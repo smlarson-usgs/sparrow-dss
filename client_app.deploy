@@ -1,0 +1,94 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<client-deployment nselem="client-deployment" class="oracle.jdeveloper.deploy.jar.ClientProfile" xmlns="http://xmlns.oracle.com/jdeveloper/101303/deploy/j2ee-client-jar">
+   <archiveOptions>
+      <additionalManifests/>
+      <compressed>true</compressed>
+      <hasManifest>true</hasManifest>
+      <mainClass>gov.usgswim.sparrow.gui.SparrowGUIMain</mainClass>
+   </archiveOptions>
+   <defaultConnection class="java.lang.String"/>
+   <deployClientMaxHeapSize/>
+   <earURL path="deploy/client_app.ear"/>
+   <enterpriseAppName/>
+   <fileGroups>
+      <groups>
+         <Item class="oracle.jdeveloper.deploy.common.PackagingFileGroup" internalName="project-output">
+            <contributors>
+               <Item type="2"/>
+               <Item type="7"/>
+            </contributors>
+            <displayName>Project Output</displayName>
+            <filters>
+               <rules>
+                  <Item type="1" pattern="**/CVS/"/>
+                  <Item type="1" pattern="**.cdi"/>
+                  <Item type="1" pattern="**.contrib"/>
+                  <Item type="1" pattern="**.keep"/>
+                  <Item type="1" pattern="**.rvi"/>
+                  <Item type="1" pattern=".jsps/"/>
+                  <Item type="1" pattern=".tags/"/>
+                  <Item type="1" pattern=".dtags/"/>
+                  <Item type="1" pattern="**/*.jht"/>
+                  <Item type="1" pattern="**/*.jjt"/>
+                  <Item type="1" pattern="**/*.jxt"/>
+                  <Item type="0" pattern="**"/>
+               </rules>
+            </filters>
+            <targetWithinJar/>
+         </Item>
+         <Item class="oracle.jdeveloper.deploy.common.ProjectFileGroup">
+            <contributors>
+               <autoInclude>true</autoInclude>
+               <deploySourceAs>0</deploySourceAs>
+               <files>
+                  <Item path="src/META-INF/application-client.xml"/>
+                  <Item path="src/gov/usgswim/sparrow/BootstrapSimple.java"/>
+                  <Item path="src/gov/usgswim/sparrow/Double2D.java"/>
+                  <Item path="src/gov/usgswim/sparrow/Int2D.java"/>
+                  <Item path="src/gov/usgswim/sparrow/PredictSimple.java"/>
+                  <Item path="src/gov/usgswim/sparrow/PredictSimple_Test.java"/>
+                  <Item path="src/gov/usgswim/sparrow/test/FileChooserPanel.java"/>
+                  <Item path="src/gov/usgswim/sparrow/test/InputPanel.java"/>
+                  <Item path="src/gov/usgswim/sparrow/test/MainFrame.java"/>
+                  <Item path="src/gov/usgswim/sparrow/test/MainPanel.java"/>
+                  <Item path="src/gov/usgswim/sparrow/test/ResultGrid.java"/>
+                  <Item path="src/gov/usgswim/sparrow/test/ResultTableModel.java"/>
+                  <Item path="src/gov/usgswim/sparrow/test/SparrowData.java"/>
+                  <Item path="src/gov/usgswim/sparrow/test/SparrowTest.java"/>
+                  <Item path="src/gov/usgswim/sparrow/test/_Test.java"/>
+                  <Item path="src/gov/usgswim/sparrow/test/tab_delimit_sample.txt"/>
+                  <Item path="src/gov/usgswim/sparrow/test/tab_delimit_sample_err1.txt"/>
+                  <Item path="src/gov/usgswim/sparrow/test/tab_delimit_sample_gap.txt"/>
+                  <Item path="src/gov/usgswim/sparrow/test/tab_delimit_sample_gap_int.txt"/>
+                  <Item path="src/gov/usgswim/sparrow/test/tab_delimit_sample_heading.txt"/>
+                  <Item path="src/gov/usgswim/sparrow/util/SparrowUtil.java"/>
+                  <Item path="src/gov/usgswim/sparrow/util/TabDelimFileReader.java"/>
+                  <Item path="src/gov/usgswim/sparrow/util/TabDelimFileReader_Test.java"/>
+                  <Item path="src/log4j.properties"/>
+               </files>
+               <selectionFilters/>
+            </contributors>
+            <displayName>Libraries</displayName>
+            <filters>
+               <additionalArchives/>
+               <afterFilters/>
+               <beforeFilters/>
+               <duringFilters/>
+               <selectedArchives>
+                  <archives>
+                     <Item protocol="jar" path="file:/Applications/JDeveloper.app/Contents/Resources/jdev/jdev/lib/jdev-rt.jar!/"/>
+                     <Item protocol="jar" path="file:/Applications/JDeveloper.app/Contents/Resources/jdev/jdev/extensions/oracle.jdeveloper.jgoodies.1.0.4/forms-1.0.4.jar!/"/>
+                     <Item path="../../../java_lib/jakarta/commons_lang/commons-lang-2.1.jar" jar-entry=""/>
+                     <Item path="../../../java_lib/apache/log4j/log4j-1.2.9.jar" jar-entry=""/>
+                  </archives>
+                  <selectionMode>0</selectionMode>
+               </selectedArchives>
+            </filters>
+            <targetWithinJar/>
+         </Item>
+      </groups>
+   </fileGroups>
+   <jarURL path="deploy/client_app.jar"/>
+   <profileDeps/>
+   <properties/>
+</client-deployment>
