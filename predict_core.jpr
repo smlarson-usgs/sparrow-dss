@@ -115,10 +115,6 @@
    <hash n="oracle.jdevimpl.config.JProjectLibraries">
       <list n="exportedReferences">
          <hash>
-            <url n="id" path="../../../../mmsd/java_lib/_lib_definition/junit_3-8.library"/>
-            <value n="isJDK" v="false"/>
-         </hash>
-         <hash>
             <value n="id" v="JDeveloper Runtime"/>
             <value n="isJDK" v="false"/>
          </hash>
@@ -127,24 +123,24 @@
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <url n="id" path="../../../java_lib/_lib_definition/jakarta_commons_lang_2-1.library"/>
+            <url n="id" path="java_lib/_lib_definition/junit_3-8.library"/>
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <url n="id" path="../../../java_lib/_lib_definition/apache_log4j_1-2-9.library"/>
+            <url n="id" path="java_lib/_lib_definition/jakarta_commons_lang_2-1.library"/>
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <url n="id" path="../../../java_lib/_lib_definition/oracle_mapviewer_client_10-1-3.library"/>
+            <url n="id" path="java_lib/_lib_definition/apache_log4j_1-2.library"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <url n="id" path="java_lib/_lib_definition/oracle_mapviewer_client_10-1-3.library"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
       <list n="libraryReferences">
          <hash>
-            <url n="id" path="../../../../mmsd/java_lib/_lib_definition/junit_3-8.library"/>
-            <value n="isJDK" v="false"/>
-         </hash>
-         <hash>
             <value n="id" v="JDeveloper Runtime"/>
             <value n="isJDK" v="false"/>
          </hash>
@@ -153,15 +149,19 @@
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <url n="id" path="../../../java_lib/_lib_definition/jakarta_commons_lang_2-1.library"/>
+            <url n="id" path="java_lib/_lib_definition/junit_3-8.library"/>
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <url n="id" path="../../../java_lib/_lib_definition/apache_log4j_1-2-9.library"/>
+            <url n="id" path="java_lib/_lib_definition/jakarta_commons_lang_2-1.library"/>
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <url n="id" path="../../../java_lib/_lib_definition/oracle_mapviewer_client_10-1-3.library"/>
+            <url n="id" path="java_lib/_lib_definition/apache_log4j_1-2.library"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <url n="id" path="java_lib/_lib_definition/oracle_mapviewer_client_10-1-3.library"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
