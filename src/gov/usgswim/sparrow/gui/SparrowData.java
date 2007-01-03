@@ -4,7 +4,7 @@ import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Double2D;
 import gov.usgswim.sparrow.Int2D;
 import gov.usgswim.sparrow.PredictSimple;
-import gov.usgswim.sparrow.util.TabDelimFileReader;
+import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.awt.Frame;
 
@@ -116,16 +116,16 @@ public class SparrowData implements DataChangeListener {
 			
 			try {
 				if (DATA_TYPE_TOPO.equals(evt.getDataType())) {
-					topoData = TabDelimFileReader.readAsInteger(f, true);
+					topoData = TabDelimFileUtil.readAsInteger(f, true);
 					fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_TOPO, topoData));
 				} else if (DATA_TYPE_COEF.equals(evt.getDataType())) {
-					coefData = TabDelimFileReader.readAsDouble(f, true);
+					coefData = TabDelimFileUtil.readAsDouble(f, true);
 					fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_COEF, coefData));
 				} else if (DATA_TYPE_SRC.equals(evt.getDataType())) {
-					srcData = TabDelimFileReader.readAsDouble(f, true);
+					srcData = TabDelimFileUtil.readAsDouble(f, true);
 					fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_SRC, srcData));
 				} else if (DATA_TYPE_DECAY.equals(evt.getDataType())) {
-					decayData = TabDelimFileReader.readAsDouble(f, true);
+					decayData = TabDelimFileUtil.readAsDouble(f, true);
 					fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_DECAY, decayData));
 				}
 			} catch (FileNotFoundException e) {
