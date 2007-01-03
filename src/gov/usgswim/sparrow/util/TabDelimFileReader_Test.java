@@ -16,7 +16,7 @@ public class TabDelimFileReader_Test extends TestCase{
 	
 	public void testDouble1() throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/tab_delimit_sample.txt");
-		double[][] data = TabDelimFileReader.readAsDouble(fileStream, false).getData();
+		double[][] data = TabDelimFileUtil.readAsDouble(fileStream, false).getData();
 		
 		this.assertEquals(1d, data[0][0], 0d);
 	  this.assertEquals(5.14159d, data[0][4], 0d);
@@ -32,7 +32,7 @@ public class TabDelimFileReader_Test extends TestCase{
 	 */
 	public void testDouble2() throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/tab_delimit_sample_gap.txt");
-		double[][] data = TabDelimFileReader.readAsDouble(fileStream, false).getData();
+		double[][] data = TabDelimFileUtil.readAsDouble(fileStream, false).getData();
 		
 		this.assertEquals(1d, data[0][0], 0d);
 		this.assertEquals(5.14159d, data[0][4], 0d);
@@ -48,7 +48,7 @@ public class TabDelimFileReader_Test extends TestCase{
 		*/
 	 public void testDouble3() throws Exception {
 		 InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/tab_delimit_sample_heading.txt");
-		 Double2D data2D = TabDelimFileReader.readAsDouble(fileStream, true);
+		 Double2D data2D = TabDelimFileUtil.readAsDouble(fileStream, true);
 		 double[][] data = data2D.getData();
 		 
 		 this.assertEquals(1d, data[0][0], 0d);
@@ -74,7 +74,7 @@ public class TabDelimFileReader_Test extends TestCase{
 		
 		
 		try {
-		  double[][] data = TabDelimFileReader.readAsDouble(fileStream, false).getData();
+		  double[][] data = TabDelimFileUtil.readAsDouble(fileStream, false).getData();
 		} catch (NumberFormatException e) {
 			return;	//terminate normally - this error is expected
 		}
@@ -90,7 +90,7 @@ public class TabDelimFileReader_Test extends TestCase{
 	 */
 	public void testInteger1() throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/tab_delimit_sample_gap_int.txt");
-		int[][] data = TabDelimFileReader.readAsInteger(fileStream, false).getData();
+		int[][] data = TabDelimFileUtil.readAsInteger(fileStream, false).getData();
 		
 	  this.assertEquals(1, data[0][0]);
 	  this.assertEquals(5, data[0][4]);
@@ -106,7 +106,7 @@ public class TabDelimFileReader_Test extends TestCase{
 		*/
 	 public void testInteger2() throws Exception {
 		 InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/tab_delimit_sample_heading.txt");
-	   Int2D data2D = TabDelimFileReader.readAsInteger(fileStream, true);
+	   Int2D data2D = TabDelimFileUtil.readAsInteger(fileStream, true);
 		 int[][] data = data2D.getData();
 		 
 		 this.assertEquals(1, data[0][0]);
