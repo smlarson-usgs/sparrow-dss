@@ -17,8 +17,8 @@ import java.io.InputStreamReader;
 
 import java.util.ArrayList;
 
-public class TabDelimFileReader {
-	private TabDelimFileReader() { /* no instances */}
+public class TabDelimFileUtil {
+	private TabDelimFileUtil() { /* no instances */}
 	
 	public static Double2D readAsDouble(File file, boolean hasHeadings)
 			throws FileNotFoundException, IOException, NumberFormatException  {
