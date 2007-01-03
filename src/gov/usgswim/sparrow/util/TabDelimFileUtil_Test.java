@@ -7,10 +7,10 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
-public class TabDelimFileReader_Test extends TestCase{
+public class TabDelimFileUtil_Test extends TestCase{
 
 	
-	public TabDelimFileReader_Test(String testName) {
+	public TabDelimFileUtil_Test(String testName) {
 		super(testName);
 	}
 	
