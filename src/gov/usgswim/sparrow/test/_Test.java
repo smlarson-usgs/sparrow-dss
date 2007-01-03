@@ -14,7 +14,7 @@ public class _Test {
 		
 
 		suite.addTestSuite(PredictSimple_Test.class);
-	  suite.addTestSuite(TabDelimFileReader_Test.class);
+	  suite.addTestSuite(TabDelimFileUtil_Test.class);
 
 		return suite;
 	}
