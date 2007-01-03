@@ -50,7 +50,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	public NSDataSet buildDataSet(Properties properties) {
 		Vector data = new Vector(1000);
 		
-		Connection conn;
+		Connection conn = null;
 
 
 		try {
