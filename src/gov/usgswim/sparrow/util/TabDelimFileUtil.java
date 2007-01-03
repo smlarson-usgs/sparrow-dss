@@ -1,19 +1,28 @@
 package gov.usgswim.sparrow.util;
 
+import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Double2D;
 
 import gov.usgswim.sparrow.Int2D;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 
 import java.io.InputStream;
 
 import java.io.InputStreamReader;
+
+import java.io.OutputStream;
+
+import java.io.OutputStreamWriter;
+
+import java.io.PrintWriter;
 
 import java.util.ArrayList;
 
@@ -159,6 +168,51 @@ public class TabDelimFileUtil {
 			}
 			br = null;
 		}
+	}
+	
+	public static void write(Data2D data, File destination)
+			throws IOException  {
+	  FileOutputStream os = new FileOutputStream(destination, false);
+		write(data, os);
+		os.flush();
+		os.close();
+	}
+			
+			
+			
+	public static void write(Data2D data, OutputStream destination)
+			throws IOException  {
+			
+		PrintWriter pw = new PrintWriter(destination);
+		//BufferedWriter bw = new BufferedWriter(osw);
+		
+		
+		StringBuffer line = new StringBuffer();
+		int colCount = data.getColCount();
+		int rowCount = data.getRowCount();
+		
+		//headings
+		for (int i = 0; i < colCount; i++)  {
+			line.append(data.getHeading(i, true) + "\t");
+		}
+		
+		//Trim extra tab from end of line and write
+		line.setLength(line.length() - 1);
+		pw.println(line.toString());
+		line.setLength(0);
+
+		for (int r=0; r<rowCount; r++) {
+			for (int c=0; c<colCount; c++) {
+				line.append(data.getValueAt(r, c).toString() + "\t");
+			}
+			//Trim extra tab from end of line and write
+			line.setLength(line.length() - 1);
+			pw.println(line.toString());
+			line.setLength(0);
+		}
+		
+		pw.flush();
+			
 	}
 	
 	private static String[] readHeadings(BufferedReader br) throws IOException {
