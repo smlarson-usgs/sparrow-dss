@@ -10,10 +10,31 @@ public interface Data2D {
 	 * Returns an appropriate wrapper object for the specified value.
 	 * @param row
 	 * @param col
-	 * @return
-	 * @throws IndexOutOfBoundsException
+	 * @return The value at the specified row/column in an appropriate wrapper type
+	 * @throws IndexOutOfBoundsException if the row or column is outside the existing data bounds
 	 */
 	public Object getValueAt(int row, int col) throws IndexOutOfBoundsException;
+	
+	/**
+	 * Returns an integer representation of the value at the specified row/column location.
+	 * Double values are trimmed.
+	 * 
+	 * @param row
+	 * @param col
+	 * @return The value at the specified row/column, as an integer
+	 * @throws IndexOutOfBoundsException if the row or column is outside the existing data bounds
+	 */
+	public int getInt(int row, int col) throws IndexOutOfBoundsException;
+	
+	/**
+	 * Returns a double representation of the value at the specified row/column location.
+	 * 
+	 * @param row
+	 * @param col
+	 * @return The value at the specified row/column, as a double
+	 * @throws IndexOutOfBoundsException if the row or column is outside the existing data bounds
+	 */
+	public double getDouble(int row, int col) throws IndexOutOfBoundsException;
 	
 	/**
 	 * Sets the value at a specified position.
@@ -32,6 +53,7 @@ public interface Data2D {
 	 * @throws IllegalArgumentException
 	 */
 	public void setValueAt(Object value, int row, int col) throws IndexOutOfBoundsException, IllegalArgumentException;
+	
 	
 	/**
 	 * The number of rows in the data array.  Null Safe.

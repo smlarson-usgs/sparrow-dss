@@ -27,6 +27,15 @@ public class Double2D implements Data2D {
 		return new Double(_data[row][col]);
 	}
 	
+	public int getInt(int row, int col) throws IndexOutOfBoundsException {
+		return (int) _data[row][col];
+	}
+	
+
+	public double getDouble(int row, int col) throws IndexOutOfBoundsException {
+		return _data[row][col];
+	}
+	
 	public void setValueAt(Object value, int row, int col)
 			throws IndexOutOfBoundsException, IllegalArgumentException {
 				

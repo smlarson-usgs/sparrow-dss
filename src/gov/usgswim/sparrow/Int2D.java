@@ -27,6 +27,16 @@ public class Int2D implements Data2D {
 		return new Integer(_data[row][col]);
 	}
 	
+
+	public int getInt(int row, int col) throws IndexOutOfBoundsException {
+	  return _data[row][col];
+	}
+	
+
+	public double getDouble(int row, int col) throws IndexOutOfBoundsException {
+	  return (double) _data[row][col];
+	}
+	
 	public void setValueAt(Object value, int row, int col)
 			throws IndexOutOfBoundsException, IllegalArgumentException {
 				
