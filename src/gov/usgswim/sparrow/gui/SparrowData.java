@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.gui;
 
 import gov.usgswim.sparrow.Data2D;
+import gov.usgswim.sparrow.Data2DView;
 import gov.usgswim.sparrow.Double2D;
 import gov.usgswim.sparrow.Int2D;
 import gov.usgswim.sparrow.PredictSimple;
@@ -30,12 +31,12 @@ public class SparrowData implements DataChangeListener {
 	public static final String DATA_TYPE_DECAY = "DATA_TYPE_DECAY";
 	public static final String DATA_TYPE_RESULT = "DATA_TYPE_RESULT";
 
-	Int2D topoData;
-	Double2D coefData;
-	Double2D srcData;
-	Double2D decayData;
+	Data2D topoData;
+	Data2D coefData;
+	Data2D srcData;
+	Data2D decayData;
 	
-	Double2D result;
+	Data2D result;
 	Frame rootFrame;
 	
 	// Create the listener list
@@ -63,9 +64,11 @@ public class SparrowData implements DataChangeListener {
 					decayData != null &&
 					srcData != null) {
 
+			//The coefData contains two extra columns that are metadata and need to
+			//be masked from the view of the PredictionCode
+			Data2DView trimmedCoef = new Data2DView(coefData, 2, coefData.getColCount() - 2);
 
-
-			PredictSimple predict = new PredictSimple(topoData, coefData, srcData, decayData);
+			PredictSimple predict = new PredictSimple(topoData, trimmedCoef, srcData, decayData);
 			
 			
 			result = predict.doPredict();
@@ -120,7 +123,20 @@ public class SparrowData implements DataChangeListener {
 					topoData = TabDelimFileUtil.readAsInteger(f, true);
 					fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_TOPO, topoData));
 				} else if (DATA_TYPE_COEF.equals(evt.getDataType())) {
-					coefData = TabDelimFileUtil.readAsDouble(f, true);
+					Double2D coefDataFull = TabDelimFileUtil.readAsDouble(f, true);
+					
+					//coefData includes multiple iterations, indicated in the first column.
+					//we want iteration 0.
+					int firstRow = coefDataFull.orderedSearchFirst(0d, 0);
+					int lastRow = coefDataFull.orderedSearchLast(0d, 0);
+					
+					if (firstRow < 0 || lastRow < firstRow) {
+						log.error("The coef data does not include an iteration zero!");
+						throw new IllegalArgumentException("The coef data does not include an iteration zero!");
+					}
+					
+					coefData = new Data2DView(coefDataFull, firstRow, lastRow - firstRow + 1, 0, coefDataFull.getColCount());
+					
 					fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_COEF, coefData));
 				} else if (DATA_TYPE_SRC.equals(evt.getDataType())) {
 					srcData = TabDelimFileUtil.readAsDouble(f, true);

@@ -22,19 +22,19 @@ public class PredictSimple {
 	 * NOTE:  We assume that the node indexes start at zero and have no skips.
 	 * Thus, nodeCount must equal the largest node index + 1
 	 */
-	protected Int2D topo;
+	protected Data2D topo;
 	
 	/**
 	 * The coef's for each reach-source.
 	 * coef[i][k] == the coefficient for source k at reach i
 	 */
-	protected Double2D coef;
+	protected Data2D coef;
 	
 	/**
 	 * The source amount for each reach-source.
 	 * src[i][k] == the amount added via source k at reach i
 	 */
-	protected Double2D src;
+	protected Data2D src;
 	
 	/**
 	 * The stream and resevor decay
@@ -46,7 +46,7 @@ public class PredictSimple {
 	 * src[i][1] == the upstream decay at reach i.
 	 *   This decay is applied to the load coming from the upstream node.
 	 */
-	protected Double2D decay;
+	protected Data2D decay;
 	
 	
 	/**
@@ -64,7 +64,7 @@ public class PredictSimple {
 	 * @param coef
 	 * @param src
 	 */
-	public PredictSimple(Int2D topo, Double2D coef, Double2D src, Double2D decay) {
+	public PredictSimple(Data2D topo, Data2D coef, Data2D src, Data2D decay) {
 		this.topo = topo; //assign the passed values to the class variables
 		this.coef = coef;
 		this.src = src;
