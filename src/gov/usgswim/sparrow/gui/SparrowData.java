@@ -64,7 +64,8 @@ public class SparrowData implements DataChangeListener {
 					srcData != null) {
 
 
-			PredictSimple predict = new PredictSimple(topoData.getData(), coefData.getData(), srcData.getData(), decayData.getData(), srcData.getHeadings());
+
+			PredictSimple predict = new PredictSimple(topoData, coefData, srcData, decayData);
 			
 			
 			result = predict.doPredict();
