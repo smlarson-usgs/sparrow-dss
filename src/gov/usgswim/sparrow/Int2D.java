@@ -9,6 +9,7 @@ import org.apache.commons.lang.math.NumberUtils;
 public class Int2D implements Data2D {
 	private int[][] _data;
 	private String[] _head;
+	private Double maxValue;	//null unless we know for sure we have the max value
 	
 	public Int2D(int[][] data, String[] headings) {
 		_data = data;
@@ -59,6 +60,14 @@ public class Int2D implements Data2D {
 			} else {
 				_data[row][col] = 0;
 			}
+			
+			//Update the max value if one is calculated
+			if (maxValue != null) {
+				if (_data[row][col] > maxValue.doubleValue()) {
+					maxValue = new Double(_data[row][col]);
+				}
+			}
+			
 		} else {
 			throw new IndexOutOfBoundsException("The row and/or column (" + row + "," + col + ") are beyond the range of the data array.");
 		}
@@ -91,6 +100,27 @@ public class Int2D implements Data2D {
 		} else {
 			return 0;
 		}
+	}
+	
+	public synchronized double findMaxValue() {
+		if (maxValue == null) {
+		  if (_data != null && _data[0] != null) {
+				
+				double max = Double.MIN_VALUE;
+				
+				for (int r = 0; r < _data.length; r++)  {
+					for (int c = 0; c < _data[0].length; c++)  {
+						if (_data[r][c] > max) max = _data[r][c];
+					}
+				}
+				
+				maxValue = new Double(max);
+			} else {
+				return 0d;
+			}
+			
+		}
+		return maxValue.doubleValue();
 	}
 	
 	/**
