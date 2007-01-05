@@ -22,19 +22,19 @@ public class PredictSimple {
 	 * NOTE:  We assume that the node indexes start at zero and have no skips.
 	 * Thus, nodeCount must equal the largest node index + 1
 	 */
-	protected int[][] topo;
+	protected Int2D topo;
 	
 	/**
 	 * The coef's for each reach-source.
 	 * coef[i][k] == the coefficient for source k at reach i
 	 */
-	protected double[][] coef;
+	protected Double2D coef;
 	
 	/**
 	 * The source amount for each reach-source.
 	 * src[i][k] == the amount added via source k at reach i
 	 */
-	protected double[][] src;
+	protected Double2D src;
 	
 	/**
 	 * The stream and resevor decay
@@ -46,12 +46,8 @@ public class PredictSimple {
 	 * src[i][1] == the upstream decay at reach i.
 	 *   This decay is applied to the load coming from the upstream node.
 	 */
-	protected double[][] decay;
+	protected Double2D decay;
 	
-	/**
-	 * The labels for the source columns
-	 */
-	protected String[] sourceLabel;
 	
 	/**
 	 * The number of nodes
@@ -68,43 +64,21 @@ public class PredictSimple {
 	 * @param coef
 	 * @param src
 	 */
-	public PredictSimple(int[][] topo, double[][] coef, double[][] src, double[][] decay, String[] sourceLabels) {
+	public PredictSimple(Int2D topo, Double2D coef, Double2D src, Double2D decay) {
 		this.topo = topo; //assign the passed values to the class variables
 		this.coef = coef;
 		this.src = src;
 		this.decay = decay;
-		this.sourceLabel = sourceLabels;
 		
-		int maxNode = 0;
-		
-		for (int i = 0; i < topo.length; i++)  {
-			if (topo[i][0] > maxNode) maxNode = topo[i][0];
-		  if (topo[i][1] > maxNode) maxNode = topo[i][1];
-		}
+		int maxNode = (int) topo.findMaxValue();
 		
 		nodeCount = maxNode + 1;
 	}
 	
-	/**
-	 * Construct a new instance.
-	 * 
-	 * @param topo
-	 * @param coef
-	 * @param src
-	 * @param nodeCount
-	 */
-	public PredictSimple(int[][] topo, double[][] coef, double[][] src, double[][] decay, String[] sourceLabels, int nodeCount) {
-		this.topo = topo;	//assign the passed values to the class variables
-		this.coef = coef;
-		this.src = src;
-	  this.decay = decay;
-		this.nodeCount = nodeCount;
-	  this.sourceLabel = sourceLabels;
-	}
 
 	public Double2D doPredict() {
-		int reachCount = topo.length;	//# of reachs is equal to the number of 'rows' in topo
-		int sourceCount = src[0].length; //# of sources is equal to the number of 'columns' in an arbitrary row (row zero)
+		int reachCount = topo.getRowCount();	//# of reachs is equal to the number of 'rows' in topo
+		int sourceCount = topo.getColCount(); //# of sources is equal to the number of 'columns' in an arbitrary row (row zero)
 		
 		/*
 		 * The number of predicted values per reach (k = number of sources, i = reach)
@@ -136,19 +110,19 @@ public class PredictSimple {
 			
 		    //temp var to store the incremental per source k.
 				//Land delivery and coeff both included in coef value.     (NOT decayed)
-				double rchSrcVal = coef[i][k] * src[i][k];
+				double rchSrcVal = coef.getDouble(i, k) * src.getDouble(i, k);
 				
 		    rchVal[i][k] = rchSrcVal;	//store to out array
 				
 				//total at reach (w/ up stream contrib) per source k (Decayed)
 				rchVal[i][k + sourceCount] =
-					(rchSrcVal * (1d - decay[i][0])) /* Just the decayed source */
+					(rchSrcVal * (1d - decay.getDouble(i, 0))) /* Just the decayed source */
 						+
-					(nodeVal[ topo[i][0] ][k] * (1d - decay[i][1])); /* Just the decayed upstream portion */
+					(nodeVal[ topo.getInt(i, 0) ][k] * (1d - decay.getDouble(i, 1))); /* Just the decayed upstream portion */
 				
 				//Accumulate at downstream node if this reach transmits
-		    if (topo[i][2] != 0) {
-					nodeVal[ topo[i][1] ][k] += rchVal[i][k + sourceCount];
+		    if (topo.getInt(i, 2) != 0) {
+					nodeVal[ topo.getInt(i, 1) ][k] += rchVal[i][k + sourceCount];
 				}
 				
 				rchIncTotal += rchSrcVal;		//add to incremental total for all sources at reach
@@ -164,10 +138,9 @@ public class PredictSimple {
 		String[] head = new String[rchValColCount];
 		
 		for (int i = 0; i < sourceCount; i++)  {
-			String s = null;
-		  if (sourceLabel != null && sourceLabel.length > i) {
-				s = StringUtils.trimToNull(sourceLabel[i]);
-			}
+		
+			String s = StringUtils.trimToNull(src.getHeading(i));
+
 			if (s == null) s = "Source " + i;
 			
 			head[i] = s + " Inc. Addition";

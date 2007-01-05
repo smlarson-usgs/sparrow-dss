@@ -56,8 +56,12 @@ public class PredictSimple_Test extends TestCase {
 			{1, 2, 3},
 	  };
 		
+		Int2D topoD = new Int2D(topo);
+	  Double2D coefD = new Double2D(coef);
+	  Double2D decayD = new Double2D(decay);
+	  Double2D srcD = new Double2D(src);
 		
-		PredictSimple predictor = new PredictSimple(topo, coef, src, decay, null);
+		PredictSimple predictor = new PredictSimple(topoD, coefD, srcD, decayD);
 		Double2D pred = predictor.doPredict();
 
 		SparrowUtil.print2DArray(pred, "Predicted Values"); 
