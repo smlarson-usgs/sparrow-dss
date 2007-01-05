@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.test;
 
+import gov.usgswim.sparrow.Data2DView_Test;
 import gov.usgswim.sparrow.PredictSimple_Test;
 import gov.usgswim.sparrow.util.*;
 
@@ -15,7 +16,8 @@ public class _Test {
 
 		suite.addTestSuite(PredictSimple_Test.class);
 	  suite.addTestSuite(TabDelimFileUtil_Test.class);
-
+	  suite.addTestSuite(Data2DView_Test.class);
+	  
 		return suite;
 	}
 
