@@ -151,6 +151,32 @@ public class Data2DView implements Data2D {
 		}
 		return maxValue.doubleValue();
 	}
+	
+	/**
+	 * A very simple search implementation
+	 * @param value
+	 * @param column
+	 * @return
+	 */
+	public int orderedSearchFirst(double value, int column) {
+		for (int r = firstRow; r < lastRow; r++)  {
+			if (data.getDouble(r, column) == value) return (r - firstRow);
+		}
+		return -1;
+	}
+	
+	/**
+	 * A very simple search implementation
+	 * @param value
+	 * @param column
+	 * @return
+	 */
+	public int orderedSearchLast(double value, int column) {
+		for (int r = lastRow - 1; r >= firstRow; r--)  {
+			if (data.getDouble(r, column) == value) return (r - firstRow);
+		}
+		return -1;
+	}
 
 	public boolean hasHeadings() {
 		return data.hasHeadings();

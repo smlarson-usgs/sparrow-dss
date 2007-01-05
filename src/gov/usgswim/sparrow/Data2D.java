@@ -72,6 +72,32 @@ public interface Data2D {
 	 * @return
 	 */
 	public double findMaxValue();
+	
+	/**
+	 * Finds the first instance of value in the specified column.
+	 * 
+	 * The search assumes that the data is ordered - that is, that values always
+	 * increase.  If the value is not found, -1 is returned.
+	 * 
+	 * @param value The value searched for
+	 * @param column the column to search
+	 * @return The first row containing the specified value in the spec'ed column
+	 * or -1 if the value cannot be found.
+	 */
+	public int orderedSearchFirst(double value, int column);
+	
+	/**
+	 * Finds the last instance of value in the specified column.
+	 * 
+	 * The search assumes that the data is ordered - that is, that values always
+	 * increase.  If the value is not found, -1 is returned.
+	 * 
+	 * @param value The value searched for
+	 * @param column the column to search
+	 * @return The last row containing the specified value in the spec'ed column
+	 * or -1 if the value cannot be found.
+	 */
+	public int orderedSearchLast(double value, int column);
 
 	/**
 	 * Returns true if there area headings, though it is possible that the headings are all null or empty.

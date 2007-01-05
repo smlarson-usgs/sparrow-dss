@@ -124,6 +124,32 @@ public class Int2D implements Data2D {
 	}
 	
 	/**
+	 * A very simple search implementation
+	 * @param value
+	 * @param column
+	 * @return
+	 */
+	public int orderedSearchFirst(double value, int column) {
+		for (int r = 0; r < _data.length; r++)  {
+			if (_data[r][column] == value) return r;
+		}
+		return -1;
+	}
+	
+	/**
+	 * A very simple search implementation
+	 * @param value
+	 * @param column
+	 * @return
+	 */
+	public int orderedSearchLast(double value, int column) {
+		for (int r = _data.length - 1; r >= 0; r--)  {
+			if (_data[r][column] == value) return r;
+		}
+		return -1;
+	}
+	
+	/**
 	 * Returns true if there area headings, though it is possible that the headings are all null or empty.
 	 * @return
 	 */
