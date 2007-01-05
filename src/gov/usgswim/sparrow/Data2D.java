@@ -66,6 +66,12 @@ public interface Data2D {
 	 * @return
 	 */
 	public int getColCount();
+	
+	/**
+	 * Returns the largest value contained anywhere in the data
+	 * @return
+	 */
+	public double findMaxValue();
 
 	/**
 	 * Returns true if there area headings, though it is possible that the headings are all null or empty.
