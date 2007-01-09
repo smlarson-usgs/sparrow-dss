@@ -32,7 +32,7 @@ public class InputPanel extends JPanel {
 	private FileChooserPanel topoPanel = new FileChooserPanel(SparrowData.DATA_TYPE_TOPO, "Topographic Data File", "Topographic Data");
 	private FileChooserPanel coefPanel = new FileChooserPanel(SparrowData.DATA_TYPE_COEF, "Coefficient (Beta) Data File", "Coefficient (Beta) Data");
 	private FileChooserPanel sourcePanel = new FileChooserPanel(SparrowData.DATA_TYPE_SRC, "Source Data File", "Source Data");
-	private FileChooserPanel decayPanel = new FileChooserPanel(SparrowData.DATA_TYPE_DECAY, "Decay Data File", "Decay Data");
+	private FileChooserPanel knownPanel = new FileChooserPanel(SparrowData.DATA_TYPE_KNOWN, "Known Result Value File", "Known Result Values");
 	private JButton runButton = new JButton("Run Predictions");
 	private VerticalFlowLayout verticalFlowLayout1 = new VerticalFlowLayout();
 
@@ -55,14 +55,14 @@ public class InputPanel extends JPanel {
 		this.add(topoPanel, null);
 	  this.add(coefPanel, null);
 	  this.add(sourcePanel, null);
-	  this.add(decayPanel, null);
+		this.add(knownPanel, null);
 		this.add(runButton, null);
 
 		SparrowData data = SparrowData.getInstance();
 		topoPanel.addDataChangeListener(data);
 	  coefPanel.addDataChangeListener(data);
 	  sourcePanel.addDataChangeListener(data);
-	  decayPanel.addDataChangeListener(data);
+		knownPanel.addDataChangeListener(data);
 	}
 
 
