@@ -17,8 +17,8 @@ public class MainPanel extends JPanel {
 	private ResultGrid topoGrid = new ResultGrid(SparrowData.DATA_TYPE_TOPO);
 	private ResultGrid coefGrid = new ResultGrid(SparrowData.DATA_TYPE_COEF);
 	private ResultGrid srcGrid = new ResultGrid(SparrowData.DATA_TYPE_SRC);
-	private ResultGrid decayGrid = new ResultGrid(SparrowData.DATA_TYPE_DECAY);
 	private ResultGrid resultGrid = new ResultGrid(SparrowData.DATA_TYPE_RESULT);
+	private ResultGrid knownGrid = new ResultGrid(SparrowData.DATA_TYPE_KNOWN);
 	private JTabbedPane jTabbedPane = new JTabbedPane();
 
 	public MainPanel() {
@@ -35,8 +35,8 @@ public class MainPanel extends JPanel {
 		jTabbedPane.add("Topo Data", topoGrid);
 	  jTabbedPane.add("Coef Data", coefGrid);
 	  jTabbedPane.add("Src Data", srcGrid);
-	  jTabbedPane.add("Decay Data", decayGrid);
 	  jTabbedPane.add("Predictions", resultGrid);
+		jTabbedPane.add("Known Results (reference)", knownGrid);
 	  jTabbedPane.setPreferredSize(new Dimension(500, 150));
 		
 		this.add(input, BorderLayout.NORTH);
