@@ -70,7 +70,11 @@ public class TabDelimFileUtil {
 					double[] row = new double[src.length];
 					
 					for (int i = 0; i < src.length; i++)  {
-						row[i] = Double.parseDouble( src[i] );
+						if (src[i].length() > 0) {
+							row[i] = Double.parseDouble( src[i] );
+						} else {
+							row[i] = 0;
+						}
 					}
 					
 					list.add(row);
@@ -141,7 +145,11 @@ public class TabDelimFileUtil {
 					int[] row = new int[src.length];
 					
 					for (int i = 0; i < src.length; i++)  {
-						row[i] = Integer.parseInt( src[i] );
+						if (src[i].length() > 0) {
+							row[i] = Integer.parseInt( src[i] );
+						} else {
+							row[i] = 0;
+						}
 					}
 					
 					list.add(row);
