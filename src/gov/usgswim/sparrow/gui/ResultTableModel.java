@@ -1,20 +1,25 @@
 package gov.usgswim.sparrow.gui;
 
 import gov.usgswim.sparrow.Data2D;
+import gov.usgswim.sparrow.Data2DCompare;
 import gov.usgswim.sparrow.Double2D;
 
 import gov.usgswim.sparrow.Int2D;
+
+import java.text.DecimalFormat;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import java.text.NumberFormat;
 
 public class ResultTableModel extends AbstractTableModel {
 	protected static Logger log = Logger.getLogger(ResultTableModel.class);
 	
 	Data2D data;
+	DecimalFormat format = new DecimalFormat("0.#######");
 	
 	public ResultTableModel(double[][] data) {
 		this.data = new Double2D(data, null);
@@ -34,6 +39,10 @@ public class ResultTableModel extends AbstractTableModel {
 	public void setData(Data2D data) {
 		this.data = data;
 	  fireTableStructureChanged();
+	}
+	
+	public Data2D getData() {
+		return data;
 	}
 
 	public int getRowCount() {
@@ -68,7 +77,11 @@ public class ResultTableModel extends AbstractTableModel {
 
 	public String getColumnName(int i) {
 	  if (data != null) {
-	    return data.getHeading(i);
+			if (data instanceof Data2DCompare) {
+				return "<html>" + data.getHeading(i) + "<p>[" + format.format( ((Data2DCompare)data).findMaxCompareValue(i)) + "]";
+			} else {
+				return data.getHeading(i);
+			}
 		} else {
 	    return StringUtils.EMPTY;
 	  }
