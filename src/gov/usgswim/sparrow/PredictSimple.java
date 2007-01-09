@@ -37,7 +37,9 @@ public class PredictSimple {
 	protected Data2D src;
 	
 	/**
-	 * The stream and resevor decay
+	 * The stream and resevor decay.  The values in the array are *actually* 
+	 * delivery, which is (1 - decay).  I.E. the delivery calculation is already
+	 * done.
 	 * 
 	 * src[i][0] == the instream decay at reach i.
 	 *   This decay is assumed to be at mid-reach and already computed as such.
@@ -78,7 +80,7 @@ public class PredictSimple {
 
 	public Double2D doPredict() {
 		int reachCount = topo.getRowCount();	//# of reachs is equal to the number of 'rows' in topo
-		int sourceCount = topo.getColCount(); //# of sources is equal to the number of 'columns' in an arbitrary row (row zero)
+		int sourceCount = src.getColCount(); //# of sources is equal to the number of 'columns' in an arbitrary row (row zero)
 		
 		/*
 		 * The number of predicted values per reach (k = number of sources, i = reach)
@@ -116,9 +118,9 @@ public class PredictSimple {
 				
 				//total at reach (w/ up stream contrib) per source k (Decayed)
 				rchVal[i][k + sourceCount] =
-					(rchSrcVal * (1d - decay.getDouble(i, 0))) /* Just the decayed source */
+					(rchSrcVal * decay.getDouble(i, 0)) /* Just the decayed source */
 						+
-					(nodeVal[ topo.getInt(i, 0) ][k] * (1d - decay.getDouble(i, 1))); /* Just the decayed upstream portion */
+					(nodeVal[ topo.getInt(i, 0) ][k] * decay.getDouble(i, 1)); /* Just the decayed upstream portion */
 				
 				//Accumulate at downstream node if this reach transmits
 		    if (topo.getInt(i, 2) != 0) {
@@ -153,4 +155,5 @@ public class PredictSimple {
 	  return new Double2D(rchVal, head);
 		
 	}
+	
 }
