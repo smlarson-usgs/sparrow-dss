@@ -29,10 +29,10 @@ import oracle.jdeveloper.layout.VerticalFlowLayout;
 public class InputPanel extends JPanel {
 
 
-	private FileChooserPanel topoPanel = new FileChooserPanel(SparrowData.DATA_TYPE_TOPO, "Topographic Data File", "Topographic Data");
-	private FileChooserPanel coefPanel = new FileChooserPanel(SparrowData.DATA_TYPE_COEF, "Coefficient (Beta) Data File", "Coefficient (Beta) Data");
-	private FileChooserPanel sourcePanel = new FileChooserPanel(SparrowData.DATA_TYPE_SRC, "Source Data File", "Source Data");
-	private FileChooserPanel knownPanel = new FileChooserPanel(SparrowData.DATA_TYPE_KNOWN, "Known Result Value File", "Known Result Values (predict.txt)");
+	private FileChooserPanel topoPanel = new FileChooserPanel(SparrowData.DATA_TYPE_TOPO, "Topographic Data File (topo.txt)", "Topographic Data (topo.txt)");
+	private FileChooserPanel coefPanel = new FileChooserPanel(SparrowData.DATA_TYPE_COEF, "Coefficient (Beta) Data File (coef.txt)", "Coefficient (Beta) Data (coef.txt)");
+	private FileChooserPanel sourcePanel = new FileChooserPanel(SparrowData.DATA_TYPE_SRC, "Source Data File (src.txt)", "Source Data (src.txt)");
+	private FileChooserPanel knownPanel = new FileChooserPanel(SparrowData.DATA_TYPE_KNOWN, "Known Result Value File (predict.txt)", "Known Result Values (predict.txt)");
 	private JButton runButton = new JButton("Run Predictions");
 	private VerticalFlowLayout verticalFlowLayout1 = new VerticalFlowLayout();
 
