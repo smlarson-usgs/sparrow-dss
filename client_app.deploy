@@ -20,6 +20,7 @@
             <displayName>Project Output</displayName>
             <filters>
                <rules>
+                  <Item type="1" pattern=".DS_Store"/>
                   <Item type="1" pattern="**/CVS/"/>
                   <Item type="1" pattern="**.cdi"/>
                   <Item type="1" pattern="**.contrib"/>
@@ -41,29 +42,43 @@
                <autoInclude>true</autoInclude>
                <deploySourceAs>0</deploySourceAs>
                <files>
+                  <Item path="deploy/coef.txt"/>
+                  <Item path="deploy/decay.txt"/>
+                  <Item path="deploy/src.txt"/>
+                  <Item path="deploy/topo.txt"/>
                   <Item path="src/META-INF/application-client.xml"/>
                   <Item path="src/gov/usgswim/sparrow/BootstrapSimple.java"/>
+                  <Item path="src/gov/usgswim/sparrow/Data2D.java"/>
+                  <Item path="src/gov/usgswim/sparrow/Data2DCompare.java"/>
+                  <Item path="src/gov/usgswim/sparrow/Data2DView.java"/>
+                  <Item path="src/gov/usgswim/sparrow/Data2DView_Test.java"/>
                   <Item path="src/gov/usgswim/sparrow/Double2D.java"/>
                   <Item path="src/gov/usgswim/sparrow/Int2D.java"/>
+                  <Item path="src/gov/usgswim/sparrow/MapViewerSparrowDataProvider.java"/>
                   <Item path="src/gov/usgswim/sparrow/PredictSimple.java"/>
                   <Item path="src/gov/usgswim/sparrow/PredictSimple_Test.java"/>
-                  <Item path="src/gov/usgswim/sparrow/test/FileChooserPanel.java"/>
-                  <Item path="src/gov/usgswim/sparrow/test/InputPanel.java"/>
-                  <Item path="src/gov/usgswim/sparrow/test/MainFrame.java"/>
-                  <Item path="src/gov/usgswim/sparrow/test/MainPanel.java"/>
-                  <Item path="src/gov/usgswim/sparrow/test/ResultGrid.java"/>
-                  <Item path="src/gov/usgswim/sparrow/test/ResultTableModel.java"/>
-                  <Item path="src/gov/usgswim/sparrow/test/SparrowData.java"/>
-                  <Item path="src/gov/usgswim/sparrow/test/SparrowTest.java"/>
+                  <Item path="src/gov/usgswim/sparrow/gui/DataChangeEvent.java"/>
+                  <Item path="src/gov/usgswim/sparrow/gui/DataChangeListener.java"/>
+                  <Item path="src/gov/usgswim/sparrow/gui/FileChooserPanel.java"/>
+                  <Item path="src/gov/usgswim/sparrow/gui/InputPanel.java"/>
+                  <Item path="src/gov/usgswim/sparrow/gui/MainFrame.java"/>
+                  <Item path="src/gov/usgswim/sparrow/gui/MainPanel.java"/>
+                  <Item path="src/gov/usgswim/sparrow/gui/ReorderableJList.java"/>
+                  <Item path="src/gov/usgswim/sparrow/gui/ResultGrid.java"/>
+                  <Item path="src/gov/usgswim/sparrow/gui/ResultTable.java"/>
+                  <Item path="src/gov/usgswim/sparrow/gui/ResultTableModel.java"/>
+                  <Item path="src/gov/usgswim/sparrow/gui/SparrowData.java"/>
+                  <Item path="src/gov/usgswim/sparrow/gui/SparrowGUIMain.java"/>
                   <Item path="src/gov/usgswim/sparrow/test/_Test.java"/>
                   <Item path="src/gov/usgswim/sparrow/test/tab_delimit_sample.txt"/>
                   <Item path="src/gov/usgswim/sparrow/test/tab_delimit_sample_err1.txt"/>
                   <Item path="src/gov/usgswim/sparrow/test/tab_delimit_sample_gap.txt"/>
                   <Item path="src/gov/usgswim/sparrow/test/tab_delimit_sample_gap_int.txt"/>
                   <Item path="src/gov/usgswim/sparrow/test/tab_delimit_sample_heading.txt"/>
+                  <Item path="src/gov/usgswim/sparrow/util/Misc.java"/>
                   <Item path="src/gov/usgswim/sparrow/util/SparrowUtil.java"/>
-                  <Item path="src/gov/usgswim/sparrow/util/TabDelimFileReader.java"/>
-                  <Item path="src/gov/usgswim/sparrow/util/TabDelimFileReader_Test.java"/>
+                  <Item path="src/gov/usgswim/sparrow/util/TabDelimFileUtil.java"/>
+                  <Item path="src/gov/usgswim/sparrow/util/TabDelimFileUtil_Test.java"/>
                   <Item path="src/log4j.properties"/>
                </files>
                <selectionFilters/>
@@ -78,8 +93,8 @@
                   <archives>
                      <Item protocol="jar" path="file:/Applications/JDeveloper.app/Contents/Resources/jdev/jdev/lib/jdev-rt.jar!/"/>
                      <Item protocol="jar" path="file:/Applications/JDeveloper.app/Contents/Resources/jdev/jdev/extensions/oracle.jdeveloper.jgoodies.1.0.4/forms-1.0.4.jar!/"/>
-                     <Item path="../../../java_lib/jakarta/commons_lang/commons-lang-2.1.jar" jar-entry=""/>
-                     <Item path="../../../java_lib/apache/log4j/log4j-1.2.9.jar" jar-entry=""/>
+                     <Item path="java_lib/jakarta/commons_lang/commons-lang-2.1.jar" jar-entry=""/>
+                     <Item path="java_lib/apache/log4j/log4j-1.2.13.jar" jar-entry=""/>
                   </archives>
                   <selectionMode>0</selectionMode>
                </selectedArchives>
