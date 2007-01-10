@@ -99,13 +99,14 @@ public class SparrowData implements DataChangeListener {
 			PredictSimple predict = new PredictSimple(topoData, trimmedCoef, srcData, decayCoef);
 			
 			long startTime = System.currentTimeMillis();
+			int iterationCount = 100;
 			
-			for (int i = 0; i < 100; i++)  {
+			for (int i = 0; i < iterationCount; i++)  {
 				result = predict.doPredict();
 			}
 
-			log.info("Predict complete.  Time: " + (System.currentTimeMillis() - startTime) + "ms for " +
-				srcData.getColCount() + " sources and " + srcData.getRowCount() + " reaches."
+			log.info("Predict complete.  Total Time: " + (System.currentTimeMillis() - startTime) + "ms for " +
+				srcData.getColCount() + " sources, " + srcData.getRowCount() + " reaches, and " + iterationCount + " iterations."
 			);
 			
 			if (knownData != null) {
@@ -115,7 +116,11 @@ public class SparrowData implements DataChangeListener {
 				fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_RESULT, result));
 			}
 			
-			JOptionPane.showMessageDialog(this.rootFrame, "Success!");
+			JOptionPane.showMessageDialog(this.rootFrame,
+				"<html>Success!" +
+				"<p><p>Predict complete.  Total Time: " + (System.currentTimeMillis() - startTime) + "ms for " +
+				srcData.getColCount() + " sources, " + srcData.getRowCount() + " reaches, and " + iterationCount + " iterations."
+			);
 			
 		} else {
 			JOptionPane.showMessageDialog(this.rootFrame, "One of the source files isn't specified or doesn't exist");
