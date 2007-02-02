@@ -1,0 +1,13 @@
+SPARROW Modeling project
+Generates SPARROW model predictions without requiring SAS.
+Future versions will create maps based on predicted values.
+
+############################################################
+
+2007-02-02 Eric Everman
+Verison 0.1 tagged
+
+This version has complete, working prediction code and a 
+simple java client app to test it.
+
+############################################################
