@@ -59,6 +59,14 @@
                   <url path="deploy/"/>
                </list>
             </hash>
+            <hash>
+               <list n="pattern-filters">
+                  <string v="+**"/>
+               </list>
+               <list n="url-path">
+                  <url path="design/"/>
+               </list>
+            </hash>
          </list>
          <list n="url-path"/>
       </hash>
@@ -98,6 +106,7 @@
             <url path="database/"/>
          </list>
       </hash>
+      <value n="offlineDBSchema" v="MYSCHEMA"/>
    </hash>
    <hash n="oracle.jdeveloper.runner.RunConfigurations">
       <hash n="runConfigurationDefinitions">
