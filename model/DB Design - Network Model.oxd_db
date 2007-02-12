@@ -158,7 +158,7 @@
          y="-499.5"/>
       <dimension
          name="pageXY"
-         width="2.0"
+         width="1.0"
          height="1.0"/>
       <insets
          name="paperMargins"

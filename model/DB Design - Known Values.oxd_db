@@ -17,18 +17,18 @@
             class="o:d:DBID"/>
       </shape>
       <shape
-         name="Nominal model prediction values are stored in the _PREDICT tables.  These values can then be mapped w/o calculation and user scenerios can be themed based on differential from the nominal values....">
+         name="Nominal Model Values">
          <elemRef
             name=""
-            value="note0.66856220100332330.5118783206701295"
+            value="note0.84197032371719340.17317709423732786"
             type="DiagramNote"
             class="j:l:String"/>
       </shape>
       <shape
-         name="Prediction Schema Detail">
+         name="Nominal model prediction values are stored in the _PREDICT tables.  These values can then be mapped w/o calculation and user scenerios can be themed based on differential from the nominal values....">
          <elemRef
             name=""
-            value="note0.84197032371719340.17317709423732786"
+            value="note0.66856220100332330.5118783206701295"
             type="DiagramNote"
             class="j:l:String"/>
       </shape>
@@ -94,14 +94,6 @@
             name=""
             value="TABLE::7e67da89-0110-1000-8003-c0a8016e0973"
             type="DatabaseTable"
-            class="o:d:DBID"/>
-      </shape>
-      <shape
-         name="SPARROW_MODEL_NETWORK_MODEL_FK">
-         <elemRef
-            name=""
-            value="CONSTRAINT::7e9e7c67-0110-1000-8010-c0a8016ee0d1::TABLE::7e67da89-0110-1000-8003-c0a8016e0973"
-            type="ForeignKey"
             class="o:d:DBID"/>
       </shape>
       <shape
@@ -1240,277 +1232,6 @@
                   name="visibility"
                   value="true"/>
             </infoMap>
-         </shapeMap>
-         <shapeMap>
-            <long
-               name="DrUID"
-               value="2439077946082635264"/>
-            <infoMap
-               name="containedShapes">
-               <infoMap
-                  name="dstDeasil">
-                  <long
-                     name="DrUID"
-                     value="-4180094815122696599"/>
-                  <infoMap
-                     name="containedShapes"/>
-                  <infoMap
-                     name="displayPreference"/>
-                  <elemRef
-                     name="elementReference"
-                     value="TextShape"
-                     type="TEXT"
-                     class="j:l:String"/>
-                  <infoMap
-                     name="graphicalData">
-                     <infoMap
-                        name="diagramStateProperties">
-                        <infoMap
-                           name="symbolic">
-                           <dimension
-                              name="elementSize"
-                              width="25.0"
-                              height="18.30625"/>
-                        </infoMap>
-                     </infoMap>
-                     <point
-                        name="elementPosition"
-                        x="-150.0"
-                        y="0.0"/>
-                     <string
-                        name="shapeState">symbolic</string>
-                     <boolean
-                        name="visibility"
-                        value="true"/>
-                  </infoMap>
-               </infoMap>
-               <infoMap
-                  name="portName">
-                  <long
-                     name="DrUID"
-                     value="1625564516026223611"/>
-                  <infoMap
-                     name="containedShapes"/>
-                  <infoMap
-                     name="displayPreference"/>
-                  <elemRef
-                     name="elementReference"
-                     value="TextShape"
-                     type="TEXT"
-                     class="j:l:String"/>
-                  <infoMap
-                     name="graphicalData">
-                     <infoMap
-                        name="diagramStateProperties">
-                        <infoMap
-                           name="symbolic">
-                           <dimension
-                              name="elementSize"
-                              width="101.0"
-                              height="21.132812"/>
-                        </infoMap>
-                     </infoMap>
-                     <point
-                        name="elementPosition"
-                        x="-125.5"
-                        y="0.0"/>
-                     <string
-                        name="shapeState">symbolic</string>
-                     <boolean
-                        name="visibility"
-                        value="false"/>
-                  </infoMap>
-               </infoMap>
-               <infoMap
-                  name="srcDeasil">
-                  <long
-                     name="DrUID"
-                     value="-8988414490019760164"/>
-                  <infoMap
-                     name="containedShapes"/>
-                  <infoMap
-                     name="displayPreference"/>
-                  <elemRef
-                     name="elementReference"
-                     value="TextShape"
-                     type="TEXT"
-                     class="j:l:String"/>
-                  <infoMap
-                     name="graphicalData">
-                     <infoMap
-                        name="diagramStateProperties">
-                        <infoMap
-                           name="symbolic">
-                           <dimension
-                              name="elementSize"
-                              width="32.0"
-                              height="18.30625"/>
-                        </infoMap>
-                     </infoMap>
-                     <point
-                        name="elementPosition"
-                        x="-32.0"
-                        y="-18.306244"/>
-                     <string
-                        name="shapeState">symbolic</string>
-                     <boolean
-                        name="visibility"
-                        value="true"/>
-                  </infoMap>
-               </infoMap>
-               <infoMap
-                  name="starbordName">
-                  <long
-                     name="DrUID"
-                     value="-1747335862939181630"/>
-                  <infoMap
-                     name="containedShapes"/>
-                  <infoMap
-                     name="displayPreference"/>
-                  <elemRef
-                     name="elementReference"
-                     value="TextShape"
-                     type="TEXT"
-                     class="j:l:String"/>
-                  <infoMap
-                     name="graphicalData">
-                     <infoMap
-                        name="diagramStateProperties">
-                        <infoMap
-                           name="symbolic">
-                           <dimension
-                              name="elementSize"
-                              width="269.0"
-                              height="21.132812"/>
-                        </infoMap>
-                     </infoMap>
-                     <point
-                        name="elementPosition"
-                        x="-209.5"
-                        y="-21.132812"/>
-                     <string
-                        name="shapeState">symbolic</string>
-                     <boolean
-                        name="visibility"
-                        value="false"/>
-                  </infoMap>
-               </infoMap>
-            </infoMap>
-            <long
-               name="destinationShapeDrUID"
-               value="6085082071011921277"/>
-            <elemRef
-               name="destinationShapeRef"
-               value="TABLE::7e67da89-0110-1000-8003-c0a8016e0973"
-               type="DatabaseTable"
-               class="o:d:DBID"/>
-            <infoMap
-               name="displayPreference">
-               <boolean
-                  name="dstDeasil"
-                  value="true"/>
-               <boolean
-                  name="dstWithershins"
-                  value="false"/>
-               <integer
-                  name="edgeType"
-                  value="1"/>
-               <null
-                  name="false"/>
-               <boolean
-                  name="portName"
-                  value="false"/>
-               <boolean
-                  name="srcDeasil"
-                  value="true"/>
-               <boolean
-                  name="srcWithershins"
-                  value="false"/>
-               <boolean
-                  name="starbordName"
-                  value="false"/>
-            </infoMap>
-            <elemRef
-               name="elementReference"
-               value="CONSTRAINT::7e9e7c67-0110-1000-8010-c0a8016ee0d1::TABLE::7e67da89-0110-1000-8003-c0a8016e0973"
-               type="ForeignKey"
-               class="o:d:DBID"/>
-            <infoMap
-               name="graphicalData">
-               <infoMap
-                  name="diagramStateProperties">
-                  <infoMap
-                     name="symbolic">
-                     <dimension
-                        name="elementSize"
-                        width="0.0"
-                        height="0.0"/>
-                     <infoMap
-                        name="layoutConstraints"/>
-                  </infoMap>
-               </infoMap>
-               <array
-                  name="elementPoints">
-                  <point
-                     name=""
-                     x="449.5"
-                     y="199.5"/>
-                  <point
-                     name=""
-                     x="299.5"
-                     y="199.5"/>
-               </array>
-               <point
-                  name="elementPosition"
-                  x="374.5"
-                  y="499.5"/>
-               <graphicalProperties
-                  name="graphicalProperties">
-                  <color
-                     name="lineColor"
-                     rgb="0x646464"
-                     alpha="0xff"/>
-                  <float
-                     name="lineWidth"
-                     value="1.0"/>
-                  <integer
-                     name="lineStyle"
-                     value="0"/>
-                  <font
-                     name="fontType"
-                     fontFamily="SansSerif"
-                     fontSize="12.0"
-                     fontWeight="normal"
-                     fontStyle="normal"/>
-                  <color
-                     name="fontColor"
-                     rgb="0x0"
-                     alpha="0xff"/>
-               </graphicalProperties>
-               <string
-                  name="shapeState">symbolic</string>
-               <elemRef
-                  name="surrogateOriginalDstRef"
-                  value="TABLE::7e67da89-0110-1000-8003-c0a8016e0973"
-                  type="DatabaseTable"
-                  class="o:d:DBID"/>
-               <elemRef
-                  name="surrogateOriginalSrcRef"
-                  value="TABLE::7e87f6f5-0110-1000-801a-c0a8016e0973"
-                  type="DatabaseTable"
-                  class="o:d:DBID"/>
-               <boolean
-                  name="visibility"
-                  value="true"/>
-            </infoMap>
-            <long
-               name="sourceShapeDrUID"
-               value="2522546389836810713"/>
-            <elemRef
-               name="sourceShapeRef"
-               value="TABLE::7e87f6f5-0110-1000-801a-c0a8016e0973"
-               type="DatabaseTable"
-               class="o:d:DBID"/>
          </shapeMap>
          <shapeMap>
             <long
@@ -3929,7 +3650,7 @@
                <string
                   name="contentType">text/plain</string>
                <string
-                  name="text">Prediction Schema Detail</string>
+                  name="text">Nominal Model Values</string>
             </infoMap>
             <infoMap
                name="displayPreference"/>
