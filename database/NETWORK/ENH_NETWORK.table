@@ -1,0 +1,553 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<TABLE class="oracle.javatools.db.Table" xmlns="http://xmlns.oracle.com/jdeveloper/10130/offlinedb">
+   <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="0">
+      <ID>e5cdba2e-0110-1000-800a-c0a80196d6ac</ID>
+      <parent/>
+      <type>TABLE</type>
+   </ID>
+   <columns>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="4">
+            <ID>e5d0096f-0110-1000-800b-c0a80196d6ac</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="5">
+               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
+               <schemaName/>
+               <typeName>NUMBER</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>ENH_NETWORK_ID</name>
+         <notNull>true</notNull>
+         <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>e5d0096f-0110-1000-800c-c0a80196d6ac</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">100</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="2">
+               <providerClass>oracle.javatools.db.ora.Oracle9i</providerClass>
+               <schemaName/>
+               <typeName>VARCHAR2</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>NAME</name>
+         <notNull>true</notNull>
+         <properties/>
+      </Item>
+      <Item id="17">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>e5d0096f-0110-1000-800d-c0a80196d6ac</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap"/>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="1">
+               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
+               <schemaName/>
+               <typeName>INT</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>MAJOR_REV</name>
+         <notNull>true</notNull>
+         <properties/>
+      </Item>
+      <Item id="18">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>e5d0096f-0110-1000-800e-c0a80196d6ac</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap"/>
+            <dataTypeID idref="1"/>
+         </dataTypeUsage>
+         <default/>
+         <name>MINOR_REV</name>
+         <notNull>true</notNull>
+         <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>e5d0096f-0110-1000-800f-c0a80196d6ac</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">30</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>REV_NAME</name>
+         <notNull>true</notNull>
+         <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>e5d00970-0110-1000-8010-c0a80196d6ac</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap"/>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
+               <providerClass>oracle.javatools.db.ora.Oracle8</providerClass>
+               <schemaName/>
+               <typeName>CLOB</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>DESCRIPTION</name>
+         <notNull>false</notNull>
+         <properties/>
+      </Item>
+      <Item id="15">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>0007f4c6-0111-1000-805a-c0a802018b15</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">1</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
+               <providerClass>oracle.javatools.db.ora.Oracle9i</providerClass>
+               <schemaName/>
+               <typeName>CHAR</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default class="java.lang.String">'F'</default>
+         <name>IS_APPROVED</name>
+         <notNull>true</notNull>
+         <properties/>
+      </Item>
+      <Item id="14">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>e674c791-0110-1000-8034-c0a80196d6ac</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">1</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="3">
+               <providerClass>oracle.javatools.db.ora.Oracle9i</providerClass>
+               <schemaName/>
+               <typeName>CHAR</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default class="java.lang.String">'F'</default>
+         <name>IS_PUBLIC</name>
+         <notNull>true</notNull>
+         <properties/>
+      </Item>
+      <Item id="16">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>e674c791-0110-1000-8035-c0a80196d6ac</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">1</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="3"/>
+         </dataTypeUsage>
+         <default class="java.lang.String">'F'</default>
+         <name>IS_ARCHIVED</name>
+         <notNull>true</notNull>
+         <properties/>
+      </Item>
+      <Item id="12">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="6">
+            <ID>e5d3f2ca-0110-1000-8019-c0a80196d6ac</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="7">
+               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
+               <schemaName/>
+               <typeName>NUMBER</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>NOM_NETWORK_ID</name>
+         <notNull>true</notNull>
+         <properties/>
+      </Item>
+      <Item id="13">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="8">
+            <ID>eb4698a9-0110-1000-802d-c0a801967bab</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="9">
+               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
+               <schemaName/>
+               <typeName>NUMBER</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>NETWORK_AREA_ID</name>
+         <notNull>true</notNull>
+         <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="10">
+            <ID>ff1d6912-0110-1000-8007-c0a802018b15</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="11">
+               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
+               <schemaName/>
+               <typeName>NUMBER</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>CONTACT_ID</name>
+         <notNull>true</notNull>
+         <properties/>
+      </Item>
+   </columns>
+   <constraints>
+      <Item class="oracle.javatools.db.PKConstraint">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>e5d292bf-0110-1000-8017-c0a80196d6ac</ID>
+            <parent idref="0"/>
+            <type>CONSTRAINT</type>
+         </ID>
+         <columns>
+            <Item>
+               <ID idref="4"/>
+               <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+                  <attributeValues class="java.util.HashMap">
+                     <Item>
+                        <Key>precision</Key>
+                        <Value>9</Value>
+                     </Item>
+                  </attributeValues>
+                  <dataTypeID idref="5"/>
+               </dataTypeUsage>
+               <default/>
+               <name>ENH_NETWORK_ID</name>
+               <notNull>true</notNull>
+               <properties/>
+            </Item>
+         </columns>
+         <enabled>true</enabled>
+         <name>ENH_NETWORK_PK</name>
+         <properties/>
+      </Item>
+      <Item class="oracle.javatools.db.FKConstraint">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>e5d2a0f7-0110-1000-8018-c0a80196d6ac</ID>
+            <parent idref="0"/>
+            <type>CONSTRAINT</type>
+         </ID>
+         <columns>
+            <Item>
+               <ID idref="6"/>
+               <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+                  <attributeValues class="java.util.HashMap">
+                     <Item>
+                        <Key>precision</Key>
+                        <Value>9</Value>
+                     </Item>
+                  </attributeValues>
+                  <dataTypeID idref="7"/>
+               </dataTypeUsage>
+               <default/>
+               <name>NOM_NETWORK_ID</name>
+               <notNull>true</notNull>
+               <properties/>
+            </Item>
+         </columns>
+         <deleteMode>0</deleteMode>
+         <enabled>true</enabled>
+         <name>ENH_NETWORK_NOM_NETWORK_FK</name>
+         <properties/>
+         <referenceID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>e5cbea43-0110-1000-8007-c0a80196d6ac</ID>
+            <parent class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+               <ID>c276f664-0110-1000-8003-c0a801663948</ID>
+               <parent/>
+               <type>TABLE</type>
+            </parent>
+            <type>CONSTRAINT</type>
+         </referenceID>
+      </Item>
+      <Item class="oracle.javatools.db.FKConstraint">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>eb466529-0110-1000-802c-c0a801967bab</ID>
+            <parent idref="0"/>
+            <type>CONSTRAINT</type>
+         </ID>
+         <columns>
+            <Item>
+               <ID idref="8"/>
+               <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+                  <attributeValues class="java.util.HashMap">
+                     <Item>
+                        <Key>precision</Key>
+                        <Value>9</Value>
+                     </Item>
+                  </attributeValues>
+                  <dataTypeID idref="9"/>
+               </dataTypeUsage>
+               <default/>
+               <name>NETWORK_AREA_ID</name>
+               <notNull>true</notNull>
+               <properties/>
+            </Item>
+         </columns>
+         <deleteMode>0</deleteMode>
+         <enabled>true</enabled>
+         <name>ENH_NETWORK_NETWORK_AREA_FK</name>
+         <properties/>
+         <referenceID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>e68c5ba4-0110-1000-804a-c0a80196d6ac</ID>
+            <parent class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+               <ID>e68b56db-0110-1000-8046-c0a80196d6ac</ID>
+               <parent/>
+               <type>TABLE</type>
+            </parent>
+            <type>CONSTRAINT</type>
+         </referenceID>
+      </Item>
+      <Item class="oracle.javatools.db.FKConstraint">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>ff1d4516-0110-1000-8006-c0a802018b15</ID>
+            <parent idref="0"/>
+            <type>CONSTRAINT</type>
+         </ID>
+         <columns>
+            <Item>
+               <ID idref="10"/>
+               <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+                  <attributeValues class="java.util.HashMap">
+                     <Item>
+                        <Key>precision</Key>
+                        <Value>9</Value>
+                     </Item>
+                  </attributeValues>
+                  <dataTypeID idref="11"/>
+               </dataTypeUsage>
+               <default/>
+               <name>CONTACT_ID</name>
+               <notNull>true</notNull>
+               <properties/>
+            </Item>
+         </columns>
+         <deleteMode>0</deleteMode>
+         <enabled>true</enabled>
+         <name>ENH_NETWORK_CONTACT_FK</name>
+         <properties/>
+         <referenceID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>7e90e733-0110-1000-802b-c0a8016e0973</ID>
+            <parent class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+               <ID>7e8dd4ea-0110-1000-8022-c0a8016e0973</ID>
+               <parent/>
+               <type>TABLE</type>
+            </parent>
+            <type>CONSTRAINT</type>
+         </referenceID>
+      </Item>
+      <Item class="oracle.javatools.db.UniqueConstraint">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>ff286ae5-0110-1000-800b-c0a802018b15</ID>
+            <parent idref="0"/>
+            <type>CONSTRAINT</type>
+         </ID>
+         <columns>
+            <Item idref="12"/>
+            <Item idref="13"/>
+            <Item idref="14"/>
+            <Item idref="15"/>
+            <Item idref="16"/>
+            <Item idref="17"/>
+            <Item idref="18"/>
+         </columns>
+         <enabled>true</enabled>
+         <name>ENH_NETWORK_UK_REVISION</name>
+         <properties/>
+      </Item>
+      <Item class="oracle.javatools.db.CheckConstraint">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>001e5ed2-0111-1000-8079-c0a802018b15</ID>
+            <parent idref="0"/>
+            <type>CONSTRAINT</type>
+         </ID>
+         <checkCondition>IS_APPROVED IN ('T','F')</checkCondition>
+         <enabled>true</enabled>
+         <name>ENH_NETWORK_CHK_IS_APP</name>
+         <properties/>
+      </Item>
+      <Item class="oracle.javatools.db.CheckConstraint">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>001e5ed2-0111-1000-807a-c0a802018b15</ID>
+            <parent idref="0"/>
+            <type>CONSTRAINT</type>
+         </ID>
+         <checkCondition>IS_PUBLIC IN ('T', 'F')</checkCondition>
+         <enabled>true</enabled>
+         <name>ENH_NETWORK_CHK_IS_PUBLIC</name>
+         <properties/>
+      </Item>
+      <Item class="oracle.javatools.db.CheckConstraint">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>001e5ed2-0111-1000-807b-c0a802018b15</ID>
+            <parent idref="0"/>
+            <type>CONSTRAINT</type>
+         </ID>
+         <checkCondition>IS_ARCHIVED IN ('T', 'F')</checkCondition>
+         <enabled>true</enabled>
+         <name>ENH_NETWORK_CHK_IS_ARC</name>
+         <properties/>
+      </Item>
+   </constraints>
+   <indexes>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>ff9c76ec-0110-1000-801c-c0a802018b15</ID>
+            <parent idref="0"/>
+            <type>INDEX</type>
+         </ID>
+         <columnExpressions>
+            <Item>
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+                  <ID>ff9c76ec-0110-1000-801d-c0a802018b15</ID>
+                  <parent/>
+                  <type>SQLFragment</type>
+               </ID>
+               <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
+                  <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+                     <ID>ff9c76ec-0110-1000-801e-c0a802018b15</ID>
+                     <parent/>
+                     <type>SQLFragment</type>
+                  </ID>
+                  <SQLText>NOM_NETWORK_ID</SQLText>
+                  <name/>
+                  <parent/>
+                  <properties/>
+               </expression>
+               <name/>
+               <order/>
+               <parent/>
+               <properties/>
+            </Item>
+         </columnExpressions>
+         <columns class="[Loracle.javatools.db.Column;"/>
+         <name>ENH_NETWORK_NOM_NETWORK_FK_I</name>
+         <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>ff9c76ec-0110-1000-801f-c0a802018b15</ID>
+            <parent idref="0"/>
+            <type>INDEX</type>
+         </ID>
+         <columnExpressions>
+            <Item>
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+                  <ID>ff9c76ec-0110-1000-8020-c0a802018b15</ID>
+                  <parent/>
+                  <type>SQLFragment</type>
+               </ID>
+               <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
+                  <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+                     <ID>ff9c76ed-0110-1000-8021-c0a802018b15</ID>
+                     <parent/>
+                     <type>SQLFragment</type>
+                  </ID>
+                  <SQLText>NETWORK_AREA_ID</SQLText>
+                  <name/>
+                  <parent/>
+                  <properties/>
+               </expression>
+               <name/>
+               <order/>
+               <parent/>
+               <properties/>
+            </Item>
+         </columnExpressions>
+         <columns class="[Loracle.javatools.db.Column;"/>
+         <name>ENH_NETWORK_NETWORK_AREA_FK_I</name>
+         <properties/>
+      </Item>
+   </indexes>
+   <name>ENH_NETWORK</name>
+   <properties class="java.util.HashMap">
+      <Item>
+         <Key>TableType</Key>
+         <Value>Normal</Value>
+      </Item>
+   </properties>
+   <schema>
+      <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+         <ID>c2772d95-0110-1000-8005-c0a801663948</ID>
+         <parent/>
+         <type>SCHEMA</type>
+      </ID>
+      <name>NETWORK</name>
+      <properties/>
+   </schema>
+</TABLE>

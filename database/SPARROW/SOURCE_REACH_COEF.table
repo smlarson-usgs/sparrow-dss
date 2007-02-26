@@ -30,7 +30,31 @@
          <notNull>false</notNull>
          <properties/>
       </Item>
-      <Item>
+      <Item id="4">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>f0987cf4-0110-1000-8059-c0a80168593e</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
+               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
+               <schemaName/>
+               <typeName>NUMBER</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>IDENTIFIER</name>
+         <notNull>true</notNull>
+         <properties/>
+      </Item>
+      <Item id="5">
          <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
             <ID>7f2d3d98-0110-1000-8046-c0a8016ee0d1</ID>
             <parent idref="0"/>
@@ -66,31 +90,11 @@
          </dataTypeUsage>
          <default/>
          <name>VALUE</name>
-         <notNull>false</notNull>
-         <properties/>
-      </Item>
-      <Item id="2">
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>7f2e1df6-0110-1000-8049-c0a8016ee0d1</ID>
-            <parent idref="0"/>
-            <type>COLUMN</type>
-         </ID>
-         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
-            <attributeValues class="java.util.HashMap">
-               <Item>
-                  <Key>precision</Key>
-                  <Value>9</Value>
-               </Item>
-            </attributeValues>
-            <dataTypeID idref="1"/>
-         </dataTypeUsage>
-         <default/>
-         <name>REACH_ID</name>
          <notNull>true</notNull>
          <properties/>
       </Item>
       <Item id="3">
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="2">
             <ID>7f2e53b6-0110-1000-804b-c0a8016ee0d1</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -113,35 +117,27 @@
    <constraints>
       <Item class="oracle.javatools.db.FKConstraint">
          <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>7f2df8ac-0110-1000-8048-c0a8016ee0d1</ID>
-            <parent idref="0"/>
-            <type>CONSTRAINT</type>
-         </ID>
-         <columns>
-            <Item idref="2"/>
-         </columns>
-         <deleteMode>0</deleteMode>
-         <enabled>true</enabled>
-         <name>SOURCE_REACH_COEF_REACH_FK</name>
-         <properties/>
-         <referenceID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>7ecb14e3-0110-1000-8024-c0a8016ee0d1</ID>
-            <parent class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-               <ID>7ec1d758-0110-1000-8019-c0a8016ee0d1</ID>
-               <parent/>
-               <type>TABLE</type>
-            </parent>
-            <type>CONSTRAINT</type>
-         </referenceID>
-      </Item>
-      <Item class="oracle.javatools.db.FKConstraint">
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
             <ID>7f2e3bed-0110-1000-804a-c0a8016ee0d1</ID>
             <parent idref="0"/>
             <type>CONSTRAINT</type>
          </ID>
          <columns>
-            <Item idref="3"/>
+            <Item>
+               <ID idref="2"/>
+               <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+                  <attributeValues class="java.util.HashMap">
+                     <Item>
+                        <Key>precision</Key>
+                        <Value>9</Value>
+                     </Item>
+                  </attributeValues>
+                  <dataTypeID idref="1"/>
+               </dataTypeUsage>
+               <default/>
+               <name>SOURCE_ID</name>
+               <notNull>true</notNull>
+               <properties/>
+            </Item>
          </columns>
          <deleteMode>0</deleteMode>
          <enabled>true</enabled>
@@ -157,8 +153,92 @@
             <type>CONSTRAINT</type>
          </referenceID>
       </Item>
+      <Item class="oracle.javatools.db.UniqueConstraint">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>000e2cbb-0111-1000-805c-c0a802018b15</ID>
+            <parent idref="0"/>
+            <type>CONSTRAINT</type>
+         </ID>
+         <columns>
+            <Item idref="3"/>
+            <Item idref="4"/>
+            <Item idref="5"/>
+         </columns>
+         <enabled>true</enabled>
+         <name>SOURCE_REACH_COEF_UK_VALUE</name>
+         <properties/>
+      </Item>
    </constraints>
-   <indexes class="[Loracle.javatools.db.Index;"/>
+   <indexes>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>000e2cbb-0111-1000-805d-c0a802018b15</ID>
+            <parent idref="0"/>
+            <type>INDEX</type>
+         </ID>
+         <columnExpressions>
+            <Item>
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+                  <ID>000e2cbb-0111-1000-805e-c0a802018b15</ID>
+                  <parent/>
+                  <type>SQLFragment</type>
+               </ID>
+               <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
+                  <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+                     <ID>000e2cbb-0111-1000-805f-c0a802018b15</ID>
+                     <parent/>
+                     <type>SQLFragment</type>
+                  </ID>
+                  <SQLText>IDENTIFIER</SQLText>
+                  <name/>
+                  <parent/>
+                  <properties/>
+               </expression>
+               <name/>
+               <order/>
+               <parent/>
+               <properties/>
+            </Item>
+         </columnExpressions>
+         <columns class="[Loracle.javatools.db.Column;"/>
+         <name>SOURCE_REACH_COEF_ID_I</name>
+         <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>00106f27-0111-1000-8064-c0a802018b15</ID>
+            <parent idref="0"/>
+            <type>INDEX</type>
+         </ID>
+         <columnExpressions>
+            <Item>
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+                  <ID>00106f27-0111-1000-8065-c0a802018b15</ID>
+                  <parent/>
+                  <type>SQLFragment</type>
+               </ID>
+               <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
+                  <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+                     <ID>00106f27-0111-1000-8066-c0a802018b15</ID>
+                     <parent/>
+                     <type>SQLFragment</type>
+                  </ID>
+                  <SQLText>ITERATION</SQLText>
+                  <name/>
+                  <parent/>
+                  <properties/>
+               </expression>
+               <name/>
+               <order/>
+               <parent/>
+               <properties/>
+            </Item>
+         </columnExpressions>
+         <columns class="[Loracle.javatools.db.Column;"/>
+         <name>SOURCE_REACH_IT_I</name>
+         <properties/>
+      </Item>
+   </indexes>
    <name>SOURCE_REACH_COEF</name>
    <properties class="java.util.HashMap">
       <Item>
