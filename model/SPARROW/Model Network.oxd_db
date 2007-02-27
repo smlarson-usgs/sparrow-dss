@@ -1611,7 +1611,7 @@
                            <dimension
                               name="elementSize"
                               width="210.0"
-                              height="92.68555"/>
+                              height="84.05266"/>
                         </infoMap>
                      </infoMap>
                      <point
@@ -1685,13 +1685,13 @@
                            <dimension
                               name="elementSize"
                               width="210.0"
-                              height="53.820312"/>
+                              height="48.8074"/>
                         </infoMap>
                      </infoMap>
                      <point
                         name="elementPosition"
                         x="0.0"
-                        y="111.640625"/>
+                        y="103.00775"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -1722,7 +1722,7 @@
                            <dimension
                               name="elementSize"
                               width="210.0"
-                              height="180.0"/>
+                              height="165.0"/>
                         </infoMap>
                      </infoMap>
                      <point
@@ -1759,7 +1759,7 @@
                            <dimension
                               name="elementSize"
                               width="210.0"
-                              height="180.0"/>
+                              height="165.0"/>
                         </infoMap>
                      </infoMap>
                      <point
@@ -1862,7 +1862,7 @@
                      <dimension
                         name="elementSize"
                         width="210.0"
-                        height="180.0"/>
+                        height="165.0"/>
                      <infoMap
                         name="layoutConstraints">
                         <float
