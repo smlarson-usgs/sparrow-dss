@@ -100,13 +100,8 @@
          </dataTypeUsage>
          <default/>
          <name>HYDSEQ</name>
-         <notNull>false</notNull>
-         <properties class="java.util.HashMap">
-            <Item>
-               <Key>Comment</Key>
-               <Value>Can be null in the case of a delete.</Value>
-            </Item>
-         </properties>
+         <notNull>true</notNull>
+         <properties/>
       </Item>
       <Item>
          <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
