@@ -194,7 +194,25 @@
    <constraints class="[Loracle.javatools.db.Constraint;"/>
    <forceOnCreate>false</forceOnCreate>
    <name>ENH_REACH_GEOM_VIEW</name>
-   <properties/>
+   <properties class="java.util.HashMap">
+      <Item>
+         <Key>Comment</Key>
+         <Value>(SELECT IDENTIFIER, REACH_GEOM, CATCH_GEOM, CUM_CATCH_GEOM FROM ENH_REACH INNER JOIN ENH_REACH_GEOM USING (ENH_REACH_ID))
+UNION
+(
+	SELECT GEOM
+	FROM ENH_REACH_VIEW
+	WHERE
+		ENH_REACH_VIEW.ENH_REACH_ID NOT IN (
+			SELECT MODEL_REACH.ENH_REACH_ID FROM MODEL_REACH WHERE OPP_TYPE='D'
+		)
+		AND
+		ENH_REACH_VIEW.ENH_REACH_ID NOT IN (
+			SELECT MODEL_REACH.ENH_REACH_ID FROM INNER JOIN MODEL_REACH_GEOM WHERE OPP_TYPE='E'
+		)
+)</Value>
+      </Item>
+   </properties>
    <queryRestriction/>
    <schema>
       <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
