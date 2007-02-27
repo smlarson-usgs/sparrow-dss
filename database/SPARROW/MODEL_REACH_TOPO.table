@@ -7,8 +7,8 @@
    </ID>
    <columns>
       <Item id="3">
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>e713a3c8-0110-1000-804c-c0a80196d6ac</ID>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="4">
+            <ID>eaf18195-0110-1000-801f-c0a801967bab</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
          </ID>
@@ -19,14 +19,14 @@
                   <Value>9</Value>
                </Item>
             </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="5">
                <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
                <schemaName/>
                <typeName>NUMBER</typeName>
             </dataTypeID>
          </dataTypeUsage>
          <default/>
-         <name>MODEL_REACH_TOPO_ID</name>
+         <name>MODEL_REACH_ID</name>
          <notNull>true</notNull>
          <properties/>
       </Item>
@@ -123,30 +123,6 @@
          <notNull>true</notNull>
          <properties/>
       </Item>
-      <Item id="4">
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>eaf18195-0110-1000-801f-c0a801967bab</ID>
-            <parent idref="0"/>
-            <type>COLUMN</type>
-         </ID>
-         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
-            <attributeValues class="java.util.HashMap">
-               <Item>
-                  <Key>precision</Key>
-                  <Value>9</Value>
-               </Item>
-            </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
-               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
-               <schemaName/>
-               <typeName>NUMBER</typeName>
-            </dataTypeID>
-         </dataTypeUsage>
-         <default/>
-         <name>MODEL_REACH_ID</name>
-         <notNull>true</notNull>
-         <properties/>
-      </Item>
    </columns>
    <constraints>
       <Item class="oracle.javatools.db.PKConstraint">
@@ -169,7 +145,22 @@
             <type>CONSTRAINT</type>
          </ID>
          <columns>
-            <Item idref="4"/>
+            <Item>
+               <ID idref="4"/>
+               <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+                  <attributeValues class="java.util.HashMap">
+                     <Item>
+                        <Key>precision</Key>
+                        <Value>9</Value>
+                     </Item>
+                  </attributeValues>
+                  <dataTypeID idref="5"/>
+               </dataTypeUsage>
+               <default/>
+               <name>MODEL_REACH_ID</name>
+               <notNull>true</notNull>
+               <properties/>
+            </Item>
          </columns>
          <deleteMode>0</deleteMode>
          <enabled>true</enabled>
@@ -184,19 +175,6 @@
             </parent>
             <type>CONSTRAINT</type>
          </referenceID>
-      </Item>
-      <Item class="oracle.javatools.db.UniqueConstraint">
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>ffc5b05f-0110-1000-8053-c0a802018b15</ID>
-            <parent idref="0"/>
-            <type>CONSTRAINT</type>
-         </ID>
-         <columns>
-            <Item idref="4"/>
-         </columns>
-         <enabled>true</enabled>
-         <name>MODEL_REACH_TOPO_UK_REACH</name>
-         <properties/>
       </Item>
    </constraints>
    <indexes class="[Loracle.javatools.db.Index;"/>
