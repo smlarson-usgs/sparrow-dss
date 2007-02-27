@@ -1,0 +1,26 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<SEQUENCE class="oracle.javatools.db.Sequence" xmlns="http://xmlns.oracle.com/jdeveloper/10130/offlinedb">
+   <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+      <ID>043228df-0111-1000-8004-c0a80164b35d</ID>
+      <parent/>
+      <type>SEQUENCE</type>
+   </ID>
+   <cacheSize/>
+   <cycleFlag>false</cycleFlag>
+   <incrementBy>1</incrementBy>
+   <maxValue/>
+   <minValue/>
+   <name>NOM_REACH_SEQ</name>
+   <orderFlag>true</orderFlag>
+   <properties/>
+   <schema>
+      <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+         <ID>c2772d95-0110-1000-8005-c0a801663948</ID>
+         <parent/>
+         <type>SCHEMA</type>
+      </ID>
+      <name>NETWORK</name>
+      <properties/>
+   </schema>
+   <startWith>1</startWith>
+</SEQUENCE>

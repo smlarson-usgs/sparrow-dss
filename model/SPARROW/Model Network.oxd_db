@@ -9,7 +9,7 @@
    <structure
       xmlns="">
       <shape
-         name="A Sparrow model must be based on a specific Enhanced Network (EN).  The Model Network (MN) inherits all reaches from its EN network and does not require an entry in MODEL_REACH (M_R) to cause a EN reach to be included (different from how the EN to NN relationship works)....">
+         name="A Sparrow model network must be based on a specific Enhanced Network (EN).  The Model Network (MN) to EN network relationshipo is the same as an EN network to NN network relationship.  The Model Network (MN) is defined by entries in the MODEL_REACH table...">
          <elemRef
             name=""
             value="note0.112261612559348080.7646118029005408"
@@ -101,14 +101,6 @@
          <elemRef
             name=""
             value="note0.432676907765007560.8965182047535091"
-            type="DiagramNote"
-            class="j:l:String"/>
-      </shape>
-      <shape
-         name="OPP-TYPE:...">
-         <elemRef
-            name=""
-            value="note0.70276262519084450.11006436049722201"
             type="DiagramNote"
             class="j:l:String"/>
       </shape>
@@ -223,7 +215,7 @@
       <dimension
          name="pageXY"
          width="1.0"
-         height="2.0"/>
+         height="1.0"/>
       <insets
          name="paperMargins"
          top="50.0"
@@ -548,7 +540,7 @@
                <point
                   name="elementPosition"
                   x="7.5"
-                  y="515.0"/>
+                  y="440.0"/>
                <graphicalProperties
                   name="graphicalProperties">
                   <color
@@ -883,7 +875,7 @@
                <point
                   name="elementPosition"
                   x="7.5"
-                  y="620.0"/>
+                  y="545.0"/>
                <graphicalProperties
                   name="graphicalProperties">
                   <color
@@ -1212,7 +1204,7 @@
                <point
                   name="elementPosition"
                   x="457.5"
-                  y="515.0"/>
+                  y="440.0"/>
                <graphicalProperties
                   name="graphicalProperties">
                   <color
@@ -1547,7 +1539,7 @@
                <point
                   name="elementPosition"
                   x="277.5"
-                  y="830.0"/>
+                  y="755.0"/>
                <graphicalProperties
                   name="graphicalProperties">
                   <color
@@ -1882,7 +1874,7 @@
                <point
                   name="elementPosition"
                   x="517.5"
-                  y="830.0"/>
+                  y="755.0"/>
                <graphicalProperties
                   name="graphicalProperties">
                   <color
@@ -1952,7 +1944,7 @@
                      <point
                         name="elementPosition"
                         x="0.0"
-                        y="41.693787"/>
+                        y="41.69378"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -2130,11 +2122,11 @@
                   <point
                      name=""
                      x="67.5"
-                     y="560.0"/>
+                     y="485.0"/>
                   <point
                      name=""
                      x="67.5"
-                     y="620.0"/>
+                     y="545.0"/>
                </array>
                <point
                   name="elementPosition"
@@ -2191,132 +2183,6 @@
          <shapeMap>
             <long
                name="DrUID"
-               value="-4238991557991364859"/>
-            <infoMap
-               name="containedShapes">
-               <infoMap
-                  name="nameOfShape">
-                  <long
-                     name="DrUID"
-                     value="-8111177364411775333"/>
-                  <infoMap
-                     name="containedShapes"/>
-                  <infoMap
-                     name="displayPreference"/>
-                  <elemRef
-                     name="elementReference"
-                     value="FormattedTextShape"
-                     type="FORMATTED"
-                     class="j:l:String"/>
-                  <infoMap
-                     name="graphicalData">
-                     <infoMap
-                        name="diagramStateProperties">
-                        <infoMap
-                           name="symbolic">
-                           <dimension
-                              name="elementSize"
-                              width="225.0"
-                              height="75.0"/>
-                        </infoMap>
-                     </infoMap>
-                     <point
-                        name="elementPosition"
-                        x="0.0"
-                        y="0.0"/>
-                     <string
-                        name="shapeState">symbolic</string>
-                     <boolean
-                        name="visibility"
-                        value="true"/>
-                  </infoMap>
-               </infoMap>
-            </infoMap>
-            <infoMap
-               name="displayData">
-               <string
-                  name="contentType">text/plain</string>
-               <string
-                  name="text">OPP-TYPE:
-
-A - ADD
-E - EDIT (REPLACE WITH NEW VALUE)
-D - DELETE </string>
-            </infoMap>
-            <infoMap
-               name="displayPreference"/>
-            <elemRef
-               name="elementReference"
-               value="note0.70276262519084450.11006436049722201"
-               type="DiagramNote"
-               class="j:l:String"/>
-            <infoMap
-               name="graphicalData">
-               <infoMap
-                  name="diagramStateProperties">
-                  <infoMap
-                     name="symbolic">
-                     <insets
-                        name="containerInsets"
-                        top="0.0"
-                        left="0.0"
-                        bottom="0.0"
-                        right="0.0"/>
-                     <dimension
-                        name="elementSize"
-                        width="240.0"
-                        height="75.0"/>
-                     <infoMap
-                        name="layoutConstraints">
-                        <float
-                           name="nameOfShape"
-                           value="1.0"/>
-                     </infoMap>
-                     <infoList
-                        name="shapesUsed"/>
-                  </infoMap>
-               </infoMap>
-               <point
-                  name="elementPosition"
-                  x="247.5"
-                  y="725.0"/>
-               <graphicalProperties
-                  name="graphicalProperties">
-                  <color
-                     name="lineColor"
-                     rgb="0xa5a5a5"
-                     alpha="0xff"/>
-                  <float
-                     name="lineWidth"
-                     value="1.0"/>
-                  <integer
-                     name="lineStyle"
-                     value="0"/>
-                  <color
-                     name="fillColor"
-                     rgb="0xffffcc"
-                     alpha="0xff"/>
-                  <font
-                     name="fontType"
-                     fontFamily="SansSerif"
-                     fontSize="11.0"
-                     fontWeight="normal"
-                     fontStyle="normal"/>
-                  <color
-                     name="fontColor"
-                     rgb="0x0"
-                     alpha="0xff"/>
-               </graphicalProperties>
-               <string
-                  name="shapeState">symbolic</string>
-               <boolean
-                  name="visibility"
-                  value="true"/>
-            </infoMap>
-         </shapeMap>
-         <shapeMap>
-            <long
-               name="DrUID"
                value="-7602688457595736886"/>
             <infoMap
                name="containedShapes">
@@ -2349,7 +2215,7 @@ D - DELETE </string>
                      <point
                         name="elementPosition"
                         x="215.0"
-                        y="-18.306252"/>
+                        y="-18.30625"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -2527,11 +2393,11 @@ D - DELETE </string>
                   <point
                      name=""
                      x="217.5"
-                     y="545.0"/>
+                     y="470.0"/>
                   <point
                      name=""
                      x="457.5"
-                     y="545.0"/>
+                     y="470.0"/>
                </array>
                <point
                   name="elementPosition"
@@ -2614,7 +2480,7 @@ D - DELETE </string>
                            <dimension
                               name="elementSize"
                               width="510.0"
-                              height="495.0"/>
+                              height="285.0"/>
                         </infoMap>
                      </infoMap>
                      <point
@@ -2634,33 +2500,16 @@ D - DELETE </string>
                <string
                   name="contentType">text/plain</string>
                <string
-                  name="text">A Sparrow model must be based on a specific Enhanced Network (EN).  The Model Network (MN) inherits all reaches from its EN network and does not require an entry in MODEL_REACH (M_R) to cause a EN reach to be included (different from how the EN to NN relationship works).
+                  name="text">A Sparrow model network must be based on a specific Enhanced Network (EN).  The Model Network (MN) to EN network relationshipo is the same as an EN network to NN network relationship.  The Model Network (MN) is defined by entries in the MODEL_REACH table
 
-A MN may add, edit, or delete reaches by including entries in its M_R table which an appropriate A/E/D opp_type.  Typical use cases:
+The MNs reaches are subsets and/or supersets of ENs.  Normally, a MN reach entry simply indicates that a EN reach is part of the model and provides a way for the MN reach to have a model specific identifier.  However, reaches may be edited by including a matching entry in the MODEL_REACH_TOPO and MODEL_REACH_GEOM tables as appropriate.  Reaches may also be added by including MN reaches that have no corresponding EN reach.
 
-Split Reaches:  Multiple entries in MODEL_REACH of opp_type 'E'.  Matching entries in M_R_TOPO required.  Geom is optional and is provided by matching entries in the M_R_GEOM table.
+Some common use cases:
+Split Reaches:  Multiple entries in MODEL_REACH for a given EN reach.  Matching entries in M_R_TOPO required.  Geom is optional.
 
-Added Reaches:  Reaches are added by including rows of opp_type 'A'.  Matching entries in M_R_TOPO required.  Geom in M_R_GEOM table optional.
+Added Reaches:  Include a reach with a null ENH_REACH_ID.  Topo data required.  Geom is optional.
 
-Delete Reaches:  An entry in the M_R table of opp_type 'D'.  Corresponding rows in M_R_TOPO and M_R_GEOM must not be included.
-
-Provide Model Specific Reach Identifier:  Include a row in M_R of opp_type 'E' w/ an identifier.
-
-To assemble the geometry:
-(SELECT GEOM FROM MODEL_REACH INNER JOIN MODEL_REACH_GEOM)
-UNION
-(
-	SELECT GEOM
-	FROM ENH_REACH_VIEW
-	WHERE
-		ENH_REACH_VIEW.ENH_REACH_ID NOT IN (
-			SELECT MODEL_REACH.ENH_REACH_ID FROM MODEL_REACH WHERE OPP_TYPE='D'
-		)
-		AND
-		ENH_REACH_VIEW.ENH_REACH_ID NOT IN (
-			SELECT MODEL_REACH.ENH_REACH_ID FROM INNER JOIN MODEL_REACH_GEOM WHERE OPP_TYPE='E'
-		)
-)</string>
+Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_REACH table.</string>
             </infoMap>
             <infoMap
                name="displayPreference"/>
@@ -2684,7 +2533,7 @@ UNION
                      <dimension
                         name="elementSize"
                         width="525.0"
-                        height="495.0"/>
+                        height="285.0"/>
                      <infoMap
                         name="layoutConstraints">
                         <float
@@ -3033,7 +2882,7 @@ UNION
                <point
                   name="elementPosition"
                   x="457.5"
-                  y="635.0"/>
+                  y="560.0"/>
                <graphicalProperties
                   name="graphicalProperties">
                   <color
@@ -3281,11 +3130,11 @@ UNION
                   <point
                      name=""
                      x="472.5"
-                     y="800.0"/>
+                     y="725.0"/>
                   <point
                      name=""
                      x="472.5"
-                     y="830.0"/>
+                     y="755.0"/>
                </array>
                <point
                   name="elementPosition"
@@ -3552,11 +3401,11 @@ UNION
                   <point
                      name=""
                      x="562.5"
-                     y="800.0"/>
+                     y="725.0"/>
                   <point
                      name=""
                      x="562.5"
-                     y="830.0"/>
+                     y="755.0"/>
                </array>
                <point
                   name="elementPosition"
@@ -3645,7 +3494,7 @@ UNION
                      <point
                         name="elementPosition"
                         x="0.0"
-                        y="56.693787"/>
+                        y="56.69378"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -3823,11 +3672,11 @@ UNION
                   <point
                      name=""
                      x="535.6563"
-                     y="560.0"/>
+                     y="485.0"/>
                   <point
                      name=""
                      x="535.6563"
-                     y="635.0"/>
+                     y="560.0"/>
                </array>
                <point
                   name="elementPosition"
@@ -4094,11 +3943,11 @@ UNION
                   <point
                      name=""
                      x="217.5"
-                     y="695.0"/>
+                     y="620.0"/>
                   <point
                      name=""
                      x="457.5"
-                     y="695.0"/>
+                     y="620.0"/>
                </array>
                <point
                   name="elementPosition"

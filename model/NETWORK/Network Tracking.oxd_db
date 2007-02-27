@@ -186,11 +186,11 @@
          y="1000.0"/>
       <point
          name="pageTL"
-         x="-1226.25"
+         x="-476.25"
          y="-451.75"/>
       <dimension
          name="pageXY"
-         width="2.0"
+         width="1.0"
          height="1.0"/>
       <insets
          name="paperMargins"
@@ -521,7 +521,7 @@
                </infoMap>
                <point
                   name="elementPosition"
-                  x="761.25"
+                  x="11.25"
                   y="316.75"/>
                <graphicalProperties
                   name="graphicalProperties">
@@ -856,7 +856,7 @@
                </infoMap>
                <point
                   name="elementPosition"
-                  x="1226.25"
+                  x="476.25"
                   y="316.75"/>
                <graphicalProperties
                   name="graphicalProperties">
@@ -1104,16 +1104,16 @@
                   name="elementPoints">
                   <point
                      name=""
-                     x="1016.25"
+                     x="266.25"
                      y="391.75"/>
                   <point
                      name=""
-                     x="1226.25"
+                     x="476.25"
                      y="391.75"/>
                </array>
                <point
                   name="elementPosition"
-                  x="1226.25"
+                  x="476.25"
                   y="451.75"/>
                <graphicalProperties
                   name="graphicalProperties">
@@ -1462,7 +1462,7 @@
                </infoMap>
                <point
                   name="elementPosition"
-                  x="1016.25"
+                  x="266.25"
                   y="751.75"/>
                <graphicalProperties
                   name="graphicalProperties">
@@ -1797,7 +1797,7 @@
                </infoMap>
                <point
                   name="elementPosition"
-                  x="761.25"
+                  x="11.25"
                   y="751.75"/>
                <graphicalProperties
                   name="graphicalProperties">
@@ -2132,7 +2132,7 @@
                </infoMap>
                <point
                   name="elementPosition"
-                  x="1016.25"
+                  x="266.25"
                   y="181.75"/>
                <graphicalProperties
                   name="graphicalProperties">
@@ -2380,20 +2380,20 @@
                   name="elementPoints">
                   <point
                      name=""
-                     x="1196.25"
+                     x="446.25"
                      y="751.75"/>
                   <point
                      name=""
-                     x="1196.25"
+                     x="446.25"
                      y="556.75"/>
                   <point
                      name=""
-                     x="1226.25"
+                     x="476.25"
                      y="556.75"/>
                </array>
                <point
                   name="elementPosition"
-                  x="1226.25"
+                  x="476.25"
                   y="451.75"/>
                <graphicalProperties
                   name="graphicalProperties">
@@ -2655,20 +2655,20 @@
                   name="elementPoints">
                   <point
                      name=""
-                     x="1046.25"
+                     x="296.25"
                      y="751.75"/>
                   <point
                      name=""
-                     x="1046.25"
+                     x="296.25"
                      y="564.25"/>
                   <point
                      name=""
-                     x="1016.25"
+                     x="266.25"
                      y="564.25"/>
                </array>
                <point
                   name="elementPosition"
-                  x="1226.25"
+                  x="476.25"
                   y="451.75"/>
                <graphicalProperties
                   name="graphicalProperties">
@@ -2930,20 +2930,20 @@
                   name="elementPoints">
                   <point
                      name=""
-                     x="1016.25"
+                     x="266.25"
                      y="219.25"/>
                   <point
                      name=""
-                     x="911.25"
+                     x="161.25"
                      y="219.25"/>
                   <point
                      name=""
-                     x="911.25"
+                     x="161.25"
                      y="316.75"/>
                </array>
                <point
                   name="elementPosition"
-                  x="1226.25"
+                  x="476.25"
                   y="451.75"/>
                <graphicalProperties
                   name="graphicalProperties">
@@ -3205,20 +3205,20 @@
                   name="elementPoints">
                   <point
                      name=""
-                     x="1226.25"
+                     x="476.25"
                      y="249.17924"/>
                   <point
                      name=""
-                     x="1346.3915"
+                     x="596.3915"
                      y="249.17924"/>
                   <point
                      name=""
-                     x="1346.3915"
+                     x="596.3915"
                      y="316.75"/>
                </array>
                <point
                   name="elementPosition"
-                  x="1226.25"
+                  x="476.25"
                   y="451.75"/>
                <graphicalProperties
                   name="graphicalProperties">
@@ -3480,16 +3480,16 @@
                   name="elementPoints">
                   <point
                      name=""
-                     x="866.25"
+                     x="116.25"
                      y="751.75"/>
                   <point
                      name=""
-                     x="866.25"
+                     x="116.25"
                      y="601.75"/>
                </array>
                <point
                   name="elementPosition"
-                  x="1226.25"
+                  x="476.25"
                   y="451.75"/>
                <graphicalProperties
                   name="graphicalProperties">

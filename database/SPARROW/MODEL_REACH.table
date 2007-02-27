@@ -30,32 +30,8 @@
          <notNull>true</notNull>
          <properties/>
       </Item>
-      <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="7">
-            <ID>e679adc1-0110-1000-8038-c0a80196d6ac</ID>
-            <parent idref="0"/>
-            <type>COLUMN</type>
-         </ID>
-         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
-            <attributeValues class="java.util.HashMap">
-               <Item>
-                  <Key>size</Key>
-                  <Value class="java.lang.Long" id="8">1</Value>
-               </Item>
-            </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="9">
-               <providerClass>oracle.javatools.db.ora.Oracle9i</providerClass>
-               <schemaName/>
-               <typeName>CHAR</typeName>
-            </dataTypeID>
-         </dataTypeUsage>
-         <default/>
-         <name>OPP_TYPE</name>
-         <notNull>true</notNull>
-         <properties/>
-      </Item>
-      <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="10">
+      <Item id="7">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
             <ID>e6821e62-0110-1000-803a-c0a80196d6ac</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -71,13 +47,8 @@
          </dataTypeUsage>
          <default/>
          <name>IDENTIFIER</name>
-         <notNull>false</notNull>
-         <properties class="java.util.HashMap">
-            <Item>
-               <Key>Comment</Key>
-               <Value>Cannot add a unique constrain b/c Delete operations may have multiple null entries.</Value>
-            </Item>
-         </properties>
+         <notNull>true</notNull>
+         <properties/>
       </Item>
       <Item>
          <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
@@ -103,7 +74,7 @@
          <notNull>true</notNull>
          <properties/>
       </Item>
-      <Item>
+      <Item id="6">
          <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="3">
             <ID>e682d9c4-0110-1000-8043-c0a80196d6ac</ID>
             <parent idref="0"/>
@@ -117,7 +88,7 @@
                </Item>
                <Item>
                   <Key>scale</Key>
-                  <Value class="java.lang.Long" id="6">0</Value>
+                  <Value class="java.lang.Long">0</Value>
                </Item>
             </attributeValues>
             <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="4">
@@ -148,7 +119,7 @@
          </dataTypeUsage>
          <default/>
          <name>ENH_REACH_ID</name>
-         <notNull>true</notNull>
+         <notNull>false</notNull>
          <properties/>
       </Item>
    </columns>
@@ -268,77 +239,11 @@
             <type>CONSTRAINT</type>
          </ID>
          <columns>
-            <Item>
-               <ID idref="3"/>
-               <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
-                  <attributeValues class="java.util.HashMap">
-                     <Item>
-                        <Key>precision</Key>
-                        <Value>9</Value>
-                     </Item>
-                     <Item>
-                        <Key>scale</Key>
-                        <Value idref="6"/>
-                     </Item>
-                  </attributeValues>
-                  <dataTypeID idref="4"/>
-               </dataTypeUsage>
-               <default/>
-               <name>SPARROW_MODEL_ID</name>
-               <notNull>true</notNull>
-               <properties/>
-            </Item>
-            <Item>
-               <ID idref="7"/>
-               <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
-                  <attributeValues class="java.util.HashMap">
-                     <Item>
-                        <Key>size</Key>
-                        <Value idref="8"/>
-                     </Item>
-                  </attributeValues>
-                  <dataTypeID idref="9"/>
-               </dataTypeUsage>
-               <default/>
-               <name>OPP_TYPE</name>
-               <notNull>true</notNull>
-               <properties/>
-            </Item>
-            <Item>
-               <ID idref="10"/>
-               <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
-                  <attributeValues class="java.util.HashMap">
-                     <Item>
-                        <Key>precision</Key>
-                        <Value>9</Value>
-                     </Item>
-                  </attributeValues>
-                  <dataTypeID idref="1"/>
-               </dataTypeUsage>
-               <default/>
-               <name>IDENTIFIER</name>
-               <notNull>false</notNull>
-               <properties class="java.util.HashMap">
-                  <Item>
-                     <Key>Comment</Key>
-                     <Value>Cannot add a unique constrain b/c Delete operations may have multiple null entries.</Value>
-                  </Item>
-               </properties>
-            </Item>
+            <Item idref="6"/>
+            <Item idref="7"/>
          </columns>
          <enabled>true</enabled>
          <name>MODEL_REACH_UK_IDENTIFIER</name>
-         <properties/>
-      </Item>
-      <Item class="oracle.javatools.db.CheckConstraint">
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>00236dbb-0111-1000-8080-c0a802018b15</ID>
-            <parent idref="0"/>
-            <type>CONSTRAINT</type>
-         </ID>
-         <checkCondition>OPP_TYPE IN ('A', 'E', 'D')</checkCondition>
-         <enabled>true</enabled>
-         <name>MODEL_REACH_CHK_OPP_TYPE</name>
          <properties/>
       </Item>
    </constraints>
@@ -350,8 +255,8 @@
             <type>INDEX</type>
          </ID>
          <columnExpressions>
-            <Item>
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <Item id="9">
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="8">
                   <ID>ffc0a754-0110-1000-8045-c0a802018b15</ID>
                   <parent/>
                   <type>SQLFragment</type>
@@ -359,12 +264,12 @@
                <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
                   <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
                      <ID>ffc0a754-0110-1000-8046-c0a802018b15</ID>
-                     <parent/>
+                     <parent idref="8"/>
                      <type>SQLFragment</type>
                   </ID>
                   <SQLText>ENH_REACH_ID</SQLText>
                   <name/>
-                  <parent/>
+                  <parent idref="9"/>
                   <properties/>
                </expression>
                <name/>
@@ -375,40 +280,6 @@
          </columnExpressions>
          <columns class="[Loracle.javatools.db.Column;"/>
          <name>MODEL_REACH_ENH_REACH_FK_I</name>
-         <properties/>
-      </Item>
-      <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>ffc0a754-0110-1000-8047-c0a802018b15</ID>
-            <parent idref="0"/>
-            <type>INDEX</type>
-         </ID>
-         <columnExpressions>
-            <Item>
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-                  <ID>ffc0a754-0110-1000-8048-c0a802018b15</ID>
-                  <parent/>
-                  <type>SQLFragment</type>
-               </ID>
-               <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
-                  <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-                     <ID>ffc0a755-0110-1000-8049-c0a802018b15</ID>
-                     <parent/>
-                     <type>SQLFragment</type>
-                  </ID>
-                  <SQLText>OPP_TYPE</SQLText>
-                  <name/>
-                  <parent/>
-                  <properties/>
-               </expression>
-               <name/>
-               <order/>
-               <parent/>
-               <properties/>
-            </Item>
-         </columnExpressions>
-         <columns class="[Loracle.javatools.db.Column;"/>
-         <name>MODEL_REACH_OPP_TYPE_I</name>
          <properties/>
       </Item>
    </indexes>

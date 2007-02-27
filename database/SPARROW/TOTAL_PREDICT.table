@@ -30,31 +30,7 @@
          <notNull>true</notNull>
          <properties/>
       </Item>
-      <Item id="8">
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>f09ff70d-0110-1000-805c-c0a80168593e</ID>
-            <parent idref="0"/>
-            <type>COLUMN</type>
-         </ID>
-         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
-            <attributeValues class="java.util.HashMap">
-               <Item>
-                  <Key>precision</Key>
-                  <Value>9</Value>
-               </Item>
-            </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
-               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
-               <schemaName/>
-               <typeName>NUMBER</typeName>
-            </dataTypeID>
-         </dataTypeUsage>
-         <default/>
-         <name>IDENTIFIER</name>
-         <notNull>true</notNull>
-         <properties/>
-      </Item>
-      <Item id="7">
+      <Item id="5">
          <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
             <ID>7f71d10c-0110-1000-8064-c0a8016ee0d1</ID>
             <parent idref="0"/>
@@ -108,8 +84,8 @@
          <notNull>true</notNull>
          <properties/>
       </Item>
-      <Item id="6">
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="4">
+      <Item id="4">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
             <ID>7f6976d4-0110-1000-805f-c0a8016ee0d1</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -125,7 +101,7 @@
                   <Value class="java.lang.Long">0</Value>
                </Item>
             </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="5">
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
                <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
                <schemaName/>
                <typeName>NUMBER</typeName>
@@ -133,6 +109,30 @@
          </dataTypeUsage>
          <default/>
          <name>SPARROW_MODEL_ID</name>
+         <notNull>true</notNull>
+         <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="6">
+            <ID>04d1a56a-0111-1000-801a-c0a80164b35d</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="7">
+               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
+               <schemaName/>
+               <typeName>NUMBER</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>MODEL_REACH_ID</name>
          <notNull>true</notNull>
          <properties/>
       </Item>
@@ -166,48 +166,6 @@
          <name>TOTAL_PREDICT_PK</name>
          <properties/>
       </Item>
-      <Item class="oracle.javatools.db.FKConstraint">
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>7f6956f1-0110-1000-805e-c0a8016ee0d1</ID>
-            <parent idref="0"/>
-            <type>CONSTRAINT</type>
-         </ID>
-         <columns>
-            <Item>
-               <ID idref="4"/>
-               <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
-                  <attributeValues class="java.util.HashMap">
-                     <Item>
-                        <Key>precision</Key>
-                        <Value>9</Value>
-                     </Item>
-                     <Item>
-                        <Key>scale</Key>
-                        <Value class="java.lang.Long">0</Value>
-                     </Item>
-                  </attributeValues>
-                  <dataTypeID idref="5"/>
-               </dataTypeUsage>
-               <default/>
-               <name>SPARROW_MODEL_ID</name>
-               <notNull>true</notNull>
-               <properties/>
-            </Item>
-         </columns>
-         <deleteMode>0</deleteMode>
-         <enabled>true</enabled>
-         <name>TOTAL_PREDICT_SPARROW_MODEL_FK</name>
-         <properties/>
-         <referenceID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>7e79f2f5-0110-1000-800f-c0a8016e0973</ID>
-            <parent class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-               <ID>7e67da89-0110-1000-8003-c0a8016e0973</ID>
-               <parent/>
-               <type>TABLE</type>
-            </parent>
-            <type>CONSTRAINT</type>
-         </referenceID>
-      </Item>
       <Item class="oracle.javatools.db.UniqueConstraint">
          <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
             <ID>00144105-0111-1000-8071-c0a802018b15</ID>
@@ -215,85 +173,53 @@
             <type>CONSTRAINT</type>
          </ID>
          <columns>
-            <Item idref="6"/>
-            <Item idref="7"/>
-            <Item idref="8"/>
+            <Item idref="4"/>
+            <Item idref="5"/>
          </columns>
          <enabled>true</enabled>
          <name>TOTAL_PREDICT_UK_VALUE</name>
          <properties/>
       </Item>
+      <Item class="oracle.javatools.db.FKConstraint">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>04d19270-0111-1000-8019-c0a80164b35d</ID>
+            <parent idref="0"/>
+            <type>CONSTRAINT</type>
+         </ID>
+         <columns>
+            <Item>
+               <ID idref="6"/>
+               <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+                  <attributeValues class="java.util.HashMap">
+                     <Item>
+                        <Key>precision</Key>
+                        <Value>9</Value>
+                     </Item>
+                  </attributeValues>
+                  <dataTypeID idref="7"/>
+               </dataTypeUsage>
+               <default/>
+               <name>MODEL_REACH_ID</name>
+               <notNull>true</notNull>
+               <properties/>
+            </Item>
+         </columns>
+         <deleteMode>0</deleteMode>
+         <enabled>true</enabled>
+         <name>TOTAL_PREDICT_MODEL_REACH_FK</name>
+         <properties/>
+         <referenceID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>e679adc1-0110-1000-8039-c0a80196d6ac</ID>
+            <parent class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+               <ID>e67865cb-0110-1000-8036-c0a80196d6ac</ID>
+               <parent/>
+               <type>TABLE</type>
+            </parent>
+            <type>CONSTRAINT</type>
+         </referenceID>
+      </Item>
    </constraints>
-   <indexes>
-      <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>00144106-0111-1000-8072-c0a802018b15</ID>
-            <parent idref="0"/>
-            <type>INDEX</type>
-         </ID>
-         <columnExpressions>
-            <Item>
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-                  <ID>00144106-0111-1000-8073-c0a802018b15</ID>
-                  <parent/>
-                  <type>SQLFragment</type>
-               </ID>
-               <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
-                  <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-                     <ID>00144106-0111-1000-8074-c0a802018b15</ID>
-                     <parent/>
-                     <type>SQLFragment</type>
-                  </ID>
-                  <SQLText>IDENTIFIER</SQLText>
-                  <name/>
-                  <parent/>
-                  <properties/>
-               </expression>
-               <name/>
-               <order/>
-               <parent/>
-               <properties/>
-            </Item>
-         </columnExpressions>
-         <columns class="[Loracle.javatools.db.Column;"/>
-         <name>TOTAL_PREDICT_INDEX_ID_I</name>
-         <properties/>
-      </Item>
-      <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>00144106-0111-1000-8075-c0a802018b15</ID>
-            <parent idref="0"/>
-            <type>INDEX</type>
-         </ID>
-         <columnExpressions>
-            <Item>
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-                  <ID>00144106-0111-1000-8076-c0a802018b15</ID>
-                  <parent/>
-                  <type>SQLFragment</type>
-               </ID>
-               <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
-                  <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-                     <ID>00144106-0111-1000-8077-c0a802018b15</ID>
-                     <parent/>
-                     <type>SQLFragment</type>
-                  </ID>
-                  <SQLText>ITERATION</SQLText>
-                  <name/>
-                  <parent/>
-                  <properties/>
-               </expression>
-               <name/>
-               <order/>
-               <parent/>
-               <properties/>
-            </Item>
-         </columnExpressions>
-         <columns class="[Loracle.javatools.db.Column;"/>
-         <name>TOTAL_PREDICT_IT_I</name>
-         <properties/>
-      </Item>
-   </indexes>
+   <indexes class="[Loracle.javatools.db.Index;"/>
    <name>TOTAL_PREDICT</name>
    <properties class="java.util.HashMap">
       <Item>
