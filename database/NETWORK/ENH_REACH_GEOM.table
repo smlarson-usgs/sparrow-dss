@@ -133,76 +133,7 @@
          <properties/>
       </Item>
    </constraints>
-   <indexes>
-      <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>ffb82900-0110-1000-8036-c0a802018b15</ID>
-            <parent idref="0"/>
-            <type>INDEX</type>
-         </ID>
-         <columnExpressions>
-            <Item id="6">
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="5">
-                  <ID>ffb82900-0110-1000-8037-c0a802018b15</ID>
-                  <parent/>
-                  <type>SQLFragment</type>
-               </ID>
-               <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
-                  <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-                     <ID>ffb82900-0110-1000-8038-c0a802018b15</ID>
-                     <parent idref="5"/>
-                     <type>SQLFragment</type>
-                  </ID>
-                  <SQLText>REACH_GEOM</SQLText>
-                  <name/>
-                  <parent idref="6"/>
-                  <properties/>
-               </expression>
-               <name/>
-               <order/>
-               <parent/>
-               <properties/>
-            </Item>
-         </columnExpressions>
-         <columns class="[Loracle.javatools.db.Column;"/>
-         <name>ENH_REACH_GEOM_REACH_GEOM_I</name>
-         <properties/>
-      </Item>
-      <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>ffb8db21-0110-1000-8039-c0a802018b15</ID>
-            <parent idref="0"/>
-            <type>INDEX</type>
-         </ID>
-         <columnExpressions>
-            <Item id="8">
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="7">
-                  <ID>ffb8db21-0110-1000-803a-c0a802018b15</ID>
-                  <parent/>
-                  <type>SQLFragment</type>
-               </ID>
-               <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
-                  <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-                     <ID>ffb8db21-0110-1000-803b-c0a802018b15</ID>
-                     <parent idref="7"/>
-                     <type>SQLFragment</type>
-                  </ID>
-                  <SQLText>CATCH_GEOM</SQLText>
-                  <name/>
-                  <parent idref="8"/>
-                  <properties/>
-               </expression>
-               <name/>
-               <order/>
-               <parent/>
-               <properties/>
-            </Item>
-         </columnExpressions>
-         <columns class="[Loracle.javatools.db.Column;"/>
-         <name>ENH_REACH_GEOM_CATCH_GEOM_I</name>
-         <properties/>
-      </Item>
-   </indexes>
+   <indexes class="[Loracle.javatools.db.Index;"/>
    <name>ENH_REACH_GEOM</name>
    <properties class="java.util.HashMap">
       <Item>
