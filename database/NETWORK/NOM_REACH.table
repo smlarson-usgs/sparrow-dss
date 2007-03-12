@@ -376,8 +376,8 @@
             <type>INDEX</type>
          </ID>
          <columnExpressions>
-            <Item>
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <Item id="11">
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="10">
                   <ID>ff96c9cf-0110-1000-801a-c0a802018b15</ID>
                   <parent/>
                   <type>SQLFragment</type>
@@ -385,12 +385,12 @@
                <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
                   <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
                      <ID>ff96c9cf-0110-1000-801b-c0a802018b15</ID>
-                     <parent/>
+                     <parent idref="10"/>
                      <type>SQLFragment</type>
                   </ID>
                   <SQLText>NOM_NETWORK_ID</SQLText>
                   <name/>
-                  <parent/>
+                  <parent idref="11"/>
                   <properties/>
                </expression>
                <name/>
@@ -410,8 +410,8 @@
             <type>INDEX</type>
          </ID>
          <columnExpressions>
-            <Item>
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <Item id="13">
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="12">
                   <ID>ffb6b2df-0110-1000-802f-c0a802018b15</ID>
                   <parent/>
                   <type>SQLFragment</type>
@@ -419,12 +419,12 @@
                <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
                   <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
                      <ID>ffb6b2df-0110-1000-8030-c0a802018b15</ID>
-                     <parent/>
+                     <parent idref="12"/>
                      <type>SQLFragment</type>
                   </ID>
                   <SQLText>HYDSEQ</SQLText>
                   <name/>
-                  <parent/>
+                  <parent idref="13"/>
                   <properties/>
                </expression>
                <name/>
@@ -435,74 +435,6 @@
          </columnExpressions>
          <columns class="[Loracle.javatools.db.Column;"/>
          <name>NOM_REACH_HYDSEQ_I</name>
-         <properties/>
-      </Item>
-      <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>ffb98b33-0110-1000-803c-c0a802018b15</ID>
-            <parent idref="0"/>
-            <type>INDEX</type>
-         </ID>
-         <columnExpressions>
-            <Item>
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-                  <ID>ffb98b33-0110-1000-803d-c0a802018b15</ID>
-                  <parent/>
-                  <type>SQLFragment</type>
-               </ID>
-               <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
-                  <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-                     <ID>ffb98b33-0110-1000-803e-c0a802018b15</ID>
-                     <parent/>
-                     <type>SQLFragment</type>
-                  </ID>
-                  <SQLText>REACH_GEOM</SQLText>
-                  <name/>
-                  <parent/>
-                  <properties/>
-               </expression>
-               <name/>
-               <order/>
-               <parent/>
-               <properties/>
-            </Item>
-         </columnExpressions>
-         <columns class="[Loracle.javatools.db.Column;"/>
-         <name>NOM_REACH_REACH_GEOM_I</name>
-         <properties/>
-      </Item>
-      <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>ffb98b33-0110-1000-803f-c0a802018b15</ID>
-            <parent idref="0"/>
-            <type>INDEX</type>
-         </ID>
-         <columnExpressions>
-            <Item>
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-                  <ID>ffb98b33-0110-1000-8040-c0a802018b15</ID>
-                  <parent/>
-                  <type>SQLFragment</type>
-               </ID>
-               <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
-                  <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-                     <ID>ffb98b33-0110-1000-8041-c0a802018b15</ID>
-                     <parent/>
-                     <type>SQLFragment</type>
-                  </ID>
-                  <SQLText>CATCH_GEOM</SQLText>
-                  <name/>
-                  <parent/>
-                  <properties/>
-               </expression>
-               <name/>
-               <order/>
-               <parent/>
-               <properties/>
-            </Item>
-         </columnExpressions>
-         <columns class="[Loracle.javatools.db.Column;"/>
-         <name>NOM_REACH_CATCH_GEOM</name>
          <properties/>
       </Item>
    </indexes>
