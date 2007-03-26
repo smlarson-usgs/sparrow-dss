@@ -122,6 +122,58 @@
          <notNull>false</notNull>
          <properties/>
       </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>7b349bab-0111-1000-8001-c0a8016fb5c4</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value class="java.lang.Long">0</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
+               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
+               <schemaName/>
+               <typeName>NUMBER</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>HYDSEQ</name>
+         <notNull>true</notNull>
+         <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>9017926c-0111-1000-8001-c0a80201355a</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>1</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
+               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
+               <schemaName/>
+               <typeName>NUMBER</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>IFTRAN</name>
+         <notNull>true</notNull>
+         <properties/>
+      </Item>
    </columns>
    <constraints>
       <Item class="oracle.javatools.db.PKConstraint">
@@ -280,6 +332,40 @@
          </columnExpressions>
          <columns class="[Loracle.javatools.db.Column;"/>
          <name>MODEL_REACH_ENH_REACH_FK_I</name>
+         <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>7b349bac-0111-1000-8002-c0a8016fb5c4</ID>
+            <parent idref="0"/>
+            <type>INDEX</type>
+         </ID>
+         <columnExpressions>
+            <Item id="11">
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="10">
+                  <ID>7b349bac-0111-1000-8003-c0a8016fb5c4</ID>
+                  <parent/>
+                  <type>SQLFragment</type>
+               </ID>
+               <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
+                  <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+                     <ID>7b349bac-0111-1000-8004-c0a8016fb5c4</ID>
+                     <parent idref="10"/>
+                     <type>SQLFragment</type>
+                  </ID>
+                  <SQLText>HYDSEQ</SQLText>
+                  <name/>
+                  <parent idref="11"/>
+                  <properties/>
+               </expression>
+               <name/>
+               <order>ASC</order>
+               <parent/>
+               <properties/>
+            </Item>
+         </columnExpressions>
+         <columns class="[Loracle.javatools.db.Column;"/>
+         <name>MODEL_REACH_HYDSEQ_I</name>
          <properties/>
       </Item>
    </indexes>

@@ -7,7 +7,7 @@
    </ID>
    <columns>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="4">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="3">
             <ID>e5cb3e23-0110-1000-8002-c0a80196d6ac</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -31,7 +31,7 @@
          <properties/>
       </Item>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="5">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="4">
             <ID>e5cc7039-0110-1000-8009-c0a80196d6ac</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -43,7 +43,7 @@
                   <Value>9</Value>
                </Item>
             </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="6">
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="5">
                <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
                <schemaName/>
                <typeName>NUMBER</typeName>
@@ -55,7 +55,7 @@
          <properties/>
       </Item>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="7">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="6">
             <ID>e660f6e8-0110-1000-8023-c0a80196d6ac</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -149,17 +149,17 @@
          </properties>
       </Item>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="9">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
             <ID>e660f6e8-0110-1000-8028-c0a80196d6ac</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
          </ID>
          <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
             <attributeValues class="java.util.HashMap"/>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="2">
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
                <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
                <schemaName/>
-               <typeName>FLOAT</typeName>
+               <typeName>INTEGER</typeName>
             </dataTypeID>
          </dataTypeUsage>
          <default/>
@@ -175,10 +175,14 @@
          </ID>
          <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
             <attributeValues class="java.util.HashMap"/>
-            <dataTypeID idref="2"/>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
+               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
+               <schemaName/>
+               <typeName>FLOAT</typeName>
+            </dataTypeID>
          </dataTypeUsage>
          <default class="java.lang.String">1</default>
-         <name>AIFTRAN</name>
+         <name>FRAC</name>
          <notNull>true</notNull>
          <properties/>
       </Item>
@@ -190,7 +194,7 @@
          </ID>
          <dataTypeUsage class="oracle.javatools.db.datatypes.ObjectTypeUsage">
             <attributeValues class="java.util.HashMap"/>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="3">
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="2">
                <providerClass>oracle.javatools.db.ora.Oracle8i</providerClass>
                <schemaName>MDSYS</schemaName>
                <typeName>SDO_GEOMETRY</typeName>
@@ -209,7 +213,7 @@
          </ID>
          <dataTypeUsage class="oracle.javatools.db.datatypes.ObjectTypeUsage">
             <attributeValues class="java.util.HashMap"/>
-            <dataTypeID idref="3"/>
+            <dataTypeID idref="2"/>
          </dataTypeUsage>
          <default/>
          <name>CATCH_GEOM</name>
@@ -224,7 +228,7 @@
          </ID>
          <dataTypeUsage class="oracle.javatools.db.datatypes.ObjectTypeUsage">
             <attributeValues class="java.util.HashMap"/>
-            <dataTypeID idref="3"/>
+            <dataTypeID idref="2"/>
          </dataTypeUsage>
          <default/>
          <name>CUM_CATCH_GEOM</name>
@@ -241,7 +245,7 @@
          </ID>
          <columns>
             <Item>
-               <ID idref="4"/>
+               <ID idref="3"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
@@ -269,7 +273,7 @@
          </ID>
          <columns>
             <Item>
-               <ID idref="5"/>
+               <ID idref="4"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
@@ -277,7 +281,7 @@
                         <Value>9</Value>
                      </Item>
                   </attributeValues>
-                  <dataTypeID idref="6"/>
+                  <dataTypeID idref="5"/>
                </dataTypeUsage>
                <default/>
                <name>NOM_NETWORK_ID</name>
@@ -306,8 +310,8 @@
             <type>CONSTRAINT</type>
          </ID>
          <columns>
-            <Item id="8">
-               <ID idref="5"/>
+            <Item>
+               <ID idref="4"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
@@ -315,7 +319,7 @@
                         <Value>9</Value>
                      </Item>
                   </attributeValues>
-                  <dataTypeID idref="6"/>
+                  <dataTypeID idref="5"/>
                </dataTypeUsage>
                <default/>
                <name>NOM_NETWORK_ID</name>
@@ -323,7 +327,7 @@
                <properties/>
             </Item>
             <Item>
-               <ID idref="7"/>
+               <ID idref="6"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
@@ -343,30 +347,6 @@
          <name>NOM_REACH_UK_IDENTIFIER</name>
          <properties/>
       </Item>
-      <Item class="oracle.javatools.db.UniqueConstraint">
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>ff2e50a8-0110-1000-800d-c0a802018b15</ID>
-            <parent idref="0"/>
-            <type>CONSTRAINT</type>
-         </ID>
-         <columns>
-            <Item idref="8"/>
-            <Item>
-               <ID idref="9"/>
-               <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
-                  <attributeValues class="java.util.HashMap"/>
-                  <dataTypeID idref="2"/>
-               </dataTypeUsage>
-               <default/>
-               <name>HYDSEQ</name>
-               <notNull>true</notNull>
-               <properties/>
-            </Item>
-         </columns>
-         <enabled>true</enabled>
-         <name>NOM_REACH_UK_HYDSEQ</name>
-         <properties/>
-      </Item>
    </constraints>
    <indexes>
       <Item>
@@ -376,8 +356,8 @@
             <type>INDEX</type>
          </ID>
          <columnExpressions>
-            <Item id="11">
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="10">
+            <Item id="8">
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="7">
                   <ID>ff96c9cf-0110-1000-801a-c0a802018b15</ID>
                   <parent/>
                   <type>SQLFragment</type>
@@ -385,12 +365,12 @@
                <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
                   <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
                      <ID>ff96c9cf-0110-1000-801b-c0a802018b15</ID>
-                     <parent idref="10"/>
+                     <parent idref="7"/>
                      <type>SQLFragment</type>
                   </ID>
                   <SQLText>NOM_NETWORK_ID</SQLText>
                   <name/>
-                  <parent idref="11"/>
+                  <parent idref="8"/>
                   <properties/>
                </expression>
                <name/>
@@ -410,8 +390,8 @@
             <type>INDEX</type>
          </ID>
          <columnExpressions>
-            <Item id="13">
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="12">
+            <Item id="10">
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="9">
                   <ID>ffb6b2df-0110-1000-802f-c0a802018b15</ID>
                   <parent/>
                   <type>SQLFragment</type>
@@ -419,12 +399,12 @@
                <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
                   <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
                      <ID>ffb6b2df-0110-1000-8030-c0a802018b15</ID>
-                     <parent idref="12"/>
+                     <parent idref="9"/>
                      <type>SQLFragment</type>
                   </ID>
                   <SQLText>HYDSEQ</SQLText>
                   <name/>
-                  <parent idref="13"/>
+                  <parent idref="10"/>
                   <properties/>
                </expression>
                <name/>

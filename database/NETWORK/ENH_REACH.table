@@ -30,7 +30,31 @@
          <notNull>true</notNull>
          <properties/>
       </Item>
-      <Item id="5">
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>76441573-0111-1000-8001-c0a8020104be</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
+               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
+               <schemaName/>
+               <typeName>NUMBER</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>HYDSEQ</name>
+         <notNull>true</notNull>
+         <properties/>
+      </Item>
+      <Item>
          <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="3">
             <ID>e5d4336f-0110-1000-801b-c0a80196d6ac</ID>
             <parent idref="0"/>
@@ -70,8 +94,8 @@
          <notNull>false</notNull>
          <properties/>
       </Item>
-      <Item id="6">
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="5">
             <ID>e66f6a64-0110-1000-802a-c0a80196d6ac</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -227,8 +251,38 @@
             <type>CONSTRAINT</type>
          </ID>
          <columns>
-            <Item idref="5"/>
-            <Item idref="6"/>
+            <Item>
+               <ID idref="3"/>
+               <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+                  <attributeValues class="java.util.HashMap">
+                     <Item>
+                        <Key>precision</Key>
+                        <Value>9</Value>
+                     </Item>
+                  </attributeValues>
+                  <dataTypeID idref="1"/>
+               </dataTypeUsage>
+               <default/>
+               <name>ENH_NETWORK_ID</name>
+               <notNull>true</notNull>
+               <properties/>
+            </Item>
+            <Item>
+               <ID idref="5"/>
+               <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+                  <attributeValues class="java.util.HashMap">
+                     <Item>
+                        <Key>precision</Key>
+                        <Value>9</Value>
+                     </Item>
+                  </attributeValues>
+                  <dataTypeID idref="1"/>
+               </dataTypeUsage>
+               <default/>
+               <name>IDENTIFIER</name>
+               <notNull>true</notNull>
+               <properties/>
+            </Item>
          </columns>
          <enabled>true</enabled>
          <name>ENH_REACH_UK_IDENTIFIER</name>
@@ -243,8 +297,8 @@
             <type>INDEX</type>
          </ID>
          <columnExpressions>
-            <Item>
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <Item id="7">
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="6">
                   <ID>ff9f05c2-0110-1000-8023-c0a802018b15</ID>
                   <parent/>
                   <type>SQLFragment</type>
@@ -252,12 +306,12 @@
                <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
                   <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
                      <ID>ff9f05c2-0110-1000-8024-c0a802018b15</ID>
-                     <parent/>
+                     <parent idref="6"/>
                      <type>SQLFragment</type>
                   </ID>
                   <SQLText>NOM_REACH_ID</SQLText>
                   <name/>
-                  <parent/>
+                  <parent idref="7"/>
                   <properties/>
                </expression>
                <name/>
@@ -277,8 +331,8 @@
             <type>INDEX</type>
          </ID>
          <columnExpressions>
-            <Item>
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <Item id="9">
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="8">
                   <ID>ff9f05c2-0110-1000-8026-c0a802018b15</ID>
                   <parent/>
                   <type>SQLFragment</type>
@@ -286,12 +340,12 @@
                <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
                   <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
                      <ID>ff9f05c2-0110-1000-8027-c0a802018b15</ID>
-                     <parent/>
+                     <parent idref="8"/>
                      <type>SQLFragment</type>
                   </ID>
                   <SQLText>ENH_NETWORK_ID</SQLText>
                   <name/>
-                  <parent/>
+                  <parent idref="9"/>
                   <properties/>
                </expression>
                <name/>
@@ -302,6 +356,40 @@
          </columnExpressions>
          <columns class="[Loracle.javatools.db.Column;"/>
          <name>ENH_REACH_ENH_NETWORK_FK_I</name>
+         <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>76441574-0111-1000-8002-c0a8020104be</ID>
+            <parent idref="0"/>
+            <type>INDEX</type>
+         </ID>
+         <columnExpressions>
+            <Item>
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+                  <ID>76441574-0111-1000-8003-c0a8020104be</ID>
+                  <parent/>
+                  <type>SQLFragment</type>
+               </ID>
+               <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
+                  <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+                     <ID>76441574-0111-1000-8004-c0a8020104be</ID>
+                     <parent/>
+                     <type>SQLFragment</type>
+                  </ID>
+                  <SQLText>HYDSEQ</SQLText>
+                  <name/>
+                  <parent/>
+                  <properties/>
+               </expression>
+               <name/>
+               <order>ASC</order>
+               <parent/>
+               <properties/>
+            </Item>
+         </columnExpressions>
+         <columns class="[Loracle.javatools.db.Column;"/>
+         <name>ENH_REACH_HYDSEQ_I</name>
          <properties/>
       </Item>
    </indexes>

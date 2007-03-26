@@ -6,8 +6,8 @@
       <type>TABLE</type>
    </ID>
    <columns>
-      <Item id="3">
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="4">
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="2">
             <ID>eaf18195-0110-1000-801f-c0a801967bab</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -19,7 +19,7 @@
                   <Value>9</Value>
                </Item>
             </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="5">
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="3">
                <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
                <schemaName/>
                <typeName>NUMBER</typeName>
@@ -84,40 +84,6 @@
             </Item>
          </properties>
       </Item>
-      <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>eaee8f3a-0110-1000-8016-c0a801967bab</ID>
-            <parent idref="0"/>
-            <type>COLUMN</type>
-         </ID>
-         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
-            <attributeValues class="java.util.HashMap"/>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="2">
-               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
-               <schemaName/>
-               <typeName>FLOAT</typeName>
-            </dataTypeID>
-         </dataTypeUsage>
-         <default/>
-         <name>HYDSEQ</name>
-         <notNull>true</notNull>
-         <properties/>
-      </Item>
-      <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>eaee8f3a-0110-1000-8017-c0a801967bab</ID>
-            <parent idref="0"/>
-            <type>COLUMN</type>
-         </ID>
-         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
-            <attributeValues class="java.util.HashMap"/>
-            <dataTypeID idref="2"/>
-         </dataTypeUsage>
-         <default/>
-         <name>AIFTRAN</name>
-         <notNull>true</notNull>
-         <properties/>
-      </Item>
    </columns>
    <constraints>
       <Item class="oracle.javatools.db.PKConstraint">
@@ -127,7 +93,22 @@
             <type>CONSTRAINT</type>
          </ID>
          <columns>
-            <Item idref="3"/>
+            <Item>
+               <ID idref="2"/>
+               <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+                  <attributeValues class="java.util.HashMap">
+                     <Item>
+                        <Key>precision</Key>
+                        <Value>9</Value>
+                     </Item>
+                  </attributeValues>
+                  <dataTypeID idref="3"/>
+               </dataTypeUsage>
+               <default/>
+               <name>MODEL_REACH_ID</name>
+               <notNull>true</notNull>
+               <properties/>
+            </Item>
          </columns>
          <enabled>true</enabled>
          <name>MODEL_REACH_TOPO_PK</name>
@@ -141,7 +122,7 @@
          </ID>
          <columns>
             <Item>
-               <ID idref="4"/>
+               <ID idref="2"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
@@ -149,7 +130,7 @@
                         <Value>9</Value>
                      </Item>
                   </attributeValues>
-                  <dataTypeID idref="5"/>
+                  <dataTypeID idref="3"/>
                </dataTypeUsage>
                <default/>
                <name>MODEL_REACH_ID</name>

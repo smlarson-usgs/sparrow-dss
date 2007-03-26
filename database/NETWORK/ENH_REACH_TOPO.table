@@ -7,7 +7,7 @@
    </ID>
    <columns>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="3">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="2">
             <ID>ea710308-0110-1000-8010-c0a801967bab</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -19,7 +19,7 @@
                   <Value>9</Value>
                </Item>
             </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="4">
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="3">
                <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
                <schemaName/>
                <typeName>NUMBER</typeName>
@@ -86,35 +86,20 @@
       </Item>
       <Item>
          <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>ea6a7223-0110-1000-8005-c0a801967bab</ID>
-            <parent idref="0"/>
-            <type>COLUMN</type>
-         </ID>
-         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
-            <attributeValues class="java.util.HashMap"/>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="2">
-               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
-               <schemaName/>
-               <typeName>FLOAT</typeName>
-            </dataTypeID>
-         </dataTypeUsage>
-         <default/>
-         <name>HYDSEQ</name>
-         <notNull>true</notNull>
-         <properties/>
-      </Item>
-      <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
             <ID>ea6a7223-0110-1000-8006-c0a801967bab</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
          </ID>
          <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
             <attributeValues class="java.util.HashMap"/>
-            <dataTypeID idref="2"/>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
+               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
+               <schemaName/>
+               <typeName>FLOAT</typeName>
+            </dataTypeID>
          </dataTypeUsage>
          <default/>
-         <name>AIFTRAN</name>
+         <name>FRAC</name>
          <notNull>true</notNull>
          <properties/>
       </Item>
@@ -127,8 +112,8 @@
             <type>CONSTRAINT</type>
          </ID>
          <columns>
-            <Item id="5">
-               <ID idref="3"/>
+            <Item id="4">
+               <ID idref="2"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
@@ -136,7 +121,7 @@
                         <Value>9</Value>
                      </Item>
                   </attributeValues>
-                  <dataTypeID idref="4"/>
+                  <dataTypeID idref="3"/>
                </dataTypeUsage>
                <default/>
                <name>ENH_REACH_ID</name>
@@ -165,49 +150,14 @@
             <type>CONSTRAINT</type>
          </ID>
          <columns>
-            <Item idref="5"/>
+            <Item idref="4"/>
          </columns>
          <enabled>true</enabled>
          <name>ENH_REACH_TOPO_PK</name>
          <properties/>
       </Item>
    </constraints>
-   <indexes>
-      <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-            <ID>ffb5f804-0110-1000-802b-c0a802018b15</ID>
-            <parent idref="0"/>
-            <type>INDEX</type>
-         </ID>
-         <columnExpressions>
-            <Item id="7">
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="6">
-                  <ID>ffb6e01e-0110-1000-8031-c0a802018b15</ID>
-                  <parent/>
-                  <type>SQLFragment</type>
-               </ID>
-               <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
-                  <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-                     <ID>ffb6e01e-0110-1000-8032-c0a802018b15</ID>
-                     <parent idref="6"/>
-                     <type>SQLFragment</type>
-                  </ID>
-                  <SQLText>HYDSEQ</SQLText>
-                  <name/>
-                  <parent idref="7"/>
-                  <properties/>
-               </expression>
-               <name/>
-               <order>ASC</order>
-               <parent/>
-               <properties/>
-            </Item>
-         </columnExpressions>
-         <columns class="[Loracle.javatools.db.Column;"/>
-         <name>ENH_REACH_TOPO_HYDSEQ_I</name>
-         <properties/>
-      </Item>
-   </indexes>
+   <indexes class="[Loracle.javatools.db.Index;"/>
    <name>ENH_REACH_TOPO</name>
    <properties class="java.util.HashMap">
       <Item>
