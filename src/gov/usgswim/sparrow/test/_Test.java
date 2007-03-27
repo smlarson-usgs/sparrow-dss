@@ -7,6 +7,8 @@ import gov.usgswim.sparrow.util.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
+import test.gov.usgswim.sparrow.util.JDBCUtil_Test;
+
 public class _Test {
 	public static Test suite() {
 		TestSuite suite;
@@ -17,6 +19,7 @@ public class _Test {
 		suite.addTestSuite(PredictSimple_Test.class);
 	  suite.addTestSuite(TabDelimFileUtil_Test.class);
 	  suite.addTestSuite(Data2DView_Test.class);
+		suite.addTestSuite(JDBCUtil_Test.class);
 	  
 		return suite;
 	}
