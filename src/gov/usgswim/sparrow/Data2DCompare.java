@@ -23,6 +23,7 @@ public class Data2DCompare extends Data2DView {
 		super(baseData, 0, baseData.getColCount());
 		
 		this.compData = compData;
+		maxCompValues = new Double[baseData.getColCount()];
 	}
 	
 	/**
