@@ -77,6 +77,25 @@ public class PredictSimple {
 		nodeCount = maxNode + 1;
 	}
 	
+	/**
+	 * Construct a new instance using a PredictionDataSet.
+	 * 
+	 * This constructor figures out the number of nodes, which is non-ideal for
+	 * larger data sets.
+	 * 
+	 * @param data An all-in-one data object
+	 */
+	public PredictSimple(PredictionDataSet data) {
+		this.topo = data.getTopo(); //assign the passed values to the class variables
+		this.coef = data.getCoef();
+		this.src = data.getSrc();
+		this.decay = data.getDecay();
+		
+		int maxNode = (int) topo.findMaxValue();
+		
+		nodeCount = maxNode + 1;
+	}
+	
 
 	public Double2D doPredict() {
 		int reachCount = topo.getRowCount();	//# of reachs is equal to the number of 'rows' in topo
