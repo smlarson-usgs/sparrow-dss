@@ -14,6 +14,7 @@ import javax.sql.DataSource;
 
 import oracle.mapviewer.share.ext.NSDataProvider;
 import oracle.mapviewer.share.ext.NSDataSet;
+import oracle.mapviewer.share.ext.NSRow;
 
 import org.apache.log4j.Logger;
 
