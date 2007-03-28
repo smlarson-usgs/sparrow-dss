@@ -7,8 +7,6 @@ import gov.usgswim.sparrow.util.*;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import test.gov.usgswim.sparrow.util.JDBCUtil_Test;
-
 public class _Test {
 	public static Test suite() {
 		TestSuite suite;
