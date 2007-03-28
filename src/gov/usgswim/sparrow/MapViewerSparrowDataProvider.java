@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.sparrow.util.JDBCUtil;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -15,6 +17,8 @@ import javax.sql.DataSource;
 import oracle.mapviewer.share.ext.NSDataProvider;
 import oracle.mapviewer.share.ext.NSDataSet;
 import oracle.mapviewer.share.ext.NSRow;
+import oracle.mapviewer.share.Field;
+
 
 import org.apache.log4j.Logger;
 
@@ -36,10 +40,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 * @return
 	 */
 	public boolean init(Properties properties) {
-	
 		datasourceName = properties.getProperty(DATASOURCE_NAME_KEY);
-		
-		
 		return true;
 	}
 
@@ -49,20 +50,37 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 * @return
 	 */
 	public NSDataSet buildDataSet(Properties properties) {
-		Vector data = new Vector(1000);
+		int modelId = Integer.parseInt( properties.getProperty("model_id") );
 		
-		Connection conn = null; //
-
-
+		Connection conn = null;
+		NSDataSet data = null;
+		
 		try {
 			conn = getConnection();
 			
+			PredictionDataSet ds = JDBCUtil.loadMinimalPredictDataSet(conn, modelId);
+			PredictSimple ps = new PredictSimple(ds);
+			Double2D result = ps.doPredict();
 			
+			int rowCount = result.getRowCount();
+			int colCount = result.getColCount();
+			NSRow[] nsRows = new NSRow[rowCount];
 			
+			for (int r=0; r < rowCount; r++) {
+				Field[] row = new Field[colCount];
+				for (int c=0; c < colCount; c++) {
+					row[c] = new Field(result.getDouble(r, c));
+				}
+				NSRow nsRow = new NSRow(row);
+				nsRows[r] = nsRow;
+			}
+			
+			log.info("Returning data with " + rowCount + " rows");
+			data = new NSDataSet(nsRows);
 			
 		} catch (Exception e) {
 			log.error("No way to indicate this error to mapViewer...", e);
-			return new NSDataSet(data);
+			return new NSDataSet(new NSRow[0]);
 		} finally {
 			if (conn != null) {
 				try {
