@@ -4,6 +4,8 @@ import gov.usgswim.sparrow.Double2D;
 
 import gov.usgswim.sparrow.Int2D;
 
+import gov.usgswim.sparrow.PredictionDataSet;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Connection;
@@ -18,6 +20,43 @@ public class JDBCUtil {
 	public JDBCUtil() {
 	}
 	
+	public static PredictionDataSet loadMinimalPredictDataSet(Connection conn, int modelId)
+			throws SQLException, Exception {
+		
+		PredictionDataSet dataSet = new PredictionDataSet();
+		
+		Int2D sources = loadSource(conn, modelId);	//Need this list
+		
+		dataSet.setSys( loadSystemInfo(conn, modelId) );
+		dataSet.setTopo( loadTopo(conn, modelId) );
+		dataSet.setCoef( loadSourceReachCoef(conn, modelId, 0, sources) );
+		dataSet.setDecay( loadDecay(conn, modelId, 0) );
+		dataSet.setSrc( loadSourceValues(conn, modelId, sources) );
+		
+		return dataSet;
+	}
+	
+	
+	/**
+	 * Returns a Int2D table of all System info
+	 * <h4>Data Columns, sorted by HYDSEQ.  One row per reach (i = reach index)</h4>
+	 * <ol>
+	 * <li>[i][0] REACH_ID - The system id for the reach (db unique id)
+	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number
+	 * </ol>
+	 * 
+	 * @param conn	A JDBC Connection to run the query on
+	 * @param modelId	The ID of the Sparrow model
+	 * @return Fetched data - see Data Columns above.
+	 * @throws SQLException
+	 */
+	public static Int2D loadSystemInfo(Connection conn, int modelId) throws SQLException {
+		String query =
+			"SELECT MODEL_REACH_ID as MODEL_REACH, HYDSEQ FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY HYDSEQ";
+	
+		return readAsInteger(conn, query, 2000);
+		
+	}
 	
 	/**
 	 * Returns a Int2D table of all topo data for for a single model.
@@ -26,7 +65,6 @@ public class JDBCUtil {
 	 * <li>FNODE - The from node
 	 * <li>TNODE - The to node
 	 * <li>IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
-	 * <li>HYDSEQ - Sort identifier such that any lower number reach is upstream of a higher numbered one.
 	 * </ol>
 	 * 
 	 * @param conn	A JDBC Connection to run the query on
@@ -36,7 +74,7 @@ public class JDBCUtil {
 	 */
 	public static Int2D loadTopo(Connection conn, int modelId) throws SQLException {
 		String query =
-			"SELECT FNODE, TNODE, IFTRAN, HYDSEQ FROM ALL_TOPO_VW WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY HYDSEQ";
+			"SELECT FNODE, TNODE, IFTRAN FROM ALL_TOPO_VW WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY HYDSEQ";
 	
 		return readAsInteger(conn, query, 1000);
 		
@@ -113,12 +151,17 @@ public class JDBCUtil {
 	
 	/**
 	 * Returns a Double2D table of all decay data for for a single model.
-	 * <h4>Data Columns (sorted by HYDSEQ)</h4>
+	 * 
+	 * <h4>Data Columns, sorted by HYDSEQ</h4>
+	 * <p>One row per reach (i = reach index)</p>
 	 * <ol>
-	 * <li>FNODE - The from node
-	 * <li>TNODE - The to node
-	 * <li>IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
-	 * <li>HYDSEQ - Sort identifier such that any lower number reach is upstream of a higher numbered one.
+	 * <li>[i][0] == the instream decay at reach i.<br>
+	 *   This decay is assumed to be at mid-reach and already computed as such.
+	 *   That is, it would normally be the sqr root of the instream decay, and
+	 *   it is assumed that this value already has the square root taken.
+	 * <li>src[i][1] == the upstream decay at reach i.<br>
+	 *   This decay is applied to the load coming from the upstream node.
+	 * <li>Additional columns ignored
 	 * </ol>
 	 * 
 	 * @param conn	A JDBC Connection to run the query on
