@@ -130,10 +130,6 @@
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <value n="id" v="JGoodies Forms"/>
-            <value n="isJDK" v="false"/>
-         </hash>
-         <hash>
             <url n="id" path="java_lib/_lib_definition/jakarta_commons_lang_2-1.library"/>
             <value n="isJDK" v="false"/>
          </hash>
@@ -155,6 +151,10 @@
          </hash>
          <hash>
             <value n="id" v="Oracle JDBC"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <url n="id" path="java_lib/_lib_definition/jgoodies_forms_1.0.library"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
@@ -164,10 +164,6 @@
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <value n="id" v="JGoodies Forms"/>
-            <value n="isJDK" v="false"/>
-         </hash>
-         <hash>
             <url n="id" path="java_lib/_lib_definition/jakarta_commons_lang_2-1.library"/>
             <value n="isJDK" v="false"/>
          </hash>
@@ -189,6 +185,10 @@
          </hash>
          <hash>
             <value n="id" v="Oracle JDBC"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <url n="id" path="java_lib/_lib_definition/jgoodies_forms_1.0.library"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
