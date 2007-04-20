@@ -18,6 +18,7 @@ public class _Test {
 	  suite.addTestSuite(TabDelimFileUtil_Test.class);
 	  suite.addTestSuite(Data2DView_Test.class);
 		suite.addTestSuite(JDBCUtil_Test.class);
+		suite.addTestSuite(SourceAdjustments_Test.class);
 	  
 		return suite;
 	}
