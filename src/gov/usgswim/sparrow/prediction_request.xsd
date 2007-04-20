@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+            targetNamespace="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+            elementFormDefault="qualified"
+            xmlns:xml="http://www.w3.org/XML/1998/namespace">
+  <xsd:element name="sparrow-prediction-request">
+    <xsd:annotation>
+      <xsd:documentation>
+        Root request element
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element name="processing-instructions" minOccurs="0">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="instruction" maxOccurs="unbounded"
+                           minOccurs="0" type="xs:string">
+                <xsd:complexType>
+                  <xsd:attribute name="name" use="required"/>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+        <xsd:choice>
+          <xsd:element name="value-prediction">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="model-id" type="xs:integer"/>
+                <xsd:element name="source-adjustments" type="source-adjustments-type"/>
+              </xsd:sequence>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="change-from-nominal">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="model-id" type="xs:integer"/>
+                <xsd:element name="source-adjustments" type="source-adjustments-type"/>
+              </xsd:sequence>
+            </xsd:complexType>
+					</xsd:element>
+        </xsd:choice>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+	
+	<xsd:complexType name="source-adjustments-type">
+		<xsd:sequence>
+			<xsd:element name="gross-adjust" minOccurs="0"
+									 maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:attribute name="src" type="xs:integer"
+												 use="required"/>
+					<xsd:attribute name="coef" type="xs:decimal"
+												 use="required"/>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="criteria-adjust"
+									 maxOccurs="unbounded" minOccurs="0"/>
+			<xsd:element name="specific-adjust"
+									 maxOccurs="unbounded" minOccurs="0">
+				<xsd:complexType>
+					<xsd:attribute name="src" use="required"
+												 type="xs:integer"/>
+					<xsd:attribute name="reach" type="xs:integer"
+												 use="required"/>
+					<xsd:attribute name="value" type="xs:decimal"
+												 use="required"/>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>
