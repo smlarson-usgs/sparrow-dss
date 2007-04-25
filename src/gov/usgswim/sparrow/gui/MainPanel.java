@@ -19,6 +19,7 @@ public class MainPanel extends JPanel {
 	private ResultGrid srcGrid = new ResultGrid(SparrowData.DATA_TYPE_SRC);
 	private ResultGrid resultGrid = new ResultGrid(SparrowData.DATA_TYPE_RESULT);
 	private ResultGrid knownGrid = new ResultGrid(SparrowData.DATA_TYPE_KNOWN);
+	private ResultGrid ancilGrid = new ResultGrid(SparrowData.DATA_TYPE_ANCIL);
 	private JTabbedPane jTabbedPane = new JTabbedPane();
 
 	public MainPanel() {
@@ -37,6 +38,7 @@ public class MainPanel extends JPanel {
 	  jTabbedPane.add("Src Data", srcGrid);
 	  jTabbedPane.add("Predictions", resultGrid);
 		jTabbedPane.add("Known Results (reference)", knownGrid);
+		jTabbedPane.add("Ancil (reference)", ancilGrid);
 	  jTabbedPane.setPreferredSize(new Dimension(500, 150));
 		
 		this.add(input, BorderLayout.NORTH);

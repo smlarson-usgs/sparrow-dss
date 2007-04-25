@@ -6,7 +6,7 @@ package gov.usgswim.sparrow;
  * This class is not thread safe!  Once created, this class may be cached and
  * used for prediction runs, so do not reassign or change the values it contains!
  */
-public class PredictionDataSet {
+public class PredictionDataSet implements Cloneable {
 
 	/**
 	 * One row per reach (i = reach index)
@@ -55,11 +55,38 @@ public class PredictionDataSet {
 	 */
 	protected Data2D decay;
 	
+	/**
+	 * Optional ancillary data.
+	 * The structure of this data is not currently defined.
+	 */
+	protected Data2D ancil;
+	
 	public PredictionDataSet() {
 	}
 	
+	
 	/**
 	 * Constructs a new dataset w/ all data tables defined.
+	 * See matching method docs for complete definitions of each parameter.
+	 * 
+	 * @param topo
+	 * @param coef
+	 * @param src
+	 * @param decay
+	 * @param sys
+	 * @param ancil
+	 */
+	public PredictionDataSet(Data2D topo, Data2D coef, Data2D src, Data2D decay, Data2D sys, Data2D ancil) {
+		this.topo = topo;
+		this.coef = coef;
+		this.src = src;
+		this.decay = decay;
+		this.sys = sys;
+		this.ancil = ancil;
+	}
+	
+	/**
+	 * Constructs a new dataset w/ all except ancil data.
 	 * See matching method docs for complete definitions of each parameter.
 	 * 
 	 * @param topo
@@ -255,5 +282,26 @@ public class PredictionDataSet {
 	 */
 	public Data2D getSys() {
 		return sys;
+	}
+
+	/**
+	 * Creates a shallow copy of the PredicionDataSet.
+	 * 
+	 * @ToDo  The Data2D objects really need an immutable version before this
+	 * is really considered 'done'.  
+	 * 
+	 * @return
+	 * @throws CloneNotSupportedException
+	 */
+	public Object clone() throws CloneNotSupportedException {
+		return (PredictionDataSet) super.clone();
+	}
+
+	public void setAncil(Data2D ancil) {
+		this.ancil = ancil;
+	}
+
+	public Data2D getAncil() {
+		return ancil;
 	}
 }

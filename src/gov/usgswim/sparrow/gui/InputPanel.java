@@ -33,6 +33,8 @@ public class InputPanel extends JPanel {
 	private FileChooserPanel coefPanel = new FileChooserPanel(SparrowData.DATA_TYPE_COEF, "Coefficient (Beta) Data File (coef.txt)", "Coefficient (Beta) Data (coef.txt)");
 	private FileChooserPanel sourcePanel = new FileChooserPanel(SparrowData.DATA_TYPE_SRC, "Source Data File (src.txt)", "Source Data (src.txt)");
 	private FileChooserPanel knownPanel = new FileChooserPanel(SparrowData.DATA_TYPE_KNOWN, "Known Result Value File (predict.txt)", "Known Result Values (predict.txt)");
+	private FileChooserPanel ancilPanel = new FileChooserPanel(SparrowData.DATA_TYPE_ANCIL, "Anicillary Values File (ancil.txt - not required)", "Anicillary Values (predict.txt)");
+
 	private JButton runButton = new JButton("Run Predictions");
 	private VerticalFlowLayout verticalFlowLayout1 = new VerticalFlowLayout();
 
@@ -56,6 +58,7 @@ public class InputPanel extends JPanel {
 	  this.add(coefPanel, null);
 	  this.add(sourcePanel, null);
 		this.add(knownPanel, null);
+		this.add(ancilPanel, null);
 		this.add(runButton, null);
 
 		SparrowData data = SparrowData.getInstance();
@@ -63,6 +66,7 @@ public class InputPanel extends JPanel {
 	  coefPanel.addDataChangeListener(data);
 	  sourcePanel.addDataChangeListener(data);
 		knownPanel.addDataChangeListener(data);
+		ancilPanel.addDataChangeListener(data);
 	}
 
 

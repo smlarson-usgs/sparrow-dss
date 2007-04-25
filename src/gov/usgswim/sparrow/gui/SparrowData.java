@@ -47,6 +47,7 @@ public class SparrowData implements DataChangeListener {
 	public static final String DATA_TYPE_SRC = "DATA_TYPE_SRC";
 	public static final String DATA_TYPE_KNOWN = "DATA_TYPE_KNOWN";
 	public static final String DATA_TYPE_RESULT = "DATA_TYPE_RESULT";
+	public static final String DATA_TYPE_ANCIL = "DATA_TYPE_ANCIL";
 	
 	public static final int[] DEFAULT_COMP_COLUMN_MAP =
 		new int[] {40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 39, 15};
@@ -55,6 +56,7 @@ public class SparrowData implements DataChangeListener {
 	Data2D coefData;
 	Data2D srcData;
 	Data2D knownData;
+	Data2D ancilData;
 	
 	int[] compColumnMap = DEFAULT_COMP_COLUMN_MAP;
 	
@@ -92,9 +94,6 @@ public class SparrowData implements DataChangeListener {
 			
 			Data2DView trimmedCoef = new Data2DView(coefData, 4, coefData.getColCount() - 4);
 			Data2DView decayCoef = new Data2DView(coefData, 1, 2);
-			
-			log.debug("Original coefData columns: " + coefData.getColCount());
-			log.debug("Trimmed coefData columns: " + trimmedCoef.getColCount());
 			
 			PredictSimple predict = new PredictSimple(topoData, trimmedCoef, srcData, decayCoef);
 			
@@ -194,6 +193,9 @@ public class SparrowData implements DataChangeListener {
 						fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_RESULT, resultComp));
 					}
 					
+				} else if (DATA_TYPE_ANCIL.equals(evt.getDataType())) {
+					ancilData = TabDelimFileUtil.readAsDouble(f, true);
+					fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_ANCIL, ancilData));
 				}
 			} catch (FileNotFoundException e) {
 				log.error("File Note found", e);
