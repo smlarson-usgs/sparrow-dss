@@ -133,7 +133,7 @@ public class JDBCUtil {
     
     pstmtMR.close();
 	  pstmtMRTopo.close();
-    
+	  pstmtMRID.close();
     
 		return 0;
 	}
