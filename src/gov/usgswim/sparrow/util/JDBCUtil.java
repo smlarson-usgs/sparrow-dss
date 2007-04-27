@@ -60,10 +60,17 @@ public class JDBCUtil {
 		return null;
 	}
 	
+	/**
+	 * Returns the number of reaches added
+	 * @param data
+	 * @param conn
+	 * @return
+	 * @throws SQLException
+	 */
 	public static int writePredictDataSet(PredictionDataSet data, Connection conn)
 			throws SQLException {
 		
-		return null;
+		return 0;
 	}
 	
 	
