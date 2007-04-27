@@ -1,13 +1,22 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.sparrow.domain.Model;
+
 /**
  * Databean that packages all of the data required to run a prediction.
- * 
+ *
  * This class is not thread safe!  Once created, this class may be cached and
  * used for prediction runs, so do not reassign or change the values it contains!
  */
 public class PredictionDataSet implements Cloneable {
 
+
+	/**
+	 * Contains the metadata for the model
+	 */
+	protected Model model;
+	
+	
 	/**
 	 * One row per reach (i = reach index)
 	 * <ol>
@@ -76,7 +85,10 @@ public class PredictionDataSet implements Cloneable {
 	 * @param sys
 	 * @param ancil
 	 */
-	public PredictionDataSet(Data2D topo, Data2D coef, Data2D src, Data2D decay, Data2D sys, Data2D ancil) {
+	public PredictionDataSet(Data2D topo, Data2D coef, Data2D src, Data2D decay,
+				Data2D sys, Data2D ancil, Model model) {
+				
+		this.model = model;
 		this.topo = topo;
 		this.coef = coef;
 		this.src = src;
@@ -303,5 +315,9 @@ public class PredictionDataSet implements Cloneable {
 
 	public Data2D getAncil() {
 		return ancil;
+	}
+
+	public Model getModel() {
+		return model;
 	}
 }
