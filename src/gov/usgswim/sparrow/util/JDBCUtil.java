@@ -6,6 +6,8 @@ import gov.usgswim.sparrow.Int2D;
 
 import gov.usgswim.sparrow.PredictionDataSet;
 
+import gov.usgswim.sparrow.domain.Model;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Connection;
@@ -20,8 +22,16 @@ public class JDBCUtil {
 	public JDBCUtil() {
 	}
 	
+	/**
+	 * Loads only the data required to run a prediction.
+	 * 
+	 * @param conn
+	 * @param modelId
+	 * @return
+	 * @throws SQLException
+	 */
 	public static PredictionDataSet loadMinimalPredictDataSet(Connection conn, int modelId)
-			throws SQLException, Exception {
+			throws SQLException {
 		
 		PredictionDataSet dataSet = new PredictionDataSet();
 		
@@ -34,6 +44,26 @@ public class JDBCUtil {
 		dataSet.setSrc( loadSourceValues(conn, modelId, sources) );
 		
 		return dataSet;
+	}
+	
+	/**
+	 * Loads all the model data.
+	 * 
+	 * @param conn
+	 * @param modelId
+	 * @return
+	 * @throws SQLException
+	 */
+	public static PredictionDataSet loadFullPredictDataSet(Connection conn, int modelId)
+			throws SQLException {
+		
+		return null;
+	}
+	
+	public static int writePredictDataSet(PredictionDataSet data, Connection conn)
+			throws SQLException {
+		
+		return null;
 	}
 	
 	
@@ -96,13 +126,13 @@ public class JDBCUtil {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Double2D loadSourceReachCoef(Connection conn, int modelId, int iteration, Int2D sources) throws SQLException, Exception {
+	public static Double2D loadSourceReachCoef(Connection conn, int modelId, int iteration, Int2D sources) throws SQLException {
 	
 		if (iteration < 0) {
-			throw new Exception("The iteration cannot be less then zero");
+			throw new IllegalArgumentException("The iteration cannot be less then zero");
 		}
 		if (sources.getRowCount() == 0) {
-			throw new Exception("There must be at least one source");
+			throw new IllegalArgumentException("There must be at least one source");
 		}
 	
 		String reachCountQuery =
@@ -197,10 +227,10 @@ public class JDBCUtil {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Double2D loadSourceValues(Connection conn, int modelId, Int2D sources) throws SQLException, Exception {
+	public static Double2D loadSourceValues(Connection conn, int modelId, Int2D sources) throws SQLException {
 	
 		if (sources.getRowCount() == 0) {
-			throw new Exception("There must be at least one source");
+			throw new IllegalArgumentException("There must be at least one source");
 		}
 	
 		String reachCountQuery =
