@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.util;
 
+import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Double2D;
 
 import gov.usgswim.sparrow.Int2D;
@@ -12,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Connection;
 
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import java.sql.Statement;
@@ -70,6 +72,69 @@ public class JDBCUtil {
 	public static int writePredictDataSet(PredictionDataSet data, Connection conn)
 			throws SQLException {
 		
+    //write ancillary table to db
+    Data2D ancil = data.getAncil();
+    Data2D topo = data.getTopo();
+    
+    
+	  //Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+    String insertMR = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, SPARROW_MODEL_ID)" +
+                   " VALUES (?,?,?,?,21)";                 
+    PreparedStatement pstmtMR = conn.prepareStatement(insertMR);
+
+  
+    String insertMRTopo = "INSERT INTO MODEL_REACH_TOPO VALUES (?,?,?)";
+    PreparedStatement pstmtMRTopo = conn.prepareStatement(insertMRTopo);
+  
+  
+    String queryMRID = "SELECT model_reach_id FROM MODEL_REACH WHERE identifier = ?";
+    PreparedStatement pstmtMRID = conn.prepareStatement(queryMRID);
+	  pstmtMRID.setFetchSize(1);
+	  ResultSet rset = null;
+  
+  
+    for (int i = 0; i < ancil.getRowCount(); i++) {
+
+      //MODEL REACH INSERT
+      pstmtMR.setInt(1, ancil.getInt(i,9));  //identifier
+      pstmtMR.setString(2, Integer.toString(ancil.getInt(i,9)));  //full_identifier
+      pstmtMR.setInt(3, ancil.getInt(i,1));  //hydseq
+      pstmtMR.setInt(4, topo.getInt(i,2));   //iftran
+      
+      //insert into MODEL_REACH table in DB
+      pstmtMR.executeUpdate();
+      
+            
+      
+      //find model_reach_id using identifier in where clause
+      int mrid = -1;
+      pstmtMRID.setInt(1,ancil.getInt(i,9));
+      rset = pstmtMRID.executeQuery();
+      try {      
+        rset = st.executeQuery(query);
+        if (rset.next()) {
+          mrid = rset.getInt(1);
+        }
+      } finally {
+        if (rset != null) {
+          rset.close();
+          rset = null;
+        }
+      }            
+      
+      //insert into model_reach_topo table in db
+      pstmtMRTopo.setInt(1, mrid);
+      pstmtMRTopo.setInt(2, topo.getInt(i,0));
+      pstmtMRTopo.setInt(3, topo.getInt(i,1));
+      
+      pstmtMRTopo.executeUpdate();
+              
+    }
+    
+    pstmtMR.close();
+	  pstmtMRTopo.close();
+    
+    
 		return 0;
 	}
 	
