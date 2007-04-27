@@ -45,7 +45,11 @@ public class LoadTestRunner {
 		pd.setCoef( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "coef.txt"), true) );
 		pd.setSrc( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "src.txt"), true) );
 		pd.setTopo( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "topo.txt"), true) );
-		pd.setModel( new ModelImp(21) );
+		
+		ModelImp model = new ModelImp(21);
+		model.setEnhNetworkId(1);
+		
+		pd.setModel( model );
 		
 		Connection conn = getConnection();
 		
