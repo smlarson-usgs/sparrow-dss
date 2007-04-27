@@ -90,6 +90,7 @@
    </hash>
    <hash n="oracle.jdeveloper.model.PathsConfiguration">
       <hash n="javaContentSet">
+         <list n="constituent-sets"/>
          <list n="pattern-filters">
             <string v="+**"/>
          </list>
@@ -154,20 +155,12 @@
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <value n="id" v="mapviewer_from_deployment"/>
+            <url n="id" path="java_lib/_lib_definition/oracle_mapviewer_client_10-1-3.library"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
       <hash n="internalDefinitions">
-         <list n="libraryDefinitions">
-            <hash>
-               <list n="classPath">
-                  <url path="java_lib/mvclient.jar" jar-entry=""/>
-               </list>
-               <value n="description" v="mapviewer_from_deployment"/>
-               <value n="id" v="mapviewer_from_deployment"/>
-            </hash>
-         </list>
+         <list n="libraryDefinitions"/>
       </hash>
       <list n="libraryReferences">
          <hash>
@@ -199,7 +192,7 @@
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <value n="id" v="mapviewer_from_deployment"/>
+            <url n="id" path="java_lib/_lib_definition/oracle_mapviewer_client_10-1-3.library"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
