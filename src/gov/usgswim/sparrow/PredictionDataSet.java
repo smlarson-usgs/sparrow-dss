@@ -320,4 +320,8 @@ public class PredictionDataSet implements Cloneable {
 	public Model getModel() {
 		return model;
 	}
+
+	public void setModel(Model model) {
+		this.model = model;
+	}
 }
