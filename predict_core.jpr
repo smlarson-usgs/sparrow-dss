@@ -202,6 +202,9 @@
    </hash>
    <hash n="oracle.tip.tools.ide.pm.addin.PMProjectSettings">
       <hash n="Integration_Content">
+         <list n="pattern-filters">
+            <string v="+**"/>
+         </list>
          <list n="url-path"/>
       </hash>
    </hash>
