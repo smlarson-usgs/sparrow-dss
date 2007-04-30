@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<sparrow-meta-response>
+	<request>
+		<source-list model-id="1"/>
+	</request>
+	<reponse>
+		<sources>
+			<source model-id="1" uuid="2342542">
+				<name>pttn</name>
+				<description>Point Source TN load (kg/yr)</description>
+			</source>
+			<source model-id="2" uuid="2342542">
+				<name>area</name>
+				<description>REACH AREA (hectares)</description>
+			</source>
+			<source model-id="3" uuid="2342542">
+				<name>frtn</name>
+				<description>NAWQA Fertilizer TN Load (Kg/yr)</description>
+			</source>
+			<source model-id="4" uuid="2342542">
+				<name>atmd</name>
+				<description>Ver. II - NADP Atm. Dep. N Load (Kg/yr)</description>
+			</source>         
+			<source model-id="5" uuid="2342542">
+				<name>mann</name>
+				<description>USDA Man. TN Ld - as exc.to ag (Kg/yr)</description>
+			</source>
+			<source model-id="6" uuid="2342542">
+				<name>urbn</name>
+				<description>Urban Area (ha)</description>
+			</source>
+			<source model-id="7" uuid="2342542">
+				<name>septic</name>
+				<description>Septic Tank Load (kg/yr)</description>
+			</source>
+			<source model-id="8" uuid="2342542">
+				<name>crop</name>
+				<description>Cropland Area (ha)</description>
+			</source>   
+			<source model-id="9" uuid="2342542">
+				<name>past</name>
+				<description>Pasture/Hay Land (ha)</description>
+			</source>
+			<source model-id="10" uuid="2342542">
+				<name>tagr</name>
+				<description>Agricultural Land (kg/yr)</description>
+			</source>   
+			<source model-id="11" uuid="2342542">
+				<name>frst</name>
+				<description>Forest Area (ha)</description>
+			</source>
+		</sources>
+	</reponse>
+</sparrow-meta-response>
