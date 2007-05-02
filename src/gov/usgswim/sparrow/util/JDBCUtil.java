@@ -83,18 +83,18 @@ public class JDBCUtil {
     PreparedStatement pstmtMR = conn.prepareStatement(insertMR);
 
   
-    String insertMRTopo = "INSERT INTO MODEL_REACH_TOPO VALUES (?,?,?)";
+    String insertMRTopo = "INSERT INTO MODEL_REACH_TOPO (MODEL_REACH_ID, FNODE, TNODE, IFTRAN) VALUES (?,?,?,?)";
     PreparedStatement pstmtMRTopo = conn.prepareStatement(insertMRTopo);
   
   
-    String queryMRID = "SELECT model_reach_id FROM MODEL_REACH WHERE identifier = ?";
+    String queryMRID = "SELECT model_reach_id FROM MODEL_REACH WHERE identifier = ? AND SPARROW_MODEL_ID = 21";
     PreparedStatement pstmtMRID = conn.prepareStatement(queryMRID);
 	  pstmtMRID.setFetchSize(1);
 	  ResultSet rset = null;
   
   
     for (int i = 0; i < ancil.getRowCount(); i++) {
-
+      try {
       //MODEL REACH INSERT
       pstmtMR.setInt(1, ancil.getInt(i,9));  //identifier
       pstmtMR.setString(2, Integer.toString(ancil.getInt(i,9)));  //full_identifier
@@ -109,9 +109,8 @@ public class JDBCUtil {
       //find model_reach_id using identifier in where clause
       int mrid = -1;
       pstmtMRID.setInt(1,ancil.getInt(i,9));
-      rset = pstmtMRID.executeQuery();
       try {      
-        rset = st.executeQuery(query);
+        rset = pstmtMRID.executeQuery();
         if (rset.next()) {
           mrid = rset.getInt(1);
         }
@@ -123,11 +122,17 @@ public class JDBCUtil {
       }            
       
       //insert into model_reach_topo table in db
-      pstmtMRTopo.setInt(1, mrid);
-      pstmtMRTopo.setInt(2, topo.getInt(i,0));
-      pstmtMRTopo.setInt(3, topo.getInt(i,1));
-      
+      pstmtMRTopo.setInt(1, mrid);              //model reach id
+      pstmtMRTopo.setInt(2, topo.getInt(i,0));  //fnode
+      pstmtMRTopo.setInt(3, topo.getInt(i,1));   //tnode
+      pstmtMRTopo.setInt(4, topo.getInt(i,2));   //iftran
+
       pstmtMRTopo.executeUpdate();
+      
+      } catch (Exception e) {
+        //e.printStackTrace();
+        System.out.println(e.getMessage());
+      }
               
     }
     
