@@ -72,72 +72,180 @@ public class JDBCUtil {
 	public static int writePredictDataSet(PredictionDataSet data, Connection conn)
 			throws SQLException {
 		
+    int MODEL_ID = 21;
+    
     //write ancillary table to db
     Data2D ancil = data.getAncil();
+    
+    //get the topo.txt file
     Data2D topo = data.getTopo();
     
+    //get the src.txt file
+    Data2D src = data.getSrc();
     
-	  //Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-    String insertMR = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, SPARROW_MODEL_ID)" +
-                   " VALUES (?,?,?,?,21)";                 
-    PreparedStatement pstmtMR = conn.prepareStatement(insertMR);
+    //get coef
+    Data2D coef = data.getCoef();
+    
+    
+    
+    /***************************************************
+     * 
+     *            INSERT INTO SOURCE TABLE
+     * 
+     *****************************************************/
+    String[] headers = src.getHeadings();
+    
+    String insertSourceHeader = "INSERT INTO SOURCE (NAME, DESCRIPTION, SORT_ORDER, SPARROW_MODEL_ID) " +
+                                "VALUES (?,?,?," + MODEL_ID + ")";
+    
+    
+	  PreparedStatement pstmtInsertSourceHeader = conn.prepareStatement(insertSourceHeader);
+    for (int i = 0; i < headers.length; i++) {
+      pstmtInsertSourceHeader.setString(1,headers[i]);
+      pstmtInsertSourceHeader.setString(2,headers[i]);
+      pstmtInsertSourceHeader.setInt(3,(i+1));
+      
+      //run insert into source table
+      pstmtInsertSourceHeader.executeUpdate();
+      
+    }
+    
+    
+    
+    
+
+    String insertModelReach = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, SPARROW_MODEL_ID)" +
+                   " VALUES (?,?,?,?," + MODEL_ID + ")";                 
+    PreparedStatement pstmtInsertModelReach = conn.prepareStatement(insertModelReach);
 
   
-    String insertMRTopo = "INSERT INTO MODEL_REACH_TOPO (MODEL_REACH_ID, FNODE, TNODE, IFTRAN) VALUES (?,?,?,?)";
-    PreparedStatement pstmtMRTopo = conn.prepareStatement(insertMRTopo);
+    String insertModelReachTopo = "INSERT INTO MODEL_REACH_TOPO (MODEL_REACH_ID, FNODE, TNODE, IFTRAN) VALUES (?,?,?,?)";
+    PreparedStatement pstmtInsertModelReachTopo = conn.prepareStatement(insertModelReachTopo);
   
   
-    String queryMRID = "SELECT model_reach_id FROM MODEL_REACH WHERE identifier = ? AND SPARROW_MODEL_ID = 21";
+    String insertReachCoef = "INSERT INTO REACH_COEF (ITERATION, INC_DELIVERY, TOTAL_DELIVERY, BOOT_ERROR, MODEL_REACH_ID) " +
+                             "VALUES (?,?,?,?,?)";
+    PreparedStatement pstmtInsertReachCoef = conn.prepareStatement(insertReachCoef);
+  
+  
+  
+  
+	  ResultSet rset = null;
+  
+    String queryMRID = "SELECT model_reach_id FROM MODEL_REACH WHERE identifier = ? AND SPARROW_MODEL_ID = " + MODEL_ID;
     PreparedStatement pstmtMRID = conn.prepareStatement(queryMRID);
 	  pstmtMRID.setFetchSize(1);
-	  ResultSet rset = null;
+  
+  
+    String querySourceID = "SELECT source_id FROM source WHERE sort_order = ? and sparrow_model_id = " + MODEL_ID;
+    PreparedStatement pstmtSourceID = conn.prepareStatement(querySourceID);
+    pstmtSourceID.setFetchSize(1);
+    
+    String insertSourceReachCoef = "INSERT INTO source_reach_coef (ITERATION, VALUE, SOURCE_ID, MODEL_REACH_ID) VALUES " +
+                                  "(?,?,?,?)";
+	  PreparedStatement pstmtInsertSourceReachCoef = conn.prepareStatement(insertSourceReachCoef);
+
   
   
     for (int i = 0; i < ancil.getRowCount(); i++) {
       try {
-      //MODEL REACH INSERT
-      pstmtMR.setInt(1, ancil.getInt(i,9));  //identifier
-      pstmtMR.setString(2, Integer.toString(ancil.getInt(i,9)));  //full_identifier
-      pstmtMR.setInt(3, ancil.getInt(i,1));  //hydseq
-      pstmtMR.setInt(4, topo.getInt(i,2));   //iftran
-      
-      //insert into MODEL_REACH table in DB
-      pstmtMR.executeUpdate();
-      
-            
-      
-      //find model_reach_id using identifier in where clause
-      int mrid = -1;
-      pstmtMRID.setInt(1,ancil.getInt(i,9));
-      try {      
-        rset = pstmtMRID.executeQuery();
-        if (rset.next()) {
-          mrid = rset.getInt(1);
-        }
-      } finally {
-        if (rset != null) {
-          rset.close();
-          rset = null;
-        }
-      }            
-      
-      //insert into model_reach_topo table in db
-      pstmtMRTopo.setInt(1, mrid);              //model reach id
-      pstmtMRTopo.setInt(2, topo.getInt(i,0));  //fnode
-      pstmtMRTopo.setInt(3, topo.getInt(i,1));   //tnode
-      pstmtMRTopo.setInt(4, topo.getInt(i,2));   //iftran
+        //MODEL REACH INSERT
+        pstmtInsertModelReach.setInt(1, ancil.getInt(i,9));  //identifier
+        pstmtInsertModelReach.setString(2, Integer.toString(ancil.getInt(i,9)));  //full_identifier
+        pstmtInsertModelReach.setInt(3, ancil.getInt(i,1));  //hydseq
+        pstmtInsertModelReach.setInt(4, topo.getInt(i,2));   //iftran
+        
+        //insert into MODEL_REACH table in DB
+        pstmtInsertModelReach.executeUpdate();
+        
+              
+        
+        //find model_reach_id using identifier in where clause
+        int mrid = -1;
+        pstmtMRID.setInt(1,ancil.getInt(i,9));
+        try {      
+          rset = pstmtMRID.executeQuery();
+          if (rset.next()) {
+            mrid = rset.getInt(1);
+          }
+        } finally {
+          if (rset != null) {
+            rset.close();
+            rset = null;
+          }
+        }            
+        
+        //insert into model_reach_topo table in db
+        pstmtInsertModelReachTopo.setInt(1, mrid);              //model reach id
+        pstmtInsertModelReachTopo.setInt(2, topo.getInt(i,0));  //fnode
+        pstmtInsertModelReachTopo.setInt(3, topo.getInt(i,1));   //tnode
+        pstmtInsertModelReachTopo.setInt(4, topo.getInt(i,2));   //iftran
+  
+        pstmtInsertModelReachTopo.executeUpdate();
+        
+        
+        
+        
+        
+        //here's a hard one- populate REACH_COEF
+        //pull out all iterations for this model reach and insert into db
+        for (int j = i; j < coef.getRowCount(); j+=ancil.getRowCount()) {
+                    
+          pstmtInsertReachCoef.setInt(1,coef.getInt(j,0));  //ITER
+          pstmtInsertReachCoef.setDouble(2,coef.getDouble(j,1));  //INC_DELIVF
+          pstmtInsertReachCoef.setDouble(3,coef.getDouble(j,2));  //TOT_DELIVF
+          pstmtInsertReachCoef.setDouble(4,coef.getDouble(j,3));  //BOOT_ERROR
+          pstmtInsertReachCoef.setInt(5, mrid);  //MODEL_REACH_ID
+         
+          pstmtInsertReachCoef.executeUpdate();
 
-      pstmtMRTopo.executeUpdate();
+          //SOURCE_REACH_COEF
+          //start at column 5 and loop
+          
+          //j = ITER
+          //mrid = MODEL_REACH_ID 
+          //loop to get values (sources) from the fourth column on
+          for (int k = 4; k < coef.getColCount(); k++) {
+            pstmtSourceID.setInt(1,(k-3));
+            
+            int sourceID = -1;
+            try {      
+              rset = pstmtSourceID.executeQuery();
+              if (rset.next()) {
+                sourceID = rset.getInt(1);
+              }
+            } finally {
+              if (rset != null) {
+                rset.close();
+                rset = null;
+              }
+            }            
+        
+        
+            //now i have source_id, model_reach_id, iter
+            //JUST NEED VALUE!
+            // value = coef.getDouble(j,(k + 3))
+            pstmtInsertSourceReachCoef.setInt(1,coef.getInt(j,0));  //iteration
+            pstmtInsertSourceReachCoef.setDouble(2, coef.getDouble(j,k));  //value
+            pstmtInsertSourceReachCoef.setInt(3,sourceID);
+            pstmtInsertSourceReachCoef.setInt(4, mrid);
+            
+            pstmtInsertSourceReachCoef.executeUpdate();
+
+          }
+        }
+        
+  
       
       } catch (Exception e) {
-        //e.printStackTrace();
+        e.printStackTrace();
         System.out.println(e.getMessage());
       }
               
     }
     
-    pstmtMR.close();
-	  pstmtMRTopo.close();
+    pstmtInsertModelReach.close();
+	  pstmtInsertModelReachTopo.close();
 	  pstmtMRID.close();
     
 		return 0;
