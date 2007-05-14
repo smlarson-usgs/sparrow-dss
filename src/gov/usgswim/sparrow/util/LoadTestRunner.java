@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.util;
 
+import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.PredictionDataSet;
 
 import gov.usgswim.sparrow.domain.ModelImp;
@@ -12,6 +13,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 import java.sql.SQLException;
+
+import java.util.HashSet;
 
 import oracle.jdbc.OracleDriver;
 
@@ -47,19 +50,45 @@ public class LoadTestRunner {
 		pd.setTopo( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "topo.txt"), true) );
 		
 		ModelImp model = new ModelImp(21);
-		model.setEnhNetworkId(1);
+		model.setEnhNetworkId(2);
 		
 		pd.setModel( model );
 		
 		Connection conn = getConnection();
 		
 		try {
+			conn.setAutoCommit(false);
 			JDBCUtil.writePredictDataSet(pd, conn);
 		} finally {
+			try {
+				conn.rollback();
+			} catch (Exception ee) {
+				//ignore
+			}
 			conn.close();
 		}
 
 	}
+	
+	/*
+	protected PredictionDataSet removeDuplicates(PredictionDataSet pdSrc) {
+		HashSet dups = new HashSet();
+		Data2D topo = pdSrc.getTopo();
+		
+		for (int i = 1; i <topo.getRowCount(); i++)  {
+			if (topo.getDouble(i, 3) == topo.getDouble(i - 1, 3)) {
+				dups.add(i);
+			}
+		}
+		
+		////// copy over skippping dups //////
+		
+		
+		
+		
+		
+	}
+	*/
 	
 	protected Connection getConnection() throws SQLException {
 		String username = "SPARROW_DSS";
