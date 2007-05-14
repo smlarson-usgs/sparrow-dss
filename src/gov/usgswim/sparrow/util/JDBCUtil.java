@@ -72,7 +72,7 @@ public class JDBCUtil {
 	public static int writePredictDataSet(PredictionDataSet data, Connection conn)
 			throws SQLException {
 		
-    int MODEL_ID = 21;
+    long MODEL_ID = data.getModel().getId();
     
     //write ancillary table to db
     Data2D ancil = data.getAncil();
