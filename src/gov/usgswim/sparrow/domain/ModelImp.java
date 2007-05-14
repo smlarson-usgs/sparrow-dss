@@ -2,6 +2,9 @@ package gov.usgswim.sparrow.domain;
 
 import java.util.Date;
 
+/**
+ * Implementation of Model, which is a Domain Object representing a SPARROW Model.
+ */
 public class ModelImp implements Model {
 	protected long _id;
 	protected boolean _approved;
