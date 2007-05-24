@@ -7,7 +7,7 @@
    </ID>
    <columns>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="2">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="3">
             <ID>7e7244f1-0110-1000-8005-c0a8016e0973</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -23,7 +23,7 @@
                   <Value class="java.lang.Long">0</Value>
                </Item>
             </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="3">
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="4">
                <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
                <schemaName/>
                <typeName>NUMBER</typeName>
@@ -35,7 +35,7 @@
          <properties/>
       </Item>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="6">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="7">
             <ID>9d342af3-0110-1000-8003-820ba1e9a3a4</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -44,7 +44,7 @@
             <attributeValues class="java.util.HashMap">
                <Item>
                   <Key>size</Key>
-                  <Value class="java.lang.Long" id="7">1</Value>
+                  <Value class="java.lang.Long" id="8">1</Value>
                </Item>
             </attributeValues>
             <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="1">
@@ -59,7 +59,7 @@
          <properties/>
       </Item>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="8">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="9">
             <ID>000545c0-0111-1000-8058-c0a802018b15</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -68,10 +68,10 @@
             <attributeValues class="java.util.HashMap">
                <Item>
                   <Key>size</Key>
-                  <Value class="java.lang.Long" id="9">1</Value>
+                  <Value class="java.lang.Long" id="10">1</Value>
                </Item>
             </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="10">
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="11">
                <providerClass>oracle.javatools.db.ora.Oracle9i</providerClass>
                <schemaName/>
                <typeName>CHAR</typeName>
@@ -83,7 +83,7 @@
          <properties/>
       </Item>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="11">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="12">
             <ID>9d342af3-0110-1000-8004-820ba1e9a3a4</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -92,7 +92,7 @@
             <attributeValues class="java.util.HashMap">
                <Item>
                   <Key>size</Key>
-                  <Value class="java.lang.Long" id="12">1</Value>
+                  <Value class="java.lang.Long" id="13">1</Value>
                </Item>
             </attributeValues>
             <dataTypeID idref="1"/>
@@ -103,7 +103,7 @@
          <properties/>
       </Item>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="13">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="14">
             <ID>7e7244f2-0110-1000-8006-c0a8016e0973</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -112,10 +112,10 @@
             <attributeValues class="java.util.HashMap">
                <Item>
                   <Key>size</Key>
-                  <Value class="java.lang.Long" id="14">40</Value>
+                  <Value class="java.lang.Long" id="15">40</Value>
                </Item>
             </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="15">
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="16">
                <providerClass>oracle.javatools.db.ora.Oracle9i</providerClass>
                <schemaName/>
                <typeName>VARCHAR2</typeName>
@@ -189,7 +189,7 @@
          <properties/>
       </Item>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="16">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="17">
             <ID>7e9aad38-0110-1000-8006-c0a8016ee0d1</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -201,7 +201,7 @@
                   <Value>9</Value>
                </Item>
             </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="17">
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="18">
                <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
                <schemaName/>
                <typeName>NUMBER</typeName>
@@ -213,7 +213,7 @@
          <properties/>
       </Item>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="4">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="5">
             <ID>efebdd9a-0110-1000-8002-c0a80168593e</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -225,7 +225,7 @@
                   <Value>9</Value>
                </Item>
             </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="5">
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="6">
                <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
                <schemaName/>
                <typeName>NUMBER</typeName>
@@ -234,6 +234,106 @@
          <default/>
          <name>ENH_NETWORK_ID</name>
          <notNull>true</notNull>
+         <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>bff0a3ef-0112-1000-8001-c0a80166548f</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value class="java.lang.Long">6</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="2">
+               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
+               <schemaName/>
+               <typeName>NUMBER</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>BOUND_NORTH</name>
+         <notNull>false</notNull>
+         <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>bff0a3ef-0112-1000-8002-c0a80166548f</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value class="java.lang.Long">6</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>BOUND_EAST</name>
+         <notNull>false</notNull>
+         <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>bff0a3ef-0112-1000-8003-c0a80166548f</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value class="java.lang.Long">6</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>BOUND_SOUTH</name>
+         <notNull>false</notNull>
+         <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>bff0a3ef-0112-1000-8004-c0a80166548f</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value class="java.lang.Long">6</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>BOUND_WEST</name>
+         <notNull>false</notNull>
          <properties/>
       </Item>
    </columns>
@@ -246,7 +346,7 @@
          </ID>
          <columns>
             <Item>
-               <ID idref="2"/>
+               <ID idref="3"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
@@ -258,7 +358,7 @@
                         <Value class="java.lang.Long">0</Value>
                      </Item>
                   </attributeValues>
-                  <dataTypeID idref="3"/>
+                  <dataTypeID idref="4"/>
                </dataTypeUsage>
                <default/>
                <name>SPARROW_MODEL_ID</name>
@@ -278,7 +378,7 @@
          </ID>
          <columns>
             <Item>
-               <ID idref="4"/>
+               <ID idref="5"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
@@ -286,7 +386,7 @@
                         <Value>9</Value>
                      </Item>
                   </attributeValues>
-                  <dataTypeID idref="5"/>
+                  <dataTypeID idref="6"/>
                </dataTypeUsage>
                <default/>
                <name>ENH_NETWORK_ID</name>
@@ -294,12 +394,12 @@
                <properties/>
             </Item>
             <Item>
-               <ID idref="6"/>
+               <ID idref="7"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
                         <Key>size</Key>
-                        <Value idref="7"/>
+                        <Value idref="8"/>
                      </Item>
                   </attributeValues>
                   <dataTypeID idref="1"/>
@@ -310,15 +410,15 @@
                <properties/>
             </Item>
             <Item>
-               <ID idref="8"/>
+               <ID idref="9"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
                         <Key>size</Key>
-                        <Value idref="9"/>
+                        <Value idref="10"/>
                      </Item>
                   </attributeValues>
-                  <dataTypeID idref="10"/>
+                  <dataTypeID idref="11"/>
                </dataTypeUsage>
                <default class="java.lang.String">'F'</default>
                <name>IS_PUBLIC</name>
@@ -326,12 +426,12 @@
                <properties/>
             </Item>
             <Item>
-               <ID idref="11"/>
+               <ID idref="12"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
                         <Key>size</Key>
-                        <Value idref="12"/>
+                        <Value idref="13"/>
                      </Item>
                   </attributeValues>
                   <dataTypeID idref="1"/>
@@ -342,15 +442,15 @@
                <properties/>
             </Item>
             <Item>
-               <ID idref="13"/>
+               <ID idref="14"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
                         <Key>size</Key>
-                        <Value idref="14"/>
+                        <Value idref="15"/>
                      </Item>
                   </attributeValues>
-                  <dataTypeID idref="15"/>
+                  <dataTypeID idref="16"/>
                </dataTypeUsage>
                <default/>
                <name>NAME</name>
@@ -370,7 +470,7 @@
          </ID>
          <columns>
             <Item>
-               <ID idref="16"/>
+               <ID idref="17"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
@@ -378,7 +478,7 @@
                         <Value>9</Value>
                      </Item>
                   </attributeValues>
-                  <dataTypeID idref="17"/>
+                  <dataTypeID idref="18"/>
                </dataTypeUsage>
                <default/>
                <name>CONTACT_ID</name>
@@ -408,7 +508,7 @@
          </ID>
          <columns>
             <Item>
-               <ID idref="4"/>
+               <ID idref="5"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
@@ -416,7 +516,7 @@
                         <Value>9</Value>
                      </Item>
                   </attributeValues>
-                  <dataTypeID idref="5"/>
+                  <dataTypeID idref="6"/>
                </dataTypeUsage>
                <default/>
                <name>ENH_NETWORK_ID</name>

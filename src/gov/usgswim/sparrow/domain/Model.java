@@ -6,7 +6,7 @@ import java.util.Date;
  * Domain Object representing a SPARROW Model.
  */
 public interface Model {
-	public long getId();
+	public Long getId();
 
 	public boolean isApproved();
 
@@ -22,7 +22,15 @@ public interface Model {
 
 	public Date getDateAdded();
 
-	public long getContactId();
+	public Long getContactId();
 
-	public long getEnhNetworkId();
+	public Long getEnhNetworkId();
+	
+	public Double getNorthBound();
+
+	public Double getEastBound();
+
+	public Double getSouthBound();
+
+	public Double getWestBound();
 }

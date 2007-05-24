@@ -3,6 +3,8 @@ package gov.usgswim.sparrow.util;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.PredictionDataSet;
 
+import gov.usgswim.sparrow.domain.Model;
+import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.domain.ModelImp;
 
 import java.io.FileNotFoundException;
@@ -29,8 +31,6 @@ public class LoadTestRunner {
 		
 		loadTestRunner.run(args);
 		
-		
-
 	}
 	
 	public void run(String[] args) throws Exception {
@@ -49,8 +49,9 @@ public class LoadTestRunner {
 		pd.setSrc( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "src.txt"), true) );
 		pd.setTopo( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "topo.txt"), true) );
 		
-		ModelImp model = new ModelImp(21);
-		model.setEnhNetworkId(2);
+		ModelBuilder mb = new ModelBuilder(21L);
+		mb.setEnhNetworkId(2L);
+		Model model = mb.getImmutable();
 		
 		pd.setModel( model );
 		
@@ -58,10 +59,14 @@ public class LoadTestRunner {
 		
 		try {
 			conn.setAutoCommit(false);
-			JDBCUtil.writePredictDataSet(pd, conn);
+			int count = JDBCUtil.writePredictDataSet(pd, conn);
+                        System.out.println("Added " + count + " records to the db.");
+                        conn.rollback();
+                } catch (Exception e) {
+                    conn.rollback();
 		} finally {
 			try {
-				conn.rollback();
+				
 			} catch (Exception ee) {
 				//ignore
 			}
@@ -70,25 +75,28 @@ public class LoadTestRunner {
 
 	}
 	
-	/*
-	protected PredictionDataSet removeDuplicates(PredictionDataSet pdSrc) {
-		HashSet dups = new HashSet();
-		Data2D topo = pdSrc.getTopo();
+	public PredictionDataSet loadModelFromText(String rootDir, long modelId, long enhNetworkId)
+				throws FileNotFoundException, IOException {
+
+		if (! rootDir.endsWith("/")) rootDir = rootDir + "/";
 		
-		for (int i = 1; i <topo.getRowCount(); i++)  {
-			if (topo.getDouble(i, 3) == topo.getDouble(i - 1, 3)) {
-				dups.add(i);
-			}
-		}
+		PredictionDataSet pd = new PredictionDataSet();
 		
-		////// copy over skippping dups //////
-		
+		pd.setAncil( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "ancil.txt"), true) );
+		pd.setCoef( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "coef.txt"), true) );
+		pd.setSrc( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "src.txt"), true) );
+		pd.setTopo( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "topo.txt"), true) );
 		
 		
+		ModelBuilder mb = new ModelBuilder(modelId);
+		mb.setEnhNetworkId(enhNetworkId);
+		Model model = mb.getImmutable();
 		
+		pd.setModel( model );
 		
+		return pd;
 	}
-	*/
+	
 	
 	protected Connection getConnection() throws SQLException {
 		String username = "SPARROW_DSS";

@@ -6,10 +6,22 @@
 	<reponse>
 		<models>
 			<model id="1">
+				<bbox>
+					<west>-80.922115</west>
+					<south>36.519230</south>
+					<east>-74.172115</east>
+					<north>41.019230</north>
+				</bbox>
 				<name>Chesapeake Bay</name>
 				<description>Chesapeake bay Test Model</description>
 			</model>
 			<model id="21">
+				<bbox>
+					<west>-80.922115</west>
+					<south>36.519230</south>
+					<east>-74.172115</east>
+					<north>41.019230</north>
+				</bbox>
 				<name>Chesapeake Bay</name>
 				<description>v2 of the Chesapeake Bay Test Model</description>
 			</model>
