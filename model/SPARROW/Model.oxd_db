@@ -219,7 +219,7 @@
                            <dimension
                               name="elementSize"
                               width="210.0"
-                              height="131.55078"/>
+                              height="221.04492"/>
                         </infoMap>
                      </infoMap>
                      <point
@@ -293,13 +293,13 @@
                            <dimension
                               name="elementSize"
                               width="210.0"
-                              height="92.68555"/>
+                              height="102.93858"/>
                         </infoMap>
                      </infoMap>
                      <point
                         name="elementPosition"
                         x="0.0"
-                        y="150.50586"/>
+                        y="240.0"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -330,7 +330,7 @@
                            <dimension
                               name="elementSize"
                               width="210.0"
-                              height="255.0"/>
+                              height="360.0"/>
                         </infoMap>
                      </infoMap>
                      <point
@@ -367,7 +367,7 @@
                            <dimension
                               name="elementSize"
                               width="210.0"
-                              height="255.0"/>
+                              height="360.0"/>
                         </infoMap>
                      </infoMap>
                      <point
@@ -470,18 +470,18 @@
                      <dimension
                         name="elementSize"
                         width="210.0"
-                        height="255.0"/>
+                        height="360.0"/>
                      <infoMap
                         name="layoutConstraints">
                         <float
                            name="attributesOfClass"
-                           value="0.5573125"/>
+                           value="0.6481402"/>
                         <float
                            name="nameOfShape"
                            value="-2.0"/>
                         <float
                            name="otherInfoOfClass"
-                           value="0.39266062"/>
+                           value="0.3018329"/>
                      </infoMap>
                      <infoList
                         name="shapesUsed"/>
@@ -1768,7 +1768,7 @@
                      <point
                         name="elementPosition"
                         x="0.0"
-                        y="-225.0"/>
+                        y="-120.0"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -1805,7 +1805,7 @@
                      <point
                         name="elementPosition"
                         x="-42.503204"
-                        y="-112.5"/>
+                        y="-60.0"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -1879,7 +1879,7 @@
                      <point
                         name="elementPosition"
                         x="-118.503174"
-                        y="-133.63281"/>
+                        y="-81.13281"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -1950,7 +1950,7 @@
                   <point
                      name=""
                      x="192.0"
-                     y="393.625"/>
+                     y="498.625"/>
                </array>
                <point
                   name="elementPosition"
