@@ -2627,7 +2627,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                            <dimension
                               name="elementSize"
                               width="210.0"
-                              height="79.73047"/>
+                              height="112.48633"/>
                         </infoMap>
                      </infoMap>
                      <point
@@ -2701,13 +2701,13 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                            <dimension
                               name="elementSize"
                               width="210.0"
-                              height="53.820312"/>
+                              height="75.93144"/>
                         </infoMap>
                      </infoMap>
                      <point
                         name="elementPosition"
                         x="0.0"
-                        y="98.68555"/>
+                        y="131.4414"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -2738,7 +2738,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                            <dimension
                               name="elementSize"
                               width="210.0"
-                              height="165.0"/>
+                              height="225.0"/>
                         </infoMap>
                      </infoMap>
                      <point
@@ -2775,7 +2775,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                            <dimension
                               name="elementSize"
                               width="210.0"
-                              height="165.0"/>
+                              height="225.0"/>
                         </infoMap>
                      </infoMap>
                      <point
@@ -2878,7 +2878,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                      <dimension
                         name="elementSize"
                         width="210.0"
-                        height="165.0"/>
+                        height="225.0"/>
                      <infoMap
                         name="layoutConstraints">
                         <float
@@ -2898,7 +2898,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                <point
                   name="elementPosition"
                   x="457.5"
-                  y="560.0"/>
+                  y="515.0"/>
                <graphicalProperties
                   name="graphicalProperties">
                   <color
@@ -2968,7 +2968,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                      <point
                         name="elementPosition"
                         x="0.0"
-                        y="11.693756"/>
+                        y="-3.306244"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -3005,7 +3005,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                      <point
                         name="elementPosition"
                         x="-60.88202"
-                        y="15.0"/>
+                        y="7.5"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -3079,7 +3079,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                      <point
                         name="elementPosition"
                         x="-96.88202"
-                        y="-6.1328125"/>
+                        y="-13.6328125"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -3146,7 +3146,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                   <point
                      name=""
                      x="472.5"
-                     y="725.0"/>
+                     y="740.0"/>
                   <point
                      name=""
                      x="472.5"
@@ -3239,7 +3239,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                      <point
                         name="elementPosition"
                         x="0.0"
-                        y="11.693756"/>
+                        y="-3.306244"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -3276,7 +3276,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                      <point
                         name="elementPosition"
                         x="-30.182255"
-                        y="15.0"/>
+                        y="7.5"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -3350,7 +3350,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                      <point
                         name="elementPosition"
                         x="-65.18225"
-                        y="-6.1328125"/>
+                        y="-13.6328125"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -3417,7 +3417,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                   <point
                      name=""
                      x="562.5"
-                     y="725.0"/>
+                     y="740.0"/>
                   <point
                      name=""
                      x="562.5"
@@ -3510,7 +3510,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                      <point
                         name="elementPosition"
                         x="0.0"
-                        y="56.69378"/>
+                        y="11.693779"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -3547,7 +3547,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                      <point
                         name="elementPosition"
                         x="-30.406685"
-                        y="37.500015"/>
+                        y="15.000015"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -3621,7 +3621,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                      <point
                         name="elementPosition"
                         x="-104.906685"
-                        y="16.367203"/>
+                        y="-6.1327972"/>
                      <string
                         name="shapeState">symbolic</string>
                      <boolean
@@ -3692,7 +3692,7 @@ Delete Reaches from EN Network:  Simply do not include the reach in the MODEL_RE
                   <point
                      name=""
                      x="535.6563"
-                     y="560.0"/>
+                     y="515.0"/>
                </array>
                <point
                   name="elementPosition"
