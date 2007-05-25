@@ -236,8 +236,8 @@ public class JDBCUtil {
             
             pstmtInsertSourceReachCoef.executeUpdate();
 
-          }
-        }
+          } //k
+        } //j
         
         
         
@@ -247,8 +247,8 @@ public class JDBCUtil {
         //value = get from src Data2D
         //source_id = pstmtSourceID.setInt(1,(CURRENT_COLUMN));
         //model_reach_id = mrid
-        for (int k = 0; k < src.getColCount(); k++) {
-          pstmtSourceID.setInt(1,(k+1));
+        for (int j = 0; j < src.getColCount(); j++) {
+          pstmtSourceID.setInt(1,(j+1));
           
           int sourceID = -1;
           try {      
@@ -266,10 +266,10 @@ public class JDBCUtil {
           
           //*******NOTE!!!!!******************          
           //I'M ASSUMING SRC.TXT AND ANCIL.TXT HAVE SAME AMOUNT OF ROWS (THEY SHOULD)
-          pstmtInsertSourceValue.setDouble(1, src.getDouble(j,k));  //value
+          pstmtInsertSourceValue.setDouble(1, src.getDouble(i,j));  //value
           
           pstmtInsertSourceValue.setInt(2, sourceID);  //source_id
-          pstmtInsertSourceValue.setInt(3, mrID);  //model_reach_id
+          pstmtInsertSourceValue.setInt(3, mrid);  //model_reach_id
           
           pstmtInsertSourceValue.executeUpdate();
           
