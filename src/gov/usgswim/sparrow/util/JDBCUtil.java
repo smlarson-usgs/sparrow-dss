@@ -110,7 +110,7 @@ public class JDBCUtil {
       
     }
     
-    
+	  pstmtInsertSourceHeader.close();
     
     
 
@@ -145,6 +145,10 @@ public class JDBCUtil {
                                   "(?,?,?,?)";
 	  PreparedStatement pstmtInsertSourceReachCoef = conn.prepareStatement(insertSourceReachCoef);
 
+
+    String insertSourceValue = "INSERT INTO source_value (VALUE, SOURCE_ID, MODEL_REACH_ID) VALUES " +
+                               "(?,?,?)";
+	  PreparedStatement pstmtInsertSourceValue = conn.prepareStatement(insertSourceValue);                           
   
   
     for (int i = 0; i < ancil.getRowCount(); i++) {
@@ -235,6 +239,42 @@ public class JDBCUtil {
           }
         }
         
+        
+        
+        
+        
+        //insert into SOURCE_VALUE -- LOOP THROUGH EACH COLUMN
+        //value = get from src Data2D
+        //source_id = pstmtSourceID.setInt(1,(CURRENT_COLUMN));
+        //model_reach_id = mrid
+        for (int k = 0; k < src.getColCount(); k++) {
+          pstmtSourceID.setInt(1,(k+1));
+          
+          int sourceID = -1;
+          try {      
+            rset = pstmtSourceID.executeQuery();
+            if (rset.next()) {
+              sourceID = rset.getInt(1);
+            }
+          } finally {
+            if (rset != null) {
+              rset.close();
+              rset = null;
+            }
+          } 
+          
+          
+          //*******NOTE!!!!!******************          
+          //I'M ASSUMING SRC.TXT AND ANCIL.TXT HAVE SAME AMOUNT OF ROWS (THEY SHOULD)
+          pstmtInsertSourceValue.setDouble(1, src.getDouble(j,k));  //value
+          
+          pstmtInsertSourceValue.setInt(2, sourceID);  //source_id
+          pstmtInsertSourceValue.setInt(3, mrID);  //model_reach_id
+          
+          pstmtInsertSourceValue.executeUpdate();
+          
+        }
+        
   
       
       } catch (Exception e) {
@@ -246,7 +286,10 @@ public class JDBCUtil {
     
     pstmtInsertModelReach.close();
 	  pstmtInsertModelReachTopo.close();
+    pstmtInsertReachCoef.close();
+	  pstmtInsertSourceReachCoef.close();
 	  pstmtMRID.close();
+	  pstmtInsertSourceValue.close();    
     
 		return 0;
 	}
