@@ -332,7 +332,7 @@ public class JDBCUtil {
 	 */
 	public static Int2D loadTopo(Connection conn, int modelId) throws SQLException {
 		String query =
-			"SELECT FNODE, TNODE, IFTRAN FROM ALL_TOPO_VW WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY HYDSEQ";
+			"SELECT FNODE, TNODE, IFTRAN, HYDSEQ FROM ALL_TOPO_VW WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY HYDSEQ";
 	
 		return readAsInteger(conn, query, 1000);
 		
