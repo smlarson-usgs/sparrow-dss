@@ -1,10 +1,16 @@
 package gov.usgswim.sparrow.domain;
 
+import gov.usgswim.GuardedBy;
+import gov.usgswim.Immutable;
+
 import java.util.Date;
 
 /**
  * Implementation of Model, which is a Domain Object representing a SPARROW Model.
  */
+
+
+@Immutable
 public class ModelImp implements Model {
 	private final Long _id;
 	private final boolean _approved;
@@ -20,12 +26,11 @@ public class ModelImp implements Model {
 	private final Double _eastBound;
 	private final Double _southBound;
 	private final Double _westBound;
-	
-	
+
 	
 	public ModelImp(Long id, boolean approved, boolean isPublic, boolean archived,
 				String name, String description, String url, Date dateAdded,
-				long contactId, long enhNetworkId,
+				Long contactId, Long enhNetworkId,
 				Double northBound, Double eastBound, Double southBound, Double westBound) {
 			
 		_id = id;
@@ -68,7 +73,7 @@ public class ModelImp implements Model {
 	public String getDescription() {
 		return _description;
 	}
-
+	
 	public String getUrl() {
 		return _url;
 	}
