@@ -61,9 +61,11 @@ public class LoadTestRunner {
 			conn.setAutoCommit(false);
 			int count = JDBCUtil.writePredictDataSet(pd, conn);
                         System.out.println("Added " + count + " records to the db.");
-                        conn.rollback();
+                        conn.commit();
                 } catch (Exception e) {
-                    conn.rollback();
+                    System.out.println("Exception during load:");
+                    e.printStackTrace(System.err);
+		    conn.rollback();
 		} finally {
 			try {
 				
