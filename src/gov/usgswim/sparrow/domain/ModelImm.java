@@ -6,12 +6,10 @@ import gov.usgswim.Immutable;
 import java.util.Date;
 
 /**
- * Implementation of Model, which is a Domain Object representing a SPARROW Model.
+ * Immutable implementation of Model, which is a Domain Object representing a SPARROW Model.
  */
-
-
 @Immutable
-public class ModelImp implements Model {
+public class ModelImm implements Model {
 	private final Long _id;
 	private final boolean _approved;
 	private final boolean _public;
@@ -28,7 +26,7 @@ public class ModelImp implements Model {
 	private final Double _westBound;
 
 	
-	public ModelImp(Long id, boolean approved, boolean isPublic, boolean archived,
+	public ModelImm(Long id, boolean approved, boolean isPublic, boolean archived,
 				String name, String description, String url, Date dateAdded,
 				Long contactId, Long enhNetworkId,
 				Double northBound, Double eastBound, Double southBound, Double westBound) {

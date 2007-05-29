@@ -5,7 +5,7 @@ import gov.usgswim.sparrow.PredictionDataSet;
 
 import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.ModelBuilder;
-import gov.usgswim.sparrow.domain.ModelImp;
+import gov.usgswim.sparrow.domain.ModelImm;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

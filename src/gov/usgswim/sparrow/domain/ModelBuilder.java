@@ -30,7 +30,7 @@ public class ModelBuilder implements Model {
 	}
 	
 	public Model getImmutable() throws IllegalStateException {
-		return new ModelImp(
+		return new ModelImm(
 			_id, _approved, _public, _archived, _name, _description, _url,
 			_dateAdded, _contactId, _enhNetworkId,
 			_northBound, _eastBound, _southBound, _westBound);
