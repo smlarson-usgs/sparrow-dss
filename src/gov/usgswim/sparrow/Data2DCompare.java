@@ -9,7 +9,8 @@ package gov.usgswim.sparrow;
 public class Data2DCompare extends Data2DView {
 	Data2D compData;
 	int[] colMap;
-	private Double[] maxCompValues;  //Max deviation for each column.  Each value may be null if unknown
+	volatile private Double[] maxCompValues;  //Max deviation for each column.  Each value may be null if unknown
+	volatile private Integer[] maxCompRows;	//The row (for each column) where the max comparison value was found.
 	
 	/**
 	 * Construct a new instance using the passed baseData and compData.
@@ -24,6 +25,7 @@ public class Data2DCompare extends Data2DView {
 		
 		this.compData = compData;
 		maxCompValues = new Double[baseData.getColCount()];
+		maxCompRows = new Integer[baseData.getColCount()];
 	}
 	
 	/**
@@ -58,17 +60,29 @@ public class Data2DCompare extends Data2DView {
 	public synchronized double findMaxCompareValue(int column) {
 		if (maxCompValues[column] == null) {
 
-			double max = Double.MIN_VALUE;
+			double max = Double.MIN_VALUE;	//The max value found
+			int maxRow = 0;	//row of the max value
 			
 			for (int r = 0; r < getRowCount(); r++)  {
 				double d = Math.abs( compare(r, column) );
-				if (d > max) max = d;
+				if (d > max) {
+					max = d;
+					maxRow = r;
+				}
 			}
 			
-			maxCompValues[column] = new Double(max);
+			maxCompValues[column] = max;
+			maxCompRows[column] = maxRow;
 			
 		}
 		return maxCompValues[column].doubleValue();
+	}
+	
+	public synchronized int findMaxCompareRow(int column) {
+		if (maxCompRows[column] == null) {
+			findMaxCompareValue(column);
+		}
+		return maxCompRows[column];
 	}
 	
 	public synchronized double findMaxCompareValue() {
