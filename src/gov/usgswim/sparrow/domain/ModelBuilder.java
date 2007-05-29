@@ -1,11 +1,17 @@
 package gov.usgswim.sparrow.domain;
 
+import gov.usgswim.NotThreadSafe;
+import gov.usgswim.sparrow.ImmutableBuilder;
 import java.util.Date;
 
 /**
- * Implementation of Model, which is a Domain Object representing a SPARROW Model.
+ * Builder implementation of Model, which is a Domain Object representing a SPARROW Model.
+ * 
+ * This class can be used to construct a model instance in a single thread,
+ * which can then be copied to an immutable instance via getImmutable()
  */
-public class ModelBuilder implements Model {
+@NotThreadSafe
+public class ModelBuilder implements Model, ImmutableBuilder {
 	protected Long _id;
 	protected boolean _approved;
 	protected boolean _public;
@@ -29,7 +35,7 @@ public class ModelBuilder implements Model {
 		_id = id;
 	}
 	
-	public Model getImmutable() throws IllegalStateException {
+	public <Model>Object getImmutable() throws IllegalStateException {
 		return new ModelImm(
 			_id, _approved, _public, _archived, _name, _description, _url,
 			_dateAdded, _contactId, _enhNetworkId,
