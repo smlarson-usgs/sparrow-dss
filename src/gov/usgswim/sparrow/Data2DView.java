@@ -77,6 +77,19 @@ public class Data2DView implements Data2D {
 		}
 		
 	}
+	
+	public int findHeading(String name) {
+		if (data.hasHeadings() && name != null) {
+			for (int i=firstCol, ii=0; i<lastCol; i++, ii++)  {
+				if (name.equalsIgnoreCase(data.getHeading(i))) {
+				  return i - firstCol;
+				}
+			}
+		}
+		
+		return -1;
+
+	}
 
 	public Object getValueAt(int row, int col) throws IndexOutOfBoundsException {
 		col+=firstCol;

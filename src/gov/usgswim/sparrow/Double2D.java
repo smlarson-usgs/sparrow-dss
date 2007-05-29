@@ -196,4 +196,16 @@ public class Double2D implements Data2D {
 			return trimToEmpty?StringUtils.EMPTY:null;
 		}
 	}
+	
+	public int findHeading(String name) {
+		if (_head != null && name != null) {
+			for(int i=0; i<_head.length; i++) {
+				if (name.equalsIgnoreCase(_head[i])) {
+				  return i;
+				}
+			}
+		}
+		
+		return -1;
+	}
 }

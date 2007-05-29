@@ -131,4 +131,15 @@ public interface Data2D {
 	 * @return
 	 */
 	public String getHeading(int col, boolean trimToEmpty);
+	
+	/**
+	 * Returns the index of the specified heading.
+	 * 
+	 * The comparison is not case-sensitive.  -1 is returned if the heading is not
+	 * found.  Null names cannot be matched.
+	 * 
+	 * @param name The heading to look for (case insensitive)
+	 * @return The index of the heading, or -1 if it is not found.
+	 */
+	public int findHeading(String name);
 }

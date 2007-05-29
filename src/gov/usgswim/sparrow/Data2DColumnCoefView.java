@@ -136,4 +136,8 @@ public class Data2DColumnCoefView implements Data2D {
 	public String getHeading(int col, boolean trimToEmpty) {
 	  return data.getHeading(col, trimToEmpty);
 	}
+	
+	public int findHeading(String name) {
+		return data.findHeading(name);
+	}
 }
