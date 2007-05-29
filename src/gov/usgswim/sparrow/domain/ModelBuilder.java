@@ -11,7 +11,7 @@ import java.util.Date;
  * which can then be copied to an immutable instance via getImmutable()
  */
 @NotThreadSafe
-public class ModelBuilder implements Model, ImmutableBuilder {
+public class ModelBuilder implements Model, ImmutableBuilder<Model> {
 	protected Long _id;
 	protected boolean _approved;
 	protected boolean _public;
@@ -35,7 +35,7 @@ public class ModelBuilder implements Model, ImmutableBuilder {
 		_id = id;
 	}
 	
-	public <Model>Object getImmutable() throws IllegalStateException {
+	public Model getImmutable() throws IllegalStateException {
 		return new ModelImm(
 			_id, _approved, _public, _archived, _name, _description, _url,
 			_dateAdded, _contactId, _enhNetworkId,

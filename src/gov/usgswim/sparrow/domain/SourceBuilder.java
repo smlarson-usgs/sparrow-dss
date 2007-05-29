@@ -15,7 +15,7 @@ import java.io.Serializable;
  * which can then be copied to an immutable instance via getImmutable()
  */
 @NotThreadSafe
-public class SourceBuilder implements Source, ImmutableBuilder {
+public class SourceBuilder implements Source, ImmutableBuilder<Source> {
 	private Long _id;
 	private int _identifier;
 	private String _name;
@@ -32,7 +32,7 @@ public class SourceBuilder implements Source, ImmutableBuilder {
 		_id = id;
 	}
 	
-	public <Source>Object getImmutable() throws IllegalStateException {
+	public Source getImmutable() throws IllegalStateException {
 		return new SourceImm(_id, _identifier, _name, _displayName,
 			_description, _sortOrder, _modelId);
 	}

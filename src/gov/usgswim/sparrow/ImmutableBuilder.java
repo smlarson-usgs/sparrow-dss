@@ -5,6 +5,6 @@ package gov.usgswim.sparrow;
  * 
  * Instances which are already immutable may return themselves.
  */
-public interface ImmutableBuilder {
-	public Object getImmutable() throws IllegalStateException;
+public interface ImmutableBuilder<T> {
+	public T getImmutable() throws IllegalStateException;
 }
