@@ -17,11 +17,11 @@ public class SourceImm implements Source, Serializable {
 	private final int _sortOrder;
 	private final Long _modelId;
 	
-	
+	/*
 	private SourceImm() {
 		//some tools need a no-arg constructor.  Not really usable w/o reflection.
 	}
-	
+	*/
 	
 	public SourceImm(Long id, int identifier, String name, String displayName,
 			String description, int sortOrder, Long modelId) {

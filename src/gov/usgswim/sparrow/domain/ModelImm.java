@@ -26,11 +26,11 @@ public class ModelImm implements Model, Serializable {
 	private final Double _southBound;
 	private final Double _westBound;
 
-	
+	/*
 	private ModelImm() {
 		//some tools need a no-arg constructor.  Not really usable w/o reflection.
 	}
-	
+	*/
 	
 	public ModelImm(Long id, boolean approved, boolean isPublic, boolean archived,
 				String name, String description, String url, Date dateAdded,
