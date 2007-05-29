@@ -108,15 +108,16 @@ public class JDBCUtil {
      *****************************************************/
     String[] headers = src.getHeadings();
     
-    String insertSourceHeader = "INSERT INTO SOURCE (NAME, DESCRIPTION, SORT_ORDER, SPARROW_MODEL_ID) " +
-                                "VALUES (?,?,?," + MODEL_ID + ")";
+    String insertSourceHeader = "INSERT INTO SOURCE (IDENTIFIER, NAME, DESCRIPTION, SORT_ORDER, SPARROW_MODEL_ID) " +
+                                "VALUES (?,?,?,?," + MODEL_ID + ")";
     
     
 	  PreparedStatement pstmtInsertSourceHeader = conn.prepareStatement(insertSourceHeader);
     for (int i = 0; i < headers.length; i++) {
+			pstmtInsertSourceHeader.setInt(3,(i+1));	//autogenerate the model-specific identifier
       pstmtInsertSourceHeader.setString(1,headers[i]);
       pstmtInsertSourceHeader.setString(2,headers[i]);
-      pstmtInsertSourceHeader.setInt(3,(i+1));
+      pstmtInsertSourceHeader.setInt(3,(i+1));	//sort order matches the initial load order
       
       //run insert into source table
       pstmtInsertSourceHeader.executeUpdate();
