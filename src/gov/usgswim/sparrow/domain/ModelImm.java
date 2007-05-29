@@ -3,13 +3,15 @@ package gov.usgswim.sparrow.domain;
 import gov.usgswim.GuardedBy;
 import gov.usgswim.Immutable;
 
+import java.io.Serializable;
+
 import java.util.Date;
 
 /**
  * Immutable implementation of Model, which is a Domain Object representing a SPARROW Model.
  */
 @Immutable
-public class ModelImm implements Model {
+public class ModelImm implements Model, Serializable {
 	private final Long _id;
 	private final boolean _approved;
 	private final boolean _public;
