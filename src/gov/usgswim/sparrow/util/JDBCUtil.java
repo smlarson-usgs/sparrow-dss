@@ -27,11 +27,13 @@ public class JDBCUtil {
 	/**
 	 * Loads only the data required to run a prediction.
 	 * 
+	 * 
 	 * @param conn
 	 * @param modelId
 	 * @return
 	 * @throws SQLException
 	 */
+	 //TODO This should be renamed 'loadMinimalModelDataSet'
 	public static PredictionDataSet loadMinimalPredictDataSet(Connection conn, int modelId)
 			throws SQLException {
 		
@@ -49,18 +51,29 @@ public class JDBCUtil {
 	}
 	
 	/**
-	 * Loads all the model data.
+	 * Loads the complete dataset for a model (including bootstrap data).
 	 * 
 	 * @param conn
 	 * @param modelId
 	 * @return
 	 * @throws SQLException
 	 */
-	public static PredictionDataSet loadFullPredictDataSet(Connection conn, int modelId)
+	public static PredictionDataSet loadFullModelDataSet(Connection conn, int modelId)
 			throws SQLException {
 		
-		return null;
+		PredictionDataSet dataSet = new PredictionDataSet();
+		
+		Int2D sources = loadSource(conn, modelId);	//Need this list
+		
+		dataSet.setSys( loadSystemInfo(conn, modelId) );
+		dataSet.setTopo( loadTopo(conn, modelId) );
+		dataSet.setCoef( loadSourceReachCoef(conn, modelId, sources) );
+		dataSet.setDecay( loadDecay(conn, modelId, 0) );
+		dataSet.setSrc( loadSourceValues(conn, modelId, sources) );
+		
+		return dataSet;
 	}
+	
 	
 	/**
 	 * Returns the number of reaches added
@@ -339,7 +352,7 @@ public class JDBCUtil {
 	}
 	
 	/**
-	 * Returns a Double2D table of all source/reach coef's for for a single model.
+	 * Returns a Double2D table of all source/reach coef's for for a single iteration of a model.
 	 * <h4>Data Columns with one row per reach (sorted by HYDSEQ)</h4>
 	 * <ol>
 	 * <li>[Source Name 1] - The coef's for the first source in one column
@@ -382,6 +395,76 @@ public class JDBCUtil {
 				"coef.Iteration = " +  iteration + " AND " +
 				"coef.SOURCE_ID = " +  sources.getInt(srcIndex, 0) + " " +
 				"ORDER BY rch.HYDSEQ";
+			
+			
+			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			st.setFetchSize(2000);
+			ResultSet rs = null;
+			
+			try {
+			
+				rs = st.executeQuery(query);
+				loadColumn(rs, sourceReachCoef, 0, srcIndex);
+				
+			} finally {
+				if (rs != null) {
+					rs.close();
+					rs = null;
+				}
+			}
+			
+		}
+		
+		return sourceReachCoef;
+
+	}
+	
+	/**
+	 * Returns a Double2D table of all source/reach coef's for for all iterationa of a model.
+	 * <h4>Data Columns with one row per reach (sorted by ITERATION then HYDSEQ)</h4>
+	 * <ol>
+	 * <li>[Source Name 1] - The coef's for the first source in one column
+	 * <li>[Source Name 2...] - The coef's for the 2nd...
+	 * <li>...
+	 * </ol>
+	 * 
+	 * @param conn	A JDBC Connection to run the query on
+	 * @param modelId	The ID of the Sparrow model
+	 * @param sources	An Int2D list of the sources for the model, in one column (see loadSource)
+	 * @return Fetched data - see Data Columns above.
+	 * @throws SQLException
+	 */
+	public static Double2D loadSourceReachCoef(Connection conn, int modelId, Int2D sources) throws SQLException {
+	
+		if (sources.getRowCount() == 0) {
+			throw new IllegalArgumentException("There must be at least one source");
+		}
+	
+		String reachCountQuery =
+			"SELECT COUNT(*) FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + modelId;
+		String itCountQuery =
+			"SELECT COUNT(*) FROM (SELECT DISTINCT coef.Iteration " +
+			"FROM SOURCE_REACH_COEF coef INNER JOIN MODEL_REACH rch ON coef.MODEL_REACH_ID = rch.MODEL_REACH_ID " +
+			"WHERE rch.SPARROW_MODEL_ID = " +  modelId + ")";
+			
+		Int2D reachCountData = readAsInteger(conn, reachCountQuery, 1);
+		Int2D itCountData = readAsInteger(conn, itCountQuery, 1);
+		int reachCount = reachCountData.getInt(0, 0);
+		int itCount = itCountData.getInt(0, 0);
+		int sourceCount = sources.getRowCount();
+		
+		Double2D sourceReachCoef = new Double2D(new double[reachCount * itCount][sourceCount]);
+		
+	
+		for (int srcIndex=0; srcIndex<sourceCount; srcIndex++) {
+		
+			String query =
+				"SELECT coef.VALUE AS Value " +
+				"FROM SOURCE_REACH_COEF coef INNER JOIN MODEL_REACH rch ON coef.MODEL_REACH_ID = rch.MODEL_REACH_ID " +
+				"WHERE " +
+				"rch.SPARROW_MODEL_ID = " +  modelId + " AND " +
+				"coef.SOURCE_ID = " +  sources.getInt(srcIndex, 0) + " " +
+				"ORDER BY coef.Iteration, rch.HYDSEQ";
 			
 			
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
