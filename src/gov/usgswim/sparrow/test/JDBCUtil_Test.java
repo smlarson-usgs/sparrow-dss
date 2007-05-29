@@ -65,6 +65,78 @@ public class JDBCUtil_Test extends TestCase {
 		assertEquals(0d, comp.findMaxCompareValue(), 0.004d);
 
 	}
+	
+	/**
+	 * @see JDBCUtil#JDBCUtil.writePredictDataSet(PredictionDataSet data, Connection conn)
+	 * 
+	 * Note:  This method does not test this method directly, instead it assumes 
+	 * that model 21 was loaded and compare the db values for model 21
+	 * to the text files at classpath:  data.ch2007_04_24/
+	 * 
+	 * Not exactly fullproof.  A better test would be to have a subset.
+	 */
+	public void testDBWriteVsTextFilesDataSet() throws Exception {
+		String rootDir = "/data/ch2007_04_24/";
+		PredictionDataSet textDs = new PredictionDataSet();
+		PredictionDataSet dbDs = null;
+		
+		
+		//Load the text files
+		textDs.setAncil( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "ancil.txt"), true) );
+		
+		//1st 4 columns are iteration, inc delv, tot_del, and boot error (skip)
+		Data2D baseTextCoef = TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "coef.txt"), true);
+		int firstRowBeyondZeroIteration = baseTextCoef.orderedSearchFirst(1d, 0);
+		
+		//For speed, you can choose which section to run below:
+		/*
+		//Uncomment this section to test only iteration 0.
+		textDs.setCoef(
+			new Data2DView(baseTextCoef, 0, firstRowBeyondZeroIteration, 4, 11)
+		);
+		*/
+		
+		//Uncomment this section to test all iterations.
+		textDs.setCoef(
+			new Data2DView(baseTextCoef, 4, 11)
+		);
+		
+		
+		textDs.setSrc( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "src.txt"), true) );
+		textDs.setTopo( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "topo.txt"), true) );
+		
+		
+		//Load the db version of the same model
+		dbDs = JDBCUtil.loadFullModelDataSet(conn, 21);
+
+		Data2DCompare comp = new Data2DCompare(textDs.getSrc(), dbDs.getSrc());
+		Data2DCompare topo = new Data2DCompare(textDs.getTopo(), dbDs.getTopo());
+		Data2DCompare coef = new Data2DCompare(textDs.getCoef(), dbDs.getCoef());
+		
+		
+		for (int i = 0; i < comp.getColCount(); i++)  {
+			System.out.println("comp col " + i + " error: " + comp.findMaxCompareValue(i));
+		}
+		
+		for (int i = 0; i < topo.getColCount(); i++)  {
+			System.out.println("topo col " + i + " error: " + topo.findMaxCompareValue(i));
+		}
+		
+		for (int i = 0; i < coef.getColCount(); i++)  {
+			System.out.println("coef col " + i + " error: " + coef.findMaxCompareValue(i));
+			int maxRow = coef.findMaxCompareRow(i);
+			System.out.println("--Row Data at max (row #" +  maxRow + ")");
+			for (int j=0; j<coef.getColCount(); j++) {
+				System.out.println("----Col " + j + ": " + coef.getValueAt(maxRow, j));
+			}
+		}
+		
+		assertEquals(0d, comp.findMaxCompareValue(), 0.004d);
+		assertEquals(0d, topo.findMaxCompareValue(), 0.004d);
+		assertEquals(0d, coef.findMaxCompareValue(), 0.004d);
+
+	}
+
 
 	/**
 	 * @see JDBCUtil#loadTopo(Connection,int)
