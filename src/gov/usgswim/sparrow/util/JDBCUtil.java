@@ -196,9 +196,7 @@ public class JDBCUtil {
       try {
         
         /********************************************
-         *  
          *  MODEL_REACH INSERT
-         *  
          *********************************************/
         {
           //MODEL REACH INSERT
