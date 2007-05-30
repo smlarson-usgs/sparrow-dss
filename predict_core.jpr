@@ -119,9 +119,19 @@
             <url n="targetURL" path="src/gov/usgswim/sparrow/test/_Test.java"/>
             <value n="VMName" v="client"/>
          </hash>
+         <hash n="Model Loader - Load the Zero Iteration of Model 22">
+            <value n="custom" v="false"/>
+            <value n="ignoreCompilerErrors" v="true"/>
+            <value n="name" v="Model Loader - Load the Zero Iteration of Model 22"/>
+            <value n="programArguments" v="/data/ch2007_04_24 22 22 0"/>
+            <value n="runActiveFile" v="false"/>
+            <url n="targetURL" path="src/gov/usgswim/sparrow/util/LoadTestRunner.java"/>
+            <value n="VMName" v="client"/>
+         </hash>
       </hash>
       <list n="runConfigurationList">
          <string v="Default"/>
+         <string v="Model Loader - Load the Zero Iteration of Model 22"/>
       </list>
    </hash>
    <hash n="oracle.jdevimpl.config.JProjectLibraries">
