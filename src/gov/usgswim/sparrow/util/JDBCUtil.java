@@ -109,10 +109,23 @@ public class JDBCUtil {
     String[] headers = src.getHeadings();
     
     String insertSourceHeader = "INSERT INTO SOURCE (IDENTIFIER, NAME, DISPLAY_NAME, DESCRIPTION, SORT_ORDER, SPARROW_MODEL_ID) " +
-                                "VALUES (?,?,?,?," + MODEL_ID + ")";
-    
+                                "VALUES (?,?,?,?,?," + MODEL_ID + ")";
     
 	  PreparedStatement pstmtInsertSourceHeader = conn.prepareStatement(insertSourceHeader);
+
+      for (int i = 0; i < headers.length; i++) {
+        pstmtInsertSourceHeader.setInt(1,(i+1));
+        pstmtInsertSourceHeader.setString(2,headers[i]);
+        pstmtInsertSourceHeader.setString(3,headers[i]);
+        pstmtInsertSourceHeader.setString(4,headers[i]);
+        pstmtInsertSourceHeader.setInt(5,(i+1));
+  
+        //run insert into source table
+        pstmtInsertSourceHeader.executeUpdate();
+        
+      }
+      pstmtInsertSourceHeader.close();
+
     for (int i = 0; i < headers.length; i++) {
 			pstmtInsertSourceHeader.setInt(1,(i+1));	//autogenerate the model-specific identifier
       pstmtInsertSourceHeader.setString(2,headers[i]);	//SPARROW model name for source
@@ -123,10 +136,8 @@ public class JDBCUtil {
       //run insert into source table
       pstmtInsertSourceHeader.executeUpdate();
       
+
     }
-    
-	  pstmtInsertSourceHeader.close();
-    
     
 
     String insertModelReach = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, SPARROW_MODEL_ID)" +
@@ -152,7 +163,7 @@ public class JDBCUtil {
 	  pstmtMRID.setFetchSize(1);
   
   
-    String querySourceID = "SELECT source_id FROM source WHERE sort_order = ? and sparrow_model_id = " + MODEL_ID;
+    String querySourceID = "SELECT source_id FROM source WHERE LOWER(name) = ? and sparrow_model_id = " + MODEL_ID;
     PreparedStatement pstmtSourceID = conn.prepareStatement(querySourceID);
     pstmtSourceID.setFetchSize(1);
     
@@ -165,23 +176,45 @@ public class JDBCUtil {
                                "(?,?,?)";
 	  PreparedStatement pstmtInsertSourceValue = conn.prepareStatement(insertSourceValue);                           
   
+    //ancillary headings indexes
+    int localIdIndexAnc = ancil.findHeading("local_id");
+    int hydseqIndexAnc = ancil.findHeading("hydseq");
+    
+    
+    //topographic headings indexes
+    int iftranIndexTopo = topo.findHeading("iftran");
+    if (iftranIndexTopo == -1) 
+      iftranIndexTopo = topo.findHeading("aiftran");  //typo in export
+    
+    int fnodeIndexTopo = topo.findHeading("fnode");
+    int tnodeIndexTopo = topo.findHeading("tnode");
   
+  
+  
+    //BEGIN TABLE LOADING LOOP...
     for (int i = 0; i < ancil.getRowCount(); i++) {
       try {
-        //MODEL REACH INSERT
-        pstmtInsertModelReach.setInt(1, ancil.getInt(i,9));  //identifier
-        pstmtInsertModelReach.setString(2, Integer.toString(ancil.getInt(i,9)));  //full_identifier
-        pstmtInsertModelReach.setInt(3, ancil.getInt(i,1));  //hydseq
-        pstmtInsertModelReach.setInt(4, topo.getInt(i,2));   //iftran
         
-        //insert into MODEL_REACH table in DB
-        pstmtInsertModelReach.executeUpdate();
-        
+        /********************************************
+         *  
+         *  MODEL_REACH INSERT
+         *  
+         *********************************************/
+        {
+          //MODEL REACH INSERT
+          pstmtInsertModelReach.setInt(1, ancil.getInt(i,localIdIndexAnc));  //identifier
+          pstmtInsertModelReach.setString(2, Integer.toString(ancil.getInt(i,localIdIndexAnc)));  //full_identifier
+          pstmtInsertModelReach.setInt(3, ancil.getInt(i,hydseqIndexAnc));  //hydseq
+          pstmtInsertModelReach.setInt(4, topo.getInt(i,iftranIndexTopo));   //iftran
+          
+          //execute insert into MODEL_REACH table in DB now
+          pstmtInsertModelReach.executeUpdate();
+        }
               
         
         //find model_reach_id using identifier in where clause
         int mrid = -1;
-        pstmtMRID.setInt(1,ancil.getInt(i,9));
+        pstmtMRID.setInt(1,ancil.getInt(i,localIdIndexAnc));
         try {      
           rset = pstmtMRID.executeQuery();
           if (rset.next()) {
@@ -194,14 +227,20 @@ public class JDBCUtil {
           }
         }            
         
-        //insert into model_reach_topo table in db
-        pstmtInsertModelReachTopo.setInt(1, mrid);              //model reach id
-        pstmtInsertModelReachTopo.setInt(2, topo.getInt(i,0));  //fnode
-        pstmtInsertModelReachTopo.setInt(3, topo.getInt(i,1));   //tnode
-        pstmtInsertModelReachTopo.setInt(4, topo.getInt(i,2));   //iftran
-  
-        pstmtInsertModelReachTopo.executeUpdate();
-        
+
+        /********************************************
+         *  MODEL_REACH_TOPO INSERT
+         *********************************************/
+        {
+          //insert into model_reach_topo table in db
+          pstmtInsertModelReachTopo.setInt(1, mrid);              //model reach id
+          pstmtInsertModelReachTopo.setInt(2, topo.getInt(i,fnodeIndexTopo));  //fnode
+          pstmtInsertModelReachTopo.setInt(3, topo.getInt(i,tnodeIndexTopo));   //tnode
+          pstmtInsertModelReachTopo.setInt(4, topo.getInt(i,iftranIndexTopo));   //iftran
+    
+          //execute insert statement
+          pstmtInsertModelReachTopo.executeUpdate();
+        }
         
         
         
@@ -209,15 +248,22 @@ public class JDBCUtil {
         //here's a hard one- populate REACH_COEF
         //pull out all iterations for this model reach and insert into db
         for (int j = i; j < coef.getRowCount(); j+=ancil.getRowCount()) {
-                    
-          pstmtInsertReachCoef.setInt(1,coef.getInt(j,0));  //ITER
-          pstmtInsertReachCoef.setDouble(2,coef.getDouble(j,1));  //INC_DELIVF
-          pstmtInsertReachCoef.setDouble(3,coef.getDouble(j,2));  //TOT_DELIVF
-          pstmtInsertReachCoef.setDouble(4,coef.getDouble(j,3));  //BOOT_ERROR
-          pstmtInsertReachCoef.setInt(5, mrid);  //MODEL_REACH_ID
-         
-          pstmtInsertReachCoef.executeUpdate();
-
+                 
+          /********************************************
+           *  REACH_COEF INSERT
+           *********************************************/                 
+          {
+            pstmtInsertReachCoef.setInt(1,coef.getInt(j,0));  //ITER
+            pstmtInsertReachCoef.setDouble(2,coef.getDouble(j,1));  //INC_DELIVF
+            pstmtInsertReachCoef.setDouble(3,coef.getDouble(j,2));  //TOT_DELIVF
+            pstmtInsertReachCoef.setDouble(4,coef.getDouble(j,3));  //BOOT_ERROR
+            pstmtInsertReachCoef.setInt(5, mrid);  //MODEL_REACH_ID
+           
+            pstmtInsertReachCoef.executeUpdate();
+          }
+          
+          
+          
           //SOURCE_REACH_COEF
           //start at column 5 and loop
           
@@ -225,7 +271,15 @@ public class JDBCUtil {
           //mrid = MODEL_REACH_ID 
           //loop to get values (sources) from the fourth column on
           for (int k = 4; k < coef.getColCount(); k++) {
+          
             pstmtSourceID.setInt(1,(k-3));
+            
+            /*
+            String src_name = coef.getHeading(k).toLowerCase();
+            String[] sn_tok = src_name.split("_");
+            src_name = sn_tok[sn_tok.length - 1];
+            pstmtSourceID.setString(1,src_name);
+            */
             
             int sourceID = -1;
             try {      
@@ -241,16 +295,20 @@ public class JDBCUtil {
             }            
         
         
-            //now i have source_id, model_reach_id, iter
-            //JUST NEED VALUE!
-            // value = coef.getDouble(j,(k + 3))
-            pstmtInsertSourceReachCoef.setInt(1,coef.getInt(j,0));  //iteration
-            pstmtInsertSourceReachCoef.setDouble(2, coef.getDouble(j,k));  //value
-            pstmtInsertSourceReachCoef.setInt(3,sourceID);
-            pstmtInsertSourceReachCoef.setInt(4, mrid);
-            
-            pstmtInsertSourceReachCoef.executeUpdate();
-
+            /********************************************
+             *  SOURCE_REACH_COEF INSERT
+             *********************************************/
+            {
+              //now i have source_id, model_reach_id, iter
+              //JUST NEED VALUE!
+              // value = coef.getDouble(j,(k + 3))
+              pstmtInsertSourceReachCoef.setInt(1,coef.getInt(j,0));  //iteration
+              pstmtInsertSourceReachCoef.setDouble(2, coef.getDouble(j,k));  //value
+              pstmtInsertSourceReachCoef.setInt(3,sourceID);
+              pstmtInsertSourceReachCoef.setInt(4, mrid);
+              
+              pstmtInsertSourceReachCoef.executeUpdate();
+            }
           } //k
         } //j
         
@@ -264,6 +322,7 @@ public class JDBCUtil {
         //model_reach_id = mrid
         for (int j = 0; j < src.getColCount(); j++) {
           pstmtSourceID.setInt(1,(j+1));
+          //pstmtSourceID.setString(1,src.getHeading(j).toLowerCase());
           
           int sourceID = -1;
           try {      
@@ -279,15 +338,19 @@ public class JDBCUtil {
           } 
           
           
-          //*******NOTE!!!!!******************          
-          //I'M ASSUMING SRC.TXT AND ANCIL.TXT HAVE SAME AMOUNT OF ROWS (THEY SHOULD)
-          pstmtInsertSourceValue.setDouble(1, src.getDouble(i,j));  //value
-          
-          pstmtInsertSourceValue.setInt(2, sourceID);  //source_id
-          pstmtInsertSourceValue.setInt(3, mrid);  //model_reach_id
-          
-          pstmtInsertSourceValue.executeUpdate();
-          
+
+          /********************************************
+          *  SOURCE_VALUE INSERT
+          *********************************************/
+           //*******NOTE!!!!!******************          
+           //I'M ASSUMING SRC.TXT AND ANCIL.TXT HAVE SAME AMOUNT OF ROWS (THEY SHOULD)
+          {
+            pstmtInsertSourceValue.setDouble(1, src.getDouble(i,j));  //value
+            pstmtInsertSourceValue.setInt(2, sourceID);  //source_id
+            pstmtInsertSourceValue.setInt(3, mrid);  //model_reach_id
+            
+            pstmtInsertSourceValue.executeUpdate();
+          }
         }
         
   
