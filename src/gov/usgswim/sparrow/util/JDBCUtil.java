@@ -113,19 +113,6 @@ public class JDBCUtil {
     
 	  PreparedStatement pstmtInsertSourceHeader = conn.prepareStatement(insertSourceHeader);
 
-      for (int i = 0; i < headers.length; i++) {
-        pstmtInsertSourceHeader.setInt(1,(i+1));
-        pstmtInsertSourceHeader.setString(2,headers[i]);
-        pstmtInsertSourceHeader.setString(3,headers[i]);
-        pstmtInsertSourceHeader.setString(4,headers[i]);
-        pstmtInsertSourceHeader.setInt(5,(i+1));
-  
-        //run insert into source table
-        pstmtInsertSourceHeader.executeUpdate();
-        
-      }
-      pstmtInsertSourceHeader.close();
-
     for (int i = 0; i < headers.length; i++) {
 			pstmtInsertSourceHeader.setInt(1,(i+1));	//autogenerate the model-specific identifier
       pstmtInsertSourceHeader.setString(2,headers[i]);	//SPARROW model name for source
@@ -135,9 +122,9 @@ public class JDBCUtil {
       
       //run insert into source table
       pstmtInsertSourceHeader.executeUpdate();
-      
-
     }
+	  pstmtInsertSourceHeader.close();
+
     
 
     String insertModelReach = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, SPARROW_MODEL_ID)" +
