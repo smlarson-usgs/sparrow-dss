@@ -99,6 +99,8 @@ public class LoadTestRunner {
 		
 		Connection conn = getConnection();
 		
+		long startTime = System.currentTimeMillis();
+		
 		try {
 			conn.setAutoCommit(false);
 			int count = JDBCUtil.writePredictDataSet(pd, conn);
@@ -109,12 +111,21 @@ public class LoadTestRunner {
                     e.printStackTrace(System.err);
 		    conn.rollback();
 		} finally {
+		
+			long endTime = System.currentTimeMillis();
+			int totalSeconds = (int) (endTime - startTime) / 1000;
+			int minutes = totalSeconds / 60;
+			int seconds = totalSeconds % 60;
+			
+			System.out.println("Total time for run was: " + minutes + ":" + seconds + " (min:sec)");
+			
+			
 			try {
-				
+				conn.close();
 			} catch (Exception ee) {
-				//ignore
+				ee.printStackTrace();
 			}
-			conn.close();
+			
 		}
 
 	}
