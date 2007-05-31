@@ -118,7 +118,7 @@ public class LoadTestRunner {
 			int seconds = totalSeconds % 60;
 			
 			System.out.println("Total time for run was: " + minutes + ":" + seconds + " (min:sec)");
-			
+			System.out.println("Total reaches loaded: " + pd.getAncil().getRowCount());
 			
 			try {
 				conn.close();
