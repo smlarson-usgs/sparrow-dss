@@ -19,6 +19,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JDBCUtil {
 	public JDBCUtil() {
@@ -74,6 +76,86 @@ public class JDBCUtil {
 		return dataSet;
 	}
 	
+	/**
+	 * Loads all the model reach in the passed PredictionDataSet into the
+	 * SPARROW_DSS.MODEL_REACH table.
+	 * 
+	 * A Map is returned that maps the reach identifier (the key) to the database
+	 * MODEL_REACH_ID from the MODEL_REACH table.  Both values are Integer's.
+	 * 
+	 * TODO We need to look up the enhanced reach ids and assign them.
+	 * 
+	 * @param data
+	 * @param conn
+	 * @param batchSize
+	 * @return
+	 * @throws SQLException
+	 */
+	private static Map<Integer, Integer> writeModelReaches(PredictionDataSet data, Connection conn, int batchSize)
+				throws SQLException {
+				
+    String insertModelReach = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, SPARROW_MODEL_ID)" +
+                   " VALUES (?,?,?,?," + data.getModel().getId().longValue() + ")";                 
+    PreparedStatement pstmtInsertModelReach = conn.prepareStatement(insertModelReach);
+		
+    Data2D ancil = data.getAncil();
+    Data2D topo = data.getTopo();
+		int rows = topo.getRowCount();
+		int batchCount = 0;	//number of statements added to the current batch
+		
+    //ancillary headings indexes
+    int localIdIndexAnc = ancil.findHeading("local_id");
+		int stdIdIndexAnc = ancil.findHeading("std_id");
+		int localSameIndexAnc = ancil.findHeading("local_same");
+    
+		if (localIdIndexAnc < 0) throw new IllegalStateException("local_id heading not found in ancil.txt");
+    if (stdIdIndexAnc < 0) throw new IllegalStateException("std_id heading not found in ancil.txt");
+		if (localSameIndexAnc < 0) throw new IllegalStateException("local_same heading not found in ancil.txt");
+    
+    //topographic headings indexes
+		int hydseqIndexTopo = topo.findHeading("hydseq");
+    int fnodeIndexTopo = topo.findHeading("fnode");
+    int tnodeIndexTopo = topo.findHeading("tnode");
+		int iftranIndexTopo = topo.findHeading("iftran");
+  
+    if (hydseqIndexTopo < 0) throw new IllegalStateException("hydseq heading not found in topo.txt");
+    if (fnodeIndexTopo < 0) throw new IllegalStateException("fnode heading not found in topo.txt");
+    if (tnodeIndexTopo < 0) throw new IllegalStateException("tnode heading not found in topo.txt");
+		if (iftranIndexTopo < 0) throw new IllegalStateException("iftran heading not found in topo.txt");
+		
+		for (int r = 0; r < rows; r++)  {
+			pstmtInsertModelReach.setInt(1, ancil.getInt(r,localIdIndexAnc));  //identifier
+			pstmtInsertModelReach.setString(2, Integer.toString(ancil.getInt(r,localIdIndexAnc)));  //full_identifier
+			pstmtInsertModelReach.setInt(3, topo.getInt(r,hydseqIndexTopo));  //hydseq
+			pstmtInsertModelReach.setInt(4, topo.getInt(r,iftranIndexTopo));   //iftran
+			
+			pstmtInsertModelReach.addBatch();
+			batchCount++;
+			
+			if (batchCount >= batchSize) {
+				pstmtInsertModelReach.executeBatch();
+				batchCount = 0;
+			}
+		}
+		
+		if (batchCount != 0) pstmtInsertModelReach.executeBatch();
+		
+		
+		//// Now load all the values back into a Map that maps IDENTIFIER to the db MODEL_REACH_ID
+		String query = "SELECT IDENTIFIER, MODEL_REACH_ID FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + data.getModel().getId().longValue();
+		Int2D reachData = readAsInteger(conn, query, 1000);
+		rows = reachData.getRowCount();
+		Map<Integer, Integer> reachMap = new HashMap<Integer, Integer>((int)(rows * 1.5), 1f);
+		
+		for (int r = 0; r < rows; r++)  {
+			reachMap.put(
+				new Integer(reachData.getInt(r, 0)),
+				new Integer(reachData.getInt(r, 1))
+			);
+		}
+		
+		return reachMap;
+	}
 	
 	/**
 	 * Returns the number of reaches added
@@ -125,12 +207,6 @@ public class JDBCUtil {
     }
 	  pstmtInsertSourceHeader.close();
 
-    
-
-    String insertModelReach = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, SPARROW_MODEL_ID)" +
-                   " VALUES (?,?,?,?," + MODEL_ID + ")";                 
-    PreparedStatement pstmtInsertModelReach = conn.prepareStatement(insertModelReach);
-
   
     String insertModelReachTopo = "INSERT INTO MODEL_REACH_TOPO (MODEL_REACH_ID, FNODE, TNODE, IFTRAN) VALUES (?,?,?,?)";
     PreparedStatement pstmtInsertModelReachTopo = conn.prepareStatement(insertModelReachTopo);
@@ -145,9 +221,9 @@ public class JDBCUtil {
   
 	  ResultSet rset = null;
   
-    String queryMRID = "SELECT model_reach_id FROM MODEL_REACH WHERE identifier = ? AND SPARROW_MODEL_ID = " + MODEL_ID;
-    PreparedStatement pstmtMRID = conn.prepareStatement(queryMRID);
-	  pstmtMRID.setFetchSize(1);
+    //String queryMRID = "SELECT model_reach_id FROM MODEL_REACH WHERE identifier = ? AND SPARROW_MODEL_ID = " + MODEL_ID;
+    //PreparedStatement pstmtMRID = conn.prepareStatement(queryMRID);
+	  //pstmtMRID.setFetchSize(1);
   
   
     String querySourceID = "SELECT source_id FROM source WHERE LOWER(name) = ? and sparrow_model_id = " + MODEL_ID;
@@ -163,54 +239,38 @@ public class JDBCUtil {
                                "(?,?,?)";
 	  PreparedStatement pstmtInsertSourceValue = conn.prepareStatement(insertSourceValue);                           
   
-    //ancillary headings indexes
+		//Ancil columns - really just need the local id.
     int localIdIndexAnc = ancil.findHeading("local_id");
-    int hydseqIndexAnc = ancil.findHeading("hydseq");
-    
-    
+		if (localIdIndexAnc < 0) throw new IllegalStateException("local_id heading not found in ancil.txt");
+		
+		
     //topographic headings indexes
-    int iftranIndexTopo = topo.findHeading("iftran");
-    if (iftranIndexTopo == -1) 
-      iftranIndexTopo = topo.findHeading("aiftran");  //typo in export
-    
+		int hydseqIndexTopo = topo.findHeading("hydseq");
     int fnodeIndexTopo = topo.findHeading("fnode");
     int tnodeIndexTopo = topo.findHeading("tnode");
+		int iftranIndexTopo = topo.findHeading("iftran");
   
+    if (hydseqIndexTopo < 0) throw new IllegalStateException("hydseq heading not found in topo.txt");
+    if (fnodeIndexTopo < 0) throw new IllegalStateException("fnode heading not found in topo.txt");
+    if (tnodeIndexTopo < 0) throw new IllegalStateException("tnode heading not found in topo.txt");
+		if (iftranIndexTopo < 0) throw new IllegalStateException("iftran heading not found in topo.txt");
   
+		/********************************************
+		 *  MODEL_REACH INSERT
+		 *********************************************/
+		Map<Integer, Integer> reachDbIdMap = writeModelReaches(data, conn, 200);
   
     //BEGIN TABLE LOADING LOOP...
     for (int i = 0; i < ancil.getRowCount(); i++) {
       try {
         
-        /********************************************
-         *  MODEL_REACH INSERT
-         *********************************************/
-        {
-          //MODEL REACH INSERT
-          pstmtInsertModelReach.setInt(1, ancil.getInt(i,localIdIndexAnc));  //identifier
-          pstmtInsertModelReach.setString(2, Integer.toString(ancil.getInt(i,localIdIndexAnc)));  //full_identifier
-          pstmtInsertModelReach.setInt(3, ancil.getInt(i,hydseqIndexAnc));  //hydseq
-          pstmtInsertModelReach.setInt(4, topo.getInt(i,iftranIndexTopo));   //iftran
-          
-          //execute insert into MODEL_REACH table in DB now
-          pstmtInsertModelReach.executeUpdate();
-        }
+
               
         
         //find model_reach_id using identifier in where clause
-        int mrid = -1;
-        pstmtMRID.setInt(1,ancil.getInt(i,localIdIndexAnc));
-        try {      
-          rset = pstmtMRID.executeQuery();
-          if (rset.next()) {
-            mrid = rset.getInt(1);
-          }
-        } finally {
-          if (rset != null) {
-            rset.close();
-            rset = null;
-          }
-        }            
+				int localId = ancil.getInt(i, localIdIndexAnc);	//local id for this row
+        int mrid = reachDbIdMap.get(new Integer(localId)).intValue();
+           
         
 
         /********************************************
@@ -347,11 +407,9 @@ public class JDBCUtil {
               
     }
     
-    pstmtInsertModelReach.close();
 	  pstmtInsertModelReachTopo.close();
     pstmtInsertReachCoef.close();
 	  pstmtInsertSourceReachCoef.close();
-	  pstmtMRID.close();
 	  pstmtInsertSourceValue.close();    
     
 		return 0;
