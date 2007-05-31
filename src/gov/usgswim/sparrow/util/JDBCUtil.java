@@ -91,7 +91,7 @@ public class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	private static Map<Integer, Integer> writeModelReaches(PredictionDataSet data, Connection conn, int batchSize)
+	public static Map<Integer, Integer> writeModelReaches(PredictionDataSet data, Connection conn, int batchSize)
 				throws SQLException {
 				
     String insertModelReach = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, SPARROW_MODEL_ID)" +
