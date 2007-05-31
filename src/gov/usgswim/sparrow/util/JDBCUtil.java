@@ -14,15 +14,22 @@ import java.sql.ResultSetMetaData;
 import java.sql.Connection;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLData;
 import java.sql.SQLException;
 
 import java.sql.Statement;
+
+import java.sql.Types;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 public class JDBCUtil {
+	protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
+	
 	public JDBCUtil() {
 	}
 	
@@ -93,9 +100,17 @@ public class JDBCUtil {
 	 */
 	public static Map<Integer, Integer> writeModelReaches(PredictionDataSet data, Connection conn, int batchSize)
 				throws SQLException {
-				
-    String insertModelReach = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, SPARROW_MODEL_ID)" +
-                   " VALUES (?,?,?,?," + data.getModel().getId().longValue() + ")";                 
+		
+		//These three should total to the number of reaches
+		int stdIdMatchCount = 0;	//Number of reaches where the STD_ID matched a enh reach
+		int stdIdNullCount = 0;		//Number of reaches where the STD_ID is null (actually, counting zero as null)
+		int stdIdNotMatched = 0;	//Number of reaches where the STD_ID is assigned, but not matched.
+		
+		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM ENH_REACH WHERE ENH_NETWORK_ID = " + data.getModel().getEnhNetworkId().longValue();
+		Map enhIdMap = buildIntegerMap(conn, enhReachQuery);
+		
+    String insertModelReach = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, ENH_REACH_ID, SPARROW_MODEL_ID)" +
+                   " VALUES (?,?,?,?,?," + data.getModel().getId().longValue() + ")";                 
     PreparedStatement pstmtInsertModelReach = conn.prepareStatement(insertModelReach);
 		
     Data2D ancil = data.getAncil();
@@ -129,6 +144,19 @@ public class JDBCUtil {
 			pstmtInsertModelReach.setInt(3, topo.getInt(r,hydseqIndexTopo));  //hydseq
 			pstmtInsertModelReach.setInt(4, topo.getInt(r,iftranIndexTopo));   //iftran
 			
+			//Assign the enh_reach_id if its found
+			if (ancil.getInt(r,stdIdIndexAnc) == 0) {
+				//this is considered null - the STD_ID is not assigned.
+				stdIdNullCount++;
+			} else if (enhIdMap.containsKey( new Integer(ancil.getInt(r,stdIdIndexAnc))) ) {
+				pstmtInsertModelReach.setInt(5, ancil.getInt(r,stdIdIndexAnc));
+				stdIdMatchCount++;
+			} else {
+				pstmtInsertModelReach.setNull(5, Types.INTEGER);
+				stdIdNotMatched++;
+				//TODO need to consult the LOCAL_MATCH PARAM
+			}
+			
 			pstmtInsertModelReach.addBatch();
 			batchCount++;
 			
@@ -140,21 +168,37 @@ public class JDBCUtil {
 		
 		if (batchCount != 0) pstmtInsertModelReach.executeBatch();
 		
+		log.debug("Reach loading is complete.  Total reaches was " + rows + " split up as:");
+		log.debug("Reachs that had matched Standard IDs: " + stdIdMatchCount);
+		log.debug("Reachs that did not have a Standard ID assigned: " + stdIdNullCount);
+		log.debug("Reachs that had a Standard ID that could not be matched (ERROR): " + stdIdNotMatched);
 		
 		//// Now load all the values back into a Map that maps IDENTIFIER to the db MODEL_REACH_ID
-		String query = "SELECT IDENTIFIER, MODEL_REACH_ID FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + data.getModel().getId().longValue();
-		Int2D reachData = readAsInteger(conn, query, 1000);
-		rows = reachData.getRowCount();
-		Map<Integer, Integer> reachMap = new HashMap<Integer, Integer>((int)(rows * 1.5), 1f);
+		String modelReachQuery = "SELECT IDENTIFIER, MODEL_REACH_ID FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + data.getModel().getId().longValue();		
+		return buildIntegerMap(conn, modelReachQuery);
+	}
+	
+	/**
+	 * Turns a query that returns two columns into a Map<Integer, Integer>.
+	 * The first column is used as the key, the second column is used as the value.
+	 * @param conn
+	 * @param query
+	 * @return
+	 * @throws SQLException
+	 */
+	private static Map<Integer, Integer> buildIntegerMap(Connection conn, String query) throws SQLException {
+		Int2D data = readAsInteger(conn, query, 1000);
+		int rows = data.getRowCount();
+		Map<Integer, Integer> map = new HashMap<Integer, Integer>((int)(rows * 1.2), 1f);
 		
 		for (int r = 0; r < rows; r++)  {
-			reachMap.put(
-				new Integer(reachData.getInt(r, 0)),
-				new Integer(reachData.getInt(r, 1))
+			map.put(
+				new Integer(data.getInt(r, 0)),
+				new Integer(data.getInt(r, 1))
 			);
 		}
 		
-		return reachMap;
+		return map;
 	}
 	
 	/**

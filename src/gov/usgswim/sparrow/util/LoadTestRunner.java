@@ -29,7 +29,7 @@ import oracle.jdbc.OracleDriver;
 import org.apache.log4j.Logger;
 
 public class LoadTestRunner {
-    protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
+	protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
     
 	public static String DATA_ROOT_DIR = "/data/ch2007_04_24/";
 	
@@ -82,9 +82,9 @@ public class LoadTestRunner {
 	
 		PredictionDataSet pd = new PredictionDataSet();
 		
-                long initStartTime = System.currentTimeMillis();
-                long fileReadStart = initStartTime;
-                
+		long initStartTime = System.currentTimeMillis();
+		long fileReadStart = initStartTime;
+		
 		if (_root.startsWith("file:")) {
 			pd = TabDelimFileUtil.loadPredictDataSet(
 				null, _root.substring(5), _modelId, _enhNetworkId, _loadAllIterations, true);
@@ -98,8 +98,8 @@ public class LoadTestRunner {
 			);
 		}
                 
-                long fileReadEnd = System.currentTimeMillis();
-                log.debug("Load time for text files was: " + (fileReadEnd-fileReadStart)/1000 + " (sec)");
+		long fileReadEnd = System.currentTimeMillis();
+		log.debug("Load time for text files was: " + (fileReadEnd-fileReadStart)/1000 + " (sec)");
 
 		ModelBuilder mb = new ModelBuilder(_modelId);
 		mb.setEnhNetworkId(_enhNetworkId);
@@ -112,16 +112,20 @@ public class LoadTestRunner {
 		long startTime = System.currentTimeMillis();
 		
 		try {
+		
 			conn.setAutoCommit(false);
 			//int count = JDBCUtil.writePredictDataSet(pd, conn);
-                        int count = JDBCUtil.writeModelReaches(pd, conn, 200).size();
-                        System.out.println("Added " + count + " records to the db.");
-                        //conn.commit();
-                        conn.rollback();
-                } catch (Exception e) {
-                    System.out.println("Exception during load:");
-                    e.printStackTrace(System.err);
-		    conn.rollback();
+			int count = JDBCUtil.writeModelReaches(pd, conn, 200).size();
+			System.out.println("Added " + count + " records to the db.");
+			//conn.commit();
+			conn.rollback();
+			
+		} catch (Exception e) {
+		
+			System.out.println("Exception during load:");
+			e.printStackTrace(System.err);
+			conn.rollback();
+			
 		} finally {
 		
 			long endTime = System.currentTimeMillis();
