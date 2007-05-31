@@ -32,7 +32,7 @@ public class LoadTestRunner {
 	private String _root;
 	private long _modelId;
 	long _enhNetworkId;
-	private int _lastIncludedIteration = -1;	//default include all iterations
+	private boolean _loadAllIterations = true;	//default include all iterations
 
 	public LoadTestRunner() {
 	}
@@ -44,7 +44,7 @@ public class LoadTestRunner {
 		loadTestRunner._modelId = Long.parseLong(args[1]);
 		loadTestRunner._enhNetworkId = Long.parseLong(args[2]);
 		if (args.length > 3) {
-			loadTestRunner._lastIncludedIteration = Integer.parseInt(args[3]);
+			loadTestRunner._loadAllIterations = Boolean.parseBoolean(args[3]);
 		}
 		
 		
@@ -53,10 +53,10 @@ public class LoadTestRunner {
 		String message = "Root to load from: " + loadTestRunner._root + "\n";
 		message += "Load to model ID: " + loadTestRunner._modelId + "\n";
 		message += "Load based on Enhanced Network ID: " + loadTestRunner._enhNetworkId + "\n";
-		if (loadTestRunner._lastIncludedIteration < 0) {
+		if (loadTestRunner._loadAllIterations) {
 			message += "--Loading all iterations--" + "\n";
 		} else {
-			message += "Loading iterations 0 thru " + loadTestRunner._lastIncludedIteration + "\n";
+			message += "Loading only the zero iteration\n";
 		}
 		
 		message += " Is this OK?" + "\n";
@@ -79,11 +79,11 @@ public class LoadTestRunner {
 		PredictionDataSet pd = new PredictionDataSet();
 		
 		if (_root.startsWith("file:")) {
-			pd = loadModelFromText(
-				null, _root.substring(5), _modelId, _enhNetworkId, _lastIncludedIteration);
+			pd = TabDelimFileUtil.loadPredictDataSet(
+				null, _root.substring(5), _modelId, _enhNetworkId, _loadAllIterations, true);
 		} else if (_root.startsWith("package:")) {
-			pd = loadModelFromText(
-				_root.substring(8), null, _modelId, _enhNetworkId, _lastIncludedIteration);
+			pd = TabDelimFileUtil.loadPredictDataSet(
+				_root.substring(8), null, _modelId, _enhNetworkId, _loadAllIterations, true);
 		} else {
 			throw new IllegalArgumentException(
 				"A package or directory containing the source files must" +
@@ -117,76 +117,6 @@ public class LoadTestRunner {
 			conn.close();
 		}
 
-	}
-	
-	/**
-	 * Loads a PredictionDataSet from text files based on either a classpath package
-	 * or a filesystem directory.
-	 * 
-	 * A lastIncludedIteration value can be passed so that only a portion of the
-	 * iterations are visible.  This value is the last iteration included, so passing
-	 * a value of zero will include only the zero iteration.  Passing -1 will
-	 * include all iterations.  The iteration passed must exist.
-	 * 
-	 * @param rootPackage
-	 * @param rootDir
-	 * @param modelId
-	 * @param enhNetworkId
-	 * @param iterations
-	 * @return
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	public PredictionDataSet loadModelFromText(
-				String rootPackage, String rootDir, long modelId,
-				long enhNetworkId, int lastIncludedIteration) throws FileNotFoundException, IOException {
-
-		
-		
-		PredictionDataSet pd = new PredictionDataSet();
-		
-		if (rootPackage != null) {
-			if (! rootPackage.endsWith("/")) rootPackage = rootPackage + "/";
-			
-			pd.setAncil( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "ancil.txt"), true) );
-			pd.setCoef( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "coef.txt"), true) );
-			pd.setSrc( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "src.txt"), true) );
-			pd.setTopo( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "topo.txt"), true) );
-			
-		} else if (rootDir != null){
-			File root = new File(rootDir);
-			
-			pd.setAncil( TabDelimFileUtil.readAsDouble(new File(root, "ancil.txt"), true) );
-			pd.setCoef( TabDelimFileUtil.readAsDouble(new File(root, "coef.txt"), true) );
-			pd.setSrc( TabDelimFileUtil.readAsDouble(new File(root, "src.txt"), true) );
-			pd.setTopo( TabDelimFileUtil.readAsDouble(new File(root, "topo.txt"), true) );
-			
-			root = null;
-		} else {
-			throw new IllegalArgumentException("Must specify a rootPackage or rootDir.");
-		}
-		
-		if (lastIncludedIteration > -1) {
-			//Find the last row containing this iteration
-			int lastRow = pd.getCoef().orderedSearchLast(lastIncludedIteration, 0);
-			
-			if (lastRow > -1) {
-				pd.setCoef( new Data2DView(pd.getCoef(), 0, lastRow + 1, 0, pd.getCoef().getColCount()) );
-			} else {
-				throw new IllegalArgumentException("Must specify a rootPackage or rootDir.");
-			}
-			
-			
-		}
-		
-		
-		ModelBuilder mb = new ModelBuilder(modelId);
-		mb.setEnhNetworkId(enhNetworkId);
-		Model model = mb.getImmutable();
-		
-		pd.setModel( model );
-		
-		return pd;
 	}
 	
 	
