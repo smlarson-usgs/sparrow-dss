@@ -1,4 +1,4 @@
-fnode	tnode	aiftran	hydseq
+fnode	tnode	iftran	hydseq
 77	76	1	1
 83	82	1	2
 43	37	1	3
