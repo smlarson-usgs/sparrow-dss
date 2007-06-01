@@ -403,7 +403,7 @@ public class JDBCUtil {
 		/********************************************
 		 *  MODEL_REACH and SOURCE
 		 *********************************************/
-		Map<Integer, Integer> reachDbIdMap = writeModelReaches(data, conn, 200);
+		Map<Integer, Integer> reachDbIdMap = writeModelReaches(data, conn, batchSize);
 		Map<Integer, Integer> sourceDbIdMap = writeModelSources(data, conn);
   
 		
