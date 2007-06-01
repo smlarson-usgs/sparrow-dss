@@ -87,10 +87,10 @@ public class LoadTestRunner {
 		
 		if (_root.startsWith("file:")) {
 			pd = TabDelimFileUtil.loadPredictDataSet(
-				null, _root.substring(5), _modelId, _enhNetworkId, _loadAllIterations, true);
+				null, _root.substring(5), _modelId, _enhNetworkId, !_loadAllIterations, true);
 		} else if (_root.startsWith("package:")) {
 			pd = TabDelimFileUtil.loadPredictDataSet(
-				_root.substring(8), null, _modelId, _enhNetworkId, _loadAllIterations, true);
+				_root.substring(8), null, _modelId, _enhNetworkId, !_loadAllIterations, true);
 		} else {
 			throw new IllegalArgumentException(
 				"A package or directory containing the source files must" +
