@@ -123,9 +123,9 @@ public class LoadTestRunner {
 		try {
 		
 			conn.setAutoCommit(false);
-			int count = JDBCUtil.writePredictDataSet(pd, conn, 800);
+			int count = JDBCUtil.writePredictDataSet(pd, conn, 200);
 
-			System.out.println("Added " + count + " records to the db.");
+			log.debug("Added " + count + " records to the db.");
 			
 			if (_commitChanges) {
 				log.debug("Committing Changes...");
