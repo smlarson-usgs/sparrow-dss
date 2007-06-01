@@ -188,7 +188,7 @@ public class JDBCUtil {
 			//Execute remaining batches
 			if (currentBatchCount != 0) insertReach.executeBatch();
 			
-			log.debug("Reach loading is complete.  Total reaches was " + modelRows + " split up as:");
+			log.debug("\nReach loading is complete.  Total reaches was " + modelRows + " split up as:");
 			log.debug("Reaches that had matched Standard IDs: " + stdIdMatchCount);
 			log.debug("Reaches that did not have a Standard ID assigned: " + stdIdNullCount);
 			log.debug("Reaches that had a Standard ID that could not be matched (ERROR): " + stdIdNotMatched);
@@ -230,6 +230,7 @@ public class JDBCUtil {
 			}
 			
 			if (currentBatchCount != 0) insertReachTopo.executeBatch();
+			log.debug("\n");
 			
 		} finally {
 			//Close all STATEMENTS - ignore errors
@@ -290,7 +291,7 @@ public class JDBCUtil {
 				insertSrc.addBatch();
 			}
 			
-			insertSrc.executeUpdate();	//run all insert batches
+			insertSrc.executeBatch();	//run all insert batches
 			
 			//
 			//Read all sources back into a map, which is returned
@@ -448,6 +449,8 @@ public class JDBCUtil {
 				}	//coef row loop (one for reach * iteration)
 				
 				if (currentBatchCount != 0) pstmtInsertReachCoef.executeBatch();
+			  log.debug("\n");
+				
 			} finally {
 				try {
 					pstmtInsertReachCoef.close();
@@ -511,6 +514,8 @@ public class JDBCUtil {
 				}	//coef row lop (one per reach * iteration)
 				
 				if (currentBatchCount != 0) srcReachCoef.executeBatch();
+			  log.debug("\n");
+				
 			} finally {
 				try {
 					srcReachCoef.close();
@@ -567,6 +572,7 @@ public class JDBCUtil {
 				}	//model row loop (one per reach)
 				
 				if (currentBatchCount != 0) srcValue.executeBatch();
+			  log.debug("\n");
 				
 			} finally {
 				try {
