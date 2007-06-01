@@ -116,7 +116,7 @@ public class JDBCUtil {
                    " VALUES (?,?,?,?,?," + data.getModel().getId().longValue() + ")";                 
     PreparedStatement insertReach = conn.prepareStatement(insertReachStr);
 		
-		String selectAlleachesQuery = "SELECT IDENTIFIER, MODEL_REACH_ID FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + data.getModel().getId().longValue();	
+		String selectAlleachesQuery = "SELECT IDENTIFIER, MODEL_REACH_ID FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + data.getModel().getId();	
 		
     String insertReachTopoStr = "INSERT INTO MODEL_REACH_TOPO (MODEL_REACH_ID, FNODE, TNODE, IFTRAN) VALUES (?,?,?,?)";
     PreparedStatement insertReachTopo = conn.prepareStatement(insertReachTopoStr);
@@ -185,9 +185,9 @@ public class JDBCUtil {
 			if (currentBatchCount != 0) insertReach.executeBatch();
 			
 			log.debug("Reach loading is complete.  Total reaches was " + modelRows + " split up as:");
-			log.debug("Reachs that had matched Standard IDs: " + stdIdMatchCount);
-			log.debug("Reachs that did not have a Standard ID assigned: " + stdIdNullCount);
-			log.debug("Reachs that had a Standard ID that could not be matched (ERROR): " + stdIdNotMatched);
+			log.debug("Reaches that had matched Standard IDs: " + stdIdMatchCount);
+			log.debug("Reaches that did not have a Standard ID assigned: " + stdIdNullCount);
+			log.debug("Reaches that had a Standard ID that could not be matched (ERROR): " + stdIdNotMatched);
 			
 			//
 			// Load all inserted db row into a Map that maps IDENTIFIER(key) to the db MODEL_REACH_ID(value)
@@ -239,6 +239,71 @@ public class JDBCUtil {
 	}
 	
 	/**
+	 * Loads all the model reach in the passed PredictionDataSet into the
+	 * SPARROW_DSS.MODEL_REACH table.
+	 * 
+	 * A Map is returned that maps the source identifier (the key) to the database
+	 * SOURCE_ID from the SOURCE table.  Both values are Integer's.
+	 * The source IDENTIFIER is 1 based, and follows the column order of the
+	 * sources in the text file.  So, the first source column has an identifier
+	 * of 1 and so on.
+	 * 
+	 * @param data
+	 * @param conn
+	 * @return
+	 * @throws SQLException
+	 */
+	public static Map<Integer, Integer> writeModelSources(PredictionDataSet data, Connection conn)
+				throws SQLException {
+
+		//return value
+		Map<Integer, Integer> sourceIdMap;		//Maps IDENTIFIER(key) to the db SOURCE_ID(value)
+		
+    String[] headers = data.getSrc().getHeadings();
+    
+    String insertSrcStr = "INSERT INTO SOURCE (IDENTIFIER, NAME, DISPLAY_NAME, DESCRIPTION, SORT_ORDER, SPARROW_MODEL_ID) " +
+                                "VALUES (?,?,?,?,?," + data.getModel().getId() + ")";
+	  PreparedStatement insertSrc = conn.prepareStatement(insertSrcStr);
+		
+		
+		String sourceMapStr = "SELECT IDENTIFIER, SOURCE_ID FROM SOURCE WHERE SPARROW_MODEL_ID = " + data.getModel().getId();
+
+		try {
+		
+			//
+			//Insert all Sources in one batch
+			for (int i = 0; i < headers.length; i++) {
+				insertSrc.setInt(1,(i+1));					//autogenerate the model-specific identifier
+				insertSrc.setString(2,headers[i]);	//SPARROW model name for source
+				insertSrc.setString(3,headers[i]);	//Human readable version of name (starts out same as above)
+				insertSrc.setString(4,headers[i]);	//...and the same for the description
+				insertSrc.setInt(5,(i+1));					//sort order matches the initial load order
+				insertSrc.addBatch();
+			}
+			
+			insertSrc.executeUpdate();	//run all insert batches
+			
+			//
+			//Read all sources back into a map, which is returned
+			sourceIdMap = buildIntegerMap(conn, sourceMapStr);
+			
+			if (sourceIdMap.size() != headers.length) {
+				log.error("The number of sources in the db does not match the number loaded!!!");
+				throw new IllegalStateException("The number of sources in the db does not match the number loaded!!!");
+			}
+		} finally {
+			try {
+				insertSrc.close();
+			} catch (Exception e) {
+				log.warn("Error attempting to close prepared statement", e);
+			}
+		}
+		
+		
+		return sourceIdMap;
+	}
+	
+	/**
 	 * Turns a query that returns two columns into a Map<Integer, Integer>.
 	 * The first column is used as the key, the second column is used as the value.
 	 * @param conn
@@ -287,29 +352,7 @@ public class JDBCUtil {
     
     int modelRows = topo.getRowCount();	//# of reaches in model
     
-    /***************************************************
-     * 
-     *            INSERT INTO SOURCE TABLE
-     * 
-     *****************************************************/
-    String[] headers = src.getHeadings();
-    
-    String insertSourceHeader = "INSERT INTO SOURCE (IDENTIFIER, NAME, DISPLAY_NAME, DESCRIPTION, SORT_ORDER, SPARROW_MODEL_ID) " +
-                                "VALUES (?,?,?,?,?," + MODEL_ID + ")";
-    
-	  PreparedStatement pstmtInsertSourceHeader = conn.prepareStatement(insertSourceHeader);
 
-    for (int i = 0; i < headers.length; i++) {
-			pstmtInsertSourceHeader.setInt(1,(i+1));	//autogenerate the model-specific identifier
-      pstmtInsertSourceHeader.setString(2,headers[i]);	//SPARROW model name for source
-			pstmtInsertSourceHeader.setString(3,headers[i]);	//Human readable version of name (starts out same as above)
-      pstmtInsertSourceHeader.setString(4,headers[i]);	//...and the same for the description
-      pstmtInsertSourceHeader.setInt(5,(i+1));	//sort order matches the initial load order
-      
-      //run insert into source table
-      pstmtInsertSourceHeader.executeUpdate();
-    }
-	  pstmtInsertSourceHeader.close();
 
   
     String insertReachCoef = "INSERT INTO REACH_COEF (ITERATION, INC_DELIVERY, TOTAL_DELIVERY, BOOT_ERROR, MODEL_REACH_ID) " +
@@ -320,15 +363,6 @@ public class JDBCUtil {
   
   
 	  ResultSet rset = null;
-  
-    //String queryMRID = "SELECT model_reach_id FROM MODEL_REACH WHERE identifier = ? AND SPARROW_MODEL_ID = " + MODEL_ID;
-    //PreparedStatement pstmtMRID = conn.prepareStatement(queryMRID);
-	  //pstmtMRID.setFetchSize(1);
-  
-  
-    String querySourceID = "SELECT source_id FROM source WHERE LOWER(name) = ? and sparrow_model_id = " + MODEL_ID;
-    PreparedStatement pstmtSourceID = conn.prepareStatement(querySourceID);
-    pstmtSourceID.setFetchSize(1);
     
     String insertSourceReachCoef = "INSERT INTO source_reach_coef (ITERATION, VALUE, SOURCE_ID, MODEL_REACH_ID) VALUES " +
                                   "(?,?,?,?)";
@@ -359,6 +393,8 @@ public class JDBCUtil {
 		 *  MODEL_REACH INSERT
 		 *********************************************/
 		Map<Integer, Integer> reachDbIdMap = writeModelReaches(data, conn, 200);
+		
+		Map<Integer, Integer> sourceDbIdMap = writeModelSources(data, conn);
   
     //try clause only to ensure statements close in a finally
 		try {
@@ -394,25 +430,14 @@ public class JDBCUtil {
 					//SOURCE_REACH_COEF
 					//start at column 5 and loop
 					
-					//j = ITER
-					//mrid = MODEL_REACH_ID 
+
 					//loop to get values (sources) from the fourth column on
+					int curSourceId = -1;	//IDENTIFIER of the current source
+					int curSourceDbId = -1;	//DB ID of the current source
 					for (int k = 4; k < coef.getColCount(); k++) {
 					
-						pstmtSourceID.setInt(1,(k-3));
-						
-						int sourceID = -1;
-						try {      
-							rset = pstmtSourceID.executeQuery();
-							if (rset.next()) {
-								sourceID = rset.getInt(1);
-							}
-						} finally {
-							if (rset != null) {
-								rset.close();
-								rset = null;
-							}
-						}            
+						curSourceId = k - 3;
+						curSourceDbId = sourceDbIdMap.get(curSourceId);
 				
 				
 						/********************************************
@@ -424,7 +449,7 @@ public class JDBCUtil {
 							// value = coef.getDouble(j,(k + 3))
 							pstmtInsertSourceReachCoef.setInt(1,coef.getInt(j,0));  //iteration
 							pstmtInsertSourceReachCoef.setDouble(2, coef.getDouble(j,k));  //value
-							pstmtInsertSourceReachCoef.setInt(3,sourceID);
+							pstmtInsertSourceReachCoef.setInt(3, curSourceDbId);
 							pstmtInsertSourceReachCoef.setInt(4, reachDbId);
 							
 							pstmtInsertSourceReachCoef.executeUpdate();
@@ -438,27 +463,12 @@ public class JDBCUtil {
 				
 				//insert into SOURCE_VALUE -- LOOP THROUGH EACH COLUMN
 				//value = get from src Data2D
-				//source_id = pstmtSourceID.setInt(1,(CURRENT_COLUMN));
-				//model_reach_id = mrid
+				int curSourceId = -1;	//IDENTIFIER of the current source
+				int curSourceDbId = -1;	//DB ID of the current source
 				for (int j = 0; j < src.getColCount(); j++) {
-					pstmtSourceID.setInt(1,(j+1));
-					//pstmtSourceID.setString(1,src.getHeading(j).toLowerCase());
+					curSourceId = j + 1;
+					curSourceDbId = sourceDbIdMap.get(curSourceId); 
 					
-					int sourceID = -1;
-					try {      
-						rset = pstmtSourceID.executeQuery();
-						if (rset.next()) {
-							sourceID = rset.getInt(1);
-						}
-					} finally {
-						if (rset != null) {
-							rset.close();
-							rset = null;
-						}
-					} 
-					
-					
-	
 					/********************************************
 					*  SOURCE_VALUE INSERT
 					*********************************************/
@@ -466,7 +476,7 @@ public class JDBCUtil {
 					 //I'M ASSUMING SRC.TXT AND ANCIL.TXT HAVE SAME AMOUNT OF ROWS (THEY SHOULD)
 					{
 						pstmtInsertSourceValue.setDouble(1, src.getDouble(currentRowIndex,j));  //value
-						pstmtInsertSourceValue.setInt(2, sourceID);  //source_id
+						pstmtInsertSourceValue.setInt(2, curSourceDbId);  //source_id
 						pstmtInsertSourceValue.setInt(3, reachDbId);  //model_reach_id
 						
 						pstmtInsertSourceValue.executeUpdate();
@@ -485,10 +495,7 @@ public class JDBCUtil {
 			}
 		}
     
-	  
-   
-    
-		return 0;
+		return modelRows;
 	}
 	
 	
