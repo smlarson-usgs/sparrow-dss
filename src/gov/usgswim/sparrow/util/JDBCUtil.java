@@ -357,6 +357,11 @@ public class JDBCUtil {
 		int iterationCnt = coefRowCnt / modelRowCnt;	//# of iterations
 		int modelSourceCnt = src.getColCount();	//# of sources in the dataset
 
+		log.debug("- - Model Startup Stats - -");
+		log.debug("- Model reach count: " + modelRowCnt);
+		log.debug("- Model coef row count: " + coefRowCnt);
+		log.debug("- Model iteration count: " + iterationCnt);
+		log.debug("- Model source count: " + modelSourceCnt);
 		
 		//Check:  coefRows should equal modelRows * iterations AND
 		//        coefRows should be an even multiple of modelRows
