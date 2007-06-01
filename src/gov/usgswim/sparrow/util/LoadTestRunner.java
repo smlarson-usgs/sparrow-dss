@@ -123,10 +123,9 @@ public class LoadTestRunner {
 		try {
 		
 			conn.setAutoCommit(false);
-			int count = JDBCUtil.writePredictDataSet(pd, conn, 400);
-			//int count = JDBCUtil.writeModelReaches(pd, conn, 200).size();
+			int count = JDBCUtil.writePredictDataSet(pd, conn, 800);
+
 			System.out.println("Added " + count + " records to the db.");
-			//conn.commit();
 			
 			if (_commitChanges) {
 				log.debug("Committing Changes...");
@@ -143,8 +142,9 @@ public class LoadTestRunner {
 			
 		} catch (Exception e) {
 		
-			System.out.println("Exception during load:");
+			log.debug("Exception during load:");
 			e.printStackTrace(System.err);
+		  log.debug("Rolling back Changes b/c of the error...");
 			conn.rollback();
 			
 		} finally {
