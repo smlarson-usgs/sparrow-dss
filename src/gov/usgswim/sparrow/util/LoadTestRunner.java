@@ -37,7 +37,8 @@ public class LoadTestRunner {
 	private long _modelId;
 	long _enhNetworkId;
 	private boolean _loadAllIterations = true;	//default include all iterations
-
+	private boolean _commitChanges = true;		//default to commiting changes to db
+	
 	public LoadTestRunner() {
 	}
 
@@ -50,6 +51,9 @@ public class LoadTestRunner {
 		if (args.length > 3) {
 			loadTestRunner._loadAllIterations = Boolean.parseBoolean(args[3]);
 		}
+	  if (args.length > 4) {
+	    loadTestRunner._commitChanges = Boolean.parseBoolean(args[4]);
+	  }
 		
 		
 
@@ -62,6 +66,11 @@ public class LoadTestRunner {
 		} else {
 			message += "Loading only the zero iteration\n";
 		}
+	  if (loadTestRunner._commitChanges) {
+	    message += "--COMMITTING changes to the db--" + "\n";
+	  } else {
+	    message += "--ROLLING BACK changes to the db--" + "\n";
+	  }
 		
 		message += " Is this OK?" + "\n";
 		
@@ -114,11 +123,23 @@ public class LoadTestRunner {
 		try {
 		
 			conn.setAutoCommit(false);
-			int count = JDBCUtil.writePredictDataSet(pd, conn, 250);
+			int count = JDBCUtil.writePredictDataSet(pd, conn, 400);
 			//int count = JDBCUtil.writeModelReaches(pd, conn, 200).size();
 			System.out.println("Added " + count + " records to the db.");
 			//conn.commit();
-			conn.rollback();
+			
+			if (_commitChanges) {
+				log.debug("Committing Changes...");
+			  long start = System.currentTimeMillis();
+			  conn.commit();
+				log.debug("Commit Complete in " + ((System.currentTimeMillis() - start) / 1000) + " seconds");
+			} else {
+			  log.debug("Rolling back Changes (as requested)...");
+			  long start = System.currentTimeMillis();
+			  conn.rollback();
+			  log.debug("Rollback Complete in " + ((System.currentTimeMillis() - start) / 1000) + " seconds");
+			}
+			
 			
 		} catch (Exception e) {
 		
