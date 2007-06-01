@@ -365,7 +365,7 @@ public class JDBCUtil {
 		
 		//Check:  coefRows should equal modelRows * iterations AND
 		//        coefRows should be an even multiple of modelRows
-		if ((coefRowCnt != modelRowCnt * coefRowCnt) || (coefRowCnt % modelRowCnt != 0)) {
+		if ((coefRowCnt != modelRowCnt * iterationCnt) || (coefRowCnt % modelRowCnt != 0)) {
 			throw new IllegalArgumentException("Rows in the coef data must be an even multiple of the number of reaches");
 		}
 		
