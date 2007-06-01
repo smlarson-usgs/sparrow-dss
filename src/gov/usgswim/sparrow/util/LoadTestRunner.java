@@ -1,32 +1,19 @@
 package gov.usgswim.sparrow.util;
 
-import gov.usgswim.sparrow.Data2D;
-import gov.usgswim.sparrow.Data2DView;
 import gov.usgswim.sparrow.PredictionDataSet;
-
 import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.ModelBuilder;
-import gov.usgswim.sparrow.domain.ModelImm;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-
 import java.sql.SQLException;
-
-import java.util.HashSet;
-
-import java.util.Scanner;
 
 import javax.swing.JOptionPane;
 
 import oracle.jdbc.OracleDriver;
 
 import org.apache.log4j.Logger;
+
 
 public class LoadTestRunner {
 	protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
@@ -124,27 +111,27 @@ public class LoadTestRunner {
 		
 			conn.setAutoCommit(false);
 			int count = JDBCUtil.writePredictDataSet(pd, conn, 200);
-
+			
 			log.debug("Added " + count + " records to the db.");
-			
-			if (_commitChanges) {
-				log.debug("Committing Changes...");
-			  long start = System.currentTimeMillis();
-			  conn.commit();
-				log.debug("Commit Complete in " + ((System.currentTimeMillis() - start) / 1000) + " seconds");
-			} else {
-			  log.debug("Rolling back Changes (as requested)...");
-			  long start = System.currentTimeMillis();
-			  conn.rollback();
-			  log.debug("Rollback Complete in " + ((System.currentTimeMillis() - start) / 1000) + " seconds");
-			}
-			
+
+				if (_commitChanges) {
+					log.debug("Committing Changes...");
+					long start = System.currentTimeMillis();
+					conn.commit();
+					log.debug("Commit Complete in " + ((System.currentTimeMillis() - start) / 1000) + " seconds");
+				} else {
+					log.debug("Rolling back Changes (as requested)...");
+					long start = System.currentTimeMillis();
+					conn.rollback();
+					log.debug("Rollback Complete in " + ((System.currentTimeMillis() - start) / 1000) + " seconds");
+				}
+
 			
 		} catch (Exception e) {
 		
-			log.debug("Exception during load:");
+			log.error("Exception during load:");
 			e.printStackTrace(System.err);
-		  log.debug("Rolling back Changes b/c of the error...");
+		  log.error("Rolling back Changes b/c of the error...");
 			conn.rollback();
 			
 		} finally {
