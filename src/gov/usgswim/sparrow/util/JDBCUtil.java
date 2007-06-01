@@ -90,8 +90,6 @@ public class JDBCUtil {
 	 * A Map is returned that maps the reach identifier (the key) to the database
 	 * MODEL_REACH_ID from the MODEL_REACH table.  Both values are Integer's.
 	 * 
-	 * TODO We need to look up the enhanced reach ids and assign them.
-	 * 
 	 * @param data
 	 * @param conn
 	 * @param batchSize
@@ -101,22 +99,33 @@ public class JDBCUtil {
 	public static Map<Integer, Integer> writeModelReaches(PredictionDataSet data, Connection conn, int batchSize)
 				throws SQLException {
 		
+		//return value
+		Map<Integer, Integer> modelIdMap;		//Maps IDENTIFIER(key) to the db MODEL_REACH_ID(value)
+		
+		//STATS
 		//These three should total to the number of reaches
 		int stdIdMatchCount = 0;	//Number of reaches where the STD_ID matched a enh reach
 		int stdIdNullCount = 0;		//Number of reaches where the STD_ID is null (actually, counting zero as null)
 		int stdIdNotMatched = 0;	//Number of reaches where the STD_ID is assigned, but not matched.
 		
+		//Queries and PreparedStatements
 		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM STREAM_NETWORK.ENH_REACH WHERE ENH_NETWORK_ID = " + data.getModel().getEnhNetworkId().longValue();
 		Map enhIdMap = buildIntegerMap(conn, enhReachQuery);
 		
-    String insertModelReach = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, ENH_REACH_ID, SPARROW_MODEL_ID)" +
+    String insertReachStr = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, ENH_REACH_ID, SPARROW_MODEL_ID)" +
                    " VALUES (?,?,?,?,?," + data.getModel().getId().longValue() + ")";                 
-    PreparedStatement pstmtInsertModelReach = conn.prepareStatement(insertModelReach);
+    PreparedStatement insertReach = conn.prepareStatement(insertReachStr);
+		
+		String selectAlleachesQuery = "SELECT IDENTIFIER, MODEL_REACH_ID FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + data.getModel().getId().longValue();	
+		
+    String insertReachTopoStr = "INSERT INTO MODEL_REACH_TOPO (MODEL_REACH_ID, FNODE, TNODE, IFTRAN) VALUES (?,?,?,?)";
+    PreparedStatement insertReachTopo = conn.prepareStatement(insertReachTopoStr);
+  
 		
     Data2D ancil = data.getAncil();
     Data2D topo = data.getTopo();
-		int rows = topo.getRowCount();
-		int batchCount = 0;	//number of statements added to the current batch
+		int modelRows = topo.getRowCount();	//# of reaches in model
+		int currentBatchCount = 0;	//number of statements added to the current batch
 		
     //ancillary headings indexes
     int localIdIndexAnc = ancil.findHeading("local_id");
@@ -138,44 +147,95 @@ public class JDBCUtil {
     if (tnodeIndexTopo < 0) throw new IllegalStateException("tnode heading not found in topo.txt");
 		if (iftranIndexTopo < 0) throw new IllegalStateException("iftran heading not found in topo.txt");
 		
-		for (int r = 0; r < rows; r++)  {
-			pstmtInsertModelReach.setInt(1, ancil.getInt(r,localIdIndexAnc));  //identifier
-			pstmtInsertModelReach.setString(2, Integer.toString(ancil.getInt(r,localIdIndexAnc)));  //full_identifier
-			pstmtInsertModelReach.setInt(3, topo.getInt(r,hydseqIndexTopo));  //hydseq
-			pstmtInsertModelReach.setInt(4, topo.getInt(r,iftranIndexTopo));   //iftran
-			
-			//Assign the enh_reach_id if its found
-			if (ancil.getInt(r,stdIdIndexAnc) == 0) {
-				//this is considered null - the STD_ID is not assigned.
-				stdIdNullCount++;
-			} else if (enhIdMap.containsKey( new Integer(ancil.getInt(r,stdIdIndexAnc))) ) {
-				pstmtInsertModelReach.setInt(5, ancil.getInt(r,stdIdIndexAnc));
-				stdIdMatchCount++;
-			} else {
-				pstmtInsertModelReach.setNull(5, Types.INTEGER);
-				stdIdNotMatched++;
-				//TODO need to consult the LOCAL_MATCH PARAM
+		//try block only has a finally clause to ensure statements close
+		try {
+		
+			//
+			//Insert rows into the MODEL_REACH table.  Total rows inserted == modelRows
+			for (int r = 0; r < modelRows; r++)  {
+				insertReach.setInt(1, ancil.getInt(r,localIdIndexAnc));  //identifier
+				insertReach.setString(2, Integer.toString(ancil.getInt(r,localIdIndexAnc)));  //full_identifier
+				insertReach.setInt(3, topo.getInt(r,hydseqIndexTopo));  //hydseq
+				insertReach.setInt(4, topo.getInt(r,iftranIndexTopo));   //iftran
+				
+				
+				//Assign the enh_reach_id if its found
+				if (ancil.getInt(r,stdIdIndexAnc) == 0) {
+					//this is considered null - the STD_ID is not assigned.
+					stdIdNullCount++;
+				} else if (enhIdMap.containsKey( new Integer(ancil.getInt(r,stdIdIndexAnc))) ) {
+					insertReach.setInt(5, ancil.getInt(r,stdIdIndexAnc));
+					stdIdMatchCount++;
+				} else {
+					insertReach.setNull(5, Types.INTEGER);
+					stdIdNotMatched++;
+					//TODO need to consult the LOCAL_MATCH PARAM
+				}
+				
+				insertReach.addBatch();
+				currentBatchCount++;
+				
+				if (currentBatchCount >= batchSize) {
+					insertReach.executeBatch();
+					currentBatchCount = 0;
+				}
 			}
 			
-			pstmtInsertModelReach.addBatch();
-			batchCount++;
+			//Execute remaining batches
+			if (currentBatchCount != 0) insertReach.executeBatch();
 			
-			if (batchCount >= batchSize) {
-				pstmtInsertModelReach.executeBatch();
-				batchCount = 0;
+			log.debug("Reach loading is complete.  Total reaches was " + modelRows + " split up as:");
+			log.debug("Reachs that had matched Standard IDs: " + stdIdMatchCount);
+			log.debug("Reachs that did not have a Standard ID assigned: " + stdIdNullCount);
+			log.debug("Reachs that had a Standard ID that could not be matched (ERROR): " + stdIdNotMatched);
+			
+			//
+			// Load all inserted db row into a Map that maps IDENTIFIER(key) to the db MODEL_REACH_ID(value)
+			// We need to use these values to load topo data, and we also return this map.
+			modelIdMap = buildIntegerMap(conn, selectAlleachesQuery);
+			
+			//Test loaded reach count
+			if (modelIdMap.size() != modelRows) {
+				log.error("The number of reaches in the db does not equal the number loaded!!");
+				throw new IllegalStateException("The number of reaches in the db does not equal the number loaded!!");
+			}
+			
+			
+			/********************************************
+			 *  MODEL_REACH_TOPO INSERT
+			 *********************************************/
+			currentBatchCount = 0;	//reset batch counter for use in another loop
+			
+			for (int r = 0; r < modelRows; r++)  {
+				insertReachTopo.setInt(1, modelIdMap.get(ancil.getInt(r,localIdIndexAnc))); //model reach id
+				insertReachTopo.setInt(2, topo.getInt(r,fnodeIndexTopo));  //fnode
+				insertReachTopo.setInt(3, topo.getInt(r,tnodeIndexTopo));   //tnode
+				insertReachTopo.setInt(4, topo.getInt(r,iftranIndexTopo));   //iftran
+				
+				insertReach.addBatch();
+				currentBatchCount++;
+				
+				if (currentBatchCount >= batchSize) {
+					insertReachTopo.executeBatch();
+					currentBatchCount = 0;
+				}
+			}
+			
+			if (currentBatchCount != 0) insertReachTopo.executeBatch();
+			
+		} finally {
+			//Close all STATEMENTS - ignore errors
+			try {
+				insertReach.close();
+				insertReachTopo.close();
+				insertReachTopo.close();
+			} catch (Exception e) {
+				log.warn("Error attempting to close prepared statement", e);
 			}
 		}
+
 		
-		if (batchCount != 0) pstmtInsertModelReach.executeBatch();
-		
-		log.debug("Reach loading is complete.  Total reaches was " + rows + " split up as:");
-		log.debug("Reachs that had matched Standard IDs: " + stdIdMatchCount);
-		log.debug("Reachs that did not have a Standard ID assigned: " + stdIdNullCount);
-		log.debug("Reachs that had a Standard ID that could not be matched (ERROR): " + stdIdNotMatched);
-		
-		//// Now load all the values back into a Map that maps IDENTIFIER to the db MODEL_REACH_ID
-		String modelReachQuery = "SELECT IDENTIFIER, MODEL_REACH_ID FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + data.getModel().getId().longValue();		
-		return buildIntegerMap(conn, modelReachQuery);
+		return modelIdMap;
 	}
 	
 	/**
@@ -225,7 +285,7 @@ public class JDBCUtil {
     //get coef
     Data2D coef = data.getCoef();
     
-    
+    int modelRows = topo.getRowCount();	//# of reaches in model
     
     /***************************************************
      * 
@@ -251,10 +311,6 @@ public class JDBCUtil {
     }
 	  pstmtInsertSourceHeader.close();
 
-  
-    String insertModelReachTopo = "INSERT INTO MODEL_REACH_TOPO (MODEL_REACH_ID, FNODE, TNODE, IFTRAN) VALUES (?,?,?,?)";
-    PreparedStatement pstmtInsertModelReachTopo = conn.prepareStatement(insertModelReachTopo);
-  
   
     String insertReachCoef = "INSERT INTO REACH_COEF (ITERATION, INC_DELIVERY, TOTAL_DELIVERY, BOOT_ERROR, MODEL_REACH_ID) " +
                              "VALUES (?,?,?,?,?)";
@@ -304,157 +360,133 @@ public class JDBCUtil {
 		 *********************************************/
 		Map<Integer, Integer> reachDbIdMap = writeModelReaches(data, conn, 200);
   
-    //BEGIN TABLE LOADING LOOP...
-    for (int i = 0; i < ancil.getRowCount(); i++) {
-      try {
-        
-
-              
-        
-        //find model_reach_id using identifier in where clause
-				int localId = ancil.getInt(i, localIdIndexAnc);	//local id for this row
-        int mrid = reachDbIdMap.get(new Integer(localId)).intValue();
-           
-        
-
-        /********************************************
-         *  MODEL_REACH_TOPO INSERT
-         *********************************************/
-        {
-          //insert into model_reach_topo table in db
-          pstmtInsertModelReachTopo.setInt(1, mrid);              //model reach id
-          pstmtInsertModelReachTopo.setInt(2, topo.getInt(i,fnodeIndexTopo));  //fnode
-          pstmtInsertModelReachTopo.setInt(3, topo.getInt(i,tnodeIndexTopo));   //tnode
-          pstmtInsertModelReachTopo.setInt(4, topo.getInt(i,iftranIndexTopo));   //iftran
+    //try clause only to ensure statements close in a finally
+		try {
+		
+			//BEGIN TABLE LOADING LOOP...
+			for (int currentRowIndex = 0; currentRowIndex < modelRows; currentRowIndex++) {
+					
+				//Current reach IDs
+				int localId = ancil.getInt(currentRowIndex, localIdIndexAnc);	//local id for this row
+				int reachDbId = reachDbIdMap.get(new Integer(localId)).intValue();
+					 
+	
+				//here's a hard one- populate REACH_COEF
+				//pull out all iterations for this model reach and insert into db
+				//This follows a single source all the way thru.
+				for (int j = currentRowIndex; j < coef.getRowCount(); j+=modelRows) {
+								 
+					/********************************************
+					 *  REACH_COEF INSERT
+					 *********************************************/                 
+					{
+						pstmtInsertReachCoef.setInt(1,coef.getInt(j,0));  //ITER
+						pstmtInsertReachCoef.setDouble(2,coef.getDouble(j,1));  //INC_DELIVF
+						pstmtInsertReachCoef.setDouble(3,coef.getDouble(j,2));  //TOT_DELIVF
+						pstmtInsertReachCoef.setDouble(4,coef.getDouble(j,3));  //BOOT_ERROR
+						pstmtInsertReachCoef.setInt(5, reachDbId);  //MODEL_REACH_ID
+					 
+						pstmtInsertReachCoef.executeUpdate();
+					}
+					
+					
+					
+					//SOURCE_REACH_COEF
+					//start at column 5 and loop
+					
+					//j = ITER
+					//mrid = MODEL_REACH_ID 
+					//loop to get values (sources) from the fourth column on
+					for (int k = 4; k < coef.getColCount(); k++) {
+					
+						pstmtSourceID.setInt(1,(k-3));
+						
+						int sourceID = -1;
+						try {      
+							rset = pstmtSourceID.executeQuery();
+							if (rset.next()) {
+								sourceID = rset.getInt(1);
+							}
+						} finally {
+							if (rset != null) {
+								rset.close();
+								rset = null;
+							}
+						}            
+				
+				
+						/********************************************
+						 *  SOURCE_REACH_COEF INSERT
+						 *********************************************/
+						{
+							//now i have source_id, model_reach_id, iter
+							//JUST NEED VALUE!
+							// value = coef.getDouble(j,(k + 3))
+							pstmtInsertSourceReachCoef.setInt(1,coef.getInt(j,0));  //iteration
+							pstmtInsertSourceReachCoef.setDouble(2, coef.getDouble(j,k));  //value
+							pstmtInsertSourceReachCoef.setInt(3,sourceID);
+							pstmtInsertSourceReachCoef.setInt(4, reachDbId);
+							
+							pstmtInsertSourceReachCoef.executeUpdate();
+						}
+					} //k
+				} //j
+				
+				
+				
+				
+				
+				//insert into SOURCE_VALUE -- LOOP THROUGH EACH COLUMN
+				//value = get from src Data2D
+				//source_id = pstmtSourceID.setInt(1,(CURRENT_COLUMN));
+				//model_reach_id = mrid
+				for (int j = 0; j < src.getColCount(); j++) {
+					pstmtSourceID.setInt(1,(j+1));
+					//pstmtSourceID.setString(1,src.getHeading(j).toLowerCase());
+					
+					int sourceID = -1;
+					try {      
+						rset = pstmtSourceID.executeQuery();
+						if (rset.next()) {
+							sourceID = rset.getInt(1);
+						}
+					} finally {
+						if (rset != null) {
+							rset.close();
+							rset = null;
+						}
+					} 
+					
+					
+	
+					/********************************************
+					*  SOURCE_VALUE INSERT
+					*********************************************/
+					 //*******NOTE!!!!!******************          
+					 //I'M ASSUMING SRC.TXT AND ANCIL.TXT HAVE SAME AMOUNT OF ROWS (THEY SHOULD)
+					{
+						pstmtInsertSourceValue.setDouble(1, src.getDouble(currentRowIndex,j));  //value
+						pstmtInsertSourceValue.setInt(2, sourceID);  //source_id
+						pstmtInsertSourceValue.setInt(3, reachDbId);  //model_reach_id
+						
+						pstmtInsertSourceValue.executeUpdate();
+					}
+				}
+	
+								
+			}
+		} finally {
+			try {
+				pstmtInsertReachCoef.close();
+				pstmtInsertSourceReachCoef.close();
+				pstmtInsertSourceValue.close(); 
+			} catch (Exception e) {
+				log.error("Error attempting to close statements", e);
+			}
+		}
     
-          //execute insert statement
-          pstmtInsertModelReachTopo.executeUpdate();
-        }
-        
-        
-        
-        
-        //here's a hard one- populate REACH_COEF
-        //pull out all iterations for this model reach and insert into db
-        for (int j = i; j < coef.getRowCount(); j+=ancil.getRowCount()) {
-                 
-          /********************************************
-           *  REACH_COEF INSERT
-           *********************************************/                 
-          {
-            pstmtInsertReachCoef.setInt(1,coef.getInt(j,0));  //ITER
-            pstmtInsertReachCoef.setDouble(2,coef.getDouble(j,1));  //INC_DELIVF
-            pstmtInsertReachCoef.setDouble(3,coef.getDouble(j,2));  //TOT_DELIVF
-            pstmtInsertReachCoef.setDouble(4,coef.getDouble(j,3));  //BOOT_ERROR
-            pstmtInsertReachCoef.setInt(5, mrid);  //MODEL_REACH_ID
-           
-            pstmtInsertReachCoef.executeUpdate();
-          }
-          
-          
-          
-          //SOURCE_REACH_COEF
-          //start at column 5 and loop
-          
-          //j = ITER
-          //mrid = MODEL_REACH_ID 
-          //loop to get values (sources) from the fourth column on
-          for (int k = 4; k < coef.getColCount(); k++) {
-          
-            pstmtSourceID.setInt(1,(k-3));
-            
-            /*
-            String src_name = coef.getHeading(k).toLowerCase();
-            String[] sn_tok = src_name.split("_");
-            src_name = sn_tok[sn_tok.length - 1];
-            pstmtSourceID.setString(1,src_name);
-            */
-            
-            int sourceID = -1;
-            try {      
-              rset = pstmtSourceID.executeQuery();
-              if (rset.next()) {
-                sourceID = rset.getInt(1);
-              }
-            } finally {
-              if (rset != null) {
-                rset.close();
-                rset = null;
-              }
-            }            
-        
-        
-            /********************************************
-             *  SOURCE_REACH_COEF INSERT
-             *********************************************/
-            {
-              //now i have source_id, model_reach_id, iter
-              //JUST NEED VALUE!
-              // value = coef.getDouble(j,(k + 3))
-              pstmtInsertSourceReachCoef.setInt(1,coef.getInt(j,0));  //iteration
-              pstmtInsertSourceReachCoef.setDouble(2, coef.getDouble(j,k));  //value
-              pstmtInsertSourceReachCoef.setInt(3,sourceID);
-              pstmtInsertSourceReachCoef.setInt(4, mrid);
-              
-              pstmtInsertSourceReachCoef.executeUpdate();
-            }
-          } //k
-        } //j
-        
-        
-        
-        
-        
-        //insert into SOURCE_VALUE -- LOOP THROUGH EACH COLUMN
-        //value = get from src Data2D
-        //source_id = pstmtSourceID.setInt(1,(CURRENT_COLUMN));
-        //model_reach_id = mrid
-        for (int j = 0; j < src.getColCount(); j++) {
-          pstmtSourceID.setInt(1,(j+1));
-          //pstmtSourceID.setString(1,src.getHeading(j).toLowerCase());
-          
-          int sourceID = -1;
-          try {      
-            rset = pstmtSourceID.executeQuery();
-            if (rset.next()) {
-              sourceID = rset.getInt(1);
-            }
-          } finally {
-            if (rset != null) {
-              rset.close();
-              rset = null;
-            }
-          } 
-          
-          
-
-          /********************************************
-          *  SOURCE_VALUE INSERT
-          *********************************************/
-           //*******NOTE!!!!!******************          
-           //I'M ASSUMING SRC.TXT AND ANCIL.TXT HAVE SAME AMOUNT OF ROWS (THEY SHOULD)
-          {
-            pstmtInsertSourceValue.setDouble(1, src.getDouble(i,j));  //value
-            pstmtInsertSourceValue.setInt(2, sourceID);  //source_id
-            pstmtInsertSourceValue.setInt(3, mrid);  //model_reach_id
-            
-            pstmtInsertSourceValue.executeUpdate();
-          }
-        }
-        
-  
-      
-      } catch (Exception e) {
-        e.printStackTrace();
-        System.out.println(e.getMessage());
-      }
-              
-    }
-    
-	  pstmtInsertModelReachTopo.close();
-    pstmtInsertReachCoef.close();
-	  pstmtInsertSourceReachCoef.close();
-	  pstmtInsertSourceValue.close();    
+	  
+   
     
 		return 0;
 	}
