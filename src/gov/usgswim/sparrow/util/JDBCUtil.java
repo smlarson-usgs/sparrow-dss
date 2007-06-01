@@ -335,43 +335,39 @@ public class JDBCUtil {
 	 */
 	public static int writePredictDataSet(PredictionDataSet data, Connection conn)
 			throws SQLException {
-		
-    long MODEL_ID = data.getModel().getId();
-    
-    //write ancillary table to db
+
+    //quick access variables for data tables
     Data2D ancil = data.getAncil();
-    
-    //get the topo.txt file
     Data2D topo = data.getTopo();
-    
-    //get the src.txt file
     Data2D src = data.getSrc();
-    
-    //get coef
     Data2D coef = data.getCoef();
     
-    int modelRows = topo.getRowCount();	//# of reaches in model
-    
+		//Basic count values for model data
+    int modelRowCnt = topo.getRowCount();	//# of reaches in model
+    int coefRowCnt = coef.getRowCount();	//# of coefs (reaches * iterations)
+		int iterationCnt = coefRowCnt / modelRowCnt;	//# of iterations
+		int modelSourceCnt = src.getColCount();	//# of sources in the dataset
 
-
+		
+		//Check:  coefRows should equal modelRows * iterations AND
+		//        coefRows should be an even multiple of modelRows
+		if ((coefRowCnt != modelRowCnt * coefRowCnt) || (coefRowCnt % modelRowCnt != 0)) {
+			throw new IllegalArgumentException("Rows in the coef data must be an even multiple of the number of reaches");
+		}
+		
+		//Check:  The coef table must contain 4 columns more then the number of sources
+		if (modelSourceCnt != coef.getColCount() - 4) {
+			throw new IllegalArgumentException("There should be four more columns in the coef data then the number of sources");
+		}
+		
+		//Check:  ancil, topo, and src should contain modelRowCnt number of rows.
+		//Note:  number of model rows is based on topo.
+		if (ancil.getRowCount() != modelRowCnt || src.getRowCount() != modelRowCnt) {
+			throw new IllegalArgumentException("The number of rows in ancil, src, and topo do not match");
+		}
   
-    String insertReachCoef = "INSERT INTO REACH_COEF (ITERATION, INC_DELIVERY, TOTAL_DELIVERY, BOOT_ERROR, MODEL_REACH_ID) " +
-                             "VALUES (?,?,?,?,?)";
-    PreparedStatement pstmtInsertReachCoef = conn.prepareStatement(insertReachCoef);
-  
-  
-  
-  
-	  ResultSet rset = null;
-    
-    String insertSourceReachCoef = "INSERT INTO source_reach_coef (ITERATION, VALUE, SOURCE_ID, MODEL_REACH_ID) VALUES " +
-                                  "(?,?,?,?)";
-	  PreparedStatement pstmtInsertSourceReachCoef = conn.prepareStatement(insertSourceReachCoef);
-
-
-    String insertSourceValue = "INSERT INTO source_value (VALUE, SOURCE_ID, MODEL_REACH_ID) VALUES " +
-                               "(?,?,?)";
-	  PreparedStatement pstmtInsertSourceValue = conn.prepareStatement(insertSourceValue);                           
+		//
+		//Named columns                    
   
 		//Ancil columns - really just need the local id.
     int localIdIndexAnc = ancil.findHeading("local_id");
@@ -390,112 +386,172 @@ public class JDBCUtil {
 		if (iftranIndexTopo < 0) throw new IllegalStateException("iftran heading not found in topo.txt");
   
 		/********************************************
-		 *  MODEL_REACH INSERT
+		 *  MODEL_REACH and SOURCE
 		 *********************************************/
 		Map<Integer, Integer> reachDbIdMap = writeModelReaches(data, conn, 200);
-		
 		Map<Integer, Integer> sourceDbIdMap = writeModelSources(data, conn);
   
-    //try clause only to ensure statements close in a finally
-		try {
 		
-			//BEGIN TABLE LOADING LOOP...
-			for (int currentRowIndex = 0; currentRowIndex < modelRows; currentRowIndex++) {
+		/********************************************
+		 *  REACH_COEF INSERT - Into the REACH_COEF table
+		 *  These are the decay coefs
+		 *********************************************/
+		{
+			String reachCoefStr = "INSERT INTO REACH_COEF (ITERATION, INC_DELIVERY, TOTAL_DELIVERY, BOOT_ERROR, MODEL_REACH_ID) " +
+															 "VALUES (?,?,?,?,?)";
+			PreparedStatement pstmtInsertReachCoef = conn.prepareStatement(reachCoefStr);
+			
+			int curReachRow = -1;	//current row of reach (ignoring iterations)
+			int localId = -1;	//local id for this reach
+			int reachDbId = -1;	//db ID for this reach
+			int currentBatchCount = 0;	//number of rows added in this batch
+			
+			try {
+				for (int coefRow=0; coefRow < coefRowCnt; coefRow++) {
+				
+					curReachRow = coefRow % modelRowCnt;
+					localId = ancil.getInt(curReachRow, localIdIndexAnc);
+					reachDbId = reachDbIdMap.get(localId);
 					
-				//Current reach IDs
-				int localId = ancil.getInt(currentRowIndex, localIdIndexAnc);	//local id for this row
-				int reachDbId = reachDbIdMap.get(new Integer(localId)).intValue();
-					 
-	
-				//here's a hard one- populate REACH_COEF
-				//pull out all iterations for this model reach and insert into db
-				//This follows a single source all the way thru.
-				for (int j = currentRowIndex; j < coef.getRowCount(); j+=modelRows) {
-								 
-					/********************************************
-					 *  REACH_COEF INSERT
-					 *********************************************/                 
-					{
-						pstmtInsertReachCoef.setInt(1,coef.getInt(j,0));  //ITER
-						pstmtInsertReachCoef.setDouble(2,coef.getDouble(j,1));  //INC_DELIVF
-						pstmtInsertReachCoef.setDouble(3,coef.getDouble(j,2));  //TOT_DELIVF
-						pstmtInsertReachCoef.setDouble(4,coef.getDouble(j,3));  //BOOT_ERROR
-						pstmtInsertReachCoef.setInt(5, reachDbId);  //MODEL_REACH_ID
-					 
-						pstmtInsertReachCoef.executeUpdate();
+					pstmtInsertReachCoef.setInt(1,coef.getInt(coefRow,0));  //ITER
+					pstmtInsertReachCoef.setDouble(2,coef.getDouble(coefRow,1));  //INC_DELIVF
+					pstmtInsertReachCoef.setDouble(3,coef.getDouble(coefRow,2));  //TOT_DELIVF
+					pstmtInsertReachCoef.setDouble(4,coef.getDouble(coefRow,3));  //BOOT_ERROR
+					pstmtInsertReachCoef.setInt(5, reachDbId);  //MODEL_REACH_ID
+				 
+					pstmtInsertReachCoef.addBatch();
+					currentBatchCount++;
+					
+					if (currentBatchCount >= 200) {
+						pstmtInsertReachCoef.executeBatch();
+						currentBatchCount = 0;
 					}
-					
-					
-					
-					//SOURCE_REACH_COEF
-					//start at column 5 and loop
-					
+				}	//coef row loop (one for reach * iteration)
+				
+				if (currentBatchCount != 0) pstmtInsertReachCoef.executeBatch();
+			} finally {
+				try {
+					pstmtInsertReachCoef.close();
+				} catch (Exception e) {
+					log.warn("Error attempting to close prepared statement", e);
+				}
+			}
 
+		}
+		
+		
+	 /********************************************
+		*  SOURCE_REACH_COEF INSERT
+		*********************************************/
+		{
+		
+			String srcReachCoefStr = "INSERT INTO source_reach_coef (ITERATION, VALUE, SOURCE_ID, MODEL_REACH_ID) VALUES " +
+																		"(?,?,?,?)";
+			PreparedStatement srcReachCoef = conn.prepareStatement(srcReachCoefStr);
+			
+			int curReachRow = -1;	//current row of reach (ignoring iterations)
+			int localId = -1;	//local id for this reach
+			int reachDbId = -1;	//db ID for this reach
+			int currentBatchCount = 0;	//number of rows added in this batch
+			
+			try {
+				for (int coefRow=0; coefRow < coefRowCnt; coefRow++) {
+				
+					curReachRow = coefRow % modelRowCnt;
+					localId = ancil.getInt(curReachRow, localIdIndexAnc);
+					reachDbId = reachDbIdMap.get(localId);
+				
+				
 					//loop to get values (sources) from the fourth column on
 					int curSourceId = -1;	//IDENTIFIER of the current source
 					int curSourceDbId = -1;	//DB ID of the current source
-					for (int k = 4; k < coef.getColCount(); k++) {
+					for (int srcIndex = 0; srcIndex < modelSourceCnt; srcIndex++) {
 					
-						curSourceId = k - 3;
+						curSourceId = srcIndex + 1;	//The source ids are 1 based
 						curSourceDbId = sourceDbIdMap.get(curSourceId);
-				
-				
-						/********************************************
-						 *  SOURCE_REACH_COEF INSERT
-						 *********************************************/
-						{
-							//now i have source_id, model_reach_id, iter
-							//JUST NEED VALUE!
-							// value = coef.getDouble(j,(k + 3))
-							pstmtInsertSourceReachCoef.setInt(1,coef.getInt(j,0));  //iteration
-							pstmtInsertSourceReachCoef.setDouble(2, coef.getDouble(j,k));  //value
-							pstmtInsertSourceReachCoef.setInt(3, curSourceDbId);
-							pstmtInsertSourceReachCoef.setInt(4, reachDbId);
-							
-							pstmtInsertSourceReachCoef.executeUpdate();
-						}
-					} //k
-				} //j
-				
-				
-				
-				
-				
-				//insert into SOURCE_VALUE -- LOOP THROUGH EACH COLUMN
-				//value = get from src Data2D
-				int curSourceId = -1;	//IDENTIFIER of the current source
-				int curSourceDbId = -1;	//DB ID of the current source
-				for (int j = 0; j < src.getColCount(); j++) {
-					curSourceId = j + 1;
-					curSourceDbId = sourceDbIdMap.get(curSourceId); 
-					
-					/********************************************
-					*  SOURCE_VALUE INSERT
-					*********************************************/
-					 //*******NOTE!!!!!******************          
-					 //I'M ASSUMING SRC.TXT AND ANCIL.TXT HAVE SAME AMOUNT OF ROWS (THEY SHOULD)
-					{
-						pstmtInsertSourceValue.setDouble(1, src.getDouble(currentRowIndex,j));  //value
-						pstmtInsertSourceValue.setInt(2, curSourceDbId);  //source_id
-						pstmtInsertSourceValue.setInt(3, reachDbId);  //model_reach_id
+
+						srcReachCoef.setInt(1,coef.getInt(coefRow,0));  //iteration
+						srcReachCoef.setDouble(2, coef.getDouble(coefRow,srcIndex + 4));  //value (4 previous columns)
+						srcReachCoef.setInt(3, curSourceDbId);
+						srcReachCoef.setInt(4, reachDbId);
+						srcReachCoef.addBatch();
 						
-						pstmtInsertSourceValue.executeUpdate();
-					}
+						currentBatchCount++;
+						
+						if (currentBatchCount >= 200) {
+							srcReachCoef.executeBatch();
+							currentBatchCount = 0;
+						}
+
+					}	//source loop
+				
+				}	//coef row lop (one per reach * iteration)
+				
+				if (currentBatchCount != 0) srcReachCoef.executeBatch();
+			} finally {
+				try {
+					srcReachCoef.close();
+				} catch (Exception e) {
+					log.warn("Error attempting to close prepared statement", e);
 				}
-	
-								
-			}
-		} finally {
-			try {
-				pstmtInsertReachCoef.close();
-				pstmtInsertSourceReachCoef.close();
-				pstmtInsertSourceValue.close(); 
-			} catch (Exception e) {
-				log.error("Error attempting to close statements", e);
 			}
 		}
+	
+	 /********************************************
+		*  SOURCE_VALUE INSERT
+		*********************************************/
+		{
+			String srcValueStr = "INSERT INTO source_value (VALUE, SOURCE_ID, MODEL_REACH_ID) VALUES " +
+																 "(?,?,?)";
+			PreparedStatement srcValue = conn.prepareStatement(srcValueStr);
+		
+			int currentBatchCount = 0;	//number of rows added in this batch
+			
+			try {
+				//BEGIN TABLE LOADING LOOP...
+				for (int curRowIndex = 0; curRowIndex < modelRowCnt; curRowIndex++) {
+						
+					//Current reach IDs
+					int localId = ancil.getInt(curRowIndex, localIdIndexAnc);	//local id for this row
+					int reachDbId = reachDbIdMap.get(localId);
+						 
+					//insert into SOURCE_VALUE -- LOOP THROUGH EACH COLUMN
+					//value = get from src Data2D
+					int curSourceId = -1;	//IDENTIFIER of the current source
+					int curSourceDbId = -1;	//DB ID of the current source
+					for (int curSourceIndex = 0; curSourceIndex < modelSourceCnt; curSourceIndex++) {
+						curSourceId = curSourceIndex + 1;	//source ids are 1 based
+						curSourceDbId = sourceDbIdMap.get(curSourceId); 
+
+						srcValue.setDouble(1, src.getDouble(curRowIndex,curSourceIndex));  //value
+						srcValue.setInt(2, curSourceDbId);  //source_id
+						srcValue.setInt(3, reachDbId);  //model_reach_id
+						
+						srcValue.addBatch();
+						currentBatchCount++;
+						
+						if (currentBatchCount >= 200) {
+							srcValue.executeBatch();
+							currentBatchCount = 0;
+						}
+
+					}	//source column loop
+				}	//model row loop (one per reach)
+				
+				if (currentBatchCount != 0) srcValue.executeBatch();
+				
+			} finally {
+				try {
+					srcValue.close();
+				} catch (Exception e) {
+					log.warn("Error attempting to close prepared statement", e);
+				}
+			}
+		
+		}
+
     
-		return modelRows;
+		return modelRowCnt;
 	}
 	
 	
