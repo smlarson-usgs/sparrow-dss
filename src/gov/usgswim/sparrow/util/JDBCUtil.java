@@ -106,7 +106,7 @@ public class JDBCUtil {
 		int stdIdNullCount = 0;		//Number of reaches where the STD_ID is null (actually, counting zero as null)
 		int stdIdNotMatched = 0;	//Number of reaches where the STD_ID is assigned, but not matched.
 		
-		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM ENH_REACH WHERE ENH_NETWORK_ID = " + data.getModel().getEnhNetworkId().longValue();
+		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM STREAM_NETWORK.ENH_REACH WHERE ENH_NETWORK_ID = " + data.getModel().getEnhNetworkId().longValue();
 		Map enhIdMap = buildIntegerMap(conn, enhReachQuery);
 		
     String insertModelReach = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, ENH_REACH_ID, SPARROW_MODEL_ID)" +
