@@ -149,7 +149,8 @@ public class JDBCUtil {
 		
 		//try block only has a finally clause to ensure statements close
 		try {
-		
+			log.debug("Adding reaches in batch size of: " + batchSize);
+			
 			//
 			//Insert rows into the MODEL_REACH table.  Total rows inserted == modelRows
 			for (int r = 0; r < modelRows; r++)  {
@@ -178,6 +179,9 @@ public class JDBCUtil {
 				if (currentBatchCount >= batchSize) {
 					insertReach.executeBatch();
 					currentBatchCount = 0;
+					if (log.isDebugEnabled()) {
+						System.out.print(".");
+					}
 				}
 			}
 			
@@ -204,6 +208,7 @@ public class JDBCUtil {
 			/********************************************
 			 *  MODEL_REACH_TOPO INSERT
 			 *********************************************/
+			log.debug("Adding reach topo rows in batch size of: " + batchSize);
 			currentBatchCount = 0;	//reset batch counter for use in another loop
 			
 			for (int r = 0; r < modelRows; r++)  {
@@ -218,6 +223,9 @@ public class JDBCUtil {
 				if (currentBatchCount >= batchSize) {
 					insertReachTopo.executeBatch();
 					currentBatchCount = 0;
+					if (log.isDebugEnabled()) {
+						System.out.print(".");
+					}
 				}
 			}
 			
@@ -255,7 +263,8 @@ public class JDBCUtil {
 	 */
 	public static Map<Integer, Integer> writeModelSources(PredictionDataSet data, Connection conn)
 				throws SQLException {
-
+		log.debug("Adding sources (one batch)");
+		
 		//return value
 		Map<Integer, Integer> sourceIdMap;		//Maps IDENTIFIER(key) to the db SOURCE_ID(value)
 		
@@ -333,7 +342,7 @@ public class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static int writePredictDataSet(PredictionDataSet data, Connection conn)
+	public static int writePredictDataSet(PredictionDataSet data, Connection conn, int batchSize)
 			throws SQLException {
 
     //quick access variables for data tables
@@ -397,6 +406,8 @@ public class JDBCUtil {
 		 *  These are the decay coefs
 		 *********************************************/
 		{
+			log.debug("Adding decay coefs in batch size of: " + batchSize);
+			
 			String reachCoefStr = "INSERT INTO REACH_COEF (ITERATION, INC_DELIVERY, TOTAL_DELIVERY, BOOT_ERROR, MODEL_REACH_ID) " +
 															 "VALUES (?,?,?,?,?)";
 			PreparedStatement pstmtInsertReachCoef = conn.prepareStatement(reachCoefStr);
@@ -422,9 +433,12 @@ public class JDBCUtil {
 					pstmtInsertReachCoef.addBatch();
 					currentBatchCount++;
 					
-					if (currentBatchCount >= 200) {
+					if (currentBatchCount >= batchSize) {
 						pstmtInsertReachCoef.executeBatch();
 						currentBatchCount = 0;
+						if (log.isDebugEnabled()) {
+							System.out.print(".");
+						}
 					}
 				}	//coef row loop (one for reach * iteration)
 				
@@ -444,7 +458,8 @@ public class JDBCUtil {
 		*  SOURCE_REACH_COEF INSERT
 		*********************************************/
 		{
-		
+			log.debug("Adding source reach coefs in batch size of: " + batchSize);
+			
 			String srcReachCoefStr = "INSERT INTO source_reach_coef (ITERATION, VALUE, SOURCE_ID, MODEL_REACH_ID) VALUES " +
 																		"(?,?,?,?)";
 			PreparedStatement srcReachCoef = conn.prepareStatement(srcReachCoefStr);
@@ -478,9 +493,12 @@ public class JDBCUtil {
 						
 						currentBatchCount++;
 						
-						if (currentBatchCount >= 200) {
+						if (currentBatchCount >= batchSize) {
 							srcReachCoef.executeBatch();
 							currentBatchCount = 0;
+							if (log.isDebugEnabled()) {
+								System.out.print(".");
+							}
 						}
 
 					}	//source loop
@@ -501,6 +519,8 @@ public class JDBCUtil {
 		*  SOURCE_VALUE INSERT
 		*********************************************/
 		{
+			log.debug("Adding source values in batch size of: " + batchSize);
+			
 			String srcValueStr = "INSERT INTO source_value (VALUE, SOURCE_ID, MODEL_REACH_ID) VALUES " +
 																 "(?,?,?)";
 			PreparedStatement srcValue = conn.prepareStatement(srcValueStr);
@@ -530,9 +550,12 @@ public class JDBCUtil {
 						srcValue.addBatch();
 						currentBatchCount++;
 						
-						if (currentBatchCount >= 200) {
+						if (currentBatchCount >= batchSize) {
 							srcValue.executeBatch();
 							currentBatchCount = 0;
+							if (log.isDebugEnabled()) {
+								System.out.print(".");
+							}
 						}
 
 					}	//source column loop
