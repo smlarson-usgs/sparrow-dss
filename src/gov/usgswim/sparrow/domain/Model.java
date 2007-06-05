@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.domain;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Domain Object representing a SPARROW Model.
@@ -97,4 +98,27 @@ public interface Model {
 	 * @return
 	 */
 	public Double getWestBound();
+	
+	/**
+	 * Returns a sorted list of model Source instances.
+	 * 
+	 * Sorting is based on the Source's sort order.
+	 * If there are no sources, this method should return an empty list.
+	 * @return
+	 */
+	public List<Source> getSources();
+	
+	/**
+	 * Returns a source from the model based on its Identifier.
+	 * 
+	 * Identifiers are usually numbered sequential for sources in a model, ie.,
+	 * the first source in a model has identifier #1.  Thus, identifiers are not
+	 * UUIDs, so they cannot be used to uniquely identify a source in the db.
+	 * 
+	 * If the identifier is not found, null is returned.
+	 * 
+	 * @param identifier
+	 * @return
+	 */
+	public Source getSource(int identifier);
 }
