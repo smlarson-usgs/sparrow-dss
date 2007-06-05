@@ -9,6 +9,10 @@ import gov.usgswim.sparrow.PredictionDataSet;
 
 import gov.usgswim.sparrow.domain.Model;
 
+import gov.usgswim.sparrow.domain.ModelBuilder;
+
+import gov.usgswim.sparrow.domain.SourceBuilder;
+
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Connection;
@@ -23,8 +27,10 @@ import java.sql.Types;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 public class JDBCUtil {
@@ -83,6 +89,177 @@ public class JDBCUtil {
 		return dataSet;
 	}
 	
+	public static List<ModelBuilder> loadModelMetaData(Connection conn) throws SQLException {
+		List<ModelBuilder> models = new ArrayList<ModelBuilder>(23);
+		
+		String selectModels =
+			"SELECT " +
+			"SPARROW_MODEL_ID,IS_APPROVED,IS_PUBLIC,IS_ARCHIVED,NAME,DESCRIPTION," +
+			"DATE_ADDED,CONTACT_ID,ENH_NETWORK_ID,URL," +
+			"BOUND_NORTH,BOUND_EAST,BOUND_SOUTH,BOUND_WEST " +
+			"FROM SPARROW_MODEL ORDER BY SPARROW_MODEL_ID";
+			
+		String selectSources =
+			"SELECT " +
+			"SOURCE_ID,NAME,DESCRIPTION,SORT_ORDER,SPARROW_MODEL_ID,IDENTIFIER,DISPLAY_NAME " +
+			"FROM SOURCE ORDER BY SPARROW_MODEL_ID, SORT_ORDER";
+		
+		Statement stmt = null;
+		ResultSet rset = null;
+		
+		
+		try {
+			stmt = conn.createStatement();
+			stmt.setFetchSize(100);
+			
+			try {
+				rset = stmt.executeQuery(selectModels);
+				
+				while (rset.next()) {
+					ModelBuilder m = new ModelBuilder();
+					m.setId(rset.getLong("SPARROW_MODEL_ID"));
+					m.setApproved(StringUtils.equalsIgnoreCase("T", rset.getString("IS_APPROVED")));
+					m.setPublic(StringUtils.equalsIgnoreCase("T", rset.getString("IS_PUBLIC")));
+					m.setArchived(StringUtils.equalsIgnoreCase("T", rset.getString("IS_ARCHIVED")));
+					m.setName(rset.getString("NAME"));
+					m.setDescription(rset.getString("DESCRIPTION"));
+					m.setDateAdded(rset.getDate("DATE_ADDED"));
+					m.setContactId(rset.getLong("CONTACT_ID"));
+					m.setEnhNetworkId(rset.getLong("ENH_NETWORK_ID"));
+					m.setUrl(rset.getString("URL"));
+					m.setNorthBound(rset.getDouble("BOUND_NORTH"));
+					m.setEastBound(rset.getDouble("BOUND_EAST"));
+					m.setSouthBound(rset.getDouble("BOUND_SOUTH"));
+					m.setWestBound(rset.getDouble("BOUND_WEST"));
+					models.add(m);
+				}
+				
+			} finally {
+				rset.close();
+			}
+			
+			try {
+				rset = stmt.executeQuery(selectSources);
+				int modelIndex = 0;
+				
+				while (rset.next()) {
+					SourceBuilder s = new SourceBuilder();
+					s.setId(rset.getLong("SOURCE_ID"));
+					s.setName(rset.getString("NAME"));
+					s.setDescription(rset.getString("DESCRIPTION"));
+					s.setSortOrder(rset.getInt("SORT_ORDER"));
+					s.setModelId(rset.getLong("SPARROW_MODEL_ID"));
+					s.setIdentifier(rset.getInt("IDENTIFIER"));
+					s.setDisplayName(rset.getString("DISPLAY_NAME"));
+					
+					//The models and sources are sorted by model_id, so scroll forward
+					//thru the models until we find the correct one.
+					while (
+								(models.get(modelIndex).getId() != s.getModelId()) &&
+								(modelIndex < models.size()) /* don't scoll past last model*/ )  {
+						modelIndex++;
+					}
+					
+					if (modelIndex < models.size()) {
+						models.get(modelIndex).addSource(s);
+					} else {
+						log.warn("Found sources not matched to a model.  Likely caused by record insertion during the queries.");
+					}
+				}
+				
+			} finally {
+				rset.close();
+			}
+		} finally {
+			stmt.close();
+		}
+		
+		return models;
+	}
+	
+	/**
+	 * Deletes an entire model from the database.
+	 * 
+	 * If keepModelRecord is true, all model data is deleted, but the model
+	 * record in the SPARROW_MODEL table is preserved.  This is intended to
+	 * allow model data to be reloaded w/o having to reinsert a model record.
+	 * 
+	 * The strategy is to delete by source, since that provides smaller chunks to
+	 * delete.  The final clean-up is then to delete the reaches.
+	 * 
+	 * @param modelId	The id of the model to be deleted.
+	 * @param keepModelRecord	If true, the model record in SPARROW_MODEL is kept.
+	 */
+	public static void deleteModel(Connection conn, long modelId, boolean keepModelRecord) throws SQLException {
+		
+		String  listSourceIds = "SELECT SOURCE_ID FROM SOURCE WHERE SPARROW_MODEL_ID = " + modelId;
+		
+		
+		String rmModel = "DELETE FROM SPARROW_MODEL WHERE SPARROW_MODEL_ID = ?";
+		PreparedStatement rmModelStmt = null;
+		
+		String rmReaches = "DELETE FROM MODEL_REACH WHERE SPARROW_MODEL_ID = ?";
+		PreparedStatement rmReachesStmt = null;
+		
+		String rmSource = "DELETE FROM SOURCE WHERE SOURCE_ID = ?";
+		PreparedStatement rmSourceStmt = null;
+		
+		Int2D srcIds = readAsInteger(conn, listSourceIds, 100);
+		
+		//Delete each source (Cascades to lots of related data)
+		try {
+			rmSourceStmt = conn.prepareStatement(rmSource);
+			log.debug("Deleting model " + modelId +  " with " + srcIds.getRowCount() + " sources.");
+			for (int i = 0; i < srcIds.getRowCount(); i++)  {
+				int srcId = srcIds.getInt(i, 0);
+				rmSourceStmt.setInt(1, srcId);
+				int cnt = rmSourceStmt.executeUpdate();
+				log.debug("Source #" + (i + 1) + " deleted (Source ID = '" + srcId + "')");
+			}
+		} finally {
+			try {
+				rmSourceStmt.close();
+			} catch (SQLException e) {
+				log.error("Exception while closing statement", e);
+			}
+		}
+		
+		//Delete all the reaches in one shot (Cascades to some related data)
+		try {
+			rmReachesStmt = conn.prepareStatement(rmReaches);
+			log.debug("Deleting all model reaches...");
+			rmReachesStmt.setInt(1, (int) modelId);
+			int cnt = rmReachesStmt.executeUpdate();
+			log.debug("Reaches deleted.  " + cnt + " records.");
+		} finally {
+			try {
+				rmReachesStmt.close();
+			} catch (SQLException e) {
+				log.error("Exception while closing statement", e);
+			}
+		}
+		
+		//Optionally, delete the model record.
+		if (!keepModelRecord) {
+			try {
+				rmModelStmt = conn.prepareStatement(rmModel);
+				log.debug("Deleting all model record...");
+				rmModelStmt.setInt(1, (int) modelId);
+				int cnt = rmModelStmt.executeUpdate();
+				log.debug("Model deleted.  " + cnt + " records.");
+			} finally {
+				try {
+					rmModelStmt.close();
+				} catch (SQLException e) {
+					log.error("Exception while closing statement", e);
+				}
+			}
+		} else {
+			log.debug("Model record kept.");
+		}
+
+	}
+	
 	/**
 	 * Loads all the model reach in the passed PredictionDataSet into the
 	 * SPARROW_DSS.MODEL_REACH table.
@@ -110,7 +287,7 @@ public class JDBCUtil {
 		
 		//Queries and PreparedStatements
 		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM STREAM_NETWORK.ENH_REACH WHERE ENH_NETWORK_ID = " + data.getModel().getEnhNetworkId().longValue();
-		Map enhIdMap = buildIntegerMap(conn, enhReachQuery);
+		Map<Integer, Integer> enhIdMap = buildIntegerMap(conn, enhReachQuery);
 		
     String insertReachStr = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, ENH_REACH_ID, SPARROW_MODEL_ID)" +
                    " VALUES (?,?,?,?,?," + data.getModel().getId().longValue() + ")";                 
@@ -154,18 +331,21 @@ public class JDBCUtil {
 			//
 			//Insert rows into the MODEL_REACH table.  Total rows inserted == modelRows
 			for (int r = 0; r < modelRows; r++)  {
-				insertReach.setInt(1, ancil.getInt(r,localIdIndexAnc));  //identifier
-				insertReach.setString(2, Integer.toString(ancil.getInt(r,localIdIndexAnc)));  //full_identifier
+				int identifier = ancil.getInt(r,localIdIndexAnc);	//the reach identifier
+				int stdIdentifier = ancil.getInt(r,stdIdIndexAnc);	//the standard identifier
+				
+				insertReach.setInt(1, identifier);  //identifier
+				insertReach.setString(2, Integer.toString(identifier));  //full_identifier
 				insertReach.setInt(3, topo.getInt(r,hydseqIndexTopo));  //hydseq
 				insertReach.setInt(4, topo.getInt(r,iftranIndexTopo));   //iftran
 				
 				
 				//Assign the enh_reach_id if its found
-				if (ancil.getInt(r,stdIdIndexAnc) == 0) {
+				if (stdIdentifier == 0) {
 					//this is considered null - the STD_ID is not assigned.
 					stdIdNullCount++;
-				} else if (enhIdMap.containsKey( new Integer(ancil.getInt(r,stdIdIndexAnc))) ) {
-					insertReach.setInt(5, ancil.getInt(r,stdIdIndexAnc));
+				} else if (enhIdMap.containsKey(stdIdentifier)) {
+					insertReach.setInt(5, enhIdMap.get(stdIdentifier) );
 					stdIdMatchCount++;
 				} else {
 					insertReach.setNull(5, Types.INTEGER);
