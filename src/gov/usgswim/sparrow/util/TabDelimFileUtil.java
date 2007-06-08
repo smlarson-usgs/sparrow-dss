@@ -129,7 +129,7 @@ public class TabDelimFileUtil {
 			}
 			pd.setCoef( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "coef.txt"), true) );
 			pd.setSrc( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "src.txt"), true) );
-			pd.setTopo( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "topo.txt"), true) );
+			pd.setTopo( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "topo.txt"), true, TOPO_HEADINGS) );
 			
 		} else if (rootDir != null){
 			File root = new File(rootDir);
@@ -139,7 +139,7 @@ public class TabDelimFileUtil {
 			}
 			pd.setCoef( TabDelimFileUtil.readAsDouble(new File(root, "coef.txt"), true) );
 			pd.setSrc( TabDelimFileUtil.readAsDouble(new File(root, "src.txt"), true) );
-			pd.setTopo( TabDelimFileUtil.readAsDouble(new File(root, "topo.txt"), true) );
+			pd.setTopo( TabDelimFileUtil.readAsDouble(new File(root, "topo.txt"), true, TOPO_HEADINGS) );
 			
 			root = null;
 		} else {
