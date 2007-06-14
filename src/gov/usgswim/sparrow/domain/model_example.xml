@@ -1,0 +1,157 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<models xmlns="http://www.usgs.gov/sparrow/model/v0_1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.usgs.gov/sparrow/model/v0_1 model.xsd">
+	<model id="1">
+		<name>Chesapeake bay</name>
+		<description>Chesapeake bay Test Model</description>
+		<dateAdded>2007-03-22</dateAdded>
+		<contactId>21</contactId>
+		<enhNetworkId>1</enhNetworkId>
+		<bounds north="41.019231" west="-80.922115" south="36.519231" east="-74.172115" />
+		<sources>
+			<source id="1" identifier="1" sortOrder="1">
+				<name>pttn</name>
+				<displayName>pttn</displayName>
+			</source>
+			<source id="2" identifier="2" sortOrder="2">
+				<name>area</name>
+				<displayName>area</displayName>
+			</source>
+			<source id="3" identifier="3" sortOrder="3">
+				<name>frtn</name>
+				<displayName>frtn</displayName>
+			</source>
+			<source id="4" identifier="4" sortOrder="4">
+				<name>atmd</name>
+				<displayName>atmd</displayName>
+			</source>
+			<source id="5" identifier="5" sortOrder="5">
+				<name>mann</name>
+				<displayName>mann</displayName>
+			</source>
+			<source id="6" identifier="6" sortOrder="6">
+				<name>urbn</name>
+				<displayName>urbn</displayName>
+			</source>
+			<source id="7" identifier="7" sortOrder="7">
+				<name>septic</name>
+				<displayName>septic</displayName>
+			</source>
+			<source id="8" identifier="8" sortOrder="8">
+				<name>crop</name>
+				<displayName>crop</displayName>
+			</source>
+			<source id="9" identifier="9" sortOrder="9">
+				<name>past</name>
+				<displayName>past</displayName>
+			</source>
+			<source id="10" identifier="10" sortOrder="10">
+				<name>tagr</name>
+				<displayName>tagr</displayName>
+			</source>
+			<source id="11" identifier="11" sortOrder="11">
+				<name>frst</name>
+				<displayName>frst</displayName>
+			</source>
+		</sources>
+	</model>
+	<model id="21">
+		<name>Chesapeake bay v2</name>
+		<description>Chesapeake bay Test Model</description>
+		<dateAdded>2007-05-25</dateAdded>
+		<contactId>21</contactId>
+		<enhNetworkId>1</enhNetworkId>
+		<bounds north="41.019231" west="-80.922115" south="36.519231" east="-74.172115" />
+		<sources>
+			<source id="166" identifier="1" sortOrder="1">
+				<name>pttn</name>
+				<displayName>pttn</displayName>
+				<description>pttn</description>
+			</source>
+			<source id="167" identifier="2" sortOrder="2">
+				<name>area</name>
+				<displayName>area</displayName>
+				<description>area</description>
+			</source>
+			<source id="168" identifier="3" sortOrder="3">
+				<name>frtn</name>
+				<displayName>frtn</displayName>
+				<description>frtn</description>
+			</source>
+			<source id="169" identifier="4" sortOrder="4">
+				<name>atmd</name>
+				<displayName>atmd</displayName>
+				<description>atmd</description>
+			</source>
+			<source id="170" identifier="5" sortOrder="5">
+				<name>mann</name>
+				<displayName>mann</displayName>
+				<description>mann</description>
+			</source>
+			<source id="171" identifier="6" sortOrder="6">
+				<name>urbn</name>
+				<displayName>urbn</displayName>
+				<description>urbn</description>
+			</source>
+			<source id="172" identifier="7" sortOrder="7">
+				<name>septic</name>
+				<displayName>septic</displayName>
+				<description>septic</description>
+			</source>
+			<source id="173" identifier="8" sortOrder="8">
+				<name>crop</name>
+				<displayName>crop</displayName>
+				<description>crop</description>
+			</source>
+			<source id="174" identifier="9" sortOrder="9">
+				<name>past</name>
+				<displayName>past</displayName>
+				<description>past</description>
+			</source>
+			<source id="175" identifier="10" sortOrder="10">
+				<name>tagr</name>
+				<displayName>tagr</displayName>
+				<description>tagr</description>
+			</source>
+			<source id="176" identifier="11" sortOrder="11">
+				<name>frst</name>
+				<displayName>frst</displayName>
+				<description>frst</description>
+			</source>
+		</sources>
+	</model>
+	<model id="22">
+		<name>national Model</name>
+		<description>A national model based on the E2RF1 dataset.</description>
+		<dateAdded>2007-05-30</dateAdded>
+		<contactId>42</contactId>
+		<enhNetworkId>22</enhNetworkId>
+		<bounds north="53.218919" west="-126.0" south="20.381081" east="-66.0" />
+		<sources>
+			<source id="282" identifier="1" sortOrder="1">
+				<name>POINT</name>
+				<displayName>POINT</displayName>
+				<description>POINT</description>
+			</source>
+			<source id="283" identifier="2" sortOrder="2">
+				<name>ATMDEP</name>
+				<displayName>ATMDEP</displayName>
+				<description>ATMDEP</description>
+			</source>
+			<source id="284" identifier="3" sortOrder="3">
+				<name>FERTILIZER</name>
+				<displayName>FERTILIZER</displayName>
+				<description>FERTILIZER</description>
+			</source>
+			<source id="285" identifier="4" sortOrder="4">
+				<name>WASTE</name>
+				<displayName>WASTE</displayName>
+				<description>WASTE</description>
+			</source>
+			<source id="286" identifier="5" sortOrder="5">
+				<name>NONAGR</name>
+				<displayName>NONAGR</displayName>
+				<description>NONAGR</description>
+			</source>
+		</sources>
+	</model>
+</models>

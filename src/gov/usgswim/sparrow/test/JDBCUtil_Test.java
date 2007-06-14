@@ -7,6 +7,9 @@ import gov.usgswim.sparrow.Double2D;
 import gov.usgswim.sparrow.Int2D;
 import gov.usgswim.sparrow.PredictSimple;
 import gov.usgswim.sparrow.PredictionDataSet;
+import gov.usgswim.sparrow.domain.Model;
+import gov.usgswim.sparrow.domain.ModelBuilder;
+import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.util.JDBCUtil;
 
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
@@ -17,6 +20,9 @@ import java.sql.Connection;
 
 import junit.framework.TestCase;
 import java.sql.*;
+
+import java.util.List;
+
 import oracle.jdbc.OracleDriver;
 
 public class JDBCUtil_Test extends TestCase {
@@ -50,7 +56,7 @@ public class JDBCUtil_Test extends TestCase {
 	/**
 	 * @see JDBCUtil#loadMinimalPredictDataSet(Connection conn, int modelId)
 	 */
-	public void testLoadMinimalPredictDataSet() throws Exception {
+	public void xtestLoadMinimalPredictDataSet() throws Exception {
 		PredictionDataSet ds = JDBCUtil.loadMinimalPredictDataSet(conn, 1);
 		PredictSimple ps = new PredictSimple(ds);
 		
@@ -66,6 +72,39 @@ public class JDBCUtil_Test extends TestCase {
 
 	}
 	
+	public void testReadModelMetadata() throws Exception {
+		List<ModelBuilder> models = JDBCUtil.loadModelMetaData(conn);
+		
+		Model m = models.get(0);
+		Source s1 = m.getSource(1);	//get by identifier
+		Source s2 = m.getSource(11);	//get by identifier
+		
+		//test that we get the first and last sources
+		this.assertEquals(s1, m.getSources().get(0));	//get via list index
+		this.assertEquals(s2, m.getSources().get(10));	//get via list index
+		
+		
+		//model
+		this.assertEquals(1, m.getId());
+		this.assertEquals("Chesapeake bay", m.getName());
+		this.assertEquals(11, m.getSources().size());
+		
+		//1st source
+		this.assertEquals(1, s1.getId());
+		this.assertEquals("pttn", s1.getName());
+		this.assertEquals(1, s1.getSortOrder());
+		this.assertEquals(1, s1.getModelId());
+		this.assertEquals(1, s1.getIdentifier());
+		
+		//last source
+		this.assertEquals(11, s2.getId());
+		this.assertEquals("frst", s2.getName());
+		this.assertEquals(11, s2.getSortOrder());
+		this.assertEquals(1, s2.getModelId());
+		this.assertEquals(11, s2.getIdentifier());
+		
+	}
+	
 	/**
 	 * @see JDBCUtil#JDBCUtil.writePredictDataSet(PredictionDataSet data, Connection conn)
 	 * 
@@ -75,7 +114,7 @@ public class JDBCUtil_Test extends TestCase {
 	 * 
 	 * Not exactly fullproof.  A better test would be to have a subset.
 	 */
-	public void testDBWriteVsTextFilesDataSet() throws Exception {
+	public void xtestDBWriteVsTextFilesDataSet() throws Exception {
 		String rootDir = "/data/ch2007_04_24/";
 		PredictionDataSet textDs = new PredictionDataSet();
 		PredictionDataSet dbDs = null;
