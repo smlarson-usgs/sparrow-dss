@@ -61,16 +61,6 @@ public class DomainSerializer {
 		writeModels(xw, models);
 	}
 	
-	/**
-	 * Writes all the passed models to the XMLStreamWriter.
-	 * @param xw
-	 * @param models
-	 * @throws XMLStreamException
-	 */
-	public void writeModels(XMLStreamWriter xw, List<? extends Model> models) throws XMLStreamException {
-		xoFact.createXMLEventWriter((Result) xw);
-		writeModels(xoFact.createXMLEventWriter((Result) xw), models);
-	}
 	
 	/**
 	 * Writes all the passed models to the XMLEventWriter.
