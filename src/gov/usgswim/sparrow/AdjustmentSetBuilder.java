@@ -1,13 +1,9 @@
 package gov.usgswim.sparrow;
 
 import gov.usgswim.NotThreadSafe;
-import gov.usgswim.sparrow.domain.Model;
-import gov.usgswim.sparrow.Adjustment.AdjustmentType;
 
 import java.util.ArrayList;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import java.util.Map;
@@ -20,7 +16,8 @@ import org.apache.commons.lang.StringUtils;
  * A Builder for AdjustmentSet.
  */
 @NotThreadSafe
-public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSet> {
+public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSetImm>,
+																						 AdjustmentSet {
 
 	
 	protected TreeSet<Adjustment> adjustments;
@@ -31,13 +28,7 @@ public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSet> {
 	
 	
 	/**
-	 * Sets the adjustments for the given type.
-	 * 
-	 * Any existing adjustments of the same type are removed and replaces with
-	 * the new ones, which are parsed from the passed string.
-	 * 
-	 * Adjustments are ordered.  Ajustments of the same type may overrite each other
-	 * and the last ones wins.  Thus, the order must be preserved.
+	 * Sets the adjustments, removing any previous.
 	 * 
 	 * @param adjs A map containing adjustment names and values.
 	 */
@@ -72,9 +63,18 @@ public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSet> {
 
 	
 	public Adjustment[] getAdjustments() {
-		return (Adjustment[]) adjustments.toArray();
+		return adjustments.toArray(new Adjustment[adjustments.size()]);
 	}
 	
+	public int getAdjustmentCount() {
+		return adjustments.size();
+	}
+	
+	/**
+	 * Reads the gross adjustments from a string
+	 * @param adj
+	 * @return
+	 */
 	protected List<Adjustment> parseGrossAdj(String adj) {
 
 		adj = StringUtils.trimToNull(adj);
@@ -97,7 +97,38 @@ public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSet> {
 	}
 
 
-	public AdjustmentSet getImmutable() {
-		return new AdjustmentSet((Adjustment[]) adjustments.toArray());
+	/**
+	 * Modifies the passed source by creating a coef-view using the same underlying
+	 * data, but adding coefficients.  This strategy allows the underlying data
+	 * to be cached and not modified.
+	 * 
+	 * If no adjustments are made, the passed data is returned and no view is created,
+	 * so DO NOT count on the returned data being a view - check using ==.
+	 * 
+	 * @param source
+	 * @return
+	 */
+	public Data2D adjustSources(Data2D source) {
+
+		if (adjustments != null) {
+			
+			Data2DColumnCoefView view = new Data2DColumnCoefView(source);
+			
+			for (Adjustment a: adjustments) {
+				//TODO This assumes we need a Data2DColumnCoefView.  How to handle other types?
+				a.adjust(view);
+			}
+			
+			return view;
+			
+		} else {
+			
+			return source;	//no adjustment
+		}
+		
+	}
+	
+	public AdjustmentSetImm getImmutable() {
+		return new AdjustmentSetImm((Adjustment[]) adjustments.toArray());
 	}
 }

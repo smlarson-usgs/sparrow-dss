@@ -1,17 +1,23 @@
 package gov.usgswim.sparrow.test;
 
 import gov.usgswim.sparrow.Adjustment;
+import gov.usgswim.sparrow.Adjustment.AdjustmentType;
+import gov.usgswim.sparrow.AdjustmentSet;
+import gov.usgswim.sparrow.AdjustmentSetBuilder;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DCompare;
 import gov.usgswim.sparrow.Double2D;
-import gov.usgswim.sparrow.AdjustmentSet;
+import gov.usgswim.sparrow.AdjustmentSetImm;
 
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -44,30 +50,34 @@ public class SourceAdjustments_Test extends TestCase {
 	 * The test file src.txt contains 11 sources.  Here we'll adjust some randomly
 	 * and see if the coefficient adjustment matches normal multiplied values.
 	 */
-	 /*
+
 	public void testSetAdjustment() {
 		//Adjustments per source (source #, coef).
 		//Any skipped ones are assumed to be 1.
 		String adjustString = "0,.25, 1,.5, 4,.1, 7,1, 8,0, 9,0 10,.5";
+		Map adjMap = new HashMap(11);
+		adjMap.put(AdjustmentType.GROSS_ADJUST.toString(), adjustString);
 		
-		AdjustmentSet sas = new AdjustmentSet();
-		sas.setAdjustment(gov.usgswim.sparrow.AdjustmentSet.AdjustmentType.GROSS_ADJUST.toString(), adjustString);
+		AdjustmentSetBuilder sas = new AdjustmentSetBuilder();
 		
-		List<Adjustment> adjList = sas.getAdjustments();
+		sas.setAdjustments(adjMap);
+		
+		Adjustment[] adjList = sas.getAdjustments();
 		
 		//Test a few of the adjustment values
-		Adjustment a = adjList.get(0);
-		assertEquals(gov.usgswim.sparrow.AdjustmentSet.AdjustmentType.GROSS_ADJUST, a.getType());
-		assertEquals(0, a.getId());
-		assertEquals(.25, a.getValue());
+		//these values will be sorted by ID, so 10 will be the first ID and .5 the first value
+		Adjustment a = adjList[0];
+		assertEquals(AdjustmentType.GROSS_ADJUST, a.getType());
+		assertEquals(10, a.getId());
+		assertEquals(.5d, a.getValue(), .00000000000001);
 		
-		a = adjList.get(1);
-		assertEquals(1, a.getId());
-		assertEquals(.5, a.getValue());
+		a = adjList[1];
+		assertEquals(9, a.getId());
+		assertEquals(0d, a.getValue(), .00000000000001);
 		
-		a = adjList.get(2);
+		a = adjList[4];
 		assertEquals(4, a.getId());
-		assertEquals(.1, a.getValue());
+		assertEquals(.1d, a.getValue(), .00000000000001);
 		
 		//Test the whole buisiness
 		Data2D adjData = sas.adjustSources(data);
@@ -112,7 +122,7 @@ public class SourceAdjustments_Test extends TestCase {
 		}
 		
 	}
-	*/
+
 	
 
 }
