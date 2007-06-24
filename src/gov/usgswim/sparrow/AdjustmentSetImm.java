@@ -5,14 +5,22 @@ import gov.usgswim.Immutable;
 
 import java.util.TreeSet;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 
 /**
  * A collection of Adjustments to be applied to sources.
+ * 
+ * The equals() and hashCode() methods have been overridden to indicate that
+ * instances w/ identical adjustments are equal.  Note that this can only be
+ * done w/ this immutable implementation since the collection of Ajustments
+ * can change in a non-immutable class (thus causing the hashcode to change).
  */
 @Immutable
 public class AdjustmentSetImm implements AdjustmentSet {
 
 	protected final TreeSet<Adjustment> adjustments;
+	private Integer hash;	//Not strictly threadsafe, but recalculation is cheap and non-destructive
 	
 	public AdjustmentSetImm(TreeSet<Adjustment> adjs) {
 		adjustments = adjs;
@@ -70,27 +78,27 @@ public class AdjustmentSetImm implements AdjustmentSet {
 	public boolean equals(Object object) {
 		if (object instanceof AdjustmentSet) {
 		
-			AdjustmentSet that = (AdjustmentSet) object;
-			
-			if (that.getAdjustmentCount() == getAdjustmentCount()) {
-				Adjustment[] thisAdjs = getAdjustments();
-				Adjustment[] thatAdjs = that.getAdjustments();
-				
-				
-				for (int i = 0; i < thisAdjs.length; i++)  {
-					if (! (thisAdjs[i].equals(thatAdjs[i]))) {
-						return false;	//Adjustment differs
-					}
-				}
-				
-				return true;
-				
-			} else {
-				return false;	//Different number of adjustments
-			}
+			return hashCode() == object.hashCode();
 			
 		} else {
 			return false;	//not an AdjustmentSet
 		}
+	}
+	
+	public int hashCode() {
+		
+		if (hash == null) {
+			//starts w/ some random numbers just to create unique results
+			HashCodeBuilder hcb = new HashCodeBuilder(798641, 68431);
+			Adjustment[] adjs = getAdjustments();
+			
+			for (Adjustment a : adjs) {
+				hcb.append(a.hashCode());
+			}
+			
+			hash = hcb.toHashCode();
+		}
+		
+		return hash;
 	}
 }

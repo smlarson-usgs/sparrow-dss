@@ -14,6 +14,9 @@ import org.apache.commons.lang.StringUtils;
 
 /**
  * A Builder for AdjustmentSet.
+ * 
+ * Note that unlike the Immutable AdjustmentSetImm, this class does NOT indicate
+ * equality for identical sets of adustments.
  */
 @NotThreadSafe
 public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSetImm>,
