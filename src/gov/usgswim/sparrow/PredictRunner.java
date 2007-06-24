@@ -140,9 +140,10 @@ public class PredictRunner {
 
 			//Do source adjustments
 			{
-				SourceAdjustments srcAdjs = new SourceAdjustments();
-				srcAdjs.setAdjustment(properties);
-				Data2D adjSource = srcAdjs.adjustSources((Data2D) nonAdjustedData);
+				AdjustmentSetBuilder srcAdjBuilder = new AdjustmentSetBuilder();
+				srcAdjBuilder.setAdjustments(properties);
+				AdjustmentSet srcAdj = srcAdjBuilder.getImmutable();
+				Data2D adjSource = srcAdj.adjustSources((Data2D) nonAdjustedData);
 				adjustedData = (PredictionDataSet) nonAdjustedData.clone();
 				adjustedData.setSrc(adjSource);
 				
