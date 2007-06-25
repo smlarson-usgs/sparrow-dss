@@ -41,7 +41,7 @@
                   </xsd:complexType>
                 </xsd:element>
               </xsd:choice>
-              <xsd:element name="data-column" minOccurs="0"/>
+              <xsd:element name="data-series" minOccurs="0"/>
             </xsd:sequence>
           </xsd:complexType>
         </xsd:element>

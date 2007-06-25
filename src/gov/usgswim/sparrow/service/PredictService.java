@@ -99,6 +99,21 @@ public class PredictService implements HttpServiceHandler, ServiceHandler,
 		DomainSerializer ds = new DomainSerializer();
 		ds.writeModels(xw, models);
 		*/
+		
+		/*
+		 * query for iding a reach...
+		 * SELECT * FROM (
+select REACH_GEOM as GEOM, model_reach_id, round(
+  SDO_GEOM.SDO_DISTANCE(REACH_GEOM, sdo_geometry(2001, 8307, sdo_point_type(-100, 40, NULL), NULL, NULL), 0.00005, 'unit=M'),4
+) DISTANCE_IN_METERS_FROM_CLICK
+from ALL_GEOM_VW
+where SPARROW_MODEL_ID = 22
+order by DISTANCE_IN_METERS_FROM_CLICK
+) inner
+WHERE rownum < 50
+		 * 
+		 * 
+		 */
 	}
 	
 	public Data2D runPrediction(PredictServiceRequest req) {
@@ -207,7 +222,7 @@ public class PredictService implements HttpServiceHandler, ServiceHandler,
 						pt.x = lng;
 						pt.y = lat;
 						req.setIdPoint(pt);
-					} else if ("data-column".equals(lName)) {
+					} else if ("data-series".equals(lName)) {
 						req.setDataColumn(
 							PredictServiceRequest.DataColumn.find(StringUtils.trimToEmpty(reader.getElementText()))
 						);

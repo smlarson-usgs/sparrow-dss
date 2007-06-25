@@ -4,7 +4,7 @@
 		<identify-by-point number-of-results="5">
 			<point lat="40" long="-100"/>
 		</identify-by-point>
-		<data-column>inc_add</data-column>
+		<data-series>inc_add</data-series>
 	</response>
 	<change-from-nominal type="percent_change">
 		<model-id>22</model-id>
