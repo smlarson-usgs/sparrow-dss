@@ -89,9 +89,9 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 	}
 
 	public int compareTo(Adjustment<K> that) {
-		final int BEFORE = -1;
+		final int BEFORE = 1;
 		final int EQUAL = 0;
-		final int AFTER = 1;
+		final int AFTER = -1;
 		
 		if (type.compareTo(that.getType()) != 0) {
 			return type.compareTo(that.getType());
