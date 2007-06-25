@@ -35,8 +35,8 @@ public class AdjustmentSetImm implements AdjustmentSet {
 	
 
 	/**
-	 * Modifies the passed source by creating a coef-view using the same underlying
-	 * data, but adding coefficients.  This strategy allows the underlying data
+	 * Creates a new Data2D source by creating a coef-view using the same underlying
+	 * data w/ coefficients on top.  This strategy allows the underlying data
 	 * to be cached and not modified.
 	 * 
 	 * If no adjustments are made, the passed data is returned and no view is created,
@@ -68,6 +68,10 @@ public class AdjustmentSetImm implements AdjustmentSet {
 	
 	public int getAdjustmentCount() {
 		return adjustments.size();
+	}
+	
+	public boolean hasAdjustments() {
+		return adjustments.size() > 0;
 	}
 	
 	public Adjustment[] getAdjustments() {

@@ -73,6 +73,10 @@ public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSetImm>,
 		return adjustments.size();
 	}
 	
+	public boolean hasAdjustments() {
+		return adjustments.size() > 0;
+	}
+	
 	/**
 	 * Reads the gross adjustments from a string
 	 * @param adj
@@ -101,8 +105,8 @@ public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSetImm>,
 
 
 	/**
-	 * Modifies the passed source by creating a coef-view using the same underlying
-	 * data, but adding coefficients.  This strategy allows the underlying data
+	 * Creates a new Data2D source by creating a coef-view using the same underlying
+	 * data w/ coefficients on top.  This strategy allows the underlying data
 	 * to be cached and not modified.
 	 * 
 	 * If no adjustments are made, the passed data is returned and no view is created,

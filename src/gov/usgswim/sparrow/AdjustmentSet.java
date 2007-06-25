@@ -5,8 +5,8 @@ package gov.usgswim.sparrow;
  */
 public interface AdjustmentSet {
 	/**
-	 * Modifies the passed source by creating a coef-view using the same underlying
-	 * data, but adding coefficients.  This strategy allows the underlying data
+	 * Creates a new Data2D source by creating a coef-view using the same underlying
+	 * data w/ coefficients on top.  This strategy allows the underlying data
 	 * to be cached and not modified.
 	 *
 	 * If no adjustments are made, the passed data is returned and no view is created,
@@ -30,4 +30,12 @@ public interface AdjustmentSet {
 	 * @return
 	 */
 	public int getAdjustmentCount();
+	
+	/**
+	 * This method is intended to be a full-proof way to determine if the set
+	 * has adjustments to make.  Future types of adjustments might not be 'countable',
+	 * so this should be more reliable then using t count.
+	 * @return
+	 */
+	public boolean hasAdjustments();
 }
