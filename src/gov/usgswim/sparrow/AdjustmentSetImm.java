@@ -22,6 +22,11 @@ public class AdjustmentSetImm implements AdjustmentSet {
 	protected final TreeSet<Adjustment> adjustments;
 	private Integer hash;	//Not strictly threadsafe, but recalculation is cheap and non-destructive
 	
+	public AdjustmentSetImm() {
+		//this instance will never have any adjustments
+		adjustments = null;
+	}
+	
 	public AdjustmentSetImm(TreeSet<Adjustment> adjs) {
 		adjustments = adjs;
 	}
