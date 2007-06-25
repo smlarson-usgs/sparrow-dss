@@ -43,9 +43,6 @@ public class ModelService implements HttpServiceHandler, ServiceHandler {
 		Logger.getLogger(ModelService.class); //logging for this class
 		
 	protected static String RESPONSE_MIME_TYPE = "application/xml";
-		
-	String dsName;
-	DataSource datasource;
 	
 	//They promise these factories are threadsafe
 	private static Object factoryLock = new Object();
@@ -53,18 +50,12 @@ public class ModelService implements HttpServiceHandler, ServiceHandler {
 	protected static XMLOutputFactory xoFact;
 	
 	
-	public ModelService() {
-		dsName = "jdbc/sparrowDS";
-	}
-	
-	public ModelService(String dataSourceName) {
-		dsName = dataSourceName;
-	}
+	public ModelService() {}
 	
 	public void dispatch(XMLStreamReader in,
 											 HttpServletResponse response) throws XMLStreamException, IOException {
 											 
-		ServiceRequest req = parseRequest(in);
+		ModelRequest req = parseRequest(in);
 		
 		response.setContentType(RESPONSE_MIME_TYPE);
 
@@ -81,7 +72,7 @@ public class ModelService implements HttpServiceHandler, ServiceHandler {
 				
 	
 																													
-		ServiceRequest req = parseRequest(in);
+		ModelRequest req = parseRequest(in);
 		
 		try {
 			dispatch(req, out);
@@ -94,7 +85,7 @@ public class ModelService implements HttpServiceHandler, ServiceHandler {
 
 	}
 	
-	public void dispatch(ServiceRequest req, OutputStream outStream) throws SQLException,
+	public void dispatch(ModelRequest req, OutputStream outStream) throws SQLException,
 																																 NamingException,
 																																 XMLStreamException {
 																																 
@@ -111,7 +102,7 @@ public class ModelService implements HttpServiceHandler, ServiceHandler {
 		ds.writeModels(xw, models);
 	}
 	
-	public ServiceRequest parseRequest(XMLStreamReader reader) throws XMLStreamException {
+	public ModelRequest parseRequest(XMLStreamReader reader) throws XMLStreamException {
 		ModelRequest req = null;
 		
 		while (reader.hasNext()) {

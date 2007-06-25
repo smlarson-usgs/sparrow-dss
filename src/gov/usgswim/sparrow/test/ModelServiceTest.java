@@ -6,7 +6,6 @@ import com.ctc.wstx.stax.WstxOutputFactory;
 import gov.usgswim.sparrow.domain.DomainSerializer;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.service.HttpServiceHandler;
-import gov.usgswim.sparrow.service.MetaRequestHandler;
 
 import gov.usgswim.sparrow.service.ModelRequest;
 import gov.usgswim.sparrow.service.ModelService;
@@ -47,7 +46,6 @@ public class ModelServiceTest extends TestCase {
 	}
 
 	/**
-	 * @see MetaRequestHandler#printEventInfo(XMLStreamReader)
 	 */
 	public void testPrintEventInfo() throws SQLException, XMLStreamException,
 																					IOException {

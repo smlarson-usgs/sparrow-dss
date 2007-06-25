@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.service;
 
 import org.apache.commons.lang.BooleanUtils;
 
-public class ModelRequest extends ServiceRequest {
+public class ModelRequest {
 	boolean _public = true;
 	boolean _approved = true;
 	boolean _archived = false;
