@@ -54,7 +54,7 @@ public class SourceAdjustments_Test extends TestCase {
 	public void testSetAdjustment() {
 		//Adjustments per source (source #, coef).
 		//Any skipped ones are assumed to be 1.
-		String adjustString = "0,.25, 1,.5, 4,.1, 7,1, 8,0, 9,0 10,.5";
+		String adjustString = "1,.5, 4,.1, 7,1, 8,0, 9,0 10,.5";
 		Map adjMap = new HashMap(11);
 		adjMap.put(AdjustmentType.GROSS_ADJUST.toString(), adjustString);
 		
@@ -65,19 +65,19 @@ public class SourceAdjustments_Test extends TestCase {
 		Adjustment[] adjList = sas.getAdjustments();
 		
 		//Test a few of the adjustment values
-		//these values will be sorted by ID, so 10 will be the first ID and .5 the first value
+		//these values will be sorted by ID, so 10 will be the last ID and .5 the last value
 		Adjustment a = adjList[0];
 		assertEquals(AdjustmentType.GROSS_ADJUST, a.getType());
-		assertEquals(10, a.getId());
+		assertEquals(1, a.getId());
 		assertEquals(.5d, a.getValue(), .00000000000001);
 		
 		a = adjList[1];
-		assertEquals(9, a.getId());
-		assertEquals(0d, a.getValue(), .00000000000001);
+		assertEquals(4, a.getId());
+		assertEquals(.1, a.getValue(), .00000000000001);
 		
 		a = adjList[4];
-		assertEquals(4, a.getId());
-		assertEquals(.1d, a.getValue(), .00000000000001);
+		assertEquals(9, a.getId());
+		assertEquals(0d, a.getValue(), .00000000000001);
 		
 		//Test the whole buisiness
 		Data2D adjData = sas.adjustSources(data);
