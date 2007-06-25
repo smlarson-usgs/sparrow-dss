@@ -38,7 +38,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.log4j.Logger;
 
 
-public class ModelService implements HttpServiceHandler, ServiceHandler {
+public class ModelService implements HttpServiceHandler, ServiceHandler,
+			RequestParser<ModelRequest>, RequestHandler<ModelRequest> {
 	protected static Logger log =
 		Logger.getLogger(ModelService.class); //logging for this class
 		
@@ -55,39 +56,18 @@ public class ModelService implements HttpServiceHandler, ServiceHandler {
 	public void dispatch(XMLStreamReader in,
 											 HttpServletResponse response) throws XMLStreamException, IOException {
 											 
-		ModelRequest req = parseRequest(in);
-		
+		ModelRequest req = parse(in);
 		response.setContentType(RESPONSE_MIME_TYPE);
-
-		try {
-			dispatch(req, response.getOutputStream());
-		} catch (SQLException e) {
-			throw new IOException("Error in query");
-		} catch (NamingException e) {
-			throw new IOException("Could not create jndi connection");
-		}
+		dispatch(req, response.getOutputStream());
 	}
 
 	public void dispatch(XMLStreamReader in, OutputStream out) throws XMLStreamException, IOException {
-				
-	
-																													
-		ModelRequest req = parseRequest(in);
-		
-		try {
-			dispatch(req, out);
-		} catch (SQLException e) {
-			throw new IOException("Error in query");
-		} catch (NamingException e) {
-			throw new IOException("Could not create jndi connection");
-		}
-
-
+																															
+		ModelRequest req = parse(in);
+		dispatch(req, out);
 	}
 	
-	public void dispatch(ModelRequest req, OutputStream outStream) throws SQLException,
-																																 NamingException,
-																																 XMLStreamException {
+	public void dispatch(ModelRequest req, OutputStream outStream) throws IOException {
 																																 
 		synchronized (factoryLock) {
 			if (xoFact == null) {
@@ -95,14 +75,23 @@ public class ModelService implements HttpServiceHandler, ServiceHandler {
 			}
 		}
 		
-		XMLEventWriter xw = xoFact.createXMLEventWriter(outStream);
-																																 
-		List<ModelBuilder> models = JDBCUtil.loadModelMetaData(getConnection());
-		DomainSerializer ds = new DomainSerializer();
-		ds.writeModels(xw, models);
+		try {
+		
+			XMLEventWriter xw = xoFact.createXMLEventWriter(outStream);																										 
+			List<ModelBuilder> models = JDBCUtil.loadModelMetaData(getConnection());
+			DomainSerializer ds = new DomainSerializer();
+			ds.writeModels(xw, models);
+			
+		} catch (SQLException e) {
+			throw new IOException("Error in query");
+		} catch (NamingException e) {
+			throw new IOException("Could not create jndi connection");
+		} catch (XMLStreamException e) {
+			throw new IOException("xml streaming error");
+		}
 	}
 	
-	public ModelRequest parseRequest(XMLStreamReader reader) throws XMLStreamException {
+	public ModelRequest parse(XMLStreamReader reader) throws XMLStreamException {
 		ModelRequest req = null;
 		
 		while (reader.hasNext()) {
