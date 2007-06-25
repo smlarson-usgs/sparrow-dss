@@ -24,6 +24,26 @@
             </xsd:sequence>
           </xsd:complexType>
         </xsd:element>
+        <xsd:element name="response">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="format">
+                <xsd:complexType/>
+              </xsd:element>
+              <xsd:choice>
+                <xsd:element name="all-results" minOccurs="1"/>
+                <xsd:element name="identify-by-point">
+                  <xsd:complexType>
+                    <xsd:sequence>
+                      <xsd:element name="point" type="pointType"/>
+                    </xsd:sequence>
+                    <xsd:attribute name="number-of-results"/>
+                  </xsd:complexType>
+                </xsd:element>
+              </xsd:choice>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
         <xsd:choice>
           <xsd:element name="value-prediction">
             <xsd:complexType>
@@ -69,6 +89,17 @@
 					<xsd:attribute name="value" type="xsd:decimal"
 												 use="required"/>
 				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="pointType">
+		<xsd:sequence>
+			<xsd:element name="point">
+			 <xsd:complexType>
+				<xsd:attribute name="lat" use="required" type="xsd:decimal"/>
+				<xsd:attribute name="long" use="required" type="xsd:decimal"/>
+			 </xsd:complexType>
 			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
