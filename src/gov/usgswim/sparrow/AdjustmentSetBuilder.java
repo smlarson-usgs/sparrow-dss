@@ -136,6 +136,14 @@ public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSetImm>,
 	}
 	
 	public AdjustmentSetImm getImmutable() {
-		return new AdjustmentSetImm((Adjustment[]) adjustments.toArray());
+		Object[] src = adjustments.toArray();
+		Adjustment[] dest = new Adjustment[src.length];
+		
+		for (int i = 0; i < src.length; i++)  {
+			dest[i] = (Adjustment) src[i];
+		}
+		
+		return new AdjustmentSetImm(dest);
+		
 	}
 }
