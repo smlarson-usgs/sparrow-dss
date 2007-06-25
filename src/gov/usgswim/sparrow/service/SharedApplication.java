@@ -1,5 +1,12 @@
 package gov.usgswim.sparrow.service;
 
+import gov.usgswim.sparrow.Computable;
+import gov.usgswim.sparrow.ComputableCache;
+import gov.usgswim.sparrow.Double2D;
+import gov.usgswim.sparrow.PredictDatasetComputable;
+import gov.usgswim.sparrow.PredictionComputable;
+import gov.usgswim.sparrow.PredictionDataSet;
+import gov.usgswim.sparrow.PredictionRequest;
 import gov.usgswim.sparrow.util.DataSourceProxy;
 import gov.usgswim.sparrow.util.JDBCConnectable;
 
@@ -16,12 +23,19 @@ import oracle.jdbc.driver.OracleDriver;
 
 public class SharedApplication extends DataSourceProxy implements JDBCConnectable {
 	private static SharedApplication instance;
-	private static String dsName = "jdbc/sparrowDS";
-	private static DataSource datasource;
-	private static boolean lookupFailed = false;
+	private String dsName = "jdbc/sparrowDS";
+	private DataSource datasource;
+	private boolean lookupFailed = false;
+	private ComputableCache<PredictionRequest, Double2D> predictResultCache;
+	private ComputableCache<Long, PredictionDataSet> predictDatasetCache;
+	private ComputableCache metadataCache;
+	
 	
 	private SharedApplication() {
 		super(null);
+		
+		predictResultCache = new ComputableCache<PredictionRequest, Double2D>(new PredictionComputable());
+		predictDatasetCache = new ComputableCache<Long, PredictionDataSet>(new PredictDatasetComputable());
 	}
 	
 	public static synchronized SharedApplication getInstance() {
@@ -73,5 +87,13 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		String thinConn = "jdbc:oracle:thin:@130.11.165.152:1521:widw";
 		
 		return DriverManager.getConnection(thinConn,username,password);
+	}
+
+	public ComputableCache<PredictionRequest, Double2D> getPredictResultCache() {
+		return predictResultCache;
+	}
+
+	public ComputableCache<Long, PredictionDataSet> getPredictDatasetCache() {
+		return predictDatasetCache;
 	}
 }
