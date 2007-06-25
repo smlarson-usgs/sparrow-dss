@@ -6,6 +6,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Encapsilates all required info for a prediction request.
+ * 
+ * Note that this class only contains the info needed to run a single prediction.
+ * It does not contain any info about what portion of it should be returned to
+ * the user.
  *
  * This class is intended to provide equality between two identical requests
  * so that multiple requests that equate to the same calculation are handled
