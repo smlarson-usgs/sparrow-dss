@@ -67,15 +67,23 @@ public class AdjustmentSetImm implements AdjustmentSet {
 	}
 	
 	public int getAdjustmentCount() {
-		return adjustments.size();
+		if (adjustments != null) {
+			return adjustments.size();
+		} else {
+			return 0;
+		}
 	}
 	
 	public boolean hasAdjustments() {
-		return adjustments.size() > 0;
+		return adjustments != null && adjustments.size() > 0;
 	}
 	
 	public Adjustment[] getAdjustments() {
-		return adjustments.toArray(new Adjustment[adjustments.size()]);
+		if (adjustments != null) {
+			return adjustments.toArray(new Adjustment[adjustments.size()]);
+		} else {
+			return new Adjustment[0];
+		}
 	}
 
 
@@ -94,10 +102,13 @@ public class AdjustmentSetImm implements AdjustmentSet {
 		if (hash == null) {
 			//starts w/ some random numbers just to create unique results
 			HashCodeBuilder hcb = new HashCodeBuilder(798641, 68431);
-			Adjustment[] adjs = getAdjustments();
 			
-			for (Adjustment a : adjs) {
-				hcb.append(a.hashCode());
+			if (adjustments != null) {
+				Adjustment[] adjs = getAdjustments();
+				
+				for (Adjustment a : adjs) {
+					hcb.append(a.hashCode());
+				}
 			}
 			
 			hash = hcb.toHashCode();
