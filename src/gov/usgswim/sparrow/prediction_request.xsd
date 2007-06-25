@@ -27,7 +27,7 @@
         <xsd:element name="response">
           <xsd:complexType>
             <xsd:sequence>
-              <xsd:element name="format">
+              <xsd:element name="format" minOccurs="0">
                 <xsd:complexType/>
               </xsd:element>
               <xsd:choice>
