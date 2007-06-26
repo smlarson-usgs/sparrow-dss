@@ -1,5 +1,8 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.sparrow.service.PredictService;
+import gov.usgswim.sparrow.service.PredictServiceRequest;
+import gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.JDBCUtil;
 
@@ -34,24 +37,15 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	protected static Logger log =
 		Logger.getLogger(MapViewerSparrowDataProvider.class); //logging for this class
 		
-	//Initiation parameter key Constants
-	public static final String JNDI_DATASOURCE_NAME_KEY = "jndi-datasource-name";
-	public static final String JDBC_DRIVER_KEY = "jdbc-driver";
-	public static final String JDBC_URL_KEY = "jdbc-url";
-	public static final String JDBC_USER_KEY = "jdbc-user";
-	public static final String JDBC_PWD_KEY = "jdbc-pwd";
+		
+	PredictService predictService;
+	
 	
 	//Request parameter key constants
 	/**
 	 * The db unique id of the Sparrow model.  Required.
 	 */
 	public static final String MODEL_ID_KEY = "model_id";
-	
-	/**
-	 * If "true" (case insensative), ignore cached model data and reload this model.  New data placed in cache.
-	 * example:  "True"
-	 */
-	public static final String IGNORE_CACHE_KEY = "ignore_cache";
 	
 	/**
 	 * A string containing a delimited list, in pairs, of the source id and the
@@ -79,6 +73,11 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	public static final String RESULT_MODE_KEY = "result_mode";
 	
 	/**
+	 * Determines which column to map.
+	 */
+	public static final String DATA_SERIES = "data-series";
+	
+	/**
 	 * A possible value for the RESULT_MODE_KEY parameter.
 	 * This mode returns the new calculated value.
 	 */
@@ -97,18 +96,6 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 * The value is returned a decimal percentage (ie, if the value doubled, 1 would be returned)
 	 */
 	public static final String RESULT_MODE_DEC_PERC_CHG = "dec_perc_chg";
-	
-		
-	protected String jndiDatasourceName = null;		//The name of a JNDI datasource to use
-	
-	protected String jdbcDriver = null;
-	protected String jdbcUrl = null;
-	protected String jdbcUser = null;
-	protected String jdbcPwd = null;
-	
-	protected DataSource jndiDS = null; //A jndi datasource for creating data related db connections.
-	
-	protected HashMap cachedData;
 
 	
 	public MapViewerSparrowDataProvider() {
@@ -122,111 +109,103 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 * @return
 	 */
 	public boolean init(Properties properties) {
-		jndiDatasourceName = properties.getProperty(JNDI_DATASOURCE_NAME_KEY);
-		jdbcDriver = properties.getProperty(JDBC_DRIVER_KEY);
-		jdbcUrl = properties.getProperty(JDBC_URL_KEY);
-		jdbcUser = properties.getProperty(JDBC_USER_KEY);
-		jdbcPwd = properties.getProperty(JDBC_PWD_KEY);
-		
-		log.info("MVSparrowDataProvider initiated with " + JNDI_DATASOURCE_NAME_KEY + " = " + jndiDatasourceName);
-		log.info("MVSparrowDataProvider initiated with " + JDBC_DRIVER_KEY + " = " + jdbcDriver);
-		log.info("MVSparrowDataProvider initiated with " + JDBC_URL_KEY + " = " + jdbcUrl);
-		log.info("MVSparrowDataProvider initiated with " + JDBC_USER_KEY + " = " + jdbcUser);
-		log.info("MVSparrowDataProvider initiated with " + JDBC_PWD_KEY + " = " + (((jdbcUrl)!= null)?"[non-null]":"<null>"));
-		
-		cachedData = new HashMap(10, 1);
-		
+		predictService = new PredictService();
 		return true;
 	}
 
 	public NSDataSet buildDataSet(java.util.Properties params) {
 		Hashtable hash = new Hashtable(13);
-		
-		Iterator it = params.keySet().iterator();
-		
-		while (it.hasNext()) {
-			Object key = it.next();
+
+		for (Object key : params.keySet()) {
 			hash.put(key, params.get(key));
 		}
-		
+
 		return buildDataSet(hash);
-		
 	}
+	
+	
 	/**
 	 * Called for each request.
 	 * @param properties
 	 * @return
 	 */
 	public NSDataSet buildDataSet(Hashtable properties) {
-		Data2D result = null;		//The prediction result
+		long startTime = System.currentTimeMillis();	//Time started
+		
+		//All request info is stored in this class
+		PredictServiceRequest svsRequest = new PredictServiceRequest();
+		PredictionRequest predictRequest;
+		
+		Data2D sysInfo = null;		//row id numbers for matching the data to the geometry
+		Data2D result = null;			//The prediction result (raw data)
+		NSDataSet nsData = null;	//The Mapviewer data format for the data
 		
 		long modelId = Long.parseLong( properties.get(MODEL_ID_KEY).toString() );
-		String resultMode = (String) properties.get(RESULT_MODE_KEY);
-		
-		boolean isPercCompareMode = StringUtils.equalsIgnoreCase(RESULT_MODE_PERC_CHG, resultMode);
-		boolean isDecPercCompareMode = StringUtils.equalsIgnoreCase(RESULT_MODE_DEC_PERC_CHG, resultMode);
-		
-		boolean isValueMode = ! (isPercCompareMode || isDecPercCompareMode);	//The default
-		boolean isCompareMode = ! isValueMode;		//Convience flag
-		
-		NSDataSet nsData = null;
-		
-		long startTime = System.currentTimeMillis();	//Time started
 
+		
+		//Build the prediction request
+		AdjustmentSetBuilder adjBuilder = new AdjustmentSetBuilder();
+		adjBuilder.setAdjustments(properties);
+		predictRequest = new PredictionRequest(modelId, adjBuilder.getImmutable());
+		
+		//Build the service request
+		svsRequest.setPredictionRequest(predictRequest);
+		svsRequest.setPredictType( PredictServiceRequest.PredictType.find((String) properties.get(RESULT_MODE_KEY)) );
+		svsRequest.setDataSeries(PredictServiceRequest.DataSeries.find((String) properties.get(DATA_SERIES)) );
+		
+		//RUN THE SERVICE REQUEST
+		result = predictService.runPrediction(svsRequest);
+		
+		
 		try {
-			AdjustmentSetBuilder adjBuilder = new AdjustmentSetBuilder();
-			adjBuilder.setAdjustments(properties);
-			PredictionRequest adjRequest = new PredictionRequest(modelId, adjBuilder.getImmutable());
-			Data2D adjResult = SharedApplication.getInstance().getPredictResultCache().compute(adjRequest);
-			
-			if (isCompareMode) {
-				//need to run the base prediction and the adjusted prediction
-				AdjustmentSetImm noAdj = new AdjustmentSetImm();
-				PredictionRequest noAdjRequest = new PredictionRequest(modelId, noAdj);
-				Data2D noAdjResult = SharedApplication.getInstance().getPredictResultCache().compute(noAdjRequest);
-	
-				result = new Data2DPercentCompare(noAdjResult, adjResult, isDecPercCompareMode, true);
-			} else {
-				//need to run only the adjusted prediction
-				result = adjResult;
-			}
-			
-			Data2D sysInfo = SharedApplication.getInstance().getPredictDatasetCache().compute( modelId ).getSys();
-			nsData = copyToNSDataSet(result, sysInfo);
-			
-			log.debug("MVSparrowDataProvider done for model #" + modelId + " (" + nsData.size() + " rows) Time: " + (System.currentTimeMillis() - startTime) + "ms");
-			
-			return nsData;
-			
+			sysInfo = SharedApplication.getInstance().getPredictDatasetCache().compute( modelId ).getSys();
 		} catch (InterruptedException e) {
-			log.error("No way to indicate this error to mapViewer, so throwing a runtime exception.", e.getCause());
-			throw new RuntimeException(e);
+			log.error("No way to indicate this error to mapViewer, so returning null", e.getCause());
+			return null;
 		}
 		
+		nsData = copyToNSDataSet(result, sysInfo, svsRequest.getDataSeries());
+		
+		log.debug("MVSparrowDataProvider done for model #" + modelId + " (" + nsData.size() + " rows) Time: " + (System.currentTimeMillis() - startTime) + "ms");
+		
+		return nsData;
 
 	}
 	
-	protected NSDataSet copyToNSDataSet(Data2D result, Data2D sysInfo) {
+	protected NSDataSet copyToNSDataSet(Data2D result, Data2D sysInfo, PredictServiceRequest.DataSeries column) {
 
 		int rowCount = result.getRowCount();
 		int colCount = result.getColCount();
 		NSRow[] nsRows = new NSRow[rowCount];
+		
+		int dataColIndex = -1;	//index of the column to pull data from
+		
+		switch (column) {
+			case TOTAL:
+				dataColIndex = colCount - 1;	//Last column is the Total amount (decayed)
+				break;
+			case INCREMENTAL_ADD:
+				dataColIndex = colCount - 2;	//2nd to last column is incremental contribution (not decayed)
+				break;
+			case DECAYED:
+				throw new UnsupportedOperationException("Decayed is not currently supported");
+			default:
+				dataColIndex = colCount - 1;
+		}
 		
 		for (int r=0; r < rowCount; r++) {
 			Field[] row = new Field[2];	//ID
 			row[0] = new Field(sysInfo.getInt(r, 0));
 			row[0].setKey(true);
 			
-			row[1] = new Field(result.getDouble(r, colCount - 1));	//Value
+			row[1] = new Field(result.getDouble(r, dataColIndex));	//Value
 			//row[1].setLabelText(true);
 	
 			NSRow nsRow = new NSRow(row);
 			nsRows[r] = nsRow;
 		}
 		
-		if (log.isDebugEnabled()) {
-			debugNSData(nsRows);
-		}
+		if (log.isDebugEnabled()) debugNSData(nsRows);
 		
 		return new NSDataSet(nsRows);
 	}

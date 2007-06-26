@@ -67,7 +67,7 @@ public class PredictServiceTest extends TestCase {
 		
 		this.assertEquals(PredictServiceRequest.ResponseType.ALL_RESULTS, req.getResponseType());
 		this.assertEquals(PredictServiceRequest.PredictType.VALUES, req.getPredictType());
-		this.assertEquals(PredictServiceRequest.DataColumn.TOTAL, req.getDataColumn());
+		this.assertEquals(PredictServiceRequest.DataSeries.TOTAL, req.getDataSeries());
 		
 		PredictionRequest pReq = req.getPredictionRequest();
 		this.assertEquals(22L, pReq.getModelId());
@@ -100,7 +100,7 @@ public class PredictServiceTest extends TestCase {
 		this.assertEquals(5, req.getNumberOfResults());
 		this.assertEquals(point, req.getIdPoint());
 		this.assertEquals(PredictServiceRequest.PredictType.PERC_CHG_FROM_NOMINAL, req.getPredictType());
-		this.assertEquals(PredictServiceRequest.DataColumn.INCREMENTAL_ADD, req.getDataColumn());
+		this.assertEquals(PredictServiceRequest.DataSeries.INCREMENTAL_ADD, req.getDataSeries());
 		
 		PredictionRequest pReq = req.getPredictionRequest();
 		this.assertEquals(22L, pReq.getModelId());

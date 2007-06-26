@@ -223,8 +223,7 @@ WHERE rownum < 50
 						pt.y = lat;
 						req.setIdPoint(pt);
 					} else if ("data-series".equals(lName)) {
-						req.setDataColumn(
-							PredictServiceRequest.DataColumn.find(StringUtils.trimToEmpty(reader.getElementText()))
+						req.setDataSeries(PredictServiceRequest.DataSeries.find(StringUtils.trimToEmpty(reader.getElementText()))
 						);
 					} 
 					

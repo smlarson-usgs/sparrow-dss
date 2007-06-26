@@ -4,9 +4,9 @@
 		<identify-by-point number-of-results="5">
 			<point lat="40" long="-100"/>
 		</identify-by-point>
-		<data-series>inc_add</data-series>
+		<data-series>incremental</data-series>
 	</response>
-	<change-from-nominal type="percent_change">
+	<change-from-nominal type="perc_change">
 		<model-id>22</model-id>
 		<source-adjustments>
 			<gross-adjust src="1" coef=".5"/>
