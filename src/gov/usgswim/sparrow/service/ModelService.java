@@ -54,24 +54,24 @@ public class ModelService implements HttpServiceHandler,
 	public ModelService() {}
 	
 	public void dispatch(XMLStreamReader in,
-											 HttpServletResponse response) throws XMLStreamException, IOException {
+											 HttpServletResponse response) throws Exception {
 											 
 		ModelRequest req = parse(in);
 		dispatch(req, response);
 	}
 
-	public void dispatch(XMLStreamReader in, OutputStream out) throws XMLStreamException, IOException {
+	public void dispatch(XMLStreamReader in, OutputStream out) throws Exception {
 																															
 		ModelRequest req = parse(in);
 		dispatch(req, out);
 	}
 	
-	public void dispatch(ModelRequest req, HttpServletResponse response) throws IOException {
+	public void dispatch(ModelRequest req, HttpServletResponse response) throws Exception {
 		response.setContentType(RESPONSE_MIME_TYPE);
 		dispatch(req, response.getOutputStream());
 	}
 	
-	public void dispatch(ModelRequest req, OutputStream outStream) throws IOException {
+	public void dispatch(ModelRequest req, OutputStream outStream) throws Exception {
 																																 
 		synchronized (factoryLock) {
 			if (xoFact == null) {
@@ -79,23 +79,16 @@ public class ModelService implements HttpServiceHandler,
 			}
 		}
 		
-		try {
+
+		XMLEventWriter xw = xoFact.createXMLEventWriter(outStream);																										 
+		List<ModelBuilder> models = JDBCUtil.loadModelMetaData(getConnection());
+		DomainSerializer ds = new DomainSerializer();
+		ds.writeModels(xw, models);
 		
-			XMLEventWriter xw = xoFact.createXMLEventWriter(outStream);																										 
-			List<ModelBuilder> models = JDBCUtil.loadModelMetaData(getConnection());
-			DomainSerializer ds = new DomainSerializer();
-			ds.writeModels(xw, models);
-			
-		} catch (SQLException e) {
-			throw new IOException("Error in query");
-		} catch (NamingException e) {
-			throw new IOException("Could not create jndi connection");
-		} catch (XMLStreamException e) {
-			throw new IOException("xml streaming error");
-		}
+
 	}
 	
-	public ModelRequest parse(XMLStreamReader reader) throws XMLStreamException {
+	public ModelRequest parse(XMLStreamReader reader) throws Exception {
 		ModelRequest req = null;
 		
 		while (reader.hasNext()) {

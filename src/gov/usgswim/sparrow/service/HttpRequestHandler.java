@@ -1,6 +1,5 @@
 package gov.usgswim.sparrow.service;
 
-import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -11,5 +10,5 @@ import javax.servlet.http.HttpServletResponse;
  * handler to set the MIME and and http headers.
  */
 public interface HttpRequestHandler<T> extends RequestHandler<T> {
-	public void dispatch(T request, HttpServletResponse response) throws IOException;
+	public void dispatch(T request, HttpServletResponse response) throws Exception;
 }

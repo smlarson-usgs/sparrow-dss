@@ -17,6 +17,6 @@ import javax.xml.stream.XMLStreamReader;
  * HttpServiceHandler.
  */
 public interface ServiceHandler {
-	public void dispatch(XMLStreamReader in, OutputStream out) throws XMLStreamException, IOException;
+	public void dispatch(XMLStreamReader in, OutputStream out) throws Exception;
 	
 }

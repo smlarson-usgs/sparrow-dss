@@ -4,6 +4,10 @@ import com.ctc.wstx.evt.WstxEventWriter;
 import com.ctc.wstx.stax.WstxOutputFactory;
 
 import gov.usgswim.sparrow.Adjustment;
+import gov.usgswim.sparrow.Data2DCompare;
+import gov.usgswim.sparrow.Double2D;
+import gov.usgswim.sparrow.PredictSimple;
+import gov.usgswim.sparrow.PredictionDataSet;
 import gov.usgswim.sparrow.PredictionRequest;
 import gov.usgswim.sparrow.domain.DomainSerializer;
 import gov.usgswim.sparrow.domain.ModelBuilder;
@@ -14,6 +18,7 @@ import gov.usgswim.sparrow.service.ModelService;
 import gov.usgswim.sparrow.service.PredictService;
 import gov.usgswim.sparrow.service.PredictServiceRequest;
 import gov.usgswim.sparrow.service.ServiceHandler;
+import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.JDBCUtil;
 
 import java.awt.Point;
@@ -60,7 +65,7 @@ public class PredictServiceTest extends TestCase {
 		
 		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
 		XMLStreamReader xsr = xinFact.createXMLStreamReader(
-			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample-predict-request-1.xml"));
+			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-1.xml"));
 		
 		PredictService service = new PredictService();
 		PredictServiceRequest req = service.parse(xsr);
@@ -91,7 +96,7 @@ public class PredictServiceTest extends TestCase {
 		
 		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
 		XMLStreamReader xsr = xinFact.createXMLStreamReader(
-			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample-predict-request-2.xml"));
+			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-2.xml"));
 		
 		PredictService service = new PredictService();
 		PredictServiceRequest req = service.parse(xsr);
@@ -115,4 +120,25 @@ public class PredictServiceTest extends TestCase {
 		this.assertEquals(4, adj.getId());
 		this.assertEquals(2d, adj.getValue());
 	}
+	
+/*
+	public void testBasicPrediction() throws Exception {
+		
+		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
+		XMLStreamReader xsr = xinFact.createXMLStreamReader(
+			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-0.xml"));
+		
+		PredictService service = new PredictService();
+		service.dispatch(xsr, );
+
+		Data2DCompare comp = buildPredictionComparison(result);
+		
+		for (int i = 0; i < comp.getColCount(); i++)  {
+			System.out.println("col " + i + " error: " + comp.findMaxCompareValue(i));
+		}
+		
+		assertEquals(0d, comp.findMaxCompareValue(), 0.004d);
+
+	}
+	*/
 }

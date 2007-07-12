@@ -1,6 +1,5 @@
 package gov.usgswim.sparrow.service;
 
-import java.io.IOException;
 import java.io.OutputStream;
 
 /**
@@ -8,5 +7,5 @@ import java.io.OutputStream;
  * and returning an output stream.
  */
 public interface RequestHandler<T> {
-	public void dispatch(T request, OutputStream out) throws IOException;
+	public void dispatch(T request, OutputStream out) throws Exception;
 }

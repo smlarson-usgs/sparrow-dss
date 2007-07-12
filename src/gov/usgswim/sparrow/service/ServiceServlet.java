@@ -87,7 +87,7 @@ public class ServiceServlet extends HttpServlet {
 				StringReader sr = new StringReader(xml);
 				xsr = inFact.createXMLStreamReader(sr);
 				handler.dispatch(xsr, response);
-			} catch (XMLStreamException e) {
+			} catch (Exception e) {
 				throw new ServletException(e);
 			}
 			
@@ -111,7 +111,7 @@ public class ServiceServlet extends HttpServlet {
 		try {
 			xsr = inFact.createXMLStreamReader(request.getInputStream());
 			handler.dispatch(xsr, response);
-		} catch (XMLStreamException e) {
+		} catch (Exception e) {
 			throw new ServletException(e);
 		}
 		

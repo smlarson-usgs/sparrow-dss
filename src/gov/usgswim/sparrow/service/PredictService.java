@@ -77,24 +77,24 @@ public class PredictService implements HttpServiceHandler,
 
 
 	public void dispatch(XMLStreamReader in,
-											 HttpServletResponse response) throws XMLStreamException, IOException {
+											 HttpServletResponse response) throws Exception {
 											 
 		PredictServiceRequest req = parse(in);
 		dispatch(req, response);
 	}
 
-	public void dispatch(XMLStreamReader in, OutputStream out) throws XMLStreamException, IOException {
+	public void dispatch(XMLStreamReader in, OutputStream out) throws Exception {
 																							
 		PredictServiceRequest req = parse(in);
 		dispatch(req, out);
 	}
 	
-	public void dispatch(PredictServiceRequest req, HttpServletResponse response) throws IOException {
+	public void dispatch(PredictServiceRequest req, HttpServletResponse response) throws Exception {
 		response.setContentType(RESPONSE_MIME_TYPE);
 		dispatch(req, response.getOutputStream());
 	}
 	
-	public void dispatch(PredictServiceRequest req, OutputStream outStream) throws IOException {
+	public void dispatch(PredictServiceRequest req, OutputStream outStream) throws Exception {
 																																 
 		synchronized (factoryLock) {
 			if (xoFact == null) {
@@ -104,13 +104,13 @@ public class PredictService implements HttpServiceHandler,
 		
 		//TODO need to actually return something here
 		Data2D result = runPrediction(req);
-		/*
+
 		XMLEventWriter xw = xoFact.createXMLEventWriter(outStream);
-																																 
+						/*(																										 
 		List<ModelBuilder> models = JDBCUtil.loadModelMetaData(getConnection());
 		DomainSerializer ds = new DomainSerializer();
 		ds.writeModels(xw, models);
-		*/
+*/
 		
 		/*
 		 * query for iding a reach...

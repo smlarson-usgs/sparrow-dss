@@ -47,8 +47,7 @@ public class ModelServiceTest extends TestCase {
 
 	/**
 	 */
-	public void testPrintEventInfo() throws SQLException, XMLStreamException,
-																					IOException {
+	public void testPrintEventInfo() throws Exception {
 		
 		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
 		XMLStreamReader xsr = xinFact.createXMLStreamReader(
