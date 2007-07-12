@@ -20,6 +20,7 @@ public class _Test {
 		suite.addTestSuite(JDBCUtil_Test.class);
 		suite.addTestSuite(SourceAdjustments_Test.class);
 		suite.addTestSuite(DomainSerializerTest.class);
+		suite.addTestSuite(PredictionSerializerTest.class);
 		suite.addTestSuite(ModelServiceTest.class);
 		suite.addTestSuite(PredictServiceTest.class);
 	  
