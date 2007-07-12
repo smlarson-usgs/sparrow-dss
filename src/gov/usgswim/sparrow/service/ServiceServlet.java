@@ -12,6 +12,14 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+/**
+ * A thin servlet that takes requests for a service and allows them to be
+ * handled by a configurable handler class.
+ * 
+ * This servlet attempts to turn the incoming request into an xml stream, or,
+ * in the case of a GET request, it looks for a configurable parameter to
+ * contain the xml request (which it also turns into a stream).
+ */
 public class ServiceServlet extends HttpServlet {
 	private static final String CONTENT_TYPE = "text/html; charset=ISO-8859-1";
 	private static final String DEFAULT_XML_PARAM_NAME = "xmlreq";

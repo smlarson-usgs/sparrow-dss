@@ -45,7 +45,15 @@ import oracle.mapviewer.share.ext.NSDataSet;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-
+/**
+ * A service that accepts requests for SPARROW predictions and returns an
+ * xml document containing the predictions.
+ * 
+ * In order to support local requests on the map server, this service also
+ * has a runPrediction() method that returns raw data in a Data2D format,
+ * so that no inter-server communication is needed if the service is running
+ * within the MapViewer server.  (similar to the EJB local interface)
+ */
 public class PredictService implements HttpServiceHandler,
 			RequestParser<PredictServiceRequest>, HttpRequestHandler<PredictServiceRequest> {
 			
