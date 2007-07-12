@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.usgs.gov/sparrow/prediction-response/v0_1"
+            targetNamespace="http://www.usgs.gov/sparrow/prediction-response/v0_1"
+            elementFormDefault="qualified">
+  <xsd:include schemaLocation="prediction_request.xsd"/>
+	
+	<xsd:element name="sparrow-prediction-response" type="sparrow-prediction-response-type">
+	
+	</xsd:element>
+  <xsd:complexType name="sparrow-prediction-response-type">
+    <xsd:sequence>
+      <xsd:element name="request" type="sparrow-prediction-request-type"
+                   minOccurs="0"/>
+      <xsd:element name="response" type="prediction-result-type"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:complexType name="prediction-result-type">
+    <xsd:sequence>
+      <xsd:element name="metadata">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="columns">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="col" minOccurs="1"
+                               maxOccurs="unbounded">
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name="short-description" minOccurs="0"/>
+                        <xsd:element name="full-description" minOccurs="0"/>
+                      </xsd:sequence>
+                      <xsd:attribute name="name" use="required"/>
+                      <xsd:attribute name="type" use="required"/>
+                    </xsd:complexType>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+          <xsd:attribute name="rowCount"/>
+          <xsd:attribute name="columnCount"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="data">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="r" minOccurs="1" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="c" maxOccurs="unbounded"/>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:schema>
