@@ -5,9 +5,8 @@
             elementFormDefault="qualified">
   <xsd:include schemaLocation="prediction_request.xsd"/>
 	
-	<xsd:element name="sparrow-prediction-response" type="sparrow-prediction-response-type">
-	
-	</xsd:element>
+	<xsd:element name="sparrow-prediction-response" type="sparrow-prediction-response-type" />
+
   <xsd:complexType name="sparrow-prediction-response-type">
     <xsd:sequence>
       <xsd:element name="request" type="sparrow-prediction-request-type"
