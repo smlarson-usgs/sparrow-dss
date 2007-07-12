@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.test;
 
 import com.ctc.wstx.evt.WstxEventWriter;
 
-import gov.usgswim.sparrow.domain.DomainSerializer;
+import gov.usgswim.sparrow.service.DomainSerializer;
 
 import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.util.JDBCUtil;
@@ -63,7 +63,7 @@ public class DomainSerializerTest extends TestCase {
 	}
 	
 	/**
-	 * @see DomainSerializer#writeModels(javax.xml.stream.XMLEventWriter,List)
+	 * @see gov.usgswim.sparrow.service.DomainSerializer#writeModels(javax.xml.stream.XMLEventWriter,List)
 	 */
 	public void testWriteModelsEvents() throws SQLException, XMLStreamException {
 		List<ModelBuilder> models = JDBCUtil.loadModelMetaData(conn);
