@@ -10,5 +10,5 @@ package gov.usgswim.sparrow;
  * Addison-Wesley, 2006.
  */
 public interface Computable<A, V> {
-    V compute(A arg) throws InterruptedException;
+    V compute(A arg) throws Exception;
 }

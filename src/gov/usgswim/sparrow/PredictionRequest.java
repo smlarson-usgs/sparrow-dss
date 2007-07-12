@@ -26,7 +26,12 @@ public class PredictionRequest {
 	
 	public PredictionRequest(Long modelId, AdjustmentSet adjSet) {
 		_modelId = modelId;
-		_adjSet = adjSet;
+		
+		if (adjSet != null) {
+			_adjSet = adjSet;
+		} else {
+			_adjSet = AdjustmentSet.EMPTY_ADJUSTMENTSET;
+		}
 	}
 	
 	/**
@@ -39,6 +44,9 @@ public class PredictionRequest {
 	
 	/**
 	 * Returns the AdjustmentSet associated w/ this request.
+	 * 
+	 * This method will never return null - it will just return an empty
+	 * AdjustmentSet if there are no adjustments.
 	 * @return
 	 */
 	public AdjustmentSet getAdjustmentSet() {

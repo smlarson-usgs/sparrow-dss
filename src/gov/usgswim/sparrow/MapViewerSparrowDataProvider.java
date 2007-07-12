@@ -159,8 +159,8 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 		
 		try {
 			sysInfo = SharedApplication.getInstance().getPredictDatasetCache().compute( modelId ).getSys();
-		} catch (InterruptedException e) {
-			log.error("No way to indicate this error to mapViewer, so returning null", e.getCause());
+		} catch (Exception e) {
+			log.error("No way to indicate this error to mapViewer, so returning null", e);
 			return null;
 		}
 		

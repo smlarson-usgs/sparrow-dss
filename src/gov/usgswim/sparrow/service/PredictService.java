@@ -94,6 +94,21 @@ public class PredictService implements HttpServiceHandler,
 		dispatch(req, response.getOutputStream());
 	}
 	
+	/**
+	 * This is really a test method and not part of any of the standard interfaces.
+	 * 
+	 * It provides direct access to the raw prediction data for an imcoming xml
+	 * request, w/o requiring the data to be serialized back to XML.
+	 * 
+	 * @param in
+	 * @return
+	 * @throws Exception
+	 */
+	public Data2D dispatch(XMLStreamReader in) throws Exception {
+		PredictServiceRequest req = parse(in);
+		return runPrediction(req);
+	}
+	
 	public void dispatch(PredictServiceRequest req, OutputStream outStream) throws Exception {
 																																 
 		synchronized (factoryLock) {
@@ -158,8 +173,8 @@ WHERE rownum < 50
 			
 			return result;
 			
-		} catch (InterruptedException e) {
-			log.error("No way to indicate this error to mapViewer, so throwing a runtime exception.", e.getCause());
+		} catch (Exception e) {
+			log.error("No way to indicate this error to mapViewer, so throwing a runtime exception.", e);
 			throw new RuntimeException(e);
 		}
 		

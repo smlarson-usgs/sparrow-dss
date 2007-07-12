@@ -12,7 +12,7 @@ public class PredictionComputable implements Computable<PredictionRequest, Doubl
 	public PredictionComputable() {
 	}
 
-	public Double2D compute(PredictionRequest request) throws InterruptedException {
+	public Double2D compute(PredictionRequest request) throws Exception {
 		PredictionDataSet data = loadData(request);
 		PredictionDataSet adjData = adjustData(request, data);
 		
@@ -33,7 +33,7 @@ public class PredictionComputable implements Computable<PredictionRequest, Doubl
 	 * @param arg
 	 * @return
 	 */
-	public PredictionDataSet loadData(PredictionRequest req) throws InterruptedException {
+	public PredictionDataSet loadData(PredictionRequest req) throws Exception {
 		return SharedApplication.getInstance().getPredictDatasetCache().compute( req.getModelId() );
 	}
 	

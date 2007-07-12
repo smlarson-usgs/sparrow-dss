@@ -4,6 +4,10 @@ package gov.usgswim.sparrow;
  * A collection of adjustments to make on the sources for a project
  */
 public interface AdjustmentSet {
+
+	//Reusable empty adjustmentset
+	public static final AdjustmentSet EMPTY_ADJUSTMENTSET = new AdjustmentSetImm();
+	
 	/**
 	 * Creates a new Data2D source by creating a coef-view using the same underlying
 	 * data w/ coefficients on top.  This strategy allows the underlying data

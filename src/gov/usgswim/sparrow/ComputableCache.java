@@ -31,13 +31,13 @@ public class ComputableCache<A, V> implements Computable<A, V> {
 		this.c = c;
 	}
 
-	public V compute(final A arg) throws InterruptedException {
+	public V compute(final A arg) throws Exception {
 		while (true) {
 			Future<V> f = cache.get(arg);
 			if (f == null) {
 			
 				Callable<V> eval = new Callable<V>() {
-						public V call() throws InterruptedException {
+						public V call() throws Exception {
 							return c.compute(arg);
 						}
 					};
@@ -48,21 +48,38 @@ public class ComputableCache<A, V> implements Computable<A, V> {
 					//It was not already in the cache
 					f = ft;
 					ft.run();
-				} else {
+				} /* else {
 					//Added by Eric Everman
 					//If a non-null value is returned, it means that our requested
 					//computation was added while this thread was setting up for the run.
 					//recall this method, which will block until the result is ready.
 					compute(arg);
-				}
+					
+					//not needed b/c the result is returned from f.get() below.
+					
+				} */
 			}
 			
 			try {
 				return f.get();	//This will block until the result is available
 			} catch (CancellationException e) {
+				//Cancelled the request
 				cache.remove(arg, f);
+				
+				throw e;	//pass it on...
+			} catch (InterruptedException e) {
+				//For some reason, the call was interupted
+				cache.remove(arg, f);
+				
+				throw e;	//pass it on...
 			} catch (ExecutionException e) {
-				throw new InterruptedException(e.getCause().getMessage());
+				//An error occured during the execution of the request.
+				//Not sure what to do here: if its a data error in the request, it will
+				//probably recurr if its tried again.  Otherwise, it could be a
+				//db connection problem or something...
+				cache.remove(arg, f);
+				
+				throw new Exception("The process threw an exception during its execution", e.getCause());
 			}
 		}
 	}

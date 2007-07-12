@@ -15,7 +15,7 @@ public class PredictDatasetComputable implements Computable<Long, PredictionData
 	public PredictDatasetComputable() {
 	}
 
-	public PredictionDataSet compute(Long modelId) throws InterruptedException {
+	public PredictionDataSet compute(Long modelId) throws Exception {
 		Connection conn = null;
 		PredictionDataSet data = null;
 		try {
@@ -28,8 +28,6 @@ public class PredictDatasetComputable implements Computable<Long, PredictionData
 			
 			log.debug("End loading predict data for model #" + modelId + "  Time: " + (System.currentTimeMillis() - startTime) + "ms");
 			
-		} catch (SQLException e) {
-			// TODO
 		} finally {
 			if (conn != null) {
 				try {
