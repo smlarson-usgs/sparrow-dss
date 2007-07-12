@@ -1,10 +1,6 @@
 package gov.usgswim.sparrow.service;
 
 
-import com.ctc.wstx.stax.WstxEventFactory;
-
-import com.ctc.wstx.stax.WstxOutputFactory;
-
 import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.Source;
 
@@ -12,43 +8,25 @@ import java.io.OutputStream;
 
 import java.util.List;
 
-import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-
-import javax.xml.transform.Result;
 
 import org.apache.commons.lang.time.DateFormatUtils;
-import org.apache.commons.lang.StringUtils;
 
-public class DomainSerializer {
-	public static String EMPTY = StringUtils.EMPTY;
-	public static String ENCODING = "ISO-8859-1";
-	public static String XML_VERSION = "1.0";
-	
+
+public class DomainSerializer extends AbstractSerializer {
 	
 	public static String TARGET_NAMESPACE = "http://www.usgs.gov/sparrow/model/v0_1";
 	public static String TARGET_NAMESPACE_LOCATION = "http://www.usgs.gov/sparrow/model/v0_1 model.xsd";
 	public static String T_PREFIX = "mod";
-	
-	public static String XMLSCHEMA_NAMESPACE = "http://www.w3.org/2001/XMLSchema-instance";
-	public static String XMLSCHEMA_PREFIX = "xsi";
-	
-	//They promise these factories are threadsafe
-	private static Object factoryLock = new Object();
-	protected static XMLEventFactory evtFact;
-	protected static XMLOutputFactory xoFact;
+
 	
 	public DomainSerializer() {
+		super();
+	}
 	
-		synchronized (factoryLock) {
-			if (evtFact == null) {
-				evtFact = WstxEventFactory.newInstance();
-				xoFact = WstxOutputFactory.newInstance();
-			}
-		}
+	public String getTargetNamespace() {
+		return TARGET_NAMESPACE;
 	}
 	
 	
@@ -138,120 +116,6 @@ public class DomainSerializer {
 
 		xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, "source") );
 
-	}
-	
-	/**
-	 * Creates events for a single Element with text content and adds them to
-	 * the event stream.  The passed value is trimmed to null and if null after
-	 * trim, no text content is written.
-	 * 
-	 * The events are added using an empty prefix and using the default namespace.
-	 * 
-	 * @param xw
-	 * @param name
-	 * @param value
-	 * @throws XMLStreamException
-	 */
-	protected void writeElemEvent(XMLEventWriter xw, String name, String value) throws XMLStreamException {
-		value = StringUtils.trimToNull(value);
-		
-		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, name) );
-		if (value != null) xw.add( evtFact.createCharacters(value) );
-		xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, name) );
-	}
-	
-	/**
-	 * Creates events for a single Element and adds them to the event stream.
-	 * 
-	 * Attributes are also written by passing an array of attribute names and
-	 * values.  These arrays must not be null and must have matching lengths.
-	 * 
-	 * The passed value is trimmed to null and if null after trim, no text content
-	 * is written.
-	 * 
-	 * The events are added using an empty prefix and using the default namespace.
-	 * 
-	 * @param xw
-	 * @param name
-	 * @param value
-	 * @param attribNames
-	 * @param attribValues
-	 * @throws XMLStreamException
-	 */
-	protected void writeElemEvent(javax.xml.stream.XMLEventWriter xw, String name, 
-				String value, String[] attribNames, String[] attribValues) throws XMLStreamException {
-				
-				
-		value = StringUtils.trimToNull(value);
-		
-		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, name) );
-		
-		for (int i = 0; i < attribNames.length; i++)  {
-			xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, attribNames[i], attribValues[i]) );
-		}
-		
-		if (value != null) {
-			xw.add( evtFact.createCharacters(value) );
-		}
-		
-		
-		xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, name) );
-	}
-	
-	/**
-	 * Creates events for a single Element w/ a single attribute and adds them to
-	 * the event stream.
-	 * 
-	 * The passed value is trimmed to null and if null after trim, no text content
-	 * is written.
-	 * 
-	 * The events are added using an empty prefix and using the default namespace.
-	 * 
-	 * @param xw
-	 * @param name
-	 * @param value
-	 * @param attribName
-	 * @param attribValue
-	 * @throws XMLStreamException
-	 */
-	protected void writeElemEvent(javax.xml.stream.XMLEventWriter xw, String name, 
-				String value, String attribName, String attribValue) throws XMLStreamException {
-				
-		value = StringUtils.trimToNull(value);
-		
-		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, name) );
-		xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, attribName, attribValue) );
-
-		
-		if (value != null) {
-			xw.add( evtFact.createCharacters(value) );
-		}
-		
-		
-		xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, name) );
-	}
-	
-	/**
-	 * Creates events for a single Element with text content and adds them to
-	 * the event stream.  The passed value is trimmed to null and if null after
-	 * trim, no element is added.
-	 * 
-	 * The events are added using an empty prefix and using the default namespace.
-	 * 
-	 * @param xw
-	 * @param name
-	 * @param value
-	 * @throws XMLStreamException
-	 */
-	protected void writeElemEventIfNotNull(javax.xml.stream.XMLEventWriter xw, String name, String value) throws XMLStreamException {
-		
-		value = StringUtils.trimToNull(value);
-		
-		if (value != null) {
-			xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, name) );
-			xw.add( evtFact.createCharacters(value) );
-			xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, name) );
-		}
 	}
 
 }
