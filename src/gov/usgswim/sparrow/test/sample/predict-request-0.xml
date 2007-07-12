@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<sparrow-prediction-request>
+	<response>
+		<all-results/>
+	</response>
+	<value-prediction>
+		<model-id>1</model-id>
+	</value-prediction>
+</sparrow-prediction-request>
