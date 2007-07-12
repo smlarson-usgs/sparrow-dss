@@ -1,38 +1,23 @@
 package gov.usgswim.sparrow.service;
 
-
-import com.ctc.wstx.stax.WstxEventFactory;
 import com.ctc.wstx.stax.WstxOutputFactory;
-
-import gov.usgswim.sparrow.domain.DomainSerializer;
-import gov.usgswim.sparrow.domain.Model;
 
 import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.util.JDBCUtil;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import java.io.OutputStream;
 
 import java.sql.Connection;
-
 import java.sql.SQLException;
 
 import java.util.List;
-
-import javax.naming.InitialContext;
 
 import javax.naming.NamingException;
 
 import javax.servlet.http.HttpServletResponse;
 
-import javax.sql.DataSource;
-
 import javax.xml.stream.XMLEventWriter;
-import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.log4j.Logger;
