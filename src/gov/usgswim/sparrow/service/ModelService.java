@@ -38,8 +38,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.log4j.Logger;
 
 
-public class ModelService implements HttpServiceHandler, ServiceHandler,
-			RequestParser<ModelRequest>, RequestHandler<ModelRequest> {
+public class ModelService implements HttpServiceHandler,
+			RequestParser<ModelRequest>, HttpRequestHandler<ModelRequest> {
 	protected static Logger log =
 		Logger.getLogger(ModelService.class); //logging for this class
 		
@@ -57,14 +57,18 @@ public class ModelService implements HttpServiceHandler, ServiceHandler,
 											 HttpServletResponse response) throws XMLStreamException, IOException {
 											 
 		ModelRequest req = parse(in);
-		response.setContentType(RESPONSE_MIME_TYPE);
-		dispatch(req, response.getOutputStream());
+		dispatch(req, response);
 	}
 
 	public void dispatch(XMLStreamReader in, OutputStream out) throws XMLStreamException, IOException {
 																															
 		ModelRequest req = parse(in);
 		dispatch(req, out);
+	}
+	
+	public void dispatch(ModelRequest req, HttpServletResponse response) throws IOException {
+		response.setContentType(RESPONSE_MIME_TYPE);
+		dispatch(req, response.getOutputStream());
 	}
 	
 	public void dispatch(ModelRequest req, OutputStream outStream) throws IOException {

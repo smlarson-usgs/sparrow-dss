@@ -7,6 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public interface HttpServiceHandler {
+public interface HttpServiceHandler extends ServiceHandler {
 	public void dispatch(XMLStreamReader in, HttpServletResponse response) throws XMLStreamException, IOException;
 }

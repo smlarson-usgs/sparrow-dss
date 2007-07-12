@@ -46,8 +46,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 
-public class PredictService implements HttpServiceHandler, ServiceHandler,
-			RequestParser<PredictServiceRequest>, RequestHandler<PredictServiceRequest> {
+public class PredictService implements HttpServiceHandler,
+			RequestParser<PredictServiceRequest>, HttpRequestHandler<PredictServiceRequest> {
 			
 			
 	protected static Logger log =
@@ -72,14 +72,18 @@ public class PredictService implements HttpServiceHandler, ServiceHandler,
 											 HttpServletResponse response) throws XMLStreamException, IOException {
 											 
 		PredictServiceRequest req = parse(in);
-		response.setContentType(RESPONSE_MIME_TYPE);
-		dispatch(req, response.getOutputStream());
+		dispatch(req, response);
 	}
 
 	public void dispatch(XMLStreamReader in, OutputStream out) throws XMLStreamException, IOException {
 																							
 		PredictServiceRequest req = parse(in);
 		dispatch(req, out);
+	}
+	
+	public void dispatch(PredictServiceRequest req, HttpServletResponse response) throws IOException {
+		response.setContentType(RESPONSE_MIME_TYPE);
+		dispatch(req, response.getOutputStream());
 	}
 	
 	public void dispatch(PredictServiceRequest req, OutputStream outStream) throws IOException {
