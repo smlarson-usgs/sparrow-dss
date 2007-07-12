@@ -51,6 +51,7 @@ public class Data2DCompare extends Data2DView {
 		this.compData = compData;
 		colMap = columnMapping;
 		maxCompValues = new Double[baseData.getColCount()];
+		maxCompRows = new Integer[baseData.getColCount()];
 	}
 	
 	public double compare(int row, int col) throws IndexOutOfBoundsException {
