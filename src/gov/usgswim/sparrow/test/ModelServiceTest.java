@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.test;
 import com.ctc.wstx.evt.WstxEventWriter;
 import com.ctc.wstx.stax.WstxOutputFactory;
 
-import gov.usgswim.sparrow.domain.DomainSerializer;
+import gov.usgswim.sparrow.service.DomainSerializer;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.service.HttpServiceHandler;
 
