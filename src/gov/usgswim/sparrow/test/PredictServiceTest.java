@@ -4,6 +4,7 @@ import com.ctc.wstx.evt.WstxEventWriter;
 import com.ctc.wstx.stax.WstxOutputFactory;
 
 import gov.usgswim.sparrow.Adjustment;
+import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DCompare;
 import gov.usgswim.sparrow.Double2D;
 import gov.usgswim.sparrow.PredictSimple;
@@ -21,11 +22,14 @@ import gov.usgswim.sparrow.service.ServiceHandler;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.JDBCUtil;
 
+import gov.usgswim.sparrow.util.TabDelimFileUtil;
+
 import java.awt.Point;
 
 import java.awt.geom.Point2D;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 
@@ -121,7 +125,7 @@ public class PredictServiceTest extends TestCase {
 		this.assertEquals(2d, adj.getValue());
 	}
 	
-/*
+
 	public void testBasicPrediction() throws Exception {
 		
 		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
@@ -129,7 +133,7 @@ public class PredictServiceTest extends TestCase {
 			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-0.xml"));
 		
 		PredictService service = new PredictService();
-		service.dispatch(xsr, );
+		Double2D result = (Double2D) service.dispatch(xsr);
 
 		Data2DCompare comp = buildPredictionComparison(result);
 		
@@ -140,5 +144,16 @@ public class PredictServiceTest extends TestCase {
 		assertEquals(0d, comp.findMaxCompareValue(), 0.004d);
 
 	}
-	*/
+	
+	protected Data2DCompare buildPredictionComparison(Double2D toBeCompared) throws Exception {
+		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/predict.txt");
+		Double2D data = TabDelimFileUtil.readAsDouble(fileStream, true);
+		int[] DEFAULT_COMP_COLUMN_MAP =
+			new int[] {40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 39, 15};
+		
+		Data2DCompare comp = new Data2DCompare(toBeCompared, data, DEFAULT_COMP_COLUMN_MAP);
+		
+		return comp;
+	}
+
 }
