@@ -141,7 +141,6 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 		NSDataSet nsData = null;	//The Mapviewer data format for the data
 		
 		long modelId = Long.parseLong( properties.get(MODEL_ID_KEY).toString() );
-
 		
 		//Build the prediction request
 		AdjustmentSetBuilder adjBuilder = new AdjustmentSetBuilder();
@@ -152,7 +151,8 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 		svsRequest.setPredictionRequest(predictRequest);
 		svsRequest.setPredictType( PredictServiceRequest.PredictType.find((String) properties.get(RESULT_MODE_KEY)) );
 		svsRequest.setDataSeries(PredictServiceRequest.DataSeries.find((String) properties.get(DATA_SERIES)) );
-		
+		log.debug("DataSeries para = " + properties.get(DATA_SERIES) + "Read as: " + svsRequest.getDataSeries());
+
 		//RUN THE SERVICE REQUEST
 		result = predictService.runPrediction(svsRequest);
 		
@@ -183,9 +183,11 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 		switch (column) {
 			case TOTAL:
 				dataColIndex = colCount - 1;	//Last column is the Total amount (decayed)
+				log.debug("creating NSDataSet w/ last column (total values)");
 				break;
 			case INCREMENTAL_ADD:
 				dataColIndex = colCount - 2;	//2nd to last column is incremental contribution (not decayed)
+				log.debug("creating NSDataSet w/ 2nd to last column (inc values)");
 				break;
 			case DECAYED:
 				throw new UnsupportedOperationException("Decayed is not currently supported");
