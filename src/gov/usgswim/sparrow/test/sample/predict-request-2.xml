@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<sparrow-prediction-request>
+	<response>
+		<identify-by-point number-of-results="5">
+			<point lat="40" long="-100"/>
+		</identify-by-point>
+		<data-series>incremental</data-series>
+	</response>
+	<change-from-nominal type="perc_change">
+		<model-id>22</model-id>
+		<source-adjustments>
+			<gross-adjust src="1" coef=".5"/>
+			<gross-adjust src="4" coef="2"/>
+		</source-adjustments>
+	</change-from-nominal>
+</sparrow-prediction-request>
