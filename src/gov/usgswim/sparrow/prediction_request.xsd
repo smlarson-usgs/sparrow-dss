@@ -55,7 +55,8 @@
 					<xsd:complexType>
 						<xsd:sequence>
 							<xsd:element name="model-id" type="xsd:integer"/>
-							<xsd:element name="source-adjustments" type="source-adjustments-type"/>
+							<xsd:element name="source-adjustments" type="source-adjustments-type"
+                    minOccurs="0"/>
 						</xsd:sequence>
 					</xsd:complexType>
 				</xsd:element>
@@ -63,7 +64,8 @@
 					<xsd:complexType>
 						<xsd:sequence>
 							<xsd:element name="model-id" type="xsd:integer"/>
-							<xsd:element name="source-adjustments" type="source-adjustments-type"/>
+							<xsd:element name="source-adjustments" type="source-adjustments-type"
+                    minOccurs="1"/>
 						</xsd:sequence>
 						<xsd:attribute name="type"/>
 					</xsd:complexType>
