@@ -92,6 +92,7 @@ public class PredictionSerializerTest extends TestCase {
 			validator.validate(new DOMSource(document));
 			return true;
     } catch (SAXException e) {
+			e.printStackTrace();
 			return false;
     }
 	}
