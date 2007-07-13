@@ -4,7 +4,7 @@
             targetNamespace="http://www.usgs.gov/sparrow/prediction-response/v0_1"
             elementFormDefault="qualified"
 						xmlns:req="http://www.usgs.gov/sparrow/prediction-request/v0_1">
-  <xsd:import namespace="req" schemaLocation="prediction_request.xsd"/>
+  <xsd:import namespace="http://www.usgs.gov/sparrow/prediction-request/v0_1" schemaLocation="prediction_request.xsd"/>
 	
 	<xsd:element name="sparrow-prediction-response" type="req:sparrow-prediction-response-type" />
 
