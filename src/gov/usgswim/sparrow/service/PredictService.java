@@ -106,14 +106,19 @@ public class PredictService implements HttpServiceHandler,
 		
 		/*
 		 * query for iding a reach...
-		 * SELECT * FROM (
-select REACH_GEOM as GEOM, model_reach_id, round(
-  SDO_GEOM.SDO_DISTANCE(REACH_GEOM, sdo_geometry(2001, 8307, sdo_point_type(-100, 40, NULL), NULL, NULL), 0.00005, 'unit=M'),4
-) DISTANCE_IN_METERS_FROM_CLICK
-from ALL_GEOM_VW
-where SPARROW_MODEL_ID = 22
-order by DISTANCE_IN_METERS_FROM_CLICK
-) inner
+		 * SELECT *
+FROM
+  (SELECT reach_geom AS
+   geom,
+   round(
+  SDO_GEOM.SDO_DISTANCE(REACH_GEOM, sdo_geometry(2001, 8307, sdo_point_type(-93, 45, NULL), NULL, NULL), 0.00005, 'unit=M'),4
+) DISTANCE_IN_METERS_FROM_CLICK,
+     model_reach_id
+   FROM all_geom_vw
+   WHERE sparrow_model_id = 22 and
+   SDO_FILTER(reach_geom, SDO_GEOMETRY(2003, 8307, NULL, SDO_ELEM_INFO_ARRAY(1,1003,3), SDO_ORDINATE_ARRAY(-95,43, -91,47))) = 'TRUE'
+   ORDER BY DISTANCE_IN_METERS_FROM_CLICK)
+INNER
 WHERE rownum < 50
 		 * 
 		 * 
@@ -214,9 +219,9 @@ WHERE rownum < 50
 					String lName = reader.getLocalName();
 					
 					if ("all-results".equals(lName)) {
-						req.setResponseType(gov.usgswim.sparrow.service.PredictServiceRequest.ResponseType.ALL_RESULTS);
+						req.setResponseType(PredictServiceRequest.ResponseFilter.ALL);
 					} else if ("identify-by-point".equals(lName)) {
-						req.setResponseType(gov.usgswim.sparrow.service.PredictServiceRequest.ResponseType.IDENTIFY_BY_POINT);
+						req.setResponseType(PredictServiceRequest.ResponseFilter.NEAR_POINT);
 						int numResults = Integer.parseInt( reader.getAttributeValue(null, "number-of-results") );
 						req.setNumberOfResults(numResults);
 					} else if ("point".equals(lName)) {
@@ -225,7 +230,7 @@ WHERE rownum < 50
 						Point.Double pt = new Point.Double();
 						pt.x = lng;
 						pt.y = lat;
-						req.setIdPoint(pt);
+						req.setFilterPoint(pt);
 					} else if ("data-series".equals(lName)) {
 						req.setDataSeries(PredictServiceRequest.DataSeries.find(StringUtils.trimToEmpty(reader.getElementText()))
 						);

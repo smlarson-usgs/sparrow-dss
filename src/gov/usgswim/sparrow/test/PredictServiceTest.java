@@ -59,7 +59,7 @@ public class PredictServiceTest extends TestCase {
 		PredictService service = new PredictService();
 		PredictServiceRequest req = service.parse(xsr);
 		
-		this.assertEquals(PredictServiceRequest.ResponseType.ALL_RESULTS, req.getResponseType());
+		this.assertEquals(PredictServiceRequest.ResponseFilter.ALL, req.getResponseType());
 		this.assertEquals(PredictServiceRequest.PredictType.VALUES, req.getPredictType());
 		this.assertEquals(PredictServiceRequest.DataSeries.TOTAL, req.getDataSeries());
 		
@@ -90,9 +90,9 @@ public class PredictServiceTest extends TestCase {
 		PredictService service = new PredictService();
 		PredictServiceRequest req = service.parse(xsr);
 		
-		this.assertEquals(PredictServiceRequest.ResponseType.IDENTIFY_BY_POINT, req.getResponseType());
+		this.assertEquals(PredictServiceRequest.ResponseFilter.NEAR_POINT, req.getResponseType());
 		this.assertEquals(5, req.getNumberOfResults());
-		this.assertEquals(point, req.getIdPoint());
+		this.assertEquals(point, req.getFilterPoint());
 		this.assertEquals(PredictServiceRequest.PredictType.PERC_CHG_FROM_NOMINAL, req.getPredictType());
 		this.assertEquals(PredictServiceRequest.DataSeries.INCREMENTAL_ADD, req.getDataSeries());
 		

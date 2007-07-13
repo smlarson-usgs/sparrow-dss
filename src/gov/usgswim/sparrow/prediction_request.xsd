@@ -35,17 +35,38 @@
 						<xsd:element name="format" minOccurs="0">
 							<xsd:complexType/>
 						</xsd:element>
-						<xsd:choice>
-							<xsd:element name="all-results" minOccurs="1"/>
-							<xsd:element name="identify-by-point">
-								<xsd:complexType>
-									<xsd:sequence>
-										<xsd:element name="point" type="pointType"/>
-									</xsd:sequence>
-									<xsd:attribute name="number-of-results"/>
-								</xsd:complexType>
-							</xsd:element>
-						</xsd:choice>
+      <xsd:element name="filter" minOccurs="0">
+       <xsd:complexType>
+        <xsd:choice>
+         <xsd:element name="all-results" minOccurs="1">
+          <xsd:annotation>
+           <xsd:documentation>
+            The default.  Same as if there is no filter.  Default sort is in
+            hydrological order from the model.
+           </xsd:documentation>
+          </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="near-point">
+          <xsd:annotation>
+           <xsd:documentation>
+            Returns only reaches near a point and, by default, returns the
+            nearest 10.  Returned reaches are sorted by the distance from the
+            point.  max-result-count has a default value of 10, but can be
+            specified.  The max number of reaches returned is arbitrarily
+            limited to those 'relatively close' in order to optimize the db
+            query.  
+           </xsd:documentation>
+          </xsd:annotation>
+          <xsd:complexType>
+           <xsd:sequence>
+            <xsd:element name="point" type="pointType"/>
+           </xsd:sequence>
+           <xsd:attribute name="max-result-count" default="10"/>
+          </xsd:complexType>
+         </xsd:element>
+        </xsd:choice>
+       </xsd:complexType>
+      </xsd:element>
 						<xsd:element name="data-series" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:complexType>

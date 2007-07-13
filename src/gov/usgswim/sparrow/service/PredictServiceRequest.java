@@ -20,11 +20,11 @@ import java.awt.geom.Point2D;
 @NotThreadSafe
 public class PredictServiceRequest {
 
-	private ResponseType responseType = gov.usgswim.sparrow.service.PredictServiceRequest.ResponseType.ALL_RESULTS;
+	private ResponseFilter responseType = PredictServiceRequest.ResponseFilter.ALL;
 	private PredictType predictType = gov.usgswim.sparrow.service.PredictServiceRequest.PredictType.VALUES;
 	private PredictionRequest predictionRequest;
 	private DataSeries dataSeries = PredictServiceRequest.DataSeries.TOTAL;
-	private Point.Double idPoint;
+	private Point.Double filterPoint;
 	private Integer numberOfResults = null;
 
 
@@ -98,13 +98,13 @@ public class PredictServiceRequest {
 		}
 	}
 	
-	public enum ResponseType {
-		ALL_RESULTS("all", "Return all results"),
-		IDENTIFY_BY_POINT("id-by-pt", "Return results nearest a point");
+	public enum ResponseFilter {
+		ALL("all", "Return all results"),
+		NEAR_POINT("near-pt", "Return results nearest a point");
 		
 		private String _name;
 		private String _desc;
-		ResponseType(String name, String description) {
+		ResponseFilter(String name, String description) {
 			_name = name;
 			_desc = description;
 		}
@@ -121,8 +121,8 @@ public class PredictServiceRequest {
 			return _desc;
 		}
 		
-		public static ResponseType find(String name) {
-			for(ResponseType type: gov.usgswim.sparrow.service.PredictServiceRequest.ResponseType.values()) {
+		public static ResponseFilter find(String name) {
+			for(ResponseFilter type: PredictServiceRequest.ResponseFilter.values()) {
 				if (type._name.equalsIgnoreCase(name)) return type;
 			}
 			return null;
@@ -133,13 +133,13 @@ public class PredictServiceRequest {
 	public PredictServiceRequest() {
 	}
 	
-	public void setResponseType(PredictServiceRequest.ResponseType responseType) {
+	public void setResponseType(PredictServiceRequest.ResponseFilter responseType) {
 		if (responseType != null) {
 			this.responseType = responseType;
 		}
 	}
 
-	public PredictServiceRequest.ResponseType getResponseType() {
+	public PredictServiceRequest.ResponseFilter getResponseType() {
 		return responseType;
 	}
 
@@ -161,12 +161,12 @@ public class PredictServiceRequest {
 		return predictionRequest;
 	}
 
-	public void setIdPoint(Point2D.Double idPoint) {
-		this.idPoint = idPoint;
+	public void setFilterPoint(Point2D.Double idPoint) {
+		this.filterPoint = idPoint;
 	}
 
-	public Point2D.Double getIdPoint() {
-		return idPoint;
+	public Point2D.Double getFilterPoint() {
+		return filterPoint;
 	}
 	
 	public void setDataSeries(PredictServiceRequest.DataSeries dataSeries) {
