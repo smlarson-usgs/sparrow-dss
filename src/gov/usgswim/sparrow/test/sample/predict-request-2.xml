@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<sparrow-prediction-request>
+<sparrow-prediction-request
+  xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<response>
-		<identify-by-point number-of-results="5">
-			<point lat="40" long="-100"/>
-		</identify-by-point>
+		<filter>
+			<near-point number-of-results="5">
+				<point lat="40" long="-100"/>
+			</near-point>
+		</filter>
 		<data-series>incremental</data-series>
 	</response>
 	<change-from-nominal type="perc_change">
