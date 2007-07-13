@@ -6,11 +6,11 @@
 						xmlns:req="http://www.usgs.gov/sparrow/prediction-request/v0_1">
   <xsd:import namespace="http://www.usgs.gov/sparrow/prediction-request/v0_1" schemaLocation="prediction_request.xsd"/>
 	
-	<xsd:element name="sparrow-prediction-response" type="req:sparrow-prediction-response-type" />
+	<xsd:element name="sparrow-prediction-response" type="sparrow-prediction-response-type" />
 
   <xsd:complexType name="sparrow-prediction-response-type">
     <xsd:sequence>
-      <xsd:element name="request" type="sparrow-prediction-request-type"
+      <xsd:element name="request" type="req:sparrow-prediction-request-type"
                    minOccurs="0"/>
       <xsd:element name="response" type="prediction-result-type"/>
     </xsd:sequence>
