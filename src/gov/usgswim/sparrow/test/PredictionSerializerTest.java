@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import java.net.URL;
+
 import java.sql.Connection;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -73,15 +75,24 @@ public class PredictionSerializerTest extends TestCase {
 	public boolean validate(String path) throws ParserConfigurationException, SAXException,
 																IOException {
     // parse an XML document into a DOM tree
-    DocumentBuilder parser = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+		dbf.setFeature("http://xml.org/sax/features/namespaces", true);
+    DocumentBuilder parser = dbf.newDocumentBuilder();
+		
     Document document = parser.parse(new File(path));
+		
 
     // create a SchemaFactory capable of understanding WXS schemas
     SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
 
-    // load a WXS schema, represented by a Schema instance   
-    Source schemaFile1 = new StreamSource(this.getClass().getResourceAsStream("/gov/usgswim/sparrow/prediction_request.xsd"));
-		Source schemaFile2 = new StreamSource(this.getClass().getResourceAsStream("/gov/usgswim/sparrow/prediction_result.xsd"));
+    // load a WXS schema, represented by a Schema instance
+		Document schemaDoc1 = parser.parse(this.getClass().getResourceAsStream("/gov/usgswim/sparrow/prediction_request.xsd"));
+		Document schemaDoc2 = parser.parse(this.getClass().getResourceAsStream("/gov/usgswim/sparrow/prediction_result.xsd"));
+		System.out.println("Schema 1 document root element: " + schemaDoc1.getDocumentElement().getNodeName());
+		System.out.println("Schema 2 document root element: " + schemaDoc2.getDocumentElement().getNodeName());
+    Source schemaFile1 = new DOMSource(schemaDoc1);
+		Source schemaFile2 = new DOMSource(schemaDoc2);
+		
     Schema schema = factory.newSchema(new Source[] {schemaFile1, schemaFile2});
 
     // create a Validator instance, which can be used to validate an instance document
@@ -89,9 +100,12 @@ public class PredictionSerializerTest extends TestCase {
 
     // validate the DOM tree
     try {
+		
+			System.out.println("Validation document w/ root element: " + document.getDocumentElement().getNodeName());
 			validator.validate(new DOMSource(document));
 			return true;
     } catch (SAXException e) {
+			System.out.println(e.getMessage());
 			e.printStackTrace();
 			return false;
     }
