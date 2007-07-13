@@ -98,15 +98,11 @@ public class PredictService implements HttpServiceHandler,
 			}
 		}
 		
-		//TODO need to actually return something here
 		Data2D result = runPrediction(req);
 
-		XMLEventWriter xw = xoFact.createXMLEventWriter(outStream);
-						/*(																										 
-		List<ModelBuilder> models = JDBCUtil.loadModelMetaData(getConnection());
-		DomainSerializer ds = new DomainSerializer();
-		ds.writeModels(xw, models);
-*/
+		PredictionSerializer ps = new PredictionSerializer();
+		ps.writeResponse(outStream, req, result);
+
 		
 		/*
 		 * query for iding a reach...
