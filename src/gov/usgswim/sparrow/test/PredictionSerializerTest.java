@@ -45,7 +45,8 @@ public class PredictionSerializerTest extends TestCase {
 	
 	
 	/**
-	 * Not really much of a test - it just writes the document out to a temp file.
+	 * Not really much of a test - it just writes the document out to a temp file,
+	 * but it does validate it.
 	 * @throws Exception
 	 */
 	public void testBasicPrediction() throws Exception {

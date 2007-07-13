@@ -16,8 +16,8 @@ import org.apache.commons.lang.time.DateFormatUtils;
 
 public class DomainSerializer extends AbstractSerializer {
 	
-	public static String TARGET_NAMESPACE = "http://www.usgs.gov/sparrow/model/v0_1";
-	public static String TARGET_NAMESPACE_LOCATION = "http://www.usgs.gov/sparrow/model/v0_1 model.xsd";
+	public static String TARGET_NAMESPACE = "http://www.usgs.gov/sparrow/meta_response/v0_1";
+	public static String TARGET_NAMESPACE_LOCATION = "http://www.usgs.gov/sparrow/meta_response.xsd";
 	public static String T_PREFIX = "mod";
 
 	
