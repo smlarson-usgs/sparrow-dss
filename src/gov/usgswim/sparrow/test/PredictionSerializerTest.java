@@ -79,9 +79,10 @@ public class PredictionSerializerTest extends TestCase {
     // create a SchemaFactory capable of understanding WXS schemas
     SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
 
-    // load a WXS schema, represented by a Schema instance
-    Source schemaFile = new StreamSource(this.getClass().getResourceAsStream("/gov/usgswim/sparrow/prediction_result.xsd"));
-    Schema schema = factory.newSchema(schemaFile);
+    // load a WXS schema, represented by a Schema instance   
+    Source schemaFile1 = new StreamSource(this.getClass().getResourceAsStream("/gov/usgswim/sparrow/prediction_request.xsd"));
+		Source schemaFile2 = new StreamSource(this.getClass().getResourceAsStream("/gov/usgswim/sparrow/prediction_result.xsd"));
+    Schema schema = factory.newSchema(new Source[] {schemaFile1, schemaFile2});
 
     // create a Validator instance, which can be used to validate an instance document
     Validator validator = schema.newValidator();

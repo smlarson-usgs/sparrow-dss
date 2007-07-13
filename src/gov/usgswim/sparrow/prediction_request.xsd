@@ -21,7 +21,7 @@
 				<xsd:complexType>
 					<xsd:sequence>
 						<xsd:element name="instruction" maxOccurs="unbounded"
-												 minOccurs="0" type="xsd:string">
+												 minOccurs="0">
 							<xsd:complexType>
 								<xsd:attribute name="name" use="required"/>
 							</xsd:complexType>

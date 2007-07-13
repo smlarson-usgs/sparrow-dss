@@ -2,10 +2,11 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             xmlns="http://www.usgs.gov/sparrow/prediction-response/v0_1"
             targetNamespace="http://www.usgs.gov/sparrow/prediction-response/v0_1"
-            elementFormDefault="qualified">
-  <xsd:include schemaLocation="prediction_request.xsd"/>
+            elementFormDefault="qualified"
+						xmlns:req="http://www.usgs.gov/sparrow/prediction-request/v0_1">
+  <xsd:import namespace="req" schemaLocation="prediction_request.xsd"/>
 	
-	<xsd:element name="sparrow-prediction-response" type="sparrow-prediction-response-type" />
+	<xsd:element name="sparrow-prediction-response" type="req:sparrow-prediction-response-type" />
 
   <xsd:complexType name="sparrow-prediction-response-type">
     <xsd:sequence>
