@@ -3,8 +3,6 @@ package gov.usgswim.sparrow.service;
 import gov.usgswim.sparrow.Computable;
 import gov.usgswim.sparrow.ComputableCache;
 import gov.usgswim.sparrow.Double2D;
-import gov.usgswim.sparrow.PredictDatasetComputable;
-import gov.usgswim.sparrow.PredictionComputable;
 import gov.usgswim.sparrow.PredictionDataSet;
 import gov.usgswim.sparrow.PredictionRequest;
 import gov.usgswim.sparrow.util.DataSourceProxy;
