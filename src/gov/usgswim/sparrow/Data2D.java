@@ -3,7 +3,7 @@ package gov.usgswim.sparrow;
 /**
  * A 2D data array.
  */
-public interface Data2D {
+public interface Data2D<T extends Number> {
 	public String[] getHeadings();
 
 	/**
@@ -13,7 +13,7 @@ public interface Data2D {
 	 * @return The value at the specified row/column in an appropriate wrapper type
 	 * @throws IndexOutOfBoundsException if the row or column is outside the existing data bounds
 	 */
-	public Object getValueAt(int row, int col) throws IndexOutOfBoundsException;
+	public T getValueAt(int row, int col) throws IndexOutOfBoundsException;
 	
 	/**
 	 * Returns an integer representation of the value at the specified row/column location.
@@ -35,24 +35,6 @@ public interface Data2D {
 	 * @throws IndexOutOfBoundsException if the row or column is outside the existing data bounds
 	 */
 	public double getDouble(int row, int col) throws IndexOutOfBoundsException;
-	
-	/**
-	 * Sets the value at a specified position.
-	 * Implementations may do some type conversions of the value to coerce it to
-	 * the proper type, but if unable to convert, an IllegalArgumentException is
-	 * thrown.
-	 * <p>
-	 * This method will not add new rows or columns to fit a value.  If the
-	 * row or column is outside the existing boundry, an IndexOutOfBoundsException
-	 * is thrown.
-	 * 
-	 * @param value
-	 * @param row
-	 * @param col
-	 * @throws IndexOutOfBoundsException
-	 * @throws IllegalArgumentException
-	 */
-	public void setValueAt(Object value, int row, int col) throws IndexOutOfBoundsException, IllegalArgumentException;
 	
 	
 	/**
@@ -143,16 +125,6 @@ public interface Data2D {
 	 */
 	public int findHeading(String name);
 	
-	/**
-	 * Sets a column to be the index column.
-	 * 
-	 * Only one column can be the index column and it provides a fast index for
-	 * retrieving a row based on the index value.  If not defined, there is no
-	 * index.
-	 * 
-	 * @param colIndex	zero based.
-	 */
-	public void setIdColumn(int colIndex);
 	
 	/**
 	 * Returns the index of the ID column.  -1 is returned if there is no index.
