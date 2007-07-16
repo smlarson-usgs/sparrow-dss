@@ -27,6 +27,8 @@ public class SparrowUtil {
 			}
 		}
 		
+		stream.println("");
+		
 		for (int r = 0; r < data.getRowCount(); r++)  {
 			for (int c = 0; c < data.getColCount(); c++)  {
 				stream.print("" + data.getInt(r, c) + "\t");
@@ -43,6 +45,8 @@ public class SparrowUtil {
 	      stream.print(data.getHeading(i) + "\t");
 	    }
 	  }
+		
+		stream.println("");
 		
 		for (int r = 0; r < data.getRowCount(); r++)  {
 			for (int c = 0; c < data.getColCount(); c++)  {
