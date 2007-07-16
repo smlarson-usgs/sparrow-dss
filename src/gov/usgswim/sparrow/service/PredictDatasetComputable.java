@@ -1,6 +1,7 @@
-package gov.usgswim.sparrow;
+package gov.usgswim.sparrow.service;
 
-import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.Computable;
+import gov.usgswim.sparrow.PredictionDataSet;
 import gov.usgswim.sparrow.util.JDBCUtil;
 
 import java.sql.Connection;

@@ -1,6 +1,11 @@
-package gov.usgswim.sparrow;
+package gov.usgswim.sparrow.service;
 
-import gov.usgswim.sparrow.service.SharedApplication;
+
+import gov.usgswim.sparrow.Computable;
+import gov.usgswim.sparrow.Double2D;
+import gov.usgswim.sparrow.PredictSimple;
+import gov.usgswim.sparrow.PredictionDataSet;
+import gov.usgswim.sparrow.PredictionRequest;
 
 import org.apache.log4j.Logger;
 
@@ -17,7 +22,7 @@ public class PredictionComputable implements Computable<PredictionRequest, Doubl
 		PredictionDataSet adjData = adjustData(request, data);
 		
 		long startTime = System.currentTimeMillis();
-		
+
 		Double2D result = runPrediction(request, adjData);
 		
 		log.debug(
@@ -39,15 +44,16 @@ public class PredictionComputable implements Computable<PredictionRequest, Doubl
 	
 	/**
 	 * Adjusts the passed data based on the adjustments in the requests.
-	 * 
+	 *
 	 * The passed data is not modified and it is possible for the initial
 	 * data to simply be returned if there are no adjustments.
-	 * 
+	 *
 	 * @param arg
 	 * @param data
 	 * @return
 	 */
-	public PredictionDataSet adjustData(PredictionRequest req, PredictionDataSet data) {
+	public PredictionDataSet adjustData(PredictionRequest req,
+																			PredictionDataSet data) {
 		PredictionDataSet adjData = data;	//start by assuming we don't have to adjust the data
 		
 		if (req.getAdjustmentSet().hasAdjustments()) {
@@ -68,14 +74,15 @@ public class PredictionComputable implements Computable<PredictionRequest, Doubl
 	
 	/**
 	 * Runs the actual prediction using the passed base data.
-	 * 
+	 *
 	 * The passed data is not modified.
-	 * 
+	 *
 	 * @param arg
 	 * @param data
 	 * @return
 	 */
-	public Double2D runPrediction(PredictionRequest req, PredictionDataSet data) {
+	public Double2D runPrediction(PredictionRequest req,
+																PredictionDataSet data) {
 		PredictSimple adjPredict = new PredictSimple(data);
 		return adjPredict.doPredict();
 	}
