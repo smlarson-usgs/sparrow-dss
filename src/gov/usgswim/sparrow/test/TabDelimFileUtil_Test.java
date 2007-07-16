@@ -1,8 +1,10 @@
-package gov.usgswim.sparrow.util;
+package gov.usgswim.sparrow.test;
 
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Double2D;
 import gov.usgswim.sparrow.Int2D;
+
+import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;
 
