@@ -1,7 +1,10 @@
 package gov.usgswim.sparrow;
 
+import java.util.HashMap;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.math.NumberUtils;
 
 public class Data2DView implements Data2D {
 	Data2D data;
@@ -13,7 +16,11 @@ public class Data2DView implements Data2D {
 	
 	int firstCol;	//First included column - zero index
 	int colCount;	//Number of columns
-	int lastCol;	//First colulum NOT included - zero index
+	int lastCol;	//First column NOT included - zero index
+	
+	private Object indexLock = new Object();
+	private volatile int indexCol = -1;
+	private volatile HashMap<Double, Integer> idIndex;
 	
 	public Data2DView(Data2D data, int firstCol, int colCount) {
 	
@@ -124,11 +131,30 @@ public class Data2DView implements Data2D {
 	public void setValueAt(Object value, int row,
 												 int col) throws IndexOutOfBoundsException,
 																				 IllegalArgumentException {
-	  col+=firstCol;
-	  row+=firstRow;
-	  if (col < lastCol && row < lastRow) {
-	    data.setValueAt(value, row, col);
-			
+	  if ((col + firstCol) < lastCol && row + firstRow < lastRow) {
+
+			if (value != null) {
+				if (value instanceof Number) {
+					internalSet(row, col, ((Number) value).doubleValue());
+				} else if (value instanceof String) {
+					String v = (String) value;
+				  if (NumberUtils.isNumber(v)) {
+						internalSet(row, col, NumberUtils.toDouble(v));
+					} else {
+						throw new IllegalArgumentException("'" + v + "' is not a valid number.");
+					}
+				  
+				} else {
+				  throw new IllegalArgumentException("'" + value + "' cannot be converted to a number.");
+				}
+				
+			} else {
+				internalSet(row, col, 0d);
+			}
+
+
+
+
 	    //Update the max value if one is calculated
 	    if (maxValue != null) {
 	      if (data.getDouble(row, col) > maxValue.doubleValue()) {
@@ -136,8 +162,27 @@ public class Data2DView implements Data2D {
 	      }
 	    }
 	  } else {
-	    throw new IndexOutOfBoundsException("The row/column (" + (row - firstRow) + ", " + (col - firstCol) + ") exceeds the data bounds");
+	    throw new IndexOutOfBoundsException("The row/column (" + row + ", " + col + ") exceeds the data bounds");
 	  }
+	}
+	
+	private void internalSet(int r, int c, Number v) {
+		if (this.indexCol == c) {
+			//there is an index and its on our current column
+
+			synchronized (indexLock) {
+				double oldIndexVal = ((Number) data.getValueAt(r + firstRow, c + firstCol)).doubleValue();
+				
+				idIndex.remove(oldIndexVal);
+				idIndex.put(v.doubleValue(), r);
+
+				data.setValueAt(v, r + firstRow, c + firstCol);
+			}
+
+		} else {
+			data.setValueAt(v, r + firstRow, c + firstCol);
+		}
+		
 	}
 
 	public int getRowCount() {
@@ -211,5 +256,55 @@ public class Data2DView implements Data2D {
 	  } else {
 	    throw new IndexOutOfBoundsException("Column " + col + " exceeds last column, " + (lastCol - 1));
 	  }
+	}
+	
+	public void setIdColumn(int colIndex) {
+		synchronized (indexLock) {
+			if (indexCol != colIndex) {
+				indexCol = colIndex;
+				
+				if (indexCol != -1) {
+					rebuildIndex();
+				} else {
+					idIndex = null;
+				}
+			}
+		}
+	}
+	
+
+	public int getIdColumn() {
+		return indexCol;
+	}
+	
+
+	public int findRowById(Double id) {
+		
+		synchronized (indexLock) {
+			if (indexCol != -1) {
+				Integer i = idIndex.get(id);
+				if (i != null) {
+					return i;
+				} else {
+					return -1;
+				}
+			} else {
+				return -1;
+			}
+		}
+
+	}
+	
+	private void rebuildIndex() {
+		synchronized (indexLock) {
+			HashMap<Double, Integer> map = new HashMap<Double, Integer>(this.getRowCount(), 1.1f);
+			int rCount = getRowCount();
+			
+			for (int i = 0; i < rCount; i++)  {
+				map.put(getDouble(i, indexCol), i);
+			}
+			
+			idIndex = map;
+		}
 	}
 }

@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow;
 
+import java.util.HashMap;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
@@ -10,6 +12,10 @@ public class Int2D implements Data2D {
 	private int[][] _data;
 	private String[] _head;
 	private Double maxValue;	//null unless we know for sure we have the max value
+	
+	private Object indexLock = new Object();
+	private volatile int indexCol = -1;
+	private volatile HashMap<Integer, Integer> idIndex;
 	
 	public Int2D(int[][] data, String[] headings) {
 		_data = data;
@@ -44,11 +50,11 @@ public class Int2D implements Data2D {
 		if (row >= 0 && row < _data.length && col >=0 && _data[0] != null && col < _data[0].length) {
 			if (value != null) {
 				if (value instanceof Number) {
-					_data[row][col] = ((Number) value).intValue();
+					internalSet(row, col, ((Number) value).intValue());
 				} else if (value instanceof String) {
 					String v = (String) value;
 					if (NumberUtils.isNumber(v)) {
-						_data[row][col] = NumberUtils.toInt(v);
+						internalSet(row, col, NumberUtils.toInt(v));
 					} else {
 						throw new IllegalArgumentException("'" + v + "' is not a valid number.");
 					}
@@ -58,7 +64,7 @@ public class Int2D implements Data2D {
 				}
 				
 			} else {
-				_data[row][col] = 0;
+				internalSet(row, col, 0);
 			}
 			
 			//Update the max value if one is calculated
@@ -72,6 +78,25 @@ public class Int2D implements Data2D {
 			throw new IndexOutOfBoundsException("The row and/or column (" + row + "," + col + ") are beyond the range of the data array.");
 		}
 				
+	}
+	
+	private void internalSet(int r, int c, int v) {
+		if (this.indexCol == c) {
+			//there is an index and its on our current column
+
+			synchronized (indexLock) {
+				int oldIndexVal = _data[r][c];
+				
+				idIndex.remove(oldIndexVal);
+				idIndex.put(v, r);
+				
+				_data[r][c] = v;
+			}
+
+		} else {
+			_data[r][c] = v;
+		}
+		
 	}
 	
 	public String[] getHeadings() {
@@ -209,5 +234,57 @@ public class Int2D implements Data2D {
 		
 		return -1;
 		
+	}
+	
+	
+
+	public void setIdColumn(int colIndex) {
+		synchronized (indexLock) {
+			if (indexCol != colIndex) {
+				indexCol = colIndex;
+				
+				if (indexCol != -1) {
+					rebuildIndex();
+				} else {
+					idIndex = null;
+				}
+			}
+		}
+	}
+	
+
+	public int getIdColumn() {
+		return indexCol;
+	}
+	
+
+	public int findRowById(Double id) {
+		
+		synchronized (indexLock) {
+			if (indexCol != -1) {
+				Integer i = idIndex.get(id.intValue());
+				if (i != null) {
+					return i;
+				} else {
+					return -1;
+				}
+			} else {
+				return -1;
+			}
+		}
+
+	}
+	
+	private void rebuildIndex() {
+		synchronized (indexLock) {
+			HashMap<Integer, Integer> map = new HashMap<Integer, Integer>(this.getRowCount(), 1.1f);
+			int rCount = getRowCount();
+			
+			for (int i = 0; i < rCount; i++)  {
+				map.put(getInt(i, indexCol), i);
+			}
+			
+			idIndex = map;
+		}
 	}
 }

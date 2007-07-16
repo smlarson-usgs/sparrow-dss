@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow;
 
+import java.util.HashMap;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.ArrayUtils;
 
@@ -8,6 +10,10 @@ public class Data2DColumnCoefView implements Data2D {
 	private Double maxValue;  //null unless we know for sure we have the max value
 	
 	double[] coef;
+	
+	private Object indexLock = new Object();
+	private volatile int indexCol = -1;
+	private volatile HashMap<Double, Integer> idIndex;
 	
 	public Data2DColumnCoefView(Data2D data) {
 		this.data = data;
@@ -139,5 +145,55 @@ public class Data2DColumnCoefView implements Data2D {
 	
 	public int findHeading(String name) {
 		return data.findHeading(name);
+	}
+	
+	public void setIdColumn(int colIndex) {
+		synchronized (indexLock) {
+			if (indexCol != colIndex) {
+				indexCol = colIndex;
+				
+				if (indexCol != -1) {
+					rebuildIndex();
+				} else {
+					idIndex = null;
+				}
+			}
+		}
+	}
+	
+
+	public int getIdColumn() {
+		return indexCol;
+	}
+	
+
+	public int findRowById(Double id) {
+		
+		synchronized (indexLock) {
+			if (indexCol != -1) {
+				Integer i = idIndex.get(id);
+				if (i != null) {
+					return i;
+				} else {
+					return -1;
+				}
+			} else {
+				return -1;
+			}
+		}
+
+	}
+	
+	private void rebuildIndex() {
+		synchronized (indexLock) {
+			HashMap<Double, Integer> map = new HashMap<Double, Integer>(this.getRowCount(), 1.1f);
+			int rCount = getRowCount();
+			
+			for (int i = 0; i < rCount; i++)  {
+				map.put(getDouble(i, indexCol), i);
+			}
+			
+			idIndex = map;
+		}
 	}
 }

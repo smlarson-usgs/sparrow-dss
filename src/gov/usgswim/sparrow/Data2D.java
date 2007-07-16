@@ -142,4 +142,31 @@ public interface Data2D {
 	 * @return The index of the heading, or -1 if it is not found.
 	 */
 	public int findHeading(String name);
+	
+	/**
+	 * Sets a column to be the index column.
+	 * 
+	 * Only one column can be the index column and it provides a fast index for
+	 * retrieving a row based on the index value.  If not defined, there is no
+	 * index.
+	 * 
+	 * @param colIndex	zero based.
+	 */
+	public void setIdColumn(int colIndex);
+	
+	/**
+	 * Returns the index of the ID column.  -1 is returned if there is no index.
+	 * @return
+	 */
+	public int getIdColumn();
+	
+	/**
+	 * Returns the zero based row index of the row with the specified id.
+	 * 
+	 * If no row is found, -1 is returned.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public int findRowById(Double id);
 }

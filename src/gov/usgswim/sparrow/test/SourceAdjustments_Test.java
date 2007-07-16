@@ -34,7 +34,7 @@ public class SourceAdjustments_Test extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		
-		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/src.txt");
+		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/src.txt");
 		data = TabDelimFileUtil.readAsDouble(fileStream, true);
 	}
 
