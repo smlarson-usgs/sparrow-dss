@@ -11,7 +11,6 @@ public class Data2DPercentCompare extends Data2DView {
 	int[] colMap;
 	private Double[] maxCompValues;  //Max deviation for each column.  Each value may be null if unknown
 	boolean decimalPercentage = false;
-	boolean returnCompValuesAsValues = false;	//if true, calling getValue, getInt, getDouble will return the compare value.
 	
 	/**
 	 * Construct a new instance using the passed baseData and compData.
@@ -21,13 +20,12 @@ public class Data2DPercentCompare extends Data2DView {
 	 * @param baseData
 	 * @param compData
 	 */
-	public Data2DPercentCompare(Data2D baseData, Data2D compData, boolean useDecimalPercentage, boolean returnCompValuesAsValues) {
+	public Data2DPercentCompare(Data2D baseData, Data2D compData, boolean useDecimalPercentage) {
 		super(baseData, 0, baseData.getColCount());
 		
 		this.compData = compData;
 		maxCompValues = new Double[baseData.getColCount()];
 		decimalPercentage = useDecimalPercentage;
-		this.returnCompValuesAsValues = returnCompValuesAsValues;
 	}
 	
 	/**
@@ -47,14 +45,13 @@ public class Data2DPercentCompare extends Data2DView {
 	 * @param compData
 	 * @param columnMapping
 	 */
-	public Data2DPercentCompare(Data2D baseData, Data2D compData, int[] columnMapping, boolean useDecimalPercentage, boolean returnCompValuesAsValues) {
+	public Data2DPercentCompare(Data2D baseData, Data2D compData, int[] columnMapping, boolean useDecimalPercentage) {
 		super(baseData, 0, baseData.getColCount());
 		
 		this.compData = compData;
 		colMap = columnMapping;
 		maxCompValues = new Double[baseData.getColCount()];
 		decimalPercentage = useDecimalPercentage;
-		this.returnCompValuesAsValues = returnCompValuesAsValues;
 	}
 	
 	public double compare(int row, int col) throws IndexOutOfBoundsException {
@@ -79,6 +76,7 @@ public class Data2DPercentCompare extends Data2DView {
 		}
 	}
 	
+	//TODO: Max value by column should be part of the interface
 	public synchronized double findMaxCompareValue(int column) {
 		if (maxCompValues[column] == null) {
 
@@ -116,37 +114,15 @@ public class Data2DPercentCompare extends Data2DView {
 	}
 
 	public double getDouble(int row, int col) throws IndexOutOfBoundsException {
-		if (returnCompValuesAsValues) {
-			return compare(row, col);
-		} else {
-			return super.getDouble(row, mapColumn(col));
-		}
+		return compare(row, col);
 	}
 
 	public int getInt(int row, int col) throws IndexOutOfBoundsException {
-		if (returnCompValuesAsValues) {
-			return (int) compare(row, col);
-		} else {
-			return super.getInt(row, mapColumn(col));
-		}
+		return (int) compare(row, col);
 	}
 
-	public Object getValueAt(int row, int col) throws IndexOutOfBoundsException {
-		
-		if (returnCompValuesAsValues) {
-			return new Double( compare(row, col) );
-		} else {
-			return super.getValueAt(row, mapColumn(col));
-		}
+	public Number getValueAt(int row, int col) throws IndexOutOfBoundsException {
+		return new Double( compare(row, col) );
 	}
 
-	public void setValueAt(Object value, int row, int col)
-			throws IndexOutOfBoundsException, IllegalArgumentException {									 
-												 
-		if (returnCompValuesAsValues) {
-			throw new UnsupportedOperationException("Cannot set values on this view when returning the compared values as real values");
-		} else {
-			super.setValueAt(value, row, mapColumn(col));
-		}
-	}
 }

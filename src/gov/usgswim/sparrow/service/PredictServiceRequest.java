@@ -99,8 +99,8 @@ public class PredictServiceRequest {
 	}
 	
 	public enum ResponseFilter {
-		ALL("all", "Return all results"),
-		NEAR_POINT("near-pt", "Return results nearest a point");
+		ALL("all-results", "Return all results"),
+		NEAR_POINT("near-point", "Return results nearest a point");
 		
 		private String _name;
 		private String _desc;

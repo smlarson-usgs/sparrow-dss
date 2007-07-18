@@ -3,8 +3,7 @@ package gov.usgswim.sparrow.gui;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DCompare;
 import gov.usgswim.sparrow.Data2DView;
-import gov.usgswim.sparrow.Double2D;
-import gov.usgswim.sparrow.Int2D;
+import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.PredictSimple;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
@@ -160,10 +159,10 @@ public class SparrowData implements DataChangeListener {
 			
 			try {
 				if (DATA_TYPE_TOPO.equals(evt.getDataType())) {
-					topoData = TabDelimFileUtil.readAsInteger(f, true);
+					topoData = TabDelimFileUtil.readAsInteger(f, true, -1);
 					fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_TOPO, topoData));
 				} else if (DATA_TYPE_COEF.equals(evt.getDataType())) {
-					Double2D coefDataFull = TabDelimFileUtil.readAsDouble(f, true);
+					Double2DImm coefDataFull = TabDelimFileUtil.readAsDouble(f, true, -1);
 					
 					//coefData includes multiple iterations, indicated in the first column.
 					//we want iteration 0.
@@ -179,10 +178,10 @@ public class SparrowData implements DataChangeListener {
 					
 					fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_COEF, coefData));
 				} else if (DATA_TYPE_SRC.equals(evt.getDataType())) {
-					srcData = TabDelimFileUtil.readAsDouble(f, true);
+					srcData = TabDelimFileUtil.readAsDouble(f, true, -1);
 					fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_SRC, srcData));
 				} else if (DATA_TYPE_KNOWN.equals(evt.getDataType())) {
-					knownData = TabDelimFileUtil.readAsDouble(f, true);
+					knownData = TabDelimFileUtil.readAsDouble(f, true, -1);
 					
 					fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_KNOWN, knownData));
 					
@@ -194,7 +193,7 @@ public class SparrowData implements DataChangeListener {
 					}
 					
 				} else if (DATA_TYPE_ANCIL.equals(evt.getDataType())) {
-					ancilData = TabDelimFileUtil.readAsDouble(f, true);
+					ancilData = TabDelimFileUtil.readAsDouble(f, true, -1);
 					fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_ANCIL, ancilData));
 				}
 			} catch (FileNotFoundException e) {

@@ -125,7 +125,6 @@ public class PredictionDataSet implements Cloneable {
 	 * @param coef
 	 * @param src
 	 * @param decay
-	 * @param sys
 	 */
 	public PredictionDataSet(Data2D topo, Data2D coef, Data2D src, Data2D decay) {
 		this.topo = topo;

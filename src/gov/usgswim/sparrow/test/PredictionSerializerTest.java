@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.test;
 
+import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Double2D;
 import gov.usgswim.sparrow.service.PredictService;
 import gov.usgswim.sparrow.service.PredictionSerializer;
@@ -56,7 +57,7 @@ public class PredictionSerializerTest extends TestCase {
 			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-0.xml"));
 		
 		PredictService service = new PredictService();
-		Double2D result = (Double2D) service.dispatch(xsr);
+		Data2D result = service.dispatch(xsr);
 
 		PredictionSerializer ps = new PredictionSerializer();
 		

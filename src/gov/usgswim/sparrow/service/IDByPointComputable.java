@@ -1,41 +1,38 @@
 package gov.usgswim.sparrow.service;
 
 import gov.usgswim.sparrow.Computable;
-import gov.usgswim.sparrow.Int2D;
-import gov.usgswim.sparrow.PredictionDataSet;
+import gov.usgswim.sparrow.Int2DImm;
 import gov.usgswim.sparrow.util.JDBCUtil;
-
-import java.awt.Point;
-import java.awt.geom.Point2D;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
+
 /**
  * Identifies reaches within a model nearest a point, sorted
  * by distance.
- * 
+ *
  * The reaches are returned in a Int2D object:
  * The first column is the model id for the reach, the second column is the
  * distance (in meters) from the original point.  The number of rows is determined
  * by the number of results requested, however, in the case where reaches cannot
  * be found 'nearby'*, the number of rows can be less and can be zero rows.
- * 
+ *
  * *'nearby' is defined arbitrarily to improve database responsiveness.
  */
-public class IDByPointComputable implements Computable<IDByPointRequest, Int2D> {
+public class IDByPointComputable implements Computable<IDByPointRequest, Int2DImm> {
 	protected static Logger log =
 		Logger.getLogger(PredictDatasetComputable.class); //logging for this class
 		
 	public IDByPointComputable() {
 	}
 
-	public Int2D compute(IDByPointRequest req) throws Exception {
+	public Int2DImm compute(IDByPointRequest req) throws Exception {
 		Connection conn = null;
 		
-		Int2D data = null;
+		Int2DImm data = null;
 		
 		try {
 			conn = SharedApplication.getInstance().getConnection();

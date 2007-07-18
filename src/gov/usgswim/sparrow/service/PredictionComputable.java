@@ -2,14 +2,14 @@ package gov.usgswim.sparrow.service;
 
 
 import gov.usgswim.sparrow.Computable;
-import gov.usgswim.sparrow.Double2D;
+import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.PredictSimple;
 import gov.usgswim.sparrow.PredictionDataSet;
 import gov.usgswim.sparrow.PredictionRequest;
 
 import org.apache.log4j.Logger;
 
-public class PredictionComputable implements Computable<PredictionRequest, Double2D> {
+public class PredictionComputable implements Computable<PredictionRequest, Double2DImm> {
 	protected static Logger log =
 		Logger.getLogger(PredictionComputable.class); //logging for this class
 		
@@ -17,13 +17,13 @@ public class PredictionComputable implements Computable<PredictionRequest, Doubl
 	public PredictionComputable() {
 	}
 
-	public Double2D compute(PredictionRequest request) throws Exception {
+	public Double2DImm compute(PredictionRequest request) throws Exception {
 		PredictionDataSet data = loadData(request);
 		PredictionDataSet adjData = adjustData(request, data);
 		
 		long startTime = System.currentTimeMillis();
 
-		Double2D result = runPrediction(request, adjData);
+		Double2DImm result = runPrediction(request, adjData);
 		
 		log.debug(
 			"Prediction done for model #" + request.getModelId() + 
@@ -81,7 +81,7 @@ public class PredictionComputable implements Computable<PredictionRequest, Doubl
 	 * @param data
 	 * @return
 	 */
-	public Double2D runPrediction(PredictionRequest req,
+	public Double2DImm runPrediction(PredictionRequest req,
 																PredictionDataSet data) {
 		PredictSimple adjPredict = new PredictSimple(data);
 		return adjPredict.doPredict();

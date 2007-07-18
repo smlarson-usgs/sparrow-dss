@@ -7,28 +7,49 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
 public class Data2DView implements Data2D {
-	Data2D data;
-	private Double maxValue;  //null unless we know for sure we have the max value
+	protected final Data2D data;
+	protected volatile Double maxValue;  //null unless we know for sure we have the max value
 	
-	int firstRow; //First included row - zero index
-	int rowCount; //Number of rows
-	int lastRow;  //First row NOT included - zero index
+	final int firstRow; //First included row - zero index
+	final int rowCount; //Number of rows
+	final int lastRow;  //First row NOT included - zero index
 	
-	int firstCol;	//First included column - zero index
-	int colCount;	//Number of columns
-	int lastCol;	//First column NOT included - zero index
+	final int firstCol;	//First included column - zero index
+	final int colCount;	//Number of columns
+	final int lastCol;	//First column NOT included - zero index
 	
-	private Object indexLock = new Object();
-	private volatile int indexCol = -1;
-	private volatile HashMap<Double, Integer> idIndex;
+	protected Object indexLock = new Object();
+	protected volatile int indexCol = -1;
+	protected volatile HashMap<Double, Integer> idIndex;
 	
 	public Data2DView(Data2D data, int firstCol, int colCount) {
+	  this(data, 0, data.getRowCount(), firstCol, colCount, -1);
+	}
 	
-	  this(data, 0, data.getRowCount(), firstCol, colCount);
-
+	public Data2DView(Data2D data, int firstCol, int colCount, int indexCol) {
+	  this(data, 0, data.getRowCount(), firstCol, colCount, indexCol);
 	}
 	
 	public Data2DView(Data2D data, int firstRow, int rowCount, int firstCol, int colCount) {
+		this(data, firstRow, rowCount, firstCol, colCount, -1);
+	}
+	
+	
+	/**
+	 * Index column refers to the column index of the columns as they will be
+	 * in the new Data2DView.  For instance, if firstCol is specified as 1,
+	 * an indexCol of zero would make that column (column 1 in the original data
+	 * and column zero in this view) the index column.  In otherwords, it must
+	 * be less than colCount.
+	 * 
+	 * @param data
+	 * @param firstRow
+	 * @param rowCount
+	 * @param firstCol
+	 * @param colCount
+	 * @param indexCol
+	 */
+	public Data2DView(Data2D data, int firstRow, int rowCount, int firstCol, int colCount, int indexCol) {
 	
 		this.data = data;
 		
@@ -39,6 +60,8 @@ public class Data2DView implements Data2D {
 		this.firstCol = firstCol;
 		this.colCount = colCount;
 		lastCol = firstCol + colCount;  //one beyond the index of the last column
+		
+		this.indexCol = indexCol;
 		
 		if (data == null)
 			throw new IllegalArgumentException("The Data2D argument cannot be null");
@@ -66,7 +89,60 @@ public class Data2DView implements Data2D {
 				"The colCount argument cannot be less then one or " +
 				"exceed the max column index of the source data"
 			);
+			
+		if (indexCol < -1 || indexCol >= colCount) {
+			throw new IllegalArgumentException(
+				"The indexCol argument must be less then the colCount"
+			);
+		}
 
+	}
+	
+	public int[][] getIntData() {
+		int rc = getRowCount();
+		int cc = getColCount();
+			
+		if (rc > 0 && cc > 0) {
+
+			int[][] out = new int[rc][];
+			
+			for (int r = 0; r < rc; r++)  {
+				int[] row = new int[cc];
+				for (int c = 0; c < cc; c++)  {
+					row[c] = getInt(r, c);
+				}
+				
+				out[r] = row;
+			}
+			
+			return out;
+
+		} else {
+			return Data2D.EMPTY_INT_2D_DATA;
+		}
+	}
+	
+	public double[][] getDoubleData() {
+		int rc = getRowCount();
+		int cc = getColCount();
+		
+		if (rc > 0 && cc > 0) {
+				
+			double[][] out = new double[rc][];
+			
+			for (int r = 0; r < rc; r++)  {
+				double[] row = new double[cc];
+				for (int c = 0; c < cc; c++) {
+					row[c] = getDouble(r, c);
+				}
+				out[r] = row;
+			}
+			
+			return out;
+
+		} else {
+			return Data2D.EMPTY_DOUBLE_2D_DATA;
+		}
 	}
 
 	public String[] getHeadings() {
@@ -98,7 +174,7 @@ public class Data2DView implements Data2D {
 
 	}
 
-	public Object getValueAt(int row, int col) throws IndexOutOfBoundsException {
+	public Number getValueAt(int row, int col) throws IndexOutOfBoundsException {
 		col+=firstCol;
 		row+=firstRow;
 		if (col < lastCol && row < lastRow) {
@@ -128,63 +204,6 @@ public class Data2DView implements Data2D {
 	  }
 	}
 
-	public void setValueAt(Object value, int row,
-												 int col) throws IndexOutOfBoundsException,
-																				 IllegalArgumentException {
-	  if ((col + firstCol) < lastCol && row + firstRow < lastRow) {
-
-			if (value != null) {
-				if (value instanceof Number) {
-					internalSet(row, col, ((Number) value).doubleValue());
-				} else if (value instanceof String) {
-					String v = (String) value;
-				  if (NumberUtils.isNumber(v)) {
-						internalSet(row, col, NumberUtils.toDouble(v));
-					} else {
-						throw new IllegalArgumentException("'" + v + "' is not a valid number.");
-					}
-				  
-				} else {
-				  throw new IllegalArgumentException("'" + value + "' cannot be converted to a number.");
-				}
-				
-			} else {
-				internalSet(row, col, 0d);
-			}
-
-
-
-
-	    //Update the max value if one is calculated
-	    if (maxValue != null) {
-	      if (data.getDouble(row, col) > maxValue.doubleValue()) {
-	        maxValue = new Double(data.getDouble(row, col));
-	      }
-	    }
-	  } else {
-	    throw new IndexOutOfBoundsException("The row/column (" + row + ", " + col + ") exceeds the data bounds");
-	  }
-	}
-	
-	private void internalSet(int r, int c, Number v) {
-		if (this.indexCol == c) {
-			//there is an index and its on our current column
-
-			synchronized (indexLock) {
-				double oldIndexVal = ((Number) data.getValueAt(r + firstRow, c + firstCol)).doubleValue();
-				
-				idIndex.remove(oldIndexVal);
-				idIndex.put(v.doubleValue(), r);
-
-				data.setValueAt(v, r + firstRow, c + firstCol);
-			}
-
-		} else {
-			data.setValueAt(v, r + firstRow, c + firstCol);
-		}
-		
-	}
-
 	public int getRowCount() {
 		return rowCount;
 	}
@@ -198,9 +217,9 @@ public class Data2DView implements Data2D {
 
 			double max = Double.MIN_VALUE;
 			
-			for (int r = firstRow; r < lastRow; r++)  {
-				for (int c = firstCol; c < lastCol; c++)  {
-					if (data.getDouble(r, c) > max) max = data.getDouble(r, c);
+			for (int r = 0; r < getRowCount(); r++)  {
+				for (int c = 0; c < getColCount(); c++)  {
+					if (getDouble(r, c) > max) max = getDouble(r, c);
 				}
 			}
 			
@@ -217,8 +236,8 @@ public class Data2DView implements Data2D {
 	 * @return
 	 */
 	public int orderedSearchFirst(double value, int column) {
-		for (int r = firstRow; r < lastRow; r++)  {
-			if (data.getDouble(r, column) == value) return (r - firstRow);
+		for (int r = 0; r < getRowCount(); r++)  {
+			if (getDouble(r, column) == value) return r;
 		}
 		return -1;
 	}
@@ -230,8 +249,8 @@ public class Data2DView implements Data2D {
 	 * @return
 	 */
 	public int orderedSearchLast(double value, int column) {
-		for (int r = lastRow - 1; r >= firstRow; r--)  {
-			if (data.getDouble(r, column) == value) return (r - firstRow);
+		for (int r = getRowCount() - 1; r >= 0; r--)  {
+			if (getDouble(r, column) == value) return r;
 		}
 		return -1;
 	}
@@ -257,21 +276,6 @@ public class Data2DView implements Data2D {
 	    throw new IndexOutOfBoundsException("Column " + col + " exceeds last column, " + (lastCol - 1));
 	  }
 	}
-	
-	public void setIdColumn(int colIndex) {
-		synchronized (indexLock) {
-			if (indexCol != colIndex) {
-				indexCol = colIndex;
-				
-				if (indexCol != -1) {
-					rebuildIndex();
-				} else {
-					idIndex = null;
-				}
-			}
-		}
-	}
-	
 
 	public int getIdColumn() {
 		return indexCol;
@@ -281,7 +285,11 @@ public class Data2DView implements Data2D {
 	public int findRowById(Double id) {
 		
 		synchronized (indexLock) {
-			if (indexCol != -1) {
+		
+			//lazy build
+			if (idIndex == null && indexCol > -1) rebuildIndex();
+			
+			if (idIndex != null) {
 				Integer i = idIndex.get(id);
 				if (i != null) {
 					return i;
@@ -295,16 +303,18 @@ public class Data2DView implements Data2D {
 
 	}
 	
-	private void rebuildIndex() {
-		synchronized (indexLock) {
-			HashMap<Double, Integer> map = new HashMap<Double, Integer>(this.getRowCount(), 1.1f);
-			int rCount = getRowCount();
-			
-			for (int i = 0; i < rCount; i++)  {
-				map.put(getDouble(i, indexCol), i);
+	protected void rebuildIndex() {
+		if (indexCol > -1) {
+			synchronized (indexLock) {
+				HashMap<Double, Integer> map = new HashMap<Double, Integer>(this.getRowCount(), 1.1f);
+				int rCount = getRowCount();
+				
+				for (int i = 0; i < rCount; i++)  {
+					map.put(getDouble(i, indexCol), i);
+				}
+				
+				idIndex = map;
 			}
-			
-			idIndex = map;
 		}
 	}
 }

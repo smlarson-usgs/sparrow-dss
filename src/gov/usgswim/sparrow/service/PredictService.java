@@ -10,8 +10,11 @@ import gov.usgswim.sparrow.AdjustmentSetImm;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DPercentCompare;
 import gov.usgswim.sparrow.PredictionRequest;
+import gov.usgswim.sparrow.service.PredictServiceRequest.ResponseFilter;
 
 import java.awt.Point;
+
+import java.awt.geom.Point2D;
 
 import java.io.OutputStream;
 
@@ -103,26 +106,6 @@ public class PredictService implements HttpServiceHandler,
 		PredictionSerializer ps = new PredictionSerializer();
 		ps.writeResponse(outStream, req, result);
 
-		
-		/*
-		 * query for iding a reach...
-		 * SELECT *
-FROM
-  (SELECT reach_geom AS
-   geom,
-   round(
-  SDO_GEOM.SDO_DISTANCE(REACH_GEOM, sdo_geometry(2001, 8307, sdo_point_type(-93, 45, NULL), NULL, NULL), 0.00005, 'unit=M'),4
-) DISTANCE_IN_METERS_FROM_CLICK,
-     model_reach_id
-   FROM all_geom_vw
-   WHERE sparrow_model_id = 22 and
-   SDO_FILTER(reach_geom, SDO_GEOMETRY(2003, 8307, NULL, SDO_ELEM_INFO_ARRAY(1,1003,3), SDO_ORDINATE_ARRAY(-95,43, -91,47))) = 'TRUE'
-   ORDER BY DISTANCE_IN_METERS_FROM_CLICK)
-INNER
-WHERE rownum < 50
-		 * 
-		 * 
-		 */
 	}
 	
 	public Data2D runPrediction(PredictServiceRequest req) {
@@ -143,8 +126,7 @@ WHERE rownum < 50
 	
 				result = new Data2DPercentCompare(
 						noAdjResult, adjResult,
-						req.getPredictType().equals(PredictServiceRequest.PredictType.DEC_CHG_FROM_NOMINAL),
-						true);
+						req.getPredictType().equals(PredictServiceRequest.PredictType.DEC_CHG_FROM_NOMINAL));
 						
 			} else {
 				//need to run only the adjusted prediction
@@ -163,7 +145,7 @@ WHERE rownum < 50
 
 	}
 	
-	public PredictServiceRequest parse(XMLStreamReader reader) throws XMLStreamException {
+	public PredictServiceRequest parse(XMLStreamReader reader) throws Exception {
 		PredictServiceRequest req = null;
 		
 		while (reader.hasNext()) {
@@ -206,10 +188,10 @@ WHERE rownum < 50
 	 * Reads just the response portion of the request and then returns.
 	 * 
 	 * @param reader
-	 * @param request
+	 * @param req
 	 * @throws XMLStreamException
 	 */
-	protected void parseResponseSection(XMLStreamReader reader, PredictServiceRequest req) throws XMLStreamException {
+	protected void parseResponseSection(XMLStreamReader reader, PredictServiceRequest req) throws Exception {
 		while (reader.hasNext()) {
 			int eventCode = reader.next();
 			
@@ -218,19 +200,8 @@ WHERE rownum < 50
 				{
 					String lName = reader.getLocalName();
 					
-					if ("all-results".equals(lName)) {
-						req.setResponseType(PredictServiceRequest.ResponseFilter.ALL);
-					} else if ("identify-by-point".equals(lName)) {
-						req.setResponseType(PredictServiceRequest.ResponseFilter.NEAR_POINT);
-						int numResults = Integer.parseInt( reader.getAttributeValue(null, "number-of-results") );
-						req.setNumberOfResults(numResults);
-					} else if ("point".equals(lName)) {
-						double lat = Double.parseDouble( reader.getAttributeValue(null, "lat") );
-						double lng = Double.parseDouble( reader.getAttributeValue(null, "long") );
-						Point.Double pt = new Point.Double();
-						pt.x = lng;
-						pt.y = lat;
-						req.setFilterPoint(pt);
+					if ("filter".equals(lName)) {
+						parseFilterSection(reader, req);
 					} else if ("data-series".equals(lName)) {
 						req.setDataSeries(PredictServiceRequest.DataSeries.find(StringUtils.trimToEmpty(reader.getElementText()))
 						);
@@ -243,6 +214,62 @@ WHERE rownum < 50
 				{
 					String lName = reader.getLocalName();
 					if ("response".equals(lName)) {
+						return;
+					}
+				}
+				break;
+			}
+		}
+	}
+	
+	/**
+	 * Reads just the response/filter portion of the request and then returns.
+	 * 
+	 * @param reader
+	 * @param request
+	 * @throws XMLStreamException
+	 */
+	protected void parseFilterSection(XMLStreamReader reader, PredictServiceRequest req) throws Exception {
+		while (reader.hasNext()) {
+			int eventCode = reader.next();
+			
+			switch (eventCode) {
+			case XMLStreamReader.START_ELEMENT:
+				{
+					String lName = reader.getLocalName();
+					PredictServiceRequest.ResponseFilter filter = PredictServiceRequest.ResponseFilter.find(lName);
+					
+					switch (filter) {
+					case ALL:
+						req.setResponseType(filter);
+						break;
+					case NEAR_POINT:
+						req.setResponseType(filter);
+						Integer n = parseAttribAsInt(reader, "number-of-results", false);
+						if (n != null) {
+							req.setNumberOfResults(n);
+						}
+						
+						reader.nextTag();	//MUST be a point element
+						
+						Point.Double pt = new Point.Double();
+						pt.x = parseAttribAsDouble(reader, "long");
+						pt.y = parseAttribAsDouble(reader, "lat");
+						req.setFilterPoint(pt);
+						
+						break;
+					default:
+						throw new Exception("Could not parse filter type '" + lName + "'");
+					
+					} 
+					
+				}
+				break;
+			
+			case XMLStreamReader.END_ELEMENT:
+				{
+					String lName = reader.getLocalName();
+					if ("filter".equals(lName)) {
 						return;
 					}
 				}
@@ -326,6 +353,105 @@ WHERE rownum < 50
 		}
 		
 		return adj.getImmutable();	//shouldn't get here
+	}
+	
+	//TODO:  These util methods could easily be part of a parse util class.
+	
+	/**
+	 * Returns the integer value found in the specified attribute of the current
+	 * element.  If require is true and the attribute does not exist, an error
+	 * is thrown.
+	 * @param reader
+	 * @param attrib
+	 * @return
+	 * @throws Exception
+	 */
+	public static int parseAttribAsInt(
+			XMLStreamReader reader, String attrib) throws Exception {
+			
+		return parseAttribAsInt(reader, attrib, true);
+	}
+	
+	/**
+	 * Returns the Integer value found in the specified attribute of the current
+	 * element.  If require is true and the attribute does not exist, an error
+	 * is thrown.  If the attribute does not exist or is empty and require is
+	 * not true, null is returned.
+	 * @param reader
+	 * @param attrib
+	 * @param require
+	 * @return
+	 * @throws Exception
+	 */
+	public static Integer parseAttribAsInt(
+			XMLStreamReader reader, String attrib, boolean require) throws Exception {
+		
+		String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
+		
+		if (v != null) {
+			int iv = 0;
+			
+			try {
+				return Integer.parseInt(v);
+			} catch (Exception e) {
+				throw new Exception("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be an integer");
+			}
+			
+		} else if (require) {
+			throw new Exception("The '" + attrib + "' attribute must exist for element '" + reader.getLocalName() + "'");
+		} else {
+			return null;
+		}
+		
+	}
+	
+	
+	/**
+	 * Returns the double value found in the specified attribute of the current
+	 * element.  If the attribute does not exist or cannot be parsed as a number,
+	 * an error is thrown.
+	 * 
+	 * @param reader
+	 * @param attrib
+	 * @return
+	 * @throws Exception
+	 */
+	public static double parseAttribAsDouble(
+			XMLStreamReader reader, String attrib) throws Exception {
+			
+		return parseAttribAsDouble(reader, attrib, true);
+	}
+	/**
+	 * Returns the Double value found in the specified attribute of the current
+	 * element.  If require is true and the attribute does not exist, an error
+	 * is thrown.  If the attribute does not exist or is empty and
+	 * require is not true, null is returned.
+	 * @param reader
+	 * @param attrib
+	 * @param require
+	 * @return
+	 * @throws Exception
+	 */
+	public static Double parseAttribAsDouble(
+			XMLStreamReader reader, String attrib, boolean require) throws Exception {
+		
+		String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
+		
+		if (v != null) {
+			int iv = 0;
+			
+			try {
+				return Double.parseDouble(v);
+			} catch (Exception e) {
+				throw new Exception("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be a number");
+			}
+			
+		} else if (require) {
+			throw new Exception("The '" + attrib + "' attribute must exist for element '" + reader.getLocalName() + "'");
+		} else {
+			return null;
+		}
+		
 	}
 
 }

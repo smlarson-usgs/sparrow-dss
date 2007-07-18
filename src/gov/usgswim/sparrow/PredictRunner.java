@@ -157,7 +157,7 @@ public class PredictRunner {
 			//Set the output data to be the result of the comparison
 			if (resultMode.isComparison()) {
 				Data2D nonAdjResult = doRun(nonAdjustedData);
-				result = new Data2DPercentCompare(nonAdjResult, result, resultMode.equals(ResultMode.DECIMAL_PERCENTAGE_CHANGE), true);	
+				result = new Data2DPercentCompare(nonAdjResult, result, resultMode.equals(ResultMode.DECIMAL_PERCENTAGE_CHANGE));	
 			}
 			
 			log.info("Returning data (" + data.getRowCount() + " rows).  Total time spent: " + (System.currentTimeMillis() - startTime) + "ms");

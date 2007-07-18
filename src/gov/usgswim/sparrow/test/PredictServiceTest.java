@@ -1,8 +1,10 @@
 package gov.usgswim.sparrow.test;
 
 import gov.usgswim.sparrow.Adjustment;
+import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DCompare;
 import gov.usgswim.sparrow.Double2D;
+import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.PredictionRequest;
 import gov.usgswim.sparrow.service.PredictService;
 import gov.usgswim.sparrow.service.PredictServiceRequest;
@@ -49,8 +51,7 @@ public class PredictServiceTest extends TestCase {
 
 	/**
 	 */
-	public void testReadData1() throws SQLException, XMLStreamException,
-																					IOException {
+	public void testReadData1() throws Exception {
 		
 		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
 		XMLStreamReader xsr = xinFact.createXMLStreamReader(
@@ -77,8 +78,7 @@ public class PredictServiceTest extends TestCase {
 		this.assertEquals(2d, adj.getValue());
 	}
 	
-	public void testReadData2() throws SQLException, XMLStreamException,
-																					IOException {
+	public void testReadData2() throws Exception {
 		Point.Double point = new Point.Double();
 		point.x = -100;
 		point.y = 40;
@@ -118,7 +118,7 @@ public class PredictServiceTest extends TestCase {
 			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-0.xml"));
 		
 		PredictService service = new PredictService();
-		Double2D result = (Double2D) service.dispatch(xsr);
+		Data2D result = service.dispatch(xsr);
 
 		Data2DCompare comp = buildPredictionComparison(result);
 		
@@ -147,9 +147,9 @@ public class PredictServiceTest extends TestCase {
 		assertTrue(validate(outFile.getAbsolutePath()));
 	}
 	
-	protected Data2DCompare buildPredictionComparison(Double2D toBeCompared) throws Exception {
+	protected Data2DCompare buildPredictionComparison(Data2D toBeCompared) throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict.txt");
-		Double2D data = TabDelimFileUtil.readAsDouble(fileStream, true);
+		Double2DImm data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 		int[] DEFAULT_COMP_COLUMN_MAP =
 			new int[] {40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 39, 15};
 		

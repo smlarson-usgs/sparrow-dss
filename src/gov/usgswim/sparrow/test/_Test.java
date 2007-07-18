@@ -17,6 +17,7 @@ public class _Test {
 		suite.addTestSuite(Int2D_Test.class);
 		suite.addTestSuite(Double2D_Test.class);
 	  suite.addTestSuite(Data2DView_Test.class);
+		suite.addTestSuite(Data2DBuilder_Test.class);
 		suite.addTestSuite(JDBCUtil_Test.class);
 		suite.addTestSuite(SourceAdjustments_Test.class);
 		suite.addTestSuite(DomainSerializerTest.class);

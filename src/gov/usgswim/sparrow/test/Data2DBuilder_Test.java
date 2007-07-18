@@ -7,11 +7,11 @@ import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 import java.io.InputStream;
 import junit.framework.TestCase;
-//TODO: Rename
-public class Double2D_Test extends TestCase {
+
+public class Data2DBuilder_Test extends TestCase {
 
 
-	public Double2D_Test(String testName) {
+	public Data2DBuilder_Test(String testName) {
 		super(testName);
 	}
 
@@ -19,7 +19,8 @@ public class Double2D_Test extends TestCase {
 	public void testDouble() throws Exception {
 		InputStream fileStream =
 				this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_heading.txt");
-		Double2DImm data2D = TabDelimFileUtil.readAsDouble(fileStream, true, 0);
+		Data2DBuilder data2D = TabDelimFileUtil.read(fileStream, true);
+		data2D.setIdColumn(0);
 
 		this.assertEquals(0, data2D.findRowById(1d));
 		this.assertEquals(1, data2D.findRowById(11d));
@@ -30,6 +31,25 @@ public class Double2D_Test extends TestCase {
 		//should not be found (-1)
 		this.assertEquals(-1, data2D.findRowById(99d));
 		
+		
+		//
+		// Change some values and make sure we find them.
+		//
+		data2D.setValueAt(new Integer(99), 9, 0);
+		this.assertEquals(9, data2D.findRowById(99d));
+		
+		data2D.setValueAt(new Integer(-1), 0, 0);
+		this.assertEquals(0, data2D.findRowById(-1d));
+		
+		//
+		// Change the index to the 2nd column.
+		//
+		data2D.setIdColumn(1);
+		this.assertEquals(0, data2D.findRowById(2d));
+		this.assertEquals(1, data2D.findRowById(12d));
+		this.assertEquals(2, data2D.findRowById(22d));
+		this.assertEquals(3, data2D.findRowById(32d));
+		this.assertEquals(9, data2D.findRowById(92d));
 	}
 
 }

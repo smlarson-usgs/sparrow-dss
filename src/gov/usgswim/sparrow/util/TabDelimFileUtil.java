@@ -1,46 +1,36 @@
 package gov.usgswim.sparrow.util;
 
 import gov.usgswim.sparrow.Data2D;
+import gov.usgswim.sparrow.Data2DBuilder;
 import gov.usgswim.sparrow.Data2DView;
-import gov.usgswim.sparrow.Double2D;
-
-import gov.usgswim.sparrow.Int2D;
-
+import gov.usgswim.sparrow.Double2DImm;
+import gov.usgswim.sparrow.Int2DImm;
 import gov.usgswim.sparrow.PredictionDataSet;
 import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-
 import java.io.InputStream;
-
 import java.io.InputStreamReader;
-
 import java.io.OutputStream;
-
-import java.io.OutputStreamWriter;
-
 import java.io.PrintWriter;
 
-import java.sql.Connection;
-
 import java.util.ArrayList;
-
 import java.util.Arrays;
 
-import org.apache.commons.lang.ArrayUtils;
 
+//TODO:  Lots to look at in this class...
 public class TabDelimFileUtil {
 	public final static String[] ANCIL_HEADINGS = new String[] {
 		 "LOCAL_ID", "STD_ID", "LOCAL_SAME"
 	};
+	
+	public final static int ANCIL_INDEX_COLUMN_INDEX = 0;
 	
 	public final static String[] TOPO_HEADINGS = new String[] {
 		 "FNODE", "TNODE", "IFTRAN", "HYDSEQ"
@@ -125,21 +115,21 @@ public class TabDelimFileUtil {
 			if (! rootPackage.endsWith("/")) rootPackage = rootPackage + "/";
 
 			if (includeAncilData) {
-				pd.setAncil( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "ancil.txt"), true, ANCIL_HEADINGS) );
+				pd.setAncil( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "ancil.txt"), true, ANCIL_HEADINGS, ANCIL_INDEX_COLUMN_INDEX) );
 			}
-			pd.setCoef( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "coef.txt"), true) );
-			pd.setSrc( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "src.txt"), true) );
-			pd.setTopo( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "topo.txt"), true, TOPO_HEADINGS) );
+			pd.setCoef( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "coef.txt"), true, -1) );
+			pd.setSrc( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "src.txt"), true, -1) );
+			pd.setTopo( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "topo.txt"), true, TOPO_HEADINGS, -1) );
 			
 		} else if (rootDir != null){
 			File root = new File(rootDir);
 			
 			if (includeAncilData) {
-				pd.setAncil( TabDelimFileUtil.readAsInteger(new File(root, "ancil.txt"), true, ANCIL_HEADINGS) );
+				pd.setAncil( TabDelimFileUtil.readAsInteger(new File(root, "ancil.txt"), true, ANCIL_HEADINGS, ANCIL_INDEX_COLUMN_INDEX) );
 			}
-			pd.setCoef( TabDelimFileUtil.readAsDouble(new File(root, "coef.txt"), true) );
-			pd.setSrc( TabDelimFileUtil.readAsDouble(new File(root, "src.txt"), true) );
-			pd.setTopo( TabDelimFileUtil.readAsDouble(new File(root, "topo.txt"), true, TOPO_HEADINGS) );
+			pd.setCoef( TabDelimFileUtil.readAsDouble(new File(root, "coef.txt"), true, -1) );
+			pd.setSrc( TabDelimFileUtil.readAsDouble(new File(root, "src.txt"), true, -1) );
+			pd.setTopo( TabDelimFileUtil.readAsDouble(new File(root, "topo.txt"), true, TOPO_HEADINGS, -1) );
 			
 			root = null;
 		} else {
@@ -169,28 +159,79 @@ public class TabDelimFileUtil {
 		return pd;
 	}
 	
-	public static Double2D readAsDouble(File file, boolean hasHeadings)
+	public static Double2DImm readAsDouble(File file, boolean hasHeadings, int indexCol)
 			throws FileNotFoundException, IOException, NumberFormatException  {
 			
-	  FileInputStream fis = new FileInputStream(file);
-		return readAsDouble(fis, hasHeadings, null);		
+		return read(file, hasHeadings, null).buildDoubleImmutable(indexCol);	
 	}
 	
-	public static Double2D readAsDouble(File file, boolean hasHeadings, String[] mappedHeadings)
+	public static Double2DImm readAsDouble(File file, boolean hasHeadings, String[] mappedHeadings, int indexCol)
 			throws FileNotFoundException, IOException, NumberFormatException  {
-			
-	  FileInputStream fis = new FileInputStream(file);
-		return readAsDouble(fis, hasHeadings, mappedHeadings);		
+
+		return read(file, hasHeadings, mappedHeadings).buildDoubleImmutable(indexCol);	
 	}
 	
-	public static Double2D readAsDouble(InputStream source, boolean hasHeadings)
+	public static Double2DImm readAsDouble(InputStream source, boolean hasHeadings, int indexCol)
 			throws FileNotFoundException, IOException, NumberFormatException  {
 		
-		return readAsDouble(source, hasHeadings, null);
+		return read(source, hasHeadings, null).buildDoubleImmutable(indexCol);
+	}
+			
+	public static Double2DImm readAsDouble(InputStream source, boolean hasHeadings, String[] mappedHeadings, int indexCol)
+			throws FileNotFoundException, IOException, NumberFormatException  {
+			
+		return read(source, hasHeadings, mappedHeadings).buildDoubleImmutable(indexCol);
+	}
+	
+	
+	public static Int2DImm readAsInteger(File file, boolean hasHeadings, int indexCol)
+			throws FileNotFoundException, IOException, NumberFormatException  {
+			
+		return read(file, hasHeadings).buildIntImmutable(indexCol);
+		
+	}
+	
+	public static Int2DImm readAsInteger(File file, boolean hasHeadings, String[] mappedHeadings, int indexCol)
+			throws FileNotFoundException, IOException, NumberFormatException  {
+
+		return read(file, hasHeadings, mappedHeadings).buildIntImmutable(indexCol);
+		
+	}
+	
+	public static Int2DImm readAsInteger(InputStream source, boolean hasHeadings, int indexCol)
+			throws FileNotFoundException, IOException, NumberFormatException  {
+			
+		return read(source, hasHeadings, null).buildIntImmutable(indexCol);
+	}
+	
+	public static Int2DImm readAsInteger(InputStream source, boolean hasHeadings, String[] mappedHeadings, int indexCol)
+			throws FileNotFoundException, IOException, NumberFormatException  {
+			
+		return read(source, hasHeadings, mappedHeadings).buildIntImmutable(indexCol);
+	}
+	
+	public static Data2DBuilder read(File file, boolean hasHeadings)
+			throws FileNotFoundException, IOException, NumberFormatException  {
+			
+	  FileInputStream fis = new FileInputStream(file);
+		return read(fis, hasHeadings, null);		
+	}
+	
+	public static Data2DBuilder read(File file, boolean hasHeadings, String[] mappedHeadings)
+			throws FileNotFoundException, IOException, NumberFormatException  {
+			
+	  FileInputStream fis = new FileInputStream(file);
+		return read(fis, hasHeadings, mappedHeadings);		
+	}
+	
+	public static Data2DBuilder read(InputStream source, boolean hasHeadings)
+			throws FileNotFoundException, IOException, NumberFormatException  {
+		
+		return read(source, hasHeadings, null);
 	}
 			
 			
-	public static Double2D readAsDouble(InputStream source, boolean hasHeadings, String[] mappedHeadings)
+	public static Data2DBuilder read(InputStream source, boolean hasHeadings, String[] mappedHeadings)
 			throws FileNotFoundException, IOException, NumberFormatException  {
 			
 		
@@ -262,7 +303,7 @@ public class TabDelimFileUtil {
 				data[i] = (double[]) list.get(i);
 			}
 			
-			Double2D data2D = new Double2D(data, (mappedHeadings==null)?headings:mappedHeadings);
+			Data2DBuilder data2D = new Data2DBuilder(data, (mappedHeadings==null)?headings:mappedHeadings);
 			
 			return data2D;
 			
@@ -272,115 +313,6 @@ public class TabDelimFileUtil {
 		  } catch (IOException e) {
 		    //At this point we ignore.
 		  }
-			br = null;
-		}
-	}
-	
-	
-	public static Int2D readAsInteger(File file, boolean hasHeadings)
-			throws FileNotFoundException, IOException, NumberFormatException  {
-			
-		FileInputStream fis = new FileInputStream(file);
-		return readAsInteger(fis, hasHeadings, null);
-		
-	}
-	
-	public static Int2D readAsInteger(File file, boolean hasHeadings, String[] mappedHeadings)
-			throws FileNotFoundException, IOException, NumberFormatException  {
-			
-		FileInputStream fis = new FileInputStream(file);
-		return readAsInteger(fis, hasHeadings, mappedHeadings);
-		
-	}
-	
-	public static Int2D readAsInteger(InputStream source, boolean hasHeadings)
-			throws FileNotFoundException, IOException, NumberFormatException  {
-			
-		return readAsInteger(source, hasHeadings, null);
-	}
-	
-	public static Int2D readAsInteger(InputStream source, boolean hasHeadings, String[] mappedHeadings)
-			throws FileNotFoundException, IOException, NumberFormatException  {
-			
-		
-		InputStreamReader isr = new InputStreamReader(source);
-		BufferedReader br = new BufferedReader(isr);
-		
-		
-		try {
-		
-		  ArrayList list = new ArrayList(500);
-		  String[] headings = null;
-			int[] remappedColumns = null;	//indexes to map the columns to
-		  String s = null;          //Single line from file
-		  int colCount = 0; //Number of columns in the input data - must match in each row
-			int mappedColumnCount = 0;	//Number of columns in the output
-		  
-		  if (hasHeadings) headings = readHeadings(br);
-			
-			if (mappedHeadings == null) {
-				//assign later
-			} else {
-				remappedColumns = mapByColumnHeadings(headings, (String[]) mappedHeadings);
-				mappedColumnCount = mappedHeadings.length;
-			}
-			
-			while ((s=br.readLine())!=null){
-				String src[] = s.split("\t");
-				
-				  if ( src.length > 0 && !(src.length == 1 && ("".equals(src[0]))) ) {
-					
-					if (colCount == 0) {
-						colCount = src.length;
-						if (remappedColumns == null) {
-							//assign mappings now
-							remappedColumns = new int[colCount];
-							for (int i = 0; i < colCount; i++)  {
-								remappedColumns[i] = i;
-							}
-							
-							mappedColumnCount = colCount;
-						}
-					} else {
-						if (src.length != colCount) {
-							throw new IllegalStateException("Each row in the file must have the same number of delimiters");
-						}
-					}
-		
-					int[] row = new int[mappedColumnCount];
-					
-					for (int i = 0; i < src.length; i++)  {
-						if (remappedColumns[i] != -1) {
-							if (src[i].length() > 0) {
-								row[remappedColumns[i]] = Integer.parseInt( src[i] );
-							} else {
-								row[remappedColumns[i]] = 0;
-							}
-						}
-					}
-					
-					list.add(row);
-				} else {
-					//ignore empty lines
-				}
-			}
-			
-			//copy the array list to an int[][] array
-			int[][] data = new int[list.size()][];
-			for (int i = 0; i < data.length; i++)  {
-				data[i] = (int[]) list.get(i);
-			}
-			
-		  Int2D data2D = new Int2D(data, (mappedHeadings==null)?headings:mappedHeadings);
-		  
-		  return data2D;
-			
-		} finally {
-			try {
-				br.close();
-			} catch (IOException e) {
-				//At this point we ignore.
-			}
 			br = null;
 		}
 	}

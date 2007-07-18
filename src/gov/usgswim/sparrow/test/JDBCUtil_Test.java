@@ -3,8 +3,8 @@ package gov.usgswim.sparrow.test;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DCompare;
 import gov.usgswim.sparrow.Data2DView;
-import gov.usgswim.sparrow.Double2D;
-import gov.usgswim.sparrow.Int2D;
+import gov.usgswim.sparrow.Double2DImm;
+import gov.usgswim.sparrow.Int2DImm;
 import gov.usgswim.sparrow.PredictSimple;
 import gov.usgswim.sparrow.PredictionDataSet;
 import gov.usgswim.sparrow.domain.Model;
@@ -60,7 +60,7 @@ public class JDBCUtil_Test extends TestCase {
 		PredictionDataSet ds = JDBCUtil.loadMinimalPredictDataSet(conn, 1);
 		PredictSimple ps = new PredictSimple(ds);
 		
-		Double2D result = ps.doPredict();
+		Double2DImm result = ps.doPredict();
 
 		Data2DCompare comp = buildPredictionComparison(result);
 		
@@ -121,10 +121,10 @@ public class JDBCUtil_Test extends TestCase {
 		
 		
 		//Load the text files
-		textDs.setAncil( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "ancil.txt"), true) );
+		textDs.setAncil( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "ancil.txt"), true, 0) );
 		
 		//1st 4 columns are iteration, inc delv, tot_del, and boot error (skip)
-		Data2D baseTextCoef = TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "coef.txt"), true);
+		Data2D baseTextCoef = TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "coef.txt"), true, -1);
 		int firstRowBeyondZeroIteration = baseTextCoef.orderedSearchFirst(1d, 0);
 		
 		//For speed, you can choose which section to run below:
@@ -141,8 +141,8 @@ public class JDBCUtil_Test extends TestCase {
 		);
 		
 		
-		textDs.setSrc( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "src.txt"), true) );
-		textDs.setTopo( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "topo.txt"), true) );
+		textDs.setSrc( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "src.txt"), true, -1) );
+		textDs.setTopo( TabDelimFileUtil.readAsDouble(getClass().getResourceAsStream(rootDir + "topo.txt"), true, -1) );
 		
 		
 		//Load the db version of the same model
@@ -181,7 +181,7 @@ public class JDBCUtil_Test extends TestCase {
 	 * @see JDBCUtil#loadTopo(Connection,int)
 	 */
 	public void xtestLoadTopo() throws Exception {
-		Int2D jdbcData = JDBCUtil.loadTopo(conn, 1);
+		Int2DImm jdbcData = JDBCUtil.loadTopo(conn, 1);
 		this.assertEquals(2339, jdbcData.getRowCount());
 		this.assertEquals(4, jdbcData.getColCount());
 		
@@ -194,7 +194,7 @@ public class JDBCUtil_Test extends TestCase {
 	 * @see JDBCUtil#loadSource(Connection, int)
 	 */
 	public void xtestLoadSource(Connection conn, int modelId) throws Exception {
-		Int2D jdbcData = JDBCUtil.loadSource(conn, 1);
+		Int2DImm jdbcData = JDBCUtil.loadSource(conn, 1);
 		this.assertEquals(11, jdbcData.getRowCount());
 		this.assertEquals(1, jdbcData.getColCount());
 		
@@ -209,8 +209,8 @@ public class JDBCUtil_Test extends TestCase {
 	 * @see JDBCUtil#loadSourceReachCoef(Connection, int, int, Int2D)
 	 */
 	public void xtestLoadSourceReachCoef() throws Exception {
-		Int2D sources = JDBCUtil.loadSource(conn, 1);
-		Double2D jdbcData = JDBCUtil.loadSourceReachCoef(conn, 1, 0, sources);
+		Int2DImm sources = JDBCUtil.loadSource(conn, 1);
+		Double2DImm jdbcData = JDBCUtil.loadSourceReachCoef(conn, 1, 0, sources);
 		
 		this.assertEquals(2339, jdbcData.getRowCount());
 		this.assertEquals(11, jdbcData.getColCount());
@@ -225,7 +225,7 @@ public class JDBCUtil_Test extends TestCase {
 	 * @see JDBCUtil#loadDecay(Connection, int, int)
 	 */
 	public void xtestLoadDecay() throws Exception {
-		Double2D jdbcData = JDBCUtil.loadDecay(conn, 1, 0);
+		Double2DImm jdbcData = JDBCUtil.loadDecay(conn, 1, 0);
 		
 		this.assertEquals(2339, jdbcData.getRowCount());
 		this.assertEquals(2, jdbcData.getColCount());
@@ -240,8 +240,8 @@ public class JDBCUtil_Test extends TestCase {
 	 * @see JDBCUtil#loadSourceValues(Connection, int, Int2D)
 	 */
 	public void xtestLoadSourceValues() throws Exception {
-		Int2D sources = JDBCUtil.loadSource(conn, 1);
-		Double2D jdbcData = JDBCUtil.loadSourceValues(conn, 1, sources);
+		Int2DImm sources = JDBCUtil.loadSource(conn, 1);
+		Double2DImm jdbcData = JDBCUtil.loadSourceValues(conn, 1, sources);
 		
 		this.assertEquals(2339, jdbcData.getRowCount());
 		this.assertEquals(11, jdbcData.getColCount());
@@ -251,18 +251,18 @@ public class JDBCUtil_Test extends TestCase {
 		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
 	}
 	
-	protected Data2DCompare buildTopoComparison(Int2D toBeCompared) throws Exception {
+	protected Data2DCompare buildTopoComparison(Data2D toBeCompared) throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/topo.txt");
-		Int2D data = TabDelimFileUtil.readAsInteger(fileStream, true);
+		Int2DImm data = TabDelimFileUtil.readAsInteger(fileStream, true, -1);
 		
 		Data2DCompare comp = new Data2DCompare(data, toBeCompared);
 		
 		return comp;
 	}
 	
-	protected Data2DCompare buildSourceReachCoefComparison(Double2D toBeCompared) throws Exception {
+	protected Data2DCompare buildSourceReachCoefComparison(Data2D toBeCompared) throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/coef.txt");
-		Double2D data = TabDelimFileUtil.readAsDouble(fileStream, true);
+		Double2DImm data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 		int firstNonZeroRow = data.orderedSearchFirst(1, 0);
 		Data2D view = new Data2DView(data, 0, firstNonZeroRow, 4, 11);	//Crop to only iteration 0 and remove non-coef columns
 		
@@ -271,9 +271,9 @@ public class JDBCUtil_Test extends TestCase {
 		return comp;
 	}
 	
-	protected Data2DCompare buildDecayComparison(Double2D toBeCompared) throws Exception {
+	protected Data2DCompare buildDecayComparison(Data2D toBeCompared) throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/coef.txt");
-		Double2D data = TabDelimFileUtil.readAsDouble(fileStream, true);
+		Double2DImm data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 		int firstNonZeroRow = data.orderedSearchFirst(1, 0);
 		Data2D view = new Data2DView(data, 0, firstNonZeroRow, 1, 2);	//Crop to only iteration 0 and only the two decay columns
 		
@@ -282,18 +282,18 @@ public class JDBCUtil_Test extends TestCase {
 		return comp;
 	}
 	
-	protected Data2DCompare buildSourceValueComparison(Double2D toBeCompared) throws Exception {
+	protected Data2DCompare buildSourceValueComparison(Data2D toBeCompared) throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/src.txt");
-		Double2D data = TabDelimFileUtil.readAsDouble(fileStream, true);
+		Double2DImm data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 		
 		Data2DCompare comp = new Data2DCompare(data, toBeCompared);
 		
 		return comp;
 	}
 	
-	protected Data2DCompare buildPredictionComparison(Double2D toBeCompared) throws Exception {
+	protected Data2DCompare buildPredictionComparison(Data2D toBeCompared) throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict.txt");
-		Double2D data = TabDelimFileUtil.readAsDouble(fileStream, true);
+		Double2DImm data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 		int[] DEFAULT_COMP_COLUMN_MAP =
 			new int[] {40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 39, 15};
 		

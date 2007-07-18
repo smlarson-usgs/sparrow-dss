@@ -26,11 +26,15 @@ public class Int2D implements Data2D {
 		_data = data;
 	}
 	
-	public int[][] getData() {
-		return _data;
+	public int[][] getIntData() {
+		return Data2DUtil.copyToIntData(_data);
 	}
 	
-	public Object getValueAt(int row, int col) throws IndexOutOfBoundsException {
+	public double[][] getDoubleData() {
+		return Data2DUtil.copyToDoubleData(_data);
+	}
+	
+	public Number getValueAt(int row, int col) throws IndexOutOfBoundsException {
 		return new Integer(_data[row][col]);
 	}
 	

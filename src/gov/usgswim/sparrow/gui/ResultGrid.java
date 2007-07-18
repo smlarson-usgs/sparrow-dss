@@ -1,54 +1,16 @@
 package gov.usgswim.sparrow.gui;
 
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-
 import gov.usgswim.sparrow.Data2D;
-import gov.usgswim.sparrow.Data2DCompare;
-import gov.usgswim.sparrow.Double2D;
-
-import gov.usgswim.sparrow.Int2D;
 
 import java.awt.BorderLayout;
-
 import java.awt.Color;
 
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.event.ComponentAdapter;
-
-import java.awt.event.ComponentEvent;
-
-import java.io.BufferedReader;
-
-import java.io.IOException;
-import java.io.StringReader;
-
-import java.util.Enumeration;
-import java.util.Vector;
-
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-import javax.swing.ListCellRenderer;
-import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
-import javax.swing.table.TableCellRenderer;
-
-import javax.swing.table.TableColumn;
-
-import javax.swing.table.TableColumnModel;
-
-import oracle.jdeveloper.layout.PaneConstraints;
-import oracle.jdeveloper.layout.PaneLayout;
-
 import org.apache.commons.lang.StringUtils;
+
 
 public class ResultGrid extends JPanel implements DataChangeListener {
 

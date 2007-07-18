@@ -1,13 +1,13 @@
 package gov.usgswim.sparrow.util;
 
 import gov.usgswim.sparrow.Data2D;
-import gov.usgswim.sparrow.Double2D;
+import gov.usgswim.sparrow.Data2DBuilder;
+import gov.usgswim.sparrow.Data2DWritable;
+import gov.usgswim.sparrow.Double2DImm;
 
-import gov.usgswim.sparrow.Int2D;
+import gov.usgswim.sparrow.Int2DImm;
 
 import gov.usgswim.sparrow.PredictionDataSet;
-
-import gov.usgswim.sparrow.domain.Model;
 
 import gov.usgswim.sparrow.domain.ModelBuilder;
 
@@ -18,7 +18,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.Connection;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLData;
 import java.sql.SQLException;
 
 import java.sql.Statement;
@@ -54,7 +53,7 @@ public class JDBCUtil {
 		
 		PredictionDataSet dataSet = new PredictionDataSet();
 		
-		Int2D sources = loadSource(conn, modelId);	//Need this list
+		Int2DImm sources = loadSource(conn, modelId);	//Need this list
 		
 		dataSet.setSys( loadSystemInfo(conn, modelId) );
 		dataSet.setTopo( loadTopo(conn, modelId) );
@@ -78,7 +77,7 @@ public class JDBCUtil {
 		
 		PredictionDataSet dataSet = new PredictionDataSet();
 		
-		Int2D sources = loadSource(conn, modelId);	//Need this list
+		Int2DImm sources = loadSource(conn, modelId);	//Need this list
 		
 		dataSet.setSys( loadSystemInfo(conn, modelId) );
 		dataSet.setTopo( loadTopo(conn, modelId) );
@@ -204,7 +203,7 @@ public class JDBCUtil {
 		String rmSource = "DELETE FROM SOURCE WHERE SOURCE_ID = ?";
 		PreparedStatement rmSourceStmt = null;
 		
-		Int2D srcIds = readAsInteger(conn, listSourceIds, 100);
+		Data2D srcIds = readAsInteger(conn, listSourceIds, 100);
 		
 		//Delete each source (Cascades to lots of related data)
 		try {
@@ -502,7 +501,7 @@ public class JDBCUtil {
 	 * @throws SQLException
 	 */
 	private static Map<Integer, Integer> buildIntegerMap(Connection conn, String query) throws SQLException {
-		Int2D data = readAsInteger(conn, query, 1000);
+		Data2D data = readAsInteger(conn, query, 1000);
 		int rows = data.getRowCount();
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>((int)(rows * 1.2), 1f);
 		
@@ -777,16 +776,18 @@ public class JDBCUtil {
 	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number
 	 * </ol>
 	 * 
+	 * TODO:  WE sort by HYDSEQ HERE - THAT IS REALLY BAD, SINCE THERE ARE DUPLICATES.
+	 * 
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Int2D loadSystemInfo(Connection conn, int modelId) throws SQLException {
+	public static Int2DImm loadSystemInfo(Connection conn, int modelId) throws SQLException {
 		String query =
 			"SELECT MODEL_REACH_ID as MODEL_REACH, HYDSEQ FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY HYDSEQ";
 	
-		return readAsInteger(conn, query, 2000);
+		return readAsInteger(conn, query, 2000, 1);
 		
 	}
 	
@@ -804,7 +805,7 @@ public class JDBCUtil {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Int2D loadTopo(Connection conn, int modelId) throws SQLException {
+	public static Int2DImm loadTopo(Connection conn, int modelId) throws SQLException {
 		String query =
 			"SELECT FNODE, TNODE, IFTRAN, HYDSEQ FROM ALL_TOPO_VW WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY HYDSEQ";
 	
@@ -828,7 +829,7 @@ public class JDBCUtil {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Double2D loadSourceReachCoef(Connection conn, int modelId, int iteration, Int2D sources) throws SQLException {
+	public static Double2DImm loadSourceReachCoef(Connection conn, int modelId, int iteration, Data2D sources) throws SQLException {
 	
 		if (iteration < 0) {
 			throw new IllegalArgumentException("The iteration cannot be less then zero");
@@ -839,11 +840,11 @@ public class JDBCUtil {
 	
 		String reachCountQuery =
 			"SELECT COUNT(*) FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + modelId;
-		Int2D reachCountData = readAsInteger(conn, reachCountQuery, 1);
+		Data2D reachCountData = readAsInteger(conn, reachCountQuery, 1);
 		int reachCount = reachCountData.getInt(0, 0);
 		int sourceCount = sources.getRowCount();
 		
-		Double2D sourceReachCoef = new Double2D(new double[reachCount][sourceCount]);
+		Data2DBuilder sourceReachCoef = new Data2DBuilder(new double[reachCount][sourceCount]);
 		
 	
 		for (int srcIndex=0; srcIndex<sourceCount; srcIndex++) {
@@ -876,7 +877,7 @@ public class JDBCUtil {
 			
 		}
 		
-		return sourceReachCoef;
+		return sourceReachCoef.buildDoubleImmutable(-1);
 
 	}
 	
@@ -895,7 +896,7 @@ public class JDBCUtil {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Double2D loadSourceReachCoef(Connection conn, int modelId, Int2D sources) throws SQLException {
+	public static Double2DImm loadSourceReachCoef(Connection conn, int modelId, Data2D sources) throws SQLException {
 	
 		if (sources.getRowCount() == 0) {
 			throw new IllegalArgumentException("There must be at least one source");
@@ -908,13 +909,13 @@ public class JDBCUtil {
 			"FROM SOURCE_REACH_COEF coef INNER JOIN MODEL_REACH rch ON coef.MODEL_REACH_ID = rch.MODEL_REACH_ID " +
 			"WHERE rch.SPARROW_MODEL_ID = " +  modelId + ")";
 			
-		Int2D reachCountData = readAsInteger(conn, reachCountQuery, 1);
-		Int2D itCountData = readAsInteger(conn, itCountQuery, 1);
+		Data2D reachCountData = readAsInteger(conn, reachCountQuery, 1);
+		Data2D itCountData = readAsInteger(conn, itCountQuery, 1);
 		int reachCount = reachCountData.getInt(0, 0);
 		int itCount = itCountData.getInt(0, 0);
 		int sourceCount = sources.getRowCount();
 		
-		Double2D sourceReachCoef = new Double2D(new double[reachCount * itCount][sourceCount]);
+		Data2DBuilder sourceReachCoef = new Data2DBuilder(new double[reachCount * itCount][sourceCount]);
 		
 	
 		for (int srcIndex=0; srcIndex<sourceCount; srcIndex++) {
@@ -946,7 +947,7 @@ public class JDBCUtil {
 			
 		}
 		
-		return sourceReachCoef;
+		return sourceReachCoef.buildDoubleImmutable(-1);
 
 	}
 
@@ -972,7 +973,7 @@ public class JDBCUtil {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Double2D loadDecay(Connection conn, int modelId, int iteration) throws SQLException {
+	public static Double2DImm loadDecay(Connection conn, int modelId, int iteration) throws SQLException {
 		String query =
 			"SELECT coef.INC_DELIVERY, coef.TOTAL_DELIVERY " +
 			"FROM REACH_COEF coef INNER JOIN MODEL_REACH rch ON coef.MODEL_REACH_ID = rch.MODEL_REACH_ID " +
@@ -999,7 +1000,7 @@ public class JDBCUtil {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Double2D loadSourceValues(Connection conn, int modelId, Int2D sources) throws SQLException {
+	public static Double2DImm loadSourceValues(Connection conn, int modelId, Data2D sources) throws SQLException {
 	
 		if (sources.getRowCount() == 0) {
 			throw new IllegalArgumentException("There must be at least one source");
@@ -1007,11 +1008,11 @@ public class JDBCUtil {
 	
 		String reachCountQuery =
 			"SELECT COUNT(*) FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + modelId;
-		Int2D reachCountData = readAsInteger(conn, reachCountQuery, 1);
+		Data2D reachCountData = readAsInteger(conn, reachCountQuery, 1);
 		int reachCount = reachCountData.getInt(0, 0);
 		int sourceCount = sources.getRowCount();
 		
-		Double2D sourceValue = new Double2D(new double[reachCount][sourceCount]);
+		Data2DBuilder sourceValue = new Data2DBuilder(new double[reachCount][sourceCount]);
 		
 	
 		for (int srcIndex=0; srcIndex<sourceCount; srcIndex++) {
@@ -1043,7 +1044,7 @@ public class JDBCUtil {
 			
 		}
 		
-		return sourceValue;
+		return sourceValue.buildDoubleImmutable(-1);
 
 	}
 	
@@ -1059,7 +1060,7 @@ public class JDBCUtil {
 	 * @return	An Int2D object contains the list of source_id's in a single column
 	 * @throws SQLException
 	 */
-	public static Int2D loadSource(Connection conn, int modelId) throws SQLException {
+	public static Int2DImm loadSource(Connection conn, int modelId) throws SQLException {
 		String query =
 			"SELECT SOURCE_ID FROM SOURCE WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY SORT_ORDER";
 	
@@ -1092,7 +1093,7 @@ public class JDBCUtil {
 	 * @param toCol The column (zero indexed) in the Double2D table to load to
 	 * @throws SQLException
 	 */
-	public static void loadColumn(ResultSet source, Double2D dest, int fromCol, int toCol) throws SQLException {
+	public static void loadColumn(ResultSet source, Data2DWritable dest, int fromCol, int toCol) throws SQLException {
 		
 		fromCol++;		//covert to ONE base index
 		int currentRow = 0;
@@ -1108,9 +1109,8 @@ public class JDBCUtil {
 	}
 	
 	
-	 
 	/**
-	 * Creates a Int2D table from the passed query.
+	 * Creates an unindexed Int2DImm table from the passed query.
 	 * 
 	 * All values in the source must be convertable to an integer.
 	 * 
@@ -1120,7 +1120,23 @@ public class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static Int2D readAsInteger(Connection conn, String query, int fetchSize) throws SQLException {
+	public static Int2DImm readAsInteger(Connection conn, String query, int fetchSize) throws SQLException {
+		return readAsInteger(conn, query, fetchSize, -1);
+	}
+	
+	/**
+	 * Creates an Int2DImm table from the passed query with an optional index.
+	 * 
+	 * All values in the source must be convertable to an integer.
+	 * 
+	 * @param conn	A connection to use for the query
+	 * @param query The query to run
+	 * @param fetchSize Number of rows returned per fetch - use large values (1000+ for queries w/ few columns)
+	 * @param indexCol A valid column index or -1 to indicate no index
+	 * @return
+	 * @throws SQLException
+	 */
+	public static Int2DImm readAsInteger(Connection conn, String query, int fetchSize, int indexCol) throws SQLException {
 		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		st.setFetchSize(fetchSize);
 
@@ -1129,7 +1145,7 @@ public class JDBCUtil {
 		try {
 		
 			rs = st.executeQuery(query);
-			return readAsInteger(rs);
+			return readAsInteger(rs, indexCol);
 			
 		} finally {
 			if (rs != null) {
@@ -1140,7 +1156,7 @@ public class JDBCUtil {
 	}
 	
 	/**
-	 * Creates a Int2D table from the passed resultset.
+	 * Creates an unindexed Int2DImm table from the passed resultset.
 	 * 
 	 * All values in the source must be convertable to an integer.
 	 * 
@@ -1148,7 +1164,21 @@ public class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static Int2D readAsInteger(ResultSet source) throws SQLException {
+	public static Int2DImm readAsInteger(ResultSet source) throws SQLException {
+		return readAsInteger(source, -1);
+	}
+	
+	/**
+	 * Creates an Int2DImm table from the passed resultset with an optional index.
+	 * 
+	 * All values in the source must be convertable to an integer.
+	 * 
+	 * @param source
+	 * @param indexCol A valid column index or -1 to indicate no index
+	 * @return
+	 * @throws SQLException
+	 */
+	public static Int2DImm readAsInteger(ResultSet source, int indexCol) throws SQLException {
 			
 		ArrayList list = new ArrayList(500);
 		String[] headings = null;		
@@ -1170,20 +1200,20 @@ public class JDBCUtil {
 		}
 				
 		
-		//copy the array list to a double[][] array
+		//copy the array list to a int[][] array
 		int[][] data = new int[list.size()][];
 		for (int i = 0; i < data.length; i++)  {
 			data[i] = (int[]) list.get(i);
 		}
 		
-		Int2D data2D = new Int2D(data, headings);
+		Int2DImm data2D = new Int2DImm(data, headings, indexCol);
 		
 		return data2D;
 	}
 	
 	
 	/**
-	 * Creates a Double2D table from the passed query.
+	 * Creates a Double2DImm table from the passed query.
 	 * 
 	 * All values in the source must be convertable to a double.
 	 * 
@@ -1193,7 +1223,7 @@ public class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static Double2D readAsDouble(Connection conn, String query, int fetchSize) throws SQLException {
+	public static Double2DImm readAsDouble(Connection conn, String query, int fetchSize) throws SQLException {
 		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		st.setFetchSize(fetchSize);
 
@@ -1213,7 +1243,7 @@ public class JDBCUtil {
 	}
 	
 	/**
-	 * Creates a Double2D table from the passed resultset.
+	 * Creates a Double2DImm table from the passed resultset.
 	 * 
 	 * All values in the source must be convertable to a double.
 	 * 
@@ -1221,7 +1251,7 @@ public class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static Double2D readAsDouble(ResultSet source) throws SQLException {
+	public static Double2DImm readAsDouble(ResultSet source) throws SQLException {
 			
 		ArrayList list = new ArrayList(500);
 		String[] headings = null;
@@ -1249,7 +1279,7 @@ public class JDBCUtil {
 			data[i] = (double[]) list.get(i);
 		}
 		
-		Double2D data2D = new Double2D(data, headings);
+		Double2DImm data2D = new Double2DImm(data, headings);
 		
 		return data2D;
 	}

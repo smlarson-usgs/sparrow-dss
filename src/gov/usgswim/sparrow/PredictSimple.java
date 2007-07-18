@@ -97,7 +97,7 @@ public class PredictSimple {
 	}
 	
 
-	public Double2D doPredict() {
+	public Double2DImm doPredict() {
 		int reachCount = topo.getRowCount();	//# of reachs is equal to the number of 'rows' in topo
 		int sourceCount = src.getColCount(); //# of sources is equal to the number of 'columns' in an arbitrary row (row zero)
 		
@@ -171,8 +171,7 @@ public class PredictSimple {
 		head[2 * sourceCount] = "Total Inc. (not decayed)";
 	  head[(2 * sourceCount) + 1] = "Grand Total (measurable)";
 		
-	  return new Double2D(rchVal, head);
-		
+	  return new Double2DImm(rchVal, head);
 	}
 	
 }

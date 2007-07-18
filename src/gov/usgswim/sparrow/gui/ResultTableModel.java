@@ -2,9 +2,10 @@ package gov.usgswim.sparrow.gui;
 
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DCompare;
-import gov.usgswim.sparrow.Double2D;
+import gov.usgswim.sparrow.Data2DWritable;
 
-import gov.usgswim.sparrow.Int2D;
+import gov.usgswim.sparrow.Double2DImm;
+import gov.usgswim.sparrow.Int2DImm;
 
 import java.text.DecimalFormat;
 
@@ -22,11 +23,11 @@ public class ResultTableModel extends AbstractTableModel {
 	DecimalFormat format = new DecimalFormat("0.#######");
 	
 	public ResultTableModel(double[][] data) {
-		this.data = new Double2D(data, null);
+		this.data = new Double2DImm(data, null);
 	}
 	
 	public ResultTableModel(int[][] data) {
-		this.data = new Int2D(data, null);
+		this.data = new Int2DImm(data, null);
 	}
 	
 	public ResultTableModel(Data2D data) {
@@ -88,13 +89,15 @@ public class ResultTableModel extends AbstractTableModel {
 	}
 
 	public void setValueAt(Object object, int i, int i1) {
-		try {
-			data.setValueAt(object, i, i1);
-		  fireTableDataChanged();
-		} catch (Exception e) {
-		  JOptionPane.showMessageDialog(
-				SparrowData.getInstance().getRootFrame(), e.getMessage(), "Could not set the value", JOptionPane.ERROR_MESSAGE);
+
+		if (data instanceof Data2DWritable) {
+			((Data2DWritable)data).setValueAt(object.toString(), i, i1);
+			fireTableDataChanged();
+		} else {
+			JOptionPane.showMessageDialog(
+				SparrowData.getInstance().getRootFrame(), "The data cannot be edited.", "Could not set the value", JOptionPane.INFORMATION_MESSAGE);
 		}
+
 	}
 
 	public boolean isCellEditable(int i, int i1) {

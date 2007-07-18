@@ -9,6 +9,7 @@ import gov.usgswim.sparrow.Data2DCompare;
 import gov.usgswim.sparrow.Double2D;
 import gov.usgswim.sparrow.AdjustmentSetImm;
 
+import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;
@@ -22,7 +23,7 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 public class SourceAdjustments_Test extends TestCase {
-	Double2D data;
+	Double2DImm data;
 	
 	public SourceAdjustments_Test(String sTestName) {
 		super(sTestName);
@@ -35,7 +36,7 @@ public class SourceAdjustments_Test extends TestCase {
 		super.setUp();
 		
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/src.txt");
-		data = TabDelimFileUtil.readAsDouble(fileStream, true);
+		data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 	}
 
 	protected void tearDown() throws Exception {

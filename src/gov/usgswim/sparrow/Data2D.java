@@ -3,7 +3,10 @@ package gov.usgswim.sparrow;
 /**
  * A 2D data array.
  */
-public interface Data2D<T extends Number> {
+public interface Data2D {
+	public static final int[][] EMPTY_INT_2D_DATA = new int[0][0];
+	public static final double[][] EMPTY_DOUBLE_2D_DATA = new double[0][0];
+	
 	public String[] getHeadings();
 
 	/**
@@ -13,7 +16,7 @@ public interface Data2D<T extends Number> {
 	 * @return The value at the specified row/column in an appropriate wrapper type
 	 * @throws IndexOutOfBoundsException if the row or column is outside the existing data bounds
 	 */
-	public T getValueAt(int row, int col) throws IndexOutOfBoundsException;
+	public Number getValueAt(int row, int col) throws IndexOutOfBoundsException;
 	
 	/**
 	 * Returns an integer representation of the value at the specified row/column location.
@@ -36,6 +39,25 @@ public interface Data2D<T extends Number> {
 	 */
 	public double getDouble(int row, int col) throws IndexOutOfBoundsException;
 	
+	/**
+	 * Returns a detached int[][] array of the data contained in the Data2D.
+	 * 
+	 * Changes made to the returned array are not written back to the Data2D
+	 * instance.
+	 * 
+	 * @return
+	 */
+	public int[][] getIntData();
+	
+	/**
+	 * Returns a detached double[][] array of the data contained in the Data2D.
+	 * 
+	 * Changes made to the returned array are not written back to the Data2D
+	 * instance.
+	 * 
+	 * @return
+	 */
+	public double[][] getDoubleData();
 	
 	/**
 	 * The number of rows in the data array.  Null Safe.
@@ -96,7 +118,6 @@ public interface Data2D<T extends Number> {
 	 *
 	 *
 	 * @param col The zero based column index
-	 * @param trimToEmpty True to ensure that null is never returned.
 	 * @return
 	 */
 	public String getHeading(int col);
@@ -141,4 +162,5 @@ public interface Data2D<T extends Number> {
 	 * @return
 	 */
 	public int findRowById(Double id);
+	
 }

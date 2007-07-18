@@ -2,8 +2,10 @@ package gov.usgswim.sparrow.test;
 
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Double2D;
+import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.Int2D;
 
+import gov.usgswim.sparrow.Int2DImm;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;
@@ -21,7 +23,7 @@ public class TabDelimFileUtil_Test extends TestCase{
 	
 	public void testDouble1() throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample.txt");
-		double[][] data = TabDelimFileUtil.readAsDouble(fileStream, false).getData();
+		double[][] data = TabDelimFileUtil.readAsDouble(fileStream, false, -1).getDoubleData();
 		
 		this.assertEquals(1d, data[0][0], 0d);
 	  this.assertEquals(5.14159d, data[0][4], 0d);
@@ -37,7 +39,7 @@ public class TabDelimFileUtil_Test extends TestCase{
 	 */
 	public void testDouble2() throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_gap.txt");
-		double[][] data = TabDelimFileUtil.readAsDouble(fileStream, false).getData();
+		double[][] data = TabDelimFileUtil.readAsDouble(fileStream, false, -1).getDoubleData();
 		
 		this.assertEquals(1d, data[0][0], 0d);
 		this.assertEquals(5.14159d, data[0][4], 0d);
@@ -53,8 +55,8 @@ public class TabDelimFileUtil_Test extends TestCase{
 		*/
 	 public void testDouble3() throws Exception {
 		 InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_heading.txt");
-		 Double2D data2D = TabDelimFileUtil.readAsDouble(fileStream, true);
-		 double[][] data = data2D.getData();
+		 Double2DImm data2D = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
+		 double[][] data = data2D.getDoubleData();
 		 
 		 this.assertEquals(1d, data[0][0], 0d);
 		 this.assertEquals(5d, data[0][4], 0d);
@@ -79,7 +81,7 @@ public class TabDelimFileUtil_Test extends TestCase{
 		
 		
 		try {
-		  double[][] data = TabDelimFileUtil.readAsDouble(fileStream, false).getData();
+		  double[][] data = TabDelimFileUtil.readAsDouble(fileStream, false, -1).getDoubleData();
 		} catch (IllegalStateException e) {
 			return;	//terminate normally - this error is expected
 		}
@@ -95,7 +97,7 @@ public class TabDelimFileUtil_Test extends TestCase{
 	 */
 	public void testInteger1() throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_gap_int.txt");
-		int[][] data = TabDelimFileUtil.readAsInteger(fileStream, false).getData();
+		int[][] data = TabDelimFileUtil.readAsInteger(fileStream, false, -1).getIntData();
 		
 	  this.assertEquals(1, data[0][0]);
 	  this.assertEquals(5, data[0][4]);
@@ -111,8 +113,8 @@ public class TabDelimFileUtil_Test extends TestCase{
 		*/
 	 public void testInteger2() throws Exception {
 		 InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_heading.txt");
-	   Int2D data2D = TabDelimFileUtil.readAsInteger(fileStream, true);
-		 int[][] data = data2D.getData();
+	   Int2DImm data2D = TabDelimFileUtil.readAsInteger(fileStream, true, -1);
+		 int[][] data = data2D.getIntData();
 		 
 		 this.assertEquals(1, data[0][0]);
 		 this.assertEquals(5, data[0][4]);
@@ -152,7 +154,7 @@ public class TabDelimFileUtil_Test extends TestCase{
 		 };
 		 
 		 InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/ancil.txt");
-		 Int2D data = TabDelimFileUtil.readAsInteger(fileStream, true, mappedHeadings);
+		 Int2DImm data = TabDelimFileUtil.readAsInteger(fileStream, true, mappedHeadings, -1);
 		 
 		 this.assertEquals(3, data.getColCount());
 		 
@@ -168,7 +170,7 @@ public class TabDelimFileUtil_Test extends TestCase{
 		 try {
 			mappedHeadings = new String[] {"LOCAL_ID", "STD_ID", "LOCAL_SAME", "lkjhdlkfhlkhlskdfh"};
 			fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/ancil.txt");
-			data = TabDelimFileUtil.readAsInteger(fileStream, true, mappedHeadings);
+			data = TabDelimFileUtil.readAsInteger(fileStream, true, mappedHeadings, -1);
 			this.fail("Should have thrown an exception b/c the column does not exist.");
 		 } catch (IllegalArgumentException e) {
 			 //exception is expected.
@@ -183,7 +185,7 @@ public class TabDelimFileUtil_Test extends TestCase{
 		 };
 		 
 		 InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/ancil.txt");
-		 Double2D data = TabDelimFileUtil.readAsDouble(fileStream, true, mappedHeadings);
+		 Double2DImm data = TabDelimFileUtil.readAsDouble(fileStream, true, mappedHeadings, -1);
 		 
 		 this.assertEquals(3, data.getColCount());
 		 
@@ -198,7 +200,7 @@ public class TabDelimFileUtil_Test extends TestCase{
 		 try {
 			mappedHeadings = new String[] {"LOCAL_ID", "STD_ID", "LOCAL_SAME", "lkjhdlkfhlkhlskdfh"};
 			fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/ancil.txt");
-			data = TabDelimFileUtil.readAsDouble(fileStream, true, mappedHeadings);
+			data = TabDelimFileUtil.readAsDouble(fileStream, true, mappedHeadings, -1);
 			this.fail("Should have thrown an exception b/c the column does not exist.");
 		 } catch (IllegalArgumentException e) {
 			 //exception is expected.

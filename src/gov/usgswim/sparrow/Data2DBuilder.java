@@ -1,16 +1,14 @@
 package gov.usgswim.sparrow;
 
-import java.util.HashMap;
+import gov.usgswim.NotThreadSafe;
 
-import java.util.LinkedList;
+import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
-/**
- * A loose wrapper around a 2D double array, which includes optional column headings.
- */
-public class Data2DImm<T extends Number> implements Data2D<T> {
+@NotThreadSafe
+public class Data2DBuilder implements Data2DWritable {
 	private double[][] _data;
 	private String[] _head;
 	private Double maxValue;  //null unless we know for sure we have the max value
@@ -19,20 +17,80 @@ public class Data2DImm<T extends Number> implements Data2D<T> {
 	private volatile int indexCol = -1;
 	private volatile HashMap<Double, Integer> idIndex;
 	
-	public Data2DImm(T[][] data, String[] headings) {
+
+	/**
+	 * Constructor that keeps the passed array as its underlying data.
+	 * 
+	 * Do not make changes to the passed array after calling this constructor.
+	 * @param data
+	 * @param headings
+	 */
+	public Data2DBuilder(double[][] data, String[] headings) {
 		_data = data;
 		_head = headings;
 	}
 	
-	public Data2DImm(double[][] data) {
+	/**
+	 * Constructor that copies the passed data - changes are not reflected back to
+	 * the passed array.
+	 * @param data
+	 * @param headings
+	 */
+	public Data2DBuilder(int[][] data, String[] headings) {
+		_data = Data2DUtil.copyToDoubleData(data);
+		_head = headings;
+	}
+	
+	/**
+	 * Constructor that keeps the passed array as its underlying data.
+	 * 
+	 * Do not make changes to the passed array after calling this constructor.
+	 * @param data
+	 */
+	public Data2DBuilder(double[][] data) {
 		_data = data;
 	}
 	
-	public double[][] getData() {
-		return _data;
+	/**
+	 * Constructor that copies the passed data - changes are not reflected back to
+	 * the passed array.
+	 * @param data
+	 */
+	public Data2DBuilder(int[][] data) {
+		_data = Data2DUtil.copyToDoubleData(data);
 	}
 	
-	public T[] getValueAt(int row, int col) throws IndexOutOfBoundsException {
+	public Int2DImm buildIntImmutable(int indexCol) {
+		int[][] newData = Data2DUtil.copyToIntData(_data);
+		String[] newHead = null;
+		if (_head != null && _head.length > 0) {
+			newHead = new String[_head.length];
+			System.arraycopy(_head, 0,  newHead, 0, _head.length);
+		}
+		
+		return new Int2DImm(newData, newHead, indexCol);
+	}
+	
+	public Double2DImm buildDoubleImmutable(int indexCol) {
+		double[][] newData = Data2DUtil.copyToDoubleData(_data);
+		String[] newHead = null;
+		if (_head != null && _head.length > 0) {
+			newHead = new String[_head.length];
+			System.arraycopy(_head, 0,  newHead, 0, _head.length);
+		}
+		
+		return new Double2DImm(newData, newHead, indexCol);
+	}
+	
+	public int[][] getIntData() {
+		return Data2DUtil.copyToIntData(_data);
+	}
+	
+	public double[][] getDoubleData() {
+		return Data2DUtil.copyToDoubleData(_data);
+	}
+	
+	public Number getValueAt(int row, int col) throws IndexOutOfBoundsException {
 		return new Double(_data[row][col]);
 	}
 	
@@ -45,24 +103,41 @@ public class Data2DImm<T extends Number> implements Data2D<T> {
 		return _data[row][col];
 	}
 	
-	public void setValueAt(Object value, int row, int col)
+	public void setValueAt(Number value, int row, int col)
 			throws IndexOutOfBoundsException, IllegalArgumentException {
 				
 		if (row >= 0 && row < _data.length && col >=0 && _data[0] != null && col < _data[0].length) {
 			if (value != null) {
-				if (value instanceof Number) {
-					internalSet(row, col, ((Number) value).doubleValue());
-				} else if (value instanceof String) {
-					String v = (String) value;
-				  if (NumberUtils.isNumber(v)) {
-						internalSet(row, col, NumberUtils.toDouble(v));
-					} else {
-						throw new IllegalArgumentException("'" + v + "' is not a valid number.");
-					}
-				  
+				internalSet(row, col, ((Number) value).doubleValue());
+			} else {
+				internalSet(row, col, 0d);
+			}
+			
+		  //Update the max value if one is calculated
+		  if (maxValue != null) {
+		    if (_data[row][col] > maxValue.doubleValue()) {
+		      maxValue = new Double(_data[row][col]);
+		    }
+		  }
+			
+		} else {
+			throw new IndexOutOfBoundsException("The row and/or column (" + row + "," + col + ") are beyond the range of the data array.");
+		}
+				
+	}
+	
+	public void setValueAt(String value, int row, int col)
+			throws IndexOutOfBoundsException, IllegalArgumentException {
+				
+		if (row >= 0 && row < _data.length && col >=0 && _data[0] != null && col < _data[0].length) {
+			if (value != null) {
+
+				if (NumberUtils.isNumber(value)) {
+					internalSet(row, col, NumberUtils.toDouble(value));
 				} else {
-				  throw new IllegalArgumentException("'" + value + "' cannot be converted to a number.");
+					throw new IllegalArgumentException("'" + value + "' is not a valid number.");
 				}
+
 				
 			} else {
 				internalSet(row, col, 0d);
@@ -101,7 +176,7 @@ public class Data2DImm<T extends Number> implements Data2D<T> {
 	}
 	
 	public String[] getHeadings() {
-		return _head;
+		return Data2DUtil.copyStrings(_head);
 	}
 	
 	/**
@@ -285,4 +360,5 @@ public class Data2DImm<T extends Number> implements Data2D<T> {
 			idIndex = map;
 		}
 	}
+
 }

@@ -1,6 +1,9 @@
 package gov.usgswim.sparrow.util;
 
+import gov.usgswim.sparrow.Data2DBuilder;
 import gov.usgswim.sparrow.Double2D;
+
+import gov.usgswim.sparrow.Double2DImm;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,7 +22,7 @@ public class Misc {
 																										IOException {
 	  String path = "/datausgs/projects/sparrow/sparrow_sim_files-1-work/coef_copy.txt";
 	  String out_path = "/datausgs/projects/sparrow/sparrow_sim_files-1-work/coef_out.txt";
-	  Double2D data = TabDelimFileUtil.readAsDouble(new File(path), true);
+	  Data2DBuilder data = TabDelimFileUtil.read(new File(path), true);
 		
 		for (int r = 0; r < data.getRowCount(); r++)  {
 			Double error = (Double) data.getValueAt(r, 13);
