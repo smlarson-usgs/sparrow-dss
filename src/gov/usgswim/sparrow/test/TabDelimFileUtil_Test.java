@@ -1,10 +1,6 @@
 package gov.usgswim.sparrow.test;
 
-import gov.usgswim.sparrow.Data2D;
-import gov.usgswim.sparrow.Double2D;
 import gov.usgswim.sparrow.Double2DImm;
-import gov.usgswim.sparrow.Int2D;
-
 import gov.usgswim.sparrow.Int2DImm;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
@@ -13,6 +9,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
+
 
 public class TabDelimFileUtil_Test extends TestCase{
 

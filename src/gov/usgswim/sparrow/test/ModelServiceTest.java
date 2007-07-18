@@ -1,45 +1,17 @@
 package gov.usgswim.sparrow.test;
 
-import com.ctc.wstx.evt.WstxEventWriter;
-import com.ctc.wstx.stax.WstxOutputFactory;
-
-import gov.usgswim.sparrow.Double2D;
-import gov.usgswim.sparrow.service.DomainSerializer;
-import gov.usgswim.sparrow.domain.ModelBuilder;
-import gov.usgswim.sparrow.service.HttpServiceHandler;
-
-import gov.usgswim.sparrow.service.ModelRequest;
 import gov.usgswim.sparrow.service.ModelService;
-import gov.usgswim.sparrow.service.PredictService;
-import gov.usgswim.sparrow.service.PredictionSerializer;
 import gov.usgswim.sparrow.service.ServiceHandler;
-import gov.usgswim.sparrow.util.JDBCUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-
-import java.sql.SQLException;
-
-import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-
 import javax.xml.stream.XMLStreamReader;
-
-import javax.xml.stream.XMLStreamWriter;
-
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.validation.Schema;
@@ -48,13 +20,12 @@ import javax.xml.validation.Validator;
 
 import junit.framework.TestCase;
 
-import oracle.jdbc.OracleDriver;
-
 import org.codehaus.stax2.XMLInputFactory2;
 
 import org.w3c.dom.Document;
 
 import org.xml.sax.SAXException;
+
 
 public class ModelServiceTest extends TestCase {
 	//private Connection conn;

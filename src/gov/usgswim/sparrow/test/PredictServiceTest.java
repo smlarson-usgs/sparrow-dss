@@ -3,12 +3,10 @@ package gov.usgswim.sparrow.test;
 import gov.usgswim.sparrow.Adjustment;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DCompare;
-import gov.usgswim.sparrow.Double2D;
 import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.PredictionRequest;
 import gov.usgswim.sparrow.service.PredictService;
 import gov.usgswim.sparrow.service.PredictServiceRequest;
-import gov.usgswim.sparrow.service.PredictionSerializer;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.awt.Point;
@@ -18,15 +16,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import java.sql.SQLException;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.validation.Schema;

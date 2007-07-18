@@ -1,15 +1,12 @@
 package gov.usgswim.sparrow.test;
 
 import gov.usgswim.sparrow.Data2D;
-import gov.usgswim.sparrow.Double2D;
 import gov.usgswim.sparrow.service.PredictService;
 import gov.usgswim.sparrow.service.PredictionSerializer;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
-import java.net.URL;
 
 import java.sql.Connection;
 
@@ -20,7 +17,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;

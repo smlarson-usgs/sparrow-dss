@@ -1,6 +1,5 @@
 package gov.usgswim.sparrow.test;
 
-import gov.usgswim.sparrow.PredictSimple_Test;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;

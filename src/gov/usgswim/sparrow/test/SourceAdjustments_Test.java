@@ -2,25 +2,18 @@ package gov.usgswim.sparrow.test;
 
 import gov.usgswim.sparrow.Adjustment;
 import gov.usgswim.sparrow.Adjustment.AdjustmentType;
-import gov.usgswim.sparrow.AdjustmentSet;
 import gov.usgswim.sparrow.AdjustmentSetBuilder;
 import gov.usgswim.sparrow.Data2D;
-import gov.usgswim.sparrow.Data2DCompare;
-import gov.usgswim.sparrow.Double2D;
-import gov.usgswim.sparrow.AdjustmentSetImm;
-
 import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import java.util.Map;
 
 import junit.framework.TestCase;
+
 
 public class SourceAdjustments_Test extends TestCase {
 	Double2DImm data;

@@ -1,13 +1,11 @@
 package gov.usgswim.sparrow.util;
 
 import gov.usgswim.sparrow.Data2DBuilder;
-import gov.usgswim.sparrow.Double2D;
-
-import gov.usgswim.sparrow.Double2DImm;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 
 public class Misc {
 	public Misc() throws Exception {
