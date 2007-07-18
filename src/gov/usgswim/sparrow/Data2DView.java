@@ -18,6 +18,10 @@ public class Data2DView implements Data2D {
 	final int colCount;	//Number of columns
 	final int lastCol;	//First column NOT included - zero index
 	
+	/*
+	 * Subclasses may be editable, so these objects need to remain volatile and
+	 * protected.
+	 */
 	protected Object indexLock = new Object();
 	protected volatile int indexCol = -1;
 	protected volatile HashMap<Double, Integer> idIndex;
