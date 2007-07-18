@@ -29,7 +29,7 @@
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
-			<xsd:element name="response">
+			<xsd:element name="response" minOccurs="0">
 				<xsd:complexType>
 					<xsd:sequence>
 						<xsd:element name="format" minOccurs="0">
