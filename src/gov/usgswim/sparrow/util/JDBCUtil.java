@@ -829,7 +829,7 @@ public class JDBCUtil {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Double2DImm loadSourceReachCoef(Connection conn, int modelId, int iteration, Data2D sources) throws SQLException {
+	public static Data2D loadSourceReachCoef(Connection conn, int modelId, int iteration, Data2D sources) throws SQLException {
 	
 		if (iteration < 0) {
 			throw new IllegalArgumentException("The iteration cannot be less then zero");
@@ -896,7 +896,7 @@ public class JDBCUtil {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Double2DImm loadSourceReachCoef(Connection conn, int modelId, Data2D sources) throws SQLException {
+	public static Data2D loadSourceReachCoef(Connection conn, int modelId, Data2D sources) throws SQLException {
 	
 		if (sources.getRowCount() == 0) {
 			throw new IllegalArgumentException("There must be at least one source");
@@ -1000,7 +1000,7 @@ public class JDBCUtil {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Double2DImm loadSourceValues(Connection conn, int modelId, Data2D sources) throws SQLException {
+	public static Data2D loadSourceValues(Connection conn, int modelId, Data2D sources) throws SQLException {
 	
 		if (sources.getRowCount() == 0) {
 			throw new IllegalArgumentException("There must be at least one source");

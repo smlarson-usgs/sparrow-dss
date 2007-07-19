@@ -34,6 +34,24 @@ public class Double2DImm extends Data2DImmAbstract {
 		idIndex = buildIndex();
 	}
 	
+	public boolean isDoubleData() { return true; }
+	
+	public Data2D buildIntImmutable(int indexCol) {
+		if (getIdColumn() == indexCol) {
+			return this;
+		} else {
+			return new Int2DImm(getIntData(), getHeadings(), indexCol);
+		}
+	}
+	
+	public Data2D buildDoubleImmutable(int indexCol) {
+		if (getIdColumn() == indexCol) {
+			return this;
+		} else {
+			return new Double2DImm(_data, getHeadings(), indexCol);
+		}
+	}
+	
 	public int[][] getIntData() {
 		return Data2DUtil.copyToIntData(_data);
 	}

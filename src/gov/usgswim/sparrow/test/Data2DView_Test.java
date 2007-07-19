@@ -3,9 +3,15 @@ package gov.usgswim.sparrow.test;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DBuilder;
 import gov.usgswim.sparrow.Data2DView;
+import gov.usgswim.sparrow.Data2DViewWriteLocal;
 import gov.usgswim.sparrow.Data2DViewWriteThru;
 import gov.usgswim.sparrow.Data2DWritable;
+import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.Int2DImm;
+
+import gov.usgswim.sparrow.util.TabDelimFileUtil;
+
+import java.io.InputStream;
 
 import junit.framework.TestCase;
 
@@ -136,8 +142,8 @@ public class Data2DView_Test extends TestCase {
 		Data2DBuilder double2D = new Data2DBuilder(doubleData, headings);
 		
 		
-		Data2DViewWriteThru int2DView = new Data2DViewWriteThru(int2D, 0, 2);
-		Data2DViewWriteThru double2DView = new Data2DViewWriteThru(double2D, 1, 2);
+		Data2DViewWriteThru int2DView = new Data2DViewWriteThru(int2D, 0, 2, 0);
+		Data2DViewWriteThru double2DView = new Data2DViewWriteThru(double2D, 1, 2, 0);
 
 
 		//Test Setting values on Int
@@ -257,14 +263,39 @@ public class Data2DView_Test extends TestCase {
 
 	}
 	
-	//TODO:  FIX THIS TEST!!
-	/*
-	public void testfindById() throws Exception {
+
+	/**
+	 * Run findById tests on multiple view implementations.
+	 * @throws Exception
+	 */
+	public void testFindById() throws Exception {
 		InputStream fileStream =
 				this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_heading.txt");
-		Double2D data2Dbase = TabDelimFileUtil.readAsDouble(fileStream, true);
-		Data2DView data2D = new Data2DView(data2Dbase, 1, 9, 1, 2);
-		data2D.setIdColumn(0);
+		Data2D data2Dbase = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
+		
+		
+		Data2DView data2DView = new Data2DView(data2Dbase, 1, 9, 1, 2, 0);
+		Data2DView data2DViewWriteLocal = new Data2DViewWriteLocal(data2Dbase, 1, 9, 1, 2, 0);
+		Data2DView data2DViewWriteThru = new Data2DViewWriteThru(
+			new Data2DViewWriteLocal(data2Dbase), 1, 9, 1, 2, 0
+		);	//using a writeLocal to provide a writable ontop of the Imm.
+		
+		runfindById(data2DView);
+		runfindById(data2DViewWriteLocal);
+		runfindById(data2DViewWriteThru);
+	}
+	
+	/**
+	 * Expects a view created as:
+	 * file = /gov/usgswim/sparrow/test/sample/tab_delimit_sample_heading.txt
+	 * new Data2DView(data2Dbase, 1, 9, 1, 2, 0);
+	 * ...or similar
+	 * 
+	 * @param data2D
+	 * @throws Exception
+	 */
+	public void runfindById(Data2D data2D) throws Exception {
+
 
 		this.assertEquals(0, data2D.findRowById(12d));
 		this.assertEquals(1, data2D.findRowById(22d));
@@ -279,22 +310,26 @@ public class Data2DView_Test extends TestCase {
 		//
 		// Change some values and make sure we find them.
 		//
-		data2D.setValueAt(new Integer(99), 8, 0);
-		this.assertEquals(8, data2D.findRowById(99d));
-		
-		data2D.setValueAt(new Integer(-1), 0, 0);
-		this.assertEquals(0, data2D.findRowById(-1d));
-		
-		//
-		// Change the index to the 2nd column.
-		//
-		data2D.setValueAt(new Integer(99), 0, 1);	//update one row b/f changing index
-		data2D.setIdColumn(1);
-		this.assertEquals(0, data2D.findRowById(99d));
-		this.assertEquals(1, data2D.findRowById(23d));
-		this.assertEquals(2, data2D.findRowById(33d));
-		this.assertEquals(3, data2D.findRowById(43d));
-		this.assertEquals(8, data2D.findRowById(93d));
+		if (data2D instanceof Data2DWritable) {
+			Data2DWritable d2dw = (Data2DWritable)data2D;
+			
+			d2dw.setValueAt(new Integer(99), 8, 0);
+			this.assertEquals(8, d2dw.findRowById(99d));
+			
+			d2dw.setValueAt(new Integer(-1), 0, 0);
+			this.assertEquals(0, d2dw.findRowById(-1d));
+			
+			//
+			// Change the index to the 2nd column.
+			//
+			d2dw.setValueAt(new Integer(99), 0, 1);	//update one row b/f changing index
+			d2dw.setIdColumn(1);
+			this.assertEquals(0, d2dw.findRowById(99d));
+			this.assertEquals(1, d2dw.findRowById(23d));
+			this.assertEquals(2, d2dw.findRowById(33d));
+			this.assertEquals(3, d2dw.findRowById(43d));
+			this.assertEquals(8, d2dw.findRowById(93d));
+		}
 	}
-	*/
+
 }

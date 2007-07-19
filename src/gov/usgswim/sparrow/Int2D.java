@@ -7,6 +7,8 @@ import org.apache.commons.lang.math.NumberUtils;
 
 /**
  * A loose wrapper around a 2D int array, which includes optional column headings.
+ * 
+ * @Deprecated Use either Int2DImm or Data2DBuilder
  */
 public class Int2D implements Data2D {
 	private int[][] _data;
@@ -15,15 +17,36 @@ public class Int2D implements Data2D {
 	
 	private Object indexLock = new Object();
 	private volatile int indexCol = -1;
-	private volatile HashMap<Integer, Integer> idIndex;
+	private volatile HashMap<Integer, Integer> idIndex;	//lazy build
 	
 	public Int2D(int[][] data, String[] headings) {
 		_data = data;
 		_head = headings;
 	}
 	
+	public Int2D(int[][] data, String[] headings, int indexCol) {
+		_data = data;
+		_head = headings;
+		this.indexCol = indexCol;
+	}
+	
 	public Int2D(int[][] data) {
 		_data = data;
+	}
+	
+	public Int2D(int[][] data, int indexCol) {
+		_data = data;
+		this.indexCol = indexCol;
+	}
+	
+	public boolean isDoubleData() { return false; }
+	
+	public Data2D buildIntImmutable(int indexCol) {
+		return new Int2DImm(getIntData(), getHeadings(), indexCol);
+	}
+	
+	public Data2D buildDoubleImmutable(int indexCol) {
+		return buildIntImmutable(indexCol);	//can offer no more precision
 	}
 	
 	public int[][] getIntData() {
@@ -85,7 +108,7 @@ public class Int2D implements Data2D {
 	}
 	
 	private void internalSet(int r, int c, int v) {
-		if (this.indexCol == c) {
+		if (indexCol == c && idIndex != null) {
 			//there is an index and its on our current column
 
 			synchronized (indexLock) {
@@ -104,7 +127,7 @@ public class Int2D implements Data2D {
 	}
 	
 	public String[] getHeadings() {
-		return _head;
+		return Data2DUtil.copyStrings(_head);
 	}
 	
 	/**
@@ -246,12 +269,7 @@ public class Int2D implements Data2D {
 		synchronized (indexLock) {
 			if (indexCol != colIndex) {
 				indexCol = colIndex;
-				
-				if (indexCol != -1) {
-					rebuildIndex();
-				} else {
-					idIndex = null;
-				}
+				idIndex = null;
 			}
 		}
 	}
@@ -266,6 +284,9 @@ public class Int2D implements Data2D {
 		
 		synchronized (indexLock) {
 			if (indexCol != -1) {
+			
+				if (idIndex == null) rebuildIndex();
+				
 				Integer i = idIndex.get(id.intValue());
 				if (i != null) {
 					return i;

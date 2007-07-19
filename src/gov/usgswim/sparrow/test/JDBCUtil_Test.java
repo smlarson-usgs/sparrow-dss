@@ -105,6 +105,8 @@ public class JDBCUtil_Test extends TestCase {
 		
 	}
 	
+	//TODO:  Should some of these tests be turned back on?
+	
 	/**
 	 * @see JDBCUtil#JDBCUtil.writePredictDataSet(PredictionDataSet data, Connection conn)
 	 * 
@@ -210,7 +212,7 @@ public class JDBCUtil_Test extends TestCase {
 	 */
 	public void xtestLoadSourceReachCoef() throws Exception {
 		Int2DImm sources = JDBCUtil.loadSource(conn, 1);
-		Double2DImm jdbcData = JDBCUtil.loadSourceReachCoef(conn, 1, 0, sources);
+		Data2D jdbcData = JDBCUtil.loadSourceReachCoef(conn, 1, 0, sources);
 		
 		this.assertEquals(2339, jdbcData.getRowCount());
 		this.assertEquals(11, jdbcData.getColCount());
@@ -241,7 +243,7 @@ public class JDBCUtil_Test extends TestCase {
 	 */
 	public void xtestLoadSourceValues() throws Exception {
 		Int2DImm sources = JDBCUtil.loadSource(conn, 1);
-		Double2DImm jdbcData = JDBCUtil.loadSourceValues(conn, 1, sources);
+		Data2D jdbcData = JDBCUtil.loadSourceValues(conn, 1, sources);
 		
 		this.assertEquals(2339, jdbcData.getRowCount());
 		this.assertEquals(11, jdbcData.getColCount());
@@ -253,7 +255,7 @@ public class JDBCUtil_Test extends TestCase {
 	
 	protected Data2DCompare buildTopoComparison(Data2D toBeCompared) throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/topo.txt");
-		Int2DImm data = TabDelimFileUtil.readAsInteger(fileStream, true, -1);
+		Data2D data = TabDelimFileUtil.readAsInteger(fileStream, true, -1);
 		
 		Data2DCompare comp = new Data2DCompare(data, toBeCompared);
 		
@@ -262,7 +264,7 @@ public class JDBCUtil_Test extends TestCase {
 	
 	protected Data2DCompare buildSourceReachCoefComparison(Data2D toBeCompared) throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/coef.txt");
-		Double2DImm data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
+		Data2D data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 		int firstNonZeroRow = data.orderedSearchFirst(1, 0);
 		Data2D view = new Data2DView(data, 0, firstNonZeroRow, 4, 11);	//Crop to only iteration 0 and remove non-coef columns
 		
@@ -273,7 +275,7 @@ public class JDBCUtil_Test extends TestCase {
 	
 	protected Data2DCompare buildDecayComparison(Data2D toBeCompared) throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/coef.txt");
-		Double2DImm data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
+		Data2D data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 		int firstNonZeroRow = data.orderedSearchFirst(1, 0);
 		Data2D view = new Data2DView(data, 0, firstNonZeroRow, 1, 2);	//Crop to only iteration 0 and only the two decay columns
 		
@@ -284,7 +286,7 @@ public class JDBCUtil_Test extends TestCase {
 	
 	protected Data2DCompare buildSourceValueComparison(Data2D toBeCompared) throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/src.txt");
-		Double2DImm data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
+		Data2D data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 		
 		Data2DCompare comp = new Data2DCompare(data, toBeCompared);
 		
@@ -293,7 +295,7 @@ public class JDBCUtil_Test extends TestCase {
 	
 	protected Data2DCompare buildPredictionComparison(Data2D toBeCompared) throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict.txt");
-		Double2DImm data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
+		Data2D data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 		int[] DEFAULT_COMP_COLUMN_MAP =
 			new int[] {40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 39, 15};
 		

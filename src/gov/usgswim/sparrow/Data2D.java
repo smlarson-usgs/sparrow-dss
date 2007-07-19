@@ -40,6 +40,49 @@ public interface Data2D {
 	public double getDouble(int row, int col) throws IndexOutOfBoundsException;
 	
 	/**
+	 * Returns true if the underlying storage is double precision data.
+	 * 
+	 * Views providing local modifications should return the storage type of the
+	 * local modifications.
+	 * 
+	 * @return True if storage type is double, False if integer.
+	 */
+	public boolean isDoubleData();
+	
+	
+	/**
+	 * Returns an immutable version with the specified index column, flattening the
+	 * data to int storage.
+	 * 
+	 * If this instance is already immutable, of the proper type, and has the
+	 * same index, it may return itself.  Otherwise, a clean (non-viewed) instance
+	 * should be returned.
+	 * 
+	 * Instances that have double storage must create an int backed instance.
+	 * 
+	 * @param indexCol
+	 * @return
+	 */
+	public Data2D buildIntImmutable(int indexCol);
+	
+	/**
+	 * Returns an immutable version with the specified index column, preserving
+	 * integer precision if available.
+	 * 
+	 * If this instance is already immutable, of the proper type, and has the
+	 * same index, it may return itself.  Otherwise, a clean (non-viewed) instance
+	 * should be returned.
+	 * 
+	 * Double backed instances should create a double immutable.
+	 * Int backed instances should should create an *int* backed instance for 
+	 * this method, since no precision can be added.
+	 * 
+	 * @param indexCol
+	 * @return
+	 */
+	public Data2D buildDoubleImmutable(int indexCol);
+	
+	/**
 	 * Returns a detached int[][] array of the data contained in the Data2D.
 	 * 
 	 * Changes made to the returned array are not written back to the Data2D

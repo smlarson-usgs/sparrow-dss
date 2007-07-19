@@ -159,52 +159,52 @@ public class TabDelimFileUtil {
 		return pd;
 	}
 	
-	public static Double2DImm readAsDouble(File file, boolean hasHeadings, int indexCol)
+	public static Data2D readAsDouble(File file, boolean hasHeadings, int indexCol)
 			throws FileNotFoundException, IOException, NumberFormatException  {
 			
 		return read(file, hasHeadings, null).buildDoubleImmutable(indexCol);	
 	}
 	
-	public static Double2DImm readAsDouble(File file, boolean hasHeadings, String[] mappedHeadings, int indexCol)
+	public static Data2D readAsDouble(File file, boolean hasHeadings, String[] mappedHeadings, int indexCol)
 			throws FileNotFoundException, IOException, NumberFormatException  {
 
 		return read(file, hasHeadings, mappedHeadings).buildDoubleImmutable(indexCol);	
 	}
 	
-	public static Double2DImm readAsDouble(InputStream source, boolean hasHeadings, int indexCol)
+	public static Data2D readAsDouble(InputStream source, boolean hasHeadings, int indexCol)
 			throws FileNotFoundException, IOException, NumberFormatException  {
 		
 		return read(source, hasHeadings, null).buildDoubleImmutable(indexCol);
 	}
 			
-	public static Double2DImm readAsDouble(InputStream source, boolean hasHeadings, String[] mappedHeadings, int indexCol)
+	public static Data2D readAsDouble(InputStream source, boolean hasHeadings, String[] mappedHeadings, int indexCol)
 			throws FileNotFoundException, IOException, NumberFormatException  {
 			
 		return read(source, hasHeadings, mappedHeadings).buildDoubleImmutable(indexCol);
 	}
 	
 	
-	public static Int2DImm readAsInteger(File file, boolean hasHeadings, int indexCol)
+	public static Data2D readAsInteger(File file, boolean hasHeadings, int indexCol)
 			throws FileNotFoundException, IOException, NumberFormatException  {
 			
 		return read(file, hasHeadings).buildIntImmutable(indexCol);
 		
 	}
 	
-	public static Int2DImm readAsInteger(File file, boolean hasHeadings, String[] mappedHeadings, int indexCol)
+	public static Data2D readAsInteger(File file, boolean hasHeadings, String[] mappedHeadings, int indexCol)
 			throws FileNotFoundException, IOException, NumberFormatException  {
 
 		return read(file, hasHeadings, mappedHeadings).buildIntImmutable(indexCol);
 		
 	}
 	
-	public static Int2DImm readAsInteger(InputStream source, boolean hasHeadings, int indexCol)
+	public static Data2D readAsInteger(InputStream source, boolean hasHeadings, int indexCol)
 			throws FileNotFoundException, IOException, NumberFormatException  {
 			
 		return read(source, hasHeadings, null).buildIntImmutable(indexCol);
 	}
 	
-	public static Int2DImm readAsInteger(InputStream source, boolean hasHeadings, String[] mappedHeadings, int indexCol)
+	public static Data2D readAsInteger(InputStream source, boolean hasHeadings, String[] mappedHeadings, int indexCol)
 			throws FileNotFoundException, IOException, NumberFormatException  {
 			
 		return read(source, hasHeadings, mappedHeadings).buildIntImmutable(indexCol);

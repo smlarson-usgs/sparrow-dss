@@ -60,26 +60,16 @@ public class Data2DBuilder implements Data2DWritable {
 		_data = Data2DUtil.copyToDoubleData(data);
 	}
 	
-	public Int2DImm buildIntImmutable(int indexCol) {
+	public boolean isDoubleData() { return true; }
+	
+	public Data2D buildIntImmutable(int indexCol) {
 		int[][] newData = Data2DUtil.copyToIntData(_data);
-		String[] newHead = null;
-		if (_head != null && _head.length > 0) {
-			newHead = new String[_head.length];
-			System.arraycopy(_head, 0,  newHead, 0, _head.length);
-		}
-		
-		return new Int2DImm(newData, newHead, indexCol);
+		return new Int2DImm(newData, getHeadings(), indexCol);
 	}
 	
-	public Double2DImm buildDoubleImmutable(int indexCol) {
+	public Data2D buildDoubleImmutable(int indexCol) {
 		double[][] newData = Data2DUtil.copyToDoubleData(_data);
-		String[] newHead = null;
-		if (_head != null && _head.length > 0) {
-			newHead = new String[_head.length];
-			System.arraycopy(_head, 0,  newHead, 0, _head.length);
-		}
-		
-		return new Double2DImm(newData, newHead, indexCol);
+		return new Double2DImm(newData, getHeadings(), indexCol);
 	}
 	
 	public int[][] getIntData() {

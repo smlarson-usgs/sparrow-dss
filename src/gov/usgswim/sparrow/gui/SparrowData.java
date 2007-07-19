@@ -162,7 +162,7 @@ public class SparrowData implements DataChangeListener {
 					topoData = TabDelimFileUtil.readAsInteger(f, true, -1);
 					fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_TOPO, topoData));
 				} else if (DATA_TYPE_COEF.equals(evt.getDataType())) {
-					Double2DImm coefDataFull = TabDelimFileUtil.readAsDouble(f, true, -1);
+					Data2D coefDataFull = TabDelimFileUtil.readAsDouble(f, true, -1);
 					
 					//coefData includes multiple iterations, indicated in the first column.
 					//we want iteration 0.

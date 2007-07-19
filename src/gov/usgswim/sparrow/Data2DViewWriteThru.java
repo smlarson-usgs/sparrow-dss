@@ -6,6 +6,14 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
+/**
+ * A writable Data2D view that allows edits to be made thru to the underlying Data2d instance.
+ * 
+ * 
+ * 
+ * Not Threadsafe.  Synchronization in this class is only used to prevent
+ * the index column from changing during index updates and assignments.
+ */
 public class Data2DViewWriteThru extends Data2DView implements Data2DWritable {
 	Data2DWritable data;
 
@@ -14,8 +22,18 @@ public class Data2DViewWriteThru extends Data2DView implements Data2DWritable {
 		this.data = data;
 	}
 	
+	public Data2DViewWriteThru(Data2DWritable data, int firstCol, int colCount, int indexCol) {
+	  super(data, 0, data.getRowCount(), firstCol, colCount, indexCol);
+		this.data = data;
+	}
+	
 	public Data2DViewWriteThru(Data2DWritable data, int firstRow, int rowCount, int firstCol, int colCount) {
 		super(data, firstRow, rowCount, firstCol, colCount);
+		this.data = data;
+	}
+	
+	public Data2DViewWriteThru(Data2DWritable data, int firstRow, int rowCount, int firstCol, int colCount, int indexCol) {
+		super(data, firstRow, rowCount, firstCol, colCount, indexCol);
 		this.data = data;
 	}
 
@@ -59,7 +77,9 @@ public class Data2DViewWriteThru extends Data2DView implements Data2DWritable {
 
 	
 	protected void internalSet(int r, int c, Number v) {
-		if (indexCol == c) {
+	
+		//Both of these conditions must be true b/c the index is lazy created
+		if (indexCol == c && idIndex != null) {
 			//there is an index and its on our current column
 
 			synchronized (indexLock) {

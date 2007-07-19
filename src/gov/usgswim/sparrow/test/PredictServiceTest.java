@@ -143,7 +143,7 @@ public class PredictServiceTest extends TestCase {
 	
 	protected Data2DCompare buildPredictionComparison(Data2D toBeCompared) throws Exception {
 		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict.txt");
-		Double2DImm data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
+		Data2D data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 		int[] DEFAULT_COMP_COLUMN_MAP =
 			new int[] {40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 39, 15};
 		

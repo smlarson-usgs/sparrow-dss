@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.test;
 
+import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.Int2DImm;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
@@ -52,7 +53,7 @@ public class TabDelimFileUtil_Test extends TestCase{
 		*/
 	 public void testDouble3() throws Exception {
 		 InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_heading.txt");
-		 Double2DImm data2D = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
+		 Data2D data2D = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 		 double[][] data = data2D.getDoubleData();
 		 
 		 this.assertEquals(1d, data[0][0], 0d);
@@ -110,7 +111,7 @@ public class TabDelimFileUtil_Test extends TestCase{
 		*/
 	 public void testInteger2() throws Exception {
 		 InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_heading.txt");
-	   Int2DImm data2D = TabDelimFileUtil.readAsInteger(fileStream, true, -1);
+	   Data2D data2D = TabDelimFileUtil.readAsInteger(fileStream, true, -1);
 		 int[][] data = data2D.getIntData();
 		 
 		 this.assertEquals(1, data[0][0]);
@@ -151,7 +152,7 @@ public class TabDelimFileUtil_Test extends TestCase{
 		 };
 		 
 		 InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/ancil.txt");
-		 Int2DImm data = TabDelimFileUtil.readAsInteger(fileStream, true, mappedHeadings, -1);
+		 Data2D data = TabDelimFileUtil.readAsInteger(fileStream, true, mappedHeadings, -1);
 		 
 		 this.assertEquals(3, data.getColCount());
 		 
@@ -182,7 +183,7 @@ public class TabDelimFileUtil_Test extends TestCase{
 		 };
 		 
 		 InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/ancil.txt");
-		 Double2DImm data = TabDelimFileUtil.readAsDouble(fileStream, true, mappedHeadings, -1);
+		 Data2D data = TabDelimFileUtil.readAsDouble(fileStream, true, mappedHeadings, -1);
 		 
 		 this.assertEquals(3, data.getColCount());
 		 

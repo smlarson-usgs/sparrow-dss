@@ -6,6 +6,20 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 
+/**
+ * A windowed view of a Data2D instance.
+ * 
+ * This class is not strictly immutable or thread safe because it exposes some
+ * files as protected so it can be subclassed.  Wrtitable subclasses *may* implement
+ * this class as threadsafe (with the caviats above) by sych'ing the set and
+ * get value methods with the indexLock so that the index stays in sync with
+ * data values.
+ * 
+ * This class is not writable, but it can be subclassed to be writable.
+ * Subclasses should call rebuildIndex() after making a change to data.
+ * Rebuild index will call getDouble() for each value, so values from the
+ * subclass will be included.
+ */
 public class Data2DView implements Data2D {
 	protected final Data2D data;
 	protected volatile Double maxValue;  //null unless we know for sure we have the max value
@@ -23,8 +37,8 @@ public class Data2DView implements Data2D {
 	 * protected.
 	 */
 	protected Object indexLock = new Object();
-	protected volatile int indexCol = -1;
-	protected volatile HashMap<Double, Integer> idIndex;
+	protected volatile int indexCol = -1;		//-1 == no index
+	protected volatile HashMap<Double, Integer> idIndex;	//lazy created
 	
 	public Data2DView(Data2D data, int firstCol, int colCount) {
 	  this(data, 0, data.getRowCount(), firstCol, colCount, -1);
@@ -100,6 +114,20 @@ public class Data2DView implements Data2D {
 			);
 		}
 
+	}
+	
+	public boolean isDoubleData() { return data.isDoubleData(); }
+	
+	public Data2D buildIntImmutable(int indexCol) {
+		return new Int2DImm(getIntData(), getHeadings(), indexCol);
+	}
+	
+	public Data2D buildDoubleImmutable(int indexCol) {
+		if (isDoubleData()) {
+			return new Double2DImm(getDoubleData(), getHeadings(), indexCol);
+		} else {
+			return new Int2DImm(getIntData(), getHeadings(), indexCol);
+		}
 	}
 	
 	public int[][] getIntData() {

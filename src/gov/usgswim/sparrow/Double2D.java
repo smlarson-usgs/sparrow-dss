@@ -7,6 +7,8 @@ import org.apache.commons.lang.math.NumberUtils;
 
 /**
  * A loose wrapper around a 2D double array, which includes optional column headings.
+ * 
+ * @Deprecated Use either Double2DImm or Data2DBuilder
  */
 public class Double2D implements Data2D {
 	private double[][] _data;
@@ -15,15 +17,36 @@ public class Double2D implements Data2D {
 	
 	private Object indexLock = new Object();
 	private volatile int indexCol = -1;
-	private volatile HashMap<Double, Integer> idIndex;
+	private volatile HashMap<Double, Integer> idIndex;	//lazy create
 	
 	public Double2D(double[][] data, String[] headings) {
 		_data = data;
 		_head = headings;
 	}
 	
+	public Double2D(double[][] data, String[] headings, int indexCol) {
+		_data = data;
+		_head = headings;
+		this.indexCol = indexCol;
+	}
+	
 	public Double2D(double[][] data) {
 		_data = data;
+	}
+	
+	public Double2D(double[][] data, int indexCol) {
+		_data = data;
+		this.indexCol = indexCol;
+	}
+	
+	public boolean isDoubleData() { return true; }
+	
+	public Data2D buildIntImmutable(int indexCol) {
+		return new Int2DImm(getIntData(), getHeadings(), indexCol);
+	}
+	
+	public Data2D buildDoubleImmutable(int indexCol) {
+		return new Double2DImm(getDoubleData(), getHeadings(), indexCol);
 	}
 	
 	public int[][] getIntData() {
@@ -84,7 +107,7 @@ public class Double2D implements Data2D {
 	}
 	
 	private void internalSet(int r, int c, double v) {
-		if (this.indexCol == c) {
+		if (this.indexCol == c && idIndex != null) {
 			//there is an index and its on our current column
 
 			synchronized (indexLock) {
@@ -103,7 +126,7 @@ public class Double2D implements Data2D {
 	}
 	
 	public String[] getHeadings() {
-		return _head;
+		return Data2DUtil.copyStrings(_head);
 	}
 	
 	/**
@@ -242,12 +265,7 @@ public class Double2D implements Data2D {
 		synchronized (indexLock) {
 			if (indexCol != colIndex) {
 				indexCol = colIndex;
-				
-				if (indexCol != -1) {
-					rebuildIndex();
-				} else {
-					idIndex = null;
-				}
+				idIndex = null;
 			}
 		}
 	}
@@ -262,6 +280,8 @@ public class Double2D implements Data2D {
 		
 		synchronized (indexLock) {
 			if (indexCol != -1) {
+				if (idIndex == null) rebuildIndex();
+				
 				Integer i = idIndex.get(id);
 				if (i != null) {
 					return i;

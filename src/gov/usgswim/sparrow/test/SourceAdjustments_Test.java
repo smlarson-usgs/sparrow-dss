@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 
 
 public class SourceAdjustments_Test extends TestCase {
-	Double2DImm data;
+	Data2D data;
 	
 	public SourceAdjustments_Test(String sTestName) {
 		super(sTestName);
