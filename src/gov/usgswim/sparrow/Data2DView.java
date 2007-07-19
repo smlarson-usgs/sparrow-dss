@@ -206,11 +206,11 @@ public class Data2DView implements Data2D {
 
 	}
 
-	public Number getValueAt(int row, int col) throws IndexOutOfBoundsException {
+	public Number getValue(int row, int col) throws IndexOutOfBoundsException {
 		col+=firstCol;
 		row+=firstRow;
 		if (col < lastCol && row < lastRow) {
-			return data.getValueAt(row, col);
+			return data.getValue(row, col);
 		} else {
 			throw new IndexOutOfBoundsException("The row/column (" + (row - firstRow) + ", " + (col - firstCol) + ") exceeds the data bounds");
 		}

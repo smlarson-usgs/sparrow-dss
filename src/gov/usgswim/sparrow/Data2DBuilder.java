@@ -80,7 +80,7 @@ public class Data2DBuilder implements Data2DWritable {
 		return Data2DUtil.copyToDoubleData(_data);
 	}
 	
-	public Number getValueAt(int row, int col) throws IndexOutOfBoundsException {
+	public Number getValue(int row, int col) throws IndexOutOfBoundsException {
 		return new Double(_data[row][col]);
 	}
 	

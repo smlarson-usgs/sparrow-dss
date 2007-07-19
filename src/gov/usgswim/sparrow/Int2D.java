@@ -57,7 +57,7 @@ public class Int2D implements Data2D {
 		return Data2DUtil.copyToDoubleData(_data);
 	}
 	
-	public Number getValueAt(int row, int col) throws IndexOutOfBoundsException {
+	public Number getValue(int row, int col) throws IndexOutOfBoundsException {
 		return new Integer(_data[row][col]);
 	}
 	

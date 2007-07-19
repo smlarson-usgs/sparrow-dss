@@ -121,7 +121,7 @@ public class Data2DPercentCompare extends Data2DView {
 		return (int) compare(row, col);
 	}
 
-	public Number getValueAt(int row, int col) throws IndexOutOfBoundsException {
+	public Number getValue(int row, int col) throws IndexOutOfBoundsException {
 		return new Double( compare(row, col) );
 	}
 

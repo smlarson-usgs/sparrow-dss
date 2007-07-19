@@ -16,7 +16,7 @@ public interface Data2D {
 	 * @return The value at the specified row/column in an appropriate wrapper type
 	 * @throws IndexOutOfBoundsException if the row or column is outside the existing data bounds
 	 */
-	public Number getValueAt(int row, int col) throws IndexOutOfBoundsException;
+	public Number getValue(int row, int col) throws IndexOutOfBoundsException;
 	
 	/**
 	 * Returns an integer representation of the value at the specified row/column location.
@@ -192,6 +192,8 @@ public interface Data2D {
 	
 	/**
 	 * Returns the index of the ID column.  -1 is returned if there is no index.
+	 * 
+	 * The ID column should contain unique values or the results will be undefined.
 	 * @return
 	 */
 	public int getIdColumn();

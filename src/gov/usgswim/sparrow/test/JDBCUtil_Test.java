@@ -168,7 +168,7 @@ public class JDBCUtil_Test extends TestCase {
 			int maxRow = coef.findMaxCompareRow(i);
 			System.out.println("--Row Data at max (row #" +  maxRow + ")");
 			for (int j=0; j<coef.getColCount(); j++) {
-				System.out.println("----Col " + j + ": " + coef.getValueAt(maxRow, j));
+				System.out.println("----Col " + j + ": " + coef.getValue(maxRow, j));
 			}
 		}
 		

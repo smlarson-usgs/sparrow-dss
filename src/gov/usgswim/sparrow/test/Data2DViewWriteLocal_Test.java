@@ -58,7 +58,7 @@ public class Data2DViewWriteLocal_Test extends TestCase {
 		this.assertEquals(.2d, data.getDouble(0, 0));
 		this.assertEquals(0, data.getInt(0, 0));
 		this.assertEquals(.5d, data.getDouble(6, 3));
-		this.assertEquals(new Double(.5d), data.getValueAt(6, 3));
+		this.assertEquals(new Double(.5d), data.getValue(6, 3));
 
 		//These tests are outside the column bound and should throw errors
 		try {
@@ -110,12 +110,12 @@ public class Data2DViewWriteLocal_Test extends TestCase {
 
 		this.assertEquals(.2d, data.getDouble(0, 0), 0d);	//initial value
 		data.setValueAt(new Double(9.9), 0, 0);							//set new value
-		this.assertEquals(new Double(9.9d), data.getValueAt(0, 0).doubleValue(), 0d);
+		this.assertEquals(new Double(9.9d), data.getValue(0, 0).doubleValue(), 0d);
 		this.assertEquals(9.9d, data.getDouble(0, 0), 0d);
 		this.assertEquals(9, data.getInt(0, 0));
 		data.setValueAt((Number)null, 0, 0);							//reset to initial (Number)
 		this.assertEquals(.2d, data.getDouble(0, 0), 0d);	//initial value
-		this.assertEquals(new Double(.2d), data.getValueAt(0, 0).doubleValue(), 0d);
+		this.assertEquals(new Double(.2d), data.getValue(0, 0).doubleValue(), 0d);
 		this.assertEquals(0, data.getInt(0, 0));
 		
 		//Try the reset as string

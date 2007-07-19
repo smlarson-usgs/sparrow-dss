@@ -88,12 +88,12 @@ public class Data2DView_Test extends TestCase {
 		this.assertEquals("c1", int2DView.getHeadings()[1]);
 
 		this.assertEquals(0, int2DView.getInt(0, 0));
-		this.assertEquals(0d, int2DView.getValueAt(0, 0).doubleValue());
+		this.assertEquals(0d, int2DView.getValue(0, 0).doubleValue());
 		this.assertEquals(0d, int2DView.getDouble(0, 0));
 
 		this.assertEquals("c1", int2DView.getHeading(1));
 		this.assertEquals(2, int2DView.getInt(0, 1));
-		this.assertEquals(2d, int2DView.getValueAt(0, 1).doubleValue());
+		this.assertEquals(2d, int2DView.getValue(0, 1).doubleValue());
 		this.assertEquals(2d, int2DView.getDouble(0, 1), 0d);
 
 		//double2DView
@@ -104,11 +104,11 @@ public class Data2DView_Test extends TestCase {
 		this.assertEquals("c2", double2DView.getHeadings()[1]);
 
 		this.assertEquals(0, double2DView.getInt(0, 0));
-		this.assertEquals(.3d, double2DView.getValueAt(0, 0).doubleValue());
+		this.assertEquals(.3d, double2DView.getValue(0, 0).doubleValue());
 		this.assertEquals(.3d, double2DView.getDouble(0, 0), 0d);
 
 		this.assertEquals(0, double2DView.getInt(0, 1));
-		this.assertEquals(.4d, double2DView.getValueAt(0, 1).doubleValue());
+		this.assertEquals(.4d, double2DView.getValue(0, 1).doubleValue());
 		this.assertEquals(.4d, double2DView.getDouble(0, 1), 0d);
 		this.assertEquals("c2", double2DView.getHeading(1));
 
@@ -230,12 +230,12 @@ public class Data2DView_Test extends TestCase {
 
 
 		this.assertEquals(1, int2DView.getInt(0, 0));
-		this.assertEquals(1d, int2DView.getValueAt(0, 0).doubleValue());
+		this.assertEquals(1d, int2DView.getValue(0, 0).doubleValue());
 		this.assertEquals(1d, int2DView.getDouble(0, 0), 0d);
 
 		this.assertEquals("c1", int2DView.getHeading(1));
 		this.assertEquals(4, int2DView.getInt(4, 0));
-		this.assertEquals(4d, int2DView.getValueAt(4, 0).doubleValue());
+		this.assertEquals(4d, int2DView.getValue(4, 0).doubleValue());
 		this.assertEquals(4d, int2DView.getDouble(4, 0), 0d);
 
 		//These tests are outside the column/row bound and should throw errors

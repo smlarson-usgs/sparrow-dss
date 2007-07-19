@@ -50,8 +50,8 @@ public class Data2DColumnCoefView extends Data2DView implements Data2D {
 	}
 
 
-	public Number getValueAt(int row, int col) throws IndexOutOfBoundsException {
-		Number val = super.getValueAt(row, col);
+	public Number getValue(int row, int col) throws IndexOutOfBoundsException {
+		Number val = super.getValue(row, col);
 		return new Double(val.doubleValue() * coef[col]);
 	}
 

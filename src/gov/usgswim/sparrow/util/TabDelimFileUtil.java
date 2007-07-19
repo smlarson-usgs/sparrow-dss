@@ -350,7 +350,7 @@ public class TabDelimFileUtil {
 
 		for (int r=0; r<rowCount; r++) {
 			for (int c=0; c<colCount; c++) {
-				line.append(data.getValueAt(r, c).toString() + "\t");
+				line.append(data.getValue(r, c).toString() + "\t");
 			}
 			//Trim extra tab from end of line and write
 			line.setLength(line.length() - 1);

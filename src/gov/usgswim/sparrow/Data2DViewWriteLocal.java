@@ -66,13 +66,13 @@ public class Data2DViewWriteLocal extends Data2DView implements Data2DWritable {
 		}
 	}
 
-	public Number getValueAt(int row, int col) throws IndexOutOfBoundsException {
+	public Number getValue(int row, int col) throws IndexOutOfBoundsException {
 		Integer hash = getHashID(row, col);
 		
 		if (sparseData.containsKey(hash)) {
 			return sparseData.get(hash);
 		} else {
-			return super.getValueAt(row, col);
+			return super.getValue(row, col);
 		}
 	}
 	
