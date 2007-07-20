@@ -4,6 +4,7 @@ import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DCompare;
 import gov.usgswim.sparrow.Data2DView;
 import gov.usgswim.sparrow.Double2DImm;
+import gov.usgswim.sparrow.IPredictionDataSet;
 import gov.usgswim.sparrow.Int2DImm;
 import gov.usgswim.sparrow.PredictSimple;
 import gov.usgswim.sparrow.PredictionDataSet;
@@ -119,7 +120,7 @@ public class JDBCUtil_Test extends TestCase {
 	public void xtestDBWriteVsTextFilesDataSet() throws Exception {
 		String rootDir = "/data/ch2007_04_24/";
 		PredictionDataSet textDs = new PredictionDataSet();
-		PredictionDataSet dbDs = null;
+		IPredictionDataSet dbDs = null;
 		
 		
 		//Load the text files

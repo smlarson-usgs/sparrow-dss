@@ -10,7 +10,7 @@ import java.util.HashMap;
  * This class is not thread safe!  Once created, this class may be cached and
  * used for prediction runs, so do not reassign or change the values it contains!
  */
-public class PredictionDataSet implements Cloneable {
+public class PredictionDataSet implements IPredictionDataSet {
 
 
 	/**
@@ -391,7 +391,7 @@ public class PredictionDataSet implements Cloneable {
 	 * @throws CloneNotSupportedException
 	 */
 	public Object clone() throws CloneNotSupportedException {
-		return (PredictionDataSet) super.clone();
+		return (IPredictionDataSet) super.clone();
 	}
 
 	public void setAncil(Data2D ancil) {
