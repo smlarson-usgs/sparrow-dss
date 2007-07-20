@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.service;
 
 import gov.usgswim.sparrow.ComputableCache;
 import gov.usgswim.sparrow.Double2DImm;
-import gov.usgswim.sparrow.IPredictionDataSet;
+import gov.usgswim.sparrow.PredictionDataSet;
 import gov.usgswim.sparrow.PredictionRequest;
 import gov.usgswim.sparrow.util.DataSourceProxy;
 import gov.usgswim.sparrow.util.JDBCConnectable;
@@ -24,7 +24,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	private DataSource datasource;
 	private boolean lookupFailed = false;
 	private ComputableCache<PredictionRequest, Double2DImm> predictResultCache;
-	private ComputableCache<Long, IPredictionDataSet> predictDatasetCache;
+	private ComputableCache<Long, PredictionDataSet> predictDatasetCache;
 	private ComputableCache metadataCache;
 	
 	
@@ -32,7 +32,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		super(null);
 		
 		predictResultCache = new ComputableCache<PredictionRequest, Double2DImm>(new PredictionComputable());
-		predictDatasetCache = new ComputableCache<Long, IPredictionDataSet>(new PredictDatasetComputable());
+		predictDatasetCache = new ComputableCache<Long, PredictionDataSet>(new PredictDatasetComputable());
 	}
 	
 	public static synchronized SharedApplication getInstance() {
@@ -90,7 +90,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		return predictResultCache;
 	}
 
-	public ComputableCache<Long, IPredictionDataSet> getPredictDatasetCache() {
+	public ComputableCache<Long, PredictionDataSet> getPredictDatasetCache() {
 		return predictDatasetCache;
 	}
 }

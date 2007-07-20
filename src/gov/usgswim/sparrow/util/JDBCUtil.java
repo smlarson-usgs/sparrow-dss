@@ -5,7 +5,7 @@ import gov.usgswim.sparrow.Data2DBuilder;
 import gov.usgswim.sparrow.Data2DWritable;
 import gov.usgswim.sparrow.Double2DImm;
 
-import gov.usgswim.sparrow.IPredictionDataSet;
+import gov.usgswim.sparrow.PredictionDataSet;
 import gov.usgswim.sparrow.Int2DImm;
 
 import gov.usgswim.sparrow.PredictionDataBuilder;
@@ -49,7 +49,7 @@ public class JDBCUtil {
 	 * @throws SQLException
 	 */
 	 //TODO This should be renamed 'loadMinimalModelDataSet'
-	public static IPredictionDataSet loadMinimalPredictDataSet(Connection conn, int modelId)
+	public static PredictionDataSet loadMinimalPredictDataSet(Connection conn, int modelId)
 			throws SQLException {
 		
 		PredictionDataBuilder dataSet = new PredictionDataBuilder();
@@ -74,7 +74,7 @@ public class JDBCUtil {
 	 * 
 	 * TODO:  This should load the model as well....
 	 */
-	public static IPredictionDataSet loadFullModelDataSet(Connection conn, int modelId)
+	public static PredictionDataSet loadFullModelDataSet(Connection conn, int modelId)
 			throws SQLException {
 		
 		PredictionDataBuilder dataSet = new PredictionDataBuilder();
@@ -273,7 +273,7 @@ public class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static Map<Integer, Integer> writeModelReaches(IPredictionDataSet data, Connection conn, int batchSize)
+	public static Map<Integer, Integer> writeModelReaches(PredictionDataSet data, Connection conn, int batchSize)
 				throws SQLException {
 		
 		//return value
@@ -442,7 +442,7 @@ public class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static Map<Integer, Integer> writeModelSources(IPredictionDataSet data, Connection conn)
+	public static Map<Integer, Integer> writeModelSources(PredictionDataSet data, Connection conn)
 				throws SQLException {
 		log.debug("Adding sources (one batch)");
 		
@@ -523,7 +523,7 @@ public class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static int writePredictDataSet(IPredictionDataSet data, Connection conn, int batchSize)
+	public static int writePredictDataSet(PredictionDataSet data, Connection conn, int batchSize)
 			throws SQLException {
 
     //quick access variables for data tables

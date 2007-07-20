@@ -2,7 +2,7 @@ package gov.usgswim.sparrow;
 
 import gov.usgswim.sparrow.domain.Model;
 
-public interface IPredictionDataSet extends ImmutableBuilder<IPredictionDataSet> {
+public interface PredictionDataSet extends ImmutableBuilder<PredictionDataSet> {
 	public Data2D getSrcIds();
 
 	/**

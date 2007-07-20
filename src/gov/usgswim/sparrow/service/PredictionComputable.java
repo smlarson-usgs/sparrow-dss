@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.service;
 
 import gov.usgswim.sparrow.Computable;
 import gov.usgswim.sparrow.Double2DImm;
-import gov.usgswim.sparrow.IPredictionDataSet;
+import gov.usgswim.sparrow.PredictionDataSet;
 import gov.usgswim.sparrow.PredictSimple;
 import gov.usgswim.sparrow.PredictionDataBuilder;
 import gov.usgswim.sparrow.PredictionRequest;
@@ -25,8 +25,8 @@ public class PredictionComputable implements Computable<PredictionRequest, Doubl
 	}
 
 	public Double2DImm compute(PredictionRequest request) throws Exception {
-		IPredictionDataSet data = loadData(request);
-		IPredictionDataSet adjData = adjustData(request, data);
+		PredictionDataSet data = loadData(request);
+		PredictionDataSet adjData = adjustData(request, data);
 		
 		long startTime = System.currentTimeMillis();
 
@@ -45,7 +45,7 @@ public class PredictionComputable implements Computable<PredictionRequest, Doubl
 	 * @param arg
 	 * @return
 	 */
-	public IPredictionDataSet loadData(PredictionRequest req) throws Exception {
+	public PredictionDataSet loadData(PredictionRequest req) throws Exception {
 		return SharedApplication.getInstance().getPredictDatasetCache().compute( req.getModelId() );
 	}
 	
@@ -65,8 +65,8 @@ public class PredictionComputable implements Computable<PredictionRequest, Doubl
 	 * @param data
 	 * @return
 	 */
-	public IPredictionDataSet adjustData(PredictionRequest req,
-																			IPredictionDataSet data) throws Exception {
+	public PredictionDataSet adjustData(PredictionRequest req,
+																			PredictionDataSet data) throws Exception {
 		
 		if (req.getAdjustmentSet().hasAdjustments()) {
 			PredictionDataBuilder mutable = data.getBuilder();
@@ -93,7 +93,7 @@ public class PredictionComputable implements Computable<PredictionRequest, Doubl
 	 * @return
 	 */
 	public Double2DImm runPrediction(PredictionRequest req,
-																IPredictionDataSet data) {
+																PredictionDataSet data) {
 		PredictSimple adjPredict = new PredictSimple(data);
 		return adjPredict.doPredict();
 	}

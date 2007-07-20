@@ -9,7 +9,7 @@ import gov.usgswim.sparrow.domain.Model;
  * This class is not thread safe!  Once created, this class may be cached and
  * used for prediction runs, so do not reassign or change the values it contains!
  */
-public class PredictionDataBuilder implements IPredictionDataSet {
+public class PredictionDataBuilder implements PredictionDataSet {
 
 
 	/**
@@ -362,7 +362,7 @@ public class PredictionDataBuilder implements IPredictionDataSet {
 	}
 	
 
-	public IPredictionDataSet getImmutable() {
+	public PredictionDataSet getImmutable() {
 
 		//TODO:  Model should have an immutable builder
 		return new PredictionDataImm(
