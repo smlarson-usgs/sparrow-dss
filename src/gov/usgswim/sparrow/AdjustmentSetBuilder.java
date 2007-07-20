@@ -31,25 +31,16 @@ public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSetImm>,
 	
 	
 	/**
-	 * Sets the adjustments, removing any previous.
+	 * Adds gross adjustments.
 	 * 
 	 * @param adjs A map containing adjustment names and values.
+	 * @Depricated Use addAdjustment
 	 */
-	public synchronized void setAdjustments(Map adjs) {
+	public synchronized void addGrossSrcAdjustments(Map adjs) {
 	
-		for(Adjustment.AdjustmentType type: Adjustment.AdjustmentType.values()) {
-			String val = (String) adjs.get( type.getName() );
-			
-			switch (type) {
-				case GROSS_ADJUST:
-				
-					adjustments.addAll(parseGrossAdj(val));
-					
-					break;
-				default:
-					throw new IllegalStateException("Unexpected AdjustmentType.");
-			}
-		}
+		String val = (String) adjs.get( Adjustment.AdjustmentType.GROSS_SRC_ADJUST.toString() );
+		adjustments.addAll(parseGrossAdj(val));
+
 	}
 	
 	
@@ -93,7 +84,7 @@ public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSetImm>,
 			for (int i = 0; i < adjs.length; i+=2)  {
 				int col = Integer.parseInt(adjs[i]);
 				double coef = Double.parseDouble(adjs[i + 1]);
-				list.add(new Adjustment(Adjustment.AdjustmentType.GROSS_ADJUST, col, coef));
+				list.add(new Adjustment(Adjustment.AdjustmentType.GROSS_SRC_ADJUST, col, coef));
 			}
 			
 			return list;
@@ -103,36 +94,8 @@ public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSetImm>,
 		
 	}
 
-
-	/**
-	 * Creates a new Data2D source by creating a coef-view using the same underlying
-	 * data w/ coefficients on top.  This strategy allows the underlying data
-	 * to be cached and not modified.
-	 * 
-	 * If no adjustments are made, the passed data is returned and no view is created,
-	 * so DO NOT count on the returned data being a view - check using ==.
-	 * 
-	 * @param source
-	 * @return
-	 */
-	public Data2D adjustSources(Data2D source) {
-
-		if (adjustments != null) {
-			
-			Data2DColumnCoefView view = new Data2DColumnCoefView(source);
-			
-			for (Adjustment a: adjustments) {
-				//TODO This assumes we need a Data2DColumnCoefView.  How to handle other types?
-				a.adjust(view);
-			}
-			
-			return view;
-			
-		} else {
-			
-			return source;	//no adjustment
-		}
-		
+	public Data2D adjust(Data2D source, Data2D srcIndex, Data2D reachIndex) throws Exception {
+		return AdjustmentSetImm.adjustSources(adjustments, source, srcIndex, reachIndex);
 	}
 	
 	public AdjustmentSetImm getImmutable() {

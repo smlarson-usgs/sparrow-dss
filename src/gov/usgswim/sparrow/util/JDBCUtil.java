@@ -53,13 +53,12 @@ public class JDBCUtil {
 		
 		PredictionDataSet dataSet = new PredictionDataSet();
 		
-		Int2DImm sources = loadSource(conn, modelId);	//Need this list
-		
+		dataSet.setSrcIds( loadSourceIds(conn, modelId));
 		dataSet.setSys( loadSystemInfo(conn, modelId) );
 		dataSet.setTopo( loadTopo(conn, modelId) );
-		dataSet.setCoef( loadSourceReachCoef(conn, modelId, 0, sources) );
+		dataSet.setCoef( loadSourceReachCoef(conn, modelId, 0, dataSet.getSrcIds()) );
 		dataSet.setDecay( loadDecay(conn, modelId, 0) );
-		dataSet.setSrc( loadSourceValues(conn, modelId, sources) );
+		dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcIds()) );
 		
 		return dataSet;
 	}
@@ -77,13 +76,12 @@ public class JDBCUtil {
 		
 		PredictionDataSet dataSet = new PredictionDataSet();
 		
-		Int2DImm sources = loadSource(conn, modelId);	//Need this list
-		
+		dataSet.setSrcIds( loadSourceIds(conn, modelId));
 		dataSet.setSys( loadSystemInfo(conn, modelId) );
 		dataSet.setTopo( loadTopo(conn, modelId) );
-		dataSet.setCoef( loadSourceReachCoef(conn, modelId, sources) );
+		dataSet.setCoef( loadSourceReachCoef(conn, modelId, dataSet.getSrcIds()) );
 		dataSet.setDecay( loadDecay(conn, modelId, 0) );
-		dataSet.setSrc( loadSourceValues(conn, modelId, sources) );
+		dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcIds()) );
 		
 		return dataSet;
 	}
@@ -178,16 +176,16 @@ public class JDBCUtil {
 	
 	/**
 	 * Deletes an entire model from the database.
-	 * 
+	 *
 	 * If keepModelRecord is true, all model data is deleted, but the model
 	 * record in the SPARROW_MODEL table is preserved.  This is intended to
 	 * allow model data to be reloaded w/o having to reinsert a model record.
-	 * 
+	 *
 	 * The strategy is to delete by source, since that provides smaller chunks to
 	 * delete.  The final clean-up is then to delete the reaches.
-	 * 
+	 *
 	 * @param modelId	The id of the model to be deleted.
-	 * @param keepModelRecord	If true, the model record in SPARROW_MODEL is kept.
+	 * @param keepModelRecord If true, the model record in SPARROW_MODEL is kept.
 	 */
 	public static void deleteModel(Connection conn, long modelId, boolean keepModelRecord) throws SQLException {
 		
@@ -775,11 +773,11 @@ public class JDBCUtil {
 	 * <li>[i][0] REACH_ID - The system id for the reach (db unique id)
 	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number
 	 * </ol>
-	 * 
+	 *
 	 * TODO:  WE sort by HYDSEQ HERE - THAT IS REALLY BAD, SINCE THERE ARE DUPLICATES.
-	 * 
-	 * @param conn	A JDBC Connection to run the query on
-	 * @param modelId	The ID of the Sparrow model
+	 *
+	 * @param conn A JDBC Connection to run the query on
+	 * @param modelId The ID of the Sparrow model
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
@@ -1055,12 +1053,14 @@ public class JDBCUtil {
 	 * <li>SOURCE_ID - The DB ID for the source
 	 * </ol>
 	 * 
+	 * The returned data is indexed on the SOURCE_ID column.
+	 * 
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
 	 * @return	An Int2D object contains the list of source_id's in a single column
 	 * @throws SQLException
 	 */
-	public static Int2DImm loadSource(Connection conn, int modelId) throws SQLException {
+	public static Int2DImm loadSourceIds(Connection conn, int modelId) throws SQLException {
 		String query =
 			"SELECT SOURCE_ID FROM SOURCE WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY SORT_ORDER";
 	
@@ -1072,7 +1072,7 @@ public class JDBCUtil {
 		try {
 		
 			rs = st.executeQuery(query);
-			return readAsInteger(rs);
+			return readAsInteger(rs, 0);
 			
 		} finally {
 			if (rs != null) {

@@ -53,7 +53,7 @@ public class PredictionComputable implements Computable<PredictionRequest, Doubl
 	 * @return
 	 */
 	public PredictionDataSet adjustData(PredictionRequest req,
-																			PredictionDataSet data) {
+																			PredictionDataSet data) throws Exception {
 		PredictionDataSet adjData = data;	//start by assuming we don't have to adjust the data
 		
 		if (req.getAdjustmentSet().hasAdjustments()) {
@@ -65,7 +65,7 @@ public class PredictionComputable implements Computable<PredictionRequest, Doubl
 			
 			//This method does not modify the underlying data
 			adjData.setSrc(
-					req.getAdjustmentSet().adjustSources(adjData.getSrc())
+					req.getAdjustmentSet().adjust(adjData.getSrc(), adjData.getSrcIds(), adjData.getSys())
 			);
 		}
 		

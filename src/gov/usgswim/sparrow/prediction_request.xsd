@@ -99,7 +99,7 @@
 	
 	<xsd:complexType name="source-adjustments-type">
 		<xsd:sequence>
-			<xsd:element name="gross-adjust" minOccurs="0"
+			<xsd:element name="gross-src" minOccurs="0"
 									 maxOccurs="unbounded">
 				<xsd:complexType>
 					<xsd:attribute name="src" type="xsd:integer"
@@ -108,9 +108,9 @@
 												 use="required"/>
 				</xsd:complexType>
 			</xsd:element>
-			<xsd:element name="criteria-adjust"
+			<xsd:element name="criteria"
 									 maxOccurs="unbounded" minOccurs="0"/>
-			<xsd:element name="specific-adjust"
+			<xsd:element name="specific"
 									 maxOccurs="unbounded" minOccurs="0">
 				<xsd:complexType>
 					<xsd:attribute name="src" use="required"

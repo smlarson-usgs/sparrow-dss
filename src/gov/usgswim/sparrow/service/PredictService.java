@@ -10,17 +10,13 @@ import gov.usgswim.sparrow.AdjustmentSetImm;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DPercentCompare;
 import gov.usgswim.sparrow.PredictionRequest;
-import gov.usgswim.sparrow.service.PredictServiceRequest.ResponseFilter;
 
 import java.awt.Point;
-
-import java.awt.geom.Point2D;
 
 import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
-import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -285,7 +281,7 @@ public class PredictService implements HttpServiceHandler,
 	 * @param request
 	 * @throws XMLStreamException
 	 */
-	protected PredictionRequest parsePredictSection(XMLStreamReader reader) throws XMLStreamException {
+	protected PredictionRequest parsePredictSection(XMLStreamReader reader) throws Exception {
 		Long modelId = null;
 		AdjustmentSet adjSet = null;
 		
@@ -318,7 +314,7 @@ public class PredictService implements HttpServiceHandler,
 	 * @param reader
 	 * @throws XMLStreamException
 	 */
-	protected AdjustmentSet parseAdjustmentsSection(XMLStreamReader reader) throws XMLStreamException {
+	protected AdjustmentSet parseAdjustmentsSection(XMLStreamReader reader) throws Exception {
 		AdjustmentSetBuilder adj = new AdjustmentSetBuilder();
 		
 		while (reader.hasNext()) {
@@ -328,14 +324,24 @@ public class PredictService implements HttpServiceHandler,
 			case XMLStreamReader.START_ELEMENT:
 				{
 					String lName = reader.getLocalName();
-					
-					if ("gross-adjust".equals(lName)) {
-						int src = Integer.parseInt(reader.getAttributeValue(null, "src"));
-						double coef = Double.parseDouble(reader.getAttributeValue(null, "coef"));
-						Adjustment a = new Adjustment(AdjustmentType.GROSS_ADJUST, src, coef);
-						adj.addAdjustment(a);
-					} else {
-						throw new XMLStreamException("Unsupported adjustment type");
+					AdjustmentType type = AdjustmentType.find(lName);
+
+					switch (type) {
+					case GROSS_SRC_ADJUST: {
+						int src = parseAttribAsInt(reader, "src");
+						double coef = parseAttribAsDouble(reader, "coef");
+						adj.addAdjustment(new Adjustment(AdjustmentType.GROSS_SRC_ADJUST, src, coef));
+						break;
+					}
+					case SPECIFIC_ADJUST: {
+						int src = parseAttribAsInt(reader, "src");
+						int reach = parseAttribAsInt(reader, "reach");
+						double val = parseAttribAsDouble(reader, "value");
+						adj.addAdjustment(new Adjustment(AdjustmentType.GROSS_SRC_ADJUST, src, reach, val));
+						break;
+					}
+					default:
+						throw new Exception("Unsupported adjustment type");
 					}
 					
 				}

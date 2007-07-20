@@ -48,13 +48,13 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	public static final String MODEL_ID_KEY = "model_id";
 	
 	/**
-	 * A string containing a delimited list, in pairs, of the source id and the
+	 * A string containing a delimited list, in pairs, of the source srcId and the
 	 * decimal percentage to adjust it.  It is an error to provide a string that
 	 * contains anything other then numbers and delimiters, or that contains
 	 * an odd number of values.
-	 * 
+	 *
 	 * Example:  "1,.25,4,2,8,0"
-	 * 
+	 *
 	 * In this example:
 	 * <ul>
 	 * <li>Source #1 has its value multiplied by .25
@@ -144,7 +144,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 		
 		//Build the prediction request
 		AdjustmentSetBuilder adjBuilder = new AdjustmentSetBuilder();
-		adjBuilder.setAdjustments(properties);
+		adjBuilder.addGrossSrcAdjustments(properties);
 		predictRequest = new PredictionRequest(modelId, adjBuilder.getImmutable());
 		
 		//Build the service request

@@ -2,6 +2,8 @@ package gov.usgswim.sparrow;
 
 import gov.usgswim.sparrow.domain.Model;
 
+import java.util.HashMap;
+
 /**
  * Databean that packages all of the data required to run a prediction.
  *
@@ -46,9 +48,19 @@ public class PredictionDataSet implements Cloneable {
 	
 	/**
 	 * The source amount for each reach-source.
+	 * Columns in this data are ordered by the SORT_ORDER column in the database.
 	 * src[i][k] == the amount added via source k at reach i
 	 */
 	protected Data2D src;
+	
+	/**
+	 * A data2D instance which contains the source ids, in SORT_ORDER, in the
+	 * first column.
+	 * 
+	 * This Data2D instance MUST be indexed by that first column, since it is
+	 * used for source id to column index mapping.
+	 */
+	protected Data2D srcIds;
 	
 	/**
 	 * The stream and resevor decay.  The values in the array are *actually* 
@@ -78,15 +90,20 @@ public class PredictionDataSet implements Cloneable {
 	 * Constructs a new dataset w/ all data tables defined.
 	 * See matching method docs for complete definitions of each parameter.
 	 * 
+	 * srcIDs is a single column Data2D with integer data.  See setSourceIDs for
+	 * details.
+	 * 
 	 * @param topo
 	 * @param coef
 	 * @param src
 	 * @param decay
 	 * @param sys
 	 * @param ancil
+	 * @param model
+	 * @param srcIDs
 	 */
 	public PredictionDataSet(Data2D topo, Data2D coef, Data2D src, Data2D decay,
-				Data2D sys, Data2D ancil, Model model) {
+				Data2D sys, Data2D ancil, Model model, Data2D srcIDs) {
 				
 		this.model = model;
 		this.topo = topo;
@@ -95,6 +112,11 @@ public class PredictionDataSet implements Cloneable {
 		this.decay = decay;
 		this.sys = sys;
 		this.ancil = ancil;
+		
+		if (srcIDs != null) {
+			this.srcIds = srcIDs.buildIntImmutable(0);
+		}
+
 	}
 	
 	/**
@@ -118,9 +140,9 @@ public class PredictionDataSet implements Cloneable {
 	/**
 	 * Constructs a new dataset w/o system info, which means it will not be possible
 	 * to match the result data to other data (no unique id).
-	 * 
+	 *
 	 * See matching method docs for complete definitions of each parameter.
-	 * 
+	 *
 	 * @param topo
 	 * @param coef
 	 * @param src
@@ -131,6 +153,70 @@ public class PredictionDataSet implements Cloneable {
 		this.coef = coef;
 		this.src = src;
 		this.decay = decay;
+	}
+	
+	/**
+	 * Assigns the IDs used to look up sources
+	 * 
+	 * The passed sourceIds is a single column Data2D with integer data.  It has one row
+	 * for each source and it maps the source ID (contained as values) to the
+	 * column position in the src data.  Column position is equal to the row index.
+	 * 
+	 * For example, this content:<br>
+	 * 10<br>
+	 * 15<br>
+	 * 17<br>
+	 * Would mean that column 0 of the src data has an ID of 10.  Column 1 has ID
+	 * of 15, and so on.
+	 * 
+	 * If passed as null, it is assumed that there are no IDs for the sources (i.e.,
+	 * the prediction is being run from a text file), and ID are auto generated
+	 * in which the first column of the sources is given an id of 1 (not zero).
+	 * 
+	 * @param sourceIds
+	 */
+	public void setSrcIds(Data2D sourceIds) {
+		if (sourceIds != null) {
+			this.srcIds = sourceIds.buildIntImmutable(0);
+		} else {
+			this.srcIds = null;
+		}
+	}
+	
+	public Data2D getSrcIds() {
+		return srcIds;
+	}
+	
+	/**
+	 * Maps a source id to its column index in the src data.
+	 * 
+	 * If there is no source id map, it is assumed that there are no IDs for the sources (i.e.,
+	 * the prediction is being run from a text file), and ID are auto generated
+	 * such that the first column of the sources is given an id of 1 (not zero).
+	 * 
+	 * See the Adjustment class, which implements the same strategy (and should
+	 * be kept in sync).
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public int mapSourceId(int id) throws Exception {
+		if (srcIds != null) {
+		
+			int i = srcIds.findRowById((double)id);
+
+			if (i > -1) {
+				return i;
+			} else  {
+				throw new Exception ("Source for id " + id + " not found");
+			}
+		} else {
+			if (id > 0) {
+				return id - 1;
+			} else {
+				throw new Exception("Invalid source id " + id + ", which must be greater then zero.");
+			}
+		}
 	}
 	
 
@@ -264,14 +350,14 @@ public class PredictionDataSet implements Cloneable {
 	/**
 	 * Assigns the system information, which is optional but required if the
 	 * results are to be correlated to other data in the db.
-	 * 
+	 *
 	 * <h4>Data Columns, sorted by HYDSEQ</h4>
 	 * <p>One row per reach (i = reach index)</p>
 	 * <ol>
 	 * <li>[i][0] REACH_ID - The system id for the reach (db unique id)
 	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number
 	 * </ol>
-	 * 
+	 *
 	 * @param sys
 	 */
 	public void setSys(Data2D sys) {
@@ -281,14 +367,14 @@ public class PredictionDataSet implements Cloneable {
 	/**
 	 * Returns the system information, which is optional but required if the
 	 * results are to be correlated to other data in the db.
-	 * 
+	 *
 	 * <h4>Data Columns, sorted by HYDSEQ</h4>
 	 * <p>One row per reach (i = reach index)</p>
 	 * <ol>
 	 * <li>[i][0] REACH_ID - The system id for the reach (db unique id)
 	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number
 	 * </ol>
-	 * 
+	 *
 	 * @return
 	 */
 	public Data2D getSys() {

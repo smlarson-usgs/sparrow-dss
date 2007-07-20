@@ -12,14 +12,21 @@ public interface AdjustmentSet {
 	 * Creates a new Data2D source by creating a coef-view using the same underlying
 	 * data w/ coefficients on top.  This strategy allows the underlying data
 	 * to be cached and not modified.
+	 * 
+	 * srcIndex and reachIndex are both indexed Data2D.  srcIndex should come
+	 * from PredictionDataSet.getSourceIds() and reachIndex should come from
+	 * PredictionDataSet.getSys(), though only the first column data is important
+	 * here.
 	 *
 	 * If no adjustments are made, the passed data is returned and no view is created,
 	 * so DO NOT count on the returned data being a view - check using ==.
 	 *
 	 * @param source
+	 * @param srcMapping
+	 * @param reachIndex Should return a row number in source for a given reach id.
 	 * @return
 	 */
-	public Data2D adjustSources(Data2D source);
+	public Data2D adjust(Data2D source, Data2D srcIndex, Data2D reachIndex) throws Exception;
 
 	/**
 	 * Returns all the adjustments in the correct order.

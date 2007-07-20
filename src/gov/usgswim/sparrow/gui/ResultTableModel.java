@@ -65,7 +65,7 @@ public class ResultTableModel extends AbstractTableModel {
 	public Object getValueAt(int row, int col) {
 	  if (data != null) {
 			try {
-				return data.getValueAt(row, col);
+				return data.getValue(row, col);
 			} catch (Exception e) {
 				log.error("The table asked for a value outside the Data2D range", e);
 				return new Integer(0);

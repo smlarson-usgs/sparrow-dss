@@ -13,8 +13,8 @@
 	<change-from-nominal type="perc_change">
 		<model-id>22</model-id>
 		<source-adjustments>
-			<gross-adjust src="1" coef=".5"/>
-			<gross-adjust src="4" coef="2"/>
+			<gross-src src="1" coef=".5"/>
+			<gross-src src="4" coef="2"/>
 		</source-adjustments>
 	</change-from-nominal>
 </sparrow-prediction-request>

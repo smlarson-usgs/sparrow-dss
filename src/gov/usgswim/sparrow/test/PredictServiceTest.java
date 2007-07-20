@@ -64,11 +64,11 @@ public class PredictServiceTest extends TestCase {
 		
 		
 		Adjustment adj = pReq.getAdjustmentSet().getAdjustments()[0];
-		this.assertEquals(1, adj.getId());
+		this.assertEquals(1, adj.getSrcId());
 		this.assertEquals(.5d, adj.getValue());
 		
 		adj = pReq.getAdjustmentSet().getAdjustments()[1];
-		this.assertEquals(4, adj.getId());
+		this.assertEquals(4, adj.getSrcId());
 		this.assertEquals(2d, adj.getValue());
 	}
 	
@@ -96,11 +96,11 @@ public class PredictServiceTest extends TestCase {
 		
 		
 		Adjustment adj = pReq.getAdjustmentSet().getAdjustments()[0];
-		this.assertEquals(1, adj.getId());
+		this.assertEquals(1, adj.getSrcId());
 		this.assertEquals(.5d, adj.getValue());
 		
 		adj = pReq.getAdjustmentSet().getAdjustments()[1];
-		this.assertEquals(4, adj.getId());
+		this.assertEquals(4, adj.getSrcId());
 		this.assertEquals(2d, adj.getValue());
 	}
 	

@@ -3,6 +3,7 @@ package gov.usgswim.sparrow;
 import gov.usgswim.Immutable;
 
 
+import java.util.List;
 import java.util.TreeSet;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -38,37 +39,8 @@ public class AdjustmentSetImm implements AdjustmentSet {
 		}
 	}
 	
-
-	/**
-	 * Creates a new Data2D source by creating a coef-view using the same underlying
-	 * data w/ coefficients on top.  This strategy allows the underlying data
-	 * to be cached and not modified.
-	 * 
-	 * If no adjustments are made, the passed data is returned and no view is created,
-	 * so DO NOT count on the returned data being a view - check using ==.
-	 * 
-	 * @param source
-	 * @return
-	 */
-	public Data2D adjustSources(Data2D source) {
-
-		if (adjustments != null) {
-			
-			
-			Data2DColumnCoefView view = new Data2DColumnCoefView(source);
-			
-			for (Adjustment a: adjustments) {
-				//TODO This assumes we need a Data2DColumnCoefView.  How to handle other types?
-				a.adjust(view);
-			}
-		
-			return view;
-			
-		} else {
-			
-			return source;	//no adjustment
-		}
-		
+	public Data2D adjust(Data2D source, Data2D srcIndex, Data2D reachIndex) throws Exception {
+		return adjustSources(adjustments, source, srcIndex, reachIndex);
 	}
 	
 	public int getAdjustmentCount() {
@@ -120,5 +92,48 @@ public class AdjustmentSetImm implements AdjustmentSet {
 		}
 		
 		return hash;
+	}
+	
+	/**
+	 * Creates a new Data2D source by creating layered views as needed.
+	 * 
+	 * The underlying data is not modified.
+	 * 
+	 * If no adjustments are made, the passed data is returned and no view is created,
+	 * so DO NOT count on the returned data being a view - check using ==.
+	 * 
+	 * @param source
+	 * @param reachIndex Should return a row number in source for a given reach id.
+	 * @return
+	 */
+	 //TODO:  Rename to doAdjust
+	public static Data2D adjustSources(TreeSet<Adjustment> adjs, Data2D source, Data2D srcIndex, Data2D reachIndex) throws Exception {
+
+		if (adjs != null) {
+			
+			Data2D view = null;
+
+			for (Adjustment a: adjs) {
+			
+				switch (a.getType()) {
+				case GROSS_SRC_ADJUST:
+					if (! (view instanceof Data2DColumnCoefView)) view = new Data2DColumnCoefView((view == null)?source:view);
+					break;
+				case SPECIFIC_ADJUST:
+					if (! (view instanceof Data2DViewWriteLocal)) view = new Data2DViewWriteLocal((view == null)?source:view);
+					break;
+				default:
+					throw new Exception("Unsupported Adjustment type '" + a + "'");
+				}
+				a.adjust(view, srcIndex, reachIndex);
+			}
+			
+			return view;
+			
+		} else {
+			
+			return source;	//no adjustment
+		}
+		
 	}
 }
