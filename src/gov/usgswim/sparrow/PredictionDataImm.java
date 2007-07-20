@@ -10,7 +10,7 @@ import java.util.HashMap;
  *
  */
 @Immutable
-public class PredictionDataImm implements PredictionDataSet {
+public class PredictionDataImm implements PredictionData {
 
 
 	/**
@@ -169,7 +169,7 @@ public class PredictionDataImm implements PredictionDataSet {
 		return model;
 	}
 	
-	public PredictionDataSet getImmutable() {
+	public PredictionData getImmutable() {
 
 		//TODO:  Model should have an immutable builder
 		return new PredictionDataImm(

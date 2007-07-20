@@ -85,7 +85,7 @@ public class PredictSimple {
 	 * 
 	 * @param data An all-in-one data object
 	 */
-	public PredictSimple(PredictionDataSet data) {
+	public PredictSimple(PredictionData data) {
 		this.topo = data.getTopo(); //assign the passed values to the class variables
 		this.coef = data.getCoef();
 		this.src = data.getSrc();
