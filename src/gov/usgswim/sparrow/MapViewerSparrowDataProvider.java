@@ -6,6 +6,8 @@ import gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.JDBCUtil;
 
+import java.io.StringReader;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -22,6 +24,10 @@ import javax.naming.NamingException;
 
 import javax.sql.DataSource;
 
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
 import oracle.mapviewer.share.ext.NSDataProvider;
 import oracle.mapviewer.share.ext.NSDataSet;
 import oracle.mapviewer.share.ext.NSRow;
@@ -33,6 +39,8 @@ import org.apache.commons.lang.StringUtils;
 
 import org.apache.log4j.Logger;
 
+import org.codehaus.stax2.XMLInputFactory2;
+
 public class MapViewerSparrowDataProvider implements NSDataProvider {
 	protected static Logger log =
 		Logger.getLogger(MapViewerSparrowDataProvider.class); //logging for this class
@@ -42,6 +50,14 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	
 	
 	//Request parameter key constants
+	
+	/**
+	 * If a non-empty value is passed for this key value, all other parameters
+	 * are ignored and the contents are assumed to be an xml request of type
+	 * http://www.usgs.gov/sparrow/prediction-response/v0_1
+	 */
+	public static final String XML_REQUEST_KEY = "xml";
+	
 	/**
 	 * The db unique id of the Sparrow model.  Required.
 	 */
@@ -97,6 +113,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 */
 	public static final String RESULT_MODE_DEC_PERC_CHG = "dec_perc_chg";
 
+	protected XMLInputFactory inFact;
 	
 	public MapViewerSparrowDataProvider() {
 	}
@@ -110,6 +127,15 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 */
 	public boolean init(Properties properties) {
 		predictService = new PredictService();
+		
+		inFact = XMLInputFactory.newInstance();
+		inFact.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES,
+											 Boolean.FALSE);
+		inFact.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES,
+											 Boolean.FALSE);
+		inFact.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
+
+		
 		return true;
 	}
 
@@ -133,32 +159,58 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 		long startTime = System.currentTimeMillis();	//Time started
 		
 		//All request info is stored in this class
-		PredictServiceRequest svsRequest = new PredictServiceRequest();
+		PredictServiceRequest svsRequest;
 		PredictionRequest predictRequest;
 		
 		Data2D sysInfo = null;		//row id numbers for matching the data to the geometry
 		Data2D result = null;			//The prediction result (raw data)
 		NSDataSet nsData = null;	//The Mapviewer data format for the data
 		
-		long modelId = Long.parseLong( properties.get(MODEL_ID_KEY).toString() );
-		
-		//Build the prediction request
-		AdjustmentSetBuilder adjBuilder = new AdjustmentSetBuilder();
-		adjBuilder.addGrossSrcAdjustments(properties);
-		predictRequest = new PredictionRequest(modelId, adjBuilder.getImmutable());
-		
-		//Build the service request
-		svsRequest.setPredictionRequest(predictRequest);
-		svsRequest.setPredictType( PredictServiceRequest.PredictType.find((String) properties.get(RESULT_MODE_KEY)) );
-		svsRequest.setDataSeries(PredictServiceRequest.DataSeries.find((String) properties.get(DATA_SERIES)) );
-		log.debug("DataSeries para = " + properties.get(DATA_SERIES) + "Read as: " + svsRequest.getDataSeries());
+		if (properties.containsKey(XML_REQUEST_KEY) && properties.get(XML_REQUEST_KEY) != null) {
+			log.debug("Request treated as xml request.");
+			
+			XMLStreamReader xsr;
+			String xmlReq = properties.get(XML_REQUEST_KEY).toString();
+			StringReader sr = new StringReader(xmlReq);
+			
+			try {
+				xsr = inFact.createXMLStreamReader(sr);
+				svsRequest = predictService.parse(xsr);
+				predictRequest = svsRequest.getPredictionRequest();
+			} catch (XMLStreamException e) {
+				throw new RuntimeException("Error reading the passed XML data", e);
+			} catch (Exception e) {
+				throw new RuntimeException("Error while handling request", e);
+			}
+
+			log.debug("DataSeries para = " + properties.get(DATA_SERIES) + "Read as: " + svsRequest.getDataSeries());
+			
+		} else {
+			log.debug("Request treated as parameter request.");
+			
+			long modelId = Long.parseLong( properties.get(MODEL_ID_KEY).toString() );
+			
+			//Build the prediction request
+			AdjustmentSetBuilder adjBuilder = new AdjustmentSetBuilder();
+			adjBuilder.addGrossSrcAdjustments(properties);
+			predictRequest = new PredictionRequest(modelId, adjBuilder.getImmutable());
+			
+			//Build the service request
+			svsRequest.setPredictionRequest(predictRequest);
+			svsRequest.setPredictType( PredictServiceRequest.PredictType.find((String) properties.get(RESULT_MODE_KEY)) );
+			svsRequest.setDataSeries(PredictServiceRequest.DataSeries.find((String) properties.get(DATA_SERIES)) );
+			log.debug("DataSeries para = " + properties.get(DATA_SERIES) + "Read as: " + svsRequest.getDataSeries());
+			
+		}
+
+
 
 		//RUN THE SERVICE REQUEST
 		result = predictService.runPrediction(svsRequest);
 		
 		
 		try {
-			sysInfo = SharedApplication.getInstance().getPredictDatasetCache().compute( modelId ).getSys();
+			sysInfo = SharedApplication.getInstance().getPredictDatasetCache().compute( predictRequest.getModelId() ).getSys();
 		} catch (Exception e) {
 			log.error("No way to indicate this error to mapViewer, so returning null", e);
 			return null;
@@ -166,7 +218,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 		
 		nsData = copyToNSDataSet(result, sysInfo, svsRequest.getDataSeries());
 		
-		log.debug("MVSparrowDataProvider done for model #" + modelId + " (" + nsData.size() + " rows) Time: " + (System.currentTimeMillis() - startTime) + "ms");
+		log.debug("MVSparrowDataProvider done for model #" + predictRequest + " (" + nsData.size() + " rows) Time: " + (System.currentTimeMillis() - startTime) + "ms");
 		
 		return nsData;
 
