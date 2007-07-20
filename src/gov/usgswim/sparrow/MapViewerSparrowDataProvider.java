@@ -196,6 +196,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 			predictRequest = new PredictionRequest(modelId, adjBuilder.getImmutable());
 			
 			//Build the service request
+			svsRequest = new PredictServiceRequest();
 			svsRequest.setPredictionRequest(predictRequest);
 			svsRequest.setPredictType( PredictServiceRequest.PredictType.find((String) properties.get(RESULT_MODE_KEY)) );
 			svsRequest.setDataSeries(PredictServiceRequest.DataSeries.find((String) properties.get(DATA_SERIES)) );
