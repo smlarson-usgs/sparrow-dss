@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -13,6 +14,7 @@ public class Data2DColumnCoefView extends Data2DView implements Data2D {
 	public Data2DColumnCoefView(Data2D data) {
 		this(data, null, -1);
 		coef = new double[getRowCount()];
+		Arrays.fill(coef, 1d);
 	}
 	
 	public Data2DColumnCoefView(Data2D data, double[] coef) {
