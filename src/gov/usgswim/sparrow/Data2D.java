@@ -199,10 +199,10 @@ public interface Data2D {
 	public int getIdColumn();
 	
 	/**
-	 * Returns the zero based row index of the row with the specified id.
-	 * 
+	 * Returns the zero based row index of the row with the specified srcId.
+	 *
 	 * If no row is found, -1 is returned.
-	 * 
+	 *
 	 * @param id
 	 * @return
 	 */
