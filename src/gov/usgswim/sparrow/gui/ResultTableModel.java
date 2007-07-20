@@ -91,7 +91,7 @@ public class ResultTableModel extends AbstractTableModel {
 	public void setValueAt(Object object, int i, int i1) {
 
 		if (data instanceof Data2DWritable) {
-			((Data2DWritable)data).setValueAt(object.toString(), i, i1);
+			((Data2DWritable)data).setValue(object.toString(), i, i1);
 			fireTableDataChanged();
 		} else {
 			JOptionPane.showMessageDialog(

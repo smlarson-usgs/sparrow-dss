@@ -87,7 +87,7 @@ public class Data2DViewWriteLocal extends Data2DView implements Data2DWritable {
 				
 	}
 	
-	public void setValueAt(String value, int row, int col)
+	public void setValue(String value, int row, int col)
 			throws IndexOutOfBoundsException, IllegalArgumentException {
 				
 		if (row >= 0 && col >=0 && row < getRowCount() && col < getColCount()) {

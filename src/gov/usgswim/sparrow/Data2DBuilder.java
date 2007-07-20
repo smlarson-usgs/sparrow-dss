@@ -116,7 +116,7 @@ public class Data2DBuilder implements Data2DWritable {
 				
 	}
 	
-	public void setValueAt(String value, int row, int col)
+	public void setValue(String value, int row, int col)
 			throws IndexOutOfBoundsException, IllegalArgumentException {
 				
 		if (row >= 0 && row < _data.length && col >=0 && _data[0] != null && col < _data[0].length) {
