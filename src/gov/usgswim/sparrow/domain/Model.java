@@ -9,7 +9,7 @@ import java.util.List;
 public interface Model {
 
 	/**
-	 * The UUID for this source.  This is the database id.
+	 * The UUID for this source.  This is the database srcId.
 	 * @return
 	 */
 	public Long getId();
