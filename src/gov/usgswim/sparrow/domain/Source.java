@@ -10,14 +10,14 @@ package gov.usgswim.sparrow.domain;
 public interface Source {
 	
 	/**
-	 * The UUID for this source.  This is the database id.
+	 * The UUID for this source.  This is the database srcId.
 	 * @return
 	 */
 	public Long getId();
 	
 	/**
-	 * The intra-model id for this source.
-	 * 
+	 * The intra-model srcId for this source.
+	 *
 	 * It is unique only within a model.
 	 * @return
 	 */
@@ -51,7 +51,7 @@ public interface Source {
 	
 	
 	/**
-	 * The UUID (database id) of the model this source belongs to.
+	 * The UUID (database srcId) of the model this source belongs to.
 	 * @return
 	 */
 	public Long getModelId();
