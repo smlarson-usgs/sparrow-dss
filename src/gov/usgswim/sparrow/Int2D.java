@@ -41,6 +41,10 @@ public class Int2D implements Data2D {
 	
 	public boolean isDoubleData() { return false; }
 	
+	public Data2D getImmutable() {
+		return buildIntImmutable(getIdColumn());
+	}
+	
 	public Data2D buildIntImmutable(int indexCol) {
 		return new Int2DImm(getIntData(), getHeadings(), indexCol);
 	}

@@ -118,6 +118,10 @@ public class Data2DView implements Data2D {
 	
 	public boolean isDoubleData() { return data.isDoubleData(); }
 	
+	public Data2D getImmutable() {
+		return buildDoubleImmutable(getIdColumn());
+	}
+	
 	public Data2D buildIntImmutable(int indexCol) {
 		return new Int2DImm(getIntData(), getHeadings(), indexCol);
 	}

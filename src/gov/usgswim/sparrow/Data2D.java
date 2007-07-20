@@ -3,7 +3,7 @@ package gov.usgswim.sparrow;
 /**
  * A 2D data array.
  */
-public interface Data2D {
+public interface Data2D extends ImmutableBuilder<Data2D> {
 	public static final int[][] EMPTY_INT_2D_DATA = new int[0][0];
 	public static final double[][] EMPTY_DOUBLE_2D_DATA = new double[0][0];
 	
@@ -49,6 +49,17 @@ public interface Data2D {
 	 */
 	public boolean isDoubleData();
 	
+	/**
+	 * Returns an immutable version with the current index column (if any).
+	 * 
+	 * If this instance is already immutable it may return itself.  Otherwise, a
+	 * clean (non-viewed) instance should be returned.
+	 * 
+	 * The same precision backing store (int or double) will be used.
+	 * 
+	 * @return
+	 */
+	public Data2D getImmutable();
 	
 	/**
 	 * Returns an immutable version with the specified index column, flattening the

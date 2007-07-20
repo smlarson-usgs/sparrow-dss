@@ -62,6 +62,10 @@ public class Data2DBuilder implements Data2DWritable {
 	
 	public boolean isDoubleData() { return true; }
 	
+	public Data2D getImmutable() {
+		return buildDoubleImmutable(getIdColumn());
+	}
+	
 	public Data2D buildIntImmutable(int indexCol) {
 		int[][] newData = Data2DUtil.copyToIntData(_data);
 		return new Int2DImm(newData, getHeadings(), indexCol);
