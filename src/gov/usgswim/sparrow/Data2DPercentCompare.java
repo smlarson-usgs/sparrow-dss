@@ -1,11 +1,14 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.NotThreadSafe;
+
 /**
  * A Data2D implementation that derives its from a comparison between two
  * Data2D instances.
- * 
+ *
  * Comparisons are always in terms of the baseData - compData.
  */
+@NotThreadSafe
 public class Data2DPercentCompare extends Data2DView {
 	Data2D compData;
 	int[] colMap;

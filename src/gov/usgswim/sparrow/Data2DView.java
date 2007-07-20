@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.NotThreadSafe;
+
 import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -20,6 +22,7 @@ import org.apache.commons.lang.math.NumberUtils;
  * Rebuild index will call getDouble() for each value, so values from the
  * subclass will be included.
  */
+@NotThreadSafe
 public class Data2DView implements Data2D {
 	protected final Data2D data;
 	protected volatile Double maxValue;  //null unless we know for sure we have the max value

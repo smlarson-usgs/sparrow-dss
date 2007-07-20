@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.NotThreadSafe;
+
 import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -10,6 +12,7 @@ import org.apache.commons.lang.math.NumberUtils;
  * 
  * @Deprecated Use either Double2DImm or Data2DBuilder
  */
+@NotThreadSafe
 public class Double2D implements Data2D {
 	private double[][] _data;
 	private String[] _head;

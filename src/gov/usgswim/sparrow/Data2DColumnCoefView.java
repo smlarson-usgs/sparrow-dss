@@ -1,11 +1,20 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.NotThreadSafe;
+
 import java.util.Arrays;
 import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.ArrayUtils;
 
+/**
+ * A view of a Data2D that allows coefficients to be sent for each column, which
+ * modifies the values returned from the get() methods.
+ * 
+ * The underlying data is not editable and is not affected.
+ */
+@NotThreadSafe
 public class Data2DColumnCoefView extends Data2DView implements Data2D {
 
 	double[] coef;

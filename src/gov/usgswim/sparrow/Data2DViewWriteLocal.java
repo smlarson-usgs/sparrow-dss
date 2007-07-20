@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.NotThreadSafe;
+
 import java.util.HashMap;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -12,6 +14,7 @@ import org.apache.commons.lang.math.NumberUtils;
  * This implementation will accept attempts to set a value to null - it will
  * remove the local value entry so that the underlying value is restored.
  */
+@NotThreadSafe
 public class Data2DViewWriteLocal extends Data2DView implements Data2DWritable {
 	HashMap<Integer, Double> sparseData = new HashMap<Integer, Double>(7);
 

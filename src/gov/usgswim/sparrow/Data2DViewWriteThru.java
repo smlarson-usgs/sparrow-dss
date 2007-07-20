@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.NotThreadSafe;
+
 import java.util.HashMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -14,6 +16,7 @@ import org.apache.commons.lang.math.NumberUtils;
  * Not Threadsafe.  Synchronization in this class is only used to prevent
  * the index column from changing during index updates and assignments.
  */
+@NotThreadSafe
 public class Data2DViewWriteThru extends Data2DView implements Data2DWritable {
 	Data2DWritable data;
 
