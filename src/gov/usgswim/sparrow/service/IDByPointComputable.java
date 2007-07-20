@@ -21,6 +21,9 @@ import org.apache.log4j.Logger;
  * be found 'nearby'*, the number of rows can be less and can be zero rows.
  *
  * *'nearby' is defined arbitrarily to improve database responsiveness.
+ * 
+ * By implementing Computable, this task can be put in a ComputableCache, which
+ * executes the task if the result does not already exist.
  */
 public class IDByPointComputable implements Computable<IDByPointRequest, Int2DImm> {
 	protected static Logger log =

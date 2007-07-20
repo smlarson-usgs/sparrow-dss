@@ -2,7 +2,6 @@ package gov.usgswim.sparrow;
 
 import gov.usgswim.sparrow.domain.Model;
 
-import java.util.HashMap;
 
 /**
  * Databean that packages all of the data required to run a prediction.
@@ -10,7 +9,7 @@ import java.util.HashMap;
  * This class is not thread safe!  Once created, this class may be cached and
  * used for prediction runs, so do not reassign or change the values it contains!
  */
-public class PredictionDataSet implements IPredictionDataSet {
+public class PredictionDataBuilder implements IPredictionDataSet {
 
 
 	/**
@@ -82,7 +81,7 @@ public class PredictionDataSet implements IPredictionDataSet {
 	 */
 	protected Data2D ancil;
 	
-	public PredictionDataSet() {
+	public PredictionDataBuilder() {
 	}
 	
 	
@@ -102,8 +101,8 @@ public class PredictionDataSet implements IPredictionDataSet {
 	 * @param model
 	 * @param srcIDs
 	 */
-	public PredictionDataSet(Data2D topo, Data2D coef, Data2D src, Data2D decay,
-				Data2D sys, Data2D ancil, Model model, Data2D srcIDs) {
+	public PredictionDataBuilder(Data2D topo, Data2D coef, Data2D src, Data2D srcIDs, Data2D decay,
+				Data2D sys, Data2D ancil, Model model) {
 				
 		this.model = model;
 		this.topo = topo;
@@ -119,41 +118,6 @@ public class PredictionDataSet implements IPredictionDataSet {
 
 	}
 	
-	/**
-	 * Constructs a new dataset w/ all except ancil data.
-	 * See matching method docs for complete definitions of each parameter.
-	 * 
-	 * @param topo
-	 * @param coef
-	 * @param src
-	 * @param decay
-	 * @param sys
-	 */
-	public PredictionDataSet(Data2D topo, Data2D coef, Data2D src, Data2D decay, Data2D sys) {
-		this.topo = topo;
-		this.coef = coef;
-		this.src = src;
-		this.decay = decay;
-		this.sys = sys;
-	}
-	
-	/**
-	 * Constructs a new dataset w/o system info, which means it will not be possible
-	 * to match the result data to other data (no unique id).
-	 *
-	 * See matching method docs for complete definitions of each parameter.
-	 *
-	 * @param topo
-	 * @param coef
-	 * @param src
-	 * @param decay
-	 */
-	public PredictionDataSet(Data2D topo, Data2D coef, Data2D src, Data2D decay) {
-		this.topo = topo;
-		this.coef = coef;
-		this.src = src;
-		this.decay = decay;
-	}
 	
 	/**
 	 * Assigns the IDs used to look up sources
@@ -381,19 +345,6 @@ public class PredictionDataSet implements IPredictionDataSet {
 		return sys;
 	}
 
-	/**
-	 * Creates a shallow copy of the PredicionDataSet.
-	 * 
-	 * //TODO  The Data2D objects really need an immutable version before this
-	 * is really considered 'done'.  
-	 * 
-	 * @return
-	 * @throws CloneNotSupportedException
-	 */
-	public Object clone() throws CloneNotSupportedException {
-		return (IPredictionDataSet) super.clone();
-	}
-
 	public void setAncil(Data2D ancil) {
 		this.ancil = ancil;
 	}
@@ -408,5 +359,26 @@ public class PredictionDataSet implements IPredictionDataSet {
 
 	public void setModel(Model model) {
 		this.model = model;
+	}
+	
+
+	public IPredictionDataSet getImmutable() {
+
+		//TODO:  Model should have an immutable builder
+		return new PredictionDataImm(
+			(getTopo() != null)?getTopo().getImmutable():null,
+			(getCoef() != null)?getCoef().getImmutable():null,
+			(getSrc() != null)?getSrc().getImmutable():null,
+			(getSrcIds() != null)?getSrcIds().getImmutable():null,
+			(getDecay() != null)?getDecay().getImmutable():null,
+			(getSys() != null)?getSys().getImmutable():null,
+			(getAncil() != null)?getAncil().getImmutable():null,
+			(getModel() != null)?getModel():null
+		);
+
+	}
+
+	public PredictionDataBuilder getBuilder() {
+		return this;
 	}
 }

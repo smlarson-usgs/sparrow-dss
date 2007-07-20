@@ -3,9 +3,8 @@ package gov.usgswim.sparrow.util;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DBuilder;
 import gov.usgswim.sparrow.Data2DView;
-import gov.usgswim.sparrow.Double2DImm;
-import gov.usgswim.sparrow.Int2DImm;
-import gov.usgswim.sparrow.PredictionDataSet;
+import gov.usgswim.sparrow.IPredictionDataSet;
+import gov.usgswim.sparrow.PredictionDataBuilder;
 import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
-//TODO:  Lots to look at in this class...
 public class TabDelimFileUtil {
 	public final static String[] ANCIL_HEADINGS = new String[] {
 		 "LOCAL_ID", "STD_ID", "LOCAL_SAME"
@@ -53,7 +51,7 @@ public class TabDelimFileUtil {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static PredictionDataSet loadFullPredictDataSet(
+	public static IPredictionDataSet loadFullPredictDataSet(
 				String rootPackage, String rootDir, long modelId, long enhNetworkId)
 				throws FileNotFoundException, IOException {
 				
@@ -76,7 +74,7 @@ public class TabDelimFileUtil {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static PredictionDataSet loadMinimalPredictDataSet(
+	public static IPredictionDataSet loadMinimalPredictDataSet(
 				String rootPackage, String rootDir, long modelId, long enhNetworkId)
 				throws FileNotFoundException, IOException {
 				
@@ -104,12 +102,12 @@ public class TabDelimFileUtil {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static PredictionDataSet loadPredictDataSet(
+	public static IPredictionDataSet loadPredictDataSet(
 				String rootPackage, String rootDir, long modelId, long enhNetworkId,
 				boolean onlyZeroIteration, boolean includeAncilData)
 				throws FileNotFoundException, IOException {
 		
-		PredictionDataSet pd = new PredictionDataSet();
+		PredictionDataBuilder pd = new PredictionDataBuilder();
 		
 		if (rootPackage != null) {
 			if (! rootPackage.endsWith("/")) rootPackage = rootPackage + "/";
@@ -156,7 +154,7 @@ public class TabDelimFileUtil {
 		
 		pd.setModel( model );
 		
-		return pd;
+		return pd.getImmutable();
 	}
 	
 	public static Data2D readAsDouble(File file, boolean hasHeadings, int indexCol)

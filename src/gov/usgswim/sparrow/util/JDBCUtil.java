@@ -8,7 +8,7 @@ import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.IPredictionDataSet;
 import gov.usgswim.sparrow.Int2DImm;
 
-import gov.usgswim.sparrow.PredictionDataSet;
+import gov.usgswim.sparrow.PredictionDataBuilder;
 
 import gov.usgswim.sparrow.domain.ModelBuilder;
 
@@ -49,10 +49,10 @@ public class JDBCUtil {
 	 * @throws SQLException
 	 */
 	 //TODO This should be renamed 'loadMinimalModelDataSet'
-	public static PredictionDataSet loadMinimalPredictDataSet(Connection conn, int modelId)
+	public static IPredictionDataSet loadMinimalPredictDataSet(Connection conn, int modelId)
 			throws SQLException {
 		
-		PredictionDataSet dataSet = new PredictionDataSet();
+		PredictionDataBuilder dataSet = new PredictionDataBuilder();
 		
 		dataSet.setSrcIds( loadSourceIds(conn, modelId));
 		dataSet.setSys( loadSystemInfo(conn, modelId) );
@@ -61,7 +61,7 @@ public class JDBCUtil {
 		dataSet.setDecay( loadDecay(conn, modelId, 0) );
 		dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcIds()) );
 		
-		return dataSet;
+		return dataSet.getImmutable();
 	}
 	
 	/**
@@ -71,11 +71,13 @@ public class JDBCUtil {
 	 * @param modelId
 	 * @return
 	 * @throws SQLException
+	 * 
+	 * TODO:  This should load the model as well....
 	 */
-	public static PredictionDataSet loadFullModelDataSet(Connection conn, int modelId)
+	public static IPredictionDataSet loadFullModelDataSet(Connection conn, int modelId)
 			throws SQLException {
 		
-		PredictionDataSet dataSet = new PredictionDataSet();
+		PredictionDataBuilder dataSet = new PredictionDataBuilder();
 		
 		dataSet.setSrcIds( loadSourceIds(conn, modelId));
 		dataSet.setSys( loadSystemInfo(conn, modelId) );
@@ -84,7 +86,7 @@ public class JDBCUtil {
 		dataSet.setDecay( loadDecay(conn, modelId, 0) );
 		dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcIds()) );
 		
-		return dataSet;
+		return dataSet.getImmutable();
 	}
 	
 	public static List<ModelBuilder> loadModelMetaData(Connection conn) throws SQLException {

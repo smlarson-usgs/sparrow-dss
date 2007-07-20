@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.util;
 
-import gov.usgswim.sparrow.PredictionDataSet;
+import gov.usgswim.sparrow.IPredictionDataSet;
+import gov.usgswim.sparrow.PredictionDataBuilder;
 import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 
@@ -76,7 +77,7 @@ public class LoadTestRunner {
 	
 	public void run() throws Exception {
 	
-		PredictionDataSet pd = new PredictionDataSet();
+		IPredictionDataSet pd;
 		
 		long initStartTime = System.currentTimeMillis();
 		long fileReadStart = initStartTime;
@@ -93,6 +94,8 @@ public class LoadTestRunner {
 				"be specified starting with 'file:' or 'package:'"
 			);
 		}
+		
+		PredictionDataBuilder pdb = pd.getBuilder();
                 
 		long fileReadEnd = System.currentTimeMillis();
 		log.debug("Load time for text files was: " + (fileReadEnd-fileReadStart)/1000 + " (sec)");
@@ -101,7 +104,7 @@ public class LoadTestRunner {
 		mb.setEnhNetworkId(_enhNetworkId);
 		Model model = mb.getImmutable();
 		
-		pd.setModel( model );
+		pdb.setModel( model );
 		
 		Connection conn = getConnection();
 		
@@ -110,7 +113,7 @@ public class LoadTestRunner {
 		try {
 		
 			conn.setAutoCommit(false);
-			int count = JDBCUtil.writePredictDataSet(pd, conn, 200);
+			int count = JDBCUtil.writePredictDataSet(pdb, conn, 200);
 			
 			log.debug("Added " + count + " records to the db.");
 

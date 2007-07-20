@@ -22,7 +22,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.log4j.Logger;
 
-
+//TODO:  No caching is done of model data
 public class ModelService implements HttpServiceHandler,
 			RequestParser<ModelRequest>, HttpRequestHandler<ModelRequest> {
 	protected static Logger log =

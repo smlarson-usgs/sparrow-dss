@@ -7,7 +7,7 @@ import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.IPredictionDataSet;
 import gov.usgswim.sparrow.Int2DImm;
 import gov.usgswim.sparrow.PredictSimple;
-import gov.usgswim.sparrow.PredictionDataSet;
+import gov.usgswim.sparrow.PredictionDataBuilder;
 import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.domain.Source;
@@ -58,7 +58,7 @@ public class JDBCUtil_Test extends TestCase {
 	 * @see JDBCUtil#loadMinimalPredictDataSet(Connection conn, int modelId)
 	 */
 	public void xtestLoadMinimalPredictDataSet() throws Exception {
-		PredictionDataSet ds = JDBCUtil.loadMinimalPredictDataSet(conn, 1);
+		IPredictionDataSet ds = JDBCUtil.loadMinimalPredictDataSet(conn, 1);
 		PredictSimple ps = new PredictSimple(ds);
 		
 		Double2DImm result = ps.doPredict();
@@ -119,7 +119,7 @@ public class JDBCUtil_Test extends TestCase {
 	 */
 	public void xtestDBWriteVsTextFilesDataSet() throws Exception {
 		String rootDir = "/data/ch2007_04_24/";
-		PredictionDataSet textDs = new PredictionDataSet();
+		PredictionDataBuilder textDs = new PredictionDataBuilder();
 		IPredictionDataSet dbDs = null;
 		
 		

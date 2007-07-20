@@ -2,7 +2,7 @@ package gov.usgswim.sparrow;
 
 import gov.usgswim.sparrow.domain.Model;
 
-public interface IPredictionDataSet extends Cloneable {
+public interface IPredictionDataSet extends ImmutableBuilder<IPredictionDataSet> {
 	public Data2D getSrcIds();
 
 	/**
@@ -95,4 +95,19 @@ public interface IPredictionDataSet extends Cloneable {
 	public Data2D getAncil();
 
 	public Model getModel();
+	
+	/**
+	 * Returns an editable copy of the current PredictionDataSet.
+	 * 
+	 * The copy simply copies the data (as immutable Data2D's) from the current
+	 * instance to a new PredictionDataBuilder instance.  All data in the new
+	 * builder will be immutable, but it can be reassigned via set methods.
+	 * 
+	 * Builder instances should return themselves from this method, i.e., this
+	 * method does not ensure a new instance if the current instance is writable.
+	 * 
+	 * @return
+	 */
+	public PredictionDataBuilder getBuilder();
+	
 }
