@@ -1,9 +1,10 @@
 package gov.usgswim.sparrow.test;
 
 import gov.usgswim.sparrow.Adjustment;
+import gov.usgswim.sparrow.Adjustment.AdjustmentType;
+import gov.usgswim.sparrow.AdjustmentSet;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DCompare;
-import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.PredictionRequest;
 import gov.usgswim.sparrow.service.PredictService;
 import gov.usgswim.sparrow.service.PredictServiceRequest;
@@ -104,6 +105,40 @@ public class PredictServiceTest extends TestCase {
 		this.assertEquals(2d, adj.getValue());
 	}
 	
+	public void testAdjustSourceValues() throws Exception {
+		
+		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
+		XMLStreamReader xsr1 = xinFact.createXMLStreamReader(
+			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-3.xml"));
+
+			
+		PredictService service = new PredictService();
+		
+		AdjustmentSet adjSet = service.parse(xsr1).getPredictionRequest().getAdjustmentSet();
+		Adjustment[] adjs = adjSet.getAdjustments();
+		
+		this.assertEquals(4, adjSet.getAdjustmentCount());
+		
+		//1st Adjustment
+		this.assertEquals(AdjustmentType.GROSS_SRC_ADJUST, adjs[0].getType());
+		this.assertEquals(1, adjs[0].getSrcId());
+		this.assertEquals(.5d, adjs[0].getValue());
+		
+		//2nd Adjustment
+		this.assertEquals(AdjustmentType.GROSS_SRC_ADJUST, adjs[1].getType());
+		this.assertEquals(4, adjs[1].getSrcId());
+		this.assertEquals(2d, adjs[1].getValue());
+		
+		//3rd Adjustment
+		this.assertEquals(AdjustmentType.SPECIFIC_ADJUST, adjs[2].getType());
+		this.assertEquals(1, adjs[2].getSrcId());
+		this.assertEquals(9.99d, adjs[2].getValue());
+		
+		//4rd Adjustment
+		this.assertEquals(AdjustmentType.SPECIFIC_ADJUST, adjs[3].getType());
+		this.assertEquals(2, adjs[3].getSrcId());
+		this.assertEquals(7.77d, adjs[3].getValue());
+	}
 
 	public void testBasicPredictionValues() throws Exception {
 		
@@ -116,9 +151,11 @@ public class PredictServiceTest extends TestCase {
 
 		Data2DCompare comp = buildPredictionComparison(result);
 		
+		/*
 		for (int i = 0; i < comp.getColCount(); i++)  {
 			System.out.println("col " + i + " error: " + comp.findMaxCompareValue(i));
 		}
+		*/
 		
 		assertEquals(0d, comp.findMaxCompareValue(), 0.004d);
 	}
