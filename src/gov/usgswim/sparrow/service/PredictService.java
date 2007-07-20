@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.service;
 
 import com.ctc.wstx.stax.WstxOutputFactory;
 
+import gov.usgswim.ThreadSafe;
 import gov.usgswim.sparrow.Adjustment;
 import gov.usgswim.sparrow.Adjustment.AdjustmentType;
 import gov.usgswim.sparrow.AdjustmentSet;
@@ -34,6 +35,7 @@ import org.apache.log4j.Logger;
  * so that no inter-server communication is needed if the service is running
  * within the MapViewer server.  (similar to the EJB local interface)
  */
+@ThreadSafe
 public class PredictService implements HttpServiceHandler,
 			RequestParser<PredictServiceRequest>, HttpRequestHandler<PredictServiceRequest> {
 			
@@ -337,7 +339,7 @@ public class PredictService implements HttpServiceHandler,
 						int src = parseAttribAsInt(reader, "src");
 						int reach = parseAttribAsInt(reader, "reach");
 						double val = parseAttribAsDouble(reader, "value");
-						adj.addAdjustment(new Adjustment(AdjustmentType.GROSS_SRC_ADJUST, src, reach, val));
+						adj.addAdjustment(new Adjustment(AdjustmentType.SPECIFIC_ADJUST, src, reach, val));
 						break;
 					}
 					default:

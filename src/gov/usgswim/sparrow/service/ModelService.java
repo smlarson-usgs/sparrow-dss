@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.service;
 
 import com.ctc.wstx.stax.WstxOutputFactory;
 
+import gov.usgswim.ThreadSafe;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.util.JDBCUtil;
 
@@ -23,6 +24,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.log4j.Logger;
 
 //TODO:  No caching is done of model data
+@ThreadSafe
 public class ModelService implements HttpServiceHandler,
 			RequestParser<ModelRequest>, HttpRequestHandler<ModelRequest> {
 	protected static Logger log =
