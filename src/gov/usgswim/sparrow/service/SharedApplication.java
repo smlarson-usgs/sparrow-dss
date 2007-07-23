@@ -20,7 +20,7 @@ import oracle.jdbc.driver.OracleDriver;
 
 public class SharedApplication extends DataSourceProxy implements JDBCConnectable {
 	private static SharedApplication instance;
-	private String dsName = "jdbc/sparrowDS";
+	private String dsName = "jdbc/sparrowDSDS";
 	private DataSource datasource;
 	private boolean lookupFailed = false;
 	private ComputableCache<PredictionRequest, Double2DImm> predictResultCache;
