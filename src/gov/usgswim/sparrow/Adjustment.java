@@ -116,7 +116,7 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 					if (reachRow != -1) {
 						data.setValueAt(_val, reachRow, mapSourceId(_srcId, srcIndex));
 					} else {
-						throw new Exception("Reach ID #" + reachIndex + " not found");
+						throw new Exception("Reach ID #" + _reachId + " not found");
 					}
 				} else {
 					throw new Exception("Expecting instance of Data2DColumnCoefView");
