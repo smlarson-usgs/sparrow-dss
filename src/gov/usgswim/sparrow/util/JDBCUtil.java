@@ -856,7 +856,7 @@ public class JDBCUtil {
 				"WHERE " +
 				"rch.SPARROW_MODEL_ID = " +  modelId + " AND " +
 				"coef.Iteration = " +  iteration + " AND " +
-				"coef.SOURCE_ID = " +  sources.getInt(srcIndex, 0) + " " +
+				"coef.SOURCE_ID = " +  sources.getInt(srcIndex, 1) + " " +
 				"ORDER BY rch.HYDSEQ";
 			
 			
@@ -1023,7 +1023,7 @@ public class JDBCUtil {
 				"FROM SOURCE_VALUE src INNER JOIN MODEL_REACH rch ON src.MODEL_REACH_ID = rch.MODEL_REACH_ID " +
 				"WHERE " +
 				"rch.SPARROW_MODEL_ID = " +  modelId + " AND " +
-				"src.SOURCE_ID = " +  sources.getInt(srcIndex, 0) + " " +
+				"src.SOURCE_ID = " +  sources.getInt(srcIndex, 1) + " " +
 				"ORDER BY rch.HYDSEQ";
 			
 			
@@ -1065,7 +1065,7 @@ public class JDBCUtil {
 	 */
 	public static Int2DImm loadSourceIds(Connection conn, int modelId) throws SQLException {
 		String query =
-			"SELECT IDENTIFIER FROM SOURCE WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY SORT_ORDER";
+			"SELECT IDENTIFIER, SOURCE_ID FROM SOURCE WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY SORT_ORDER";
 	
 		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		st.setFetchSize(1000);
