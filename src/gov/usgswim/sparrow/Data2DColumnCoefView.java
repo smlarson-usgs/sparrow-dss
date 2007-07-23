@@ -22,13 +22,12 @@ public class Data2DColumnCoefView extends Data2DView implements Data2D {
 	
 	public Data2DColumnCoefView(Data2D data) {
 		this(data, null, -1);
-		coef = new double[getRowCount()];
+		coef = new double[getColCount()];
 		Arrays.fill(coef, 1d);
 	}
 	
 	public Data2DColumnCoefView(Data2D data, double[] coef) {
 		this(data, coef, -1);
-		coef = new double[getRowCount()];
 	}
 	
 	public Data2DColumnCoefView(Data2D data, double[] coef, int indexCol) {
@@ -43,11 +42,7 @@ public class Data2DColumnCoefView extends Data2DView implements Data2D {
 			this.coef = coef;
 		} else {
 			coef = new double[data.getColCount()];
-			
-			for (int i = 0; i < coef.length; i++)  {
-				coef[i] = 1d;
-			}
-			
+			Arrays.fill(coef, 1d);
 		}
 	}
 	
