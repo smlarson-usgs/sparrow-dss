@@ -54,11 +54,18 @@ public class PredictionDataImm implements PredictionData {
 	private final Data2D src;
 	
 	/**
-	 * A data2D instance which contains the source ids, in SORT_ORDER, in the
-	 * first column.
+	 * SourceIds is a two column Data2D with integer data and it has one row
+	 * for each source.  Each row contains the source IDENTIFIER (col 0) and
+	 * the DB unique ID (col 1) for a source for the model.  Row position in this
+	 * dataset is equal to the column position of the source  in the sourceValue
+	 * dataset.
 	 * 
-	 * This Data2D instance MUST be indexed by that first column, since it is
-	 * used for source id to column index mapping.
+	 * For example, this content:<br>
+	 * [10] [7392]<br>
+	 * [15] [4723]<br>
+	 * [17] [4782]<br>
+	 * Would mean that column 0 of the src data has an IDENTIFIER of 10 and a db
+	 * unique id of 7392.
 	 */
 	private final Data2D srcIds;
 	
@@ -170,20 +177,34 @@ public class PredictionDataImm implements PredictionData {
 	}
 	
 	public PredictionData getImmutable() {
-
+		return getImmutable(false);
+	}
+	
+	public PredictionData getImmutable(boolean forceImmutableMembers) {
 		//TODO:  Model should have an immutable builder
-		return new PredictionDataImm(
-			(getTopo() != null)?getTopo().getImmutable():null,
-			(getCoef() != null)?getCoef().getImmutable():null,
-			(getSrc() != null)?getSrc().getImmutable():null,
-			(getSrcIds() != null)?getSrcIds().getImmutable():null,
-			(getDecay() != null)?getDecay().getImmutable():null,
-			(getSys() != null)?getSys().getImmutable():null,
-			(getAncil() != null)?getAncil().getImmutable():null,
-			(getModel() != null)?getModel():null
-			
-		);
-
+		if (forceImmutableMembers) {
+			return new PredictionDataImm(
+				(getTopo() != null)?getTopo().getImmutable():null,
+				(getCoef() != null)?getCoef().getImmutable():null,
+				(getSrc() != null)?getSrc().getImmutable():null,
+				(getSrcIds() != null)?getSrcIds().getImmutable():null,
+				(getDecay() != null)?getDecay().getImmutable():null,
+				(getSys() != null)?getSys().getImmutable():null,
+				(getAncil() != null)?getAncil().getImmutable():null,
+				(getModel() != null)?getModel():null
+			);
+		} else {
+			return new PredictionDataImm(
+				getTopo(),
+				getCoef(),
+				getSrc(),
+				getSrcIds(),
+				getDecay(),
+				getSys(),
+				getAncil(),
+				getModel()
+			);
+		}
 	}
 	
 	public PredictionDataBuilder getBuilder() {

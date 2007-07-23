@@ -3,6 +3,31 @@ package gov.usgswim.sparrow;
 import gov.usgswim.sparrow.domain.Model;
 
 public interface PredictionData extends ImmutableBuilder<PredictionData> {
+
+
+	/**
+	 * Returns the IDs used to indentify and look up sources
+	 * 
+	 * SourceIds is a two column Data2D with integer data and it has one row
+	 * for each source.  Each row contains the source IDENTIFIER (col 0) and
+	 * the DB unique ID (col 1) for a source for the model.  Row position in this
+	 * dataset is equal to the column position of the source  in the sourceValue
+	 * dataset.
+	 * 
+	 * For example, this content:<br>
+	 * [10] [7392]<br>
+	 * [15] [4723]<br>
+	 * [17] [4782]<br>
+	 * Would mean that column 0 of the src data has an IDENTIFIER of 10 and a db
+	 * unique id of 7392.
+	 * 
+	 * <h4>Data Columns from SOURCE, sorted by SORT_ORDER.</h4>
+	 * <ol>
+	 * <li>[column 0] Source IDENTIFIER - This column is indexed.
+	 * <li>[column 1] SOURCE_ID - DB ID for the source.
+	 * </ol>
+	 * @return
+	 */
 	public Data2D getSrcIds();
 
 	/**
@@ -109,5 +134,25 @@ public interface PredictionData extends ImmutableBuilder<PredictionData> {
 	 * @return
 	 */
 	public PredictionDataBuilder getBuilder();
+	
+	/**
+	 * Creates an immutable version of the instance, making a shallow copy of
+	 * member variables.
+	 * 
+	 * If the member variables are mutable, they will remain mutable.
+	 * @return
+	 */
+	public PredictionData getImmutable();
+	
+	/**
+	 * Creates an immutable version of the instance optionally forcing all member
+	 * variables to be immutable.
+	 * This can be 'bad', since new arrays need to be created for all underlying
+	 * data.
+	 * 
+	 * @param forceImmutableMembers If true, copies are made of mutable data
+	 * @return
+	 */
+	public PredictionData getImmutable(boolean forceImmutableMembers);
 	
 }
