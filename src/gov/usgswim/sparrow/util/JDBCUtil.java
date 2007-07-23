@@ -788,7 +788,7 @@ public class JDBCUtil {
 		String query =
 			"SELECT MODEL_REACH_ID as MODEL_REACH, HYDSEQ FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY HYDSEQ";
 	
-		return readAsInteger(conn, query, 2000, 1);
+		return readAsInteger(conn, query, 2000, 0);
 		
 	}
 	
