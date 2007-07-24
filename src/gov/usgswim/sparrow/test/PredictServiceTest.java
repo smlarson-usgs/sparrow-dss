@@ -57,7 +57,7 @@ public class PredictServiceTest extends TestCase {
 		
 		this.assertEquals(PredictServiceRequest.ResponseFilter.ALL, req.getResponseType());
 		this.assertEquals(PredictServiceRequest.PredictType.VALUES, req.getPredictType());
-		this.assertEquals(PredictServiceRequest.DataSeries.TOTAL, req.getDataSeries());
+		this.assertEquals(PredictServiceRequest.DataSeries.ALL, req.getDataSeries());
 		
 		PredictionRequest pReq = req.getPredictionRequest();
 		this.assertEquals(22L, pReq.getModelId());
