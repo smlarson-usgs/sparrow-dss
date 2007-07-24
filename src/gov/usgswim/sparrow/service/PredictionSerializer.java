@@ -49,7 +49,7 @@ public class PredictionSerializer extends AbstractSerializer {
 		xw.add( evtFact.createAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE_LOCATION) );
 
 		writeRequest(xw, request);
-		writeResponse(xw, result);
+		writeResponseSection(xw, request, result);
 		
 		xw.add( evtFact.createEndElement(T_PREFIX, TARGET_NAMESPACE, "sparrow-prediction-response") );
 		xw.add( evtFact.createEndDocument() );
@@ -59,18 +59,18 @@ public class PredictionSerializer extends AbstractSerializer {
 		//for now, just skip this optional element
 	}
 	
-	public void writeResponse(javax.xml.stream.XMLEventWriter xw, Data2D result) throws XMLStreamException {
+	public void writeResponseSection(javax.xml.stream.XMLEventWriter xw, PredictServiceRequest request, Data2D result) throws XMLStreamException {
 
 		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "response") );
-		writeMetadata(xw, result);
-		writeData(xw, result);
+		writeMetadata(xw, request, result);
+		writeData(xw, request, result);
 
 		
 		xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, "response") );
 
 	}
 	
-	public void writeMetadata(XMLEventWriter xw, Data2D result) throws XMLStreamException {
+	public void writeMetadata(XMLEventWriter xw, PredictServiceRequest request, Data2D result) throws XMLStreamException {
 		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "metadata") );
 		xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, "rowCount", Integer.toString(result.getRowCount())) );
 		xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, "columnCount", Integer.toString(result.getColCount())) );
@@ -86,7 +86,7 @@ public class PredictionSerializer extends AbstractSerializer {
 
 	}
 	
-	public void writeData(XMLEventWriter xw, Data2D result) throws XMLStreamException {
+	public void writeData(XMLEventWriter xw, PredictServiceRequest request, Data2D result) throws XMLStreamException {
 		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "data") );
 
 			for (int r = 0; r < result.getRowCount(); r++)  {
