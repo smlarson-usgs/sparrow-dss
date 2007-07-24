@@ -123,14 +123,14 @@ public interface PredictionData extends ImmutableBuilder<PredictionData> {
 	
 	/**
 	 * Returns an editable copy of the current PredictionDataSet.
-	 * 
+	 *
 	 * The copy simply copies the data (as immutable Data2D's) from the current
-	 * instance to a new PredictionDataBuilder instance.  All data in the new
+	 * instance to a new PredictionDataBuilder instance.  ALL data in the new
 	 * builder will be immutable, but it can be reassigned via set methods.
-	 * 
+	 *
 	 * Builder instances should return themselves from this method, i.e., this
 	 * method does not ensure a new instance if the current instance is writable.
-	 * 
+	 *
 	 * @return
 	 */
 	public PredictionDataBuilder getBuilder();
