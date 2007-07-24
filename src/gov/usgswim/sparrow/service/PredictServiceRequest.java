@@ -29,6 +29,7 @@ public class PredictServiceRequest {
 
 
 	public enum DataSeries {
+		All("all", "Return all values"),
 		TOTAL("total", "Return total predicted values"),
 		INCREMENTAL_ADD("incremental", "Return the incremental added in the catch (not decayed)"),
 		DECAYED("decay", "Return the amount decayed in each reach");
