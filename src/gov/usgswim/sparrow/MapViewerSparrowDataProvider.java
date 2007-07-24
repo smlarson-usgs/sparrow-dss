@@ -76,7 +76,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 * <li>Source #1 has its value multiplied by .25
 	 * <li>Source #4 has its value multiplied by 2
 	 * <li>Source #8 has its value multiplied by 0 (effectively turning it off)
-	 * <li>All other sources not listed as assumed to be unchanged
+	 * <li>ALL other sources not listed as assumed to be unchanged
 	 * (that is, they are multiplied by 1).
 	 * <ul>
 	 */
@@ -176,6 +176,10 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 			try {
 				xsr = inFact.createXMLStreamReader(sr);
 				svsRequest = predictService.parse(xsr);
+				
+				//Make this default to TOTAL instead of all
+				if (svsRequest.getDataSeries() == DataSeries.ALL) svsRequest.setDataSeries(DataSeries.TOTAL);
+				
 				predictRequest = svsRequest.getPredictionRequest();
 			} catch (XMLStreamException e) {
 				throw new RuntimeException("Error reading the passed XML data", e);
@@ -183,7 +187,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 				throw new RuntimeException("Error while handling request", e);
 			}
 
-			log.debug("DataSeries para = " + properties.get(DATA_SERIES) + "Read as: " + svsRequest.getDataSeries());
+			log.debug("Using Dataseries: " + svsRequest.getDataSeries());
 			
 		} else {
 			log.debug("Request treated as parameter request.");
@@ -200,7 +204,11 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 			svsRequest.setPredictionRequest(predictRequest);
 			svsRequest.setPredictType( PredictServiceRequest.PredictType.find((String) properties.get(RESULT_MODE_KEY)) );
 			svsRequest.setDataSeries(PredictServiceRequest.DataSeries.find((String) properties.get(DATA_SERIES)) );
-			log.debug("DataSeries para = " + properties.get(DATA_SERIES) + "Read as: " + svsRequest.getDataSeries());
+			
+			//Make this default to TOTAL instead of all
+			if (svsRequest.getDataSeries() == DataSeries.ALL) svsRequest.setDataSeries(DataSeries.TOTAL);
+				
+			log.debug("Using Dataseries: " + svsRequest.getDataSeries());
 			
 		}
 
@@ -228,25 +236,9 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	protected NSDataSet copyToNSDataSet(Data2D result, Data2D sysInfo, PredictServiceRequest.DataSeries column) {
 
 		int rowCount = result.getRowCount();
-		int colCount = result.getColCount();
 		NSRow[] nsRows = new NSRow[rowCount];
 		
-		int dataColIndex = -1;	//index of the column to pull data from
-		
-		switch (column) {
-			case TOTAL:
-				dataColIndex = colCount - 1;	//Last column is the Total amount (decayed)
-				log.debug("creating NSDataSet w/ last column (total values)");
-				break;
-			case INCREMENTAL_ADD:
-				dataColIndex = colCount - 2;	//2nd to last column is incremental contribution (not decayed)
-				log.debug("creating NSDataSet w/ 2nd to last column (inc values)");
-				break;
-			case DECAYED:
-				throw new UnsupportedOperationException("Decayed is not currently supported");
-			default:
-				dataColIndex = colCount - 1;
-		}
+		final int dataColIndex = 0;	//we always place the data in the first column
 		
 		for (int r=0; r < rowCount; r++) {
 			Field[] row = new Field[2];	//ID

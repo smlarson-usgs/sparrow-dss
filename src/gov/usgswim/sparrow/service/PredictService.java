@@ -10,6 +10,7 @@ import gov.usgswim.sparrow.AdjustmentSetBuilder;
 import gov.usgswim.sparrow.AdjustmentSetImm;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DPercentCompare;
+import gov.usgswim.sparrow.Data2DView;
 import gov.usgswim.sparrow.PredictionRequest;
 
 import java.awt.Point;
@@ -133,7 +134,18 @@ public class PredictService implements HttpServiceHandler,
 			
 			log.debug("Predict service done for model #" + modelId + " (" + result.getRowCount() + " rows) Time: " + (System.currentTimeMillis() - startTime) + "ms");
 			
-			return result;
+			if (req.getDataSeries() == PredictServiceRequest.DataSeries.ALL) {
+				//return all results
+				return result;
+			} else if (req.getDataSeries().getAggColumnIndex() > -1){
+				//Return only the requested series
+				int firstAggCol = result.getColCount() - 2;
+				int dataCol = firstAggCol + req.getDataSeries().getAggColumnIndex();
+				return new Data2DView(result, dataCol, 1);
+			} else {
+				//should handle these special - for now return all data
+				return result;
+			}
 			
 		} catch (Exception e) {
 			log.error("No way to indicate this error to mapViewer, so throwing a runtime exception.", e);
