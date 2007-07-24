@@ -2,16 +2,28 @@
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee">
 	<description>Empty web.xml file for Web Application</description>
  <servlet>
-  <servlet-name>ServiceServlet</servlet-name>
+  <servlet-name>ModelService</servlet-name>
   <servlet-class>gov.usgswim.sparrow.service.ServiceServlet</servlet-class>
 	<init-param>
-		<param-name></param-name>
-		<param-value>gov.usgswim.sparrow.service.MetaRequestHandler</param-value>
+		<param-name>handler-class</param-name>
+		<param-value>gov.usgswim.sparrow.service.ModelService</param-value>
+	</init-param>
+ </servlet>
+ <servlet>
+  <servlet-name>PredictService</servlet-name>
+  <servlet-class>gov.usgswim.sparrow.service.ServiceServlet</servlet-class>
+	<init-param>
+		<param-name>handler-class</param-name>
+		<param-value>gov.usgswim.sparrow.service.PredictService</param-value>
 	</init-param>
  </servlet>
  <servlet-mapping>
-  <servlet-name>ServiceServlet</servlet-name>
-  <url-pattern>/status</url-pattern>
+  <servlet-name>ModelService</servlet-name>
+  <url-pattern>/sp_model/*</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>PredictService</servlet-name>
+  <url-pattern>/sp_predict/*</url-pattern>
  </servlet-mapping>
  <session-config>
 		<session-timeout>35</session-timeout>
