@@ -37,72 +37,9 @@
          </Item>
          <Item class="oracle.jdeveloper.deploy.common.ProjectFileGroup">
             <contributors>
-               <autoInclude>true</autoInclude>
+               <autoInclude>false</autoInclude>
                <deploySourceAs>0</deploySourceAs>
-               <files>
-                  <Item path="../_usgs_history.txt"/>
-                  <Item path="../database/#Untitled-1#"/>
-                  <Item path="../database/create_model_geom_indexes.sql"/>
-                  <Item path="../database/create_model_tables.sql"/>
-                  <Item path="../database/create_model_triggers.sql"/>
-                  <Item path="../database/create_network_geom_indexes.sql"/>
-                  <Item path="../database/create_network_tables.sql"/>
-                  <Item path="../database/create_network_triggers.sql"/>
-                  <Item path="../database/create_triggers.xslt"/>
-                  <Item path="../database/script1.sql"/>
-                  <Item path="../database/script2.sql"/>
-                  <Item path="../database/script3.sql"/>
-                  <Item path="../database/script4.sql"/>
-                  <Item path="ancil.txt"/>
-                  <Item path="coef.txt"/>
-                  <Item path="predict.txt"/>
-                  <Item path="src.txt"/>
-                  <Item path="topo.txt"/>
-                  <Item path="../design/db_schema.zargo"/>
-                  <Item path="../public_html/WEB-INF/web.xml"/>
-                  <Item path="../src/META-INF/application-client.xml"/>
-                  <Item path="../src/gov/usgswim/sparrow/BootstrapSimple.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/Data2D.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/Data2DCompare.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/Data2DView.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/Data2DView_Test.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/Double2D.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/Int2D.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/MapViewerSparrowDataProvider.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/PredictSimple.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/PredictSimple_Test.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/PredictionDataSet.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/gui/DataChangeEvent.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/gui/DataChangeListener.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/gui/FileChooserPanel.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/gui/InputPanel.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/gui/MainFrame.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/gui/MainPanel.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/gui/ReorderableJList.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/gui/ResultGrid.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/gui/ResultTable.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/gui/ResultTableModel.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/gui/SparrowData.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/gui/SparrowGUIMain.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/test/JDBCUtil_Test.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/test/_Test.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/test/ancil.txt"/>
-                  <Item path="../src/gov/usgswim/sparrow/test/coef.txt"/>
-                  <Item path="../src/gov/usgswim/sparrow/test/predict.txt"/>
-                  <Item path="../src/gov/usgswim/sparrow/test/src.txt"/>
-                  <Item path="../src/gov/usgswim/sparrow/test/tab_delimit_sample.txt"/>
-                  <Item path="../src/gov/usgswim/sparrow/test/tab_delimit_sample_err1.txt"/>
-                  <Item path="../src/gov/usgswim/sparrow/test/tab_delimit_sample_gap.txt"/>
-                  <Item path="../src/gov/usgswim/sparrow/test/tab_delimit_sample_gap_int.txt"/>
-                  <Item path="../src/gov/usgswim/sparrow/test/tab_delimit_sample_heading.txt"/>
-                  <Item path="../src/gov/usgswim/sparrow/test/topo.txt"/>
-                  <Item path="../src/gov/usgswim/sparrow/util/JDBCUtil.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/util/Misc.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/util/SparrowUtil.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/util/TabDelimFileUtil.java"/>
-                  <Item path="../src/gov/usgswim/sparrow/util/TabDelimFileUtil_Test.java"/>
-                  <Item path="../src/log4j.properties"/>
-               </files>
+               <files class="[Ljava.net.URL;"/>
                <selectionFilters/>
             </contributors>
             <displayName>libraries</displayName>
@@ -115,6 +52,9 @@
                   <archives>
                      <Item path="../java_lib/jakarta/commons_lang/commons-lang-2.1.jar" jar-entry=""/>
                      <Item path="../java_lib/apache/log4j/log4j-1.2.13.jar" jar-entry=""/>
+                     <Item path="../java_lib/codehaus/woodstox/binary/stax-api-1.0.1.jar" jar-entry=""/>
+                     <Item path="../java_lib/codehaus/woodstox/binary/wstx-lgpl-3.2.jar" jar-entry=""/>
+                     <Item path="../java_lib/sjsxp-1_0_1/sjsxp.jar" jar-entry=""/>
                   </archives>
                   <selectionMode>0</selectionMode>
                </selectedArchives>
