@@ -20,25 +20,27 @@ import java.awt.geom.Point2D;
 @NotThreadSafe
 public class PredictServiceRequest {
 
-	private ResponseFilter responseType = PredictServiceRequest.ResponseFilter.ALL;
-	private PredictType predictType = gov.usgswim.sparrow.service.PredictServiceRequest.PredictType.VALUES;
+	private ResponseFilter responseType = ResponseFilter.ALL;
+	private PredictType predictType = PredictType.VALUES;
 	private PredictionRequest predictionRequest;
-	private DataSeries dataSeries = PredictServiceRequest.DataSeries.TOTAL;
+	private DataSeries dataSeries = DataSeries.ALL;
 	private Point.Double filterPoint;
 	private Integer numberOfResults = null;
 
 
 	public enum DataSeries {
-		All("all", "Return all values"),
-		TOTAL("total", "Return total predicted values"),
-		INCREMENTAL_ADD("incremental", "Return the incremental added in the catch (not decayed)"),
-		DECAYED("decay", "Return the amount decayed in each reach");
+		ALL("all", "Return all values", -1),
+		TOTAL("total", "Return total predicted values", 1),
+		INCREMENTAL_ADD("incremental", "Return the incremental added in the catch (not decayed)", 0),
+		DECAYED("decay", "Return the amount decayed in each reach", -1);	//Dont have a column for this yet
 		
 		private String _name;
 		private String _desc;
-		DataSeries(String name, String description) {
+		private int _aggCol;
+		DataSeries(String name, String description, int aggCol) {
 			_name = name;
 			_desc = description;
+			_aggCol = aggCol;
 		}
 		
 		public String toString() {
@@ -51,6 +53,17 @@ public class PredictServiceRequest {
 		
 		public String getDescription() {
 			return _desc;
+		}
+		
+		/**
+		 * Returns the column index of the data column, after all of the source
+		 * columns.  A value of 0 is the first aggregate column (the first column
+		 * beyond the source specific columns) and so on.  For dataseries that this
+		 * does not apply to, -1 should be returned.
+		 * @return
+		 */
+		public int getAggColumnIndex() {
+			return _aggCol;
 		}
 		
 		public static DataSeries find(String name) {
