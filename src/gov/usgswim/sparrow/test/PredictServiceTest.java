@@ -139,6 +139,66 @@ public class PredictServiceTest extends TestCase {
 		this.assertEquals(2, adjs[3].getSrcId());
 		this.assertEquals(7.77d, adjs[3].getValue());
 	}
+	
+	public void testAdjustedTotalPrediction() throws Exception {
+		
+		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
+		XMLStreamReader xsr = xinFact.createXMLStreamReader(
+			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-5.xml"));
+
+			
+		PredictService service = new PredictService();
+		
+		Data2D result = service.dispatch(xsr);
+		
+		boolean foundNonZero = false;
+		
+		for (int r = 0; r < result.getRowCount() && ! foundNonZero; r++)  {
+			for (int c = 0; c < result.getColCount(); c++)  {
+				if (result.getDouble(r, c) > 0d) {
+					foundNonZero = true;
+					System.out.println("Found non zero total predict value at r:" + r + " c: " + c + " value = " + result.getDouble(r, c));
+					break;
+				}
+			}
+			
+		}
+		
+		if (!foundNonZero) {
+			this.fail("no non-zero values found.");
+		}
+		
+	}
+	
+	public void testAdjustedCompPrediction() throws Exception {
+		
+		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
+		XMLStreamReader xsr = xinFact.createXMLStreamReader(
+			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-3.xml"));
+
+			
+		PredictService service = new PredictService();
+		
+		Data2D result = service.dispatch(xsr);
+		
+		boolean foundNonZero = false;
+		
+		for (int r = 0; r < result.getRowCount() && ! foundNonZero; r++)  {
+			for (int c = 0; c < result.getColCount(); c++)  {
+				if (result.getDouble(r, c) > 0d) {
+					foundNonZero = true;
+					System.out.println("Found non zero comp predict value at r:" + r + " c: " + c + " value = " + result.getDouble(r, c));
+					break;
+				}
+			}
+			
+		}
+		
+		if (!foundNonZero) {
+			this.fail("no non-zero values found.");
+		}
+		
+	}
 
 	public void testBasicPredictionValues() throws Exception {
 		
