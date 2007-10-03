@@ -365,8 +365,8 @@
             <type>INDEX</type>
          </ID>
          <columnExpressions>
-            <Item>
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <Item id="11">
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="10">
                   <ID>76441574-0111-1000-8003-c0a8020104be</ID>
                   <parent/>
                   <type>SQLFragment</type>
@@ -374,12 +374,12 @@
                <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
                   <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
                      <ID>76441574-0111-1000-8004-c0a8020104be</ID>
-                     <parent/>
+                     <parent idref="10"/>
                      <type>SQLFragment</type>
                   </ID>
                   <SQLText>HYDSEQ</SQLText>
                   <name/>
-                  <parent/>
+                  <parent idref="11"/>
                   <properties/>
                </expression>
                <name/>
