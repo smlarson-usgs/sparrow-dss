@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.ImmutableBuilder;
+
 /**
  * A 2D data array.
  */

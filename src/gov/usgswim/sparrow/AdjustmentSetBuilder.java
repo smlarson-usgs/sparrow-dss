@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.ImmutableBuilder;
 import gov.usgswim.NotThreadSafe;
 
 import java.util.ArrayList;

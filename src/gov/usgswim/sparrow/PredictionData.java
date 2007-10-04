@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.ImmutableBuilder;
 import gov.usgswim.sparrow.domain.Model;
 
 public interface PredictionData extends ImmutableBuilder<PredictionData> {

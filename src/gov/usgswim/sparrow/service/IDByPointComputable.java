@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.service;
 
-import gov.usgswim.sparrow.Computable;
+import gov.usgswim.task.Computable;
 import gov.usgswim.sparrow.Int2DImm;
 import gov.usgswim.sparrow.util.JDBCUtil;
 

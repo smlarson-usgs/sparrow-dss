@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.service;
 
-import gov.usgswim.sparrow.ComputableCache;
+import gov.usgswim.task.ComputableCache;
 import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.PredictionData;
 import gov.usgswim.sparrow.PredictionRequest;

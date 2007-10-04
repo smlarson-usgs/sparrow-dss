@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow;
+package gov.usgswim;
 
 /**
  * Allows a class to return an immutable version of itself.

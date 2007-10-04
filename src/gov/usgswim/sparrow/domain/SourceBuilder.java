@@ -4,7 +4,7 @@ import gov.usgswim.Immutable;
 
 import gov.usgswim.NotThreadSafe;
 
-import gov.usgswim.sparrow.ImmutableBuilder;
+import gov.usgswim.ImmutableBuilder;
 
 import java.io.Serializable;
 

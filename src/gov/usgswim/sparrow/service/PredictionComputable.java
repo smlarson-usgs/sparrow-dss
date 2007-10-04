@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.service;
 
 
-import gov.usgswim.sparrow.Computable;
+import gov.usgswim.task.Computable;
 import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.PredictionData;
 import gov.usgswim.sparrow.PredictSimple;

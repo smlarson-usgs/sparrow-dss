@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow;
+package gov.usgswim.task;
 
 /**
  * A processor capable of processing a unit of work.
