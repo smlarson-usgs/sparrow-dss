@@ -3,6 +3,9 @@ package gov.usgswim.sparrow.service;
 import com.ctc.wstx.stax.WstxOutputFactory;
 
 import gov.usgswim.ThreadSafe;
+import gov.usgswim.service.HttpRequestHandler;
+import gov.usgswim.service.HttpServiceHandler;
+import gov.usgswim.service.RequestParser;
 import gov.usgswim.sparrow.Adjustment;
 import gov.usgswim.sparrow.Adjustment.AdjustmentType;
 import gov.usgswim.sparrow.AdjustmentSet;

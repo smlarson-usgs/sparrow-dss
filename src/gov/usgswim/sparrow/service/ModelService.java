@@ -3,6 +3,9 @@ package gov.usgswim.sparrow.service;
 import com.ctc.wstx.stax.WstxOutputFactory;
 
 import gov.usgswim.ThreadSafe;
+import gov.usgswim.service.HttpRequestHandler;
+import gov.usgswim.service.HttpServiceHandler;
+import gov.usgswim.service.RequestParser;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.util.JDBCUtil;
 

@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.service;
+package gov.usgswim.service;
 
 import java.io.OutputStream;
 
