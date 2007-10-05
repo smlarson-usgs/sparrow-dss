@@ -16,28 +16,73 @@ import javax.xml.stream.XMLStreamReader;
  * A thin servlet that takes requests for a service and allows them to be
  * handled by a configurable handler class.
  * 
- * This servlet attempts to turn the incoming request into an xml stream, or,
+ * This servlet attempts to turn the incoming request into an XML stream, or,
  * in the case of a GET request, it looks for a configurable parameter to
  * contain the xml request (which it also turns into a stream).
+ * 
+ * For GET requests:  The XML request must be passed as a properly escaped XML
+ * document using the parameter name defined in the servlet configuration.
+ * 
+ * For POST requests:  The XML request document may be passed as the content of the
+ * POST request itself with no parameter name.  Not all frameworks will support
+ * creating requests in this way so the XML document may also be included as
+ * a parameter, using the parameter name defined by the 'xml-param-name' 
+ * servlet init param, which defaults to xmlreq.  To indicate that the XML
+ * request document is passed as a parameter, the name of the parameter
+ * must be appened to the url.  For instance, if the servlet url is:
+ * <code>/myservice</code>
+ * To indicate that the XML has been passed as a parameter, modify the url to:
+ * <code>/myservice/xmlreq</code>
+ * Where xmlreq could be changed based on the 'xml-param-name' init parameter.
  */
 public class ServiceServlet extends HttpServlet {
 	private static final String CONTENT_TYPE = "text/html; charset=ISO-8859-1";
+	
+	/**
+	 * The name of the optional init parameter that defines the name of the http request
+	 * parameter that contains the XML request.  If not specified as an init
+	 * parameter to this servlet, it defaults to 'xmlreq'.
+	 * 
+	 * For GET requests, the parameter defined here is required to pass the
+	 * request content.  See the class documentation for details regarding
+	 * GET and POST requests.
+	 */
+	public static final String XML_PARAM_NAME = "xml-param-name";
+	
+	/**
+	 * The name of an init parameter which must contain the fully qualified
+	 * class name of the HttpServiceHandler instance that will handle requests to
+	 * this servlet.
+	 * 
+	 * The name class must implement the HttpServiceHandler interface.
+	 */
+	public static final String HANDLER_CLASS = "handler-class";
+	
+	//Default value of XML_PARAM_NAME
 	private static final String DEFAULT_XML_PARAM_NAME = "xmlreq";
 	
-	String handlerClassName = "";
-	HttpServiceHandler handler;
+	/**
+	 * The fully qualified class name of the HttpServiceHandler instance that will
+	 * handle requests to this servlet.
+	 */
+	protected String handlerClassName = "";
 	
-	String xmlParamName = DEFAULT_XML_PARAM_NAME;
+	/**
+	 * An instance of the handler class named by handlerClassName.
+	 */
+	protected HttpServiceHandler handler;
+	
+	protected String xmlParamName = DEFAULT_XML_PARAM_NAME;
 	protected XMLInputFactory inFact;
 	
 	
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		
-		handlerClassName = config.getInitParameter("handler-class");
+		handlerClassName = config.getInitParameter(HANDLER_CLASS);
 
-		if (config.getInitParameter("xml-param-name") != null) {
-			xmlParamName = config.getInitParameter("xml-param-name");
+		if (config.getInitParameter(XML_PARAM_NAME) != null) {
+			xmlParamName = config.getInitParameter(XML_PARAM_NAME);
 		}
 
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -110,6 +155,8 @@ public class ServiceServlet extends HttpServlet {
 			
 				String xml = request.getParameter(xmlParamName);
 				doStringRequest(xml, response);
+				
+				return;	//request has been handled
 				
 			} else {
 				//ignore the extra url info and process as normal
