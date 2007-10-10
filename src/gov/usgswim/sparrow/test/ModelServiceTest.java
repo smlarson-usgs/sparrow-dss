@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.test;
 
 import gov.usgswim.sparrow.service.ModelService;
-import gov.usgswim.sparrow.service.ServiceHandler;
+import gov.usgswim.service.ServiceHandler;
 
 import java.io.File;
 import java.io.FileOutputStream;
