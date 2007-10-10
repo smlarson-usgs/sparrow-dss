@@ -3,7 +3,7 @@
 	<description>Empty web.xml file for Web Application</description>
  <servlet>
   <servlet-name>ModelService</servlet-name>
-  <servlet-class>gov.usgswim.sparrow.service.ServiceServlet</servlet-class>
+  <servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
 	<init-param>
 		<param-name>handler-class</param-name>
 		<param-value>gov.usgswim.sparrow.service.ModelService</param-value>
@@ -11,7 +11,7 @@
  </servlet>
  <servlet>
   <servlet-name>PredictService</servlet-name>
-  <servlet-class>gov.usgswim.sparrow.service.ServiceServlet</servlet-class>
+  <servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
 	<init-param>
 		<param-name>handler-class</param-name>
 		<param-value>gov.usgswim.sparrow.service.PredictService</param-value>
