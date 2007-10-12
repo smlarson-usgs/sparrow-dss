@@ -6,8 +6,9 @@ import gov.usgswim.sparrow.AdjustmentSet;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DCompare;
 import gov.usgswim.sparrow.PredictionRequest;
+import gov.usgswim.sparrow.service.PredictParser;
 import gov.usgswim.sparrow.service.PredictService;
-import gov.usgswim.sparrow.service.PredictServiceRequest;
+import gov.usgswim.sparrow.service.PredictRequest;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.awt.Point;
@@ -52,12 +53,12 @@ public class PredictServiceTest extends TestCase {
 		XMLStreamReader xsr = xinFact.createXMLStreamReader(
 			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-1.xml"));
 		
-		PredictService service = new PredictService();
-		PredictServiceRequest req = service.parse(xsr);
+		PredictParser parser = new PredictParser();
+		PredictRequest req = parser.parse(xsr);
 		
-		this.assertEquals(PredictServiceRequest.ResponseFilter.ALL, req.getResponseType());
-		this.assertEquals(PredictServiceRequest.PredictType.VALUES, req.getPredictType());
-		this.assertEquals(PredictServiceRequest.DataSeries.ALL, req.getDataSeries());
+		this.assertEquals(gov.usgswim.sparrow.service.PredictRequest.ResponseFilter.ALL, req.getResponseType());
+		this.assertEquals(gov.usgswim.sparrow.service.PredictRequest.PredictType.VALUES, req.getPredictType());
+		this.assertEquals(gov.usgswim.sparrow.service.PredictRequest.DataSeries.ALL, req.getDataSeries());
 		
 		PredictionRequest pReq = req.getPredictionRequest();
 		this.assertEquals(22L, pReq.getModelId());
@@ -82,14 +83,14 @@ public class PredictServiceTest extends TestCase {
 		XMLStreamReader xsr = xinFact.createXMLStreamReader(
 			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-2.xml"));
 		
-		PredictService service = new PredictService();
-		PredictServiceRequest req = service.parse(xsr);
+		PredictParser parser = new PredictParser();
+		PredictRequest req = parser.parse(xsr);
 		
-		this.assertEquals(PredictServiceRequest.ResponseFilter.NEAR_POINT, req.getResponseType());
+		this.assertEquals(gov.usgswim.sparrow.service.PredictRequest.ResponseFilter.NEAR_POINT, req.getResponseType());
 		this.assertEquals(5, req.getNumberOfResults());
 		this.assertEquals(point, req.getFilterPoint());
-		this.assertEquals(PredictServiceRequest.PredictType.PERC_CHG_FROM_NOMINAL, req.getPredictType());
-		this.assertEquals(PredictServiceRequest.DataSeries.INCREMENTAL_ADD, req.getDataSeries());
+		this.assertEquals(gov.usgswim.sparrow.service.PredictRequest.PredictType.PERC_CHG_FROM_NOMINAL, req.getPredictType());
+		this.assertEquals(gov.usgswim.sparrow.service.PredictRequest.DataSeries.INCREMENTAL_ADD, req.getDataSeries());
 		
 		PredictionRequest pReq = req.getPredictionRequest();
 		this.assertEquals(22L, pReq.getModelId());
@@ -111,10 +112,8 @@ public class PredictServiceTest extends TestCase {
 		XMLStreamReader xsr1 = xinFact.createXMLStreamReader(
 			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-3.xml"));
 
-			
-		PredictService service = new PredictService();
-		
-		AdjustmentSet adjSet = service.parse(xsr1).getPredictionRequest().getAdjustmentSet();
+		PredictParser parser = new PredictParser();
+		AdjustmentSet adjSet = parser.parse(xsr1).getPredictionRequest().getAdjustmentSet();
 		Adjustment[] adjs = adjSet.getAdjustments();
 		
 		this.assertEquals(4, adjSet.getAdjustmentCount());
@@ -148,8 +147,10 @@ public class PredictServiceTest extends TestCase {
 
 			
 		PredictService service = new PredictService();
+		PredictParser parser = new PredictParser();
 		
-		Data2D result = service.dispatch(xsr);
+		PredictRequest pr = parser.parse(xsr);
+		Data2D result = service.dispatchDirect(pr);
 		
 		boolean foundNonZero = false;
 		
@@ -178,8 +179,10 @@ public class PredictServiceTest extends TestCase {
 
 			
 		PredictService service = new PredictService();
+		PredictParser parser = new PredictParser();
 		
-		Data2D result = service.dispatch(xsr);
+		PredictRequest pr = parser.parse(xsr);
+		Data2D result = service.dispatchDirect(pr);
 		
 		boolean foundNonZero = false;
 		
@@ -207,7 +210,10 @@ public class PredictServiceTest extends TestCase {
 			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-0.xml"));
 		
 		PredictService service = new PredictService();
-		Data2D result = service.dispatch(xsr);
+		PredictParser parser = new PredictParser();
+		
+		PredictRequest pr = parser.parse(xsr);
+		Data2D result = service.dispatchDirect(pr);
 
 		Data2DCompare comp = buildPredictionComparison(result);
 		
@@ -229,7 +235,10 @@ public class PredictServiceTest extends TestCase {
 		FileOutputStream fos = new FileOutputStream(outFile);
 		
 		PredictService service = new PredictService();
-		service.dispatch(xsr, fos);
+		PredictParser parser = new PredictParser();
+		
+		PredictRequest pr = parser.parse(xsr);
+		service.dispatch(pr, fos);
 
 		fos.close();
 		System.out.println("Result of prediction serialization written to: " + outFile.getAbsolutePath());

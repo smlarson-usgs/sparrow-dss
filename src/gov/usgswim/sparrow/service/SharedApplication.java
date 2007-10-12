@@ -31,7 +31,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	private SharedApplication() {
 		super(null);
 		
-		predictResultCache = new ComputableCache<PredictionRequest, Double2DImm>(new PredictionComputable());
+		predictResultCache = new ComputableCache<PredictionRequest, Double2DImm>(new PredictComputable());
 		predictDatasetCache = new ComputableCache<Long, PredictionData>(new PredictDatasetComputable());
 	}
 	

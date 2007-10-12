@@ -11,4 +11,5 @@ import java.io.OutputStream;
  */
 public interface RequestHandler<T> {
 	public void dispatch(T request, OutputStream out) throws Exception;
+	public void shutDown();
 }

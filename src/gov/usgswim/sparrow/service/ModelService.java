@@ -4,8 +4,6 @@ import com.ctc.wstx.stax.WstxOutputFactory;
 
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.service.HttpRequestHandler;
-import gov.usgswim.service.HttpServiceHandler;
-import gov.usgswim.service.RequestParser;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.util.JDBCUtil;
 
@@ -22,14 +20,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamReader;
 
 import org.apache.log4j.Logger;
 
 //TODO:  No caching is done of model data
 @ThreadSafe
-public class ModelService implements HttpServiceHandler,
-			RequestParser<ModelRequest>, HttpRequestHandler<ModelRequest> {
+public class ModelService implements HttpRequestHandler<ModelRequest> {
 	protected static Logger log =
 		Logger.getLogger(ModelService.class); //logging for this class
 		
@@ -43,18 +39,6 @@ public class ModelService implements HttpServiceHandler,
 	
 	public ModelService() {}
 	
-	public void dispatch(XMLStreamReader in,
-											 HttpServletResponse response) throws Exception {
-											 
-		ModelRequest req = parse(in);
-		dispatch(req, response);
-	}
-
-	public void dispatch(XMLStreamReader in, OutputStream out) throws Exception {
-																															
-		ModelRequest req = parse(in);
-		dispatch(req, out);
-	}
 	
 	public void dispatch(ModelRequest req, HttpServletResponse response) throws Exception {
 		response.setContentType(RESPONSE_MIME_TYPE);
@@ -78,51 +62,12 @@ public class ModelService implements HttpServiceHandler,
 
 	}
 	
-	public ModelRequest parse(XMLStreamReader reader) throws Exception {
-		ModelRequest req = null;
-		
-		while (reader.hasNext()) {
-			int eventCode = reader.next();
-			
-			switch (eventCode) {
-			case XMLStreamReader.START_ELEMENT:
-				String lName = reader.getLocalName();
-				
-				if ("model".equals(lName)) {
-					req = new ModelRequest();
-					
-					if (reader.getAttributeCount() > 0) {
-						for (int i = 0; i < reader.getAttributeCount(); i++)  {
-							String name = reader.getAttributeLocalName(i);
-							String val = reader.getAttributeValue(i);
-							if ("public".equals(name)) {
-								req.setPublic(val);
-							} else if ("approved".equals(name)) {
-								req.setApproved(val);
-							} else if ("archived".equals(name)) {
-								req.setArchived(val);
-							}
-						}
-						
-						
-					}
-					
-					
-				} else if ("source".equals(lName)) {
-					req.setSources(true);
-				}
-				
-				
-				break;
-			}
-		}
-		
-		return req;
-	}
 	
 	protected Connection getConnection() throws NamingException, SQLException {
 		return SharedApplication.getInstance().getConnection();
 	}
 
-
+	public void shutDown() {
+		xoFact = null;
+	}
 }

@@ -1,8 +1,9 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.sparrow.service.PredictParser;
 import gov.usgswim.sparrow.service.PredictService;
-import gov.usgswim.sparrow.service.PredictServiceRequest;
-import gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries;
+import gov.usgswim.sparrow.service.PredictRequest;
+import gov.usgswim.sparrow.service.PredictRequest.DataSeries;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.JDBCUtil;
 
@@ -47,6 +48,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 		
 		
 	PredictService predictService;
+	PredictParser predictParser;
 	
 	
 	//Request parameter key constants
@@ -112,8 +114,6 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 * The value is returned a decimal percentage (ie, if the value doubled, 1 would be returned)
 	 */
 	public static final String RESULT_MODE_DEC_PERC_CHG = "dec_perc_chg";
-
-	protected XMLInputFactory inFact;
 	
 	public MapViewerSparrowDataProvider() {
 	}
@@ -127,14 +127,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 */
 	public boolean init(Properties properties) {
 		predictService = new PredictService();
-		
-		inFact = XMLInputFactory.newInstance();
-		inFact.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES,
-											 Boolean.FALSE);
-		inFact.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES,
-											 Boolean.FALSE);
-		inFact.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
-
+		predictParser = new PredictParser();
 		
 		return true;
 	}
@@ -159,7 +152,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 		long startTime = System.currentTimeMillis();	//Time started
 		
 		//All request info is stored in this class
-		PredictServiceRequest svsRequest;
+		PredictRequest svsRequest;
 		PredictionRequest predictRequest;
 		
 		Data2D sysInfo = null;		//row id numbers for matching the data to the geometry
@@ -169,16 +162,14 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 		if (properties.containsKey(XML_REQUEST_KEY) && properties.get(XML_REQUEST_KEY) != null) {
 			log.debug("Request treated as xml request.");
 			
-			XMLStreamReader xsr;
+			//find the xml request as a property of the request
 			String xmlReq = properties.get(XML_REQUEST_KEY).toString();
-			StringReader sr = new StringReader(xmlReq);
 			
 			try {
-				xsr = inFact.createXMLStreamReader(sr);
-				svsRequest = predictService.parse(xsr);
+				svsRequest = predictParser.parse(xmlReq);
 				
 				//Make this default to TOTAL instead of all
-				if (svsRequest.getDataSeries() == DataSeries.ALL) svsRequest.setDataSeries(DataSeries.TOTAL);
+				if (svsRequest.getDataSeries() == PredictRequest.DataSeries.ALL) svsRequest.setDataSeries(PredictRequest.DataSeries.TOTAL);
 				
 				predictRequest = svsRequest.getPredictionRequest();
 			} catch (XMLStreamException e) {
@@ -200,13 +191,13 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 			predictRequest = new PredictionRequest(modelId, adjBuilder.getImmutable());
 			
 			//Build the service request
-			svsRequest = new PredictServiceRequest();
+			svsRequest = new PredictRequest();
 			svsRequest.setPredictionRequest(predictRequest);
-			svsRequest.setPredictType( PredictServiceRequest.PredictType.find((String) properties.get(RESULT_MODE_KEY)) );
-			svsRequest.setDataSeries(PredictServiceRequest.DataSeries.find((String) properties.get(DATA_SERIES)) );
+			svsRequest.setPredictType(gov.usgswim.sparrow.service.PredictRequest.PredictType.find((String) properties.get(RESULT_MODE_KEY)) );
+			svsRequest.setDataSeries(gov.usgswim.sparrow.service.PredictRequest.DataSeries.find((String) properties.get(DATA_SERIES)) );
 			
 			//Make this default to TOTAL instead of all
-			if (svsRequest.getDataSeries() == DataSeries.ALL) svsRequest.setDataSeries(DataSeries.TOTAL);
+			if (svsRequest.getDataSeries() == PredictRequest.DataSeries.ALL) svsRequest.setDataSeries(PredictRequest.DataSeries.TOTAL);
 				
 			log.debug("Using Dataseries: " + svsRequest.getDataSeries());
 			
@@ -233,7 +224,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 
 	}
 	
-	protected NSDataSet copyToNSDataSet(Data2D result, Data2D sysInfo, PredictServiceRequest.DataSeries column) {
+	protected NSDataSet copyToNSDataSet(Data2D result, Data2D sysInfo, PredictRequest.DataSeries column) {
 
 		int rowCount = result.getRowCount();
 		NSRow[] nsRows = new NSRow[rowCount];
@@ -278,7 +269,9 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 * Called once when this instance is destroyed
 	 */
 	public void destroy() {
-		//
+		predictService.shutDown();
+		predictService = null;
+		predictParser = null;
 	}
 	
 

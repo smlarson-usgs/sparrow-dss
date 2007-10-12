@@ -1,7 +1,9 @@
 package gov.usgswim.sparrow.test;
 
+import gov.usgswim.service.RequestHandler;
+import gov.usgswim.sparrow.service.ModelParser;
+import gov.usgswim.sparrow.service.ModelRequest;
 import gov.usgswim.sparrow.service.ModelService;
-import gov.usgswim.service.ServiceHandler;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,11 +48,14 @@ public class ModelServiceTest extends TestCase {
 		XMLStreamReader xsr = xinFact.createXMLStreamReader(
 			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/meta_request_1.xml"));
 		
-		ServiceHandler service = new ModelService();
+		RequestHandler service = new ModelService();
+		ModelParser parser = new ModelParser();
+		
 		File outFile = File.createTempFile("model-service-test", ".xml");
 		FileOutputStream fos = new FileOutputStream(outFile);
 		
-		service.dispatch(xsr, fos);
+		ModelRequest req = parser.parse(xsr);
+		service.dispatch(req, fos);
 
 		fos.close();
 		System.out.println("Result of model request written to: " + outFile.getAbsolutePath());

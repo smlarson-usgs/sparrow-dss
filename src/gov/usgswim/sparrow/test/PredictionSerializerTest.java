@@ -1,8 +1,10 @@
 package gov.usgswim.sparrow.test;
 
 import gov.usgswim.sparrow.Data2D;
+import gov.usgswim.sparrow.service.PredictParser;
 import gov.usgswim.sparrow.service.PredictService;
-import gov.usgswim.sparrow.service.PredictionSerializer;
+import gov.usgswim.sparrow.service.PredictRequest;
+import gov.usgswim.sparrow.service.PredictSerializer;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,9 +55,12 @@ public class PredictionSerializerTest extends TestCase {
 			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-0.xml"));
 		
 		PredictService service = new PredictService();
-		Data2D result = service.dispatch(xsr);
+		PredictParser parser = new PredictParser();
+		
+		PredictRequest pr = parser.parse(xsr);
+		Data2D result = service.dispatchDirect(pr);
 
-		PredictionSerializer ps = new PredictionSerializer();
+		PredictSerializer ps = new PredictSerializer();
 		
 		File outFile = File.createTempFile("predict-serilizer-test", ".xml");
 		FileOutputStream fos = new FileOutputStream(outFile);

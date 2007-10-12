@@ -16,12 +16,12 @@ import org.apache.log4j.Logger;
  * By implementing Computable, this task can be put in a ComputableCache, which
  * executes the task if the result does not already exist.
  */
-public class PredictionComputable implements Computable<PredictionRequest, Double2DImm> {
+public class PredictComputable implements Computable<PredictionRequest, Double2DImm> {
 	protected static Logger log =
-		Logger.getLogger(PredictionComputable.class); //logging for this class
+		Logger.getLogger(PredictComputable.class); //logging for this class
 		
 		
-	public PredictionComputable() {
+	public PredictComputable() {
 	}
 
 	public Double2DImm compute(PredictionRequest request) throws Exception {

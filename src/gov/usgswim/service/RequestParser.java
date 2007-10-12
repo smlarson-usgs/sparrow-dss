@@ -8,4 +8,5 @@ import javax.xml.stream.XMLStreamReader;
  */
 public interface RequestParser<T> {
 	public T parse(XMLStreamReader in) throws Exception;
+	public T parse(String in) throws Exception;
 }
