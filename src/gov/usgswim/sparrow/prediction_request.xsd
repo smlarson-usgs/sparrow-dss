@@ -29,13 +29,37 @@
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
-			<xsd:element name="response" minOccurs="0">
+   <xsd:element name="predict">
+    <xsd:complexType>
+     <xsd:choice>
+      <xsd:element name="raw-value">
+       <xsd:complexType>
+        <xsd:sequence>
+         <xsd:element name="source-adjustments" type="source-adjustments-type"
+                      minOccurs="0"/>
+        </xsd:sequence>
+       </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="change-from-nominal">
+       <xsd:complexType>
+        <xsd:sequence>
+         <xsd:element name="source-adjustments" type="source-adjustments-type"
+                      minOccurs="1"/>
+        </xsd:sequence>
+        <xsd:attribute name="type"/>
+       </xsd:complexType>
+      </xsd:element>
+     </xsd:choice>
+     <xsd:attribute name="model-id" type="xsd:integer"/>
+    </xsd:complexType>
+   </xsd:element>
+   <xsd:element name="response-options" minOccurs="0">
 				<xsd:complexType>
 					<xsd:sequence>
 						<xsd:element name="format" minOccurs="0">
 							<xsd:complexType/>
 						</xsd:element>
-      <xsd:element name="filter" minOccurs="0">
+      <xsd:element name="result-filter" minOccurs="0">
        <xsd:complexType>
         <xsd:choice>
          <xsd:element name="all-results" minOccurs="1">
@@ -67,7 +91,7 @@
         </xsd:choice>
        </xsd:complexType>
       </xsd:element>
-      <xsd:element name="data" minOccurs="0">
+      <xsd:element name="result-content" minOccurs="0">
        <xsd:complexType>
         <xsd:sequence>
          <xsd:element name="data-series" minOccurs="0"/>
@@ -78,28 +102,7 @@
      </xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
-			<xsd:choice>
-				<xsd:element name="value-prediction">
-					<xsd:complexType>
-						<xsd:sequence>
-							<xsd:element name="model-id" type="xsd:integer"/>
-							<xsd:element name="source-adjustments" type="source-adjustments-type"
-                    minOccurs="0"/>
-						</xsd:sequence>
-					</xsd:complexType>
-				</xsd:element>
-				<xsd:element name="change-from-nominal">
-					<xsd:complexType>
-						<xsd:sequence>
-							<xsd:element name="model-id" type="xsd:integer"/>
-							<xsd:element name="source-adjustments" type="source-adjustments-type"
-                    minOccurs="1"/>
-						</xsd:sequence>
-						<xsd:attribute name="type"/>
-					</xsd:complexType>
-				</xsd:element>
-			</xsd:choice>
-		</xsd:sequence>
+  </xsd:sequence>
 	</xsd:complexType>
 	
 

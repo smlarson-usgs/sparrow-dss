@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.test;
 
 import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.Int2DImm;
-import gov.usgswim.sparrow.PredictSimple;
+import gov.usgswim.sparrow.PredictRunner;
 import gov.usgswim.sparrow.util.SparrowUtil;
 
 import junit.framework.TestCase;
@@ -64,7 +64,7 @@ public class PredictSimple_Test extends TestCase {
 		Double2DImm decayD = new Double2DImm(decay);
 		Double2DImm srcD = new Double2DImm(src);
 
-		PredictSimple predictor = new PredictSimple(topoD, coefD, srcD, decayD);
+		PredictRunner predictor = new PredictRunner(topoD, coefD, srcD, decayD);
 		Double2DImm pred = predictor.doPredict();
 
 		SparrowUtil.print2DArray(pred, "Predicted Values"); 

@@ -7,24 +7,29 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * Encapsilates all required info for a prediction request.
  * 
- * Note that this class only contains the info needed to run a single prediction.
- * It does not contain any info about what portion of it should be returned to
- * the user.
+ * This class contains the ID of the model to run, adjustment information,
+ * and the type of prediction to run.  It does not contain the actual model
+ * data (@see PredictData).
+ * 
+ * Also, this class does not contain any info about what portion of the results
+ * to present, how the results should be filtered, or what
+ * additional metadata should be returned to the user
+ * (@see gov.usgswim.service.PredictServiceRequest).
  *
- * This class is intended to provide equality between two identical requests
+ * This class provides .equals equality between two identical requests
  * so that multiple requests that equate to the same calculation are handled
  * together.
  *
- * This class is inteded to be immutable and will be cached.  To ensure
+ * This class is immutable and will be cached.  However, to ensure
  * proper immutability, always use an immutable AdjustmetSet in the constructor.
  */
 @Immutable
-public class PredictionRequest {
+public class PredictRequest {
 	private final Long _modelId;
 	private final AdjustmentSet _adjSet;
 	private Integer hash;	//Not strictly threadsafe, but recalculation is cheap and non-destructive
 	
-	public PredictionRequest(Long modelId, AdjustmentSet adjSet) {
+	public PredictRequest(Long modelId, AdjustmentSet adjSet) {
 		_modelId = modelId;
 		
 		if (adjSet != null) {
@@ -54,8 +59,8 @@ public class PredictionRequest {
 	}
 
 	public boolean equals(Object object) {
-		if (object instanceof PredictionRequest) {
-			PredictionRequest that = (PredictionRequest) object;
+		if (object instanceof PredictRequest) {
+			PredictRequest that = (PredictRequest) object;
 			return this.hashCode() == that.hashCode();
 		} else {
 			return false;

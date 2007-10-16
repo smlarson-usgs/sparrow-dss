@@ -1,15 +1,15 @@
 package gov.usgswim.sparrow.service;
 
 import gov.usgswim.NotThreadSafe;
-import gov.usgswim.sparrow.PredictionRequest;
+import gov.usgswim.sparrow.PredictRequest;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
 
 /**
- * Represents the entire state of a prediction request.
+ * Holds the entire state of a prediction service request.
  * 
- * This is more then just a PredictionRequest, which only contains the info
+ * This is more then just a PredictRequest, which only contains the info
  * needed to define a prediction to run.  This class includes additional
  * data such as which data to return, wheather to return raw data or comparisons,
  * etc..
@@ -18,12 +18,12 @@ import java.awt.geom.Point2D;
  * value, an attempt to set to null is simply ignored.
  */
 @NotThreadSafe
-public class PredictRequest {
+public class PredictServiceRequest {
 
-	private ResponseFilter responseType = PredictRequest.ResponseFilter.ALL;
-	private PredictType predictType = PredictRequest.PredictType.VALUES;
-	private PredictionRequest predictionRequest;
-	private DataSeries dataSeries = PredictRequest.DataSeries.ALL;
+	private ResponseFilter responseType = gov.usgswim.sparrow.service.PredictServiceRequest.ResponseFilter.ALL;
+	private PredictType predictType = gov.usgswim.sparrow.service.PredictServiceRequest.PredictType.VALUES;
+	private PredictRequest predictRequest;
+	private DataSeries dataSeries = gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.ALL;
 	private Point.Double filterPoint;
 	private Integer numberOfResults = null;
 
@@ -67,7 +67,7 @@ public class PredictRequest {
 		}
 		
 		public static DataSeries find(String name) {
-			for(DataSeries type: gov.usgswim.sparrow.service.PredictRequest.DataSeries.values()) {
+			for(DataSeries type: gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.values()) {
 				if (type._name.equalsIgnoreCase(name)) return type;
 			}
 			return null;
@@ -105,7 +105,7 @@ public class PredictRequest {
 		}
 		
 		public static PredictType find(String name) {
-			for(PredictType type: gov.usgswim.sparrow.service.PredictRequest.PredictType.values()) {
+			for(PredictType type: gov.usgswim.sparrow.service.PredictServiceRequest.PredictType.values()) {
 				if (type._name.equalsIgnoreCase(name)) return type;
 			}
 			return null;
@@ -136,7 +136,7 @@ public class PredictRequest {
 		}
 		
 		public static ResponseFilter find(String name) {
-			for(ResponseFilter type: gov.usgswim.sparrow.service.PredictRequest.ResponseFilter.values()) {
+			for(ResponseFilter type: gov.usgswim.sparrow.service.PredictServiceRequest.ResponseFilter.values()) {
 				if (type._name.equalsIgnoreCase(name)) return type;
 			}
 			return null;
@@ -144,35 +144,35 @@ public class PredictRequest {
 			
 	};
 	
-	public PredictRequest() {
+	public PredictServiceRequest() {
 	}
 	
-	public void setResponseType(PredictRequest.ResponseFilter responseType) {
+	public void setResponseType(PredictServiceRequest.ResponseFilter responseType) {
 		if (responseType != null) {
 			this.responseType = responseType;
 		}
 	}
 
-	public PredictRequest.ResponseFilter getResponseType() {
+	public PredictServiceRequest.ResponseFilter getResponseType() {
 		return responseType;
 	}
 
-	public void setPredictType(PredictRequest.PredictType predictType) {
+	public void setPredictType(PredictServiceRequest.PredictType predictType) {
 		if (predictType != null) {
 			this.predictType = predictType;
 		}
 	}
 
-	public PredictRequest.PredictType getPredictType() {
+	public PredictServiceRequest.PredictType getPredictType() {
 		return predictType;
 	}
 
-	public void setPredictionRequest(PredictionRequest predictionRequest) {
-		this.predictionRequest = predictionRequest;
+	public void setPredictRequest(PredictRequest predictionRequest) {
+		this.predictRequest = predictionRequest;
 	}
 
-	public PredictionRequest getPredictionRequest() {
-		return predictionRequest;
+	public PredictRequest getPredictRequest() {
+		return predictRequest;
 	}
 
 	public void setFilterPoint(Point2D.Double idPoint) {
@@ -183,13 +183,13 @@ public class PredictRequest {
 		return filterPoint;
 	}
 	
-	public void setDataSeries(PredictRequest.DataSeries dataSeries) {
+	public void setDataSeries(PredictServiceRequest.DataSeries dataSeries) {
 		if (dataSeries != null) {
 			this.dataSeries = dataSeries;
 		}
 	}
 
-	public PredictRequest.DataSeries getDataSeries() {
+	public PredictServiceRequest.DataSeries getDataSeries() {
 		return dataSeries;
 	}
 	

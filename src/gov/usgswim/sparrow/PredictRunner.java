@@ -9,7 +9,7 @@ import org.apache.commons.lang.StringUtils;
  * all match, and that the reach order is such that reach(n) never flows to
  * reach(<n).
  */
-public class PredictSimple {
+public class PredictRunner {
 	/* NOTE : ALL JAVA ARRAYS ARE ALWAYS ZERO BASED */
 	
 	/**
@@ -66,7 +66,7 @@ public class PredictSimple {
 	 * @param coef
 	 * @param src
 	 */
-	public PredictSimple(Data2D topo, Data2D coef, Data2D src, Data2D decay) {
+	public PredictRunner(Data2D topo, Data2D coef, Data2D src, Data2D decay) {
 		this.topo = topo; //assign the passed values to the class variables
 		this.coef = coef;
 		this.src = src;
@@ -85,7 +85,7 @@ public class PredictSimple {
 	 * 
 	 * @param data An all-in-one data object
 	 */
-	public PredictSimple(PredictionData data) {
+	public PredictRunner(PredictData data) {
 		this.topo = data.getTopo(); //assign the passed values to the class variables
 		this.coef = data.getCoef();
 		this.src = data.getSrc();

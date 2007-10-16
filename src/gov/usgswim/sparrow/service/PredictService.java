@@ -8,7 +8,7 @@ import gov.usgswim.sparrow.AdjustmentSetImm;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DPercentCompare;
 import gov.usgswim.sparrow.Data2DView;
-import gov.usgswim.sparrow.PredictionRequest;
+import gov.usgswim.sparrow.PredictRequest;
 
 import java.io.OutputStream;
 
@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
  * within the MapViewer server.  (similar to the EJB local interface)
  */
 @ThreadSafe
-public class PredictService implements HttpRequestHandler<PredictRequest> {
+public class PredictService implements HttpRequestHandler<PredictServiceRequest> {
 			
 			
 	protected static Logger log =
@@ -48,7 +48,7 @@ public class PredictService implements HttpRequestHandler<PredictRequest> {
 	}
 	
 	
-	public void dispatch(PredictRequest req, HttpServletResponse response) throws Exception {
+	public void dispatch(PredictServiceRequest req, HttpServletResponse response) throws Exception {
 		response.setContentType(RESPONSE_MIME_TYPE);
 		dispatch(req, response.getOutputStream());
 	}
@@ -63,11 +63,11 @@ public class PredictService implements HttpRequestHandler<PredictRequest> {
 	 * @return
 	 * @throws Exception
 	 */
-	public Data2D dispatchDirect(PredictRequest req) throws Exception {
+	public Data2D dispatchDirect(PredictServiceRequest req) throws Exception {
 		return runPrediction(req);
 	}
 	
-	public void dispatch(PredictRequest req, OutputStream outStream) throws Exception {
+	public void dispatch(PredictServiceRequest req, OutputStream outStream) throws Exception {
 																																 
 		synchronized (factoryLock) {
 			if (xoFact == null) {
@@ -82,25 +82,25 @@ public class PredictService implements HttpRequestHandler<PredictRequest> {
 
 	}
 	
-	public Data2D runPrediction(PredictRequest req) {
+	public Data2D runPrediction(PredictServiceRequest req) {
 		Data2D result = null;		//The prediction result
 		
-		Long modelId = req.getPredictionRequest().getModelId();
+		Long modelId = req.getPredictRequest().getModelId();
 		long startTime = System.currentTimeMillis();	//Time started
 
 		try {
 
-			Data2D adjResult = SharedApplication.getInstance().getPredictResultCache().compute(req.getPredictionRequest());
+			Data2D adjResult = SharedApplication.getInstance().getPredictResultCache().compute(req.getPredictRequest());
 			
 			if (req.getPredictType().isComparison()) {
 				//need to run the base prediction and the adjusted prediction
 				AdjustmentSetImm noAdj = new AdjustmentSetImm();
-				PredictionRequest noAdjRequest = new PredictionRequest(modelId, noAdj);
+				PredictRequest noAdjRequest = new PredictRequest(modelId, noAdj);
 				Data2D noAdjResult = SharedApplication.getInstance().getPredictResultCache().compute(noAdjRequest);
 	
 				result = new Data2DPercentCompare(
 						noAdjResult, adjResult,
-						req.getPredictType().equals(gov.usgswim.sparrow.service.PredictRequest.PredictType.DEC_CHG_FROM_NOMINAL));
+						req.getPredictType().equals(gov.usgswim.sparrow.service.PredictServiceRequest.PredictType.DEC_CHG_FROM_NOMINAL));
 						
 			} else {
 				//need to run only the adjusted prediction
@@ -109,7 +109,7 @@ public class PredictService implements HttpRequestHandler<PredictRequest> {
 			
 			log.debug("Predict service done for model #" + modelId + " (" + result.getRowCount() + " rows) Time: " + (System.currentTimeMillis() - startTime) + "ms");
 			
-			if (req.getDataSeries() == gov.usgswim.sparrow.service.PredictRequest.DataSeries.ALL) {
+			if (req.getDataSeries() == gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.ALL) {
 				//return all results
 				return result;
 			} else if (req.getDataSeries().getAggColumnIndex() > -1){

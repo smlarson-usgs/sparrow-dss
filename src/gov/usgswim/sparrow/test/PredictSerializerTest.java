@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.test;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.service.PredictParser;
 import gov.usgswim.sparrow.service.PredictService;
-import gov.usgswim.sparrow.service.PredictRequest;
+import gov.usgswim.sparrow.service.PredictServiceRequest;
 import gov.usgswim.sparrow.service.PredictSerializer;
 
 import java.io.File;
@@ -32,10 +32,10 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 
-public class PredictionSerializerTest extends TestCase {
+public class PredictSerializerTest extends TestCase {
 	private Connection conn;
 	
-	public PredictionSerializerTest(String sTestName) {
+	public PredictSerializerTest(String sTestName) {
 		super(sTestName);
 	}
 
@@ -57,7 +57,7 @@ public class PredictionSerializerTest extends TestCase {
 		PredictService service = new PredictService();
 		PredictParser parser = new PredictParser();
 		
-		PredictRequest pr = parser.parse(xsr);
+		PredictServiceRequest pr = parser.parse(xsr);
 		Data2D result = service.dispatchDirect(pr);
 
 		PredictSerializer ps = new PredictSerializer();

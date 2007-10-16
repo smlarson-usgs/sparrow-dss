@@ -6,11 +6,13 @@ import gov.usgswim.sparrow.domain.Model;
 import java.util.HashMap;
 
 /**
- * Databean that packages all of the data required to run a prediction.
- *
+ * An immutable implementation of PredictData.
+ * PredictData instances contain all the data required to run a prediction.
+ * 
+ * This class can be cached.
  */
 @Immutable
-public class PredictionDataImm implements PredictionData {
+public class PredictDataImm implements PredictData {
 
 
 	/**
@@ -106,7 +108,7 @@ public class PredictionDataImm implements PredictionData {
 	 * @param model
 	 * @param srcIDs
 	 */
-	public PredictionDataImm(Data2D topo, Data2D coef, Data2D src, Data2D srcIDs,
+	public PredictDataImm(Data2D topo, Data2D coef, Data2D src, Data2D srcIDs,
 				Data2D decay, Data2D sys, Data2D ancil, Model model) {
 				
 		this.model = model;
@@ -176,14 +178,14 @@ public class PredictionDataImm implements PredictionData {
 		return model;
 	}
 	
-	public PredictionData getImmutable() {
+	public PredictData getImmutable() {
 		return getImmutable(false);
 	}
 	
-	public PredictionData getImmutable(boolean forceImmutableMembers) {
+	public PredictData getImmutable(boolean forceImmutableMembers) {
 		//TODO:  Model should have an immutable builder
 		if (forceImmutableMembers) {
-			return new PredictionDataImm(
+			return new PredictDataImm(
 				(getTopo() != null)?getTopo().getImmutable():null,
 				(getCoef() != null)?getCoef().getImmutable():null,
 				(getSrc() != null)?getSrc().getImmutable():null,
@@ -194,7 +196,7 @@ public class PredictionDataImm implements PredictionData {
 				(getModel() != null)?getModel():null
 			);
 		} else {
-			return new PredictionDataImm(
+			return new PredictDataImm(
 				getTopo(),
 				getCoef(),
 				getSrc(),
@@ -207,8 +209,8 @@ public class PredictionDataImm implements PredictionData {
 		}
 	}
 	
-	public PredictionDataBuilder getBuilder() {
-		return new PredictionDataBuilder(
+	public PredictDataBuilder getBuilder() {
+		return new PredictDataBuilder(
 			(getTopo() != null)?getTopo().getImmutable():null,
 			(getCoef() != null)?getCoef().getImmutable():null,
 			(getSrc() != null)?getSrc().getImmutable():null,

@@ -3,8 +3,8 @@ package gov.usgswim.sparrow.util;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DBuilder;
 import gov.usgswim.sparrow.Data2DView;
-import gov.usgswim.sparrow.PredictionData;
-import gov.usgswim.sparrow.PredictionDataBuilder;
+import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 
@@ -51,7 +51,7 @@ public class TabDelimFileUtil {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static PredictionData loadFullPredictDataSet(
+	public static PredictData loadFullPredictDataSet(
 				String rootPackage, String rootDir, long modelId, long enhNetworkId)
 				throws FileNotFoundException, IOException {
 				
@@ -74,7 +74,7 @@ public class TabDelimFileUtil {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static PredictionData loadMinimalPredictDataSet(
+	public static PredictData loadMinimalPredictDataSet(
 				String rootPackage, String rootDir, long modelId, long enhNetworkId)
 				throws FileNotFoundException, IOException {
 				
@@ -102,12 +102,12 @@ public class TabDelimFileUtil {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public static PredictionData loadPredictDataSet(
+	public static PredictData loadPredictDataSet(
 				String rootPackage, String rootDir, long modelId, long enhNetworkId,
 				boolean onlyZeroIteration, boolean includeAncilData)
 				throws FileNotFoundException, IOException {
 		
-		PredictionDataBuilder pd = new PredictionDataBuilder();
+		PredictDataBuilder pd = new PredictDataBuilder();
 		
 		if (rootPackage != null) {
 			if (! rootPackage.endsWith("/")) rootPackage = rootPackage + "/";

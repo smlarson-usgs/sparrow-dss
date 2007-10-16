@@ -7,7 +7,7 @@ import gov.usgswim.service.RequestParser;
 import gov.usgswim.sparrow.Adjustment;
 import gov.usgswim.sparrow.AdjustmentSet;
 import gov.usgswim.sparrow.AdjustmentSetBuilder;
-import gov.usgswim.sparrow.PredictionRequest;
+import gov.usgswim.sparrow.PredictRequest;
 
 import java.awt.Point;
 import java.awt.geom.Point2D;
@@ -19,23 +19,23 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.StringUtils;
 
-public class PredictParser extends AbstractHttpRequestParser<PredictRequest> implements RequestParser<PredictRequest> {
+public class PredictParser extends AbstractHttpRequestParser<PredictServiceRequest> implements RequestParser<PredictServiceRequest> {
 
 	public PredictParser() {
 	}
 
-	public PredictRequest parse(HttpServletRequest request) throws Exception {
+	public PredictServiceRequest parse(HttpServletRequest request) throws Exception {
 		XMLStreamReader reader = getXMLStream(request);
 		return parse(reader);
 	}
 
-	public PredictRequest parse(String in) throws Exception {
+	public PredictServiceRequest parse(String in) throws Exception {
 		XMLStreamReader reader = getXMLStream(in);
 		return parse(reader);
 	}
 	
-	public PredictRequest parse(XMLStreamReader reader) throws Exception {
-		PredictRequest req = null;
+	public PredictServiceRequest parse(XMLStreamReader reader) throws Exception {
+		PredictServiceRequest req = null;
 		
 		while (reader.hasNext()) {
 			int eventCode = reader.next();
@@ -44,24 +44,12 @@ public class PredictParser extends AbstractHttpRequestParser<PredictRequest> imp
 			case XMLStreamReader.START_ELEMENT:
 				String lName = reader.getLocalName();
 				
-				if ("value-prediction".equals(lName)) {
-					req.setPredictType(gov.usgswim.sparrow.service.PredictRequest.PredictType.VALUES);
-					PredictionRequest pr = parsePredictSection(reader);
-					req.setPredictionRequest(pr);
-				} else if ("change-from-nominal".equals(lName)) {
-					if (reader.getAttributeValue(null, "type") != null) {
-						req.setPredictType(gov.usgswim.sparrow.service.PredictRequest.PredictType.find(reader.getAttributeValue(null, "type"))
-						);
-					} else {
-						req.setPredictType(gov.usgswim.sparrow.service.PredictRequest.PredictType.PERC_CHG_FROM_NOMINAL);
-					}
-					
-					PredictionRequest pr = parsePredictSection(reader);
-					req.setPredictionRequest(pr);
-				} else if ("response".equals(lName)) {
-					parseResponseSection(reader, req);
+				if ("predict".equals(lName)) {
+					parsePredict(reader, req);
+				} else if ("response-options".equals(lName)) {
+					parseOptions(reader, req);
 				} else if ("sparrow-prediction-request".equals(lName)) {
-					req = new PredictRequest();
+					req = new PredictServiceRequest();
 				}
 				
 				
@@ -73,13 +61,16 @@ public class PredictParser extends AbstractHttpRequestParser<PredictRequest> imp
 	}
 	
 	/**
-	 * Reads just the response portion of the request and then returns.
+	 * Assumes the reader is looking at a 'predict' element
 	 * 
 	 * @param reader
 	 * @param req
-	 * @throws XMLStreamException
+	 * @throws Exception
 	 */
-	protected void parseResponseSection(XMLStreamReader reader, PredictRequest req) throws Exception {
+	protected void parsePredict(XMLStreamReader reader, PredictServiceRequest req) throws Exception {
+		Long modelId = Long.parseLong(reader.getAttributeValue(null, "model-id"));	//require attrib
+		AdjustmentSet adjSet = null;
+		
 		while (reader.hasNext()) {
 			int eventCode = reader.next();
 			
@@ -88,10 +79,60 @@ public class PredictParser extends AbstractHttpRequestParser<PredictRequest> imp
 				{
 					String lName = reader.getLocalName();
 					
-					if ("filter".equals(lName)) {
+					if ("raw-value".equals(lName)) {
+						req.setPredictType(PredictServiceRequest.PredictType.VALUES);
+					} else if ("change-from-nominal".equals(lName)) {
+						if (reader.getAttributeValue(null, "type") != null) {
+							req.setPredictType(PredictServiceRequest.PredictType.find(reader.getAttributeValue(null, "type"))
+							);
+						} else {
+							req.setPredictType(PredictServiceRequest.PredictType.PERC_CHG_FROM_NOMINAL);
+						}
+						
+					} else if ("source-adjustments".equals(lName)) {
+						adjSet = parseAdjustmentsSection(reader);
+						
+					}
+					
+				}
+				break;
+			
+			case XMLStreamReader.END_ELEMENT:
+				{
+					String lName = reader.getLocalName();
+					if ("predict".equals(lName)) {
+						PredictRequest pr = new PredictRequest(modelId, adjSet);
+						req.setPredictRequest(pr);
+						return;
+					}
+				}
+				break;
+			}
+		}
+	}
+	
+	
+	/**
+	 * Reads just the 'response-options' portion of the request and then returns.
+	 * 
+	 * @param reader
+	 * @param req
+	 * @throws XMLStreamException
+	 */
+	protected void parseOptions(XMLStreamReader reader, PredictServiceRequest req) throws Exception {
+		while (reader.hasNext()) {
+			int eventCode = reader.next();
+			
+			switch (eventCode) {
+			case XMLStreamReader.START_ELEMENT:
+				{
+					String lName = reader.getLocalName();
+					
+					if ("result-filter".equals(lName)) {
 						parseFilterSection(reader, req);
 					} else if ("data-series".equals(lName)) {
-						req.setDataSeries(gov.usgswim.sparrow.service.PredictRequest.DataSeries.find(StringUtils.trimToEmpty(reader.getElementText()))
+						//This would be nested inside a 'result-content' element
+						req.setDataSeries(PredictServiceRequest.DataSeries.find(StringUtils.trimToEmpty(reader.getElementText()))
 						);
 					} 
 					
@@ -101,7 +142,7 @@ public class PredictParser extends AbstractHttpRequestParser<PredictRequest> imp
 			case XMLStreamReader.END_ELEMENT:
 				{
 					String lName = reader.getLocalName();
-					if ("response".equals(lName)) {
+					if ("response-options".equals(lName)) {
 						return;
 					}
 				}
@@ -111,13 +152,13 @@ public class PredictParser extends AbstractHttpRequestParser<PredictRequest> imp
 	}
 	
 	/**
-	 * Reads just the response/filter portion of the request and then returns.
+	 * Expecting 'result-filter' element
 	 * 
 	 * @param reader
 	 * @param request
 	 * @throws XMLStreamException
 	 */
-	protected void parseFilterSection(XMLStreamReader reader, PredictRequest req) throws Exception {
+	protected void parseFilterSection(XMLStreamReader reader, PredictServiceRequest req) throws Exception {
 		while (reader.hasNext()) {
 			int eventCode = reader.next();
 			
@@ -125,7 +166,7 @@ public class PredictParser extends AbstractHttpRequestParser<PredictRequest> imp
 			case XMLStreamReader.START_ELEMENT:
 				{
 					String lName = reader.getLocalName();
-					PredictRequest.ResponseFilter filter = gov.usgswim.sparrow.service.PredictRequest.ResponseFilter.find(lName);
+					PredictServiceRequest.ResponseFilter filter = gov.usgswim.sparrow.service.PredictServiceRequest.ResponseFilter.find(lName);
 					
 					switch (filter) {
 					case ALL:
@@ -157,7 +198,7 @@ public class PredictParser extends AbstractHttpRequestParser<PredictRequest> imp
 			case XMLStreamReader.END_ELEMENT:
 				{
 					String lName = reader.getLocalName();
-					if ("filter".equals(lName)) {
+					if ("result-filter".equals(lName)) {
 						return;
 					}
 				}
@@ -166,39 +207,6 @@ public class PredictParser extends AbstractHttpRequestParser<PredictRequest> imp
 		}
 	}
 	
-	/**
-	 * Reads just the prediction portion of the request and then returns.
-	 * 
-	 * @param reader
-	 * @param request
-	 * @throws XMLStreamException
-	 */
-	protected PredictionRequest parsePredictSection(XMLStreamReader reader) throws Exception {
-		Long modelId = null;
-		AdjustmentSet adjSet = null;
-		
-		while (reader.hasNext()) {
-			int eventCode = reader.next();
-			
-			switch (eventCode) {
-			case XMLStreamReader.START_ELEMENT:
-				{
-					String lName = reader.getLocalName();
-					
-					if ("model-id".equals(lName)) {
-						modelId = Long.parseLong(reader.getElementText());
-					} else if ("source-adjustments".equals(lName)) {
-						adjSet = parseAdjustmentsSection(reader);
-						return new PredictionRequest(modelId, adjSet);
-					}
-					
-				}
-				break;
-			}
-		}
-		
-		return new PredictionRequest(modelId, adjSet);	//should not get here
-	}
 	
 	/**
 	 * Reads just the adjustments portion of the request and then returns.

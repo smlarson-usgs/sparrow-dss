@@ -2,19 +2,24 @@
 <sparrow-prediction-request
   xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<response>
-		<filter>
+	<predict model-id="22">
+		<change-from-nominal type="perc_change">
+			<source-adjustments>
+				<gross-src src="1" coef=".5"/>
+				<gross-src src="4" coef="2"/>
+			</source-adjustments>
+		</change-from-nominal>
+	</predict>
+	
+	<response-options>
+		<result-filter>
 			<near-point number-of-results="5">
 				<point lat="40" long="-100"/>
 			</near-point>
-		</filter>
-		<data-series>incremental</data-series>
-	</response>
-	<change-from-nominal type="perc_change">
-		<model-id>22</model-id>
-		<source-adjustments>
-			<gross-src src="1" coef=".5"/>
-			<gross-src src="4" coef="2"/>
-		</source-adjustments>
-	</change-from-nominal>
+		</result-filter>
+		<result-content>
+			<data-series>incremental</data-series>
+		</result-content>
+	</response-options>
+
 </sparrow-prediction-request>

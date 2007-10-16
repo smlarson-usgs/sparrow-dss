@@ -5,10 +5,10 @@ import gov.usgswim.sparrow.Adjustment.AdjustmentType;
 import gov.usgswim.sparrow.AdjustmentSet;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DCompare;
-import gov.usgswim.sparrow.PredictionRequest;
+import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.service.PredictParser;
 import gov.usgswim.sparrow.service.PredictService;
-import gov.usgswim.sparrow.service.PredictRequest;
+import gov.usgswim.sparrow.service.PredictServiceRequest;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.awt.Point;
@@ -54,13 +54,13 @@ public class PredictServiceTest extends TestCase {
 			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-1.xml"));
 		
 		PredictParser parser = new PredictParser();
-		PredictRequest req = parser.parse(xsr);
+		PredictServiceRequest req = parser.parse(xsr);
 		
-		this.assertEquals(gov.usgswim.sparrow.service.PredictRequest.ResponseFilter.ALL, req.getResponseType());
-		this.assertEquals(gov.usgswim.sparrow.service.PredictRequest.PredictType.VALUES, req.getPredictType());
-		this.assertEquals(gov.usgswim.sparrow.service.PredictRequest.DataSeries.ALL, req.getDataSeries());
+		this.assertEquals(gov.usgswim.sparrow.service.PredictServiceRequest.ResponseFilter.ALL, req.getResponseType());
+		this.assertEquals(gov.usgswim.sparrow.service.PredictServiceRequest.PredictType.VALUES, req.getPredictType());
+		this.assertEquals(gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.ALL, req.getDataSeries());
 		
-		PredictionRequest pReq = req.getPredictionRequest();
+		PredictRequest pReq = req.getPredictRequest();
 		this.assertEquals(22L, pReq.getModelId());
 		this.assertEquals(2, pReq.getAdjustmentSet().getAdjustmentCount());
 		
@@ -84,15 +84,15 @@ public class PredictServiceTest extends TestCase {
 			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-2.xml"));
 		
 		PredictParser parser = new PredictParser();
-		PredictRequest req = parser.parse(xsr);
+		PredictServiceRequest req = parser.parse(xsr);
 		
-		this.assertEquals(gov.usgswim.sparrow.service.PredictRequest.ResponseFilter.NEAR_POINT, req.getResponseType());
+		this.assertEquals(gov.usgswim.sparrow.service.PredictServiceRequest.ResponseFilter.NEAR_POINT, req.getResponseType());
 		this.assertEquals(5, req.getNumberOfResults());
 		this.assertEquals(point, req.getFilterPoint());
-		this.assertEquals(gov.usgswim.sparrow.service.PredictRequest.PredictType.PERC_CHG_FROM_NOMINAL, req.getPredictType());
-		this.assertEquals(gov.usgswim.sparrow.service.PredictRequest.DataSeries.INCREMENTAL_ADD, req.getDataSeries());
+		this.assertEquals(gov.usgswim.sparrow.service.PredictServiceRequest.PredictType.PERC_CHG_FROM_NOMINAL, req.getPredictType());
+		this.assertEquals(gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.INCREMENTAL_ADD, req.getDataSeries());
 		
-		PredictionRequest pReq = req.getPredictionRequest();
+		PredictRequest pReq = req.getPredictRequest();
 		this.assertEquals(22L, pReq.getModelId());
 		this.assertEquals(2, pReq.getAdjustmentSet().getAdjustmentCount());
 		
@@ -113,7 +113,7 @@ public class PredictServiceTest extends TestCase {
 			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-3.xml"));
 
 		PredictParser parser = new PredictParser();
-		AdjustmentSet adjSet = parser.parse(xsr1).getPredictionRequest().getAdjustmentSet();
+		AdjustmentSet adjSet = parser.parse(xsr1).getPredictRequest().getAdjustmentSet();
 		Adjustment[] adjs = adjSet.getAdjustments();
 		
 		this.assertEquals(4, adjSet.getAdjustmentCount());
@@ -149,7 +149,7 @@ public class PredictServiceTest extends TestCase {
 		PredictService service = new PredictService();
 		PredictParser parser = new PredictParser();
 		
-		PredictRequest pr = parser.parse(xsr);
+		PredictServiceRequest pr = parser.parse(xsr);
 		Data2D result = service.dispatchDirect(pr);
 		
 		boolean foundNonZero = false;
@@ -181,7 +181,7 @@ public class PredictServiceTest extends TestCase {
 		PredictService service = new PredictService();
 		PredictParser parser = new PredictParser();
 		
-		PredictRequest pr = parser.parse(xsr);
+		PredictServiceRequest pr = parser.parse(xsr);
 		Data2D result = service.dispatchDirect(pr);
 		
 		boolean foundNonZero = false;
@@ -212,7 +212,7 @@ public class PredictServiceTest extends TestCase {
 		PredictService service = new PredictService();
 		PredictParser parser = new PredictParser();
 		
-		PredictRequest pr = parser.parse(xsr);
+		PredictServiceRequest pr = parser.parse(xsr);
 		Data2D result = service.dispatchDirect(pr);
 
 		Data2DCompare comp = buildPredictionComparison(result);
@@ -237,7 +237,7 @@ public class PredictServiceTest extends TestCase {
 		PredictService service = new PredictService();
 		PredictParser parser = new PredictParser();
 		
-		PredictRequest pr = parser.parse(xsr);
+		PredictServiceRequest pr = parser.parse(xsr);
 		service.dispatch(pr, fos);
 
 		fos.close();

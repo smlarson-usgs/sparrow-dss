@@ -3,7 +3,21 @@ package gov.usgswim.sparrow;
 import gov.usgswim.ImmutableBuilder;
 import gov.usgswim.sparrow.domain.Model;
 
-public interface PredictionData extends ImmutableBuilder<PredictionData> {
+/**
+ * A PredictData instance contains all the numerical data needed to run a prediction.
+ * 
+ * Instances may be be mutable or immutable, but will be forced
+ * immutable (via the ImmutableBuilder interface) so that they can be cached.
+ * 
+ * Note that instances will tend to be very large since they can contain many
+ * thousands of rows of data.
+ * 
+ * Compared to PredictRequest, this class contains the actual data
+ * needed to run the prediction whereas PredictRequest only contains
+ * the ID of the model to run, adjustment information, and the type of prediction
+ * to run.
+ */
+public interface PredictData extends ImmutableBuilder<PredictData> {
 
 
 	/**
@@ -134,7 +148,7 @@ public interface PredictionData extends ImmutableBuilder<PredictionData> {
 	 *
 	 * @return
 	 */
-	public PredictionDataBuilder getBuilder();
+	public PredictDataBuilder getBuilder();
 	
 	/**
 	 * Creates an immutable version of the instance, making a shallow copy of
@@ -143,7 +157,7 @@ public interface PredictionData extends ImmutableBuilder<PredictionData> {
 	 * If the member variables are mutable, they will remain mutable.
 	 * @return
 	 */
-	public PredictionData getImmutable();
+	public PredictData getImmutable();
 	
 	/**
 	 * Creates an immutable version of the instance optionally forcing all member
@@ -154,6 +168,6 @@ public interface PredictionData extends ImmutableBuilder<PredictionData> {
 	 * @param forceImmutableMembers If true, copies are made of mutable data
 	 * @return
 	 */
-	public PredictionData getImmutable(boolean forceImmutableMembers);
+	public PredictData getImmutable(boolean forceImmutableMembers);
 	
 }

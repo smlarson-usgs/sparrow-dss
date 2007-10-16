@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.util;
 
-import gov.usgswim.sparrow.PredictionData;
-import gov.usgswim.sparrow.PredictionDataBuilder;
+import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 
@@ -77,7 +77,7 @@ public class LoadTestRunner {
 	
 	public void run() throws Exception {
 	
-		PredictionData pd;
+		PredictData pd;
 		
 		long initStartTime = System.currentTimeMillis();
 		long fileReadStart = initStartTime;
@@ -95,7 +95,7 @@ public class LoadTestRunner {
 			);
 		}
 		
-		PredictionDataBuilder pdb = pd.getBuilder();
+		PredictDataBuilder pdb = pd.getBuilder();
                 
 		long fileReadEnd = System.currentTimeMillis();
 		log.debug("Load time for text files was: " + (fileReadEnd-fileReadStart)/1000 + " (sec)");

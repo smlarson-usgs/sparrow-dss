@@ -1,12 +1,8 @@
-package gov.usgswim.sparrow.service;
+package gov.usgswim.sparrow;
 
 
+import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.task.Computable;
-import gov.usgswim.sparrow.Double2DImm;
-import gov.usgswim.sparrow.PredictionData;
-import gov.usgswim.sparrow.PredictSimple;
-import gov.usgswim.sparrow.PredictionDataBuilder;
-import gov.usgswim.sparrow.PredictionRequest;
 
 import org.apache.log4j.Logger;
 
@@ -16,7 +12,7 @@ import org.apache.log4j.Logger;
  * By implementing Computable, this task can be put in a ComputableCache, which
  * executes the task if the result does not already exist.
  */
-public class PredictComputable implements Computable<PredictionRequest, Double2DImm> {
+public class PredictComputable implements Computable<PredictRequest, Double2DImm> {
 	protected static Logger log =
 		Logger.getLogger(PredictComputable.class); //logging for this class
 		
@@ -24,9 +20,9 @@ public class PredictComputable implements Computable<PredictionRequest, Double2D
 	public PredictComputable() {
 	}
 
-	public Double2DImm compute(PredictionRequest request) throws Exception {
-		PredictionData data = loadData(request);
-		PredictionData adjData = adjustData(request, data);
+	public Double2DImm compute(PredictRequest request) throws Exception {
+		PredictData data = loadData(request);
+		PredictData adjData = adjustData(request, data);
 		
 		long startTime = System.currentTimeMillis();
 
@@ -45,7 +41,7 @@ public class PredictComputable implements Computable<PredictionRequest, Double2D
 	 * @param arg
 	 * @return
 	 */
-	public PredictionData loadData(PredictionRequest req) throws Exception {
+	public PredictData loadData(PredictRequest req) throws Exception {
 		return SharedApplication.getInstance().getPredictDatasetCache().compute( req.getModelId() );
 	}
 	
@@ -65,11 +61,11 @@ public class PredictComputable implements Computable<PredictionRequest, Double2D
 	 * @param data
 	 * @return
 	 */
-	public PredictionData adjustData(PredictionRequest req,
-																			PredictionData data) throws Exception {
+	public PredictData adjustData(PredictRequest req,
+																			PredictData data) throws Exception {
 		
 		if (req.getAdjustmentSet().hasAdjustments()) {
-			PredictionDataBuilder mutable = data.getBuilder();
+			PredictDataBuilder mutable = data.getBuilder();
 
 			
 			//This method does not modify the underlying data
@@ -92,9 +88,9 @@ public class PredictComputable implements Computable<PredictionRequest, Double2D
 	 * @param data
 	 * @return
 	 */
-	public Double2DImm runPrediction(PredictionRequest req,
-																PredictionData data) {
-		PredictSimple adjPredict = new PredictSimple(data);
+	public Double2DImm runPrediction(PredictRequest req,
+																PredictData data) {
+		PredictRunner adjPredict = new PredictRunner(data);
 		return adjPredict.doPredict();
 	}
 }

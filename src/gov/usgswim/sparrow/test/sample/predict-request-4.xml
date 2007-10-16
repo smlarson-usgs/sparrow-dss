@@ -2,15 +2,21 @@
 <sparrow-prediction-request
   xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<response>
-		<data-series>incremental</data-series>
-	</response>
-	<value-prediction>
-		<model-id>1</model-id>
-		<source-adjustments>
-			<specific src="2" reach="2049" value="7.77"/><!-- VALUE WAS 0 -->
-			<specific src="1" reach="2050" value="9.99"/><!-- VALUE WAS 1.4991568171 -->
-			<specific src="3" reach="285" value="11.11"/><!-- VALUE WAS 0.407362758 -->
-		</source-adjustments>
-	</value-prediction>
+	
+	<predict model-id="1">
+		<raw-value>
+			<source-adjustments>
+				<specific src="2" reach="2049" value="7.77"/><!-- VALUE WAS 0 -->
+				<specific src="1" reach="2050" value="9.99"/><!-- VALUE WAS 1.4991568171 -->
+				<specific src="3" reach="285" value="11.11"/><!-- VALUE WAS 0.407362758 -->
+			</source-adjustments>
+		</raw-value>
+	</predict>
+	
+	<response-options>
+		<result-content>
+			<data-series>incremental</data-series>
+		</result-content>
+	</response-options>
+	
 </sparrow-prediction-request>

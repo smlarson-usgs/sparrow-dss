@@ -22,7 +22,7 @@ public class PredictSerializer extends AbstractSerializer {
 	}
 	
 	
-	public void writeResponse(OutputStream stream, PredictRequest request, Data2D result) throws XMLStreamException {
+	public void writeResponse(OutputStream stream, PredictServiceRequest request, Data2D result) throws XMLStreamException {
 		XMLEventWriter xw = xoFact.createXMLEventWriter(stream);
 		writeResponse(xw, request, result);
 	}
@@ -35,7 +35,7 @@ public class PredictSerializer extends AbstractSerializer {
 	 * @param models
 	 * @throws XMLStreamException
 	 */
-	public void writeResponse(XMLEventWriter xw, PredictRequest request, Data2D result) throws XMLStreamException {
+	public void writeResponse(XMLEventWriter xw, PredictServiceRequest request, Data2D result) throws XMLStreamException {
 	
 		xw.setDefaultNamespace(TARGET_NAMESPACE);
 		xw.add( evtFact.createStartDocument(ENCODING, XML_VERSION) );
@@ -53,11 +53,11 @@ public class PredictSerializer extends AbstractSerializer {
 		xw.add( evtFact.createEndDocument() );
 	}
 	
-	public void writeRequest(XMLEventWriter xw, PredictRequest request) {
+	public void writeRequest(XMLEventWriter xw, PredictServiceRequest request) {
 		//for now, just skip this optional element
 	}
 	
-	public void writeResponseSection(javax.xml.stream.XMLEventWriter xw, PredictRequest request, Data2D result) throws XMLStreamException {
+	public void writeResponseSection(javax.xml.stream.XMLEventWriter xw, PredictServiceRequest request, Data2D result) throws XMLStreamException {
 
 		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "response") );
 		writeMetadata(xw, request, result);
@@ -68,7 +68,7 @@ public class PredictSerializer extends AbstractSerializer {
 
 	}
 	
-	public void writeMetadata(XMLEventWriter xw, PredictRequest request, Data2D result) throws XMLStreamException {
+	public void writeMetadata(XMLEventWriter xw, PredictServiceRequest request, Data2D result) throws XMLStreamException {
 		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "metadata") );
 		xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, "rowCount", Integer.toString(result.getRowCount())) );
 		xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, "columnCount", Integer.toString(result.getColCount())) );
@@ -84,7 +84,7 @@ public class PredictSerializer extends AbstractSerializer {
 
 	}
 	
-	public void writeData(XMLEventWriter xw, PredictRequest request, Data2D result) throws XMLStreamException {
+	public void writeData(XMLEventWriter xw, PredictServiceRequest request, Data2D result) throws XMLStreamException {
 		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "data") );
 
 			for (int r = 0; r < result.getRowCount(); r++)  {

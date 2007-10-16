@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.gui;
 
-import gov.usgswim.sparrow.PredictSimple;
+import gov.usgswim.sparrow.PredictRunner;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.awt.BorderLayout;

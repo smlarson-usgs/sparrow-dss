@@ -4,12 +4,13 @@ import gov.usgswim.sparrow.domain.Model;
 
 
 /**
- * Databean that packages all of the data required to run a prediction.
+ * A mutable implementation of PredictData.
+ * PredictData instances contain alll the data required to run a prediction.
  *
  * This class is not thread safe!  Once created, this class may be cached and
  * used for prediction runs, so do not reassign or change the values it contains!
  */
-public class PredictionDataBuilder implements PredictionData {
+public class PredictDataBuilder implements PredictData {
 
 
 	/**
@@ -88,7 +89,7 @@ public class PredictionDataBuilder implements PredictionData {
 	 */
 	protected Data2D ancil;
 	
-	public PredictionDataBuilder() {
+	public PredictDataBuilder() {
 	}
 	
 	
@@ -108,7 +109,7 @@ public class PredictionDataBuilder implements PredictionData {
 	 * @param model
 	 * @param srcIDs
 	 */
-	public PredictionDataBuilder(Data2D topo, Data2D coef, Data2D src, Data2D srcIDs, Data2D decay,
+	public PredictDataBuilder(Data2D topo, Data2D coef, Data2D src, Data2D srcIDs, Data2D decay,
 				Data2D sys, Data2D ancil, Model model) {
 				
 		this.model = model;
@@ -371,14 +372,14 @@ public class PredictionDataBuilder implements PredictionData {
 	}
 	
 
-	public PredictionData getImmutable() {
+	public PredictData getImmutable() {
 		return getImmutable(false);
 	}
 	
-	public PredictionData getImmutable(boolean forceImmutableMembers) {
+	public PredictData getImmutable(boolean forceImmutableMembers) {
 		//TODO:  Model should have an immutable builder
 		if (forceImmutableMembers) {
-			return new PredictionDataImm(
+			return new PredictDataImm(
 				(getTopo() != null)?getTopo().getImmutable():null,
 				(getCoef() != null)?getCoef().getImmutable():null,
 				(getSrc() != null)?getSrc().getImmutable():null,
@@ -389,7 +390,7 @@ public class PredictionDataBuilder implements PredictionData {
 				(getModel() != null)?getModel():null
 			);
 		} else {
-			return new PredictionDataImm(
+			return new PredictDataImm(
 				getTopo(),
 				getCoef(),
 				getSrc(),
@@ -402,7 +403,7 @@ public class PredictionDataBuilder implements PredictionData {
 		}
 	}
 
-	public PredictionDataBuilder getBuilder() {
+	public PredictDataBuilder getBuilder() {
 		return this;
 	}
 }

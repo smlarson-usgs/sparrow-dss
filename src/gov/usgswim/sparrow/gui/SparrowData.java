@@ -4,7 +4,7 @@ import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DCompare;
 import gov.usgswim.sparrow.Data2DView;
 import gov.usgswim.sparrow.Double2DImm;
-import gov.usgswim.sparrow.PredictSimple;
+import gov.usgswim.sparrow.PredictRunner;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.awt.Frame;
@@ -94,7 +94,7 @@ public class SparrowData implements DataChangeListener {
 			Data2DView trimmedCoef = new Data2DView(coefData, 4, coefData.getColCount() - 4);
 			Data2DView decayCoef = new Data2DView(coefData, 1, 2);
 			
-			PredictSimple predict = new PredictSimple(topoData, trimmedCoef, srcData, decayCoef);
+			PredictRunner predict = new PredictRunner(topoData, trimmedCoef, srcData, decayCoef);
 			
 			long startTime = System.currentTimeMillis();
 			int iterationCount = 100;

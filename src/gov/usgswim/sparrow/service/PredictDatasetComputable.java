@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.service;
 
 import gov.usgswim.task.Computable;
-import gov.usgswim.sparrow.PredictionData;
+import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.util.JDBCUtil;
 
 import java.sql.Connection;
@@ -15,16 +15,16 @@ import org.apache.log4j.Logger;
  * By implementing Computable, this task can be put in a ComputableCache, which
  * executes the task if the result does not already exist.
  */
-public class PredictDatasetComputable implements Computable<Long, PredictionData> {
+public class PredictDatasetComputable implements Computable<Long, PredictData> {
 	protected static Logger log =
 		Logger.getLogger(PredictDatasetComputable.class); //logging for this class
 		
 	public PredictDatasetComputable() {
 	}
 
-	public PredictionData compute(Long modelId) throws Exception {
+	public PredictData compute(Long modelId) throws Exception {
 		Connection conn = null;
-		PredictionData data = null;
+		PredictData data = null;
 		try {
 			conn = SharedApplication.getInstance().getConnection();
 			
