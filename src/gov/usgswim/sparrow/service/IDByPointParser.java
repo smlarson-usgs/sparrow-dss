@@ -5,6 +5,8 @@ import gov.usgswim.service.HttpRequestParser;
 
 import javax.servlet.http.HttpServletRequest;
 
+import javax.xml.stream.XMLStreamReader;
+
 public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest> {
 	public IDByPointParser() {
 	}
@@ -15,6 +17,14 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 		
 		
 		
+		return null;
+	}
+
+	public IDByPointRequest parse(XMLStreamReader in) {
+		return null;
+	}
+
+	public IDByPointRequest parse(String in) {
 		return null;
 	}
 }

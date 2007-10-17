@@ -18,5 +18,12 @@ public class SimpleHttpRequestParser extends AbstractHttpRequestParser<XMLStream
 	public XMLStreamReader parse(HttpServletRequest request) throws Exception {
 		return getXMLStream(request);
 	}
-	
+
+	public XMLStreamReader parse(XMLStreamReader in) {
+		return in;
+	}
+
+	public XMLStreamReader parse(String in) throws Exception {
+		return getXMLStream(in);
+	}
 }
