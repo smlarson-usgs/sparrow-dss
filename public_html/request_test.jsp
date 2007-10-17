@@ -81,7 +81,7 @@
 				<p>
 				National Model w/ gross and specific adjustments.
 				</p>
-				<textarea id="xml_input_2" name="xmlreq" cols="120" rows="40">
+				<textarea id="xml_input_2" name="xmlreq" cols="120" rows="20">
 &lt;?xml version="1.0" encoding="ISO-8859-1" ?>
 &lt;sparrow-prediction-request
   xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
@@ -109,7 +109,7 @@
 				<p>
 				Slightly changed from Request 2 to see the result of a specific reach change.
 				</p>
-				<textarea id="xml_input_3" name="xmlreq" cols="120" rows="40">
+				<textarea id="xml_input_3" name="xmlreq" cols="120" rows="20">
 &lt;?xml version="1.0" encoding="ISO-8859-1" ?>
 &lt;sparrow-prediction-request
   xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
@@ -137,7 +137,7 @@
 				<p>
 				Reordered adjustements from #3.  This should not result in a re-run of the prediction.
 				</p>
-				<textarea id="xml_input_4" name="xmlreq" cols="120" rows="40">
+				<textarea id="xml_input_4" name="xmlreq" cols="120" rows="20">
 &lt;?xml version="1.0" encoding="ISO-8859-1" ?>
 &lt;sparrow-prediction-request
   xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
