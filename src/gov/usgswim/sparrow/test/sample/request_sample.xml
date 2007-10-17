@@ -51,9 +51,6 @@
 				-->
 				<specific-adjust src="1" reach="1242" value="7839"/>
 			</source-adjustments>
-		
 		</raw-value>
-	
 	</predict>
-
 </sparrow-prediction-request>
