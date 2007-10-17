@@ -241,7 +241,10 @@ public class PredictParser extends AbstractHttpRequestParser<PredictServiceReque
 						break;
 					}
 					default:
-						throw new Exception("Unsupported adjustment type");
+						throw new Exception(
+							"Unsupported adjustment type: '" + lName + "' at line " +
+							reader.getLocation().getLineNumber() + ", column " +
+							reader.getLocation().getColumnNumber() + ".");
 					}
 					
 				}

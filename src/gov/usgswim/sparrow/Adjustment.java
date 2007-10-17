@@ -34,7 +34,8 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 	 */
 	public enum AdjustmentType {
 		GROSS_SRC_ADJUST("gross-src", "Bulk adjust the source by multiplying by a coef."),
-		SPECIFIC_ADJUST("specific", "Adjust a specific source at a specific reach.");
+		SPECIFIC_ADJUST("specific", "Adjust a specific source at a specific reach."),
+		UNKNOWN("unknown", "Adjustment specified is unknown");
 		
 		private String _name;
 		private String _desc;
@@ -59,7 +60,7 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 			for(AdjustmentType type: Adjustment.AdjustmentType.values()) {
 				if (type._name.equalsIgnoreCase(name)) return type;
 			}
-			return null;
+			return UNKNOWN;
 		}
 			
 	};
