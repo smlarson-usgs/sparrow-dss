@@ -36,7 +36,7 @@ import javax.xml.stream.XMLStreamReader;
  * Where xmlreq could be changed based on the 'xml-param-name' init parameter.
  */
 public class ServiceServlet extends HttpServlet {
-	private static final String CONTENT_TYPE = "text/html; charset=ISO-8859-1";
+
 	
 	/**
 	 * The name of the optional init parameter that defines the name of the http request
@@ -171,29 +171,25 @@ public class ServiceServlet extends HttpServlet {
 	}
 
 
+	/**
+	 * @see doPost()
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
 	public void doGet(HttpServletRequest request,
 										HttpServletResponse response) throws ServletException,
 																												 IOException {
 		
-		Object o;
-		try {
-			o = parser.parse(request);
-			handler.dispatch(o, response);
-		} catch (Exception e) {
-			throw new ServletException(e);
-		}
+		doPost(request, response);
 	}
 	
 
 
 	/**
-	 * Post expect either xml request to be contain either as the body of the
-	 * request, or as the parameter DEFAULT_XML_PARAM_NAME *if* that name is added
-	 * to the url, eg:
-	 * 
-	 * url: servlet-context/xmlreq
-	 * -and-
-	 * request contains a parameter 'xmlreq' w/ the XML document
+	 * Delegates to the HttpRequestParser to get a request, then passes the request
+	 * to the HttpRequestHandler.
 	 * 
 	 * @param request
 	 * @param response
@@ -204,58 +200,15 @@ public class ServiceServlet extends HttpServlet {
 										 HttpServletResponse response) throws ServletException,
 																													IOException {
 
-		String extraPath = request.getPathInfo();
-		
-		if (extraPath != null && extraPath.length() > 1) {
-			extraPath = extraPath.substring(1);
-			if (xmlParamName.equals(extraPath)) {
-			
-				String xml = request.getParameter(xmlParamName);
-				doStringRequest(xml, response);
-				
-				return;	//request has been handled
-				
-			} else {
-				//ignore the extra url info and process as normal
-			}
-
-		}
-		
-		
-		XMLStreamReader xsr;
+		Object o;
 		try {
-			xsr = inFact.createXMLStreamReader(request.getInputStream());
-			handler.dispatch(xsr, response);
+			o = parser.parse(request);
+			response.addHeader("Content-Disposition", "attachment");
+			handler.dispatch(o, response);
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
-		
-		response.getOutputStream().flush();
-		response.getOutputStream().close();
 
-		
-	}
-	
-	protected void doStringRequest(String xml, HttpServletResponse response)
-				throws ServletException, IOException {
-																													
-
-		if (xml != null) {
-			XMLStreamReader xsr;
-			try {
-				StringReader sr = new StringReader(xml);
-				xsr = inFact.createXMLStreamReader(sr);
-				handler.dispatch(xsr, response);
-			} catch (Exception e) {
-				throw new ServletException(e);
-			}
-			
-			
-			response.getOutputStream().flush();
-			response.getOutputStream().close();
-		} else {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST , "No data found");
-		}																										
 	}
 
 }
