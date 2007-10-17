@@ -8,9 +8,12 @@
   </head>
   <body>
 		<form action="sp_predict/xmlreq" method="post" enctype="application/x-www-form-urlencoded">
-			<fieldset title="Prediction Request">
-				<label for="xml_input">XML Prediction Request</label>
-				<textarea id="xml_input" name="xmlreq" cols="120" rows="40">
+			<fieldset title="Prediction Request 1">
+				<label for="xml_input_1">Prediction Request 1</label>
+				<p>
+				This request contains an error - note the line precise error reporting.
+				</p>
+				<textarea id="xml_input_2" name="xmlreq" cols="120" rows="40">
 &lt;sparrow-prediction-request>
 	&lt;!-- This file is way out of date - its more of an example of where I'd like to take this -->
 	&lt;processing-instructions>
@@ -65,6 +68,90 @@
 				&lt;specific-adjust src="1" reach="1242" value="7839"/>
 			&lt;/source-adjustments>
 		&lt;/raw-value>
+	&lt;/predict>
+&lt;/sparrow-prediction-request>
+				</textarea>
+				<input type="submit" name="submit" value="submit"/>
+			</fieldset>
+		</form>
+		
+		<form action="sp_predict/xmlreq" method="post" enctype="application/x-www-form-urlencoded">
+			<fieldset title="Prediction Request 2">
+				<label for="xml_input_2">Prediction Request 2</label>
+				<p>
+				National Model w/ gross and specific adjustments.
+				</p>
+				<textarea id="xml_input_2" name="xmlreq" cols="120" rows="40">
+&lt;?xml version="1.0" encoding="ISO-8859-1" ?>
+&lt;sparrow-prediction-request
+  xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	&lt;predict model-id="22">
+		&lt;change-from-nominal type="perc_change">
+			&lt;source-adjustments>
+				&lt;!-- Sort order: 2 -->&lt;gross-src src="4" coef="2"/>
+				&lt;!-- Sort order: 1 -->&lt;gross-src src="1" coef=".5"/>
+				&lt;!-- Sort order: 4 -->&lt;specific src="2" reach="1787602" value="7.77"/>&lt;!-- VALUE WAS 315.819 -->
+				&lt;!-- Sort order: 3 -->&lt;specific src="1" reach="1787601" value="9.99"/>&lt;!-- VALUE WAS 5432.3354442 -->
+			&lt;/source-adjustments>
+		&lt;/change-from-nominal>
+	&lt;/predict>
+&lt;/sparrow-prediction-request>
+				</textarea>
+				<input type="submit" name="submit" value="submit"/>
+			</fieldset>
+		</form>
+		
+		<form action="sp_predict/xmlreq" method="post" enctype="application/x-www-form-urlencoded">
+			<fieldset title="Prediction Request 3">
+				<label for="xml_input_3">Prediction Request 3</label>
+				<p>
+				Slightly changed from Request 2 to see the result of a specific reach change.
+				</p>
+				<textarea id="xml_input_3" name="xmlreq" cols="120" rows="40">
+&lt;?xml version="1.0" encoding="ISO-8859-1" ?>
+&lt;sparrow-prediction-request
+  xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	&lt;predict model-id="22">
+		&lt;change-from-nominal type="perc_change">
+			&lt;source-adjustments>
+				&lt;!-- Sort order: 2 -->&lt;gross-src src="4" coef="2"/>
+				&lt;!-- Sort order: 1 -->&lt;gross-src src="1" coef=".5"/>
+				&lt;!-- Sort order: 4 -->&lt;specific src="2" reach="1787602" value="7"/>&lt;!-- VALUE WAS 315.819 -->
+				&lt;!-- Sort order: 3 -->&lt;specific src="1" reach="1787601" value="9.99"/>&lt;!-- VALUE WAS 5432.3354442 -->
+			&lt;/source-adjustments>
+		&lt;/change-from-nominal>
+	&lt;/predict>
+&lt;/sparrow-prediction-request>
+				</textarea>
+				<input type="submit" name="submit" value="submit"/>
+			</fieldset>
+		</form>
+		
+		<form action="sp_predict/xmlreq" method="post" enctype="application/x-www-form-urlencoded">
+			<fieldset title="Prediction Request 4">
+				<label for="xml_input_4">Prediction Request 4</label>
+				<p>
+				Reordered adjustements from #3.  This should not result in a re-run of the prediction.
+				</p>
+				<textarea id="xml_input_4" name="xmlreq" cols="120" rows="40">
+&lt;?xml version="1.0" encoding="ISO-8859-1" ?>
+&lt;sparrow-prediction-request
+  xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	&lt;predict model-id="22">
+		&lt;change-from-nominal type="perc_change">
+			&lt;source-adjustments>
+				&lt;!-- Sort order: 2 -->&lt;gross-src src="4" coef="2"/>
+				&lt;!-- Sort order: 1 -->&lt;gross-src src="1" coef=".5"/>
+				&lt;!-- Sort order: 4 -->&lt;specific src="2" reach="1787602" value="7"/>&lt;!-- VALUE WAS 315.819 -->
+				&lt;!-- Sort order: 3 -->&lt;specific src="1" reach="1787601" value="9.99"/>&lt;!-- VALUE WAS 5432.3354442 -->
+			&lt;/source-adjustments>
+		&lt;/change-from-nominal>
 	&lt;/predict>
 &lt;/sparrow-prediction-request>
 				</textarea>
