@@ -10,23 +10,63 @@
 		<form action="sp_predict/xmlreq" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Prediction Request">
 				<label for="xml_input">XML Prediction Request</label>
-				<textarea id="xml_input" name="xmlreq" cols="60" rows="40">
-&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot; ?&gt;
-&lt;sparrow-prediction-request
-  xmlns=&quot;http://www.usgs.gov/sparrow/prediction-request/v0_1&quot;
-  xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;
-  &lt;response&gt;
-    &lt;data-series&gt;incremental&lt;/data-series&gt;
-  &lt;/response&gt;
-  &lt;value-prediction&gt;
-    &lt;model-id&gt;1&lt;/model-id&gt;
-    &lt;source-adjustments&gt;
-      &lt;specific src=&quot;2&quot; reach=&quot;2049&quot; value=&quot;7.77&quot;/&gt;&lt;!-- VALUE WAS 0 --&gt;
-      &lt;specific src=&quot;1&quot; reach=&quot;2050&quot; value=&quot;9.99&quot;/&gt;&lt;!-- VALUE WAS 1.4991568171 --&gt;
-      &lt;specific src=&quot;3&quot; reach=&quot;285&quot; value=&quot;11.11&quot;/&gt;&lt;!-- VALUE WAS 0.407362758 --&gt;
-    &lt;/source-adjustments&gt;
-  &lt;/value-prediction&gt;
-&lt;/sparrow-prediction-request&gt;
+				<textarea id="xml_input" name="xmlreq" cols="120" rows="40">
+&lt;sparrow-prediction-request>
+	&lt;!-- This file is way out of date - its more of an example of where I'd like to take this -->
+	&lt;processing-instructions>
+
+	&lt;/processing-instructions>
+	
+	&lt;!-- Generic Container for any type of prediction -->
+	&lt;predict model-id="1">
+		&lt;!--
+		The type of prediction.  One of raw-value or change-from-nominal.
+		Future versions may include options to compare two versions of a model, or
+		a model at two different times (not sure how I'd store these in the db).
+		So, the model-id is specified inside this element rather then at top level,
+		since we may need multiple model ids depending on the calculation type.
+		-->
+		&lt;raw-value>
+			
+			&lt;!--
+			A list of source adjustments.
+			Order is signmificant, but there will be a priority to these.  For instance,
+			all individual adjustments will take priority over gross adjustments.
+			-->
+			&lt;source-adjustments>
+				&lt;!--
+				Uniformly adjust these sources by the specified multiplier.
+				Unadjusted sources are basically passed an implicite '1' value
+				-->
+				&lt;gross-adjust src="1" coef=".25"/>
+				&lt;gross-adjust src="3" coef="2"/>
+				
+				&lt;!-- Not implemented, but would this override the gross adj values or augment it? -->
+				&lt;criteria-adjust override-gross="true">
+					&lt;gross-adjust coef=".25"/>
+					
+					&lt;criteria>
+						&lt;group>
+							&lt;criteria table="metadata" field="state_code" type="equals">mn&lt;/criteria>
+							&lt;criteria table="metadata" field="elevation" type="gt">1000&lt;/criteria>
+						&lt;/group>
+						&lt;or/>
+						&lt;group>
+							&lt;criteria table="metadata" field="state_code" type="equals">mn&lt;/criteria>
+							&lt;criteria table="source" field="type" type="equals">point_source&lt;/criteria>
+						&lt;/group>
+					&lt;/criteria>
+				&lt;/criteria-adjust>
+				
+				&lt;!--
+				Specify the source value for a specific source at a specific reach.
+				This is the highest priority and will override any other changes
+				-->
+				&lt;specific-adjust src="1" reach="1242" value="7839"/>
+			&lt;/source-adjustments>
+		&lt;/raw-value>
+	&lt;/predict>
+&lt;/sparrow-prediction-request>
 				</textarea>
 				<input type="submit" name="submit" value="submit"/>
 			</fieldset>
