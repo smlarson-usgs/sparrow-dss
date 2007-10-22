@@ -180,6 +180,7 @@ public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<
 			
 		return parseAttribAsDouble(reader, attrib, true);
 	}
+	
 	/**
 	 * Returns the Double value found in the specified attribute of the current
 	 * element.  If require is true and the attribute does not exist, an error
@@ -203,6 +204,55 @@ public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<
 				return Double.parseDouble(v);
 			} catch (Exception e) {
 				throw new Exception("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be a number");
+			}
+			
+		} else if (require) {
+			throw new Exception("The '" + attrib + "' attribute must exist for element '" + reader.getLocalName() + "'");
+		} else {
+			return null;
+		}
+		
+	}
+	
+	/**
+	 * Returns the long value found in the specified attribute of the current
+	 * element.  If the attribute does not exist or cannot be parsed as a number,
+	 * an error is thrown.
+	 * 
+	 * @param reader
+	 * @param attrib
+	 * @return
+	 * @throws Exception
+	 */
+	public static long parseAttribAsLong(
+			XMLStreamReader reader, String attrib) throws Exception {
+			
+		return parseAttribAsLong(reader, attrib, true);
+	}
+	
+	/**
+	 * Returns the Long value found in the specified attribute of the current
+	 * element.  If require is true and the attribute does not exist, an error
+	 * is thrown.  If the attribute does not exist or is empty and
+	 * require is not true, null is returned.
+	 * @param reader
+	 * @param attrib
+	 * @param require
+	 * @return
+	 * @throws Exception
+	 */
+	public static Long parseAttribAsLong(
+			XMLStreamReader reader, String attrib, boolean require) throws Exception {
+		
+		String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
+		
+		if (v != null) {
+			int iv = 0;
+			
+			try {
+				return Long.parseLong(v);
+			} catch (Exception e) {
+				throw new Exception("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be a long integer");
 			}
 			
 		} else if (require) {
