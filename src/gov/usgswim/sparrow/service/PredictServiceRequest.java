@@ -24,8 +24,7 @@ public class PredictServiceRequest {
 	private PredictType predictType = gov.usgswim.sparrow.service.PredictServiceRequest.PredictType.VALUES;
 	private PredictRequest predictRequest;
 	private DataSeries dataSeries = gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.ALL;
-	private Point.Double filterPoint;
-	private Integer numberOfResults = null;
+	private IDByPointRequest idByPointRequest;
 
 
 	public enum DataSeries {
@@ -112,6 +111,7 @@ public class PredictServiceRequest {
 		}
 	}
 	
+	//TODO This is perhaps obsolete - the idbypoint is being handled by its own request...
 	public enum ResponseFilter {
 		ALL("all-results", "Return all results"),
 		NEAR_POINT("near-point", "Return results nearest a point");
@@ -175,12 +175,12 @@ public class PredictServiceRequest {
 		return predictRequest;
 	}
 
-	public void setFilterPoint(Point2D.Double idPoint) {
-		this.filterPoint = idPoint;
+	public void setIdByPointRequest(IDByPointRequest idByPointRequest) {
+		this.idByPointRequest = idByPointRequest;
 	}
 
-	public Point2D.Double getFilterPoint() {
-		return filterPoint;
+	public IDByPointRequest getIdByPointRequest() {
+		return idByPointRequest;
 	}
 	
 	public void setDataSeries(PredictServiceRequest.DataSeries dataSeries) {
@@ -193,11 +193,4 @@ public class PredictServiceRequest {
 		return dataSeries;
 	}
 	
-	public void setNumberOfResults(Integer numberOfResults) {
-		this.numberOfResults = numberOfResults;
-	}
-
-	public Integer getNumberOfResults() {
-		return numberOfResults;
-	}
 }

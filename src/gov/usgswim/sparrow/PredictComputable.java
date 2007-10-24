@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
  * By implementing Computable, this task can be put in a ComputableCache, which
  * executes the task if the result does not already exist.
  */
-public class PredictComputable implements Computable<PredictRequest, Double2DImm> {
+public class PredictComputable implements Computable<PredictRequest, PredictResult> {
 	protected static Logger log =
 		Logger.getLogger(PredictComputable.class); //logging for this class
 		
@@ -20,13 +20,13 @@ public class PredictComputable implements Computable<PredictRequest, Double2DImm
 	public PredictComputable() {
 	}
 
-	public Double2DImm compute(PredictRequest request) throws Exception {
+	public PredictResult compute(PredictRequest request) throws Exception {
 		PredictData data = loadData(request);
 		PredictData adjData = adjustData(request, data);
 		
 		long startTime = System.currentTimeMillis();
 
-		Double2DImm result = runPrediction(request, adjData);
+		PredictResult result = runPrediction(request, adjData);
 		
 		log.debug(
 			"Prediction done for model #" + request.getModelId() + 
@@ -88,9 +88,14 @@ public class PredictComputable implements Computable<PredictRequest, Double2DImm
 	 * @param data
 	 * @return
 	 */
-	public Double2DImm runPrediction(PredictRequest req,
+	public PredictResult runPrediction(PredictRequest req,
 																PredictData data) {
 		PredictRunner adjPredict = new PredictRunner(data);
-		return adjPredict.doPredict();
+		Double2DImm result = adjPredict.doPredict();
+		
+		int[] reachIds = data.getSys().getRowIds();
+		
+		PredictResult pr = new PredictResult(result, reachIds);
+		return pr;
 	}
 }

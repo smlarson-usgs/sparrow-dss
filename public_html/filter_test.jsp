@@ -33,7 +33,7 @@
 	
 	&lt;response-options>
 		&lt;result-filter>
-			&lt;near-point number-of-results="5">
+			&lt;near-point result-count="5">
 				&lt;point lat="40" long="-100"/>
 			&lt;/near-point>
 		&lt;/result-filter>

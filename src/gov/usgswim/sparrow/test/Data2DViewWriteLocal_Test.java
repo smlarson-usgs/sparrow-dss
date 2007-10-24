@@ -33,7 +33,7 @@ public class Data2DViewWriteLocal_Test extends TestCase {
 
 	public void testBasic1() throws Exception {
 		Data2DWritable dataBuilder = new Data2DBuilder(doubleData, headings);
-		dataBuilder.setIdColumn(0);
+		dataBuilder.setIndexColumn(0);
 		Data2D dataImm = ((Data2DBuilder)dataBuilder).buildDoubleImmutable(0);
 
 		runBasicTestA(new Data2DViewWriteLocal(dataImm, 0, 4, 0));

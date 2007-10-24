@@ -12,16 +12,6 @@ public class ModelParser extends AbstractHttpRequestParser<ModelRequest> impleme
 
 	public ModelParser() {
 	}
-
-	public ModelRequest parse(HttpServletRequest request) throws Exception {
-		XMLStreamReader reader = getXMLStream(request);
-		return parse(reader);
-	}
-
-	public ModelRequest parse(String in) throws Exception {
-		XMLStreamReader reader = getXMLStream(in);
-		return parse(reader);
-	}
 	
 	public ModelRequest parse(XMLStreamReader reader) throws Exception {
 		ModelRequest req = null;

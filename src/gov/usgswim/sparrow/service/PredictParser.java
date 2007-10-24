@@ -20,18 +20,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.commons.lang.StringUtils;
 
 public class PredictParser extends AbstractHttpRequestParser<PredictServiceRequest> implements RequestParser<PredictServiceRequest> {
-
+	
 	public PredictParser() {
-	}
-
-	public PredictServiceRequest parse(HttpServletRequest request) throws Exception {
-		XMLStreamReader reader = getXMLStream(request);
-		return parse(reader);
-	}
-
-	public PredictServiceRequest parse(String in) throws Exception {
-		XMLStreamReader reader = getXMLStream(in);
-		return parse(reader);
 	}
 	
 	public PredictServiceRequest parse(XMLStreamReader reader) throws Exception {
@@ -166,7 +156,7 @@ public class PredictParser extends AbstractHttpRequestParser<PredictServiceReque
 			case XMLStreamReader.START_ELEMENT:
 				{
 					String lName = reader.getLocalName();
-					PredictServiceRequest.ResponseFilter filter = gov.usgswim.sparrow.service.PredictServiceRequest.ResponseFilter.find(lName);
+					PredictServiceRequest.ResponseFilter filter = PredictServiceRequest.ResponseFilter.find(lName);
 					
 					switch (filter) {
 					case ALL:
@@ -174,17 +164,11 @@ public class PredictParser extends AbstractHttpRequestParser<PredictServiceReque
 						break;
 					case NEAR_POINT:
 						req.setResponseType(filter);
-						Integer n = parseAttribAsInt(reader, "number-of-results", false);
-						if (n != null) {
-							req.setNumberOfResults(n);
-						}
 						
-						reader.nextTag();	//MUST be a point element
+						IDByPointParser idByPointParser = new IDByPointParser();
+						IDByPointRequest idReq = idByPointParser.parseMain(reader, req.getPredictRequest().getModelId());
 						
-						Point.Double pt = new Point.Double();
-						pt.x = parseAttribAsDouble(reader, "long");
-						pt.y = parseAttribAsDouble(reader, "lat");
-						req.setFilterPoint(pt);
+						req.setIdByPointRequest(idReq);
 						
 						break;
 					default:

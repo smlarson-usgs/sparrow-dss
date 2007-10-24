@@ -85,7 +85,7 @@
            <xsd:sequence>
             <xsd:element name="point" type="pointType"/>
            </xsd:sequence>
-           <xsd:attribute name="max-result-count" default="10"/>
+           <xsd:attribute name="result-count" default="10"/>
           </xsd:complexType>
          </xsd:element>
         </xsd:choice>

@@ -21,6 +21,7 @@ public class _Test {
 		suite.addTestSuite(SourceAdjustments_Test.class);
 		suite.addTestSuite(DomainSerializerTest.class);
 		suite.addTestSuite(PredictSerializerTest.class);
+		suite.addTestSuite(IDByPointParserTest.class);
 		suite.addTestSuite(ModelServiceTest.class);
 		suite.addTestSuite(PredictServiceTest.class);
 	  

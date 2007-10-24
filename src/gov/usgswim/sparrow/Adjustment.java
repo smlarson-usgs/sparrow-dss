@@ -112,7 +112,7 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 				if (source instanceof Data2DWritable) {
 					Data2DWritable data = (Data2DWritable)source;
 					
-					int reachRow = reachIndex.findRowById((double)_reachId);
+					int reachRow = reachIndex.findRowByIndex((double)_reachId);
 					
 					if (reachRow != -1) {
 						data.setValueAt(_val, reachRow, mapSourceId(_srcId, srcIndex));
@@ -146,7 +146,7 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 	public int mapSourceId(int id, Data2D srcIndex) throws Exception {
 		if (srcIndex != null) {
 		
-			int i = srcIndex.findRowById((double)id);
+			int i = srcIndex.findRowByIndex((double)id);
 
 			if (i > -1) {
 				return i;

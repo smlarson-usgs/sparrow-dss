@@ -5,6 +5,9 @@ import gov.usgswim.NotThreadSafe;
 /**
  * A Data2D implementation that derives its from a comparison between two
  * Data2D instances.
+ * 
+ * The ID values (if any) of the first Data2D (the baseData) is the one used
+ * for ID lookups.
  *
  * Comparisons are always in terms of the baseData - compData.
  */

@@ -20,15 +20,15 @@ public class Double2DImm extends Data2DImmAbstract {
 	private volatile HashMap<Double, Integer> idIndex;
 	
 	public Double2DImm(double[][] data) {
-		this(data, null, -1);
+		this(data, null, -1, null);
 	}
 	
 	public Double2DImm(double[][] data, String[] headings) {
-		this(data, headings, -1);
+		this(data, headings, -1, null);
 	}
 	
-	public Double2DImm(double[][] data, String[] headings, Integer indexCol) {
-		super((data != null)?data.length:0, (data != null && data.length > 0 && data[0] != null)?data[0].length:0, headings, indexCol);
+	public Double2DImm(double[][] data, String[] headings, Integer indexCol, int[] ids) {
+		super((data != null)?data.length:0, (data != null && data.length > 0 && data[0] != null)?data[0].length:0, headings, indexCol, ids);
 		_data = data;
 		
 		idIndex = buildIndex();
@@ -37,22 +37,22 @@ public class Double2DImm extends Data2DImmAbstract {
 	public boolean isDoubleData() { return true; }
 	
 	public Data2D getImmutable() {
-		return buildDoubleImmutable(getIdColumn());
+		return this;
 	}
 	
 	public Data2D buildIntImmutable(int indexCol) {
-		if (getIdColumn() == indexCol) {
+		if (getIndexColumn() == indexCol) {
 			return this;
 		} else {
-			return new Int2DImm(getIntData(), getHeadings(), indexCol);
+			return new Int2DImm(getIntData(), getHeadings(), indexCol, getRowIds());
 		}
 	}
 	
 	public Data2D buildDoubleImmutable(int indexCol) {
-		if (getIdColumn() == indexCol) {
+		if (getIndexColumn() == indexCol) {
 			return this;
 		} else {
-			return new Double2DImm(_data, getHeadings(), indexCol);
+			return new Double2DImm(_data, getHeadings(), indexCol, getRowIds());
 		}
 	}
 	
@@ -104,7 +104,7 @@ public class Double2DImm extends Data2DImmAbstract {
 	}
 	
 
-	public int findRowById(Double id) {
+	public int findRowByIndex(Double id) {
 	
 		if (idIndex != null) {
 			Integer i = idIndex.get(id);
@@ -121,7 +121,7 @@ public class Double2DImm extends Data2DImmAbstract {
 	
 	private HashMap<Double, Integer> buildIndex() {
 		int rCount = getRowCount();
-		int idCol = getIdColumn();
+		int idCol = getIndexColumn();
 		
 		if (idCol > -1) {
 
@@ -135,5 +135,44 @@ public class Double2DImm extends Data2DImmAbstract {
 		} else {
 			return null;
 		}
+	}
+	
+	public int[] getIntColumn(int col) {
+		int rCount = getRowCount();
+		int[] newData = new int[rCount];
+		
+		for (int i=0; i<rCount; i++) {
+			newData[i] = (int) _data[i][col];
+		}
+		return newData;
+	}
+
+	public double[] getDoubleColumn(int col) {
+		int rCount = getRowCount();
+		double[] newData = new double[rCount];
+		for (int i=0; i<rCount; i++) {
+			newData[i] = _data[i][col];
+		}
+		return newData;
+	}
+
+	public int[] getIntRow(int row) {
+		int cCount = getColCount();
+		int[] newData = new int[cCount];
+		
+		for (int i=0; i<cCount; i++) {
+			newData[i] = (int) _data[row][i];
+		}
+		return newData;
+	}
+
+	public double[] getDoubleRow(int row) {
+		int cCount = getColCount();
+		double[] newData = new double[cCount];
+		
+		for (int i=0; i<cCount; i++) {
+			newData[i] = _data[row][i];
+		}
+		return newData;
 	}
 }

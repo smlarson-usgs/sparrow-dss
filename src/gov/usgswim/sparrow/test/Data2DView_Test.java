@@ -15,6 +15,8 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.lang.ArrayUtils;
+
 public class Data2DView_Test extends TestCase {
 	static final double DELTA = .00000000000000001d;
 	
@@ -95,7 +97,27 @@ public class Data2DView_Test extends TestCase {
 		this.assertEquals(2, int2DView.getInt(0, 1));
 		this.assertEquals(2d, int2DView.getValue(0, 1).doubleValue());
 		this.assertEquals(2d, int2DView.getDouble(0, 1), 0d);
+		
+		//--int rows and columns
+		int[] row0 = int2DView.getIntRow(0);
+		int[] row6 = int2DView.getIntRow(6);
+		int[] col0 = int2DView.getIntColumn(0);
+		int[] col1 = int2DView.getIntColumn(1);
+		this.assertTrue(ArrayUtils.isEquals(new int[] {0, 2}, row0));
+		this.assertTrue(ArrayUtils.isEquals(new int[] {6, 7}, row6));
+		this.assertTrue(ArrayUtils.isEquals(new int[] {0, 1, 2, 3, 5, 4, 6}, col0));
+		this.assertTrue(ArrayUtils.isEquals(new int[] {2, 2, 4, 4, 6, 6, 7}, col1));
+		//--double rows and columns
+		double[] rowd0 = int2DView.getDoubleRow(0);
+		double[] rowd6 = int2DView.getDoubleRow(6);
+		double[] cold0 = int2DView.getDoubleColumn(0);
+		double[] cold1 = int2DView.getDoubleColumn(1);
+		this.assertTrue(ArrayUtils.isEquals(new double[] {0d, 2d}, rowd0));
+		this.assertTrue(ArrayUtils.isEquals(new double[] {6d, 7d}, rowd6));
+		this.assertTrue(ArrayUtils.isEquals(new double[] {0d, 1d, 2d, 3d, 5d, 4d, 6d}, cold0));
+		this.assertTrue(ArrayUtils.isEquals(new double[] {2d, 2d, 4d, 4d, 6d, 6d, 7d}, cold1));
 
+		//
 		//double2DView
 		this.assertEquals(2, double2DView.getColCount());
 		this.assertEquals(7, double2DView.getRowCount());
@@ -111,6 +133,27 @@ public class Data2DView_Test extends TestCase {
 		this.assertEquals(.4d, double2DView.getValue(0, 1).doubleValue());
 		this.assertEquals(.4d, double2DView.getDouble(0, 1), 0d);
 		this.assertEquals("c2", double2DView.getHeading(1));
+		
+		//--int rows and columns
+		row0 = double2DView.getIntRow(0);
+		row6 = double2DView.getIntRow(6);
+		col0 = double2DView.getIntColumn(0);
+		col1 = double2DView.getIntColumn(1);
+		this.assertTrue(ArrayUtils.isEquals(new int[] {0, 0}, row0));
+		this.assertTrue(ArrayUtils.isEquals(new int[] {0, 0}, row6));
+		this.assertTrue(ArrayUtils.isEquals(new int[] {0, 0, 0, 0, 0, 0, 0}, col0));
+		this.assertTrue(ArrayUtils.isEquals(new int[] {0, 0, 0, 0, 0, 0, 0}, col1));
+		//--double rows and columns
+		rowd0 = double2DView.getDoubleRow(0);
+		rowd6 = double2DView.getDoubleRow(6);
+		cold0 = double2DView.getDoubleColumn(0);
+		cold1 = double2DView.getDoubleColumn(1);
+		this.assertTrue(ArrayUtils.isEquals(new double[] {.3d, .4d}, rowd0));
+		this.assertTrue(ArrayUtils.isEquals(new double[] {.3d, .4d}, rowd6));
+		this.assertTrue(ArrayUtils.isEquals(new double[] {.3d, .3d, .3d, .3d, .3d, .3d, .3d}, cold0));
+		this.assertTrue(ArrayUtils.isEquals(new double[] {.4d, .4d, .4d, .4d, .4d, .4d, .4d}, cold1));
+		
+
 
 		//These tests are outside the column bound and should throw errors
 		try {
@@ -297,14 +340,14 @@ public class Data2DView_Test extends TestCase {
 	public void runfindById(Data2D data2D) throws Exception {
 
 
-		this.assertEquals(0, data2D.findRowById(12d));
-		this.assertEquals(1, data2D.findRowById(22d));
-		this.assertEquals(2, data2D.findRowById(32d));
-		this.assertEquals(3, data2D.findRowById(42d));
-		this.assertEquals(8, data2D.findRowById(92d));
+		this.assertEquals(0, data2D.findRowByIndex(12d));
+		this.assertEquals(1, data2D.findRowByIndex(22d));
+		this.assertEquals(2, data2D.findRowByIndex(32d));
+		this.assertEquals(3, data2D.findRowByIndex(42d));
+		this.assertEquals(8, data2D.findRowByIndex(92d));
 
 		//should not be found (-1)
-		this.assertEquals(-1, data2D.findRowById(99d));
+		this.assertEquals(-1, data2D.findRowByIndex(99d));
 		
 		
 		//
@@ -314,21 +357,21 @@ public class Data2DView_Test extends TestCase {
 			Data2DWritable d2dw = (Data2DWritable)data2D;
 			
 			d2dw.setValueAt(new Integer(99), 8, 0);
-			this.assertEquals(8, d2dw.findRowById(99d));
+			this.assertEquals(8, d2dw.findRowByIndex(99d));
 			
 			d2dw.setValueAt(new Integer(-1), 0, 0);
-			this.assertEquals(0, d2dw.findRowById(-1d));
+			this.assertEquals(0, d2dw.findRowByIndex(-1d));
 			
 			//
 			// Change the index to the 2nd column.
 			//
 			d2dw.setValueAt(new Integer(99), 0, 1);	//update one row b/f changing index
-			d2dw.setIdColumn(1);
-			this.assertEquals(0, d2dw.findRowById(99d));
-			this.assertEquals(1, d2dw.findRowById(23d));
-			this.assertEquals(2, d2dw.findRowById(33d));
-			this.assertEquals(3, d2dw.findRowById(43d));
-			this.assertEquals(8, d2dw.findRowById(93d));
+			d2dw.setIndexColumn(1);
+			this.assertEquals(0, d2dw.findRowByIndex(99d));
+			this.assertEquals(1, d2dw.findRowByIndex(23d));
+			this.assertEquals(2, d2dw.findRowByIndex(33d));
+			this.assertEquals(3, d2dw.findRowByIndex(43d));
+			this.assertEquals(8, d2dw.findRowByIndex(93d));
 		}
 	}
 

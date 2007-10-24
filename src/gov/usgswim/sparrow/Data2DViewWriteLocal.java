@@ -165,7 +165,7 @@ public class Data2DViewWriteLocal extends Data2DView implements Data2DWritable {
 		
 	}
 	
-	public void setIdColumn(int colIndex) {
+	public void setIndexColumn(int colIndex) {
 		synchronized (indexLock) {
 			if (indexCol != colIndex) {
 				indexCol = colIndex;

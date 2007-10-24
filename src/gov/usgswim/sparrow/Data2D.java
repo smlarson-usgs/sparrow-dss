@@ -116,6 +116,38 @@ public interface Data2D extends ImmutableBuilder<Data2D> {
 	public double[][] getDoubleData();
 	
 	/**
+	 * Returns a disconnected array of int values in a column.
+	 * 
+	 * @param col
+	 * @return
+	 */
+	public int[] getIntColumn(int col);
+	
+	/**
+	 * Returns a disconnected array of double values in a column.
+	 * 
+	 * @param col
+	 * @return
+	 */
+	public double[] getDoubleColumn(int col);
+	
+	/**
+	 * Returns a disconnected array of int values in a row.
+	 * 
+	 * @param row
+	 * @return
+	 */
+	public int[] getIntRow(int row);
+	
+	/**
+	 * Returns a disconnected array of double values in a row.
+	 * 
+	 * @param row
+	 * @return
+	 */
+	public double[] getDoubleRow(int row);
+	
+	/**
 	 * The number of rows in the data array.  Null Safe.
 	 * @return
 	 */
@@ -209,16 +241,50 @@ public interface Data2D extends ImmutableBuilder<Data2D> {
 	 * The ID column should contain unique values or the results will be undefined.
 	 * @return
 	 */
-	public int getIdColumn();
+	public int getIndexColumn();
 	
 	/**
-	 * Returns the zero based row index of the row with the specified srcId.
+	 * Returns the zero based row index of the row based on an indexed column.
 	 *
+	 * Only one column can be indexed and it is the column returned by getIndexColumn.
+	 * If no row is found, -1 is returned.
+	 *
+	 * @param indexValue
+	 * @return
+	 */
+	public int findRowByIndex(Double indexValue);
+	
+	/**
+	 * Returns the zero based row index of the row with the ID.
+	 *
+	 * IDs are differnt than an index.  An indexed column is part of the regular
+	 * addressable data.  ID values are not part of the data array and are
+	 * specified separately.
+	 * 
 	 * If no row is found, -1 is returned.
 	 *
 	 * @param id
 	 * @return
 	 */
-	public int findRowById(Double id);
+	public int findRowById(Integer id);
+	
+	/**
+	 * Returns the ID for the passed row.
+	 * 
+	 * If IDs are not defined (or not defined for this row), null is returned.
+	 * 
+	 * @param row
+	 * @return
+	 */
+	public Integer getIdForRow(int row);
+	
+	/**
+	 * Returns a disconnected array of IDs for the rows, if they exist.
+	 * 
+	 * This method returns null if no IDs have been assigned.
+	 * 
+	 * @return
+	 */
+	public int[] getRowIds();
 	
 }

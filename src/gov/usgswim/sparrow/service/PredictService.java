@@ -8,7 +8,11 @@ import gov.usgswim.sparrow.AdjustmentSetImm;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DPercentCompare;
 import gov.usgswim.sparrow.Data2DView;
+import gov.usgswim.sparrow.Double2DImm;
+import gov.usgswim.sparrow.Int2DImm;
 import gov.usgswim.sparrow.PredictRequest;
+
+import gov.usgswim.sparrow.PredictResult;
 
 import java.io.OutputStream;
 
@@ -69,17 +73,36 @@ public class PredictService implements HttpRequestHandler<PredictServiceRequest>
 	
 	public void dispatch(PredictServiceRequest req, OutputStream outStream) throws Exception {
 																																 
-		synchronized (factoryLock) {
-			if (xoFact == null) {
-				xoFact = WstxOutputFactory.newInstance();
-			}
-		}
-		
 		Data2D result = runPrediction(req);
+		result = filterResults(result, req);
 
 		PredictSerializer ps = new PredictSerializer();
 		ps.writeResponse(outStream, req, result);
-
+		//TODO CLOSE STREAM?
+	}
+	
+	//TODO Not tested
+	public Data2D filterResults(Data2D data, PredictServiceRequest req) throws Exception {
+	
+		if (req.getIdByPointRequest() != null) {
+		
+			//The IDByPointRequest returns data w/ reach Ids as IDs in the Data2D
+			int[] rowIds = SharedApplication.getInstance().getIdByPointCache().compute(req.getIdByPointRequest()).getRowIds();
+			
+			double[][] newData = new double[rowIds.length][];
+			
+			for (int index=0; index<rowIds.length; index++) {
+				int rowId = rowIds[index];
+				int rowIndex = data.findRowById(rowId);
+				double[] rowData = data.getDoubleRow(rowIndex);
+				newData[index] = rowData;
+			}
+			
+			return new Double2DImm(newData, data.getHeadings(), data.getIndexColumn(), rowIds);
+			
+		} else {
+			return data;
+		}
 	}
 	
 	public Data2D runPrediction(PredictServiceRequest req) {
@@ -90,13 +113,13 @@ public class PredictService implements HttpRequestHandler<PredictServiceRequest>
 
 		try {
 
-			Data2D adjResult = SharedApplication.getInstance().getPredictResultCache().compute(req.getPredictRequest());
+			PredictResult adjResult = SharedApplication.getInstance().getPredictResultCache().compute(req.getPredictRequest());
 			
 			if (req.getPredictType().isComparison()) {
 				//need to run the base prediction and the adjusted prediction
 				AdjustmentSetImm noAdj = new AdjustmentSetImm();
 				PredictRequest noAdjRequest = new PredictRequest(modelId, noAdj);
-				Data2D noAdjResult = SharedApplication.getInstance().getPredictResultCache().compute(noAdjRequest);
+				PredictResult noAdjResult = SharedApplication.getInstance().getPredictResultCache().compute(noAdjRequest);
 	
 				result = new Data2DPercentCompare(
 						noAdjResult, adjResult,
@@ -109,7 +132,7 @@ public class PredictService implements HttpRequestHandler<PredictServiceRequest>
 			
 			log.debug("Predict service done for model #" + modelId + " (" + result.getRowCount() + " rows) Time: " + (System.currentTimeMillis() - startTime) + "ms");
 			
-			if (req.getDataSeries() == gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.ALL) {
+			if (req.getDataSeries() == PredictServiceRequest.DataSeries.ALL) {
 				//return all results
 				return result;
 			} else if (req.getDataSeries().getAggColumnIndex() > -1){

@@ -13,7 +13,7 @@
 	
 	<response-options>
 		<result-filter>
-			<near-point number-of-results="5">
+			<near-point result-count="5">
 				<point lat="40" long="-100"/>
 			</near-point>
 		</result-filter>

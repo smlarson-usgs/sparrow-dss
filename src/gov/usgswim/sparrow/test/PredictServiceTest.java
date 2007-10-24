@@ -87,8 +87,8 @@ public class PredictServiceTest extends TestCase {
 		PredictServiceRequest req = parser.parse(xsr);
 		
 		this.assertEquals(gov.usgswim.sparrow.service.PredictServiceRequest.ResponseFilter.NEAR_POINT, req.getResponseType());
-		this.assertEquals(5, req.getNumberOfResults());
-		this.assertEquals(point, req.getFilterPoint());
+		this.assertEquals(5, req.getIdByPointRequest().getNumberOfResults());
+		this.assertEquals(point, req.getIdByPointRequest().getPoint());
 		this.assertEquals(gov.usgswim.sparrow.service.PredictServiceRequest.PredictType.PERC_CHG_FROM_NOMINAL, req.getPredictType());
 		this.assertEquals(gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.INCREMENTAL_ADD, req.getDataSeries());
 		

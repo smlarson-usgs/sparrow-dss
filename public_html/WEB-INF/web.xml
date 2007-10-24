@@ -25,6 +25,18 @@
 		<param-value>gov.usgswim.sparrow.service.PredictParser</param-value>
 	</init-param>
  </servlet>
+ <servlet>
+  <servlet-name>IDByPointService</servlet-name>
+  <servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
+	<init-param>
+		<param-name>handler-class</param-name>
+		<param-value>gov.usgswim.sparrow.service.IDByPointService</param-value>
+	</init-param>
+	<init-param>
+		<param-name>parser-class</param-name>
+		<param-value>gov.usgswim.sparrow.service.IDByPointParser</param-value>
+	</init-param>
+ </servlet>
  <servlet-mapping>
   <servlet-name>ModelService</servlet-name>
   <url-pattern>/sp_model/*</url-pattern>
@@ -32,6 +44,10 @@
  <servlet-mapping>
   <servlet-name>PredictService</servlet-name>
   <url-pattern>/sp_predict/*</url-pattern>
+ </servlet-mapping>
+ <servlet-mapping>
+  <servlet-name>IDByPointService</servlet-name>
+  <url-pattern>/sp_idpoint/*</url-pattern>
  </servlet-mapping>
  <session-config>
 		<session-timeout>35</session-timeout>

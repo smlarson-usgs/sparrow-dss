@@ -2,14 +2,15 @@ package gov.usgswim.service;
 
 import gov.usgswim.ThreadSafe;
 
+
 import java.io.IOException;
 
 import java.io.StringReader;
 
-import javax.servlet.ServletException;
+import java.util.StringTokenizer;
+
 import javax.servlet.http.HttpServletRequest;
 
-import javax.servlet.http.HttpServletResponse;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -34,7 +35,7 @@ public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<
 	 */
 	protected Object PARAM_NAME_LOCK = new Object();
 	
-	private String _paramName;
+	private String _paramName;	//TODO Shouldn't this have a default?
 	
 	protected XMLInputFactory inFact;
 	
@@ -47,6 +48,17 @@ public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<
 		inFact.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
 
 	}
+	
+	public T parse(HttpServletRequest request) throws Exception {
+		XMLStreamReader reader = getXMLStream(request);
+		return parse(reader);
+	}
+
+	public T parse(String in) throws Exception {
+		XMLStreamReader reader = getXMLStream(in);
+		return parse(reader);
+	}
+	
 
 	//@Override
 	//public abstract T parse(HttpServletRequest request) throws Exception;
@@ -128,7 +140,7 @@ public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<
 	public static int parseAttribAsInt(
 			XMLStreamReader reader, String attrib) throws Exception {
 			
-		return parseAttribAsInt(reader, attrib, true);
+		return (int) parseAttribAsLong(reader, attrib, true);
 	}
 	
 	/**
@@ -145,25 +157,34 @@ public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<
 	public static Integer parseAttribAsInt(
 			XMLStreamReader reader, String attrib, boolean require) throws Exception {
 		
-		String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
-		
+		Long v = parseAttribAsLong(reader, attrib, require);
 		if (v != null) {
-			int iv = 0;
-			
-			try {
-				return Integer.parseInt(v);
-			} catch (Exception e) {
-				throw new Exception("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be an integer");
-			}
-			
-		} else if (require) {
-			throw new Exception("The '" + attrib + "' attribute must exist for element '" + reader.getLocalName() + "'");
+			return v.intValue();
 		} else {
 			return null;
 		}
-		
 	}
 	
+	/**
+	 * Returns the Integer value found in the specified attribute of the current
+	 * element.  If the attribute does not exist, the default value is returned.
+	 * 
+	 * @param reader
+	 * @param attrib
+	 * @param defaultVal Returned if the specified attribute does not exist.
+	 * @return
+	 * @throws Exception If the attribute cannot be parsed to the appropriate type.
+	 */
+	public static Integer parseAttribAsInt(
+			XMLStreamReader reader, String attrib, Integer defaultVal) throws Exception {
+		
+		Long v = parseAttribAsLong(reader, attrib, (long) defaultVal);
+		if (v != null) {
+			return v.intValue();
+		} else {
+			return null;
+		}
+	}
 	
 	/**
 	 * Returns the double value found in the specified attribute of the current
@@ -215,6 +236,34 @@ public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<
 	}
 	
 	/**
+	 * Returns the Double value found in the specified attribute of the current
+	 * element.  If the attribute does not exist, the default value is returned.
+	 * 
+	 * @param reader
+	 * @param attrib
+	 * @param defaultVal Returned if the specified attribute does not exist.
+	 * @return
+	 * @throws Exception If the attribute cannot be parsed to the appropriate type.
+	 */
+	public static Double parseAttribAsDouble(
+			XMLStreamReader reader, String attrib, Double defaultVal) throws Exception {
+		
+		String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
+		
+		if (v != null) {
+			try {
+				return Double.parseDouble(v);
+			} catch (Exception e) {
+				throw new Exception("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be a number");
+			}
+			
+		} else {
+			return defaultVal;
+		}
+		
+	}
+	
+	/**
 	 * Returns the long value found in the specified attribute of the current
 	 * element.  If the attribute does not exist or cannot be parsed as a number,
 	 * an error is thrown.
@@ -247,12 +296,10 @@ public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<
 		String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
 		
 		if (v != null) {
-			int iv = 0;
-			
 			try {
 				return Long.parseLong(v);
 			} catch (Exception e) {
-				throw new Exception("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be a long integer");
+				throw new Exception("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be an integer");
 			}
 			
 		} else if (require) {
@@ -262,4 +309,149 @@ public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<
 		}
 		
 	}
+	
+	/**
+	 * Returns the Long value found in the specified attribute of the current
+	 * element.  If the attribute does not exist, the default value is returned.
+	 * 
+	 * @param reader
+	 * @param attrib
+	 * @param defaultVal Returned if the specified attribute does not exist.
+	 * @return
+	 * @throws Exception If the attribute cannot be parsed to the appropriate type.
+	 */
+	public static Long parseAttribAsLong(
+			XMLStreamReader reader, String attrib, Long defaultVal) throws Exception {
+		
+		String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
+		
+		if (v != null) {
+			try {
+				return Long.parseLong(v);
+			} catch (Exception e) {
+				throw new Exception("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be an integer");
+			}
+			
+		} else {
+			return defaultVal;
+		}
+		
+	}
+	
+	/**
+	 * Returns the double value found in the specified parameter of the HTTPRequest.
+	 * If the parameter does not exist or cannot be parsed as a number, an error is thrown.
+	 * 
+	 * @param req
+	 * @param name
+	 * @return
+	 * @throws Exception If the value cannot be converted to a Double
+	 */
+	public static double parseParamAsDouble(HttpServletRequest req, String name) throws Exception {
+		return parseParamAsDouble(req, name, true);
+	}
+	
+	/**
+	 * Returns the double value found in the specified parameter of the HTTPRequest.
+	 * If require is true and the parameter does not exist, an error
+	 * is thrown.  If the parameter does not exist or is empty and
+	 * require is not true, null is returned.
+	 * 
+	 * @param req
+	 * @param name
+	 * @param require
+	 * @return
+	 * @throws Exception If the value cannot be converted to a Double
+	 */
+	public static Double parseParamAsDouble(HttpServletRequest req, String name, boolean require) throws Exception {
+	
+		String v = req.getParameter(name);
+		
+		if (v != null) {
+			try {
+				return Double.parseDouble(v);
+			} catch (Exception e) {
+				throw new Exception("The '" + name + "' parameter could not be converted to an integer");
+			}
+			
+		} else if (require) {
+			throw new Exception("A double (decimal) '" + name + "' parameter is required as part of the request");
+		} else {
+			return null;
+		}
+			
+	}
+	
+	/**
+	 * Returns the double value found in the specified parameter of the HTTPRequest.
+	 * If the attribute does not exist, the default value is returned.
+	 * 
+	 * @param req
+	 * @param name
+	 * @param defaultVal
+	 * @return
+	 * @throws Exception If the value cannot be converted to a Double
+	 */
+	public static Double parseParamAsDouble(HttpServletRequest req, String name, Double defaultVal) throws Exception {
+		String v = req.getParameter(name);
+		
+		if (v != null) {
+			try {
+				return Double.parseDouble(v);
+			} catch (Exception e) {
+				throw new Exception("The '" + name + "' parameter could not be converted to an double (decimal)");
+			}
+		} else {
+			return defaultVal;
+		}
+	}
+	
+	public static long parseParamAsLong(HttpServletRequest req, String name) throws Exception {
+		return parseParamAsLong(req, name, true);
+	}
+	
+	public static Long parseParamAsLong(HttpServletRequest req, String name, boolean require) throws Exception {
+	
+		String v = req.getParameter(name);
+		
+		if (v != null) {
+			try {
+				return Long.parseLong(v);
+			} catch (Exception e) {
+				throw new Exception("The '" + name + "' parameter could not be converted to an integer");
+			}
+			
+		} else if (require) {
+			throw new Exception("An integer '" + name + "' parameter is required as part of the request");
+		} else {
+			return null;
+		}
+			
+	}
+	
+	public static Long parseParamAsLong(HttpServletRequest req, String name, Long defaultVal) throws Exception {
+		String v = req.getParameter(name);
+		
+		if (v != null) {
+			try {
+				return Long.parseLong(v);
+			} catch (Exception e) {
+				throw new Exception("The '" + name + "' parameter could not be converted to an integer");
+			}
+		} else {
+			return defaultVal;
+		}
+	}
+	
+	/**
+	 * Splits the extra path into pieces separated by '/'
+	 * 
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public static String[] parseExtraPath(HttpServletRequest request) throws Exception {
+		return StringUtils.split(request.getPathInfo(), '/');
+	}
+
 }

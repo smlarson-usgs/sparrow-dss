@@ -122,18 +122,18 @@ public class Data2DView implements Data2D {
 	public boolean isDoubleData() { return data.isDoubleData(); }
 	
 	public Data2D getImmutable() {
-		return buildDoubleImmutable(getIdColumn());
+		return buildDoubleImmutable(getIndexColumn());
 	}
 	
 	public Data2D buildIntImmutable(int indexCol) {
-		return new Int2DImm(getIntData(), getHeadings(), indexCol);
+		return new Int2DImm(getIntData(), getHeadings(), indexCol, getRowIds());
 	}
 	
 	public Data2D buildDoubleImmutable(int indexCol) {
 		if (isDoubleData()) {
-			return new Double2DImm(getDoubleData(), getHeadings(), indexCol);
+			return new Double2DImm(getDoubleData(), getHeadings(), indexCol, getRowIds());
 		} else {
-			return new Int2DImm(getIntData(), getHeadings(), indexCol);
+			return new Int2DImm(getIntData(), getHeadings(), indexCol, getRowIds());
 		}
 	}
 	
@@ -316,12 +316,12 @@ public class Data2DView implements Data2D {
 	  }
 	}
 
-	public int getIdColumn() {
+	public int getIndexColumn() {
 		return indexCol;
 	}
 	
 
-	public int findRowById(Double id) {
+	public int findRowByIndex(Double id) {
 		
 		synchronized (indexLock) {
 		
@@ -355,5 +355,81 @@ public class Data2DView implements Data2D {
 				idIndex = map;
 			}
 		}
+	}
+
+	public int findRowById(Integer id) {
+		int r = data.findRowById(id);
+		if (r != -1) {
+			if (r >= firstRow && r < lastRow) {
+				return r - firstRow;
+			} else {
+				return -1;
+			}
+		} else {
+			return -1;
+		}
+	}
+
+	public Integer getIdForRow(int row) {
+	  row+=firstRow;
+	  if (row < lastRow) {
+			return data.getIdForRow(row);
+	  } else {
+	    throw new IndexOutOfBoundsException("The row " + (row - firstRow) + " exceeds the data bounds");
+	  }
+	}
+	
+	public int[] getRowIds() {
+		if (getRowCount() == 0) {
+			return ArrayUtils.EMPTY_INT_ARRAY;
+		} else if (getIdForRow(0) != null) {
+		
+			int[] newIds = new int[rowCount];
+			
+			for (int i = 0; i < rowCount; i++)  {
+				newIds[i] = getIdForRow(i);
+			}
+			
+			return newIds;
+		} else {
+			return null;
+		}
+	}
+	
+	public int[] getIntColumn(int col) {
+		
+		int[] newData = new int[rowCount];
+		for (int i=0; i<rowCount; i++) {
+			newData[i] = getInt(i, col);
+		}
+		return newData;
+	}
+
+	public double[] getDoubleColumn(int col) {
+
+		double[] newData = new double[rowCount];
+		for (int i=0; i<rowCount; i++) {
+			newData[i] = getDouble(i, col);
+		}
+		return newData;
+	}
+
+	public int[] getIntRow(int row) {
+
+		int[] newData = new int[colCount];
+		for (int i=0; i<colCount; i++) {
+			newData[i] = getInt(row, i);
+		}
+		return newData;
+	}
+
+	public double[] getDoubleRow(int row) {
+
+		double[] newData = new double[colCount];
+		
+		for (int i=0; i<colCount; i++) {
+			newData[i] = getDouble(row, i);
+		}
+		return newData;
 	}
 }

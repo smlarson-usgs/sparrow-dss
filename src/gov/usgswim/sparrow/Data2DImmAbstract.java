@@ -3,6 +3,8 @@ package gov.usgswim.sparrow;
 
 import gov.usgswim.Immutable;
 
+import java.util.HashMap;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
@@ -25,11 +27,33 @@ public abstract class Data2DImmAbstract implements Data2D {
 	//Not immutable, but threadsafe
 	private volatile Double maxValue;
 	
-	public Data2DImmAbstract(int rowCount, int colCount, String[] headings, int indexCol) {
+	//IDs and a map to index them.  Not volitile b/c it is supposed to be unchanging
+	private HashMap<Integer, Integer> _idMap;
+	private int[] _ids;
+	
+	/**
+	 * Constructs a new instance w/ all values specified.
+	 * 
+	 * @param rowCount
+	 * @param colCount
+	 * @param headings
+	 * @param indexCol
+	 * @param ids
+	 */
+	public Data2DImmAbstract(int rowCount, int colCount, String[] headings, int indexCol, int[] ids) {
 		_rowCount = rowCount;
 		_colCount = colCount;
 		_head = headings;
 		_indexCol = indexCol;
+		_ids = ids;
+		
+		if (_ids != null) {
+			if (_ids.length != getRowCount()) {
+				throw new IllegalArgumentException("The length of the ID array must equal the number of rows in the data.");
+			}
+			
+			rebuildIdMap();
+		}
 	}
 	
 	
@@ -136,8 +160,55 @@ public abstract class Data2DImmAbstract implements Data2D {
 		return -1;
 	}
 
-	public int getIdColumn() {
+	public int getIndexColumn() {
 		return _indexCol;
+	}
+	
+	private synchronized void rebuildIdMap() {
+		int rCount = getRowCount();
+
+		if (_ids != null) {
+			
+			HashMap<Integer, Integer> map = new HashMap<Integer, Integer>(rCount, 1.1f);
+			
+			for (int r = 0; r < rCount; r++)  {
+				map.put(_ids[r], r);
+			}
+			
+			_idMap = map;
+
+		}
+	}
+
+	public int findRowById(Integer id) {
+		if (_idMap != null) {
+			Integer r = _idMap.get(id);
+			if (r != null) {
+				return r;
+			} else {
+				return -1;
+			}
+		} else {
+			return -1;
+		}
+	}
+
+	public Integer getIdForRow(int row) {
+		if (_ids != null) {
+			return _ids[row];
+		} else {
+			return null;
+		}
+	}
+	
+	public int[] getRowIds() {
+		if (_ids != null) {
+			int[] newIds = new int[_ids.length];
+			System.arraycopy(_ids, 0, newIds, 0, _ids.length);
+			return newIds;
+		} else {
+			return null;
+		}
 	}
 	
 }

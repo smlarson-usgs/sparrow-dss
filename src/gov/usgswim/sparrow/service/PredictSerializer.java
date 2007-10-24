@@ -89,6 +89,7 @@ public class PredictSerializer extends AbstractSerializer {
 
 			for (int r = 0; r < result.getRowCount(); r++)  {
 				xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "r") );
+				xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, "id", Integer.toString(result.getIdForRow(r))) );
 				for (int c = 0; c < result.getColCount(); c++)  {
 					writeElemEvent(xw, "c", Double.toString(result.getDouble(r, c)));
 				}

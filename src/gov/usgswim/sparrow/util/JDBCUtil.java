@@ -772,6 +772,7 @@ public class JDBCUtil {
 	/**
 	 * Returns a Int2D table of all System info
 	 * <h4>Data Columns, sorted by HYDSEQ.  One row per reach (i = reach index)</h4>
+	 * <p>Row IDs duplicate the Reach Ids in column zero.</p>
 	 * <ol>
 	 * <li>[i][0] REACH_ID - The system id for the reach (db unique id)
 	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number
@@ -788,7 +789,9 @@ public class JDBCUtil {
 		String query =
 			"SELECT MODEL_REACH_ID as MODEL_REACH, HYDSEQ FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY HYDSEQ";
 	
-		return readAsInteger(conn, query, 2000, 0);
+		Int2DImm data = readAsInteger(conn, query, 2000, -1);
+		int[] ids = data.getIntColumn(0);
+		return new Int2DImm(data.getIntData(), data.getHeadings(), 0, ids);
 		
 	}
 	
@@ -1209,7 +1212,7 @@ public class JDBCUtil {
 			data[i] = (int[]) list.get(i);
 		}
 		
-		Int2DImm data2D = new Int2DImm(data, headings, indexCol);
+		Int2DImm data2D = new Int2DImm(data, headings, indexCol, null);
 		
 		return data2D;
 	}

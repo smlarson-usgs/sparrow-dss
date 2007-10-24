@@ -129,7 +129,7 @@ public class SourceAdjustments_Test extends TestCase {
 	
 	public void testSetGrossAndSpecificAdjustment() throws Exception {
 		
-		Data2D reachIndex = new Int2DImm(rowIndexData, null, 0);
+		Data2D reachIndex = new Int2DImm(rowIndexData, null, 0, null);
 		String adjustString = "1,.5, 4,.1, 7,1, 8,0, 9,0 10,.5";
 		Map adjMap = new HashMap(11);
 		adjMap.put(AdjustmentType.GROSS_SRC_ADJUST.toString(), adjustString);

@@ -130,7 +130,7 @@ public class PredictDataImm implements PredictData {
 	public int mapSourceId(int id) throws Exception {
 		if (srcIds != null) {
 		
-			int i = srcIds.findRowById((double)id);
+			int i = srcIds.findRowByIndex((double)id);
 
 			if (i > -1) {
 				return i;

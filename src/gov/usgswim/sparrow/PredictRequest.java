@@ -60,8 +60,7 @@ public class PredictRequest {
 
 	public boolean equals(Object object) {
 		if (object instanceof PredictRequest) {
-			PredictRequest that = (PredictRequest) object;
-			return this.hashCode() == that.hashCode();
+			return this.hashCode() == object.hashCode();
 		} else {
 			return false;
 		}

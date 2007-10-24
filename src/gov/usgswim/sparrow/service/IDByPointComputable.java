@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.service;
 
+import gov.usgswim.sparrow.Data2D;
+import gov.usgswim.sparrow.Data2DView;
 import gov.usgswim.task.Computable;
 import gov.usgswim.sparrow.Int2DImm;
 import gov.usgswim.sparrow.util.JDBCUtil;
@@ -41,17 +43,24 @@ public class IDByPointComputable implements Computable<IDByPointRequest, Int2DIm
 			conn = SharedApplication.getInstance().getConnection();
 			
 			long startTime = System.currentTimeMillis();
-			log.debug("Begin loading ID by point data for model #" + req.getModelId() + " for point x: " + req.getPoint().x + " y: " + req.getPoint().y);
 			
 			String query = buildQuery(req);
 			
 			if (log.isDebugEnabled()) {
-				log.debug("loading ID by point query: " + query);
+				log.debug("Begin ID by point query for model #" + req.getModelId() + " long: " + req.getPoint().x + " lat: " + req.getPoint().y + " query: " + query);
 			}
 			
+			//Load the data
 			data = JDBCUtil.readAsInteger(conn, query, 100);
 			
-			log.debug("End loading predict data for model #" + req.getModelId() + "  Time: " + (System.currentTimeMillis() - startTime) + "ms");
+			//data has reach IDs in the first column and distances in the 2nd.
+			//Convert to reachIDs as actual IDs and distance in the first column
+			int[] ids = data.getIntColumn(0);	//IDs are in column zero
+			Data2D view = new Data2DView(data, 1, 1);	//Create view of only 2nd column (column 1)
+			int[][] intData = view.getIntData();	//Grab the data array of the view's data
+			data = new Int2DImm(intData, view.getHeadings(), -1, ids);
+			
+			log.debug("End ID by point query for model #" + req.getModelId() + "  Time: " + (System.currentTimeMillis() - startTime) + "ms");
 			
 		} finally {
 			if (conn != null) {
@@ -80,7 +89,7 @@ public class IDByPointComputable implements Computable<IDByPointRequest, Int2DIm
 			"			NULL, NULL), 0.00005, 'unit=M'),4) Dist_In_Meters \n" +
 			"	FROM all_geom_vw \n" +
 			"	WHERE \n" +
-			"	sparrow_model_id = 22 and \n" +
+			"	sparrow_model_id = " + req.getModelId() + " and \n" +
 			"	SDO_FILTER(reach_geom, SDO_GEOMETRY(2003, 8307, NULL, SDO_ELEM_INFO_ARRAY(1,1003,3), " +
 			"	SDO_ORDINATE_ARRAY(" + (x - 2) + "," + (y - 2) + "," + (x + 2) +"," + (y + 2) + "))) = 'TRUE' \n" +
 			" ORDER BY Dist_In_Meters \n" +

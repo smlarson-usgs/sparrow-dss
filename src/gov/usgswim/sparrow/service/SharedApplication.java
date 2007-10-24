@@ -2,9 +2,10 @@ package gov.usgswim.sparrow.service;
 
 import gov.usgswim.sparrow.PredictComputable;
 import gov.usgswim.task.ComputableCache;
-import gov.usgswim.sparrow.Double2DImm;
+import gov.usgswim.sparrow.Int2DImm;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
+import gov.usgswim.sparrow.PredictResult;
 import gov.usgswim.sparrow.util.DataSourceProxy;
 import gov.usgswim.sparrow.util.JDBCConnectable;
 
@@ -24,16 +25,18 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	private String dsName = "jdbc/sparrowDSDS";
 	private DataSource datasource;
 	private boolean lookupFailed = false;
-	private ComputableCache<PredictRequest, Double2DImm> predictResultCache;
+	private ComputableCache<PredictRequest, PredictResult> predictResultCache;
 	private ComputableCache<Long, PredictData> predictDatasetCache;
+	private ComputableCache<IDByPointRequest, Int2DImm> idByPointCache;
 	private ComputableCache metadataCache;
 	
 	
 	private SharedApplication() {
 		super(null);
 		
-		predictResultCache = new ComputableCache<PredictRequest, Double2DImm>(new PredictComputable());
+		predictResultCache = new ComputableCache<PredictRequest, PredictResult>(new PredictComputable());
 		predictDatasetCache = new ComputableCache<Long, PredictData>(new PredictDatasetComputable());
+		idByPointCache = new ComputableCache<IDByPointRequest, Int2DImm>(new IDByPointComputable());
 	}
 	
 	public static synchronized SharedApplication getInstance() {
@@ -87,11 +90,15 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		return DriverManager.getConnection(thinConn,username,password);
 	}
 
-	public ComputableCache<PredictRequest, Double2DImm> getPredictResultCache() {
+	public ComputableCache<PredictRequest, PredictResult> getPredictResultCache() {
 		return predictResultCache;
 	}
 
 	public ComputableCache<Long, PredictData> getPredictDatasetCache() {
 		return predictDatasetCache;
+	}
+	
+	public ComputableCache<IDByPointRequest, Int2DImm> getIdByPointCache() {
+		return idByPointCache;
 	}
 }

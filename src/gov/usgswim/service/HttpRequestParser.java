@@ -33,4 +33,5 @@ public interface HttpRequestParser<T> extends RequestParser<T> {
 	 * @return
 	 */
 	public String getXmlParam();
+	
 }

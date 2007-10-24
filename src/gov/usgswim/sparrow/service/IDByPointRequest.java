@@ -2,7 +2,11 @@ package gov.usgswim.sparrow.service;
 
 import gov.usgswim.Immutable;
 
+import gov.usgswim.sparrow.PredictRequest;
+
 import java.awt.Point;
+
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 
 /**
@@ -16,6 +20,8 @@ public class IDByPointRequest {
 	private final Point.Double _point;
 	private final int _numberOfResults;
 	private final Long _modelId;
+	
+	private Integer hash;	//Not strictly threadsafe, but recalculation is cheap and non-destructive
 	
 	/**
 	 * Constructs a new request instance.
@@ -41,5 +47,26 @@ public class IDByPointRequest {
 	
 	public Point.Double getPoint() {
 		return _point;
+	}
+	
+	public boolean equals(Object object) {
+		if (object instanceof IDByPointRequest) {
+			return this.hashCode() == object.hashCode();
+		} else {
+			return false;
+		}
+	}
+
+	public int hashCode() {
+		//starts w/ some random numbers just to create unique results
+		if (hash == null) {
+			hash = new HashCodeBuilder(46517, 40116971).
+				append(_modelId).
+				append(_point).
+				append(_numberOfResults).
+				toHashCode();
+		}
+		
+		return hash;
 	}
 }

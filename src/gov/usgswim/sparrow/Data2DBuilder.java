@@ -15,7 +15,11 @@ public class Data2DBuilder implements Data2DWritable {
 	
 	private Object indexLock = new Object();
 	private volatile int indexCol = -1;
-	private volatile HashMap<Double, Integer> idIndex;
+	private volatile HashMap<Double, Integer> indexMap;
+	
+	//IDs and a map to index them.  Not volitile b/c it is supposed to be unchanging
+	private HashMap<Integer, Integer> _idMap;
+	private int[] _ids;
 	
 
 	/**
@@ -31,6 +35,28 @@ public class Data2DBuilder implements Data2DWritable {
 	}
 	
 	/**
+	 * Constructor that keeps the passed array as its underlying data.
+	 * 
+	 * Do not make changes to the passed array after calling this constructor.
+	 * @param data
+	 * @param headings
+	 * @param ids an array of IDs with length equals to the number of rows.
+	 */
+	public Data2DBuilder(double[][] data, String[] headings, int[] ids) {
+		_data = data;
+		_head = headings;
+		_ids = ids;
+		
+		if (_ids != null) {
+			if (_ids.length != getRowCount()) {
+				throw new IllegalArgumentException("The length of the ID array must equal the number of rows in the data.");
+			}
+			
+			rebuildIdMap();
+		}
+	}
+	
+	/**
 	 * Constructor that copies the passed data - changes are not reflected back to
 	 * the passed array.
 	 * @param data
@@ -39,6 +65,27 @@ public class Data2DBuilder implements Data2DWritable {
 	public Data2DBuilder(int[][] data, String[] headings) {
 		_data = Data2DUtil.copyToDoubleData(data);
 		_head = headings;
+	}
+	
+	/**
+	 * Constructor that copies the passed data - changes are not reflected back to
+	 * the passed array.
+	 * @param data
+	 * @param headings
+	 * @param ids an array of IDs with length equals to the number of rows.
+	 */
+	public Data2DBuilder(int[][] data, String[] headings, int[] ids) {
+		_data = Data2DUtil.copyToDoubleData(data);
+		_head = headings;
+		_ids = ids;
+		
+		if (_ids != null) {
+			if (_ids.length != getRowCount()) {
+				throw new IllegalArgumentException("The length of the ID array must equal the number of rows in the data.");
+			}
+			
+			rebuildIdMap();
+		}
 	}
 	
 	/**
@@ -63,17 +110,17 @@ public class Data2DBuilder implements Data2DWritable {
 	public boolean isDoubleData() { return true; }
 	
 	public Data2D getImmutable() {
-		return buildDoubleImmutable(getIdColumn());
+		return buildDoubleImmutable(getIndexColumn());
 	}
 	
 	public Data2D buildIntImmutable(int indexCol) {
 		int[][] newData = Data2DUtil.copyToIntData(_data);
-		return new Int2DImm(newData, getHeadings(), indexCol);
+		return new Int2DImm(newData, getHeadings(), indexCol, getRowIds());
 	}
 	
 	public Data2D buildDoubleImmutable(int indexCol) {
 		double[][] newData = Data2DUtil.copyToDoubleData(_data);
-		return new Double2DImm(newData, getHeadings(), indexCol);
+		return new Double2DImm(newData, getHeadings(), indexCol, getRowIds());
 	}
 	
 	public int[][] getIntData() {
@@ -157,8 +204,8 @@ public class Data2DBuilder implements Data2DWritable {
 			synchronized (indexLock) {
 				double oldIndexVal = _data[r][c];
 				
-				idIndex.remove(oldIndexVal);
-				idIndex.put(v, r);
+				indexMap.remove(oldIndexVal);
+				indexMap.put(v, r);
 				
 				_data[r][c] = v;
 			}
@@ -305,7 +352,7 @@ public class Data2DBuilder implements Data2DWritable {
 		return -1;
 	}
 	
-	public void setIdColumn(int colIndex) {
+	public void setIndexColumn(int colIndex) {
 		synchronized (indexLock) {
 			if (indexCol != colIndex) {
 				indexCol = colIndex;
@@ -313,23 +360,23 @@ public class Data2DBuilder implements Data2DWritable {
 				if (indexCol != -1) {
 					rebuildIndex();
 				} else {
-					idIndex = null;
+					indexMap = null;
 				}
 			}
 		}
 	}
 	
 
-	public int getIdColumn() {
+	public int getIndexColumn() {
 		return indexCol;
 	}
 	
 
-	public int findRowById(Double id) {
+	public int findRowByIndex(Double id) {
 		
 		synchronized (indexLock) {
 			if (indexCol != -1) {
-				Integer i = idIndex.get(id);
+				Integer i = indexMap.get(id);
 				if (i != null) {
 					return i;
 				} else {
@@ -351,8 +398,93 @@ public class Data2DBuilder implements Data2DWritable {
 				map.put(getDouble(i, indexCol), i);
 			}
 			
-			idIndex = map;
+			indexMap = map;
+		}
+	}
+	
+	private synchronized void rebuildIdMap() {
+		int rCount = getRowCount();
+
+		if (_ids != null) {
+			
+			HashMap<Integer, Integer> map = new HashMap<Integer, Integer>(rCount, 1.1f);
+			
+			for (int r = 0; r < rCount; r++)  {
+				map.put(_ids[r], r);
+			}
+			
+			_idMap = map;
+
 		}
 	}
 
+	public int findRowById(Integer id) {
+		if (_idMap != null) {
+			Integer r = _idMap.get(id);
+			if (r != null) {
+				return r;
+			} else {
+				return -1;
+			}
+		} else {
+			return -1;
+		}
+	}
+
+	public Integer getIdForRow(int row) {
+		if (_ids != null) {
+			return _ids[row];
+		} else {
+			return null;
+		}
+	}
+
+	public int[] getRowIds() {
+		if (_ids != null) {
+			int[] newIds = new int[_ids.length];
+			System.arraycopy(_ids, 0, newIds, 0, _ids.length);
+			return newIds;
+		} else {
+			return null;
+		}
+	}
+
+	public int[] getIntColumn(int col) {
+		int rCount = getRowCount();
+		int[] newData = new int[rCount];
+		
+		for (int i=0; i<rCount; i++) {
+			newData[i] = (int) _data[i][col];
+		}
+		return newData;
+	}
+
+	public double[] getDoubleColumn(int col) {
+		int rCount = getRowCount();
+		double[] newData = new double[rCount];
+		for (int i=0; i<rCount; i++) {
+			newData[i] = _data[i][col];
+		}
+		return newData;
+	}
+
+	public int[] getIntRow(int row) {
+		int cCount = getColCount();
+		int[] newData = new int[cCount];
+		
+		for (int i=0; i<cCount; i++) {
+			newData[i] = (int) _data[row][i];
+		}
+		return newData;
+	}
+
+	public double[] getDoubleRow(int row) {
+		int cCount = getColCount();
+		double[] newData = new double[cCount];
+		
+		for (int i=0; i<cCount; i++) {
+			newData[i] = _data[row][i];
+		}
+		return newData;
+	}
 }
