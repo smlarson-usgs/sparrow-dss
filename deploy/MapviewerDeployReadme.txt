@@ -2,12 +2,12 @@ This application (currently) needs to be deployed inside of Mapviewer.
 
 1.  From JDev, deploy 'CompleteMapviewerDeployment.deploy' to create the jar sparrowMV.jar
 
-2.  Copy the following jars to the current [Mapviewer Deployment]/WEB-INF/lib directory:
+2.  Copy the following jars to the current [Mapviewer Deployment]/web/WEB-INF/lib directory:
 *  sparrowMV.jar
 *  wstx-lgpl-3.2.jar from [SparrowProject]/java_lib/codehaus/woodstox/usgs_core/wstx-lgpl-3.2.jar
 *  stax-api-1.0.jar from [SparrowProject]/java_lib/codehaus/woodstox/usgs_dep/stax-api-1.0.jar
 
-3.  Add the following to [Mapviewer Deployment]/WEB-INF/conf/mapViewerConfig.xml
+3.  Add the following to [Mapviewer Deployment]/web/WEB-INF/conf/mapViewerConfig.xml
 
 It should be added to the 'Custom Non-Spatial Data Provider' section.  There is
 usually a 'defaultNSDP' ns_data_provider already there, so just add it after
@@ -28,7 +28,7 @@ that one.
       </ns_data_provider> 
 ================================================================================
 
-4.  Add the following xml chunks to [Mapviewer Deployment]/WEB-INF/web.xml.
+4.  Add the following xml chunks to [Mapviewer Deployment]/web/WEB-INF/web.xml.
 
 Note that the 'servlet' elements must be placed in with the other servlet
 elements and the same for 'servlet-mapping' elements.
@@ -93,5 +93,9 @@ elements and the same for 'servlet-mapping' elements.
   </servlet-mapping>
 ================================================================================
 
-5.  Restart the application from the OC4J admin console - restarting via the
+5.  Copy the html and jsp files from [SparrowProject]/public_html
+to [Mapviewer Deployment]/web.  These are test files to test requests directly
+to the Sparrow service, bypassing Mapviewer.
+
+6.  Restart the application from the OC4J admin console - restarting via the
 MapViewer interface will not reload the web.xml file or any of the jar files.
