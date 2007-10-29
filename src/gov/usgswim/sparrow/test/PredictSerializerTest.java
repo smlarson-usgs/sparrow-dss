@@ -65,7 +65,7 @@ public class PredictSerializerTest extends TestCase {
 		File outFile = File.createTempFile("predict-serilizer-test", ".xml");
 		FileOutputStream fos = new FileOutputStream(outFile);
 		
-		ps.writeResponse(fos, null, result);
+		ps.writeResponse(fos, null, result, null);
 		fos.close();
 		System.out.println("Result of prediction serialization written to: " + outFile.getAbsolutePath());
 		

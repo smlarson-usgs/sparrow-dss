@@ -10,6 +10,8 @@ import gov.usgswim.sparrow.Data2DPercentCompare;
 import gov.usgswim.sparrow.Data2DView;
 import gov.usgswim.sparrow.Double2DImm;
 import gov.usgswim.sparrow.Int2DImm;
+import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.PredictRequest;
 
 import gov.usgswim.sparrow.PredictResult;
@@ -77,8 +79,22 @@ public class PredictService implements HttpRequestHandler<PredictServiceRequest>
 		result = filterResults(result, req);
 
 		PredictSerializer ps = new PredictSerializer();
-		ps.writeResponse(outStream, req, result);
-		//TODO CLOSE STREAM?
+
+		
+		if (req.getDataSeries().equals( PredictServiceRequest.DataSeries.ALL )) {
+			//TODO This is a hack:  we throw away the adjusted data in the PredictComputable,
+			//then recompute it here b/c there is no way back to it.
+			PredictData data = loadData(req.getPredictRequest());	//is cached
+			PredictData adjData = adjustData(req.getPredictRequest(), data);	//redo adjustement
+			
+			ps.writeResponse(outStream, req, result, adjData);
+			
+		} else {
+			
+			ps.writeResponse(outStream, req, result, null);
+			//TODO CLOSE STREAM?
+		}
+
 	}
 	
 	//TODO Not tested
@@ -151,6 +167,49 @@ public class PredictService implements HttpRequestHandler<PredictServiceRequest>
 		}
 		
 
+	}
+	
+	/**
+	 * Loads the model sources, coefs, and values needed to run the prediction.
+	 * @param arg
+	 * @return
+	 */
+	public PredictData loadData(PredictRequest req) throws Exception {
+		return SharedApplication.getInstance().getPredictDatasetCache().compute( req.getModelId() );
+	}
+	
+	/**
+	 * Adjusts the passed data based on the adjustments in the requests.
+	 *
+	 * It is assumed that the passed data is immutable, in which case a mutable
+	 * builder is created, adjusted, copied as immutable, and returned.
+	 * 
+	 * If the passed data is mutable (an instance of PredictionDataBuilder,
+	 * possibly for testing purposes), it will be adjusted by setting a new source,
+	 * copied as immutable, and returned.
+	 * 
+	 * If there are no adjustments, the passed dataset is returned.
+	 *
+	 * @param req
+	 * @param data
+	 * @return
+	 */
+	public PredictData adjustData(PredictRequest req,
+																			PredictData data) throws Exception {
+		
+		if (req.getAdjustmentSet().hasAdjustments()) {
+			PredictDataBuilder mutable = data.getBuilder();
+
+			
+			//This method does not modify the underlying data
+			mutable.setSrc(
+					req.getAdjustmentSet().adjust(mutable.getSrc(), mutable.getSrcIds(), mutable.getSys())
+			);
+			
+			return mutable.getImmutable();
+		}
+		
+		return data;
 	}
 
 

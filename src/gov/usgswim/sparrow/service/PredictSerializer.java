@@ -2,6 +2,8 @@ package gov.usgswim.sparrow.service;
 
 import gov.usgswim.sparrow.Data2D;
 
+import gov.usgswim.sparrow.PredictData;
+
 import java.io.OutputStream;
 
 import javax.xml.stream.XMLEventWriter;
@@ -22,9 +24,9 @@ public class PredictSerializer extends AbstractSerializer {
 	}
 	
 	
-	public void writeResponse(OutputStream stream, PredictServiceRequest request, Data2D result) throws XMLStreamException {
+	public void writeResponse(OutputStream stream, PredictServiceRequest request, Data2D result, PredictData predictData) throws XMLStreamException {
 		XMLEventWriter xw = xoFact.createXMLEventWriter(stream);
-		writeResponse(xw, request, result);
+		writeResponse(xw, request, result, predictData);
 	}
 	
 	
@@ -35,7 +37,7 @@ public class PredictSerializer extends AbstractSerializer {
 	 * @param models
 	 * @throws XMLStreamException
 	 */
-	public void writeResponse(XMLEventWriter xw, PredictServiceRequest request, Data2D result) throws XMLStreamException {
+	public void writeResponse(XMLEventWriter xw, PredictServiceRequest request, Data2D result, PredictData predictData) throws XMLStreamException {
 	
 		xw.setDefaultNamespace(TARGET_NAMESPACE);
 		xw.add( evtFact.createStartDocument(ENCODING, XML_VERSION) );
@@ -47,7 +49,7 @@ public class PredictSerializer extends AbstractSerializer {
 		xw.add( evtFact.createAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE_LOCATION) );
 
 		writeRequest(xw, request);
-		writeResponseSection(xw, request, result);
+		writeResponseSection(xw, request, result, predictData);
 		
 		xw.add( evtFact.createEndElement(T_PREFIX, TARGET_NAMESPACE, "sparrow-prediction-response") );
 		xw.add( evtFact.createEndDocument() );
@@ -57,42 +59,88 @@ public class PredictSerializer extends AbstractSerializer {
 		//for now, just skip this optional element
 	}
 	
-	public void writeResponseSection(javax.xml.stream.XMLEventWriter xw, PredictServiceRequest request, Data2D result) throws XMLStreamException {
+	public void writeResponseSection(javax.xml.stream.XMLEventWriter xw,
+				PredictServiceRequest request, Data2D result, PredictData predictData) throws XMLStreamException {
 
 		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "response") );
-		writeMetadata(xw, request, result);
-		writeData(xw, request, result);
+		writeMetadata(xw, request, result, predictData);
+		writeData(xw, request, result, predictData);
 
 		
 		xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, "response") );
 
 	}
 	
-	public void writeMetadata(XMLEventWriter xw, PredictServiceRequest request, Data2D result) throws XMLStreamException {
+	//TODO There is no test to verify writting the source values with the serializer
+	public void writeMetadata(XMLEventWriter xw, PredictServiceRequest request,
+				Data2D result, PredictData predictData) throws XMLStreamException {
+				
+				
 		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "metadata") );
 		xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, "rowCount", Integer.toString(result.getRowCount())) );
 		xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, "columnCount", Integer.toString(result.getColCount())) );
 		
 		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "columns") );
 		String[] attribNames = new String[] {"name", "type"};
-		for(String head : result.getHeadings()) {
-			writeElemEvent(xw, "col", null, attribNames, new String[] {head, "Number"});
-		}
-		xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, "columns") );
+		
+		if (predictData != null && request.getDataSeries().equals(PredictServiceRequest.DataSeries.ALL)) {
 
+			//Add a group for the source columns
+			xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "group") );
+			xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, "name", "Source Values") );
+			for(String head : predictData.getSrc().getHeadings()) {
+				writeElemEvent(xw, "col", null, attribNames, new String[] {head, "Number"});
+			}
+			xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, "group") );
+			
+			//Add a group for the predicted value columns
+			xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "group") );
+			xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, "name", "Predicted Values") );
+			
+			for(String head : result.getHeadings()) {
+				writeElemEvent(xw, "col", null, attribNames, new String[] {head, "Number"});
+			}
+		
+			xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, "group") );
+
+		} else {
+			//We don't have the original predict data, so the best we can do is just the predict columns
+			for(String head : result.getHeadings()) {
+				writeElemEvent(xw, "col", null, attribNames, new String[] {head, "Number"});
+			}
+			
+		}
+		
+		xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, "columns") );
 		xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, "metadata") );
 
 	}
 	
-	public void writeData(XMLEventWriter xw, PredictServiceRequest request, Data2D result) throws XMLStreamException {
+	public void writeData(XMLEventWriter xw, PredictServiceRequest request,
+				Data2D result, PredictData predictData) throws XMLStreamException {
+				
+		//If true, write the source value columns into the data.  It should preceed the predict val columns
+		boolean writeSrcs = predictData != null && request.getDataSeries().equals(PredictServiceRequest.DataSeries.ALL);
+		Data2D src = (writeSrcs)?predictData.getSrc():null;
+				
 		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "data") );
 
 			for (int r = 0; r < result.getRowCount(); r++)  {
 				xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "r") );
 				xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, "id", Integer.toString(result.getIdForRow(r))) );
+				
+				//write source value columns (if requested)
+				if (writeSrcs) {
+					for (int c = 0; c < src.getColCount(); c++)  {
+						writeElemEvent(xw, "c", Double.toString(src.getDouble(r, c)));
+					}
+				}
+
+				//write predicted data columns
 				for (int c = 0; c < result.getColCount(); c++)  {
 					writeElemEvent(xw, "c", Double.toString(result.getDouble(r, c)));
 				}
+
 				xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, "r") );
 			}
 			
