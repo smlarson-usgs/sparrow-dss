@@ -48,5 +48,84 @@
 			</fieldset>
 		</form>
 		
+		<form action="sp_predict/xmlreq" method="post" enctype="application/x-www-form-urlencoded">
+			<fieldset title="Prediction Request 2">
+				<label for="xml_input_2">Prediction Request 2</label>
+				<p>
+				Chesapeake Model w/ gross adjustments.  The response type is 'all', so
+				we should get the source values in the result as well.  Note the
+				grouped column headings in the metadata as a result.
+				</p>
+				<textarea id="xml_input_2" name="xmlreq" cols="120" rows="20">
+&lt;?xml version="1.0" encoding="ISO-8859-1" ?>
+&lt;sparrow-prediction-request
+  xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	&lt;predict model-id="1">
+		&lt;change-from-nominal type="perc_change">
+			&lt;source-adjustments>
+				&lt;gross-src src="4" coef="2"/>
+				&lt;gross-src src="1" coef=".5"/>
+			&lt;/source-adjustments>
+		&lt;/change-from-nominal>
+	&lt;/predict>
+	
+	&lt;response-options>
+		&lt;result-filter>
+			&lt;near-point result-count="5">
+				&lt;point lat="38.43" long="-76.93"/>
+			&lt;/near-point>
+		&lt;/result-filter>
+		&lt;result-content>
+			&lt;data-series>all&lt;/data-series>
+		&lt;/result-content>
+	&lt;/response-options>
+	
+&lt;/sparrow-prediction-request>
+				</textarea>
+				<input type="submit" name="submit" value="submit"/>
+			</fieldset>
+		</form>
+		
+		<form action="sp_predict/xmlreq" method="post" enctype="application/x-www-form-urlencoded">
+			<fieldset title="Prediction Request 3">
+				<label for="xml_input_3">Prediction Request 3</label>
+				<p>
+				Chesapeake Model w/ gross adjustments.  The response type is 'incremental', so
+				only the incremental values (and not source values) should be returned.
+				</p>
+				<textarea id="xml_input_3" name="xmlreq" cols="120" rows="20">
+&lt;?xml version="1.0" encoding="ISO-8859-1" ?>
+&lt;sparrow-prediction-request
+  xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	&lt;predict model-id="1">
+		&lt;change-from-nominal type="perc_change">
+			&lt;source-adjustments>
+				&lt;gross-src src="4" coef="2"/>
+				&lt;gross-src src="1" coef=".5"/>
+			&lt;/source-adjustments>
+		&lt;/change-from-nominal>
+	&lt;/predict>
+	
+	&lt;response-options>
+		&lt;result-filter>
+			&lt;near-point result-count="5">
+				&lt;point lat="38.43" long="-76.93"/>
+			&lt;/near-point>
+		&lt;/result-filter>
+		&lt;result-content>
+			&lt;data-series>incremental&lt;/data-series>
+		&lt;/result-content>
+	&lt;/response-options>
+	
+&lt;/sparrow-prediction-request>
+				</textarea>
+				<input type="submit" name="submit" value="submit"/>
+			</fieldset>
+		</form>
+		
 	</body>
 </html>
