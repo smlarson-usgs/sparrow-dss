@@ -52,9 +52,10 @@
 			<fieldset title="Prediction Request 2">
 				<label for="xml_input_2">Prediction Request 2</label>
 				<p>
-				Chesapeake Model w/ gross adjustments.  The response type is 'all', so
+				Chesapeake Model w/ gross adjustments.  The response type is <b>'all'</b> so
 				we should get the source values in the result as well.  Note the
 				grouped column headings in the metadata as a result.
+				<b>This is the one to look at for displaying a specific adjustment popup to the user.</b>
 				</p>
 				<textarea id="xml_input_2" name="xmlreq" cols="120" rows="20">
 &lt;?xml version="1.0" encoding="ISO-8859-1" ?>
