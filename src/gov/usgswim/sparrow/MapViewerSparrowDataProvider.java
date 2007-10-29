@@ -16,6 +16,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 import java.util.StringTokenizer;
@@ -187,19 +188,40 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 			
 			//Build the prediction request
 			AdjustmentSetBuilder adjBuilder = new AdjustmentSetBuilder();
-			adjBuilder.addGrossSrcAdjustments(properties);
+			List<Adjustment> adjs = adjBuilder.parseGrossAdj((String) properties.get(GROSS_SOURCE_ADJUST_KEY));
+			for (Adjustment a: adjs) {
+				adjBuilder.addAdjustment(a);
+			}
+			
 			predictRequest = new PredictRequest(modelId, adjBuilder.getImmutable());
 			
 			//Build the service request
 			svsRequest = new PredictServiceRequest();
 			svsRequest.setPredictRequest(predictRequest);
-			svsRequest.setPredictType(gov.usgswim.sparrow.service.PredictServiceRequest.PredictType.find((String) properties.get(RESULT_MODE_KEY)) );
-			svsRequest.setDataSeries(gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.find((String) properties.get(DATA_SERIES)) );
+			
+			//this should work, but we are trying to be compatable w/ existing app
+			//svsRequest.setPredictType(PredictServiceRequest.PredictType.find((String) properties.get(RESULT_MODE_KEY)) );
+			//
+			//Set resultType using old style parameters
+			String predType = (String) properties.get(RESULT_MODE_KEY);
+			if (RESULT_MODE_VALUE.equals(predType)) {
+				svsRequest.setPredictType(PredictServiceRequest.PredictType.VALUES);
+			} else if (RESULT_MODE_PERC_CHG.equals(predType)) {
+				svsRequest.setPredictType(PredictServiceRequest.PredictType.PERC_CHG_FROM_NOMINAL);
+			} else {
+				//default
+				svsRequest.setPredictType(PredictServiceRequest.PredictType.PERC_CHG_FROM_NOMINAL);
+			}
+			
+			
+			//new version still compatible w/ old here.
+			svsRequest.setDataSeries(PredictServiceRequest.DataSeries.find((String) properties.get(DATA_SERIES)) );
+
 			
 			//Make this default to TOTAL instead of all
 			if (svsRequest.getDataSeries() == gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.ALL) svsRequest.setDataSeries(gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.TOTAL);
 				
-			log.debug("Using Dataseries: " + svsRequest.getDataSeries());
+			log.debug("Using Dataseries: " + svsRequest.getDataSeries() + " & result mode: " + svsRequest.getPredictType());
 			
 		}
 
