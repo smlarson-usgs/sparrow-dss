@@ -6,6 +6,7 @@ import gov.usgswim.sparrow.Int2DImm;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.PredictResult;
+import gov.usgswim.sparrow.domain.ModelImm;
 import gov.usgswim.sparrow.util.DataSourceProxy;
 import gov.usgswim.sparrow.util.JDBCConnectable;
 
@@ -28,7 +29,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	private ComputableCache<PredictRequest, PredictResult> predictResultCache;
 	private ComputableCache<Long, PredictData> predictDatasetCache;
 	private ComputableCache<IDByPointRequest, Int2DImm> idByPointCache;
-	private ComputableCache metadataCache;
+	private ComputableCache<ModelRequest, ModelImm> modelCache;
 	
 	
 	private SharedApplication() {
@@ -37,6 +38,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		predictResultCache = new ComputableCache<PredictRequest, PredictResult>(new PredictComputable());
 		predictDatasetCache = new ComputableCache<Long, PredictData>(new PredictDatasetComputable());
 		idByPointCache = new ComputableCache<IDByPointRequest, Int2DImm>(new IDByPointComputable());
+		modelCache = new ComputableCache<ModelRequest, ModelImm>(new ModelComputable());
 	}
 	
 	public static synchronized SharedApplication getInstance() {
@@ -100,5 +102,9 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	
 	public ComputableCache<IDByPointRequest, Int2DImm> getIdByPointCache() {
 		return idByPointCache;
+	}
+
+	public ComputableCache<ModelRequest, ModelImm> getModelCache() {
+		return modelCache;
 	}
 }
