@@ -2,7 +2,7 @@
 <id-point-request
   xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_1"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	model-id="22" number-of-results="5">
+	model-id="22" result-count="5">
 
 	<point lat="40" long="-100"/>
 </id-point-request>
