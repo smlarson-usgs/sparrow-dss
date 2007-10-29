@@ -1009,6 +1009,7 @@ public class JDBCUtil {
 		if (sources.getRowCount() == 0) {
 			throw new IllegalArgumentException("There must be at least one source");
 		}
+		
 	
 		String reachCountQuery =
 			"SELECT COUNT(*) FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + modelId;
@@ -1016,7 +1017,34 @@ public class JDBCUtil {
 		int reachCount = reachCountData.getInt(0, 0);
 		int sourceCount = sources.getRowCount();
 		
-		Data2DBuilder sourceValue = new Data2DBuilder(new double[reachCount][sourceCount]);
+		//Load column headings using the source display names
+		String selectNames =
+			"SELECT DISPLAY_NAME FROM SOURCE " +
+			"WHERE SPARROW_MODEL_ID = " + modelId + " " +
+			"ORDER BY SORT_ORDER";
+		String[] headings = new String[sourceCount];
+		
+		Statement headSt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+		headSt.setFetchSize(20);
+		ResultSet headRs = null;
+		
+		try {
+		
+			headRs = headSt.executeQuery(selectNames);
+			for (int i = 0; i < sourceCount; i++)  {
+				headRs.next();
+				headings[i] = headRs.getString(1);
+			}
+			
+		} finally {
+			if (headRs != null) {
+				headRs.close();
+				headRs = null;
+			}
+		}
+		
+		
+		Data2DBuilder sourceValue = new Data2DBuilder(new double[reachCount][sourceCount], headings);
 		
 	
 		for (int srcIndex=0; srcIndex<sourceCount; srcIndex++) {
@@ -1047,7 +1075,7 @@ public class JDBCUtil {
 			}
 			
 		}
-		
+
 		return sourceValue.buildDoubleImmutable(-1);
 
 	}
