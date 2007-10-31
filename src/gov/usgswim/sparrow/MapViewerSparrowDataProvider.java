@@ -178,8 +178,8 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 			} catch (Exception e) {
 				throw new RuntimeException("Error while handling request", e);
 			}
-
-			log.debug("Using Dataseries: " + svsRequest.getDataSeries());
+			
+			log.debug("Using Dataseries: " + svsRequest.getDataSeries() + " & result mode: " + svsRequest.getPredictType());
 			
 		} else {
 			log.debug("Request treated as parameter request.");
