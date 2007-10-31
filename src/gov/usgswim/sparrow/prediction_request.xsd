@@ -94,7 +94,12 @@
       <xsd:element name="result-content" minOccurs="0">
        <xsd:complexType>
         <xsd:sequence>
-         <xsd:element name="data-series" minOccurs="0"/>
+         <xsd:element name="data-series" minOccurs="0">
+				 <xsd:annotation><xsd:documentation>
+						See the values for gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries
+						for the possible values for dataseries.  Currently, that includes 'all', 'total', and 'incremental'.
+					</xsd:documentation></xsd:annotation>
+         </xsd:element>
          <xsd:element name="metadata" minOccurs="0"/>
         </xsd:sequence>
        </xsd:complexType>
