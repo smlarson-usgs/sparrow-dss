@@ -121,18 +121,25 @@ public class PredictSerializer extends AbstractSerializer {
 				
 		//If true, write the source value columns into the data.  It should preceed the predict val columns
 		boolean writeSrcs = predictData != null && request.getDataSeries().equals(PredictServiceRequest.DataSeries.ALL);
-		Data2D src = (writeSrcs)?predictData.getSrc():null;
+		Data2D src = predictData.getSrc();
+		Data2D sys = predictData.getSys();
 				
 		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "data") );
 
 			for (int r = 0; r < result.getRowCount(); r++)  {
+			
+				Integer id = result.getIdForRow(r);
+				
 				xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "r") );
-				xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, "id", Integer.toString(result.getIdForRow(r))) );
+				xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, "id", id.toString()) );
 				
 				//write source value columns (if requested)
+				//Note that the results may be filtered, so we cannot assume that the
+				//row ordering of src's matches the results.
 				if (writeSrcs) {
+					int srcRow = sys.findRowById(id);	//Find row num in sys for the current ID
 					for (int c = 0; c < src.getColCount(); c++)  {
-						writeElemEvent(xw, "c", Double.toString(src.getDouble(r, c)));
+						writeElemEvent(xw, "c", Double.toString(src.getDouble(srcRow, c)));
 					}
 				}
 
