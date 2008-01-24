@@ -20,7 +20,7 @@ public class PredictDataBuilder implements PredictData {
 	
 	
 	/**
-	 * One row per reach (i = reach index)
+	 * One row per reach (i = reach index).  Row ID is assigned same as column 0.
 	 * <ol>
 	 * <li>[i][0] REACH_ID - The system id for the reach (db unique id)
 	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number
@@ -322,8 +322,7 @@ public class PredictDataBuilder implements PredictData {
 	}
 
 	/**
-	 * Assigns the system information, which is optional but required if the
-	 * results are to be correlated to other data in the db.
+	 * Assigns the system information, which is used to correlate to other data in the db.
 	 *
 	 * <h4>Data Columns, sorted by HYDSEQ</h4>
 	 * <p>One row per reach (i = reach index)</p>
@@ -339,8 +338,7 @@ public class PredictDataBuilder implements PredictData {
 	}
 
 	/**
-	 * Returns the system information, which is optional but required if the
-	 * results are to be correlated to other data in the db.
+	 * Returns the system information, which is used to correlate to other data in the db.
 	 *
 	 * <h4>Data Columns, sorted by HYDSEQ</h4>
 	 * <p>One row per reach (i = reach index)</p>

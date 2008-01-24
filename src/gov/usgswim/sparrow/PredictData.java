@@ -122,7 +122,8 @@ public interface PredictData extends ImmutableBuilder<PredictData> {
 	 * results are to be correlated to other data in the db.
 	 *
 	 * <h4>Data Columns, sorted by HYDSEQ</h4>
-	 * <p>One row per reach (i = reach index)</p>
+	 * <p>One row per reach (i = reach index).
+	 * Row ID is assigned same as column 0.</p>
 	 * <ol>
 	 * <li>[i][0] REACH_ID - The system id for the reach (db unique id)
 	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number

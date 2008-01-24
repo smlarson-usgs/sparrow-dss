@@ -22,7 +22,7 @@ public class PredictDataImm implements PredictData {
 	
 	
 	/**
-	 * One row per reach (i = reach index)
+	 * One row per reach (i = reach index).  Row ID is assigned same as column 0.
 	 * <ol>
 	 * <li>[i][0] REACH_ID - The system id for the reach (db unique id)
 	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number
