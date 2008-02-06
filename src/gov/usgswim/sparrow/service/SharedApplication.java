@@ -27,7 +27,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	private DataSource datasource;
 	private boolean lookupFailed = false;
 	private ComputableCache<PredictRequest, PredictResult> predictResultCache;
-	private ComputableCache<Long, PredictData> predictDatasetCache;
+	private ComputableCache<Long, PredictData> predictDatasetCache;	//Long is the Model ID
 	private ComputableCache<IDByPointRequest, Int2DImm> idByPointCache;
 	private ComputableCache<ModelRequest, ModelImm> modelCache;
 	
