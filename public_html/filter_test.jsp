@@ -34,7 +34,7 @@
 	&lt;response-options>
 		&lt;result-filter>
 			&lt;near-point result-count="5">
-				&lt;point lat="40" long="-100"/>
+				&lt;point lat="43" long="-89.3"/>&lt;!-- In Madison -->
 			&lt;/near-point>
 		&lt;/result-filter>
 		&lt;result-content>
