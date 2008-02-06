@@ -78,22 +78,21 @@ public class PredictService implements HttpRequestHandler<PredictServiceRequest>
 		Data2D result = runPrediction(req);
 		result = filterResults(result, req);
 
+
+		//TODO This is a hack:  we throw away the adjusted data in the PredictComputable,
+		//then recompute it here b/c there is no way back to it.  What is really
+		//Needed is a short-lived cache of adjusted data, or have result include a
+		//ref to the adjusted data used to compute it.
+		//Really, though, adjusting the data is low cost...
+		PredictData data = loadData(req.getPredictRequest());	//is cached
+		PredictData adjData = adjustData(req.getPredictRequest(), data);	//redo adjustement
+
+
 		PredictSerializer ps = new PredictSerializer();
 
 		
-		if (req.getDataSeries().equals( PredictServiceRequest.DataSeries.ALL )) {
-			//TODO This is a hack:  we throw away the adjusted data in the PredictComputable,
-			//then recompute it here b/c there is no way back to it.
-			PredictData data = loadData(req.getPredictRequest());	//is cached
-			PredictData adjData = adjustData(req.getPredictRequest(), data);	//redo adjustement
-			
-			ps.writeResponse(outStream, req, result, adjData);
-			
-		} else {
-			
-			ps.writeResponse(outStream, req, result, null);
-			//TODO CLOSE STREAM?
-		}
+		ps.writeResponse(outStream, req, result, adjData);
+		//TODO CLOSE STREAM?
 
 	}
 	
