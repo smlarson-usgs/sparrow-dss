@@ -6,8 +6,8 @@
       <type>TABLE</type>
    </ID>
    <columns>
-      <Item id="2">
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="3">
             <ID>f94ee5a4-0116-1000-8002-c0a80201ae3a</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -23,7 +23,7 @@
                   <Value class="java.lang.Long">0</Value>
                </Item>
             </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="4">
                <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
                <schemaName/>
                <typeName>NUMBER</typeName>
@@ -33,6 +33,60 @@
          <name>NOM_REACH_ID</name>
          <notNull>true</notNull>
          <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>7e978081-0117-1000-8001-c0a8020192bc</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">60</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="1">
+               <providerClass>oracle.javatools.db.ora.Oracle9i</providerClass>
+               <schemaName/>
+               <typeName>VARCHAR2</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>REACH_NAME</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>Comment</Key>
+               <Value>The primary name for the reach</Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>7e978082-0117-1000-8002-c0a8020192bc</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">60</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="1"/>
+         </dataTypeUsage>
+         <default/>
+         <name>OPEN_WATER_NAME</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>Comment</Key>
+               <Value>The primary name for any associated open water, such as a lake or pond.</Value>
+            </Item>
+         </properties>
       </Item>
       <Item>
          <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
@@ -51,7 +105,7 @@
                   <Value class="java.lang.Long">4</Value>
                </Item>
             </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="1">
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="2">
                <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
                <schemaName/>
                <typeName>NUMBER</typeName>
@@ -84,7 +138,7 @@
                   <Value class="java.lang.Long">2</Value>
                </Item>
             </attributeValues>
-            <dataTypeID idref="1"/>
+            <dataTypeID idref="2"/>
          </dataTypeUsage>
          <default/>
          <name>MEANV</name>
@@ -113,7 +167,7 @@
                   <Value class="java.lang.Long">3</Value>
                </Item>
             </attributeValues>
-            <dataTypeID idref="1"/>
+            <dataTypeID idref="2"/>
          </dataTypeUsage>
          <default/>
          <name>CATCH_AREA</name>
@@ -142,12 +196,17 @@
                   <Value class="java.lang.Long">3</Value>
                </Item>
             </attributeValues>
-            <dataTypeID idref="1"/>
+            <dataTypeID idref="2"/>
          </dataTypeUsage>
          <default/>
          <name>CUM_CATCH_AREA</name>
          <notNull>false</notNull>
-         <properties/>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>Comment</Key>
+               <Value>Cumulative drainage area for a given reach, in square kilometers</Value>
+            </Item>
+         </properties>
       </Item>
       <Item>
          <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
@@ -166,7 +225,7 @@
                   <Value class="java.lang.Long">0</Value>
                </Item>
             </attributeValues>
-            <dataTypeID idref="1"/>
+            <dataTypeID idref="2"/>
          </dataTypeUsage>
          <default/>
          <name>REACH_LENGTH</name>
@@ -187,10 +246,29 @@
             <type>CONSTRAINT</type>
          </ID>
          <columns>
-            <Item idref="2"/>
+            <Item id="5">
+               <ID idref="3"/>
+               <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+                  <attributeValues class="java.util.HashMap">
+                     <Item>
+                        <Key>precision</Key>
+                        <Value>9</Value>
+                     </Item>
+                     <Item>
+                        <Key>scale</Key>
+                        <Value class="java.lang.Long">0</Value>
+                     </Item>
+                  </attributeValues>
+                  <dataTypeID idref="4"/>
+               </dataTypeUsage>
+               <default/>
+               <name>NOM_REACH_ID</name>
+               <notNull>true</notNull>
+               <properties/>
+            </Item>
          </columns>
          <enabled>true</enabled>
-         <name>NOM_REACH_STATS_PK</name>
+         <name>NOM_REACH_ATTRIB_PK</name>
          <properties/>
       </Item>
       <Item class="oracle.javatools.db.FKConstraint">
@@ -200,11 +278,11 @@
             <type>CONSTRAINT</type>
          </ID>
          <columns>
-            <Item idref="2"/>
+            <Item idref="5"/>
          </columns>
          <deleteMode>1</deleteMode>
          <enabled>true</enabled>
-         <name>NOM_REACH_STATS_NOM_REACH_FK1</name>
+         <name>NOM_REACH_ATTRIB_NOM_REACH_FK1</name>
          <properties/>
          <referenceID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
             <ID>ef7fb640-0116-1000-8083-c0a8020182ea</ID>
@@ -217,8 +295,77 @@
          </referenceID>
       </Item>
    </constraints>
-   <indexes class="[Loracle.javatools.db.Index;"/>
-   <name>NOM_REACH_STATS</name>
+   <indexes>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>7e99a14e-0117-1000-8005-c0a8020192bc</ID>
+            <parent idref="0"/>
+            <type>INDEX</type>
+         </ID>
+         <columnExpressions>
+            <Item>
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+                  <ID>7e99a14e-0117-1000-8006-c0a8020192bc</ID>
+                  <parent/>
+                  <type>SQLFragment</type>
+               </ID>
+               <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
+                  <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+                     <ID>7e99a14e-0117-1000-8007-c0a8020192bc</ID>
+                     <parent/>
+                     <type>SQLFragment</type>
+                  </ID>
+                  <SQLText>REACH_NAME</SQLText>
+                  <name/>
+                  <parent/>
+                  <properties/>
+               </expression>
+               <name/>
+               <order/>
+               <parent/>
+               <properties/>
+            </Item>
+         </columnExpressions>
+         <columns class="[Loracle.javatools.db.Column;"/>
+         <name>NOM_REACH_ATTRIB_REACH_NAME_I</name>
+         <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>7e99a14e-0117-1000-8008-c0a8020192bc</ID>
+            <parent idref="0"/>
+            <type>INDEX</type>
+         </ID>
+         <columnExpressions>
+            <Item>
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+                  <ID>7e99a14e-0117-1000-8009-c0a8020192bc</ID>
+                  <parent/>
+                  <type>SQLFragment</type>
+               </ID>
+               <expression class="oracle.javatools.db.sql.SimpleSQLFragment">
+                  <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+                     <ID>7e99a14e-0117-1000-800a-c0a8020192bc</ID>
+                     <parent/>
+                     <type>SQLFragment</type>
+                  </ID>
+                  <SQLText>OPEN_WATER_NAME</SQLText>
+                  <name/>
+                  <parent/>
+                  <properties/>
+               </expression>
+               <name/>
+               <order/>
+               <parent/>
+               <properties/>
+            </Item>
+         </columnExpressions>
+         <columns class="[Loracle.javatools.db.Column;"/>
+         <name>NOM_REACH_ATTRIB_OW_NAME_I</name>
+         <properties/>
+      </Item>
+   </indexes>
+   <name>NOM_REACH_ATTRIB</name>
    <properties class="java.util.HashMap">
       <Item>
          <Key>TableType</Key>

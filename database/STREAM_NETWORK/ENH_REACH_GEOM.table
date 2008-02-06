@@ -54,7 +54,7 @@
          </properties>
       </Item>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="5">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="10">
             <ID>ef7fb63e-0116-1000-8040-c0a8020182ea</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -69,8 +69,12 @@
          </dataTypeUsage>
          <default/>
          <name>REACH_GEOM</name>
-         <notNull>true</notNull>
+         <notNull>false</notNull>
          <properties class="java.util.HashMap">
+            <Item>
+               <Key>Comment</Key>
+               <Value>The geometry for the stream reach.</Value>
+            </Item>
             <Item>
                <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
                <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
@@ -92,7 +96,7 @@
          </properties>
       </Item>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="3">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="4">
             <ID>ef7fb63e-0116-1000-8041-c0a8020182ea</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -103,8 +107,12 @@
          </dataTypeUsage>
          <default/>
          <name>CATCH_GEOM</name>
-         <notNull>true</notNull>
+         <notNull>false</notNull>
          <properties class="java.util.HashMap">
+            <Item>
+               <Key>Comment</Key>
+               <Value>The geometry for the catchment of the reach.</Value>
+            </Item>
             <Item>
                <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
                <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
@@ -126,7 +134,7 @@
          </properties>
       </Item>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="4">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="7">
             <ID>ef7fb63e-0116-1000-8042-c0a8020182ea</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -137,8 +145,12 @@
          </dataTypeUsage>
          <default/>
          <name>CUM_CATCH_GEOM</name>
-         <notNull>true</notNull>
+         <notNull>false</notNull>
          <properties class="java.util.HashMap">
+            <Item>
+               <Key>Comment</Key>
+               <Value>The geometry for the cumulative catchment of the reach, including the catchment area of all upper reaches.</Value>
+            </Item>
             <Item>
                <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
                <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
@@ -244,8 +256,8 @@
             <type>INDEX</type>
          </ID>
          <columnExpressions>
-            <Item>
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <Item id="5">
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="3">
                   <ID>ef7fb63e-0116-1000-8046-c0a8020182ea</ID>
                   <parent/>
                   <type>SQLFragment</type>
@@ -253,16 +265,16 @@
                <expression class="oracle.javatools.db.sql.ColumnUsage">
                   <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
                      <ID>ef7fb63e-0116-1000-8047-c0a8020182ea</ID>
-                     <parent/>
+                     <parent idref="3"/>
                      <type>SQLFragment</type>
                   </ID>
                   <attributes/>
                   <columnID/>
                   <fromObject/>
                   <name/>
-                  <objectID idref="3"/>
+                  <objectID idref="4"/>
                   <outerJoin>false</outerJoin>
-                  <parent/>
+                  <parent idref="5"/>
                   <properties/>
                   <qualified>true</qualified>
                </expression>
@@ -283,8 +295,8 @@
             <type>INDEX</type>
          </ID>
          <columnExpressions>
-            <Item>
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <Item id="8">
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="6">
                   <ID>ef7fb63e-0116-1000-8049-c0a8020182ea</ID>
                   <parent/>
                   <type>SQLFragment</type>
@@ -292,16 +304,16 @@
                <expression class="oracle.javatools.db.sql.ColumnUsage">
                   <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
                      <ID>ef7fb63e-0116-1000-804a-c0a8020182ea</ID>
-                     <parent/>
+                     <parent idref="6"/>
                      <type>SQLFragment</type>
                   </ID>
                   <attributes/>
                   <columnID/>
                   <fromObject/>
                   <name/>
-                  <objectID idref="4"/>
+                  <objectID idref="7"/>
                   <outerJoin>false</outerJoin>
-                  <parent/>
+                  <parent idref="8"/>
                   <properties/>
                   <qualified>true</qualified>
                </expression>
@@ -322,8 +334,8 @@
             <type>INDEX</type>
          </ID>
          <columnExpressions>
-            <Item>
-               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <Item id="11">
+               <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="9">
                   <ID>ef7fb63e-0116-1000-804c-c0a8020182ea</ID>
                   <parent/>
                   <type>SQLFragment</type>
@@ -331,16 +343,16 @@
                <expression class="oracle.javatools.db.sql.ColumnUsage">
                   <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
                      <ID>ef7fb63f-0116-1000-804d-c0a8020182ea</ID>
-                     <parent/>
+                     <parent idref="9"/>
                      <type>SQLFragment</type>
                   </ID>
                   <attributes/>
                   <columnID/>
                   <fromObject/>
                   <name/>
-                  <objectID idref="5"/>
+                  <objectID idref="10"/>
                   <outerJoin>false</outerJoin>
-                  <parent/>
+                  <parent idref="11"/>
                   <properties/>
                   <qualified>true</qualified>
                </expression>
