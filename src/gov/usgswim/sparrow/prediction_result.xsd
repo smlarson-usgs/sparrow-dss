@@ -62,6 +62,24 @@
     </xsd:sequence>
     <xsd:attribute name="name" use="required"/>
     <xsd:attribute name="type" use="required"/>
+    <xsd:attribute name="unit">
+      <xsd:annotation>
+        <xsd:documentation>
+          For columns with associated measurement units, the unit attribute is
+					the name of the unit.  Examples unit values:  'Percent', 'Pounds',
+          'Miles'.
+        </xsd:documentation>
+      </xsd:annotation>
+		</xsd:attribute>
+    <xsd:attribute name="unit-abbr">
+      <xsd:annotation>
+        <xsd:documentation>
+          For columns with units, the unit-abbr is the abbreviated suffix that
+					can be appended to values when displayed.
+          Examples unit-abbr values:  '%', 'lbs', 'mi'.
+        </xsd:documentation>
+      </xsd:annotation>
+    </xsd:attribute>
   </xsd:complexType>
   <xsd:complexType name="grouped-column-metadata">
     <xsd:sequence>
