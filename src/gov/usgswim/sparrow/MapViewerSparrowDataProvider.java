@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.sparrow.service.PredictParser;
 import gov.usgswim.sparrow.service.PredictService;
 import gov.usgswim.sparrow.service.PredictServiceRequest;
@@ -49,7 +50,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 		
 		
 	PredictService predictService;
-	PredictParser predictParser;
+	AbstractHttpRequestParser<PredictServiceRequest> predictParser;
 	
 	
 	//Request parameter key constants

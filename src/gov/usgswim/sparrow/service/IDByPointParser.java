@@ -1,12 +1,13 @@
 package gov.usgswim.sparrow.service;
 
 import gov.usgswim.service.AbstractHttpRequestParser;
+import gov.usgswim.service.pipeline.PipelineRequest;
 
 import java.awt.Point;
 
 import javax.servlet.http.HttpServletRequest;
-
 import javax.xml.stream.XMLStreamReader;
+
 import org.apache.commons.lang.StringUtils;
 
 
@@ -26,7 +27,7 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 				if (paramChain.length == 1 && StringUtils.isNumeric(paramChain[0])) {
 				
 					Long id = Long.parseLong(paramChain[0]);
-					int numResults = (int) this.parseParamAsLong(request, "result-count", 3L);
+					int numResults = this.parseParamAsLong(request, "result-count", 3L).intValue();
 					if (numResults > 100) numResults = 100;
 					
 					Point.Double point = new Point.Double();	//required
@@ -118,5 +119,9 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 		throw new Exception("Badly formed document - no end element found for '" + mainElement + "'");
 	}
 
-
+	public PipelineRequest parseForPipeline(HttpServletRequest request)throws Exception {
+		PipelineRequest result = parse(request);
+		result.setMimeType(request.getParameter("mimetype"));
+		return result;
+	}
 }

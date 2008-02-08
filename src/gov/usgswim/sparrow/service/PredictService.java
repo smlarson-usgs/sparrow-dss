@@ -1,26 +1,23 @@
 package gov.usgswim.sparrow.service;
 
-import com.ctc.wstx.stax.WstxOutputFactory;
-
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.service.HttpRequestHandler;
+import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.AdjustmentSetImm;
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DPercentCompare;
 import gov.usgswim.sparrow.Data2DView;
 import gov.usgswim.sparrow.Double2DImm;
-import gov.usgswim.sparrow.Int2DImm;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.PredictRequest;
-
 import gov.usgswim.sparrow.PredictResult;
 
 import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletResponse;
-
 import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 import org.apache.log4j.Logger;
 
@@ -53,6 +50,10 @@ public class PredictService implements HttpRequestHandler<PredictServiceRequest>
 	public PredictService() {
 	}
 	
+	@Deprecated
+	public void dispatch(PipelineRequest request, HttpServletResponse response) throws Exception {
+		throw new UnsupportedOperationException("This old dispatch method has been deprecated for PredictService pending refactoring");
+	}
 	
 	public void dispatch(PredictServiceRequest req, HttpServletResponse response) throws Exception {
 		response.setContentType(RESPONSE_MIME_TYPE);
@@ -72,6 +73,7 @@ public class PredictService implements HttpRequestHandler<PredictServiceRequest>
 	public Data2D dispatchDirect(PredictServiceRequest req) throws Exception {
 		return runPrediction(req);
 	}
+
 	
 	public void dispatch(PredictServiceRequest req, OutputStream outStream) throws Exception {
 																																 
@@ -96,29 +98,8 @@ public class PredictService implements HttpRequestHandler<PredictServiceRequest>
 
 	}
 	
-	//TODO Not tested
-	public Data2D filterResults(Data2D data, PredictServiceRequest req) throws Exception {
 	
-		if (req.getIdByPointRequest() != null) {
-		
-			//The IDByPointRequest returns data w/ reach Ids as IDs in the Data2D
-			int[] rowIds = SharedApplication.getInstance().getIdByPointCache().compute(req.getIdByPointRequest()).getRowIds();
-			
-			double[][] newData = new double[rowIds.length][];
-			
-			for (int index=0; index<rowIds.length; index++) {
-				int rowId = rowIds[index];
-				int rowIndex = data.findRowById(rowId);
-				double[] rowData = data.getDoubleRow(rowIndex);
-				newData[index] = rowData;
-			}
-			
-			return new Double2DImm(newData, data.getHeadings(), data.getIndexColumn(), rowIds);
-			
-		} else {
-			return data;
-		}
-	}
+
 	
 	public Data2D runPrediction(PredictServiceRequest req) {
 		Data2D result = null;		//The prediction result
@@ -215,4 +196,51 @@ public class PredictService implements HttpRequestHandler<PredictServiceRequest>
 	public void shutDown() {
 		xoFact = null;
 	}
+	
+	public XMLStreamReader getXMLStreamReader(PipelineRequest o, boolean needsCompleteFirstRow) throws Exception {
+		return getXMLStreamReader((PredictServiceRequest) o, needsCompleteFirstRow);
+	}
+
+	public XMLStreamReader getXMLStreamReader(PredictServiceRequest req, boolean needsCompleteFirstRow) throws Exception {
+		Data2D result = runPrediction(req);
+		result = filterResults(result, req);
+		PredictData adjData = null;
+		if (req.getDataSeries().equals( PredictServiceRequest.DataSeries.ALL )) {
+			//TODO This is a hack:  we throw away the adjusted data in the PredictComputable,
+			//then recompute it here b/c there is no way back to it.
+			PredictData data = loadData(req.getPredictRequest());	//is cached
+			adjData = adjustData(req.getPredictRequest(), data);	//redo adjustement
+		}
+		return new PredictSerializer2(req, result, adjData);
+	}
+	
+	//TODO Not tested
+	public Data2D filterResults(Data2D data, PredictServiceRequest req) throws Exception {
+	
+		if (req.getIdByPointRequest() != null) {
+		
+			//The IDByPointRequest returns data w/ reach Ids as IDs in the Data2D
+			int[] rowIds = SharedApplication.getInstance().getIdByPointCache().compute(req.getIdByPointRequest()).getRowIds();
+			
+			double[][] newData = new double[rowIds.length][];
+			
+			for (int index=0; index<rowIds.length; index++) {
+				int rowId = rowIds[index];
+				int rowIndex = data.findRowById(rowId);
+				double[] rowData = data.getDoubleRow(rowIndex);
+				newData[index] = rowData;
+			}
+			
+			return new Double2DImm(newData, data.getHeadings(), data.getIndexColumn(), rowIds);
+			
+		} else {
+			return data;
+		}
+	}
+
+
+
+
+
+
 }

@@ -1,7 +1,6 @@
 package gov.usgswim.sparrow.service;
 
 import gov.usgswim.sparrow.Data2D;
-
 import gov.usgswim.sparrow.PredictData;
 
 import java.io.OutputStream;
@@ -149,6 +148,7 @@ public class PredictSerializer extends AbstractSerializer {
 				}
 
 				xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, "r") );
+				xw.add( evtFact.createCharacters("\n") );
 			}
 			
 			

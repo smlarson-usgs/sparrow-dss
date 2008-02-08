@@ -1,6 +1,7 @@
 package gov.usgswim.service;
 
 import gov.usgswim.ThreadSafe;
+import gov.usgswim.service.pipeline.PipelineRequest;
 
 
 import java.io.IOException;
@@ -128,6 +129,18 @@ public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<
 		}																										
 	}
 	
+	// TODO make T extend PipelineRequest and pull up from subclasses. 
+	// This can be done if we can get rid of
+	// ?unused? class SimpleHTTPRequestParser
+//	public PipelineRequest parseForPipeline(HttpServletRequest request)
+//			throws Exception {
+//		PipelineRequest result = parse(request);
+//		result.setMimeType(request.getParameter("mimetype"));
+//		return result;
+//	}
+	
+	public abstract PipelineRequest parseForPipeline(HttpServletRequest request) throws Exception;
+
 	/**
 	 * Returns the integer value found in the specified attribute of the current
 	 * element.  If require is true and the attribute does not exist, an error
@@ -140,7 +153,7 @@ public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<
 	public static int parseAttribAsInt(
 			XMLStreamReader reader, String attrib) throws Exception {
 			
-		return (int) parseAttribAsLong(reader, attrib, true);
+		return parseAttribAsLong(reader, attrib, true).intValue();
 	}
 	
 	/**

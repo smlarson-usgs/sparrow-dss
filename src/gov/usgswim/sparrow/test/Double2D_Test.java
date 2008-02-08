@@ -85,8 +85,8 @@ public class Double2D_Test extends TestCase {
 	public void runIDTest(Data2D data2D) throws Exception {
 		this.assertEquals(0, data2D.findRowById(5));	//ID of first row
 		this.assertEquals(9, data2D.findRowById(95));	//ID of last row
-		this.assertEquals(5, data2D.getIdForRow(0));
-		this.assertEquals(95, data2D.getIdForRow(9));
+		this.assertEquals(5, data2D.getIdForRow(0).intValue());
+		this.assertEquals(95, data2D.getIdForRow(9).intValue());
 	}
 	
 

@@ -1,8 +1,7 @@
 package gov.usgswim.sparrow.service;
 
 import gov.usgswim.Immutable;
-
-import gov.usgswim.sparrow.PredictRequest;
+import gov.usgswim.service.pipeline.PipelineRequest;
 
 import java.awt.Point;
 
@@ -16,12 +15,13 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * 10 in areas w/ few reaches may return fewer results.
  */
 @Immutable
-public class IDByPointRequest {
+public class IDByPointRequest implements PipelineRequest{
 	private final Point.Double _point;
 	private final int _numberOfResults;
 	private final Long _modelId;
 	
 	private Integer hash;	//Not strictly threadsafe, but recalculation is cheap and non-destructive
+	protected String mimetype = "xml"; // default is xml
 	
 	/**
 	 * Constructs a new request instance.
@@ -68,5 +68,19 @@ public class IDByPointRequest {
 		}
 		
 		return hash;
+	}
+	
+	public String getMimeType() {
+		return mimetype;
+	}
+
+	public void setMimeType(String mimetype) {
+		if (mimetype != null) {
+			this.mimetype = mimetype;	
+		}	
+	}
+	
+	public String getFileName() {
+		return "idByPoint";
 	}
 }

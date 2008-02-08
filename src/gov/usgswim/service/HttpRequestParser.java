@@ -1,5 +1,7 @@
 package gov.usgswim.service;
 
+import gov.usgswim.service.pipeline.PipelineRequest;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -33,5 +35,7 @@ public interface HttpRequestParser<T> extends RequestParser<T> {
 	 * @return
 	 */
 	public String getXmlParam();
+
+	public PipelineRequest parseForPipeline(HttpServletRequest request) throws Exception;
 	
 }

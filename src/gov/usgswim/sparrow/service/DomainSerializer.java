@@ -5,7 +5,6 @@ import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.Source;
 
 import java.io.OutputStream;
-
 import java.util.List;
 
 import javax.xml.stream.XMLEventWriter;
@@ -93,9 +92,6 @@ public class DomainSerializer extends AbstractSerializer {
 			writeSource(xw, s);
 		}
 		xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, "sources") );
-		
-		
-		
 		
 		xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, "model") );
 

@@ -25,6 +25,9 @@
 &lt;/sparrow-meta-request&gt;
 				</textarea>
 				<input type="submit" name="submit" value="submit"/>
+				<input type="checkbox" name="mimetype" value="csv">csv
+				<input type="checkbox" name="mimetype" value="tab">tab
+				<input type="checkbox" name="mimetype" value="excel">excel
 			</fieldset>
 		</form>
 		
@@ -44,6 +47,9 @@
 &lt;/sparrow-meta-request&gt;
 				</textarea>
 				<input type="submit" name="submit" value="submit"/>
+				<input type="checkbox" name="mimetype" value="csv">csv
+				<input type="checkbox" name="mimetype" value="tab">tab
+				<input type="checkbox" name="mimetype" value="excel">excel
 			</fieldset>
 		</form>
 	

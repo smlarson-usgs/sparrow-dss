@@ -1,20 +1,18 @@
 package gov.usgswim.sparrow.service;
 
+import static gov.usgswim.sparrow.Adjustment.AdjustmentType.GROSS_SRC_ADJUST;
+import static gov.usgswim.sparrow.Adjustment.AdjustmentType.SPECIFIC_ADJUST;
 import gov.usgswim.service.AbstractHttpRequestParser;
-
 import gov.usgswim.service.RequestParser;
-
+import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.Adjustment;
 import gov.usgswim.sparrow.AdjustmentSet;
 import gov.usgswim.sparrow.AdjustmentSetBuilder;
 import gov.usgswim.sparrow.PredictRequest;
-
-import java.awt.Point;
-import java.awt.geom.Point2D;
 import gov.usgswim.sparrow.Adjustment.AdjustmentType;
 
 import javax.servlet.http.HttpServletRequest;
-
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.StringUtils;
@@ -248,5 +246,9 @@ public class PredictParser extends AbstractHttpRequestParser<PredictServiceReque
 		return adj.getImmutable();	//shouldn't get here
 	}
 
-
+	public PipelineRequest parseForPipeline(HttpServletRequest request)throws Exception {
+		PipelineRequest result = parse(request);
+		result.setMimeType(request.getParameter("mimetype"));
+		return result;
+	}
 }

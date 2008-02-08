@@ -86,22 +86,22 @@ public class JDBCUtil_Test extends TestCase {
 		
 		
 		//model
-		this.assertEquals(1, m.getId());
+		this.assertEquals(1, m.getId().intValue());
 		this.assertEquals("Chesapeake bay", m.getName());
 		this.assertEquals(11, m.getSources().size());
 		
 		//1st source
-		this.assertEquals(1, s1.getId());
+		this.assertEquals(1, s1.getId().intValue());
 		this.assertEquals("pttn", s1.getName());
 		this.assertEquals(1, s1.getSortOrder());
-		this.assertEquals(1, s1.getModelId());
+		this.assertEquals(1, s1.getModelId().intValue());
 		this.assertEquals(1, s1.getIdentifier());
 		
 		//last source
-		this.assertEquals(11, s2.getId());
+		this.assertEquals(11, s2.getId().intValue());
 		this.assertEquals("frst", s2.getName());
 		this.assertEquals(11, s2.getSortOrder());
-		this.assertEquals(1, s2.getModelId());
+		this.assertEquals(1, s2.getModelId().intValue());
 		this.assertEquals(11, s2.getIdentifier());
 		
 	}

@@ -61,7 +61,7 @@ public class PredictServiceTest extends TestCase {
 		this.assertEquals(gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.ALL, req.getDataSeries());
 		
 		PredictRequest pReq = req.getPredictRequest();
-		this.assertEquals(22L, pReq.getModelId());
+		this.assertEquals(22L, pReq.getModelId().longValue());
 		this.assertEquals(2, pReq.getAdjustmentSet().getAdjustmentCount());
 		
 		
@@ -93,7 +93,7 @@ public class PredictServiceTest extends TestCase {
 		this.assertEquals(gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.INCREMENTAL_ADD, req.getDataSeries());
 		
 		PredictRequest pReq = req.getPredictRequest();
-		this.assertEquals(22L, pReq.getModelId());
+		this.assertEquals(22L, pReq.getModelId().longValue());
 		this.assertEquals(2, pReq.getAdjustmentSet().getAdjustmentCount());
 		
 		

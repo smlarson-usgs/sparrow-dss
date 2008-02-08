@@ -1,10 +1,8 @@
 package gov.usgswim.sparrow.service;
 
 import gov.usgswim.NotThreadSafe;
+import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.PredictRequest;
-
-import java.awt.Point;
-import java.awt.geom.Point2D;
 
 /**
  * Holds the entire state of a prediction service request.
@@ -18,13 +16,14 @@ import java.awt.geom.Point2D;
  * value, an attempt to set to null is simply ignored.
  */
 @NotThreadSafe
-public class PredictServiceRequest {
+public class PredictServiceRequest implements PipelineRequest{
 
 	private ResponseFilter responseType = gov.usgswim.sparrow.service.PredictServiceRequest.ResponseFilter.ALL;
 	private PredictType predictType = gov.usgswim.sparrow.service.PredictServiceRequest.PredictType.VALUES;
 	private PredictRequest predictRequest;
 	private DataSeries dataSeries = gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.ALL;
 	private IDByPointRequest idByPointRequest;
+	protected String mimetype = "xml"; // default is xml
 
 
 	public enum DataSeries {
@@ -147,6 +146,9 @@ public class PredictServiceRequest {
 	public PredictServiceRequest() {
 	}
 	
+	// -------------------
+	// GETTERS AND SETTERS
+	// -------------------
 	public void setResponseType(PredictServiceRequest.ResponseFilter responseType) {
 		if (responseType != null) {
 			this.responseType = responseType;
@@ -191,6 +193,20 @@ public class PredictServiceRequest {
 
 	public PredictServiceRequest.DataSeries getDataSeries() {
 		return dataSeries;
+	}
+
+	public String getMimeType() {
+		return mimetype;
+	}
+
+	public void setMimeType(String mimetype) {
+		if (mimetype != null) {
+			this.mimetype = mimetype;	
+		}
+	}
+
+	public String getFileName() {
+		return "predict";
 	}
 	
 }

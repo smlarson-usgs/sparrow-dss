@@ -2,9 +2,9 @@ package gov.usgswim.sparrow.service;
 
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DView;
-import gov.usgswim.task.Computable;
 import gov.usgswim.sparrow.Int2DImm;
 import gov.usgswim.sparrow.util.JDBCUtil;
+import gov.usgswim.task.Computable;
 
 import java.sql.Connection;
 import java.sql.SQLException;

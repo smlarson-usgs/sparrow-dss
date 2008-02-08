@@ -1,11 +1,10 @@
 package gov.usgswim.sparrow.service;
 
 import gov.usgswim.service.AbstractHttpRequestParser;
-
 import gov.usgswim.service.RequestParser;
+import gov.usgswim.service.pipeline.PipelineRequest;
 
 import javax.servlet.http.HttpServletRequest;
-
 import javax.xml.stream.XMLStreamReader;
 
 public class ModelParser extends AbstractHttpRequestParser<ModelRequest> implements RequestParser<ModelRequest> {
@@ -55,5 +54,9 @@ public class ModelParser extends AbstractHttpRequestParser<ModelRequest> impleme
 		return req;
 	}
 
-
+	public PipelineRequest parseForPipeline(HttpServletRequest request)throws Exception {
+		PipelineRequest result = parse(request);
+		result.setMimeType(request.getParameter("mimetype"));
+		return result;
+	}
 }

@@ -1,12 +1,15 @@
 package gov.usgswim.sparrow.service;
 
+import gov.usgswim.service.pipeline.PipelineRequest;
+
 import org.apache.commons.lang.BooleanUtils;
 
-public class ModelRequest {
+public class ModelRequest implements PipelineRequest{
 	boolean _public = true;
 	boolean _approved = true;
 	boolean _archived = false;
 	boolean _sources = false;
+	private String mimetype = "xml";
 	
 	public ModelRequest() {
 	}
@@ -58,5 +61,17 @@ public class ModelRequest {
 	public boolean isSources() {
 		return _sources;
 	}
+	
+	public String getMimeType() {
+		return mimetype;
+	}
 
+	public void setMimeType(String mimetype) {
+		if (mimetype != null) {
+			this.mimetype = mimetype;	
+		}	
+	}
+	public String getFileName() {
+		return "model";
+	}
 }

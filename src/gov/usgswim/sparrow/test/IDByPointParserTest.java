@@ -41,7 +41,7 @@ public class IDByPointParserTest extends TestCase {
 		IDByPointRequest req = parser.parse(xsr);
 
 		assertEquals(5, req.getNumberOfResults());
-		assertEquals(22, req.getModelId());
+		assertEquals(22, req.getModelId().intValue());
 		assertEquals(-100d, req.getPoint().getX());
 		assertEquals(40d, req.getPoint().getY());
 	}

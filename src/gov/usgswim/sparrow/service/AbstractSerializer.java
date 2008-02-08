@@ -1,15 +1,15 @@
 package gov.usgswim.sparrow.service;
 
 
-import com.ctc.wstx.stax.WstxEventFactory;
-
-import com.ctc.wstx.stax.WstxOutputFactory;
-
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
+
 import org.apache.commons.lang.StringUtils;
+
+import com.ctc.wstx.stax.WstxEventFactory;
+import com.ctc.wstx.stax.WstxOutputFactory;
 
 public abstract class AbstractSerializer {
 	public static String EMPTY = StringUtils.EMPTY;
