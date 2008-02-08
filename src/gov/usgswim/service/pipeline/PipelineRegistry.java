@@ -59,7 +59,7 @@ public class PipelineRegistry {
 						case TAB:
 						case EXCEL:
 						case HTML:
-							DataFlatteningFormatter df = new DataFlatteningFormatter(OutputType.CSV);
+							DataFlatteningFormatter df = new DataFlatteningFormatter(outputType);
 							df.setRowElementName("source");
 							df.setKeepElderInfo(true);
 							formatter = df;
