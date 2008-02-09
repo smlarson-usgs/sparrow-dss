@@ -1,5 +1,7 @@
 package gov.usgswim.service;
 
+import java.io.IOException;
+
 import gov.usgswim.service.pipeline.PipelineRequest;
 
 import javax.servlet.http.HttpServletRequest;

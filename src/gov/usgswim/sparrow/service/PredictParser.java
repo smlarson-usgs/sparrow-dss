@@ -249,6 +249,8 @@ public class PredictParser extends AbstractHttpRequestParser<PredictServiceReque
 	public PipelineRequest parseForPipeline(HttpServletRequest request)throws Exception {
 		PipelineRequest result = parse(request);
 		result.setMimeType(request.getParameter("mimetype"));
+		result.setEcho(request.getParameter("echo"));
+		
 		return result;
 	}
 }

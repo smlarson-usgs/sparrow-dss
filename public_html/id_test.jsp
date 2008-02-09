@@ -15,6 +15,8 @@
 			
 			csv:<a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&mimetype=csv">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;mimetype=csv</a><br>
 			tab:<a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&mimetype=tab">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;mimetype=tab</a><br>
+			echo: <a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&echo=yes">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;echo=yes</a><br>
+		
 		</p>
 		
 		<p>
@@ -23,6 +25,8 @@
 			excel: <a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&mimetype=excel">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&amp;mimetype=excel</a><br>
 			csv:<a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&mimetype=csv">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&amp;mimetype=csv</a><br>
 			tab:<a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&mimetype=tab">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&amp;mimetype=tab</a><br>
+			echo: <a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&echo=yes">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&amp;echo=yes</a><br>
+		
 		</p>
 		
 		<p>
@@ -32,6 +36,8 @@
 			excel: <a href="sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&mimetype=excel">sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&amp;mimetype=excel</a><br>
 			csv: <a href="sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&mimetype=csv">sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&amp;mimetype=csv</a><br>
 			tab: <a href="sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&mimetype=tab">sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&amp;mimetype=tab</a><br>
+			echo: <a href="sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&echo=yes">sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&amp;echo=yes</a><br>
+
 		</p>
 		
 	</body>

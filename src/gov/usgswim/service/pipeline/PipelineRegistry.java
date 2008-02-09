@@ -20,9 +20,12 @@ public class PipelineRegistry {
 	public static final List<String> flatMimeTypes = Arrays.asList(new String[] {"csv", "tab", "excel", "html"});
 
 	public static Pipeline lookup(PipelineRequest o) {
-
+		if (o.isEcho()) {
+			return new EchoPipeline(o.getXMLRequest());
+		}
+		// otherwise ...
 		return new Pipeline(){
-			
+
 			/**
 			 * The handler is responsible for creating the source of XMLStreamReader events
 			 */
@@ -37,7 +40,7 @@ public class PipelineRegistry {
 				boolean isSparrowXML = (o instanceof PredictServiceRequest )||(o instanceof IDByPointRequest) ;
 				boolean isModelXML = (o instanceof ModelRequest);
 				OutputType outputType = Enum.valueOf(OutputType.class, o.getMimeType().toUpperCase());
-//				 TODO this code doesn't belong here. Refactor later. use generics
+//				TODO this code doesn't belong here. Refactor later. use generics
 				IFormatter formatter = null;
 				if (isSparrowXML) {
 					switch (outputType) {
@@ -51,7 +54,7 @@ public class PipelineRegistry {
 							// XML is the default case
 						default:
 							formatter = new XMLPassThroughFormatter();
-							break;
+						break;
 					}
 				} else if (isModelXML) {
 					switch (outputType) {
@@ -68,7 +71,7 @@ public class PipelineRegistry {
 							// XML is the default case
 						default:
 							formatter = new XMLPassThroughFormatter();
-							break;
+						break;
 					}
 				}
 				formatter.setFileName(o.getFileName());
@@ -79,8 +82,10 @@ public class PipelineRegistry {
 			public void setHandler(HttpRequestHandler handler) {
 				this.handler = handler;
 			}
-			
+
 		};
+
 	}
+
 
 }

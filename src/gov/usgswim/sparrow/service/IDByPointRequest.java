@@ -19,9 +19,11 @@ public class IDByPointRequest implements PipelineRequest{
 	private final Point.Double _point;
 	private final int _numberOfResults;
 	private final Long _modelId;
+	private boolean isEcho;
 	
 	private Integer hash;	//Not strictly threadsafe, but recalculation is cheap and non-destructive
 	protected String mimetype = "xml"; // default is xml
+	private String xmlRequest;
 	
 	/**
 	 * Constructs a new request instance.
@@ -82,5 +84,25 @@ public class IDByPointRequest implements PipelineRequest{
 	
 	public String getFileName() {
 		return "idByPoint";
+	}
+
+	public void setEcho(String echo) {
+			isEcho = ("yes".equalsIgnoreCase(echo) || "true".equalsIgnoreCase(echo));
+	}
+
+	public void setEcho(boolean echo) {
+		isEcho = echo;
+	}
+
+	public boolean isEcho() {
+		return isEcho;
+	}
+
+	public String getXMLRequest() {
+		return xmlRequest;
+	}
+
+	public void setXMLRequest(String request) {
+		xmlRequest = request;		
 	}
 }

@@ -10,6 +10,8 @@ public class ModelRequest implements PipelineRequest{
 	boolean _archived = false;
 	boolean _sources = false;
 	private String mimetype = "xml";
+	private boolean isEcho;
+	private String xmlRequest;
 	
 	public ModelRequest() {
 	}
@@ -73,5 +75,25 @@ public class ModelRequest implements PipelineRequest{
 	}
 	public String getFileName() {
 		return "model";
+	}
+	
+	public void setEcho(String echo) {
+		isEcho = ("yes".equalsIgnoreCase(echo) || "true".equalsIgnoreCase(echo));
+	}
+
+	public void setEcho(boolean echo) {
+		isEcho = echo;
+	}
+
+	public boolean isEcho() {
+		return isEcho;
+	}
+
+	public String getXMLRequest() {
+		return xmlRequest;
+	}
+
+	public void setXMLRequest(String request) {
+		xmlRequest = request;		
 	}
 }

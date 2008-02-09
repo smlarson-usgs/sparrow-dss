@@ -4,6 +4,7 @@ import gov.usgswim.ThreadSafe;
 import gov.usgswim.service.pipeline.PipelineRequest;
 
 
+import java.io.BufferedReader;
 import java.io.IOException;
 
 import java.io.StringReader;
@@ -28,7 +29,7 @@ import org.apache.commons.lang.StringUtils;
  * specific to the application.
  */
 @ThreadSafe
-public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<T> {
+public abstract class AbstractHttpRequestParser<T extends PipelineRequest> implements HttpRequestParser<T> {
 
 	/**
 	 * Used to lock the xmlParamName for thread saftey.
@@ -39,6 +40,8 @@ public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<
 	private String _paramName;	//TODO Shouldn't this have a default?
 	
 	protected XMLInputFactory inFact;
+
+//	private String xmlRequest;
 	
 	public AbstractHttpRequestParser() {
 		inFact = XMLInputFactory.newInstance();
@@ -51,13 +54,18 @@ public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<
 	}
 	
 	public T parse(HttpServletRequest request) throws Exception {
-		XMLStreamReader reader = getXMLStream(request);
-		return parse(reader);
+		String xmlRequest = readInputXMLRequest(request);
+		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(xmlRequest));
+		T result = parse(reader);
+		result.setXMLRequest(xmlRequest);
+		return result;
 	}
 
 	public T parse(String in) throws Exception {
 		XMLStreamReader reader = getXMLStream(in);
-		return parse(reader);
+		T result = parse(reader);
+		result.setXMLRequest(in);
+		return result;
 	}
 	
 
@@ -76,16 +84,14 @@ public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<
 		}
 	}
 	
-	protected XMLStreamReader getXMLStream(HttpServletRequest request) throws XMLStreamException,
-																																						IOException {
+	private String readInputXMLRequest(HttpServletRequest request) throws IOException {
 		String extraPath = request.getPathInfo();
 		String xmlParam = getXmlParam();
-		
 		
 		if ("GET".equals(request.getMethod())) {
 		
 			String xml = request.getParameter(xmlParam);
-			return getXMLStream(xml);
+			return (xml == null)? "": xml;
 			
 		} else if ("POST".equals(request.getMethod())) {
 		
@@ -96,7 +102,7 @@ public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<
 				if (extraPath.equals(xmlParam)) {
 				
 					String xml = request.getParameter(xmlParam);
-					return getXMLStream(xml);
+					return (xml == null)? "": xml;
 
 				} else {
 					//ignore the extra url info and process as normal.
@@ -105,25 +111,62 @@ public abstract class AbstractHttpRequestParser<T> implements HttpRequestParser<
 	
 			}
 			
-			//Assume the entire POST contents is the XML document
-			return inFact.createXMLStreamReader(request.getInputStream());
+			// Read the input stream into a String
+			StringBuilder result = new StringBuilder();
+			BufferedReader requestReader = request.getReader();
+			String line = null;
+			while ((line = requestReader.readLine()) != null) {
+				result.append(line).append("\n");
+			}
+			return result.toString();
 			
 		} else {
 			throw new IOException("Unsupported request method '" + request.getMethod() + "'");
 		}
-
 	}
+
+//	protected XMLStreamReader getXMLStream(HttpServletRequest request) throws XMLStreamException, IOException {
+//		String extraPath = request.getPathInfo();
+//		String xmlParam = getXmlParam();
+//		
+//		
+//		if ("GET".equals(request.getMethod())) {
+//		
+//			String xml = request.getParameter(xmlParam);
+//			return getXMLStream(xml);
+//			
+//		} else if ("POST".equals(request.getMethod())) {
+//		
+//			if (extraPath != null && extraPath.length() > 1) {
+//				//The client may have passed the XML request as a parameter...
+//				
+//				extraPath = extraPath.substring(1);
+//				if (extraPath.equals(xmlParam)) {
+//				
+//					String xml = request.getParameter(xmlParam);
+//					return getXMLStream(xml);
+//
+//				} else {
+//					//ignore the extra url info and process as normal.
+//					//No idea what the extra stuff could be.
+//				}
+//	
+//			}
+//			
+//			//Assume the entire POST contents is the XML document
+//			return inFact.createXMLStreamReader(request.getInputStream());
+//			
+//		} else {
+//			throw new IOException("Unsupported request method '" + request.getMethod() + "'");
+//		}
+//
+//	}
 	
-	protected XMLStreamReader getXMLStream(String xml) throws IOException,
-																															 XMLStreamException {
-																													
+
+
+	protected XMLStreamReader getXMLStream(String xml) throws IOException, XMLStreamException {							
 		if (xml != null) {
-		
-			XMLStreamReader xsr;
-			StringReader sr = new StringReader(xml);
-			xsr = inFact.createXMLStreamReader(sr);
-			return xsr;
-			
+			return inFact.createXMLStreamReader(new StringReader(xml));		
 		} else {
 			throw new IOException("No request data found");
 		}																										

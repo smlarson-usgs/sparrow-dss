@@ -24,6 +24,8 @@ public class PredictServiceRequest implements PipelineRequest{
 	private DataSeries dataSeries = gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.ALL;
 	private IDByPointRequest idByPointRequest;
 	protected String mimetype = "xml"; // default is xml
+	private boolean isEcho;
+	private String xmlRequest;
 
 
 	public enum DataSeries {
@@ -209,4 +211,22 @@ public class PredictServiceRequest implements PipelineRequest{
 		return "predict";
 	}
 	
+	public void setEcho(String echo) {
+		isEcho = ("yes".equalsIgnoreCase(echo) || "true".equalsIgnoreCase(echo));
+	}
+
+	public void setEcho(boolean echo) {
+		isEcho = echo;
+	}
+
+	public boolean isEcho() {
+		return isEcho;
+	}
+	public String getXMLRequest() {
+		return xmlRequest;
+	}
+
+	public void setXMLRequest(String request) {
+		xmlRequest = request;		
+	}
 }

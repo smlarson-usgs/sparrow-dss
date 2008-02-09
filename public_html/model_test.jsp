@@ -28,10 +28,11 @@
 				<input type="checkbox" name="mimetype" value="csv">csv
 				<input type="checkbox" name="mimetype" value="tab">tab
 				<input type="checkbox" name="mimetype" value="excel">excel
+				<input type="checkbox" name="echo" value="true">echo
 			</fieldset>
 		</form>
 		
-		<form action="sp_predict/xmlreq" method="post" enctype="application/x-www-form-urlencoded">
+		<form action="sp_model/xmlreq" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Prediction Request 2">
 				<label for="xml_input_2">Prediction Request 2</label>
 				<p>
@@ -50,6 +51,7 @@
 				<input type="checkbox" name="mimetype" value="csv">csv
 				<input type="checkbox" name="mimetype" value="tab">tab
 				<input type="checkbox" name="mimetype" value="excel">excel
+				<input type="checkbox" name="echo" value="true">echo
 			</fieldset>
 		</form>
 	

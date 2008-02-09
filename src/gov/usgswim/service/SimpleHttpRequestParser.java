@@ -11,12 +11,15 @@ import javax.xml.stream.XMLStreamReader;
  * XMLStreamReader as the request object.
  */
 @ThreadSafe
-public class SimpleHttpRequestParser extends AbstractHttpRequestParser<XMLStreamReader> {
+//public class SimpleHttpRequestParser extends AbstractHttpRequestParser<PipelineRequest> {
+//IK: is this class used? Cannot find refernces to it.
+public class SimpleHttpRequestParser  {
 	public SimpleHttpRequestParser() {
 	}
 
 	public XMLStreamReader parse(HttpServletRequest request) throws Exception {
-		return getXMLStream(request);
+//		return (XMLStreamReader) getXMLStream(request);
+		return null;
 	}
 
 	public XMLStreamReader parse(XMLStreamReader in) {
@@ -24,11 +27,12 @@ public class SimpleHttpRequestParser extends AbstractHttpRequestParser<XMLStream
 	}
 
 	public XMLStreamReader parse(String in) throws Exception {
-		return getXMLStream(in);
+//		return getXMLStream(in);
+		return null;
 	}
 
-	public PipelineRequest parseForPipeline(HttpServletRequest request) throws Exception {
-		// IK: is this class used? Cannot find refernces to it.
-		throw new UnsupportedOperationException("may have to refactor interfaces");
-	}
+//	public PipelineRequest parseForPipeline(HttpServletRequest request) throws Exception {
+//		
+//		throw new UnsupportedOperationException("may have to refactor interfaces");
+//	}
 }

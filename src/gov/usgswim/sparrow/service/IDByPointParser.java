@@ -34,7 +34,9 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 					point.x = parseParamAsDouble(request, "long");
 					point.y = parseParamAsDouble(request, "lat");
 					
-					return new IDByPointRequest(id, point, numResults);
+					IDByPointRequest result = new IDByPointRequest(id, point, numResults);
+					result.setXMLRequest(""); // no xml request, RESTlike
+					return result;
 				} else {
 					throw new Exception("The IDByPoint Request must contain exactly one argument as part of the URL - the model ID.");
 				}
@@ -122,6 +124,7 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 	public PipelineRequest parseForPipeline(HttpServletRequest request)throws Exception {
 		PipelineRequest result = parse(request);
 		result.setMimeType(request.getParameter("mimetype"));
+		result.setEcho(request.getParameter("echo"));
 		return result;
 	}
 }
