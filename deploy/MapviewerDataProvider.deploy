@@ -49,13 +49,7 @@
                <beforeFilters/>
                <duringFilters/>
                <selectedArchives>
-                  <archives>
-                     <Item path="../java_lib/jakarta/commons_lang/commons-lang-2.1.jar" jar-entry=""/>
-                     <Item path="../java_lib/apache/log4j/log4j-1.2.13.jar" jar-entry=""/>
-                     <Item path="../java_lib/codehaus/woodstox/binary/stax-api-1.0.1.jar" jar-entry=""/>
-                     <Item path="../java_lib/codehaus/woodstox/binary/wstx-lgpl-3.2.jar" jar-entry=""/>
-                     <Item path="../java_lib/sjsxp-1_0_1/sjsxp.jar" jar-entry=""/>
-                  </archives>
+                  <archives class="[Ljava.net.URL;"/>
                   <selectionMode>0</selectionMode>
                </selectedArchives>
             </filters>
