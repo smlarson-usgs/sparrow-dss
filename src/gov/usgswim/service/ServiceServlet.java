@@ -203,7 +203,10 @@ public class ServiceServlet extends HttpServlet {
 		try {
 			o = parser.parseForPipeline(request); 
 			Pipeline pipe = PipelineRegistry.lookup(o);
-			pipe.setHandler(handler);
+			
+			//Handler is the service class, which this servlet is config'ed for,
+			//but the PipelineRegistry is unaware of.
+			pipe.setHandler(handler);		
 			pipe.dispatch(o, response);
 			
 		} catch (Exception e) {
