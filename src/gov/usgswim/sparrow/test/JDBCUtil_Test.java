@@ -227,7 +227,7 @@ public class JDBCUtil_Test extends TestCase {
 	/**
 	 * @see JDBCUtil#loadDecay(Connection, int, int)
 	 */
-	public void xtestLoadDecay() throws Exception {
+	public void testLoadDecay() throws Exception {
 		Double2DImm jdbcData = JDBCUtil.loadDecay(conn, 1, 0);
 		
 		this.assertEquals(2339, jdbcData.getRowCount());
