@@ -18,6 +18,7 @@ public class _OfflineTest {
 	  suite.addTestSuite(Data2DView_Test.class);
 		suite.addTestSuite(Data2DBuilder_Test.class);
 		//suite.addTestSuite(JDBCUtil_Test.class);
+		suite.addTestSuite(DataLoaderOfflineTest.class);
 		suite.addTestSuite(SourceAdjustments_Test.class);
 		//suite.addTestSuite(DomainSerializerTest.class);
 		suite.addTestSuite(PredictSerializerTest.class);
