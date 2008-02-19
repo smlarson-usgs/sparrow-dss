@@ -2,22 +2,11 @@ package gov.usgswim.sparrow.test;
 
 import gov.usgswim.sparrow.Data2D;
 import gov.usgswim.sparrow.Data2DCompare;
-import gov.usgswim.sparrow.domain.Model;
-import gov.usgswim.sparrow.domain.ModelBuilder;
-import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.util.DataLoader;
 import gov.usgswim.sparrow.util.JDBCUtil;
 
-import gov.usgswim.sparrow.util.TabDelimFileUtil;
-
-import java.io.IOException;
-
-import java.io.InputStream;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
-
-import java.util.List;
 
 import junit.swingui.TestRunner;
 
@@ -60,7 +49,7 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 		Data2D dldata = DataLoader.loadSystemInfo(conn, 22);
 		
 		Data2DCompare comp = new Data2DCompare(jdbcData, dldata);
-		//this.assertEquals(0d, comp.findMaxCompareValue());
+		
 		
 		for (int c=0; c<comp.getColCount(); c++) {
 			int r = comp.findMaxCompareRow(c);
@@ -69,7 +58,7 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 			System.out.println("Expected: " + jdbcData.getValue(r, c) + " Actual: " + dldata.getValue(r, c));
 		}
 		
-		
+	  this.assertEquals(0d, comp.findMaxCompareValue());
 		//dumpComparison(jdbcData, dldata, 999999);
 		
 	}

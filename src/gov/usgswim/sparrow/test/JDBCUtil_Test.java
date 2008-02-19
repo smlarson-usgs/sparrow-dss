@@ -57,7 +57,7 @@ public class JDBCUtil_Test extends TestCase {
 	/**
 	 * @see JDBCUtil#loadMinimalPredictDataSet(Connection conn, int modelId)
 	 */
-	public void xtestLoadMinimalPredictDataSet() throws Exception {
+	public void testLoadMinimalPredictDataSet() throws Exception {
 		PredictData ds = JDBCUtil.loadMinimalPredictDataSet(conn, 1);
 		PredictRunner ps = new PredictRunner(ds);
 		
@@ -183,7 +183,7 @@ public class JDBCUtil_Test extends TestCase {
 	/**
 	 * @see JDBCUtil#loadTopo(Connection,int)
 	 */
-	public void xtestLoadTopo() throws Exception {
+	public void testLoadTopo() throws Exception {
 		Int2DImm jdbcData = JDBCUtil.loadTopo(conn, 1);
 		this.assertEquals(2339, jdbcData.getRowCount());
 		this.assertEquals(4, jdbcData.getColCount());
@@ -196,7 +196,7 @@ public class JDBCUtil_Test extends TestCase {
 	/**
 	 * @see JDBCUtil#loadSourceIds(java.sql.Connection,int)
 	 */
-	public void xtestLoadSource(Connection conn, int modelId) throws Exception {
+	public void testLoadSource(Connection conn, int modelId) throws Exception {
 		Int2DImm jdbcData = JDBCUtil.loadSourceIds(conn, 1);
 		this.assertEquals(11, jdbcData.getRowCount());
 		this.assertEquals(1, jdbcData.getColCount());
@@ -211,7 +211,7 @@ public class JDBCUtil_Test extends TestCase {
 	/**
 	 * @see JDBCUtil#loadSourceReachCoef(Connection, int, int, Int2D)
 	 */
-	public void xtestLoadSourceReachCoef() throws Exception {
+	public void testLoadSourceReachCoef() throws Exception {
 		Int2DImm sources = JDBCUtil.loadSourceIds(conn, 1);
 		Data2D jdbcData = JDBCUtil.loadSourceReachCoef(conn, 1, 0, sources);
 		
@@ -242,7 +242,7 @@ public class JDBCUtil_Test extends TestCase {
 	/**
 	 * @see JDBCUtil#loadSourceValues(Connection, int, Int2D)
 	 */
-	public void xtestLoadSourceValues() throws Exception {
+	public void testLoadSourceValues() throws Exception {
 		Int2DImm sources = JDBCUtil.loadSourceIds(conn, 1);
 		Data2D jdbcData = JDBCUtil.loadSourceValues(conn, 1, sources);
 		
