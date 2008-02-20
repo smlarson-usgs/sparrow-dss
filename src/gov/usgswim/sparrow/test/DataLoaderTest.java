@@ -72,7 +72,7 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 			System.out.println("Expected: " + jdbcData.getValue(r, c) + " Actual: " + dldata.getValue(r, c));
 		}
 		
-	  this.assertEquals(0d, comp.findMaxCompareValue());
+	  this.assertEquals(0d, comp.findMaxCompareValue(), .000000000000001d);
 		//dumpComparison(jdbcData, dldata, 999999);
 		
 	}
@@ -80,7 +80,7 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 	/**
 	 * @see DataLoader#loadMinimalPredictDataSet(Connection conn, int modelId)
 	 */
-	public void xtestLoadMinimalPredictDataSet() throws Exception {
+	public void testLoadMinimalPredictDataSet() throws Exception {
 		PredictData ds = DataLoader.loadMinimalPredictDataSet(conn, 1);
 		PredictRunner ps = new PredictRunner(ds);
 		
@@ -100,8 +100,8 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 		
 		Data2DCompare comp = null;	//used for all comparisons
 		
-		PredictData expect = JDBCUtil.loadFullModelDataSet(conn, 1);
-		PredictData data = DataLoader.loadFullModelDataSet(conn, 1);
+		PredictData expect = JDBCUtil.loadFullModelDataSet(conn, 22);
+		PredictData data = DataLoader.loadFullModelDataSet(conn, 22);
 		
 		PredictRunner expectPr = new PredictRunner(expect);
 		PredictRunner dataPr = new PredictRunner(data);
@@ -129,7 +129,14 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
 		
 		comp = new Data2DCompare(expect.getTopo(), data.getTopo());
-		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
+		//assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
+                for (int i = 0; i < comp.getColCount(); i++)  {
+                    System.out.println("col " + i + " error: " + comp.findMaxCompareValue(i));
+                    int row = comp.findMaxCompareRow(i);
+                    System.out.println("id: " + expect.getTopo().getIdForRow(row));
+                    System.out.println("expected: " + expect.getTopo().getValue(row, i));
+                    System.out.println("found: " + data.getTopo().getValue(row, i));
+                }
 		
 	}
 	
