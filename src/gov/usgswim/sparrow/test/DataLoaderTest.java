@@ -112,10 +112,7 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 		//Compare result values
 		comp = new Data2DCompare(expectResult, dataResult);
 		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
-		
-		comp = new Data2DCompare(expect.getAncil(), data.getAncil());
-		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
-		
+
 		comp = new Data2DCompare(expect.getCoef(), data.getCoef());
 		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
 		
