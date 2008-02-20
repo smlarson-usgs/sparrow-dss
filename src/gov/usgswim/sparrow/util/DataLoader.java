@@ -363,7 +363,7 @@ public class DataLoader {
 		
 			String query =
 				getQuery("SelectAllReachCoef", new Object[] {
-					"ModelId", modelId, "Iteration", sources.getInt(srcIndex, 0)
+					"ModelId", modelId, "SourceId", sources.getInt(srcIndex, 0)
 				});
 
 			
