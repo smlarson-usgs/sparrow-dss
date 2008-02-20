@@ -787,7 +787,7 @@ public class JDBCUtil {
 	 */
 	public static Int2DImm loadSystemInfo(Connection conn, int modelId) throws SQLException {
 		String query =
-			"SELECT MODEL_REACH_ID as MODEL_REACH, HYDSEQ FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY HYDSEQ";
+			"SELECT MODEL_REACH_ID as MODEL_REACH, HYDSEQ FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY HYDSEQ, MODEL_REACH_ID";
 	
 		Int2DImm data = readAsInteger(conn, query, 2000, -1);
 		int[] ids = data.getIntColumn(0);
@@ -811,7 +811,7 @@ public class JDBCUtil {
 	 */
 	public static Int2DImm loadTopo(Connection conn, int modelId) throws SQLException {
 		String query =
-			"SELECT FNODE, TNODE, IFTRAN, HYDSEQ FROM ALL_TOPO_VW WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY HYDSEQ";
+			"SELECT FNODE, TNODE, IFTRAN, HYDSEQ FROM ALL_TOPO_VW WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY HYDSEQ, MODEL_REACH_ID";
 	
 		return readAsInteger(conn, query, 1000);
 		
@@ -860,7 +860,7 @@ public class JDBCUtil {
 				"rch.SPARROW_MODEL_ID = " +  modelId + " AND " +
 				"coef.Iteration = " +  iteration + " AND " +
 				"coef.SOURCE_ID = " +  sources.getInt(srcIndex, 1) + " " +
-				"ORDER BY rch.HYDSEQ";
+				"ORDER BY rch.HYDSEQ, tch.MODEL_REACH_ID";
 			
 			
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
@@ -930,7 +930,7 @@ public class JDBCUtil {
 				"WHERE " +
 				"rch.SPARROW_MODEL_ID = " +  modelId + " AND " +
 				"coef.SOURCE_ID = " +  sources.getInt(srcIndex, 0) + " " +
-				"ORDER BY coef.Iteration, rch.HYDSEQ";
+				"ORDER BY coef.Iteration, rch.HYDSEQ, rch.MODEL_REACH_ID";
 			
 			
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
@@ -982,7 +982,7 @@ public class JDBCUtil {
 			"SELECT coef.INC_DELIVERY, coef.TOTAL_DELIVERY " +
 			"FROM REACH_COEF coef INNER JOIN MODEL_REACH rch ON coef.MODEL_REACH_ID = rch.MODEL_REACH_ID " +
 			"WHERE rch.SPARROW_MODEL_ID = " +  modelId + " AND coef.ITERATION = " + iteration + " " +
-			"ORDER BY rch.HYDSEQ";
+			"ORDER BY rch.HYDSEQ, rch.MODEL_REACH_ID";
 	
 		return readAsDouble(conn, query, 2000);
 		
@@ -1055,7 +1055,7 @@ public class JDBCUtil {
 				"WHERE " +
 				"rch.SPARROW_MODEL_ID = " +  modelId + " AND " +
 				"src.SOURCE_ID = " +  sources.getInt(srcIndex, 1) + " " +
-				"ORDER BY rch.HYDSEQ";
+				"ORDER BY rch.HYDSEQ, rch.MODEL_REACH_ID";
 			
 			
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
