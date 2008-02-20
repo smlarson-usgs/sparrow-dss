@@ -78,9 +78,9 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 	}
 	
 	/**
-	 * @see JDBCUtil#loadMinimalPredictDataSet(Connection conn, int modelId)
+	 * @see DataLoader#loadMinimalPredictDataSet(Connection conn, int modelId)
 	 */
-	public void testLoadMinimalPredictDataSet() throws Exception {
+	public void xtestLoadMinimalPredictDataSet() throws Exception {
 		PredictData ds = DataLoader.loadMinimalPredictDataSet(conn, 1);
 		PredictRunner ps = new PredictRunner(ds);
 		
@@ -94,6 +94,46 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 		
 		assertEquals(0d, comp.findMaxCompareValue(), 0.004d);
 
+	}
+	
+	public void testDoFullCompare() throws Exception {
+		
+		Data2DCompare comp = null;	//used for all comparisons
+		
+		PredictData expect = JDBCUtil.loadFullModelDataSet(conn, 1);
+		PredictData data = DataLoader.loadFullModelDataSet(conn, 1);
+		
+		PredictRunner expectPr = new PredictRunner(expect);
+		PredictRunner dataPr = new PredictRunner(data);
+		
+		Double2DImm expectResult = expectPr.doPredict();
+		Double2DImm dataResult = expectPr.doPredict();
+
+		//Compare result values
+		comp = new Data2DCompare(expectResult, dataResult);
+		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
+		
+		comp = new Data2DCompare(expect.getAncil(), data.getAncil());
+		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
+		
+		comp = new Data2DCompare(expect.getCoef(), data.getCoef());
+		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
+		
+		comp = new Data2DCompare(expect.getDecay(), data.getDecay());
+		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
+		
+		comp = new Data2DCompare(expect.getSrc(), data.getSrc());
+		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
+		
+		comp = new Data2DCompare(expect.getSrcIds(), data.getSrcIds());
+		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
+		
+		comp = new Data2DCompare(expect.getSys(), data.getSys());
+		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
+		
+		comp = new Data2DCompare(expect.getTopo(), data.getTopo());
+		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
+		
 	}
 	
 	public void testReadModelMetadata() throws Exception {
