@@ -860,7 +860,7 @@ public class JDBCUtil {
 				"rch.SPARROW_MODEL_ID = " +  modelId + " AND " +
 				"coef.Iteration = " +  iteration + " AND " +
 				"coef.SOURCE_ID = " +  sources.getInt(srcIndex, 1) + " " +
-				"ORDER BY rch.HYDSEQ, tch.MODEL_REACH_ID";
+				"ORDER BY rch.HYDSEQ, rch.MODEL_REACH_ID";
 			
 			
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
