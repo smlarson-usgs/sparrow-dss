@@ -171,7 +171,9 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 				svsRequest = predictParser.parse(xmlReq);
 				
 				//Make this default to TOTAL instead of all
-				if (svsRequest.getDataSeries() == gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.ALL) svsRequest.setDataSeries(gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.TOTAL);
+				if (svsRequest.getDataSeries() == PredictServiceRequest.DataSeries.ALL) {
+					svsRequest.setDataSeries(PredictServiceRequest.DataSeries.TOTAL);
+				}
 				
 				predictRequest = svsRequest.getPredictRequest();
 			} catch (XMLStreamException e) {
