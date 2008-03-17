@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<sparrow-prediction-request
+  xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	<!--
+	We need to be able to store the predict requests in a chache w/ a transact ID
+	so they can be refered to later.  Its a seperate issue to cache an entire
+	service request, which contains much more info (when we we use this?).
+	However, a MV request needs the predict request, the comp type, and the primary
+	data series in order to have all the info needed for mapping.
+	
+	How do we bring all of that together?
+	
+	Maybe we need to store entire predict service requests, rather then just
+	predict requests.  Or we could do both and allow a predict service request
+	refer to the a predict request trans ID.
+	
+	-->
+	<predict model-id="22">
+		<comparison type="perc_change">
+				<!--
+				place adjustments directly under predict will result in no comparison.
+				Other types of comparisons might include (but are not implemented)
+				subtract-from-nominal, subtract-from-adjusted, etc..  All assume chg from
+				nominal, however, this structure allows for the comparison of multiple
+				adjusted predictions by adding another source-adjustments element.
+				-->
+			<source-adjustments>
+				<gross-src src="1" coef=".5"/>
+				<gross-src src="4" coef="2"/>
+			</source-adjustments>
+		</comparison>
+	</predict>
+	
+	<!--
+	response-content gives the ability to controls what rows and columns are returned.
+	result-filter removes columns based on a criteria.
+	data-series allows only a subset of data to be returned, or allows additional
+	series of data to be added (such as the source values used to calculate the
+	predicted data.
+	-->
+	<response-content>
+		<result-filter>
+			<near-point result-count="5">
+				<point lat="40" long="-100"/>
+			</near-point>
+		</result-filter>
+		
+		<!--
+		How can I indicate that one of the returned series is the one to map, w/o
+		odd restrictions that apply only to map requests?
+		
+		It would be nice to just include the series to be mappped in the MV request
+		seperately, since here we allow multiple or ALL series to be returned.  But
+		if we allow it in the MV request, what is provided here might conflict.
+		-->
+		<data-series include-nom="true">
+			<series>incremental</series>
+			<series>total</series>
+			
+		</data-series>
+	</response-content>
+	
+	<!--
+	Allows precise formatting of the returned content.
+	-->
+	<response-format name="pre-configured format name" compress="zip">
+		<mime-type>application/msword</mime-type>
+		<template>beige</template>
+		<options>
+			<option name="gov.usgswim.WordGenerator.marin-top">1.5in</option>
+		</options>
+	</response-format>
+
+</sparrow-prediction-request>
