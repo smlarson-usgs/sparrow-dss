@@ -9,13 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class EchoPipeline implements Pipeline {
 
-	private final String xmlRequest;
 	private String fileName = "request";
-	
-
-	public EchoPipeline(String request) {
-		this.xmlRequest = request;
-	}
 
 	public void dispatch(PipelineRequest o, HttpServletResponse response)
 			throws Exception {

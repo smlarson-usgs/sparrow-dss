@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.test;
 
-import gov.usgswim.sparrow.Int2DImm;
+import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.service.IDByPointComputable;
 import gov.usgswim.sparrow.service.IDByPointRequest;
 import gov.usgswim.sparrow.util.SparrowUtil;
@@ -27,9 +27,9 @@ public class IDByPointComputableTest extends TestCase {
 		
 		IDByPointComputable idc = new IDByPointComputable();
 		IDByPointRequest req = new IDByPointRequest(22L, new Point.Double(-93d, 45d), 5);
-		Int2DImm data = idc.compute(req);
+		DataTable data = idc.compute(req);
 		
-		SparrowUtil.print2DArray(data, "Nearest to point:");
+		SparrowUtil.printDataTable(data, "Nearest to point:");
 		
 		assertEquals(5, data.getRowCount());
 		

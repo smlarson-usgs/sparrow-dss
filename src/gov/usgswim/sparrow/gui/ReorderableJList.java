@@ -6,7 +6,6 @@ import java.awt.dnd.*;
 import javax.swing.*;
 import java.io.IOException;
 import java.util.*;
-import java.awt.image.*;
 
 public class ReorderableJList extends JList 
     implements DragSourceListener, DropTargetListener, DragGestureListener {

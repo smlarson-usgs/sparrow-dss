@@ -1,26 +1,21 @@
 package gov.usgswim.sparrow.test;
-
+import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.sparrow.Adjustment;
-import gov.usgswim.sparrow.Adjustment.AdjustmentType;
 import gov.usgswim.sparrow.AdjustmentSetBuilder;
-import gov.usgswim.sparrow.Data2D;
-import gov.usgswim.sparrow.Double2DImm;
-import gov.usgswim.sparrow.Int2DImm;
+import gov.usgswim.sparrow.Adjustment.AdjustmentType;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;
-
 import java.util.HashMap;
 import java.util.Map;
 
 import junit.framework.TestCase;
-
-
 public class SourceAdjustments_Test extends TestCase {
-	Data2D data;
-	
+	DataTable data;
+
 	int[][] rowIndexData =
-		 new int[][] {
+		new int[][] {
 			{ 100, 2, 1 },
 			{ 200, 2, 1 },
 			{ 300, 4, 1 },
@@ -28,8 +23,8 @@ public class SourceAdjustments_Test extends TestCase {
 			{ 500, 6, 1 },
 			{ 600, 6, 1 },
 			{ 700, 7, 1 },
-		};
-	
+	};
+
 	public SourceAdjustments_Test(String sTestName) {
 		super(sTestName);
 	}
@@ -39,14 +34,14 @@ public class SourceAdjustments_Test extends TestCase {
 
 	protected void setUp() throws Exception {
 		super.setUp();
-		
-		InputStream fileStream = this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/src.txt");
+
+		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/src.txt");
 		data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 	}
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
-		
+
 		data = null;
 	}
 
@@ -64,144 +59,143 @@ public class SourceAdjustments_Test extends TestCase {
 		//Adjustments per source (source #, coef).
 		//Any skipped ones are assumed to be 1.
 		String adjustString = "1,.5, 4,.1, 7,1, 8,0, 9,0 10,.5";
-		Map adjMap = new HashMap(11);
+		Map<String, String> adjMap = new HashMap<String, String>(11);
 		adjMap.put(AdjustmentType.GROSS_SRC_ADJUST.toString(), adjustString);
-		
+
 		AdjustmentSetBuilder sas = new AdjustmentSetBuilder();
-		
+
 		sas.addGrossSrcAdjustments(adjMap);
-		
+
 		Adjustment[] adjList = sas.getAdjustments();
-		
+
 		//Test a few of the adjustment values
 		//these values will be sorted by ID, so 10 will be the last ID and .5 the last value
 		Adjustment a = adjList[0];
 		assertEquals(AdjustmentType.GROSS_SRC_ADJUST, a.getType());
 		assertEquals(1, a.getSrcId());
 		assertEquals(.5d, a.getValue(), .00000000000001);
-		
+
 		a = adjList[1];
 		assertEquals(4, a.getSrcId());
 		assertEquals(.1, a.getValue(), .00000000000001);
-		
+
 		a = adjList[4];
 		assertEquals(9, a.getSrcId());
 		assertEquals(0d, a.getValue(), .00000000000001);
-		
+
 		//Test the whole buisiness
-		Data2D adjData = sas.adjust(data, null, null);
-		
+		DataTable adjData = sas.adjust(data, null, null);
+
 		//These two should be different instances (one is a view of hte other)
-		this.assertNotSame(data, adjData);
-		
+		assertNotSame(data, adjData);
+
 		//Test a few columns
 		//Column 1 (index 0)
-		for (int r = 0; r < data.getColCount(); r++)  {
-			this.assertEquals((data.getDouble(r, 0) * .5d), adjData.getDouble(r, 0), .00000000000001);
+		for (int r = 0; r < data.getColumnCount(); r++)  {
+			assertEquals((data.getDouble(r, 0) * .5d), adjData.getDouble(r, 0), .00000000000001);
 		}
-		
+
 		//Column 2 (index 1) - not modified
-		for (int r = 0; r < data.getColCount(); r++)  {
-			this.assertEquals(data.getDouble(r, 1), adjData.getDouble(r, 1), .00000000000001);
+		for (int r = 0; r < data.getColumnCount(); r++)  {
+			assertEquals(data.getDouble(r, 1), adjData.getDouble(r, 1), .00000000000001);
 		}
-		
+
 		//Column 3 (index 2) - not modified
-		for (int r = 0; r < data.getColCount(); r++)  {
-			this.assertEquals(data.getDouble(r, 2), adjData.getDouble(r, 2), .00000000000001);
+		for (int r = 0; r < data.getColumnCount(); r++)  {
+			assertEquals(data.getDouble(r, 2), adjData.getDouble(r, 2), .00000000000001);
 		}
-		
+
 		//Column 4 (index 3)
-		for (int r = 0; r < data.getColCount(); r++)  {
-			this.assertEquals((data.getDouble(r, 3) * .1d), adjData.getDouble(r, 3), .00000000000001);
+		for (int r = 0; r < data.getColumnCount(); r++)  {
+			assertEquals((data.getDouble(r, 3) * .1d), adjData.getDouble(r, 3), .00000000000001);
 		}
-		
+
 		//Column 8 (index 7) - should be zero
-		for (int r = 0; r < data.getColCount(); r++)  {
-			this.assertEquals(0, adjData.getDouble(r, 7), .00000000000001);
+		for (int r = 0; r < data.getColumnCount(); r++)  {
+			assertEquals(0, adjData.getDouble(r, 7), .00000000000001);
 		}
-		
+
 		//Column 10 (index 9)
-		for (int r = 0; r < data.getColCount(); r++)  {
-			this.assertEquals((data.getDouble(r, 9) * .5d), adjData.getDouble(r, 9), .00000000000001);
+		for (int r = 0; r < data.getColumnCount(); r++)  {
+			assertEquals((data.getDouble(r, 9) * .5d), adjData.getDouble(r, 9), .00000000000001);
 		}
-		
+
 	}
-	
+
 	public void testSetGrossAndSpecificAdjustment() throws Exception {
-		
-		Data2D reachIndex = new Int2DImm(rowIndexData, null, 0, null);
+
+		DataTable reachIndex = new SimpleDataTableWritable(rowIndexData, (String[]) null, 0, (int[]) null);
 		String adjustString = "1,.5, 4,.1, 7,1, 8,0, 9,0 10,.5";
-		Map adjMap = new HashMap(11);
+		Map<String, String> adjMap = new HashMap<String, String>(11);
 		adjMap.put(AdjustmentType.GROSS_SRC_ADJUST.toString(), adjustString);
-		
+
 		AdjustmentSetBuilder sas = new AdjustmentSetBuilder();
-		
+
 		//Add the adjustments - specific adjs should always sort to last.
-		sas.addAdjustment(new Adjustment(AdjustmentType.SPECIFIC_ADJUST, 1, 100, .5));	//(0,0)
+		sas.addAdjustment(new Adjustment(Adjustment.AdjustmentType.SPECIFIC_ADJUST, 1, 100, .5));	//(0,0)
 		sas.addGrossSrcAdjustments(adjMap);
-		sas.addAdjustment(new Adjustment(AdjustmentType.SPECIFIC_ADJUST, 2, 200, 2.5d));	//(1,1)
-		
+		sas.addAdjustment(new Adjustment(Adjustment.AdjustmentType.SPECIFIC_ADJUST, 2, 200, 2.5d));	//(1,1)
+
 		Adjustment[] adjList = sas.getAdjustments();
-		
+
 		//Test a few of the adjustment values.  In particular, the specific adjustments
 		//must go last.
 		Adjustment a = adjList[0];
 		assertEquals(AdjustmentType.GROSS_SRC_ADJUST, a.getType());
 		assertEquals(1, a.getSrcId());
 		assertEquals(.5d, a.getValue(), .00000000000001);
-		
+
 		a = adjList[6];
 		assertEquals(AdjustmentType.SPECIFIC_ADJUST, a.getType());
 		assertEquals(1, a.getSrcId());
 		assertEquals(100, a.getReachId());
 		assertEquals(.5d, a.getValue(), .00000000000001);
-		
+
 		a = adjList[7];
 		assertEquals(AdjustmentType.SPECIFIC_ADJUST, a.getType());
 		assertEquals(2, a.getSrcId());
 		assertEquals(200, a.getReachId());
 		assertEquals(2.5d, a.getValue(), .00000000000001);
-		
+
 		//Test the whole buisiness
-		Data2D adjData = sas.adjust(data, null, reachIndex);
-		
+		DataTable adjData = sas.adjust(data, null, reachIndex);
+
 
 		//Test the specific adj value and a few values on either side
-		this.assertEquals(.5d, adjData.getDouble(0, 0), .00000000000001);	//specific
-		this.assertEquals((data.getDouble(1, 0) * .5d), adjData.getDouble(1, 0), .00000000000001);
-		
-		
-		this.assertEquals(data.getDouble(0, 1), adjData.getDouble(0, 1), .00000000000001);
-		this.assertEquals(2.5d, adjData.getDouble(1, 1), .00000000000001);	//specific
-		this.assertEquals(data.getDouble(2, 1), adjData.getDouble(2, 1), .00000000000001);
-		
-		
+		assertEquals(.5d, adjData.getDouble(0, 0), .00000000000001);	//specific
+		assertEquals((data.getDouble(1, 0) * .5d), adjData.getDouble(1, 0), .00000000000001);
+
+
+		assertEquals(data.getDouble(0, 1), adjData.getDouble(0, 1), .00000000000001);
+		assertEquals(2.5d, adjData.getDouble(1, 1), .00000000000001);	//specific
+		assertEquals(data.getDouble(2, 1), adjData.getDouble(2, 1), .00000000000001);
+
+
 		//
 		//These column tests are the same as the coef adjust
 		//
-		
+
 		//Column 3 (index 2) - not modified
-		for (int r = 0; r < data.getColCount(); r++)  {
-			this.assertEquals(data.getDouble(r, 2), adjData.getDouble(r, 2), .00000000000001);
+		for (int r = 0; r < data.getColumnCount(); r++)  {
+			assertEquals(data.getDouble(r, 2), adjData.getDouble(r, 2), .00000000000001);
 		}
-		
+
 		//Column 4 (index 3)
-		for (int r = 0; r < data.getColCount(); r++)  {
-			this.assertEquals((data.getDouble(r, 3) * .1d), adjData.getDouble(r, 3), .00000000000001);
+		for (int r = 0; r < data.getColumnCount(); r++)  {
+			assertEquals((data.getDouble(r, 3) * .1d), adjData.getDouble(r, 3), .00000000000001);
 		}
-		
+
 		//Column 8 (index 7) - should be zero
-		for (int r = 0; r < data.getColCount(); r++)  {
-			this.assertEquals(0, adjData.getDouble(r, 7), .00000000000001);
+		for (int r = 0; r < data.getColumnCount(); r++)  {
+			assertEquals(0, adjData.getDouble(r, 7), .00000000000001);
 		}
-		
+
 		//Column 10 (index 9)
-		for (int r = 0; r < data.getColCount(); r++)  {
-			this.assertEquals((data.getDouble(r, 9) * .5d), adjData.getDouble(r, 9), .00000000000001);
+		for (int r = 0; r < data.getColumnCount(); r++)  {
+			assertEquals((data.getDouble(r, 9) * .5d), adjData.getDouble(r, 9), .00000000000001);
 		}
-		
+
 	}
 
-	
 
 }

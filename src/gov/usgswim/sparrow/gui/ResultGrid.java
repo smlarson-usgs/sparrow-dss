@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.gui;
 
-import gov.usgswim.sparrow.Data2D;
+import gov.usgswim.sparrow.deprecated.Data2D;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

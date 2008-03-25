@@ -26,6 +26,7 @@ public class PredictServiceRequest implements PipelineRequest{
 	protected String mimetype = "xml"; // default is xml
 	private boolean isEcho;
 	private String xmlRequest;
+	private int rowLimit;
 
 
 	public enum DataSeries {
@@ -171,14 +172,21 @@ public class PredictServiceRequest implements PipelineRequest{
 		return predictType;
 	}
 
+	/**
+	 * @param predictionRequest
+	 */
 	public void setPredictRequest(PredictRequest predictionRequest) {
 		this.predictRequest = predictionRequest;
 	}
+	
 
+	/**
+	 * @return
+	 */
 	public PredictRequest getPredictRequest() {
 		return predictRequest;
 	}
-
+	
 	public void setIdByPointRequest(IDByPointRequest idByPointRequest) {
 		this.idByPointRequest = idByPointRequest;
 	}
@@ -228,5 +236,13 @@ public class PredictServiceRequest implements PipelineRequest{
 
 	public void setXMLRequest(String request) {
 		xmlRequest = request;		
+	}
+
+	public void setRowLimit(int rowLimit) {
+		this.rowLimit = rowLimit;
+	}
+	
+	public int getRowLimit() {
+		return rowLimit;
 	}
 }

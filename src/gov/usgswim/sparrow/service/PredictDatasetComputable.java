@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.service;
 
-import gov.usgswim.task.Computable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.util.JDBCUtil;
+import gov.usgswim.task.Computable;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 public class PredictDatasetComputable implements Computable<Long, PredictData> {
 	protected static Logger log =
 		Logger.getLogger(PredictDatasetComputable.class); //logging for this class
-		
+
 	public PredictDatasetComputable() {
 	}
 
@@ -27,14 +27,14 @@ public class PredictDatasetComputable implements Computable<Long, PredictData> {
 		PredictData data = null;
 		try {
 			conn = SharedApplication.getInstance().getConnection();
-			
+
 			long startTime = System.currentTimeMillis();
 			log.debug("Begin loading predict data for model #" + modelId);
-			
+
 			data = JDBCUtil.loadMinimalPredictDataSet(conn, modelId.intValue());
-			
+
 			log.debug("End loading predict data for model #" + modelId + "  Time: " + (System.currentTimeMillis() - startTime) + "ms");
-			
+
 		} finally {
 			if (conn != null) {
 				try {
@@ -44,8 +44,9 @@ public class PredictDatasetComputable implements Computable<Long, PredictData> {
 				}
 			}
 		}
-		
-		return data;
-		
+
+		return data.toImmutable();
+
 	}
 }
+

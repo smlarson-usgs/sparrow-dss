@@ -1,29 +1,11 @@
 package gov.usgswim.sparrow.gui;
 
-import gov.usgswim.sparrow.PredictRunner;
-import gov.usgswim.sparrow.util.TabDelimFileUtil;
-
-import java.awt.BorderLayout;
-
-import java.awt.FlowLayout;
-
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.io.File;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
-import oracle.jdeveloper.layout.PaneConstraints;
-import oracle.jdeveloper.layout.PaneLayout;
 import oracle.jdeveloper.layout.VerticalFlowLayout;
 
 public class InputPanel extends JPanel {

@@ -1,6 +1,5 @@
 package gov.usgswim.service;
 
-import java.io.OutputStream;
 
 /**
  * Implementations are capable of processing a generically defined request bean
@@ -10,6 +9,6 @@ import java.io.OutputStream;
  * an interface to use for http requests.
  */
 public interface RequestHandler<T> {
-	public void dispatch(T request, OutputStream out) throws Exception;
+//	public void dispatch(T request, OutputStream out) throws Exception;
 	public void shutDown();
 }

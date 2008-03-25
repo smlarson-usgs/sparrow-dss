@@ -14,7 +14,7 @@ package gov.usgswim.sparrow;
 public class DataProviderCacheProxy {
 	private static Object bogusData = new Exception("Placeholder");
 	private static int DEFAULT_SLEEP_MILISEC = 2000;
-	private static int DEFAULT_SLEEP_INTERVALS_SECS = 60;
+	//private static int DEFAULT_SLEEP_INTERVALS_SECS = 60;
 
 	private Object key;
 	private Object data = bogusData;

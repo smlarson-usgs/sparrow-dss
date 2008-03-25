@@ -1,8 +1,10 @@
 package gov.usgswim.sparrow;
 
 import gov.usgswim.ImmutableBuilder;
+import gov.usgswim.datatable.DataTable;
+import gov.usgswim.sparrow.PredictDataBuilder;
+import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.domain.Model;
-
 /**
  * A PredictData instance contains all the numerical data needed to run a prediction.
  * 
@@ -17,8 +19,7 @@ import gov.usgswim.sparrow.domain.Model;
  * the ID of the model to run, adjustment information, and the type of prediction
  * to run.
  */
-public interface PredictData extends ImmutableBuilder<PredictData> {
-
+public interface PredictData extends ImmutableBuilder<PredictDataImm> {
 
 	/**
 	 * Returns the IDs used to indentify and look up sources
@@ -43,7 +44,7 @@ public interface PredictData extends ImmutableBuilder<PredictData> {
 	 * </ol>
 	 * @return
 	 */
-	public Data2D getSrcIds();
+	public DataTable getSrcIds();
 
 	/**
 	 * Maps a source id to its column index in the src data.
@@ -76,7 +77,7 @@ public interface PredictData extends ImmutableBuilder<PredictData> {
 	 * require more memory to process.
 	 * @return The Data2D data
 	 */
-	public Data2D getTopo();
+	public DataTable getTopo();
 
 	/**
 	 * Returns the coef data.
@@ -86,7 +87,7 @@ public interface PredictData extends ImmutableBuilder<PredictData> {
 	 *
 	 * @return The Data2D data
 	 */
-	public Data2D getCoef();
+	public DataTable getCoef();
 
 	/**
 	 * Returns the source data
@@ -96,7 +97,7 @@ public interface PredictData extends ImmutableBuilder<PredictData> {
 	 *
 	 * @return The Data2D data
 	 */
-	public Data2D getSrc();
+	public DataTable getSrc();
 
 	/**
 	 * Returns the decay data.
@@ -115,7 +116,7 @@ public interface PredictData extends ImmutableBuilder<PredictData> {
 	 *
 	 * @return
 	 */
-	public Data2D getDecay();
+	public DataTable getDecay();
 
 	/**
 	 * Returns the system information, which is optional but required if the
@@ -131,12 +132,12 @@ public interface PredictData extends ImmutableBuilder<PredictData> {
 	 *
 	 * @return
 	 */
-	public Data2D getSys();
+	public DataTable getSys();
 
-	public Data2D getAncil();
+	public DataTable getAncil();
 
 	public Model getModel();
-	
+
 	/**
 	 * Returns an editable copy of the current PredictionDataSet.
 	 *
@@ -150,7 +151,7 @@ public interface PredictData extends ImmutableBuilder<PredictData> {
 	 * @return
 	 */
 	public PredictDataBuilder getBuilder();
-	
+
 	/**
 	 * Creates an immutable version of the instance, making a shallow copy of
 	 * member variables.
@@ -158,17 +159,18 @@ public interface PredictData extends ImmutableBuilder<PredictData> {
 	 * If the member variables are mutable, they will remain mutable.
 	 * @return
 	 */
-	public PredictData getImmutable();
-	
-	/**
-	 * Creates an immutable version of the instance optionally forcing all member
-	 * variables to be immutable.
-	 * This can be 'bad', since new arrays need to be created for all underlying
-	 * data.
-	 * 
-	 * @param forceImmutableMembers If true, copies are made of mutable data
-	 * @return
-	 */
-	public PredictData getImmutable(boolean forceImmutableMembers);
-	
+	public PredictDataImm toImmutable();
+
+//	/**
+//	* Creates an immutable version of the instance optionally forcing all member
+//	* variables to be immutable.
+//	* This can be 'bad', since new arrays need to be created for all underlying
+//	* data.
+//	* 
+//	* @param forceImmutableMembers If true, copies are made of mutable data
+//	* @return
+//	*/
+//	public PredictData2 getImmutable(boolean forceImmutableMembers);
+
 }
+

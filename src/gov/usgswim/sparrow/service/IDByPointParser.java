@@ -27,7 +27,7 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 				if (paramChain.length == 1 && StringUtils.isNumeric(paramChain[0])) {
 				
 					Long id = Long.parseLong(paramChain[0]);
-					int numResults = this.parseParamAsLong(request, "result-count", 3L).intValue();
+					int numResults = AbstractHttpRequestParser.parseParamAsLong(request, "result-count", 3L).intValue();
 					if (numResults > 100) numResults = 100;
 					
 					Point.Double point = new Point.Double();	//required

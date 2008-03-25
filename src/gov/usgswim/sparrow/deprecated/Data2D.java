@@ -1,9 +1,10 @@
-package gov.usgswim.sparrow;
+package gov.usgswim.sparrow.deprecated;
 
 import gov.usgswim.ImmutableBuilder;
 
 /**
  * A 2D data array.
+ * @deprecated
  */
 public interface Data2D extends ImmutableBuilder<Data2D> {
 	public static final int[][] EMPTY_INT_2D_DATA = new int[0][0];
@@ -61,7 +62,7 @@ public interface Data2D extends ImmutableBuilder<Data2D> {
 	 * 
 	 * @return
 	 */
-	public Data2D getImmutable();
+	public Data2D toImmutable();
 	
 	/**
 	 * Returns an immutable version with the specified index column, flattening the

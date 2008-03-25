@@ -1,55 +1,54 @@
-package gov.usgswim.sparrow;
+package gov.usgswim.sparrow.deprecated;
 
 import gov.usgswim.Immutable;
 
 import java.util.HashMap;
 
-import java.util.LinkedList;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.math.NumberUtils;
-
 /**
  * A loose wrapper around a 2D double array, which includes optional column headings.
+ * @deprecated
  */
 @Immutable
-public class Int2DImm extends Data2DImmAbstract {
-	private final int[][] _data;
+public class Double2DImm extends Data2DImmAbstract {
+	private final double[][] _data;
 	
 	private volatile HashMap<Double, Integer> idIndex;
 	
-	public Int2DImm(int[][] data) {
+	public Double2DImm(double[][] data) {
 		this(data, null, -1, null);
 	}
 	
-	public Int2DImm(int[][] data, String[] headings) {
+	public Double2DImm(double[][] data, String[] headings) {
 		this(data, headings, -1, null);
 	}
 	
-	public Int2DImm(int[][] data, String[] headings, Integer indexCol, int[] ids) {
+	public Double2DImm(double[][] data, String[] headings, Integer indexCol, int[] ids) {
 		super((data != null)?data.length:0, (data != null && data.length > 0 && data[0] != null)?data[0].length:0, headings, indexCol, ids);
 		_data = data;
 		
 		idIndex = buildIndex();
 	}
 	
-	public boolean isDoubleData() { return false; }
+	public boolean isDoubleData() { return true; }
 	
-	public Data2D getImmutable() {
-		return buildIntImmutable(getIndexColumn());
+	public Data2D toImmutable() {
+		return this;
 	}
 	
 	public Data2D buildIntImmutable(int indexCol) {
 		if (getIndexColumn() == indexCol) {
 			return this;
 		} else {
-			return new Int2DImm(_data, getHeadings(), indexCol, getRowIds());
+			return new Int2DImm(getIntData(), getHeadings(), indexCol, getRowIds());
 		}
 	}
 	
 	public Data2D buildDoubleImmutable(int indexCol) {
-		return buildIntImmutable(indexCol);
+		if (getIndexColumn() == indexCol) {
+			return this;
+		} else {
+			return new Double2DImm(_data, getHeadings(), indexCol, getRowIds());
+		}
 	}
 	
 	public int[][] getIntData() {
@@ -61,11 +60,11 @@ public class Int2DImm extends Data2DImmAbstract {
 	}
 	
 	public Number getValue(int row, int col) throws IndexOutOfBoundsException {
-		return new Integer(_data[row][col]);
+		return new Double(_data[row][col]);
 	}
 	
 	public int getInt(int row, int col) throws IndexOutOfBoundsException {
-		return _data[row][col];
+		return (int) _data[row][col];
 	}
 	
 
@@ -120,6 +119,7 @@ public class Int2DImm extends Data2DImmAbstract {
 		int idCol = getIndexColumn();
 		
 		if (idCol > -1) {
+
 			HashMap<Double, Integer> map = new HashMap<Double, Integer>(rCount, 1.1f);
 			
 			for (int r = 0; r < rCount; r++)  {
@@ -137,7 +137,7 @@ public class Int2DImm extends Data2DImmAbstract {
 		int[] newData = new int[rCount];
 		
 		for (int i=0; i<rCount; i++) {
-			newData[i] = _data[i][col];
+			newData[i] = (int) _data[i][col];
 		}
 		return newData;
 	}
@@ -156,7 +156,7 @@ public class Int2DImm extends Data2DImmAbstract {
 		int[] newData = new int[cCount];
 		
 		for (int i=0; i<cCount; i++) {
-			newData[i] = _data[row][i];
+			newData[i] = (int) _data[row][i];
 		}
 		return newData;
 	}

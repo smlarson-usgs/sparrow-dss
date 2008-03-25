@@ -9,6 +9,7 @@ import java.io.Serializable;
  */
 @Immutable
 public class SourceImm implements Source, Serializable {
+	private static final long serialVersionUID = 1L;
 	private final Long _id;
 	private final int _identifier;
 	private final String _name;

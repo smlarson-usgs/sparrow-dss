@@ -27,7 +27,7 @@ public class DataLoaderOfflineTest extends TestCase {
 		String expected =
 		"SELECT MODEL_REACH_ID as MODEL_REACH, HYDSEQ FROM MODEL_REACH WHERE SPARROW_MODEL_ID = $ModelId$ ORDER BY HYDSEQ";
 		
-		this.assertEquals(expected, query);
+		assertEquals(expected, query);
 	}
 
 	/**
@@ -39,7 +39,7 @@ public class DataLoaderOfflineTest extends TestCase {
 		String expected =
 		"SELECT MODEL_REACH_ID as MODEL_REACH, HYDSEQ FROM MODEL_REACH WHERE SPARROW_MODEL_ID = 999 ORDER BY HYDSEQ";
 		
-		this.assertEquals(expected, query);
+		assertEquals(expected, query);
 	}
 
 	/**
@@ -52,6 +52,6 @@ public class DataLoaderOfflineTest extends TestCase {
 		String expected =
 		"SELECT coef.VALUE AS Value FROM SOURCE_REACH_COEF coef INNER JOIN MODEL_REACH rch ON coef.MODEL_REACH_ID = rch.MODEL_REACH_ID WHERE rch.SPARROW_MODEL_ID = 999 AND coef.Iteration = 888 AND coef.SOURCE_ID = 777 ORDER BY rch.HYDSEQ";
 	
-		this.assertEquals(expected, query);
+		assertEquals(expected, query);
 	}
 }

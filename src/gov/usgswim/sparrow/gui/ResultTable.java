@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.gui;
 
-import gov.usgswim.sparrow.Data2DCompare;
+import gov.usgswim.sparrow.deprecated.Data2DCompare;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -10,9 +10,7 @@ import java.util.Enumeration;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JTable;
-import javax.swing.ListCellRenderer;
 import javax.swing.UIManager;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.TableCellRenderer;

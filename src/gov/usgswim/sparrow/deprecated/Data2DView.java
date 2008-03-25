@@ -1,12 +1,10 @@
-package gov.usgswim.sparrow;
+package gov.usgswim.sparrow.deprecated;
 
 import gov.usgswim.NotThreadSafe;
 
 import java.util.HashMap;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.math.NumberUtils;
 
 /**
  * A windowed view of a Data2D instance.
@@ -21,6 +19,7 @@ import org.apache.commons.lang.math.NumberUtils;
  * Subclasses should call rebuildIndex() after making a change to data.
  * Rebuild index will call getDouble() for each value, so values from the
  * subclass will be included.
+ * @deprecated
  */
 @NotThreadSafe
 public class Data2DView implements Data2D {
@@ -121,7 +120,7 @@ public class Data2DView implements Data2D {
 	
 	public boolean isDoubleData() { return data.isDoubleData(); }
 	
-	public Data2D getImmutable() {
+	public Data2D toImmutable() {
 		return buildDoubleImmutable(getIndexColumn());
 	}
 	

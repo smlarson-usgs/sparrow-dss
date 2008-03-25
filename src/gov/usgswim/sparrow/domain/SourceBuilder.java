@@ -1,12 +1,7 @@
 package gov.usgswim.sparrow.domain;
 
-import gov.usgswim.Immutable;
-
-import gov.usgswim.NotThreadSafe;
-
 import gov.usgswim.ImmutableBuilder;
-
-import java.io.Serializable;
+import gov.usgswim.NotThreadSafe;
 
 /**
  * Builder implementation of Model, which is a Domain Object representing a SPARROW Model.
@@ -32,7 +27,7 @@ public class SourceBuilder implements Source, ImmutableBuilder<Source> {
 		_id = id;
 	}
 	
-	public Source getImmutable() throws IllegalStateException {
+	public Source toImmutable() throws IllegalStateException {
 		return new SourceImm(_id, _identifier, _name, _displayName,
 			_description, _sortOrder, _modelId);
 	}

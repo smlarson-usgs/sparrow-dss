@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.util;
 
-import gov.usgswim.sparrow.Data2DBuilder;
+import gov.usgswim.datatable.DataTableWritable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,7 +20,7 @@ public class Misc {
 																										IOException {
 	  String path = "/datausgs/projects/sparrow/sparrow_sim_files-1-work/coef_copy.txt";
 	  String out_path = "/datausgs/projects/sparrow/sparrow_sim_files-1-work/coef_out.txt";
-	  Data2DBuilder data = TabDelimFileUtil.read(new File(path), true);
+	  DataTableWritable data = TabDelimFileUtil.read(new File(path), true);
 		
 		for (int r = 0; r < data.getRowCount(); r++)  {
 			Double error = (Double) data.getValue(r, 13);
@@ -28,10 +28,10 @@ public class Misc {
 			//ripple  all values down
 			for (int i=12; i>0; i--) {
 				Double v = (Double) data.getValue(r, i);
-				data.setValueAt(v, r, i+1);
+				data.setValue(v, r, i+1);
 			}
 			
-		  data.setValueAt(error, r, 1);
+		  data.setValue(error, r, 1);
 			
 		}
 

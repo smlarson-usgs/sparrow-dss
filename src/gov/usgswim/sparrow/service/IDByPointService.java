@@ -2,14 +2,10 @@ package gov.usgswim.sparrow.service;
 
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.ThreadSafe;
+import gov.usgswim.datatable.DataTable;
 import gov.usgswim.service.HttpRequestHandler;
-import gov.usgswim.service.pipeline.PipelineRegistry;
 import gov.usgswim.service.pipeline.PipelineRequest;
-import gov.usgswim.sparrow.Data2D;
-import gov.usgswim.sparrow.Int2DImm;
-import gov.usgswim.sparrow.PredictData;
 
-import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -33,7 +29,7 @@ public class IDByPointService implements HttpRequestHandler<IDByPointRequest> {
 	//protected static XMLInputFactory xinFact;
 	protected static XMLOutputFactory xoFact;
 	
-	protected Data2DSerializer serializer = new Data2DSerializer();
+
 	
 	public IDByPointService() {}
 	
@@ -43,29 +39,29 @@ public class IDByPointService implements HttpRequestHandler<IDByPointRequest> {
 		dispatch((IDByPointRequest) request, response);
 	}
 	
-	/** (non-Javadoc)
-	 * @see gov.usgswim.service.HttpRequestHandler#dispatch(java.lang.Object, javax.servlet.http.HttpServletResponse)
-	 * @deprecated
-	 */
-	public void dispatch(IDByPointRequest req, HttpServletResponse response) throws Exception {
-		response.setContentType(RESPONSE_MIME_TYPE);
-		dispatch(req, response.getOutputStream());
-	}
-	
-	/** (non-Javadoc)
-	 * @see gov.usgswim.service.RequestHandler#dispatch(java.lang.Object, java.io.OutputStream)
-	 * @deprecated
-	 */
-	public void dispatch(IDByPointRequest req, OutputStream outStream) throws Exception {
-																																 
-		Int2DImm result = SharedApplication.getInstance().getIdByPointCache().compute(req);
-		
-
-		serializer.writeResponse(outStream, result);
-
-	}
-	
-	
+//	/** (non-Javadoc)
+//	 * @see gov.usgswim.service.HttpRequestHandler#dispatch(java.lang.Object, javax.servlet.http.HttpServletResponse)
+//	 * @deprecated
+//	 */
+//	public void dispatch(IDByPointRequest req, HttpServletResponse response) throws Exception {
+//		response.setContentType(RESPONSE_MIME_TYPE);
+//		dispatch(req, response.getOutputStream());
+//	}
+//	
+//	/** (non-Javadoc)
+//	 * @see gov.usgswim.service.RequestHandler#dispatch(java.lang.Object, java.io.OutputStream)
+//	 * @deprecated
+//	 */
+//	public void dispatch(IDByPointRequest req, OutputStream outStream) throws Exception {
+//																																 
+//		Int2DImm result = SharedApplication.getInstance().getIdByPointCache().compute(req);
+//		
+//
+//		serializer.writeResponse(outStream, result);
+//
+//	}
+//	
+//	
 	protected Connection getConnection() throws NamingException, SQLException {
 		return SharedApplication.getInstance().getConnection();
 	}
@@ -81,9 +77,9 @@ public class IDByPointService implements HttpRequestHandler<IDByPointRequest> {
 	
 	public XMLStreamReader getXMLStreamReader(IDByPointRequest req, boolean isNeedsFlattening) throws Exception {
 		// TODO isNeedsFlattening ignored for now because using custom flattener
-		Int2DImm result = SharedApplication.getInstance().getIdByPointCache().compute(req);
-		boolean isFlatMimeType = PipelineRegistry.flatMimeTypes.contains(req.getMimeType());
-		BasicXMLStreamReader reader = new Data2DSerializer2(req, result);
+		DataTable result = SharedApplication.getInstance().getIdByPointCache().compute(req);
+		//boolean isFlatMimeType = PipelineRegistry.flatMimeTypes.contains(req.getMimeType());
+		BasicXMLStreamReader reader = new DataTableSerializer(req, result);
 		return reader;
 	}
 

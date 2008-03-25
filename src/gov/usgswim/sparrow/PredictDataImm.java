@@ -1,9 +1,8 @@
 package gov.usgswim.sparrow;
 
 import gov.usgswim.Immutable;
+import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.domain.Model;
-
-import java.util.HashMap;
 
 /**
  * An immutable implementation of PredictData.
@@ -19,8 +18,8 @@ public class PredictDataImm implements PredictData {
 	 * Contains the metadata for the model
 	 */
 	private final Model model;
-	
-	
+
+
 	/**
 	 * One row per reach (i = reach index).  Row ID is assigned same as column 0.
 	 * <ol>
@@ -28,8 +27,8 @@ public class PredictDataImm implements PredictData {
 	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number
 	 * </ol>
 	 */
-	private final Data2D sys;
-	
+	private final DataTable sys;
+
 	/**
 	 * Invariant topographic info about each reach
 	 * i = reach index
@@ -40,23 +39,23 @@ public class PredictDataImm implements PredictData {
 	 * NOTE:  We assume that the node indexes start at zero and have no skips.
 	 * Thus, nodeCount must equal the largest node index + 1
 	 */
-	private final Data2D topo;
-	
+	private final DataTable topo;
+
 	/**
 	 * The coef's for each reach-source.
 	 * coef[i][k] == the coefficient for source k at reach i
 	 */
-	private final Data2D coef;
-	
+	private final DataTable coef;
+
 	/**
 	 * The source amount for each reach-source.
 	 * Columns in this data are ordered by the SORT_ORDER column in the database.
 	 * src[i][k] == the amount added via source k at reach i
 	 */
-	private final Data2D src;
-	
+	private final DataTable src;
+
 	/**
-	 * SourceIds is a two column Data2D with integer data and it has one row
+	 * SourceIds is a two column DataTable with integer data and it has one row
 	 * for each source.  Each row contains the source IDENTIFIER (col 0) and
 	 * the DB unique ID (col 1) for a source for the model.  Row position in this
 	 * dataset is equal to the column position of the source  in the sourceValue
@@ -69,8 +68,8 @@ public class PredictDataImm implements PredictData {
 	 * Would mean that column 0 of the src data has an IDENTIFIER of 10 and a db
 	 * unique id of 7392.
 	 */
-	private final Data2D srcIds;
-	
+	private final DataTable srcIds;
+
 	/**
 	 * The stream and resevor decay.  The values in the array are *actually* 
 	 * delivery, which is (1 - decay).  I.E. the delivery calculation is already
@@ -83,20 +82,20 @@ public class PredictDataImm implements PredictData {
 	 * src[i][1] == the upstream decay at reach i.
 	 *   This decay is applied to the load coming from the upstream node.
 	 */
-	private final Data2D decay;
-	
+	private final DataTable decay;
+
 	/**
 	 * Optional ancillary data.
 	 * The structure of this data is not currently defined.
 	 */
-	private final Data2D ancil;
-	
-	
+	private final DataTable ancil;
+
+
 	/**
 	 * Constructs a new dataset w/ all data tables defined.
 	 * See matching method docs for complete definitions of each parameter.
 	 * 
-	 * srcIDs is a single column Data2D with integer data.  See setSourceIDs for
+	 * srcIDs is a single column DataTable with integer data.  See setSourceIDs for
 	 * details.
 	 * 
 	 * @param topo
@@ -108,9 +107,9 @@ public class PredictDataImm implements PredictData {
 	 * @param model
 	 * @param srcIDs
 	 */
-	public PredictDataImm(Data2D topo, Data2D coef, Data2D src, Data2D srcIDs,
-				Data2D decay, Data2D sys, Data2D ancil, Model model) {
-				
+	public PredictDataImm(DataTable topo, DataTable coef, DataTable src, DataTable srcIDs,
+			DataTable decay, DataTable sys, DataTable ancil, Model model) {
+
 		this.model = model;
 		this.topo = topo;
 		this.coef = coef;
@@ -118,19 +117,20 @@ public class PredictDataImm implements PredictData {
 		this.decay = decay;
 		this.sys = sys;
 		this.ancil = ancil;
-		
-		if (srcIDs != null) {
-			this.srcIds = srcIDs.buildIntImmutable(0);
-		} else {
-			srcIds = null;
-		}
+		this.srcIds = srcIDs;
+
+//		if (srcIDs != null) {
+//		this.srcIds = srcIDs.toImmutable();
+//		} else {
+//		srcIds = null;
+//		}
 
 	}
-	
+
 	public int mapSourceId(int id) throws Exception {
 		if (srcIds != null) {
-		
-			int i = srcIds.findRowByIndex((double)id);
+
+			int i = srcIds.findFirst(0, id);
 
 			if (i > -1) {
 				return i;
@@ -145,79 +145,80 @@ public class PredictDataImm implements PredictData {
 			}
 		}
 	}
-	
-	public Data2D getSrcIds() {
+
+	public DataTable getSrcIds() {
 		return srcIds;
 	}
-	
-	public Data2D getTopo() {
+
+	public DataTable getTopo() {
 		return topo;
 	}
 
-	public Data2D getCoef() {
+	public DataTable getCoef() {
 		return coef;
 	}
 
-	public Data2D getSrc() {
+	public DataTable getSrc() {
 		return src;
 	}
 
-	public Data2D getDecay() {
+	public DataTable getDecay() {
 		return decay;
 	}
 
-	public Data2D getSys() {
+	public DataTable getSys() {
 		return sys;
 	}
 
-	public Data2D getAncil() {
+	public DataTable getAncil() {
 		return ancil;
 	}
 
 	public Model getModel() {
 		return model;
 	}
-	
-	public PredictData getImmutable() {
-		return getImmutable(false);
+
+	public PredictDataImm toImmutable() {
+		return this;
 	}
-	
-	public PredictData getImmutable(boolean forceImmutableMembers) {
-		//TODO:  Model should have an immutable builder
-		if (forceImmutableMembers) {
-			return new PredictDataImm(
-				(getTopo() != null)?getTopo().getImmutable():null,
-				(getCoef() != null)?getCoef().getImmutable():null,
-				(getSrc() != null)?getSrc().getImmutable():null,
-				(getSrcIds() != null)?getSrcIds().getImmutable():null,
-				(getDecay() != null)?getDecay().getImmutable():null,
-				(getSys() != null)?getSys().getImmutable():null,
-				(getAncil() != null)?getAncil().getImmutable():null,
-				(getModel() != null)?getModel():null
-			);
-		} else {
-			return new PredictDataImm(
-				getTopo(),
-				getCoef(),
-				getSrc(),
-				getSrcIds(),
-				getDecay(),
-				getSys(),
-				getAncil(),
-				getModel()
-			);
-		}
-	}
-	
+
+//	public PredictData2 getImmutable(boolean forceImmutableMembers) {
+//	//TODO:  Model should have an immutable builder
+//	if (forceImmutableMembers) {
+//	return new PredictData2Imm(
+//	(getTopo() != null)?getTopo().toImmutable():null,
+//	(getCoef() != null)?getCoef().toImmutable():null,
+//	(getSrc() != null)?getSrc().toImmutable():null,
+//	(getSrcIds() != null)?getSrcIds().toImmutable():null,
+//	(getDecay() != null)?getDecay().toImmutable():null,
+//	(getSys() != null)?getSys().toImmutable():null,
+//	(getAncil() != null)?getAncil().toImmutable():null,
+//	(getModel() != null)?getModel():null
+//	);
+//	} else {
+//	return new PredictData2Imm(
+//	getTopo(),
+//	getCoef(),
+//	getSrc(),
+//	getSrcIds(),
+//	getDecay(),
+//	getSys(),
+//	getAncil(),
+//	getModel()
+//	);
+//	}
+//	}
+
 	public PredictDataBuilder getBuilder() {
+		// toimmutable calls should be unnecessary
 		return new PredictDataBuilder(
-			(getTopo() != null)?getTopo().getImmutable():null,
-			(getCoef() != null)?getCoef().getImmutable():null,
-			(getSrc() != null)?getSrc().getImmutable():null,
-			(getSrcIds() != null)?getSrcIds().getImmutable():null,
-			(getDecay() != null)?getDecay().getImmutable():null,
-			(getSys() != null)?getSys().getImmutable():null,
-			(getAncil() != null)?getAncil().getImmutable():null,
+			(getTopo() != null)?getTopo().toImmutable():null,
+			(getCoef() != null)?getCoef().toImmutable():null,
+			(getSrc() != null)?getSrc().toImmutable():null,
+			(getSrcIds() != null)?getSrcIds().toImmutable():null,
+			(getDecay() != null)?getDecay().toImmutable():null,
+			(getSys() != null)?getSys().toImmutable():null,
+			(getAncil() != null)?getAncil().toImmutable():null,
 			(getModel() != null)?getModel():null
 		);
 	}

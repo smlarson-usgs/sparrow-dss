@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow;
 
-
+import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.task.Computable;
 
@@ -15,27 +15,27 @@ import org.apache.log4j.Logger;
 public class PredictComputable implements Computable<PredictRequest, PredictResult> {
 	protected static Logger log =
 		Logger.getLogger(PredictComputable.class); //logging for this class
-		
-		
+
+
 	public PredictComputable() {
 	}
 
 	public PredictResult compute(PredictRequest request) throws Exception {
 		PredictData data = loadData(request);
 		PredictData adjData = adjustData(request, data);
-		
+
 		long startTime = System.currentTimeMillis();
 
 		PredictResult result = runPrediction(request, adjData);
-		
+
 		log.debug(
-			"Prediction done for model #" + request.getModelId() + 
-			" Time: " + (System.currentTimeMillis() - startTime) + "ms, " +
-			adjData.getSrc().getRowCount() + " reaches");
-			
+				"Prediction done for model #" + request.getModelId() + 
+				" Time: " + (System.currentTimeMillis() - startTime) + "ms, " +
+				adjData.getSrc().getRowCount() + " reaches");
+
 		return result;
 	}
-	
+
 	/**
 	 * Loads the model sources, coefs, and values needed to run the prediction.
 	 * @param arg
@@ -44,7 +44,7 @@ public class PredictComputable implements Computable<PredictRequest, PredictResu
 	public PredictData loadData(PredictRequest req) throws Exception {
 		return SharedApplication.getInstance().getPredictDatasetCache().compute( req.getModelId() );
 	}
-	
+
 	/**
 	 * Adjusts the passed data based on the adjustments in the requests.
 	 *
@@ -61,24 +61,23 @@ public class PredictComputable implements Computable<PredictRequest, PredictResu
 	 * @param data
 	 * @return
 	 */
-	public PredictData adjustData(PredictRequest req,
-																			PredictData data) throws Exception {
-		
+	public PredictData adjustData(PredictRequest req, PredictData data) throws Exception {
+
 		if (req.getAdjustmentSet().hasAdjustments()) {
 			PredictDataBuilder mutable = data.getBuilder();
 
-			
+
 			//This method does not modify the underlying data
 			mutable.setSrc(
 					req.getAdjustmentSet().adjust(mutable.getSrc(), mutable.getSrcIds(), mutable.getSys())
 			);
-			
-			return mutable.getImmutable();
+
+			return mutable.toImmutable();
 		}
-		
+
 		return data;
 	}
-	
+
 	/**
 	 * Runs the actual prediction using the passed base data.
 	 *
@@ -88,14 +87,15 @@ public class PredictComputable implements Computable<PredictRequest, PredictResu
 	 * @param data
 	 * @return
 	 */
-	public PredictResult runPrediction(PredictRequest req,
-																PredictData data) {
+	public PredictResult runPrediction(PredictRequest req, PredictData data) {
 		PredictRunner adjPredict = new PredictRunner(data);
-		Double2DImm result = adjPredict.doPredict();
-		
-		int[] reachIds = data.getSys().getRowIds();
-		
-		PredictResult pr = new PredictResult(result, reachIds);
-		return pr;
+		PredictResult result = adjPredict.doPredict2();
+
+		long[] reachIds = TemporaryHelper.getRowIds(data.getSys());
+
+		//System.err.println("reachIDs is null? " + (reachIds == null));
+		TemporaryHelper.setIds(result, reachIds);
+
+		return result;
 	}
 }

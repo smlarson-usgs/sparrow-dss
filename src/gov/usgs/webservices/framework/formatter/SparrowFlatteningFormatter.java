@@ -7,8 +7,6 @@ import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.HTM
 import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.TAB;
 import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.XHTML;
 import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.XML;
-
-import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgs.webservices.framework.utils.XMLUtils;
 
 import java.io.IOException;

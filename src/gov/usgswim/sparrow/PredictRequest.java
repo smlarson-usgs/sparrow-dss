@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow;
 
 import gov.usgswim.Immutable;
+import gov.usgswim.sparrow.AdjustmentSet;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -26,19 +27,23 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @Immutable
 public class PredictRequest {
 	private final Long _modelId;
-	private final AdjustmentSet _adjSet;
+	private final AdjustmentSet _adjSet2;
 	private Integer hash;	//Not strictly threadsafe, but recalculation is cheap and non-destructive
-	
-	public PredictRequest(Long modelId, AdjustmentSet adjSet) {
+
+	/**
+	 * @param modelId
+	 * @param adjSet
+	 */
+	public PredictRequest(Long modelId, AdjustmentSet adjSet2) {
 		_modelId = modelId;
-		
-		if (adjSet != null) {
-			_adjSet = adjSet;
+
+		if (adjSet2 != null) {
+			_adjSet2 = adjSet2;
 		} else {
-			_adjSet = AdjustmentSet.EMPTY_ADJUSTMENTSET;
+			_adjSet2 = AdjustmentSet.EMPTY_ADJUSTMENTSET;
 		}
 	}
-	
+
 	/**
 	 * Returns the model ID (db id) associated w/ this request.
 	 * @return
@@ -46,7 +51,7 @@ public class PredictRequest {
 	public Long getModelId() {
 		return _modelId;
 	}
-	
+
 	/**
 	 * Returns the AdjustmentSet associated w/ this request.
 	 * 
@@ -55,7 +60,8 @@ public class PredictRequest {
 	 * @return
 	 */
 	public AdjustmentSet getAdjustmentSet() {
-		return _adjSet;
+		assert(_adjSet2 != null);
+		return _adjSet2;
 	}
 
 	public boolean equals(Object object) {
@@ -70,12 +76,13 @@ public class PredictRequest {
 		//starts w/ some random numbers just to create unique results
 		if (hash == null) {
 			hash = new HashCodeBuilder(97317, 1169401).
-				append(_modelId).
-				append(_adjSet).
-				toHashCode();
+			append(_modelId).
+			append(_adjSet2).
+			toHashCode();
 		}
-		
+
 		return hash;
 	}
 
 }
+

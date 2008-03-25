@@ -102,7 +102,7 @@ public class LoadTestRunner {
 
 		ModelBuilder mb = new ModelBuilder(_modelId);
 		mb.setEnhNetworkId(_enhNetworkId);
-		Model model = mb.getImmutable();
+		Model model = mb.toImmutable();
 		
 		pdb.setModel( model );
 		

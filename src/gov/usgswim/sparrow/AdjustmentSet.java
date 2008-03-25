@@ -1,13 +1,17 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.datatable.DataTable;
+import gov.usgswim.sparrow.Adjustment;
+import gov.usgswim.sparrow.AdjustmentSetImm;
+
 /**
  * A collection of adjustments to make on the sources for a project
  */
 public interface AdjustmentSet {
-
+	
 	//Reusable empty adjustmentset
 	public static final AdjustmentSet EMPTY_ADJUSTMENTSET = new AdjustmentSetImm();
-	
+
 	/**
 	 * Creates a new Data2D source by creating a coef-view using the same underlying
 	 * data w/ coefficients on top.  This strategy allows the underlying data
@@ -26,7 +30,7 @@ public interface AdjustmentSet {
 	 * @param reachIndex Should return a row number in source for a given reach id.
 	 * @return
 	 */
-	public Data2D adjust(Data2D source, Data2D srcIndex, Data2D reachIndex) throws Exception;
+	public DataTable adjust(DataTable source, DataTable srcIndex, DataTable reachIndex) throws Exception;
 
 	/**
 	 * Returns all the adjustments in the correct order.
@@ -35,13 +39,13 @@ public interface AdjustmentSet {
 	 * @return
 	 */
 	public Adjustment[] getAdjustments();
-	
+
 	/**
 	 * Returns the number of adjustments
 	 * @return
 	 */
 	public int getAdjustmentCount();
-	
+
 	/**
 	 * This method is intended to be a full-proof way to determine if the set
 	 * has adjustments to make.  Future types of adjustments might not be 'countable',
@@ -50,3 +54,4 @@ public interface AdjustmentSet {
 	 */
 	public boolean hasAdjustments();
 }
+

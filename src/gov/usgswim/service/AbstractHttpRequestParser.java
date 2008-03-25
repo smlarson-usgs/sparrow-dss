@@ -3,17 +3,11 @@ package gov.usgswim.service;
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.service.pipeline.PipelineRequest;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
-
 import java.io.StringReader;
 
-import java.util.StringTokenizer;
-
 import javax.servlet.http.HttpServletRequest;
-
-
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;

@@ -1,26 +1,9 @@
 package gov.usgswim.sparrow.test;
 
-import com.ctc.wstx.evt.WstxEventWriter;
-
-import gov.usgswim.sparrow.service.DomainSerializer;
-
-import gov.usgswim.sparrow.domain.ModelBuilder;
-import gov.usgswim.sparrow.util.JDBCUtil;
-
-import java.io.OutputStream;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 
-import java.sql.SQLException;
-
-import java.util.List;
-
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-
 import junit.framework.TestCase;
-
 import oracle.jdbc.OracleDriver;
 
 public class DomainSerializerTest extends TestCase {
@@ -51,28 +34,28 @@ public class DomainSerializerTest extends TestCase {
 		conn = null;
 	}
 
-	/**
-	 * @see DomainSerializer#writeModels(XMLStreamWriter,List)
-	 */
-	public void testWriteModelsStream() throws SQLException, XMLStreamException {
-		List<ModelBuilder> models = JDBCUtil.loadModelMetaData(conn);
-		
-		DomainSerializer ds = new DomainSerializer();
-		
-		ds.writeModels(System.out, models);
-	}
+//	/**
+//	 * @see DomainSerializer#writeModels(XMLStreamWriter,List)
+//	 */
+//	public void testWriteModelsStream() throws SQLException, XMLStreamException {
+//		List<ModelBuilder> models = JDBCUtil.loadModelMetaData(conn);
+//		
+//		DomainSerializer ds = new DomainSerializer();
+//		
+//		ds.writeModels(System.out, models);
+//	}
 	
-	/**
-	 * @see gov.usgswim.sparrow.service.DomainSerializer#writeModels(javax.xml.stream.XMLEventWriter,List)
-	 */
-	public void testWriteModelsEvents() throws SQLException, XMLStreamException {
-		List<ModelBuilder> models = JDBCUtil.loadModelMetaData(conn);
-		XMLOutputFactory fact = XMLOutputFactory.newInstance();
-		
-		WstxEventWriter evtWriter = (WstxEventWriter) fact.createXMLEventWriter(System.out);
-		
-		DomainSerializer ds = new DomainSerializer();
-		
-		ds.writeModels(evtWriter, models);
-	}
+//	/**
+//	 * @see gov.usgswim.sparrow.service.DomainSerializer#writeModels(javax.xml.stream.XMLEventWriter,List)
+//	 */
+//	public void testWriteModelsEvents() throws SQLException, XMLStreamException {
+//		List<ModelBuilder> models = JDBCUtil.loadModelMetaData(conn);
+//		XMLOutputFactory fact = XMLOutputFactory.newInstance();
+//		
+//		WstxEventWriter evtWriter = (WstxEventWriter) fact.createXMLEventWriter(System.out);
+//		
+//		DomainSerializer ds = new DomainSerializer();
+//		
+//		ds.writeModels(evtWriter, models);
+//	}
 }

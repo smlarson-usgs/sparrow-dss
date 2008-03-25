@@ -40,7 +40,7 @@ public class ModelBuilder implements Model, ImmutableBuilder<Model> {
 		_id = id;
 	}
 	
-	public Model getImmutable() throws IllegalStateException {
+	public Model toImmutable() throws IllegalStateException {
 	
 		List<Source> tmpList = null;
 		
@@ -51,7 +51,7 @@ public class ModelBuilder implements Model, ImmutableBuilder<Model> {
 			for (int i = 0; i < _sources.size(); i++)  {
 				Source s = _sources.get(i);
 				if (s instanceof ImmutableBuilder) {
-					s = ((ImmutableBuilder<Source>)s).getImmutable();
+					s = ((ImmutableBuilder<Source>)s).toImmutable();
 				}
 				tmpList.add(s);
 			}

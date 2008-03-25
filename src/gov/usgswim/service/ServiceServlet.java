@@ -37,8 +37,8 @@ import javax.xml.stream.XMLInputFactory;
  * Where xmlreq could be changed based on the 'xml-param-name' init parameter.
  */
 public class ServiceServlet extends HttpServlet {
+	private static final long serialVersionUID = 7831587587942691556L;
 
-	
 	/**
 	 * The name of the optional init parameter that defines the name of the http request
 	 * parameter that contains the XML request.  If not specified as an init

@@ -1,30 +1,23 @@
 package gov.usgswim.sparrow.util;
 
-import gov.usgswim.sparrow.Data2D;
-import gov.usgswim.sparrow.Data2DBuilder;
-import gov.usgswim.sparrow.Data2DWritable;
-import gov.usgswim.sparrow.Double2DImm;
-
+import gov.usgs.webservices.framework.utils.TemporaryHelper;
+import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.impl.SimpleDataTableWritable;
+import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.Int2DImm;
-
 import gov.usgswim.sparrow.PredictDataBuilder;
-
 import gov.usgswim.sparrow.domain.ModelBuilder;
-
 import gov.usgswim.sparrow.domain.SourceBuilder;
+import gov.usgswim.sparrow.util.LoadTestRunner;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.sql.Connection;
-
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
 import java.sql.Statement;
-
 import java.sql.Types;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,12 +26,15 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-public class JDBCUtil {
+public abstract class JDBCUtil {
+
+
 	protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
-	
+	public static int DO_NOT_INDEX = -1;
+
 	public JDBCUtil() {
 	}
-	
+
 	/**
 	 * Loads only the data required to run a prediction.
 	 * 
@@ -48,22 +44,22 @@ public class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	 //TODO This should be renamed 'loadMinimalModelDataSet'
+	//TODO This should be renamed 'loadMinimalModelDataSet'
 	public static PredictData loadMinimalPredictDataSet(Connection conn, int modelId)
-			throws SQLException {
-		
+	throws SQLException {
+
 		PredictDataBuilder dataSet = new PredictDataBuilder();
-		
+
 		dataSet.setSrcIds( loadSourceIds(conn, modelId));
 		dataSet.setSys( loadSystemInfo(conn, modelId) );
 		dataSet.setTopo( loadTopo(conn, modelId) );
 		dataSet.setCoef( loadSourceReachCoef(conn, modelId, 0, dataSet.getSrcIds()) );
 		dataSet.setDecay( loadDecay(conn, modelId, 0) );
 		dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcIds()) );
-		
-		return dataSet.getImmutable();
+
+		return dataSet;
 	}
-	
+
 	/**
 	 * Loads the complete dataset for a model (including bootstrap data).
 	 * 
@@ -75,46 +71,46 @@ public class JDBCUtil {
 	 * TODO:  This should load the model as well....
 	 */
 	public static PredictData loadFullModelDataSet(Connection conn, int modelId)
-			throws SQLException {
-		
+	throws SQLException {
+
 		PredictDataBuilder dataSet = new PredictDataBuilder();
-		
+
 		dataSet.setSrcIds( loadSourceIds(conn, modelId));
 		dataSet.setSys( loadSystemInfo(conn, modelId) );
 		dataSet.setTopo( loadTopo(conn, modelId) );
 		dataSet.setCoef( loadSourceReachCoef(conn, modelId, dataSet.getSrcIds()) );
 		dataSet.setDecay( loadDecay(conn, modelId, 0) );
 		dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcIds()) );
-		
-		return dataSet.getImmutable();
+
+		return dataSet;
 	}
-	
+
 	public static List<ModelBuilder> loadModelMetaData(Connection conn) throws SQLException {
 		List<ModelBuilder> models = new ArrayList<ModelBuilder>(23);
-		
+
 		String selectModels =
 			"SELECT " +
 			"SPARROW_MODEL_ID,IS_APPROVED,IS_PUBLIC,IS_ARCHIVED,NAME,DESCRIPTION," +
 			"DATE_ADDED,CONTACT_ID,ENH_NETWORK_ID,URL," +
 			"BOUND_NORTH,BOUND_EAST,BOUND_SOUTH,BOUND_WEST " +
 			"FROM SPARROW_MODEL ORDER BY SPARROW_MODEL_ID";
-			
+
 		String selectSources =
 			"SELECT " +
 			"SOURCE_ID,NAME,DESCRIPTION,SORT_ORDER,SPARROW_MODEL_ID,IDENTIFIER,DISPLAY_NAME " +
 			"FROM SOURCE ORDER BY SPARROW_MODEL_ID, SORT_ORDER";
-		
+
 		Statement stmt = null;
 		ResultSet rset = null;
-		
-		
+
+
 		try {
 			stmt = conn.createStatement();
 			stmt.setFetchSize(100);
-			
+
 			try {
 				rset = stmt.executeQuery(selectModels);
-				
+
 				while (rset.next()) {
 					ModelBuilder m = new ModelBuilder();
 					m.setId(rset.getLong("SPARROW_MODEL_ID"));
@@ -133,15 +129,15 @@ public class JDBCUtil {
 					m.setWestBound(rset.getDouble("BOUND_WEST"));
 					models.add(m);
 				}
-				
+
 			} finally {
 				rset.close();
 			}
-			
+
 			try {
 				rset = stmt.executeQuery(selectSources);
 				int modelIndex = 0;
-				
+
 				while (rset.next()) {
 					SourceBuilder s = new SourceBuilder();
 					s.setId(rset.getLong("SOURCE_ID"));
@@ -151,32 +147,32 @@ public class JDBCUtil {
 					s.setModelId(rset.getLong("SPARROW_MODEL_ID"));
 					s.setIdentifier(rset.getInt("IDENTIFIER"));
 					s.setDisplayName(rset.getString("DISPLAY_NAME"));
-					
+
 					//The models and sources are sorted by model_id, so scroll forward
 					//thru the models until we find the correct one.
 					while (
-								(models.get(modelIndex).getId() != s.getModelId()) &&
-								(modelIndex < models.size()) /* don't scoll past last model*/ )  {
+							(models.get(modelIndex).getId() != s.getModelId()) &&
+							(modelIndex < models.size()) /* don't scoll past last model*/ )  {
 						modelIndex++;
 					}
-					
+
 					if (modelIndex < models.size()) {
 						models.get(modelIndex).addSource(s);
 					} else {
 						log.warn("Found sources not matched to a model.  Likely caused by record insertion during the queries.");
 					}
 				}
-				
+
 			} finally {
 				rset.close();
 			}
 		} finally {
 			stmt.close();
 		}
-		
+
 		return models;
 	}
-	
+
 	/**
 	 * Deletes an entire model from the database.
 	 *
@@ -191,21 +187,21 @@ public class JDBCUtil {
 	 * @param keepModelRecord If true, the model record in SPARROW_MODEL is kept.
 	 */
 	public static void deleteModel(Connection conn, long modelId, boolean keepModelRecord) throws SQLException {
-		
+
 		String  listSourceIds = "SELECT SOURCE_ID FROM SOURCE WHERE SPARROW_MODEL_ID = " + modelId;
-		
-		
+
+
 		String rmModel = "DELETE FROM SPARROW_MODEL WHERE SPARROW_MODEL_ID = ?";
 		PreparedStatement rmModelStmt = null;
-		
+
 		String rmReaches = "DELETE FROM MODEL_REACH WHERE SPARROW_MODEL_ID = ?";
 		PreparedStatement rmReachesStmt = null;
-		
+
 		String rmSource = "DELETE FROM SOURCE WHERE SOURCE_ID = ?";
 		PreparedStatement rmSourceStmt = null;
-		
-		Data2D srcIds = readAsInteger(conn, listSourceIds, 100);
-		
+
+		DataTableWritable srcIds = readAsInteger(conn, listSourceIds, 100);
+
 		//Delete each source (Cascades to lots of related data)
 		try {
 			rmSourceStmt = conn.prepareStatement(rmSource);
@@ -213,7 +209,7 @@ public class JDBCUtil {
 			for (int i = 0; i < srcIds.getRowCount(); i++)  {
 				int srcId = srcIds.getInt(i, 0);
 				rmSourceStmt.setInt(1, srcId);
-				int cnt = rmSourceStmt.executeUpdate();
+				//int cnt = rmSourceStmt.executeUpdate();
 				log.debug("Source #" + (i + 1) + " deleted (Source ID = '" + srcId + "')");
 			}
 		} finally {
@@ -223,7 +219,7 @@ public class JDBCUtil {
 				log.error("Exception while closing statement", e);
 			}
 		}
-		
+
 		//Delete all the reaches in one shot (Cascades to some related data)
 		try {
 			rmReachesStmt = conn.prepareStatement(rmReaches);
@@ -238,7 +234,7 @@ public class JDBCUtil {
 				log.error("Exception while closing statement", e);
 			}
 		}
-		
+
 		//Optionally, delete the model record.
 		if (!keepModelRecord) {
 			try {
@@ -259,7 +255,7 @@ public class JDBCUtil {
 		}
 
 	}
-	
+
 	/**
 	 * Loads all the model reach in the passed PredictionDataSet into the
 	 * SPARROW_DSS.MODEL_REACH table.
@@ -274,72 +270,72 @@ public class JDBCUtil {
 	 * @throws SQLException
 	 */
 	public static Map<Integer, Integer> writeModelReaches(PredictData data, Connection conn, int batchSize)
-				throws SQLException {
-		
+	throws SQLException {
+
 		//return value
 		Map<Integer, Integer> modelIdMap;		//Maps IDENTIFIER(key) to the db MODEL_REACH_ID(value)
-		
+
 		//STATS
 		//These three should total to the number of reaches
 		int stdIdMatchCount = 0;	//Number of reaches where the STD_ID matched a enh reach
 		int stdIdNullCount = 0;		//Number of reaches where the STD_ID is null (actually, counting zero as null)
 		int stdIdNotMatched = 0;	//Number of reaches where the STD_ID is assigned, but not matched.
-		
+
 		//Queries and PreparedStatements
 		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM STREAM_NETWORK.ENH_REACH WHERE ENH_NETWORK_ID = " + data.getModel().getEnhNetworkId().longValue();
 		Map<Integer, Integer> enhIdMap = buildIntegerMap(conn, enhReachQuery);
-		
-    String insertReachStr = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, ENH_REACH_ID, SPARROW_MODEL_ID)" +
-                   " VALUES (?,?,?,?,?," + data.getModel().getId().longValue() + ")";                 
-    PreparedStatement insertReach = conn.prepareStatement(insertReachStr);
-		
+
+		String insertReachStr = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, ENH_REACH_ID, SPARROW_MODEL_ID)" +
+		" VALUES (?,?,?,?,?," + data.getModel().getId().longValue() + ")";                 
+		PreparedStatement insertReach = conn.prepareStatement(insertReachStr);
+
 		String selectAlleachesQuery = "SELECT IDENTIFIER, MODEL_REACH_ID FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + data.getModel().getId();	
-		
-    String insertReachTopoStr = "INSERT INTO MODEL_REACH_TOPO (MODEL_REACH_ID, FNODE, TNODE, IFTRAN) VALUES (?,?,?,?)";
-    PreparedStatement insertReachTopo = conn.prepareStatement(insertReachTopoStr);
-  
-		
-    Data2D ancil = data.getAncil();
-    Data2D topo = data.getTopo();
+
+		String insertReachTopoStr = "INSERT INTO MODEL_REACH_TOPO (MODEL_REACH_ID, FNODE, TNODE, IFTRAN) VALUES (?,?,?,?)";
+		PreparedStatement insertReachTopo = conn.prepareStatement(insertReachTopoStr);
+
+
+		DataTable ancil = data.getAncil();
+		DataTable topo = data.getTopo();
 		int modelRows = topo.getRowCount();	//# of reaches in model
 		int currentBatchCount = 0;	//number of statements added to the current batch
-		
-    //ancillary headings indexes
-    int localIdIndexAnc = ancil.findHeading("local_id");
-		int stdIdIndexAnc = ancil.findHeading("std_id");
-		int localSameIndexAnc = ancil.findHeading("local_same");
-    
+
+		//ancillary headings indexes
+		int localIdIndexAnc = ancil.getColumnByName("local_id");
+		int stdIdIndexAnc = ancil.getColumnByName("std_id");
+		int localSameIndexAnc = ancil.getColumnByName("local_same");
+
 		if (localIdIndexAnc < 0) throw new IllegalStateException("local_id heading not found in ancil.txt");
-    if (stdIdIndexAnc < 0) throw new IllegalStateException("std_id heading not found in ancil.txt");
+		if (stdIdIndexAnc < 0) throw new IllegalStateException("std_id heading not found in ancil.txt");
 		if (localSameIndexAnc < 0) throw new IllegalStateException("local_same heading not found in ancil.txt");
-    
-    //topographic headings indexes
-		int hydseqIndexTopo = topo.findHeading("hydseq");
-    int fnodeIndexTopo = topo.findHeading("fnode");
-    int tnodeIndexTopo = topo.findHeading("tnode");
-		int iftranIndexTopo = topo.findHeading("iftran");
-  
-    if (hydseqIndexTopo < 0) throw new IllegalStateException("hydseq heading not found in topo.txt");
-    if (fnodeIndexTopo < 0) throw new IllegalStateException("fnode heading not found in topo.txt");
-    if (tnodeIndexTopo < 0) throw new IllegalStateException("tnode heading not found in topo.txt");
+
+		//topographic headings indexes
+		int hydseqIndexTopo = topo.getColumnByName("hydseq");
+		int fnodeIndexTopo = topo.getColumnByName("fnode");
+		int tnodeIndexTopo = topo.getColumnByName("tnode");
+		int iftranIndexTopo = topo.getColumnByName("iftran");
+
+		if (hydseqIndexTopo < 0) throw new IllegalStateException("hydseq heading not found in topo.txt");
+		if (fnodeIndexTopo < 0) throw new IllegalStateException("fnode heading not found in topo.txt");
+		if (tnodeIndexTopo < 0) throw new IllegalStateException("tnode heading not found in topo.txt");
 		if (iftranIndexTopo < 0) throw new IllegalStateException("iftran heading not found in topo.txt");
-		
+
 		//try block only has a finally clause to ensure statements close
 		try {
 			log.debug("Adding reaches in batch size of: " + batchSize);
-			
+
 			//
 			//Insert rows into the MODEL_REACH table.  Total rows inserted == modelRows
 			for (int r = 0; r < modelRows; r++)  {
 				int identifier = ancil.getInt(r,localIdIndexAnc);	//the reach identifier
 				int stdIdentifier = ancil.getInt(r,stdIdIndexAnc);	//the standard identifier
-				
+
 				insertReach.setInt(1, identifier);  //identifier
 				insertReach.setString(2, Integer.toString(identifier));  //full_identifier
 				insertReach.setInt(3, topo.getInt(r,hydseqIndexTopo));  //hydseq
 				insertReach.setInt(4, topo.getInt(r,iftranIndexTopo));   //iftran
-				
-				
+
+
 				//Assign the enh_reach_id if its found
 				if (stdIdentifier == 0) {
 					//this is considered null - the STD_ID is not assigned.
@@ -352,10 +348,10 @@ public class JDBCUtil {
 					stdIdNotMatched++;
 					//TODO need to consult the LOCAL_MATCH PARAM
 				}
-				
+
 				insertReach.addBatch();
 				currentBatchCount++;
-				
+
 				if (currentBatchCount >= batchSize) {
 					insertReach.executeBatch();
 					currentBatchCount = 0;
@@ -364,42 +360,42 @@ public class JDBCUtil {
 					}
 				}
 			}
-			
+
 			//Execute remaining batches
 			if (currentBatchCount != 0) insertReach.executeBatch();
-			
+
 			log.debug("\nReach loading is complete.  Total reaches was " + modelRows + " split up as:");
 			log.debug("Reaches that had matched Standard IDs: " + stdIdMatchCount);
 			log.debug("Reaches that did not have a Standard ID assigned: " + stdIdNullCount);
 			log.debug("Reaches that had a Standard ID that could not be matched (ERROR): " + stdIdNotMatched);
-			
+
 			//
 			// Load all inserted db row into a Map that maps IDENTIFIER(key) to the db MODEL_REACH_ID(value)
 			// We need to use these values to load topo data, and we also return this map.
 			modelIdMap = buildIntegerMap(conn, selectAlleachesQuery);
-			
+
 			//Test loaded reach count
 			if (modelIdMap.size() != modelRows) {
 				log.error("The number of reaches in the db does not equal the number loaded!!");
 				throw new IllegalStateException("The number of reaches in the db does not equal the number loaded!!");
 			}
-			
-			
+
+
 			/********************************************
 			 *  MODEL_REACH_TOPO INSERT
 			 *********************************************/
 			log.debug("Adding reach topo rows in batch size of: " + batchSize);
 			currentBatchCount = 0;	//reset batch counter for use in another loop
-			
+
 			for (int r = 0; r < modelRows; r++)  {
 				insertReachTopo.setInt(1, modelIdMap.get(ancil.getInt(r,localIdIndexAnc))); //model reach id
 				insertReachTopo.setInt(2, topo.getInt(r,fnodeIndexTopo));  //fnode
 				insertReachTopo.setInt(3, topo.getInt(r,tnodeIndexTopo));   //tnode
 				insertReachTopo.setInt(4, topo.getInt(r,iftranIndexTopo));   //iftran
-				
+
 				insertReach.addBatch();
 				currentBatchCount++;
-				
+
 				if (currentBatchCount >= batchSize) {
 					insertReachTopo.executeBatch();
 					currentBatchCount = 0;
@@ -408,10 +404,10 @@ public class JDBCUtil {
 					}
 				}
 			}
-			
+
 			if (currentBatchCount != 0) insertReachTopo.executeBatch();
 			log.debug("\n");
-			
+
 		} finally {
 			//Close all STATEMENTS - ignore errors
 			try {
@@ -423,10 +419,10 @@ public class JDBCUtil {
 			}
 		}
 
-		
+
 		return modelIdMap;
 	}
-	
+
 	/**
 	 * Loads all the model reach in the passed PredictionDataSet into the
 	 * SPARROW_DSS.MODEL_REACH table.
@@ -443,23 +439,23 @@ public class JDBCUtil {
 	 * @throws SQLException
 	 */
 	public static Map<Integer, Integer> writeModelSources(PredictData data, Connection conn)
-				throws SQLException {
+	throws SQLException {
 		log.debug("Adding sources (one batch)");
-		
+
 		//return value
 		Map<Integer, Integer> sourceIdMap;		//Maps IDENTIFIER(key) to the db SOURCE_ID(value)
-		
-    String[] headers = data.getSrc().getHeadings();
-    
-    String insertSrcStr = "INSERT INTO SOURCE (IDENTIFIER, NAME, DISPLAY_NAME, DESCRIPTION, SORT_ORDER, SPARROW_MODEL_ID) " +
-                                "VALUES (?,?,?,?,?," + data.getModel().getId() + ")";
-	  PreparedStatement insertSrc = conn.prepareStatement(insertSrcStr);
-		
-		
+
+		String[] headers = TemporaryHelper.getHeadings(data.getSrc());
+
+		String insertSrcStr = "INSERT INTO SOURCE (IDENTIFIER, NAME, DISPLAY_NAME, DESCRIPTION, SORT_ORDER, SPARROW_MODEL_ID) " +
+		"VALUES (?,?,?,?,?," + data.getModel().getId() + ")";
+		PreparedStatement insertSrc = conn.prepareStatement(insertSrcStr);
+
+
 		String sourceMapStr = "SELECT IDENTIFIER, SOURCE_ID FROM SOURCE WHERE SPARROW_MODEL_ID = " + data.getModel().getId();
 
 		try {
-		
+
 			//
 			//Insert all Sources in one batch
 			for (int i = 0; i < headers.length; i++) {
@@ -470,13 +466,13 @@ public class JDBCUtil {
 				insertSrc.setInt(5,(i+1));					//sort order matches the initial load order
 				insertSrc.addBatch();
 			}
-			
+
 			insertSrc.executeBatch();	//run all insert batches
-			
+
 			//
 			//Read all sources back into a map, which is returned
 			sourceIdMap = buildIntegerMap(conn, sourceMapStr);
-			
+
 			if (sourceIdMap.size() != headers.length) {
 				log.error("The number of sources in the db does not match the number loaded!!!");
 				throw new IllegalStateException("The number of sources in the db does not match the number loaded!!!");
@@ -488,11 +484,11 @@ public class JDBCUtil {
 				log.warn("Error attempting to close prepared statement", e);
 			}
 		}
-		
-		
+
+
 		return sourceIdMap;
 	}
-	
+
 	/**
 	 * Turns a query that returns two columns into a Map<Integer, Integer>.
 	 * The first column is used as the key, the second column is used as the value.
@@ -502,20 +498,20 @@ public class JDBCUtil {
 	 * @throws SQLException
 	 */
 	private static Map<Integer, Integer> buildIntegerMap(Connection conn, String query) throws SQLException {
-		Data2D data = readAsInteger(conn, query, 1000);
+		DataTableWritable data = readAsInteger(conn, query, 1000);
 		int rows = data.getRowCount();
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>((int)(rows * 1.2), 1f);
-		
+
 		for (int r = 0; r < rows; r++)  {
 			map.put(
-				new Integer(data.getInt(r, 0)),
-				new Integer(data.getInt(r, 1))
+					new Integer(data.getInt(r, 0)),
+					new Integer(data.getInt(r, 1))
 			);
 		}
-		
+
 		return map;
 	}
-	
+
 	/**
 	 * Returns the number of reaches added
 	 * @param data
@@ -524,101 +520,101 @@ public class JDBCUtil {
 	 * @throws SQLException
 	 */
 	public static int writePredictDataSet(PredictData data, Connection conn, int batchSize)
-			throws SQLException {
+	throws SQLException {
 
-    //quick access variables for data tables
-    Data2D ancil = data.getAncil();
-    Data2D topo = data.getTopo();
-    Data2D src = data.getSrc();
-    Data2D coef = data.getCoef();
-    
+		//quick access variables for data tables
+		DataTable ancil = data.getAncil();
+		DataTable topo = data.getTopo();
+		DataTable src = data.getSrc();
+		DataTable coef = data.getCoef();
+
 		//Basic count values for model data
-    int modelRowCnt = topo.getRowCount();	//# of reaches in model
-    int coefRowCnt = coef.getRowCount();	//# of coefs (reaches * iterations)
+		int modelRowCnt = topo.getRowCount();	//# of reaches in model
+		int coefRowCnt = coef.getRowCount();	//# of coefs (reaches * iterations)
 		int iterationCnt = coefRowCnt / modelRowCnt;	//# of iterations
-		int modelSourceCnt = src.getColCount();	//# of sources in the dataset
+		int modelSourceCnt = src.getColumnCount();	//# of sources in the dataset
 
 		log.debug("- - Model Startup Stats - -");
 		log.debug("- Model reach count: " + modelRowCnt);
 		log.debug("- Model coef row count: " + coefRowCnt);
 		log.debug("- Model iteration count: " + iterationCnt);
 		log.debug("- Model source count: " + modelSourceCnt);
-		
+
 		//Check:  coefRows should equal modelRows * iterations AND
 		//        coefRows should be an even multiple of modelRows
 		if ((coefRowCnt != modelRowCnt * iterationCnt) || (coefRowCnt % modelRowCnt != 0)) {
 			throw new IllegalArgumentException("Rows in the coef data must be an even multiple of the number of reaches");
 		}
-		
+
 		//Check:  The coef table must contain 4 columns more then the number of sources
-		if (modelSourceCnt != coef.getColCount() - 4) {
+		if (modelSourceCnt != coef.getColumnCount() - 4) {
 			throw new IllegalArgumentException("There should be four more columns in the coef data then the number of sources");
 		}
-		
+
 		//Check:  ancil, topo, and src should contain modelRowCnt number of rows.
 		//Note:  number of model rows is based on topo.
 		if (ancil.getRowCount() != modelRowCnt || src.getRowCount() != modelRowCnt) {
 			throw new IllegalArgumentException("The number of rows in ancil, src, and topo do not match");
 		}
-  
+
 		//
 		//Named columns                    
-  
+
 		//Ancil columns - really just need the local id.
-    int localIdIndexAnc = ancil.findHeading("local_id");
+		int localIdIndexAnc = ancil.getColumnByName("local_id");
 		if (localIdIndexAnc < 0) throw new IllegalStateException("local_id heading not found in ancil.txt");
-		
-		
-    //topographic headings indexes
-		int hydseqIndexTopo = topo.findHeading("hydseq");
-    int fnodeIndexTopo = topo.findHeading("fnode");
-    int tnodeIndexTopo = topo.findHeading("tnode");
-		int iftranIndexTopo = topo.findHeading("iftran");
-  
-    if (hydseqIndexTopo < 0) throw new IllegalStateException("hydseq heading not found in topo.txt");
-    if (fnodeIndexTopo < 0) throw new IllegalStateException("fnode heading not found in topo.txt");
-    if (tnodeIndexTopo < 0) throw new IllegalStateException("tnode heading not found in topo.txt");
+
+
+		//topographic headings indexes
+		int hydseqIndexTopo = topo.getColumnByName("hydseq");
+		int fnodeIndexTopo = topo.getColumnByName("fnode");
+		int tnodeIndexTopo = topo.getColumnByName("tnode");
+		int iftranIndexTopo = topo.getColumnByName("iftran");
+
+		if (hydseqIndexTopo < 0) throw new IllegalStateException("hydseq heading not found in topo.txt");
+		if (fnodeIndexTopo < 0) throw new IllegalStateException("fnode heading not found in topo.txt");
+		if (tnodeIndexTopo < 0) throw new IllegalStateException("tnode heading not found in topo.txt");
 		if (iftranIndexTopo < 0) throw new IllegalStateException("iftran heading not found in topo.txt");
-  
+
 		/********************************************
 		 *  MODEL_REACH and SOURCE
 		 *********************************************/
 		Map<Integer, Integer> reachDbIdMap = writeModelReaches(data, conn, batchSize);
 		Map<Integer, Integer> sourceDbIdMap = writeModelSources(data, conn);
-  
-		
+
+
 		/********************************************
 		 *  REACH_COEF INSERT - Into the REACH_COEF table
 		 *  These are the decay coefs
 		 *********************************************/
 		{
 			log.debug("Adding decay coefs in batch size of: " + batchSize);
-			
+
 			String reachCoefStr = "INSERT INTO REACH_COEF (ITERATION, INC_DELIVERY, TOTAL_DELIVERY, BOOT_ERROR, MODEL_REACH_ID) " +
-															 "VALUES (?,?,?,?,?)";
+			"VALUES (?,?,?,?,?)";
 			PreparedStatement pstmtInsertReachCoef = conn.prepareStatement(reachCoefStr);
-			
+
 			int curReachRow = -1;	//current row of reach (ignoring iterations)
 			int localId = -1;	//local id for this reach
 			int reachDbId = -1;	//db ID for this reach
 			int currentBatchCount = 0;	//number of rows added in this batch
-			
+
 			try {
 				for (int coefRow=0; coefRow < coefRowCnt; coefRow++) {
-				
+
 					curReachRow = coefRow % modelRowCnt;
 					localId = ancil.getInt(curReachRow, localIdIndexAnc);
 					reachDbId = reachDbIdMap.get(localId);
-					
+
 					pstmtInsertReachCoef.setInt(1,coef.getInt(coefRow,0));  //ITER
 					pstmtInsertReachCoef.setDouble(2,coef.getDouble(coefRow,1));  //INC_DELIVF
 					pstmtInsertReachCoef.setDouble(3,coef.getDouble(coefRow,2));  //TOT_DELIVF
 					pstmtInsertReachCoef.setDouble(4,coef.getDouble(coefRow,3));  //BOOT_ERROR
 					pstmtInsertReachCoef.setInt(5, reachDbId);  //MODEL_REACH_ID
-				 
+
 					pstmtInsertReachCoef.addBatch();
 					currentBatchCount++;
-					
+
 					if (currentBatchCount >= batchSize) {
 						pstmtInsertReachCoef.executeBatch();
 						currentBatchCount = 0;
@@ -627,10 +623,10 @@ public class JDBCUtil {
 						}
 					}
 				}	//coef row loop (one for reach * iteration)
-				
+
 				if (currentBatchCount != 0) pstmtInsertReachCoef.executeBatch();
-			  log.debug("\n");
-				
+				log.debug("\n");
+
 			} finally {
 				try {
 					pstmtInsertReachCoef.close();
@@ -640,36 +636,36 @@ public class JDBCUtil {
 			}
 
 		}
-		
-		
-	 /********************************************
-		*  SOURCE_REACH_COEF INSERT
-		*********************************************/
+
+
+		/********************************************
+		 *  SOURCE_REACH_COEF INSERT
+		 *********************************************/
 		{
 			log.debug("Adding source reach coefs in batch size of: " + batchSize);
-			
+
 			String srcReachCoefStr = "INSERT INTO source_reach_coef (ITERATION, VALUE, SOURCE_ID, MODEL_REACH_ID) VALUES " +
-																		"(?,?,?,?)";
+			"(?,?,?,?)";
 			PreparedStatement srcReachCoef = conn.prepareStatement(srcReachCoefStr);
-			
+
 			int curReachRow = -1;	//current row of reach (ignoring iterations)
 			int localId = -1;	//local id for this reach
 			int reachDbId = -1;	//db ID for this reach
 			int currentBatchCount = 0;	//number of rows added in this batch
-			
+
 			try {
 				for (int coefRow=0; coefRow < coefRowCnt; coefRow++) {
-				
+
 					curReachRow = coefRow % modelRowCnt;
 					localId = ancil.getInt(curReachRow, localIdIndexAnc);
 					reachDbId = reachDbIdMap.get(localId);
-				
-				
+
+
 					//loop to get values (sources) from the fourth column on
 					int curSourceId = -1;	//IDENTIFIER of the current source
 					int curSourceDbId = -1;	//DB ID of the current source
 					for (int srcIndex = 0; srcIndex < modelSourceCnt; srcIndex++) {
-					
+
 						curSourceId = srcIndex + 1;	//The source ids are 1 based
 						curSourceDbId = sourceDbIdMap.get(curSourceId);
 
@@ -678,9 +674,9 @@ public class JDBCUtil {
 						srcReachCoef.setInt(3, curSourceDbId);
 						srcReachCoef.setInt(4, reachDbId);
 						srcReachCoef.addBatch();
-						
+
 						currentBatchCount++;
-						
+
 						if (currentBatchCount >= batchSize) {
 							srcReachCoef.executeBatch();
 							currentBatchCount = 0;
@@ -690,12 +686,12 @@ public class JDBCUtil {
 						}
 
 					}	//source loop
-				
+
 				}	//coef row lop (one per reach * iteration)
-				
+
 				if (currentBatchCount != 0) srcReachCoef.executeBatch();
-			  log.debug("\n");
-				
+				log.debug("\n");
+
 			} finally {
 				try {
 					srcReachCoef.close();
@@ -704,27 +700,27 @@ public class JDBCUtil {
 				}
 			}
 		}
-	
-	 /********************************************
-		*  SOURCE_VALUE INSERT
-		*********************************************/
+
+		/********************************************
+		 *  SOURCE_VALUE INSERT
+		 *********************************************/
 		{
 			log.debug("Adding source values in batch size of: " + batchSize);
-			
+
 			String srcValueStr = "INSERT INTO source_value (VALUE, SOURCE_ID, MODEL_REACH_ID) VALUES " +
-																 "(?,?,?)";
+			"(?,?,?)";
 			PreparedStatement srcValue = conn.prepareStatement(srcValueStr);
-		
+
 			int currentBatchCount = 0;	//number of rows added in this batch
-			
+
 			try {
 				//BEGIN TABLE LOADING LOOP...
 				for (int curRowIndex = 0; curRowIndex < modelRowCnt; curRowIndex++) {
-						
+
 					//Current reach IDs
 					int localId = ancil.getInt(curRowIndex, localIdIndexAnc);	//local id for this row
 					int reachDbId = reachDbIdMap.get(localId);
-						 
+
 					//insert into SOURCE_VALUE -- LOOP THROUGH EACH COLUMN
 					//value = get from src Data2D
 					int curSourceId = -1;	//IDENTIFIER of the current source
@@ -736,10 +732,10 @@ public class JDBCUtil {
 						srcValue.setDouble(1, src.getDouble(curRowIndex,curSourceIndex));  //value
 						srcValue.setInt(2, curSourceDbId);  //source_id
 						srcValue.setInt(3, reachDbId);  //model_reach_id
-						
+
 						srcValue.addBatch();
 						currentBatchCount++;
-						
+
 						if (currentBatchCount >= batchSize) {
 							srcValue.executeBatch();
 							currentBatchCount = 0;
@@ -750,10 +746,10 @@ public class JDBCUtil {
 
 					}	//source column loop
 				}	//model row loop (one per reach)
-				
+
 				if (currentBatchCount != 0) srcValue.executeBatch();
-			  log.debug("\n");
-				
+				log.debug("\n");
+
 			} finally {
 				try {
 					srcValue.close();
@@ -761,14 +757,14 @@ public class JDBCUtil {
 					log.warn("Error attempting to close prepared statement", e);
 				}
 			}
-		
+
 		}
 
-    
+
 		return modelRowCnt;
 	}
-	
-	
+
+
 	/**
 	 * Returns a Int2D table of all System info
 	 * <h4>Data Columns, sorted by HYDSEQ.  One row per reach (i = reach index)</h4>
@@ -785,16 +781,19 @@ public class JDBCUtil {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Int2DImm loadSystemInfo(Connection conn, int modelId) throws SQLException {
+	public static DataTable loadSystemInfo(Connection conn, int modelId) throws SQLException {
 		String query =
 			"SELECT MODEL_REACH_ID as MODEL_REACH, HYDSEQ FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY HYDSEQ, MODEL_REACH_ID";
-	
-		Int2DImm data = readAsInteger(conn, query, 2000, -1);
-		int[] ids = data.getIntColumn(0);
-		return new Int2DImm(data.getIntData(), data.getHeadings(), 0, ids);
-		
+
+		DataTableWritable data = readAsInteger(conn, query, 2000, DO_NOT_INDEX);
+//		int[] ids = TemporaryHelper.getIntColumn(data, 0);
+//		DataTableWritable result = TemporaryHelper.setIds(data, ids);
+		data.buildIndex(0);
+		long[] ids = TemporaryHelper.getLongData(data, 0);
+		TemporaryHelper.setIds(data, ids);
+		return data.toImmutable();
 	}
-	
+
 	/**
 	 * Returns a Int2D table of all topo data for for a single model.
 	 * <h4>Data Columns (sorted by HYDSEQ)</h4>
@@ -809,14 +808,14 @@ public class JDBCUtil {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Int2DImm loadTopo(Connection conn, int modelId) throws SQLException {
+	public static DataTableWritable loadTopo(Connection conn, int modelId) throws SQLException {
 		String query =
 			"SELECT FNODE, TNODE, IFTRAN, HYDSEQ FROM ALL_TOPO_VW WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY HYDSEQ, MODEL_REACH_ID";
-	
+
 		return readAsInteger(conn, query, 1000);
-		
+
 	}
-	
+
 	/**
 	 * Returns a Double2D table of all source/reach coef's for for a single iteration of a model.
 	 * <h4>Data Columns with one row per reach (sorted by HYDSEQ)</h4>
@@ -833,26 +832,26 @@ public class JDBCUtil {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Data2D loadSourceReachCoef(Connection conn, int modelId, int iteration, Data2D sources) throws SQLException {
-	
+	public static DataTableWritable loadSourceReachCoef(Connection conn, int modelId, int iteration, DataTable sources) throws SQLException {
+
 		if (iteration < 0) {
 			throw new IllegalArgumentException("The iteration cannot be less then zero");
 		}
 		if (sources.getRowCount() == 0) {
 			throw new IllegalArgumentException("There must be at least one source");
 		}
-	
-		String reachCountQuery =
-			"SELECT COUNT(*) FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + modelId;
-		Data2D reachCountData = readAsInteger(conn, reachCountQuery, 1);
-		int reachCount = reachCountData.getInt(0, 0);
+
+		//String reachCountQuery =
+		//	"SELECT COUNT(*) FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + modelId;
+		//DataTableWritable reachCountData = readAsInteger(conn, reachCountQuery, 1);
+		//int reachCount = reachCountData.getInt(0, 0);
 		int sourceCount = sources.getRowCount();
-		
-		Data2DBuilder sourceReachCoef = new Data2DBuilder(new double[reachCount][sourceCount]);
-		
-	
+
+		DataTableWritable sourceReachCoef = new SimpleDataTableWritable();
+
+
 		for (int srcIndex=0; srcIndex<sourceCount; srcIndex++) {
-		
+
 			String query =
 				"SELECT coef.VALUE AS Value " +
 				"FROM SOURCE_REACH_COEF coef INNER JOIN MODEL_REACH rch ON coef.MODEL_REACH_ID = rch.MODEL_REACH_ID " +
@@ -861,30 +860,31 @@ public class JDBCUtil {
 				"coef.Iteration = " +  iteration + " AND " +
 				"coef.SOURCE_ID = " +  sources.getInt(srcIndex, 1) + " " +
 				"ORDER BY rch.HYDSEQ, rch.MODEL_REACH_ID";
-			
-			
+
+
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			st.setFetchSize(2000);
 			ResultSet rs = null;
-			
+
 			try {
-			
+
 				rs = st.executeQuery(query);
+				sourceReachCoef.addColumn(new StandardNumberColumnDataWritable<Double>());
 				loadColumn(rs, sourceReachCoef, 0, srcIndex);
-				
+
 			} finally {
 				if (rs != null) {
 					rs.close();
 					rs = null;
 				}
 			}
-			
+
 		}
-		
-		return sourceReachCoef.buildDoubleImmutable(-1);
+
+		return sourceReachCoef;
 
 	}
-	
+
 	/**
 	 * Returns a Double2D table of all source/reach coef's for for all iterationa of a model.
 	 * <h4>Data Columns with one row per reach (sorted by ITERATION then HYDSEQ)</h4>
@@ -900,30 +900,34 @@ public class JDBCUtil {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Data2D loadSourceReachCoef(Connection conn, int modelId, Data2D sources) throws SQLException {
-	
+	public static DataTableWritable loadSourceReachCoef(Connection conn, int modelId, DataTable sources) throws SQLException {
+
 		if (sources.getRowCount() == 0) {
 			throw new IllegalArgumentException("There must be at least one source");
 		}
-	
-		String reachCountQuery =
-			"SELECT COUNT(*) FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + modelId;
-		String itCountQuery =
-			"SELECT COUNT(*) FROM (SELECT DISTINCT coef.Iteration " +
-			"FROM SOURCE_REACH_COEF coef INNER JOIN MODEL_REACH rch ON coef.MODEL_REACH_ID = rch.MODEL_REACH_ID " +
-			"WHERE rch.SPARROW_MODEL_ID = " +  modelId + ")";
-			
-		Data2D reachCountData = readAsInteger(conn, reachCountQuery, 1);
-		Data2D itCountData = readAsInteger(conn, itCountQuery, 1);
-		int reachCount = reachCountData.getInt(0, 0);
-		int itCount = itCountData.getInt(0, 0);
+
+//		String reachCountQuery =
+//			"SELECT COUNT(*) FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + modelId;
+//		String itCountQuery =
+//			"SELECT COUNT(*) FROM (SELECT DISTINCT coef.Iteration " +
+//			"FROM SOURCE_REACH_COEF coef INNER JOIN MODEL_REACH rch ON coef.MODEL_REACH_ID = rch.MODEL_REACH_ID " +
+//			"WHERE rch.SPARROW_MODEL_ID = " +  modelId + ")";
+
+//		DataTable reachCountData = readAsInteger(conn, reachCountQuery, 1);
+//		DataTable itCountData = readAsInteger(conn, itCountQuery, 1);
+//		int reachCount = reachCountData.getInt(0, 0);
+//		int itCount = itCountData.getInt(0, 0);
 		int sourceCount = sources.getRowCount();
-		
-		Data2DBuilder sourceReachCoef = new Data2DBuilder(new double[reachCount * itCount][sourceCount]);
-		
-	
+
+		DataTableWritable sourceReachCoef = new SimpleDataTableWritable();
+		//new double[reachCount * itCount][sourceCount]);
+		// TODO [eric] The query needs to be revised to not retrieve all the
+		// iterations at once otherwise it is likely to cause an out-of-memory
+		// exception. In previous experience, 62382 reaches * 51 iterations * 5
+		// sources * 8 bytes per double primitive ~128M!
+
 		for (int srcIndex=0; srcIndex<sourceCount; srcIndex++) {
-		
+
 			String query =
 				"SELECT coef.VALUE AS Value " +
 				"FROM SOURCE_REACH_COEF coef INNER JOIN MODEL_REACH rch ON coef.MODEL_REACH_ID = rch.MODEL_REACH_ID " +
@@ -931,31 +935,31 @@ public class JDBCUtil {
 				"rch.SPARROW_MODEL_ID = " +  modelId + " AND " +
 				"coef.SOURCE_ID = " +  sources.getInt(srcIndex, 0) + " " +
 				"ORDER BY coef.Iteration, rch.HYDSEQ, rch.MODEL_REACH_ID";
-			
-			
+
+
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			st.setFetchSize(2000);
 			ResultSet rs = null;
-			
+
 			try {
-			
+
 				rs = st.executeQuery(query);
 				loadColumn(rs, sourceReachCoef, 0, srcIndex);
-				
+
 			} finally {
 				if (rs != null) {
 					rs.close();
 					rs = null;
 				}
 			}
-			
+
 		}
-		
-		return sourceReachCoef.buildDoubleImmutable(-1);
+
+		return sourceReachCoef;
 
 	}
 
-	
+
 	/**
 	 * Returns a Double2D table of all decay data for for a single model.
 	 * 
@@ -977,18 +981,18 @@ public class JDBCUtil {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Double2DImm loadDecay(Connection conn, int modelId, int iteration) throws SQLException {
+	public static DataTableWritable loadDecay(Connection conn, int modelId, int iteration) throws SQLException {
 		String query =
 			"SELECT coef.INC_DELIVERY, coef.TOTAL_DELIVERY " +
 			"FROM REACH_COEF coef INNER JOIN MODEL_REACH rch ON coef.MODEL_REACH_ID = rch.MODEL_REACH_ID " +
 			"WHERE rch.SPARROW_MODEL_ID = " +  modelId + " AND coef.ITERATION = " + iteration + " " +
 			"ORDER BY rch.HYDSEQ, rch.MODEL_REACH_ID";
-	
+
 		return readAsDouble(conn, query, 2000);
-		
+
 	}
-	
-	
+
+
 	/**
 	 * Returns a Double2D table of all source values for for a single model.
 	 * <h4>Data Columns with one row per reach (sorted by HYDSEQ)</h4>
@@ -1004,51 +1008,52 @@ public class JDBCUtil {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static Data2D loadSourceValues(Connection conn, int modelId, Data2D sources) throws SQLException {
-	
+	public static DataTableWritable loadSourceValues(Connection conn, int modelId, DataTable sources) throws SQLException {
+
 		if (sources.getRowCount() == 0) {
 			throw new IllegalArgumentException("There must be at least one source");
 		}
-		
-	
-		String reachCountQuery =
-			"SELECT COUNT(*) FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + modelId;
-		Data2D reachCountData = readAsInteger(conn, reachCountQuery, 1);
-		int reachCount = reachCountData.getInt(0, 0);
+
+
+//		String reachCountQuery =
+//			"SELECT COUNT(*) FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + modelId;
+//		DataTableWritable reachCountData = readAsInteger(conn, reachCountQuery, 1);
+//		int reachCount = reachCountData.getInt(0, 0);
 		int sourceCount = sources.getRowCount();
-		
+
 		//Load column headings using the source display names
 		String selectNames =
 			"SELECT DISPLAY_NAME FROM SOURCE " +
 			"WHERE SPARROW_MODEL_ID = " + modelId + " " +
 			"ORDER BY SORT_ORDER";
 		String[] headings = new String[sourceCount];
-		
+
 		Statement headSt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		headSt.setFetchSize(20);
 		ResultSet headRs = null;
-		
+
 		try {
-		
+
 			headRs = headSt.executeQuery(selectNames);
 			for (int i = 0; i < sourceCount; i++)  {
 				headRs.next();
 				headings[i] = headRs.getString(1);
 			}
-			
+
 		} finally {
 			if (headRs != null) {
 				headRs.close();
 				headRs = null;
 			}
 		}
-		
-		
-		Data2DBuilder sourceValue = new Data2DBuilder(new double[reachCount][sourceCount], headings);
-		
-	
+
+
+		DataTableWritable sourceValue = new SimpleDataTableWritable();
+		//new double[reachCount][sourceCount], headings);
+
+
 		for (int srcIndex=0; srcIndex<sourceCount; srcIndex++) {
-		
+
 			String query =
 				"SELECT src.VALUE AS Value " +
 				"FROM SOURCE_VALUE src INNER JOIN MODEL_REACH rch ON src.MODEL_REACH_ID = rch.MODEL_REACH_ID " +
@@ -1056,30 +1061,32 @@ public class JDBCUtil {
 				"rch.SPARROW_MODEL_ID = " +  modelId + " AND " +
 				"src.SOURCE_ID = " +  sources.getInt(srcIndex, 1) + " " +
 				"ORDER BY rch.HYDSEQ, rch.MODEL_REACH_ID";
-			
-			
+
+
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			st.setFetchSize(2000);
 			ResultSet rs = null;
-			
+
 			try {
-			
+
 				rs = st.executeQuery(query);
+				sourceValue.addColumn(new StandardNumberColumnDataWritable<Double>(headings[srcIndex], null));
 				loadColumn(rs, sourceValue, 0, srcIndex);
-				
+
 			} finally {
 				if (rs != null) {
 					rs.close();
 					rs = null;
 				}
 			}
-			
+
 		}
 
-		return sourceValue.buildDoubleImmutable(-1);
+		return sourceValue;
+		//.buildDoubleImmutable(-1);
 
 	}
-	
+
 	/**
 	 * Returns a single column Int2D table of all source IDs for a single model.
 	 * <h4>Data Columns (sorted by SORT_ORDER)</h4>
@@ -1094,20 +1101,20 @@ public class JDBCUtil {
 	 * @return	An Int2D object contains the list of source_id's in a single column
 	 * @throws SQLException
 	 */
-	public static Int2DImm loadSourceIds(Connection conn, int modelId) throws SQLException {
+	public static DataTableWritable loadSourceIds(Connection conn, int modelId) throws SQLException {
 		String query =
 			"SELECT IDENTIFIER, SOURCE_ID FROM SOURCE WHERE SPARROW_MODEL_ID = " +  modelId + " ORDER BY SORT_ORDER";
-	
+
 		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		st.setFetchSize(1000);
 
 		ResultSet rs = null;
-		
+
 		try {
-		
+
 			rs = st.executeQuery(query);
-			return readAsInteger(rs, 0);
-			
+			return readAsInteger(rs, DO_NOT_INDEX);
+
 		} finally {
 			if (rs != null) {
 				rs.close();
@@ -1115,8 +1122,8 @@ public class JDBCUtil {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Loads a single column from the resultSet source to the Double2D destination table.
 	 * For consistency, the from and to columns are ZERO INDEXED in both cases.
@@ -1127,22 +1134,22 @@ public class JDBCUtil {
 	 * @param toCol The column (zero indexed) in the Double2D table to load to
 	 * @throws SQLException
 	 */
-	public static void loadColumn(ResultSet source, Data2DWritable dest, int fromCol, int toCol) throws SQLException {
-		
+	public static void loadColumn(ResultSet source, DataTableWritable dest, int fromCol, int toCol) throws SQLException {
+
 		fromCol++;		//covert to ONE base index
 		int currentRow = 0;
-		
+
 		while (source.next()){
-		
-			double d = source.getDouble(fromCol);
-			dest.setValueAt(new Double(d), currentRow,  toCol);
+
+			Double d = source.getDouble(fromCol);
+			dest.setValue(d, currentRow,  toCol);
 			currentRow++;
-			
+
 		}
 
 	}
-	
-	
+
+
 	/**
 	 * Creates an unindexed Int2DImm table from the passed query.
 	 * 
@@ -1154,10 +1161,10 @@ public class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static Int2DImm readAsInteger(Connection conn, String query, int fetchSize) throws SQLException {
-		return readAsInteger(conn, query, fetchSize, -1);
+	public static DataTableWritable readAsInteger(Connection conn, String query, int fetchSize) throws SQLException {
+		return readAsInteger(conn, query, fetchSize, DO_NOT_INDEX);
 	}
-	
+
 	/**
 	 * Creates an Int2DImm table from the passed query with an optional index.
 	 * 
@@ -1170,17 +1177,17 @@ public class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static Int2DImm readAsInteger(Connection conn, String query, int fetchSize, int indexCol) throws SQLException {
+	public static DataTableWritable readAsInteger(Connection conn, String query, int fetchSize, int indexCol) throws SQLException {
 		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		st.setFetchSize(fetchSize);
 
 		ResultSet rs = null;
-		
+
 		try {
-		
+
 			rs = st.executeQuery(query);
 			return readAsInteger(rs, indexCol);
-			
+
 		} finally {
 			if (rs != null) {
 				rs.close();
@@ -1188,7 +1195,7 @@ public class JDBCUtil {
 			}
 		}
 	}
-	
+
 	/**
 	 * Creates an unindexed Int2DImm table from the passed resultset.
 	 * 
@@ -1198,10 +1205,10 @@ public class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static Int2DImm readAsInteger(ResultSet source) throws SQLException {
-		return readAsInteger(source, -1);
+	public static DataTableWritable readAsInteger(ResultSet source) throws SQLException {
+		return readAsInteger(source, DO_NOT_INDEX);
 	}
-	
+
 	/**
 	 * Creates an Int2DImm table from the passed resultset with an optional index.
 	 * 
@@ -1212,40 +1219,43 @@ public class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static Int2DImm readAsInteger(ResultSet source, int indexCol) throws SQLException {
-			
-		ArrayList list = new ArrayList(500);
+	public static DataTableWritable readAsInteger(ResultSet source, int indexCol) throws SQLException {
+
+		ArrayList<int[]> list = new ArrayList<int[]>(500);
 		String[] headings = null;		
-		
+
 		headings = readHeadings(source.getMetaData());
 		int colCount = headings.length; //Number of columns
-		
+
 		while (source.next()){
-		
-		
+
+
 			int[] row = new int[colCount];
-			
+
 			for (int i=1; i<=colCount; i++) {
 				row[i - 1] = source.getInt(i);
 			}
-			
+
 			list.add(row);
-			
+
 		}
-				
-		
+
+
 		//copy the array list to a int[][] array
 		int[][] data = new int[list.size()][];
 		for (int i = 0; i < data.length; i++)  {
 			data[i] = (int[]) list.get(i);
 		}
-		
-		Int2DImm data2D = new Int2DImm(data, headings, indexCol, null);
-		
-		return data2D;
+
+		SimpleDataTableWritable result = new SimpleDataTableWritable(data, headings);
+		if (indexCol > DO_NOT_INDEX) {
+			result.buildIndex(indexCol);
+		}
+
+		return result;
 	}
-	
-	
+
+
 	/**
 	 * Creates a Double2DImm table from the passed query.
 	 * 
@@ -1257,17 +1267,17 @@ public class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static Double2DImm readAsDouble(Connection conn, String query, int fetchSize) throws SQLException {
+	public static DataTableWritable readAsDouble(Connection conn, String query, int fetchSize) throws SQLException {
 		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		st.setFetchSize(fetchSize);
 
 		ResultSet rs = null;
-		
+
 		try {
-		
+
 			rs = st.executeQuery(query);
 			return readAsDouble(rs);
-			
+
 		} finally {
 			if (rs != null) {
 				rs.close();
@@ -1275,7 +1285,7 @@ public class JDBCUtil {
 			}
 		}
 	}
-	
+
 	/**
 	 * Creates a Double2DImm table from the passed resultset.
 	 * 
@@ -1285,48 +1295,48 @@ public class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static Double2DImm readAsDouble(ResultSet source) throws SQLException {
-			
-		ArrayList list = new ArrayList(500);
+	public static DataTableWritable readAsDouble(ResultSet source) throws SQLException {
+
+		ArrayList<double[]> list = new ArrayList<double[]>(500);
 		String[] headings = null;
-		
+
 		headings = readHeadings(source.getMetaData());
 		int colCount = headings.length; //Number of columns
-		
+
 		while (source.next()){
-		
-		
+
+
 			double[] row = new double[colCount];
-			
+
 			for (int i=1; i<=colCount; i++) {
 				row[i - 1] = source.getDouble(i);
 			}
-			
+
 			list.add(row);
-			
+
 		}
-				
-		
+
+
 		//copy the array list to a double[][] array
 		double[][] data = new double[list.size()][];
 		for (int i = 0; i < data.length; i++)  {
 			data[i] = (double[]) list.get(i);
 		}
-		
-		Double2DImm data2D = new Double2DImm(data, headings);
-		
-		return data2D;
+
+		DataTableWritable result = new SimpleDataTableWritable(data, headings);
+
+		return result;
 	}
-	
+
 	private static String[] readHeadings(ResultSetMetaData meta) throws SQLException {
 		int count = meta.getColumnCount();
 		String[] headings = new String[count];
-		
+
 		for (int i=1; i<=count; i++) {
 			headings[i - 1] = meta.getColumnName(i);
 		}
-		
+
 		return headings;
-			
+
 	}
 }

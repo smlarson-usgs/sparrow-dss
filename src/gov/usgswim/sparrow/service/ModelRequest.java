@@ -12,14 +12,14 @@ public class ModelRequest implements PipelineRequest{
 	private String mimetype = "xml";
 	private boolean isEcho;
 	private String xmlRequest;
-	
+
 	public ModelRequest() {
 	}
 
 	public void setPublic(boolean p) {
 		this._public = p;
 	}
-	
+
 	public void setPublic(String p) {
 		_public = BooleanUtils.toBoolean(p);
 	}
@@ -31,7 +31,7 @@ public class ModelRequest implements PipelineRequest{
 	public void setApproved(boolean approved) {
 		this._approved = approved;
 	}
-	
+
 	public void setApproved(String approved) {
 		this._approved = BooleanUtils.toBoolean(approved);
 	}
@@ -43,7 +43,7 @@ public class ModelRequest implements PipelineRequest{
 	public void setArchived(boolean archived) {
 		this._archived = archived;
 	}
-	
+
 	public void setArchived(String archived) {
 		this._archived = BooleanUtils.toBoolean(archived);
 	}
@@ -55,7 +55,7 @@ public class ModelRequest implements PipelineRequest{
 	public void setSources(boolean sources) {
 		this._sources = sources;
 	}
-	
+
 	public void setSources(String sources) {
 		this._sources = BooleanUtils.toBoolean(sources);
 	}
@@ -63,7 +63,7 @@ public class ModelRequest implements PipelineRequest{
 	public boolean isSources() {
 		return _sources;
 	}
-	
+
 	public String getMimeType() {
 		return mimetype;
 	}
@@ -76,7 +76,7 @@ public class ModelRequest implements PipelineRequest{
 	public String getFileName() {
 		return "model";
 	}
-	
+
 	public void setEcho(String echo) {
 		isEcho = ("yes".equalsIgnoreCase(echo) || "true".equalsIgnoreCase(echo));
 	}

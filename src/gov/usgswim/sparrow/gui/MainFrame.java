@@ -2,12 +2,6 @@ package gov.usgswim.sparrow.gui;
 
 import java.awt.Dimension;
 
-import java.awt.Rectangle;
-
-import java.awt.event.WindowAdapter;
-
-import java.awt.event.WindowEvent;
-
 import javax.swing.JFrame;
 
 import oracle.jdeveloper.layout.PaneConstraints;

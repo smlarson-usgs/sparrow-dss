@@ -1,7 +1,12 @@
-package gov.usgswim.sparrow;
+package gov.usgswim.sparrow.deprecated;
+
 
 import org.apache.commons.lang.ArrayUtils;
 
+/**
+ *
+ * @deprecated
+ */
 public class Data2DUtil {
 	private Data2DUtil() {
 		//no instances

@@ -7,12 +7,9 @@ import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.HTM
 import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.TAB;
 import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.XHTML;
 import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.XML;
-import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgs.webservices.framework.utils.XMLUtils;
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.Date;
@@ -23,7 +20,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;

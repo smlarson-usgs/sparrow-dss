@@ -1,11 +1,11 @@
 package gov.usgswim.sparrow.gui;
 
-import gov.usgswim.sparrow.Data2D;
-import gov.usgswim.sparrow.Data2DCompare;
-import gov.usgswim.sparrow.Data2DWritable;
 
-import gov.usgswim.sparrow.Double2DImm;
-import gov.usgswim.sparrow.Int2DImm;
+import gov.usgswim.sparrow.deprecated.Data2D;
+import gov.usgswim.sparrow.deprecated.Data2DCompare;
+import gov.usgswim.sparrow.deprecated.Data2DWritable;
+import gov.usgswim.sparrow.deprecated.Double2DImm;
+import gov.usgswim.sparrow.deprecated.Int2DImm;
 
 import java.text.DecimalFormat;
 

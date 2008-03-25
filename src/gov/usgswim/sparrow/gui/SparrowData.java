@@ -1,24 +1,19 @@
 package gov.usgswim.sparrow.gui;
 
-import gov.usgswim.sparrow.Data2D;
-import gov.usgswim.sparrow.Data2DCompare;
-import gov.usgswim.sparrow.Data2DView;
-import gov.usgswim.sparrow.Double2DImm;
+import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.adjustment.FilteredDataTable;
 import gov.usgswim.sparrow.PredictRunner;
+import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.awt.Frame;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import javax.swing.JOptionPane;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.EventListenerList;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -51,16 +46,16 @@ public class SparrowData implements DataChangeListener {
 	public static final int[] DEFAULT_COMP_COLUMN_MAP =
 		new int[] {40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 39, 15};
 
-	Data2D topoData;
-	Data2D coefData;
-	Data2D srcData;
-	Data2D knownData;
-	Data2D ancilData;
+	DataTable topoData;
+	DataTable coefData;
+	DataTable srcData;
+	DataTable knownData;
+	DataTable ancilData;
 	
 	int[] compColumnMap = DEFAULT_COMP_COLUMN_MAP;
 	
-	Data2D result;
-	Data2DCompare resultComp;	//Comparison of result to knownData
+	DataTable result;
+	DataTableCompare resultComp;	//Comparison of result to knownData
 	Frame rootFrame;
 	
 	// Create the listener list
@@ -91,8 +86,8 @@ public class SparrowData implements DataChangeListener {
 			//These need to be masked out of the coef data.
 			
 			
-			Data2DView trimmedCoef = new Data2DView(coefData, 4, coefData.getColCount() - 4);
-			Data2DView decayCoef = new Data2DView(coefData, 1, 2);
+			DataTable trimmedCoef = new FilteredDataTable(coefData, 4, coefData.getColumnCount() - 4);
+			DataTable decayCoef = new FilteredDataTable(coefData, 1, 2);
 			
 			PredictRunner predict = new PredictRunner(topoData, trimmedCoef, srcData, decayCoef);
 			
@@ -100,15 +95,15 @@ public class SparrowData implements DataChangeListener {
 			int iterationCount = 100;
 			
 			for (int i = 0; i < iterationCount; i++)  {
-				result = predict.doPredict();
+				result = predict.doPredict2();
 			}
 
 			log.info("Predict complete.  Total Time: " + (System.currentTimeMillis() - startTime) + "ms for " +
-				srcData.getColCount() + " sources, " + srcData.getRowCount() + " reaches, and " + iterationCount + " iterations."
+				srcData.getColumnCount() + " sources, " + srcData.getRowCount() + " reaches, and " + iterationCount + " iterations."
 			);
 			
 			if (knownData != null) {
-				resultComp = new Data2DCompare(result, knownData, compColumnMap);
+				resultComp = new DataTableCompare(result, knownData, compColumnMap);
 				fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_RESULT, resultComp));
 			} else {
 				fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_RESULT, result));
@@ -117,7 +112,7 @@ public class SparrowData implements DataChangeListener {
 			JOptionPane.showMessageDialog(this.rootFrame,
 				"<html>Success!" +
 				"<p><p>Predict complete.  Total Time: " + (System.currentTimeMillis() - startTime) + "ms for " +
-				srcData.getColCount() + " sources, " + srcData.getRowCount() + " reaches, and " + iterationCount + " iterations."
+				srcData.getColumnCount() + " sources, " + srcData.getRowCount() + " reaches, and " + iterationCount + " iterations."
 			);
 			
 		} else {
@@ -162,19 +157,19 @@ public class SparrowData implements DataChangeListener {
 					topoData = TabDelimFileUtil.readAsInteger(f, true, -1);
 					fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_TOPO, topoData));
 				} else if (DATA_TYPE_COEF.equals(evt.getDataType())) {
-					Data2D coefDataFull = TabDelimFileUtil.readAsDouble(f, true, -1);
+					DataTable coefDataFull = TabDelimFileUtil.readAsDouble(f, true, -1);
 					
 					//coefData includes multiple iterations, indicated in the first column.
 					//we want iteration 0.
-					int firstRow = coefDataFull.orderedSearchFirst(0d, 0);
-					int lastRow = coefDataFull.orderedSearchLast(0d, 0);
+					int firstRow = coefDataFull.findFirst(0, Double.valueOf(0d));
+					int lastRow = coefDataFull.findLast(0, Double.valueOf(0d));
 					
 					if (firstRow < 0 || lastRow < firstRow) {
 						log.error("The coef data does not include an iteration zero!");
 						throw new IllegalArgumentException("The coef data does not include an iteration zero!");
 					}
 					
-					coefData = new Data2DView(coefDataFull, firstRow, lastRow - firstRow + 1, 0, coefDataFull.getColCount());
+					coefData = new FilteredDataTable(coefDataFull, firstRow, lastRow - firstRow + 1, 0, coefDataFull.getColumnCount());
 					
 					fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_COEF, coefData));
 				} else if (DATA_TYPE_SRC.equals(evt.getDataType())) {
@@ -188,7 +183,7 @@ public class SparrowData implements DataChangeListener {
 					//also fire for result data if this adds comparison info
 
 					if (result != null) {
-						resultComp = new Data2DCompare(result, knownData, compColumnMap);
+						resultComp = new DataTableCompare(result, knownData, compColumnMap);
 						fireDataChangeEvent(new DataChangeEvent(this, DATA_TYPE_RESULT, resultComp));
 					}
 					

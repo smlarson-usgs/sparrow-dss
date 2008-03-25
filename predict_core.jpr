@@ -123,16 +123,28 @@
          <hash n="Model Loader - Load the Zero Iteration of Model 22">
             <value n="custom" v="false"/>
             <value n="ignoreCompilerErrors" v="true"/>
+            <value n="javaOptions" v="-XX:MaxPermSize=384m -Xms768m -Xmx1024m"/>
             <value n="name" v="Model Loader - Load the Zero Iteration of Model 22"/>
             <value n="programArguments" v="/data/ch2007_04_24 22 22 0"/>
             <value n="runActiveFile" v="false"/>
             <url n="targetURL" path="src/gov/usgswim/sparrow/util/LoadTestRunner.java"/>
             <value n="VMName" v="client"/>
          </hash>
+         <hash n="sparrow">
+            <value n="custom" v="false"/>
+            <value n="ignoreCompilerErrors" v="true"/>
+            <value n="javaOptions" v="-XX:MaxPermSize=384m -Xms768m -Xmx1024m"/>
+            <value n="name" v="sparrow"/>
+            <value n="programArguments" v=""/>
+            <value n="runActiveFile" v="false"/>
+            <url n="targetURL" path="public_html/sparrow.html"/>
+            <value n="VMName" v="client"/>
+         </hash>
       </hash>
       <list n="runConfigurationList">
          <string v="Default"/>
          <string v="Model Loader - Load the Zero Iteration of Model 22"/>
+         <string v="sparrow"/>
       </list>
    </hash>
    <hash n="oracle.jdevimpl.config.JProjectLibraries">
@@ -179,6 +191,10 @@
          </hash>
          <hash>
             <value n="id" v="JSP Runtime"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <url n="id" path="java_lib/_lib_definition/usgs_datatable.library"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
@@ -228,6 +244,10 @@
          </hash>
          <hash>
             <value n="id" v="JSP Runtime"/>
+            <value n="isJDK" v="false"/>
+         </hash>
+         <hash>
+            <url n="id" path="../CRKData/wqws/WebServiceFramework/WebServiceFramework/java_lib/_lib_definition/usgs_datatable.library"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>

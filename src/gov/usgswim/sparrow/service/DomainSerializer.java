@@ -1,117 +1,146 @@
 package gov.usgswim.sparrow.service;
 
-
+import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_NAMESPACE;
+import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
+import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
+import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.sparrow.domain.Model;
+import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.domain.Source;
 
-import java.io.OutputStream;
+import java.util.Iterator;
 import java.util.List;
 
-import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLStreamException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
-
-
-public class DomainSerializer extends AbstractSerializer {
-	
+public class DomainSerializer extends BasicXMLStreamReader {
 	public static String TARGET_NAMESPACE = "http://www.usgs.gov/sparrow/meta_response/v0_1";
 	public static String TARGET_NAMESPACE_LOCATION = "http://www.usgs.gov/sparrow/meta_response.xsd";
-	public static String T_PREFIX = "mod";
+
+	private List<ModelBuilder> models;
+	private Iterator<ModelBuilder> mIter;
+	private boolean isOutputCompleteFirstRow;
+
+	public DomainSerializer(List<ModelBuilder> models) {
+		this.models = models;
+	}
 
 	
-	public DomainSerializer() {
-		super();
-	}
-	
-	public String getTargetNamespace() {
-		return TARGET_NAMESPACE;
-	}
-	
-	
-	/**
-	 * Writes all the passed models to the output stream as XML.
-	 * 
-	 * @param stream
-	 * @param models
-	 * @throws XMLStreamException
+	/* Override because there's no resultset
+	 * @see gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader#readNext()
 	 */
-	public void writeModels(OutputStream stream, List<? extends Model> models) throws XMLStreamException {
-		XMLEventWriter xw = xoFact.createXMLEventWriter(stream);
-		writeModels(xw, models);
-	}
-	
-	
-	/**
-	 * Writes all the passed models to the XMLEventWriter.
-	 * 
-	 * @param xw
-	 * @param models
-	 * @throws XMLStreamException
-	 */
-	public void writeModels(XMLEventWriter xw, List<? extends Model> models) throws XMLStreamException {
-	
-		xw.setDefaultNamespace(TARGET_NAMESPACE);
-		xw.add( evtFact.createStartDocument(ENCODING, XML_VERSION) );
-		
-		
-		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "models") );
-		xw.add( evtFact.createNamespace(TARGET_NAMESPACE) );
-		xw.add( evtFact.createNamespace(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE) );
-		xw.add( evtFact.createAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE_LOCATION) );
-
-		for (Model m : models) {
-			writeModel(xw, m);
+	@Override
+	public void readNext() throws XMLStreamException {
+		try {
+			if (!isStarted) {
+				documentStartAction();
+			}
+			readModel();
+			if (isDataDone && isStarted && !isEnded) {
+				// Only output footer if the data is finished, the document was
+				// actually started,
+				// and the footer has not been output.
+				documentEndAction();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new XMLStreamException(e);
 		}
-
-		xw.add( evtFact.createEndElement(T_PREFIX, TARGET_NAMESPACE, "models") );
-		xw.add( evtFact.createEndDocument() );
 	}
 	
-	
-	public void writeModel(javax.xml.stream.XMLEventWriter xw,
-												 Model model) throws XMLStreamException {
-
-		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "model") );
-		xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, "id", model.getId().toString()) );
+	protected BasicTagEvent documentStartAction() {
+		super.documentStartAction();
+		// add the namespaces
+		this.setDefaultNamespace(TARGET_NAMESPACE);
+		addNamespace(XMLSCHEMA_NAMESPACE, XMLSCHEMA_PREFIX);
+		// opening element
+		events.add(new BasicTagEvent(START_DOCUMENT));
+		// TODO need to add encoding and version xw.add( evtFact.createStartDocument(ENCODING, XML_VERSION) );
 		
-		writeElemEvent(xw, "name", model.getName());
-		writeElemEventIfNotNull(xw, "description", model.getDescription());
-		writeElemEventIfNotNull(xw, "url", model.getUrl());
-		writeElemEvent(xw, "dateAdded", DateFormatUtils.ISO_DATE_FORMAT.format(model.getDateAdded()));
-		writeElemEvent(xw, "contactId", model.getContactId().toString());
-		writeElemEvent(xw, "enhNetworkId", model.getEnhNetworkId().toString());
-		writeElemEvent(xw, "bounds", null,
-			new String[] {"north", "west", "south", "east"},
-			new String[] {model.getNorthBound().toString(), model.getWestBound().toString(), model.getSouthBound().toString(), model.getEastBound().toString()});
+		events.add(new BasicTagEvent(START_ELEMENT, "models")
+			.addAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE + " " + TARGET_NAMESPACE_LOCATION));
+
+		mIter = models.iterator();
+		return null;
+	}
 
 
-
-		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "sources") );
-		for (Source s : model.getSources()) {
-			writeSource(xw, s);
+	private void readModel() {
+		if (mIter.hasNext()) {
+			Model model = mIter.next();
+			events.add(new BasicTagEvent(START_ELEMENT, "model").addAttribute("id", model.getId().toString()));
+			{
+				addNonNullBasicTag("name", model.getName());
+				addNonNullBasicTag("description", StringUtils.trimToNull(model.getDescription()));
+				addNonNullBasicTag("url", StringUtils.trimToNull(model.getUrl()));
+				addNonNullBasicTag("dateAdded", DateFormatUtils.ISO_DATE_FORMAT.format(model.getDateAdded()));
+				addNonNullBasicTag("contactId", model.getContactId().toString());
+				addNonNullBasicTag("enhNetworkId", model.getEnhNetworkId().toString());
+				events.add(new BasicTagEvent("bounds", null)
+					.addAttribute("north", model.getNorthBound().toString())
+					.addAttribute("west", model.getWestBound().toString())
+					.addAttribute("south", model.getSouthBound().toString())
+					.addAttribute("east", model.getEastBound().toString()));
+				addOpenTag("sources");
+				{
+					for (Source src : model.getSources()) {
+						if (isOutputCompleteFirstRow) {
+							outputEmptySourceForHeaders();
+						}
+						events.add(new BasicTagEvent(START_ELEMENT, "source")
+							.addAttribute("id", src.getId().toString())
+							.addAttribute("identifier", Integer.toString(src.getIdentifier()))
+							.addAttribute("sortOrder", Integer.toString(src.getSortOrder()))
+						);
+						{
+							addNonNullBasicTag("name", src.getName());
+							addNonNullBasicTag("displayName", src.getDisplayName());
+							addNonNullBasicTag("description",StringUtils.trimToNull(src.getDescription()));
+						}
+						addCloseTag("source");
+						// add a carriage return to break up long text line
+						events.add(new BasicTagEvent(SPACE));
+					}
+				}
+				addCloseTag("sources");
+			}
+			addCloseTag("model");
+		} else {
+			isDataDone = true;
 		}
-		xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, "sources") );
-		
-		xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, "model") );
-
 	}
 	
-	public void writeSource(XMLEventWriter xw,
-													Source src) throws XMLStreamException {
-		xw.add( evtFact.createStartElement(EMPTY, TARGET_NAMESPACE, "source") );
-		xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, "id", src.getId().toString()) );
-		xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, "identifier", Integer.toString(src.getIdentifier())) );
-		xw.add( evtFact.createAttribute(EMPTY, TARGET_NAMESPACE, "sortOrder", Integer.toString(src.getSortOrder())) );
-		
+	@Override
+	protected void documentEndAction() {
+		super.documentEndAction();
+		addCloseTag("models");
+		events.add(new BasicTagEvent(END_DOCUMENT));
+	}
 
-		writeElemEvent(xw, "name", src.getName());
-		writeElemEvent(xw, "displayName", src.getDisplayName());
-		writeElemEventIfNotNull(xw, "description", src.getDescription());
-		
 
-		xw.add( evtFact.createEndElement(EMPTY, TARGET_NAMESPACE, "source") );
+	private void outputEmptySourceForHeaders() {
+		events.add(new BasicTagEvent(START_ELEMENT, "source")
+				.addAttribute("id", "")
+				.addAttribute("identifier", "")
+				.addAttribute("sortOrder", ""));
+		{
+			addNonNullBasicTag("name", "");
+			addNonNullBasicTag("displayName", "");
+			addNonNullBasicTag("description", "");
+		}
+		addCloseTag("source");
+		isOutputCompleteFirstRow = false;
+	}
 
+	public void setOutputCompleteFirstRow() {
+		isOutputCompleteFirstRow = true;
+	}
+	
+	@Override
+	public void close() throws XMLStreamException {
+		// TODO Auto-generated method stub
 	}
 
 }

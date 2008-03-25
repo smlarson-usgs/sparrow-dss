@@ -1,19 +1,7 @@
 package gov.usgswim.sparrow.test;
 
-import gov.usgswim.service.RequestHandler;
-import gov.usgswim.sparrow.Int2DImm;
-import gov.usgswim.sparrow.service.IDByPointComputable;
 import gov.usgswim.sparrow.service.IDByPointParser;
 import gov.usgswim.sparrow.service.IDByPointRequest;
-import gov.usgswim.sparrow.service.ModelParser;
-import gov.usgswim.sparrow.service.ModelRequest;
-import gov.usgswim.sparrow.service.ModelService;
-import gov.usgswim.sparrow.util.SparrowUtil;
-
-import java.awt.Point;
-
-import java.io.File;
-import java.io.FileOutputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;

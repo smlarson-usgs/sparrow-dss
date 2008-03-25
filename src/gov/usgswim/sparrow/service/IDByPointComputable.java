@@ -1,8 +1,9 @@
 package gov.usgswim.sparrow.service;
 
-import gov.usgswim.sparrow.Data2D;
-import gov.usgswim.sparrow.Data2DView;
-import gov.usgswim.sparrow.Int2DImm;
+import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.impl.SimpleDataTableWritable;
+import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.util.JDBCUtil;
 import gov.usgswim.task.Computable;
 
@@ -27,41 +28,51 @@ import org.apache.log4j.Logger;
  * By implementing Computable, this task can be put in a ComputableCache, which
  * executes the task if the result does not already exist.
  */
-public class IDByPointComputable implements Computable<IDByPointRequest, Int2DImm> {
+public class IDByPointComputable implements Computable<IDByPointRequest, DataTable> {
 	protected static Logger log =
 		Logger.getLogger(PredictDatasetComputable.class); //logging for this class
-		
+
 	public IDByPointComputable() {
 	}
 
-	public Int2DImm compute(IDByPointRequest req) throws Exception {
+	public DataTable compute(IDByPointRequest req) throws Exception {
 		Connection conn = null;
-		
-		Int2DImm data = null;
-		
+
+		DataTableWritable data = null;
+
 		try {
 			conn = SharedApplication.getInstance().getConnection();
-			
+
 			long startTime = System.currentTimeMillis();
-			
+
 			String query = buildQuery(req);
-			
+
 			if (log.isDebugEnabled()) {
 				log.debug("Begin ID by point query for model #" + req.getModelId() + " long: " + req.getPoint().x + " lat: " + req.getPoint().y + " query: " + query);
 			}
-			
+
 			//Load the data
-			data = JDBCUtil.readAsInteger(conn, query, 100);
-			
+			DataTableWritable load = JDBCUtil.readAsInteger(conn, query, 100);
+
 			//data has reach IDs in the first column and distances in the 2nd.
 			//Convert to reachIDs as actual IDs and distance in the first column
-			int[] ids = data.getIntColumn(0);	//IDs are in column zero
-			Data2D view = new Data2DView(data, 1, 1);	//Create view of only 2nd column (column 1)
-			int[][] intData = view.getIntData();	//Grab the data array of the view's data
-			data = new Int2DImm(intData, view.getHeadings(), -1, ids);
+//			int[] ids = DataTableUtils.getIntColumn(data, 0);	//IDs are in column zero
+//			DataTable view = new FilteredDataTable(data, 1, 1);	//Create view of only 2nd column (column 1)
+//			int[][] intData = view.getIntData();	//Grab the data array of the view's data
+//			data = SimpleDataTableWritable(new Int2DImm(intData, view.getHeadings(), -1, ids);
 			
+			SimpleDataTableWritable result = new SimpleDataTableWritable();
+			data = result;
+			result.addColumn(new StandardNumberColumnDataWritable<Integer>(load.getName(1), null));
+			int destinationCol = 0;
+			int sourceCol = 1;
+			for (int row=0; row<load.getRowCount(); row++) {
+				result.setValue(load.getInt(row, sourceCol), row, destinationCol);
+				result.setRowId(load.getLong(row, 0), row);
+			}
+
 			log.debug("End ID by point query for model #" + req.getModelId() + "  Time: " + (System.currentTimeMillis() - startTime) + "ms");
-			
+
 		} finally {
 			if (conn != null) {
 				try {
@@ -71,15 +82,15 @@ public class IDByPointComputable implements Computable<IDByPointRequest, Int2DIm
 				}
 			}
 		}
-		
+
 		return data;
-		
+
 	}
-	
+
 	public String buildQuery(IDByPointRequest req) {
 		double x = req.getPoint().x;
 		double y = req.getPoint().y;
-		
+
 		String query =
 			"SELECT * FROM (\n" +
 			"	SELECT \n" +
@@ -94,7 +105,7 @@ public class IDByPointComputable implements Computable<IDByPointRequest, Int2DIm
 			"	SDO_ORDINATE_ARRAY(" + (x - 2) + "," + (y - 2) + "," + (x + 2) +"," + (y + 2) + "))) = 'TRUE' \n" +
 			" ORDER BY Dist_In_Meters \n" +
 			") INNER WHERE rownum < " + (req.getNumberOfResults() + 1);
-			
+
 		return query;
 	}
 }

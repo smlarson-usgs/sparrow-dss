@@ -1,6 +1,8 @@
 package gov.usgswim.task;
 
 
+import gov.usgswim.sparrow.service.PredictDatasetComputable;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -8,6 +10,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
+
+import org.apache.log4j.Logger;
 
 /**
  * A cache that takes Computable units of work, runs them, and stores the results.
@@ -22,18 +26,22 @@ import java.util.concurrent.FutureTask;
  * Addison-Wesley, 2006.
  */
 public class ComputableCache<A, V> implements Computable<A, V> {
+	// TODO [IK] Make the concurrent map a map of weak references
 	private final ConcurrentMap<A, Future<V>> cache = new ConcurrentHashMap<A, Future<V>>();
-		 
 	private final Computable<A, V> c;
+	private final String cacheName;
+	protected final static Logger log = Logger.getLogger(ComputableCache.class);
 
 	//TODO  Need to make this take a max number of items argument and a FIFO usage
 	//buffer to determine which (oldest) item to remove
-	public ComputableCache(Computable<A, V> c) {
+	public ComputableCache(Computable<A, V> c, String name) {
 		this.c = c;
+		this.cacheName = name;
 	}
 
 	public V compute(final A arg) throws Exception {
 		while (true) {
+			log.info(cacheName + ": " + arg.toString());
 			Future<V> f = cache.get(arg);
 			if (f == null) {
 			
@@ -45,8 +53,15 @@ public class ComputableCache<A, V> implements Computable<A, V> {
 					
 				FutureTask<V> ft = new FutureTask<V>(eval);
 				f = cache.putIfAbsent(arg, ft);
+				if (log.isInfoEnabled()) {
+					log.info(cacheName + ": " + "putIfAbsent (" + arg.toString() + "," + ft.toString());				
+				}
 				if (f == null) {
 					//It was not already in the cache
+					if (log.isInfoEnabled()) {
+						log.info(cacheName + ": " + "Absent, running: " + ft.toString());			
+					}
+
 					f = ft;
 					ft.run();
 				} /* else {
@@ -62,6 +77,8 @@ public class ComputableCache<A, V> implements Computable<A, V> {
 			}
 			
 			try {
+				Object result = f.get();
+				log.info("returned cache object of " + result.getClass());
 				return f.get();	//This will block until the result is available
 			} catch (CancellationException e) {
 				//Cancelled the request

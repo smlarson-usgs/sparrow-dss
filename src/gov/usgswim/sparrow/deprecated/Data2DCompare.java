@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow;
+package gov.usgswim.sparrow.deprecated;
 
 import gov.usgswim.NotThreadSafe;
 
@@ -10,13 +10,16 @@ import gov.usgswim.NotThreadSafe;
  * for ID lookups.
  *
  * Comparisons are always in terms of the baseData - compData.
+ * 
+ * @deprecated This class does not properly support the getInt/Double methods
+ * so that other views can extend it.  Other views will only return
  */
 @NotThreadSafe
-public class Data2DPercentCompare extends Data2DView {
+public class Data2DCompare extends Data2DView {
 	Data2D compData;
 	int[] colMap;
-	private Double[] maxCompValues;  //Max deviation for each column.  Each value may be null if unknown
-	boolean decimalPercentage = false;
+	volatile private Double[] maxCompValues;  //Max deviation for each column.  Each value may be null if unknown
+	volatile private Integer[] maxCompRows;	//The row (for each column) where the max comparison value was found.
 	
 	/**
 	 * Construct a new instance using the passed baseData and compData.
@@ -26,12 +29,12 @@ public class Data2DPercentCompare extends Data2DView {
 	 * @param baseData
 	 * @param compData
 	 */
-	public Data2DPercentCompare(Data2D baseData, Data2D compData, boolean useDecimalPercentage) {
+	public Data2DCompare(Data2D baseData, Data2D compData) {
 		super(baseData, 0, baseData.getColCount());
 		
 		this.compData = compData;
 		maxCompValues = new Double[baseData.getColCount()];
-		decimalPercentage = useDecimalPercentage;
+		maxCompRows = new Integer[baseData.getColCount()];
 	}
 	
 	/**
@@ -51,52 +54,44 @@ public class Data2DPercentCompare extends Data2DView {
 	 * @param compData
 	 * @param columnMapping
 	 */
-	public Data2DPercentCompare(Data2D baseData, Data2D compData, int[] columnMapping, boolean useDecimalPercentage) {
+	public Data2DCompare(Data2D baseData, Data2D compData, int[] columnMapping) {
 		super(baseData, 0, baseData.getColCount());
 		
 		this.compData = compData;
 		colMap = columnMapping;
 		maxCompValues = new Double[baseData.getColCount()];
-		decimalPercentage = useDecimalPercentage;
+		maxCompRows = new Integer[baseData.getColCount()];
 	}
 	
 	public double compare(int row, int col) throws IndexOutOfBoundsException {
-		double base = super.getDouble(row, col);
-		double comp = compData.getDouble(row, mapColumn(col));
-		double dec = 0d;	//default zero percent change
-		
-		if (base == 0d) {
-			if (comp > 0) {
-				dec = Double.MAX_VALUE;
-			} else if (comp < 0) {
-				dec = Double.MIN_VALUE;
-			}
-		} else {
-			dec = (comp - base)/base;
-		}
-		
-		if (decimalPercentage) {
-			return dec;
-		} else {
-			return 100d * dec;
-		}
+		return super.getDouble(row, col) - compData.getDouble(row, mapColumn(col));
 	}
 	
-	//TODO: Max value by column should be part of the interface
 	public synchronized double findMaxCompareValue(int column) {
 		if (maxCompValues[column] == null) {
-
-			double max = Double.MIN_VALUE;
+			double max = Double.MIN_VALUE;	//The max value found
+			int maxRow = 0;	//row of the max value
 			
 			for (int r = 0; r < getRowCount(); r++)  {
 				double d = Math.abs( compare(r, column) );
-				if (d > max) max = d;
+				if (d > max) {
+					max = d;
+					maxRow = r;
+				}
 			}
 			
-			maxCompValues[column] = new Double(max);
+			maxCompValues[column] = max;
+			maxCompRows[column] = maxRow;
 			
 		}
 		return maxCompValues[column].doubleValue();
+	}
+	
+	public synchronized int findMaxCompareRow(int column) {
+		if (maxCompRows[column] == null) {
+			findMaxCompareValue(column);
+		}
+		return maxCompRows[column];
 	}
 	
 	public synchronized double findMaxCompareValue() {
@@ -117,18 +112,6 @@ public class Data2DPercentCompare extends Data2DView {
 		} else {
 			return c;
 		}
-	}
-
-	public double getDouble(int row, int col) throws IndexOutOfBoundsException {
-		return compare(row, col);
-	}
-
-	public int getInt(int row, int col) throws IndexOutOfBoundsException {
-		return (int) compare(row, col);
-	}
-
-	public Number getValue(int row, int col) throws IndexOutOfBoundsException {
-		return new Double( compare(row, col) );
 	}
 
 }

@@ -14,6 +14,7 @@ import java.util.List;
  */
 @Immutable
 public class ModelImm implements Model, Serializable {
+	private static final long serialVersionUID = 4501741342624409074L;
 	private final Long _id;
 	private final boolean _approved;
 	private final boolean _public;

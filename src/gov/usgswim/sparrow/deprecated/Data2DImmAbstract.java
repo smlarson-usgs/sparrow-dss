@@ -1,11 +1,10 @@
-package gov.usgswim.sparrow;
+package gov.usgswim.sparrow.deprecated;
 
 
 import gov.usgswim.Immutable;
 
 import java.util.HashMap;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 
 
@@ -15,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
  * 
  * *This class is immutable except for maxValue, which is lazy calculated in
  * a threadsafe fashion.
+ * @deprecated
  */
 @Immutable
 public abstract class Data2DImmAbstract implements Data2D {

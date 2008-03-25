@@ -8,7 +8,7 @@ public class PipelineRegistry {
 
 	public static Pipeline lookup(PipelineRequest o) {
 		if (o.isEcho()) {
-			return new EchoPipeline(o.getXMLRequest());
+			return new EchoPipeline();
 		} else {
 			return new SimplePipeline();
 		}
