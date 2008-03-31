@@ -4,7 +4,7 @@ import gov.usgswim.ThreadSafe;
 import gov.usgswim.service.HttpRequestHandler;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.domain.ModelBuilder;
-import gov.usgswim.sparrow.util.JDBCUtil;
+import gov.usgswim.sparrow.util.DataLoader;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -47,7 +47,7 @@ public class ModelService implements HttpRequestHandler<ModelRequest> {
 
 	public XMLStreamReader getXMLStreamReader(ModelRequest o, boolean needsCompleteFirstRow) throws Exception{
 		
-		List<ModelBuilder> models = JDBCUtil.loadModelMetaData(getConnection());
+		List<ModelBuilder> models = DataLoader.loadModelMetaData(getConnection());
 		DomainSerializer serializer = new DomainSerializer(models);
 		if (needsCompleteFirstRow) {
 			serializer.setOutputCompleteFirstRow();

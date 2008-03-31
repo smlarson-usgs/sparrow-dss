@@ -52,7 +52,12 @@ public class SimplePipeline implements Pipeline {
 				case TAB:
 				case EXCEL:
 				case HTML:
-					formatter = new ZipFormatter(new SparrowFlatteningFormatter(outputType));
+					if (o.isZipped()) {
+						formatter = new ZipFormatter(new SparrowFlatteningFormatter(outputType));
+					} else {
+						formatter = new SparrowFlatteningFormatter(outputType);
+					}
+					
 					break;
 				case XML:
 					// XML is the default case
@@ -69,8 +74,7 @@ public class SimplePipeline implements Pipeline {
 					DataFlatteningFormatter df = new DataFlatteningFormatter(outputType);
 					df.setRowElementName("source");
 					df.setKeepElderInfo(true);
-					formatter = new ZipFormatter(df);
-//					formatter = df;
+					formatter = (o.isZipped())? new ZipFormatter(df): (IFormatter) df;
 					break;
 				case XML:
 					// XML is the default case

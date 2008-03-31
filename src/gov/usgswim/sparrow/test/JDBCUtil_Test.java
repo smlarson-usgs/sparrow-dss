@@ -8,6 +8,7 @@ import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.domain.Source;
+import gov.usgswim.sparrow.util.DataLoader;
 import gov.usgswim.sparrow.util.JDBCUtil;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
@@ -46,27 +47,9 @@ public class JDBCUtil_Test extends TestCase {
 		conn = null;
 	}
 
-	/**
-	 * @see JDBCUtil#loadMinimalPredictDataSet(Connection conn, int modelId)
-	 */
-	public void testLoadMinimalPredictDataSet() throws Exception {
-		PredictData ds = JDBCUtil.loadMinimalPredictDataSet(conn, 1);
-		PredictRunner ps = new PredictRunner(ds);
-
-		DataTable result = ps.doPredict2();
-
-		DataTableCompare comp = buildPredictionComparison(result);
-//		System.out.println(comp.getColumnCount());
-//		for (int i = 0; i < comp.getColumnCount(); i++)  {
-//			System.out.println("col " + i + " error: " + comp.findMaxCompareValue(i));
-//		}
-//		System.out.println("========");
-		assertEquals(0d, comp.findMaxCompareValue(), 0.004d);
-
-	}
 
 	public void testReadModelMetadata() throws Exception {
-		List<ModelBuilder> models = JDBCUtil.loadModelMetaData(conn);
+		List<ModelBuilder> models = DataLoader.loadModelMetaData(conn);
 
 		Model m = models.get(0);
 		Source s1 = m.getSource(1);	//get by identifier
@@ -141,7 +124,7 @@ public class JDBCUtil_Test extends TestCase {
 
 
 		//Load the db version of the same model
-		dbDs = JDBCUtil.loadFullModelDataSet(conn, 21);
+		dbDs = DataLoader.loadFullModelDataSet(conn, 21);
 
 		DataTableCompare comp = new DataTableCompare(textDs.getSrc(), dbDs.getSrc());
 		DataTableCompare topo = new DataTableCompare(textDs.getTopo(), dbDs.getTopo());
@@ -171,80 +154,6 @@ public class JDBCUtil_Test extends TestCase {
 
 	}
 
-
-	/**
-	 * @see JDBCUtil#loadTopo(Connection,int)
-	 */
-	public void testLoadTopo() throws Exception {
-		DataTable jdbcData = JDBCUtil.loadTopo(conn, 1);
-		assertEquals(2339, jdbcData.getRowCount());
-		assertEquals(4, jdbcData.getColumnCount());
-
-		DataTableCompare comp = buildTopoComparison(jdbcData);
-
-		assertEquals(0, (int) comp.findMaxCompareValue());
-	}
-
-	/**
-	 * @see JDBCUtil#loadSourceIds(java.sql.Connection,int)
-	 */
-	public void testLoadSource(Connection conn, int modelId) throws Exception {
-		DataTable jdbcData = JDBCUtil.loadSourceIds(conn, 1);
-		assertEquals(11, jdbcData.getRowCount());
-		assertEquals(1, jdbcData.getColumnCount());
-
-		//This basic set of sources should have id's 0 to 10.
-		for (int i = 0; i < 11; i++)  {
-			assertEquals(Integer.valueOf(i), jdbcData.getInt(i, 0));
-		}
-
-	}
-
-	/**
-	 * @see JDBCUtil#loadSourceReachCoef(Connection, int, int, Int2D)
-	 */
-	public void testLoadSourceReachCoef() throws Exception {
-		DataTable sources = JDBCUtil.loadSourceIds(conn, 1);
-		DataTable jdbcData = JDBCUtil.loadSourceReachCoef(conn, 1, 0, sources);
-
-		assertEquals(2339, jdbcData.getRowCount());
-		assertEquals(11, jdbcData.getColumnCount());
-
-		DataTableCompare comp = buildSourceReachCoefComparison(jdbcData);
-
-		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
-	}
-
-
-	/**
-	 * @see JDBCUtil#loadDecay(Connection, int, int)
-	 */
-	public void testLoadDecay() throws Exception {
-		DataTable jdbcData = JDBCUtil.loadDecay(conn, 1, 0);
-
-		assertEquals(2339, jdbcData.getRowCount());
-		assertEquals(2, jdbcData.getColumnCount());
-
-		DataTableCompare comp = buildDecayComparison(jdbcData);
-
-		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
-	}
-
-
-	/**
-	 * @see JDBCUtil#loadSourceValues(Connection, int, Int2D)
-	 */
-	public void testLoadSourceValues() throws Exception {
-		DataTable sources = JDBCUtil.loadSourceIds(conn, 1);
-		DataTable jdbcData = JDBCUtil.loadSourceValues(conn, 1, sources);
-
-		assertEquals(2339, jdbcData.getRowCount());
-		assertEquals(11, jdbcData.getColumnCount());
-
-		DataTableCompare comp = buildSourceValueComparison(jdbcData);
-
-		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
-	}
 
 	protected DataTableCompare buildTopoComparison(DataTable toBeCompared) throws Exception {
 		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/topo.txt");

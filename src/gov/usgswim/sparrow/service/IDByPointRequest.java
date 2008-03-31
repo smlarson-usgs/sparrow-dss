@@ -24,6 +24,7 @@ public class IDByPointRequest implements PipelineRequest{
 	private Integer hash;	//Not strictly threadsafe, but recalculation is cheap and non-destructive
 	protected String mimetype = "xml"; // default is xml
 	private String xmlRequest;
+	private boolean isUnzipped;
 	
 	/**
 	 * Constructs a new request instance.
@@ -104,5 +105,13 @@ public class IDByPointRequest implements PipelineRequest{
 
 	public void setXMLRequest(String request) {
 		xmlRequest = request;		
+	}
+
+	public boolean isZipped() {
+		return !isUnzipped;
+	}
+	
+	public void setZip(boolean zip) {
+		isUnzipped = !zip;
 	}
 }

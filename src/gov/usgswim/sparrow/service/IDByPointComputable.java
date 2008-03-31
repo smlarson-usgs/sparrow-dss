@@ -4,7 +4,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
-import gov.usgswim.sparrow.util.JDBCUtil;
+import gov.usgswim.sparrow.util.DataLoader;
 import gov.usgswim.task.Computable;
 
 import java.sql.Connection;
@@ -52,7 +52,7 @@ public class IDByPointComputable implements Computable<IDByPointRequest, DataTab
 			}
 
 			//Load the data
-			DataTableWritable load = JDBCUtil.readAsInteger(conn, query, 100);
+			DataTableWritable load = DataLoader.readAsInteger(conn, query, 100);
 
 			//data has reach IDs in the first column and distances in the 2nd.
 			//Convert to reachIDs as actual IDs and distance in the first column

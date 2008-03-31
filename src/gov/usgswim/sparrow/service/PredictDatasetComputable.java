@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.service;
 
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.util.DataLoader;
 import gov.usgswim.sparrow.util.JDBCUtil;
 import gov.usgswim.task.Computable;
 
@@ -31,7 +32,7 @@ public class PredictDatasetComputable implements Computable<Long, PredictData> {
 			long startTime = System.currentTimeMillis();
 			log.debug("Begin loading predict data for model #" + modelId);
 
-			data = JDBCUtil.loadMinimalPredictDataSet(conn, modelId.intValue());
+			data = DataLoader.loadMinimalPredictDataSet(conn, modelId.intValue());
 
 			log.debug("End loading predict data for model #" + modelId + "  Time: " + (System.currentTimeMillis() - startTime) + "ms");
 

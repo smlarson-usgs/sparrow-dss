@@ -1,8 +1,10 @@
 package gov.usgswim.sparrow.test;
 
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.sparrow.util.DataLoader;
 import gov.usgswim.sparrow.util.JDBCUtil;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -127,25 +129,25 @@ public class JDBCUtilMemoryTest extends TestCase {
 		final int modelId = 1;
 		System.out.println("======= Testing loadFullModelDataSet Components Memory Usage =======");
 		ObjectFactory sourceIDFactory = new ObjectFactory() {
-			public Object makeObject() throws SQLException {
-				return JDBCUtil.loadSourceIds(conn, modelId);
+			public Object makeObject() throws SQLException, IOException {
+				return DataLoader.loadSourceIds(conn, modelId);
 			}
 		};
 		ObjectFactory systemInfoFactory = new ObjectFactory() {
-			public Object makeObject() throws SQLException {
-				return JDBCUtil.loadSystemInfo(conn, modelId);
+			public Object makeObject() throws SQLException, IOException {
+				return DataLoader.loadSystemInfo(conn, modelId);
 			}
 		};
 		
 		ObjectFactory topoFactory = new ObjectFactory() {
-			public Object makeObject() throws SQLException {
-				return JDBCUtil.loadTopo(conn, modelId);
+			public Object makeObject() throws SQLException, IOException {
+				return DataLoader.loadTopo(conn, modelId);
 			}
 		};
 		
 		ObjectFactory decayFactory = new ObjectFactory() {
-			public Object makeObject() throws SQLException {
-				return JDBCUtil.loadDecay(conn, modelId, 0);
+			public Object makeObject() throws SQLException, IOException {
+				return DataLoader.loadDecay(conn, modelId, 0);
 			}
 		};
 
@@ -163,14 +165,14 @@ public class JDBCUtilMemoryTest extends TestCase {
 		mtb.showMemoryUsage(decayFactory);
 		
 		ObjectFactory sourceReachCoefFactory = new ObjectFactory() {
-			public Object makeObject() throws SQLException {
-				return JDBCUtil.loadSourceReachCoef(conn, modelId, sourceIDs);
+			public Object makeObject() throws SQLException, IOException {
+				return DataLoader.loadSourceReachCoef(conn, modelId, sourceIDs);
 			}
 		};
 		
 		ObjectFactory sourceValuesFactory = new ObjectFactory() {
-			public Object makeObject() throws SQLException {
-				return JDBCUtil.loadSourceValues(conn, modelId, sourceIDs);
+			public Object makeObject() throws SQLException, IOException {
+				return DataLoader.loadSourceValues(conn, modelId, sourceIDs);
 			}
 		};
 		
@@ -183,8 +185,8 @@ public class JDBCUtilMemoryTest extends TestCase {
 		
 		
 		ObjectFactory fullModelDataSetFactory = new ObjectFactory() {
-			public Object makeObject() throws SQLException {
-				return JDBCUtil.loadFullModelDataSet(conn, modelId);
+			public Object makeObject() throws SQLException, IOException {
+				return DataLoader.loadFullModelDataSet(conn, modelId);
 			}
 		};
 		

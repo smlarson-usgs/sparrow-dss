@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.test;
 
 
 import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.sparrow.util.JDBCUtil;
+import gov.usgswim.sparrow.util.DataLoader;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;
@@ -15,7 +15,7 @@ public class ReadStreamAsIntegersTest extends ReadStreamAsDoubleTest {
 				.getResourceAsStream(
 						"/gov/usgswim/sparrow/test/sample/tab_delimit_sample_heading.txt");
 
-		DataTableWritable dt = TabDelimFileUtil.readAsInteger(fileStream, true, JDBCUtil.DO_NOT_INDEX);
+		DataTableWritable dt = TabDelimFileUtil.readAsInteger(fileStream, true, DataLoader.DO_NOT_INDEX);
 		runIDTest(dt);
 	}
 

@@ -27,6 +27,7 @@ public class PredictServiceRequest implements PipelineRequest{
 	private boolean isEcho;
 	private String xmlRequest;
 	private int rowLimit;
+	private boolean isUnzipped;
 
 
 	public enum DataSeries {
@@ -244,5 +245,13 @@ public class PredictServiceRequest implements PipelineRequest{
 	
 	public int getRowLimit() {
 		return rowLimit;
+	}
+	
+	public boolean isZipped() {
+		return !isUnzipped;
+	}
+	
+	public void setZip(boolean zip) {
+		isUnzipped = !zip;
 	}
 }

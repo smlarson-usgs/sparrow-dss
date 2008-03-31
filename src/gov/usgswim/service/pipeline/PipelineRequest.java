@@ -3,6 +3,7 @@ package gov.usgswim.service.pipeline;
 public interface PipelineRequest {
 	
 	public String getMimeType();
+	public boolean isZipped();
 	
 	public void setMimeType(String mimetype);
 	

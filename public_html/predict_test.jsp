@@ -37,6 +37,7 @@
 				<input type="checkbox" name="mimetype" value="tab">tab
 				<input type="checkbox" name="mimetype" value="excel">excel
 				<input type="checkbox" name="echo" value="true">echo
+				<input type="checkbox" name="unzip" value="yes" checked="checked">unzip
 			</fieldset>
 		</form>
 		
@@ -69,6 +70,7 @@
 				<input type="checkbox" name="mimetype" value="tab">tab
 				<input type="checkbox" name="mimetype" value="excel">excel
 				<input type="checkbox" name="echo" value="true">echo
+				<input type="checkbox" name="unzip" value="yes" checked="checked">unzip
 			</fieldset>
 		</form>
 		
@@ -101,6 +103,7 @@
 				<input type="checkbox" name="mimetype" value="tab">tab
 				<input type="checkbox" name="mimetype" value="excel">excel
 				<input type="checkbox" name="echo" value="true">echo
+				<input type="checkbox" name="unzip" value="yes" checked="checked">unzip
 			</fieldset>
 		</form>
 	

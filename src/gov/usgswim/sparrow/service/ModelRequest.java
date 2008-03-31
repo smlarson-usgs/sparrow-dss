@@ -12,6 +12,7 @@ public class ModelRequest implements PipelineRequest{
 	private String mimetype = "xml";
 	private boolean isEcho;
 	private String xmlRequest;
+	private boolean isUnzipped;
 
 	public ModelRequest() {
 	}
@@ -95,5 +96,13 @@ public class ModelRequest implements PipelineRequest{
 
 	public void setXMLRequest(String request) {
 		xmlRequest = request;		
+	}
+	
+	public boolean isZipped() {
+		return !isUnzipped;
+	}
+	
+	public void setZip(boolean zip) {
+		isUnzipped = !zip;
 	}
 }

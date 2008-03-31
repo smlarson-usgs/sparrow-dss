@@ -8,7 +8,6 @@ import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.util.DataLoader;
-import gov.usgswim.sparrow.util.JDBCUtil;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;
@@ -51,24 +50,24 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 		conn = null;
 	}
 
-	public void testReadSystemInfo() throws Exception {
-		DataTable jdbcData = JDBCUtil.loadSystemInfo(conn, 22);
-		DataTable dldata = DataLoader.loadSystemInfo(conn, 22);
-
-		DataTableCompare comp = new DataTableCompare(jdbcData, dldata);
-
-
-		for (int c=0; c<comp.getColumnCount(); c++) {
-			int r = comp.findMaxCompareRow(c);
-
-			System.out.println("*** max compare in column " + c + " is row " + r);
-			System.out.println("Expected: " + jdbcData.getValue(r, c) + " Actual: " + dldata.getValue(r, c));
-		}
-
-		assertEquals(0d, comp.findMaxCompareValue(), .000000000000001d);
-		//dumpComparison(jdbcData, dldata, 999999);
-
-	}
+//	public void testReadSystemInfo() throws Exception {
+//		DataTable jdbcData = JDBCUtil.loadSystemInfo(conn, 22);
+//		DataTable dldata = DataLoader.loadSystemInfo(conn, 22);
+//
+//		DataTableCompare comp = new DataTableCompare(jdbcData, dldata);
+//
+//
+//		for (int c=0; c<comp.getColumnCount(); c++) {
+//			int r = comp.findMaxCompareRow(c);
+//
+//			System.out.println("*** max compare in column " + c + " is row " + r);
+//			System.out.println("Expected: " + jdbcData.getValue(r, c) + " Actual: " + dldata.getValue(r, c));
+//		}
+//
+//		assertEquals(0d, comp.findMaxCompareValue(), .000000000000001d);
+//		//dumpComparison(jdbcData, dldata, 999999);
+//
+//	}
 
 	/**
 	 * @see DataLoader#loadMinimalPredictDataSet(Connection conn, int modelId)
@@ -177,7 +176,7 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 
 
 	/**
-	 * @see JDBCUtil#loadTopo(Connection,int)
+	 * @see DataLoader#loadTopo(Connection,int)
 	 */
 	public void testLoadTopo() throws Exception {
 		DataTable jdbcData = DataLoader.loadTopo(conn, 1);
@@ -190,7 +189,7 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 	}
 
 	/**
-	 * @see JDBCUtil#loadSourceIds(java.sql.Connection,int)
+	 * @see DataLoader#loadSourceIds(java.sql.Connection,int)
 	 */
 	public void testLoadSource(Connection conn, int modelId) throws Exception {
 		DataTable jdbcData = DataLoader.loadSourceIds(conn, 1);
@@ -205,7 +204,7 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 	}
 
 	/**
-	 * @see JDBCUtil#loadSourceReachCoef(Connection, int, int, Int2D)
+	 * @see DataLoader#loadSourceReachCoef(Connection, int, int, Int2D)
 	 */
 	public void testLoadSourceReachCoef() throws Exception {
 		DataTable sources = DataLoader.loadSourceIds(conn, 1);
@@ -221,7 +220,7 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 
 
 	/**
-	 * @see JDBCUtil#loadDecay(Connection, int, int)
+	 * @see DataLoader#loadDecay(Connection, int, int)
 	 */
 	public void testLoadDecay() throws Exception {
 		DataTable jdbcData = DataLoader.loadDecay(conn, 1, 0);
@@ -235,7 +234,7 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 	}
 
 	/**
-	 * @see JDBCUtil#loadSourceValues(Connection, int, Int2D)
+	 * @see DataLoader#loadSourceValues(Connection, int, Int2D)
 	 */
 	public void testLoadSourceValues() throws Exception {
 		DataTable sources = DataLoader.loadSourceIds(conn, 1);

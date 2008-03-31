@@ -261,10 +261,13 @@ public class PredictParser extends AbstractHttpRequestParser<PredictServiceReque
 		}
 
 		public PipelineRequest parseForPipeline(HttpServletRequest request)throws Exception {
-			PipelineRequest result = parse(request);
+			PredictServiceRequest result = parse(request);
 			result.setMimeType(request.getParameter("mimetype"));
 			result.setEcho(request.getParameter("echo"));
-			
+			String unzip = request.getParameter("unzip");
+			if (unzip != null && unzip.equals("yes")) {
+				result.setZip(false);
+			}
 			return result;
 		}
 	}

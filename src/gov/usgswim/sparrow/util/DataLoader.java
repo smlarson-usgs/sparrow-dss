@@ -37,6 +37,7 @@ public class DataLoader {
 
 
 	protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
+	public static int DO_NOT_INDEX = -1;
 
 	public DataLoader() {
 	}
@@ -183,7 +184,7 @@ public class DataLoader {
 	 * @throws SQLException
 	 */
 	private static Map<Integer, Integer> buildIntegerMap(Connection conn, String query) throws SQLException {
-		DataTable data = readAsInteger(conn, query, 1000);
+		DataTableWritable data = readAsInteger(conn, query, 1000);
 		int rows = data.getRowCount();
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>((int)(rows * 1.2), 1f);
 
@@ -218,7 +219,7 @@ public class DataLoader {
 	IOException {
 		String query = getQuery("SelectSystemData", modelId);
 
-		DataTableWritable data = readAsInteger(conn, query, 2000, JDBCUtil.DO_NOT_INDEX);
+		DataTableWritable data = readAsInteger(conn, query, 2000, DataLoader.DO_NOT_INDEX);
 		int[] ids = TemporaryHelper.getIntColumn(data, 0);
 		return TemporaryHelper.setIds(data, ids);
 //		return new Int2DImm(data.getIntData(), data.getHeadings(), 0, ids);
@@ -239,7 +240,7 @@ public class DataLoader {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static DataTable loadTopo(Connection conn, long modelId) throws SQLException,
+	public static DataTableWritable loadTopo(Connection conn, long modelId) throws SQLException,
 	IOException {
 		String query = getQuery("SelectTopoData", modelId);
 
@@ -263,7 +264,7 @@ public class DataLoader {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static DataTable loadSourceReachCoef(Connection conn, long modelId, int iteration, DataTable sources) throws SQLException,
+	public static DataTableWritable loadSourceReachCoef(Connection conn, long modelId, int iteration, DataTable sources) throws SQLException,
 	IOException {
 
 		if (iteration < 0) {
@@ -330,7 +331,7 @@ public class DataLoader {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static DataTable loadSourceReachCoef(Connection conn, long modelId, DataTable sources) throws SQLException,
+	public static DataTableWritable loadSourceReachCoef(Connection conn, long modelId, DataTable sources) throws SQLException,
 	IOException {
 
 		if (sources.getRowCount() == 0) {
@@ -348,7 +349,11 @@ public class DataLoader {
 		int sourceCount = sources.getRowCount();
 
 		DataTableWritable sourceReachCoef = new SimpleDataTableWritable();
-
+		//new double[reachCount * itCount][sourceCount]);
+		// TODO [eric] The query needs to be revised to not retrieve all the
+		// iterations at once otherwise it is likely to cause an out-of-memory
+		// exception. In previous experience, 62382 reaches * 51 iterations * 5
+		// sources * 8 bytes per double primitive ~128M!
 
 		for (int srcIndex=0; srcIndex<sourceCount; srcIndex++) {
 
@@ -403,7 +408,7 @@ public class DataLoader {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static DataTable loadDecay(Connection conn, long modelId, int iteration) throws SQLException,
+	public static DataTableWritable loadDecay(Connection conn, long modelId, int iteration) throws SQLException,
 	IOException {
 
 		String query = getQuery("SelectDecayCoef", new Object[] {
@@ -430,7 +435,7 @@ public class DataLoader {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static DataTable loadSourceValues(Connection conn, long modelId, DataTable sources) throws SQLException,
+	public static DataTableWritable loadSourceValues(Connection conn, long modelId, DataTable sources) throws SQLException,
 	IOException {
 
 		if (sources.getRowCount() == 0) {
@@ -485,7 +490,7 @@ public class DataLoader {
 			try {
 
 				rs = st.executeQuery(query);
-				sourceValue.addColumn(new StandardNumberColumnDataWritable<Double>());
+				sourceValue.addColumn(new StandardNumberColumnDataWritable<Double>(headings[srcIndex], null));
 				loadColumn(rs, sourceValue, 0, srcIndex);
 
 			} finally {
@@ -515,7 +520,7 @@ public class DataLoader {
 	 * @return	An Int2D object contains the list of source_id's in a single column
 	 * @throws SQLException
 	 */
-	public static DataTable loadSourceIds(Connection conn, long modelId) throws SQLException,
+	public static DataTableWritable loadSourceIds(Connection conn, long modelId) throws SQLException,
 	IOException {
 
 		String query = getQuery("SelectSourceIds", modelId);
@@ -528,7 +533,7 @@ public class DataLoader {
 		try {
 
 			rs = st.executeQuery(query);
-			return readAsInteger(rs, 0);
+			return readAsInteger(rs, DO_NOT_INDEX);
 
 		} finally {
 			if (rs != null) {
@@ -576,8 +581,8 @@ public class DataLoader {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static DataTable readAsInteger(Connection conn, String query, int fetchSize) throws SQLException {
-		return readAsInteger(conn, query, fetchSize, JDBCUtil.DO_NOT_INDEX);
+	public static DataTableWritable readAsInteger(Connection conn, String query, int fetchSize) throws SQLException {
+		return readAsInteger(conn, query, fetchSize, DO_NOT_INDEX);
 	}
 
 	/**
@@ -620,8 +625,8 @@ public class DataLoader {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static DataTable readAsInteger(ResultSet source) throws SQLException {
-		return readAsInteger(source, JDBCUtil.DO_NOT_INDEX);
+	public static DataTableWritable readAsInteger(ResultSet source) throws SQLException {
+		return readAsInteger(source, DO_NOT_INDEX);
 	}
 
 	/**
@@ -662,9 +667,12 @@ public class DataLoader {
 			data[i] = (int[]) list.get(i);
 		}
 
-		DataTableWritable data2D = new SimpleDataTableWritable(data, headings);
+		DataTableWritable result = new SimpleDataTableWritable(data, headings);
+		if (indexCol > DO_NOT_INDEX) {
+			result.buildIndex(indexCol);
+		}
 
-		return data2D;
+		return result;
 	}
 
 
@@ -679,7 +687,7 @@ public class DataLoader {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static DataTable readAsDouble(Connection conn, String query, int fetchSize) throws SQLException {
+	public static DataTableWritable readAsDouble(Connection conn, String query, int fetchSize) throws SQLException {
 		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		st.setFetchSize(fetchSize);
 
@@ -707,7 +715,7 @@ public class DataLoader {
 	 * @return
 	 * @throws SQLException
 	 */
-	public static DataTable readAsDouble(ResultSet source) throws SQLException {
+	public static DataTableWritable readAsDouble(ResultSet source) throws SQLException {
 
 		ArrayList<double[]> list = new ArrayList<double[]>(500);
 		String[] headings = null;
@@ -735,9 +743,9 @@ public class DataLoader {
 			data[i] = (double[]) list.get(i);
 		}
 
-		DataTable data2D = new SimpleDataTableWritable(data, headings);
+		DataTableWritable result = new SimpleDataTableWritable(data, headings);
 
-		return data2D;
+		return result;
 	}
 
 	private static String[] readHeadings(ResultSetMetaData meta) throws SQLException {
