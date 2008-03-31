@@ -46,7 +46,7 @@
          </dataTypeUsage>
          <default/>
          <name>REACH_GEOM</name>
-         <notNull>true</notNull>
+         <notNull>false</notNull>
          <properties/>
       </Item>
       <Item>
@@ -61,7 +61,7 @@
          </dataTypeUsage>
          <default/>
          <name>CATCH_GEOM</name>
-         <notNull>true</notNull>
+         <notNull>false</notNull>
          <properties/>
       </Item>
       <Item>
@@ -75,8 +75,8 @@
             <dataTypeID idref="1"/>
          </dataTypeUsage>
          <default/>
-         <name>CUM_CATCH_GEOM</name>
-         <notNull>true</notNull>
+         <name>WATERSHED_GEOM</name>
+         <notNull>false</notNull>
          <properties/>
       </Item>
    </columns>

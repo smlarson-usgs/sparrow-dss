@@ -231,7 +231,7 @@
             <dataTypeID idref="2"/>
          </dataTypeUsage>
          <default/>
-         <name>CUM_CATCH_GEOM</name>
+         <name>WATERSHED_GEOM</name>
          <notNull>false</notNull>
          <properties/>
       </Item>
