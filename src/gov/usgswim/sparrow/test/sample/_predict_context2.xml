@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<prediction-context
+  xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	model-id="22" echo="full">
+	
+		<treatment-groups predefined="957648"/>
+
+		<analysis context-id="1093474"/>
+		
+		<!--
+		These two elements are optional:
+		<terminus-reaches/>
+		<area-of-interest/>
+		-->
+
+</prediction-context>
