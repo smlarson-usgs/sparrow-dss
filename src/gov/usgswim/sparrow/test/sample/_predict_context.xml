@@ -24,10 +24,10 @@
 				</notes>
 				<treatment src="5" coef=".9"/>
 				<logical-set>
-					<criteria name="huc8">01746286</criteria>
+					<criteria attrib="huc8">01746286</criteria>
 				</logical-set>
 				<logical-set>
-					<criteria name="huc8">01746289</criteria>
+					<criteria attrib="huc8">01746289</criteria>
 				</logical-set>
 			</group>
 			
@@ -40,10 +40,10 @@
 				</notes>
 				<treatment src="1" coef="1.05"/>
 				<logical-set>
-					<criteria name="upstream-of">8346289</criteria>
+					<criteria attrib="reach" relation="upstream">8346289</criteria>
 				</logical-set>
 				<logical-set>
-					<criteria name="upstream-of">9374562</criteria>
+					<criteria attrib="reach" relation="upstream">9374562</criteria>
 				</logical-set>
 			</group>
 			
@@ -52,7 +52,7 @@
 				<notes>The Urban source for Illinois is predicted is to increase 20%.</notes>
 				<treatment src="2" coef="1.2"/>
 				<logical-set>
-					<criteria name="state-code">il</criteria>
+					<criteria attrib="state-code">il</criteria>
 				</logical-set>
 			</group>
 			
