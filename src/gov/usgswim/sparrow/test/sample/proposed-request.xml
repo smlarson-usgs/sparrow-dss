@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<sparrow-prediction-request
-  xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+<sparrow-report-request
+  xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	
-	<!--
+	<!-- run request
 	We need to be able to store the predict requests in a chache w/ a transact ID
 	so they can be refered to later.  Its a seperate issue to cache an entire
 	service request, which contains much more info (when we we use this?).
@@ -17,23 +17,13 @@
 	refer to the a predict request trans ID.
 	
 	-->
-	<predict model-id="22">
-		<comparison type="perc_change">
-				<!--
-				place adjustments directly under predict will result in no comparison.
-				Other types of comparisons might include (but are not implemented)
-				subtract-from-nominal, subtract-from-adjusted, etc..  All assume chg from
-				nominal, however, this structure allows for the comparison of multiple
-				adjusted predictions by adding another source-adjustments element.
-				-->
-			<source-adjustments>
-				<gross-src src="1" coef=".5"/>
-				<gross-src src="4" coef="2"/>
-			</source-adjustments>
-		</comparison>
-	</predict>
+	<predict-context context-id="1231241243424"/>
+
+	
+
 	
 	<!--
+	Really only for export or ID
 	response-content gives the ability to controls what rows and columns are returned.
 	result-filter removes columns based on a criteria.
 	data-series allows only a subset of data to be returned, or allows additional
@@ -58,8 +48,14 @@
 		<data-series include-nom="true">
 			<series>incremental</series>
 			<series>total</series>
-			
 		</data-series>
+		
+		<binning>
+			<!--
+			A request to return binning data.  Can be combined w/ data-series.
+			-->
+			
+		</binning>
 	</response-content>
 	
 	<!--
@@ -73,4 +69,4 @@
 		</options>
 	</response-format>
 
-</sparrow-prediction-request>
+</sparrow-report-request>
