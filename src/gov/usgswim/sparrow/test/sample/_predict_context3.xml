@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<prediction-context
+  xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	model-id="22" context-id="389392" echo="full">
+
+	<!--
+	This request echos back the fully expanded prediction-context.
+	
+	The use would be to allow the user to download and locally store the prediction
+	context so that they can continue work at a later point, or hand-modify the
+	prediction-context to handle cases not addressed by the GUI.
+	
+	__echo abbribute values__
+	full:  Fully expand the components of the prediction-context so that its full
+	contents are in the returned document.  The 'echo' attribute should be removed
+	from the response document.
+	exact:  Echo back the exact document as received.  This is intended as a
+	debug option.
+	
+	
+	-->
+
+</prediction-context>

@@ -2,16 +2,25 @@
 <prediction-context
   xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	model-id="22" echo="full">
+	model-id="22">
 	
-		<treatment-groups predefined="957648"/>
-
-		<analysis context-id="1093474"/>
-		
-		<!--
-		These two elements are optional:
-		<terminus-reaches/>
-		<area-of-interest/>
-		-->
+	<!--
+	A prediction context may be built up from pieces that have previously defined.
+	
+	* Those refered to by a 'predefined' id are pulled from the database where they
+	are permanently stored.
+	
+	* Those refered to by 'context-id' were defined by another request and are
+	being stored in a cache on the server.
+	-->
+	
+	<treatment-groups predefined="957648"/>
+	<analysis context-id="1093474"/>
+	
+	<!--
+	These two elements are optional:
+	<terminus-reaches/>
+	<area-of-interest/>
+	-->
 
 </prediction-context>
