@@ -11,12 +11,15 @@
 	context so that they can continue work at a later point, or hand-modify the
 	prediction-context to handle cases not addressed by the GUI.
 	
+	This option would also be available via http parameters.
+	
 	__echo abbribute values__
 	full:  Fully expand the components of the prediction-context so that its full
 	contents are in the returned document.  The 'echo' attribute should be removed
 	from the response document.
 	exact:  Echo back the exact document as received.  This is intended as a
 	debug option.
+	none:  Default - do not echo.
 	
 	
 	-->

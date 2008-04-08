@@ -38,28 +38,41 @@
 		</result-filter>
 		
 		<!--
-		How can I indicate that one of the returned series is the one to map, w/o
-		odd restrictions that apply only to map requests?
+
+		Its assumed that the column in the 'analysis' section is always included,
+		as well as the basic columns.  Additional columns can be requested here
+		as 'series'.
 		
-		It would be nice to just include the series to be mappped in the MV request
-		seperately, since here we allow multiple or ALL series to be returned.  But
-		if we allow it in the MV request, what is provided here might conflict.
+		include-nom:	Includes the nominal values when comparisons are done (default false)
+		include:	Include reported data (default true).
+							Allows data to be turned off for a binning-only request.
+		
 		-->
-		<data-series include-nom="true">
+		<data-series include="true" include-nom="true">
 			<series>incremental</series>
 			<series>total</series>
 		</data-series>
 		
-		<binning>
 			<!--
-			A request to return binning data.  Can be combined w/ data-series.
-			-->
+			A request to return binning data based on the analysis column.
+			Can be combined w/ data-series.  Data is returned in the metadata section
+			of the response document.
 			
-		</binning>
+			count:	The number of bins created
+			type:		The type of bins created:
+							equal-count | equal-range | otheres?
+			min-value:	Exclude values lower than this value when creating the bins
+			max-value:	Exclude values higher than this value when creating the bins
+			
+			-->
+		<binning count="5" type="equal-count" min-value="0" max-value="100000" />
+
+
 	</response-content>
 	
 	<!--
 	Allows precise formatting of the returned content.
+	Default is a raw xml document.
 	-->
 	<response-format name="pre-configured format name" compress="zip">
 		<mime-type>application/msword</mime-type>

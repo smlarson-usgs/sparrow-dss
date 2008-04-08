@@ -12,7 +12,7 @@
 		nominal, however, this structure allows for the comparison of multiple
 		adjusted predictions by adding another source-adjustments element.
 		-->
-		<treatment-groups conflicts="accumulate | supersede" predefined="some id" context-id="">
+		<treatment-groups conflicts="accumulate | supersede">
 			<group enabled="true" name="Northern Indiana Plants">
 				<desc>Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project</desc>
 				<notes>
@@ -109,7 +109,7 @@
 		Quartiles would need to be here, since there is no way to get that data,
 		unlesss we report the quartiles?  Or is that a response option??
 		-->
-		<analysis series="incremental" predefined="some id" context-id="">
+		<analysis source="1" series="incremental">
 			<values/> | <compare type="percent | absolute"/> <!-- Applies to all series -->
 			<rank type="dense" /> <!-- Applies to specified series -->
 			
@@ -134,15 +134,15 @@
 			
 		</analysis>
 		
-		<terminus-reaches predefined="some id" context-id="">
+		<terminal-reaches>
 			<reach>2345642</reach>
 			<reach>3425688</reach>
 			<reach>5235424</reach>
 			or
 			<logical-set/>
-		</terminus-reaches>
+		</terminal-reaches>
 		
-		<area-of-interest predefined="some id" context-id="">
+		<area-of-interest>
 	
 			<!--
 			Political boundry
