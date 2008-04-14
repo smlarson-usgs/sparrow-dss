@@ -2,6 +2,7 @@ package gov.usgswim.service.pipeline;
 
 import gov.usgs.webservices.framework.formatter.DataFlatteningFormatter;
 import gov.usgs.webservices.framework.formatter.IFormatter;
+import gov.usgs.webservices.framework.formatter.JSONFormatter;
 import gov.usgs.webservices.framework.formatter.SparrowFlatteningFormatter;
 import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
 import gov.usgs.webservices.framework.formatter.ZipFormatter;
@@ -59,6 +60,9 @@ public class SimplePipeline implements Pipeline {
 					}
 					
 					break;
+				case JSON:
+					formatter = new JSONFormatter();
+					break;
 				case XML:
 					// XML is the default case
 				default:
@@ -75,6 +79,9 @@ public class SimplePipeline implements Pipeline {
 					df.setRowElementName("source");
 					df.setKeepElderInfo(true);
 					formatter = (o.isZipped())? new ZipFormatter(df): (IFormatter) df;
+					break;
+				case JSON:
+					formatter = new JSONFormatter();
 					break;
 				case XML:
 					// XML is the default case

@@ -33,6 +33,7 @@ public abstract class AbstractFormatter implements IFormatter {
 			case CSV:
 			case TAB:
 			case HTML:
+			case JSON:
 			case XML:
 				response.addHeader(
 				        "Content-Disposition","attachment; filename=" + fileName + "." + outputType.getFileSuffix() );

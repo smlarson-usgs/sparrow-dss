@@ -28,6 +28,7 @@
 				<input type="checkbox" name="mimetype" value="csv">csv
 				<input type="checkbox" name="mimetype" value="tab">tab
 				<input type="checkbox" name="mimetype" value="excel">excel
+				<input type="checkbox" name="mimetype" value="json">json
 				<input type="checkbox" name="echo" value="true">echo
 				<input type="checkbox" name="unzip" value="yes" checked="checked">unzip
 			</fieldset>
@@ -52,6 +53,7 @@
 				<input type="checkbox" name="mimetype" value="csv">csv
 				<input type="checkbox" name="mimetype" value="tab">tab
 				<input type="checkbox" name="mimetype" value="excel">excel
+				<input type="checkbox" name="mimetype" value="json">json
 				<input type="checkbox" name="echo" value="true">echo
 				<input type="checkbox" name="unzip" value="yes" checked="checked">unzip
 			</fieldset>
