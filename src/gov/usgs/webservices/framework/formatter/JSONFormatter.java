@@ -23,8 +23,9 @@ import javax.xml.stream.XMLStreamReader;
  * 
  */
 public class JSONFormatter extends AbstractFormatter implements IFormatter {
-
-	protected Set<String> repeatedTags = new HashSet<String>();
+	public static final String ANY_PARENT="*";
+	protected Set<String> repeatedTags = new HashSet<String>(); // parent-child combos
+	protected Set<String> wildTags  = new HashSet<String>(); // child combos only
 	
 	// =============
 	// INNER CLASSES
@@ -32,7 +33,6 @@ public class JSONFormatter extends AbstractFormatter implements IFormatter {
 	public class XMLElement{
 		String tagName;
 		String parentName;
-		String key;
 		boolean isArray;
 		boolean isArrayMemberOpen; // true -> false when corresponding end tag encountered
 		boolean hasChildOrAttribs;
@@ -45,8 +45,7 @@ public class JSONFormatter extends AbstractFormatter implements IFormatter {
 		public XMLElement(String parent, String tagName) {
 			this.tagName = tagName;
 			this.parentName = parent;
-			this.key = key(parent, tagName);
-			isArray = repeatedTags.contains(this.key);
+			isArray = isRepeated(parentName, tagName);
 			isArrayMemberOpen = isArray;
 		}
 		
@@ -65,7 +64,6 @@ public class JSONFormatter extends AbstractFormatter implements IFormatter {
 	public class ParseState{
 		Stack<XMLElement> parsed = new Stack<XMLElement>();
 		boolean isDocumentStarted;
-		boolean hasContent;
 		{	// initializer
 			parsed.add(new XMLElement("", ""));
 		}
@@ -214,10 +212,10 @@ public class JSONFormatter extends AbstractFormatter implements IFormatter {
 	}
 	
 	public static final Pattern quotesEscape= Pattern.compile("\"");
-	public static final Pattern forwardSlashEscape= Pattern.compile("\\");
+	public static final Pattern forwardSlashEscape= Pattern.compile("\\\\");
 	public static String escapeForJSString(String value) {
-		String result = forwardSlashEscape.matcher(value).replaceAll("\\\\");
-		result = quotesEscape.matcher(value).replaceAll("\\\"");
+		String result = forwardSlashEscape.matcher(value).replaceAll("\\\\\\\\");
+		result = quotesEscape.matcher(result).replaceAll("\\\\\"");
 		return result;
 	}
 
@@ -227,16 +225,26 @@ public class JSONFormatter extends AbstractFormatter implements IFormatter {
 	/**
 	 * Tags which may be repeated must be identified to the JSONFormatter so
 	 * that it knows to serialize it as an array object rather than a name-value
-	 * hash entry.
+	 * hash entry. A null tagName or ANY_PARENT="*" may be passed in to indicate
+	 * irrelevance of parent
 	 * 
-	 * @param tagName
-	 * @param tagParent
-	 *            [optional]
+	 * @param tagParent [optional]
+	 * @param tagName 
 	 */
-	public void identifyRepeatedTagElement(String tagName, String tagParent) {
+	public void identifyRepeatedTagElement(String tagParent, String tagName) {
 		assert(tagName != null): "tagName is required";
-		tagParent = (tagParent == null)? "": tagParent;
-		repeatedTags.add(key(tagParent, tagName));
+		tagParent = (tagParent == null)? ANY_PARENT: tagParent;
+		if (tagParent.equals(ANY_PARENT)) {
+			wildTags.add(tagName);
+		} else {
+			repeatedTags.add(key(tagParent, tagName));
+		}
+
+	}
+	
+	public boolean isRepeated(String parentName, String tagName) {
+		boolean isWild = wildTags.contains(tagName);
+		return (isWild)? true: repeatedTags.contains(key(parentName, tagName));
 	}
 
 	@Override
