@@ -79,58 +79,201 @@
 		How would binning be handled?  handle here (would apply to exports) or in mapping?
 		(#) numbers refer to Gregs email in SPDSS-72
 		
-		- - Non-Source Specific - -
-		total (1)
-		incremental	(2)
-		total-no-decay	(3)
-		total-delivered-fraction	(4)
-		total-decay	(5)
-		incremental-yield	(6) Handled by weighting?
-		concentration	(8)
-		incremental-delivered	(25)
-	
-		- - Source Specific - -
-		source-n-total	(1)
-		source-n-incremental	(2)
-		source-n-no-decay	(3)
-		source-n-incremental-yield	(7)
-		source-n-incremental-share (9)
-		source-n-incremental-delivered	(25)
-	
-	
-		- - Categorical - -
-		primary-source-incremental
-		primary-source-total
+		Numerical / Categorical
+		Quantitative / Qualitative
+		Continuous / Discrete
 		
-		- - Other From Baltimore Trip - -
+		- - Quantitative - -
+		total* (1)
+		incremental*	(2)
+		total-no-decay*	(3)
+		total-delivered-fraction*	(4)
+		total-decay	(5)
+		incremental-yield*	(6/7)
+		incremental-delivered*	(25)
+		concentration*	(8)
 		land-to-water-coef
-		(other model values)
+		instream-decay-coef
+		incremental-share** (9)
+		source-value**
+		
+		total-delivered-yield* (not listed)
+		incremental-delivered-yield* (not listed)
+		
+		- - Qualitative - -
+		primary-source-incremental (handled by max-source)
+		primary-source-total (handled by max-source)
+		
+		
+		* Available by source
+		** Only available by source
+		
+		
+	
+
 		
 		Quartiles would need to be here, since there is no way to get that data,
 		unlesss we report the quartiles?  Or is that a response option??
+		
+		Does annalysis happen for all related columns?  Yes.
 		-->
-		<analysis source="1" series="incremental">
-			<values/> | <compare type="percent | absolute"/> <!-- Applies to all series -->
-			<rank type="dense" /> <!-- Applies to specified series -->
+		<analysis>
+		
+			<!-- similar to a SQL Select clause -->
+			<select>
+			
+				<!--
+				- - Possible Values - -
+				total*
+				incremental*
+				total-no-decay*+
+				total-delivered*! (not included in Greg's email)
+				total-delivered-fraction*!
+				total-decay+
+				incremental-delivered*!
+				land-to-water-coef
+				instream-decay-coef
+
+				* Available by source
+				** Only available by source
+				+ Optional column(s) only calculated when requested
+				! Requires 2nd pass network 'climbing' to calculate
+				-->
+				<data-series source="1" per="area">incremental</data-series>
+				
+				
+				<!--
+				Required if group-by is specified.  Applies an aggregate function to the
+				data-series specified to return a single calculated value for each group.
+				An aggregate function (as defined here) is a function that can be calculated
+				solely based on the values within the group.  Thus, rankings are not
+				supported as an aggregate function b/c they cannot be calculated from the
+				values within the group (see analytic-function).
+				
+				The 'per' attribute does the same aggregate function on a physical
+				property and divides the aggregated value by the aggregated 'per' value.
+				
+
+				
+				- - Possible Values - -
+				sum
+				avg
+				max
+				min
+				stddev
+				
+				- - Examples - -
+				1.	data-series:  incremental
+						group-by:  HUC8
+						agg-function:  sum
+						agg-function[per]:  area
+				
+				Within each HUC8, sum the incremental value for each reach and divide by
+				the sum the areas.  This would generate an incremental yeild value for the
+				entire HUC8.  One row is returned per	HUC8 and the row id is the HUC8 ID.
+				
+				2.	data-series:  total
+						group-by: HUC8
+						agg-function: max
+				Within each HUC8, find the maximum total value.  One row is returned per
+				HUC8 and the row id is the HUC8 ID.  This would be a good approximation
+				of the HUC8 total value.
+
+				-->
+				<agg-function per="area">avg</agg-function> <!-- rank would be rank of the group within the whole -->
+				
+				<!--
+				The analytic function is applied after grouping and the aggregate function
+				takes plus, thus, one 'row' for the analytic function is the already
+				aggregated results from the aggregate function.  If there is no	group-by,
+				each reach is considered its own group.  
+				
+				The analytic function can compare the rows (ranking) within the entire
+				returned set, or it can make the comparison based on subsets of the
+				entire result, such as a HUC - this is done using the partitioning
+				attribute.
+				
+				The max-source function is categorical and compares the individual values
+				calculated up to this point and creates a column containing the id of
+				the maximum source (remember, data series and aggregate functions
+				are applied to all sources, so all source values are available and have
+				had the same caluculation applied to them).  Partitioning cannot be
+				applied to max-source.
+				
+				The source-share function calculates the fraction of each calculated
+				source value to the total value.  The data column is the source identified
+				in the data-series 'source' attribute, which must be present (err if not).
+				
+				
+				- - Values - -
+				rank-desc
+				rank-asc
+				dense-rank-desc
+				dense-rank-asc
+				max-source	(id of the max source value for the series)
+				source-share (share of the source compared to the total value)
+				...and other statistical functions which return a result for one value
+				within a group.
+				
+				
+	
+				Examples:
+				1.
+				data-series: incremental (defined above)
+				group-by: HUC8 (return one row per HUC8)
+				agg-function: avg
+				analytic-function: rank-desc
+				window: HUC6 (calculate w/in the context of each HUC6)
+				
+				The incremental value is calculated for each reach and is averaged at
+				the HUC8 level.  That average value is then ranked within each HUC6, with
+				the highest value give the rank '1'.
+				Thus, within each HUC6, HUC8's will be given values 1-n.
+				
+				2.
+				data-series: incremental (defined above)
+				group-by: -not defined- (return one row per reach)
+				agg-function: -not defined-
+				analytic-function: rank-desc
+				window: HUC6 (calculate w/in the context of each HUC6)
+				
+				The incremental value is calculated for each reach.  That value is then
+				ranked within each HUC6, with the highest value give the rank '1'.
+				Thus, within each HUC6, each reach will be given values 1-n.
+				
+				3.
+				data-series: incremental (defined above)
+				group-by: HUC8 (return one row per HUC8)
+				agg-function: sum
+				analytic-function: max
+				partition: HUC6 (calculate w/in the context of each HUC6)
+				
+				The incremental value is calculated for each reach and is averaged at
+				the HUC8 level.  That average value is then ranked within each HUC6, with
+				the highest value give the rank '1'.
+				Thus, within each HUC6, HUC8's will be given values 1-n.
+	
+				-->
+				<analytic-function partition="HUC6">rank-desc</analytic-function>
+			
+				<nominal_comparison type="percent | absolute"/>
+			</select>
+
+			
+			<!--	Restrict results considered.  Similar to WHERE clause.	-->
+			<limit-to>contributors | terminals | area-of-interest</limit-to>
 			
 			<!--
-			Aggregating also changes the ID numbers.
-			Are the serieses smart enough to know the possible Agg basis?
-			Terminal Reaches as an agg.
+			Similar to the SQL GROUP BY clause.  Whenever group-by is specified, one
+			row per group is returned rathen then one row per reach.  If group-by is
+			specified, an aggregate-function must be provided.
 			
-			- - Aggregate types - -
-			sum
-			avg
-			max
-			min
-			stddev
-			
+			Possible Values:
+			HUC8, HUC6, HUC4, HUC2
+			state, county
+			terminals (what happens at splits such as near the end of the mississippi?)
 			-->
-			<weighting>catch-area | watershed-area | flow | count</weighting>
-			<aggregate type="avg">HUC8</aggregate><!-- additive or averaged (if avg'ed it would have to be yeild based) -->
-			
-			<!--	Restrict results considered.  Similar to HAVING or WHERE?	-->
-			<limit-to>contributors | terminals</limit-to>
+			<group-by>HUC8</group-by>
 			
 		</analysis>
 		

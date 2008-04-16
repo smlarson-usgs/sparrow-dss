@@ -2,26 +2,41 @@
 <prediction-context
   xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	model-id="22" context-id="389392" echo="full">
-
+	model-id="22">
+	
 	<!--
-	This request echos back the fully expanded prediction-context.
+	A prediction context may be built up from pieces that have previously defined.
 	
-	The use would be to allow the user to download and locally store the prediction
-	context so that they can continue work at a later point, or hand-modify the
-	prediction-context to handle cases not addressed by the GUI.
+	* Those refered to by a 'predefined' id are pulled from the database where they
+	are permanently stored.
 	
-	This option would also be available via http parameters.
+	* Those refered to by 'context-id' were defined by another request and are
+	being stored in a cache on the server.
 	
-	__echo abbribute values__
-	full:  Fully expand the components of the prediction-context so that its full
-	contents are in the returned document.  The 'echo' attribute should be removed
-	from the response document.
-	exact:  Echo back the exact document as received.  This is intended as a
-	debug option.
-	none:  Default - do not echo.
-	
-	
+	* analysis may be refered to by named analysis types.
 	-->
+	
+	<treatment-groups predefined="957648"/>
+	
+	<!--
+	required element
+	name refers to a built-in analysis type.  An optional source is allowed to
+	specify that the analysis is applied to a specific source.  It may be required
+	for some types of anaylysis and not allowed for others.
+	-->
+	<analysis name="incremental-yield" source="1"/>
+	
+	<!--
+	optional element
+	context-id refers to a set of terminal reaches previously stored (not permanently stored)
+	-->
+	<terminal-reaches context-id="1093474" />
+	
+	<!--
+	optional element
+	predefined refers to a set of terminal reaches permanently stored.
+	-->
+	<area-of-interest predefined="15642"/>
+
 
 </prediction-context>

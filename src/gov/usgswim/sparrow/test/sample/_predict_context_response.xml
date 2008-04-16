@@ -22,7 +22,8 @@
 	model specific, so it seems like this document should continue to contain
 	the model-id (at top) to reflect that.
 	-->
-
+	<row-ids>reach | HUC8 | HUC6 | HUC4 | HUC2 | state | county</row-ids>
+	
 	<treatment-groups context-id="982398"/>
 	<analysis context-id="1093474"/>
 	<terminal-reaches context-id="127830"/>
