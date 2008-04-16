@@ -94,9 +94,9 @@
 	<response-format name="pre-configured format name" compress="zip">
 		<mime-type>application/msword</mime-type>
 		<template>beige</template>
-		<options>
-			<option name="gov.usgswim.WordGenerator.marin-top">1.5in</option>
-		</options>
+		<params>
+			<param name="gov.usgswim.WordGenerator.marin-top">1.5in</param>
+		</params>
 	</response-format>
 
 </sparrow-report-request>

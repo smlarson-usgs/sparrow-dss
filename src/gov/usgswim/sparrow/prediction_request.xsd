@@ -56,8 +56,26 @@
    <xsd:element name="response-options" minOccurs="0">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="format" minOccurs="0">
-							<xsd:complexType/>
+						<xsd:element name="response-format" minOccurs="0">
+							<xsd:complexType>
+        <xsd:sequence>
+         <xsd:element name="mime-type"/>
+         <xsd:element name="template" maxOccurs="1" minOccurs="0"/>
+         <xsd:element name="params" minOccurs="0">
+          <xsd:complexType>
+           <xsd:sequence>
+            <xsd:element name="param" maxOccurs="unbounded" minOccurs="0">
+             <xsd:complexType>
+              <xsd:attribute name="name"/>
+             </xsd:complexType>
+            </xsd:element>
+           </xsd:sequence>
+          </xsd:complexType>
+         </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="name"/>
+        <xsd:attribute name="compress"/>
+       </xsd:complexType>
 						</xsd:element>
       <xsd:element name="result-filter" minOccurs="0">
        <xsd:complexType>
