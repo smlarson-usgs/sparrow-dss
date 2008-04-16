@@ -39,19 +39,36 @@
 		
 		<!--
 
-		Its assumed that the column in the 'analysis' section is always included,
+		Its assumed that the result column from the 'analysis' section is included.
+		
 		as well as the basic columns.  Additional columns can be requested here
 		as 'series'.
 		
-		include-nom:	Includes the nominal values when comparisons are done (default false)
-		include:	Include reported data (default true).
+		include-data:  True to return the result column from the 'analysis' section.
+				Setting false allows data to be turned off for a binning-only request.
+				If set false, all other attributes are ignored.
+		include-related:	Include the columns related to the result column.  For instance,
+				if incremental yield for a specific source is requested, incrementtal
+				yield for all sources as well as total yield is returned.  In cases of
+				categorical (ranking and max sources), the related data is the data the
+				categorical operation was done one.  (default true).
 							Allows data to be turned off for a binning-only request.
+		include-nom:	Includes the nominal values when comparisons are done (default false)
 		
 		-->
-		<data-series include="true" include-nom="true">
+		<columns include-data="true" include-related="true" include-nom="true">
+			<!--
+			Other standard series of data can be requested, even if not requested.
+			The values below are the standard ones.
+			-->
 			<series>incremental</series>
 			<series>total</series>
-		</data-series>
+			
+			<!-- Others that could be easily added.  Might not be available for
+			aggregated data. -->
+			<series>attributes</series>	<!-- Physical attributes -->
+			<series>model-attributes</series>	<!-- Model related data -->
+		</columns>
 		
 			<!--
 			A request to return binning data based on the analysis column.
