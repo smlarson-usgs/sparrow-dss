@@ -208,7 +208,7 @@ public class DataLoader {
 	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number
 	 * </ol>
 	 *
-	 * TODO:  WE sort by HYDSEQ HERE - THAT IS REALLY BAD, SINCE THERE ARE DUPLICATES.
+	 * Sort by HYDSEQ then IDENTIFIER, since in some cases HYDSEQ is not unique.
 	 *
 	 * @param conn A JDBC Connection to run the query on
 	 * @param modelId The ID of the Sparrow model
@@ -233,7 +233,10 @@ public class DataLoader {
 	 * <li>FNODE - The from node
 	 * <li>TNODE - The to node
 	 * <li>IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
+	 * <li>HYDSEQ - Hydrologic sequence order
 	 * </ol>
+	 * 
+	 * TODO:  Is HYDSEQ needed here since it duplicates system info?
 	 * 
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
@@ -390,16 +393,17 @@ public class DataLoader {
 	/**
 	 * Returns a Double2D table of all decay data for for a single model.
 	 * 
-	 * <h4>Data Columns, sorted by HYDSEQ</h4>
+	 * <h4>Data Columns, sorted by HYDSEQ then IDENTIFIER</h4>
+	 * <p><i>Note:  These are actually delivery terms - that is 1/decay</i></p>
+	 * 
 	 * <p>One row per reach (i = reach index)</p>
 	 * <ol>
-	 * <li>[i][0] == the instream decay at reach i.<br>
+	 * <li>[0] == the instream decay at reach i.<br>
 	 *   This decay is assumed to be at mid-reach and already computed as such.
 	 *   That is, it would normally be the sqr root of the instream decay, and
 	 *   it is assumed that this value already has the square root taken.
-	 * <li>src[i][1] == the upstream decay at reach i.<br>
+	 * <li>[1] == the upstream decay at reach i.<br>
 	 *   This decay is applied to the load coming from the upstream node.
-	 * <li>Additional columns ignored
 	 * </ol>
 	 * 
 	 * @param conn	A JDBC Connection to run the query on
@@ -510,10 +514,9 @@ public class DataLoader {
 	 * Returns a single column Int2D table of all source IDs for a single model.
 	 * <h4>Data Columns (sorted by SORT_ORDER)</h4>
 	 * <ol>
+	 * <li>IDENTIFIER - The Model specific ID for the source (usually numbered starting w/ 1)
 	 * <li>SOURCE_ID - The DB ID for the source
 	 * </ol>
-	 * 
-	 * The returned data is indexed on the SOURCE_ID column.
 	 * 
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
