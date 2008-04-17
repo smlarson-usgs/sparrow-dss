@@ -50,116 +50,58 @@ public class ServiceServlet extends HttpServlet {
 	 */
 	public static final String XML_PARAM_NAME = "xml-param-name";
 	
+	//Default value of XML_PARAM_NAME
+	public static final String DEFAULT_XML_PARAM_NAME = "xmlreq";
+	protected String xmlParamName = DEFAULT_XML_PARAM_NAME;
+	
 	/**
 	 * The name of an init parameter which must contain the fully qualified
-	 * class name of the HttpServiceHandler class that will handle requests to
+	 * class name of the Pipeline class that will handle requests to
 	 * this servlet.
 	 * 
-	 * The name class must implement the HttpRequestHandler interface.
+	 * The name class must implement the Pipeline interface.
 	 */
-	public static final String HANDLER_CLASS = "handler-class";
-	
+	public static final String PIPELINE_CLASS = "pipeline-class";
+
+
 	/**
-	 * The name of an init parameter which may contain the fully qualified
-	 * class name of the HttpRequestParser class that will
-	 * create request objects to pass to the handler.  The SimpleHttpRequestParser
-	 * is used if none is specified.
-	 * 
-	 * The name class must implement the HttpRequestParser interface.
-	 */
-	public static final String PARSER_CLASS = "parser-class";
-	
-	
-	//Default value of XML_PARAM_NAME
-	private static final String DEFAULT_XML_PARAM_NAME = "xmlreq";
-	
-	private static final String DEFAULT_PARSER_CLASS_NAME = "gov.usgswim.service.SimpleHttpRequestParser";
-	
-	/**
-	 * The fully qualified class name of the HttpRequestHandler class that will
+	 * The fully qualified class name of the Pipeline class that will
 	 * handle requests to this servlet.
+	 * 
 	 */
-	protected String handlerClassName = "";
-	
-	/**
-	 * The fully qualified class name of the HttpRequestParser class that will
-	 * create a request object to pass to the handler.  The SimpleHttpRequestParser
-	 * is used if none is specified.
-	 */
-	protected String parserClassName = DEFAULT_PARSER_CLASS_NAME;
-	
-	/**
-	 * An instance of the handler class named by handlerClassName.
-	 */
-	protected HttpRequestHandler handler;
-	
-	/**
-	 * An instance of the parser.
-	 */
-	protected HttpRequestParser parser;
-	
-	protected String xmlParamName = DEFAULT_XML_PARAM_NAME;
+	protected String pipelineClassName = "";
+	protected Class pipelineClass;
+
 	protected XMLInputFactory inFact;
-	
-	
+
+	// ================
+	// INSTANCE METHODS
+	// ================
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		
-		handlerClassName = config.getInitParameter(HANDLER_CLASS);
-		
-		if (config.getInitParameter(PARSER_CLASS) != null) {
-			parserClassName = config.getInitParameter(PARSER_CLASS);
-		}
-		
-
 		if (config.getInitParameter(XML_PARAM_NAME) != null) {
 			xmlParamName = config.getInitParameter(XML_PARAM_NAME);
 		}
-
+		
+		pipelineClassName = config.getInitParameter(PIPELINE_CLASS);
+		
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		Class _theClass;
-		
-		try {
-		
-			try {
-				if (loader != null) {
-					_theClass = Class.forName(handlerClassName, false, loader);
-				}	else {
-					_theClass = Class.forName(handlerClassName);
-				}
-				
-				handler = (HttpRequestHandler) _theClass.newInstance();
-			
-			} catch (ClassNotFoundException e) {
-				throw new ServletException(
-					"Could not find initilization class '" + handlerClassName +
-					"' specified by the init param 'handler-class'"
-				);
-			}
-			
-			try {
-				if (loader != null) {
-					_theClass = Class.forName(parserClassName, false, loader);
-				}	else {
-					_theClass = Class.forName(parserClassName);
-				}
-				
-				parser = (HttpRequestParser) _theClass.newInstance();
-				parser.setXmlParam(xmlParamName);
-			
-			} catch (ClassNotFoundException e) {
-				throw new ServletException(
-					"Could not find initilization class '" + parserClassName +
-					"' specified by the init param 'parser-class'"
-				);
-			}
-		} catch (IllegalAccessException e) {
-			throw new ServletException(e);
-		} catch (InstantiationException e) {
-			throw new ServletException(e);
-		}
-		
 
+		try {
+			if (loader != null) {
+				_theClass = Class.forName(pipelineClassName, false, loader);
+			}	else {
+				_theClass = Class.forName(pipelineClassName);
+			}
+			pipelineClass = _theClass;
+		} catch (ClassNotFoundException e) {
+			throw new ServletException(
+					"Could not find initilization class '" + pipelineClassName +
+					"' specified by the init param '" + PIPELINE_CLASS + "'"
+			);
+		}
 
 		inFact = XMLInputFactory.newInstance();
 		inFact.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES,
@@ -167,8 +109,6 @@ public class ServiceServlet extends HttpServlet {
 		inFact.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES,
 											 Boolean.FALSE);
 		inFact.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
-
-
 	}
 
 
@@ -197,22 +137,17 @@ public class ServiceServlet extends HttpServlet {
 	 * @throws IOException
 	 */
 	public void doPost(HttpServletRequest request,
-										 HttpServletResponse response) throws ServletException, IOException {
+			HttpServletResponse response) throws ServletException, IOException {
+		PipelineRequest o = null;
 
-		PipelineRequest o;
 		try {
-			o = parser.parseForPipeline(request); 
-			Pipeline pipe = PipelineRegistry.lookup(o);
-			
-			//Handler is the service class, which this servlet is config'ed for,
-			//but the PipelineRegistry is unaware of.
-			pipe.setHandler(handler);		
+			Pipeline pipe = (Pipeline) pipelineClass.newInstance();
+			pipe.setXMLParamName(xmlParamName);
+			o = pipe.parse(request);
 			pipe.dispatch(o, response);
-			
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
-
 	}
 
 }

@@ -14,6 +14,7 @@ import gov.usgswim.sparrow.service.IDByPointRequest;
 import gov.usgswim.sparrow.service.ModelRequest;
 import gov.usgswim.sparrow.service.PredictServiceRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import javax.xml.stream.XMLStreamReader;
@@ -28,13 +29,10 @@ public class SimplePipeline implements Pipeline {
 	public SimplePipeline() {
 	}
 
-
 	public void setHandler(HttpRequestHandler handler) {
 		this.handler = handler;
 	}
 	
-
-			
 
 	public void dispatch(PipelineRequest o, HttpServletResponse response) throws Exception {
 		// Generators have to behave differently if flattening is needed
@@ -93,6 +91,16 @@ public class SimplePipeline implements Pipeline {
 		formatter.setFileName(o.getFileName());
 		formatter.dispatch(reader, response);
 
+	}
+
+	public PipelineRequest parse(HttpServletRequest request) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setXMLParamName(String xmlParamName) {
+		// TODO Auto-generated method stub
+		
 	}
 
 

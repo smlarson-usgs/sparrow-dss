@@ -5,47 +5,24 @@
   <servlet-name>ModelService</servlet-name>
   <servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
 	<init-param>
-		<param-name>handler-class</param-name>
-		<param-value>gov.usgswim.sparrow.service.ModelService</param-value>
-	</init-param>
-	<init-param>
-		<param-name>parser-class</param-name>
-		<param-value>gov.usgswim.sparrow.service.ModelParser</param-value>
+		<param-name>pipeline-class</param-name>
+		<param-value>gov.usgswim.sparrow.service.ModelPipeline</param-value>
 	</init-param>
  </servlet>
  <servlet>
   <servlet-name>PredictService</servlet-name>
   <servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
-
 	<init-param>
-		<param-name>handler-class</param-name>
-		<param-value>gov.usgswim.sparrow.service.PredictService</param-value>
+		<param-name>pipeline-class</param-name>
+		<param-value>gov.usgswim.sparrow.service.PredictPipeline</param-value>
 	</init-param>
-	<init-param>
-		<param-name>parser-class</param-name>
-		<param-value>gov.usgswim.sparrow.service.PredictParser</param-value>
-	</init-param>
-	  <!-- 
-	<init-param>
-		<param-name>handler-class</param-name>
-		<param-value>gov.usgswim.sparrow.datatable.PredictService2</param-value>
-	</init-param>
-	<init-param>
-		<param-name>parser-class</param-name>
-		<param-value>gov.usgswim.sparrow.datatable.PredictParser2</param-value>
-	</init-param>
-	 -->
  </servlet>
  <servlet>
   <servlet-name>IDByPointService</servlet-name>
   <servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
 	<init-param>
-		<param-name>handler-class</param-name>
-		<param-value>gov.usgswim.sparrow.service.IDByPointService</param-value>
-	</init-param>
-	<init-param>
-		<param-name>parser-class</param-name>
-		<param-value>gov.usgswim.sparrow.service.IDByPointParser</param-value>
+		<param-name>pipeline-class</param-name>
+		<param-value>gov.usgswim.sparrow.service.IDByPointPipeline</param-value>
 	</init-param>
  </servlet>
  <servlet-mapping>

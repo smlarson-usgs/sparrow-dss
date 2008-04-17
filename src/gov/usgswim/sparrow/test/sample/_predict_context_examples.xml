@@ -349,7 +349,7 @@
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		model-id="22">
 		
-			<!-- Bunch of treatments applied here - - >
+			<! - - Bunch of treatments applied here - - >
 			<treatment-groups conflicts="accumulate"/>
 	
 			<analysis>

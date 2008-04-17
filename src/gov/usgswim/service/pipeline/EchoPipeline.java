@@ -5,6 +5,7 @@ import gov.usgswim.service.HttpRequestHandler;
 
 import java.io.PrintWriter;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class EchoPipeline implements Pipeline {
@@ -23,6 +24,16 @@ public class EchoPipeline implements Pipeline {
 
 	public void setHandler(HttpRequestHandler handler) {
 		// no handler needed
+	}
+
+	public PipelineRequest parse(HttpServletRequest request) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void setXMLParamName(String xmlParamName) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
