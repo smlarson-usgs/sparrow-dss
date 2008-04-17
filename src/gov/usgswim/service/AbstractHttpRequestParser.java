@@ -34,8 +34,6 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 	private String _paramName;	//TODO Shouldn't this have a default?
 	
 	protected XMLInputFactory inFact;
-
-//	private String xmlRequest;
 	
 	public AbstractHttpRequestParser() {
 		inFact = XMLInputFactory.newInstance();
@@ -61,10 +59,6 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 		result.setXMLRequest(in);
 		return result;
 	}
-	
-
-	//@Override
-	//public abstract T parse(HttpServletRequest request) throws Exception;
 	
 	public void setXmlParam(String paramName) {
 		synchronized (PARAM_NAME_LOCK) {

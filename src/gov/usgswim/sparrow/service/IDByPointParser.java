@@ -15,6 +15,13 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 	public IDByPointParser() {
 	}
 
+	/**
+	 * parse() overridden to handle the special case of input parameters being
+	 * placed in query string, as IDByPoint is simple enough to invoke in this way.
+	 * 
+	 * @see gov.usgswim.service.AbstractHttpRequestParser#parse(javax.servlet.http.HttpServletRequest)
+	 */
+	@Override
 	public IDByPointRequest parse(HttpServletRequest request) throws Exception {
 		if ("GET".equals(request.getMethod())) {
 		
