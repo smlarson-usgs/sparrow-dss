@@ -1,96 +1,75 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
-            targetNamespace="http://www.usgs.gov/sparrow/prediction-request/v0_1"
-            elementFormDefault="qualified"
-            xmlns:xml="http://www.w3.org/XML/1998/namespace">
-		
-  <xsd:element name="sparrow-prediction-request" type="sparrow-prediction-request-type">
+	xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+	targetNamespace="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+	elementFormDefault="qualified" xmlns:xml="http://www.w3.org/XML/1998/namespace">
+	<xsd:include schemaLocation="sparrow_common.xsd" />
+
+	<xsd:element name="sparrow-prediction-request" type="sparrow-prediction-request-type">
 		<xsd:annotation>
-      <xsd:documentation>
+			<xsd:documentation>
         Root request element
       </xsd:documentation>
-    </xsd:annotation>
-  </xsd:element>	
+		</xsd:annotation>
+	</xsd:element>
 
-		
-		
+
+
 	<xsd:complexType name="sparrow-prediction-request-type">
 		<xsd:sequence>
 			<xsd:element name="processing-instructions" minOccurs="0">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="instruction" maxOccurs="unbounded"
-												 minOccurs="0">
+						<xsd:element name="instruction" maxOccurs="unbounded" minOccurs="0">
 							<xsd:complexType>
-								<xsd:attribute name="name" use="required"/>
+								<xsd:attribute name="name" use="required" />
 							</xsd:complexType>
 						</xsd:element>
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
-   <xsd:element name="predict">
-    <xsd:complexType>
-     <xsd:choice>
-      <xsd:element name="raw-value">
-       <xsd:complexType>
-        <xsd:sequence>
-         <xsd:element name="source-adjustments" type="source-adjustments-type"
-                      minOccurs="0"/>
-        </xsd:sequence>
-       </xsd:complexType>
-      </xsd:element>
-      <xsd:element name="change-from-nominal">
-       <xsd:complexType>
-        <xsd:sequence>
-         <xsd:element name="source-adjustments" type="source-adjustments-type"
-                      minOccurs="1"/>
-        </xsd:sequence>
-        <xsd:attribute name="type"/>
-       </xsd:complexType>
-      </xsd:element>
-     </xsd:choice>
-     <xsd:attribute name="model-id" type="xsd:integer"/>
-    </xsd:complexType>
-   </xsd:element>
-   <xsd:element name="response-options" minOccurs="0">
+			<xsd:element name="predict">
+				<xsd:complexType>
+					<xsd:choice>
+						<xsd:element name="raw-value">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="source-adjustments" type="source-adjustments-type"
+										minOccurs="0" />
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="change-from-nominal">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="source-adjustments" type="source-adjustments-type"
+										minOccurs="1" />
+								</xsd:sequence>
+								<xsd:attribute name="type" />
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:choice>
+					<xsd:attribute name="model-id" type="xsd:integer" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="response-options" minOccurs="0">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="response-format" minOccurs="0">
+						<xsd:element name="response-format" type="responseFormatType" minOccurs="0" />
+						<xsd:element name="result-filter" minOccurs="0">
 							<xsd:complexType>
-        <xsd:sequence>
-         <xsd:element name="mime-type"/>
-         <xsd:element name="template" maxOccurs="1" minOccurs="0"/>
-         <xsd:element name="params" minOccurs="0">
-          <xsd:complexType>
-           <xsd:sequence>
-            <xsd:element name="param" maxOccurs="unbounded" minOccurs="0">
-             <xsd:complexType>
-              <xsd:attribute name="name"/>
-             </xsd:complexType>
-            </xsd:element>
-           </xsd:sequence>
-          </xsd:complexType>
-         </xsd:element>
-        </xsd:sequence>
-        <xsd:attribute name="name"/>
-        <xsd:attribute name="compress"/>
-       </xsd:complexType>
-						</xsd:element>
-      <xsd:element name="result-filter" minOccurs="0">
-       <xsd:complexType>
-        <xsd:choice>
-         <xsd:element name="all-results" minOccurs="1">
-          <xsd:annotation>
-           <xsd:documentation>
+								<xsd:choice>
+									<xsd:element name="all-results" minOccurs="1">
+										<xsd:annotation>
+											<xsd:documentation>
             The default.  Same as if there is no filter.  Default sort is in
             hydrological order from the model.
            </xsd:documentation>
-          </xsd:annotation>
-         </xsd:element>
-         <xsd:element name="near-point">
-          <xsd:annotation>
-           <xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="near-point">
+										<xsd:annotation>
+											<xsd:documentation>
             Returns only reaches near a point and, by default, returns the
             nearest 10.  Returned reaches are sorted by the distance from the
             point.  max-result-count has a default value of 10, but can be
@@ -98,73 +77,36 @@
             limited to those 'relatively close' in order to optimize the db
             query.  
            </xsd:documentation>
-          </xsd:annotation>
-          <xsd:complexType>
-           <xsd:sequence>
-            <xsd:element name="point" type="pointType"/>
-           </xsd:sequence>
-           <xsd:attribute name="result-count" default="10"/>
-          </xsd:complexType>
-         </xsd:element>
-        </xsd:choice>
-       </xsd:complexType>
-      </xsd:element>
-      <xsd:element name="result-content" minOccurs="0">
-       <xsd:complexType>
-        <xsd:sequence>
-         <xsd:element name="data-series" minOccurs="0">
-				 <xsd:annotation><xsd:documentation>
+										</xsd:annotation>
+										<xsd:complexType>
+											<xsd:sequence>
+												<xsd:element name="point" type="pointType" />
+											</xsd:sequence>
+											<xsd:attribute name="result-count" default="10" />
+										</xsd:complexType>
+									</xsd:element>
+								</xsd:choice>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="result-content" minOccurs="0">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="data-series" minOccurs="0">
+										<xsd:annotation>
+											<xsd:documentation>
 						See the values for gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries
 						for the possible values for dataseries.  Currently, that includes 'all', 'total', and 'incremental'.
-					</xsd:documentation></xsd:annotation>
-         </xsd:element>
-         <xsd:element name="metadata" minOccurs="0"/>
-        </xsd:sequence>
-       </xsd:complexType>
-      </xsd:element>
-     </xsd:sequence>
+					</xsd:documentation>
+										</xsd:annotation>
+									</xsd:element>
+									<xsd:element name="metadata" minOccurs="0" />
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
-  </xsd:sequence>
+		</xsd:sequence>
 	</xsd:complexType>
-	
 
-	
-	<xsd:complexType name="source-adjustments-type">
-		<xsd:sequence>
-			<xsd:element name="gross-src" minOccurs="0"
-									 maxOccurs="unbounded">
-				<xsd:complexType>
-					<xsd:attribute name="src" type="xsd:integer"
-												 use="required"/>
-					<xsd:attribute name="coef" type="xsd:decimal"
-												 use="required"/>
-				</xsd:complexType>
-			</xsd:element>
-			<xsd:element name="criteria"
-									 maxOccurs="unbounded" minOccurs="0"/>
-			<xsd:element name="specific"
-									 maxOccurs="unbounded" minOccurs="0">
-				<xsd:complexType>
-					<xsd:attribute name="src" use="required"
-												 type="xsd:integer"/>
-					<xsd:attribute name="reach" type="xsd:integer"
-												 use="required"/>
-					<xsd:attribute name="value" type="xsd:decimal"
-												 use="required"/>
-				</xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:complexType name="pointType">
-		<xsd:sequence>
-			<xsd:element name="point">
-			 <xsd:complexType>
-				<xsd:attribute name="lat" use="required" type="xsd:decimal"/>
-				<xsd:attribute name="long" use="required" type="xsd:decimal"/>
-			 </xsd:complexType>
-			</xsd:element>
-		</xsd:sequence>
-	</xsd:complexType>
 </xsd:schema>
