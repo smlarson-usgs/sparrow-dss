@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.service;
 
 import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.service.RequestParser;
+import gov.usgswim.service.ResponseFormat;
 import gov.usgswim.service.pipeline.PipelineRequest;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ public class ModelParser extends AbstractHttpRequestParser<ModelRequest> impleme
 	
 	public ModelRequest parse(XMLStreamReader reader) throws Exception {
 		ModelRequest req = null;
+
 
 		while (reader.hasNext()) {
 			int eventCode = reader.next();
@@ -44,6 +46,11 @@ public class ModelParser extends AbstractHttpRequestParser<ModelRequest> impleme
 					
 				} else if ("source".equals(lName)) {
 					req.setSources(true);
+				} else if (ResponseFormat.isTargetMatch(lName)) {
+					ResponseFormat respFormat = new ResponseFormat();
+					respFormat.setMimeType("xml"); // default
+					respFormat.parse(reader);
+					req.setResponseFormat(respFormat);
 				}
 				
 				
@@ -56,11 +63,18 @@ public class ModelParser extends AbstractHttpRequestParser<ModelRequest> impleme
 
 	public PipelineRequest parseForPipeline(HttpServletRequest request)throws Exception {
 		ModelRequest result = parse(request);
-		result.setMimeType(request.getParameter("mimetype"));
+		ResponseFormat respFormat = result.getResponseFormat();
+		
+		String mimeType = request.getParameter("mimetype");
+		if (mimeType != null) {
+			respFormat.setMimeType(mimeType);
+		}
+
 		result.setEcho(request.getParameter("echo"));
-		String unzip = request.getParameter("unzip");
-		if (unzip != null && unzip.equals("yes")) {
-			result.setZip(false);
+		
+		String compress = request.getParameter("compress");
+		if (compress != null && compress.equals("zip")) {
+			respFormat.setCompression("zip");
 		}
 		return result;
 	}

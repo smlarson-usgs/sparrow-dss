@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.service;
 
+import gov.usgswim.service.ResponseFormat;
 import gov.usgswim.service.pipeline.PipelineRequest;
 
 import org.apache.commons.lang.BooleanUtils;
@@ -9,10 +10,9 @@ public class ModelRequest implements PipelineRequest{
 	boolean _approved = true;
 	boolean _archived = false;
 	boolean _sources = false;
-	private String mimetype = "xml";
 	private boolean isEcho;
 	private String xmlRequest;
-	private boolean isUnzipped;
+	private ResponseFormat responseFormat;
 
 	public ModelRequest() {
 	}
@@ -65,19 +65,6 @@ public class ModelRequest implements PipelineRequest{
 		return _sources;
 	}
 
-	public String getMimeType() {
-		return mimetype;
-	}
-
-	public void setMimeType(String mimetype) {
-		if (mimetype != null) {
-			this.mimetype = mimetype;	
-		}	
-	}
-	public String getFileName() {
-		return "model";
-	}
-
 	public void setEcho(String echo) {
 		isEcho = ("yes".equalsIgnoreCase(echo) || "true".equalsIgnoreCase(echo));
 	}
@@ -97,12 +84,16 @@ public class ModelRequest implements PipelineRequest{
 	public void setXMLRequest(String request) {
 		xmlRequest = request;		
 	}
-	
-	public boolean isZipped() {
-		return !isUnzipped;
+
+	public void setResponseFormat(ResponseFormat respFormat) {
+		this.responseFormat = respFormat;
+		responseFormat.fileName = "model";
 	}
 	
-	public void setZip(boolean zip) {
-		isUnzipped = !zip;
+	public ResponseFormat getResponseFormat() {
+		if (responseFormat == null) {
+			setResponseFormat(new ResponseFormat());
+		}
+		return responseFormat;
 	}
 }

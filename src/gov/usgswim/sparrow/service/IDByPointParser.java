@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.service;
 
 import gov.usgswim.service.AbstractHttpRequestParser;
+import gov.usgswim.service.ResponseFormat;
 import gov.usgswim.service.pipeline.PipelineRequest;
 
 import java.awt.Point;
@@ -97,6 +98,9 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 		numResults = parseAttribAsInt(reader, "result-count", 3);
 		if (numResults > 100) numResults = 100;
 		
+		ResponseFormat respFormat = new ResponseFormat();
+		respFormat.setMimeType("xml"); // default
+		
 		while (reader.hasNext()) {
 			int eventCode = reader.next();
 			
@@ -108,8 +112,9 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 					if ("point".equals(lName)) {
 						point.x = parseAttribAsDouble(reader, "long", true);
 						point.y = parseAttribAsDouble(reader, "lat", true);
-					} 
-					
+					} else if (ResponseFormat.isTargetMatch(lName)) {
+						respFormat.parse(reader);
+					}
 				}
 				break;
 			
@@ -118,6 +123,7 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 					String lName = reader.getLocalName();
 					if (mainElement.equals(lName)) {
 						IDByPointRequest req = new IDByPointRequest(id, point, numResults);
+						req.setResponseFormat(respFormat);
 						return req;
 					}
 				}
@@ -130,11 +136,18 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 
 	public PipelineRequest parseForPipeline(HttpServletRequest request)throws Exception {
 		IDByPointRequest result = parse(request);
-		result.setMimeType(request.getParameter("mimetype"));
+		ResponseFormat respFormat = result.getResponseFormat();
+		
+		String mimeType = request.getParameter("mimetype");
+		if (mimeType != null) {
+			respFormat.setMimeType(mimeType);
+		}
+
 		result.setEcho(request.getParameter("echo"));
-		String unzip = request.getParameter("unzip");
-		if (unzip != null && unzip.equals("yes")) {
-			result.setZip(false);
+		
+		String compress = request.getParameter("compress");
+		if (compress != null && compress.equals("zip")) {
+			respFormat.setCompression("zip");
 		}
 		return result;
 	}

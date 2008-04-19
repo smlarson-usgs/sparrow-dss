@@ -43,6 +43,21 @@ public interface IFormatter {
 		public String getFileSuffix() {
 			return _fileSuffix;
 		}
+		
+		public static OutputType parse(String value) {
+			OutputType result = null;
+			int hits = 0;
+			for (OutputType element: OutputType.values()) {
+				if (element.name().equalsIgnoreCase(value)) {
+					return element;
+				}
+				if (element._mimeType.equalsIgnoreCase(value)) {
+					result = element;
+					hits++;
+				}
+			}
+			return (hits == 1)? result: null;
+		}
 	}
 
 	public void dispatch(XMLStreamReader in, HttpServletResponse response) throws IOException;

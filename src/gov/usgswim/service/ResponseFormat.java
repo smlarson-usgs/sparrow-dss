@@ -12,10 +12,21 @@ public class ResponseFormat implements XMLStreamParserComponent {
 
 	public String formatName;
 	public String name;
+	public String fileName;
 	protected String compressMethod;
 	protected String mimeType;
 	protected OutputType outputType;
 
+	// =============================
+	// PUBLIC STATIC UTILITY METHODS
+	// =============================
+	public static boolean isTargetMatch(String tagName) {
+		return mainElementName.equals(tagName);
+	}
+
+	// ================
+	// INSTANCE METHODS
+	// ================
 	public ResponseFormat parse(XMLStreamReader in) throws XMLStreamException {
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
@@ -32,19 +43,18 @@ public class ResponseFormat implements XMLStreamParserComponent {
 				isStarted = true;
 			}
 
-			// Main event loop -- parse until corresponding end tag encountered.
+			// Main event loop -- parse until corresponding target end tag encountered.
 			switch (eventCode) {
 				case START_ELEMENT:
 					localName = in.getLocalName();
 					if ("mime-type".equals(localName) || "mimeType".equals(localName)) {
 						setMimeType(ParserHelper.parseSimpleElementValue(in));
 					} else if (mainElementName.equals(localName)) {
-						// pull out the relevant attributes
+						// pull out the relevant attributes in the target start tag
 						compressMethod = in.getAttributeValue(null, "compress");
 						name = in.getAttributeValue(null, "name");
 					}
 					break;
-
 				case END_ELEMENT:
 					localName = in.getLocalName();
 					if (mainElementName.equals(localName)) {
@@ -65,10 +75,10 @@ public class ResponseFormat implements XMLStreamParserComponent {
 	// GETTERS & SETTERS
 	// =================
 	public void setMimeType(String mimeType) {
-		this.mimeType = (mimeType != null)? mimeType.toLowerCase(): null;
-		// do stuff for output type
 		if (mimeType != null) {
-			outputType = Enum.valueOf(OutputType.class, mimeType.toUpperCase());
+			this.mimeType = mimeType.toLowerCase();
+			// set the associated output type
+			outputType = OutputType.parse(mimeType);
 		}
 	}
 

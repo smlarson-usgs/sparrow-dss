@@ -77,7 +77,7 @@
 				<input type="checkbox" name="mimetype" value="excel">excel
 				<input type="checkbox" name="mimetype" value="json">json
 				<input type="checkbox" name="echo" value="true">echo
-				<input type="checkbox" name="unzip" value="yes" checked="checked">unzip
+				<input type="checkbox" name="compress" value="zip">zip
 				
 			</fieldset>
 		</form>

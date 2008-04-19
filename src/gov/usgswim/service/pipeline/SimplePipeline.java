@@ -9,6 +9,7 @@ import gov.usgs.webservices.framework.formatter.ZipFormatter;
 import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 
 import gov.usgswim.service.HttpRequestHandler;
+import gov.usgswim.service.ResponseFormat;
 
 import gov.usgswim.sparrow.service.IDByPointRequest;
 import gov.usgswim.sparrow.service.ModelRequest;
@@ -37,24 +38,24 @@ public class SimplePipeline implements Pipeline {
 	public void dispatch(PipelineRequest o, HttpServletResponse response) throws Exception {
 		// Generators have to behave differently if flattening is needed
 		// TODO refactor this into a query of the formatter.
-		boolean isNeedsFlattening = PipelineRegistry.flatMimeTypes.contains(o.getMimeType());
+		ResponseFormat responseFormat = o.getResponseFormat();
+		boolean isNeedsFlattening = PipelineRegistry.flatMimeTypes.contains(responseFormat.getMimeType());
 		XMLStreamReader reader = handler.getXMLStreamReader(o, isNeedsFlattening);
 		//
 		boolean isSparrowXML = (o instanceof PredictServiceRequest )||(o instanceof IDByPointRequest) ;
 		boolean isModelXML = (o instanceof ModelRequest);
-		OutputType outputType = Enum.valueOf(OutputType.class, o.getMimeType().toUpperCase());
 //				TODO this code doesn't belong here. Refactor later. use generics
 		IFormatter formatter = null;
 		if (isSparrowXML) {
-			switch (outputType) {
+			switch (responseFormat.getOutputType()) {
 				case CSV:
 				case TAB:
 				case EXCEL:
 				case HTML:
-					if (o.isZipped()) {
-						formatter = new ZipFormatter(new SparrowFlatteningFormatter(outputType));
+					if ("zip".equals(responseFormat.getCompression())) {
+						formatter = new ZipFormatter(new SparrowFlatteningFormatter(responseFormat.getOutputType()));
 					} else {
-						formatter = new SparrowFlatteningFormatter(outputType);
+						formatter = new SparrowFlatteningFormatter(responseFormat.getOutputType());
 					}
 					
 					break;
@@ -68,15 +69,15 @@ public class SimplePipeline implements Pipeline {
 				break;
 			}
 		} else if (isModelXML) {
-			switch (outputType) {
+			switch (responseFormat.getOutputType()) {
 				case CSV:
 				case TAB:
 				case EXCEL:
 				case HTML:
-					DataFlatteningFormatter df = new DataFlatteningFormatter(outputType);
+					DataFlatteningFormatter df = new DataFlatteningFormatter(responseFormat.getOutputType());
 					df.setRowElementName("source");
 					df.setKeepElderInfo(true);
-					formatter = (o.isZipped())? new ZipFormatter(df): (IFormatter) df;
+					formatter = ("zip".equals(responseFormat.getCompression()))? new ZipFormatter(df): (IFormatter) df;
 					break;
 				case JSON:
 					formatter = new JSONFormatter();
@@ -88,7 +89,7 @@ public class SimplePipeline implements Pipeline {
 				break;
 			}
 		}
-		formatter.setFileName(o.getFileName());
+		formatter.setFileName(responseFormat.fileName);
 		formatter.dispatch(reader, response);
 
 	}

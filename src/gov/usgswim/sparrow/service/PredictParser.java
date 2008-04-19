@@ -4,6 +4,7 @@ import static gov.usgswim.sparrow.Adjustment.AdjustmentType.GROSS_SRC_ADJUST;
 import static gov.usgswim.sparrow.Adjustment.AdjustmentType.SPECIFIC_ADJUST;
 import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.service.RequestParser;
+import gov.usgswim.service.ResponseFormat;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.Adjustment;
 import gov.usgswim.sparrow.AdjustmentSet;
@@ -37,6 +38,11 @@ public class PredictParser extends AbstractHttpRequestParser<PredictServiceReque
 						parseOptions(reader, req);
 					} else if ("sparrow-prediction-request".equals(lName)) {
 						req = new PredictServiceRequest();
+					} else if (ResponseFormat.isTargetMatch(lName)) {
+						ResponseFormat respFormat = new ResponseFormat();
+						respFormat.setMimeType("xml"); // default
+						respFormat.parse(reader);
+						req.setResponseFormat(respFormat);
 					}
 					
 					
@@ -262,11 +268,18 @@ public class PredictParser extends AbstractHttpRequestParser<PredictServiceReque
 
 		public PipelineRequest parseForPipeline(HttpServletRequest request)throws Exception {
 			PredictServiceRequest result = parse(request);
-			result.setMimeType(request.getParameter("mimetype"));
+			ResponseFormat respFormat = result.getResponseFormat();
+			
+			String mimeType = request.getParameter("mimetype");
+			if (mimeType != null) {
+				respFormat.setMimeType(mimeType);
+			}
+
 			result.setEcho(request.getParameter("echo"));
-			String unzip = request.getParameter("unzip");
-			if (unzip != null && unzip.equals("yes")) {
-				result.setZip(false);
+			
+			String compress = request.getParameter("compress");
+			if (compress != null && compress.equals("zip")) {
+				respFormat.setCompression("zip");
 			}
 			return result;
 		}

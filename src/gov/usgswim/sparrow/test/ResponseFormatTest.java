@@ -48,26 +48,25 @@ public class ResponseFormatTest extends TestCase {
 		
 	}
 
-//	public void testSetMimeType() {
+//	public void testGetOutputType() {
 //
 //	}
 
-	public void testGetOutputType() {
+	public void testSetMimeType() {
 		ResponseFormat rf = new ResponseFormat();
 		rf.setMimeType("csv");
+		// output type is set implicitly
 		assertEquals(OutputType.CSV, rf.getOutputType());
 	}
 
 	public void testSetCompression() {
 		ResponseFormat rf = new ResponseFormat();
-		try {
-			rf.setMimeType("GzIp");
-			fail("an exception should be thrown before this point");
-		} catch (IllegalArgumentException e) {
-			// expected exception
-		}
 
-		rf.setMimeType("zIp");
+		rf.setMimeType("GzIp");
+		assertNull("currently unrecognized output type", rf.getOutputType());
+
+		// note that setting the attribute is case-insensitive.
+		rf.setMimeType("zIp"); 
 		assertEquals("zip", rf.getMimeType());
 
 	}

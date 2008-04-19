@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.service;
 
 import gov.usgswim.Immutable;
+import gov.usgswim.service.ResponseFormat;
 import gov.usgswim.service.pipeline.PipelineRequest;
 
 import java.awt.Point;
@@ -24,7 +25,7 @@ public class IDByPointRequest implements PipelineRequest{
 	private Integer hash;	//Not strictly threadsafe, but recalculation is cheap and non-destructive
 	protected String mimetype = "xml"; // default is xml
 	private String xmlRequest;
-	private boolean isUnzipped;
+	private ResponseFormat responseFormat;
 	
 	/**
 	 * Constructs a new request instance.
@@ -72,20 +73,6 @@ public class IDByPointRequest implements PipelineRequest{
 		
 		return hash;
 	}
-	
-	public String getMimeType() {
-		return mimetype;
-	}
-
-	public void setMimeType(String mimetype) {
-		if (mimetype != null) {
-			this.mimetype = mimetype;	
-		}	
-	}
-	
-	public String getFileName() {
-		return "idByPoint";
-	}
 
 	public void setEcho(String echo) {
 			isEcho = ("yes".equalsIgnoreCase(echo) || "true".equalsIgnoreCase(echo));
@@ -107,11 +94,15 @@ public class IDByPointRequest implements PipelineRequest{
 		xmlRequest = request;		
 	}
 
-	public boolean isZipped() {
-		return !isUnzipped;
+	public void setResponseFormat(ResponseFormat respFormat) {
+		this.responseFormat = respFormat;
+		responseFormat.fileName = "idByPoint";
 	}
 	
-	public void setZip(boolean zip) {
-		isUnzipped = !zip;
+	public ResponseFormat getResponseFormat() {
+		if (responseFormat == null) {
+			setResponseFormat(new ResponseFormat());
+		}
+		return responseFormat;
 	}
 }

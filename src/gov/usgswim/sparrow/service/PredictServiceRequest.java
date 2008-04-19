@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.service;
 
 import gov.usgswim.NotThreadSafe;
+import gov.usgswim.service.ResponseFormat;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.PredictRequest;
 
@@ -23,11 +24,10 @@ public class PredictServiceRequest implements PipelineRequest{
 	private PredictRequest predictRequest;
 	private DataSeries dataSeries = gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.ALL;
 	private IDByPointRequest idByPointRequest;
-	protected String mimetype = "xml"; // default is xml
 	private boolean isEcho;
 	private String xmlRequest;
 	private int rowLimit;
-	private boolean isUnzipped;
+	private ResponseFormat responseFormat;
 
 
 	public enum DataSeries {
@@ -205,20 +205,6 @@ public class PredictServiceRequest implements PipelineRequest{
 	public PredictServiceRequest.DataSeries getDataSeries() {
 		return dataSeries;
 	}
-
-	public String getMimeType() {
-		return mimetype;
-	}
-
-	public void setMimeType(String mimetype) {
-		if (mimetype != null) {
-			this.mimetype = mimetype;	
-		}
-	}
-
-	public String getFileName() {
-		return "predict";
-	}
 	
 	public void setEcho(String echo) {
 		isEcho = ("yes".equalsIgnoreCase(echo) || "true".equalsIgnoreCase(echo));
@@ -246,12 +232,16 @@ public class PredictServiceRequest implements PipelineRequest{
 	public int getRowLimit() {
 		return rowLimit;
 	}
-	
-	public boolean isZipped() {
-		return !isUnzipped;
+
+	public void setResponseFormat(ResponseFormat respFormat) {
+		this.responseFormat = respFormat;
+		responseFormat.fileName = "predict";
 	}
 	
-	public void setZip(boolean zip) {
-		isUnzipped = !zip;
+	public ResponseFormat getResponseFormat() {
+		if (responseFormat == null) {
+			setResponseFormat(new ResponseFormat());
+		}
+		return responseFormat;
 	}
 }
