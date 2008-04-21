@@ -64,6 +64,7 @@
 					We know of 3 plants on the Wisconsin River which have announced improved
 					BPM implementations.
 				</notes>
+				<treatment src="2" coef=".75"/>
 				<reach id="483947453">
 					<treatment src="2" coef=".9"/>
 				</reach>
