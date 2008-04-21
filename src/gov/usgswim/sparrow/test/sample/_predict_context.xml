@@ -22,7 +22,9 @@
 					As a start, we are proposing a 10% reduction across the board,
 					but we will tailor this later based on plant type.
 				</notes>
+				<!-- Multiple treatments are possible -->
 				<treatment src="5" coef=".9"/>
+				<treatment src="4" coef=".75"/>
 				<logical-set>
 					<criteria attrib="huc8">01746286</criteria>
 				</logical-set>
@@ -131,11 +133,13 @@
 				total-delivered-fraction*!
 				total-decay+
 				incremental-delivered*!
+				source-value**
 				land-to-water-coef
-				instream-decay-coef
+				instream-decay-coef***
 
 				* Available by source
 				** Only available by source
+				*** Not available by source
 				+ Optional column(s) only calculated when requested
 				! Requires 2nd pass network 'climbing' to calculate
 				-->
