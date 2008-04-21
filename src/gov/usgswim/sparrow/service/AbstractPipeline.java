@@ -8,6 +8,7 @@ import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.service.HttpRequestHandler;
 import gov.usgswim.service.ResponseFormat;
+import gov.usgswim.service.pipeline.EchoPipeline;
 import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRegistry;
 import gov.usgswim.service.pipeline.PipelineRequest;
@@ -31,6 +32,12 @@ public abstract class AbstractPipeline<T extends PipelineRequest> implements Pip
 	}
 
 	public void dispatch(PipelineRequest o, HttpServletResponse response) throws Exception {
+		if (o.isEcho()) {
+			Pipeline pipeline = new EchoPipeline();
+			pipeline.dispatch(o, response);
+			return;
+		}
+		
 		// Generators have to behave differently if flattening is needed
 		// TODO refactor this into a query of the formatter.
 		ResponseFormat respFormat = o.getResponseFormat();
