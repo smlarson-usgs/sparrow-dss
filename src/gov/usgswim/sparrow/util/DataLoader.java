@@ -545,6 +545,59 @@ public class DataLoader {
 			}
 		}
 	}
+	
+	
+	/**
+	 * Returns metadata about the sources in the model.
+	 * 
+	 * Typically 5-10 rows per model.
+	 *
+	 * <h4>Data Columns (sorted by SORT_ORDER)</h4>
+	 * <h5>IDENTIFIER - The Row ID (not a column). The Model specific ID for the source (starting w/ 1)</h5>
+	 * <ol>
+	 * <li>SOURCE_ID - (long) The database unique ID for the source
+	 * <li>NAME - (String) The full (long text) name of the source
+	 * <li>DISPLAY_NAME - (String) The short name of the source, used for display
+	 * <li>DESCRIPTION - (String) A description of the source (could be long)
+	 * <li>CONSTITUENT - (String) The name of the Constituent being measured
+	 * <li>UNITS - (STring) The units the constituent is measured in
+	 * <li>PRECISION - (int) The number of decimal places
+	 * <li>IS_POINT_SOURCE (boolean) 'T' or 'F' values that can be mapped to boolean.
+	 * </ol>
+	 * 
+	 * TODO:  Finish this load method and use instead of loadSourceIds.  Update
+	 * PredictData to have set/getSrcMetaData instead of srcIds.
+	 *
+	 * @param conn
+	 * @param modelId
+	 * @return
+	 * @throws SQLException
+	 * @throws IOException
+	 */
+	public static DataTableWritable loadSourceData(Connection conn, long modelId)
+			throws SQLException, IOException {
+	
+		String query = getQuery("SelectSourceData", modelId);
+
+		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+		st.setFetchSize(30);
+
+		ResultSet rs = null;
+
+		try {
+
+			rs = st.executeQuery(query);
+			return null;	// TODO:  Use the new util loader here...
+
+		} finally {
+			if (rs != null) {
+				rs.close();
+				rs = null;
+			}
+		}
+	
+			
+	}
 
 
 	/**
