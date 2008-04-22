@@ -7,7 +7,7 @@
    </ID>
    <columns>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="2">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="3">
             <ID>7f2160c9-0110-1000-8032-c0a8016ee0d1</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -40,7 +40,11 @@
             <attributeValues class="java.util.HashMap">
                <Item>
                   <Key>size</Key>
-                  <Value class="java.lang.Long">60</Value>
+                  <Value class="java.lang.Long">20</Value>
+               </Item>
+               <Item>
+                  <Key>unit</Key>
+                  <Value>CHAR</Value>
                </Item>
             </attributeValues>
             <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
@@ -52,7 +56,13 @@
          <default/>
          <name>DISPLAY_NAME</name>
          <notNull>false</notNull>
-         <properties/>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>Comment</Key>
+               <Value>A shortened name for the source that is easier to display in space limited areas
+</Value>
+            </Item>
+         </properties>
       </Item>
       <Item>
          <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
@@ -80,10 +90,15 @@
          <default/>
          <name>IDENTIFIER</name>
          <notNull>true</notNull>
-         <properties/>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>Comment</Key>
+               <Value>Normally a sequentially numbered ID for the source, starting at 1. Used to refer to a source within a model.</Value>
+            </Item>
+         </properties>
       </Item>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="7">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="8">
             <ID>7f2160c9-0110-1000-8033-c0a8016ee0d1</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -94,8 +109,12 @@
                   <Key>size</Key>
                   <Value class="java.lang.Long">60</Value>
                </Item>
+               <Item>
+                  <Key>unit</Key>
+                  <Value>CHAR</Value>
+               </Item>
             </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="8">
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="9">
                <providerClass>oracle.javatools.db.ora.Oracle9i</providerClass>
                <schemaName/>
                <typeName>VARCHAR2</typeName>
@@ -104,7 +123,13 @@
          <default/>
          <name>NAME</name>
          <notNull>true</notNull>
-         <properties/>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>Comment</Key>
+               <Value>The full name of the source.
+</Value>
+            </Item>
+         </properties>
       </Item>
       <Item>
          <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
@@ -123,7 +148,12 @@
          <default/>
          <name>DESCRIPTION</name>
          <notNull>false</notNull>
-         <properties/>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>Comment</Key>
+               <Value>A detailed description of the source.</Value>
+            </Item>
+         </properties>
       </Item>
       <Item>
          <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
@@ -143,10 +173,15 @@
          <default class="java.lang.String">1</default>
          <name>SORT_ORDER</name>
          <notNull>true</notNull>
-         <properties/>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>Comment</Key>
+               <Value>Sequential numbers used to sort the sources (low to high) when the sources are displayed to the user. Can just be a copy of the SOURCE_ID values if the sort order does not need to be changed.</Value>
+            </Item>
+         </properties>
       </Item>
       <Item>
-         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="3">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="4">
             <ID>7f21e515-0110-1000-8038-c0a8016ee0d1</ID>
             <parent idref="0"/>
             <type>COLUMN</type>
@@ -159,10 +194,10 @@
                </Item>
                <Item>
                   <Key>scale</Key>
-                  <Value class="java.lang.Long" id="4">0</Value>
+                  <Value class="java.lang.Long" id="5">0</Value>
                </Item>
             </attributeValues>
-            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="5">
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="6">
                <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
                <schemaName/>
                <typeName>NUMBER</typeName>
@@ -172,6 +207,134 @@
          <name>SPARROW_MODEL_ID</name>
          <notNull>true</notNull>
          <properties/>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>770778e1-0119-1000-8002-c0a8019661a5</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">30</Value>
+               </Item>
+               <Item>
+                  <Key>unit</Key>
+                  <Value>CHAR</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="2">
+               <providerClass>oracle.javatools.db.ora.Oracle9i</providerClass>
+               <schemaName/>
+               <typeName>VARCHAR2</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>CONSTITUENT</name>
+         <notNull>true</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>Comment</Key>
+               <Value>The name of the thing the source values are measuring.
+</Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>770778e2-0119-1000-8003-c0a8019661a5</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">30</Value>
+               </Item>
+               <Item>
+                  <Key>unit</Key>
+                  <Value>CHAR</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>UNITS</name>
+         <notNull>true</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>Comment</Key>
+               <Value>The units in which the constituent is measured in
+</Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>770778e2-0119-1000-8004-c0a8019661a5</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>2</Value>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value class="java.lang.Long">0</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID">
+               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
+               <schemaName/>
+               <typeName>NUMBER</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>PRECISION</name>
+         <notNull>true</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>Comment</Key>
+               <Value>The number of decimal places used in reports of the source value. Full precision is used for calculations.
+</Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>770778e2-0119-1000-8005-c0a8019661a5</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">1</Value>
+               </Item>
+               <Item>
+                  <Key>unit</Key>
+                  <Value>CHAR</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>IS_POINT_SOURCE</name>
+         <notNull>true</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>Comment</Key>
+               <Value>A yes or no flag (values are Y or N) to indicate if this is a point source. This flag may be used to inhibit reports of yield calculations based on point sources.
+</Value>
+            </Item>
+         </properties>
       </Item>
    </columns>
    <constraints>
@@ -183,7 +346,7 @@
          </ID>
          <columns>
             <Item>
-               <ID idref="2"/>
+               <ID idref="3"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
@@ -210,8 +373,8 @@
             <type>CONSTRAINT</type>
          </ID>
          <columns>
-            <Item id="6">
-               <ID idref="3"/>
+            <Item id="7">
+               <ID idref="4"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
@@ -220,10 +383,10 @@
                      </Item>
                      <Item>
                         <Key>scale</Key>
-                        <Value idref="4"/>
+                        <Value idref="5"/>
                      </Item>
                   </attributeValues>
-                  <dataTypeID idref="5"/>
+                  <dataTypeID idref="6"/>
                </dataTypeUsage>
                <default/>
                <name>SPARROW_MODEL_ID</name>
@@ -252,9 +415,9 @@
             <type>CONSTRAINT</type>
          </ID>
          <columns>
-            <Item idref="6"/>
+            <Item idref="7"/>
             <Item>
-               <ID idref="7"/>
+               <ID idref="8"/>
                <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
                   <attributeValues class="java.util.HashMap">
                      <Item>
@@ -262,7 +425,7 @@
                         <Value class="java.lang.Long">60</Value>
                      </Item>
                   </attributeValues>
-                  <dataTypeID idref="8"/>
+                  <dataTypeID idref="9"/>
                </dataTypeUsage>
                <default/>
                <name>NAME</name>
@@ -272,6 +435,17 @@
          </columns>
          <enabled>true</enabled>
          <name>SOURCE_UK_SOURCE_NAME</name>
+         <properties/>
+      </Item>
+      <Item class="oracle.javatools.db.CheckConstraint">
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>7708b1f4-0119-1000-8006-c0a8019661a5</ID>
+            <parent idref="0"/>
+            <type>CONSTRAINT</type>
+         </ID>
+         <checkCondition>IS_POINT_SOURCE IN ('T','F')</checkCondition>
+         <enabled>true</enabled>
+         <name>SOURCE_CHK_IS_POINT_SOURCE</name>
          <properties/>
       </Item>
    </constraints>
