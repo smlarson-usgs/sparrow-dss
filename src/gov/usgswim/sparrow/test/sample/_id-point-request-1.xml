@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<id-point-request
+  xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	model-id="22">
+	<!-- Eliminated the result-count from the root element - it only makes sense to return one reach -->
+	
+	<point lat="40" long="-100"/>
+	
+	<content>
+		<treatments/>
+		<attributes/>
+		<predicted/>
+		<!-- an 'all' element is also accepted -->
+	</content>
+	
+	<!--
+	This is the same response-format element used in other documents.
+	There are lots of other added parts, but this example or w/ the
+	applicatoin/xml are really the only two possible values.
+	-->
+	<response-format>
+		<mime-type>application/json</mime-type>
+	</response-format>
+</id-point-request>

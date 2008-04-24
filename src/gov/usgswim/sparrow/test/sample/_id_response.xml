@@ -6,7 +6,12 @@
 	<message />
 	<cache-lifetime-seconds>86400</cache-lifetime-seconds>
 
-	<identification>
+	<!--
+	This is the maximum possible response (it has all components in it).
+	All ID responses will contain the identification element, but all other elements
+	are optional and can be requested individually or all together.
+	-->
+	<identification distance-in-meters="1246">
 		<id>185135413</id>
 		<name>Red River</name>
 	</identification>
