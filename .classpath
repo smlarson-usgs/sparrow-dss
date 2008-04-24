@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="java_lib/apache/log4j/log4j-1.2.13.jar"/>
+	<classpathentry kind="lib" path="java_lib/codehaus/woodstox/usgs_core/wstx-lgpl-3.2.4.jar"/>
+	<classpathentry kind="lib" path="java_lib/jakarta/commons_lang/commons-lang-2.1.jar"/>
+	<classpathentry kind="lib" path="java_lib/jgoodies/forms/deploy/forms.jar"/>
+	<classpathentry kind="lib" path="java_lib/junit/junit.jar"/>
+	<classpathentry kind="lib" path="java_lib/junit/src.jar"/>
+	<classpathentry kind="lib" path="java_lib/oracle/mapviewer_client/mvclient.jar"/>
+	<classpathentry kind="lib" path="java_lib/oracle/mapviewer_client/sdovis.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/apache-tomcat-6.0.14/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="D:/apache-tomcat-6.0.14/lib/ojdbc14.jar"/>
+	<classpathentry kind="lib" path="D:/jdev10132/jdev/lib/jdev-rt.jar"/>
+	<classpathentry kind="lib" path="java_lib/codehaus/woodstox/usgs_dep/stax-api-1.0.1.jar" sourcepath="java_lib/codehaus/woodstox/wstx-src/src/java/com"/>
+	<classpathentry kind="lib" path="java_lib/usgs/datatable/usgs_core/usgs-datatable.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>
