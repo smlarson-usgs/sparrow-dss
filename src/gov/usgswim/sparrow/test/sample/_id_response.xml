@@ -11,7 +11,7 @@
 		<name>Red River</name>
 	</identification>
 	
-	<response display="Treatments" name="treatments">
+	<treatments display="Treatments">
 		<metadata rowCount="5" columnCount="5" row-id-name="source_id">
 			<columns>
 				<col name="Source Name" type="String" />
@@ -28,8 +28,8 @@
 			<r id="4"><c>Waste</c><c>Tons of Garbage</c><c>354564</c><c>354564</c><c>1</c></r>
 			<r id="5"><c>Non-Agricultural</c><c>Total Population</c><c>354564</c><c>354564</c><c>1</c></r>
 		</data>
-	</response>
-	<response display="Attributes" name="attribs">
+	</treatments>
+	<attributes display="Attributes">
 		<metadata rowCount="11" columnCount="3">
 			<columns>
 				<col name="Name" type="String" />
@@ -51,8 +51,8 @@
 				<r><c>To Node</c><c>4843</c><c/></r>
 			</section>
 		</data>
-	</response>
-	<response display="Predicted Values" name="predicted">
+	</attributes>
+	<predicted display="Predicted Values">
 		<metadata rowCount="12" columnCount="4">
 			<columns>
 				<col name="Source Name" type="String" />
@@ -79,6 +79,6 @@
 				<r><c>Total:</c><c>354564</c><c>354564</c><c>0</c></r>
 			</section>
 		</data>
-	</response>
+	</predicted>
 
 </sparrow-id-response>
