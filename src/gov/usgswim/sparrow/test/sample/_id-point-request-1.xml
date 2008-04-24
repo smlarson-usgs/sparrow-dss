@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <id-point-request
   xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_2"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	model-id="22">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<!-- Eliminated the result-count from the root element - it only makes sense to return one reach -->
+	
+	<predict-context context-id="1231241243424"/>
 	
 	<point lat="40" long="-100"/>
 	
