@@ -10,10 +10,9 @@
 	<classpathentry kind="lib" path="java_lib/oracle/mapviewer_client/mvclient.jar"/>
 	<classpathentry kind="lib" path="java_lib/oracle/mapviewer_client/sdovis.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="D:/apache-tomcat-6.0.14/lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="D:/apache-tomcat-6.0.14/lib/ojdbc14.jar"/>
-	<classpathentry kind="lib" path="D:/jdev10132/jdev/lib/jdev-rt.jar"/>
 	<classpathentry kind="lib" path="java_lib/codehaus/woodstox/usgs_dep/stax-api-1.0.1.jar" sourcepath="java_lib/codehaus/woodstox/wstx-src/src/java/com"/>
 	<classpathentry kind="lib" path="java_lib/usgs/datatable/usgs_core/usgs-datatable.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/common/lib/servlet-api.jar"/>
+	<classpathentry kind="var" path="ORA_JDBC_DRIVERS/ojdbc14.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
