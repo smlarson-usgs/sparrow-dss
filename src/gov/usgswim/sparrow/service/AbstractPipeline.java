@@ -1,5 +1,8 @@
 package gov.usgswim.sparrow.service;
 
+import java.util.Arrays;
+import java.util.List;
+
 import gov.usgs.webservices.framework.formatter.IFormatter;
 import gov.usgs.webservices.framework.formatter.JSONFormatter;
 import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
@@ -10,7 +13,6 @@ import gov.usgswim.service.HttpRequestHandler;
 import gov.usgswim.service.ResponseFormat;
 import gov.usgswim.service.pipeline.EchoPipeline;
 import gov.usgswim.service.pipeline.Pipeline;
-import gov.usgswim.service.pipeline.PipelineRegistry;
 import gov.usgswim.service.pipeline.PipelineRequest;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +23,7 @@ public abstract class AbstractPipeline<T extends PipelineRequest> implements Pip
 
 	protected final HttpRequestHandler<T> handler;
 	protected final AbstractHttpRequestParser<T> parser;
+	public static final List<String> flatMimeTypes = Arrays.asList(new String[] {"csv", "tab", "excel", "html"});
 	
 	protected AbstractPipeline(HttpRequestHandler<T> handler, AbstractHttpRequestParser<T> parser) {
 		this.handler = handler;
@@ -41,7 +44,7 @@ public abstract class AbstractPipeline<T extends PipelineRequest> implements Pip
 		// Generators have to behave differently if flattening is needed
 		// TODO refactor this into a query of the formatter.
 		ResponseFormat respFormat = o.getResponseFormat();
-		boolean isNeedsFlattening = PipelineRegistry.flatMimeTypes.contains(respFormat.getMimeType());
+		boolean isNeedsFlattening = AbstractPipeline.flatMimeTypes.contains(respFormat.getMimeType());
 		XMLStreamReader reader = handler.getXMLStreamReader((T)o, isNeedsFlattening);
 		// TODO worry about genericize later
 		OutputType outputType = respFormat.getOutputType();

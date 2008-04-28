@@ -3,6 +3,7 @@ package gov.usgswim.sparrow;
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.task.Computable;
+import gov.usgswim.task.ComputableCache;
 
 import org.apache.log4j.Logger;
 
@@ -42,7 +43,8 @@ public class PredictComputable implements Computable<PredictRequest, PredictResu
 	 * @return
 	 */
 	public PredictData loadData(PredictRequest req) throws Exception {
-		return SharedApplication.getInstance().getPredictDatasetCache().compute( req.getModelId() );
+		ComputableCache<Long, PredictData> pdCache = SharedApplication.getInstance().getPredictDatasetCache();
+		return pdCache.compute( req.getModelId() );
 	}
 
 	/**

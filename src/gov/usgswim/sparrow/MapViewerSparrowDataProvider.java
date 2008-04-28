@@ -6,6 +6,7 @@ import gov.usgswim.sparrow.service.PredictParser;
 import gov.usgswim.sparrow.service.PredictService;
 import gov.usgswim.sparrow.service.PredictServiceRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.task.ComputableCache;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -211,7 +212,8 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 
 
 		try {
-			sysInfo = SharedApplication.getInstance().getPredictDatasetCache().compute( predictRequest.getModelId() ).getSys();
+			ComputableCache<Long, PredictData> pdCache = SharedApplication.getInstance().getPredictDatasetCache();
+			sysInfo = pdCache.compute( predictRequest.getModelId() ).getSys();
 		} catch (Exception e) {
 			log.error("No way to indicate this error to mapViewer, so returning null", e);
 			return null;

@@ -130,7 +130,7 @@ public class JDBCUtilMemoryTest extends TestCase {
 		System.out.println("======= Testing loadFullModelDataSet Components Memory Usage =======");
 		ObjectFactory sourceIDFactory = new ObjectFactory() {
 			public Object makeObject() throws SQLException, IOException {
-				return DataLoader.loadSourceIds(conn, modelId);
+				return DataLoader.loadSourceData(conn, modelId);
 			}
 		};
 		ObjectFactory systemInfoFactory = new ObjectFactory() {

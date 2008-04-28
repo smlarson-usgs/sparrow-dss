@@ -122,7 +122,6 @@ public class AdjustmentSetImm implements AdjustmentSet {
 						break;
 					case SPECIFIC_ADJUST:
 						if (! (view instanceof SparseOverrideAdjustment)) view = new SparseOverrideAdjustment((view == null)?source:view);
-//						if (! (view instanceof Data2DViewWriteLocal)) view = new Data2DViewWriteLocal((view == null)?source:view);
 						break;
 					default:
 						throw new Exception("Unsupported Adjustment type '" + a + "'");

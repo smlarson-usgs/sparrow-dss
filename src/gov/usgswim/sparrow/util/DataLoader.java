@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.util;
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.PredictData;
@@ -25,7 +26,7 @@ import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 /**
- * Reads in data from the db to Data2D instances.
+ * Reads in data from the db to DataTable instances.
  * 
  * The methods in this class pull the SQL query strings from the associated
  * DataLoader.properties file.  The values in this file are read fresh for
@@ -38,7 +39,8 @@ public class DataLoader {
 
 	protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
 	public static int DO_NOT_INDEX = -1;
-
+	public static final int SOURCE_ID_COL = 0;
+	
 	public DataLoader() {
 	}
 
@@ -58,7 +60,7 @@ public class DataLoader {
 
 		PredictDataBuilder dataSet = new PredictDataBuilder();
 
-		dataSet.setSrcIds( loadSourceIds(conn, modelId));
+		dataSet.setSrcIds( loadSourceData(conn, modelId));
 		dataSet.setSys( loadSystemInfo(conn, modelId) );
 		dataSet.setTopo( loadTopo(conn, modelId) );
 		dataSet.setCoef( loadSourceReachCoef(conn, modelId, 0, dataSet.getSrcIds()) );
@@ -84,7 +86,7 @@ public class DataLoader {
 
 		PredictDataBuilder dataSet = new PredictDataBuilder();
 
-		dataSet.setSrcIds( loadSourceIds(conn, modelId));
+		dataSet.setSrcIds( loadSourceData(conn, modelId));
 		dataSet.setSys( loadSystemInfo(conn, modelId) );
 		dataSet.setTopo( loadTopo(conn, modelId) );
 		dataSet.setCoef( loadSourceReachCoef(conn, modelId, dataSet.getSrcIds()) );
@@ -200,7 +202,7 @@ public class DataLoader {
 
 
 	/**
-	 * Returns a Int2D table of all System info
+	 * Returns a DataTable of all System info
 	 * <h4>Data Columns, sorted by HYDSEQ.  One row per reach (i = reach index)</h4>
 	 * <p>Row IDs duplicate the Reach Ids in column zero.</p>
 	 * <ol>
@@ -222,12 +224,11 @@ public class DataLoader {
 		DataTableWritable data = readAsInteger(conn, query, 2000, DataLoader.DO_NOT_INDEX);
 		int[] ids = TemporaryHelper.getIntColumn(data, 0);
 		return TemporaryHelper.setIds(data, ids);
-//		return new Int2DImm(data.getIntData(), data.getHeadings(), 0, ids);
 
 	}
 
 	/**
-	 * Returns a Int2D table of all topo data for for a single model.
+	 * Returns a DataTable of all topo data for for a single model.
 	 * <h4>Data Columns (sorted by HYDSEQ)</h4>
 	 * <ol>
 	 * <li>FNODE - The from node
@@ -252,7 +253,7 @@ public class DataLoader {
 	}
 
 	/**
-	 * Returns a Double2D table of all source/reach coef's for for a single iteration of a model.
+	 * Returns a DataTable of all source/reach coef's for for a single iteration of a model.
 	 * <h4>Data Columns with one row per reach (sorted by HYDSEQ)</h4>
 	 * <ol>
 	 * <li>[Source Name 1] - The coef's for the first source in one column
@@ -263,7 +264,7 @@ public class DataLoader {
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
 	 * @param iteration The iteration for which coef's should be returned.  Zero is the nominal value - all others are for bootstrapping.
-	 * @param sources	An Int2D list of the sources for the model, in one column (see loadSource)
+	 * @param sources	An DataTable list of the sources for the model, in one column (see loadSource)
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
@@ -277,24 +278,15 @@ public class DataLoader {
 			throw new IllegalArgumentException("There must be at least one source");
 		}
 
-
-//		String reachCountQuery = getQuery("SelectReachCount", modelId);
-
-//		DataTable reachCountData = readAsInteger(conn, reachCountQuery, 1);
-//		int reachCount = reachCountData.getInt(0, 0);
 		int sourceCount = sources.getRowCount();
-
 		DataTableWritable sourceReachCoef = new SimpleDataTableWritable();
-
 
 		for (int srcIndex=0; srcIndex<sourceCount; srcIndex++) {
 
-
 			String query =
 				getQuery("SelectReachCoef", new Object[] {
-						"ModelId", modelId, "Iteration", iteration, "SourceId", sources.getInt(srcIndex, 1)
+						"ModelId", modelId, "Iteration", iteration, "SourceId", sources.getInt(srcIndex, SOURCE_ID_COL)
 				});
-
 
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			st.setFetchSize(2000);
@@ -320,7 +312,7 @@ public class DataLoader {
 	}
 
 	/**
-	 * Returns a Double2D table of all source/reach coef's for for all iterationa of a model.
+	 * Returns a DataTable of all source/reach coef's for for all iterationa of a model.
 	 * <h4>Data Columns with one row per reach (sorted by ITERATION then HYDSEQ)</h4>
 	 * <ol>
 	 * <li>[Source Name 1] - The coef's for the first source in one column
@@ -330,7 +322,7 @@ public class DataLoader {
 	 * 
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
-	 * @param sources	An Int2D list of the sources for the model, in one column (see loadSource)
+	 * @param sources	An DataTable list of the sources for the model, in one column (see loadSource)
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
@@ -340,15 +332,7 @@ public class DataLoader {
 		if (sources.getRowCount() == 0) {
 			throw new IllegalArgumentException("There must be at least one source");
 		}
-
-//		String reachCountQuery = getQuery("SelectReachCount", modelId);
-
-//		String itCountQuery = getQuery("SelectIterationCount", modelId);
-
-//		DataTable reachCountData = readAsInteger(conn, reachCountQuery, 1);
-//		DataTable itCountData = readAsInteger(conn, itCountQuery, 1);
-//		int reachCount = reachCountData.getInt(0, 0);
-//		int itCount = itCountData.getInt(0, 0);
+		
 		int sourceCount = sources.getRowCount();
 
 		DataTableWritable sourceReachCoef = new SimpleDataTableWritable();
@@ -362,9 +346,8 @@ public class DataLoader {
 
 			String query =
 				getQuery("SelectAllReachCoef", new Object[] {
-						"ModelId", modelId, "SourceId", sources.getInt(srcIndex, 1)
+						"ModelId", modelId, "SourceId", sources.getInt(srcIndex, SOURCE_ID_COL)
 				});
-
 
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			st.setFetchSize(2000);
@@ -382,7 +365,6 @@ public class DataLoader {
 					rs = null;
 				}
 			}
-
 		}
 
 		return sourceReachCoef;
@@ -391,7 +373,7 @@ public class DataLoader {
 
 
 	/**
-	 * Returns a Double2D table of all decay data for for a single model.
+	 * Returns a DataTable of all decay data for for a single model.
 	 * 
 	 * <h4>Data Columns, sorted by HYDSEQ then IDENTIFIER</h4>
 	 * <p><i>Note:  These are actually delivery terms - that is 1/decay</i></p>
@@ -425,7 +407,7 @@ public class DataLoader {
 
 
 	/**
-	 * Returns a Double2D table of all source values for for a single model.
+	 * Returns a DataTable of all source values for for a single model.
 	 * <h4>Data Columns with one row per reach (sorted by HYDSEQ)</h4>
 	 * <ol>
 	 * <li>[Source Name 1] - The values for the first source in one column
@@ -435,7 +417,7 @@ public class DataLoader {
 	 * 
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
-	 * @param sources	An Int2D list of the sources for the model, in one column (see loadSource)
+	 * @param sources	An DataTable list of the sources for the model, in one column (see loadSource)
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
@@ -446,10 +428,6 @@ public class DataLoader {
 			throw new IllegalArgumentException("There must be at least one source");
 		}
 
-//		String reachCountQuery = getQuery("SelectReachCount", modelId);
-//
-//		DataTable reachCountData = readAsInteger(conn, reachCountQuery, 1);
-//		int reachCount = reachCountData.getInt(0, 0);
 		int sourceCount = sources.getRowCount();
 
 		//Load column headings using the source display names
@@ -476,7 +454,6 @@ public class DataLoader {
 			}
 		}
 
-
 		DataTableWritable sourceValue = new SimpleDataTableWritable();
 
 
@@ -484,9 +461,9 @@ public class DataLoader {
 
 			String query =
 				getQuery("SelectSourceValues", new Object[] {
-						"ModelId", modelId, "SourceId", sources.getInt(srcIndex, 1)
+						"ModelId", modelId, "SourceId", sources.getInt(srcIndex, SOURCE_ID_COL)
 				});
-
+			
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			st.setFetchSize(2000);
 			ResultSet rs = null;
@@ -511,7 +488,7 @@ public class DataLoader {
 	}
 
 	/**
-	 * Returns a single column Int2D table of all source IDs for a single model.
+	 * Returns a single column DataTable of all source IDs for a single model.
 	 * <h4>Data Columns (sorted by SORT_ORDER)</h4>
 	 * <ol>
 	 * <li>IDENTIFIER - The Model specific ID for the source (usually numbered starting w/ 1)
@@ -520,31 +497,31 @@ public class DataLoader {
 	 * 
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
-	 * @return	An Int2D object contains the list of source_id's in a single column
+	 * @return	An DataTable object contains the list of source_id's in a single column
 	 * @throws SQLException
 	 */
-	public static DataTableWritable loadSourceIds(Connection conn, long modelId) throws SQLException,
-	IOException {
-
-		String query = getQuery("SelectSourceIds", modelId);
-
-		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		st.setFetchSize(1000);
-
-		ResultSet rs = null;
-
-		try {
-
-			rs = st.executeQuery(query);
-			return readAsInteger(rs, DO_NOT_INDEX);
-
-		} finally {
-			if (rs != null) {
-				rs.close();
-				rs = null;
-			}
-		}
-	}
+//	public static DataTableWritable loadSourceIds(Connection conn, long modelId) throws SQLException,
+//	IOException {
+//
+//		String query = getQuery("SelectSourceIds", modelId);
+//
+//		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+//		st.setFetchSize(1000);
+//
+//		ResultSet rs = null;
+//
+//		try {
+//
+//			rs = st.executeQuery(query);
+//			return readAsInteger(rs, DO_NOT_INDEX);
+//
+//		} finally {
+//			if (rs != null) {
+//				rs.close();
+//				rs = null;
+//			}
+//		}
+//	}
 	
 	
 	/**
@@ -585,10 +562,8 @@ public class DataLoader {
 		ResultSet rs = null;
 
 		try {
-
 			rs = st.executeQuery(query);
-			return null;	// TODO:  Use the new util loader here...
-
+			return DataTableUtils.toDataTable(rs, true);
 		} finally {
 			if (rs != null) {
 				rs.close();
@@ -601,13 +576,13 @@ public class DataLoader {
 
 
 	/**
-	 * Loads a single column from the resultSet source to the Double2D destination table.
+	 * Loads a single column from the resultSet source to the destination DataTable.
 	 * For consistency, the from and to columns are ZERO INDEXED in both cases.
 	 * 
 	 * @param source Resultset to load the data from.  The resultset is assumed to be before the first row.
-	 * @param dest The destination Double2D table
+	 * @param dest The destination DataTable
 	 * @param fromCol The column (zero indexed) in the resultset to load from
-	 * @param toCol The column (zero indexed) in the Double2D table to load to
+	 * @param toCol The column (zero indexed) in the DataTable to load to
 	 * @throws SQLException
 	 */
 	public static void loadColumn(ResultSet source, DataTableWritable dest, int fromCol, int toCol) throws SQLException {
@@ -627,7 +602,7 @@ public class DataLoader {
 
 
 	/**
-	 * Creates an unindexed Int2DImm table from the passed query.
+	 * Creates an unindexed DataTable from the passed query.
 	 * 
 	 * All values in the source must be convertable to an integer.
 	 * 
@@ -642,7 +617,7 @@ public class DataLoader {
 	}
 
 	/**
-	 * Creates an Int2DImm table from the passed query with an optional index.
+	 * Creates an DataTable from the passed query with an optional index.
 	 * 
 	 * All values in the source must be convertable to an integer.
 	 * 
@@ -673,7 +648,7 @@ public class DataLoader {
 	}
 
 	/**
-	 * Creates an unindexed Int2DImm table from the passed resultset.
+	 * Creates an unindexed DataTable from the passed resultset.
 	 * 
 	 * All values in the source must be convertable to an integer.
 	 * 
@@ -686,7 +661,7 @@ public class DataLoader {
 	}
 
 	/**
-	 * Creates an Int2DImm table from the passed resultset with an optional index.
+	 * Creates a DataTable from the passed resultset with an optional index.
 	 * 
 	 * All values in the source must be convertable to an integer.
 	 * 
@@ -733,7 +708,7 @@ public class DataLoader {
 
 
 	/**
-	 * Creates a Double2DImm table from the passed query.
+	 * Creates a DataTable from the passed query.
 	 * 
 	 * All values in the source must be convertable to a double.
 	 * 
@@ -763,7 +738,7 @@ public class DataLoader {
 	}
 
 	/**
-	 * Creates a Double2DImm table from the passed resultset.
+	 * Creates a DataTable from the passed resultset.
 	 * 
 	 * All values in the source must be convertable to a double.
 	 * 

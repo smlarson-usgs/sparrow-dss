@@ -155,7 +155,7 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 	public int mapSourceId(int id, DataTable srcIndex) throws Exception {
 		if (srcIndex != null) {
 
-			int i = srcIndex.findFirst(0, id);
+			int i = srcIndex.getRowForId(Long.valueOf(id));
 
 			if (i > -1) {
 				// Running from database, so has a sourceid table
@@ -216,12 +216,13 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 	@Override
 	public int hashCode() {
 		//starts w/ some random numbers just to create unique results
-		return new HashCodeBuilder(123, 11).
+		int hash = new HashCodeBuilder(123, 11).
 		append(_type.ordinal()).
 		append(_reachId).
 		append(_srcId).
 		append(_val).
 		toHashCode();
+		return hash;
 	}
 }
 

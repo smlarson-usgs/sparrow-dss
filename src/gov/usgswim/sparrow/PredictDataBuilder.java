@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow;
 
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTable.Immutable;
 import gov.usgswim.sparrow.domain.Model;
 
 /**
@@ -275,7 +276,7 @@ public class PredictDataBuilder implements PredictData {
 	 * <h4>Data Columns, sorted by HYDSEQ</h4>
 	 * <p>One row per reach (i = reach index).  coef[i][k] == the source value for source k at reach i</p>
 	 * 
-	 * @return The Data2D data
+	 * @return The DataTable data
 	 */
 	public DataTable getSrc() {
 		return src;
@@ -374,46 +375,20 @@ public class PredictDataBuilder implements PredictData {
 
 	public PredictDataImm toImmutable() {
 		// TODO:  Model should have an immutable builder
-		return new PredictDataImm(
-				(getTopo() != null)?getTopo().toImmutable():null,
-						(getCoef() != null)?getCoef().toImmutable():null,
-								(getSrc() != null)?getSrc().toImmutable():null,
-										(getSrcIds() != null)?getSrcIds().toImmutable():null,
-												(getDecay() != null)?getDecay().toImmutable():null,
-														(getSys() != null)?getSys().toImmutable():null,
-																(getAncil() != null)?getAncil().toImmutable():null,
-																		(getModel() != null)?getModel():null
-		);
+		DataTable topo2 = (getTopo() != null)?getTopo().toImmutable():null;
+		DataTable coef2 = (getCoef() != null)?getCoef().toImmutable():null;
+		DataTable source2 = (getSrc() != null)?getSrc().toImmutable():null;
+		DataTable sourceIds2 = (getSrcIds() != null)?getSrcIds().toImmutable():null;
+		DataTable decay2 = (getDecay() != null)?getDecay().toImmutable():null;
+		DataTable sys2 = (getSys() != null)?getSys().toImmutable():null;
+		DataTable ancil2 = (getAncil() != null)?getAncil().toImmutable():null;
+		Model model2 = (getModel() != null)?getModel():null;
+		
+		return new PredictDataImm(topo2, coef2, source2, sourceIds2, decay2, sys2, ancil2, model2);
 
 	}
 
-//	public PredictData2 getImmutable(boolean forceImmutableMembers) {
-//	//TODO:  Model should have an immutable builder
-//	if (forceImmutableMembers) {
-//	return new PredictData2Imm(
-//	(getTopo() != null)?getTopo().toImmutable():null,
-//	(getCoef() != null)?getCoef().toImmutable():null,
-//	(getSrc() != null)?getSrc().toImmutable():null,
-//	(getSrcIds() != null)?getSrcIds().toImmutable():null,
-//	(getDecay() != null)?getDecay().toImmutable():null,
-//	(getSys() != null)?getSys().toImmutable():null,
-//	(getAncil() != null)?getAncil().toImmutable():null,
-//	(getModel() != null)?getModel():null
-//	);
-//	} else {
-//	return new PredictData2Imm(
-//	getTopo(),
-//	getCoef(),
-//	getSrc(),
-//	getSrcIds(),
-//	getDecay(),
-//	getSys(),
-//	getAncil(),
-//	getModel()
-//	);
-//	}
 
-//	}
 
 	public PredictDataBuilder getBuilder() {
 		return this;

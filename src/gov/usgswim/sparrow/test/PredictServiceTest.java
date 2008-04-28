@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.test;
 
+import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.ComparePercentageView;
 import gov.usgswim.sparrow.service.PredictParser;
@@ -225,12 +226,13 @@ public class PredictServiceTest extends TestCase {
 		PredictParser parser = new PredictParser();
 
 		PredictServiceRequest pr = parser.parse(xsr);
-//		service.dispatch(pr, fos);
-		// TODO need to find another way to create the file or to do validation
+
+		XMLPassThroughFormatter formatter = new XMLPassThroughFormatter();
+		XMLStreamReader in = service.getXMLStreamReader(pr, false);
+		formatter.dispatch(in, fos);
 
 		fos.close();
 		System.out.println("Result of prediction serialization written to: " + outFile.getAbsolutePath());
-
 
 		assertTrue(validate(outFile.getAbsolutePath()));
 	}

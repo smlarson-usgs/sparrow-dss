@@ -1,8 +1,8 @@
 package gov.usgswim.service;
 
 import gov.usgswim.service.pipeline.Pipeline;
-import gov.usgswim.service.pipeline.PipelineRegistry;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.MapViewerSparrowDataProvider;
 
 import java.io.IOException;
 
@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.stream.XMLInputFactory;
+
+import org.apache.log4j.Logger;
 
 /**
  * A thin servlet that takes requests for a service and allows them to be
@@ -38,6 +40,9 @@ import javax.xml.stream.XMLInputFactory;
  */
 public class ServiceServlet extends HttpServlet {
 	private static final long serialVersionUID = 7831587587942691556L;
+	protected static Logger log =
+		Logger.getLogger(ServiceServlet.class); //logging for this class
+
 
 	/**
 	 * The name of the optional init parameter that defines the name of the http request

@@ -133,7 +133,7 @@
          <hash n="sparrow">
             <value n="custom" v="false"/>
             <value n="ignoreCompilerErrors" v="true"/>
-            <value n="javaOptions" v="-XX:MaxPermSize=384m -Xms768m -Xmx1024m"/>
+            <value n="javaOptions" v="-XX:MaxPermSize=384m -Xms768m -Xmx1024m -ea"/>
             <value n="name" v="sparrow"/>
             <value n="programArguments" v=""/>
             <value n="runActiveFile" v="false"/>

@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.test;
 
+import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
 import gov.usgswim.service.RequestHandler;
 import gov.usgswim.sparrow.service.ModelParser;
 import gov.usgswim.sparrow.service.ModelRequest;
@@ -41,27 +42,28 @@ public class ModelServiceTest extends TestCase {
 	 * @throws Exception
 	 */
 	public void testBasicMetaRequest() throws Exception {
-		// TODO [IK] Temporarily commented out while jaxp issues are to be fixed
 		
-//		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
-//		XMLStreamReader xsr = xinFact.createXMLStreamReader(
-//			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/meta_request_1.xml"));
-//		
-//		RequestHandler service = new ModelService();
-//		ModelParser parser = new ModelParser();
-//		
-//		File outFile = File.createTempFile("model-service-test", ".xml");
-//		FileOutputStream fos = new FileOutputStream(outFile);
-//		
-//		ModelRequest req = parser.parse(xsr);
-//		service.dispatch(req, fos);
-//
-//		fos.close();
-//		System.out.println("Result of model request written to: " + outFile.getAbsolutePath());
-//		
-//		
-//		assertTrue(validate(outFile.getAbsolutePath()));
-		assertTrue(false);// remove this when uncommenting the rest
+		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
+		XMLStreamReader xsr = xinFact.createXMLStreamReader(
+			this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/meta_request_1.xml"));
+		
+		ModelService service = new ModelService();
+		ModelParser parser = new ModelParser();
+		
+		File outFile = File.createTempFile("model-service-test", ".xml");
+		FileOutputStream fos = new FileOutputStream(outFile);
+		
+		ModelRequest req = parser.parse(xsr);
+		
+		XMLPassThroughFormatter formatter = new XMLPassThroughFormatter();
+		XMLStreamReader in = service.getXMLStreamReader(req, false);
+		formatter.dispatch(in, fos);
+
+		fos.close();
+		System.out.println("Result of model request written to: " + outFile.getAbsolutePath());
+		
+		
+		assertTrue(validate(outFile.getAbsolutePath()));
 	}
 	
 

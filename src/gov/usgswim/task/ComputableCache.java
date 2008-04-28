@@ -50,7 +50,7 @@ public class ComputableCache<A, V> implements Computable<A, V> {
 							return c.compute(arg);
 						}
 					};
-					
+				
 				FutureTask<V> ft = new FutureTask<V>(eval);
 				f = cache.putIfAbsent(arg, ft);
 				if (log.isInfoEnabled()) {
@@ -93,7 +93,7 @@ public class ComputableCache<A, V> implements Computable<A, V> {
 			} catch (ExecutionException e) {
 				//An error occured during the execution of the request.
 				//Not sure what to do here: if its a data error in the request, it will
-				//probably recurr if its tried again.  Otherwise, it could be a
+				//probably recur if it's tried again.  Otherwise, it could be a
 				//db connection problem or something...
 				cache.remove(arg, f);
 				

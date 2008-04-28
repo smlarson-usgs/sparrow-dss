@@ -15,6 +15,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.PredictResult;
+import gov.usgswim.task.ComputableCache;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -26,7 +27,7 @@ import org.apache.log4j.Logger;
  * xml document containing the predictions.
  *
  * In order to support local requests on the map server, this service also
- * has a runPrediction() method that returns raw data in a Data2D format,
+ * has a runPrediction() method that returns raw data in a DataTable format,
  * so that no inter-server communication is needed if the service is running
  * within the MapViewer server.  (similar to the EJB local interface)
  */
@@ -55,8 +56,8 @@ public class PredictService implements HttpRequestHandler<PredictServiceRequest>
 		long startTime = System.currentTimeMillis();	//Time started
 
 		try {
-
-			PredictResult adjResult = SharedApplication.getInstance().getPredictResultCache().compute(req.getPredictRequest());
+			ComputableCache<PredictRequest, PredictResult> pdCache = SharedApplication.getInstance().getPredictResultCache();
+			PredictResult adjResult = pdCache.compute(req.getPredictRequest());
 
 			TemporaryHelper.sampleDataTable(adjResult);
 
@@ -107,8 +108,8 @@ public class PredictService implements HttpRequestHandler<PredictServiceRequest>
 	 * @return
 	 */
 	public PredictData loadData(PredictRequest req) throws Exception {
-		// TODO need to circumvent the cache temporarily
-		return SharedApplication.getInstance().getPredictDatasetCache().compute( req.getModelId() );
+		ComputableCache<Long, PredictData> pdCache = SharedApplication.getInstance().getPredictDatasetCache();
+		return pdCache.compute( req.getModelId() );
 	}
 
 	/**
@@ -172,8 +173,9 @@ public class PredictService implements HttpRequestHandler<PredictServiceRequest>
 
 		if (req.getIdByPointRequest() != null) {
 
-			//The IDByPointRequest returns data w/ reach Ids as IDs in the Data2D
-			Long[] rowIds = DataTableUtils.getRowIds(SharedApplication.getInstance().getIdByPointCache().compute(req.getIdByPointRequest()));
+			//The IDByPointRequest returns data w/ reach Ids as IDs in the DataTable
+			ComputableCache<IDByPointRequest, DataTable> idByPcache = SharedApplication.getInstance().getIdByPointCache();
+			Long[] rowIds = DataTableUtils.getRowIds(idByPcache.compute(req.getIdByPointRequest()));
 
 			double[][] newData = new double[rowIds.length][];
 
@@ -188,7 +190,6 @@ public class PredictService implements HttpRequestHandler<PredictServiceRequest>
 			TemporaryHelper.setIds(result, rowIds);
 			return result;
 			// TODO determine if necessary to add indexes
-			//return new Double2DImm(newData, result.getHeadings(), result.getIndexColumn(), rowIds); OLD CODE
 
 		} else {
 			return source;

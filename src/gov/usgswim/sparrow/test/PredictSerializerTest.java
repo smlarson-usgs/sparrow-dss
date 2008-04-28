@@ -1,12 +1,24 @@
 package gov.usgswim.sparrow.test;
 
+import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
+import gov.usgswim.datatable.DataTable;
+import gov.usgswim.sparrow.service.PredictParser;
+import gov.usgswim.sparrow.service.PredictSerializer;
+import gov.usgswim.sparrow.service.PredictService;
+import gov.usgswim.sparrow.service.PredictServiceRequest;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.codehaus.stax2.XMLInputFactory2;
 import org.xml.sax.SAXException;
 
 
@@ -28,29 +40,26 @@ public class PredictSerializerTest extends TestCase {
 	 * TODO [IK] re fill this test
 	 */
 	public void testBasicPrediction() throws Exception {
-		// TODO [IK] Temporarily commented out while jaxp issues are to be fixed
-//		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
-//		XMLStreamReader xsr = xinFact.createXMLStreamReader(
-//				this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-0.xml"));
-//
-//		PredictService service = new PredictService();
-//		PredictParser parser = new PredictParser();
-//
-//		PredictServiceRequest pr = parser.parse(xsr);
-//		Data2D result = service.dispatchDirect(pr);
-//
-//		PredictSerializer ps = new PredictSerializer();
-//
-//		File outFile = File.createTempFile("predict-serilizer-test", ".xml");
-//		FileOutputStream fos = new FileOutputStream(outFile);
-//
-//		ps.writeResponse(fos, null, result, null);
-//		fos.close();
-//		System.out.println("Result of prediction serialization written to: " + outFile.getAbsolutePath());
-//
-//
-//		assertTrue(validate(outFile.getAbsolutePath()));
-		assertTrue(false);// remove this when uncommenting the rest
+		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
+		XMLStreamReader xsr = xinFact.createXMLStreamReader(
+				this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-0.xml"));
+
+		PredictService service = new PredictService();
+		PredictParser parser = new PredictParser();
+		PredictServiceRequest pr = parser.parse(xsr);
+		File outFile = File.createTempFile("predict-serilizer-test", ".xml");
+		FileOutputStream fos = new FileOutputStream(outFile);
+
+		XMLPassThroughFormatter formatter = new XMLPassThroughFormatter();
+		formatter.dispatch(service.getXMLStreamReader(pr, false), fos);
+
+		fos.close();
+		System.out.println("Result of prediction serialization written to: " + outFile.getAbsolutePath());
+
+		// TODO need to assign schemalocation via resolver
+		// to D:/sparrow-main/classes/gov/usgswim/sparrow/prediction_result.xsd
+		assertTrue(validate(outFile.getAbsolutePath()));
+
 
 	}
 
