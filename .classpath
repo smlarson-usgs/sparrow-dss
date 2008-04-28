@@ -14,5 +14,7 @@
 	<classpathentry kind="lib" path="java_lib/usgs/datatable/usgs_core/usgs-datatable.jar"/>
 	<classpathentry kind="var" path="ORA_JDBC_DRIVERS/ojdbc14.jar"/>
 	<classpathentry kind="var" path="TOMCAT6_HOME/lib/servlet-api.jar"/>
+	<classpathentry kind="lib" path="java_lib/ehcache/usgs_core/ehcache.jar"/>
+	<classpathentry kind="lib" path="java_lib/ehcache/usgs_dep/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
