@@ -15,5 +15,6 @@
 	<classpathentry kind="var" path="TOMCAT6_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="java_lib/ehcache/usgs_core/ehcache.jar"/>
 	<classpathentry kind="lib" path="java_lib/ehcache/usgs_dep/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="lib" path="java_lib/backport_util/usgs_core/backport-util-concurrent.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
