@@ -12,7 +12,7 @@
 		nominal, however, this structure allows for the comparison of multiple
 		adjusted predictions by adding another source-adjustments element.
 		-->
-		<adjustment-groups conflicts="accumulate | supersede">
+		<adjustment-groups conflicts="accumulate | supersede">	<!--  AdjustmentGroup Object?  Cached. -->
 			<reach-group enabled="true" name="Northern Indiana Plants"> <!--  ReachGroup Object -->
 				<desc>Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project</desc>
 				<notes>
@@ -23,9 +23,9 @@
 					but we will tailor this later based on plant type.
 				</notes>
 				<!-- Multiple treatments are possible -->
-				<adjustment src="5" coef=".9"/>
+				<adjustment src="5" coef=".9"/>	<!--  Existing Adjustment Object -->
 				<adjustment src="4" coef=".75"/>
-				<logical-set>
+				<logical-set>	<!--  LogicalSet Object?  Used as cache key for a reach collection. -->
 					<criteria attrib="huc8">01746286</criteria>
 				</logical-set>
 				<logical-set>
@@ -120,7 +120,7 @@
 		
 		Does annalysis happen for all related columns?  Yes.
 		-->
-		<analysis>
+		<analysis>	<!--  Analysis Object  Cached. -->
 		
 			<!-- similar to a SQL Select clause -->
 			<select>
@@ -282,7 +282,7 @@
 			
 		</analysis>
 		
-		<terminal-reaches>
+		<terminal-reaches>	<!--  TerminalReaches Object.  (hold off)  Cached. -->
 			<reach>2345642</reach>
 			<reach>3425688</reach>
 			<reach>5235424</reach>
@@ -290,7 +290,7 @@
 			<logical-set/>
 		</terminal-reaches>
 		
-		<area-of-interest>
+		<area-of-interest>	<!--  AreaOfInterest Object.  (hold off)  Cached. -->
 	
 			<!--
 			Political boundry
