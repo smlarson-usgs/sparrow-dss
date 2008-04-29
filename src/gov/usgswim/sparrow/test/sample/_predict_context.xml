@@ -12,8 +12,8 @@
 		nominal, however, this structure allows for the comparison of multiple
 		adjusted predictions by adding another source-adjustments element.
 		-->
-		<treatment-groups conflicts="accumulate | supersede">
-			<group enabled="true" name="Northern Indiana Plants">
+		<adjustment-groups conflicts="accumulate | supersede">
+			<group enabled="true" name="Northern Indiana Plants"> <!--  ReachGroup Object -->
 				<desc>Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project</desc>
 				<notes>
 					I initially selected HUC 01746286 and 01746289,
@@ -23,8 +23,8 @@
 					but we will tailor this later based on plant type.
 				</notes>
 				<!-- Multiple treatments are possible -->
-				<treatment src="5" coef=".9"/>
-				<treatment src="4" coef=".75"/>
+				<adjustment src="5" coef=".9"/>
+				<adjustment src="4" coef=".75"/>
 				<logical-set>
 					<criteria attrib="huc8">01746286</criteria>
 				</logical-set>
@@ -40,7 +40,7 @@
 					which will roughly result in a 5% increase in the aggrecultural source.
 					This is an estimate so I'm leaving it out of the runs created	for the EPA.
 				</notes>
-				<treatment src="1" coef="1.05"/>
+				<adjustment src="1" coef="1.05"/>
 				<logical-set>
 					<criteria attrib="reach" relation="upstream">8346289</criteria>
 				</logical-set>
@@ -52,7 +52,7 @@
 			<group enabled="true" name="Illinois">
 				<desc>The entire state of Illinois</desc>
 				<notes>The Urban source for Illinois is predicted is to increase 20%.</notes>
-				<treatment src="2" coef="1.2"/>
+				<adjustment src="2" coef="1.2"/>
 				<logical-set>
 					<criteria attrib="state-code">il</criteria>
 				</logical-set>
@@ -64,18 +64,18 @@
 					We know of 3 plants on the Wisconsin River which have announced improved
 					BPM implementations.
 				</notes>
-				<treatment src="2" coef=".75"/>
+				<adjustment src="2" coef=".75"/>
 				<reach id="483947453">
-					<treatment src="2" coef=".9"/>
+					<adjustment src="2" coef=".9"/>
 				</reach>
 				<reach id="947839474">
-					<treatment src="2" abs="91344"/>
+					<adjustment src="2" abs="91344"/>
 				</reach>
 			</group>
 			
 			<!-- Do we still allow gross adjustments?  -->
 			<!-- <gross-src src="4" coef="2"/> -->
-		</treatment-groups>
+		</adjustment-groups>
 		
 		<!--
 		

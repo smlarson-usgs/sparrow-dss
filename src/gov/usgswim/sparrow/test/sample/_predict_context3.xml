@@ -16,7 +16,7 @@
 	* analysis may be refered to by named analysis types.
 	-->
 	
-	<treatment-groups predefined="957648"/>
+	<adjustment-groups predefined="957648"/>
 	
 	<!--
 	required element

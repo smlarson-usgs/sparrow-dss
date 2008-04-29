@@ -16,7 +16,7 @@
 		<name>Red River</name>
 	</identification>
 	
-	<treatments display="Treatments">
+	<adjustments display="Treatments">
 		<metadata rowCount="5" columnCount="5" row-id-name="source_id">
 			<columns>
 				<col name="Source Name" type="String" />
@@ -33,7 +33,7 @@
 			<r id="4"><c>Waste</c><c>Tons of Garbage</c><c>354564</c><c>354564</c><c>1</c></r>
 			<r id="5"><c>Non-Agricultural</c><c>Total Population</c><c>354564</c><c>354564</c><c>1</c></r>
 		</data>
-	</treatments>
+	</adjustments>
 	<attributes display="Attributes">
 		<metadata rowCount="11" columnCount="3">
 			<columns>

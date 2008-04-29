@@ -11,7 +11,7 @@
 		model-id="22">
 		
 			<!-- Bunch of treatments applied here -->
-			<treatment-groups conflicts="accumulate"/>
+			<adjustment-groups conflicts="accumulate"/>
 	
 			<analysis>
 				<select>
@@ -31,7 +31,7 @@
 		model-id="22">
 		
 			<!-- Bunch of treatments applied here -->
-			<treatment-groups conflicts="accumulate"/>
+			<adjustment-groups conflicts="accumulate"/>
 	
 			<analysis>
 				<select>
@@ -55,7 +55,7 @@
 		model-id="22">
 		
 			<!-- Bunch of treatments applied here -->
-			<treatment-groups conflicts="accumulate"/>
+			<adjustment-groups conflicts="accumulate"/>
 	
 			<analysis>
 				<select>
@@ -76,7 +76,7 @@
 		model-id="22">
 		
 			<!-- Bunch of treatments applied here -->
-			<treatment-groups conflicts="accumulate"/>
+			<adjustment-groups conflicts="accumulate"/>
 	
 			<analysis>
 				<select>
@@ -104,7 +104,7 @@
 		model-id="22">
 		
 			<!-- Bunch of treatments applied here -->
-			<treatment-groups conflicts="accumulate"/>
+			<adjustment-groups conflicts="accumulate"/>
 	
 			<analysis>
 				<select>
@@ -131,7 +131,7 @@
 		model-id="22">
 		
 			<!-- Bunch of treatments applied here -->
-			<treatment-groups conflicts="accumulate"/>
+			<adjustment-groups conflicts="accumulate"/>
 	
 			<analysis>
 				<select>
@@ -165,7 +165,7 @@
 		model-id="22">
 		
 			<!-- Bunch of treatments applied here -->
-			<treatment-groups conflicts="accumulate"/>
+			<adjustment-groups conflicts="accumulate"/>
 	
 			<analysis>
 				<select>
@@ -199,7 +199,7 @@
 		model-id="22">
 		
 			<!-- Bunch of treatments applied here -->
-			<treatment-groups conflicts="accumulate"/>
+			<adjustment-groups conflicts="accumulate"/>
 	
 			<analysis>
 				<select>
@@ -224,7 +224,7 @@
 		model-id="22">
 		
 			<!-- Bunch of treatments applied here -->
-			<treatment-groups conflicts="accumulate"/>
+			<adjustment-groups conflicts="accumulate"/>
 	
 			<analysis>
 				<select>
@@ -257,7 +257,7 @@
 		model-id="22">
 		
 			<!-- Bunch of treatments applied here -->
-			<treatment-groups conflicts="accumulate"/>
+			<adjustment-groups conflicts="accumulate"/>
 	
 			<analysis>
 				<select>
@@ -288,7 +288,7 @@
 		model-id="22">
 		
 			<!-- Bunch of treatments applied here -->
-			<treatment-groups conflicts="accumulate"/>
+			<adjustment-groups conflicts="accumulate"/>
 	
 			<analysis>
 				<select>
@@ -323,7 +323,7 @@
 		model-id="22">
 		
 			<!-- Bunch of treatments applied here -->
-			<treatment-groups conflicts="accumulate"/>
+			<adjustment-groups conflicts="accumulate"/>
 	
 			<analysis>
 				<select>
@@ -350,7 +350,7 @@
 		model-id="22">
 		
 			<! - - Bunch of treatments applied here - - >
-			<treatment-groups conflicts="accumulate"/>
+			<adjustment-groups conflicts="accumulate"/>
 	
 			<analysis>
 				<select>

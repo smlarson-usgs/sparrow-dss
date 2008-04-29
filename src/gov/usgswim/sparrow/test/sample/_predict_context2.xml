@@ -14,7 +14,7 @@
 	being stored in a cache on the server.
 	-->
 	
-	<treatment-groups predefined="957648"/>
+	<adjustment-groups predefined="957648"/>
 	<analysis context-id="1093474"/>
 	
 	<!--

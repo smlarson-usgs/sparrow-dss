@@ -25,7 +25,7 @@
 	<row-ids>reach | HUC8 | HUC6 | HUC4 | HUC2 | state | county</row-ids>
 	
 	<!-- Here a predefined treatment group was used, so both IDs are returned -->
-	<treatment-groups predefined="957648" context-id="982398"/>
+	<adjustment-groups predefined="957648" context-id="982398"/>
 	<analysis context-id="1093474"/>
 	<terminal-reaches context-id="127830"/>
 	<area-of-interest context-id="2947593"/>
