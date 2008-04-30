@@ -230,9 +230,8 @@
 		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
 
 	<!--
-		Sparrow caches. Initially all the same as the default cache...
+		Sparrow Bean caches. Initially all the same as the default cache...
 	-->
-
 	<cache name="PredictContext" maxElementsInMemory="200"
 		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
 		diskSpoolBufferSizeMB="1" timeToIdleSeconds="86400"
@@ -263,5 +262,19 @@
 		timeToLiveSeconds="0" diskPersistent="true"
 		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
 
+	<!--
+		Sparrow calculated value caches.
+		These caches will all use the SelfPopulatingCache decorator, which
+		extends BlockingCache.
+		Each cache will have a CacheEntryFactory subclass associated with it that
+		creates cache entries on demand.  The BlockingCache ensures that get requests
+		that occur while the entry is being built are blocked until the factory
+		completes.
+	-->
+	<cache name="PredictData" maxElementsInMemory="2"
+		maxElementsOnDisk="6" eternal="false" overflowToDisk="true"
+		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
+		timeToLiveSeconds="14400" diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
 
 </ehcache>

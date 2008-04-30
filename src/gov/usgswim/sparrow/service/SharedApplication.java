@@ -22,6 +22,7 @@ import javax.sql.DataSource;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 
 import oracle.jdbc.driver.OracleDriver;
 
@@ -38,13 +39,16 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	//an ehcache test cache
 	public static final String SERIALIZABLE_CACHE = "PredictContext";
 	
-	//ehcache names
+	//ehcache bean cache names
 	public static final String PREDICT_CONTEXT_CACHE = "PredictContext";
 	public static final String ADJUSTMENT_GROUPS_CACHE = "AdjustmentGroups";
 	public static final String ANALYSES_CACHE = "Analyses";
 	public static final String TERMINAL_REACHES_CACHE = "TerminalReaches";
 	public static final String AREA_OF_INTEREST_CACHE = "AreaOfInterest";
 	
+	//ehcache self-populated cache names
+	public static final String PREDICT_DATA_CACHE = "PredictData";
+
 	
 	private SharedApplication() {
 		super(null);
@@ -54,6 +58,15 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		idByPointCache = new ComputableCache<IDByPointRequest, DataTable>(new IDByPointComputable(), "ID by Point Cache");
 		modelCache = new ComputableCache<ModelRequest, ModelImm>(new ModelComputable(), "Model Cache");
 		
+		//
+		//Set up ehcaches that have decorators
+		//
+		
+		CacheManager cm = CacheManager.getInstance();
+		
+		//PredictDataCache
+		SelfPopulatingCache predictDataCache = new SelfPopulatingCache(cm.getCache(PREDICT_DATA_CACHE), new PredictDataFactory());
+		cm.replaceCacheWithDecoratedCache(cm.getCache(PREDICT_DATA_CACHE), predictDataCache);
 	}
 
 	public static synchronized SharedApplication getInstance() {
@@ -133,7 +146,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	public PredictionContext getPredictionContext(Integer id) {
-		return (PredictionContext) getSerializable(id, false);
+		return getPredictionContext(id, false);
 	}
 	
 	public PredictionContext getPredictionContext(Integer id, boolean quiet) {
@@ -154,7 +167,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	public Analysis getAnalysisContext(Integer id) {
-		return (Analysis) getSerializable(id, false);
+		return getAnalysis(id, false);
 	}
 	
 	public Analysis getAnalysis(Integer id, boolean quiet) {
@@ -172,7 +185,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	public TerminalReaches getTerminalReaches(Integer id) {
-		return (TerminalReaches) getSerializable(id, false);
+		return getTerminalReaches(id, false);
 	}
 	
 	public TerminalReaches getTerminalReaches(Integer id, boolean quiet) {
@@ -183,6 +196,25 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	
 	//AreaOfInterest Cache
 	//TODO:  need this yet
+	//
+	
+	//TerminalReach Cache
+	public Long putPredictData(PredictData data) {
+		Cache c = CacheManager.getInstance().getCache(PREDICT_DATA_CACHE);
+		long id = data.getModel().getId();
+		c.put( new Element(id, data) );
+		return id;
+	}
+	
+	public PredictData getPredictData(Long id) {
+		return getPredictData(id, false);
+	}
+	
+	public PredictData getPredictData(Long id, boolean quiet) {
+		Cache c = CacheManager.getInstance().getCache(PREDICT_DATA_CACHE);
+		Element e  = (quiet)?c.getQuiet(id):c.get(id);
+		return (e != null)?((PredictData) e.getObjectValue()):null;
+	}
 	
 	public ComputableCache<PredictRequest, PredictResult> getPredictResultCache() {
 		return predictResultCache;
@@ -199,5 +231,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	public ComputableCache<ModelRequest, ModelImm> getModelCache() {
 		return modelCache;
 	}
+	
+
 }
 
