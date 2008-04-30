@@ -9,6 +9,7 @@ import gov.usgswim.sparrow.domain.ModelImm;
 import gov.usgswim.sparrow.util.DataSourceProxy;
 import gov.usgswim.sparrow.util.JDBCConnectable;
 import gov.usgswim.task.ComputableCache;
+import gov.usgswim.sparrow.parser.*;
 
 import java.io.Serializable;
 import java.sql.Connection;
@@ -34,7 +35,15 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	private ComputableCache<IDByPointRequest, DataTable> idByPointCache;
 	private ComputableCache<ModelRequest, ModelImm> modelCache;
 
-	public static final String PREDICT_CONTEXT_CACHE = "predictContext";
+	//an ehcache test cache
+	public static final String SERIALIZABLE_CACHE = "PredictContext";
+	
+	//ehcache names
+	public static final String PREDICT_CONTEXT_CACHE = "PredictContext";
+	public static final String ADJUSTMENT_GROUPS_CACHE = "AdjustmentGroups";
+	public static final String ANALYSES_CACHE = "Analyses";
+	public static final String TERMINAL_REACHES_CACHE = "TerminalReaches";
+	public static final String AREA_OF_INTEREST_CACHE = "AreaOfInterest";
 	
 	
 	private SharedApplication() {
@@ -98,25 +107,82 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		return DriverManager.getConnection(thinConn,username,password);
 	}
 
-	public Integer putPredictContext(Serializable context) {
+	public Integer putSerializable(Serializable context) {
+		Cache c = CacheManager.getInstance().getCache(SERIALIZABLE_CACHE);
+		int hash = context.hashCode();
+		c.put( new Element(hash, context) );
+		return hash;
+	}
+	
+	public Serializable getSerializable(Integer id) {
+		return getSerializable(id, false);
+	}
+	
+	public Serializable getSerializable(Integer id, boolean quiet) {
+		Cache c = CacheManager.getInstance().getCache(SERIALIZABLE_CACHE);
+		Element e  = (quiet)?c.getQuiet(id):c.get(id);
+		return (e != null)?((Serializable) e.getObjectValue()):null;
+	}
+	
+	//PredictContext Cache
+	public Integer putPredictionContext(PredictionContext context) {
 		Cache c = CacheManager.getInstance().getCache(PREDICT_CONTEXT_CACHE);
 		int hash = context.hashCode();
 		c.put( new Element(hash, context) );
 		return hash;
 	}
 	
-	public Serializable getPredictContext(Integer id) {
-		return getPredictContext(id, false);
+	public PredictionContext getPredictionContext(Integer id) {
+		return (PredictionContext) getSerializable(id, false);
 	}
 	
-	public Serializable getPredictContext(Integer id, boolean quiet) {
+	public PredictionContext getPredictionContext(Integer id, boolean quiet) {
 		Cache c = CacheManager.getInstance().getCache(PREDICT_CONTEXT_CACHE);
-		Element e = null;
-		
-		e = (quiet)?c.getQuiet(id):c.get(id);
-
-		return (e != null)?((Serializable) e.getObjectValue()):null;
+		Element e  = (quiet)?c.getQuiet(id):c.get(id);
+		return (e != null)?((PredictionContext) e.getObjectValue()):null;
 	}
+	
+	//AdjustmentGroup Cache
+	//TODO:  need this yet
+	
+	//Analysis Cache
+	public Integer putAnalysis(Analysis context) {
+		Cache c = CacheManager.getInstance().getCache(ANALYSES_CACHE);
+		int hash = context.hashCode();
+		c.put( new Element(hash, context) );
+		return hash;
+	}
+	
+	public Analysis getAnalysisContext(Integer id) {
+		return (Analysis) getSerializable(id, false);
+	}
+	
+	public Analysis getAnalysis(Integer id, boolean quiet) {
+		Cache c = CacheManager.getInstance().getCache(ANALYSES_CACHE);
+		Element e  = (quiet)?c.getQuiet(id):c.get(id);
+		return (e != null)?((Analysis) e.getObjectValue()):null;
+	}
+	
+	//TerminalReach Cache
+	public Integer putTerminalReaches(Analysis context) {
+		Cache c = CacheManager.getInstance().getCache(TERMINAL_REACHES_CACHE);
+		int hash = context.hashCode();
+		c.put( new Element(hash, context) );
+		return hash;
+	}
+	
+	public TerminalReaches getTerminalReaches(Integer id) {
+		return (TerminalReaches) getSerializable(id, false);
+	}
+	
+	public TerminalReaches getTerminalReaches(Integer id, boolean quiet) {
+		Cache c = CacheManager.getInstance().getCache(TERMINAL_REACHES_CACHE);
+		Element e  = (quiet)?c.getQuiet(id):c.get(id);
+		return (e != null)?((TerminalReaches) e.getObjectValue()):null;
+	}
+	
+	//AreaOfInterest Cache
+	//TODO:  need this yet
 	
 	public ComputableCache<PredictRequest, PredictResult> getPredictResultCache() {
 		return predictResultCache;

@@ -230,10 +230,34 @@
 		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
 
 	<!--
-		Sample caches. Following are some example caches. Remove these before use.
+		Sparrow caches. Initially all the same as the default cache...
 	-->
 
-	<cache name="predictContext" maxElementsInMemory="200"
+	<cache name="PredictContext" maxElementsInMemory="200"
+		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
+		diskSpoolBufferSizeMB="1" timeToIdleSeconds="86400"
+		timeToLiveSeconds="0" diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+		
+	<cache name="AdjustmentGroups" maxElementsInMemory="200"
+		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
+		diskSpoolBufferSizeMB="1" timeToIdleSeconds="86400"
+		timeToLiveSeconds="0" diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+		
+	<cache name="Analyses" maxElementsInMemory="200"
+		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
+		diskSpoolBufferSizeMB="1" timeToIdleSeconds="86400"
+		timeToLiveSeconds="0" diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+		
+	<cache name="TerminalReaches" maxElementsInMemory="200"
+		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
+		diskSpoolBufferSizeMB="1" timeToIdleSeconds="86400"
+		timeToLiveSeconds="0" diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+		
+	<cache name="AreaOfInterest" maxElementsInMemory="200"
 		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
 		diskSpoolBufferSizeMB="1" timeToIdleSeconds="86400"
 		timeToLiveSeconds="0" diskPersistent="true"

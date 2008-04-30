@@ -23,19 +23,19 @@ public class SharedApplicationCaching extends TestCase {
 	
 	public void test1() {
 		SharedApplication sa = SharedApplication.getInstance();
-		Cache c = CacheManager.getInstance().getCache(SharedApplication.PREDICT_CONTEXT_CACHE);
+		Cache c = CacheManager.getInstance().getCache(SharedApplication.SERIALIZABLE_CACHE);
 		
 		//change to 1 second for disk eviction
 		c.getCacheConfiguration().setDiskExpiryThreadIntervalSeconds(1);
 		
 		//Load numbers 1 - 10000
 		for (int i = 1; i < 10000; i++) {
-	    sa.putPredictContext(new Long(i));
+	    sa.putSerializable(new Long(i));
     }
 		
 		//Retrieve numbers 1 - 10000
 		for (int i = 1; i < 10000; i++) {
-	    assertEquals(new Long(i), sa.getPredictContext(new Integer(i)));
+	    assertEquals(new Long(i), sa.getSerializable(new Integer(i)));
     }
 		
 		
@@ -51,7 +51,7 @@ public class SharedApplicationCaching extends TestCase {
 		
 		//Retrieve numbers 1 - 10000
 		for (int i = 1; i < 10000; i++) {
-	    assertEquals(new Long(i), sa.getPredictContext(new Integer(i)));
+	    assertEquals(new Long(i), sa.getSerializable(new Integer(i)));
     }
 		
 		
