@@ -1,6 +1,6 @@
 package gov.usgswim.service.pipeline;
 
-import gov.usgswim.service.ResponseFormat;
+import gov.usgswim.sparrow.parser.ResponseFormat;
 
 public interface PipelineRequest {
 	

@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.service;
 
 import gov.usgswim.service.AbstractHttpRequestParser;
-import gov.usgswim.service.ResponseFormat;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.parser.ResponseFormat;
 
 import java.awt.Point;
 

@@ -1,8 +1,5 @@
 package gov.usgswim.sparrow.service;
 
-import java.util.Arrays;
-import java.util.List;
-
 import gov.usgs.webservices.framework.formatter.IFormatter;
 import gov.usgs.webservices.framework.formatter.JSONFormatter;
 import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
@@ -10,10 +7,13 @@ import gov.usgs.webservices.framework.formatter.ZipFormatter;
 import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.service.HttpRequestHandler;
-import gov.usgswim.service.ResponseFormat;
 import gov.usgswim.service.pipeline.EchoPipeline;
 import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.parser.ResponseFormat;
+
+import java.util.Arrays;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

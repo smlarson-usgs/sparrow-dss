@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow.service;
 
 import gov.usgswim.NotThreadSafe;
-import gov.usgswim.service.ResponseFormat;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.PredictRequest;
+import gov.usgswim.sparrow.parser.ResponseFormat;
 
 /**
  * Holds the entire state of a prediction service request.

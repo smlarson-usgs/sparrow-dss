@@ -1,7 +1,7 @@
-package gov.usgswim.sparrow.test;
+package gov.usgswim.sparrow.test.parsers;
 
 import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
-import gov.usgswim.service.ResponseFormat;
+import gov.usgswim.sparrow.parser.ResponseFormat;
 
 import java.io.StringReader;
 
