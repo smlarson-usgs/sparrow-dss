@@ -263,7 +263,7 @@
 				<analytic-function partition="HUC6">rank-desc</analytic-function>
 			
 				<!--  Needed in first iteration -->
-				<nominal_comparison type="percent | absolute"/>
+				<nominal-comparison type="percent | absolute"/>
 			</select>
 
 			

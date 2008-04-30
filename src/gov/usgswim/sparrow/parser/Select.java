@@ -3,15 +3,20 @@ package gov.usgswim.sparrow.parser;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-import javax.xml.XMLConstants;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
+import java.io.Serializable;
 
 import gov.usgswim.service.ParserHelper;
 import gov.usgswim.service.XMLStreamParserComponent;
 
-public class Select implements XMLStreamParserComponent {
+import javax.xml.XMLConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
+public class Select implements XMLStreamParserComponent, Serializable {
+
+	private static final long serialVersionUID = -3301580483184096772L;
 	public static final String MAIN_ELEMENT_NAME = "select";
 
 	// =============================
@@ -92,6 +97,22 @@ public class Select implements XMLStreamParserComponent {
 
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = new HashCodeBuilder(137, 1729).
+		append(dataSeries).
+		append(source).
+		append(dataSeriesPer).
+		append(aggFunctionPer).
+		append(aggFunction).
+		append(partition).
+		append(analyticFunction).
+		append(type).
+		append(nominalComparison).
+		toHashCode();
+		return hash;
 	}
 	
 	// =================

@@ -102,10 +102,8 @@ public class PredictionContextTest extends TestCase {
 		reader.next();
 		pCon.parse(reader);
 
-		assertEquals("accumulate", pCon.getAdjustmentGroupConflicts());
-		assertEquals("HUC8", pCon.getAnalysis().getGroupBy());
 		assertEquals("22", pCon.getModelID());
-		assertEquals(4, pCon.getReachGroups().size());
+		assertEquals("HUC8", pCon.getAnalysis().getGroupBy());
 		assertEquals(3, pCon.getTerminalReaches().getReachIDs().size());
 		
 		// should have stopped at the end tag

@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.test;
 
 
+import gov.usgswim.sparrow.test.parsers.AllParseTests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -30,6 +31,9 @@ public class _Test {
 		suite.addTestSuite(PredictServiceTest.class);
 		
 		suite.addTestSuite(SharedApplicationCaching.class);
+		
+		// Parsing
+		suite.addTestSuite(AllParseTests.class);
 	  
 		return suite;
 	}

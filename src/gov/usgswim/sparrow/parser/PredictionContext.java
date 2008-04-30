@@ -5,6 +5,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.service.ParserHelper;
 import gov.usgswim.service.XMLStreamParserComponent;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,11 @@ import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class PredictionContext implements XMLStreamParserComponent {
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
+public class PredictionContext implements XMLStreamParserComponent, Serializable {
+
+	private static final long serialVersionUID = -5343918321449313545L;
 	public static final String MAIN_ELEMENT_NAME = "prediction-context";
 	public static final String ADJUSTMENT_GROUPS = "adjustment-groups";
 
@@ -24,10 +29,15 @@ public class PredictionContext implements XMLStreamParserComponent {
 	}
 
 	private String modelID;
-	private String adjustmentGroupConflicts;
-	private List<ReachGroup> reachGroups = new ArrayList<ReachGroup>();
-	private TerminalReaches terminalReaches;
-	private Analysis analysis;
+	private String adjustmentGroupsID;
+	private String analysisID;
+	private String terminalReachesID;
+	private String areaOfInterestID;
+	private transient AdjustmentGroups adjustmentGroups;
+	private transient Analysis analysis;
+	private transient TerminalReaches terminalReaches;
+//	private AreaOfInterest areaOfInterest;
+	
 
 	// ================
 	// INSTANCE METHODS
@@ -54,22 +64,21 @@ public class PredictionContext implements XMLStreamParserComponent {
 					localName = in.getLocalName();
 					if (isTargetMatch(localName)) {
 						modelID = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "model-id");
-					} else if (ADJUSTMENT_GROUPS.equals(localName)) {
-						adjustmentGroupConflicts = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "conflicts");
-						// advance
-						in.next();
-					} else if (ReachGroup.isTargetMatch(localName)) {
-						ReachGroup rg = new ReachGroup();
-						rg.parse(in);
-						reachGroups.add(rg);
+					} else if (AdjustmentGroups.isTargetMatch(localName)) {
+						AdjustmentGroups ag = new AdjustmentGroups();
+						ag.parse(in);
+						this.adjustmentGroups = ag;
+						adjustmentGroupsID = (ag == null)? null: ag.getId();
 					} else if (TerminalReaches.isTargetMatch(localName)) {
 						TerminalReaches tr = new TerminalReaches();
 						tr.parse(in);
 						this.terminalReaches = tr;
+						terminalReachesID = (tr == null)? null: tr.getId();
 					} else if (Analysis.isTargetMatch(localName)) {
 						Analysis analysis = new Analysis();
 						analysis.parse(in);
 						this.analysis = analysis;
+						analysisID = (analysis == null)? null: analysis.getId();
 					} else if ("area-of-interest".equals(localName)) {
 						ParserHelper.ignoreElement(in);
 					} else {
@@ -96,24 +105,31 @@ public class PredictionContext implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME;
 	}
 	
+	
+	@Override
+	public int hashCode() {
+		int hash = new HashCodeBuilder(13, 1776).
+		append(modelID).
+		append(adjustmentGroupsID).
+		append(analysisID).
+		append(terminalReachesID).
+		append(areaOfInterestID).
+		append(adjustmentGroups).
+		append(analysis).
+		append(terminalReaches).	//append(areaOfInterest).
+		toHashCode();
+		return hash;
+	}
+
 	// =================
 	// GETTERS & SETTERS
 	// =================
-	
-	public String getAdjustmentGroupConflicts() {
-		return adjustmentGroupConflicts;
-	}
-
 	public Analysis getAnalysis() {
 		return analysis;
 	}
 
 	public String getModelID() {
 		return modelID;
-	}
-
-	public List<ReachGroup> getReachGroups() {
-		return reachGroups;
 	}
 
 	public TerminalReaches getTerminalReaches() {
