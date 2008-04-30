@@ -7,9 +7,9 @@ import gov.usgswim.sparrow.util.DataLoader;
 public class PredictDataFactory implements CacheEntryFactory {
 
 	public Object createEntry(Object modelId) throws Exception {
-		Integer id = (Integer)modelId;
+		Long id = (Long)modelId;
 		
-		return DataLoader.loadMinimalPredictDataSet(SharedApplication.getInstance().getConnection(), id).toImmutable();
+		return DataLoader.loadMinimalPredictDataSet(SharedApplication.getInstance().getConnection(), id.intValue()).toImmutable();
 	}
 
 }

@@ -21,6 +21,7 @@ import javax.sql.DataSource;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 
@@ -67,8 +68,8 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		CacheManager cm = CacheManager.getInstance();
 		
 		//PredictDataCache
-		SelfPopulatingCache predictDataCache = new SelfPopulatingCache(cm.getCache(PREDICT_DATA_CACHE), new PredictDataFactory());
-		cm.replaceCacheWithDecoratedCache(cm.getCache(PREDICT_DATA_CACHE), predictDataCache);
+		SelfPopulatingCache predictDataCache = new SelfPopulatingCache(cm.getEhcache(PREDICT_DATA_CACHE), new PredictDataFactory());
+		cm.replaceCacheWithDecoratedCache(cm.getEhcache(PREDICT_DATA_CACHE), predictDataCache);
 	}
 
 	public static synchronized SharedApplication getInstance() {
@@ -123,7 +124,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 
 	public Integer putSerializable(Serializable context) {
-		Cache c = CacheManager.getInstance().getCache(SERIALIZABLE_CACHE);
+		Ehcache c = CacheManager.getInstance().getEhcache(SERIALIZABLE_CACHE);
 		int hash = context.hashCode();
 		c.put( new Element(hash, context) );
 		return hash;
@@ -134,14 +135,14 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	public Serializable getSerializable(Integer id, boolean quiet) {
-		Cache c = CacheManager.getInstance().getCache(SERIALIZABLE_CACHE);
+		Ehcache c = CacheManager.getInstance().getEhcache(SERIALIZABLE_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
 		return (e != null)?((Serializable) e.getObjectValue()):null;
 	}
 	
 	//PredictContext Cache
 	public Integer putPredictionContext(PredictionContext context) {
-		Cache c = CacheManager.getInstance().getCache(PREDICT_CONTEXT_CACHE);
+		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_CONTEXT_CACHE);
 		int hash = context.hashCode();
 		c.put( new Element(hash, context) );
 		return hash;
@@ -152,7 +153,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	public PredictionContext getPredictionContext(Integer id, boolean quiet) {
-		Cache c = CacheManager.getInstance().getCache(PREDICT_CONTEXT_CACHE);
+		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_CONTEXT_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
 		return (e != null)?((PredictionContext) e.getObjectValue()):null;
 	}
@@ -162,7 +163,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	
 	//Analysis Cache
 	public Integer putAnalysis(Analysis context) {
-		Cache c = CacheManager.getInstance().getCache(ANALYSES_CACHE);
+		Ehcache c = CacheManager.getInstance().getEhcache(ANALYSES_CACHE);
 		int hash = context.hashCode();
 		c.put( new Element(hash, context) );
 		return hash;
@@ -173,14 +174,14 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	public Analysis getAnalysis(Integer id, boolean quiet) {
-		Cache c = CacheManager.getInstance().getCache(ANALYSES_CACHE);
+		Ehcache c = CacheManager.getInstance().getEhcache(ANALYSES_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
 		return (e != null)?((Analysis) e.getObjectValue()):null;
 	}
 	
 	//TerminalReach Cache
 	public Integer putTerminalReaches(Analysis context) {
-		Cache c = CacheManager.getInstance().getCache(TERMINAL_REACHES_CACHE);
+		Ehcache c = CacheManager.getInstance().getEhcache(TERMINAL_REACHES_CACHE);
 		int hash = context.hashCode();
 		c.put( new Element(hash, context) );
 		return hash;
@@ -191,7 +192,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	public TerminalReaches getTerminalReaches(Integer id, boolean quiet) {
-		Cache c = CacheManager.getInstance().getCache(TERMINAL_REACHES_CACHE);
+		Ehcache c = CacheManager.getInstance().getEhcache(TERMINAL_REACHES_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
 		return (e != null)?((TerminalReaches) e.getObjectValue()):null;
 	}
@@ -206,7 +207,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	public PredictData getPredictData(Long id, boolean quiet) {
-		Cache c = CacheManager.getInstance().getCache(PREDICT_DATA_CACHE);
+		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_DATA_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
 		return (e != null)?((PredictData) e.getObjectValue()):null;
 	}
@@ -217,7 +218,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	public PredictResult getPredictResult(PredictRequest req, boolean quiet) {
-		Cache c = CacheManager.getInstance().getCache(PREDICT_RESULT_CACHE);
+		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_RESULT_CACHE);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
 		return (e != null)?((PredictResult) e.getObjectValue()):null;
 	}

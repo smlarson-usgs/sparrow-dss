@@ -7,7 +7,9 @@ import gov.usgswim.task.ComputableCache;
 import junit.framework.TestCase;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
+import net.sf.ehcache.hibernate.EhCache;
 
 public class SharedApplicationCaching extends TestCase {
 	
@@ -26,7 +28,7 @@ public class SharedApplicationCaching extends TestCase {
 	
 	public void testBasic() {
 		SharedApplication sa = SharedApplication.getInstance();
-		Cache c = CacheManager.getInstance().getCache(SharedApplication.SERIALIZABLE_CACHE);
+		Ehcache c = CacheManager.getInstance().getEhcache(SharedApplication.SERIALIZABLE_CACHE);
 		
 		//change to 1 second for disk eviction
 		c.getCacheConfiguration().setDiskExpiryThreadIntervalSeconds(1);
@@ -65,7 +67,9 @@ public class SharedApplicationCaching extends TestCase {
 	
 	public void testPredictDataCache() throws Exception {
 		SharedApplication sa = SharedApplication.getInstance();
-		Cache c = CacheManager.getInstance().getCache(SharedApplication.PREDICT_DATA_CACHE);
+		Ehcache c = CacheManager.getInstance().getEhcache(SharedApplication.PREDICT_DATA_CACHE);
+		
+		assertNotNull(c);
 		
 		PredictData pdEHCache = sa.getPredictData(22L);
 		ComputableCache<Long, PredictData> pdCache = sa.getPredictDatasetCache();
