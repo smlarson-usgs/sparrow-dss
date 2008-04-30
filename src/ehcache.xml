@@ -276,5 +276,11 @@
 		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
 		timeToLiveSeconds="14400" diskPersistent="true"
 		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+		
+	<cache name="PredictResult" maxElementsInMemory="2"
+		maxElementsOnDisk="6" eternal="false" overflowToDisk="true"
+		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
+		timeToLiveSeconds="14400" diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
 
 </ehcache>

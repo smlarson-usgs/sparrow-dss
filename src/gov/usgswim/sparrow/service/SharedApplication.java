@@ -46,8 +46,10 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	public static final String TERMINAL_REACHES_CACHE = "TerminalReaches";
 	public static final String AREA_OF_INTEREST_CACHE = "AreaOfInterest";
 	
+	
 	//ehcache self-populated cache names
 	public static final String PREDICT_DATA_CACHE = "PredictData";
+	public static final String PREDICT_RESULT_CACHE = "PredictResult";
 
 	
 	private SharedApplication() {
@@ -198,14 +200,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	//TODO:  need this yet
 	//
 	
-	//TerminalReach Cache
-	public Long putPredictData(PredictData data) {
-		Cache c = CacheManager.getInstance().getCache(PREDICT_DATA_CACHE);
-		long id = data.getModel().getId();
-		c.put( new Element(id, data) );
-		return id;
-	}
-	
+	//PredictData Cache
 	public PredictData getPredictData(Long id) {
 		return getPredictData(id, false);
 	}
@@ -215,6 +210,19 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
 		return (e != null)?((PredictData) e.getObjectValue()):null;
 	}
+	
+	//PredictResult Cache
+	public PredictResult getPredictResult(PredictRequest req) {
+		return getPredictResult(req, false);
+	}
+	
+	public PredictResult getPredictResult(PredictRequest req, boolean quiet) {
+		Cache c = CacheManager.getInstance().getCache(PREDICT_RESULT_CACHE);
+		Element e  = (quiet)?c.getQuiet(req):c.get(req);
+		return (e != null)?((PredictResult) e.getObjectValue()):null;
+	}
+	
+	
 	
 	public ComputableCache<PredictRequest, PredictResult> getPredictResultCache() {
 		return predictResultCache;
