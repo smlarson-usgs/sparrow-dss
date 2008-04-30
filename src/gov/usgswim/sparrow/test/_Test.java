@@ -28,6 +28,8 @@ public class _Test {
 		
 		suite.addTestSuite(ModelServiceTest.class); // OK as is
 		suite.addTestSuite(PredictServiceTest.class);
+		
+		suite.addTestSuite(SharedApplicationCaching.class);
 	  
 		return suite;
 	}

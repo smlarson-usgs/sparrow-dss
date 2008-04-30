@@ -10,12 +10,17 @@ import gov.usgswim.sparrow.util.DataSourceProxy;
 import gov.usgswim.sparrow.util.JDBCConnectable;
 import gov.usgswim.task.ComputableCache;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 
 import oracle.jdbc.driver.OracleDriver;
 
@@ -29,7 +34,9 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	private ComputableCache<IDByPointRequest, DataTable> idByPointCache;
 	private ComputableCache<ModelRequest, ModelImm> modelCache;
 
-
+	public static final String PREDICT_CONTEXT_CACHE = "predictContext";
+	
+	
 	private SharedApplication() {
 		super(null);
 
@@ -37,6 +44,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		predictDatasetCache = new ComputableCache<Long, PredictData>(new PredictDatasetComputable(), "Predict Dataset Cache");
 		idByPointCache = new ComputableCache<IDByPointRequest, DataTable>(new IDByPointComputable(), "ID by Point Cache");
 		modelCache = new ComputableCache<ModelRequest, ModelImm>(new ModelComputable(), "Model Cache");
+		
 	}
 
 	public static synchronized SharedApplication getInstance() {
@@ -90,6 +98,26 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		return DriverManager.getConnection(thinConn,username,password);
 	}
 
+	public Integer putPredictContext(Serializable context) {
+		Cache c = CacheManager.getInstance().getCache(PREDICT_CONTEXT_CACHE);
+		int hash = context.hashCode();
+		c.put( new Element(hash, context) );
+		return hash;
+	}
+	
+	public Serializable getPredictContext(Integer id) {
+		return getPredictContext(id, false);
+	}
+	
+	public Serializable getPredictContext(Integer id, boolean quiet) {
+		Cache c = CacheManager.getInstance().getCache(PREDICT_CONTEXT_CACHE);
+		Element e = null;
+		
+		e = (quiet)?c.getQuiet(id):c.get(id);
+
+		return (e != null)?((Serializable) e.getObjectValue()):null;
+	}
+	
 	public ComputableCache<PredictRequest, PredictResult> getPredictResultCache() {
 		return predictResultCache;
 	}

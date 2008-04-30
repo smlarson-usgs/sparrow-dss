@@ -9,6 +9,7 @@ public class _OfflineTest {
 		TestSuite suite;
 		suite = new TestSuite("Prediction Tests");
 
+		/*
 		suite.addTestSuite(PredictSimple_Test.class);
 		suite.addTestSuite(TabDelimFileUtil_Test.class);
 		suite.addTestSuite(ReadStreamAsIntegersTest.class);
@@ -23,6 +24,9 @@ public class _OfflineTest {
 
 		//suite.addTestSuite(ModelServiceTest.class);
 		//suite.addTestSuite(PredictServiceTest.class);
+		*/
+		
+		suite.addTestSuite(SharedApplicationCaching.class);
 
 		return suite;
 	}
