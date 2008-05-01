@@ -2,10 +2,10 @@ package gov.usgswim.sparrow;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.service.AbstractHttpRequestParser;
-import gov.usgswim.sparrow.service.PredictParser;
-import gov.usgswim.sparrow.service.PredictService;
-import gov.usgswim.sparrow.service.PredictServiceRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.service.predict.PredictParser;
+import gov.usgswim.sparrow.service.predict.PredictService;
+import gov.usgswim.sparrow.service.predict.PredictServiceRequest;
 import gov.usgswim.task.ComputableCache;
 
 import java.util.Hashtable;
@@ -199,7 +199,7 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 
 
 			//Make this default to TOTAL instead of all
-			if (svsRequest.getDataSeries() == gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.ALL) svsRequest.setDataSeries(gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.TOTAL);
+			if (svsRequest.getDataSeries() == gov.usgswim.sparrow.service.predict.PredictServiceRequest.DataSeries.ALL) svsRequest.setDataSeries(gov.usgswim.sparrow.service.predict.PredictServiceRequest.DataSeries.TOTAL);
 
 			log.debug("Using Dataseries: " + svsRequest.getDataSeries() + " & result mode: " + svsRequest.getPredictType());
 

@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.service;
+package gov.usgswim.sparrow.service.predict;
 
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.ThreadSafe;
@@ -15,6 +15,10 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.PredictResult;
+import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
+import gov.usgswim.sparrow.service.predict.PredictServiceRequest.DataSeries;
+import gov.usgswim.sparrow.service.predict.PredictServiceRequest.PredictType;
 import gov.usgswim.task.ComputableCache;
 
 import javax.xml.stream.XMLOutputFactory;
@@ -71,7 +75,7 @@ public class PredictService implements HttpRequestHandler<PredictServiceRequest>
 
 				result = new ComparePercentageView(
 						noAdjResult, adjResult,
-						req.getPredictType().equals(gov.usgswim.sparrow.service.PredictServiceRequest.PredictType.DEC_CHG_FROM_NOMINAL));
+						req.getPredictType().equals(gov.usgswim.sparrow.service.predict.PredictServiceRequest.PredictType.DEC_CHG_FROM_NOMINAL));
 
 			} else {
 				//need to run only the adjusted prediction

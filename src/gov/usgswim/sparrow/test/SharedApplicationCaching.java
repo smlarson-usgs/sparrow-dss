@@ -1,31 +1,19 @@
 package gov.usgswim.sparrow.test;
 
-import java.io.InputStream;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
-
-import org.codehaus.stax2.XMLInputFactory2;
-
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.ComparePercentageView;
 import gov.usgswim.sparrow.AdjustmentSet;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
-import gov.usgswim.sparrow.PredictResult;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
-import gov.usgswim.sparrow.service.PredictParser;
-import gov.usgswim.sparrow.service.PredictService;
-import gov.usgswim.sparrow.service.PredictServiceRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
-import gov.usgswim.task.ComputableCache;
+
+import java.io.InputStream;
+
 import junit.framework.TestCase;
-import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
-import net.sf.ehcache.hibernate.EhCache;
 
 public class SharedApplicationCaching extends TestCase {
 	
@@ -142,7 +130,7 @@ public class SharedApplicationCaching extends TestCase {
 			for (int i = 0; i < comp.getColumnCount(); i++)  {
 				System.out.println("col " + i + " error: " + comp.findMaxCompareValue(i));
 				int row = comp.findMaxCompareRow(i);
-				System.out.println("id: " + expect.getTopo().getIdForRow(row));
+//				System.out.println("id: " + expect.getTopo().getIdForRow(row));
 				System.out.println("expected: " + expect.getTopo().getValue(row, i));
 				System.out.println("found: " + data.getTopo().getValue(row, i));
 			}

@@ -2,10 +2,10 @@ package gov.usgswim.sparrow.test;
 
 import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.service.PredictParser;
-import gov.usgswim.sparrow.service.PredictSerializer;
-import gov.usgswim.sparrow.service.PredictService;
-import gov.usgswim.sparrow.service.PredictServiceRequest;
+import gov.usgswim.sparrow.service.predict.PredictParser;
+import gov.usgswim.sparrow.service.predict.PredictSerializer;
+import gov.usgswim.sparrow.service.predict.PredictService;
+import gov.usgswim.sparrow.service.predict.PredictServiceRequest;
 
 import java.io.File;
 import java.io.FileOutputStream;

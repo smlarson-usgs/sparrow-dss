@@ -2,9 +2,9 @@ package gov.usgswim.sparrow.test;
 
 import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
 import gov.usgswim.service.RequestHandler;
-import gov.usgswim.sparrow.service.ModelParser;
-import gov.usgswim.sparrow.service.ModelRequest;
-import gov.usgswim.sparrow.service.ModelService;
+import gov.usgswim.sparrow.service.model.ModelParser;
+import gov.usgswim.sparrow.service.model.ModelRequest;
+import gov.usgswim.sparrow.service.model.ModelService;
 
 import java.io.File;
 import java.io.FileOutputStream;

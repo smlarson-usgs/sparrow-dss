@@ -1,9 +1,11 @@
-package gov.usgswim.sparrow.service;
+package gov.usgswim.sparrow.service.model;
 
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.service.HttpRequestHandler;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.domain.ModelBuilder;
+import gov.usgswim.sparrow.service.DomainSerializer;
+import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.DataLoader;
 
 import java.sql.Connection;

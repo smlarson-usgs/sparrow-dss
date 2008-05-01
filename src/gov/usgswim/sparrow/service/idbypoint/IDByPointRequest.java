@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.service;
+package gov.usgswim.sparrow.service.idbypoint;
 
 import gov.usgswim.Immutable;
 import gov.usgswim.service.pipeline.PipelineRequest;

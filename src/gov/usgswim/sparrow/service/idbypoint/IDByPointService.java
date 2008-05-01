@@ -1,10 +1,13 @@
-package gov.usgswim.sparrow.service;
+package gov.usgswim.sparrow.service.idbypoint;
 
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.service.HttpRequestHandler;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.service.DataTableSerializer;
+import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.service.model.ModelService;
 
 import java.sql.Connection;
 import java.sql.SQLException;

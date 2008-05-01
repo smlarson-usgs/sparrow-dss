@@ -1,7 +1,7 @@
 package gov.usgswim.task;
 
 
-import gov.usgswim.sparrow.service.PredictDatasetComputable;
+import gov.usgswim.sparrow.service.predict.PredictDatasetComputable;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;

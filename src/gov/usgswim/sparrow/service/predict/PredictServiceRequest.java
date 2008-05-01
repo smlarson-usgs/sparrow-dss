@@ -1,9 +1,10 @@
-package gov.usgswim.sparrow.service;
+package gov.usgswim.sparrow.service.predict;
 
 import gov.usgswim.NotThreadSafe;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.parser.ResponseFormat;
+import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 
 /**
  * Holds the entire state of a prediction service request.
@@ -19,10 +20,10 @@ import gov.usgswim.sparrow.parser.ResponseFormat;
 @NotThreadSafe
 public class PredictServiceRequest implements PipelineRequest{
 
-	private ResponseFilter responseType = gov.usgswim.sparrow.service.PredictServiceRequest.ResponseFilter.ALL;
-	private PredictType predictType = gov.usgswim.sparrow.service.PredictServiceRequest.PredictType.VALUES;
+	private ResponseFilter responseType = gov.usgswim.sparrow.service.predict.PredictServiceRequest.ResponseFilter.ALL;
+	private PredictType predictType = gov.usgswim.sparrow.service.predict.PredictServiceRequest.PredictType.VALUES;
 	private PredictRequest predictRequest;
-	private DataSeries dataSeries = gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.ALL;
+	private DataSeries dataSeries = gov.usgswim.sparrow.service.predict.PredictServiceRequest.DataSeries.ALL;
 	private IDByPointRequest idByPointRequest;
 	private boolean isEcho;
 	private String xmlRequest;
@@ -69,7 +70,7 @@ public class PredictServiceRequest implements PipelineRequest{
 		}
 		
 		public static DataSeries find(String name) {
-			for(DataSeries type: gov.usgswim.sparrow.service.PredictServiceRequest.DataSeries.values()) {
+			for(DataSeries type: gov.usgswim.sparrow.service.predict.PredictServiceRequest.DataSeries.values()) {
 				if (type._name.equalsIgnoreCase(name)) return type;
 			}
 			return null;
@@ -107,7 +108,7 @@ public class PredictServiceRequest implements PipelineRequest{
 		}
 		
 		public static PredictType find(String name) {
-			for(PredictType type: gov.usgswim.sparrow.service.PredictServiceRequest.PredictType.values()) {
+			for(PredictType type: gov.usgswim.sparrow.service.predict.PredictServiceRequest.PredictType.values()) {
 				if (type._name.equalsIgnoreCase(name)) return type;
 			}
 			return null;
@@ -139,7 +140,7 @@ public class PredictServiceRequest implements PipelineRequest{
 		}
 		
 		public static ResponseFilter find(String name) {
-			for(ResponseFilter type: gov.usgswim.sparrow.service.PredictServiceRequest.ResponseFilter.values()) {
+			for(ResponseFilter type: gov.usgswim.sparrow.service.predict.PredictServiceRequest.ResponseFilter.values()) {
 				if (type._name.equalsIgnoreCase(name)) return type;
 			}
 			return null;

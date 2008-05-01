@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.service;
+package gov.usgswim.sparrow.service.model;
 
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.parser.ResponseFormat;

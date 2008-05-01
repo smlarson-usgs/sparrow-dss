@@ -6,6 +6,7 @@ import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 
 import javax.xml.stream.XMLStreamException;
 

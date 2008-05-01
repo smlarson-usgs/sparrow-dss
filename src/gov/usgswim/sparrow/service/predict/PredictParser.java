@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.service;
+package gov.usgswim.sparrow.service.predict;
 
 import static gov.usgswim.sparrow.Adjustment.AdjustmentType.GROSS_SRC_ADJUST;
 import static gov.usgswim.sparrow.Adjustment.AdjustmentType.SPECIFIC_ADJUST;
@@ -10,6 +10,11 @@ import gov.usgswim.sparrow.AdjustmentSet;
 import gov.usgswim.sparrow.AdjustmentSetBuilder;
 import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.parser.ResponseFormat;
+import gov.usgswim.sparrow.service.idbypoint.IDByPointParser;
+import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
+import gov.usgswim.sparrow.service.predict.PredictServiceRequest.DataSeries;
+import gov.usgswim.sparrow.service.predict.PredictServiceRequest.PredictType;
+import gov.usgswim.sparrow.service.predict.PredictServiceRequest.ResponseFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.stream.XMLStreamException;

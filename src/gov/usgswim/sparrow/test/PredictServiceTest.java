@@ -3,9 +3,9 @@ package gov.usgswim.sparrow.test;
 import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.ComparePercentageView;
-import gov.usgswim.sparrow.service.PredictParser;
-import gov.usgswim.sparrow.service.PredictService;
-import gov.usgswim.sparrow.service.PredictServiceRequest;
+import gov.usgswim.sparrow.service.predict.PredictParser;
+import gov.usgswim.sparrow.service.predict.PredictService;
+import gov.usgswim.sparrow.service.predict.PredictServiceRequest;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.File;

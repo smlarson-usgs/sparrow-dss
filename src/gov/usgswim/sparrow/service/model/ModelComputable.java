@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.service;
+package gov.usgswim.sparrow.service.model;
 
 import gov.usgswim.sparrow.domain.ModelImm;
 import gov.usgswim.task.Computable;

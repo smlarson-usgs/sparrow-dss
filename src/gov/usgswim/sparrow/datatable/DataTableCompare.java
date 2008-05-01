@@ -70,8 +70,29 @@ public class DataTableCompare implements DataTable{
 		maxCompRows = new Integer[baseData.getColumnCount()];
 	}
 
+	/**
+	 * Returns the difference between the base and and the comparison
+	 * 
+	 * @param row
+	 * @param col
+	 * @return
+	 * @throws IndexOutOfBoundsException
+	 */
 	public double compare(int row, int col) throws IndexOutOfBoundsException {
-		return baseData.getDouble(row, col) - compData.getDouble(row, mapColumn(col));
+		Double base = baseData.getDouble(row, col);
+		if (base != null) {
+			// just return the difference of two numbers
+			return base - compData.getDouble(row, mapColumn(col));
+		} else {
+			// null returned because underlying column type is not number type.
+			String baseString = baseData.getString(row, col);
+			if (baseString != null) {
+				String compString = compData.getString(row, col);
+				return baseString.compareTo(compString);
+			} else {
+				return Double.NaN;
+			}
+		}
 	}
 
 	public synchronized double findMaxCompareValue(int column) {

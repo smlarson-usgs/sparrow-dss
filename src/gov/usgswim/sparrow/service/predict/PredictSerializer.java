@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.service;
+package gov.usgswim.sparrow.service.predict;
 
 import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_NAMESPACE;
 import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
