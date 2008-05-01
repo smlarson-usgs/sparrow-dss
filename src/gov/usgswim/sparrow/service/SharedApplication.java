@@ -70,6 +70,10 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		//PredictDataCache
 		SelfPopulatingCache predictDataCache = new SelfPopulatingCache(cm.getEhcache(PREDICT_DATA_CACHE), new PredictDataFactory());
 		cm.replaceCacheWithDecoratedCache(cm.getEhcache(PREDICT_DATA_CACHE), predictDataCache);
+		
+		//PredictDataCache
+		SelfPopulatingCache predictResultCache = new SelfPopulatingCache(cm.getEhcache(PREDICT_RESULT_CACHE), new PredictResultFactory());
+		cm.replaceCacheWithDecoratedCache(cm.getEhcache(PREDICT_RESULT_CACHE), predictResultCache);
 	}
 
 	public static synchronized SharedApplication getInstance() {
@@ -213,14 +217,14 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	//PredictResult Cache
-	public PredictResult getPredictResult(PredictRequest req) {
+	public DataTable getPredictResult(PredictRequest req) {
 		return getPredictResult(req, false);
 	}
 	
-	public PredictResult getPredictResult(PredictRequest req, boolean quiet) {
+	public DataTable getPredictResult(PredictRequest req, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_RESULT_CACHE);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
-		return (e != null)?((PredictResult) e.getObjectValue()):null;
+		return (e != null)?((DataTable) e.getObjectValue()):null;
 	}
 	
 	
