@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<id-point-request
+<sparrow-id-request
   xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<!-- Eliminated the result-count from the root element - it only makes sense to return one reach -->
 	
 	<predict-context context-id="1231241243424"/>
 	
+	<!-- Request can include one of these elements: -->
 	<point lat="40" long="-100"/> or <reach>1234874</reach>
 	
 	<content>
-		<treatments/>
+		<!-- The response document can include from zero to all of the following: -->
+		<adjustments/>
 		<attributes/>
 		<predicted/>
 		<!-- an 'all' element is also accepted -->
@@ -17,10 +19,10 @@
 	
 	<!--
 	This is the same response-format element used in other documents.
-	There are lots of other added parts, but this example or w/ the
-	applicatoin/xml are really the only two possible values.
+	There are lots of other added parts, but application/json or
+	applicatoin/xml are really the only two possible values for this docuemnt.
 	-->
 	<response-format>
 		<mime-type>application/json</mime-type>
 	</response-format>
-</id-point-request>
+</sparrow-id-request>
