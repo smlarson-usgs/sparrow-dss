@@ -14,7 +14,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-public class TerminalReaches implements XMLStreamParserComponent, Serializable {
+public class TerminalReaches implements XMLStreamParserComponent, Serializable, Cloneable {
 
 	private static final long serialVersionUID = 8804027069848411715L;
 	private static final String REACHES_CHILD = "reach";
@@ -93,6 +93,19 @@ public class TerminalReaches implements XMLStreamParserComponent, Serializable {
 		int hash = hashBuilder.toHashCode();
 		return hash;
 	}
+	
+	@Override
+	protected TerminalReaches clone() throws CloneNotSupportedException {
+		TerminalReaches myClone = new TerminalReaches();
+		myClone.reachIDs = new ArrayList<Integer>(reachIDs.size());
+		for (Integer reachID: reachIDs) {
+			myClone.reachIDs.add(reachID);
+		}
+		
+		myClone.id = id;
+		return myClone;
+	}
+
 	// =================
 	// GETTERS & SETTERS
 	// =================

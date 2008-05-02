@@ -8,7 +8,7 @@ import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class ReachGroup implements XMLStreamParserComponent {
+public class ReachGroup implements XMLStreamParserComponent, Cloneable {
 	public static final String MAIN_ELEMENT_NAME = "reach-group";
 
 	// =============================
@@ -85,6 +85,16 @@ public class ReachGroup implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME;
 	}
 	
+	@Override
+	protected ReachGroup clone() throws CloneNotSupportedException {
+		ReachGroup myClone = new ReachGroup();
+		myClone.isEnabled = isEnabled;
+		myClone.name = name;
+		myClone.description = description;
+		myClone.notes = notes;
+		return myClone;
+	}
+
 	// =================
 	// GETTERS & SETTERS
 	// =================

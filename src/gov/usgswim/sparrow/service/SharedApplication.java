@@ -120,7 +120,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 
 	public Integer putSerializable(Serializable context) {
 		Ehcache c = CacheManager.getInstance().getEhcache(SERIALIZABLE_CACHE);
-		int hash = context.hashCode();
+		Integer hash = context.hashCode();
 		c.put( new Element(hash, context) );
 		return hash;
 	}
@@ -137,19 +137,27 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	
 	//PredictContext Cache
 	public Integer putPredictionContext(PredictionContext context) {
-		//TODO [IK] PredictionContext needs to support clonable
-		//context = context.clone();
+
+		try {
+			context = context.clone();
+		} catch (CloneNotSupportedException e) {
+			// Shouldn't happen
+			e.printStackTrace();
+		}
 		
 		CacheManager cm = CacheManager.getInstance();
 
-		int PCHash = context.hashCode();
+		Integer PCHash = context.hashCode();
 		cm.getEhcache(PREDICT_CONTEXT_CACHE).put( new Element(PCHash, context) );
 		
-		//put all the child beans in their respective caches
-		//TODO [IK] PredictContext needs a getAdjustmentGroups() method
-		//cm.getEhcache(ADJUSTMENT_GROUPS_CACHE).put( new Element(context.getAdjustmentGroups().hashCode(), context.getAdjustmentGroups()) );
-		cm.getEhcache(ANALYSES_CACHE).put( new Element(context.getAnalysis().hashCode(), context.getAnalysis()) );
-		cm.getEhcache(TERMINAL_REACHES_CACHE).put( new Element(context.getTerminalReaches().hashCode(), context.getTerminalReaches()) );
+		Integer agHash = context.getAdjustmentGroups().hashCode();
+		cm.getEhcache(ADJUSTMENT_GROUPS_CACHE).put( new Element(agHash, context.getAdjustmentGroups()) );
+		
+		Integer analHash = context.getAnalysis().hashCode();
+		cm.getEhcache(ANALYSES_CACHE).put( new Element(analHash, context.getAnalysis()) );
+		
+		Integer trHash = context.getTerminalReaches().hashCode();
+		cm.getEhcache(TERMINAL_REACHES_CACHE).put( new Element(trHash, context.getTerminalReaches()) );
 		//TODO [IK] PredictContext needs a getAreaOfInterest() method (future)
 		//cm.getEhcache(AREA_OF_INTEREST_CACHE).put( new Element(context.getAreaOfInterest().hashCode(), context.getAreaOfInterest()) );
 

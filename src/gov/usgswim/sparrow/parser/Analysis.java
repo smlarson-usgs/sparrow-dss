@@ -12,7 +12,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-public class Analysis implements XMLStreamParserComponent, Serializable{
+public class Analysis implements XMLStreamParserComponent, Serializable, Cloneable{
 
 	private static final long serialVersionUID = 6047046812440162869L;
 	private static final String GROUP_BY_CHILD = "group-by";
@@ -94,7 +94,18 @@ public class Analysis implements XMLStreamParserComponent, Serializable{
 		append(select)
 		.toHashCode();
 		return hash;
+	}	
+	
+	@Override
+	protected Analysis clone() throws CloneNotSupportedException {
+		Analysis myClone = new Analysis();
+		myClone.groupBy = groupBy;
+		myClone.limitTo = limitTo;
+		myClone.id = id;
+		myClone.select = select;
+		return myClone;
 	}
+
 	// =================
 	// GETTERS & SETTERS
 	// =================

@@ -13,7 +13,7 @@ import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class AdjustmentGroups implements XMLStreamParserComponent, Serializable {
+public class AdjustmentGroups implements XMLStreamParserComponent, Serializable, Cloneable {
 	public static final String MAIN_ELEMENT_NAME = "adjustment-groups";
 
 	// =============================
@@ -78,10 +78,25 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable 
 		return MAIN_ELEMENT_NAME;
 	}
 
+	@Override
+	protected AdjustmentGroups clone() throws CloneNotSupportedException {
+		AdjustmentGroups myClone = new AdjustmentGroups();
+		// clone the ReachGroups
+		myClone.reachGroups = new ArrayList<ReachGroup>(reachGroups.size());
+		for (ReachGroup reachGroup: reachGroups) {
+			myClone.reachGroups.add(reachGroup.clone());
+		}
+		
+		myClone.id = id;
+		myClone.conflicts = conflicts;
+
+		return myClone;
+	}
+
+	
 	// =================
 	// GETTERS & SETTERS
 	// =================
-
 	public String getId() {
 		return id;
 	}

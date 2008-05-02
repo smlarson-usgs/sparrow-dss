@@ -14,11 +14,17 @@ public class PredictContextService implements HttpRequestHandler<PredictContextR
 			boolean isNeedsCompleteFirstRow) throws Exception {
 
 		//Store to cache
-		SharedApplication.getInstance().putPredictionContext(o.getPredictionContext());
-		
-		boolean success = true;
+		boolean isSuccess = false;
+		try {
+			SharedApplication.getInstance().putPredictionContext(o.getPredictionContext());
+			isSuccess = true;
+		} catch (Exception e) {
+			// TODO need to log failure
+			e.printStackTrace();
+		}
+
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
-		if (success) {
+		if (isSuccess) {
 			return inFact.createXMLStreamReader(new StringReader("<prediction-context-response><status>OK</status></prediction-context-response>"));
 //			<prediction-context-response
 //			  xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
@@ -53,6 +59,7 @@ public class PredictContextService implements HttpRequestHandler<PredictContextR
 //
 //			</prediction-context-response>
 		}
+		// failure
 		return inFact.createXMLStreamReader(new StringReader("<prediction-context-response><status>Failed</status></prediction-context-response>"));
 	}
 

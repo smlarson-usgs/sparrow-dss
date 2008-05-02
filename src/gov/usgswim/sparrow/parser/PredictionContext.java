@@ -12,7 +12,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-public class PredictionContext implements XMLStreamParserComponent, Serializable {
+public class PredictionContext implements XMLStreamParserComponent, Serializable, Cloneable {
 
 	private static final long serialVersionUID = -5343918321449313545L;
 	public static final String MAIN_ELEMENT_NAME = "prediction-context";
@@ -105,7 +105,7 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 	
 	@Override
 	public int hashCode() {
-		int hash = new HashCodeBuilder(13, 1776).
+		int hash = new HashCodeBuilder(13, 16661).
 		append(modelID).
 		append(adjustmentGroupsID).
 		append(analysisID).
@@ -116,6 +116,22 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 		append(terminalReaches).	//append(areaOfInterest).
 		toHashCode();
 		return hash;
+	}
+
+	
+	@Override
+	public PredictionContext clone() throws CloneNotSupportedException {
+		PredictionContext myClone = new PredictionContext();
+		myClone.modelID = modelID;
+		myClone.adjustmentGroupsID = adjustmentGroupsID;
+		myClone.analysisID = analysisID;
+		myClone.terminalReachesID = terminalReachesID;
+		myClone.areaOfInterestID = areaOfInterestID;
+		myClone.adjustmentGroups = adjustmentGroups.clone();
+		myClone.analysis = analysis.clone();
+		myClone.terminalReaches = terminalReaches.clone();
+
+		return myClone;
 	}
 
 	// =================
@@ -131,5 +147,9 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 
 	public TerminalReaches getTerminalReaches() {
 		return terminalReaches;
+	}
+
+	public AdjustmentGroups getAdjustmentGroups() {
+		return adjustmentGroups;
 	}
 }

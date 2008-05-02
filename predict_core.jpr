@@ -194,11 +194,11 @@
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <url n="id" path="../CRKData/wqws/WebServiceFramework/WebServiceFramework/java_lib/_lib_definition/Ehcache.jar.library"/>
+            <value n="id" v="Commons Logging 1.0.3"/>
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <value n="id" v="Commons Logging 1.0.3"/>
+            <url n="id" path="java_lib/_lib_definition/ehcache.library"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
@@ -251,11 +251,11 @@
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <url n="id" path="../CRKData/wqws/WebServiceFramework/WebServiceFramework/java_lib/_lib_definition/Ehcache.jar.library"/>
+            <value n="id" v="Commons Logging 1.0.3"/>
             <value n="isJDK" v="false"/>
          </hash>
          <hash>
-            <value n="id" v="Commons Logging 1.0.3"/>
+            <url n="id" path="java_lib/_lib_definition/ehcache.library"/>
             <value n="isJDK" v="false"/>
          </hash>
       </list>
