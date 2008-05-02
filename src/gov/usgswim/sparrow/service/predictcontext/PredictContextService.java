@@ -1,12 +1,17 @@
 package gov.usgswim.sparrow.service.predictcontext;
 
 import gov.usgswim.service.HttpRequestHandler;
+import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 
+import java.io.IOException;
 import java.io.StringReader;
+import java.util.Properties;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+
+import org.apache.commons.lang.StringUtils;
 
 public class PredictContextService implements HttpRequestHandler<PredictContextRequest> {
 
@@ -14,9 +19,10 @@ public class PredictContextService implements HttpRequestHandler<PredictContextR
 			boolean isNeedsCompleteFirstRow) throws Exception {
 
 		//Store to cache
+		PredictionContext context = o.getPredictionContext()
 		boolean isSuccess = false;
 		try {
-			SharedApplication.getInstance().putPredictionContext(o.getPredictionContext());
+			SharedApplication.getInstance().putPredictionContext(context);
 			isSuccess = true;
 		} catch (Exception e) {
 			// TODO need to log failure
@@ -25,39 +31,20 @@ public class PredictContextService implements HttpRequestHandler<PredictContextR
 
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
 		if (isSuccess) {
-			return inFact.createXMLStreamReader(new StringReader("<prediction-context-response><status>OK</status></prediction-context-response>"));
-//			<prediction-context-response
-//			  xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
-//				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-//				model-id="22" context-id="389392">
-//				
-//				<status>OK</status>
-//				<message></message>
-//				<cache-lifetime-seconds>86400</cache-lifetime-seconds>
-//				
-//				<!--
-//				The response document indicates that the submission was received and will
-//				be stored on the server for 86400 seconds (24 hours).  During that time, this
-//				prediction context can be refered to by the context-id (389392 from above),
-//				or the four pieces of the prediction context can be used seperately via their
-//				individual context-id's (below).
-//				
-//				Any use of the prediction context (or any piece of it) will reset the cache
-//				timer.
-//				
-//				The treatment groups, terminus-reaches, and area-of-interest are all very
-//				model specific, so it seems like this document should continue to contain
-//				the model-id (at top) to reflect that.
-//				-->
-//				<row-ids>reach | HUC8 | HUC6 | HUC4 | HUC2 | state | county</row-ids>
-//				
-//				<!-- Here a predefined treatment group was used, so both IDs are returned -->
-//				<adjustment-groups predefined="957648" context-id="982398"/>
-//				<analysis context-id="1093474"/>
-//				<terminal-reaches context-id="127830"/>
-//				<area-of-interest context-id="2947593"/>
-//
-//			</prediction-context-response>
+			
+			
+			String response = getText("ResponseOK", 
+				new String[] {
+					"ModelId", context.getModelID(),
+					"ContextId", Integer.toString( context.hashCode() ),
+					"RowIdType", "reach",
+					"AdjustmentContextId", Integer.toString( context.getAdjustmentGroups().hashCode() ),
+					"AnalysisContextId", Integer.toString( context.getAnalysis().hashCode() ),
+					"TerminalContextId", Integer.toString( context.getTerminalReaches().hashCode() ),
+					"AreaOfInterstContextId", "NEED-AREA-OF-INTEREST"
+			});
+			
+			return inFact.createXMLStreamReader(new StringReader(response));
 		}
 		// failure
 		return inFact.createXMLStreamReader(new StringReader("<prediction-context-response><status>Failed</status></prediction-context-response>"));
@@ -66,6 +53,40 @@ public class PredictContextService implements HttpRequestHandler<PredictContextR
 	public void shutDown() {
 		// TODO Auto-generated method stub
 
+	}
+	
+	/**
+	 * Loads the named text chunk from the properties file and inserts the named values passed in params.
+	 * 
+	 * params are passed in serial pairs as {"name1", "value1", "name2", "value2"}.
+	 * toString is called on each item, so it is OK to pass in autobox numerics.
+	 * See the DataLoader.properties file for the names of the parameters available
+	 * for the requested query.
+	 * 
+	 * @param name	Name of the query in the properties file
+	 * @param params	An array of name and value objects to replace in the query.
+	 * @return
+	 * @throws IOException
+	 */
+	public static String getText(String name, Object[] params) throws IOException {
+		String query = getText(name);
+
+		for (int i=0; i<params.length; i+=2) {
+			String n = "$" + params[i].toString() + "$";
+			String v = params[i+1].toString();
+
+			query = StringUtils.replace(query, n, v);
+		}
+
+		return query;
+	}
+	
+	public static String getText(String name) throws IOException {
+		Properties props = new Properties();
+
+		props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("gov/usgswim/sparrow/service/predictcontext/PredictContextServiceTemplate.properties"));
+
+		return props.getProperty(name);
 	}
 
 }

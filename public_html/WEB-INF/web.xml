@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd" version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee">
-	<description>Empty web.xml file for Web Application</description>
+	<description>
+		SPARROW application.  In normal use, this would be deployed inside the Oracle
+		MapViewer application, so the entries in this web.xml file would be copied
+		into MapViewer's web.xml file.
+	</description>
 	<listener>
 		<listener-class>gov.usgswim.sparrow.LifecycleListener</listener-class>
 	</listener>
