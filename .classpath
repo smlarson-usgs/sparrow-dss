@@ -16,5 +16,5 @@
 	<classpathentry kind="lib" path="java_lib/ehcache/usgs_core/ehcache.jar" sourcepath="java_lib/ehcache/src/ehcache-sources.jar"/>
 	<classpathentry kind="lib" path="java_lib/ehcache/usgs_dep/commons-logging-1.0.4.jar"/>
 	<classpathentry kind="lib" path="java_lib/backport_util/usgs_core/backport-util-concurrent.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="public_html/WEB-INF/classes"/>
 </classpath>
