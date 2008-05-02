@@ -24,6 +24,8 @@ import java.sql.SQLException;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
@@ -33,6 +35,9 @@ import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import oracle.jdbc.driver.OracleDriver;
 
 public class SharedApplication extends DataSourceProxy implements JDBCConnectable {
+	protected static Logger log =
+		Logger.getLogger(SharedApplication.class); //logging for this class
+	
 	private static SharedApplication instance;
 	private String dsName = "jdbc/sparrowDSDS";
 	private DataSource datasource;
@@ -173,7 +178,47 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		
 		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_CONTEXT_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
-		return (e != null)?((PredictionContext) e.getObjectValue()):null;
+		
+		if (e == null) return null;
+		
+		PredictionContext pc = (PredictionContext) e.getObjectValue();
+
+		//Populate the transient child objects if they have been stripped off during serialization.
+		//Just using the AdjustmentGroups as a test child.  If its null, assume all are null.
+		
+		if (pc.getAdjustmentGroups() == null) {
+			try {
+				
+				//TODO:  [IK or eric] Repopulate the child elements.  Possible code below.  Need to implement methods in PredictionContext (see related todo)
+				/*
+				//Sample code - this is how i see this working.
+				AdjustmentGroups ags = getAdjustmentGroups(pc.getAdjustmentGroupsID());
+				ags = ags.clone();		//will force error if null
+				
+				Analysis analysis = getAnalysis(pc.getAnalysisID());
+				analysis = analysis.clone();	//will force error if null
+				
+				TerminalReaches terms = getTerminalReaches(pc.getTerminalReachesID());
+				terms = terms.clone();	//will force error if null
+				
+				pc = pc.clone(ags, analysis, terms);
+				*/
+			} catch (Exception ee) {
+				log.info("An attempt was made to retrieve a PredictionContext for which the child had expired.  Returning null");
+				pc = null;
+			}
+		} else {
+			
+			//TODO:  [IK or eric] See todo above - need the getXXXID methods, afterwhich this code can be uncommented.
+			//Ensure the child elements are 'touched' so that they don't expire b/f the PC.
+			/*
+			getAdjustmentGroups(pc.getAdjustmentGroupsID());
+			getAnalysisContext(pc.getAnalysisID());
+			getTerminalReaches(pc.getTerminalReachesID());
+			*/
+		}
+
+		return pc;
 	}
 	
 	//AdjustmentGroup Cache

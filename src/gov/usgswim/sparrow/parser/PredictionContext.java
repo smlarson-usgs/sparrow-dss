@@ -26,10 +26,13 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 	}
 
 	private String modelID;
+	
+	//TODO [ik] Need getters for these IDs and they should be Integers
 	private String adjustmentGroupsID;
 	private String analysisID;
 	private String terminalReachesID;
 	private String areaOfInterestID;
+	
 	private transient AdjustmentGroups adjustmentGroups;
 	private transient Analysis analysis;
 	private transient TerminalReaches terminalReaches;
@@ -103,7 +106,7 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 	}
 	
 	
-	@Override
+	//TODO [IK] Don't need children in hashcode
 	public int hashCode() {
 		int hash = new HashCodeBuilder(13, 16661).
 		append(modelID).
@@ -119,7 +122,7 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 	}
 
 	
-	@Override
+	//TODO [IK] Children may be null.  Also need a clone method as shown in SharedApplication line 204
 	public PredictionContext clone() throws CloneNotSupportedException {
 		PredictionContext myClone = new PredictionContext();
 		myClone.modelID = modelID;
