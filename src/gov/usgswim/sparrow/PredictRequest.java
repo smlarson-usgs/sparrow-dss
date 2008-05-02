@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow;
 
+import java.io.Serializable;
+
 import gov.usgswim.Immutable;
 import gov.usgswim.sparrow.AdjustmentSet;
 
@@ -25,7 +27,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * proper immutability, always use an immutable AdjustmetSet in the constructor.
  */
 @Immutable
-public class PredictRequest {
+public class PredictRequest implements Serializable {
 	private final Long _modelId;
 	private final AdjustmentSet _adjSet2;
 	private Integer hash;	//Not strictly threadsafe, but recalculation is cheap and non-destructive

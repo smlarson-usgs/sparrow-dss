@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.test;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.ComparePercentageView;
 import gov.usgswim.sparrow.AdjustmentSet;
+import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
@@ -17,21 +18,22 @@ import net.sf.ehcache.Ehcache;
 
 public class SharedApplicationCaching extends TestCase {
 	
-	CacheManager cacheManager;
+	LifecycleListener lifecycle = new LifecycleListener();
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		cacheManager = CacheManager.getInstance();
+		lifecycle.contextInitialized(null);
 	}
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		
-		cacheManager.clearAll();
+		lifecycle.contextDestroyed(null);
 	}
-	
+	/*
 	public void testBasic() {
 		SharedApplication sa = SharedApplication.getInstance();
+		CacheManager.getInstance().clearAll();
 		Ehcache c = CacheManager.getInstance().getEhcache(SharedApplication.SERIALIZABLE_CACHE);
 		
 		//change to 1 second for disk eviction
@@ -68,6 +70,34 @@ public class SharedApplicationCaching extends TestCase {
 		
 	}
 	
+	*/
+	
+	/**
+	 * Do we keep items in cache across a restart?
+	 */
+	public void testAcrossRestart() {
+		SharedApplication sa = SharedApplication.getInstance();
+		CacheManager.getInstance().clearAll();
+		Ehcache c = CacheManager.getInstance().getEhcache(SharedApplication.SERIALIZABLE_CACHE);
+		
+		//change to 1 second for disk eviction
+
+		//Load numbers 1 - 10000
+		for (int i = 1; i < 210; i++) {
+	    sa.putSerializable(new Long(i));
+    }
+		
+		//restarting the cache
+		lifecycle.contextDestroyed(null);
+		lifecycle.contextInitialized(null);
+		
+		//Retrieve numbers 1 - 10000
+		for (int i = 1; i < 210; i++) {
+	    assertEquals(new Long(i), sa.getSerializable(new Integer(i)));
+    }
+		
+	}
+	
 	/*
 	public void testPredictDataCache() throws Exception {
 		SharedApplication sa = SharedApplication.getInstance();
@@ -83,6 +113,7 @@ public class SharedApplicationCaching extends TestCase {
 	
 	public void testBasicPredictionValues() throws Exception {
 		SharedApplication sa = SharedApplication.getInstance();
+		CacheManager.getInstance().clearAll();
 		PredictRequest pr = new PredictRequest(1L, AdjustmentSet.EMPTY_ADJUSTMENTSET);
 		
 		

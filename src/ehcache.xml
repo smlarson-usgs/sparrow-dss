@@ -275,11 +275,13 @@
 		Calculation time is typically small (milliseconds), so the main purpose of
 		these caches is to 'cushion' the impact of map tiles requests, which typically
 		request 24 tiles at a time, and then batches of 4 as the user scrolls.
+		
+		None of these caches use disk storage.
 	-->
 	<cache name="PredictData" maxElementsInMemory="2"
-		maxElementsOnDisk="6" eternal="false" overflowToDisk="true"
+		maxElementsOnDisk="6" eternal="false" overflowToDisk="false"
 		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
-		timeToLiveSeconds="14400" diskPersistent="true"
+		timeToLiveSeconds="14400" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
 		
 	<cache name="PredictResult" maxElementsInMemory="2"

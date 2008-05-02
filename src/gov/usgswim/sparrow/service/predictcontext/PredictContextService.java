@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.service.predictcontext;
 
 import gov.usgswim.service.HttpRequestHandler;
+import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.StringReader;
 
@@ -12,7 +13,9 @@ public class PredictContextService implements HttpRequestHandler<PredictContextR
 	public XMLStreamReader getXMLStreamReader(PredictContextRequest o,
 			boolean isNeedsCompleteFirstRow) throws Exception {
 
-		// TODO [eric] cache the PredictContext here
+		//Store to cache
+		SharedApplication.getInstance().putPredictionContext(o.getPredictionContext());
+		
 		boolean success = true;
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
 		if (success) {

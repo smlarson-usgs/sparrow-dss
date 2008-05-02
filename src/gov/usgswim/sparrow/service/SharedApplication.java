@@ -65,20 +65,6 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		predictDatasetCache = new ComputableCache<Long, PredictData>(new PredictDatasetComputable(), "Predict Dataset Cache");
 		idByPointCache = new ComputableCache<IDByPointRequest, DataTable>(new IDByPointComputable(), "ID by Point Cache");
 		modelCache = new ComputableCache<ModelRequest, ModelImm>(new ModelComputable(), "Model Cache");
-		
-		//
-		//Set up ehcaches that have decorators
-		//
-		
-		CacheManager cm = CacheManager.getInstance();
-		
-		//PredictDataCache
-		SelfPopulatingCache predictDataCache = new SelfPopulatingCache(cm.getEhcache(PREDICT_DATA_CACHE), new PredictDataFactory());
-		cm.replaceCacheWithDecoratedCache(cm.getEhcache(PREDICT_DATA_CACHE), predictDataCache);
-		
-		//PredictDataCache
-		SelfPopulatingCache predictResultCache = new SelfPopulatingCache(cm.getEhcache(PREDICT_RESULT_CACHE), new PredictResultFactory());
-		cm.replaceCacheWithDecoratedCache(cm.getEhcache(PREDICT_RESULT_CACHE), predictResultCache);
 	}
 
 	public static synchronized SharedApplication getInstance() {

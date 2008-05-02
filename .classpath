@@ -10,7 +10,7 @@
 	<classpathentry kind="lib" path="java_lib/oracle/mapviewer_client/sdovis.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="java_lib/codehaus/woodstox/usgs_dep/stax-api-1.0.1.jar" sourcepath="java_lib/codehaus/woodstox/wstx-src/src/java/com"/>
-	<classpathentry kind="lib" path="java_lib/usgs/datatable/usgs_core/usgs-datatable.jar"/>
+	<classpathentry kind="lib" path="java_lib/usgs/datatable/usgs_core/usgs-datatable.jar" sourcepath="java_lib/usgs/datatable/src"/>
 	<classpathentry kind="var" path="ORA_JDBC_DRIVERS/ojdbc14.jar"/>
 	<classpathentry kind="var" path="TOMCAT6_HOME/lib/servlet-api.jar"/>
 	<classpathentry kind="lib" path="java_lib/ehcache/usgs_core/ehcache.jar" sourcepath="java_lib/ehcache/src/ehcache-sources.jar"/>
