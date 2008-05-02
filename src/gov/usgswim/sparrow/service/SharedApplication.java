@@ -137,10 +137,23 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	
 	//PredictContext Cache
 	public Integer putPredictionContext(PredictionContext context) {
-		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_CONTEXT_CACHE);
-		int hash = context.hashCode();
-		c.put( new Element(hash, context) );
-		return hash;
+		//TODO [IK] PredictionContext needs to support clonable
+		//context = context.clone();
+		
+		CacheManager cm = CacheManager.getInstance();
+
+		int PCHash = context.hashCode();
+		cm.getEhcache(PREDICT_CONTEXT_CACHE).put( new Element(PCHash, context) );
+		
+		//put all the child beans in their respective caches
+		//TODO [IK] PredictContext needs a getAdjustmentGroups() method
+		//cm.getEhcache(ADJUSTMENT_GROUPS_CACHE).put( new Element(context.getAdjustmentGroups().hashCode(), context.getAdjustmentGroups()) );
+		cm.getEhcache(ANALYSES_CACHE).put( new Element(context.getAnalysis().hashCode(), context.getAnalysis()) );
+		cm.getEhcache(TERMINAL_REACHES_CACHE).put( new Element(context.getTerminalReaches().hashCode(), context.getTerminalReaches()) );
+		//TODO [IK] PredictContext needs a getAreaOfInterest() method (future)
+		//cm.getEhcache(AREA_OF_INTEREST_CACHE).put( new Element(context.getAreaOfInterest().hashCode(), context.getAreaOfInterest()) );
+
+		return PCHash;
 	}
 	
 	public PredictionContext getPredictionContext(Integer id) {
@@ -148,22 +161,25 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	public PredictionContext getPredictionContext(Integer id, boolean quiet) {
+		//TODO [eric] return the clone
+		
 		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_CONTEXT_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
 		return (e != null)?((PredictionContext) e.getObjectValue()):null;
 	}
 	
 	//AdjustmentGroup Cache
-	//TODO:  need this yet
-	
-	//Analysis Cache
-	public Integer putAnalysis(Analysis context) {
-		Ehcache c = CacheManager.getInstance().getEhcache(ANALYSES_CACHE);
-		int hash = context.hashCode();
-		c.put( new Element(hash, context) );
-		return hash;
+	public AdjustmentGroups getAdjustmentGroups(Integer id) {
+		return getAdjustmentGroups(id, false);
 	}
 	
+	public AdjustmentGroups getAdjustmentGroups(Integer id, boolean quiet) {
+		Ehcache c = CacheManager.getInstance().getEhcache(ADJUSTMENT_GROUPS_CACHE);
+		Element e  = (quiet)?c.getQuiet(id):c.get(id);
+		return (e != null)?((AdjustmentGroups) e.getObjectValue()):null;
+	}
+	
+	//Analysis Cache	
 	public Analysis getAnalysisContext(Integer id) {
 		return getAnalysis(id, false);
 	}
@@ -175,13 +191,6 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	//TerminalReach Cache
-	public Integer putTerminalReaches(Analysis context) {
-		Ehcache c = CacheManager.getInstance().getEhcache(TERMINAL_REACHES_CACHE);
-		int hash = context.hashCode();
-		c.put( new Element(hash, context) );
-		return hash;
-	}
-	
 	public TerminalReaches getTerminalReaches(Integer id) {
 		return getTerminalReaches(id, false);
 	}
@@ -193,8 +202,18 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	//AreaOfInterest Cache
-	//TODO:  need this yet
-	//
+	//TODO [IK] Need an AreaOfInterest object (can be just a placeholder)
+	/*
+	public AreaOfInterest getAreaOfInterest(Integer id) {
+		return getAreaOfInterest(id, false);
+	}
+	
+	public AreaOfInterest getAreaOfInterest(Integer id, boolean quiet) {
+		Ehcache c = CacheManager.getInstance().getEhcache(AREA_OF_INTEREST_CACHE);
+		Element e  = (quiet)?c.getQuiet(id):c.get(id);
+		return (e != null)?((AreaOfInterest) e.getObjectValue()):null;
+	}
+	*/
 	
 	//PredictData Cache
 	public PredictData getPredictData(Long id) {
