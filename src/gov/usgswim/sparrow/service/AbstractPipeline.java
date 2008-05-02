@@ -30,10 +30,6 @@ public abstract class AbstractPipeline<T extends PipelineRequest> implements Pip
 		this.parser = parser;
 	}
 
-	public void setHandler(HttpRequestHandler handler) {
-		// TODO Auto-generated method stub
-	}
-
 	public void dispatch(PipelineRequest o, HttpServletResponse response) throws Exception {
 		if (o.isEcho()) {
 			Pipeline pipeline = new EchoPipeline();
@@ -69,7 +65,7 @@ public abstract class AbstractPipeline<T extends PipelineRequest> implements Pip
 		}
 	
 		formatter.setFileName(respFormat.fileName);
-		formatter.dispatch(reader, response);
+		formatter.dispatch(reader, response, respFormat.isAttachement());
 	
 	}
 

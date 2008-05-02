@@ -2,13 +2,11 @@ package gov.usgswim.sparrow.parser;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import gov.usgswim.service.XMLStreamParserComponent;
 
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import gov.usgswim.service.ParserHelper;
-import gov.usgswim.service.XMLStreamParserComponent;
 
 public class ReachGroup implements XMLStreamParserComponent {
 	public static final String MAIN_ELEMENT_NAME = "reach-group";

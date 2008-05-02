@@ -113,43 +113,6 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 		}
 	}
 
-//	protected XMLStreamReader getXMLStream(HttpServletRequest request) throws XMLStreamException, IOException {
-//		String extraPath = request.getPathInfo();
-//		String xmlParam = getXmlParam();
-//		
-//		
-//		if ("GET".equals(request.getMethod())) {
-//		
-//			String xml = request.getParameter(xmlParam);
-//			return getXMLStream(xml);
-//			
-//		} else if ("POST".equals(request.getMethod())) {
-//		
-//			if (extraPath != null && extraPath.length() > 1) {
-//				//The client may have passed the XML request as a parameter...
-//				
-//				extraPath = extraPath.substring(1);
-//				if (extraPath.equals(xmlParam)) {
-//				
-//					String xml = request.getParameter(xmlParam);
-//					return getXMLStream(xml);
-//
-//				} else {
-//					//ignore the extra url info and process as normal.
-//					//No idea what the extra stuff could be.
-//				}
-//	
-//			}
-//			
-//			//Assume the entire POST contents is the XML document
-//			return inFact.createXMLStreamReader(request.getInputStream());
-//			
-//		} else {
-//			throw new IOException("Unsupported request method '" + request.getMethod() + "'");
-//		}
-//
-//	}
-	
 
 
 	protected XMLStreamReader getXMLStream(String xml) throws IOException, XMLStreamException {							

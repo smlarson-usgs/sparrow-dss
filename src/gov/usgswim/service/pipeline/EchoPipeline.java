@@ -1,7 +1,6 @@
 package gov.usgswim.service.pipeline;
 
 import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.XML;
-import gov.usgswim.service.HttpRequestHandler;
 
 import java.io.PrintWriter;
 
@@ -20,10 +19,6 @@ public class EchoPipeline implements Pipeline {
 		out.write(o.getXMLRequest());
 		out.flush();
 		out.close();
-	}
-
-	public void setHandler(HttpRequestHandler handler) {
-		// no handler needed
 	}
 
 	public PipelineRequest parse(HttpServletRequest request) throws Exception {

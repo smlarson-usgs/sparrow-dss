@@ -60,6 +60,7 @@ public interface IFormatter {
 		}
 	}
 
+	public void dispatch(XMLStreamReader in, HttpServletResponse response, boolean isAttachment) throws IOException;
 	public void dispatch(XMLStreamReader in, HttpServletResponse response) throws IOException;
 	public void dispatch(XMLStreamReader in, OutputStream out) throws IOException;
 	public void dispatch(XMLStreamReader in, Writer out) throws IOException;

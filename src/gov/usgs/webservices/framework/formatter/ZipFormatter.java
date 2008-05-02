@@ -17,12 +17,14 @@ public class ZipFormatter implements IFormatter {
 		wrappedFormatter = formatter;
 	}
 
-	public void dispatch(XMLStreamReader in, HttpServletResponse response)
-			throws IOException {
+	public void dispatch(XMLStreamReader in, HttpServletResponse response, boolean isAttachment)
+	throws IOException {
 		ZipOutputStream zOutStream = new ZipOutputStream(response.getOutputStream());
 		response.setContentType("application/zip");
 		response.addHeader("Content-transfer-encoding", "binary");
-		response.setHeader("Content-disposition", "attachment;filename=\"" + fileName + ".zip\"");
+		if (isAttachment) {
+			response.setHeader("Content-disposition", "attachment;filename=\"" + fileName + ".zip\"");
+		}
 		String suffix = wrappedFormatter.getFileSuffix();
 		suffix = (suffix != null)? suffix: "txt";
 		String fileName = "data." + suffix;
@@ -30,6 +32,12 @@ public class ZipFormatter implements IFormatter {
 		wrappedFormatter.dispatch(in, zOutStream);
 		zOutStream.flush();
 		zOutStream.close();
+	}
+
+	
+	public void dispatch(XMLStreamReader in, HttpServletResponse response)
+			throws IOException {
+		dispatch(in, response, true);
 	}
 
 	public void dispatch(XMLStreamReader in, OutputStream out)

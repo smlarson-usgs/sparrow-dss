@@ -3,7 +3,6 @@ package gov.usgswim.sparrow.parser;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
-import gov.usgswim.service.ParserHelper;
 import gov.usgswim.service.XMLStreamParserComponent;
 
 import javax.xml.stream.XMLStreamException;
@@ -18,6 +17,7 @@ public class ResponseFormat implements XMLStreamParserComponent {
 	protected String compressMethod;
 	protected String mimeType;
 	protected OutputType outputType;
+	protected boolean isAttachment = true;
 
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
@@ -100,6 +100,14 @@ public class ResponseFormat implements XMLStreamParserComponent {
 
 	public String getCompression() {
 		return compressMethod;
+	}
+	
+	public boolean isAttachement() {
+		return isAttachment;
+	}
+
+	public void setAttachment(boolean attach) {
+		this.isAttachment = attach;
 	}
 
 }

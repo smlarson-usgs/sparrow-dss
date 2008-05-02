@@ -24,6 +24,10 @@ public abstract class AbstractFormatter implements IFormatter {
 	}
 
 	public void dispatch(XMLStreamReader in, HttpServletResponse response) throws IOException {
+		dispatch(in, response, true);
+	}
+	
+	public void dispatch(XMLStreamReader in, HttpServletResponse response, boolean isAttachment) throws IOException {
 		String mimeType = outputType.getMimeType();
 		response.setContentType(mimeType);
 		switch (outputType) {
@@ -35,14 +39,17 @@ public abstract class AbstractFormatter implements IFormatter {
 			case HTML:
 			case JSON:
 			case XML:
-				response.addHeader(
-				        "Content-Disposition","attachment; filename=" + fileName + "." + outputType.getFileSuffix() );
+				if (isAttachment) {
+					response.addHeader(
+					        "Content-Disposition","attachment; filename=" + fileName + "." + outputType.getFileSuffix() );
+				}
 				break;
 				default:
 					// xml by default
-					response.addHeader(
-					        "Content-Disposition","attachment; filename=" + fileName + "." + OutputType.XML.getFileSuffix() );
-			
+					if (isAttachment) {
+						response.addHeader(
+						        "Content-Disposition","attachment; filename=" + fileName + "." + OutputType.XML.getFileSuffix() );
+					}
 		}
 		dispatch(in, response.getWriter());
 	}

@@ -3,18 +3,14 @@ package gov.usgswim.sparrow.parser;
 import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import gov.usgswim.service.XMLStreamParserComponent;
 
 import java.io.Serializable;
-import java.util.List;
 
-import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
-
-import gov.usgswim.service.ParserHelper;
-import gov.usgswim.service.XMLStreamParserComponent;
 
 public class Analysis implements XMLStreamParserComponent, Serializable{
 
