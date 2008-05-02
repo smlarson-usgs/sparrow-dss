@@ -19,7 +19,7 @@ public class PredictContextService implements HttpRequestHandler<PredictContextR
 			boolean isNeedsCompleteFirstRow) throws Exception {
 
 		//Store to cache
-		PredictionContext context = o.getPredictionContext()
+		PredictionContext context = o.getPredictionContext();
 		boolean isSuccess = false;
 		try {
 			SharedApplication.getInstance().putPredictionContext(context);
