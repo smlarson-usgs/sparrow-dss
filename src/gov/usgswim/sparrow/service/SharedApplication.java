@@ -195,24 +195,44 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		
 		PredictionContext pc = (PredictionContext) e.getObjectValue();
 		
-		//	Populate the transient child objects if they have been stripped off during serialization.
-		try {
-			if (pc.getAdjustmentGroups() == null && pc.getAdjustmentGroupsID() != null) {
+		//TODO [IK] A lot of this code relies on the child elements.  Can we just assume there is always a child element, even if empty?  Thus, getAdjustmentGroupsID() would never return null? 
+		
+		
+		if (pc.getAdjustmentGroups() == null && pc.getAdjustmentGroupsID() != null) {
+			//The transient children have been stripped off during serialization - reassign them
+			try {
+
 				AdjustmentGroups ags = getAdjustmentGroups(pc.getAdjustmentGroupsID());
-				Analysis analysis = getAnalysisContext(pc.getAnalysisID());
+				Analysis analysis = getAnalysis(pc.getAnalysisID());
 				TerminalReaches terminalReaches = getTerminalReaches(pc.getTerminalReachesID());
-				// TODO:  [eric] Ensure the child elements are 'touched' so that they don't expire b/f the PC.
+				//TODO [IK] AOI used here as well...
+				
 				pc = pc.clone(ags.clone(), analysis.clone(), terminalReaches.clone());
+
+			} catch (CloneNotSupportedException e1) {
+				log.info("An attempt was made to retrieve a PredictionContext for which the child had expired.  Returning null");
+				pc = null;
 			}
-		} catch (CloneNotSupportedException e1) {
-			log.info("An attempt was made to retrieve a PredictionContext for which the child had expired.  Returning null");
-			pc = null;
+			
+		} else {
+			//Child elements are present, but ensure that they stay alive in the cache just as long as the parent by accessing them
+			putAdjustmentGroups(pc.getAdjustmentGroups());
+			putAnalysis(pc.getAnalysis());
+			putTerminalReaches(pc.getTerminalReaches());
+			putAreaOfInterest(pc.getAreaOfInterest());
 		}
 		
 		return pc;
 	}
 	
 	//AdjustmentGroup Cache
+	protected Integer putAdjustmentGroups(AdjustmentGroups adj) {
+		Ehcache c = CacheManager.getInstance().getEhcache(ADJUSTMENT_GROUPS_CACHE);
+		int hash = adj.hashCode();
+		c.put( new Element(hash, adj) );
+		return hash;
+	}
+	
 	public AdjustmentGroups getAdjustmentGroups(Integer id) {
 		return getAdjustmentGroups(id, false);
 	}
@@ -223,8 +243,15 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		return (e != null)?((AdjustmentGroups) e.getObjectValue()):null;
 	}
 	
-	//Analysis Cache	
-	public Analysis getAnalysisContext(Integer id) {
+	//Analysis Cache
+	protected Integer putAnalysis(Analysis analysis) {
+		Ehcache c = CacheManager.getInstance().getEhcache(ANALYSES_CACHE);
+		int hash = analysis.hashCode();
+		c.put( new Element(hash, analysis) );
+		return hash;
+	}
+	
+	public Analysis getAnalysis(Integer id) {
 		return getAnalysis(id, false);
 	}
 	
@@ -235,6 +262,13 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	//TerminalReach Cache
+	protected Integer putTerminalReaches(TerminalReaches term) {
+		Ehcache c = CacheManager.getInstance().getEhcache(TERMINAL_REACHES_CACHE);
+		int hash = term.hashCode();
+		c.put( new Element(hash, term) );
+		return hash;
+	}
+	
 	public TerminalReaches getTerminalReaches(Integer id) {
 		return getTerminalReaches(id, false);
 	}
@@ -245,7 +279,15 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		return (e != null)?((TerminalReaches) e.getObjectValue()):null;
 	}
 	
+	//TODO [IK]  Need an AreaOfInterest object - just a placeholder for now.
 	//AreaOfInterest Cache
+	protected Integer putAreaOfInterest(AreaOfInterest area) {
+		Ehcache c = CacheManager.getInstance().getEhcache(AREA_OF_INTEREST_CACHE);
+		int hash = area.hashCode();
+		c.put( new Element(hash, area) );
+		return hash;
+	}
+	
 	public AreaOfInterest getAreaOfInterest(Integer id) {
 		return getAreaOfInterest(id, false);
 	}
