@@ -249,6 +249,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		return getAdjustmentGroups(id, false);
 	}
 	
+	//TODO [eric]  all these gets should return clones
 	public AdjustmentGroups getAdjustmentGroups(Integer id, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(ADJUSTMENT_GROUPS_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
