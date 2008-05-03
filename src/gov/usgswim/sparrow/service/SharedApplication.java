@@ -152,22 +152,34 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		
 		CacheManager cm = CacheManager.getInstance();
 
-		Integer PCHash = context.hashCode();
-		cm.getEhcache(PREDICT_CONTEXT_CACHE).put( new Element(PCHash, context) );
-		
-		Integer agHash = context.getAdjustmentGroups().hashCode();
-		cm.getEhcache(ADJUSTMENT_GROUPS_CACHE).put( new Element(agHash, context.getAdjustmentGroups()) );
-		
-		Integer analHash = context.getAnalysis().hashCode();
-		cm.getEhcache(ANALYSES_CACHE).put( new Element(analHash, context.getAnalysis()) );
-		
-		Integer trHash = context.getTerminalReaches().hashCode();
-		cm.getEhcache(TERMINAL_REACHES_CACHE).put( new Element(trHash, context.getTerminalReaches()) );
-		
-		Integer aoiHash = context.getAreaOfInterest().hashCode();
-		cm.getEhcache(AREA_OF_INTEREST_CACHE).put( new Element(aoiHash, context.getAreaOfInterest()) );
+		Integer pcHash = context.hashCode();
+		cm.getEhcache(PREDICT_CONTEXT_CACHE).put( new Element(pcHash, context) );
 
-		return PCHash;
+		AdjustmentGroups ag = context.getAdjustmentGroups();
+		if (ag != null) {
+			Integer hash = ag.hashCode();
+			cm.getEhcache(ADJUSTMENT_GROUPS_CACHE).put( new Element(hash, ag) );			
+		}
+		
+		Analysis anal = context.getAnalysis();
+		if (anal != null) {
+			Integer hash = anal.hashCode();
+			cm.getEhcache(ANALYSES_CACHE).put( new Element(hash, anal) );
+		}
+		
+		TerminalReaches tr = context.getTerminalReaches();
+		if (tr != null) {
+			Integer hash = context.getTerminalReaches().hashCode();
+			cm.getEhcache(TERMINAL_REACHES_CACHE).put( new Element(hash, tr) );
+		}
+		
+		AreaOfInterest aoi = context.getAreaOfInterest();
+		if (aoi != null) {
+			Integer hash = aoi.hashCode();
+			cm.getEhcache(AREA_OF_INTEREST_CACHE).put( new Element(hash, aoi) );
+		}
+		
+		return pcHash;
 	}
 	
 	public PredictionContext getPredictionContext(Integer id) {

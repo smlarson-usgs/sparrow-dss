@@ -3,15 +3,14 @@ package gov.usgswim.sparrow;
 import gov.usgswim.sparrow.parser.PredictDataFactory;
 import gov.usgswim.sparrow.parser.PredictResultFactory;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.service.predict.PredictService;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import org.apache.log4j.Logger;
-
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
+
+import org.apache.log4j.Logger;
 
 /**
  * This class should be registered as listener in the servlet container the
@@ -32,7 +31,7 @@ import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
  * @author eeverman
  *
  */
-public class LifecycleListener implements ServletContextListener {
+public class LifecycleListener implements ServletContextListener { 
 	protected static Logger log =
 		Logger.getLogger(LifecycleListener.class); //logging for this class
 	

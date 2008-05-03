@@ -41,7 +41,7 @@ public class PredictContextService implements HttpRequestHandler<PredictContextR
 					"AdjustmentContextId", Integer.toString( context.getAdjustmentGroups().hashCode() ),
 					"AnalysisContextId", Integer.toString( context.getAnalysis().hashCode() ),
 					"TerminalContextId", Integer.toString( context.getTerminalReaches().hashCode() ),
-					"AreaOfInterstContextId", "NEED-AREA-OF-INTEREST"
+					"AreaOfInterstContextId", Integer.toString( context.getAreaOfInterest().hashCode() )
 			});
 			
 			return inFact.createXMLStreamReader(new StringReader(response));
