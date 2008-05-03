@@ -195,49 +195,49 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		
 		PredictionContext pc = (PredictionContext) e.getObjectValue();
 		
-		// TODO [IK] A lot of this code relies on the child elements. Can we
-		// just assume there is always a child element, even if empty? Thus,
-		// getAdjustmentGroupsID() would never return null?
-		// TODO [eric] We can define a default empty singleton for each of the
-		// child types. However, I think then your cache has to get smarter so
-		// as to not store the empty singletons? And it's smarter in a bad way
-		// because caches should be dumb and not know about the details of the
-		// objects they are storing. Using default empty singletons also requires
-		// adjustment on the parser, as currently, when parsing a PredictContext,
-		// it does not create child elements if they are not encountered in
-		// the xml.
-		// TODO [IK] change conditionals back for each child if not assuming
-		// existence of child element, or correct to only if (pc.getAdjustmentGroups() == null)
-		// if using empty singletons.
-		if (pc.getAdjustmentGroups() == null && pc.getAdjustmentGroupsID() != null) {
-			//The transient children have been stripped off during serialization - reassign them
-			try {
+		//TODO [IK] Code here now assumes nulls are allowed, so PredictionContext code may need to change to match.
+		AdjustmentGroups ags = pc.getAdjustmentGroups();
+		Analysis analysis = pc.getAnalysis();
+		TerminalReaches terminalReaches = pc.getTerminalReaches();
+		AreaOfInterest aoi = pc.getAreaOfInterest();
 
-				AdjustmentGroups ags = getAdjustmentGroups(pc.getAdjustmentGroupsID());
-				Analysis analysis = getAnalysis(pc.getAnalysisID());
-				TerminalReaches terminalReaches = getTerminalReaches(pc.getTerminalReachesID());
-				AreaOfInterest aoi = getAreaOfInterest(pc.getAreaOfInterestID());
-				
-				//TODO [IK] Clone method should include AOI
-				pc = pc.clone(ags.clone(), analysis.clone(), terminalReaches.clone());
-
-			} catch (CloneNotSupportedException e1) {
-				log.info("An attempt was made to retrieve a PredictionContext for which the child had expired.  Returning null");
-				pc = null;
+		try {
+			
+			if (ags == null && pc.getAdjustmentGroupsID() != null) {
+				ags = getAdjustmentGroups(pc.getAdjustmentGroupsID());
+			} else if (ags != null){
+				touchAdjustmentGroups(ags.getId());	//refresh in cache
+				ags = ags.clone();
 			}
 			
-		} else {
-			//Child elements are present, but ensure that they stay alive in the cache just as long as the parent by accessing them
-			try {
-	      pc = pc.clone();
-      } catch (CloneNotSupportedException e1) {
-      	log.error("Unexpected Clone not supported - returning null");
-      	return null;
-      }
-			putAdjustmentGroups(pc.getAdjustmentGroups());
-			putAnalysis(pc.getAnalysis());
-			putTerminalReaches(pc.getTerminalReaches());
-			putAreaOfInterest(pc.getAreaOfInterest());
+			if (analysis == null && pc.getAnalysisID() != null) {
+				analysis = getAnalysis(pc.getAnalysisID());
+			} else if (analysis != null){
+				touchAnalysis(analysis.getId());	//refresh in cache
+				analysis = analysis.clone();
+			}
+			
+			if (terminalReaches == null && pc.getTerminalReachesID() != null) {
+				terminalReaches = getTerminalReaches(pc.getTerminalReachesID());
+			} else if (terminalReaches != null) {
+				touchTerminalReaches(terminalReaches.getId());	//refresh in cache
+				terminalReaches = terminalReaches.clone();
+			}
+			
+			if (aoi == null && pc.getAreaOfInterestID() != null) {
+				aoi = getAreaOfInterest(pc.getAreaOfInterestID());
+			} else if (aoi != null) {
+				touchAreaOfInterest(aoi.getId());	//refresh in cache
+				aoi = aoi.clone();
+			}
+			
+		
+			//TODO [IK] Clone method should include AOI
+			pc = pc.clone(ags, analysis, terminalReaches);
+
+		} catch (CloneNotSupportedException e1) {
+			log.error("Unexpected Clone not supported - returning null");
+			pc = null;
 		}
 		
 		return pc;
@@ -249,6 +249,12 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		int hash = adj.hashCode();
 		c.put( new Element(hash, adj) );
 		return hash;
+	}
+	
+	protected boolean touchAdjustmentGroups(Integer id) {
+		Ehcache c = CacheManager.getInstance().getEhcache(ADJUSTMENT_GROUPS_CACHE);
+		Element e  = c.get(id);
+		return (e != null);
 	}
 	
 	public AdjustmentGroups getAdjustmentGroups(Integer id) {
@@ -279,6 +285,12 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		return hash;
 	}
 	
+	protected boolean touchAnalysis(Integer id) {
+		Ehcache c = CacheManager.getInstance().getEhcache(ANALYSES_CACHE);
+		Element e  = c.get(id);
+		return (e != null);
+	}
+	
 	public Analysis getAnalysis(Integer id) {
 		return getAnalysis(id, false);
 	}
@@ -307,6 +319,12 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		return hash;
 	}
 	
+	protected boolean touchTerminalReaches(Integer id) {
+		Ehcache c = CacheManager.getInstance().getEhcache(TERMINAL_REACHES_CACHE);
+		Element e  = c.get(id);
+		return (e != null);
+	}
+	
 	public TerminalReaches getTerminalReaches(Integer id) {
 		return getTerminalReaches(id, false);
 	}
@@ -333,6 +351,12 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		int hash = area.hashCode();
 		c.put( new Element(hash, area) );
 		return hash;
+	}
+	
+	protected boolean touchAreaOfInterest(Integer id) {
+		Ehcache c = CacheManager.getInstance().getEhcache(AREA_OF_INTEREST_CACHE);
+		Element e  = c.get(id);
+		return (e != null);
 	}
 	
 	public AreaOfInterest getAreaOfInterest(Integer id) {
