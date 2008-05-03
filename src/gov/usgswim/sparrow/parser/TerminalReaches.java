@@ -29,7 +29,7 @@ public class TerminalReaches implements XMLStreamParserComponent, Serializable, 
 	}
 
 	protected List<Integer> reachIDs = new ArrayList<Integer>();
-	private String id;
+	private Integer id;
 	
 	// ================
 	// INSTANCE METHODS
@@ -55,7 +55,8 @@ public class TerminalReaches implements XMLStreamParserComponent, Serializable, 
 				case START_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
-						id = in.getAttributeValue(DEFAULT_NS_PREFIX, XMLStreamParserComponent.ID_ATTR);
+						String idString = in.getAttributeValue(DEFAULT_NS_PREFIX, XMLStreamParserComponent.ID_ATTR);
+						id = (idString == null)? null: Integer.valueOf(idString);
 					} else if (REACHES_CHILD.equals(localName)) {
 						String reachID = ParserHelper.parseSimpleElementValue(in);
 						reachIDs.add(Integer.parseInt(reachID));
@@ -95,7 +96,7 @@ public class TerminalReaches implements XMLStreamParserComponent, Serializable, 
 	}
 	
 	@Override
-	protected TerminalReaches clone() throws CloneNotSupportedException {
+	public TerminalReaches clone() throws CloneNotSupportedException {
 		TerminalReaches myClone = new TerminalReaches();
 		myClone.reachIDs = new ArrayList<Integer>(reachIDs.size());
 		for (Integer reachID: reachIDs) {
@@ -113,7 +114,7 @@ public class TerminalReaches implements XMLStreamParserComponent, Serializable, 
 		return reachIDs;
 	}
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 	

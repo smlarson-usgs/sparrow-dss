@@ -163,8 +163,9 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		
 		Integer trHash = context.getTerminalReaches().hashCode();
 		cm.getEhcache(TERMINAL_REACHES_CACHE).put( new Element(trHash, context.getTerminalReaches()) );
-		//TODO [IK] PredictContext needs a getAreaOfInterest() method (future)
-		//cm.getEhcache(AREA_OF_INTEREST_CACHE).put( new Element(context.getAreaOfInterest().hashCode(), context.getAreaOfInterest()) );
+		
+		Integer aoiHash = context.getAreaOfInterest().hashCode();
+		cm.getEhcache(AREA_OF_INTEREST_CACHE).put( new Element(aoiHash, context.getAreaOfInterest()) );
 
 		return PCHash;
 	}
@@ -174,7 +175,6 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	public PredictionContext getPredictionContext(Integer id, boolean quiet) {
-		//TODO [eric] return the clone
 		
 		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_CONTEXT_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
@@ -182,42 +182,21 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		if (e == null) return null;
 		
 		PredictionContext pc = (PredictionContext) e.getObjectValue();
-
-		//Populate the transient child objects if they have been stripped off during serialization.
-		//Just using the AdjustmentGroups as a test child.  If its null, assume all are null.
 		
-		if (pc.getAdjustmentGroups() == null) {
-			try {
-				
-				//TODO:  [IK or eric] Repopulate the child elements.  Possible code below.  Need to implement methods in PredictionContext (see related todo)
-				/*
-				//Sample code - this is how i see this working.
+		//	Populate the transient child objects if they have been stripped off during serialization.
+		try {
+			if (pc.getAdjustmentGroups() == null && pc.getAdjustmentGroupsID() != null) {
 				AdjustmentGroups ags = getAdjustmentGroups(pc.getAdjustmentGroupsID());
-				ags = ags.clone();		//will force error if null
-				
-				Analysis analysis = getAnalysis(pc.getAnalysisID());
-				analysis = analysis.clone();	//will force error if null
-				
-				TerminalReaches terms = getTerminalReaches(pc.getTerminalReachesID());
-				terms = terms.clone();	//will force error if null
-				
-				pc = pc.clone(ags, analysis, terms);
-				*/
-			} catch (Exception ee) {
-				log.info("An attempt was made to retrieve a PredictionContext for which the child had expired.  Returning null");
-				pc = null;
+				Analysis analysis = getAnalysisContext(pc.getAnalysisID());
+				TerminalReaches terminalReaches = getTerminalReaches(pc.getTerminalReachesID());
+				// TODO:  [eric] Ensure the child elements are 'touched' so that they don't expire b/f the PC.
+				pc = pc.clone(ags.clone(), analysis.clone(), terminalReaches.clone());
 			}
-		} else {
-			
-			//TODO:  [IK or eric] See todo above - need the getXXXID methods, afterwhich this code can be uncommented.
-			//Ensure the child elements are 'touched' so that they don't expire b/f the PC.
-			/*
-			getAdjustmentGroups(pc.getAdjustmentGroupsID());
-			getAnalysisContext(pc.getAnalysisID());
-			getTerminalReaches(pc.getTerminalReachesID());
-			*/
+		} catch (CloneNotSupportedException e1) {
+			log.info("An attempt was made to retrieve a PredictionContext for which the child had expired.  Returning null");
+			pc = null;
 		}
-
+		
 		return pc;
 	}
 	
@@ -255,8 +234,6 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	//AreaOfInterest Cache
-	//TODO [IK] Need an AreaOfInterest object (can be just a placeholder)
-	/*
 	public AreaOfInterest getAreaOfInterest(Integer id) {
 		return getAreaOfInterest(id, false);
 	}
@@ -266,8 +243,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
 		return (e != null)?((AreaOfInterest) e.getObjectValue()):null;
 	}
-	*/
-	
+
 	//PredictData Cache
 	public PredictData getPredictData(Long id) {
 		return getPredictData(id, false);

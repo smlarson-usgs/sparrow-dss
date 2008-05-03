@@ -102,7 +102,7 @@ public class PredictionContextTest extends TestCase {
 		reader.next();
 		pCon.parse(reader);
 
-		assertEquals("22", pCon.getModelID());
+		assertEquals(Integer.valueOf(22), pCon.getModelID());
 		assertEquals("HUC8", pCon.getAnalysis().getGroupBy());
 		assertEquals(3, pCon.getTerminalReaches().getReachIDs().size());
 		

@@ -24,7 +24,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 	}
 
 	private List<ReachGroup> reachGroups = new ArrayList<ReachGroup>();
-	private String id;
+	private Integer id;
 	private String conflicts;
 	
 	// ================
@@ -51,10 +51,9 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 				case START_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
-						id = in.getAttributeValue(DEFAULT_NS_PREFIX, XMLStreamParserComponent.ID_ATTR);
-						conflicts = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "conflicts");
-						
-					
+						String idString = in.getAttributeValue(DEFAULT_NS_PREFIX, XMLStreamParserComponent.ID_ATTR);
+						id = (idString == null)? null: Integer.valueOf(idString);
+						conflicts = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "conflicts");				
 					}  else if (ReachGroup.isTargetMatch(localName)) {
 						ReachGroup rg = new ReachGroup();
 						rg.parse(in);
@@ -79,7 +78,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 	}
 
 	@Override
-	protected AdjustmentGroups clone() throws CloneNotSupportedException {
+	public AdjustmentGroups clone() throws CloneNotSupportedException {
 		AdjustmentGroups myClone = new AdjustmentGroups();
 		// clone the ReachGroups
 		myClone.reachGroups = new ArrayList<ReachGroup>(reachGroups.size());
@@ -97,11 +96,11 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 	// =================
 	// GETTERS & SETTERS
 	// =================
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(String id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

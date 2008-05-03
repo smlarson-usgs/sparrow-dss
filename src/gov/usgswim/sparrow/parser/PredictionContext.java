@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.parser;
 
+import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.service.XMLStreamParserComponent;
@@ -25,18 +26,17 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 
-	private String modelID;
-	
-	//TODO [ik] Need getters for these IDs and they should be Integers
-	private String adjustmentGroupsID;
-	private String analysisID;
-	private String terminalReachesID;
-	private String areaOfInterestID;
+	private Integer id;
+	private Integer modelID;
+	private Integer adjustmentGroupsID;
+	private Integer analysisID;
+	private Integer terminalReachesID;
+	private Integer areaOfInterestID;
 	
 	private transient AdjustmentGroups adjustmentGroups;
 	private transient Analysis analysis;
 	private transient TerminalReaches terminalReaches;
-//	private AreaOfInterest areaOfInterest;
+	private AreaOfInterest areaOfInterest;
 	
 
 	// ================
@@ -63,7 +63,11 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 				case START_ELEMENT:
 					localName = in.getLocalName();
 					if (isTargetMatch(localName)) {
-						modelID = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "model-id");
+						String modelIdString = in.getAttributeValue(DEFAULT_NS_PREFIX, "model-id");
+						modelID = (modelIdString == null)? null: Integer.valueOf(modelIdString);
+						
+						String idString = in.getAttributeValue(DEFAULT_NS_PREFIX, XMLStreamParserComponent.ID_ATTR);
+						id = (idString == null)? null: Integer.valueOf(idString);
 					} else if (AdjustmentGroups.isTargetMatch(localName)) {
 						AdjustmentGroups ag = new AdjustmentGroups();
 						ag.parse(in);
@@ -79,8 +83,11 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 						analysis.parse(in);
 						this.analysis = analysis;
 						analysisID = (analysis == null)? null: analysis.getId();
-					} else if ("area-of-interest".equals(localName)) {
-						ParserHelper.ignoreElement(in);
+					} else if (AreaOfInterest.isTargetMatch(localName)) {
+						AreaOfInterest aoi = new AreaOfInterest();
+						aoi.parse(in);
+						this.areaOfInterest = aoi;
+						areaOfInterestID = (areaOfInterest == null)? null: areaOfInterest.getId();
 					} else {
 						throw new RuntimeException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
 					}
@@ -105,8 +112,6 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 		return MAIN_ELEMENT_NAME;
 	}
 	
-	
-	//TODO [IK] Don't need children in hashcode
 	public int hashCode() {
 		int hash = new HashCodeBuilder(13, 16661).
 		append(modelID).
@@ -114,15 +119,13 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 		append(analysisID).
 		append(terminalReachesID).
 		append(areaOfInterestID).
-		append(adjustmentGroups).
-		append(analysis).
-		append(terminalReaches).	//append(areaOfInterest).
 		toHashCode();
 		return hash;
 	}
 
-	
-	//TODO [IK] Children may be null.  Also need a clone method as shown in SharedApplication line 204
+	/* A simple clone method, caveat emptor as it doesn't deal with transient children.
+	 * @see java.lang.Object#clone()
+	 */
 	public PredictionContext clone() throws CloneNotSupportedException {
 		PredictionContext myClone = new PredictionContext();
 		myClone.modelID = modelID;
@@ -136,6 +139,34 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 
 		return myClone;
 	}
+	
+	/**
+	 * Clones with supplied transient children. Does not clone supplied children.
+	 * 
+	 * @param ag
+	 * @param anal
+	 * @param tr
+	 * @return
+	 * @throws CloneNotSupportedException
+	 */
+	public PredictionContext clone(AdjustmentGroups ag, Analysis anal, TerminalReaches tr) throws CloneNotSupportedException {
+		PredictionContext myClone = this.clone();
+		
+		// populate the transient children only if necessary & correct
+		if (adjustmentGroupsID != null && ag != null && ag.getId().equals(adjustmentGroupsID)) {
+			myClone.adjustmentGroups = ag;
+		}
+		
+		if (analysisID != null && anal != null && anal.getId().equals(analysisID)) {
+			myClone.analysis = anal;
+		}
+		
+		if (terminalReachesID != null && tr != null && tr.getId().equals(terminalReachesID)) {
+			myClone.terminalReaches = tr;
+		}	
+
+		return myClone;
+	}
 
 	// =================
 	// GETTERS & SETTERS
@@ -144,7 +175,7 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 		return analysis;
 	}
 
-	public String getModelID() {
+	public Integer getModelID() {
 		return modelID;
 	}
 
@@ -154,5 +185,29 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 
 	public AdjustmentGroups getAdjustmentGroups() {
 		return adjustmentGroups;
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public Integer getAdjustmentGroupsID() {
+		return adjustmentGroupsID;
+	}
+
+	public Integer getAnalysisID() {
+		return analysisID;
+	}
+
+	public Integer getAreaOfInterestID() {
+		return areaOfInterestID;
+	}
+
+	public Integer getTerminalReachesID() {
+		return terminalReachesID;
+	}
+
+	public AreaOfInterest getAreaOfInterest() {
+		return areaOfInterest;
 	}
 }

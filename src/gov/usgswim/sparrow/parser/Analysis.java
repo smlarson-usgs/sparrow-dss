@@ -28,7 +28,7 @@ public class Analysis implements XMLStreamParserComponent, Serializable, Cloneab
 
 	private String groupBy;
 	private String limitTo;
-	private String id;
+	private Integer id;
 	private Select select;
 
 	// ================
@@ -55,7 +55,8 @@ public class Analysis implements XMLStreamParserComponent, Serializable, Cloneab
 				case START_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
-						id = in.getAttributeValue(DEFAULT_NS_PREFIX, XMLStreamParserComponent.ID_ATTR);
+						String idString = in.getAttributeValue(DEFAULT_NS_PREFIX, XMLStreamParserComponent.ID_ATTR);
+						id = (idString == null)? null: Integer.valueOf(idString);
 					} else if ("select".equals(localName)) {
 						Select selectElement = new Select();
 						selectElement.parse(in);
@@ -97,7 +98,7 @@ public class Analysis implements XMLStreamParserComponent, Serializable, Cloneab
 	}	
 	
 	@Override
-	protected Analysis clone() throws CloneNotSupportedException {
+	public Analysis clone() throws CloneNotSupportedException {
 		Analysis myClone = new Analysis();
 		myClone.groupBy = groupBy;
 		myClone.limitTo = limitTo;
@@ -117,7 +118,7 @@ public class Analysis implements XMLStreamParserComponent, Serializable, Cloneab
 		return groupBy;
 	}
 
-	public String getId() {
+	public Integer getId() {
 		return id;
 	}
 }

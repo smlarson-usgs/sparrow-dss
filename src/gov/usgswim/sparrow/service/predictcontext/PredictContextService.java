@@ -35,7 +35,7 @@ public class PredictContextService implements HttpRequestHandler<PredictContextR
 			
 			String response = getText("ResponseOK", 
 				new String[] {
-					"ModelId", context.getModelID(),
+					"ModelId", context.getModelID().toString(),
 					"ContextId", Integer.toString( context.hashCode() ),
 					"RowIdType", "reach",
 					"AdjustmentContextId", Integer.toString( context.getAdjustmentGroups().hashCode() ),
