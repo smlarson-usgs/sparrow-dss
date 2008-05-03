@@ -218,6 +218,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 				TerminalReaches terminalReaches = getTerminalReaches(pc.getTerminalReachesID());
 				AreaOfInterest aoi = getAreaOfInterest(pc.getAreaOfInterestID());
 				
+				//TODO [IK] Clone method should include AOI
 				pc = pc.clone(ags.clone(), analysis.clone(), terminalReaches.clone());
 
 			} catch (CloneNotSupportedException e1) {
@@ -227,7 +228,12 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 			
 		} else {
 			//Child elements are present, but ensure that they stay alive in the cache just as long as the parent by accessing them
-			pc = pc.clone();
+			try {
+	      pc = pc.clone();
+      } catch (CloneNotSupportedException e1) {
+      	log.error("Unexpected Clone not supported - returning null");
+      	return null;
+      }
 			putAdjustmentGroups(pc.getAdjustmentGroups());
 			putAnalysis(pc.getAnalysis());
 			putTerminalReaches(pc.getTerminalReaches());
@@ -249,11 +255,20 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		return getAdjustmentGroups(id, false);
 	}
 	
-	//TODO [eric]  all these gets should return clones
 	public AdjustmentGroups getAdjustmentGroups(Integer id, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(ADJUSTMENT_GROUPS_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
-		return (e != null)?((AdjustmentGroups) e.getObjectValue()):null;
+		
+		if (e != null) {
+			try {
+	      return ((AdjustmentGroups) e.getObjectValue()).clone();
+      } catch (CloneNotSupportedException e1) {
+      	log.error("Unexpected Clone not supported - returning null");
+      	return null;
+      }
+		} else {
+			return null;
+		}
 	}
 	
 	//Analysis Cache
@@ -271,7 +286,17 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	public Analysis getAnalysis(Integer id, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(ANALYSES_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
-		return (e != null)?((Analysis) e.getObjectValue()):null;
+		
+		if (e != null) {
+			try {
+	      return ((Analysis) e.getObjectValue()).clone();
+      } catch (CloneNotSupportedException e1) {
+      	log.error("Unexpected Clone not supported - returning null");
+      	return null;
+      }
+		} else {
+			return null;
+		}
 	}
 	
 	//TerminalReach Cache
@@ -289,10 +314,19 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	public TerminalReaches getTerminalReaches(Integer id, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(TERMINAL_REACHES_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
-		return (e != null)?((TerminalReaches) e.getObjectValue()):null;
+
+		if (e != null) {
+			try {
+	      return ((TerminalReaches) e.getObjectValue()).clone();
+      } catch (CloneNotSupportedException e1) {
+      	log.error("Unexpected Clone not supported - returning null");
+      	return null;
+      }
+		} else {
+			return null;
+		}
 	}
 	
-	//TODO [IK]  Need an AreaOfInterest object - just a placeholder for now.
 	//AreaOfInterest Cache
 	protected Integer putAreaOfInterest(AreaOfInterest area) {
 		Ehcache c = CacheManager.getInstance().getEhcache(AREA_OF_INTEREST_CACHE);
@@ -308,7 +342,17 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	public AreaOfInterest getAreaOfInterest(Integer id, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(AREA_OF_INTEREST_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
-		return (e != null)?((AreaOfInterest) e.getObjectValue()):null;
+
+		if (e != null) {
+			try {
+	      return ((AreaOfInterest) e.getObjectValue()).clone();
+      } catch (CloneNotSupportedException e1) {
+      	log.error("Unexpected Clone not supported - returning null");
+      	return null;
+      }
+		} else {
+			return null;
+		}
 	}
 
 	//PredictData Cache
