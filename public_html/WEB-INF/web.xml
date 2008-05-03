@@ -40,6 +40,22 @@
 			<param-value>gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline</param-value>
 		</init-param>
 	</servlet>
+	<servlet>
+		<servlet-name>EchoXMLService</servlet-name>
+		<servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
+		<init-param>
+			<param-name>pipeline-class</param-name>
+			<param-value>gov.usgswim.sparrow.service.echo.EchoPipeline</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
+		<servlet-name>JSONifyService</servlet-name>
+		<servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
+		<init-param>
+			<param-name>pipeline-class</param-name>
+			<param-value>gov.usgswim.sparrow.service.json.JSONifyPipeline</param-value>
+		</init-param>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>ModelService</servlet-name>
 		<url-pattern>/sp_model/*</url-pattern>
@@ -55,6 +71,14 @@
 	<servlet-mapping>
 		<servlet-name>PredictContextService</servlet-name>
 		<url-pattern>/sp_predictcontext/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>EchoXMLService</servlet-name>
+		<url-pattern>/sp_echo/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>JSONifyService</servlet-name>
+		<url-pattern>/sp_jsonify/*</url-pattern>
 	</servlet-mapping>
 	<session-config>
 		<session-timeout>35</session-timeout>

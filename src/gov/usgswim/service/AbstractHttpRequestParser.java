@@ -72,9 +72,8 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 		}
 	}
 	
-	private String readInputXMLRequest(HttpServletRequest request) throws IOException {
+	public static String readInputXMLRequest(HttpServletRequest request, String xmlParam) throws IOException {
 		String extraPath = request.getPathInfo();
-		String xmlParam = getXmlParam();
 		
 		if ("GET".equals(request.getMethod())) {
 		
@@ -111,6 +110,10 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 		} else {
 			throw new IOException("Unsupported request method '" + request.getMethod() + "'");
 		}
+	}
+	
+	private String readInputXMLRequest(HttpServletRequest request) throws IOException {
+		return readInputXMLRequest(request, getXmlParam());
 	}
 
 

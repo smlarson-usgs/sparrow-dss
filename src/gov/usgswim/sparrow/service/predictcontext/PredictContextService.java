@@ -32,7 +32,6 @@ public class PredictContextService implements HttpRequestHandler<PredictContextR
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
 		if (isSuccess) {
 			
-			
 			String response = getText("ResponseOK", 
 				new String[] {
 					"ModelId", context.getModelID().toString(),

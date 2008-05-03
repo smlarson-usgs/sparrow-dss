@@ -280,8 +280,6 @@ public class PredictParser extends AbstractHttpRequestParser<PredictServiceReque
 				respFormat.setMimeType(mimeType);
 			}
 
-			result.setEcho(request.getParameter("echo"));
-			
 			String compress = request.getParameter("compress");
 			if (compress != null && compress.equals("zip")) {
 				respFormat.setCompression("zip");

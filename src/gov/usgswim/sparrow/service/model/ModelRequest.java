@@ -65,18 +65,6 @@ public class ModelRequest implements PipelineRequest{
 		return _sources;
 	}
 
-	public void setEcho(String echo) {
-		isEcho = ("yes".equalsIgnoreCase(echo) || "true".equalsIgnoreCase(echo));
-	}
-
-	public void setEcho(boolean echo) {
-		isEcho = echo;
-	}
-
-	public boolean isEcho() {
-		return isEcho;
-	}
-
 	public String getXMLRequest() {
 		return xmlRequest;
 	}

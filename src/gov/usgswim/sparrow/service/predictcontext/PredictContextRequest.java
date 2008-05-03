@@ -24,18 +24,6 @@ public class PredictContextRequest implements PipelineRequest {
 	// =================
 	// GETTERS & SETTERS
 	// =================
-	public void setEcho(String echo) {
-		isEcho = ("yes".equalsIgnoreCase(echo) || "true".equalsIgnoreCase(echo));
-	}
-
-	public void setEcho(boolean echo) {
-		isEcho = echo;
-	}
-
-	public boolean isEcho() {
-		return isEcho;
-	}
-
 	public String getXMLRequest() {
 		return xmlRequest;
 	}
@@ -56,13 +44,9 @@ public class PredictContextRequest implements PipelineRequest {
 		return responseFormat;
 	}
 
-
-
 	public PredictionContext getPredictionContext() {
 		return predictionContext;
 	}
-
-
 
 	public void setPredictionContext(PredictionContext predictionContext) {
 		this.predictionContext = predictionContext;

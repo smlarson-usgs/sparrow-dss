@@ -115,7 +115,6 @@
 				<input type="checkbox" name="mimetype" value="tab">tab
 				<input type="checkbox" name="mimetype" value="excel">excel
 				<input type="checkbox" name="mimetype" value="json">json
-				<input type="checkbox" name="echo" value="true">echo
 				<input type="checkbox" name="compress" value="zip">zip
 			</fieldset>
 		</form>
@@ -150,7 +149,6 @@
 				<input type="checkbox" name="mimetype" value="tab">tab
 				<input type="checkbox" name="mimetype" value="excel">excel
 				<input type="checkbox" name="mimetype" value="json">json
-				<input type="checkbox" name="echo" value="true">echo
 				<input type="checkbox" name="compress" value="zip">zip
 			</fieldset>
 		</form>
@@ -164,7 +162,6 @@
 			tab:<a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&mimetype=tab">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;mimetype=tab</a><br>
 			json:<a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&mimetype=json">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;mimetype=json</a><br>
 
-			echo: <a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&echo=yes">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;echo=yes</a><br>
 		
 		</p>
 		-->
