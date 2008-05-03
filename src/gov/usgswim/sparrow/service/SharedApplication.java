@@ -227,6 +227,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 			
 		} else {
 			//Child elements are present, but ensure that they stay alive in the cache just as long as the parent by accessing them
+			pc = pc.clone();
 			putAdjustmentGroups(pc.getAdjustmentGroups());
 			putAnalysis(pc.getAnalysis());
 			putTerminalReaches(pc.getTerminalReaches());
