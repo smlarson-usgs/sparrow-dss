@@ -68,10 +68,6 @@ public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSetImm>,
 		return adjustments.size() > 0;
 	}
 
-	// TODO [IK] Maybe implement these?
-//	public Adjustment2[] getGrossAdjustments() { return null;}
-//	public Adjustment2[] getSpecificAdjustments() { return null;}
-
 	/**
 	 * Reads the gross adjustments from a string
 	 * @param adj

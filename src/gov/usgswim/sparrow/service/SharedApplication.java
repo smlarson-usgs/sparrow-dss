@@ -195,9 +195,20 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		
 		PredictionContext pc = (PredictionContext) e.getObjectValue();
 		
-		//TODO [IK] A lot of this code relies on the child elements.  Can we just assume there is always a child element, even if empty?  Thus, getAdjustmentGroupsID() would never return null? 
-		
-		
+		// TODO [IK] A lot of this code relies on the child elements. Can we
+		// just assume there is always a child element, even if empty? Thus,
+		// getAdjustmentGroupsID() would never return null?
+		// TODO [eric] We can define a default empty singleton for each of the
+		// child types. However, I think then your cache has to get smarter so
+		// as to not store the empty singletons? And it's smarter in a bad way
+		// because caches should be dumb and not know about the details of the
+		// objects they are storing. Using default empty singletons also requires
+		// adjustment on the parser, as currently, when parsing a PredictContext,
+		// it does not create child elements if they are not encountered in
+		// the xml.
+		// TODO [IK] change conditionals back for each child if not assuming
+		// existence of child element, or correct to only if (pc.getAdjustmentGroups() == null)
+		// if using empty singletons.
 		if (pc.getAdjustmentGroups() == null && pc.getAdjustmentGroupsID() != null) {
 			//The transient children have been stripped off during serialization - reassign them
 			try {
@@ -205,7 +216,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 				AdjustmentGroups ags = getAdjustmentGroups(pc.getAdjustmentGroupsID());
 				Analysis analysis = getAnalysis(pc.getAnalysisID());
 				TerminalReaches terminalReaches = getTerminalReaches(pc.getTerminalReachesID());
-				//TODO [IK] AOI used here as well...
+				AreaOfInterest aoi = getAreaOfInterest(pc.getAreaOfInterestID());
 				
 				pc = pc.clone(ags.clone(), analysis.clone(), terminalReaches.clone());
 

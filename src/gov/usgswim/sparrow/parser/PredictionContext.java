@@ -133,9 +133,11 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 		myClone.analysisID = analysisID;
 		myClone.terminalReachesID = terminalReachesID;
 		myClone.areaOfInterestID = areaOfInterestID;
+		// TODO [IK] add null conditionals if not using default empty singletons
 		myClone.adjustmentGroups = adjustmentGroups.clone();
 		myClone.analysis = analysis.clone();
 		myClone.terminalReaches = terminalReaches.clone();
+		myClone.areaOfInterest = areaOfInterest.clone();
 
 		return myClone;
 	}

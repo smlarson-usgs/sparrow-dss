@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * Addison-Wesley, 2006.
  */
 public class ComputableCache<A, V> implements Computable<A, V> {
-	// TODO [IK] Make the concurrent map a map of weak references
+	// TODO Make the concurrent map a map of weak references. Obsolete with ehcache
 	private final ConcurrentMap<A, Future<V>> cache = new ConcurrentHashMap<A, Future<V>>();
 	private final Computable<A, V> c;
 	private final String cacheName;
