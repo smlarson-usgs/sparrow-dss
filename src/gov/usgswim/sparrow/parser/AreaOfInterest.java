@@ -3,17 +3,14 @@ package gov.usgswim.sparrow.parser;
 import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import gov.usgswim.service.XMLStreamParserComponent;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
-
-import gov.usgswim.service.XMLStreamParserComponent;
 
 public class AreaOfInterest implements XMLStreamParserComponent, Serializable, Cloneable {
 	public static final String MAIN_ELEMENT_NAME = "area-of-interest";
@@ -24,7 +21,15 @@ public class AreaOfInterest implements XMLStreamParserComponent, Serializable, C
 	public static boolean isTargetMatch(String tagName) {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
-
+	
+	public static AreaOfInterest parseStream(XMLStreamReader in) throws XMLStreamException {
+		AreaOfInterest aoi = new AreaOfInterest();
+		return aoi.parse(in);
+	}
+	
+	// ===============
+	// INSTANCE FIELDS
+	// ===============
 	private Integer id;
 	
 	// ================

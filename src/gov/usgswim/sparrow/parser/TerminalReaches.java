@@ -28,6 +28,14 @@ public class TerminalReaches implements XMLStreamParserComponent, Serializable, 
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 
+	public static TerminalReaches parseStream(XMLStreamReader in) throws XMLStreamException {
+		TerminalReaches tr = new TerminalReaches();
+		return tr.parse(in);
+	}
+	
+	// ===============
+	// INSTANCE FIELDS
+	// ===============
 	protected List<Integer> reachIDs = new ArrayList<Integer>();
 	private Integer id;
 	
@@ -117,5 +125,5 @@ public class TerminalReaches implements XMLStreamParserComponent, Serializable, 
 	public Integer getId() {
 		return id;
 	}
-	
+
 }

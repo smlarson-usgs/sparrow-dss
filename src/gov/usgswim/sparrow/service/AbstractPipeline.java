@@ -49,7 +49,9 @@ public abstract class AbstractPipeline<T extends PipelineRequest> implements Pip
 				formatter = ("zip".equals(respFormat.getCompression()))? new ZipFormatter(df): (IFormatter) df;
 				break;
 			case JSON:
-				formatter = new JSONFormatter();
+				
+				formatter = getConfiguredJSONFormatter();
+				formatter = (formatter == null)? new JSONFormatter(): formatter;
 				break;
 			case XML:
 				// XML is the default case
@@ -65,6 +67,10 @@ public abstract class AbstractPipeline<T extends PipelineRequest> implements Pip
 
 	protected abstract IFormatter getCustomFlatteningFormatter(OutputType outputType);
 	
+	public IFormatter getConfiguredJSONFormatter() {
+		return new JSONFormatter(); // unconfigured JSON formatter
+	}
+
 	public PipelineRequest parse(HttpServletRequest request) throws Exception {
 		return parser.parseForPipeline(request);
 	}

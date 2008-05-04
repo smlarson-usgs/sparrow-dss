@@ -12,9 +12,6 @@ import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointParser;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
-import gov.usgswim.sparrow.service.predict.PredictServiceRequest.DataSeries;
-import gov.usgswim.sparrow.service.predict.PredictServiceRequest.PredictType;
-import gov.usgswim.sparrow.service.predict.PredictServiceRequest.ResponseFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.stream.XMLStreamException;
@@ -278,6 +275,9 @@ public class PredictParser extends AbstractHttpRequestParser<PredictServiceReque
 			String mimeType = request.getParameter("mimetype");
 			if (mimeType != null) {
 				respFormat.setMimeType(mimeType);
+			}
+			if (respFormat.getMimeType() == null){
+				respFormat.setMimeType("xml"); // defaults to xml
 			}
 
 			String compress = request.getParameter("compress");

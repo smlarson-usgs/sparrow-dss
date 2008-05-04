@@ -196,50 +196,51 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		PredictionContext pc = (PredictionContext) e.getObjectValue();
 		
 		//TODO [IK] Code here now assumes nulls are allowed, so PredictionContext code may need to change to match.
-		AdjustmentGroups ags = pc.getAdjustmentGroups();
-		Analysis analysis = pc.getAnalysis();
-		TerminalReaches terminalReaches = pc.getTerminalReaches();
-		AreaOfInterest aoi = pc.getAreaOfInterest();
+		// Populate transient children if necessary
+		{
+			AdjustmentGroups ags = pc.getAdjustmentGroups();
+			Analysis analysis = pc.getAnalysis();
+			TerminalReaches terminalReaches = pc.getTerminalReaches();
+			AreaOfInterest aoi = pc.getAreaOfInterest();
 
-		try {
-			
-			if (ags == null && pc.getAdjustmentGroupsID() != null) {
-				ags = getAdjustmentGroups(pc.getAdjustmentGroupsID());
-			} else if (ags != null){
-				touchAdjustmentGroups(ags.getId());	//refresh in cache
-				ags = ags.clone();
-			}
-			
-			if (analysis == null && pc.getAnalysisID() != null) {
-				analysis = getAnalysis(pc.getAnalysisID());
-			} else if (analysis != null){
-				touchAnalysis(analysis.getId());	//refresh in cache
-				analysis = analysis.clone();
-			}
-			
-			if (terminalReaches == null && pc.getTerminalReachesID() != null) {
-				terminalReaches = getTerminalReaches(pc.getTerminalReachesID());
-			} else if (terminalReaches != null) {
-				touchTerminalReaches(terminalReaches.getId());	//refresh in cache
-				terminalReaches = terminalReaches.clone();
-			}
-			
-			if (aoi == null && pc.getAreaOfInterestID() != null) {
-				aoi = getAreaOfInterest(pc.getAreaOfInterestID());
-			} else if (aoi != null) {
-				touchAreaOfInterest(aoi.getId());	//refresh in cache
-				aoi = aoi.clone();
-			}
-			
-		
-			//TODO [IK] Clone method should include AOI
-			pc = pc.clone(ags, analysis, terminalReaches);
+			try {
 
-		} catch (CloneNotSupportedException e1) {
-			log.error("Unexpected Clone not supported - returning null");
-			pc = null;
+				if (ags == null && pc.getAdjustmentGroupsID() != null) {
+					ags = getAdjustmentGroups(pc.getAdjustmentGroupsID());
+				} else if (ags != null){
+					touchAdjustmentGroups(ags.getId());	//refresh in cache
+					ags = ags.clone();
+				}
+
+				if (analysis == null && pc.getAnalysisID() != null) {
+					analysis = getAnalysis(pc.getAnalysisID());
+				} else if (analysis != null){
+					touchAnalysis(analysis.getId());	//refresh in cache
+					analysis = analysis.clone();
+				}
+
+				if (terminalReaches == null && pc.getTerminalReachesID() != null) {
+					terminalReaches = getTerminalReaches(pc.getTerminalReachesID());
+				} else if (terminalReaches != null) {
+					touchTerminalReaches(terminalReaches.getId());	//refresh in cache
+					terminalReaches = terminalReaches.clone();
+				}
+
+				if (aoi == null && pc.getAreaOfInterestID() != null) {
+					aoi = getAreaOfInterest(pc.getAreaOfInterestID());
+				} else if (aoi != null) {
+					touchAreaOfInterest(aoi.getId());	//refresh in cache
+					aoi = aoi.clone();
+				}
+
+				pc = pc.clone(ags, analysis, terminalReaches, aoi);
+
+
+			} catch (CloneNotSupportedException e1) {
+				log.error("Unexpected Clone not supported - returning null");
+				pc = null;
+			}
 		}
-		
 		return pc;
 	}
 	

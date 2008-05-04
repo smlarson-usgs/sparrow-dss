@@ -25,7 +25,15 @@ public class Analysis implements XMLStreamParserComponent, Serializable, Cloneab
 	public static boolean isTargetMatch(String tagName) {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
-
+	
+	public static Analysis parseStream(XMLStreamReader in) throws XMLStreamException {
+		Analysis anal = new Analysis();
+		return anal.parse(in);
+	}
+	
+	// ===============
+	// INSTANCE FIELDS
+	// ===============
 	private String groupBy;
 	private String limitTo;
 	private Integer id;

@@ -64,29 +64,22 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 					localName = in.getLocalName();
 					if (isTargetMatch(localName)) {
 						String modelIdString = in.getAttributeValue(DEFAULT_NS_PREFIX, "model-id");
-						modelID = (modelIdString == null)? null: Integer.valueOf(modelIdString);
+						modelID = (modelIdString == null || modelIdString.length() == 0)? null: Integer.valueOf(modelIdString);
 						
 						String idString = in.getAttributeValue(DEFAULT_NS_PREFIX, XMLStreamParserComponent.ID_ATTR);
-						id = (idString == null)? null: Integer.valueOf(idString);
-					} else if (AdjustmentGroups.isTargetMatch(localName)) {
-						AdjustmentGroups ag = new AdjustmentGroups();
-						ag.parse(in);
-						this.adjustmentGroups = ag;
-						adjustmentGroupsID = (ag == null)? null: ag.getId();
+						id = (idString == null || idString.length() == 0)? null: Integer.valueOf(idString);
+					}// the following are all children matches 
+					else if (AdjustmentGroups.isTargetMatch(localName)) {
+						this.adjustmentGroups = AdjustmentGroups.parseStream(in);
+						adjustmentGroupsID = (adjustmentGroups == null)? null: adjustmentGroups.getId();
 					} else if (TerminalReaches.isTargetMatch(localName)) {
-						TerminalReaches tr = new TerminalReaches();
-						tr.parse(in);
-						this.terminalReaches = tr;
-						terminalReachesID = (tr == null)? null: tr.getId();
+						this.terminalReaches = TerminalReaches.parseStream(in);
+						terminalReachesID = (terminalReaches == null)? null: terminalReaches.getId();
 					} else if (Analysis.isTargetMatch(localName)) {
-						Analysis analysis = new Analysis();
-						analysis.parse(in);
-						this.analysis = analysis;
+						this.analysis = Analysis.parseStream(in);
 						analysisID = (analysis == null)? null: analysis.getId();
 					} else if (AreaOfInterest.isTargetMatch(localName)) {
-						AreaOfInterest aoi = new AreaOfInterest();
-						aoi.parse(in);
-						this.areaOfInterest = aoi;
+						this.areaOfInterest = AreaOfInterest.parseStream(in);
 						areaOfInterestID = (areaOfInterest == null)? null: areaOfInterest.getId();
 					} else {
 						throw new RuntimeException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
@@ -95,14 +88,16 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 				case END_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
+						// TODO [IK] Might want to calculate PC id here.
+						// TODO [eric] If the ID is unavailable because this is
+						// a new PContext, when in the object lifecycle should
+						// id be calculated and populated? Here? on cache.put()?
 						return this; // we're done
-					} else if (ADJUSTMENT_GROUPS.equals(localName)){
-						//keep going;
 					} else {
 						// otherwise, error
 						throw new RuntimeException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);
 					}
-					break;
+					//break;
 			}
 		}
 		throw new RuntimeException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
@@ -123,7 +118,10 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 		return hash;
 	}
 
-	/* A simple clone method, caveat emptor as it doesn't deal with transient children.
+	/**
+	 * A simple clone method, caveat emptor as it doesn't deal with transient
+	 * children.
+	 * 
 	 * @see java.lang.Object#clone()
 	 */
 	public PredictionContext clone() throws CloneNotSupportedException {
@@ -133,11 +131,11 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 		myClone.analysisID = analysisID;
 		myClone.terminalReachesID = terminalReachesID;
 		myClone.areaOfInterestID = areaOfInterestID;
-		// TODO [IK] add null conditionals if not using default empty singletons
-		myClone.adjustmentGroups = adjustmentGroups.clone();
-		myClone.analysis = analysis.clone();
-		myClone.terminalReaches = terminalReaches.clone();
-		myClone.areaOfInterest = areaOfInterest.clone();
+
+		myClone.adjustmentGroups = (adjustmentGroups == null)? null: adjustmentGroups.clone();
+		myClone.analysis = (analysis == null)? null: analysis.clone();
+		myClone.terminalReaches = (terminalReaches == null)? null: terminalReaches.clone();
+		myClone.areaOfInterest = (areaOfInterest == null)? null: areaOfInterest.clone();
 
 		return myClone;
 	}
@@ -151,8 +149,10 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 	 * @return
 	 * @throws CloneNotSupportedException
 	 */
-	public PredictionContext clone(AdjustmentGroups ag, Analysis anal, TerminalReaches tr) throws CloneNotSupportedException {
+	public PredictionContext clone(AdjustmentGroups ag, Analysis anal, TerminalReaches tr, AreaOfInterest aoi) throws CloneNotSupportedException {
 		PredictionContext myClone = this.clone();
+		// TODO [IK] log error conditions appropriately. Return null if error?
+		// TODO [eric] Determine error behavior. Suggest return null if error.
 		
 		// populate the transient children only if necessary & correct
 		if (adjustmentGroupsID != null && ag != null && ag.getId().equals(adjustmentGroupsID)) {
@@ -165,6 +165,10 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 		
 		if (terminalReachesID != null && tr != null && tr.getId().equals(terminalReachesID)) {
 			myClone.terminalReaches = tr;
+		}
+		
+		if (areaOfInterestID != null && aoi != null && aoi.getId().equals(areaOfInterestID)) {
+			myClone.areaOfInterest = aoi;
 		}	
 
 		return myClone;

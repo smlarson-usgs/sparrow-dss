@@ -45,8 +45,7 @@ public class EchoPipeline extends AbstractPipeline implements Pipeline {
 			}
 
 			public void setResponseFormat(ResponseFormat respFormat) {
-				// TODO Auto-generated method stub
-				
+
 			}
 
 			public void setXMLRequest(String request) {
@@ -70,9 +69,5 @@ public class EchoPipeline extends AbstractPipeline implements Pipeline {
 	public void setXMLParamName(String xmlParamName) {
 		this.xmlParamName = xmlParamName;
 	}
-	
-	
-	
-	
 
 }

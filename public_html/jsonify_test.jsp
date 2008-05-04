@@ -8,8 +8,8 @@
   </head>
   <body>
 		
-		<form action="sp_predictcontext/xmlreq" method="post" enctype="application/x-www-form-urlencoded">
-			<fieldset title="Prediction Context Request 1">
+		<form action="sp_jsonify/xmlreq" method="post" enctype="application/x-www-form-urlencoded">
+			<fieldset title="JSONify Prediction Context Request">
 				<label for="xml_input_1">Prediction Request Format</label>
 				<p>
 				National Model w/ gross and specific adjustments.
@@ -118,5 +118,6 @@
 				<input type="checkbox" name="compress" value="zip">zip
 			</fieldset>
 		</form>
+
 	</body>
 </html>

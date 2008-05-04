@@ -22,7 +22,15 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 	public static boolean isTargetMatch(String tagName) {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
-
+	
+	public static AdjustmentGroups parseStream(XMLStreamReader in) throws XMLStreamException {
+		AdjustmentGroups ag = new AdjustmentGroups();
+		return ag.parse(in);
+	}
+	
+	// ===============
+	// INSTANCE FIELDS
+	// ===============
 	private List<ReachGroup> reachGroups = new ArrayList<ReachGroup>();
 	private Integer id;
 	private String conflicts;

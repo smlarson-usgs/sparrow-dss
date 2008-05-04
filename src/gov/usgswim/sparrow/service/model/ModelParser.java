@@ -71,6 +71,9 @@ public class ModelParser
 		if (mimeType != null) {
 			respFormat.setMimeType(mimeType);
 		}
+		if (respFormat.getMimeType() == null){
+			respFormat.setMimeType("xml"); // defaults to xml
+		}
 
 		String compress = request.getParameter("compress");
 		if (compress != null && compress.equals("zip")) {
