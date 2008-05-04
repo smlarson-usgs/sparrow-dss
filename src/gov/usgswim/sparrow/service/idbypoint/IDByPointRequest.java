@@ -41,6 +41,12 @@ public class IDByPointRequest implements PipelineRequest{
 		_numberOfResults = (numberOfResults < 1)?1:numberOfResults;
 	}
 
+	public IDByPointRequest(Integer modelId, Point.Double point, int numberOfResults) {
+		_modelId = modelId.longValue();
+		_point = point;
+		_numberOfResults = (numberOfResults < 1)?1:numberOfResults;
+	}
+	
 	public int getNumberOfResults() {
 		return _numberOfResults;
 	}

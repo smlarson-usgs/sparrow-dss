@@ -4,7 +4,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 public interface XMLStreamParserComponent {
-	public static final String ID_ATTR = "id";
+	public static final String ID_ATTR = "context-id";
 	/**
 	 * Partially parses the stream (up to but not after the end target tag) and
 	 * fills in its attributes.

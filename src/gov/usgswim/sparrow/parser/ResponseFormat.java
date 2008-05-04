@@ -11,13 +11,6 @@ import javax.xml.stream.XMLStreamReader;
 public class ResponseFormat implements XMLStreamParserComponent {
 	public static final String MAIN_ELEMENT_NAME = "response-format";
 
-	public String formatName;
-	public String name;
-	public String fileName;
-	protected String compressMethod;
-	protected String mimeType;
-	protected OutputType outputType;
-	protected boolean isAttachment = true;
 
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
@@ -25,7 +18,22 @@ public class ResponseFormat implements XMLStreamParserComponent {
 	public static boolean isTargetMatch(String tagName) {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
-
+	public static ResponseFormat parseStream(XMLStreamReader in) throws XMLStreamException {
+		ResponseFormat rf = new ResponseFormat();
+		return rf.parse(in);
+	}
+	
+	// ===============
+	// INSTANCE FIELDS
+	// ===============
+	public String formatName;
+	public String name;
+	public String fileName;
+	protected String compressMethod;
+	protected String mimeType;
+	protected OutputType outputType;
+	protected boolean isAttachment = true;
+	
 	// ================
 	// INSTANCE METHODS
 	// ================

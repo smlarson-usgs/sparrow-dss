@@ -111,11 +111,6 @@
 &lt;/prediction-context>
 				</textarea>
 				<input type="submit" name="submit" value="submit"/>
-				<input type="checkbox" name="mimetype" value="csv">csv
-				<input type="checkbox" name="mimetype" value="tab">tab
-				<input type="checkbox" name="mimetype" value="excel">excel
-				<input type="checkbox" name="mimetype" value="json">json
-				<input type="checkbox" name="compress" value="zip">zip
 			</fieldset>
 		</form>
 

@@ -8,6 +8,7 @@ import gov.usgswim.sparrow.PredictResult;
 import gov.usgswim.sparrow.domain.ModelImm;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointComputable;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
+import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest2;
 import gov.usgswim.sparrow.service.model.ModelComputable;
 import gov.usgswim.sparrow.service.model.ModelRequest;
 import gov.usgswim.sparrow.service.predict.PredictDatasetComputable;

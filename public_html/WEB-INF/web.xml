@@ -33,6 +33,14 @@
 		</init-param>
 	</servlet>
 	<servlet>
+		<servlet-name>IDByPointService2</servlet-name>
+		<servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
+		<init-param>
+			<param-name>pipeline-class</param-name>
+			<param-value>gov.usgswim.sparrow.service.idbypoint.IDByPointPipeline2</param-value>
+		</init-param>
+	</servlet>
+	<servlet>
 		<servlet-name>PredictContextService</servlet-name>
 		<servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
 		<init-param>
@@ -67,6 +75,10 @@
 	<servlet-mapping>
 		<servlet-name>IDByPointService</servlet-name>
 		<url-pattern>/sp_idpoint/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>IDByPointService2</servlet-name>
+		<url-pattern>/sp_idpoint2/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>PredictContextService</servlet-name>

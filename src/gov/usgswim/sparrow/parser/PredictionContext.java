@@ -7,7 +7,6 @@ import gov.usgswim.service.XMLStreamParserComponent;
 
 import java.io.Serializable;
 
-import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -17,7 +16,7 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 
 	private static final long serialVersionUID = -5343918321449313545L;
 	public static final String MAIN_ELEMENT_NAME = "prediction-context";
-	public static final String ADJUSTMENT_GROUPS = "adjustment-groups";
+//	public static final String ADJUSTMENT_GROUPS = "adjustment-groups";
 
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
@@ -25,7 +24,14 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 	public static boolean isTargetMatch(String tagName) {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
-
+	public static PredictionContext parseStream(XMLStreamReader in) throws XMLStreamException {
+		PredictionContext ag = new PredictionContext();
+		return ag.parse(in);
+	}
+	
+	// ===============
+	// INSTANCE FIELDS
+	// ===============
 	private Integer id;
 	private Integer modelID;
 	private Integer adjustmentGroupsID;
@@ -185,6 +191,9 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 		return modelID;
 	}
 
+	public void setModelID(Integer modelID) {
+		this.modelID = modelID;
+	}
 	public TerminalReaches getTerminalReaches() {
 		return terminalReaches;
 	}

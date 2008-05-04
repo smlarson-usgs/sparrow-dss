@@ -7,6 +7,7 @@ import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
+import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest2;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -27,7 +28,6 @@ public class DataTableSerializer extends BasicXMLStreamReader {
 		//this.request = req; NOT USED. ELIMINATE?
 		this.result = result;
 	}
-
 
 	// ================
 	// INSTANCE METHODS
