@@ -1,0 +1,23 @@
+<project name="sparrow"  basedir=".">
+	<!-- 
+		Load environment variables. Will this work for Mac? NO
+		Mac environmental variables must be defined in 
+		local.properties, unfortunately.
+	 -->
+	<property environment="env"/>
+
+	<echo message="Running ${ant.version}"/>
+
+	<property name="java-lib.dir" location="java_lib"/>
+	<property name="web-inf.lib.dir" location="public_html/WEB-INF/lib"/>
+
+	<target name="copy-jars-to_WEB-INF-lib">
+		<copy todir="${web-inf.lib.dir}" flatten="true">
+			<fileset dir="${java-lib.dir}">
+				<include name="**/usgs_core/*.jar" />
+				<include name="**/log4j/*.jar" />
+				<include name="**/ehcache/usgs_dep/*.jar" />
+			</fileset>
+		</copy>
+	</target>
+</project>
