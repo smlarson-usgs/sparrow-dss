@@ -4,7 +4,12 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<!-- Eliminated the result-count from the root element - it only makes sense to return one reach -->
 	
-	<prediction-context context-id="1231241243424"/>
+	<!--
+	A prediction-context is used when the user has established a prediction context.
+	If the user has no prediction context, the model-id element can be passed instead,
+	which just returns nominal information.
+	-->
+	<prediction-context context-id="1231241243424"/> or <model-id>22</model-id>
 	
 	<!-- Request can include one of these elements: -->
 	<point lat="40" long="-100"/> or <reach>1234874</reach>
