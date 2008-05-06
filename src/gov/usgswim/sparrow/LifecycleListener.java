@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow;
 
-import gov.usgswim.sparrow.parser.PredictDataFactory;
-import gov.usgswim.sparrow.parser.PredictResultFactory;
+import gov.usgswim.sparrow.cachefactory.PredictDataFactory;
+import gov.usgswim.sparrow.cachefactory.PredictResultFactory;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import javax.servlet.ServletContextEvent;

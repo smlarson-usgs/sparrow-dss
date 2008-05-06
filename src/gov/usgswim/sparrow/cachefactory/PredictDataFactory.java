@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.parser;
+package gov.usgswim.sparrow.cachefactory;
 
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import gov.usgswim.sparrow.service.SharedApplication;
