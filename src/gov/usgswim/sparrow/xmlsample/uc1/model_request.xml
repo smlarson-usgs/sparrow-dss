@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<sparrow-meta-request
+  xmlns="http://www.usgs.gov/sparrow/meta_request/v0_1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<model public="true" archived="false" approved="true">
+	</model>
+</sparrow-meta-request>

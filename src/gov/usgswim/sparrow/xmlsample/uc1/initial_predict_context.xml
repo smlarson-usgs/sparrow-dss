@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<prediction-context
+  xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	model-id="22">
+
+		<adjustment-groups conflicts="accumulate">
+			<reach-group enabled="true" name="Illinois">
+				<desc>Some point sources located somewhere...</desc>
+				<notes>
+					We know of 3 plants on the Wisconsin River which have announced improved
+					BPM implementations.
+				</notes>
+
+				<reach id="10">
+					<adjustment src="2" coef=".9"/>
+				</reach>
+			</reach-group>
+		</adjustment-groups>
+		
+		
+		<!--
+		This analysis section specifies that we want the incremental value to be the
+		data value when maps are generated.
+		-->
+		<analysis>
+			<select>
+				<data-series>incremental</data-series>
+			</select>
+		</analysis>
+
+</prediction-context>
