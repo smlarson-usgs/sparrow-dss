@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tomcatProjectProperties>
     <rootDir>/public_html</rootDir>
-    <exportSource>false</exportSource>
+    <exportSource>true</exportSource>
     <reloadable>true</reloadable>
     <redirectLogger>true</redirectLogger>
     <updateXml>true</updateXml>
-    <warLocation></warLocation>
+    <warLocation>/datausgs/svn_root/sparrow/deploy/sparrow.war</warLocation>
     <extraInfo></extraInfo>
     <webPath>sparrow</webPath>
     <webClassPathEntries>

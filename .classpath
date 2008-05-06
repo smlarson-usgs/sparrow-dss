@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="java_lib/apache/log4j/log4j-1.2.13.jar"/>
-	<classpathentry kind="lib" path="java_lib/codehaus/woodstox/usgs_core/wstx-lgpl-3.2.4.jar"/>
-	<classpathentry kind="lib" path="java_lib/jakarta/commons_lang/commons-lang-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="java_lib/apache/log4j/log4j-1.2.13.jar"/>
+	<classpathentry exported="true" kind="lib" path="java_lib/codehaus/woodstox/usgs_core/wstx-lgpl-3.2.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="java_lib/jakarta/commons_lang/commons-lang-2.1.jar"/>
 	<classpathentry kind="lib" path="java_lib/junit/junit.jar"/>
 	<classpathentry kind="lib" path="java_lib/junit/src.jar"/>
 	<classpathentry kind="lib" path="java_lib/oracle/mapviewer_client/mvclient.jar"/>
-	<classpathentry kind="lib" path="java_lib/oracle/mapviewer_client/sdovis.jar"/>
+	<classpathentry exported="true" kind="lib" path="java_lib/oracle/mapviewer_client/sdovis.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="java_lib/codehaus/woodstox/usgs_dep/stax-api-1.0.1.jar" sourcepath="java_lib/codehaus/woodstox/wstx-src/src/java/com"/>
-	<classpathentry kind="lib" path="java_lib/usgs/datatable/usgs_core/usgs-datatable.jar" sourcepath="java_lib/usgs/datatable/src"/>
-	<classpathentry kind="var" path="ORA_JDBC_DRIVERS/ojdbc14.jar"/>
+	<classpathentry exported="true" kind="lib" path="java_lib/codehaus/woodstox/usgs_dep/stax-api-1.0.1.jar" sourcepath="java_lib/codehaus/woodstox/wstx-src/src/java/com"/>
+	<classpathentry exported="true" kind="lib" path="java_lib/usgs/datatable/usgs_core/usgs-datatable.jar" sourcepath="java_lib/usgs/datatable/src"/>
+	<classpathentry exported="true" kind="var" path="ORA_JDBC_DRIVERS/ojdbc14.jar"/>
 	<classpathentry kind="var" path="TOMCAT6_HOME/lib/servlet-api.jar"/>
-	<classpathentry kind="lib" path="java_lib/ehcache/usgs_core/ehcache.jar" sourcepath="java_lib/ehcache/src/ehcache-sources.jar"/>
-	<classpathentry kind="lib" path="java_lib/ehcache/usgs_dep/commons-logging-1.0.4.jar"/>
-	<classpathentry kind="lib" path="java_lib/backport_util/usgs_core/backport-util-concurrent.jar"/>
+	<classpathentry exported="true" kind="lib" path="java_lib/ehcache/usgs_core/ehcache.jar" sourcepath="java_lib/ehcache/src/ehcache-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="java_lib/ehcache/usgs_dep/commons-logging-1.0.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="java_lib/backport_util/usgs_core/backport-util-concurrent.jar"/>
 	<classpathentry kind="output" path="public_html/WEB-INF/classes"/>
 </classpath>
