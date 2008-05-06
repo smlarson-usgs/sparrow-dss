@@ -20,7 +20,7 @@ import gov.usgswim.task.ComputableCache;
  * This factory class creates a PredictResult on demand for an EHCache.
  * 
  * When the cache receives a get(PredictRequest) call and it doesn't have a cache
- * entry for that PredictRequest, the createEntry() method of this class is called
+ * entry for that fequest, the createEntry() method of this class is called
  * and the returned value is cached.
  * 
  * The basic process followed in this class is:

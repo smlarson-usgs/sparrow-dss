@@ -1,7 +1,6 @@
 package gov.usgswim.sparrow;
 
-import gov.usgswim.sparrow.cachefactory.PredictDataFactory;
-import gov.usgswim.sparrow.cachefactory.PredictResultFactory;
+import gov.usgswim.sparrow.cachefactory.*;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import javax.servlet.ServletContextEvent;
@@ -78,6 +77,11 @@ public class LifecycleListener implements ServletContextListener {
 		//PredictDataCache
 		SelfPopulatingCache predictResultCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.PREDICT_RESULT_CACHE), new PredictResultFactory());
 		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.PREDICT_RESULT_CACHE), predictResultCache);
+		
+		//IdentifyReachByPoint
+		SelfPopulatingCache reachByPointCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.IDENTIFY_REACH_BY_POINT), new ReachByPointFactory());
+		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.PREDICT_RESULT_CACHE), reachByPointCache);
+		
 	}
 
 }

@@ -9,6 +9,7 @@ import gov.usgswim.sparrow.domain.ModelImm;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointComputable;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest2;
+import gov.usgswim.sparrow.service.idbypoint.Reach;
 import gov.usgswim.sparrow.service.model.ModelComputable;
 import gov.usgswim.sparrow.service.model.ModelRequest;
 import gov.usgswim.sparrow.service.predict.PredictDatasetComputable;
@@ -62,6 +63,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	//ehcache self-populated cache names
 	public static final String PREDICT_DATA_CACHE = "PredictData";
 	public static final String PREDICT_RESULT_CACHE = "PredictResult";
+	public static final String IDENTIFY_REACH_BY_POINT = "IdentifyReachByPoint";
 
 	
 	private SharedApplication() {
@@ -401,6 +403,17 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_RESULT_CACHE);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
 		return (e != null)?((DataTable) e.getObjectValue()):null;
+	}
+	
+	//ReachByPoint Cache
+	public Reach getReachByPointResult(IDByPointRequest2 req) {
+		return getReachByPointResult(req, false);
+	}
+	
+	public Reach getReachByPointResult(IDByPointRequest2 req, boolean quiet) {
+		Ehcache c = CacheManager.getInstance().getEhcache(IDENTIFY_REACH_BY_POINT);
+		Element e  = (quiet)?c.getQuiet(req):c.get(req);
+		return (e != null)?((Reach) e.getObjectValue()):null;
 	}
 	
 	

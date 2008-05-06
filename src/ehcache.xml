@@ -289,5 +289,11 @@
 		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
 		timeToLiveSeconds="14400" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+	
+	<cache name="IdentifyReachByPoint" maxElementsInMemory="20"
+		maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
+		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
+		timeToLiveSeconds="14400" diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
 
 </ehcache>
