@@ -37,7 +37,7 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 		
 		
 		String query = getText(
-				"FindIdentifier",
+				"FindReach",
 				new String[] {"ModelId", modelId.toString(), "lng", lng.toString(), "lat", lat.toString()});
 		
 		Connection conn = SharedApplication.getInstance().getConnection();
