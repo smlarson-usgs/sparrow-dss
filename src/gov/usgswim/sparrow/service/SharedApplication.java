@@ -10,7 +10,6 @@ import gov.usgswim.sparrow.service.idbypoint.IDByPointComputable;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest2;
 import gov.usgswim.sparrow.service.idbypoint.Reach;
-import gov.usgswim.sparrow.service.model.ModelComputable;
 import gov.usgswim.sparrow.service.model.ModelRequest;
 import gov.usgswim.sparrow.service.predict.PredictDatasetComputable;
 import gov.usgswim.sparrow.util.DataSourceProxy;
@@ -72,7 +71,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		predictResultCache = new ComputableCache<PredictRequest, PredictResult>(new PredictComputable(), "Predict Result Cache");
 		predictDatasetCache = new ComputableCache<Long, PredictData>(new PredictDatasetComputable(), "Predict Dataset Cache");
 		idByPointCache = new ComputableCache<IDByPointRequest, DataTable>(new IDByPointComputable(), "ID by Point Cache");
-		modelCache = new ComputableCache<ModelRequest, ModelImm>(new ModelComputable(), "Model Cache");
+		//modelCache = new ComputableCache<ModelRequest, ModelImm>(new ModelComputable(), "Model Cache");
 	}
 
 	public static synchronized SharedApplication getInstance() {
