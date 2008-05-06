@@ -17,7 +17,7 @@
 	refer to the a predict request trans ID.
 	
 	-->
-	<predict-context context-id="1231241243424"/>
+	<prediction-context context-id="1231241243424"/>
 
 	
 
