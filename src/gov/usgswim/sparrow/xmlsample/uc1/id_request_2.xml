@@ -6,12 +6,15 @@
 	<!-- The user does not have a prediction context yet, so we use the model-id here -->
 	<model-id>22</model-id>
 	
-	<!-- We now know the ID of the reach, so use it in future requests -->
-	<reach-id>10</reach-id>
+	<!-- Where the user clicked -->
+	<point lat="38" long="-100"/>
 	
-	<!-- Ask for just the info on the 2nd tab. -->
+	<!-- We now know the ID of the reach, so use it in future requests -->
+	<!-- <reach-id>10</reach-id> -->
+	
+	<!-- Ask for just the info on the adjustments tab. -->
 	<content>
-		<attributes/>
+		<adjustments/>
 	</content>
 	
 	<!-- Get the response back as JSON -->
