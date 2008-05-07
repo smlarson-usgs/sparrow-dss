@@ -7,7 +7,7 @@ import gov.usgswim.datatable.adjustment.ComparePercentageView;
 import gov.usgswim.datatable.adjustment.FilteredDataTable;
 import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
-import gov.usgswim.service.HttpRequestHandler;
+import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.AdjustmentSet;
 import gov.usgswim.sparrow.AdjustmentSetImm;
@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  * within the MapViewer server.  (similar to the EJB local interface)
  */
 @ThreadSafe
-public class PredictService implements HttpRequestHandler<PredictServiceRequest> {
+public class PredictService implements HttpService<PredictServiceRequest> {
 
 
 	protected static Logger log =

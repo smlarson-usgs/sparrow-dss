@@ -9,7 +9,7 @@ import javax.xml.stream.XMLStreamReader;
  * This extends the functionality of RequestHandler - primarily allowing the
  * handler to set the MIME and and http headers.
  */
-public interface HttpRequestHandler<T> extends RequestHandler<T> {
+public interface HttpService<T> extends Service<T> {
 
 
 	public XMLStreamReader getXMLStreamReader(T o, boolean isNeedsCompleteFirstRow) throws Exception;

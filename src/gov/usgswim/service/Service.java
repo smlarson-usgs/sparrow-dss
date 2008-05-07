@@ -8,7 +8,7 @@ package gov.usgswim.service;
  * This interface is primarily used for testing.  See HttpRequestHandler for
  * an interface to use for http requests.
  */
-public interface RequestHandler<T> {
+public interface Service<T> {
 //	public void dispatch(T request, OutputStream out) throws Exception;
 	public void shutDown();
 }

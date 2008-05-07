@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.service.model;
 
 import gov.usgswim.ThreadSafe;
-import gov.usgswim.service.HttpRequestHandler;
+import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.service.DomainSerializer;
@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 
 //TODO:  No caching is done of model data
 @ThreadSafe
-public class ModelService implements HttpRequestHandler<ModelRequest> {
+public class ModelService implements HttpService<ModelRequest> {
 	protected static Logger log =
 		Logger.getLogger(ModelService.class); //logging for this class
 		

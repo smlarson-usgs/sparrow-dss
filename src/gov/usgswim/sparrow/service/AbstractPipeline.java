@@ -6,7 +6,7 @@ import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
 import gov.usgs.webservices.framework.formatter.ZipFormatter;
 import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgswim.service.AbstractHttpRequestParser;
-import gov.usgswim.service.HttpRequestHandler;
+import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.parser.ResponseFormat;
@@ -21,11 +21,11 @@ import javax.xml.stream.XMLStreamReader;
 
 public abstract class AbstractPipeline<T extends PipelineRequest> implements Pipeline {
 
-	protected final HttpRequestHandler<T> handler;
+	protected final HttpService<T> handler;
 	protected final AbstractHttpRequestParser<T> parser;
 	public static final List<String> flatMimeTypes = Arrays.asList(new String[] {"csv", "tab", "excel", "html"});
 	
-	protected AbstractPipeline(HttpRequestHandler<T> handler, AbstractHttpRequestParser<T> parser) {
+	protected AbstractPipeline(HttpService<T> handler, AbstractHttpRequestParser<T> parser) {
 		this.handler = handler;
 		this.parser = parser;
 	}

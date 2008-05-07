@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.service.idbypoint;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.service.HttpRequestHandler;
+import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.service.DataTableSerializer;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -20,7 +20,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.log4j.Logger;
 //TODO not complete
 @ThreadSafe
-public class IDByPointService implements HttpRequestHandler<IDByPointRequest> {
+public class IDByPointService implements HttpService<IDByPointRequest> {
 	protected static Logger log =
 		Logger.getLogger(ModelService.class); //logging for this class
 		

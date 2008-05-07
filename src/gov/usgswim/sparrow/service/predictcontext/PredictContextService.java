@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.service.predictcontext;
 
-import gov.usgswim.service.HttpRequestHandler;
+import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -13,7 +13,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.StringUtils;
 
-public class PredictContextService implements HttpRequestHandler<PredictContextRequest> {
+public class PredictContextService implements HttpService<PredictContextRequest> {
 
 	public XMLStreamReader getXMLStreamReader(PredictContextRequest o,
 			boolean isNeedsCompleteFirstRow) throws Exception {
