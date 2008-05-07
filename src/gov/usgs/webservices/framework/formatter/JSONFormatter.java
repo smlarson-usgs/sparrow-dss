@@ -14,10 +14,11 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 /**
- * Convert an XMLStream to JSON. Following rules at
- * http://www.xml.com/pub/a/2006/05/31/converting-between-xml-and-json.html One
- * caveat is that no mixed content XML is allowed -- an element either has inner
- * text or element children, not both.
+ * Convert an XMLStreamReader to JSON. Follows rules at
+ * http://www.xml.com/pub/a/2006/05/31/converting-between-xml-and-json.html.
+ * One caveat is that no mixed content XML is allowed -- an element either has inner
+ * text or element children, not both, and that elements of the same are
+ * necessarily adjacent.
  * 
  * @author ilinkuo
  * 
@@ -33,12 +34,14 @@ public class JSONFormatter extends AbstractFormatter implements IFormatter {
 	public class XMLElement{
 		String tagName;
 		String parentName;
-		boolean isArray;
-		boolean isArrayMemberOpen; // true -> false when corresponding end tag encountered
+		// tag content flags
 		boolean hasChildOrAttribs;
 		boolean hasContent; // hasContent = hasChildOrAttribs || has text content
 		
-		// isStarted is applicable only for arrays. Indicates whether the first
+		// array content flags
+		boolean isArray;
+		boolean isArrayMemberOpen; // true -> false when corresponding end tag encountered
+		// isStarted indicates whether the first array
 		// member has been printed to stream yet.
 		boolean isArrayStarted = false;
 
@@ -52,8 +55,8 @@ public class JSONFormatter extends AbstractFormatter implements IFormatter {
 		@Override public String toString() {
 			return parentName + "|" + tagName;
 		}
-		
-		public void closeElement() {
+
+		public void closeArrayElement() {
 			hasChildOrAttribs = false;
 			hasContent = false;
 			isArrayMemberOpen = false;
@@ -90,7 +93,7 @@ public class JSONFormatter extends AbstractFormatter implements IFormatter {
 				if (localName.equals(previous.tagName)) {
 					// CASE 3: is member of array					
 					// Close the previous array member.
-					previous.closeElement();
+					previous.closeArrayElement();
 					result.append(", ");
 					// Open the new array member
 					previous.isArrayMemberOpen = true;
@@ -144,7 +147,7 @@ public class JSONFormatter extends AbstractFormatter implements IFormatter {
 				current = previous;
 				
 				// Close, outputting closing bracket if there is non-text content, js null
-				// if no content, no closing char if text content only
+				// if no content, no closing bracket if text content only
 				result.append((previous.hasChildOrAttribs)? "}": (previous.hasContent)? "": "null");
 				
 			} else { // CASE 5 & 6: prev array != current
@@ -158,7 +161,7 @@ public class JSONFormatter extends AbstractFormatter implements IFormatter {
 			if (current.isArray) {
 				// CASE 6 nested array or CASE 2: array member
 				assert(current.isArrayMemberOpen): "The current element/array should be open at this point.";
-				current.closeElement();
+				current.closeArrayElement();
 				// don't pop as array may not be closed
 			} else {
 				// CASE 5 or CASE 1: current member is not an array, so just close object
@@ -223,16 +226,15 @@ public class JSONFormatter extends AbstractFormatter implements IFormatter {
 	// PUBLIC INSTANCE METHODS
 	// =======================
 	/**
-	 * Tags which may be repeated must be identified to the JSONFormatter so
+	 * Identify tags which may be repeated to the JSONFormatter so
 	 * that it knows to serialize it as an array object rather than a name-value
 	 * hash entry. A null tagName or ANY_PARENT="*" may be passed in to indicate
 	 * irrelevance of parent
 	 * 
-	 * @param tagParent [optional]
+	 * @param tagParent [optional] null or "*" allowed
 	 * @param tagName 
 	 */
 	public void identifyRepeatedTagElement(String tagParent, String tagName) {
-		assert(tagName != null): "tagName is required";
 		tagParent = (tagParent == null)? ANY_PARENT: tagParent;
 		if (tagParent.equals(ANY_PARENT)) {
 			wildTags.add(tagName);
@@ -250,7 +252,9 @@ public class JSONFormatter extends AbstractFormatter implements IFormatter {
 	@Override
 	public void dispatch(XMLStreamReader in, Writer out) throws IOException {
 		ParseState state = new ParseState();
+		
 		try {
+			out.write("{");
 			done: while (true) {
 				int event = in.next();
 				switch (event) {
@@ -297,6 +301,7 @@ public class JSONFormatter extends AbstractFormatter implements IFormatter {
 						break done;
 				}
 			}
+			out.write("}");
 
 		} catch (XMLStreamException e) {
 			e.printStackTrace();
