@@ -91,14 +91,14 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 				//The client may have passed the XML request as a parameter...
 				
 				extraPath = extraPath.substring(1);
-				if (extraPath.equals(xmlParam)) {
+				if (extraPath.contains("formpost")) {
 				
 					String xml = request.getParameter(xmlParam);
 					return (xml == null)? "": xml;
 
 				} else {
-					//ignore the extra url info and process as normal.
-					//No idea what the extra stuff could be.
+					//ignore the extra url info (it may be asking for echo service)
+					//fall thru to code below
 				}
 	
 			}
