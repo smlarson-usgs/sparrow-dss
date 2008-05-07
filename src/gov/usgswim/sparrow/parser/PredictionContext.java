@@ -24,6 +24,7 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 	public static boolean isTargetMatch(String tagName) {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
+	
 	public static PredictionContext parseStream(XMLStreamReader in) throws XMLStreamException {
 		PredictionContext ag = new PredictionContext();
 		return ag.parse(in);

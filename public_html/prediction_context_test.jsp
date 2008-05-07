@@ -8,7 +8,7 @@
   </head>
   <body>
 		
-		<form action="sp_predictcontext/xmlreq" method="post" enctype="application/x-www-form-urlencoded">
+		<form action="sp_predictcontext/formpost" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Prediction Context Request 1">
 				<label for="xml_input_1">Prediction Request Format</label>
 				<p>

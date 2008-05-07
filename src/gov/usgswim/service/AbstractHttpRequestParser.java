@@ -79,6 +79,7 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 	
 	public static String defaultReadXMLRequest(HttpServletRequest request, String xmlParam) throws IOException {
 		String extraPath = request.getPathInfo();
+//		request.get
 		
 		if ("GET".equals(request.getMethod())) {
 		

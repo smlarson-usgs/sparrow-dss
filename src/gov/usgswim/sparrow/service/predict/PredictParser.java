@@ -56,7 +56,7 @@ public class PredictParser extends AbstractHttpRequestParser<PredictServiceReque
 		}
 		
 		public PredictServiceRequest parse(HttpServletRequest request)throws Exception {
-			PredictServiceRequest result = parse(request);
+			PredictServiceRequest result = super.parse(request);
 			ResponseFormat respFormat = result.getResponseFormat();
 			
 			String mimeType = request.getParameter("mimetype");

@@ -8,7 +8,7 @@
   </head>
   <body>
 		
-		<form action="sp_predict/xmlreq" method="post" enctype="application/x-www-form-urlencoded">
+		<form action="sp_predict/formpost" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Prediction Request 1">
 				<label for="xml_input_1">Prediction Request Format</label>
 				<p>
@@ -50,7 +50,7 @@
 		</form>
 
 
-		<form action="sp_model/xmlreq" method="post" enctype="application/x-www-form-urlencoded">
+		<form action="sp_model/formpost" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Model Request 1">
 				<label for="xml_input_1">Model Request Format</label>
 				<p>
