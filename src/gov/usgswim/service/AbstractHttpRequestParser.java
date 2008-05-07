@@ -72,7 +72,12 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 		}
 	}
 	
-	public static String readInputXMLRequest(HttpServletRequest request, String xmlParam) throws IOException {
+	public String readXMLRequest(HttpServletRequest request, String xmlParam) throws IOException {
+		//just use the default implementation
+		return defaultReadXMLRequest(request, xmlParam);
+	}
+	
+	public static String defaultReadXMLRequest(HttpServletRequest request, String xmlParam) throws IOException {
 		String extraPath = request.getPathInfo();
 		
 		if ("GET".equals(request.getMethod())) {
@@ -113,7 +118,7 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 	}
 	
 	private String readInputXMLRequest(HttpServletRequest request) throws IOException {
-		return readInputXMLRequest(request, getXmlParam());
+		return defaultReadXMLRequest(request, getXmlParam());
 	}
 
 
@@ -125,18 +130,6 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 			throw new IOException("No request data found");
 		}																										
 	}
-	
-	// TODO make T extend PipelineRequest and pull up from subclasses. 
-	// This can be done if we can get rid of
-	// ?unused? class SimpleHTTPRequestParser
-//	public PipelineRequest parseForPipeline(HttpServletRequest request)
-//			throws Exception {
-//		PipelineRequest result = parse(request);
-//		result.setMimeType(request.getParameter("mimetype"));
-//		return result;
-//	}
-	
-	public abstract PipelineRequest parseForPipeline(HttpServletRequest request) throws Exception;
 
 	/**
 	 * Returns the integer value found in the specified attribute of the current

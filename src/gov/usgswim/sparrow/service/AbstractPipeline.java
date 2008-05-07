@@ -11,6 +11,7 @@ import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -71,12 +72,17 @@ public abstract class AbstractPipeline<T extends PipelineRequest> implements Pip
 		return new JSONFormatter(); // unconfigured JSON formatter
 	}
 
-	public PipelineRequest parse(HttpServletRequest request) throws Exception {
-		return parser.parseForPipeline(request);
+	public T parse(HttpServletRequest request) throws Exception {
+		return parser.parse(request);
 	}
+
+	public T parse(String xmlRequest) throws Exception {
+	  return parser.parse(xmlRequest);
+  }
 
 	public void setXMLParamName(String xmlParamName) {
 		parser.setXmlParam(xmlParamName);
 	}
+
 
 }

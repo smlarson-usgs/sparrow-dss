@@ -148,6 +148,9 @@ public class ServiceServlet extends HttpServlet {
 		try {
 			Pipeline pipe = (Pipeline) pipelineClass.newInstance();
 			pipe.setXMLParamName(xmlParamName);
+			
+			
+			
 			o = pipe.parse(request);
 			pipe.dispatch(o, response);
 		} catch (Exception e) {

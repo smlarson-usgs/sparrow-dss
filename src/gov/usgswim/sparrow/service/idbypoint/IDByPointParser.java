@@ -22,8 +22,7 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 	 * 
 	 * @see gov.usgswim.service.AbstractHttpRequestParser#parse(javax.servlet.http.HttpServletRequest)
 	 */
-	@Override
-	public IDByPointRequest parse(HttpServletRequest request) throws Exception {
+	public IDByPointRequest idParse(HttpServletRequest request) throws Exception {
 		if ("GET".equals(request.getMethod())) {
 		
 			if (request.getParameter(getXmlParam()) != null) {
@@ -54,6 +53,25 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 		} else {
 			return super.parse(request);
 		}
+	}
+	
+	public IDByPointRequest parse(HttpServletRequest request) throws Exception {
+		IDByPointRequest result = idParse(request);
+		ResponseFormat respFormat = result.getResponseFormat();
+		
+		String mimeType = request.getParameter("mimetype");
+		if (mimeType != null) {
+			respFormat.setMimeType(mimeType);
+		}
+		if (respFormat.getMimeType() == null){
+			respFormat.setMimeType("xml"); // defaults to xml
+		}
+		
+		String compress = request.getParameter("compress");
+		if (compress != null && compress.equals("zip")) {
+			respFormat.setCompression("zip");
+		}
+		return result;
 	}
 	
 	public IDByPointRequest parse(XMLStreamReader reader) throws Exception {
@@ -134,22 +152,5 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 		throw new Exception("Badly formed document - no end element found for '" + mainElement + "'");
 	}
 
-	public PipelineRequest parseForPipeline(HttpServletRequest request)throws Exception {
-		IDByPointRequest result = parse(request);
-		ResponseFormat respFormat = result.getResponseFormat();
-		
-		String mimeType = request.getParameter("mimetype");
-		if (mimeType != null) {
-			respFormat.setMimeType(mimeType);
-		}
-		if (respFormat.getMimeType() == null){
-			respFormat.setMimeType("xml"); // defaults to xml
-		}
-		
-		String compress = request.getParameter("compress");
-		if (compress != null && compress.equals("zip")) {
-			respFormat.setCompression("zip");
-		}
-		return result;
-	}
+
 }

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
  * request object.  Implementors of this interface must provide a no-argument
  * constructor and must be threadsafe.
  */
-public interface HttpRequestParser<T> extends RequestParser<T> {
+public interface HttpRequestParser<T extends PipelineRequest> extends RequestParser<T> {
 	/**
 	 * Parses an HttpServletRequest into an application specific request object.
 	 * 
@@ -36,6 +36,5 @@ public interface HttpRequestParser<T> extends RequestParser<T> {
 	 */
 	public String getXmlParam();
 
-	public PipelineRequest parseForPipeline(HttpServletRequest request) throws Exception;
 	
 }

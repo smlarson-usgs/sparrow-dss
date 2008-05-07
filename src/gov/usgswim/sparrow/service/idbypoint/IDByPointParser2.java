@@ -23,8 +23,7 @@ public class IDByPointParser2 extends AbstractHttpRequestParser<IDByPointRequest
 	 * 
 	 * @see gov.usgswim.service.AbstractHttpRequestParser#parse(javax.servlet.http.HttpServletRequest)
 	 */
-	@Override
-	public IDByPointRequest2 parse(HttpServletRequest request) throws Exception {
+	public IDByPointRequest2 idParse(HttpServletRequest request) throws Exception {
 		// Special handling for a GET request
 		if ("GET".equals(request.getMethod()) && request.getParameter(getXmlParam()) == null) {
 			String[] paramChain = parseExtraPath(request);
@@ -52,15 +51,8 @@ public class IDByPointParser2 extends AbstractHttpRequestParser<IDByPointRequest
 		}
 	}
 	
-	public IDByPointRequest2 parse(XMLStreamReader in) throws Exception {
-		IDByPointRequest2 ibpRequest = new IDByPointRequest2();
-		ParserHelper.parseToStartTag(in, IDByPointRequest2.MAIN_ELEMENT_NAME);
-		return ibpRequest.parse(in);
-	}
-
-
-	public PipelineRequest parseForPipeline(HttpServletRequest request)throws Exception {
-		IDByPointRequest2 result = parse(request);
+	public IDByPointRequest2 parse(HttpServletRequest request) throws Exception {
+		IDByPointRequest2 result = idParse(request);
 		ResponseFormat respFormat = result.getResponseFormat();
 		
 		String mimeType = request.getParameter("mimetype");
@@ -77,4 +69,11 @@ public class IDByPointParser2 extends AbstractHttpRequestParser<IDByPointRequest
 		}
 		return result;
 	}
+	
+	public IDByPointRequest2 parse(XMLStreamReader in) throws Exception {
+		IDByPointRequest2 ibpRequest = new IDByPointRequest2();
+		ParserHelper.parseToStartTag(in, IDByPointRequest2.MAIN_ELEMENT_NAME);
+		return ibpRequest.parse(in);
+	}
+
 }

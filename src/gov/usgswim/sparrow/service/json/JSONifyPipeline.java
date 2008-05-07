@@ -46,7 +46,7 @@ public class JSONifyPipeline extends AbstractPipeline implements Pipeline {
 
 	@Override
 	public PipelineRequest parse(HttpServletRequest request) throws Exception {
-		requestString = AbstractHttpRequestParser.readInputXMLRequest(request, xmlParamName);
+		requestString = AbstractHttpRequestParser.defaultReadXMLRequest(request, xmlParamName);
 		
 		return new PipelineRequest() {
 

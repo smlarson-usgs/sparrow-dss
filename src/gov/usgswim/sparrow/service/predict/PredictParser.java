@@ -55,6 +55,25 @@ public class PredictParser extends AbstractHttpRequestParser<PredictServiceReque
 			return req;
 		}
 		
+		public PredictServiceRequest parse(HttpServletRequest request)throws Exception {
+			PredictServiceRequest result = parse(request);
+			ResponseFormat respFormat = result.getResponseFormat();
+			
+			String mimeType = request.getParameter("mimetype");
+			if (mimeType != null) {
+				respFormat.setMimeType(mimeType);
+			}
+			if (respFormat.getMimeType() == null){
+				respFormat.setMimeType("xml"); // defaults to xml
+			}
+
+			String compress = request.getParameter("compress");
+			if (compress != null && compress.equals("zip")) {
+				respFormat.setCompression("zip");
+			}
+			return result;
+		}
+		
 		/**
 		 * Assumes the reader is looking at a 'predict' element
 		 * 
@@ -268,23 +287,5 @@ public class PredictParser extends AbstractHttpRequestParser<PredictServiceReque
 			return adj.toImmutable();	//shouldn't get here
 		}
 
-		public PipelineRequest parseForPipeline(HttpServletRequest request)throws Exception {
-			PredictServiceRequest result = parse(request);
-			ResponseFormat respFormat = result.getResponseFormat();
-			
-			String mimeType = request.getParameter("mimetype");
-			if (mimeType != null) {
-				respFormat.setMimeType(mimeType);
-			}
-			if (respFormat.getMimeType() == null){
-				respFormat.setMimeType("xml"); // defaults to xml
-			}
-
-			String compress = request.getParameter("compress");
-			if (compress != null && compress.equals("zip")) {
-				respFormat.setCompression("zip");
-			}
-			return result;
-		}
 	}
 

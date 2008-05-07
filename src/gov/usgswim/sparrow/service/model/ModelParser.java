@@ -63,8 +63,8 @@ public class ModelParser
 		return req;
 	}
 
-	public PipelineRequest parseForPipeline(HttpServletRequest request)throws Exception {
-		ModelRequest result = parse(request);
+	public ModelRequest parse(HttpServletRequest request)throws Exception {
+		ModelRequest result = super.parse(request);
 		ResponseFormat respFormat = result.getResponseFormat();
 		
 		String mimeType = request.getParameter("mimetype");

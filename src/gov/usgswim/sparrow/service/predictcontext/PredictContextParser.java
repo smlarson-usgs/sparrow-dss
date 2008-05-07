@@ -15,7 +15,7 @@ public class PredictContextParser
 	implements RequestParser<PredictContextRequest>  {
 
 	@Override
-	public PipelineRequest parseForPipeline(HttpServletRequest request)
+	public PredictContextRequest parse(HttpServletRequest request)
 			throws Exception {
 
 		
