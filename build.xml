@@ -10,14 +10,44 @@
 
 	<property name="java-lib.dir" location="java_lib"/>
 	<property name="web-inf.lib.dir" location="public_html/WEB-INF/lib"/>
+	<property name="application.webcontent.dir" value="public_html"/>
 
+	
 	<target name="copy-jars-to_WEB-INF-lib">
 		<copy todir="${web-inf.lib.dir}" flatten="true">
 			<fileset dir="${java-lib.dir}">
 				<include name="**/usgs_core/*.jar" />
 				<include name="**/log4j/*.jar" />
 				<include name="**/ehcache/usgs_dep/*.jar" />
+				<include name="**/commons_lang/*.jar" />
+				<include name="**/mapviewer_client/*.jar" />
+				<include name="**/woodstox/usgs_dep/*.jar" />
 			</fileset>
 		</copy>
+	</target>
+
+	<target name="create-war">
+		<property name="warfile.name" value="sparrow.war"/>
+		<property name="warfile.path" location="deploy/${warfile.name}"/>
+		<!--
+		<property name="contextFile.name" value="${application.context}.xml"/>
+		-->
+		<property name="tomcat.context.dir.dev" value="${application.context}.xml"/>
+		
+		<war basedir="${application.webcontent.dir}" destfile="${warfile.path}" 
+			webxml="${application.webcontent.dir}/WEB-INF/web.xml" >
+			<!-- See http://ant.apache.org/manual/CoreTasks/war.html for documentation-->
+			<!-- <fileset><exclude></exclude></fileset> -->
+			<!--
+			It is not necessary to specify lib and classes. 
+			Everything already in the @basedir will get WARred.
+			TODO However, we should do a clean build from compile
+			rather than rely on classes compiled by the IDE, but save
+			this for later in SVN scorched early build
+			<lib dir="${application.webcontent.dir}/WEB-INF/lib"/>
+			<classes dir="${jdev.project.home}/src"/>
+			-->
+		</war>
+		<echo>WAR created in ${warfile.path}</echo>
 	</target>
 </project>

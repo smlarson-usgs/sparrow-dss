@@ -3,6 +3,8 @@ package gov.usgswim.service;
 import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.MapViewerSparrowDataProvider;
+import gov.usgswim.sparrow.service.echo.EchoPipeline;
+import gov.usgswim.sparrow.service.json.JSONifyPipeline;
 
 import java.io.IOException;
 
@@ -39,6 +41,8 @@ import org.apache.log4j.Logger;
  * Where xmlreq could be changed based on the 'xml-param-name' init parameter.
  */
 public class ServiceServlet extends HttpServlet {
+	private static final String JSON = "json";
+	private static final String XML = "xml";
 	private static final long serialVersionUID = 7831587587942691556L;
 	protected static Logger log =
 		Logger.getLogger(ServiceServlet.class); //logging for this class
@@ -146,16 +150,38 @@ public class ServiceServlet extends HttpServlet {
 		PipelineRequest o = null;
 
 		try {
-			Pipeline pipe = (Pipeline) pipelineClass.newInstance();
+			String echoType = getEchoRequestType(request);
+			Pipeline pipe = null;
+			if (echoType != null) {
+				pipe = makeEchoPipeline(echoType);
+			} else {
+				pipe = (Pipeline) pipelineClass.newInstance();
+			}
 			pipe.setXMLParamName(xmlParamName);
-			
-			
-			
 			o = pipe.parse(request);
 			pipe.dispatch(o, response);
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
+	}
+
+	public static Pipeline makeEchoPipeline(String echoType) {
+		if (JSON.equals(echoType)) {
+			return new JSONifyPipeline();
+		} else if (XML.equals(echoType)) {
+			return new EchoPipeline();
+		}
+		return null;
+	}
+
+	public static String getEchoRequestType(HttpServletRequest request) {
+		String extraPath = request.getPathInfo();
+		if (extraPath.contains("xmlecho")) {
+			return XML;
+		} else if (extraPath.contains("jsonecho")) {
+			return JSON;
+		}
+		return null;
 	}
 
 }
