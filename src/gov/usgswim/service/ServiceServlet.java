@@ -176,6 +176,7 @@ public class ServiceServlet extends HttpServlet {
 
 	public static String getEchoRequestType(HttpServletRequest request) {
 		String extraPath = request.getPathInfo();
+		extraPath = (extraPath == null)? "": extraPath;
 		if (extraPath.contains("xmlecho")) {
 			return XML;
 		} else if (extraPath.contains("jsonecho")) {
