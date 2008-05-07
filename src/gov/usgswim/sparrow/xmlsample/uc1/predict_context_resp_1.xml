@@ -11,7 +11,7 @@
 	<row-ids>reach</row-ids>
 	
 	<!-- These IDs could in some cases be used, but are not used in this example. -->
-	<adjustment-groups predefined="957648" context-id="982398"/>
+	<adjustment-groups context-id="982398"/>
 	<analysis context-id="1093474"/>
 
 </prediction-context-response>
