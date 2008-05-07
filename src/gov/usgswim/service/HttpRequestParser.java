@@ -1,5 +1,7 @@
 package gov.usgswim.service;
 
+import java.io.IOException;
+
 import gov.usgswim.service.pipeline.PipelineRequest;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +37,15 @@ public interface HttpRequestParser<T extends PipelineRequest> extends RequestPar
 	 * @return
 	 */
 	public String getXmlParam();
+	
+	/**
+	 * Finds the XML request document in the HTTPRequest and returns it as a string.
+	 * @param request
+	 * @param xmlParam
+	 * @return
+	 * @throws IOException
+	 */
+	public String readXMLRequest(HttpServletRequest request, String xmlParam) throws IOException;
 
 	
 }
