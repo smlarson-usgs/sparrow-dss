@@ -5,6 +5,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.service.XMLStreamParserComponent;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.parser.Content;
 import gov.usgswim.sparrow.parser.ParserHelper;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.ResponseFormat;
@@ -21,6 +22,7 @@ public class IDByPointRequest2 implements XMLStreamParserComponent, PipelineRequ
 
 	private static final String ID_BY_POINT_FILENAME = "idByPoint";
 	public static final String MAIN_ELEMENT_NAME = "sparrow-id-request";
+	private static final String MODELID_CHILD = "model-id";
 	private static final String CONTENT_CHILD = "content";
 	private static final String POINT_CHILD = "point";
 	private static final String REACH_CHILD = "reach";
@@ -41,11 +43,12 @@ public class IDByPointRequest2 implements XMLStreamParserComponent, PipelineRequ
 //	private Predicted predicted;
 	private boolean isSelectAll;
 	private ResponseFormat respFormat;
-	Point.Double point;
+	private Point.Double point;
 	private Integer reachID;
 	// PipelineRequest fields
 	private String xmlRequest;
 	private int numberOfResults;
+	private Content content;
 
 	// ============
 	// CONSTRUCTORS
@@ -91,18 +94,23 @@ public class IDByPointRequest2 implements XMLStreamParserComponent, PipelineRequ
 					}// the following are all children matches 
 					else if (PredictionContext.isTargetMatch(localName)) {
 						this.predictionContext = PredictionContext.parseStream(in);
+					} else if (MODELID_CHILD.equals(localName)) {
+						String modelIDString = ParserHelper.parseSimpleElementValue(in);
+						if (predictionContext == null) {
+							predictionContext = new PredictionContext();
+						}
+						predictionContext.setModelID(Integer.valueOf(modelIDString));
 					} else if (POINT_CHILD.equals(localName)) {
 
 						point = new Point.Double();	//required
 						point.x = java.lang.Double.parseDouble(in.getAttributeValue(DEFAULT_NS_PREFIX, "long"));
 						point.y = java.lang.Double.parseDouble(in.getAttributeValue(DEFAULT_NS_PREFIX, "lat"));
-
+						ParserHelper.ignoreElement(in);
 					} else if (REACH_CHILD.equals(localName)) {
 						String reachIDString = ParserHelper.parseSimpleElementValue(in);
 						reachID = Integer.parseInt(reachIDString);
-					} else if (CONTENT_CHILD.equals(localName)) {
-						ParserHelper.ignoreElement(in);
-						// TODO [eric] define _id-point-request-1.xml in more detail so this can be filled in.
+					} else if (Content.isTargetMatch(localName)) {
+						this.content = Content.parseStream(in);
 					} else if (ResponseFormat.isTargetMatch(localName)) {
 						this.respFormat = ResponseFormat.parseStream(in);
 					} else {
@@ -121,8 +129,6 @@ public class IDByPointRequest2 implements XMLStreamParserComponent, PipelineRequ
 							respFormat.fileName = ID_BY_POINT_FILENAME;
 						}
 						return this; // we're done
-					} else if (CONTENT_CHILD.equals(localName) || POINT_CHILD.equals(localName) || REACH_CHILD.equals(localName)) {
-						// Do nothing. Continue
 					} else {
 						// otherwise, error
 						throw new RuntimeException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);
@@ -262,5 +268,11 @@ public class IDByPointRequest2 implements XMLStreamParserComponent, PipelineRequ
 	}
 	public int getNumberOfResults() {
 		return numberOfResults;
+	}
+	public static String getPOINT_CHILD() {
+		return POINT_CHILD;
+	}
+	public Content getContent() {
+		return content;
 	}
 }

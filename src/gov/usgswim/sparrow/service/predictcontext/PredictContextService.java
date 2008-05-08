@@ -3,17 +3,16 @@ package gov.usgswim.sparrow.service.predictcontext;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.util.PropertyLoaderHelper;
 
-import java.io.IOException;
 import java.io.StringReader;
-import java.util.Properties;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.commons.lang.StringUtils;
-
 public class PredictContextService implements HttpService<PredictContextRequest> {
+	
+	private PropertyLoaderHelper props = new PropertyLoaderHelper("gov/usgswim/sparrow/service/predictcontext/PredictContextServiceTemplate.properties");
 
 	public XMLStreamReader getXMLStreamReader(PredictContextRequest o,
 			boolean isNeedsCompleteFirstRow) throws Exception {
@@ -32,7 +31,7 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
 		if (isSuccess) {
 			
-			String response = getText("ResponseOK", 
+			String response = props.getText("ResponseOK", 
 				new String[] {
 					"ModelId", context.getModelID().toString(),
 					"ContextId", Integer.toString( context.hashCode() ),
@@ -54,38 +53,6 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 
 	}
 	
-	/**
-	 * Loads the named text chunk from the properties file and inserts the named values passed in params.
-	 * 
-	 * params are passed in serial pairs as {"name1", "value1", "name2", "value2"}.
-	 * toString is called on each item, so it is OK to pass in autobox numerics.
-	 * See the DataLoader.properties file for the names of the parameters available
-	 * for the requested query.
-	 * 
-	 * @param name	Name of the query in the properties file
-	 * @param params	An array of name and value objects to replace in the query.
-	 * @return
-	 * @throws IOException
-	 */
-	public static String getText(String name, Object[] params) throws IOException {
-		String query = getText(name);
 
-		for (int i=0; i<params.length; i+=2) {
-			String n = "$" + params[i].toString() + "$";
-			String v = params[i+1].toString();
-
-			query = StringUtils.replace(query, n, v);
-		}
-
-		return query;
-	}
-	
-	public static String getText(String name) throws IOException {
-		Properties props = new Properties();
-
-		props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("gov/usgswim/sparrow/service/predictcontext/PredictContextServiceTemplate.properties"));
-
-		return props.getProperty(name);
-	}
 
 }

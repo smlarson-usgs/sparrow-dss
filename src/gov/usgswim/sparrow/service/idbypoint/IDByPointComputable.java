@@ -92,7 +92,7 @@ public class IDByPointComputable implements Computable<IDByPointRequest, DataTab
 	public String buildQuery(IDByPointRequest req) {
 		double x = req.getPoint().x;
 		double y = req.getPoint().y;
-
+// use identifier model_reach.identifier
 		String query =
 			"SELECT * FROM (\n" +
 			"	SELECT \n" +

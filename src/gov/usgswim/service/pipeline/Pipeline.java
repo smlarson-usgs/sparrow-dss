@@ -1,7 +1,5 @@
 package gov.usgswim.service.pipeline;
 
-import java.io.InputStream;
-
 import gov.usgs.webservices.framework.formatter.IFormatter;
 
 import javax.servlet.http.HttpServletRequest;

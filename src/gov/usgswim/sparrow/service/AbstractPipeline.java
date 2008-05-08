@@ -11,7 +11,6 @@ import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
