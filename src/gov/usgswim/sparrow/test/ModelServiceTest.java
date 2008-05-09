@@ -1,7 +1,6 @@
 package gov.usgswim.sparrow.test;
 
 import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
-import gov.usgswim.service.Service;
 import gov.usgswim.sparrow.service.model.ModelParser;
 import gov.usgswim.sparrow.service.model.ModelRequest;
 import gov.usgswim.sparrow.service.model.ModelService;

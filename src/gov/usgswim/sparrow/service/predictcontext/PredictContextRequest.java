@@ -6,7 +6,6 @@ import gov.usgswim.sparrow.parser.ResponseFormat;
 
 public class PredictContextRequest implements PipelineRequest {
 
-	private boolean isEcho;
 	private String xmlRequest;
 	private ResponseFormat responseFormat;
 	private PredictionContext predictionContext;

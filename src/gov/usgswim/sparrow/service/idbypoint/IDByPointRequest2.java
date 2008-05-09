@@ -11,9 +11,7 @@ import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 
 import java.awt.Point;
-import java.awt.geom.Point2D;
 import java.awt.geom.Point2D.Double;
-import java.io.Serializable;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -23,7 +21,6 @@ public class IDByPointRequest2 implements XMLStreamParserComponent, PipelineRequ
 	private static final String ID_BY_POINT_FILENAME = "idByPoint";
 	public static final String MAIN_ELEMENT_NAME = "sparrow-id-request";
 	private static final String MODELID_CHILD = "model-id";
-	private static final String CONTENT_CHILD = "content";
 	private static final String POINT_CHILD = "point";
 	private static final String REACH_CHILD = "reach";
 	

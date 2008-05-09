@@ -2,7 +2,6 @@ package gov.usgswim.sparrow.test.parsers;
 
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.ReachGroup;
-import gov.usgswim.sparrow.parser.TerminalReaches;
 
 import java.io.StringReader;
 import java.util.List;

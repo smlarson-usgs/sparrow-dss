@@ -10,7 +10,6 @@ public class ModelRequest implements PipelineRequest{
 	boolean _approved = true;
 	boolean _archived = false;
 	boolean _sources = false;
-	private boolean isEcho;
 	private String xmlRequest;
 	private ResponseFormat responseFormat;
 

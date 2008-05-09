@@ -1,10 +1,8 @@
 package gov.usgswim.sparrow.test.parsers;
 
 import gov.usgswim.sparrow.parser.PredictionContext;
-import gov.usgswim.sparrow.parser.TerminalReaches;
 
 import java.io.StringReader;
-import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;

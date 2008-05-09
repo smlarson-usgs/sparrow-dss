@@ -7,7 +7,6 @@ import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRequest;
-import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 import gov.usgswim.sparrow.service.AbstractPipeline;
 import gov.usgswim.sparrow.service.model.ModelPipeline;

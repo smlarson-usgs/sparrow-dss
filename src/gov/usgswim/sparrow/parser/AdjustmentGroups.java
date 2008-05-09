@@ -14,6 +14,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 public class AdjustmentGroups implements XMLStreamParserComponent, Serializable, Cloneable {
+
+	private static final long serialVersionUID = 1L;
 	public static final String MAIN_ELEMENT_NAME = "adjustment-groups";
 
 	// =============================

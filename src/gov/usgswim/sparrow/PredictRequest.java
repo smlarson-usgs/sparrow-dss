@@ -28,6 +28,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  */
 @Immutable
 public class PredictRequest implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	private final Long _modelId;
 	private final AdjustmentSet _adjSet2;
 	private Integer hash;	//Not strictly threadsafe, but recalculation is cheap and non-destructive

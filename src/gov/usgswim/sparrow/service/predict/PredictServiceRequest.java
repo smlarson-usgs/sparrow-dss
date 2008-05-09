@@ -25,7 +25,6 @@ public class PredictServiceRequest implements PipelineRequest{
 	private PredictRequest predictRequest;
 	private DataSeries dataSeries = gov.usgswim.sparrow.service.predict.PredictServiceRequest.DataSeries.ALL;
 	private IDByPointRequest idByPointRequest;
-	private boolean isEcho;
 	private String xmlRequest;
 	private int rowLimit;
 	private ResponseFormat responseFormat;

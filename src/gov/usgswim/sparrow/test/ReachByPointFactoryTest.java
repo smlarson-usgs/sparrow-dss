@@ -1,11 +1,11 @@
 package gov.usgswim.sparrow.test;
 
-import java.io.IOException;
-import java.awt.geom.Point2D.Double;
-
 import gov.usgswim.sparrow.cachefactory.ReachByPointFactory;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest2;
 import gov.usgswim.sparrow.service.idbypoint.Reach;
+
+import java.awt.geom.Point2D.Double;
+
 import junit.framework.TestCase;
 
 public class ReachByPointFactoryTest extends TestCase {

@@ -2,7 +2,6 @@ package gov.usgswim.service;
 
 import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRequest;
-import gov.usgswim.sparrow.MapViewerSparrowDataProvider;
 import gov.usgswim.sparrow.service.echo.EchoPipeline;
 import gov.usgswim.sparrow.service.json.JSONifyPipeline;
 

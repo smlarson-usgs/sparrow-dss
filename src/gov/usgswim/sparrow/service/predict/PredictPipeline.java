@@ -10,8 +10,9 @@ public class PredictPipeline extends AbstractPipeline<PredictServiceRequest> {
 	public static JSONFormatter configure(JSONFormatter jFormatter) {
 		jFormatter.identifyRepeatedTagElement("columns", "group");
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "col");
-		jFormatter.identifyRepeatedTagElement("data", "r");
-		jFormatter.identifyRepeatedTagElement("r", "c");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "r");
+		jFormatter.identifyRepeatedTagElement("data", "section");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "c");
 		return jFormatter;
 	}
 

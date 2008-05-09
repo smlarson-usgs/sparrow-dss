@@ -5,7 +5,6 @@ import gov.usgswim.sparrow.parser.TerminalReaches;
 import java.io.StringReader;
 import java.util.List;
 
-import javax.xml.XMLConstants;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;

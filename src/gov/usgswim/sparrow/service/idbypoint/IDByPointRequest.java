@@ -20,7 +20,6 @@ public class IDByPointRequest implements PipelineRequest{
 	private final Point.Double _point;
 	private final int _numberOfResults;
 	private final Long _modelId;
-	private boolean isEcho;
 	
 	private Integer hash;	//Not strictly threadsafe, but recalculation is cheap and non-destructive
 	protected String mimetype = "xml"; // default is xml

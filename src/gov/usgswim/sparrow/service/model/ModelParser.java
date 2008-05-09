@@ -2,7 +2,6 @@ package gov.usgswim.sparrow.service.model;
 
 import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.service.RequestParser;
-import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 
 import javax.servlet.http.HttpServletRequest;

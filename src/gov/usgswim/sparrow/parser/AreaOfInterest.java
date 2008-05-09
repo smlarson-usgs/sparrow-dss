@@ -13,6 +13,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class AreaOfInterest implements XMLStreamParserComponent, Serializable, Cloneable {
+
+	private static final long serialVersionUID = 1L;
 	public static final String MAIN_ELEMENT_NAME = "area-of-interest";
 
 	// =============================
