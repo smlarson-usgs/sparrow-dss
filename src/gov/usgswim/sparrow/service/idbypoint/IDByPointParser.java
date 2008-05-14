@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.service.idbypoint;
 
 import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.parser.ParserHelper;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 
 import java.awt.Point;
@@ -112,8 +113,8 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 		int numResults;
 		Point.Double point = new Point.Double();	//required
 		
-		id = parseAttribAsLong(reader, "model-id", modelId);
-		numResults = parseAttribAsInt(reader, "result-count", 3);
+		id = ParserHelper.parseAttribAsLong(reader, "model-id", modelId);
+		numResults = ParserHelper.parseAttribAsInt(reader, "result-count", 3);
 		if (numResults > 100) numResults = 100;
 		
 		ResponseFormat respFormat = new ResponseFormat();
@@ -128,8 +129,8 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 					String lName = reader.getLocalName();
 					
 					if ("point".equals(lName)) {
-						point.x = parseAttribAsDouble(reader, "long", true);
-						point.y = parseAttribAsDouble(reader, "lat", true);
+						point.x = ParserHelper.parseAttribAsDouble(reader, "long", true);
+						point.y = ParserHelper.parseAttribAsDouble(reader, "lat", true);
 					} else if (ResponseFormat.isTargetMatch(lName)) {
 						respFormat.parse(reader);
 					}

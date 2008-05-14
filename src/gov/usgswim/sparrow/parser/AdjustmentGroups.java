@@ -3,7 +3,6 @@ package gov.usgswim.sparrow.parser;
 import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import gov.usgswim.service.XMLStreamParserComponent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -12,6 +11,8 @@ import java.util.List;
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class AdjustmentGroups implements XMLStreamParserComponent, Serializable, Cloneable {
 
@@ -25,7 +26,9 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 	
-	public static AdjustmentGroups parseStream(XMLStreamReader in) throws XMLStreamException {
+	public static AdjustmentGroups parseStream(XMLStreamReader in)
+		throws XMLStreamException, XMLParseValidationException {
+		
 		AdjustmentGroups ag = new AdjustmentGroups();
 		return ag.parse(in);
 	}
@@ -35,12 +38,16 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 	// ===============
 	private List<ReachGroup> reachGroups = new ArrayList<ReachGroup>();
 	private Integer id;
-	private String conflicts;
+	private String conflicts;	//This should be an enum
+	
+	//TODO: Parse should attempt to find the AG in the cache if it gets a ID.
 	
 	// ================
 	// INSTANCE METHODS
 	// ================
-	public AdjustmentGroups parse(XMLStreamReader in) throws XMLStreamException {
+	public AdjustmentGroups parse(XMLStreamReader in)
+			throws XMLStreamException, XMLParseValidationException {
+		
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
 		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : 
@@ -61,8 +68,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 				case START_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
-						String idString = in.getAttributeValue(DEFAULT_NS_PREFIX, XMLStreamParserComponent.ID_ATTR);
-						id = (idString == null)? null: Integer.valueOf(idString);
+						id = ParserHelper.parseAttribAsInt(in, XMLStreamParserComponent.ID_ATTR, false);
 						conflicts = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "conflicts");				
 					}  else if (ReachGroup.isTargetMatch(localName)) {
 						ReachGroup rg = new ReachGroup();
@@ -100,6 +106,25 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 		myClone.conflicts = conflicts;
 
 		return myClone;
+	}
+	
+	/**
+	 * Consider two instances the same if they have the same calculated hashcodes
+	 */
+  public boolean equals(Object obj) {
+	  if (obj instanceof AdjustmentGroups) {
+	  	return obj.hashCode() == hashCode();
+	  } else {
+	  	return false;
+	  }
+  }
+  
+	public int hashCode() {
+		int hash = new HashCodeBuilder(324164, 824).
+		append(id).
+		append(conflicts).
+		toHashCode();
+		return hash;
 	}
 
 	

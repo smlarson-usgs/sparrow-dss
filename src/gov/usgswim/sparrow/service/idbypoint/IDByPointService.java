@@ -37,11 +37,6 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	public IDByPointService() {}
 	
 	
-	public void dispatch(PipelineRequest request, HttpServletResponse response) throws Exception {
-		// TODO remove this simple redirection method by better use of generics
-		dispatch((IDByPointRequest) request, response);
-	}
-	
 //	/** (non-Javadoc)
 //	 * @see gov.usgswim.service.HttpRequestHandler#dispatch(java.lang.Object, javax.servlet.http.HttpServletResponse)
 //	 * @deprecated
@@ -72,11 +67,6 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	public void shutDown() {
 		xoFact = null;
 	}
-
-
-	public XMLStreamReader getXMLStreamReader(PipelineRequest o, boolean isNeedsFlattening)  throws Exception{
-		return getXMLStreamReader((IDByPointRequest) o, isNeedsFlattening);
-	}
 	
 	public XMLStreamReader getXMLStreamReader(IDByPointRequest req, boolean isNeedsFlattening) throws Exception {
 		// TODO isNeedsFlattening ignored for now because using custom flattener
@@ -84,6 +74,11 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		//boolean isFlatMimeType = PipelineRegistry.flatMimeTypes.contains(req.getMimeType());
 		BasicXMLStreamReader reader = new DataTableSerializer(req, result);
 		return reader;
+	}
+	
+	public void dispatch(PipelineRequest request, HttpServletResponse response) throws Exception {
+		// TODO remove this simple redirection method by better use of generics
+		dispatch((IDByPointRequest) request, response);
 	}
 
 

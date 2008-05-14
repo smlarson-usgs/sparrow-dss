@@ -3,12 +3,13 @@ package gov.usgswim.sparrow.service.idbypoint;
 import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import gov.usgswim.service.XMLStreamParserComponent;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.parser.Content;
 import gov.usgswim.sparrow.parser.ParserHelper;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.ResponseFormat;
+import gov.usgswim.sparrow.parser.XMLParseValidationException;
+import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
 
 import java.awt.Point;
 import java.awt.geom.Point2D.Double;
@@ -66,7 +67,9 @@ public class IDByPointRequest2 implements XMLStreamParserComponent, PipelineRequ
 	// ================
 	// INSTANCE METHODS
 	// ================
-	public IDByPointRequest2 parse(XMLStreamReader in) throws XMLStreamException {
+	public IDByPointRequest2 parse(XMLStreamReader in)
+			throws XMLStreamException, XMLParseValidationException {
+		
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
 		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : this

@@ -3,7 +3,6 @@ package gov.usgswim.sparrow.parser;
 import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import gov.usgswim.service.XMLStreamParserComponent;
 
 import java.io.Serializable;
 
@@ -63,8 +62,7 @@ public class Analysis implements XMLStreamParserComponent, Serializable, Cloneab
 				case START_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
-						String idString = in.getAttributeValue(DEFAULT_NS_PREFIX, XMLStreamParserComponent.ID_ATTR);
-						id = (idString == null)? null: Integer.valueOf(idString);
+						id = ParserHelper.parseAttribAsInt(in, XMLStreamParserComponent.ID_ATTR, false);
 					} else if ("select".equals(localName)) {
 						Select selectElement = new Select();
 						selectElement.parse(in);
@@ -94,7 +92,17 @@ public class Analysis implements XMLStreamParserComponent, Serializable, Cloneab
 		return MAIN_ELEMENT_NAME;
 	}
 	
-	@Override
+	/**
+	 * Consider two instances the same if they have the same calculated hashcodes
+	 */
+  public boolean equals(Object obj) {
+	  if (obj instanceof Analysis) {
+	  	return obj.hashCode() == hashCode();
+	  } else {
+	  	return false;
+	  }
+  }
+  
 	public int hashCode() {
 		int hash = new HashCodeBuilder(137, 1729).
 		append(groupBy).

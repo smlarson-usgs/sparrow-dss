@@ -2,11 +2,11 @@ package gov.usgswim.sparrow.parser;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import gov.usgswim.service.XMLStreamParserComponent;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+//TODO:  Not sure what this class is for....
 public class Content implements XMLStreamParserComponent {
 	public static final String MAIN_ELEMENT_NAME = "content";
 	public static final String ADJUSTMENTS_CHILD = "adjustments";

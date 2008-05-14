@@ -8,6 +8,7 @@ import gov.usgswim.sparrow.Adjustment;
 import gov.usgswim.sparrow.AdjustmentSet;
 import gov.usgswim.sparrow.AdjustmentSetBuilder;
 import gov.usgswim.sparrow.PredictRequest;
+import gov.usgswim.sparrow.parser.ParserHelper;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointParser;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
@@ -250,15 +251,15 @@ public class PredictParser extends AbstractHttpRequestParser<PredictServiceReque
 
 						switch (type) {
 						case GROSS_SRC_ADJUST: {
-							int src = parseAttribAsInt(reader, "src");
-							double coef = parseAttribAsDouble(reader, "coef");
+							int src = ParserHelper.parseAttribAsInt(reader, "src");
+							double coef = ParserHelper.parseAttribAsDouble(reader, "coef");
 							adj.addAdjustment(new Adjustment(GROSS_SRC_ADJUST, src, coef));
 							break;
 						}
 						case SPECIFIC_ADJUST: {
-							int src = parseAttribAsInt(reader, "src");
-							int reach = parseAttribAsInt(reader, "reach");
-							double val = parseAttribAsDouble(reader, "value");
+							int src = ParserHelper.parseAttribAsInt(reader, "src");
+							int reach = ParserHelper.parseAttribAsInt(reader, "reach");
+							double val = ParserHelper.parseAttribAsDouble(reader, "value");
 							adj.addAdjustment(new Adjustment(SPECIFIC_ADJUST, src, reach, val));
 							break;
 						}

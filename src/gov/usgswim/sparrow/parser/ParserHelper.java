@@ -8,6 +8,8 @@ import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.commons.lang.StringUtils;
+
 public abstract class ParserHelper {
 
 	public static String parseSimpleElementValue(XMLStreamReader in) throws XMLStreamException {
@@ -92,4 +94,214 @@ public abstract class ParserHelper {
 		}
 		return false;
 	}
+
+	/**
+   * Returns the integer value found in the specified attribute of the current
+   * element.  If require is true and the attribute does not exist, an error
+   * is thrown.
+   * @param reader
+   * @param attrib
+   * @return
+   * @throws Exception
+   */
+  public static int parseAttribAsInt(
+  		XMLStreamReader reader, String attrib) throws XMLStreamException {
+  		
+  	return parseAttribAsLong(reader, attrib, true).intValue();
+  }
+
+	/**
+   * Returns the Integer value found in the specified attribute of the current
+   * element.  If require is true and the attribute does not exist, an error
+   * is thrown.  If the attribute does not exist or is empty and require is
+   * not true, null is returned.
+   * @param reader
+   * @param attrib
+   * @param require
+   * @return
+   * @throws Exception
+   */
+  public static Integer parseAttribAsInt(
+  		XMLStreamReader reader, String attrib, boolean require) throws XMLStreamException {
+  	
+  	Long v = parseAttribAsLong(reader, attrib, require);
+  	if (v != null) {
+  		return v.intValue();
+  	} else {
+  		return null;
+  	}
+  }
+
+	/**
+   * Returns the Integer value found in the specified attribute of the current
+   * element.  If the attribute does not exist, the default value is returned.
+   * 
+   * @param reader
+   * @param attrib
+   * @param defaultVal Returned if the specified attribute does not exist.
+   * @return
+   * @throws Exception If the attribute cannot be parsed to the appropriate type.
+   */
+  public static Integer parseAttribAsInt(
+  		XMLStreamReader reader, String attrib, Integer defaultVal) throws XMLStreamException {
+  	
+  	Long v = parseAttribAsLong(reader, attrib, (long) defaultVal);
+  	if (v != null) {
+  		return v.intValue();
+  	} else {
+  		return null;
+  	}
+  }
+
+	/**
+   * Returns the double value found in the specified attribute of the current
+   * element.  If the attribute does not exist or cannot be parsed as a number,
+   * an error is thrown.
+   * 
+   * @param reader
+   * @param attrib
+   * @return
+   * @throws Exception
+   */
+  public static double parseAttribAsDouble(
+  		XMLStreamReader reader, String attrib) throws XMLStreamException {
+  		
+  	return parseAttribAsDouble(reader, attrib, true);
+  }
+
+	/**
+   * Returns the Double value found in the specified attribute of the current
+   * element.  If require is true and the attribute does not exist, an error
+   * is thrown.  If the attribute does not exist or is empty and
+   * require is not true, null is returned.
+   * @param reader
+   * @param attrib
+   * @param require
+   * @return
+   * @throws Exception
+   */
+  public static Double parseAttribAsDouble(
+  		XMLStreamReader reader, String attrib, boolean require) throws XMLStreamException {
+  	
+  	String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
+  	
+  	if (v != null) {
+  		int iv = 0;
+  		
+  		try {
+  			return Double.parseDouble(v);
+  		} catch (Exception e) {
+  			throw new XMLStreamException("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be a number");
+  		}
+  		
+  	} else if (require) {
+  		throw new XMLStreamException("The '" + attrib + "' attribute must exist for element '" + reader.getLocalName() + "'");
+  	} else {
+  		return null;
+  	}
+  	
+  }
+
+	/**
+   * Returns the Double value found in the specified attribute of the current
+   * element.  If the attribute does not exist, the default value is returned.
+   * 
+   * @param reader
+   * @param attrib
+   * @param defaultVal Returned if the specified attribute does not exist.
+   * @return
+   * @throws Exception If the attribute cannot be parsed to the appropriate type.
+   */
+  public static Double parseAttribAsDouble(
+  		XMLStreamReader reader, String attrib, Double defaultVal) throws XMLStreamException {
+  	
+  	String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
+  	
+  	if (v != null) {
+  		try {
+  			return Double.parseDouble(v);
+  		} catch (Exception e) {
+  			throw new XMLStreamException("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be a number");
+  		}
+  		
+  	} else {
+  		return defaultVal;
+  	}
+  	
+  }
+
+	/**
+   * Returns the long value found in the specified attribute of the current
+   * element.  If the attribute does not exist or cannot be parsed as a number,
+   * an error is thrown.
+   * 
+   * @param reader
+   * @param attrib
+   * @return
+   * @throws Exception
+   */
+  public static long parseAttribAsLong(
+  		XMLStreamReader reader, String attrib) throws XMLStreamException {
+  		
+  	return parseAttribAsLong(reader, attrib, true);
+  }
+
+	/**
+   * Returns the Long value found in the specified attribute of the current
+   * element.  If require is true and the attribute does not exist, an error
+   * is thrown.  If the attribute does not exist or is empty and
+   * require is not true, null is returned.
+   * @param reader
+   * @param attrib
+   * @param require
+   * @return
+   * @throws Exception
+   */
+  public static Long parseAttribAsLong(
+  		XMLStreamReader reader, String attrib, boolean require) throws XMLStreamException {
+  	
+  	String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
+  	
+  	if (v != null) {
+  		try {
+  			return Long.parseLong(v);
+  		} catch (Exception e) {
+  			throw new XMLStreamException("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be an integer");
+  		}
+  		
+  	} else if (require) {
+  		throw new XMLStreamException("The '" + attrib + "' attribute must exist for element '" + reader.getLocalName() + "'");
+  	} else {
+  		return null;
+  	}
+  	
+  }
+
+	/**
+   * Returns the Long value found in the specified attribute of the current
+   * element.  If the attribute does not exist, the default value is returned.
+   * 
+   * @param reader
+   * @param attrib
+   * @param defaultVal Returned if the specified attribute does not exist.
+   * @return
+   * @throws Exception If the attribute cannot be parsed to the appropriate type.
+   */
+  public static Long parseAttribAsLong(
+  		XMLStreamReader reader, String attrib, Long defaultVal) throws XMLStreamException {
+  	
+  	String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
+  	
+  	if (v != null) {
+  		try {
+  			return Long.parseLong(v);
+  		} catch (Exception e) {
+  			throw new XMLStreamException("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be an integer");
+  		}
+  		
+  	} else {
+  		return defaultVal;
+  	}
+  	
+  }
 }

@@ -1,5 +1,6 @@
 package gov.usgswim.service;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.stream.XMLStreamReader;
 
 /**
@@ -11,13 +12,9 @@ import javax.xml.stream.XMLStreamReader;
  */
 public interface HttpService<T> extends Service<T> {
 
-
+	//TODO [IK] It would be nice to get the 'firstrow' param out.  Flattening is specific to the XML anyway... 
 	public XMLStreamReader getXMLStreamReader(T o, boolean isNeedsCompleteFirstRow) throws Exception;
 	
-	
-//	public void dispatch(T request, HttpServletResponse response) throws Exception;
-	// TODO remove the need for this by better use of generics, stumbling block is simplehttprequest class
-//	public void dispatch(PipelineRequest request, HttpServletResponse response) throws Exception;
-	
+	//public void dispatch(T request, HttpServletResponse response) throws Exception;
 
 }

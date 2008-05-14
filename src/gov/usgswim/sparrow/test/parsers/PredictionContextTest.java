@@ -14,7 +14,7 @@ import junit.framework.TestCase;
 public class PredictionContextTest extends TestCase {
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 
-	public void testParseMainUseCase() throws XMLStreamException {
+	public void testParseMainUseCase() throws Exception {
 		String testRequest = "<prediction-context "
 		+ "  xmlns=\"http://www.usgs.gov/sparrow/prediction-schema/v0_2\" "
 		+ "	xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "

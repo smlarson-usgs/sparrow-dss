@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.test.parsers;
 
-import gov.usgswim.sparrow.parser.ReachGroup;
+import gov.usgswim.sparrow.parser.*;
 
 import java.io.StringReader;
 
@@ -10,10 +10,15 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+/**
+ * Tests everything at the ReachGroup level and below
+ * @author eeverman
+ *
+ */
 public class ReachGroupTest extends TestCase {
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	
-	public void testParse1() throws XMLStreamException {
+	public void testParse1() throws Exception {
 		String testRequest = "<reach-group enabled=\"true\" name=\"Northern Indiana Plants\"> <!--  ReachGroup Object -->"
 		+ "	<desc>Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project</desc>"
 		+ "	<notes>"
@@ -44,7 +49,7 @@ public class ReachGroupTest extends TestCase {
 		assertTrue(rg.getNotes().contains("based on plant type"));
 	}
 	
-	public void testParse2() throws XMLStreamException {
+	public void testParse2() throws Exception {
 		String testRequest = "<reach-group enabled=\"false\" name=\"Southern Indiana Fields\">"
 		+ "	<desc>Fields in Southern Indiana</desc>"
 		+ "	<notes>"
@@ -71,7 +76,7 @@ public class ReachGroupTest extends TestCase {
 		assertTrue(rg.getNotes().contains("for the EPA"));
 	}
 	
-	public void testParse3() throws XMLStreamException {
+	public void testParse3() throws Exception {
 		String testRequest = "<reach-group enabled=\"true\" name=\"Illinois\">"
 		+ "	<desc>The entire state of Illinois</desc>"
 		+ "	<notes>The Urban source for Illinois is predicted is to increase 20%.</notes>"
@@ -91,7 +96,7 @@ public class ReachGroupTest extends TestCase {
 		assertTrue(rg.getNotes().contains("to increase 20%."));
 	}
 	
-	public void testParse4() throws XMLStreamException {
+	public void testParse4() throws Exception {
 		String testRequest = "<reach-group enabled=\"true\" name=\"Illinois\">"
 			+ "	<desc>Wisconsin River Plants</desc>"
 			+ "	<notes>"
@@ -104,6 +109,7 @@ public class ReachGroupTest extends TestCase {
 			+ "	</reach>"
 			+ "	<reach id=\"947839474\">"
 			+ "		<adjustment src=\"2\" abs=\"91344\"/>"
+			+ "		<adjustment src=\"4\" coef=\".7\"/>"
 			+ "	</reach>"
 			+ "</reach-group>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
@@ -115,6 +121,58 @@ public class ReachGroupTest extends TestCase {
 		assertEquals("Illinois", rg.getName());
 		assertEquals("Wisconsin River Plants", rg.getDescription());
 		assertTrue(rg.getNotes().contains("River which have"));
+		
+		assertEquals(2, rg.getReaches().size());
+		
+		//Test the individual reaches
+		Reach reach0 = rg.getReaches().get(0);
+		Reach reach1 = rg.getReaches().get(1);
+		assertEquals(new Integer(483947453), reach0.getId());
+		assertEquals(new Integer(947839474), reach1.getId());
+		
+		//Test the adjustments applied to these specific reaches - Reach 0:
+		assertEquals(new Integer(2), reach0.getAdjustments().get(0).getSource());
+		assertEquals(new Double(.9), reach0.getAdjustments().get(0).getCoefficient());
+		assertNull(reach0.getAdjustments().get(0).getAbsolute());
+		
+		//Test the adjustments applied to these specific reaches - Reach 1 (two adj's):
+		assertEquals(new Integer(2), reach1.getAdjustments().get(0).getSource());
+		assertNull(reach1.getAdjustments().get(0).getCoefficient());
+		assertEquals(new Double(91344), reach1.getAdjustments().get(0).getAbsolute());
+		assertEquals(new Integer(4), reach1.getAdjustments().get(1).getSource());
+		assertEquals(new Double(.7), reach1.getAdjustments().get(1).getCoefficient());
+		assertNull(reach1.getAdjustments().get(1).getAbsolute());
+	}
+	
+	public void testParse5() throws Exception {
+		String testRequest = "<reach-group enabled=\"true\" name=\"Illinois\">"
+			+ "	<desc>Wisconsin River Plants</desc>"
+			+ "	<notes>"
+			+ "		We know of 3 plants on the Wisconsin River which have announced improved"
+			+ "		BPM implementations."
+			+ "	</notes>"
+			+ "	<adjustment src=\"2\" coef=\".75\"/>"
+			+ "	<reach id=\"947839474\">"
+			+ "		<adjustment src=\"2\" abs=\"91344\" coef=\".7\"/>"
+			+ "		<adjustment src=\"4\" coef=\".7\"/>"
+			+ "	</reach>"
+			+ "</reach-group>";
+		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
+		ReachGroup rg = new ReachGroup();
+		reader.next();
+
+
+		try {
+      rg.parse(reader);
+      fail("This test should have thrown an error b/c it spec's abs and coef values in an Adjustment");
+    } catch (XMLParseValidationException e) {
+      //Expected exception
+    }
+    
+    
+		
+
+
 	}
 	
 

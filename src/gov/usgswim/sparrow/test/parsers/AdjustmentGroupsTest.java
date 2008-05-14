@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 public class AdjustmentGroupsTest extends TestCase {
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	
-	public void testParseMainUseCase() throws XMLStreamException {
+	public void testParseMainUseCase() throws Exception {
 		String testRequest = "<adjustment-groups conflicts=\"supersede\">	<!--  AdjustmentGroup Object?  Cached. -->"
 		+ "	<reach-group enabled=\"true\" name=\"Northern Indiana Plants\"> <!--  ReachGroup Object -->"
 		+ "		<desc>Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project</desc>"

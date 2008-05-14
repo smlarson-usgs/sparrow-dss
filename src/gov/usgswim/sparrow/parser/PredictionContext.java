@@ -3,7 +3,6 @@ package gov.usgswim.sparrow.parser;
 import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import gov.usgswim.service.XMLStreamParserComponent;
 
 import java.io.Serializable;
 
@@ -25,7 +24,9 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 	
-	public static PredictionContext parseStream(XMLStreamReader in) throws XMLStreamException {
+	public static PredictionContext parseStream(XMLStreamReader in)
+			throws XMLStreamException, XMLParseValidationException {
+		
 		PredictionContext ag = new PredictionContext();
 		return ag.parse(in);
 	}
@@ -49,7 +50,9 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 	// ================
 	// INSTANCE METHODS
 	// ================
-	public PredictionContext parse(XMLStreamReader in) throws XMLStreamException {
+	public PredictionContext parse(XMLStreamReader in)
+			throws XMLStreamException, XMLParseValidationException {
+		
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
 		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : this
@@ -113,6 +116,17 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
 	}
+	
+	/**
+	 * Consider two instances the same if they have the same calculated hashcodes
+	 */
+  public boolean equals(Object obj) {
+	  if (obj instanceof PredictionContext) {
+	  	return obj.hashCode() == hashCode();
+	  } else {
+	  	return false;
+	  }
+  }
 	
 	public int hashCode() {
 		int hash = new HashCodeBuilder(13, 16661).
