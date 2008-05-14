@@ -44,7 +44,7 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 	private transient AdjustmentGroups adjustmentGroups;
 	private transient Analysis analysis;
 	private transient TerminalReaches terminalReaches;
-	private AreaOfInterest areaOfInterest;
+	private transient AreaOfInterest areaOfInterest;
 	
 
 	// ================
