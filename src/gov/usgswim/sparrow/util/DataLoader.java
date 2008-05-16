@@ -206,8 +206,8 @@ public class DataLoader {
 	 * <h4>Data Columns, sorted by HYDSEQ.  One row per reach (i = reach index)</h4>
 	 * <p>Row IDs duplicate the Reach Ids in column zero.</p>
 	 * <ol>
-	 * <li>[i][0] REACH_ID - The system id for the reach (db unique id)
-	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number
+	 * <li>[i][0] IDENTIFIER - The model specific ID for this reach
+	 * <li>[i][1] REACH_ID - The system id for the reach (db unique id)
 	 * </ol>
 	 *
 	 * Sort by HYDSEQ then IDENTIFIER, since in some cases HYDSEQ is not unique.
