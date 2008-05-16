@@ -6,6 +6,8 @@ import gov.usgswim.sparrow.AdjustmentSet;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
+import gov.usgswim.sparrow.PredictResult;
+import gov.usgswim.sparrow.PredictRunner;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
@@ -111,6 +113,10 @@ public class SharedApplicationCaching extends TestCase {
 	}
 	*/
 	
+	/**
+	 * Compares the calculated prediction results of the cache (via the PredictResultFactory)
+	 * to the canned results from a file.
+	 */
 	public void testBasicPredictionValues() throws Exception {
 		SharedApplication sa = SharedApplication.getInstance();
 		CacheManager.getInstance().clearAll();
@@ -122,9 +128,6 @@ public class SharedApplicationCaching extends TestCase {
 		
 		DataTable result = sa.getPredictResult(pr);
 		
-		
-		
-		
 		ComparePercentageView comp = buildPredictionComparison(result);
 
 		for (int i = 0; i < comp.getColumnCount(); i++)  {
@@ -132,6 +135,8 @@ public class SharedApplicationCaching extends TestCase {
 		}
 
 		assertEquals(0d, comp.findMaxCompareValue(), 0.004d);
+		
+
 	}
 
 	

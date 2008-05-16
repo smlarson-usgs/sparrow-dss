@@ -76,7 +76,7 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 		PredictData ds = DataLoader.loadMinimalPredictDataSet(conn, 1);
 		PredictRunner ps = new PredictRunner(ds);
 
-		DataTable result = ps.doPredict2();
+		DataTable result = ps.doPredict();
 
 		DataTableCompare comp = buildPredictionComparison(result);
 

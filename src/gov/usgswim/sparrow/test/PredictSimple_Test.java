@@ -64,7 +64,7 @@ public class PredictSimple_Test extends TestCase {
 		DataTableWritable srcDT = new SimpleDataTableWritable(src, null);
 
 		PredictRunner predictor = new PredictRunner(topoDT, coefDT, srcDT, decayDT);
-		DataTable pred = predictor.doPredict2();
+		DataTable pred = predictor.doPredict();
 
 		SparrowUtil.printDataTable(pred, "Predicted Values"); 
 

@@ -91,13 +91,7 @@ public class PredictComputable implements Computable<PredictRequest, PredictResu
 	 */
 	public PredictResult runPrediction(PredictRequest req, PredictData data) {
 		PredictRunner adjPredict = new PredictRunner(data);
-		PredictResult result = adjPredict.doPredict2();
-
-		long[] reachIds = TemporaryHelper.getRowIds(data.getSys());
-
-		//System.err.println("reachIDs is null? " + (reachIds == null));
-		TemporaryHelper.setIds(result, reachIds);
-
+		PredictResult result = adjPredict.doPredict();
 		return result;
 	}
 }
