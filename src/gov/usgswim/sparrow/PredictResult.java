@@ -15,6 +15,7 @@ import gov.usgswim.sparrow.datatable.ImmutableDoubleColumn;
  * 
  */
 @Immutable
+//TODO:  [EE]  Add gett'ers that are data specific (getSource())
 public class PredictResult extends SimpleDataTable {
 	
 	public PredictResult(ColumnData[] columns, long[] rowIds) {

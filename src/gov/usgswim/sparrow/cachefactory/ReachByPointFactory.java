@@ -13,11 +13,15 @@ import gov.usgswim.sparrow.service.idbypoint.Reach;
 
 
 /**
- * This factory class creates a ReachId on demand for an EHCache.
+ * This factory finds a ReachId based on a IDByPointRequest.
  * 
- * When the cache receives a get(IDByPointRequest) call and it doesn't have a cache
- * entry for that request, the createEntry() method of this class is called
- * and the returned value is cached.
+ * This class implements CacheEntryFactory, which plugs into the caching system
+ * so that the createEntry() method is only called when a entry needs to be
+ * created/loaded.
+ * 
+ * Caching, blocking, and de-caching are all handled by the caching system, so
+ * that this factory class only needs to worry about building a new entity in
+ * (what it can consider) a single thread environment.
  * 
  * @author eeverman
  *

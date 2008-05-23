@@ -93,6 +93,8 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 	 * The value is returned a decimal percentage (ie, if the value doubled, 1 would be returned)
 	 */
 	public static final String RESULT_MODE_DEC_PERC_CHG = "dec_perc_chg";
+	
+	public static final String CONTEXT_ID = "context-id";
 
 	public MapViewerSparrowDataProvider() {
 	}

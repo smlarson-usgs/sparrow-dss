@@ -20,13 +20,23 @@ import gov.usgswim.task.ComputableCache;
  * This factory class creates a PredictResult on demand for an EHCache.
  * 
  * When the cache receives a get(PredictRequest) call and it doesn't have a cache
- * entry for that fequest, the createEntry() method of this class is called
+ * entry for that request, the createEntry() method of this class is called
  * and the returned value is cached.
  * 
  * The basic process followed in this class is:
+ * <ul>
  * <li>load the PredictData for the specified model, pulling it from the cache
  * <li>adjust the PredictData as spec'ed in the PredictRequest
  * <li>run the prediction using the adjusted data
+ * </ul>
+ * 
+ * This class implements CacheEntryFactory, which plugs into the caching system
+ * so that the createEntry() method is only called when a entry needs to be
+ * created/loaded.
+ * 
+ * Caching, blocking, and de-caching are all handled by the caching system, so
+ * that this factory class only needs to worry about building a new entity in
+ * (what it can consider) a single thread environment.
  * 
  * @author eeverman
  *
