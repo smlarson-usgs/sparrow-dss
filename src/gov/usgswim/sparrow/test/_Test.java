@@ -32,8 +32,8 @@ public class _Test {
 		
 		suite.addTestSuite(SharedApplicationCaching.class);
 		
-		// Parsing
-		suite.addTestSuite(AllParseTests.class);
+		//parse tests
+		suite.addTest(AllParseTests.suite()); // Note: this is the way to add a suite.
 	  
 		return suite;
 	}
