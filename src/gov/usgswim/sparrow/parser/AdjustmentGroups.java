@@ -26,22 +26,30 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 	
-	public static AdjustmentGroups parseStream(XMLStreamReader in)
+	public static AdjustmentGroups parseStream(XMLStreamReader in, Long modelID)
 		throws XMLStreamException, XMLParseValidationException {
 		
-		AdjustmentGroups ag = new AdjustmentGroups();
+		AdjustmentGroups ag = new AdjustmentGroups(modelID);
 		return ag.parse(in);
 	}
 	
 	// ===============
 	// INSTANCE FIELDS
 	// ===============
+	private Long modelID;
 	private List<ReachGroup> reachGroups = new ArrayList<ReachGroup>();
 	private DefaultGroup defaultGroup;
 	private Integer id;
 	private String conflicts;	//This should be an enum
 	
 	//TODO: Parse should attempt to find the AG in the cache if it gets a ID.
+	
+	/**
+	 * Constructor requires a modelID
+	 */
+	public AdjustmentGroups(Long modelID) {
+		this.modelID = modelID;
+	}
 	
 	// ================
 	// INSTANCE METHODS
@@ -104,14 +112,14 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 
 	@Override
 	public AdjustmentGroups clone() throws CloneNotSupportedException {
-		AdjustmentGroups myClone = new AdjustmentGroups();
+		AdjustmentGroups myClone = new AdjustmentGroups(modelID);
 		// clone the ReachGroups
 		myClone.reachGroups = new ArrayList<ReachGroup>(reachGroups.size());
 		for (ReachGroup reachGroup: reachGroups) {
 			myClone.reachGroups.add(reachGroup.clone());
 		}
 		
-		myClone.id = id;
+		myClone.defaultGroup = (DefaultGroup) defaultGroup.clone();
 		myClone.conflicts = conflicts;
 
 		return myClone;
@@ -128,12 +136,24 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 	  }
   }
   
-	public int hashCode() {
-		int hash = new HashCodeBuilder(324164, 824).
-		append(id).
-		append(conflicts).
-		toHashCode();
-		return hash;
+	public synchronized int hashCode() {
+		if (id == null) {
+			HashCodeBuilder hash = new HashCodeBuilder(324163, 823);
+			hash.append(modelID);
+			hash.append(conflicts);
+			hash.append(defaultGroup);
+			
+			if (reachGroups != null && reachGroups.size() > 0) {
+				for (ReachGroup rg: reachGroups) {
+					hash.append(rg.getStateHash());
+				}
+				
+			}
+			
+			id = hash.toHashCode();
+		} 
+		
+		return id;
 	}
 
 	
@@ -141,11 +161,11 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 	// GETTERS & SETTERS
 	// =================
 	public Integer getId() {
-		return id;
+		return hashCode();
 	}
-
-	public void setId(Integer id) {
-		this.id = id;
+	
+	public Long getModelID() {
+		return modelID;
 	}
 
 	public List<ReachGroup> getReachGroups() {

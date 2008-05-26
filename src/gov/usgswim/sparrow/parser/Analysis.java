@@ -11,6 +11,17 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+/**
+ * Top-level child of PredictionContext.
+ * 
+ * This child is unique, b/c it does NOT include the modelID, which all the other
+ * top-level-children do.  This is because Analysis is (almost) sharable between
+ * models, so it seems reasonable to allow users to reuse a type of analysis
+ * across models.  The exception to this is that source numbers vary b/t models,
+ * so there is the possibility of an error, either logical or runtime.
+ * @author eeverman
+ *
+ */
 public class Analysis implements XMLStreamParserComponent, Serializable, Cloneable{
 
 	private static final long serialVersionUID = 6047046812440162869L;
@@ -107,14 +118,16 @@ public class Analysis implements XMLStreamParserComponent, Serializable, Cloneab
 	  }
   }
   
-	public int hashCode() {
-		int hash = new HashCodeBuilder(137, 1729).
-		append(groupBy).
-		append(limitTo).
-		append(id).
-		append(select)
-		.toHashCode();
-		return hash;
+	public synchronized int hashCode() {
+		if (id == null) {
+			int hash = new HashCodeBuilder(137, 1729).
+			append(groupBy).
+			append(limitTo).
+			append(select)
+			.toHashCode();
+			id = hash;
+		}
+		return id;
 	}	
 	
 	@Override
@@ -122,7 +135,6 @@ public class Analysis implements XMLStreamParserComponent, Serializable, Cloneab
 		Analysis myClone = new Analysis();
 		myClone.groupBy = groupBy;
 		myClone.limitTo = limitTo;
-		myClone.id = id;
 		myClone.select = select;
 		return myClone;
 	}
@@ -139,6 +151,6 @@ public class Analysis implements XMLStreamParserComponent, Serializable, Cloneab
 	}
 
 	public Integer getId() {
-		return id;
+		return hashCode();
 	}
 }

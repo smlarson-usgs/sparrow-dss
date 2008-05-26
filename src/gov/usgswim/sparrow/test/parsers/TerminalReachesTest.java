@@ -22,7 +22,7 @@ public class TerminalReachesTest extends TestCase {
 		+ "	<reach>5235424</reach>"
 		+ "</terminal-reaches>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
-		TerminalReaches termReaches = new TerminalReaches();
+		TerminalReaches termReaches = new TerminalReaches(1L);
 		reader.next();
 		termReaches.parse(reader);
 		List<Integer> reachIDs = termReaches.getReachIDs();
@@ -40,7 +40,7 @@ public class TerminalReachesTest extends TestCase {
 		+ "	<logical-set/>"
 		+ "</terminal-reaches>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
-		TerminalReaches termReaches = new TerminalReaches();
+		TerminalReaches termReaches = new TerminalReaches(1L);
 		reader.next();
 		termReaches.parse(reader);
 		// passes if no errors thrown
@@ -51,7 +51,7 @@ public class TerminalReachesTest extends TestCase {
 		+ "	<bad-tag/>"
 		+ "</terminal-reaches>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
-		TerminalReaches termReaches = new TerminalReaches();
+		TerminalReaches termReaches = new TerminalReaches(1L);
 		reader.next();
 		try {
 			termReaches.parse(reader);

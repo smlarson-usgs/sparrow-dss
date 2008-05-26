@@ -27,16 +27,24 @@ public class TerminalReaches implements XMLStreamParserComponent, Serializable, 
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 
-	public static TerminalReaches parseStream(XMLStreamReader in) throws XMLStreamException {
-		TerminalReaches tr = new TerminalReaches();
+	public static TerminalReaches parseStream(XMLStreamReader in, Long modelID) throws XMLStreamException {
+		TerminalReaches tr = new TerminalReaches(modelID);
 		return tr.parse(in);
 	}
 	
 	// ===============
 	// INSTANCE FIELDS
 	// ===============
+	private Long modelID;
 	protected List<Integer> reachIDs = new ArrayList<Integer>();
 	private Integer id;
+	
+	/**
+	 * Constructor requires a modelID
+	 */
+	public TerminalReaches(Long modelID) {
+		this.modelID = modelID;
+	}
 	
 	// ================
 	// INSTANCE METHODS
@@ -106,24 +114,30 @@ public class TerminalReaches implements XMLStreamParserComponent, Serializable, 
 	  }
   }
   
-	public int hashCode() {
-		HashCodeBuilder hashBuilder = new HashCodeBuilder(137, 1729).append(id);
-		for (Integer idValue: reachIDs) {
-			hashBuilder.append(idValue);
+	public synchronized int hashCode() {
+		if (id == null) {
+			HashCodeBuilder hashBuilder = new HashCodeBuilder(137, 1729);
+			
+			hashBuilder.append(modelID);
+			for (Integer idValue: reachIDs) {
+				hashBuilder.append(idValue);
+			}
+			int hash = hashBuilder.toHashCode();
+			
+			id = hash;
 		}
-		int hash = hashBuilder.toHashCode();
-		return hash;
+		
+		return id;
 	}
 	
 	@Override
 	public TerminalReaches clone() throws CloneNotSupportedException {
-		TerminalReaches myClone = new TerminalReaches();
+		TerminalReaches myClone = new TerminalReaches(modelID);
 		myClone.reachIDs = new ArrayList<Integer>(reachIDs.size());
 		for (Integer reachID: reachIDs) {
 			myClone.reachIDs.add(reachID);
 		}
 		
-		myClone.id = id;
 		return myClone;
 	}
 
@@ -131,11 +145,16 @@ public class TerminalReaches implements XMLStreamParserComponent, Serializable, 
 	// GETTERS & SETTERS
 	// =================
 	public List<Integer> getReachIDs(){
+		//TODO: [ee] This should be wrapped as an immutable (same for all lists)
 		return reachIDs;
+	}
+	
+	public Long getModelID() {
+		return modelID;
 	}
 
 	public Integer getId() {
-		return id;
+		return hashCode();
 	}
 
 }

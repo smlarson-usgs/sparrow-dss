@@ -90,12 +90,12 @@ public class AdjustmentGroupsTest extends TestCase {
 		+ "</adjustment-groups>";
 		
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
-		AdjustmentGroups adjGroups = new AdjustmentGroups();
+		AdjustmentGroups adjGroups = new AdjustmentGroups(1L);
 		reader.next();
 		adjGroups.parse(reader);
 		List<ReachGroup> reachGroups = adjGroups.getReachGroups();
 		assertEquals("supersede", adjGroups.getConflicts());
-		assertNull(adjGroups.getId());
+		assertEquals(new Long(1L), adjGroups.getModelID());
 		assertEquals(4, reachGroups.size());
 		
 		assertEquals(2, adjGroups.getDefaultGroup().getAdjustments().size());

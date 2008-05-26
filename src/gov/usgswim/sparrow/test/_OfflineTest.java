@@ -26,6 +26,11 @@ public class _OfflineTest {
 
 		
 		suite.addTestSuite(SharedApplicationCaching.class);
+		
+		//parse tests
+		suite.addTestSuite(gov.usgswim.sparrow.test.parsers.AllParseTests.class);
+		
+		
 
 		return suite;
 	}

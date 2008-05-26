@@ -124,16 +124,16 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 						id = (idString == null || idString.length() == 0)? null: Integer.valueOf(idString);
 					}// the following are all children matches 
 					else if (AdjustmentGroups.isTargetMatch(localName)) {
-						this.adjustmentGroups = AdjustmentGroups.parseStream(in);
+						this.adjustmentGroups = AdjustmentGroups.parseStream(in, modelID);
 						adjustmentGroupsID = (adjustmentGroups == null)? null: adjustmentGroups.getId();
 					} else if (TerminalReaches.isTargetMatch(localName)) {
-						this.terminalReaches = TerminalReaches.parseStream(in);
+						this.terminalReaches = TerminalReaches.parseStream(in, modelID);
 						terminalReachesID = (terminalReaches == null)? null: terminalReaches.getId();
 					} else if (Analysis.isTargetMatch(localName)) {
 						this.analysis = Analysis.parseStream(in);
 						analysisID = (analysis == null)? null: analysis.getId();
 					} else if (AreaOfInterest.isTargetMatch(localName)) {
-						this.areaOfInterest = AreaOfInterest.parseStream(in);
+						this.areaOfInterest = AreaOfInterest.parseStream(in, modelID);
 						areaOfInterestID = (areaOfInterest == null)? null: areaOfInterest.getId();
 					} else {
 						throw new RuntimeException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
@@ -176,15 +176,19 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 	  }
   }
 	
-	public int hashCode() {
-		int hash = new HashCodeBuilder(13, 16661).
-		append(modelID).
-		append(adjustmentGroupsID).
-		append(analysisID).
-		append(terminalReachesID).
-		append(areaOfInterestID).
-		toHashCode();
-		return hash;
+	public synchronized int hashCode() {
+		if (id == null) {
+			int hash = new HashCodeBuilder(13, 16661).
+			append(modelID).
+			append(adjustmentGroupsID).
+			append(analysisID).
+			append(terminalReachesID).
+			append(areaOfInterestID).
+			toHashCode();
+			id = hash;
+		}
+		
+		return id;
 	}
 
 	/**
@@ -263,7 +267,7 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 	}
 
 	public Integer getId() {
-		return id;
+		return hashCode();
 	}
 
 	public Integer getAdjustmentGroupsID() {

@@ -23,15 +23,23 @@ public class AreaOfInterest implements XMLStreamParserComponent, Serializable, C
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 	
-	public static AreaOfInterest parseStream(XMLStreamReader in) throws XMLStreamException {
-		AreaOfInterest aoi = new AreaOfInterest();
+	public static AreaOfInterest parseStream(XMLStreamReader in, Long modelID) throws XMLStreamException {
+		AreaOfInterest aoi = new AreaOfInterest(modelID);
 		return aoi.parse(in);
 	}
 	
 	// ===============
 	// INSTANCE FIELDS
 	// ===============
+	private Long modelID;
 	private Integer id;
+	
+	/**
+	 * Constructor requires a modelID
+	 */
+	public AreaOfInterest(Long modelID) {
+		this.modelID = modelID;
+	}
 	
 	// ================
 	// INSTANCE METHODS
@@ -96,16 +104,20 @@ public class AreaOfInterest implements XMLStreamParserComponent, Serializable, C
 	  }
   }
   
-	public int hashCode() {
-		HashCodeBuilder hashBuilder = new HashCodeBuilder(137, 1729).append(id);
-		int hash = hashBuilder.toHashCode();
-		return hash;
+	public synchronized int hashCode() {
+		if (id == null) {
+			HashCodeBuilder hash = new HashCodeBuilder(137, 1729);
+			
+			hash.append(modelID);
+	
+			id = hash.toHashCode();
+		}
+		return id;
 	}
 	
 	@Override
 	public AreaOfInterest clone() throws CloneNotSupportedException {
-		AreaOfInterest myClone = new AreaOfInterest();
-		myClone.id = id;
+		AreaOfInterest myClone = new AreaOfInterest(modelID);
 		return myClone;
 	}
 
@@ -114,7 +126,11 @@ public class AreaOfInterest implements XMLStreamParserComponent, Serializable, C
 	// =================
 
 	public Integer getId() {
-		return id;
+		return hashCode();
+	}
+	
+	public Long getModelID() {
+		return modelID;
 	}
 
 }
