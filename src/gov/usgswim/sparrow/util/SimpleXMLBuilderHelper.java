@@ -41,4 +41,8 @@ public abstract class SimpleXMLBuilderHelper {
 	public static String asString(Integer value) {
 		return (value == null)? null: value.toString();
 	}
+	
+	public static String asString(Long value) {
+		return (value == null)? null: value.toString();
+	}
 }
