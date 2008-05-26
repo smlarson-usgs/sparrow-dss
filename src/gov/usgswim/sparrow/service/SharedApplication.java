@@ -68,6 +68,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	private SharedApplication() {
 		super(null);
 
+		//These are now all depricated in favor of the EHCache versions
 		predictResultCache = new ComputableCache<PredictRequest, PredictResult>(new PredictComputable(), "Predict Result Cache");
 		predictDatasetCache = new ComputableCache<Long, PredictData>(new PredictDatasetComputable(), "Predict Dataset Cache");
 		idByPointCache = new ComputableCache<IDByPointRequest, DataTable>(new IDByPointComputable(), "ID by Point Cache");
@@ -394,14 +395,14 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	//PredictResult Cache
-	public DataTable getPredictResult(PredictRequest req) {
-		return getPredictResult(req, false);
+	public PredictResult getPredictResult(PredictionContext context) {
+		return getPredictResult(context, false);
 	}
 	
-	public DataTable getPredictResult(PredictRequest req, boolean quiet) {
+	public PredictResult getPredictResult(PredictionContext context, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_RESULT_CACHE);
-		Element e  = (quiet)?c.getQuiet(req):c.get(req);
-		return (e != null)?((DataTable) e.getObjectValue()):null;
+		Element e  = (quiet)?c.getQuiet(context):c.get(context);
+		return (e != null)?((PredictResult) e.getObjectValue()):null;
 	}
 	
 	//ReachByPoint Cache
