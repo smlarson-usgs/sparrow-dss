@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.test;
 
 
+import gov.usgswim.sparrow.test.parsers.AllParseTests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -28,8 +29,7 @@ public class _OfflineTest {
 		suite.addTestSuite(SharedApplicationCaching.class);
 		
 		//parse tests
-		suite.addTestSuite(gov.usgswim.sparrow.test.parsers.AllParseTests.class);
-		
+		suite.addTest(AllParseTests.suite()); // Note: this is the way to add a suite.
 		
 
 		return suite;
