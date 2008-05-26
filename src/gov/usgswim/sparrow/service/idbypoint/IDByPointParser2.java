@@ -29,7 +29,7 @@ public class IDByPointParser2 extends AbstractHttpRequestParser<IDByPointRequest
 
 			if (paramChain.length == 1 && StringUtils.isNumeric(paramChain[0])) {
 
-				Integer modelID = Integer.parseInt(paramChain[0]);
+				Long modelID = Long.parseLong(paramChain[0]);
 				int numResults = AbstractHttpRequestParser.parseParamAsLong(request, "result-count", 3L).intValue();
 				if (numResults > 100) numResults = 100;
 

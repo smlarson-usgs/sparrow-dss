@@ -108,6 +108,10 @@ public class Reach implements XMLStreamParserComponent, Cloneable {
 		return MAIN_ELEMENT_NAME;
 	}
 	
+	public boolean isParseTarget(String name) {
+		return MAIN_ELEMENT_NAME.equals(name);
+	}
+	
 	//TODO:  I am just assigning the Adjustment array b/c it is unmodifiable.  Is that truely acceptable...?
 	protected Reach clone() throws CloneNotSupportedException {
 		Reach myClone = new Reach();

@@ -34,7 +34,7 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 		
 		IDByPointRequest2 req = (IDByPointRequest2) request;
 		
-		Integer modelId = req.getModelID();
+		Long modelId = req.getModelID();
 		Double lng = req.getPoint().x;
 		Double lat = req.getPoint().y;
 		

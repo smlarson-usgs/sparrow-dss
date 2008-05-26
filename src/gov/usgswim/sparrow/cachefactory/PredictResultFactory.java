@@ -12,6 +12,7 @@ import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.PredictResult;
 import gov.usgswim.sparrow.PredictRunner;
+import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.DataLoader;
 import gov.usgswim.task.ComputableCache;
@@ -46,19 +47,19 @@ public class PredictResultFactory implements CacheEntryFactory {
 		Logger.getLogger(PredictComputable.class); //logging for this class
 	
 	public Object createEntry(Object predictRequest) throws Exception {
-		PredictRequest request = (PredictRequest)predictRequest;
+		PredictionContext context = (PredictionContext)predictRequest;
 		
 		//return DataLoader.loadMinimalPredictDataSet(SharedApplication.getInstance().getConnection(), id.intValue()).toImmutable();
 		
-		PredictData data = SharedApplication.getInstance().getPredictData(request.getModelId());
-		PredictData adjData = adjustData(request, data);
+		PredictData data = SharedApplication.getInstance().getPredictData(context.getModelID());
+		PredictData adjData = adjustData(context, data);
 
 		long startTime = System.currentTimeMillis();			
 
-		PredictResult result = runPrediction(request, adjData);
+		PredictResult result = runPrediction(context, data, adjData);
 
 		log.debug(
-				"Prediction done for model #" + request.getModelId() + 
+				"Prediction done for model #" + context.getModelID() + 
 				" Time: " + (System.currentTimeMillis() - startTime) + "ms, " +
 				adjData.getSrc().getRowCount() + " reaches");
 
@@ -81,16 +82,16 @@ public class PredictResultFactory implements CacheEntryFactory {
 	 * @param data
 	 * @return
 	 */
-	public PredictData adjustData(PredictRequest req, PredictData data) throws Exception {
+	public PredictData adjustData(PredictionContext context, PredictData data) throws Exception {
 
-		if (req.getAdjustmentSet().hasAdjustments()) {
+		if (context.getAdjustmentGroups() != null && context.getAdjustmentGroups().getReachGroups().size() > 0) {
 			PredictDataBuilder mutable = data.getBuilder();
 
 
 			//This method does not modify the underlying data
-			mutable.setSrc(
-					req.getAdjustmentSet().adjust(mutable.getSrc(), mutable.getSrcIds(), mutable.getSys())
-			);
+			//mutable.setSrc(
+					//req.getAdjustmentSet().adjust(mutable.getSrc(), mutable.getSrcIds(), mutable.getSys())
+			//);
 
 			return mutable.toImmutable();
 		}
@@ -99,16 +100,16 @@ public class PredictResultFactory implements CacheEntryFactory {
 	}
 
 	/**
-	 * Runs the actual prediction using the passed base data.
-	 *
-	 * The passed data is not modified.
-	 *
-	 * @param arg
-	 * @param data
+	 * Runs the actual prediction.
+	 * 
+	 * @param context
+	 * @param baseData
+	 * @param adjData
 	 * @return
 	 */
-	public PredictResult runPrediction(PredictRequest req, PredictData data) {
-		PredictRunner adjPredict = new PredictRunner(data);
+	//TODO:  [eric] need to fill out the anyalysis section to really detect what type of prediction we are doing
+	public PredictResult runPrediction(PredictionContext context, PredictData baseData, PredictData adjData) {
+		PredictRunner adjPredict = new PredictRunner(adjData);
 		PredictResult result = adjPredict.doPredict();
 		return result;
 	}

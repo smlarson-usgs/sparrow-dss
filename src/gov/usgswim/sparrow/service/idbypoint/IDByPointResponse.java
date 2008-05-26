@@ -10,7 +10,7 @@ import gov.usgswim.datatable.DataTable;
  *
  */
 public class IDByPointResponse {
-	public Integer modelID;
+	public Long modelID;
 	public Integer contextID;
 	public boolean statusOK;
 	public String message;

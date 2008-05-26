@@ -22,5 +22,11 @@ public interface XMLStreamParserComponent {
 			throws XMLStreamException, XMLParseValidationException;
 	
 	public String getParseTarget();
+	
+	/**
+	 * Returns true if the passed local name is a match to the parse target.
+	 * @return
+	 */
+	public boolean isParseTarget(String name);
 
 }

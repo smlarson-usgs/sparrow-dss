@@ -91,6 +91,10 @@ public class TerminalReaches implements XMLStreamParserComponent, Serializable, 
 		return MAIN_ELEMENT_NAME;
 	}
 	
+	public boolean isParseTarget(String name) {
+		return MAIN_ELEMENT_NAME.equals(name);
+	}
+	
 	/**
 	 * Consider two instances the same if they have the same calculated hashcodes
 	 */

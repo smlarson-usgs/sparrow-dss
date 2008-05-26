@@ -95,6 +95,10 @@ public class Select implements XMLStreamParserComponent, Serializable {
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
 	}
+	
+	public boolean isParseTarget(String name) {
+		return MAIN_ELEMENT_NAME.equals(name);
+	}
 
 	@Override
 	public int hashCode() {

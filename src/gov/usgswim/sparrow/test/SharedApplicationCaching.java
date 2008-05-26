@@ -9,6 +9,7 @@ import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.PredictResult;
 import gov.usgswim.sparrow.PredictRunner;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
+import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
@@ -120,13 +121,13 @@ public class SharedApplicationCaching extends TestCase {
 	public void testBasicPredictionValues() throws Exception {
 		SharedApplication sa = SharedApplication.getInstance();
 		CacheManager.getInstance().clearAll();
-		PredictRequest pr = new PredictRequest(1L, AdjustmentSet.EMPTY_ADJUSTMENTSET);
+		PredictionContext context = new PredictionContext(1L, null, null, null, null);
 		
 		
 		//ComputableCache<PredictRequest, PredictResult> pdCache = SharedApplication.getInstance().getPredictResultCache();
 		//PredictResult orgResult = pdCache.compute(pr);
 		
-		DataTable result = sa.getPredictResult(pr);
+		DataTable result = sa.getPredictResult(context);
 		
 		ComparePercentageView comp = buildPredictionComparison(result);
 

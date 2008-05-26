@@ -54,9 +54,8 @@ public class IDByPointRequest2 implements XMLStreamParserComponent, PipelineRequ
 	public IDByPointRequest2() {
 		
 	}
-	public IDByPointRequest2(Integer modelID, Double point, int numResults) {
-		this.predictionContext = new PredictionContext();
-		predictionContext.setModelID(modelID);
+	public IDByPointRequest2(Long modelID, Double point, int numResults) {
+		this.predictionContext = new PredictionContext(modelID, null, null, null, null);
 		this.point = point;
 		this.numberOfResults = numResults;
 
@@ -96,10 +95,7 @@ public class IDByPointRequest2 implements XMLStreamParserComponent, PipelineRequ
 						this.predictionContext = PredictionContext.parseStream(in);
 					} else if (MODELID_CHILD.equals(localName)) {
 						String modelIDString = ParserHelper.parseSimpleElementValue(in);
-						if (predictionContext == null) {
-							predictionContext = new PredictionContext();
-						}
-						predictionContext.setModelID(Integer.valueOf(modelIDString));
+						predictionContext = new PredictionContext(Long.valueOf(modelIDString), null, null, null, null);
 					} else if (POINT_CHILD.equals(localName)) {
 
 						point = new Point.Double();	//required
@@ -218,6 +214,11 @@ public class IDByPointRequest2 implements XMLStreamParserComponent, PipelineRequ
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
 	}
+	
+	public boolean isParseTarget(String name) {
+	  // TODO Auto-generated method stub
+	  return MAIN_ELEMENT_NAME.equals(name);
+  }
 
 	public boolean isSelectAll() {
 		return isSelectAll;
@@ -260,12 +261,12 @@ public class IDByPointRequest2 implements XMLStreamParserComponent, PipelineRequ
 	public void setNumberOfResults(int numberOfResults) {
 		this.numberOfResults = numberOfResults;
 	}
-	public Integer getModelID() {
+	public Long getModelID() {
 		return predictionContext.getModelID();
 	}
-	public void setModelID(Integer modelID) {
-		this.predictionContext.setModelID(modelID);
-	}
+	//public void setModelID(Long modelID) {
+		//this.predictionContext.setModelID(modelID);
+	//}
 	public int getNumberOfResults() {
 		return numberOfResults;
 	}
@@ -275,4 +276,5 @@ public class IDByPointRequest2 implements XMLStreamParserComponent, PipelineRequ
 	public Content getContent() {
 		return content;
 	}
+
 }

@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.test.parsers;
 
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
+import gov.usgswim.sparrow.parser.DefaultGroup;
 import gov.usgswim.sparrow.parser.ReachGroup;
 
 import java.io.StringReader;
@@ -74,8 +75,18 @@ public class AdjustmentGroupsTest extends TestCase {
 		+ "			<adjustment src=\"2\" abs=\"91344\"/>"
 		+ "		</reach>"
 		+ "	</reach-group>"
-		+ "	<!-- Do we still allow gross adjustments?  -->"
-		+ "	<!-- <gross-src src=\"4\" coef=\"2\"/> -->"
+		+ "<default-group enabled=\"true\"> <!--  DefaultGroup Object -->"
+		+ "	<desc>Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project</desc>"
+		+ "	<notes>"
+		+ "		I initially selected HUC 01746286 and 01746289,"
+		+ "		but it looks like there are some others plants that need to be included."
+		+ ""
+		+ "		As a start, we are proposing a 10% reduction across the board,"
+		+ "		but we will tailor this later based on plant type."
+		+ "	</notes>"
+		+ "	<adjustment src=\"5\" coef=\".9\"/>"
+		+ "	<adjustment src=\"4\" coef=\".75\"/>"
+		+ "</default-group>"
 		+ "</adjustment-groups>";
 		
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
@@ -86,6 +97,9 @@ public class AdjustmentGroupsTest extends TestCase {
 		assertEquals("supersede", adjGroups.getConflicts());
 		assertNull(adjGroups.getId());
 		assertEquals(4, reachGroups.size());
+		
+		assertEquals(2, adjGroups.getDefaultGroup().getAdjustments().size());
+		assertEquals(true, adjGroups.getDefaultGroup().isEnabled());
 		
 		// should have stopped at the end tag
 		assertTrue(reader.getEventType() == XMLStreamConstants.END_ELEMENT);

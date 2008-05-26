@@ -51,7 +51,7 @@ public class ReachGroup implements XMLStreamParserComponent, Cloneable {
 		int eventCode = in.getEventType();
 		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : 
 			this.getClass().getSimpleName()
-			+ " can only parse " + MAIN_ELEMENT_NAME + " elements.";
+			+ " can only parse " + getParseTarget() + " elements.";
 		boolean isStarted = false;
 
 		while (in.hasNext()) {
@@ -66,7 +66,7 @@ public class ReachGroup implements XMLStreamParserComponent, Cloneable {
 			switch (eventCode) {
 				case START_ELEMENT:
 					localName = in.getLocalName();
-					if (MAIN_ELEMENT_NAME.equals(localName)) {
+					if (isParseTarget(localName)) {
 						isEnabled = "true".equals(in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "enabled"));
 						name = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "name");
 						
@@ -96,7 +96,7 @@ public class ReachGroup implements XMLStreamParserComponent, Cloneable {
 					break;
 				case END_ELEMENT:
 					localName = in.getLocalName();
-					if (MAIN_ELEMENT_NAME.equals(localName)) {
+					if (isParseTarget(localName)) {
 						
 						//Wrap collections as unmodifiable
 						if (reaches != null) {
@@ -114,15 +114,19 @@ public class ReachGroup implements XMLStreamParserComponent, Cloneable {
 						return this; // we're done
 					}
 					// otherwise, error
-					throw new RuntimeException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);
+					throw new RuntimeException("unexpected closing tag of </" + localName + ">; expected  " + getParseTarget());
 					//break;
 			}
 		}
-		throw new RuntimeException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
+		throw new RuntimeException("tag <" + getParseTarget() + "> not closed. Unexpected end of stream?");
 	}
 
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
+	}
+
+	public boolean isParseTarget(String name) {
+		return MAIN_ELEMENT_NAME.equals(name);
 	}
 	
 	//TODO:  We are copying immutable lists during the cloning.. OK?

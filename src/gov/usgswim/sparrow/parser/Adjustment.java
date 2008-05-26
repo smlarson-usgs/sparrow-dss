@@ -92,6 +92,10 @@ public class Adjustment implements XMLStreamParserComponent, Cloneable {
 		return MAIN_ELEMENT_NAME;
 	}
 	
+	public boolean isParseTarget(String name) {
+		return MAIN_ELEMENT_NAME.equals(name);
+	}
+	
 	protected Adjustment clone() throws CloneNotSupportedException {
 		Adjustment myClone = new Adjustment();
 		myClone.src = src;

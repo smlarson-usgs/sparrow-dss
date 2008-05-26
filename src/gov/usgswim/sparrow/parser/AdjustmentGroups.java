@@ -37,6 +37,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 	// INSTANCE FIELDS
 	// ===============
 	private List<ReachGroup> reachGroups = new ArrayList<ReachGroup>();
+	private DefaultGroup defaultGroup;
 	private Integer id;
 	private String conflicts;	//This should be an enum
 	
@@ -74,6 +75,10 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 						ReachGroup rg = new ReachGroup();
 						rg.parse(in);
 						reachGroups.add(rg);
+					} else if (DefaultGroup.isTargetMatch(localName)) {
+						DefaultGroup dg = new DefaultGroup();
+						dg.parse(in);
+						defaultGroup = dg;
 					}
 					break;
 				case END_ELEMENT:
@@ -91,6 +96,10 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
+	}
+	
+	public boolean isParseTarget(String name) {
+		return MAIN_ELEMENT_NAME.equals(name);
 	}
 
 	@Override
@@ -146,4 +155,12 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 	public String getConflicts() {
 		return conflicts;
 	}
+
+	/**
+	 * May return null
+	 * @return
+	 */
+	public DefaultGroup getDefaultGroup() {
+  	return defaultGroup;
+  }
 }

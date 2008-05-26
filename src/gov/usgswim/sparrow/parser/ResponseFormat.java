@@ -79,6 +79,10 @@ public class ResponseFormat implements XMLStreamParserComponent {
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
 	}
+	
+	public boolean isParseTarget(String name) {
+		return MAIN_ELEMENT_NAME.equals(name);
+	}
 
 	// =================
 	// GETTERS & SETTERS

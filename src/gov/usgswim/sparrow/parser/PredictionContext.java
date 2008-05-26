@@ -17,6 +17,7 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 	public static final String MAIN_ELEMENT_NAME = "prediction-context";
 //	public static final String ADJUSTMENT_GROUPS = "adjustment-groups";
 
+	
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
 	// =============================
@@ -31,11 +32,54 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 		return ag.parse(in);
 	}
 	
+	/**
+	 * Constructs an empty instance.
+	 */
+	public PredictionContext() {
+	
+	}
+	/**
+	 * Constructs a fully configured instance.
+	 * 
+	 * @param modelID
+	 * @param ag
+	 * @param anal
+	 * @param tr
+	 * @param aoi
+	 * @return
+	 */
+	public PredictionContext(Long modelID, AdjustmentGroups ag, Analysis anal,
+				TerminalReaches tr, AreaOfInterest aoi) {
+		
+		this.modelID = modelID;
+		
+		if (ag != null) {
+			this.adjustmentGroups = ag;
+			this.adjustmentGroupsID = ag.getId();
+		}
+		
+		if (anal != null) {
+			this.analysis = anal;
+			this.analysisID = anal.getId();
+		}
+		
+		if (tr != null) {
+			this.terminalReaches = tr;
+			this.terminalReachesID = tr.getId();
+		}
+		
+		if (aoi != null) {
+			this.areaOfInterest = aoi;
+			this.areaOfInterestID = aoi.getId();
+		}	
+
+	}
+	
 	// ===============
 	// INSTANCE FIELDS
 	// ===============
 	private Integer id;
-	private Integer modelID;
+	private Long modelID;
 	private Integer adjustmentGroupsID;
 	private Integer analysisID;
 	private Integer terminalReachesID;
@@ -74,7 +118,7 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 					localName = in.getLocalName();
 					if (isTargetMatch(localName)) {
 						String modelIdString = in.getAttributeValue(DEFAULT_NS_PREFIX, "model-id");
-						modelID = (modelIdString == null || modelIdString.length() == 0)? null: Integer.valueOf(modelIdString);
+						modelID = (modelIdString == null || modelIdString.length() == 0)? null: Long.valueOf(modelIdString);
 						
 						String idString = in.getAttributeValue(DEFAULT_NS_PREFIX, XMLStreamParserComponent.ID_ATTR);
 						id = (idString == null || idString.length() == 0)? null: Integer.valueOf(idString);
@@ -115,6 +159,10 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
+	}
+	
+	public boolean isParseTarget(String name) {
+		return MAIN_ELEMENT_NAME.equals(name);
 	}
 	
 	/**
@@ -202,13 +250,10 @@ public class PredictionContext implements XMLStreamParserComponent, Serializable
 		return analysis;
 	}
 
-	public Integer getModelID() {
+	public Long getModelID() {
 		return modelID;
 	}
 
-	public void setModelID(Integer modelID) {
-		this.modelID = modelID;
-	}
 	public TerminalReaches getTerminalReaches() {
 		return terminalReaches;
 	}

@@ -15,6 +15,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.PredictResult;
+import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.task.ComputableCache;
@@ -51,6 +52,16 @@ public class PredictService implements HttpService<PredictServiceRequest> {
 	public PredictService() {
 	}
 
+	public PredictResult runPrediction(Integer predictionContextId) {
+		PredictionContext pc = SharedApplication.getInstance().getPredictionContext(predictionContextId);
+		return runPrediction(pc);
+	}
+	
+	public PredictResult runPrediction(PredictionContext context) {
+		return SharedApplication.getInstance().getPredictResult(context);
+	}
+	
+	
 	public DataTable runPrediction(PredictServiceRequest req) {
 		DataTable result = null;		//The prediction result
 

@@ -74,6 +74,22 @@
 				</reach>
 			</reach-group>
 			
+			<!-- 
+			The default-group allows model-wide adjustments.  This is basically the
+			replacement for the 'gross-adjust' from the previous schema.
+			The only children allowed are desc, notes, and adjustment.  No logical-set's
+			or reach element are allowed.
+			It allows an 'enabled' attribute, but not a name.
+			-->
+			<default-group enabled="true">
+				<desc>Bulk adjust to simulate result of proposed regulation 214</desc>
+				<notes>
+					This is just an approximation - we need more detail for the Western region.
+				</notes>
+				<adjustment src="4" coef=".9"/>
+				
+			</default-group>
+			
 			<!-- Do we still allow gross adjustments?  -->
 			<!-- <gross-src src="4" coef="2"/> -->
 		</adjustment-groups>

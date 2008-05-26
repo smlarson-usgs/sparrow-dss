@@ -94,6 +94,10 @@ public class Content implements XMLStreamParserComponent {
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
 	}
+	
+	public boolean isParseTarget(String name) {
+		return MAIN_ELEMENT_NAME.equals(name);
+	}
 
 	public boolean hasAdjustments() {
 		return hasAdjustments;
