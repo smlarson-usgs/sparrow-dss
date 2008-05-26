@@ -54,21 +54,8 @@ public class PredictDataImm implements PredictData {
 	 */
 	private final DataTable src;
 
-	/**
-	 * SourceIds is a two column DataTable with integer data and it has one row
-	 * for each source.  Each row contains the source IDENTIFIER (col 0) and
-	 * the DB unique ID (col 1) for a source for the model.  Row position in this
-	 * dataset is equal to the column position of the source  in the sourceValue
-	 * dataset.
-	 * 
-	 * For example, this content:<br>
-	 * [10] [7392]<br>
-	 * [15] [4723]<br>
-	 * [17] [4782]<br>
-	 * Would mean that column 0 of the src data has an IDENTIFIER of 10 and a db
-	 * unique id of 7392.
-	 */
-	private final DataTable srcIds;
+
+	private final DataTable srcMetadata;
 
 	/**
 	 * The stream and resevor decay.  The values in the array are *actually* 
@@ -117,7 +104,7 @@ public class PredictDataImm implements PredictData {
 		this.decay = decay;
 		this.sys = sys;
 		this.ancil = ancil;
-		this.srcIds = srcIDs;
+		this.srcMetadata = srcIDs;
 
 //		if (srcIDs != null) {
 //		this.srcIds = srcIDs.toImmutable();
@@ -128,9 +115,9 @@ public class PredictDataImm implements PredictData {
 	}
 
 	public int mapSourceId(int id) throws Exception {
-		if (srcIds != null) {
+		if (srcMetadata != null) {
 
-			int i = srcIds.findFirst(0, id);
+			int i = srcMetadata.findFirst(0, id);
 
 			if (i > -1) {
 				return i;
@@ -146,8 +133,8 @@ public class PredictDataImm implements PredictData {
 		}
 	}
 
-	public DataTable getSrcIds() {
-		return srcIds;
+	public DataTable getSrcMetadata() {
+		return srcMetadata;
 	}
 
 	public DataTable getTopo() {
@@ -215,7 +202,7 @@ public class PredictDataImm implements PredictData {
 			(getTopo() != null)?getTopo().toImmutable():null,
 			(getCoef() != null)?getCoef().toImmutable():null,
 			(getSrc() != null)?getSrc().toImmutable():null,
-			(getSrcIds() != null)?getSrcIds().toImmutable():null,
+			(getSrcMetadata() != null)?getSrcMetadata().toImmutable():null,
 			(getDecay() != null)?getDecay().toImmutable():null,
 			(getSys() != null)?getSys().toImmutable():null,
 			(getAncil() != null)?getAncil().toImmutable():null,

@@ -22,29 +22,28 @@ import gov.usgswim.sparrow.domain.Model;
 public interface PredictData extends ImmutableBuilder<PredictDataImm> {
 
 	/**
-	 * Returns the IDs used to indentify and look up sources
+	 * Returns the soruce metadata, which includes ids, names, units, and other metadata.
 	 * 
-	 * SourceIds is a two column Data2D with integer data and it has one row
-	 * for each source.  Each row contains the source IDENTIFIER (col 0) and
-	 * the DB unique ID (col 1) for a source for the model.  Row position in this
-	 * dataset is equal to the column position of the source  in the sourceValue
-	 * dataset.
+	 * SrcMetadata contains a row for each source in the model.  The source
+	 * identifier (model specific, it is not based on db ID) is the row id for each
+	 * row.  Row position in this dataset is equal to the column position of the
+	 * source  in the sourceValue dataset.
 	 * 
-	 * For example, this content:<br>
-	 * [10] [7392]<br>
-	 * [15] [4723]<br>
-	 * [17] [4782]<br>
-	 * Would mean that column 0 of the src data has an IDENTIFIER of 10 and a db
-	 * unique id of 7392.
-	 * 
-	 * <h4>Data Columns from SOURCE, sorted by SORT_ORDER.</h4>
+	 * <h4>Data Columns (sorted by SORT_ORDER)</h4>
+	 * <h5>IDENTIFIER - The Row ID (not a column). The Model specific ID for the source (starting w/ 1)</h5>
 	 * <ol>
-	 * <li>[column 0] Source IDENTIFIER - This column is indexed.
-	 * <li>[column 1] SOURCE_ID - DB ID for the source.
+	 * <li>SOURCE_ID - (long) The database unique ID for the source
+	 * <li>NAME - (String) The full (long text) name of the source
+	 * <li>DISPLAY_NAME - (String) The short name of the source, used for display
+	 * <li>DESCRIPTION - (String) A description of the source (could be long)
+	 * <li>CONSTITUENT - (String) The name of the Constituent being measured
+	 * <li>UNITS - (STring) The units the constituent is measured in
+	 * <li>PRECISION - (int) The number of decimal places
+	 * <li>IS_POINT_SOURCE (boolean) 'T' or 'F' values that can be mapped to boolean.
 	 * </ol>
 	 * @return
 	 */
-	public DataTable getSrcIds();
+	public DataTable getSrcMetadata();
 
 	/**
 	 * Maps a source id to its column index in the src data.

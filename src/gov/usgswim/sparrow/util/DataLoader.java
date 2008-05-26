@@ -60,12 +60,12 @@ public class DataLoader {
 
 		PredictDataBuilder dataSet = new PredictDataBuilder();
 
-		dataSet.setSrcIds( loadSourceData(conn, modelId));
+		dataSet.setSrcMetadata( loadSrcMetadata(conn, modelId));
 		dataSet.setSys( loadSystemInfo(conn, modelId) );
 		dataSet.setTopo( loadTopo(conn, modelId) );
-		dataSet.setCoef( loadSourceReachCoef(conn, modelId, 0, dataSet.getSrcIds()) );
+		dataSet.setCoef( loadSourceReachCoef(conn, modelId, 0, dataSet.getSrcMetadata()) );
 		dataSet.setDecay( loadDecay(conn, modelId, 0) );
-		dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcIds()) );
+		dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcMetadata()) );
 
 		return dataSet.toImmutable();
 	}
@@ -86,12 +86,12 @@ public class DataLoader {
 
 		PredictDataBuilder dataSet = new PredictDataBuilder();
 
-		dataSet.setSrcIds( loadSourceData(conn, modelId));
+		dataSet.setSrcMetadata( loadSrcMetadata(conn, modelId));
 		dataSet.setSys( loadSystemInfo(conn, modelId) );
 		dataSet.setTopo( loadTopo(conn, modelId) );
-		dataSet.setCoef( loadSourceReachCoef(conn, modelId, dataSet.getSrcIds()) );
+		dataSet.setCoef( loadSourceReachCoef(conn, modelId, dataSet.getSrcMetadata()) );
 		dataSet.setDecay( loadDecay(conn, modelId, 0) );
-		dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcIds()) );
+		dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcMetadata()) );
 
 		return dataSet.toImmutable();
 	}
@@ -551,7 +551,7 @@ public class DataLoader {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public static DataTableWritable loadSourceData(Connection conn, long modelId)
+	public static DataTableWritable loadSrcMetadata(Connection conn, long modelId)
 			throws SQLException, IOException {
 	
 		String query = getQuery("SelectSourceData", modelId);

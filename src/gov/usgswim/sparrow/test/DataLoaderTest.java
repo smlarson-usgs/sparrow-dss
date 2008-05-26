@@ -192,7 +192,7 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 	 * @see DataLoader#loadSourceIds(java.sql.Connection,int)
 	 */
 	public void testLoadSource(Connection conn, int modelId) throws Exception {
-		DataTable jdbcData = DataLoader.loadSourceData(conn, 1);
+		DataTable jdbcData = DataLoader.loadSrcMetadata(conn, 1);
 		assertEquals(11, jdbcData.getRowCount());
 		assertEquals(1, jdbcData.getColumnCount());
 
@@ -207,7 +207,7 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 	 * @see DataLoader#loadSourceReachCoef(Connection, int, int, Int2D)
 	 */
 	public void testLoadSourceReachCoef() throws Exception {
-		DataTable sources = DataLoader.loadSourceData(conn, 1);
+		DataTable sources = DataLoader.loadSrcMetadata(conn, 1);
 		DataTable jdbcData = DataLoader.loadSourceReachCoef(conn, 1, 0, sources);
 
 		assertEquals(2339, jdbcData.getRowCount());
@@ -237,7 +237,7 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 	 * @see DataLoader#loadSourceValues(Connection, int, Int2D)
 	 */
 	public void testLoadSourceValues() throws Exception {
-		DataTable sources = DataLoader.loadSourceData(conn, 1);
+		DataTable sources = DataLoader.loadSrcMetadata(conn, 1);
 		DataTable jdbcData = DataLoader.loadSourceValues(conn, 1, sources);
 
 		assertEquals(2339, jdbcData.getRowCount());

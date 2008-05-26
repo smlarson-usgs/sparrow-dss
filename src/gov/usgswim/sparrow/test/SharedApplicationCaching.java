@@ -156,7 +156,7 @@ public class SharedApplicationCaching extends TestCase {
 			comp = new DataTableCompare(expect.getSrc(), data.getSrc());
 			assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
 
-			comp = new DataTableCompare(expect.getSrcIds(), data.getSrcIds());
+			comp = new DataTableCompare(expect.getSrcMetadata(), data.getSrcMetadata());
 			assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
 
 			comp = new DataTableCompare(expect.getSys(), data.getSys());

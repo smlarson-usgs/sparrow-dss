@@ -4,6 +4,11 @@ import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.adjustment.ColumnCoefAdjustment;
+import gov.usgswim.sparrow.PredictData;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -154,6 +159,118 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 		} 
 		
 		return id;
+	}
+	
+	/**
+	 * Actually does the adjustment, returning sparse view of the underlying data.
+	 * @param source
+	 * @param srcIndex
+	 * @param reachIndex
+	 * @throws Exception
+	 */
+	public DataTable adjust(PredictData data) throws Exception {
+		
+		DataTable adjusted = null;
+		
+		//Do model-wide adjustments
+		if (defaultGroup != null && defaultGroup.getAdjustments().size() > 0) {
+
+			ColumnCoefAdjustment colAdj = new ColumnCoefAdjustment(data.getSrc());
+			adjusted = colAdj;
+			
+			for (Adjustment adj: defaultGroup.getAdjustments()) {
+				Double coef = adj.getCoefficient();
+				Integer srcId = adj.getSource();
+				
+				//Logic check...
+				if (coef == null || srcId == null) {
+					throw new Exception("For a global adjustment, a source and coefficient must be specified");
+				}
+				
+				colAdj.setColumnMultiplier(mapSourceId(srcId, data.getSrcMetadata()), coef);
+				
+			}
+			
+		}
+		
+		if (adjusted != null) {
+			return adjusted;
+		} else {
+			return data.getSrc();
+		}
+		
+		/*
+		 
+		Code copied from the old Adjustment class....
+		switch (_type) {
+			case GROSS_SRC_ADJUST: {
+				if (source instanceof ColumnCoefAdjustment) {
+					ColumnCoefAdjustment data = (ColumnCoefAdjustment)source;
+//					data.setColumnMultiplier(column, multiplierValue)
+					data.setColumnMultiplier(mapSourceId(_srcId, srcIndex), getValue());
+
+				} else {
+					throw new Exception("Expecting instance of RowColumnCoefAdjustment");
+				}
+				break;
+			}
+			case SPECIFIC_ADJUST: {
+				if (source instanceof DataTableWritable) {
+					DataTableWritable data = (DataTableWritable)source;
+
+					int reachRow = reachIndex.findFirst(0, Integer.valueOf(_reachId));
+
+					if (reachRow != -1) {
+						data.setValue(Double.valueOf(_val), reachRow, mapSourceId(_srcId, srcIndex));
+					} else {
+						throw new Exception("Reach ID #" + _reachId + " not found");
+					}
+				} else {
+					throw new Exception("Expecting instance of SparseOverrideAdjustment");
+				}
+				break;
+			}
+			default:
+				throw new Exception("Unsupported Adjustment type '" + _type);
+		}
+		
+		*/
+
+	}
+	
+	/**
+	 * Maps a source id to its column index in the src data.
+	 * 
+	 * If there is no source id map, it is assumed that there are no IDs for the sources (i.e.,
+	 * the prediction is being run from a text file), and ID are auto generated
+	 * such that the first column of the sources is given an id of 1 (not zero).
+	 * 
+	 * See the PredictionDataSet class, which implements the same strategy (and should
+	 * be kept in sync).
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	public int mapSourceId(Integer id, DataTable srcMetadata) throws Exception {
+		if (srcMetadata != null) {
+
+			int i = srcMetadata.getRowForId(id.longValue());
+
+			if (i > -1) {
+				// Running from database, so has a sourceid table
+				return i;
+			} else  {
+				throw new Exception ("Source for id " + id + " not found");
+			}
+		} else {
+			// Running from text file so assume columns in order
+			//In this case, id '1' is column zero.
+			if (id > 0) {
+				return id.intValue() - 1;
+			} else {
+				throw new Exception("Invalid source id " + id + ", which must be greater then zero.");
+			}
+		}
 	}
 
 	
