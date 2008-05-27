@@ -120,7 +120,7 @@ public class IDByPointService2 implements HttpService<IDByPointRequest2> {
 			int identifier = (response.reachID == 0)? req.getReachID(): response.reachID;
 			response.reachID = identifier;
 		}
-		String basicAttributesQuery = "SELECT * FROM MODEL_ATTRIB_VW "
+		String basicAttributesQuery = props.getText("basicAttSelectClause") + " FROM MODEL_ATTRIB_VW "
 			+ " WHERE IDENTIFIER=" + response.reachID 
 			+ " AND SPARROW_MODEL_ID=" + req.getModelID();
 		
@@ -130,21 +130,22 @@ public class IDByPointService2 implements HttpService<IDByPointRequest2> {
 		ResultSet rset = st.executeQuery(basicAttributesQuery);
 		response.basicAttributes = DataTableUtils.toDataTable(rset);
 		closeConnection(conn, rset);
-
-		String sparrowAttributesQuery = "SELECT * FROM MODEL_REACH "
+//props.getText("basicAttSelectClause") +
+		String sparrowAttributesQuery =  props.getText("sparrowAttSelectClause") + " FROM MODEL_REACH "
 			+ " WHERE IDENTIFIER=" + response.reachID
 			+ " AND SPARROW_MODEL_ID=" + req.getModelID();
+
 		conn = getConnection();
 		st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		rset = st.executeQuery(basicAttributesQuery);
+		rset = st.executeQuery(sparrowAttributesQuery);
 		response.sparrowAttributes = DataTableUtils.toDataTable(rset);
 		closeConnection(conn, rset);
-		
+		 
 		// DEBUG
-		TemporaryHelper.printDataTable(response.sparrowAttributes);
+//		TemporaryHelper.printDataTable(response.sparrowAttributes);
 		
 		StringBuilder basicAttributesSection = toSection(response.basicAttributes, "Basic Attributes", "basic_attrib");		
-		StringBuilder sparrowAttributesSection = toSection(response.basicAttributes, "SPARROW Attributes", "sparrow_attrib");
+		StringBuilder sparrowAttributesSection = toSection(response.sparrowAttributes, "SPARROW Attributes", "sparrow_attrib");
 
 		response.attributesXML = props.getText("attributesXMLResponseStart") + basicAttributesSection + sparrowAttributesSection + props.getText("attributesXMLResponseEnd");
 
