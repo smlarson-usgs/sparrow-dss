@@ -195,10 +195,10 @@ public class PredictService implements HttpService<PredictServiceRequest> {
 			for (int index=0; index<rowIds.length; index++) {
 				long rowId = rowIds[index];
 				int rowIndex = source.getRowForId(rowId);
-				double[] rowData = TemporaryHelper.getDoubleRow(source, rowIndex);
+				double[] rowData = DataTableUtils.getDoubleRow(source, rowIndex);
 				newData[index] = rowData;
 			}
-			String[] headings = TemporaryHelper.getHeadings(source);
+			String[] headings = DataTableUtils.getHeadings(source);
 			SimpleDataTableWritable result = new SimpleDataTableWritable(newData, headings);
 			TemporaryHelper.setIds(result, rowIds);
 			return result;

@@ -22,7 +22,8 @@ public class IDByPointResponse {
 	//
 	public DataTable adjustments;
 	public DataTable predictions;
-	public DataTable attributes;
+	public DataTable basicAttributes;
+	public DataTable sparrowAttributes;
 
 	// TODO remove these when working code successfully populates DataTable fields dynamically
 	public String adjustmentsXML;
@@ -74,6 +75,7 @@ public class IDByPointResponse {
 
 		return in.toString();
 	}
+
 
 
 }

@@ -6,6 +6,7 @@ import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 
 import javax.xml.stream.XMLStreamException;
@@ -99,7 +100,7 @@ public class PredictSerializer extends BasicXMLStreamReader{
 							events.add(new BasicTagEvent(START_ELEMENT, "group")
 								.addAttribute("name", "Source Values"));
 							{
-								for(String head : TemporaryHelper.getHeadings(predictData.getSrc())) {
+								for(String head : DataTableUtils.getHeadings(predictData.getSrc())) {
 									events.add(makeNonNullBasicTag("col", "")
 											.addAttribute("name", head)
 											.addAttribute("type", "Number"));
@@ -110,7 +111,7 @@ public class PredictSerializer extends BasicXMLStreamReader{
 							events.add(new BasicTagEvent(START_ELEMENT, "group")
 								.addAttribute("name", "Predicted Values"));
 							{
-								for(String head : TemporaryHelper.getHeadings(result)) {
+								for(String head : DataTableUtils.getHeadings(result)) {
 									events.add(makeNonNullBasicTag("col", "")
 											.addAttribute("name", head)
 											.addAttribute("type", "Number"));
@@ -123,7 +124,7 @@ public class PredictSerializer extends BasicXMLStreamReader{
 							// IK: shouldn't this be in a group? ADDED TODO verify with Eric
 							events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Predicted Values"));
 							{
-								for(String head : TemporaryHelper.getHeadings(result)) {
+								for(String head : DataTableUtils.getHeadings(result)) {
 									events.add(makeNonNullBasicTag("col", "")
 											.addAttribute("name", head)
 											.addAttribute("type", "Number"));

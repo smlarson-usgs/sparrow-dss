@@ -222,7 +222,7 @@ public class DataLoader {
 		String query = getQuery("SelectSystemData", modelId);
 
 		DataTableWritable data = readAsInteger(conn, query, 2000, DataLoader.DO_NOT_INDEX);
-		int[] ids = TemporaryHelper.getIntColumn(data, 0);
+		int[] ids = DataTableUtils.getIntColumn(data, 0);
 		return TemporaryHelper.setIds(data, ids);
 
 	}

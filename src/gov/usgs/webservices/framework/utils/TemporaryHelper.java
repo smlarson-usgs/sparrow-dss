@@ -2,6 +2,7 @@ package gov.usgs.webservices.framework.utils;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.impl.DataTableUtils;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,37 +16,9 @@ public abstract class TemporaryHelper {
 //	static<T extends DataTableWritable> T fillDouble(T dt, Data2D data) {
 //		return BuilderHelper.fill(dt, data.getDoubleData(), null);
 //	}
-
-	/**
-	 * @param data
-	 * @param col
-	 * @return
-	 * @deprecated
-	 */
-	public static int[] getIntColumn(DataTable data, int col) {
-		int size = data.getRowCount();
-		int[] result = new int[size];
-		for (int row=0; row<size; row++) {
-			result[row] = data.getInt(row, col);
-		}
-		return result;
-	}
-	
-	/**
-	 * @param source
-	 * @param col
-	 * @return
-	 * @deprecated
-	 */
-	public static double[] getDoubleColumn(DataTable source, int col){
-		double[] result = new double[source.getRowCount()];
-		for (int i=0; i<result.length; i++) {
-			result[i] = source.getDouble(i, col);
-		}
-		return result;
-	}
 	
 	public static DataTableWritable setIds(DataTableWritable data, int[] ids) {
+//		 TODO [IK] Move to DataTableUtils
 		int size = Math.min(data.getRowCount(), ids.length);
 		for (int row = 0; row < size; row++) {
 			data.setRowId(ids[row], row);
@@ -54,6 +27,7 @@ public abstract class TemporaryHelper {
 	}
 	
 	public static DataTableWritable setIds(DataTableWritable data, long[] ids) {
+		//	 TODO [IK] Move to DataTableUtils
 		int size = Math.min(data.getRowCount(), ids.length);
 		for (int row = 0; row < size; row++) {
 			data.setRowId(ids[row], row);
@@ -62,50 +36,17 @@ public abstract class TemporaryHelper {
 	}
 	
 	public static DataTableWritable setIds(DataTableWritable data, Long[] ids) {
+		// TODO [IK] Move to DataTableUtils
 		int size = Math.min(data.getRowCount(), ids.length);
 		for (int row = 0; row < size; row++) {
 			data.setRowId(ids[row], row);
 		}
 		return data;
 	}
-	
-	/**
-	 * @param source
-	 * @param row
-	 * @return
-	 * @deprecated
-	 */
-	public static int[] getIntRow(DataTable source, int row){
-		int[] result = new int[source.getColumnCount()];
-		for (int j=0; j<result.length; j++) {
-			result[j] = source.getInt(row, j);
-		}
-		return result;
-	}
-	
-	/**
-	 * @param source
-	 * @param row
-	 * @return
-	 * @deprecated
-	 */
-	public static double[] getDoubleRow(DataTable source, int row){
-		double[] result = new double[source.getColumnCount()];
-		for (int j=0; j<result.length; j++) {
-			result[j] = source.getDouble(row, j);
-		}
-		return result;
-	}
-	
-	public static String[] getHeadings(DataTable source) {
-		String[] result = new String[source.getColumnCount()];
-		for (int i=0; i < result.length; i++) {
-			result[i] = source.getName(i);
-		}
-		return result;
-	}
+
 
 	public static long[] getRowIds(DataTable dt) {
+		// TODO [ik] reconcile with DataTableUtils
 		if (dt != null && dt.hasRowIds()) {
 			long[] result = new long[dt.getRowCount()];
 			for (int i=0; i<result.length; i++) {
@@ -159,5 +100,27 @@ public abstract class TemporaryHelper {
 //			}
 //		}
 //		System.out.println("=======");
+	}
+	
+	public static void printDataTable(DataTable dt) {
+		if (dt != null) {
+			// print headings
+			String[] headings = DataTableUtils.getHeadings(dt);
+			System.out.println();
+			for (String heading: headings) {
+				System.out.print(heading);
+				System.out.print("\t");
+			}
+			System.out.println();
+			// Print data
+			for (int i=0; i < dt.getRowCount(); i++) {
+				for (int j=0; j<dt.getColumnCount(); j++) {
+					Object value = dt.getValue(i, j);
+					System.out.print((value == null)? "": value.toString());
+					System.out.print("\t");
+				}
+				System.out.println();
+			}
+		}
 	}
 }

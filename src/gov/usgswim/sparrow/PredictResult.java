@@ -1,15 +1,14 @@
 package gov.usgswim.sparrow;
 
-import java.util.Collections;
-
-import org.apache.commons.lang.StringUtils;
-
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.Immutable;
 import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.datatable.ImmutableDoubleColumn;
+
+import java.util.Collections;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * 

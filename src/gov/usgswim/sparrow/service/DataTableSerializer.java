@@ -6,6 +6,7 @@ import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest2;
 
@@ -91,7 +92,7 @@ public class DataTableSerializer extends BasicXMLStreamReader {
 							events.add(new BasicTagEvent(START_ELEMENT, "group")
 							.addAttribute("name", ""));
 							{
-								for(String head : TemporaryHelper.getHeadings(result)) {
+								for(String head : DataTableUtils.getHeadings(result)) {
 									events.add(makeNonNullBasicTag("col", "")
 											.addAttribute("name", head)
 											.addAttribute("type", "Number"));

@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.util;
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.PredictData;
@@ -311,7 +312,7 @@ public abstract class JDBCUtil {
 		//return value
 		Map<Integer, Integer> sourceIdMap;		//Maps IDENTIFIER(key) to the db SOURCE_ID(value)
 
-		String[] headers = TemporaryHelper.getHeadings(data.getSrc());
+		String[] headers = DataTableUtils.getHeadings(data.getSrc());
 
 		String insertSrcStr = "INSERT INTO SOURCE (IDENTIFIER, NAME, DISPLAY_NAME, DESCRIPTION, SORT_ORDER, SPARROW_MODEL_ID) " +
 		"VALUES (?,?,?,?,?," + data.getModel().getId() + ")";
