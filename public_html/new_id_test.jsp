@@ -7,7 +7,7 @@
     <title>ID By Point Test</title>
   </head>
   <body>
-		
+		<!-- 
 		<p>
 			Requests the 7 closest reaches to lat/long 40/-100 in model 22<br>
 			xml: <a href="sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=7">sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=7</a><br>
@@ -41,9 +41,11 @@
 
 
 		</p>
+		
+		 -->
 	<form action="sp_idpoint2/formpost" method="post" enctype="application/x-www-form-urlencoded">
 		<fieldset title="IDByPoint Request 1">
-			<label for="xml_input_1">Prediction Request 1</label>
+			<label for="xml_input_1">new IDByPoint Request 1</label>
 			<p>
 			National Model w/ gross and specific adjustments.
 			</p>

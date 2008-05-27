@@ -8,7 +8,7 @@
   </head>
   <body>
 		
-		<form action="sp_jsonify/xmlreq" method="post" enctype="application/x-www-form-urlencoded">
+		<form action="sp_jsonify/formpost" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="JSONify Prediction Context Request">
 				<label for="xml_input_1">Prediction Request Format</label>
 				<p>

@@ -65,7 +65,11 @@ public class IDByPointService2 implements HttpService<IDByPointRequest2> {
 		// TODO isNeedsFlattening ignored for now because using custom flattener
 		// TODO extract to method when satisfied.
 		IDByPointResponse response = new IDByPointResponse();
+		// two types of id requests, with and without a context.
+		// without means we have to store the context? NO, null context.
+		// uc-1 example has no context. Later ones have prediction context.
 		response.modelID = req.getModelID();
+
 		// TODO populate response.contextID;
 		if (req.getPoint() != null) {
 			retrieveReachIdentification(req, response);
@@ -106,13 +110,15 @@ public class IDByPointService2 implements HttpService<IDByPointRequest2> {
 	}
 	
 	private void retrievePredicteds(IDByPointRequest2 req, IDByPointResponse response) throws IOException {
-		//	TODO move to DataLoader when done debugging
+		//TODO move to DataLoader when done debugging
 		// TODO replace with dynamic working code
+		// only go to cache using context-id as key
+		// or... use base nonadjusted prediction results if no key
 		response.predictionsXML = props.getText("predictedXMLResponse");
 	}
 
 	private void retrieveAttributes(IDByPointRequest2 req, IDByPointResponse response) throws IOException, SQLException, NamingException {
-		//	TODO move to DataLoader when done debugging
+		// TODO move to DataLoader when done debugging
 		// TODO replace with dynamic working code
 		
 		{	// HACK temporary. review later
@@ -130,7 +136,7 @@ public class IDByPointService2 implements HttpService<IDByPointRequest2> {
 		ResultSet rset = st.executeQuery(basicAttributesQuery);
 		response.basicAttributes = DataTableUtils.toDataTable(rset);
 		closeConnection(conn, rset);
-//props.getText("basicAttSelectClause") +
+
 		String sparrowAttributesQuery =  props.getText("sparrowAttSelectClause") + " FROM MODEL_REACH "
 			+ " WHERE IDENTIFIER=" + response.reachID
 			+ " AND SPARROW_MODEL_ID=" + req.getModelID();
@@ -217,7 +223,11 @@ public class IDByPointService2 implements HttpService<IDByPointRequest2> {
 		// PLAN
 		// 1) Use DataLoader.properties SelectSourceValues  to obtain SourceName, Units, Original Value
 		// 2) Handle the prediction context in order to calculate AdjustValue and Multiplier. Note that one
-		// or more of Adjusted Value and Multiplier may be null, depending on the kind of adjustment
+		// or more of Adjusted Value and Multiplier may be null, depending on the kind of adjustment.
+		// Adjustment may or may not have prediction context, and it may or may not have been run.
+		// If pred context, exists, check whether there are adjustments(difficult?)
+		// Adjustment is only for reporting purposes
+		// Happy path: predicted data available, all cached.
 		response.adjustmentsXML = props.getText("adjustmentsXMLResponse");
 	}
 

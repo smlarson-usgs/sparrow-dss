@@ -126,7 +126,9 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 			myClone.reachGroups.add(reachGroup.clone());
 		}
 		
-		myClone.defaultGroup = (DefaultGroup) defaultGroup.clone();
+		if (defaultGroup != null) {
+			myClone.defaultGroup = (DefaultGroup) defaultGroup.clone();
+		}
 		myClone.conflicts = conflicts;
 
 		return myClone;
