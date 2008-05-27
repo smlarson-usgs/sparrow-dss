@@ -18,7 +18,7 @@ public class PredictContextParser
 			throws Exception {
 
 		
-		PredictContextRequest result = parse(request);
+		PredictContextRequest result = super.parse(request);
 		ResponseFormat respFormat = result.getResponseFormat();
 		
 		String mimeType = request.getParameter("mimetype");
