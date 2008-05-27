@@ -28,7 +28,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * reach and its associated adjustments.  This method is a convenience to parent
  * classes who need to include the state of their reaches in their hashcodes.
  */
-public class Reach implements XMLStreamParserComponent, Cloneable {
+public class Reach implements XMLStreamParserComponent {
 	public static final String MAIN_ELEMENT_NAME = "reach";
 
 	// =============================

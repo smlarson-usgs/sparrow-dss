@@ -1,11 +1,12 @@
 package gov.usgswim.sparrow.parser;
 
 
+import java.io.Serializable;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-//TODO: This interface should extend serializable
-public interface XMLStreamParserComponent {
+public interface XMLStreamParserComponent extends Serializable, Cloneable {
 	public static final String ID_ATTR = "context-id";
 	/**
 	 * Partially parses the stream (up to but not after the end target tag) and

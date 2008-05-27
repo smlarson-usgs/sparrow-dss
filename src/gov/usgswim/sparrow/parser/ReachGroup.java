@@ -23,7 +23,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * adjustment..  This method is a convenience to parent
  * classes who need to include the state of their adjustments in their hashcodes.
  */
-public class ReachGroup implements XMLStreamParserComponent, Cloneable {
+public class ReachGroup implements XMLStreamParserComponent {
 	public static final String MAIN_ELEMENT_NAME = "reach-group";
 
 	// =============================

@@ -22,7 +22,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * @author eeverman
  *
  */
-public class Analysis implements XMLStreamParserComponent, Serializable, Cloneable{
+public class Analysis implements XMLStreamParserComponent {
 
 	private static final long serialVersionUID = 6047046812440162869L;
 	private static final String GROUP_BY_CHILD = "group-by";

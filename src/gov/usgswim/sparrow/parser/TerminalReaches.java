@@ -13,7 +13,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-public class TerminalReaches implements XMLStreamParserComponent, Serializable, Cloneable {
+public class TerminalReaches implements XMLStreamParserComponent {
 
 	private static final long serialVersionUID = 8804027069848411715L;
 	private static final String REACHES_CHILD = "reach";

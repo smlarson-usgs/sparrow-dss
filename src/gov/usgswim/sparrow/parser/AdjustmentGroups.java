@@ -21,7 +21,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
-public class AdjustmentGroups implements XMLStreamParserComponent, Serializable, Cloneable {
+public class AdjustmentGroups implements XMLStreamParserComponent {
 
 	private static final long serialVersionUID = 1L;
 	public static final String MAIN_ELEMENT_NAME = "adjustment-groups";
