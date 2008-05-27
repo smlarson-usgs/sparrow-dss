@@ -174,7 +174,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 		
 		DataTable adjusted = null;
 		
-		//Do model-wide adjustments
+		//Do model-wide adjustments first.  Any further adjustments will accumulate/override as appropriate
 		if (defaultGroup != null && defaultGroup.getAdjustments().size() > 0) {
 
 			ColumnCoefAdjustment colAdj = new ColumnCoefAdjustment(data.getSrc());
@@ -198,6 +198,9 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 		//Here we are assuming conflict accumulate
 		if (reachGroups != null && reachGroups.size() > 0) {
 			
+			//Two places to adjust:  SparseCoeff allows coeff adjustments to individual
+			//reaches, SparesOverride, which wraps coef, allows absolute value adjustments
+			//to individual reaches.
 			SparseCoefficientAdjustment coefAdj = new SparseCoefficientAdjustment(adjusted);
 			SparseOverrideAdjustment overAdj = new SparseOverrideAdjustment(coefAdj);
 			
@@ -205,34 +208,43 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 			for (ReachGroup rg: reachGroups) {
 				
 				//TODO:  [ee] loop through logical sets of reaches...
+				//TODO:  [ee] All lists should be returning non-null unmodifiable lists...
 				
 				//Loop Through the explicit set of reaches
 				for (Reach r: rg.getReaches()) {
 					
-					//assign the adjustments applied to this group as a whole.
-					//We are allowing absolute value adjustments, though this is likely a user error.
+					//apply the adjustments for this reachGroup as a whole to this reach.
+					//This needs to take place for each reach.
 					for (Adjustment adj: rg.getAdjustments()) {
 						Double coef = adj.getCoefficient();
 						Double abs = adj.getAbsolute();
 						Integer srcId = adj.getSource();
 						
 						if (coef != null) {
+							
+							//if a coef already exists, the new coef is the product of the existing and the new
+							Number existingCoef = coefAdj.getCoef(data.getRowForReachID(r.getId()), data.getSourceColumnForSourceID(srcId));
+							if (existingCoef != null) {
+								coef = coef.doubleValue() * existingCoef.doubleValue();
+							}
+							
 							coefAdj.setValue(coef, data.getRowForReachID(r.getId()), data.getSourceColumnForSourceID(srcId));
 						} else {
+							//We are allowing absolute value adjustments, though this is likely a user error.
 							overAdj.setValue(abs, data.getRowForReachID(r.getId()), data.getSourceColumnForSourceID(srcId));
 						}
 					}
 					
-					//set the override absolute values for this individual reach
-					//TODO:  [ee]  left off work somewhere in here...
+					//apply the adjustments specified for just this reach (if any)
+					//Note:  getAdjustments() never returns null
 					for (Adjustment adj: r.getAdjustments()) {
 						Double coef = adj.getCoefficient();
 						Double abs = adj.getAbsolute();
 						Integer srcId = adj.getSource();
 						
 						if (coef != null) {
-							//Since coef accumulate, we need to grab any existing coef and multiply it.
-							//Otherwise, just add a new coef.
+
+							//if a coef already exists, the new coef is the product of the existing and the new
 							Number existingCoef = coefAdj.getCoef(data.getRowForReachID(r.getId()), data.getSourceColumnForSourceID(srcId));
 							if (existingCoef != null) {
 								coef = coef.doubleValue() * existingCoef.doubleValue();
@@ -246,14 +258,6 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 						}
 					}
 				}
-				
-				
-				
-				for (Adjustment adj: rg.getAdjustments()) {
-					//if (adj.getAbsolute())
-				}
-
-				
 				
 			}
 			
