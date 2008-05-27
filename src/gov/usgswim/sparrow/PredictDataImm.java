@@ -11,7 +11,7 @@ import gov.usgswim.sparrow.domain.Model;
  * This class can be cached.
  */
 @Immutable
-public class PredictDataImm implements PredictData {
+public class PredictDataImm extends AbstractPredictData {
 
 
 	/**

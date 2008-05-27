@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow;
 
+import java.io.Serializable;
+
 import gov.usgswim.ImmutableBuilder;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictDataBuilder;
@@ -19,7 +21,7 @@ import gov.usgswim.sparrow.domain.Model;
  * the ID of the model to run, adjustment information, and the type of prediction
  * to run.
  */
-public interface PredictData extends ImmutableBuilder<PredictDataImm> {
+public interface PredictData extends ImmutableBuilder<PredictDataImm>, Serializable {
 
 	/**
 	 * Returns the soruce metadata, which includes ids, names, units, and other metadata.
@@ -170,6 +172,38 @@ public interface PredictData extends ImmutableBuilder<PredictDataImm> {
 //	* @return
 //	*/
 //	public PredictData2 getImmutable(boolean forceImmutableMembers);
+	
+	
+	/**
+	 * Returns the source column corresponding to the passed source ID.
+	 * 
+	 * @param id The model specific source id (not the db id)
+	 * @return
+	 * @throws Exception If the source ID cannot be found.
+	 */
+	public int getSourceColumnForSourceID(Integer id) throws Exception;
+	
+	/**
+	 * Returns the row index corresponding to the passed reach id.
+	 * 
+	 * This row index applies to all 'per-reach' datatables.
+	 * 
+	 * @param id The model specific reach id (not the db id)
+	 * @return
+	 * @throws Exception If the reach ID cannot be found.
+	 */
+	public int getRowForReachID(Long id) throws Exception;
+	
+	/**
+	 * Returns the row index corresponding to the passed reach id.
+	 * 
+	 * This row index applies to all 'per-reach' datatables.
+	 * 
+	 * @param id The model specific reach id (not the db id)
+	 * @return
+	 * @throws Exception If the reach ID cannot be found.
+	 */
+	public int getRowForReachID(Integer id) throws Exception;
 
 }
 

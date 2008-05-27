@@ -7,6 +7,8 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.adjustment.ColumnCoefAdjustment;
+import gov.usgswim.datatable.adjustment.SparseCoefficientAdjustment;
+import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
 import gov.usgswim.sparrow.PredictData;
 
 import java.io.Serializable;
@@ -187,10 +189,76 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 					throw new Exception("For a global adjustment, a source and coefficient must be specified");
 				}
 				
-				colAdj.setColumnMultiplier(mapSourceId(srcId, data.getSrcMetadata()), coef);
+				colAdj.setColumnMultiplier(data.getSourceColumnForSourceID(srcId), coef);
+				
+			}
+		}
+		
+		//Loop thru ReachGroups to do adjustments
+		//Here we are assuming conflict accumulate
+		if (reachGroups != null && reachGroups.size() > 0) {
+			
+			SparseCoefficientAdjustment coefAdj = new SparseCoefficientAdjustment(adjusted);
+			SparseOverrideAdjustment overAdj = new SparseOverrideAdjustment(coefAdj);
+			
+			
+			for (ReachGroup rg: reachGroups) {
+				
+				//TODO:  [ee] loop through logical sets of reaches...
+				
+				//Loop Through the explicit set of reaches
+				for (Reach r: rg.getReaches()) {
+					
+					//assign the adjustments applied to this group as a whole.
+					//We are allowing absolute value adjustments, though this is likely a user error.
+					for (Adjustment adj: rg.getAdjustments()) {
+						Double coef = adj.getCoefficient();
+						Double abs = adj.getAbsolute();
+						Integer srcId = adj.getSource();
+						
+						if (coef != null) {
+							coefAdj.setValue(coef, data.getRowForReachID(r.getId()), data.getSourceColumnForSourceID(srcId));
+						} else {
+							overAdj.setValue(abs, data.getRowForReachID(r.getId()), data.getSourceColumnForSourceID(srcId));
+						}
+					}
+					
+					//set the override absolute values for this individual reach
+					//TODO:  [ee]  left off work somewhere in here...
+					for (Adjustment adj: r.getAdjustments()) {
+						Double coef = adj.getCoefficient();
+						Double abs = adj.getAbsolute();
+						Integer srcId = adj.getSource();
+						
+						if (coef != null) {
+							//Since coef accumulate, we need to grab any existing coef and multiply it.
+							//Otherwise, just add a new coef.
+							Number existingCoef = coefAdj.getCoef(data.getRowForReachID(r.getId()), data.getSourceColumnForSourceID(srcId));
+							if (existingCoef != null) {
+								coef = coef.doubleValue() * existingCoef.doubleValue();
+							}
+							
+							coefAdj.setValue(coef, data.getRowForReachID(r.getId()), data.getSourceColumnForSourceID(srcId));
+						} else {
+							//Since 'override' supersedes all others, its OK to just rewrite the new
+							//value into the table.
+							overAdj.setValue(abs, data.getRowForReachID(r.getId()), data.getSourceColumnForSourceID(srcId));
+						}
+					}
+				}
+				
+				
+				
+				for (Adjustment adj: rg.getAdjustments()) {
+					//if (adj.getAbsolute())
+				}
+
+				
 				
 			}
 			
+			
+			adjusted = overAdj;	//resulting adjustment
 		}
 		
 		if (adjusted != null) {
@@ -237,41 +305,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent, Serializable,
 		*/
 
 	}
-	
-	/**
-	 * Maps a source id to its column index in the src data.
-	 * 
-	 * If there is no source id map, it is assumed that there are no IDs for the sources (i.e.,
-	 * the prediction is being run from a text file), and ID are auto generated
-	 * such that the first column of the sources is given an id of 1 (not zero).
-	 * 
-	 * See the PredictionDataSet class, which implements the same strategy (and should
-	 * be kept in sync).
-	 * @param id
-	 * @return
-	 * @throws Exception
-	 */
-	public int mapSourceId(Integer id, DataTable srcMetadata) throws Exception {
-		if (srcMetadata != null) {
 
-			int i = srcMetadata.getRowForId(id.longValue());
-
-			if (i > -1) {
-				// Running from database, so has a sourceid table
-				return i;
-			} else  {
-				throw new Exception ("Source for id " + id + " not found");
-			}
-		} else {
-			// Running from text file so assume columns in order
-			//In this case, id '1' is column zero.
-			if (id > 0) {
-				return id.intValue() - 1;
-			} else {
-				throw new Exception("Invalid source id " + id + ", which must be greater then zero.");
-			}
-		}
-	}
 
 	
 	// =================

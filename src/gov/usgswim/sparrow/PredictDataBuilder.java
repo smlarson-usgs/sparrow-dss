@@ -11,7 +11,7 @@ import gov.usgswim.sparrow.domain.Model;
  * This class is not thread safe!  Once created, this class may be cached and
  * used for prediction runs, so do not reassign or change the values it contains!
  */
-public class PredictDataBuilder implements PredictData {
+public class PredictDataBuilder extends AbstractPredictData {
 
 	/**
 	 * Contains the metadata for the model
