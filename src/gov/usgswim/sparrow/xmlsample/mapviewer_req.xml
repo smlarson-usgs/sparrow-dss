@@ -30,7 +30,7 @@
 			<jdbc_query datasource="sparrow" jdbc_srid="8307" spatial_column="geom" asis="false"
 				render_style="V.PERC_FILL_0_100">
                    SELECT CATCH_GEOM AS GEOM,
-                   MODEL_REACH_ID from MODEL_GEOM_VW WHERE SPARROW_MODEL_ID = 1
+                   IDENTIFIER from MODEL_GEOM_VW WHERE SPARROW_MODEL_ID = 1
               </jdbc_query>
 		</theme>
 		<!--  reach version
@@ -38,7 +38,7 @@
 			<jdbc_query datasource="sparrow" jdbc_srid="8307" spatial_column="geom"
 				render_style="V.PERC_LINES_0_100" asis="false">
                    SELECT REACH_GEOM AS GEOM,
-                   MODEL_REACH_ID from MODEL_GEOM_VW WHERE SPARROW_MODEL_ID = 1
+                   IDENTIFIER from MODEL_GEOM_VW WHERE SPARROW_MODEL_ID = 1
                </jdbc_query>
 		</theme>
 		-->
