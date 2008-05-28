@@ -2,6 +2,7 @@ package gov.usgswim.sparrow;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.service.AbstractHttpRequestParser;
+import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.PredictParser;
 import gov.usgswim.sparrow.service.predict.PredictService;
@@ -163,6 +164,25 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 
 			log.debug("Using Dataseries: " + svsRequest.getDataSeries() + " & result mode: " + svsRequest.getPredictType());
 
+		} else if (properties.containsKey(CONTEXT_ID) && properties.get(CONTEXT_ID) != null) {
+			log.debug("Request treated as a context-id request.");
+			
+			Integer contextId = Integer.parseInt( properties.get(CONTEXT_ID).toString() );
+			PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
+			
+			if (context != null) {
+				PredictResult predictResult = SharedApplication.getInstance().getPredictResult(context);
+				PredictData predictData = SharedApplication.getInstance().getPredictData(context.getModelID());
+				nsData = copyToNSDataSet(predictResult, predictData.getSys(), PredictServiceRequest.DataSeries.TOTAL);
+
+				log.debug("MVSparrowDataProvider done for model #" + context.getModelID() + " (" + nsData.size() + " rows) Time: " + (System.currentTimeMillis() - startTime) + "ms");
+
+				return nsData;
+				
+			} else {
+				throw new RuntimeException("No PredictionContext found for ID " + contextId);
+			}
+			
 		} else {
 			log.debug("Request treated as parameter request.");
 
