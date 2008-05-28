@@ -136,7 +136,7 @@ public class Adjustment implements XMLStreamParserComponent {
 	 * @return
 	 */
 	public int getStateHash() {
-		int hash = new HashCodeBuilder(1343837, 1251729).
+		int hash = new HashCodeBuilder(37, 13).
 		append(src).
 		append(coef).
 		append(abs).

@@ -84,7 +84,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 				case START_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
-						id = ParserHelper.parseAttribAsInt(in, XMLStreamParserComponent.ID_ATTR, false);
+						//id = ParserHelper.parseAttribAsInt(in, XMLStreamParserComponent.ID_ATTR, false);
 						conflicts = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "conflicts");				
 					}  else if (ReachGroup.isTargetMatch(localName)) {
 						ReachGroup rg = new ReachGroup();
@@ -147,17 +147,22 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
   
 	public synchronized int hashCode() {
 		if (id == null) {
-			HashCodeBuilder hash = new HashCodeBuilder(324163, 823);
+			HashCodeBuilder hash = new HashCodeBuilder(17, 13);
 			hash.append(modelID);
 			hash.append(conflicts);
-			hash.append(defaultGroup);
 			
+			if (defaultGroup != null) {
+				hash.append(defaultGroup.getStateHash());
+			}
+			
+
 			if (reachGroups != null && reachGroups.size() > 0) {
 				for (ReachGroup rg: reachGroups) {
 					hash.append(rg.getStateHash());
 				}
 				
 			}
+
 			
 			id = hash.toHashCode();
 		} 
