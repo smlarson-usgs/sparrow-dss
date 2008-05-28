@@ -35,7 +35,7 @@
 		<property name="tomcat.context.dir.dev" value="${application.context}.xml"/>
 		
 		<war basedir="${application.webcontent.dir}" destfile="${warfile.path}" 
-			webxml="${application.webcontent.dir}/WEB-INF/web.xml" >
+			webxml="${application.webcontent.dir}/WEB-INF/web.xml">
 			<!-- See http://ant.apache.org/manual/CoreTasks/war.html for documentation-->
 			<!-- <fileset><exclude></exclude></fileset> -->
 			<!--
@@ -45,9 +45,19 @@
 			rather than rely on classes compiled by the IDE, but save
 			this for later in SVN scorched early build
 			<lib dir="${application.webcontent.dir}/WEB-INF/lib"/>
-			<classes dir="${jdev.project.home}/src"/>
 			-->
+			<classes dir="src" excludes="**/test/**"/>
 		</war>
 		<echo>WAR created in ${warfile.path}</echo>
+	</target>
+	
+	<target name="create-jar">
+		<property name="jarfile.name" value="sparrowMV.jar"/>
+		<property name="jarfile.path" location="deploy/${jarfile.name}"/>
+		
+		<echo>Buildings jar from ${application.webcontent.dir}/WEB-INF/classes</echo>
+		
+	  <jar destfile="${jarfile.path}" basedir="${application.webcontent.dir}/WEB-INF/classes" excludes="**/test /test">
+	  </jar>
 	</target>
 </project>
