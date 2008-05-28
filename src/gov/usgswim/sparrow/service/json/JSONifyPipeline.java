@@ -13,6 +13,7 @@ import gov.usgswim.sparrow.service.model.ModelPipeline;
 import gov.usgswim.sparrow.service.predict.PredictPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 
@@ -68,7 +69,24 @@ public class JSONifyPipeline extends AbstractPipeline implements Pipeline {
 		};
 	}
 
-	@Override
+	public void dispatch(PipelineRequest o, OutputStream response) throws Exception {
+		
+		// Configure the JSON formatter
+		JSONFormatter jFormatter = new JSONFormatter();
+		PredictPipeline.configure(jFormatter);
+		ModelPipeline.configure(jFormatter);
+		PredictContextPipeline.configure(jFormatter);
+		
+		PrintWriter out = new PrintWriter(response);
+		XMLInputFactory inFact = XMLInputFactory.newInstance();
+		XMLStreamReader in = inFact.createXMLStreamReader(new StringReader(o.getXMLRequest()));
+		jFormatter.dispatch(in, out);
+		
+		// TODO might have to remove these
+		out.flush();
+		out.close();
+	}
+	
 	public void dispatch(PipelineRequest o, HttpServletResponse response) throws Exception {
 		response.setContentType(JSON.getMimeType());
 		

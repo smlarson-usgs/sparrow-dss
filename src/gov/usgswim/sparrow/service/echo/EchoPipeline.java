@@ -10,6 +10,7 @@ import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 import gov.usgswim.sparrow.service.AbstractPipeline;
 
+import java.io.OutputStream;
 import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,7 +56,13 @@ public class EchoPipeline extends AbstractPipeline implements Pipeline {
 		};
 	}
 
-	@Override
+	public void dispatch(PipelineRequest o, OutputStream response) throws Exception {
+		PrintWriter out = new PrintWriter(response);
+		out.write(o.getXMLRequest());
+		out.flush();
+		out.close();
+	}
+	
 	public void dispatch(PipelineRequest o, HttpServletResponse response) throws Exception {
 		response.setContentType(XML.getMimeType());
 //		response.addHeader( "Content-Disposition","attachment; filename=" + fileName + "." + XML.getFileSuffix() );
