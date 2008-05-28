@@ -19,7 +19,7 @@
 		</parameters>
 		<for_theme name="catch" />
 		<custom_rendering_style name="" />
-		<join spatial_key_column="model_reach_id" />
+		<join spatial_key_column="identifier" />
 	</ns_data_provider>
 	<themes>
 		<!-- 
