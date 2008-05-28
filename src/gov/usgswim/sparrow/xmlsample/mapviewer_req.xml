@@ -11,6 +11,8 @@
 			In cases where the user has no prediction context, use the model-id
 			parameter, which just maps the calibrated state of the model.
 			Do not use both together.
+			
+			Note the name of "model-id" has changed.
 			-->
 			<parameter name="context-id">-1354486922</parameter>
 			<!-- <parameter name="model-id">1</parameter>	-->
