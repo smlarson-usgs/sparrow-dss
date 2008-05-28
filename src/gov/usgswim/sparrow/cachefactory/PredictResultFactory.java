@@ -6,6 +6,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
+import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictComputable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
@@ -84,14 +85,12 @@ public class PredictResultFactory implements CacheEntryFactory {
 	 */
 	public PredictData adjustData(PredictionContext context, PredictData data) throws Exception {
 
-		if (context.getAdjustmentGroups() != null && context.getAdjustmentGroups().getReachGroups().size() > 0) {
+		if (context.getAdjustmentGroups() != null) {
+			
+			DataTable src = context.getAdjustmentGroups().adjust(data);
+			
 			PredictDataBuilder mutable = data.getBuilder();
-
-
-			//This method does not modify the underlying data
-			//mutable.setSrc(
-					//req.getAdjustmentSet().adjust(mutable.getSrc(), mutable.getSrcIds(), mutable.getSys())
-			//);
+			mutable.setSrc(src);
 
 			return mutable.toImmutable();
 		}
