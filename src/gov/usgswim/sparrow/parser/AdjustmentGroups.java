@@ -166,7 +166,9 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	}
 	
 	/**
-	 * Actually does the adjustment, returning sparse view of the underlying data.
+	 * Actually does the adjustment, returning sparse view that wraps the source
+	 * data in the passed PredictData.
+	 * 
 	 * @param source
 	 * @param srcIndex
 	 * @param reachIndex
