@@ -19,7 +19,7 @@
 		</parameters>
 		<for_theme name="catch" />
 		<custom_rendering_style name="" />
-		<join spatial_key_column="identifier" />
+		<join spatial_key_column="IDENTIFIER" />
 	</ns_data_provider>
 	<themes>
 		<!-- 
