@@ -181,12 +181,12 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	 */
 	public DataTable adjust(PredictData data) throws Exception {
 		
-		DataTable adjusted = null;
+		DataTable adjusted = data.getSrc();	//start assuming there are no adjustments
 		
 		//Do model-wide adjustments first.  Any further adjustments will accumulate/override as appropriate
 		if (defaultGroup != null && defaultGroup.getAdjustments().size() > 0) {
 
-			ColumnCoefAdjustment colAdj = new ColumnCoefAdjustment(data.getSrc());
+			ColumnCoefAdjustment colAdj = new ColumnCoefAdjustment(adjusted);
 			adjusted = colAdj;
 			
 			for (Adjustment adj: defaultGroup.getAdjustments()) {
@@ -274,49 +274,8 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 			adjusted = overAdj;	//resulting adjustment
 		}
 		
-		if (adjusted != null) {
-			return adjusted;
-		} else {
-			return data.getSrc();
-		}
-		
-		/*
-		 
-		Code copied from the old Adjustment class....
-		switch (_type) {
-			case GROSS_SRC_ADJUST: {
-				if (source instanceof ColumnCoefAdjustment) {
-					ColumnCoefAdjustment data = (ColumnCoefAdjustment)source;
-//					data.setColumnMultiplier(column, multiplierValue)
-					data.setColumnMultiplier(mapSourceId(_srcId, srcIndex), getValue());
 
-				} else {
-					throw new Exception("Expecting instance of RowColumnCoefAdjustment");
-				}
-				break;
-			}
-			case SPECIFIC_ADJUST: {
-				if (source instanceof DataTableWritable) {
-					DataTableWritable data = (DataTableWritable)source;
-
-					int reachRow = reachIndex.findFirst(0, Integer.valueOf(_reachId));
-
-					if (reachRow != -1) {
-						data.setValue(Double.valueOf(_val), reachRow, mapSourceId(_srcId, srcIndex));
-					} else {
-						throw new Exception("Reach ID #" + _reachId + " not found");
-					}
-				} else {
-					throw new Exception("Expecting instance of SparseOverrideAdjustment");
-				}
-				break;
-			}
-			default:
-				throw new Exception("Unsupported Adjustment type '" + _type);
-		}
-		
-		*/
-
+		return adjusted;
 	}
 
 
