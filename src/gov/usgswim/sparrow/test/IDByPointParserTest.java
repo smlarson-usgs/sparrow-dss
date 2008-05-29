@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.test;
 
 import gov.usgswim.sparrow.deprecated.IDByPointParser;
-import gov.usgswim.sparrow.deprecated.IDByPointRequest;
+import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -26,7 +26,7 @@ public class IDByPointParserTest extends TestCase {
 		
 		IDByPointParser parser = new IDByPointParser();
 		
-		IDByPointRequest req = parser.parse(xsr);
+		IDByPointRequest_old req = parser.parse(xsr);
 
 		assertEquals(5, req.getNumberOfResults());
 		assertEquals(22, req.getModelId().intValue());

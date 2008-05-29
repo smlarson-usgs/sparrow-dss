@@ -13,7 +13,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.commons.lang.StringUtils;
 
 
-public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest> {
+public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest_old> {
 	public IDByPointParser() {
 	}
 
@@ -23,7 +23,7 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 	 * 
 	 * @see gov.usgswim.service.AbstractHttpRequestParser#parse(javax.servlet.http.HttpServletRequest)
 	 */
-	public IDByPointRequest idParse(HttpServletRequest request) throws Exception {
+	public IDByPointRequest_old idParse(HttpServletRequest request) throws Exception {
 		if ("GET".equals(request.getMethod())) {
 		
 			if (request.getParameter(getXmlParam()) != null) {
@@ -42,7 +42,7 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 					point.x = parseParamAsDouble(request, "long");
 					point.y = parseParamAsDouble(request, "lat");
 					
-					IDByPointRequest result = new IDByPointRequest(id, point, numResults);
+					IDByPointRequest_old result = new IDByPointRequest_old(id, point, numResults);
 					result.setXMLRequest(""); // no xml request, RESTlike
 					return result;
 				} else {
@@ -56,8 +56,8 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 		}
 	}
 	
-	public IDByPointRequest parse(HttpServletRequest request) throws Exception {
-		IDByPointRequest result = idParse(request);
+	public IDByPointRequest_old parse(HttpServletRequest request) throws Exception {
+		IDByPointRequest_old result = idParse(request);
 		ResponseFormat respFormat = result.getResponseFormat();
 		
 		String mimeType = request.getParameter("mimetype");
@@ -75,7 +75,7 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 		return result;
 	}
 	
-	public IDByPointRequest parse(XMLStreamReader reader) throws Exception {
+	public IDByPointRequest_old parse(XMLStreamReader reader) throws Exception {
 
 		while (reader.hasNext()) {
 			int eventCode = reader.next();
@@ -107,7 +107,7 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 	 *   in the 'id-by-point' portion of the request), it can be passed.
 	 * @throws Exception
 	 */
-	public IDByPointRequest parseMain(XMLStreamReader reader, Long modelId) throws Exception {
+	public IDByPointRequest_old parseMain(XMLStreamReader reader, Long modelId) throws Exception {
 		String mainElement = reader.getLocalName();	//save to know when we are complete
 		Long id;	//default id may be passed - this is sort of a multi-use parser
 		int numResults;
@@ -141,7 +141,7 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 				{
 					String lName = reader.getLocalName();
 					if (mainElement.equals(lName)) {
-						IDByPointRequest req = new IDByPointRequest(id, point, numResults);
+						IDByPointRequest_old req = new IDByPointRequest_old(id, point, numResults);
 						req.setResponseFormat(respFormat);
 						return req;
 					}

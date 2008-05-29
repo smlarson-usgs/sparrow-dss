@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.service.predict;
 import gov.usgswim.NotThreadSafe;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.PredictRequest;
-import gov.usgswim.sparrow.deprecated.IDByPointRequest;
+import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 
 /**
@@ -24,7 +24,7 @@ public class PredictServiceRequest implements PipelineRequest{
 	private PredictType predictType = gov.usgswim.sparrow.service.predict.PredictServiceRequest.PredictType.VALUES;
 	private PredictRequest predictRequest;
 	private DataSeries dataSeries = gov.usgswim.sparrow.service.predict.PredictServiceRequest.DataSeries.ALL;
-	private IDByPointRequest idByPointRequest;
+	private IDByPointRequest_old idByPointRequest;
 	private String xmlRequest;
 	private int rowLimit;
 	private ResponseFormat responseFormat;
@@ -188,11 +188,11 @@ public class PredictServiceRequest implements PipelineRequest{
 		return predictRequest;
 	}
 	
-	public void setIdByPointRequest(IDByPointRequest idByPointRequest) {
+	public void setIdByPointRequest(IDByPointRequest_old idByPointRequest) {
 		this.idByPointRequest = idByPointRequest;
 	}
 
-	public IDByPointRequest getIdByPointRequest() {
+	public IDByPointRequest_old getIdByPointRequest() {
 		return idByPointRequest;
 	}
 	

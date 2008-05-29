@@ -6,9 +6,9 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.PredictResult;
 import gov.usgswim.sparrow.deprecated.IDByPointComputable;
-import gov.usgswim.sparrow.deprecated.IDByPointRequest;
+import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
 import gov.usgswim.sparrow.domain.ModelImm;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest2;
+import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.sparrow.service.idbypoint.Reach;
 import gov.usgswim.sparrow.service.model.ModelRequest;
 import gov.usgswim.sparrow.service.predict.PredictDatasetComputable;
@@ -45,7 +45,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	private boolean lookupFailed = false;
 	private ComputableCache<PredictRequest, PredictResult> predictResultCache;
 	private ComputableCache<Long, PredictData> predictDatasetCache;	//Long is the Model ID
-	private ComputableCache<IDByPointRequest, DataTable> idByPointCache;
+	private ComputableCache<IDByPointRequest_old, DataTable> idByPointCache;
 	private ComputableCache<ModelRequest, ModelImm> modelCache;
 
 	//an ehcache test cache
@@ -72,7 +72,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		//These are now all depricated in favor of the EHCache versions
 		predictResultCache = new ComputableCache<PredictRequest, PredictResult>(new PredictComputable(), "Predict Result Cache");
 		predictDatasetCache = new ComputableCache<Long, PredictData>(new PredictDatasetComputable(), "Predict Dataset Cache");
-		idByPointCache = new ComputableCache<IDByPointRequest, DataTable>(new IDByPointComputable(), "ID by Point Cache");
+		idByPointCache = new ComputableCache<IDByPointRequest_old, DataTable>(new IDByPointComputable(), "ID by Point Cache");
 		//modelCache = new ComputableCache<ModelRequest, ModelImm>(new ModelComputable(), "Model Cache");
 	}
 
@@ -407,11 +407,11 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	//ReachByPoint Cache
-	public Reach getReachByPointResult(IDByPointRequest2 req) {
+	public Reach getReachByPointResult(IDByPointRequest req) {
 		return getReachByPointResult(req, false);
 	}
 	
-	public Reach getReachByPointResult(IDByPointRequest2 req, boolean quiet) {
+	public Reach getReachByPointResult(IDByPointRequest req, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(IDENTIFY_REACH_BY_POINT);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
 		return (e != null)?((Reach) e.getObjectValue()):null;
@@ -438,7 +438,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		return predictDatasetCache;
 	}
 
-	public ComputableCache<IDByPointRequest, DataTable> getIdByPointCache() {
+	public ComputableCache<IDByPointRequest_old, DataTable> getIdByPointCache() {
 		return idByPointCache;
 	}
 

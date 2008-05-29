@@ -7,7 +7,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
-import gov.usgswim.sparrow.deprecated.IDByPointRequest;
+import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
 import gov.usgswim.sparrow.parser.Content;
 import gov.usgswim.sparrow.service.DataTableSerializer;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -30,12 +30,12 @@ import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 //TODO not complete
 @ThreadSafe
-public class IDByPointService2 implements HttpService<IDByPointRequest2> {
+public class IDByPointService implements HttpService<IDByPointRequest> {
 	// =============
 	// STATIC FIELDS
 	// =============
 	protected static Logger log =
-		Logger.getLogger(IDByPointService2.class); //logging for this class
+		Logger.getLogger(IDByPointService.class); //logging for this class
 
 	protected static String RESPONSE_MIME_TYPE = "application/xml";
 
@@ -53,16 +53,16 @@ public class IDByPointService2 implements HttpService<IDByPointRequest2> {
 	// ===========
 	// CONSTRUCTOR
 	// ===========
-	public IDByPointService2() {}
+	public IDByPointService() {}
 
 	// ================
 	// INSTANCE METHODS
 	// ================
 	public XMLStreamReader getXMLStreamReader(PipelineRequest o, boolean isNeedsFlattening)  throws Exception{
-		return getXMLStreamReader((IDByPointRequest2) o, isNeedsFlattening);
+		return getXMLStreamReader((IDByPointRequest) o, isNeedsFlattening);
 	}
 
-	public XMLStreamReader getXMLStreamReader(IDByPointRequest2 req, boolean isNeedsFlattening) throws Exception {
+	public XMLStreamReader getXMLStreamReader(IDByPointRequest req, boolean isNeedsFlattening) throws Exception {
 		// TODO isNeedsFlattening ignored for now because using custom flattener
 		// TODO extract to method when satisfied.
 		IDByPointResponse response = new IDByPointResponse();
@@ -100,9 +100,9 @@ public class IDByPointService2 implements HttpService<IDByPointRequest2> {
 	 * @throws Exception
 	 * @deprecated
 	 */
-	private BasicXMLStreamReader returnOldResult(IDByPointRequest2 req) throws Exception {
+	private BasicXMLStreamReader returnOldResult(IDByPointRequest req) throws Exception {
 		//	IDByPointRequest oldReq = new IDByPointRequest(req.getModelID(), req.getPoint(), req.getNumberOfResults());
-		IDByPointRequest oldReq = new IDByPointRequest(req.getModelID(), req.getPoint(), 7);
+		IDByPointRequest_old oldReq = new IDByPointRequest_old(req.getModelID(), req.getPoint(), 7);
 
 		// TODO [eric] update this old cache code. Should use IDByPointRequest2 rather than IDByPointRequest
 		DataTable result = SharedApplication.getInstance().getIdByPointCache().compute(oldReq);
@@ -110,7 +110,7 @@ public class IDByPointService2 implements HttpService<IDByPointRequest2> {
 		return reader;
 	}
 	
-	private void retrievePredicteds(IDByPointRequest2 req, IDByPointResponse response) throws IOException {
+	private void retrievePredicteds(IDByPointRequest req, IDByPointResponse response) throws IOException {
 		//TODO move to DataLoader when done debugging
 		// TODO replace with dynamic working code
 		// only go to cache using context-id as key
@@ -118,7 +118,7 @@ public class IDByPointService2 implements HttpService<IDByPointRequest2> {
 		response.predictionsXML = props.getText("predictedXMLResponse");
 	}
 
-	private void retrieveAttributes(IDByPointRequest2 req, IDByPointResponse response) throws IOException, SQLException, NamingException {
+	private void retrieveAttributes(IDByPointRequest req, IDByPointResponse response) throws IOException, SQLException, NamingException {
 		// TODO move to DataLoader when done debugging
 		// TODO replace with dynamic working code
 		
@@ -198,7 +198,7 @@ public class IDByPointService2 implements HttpService<IDByPointRequest2> {
 		}
 	}
 
-	private void retrieveAdjustments(IDByPointRequest2 req, IDByPointResponse response) throws IOException {
+	private void retrieveAdjustments(IDByPointRequest req, IDByPointResponse response) throws IOException {
 		//	TODO move to DataLoader when done debugging
 		// TODO replace with dynamic working code
 		
@@ -232,7 +232,7 @@ public class IDByPointService2 implements HttpService<IDByPointRequest2> {
 		response.adjustmentsXML = props.getText("adjustmentsXMLResponse");
 	}
 
-	private void retrieveReachIdentification(IDByPointRequest2 req, IDByPointResponse response) throws SQLException, NamingException {
+	private void retrieveReachIdentification(IDByPointRequest req, IDByPointResponse response) throws SQLException, NamingException {
 		// TODO move to DataLoader when done debugging
 		Double point = req.getPoint();
 		try {

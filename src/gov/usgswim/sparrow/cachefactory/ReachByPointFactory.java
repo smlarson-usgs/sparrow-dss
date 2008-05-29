@@ -7,7 +7,7 @@ import java.sql.Statement;
 import org.apache.log4j.Logger;
 
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest2;
+import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.sparrow.service.idbypoint.Reach;
 
 
@@ -32,7 +32,7 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 	
 	public Object createEntry(Object request) throws Exception {
 		
-		IDByPointRequest2 req = (IDByPointRequest2) request;
+		IDByPointRequest req = (IDByPointRequest) request;
 		
 		Long modelId = req.getModelID();
 		Double lng = req.getPoint().x;

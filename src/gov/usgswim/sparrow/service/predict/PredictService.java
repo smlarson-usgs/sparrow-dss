@@ -15,7 +15,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.PredictResult;
-import gov.usgswim.sparrow.deprecated.IDByPointRequest;
+import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.task.ComputableCache;
@@ -187,7 +187,7 @@ public class PredictService implements HttpService<PredictServiceRequest> {
 		if (req.getIdByPointRequest() != null) {
 
 			//The IDByPointRequest returns data w/ reach Ids as IDs in the DataTable
-			ComputableCache<IDByPointRequest, DataTable> idByPcache = SharedApplication.getInstance().getIdByPointCache();
+			ComputableCache<IDByPointRequest_old, DataTable> idByPcache = SharedApplication.getInstance().getIdByPointCache();
 			Long[] rowIds = DataTableUtils.getRowIds(idByPcache.compute(req.getIdByPointRequest()));
 
 			double[][] newData = new double[rowIds.length][];

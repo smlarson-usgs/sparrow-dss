@@ -17,7 +17,7 @@ import java.awt.geom.Point2D.Double;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class IDByPointRequest2 implements XMLStreamParserComponent, PipelineRequest {
+public class IDByPointRequest implements XMLStreamParserComponent, PipelineRequest {
 
 	private static final String ID_BY_POINT_FILENAME = "idByPoint";
 	public static final String MAIN_ELEMENT_NAME = "sparrow-id-request";
@@ -51,10 +51,10 @@ public class IDByPointRequest2 implements XMLStreamParserComponent, PipelineRequ
 	// ============
 	// CONSTRUCTORS
 	// ============
-	public IDByPointRequest2() {
+	public IDByPointRequest() {
 		
 	}
-	public IDByPointRequest2(Long modelID, Double point, int numResults) {
+	public IDByPointRequest(Long modelID, Double point, int numResults) {
 		this.predictionContext = new PredictionContext(modelID, null, null, null, null);
 		this.point = point;
 		this.numberOfResults = numResults;
@@ -66,7 +66,7 @@ public class IDByPointRequest2 implements XMLStreamParserComponent, PipelineRequ
 	// ================
 	// INSTANCE METHODS
 	// ================
-	public IDByPointRequest2 parse(XMLStreamReader in)
+	public IDByPointRequest parse(XMLStreamReader in)
 			throws XMLStreamException, XMLParseValidationException {
 		
 		String localName = in.getLocalName();

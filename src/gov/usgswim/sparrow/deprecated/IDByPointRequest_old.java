@@ -16,7 +16,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * 10 in areas w/ few reaches may return fewer results.
  */
 @Immutable
-public class IDByPointRequest implements PipelineRequest{
+public class IDByPointRequest_old implements PipelineRequest{
 	private final Point.Double _point;
 	private final int _numberOfResults;
 	private final Long _modelId;
@@ -34,13 +34,13 @@ public class IDByPointRequest implements PipelineRequest{
 	 * @param point
 	 * @param numberOfResults
 	 */
-	public IDByPointRequest(Long modelId, Point.Double point, int numberOfResults) {
+	public IDByPointRequest_old(Long modelId, Point.Double point, int numberOfResults) {
 		_modelId = modelId;
 		_point = point;
 		_numberOfResults = (numberOfResults < 1)?1:numberOfResults;
 	}
 
-	public IDByPointRequest(Integer modelId, Point.Double point, int numberOfResults) {
+	public IDByPointRequest_old(Integer modelId, Point.Double point, int numberOfResults) {
 		_modelId = modelId.longValue();
 		_point = point;
 		_numberOfResults = (numberOfResults < 1)?1:numberOfResults;
@@ -59,7 +59,7 @@ public class IDByPointRequest implements PipelineRequest{
 	}
 	
 	public boolean equals(Object object) {
-		if (object instanceof IDByPointRequest) {
+		if (object instanceof IDByPointRequest_old) {
 			return this.hashCode() == object.hashCode();
 		} else {
 			return false;

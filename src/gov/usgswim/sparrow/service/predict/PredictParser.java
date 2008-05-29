@@ -9,7 +9,7 @@ import gov.usgswim.sparrow.AdjustmentSet;
 import gov.usgswim.sparrow.AdjustmentSetBuilder;
 import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.deprecated.IDByPointParser;
-import gov.usgswim.sparrow.deprecated.IDByPointRequest;
+import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
 import gov.usgswim.sparrow.parser.ParserHelper;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 
@@ -205,7 +205,7 @@ public class PredictParser extends AbstractHttpRequestParser<PredictServiceReque
 							req.setResponseType(filter);
 							
 							IDByPointParser idByPointParser = new IDByPointParser();
-							IDByPointRequest idReq = idByPointParser.parseMain(reader, req.getPredictRequest().getModelId());
+							IDByPointRequest_old idReq = idByPointParser.parseMain(reader, req.getPredictRequest().getModelId());
 							
 							req.setIdByPointRequest(idReq);
 							

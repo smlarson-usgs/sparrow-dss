@@ -7,11 +7,11 @@ import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgswim.sparrow.service.AbstractPipeline;
 import gov.usgswim.sparrow.service.predict.PredictPipeline;
 
-public class IDByPointPipeline2 extends AbstractPipeline<IDByPointRequest2> {
+public class IDByPointPipeline extends AbstractPipeline<IDByPointRequest> {
 
 
-	public IDByPointPipeline2(){
-		super(new IDByPointService2(), new IDByPointParser2());
+	public IDByPointPipeline(){
+		super(new IDByPointService(), new IDByPointParser());
 	}
 
 	protected IFormatter getCustomFlatteningFormatter(OutputType outputType) {

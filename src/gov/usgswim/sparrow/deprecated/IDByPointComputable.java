@@ -30,14 +30,14 @@ import org.apache.log4j.Logger;
  * By implementing Computable, this task can be put in a ComputableCache, which
  * executes the task if the result does not already exist.
  */
-public class IDByPointComputable implements Computable<IDByPointRequest, DataTable> {
+public class IDByPointComputable implements Computable<IDByPointRequest_old, DataTable> {
 	protected static Logger log =
 		Logger.getLogger(PredictDatasetComputable.class); //logging for this class
 
 	public IDByPointComputable() {
 	}
 
-	public DataTable compute(IDByPointRequest req) throws Exception {
+	public DataTable compute(IDByPointRequest_old req) throws Exception {
 		Connection conn = null;
 
 		DataTableWritable data = null;
@@ -89,7 +89,7 @@ public class IDByPointComputable implements Computable<IDByPointRequest, DataTab
 
 	}
 
-	public String buildQuery(IDByPointRequest req) {
+	public String buildQuery(IDByPointRequest_old req) {
 		double x = req.getPoint().x;
 		double y = req.getPoint().y;
 // use identifier model_reach.identifier

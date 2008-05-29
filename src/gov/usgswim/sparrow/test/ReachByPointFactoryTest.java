@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.test;
 
 import gov.usgswim.sparrow.cachefactory.ReachByPointFactory;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest2;
+import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.sparrow.service.idbypoint.Reach;
 
 import java.awt.geom.Point2D.Double;
@@ -12,7 +12,7 @@ public class ReachByPointFactoryTest extends TestCase {
 
 	public void testCreateEntry() throws Exception {
 		ReachByPointFactory factory = new ReachByPointFactory();
-		IDByPointRequest2 req = new IDByPointRequest2(22L, new Double(-90, 45), 1);
+		IDByPointRequest req = new IDByPointRequest(22L, new Double(-90, 45), 1);
 
 		Reach reach = (Reach) factory.createEntry(req);
 		

@@ -7,7 +7,7 @@ import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgswim.sparrow.service.AbstractPipeline;
 import gov.usgswim.sparrow.service.predict.PredictPipeline;
 
-public class IDByPointPipeline extends AbstractPipeline<IDByPointRequest> {
+public class IDByPointPipeline extends AbstractPipeline<IDByPointRequest_old> {
 
 
 	public IDByPointPipeline(){
