@@ -18,16 +18,17 @@
 				<col name="Source Name" type="String" />
 				<col name="Units" type="String" />
 				<col name="Original Value" type="Number" />
-				<col name="Adjusted Value" type="Number" />
+				<col name="Absolute Value" type="Number" />
 				<col name="Multiplier" type="Number" />
+				<col name="Adjusted Value" type="Number" />
 			</columns>
 		</metadata>
 		<data>
-			<r id="1"><c>Point Sources</c><c>N in Tons</c><c>354564</c><c></c><c></c></r>
-			<r id="2"><c>Atmospheric Deposition</c><c>N in Tons / SQ. Mile</c><c>5135484</c><c></c><c></c></r>
-			<r id="3"><c>Fertilizer</c><c>N in Tons / Acre</c><c>38138991</c><c></c><c></c></r>
-			<r id="4"><c>Waste</c><c>Tons of Garbage</c><c>0</c><c></c><c></c></r>
-			<r id="5"><c>Non-Agricultural</c><c>Total Population</c><c>9534</c><c></c><c></c></r>
+			<r id="1"><c>Point Sources</c><c>N in Tons</c><c>354564</c><c></c><c></c><c>354564</c></r>
+			<r id="2"><c>Atmospheric Deposition</c><c>N in Tons / SQ. Mile</c><c>5135484</c><c></c><c></c><c>5135484</c></r>
+			<r id="3"><c>Fertilizer</c><c>N in Tons / Acre</c><c>38138991</c><c></c><c></c><c>38138991</c></r>
+			<r id="4"><c>Waste</c><c>Tons of Garbage</c><c>0</c><c></c><c></c><c>0</c></r>
+			<r id="5"><c>Non-Agricultural</c><c>Total Population</c><c>9534</c><c></c><c></c><c>9534</c></r>
 		</data>
 	</adjustments>
 
