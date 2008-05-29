@@ -34,7 +34,9 @@ public class _Test {
 		
 		//parse tests
 		suite.addTest(AllParseTests.suite()); // Note: this is the way to add a suite.
-	  
+		suite.addTest(_IntegrationTests.suite()); // Note: this is the way to add a suite.
+		suite.addTest(_OfflineTest.suite()); // Note: this is the way to add a suite.
+		
 		return suite;
 	}
 
