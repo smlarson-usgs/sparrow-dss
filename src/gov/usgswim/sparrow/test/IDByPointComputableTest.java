@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.test;
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointComputable;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
+import gov.usgswim.sparrow.deprecated.IDByPointComputable;
+import gov.usgswim.sparrow.deprecated.IDByPointRequest;
 import gov.usgswim.sparrow.util.SparrowUtil;
 
 import java.awt.Point;

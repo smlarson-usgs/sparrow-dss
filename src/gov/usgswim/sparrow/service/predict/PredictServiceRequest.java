@@ -3,8 +3,8 @@ package gov.usgswim.sparrow.service.predict;
 import gov.usgswim.NotThreadSafe;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.PredictRequest;
+import gov.usgswim.sparrow.deprecated.IDByPointRequest;
 import gov.usgswim.sparrow.parser.ResponseFormat;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 
 /**
  * Holds the entire state of a prediction service request.

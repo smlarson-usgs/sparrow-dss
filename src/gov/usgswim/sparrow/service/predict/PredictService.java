@@ -15,9 +15,9 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.PredictResult;
+import gov.usgswim.sparrow.deprecated.IDByPointRequest;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.task.ComputableCache;
 
 import javax.xml.stream.XMLOutputFactory;

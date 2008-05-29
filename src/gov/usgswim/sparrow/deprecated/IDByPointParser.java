@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.service.idbypoint;
+package gov.usgswim.sparrow.deprecated;
 
 import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.service.pipeline.PipelineRequest;

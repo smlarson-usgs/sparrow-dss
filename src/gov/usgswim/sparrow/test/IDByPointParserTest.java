@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.test;
 
-import gov.usgswim.sparrow.service.idbypoint.IDByPointParser;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
+import gov.usgswim.sparrow.deprecated.IDByPointParser;
+import gov.usgswim.sparrow.deprecated.IDByPointRequest;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;

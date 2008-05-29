@@ -7,7 +7,7 @@ import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.DataTableUtils;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
+import gov.usgswim.sparrow.deprecated.IDByPointRequest;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest2;
 
 import javax.xml.stream.XMLStreamException;

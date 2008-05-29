@@ -8,10 +8,10 @@ import gov.usgswim.sparrow.Adjustment;
 import gov.usgswim.sparrow.AdjustmentSet;
 import gov.usgswim.sparrow.AdjustmentSetBuilder;
 import gov.usgswim.sparrow.PredictRequest;
+import gov.usgswim.sparrow.deprecated.IDByPointParser;
+import gov.usgswim.sparrow.deprecated.IDByPointRequest;
 import gov.usgswim.sparrow.parser.ParserHelper;
 import gov.usgswim.sparrow.parser.ResponseFormat;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointParser;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.stream.XMLStreamException;

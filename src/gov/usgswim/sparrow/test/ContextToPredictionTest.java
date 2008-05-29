@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.test;
 
+import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictResult;
@@ -56,9 +57,33 @@ public class ContextToPredictionTest extends TestCase {
 		assertNotNull(predictData);
 		assertNotNull(predictResult);
 		
+		//
+		//Test some of the adjusted values - here is the adjustment that has been made:
+		//
+		//		<reach-group enabled="true" name="Wisconsin">
+		//		<adjustment src="2" coef=".75"/>
+		//		<!-- Note:  these are the first two reaches in model 1 -->
+		//		<reach id="3074">
+		//			<adjustment src="2" coef=".9"/>
+		//		</reach>
+		//		<reach id="3077">
+		//			<adjustment src="2" abs="91344"/>
+		//		</reach>
+		//	</reach-group>
+		DataTable orgSrc = predictData.getSrc();
+		DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(contextReq.getPredictionContext().getAdjustmentGroups());
 		
-		//Test some of the adjusted values
+		int colForSrc2 = predictData.getSourceColumnForSourceID(2);
 		
+		assertEquals(
+				new Double(orgSrc.getDouble(0, colForSrc2).doubleValue() * .75d * .9d),
+				adjSrc.getDouble(0, colForSrc2),
+				.0000001d);
+		
+		assertEquals(
+				new Double(91344d),
+				adjSrc.getDouble(1, colForSrc2),
+				.0000001d);
 	}
 	
 	public void testHashCode() throws Exception {

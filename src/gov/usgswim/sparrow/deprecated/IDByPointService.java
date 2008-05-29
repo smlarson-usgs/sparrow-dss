@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.service.idbypoint;
+package gov.usgswim.sparrow.deprecated;
 
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.ThreadSafe;

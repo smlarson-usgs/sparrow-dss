@@ -7,6 +7,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.deprecated.IDByPointRequest;
 import gov.usgswim.sparrow.parser.Content;
 import gov.usgswim.sparrow.service.DataTableSerializer;
 import gov.usgswim.sparrow.service.SharedApplication;
