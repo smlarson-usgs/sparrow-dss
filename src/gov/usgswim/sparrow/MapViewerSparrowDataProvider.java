@@ -96,6 +96,12 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 	public static final String RESULT_MODE_DEC_PERC_CHG = "dec_perc_chg";
 	
 	public static final String CONTEXT_ID = "context-id";
+	
+	/**
+	 * The model id.  This is an alternate to CONTEXT_ID when a context-id is not
+	 * available.
+	 */
+	public static final String MODEL_ID = "model-id";
 
 	public MapViewerSparrowDataProvider() {
 	}
@@ -182,6 +188,22 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 			} else {
 				throw new RuntimeException("No PredictionContext found for ID " + contextId);
 			}
+			
+		} else if (properties.containsKey(MODEL_ID) && properties.get(MODEL_ID) != null) {
+			
+			Long modelId = Long.parseLong( properties.get(MODEL_ID).toString() );
+			PredictionContext context = new PredictionContext(modelId, null, null, null, null);
+			
+			log.debug("MVDP model-id request (map calibrated state).  PC hash = " + context.hashCode());
+
+			PredictResult predictResult = SharedApplication.getInstance().getPredictResult(context);
+			PredictData predictData = SharedApplication.getInstance().getPredictData(context.getModelID());
+			nsData = copyToNSDataSet(predictResult, predictData.getSys(), PredictServiceRequest.DataSeries.TOTAL);
+
+			log.debug("MVSparrowDataProvider done for model #" + context.getModelID() + " (" + nsData.size() + " rows) Time: " + (System.currentTimeMillis() - startTime) + "ms");
+
+			return nsData;
+			
 			
 		} else {
 			log.debug("Request treated as parameter request.");
