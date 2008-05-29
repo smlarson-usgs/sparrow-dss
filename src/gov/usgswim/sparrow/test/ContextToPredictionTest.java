@@ -20,6 +20,10 @@ public class ContextToPredictionTest extends TestCase {
 
 	LifecycleListener lifecycle = new LifecycleListener();
 	
+	//Unchanging context-id for the predictionContext described in the xml file
+	//loaded in buildRequest().
+	public static final int CONTEXT_ID = 1612937363;
+	
 	protected void setUp() throws Exception {
 		super.setUp();
 		lifecycle.contextInitialized(null);
@@ -33,7 +37,7 @@ public class ContextToPredictionTest extends TestCase {
 	
 	public void testBasicPredictionValues() throws Exception {
 
-		PredictContextRequest contextReq = buildRequest();
+		PredictContextRequest contextReq = buildRequest();	//Build a context from a canned file
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PredictContextPipeline pipe = new PredictContextPipeline();
@@ -45,12 +49,23 @@ public class ContextToPredictionTest extends TestCase {
 		System.out.println("PredictContextID: " + contextReq.getPredictionContext().hashCode());
 		System.out.println("***");
 		
-		assertTrue(out.toString().contains(new Integer(contextReq.getPredictionContext().hashCode()).toString() ));
-		assertTrue(out.toString().contains("1612937363"));
+		//Confirm that the response xml doc contains the correct context-id,
+		//which is and must be repeatable, so as long as the request doesn't change, this number is fixed.
+		assertTrue(out.toString().contains( Integer.toString(CONTEXT_ID) ));
 		
-		//Now reproduce the steps taken by running a prediction...
-		PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(1612937363);
+		//
+		//The PredictionContext is now in the cache and can be accessed by its id.
+		//Now we request a prediction from this context, using the ID...
+		//
+		
+		
+		//Get the prediction context from the cache
+		PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(CONTEXT_ID);
+		
+		//Get the prediction result from cache (this forces it to be calculated, see PredictResultFactory)
 		PredictResult predictResult = SharedApplication.getInstance().getPredictResult(contextFromCache);
+		
+		//For comparison, get the prediction data (original model data) from the cache (cached by PredictResultFactory)
 		PredictData predictData = SharedApplication.getInstance().getPredictData(contextFromCache.getModelID());
 		
 		assertEquals(new Long(1L), contextFromCache.getModelID());
@@ -58,28 +73,38 @@ public class ContextToPredictionTest extends TestCase {
 		assertNotNull(predictResult);
 		
 		//
-		//Test some of the adjusted values - here is the adjustment that has been made:
+		// Now test some of the adjusted values.  Below are the adjustments that
+		// were actually made.  Other types of adjustments are in the xml file,
+		// but these are the only ones that are implemented:
 		//
-		//		<reach-group enabled="true" name="Wisconsin">
-		//		<adjustment src="2" coef=".75"/>
-		//		<!-- Note:  these are the first two reaches in model 1 -->
-		//		<reach id="3074">
+		// <reach-group enabled="true" name="Wisconsin">
+		//		<adjustment src="2" coef=".75"/>  <--- Applies to all (both) reaches in this group
+		//		
+		//		<reach id="3074">  <------------------ This is the 1st reach in the dataset (reach 0)
 		//			<adjustment src="2" coef=".9"/>
 		//		</reach>
-		//		<reach id="3077">
+		//		<reach id="3077">	<------------------- This is the 2nd reach in the dataset (reach 1)
 		//			<adjustment src="2" abs="91344"/>
 		//		</reach>
 		//	</reach-group>
+		
+		//Get the Original, unadjusted source data
 		DataTable orgSrc = predictData.getSrc();
+		
+		//Get the user adjusted source data, which is also cached.  The adjusted values are cached w/in
+		//PredictResultFactory by another cache call, which is handled by AdjustedSourceFactory
 		DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(contextReq.getPredictionContext().getAdjustmentGroups());
 		
+		//Determine the column for source '2'
 		int colForSrc2 = predictData.getSourceColumnForSourceID(2);
 		
+		//The first reach has a cumulative adjustment of the group coef and the reach coef.
 		assertEquals(
 				new Double(orgSrc.getDouble(0, colForSrc2).doubleValue() * .75d * .9d),
 				adjSrc.getDouble(0, colForSrc2),
 				.0000001d);
 		
+		//The 2nd reach has an absolute value adjust, so the group coef is ignored.
 		assertEquals(
 				new Double(91344d),
 				adjSrc.getDouble(1, colForSrc2),
