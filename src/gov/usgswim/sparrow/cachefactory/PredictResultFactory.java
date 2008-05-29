@@ -45,15 +45,21 @@ import gov.usgswim.task.ComputableCache;
  */
 public class PredictResultFactory implements CacheEntryFactory {
 	protected static Logger log =
-		Logger.getLogger(PredictComputable.class); //logging for this class
+		Logger.getLogger(PredictResultFactory.class); //logging for this class
 	
 	public Object createEntry(Object predictRequest) throws Exception {
 		PredictionContext context = (PredictionContext)predictRequest;
 		
-		//return DataLoader.loadMinimalPredictDataSet(SharedApplication.getInstance().getConnection(), id.intValue()).toImmutable();
-		
 		PredictData data = SharedApplication.getInstance().getPredictData(context.getModelID());
-		PredictData adjData = adjustData(context, data);
+		PredictData adjData = data;	//assume no adjustments
+		
+		if (context.getAdjustmentGroups() != null) {
+			DataTable src = SharedApplication.getInstance().getAdjustedSource(context.getAdjustmentGroups());
+			
+			PredictDataBuilder mutable = data.getBuilder();
+			mutable.setSrc(src);
+			adjData = mutable.toImmutable();
+		}
 
 		long startTime = System.currentTimeMillis();			
 
@@ -65,37 +71,6 @@ public class PredictResultFactory implements CacheEntryFactory {
 				adjData.getSrc().getRowCount() + " reaches");
 
 		return result.toImmutable();
-	}
-
-	/**
-	 * Adjusts the passed data based on the adjustments in the requests.
-	 *
-	 * It is assumed that the passed data is immutable, in which case a mutable
-	 * builder is created, adjusted, copied as immutable, and returned.
-	 * 
-	 * If the passed data is mutable (an instance of PredictionDataBuilder,
-	 * possibly for testing purposes), it will be adjusted by setting a new source,
-	 * copied as immutable, and returned.
-	 * 
-	 * If there are no adjustments, the passed dataset is returned.
-	 *
-	 * @param req
-	 * @param data
-	 * @return
-	 */
-	public PredictData adjustData(PredictionContext context, PredictData data) throws Exception {
-
-		if (context.getAdjustmentGroups() != null) {
-			
-			DataTable src = context.getAdjustmentGroups().adjust(data);
-			
-			PredictDataBuilder mutable = data.getBuilder();
-			mutable.setSrc(src);
-
-			return mutable.toImmutable();
-		}
-
-		return data;
 	}
 
 	/**

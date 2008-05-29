@@ -284,6 +284,12 @@
 		timeToLiveSeconds="14400" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
 		
+	<cache name="AdjustedSource" maxElementsInMemory="6"
+		maxElementsOnDisk="40" eternal="false" overflowToDisk="false"
+		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
+		timeToLiveSeconds="14400" diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+	
 	<cache name="PredictResult" maxElementsInMemory="2"
 		maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
 		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
@@ -295,5 +301,7 @@
 		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
 		timeToLiveSeconds="14400" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+	
+
 
 </ehcache>

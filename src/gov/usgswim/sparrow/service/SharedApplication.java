@@ -61,6 +61,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	
 	//ehcache self-populated cache names
 	public static final String PREDICT_DATA_CACHE = "PredictData";
+	public static final String ADJUSTED_SOURCE_CACHE = "AdjustedSource";
 	public static final String PREDICT_RESULT_CACHE = "PredictResult";
 	public static final String IDENTIFY_REACH_BY_POINT = "IdentifyReachByPoint";
 
@@ -414,6 +415,17 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		Ehcache c = CacheManager.getInstance().getEhcache(IDENTIFY_REACH_BY_POINT);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
 		return (e != null)?((Reach) e.getObjectValue()):null;
+	}
+	
+	//Adjusted Source Cache
+	public DataTable getAdjustedSource(AdjustmentGroups req) {
+		return getAdjustedSource(req, false);
+	}
+	
+	public DataTable getAdjustedSource(AdjustmentGroups req, boolean quiet) {
+		Ehcache c = CacheManager.getInstance().getEhcache(ADJUSTED_SOURCE_CACHE);
+		Element e  = (quiet)?c.getQuiet(req):c.get(req);
+		return (e != null)?((DataTable) e.getObjectValue()):null;
 	}
 	
 	
