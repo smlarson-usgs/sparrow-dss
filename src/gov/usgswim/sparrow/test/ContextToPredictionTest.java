@@ -1,42 +1,19 @@
 package gov.usgswim.sparrow.test;
 
-import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.adjustment.ComparePercentageView;
 import gov.usgswim.sparrow.LifecycleListener;
+import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.PredictResult;
 import gov.usgswim.sparrow.parser.PredictionContext;
-import gov.usgswim.sparrow.service.predict.PredictParser;
-import gov.usgswim.sparrow.service.predict.PredictService;
-import gov.usgswim.sparrow.service.predict.PredictServiceRequest;
+import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
-import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import javax.print.DocFlavor.URL;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
-import javax.xml.transform.Source;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-
 import junit.framework.TestCase;
-
-import org.codehaus.stax2.XMLInputFactory2;
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 public class ContextToPredictionTest extends TestCase {
 
@@ -61,15 +38,27 @@ public class ContextToPredictionTest extends TestCase {
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		pipe.dispatch(contextReq, out);
 		
-		/*
+
 		System.out.println("***");
 		System.out.println("Response: " + out.toString());
 		System.out.println("PredictContextID: " + contextReq.getPredictionContext().hashCode());
 		System.out.println("***");
-		*/
 		
 		assertTrue(out.toString().contains(new Integer(contextReq.getPredictionContext().hashCode()).toString() ));
-		assertTrue(out.toString().contains("753450665"));
+		assertTrue(out.toString().contains("1612937363"));
+		
+		//Now reproduce the steps taken by running a prediction...
+		PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(1612937363);
+		PredictResult predictResult = SharedApplication.getInstance().getPredictResult(contextFromCache);
+		PredictData predictData = SharedApplication.getInstance().getPredictData(contextFromCache.getModelID());
+		
+		assertEquals(new Long(1L), contextFromCache.getModelID());
+		assertNotNull(predictData);
+		assertNotNull(predictResult);
+		
+		
+		//Test some of the adjusted values
+		
 	}
 	
 	public void testHashCode() throws Exception {
