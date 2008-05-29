@@ -123,8 +123,9 @@ public class Analysis implements XMLStreamParserComponent {
 			int hash = new HashCodeBuilder(137, 1729).
 			append(groupBy).
 			append(limitTo).
-			append(select)
-			.toHashCode();
+			append(select).
+			toHashCode();
+
 			id = hash;
 		}
 		return id;
@@ -148,6 +149,10 @@ public class Analysis implements XMLStreamParserComponent {
 	
 	public String getGroupBy(){
 		return groupBy;
+	}
+	
+	public Select getSelect(){
+		return select;
 	}
 
 	public Integer getId() {

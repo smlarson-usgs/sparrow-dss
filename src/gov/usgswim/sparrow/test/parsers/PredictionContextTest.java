@@ -2,7 +2,12 @@ package gov.usgswim.sparrow.test.parsers;
 
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
+import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 
 import javax.xml.stream.XMLInputFactory;
@@ -27,8 +32,20 @@ public class PredictionContextTest extends TestCase {
 
 		PredictionContext pCon1 = buildContext();
 		PredictionContext pCon2 = buildContext();
+		PredictionContext pCon3 = pCon1.clone();
 		
 		assertEquals(pCon1.hashCode(), pCon2.hashCode());
+		assertEquals(pCon1.hashCode(), pCon3.hashCode());
+		
+		
+		///////
+		pCon1 = getTestRequest2().getPredictionContext();
+		pCon2 = getTestRequest2().getPredictionContext();
+		pCon3 = pCon1.clone();
+		
+		assertEquals(pCon1.hashCode(), pCon2.hashCode());
+		assertEquals(pCon1.hashCode(), pCon3.hashCode());
+		
 	}
 	
 	
@@ -44,6 +61,8 @@ public class PredictionContextTest extends TestCase {
 		
 		return pCon;
 	}
+	
+
 	
 	public String getTestRequest() {
 		String testRequest = "<prediction-context "
@@ -127,5 +146,34 @@ public class PredictionContextTest extends TestCase {
 			+ "	</area-of-interest>"
 			+ "</prediction-context>";
 		return testRequest;
+	}
+	
+	public PredictContextRequest getTestRequest2() throws Exception {
+		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-context-1.xml");
+		String xml = readToString(is);
+		
+		PredictContextPipeline pipe = new PredictContextPipeline();
+		return pipe.parse(xml);
+	}
+	
+	public String readToString(InputStream is) {
+		InputStreamReader isr = new InputStreamReader(is);
+		BufferedReader br = new BufferedReader(isr);
+
+		StringBuffer sb = new StringBuffer();
+		try {
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				sb.append(line + "\n");
+			}
+		} catch (Exception ex) {
+			ex.getMessage();
+		} finally {
+			try {
+				is.close();
+			} catch (Exception ex) {
+			}
+		}
+		return sb.toString();
 	}
 }

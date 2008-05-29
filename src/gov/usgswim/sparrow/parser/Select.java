@@ -102,18 +102,24 @@ public class Select implements XMLStreamParserComponent {
 
 	@Override
 	public int hashCode() {
-		int hash = new HashCodeBuilder(137, 1729).
-		append(dataSeries).
-		append(source).
-		append(dataSeriesPer).
-		append(aggFunctionPer).
-		append(aggFunction).
-		append(partition).
-		append(analyticFunction).
-		append(type).
-		append(nominalComparison).
-		toHashCode();
-		return hash;
+		HashCodeBuilder hash = new HashCodeBuilder(137, 1729);
+		
+		//Note: The hashcode of an enum is not repeatable
+		if (dataSeries != null) {
+			hash.append(dataSeries.ordinal());
+		}
+		
+		hash.append(source);
+		hash.append(dataSeriesPer);
+		hash.append(aggFunctionPer);
+		hash.append(aggFunction);
+		hash.append(partition);
+		hash.append(analyticFunction);
+		hash.append(type);
+		hash.append(nominalComparison);
+		
+		return hash.toHashCode();
+
 	}
 	
 	// =================

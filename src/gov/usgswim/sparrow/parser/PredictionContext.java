@@ -178,6 +178,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	
 	public synchronized int hashCode() {
 		if (id == null) {
+			
 			int hash = new HashCodeBuilder(13, 16661).
 			append(modelID).
 			append(adjustmentGroupsID).
@@ -198,6 +199,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	 * @see java.lang.Object#clone()
 	 */
 	public PredictionContext clone() throws CloneNotSupportedException {
+		
 		PredictionContext myClone = new PredictionContext();
 		myClone.modelID = modelID;
 		myClone.adjustmentGroupsID = adjustmentGroupsID;
