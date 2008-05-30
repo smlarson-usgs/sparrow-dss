@@ -97,17 +97,19 @@ public class ContextToPredictionTest extends TestCase {
 		
 		//Determine the column for source '2'
 		int colForSrc2 = predictData.getSourceColumnForSourceID(2);
+		int rowForReach3074 = predictData.getRowForReachID(3074);
+		int rowForReach3077 = predictData.getRowForReachID(3077);
 		
 		//The first reach has a cumulative adjustment of the group coef and the reach coef.
 		assertEquals(
-				new Double(orgSrc.getDouble(0, colForSrc2).doubleValue() * .75d * .9d),
+				new Double(orgSrc.getDouble(rowForReach3074, colForSrc2).doubleValue() * .75d * .9d),
 				adjSrc.getDouble(0, colForSrc2),
 				.0000001d);
 		
 		//The 2nd reach has an absolute value adjust, so the group coef is ignored.
 		assertEquals(
 				new Double(91344d),
-				adjSrc.getDouble(1, colForSrc2),
+				adjSrc.getDouble(rowForReach3077, colForSrc2),
 				.0000001d);
 	}
 	
