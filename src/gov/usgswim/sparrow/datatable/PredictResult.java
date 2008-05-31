@@ -2,6 +2,14 @@ package gov.usgswim.sparrow.datatable;
 
 import gov.usgswim.datatable.DataTable.Immutable;
 
+/**
+ * A Datatable of sparrow prediction results.
+ * 
+ * SPARROW specific data access methods are provided so that clients do not need
+ * to know how the data is structured in the table.
+ * 
+ * @author eeverman
+ */
 public interface PredictResult extends Immutable {
 	public int getSourceCount();
 	

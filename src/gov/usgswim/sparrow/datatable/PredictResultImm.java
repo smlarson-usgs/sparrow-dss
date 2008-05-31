@@ -13,10 +13,14 @@ import java.util.Hashtable;
 import org.apache.commons.lang.StringUtils;
 
 /**
+ * An immutable implementation of PredictResult.
  * 
+ * This will likely be the only implementation unless the PredictRunner code is
+ * modified to use a builder instead of arrays.
+ * 
+ * @author eeverman
  */
 @Immutable
-//TODO:  [EE]  Add gett'ers that are data specific (getSource())
 public class PredictResultImm extends SimpleDataTable implements PredictResult {
 	
 	/**
