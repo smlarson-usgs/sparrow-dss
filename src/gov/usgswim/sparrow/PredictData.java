@@ -48,21 +48,6 @@ public interface PredictData extends ImmutableBuilder<PredictDataImm>, Serializa
 	public DataTable getSrcMetadata();
 
 	/**
-	 * Maps a source id to its column index in the src data.
-	 *
-	 * If there is no source id map, it is assumed that there are no IDs for the sources (i.e.,
-	 * the prediction is being run from a text file), and ID are auto generated
-	 * such that the first column of the sources is given an id of 1 (not zero).
-	 *
-	 * See the Adjustment class, which implements the same strategy (and should
-	 * be kept in sync).
-	 * @param id
-	 * @return
-	 * @throws Exception
-	 */
-	public int mapSourceId(int id) throws Exception;
-
-	/**
 	 * Returns the topo data.
 	 *
 	 * <h4>Data Columns, sorted by HYDSEQ.</h4>
@@ -175,13 +160,31 @@ public interface PredictData extends ImmutableBuilder<PredictDataImm>, Serializa
 	
 	
 	/**
-	 * Returns the source column corresponding to the passed source ID.
+	 * Returns the source column index corresponding to the passed source ID.
 	 * 
 	 * @param id The model specific source id (not the db id)
 	 * @return
 	 * @throws Exception If the source ID cannot be found.
 	 */
 	public int getSourceColumnForSourceID(Integer id) throws Exception;
+	
+	/**
+	 * Returns the source ID for the passed source index.
+	 * 
+	 * The source index is the sequential index of the source, starting with zero,
+	 * when the sources are sorted by their source order.  The source ID (Identifier)
+	 * is the model unique ID assigned to that source, which may or may not match
+	 * the index.
+	 * 
+	 * The source index is also the order by which all source related data is
+	 * stored in tables.  Thus, a zero index number means that the source values
+	 * are stored in the first column of the src table.
+	 * 
+	 * @param index
+	 * @return
+	 * @throws Exception
+	 */
+	public Long getSourceIdForSourceIndex(int index) throws Exception;
 	
 	/**
 	 * Returns the row index corresponding to the passed reach id.

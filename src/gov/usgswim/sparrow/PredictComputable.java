@@ -89,8 +89,9 @@ public class PredictComputable implements Computable<PredictRequest, PredictResu
 	 * @param arg
 	 * @param data
 	 * @return
+	 * @throws Exception 
 	 */
-	public PredictResultImm runPrediction(PredictRequest req, PredictData data) {
+	public PredictResultImm runPrediction(PredictRequest req, PredictData data) throws Exception {
 		PredictRunner adjPredict = new PredictRunner(data);
 		PredictResultImm result = adjPredict.doPredict();
 		return result;

@@ -37,6 +37,25 @@ public abstract class AbstractPredictData implements PredictData {
 		}
 	}
 	
+	public Long getSourceIdForSourceIndex(int index) throws Exception {
+		DataTable srcMetadata = this.getSrcMetadata();
+		
+		if (srcMetadata != null) {
+
+			return srcMetadata.getIdForRow(index);
+
+		} else {
+			// Running from text file so assume columns in order
+			//In this case, the id is '1' based while the index is zero based
+			//TODO: We are not checking for indexes which are too large
+			if (index > -1) {
+				return new Long(index + 1);
+			} else {
+				throw new Exception("Invalid source index " + index + ", which must be greater then zero.");
+			}
+		}
+	}
+	
 	/**
 	 * Returns the row index corresponding to the passed reach id.
 	 * 

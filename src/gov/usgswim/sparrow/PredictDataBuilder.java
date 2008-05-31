@@ -149,40 +149,6 @@ public class PredictDataBuilder extends AbstractPredictData {
 		return srcMetadata;
 	}
 
-	/**
-	 * Maps a source id to its column index in the src data.
-	 * 
-	 * If there is no source id map, it is assumed that there are no IDs for the sources (i.e.,
-	 * the prediction is being run from a text file), and ID are auto generated
-	 * such that the first column of the sources is given an id of 1 (not zero).
-	 * 
-	 * See the Adjustment class, which implements the same strategy (and should
-	 * be kept in sync).
-	 * @param id
-	 * @return
-	 * @throws Exception
-	 */
-	public int mapSourceId(int id) throws Exception {
-		if (srcMetadata != null) {
-
-			int i = srcMetadata.findFirst(0, id);
-
-			if (i > -1) {
-				// Running from database, so has a sourceid table
-				return i;
-			} else  {
-				throw new Exception ("Source for id " + id + " not found");
-			}
-		} else {
-			// Running from text file so assume columns in order
-			if (id > 0) {
-				return id - 1;
-			} else {
-				throw new Exception("Invalid source id " + id + ", which must be greater then zero.");
-			}
-		}
-	}
-
 
 	/**
 	 * Assigns the topo data.

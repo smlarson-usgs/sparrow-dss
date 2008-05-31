@@ -105,32 +105,6 @@ public class PredictDataImm extends AbstractPredictData {
 		this.sys = sys;
 		this.ancil = ancil;
 		this.srcMetadata = srcIDs;
-
-//		if (srcIDs != null) {
-//		this.srcIds = srcIDs.toImmutable();
-//		} else {
-//		srcIds = null;
-//		}
-
-	}
-
-	public int mapSourceId(int id) throws Exception {
-		if (srcMetadata != null) {
-
-			int i = srcMetadata.findFirst(0, id);
-
-			if (i > -1) {
-				return i;
-			} else  {
-				throw new Exception ("Source for id " + id + " not found");
-			}
-		} else {
-			if (id > 0) {
-				return id - 1;
-			} else {
-				throw new Exception("Invalid source id " + id + ", which must be greater then zero.");
-			}
-		}
 	}
 
 	public DataTable getSrcMetadata() {

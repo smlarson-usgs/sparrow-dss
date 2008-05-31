@@ -82,7 +82,7 @@ public class PredictResultFactory implements CacheEntryFactory {
 	 * @return
 	 */
 	//TODO:  [eric] need to fill out the anyalysis section to really detect what type of prediction we are doing
-	public PredictResultImm runPrediction(PredictionContext context, PredictData baseData, PredictData adjData) {
+	public PredictResultImm runPrediction(PredictionContext context, PredictData baseData, PredictData adjData) throws Exception {
 		PredictRunner adjPredict = new PredictRunner(adjData);
 		PredictResultImm result = adjPredict.doPredict();
 		return result;

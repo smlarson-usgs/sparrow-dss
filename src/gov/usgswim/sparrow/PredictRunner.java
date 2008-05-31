@@ -123,7 +123,7 @@ public class PredictRunner {
 	}
 
 
-	public PredictResultImm doPredict() {
+	public PredictResultImm doPredict() throws Exception {
 		int reachCount = topo.getRowCount();	//# of reachs is equal to the number of 'rows' in topo
 		int sourceCount = src.getColumnCount(); //# of sources is equal to the number of 'columns' in an arbitrary row (row zero)
 
