@@ -15,13 +15,13 @@ import org.apache.commons.lang.StringUtils;
  */
 @Immutable
 //TODO:  [EE]  Add gett'ers that are data specific (getSource())
-public class PredictResult extends SimpleDataTable {
+public class PredictResultImm extends SimpleDataTable {
 	
-	public PredictResult(ColumnData[] columns, long[] rowIds) {
+	public PredictResultImm(ColumnData[] columns, long[] rowIds) {
 		super(columns, "Prediction Data", "Prediction Result Data", Collections.<String, String>emptyMap(), null);
 	}
 
-	public static PredictResult buildPredictResult(double[][] data, PredictData predictData) {
+	public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData) {
 		
 		ColumnData[] columns = new ColumnData[data[0].length];
 		int sourceCount = predictData.getSrc().getColumnCount();
@@ -48,9 +48,9 @@ public class PredictResult extends SimpleDataTable {
 		
 		if (predictData.getSys() != null) {
 			long[] ids = TemporaryHelper.getRowIds(predictData.getSys());
-			return new PredictResult(columns, ids);
+			return new PredictResultImm(columns, ids);
 		} else {
-			return new PredictResult(columns, null);
+			return new PredictResultImm(columns, null);
 		}
 		
 		

@@ -8,7 +8,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.PredictRunner;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
-import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;

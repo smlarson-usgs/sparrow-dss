@@ -2,7 +2,7 @@ package gov.usgswim.sparrow;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.domain.Model;
 
 import org.apache.commons.lang.StringUtils;
@@ -123,7 +123,7 @@ public class PredictRunner {
 	}
 
 
-	public PredictResult doPredict() {
+	public PredictResultImm doPredict() {
 		int reachCount = topo.getRowCount();	//# of reachs is equal to the number of 'rows' in topo
 		int sourceCount = src.getColumnCount(); //# of sources is equal to the number of 'columns' in an arbitrary row (row zero)
 
@@ -181,7 +181,7 @@ public class PredictRunner {
 
 		}
 
-		return PredictResult.buildPredictResult(rchVal, predictData);
+		return PredictResultImm.buildPredictResult(rchVal, predictData);
 
 	}
 

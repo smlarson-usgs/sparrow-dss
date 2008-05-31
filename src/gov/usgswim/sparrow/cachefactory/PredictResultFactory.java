@@ -12,7 +12,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.PredictRunner;
-import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.DataLoader;
@@ -63,7 +63,7 @@ public class PredictResultFactory implements CacheEntryFactory {
 
 		long startTime = System.currentTimeMillis();			
 
-		PredictResult result = runPrediction(context, data, adjData);
+		PredictResultImm result = runPrediction(context, data, adjData);
 
 		log.debug(
 				"Prediction done for model #" + context.getModelID() + 
@@ -82,9 +82,9 @@ public class PredictResultFactory implements CacheEntryFactory {
 	 * @return
 	 */
 	//TODO:  [eric] need to fill out the anyalysis section to really detect what type of prediction we are doing
-	public PredictResult runPrediction(PredictionContext context, PredictData baseData, PredictData adjData) {
+	public PredictResultImm runPrediction(PredictionContext context, PredictData baseData, PredictData adjData) {
 		PredictRunner adjPredict = new PredictRunner(adjData);
-		PredictResult result = adjPredict.doPredict();
+		PredictResultImm result = adjPredict.doPredict();
 		return result;
 	}
 

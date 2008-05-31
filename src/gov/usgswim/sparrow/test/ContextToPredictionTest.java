@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.test;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
@@ -63,7 +63,7 @@ public class ContextToPredictionTest extends TestCase {
 		PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(CONTEXT_ID);
 		
 		//Get the prediction result from cache (this forces it to be calculated, see PredictResultFactory)
-		PredictResult predictResult = SharedApplication.getInstance().getPredictResult(contextFromCache);
+		PredictResultImm predictResult = SharedApplication.getInstance().getPredictResult(contextFromCache);
 		
 		//For comparison, get the prediction data (original model data) from the cache (cached by PredictResultFactory)
 		PredictData predictData = SharedApplication.getInstance().getPredictData(contextFromCache.getModelID());

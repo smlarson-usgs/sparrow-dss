@@ -14,7 +14,7 @@ import gov.usgswim.sparrow.AdjustmentSetImm;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.PredictRequest;
-import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -52,12 +52,12 @@ public class PredictService implements HttpService<PredictServiceRequest> {
 	public PredictService() {
 	}
 
-	public PredictResult runPrediction(Integer predictionContextId) {
+	public PredictResultImm runPrediction(Integer predictionContextId) {
 		PredictionContext pc = SharedApplication.getInstance().getPredictionContext(predictionContextId);
 		return runPrediction(pc);
 	}
 	
-	public PredictResult runPrediction(PredictionContext context) {
+	public PredictResultImm runPrediction(PredictionContext context) {
 		return SharedApplication.getInstance().getPredictResult(context);
 	}
 	
@@ -69,8 +69,8 @@ public class PredictService implements HttpService<PredictServiceRequest> {
 		long startTime = System.currentTimeMillis();	//Time started
 
 		try {
-			ComputableCache<PredictRequest, PredictResult> pdCache = SharedApplication.getInstance().getPredictResultCache();
-			PredictResult adjResult = pdCache.compute(req.getPredictRequest());
+			ComputableCache<PredictRequest, PredictResultImm> pdCache = SharedApplication.getInstance().getPredictResultCache();
+			PredictResultImm adjResult = pdCache.compute(req.getPredictRequest());
 
 			TemporaryHelper.sampleDataTable(adjResult);
 
@@ -78,7 +78,7 @@ public class PredictService implements HttpService<PredictServiceRequest> {
 				//need to run the base prediction and the adjusted prediction
 				AdjustmentSet noAdj = new AdjustmentSetImm();
 				PredictRequest noAdjRequest = new PredictRequest(modelId, noAdj);
-				PredictResult noAdjResult = SharedApplication.getInstance().getPredictResultCache().compute(noAdjRequest);
+				PredictResultImm noAdjResult = SharedApplication.getInstance().getPredictResultCache().compute(noAdjRequest);
 
 				TemporaryHelper.sampleDataTable(noAdjResult);
 

@@ -4,7 +4,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictComputable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
-import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.deprecated.IDByPointComputable;
 import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
 import gov.usgswim.sparrow.domain.ModelImm;
@@ -43,7 +43,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	private String dsName = "jdbc/sparrowDSDS";
 	private DataSource datasource;
 	private boolean lookupFailed = false;
-	private ComputableCache<PredictRequest, PredictResult> predictResultCache;
+	private ComputableCache<PredictRequest, PredictResultImm> predictResultCache;
 	private ComputableCache<Long, PredictData> predictDatasetCache;	//Long is the Model ID
 	private ComputableCache<IDByPointRequest_old, DataTable> idByPointCache;
 	private ComputableCache<ModelRequest, ModelImm> modelCache;
@@ -70,7 +70,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		super(null);
 
 		//These are now all depricated in favor of the EHCache versions
-		predictResultCache = new ComputableCache<PredictRequest, PredictResult>(new PredictComputable(), "Predict Result Cache");
+		predictResultCache = new ComputableCache<PredictRequest, PredictResultImm>(new PredictComputable(), "Predict Result Cache");
 		predictDatasetCache = new ComputableCache<Long, PredictData>(new PredictDatasetComputable(), "Predict Dataset Cache");
 		idByPointCache = new ComputableCache<IDByPointRequest_old, DataTable>(new IDByPointComputable(), "ID by Point Cache");
 		//modelCache = new ComputableCache<ModelRequest, ModelImm>(new ModelComputable(), "Model Cache");
@@ -396,14 +396,14 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	//PredictResult Cache
-	public PredictResult getPredictResult(PredictionContext context) {
+	public PredictResultImm getPredictResult(PredictionContext context) {
 		return getPredictResult(context, false);
 	}
 	
-	public PredictResult getPredictResult(PredictionContext context, boolean quiet) {
+	public PredictResultImm getPredictResult(PredictionContext context, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_RESULT_CACHE);
 		Element e  = (quiet)?c.getQuiet(context):c.get(context);
-		return (e != null)?((PredictResult) e.getObjectValue()):null;
+		return (e != null)?((PredictResultImm) e.getObjectValue()):null;
 	}
 	
 	//ReachByPoint Cache
@@ -430,7 +430,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	
 	
 	
-	public ComputableCache<PredictRequest, PredictResult> getPredictResultCache() {
+	public ComputableCache<PredictRequest, PredictResultImm> getPredictResultCache() {
 		return predictResultCache;
 	}
 

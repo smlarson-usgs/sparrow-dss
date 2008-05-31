@@ -2,7 +2,7 @@ package gov.usgswim.sparrow;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.service.AbstractHttpRequestParser;
-import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.PredictParser;
@@ -178,7 +178,7 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 			PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
 			
 			if (context != null) {
-				PredictResult predictResult = SharedApplication.getInstance().getPredictResult(context);
+				PredictResultImm predictResult = SharedApplication.getInstance().getPredictResult(context);
 				PredictData predictData = SharedApplication.getInstance().getPredictData(context.getModelID());
 				nsData = copyToNSDataSet(predictResult, predictData.getSys(), PredictServiceRequest.DataSeries.TOTAL);
 
@@ -197,7 +197,7 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 			
 			log.debug("MVDP model-id request (map calibrated state).  PC hash = " + context.hashCode());
 
-			PredictResult predictResult = SharedApplication.getInstance().getPredictResult(context);
+			PredictResultImm predictResult = SharedApplication.getInstance().getPredictResult(context);
 			PredictData predictData = SharedApplication.getInstance().getPredictData(context.getModelID());
 			nsData = copyToNSDataSet(predictResult, predictData.getSys(), PredictServiceRequest.DataSeries.TOTAL);
 
