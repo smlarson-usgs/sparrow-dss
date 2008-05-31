@@ -14,7 +14,7 @@ import gov.usgswim.sparrow.AdjustmentSetImm;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.PredictRequest;
-import gov.usgswim.sparrow.PredictResult;
+import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;

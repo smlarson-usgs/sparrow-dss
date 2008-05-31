@@ -2,6 +2,7 @@ package gov.usgswim.sparrow;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.Model;
 
 import org.apache.commons.lang.StringUtils;

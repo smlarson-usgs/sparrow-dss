@@ -1,10 +1,10 @@
-package gov.usgswim.sparrow;
+package gov.usgswim.sparrow.datatable;
 
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.Immutable;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.impl.SimpleDataTable;
-import gov.usgswim.sparrow.datatable.ImmutableDoubleColumn;
+import gov.usgswim.sparrow.PredictData;
 
 import java.util.Collections;
 
