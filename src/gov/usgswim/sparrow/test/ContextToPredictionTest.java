@@ -126,13 +126,13 @@ public class ContextToPredictionTest extends TestCase {
 		assertEquals(22, predictResult.getIncrementalCol());
 		assertEquals(23, predictResult.getTotalCol());
 		
-		//Check some actual values
-		assertEquals(predictResult.getDouble(100, 0), predictResult.getIncrementalForSrc(100, 1L));
-		assertEquals(predictResult.getDouble(100, 10), predictResult.getIncrementalForSrc(100, 11L));
-		assertEquals(predictResult.getDouble(100, 11), predictResult.getTotalForSrc(100, 1L));
-		assertEquals(predictResult.getDouble(100, 21), predictResult.getTotalForSrc(100, 11L));
-		assertEquals(predictResult.getDouble(100, 22), predictResult.getIncremental(100));
-		assertEquals(predictResult.getDouble(100, 23), predictResult.getTotal(100));
+		//Check some actual values for the reach w/ id 3074
+		assertEquals(predictResult.getDouble(rowForReach3074, 0), predictResult.getIncrementalForSrc(rowForReach3074, 1L));
+		assertEquals(predictResult.getDouble(rowForReach3074, 10), predictResult.getIncrementalForSrc(rowForReach3074, 11L));
+		assertEquals(predictResult.getDouble(rowForReach3074, 11), predictResult.getTotalForSrc(rowForReach3074, 1L));
+		assertEquals(predictResult.getDouble(rowForReach3074, 21), predictResult.getTotalForSrc(rowForReach3074, 11L));
+		assertEquals(predictResult.getDouble(rowForReach3074, 22), predictResult.getIncremental(rowForReach3074));
+		assertEquals(predictResult.getDouble(rowForReach3074, 23), predictResult.getTotal(rowForReach3074));
 	}
 	
 	public void testHashCode() throws Exception {
