@@ -39,7 +39,7 @@ public interface PredictResult extends Immutable {
 	 * @param srcId
 	 * @return
 	 */
-	public int getIncrementalColForSrc(int srcId);
+	public int getIncrementalColForSrc(Long srcId);
 	
 	/**
 	 * Returns the incremental value for the specified source id (the IDENTIFIER of that source) and row.
@@ -50,7 +50,7 @@ public interface PredictResult extends Immutable {
 	 * @param srcId
 	 * @return
 	 */
-	public Double getIncrementalForSrc(int row, int srcId);
+	public Double getIncrementalForSrc(int row, Long srcId);
 	
 	/**
 	 * Returns the index of the total Total column.
@@ -75,7 +75,7 @@ public interface PredictResult extends Immutable {
 	 * @param srcId
 	 * @return
 	 */
-	public int getTotalColForSrc(int srcId);
+	public int getTotalColForSrc(Long srcId);
 	
 	/**
 	 * Returns the total value for the specified source id (the IDENTIFIER of that source) and row.
@@ -86,6 +86,6 @@ public interface PredictResult extends Immutable {
 	 * @param srcId
 	 * @return
 	 */
-	public Double getTotalForSrc(int row, int srcId);
+	public Double getTotalForSrc(int row, Long srcId);
 	
 }

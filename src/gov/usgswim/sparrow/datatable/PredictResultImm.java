@@ -142,19 +142,19 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 	  return totalTotalCol;
   }
 
-	public int getIncrementalColForSrc(int srcId) {
+	public int getIncrementalColForSrc(Long srcId) {
 	  return srcIdIncMap.get(srcId);
   }
 
-	public Double getIncrementalForSrc(int row, int srcId) {
+	public Double getIncrementalForSrc(int row, Long srcId) {
 	  return getDouble(row, srcIdIncMap.get(srcId));
   }
 
-	public int getTotalColForSrc(int srcId) {
+	public int getTotalColForSrc(Long srcId) {
 		return srcIdTotalMap.get(srcId);
   }
 
-	public Double getTotalForSrc(int row, int srcId) {
+	public Double getTotalForSrc(int row, Long srcId) {
 		return getDouble(row, srcIdTotalMap.get(srcId));
   }
 

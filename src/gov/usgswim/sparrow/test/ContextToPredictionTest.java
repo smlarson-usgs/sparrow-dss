@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.test;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -63,7 +64,7 @@ public class ContextToPredictionTest extends TestCase {
 		PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(CONTEXT_ID);
 		
 		//Get the prediction result from cache (this forces it to be calculated, see PredictResultFactory)
-		PredictResultImm predictResult = SharedApplication.getInstance().getPredictResult(contextFromCache);
+		PredictResult predictResult = SharedApplication.getInstance().getPredictResult(contextFromCache);
 		
 		//For comparison, get the prediction data (original model data) from the cache (cached by PredictResultFactory)
 		PredictData predictData = SharedApplication.getInstance().getPredictData(contextFromCache.getModelID());
@@ -111,6 +112,27 @@ public class ContextToPredictionTest extends TestCase {
 				new Double(91344d),
 				adjSrc.getDouble(rowForReach3077, colForSrc2),
 				.0000001d);
+		
+		
+		////////
+		// These tests are added to check that the column indexes and values returned
+		// from the new SPARROW specific access methods in PredictResultImm return
+		// expected values.
+		assertEquals(11, predictResult.getSourceCount());
+		assertEquals(0, predictResult.getIncrementalColForSrc(1L));
+		assertEquals(10, predictResult.getIncrementalColForSrc(11L));
+		assertEquals(11, predictResult.getTotalColForSrc(1L));
+		assertEquals(21, predictResult.getTotalColForSrc(11L));
+		assertEquals(22, predictResult.getIncrementalCol());
+		assertEquals(23, predictResult.getTotalCol());
+		
+		//Check some actual values
+		assertEquals(predictResult.getDouble(100, 0), predictResult.getIncrementalForSrc(100, 1L));
+		assertEquals(predictResult.getDouble(100, 10), predictResult.getIncrementalForSrc(100, 11L));
+		assertEquals(predictResult.getDouble(100, 11), predictResult.getTotalForSrc(100, 1L));
+		assertEquals(predictResult.getDouble(100, 21), predictResult.getTotalForSrc(100, 11L));
+		assertEquals(predictResult.getDouble(100, 22), predictResult.getIncremental(100));
+		assertEquals(predictResult.getDouble(100, 23), predictResult.getTotal(100));
 	}
 	
 	public void testHashCode() throws Exception {
