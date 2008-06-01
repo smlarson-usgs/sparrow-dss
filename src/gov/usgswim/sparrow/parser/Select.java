@@ -39,6 +39,7 @@ public class Select implements XMLStreamParserComponent {
 	// ================
 	// INSTANCE METHODS
 	// ================
+	//TODO:  A DataSeries of source_value should throw an exception if no source is specified.
 	public Select parse(XMLStreamReader in) throws XMLStreamException {
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();

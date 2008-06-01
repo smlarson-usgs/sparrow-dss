@@ -2,8 +2,12 @@ package gov.usgswim.sparrow;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.service.AbstractHttpRequestParser;
+import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
+import gov.usgswim.sparrow.parser.Analysis;
+import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.parser.Select;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.PredictParser;
 import gov.usgswim.sparrow.service.predict.PredictService;
@@ -180,7 +184,13 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 			if (context != null) {
 				PredictResultImm predictResult = SharedApplication.getInstance().getPredictResult(context);
 				PredictData predictData = SharedApplication.getInstance().getPredictData(context.getModelID());
-				nsData = copyToNSDataSet(predictResult, predictData.getSys(), PredictServiceRequest.DataSeries.TOTAL);
+
+				try {
+	        nsData = copyToNSDataSet(predictResult, predictData, context.getAnalysis());
+        } catch (Exception e) {
+        	e.printStackTrace();
+        	throw new RuntimeException(e);
+        }
 
 				log.debug("MVSparrowDataProvider done for model #" + context.getModelID() + " (" + nsData.size() + " rows) Time: " + (System.currentTimeMillis() - startTime) + "ms");
 
@@ -271,7 +281,69 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 		return nsData;
 
 	}
+	
+	
+	protected NSDataSet copyToNSDataSet(PredictResult result, PredictData predictData, Analysis analysis) throws Exception {
 
+		int rowCount = result.getRowCount();
+		NSRow[] nsRows = new NSRow[rowCount];
+
+		Select select = analysis.getSelect();
+		DataSeriesType type = select.getDataSeries();
+		
+		int dataColIndex = 0;	//The column of the data in the resultTable (unknown initially)
+		DataTable resultTable = null;	//The table to get data from (could be results of prediction, source vals, or other)
+		
+		DataTable sysInfo = predictData.getSys();	//The table w/ row Identifiers
+		
+		switch (type) {
+			case total:
+				if (select.getSource() != null) {
+					dataColIndex = result.getTotalColForSrc(select.getSource().longValue());
+				} else {
+					dataColIndex = result.getTotalCol();
+				}
+				resultTable = result;
+				
+				break;
+			case incremental:
+				if (select.getSource() != null) {
+					dataColIndex = result.getIncrementalColForSrc(select.getSource().longValue());
+				} else {
+					dataColIndex = result.getIncrementalCol();
+				}
+				resultTable = result;
+				break;
+			case source_value:
+				if (select.getSource() != null) {
+					dataColIndex = predictData.getSourceColumnForSourceID(select.getSource());
+					resultTable = predictData.getSrc();
+				} else {
+					throw new Exception("The data series 'source_value' requires a source ID to be specified.");
+				}
+				break;
+			default:
+				throw new Exception("No data-series was specified in the analysis section");
+		}
+
+		//Build the 
+		for (int r=0; r < rowCount; r++) {
+			Field[] row = new Field[2];	//ID
+			row[0] = new Field(sysInfo.getInt(r, 0));
+			row[0].setKey(true);
+
+			row[1] = new Field(resultTable.getDouble(r, dataColIndex));	//Value
+
+			NSRow nsRow = new NSRow(row);
+			nsRows[r] = nsRow;
+		}
+
+		if (log.isDebugEnabled()) debugNSData(nsRows);
+
+		return new NSDataSet(nsRows);
+	}
+
+	@Deprecated
 	protected NSDataSet copyToNSDataSet(DataTable result, DataTable sysInfo, PredictServiceRequest.DataSeries column) {
 
 		int rowCount = result.getRowCount();
