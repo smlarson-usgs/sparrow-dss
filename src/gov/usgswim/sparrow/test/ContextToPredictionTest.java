@@ -23,7 +23,7 @@ public class ContextToPredictionTest extends TestCase {
 	
 	//Unchanging context-id for the predictionContext described in the xml file
 	//loaded in buildRequest().
-	public static final int CONTEXT_ID = 1612937363;
+	public static final int CONTEXT_ID = -43431453;
 	
 	protected void setUp() throws Exception {
 		super.setUp();

@@ -27,7 +27,7 @@ public class SelectTest extends TestCase {
 		reader.next();
 		select.parse(reader);
 
-		assertEquals("1", select.getSource());
+		assertEquals(new Integer(1), select.getSource());
 		assertEquals("area", select.getDataSeriesPer());
 		assertEquals(DataSeriesType.incremental, select.getDataSeries());
 		assertEquals("area", select.getAggFunctionPer());

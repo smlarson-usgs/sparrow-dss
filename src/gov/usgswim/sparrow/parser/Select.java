@@ -27,7 +27,7 @@ public class Select implements XMLStreamParserComponent {
 	// INSTANCE FIELDS
 	// ===============
 	private DataSeriesType dataSeries;
-	private String source;
+	private Integer source;
 	private String dataSeriesPer;
 	private String aggFunctionPer;
 	private String aggFunction;
@@ -61,7 +61,7 @@ public class Select implements XMLStreamParserComponent {
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
 					} else if ("data-series".equals(localName)) {
-						source = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "source");
+						source = ParserHelper.parseAttribAsInt(in, "source", false);
 						dataSeriesPer = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "per");
 						String dataSeriesString = ParserHelper.parseSimpleElementValue(in);
 						dataSeries = (dataSeriesString != null)? 
@@ -153,7 +153,7 @@ public class Select implements XMLStreamParserComponent {
 		return partition;
 	}
 
-	public String getSource() {
+	public Integer getSource() {
 		return source;
 	}
 
