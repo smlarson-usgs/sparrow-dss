@@ -30,16 +30,35 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
 		if (isSuccess) {
+			String adjustmentGroups = "";
+			String terminalReaches = "";
+			String areaOfInterest = "";
+			
+			if (context.getAdjustmentGroups() != null) {
+				String contextId = Integer.toString(context.getAdjustmentGroups().hashCode());
+				adjustmentGroups = props.getText("adjustment-groups", 
+						new String[] { "AdjustmentContextId",  contextId });
+			}
+			if (context.getTerminalReaches() != null) {
+				String contextId = Integer.toString(context.getTerminalReaches().hashCode());
+				terminalReaches = props.getText("terminal-reaches", 
+						new String[] { "TerminalContextId",  contextId });
+			}
+			if (context.getAreaOfInterest() != null) {
+				String contextId = Integer.toString(context.getAreaOfInterest().hashCode());
+				areaOfInterest = props.getText("area-of-interest", 
+						new String[] { "AreaOfInterstContextId",  contextId });
+			}
 			
 			String response = props.getText("ResponseOK", 
 				new String[] {
 					"ModelId", context.getModelID().toString(),
 					"ContextId", Integer.toString( context.hashCode() ),
 					"RowIdType", "reach",
-					"AdjustmentContextId", Integer.toString( context.getAdjustmentGroups().hashCode() ),
+					"adjustment-groups", adjustmentGroups,
 					"AnalysisContextId", Integer.toString( context.getAnalysis().hashCode() ),
-					"TerminalContextId", Integer.toString( context.getTerminalReaches().hashCode() ),
-					"AreaOfInterstContextId", Integer.toString( context.getAreaOfInterest().hashCode() )
+					"terminal-reaches", terminalReaches,
+					"area-of-interest", areaOfInterest
 			});
 			
 			return inFact.createXMLStreamReader(new StringReader(response));

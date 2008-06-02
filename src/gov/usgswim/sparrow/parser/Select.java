@@ -11,6 +11,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+import static gov.usgswim.sparrow.parser.DataSeriesType.*;
+
 public class Select implements XMLStreamParserComponent {
 
 	private static final long serialVersionUID = -3301580483184096772L;
@@ -98,15 +100,19 @@ public class Select implements XMLStreamParserComponent {
 		if (!isValid()) {
 			// Diagnose the error and throw a custom error message depending on the error
 			StringBuilder errors = new StringBuilder();
-			if (source == null) {
-				errors.append("No data source specified; ");
+			if (isDataSeriesSourceNeeded()) {
+				errors.append("@source must be specified when data-series == \"" + source_value.name() + "\"; ");
 			}
 			throw new XMLParseValidationException(errors.toString());
 		}
 	}
 
 	public boolean isValid() {
-		return source != null;
+		return isDataSeriesSourceNeeded();
+	}
+
+	private boolean isDataSeriesSourceNeeded() {
+		return !(dataSeries == source_value && source == null);
 	}
 	
 	public boolean isParseTarget(String name) {
