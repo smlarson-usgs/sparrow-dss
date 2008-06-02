@@ -7,7 +7,7 @@
 	<prediction-context context-id="389392"/>
 	
 	<!-- We now know the ID of the reach, so use it. -->
-	<reach-id>15</reach-id>
+	<reach id="15"/>
 	
 	<!-- Ask for just the info on the 2nd tab. -->
 	<content>

@@ -7,7 +7,7 @@
 	<model-id>22</model-id>
 	
 	<!-- We now know the ID of the reach, so use it in future requests -->
-	<reach-id>15</reach-id>
+	<reach id="15"/>
 	
 	<!-- Ask for just the info on the 2nd tab. -->
 	<content>
