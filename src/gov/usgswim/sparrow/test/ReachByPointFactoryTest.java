@@ -12,7 +12,7 @@ public class ReachByPointFactoryTest extends TestCase {
 
 	public void testCreateEntry() throws Exception {
 		ReachByPointFactory factory = new ReachByPointFactory();
-		IDByPointRequest req = new IDByPointRequest(22L, new Double(-90, 45), 1);
+		IDByPointRequest req = new IDByPointRequest(22L, new Double(-90, 45));
 
 		Reach reach = (Reach) factory.createEntry(req);
 		

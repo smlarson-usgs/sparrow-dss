@@ -8,13 +8,13 @@ import org.apache.log4j.Logger;
 
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
-import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.Reach;
+import gov.usgswim.sparrow.service.idbypoint.ReachID;
 
 
 
 /**
- * This factory finds a Reach based on a ModelPoint.
+ * This factory finds a Reach based on a ReachID object
  * 
  * This class implements CacheEntryFactory, which plugs into the caching system
  * so that the createEntry() method is only called when a entry needs to be
@@ -27,30 +27,24 @@ import gov.usgswim.sparrow.service.idbypoint.Reach;
  * @author eeverman
  *
  */
-public class ReachByPointFactory extends AbstractCacheFactory {
+public class ReachByIDFactory extends AbstractCacheFactory {
 	protected static Logger log =
-		Logger.getLogger(ReachByPointFactory.class); //logging for this class
+		Logger.getLogger(ReachByIDFactory.class); //logging for this class
 	
 	public Object createEntry(Object request) throws Exception {
 		
-		ModelPoint req = (ModelPoint) request;
-		
-		Long modelId = req.getModelID();
-		Double lng = req.getPoint().x;
-		Double lat = req.getPoint().y;
-		
-		
+		ReachID req = (ReachID) request;
 		
 		String query = getText(
 				"FindReach",
-				new String[] {"ModelId", modelId.toString(), "lng", lng.toString(), "lat", lat.toString()});
+				new String[] { "ModelId", Long.toString(req.getModelID()), "Identifier", Integer.toString( req.getReachID() ) });
 		
 		Connection conn = SharedApplication.getInstance().getConnection();
 		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		st.setFetchSize(1);
 
 		ResultSet rs = null;
-		Reach reachId = null;
+		Reach reach = null;
 		
 		try {
 
@@ -58,7 +52,7 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 			
 			if (rs.next()) {
 				
-				reachId = new Reach(rs.getInt("identifier"), rs.getString("reach_name"), rs.getInt("dist_in_meters"));
+				reach = new Reach(rs.getInt("identifier"), rs.getString("reach_name"), 0);
 
 			} else {
 				//no rows found - leave as null
@@ -73,7 +67,7 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 		
 
 		
-		return reachId;
+		return reach;
 		
 	}
 

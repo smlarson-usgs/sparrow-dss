@@ -30,14 +30,13 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 			if (paramChain.length == 1 && StringUtils.isNumeric(paramChain[0])) {
 
 				Long modelID = Long.parseLong(paramChain[0]);
-				int numResults = AbstractHttpRequestParser.parseParamAsLong(request, "result-count", 3L).intValue();
-				if (numResults > 100) numResults = 100;
 
+				//TODO:  There are four IDByPointRequest constructors that can be used here - currently only handling one possiblity
 				Point.Double point = new Point.Double();	//required
 				point.x = parseParamAsDouble(request, "long");
 				point.y = parseParamAsDouble(request, "lat");
 
-				IDByPointRequest result = new IDByPointRequest(modelID, point, numResults);
+				IDByPointRequest result = new IDByPointRequest(modelID, point);
 				result.setXMLRequest(""); // no xml request, RESTlike
 				return result;
 			} else {

@@ -1,19 +1,14 @@
 package gov.usgswim.sparrow.service.idbypoint;
 
-import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
-import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
-import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
-import gov.usgswim.sparrow.parser.Content;
-import gov.usgswim.sparrow.service.DataTableSerializer;
+import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.PropertyLoaderHelper;
 
-import java.awt.geom.Point2D.Double;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.Connection;
@@ -26,7 +21,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 //TODO not complete
 @ThreadSafe
@@ -66,47 +60,54 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		// TODO isNeedsFlattening ignored for now because using custom flattener
 		// TODO extract to method when satisfied.
 		IDByPointResponse response = new IDByPointResponse();
+		
+		
+		Long modelId = null;
+		Reach reach = null;
+		
+		//Find the model ID
+		if (req.getContextID() != null) {
+			PredictionContext context = SharedApplication.getInstance().getPredictionContext(req.getContextID());
+			modelId = context.getModelID();
+		} else if (req.getModelID() != null) {
+			modelId = req.getModelID();
+		} else {
+			throw new Exception("A context-id or a model-id is required for a id request");
+		}
+		
+		//Find the Reach ID
+		if (req.getReachID() != null) {
+			reach = SharedApplication.getInstance().getReachByIDResult(new ReachID(modelId, req.getReachID()));
+		} else if (req.getPoint() != null) {
+			reach = SharedApplication.getInstance().getReachByPointResult(new ModelPoint(modelId, req.getPoint()));
+		} else {
+			throw new Exception("A context-id or a model-id is required for a id request");
+		}
+		
 		// two types of id requests, with and without a context.
 		// without means we have to store the context? NO, null context.
 		// uc-1 example has no context. Later ones have prediction context.
-		response.modelID = req.getModelID();
+		response.modelID = modelId;
+		response.reachID = reach.getId();
+		response.reachName = reach.getName();
+		response.distanceFromReach = reach.getDistanceInMeters();
+		response.statusOK = true;
 
-		// TODO populate response.contextID;
-		if (req.getPoint() != null) {
-			retrieveReachIdentification(req, response);
-		}
-		Content requestedContent = req.getContent();
-		if (requestedContent.hasAdjustments()) {
+		if (req.hasAdjustments()) {
 			retrieveAdjustments(req, response);
 		}
-		if (requestedContent.hasAttributes()) {
+		if (req.hasAttributes()) {
 			retrieveAttributes(req, response);
 		}
-		if (requestedContent.hasPredicted()) {
+		if (req.hasPredicted()) {
 			retrievePredicteds(req, response);
 		}
 		
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
-		String result = response.toXML();
+		//String result = response.toXML();
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(response.toXML()));
 		// HACK [eric or IK] temporarily converting into old request format. Remove when done.
 		//BasicXMLStreamReader reader = returnOldResult(req);
-		return reader;
-	}
-
-	/**
-	 * @param req
-	 * @return
-	 * @throws Exception
-	 * @deprecated
-	 */
-	private BasicXMLStreamReader returnOldResult(IDByPointRequest req) throws Exception {
-		//	IDByPointRequest oldReq = new IDByPointRequest(req.getModelID(), req.getPoint(), req.getNumberOfResults());
-		IDByPointRequest_old oldReq = new IDByPointRequest_old(req.getModelID(), req.getPoint(), 7);
-
-		// TODO [eric] update this old cache code. Should use IDByPointRequest2 rather than IDByPointRequest
-		DataTable result = SharedApplication.getInstance().getIdByPointCache().compute(oldReq);
-		BasicXMLStreamReader reader = new DataTableSerializer(oldReq, result);
 		return reader;
 	}
 	
@@ -230,47 +231,6 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		// Adjustment is only for reporting purposes
 		// Happy path: predicted data available, all cached.
 		response.adjustmentsXML = props.getText("adjustmentsXMLResponse");
-	}
-
-	private void retrieveReachIdentification(IDByPointRequest req, IDByPointResponse response) throws SQLException, NamingException {
-		// TODO move to DataLoader when done debugging
-		Double point = req.getPoint();
-		try {
-			String query = props.getText("FindReach", 
-					new String[] {
-						"ModelId", req.getPredictionContext().getModelID().toString(),
-						"lng", java.lang.Double.valueOf( point.getX() ).toString(),
-						"lat", java.lang.Double.valueOf( point.getY() ).toString()
-				});
-			Connection conn = getConnection();
-			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-			ResultSet rset = st.executeQuery(query);
-			
-			if (rset.next()) {
-				response.statusOK = true;
-				// TODO set response.message
-				// TODO set response.cacheLifetime
-				response.distanceFromReach = rset.getInt("DIST_IN_METERS");
-				response.reachID = rset.getInt("IDENTIFIER");
-				response.reachName = rset.getString("REACH_NAME");
-			} else {// no reach found near point
-				response.statusOK = false;
-				response.message = "No reach found near lat=" + point.y + " long=" + point.x;
-			}
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-			// wrap and rethrow for now
-			// TODO decide how to handle these exceptions later
-			throw new RuntimeException(e);
-		}
-		// TODO need to add logic to synchronize reach ID between request and response
-		{	// HACK temporary. review later
-			// use the submitted reach id if the response was not looked up.
-			int identifier = (response.reachID == 0)? req.getReachID(): response.reachID;
-			response.reachID = identifier;
-		}
-		
 	}
 
 

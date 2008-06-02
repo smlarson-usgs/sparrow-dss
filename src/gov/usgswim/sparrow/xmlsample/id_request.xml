@@ -9,10 +9,10 @@
 	If the user has no prediction context, the model-id element can be passed instead,
 	which just returns nominal information.
 	-->
-	<prediction-context context-id="1231241243424"/> or <model-id>22</model-id>
+	<context-id>1231241243424</context-id> or <model-id>22</model-id>
 	
 	<!-- Request can include one of these elements: -->
-	<point lat="40" long="-100"/> or <reach-id>1234874</reach-id>
+	<point lat="40" long="-100"/> or <reach id="1234874"/>
 	
 	<content>
 		<!-- The response document can include from zero to all of the following: -->
