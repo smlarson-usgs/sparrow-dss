@@ -98,7 +98,7 @@ public class Select implements XMLStreamParserComponent {
 		if (!isValid()) {
 			// Diagnose the error and throw a custom error message depending on the error
 			StringBuilder errors = new StringBuilder();
-			if (source == 0) {
+			if (source == null) {
 				errors.append("No data source specified; ");
 			}
 			throw new XMLParseValidationException(errors.toString());
@@ -106,7 +106,7 @@ public class Select implements XMLStreamParserComponent {
 	}
 
 	public boolean isValid() {
-		return source != 0;
+		return source != null;
 	}
 	
 	public boolean isParseTarget(String name) {
