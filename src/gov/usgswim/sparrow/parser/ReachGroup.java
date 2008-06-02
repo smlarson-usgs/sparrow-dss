@@ -49,7 +49,7 @@ public class ReachGroup implements XMLStreamParserComponent {
 		
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
-		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : 
+		assert (isParseTarget(localName) && eventCode == START_ELEMENT) : 
 			this.getClass().getSimpleName()
 			+ " can only parse " + getParseTarget() + " elements.";
 		boolean isStarted = false;
