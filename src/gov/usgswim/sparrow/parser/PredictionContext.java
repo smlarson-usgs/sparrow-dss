@@ -146,6 +146,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 						// TODO [eric] If the ID is unavailable because this is
 						// a new PContext, when in the object lifecycle should
 						// id be calculated and populated? Here? on cache.put()?
+						checkValidity();
 						return this; // we're done
 					} else {
 						// otherwise, error
@@ -249,6 +250,17 @@ public class PredictionContext implements XMLStreamParserComponent {
 		return myClone;
 	}
 
+	public void checkValidity() throws XMLParseValidationException {
+		if (!isValid()) {
+			// throw a custom error message depending on the error
+			throw new XMLParseValidationException(MAIN_ELEMENT_NAME + " is not valid");
+		}
+	}
+
+	public boolean isValid() {
+		return true;
+	}
+	
 	// =================
 	// GETTERS & SETTERS
 	// =================

@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.test.parsers;
 
 import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.TerminalReaches;
+import gov.usgswim.sparrow.parser.XMLParseValidationException;
 
 import java.io.StringReader;
 import java.util.List;
@@ -28,7 +29,7 @@ public class TerminalReachesTest extends TestCase {
 
 	}
 	
-	public void testAcceptsLogicalSet() throws XMLStreamException {
+	public void testAcceptsLogicalSet() throws XMLStreamException, XMLParseValidationException {
 		String testRequest = "<terminal-reaches>"
 		+ "	<logical-set/>"
 		+ "</terminal-reaches>";
@@ -39,7 +40,7 @@ public class TerminalReachesTest extends TestCase {
 		// passes if no errors thrown
 	}
 	
-	public void testDoesNotAcceptsBadTag() throws XMLStreamException {
+	public void testDoesNotAcceptsBadTag() throws XMLStreamException, XMLParseValidationException {
 		String testRequest = "<terminal-reaches>"
 		+ "	<bad-tag/>"
 		+ "</terminal-reaches>";

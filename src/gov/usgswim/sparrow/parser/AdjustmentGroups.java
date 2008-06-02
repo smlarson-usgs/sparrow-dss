@@ -99,6 +99,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 				case END_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
+						checkValidity();
 						return this; // we're done
 					}
 					// otherwise, error
@@ -277,7 +278,17 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 
 		return adjusted;
 	}
+	
+	public void checkValidity() throws XMLParseValidationException {
+		if (!isValid()) {
+			// throw a custom error message depending on the error
+			throw new XMLParseValidationException(MAIN_ELEMENT_NAME + " is not valid");
+		}
+	}
 
+	public boolean isValid() {
+		return true;
+	}
 
 	
 	// =================

@@ -40,7 +40,7 @@ public class Select implements XMLStreamParserComponent {
 	// INSTANCE METHODS
 	// ================
 	//TODO:  A DataSeries of source_value should throw an exception if no source is specified.
-	public Select parse(XMLStreamReader in) throws XMLStreamException {
+	public Select parse(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
 		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : 
@@ -83,6 +83,7 @@ public class Select implements XMLStreamParserComponent {
 				case END_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
+						checkValidity();
 						return this; // we're done
 					}
 					// otherwise, error
@@ -92,9 +93,20 @@ public class Select implements XMLStreamParserComponent {
 		}
 		throw new RuntimeException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
 	}
+	
+	public void checkValidity() throws XMLParseValidationException {
+		if (!isValid()) {
+			// Diagnose the error and throw a custom error message depending on the error
+			StringBuilder errors = new StringBuilder();
+			if (source == 0) {
+				errors.append("No data source specified; ");
+			}
+			throw new XMLParseValidationException(errors.toString());
+		}
+	}
 
-	public String getParseTarget() {
-		return MAIN_ELEMENT_NAME;
+	public boolean isValid() {
+		return source != 0;
 	}
 	
 	public boolean isParseTarget(String name) {
@@ -126,6 +138,10 @@ public class Select implements XMLStreamParserComponent {
 	// =================
 	// GETTERS & SETTERS
 	// =================
+	public String getParseTarget() {
+		return MAIN_ELEMENT_NAME;
+	}
+	
 	public String getAggFunction() {
 		return aggFunction;
 	}
@@ -161,4 +177,5 @@ public class Select implements XMLStreamParserComponent {
 	public String getType() {
 		return type;
 	}
+
 }

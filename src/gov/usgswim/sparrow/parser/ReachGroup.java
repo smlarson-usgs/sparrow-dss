@@ -111,6 +111,7 @@ public class ReachGroup implements XMLStreamParserComponent {
 							adjs = Collections.emptyList();
 						}
 
+						checkValidity();
 						return this; // we're done
 					}
 					// otherwise, error
@@ -141,6 +142,17 @@ public class ReachGroup implements XMLStreamParserComponent {
 		return myClone;
 	}
 
+	public void checkValidity() throws XMLParseValidationException {
+		if (!isValid()) {
+			// throw a custom error message depending on the error
+			throw new XMLParseValidationException(MAIN_ELEMENT_NAME + " is not valid");
+		}
+	}
+
+	public boolean isValid() {
+		return true;
+	}
+	
 	// =================
 	// GETTERS & SETTERS
 	// =================

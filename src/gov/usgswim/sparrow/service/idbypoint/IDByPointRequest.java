@@ -124,6 +124,7 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 						if  (respFormat.fileName == null) {
 							respFormat.fileName = ID_BY_POINT_FILENAME;
 						}
+						checkValidity();
 						return this; // we're done
 					} else {
 						// otherwise, error
@@ -207,6 +208,17 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 //
 //		return myClone;
 //	}
+	
+	public void checkValidity() throws XMLParseValidationException {
+		if (!isValid()) {
+			// throw a custom error message depending on the error
+			throw new XMLParseValidationException(MAIN_ELEMENT_NAME + " is not valid");
+		}
+	}
+
+	public boolean isValid() {
+		return true;
+	}
 
 	// =================
 	// GETTERS & SETTERS

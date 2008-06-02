@@ -21,7 +21,7 @@ public class Content implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 	
-	public static Content parseStream(XMLStreamReader in) throws XMLStreamException {
+	public static Content parseStream(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
 		Content content = new Content();
 		return content.parse(in);
 	}
@@ -36,7 +36,7 @@ public class Content implements XMLStreamParserComponent {
 	// ================
 	// INSTANCE METHODS
 	// ================
-	public Content parse(XMLStreamReader in) throws XMLStreamException {
+	public Content parse(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
 		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : 
@@ -77,6 +77,7 @@ public class Content implements XMLStreamParserComponent {
 				case END_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
+						checkValidity();
 						return this; // we're done
 					}
 					// otherwise, error
@@ -87,6 +88,16 @@ public class Content implements XMLStreamParserComponent {
 		throw new RuntimeException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
 	}
 
+	public void checkValidity() throws XMLParseValidationException {
+		if (!isValid()) {
+			// throw a custom error message depending on the error
+			throw new XMLParseValidationException(MAIN_ELEMENT_NAME + " is not valid");
+		}
+	}
+
+	public boolean isValid() {
+		return true;
+	}
 
 	// =================
 	// GETTERS & SETTERS

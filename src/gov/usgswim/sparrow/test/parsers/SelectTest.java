@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.test.parsers;
 
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.Select;
+import gov.usgswim.sparrow.parser.XMLParseValidationException;
 
 import java.io.StringReader;
 
@@ -15,7 +16,7 @@ import junit.framework.TestCase;
 public class SelectTest extends TestCase {
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	
-	public void testParse1() throws XMLStreamException {
+	public void testParse1() throws XMLStreamException, XMLParseValidationException {
 		String testRequest = "<select>"
 		+ "		<data-series source=\"1\" per=\"area\">incremental</data-series>"
 		+ "		<agg-function per=\"area\">avg</agg-function>"
@@ -39,6 +40,26 @@ public class SelectTest extends TestCase {
 		// should have stopped at the end tag
 		assertTrue(reader.getEventType() == XMLStreamConstants.END_ELEMENT);
 		assertEquals(Select.MAIN_ELEMENT_NAME, reader.getLocalName());
+	}
+	
+	public void testMissingDataSeriesSourceParse() throws XMLStreamException, XMLParseValidationException {
+		String testRequest = "<select>"
+		+ "		<data-series per=\"area\">incremental</data-series>"
+		+ "		<agg-function per=\"area\">avg</agg-function>"
+		+ "		<analytic-function partition=\"HUC6\">rank-desc</analytic-function>"
+		+ "		<nominal-comparison type=\"percent\"/>"
+		+ "	</select>";
+		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
+		Select select = new Select();
+		reader.next();
+		try {
+			select.parse(reader);
+			fail("A parsing error should have been thrown with no data-series source");
+		} catch (Exception e) {
+			// expected exception thrown
+		}
+
+
 	}
 
 }

@@ -27,7 +27,7 @@ public class TerminalReaches implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 
-	public static TerminalReaches parseStream(XMLStreamReader in, Long modelID) throws XMLStreamException {
+	public static TerminalReaches parseStream(XMLStreamReader in, Long modelID) throws XMLStreamException, XMLParseValidationException {
 		TerminalReaches tr = new TerminalReaches(modelID);
 		return tr.parse(in);
 	}
@@ -49,7 +49,7 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	// ================
 	// INSTANCE METHODS
 	// ================
-	public TerminalReaches parse(XMLStreamReader in) throws XMLStreamException {
+	public TerminalReaches parse(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
 		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : 
@@ -83,6 +83,7 @@ public class TerminalReaches implements XMLStreamParserComponent {
 				case END_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
+						checkValidity();
 						return this; // we're done
 					} else if (REACHES_CHILD.equals(localName)) {
 						
@@ -139,6 +140,17 @@ public class TerminalReaches implements XMLStreamParserComponent {
 		}
 		
 		return myClone;
+	}
+	
+	public void checkValidity() throws XMLParseValidationException {
+		if (!isValid()) {
+			// throw a custom error message depending on the error
+			throw new XMLParseValidationException(MAIN_ELEMENT_NAME + " is not valid");
+		}
+	}
+
+	public boolean isValid() {
+		return true;
 	}
 
 	// =================

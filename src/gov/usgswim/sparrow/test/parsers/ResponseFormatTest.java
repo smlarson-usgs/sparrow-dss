@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.test.parsers;
 
 import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgswim.sparrow.parser.ResponseFormat;
+import gov.usgswim.sparrow.parser.XMLParseValidationException;
 
 import java.io.StringReader;
 
@@ -14,7 +15,7 @@ import junit.framework.TestCase;
 public class ResponseFormatTest extends TestCase {
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	
-	public void testParse() throws XMLStreamException {
+	public void testParse() throws XMLStreamException, XMLParseValidationException {
 		String testRequest="<response-format name='pre-configured format name' compress='zip'>"
 			+ "	<mime-type>text</mime-type>"
 			+ "	<template>beige</template>"
@@ -32,7 +33,7 @@ public class ResponseFormatTest extends TestCase {
 		
 	}
 	
-	public void testAlternateMimetypeString() throws XMLStreamException {
+	public void testAlternateMimetypeString() throws XMLStreamException, XMLParseValidationException {
 		String testRequest="<response-format name='pre-configured format name' compress='zip'>"
 			+ "	<mimeType>text</mimeType>"
 			+ "	<template>beige</template>"

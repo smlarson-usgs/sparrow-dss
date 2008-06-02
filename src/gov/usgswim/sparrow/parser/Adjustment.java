@@ -78,6 +78,7 @@ public class Adjustment implements XMLStreamParserComponent {
 				case END_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
+						checkValidity();
 						return this; // we're done
 					}
 					// otherwise, error
@@ -103,6 +104,17 @@ public class Adjustment implements XMLStreamParserComponent {
 		myClone.coef = coef;
 		
 		return myClone;
+	}
+	
+	public void checkValidity() throws XMLParseValidationException {
+		if (!isValid()) {
+			// throw a custom error message depending on the error
+			throw new XMLParseValidationException(MAIN_ELEMENT_NAME + " is not valid");
+		}
+	}
+
+	public boolean isValid() {
+		return true;
 	}
 
 	// =================
@@ -143,5 +155,6 @@ public class Adjustment implements XMLStreamParserComponent {
 		toHashCode();
 		return hash;
 	}
+
 	
 }

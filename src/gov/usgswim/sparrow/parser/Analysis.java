@@ -36,7 +36,7 @@ public class Analysis implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 	
-	public static Analysis parseStream(XMLStreamReader in) throws XMLStreamException {
+	public static Analysis parseStream(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
 		Analysis anal = new Analysis();
 		return anal.parse(in);
 	}
@@ -52,7 +52,7 @@ public class Analysis implements XMLStreamParserComponent {
 	// ================
 	// INSTANCE METHODS
 	// ================
-	public Analysis parse(XMLStreamReader in) throws XMLStreamException {
+	public Analysis parse(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
 		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : 
@@ -89,6 +89,7 @@ public class Analysis implements XMLStreamParserComponent {
 				case END_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
+						checkValidity();
 						return this; // we're done
 					}
 					// otherwise, error
@@ -139,7 +140,17 @@ public class Analysis implements XMLStreamParserComponent {
 		myClone.select = select;
 		return myClone;
 	}
+	
+	public void checkValidity() throws XMLParseValidationException {
+		if (!isValid()) {
+			// throw a custom error message depending on the error
+			throw new XMLParseValidationException(MAIN_ELEMENT_NAME + " is not valid");
+		}
+	}
 
+	public boolean isValid() {
+		return true;
+	}
 	// =================
 	// GETTERS & SETTERS
 	// =================

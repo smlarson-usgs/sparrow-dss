@@ -23,7 +23,7 @@ public class AreaOfInterest implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 	
-	public static AreaOfInterest parseStream(XMLStreamReader in, Long modelID) throws XMLStreamException {
+	public static AreaOfInterest parseStream(XMLStreamReader in, Long modelID) throws XMLStreamException, XMLParseValidationException {
 		AreaOfInterest aoi = new AreaOfInterest(modelID);
 		return aoi.parse(in);
 	}
@@ -44,7 +44,7 @@ public class AreaOfInterest implements XMLStreamParserComponent {
 	// ================
 	// INSTANCE METHODS
 	// ================
-	public AreaOfInterest parse(XMLStreamReader in) throws XMLStreamException {
+	public AreaOfInterest parse(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
 		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : 
@@ -75,6 +75,7 @@ public class AreaOfInterest implements XMLStreamParserComponent {
 				case END_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
+						checkValidity();
 						return this; // we're done
 					} else {// otherwise, error
 						throw new RuntimeException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);
@@ -121,6 +122,17 @@ public class AreaOfInterest implements XMLStreamParserComponent {
 		return myClone;
 	}
 
+	public void checkValidity() throws XMLParseValidationException {
+		if (!isValid()) {
+			// throw a custom error message depending on the error
+			throw new XMLParseValidationException(MAIN_ELEMENT_NAME + " is not valid");
+		}
+	}
+
+	public boolean isValid() {
+		return true;
+	}
+	
 	// =================
 	// GETTERS & SETTERS
 	// =================
