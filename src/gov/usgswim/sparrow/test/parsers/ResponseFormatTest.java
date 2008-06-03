@@ -63,8 +63,12 @@ public class ResponseFormatTest extends TestCase {
 	public void testSetCompression() {
 		ResponseFormat rf = new ResponseFormat();
 
-		rf.setMimeType("GzIp");
-		assertNull("currently unrecognized output type", rf.getOutputType());
+		try {
+	    rf.setMimeType("GzIp");
+	    this.fail("This should throw an exception b/c the mime-type does not exist");
+    } catch (RuntimeException e) {
+	    //Expected error
+    }
 
 		// note that setting the attribute is case-insensitive.
 		rf.setMimeType("zIp"); 

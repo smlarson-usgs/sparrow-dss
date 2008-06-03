@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.test.parsers;
 
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
+import gov.usgswim.sparrow.parser.ComparisonType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
@@ -27,6 +28,7 @@ public class PredictionContextTest extends TestCase {
 		assertEquals(Long.valueOf(22), pCon.getModelID());
 		assertEquals("HUC8", pCon.getAnalysis().getGroupBy());
 		assertEquals(3, pCon.getTerminalReaches().getReachIDs().size());
+		assertEquals(ComparisonType.absolute, pCon.getAnalysis().getSelect().getNominalComparison());
 	}
 	
 	public void testHashcode() throws Exception {
@@ -138,7 +140,7 @@ public class PredictionContextTest extends TestCase {
 		+ "			<data-series source=\"1\" per=\"area\">incremental</data-series>"
 		+ "			<agg-function per=\"area\">avg</agg-function>"
 		+ "			<analytic-function partition=\"HUC6\">rank-desc</analytic-function>"
-		+ "			<nominal-comparison type=\"percent | absolute\"/>"
+		+ "			<nominal-comparison type=\"absolute\"/>"
 		+ "		</select>"
 		+ "		<limit-to>contributors | terminals | area-of-interest</limit-to>"
 		+ "		<group-by>HUC8</group-by>"

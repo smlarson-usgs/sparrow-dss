@@ -55,7 +55,7 @@ public class AnalysisTest extends TestCase {
 			+ "		<data-series source=\"1\" per=\"area\">incremental</data-series>"
 			+ "		<agg-function per=\"area\">avg</agg-function>"
 			+ "		<analytic-function partition=\"HUC6\">rank-desc</analytic-function>"
-			+ "		<nominal-comparison type=\"percent | absolute\"/>"
+			+ "		<nominal-comparison type=\"percent\"/>"
 			+ "	</select>"
 			+ "	<limit-to>contributors</limit-to>"
 			+ "	<group-by>HUC8</group-by>"

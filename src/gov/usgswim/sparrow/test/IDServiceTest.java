@@ -75,13 +75,17 @@ public class IDServiceTest extends TestCase {
 	
 	public void testContextByPoint() throws Exception {
 
-		int CONTEXT_ID = -759573167;
-		
 		PredictContextRequest contextReq = buildPredictContext();	//Build a context from a canned file
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PredictContextPipeline PCPipe = new PredictContextPipeline();
 		PCPipe.dispatch(contextReq, out);
+		
+		/*
+		System.out.println("***");
+		System.out.println("PredictContextID: " + contextReq.getPredictionContext().hashCode());
+		System.out.println("***");
+		*/
 		
 		IDByPointRequest req = buildIDByPointRequest3();
 		
@@ -100,8 +104,6 @@ public class IDServiceTest extends TestCase {
 	
 	public void testContextByID() throws Exception {
 
-		int CONTEXT_ID = -759573167;
-		
 		PredictContextRequest contextReq = buildPredictContext();	//Build a context from a canned file
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();

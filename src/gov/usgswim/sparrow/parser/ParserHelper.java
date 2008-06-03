@@ -304,4 +304,67 @@ public abstract class ParserHelper {
   	}
   	
   }
+  
+	/**
+   * Returns the String found in the specified attribute of the current
+   * element.  If the attribute does not exist or is empty, an error is thrown.
+   * 
+   * @param reader
+   * @param attrib
+   * @return
+   * @throws Exception
+   */
+  public static String parseAttribAsString(
+  		XMLStreamReader reader, String attrib) throws XMLStreamException {
+  		
+  	return parseAttribAsString(reader, attrib, true);
+  }
+
+	/**
+   * Returns the String found in the specified attribute of the current
+   * element.  If require is true and the attribute does not exist, an error
+   * is thrown.  If the attribute does not exist or is empty and
+   * require is not true, null is returned.
+   * @param reader
+   * @param attrib
+   * @param require
+   * @return
+   * @throws Exception
+   */
+  public static String parseAttribAsString(
+  		XMLStreamReader reader, String attrib, boolean require) throws XMLStreamException {
+  	
+  	String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
+  	
+  	if (v != null && ! ("".equals(v))) {
+  		return v;
+  	} else if (require) {
+  		throw new XMLStreamException("The '" + attrib + "' attribute must exist and be non-empty for element '" + reader.getLocalName() + "'");
+  	} else {
+  		return null;
+  	}
+  	
+  }
+
+	/**
+   * Returns the String value found in the specified attribute of the current
+   * element.  If the attribute does not exist, the default value is returned.
+   * 
+   * @param reader
+   * @param attrib
+   * @param defaultVal Returned if the specified attribute does not exist or is empty.
+   * @return
+   */
+  public static String parseAttribAsString(
+  		XMLStreamReader reader, String attrib, String defaultVal) {
+  	
+  	String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
+  	
+  	if (v != null && ! ("".equals(v))) {
+  		return v;
+  	} else {
+  		return defaultVal;
+  	}
+  	
+  }
 }

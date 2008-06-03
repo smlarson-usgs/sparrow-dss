@@ -35,8 +35,7 @@ public class Select implements XMLStreamParserComponent {
 	private String aggFunction;
 	private String partition;
 	private String analyticFunction;
-	private String type;
-	private String nominalComparison;
+	private ComparisonType nominalComparison = ComparisonType.none;
 
 	// ================
 	// INSTANCE METHODS
@@ -76,8 +75,14 @@ public class Select implements XMLStreamParserComponent {
 						partition = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "partition");
 						analyticFunction = ParserHelper.parseSimpleElementValue(in);
 					} else if ("nominal-comparison".equals(localName)) {
-						type = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "type");
-						nominalComparison = ParserHelper.parseSimpleElementValue(in);
+						String type = ParserHelper.parseAttribAsString(in, "type", "none");
+						
+						try {
+	            nominalComparison = ComparisonType.valueOf(type);
+            } catch (IllegalArgumentException e) {
+	            throw new XMLParseValidationException("The nominal-comparison type '" + type + "' is unrecognized");
+            }
+						ParserHelper.ignoreElement(in);
 					} else {
 						throw new RuntimeException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
 					}
@@ -125,7 +130,7 @@ public class Select implements XMLStreamParserComponent {
 		
 		//Note: The hashcode of an enum is not repeatable
 		if (dataSeries != null) {
-			hash.append(dataSeries.ordinal());
+			hash.append(dataSeries.ordinal());	//must be repeatable (thus ordinal)
 		}
 		
 		hash.append(source);
@@ -134,8 +139,7 @@ public class Select implements XMLStreamParserComponent {
 		hash.append(aggFunction);
 		hash.append(partition);
 		hash.append(analyticFunction);
-		hash.append(type);
-		hash.append(nominalComparison);
+		hash.append(nominalComparison.ordinal());	//never null, and must be repeatable (thus ordinal)
 		
 		return hash.toHashCode();
 
@@ -168,7 +172,7 @@ public class Select implements XMLStreamParserComponent {
 		return dataSeriesPer;
 	}
 
-	public String getNominalComparison() {
+	public ComparisonType getNominalComparison() {
 		return nominalComparison;
 	}
 
@@ -178,10 +182,6 @@ public class Select implements XMLStreamParserComponent {
 
 	public Integer getSource() {
 		return source;
-	}
-
-	public String getType() {
-		return type;
 	}
 
 }

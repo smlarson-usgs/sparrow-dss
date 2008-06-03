@@ -28,7 +28,7 @@
 				<agg-function per="area">avg</agg-function> <!-- rank would be rank of the group within the whole -->
 				<analytic-function partition="HUC6">rank-desc</analytic-function>
 
-				<nominal-comparison type="percent | absolute"/>
+				<nominal-comparison type="absolute"/>
 			</select>
 			<limit-to>contributors | terminals | area-of-interest</limit-to>
 
