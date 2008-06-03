@@ -2,9 +2,12 @@ package gov.usgswim.sparrow.service.idbypoint;
 
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.adjustment.FilteredDataTable;
 import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.SparrowModelProperties;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.PropertyLoaderHelper;
@@ -128,42 +131,32 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			int identifier = (response.reachID == 0)? req.getReachID(): response.reachID;
 			response.reachID = identifier;
 		}
-		String basicAttributesQuery = props.getText("basicAttSelectClause") + " FROM MODEL_ATTRIB_VW "
-			+ " WHERE IDENTIFIER=" + response.reachID 
-			+ " AND SPARROW_MODEL_ID=" + req.getModelID();
-		
+		//***
+		String attributesQuery = props.getText("attributesSelectClause") + " FROM MODEL_ATTRIB_VW "
+		+ " WHERE IDENTIFIER=" + response.reachID 
+		+ " AND SPARROW_MODEL_ID=" + req.getModelID();
 		
 		Connection conn = getConnection();
 		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		ResultSet rset = st.executeQuery(basicAttributesQuery);
-		response.basicAttributes = DataTableUtils.toDataTable(rset);
+		ResultSet rset = st.executeQuery(attributesQuery);
+		DataTableWritable attributes = DataTableUtils.toDataTable(rset);
 		closeConnection(conn, rset);
-
-		String sparrowAttributesQuery =  props.getText("sparrowAttSelectClause") + " FROM MODEL_REACH "
-			+ " WHERE IDENTIFIER=" + response.reachID
-			+ " AND SPARROW_MODEL_ID=" + req.getModelID();
-
-		conn = getConnection();
-		st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		rset = st.executeQuery(sparrowAttributesQuery);
-		response.sparrowAttributes = DataTableUtils.toDataTable(rset);
-		closeConnection(conn, rset);
+		
+		// TODO [IK] This 4 is hardcoded for now. Have to go back and use SparrowModelProperties to do properly
+		response.basicAttributes = new FilteredDataTable(attributes, 4, attributes.getColumnCount()- 4);
+		response.sparrowAttributes = new FilteredDataTable(attributes, 0, 4);
 		 
 		// DEBUG
 //		TemporaryHelper.printDataTable(response.sparrowAttributes);
 		
-		StringBuilder basicAttributesSection = toSection(response.basicAttributes, "Basic Attributes", "basic_attrib");		
+		StringBuilder basicAttributesSection = toSection(response.basicAttributes, "Basic Attributes", "basic_attrib");
 		StringBuilder sparrowAttributesSection = toSection(response.sparrowAttributes, "SPARROW Attributes", "sparrow_attrib");
 
 		response.attributesXML = props.getText("attributesXMLResponseStart") + basicAttributesSection + sparrowAttributesSection + props.getText("attributesXMLResponseEnd");
 
-		// TODO [IK]convert the attributes DataTables to XML. At this point, it's still just a mock.
-		// TODO create a DataTableToRCXML (rc=row column) method to do this to convert to data portion, taking into account id
-		// DataTableToRCXML(DataTable data, int cols); to fill/pad the rows.
-		// makeRCHeaders(String... ) for column headers.
-		// Create a combo XMLStreamReader to enable several streamreader to be assembled sequentially, using hasNext to query.
+		// TODO Create a combo XMLStreamReader to enable several streamreader to be assembled sequentially, using hasNext to query.
 		// This makes the pieces combineable.
-//		response.attributesXML = props.getText("attributesXMLResponse");
+
 	}
 
 	private StringBuilder toSection(DataTable basicAttributes, String display, String name) {
@@ -172,13 +165,20 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			sb = new StringBuilder("<section display=\"");
 			sb.append(display).append("\" name=\"").append(name).append("\">\n");
 			for (int j=0; j<basicAttributes.getColumnCount(); j++) {
-				sb.append("<r><c>").append(basicAttributes.getName(j)).append("</c><c>");
+				String columnName = basicAttributes.getName(j);
+				sb.append("<r><c>").append(columnName).append("</c><c>");
 				String value = basicAttributes.getString(0, j);
 				value = (value == null)? "N/A": value;
 				sb.append(value).append("</c>");
 				String units = basicAttributes.getUnits(j);
+				// look up the units if not available in DataTable attributes
+				// TODO [IK] Should populate the DataTable units property rather
+				// than do lookup, but right now that would
+				// touch too many classes and needs to be tested.
+				units = (units == null)? SparrowModelProperties.HARDCODED_ATTRIBUTE_UNITS.get(columnName): units;
+
 				if (units != null) {
-					sb.append("<c>").append(units).append("</c");
+					sb.append("<c>").append(units).append("</c>");
 				} else {
 					sb.append("<c/>");
 				}
@@ -188,7 +188,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		}
 		return sb;
 	}
-
+	
 	private void closeConnection(Connection conn, ResultSet rset) {
 		// TODO [IK] implement a utility method for closing connections and refactor to a different place. Doesn't belong here.
 		try {

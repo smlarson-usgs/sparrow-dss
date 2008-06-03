@@ -64,6 +64,8 @@
 	&lt;!-- Ask for just the info on the adjustments tab. --&gt;
 	&lt;content&gt;
 		&lt;adjustments/&gt;
+		&lt;!-- &lt;attributes/&gt; uncomment this to get attributes --&gt;
+		&lt;!-- &lt;predicted/&gt;  uncomment this to get predicted --&gt;
 	&lt;/content&gt;
 	
 	&lt;!-- Get the response back as JSON --&gt;
