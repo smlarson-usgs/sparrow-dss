@@ -21,7 +21,7 @@ import gov.usgswim.task.ComputableCache;
 /**
  * This factory class creates a PredictResult on demand for an EHCache.
  * 
- * When the cache receives a get(PredictRequest) call and it doesn't have a cache
+ * When the cache receives a get(predictContext) call and it doesn't have a cache
  * entry for that request, the createEntry() method of this class is called
  * and the returned value is cached.
  * 
@@ -47,8 +47,8 @@ public class PredictResultFactory implements CacheEntryFactory {
 	protected static Logger log =
 		Logger.getLogger(PredictResultFactory.class); //logging for this class
 	
-	public Object createEntry(Object predictRequest) throws Exception {
-		PredictionContext context = (PredictionContext)predictRequest;
+	public Object createEntry(Object predictContext) throws Exception {
+		PredictionContext context = (PredictionContext)predictContext;
 		
 		PredictData data = SharedApplication.getInstance().getPredictData(context.getModelID());
 		PredictData adjData = data;	//assume no adjustments
