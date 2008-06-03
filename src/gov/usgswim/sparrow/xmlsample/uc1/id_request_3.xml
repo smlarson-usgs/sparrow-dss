@@ -16,6 +16,6 @@
 	
 	<!-- Get the response back as JSON -->
 	<response-format>
-		<mime-type>application/json</mime-type>
+		<mime-type>JSON</mime-type>
 	</response-format>
 </sparrow-id-request>

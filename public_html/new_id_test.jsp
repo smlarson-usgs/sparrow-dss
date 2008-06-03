@@ -50,37 +50,30 @@
 			National Model w/ gross and specific adjustments.
 			</p>
 			<textarea id="xml_input_1" name="xmlreq" cols="120" rows="20">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;ISO-8859-1&quot; ?&gt;
 &lt;sparrow-id-request
-  xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_2"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	&lt;!-- Eliminated the result-count from the root element - it only makes sense to return one reach -->
+  xmlns=&quot;http://www.usgs.gov/sparrow/id-point-request/v0_2&quot;
+	xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;
 	
-	&lt;!-- model-id attribute added as a temporary hack -->
-	&lt;prediction-context context-id="12312" model-id="22"/>
+	&lt;!-- The user does not have a prediction context yet, so we use the model-id here --&gt;
+	&lt;model-id&gt;22&lt;/model-id&gt;
 	
-	&lt;!-- Request can include one of these elements: -->
-	&lt;point lat="40" long="-100"/> or &lt;reach>1234874&lt;/reach>
+	&lt;!-- Where the user clicked --&gt;
+	&lt;point lat=&quot;39.5&quot; long=&quot;-76.68&quot;/&gt;
 	
-	&lt;content>
-		&lt;!-- The response document can include from zero to all of the following: -->
-		&lt;adjustments/>
-		&lt;attributes/>
-		&lt;predicted/>
-		&lt;!-- an 'all' element is also accepted -->
-	&lt;/content>
+	&lt;!-- Ask for just the info on the adjustments tab. --&gt;
+	&lt;content&gt;
+		&lt;adjustments/&gt;
+	&lt;/content&gt;
 	
-	&lt;!--
-	This is the same response-format element used in other documents.
-	There are lots of other added parts, but application/json or
-	applicatoin/xml are really the only two possible values for this docuemnt.
-	-->
-	&lt;response-format>
-		&lt;mime-type>xml&lt;/mime-type>
-	&lt;/response-format>
-&lt;/sparrow-id-request>
+	&lt;!-- Get the response back as JSON --&gt;
+	&lt;response-format&gt;
+		&lt;mime-type&gt;XML&lt;/mime-type&gt;
+	&lt;/response-format&gt;
+&lt;/sparrow-id-request&gt;
 			</textarea>
 			<input type="submit" name="submit" value="submit"/>
-			<input type="checkbox" name="mimetype" value="json">json
+			<input type="checkbox" name="mimetype" value="JSON">json
 		</fieldset>
 	</form>
 	</body>

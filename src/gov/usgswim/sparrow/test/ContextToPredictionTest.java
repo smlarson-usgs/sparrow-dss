@@ -7,6 +7,8 @@ import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.service.idbypoint.IDByPointPipeline;
+import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 
@@ -38,7 +40,7 @@ public class ContextToPredictionTest extends TestCase {
 	
 	public void testBasicPredictionValues() throws Exception {
 
-		PredictContextRequest contextReq = buildRequest();	//Build a context from a canned file
+		PredictContextRequest contextReq = buildPredictContext();	//Build a context from a canned file
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PredictContextPipeline pipe = new PredictContextPipeline();
@@ -136,8 +138,8 @@ public class ContextToPredictionTest extends TestCase {
 	}
 	
 	public void testHashCode() throws Exception {
-		PredictionContext context1 = buildRequest().getPredictionContext();
-		PredictionContext context2 = buildRequest().getPredictionContext();
+		PredictionContext context1 = buildPredictContext().getPredictionContext();
+		PredictionContext context2 = buildPredictContext().getPredictionContext();
 		
 		assertEquals(context1.hashCode(), context2.hashCode());
 		assertEquals(context1.getId(), context2.getId());
@@ -145,11 +147,19 @@ public class ContextToPredictionTest extends TestCase {
 	}
 	
 	
-	public PredictContextRequest buildRequest() throws Exception {
+	public PredictContextRequest buildPredictContext() throws Exception {
 		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-context-1.xml");
 		String xml = readToString(is);
 		
 		PredictContextPipeline pipe = new PredictContextPipeline();
+		return pipe.parse(xml);
+	}
+	
+	public IDByPointRequest buildIDByPointRequest1() throws Exception {
+		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/id_request_1.xml");
+		String xml = readToString(is);
+		
+		IDByPointPipeline pipe = new IDByPointPipeline();
 		return pipe.parse(xml);
 	}
 	

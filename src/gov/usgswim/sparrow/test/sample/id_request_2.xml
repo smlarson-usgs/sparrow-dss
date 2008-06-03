@@ -3,19 +3,18 @@
   xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	
-	<!-- The user now has a prediction context, so use it. -->
-	<prediction-context context-id="389392"/>
+	<!-- The user does not have a prediction context yet, so we use the model-id here -->
+	<model-id>22</model-id>
 	
-	<!-- We now know the ID of the reach, so use it. -->
-	<reach id="15"/>
+	<reach id="4428"/>
 	
-	<!-- Ask for just the info on the 2nd tab. -->
+	<!-- Ask for just the info on the adjustments tab. -->
 	<content>
-		<predicted/>
+		<adjustments/>
 	</content>
 	
 	<!-- Get the response back as JSON -->
 	<response-format>
-		<mime-type>JSON</mime-type>
+		<mime-type>XML</mime-type>
 	</response-format>
 </sparrow-id-request>

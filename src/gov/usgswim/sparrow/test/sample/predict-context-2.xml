@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<prediction-context
+  xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	model-id="22">
+		<adjustment-groups conflicts="accumulate">
+
+			<reach-group enabled="true" name="Wisconsin">
+				<desc>Wisconsin River Plants</desc>
+				<notes>
+					We know of 3 plants on the Wisconsin River which have announced improved
+					BPM implementations.
+				</notes>
+				<adjustment src="4" coef=".75"/>
+				
+				<!-- Note:  these are the first two reaches in model 1 -->
+				<reach id="4428">
+					<adjustment src="2" abs="123456"/>
+					<adjustment src="3" abs="654321"/>
+				</reach>
+			</reach-group>
+
+		</adjustment-groups>
+		<analysis>
+			<select>
+
+				<data-series source="1" per="area">incremental</data-series>
+				<agg-function per="area">avg</agg-function> <!-- rank would be rank of the group within the whole -->
+				<analytic-function partition="HUC6">rank-desc</analytic-function>
+
+				<nominal-comparison type="percent | absolute"/>
+			</select>
+			<limit-to>contributors | terminals | area-of-interest</limit-to>
+
+			<group-by>HUC8</group-by>
+			
+		</analysis>
+		
+
+</prediction-context>

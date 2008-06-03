@@ -19,6 +19,7 @@ public class _IntegrationTests {
 		suite = new TestSuite("Integration Tests");
 
 		suite.addTestSuite(ContextToPredictionTest.class);
+		suite.addTestSuite(IDServiceTest.class);
 
 		return suite;
 	}
