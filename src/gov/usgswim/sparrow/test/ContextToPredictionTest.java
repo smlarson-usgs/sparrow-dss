@@ -71,6 +71,10 @@ public class ContextToPredictionTest extends TestCase {
 		//For comparison, get the prediction data (original model data) from the cache (cached by PredictResultFactory)
 		PredictData predictData = SharedApplication.getInstance().getPredictData(contextFromCache.getModelID());
 		
+		//Also for comparison, get the nominal predicted values
+		PredictionContext nomContext = new PredictionContext(contextFromCache.getModelID(), null, null, null, null);
+		PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
+		
 		assertEquals(new Long(1L), contextFromCache.getModelID());
 		assertNotNull(predictData);
 		assertNotNull(predictResult);
@@ -115,6 +119,20 @@ public class ContextToPredictionTest extends TestCase {
 				adjSrc.getDouble(rowForReach3077, colForSrc2),
 				.0000001d);
 		
+		//Only 2 sources has been adjusted on 2 reaches.  As a quick test, compare the
+		//incremental predicted values (nominal vs adjusted) of some of those sources.
+		//Only the adjusted source (source 2) should be affected.
+		assertEquals(predictResult.getIncrementalForSrc(rowForReach3074, 1L), nomResult.getIncrementalForSrc(rowForReach3074, 1L));
+		assertTrue(predictResult.getIncrementalForSrc(rowForReach3074, 2L) != nomResult.getIncrementalForSrc(rowForReach3074, 2L));
+		assertEquals(predictResult.getIncrementalForSrc(rowForReach3074, 3L), nomResult.getIncrementalForSrc(rowForReach3074, 3L));
+		assertEquals(predictResult.getIncrementalForSrc(rowForReach3074, 4L), nomResult.getIncrementalForSrc(rowForReach3074, 4L));
+		assertEquals(predictResult.getIncrementalForSrc(rowForReach3074, 5L), nomResult.getIncrementalForSrc(rowForReach3074, 5L));
+		
+		assertEquals(predictResult.getIncrementalForSrc(rowForReach3077, 1L), nomResult.getIncrementalForSrc(rowForReach3077, 1L));
+		assertTrue(predictResult.getIncrementalForSrc(rowForReach3077, 2L) != nomResult.getIncrementalForSrc(rowForReach3077, 2L));
+		assertEquals(predictResult.getIncrementalForSrc(rowForReach3077, 3L), nomResult.getIncrementalForSrc(rowForReach3077, 3L));
+		assertEquals(predictResult.getIncrementalForSrc(rowForReach3077, 4L), nomResult.getIncrementalForSrc(rowForReach3077, 4L));
+		assertEquals(predictResult.getIncrementalForSrc(rowForReach3077, 5L), nomResult.getIncrementalForSrc(rowForReach3077, 5L));
 		
 		////////
 		// These tests are added to check that the column indexes and values returned
