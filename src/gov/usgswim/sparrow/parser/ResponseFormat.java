@@ -57,7 +57,12 @@ public class ResponseFormat implements XMLStreamParserComponent {
 				case START_ELEMENT:
 					localName = in.getLocalName();
 					if ("mime-type".equals(localName) || "mimeType".equals(localName)) {
-						setMimeType(ParserHelper.parseSimpleElementValue(in));
+						String mime = ParserHelper.parseSimpleElementValue(in);
+						try {
+	            setMimeType(mime);
+            } catch (RuntimeException e) {
+            	throw new XMLParseValidationException("The mime-type '" + mime + "' is unrecognized.");
+            }
 					} else if (MAIN_ELEMENT_NAME.equals(localName)) {
 						// pull out the relevant attributes in the target start tag
 						compressMethod = in.getAttributeValue(null, "compress");
@@ -103,6 +108,9 @@ public class ResponseFormat implements XMLStreamParserComponent {
 			this.mimeType = mimeType.toLowerCase();
 			// set the associated output type
 			outputType = OutputType.parse(mimeType);
+			if (outputType == null) {
+				throw new RuntimeException("The mime-type '" + mimeType + "' is unrecognized.");
+			}
 		}
 	}
 
