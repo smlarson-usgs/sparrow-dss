@@ -39,13 +39,23 @@ public class LifecycleListener implements ServletContextListener {
 	 * This method should properly shutdown the cache and any other shared resources.
 	 */
 	public void contextDestroyed(ServletContextEvent context) {
+		contextDestroyed(context, false);
+	}
+	
+	public void contextDestroyed(ServletContextEvent context, boolean clearCache) {
 		if (context != null) {
 			log.info("Stopping the SPARROW application within a servlet context - shutting down the cache");
 		} else {
 			log.info("Stopping the SPARROW application (non-servlet deployment) - shutting down the cache");
 		}
 		
+		if (clearCache) {
+			log.info("Clearing the cache as requested");
+			CacheManager.getInstance().clearAll();
+		}
+		
 		CacheManager.getInstance().shutdown();
+		
 	}
 
 	/**
