@@ -107,15 +107,17 @@
 		total* (1)
 		incremental*	(2)
 		total-no-decay*	(3)
-		total-delivered-fraction*	(4)
+		delivered-fraction* (4)
 		total-decay	(5)
 		incremental-yield*	(6/7)
 		incremental-delivered*	(25)
+		total-delivered*	(not listed)
 		concentration*	(8)
 		land-to-water-coef
 		instream-decay-coef
 		incremental-share** (9)
 		source-value**
+		
 		
 		total-delivered-yield* (not listed)
 		incremental-delivered-yield* (not listed)
@@ -148,9 +150,9 @@
 				incremental*
 				total-no-decay*+
 				total-delivered*! (not included in Greg's email)
-				total-delivered-fraction*!
 				total-decay+
 				incremental-delivered*!
+				delivered-fraction***!
 				source-value**
 				land-to-water-coef
 				instream-decay-coef***

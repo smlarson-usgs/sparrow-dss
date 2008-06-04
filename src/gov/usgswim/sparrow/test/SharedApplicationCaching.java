@@ -7,7 +7,7 @@ import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.PredictRunner;
-import gov.usgswim.sparrow.datatable.DataTableCompare;
+import gov.usgswim.sparrow.datatable.DataTableCompareOld;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -145,24 +145,24 @@ public class SharedApplicationCaching extends TestCase {
 	@SuppressWarnings("deprecation")
   public void doFullCompare(PredictData expect, PredictData data) throws Exception {
 
-			DataTableCompare comp = null;	//used for all comparisons
+			DataTableCompareOld comp = null;	//used for all comparisons
 
-			comp = new DataTableCompare(expect.getCoef(), data.getCoef());
+			comp = new DataTableCompareOld(expect.getCoef(), data.getCoef());
 			assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
 
-			comp = new DataTableCompare(expect.getDecay(), data.getDecay());
+			comp = new DataTableCompareOld(expect.getDecay(), data.getDecay());
 			assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
 
-			comp = new DataTableCompare(expect.getSrc(), data.getSrc());
+			comp = new DataTableCompareOld(expect.getSrc(), data.getSrc());
 			assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
 
-			comp = new DataTableCompare(expect.getSrcMetadata(), data.getSrcMetadata());
+			comp = new DataTableCompareOld(expect.getSrcMetadata(), data.getSrcMetadata());
 			assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
 
-			comp = new DataTableCompare(expect.getSys(), data.getSys());
+			comp = new DataTableCompareOld(expect.getSys(), data.getSys());
 			assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
 
-			comp = new DataTableCompare(expect.getTopo(), data.getTopo());
+			comp = new DataTableCompareOld(expect.getTopo(), data.getTopo());
 			assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
 			for (int i = 0; i < comp.getColumnCount(); i++)  {
 				System.out.println("col " + i + " error: " + comp.findMaxCompareValue(i));

@@ -4,7 +4,7 @@ import gov.usgswim.datatable.adjustment.FilteredDataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.PredictRunner;
-import gov.usgswim.sparrow.datatable.DataTableCompare;
+import gov.usgswim.sparrow.datatable.DataTableCompareOld;
 import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.domain.Source;
@@ -126,9 +126,9 @@ public class JDBCUtil_Test extends TestCase {
 		//Load the db version of the same model
 		dbDs = DataLoader.loadFullModelDataSet(conn, 21);
 
-		DataTableCompare comp = new DataTableCompare(textDs.getSrc(), dbDs.getSrc());
-		DataTableCompare topo = new DataTableCompare(textDs.getTopo(), dbDs.getTopo());
-		DataTableCompare coef = new DataTableCompare(textDs.getCoef(), dbDs.getCoef());
+		DataTableCompareOld comp = new DataTableCompareOld(textDs.getSrc(), dbDs.getSrc());
+		DataTableCompareOld topo = new DataTableCompareOld(textDs.getTopo(), dbDs.getTopo());
+		DataTableCompareOld coef = new DataTableCompareOld(textDs.getCoef(), dbDs.getCoef());
 
 
 		for (int i = 0; i < comp.getColumnCount(); i++)  {
@@ -155,53 +155,53 @@ public class JDBCUtil_Test extends TestCase {
 	}
 
 
-	protected DataTableCompare buildTopoComparison(DataTable toBeCompared) throws Exception {
+	protected DataTableCompareOld buildTopoComparison(DataTable toBeCompared) throws Exception {
 		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/topo.txt");
 		DataTable data = TabDelimFileUtil.readAsInteger(fileStream, true, -1);
 
-		DataTableCompare comp = new DataTableCompare(data, toBeCompared);
+		DataTableCompareOld comp = new DataTableCompareOld(data, toBeCompared);
 
 		return comp;
 	}
 
-	protected DataTableCompare buildSourceReachCoefComparison(DataTable toBeCompared) throws Exception {
+	protected DataTableCompareOld buildSourceReachCoefComparison(DataTable toBeCompared) throws Exception {
 		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/coef.txt");
 		DataTable data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 		int firstNonZeroRow = data.findFirst(0, Double.valueOf(1));
 		DataTable view = new FilteredDataTable(data, 0, firstNonZeroRow, 4, 11);	//Crop to only iteration 0 and remove non-coef columns
 		// System.out.println("DEBUG: " + view.getRowCount() + " - " + toBeCompared.getRowCount());
-		DataTableCompare comp = new DataTableCompare(view, toBeCompared);
+		DataTableCompareOld comp = new DataTableCompareOld(view, toBeCompared);
 
 		return comp;
 	}
 
-	protected DataTableCompare buildDecayComparison(DataTable toBeCompared) throws Exception {
+	protected DataTableCompareOld buildDecayComparison(DataTable toBeCompared) throws Exception {
 		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/coef.txt");
 		DataTable data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 		int firstNonZeroRow = data.findFirst(0, Double.valueOf(1d));
 		DataTable view = new FilteredDataTable(data, 0, firstNonZeroRow, 1, 2);	//Crop to only iteration 0 and only the two decay columns
 
-		DataTableCompare comp = new DataTableCompare(view, toBeCompared);
+		DataTableCompareOld comp = new DataTableCompareOld(view, toBeCompared);
 
 		return comp;
 	}
 
-	protected DataTableCompare buildSourceValueComparison(DataTable toBeCompared) throws Exception {
+	protected DataTableCompareOld buildSourceValueComparison(DataTable toBeCompared) throws Exception {
 		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/src.txt");
 		DataTable data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 
-		DataTableCompare comp = new DataTableCompare(data, toBeCompared);
+		DataTableCompareOld comp = new DataTableCompareOld(data, toBeCompared);
 
 		return comp;
 	}
 
-	protected DataTableCompare buildPredictionComparison(DataTable toBeCompared) throws Exception {
+	protected DataTableCompareOld buildPredictionComparison(DataTable toBeCompared) throws Exception {
 		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict.txt");
 		DataTable data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 		int[] DEFAULT_COMP_COLUMN_MAP =
 			new int[] {40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 39, 15};
 
-		DataTableCompare comp = new DataTableCompare(toBeCompared, data, DEFAULT_COMP_COLUMN_MAP);
+		DataTableCompareOld comp = new DataTableCompareOld(toBeCompared, data, DEFAULT_COMP_COLUMN_MAP);
 
 		return comp;
 	}

@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow;
 
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
-import gov.usgswim.sparrow.datatable.PredictResultImm;
+import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.task.Computable;
 import gov.usgswim.task.ComputableCache;
@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
  * By implementing Computable, this task can be put in a ComputableCache, which
  * executes the task if the result does not already exist.
  */
-public class PredictComputable implements Computable<PredictRequest, PredictResultImm> {
+public class PredictComputable implements Computable<PredictRequest, PredictResult> {
 	protected static Logger log =
 		Logger.getLogger(PredictComputable.class); //logging for this class
 
@@ -22,13 +22,13 @@ public class PredictComputable implements Computable<PredictRequest, PredictResu
 	public PredictComputable() {
 	}
 
-	public PredictResultImm compute(PredictRequest request) throws Exception {
+	public PredictResult compute(PredictRequest request) throws Exception {
 		PredictData data = loadData(request);
 		PredictData adjData = adjustData(request, data);
 
 		long startTime = System.currentTimeMillis();
 
-		PredictResultImm result = runPrediction(request, adjData);
+		PredictResult result = runPrediction(request, adjData);
 
 		log.debug(
 				"Prediction done for model #" + request.getModelId() + 
@@ -91,9 +91,9 @@ public class PredictComputable implements Computable<PredictRequest, PredictResu
 	 * @return
 	 * @throws Exception 
 	 */
-	public PredictResultImm runPrediction(PredictRequest req, PredictData data) throws Exception {
+	public PredictResult runPrediction(PredictRequest req, PredictData data) throws Exception {
 		PredictRunner adjPredict = new PredictRunner(data);
-		PredictResultImm result = adjPredict.doPredict();
+		PredictResult result = adjPredict.doPredict();
 		return result;
 	}
 }

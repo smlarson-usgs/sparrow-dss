@@ -28,12 +28,25 @@ public class Analysis implements XMLStreamParserComponent {
 	private static final String GROUP_BY_CHILD = "group-by";
 	private static final String LIMIT_TO_CHILD = "limit-to";
 	public static final String MAIN_ELEMENT_NAME = "analysis";
+	
+	public static final Analysis DEFAULT_TOTAL_INSTANCE = new Analysis(new Select(DataSeriesType.total));
 
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
 	// =============================
 	public static boolean isTargetMatch(String tagName) {
 		return MAIN_ELEMENT_NAME.equals(tagName);
+	}
+	
+	
+	public Analysis() {};
+	
+	public Analysis(Select select) {
+		this.select = select;
+	};
+	
+	public static Analysis getDefaultTotalAnalysis() {
+		return DEFAULT_TOTAL_INSTANCE;
 	}
 	
 	public static Analysis parseStream(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {

@@ -2,9 +2,11 @@ package gov.usgswim.sparrow;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.service.AbstractHttpRequestParser;
+import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.Analysis;
+import gov.usgswim.sparrow.parser.ComparisonType;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.Select;
@@ -182,11 +184,9 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 			PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
 			
 			if (context != null) {
-				PredictResultImm predictResult = SharedApplication.getInstance().getPredictResult(context);
-				PredictData predictData = SharedApplication.getInstance().getPredictData(context.getModelID());
 
 				try {
-	        nsData = copyToNSDataSet(predictResult, predictData, context.getAnalysis());
+	        nsData = copyToNSDataSet(context);
         } catch (Exception e) {
         	e.printStackTrace();
         	throw new RuntimeException(e);
@@ -203,18 +203,20 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 		} else if (properties.containsKey(MODEL_ID) && properties.get(MODEL_ID) != null) {
 			
 			Long modelId = Long.parseLong( properties.get(MODEL_ID).toString() );
-			PredictionContext context = new PredictionContext(modelId, null, null, null, null);
+			PredictionContext context = new PredictionContext(modelId, null, Analysis.getDefaultTotalAnalysis(), null, null);
 			
 			log.debug("MVDP model-id request (map calibrated state).  PC hash = " + context.hashCode());
 
-			PredictResultImm predictResult = SharedApplication.getInstance().getPredictResult(context);
-			PredictData predictData = SharedApplication.getInstance().getPredictData(context.getModelID());
-			nsData = copyToNSDataSet(predictResult, predictData.getSys(), PredictServiceRequest.DataSeries.TOTAL);
+			try {
+        nsData = copyToNSDataSet(context);
+      } catch (Exception e) {
+      	e.printStackTrace();
+      	throw new RuntimeException(e);
+      }
 
 			log.debug("MVSparrowDataProvider done for model #" + context.getModelID() + " (" + nsData.size() + " rows) Time: " + (System.currentTimeMillis() - startTime) + "ms");
 
 			return nsData;
-			
 			
 		} else {
 			log.debug("Request treated as parameter request.");
@@ -283,20 +285,22 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 	}
 	
 	
-	protected NSDataSet copyToNSDataSet(PredictResult result, PredictData predictData, Analysis analysis) throws Exception {
+	protected NSDataSet copyToNSDataSet(PredictionContext context) throws Exception {
 
-		int rowCount = result.getRowCount();
-		NSRow[] nsRows = new NSRow[rowCount];
-
-		Select select = analysis.getSelect();
-		DataSeriesType type = select.getDataSeries();
+		PredictData predictData = SharedApplication.getInstance().getPredictData(context.getModelID());
 		
 		int dataColIndex = 0;	//The column of the data in the resultTable (unknown initially)
 		DataTable resultTable = null;	//The table to get data from (could be results of prediction, source vals, or other)
 		
-		DataTable sysInfo = predictData.getSys();	//The table w/ row Identifiers
 		
-		switch (type) {
+		Select select = context.getAnalysis().getSelect();
+		DataSeriesType type = select.getDataSeries();
+		
+		if (type.isResultBased()) {
+			//We will try to get result-based series out of the analysis cache
+			PredictResult result = SharedApplication.getInstance().getAnalysisResult(context);
+			
+			switch (type) {
 			case total:
 				if (select.getSource() != null) {
 					dataColIndex = result.getTotalColForSrc(select.getSource().longValue());
@@ -314,17 +318,43 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 				}
 				resultTable = result;
 				break;
+			default:
+				throw new Exception("No data-series was specified in the analysis section");
+			}
+			
+		} else {
+			switch (type) {
 			case source_value:
 				if (select.getSource() != null) {
+					
 					dataColIndex = predictData.getSourceColumnForSourceID(select.getSource());
-					resultTable = predictData.getSrc();
+					
+					if (select.getNominalComparison().isNone()) {
+						
+						resultTable = predictData.getSrc();
+						
+					} else  {
+						
+						//working w/ either a percent or absolute comparison
+						PredictData nomPredictData = SharedApplication.getInstance().getPredictData(context.getModelID());
+						resultTable = new DataTableCompare(
+								nomPredictData.getSrc(),
+								predictData.getSrc(),
+								select.getNominalComparison().equals(ComparisonType.absolute));
+					}
 				} else {
 					throw new Exception("The data series 'source_value' requires a source ID to be specified.");
 				}
 				break;
 			default:
 				throw new Exception("No data-series was specified in the analysis section");
+			}
 		}
+		int rowCount = resultTable.getRowCount();
+		NSRow[] nsRows = new NSRow[rowCount];
+
+		DataTable sysInfo = predictData.getSys();	//The table w/ row Identifiers
+		
 
 		//Build the 
 		for (int r=0; r < rowCount; r++) {

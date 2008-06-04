@@ -37,6 +37,12 @@ public class Select implements XMLStreamParserComponent {
 	private String analyticFunction;
 	private ComparisonType nominalComparison = ComparisonType.none;
 
+	public Select() {};
+	
+	public Select(DataSeriesType dataSeries) {
+		this.dataSeries = dataSeries;
+	}
+	
 	// ================
 	// INSTANCE METHODS
 	// ================
@@ -124,6 +130,17 @@ public class Select implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME.equals(name);
 	}
 
+	/**
+	 * Consider two instances the same if they have the same calculated hashcodes
+	 */
+  public boolean equals(Object obj) {
+	  if (obj instanceof Select) {
+	  	return obj.hashCode() == hashCode();
+	  } else {
+	  	return false;
+	  }
+  }
+  
 	@Override
 	public int hashCode() {
 		HashCodeBuilder hash = new HashCodeBuilder(137, 1729);
