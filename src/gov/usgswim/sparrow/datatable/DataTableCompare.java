@@ -1,306 +1,218 @@
 package gov.usgswim.sparrow.datatable;
 
-import gov.usgswim.NotThreadSafe;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.FindHelper;
-import gov.usgswim.datatable.impl.SimpleDataTableImmutable;
+import gov.usgswim.datatable.DataTable.Immutable;
 
-import java.util.Arrays;
 import java.util.Set;
 
 /**
- * A Data2D implementation that derives its from a comparison between two
- * Data2D instances.
+ * Compares two PredictResults and returns values as either percentage increase
+ * or as absolute values.
  * 
- * The ID values (if any) of the first Data2D (the baseData) is the one used
- * for ID lookups.
+ * find, ID, metadata, getMax/Min, return values from the base data.
+ * 
+ * getDataType returns Double for all columns b/c the returned data is always a comparison.
+ * getUnits returns the units of the base table if absolute, 'percentage' otherwise.
+ * 
+ * Sparrow specific methods (the PredictResult interface) return column numbers
+ * from the base data, but return comparison values for all data access methods.
+ * 
+ * @author eeverman
  *
- * Comparisons are always in terms of the baseData - compData.
- * 
- * @deprecated This class does not properly support the getInt/Double methods
- * so that other views can extend it.  Other views will only return
- * TODO [IK] Kill this class. Not needed
  */
-@NotThreadSafe
-public class DataTableCompare implements DataTable{
-	DataTable baseData, compData;
-	int[] colMap;
-	volatile private Double[] maxCompValues;  //Max deviation for each column.  Each value may be null if unknown
-	volatile private Integer[] maxCompRows;	//The row (for each column) where the max comparison value was found.
+public class DataTableCompare implements Immutable {
 	
-
+	private final DataTable base;
+	private final DataTable compare;
+	private final boolean absolute;
+	
 	/**
-	 * Construct a new instance using the passed baseData and compData.
-	 * The values returned from this instance at any row column are always
-	 * baseData - compData.
-	 * 
-	 * @param baseData
-	 * @param compData
+	 * Constructs a new comparison instance
+	 * @param base	The data to compare to
+	 * @param compare	The data to be compared
+	 * @param isAbsolute	If true, values are (compare - base).  If false (percentage increase),
+	 * the values are (compare - base) / base.
 	 */
-	public DataTableCompare( DataTable baseData, DataTable compData) {
-		this.baseData = baseData;
-		this.compData = compData;
-		maxCompValues = new Double[baseData.getColumnCount()];
-		maxCompRows = new Integer[baseData.getColumnCount()];
-	}
-
-	/**
-	 * Construct a new instance using the passed baseData and compData.
-	 * The values returned from this instance at any row column are always
-	 * baseData - compData.
-	 * 
-	 * The column mapping specifies how the column in baseData map to compData.
-	 * For instance, if column index 4 of baseData should be compared to column
-	 * index 9 of compData, index 4 of the columnMapping should contain a 9.
-	 * 
-	 * The passed columnMapping array size must match the number of columns in
-	 * baseData.  There is no such requirement to match columnMapping (ie, the
-	 * compData may contain un-needed columns).
-	 * 
-	 * @param baseData
-	 * @param compData
-	 * @param columnMapping
-	 */
-	public DataTableCompare( DataTable baseData,  DataTable compData, int[] columnMapping) {
-		this.baseData = baseData;
-		this.compData = compData;
-		colMap = columnMapping;
-		maxCompValues = new Double[baseData.getColumnCount()];
-		maxCompRows = new Integer[baseData.getColumnCount()];
-	}
-
-	/**
-	 * Returns the difference between the base and and the comparison
-	 * 
-	 * @param row
-	 * @param col
-	 * @return
-	 * @throws IndexOutOfBoundsException
-	 */
-	public double compare(int row, int col) throws IndexOutOfBoundsException {
-		Double base = baseData.getDouble(row, col);
-		if (base != null) {
-			// just return the difference of two numbers
-			return base - compData.getDouble(row, mapColumn(col));
-		} else {
-			// null returned because underlying column type is not number type.
-			String baseString = baseData.getString(row, col);
-			if (baseString != null) {
-				String compString = compData.getString(row, col);
-				return baseString.compareTo(compString);
-			} else {
-				return Double.NaN;
-			}
-		}
-	}
-
-	public synchronized double findMaxCompareValue(int column) {
-		if (maxCompValues[column] == null) {
-			
-			double max = Double.MIN_VALUE;	//The max value found
-			int maxRow = 0;	//row of the max value
-
-			for (int r = 0; r < getRowCount(); r++)  {
-				double d = Math.abs( compare(r, column) );
-				if (d > max) {
-					max = d;
-					maxRow = r;
-				}
-			}
-
-			maxCompValues[column] = max;
-			maxCompRows[column] = maxRow;
-
-		}
-		return maxCompValues[column];
-	}
-
-	public synchronized int findMaxCompareRow(int column) {
-		if (maxCompRows[column] == null) {
-			findMaxCompareValue(column);
-		}
-		return maxCompRows[column];
-	}
-
-	public synchronized double findMaxCompareValue() {
-
-		double max = Double.MIN_VALUE;
-
-		for (int i = 0; i < maxCompValues.length; i++)  {
-			double d = findMaxCompareValue(i);
-			if (d > max) max = d;
-		}
-
-		return max;
-	}
-
-	protected int mapColumn(int c) {
-		if (colMap != null) {
-			return colMap[c];
-		} else {
-			return c;
-		}
-	}
-	// =================
-	// Delegated Methods
-	// =================
-
-	public DataTableWritable copyWritable() {
-		// TODO Auto-generated method stub
-		return null;
+	public DataTableCompare(DataTable base, DataTable compare, boolean isAbsolute) {
+		this.base = base.toImmutable();
+		this.compare = compare.toImmutable();
+		this.absolute = isAbsolute;
 	}
 
 	public int[] findAll(int col, Object value) {
-		return FindHelper.bruteForceFindAll(this, col, value);
+		return base.findAll(col, value);
 	}
 
 	public int findFirst(int col, Object value) {
-		return FindHelper.bruteForceFindFirst(this, col, value);
+		return base.findFirst(col, value);
 	}
 
 	public int findLast(int col, Object value) {
-		return FindHelper.bruteForceFindLast(this, col, value);
+		return base.findLast(col, value);
 	}
 
 	public Integer getColumnByName(String name) {
-		return baseData.getColumnByName(name);
+		return base.getColumnByName(name);
 	}
 
 	public int getColumnCount() {
-		return baseData.getColumnCount();
+		return base.getColumnCount();
 	}
 
 	public Class getDataType(int col) {
-		return baseData.getDataType(col);
+		return Double.class;
 	}
 
 	public String getDescription() {
-		return baseData.getDescription();
+		return base.getDescription();
 	}
 
 	public String getDescription(int col) {
-		return baseData.getDescription(col);
+		return base.getDescription(col);
 	}
 
 	public Double getDouble(int row, int col) {
-		return compare(row, col);
+		double b = base.getDouble(row, col);
+		double c = compare.getDouble(row, col);
+		
+		if (absolute) {
+			return c - b;
+		} else {
+			return (c - b) / b;
+		}
 	}
 
 	public Float getFloat(int row, int col) {
-		return Double.valueOf(compare(row, col)).floatValue();
+		double b = base.getDouble(row, col);
+		double c = compare.getDouble(row, col);
+		
+		if (absolute) {
+			return (float)(c - b);
+		} else {
+			return (float)((c - b) / b);
+		}
 	}
 
-	public Long getIdForRow(int arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public Long getIdForRow(int row) {
+		return base.getIdForRow(row);
 	}
-	public Long getLong(int row, int col) {
-		return Double.valueOf(compare(row, col)).longValue();
-	}
+
 	public Integer getInt(int row, int col) {
-		return Double.valueOf(compare(row, col)).intValue();
+		double b = base.getDouble(row, col);
+		double c = compare.getDouble(row, col);
+		
+		if (absolute) {
+			return (int)(c - b);
+		} else {
+			return (int)((c - b) / b);
+		}
+	}
+
+	public Long getLong(int row, int col) {
+		double b = base.getDouble(row, col);
+		double c = compare.getDouble(row, col);
+		
+		if (absolute) {
+			return (long)(c - b);
+		} else {
+			return (long)((c - b) / b);
+		}
 	}
 
 	public Double getMaxDouble() {
-		return FindHelper.bruteForceFindMaxDouble(this);
+		return base.getMaxDouble();
 	}
 
 	public Double getMaxDouble(int col) {
-		return FindHelper.bruteForceFindMaxDouble(this, col);
+		return base.getMaxDouble(col);
 	}
 
 	public Integer getMaxInt() {
-		return FindHelper.bruteForceFindMaxDouble(this).intValue();
+		return base.getMaxInt();
 	}
 
 	public Integer getMaxInt(int col) {
-		return FindHelper.bruteForceFindMaxDouble(this, col).intValue();
+		return base.getMaxInt(col);
 	}
 
 	public Double getMinDouble() {
-		return FindHelper.bruteForceFindMinDouble(this);
+		return base.getMinDouble();
 	}
 
 	public Double getMinDouble(int col) {
-		return FindHelper.bruteForceFindMinDouble(this, col);
+		return base.getMinDouble(col);
 	}
 
 	public Integer getMinInt() {
-		return FindHelper.bruteForceFindMinDouble(this).intValue();
+		return base.getMinInt();
 	}
 
 	public Integer getMinInt(int col) {
-		return FindHelper.bruteForceFindMinDouble(this, col).intValue();
+		return base.getMinInt(col);
 	}
 
 	public String getName() {
-		return baseData.getName();
+		return base.getName();
 	}
 
 	public String getName(int col) {
-		return baseData.getName(col);
+		return base.getName(col);
 	}
 
 	public String getProperty(String name) {
-		return baseData.getProperty(name);
+		return base.getProperty(name);
 	}
 
 	public String getProperty(int col, String name) {
-		return baseData.getProperty(col, name);
+		return base.getProperty(col, name);
 	}
 
 	public Set<String> getPropertyNames() {
-		return baseData.getPropertyNames();
+		return base.getPropertyNames();
 	}
 
 	public Set<String> getPropertyNames(int col) {
-		return baseData.getPropertyNames(col);
+		return base.getPropertyNames(col);
 	}
 
 	public int getRowCount() {
-		return baseData.getRowCount();
+		return base.getRowCount();
 	}
 
 	public int getRowForId(Long id) {
-		return baseData.getRowForId(id);
+		return base.getRowForId(id);
 	}
 
 	public String getString(int row, int col) {
-		return getDouble(row, col).toString();
+		return Double.toString(getDouble(row, col));
 	}
 
 	public String getUnits(int col) {
-		return baseData.getUnits(col);
+		if (absolute) {
+			return base.getUnits(col);
+		} else {
+			return "percentage";
+		}
 	}
 
-	public Object getValue(int arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return null;
+	public Object getValue(int row, int col) {
+		return getDouble(row, col);
 	}
 
 	public boolean hasRowIds() {
-		return baseData.hasRowIds();
+		return base.hasRowIds();
 	}
 
 	public boolean isIndexed(int col) {
-		return baseData.isIndexed(col);
+		return base.isIndexed(col);
 	}
 
 	public boolean isValid() {
-		return baseData.isValid();
+		return base.isValid() && compare.isValid();
 	}
 
-
 	public Immutable toImmutable() {
-		int[] colMapCopy = (colMap != null)? colMap.clone():null;
-		DataTableCompare immutableCore = new DataTableCompare(baseData.toImmutable(), compData.toImmutable(), colMapCopy);
-		// invalidate self
-		this.baseData = null;
-		this.compData = null;
-		this.colMap = null;
-		return new SimpleDataTableImmutable(immutableCore);
+		return this;
 	}
 
 }
-
