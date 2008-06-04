@@ -50,14 +50,21 @@
 		</war>
 		<echo>WAR created in ${warfile.path}</echo>
 	</target>
-	
+
 	<target name="create-jar">
 		<property name="jarfile.name" value="sparrowMV.jar"/>
 		<property name="jarfile.path" location="deploy/${jarfile.name}"/>
 		
-		<echo>Buildings jar from ${application.webcontent.dir}/WEB-INF/classes</echo>
+		<echo>Buildings jar from ${application.webcontent.dir}/WEB-INF/classes
+			Exclusing /test and gov/usgswim/sparrow/test
+		</echo>
 		
-	  <jar destfile="${jarfile.path}" basedir="${application.webcontent.dir}/WEB-INF/classes" excludes="**/test /test">
-	  </jar>
+		<jar destfile="${jarfile.path}" >
+			<!-- should .xml files also be excluded ?? -->
+		  	<fileset dir="${application.webcontent.dir}/WEB-INF/classes">
+	  			<exclude name="test/**"/>
+	  			<exclude name="gov/usgswim/sparrow/test/**"/>
+	  		</fileset>
+		</jar>
 	</target>
 </project>
