@@ -11,6 +11,10 @@ import gov.usgswim.datatable.DataTable.Immutable;
  * @author eeverman
  */
 public interface PredictResult extends Immutable {
+//	public static final String SOURCE_NAME = "sourceName";
+	public static final String RESULT_TYPE = "type";
+	public static final String IS_TOTAL = "total";
+
 	/**
 	 * Returns the number of sources.
 	 * @return

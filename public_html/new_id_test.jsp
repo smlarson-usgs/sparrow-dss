@@ -57,6 +57,8 @@
 	
 	&lt;!-- The user does not have a prediction context yet, so we use the model-id here --&gt;
 	&lt;model-id&gt;22&lt;/model-id&gt;
+	&lt;!--  if prediction context were available, it would look like this
+		&lt;context-id&gt;1231241243424&lt;/context-id&gt; --&gt; 
 	
 	&lt;!-- Where the user clicked --&gt;
 	&lt;point lat=&quot;39.5&quot; long=&quot;-76.68&quot;/&gt;

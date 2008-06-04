@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.service.idbypoint;
 
+import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
@@ -8,6 +9,7 @@ import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.SparrowModelProperties;
+import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.PropertyLoaderHelper;
@@ -18,6 +20,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.naming.NamingException;
 import javax.xml.stream.XMLInputFactory;
@@ -103,7 +107,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			retrieveAttributes(req, response);
 		}
 		if (req.hasPredicted()) {
-			retrievePredicteds(req, response);
+			retrievePredicteds(req, response, reach);
 		}
 		
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
@@ -114,12 +118,97 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		return reader;
 	}
 	
-	private void retrievePredicteds(IDByPointRequest req, IDByPointResponse response) throws IOException {
-		//TODO move to DataLoader when done debugging
-		// TODO replace with dynamic working code
-		// only go to cache using context-id as key
-		// or... use base nonadjusted prediction results if no key
-		response.predictionsXML = props.getText("predictedXMLResponse");
+	private void retrievePredicteds(IDByPointRequest req, IDByPointResponse response, Reach reach) throws IOException {
+		// TODO move to DataLoader when done debugging
+		Integer predictionContextID = req.getContextID();
+		
+		// Get the nominal and adjusted prediction results
+		PredictionContext nominalPredictionContext = null;
+		PredictResult adjustedPrediction = null;
+		
+		if (predictionContextID != null) {
+			// use prediction context to get the predicted results from cache if available
+			PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(predictionContextID);
+			adjustedPrediction = SharedApplication.getInstance().getPredictResult(contextFromCache);
+			nominalPredictionContext = new PredictionContext(contextFromCache.getModelID(), null, null, null, null);
+		} else {
+			nominalPredictionContext = new PredictionContext(req.getModelID(), null, null, null, null);
+		}
+		PredictResult nominalPrediction = SharedApplication.getInstance().getPredictResult(nominalPredictionContext);
+		
+		String incrementalContribution = buildPredSection(nominalPrediction, adjustedPrediction, Long.valueOf(response.reachID), "inc", "Incremental Contribution Values", "inc");
+		String totalContribution = buildPredSection(nominalPrediction, adjustedPrediction, Long.valueOf(response.reachID), "total", "Total (Measurable) Values", "inc");
+
+		response.predictionsXML = incrementalContribution + totalContribution;
+	}
+
+	private String buildPredSection(PredictResult nominalPrediction, PredictResult adjustedPrediction, Long id, String discriminator, String display, String name) {
+		if (nominalPrediction == null || discriminator == null || id == null || id == 0) return "";
+
+		List<Integer> relevantColumns = new ArrayList<Integer>();
+		Integer totalColumn = null;
+		
+		int nominalRowID = nominalPrediction.getRowForId(id);
+		// Collect all the relevant column indices for this row.
+		for (int j=0; j<nominalPrediction.getColumnCount(); j++) {
+			boolean isDesiredType = discriminator.equals(nominalPrediction.getProperty(j, PredictResult.RESULT_TYPE));
+			boolean isTotal = (nominalPrediction.getProperty(j, PredictResult.IS_TOTAL) != null );
+			
+			if (isDesiredType) {
+				if (isTotal) {
+					totalColumn = j;
+				} else {
+					relevantColumns.add(j);
+				}
+			}
+		}
+		
+		// Assume adjustedPrediction has same Column structure and rows in same order.
+		// Otherwise, we have to rewrite the following code.
+		assert((adjustedPrediction == null) ||
+				(	nominalPrediction.getRowCount() == adjustedPrediction.getRowCount()
+						&& nominalPrediction.getColumnCount() == adjustedPrediction.getColumnCount())):
+							"Assume adjustedPrediction has same column structure and rows in same order";
+				
+		
+		StringBuilder sb = null;
+
+		sb = new StringBuilder("<section display=\"");
+		sb.append(display).append("\" name=\"").append(name).append("\">\n");
+		
+		for (Integer j : relevantColumns) {
+			String columnName = nominalPrediction.getName(j);
+			sb.append("<r><c>").append(columnName).append("</c><c>");
+			String value = nominalPrediction.getString(nominalRowID, j);
+			value = (value == null)? "N/A": value;
+			sb.append(value).append("</c>");
+			
+			if (adjustedPrediction == null || adjustedPrediction.getString(nominalRowID, j) == null) {
+				// no predicted value available
+				sb.append("<c>N/A</c>");
+			} else {
+				// add predicted value
+				sb.append("<c>").append(adjustedPrediction.getString(nominalRowID, j)).append("</c>");
+			}
+
+			sb.append("</r>");
+		}
+		
+		// add in the total TODO (with predicted)
+		sb.append("<r><c>").append(nominalPrediction.getName(totalColumn)).append("</c><c>");
+		sb.append(nominalPrediction.getString(nominalRowID, totalColumn)).append("</c>");
+		if (adjustedPrediction == null || adjustedPrediction.getString(nominalRowID, totalColumn) == null) {
+			// no predicted total available
+			sb.append("<c>N/A</c>");
+		} else {
+			// add predicted total
+			sb.append("<c>").append(adjustedPrediction.getString(nominalRowID, totalColumn)).append("</c>");
+		}
+		sb.append("</r>");
+		
+		sb.append("</section>");
+
+		return sb.toString();
 	}
 
 	private void retrieveAttributes(IDByPointRequest req, IDByPointResponse response) throws IOException, SQLException, NamingException {
@@ -131,32 +220,39 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			int identifier = (response.reachID == 0)? req.getReachID(): response.reachID;
 			response.reachID = identifier;
 		}
-		//***
+
 		String attributesQuery = props.getText("attributesSelectClause") + " FROM MODEL_ATTRIB_VW "
 		+ " WHERE IDENTIFIER=" + response.reachID 
 		+ " AND SPARROW_MODEL_ID=" + req.getModelID();
 		
-		Connection conn = getConnection();
-		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		ResultSet rset = st.executeQuery(attributesQuery);
-		DataTableWritable attributes = DataTableUtils.toDataTable(rset);
-		closeConnection(conn, rset);
-		
+		DataTableWritable attributes = queryToDataTable(attributesQuery);
 		// TODO [IK] This 4 is hardcoded for now. Have to go back and use SparrowModelProperties to do properly
-		response.basicAttributes = new FilteredDataTable(attributes, 4, attributes.getColumnCount()- 4);
-		response.sparrowAttributes = new FilteredDataTable(attributes, 0, 4);
-		 
-		// DEBUG
-//		TemporaryHelper.printDataTable(response.sparrowAttributes);
+		response.sparrowAttributes = new FilteredDataTable(attributes, 0, 4); // first four columns
+		response.basicAttributes = new FilteredDataTable(attributes, 4, attributes.getColumnCount()- 4); // remaining columns
 		
 		StringBuilder basicAttributesSection = toSection(response.basicAttributes, "Basic Attributes", "basic_attrib");
 		StringBuilder sparrowAttributesSection = toSection(response.sparrowAttributes, "SPARROW Attributes", "sparrow_attrib");
 
-		response.attributesXML = props.getText("attributesXMLResponseStart") + basicAttributesSection + sparrowAttributesSection + props.getText("attributesXMLResponseEnd");
-
+		// attributesXMLResponse
+		response.attributesXML = props.getText("attributesXMLResponse", 
+				new String[] {
+				"AttributesCount", Integer.toString(attributes.getColumnCount()),
+				"BasicAttributes", basicAttributesSection.toString(),
+				"SparrowAttributes", sparrowAttributesSection.toString(),
+		});
+		
 		// TODO Create a combo XMLStreamReader to enable several streamreader to be assembled sequentially, using hasNext to query.
 		// This makes the pieces combineable.
 
+	}
+
+	private DataTableWritable queryToDataTable(String query) throws NamingException, SQLException {
+		Connection conn = getConnection();
+		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+		ResultSet rset = st.executeQuery(query);
+		DataTableWritable attributes = DataTableUtils.toDataTable(rset);
+		closeConnection(conn, rset);
+		return attributes;
 	}
 
 	private StringBuilder toSection(DataTable basicAttributes, String display, String name) {
@@ -171,7 +267,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				value = (value == null)? "N/A": value;
 				sb.append(value).append("</c>");
 				String units = basicAttributes.getUnits(j);
-				// look up the units if not available in DataTable attributes
+				// HACK look up the units if not available in DataTable attributes
 				// TODO [IK] Should populate the DataTable units property rather
 				// than do lookup, but right now that would
 				// touch too many classes and needs to be tested.

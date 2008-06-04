@@ -11,8 +11,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import javax.servlet.ServletContextEvent;
-
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.StringUtils;

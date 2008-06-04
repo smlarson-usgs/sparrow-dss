@@ -233,6 +233,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 						if (coef != null) {
 							
 							//if a coef already exists, the new coef is the product of the existing and the new
+							
 							Number existingCoef = coefAdj.getCoef(data.getRowForReachID(r.getId()), data.getSourceColumnForSourceID(srcId));
 							if (existingCoef != null) {
 								coef = coef.doubleValue() * existingCoef.doubleValue();

@@ -3,10 +3,12 @@ package gov.usgswim.sparrow.datatable;
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.Immutable;
 import gov.usgswim.datatable.ColumnData;
+import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.PredictData;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Hashtable;
 
@@ -55,7 +57,7 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 				Map<Long, Integer> srcIdIncMap, Map<Long, Integer> srcIdTotalMap,
 				int totalIncCol, int totalTotalCol) {
 		
-		super(columns, "Prediction Data", "Prediction Result Data", Collections.<String, String>emptyMap(), null);
+		super(columns, "Prediction Data", "Prediction Result Data", Collections.<String, String>emptyMap(), rowIds);
 		
 
 		{
@@ -83,11 +85,13 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 		//Same definition as the instance vars
 		Map<Long, Integer> srcIdIncMap = new Hashtable<Long, Integer>(13, 2);
 		Map<Long, Integer> srcIdTotalMap = new Hashtable<Long, Integer>(13, 2);
-		
-		//Create Source Columns
-		for (int c=0; c<data[0].length; c++) {
-			columns[c] = new ImmutableDoubleColumn(data, c, "name", "units", "description", null);
-		}
+
+		// ------------------------------------------
+		// Define the source columns of the DataTable
+		// ------------------------------------------
+//		DataTable srcMetaData = predictData.getSrcMetadata();
+//		boolean hasMetaData = (srcMetaData != null); // only use the metadata if it exists
+//		Integer nameCol = (hasMetaData)? srcMetaData.getColumnByName("NAME"): -1;
 		
 		for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++)  {
 
@@ -101,25 +105,43 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 			srcIdIncMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcIncAddIndex); 
 			srcIdTotalMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcTotalIndex); 
 			
-			columns[srcIncAddIndex] = new ImmutableDoubleColumn(data, srcIncAddIndex, name + " Inc. Addition", "units", "description", null);
-			columns[srcTotalIndex] = new ImmutableDoubleColumn(data, srcTotalIndex, name + " Total (w/ upstream, decayed)", "units", "description", null);
+			Map<String, String> incProps = new HashMap<String, String>();
+			incProps.put(RESULT_TYPE, "inc");
+			
+			Map<String, String> totProps = new HashMap<String, String>();
+			totProps.put(RESULT_TYPE, "total");
+			
+//			if (hasMetaData) {
+//				// use the metadata to popultae the source name
+//				String sourceName = srcMetaData.getString(srcIndex, nameCol);
+//				incProps.put(SOURCE_NAME, sourceName);
+//				totProps.put(SOURCE_NAME, sourceName);
+//			}
+			
+			columns[srcIncAddIndex] = new ImmutableDoubleColumn(data, srcIncAddIndex, name + " Inc. Addition", "units", "description", incProps);
+			columns[srcTotalIndex] = new ImmutableDoubleColumn(data, srcTotalIndex, name + " Total (w/ upstream, decayed)", "units", "description", totProps);
 		}
 		
-
+		// ------------------------------------------
+		// Define the total columns of the DataTable
+		// ------------------------------------------
 		int totalIncCol = 2 * sourceCount;	//The total inc col comes right after the two sets of source columns
-		int totalTotalCol = totalIncCol + 1; //The total total col comes right after the total incremental col
+		Map<String, String> totalIncProps = new HashMap<String, String>();
+		totalIncProps.put(RESULT_TYPE, "inc");
+		totalIncProps.put(IS_TOTAL, "inc");
 		
-		columns[totalIncCol] = new ImmutableDoubleColumn(data, totalIncCol, "Total Inc. (not decayed)", "units", "description", null);
-		columns[totalTotalCol] = new ImmutableDoubleColumn(data, totalTotalCol, "Grand Total (measurable)", "units", "description", null);
+		int totalTotalCol = totalIncCol + 1; //The grand total col comes right after the total incremental col
+		Map<String, String> grandTotalProps = new HashMap<String, String>();
+		grandTotalProps.put(RESULT_TYPE, "total");
+		grandTotalProps.put(IS_TOTAL, "total");
 		
+		columns[totalIncCol] = new ImmutableDoubleColumn(data, totalIncCol, "Total Inc. (not decayed)", "units", "description", totalIncProps);
+		columns[totalTotalCol] = new ImmutableDoubleColumn(data, totalTotalCol, "Grand Total (measurable)", "units", "description", grandTotalProps);
 		
-		if (predictData.getSys() != null) {
-			long[] ids = TemporaryHelper.getRowIds(predictData.getSys());
-			return new PredictResultImm(columns, ids, srcIdIncMap, srcIdTotalMap, totalIncCol, totalTotalCol);
-		} else {
-			return new PredictResultImm(columns, null, srcIdIncMap, srcIdTotalMap, totalIncCol, totalTotalCol);
-		}
+		// only get the ids if available
+		long[] ids = (predictData.getSys() != null)? TemporaryHelper.getRowIds(predictData.getSys()): null;
 		
+		return new PredictResultImm(columns, ids, srcIdIncMap, srcIdTotalMap, totalIncCol, totalTotalCol);
 	}
 
 	public int getSourceCount() {

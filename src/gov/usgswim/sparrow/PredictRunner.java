@@ -1,5 +1,9 @@
 package gov.usgswim.sparrow;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
@@ -124,19 +128,18 @@ public class PredictRunner {
 
 
 	public PredictResultImm doPredict() throws Exception {
-		int reachCount = topo.getRowCount();	//# of reachs is equal to the number of 'rows' in topo
+		int reachCount = topo.getRowCount();	//# of reaches is equal to the number of 'rows' in topo
 		int sourceCount = src.getColumnCount(); //# of sources is equal to the number of 'columns' in an arbitrary row (row zero)
 
 		/*
-		 * The number of predicted values per reach (k = number of sources, i = reach)
+		 * The number of predicted values per reach (k = number of sources, i = reach #)
 		 * [i, 0 ... (k-1)]		incremental added at reach, per source k (NOT decayed, just showing what comes in)
 		 * [i, k ... (2k-1)]	total at reach (w/ up stream contrib), per source k (decayed)
-		 * [i, (2k)]					total incremental contribution at reach (NOT decayed)
-		 * [i, (2k + 1)]			grand total at reach (incremental + from node).  Comparable to measured. (decayed)
+		 * [i, (2k)]			total incremental contribution at reach (NOT decayed)
+		 * [i, (2k + 1)]		grand total at reach (incremental + from node).  Comparable to measured. (decayed)
 		 */
-		int rchValColCount = (sourceCount * 2) + 2;	
-
-
+		int rchValColCount = (sourceCount * 2) + 2;
+		
 		double rchVal[][] = new double[reachCount][rchValColCount];
 
 		/*

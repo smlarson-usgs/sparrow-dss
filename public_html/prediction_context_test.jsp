@@ -88,7 +88,7 @@
 				&lt;agg-function per="area">avg&lt;/agg-function> &lt;!-- rank would be rank of the group within the whole -->
 				&lt;analytic-function partition="HUC6">rank-desc&lt;/analytic-function>
 
-				&lt;nominal-comparison type="percent | absolute"/>
+				&lt;nominal-comparison type="absolute"/>
 			&lt;/select>
 			&lt;limit-to>contributors | terminals | area-of-interest&lt;/limit-to>
 
