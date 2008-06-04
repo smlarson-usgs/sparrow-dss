@@ -19,11 +19,13 @@ import gov.usgswim.datatable.DataTable.Immutable;
  * @author eeverman
  *
  */
-public class PredictResultCompare implements Immutable, PredictResult {
+public class PredictResultCompare extends DataTableCompare implements PredictResult {
 	
+	/*
 	private final PredictResult base;
 	private final PredictResult compare;
 	private final boolean absolute;
+	*/
 	
 	/**
 	 * Constructs a new comparison instance
@@ -33,185 +35,7 @@ public class PredictResultCompare implements Immutable, PredictResult {
 	 * the values are (compare - base) / base.
 	 */
 	public PredictResultCompare(PredictResult base, PredictResult compare, boolean isAbsolute) {
-		this.base = (PredictResult) base.toImmutable();
-		this.compare = (PredictResult) compare.toImmutable();
-		this.absolute = isAbsolute;
-	}
-
-	public int[] findAll(int col, Object value) {
-		return base.findAll(col, value);
-	}
-
-	public int findFirst(int col, Object value) {
-		return base.findFirst(col, value);
-	}
-
-	public int findLast(int col, Object value) {
-		return base.findLast(col, value);
-	}
-
-	public Integer getColumnByName(String name) {
-		return base.getColumnByName(name);
-	}
-
-	public int getColumnCount() {
-		return base.getColumnCount();
-	}
-
-	public Class getDataType(int col) {
-		return Double.class;
-	}
-
-	public String getDescription() {
-		return base.getDescription();
-	}
-
-	public String getDescription(int col) {
-		return base.getDescription(col);
-	}
-
-	public Double getDouble(int row, int col) {
-		double b = base.getDouble(row, col);
-		double c = compare.getDouble(row, col);
-		
-		if (absolute) {
-			return c - b;
-		} else {
-			return (c - b) / b;
-		}
-	}
-
-	public Float getFloat(int row, int col) {
-		double b = base.getDouble(row, col);
-		double c = compare.getDouble(row, col);
-		
-		if (absolute) {
-			return (float)(c - b);
-		} else {
-			return (float)((c - b) / b);
-		}
-	}
-
-	public Long getIdForRow(int row) {
-		return base.getIdForRow(row);
-	}
-
-	public Integer getInt(int row, int col) {
-		double b = base.getDouble(row, col);
-		double c = compare.getDouble(row, col);
-		
-		if (absolute) {
-			return (int)(c - b);
-		} else {
-			return (int)((c - b) / b);
-		}
-	}
-
-	public Long getLong(int row, int col) {
-		double b = base.getDouble(row, col);
-		double c = compare.getDouble(row, col);
-		
-		if (absolute) {
-			return (long)(c - b);
-		} else {
-			return (long)((c - b) / b);
-		}
-	}
-
-	public Double getMaxDouble() {
-		return base.getMaxDouble();
-	}
-
-	public Double getMaxDouble(int col) {
-		return base.getMaxDouble(col);
-	}
-
-	public Integer getMaxInt() {
-		return base.getMaxInt();
-	}
-
-	public Integer getMaxInt(int col) {
-		return base.getMaxInt(col);
-	}
-
-	public Double getMinDouble() {
-		return base.getMinDouble();
-	}
-
-	public Double getMinDouble(int col) {
-		return base.getMinDouble(col);
-	}
-
-	public Integer getMinInt() {
-		return base.getMinInt();
-	}
-
-	public Integer getMinInt(int col) {
-		return base.getMinInt(col);
-	}
-
-	public String getName() {
-		return base.getName();
-	}
-
-	public String getName(int col) {
-		return base.getName(col);
-	}
-
-	public String getProperty(String name) {
-		return base.getProperty(name);
-	}
-
-	public String getProperty(int col, String name) {
-		return base.getProperty(col, name);
-	}
-
-	public Set<String> getPropertyNames() {
-		return base.getPropertyNames();
-	}
-
-	public Set<String> getPropertyNames(int col) {
-		return base.getPropertyNames(col);
-	}
-
-	public int getRowCount() {
-		return base.getRowCount();
-	}
-
-	public int getRowForId(Long id) {
-		return base.getRowForId(id);
-	}
-
-	public String getString(int row, int col) {
-		return Double.toString(getDouble(row, col));
-	}
-
-	public String getUnits(int col) {
-		if (absolute) {
-			return base.getUnits(col);
-		} else {
-			return "percentage";
-		}
-	}
-
-	public Object getValue(int row, int col) {
-		return getDouble(row, col);
-	}
-
-	public boolean hasRowIds() {
-		return base.hasRowIds();
-	}
-
-	public boolean isIndexed(int col) {
-		return base.isIndexed(col);
-	}
-
-	public boolean isValid() {
-		return base.isValid() && compare.isValid();
-	}
-
-	public Immutable toImmutable() {
-		return this;
+		super(base, compare, isAbsolute);
 	}
 
 	public Double getIncremental(int row) {
@@ -219,35 +43,35 @@ public class PredictResultCompare implements Immutable, PredictResult {
 	}
 
 	public int getIncrementalCol() {
-		return base.getIncrementalCol();
+		return ((PredictResult)base).getIncrementalCol();
 	}
 
 	public int getIncrementalColForSrc(Long srcId) {
-		return base.getIncrementalColForSrc(srcId);
+		return ((PredictResult)base).getIncrementalColForSrc(srcId);
 	}
 
 	public Double getIncrementalForSrc(int row, Long srcId) {
-		return getDouble(row, base.getIncrementalColForSrc(srcId));
+		return getDouble(row, ((PredictResult)base).getIncrementalColForSrc(srcId));
 	}
 
 	public int getSourceCount() {
-		return base.getSourceCount();
+		return ((PredictResult)base).getSourceCount();
 	}
 
 	public Double getTotal(int row) {
-		return getDouble(row, base.getTotalCol());
+		return getDouble(row, ((PredictResult)base).getTotalCol());
 	}
 
 	public int getTotalCol() {
-		return base.getTotalCol();
+		return ((PredictResult)base).getTotalCol();
 	}
 
 	public int getTotalColForSrc(Long srcId) {
-		return base.getTotalColForSrc(srcId);
+		return ((PredictResult)base).getTotalColForSrc(srcId);
 	}
 
 	public Double getTotalForSrc(int row, Long srcId) {
-		return getDouble(row, base.getTotalColForSrc(srcId));
+		return getDouble(row, ((PredictResult)base).getTotalColForSrc(srcId));
 	}
 
 }

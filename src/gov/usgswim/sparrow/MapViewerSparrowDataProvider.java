@@ -285,9 +285,9 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 	}
 	
 	
-	protected NSDataSet copyToNSDataSet(PredictionContext context) throws Exception {
+	public NSDataSet copyToNSDataSet(PredictionContext context) throws Exception {
 
-		PredictData predictData = SharedApplication.getInstance().getPredictData(context.getModelID());
+		PredictData nomPredictData = SharedApplication.getInstance().getPredictData(context.getModelID());
 		
 		int dataColIndex = 0;	//The column of the data in the resultTable (unknown initially)
 		DataTable resultTable = null;	//The table to get data from (could be results of prediction, source vals, or other)
@@ -327,19 +327,18 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 			case source_value:
 				if (select.getSource() != null) {
 					
-					dataColIndex = predictData.getSourceColumnForSourceID(select.getSource());
+					dataColIndex = nomPredictData.getSourceColumnForSourceID(select.getSource());
+					DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(context.getAdjustmentGroups());
 					
 					if (select.getNominalComparison().isNone()) {
 						
-						resultTable = predictData.getSrc();
+						resultTable = adjSrc;
 						
 					} else  {
 						
 						//working w/ either a percent or absolute comparison
-						PredictData nomPredictData = SharedApplication.getInstance().getPredictData(context.getModelID());
 						resultTable = new DataTableCompare(
-								nomPredictData.getSrc(),
-								predictData.getSrc(),
+								nomPredictData.getSrc(), adjSrc,
 								select.getNominalComparison().equals(ComparisonType.absolute));
 					}
 				} else {
@@ -353,7 +352,8 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 		int rowCount = resultTable.getRowCount();
 		NSRow[] nsRows = new NSRow[rowCount];
 
-		DataTable sysInfo = predictData.getSys();	//The table w/ row Identifiers
+		//TODO:  This should use row ids from the PredictResult if possible
+		DataTable sysInfo = nomPredictData.getSys();	//The table w/ row Identifiers
 		
 
 		//Build the 

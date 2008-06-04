@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.test;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
+import gov.usgswim.sparrow.MapViewerSparrowDataProvider;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
@@ -17,30 +18,31 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import oracle.mapviewer.share.ext.NSDataSet;
+import oracle.mapviewer.share.ext.NSRow;
+
 import junit.framework.TestCase;
 
 public class ContextToPredictionTest extends TestCase {
 
 	LifecycleListener lifecycle = new LifecycleListener();
 	
-	//Unchanging context-id for the predictionContext described in the xml file
-	//loaded in buildRequest().
-	public static final int CONTEXT_ID = 720751343;
-	
 	protected void setUp() throws Exception {
 		super.setUp();
-		lifecycle.contextInitialized(null);
+		lifecycle.contextInitialized(null, true);
 	}
 
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		
-		lifecycle.contextDestroyed(null);
+		lifecycle.contextDestroyed(null, true);
 	}
 	
-	public void testBasicPredictionValues() throws Exception {
+	public void xtestBasicPredictionValues() throws Exception {
 
-		PredictContextRequest contextReq = buildPredictContext();	//Build a context from a canned file
+		int CONTEXT_ID = 720751343;
+		
+		PredictContextRequest contextReq = buildPredictContext1();	//Build a context from a canned file
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PredictContextPipeline pipe = new PredictContextPipeline();
@@ -155,9 +157,58 @@ public class ContextToPredictionTest extends TestCase {
 		assertEquals(predictResult.getDouble(rowForReach3074, 23), predictResult.getTotal(rowForReach3074));
 	}
 	
+	/**
+	 * This test is intended to reproduce an issue where the dataseries 'source_value'
+	 * seems to show no changes when the nominal comparison 'percent' is used.
+	 */
+	public void testSourceValuesChange() throws Exception {
+
+		int CONTEXT_ID = -1926160079;
+		PredictContextRequest contextReq = buildPredictContext3();	//Build a context from a canned file
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PredictContextPipeline pipe = new PredictContextPipeline();
+		pipe.dispatch(contextReq, out);
+		
+
+		System.out.println("***");
+		System.out.println("Response: " + out.toString());
+		System.out.println("PredictContextID: " + contextReq.getPredictionContext().hashCode());
+		System.out.println("***");
+		
+		//Confirm that the response xml doc contains the correct context-id,
+		//which is and must be repeatable, so as long as the request doesn't change, this number is fixed.
+		assertTrue(out.toString().contains( Integer.toString(CONTEXT_ID) ));
+		
+		//Get the prediction context from the cache
+		PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(CONTEXT_ID);
+		
+
+		MapViewerSparrowDataProvider nsProvider = new MapViewerSparrowDataProvider();
+		
+		NSDataSet data = nsProvider.copyToNSDataSet(contextFromCache);
+		
+		int zeros = 0;
+		int nonZeros = 0;
+		
+		while (data.next()) {
+			NSRow row = data.getRow();
+			double v = row.get(1).getDouble();
+			if (v == 0d) {
+				zeros++;
+			} else {
+				nonZeros++;
+				System.out.println("Non Zero value: " + v);
+			}
+		}
+		
+		assertEquals(2, nonZeros);
+	
+	}
+	
 	public void testHashCode() throws Exception {
-		PredictionContext context1 = buildPredictContext().getPredictionContext();
-		PredictionContext context2 = buildPredictContext().getPredictionContext();
+		PredictionContext context1 = buildPredictContext1().getPredictionContext();
+		PredictionContext context2 = buildPredictContext1().getPredictionContext();
 		
 		assertEquals(context1.hashCode(), context2.hashCode());
 		assertEquals(context1.getId(), context2.getId());
@@ -165,8 +216,16 @@ public class ContextToPredictionTest extends TestCase {
 	}
 	
 	
-	public PredictContextRequest buildPredictContext() throws Exception {
+	public PredictContextRequest buildPredictContext1() throws Exception {
 		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-context-1.xml");
+		String xml = readToString(is);
+		
+		PredictContextPipeline pipe = new PredictContextPipeline();
+		return pipe.parse(xml);
+	}
+	
+	public PredictContextRequest buildPredictContext3() throws Exception {
+		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-context-3.xml");
 		String xml = readToString(is);
 		
 		PredictContextPipeline pipe = new PredictContextPipeline();
