@@ -1,7 +1,6 @@
 package gov.usgswim.sparrow;
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.domain.Model;
 
 public abstract class AbstractPredictData implements PredictData {
 

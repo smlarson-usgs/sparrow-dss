@@ -14,6 +14,12 @@ import gov.usgswim.sparrow.domain.Model;
 public class PredictDataBuilder extends AbstractPredictData {
 
 	/**
+   * 
+   */
+  private static final long serialVersionUID = 351354348641L;
+
+
+	/**
 	 * Contains the metadata for the model
 	 */
 	protected Model model;
@@ -326,7 +332,7 @@ public class PredictDataBuilder extends AbstractPredictData {
 	}
 
 
-	public PredictDataImm toImmutable() {
+	public PredictData toImmutable() {
 		// TODO:  Model should have an immutable builder
 		DataTable topo2 = (getTopo() != null)?getTopo().toImmutable():null;
 		DataTable coef2 = (getCoef() != null)?getCoef().toImmutable():null;

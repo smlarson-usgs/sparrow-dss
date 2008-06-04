@@ -5,8 +5,8 @@ import java.io.Serializable;
 import gov.usgswim.ImmutableBuilder;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictDataBuilder;
-import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.domain.Model;
+
 /**
  * A PredictData instance contains all the numerical data needed to run a prediction.
  * 
@@ -21,7 +21,7 @@ import gov.usgswim.sparrow.domain.Model;
  * the ID of the model to run, adjustment information, and the type of prediction
  * to run.
  */
-public interface PredictData extends ImmutableBuilder<PredictDataImm>, Serializable {
+public interface PredictData extends ImmutableBuilder<PredictData>, Serializable {
 
 	/**
 	 * Returns the soruce metadata, which includes ids, names, units, and other metadata.
@@ -138,14 +138,6 @@ public interface PredictData extends ImmutableBuilder<PredictDataImm>, Serializa
 	 */
 	public PredictDataBuilder getBuilder();
 
-	/**
-	 * Creates an immutable version of the instance, making a shallow copy of
-	 * member variables.
-	 * 
-	 * If the member variables are mutable, they will remain mutable.
-	 * @return
-	 */
-	public PredictDataImm toImmutable();
 
 //	/**
 //	* Creates an immutable version of the instance optionally forcing all member

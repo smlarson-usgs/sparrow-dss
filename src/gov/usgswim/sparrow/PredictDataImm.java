@@ -14,6 +14,9 @@ import gov.usgswim.sparrow.domain.Model;
 public class PredictDataImm extends AbstractPredictData {
 
 
+  private static final long serialVersionUID = 13546441L;
+
+
 	/**
 	 * Contains the metadata for the model
 	 */
@@ -139,7 +142,7 @@ public class PredictDataImm extends AbstractPredictData {
 		return model;
 	}
 
-	public PredictDataImm toImmutable() {
+	public PredictData toImmutable() {
 		return this;
 	}
 
