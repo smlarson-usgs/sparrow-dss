@@ -58,10 +58,13 @@ public class LifecycleListener implements ServletContextListener {
 		
 	}
 
+	public void contextInitialized(ServletContextEvent context) {
+		contextInitialized(context, false);
+	}
 	/**
 	 * Called when the context (the entire application) is initialize.
 	 */
-	public void contextInitialized(ServletContextEvent context) {
+	public void contextInitialized(ServletContextEvent context, boolean clearCache) {
 		if (context != null) {
 			log.info("Starting the SPARROW application within a servlet context - (no init tasks)");
 			//Nothing to do
@@ -79,6 +82,12 @@ public class LifecycleListener implements ServletContextListener {
 		//
 		
 		CacheManager cm = CacheManager.getInstance();
+		
+		if (clearCache) {
+			log.info("Clearing the SPARROW cache as requested.");
+			cm.clearAll();
+		}
+		
 		
 		//PredictDataCache
 		SelfPopulatingCache predictDataCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.PREDICT_DATA_CACHE), new PredictDataFactory());
