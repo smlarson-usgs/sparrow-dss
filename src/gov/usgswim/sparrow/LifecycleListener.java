@@ -92,6 +92,10 @@ public class LifecycleListener implements ServletContextListener {
 		SelfPopulatingCache predictResultCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.PREDICT_RESULT_CACHE), new PredictResultFactory());
 		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.PREDICT_RESULT_CACHE), predictResultCache);
 		
+		//AnalysisResultCache
+		SelfPopulatingCache predictAnalysisCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.ANALYSIS_RESULT_CACHE), new AnalysisResultFactory());
+		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.ANALYSIS_RESULT_CACHE), predictAnalysisCache);
+		
 		//IdentifyReachByPoint
 		SelfPopulatingCache reachByPointCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.IDENTIFY_REACH_BY_POINT), new ReachByPointFactory());
 		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.IDENTIFY_REACH_BY_POINT), reachByPointCache);

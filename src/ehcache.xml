@@ -296,6 +296,12 @@
 		timeToLiveSeconds="14400" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
 	
+	<cache name="AnalysisResult" maxElementsInMemory="2"
+		maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
+		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
+		timeToLiveSeconds="14400" diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+	
 	<cache name="IdentifyReachByPoint" maxElementsInMemory="100"
 		maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
 		diskSpoolBufferSizeMB="8" timeToIdleSeconds="3600"
