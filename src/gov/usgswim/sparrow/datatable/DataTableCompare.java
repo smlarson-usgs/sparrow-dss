@@ -22,9 +22,9 @@ import java.util.Set;
  */
 public class DataTableCompare implements Immutable {
 	
-	private final DataTable base;
-	private final DataTable compare;
-	private final boolean absolute;
+	protected final DataTable base;
+	protected final DataTable compare;
+	protected final boolean absolute;
 	
 	/**
 	 * Constructs a new comparison instance
@@ -78,7 +78,17 @@ public class DataTableCompare implements Immutable {
 		if (absolute) {
 			return c - b;
 		} else {
-			return (c - b) / b;
+			if (b != 0d) {
+				return 100d * (c - b) / b;
+			} else {
+				if (c > b) {
+					return 100d;
+				} else if (b > c) {
+					return -100d;
+				} else {
+					return 0d;
+				}
+			}
 		}
 	}
 
@@ -89,12 +99,18 @@ public class DataTableCompare implements Immutable {
 		if (absolute) {
 			return (float)(c - b);
 		} else {
-			return (float)((c - b) / b);
+			if (b != 0d) {
+				return (float)(100d * (c - b) / b);
+			} else {
+				if (c > b) {
+					return 100f;
+				} else if (b > c) {
+					return -100f;
+				} else {
+					return 0f;
+				}
+			}
 		}
-	}
-
-	public Long getIdForRow(int row) {
-		return base.getIdForRow(row);
 	}
 
 	public Integer getInt(int row, int col) {
@@ -104,7 +120,17 @@ public class DataTableCompare implements Immutable {
 		if (absolute) {
 			return (int)(c - b);
 		} else {
-			return (int)((c - b) / b);
+			if (b != 0d) {
+				return (int) (100d * (c - b) / b);
+			} else {
+				if (c > b) {
+					return 100;
+				} else if (b > c) {
+					return -100;
+				} else {
+					return 0;
+				}
+			}
 		}
 	}
 
@@ -115,8 +141,22 @@ public class DataTableCompare implements Immutable {
 		if (absolute) {
 			return (long)(c - b);
 		} else {
-			return (long)((c - b) / b);
+			if (b != 0d) {
+				return (long)(100d * (c - b) / b);
+			} else {
+				if (c > b) {
+					return 100L;
+				} else if (b > c) {
+					return -100L;
+				} else {
+					return 0L;
+				}
+			}
 		}
+	}
+	
+	public Long getIdForRow(int row) {
+		return base.getIdForRow(row);
 	}
 
 	public Double getMaxDouble() {
