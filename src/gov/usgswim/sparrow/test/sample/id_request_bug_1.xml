@@ -1,7 +1,9 @@
 <sparrow-id-request xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<context-id>1002885697</context-id>
-	<point lat="44.46990966796875" long="-88.11996459960938" />
+	<context-id>724260834</context-id>
+	
+	<!-- A location somewhere in the chesapeak -->
+	<point lat="39.44" long="-76.45" />
 	<content>
 		<adjustments />
 		<attributes />
