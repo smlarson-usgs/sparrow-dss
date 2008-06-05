@@ -11,7 +11,7 @@ public abstract class AbstractPredictData implements PredictData {
 	 * @return
 	 * @throws Exception If the source ID cannot be found.
 	 */
-	public int getSourceColumnForSourceID(Integer id) throws Exception {
+	public int getSourceIndexForSourceID(Integer id) throws Exception {
 		
 		DataTable srcMetadata = this.getSrcMetadata();
 		

@@ -199,7 +199,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 					throw new Exception("For a global adjustment, a source and coefficient must be specified");
 				}
 				
-				colAdj.setColumnMultiplier(data.getSourceColumnForSourceID(srcId), coef);
+				colAdj.setColumnMultiplier(data.getSourceIndexForSourceID(srcId), coef);
 				
 			}
 		}
@@ -234,15 +234,15 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 							
 							//if a coef already exists, the new coef is the product of the existing and the new
 							
-							Number existingCoef = coefAdj.getCoef(data.getRowForReachID(r.getId()), data.getSourceColumnForSourceID(srcId));
+							Number existingCoef = coefAdj.getCoef(data.getRowForReachID(r.getId()), data.getSourceIndexForSourceID(srcId));
 							if (existingCoef != null) {
 								coef = coef.doubleValue() * existingCoef.doubleValue();
 							}
 							
-							coefAdj.setValue(coef, data.getRowForReachID(r.getId()), data.getSourceColumnForSourceID(srcId));
+							coefAdj.setValue(coef, data.getRowForReachID(r.getId()), data.getSourceIndexForSourceID(srcId));
 						} else {
 							//We are allowing absolute value adjustments, though this is likely a user error.
-							overAdj.setValue(abs, data.getRowForReachID(r.getId()), data.getSourceColumnForSourceID(srcId));
+							overAdj.setValue(abs, data.getRowForReachID(r.getId()), data.getSourceIndexForSourceID(srcId));
 						}
 					}
 					
@@ -256,16 +256,16 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 						if (coef != null) {
 
 							//if a coef already exists, the new coef is the product of the existing and the new
-							Number existingCoef = coefAdj.getCoef(data.getRowForReachID(r.getId()), data.getSourceColumnForSourceID(srcId));
+							Number existingCoef = coefAdj.getCoef(data.getRowForReachID(r.getId()), data.getSourceIndexForSourceID(srcId));
 							if (existingCoef != null) {
 								coef = coef.doubleValue() * existingCoef.doubleValue();
 							}
 							
-							coefAdj.setValue(coef, data.getRowForReachID(r.getId()), data.getSourceColumnForSourceID(srcId));
+							coefAdj.setValue(coef, data.getRowForReachID(r.getId()), data.getSourceIndexForSourceID(srcId));
 						} else {
 							//Since 'override' supersedes all others, its OK to just rewrite the new
 							//value into the table.
-							overAdj.setValue(abs, data.getRowForReachID(r.getId()), data.getSourceColumnForSourceID(srcId));
+							overAdj.setValue(abs, data.getRowForReachID(r.getId()), data.getSourceIndexForSourceID(srcId));
 						}
 					}
 				}

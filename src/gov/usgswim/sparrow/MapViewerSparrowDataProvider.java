@@ -327,7 +327,7 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 			case source_value:
 				if (select.getSource() != null) {
 					
-					dataColIndex = nomPredictData.getSourceColumnForSourceID(select.getSource());
+					dataColIndex = nomPredictData.getSourceIndexForSourceID(select.getSource());
 					DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(context.getAdjustmentGroups());
 					
 					if (select.getNominalComparison().isNone()) {

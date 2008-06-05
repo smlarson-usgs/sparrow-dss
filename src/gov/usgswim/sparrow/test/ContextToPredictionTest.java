@@ -105,7 +105,7 @@ public class ContextToPredictionTest extends TestCase {
 		DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(contextReq.getPredictionContext().getAdjustmentGroups());
 		
 		//Determine the column for source '2'
-		int colForSrc2 = predictData.getSourceColumnForSourceID(2);
+		int colForSrc2 = predictData.getSourceIndexForSourceID(2);
 		int rowForReach3074 = predictData.getRowForReachID(3074);
 		int rowForReach3077 = predictData.getRowForReachID(3077);
 		

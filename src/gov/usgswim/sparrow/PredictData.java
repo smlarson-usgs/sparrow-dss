@@ -158,7 +158,7 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 * @return
 	 * @throws Exception If the source ID cannot be found.
 	 */
-	public int getSourceColumnForSourceID(Integer id) throws Exception;
+	public int getSourceIndexForSourceID(Integer id) throws Exception;
 	
 	/**
 	 * Returns the source ID for the passed source index.
