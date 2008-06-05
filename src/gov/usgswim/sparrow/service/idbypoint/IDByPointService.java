@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.service.idbypoint;
 
 import static gov.usgswim.sparrow.service.predict.ValueType.incremental;
 import static gov.usgswim.sparrow.service.predict.ValueType.total;
+import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
@@ -9,6 +10,7 @@ import gov.usgswim.datatable.adjustment.FilteredDataTable;
 import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowModelProperties;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.PredictionContext;
@@ -78,7 +80,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	
 		// populate each of the sections
 		if (req.hasAdjustments()) {
-			retrieveAdjustments(req, response);
+			retrieveAdjustments(req.getContextID(), req, response);
 		}
 		if (req.hasAttributes()) {
 			retrieveAttributes(req, response);
@@ -119,7 +121,74 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			throw new RuntimeException("A context-id or a model-id is required for a id request");
 		}
 	}
-	
+	private void retrieveAdjustments(Integer predContextID, IDByPointRequest req, IDByPointResponse response) throws IOException {
+		//	TODO move to DataLoader when done debugging
+		// TODO replace with dynamic working code
+		
+//		<adjustments display="Adjustments">
+//		<metadata rowCount="5" columnCount="5" row-id-name="source_id">
+//			<columns>
+//				<col name="Source Name" type="String" />
+//				<col name="Units" type="String" />
+//				<col name="Original Value" type="Number" />
+//				<col name="Absolute Value" type="Number" />
+//				<col name="Multiplier" type="Number" />
+//				<col name="Adjusted Value" type="Number" />
+//			</columns>
+//		</metadata>
+//		<data>
+//			<r id="1"><c>Point Sources</c><c>N in Tons</c><c>354564</c><c></c><c></c><c>354564</c></r>
+//			<r id="2"><c>Atmospheric Deposition</c><c>N in Tons / SQ. Mile</c><c>5135484</c><c></c><c></c><c>5135484</c></r>
+//			<r id="3"><c>Fertilizer</c><c>N in Tons / Acre</c><c>38138991</c><c></c><c></c><c>38138991</c></r>
+//			<r id="4"><c>Waste</c><c>Tons of Garbage</c><c>0</c><c></c><c></c><c>0</c></r>
+//			<r id="5"><c>Non-Agricultural</c><c>Total Population</c><c>9534</c><c></c><c></c><c>9534</c></r>
+//		</data>
+//	</adjustments>
+		
+		// PLAN
+		// 1) Use DataLoader.properties SelectSourceValues  to obtain SourceName, Units, Original Value
+		// 2) Handle the prediction context in order to calculate AdjustValue and Multiplier. Note that one
+		// or more of Adjusted Value and Multiplier may be null, depending on the kind of adjustment.
+		// Adjustment may or may not have prediction context, and it may or may not have been run.
+		// If pred context, exists, check whether there are adjustments(difficult?)
+		// Adjustment is only for reporting purposes
+		// Happy path: predicted data available, all cached.
+		
+		if (predContextID == null || predContextID.equals(0)) return; // no prediction context means no adjustments 
+		
+//		Get the prediction context from the cache
+		PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(predContextID);
+		PredictResult predictResult = SharedApplication.getInstance().getPredictResult(contextFromCache);
+		PredictData predictData = SharedApplication.getInstance().getPredictData(contextFromCache.getModelID());
+		
+//		Get the Original, unadjusted source data and the adjusted source data
+		DataTable orgSrc = predictData.getSrc();
+		DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(contextFromCache.getAdjustmentGroups());
+		
+		response.adjustmentsXML = buildAdjustment(orgSrc, adjSrc, req.getModelID(), Long.valueOf(response.reachID));
+		
+//		response.adjustmentsXML = props.getText("adjustmentsXMLResponse");
+	}
+	private String buildAdjustment(DataTable orgSrc, DataTable adjSrc, Long modelID, Long reachID) {
+		StringBuilder sb = new StringBuilder();
+		int rowID = orgSrc.getRowForId(reachID);
+		for (int j=0; j<orgSrc.getColumnCount(); j++) {
+			// TODO add r @id
+			String orgValString = orgSrc.getString(0, j);
+			String adjValString = adjSrc.getString(0, j);
+			
+			sb.append("<r>");
+			sb.append("<c>").append(orgSrc.getName(j)).append("</c>");
+			sb.append("<c>").append("").append("</c>"); // TODO add units
+			sb.append("<c>").append(orgValString).append("</c>");
+			sb.append("<c>").append("").append("</c>"); // TODO add Absolute value
+			sb.append("<c>").append("").append("</c>"); // TODO add Multiplier
+			sb.append("<c>").append(adjValString).append("</c>");
+			sb.append("</r>");
+		}
+		return sb.toString();
+	}
+
 	private String retrievePredictedsForReach(Integer predictionContextID, Long modelID, Long reachID) throws IOException {
 		// TODO move to DataLoader when done debugging
 		
@@ -156,7 +225,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		List<Integer> relevantColumns = new ArrayList<Integer>();
 		Integer totalColumn = null;
 		
-		int nominalRowID = nominalPrediction.getRowForId(id);
+		int rowID = nominalPrediction.getRowForId(id);
 		// Collect all the relevant column indices for this row.
 		for (int j=0; j<nominalPrediction.getColumnCount(); j++) {
 			boolean isDesiredType = typeName.equals(nominalPrediction.getProperty(j, PredictResult.VALUE_TYPE_PROP));
@@ -188,25 +257,19 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		for (Integer j : relevantColumns) {
 			String columnName = nominalPrediction.getName(j);
 			sb.append("<r><c>").append(columnName).append("</c><c>");
-			String value = nominalPrediction.getString(nominalRowID, j);
+			String value = nominalPrediction.getString(rowID, j);
 			value = (value == null)? "N/A": value;
 			sb.append(value).append("</c>");
 			
-			if (adjustedPrediction == null || adjustedPrediction.getString(nominalRowID, j) == null) {
+			if (adjustedPrediction == null || adjustedPrediction.getString(rowID, j) == null) {
 				// no predicted value available
 				sb.append("<c>N/A</c><c/>");
 			} else {
 				// add predicted value
-				String predValueString = adjustedPrediction.getString(nominalRowID, j);
+				String predValueString = adjustedPrediction.getString(rowID, j);
 				Double predValue = Double.valueOf(predValueString);
 				Double nomValue = Double.valueOf(value);
-				Double percentChange = Double.NaN; 
-				if ( predValue.equals(nomValue)) {
-					// This takes care of the case when both nominal and predicted are zero
-					percentChange = 0D;
-				} else if (!nomValue.equals(0D)) {
-					percentChange = 100*(predValue - nomValue)/nomValue;
-				}
+				Double percentChange = calculatePercentageChange(predValue, nomValue);
 				
 				sb.append("<c>").append(predValueString).append("</c><c>").append(percentChange.toString()).append("</c>");
 			}
@@ -216,22 +279,16 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		
 		// add in the total TODO (with predicted)
 		sb.append("<r><c>").append(nominalPrediction.getName(totalColumn)).append("</c><c>");
-		sb.append(nominalPrediction.getString(nominalRowID, totalColumn)).append("</c>");
-		if (adjustedPrediction == null || adjustedPrediction.getString(nominalRowID, totalColumn) == null) {
+		sb.append(nominalPrediction.getString(rowID, totalColumn)).append("</c>");
+		if (adjustedPrediction == null || adjustedPrediction.getString(rowID, totalColumn) == null) {
 			// no predicted total available
 			sb.append("<c>N/A</c>");
 		} else {
 			// add predicted total
-			String predValueString = adjustedPrediction.getString(nominalRowID, totalColumn);
+			String predValueString = adjustedPrediction.getString(rowID, totalColumn);
 			Double predValue = Double.valueOf(predValueString);
-			Double nomValue = Double.valueOf(nominalPrediction.getString(nominalRowID, totalColumn));
-			Double percentChange = Double.NaN; 
-			if ( predValue.equals(nomValue)) {
-				// This takes care of the case when both nominal and predicted are zero
-				percentChange = 0D;
-			} else if (!nomValue.equals(0D)) {
-				percentChange = 100*(predValue - nomValue)/nomValue;
-			}
+			Double nomValue = Double.valueOf(nominalPrediction.getString(rowID, totalColumn));
+			Double percentChange = calculatePercentageChange(predValue, nomValue);
 			sb.append("<c>").append(predValueString).append("</c><c>").append(percentChange.toString()).append("</c>");
 		}
 		sb.append("</r>");
@@ -239,6 +296,16 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		sb.append("</section>");
 
 		return sb.toString();
+	}
+
+	public static Double calculatePercentageChange(Double newVal, Double baseVal) {
+		if ( newVal.equals(baseVal)) {
+			// This takes care of the case when both nominal and predicted are zero
+			return 0D;
+		} else if (!baseVal.equals(0D)) {
+			return 100*(newVal - baseVal)/baseVal;
+		}
+		return Double.NaN; // division by zero because baseVal == 0 and newVal != 0
 	}
 
 	private void retrieveAttributes(IDByPointRequest req, IDByPointResponse response) throws IOException, SQLException, NamingException {
@@ -325,39 +392,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		}
 	}
 
-	private void retrieveAdjustments(IDByPointRequest req, IDByPointResponse response) throws IOException {
-		//	TODO move to DataLoader when done debugging
-		// TODO replace with dynamic working code
-		
-//	    <adjustments display="Adjustments">
-//        <metadata rowCount="5" columnCount="5" row-id-name="source_id">
-//            <columns>
-//                <col name="Source Name" type="String" />
-//                <col name="Units" type="String" />
-//                <col name="Original Value" type="Number" />
-//                <col name="Adjusted Value" type="Number" />
-//                <col name="Multiplier" type="Number" />
-//            </columns>
-//        </metadata>
-//        <data>
-//            <r id="1"><c>Point Sources</c><c>N in Tons</c><c>143843</c><c></c><c></c></r>
-//            <r id="2"><c>Atmospheric Deposition</c><c>N in Tons / SQ. Mile</c><c>38434</c><c></c><c></c></r>
-//            <r id="3"><c>Fertilizer</c><c>N in Tons / Acre</c><c>94434</c><c></c><c></c></r>
-//            <r id="4"><c>Waste</c><c>Tons of Garbage</c><c>143</c><c></c><c></c></r>
-//            <r id="5"><c>Non-Agricultural</c><c>Total Population</c><c>91343</c><c></c><c></c></r>
-//        </data>
-//    	</adjustments>
-		
-		// PLAN
-		// 1) Use DataLoader.properties SelectSourceValues  to obtain SourceName, Units, Original Value
-		// 2) Handle the prediction context in order to calculate AdjustValue and Multiplier. Note that one
-		// or more of Adjusted Value and Multiplier may be null, depending on the kind of adjustment.
-		// Adjustment may or may not have prediction context, and it may or may not have been run.
-		// If pred context, exists, check whether there are adjustments(difficult?)
-		// Adjustment is only for reporting purposes
-		// Happy path: predicted data available, all cached.
-		response.adjustmentsXML = props.getText("adjustmentsXMLResponse");
-	}
+
 
 
 	protected Connection getConnection() throws NamingException, SQLException {
