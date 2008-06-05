@@ -353,12 +353,15 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 		String attributesQuery = props.getText("attributesSelectClause") + " FROM MODEL_ATTRIB_VW "
 		+ " WHERE IDENTIFIER=" + response.reachID 
-		+ " AND SPARROW_MODEL_ID=" + req.getModelID();
+		+ " AND SPARROW_MODEL_ID=" + response.modelID;
 		
 		DataTableWritable attributes = queryToDataTable(attributesQuery);
 		// TODO [IK] This 4 is hardcoded for now. Have to go back and use SparrowModelProperties to do properly
 		response.sparrowAttributes = new FilteredDataTable(attributes, 0, 4); // first four columns
 		response.basicAttributes = new FilteredDataTable(attributes, 4, attributes.getColumnCount()- 4); // remaining columns
+		
+		TemporaryHelper.printDataTable(response.sparrowAttributes);
+		TemporaryHelper.printDataTable(response.basicAttributes);
 		
 		StringBuilder basicAttributesSection = toSection(response.basicAttributes, "Basic Attributes", "basic_attrib");
 		StringBuilder sparrowAttributesSection = toSection(response.sparrowAttributes, "SPARROW Attributes", "sparrow_attrib");

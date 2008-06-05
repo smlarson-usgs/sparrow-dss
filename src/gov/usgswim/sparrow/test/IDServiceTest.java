@@ -29,99 +29,99 @@ public class IDServiceTest extends TestCase {
 		lifecycle.contextDestroyed(null, true);
 	}
 	
-	public void testModelByPoint() throws Exception {
-
-		IDByPointRequest req = buildIDByPointRequest1();
-		
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		IDByPointPipeline pipe = new IDByPointPipeline();
-		pipe.dispatch(req, out);
-		String response = out.toString();
-		
-		int reachID = Integer.parseInt( StringUtils.substringBetween(response, "<id>", "</id>") );
-		String reachName = StringUtils.substringBetween(response, "<name>", "</name>");
-
-		assertEquals(4428, reachID);
-		assertEquals("POTOMAC R", reachName);
-		
-	}
-	
-	public void testModelByID() throws Exception {
-
-		IDByPointRequest req = buildIDByPointRequest2();
-		
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		IDByPointPipeline pipe = new IDByPointPipeline();
-		pipe.dispatch(req, out);
-		String response = out.toString();
-		
-		int reachID = Integer.parseInt( StringUtils.substringBetween(response, "<id>", "</id>") );
-		String reachName = StringUtils.substringBetween(response, "<name>", "</name>");
-
-		/*
-		System.out.println("***");
-		System.out.println("Response: " + out.toString());
-		System.out.println("ReachID: " + reachID + " Reach Name: " + reachName);
-		System.out.println("***");
-		*/
-		
-		assertEquals(4428, reachID);
-		assertEquals("POTOMAC R", reachName);
-		
-	}
-	
-	
-	public void testContextByPoint() throws Exception {
-
-		PredictContextRequest contextReq = buildPredictContext2();	//Build a context from a canned file
-		
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		PredictContextPipeline PCPipe = new PredictContextPipeline();
-		PCPipe.dispatch(contextReq, out);
-		
-		/*
-		System.out.println("***");
-		System.out.println("PredictContextID: " + contextReq.getPredictionContext().hashCode());
-		System.out.println("***");
-		*/
-		
-		IDByPointRequest req = buildIDByPointRequest3();
-		
-		out = new ByteArrayOutputStream();
-		IDByPointPipeline IDpipe = new IDByPointPipeline();
-		IDpipe.dispatch(req, out);
-		String response = out.toString();
-		
-		int reachID = Integer.parseInt( StringUtils.substringBetween(response, "<id>", "</id>") );
-		String reachName = StringUtils.substringBetween(response, "<name>", "</name>");
-
-		assertEquals(4428, reachID);
-		assertEquals("POTOMAC R", reachName);
-		
-	}
-	
-	public void testContextByID() throws Exception {
-
-		PredictContextRequest contextReq = buildPredictContext2();	//Build a context from a canned file
-		
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		PredictContextPipeline PCPipe = new PredictContextPipeline();
-		PCPipe.dispatch(contextReq, out);
-		
-		IDByPointRequest req = buildIDByPointRequest4();
-		
-		out = new ByteArrayOutputStream();
-		IDByPointPipeline IDpipe = new IDByPointPipeline();
-		IDpipe.dispatch(req, out);
-		String response = out.toString();
-		
-		int reachID = Integer.parseInt( StringUtils.substringBetween(response, "<id>", "</id>") );
-		String reachName = StringUtils.substringBetween(response, "<name>", "</name>");
-
-		assertEquals(4428, reachID);
-		assertEquals("POTOMAC R", reachName);
-		
-	}
+//	public void testModelByPoint() throws Exception {
+//
+//		IDByPointRequest req = buildIDByPointRequest1();
+//		
+//		ByteArrayOutputStream out = new ByteArrayOutputStream();
+//		IDByPointPipeline pipe = new IDByPointPipeline();
+//		pipe.dispatch(req, out);
+//		String response = out.toString();
+//		
+//		int reachID = Integer.parseInt( StringUtils.substringBetween(response, "<id>", "</id>") );
+//		String reachName = StringUtils.substringBetween(response, "<name>", "</name>");
+//
+//		assertEquals(4428, reachID);
+//		assertEquals("POTOMAC R", reachName);
+//		
+//	}
+//	
+//	public void testModelByID() throws Exception {
+//
+//		IDByPointRequest req = buildIDByPointRequest2();
+//		
+//		ByteArrayOutputStream out = new ByteArrayOutputStream();
+//		IDByPointPipeline pipe = new IDByPointPipeline();
+//		pipe.dispatch(req, out);
+//		String response = out.toString();
+//		
+//		int reachID = Integer.parseInt( StringUtils.substringBetween(response, "<id>", "</id>") );
+//		String reachName = StringUtils.substringBetween(response, "<name>", "</name>");
+//
+//		/*
+//		System.out.println("***");
+//		System.out.println("Response: " + out.toString());
+//		System.out.println("ReachID: " + reachID + " Reach Name: " + reachName);
+//		System.out.println("***");
+//		*/
+//		
+//		assertEquals(4428, reachID);
+//		assertEquals("POTOMAC R", reachName);
+//		
+//	}
+//	
+//	
+//	public void testContextByPoint() throws Exception {
+//
+//		PredictContextRequest contextReq = buildPredictContext2();	//Build a context from a canned file
+//		
+//		ByteArrayOutputStream out = new ByteArrayOutputStream();
+//		PredictContextPipeline PCPipe = new PredictContextPipeline();
+//		PCPipe.dispatch(contextReq, out);
+//		
+//		/*
+//		System.out.println("***");
+//		System.out.println("PredictContextID: " + contextReq.getPredictionContext().hashCode());
+//		System.out.println("***");
+//		*/
+//		
+//		IDByPointRequest req = buildIDByPointRequest3();
+//		
+//		out = new ByteArrayOutputStream();
+//		IDByPointPipeline IDpipe = new IDByPointPipeline();
+//		IDpipe.dispatch(req, out);
+//		String response = out.toString();
+//		
+//		int reachID = Integer.parseInt( StringUtils.substringBetween(response, "<id>", "</id>") );
+//		String reachName = StringUtils.substringBetween(response, "<name>", "</name>");
+//
+//		assertEquals(4428, reachID);
+//		assertEquals("POTOMAC R", reachName);
+//		
+//	}
+//	
+//	public void testContextByID() throws Exception {
+//
+//		PredictContextRequest contextReq = buildPredictContext2();	//Build a context from a canned file
+//		
+//		ByteArrayOutputStream out = new ByteArrayOutputStream();
+//		PredictContextPipeline PCPipe = new PredictContextPipeline();
+//		PCPipe.dispatch(contextReq, out);
+//		
+//		IDByPointRequest req = buildIDByPointRequest4();
+//		
+//		out = new ByteArrayOutputStream();
+//		IDByPointPipeline IDpipe = new IDByPointPipeline();
+//		IDpipe.dispatch(req, out);
+//		String response = out.toString();
+//		
+//		int reachID = Integer.parseInt( StringUtils.substringBetween(response, "<id>", "</id>") );
+//		String reachName = StringUtils.substringBetween(response, "<name>", "</name>");
+//
+//		assertEquals(4428, reachID);
+//		assertEquals("POTOMAC R", reachName);
+//		
+//	}
 
 	/**
 	 * Trying to reproduce a bug.

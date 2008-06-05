@@ -10,6 +10,6 @@
 		<predicted />
 	</content>
 	<response-format>
-		<mime-type>json</mime-type>
+		<mime-type>xml</mime-type>
 	</response-format>
 </sparrow-id-request>

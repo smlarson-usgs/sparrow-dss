@@ -18,9 +18,6 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 	public XMLStreamReader getXMLStreamReader(PredictContextRequest o,
 			boolean isNeedsCompleteFirstRow) throws Exception {
 
-		LifecycleListener lifecycle = new LifecycleListener(); 
-		lifecycle.contextDestroyed(null, true); 
-		lifecycle.contextInitialized(null, true);
 		//Store to cache
 		PredictionContext context = o.getPredictionContext();
 		boolean isSuccess = false;
