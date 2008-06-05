@@ -13,7 +13,11 @@ import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowModelProperties;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.parser.Adjustment;
+import gov.usgswim.sparrow.parser.AdjustmentGroups;
+import gov.usgswim.sparrow.parser.DefaultGroup;
 import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.parser.ReachGroup;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.AggregateType;
 import gov.usgswim.sparrow.service.predict.ValueType;
@@ -34,7 +38,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.log4j.Logger;
-//TODO not complete
+
 @ThreadSafe
 public class IDByPointService implements HttpService<IDByPointRequest> {
 	// =============
@@ -123,70 +127,99 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	}
 	private void retrieveAdjustments(Integer predContextID, IDByPointRequest req, IDByPointResponse response) throws IOException {
 		//	TODO move to DataLoader when done debugging
-		// TODO replace with dynamic working code
-		
-//		<adjustments display="Adjustments">
-//		<metadata rowCount="5" columnCount="5" row-id-name="source_id">
-//			<columns>
-//				<col name="Source Name" type="String" />
-//				<col name="Units" type="String" />
-//				<col name="Original Value" type="Number" />
-//				<col name="Absolute Value" type="Number" />
-//				<col name="Multiplier" type="Number" />
-//				<col name="Adjusted Value" type="Number" />
-//			</columns>
-//		</metadata>
-//		<data>
-//			<r id="1"><c>Point Sources</c><c>N in Tons</c><c>354564</c><c></c><c></c><c>354564</c></r>
-//			<r id="2"><c>Atmospheric Deposition</c><c>N in Tons / SQ. Mile</c><c>5135484</c><c></c><c></c><c>5135484</c></r>
-//			<r id="3"><c>Fertilizer</c><c>N in Tons / Acre</c><c>38138991</c><c></c><c></c><c>38138991</c></r>
-//			<r id="4"><c>Waste</c><c>Tons of Garbage</c><c>0</c><c></c><c></c><c>0</c></r>
-//			<r id="5"><c>Non-Agricultural</c><c>Total Population</c><c>9534</c><c></c><c></c><c>9534</c></r>
-//		</data>
-//	</adjustments>
-		
-		// PLAN
-		// 1) Use DataLoader.properties SelectSourceValues  to obtain SourceName, Units, Original Value
-		// 2) Handle the prediction context in order to calculate AdjustValue and Multiplier. Note that one
-		// or more of Adjusted Value and Multiplier may be null, depending on the kind of adjustment.
-		// Adjustment may or may not have prediction context, and it may or may not have been run.
-		// If pred context, exists, check whether there are adjustments(difficult?)
-		// Adjustment is only for reporting purposes
-		// Happy path: predicted data available, all cached.
-		
-		if (predContextID == null || predContextID.equals(0)) return; // no prediction context means no adjustments 
-		
-//		Get the prediction context from the cache
+
+		if (predContextID == null || predContextID.equals(0))
+			return; // no prediction context means no adjustments
+
+		// Get the prediction context and data from the cache
 		PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(predContextID);
-		PredictResult predictResult = SharedApplication.getInstance().getPredictResult(contextFromCache);
 		PredictData predictData = SharedApplication.getInstance().getPredictData(contextFromCache.getModelID());
+
+		// Get the adjusted source data. The original, unadjusted source data is
+		// contained within predictData
+		AdjustmentGroups adjGroups = contextFromCache.getAdjustmentGroups();
+		DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(adjGroups);
 		
-//		Get the Original, unadjusted source data and the adjusted source data
-		DataTable orgSrc = predictData.getSrc();
-		DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(contextFromCache.getAdjustmentGroups());
-		
-		response.adjustmentsXML = buildAdjustment(orgSrc, adjSrc, req.getModelID(), Long.valueOf(response.reachID));
-		
-//		response.adjustmentsXML = props.getText("adjustmentsXMLResponse");
+		response.adjustmentsXML = buildAdjustment(predictData, adjSrc, req.getModelID(), Long.valueOf(response.reachID), adjGroups);
 	}
-	private String buildAdjustment(DataTable orgSrc, DataTable adjSrc, Long modelID, Long reachID) {
+
+	/**
+	 * @param adjGroups
+	 * @param reachID
+	 * @param srcId 
+	 * @return an array of two coefficients, [multiplying coefficient adjustment, absolute override adjustment]
+	 */
+	private Double[] getAdjustmentCoefficients(AdjustmentGroups adjGroups, long reachID, Long srcId) {
+		Double coef = 1D;
+		Double abs = null;
+		for (ReachGroup rGrp: adjGroups.getReachGroups()) {
+			if (rGrp.contains(reachID)) {
+				// get last absolute.
+				// get prod coef
+				for (Adjustment adj: rGrp.getAdjustments()) {
+					if (adj.getSource().longValue() == srcId) {
+						if (adj.isAbsolute()) {
+							abs = adj.getAbsolute();
+						} else if (adj.isCoefficient()) {
+							coef *= adj.getCoefficient();
+						}
+					}
+				}
+			}
+		}
+		return new Double[] {coef, abs};
+	}
+	private String buildAdjustment(PredictData predictData, DataTable adjSrc, Long modelID, Long reachID, AdjustmentGroups adjGroups) throws IOException {
 		StringBuilder sb = new StringBuilder();
+		DataTable orgSrc = predictData.getSrc();
+		DataTable srcMetadata = predictData.getSrcMetadata();
+		assert(srcMetadata.getRowCount() == orgSrc.getColumnCount());
+		
 		int rowID = orgSrc.getRowForId(reachID);
-		for (int j=0; j<orgSrc.getColumnCount(); j++) {
+
+		Integer displayCol = srcMetadata.getColumnByName("DISPLAY_NAME");
+		
+		Integer unitsCol = srcMetadata.getColumnByName("UNITS");
+		Integer precisionCol = srcMetadata.getColumnByName("PRECISION");
+		// build each row
+		for (int j=0; j<srcMetadata.getRowCount(); j++) {
 			// TODO add r @id
 			String orgValString = orgSrc.getString(0, j);
 			String adjValString = adjSrc.getString(0, j);
+			Long id = srcMetadata.getIdForRow(j);
+			String units = srcMetadata.getString(j, unitsCol);
 			
-			sb.append("<r>");
+			sb.append("<r id=\"").append(id).append("\">");
 			sb.append("<c>").append(orgSrc.getName(j)).append("</c>");
-			sb.append("<c>").append("").append("</c>"); // TODO add units
+			if (units != null) {
+				sb.append("<c>").append(units).append("</c>");
+			} else {
+				sb.append("<c/>");
+			}
 			sb.append("<c>").append(orgValString).append("</c>");
-			sb.append("<c>").append("").append("</c>"); // TODO add Absolute value
-			sb.append("<c>").append("").append("</c>"); // TODO add Multiplier
+			{	// output absolute and multiplier coefficients
+				Double[] coefficients = getAdjustmentCoefficients(adjGroups, reachID.intValue(), id);
+				if (coefficients[1] != null) {
+					sb.append("<c>").append(coefficients[1]).append("</c>");
+					sb.append("<c/>");
+				} else if (!coefficients[0].equals(1D)) {
+					sb.append("<c/>");
+					sb.append("<c>").append(coefficients[0]).append("</c>");
+				} else {
+					sb.append("<c/><c/>");
+				}
+			}
 			sb.append("<c>").append(adjValString).append("</c>");
 			sb.append("</r>");
 		}
-		return sb.toString();
+
+		// adjustmentsXMLResponse
+		return props.getText("adjustmentsXMLResponse", 
+				new String[] {
+				"rowCount", "" + srcMetadata.getRowCount(),
+				"adjustments", sb.toString()
+		});
+
 	}
 
 	private String retrievePredictedsForReach(Integer predictionContextID, Long modelID, Long reachID) throws IOException {
@@ -314,7 +347,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		
 		{	// HACK temporary. review later
 			// use the submitted reach id if the response was not looked up.
-			int identifier = (response.reachID == 0)? req.getReachID(): response.reachID;
+			long identifier = (response.reachID == 0)? req.getReachID(): response.reachID;
 			response.reachID = identifier;
 		}
 
@@ -391,9 +424,6 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			e.printStackTrace();
 		}
 	}
-
-
-
 
 	protected Connection getConnection() throws NamingException, SQLException {
 		return SharedApplication.getInstance().getConnection();

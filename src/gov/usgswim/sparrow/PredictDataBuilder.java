@@ -1,7 +1,6 @@
 package gov.usgswim.sparrow;
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTable.Immutable;
 import gov.usgswim.sparrow.domain.Model;
 
 /**
@@ -14,9 +13,9 @@ import gov.usgswim.sparrow.domain.Model;
 public class PredictDataBuilder extends AbstractPredictData {
 
 	/**
-   * 
-   */
-  private static final long serialVersionUID = 351354348641L;
+	 * 
+	 */
+	private static final long serialVersionUID = 351354348641L;
 
 
 	/**
@@ -136,7 +135,7 @@ public class PredictDataBuilder extends AbstractPredictData {
 	 * <li>DISPLAY_NAME - (String) The short name of the source, used for display
 	 * <li>DESCRIPTION - (String) A description of the source (could be long)
 	 * <li>CONSTITUENT - (String) The name of the Constituent being measured
-	 * <li>UNITS - (STring) The units the constituent is measured in
+	 * <li>UNITS - (String) The units the constituent is measured in
 	 * <li>PRECISION - (int) The number of decimal places
 	 * <li>IS_POINT_SOURCE (boolean) 'T' or 'F' values that can be mapped to boolean.
 	 * </ol>

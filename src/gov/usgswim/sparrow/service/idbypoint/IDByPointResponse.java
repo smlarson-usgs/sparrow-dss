@@ -16,7 +16,7 @@ public class IDByPointResponse {
 	public String message;
 	public Integer cacheLifetime;
 	//
-	public int reachID;
+	public long reachID;
 	private Reach reach;
 	//
 	public DataTable adjustments;

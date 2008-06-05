@@ -38,7 +38,7 @@ public class Reach implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 
-	private Integer id;	//The Model Specific ID of the reach. (not the db PK).
+	private Long id;	//The Model Specific ID of the reach. (not the db PK).
 	
 	//TODO: This should be a sorted set
 	private List<Adjustment> adjs;	//List of one or more adjustments
@@ -69,7 +69,7 @@ public class Reach implements XMLStreamParserComponent {
 				case START_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
-						id = ParserHelper.parseAttribAsInt(in, "id");
+						id = ParserHelper.parseAttribAsLong(in, "id");
 					} else if ("adjustment".equals(localName)) {
 						
 						//Lazy build the arrayList
@@ -134,14 +134,14 @@ public class Reach implements XMLStreamParserComponent {
 	// =================
 	// GETTERS & SETTERS
 	// =================
-	public Integer getId() {
-  	return id;
-  }
+	public Long getId() {
+		return id;
+	}
 
 	public List<Adjustment> getAdjustments() {
-  	return adjs;
-  }
-	
+		return adjs;
+	}
+
 	/**
 	 * Returns a hashcode that fully represents the state of this adjustment.
 	 * 
@@ -150,7 +150,7 @@ public class Reach implements XMLStreamParserComponent {
 	 * @return
 	 */
 	public int getStateHash() {
-		
+
 		HashCodeBuilder hcb = new HashCodeBuilder(133457, 29);
 		hcb.append(id);
 

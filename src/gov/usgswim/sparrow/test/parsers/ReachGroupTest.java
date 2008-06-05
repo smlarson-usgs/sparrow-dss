@@ -127,8 +127,8 @@ public class ReachGroupTest extends TestCase {
 		//Test the individual reaches
 		Reach reach0 = rg.getReaches().get(0);
 		Reach reach1 = rg.getReaches().get(1);
-		assertEquals(new Integer(483947453), reach0.getId());
-		assertEquals(new Integer(947839474), reach1.getId());
+		assertEquals(new Long(483947453), reach0.getId());
+		assertEquals(new Long(947839474), reach1.getId());
 		
 		//Test the adjustments applied to these specific reaches - Reach 0:
 		assertEquals(new Integer(2), reach0.getAdjustments().get(0).getSource());

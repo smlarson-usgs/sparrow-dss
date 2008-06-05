@@ -3,9 +3,11 @@ package gov.usgswim.sparrow.parser;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Set;
 
 
 import javax.xml.XMLConstants;
@@ -40,6 +42,9 @@ public class ReachGroup implements XMLStreamParserComponent {
 	
 	private List<Adjustment> adjs = new ArrayList<Adjustment>();
 	private List<Reach> reaches = new ArrayList<Reach>();
+	
+	// search
+	private Set<Long> containedReachIDs;
 	
 	// ================
 	// INSTANCE METHODS
@@ -153,6 +158,31 @@ public class ReachGroup implements XMLStreamParserComponent {
 		return true;
 	}
 	
+	// ==============
+	// SEARCH METHODS
+	// ==============
+	/**
+	 * @param reachID
+	 * @return
+	 * 
+	 * WARNING: do not call this method until all the reaches have been added to the group, as it will make subsequent search behavior incorrect
+	 */
+	public boolean contains(long reachID) {
+		if (reaches == null) return false;
+		// late initialize as necessary
+		if (containedReachIDs == null) {
+			containedReachIDs = new HashSet<Long>();
+			for (Reach reach: reaches) {
+				containedReachIDs.add(reach.getId());
+			}
+		}
+		return containedReachIDs.contains(reachID);
+	}
+	
+	public boolean contains(Reach reach) {
+		return contains(reach.getId());
+	}
+	
 	// =================
 	// GETTERS & SETTERS
 	// =================
@@ -173,12 +203,12 @@ public class ReachGroup implements XMLStreamParserComponent {
 	}
 
 	public List<Adjustment> getAdjustments() {
-  	return adjs;
-  }
-	
+		return adjs;
+	}
+
 	public List<Reach> getReaches() {
-  	return reaches;
-  }
+		return reaches;
+	}
 	
 	/**
 	 * Returns a hashcode that fully represents the state of this adjustment.
