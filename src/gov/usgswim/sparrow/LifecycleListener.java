@@ -38,8 +38,9 @@ public class LifecycleListener implements ServletContextListener {
 	 * Called when the context (the entire application) is being shut down.
 	 * This method should properly shutdown the cache and any other shared resources.
 	 */
+	//TODO: [ee] This is set to clear always....
 	public void contextDestroyed(ServletContextEvent context) {
-		contextDestroyed(context, false);
+		contextDestroyed(context, true);
 	}
 	
 	public void contextDestroyed(ServletContextEvent context, boolean clearCache) {
@@ -58,8 +59,9 @@ public class LifecycleListener implements ServletContextListener {
 		
 	}
 
+	//TODO: [ee] This is set to clear always....
 	public void contextInitialized(ServletContextEvent context) {
-		contextInitialized(context, false);
+		contextInitialized(context, true);
 	}
 	/**
 	 * Called when the context (the entire application) is initialize.
