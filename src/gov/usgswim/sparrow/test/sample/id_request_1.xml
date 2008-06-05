@@ -14,7 +14,7 @@
 		<adjustments/>
 	</content>
 	
-	<!-- Get the response back as JSON -->
+	<!-- Get the response back as XML -->
 	<response-format>
 		<mime-type>XML</mime-type>
 	</response-format>
