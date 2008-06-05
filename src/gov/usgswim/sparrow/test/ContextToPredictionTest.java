@@ -38,7 +38,7 @@ public class ContextToPredictionTest extends TestCase {
 		lifecycle.contextDestroyed(null, true);
 	}
 	
-	public void xtestBasicPredictionValues() throws Exception {
+	public void testBasicPredictionValues() throws Exception {
 
 		int CONTEXT_ID = 720751343;
 		
