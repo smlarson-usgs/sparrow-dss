@@ -34,15 +34,24 @@ public abstract class SimpleXMLBuilderHelper {
 		in.append(">");
 	}
 	
+	/**
+	 * @param in
+	 * @param tagName
+	 * @param attributes an even array of name-value pairs
+	 */
+	public static void writeClosedFullTag(StringBuilder in, String tagName, String... attributes) {
+		in.append("<").append(tagName);
+		for (int i=0; i<attributes.length; i=i+2) {
+			writeNonNullAttribute(in, attributes[i], attributes[i+1]);
+		}
+		in.append(" />");
+	}
+	
 	public static void writeClosingTag(StringBuilder in, String tagName) {
 		in.append("</").append(tagName).append(">");
 	}
 	
-	public static String asString(Integer value) {
-		return (value == null)? null: value.toString();
-	}
-	
-	public static String asString(Long value) {
+	public static String asString(Number value) {
 		return (value == null)? null: value.toString();
 	}
 }

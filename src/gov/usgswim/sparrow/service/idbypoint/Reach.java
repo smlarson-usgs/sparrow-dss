@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.service.idbypoint;
 
 import gov.usgswim.Immutable;
-
+import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.*;
 /**
  * Simple bean class to hold a reach that was identified by a user lat/long location.
  * @author eeverman
@@ -27,6 +27,26 @@ public class Reach {
 		this.minLat = minLat;
 		this.maxLong = maxLong;
 		this.maxLat = maxLat;
+	}
+	
+	public String toIdentificationXML() {
+		StringBuilder in = new StringBuilder();
+		// write <identification>
+		writeOpeningTag(in, "identification", 
+				"distance-in-meters", asString(distInMeters));
+		{
+			writeNonNullTag(in, "id", asString(id));
+			writeNonNullTag(in, "name", name);
+			writeClosedFullTag(in, "bbox", 
+					"min-long", asString(minLong),
+					"min-lat", asString(minLat),
+					"max-long", asString(maxLong),
+					"max-lat", asString(maxLat)
+			);
+		}
+		writeClosingTag(in, "identification");
+		
+		return in.toString();
 	}
 
 	public int getId() {

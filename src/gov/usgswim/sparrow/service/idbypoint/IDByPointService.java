@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.service.idbypoint;
 
-import gov.usgs.webservices.framework.utils.TemporaryHelper;
+import static gov.usgswim.sparrow.service.predict.ValueType.incremental;
+import static gov.usgswim.sparrow.service.predict.ValueType.total;
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
@@ -14,7 +15,6 @@ import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.AggregateType;
 import gov.usgswim.sparrow.service.predict.ValueType;
-import static gov.usgswim.sparrow.service.predict.ValueType.*;
 import gov.usgswim.sparrow.util.PropertyLoaderHelper;
 
 import java.io.IOException;
@@ -71,39 +71,12 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		// TODO extract to method when satisfied.
 		IDByPointResponse response = new IDByPointResponse();
 		
-		Long modelId = null;
-		Reach reach = null;
-		
-		//Find the model ID
-		if (req.getContextID() != null) {
-			PredictionContext context = SharedApplication.getInstance().getPredictionContext(req.getContextID());
-			if (context == null) throw new RuntimeException("Prediction Context with id " 
-					+ req.getContextID() + " has not been registered. Perhaps the server has been restarted?");
-			modelId = context.getModelID();
-		} else if (req.getModelID() != null) {
-			modelId = req.getModelID();
-		} else {
-			throw new Exception("A context-id or a model-id is required for a id request");
-		}
-		
-		//Find the Reach ID
-		if (req.getReachID() != null) {
-			reach = SharedApplication.getInstance().getReachByIDResult(new ReachID(modelId, req.getReachID()));
-		} else if (req.getPoint() != null) {
-			reach = SharedApplication.getInstance().getReachByPointResult(new ModelPoint(modelId, req.getPoint()));
-		} else {
-			throw new Exception("A context-id or a model-id is required for a id request");
-		}
-		
-		// two types of id requests, with and without a context.
-		// without means we have to store the context? NO, null context.
-		// uc-1 example has no context. Later ones have prediction context.
-		response.modelID = modelId;
-		response.reachID = reach.getId();
-		response.reachName = reach.getName();
-		response.distanceFromReach = reach.getDistanceInMeters();
-		response.statusOK = true;
-
+		//Find the model ID and reach ID. Note that the model ID must be known before calling 
+		response.modelID = populateModelID(req);
+		assert(response.modelID != null);
+		response.setReach(populateReachID(req, response));
+	
+		// populate each of the sections
 		if (req.hasAdjustments()) {
 			retrieveAdjustments(req, response);
 		}
@@ -111,20 +84,44 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			retrieveAttributes(req, response);
 		}
 		if (req.hasPredicted()) {
-			retrievePredicteds(req, response, reach);
+			response.predictionsXML = retrievePredictedsForReach(req.getContextID(), req.getModelID(), Long.valueOf(response.reachID));
 		}
 		
+		response.statusOK = true;
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
-		//String result = response.toXML();
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(response.toXML()));
-		// HACK [eric or IK] temporarily converting into old request format. Remove when done.
-		//BasicXMLStreamReader reader = returnOldResult(req);
+
 		return reader;
 	}
+
+	// =======================
+	// PRIVATE HELPER METHODS
+	// =======================
+	private Reach populateReachID(IDByPointRequest req, IDByPointResponse response) throws Exception {
+		if (req.getReachID() != null) {
+			return SharedApplication.getInstance().getReachByIDResult(new ReachID(response.modelID, req.getReachID()));
+		} else if (req.getPoint() != null) {
+			return SharedApplication.getInstance().getReachByPointResult(new ModelPoint(response.modelID, req.getPoint()));
+		} else {
+			throw new Exception("A context-id or a model-id is required for a id request");
+		}
+	}
+
+	private Long populateModelID(IDByPointRequest req) throws Exception {
+		if (req.getContextID() != null) {
+			PredictionContext context = SharedApplication.getInstance().getPredictionContext(req.getContextID());
+			if (context == null) throw new RuntimeException("Prediction Context with id " 
+					+ req.getContextID() + " has not been registered. Perhaps the server has been restarted?");
+			return context.getModelID();
+		} else if (req.getModelID() != null) {
+			return req.getModelID();
+		} else {
+			throw new RuntimeException("A context-id or a model-id is required for a id request");
+		}
+	}
 	
-	private void retrievePredicteds(IDByPointRequest req, IDByPointResponse response, Reach reach) throws IOException {
+	private String retrievePredictedsForReach(Integer predictionContextID, Long modelID, Long reachID) throws IOException {
 		// TODO move to DataLoader when done debugging
-		Integer predictionContextID = req.getContextID();
 		
 		// Get the nominal and adjusted prediction results
 		PredictionContext nominalPredictionContext = null;
@@ -136,20 +133,20 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			adjustedPrediction = SharedApplication.getInstance().getPredictResult(contextFromCache);
 			nominalPredictionContext = new PredictionContext(contextFromCache.getModelID(), null, null, null, null);
 		} else {
-			nominalPredictionContext = new PredictionContext(req.getModelID(), null, null, null, null);
+			nominalPredictionContext = new PredictionContext(modelID, null, null, null, null);
 		}
 		PredictResult nominalPrediction = SharedApplication.getInstance().getPredictResult(nominalPredictionContext);
 		
-		String incrementalContribution = buildPredSection(nominalPrediction, adjustedPrediction, Long.valueOf(response.reachID), incremental, "Incremental Contribution Values", "inc");
-		String totalContribution = buildPredSection(nominalPrediction, adjustedPrediction, Long.valueOf(response.reachID), total, "Total (Measurable) Values", "inc");
-		// attributesXMLResponse
-		response.predictionsXML = props.getText("predictedXMLResponse", 
+		String incrementalContribution = buildPredSection(nominalPrediction, adjustedPrediction, reachID, incremental, "Incremental Contribution Values", "inc");
+		String totalContribution = buildPredSection(nominalPrediction, adjustedPrediction, reachID, total, "Total (Measurable) Values", "inc");
+		
+		// predictedXMLResponse
+		return props.getText("predictedXMLResponse", 
 				new String[] {
 				"rowCount", "" + nominalPrediction.getColumnCount(),
 				"incContribution", incrementalContribution,
 				"totalContribution", totalContribution,
 		});
-//		response.predictionsXML = incrementalContribution + totalContribution;
 	}
 
 	private String buildPredSection(PredictResult nominalPrediction, PredictResult adjustedPrediction, Long id, ValueType type, String display, String name) {

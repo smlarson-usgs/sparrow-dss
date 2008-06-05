@@ -16,9 +16,8 @@ public class IDByPointResponse {
 	public String message;
 	public Integer cacheLifetime;
 	//
-	public Integer distanceFromReach;
 	public int reachID;
-	public String reachName;
+	private Reach reach;
 	//
 	public DataTable adjustments;
 	public DataTable predictions;
@@ -29,6 +28,15 @@ public class IDByPointResponse {
 	public String adjustmentsXML;
 	public String predictionsXML;
 	public String attributesXML;
+	
+	public Reach getReach() {
+		return reach;
+	}
+	
+	public void setReach(Reach reach) {
+		this.reach = reach;
+		this.reachID = reach.getId(); // keep in sync
+	}	
 
 	public String toXML() {
 
@@ -46,15 +54,8 @@ public class IDByPointResponse {
 			writeNonNullTag(in, "message", message);
 			writeNonNullTag(in, "cache-lifetime-seconds", asString(cacheLifetime));
 			in.append("\n");
-
-			// write <identification>
-			writeOpeningTag(in, "identification", 
-					"distance-in-meters", asString(distanceFromReach));
-			{
-				writeNonNullTag(in, "id", asString(reachID));
-				writeNonNullTag(in, "name", reachName);
-			}
-			writeClosingTag(in, "identification");
+			
+			in.append(reach.toIdentificationXML());
 			in.append("\n");
 
 			// TODO Replace this when populated
