@@ -1,0 +1,13 @@
+<sparrow-id-request xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<context-id>1002885697</context-id>
+	<point lat="44.46990966796875" long="-88.11996459960938" />
+	<content>
+		<adjustments />
+		<attributes />
+		<predicted />
+	</content>
+	<response-format>
+		<mime-type>json</mime-type>
+	</response-format>
+</sparrow-id-request>

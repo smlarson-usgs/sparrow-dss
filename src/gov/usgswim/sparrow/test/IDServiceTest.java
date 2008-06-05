@@ -73,7 +73,7 @@ public class IDServiceTest extends TestCase {
 	
 	public void testContextByPoint() throws Exception {
 
-		PredictContextRequest contextReq = buildPredictContext();	//Build a context from a canned file
+		PredictContextRequest contextReq = buildPredictContext2();	//Build a context from a canned file
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PredictContextPipeline PCPipe = new PredictContextPipeline();
@@ -102,7 +102,7 @@ public class IDServiceTest extends TestCase {
 	
 	public void testContextByID() throws Exception {
 
-		PredictContextRequest contextReq = buildPredictContext();	//Build a context from a canned file
+		PredictContextRequest contextReq = buildPredictContext2();	//Build a context from a canned file
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PredictContextPipeline PCPipe = new PredictContextPipeline();
@@ -123,6 +123,38 @@ public class IDServiceTest extends TestCase {
 		
 	}
 
+	/**
+	 * Trying to reproduce a bug.
+	 * @throws Exception
+	 */
+	public void testContextByPointBug1() throws Exception {
+
+		PredictContextRequest contextReq = buildPredictContextBug1();	//Build a context from a canned file
+		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		PredictContextPipeline PCPipe = new PredictContextPipeline();
+		PCPipe.dispatch(contextReq, out);
+		
+		/*
+		System.out.println("***");
+		System.out.println("PredictContextID: " + contextReq.getPredictionContext().hashCode());
+		System.out.println("***");
+		*/
+		
+		IDByPointRequest req = buildIDByPointRequestBug1();
+		
+		out = new ByteArrayOutputStream();
+		IDByPointPipeline IDpipe = new IDByPointPipeline();
+		IDpipe.dispatch(req, out);
+		String response = out.toString();
+		
+		int reachID = Integer.parseInt( StringUtils.substringBetween(response, "<id>", "</id>") );
+		String reachName = StringUtils.substringBetween(response, "<name>", "</name>");
+
+		//assertEquals(4428, reachID);
+		//assertEquals("POTOMAC R", reachName);
+		
+	}
 	
 	/*
 	public void testHashCode() throws Exception {
@@ -168,8 +200,24 @@ public class IDServiceTest extends TestCase {
 		return pipe.parse(xml);
 	}
 	
-	public PredictContextRequest buildPredictContext() throws Exception {
+	public IDByPointRequest buildIDByPointRequestBug1() throws Exception {
+		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/id_request_bug_1.xml");
+		String xml = readToString(is);
+		
+		IDByPointPipeline pipe = new IDByPointPipeline();
+		return pipe.parse(xml);
+	}
+	
+	public PredictContextRequest buildPredictContext2() throws Exception {
 		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-context-2.xml");
+		String xml = readToString(is);
+		
+		PredictContextPipeline pipe = new PredictContextPipeline();
+		return pipe.parse(xml);
+	}
+	
+	public PredictContextRequest buildPredictContextBug1() throws Exception {
+		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-context-bug_1.xml");
 		String xml = readToString(is);
 		
 		PredictContextPipeline pipe = new PredictContextPipeline();
