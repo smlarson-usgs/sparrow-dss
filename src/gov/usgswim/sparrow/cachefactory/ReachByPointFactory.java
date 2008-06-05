@@ -58,7 +58,10 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 			
 			if (rs.next()) {
 				
-				reachId = new Reach(rs.getInt("identifier"), rs.getString("reach_name"), rs.getInt("dist_in_meters"));
+				reachId = new Reach(
+						rs.getInt("identifier"), rs.getString("reach_name"), rs.getInt("dist_in_meters"),
+						rs.getDouble("MIN_LONG"), rs.getDouble("MIN_LAT"), rs.getDouble("MAX_LONG"), rs.getDouble("MAX_LAT")
+				);
 
 			} else {
 				//no rows found - leave as null

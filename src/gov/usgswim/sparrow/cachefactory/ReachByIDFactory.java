@@ -52,7 +52,9 @@ public class ReachByIDFactory extends AbstractCacheFactory {
 			
 			if (rs.next()) {
 				
-				reach = new Reach(rs.getInt("identifier"), rs.getString("reach_name"), 0);
+				reach = new Reach(rs.getInt("identifier"), rs.getString("reach_name"), 0,
+						rs.getDouble("MIN_LONG"), rs.getDouble("MIN_LAT"), rs.getDouble("MAX_LONG"), rs.getDouble("MAX_LAT")
+				);
 
 			} else {
 				//no rows found - leave as null
