@@ -125,22 +125,22 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			throw new RuntimeException("A context-id or a model-id is required for a id request");
 		}
 	}
-	private void retrieveAdjustments(Integer predContextID, IDByPointRequest req, IDByPointResponse response) throws IOException {
+	private void retrieveAdjustments(Integer predContextID, IDByPointRequest req, IDByPointResponse response) throws Exception {
 		//	TODO move to DataLoader when done debugging
 
 		if (predContextID == null || predContextID.equals(0))
 			return; // no prediction context means no adjustments
 
 		// Get the prediction context and data from the cache
-		PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(predContextID);
-		PredictData predictData = SharedApplication.getInstance().getPredictData(contextFromCache.getModelID());
+		PredictionContext context = SharedApplication.getInstance().getPredictionContext(predContextID);
+		PredictData nomPredictData = SharedApplication.getInstance().getPredictData(context.getModelID());
 
 		// Get the adjusted source data. The original, unadjusted source data is
 		// contained within predictData
-		AdjustmentGroups adjGroups = contextFromCache.getAdjustmentGroups();
+		AdjustmentGroups adjGroups = context.getAdjustmentGroups();
 		DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(adjGroups);
 		
-		response.adjustmentsXML = buildAdjustment(predictData, adjSrc, req.getModelID(), Long.valueOf(response.reachID), adjGroups);
+		response.adjustmentsXML = buildAdjustment(nomPredictData, adjSrc, context.getModelID(), Long.valueOf(response.reachID), adjGroups);
 	}
 
 	/**
@@ -169,13 +169,13 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		}
 		return new Double[] {coef, abs};
 	}
-	private String buildAdjustment(PredictData predictData, DataTable adjSrc, Long modelID, Long reachID, AdjustmentGroups adjGroups) throws IOException {
+	private String buildAdjustment(PredictData predictData, DataTable adjSrc, Long modelID, Long reachID, AdjustmentGroups adjGroups) throws Exception {
 		StringBuilder sb = new StringBuilder();
 		DataTable orgSrc = predictData.getSrc();
 		DataTable srcMetadata = predictData.getSrcMetadata();
 		assert(srcMetadata.getRowCount() == orgSrc.getColumnCount());
 		
-		int rowID = orgSrc.getRowForId(reachID);
+		int rowID = predictData.getRowForReachID(reachID);
 
 		Integer displayCol = srcMetadata.getColumnByName("DISPLAY_NAME");
 		
