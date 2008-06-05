@@ -184,8 +184,8 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		// build each row
 		for (int j=0; j<srcMetadata.getRowCount(); j++) {
 			// TODO add r @id
-			String orgValString = orgSrc.getString(0, j);
-			String adjValString = adjSrc.getString(0, j);
+			String orgValString = orgSrc.getString(rowID, j);
+			String adjValString = adjSrc.getString(rowID, j);
 			Long id = srcMetadata.getIdForRow(j);
 			String units = srcMetadata.getString(j, unitsCol);
 			
@@ -198,13 +198,17 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			}
 			sb.append("<c>").append(orgValString).append("</c>");
 			{	// output absolute and multiplier coefficients
+				//return [coef, abs].  coef is 1D by default.
 				Double[] coefficients = getAdjustmentCoefficients(adjGroups, reachID.intValue(), id);
-				if (coefficients[1] != null) {
-					sb.append("<c>").append(coefficients[1]).append("</c>");
-					sb.append("<c/>");
-				} else if (!coefficients[0].equals(1D)) {
-					sb.append("<c/>");
+				
+				if (!coefficients[0].equals(1D)) {
+					//coef is populated
 					sb.append("<c>").append(coefficients[0]).append("</c>");
+					sb.append("<c/>");
+				} else if (coefficients[1] != null) {
+					//abs is populated
+					sb.append("<c/>");
+					sb.append("<c>").append(coefficients[1]).append("</c>");
 				} else {
 					sb.append("<c/><c/>");
 				}
