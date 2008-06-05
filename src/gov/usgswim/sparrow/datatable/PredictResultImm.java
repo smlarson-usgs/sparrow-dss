@@ -6,6 +6,8 @@ import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.PredictData;
+import static gov.usgswim.sparrow.service.predict.AggregateType.*;
+import static gov.usgswim.sparrow.service.predict.ValueType.*;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -106,18 +108,12 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 			srcIdTotalMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcTotalIndex); 
 			
 			Map<String, String> incProps = new HashMap<String, String>();
-			incProps.put(RESULT_TYPE, "inc");
+			incProps.put(VALUE_TYPE_PROP, incremental.name());
 			
 			Map<String, String> totProps = new HashMap<String, String>();
-			totProps.put(RESULT_TYPE, "total");
+			totProps.put(VALUE_TYPE_PROP, total.name());
 			
-//			if (hasMetaData) {
-//				// use the metadata to popultae the source name
-//				String sourceName = srcMetaData.getString(srcIndex, nameCol);
-//				incProps.put(SOURCE_NAME, sourceName);
-//				totProps.put(SOURCE_NAME, sourceName);
-//			}
-			
+
 			columns[srcIncAddIndex] = new ImmutableDoubleColumn(data, srcIncAddIndex, name + " Inc. Addition", "units", "description", incProps);
 			columns[srcTotalIndex] = new ImmutableDoubleColumn(data, srcTotalIndex, name + " Total (w/ upstream, decayed)", "units", "description", totProps);
 		}
@@ -127,13 +123,13 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 		// ------------------------------------------
 		int totalIncCol = 2 * sourceCount;	//The total inc col comes right after the two sets of source columns
 		Map<String, String> totalIncProps = new HashMap<String, String>();
-		totalIncProps.put(RESULT_TYPE, "inc");
-		totalIncProps.put(IS_TOTAL, "inc");
+		totalIncProps.put(VALUE_TYPE_PROP, incremental.name());
+		totalIncProps.put(AGGREGATE_TYPE_PROP, sum.name());
 		
 		int totalTotalCol = totalIncCol + 1; //The grand total col comes right after the total incremental col
 		Map<String, String> grandTotalProps = new HashMap<String, String>();
-		grandTotalProps.put(RESULT_TYPE, "total");
-		grandTotalProps.put(IS_TOTAL, "total");
+		grandTotalProps.put(VALUE_TYPE_PROP, total.name());
+		grandTotalProps.put(AGGREGATE_TYPE_PROP, sum.name());
 		
 		columns[totalIncCol] = new ImmutableDoubleColumn(data, totalIncCol, "Total Inc. (not decayed)", "units", "description", totalIncProps);
 		columns[totalTotalCol] = new ImmutableDoubleColumn(data, totalTotalCol, "Grand Total (measurable)", "units", "description", grandTotalProps);

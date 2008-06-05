@@ -12,6 +12,9 @@ import gov.usgswim.sparrow.SparrowModelProperties;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.service.predict.AggregateType;
+import gov.usgswim.sparrow.service.predict.ValueType;
+import static gov.usgswim.sparrow.service.predict.ValueType.*;
 import gov.usgswim.sparrow.util.PropertyLoaderHelper;
 
 import java.io.IOException;
@@ -68,13 +71,14 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		// TODO extract to method when satisfied.
 		IDByPointResponse response = new IDByPointResponse();
 		
-		
 		Long modelId = null;
 		Reach reach = null;
 		
 		//Find the model ID
 		if (req.getContextID() != null) {
 			PredictionContext context = SharedApplication.getInstance().getPredictionContext(req.getContextID());
+			if (context == null) throw new RuntimeException("Prediction Context with id " 
+					+ req.getContextID() + " has not been registered. Perhaps the server has been restarted?");
 			modelId = context.getModelID();
 		} else if (req.getModelID() != null) {
 			modelId = req.getModelID();
@@ -136,23 +140,31 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		}
 		PredictResult nominalPrediction = SharedApplication.getInstance().getPredictResult(nominalPredictionContext);
 		
-		String incrementalContribution = buildPredSection(nominalPrediction, adjustedPrediction, Long.valueOf(response.reachID), "inc", "Incremental Contribution Values", "inc");
-		String totalContribution = buildPredSection(nominalPrediction, adjustedPrediction, Long.valueOf(response.reachID), "total", "Total (Measurable) Values", "inc");
-
-		response.predictionsXML = incrementalContribution + totalContribution;
+		String incrementalContribution = buildPredSection(nominalPrediction, adjustedPrediction, Long.valueOf(response.reachID), incremental, "Incremental Contribution Values", "inc");
+		String totalContribution = buildPredSection(nominalPrediction, adjustedPrediction, Long.valueOf(response.reachID), total, "Total (Measurable) Values", "inc");
+		// attributesXMLResponse
+		response.predictionsXML = props.getText("predictedXMLResponse", 
+				new String[] {
+				"rowCount", "" + nominalPrediction.getColumnCount(),
+				"incContribution", incrementalContribution,
+				"totalContribution", totalContribution,
+		});
+//		response.predictionsXML = incrementalContribution + totalContribution;
 	}
 
-	private String buildPredSection(PredictResult nominalPrediction, PredictResult adjustedPrediction, Long id, String discriminator, String display, String name) {
-		if (nominalPrediction == null || discriminator == null || id == null || id == 0) return "";
-
+	private String buildPredSection(PredictResult nominalPrediction, PredictResult adjustedPrediction, Long id, ValueType type, String display, String name) {
+		if (nominalPrediction == null ||  id == null || id == 0) return "";
+		String typeName = (type == null)? "": type.name();
+		String isTotalVal = AggregateType.sum.name();
 		List<Integer> relevantColumns = new ArrayList<Integer>();
 		Integer totalColumn = null;
 		
 		int nominalRowID = nominalPrediction.getRowForId(id);
 		// Collect all the relevant column indices for this row.
 		for (int j=0; j<nominalPrediction.getColumnCount(); j++) {
-			boolean isDesiredType = discriminator.equals(nominalPrediction.getProperty(j, PredictResult.RESULT_TYPE));
-			boolean isTotal = (nominalPrediction.getProperty(j, PredictResult.IS_TOTAL) != null );
+			boolean isDesiredType = typeName.equals(nominalPrediction.getProperty(j, PredictResult.VALUE_TYPE_PROP));
+			String aggType = nominalPrediction.getProperty(j, PredictResult.AGGREGATE_TYPE_PROP);
+			boolean isTotal = (aggType != null ) && isTotalVal.equals(aggType);
 			
 			if (isDesiredType) {
 				if (isTotal) {
@@ -185,10 +197,21 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			
 			if (adjustedPrediction == null || adjustedPrediction.getString(nominalRowID, j) == null) {
 				// no predicted value available
-				sb.append("<c>N/A</c>");
+				sb.append("<c>N/A</c><c/>");
 			} else {
 				// add predicted value
-				sb.append("<c>").append(adjustedPrediction.getString(nominalRowID, j)).append("</c>");
+				String predValueString = adjustedPrediction.getString(nominalRowID, j);
+				Double predValue = Double.valueOf(predValueString);
+				Double nomValue = Double.valueOf(value);
+				Double percentChange = Double.NaN; 
+				if ( predValue.equals(nomValue)) {
+					// This takes care of the case when both nominal and predicted are zero
+					percentChange = 0D;
+				} else if (!nomValue.equals(0D)) {
+					percentChange = 100*(predValue - nomValue)/nomValue;
+				}
+				
+				sb.append("<c>").append(predValueString).append("</c><c>").append(percentChange.toString()).append("</c>");
 			}
 
 			sb.append("</r>");
@@ -202,10 +225,20 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			sb.append("<c>N/A</c>");
 		} else {
 			// add predicted total
-			sb.append("<c>").append(adjustedPrediction.getString(nominalRowID, totalColumn)).append("</c>");
+			String predValueString = adjustedPrediction.getString(nominalRowID, totalColumn);
+			Double predValue = Double.valueOf(predValueString);
+			Double nomValue = Double.valueOf(nominalPrediction.getString(nominalRowID, totalColumn));
+			Double percentChange = Double.NaN; 
+			if ( predValue.equals(nomValue)) {
+				// This takes care of the case when both nominal and predicted are zero
+				percentChange = 0D;
+			} else if (!nomValue.equals(0D)) {
+				percentChange = 100*(predValue - nomValue)/nomValue;
+			}
+			sb.append("<c>").append(predValueString).append("</c><c>").append(percentChange.toString()).append("</c>");
 		}
 		sb.append("</r>");
-		
+
 		sb.append("</section>");
 
 		return sb.toString();
