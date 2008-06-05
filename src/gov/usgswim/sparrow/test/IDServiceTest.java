@@ -21,7 +21,7 @@ public class IDServiceTest extends TestCase {
 	
 	protected void setUp() throws Exception {
 		super.setUp();
-		lifecycle.contextInitialized(null);
+		lifecycle.contextInitialized(null, true);
 	}
 
 	protected void tearDown() throws Exception {
