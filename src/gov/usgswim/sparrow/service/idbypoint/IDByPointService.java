@@ -7,7 +7,6 @@ import gov.usgswim.ThreadSafe;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.adjustment.FilteredDataTable;
-import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.PredictData;
@@ -21,14 +20,12 @@ import gov.usgswim.sparrow.parser.ReachGroup;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.AggregateType;
 import gov.usgswim.sparrow.service.predict.ValueType;
+import gov.usgswim.sparrow.util.JDBCUtil;
 import gov.usgswim.sparrow.util.PropertyLoaderHelper;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -359,7 +356,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		+ " WHERE IDENTIFIER=" + response.reachID 
 		+ " AND SPARROW_MODEL_ID=" + response.modelID;
 		
-		DataTableWritable attributes = queryToDataTable(attributesQuery);
+		DataTableWritable attributes = JDBCUtil.queryToDataTable(attributesQuery);
 		// TODO [IK] This 4 is hardcoded for now. Have to go back and use SparrowModelProperties to do properly
 		response.sparrowAttributes = new FilteredDataTable(attributes, 0, 4); // first four columns
 		response.basicAttributes = new FilteredDataTable(attributes, 4, attributes.getColumnCount()- 4); // remaining columns
@@ -381,15 +378,6 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		// TODO Create a combo XMLStreamReader to enable several streamreader to be assembled sequentially, using hasNext to query.
 		// This makes the pieces combineable.
 
-	}
-
-	private DataTableWritable queryToDataTable(String query) throws NamingException, SQLException {
-		Connection conn = getConnection();
-		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		ResultSet rset = st.executeQuery(query);
-		DataTableWritable attributes = DataTableUtils.toDataTable(rset);
-		closeConnection(conn, rset);
-		return attributes;
 	}
 
 	private StringBuilder toSection(DataTable basicAttributes, String display, String name) {
@@ -422,20 +410,6 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		return sb;
 	}
 	
-	private void closeConnection(Connection conn, ResultSet rset) {
-		// TODO [IK] implement a utility method for closing connections and refactor to a different place. Doesn't belong here.
-		try {
-			if (rset != null) rset.close();
-			if (conn != null) conn.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	protected Connection getConnection() throws NamingException, SQLException {
-		return SharedApplication.getInstance().getConnection();
-	}
-
 	public void shutDown() {
 		xoFact = null;
 	}
