@@ -43,7 +43,7 @@ public class HucsForReachPipeline extends AbstractPipeline<HucsForReachRequest>{
 				
 				Integer modelID = Integer.parseInt(paramChain[0]);
 				Long reachID = Long.parseLong(paramChain[1]);
-				String desiredAttribute = paramChain[2];
+				String desiredAttribute = paramChain[2].toLowerCase();
 				
 				return new HucsForReachRequest(modelID, reachID, desiredAttribute);
 			} else {
@@ -60,16 +60,17 @@ public class HucsForReachPipeline extends AbstractPipeline<HucsForReachRequest>{
 	@Override
 	public XMLStreamReader getXMLStreamReader(HucsForReachRequest request, boolean isNeedsCompleteFirstRow) throws Exception {
 		StringBuilder result = new StringBuilder();
-		if ("huc8".equals(request.attributeName)) {
-			String attributesQuery = "SELECT attrib.IDENTIFIER, attrib.HUC8, lkp.name " 
-				+ " FROM SPARROW_DSS.model_attrib_vw attrib LEFT OUTER JOIN STREAM_NETWORK.HUC8_LKP lkp ON attrib.HUC8 = lkp.huc8 "
+		String attName = request.attributeName;
+		if ( attName != null && attName.startsWith("huc")) {
+			String attributesQuery = "SELECT attrib.IDENTIFIER, attrib." + attName + ", lkp.name " 
+				+ " FROM SPARROW_DSS.model_attrib_vw attrib LEFT OUTER JOIN STREAM_NETWORK." + attName + "_LKP lkp ON attrib." + attName + " = lkp." + attName 
 				+ " where sparrow_model_id = " + request.modelID
 				+ " and IDENTIFIER = " + request.reachID;
 			DataTableWritable dt = JDBCUtil.queryToDataTable(attributesQuery);
 			result.append("<hucsForReachResponse reachID=\"").append(request.reachID).append("\">");
 			for (int i=0; i<dt.getRowCount(); i++) {
 				result.append("<huc id=\"").append(dt.getString(i, 0));
-				result.append("\" huc8=\"").append(dt.getString(i, 1)).append("\" >");
+				result.append("\" ").append(attName).append("=\"").append(dt.getString(i, 1)).append("\" >");
 				result.append(dt.getString(i, 2));
 				result.append("</huc>");
 			}
