@@ -4,6 +4,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictComputable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
+import gov.usgswim.sparrow.cachefactory.ReachesByHUCRequest;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.deprecated.IDByPointComputable;
 import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
@@ -68,6 +69,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	public static final String ANALYSIS_RESULT_CACHE = "AnalysisResult";
 	public static final String IDENTIFY_REACH_BY_POINT = "IdentifyReachByPoint";
 	public static final String IDENTIFY_REACH_BY_ID = "IdentifyReachByID";
+	public static final String REACHES_BY_HUC = "ReachesByHUC";
 	
 
 	
@@ -453,6 +455,17 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		Ehcache c = CacheManager.getInstance().getEhcache(ADJUSTED_SOURCE_CACHE);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
 		return (e != null)?((DataTable) e.getObjectValue()):null;
+	}
+	
+	//Adjusted Source Cache
+	public int[] getReachesByHUC(ReachesByHUCRequest req) {
+		return getReachesByHUC(req, false);
+	}
+	
+	public int[] getReachesByHUC(ReachesByHUCRequest req, boolean quiet) {
+		Ehcache c = CacheManager.getInstance().getEhcache(REACHES_BY_HUC);
+		Element e  = (quiet)?c.getQuiet(req):c.get(req);
+		return (e != null)?((int[]) e.getObjectValue()):null;
 	}
 	
 	
