@@ -4,6 +4,13 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	
 
+<!-- 
+param names
+context-id
+mime-type
+bbox
+-->
+
 	<prediction-context context-id="1231241243424"/>
 
 	
