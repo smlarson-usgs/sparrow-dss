@@ -121,21 +121,21 @@ public class Adjustment implements XMLStreamParserComponent {
 	// GETTERS & SETTERS
 	// =================
 	public Integer getSource() {
-  	return src;
-  }
+		return src;
+	}
 
 	public Double getAbsolute() {
-  	return abs;
-  }
+		return abs;
+	}
 
 	public Double getCoefficient() {
-  	return coef;
-  }
-	
+		return coef;
+	}
+
 	public boolean isAbsolute() {
 		return abs != null;
 	}
-	
+
 	public boolean isCoefficient() {
 		return coef != null;
 	}

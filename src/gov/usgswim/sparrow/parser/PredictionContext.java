@@ -136,7 +136,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 						this.areaOfInterest = AreaOfInterest.parseStream(in, modelID);
 						areaOfInterestID = (areaOfInterest == null)? null: areaOfInterest.getId();
 					} else {
-						throw new RuntimeException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
+						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
 					}
 					break;
 				case END_ELEMENT:
@@ -150,12 +150,12 @@ public class PredictionContext implements XMLStreamParserComponent {
 						return this; // we're done
 					} else {
 						// otherwise, error
-						throw new RuntimeException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);
+						throw new XMLParseValidationException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);
 					}
 					//break;
 			}
 		}
-		throw new RuntimeException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
+		throw new XMLParseValidationException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
 	}
 
 	public String getParseTarget() {

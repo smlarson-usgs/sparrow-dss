@@ -4,39 +4,40 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictComputable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
-import gov.usgswim.sparrow.cachefactory.ReachesByHUCRequest;
+import gov.usgswim.sparrow.cachefactory.ReachID;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.deprecated.IDByPointComputable;
 import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
 import gov.usgswim.sparrow.domain.ModelImm;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
+import gov.usgswim.sparrow.parser.AdjustmentGroups;
+import gov.usgswim.sparrow.parser.Analysis;
+import gov.usgswim.sparrow.parser.AreaOfInterest;
+import gov.usgswim.sparrow.parser.LogicalSet;
+import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.Reach;
-import gov.usgswim.sparrow.service.idbypoint.ReachID;
 import gov.usgswim.sparrow.service.model.ModelRequest;
 import gov.usgswim.sparrow.service.predict.PredictDatasetComputable;
 import gov.usgswim.sparrow.util.DataSourceProxy;
 import gov.usgswim.sparrow.util.JDBCConnectable;
 import gov.usgswim.task.ComputableCache;
-import gov.usgswim.sparrow.parser.*;
 
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
-
-import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
-
 import oracle.jdbc.driver.OracleDriver;
+
+import org.apache.log4j.Logger;
 
 public class SharedApplication extends DataSourceProxy implements JDBCConnectable {
 	protected static Logger log =
@@ -69,7 +70,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	public static final String ANALYSIS_RESULT_CACHE = "AnalysisResult";
 	public static final String IDENTIFY_REACH_BY_POINT = "IdentifyReachByPoint";
 	public static final String IDENTIFY_REACH_BY_ID = "IdentifyReachByID";
-	public static final String REACHES_BY_HUC = "ReachesByHUC";
+	public static final String REACHES_BY_CRITERIA = "ReachesByCriteria";
 	
 
 	
@@ -458,14 +459,14 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	//Adjusted Source Cache
-	public int[] getReachesByHUC(ReachesByHUCRequest req) {
-		return getReachesByHUC(req, false);
+	public List<Long> getReachesByCriteria(LogicalSet req) {
+		return getReachesByCriteria(req, false);
 	}
 	
-	public int[] getReachesByHUC(ReachesByHUCRequest req, boolean quiet) {
-		Ehcache c = CacheManager.getInstance().getEhcache(REACHES_BY_HUC);
+	public List<Long> getReachesByCriteria(LogicalSet req, boolean quiet) {
+		Ehcache c = CacheManager.getInstance().getEhcache(REACHES_BY_CRITERIA);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
-		return (e != null)?((int[]) e.getObjectValue()):null;
+		return (e != null)?((List<Long>) e.getObjectValue()):null;
 	}
 	
 	

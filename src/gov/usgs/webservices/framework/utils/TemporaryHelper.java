@@ -123,4 +123,24 @@ public abstract class TemporaryHelper {
 			}
 		}
 	}
+	
+	public static String[] getStringColumn(DataTable data, int col) {
+//		 TODO [IK] move to DataTableUtils
+		int size = data.getRowCount();
+		String[] result = new String[size];
+		for (int row=0; row<size; row++) {
+			result[row] = data.getString(row, col);
+		}
+		return result;
+	}
+	
+	public static Long[] getLongColumn(DataTable data, int col) {
+		// TODO [IK] move to DataTableUtils
+		int size = data.getRowCount();
+		Long[] result = new Long[size];
+		for (int row=0; row<size; row++) {
+			result[row] = data.getLong(row, col);
+		}
+		return result;
+	}
 }

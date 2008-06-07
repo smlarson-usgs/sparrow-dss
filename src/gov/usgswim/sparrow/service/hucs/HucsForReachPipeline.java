@@ -21,6 +21,10 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * @author ilinkuo
+ * @deprecated Scheduled to be killed. The entire package is to be killed.
+ */
 public class HucsForReachPipeline extends AbstractPipeline<HucsForReachRequest>{
 
 	public static JSONFormatter configure(JSONFormatter jFormatter) {

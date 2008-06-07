@@ -35,6 +35,15 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 				Point.Double point = new Point.Double();	//required
 				point.x = parseParamAsDouble(request, "long");
 				point.y = parseParamAsDouble(request, "lat");
+				
+				String paramValue = request.getParameter("adj");
+				boolean hasAdjustment = (paramValue != null);
+				paramValue = request.getParameter("attrib");
+				boolean hasAttribute = (paramValue != null);
+				paramValue = request.getParameter("pred");
+				boolean hasPrediction = (paramValue != null);
+				
+				String format = request.getParameter("format");
 
 				IDByPointRequest result = new IDByPointRequest(modelID, point);
 				result.setXMLRequest(""); // no xml request, RESTlike

@@ -87,11 +87,11 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 						//id = ParserHelper.parseAttribAsInt(in, XMLStreamParserComponent.ID_ATTR, false);
 						conflicts = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "conflicts");				
 					}  else if (ReachGroup.isTargetMatch(localName)) {
-						ReachGroup rg = new ReachGroup();
+						ReachGroup rg = new ReachGroup(modelID);
 						rg.parse(in);
 						reachGroups.add(rg);
 					} else if (DefaultGroup.isTargetMatch(localName)) {
-						DefaultGroup dg = new DefaultGroup();
+						DefaultGroup dg = new DefaultGroup(modelID);
 						dg.parse(in);
 						defaultGroup = dg;
 					}
@@ -103,11 +103,11 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 						return this; // we're done
 					}
 					// otherwise, error
-					throw new RuntimeException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);
+					throw new XMLParseValidationException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);
 					//break;
 			}
 		}
-		throw new RuntimeException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
+		throw new XMLParseValidationException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
 	}
 
 	public String getParseTarget() {
@@ -221,7 +221,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 				//TODO:  [ee] All lists should be returning non-null unmodifiable lists...
 				
 				//Loop Through the explicit set of reaches
-				for (Reach r: rg.getReaches()) {
+				for (Reach r: rg.getExplicitReaches()) {
 					
 					//apply the adjustments for this reachGroup as a whole to this reach.
 					//This needs to take place for each reach.

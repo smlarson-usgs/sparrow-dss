@@ -14,6 +14,13 @@ public class DefaultGroup extends ReachGroup {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 
+	// ===========
+	// CONSTRUCTOR
+	// ===========
+	public DefaultGroup(long modelID) {
+		super(modelID);
+	}
+	
 	@Override
 	public ReachGroup parse(XMLStreamReader in) throws XMLStreamException,
 	XMLParseValidationException {
@@ -24,7 +31,7 @@ public class DefaultGroup extends ReachGroup {
 			throw new XMLParseValidationException("The default-group does not allow a name");
 		}
 
-		if (group.getReaches().size() > 0) {
+		if (group.getExplicitReaches().size() > 0) {
 			throw new XMLParseValidationException("The default-group does not allow individual reaches to be specified");
 		}
 

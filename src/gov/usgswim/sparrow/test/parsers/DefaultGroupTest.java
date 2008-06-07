@@ -55,7 +55,7 @@ public class DefaultGroupTest extends TestCase {
 		+ "	</reach>"
 		+ "</default-group>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
-		DefaultGroup rg = new DefaultGroup();
+		DefaultGroup rg = new DefaultGroup(1);
 		
 		reader.next();
 		
@@ -69,7 +69,7 @@ public class DefaultGroupTest extends TestCase {
 	
 	public ReachGroup buildDefaultGroup() throws Exception {
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(getTestRequest()));
-		ReachGroup rg = new DefaultGroup();
+		ReachGroup rg = new DefaultGroup(1);
 		reader.next();
 		rg = rg.parse(reader);
 		

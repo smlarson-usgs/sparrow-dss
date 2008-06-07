@@ -50,7 +50,7 @@ public class TerminalReachesTest extends TestCase {
 		try {
 			termReaches.parse(reader);
 			fail("exception should be thrown before this point");
-		} catch (RuntimeException e) {
+		} catch (XMLParseValidationException e) {
 			assertTrue(e.getMessage().contains("unrecognized"));
 		}
 	}

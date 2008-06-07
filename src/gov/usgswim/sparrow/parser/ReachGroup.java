@@ -2,13 +2,13 @@ package gov.usgswim.sparrow.parser;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import gov.usgswim.sparrow.service.SharedApplication;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
-
 
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
@@ -35,6 +35,13 @@ public class ReachGroup implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 
+	// ===========
+	// CONSTRUCTOR
+	// ===========
+	public ReachGroup(long modelID) {
+		this.modelID = modelID;
+	}
+	
 	private boolean isEnabled;
 	private String name;
 	private String description;
@@ -42,9 +49,12 @@ public class ReachGroup implements XMLStreamParserComponent {
 	
 	private List<Adjustment> adjs = new ArrayList<Adjustment>();
 	private List<Reach> reaches = new ArrayList<Reach>();
+	private List<LogicalSet> logicalSets;
+	private transient List<List<Long>> reachIDsByLogicalSets; // transient as this is fetched from cache
 	
 	// search
 	private Set<Long> containedReachIDs;
+	private long modelID;
 	
 	// ================
 	// INSTANCE METHODS
@@ -79,7 +89,7 @@ public class ReachGroup implements XMLStreamParserComponent {
 						notes = ParserHelper.parseSimpleElementValue(in);
 					} else if ("desc".equals(localName)) {
 						description = ParserHelper.parseSimpleElementValue(in);
-					} else if ("adjustment".equals(localName)) {
+					} else if (Adjustment.isTargetMatch(localName)) {
 
 						//Lazy build the arrayList
 						if (adjs == null) adjs = new ArrayList<Adjustment>();
@@ -88,15 +98,19 @@ public class ReachGroup implements XMLStreamParserComponent {
 						adj.parse(in);
 						adjs.add(adj);
 						
-					} else if ("logical-set".equals(localName)) {
-						// ignore for now
-						ParserHelper.ignoreElement(in);
-					} else if ("reach".equals(localName)) {
+					} else if (LogicalSet.isTargetMatch(localName)) {
+
+						if (logicalSets == null) logicalSets = new ArrayList<LogicalSet>();
+
+						LogicalSet ls = new LogicalSet(modelID);
+						ls.parse(in);
+						logicalSets.add(ls);
+					} else if (Reach.isTargetMatch(localName)) {
 						Reach r = new Reach();
 						r.parse(in);
 						reaches.add(r);
 					} else {
-						throw new RuntimeException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
+						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
 					}
 					break;
 				case END_ELEMENT:
@@ -115,16 +129,22 @@ public class ReachGroup implements XMLStreamParserComponent {
 						} else {
 							adjs = Collections.emptyList();
 						}
+						
+						if (logicalSets != null) {
+							logicalSets = Collections.unmodifiableList(logicalSets);
+						} else {
+							logicalSets = Collections.emptyList();
+						}
 
 						checkValidity();
 						return this; // we're done
 					}
 					// otherwise, error
-					throw new RuntimeException("unexpected closing tag of </" + localName + ">; expected  " + getParseTarget());
+					throw new XMLParseValidationException("unexpected closing tag of </" + localName + ">; expected  " + getParseTarget());
 					//break;
 			}
 		}
-		throw new RuntimeException("tag <" + getParseTarget() + "> not closed. Unexpected end of stream?");
+		throw new XMLParseValidationException("tag <" + getParseTarget() + "> not closed. Unexpected end of stream?");
 	}
 
 	public String getParseTarget() {
@@ -135,15 +155,19 @@ public class ReachGroup implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME.equals(name);
 	}
 	
-	//TODO:  We are copying immutable lists during the cloning.. OK?
+	
 	protected ReachGroup clone() throws CloneNotSupportedException {
-		ReachGroup myClone = new ReachGroup();
+		// DONE: We are copying immutable lists during the cloning.. OK?
+		ReachGroup myClone = new ReachGroup(modelID);
 		myClone.isEnabled = isEnabled;
 		myClone.name = name;
 		myClone.description = description;
 		myClone.notes = notes;
-		myClone.adjs = adjs;
-		myClone.reaches = reaches;
+		myClone.adjs = adjs; // immutable
+		myClone.reaches = reaches; // immutable
+		myClone.logicalSets = logicalSets; // immutable
+		// Deliberately NOT copying reachIDsByLogicalSets, relying on
+		// late-binding code in getLogicalReachIDs to fetch from cache.
 		return myClone;
 	}
 
@@ -206,10 +230,44 @@ public class ReachGroup implements XMLStreamParserComponent {
 		return adjs;
 	}
 
-	public List<Reach> getReaches() {
+	public List<LogicalSet> getLogicalSets() {
+		return logicalSets;
+	}
+
+	public long getModelID() {
+		return modelID;
+	}
+
+	public List<Reach> getExplicitReaches() {
 		return reaches;
 	}
 	
+	/**
+	 * @param i
+	 * @return reachIds for the ith logical-set
+	 */
+	public List<Long> getLogicalReachIDs(int i) {
+		if (reachIDsByLogicalSets == null && logicalSets != null && i>=0 && logicalSets.size()>i) {
+			// valid request but reachIDsByLogicalSets not yet populated.
+			// Create an empty List for reachIDs of the correct size, filled with nulls;
+			reachIDsByLogicalSets = new ArrayList<List<Long>>(logicalSets.size());
+			for (int j=0; j<reachIDsByLogicalSets.size(); j++) {
+				reachIDsByLogicalSets.add(null);
+			}
+		} else {
+			throw new RuntimeException("out-of-bounds logical-set index [" + i + "] for logical reach id ");
+		}
+		
+		// reachIDs are only fetched at the time that they are requested
+		List<Long> result = reachIDsByLogicalSets.get(i);
+		if (result == null) {
+			result = SharedApplication.getInstance().getReachesByCriteria(logicalSets.get(i));
+			reachIDsByLogicalSets.set(i, result);
+		}
+		return reachIDsByLogicalSets.get(i);
+	}
+
+
 	/**
 	 * Returns a hashcode that fully represents the state of this adjustment.
 	 * 
@@ -224,6 +282,7 @@ public class ReachGroup implements XMLStreamParserComponent {
 		hcb.append(description);
 		hcb.append(isEnabled);
 		hcb.append(notes);
+
 		
 		if (adjs != null) {
 			for (Adjustment adj : adjs) {
@@ -236,6 +295,14 @@ public class ReachGroup implements XMLStreamParserComponent {
 				hcb.append(reach.getStateHash());
 			}
 		}
+		
+		if (logicalSets != null) {
+			for (LogicalSet ls: logicalSets) {
+				hcb.append(ls.hashCode());
+			}
+		}
+		
+		// reachIDsByLogicalSets deliberately ignored
 		
 		return hcb.toHashCode();
 		
