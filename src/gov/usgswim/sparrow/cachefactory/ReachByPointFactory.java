@@ -10,6 +10,7 @@ import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.Reach;
+import gov.usgswim.sparrow.service.idbypoint.ReachID;
 
 
 
@@ -50,21 +51,17 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 		st.setFetchSize(1);
 
 		ResultSet rs = null;
-		Reach reachId = null;
 		
 		try {
 
 			rs = st.executeQuery(query);
 			
 			if (rs.next()) {
-				
-				reachId = new Reach(
-						rs.getInt("identifier"), rs.getString("reach_name"), rs.getInt("dist_in_meters"),
-						rs.getDouble("MIN_LONG"), rs.getDouble("MIN_LAT"), rs.getDouble("MAX_LONG"), rs.getDouble("MAX_LAT")
-				);
-
-			} else {
-				//no rows found - leave as null
+				int reachID = rs.getInt("identifier");
+				int distance = rs.getInt("dist_in_meters");
+				Reach reach = SharedApplication.getInstance().getReachByIDResult(new ReachID(req.getModelID(), reachID));
+				// add the distance information to the retrieved Reach
+				return reach.cloneWithDistance(distance);
 			}
 
 		} finally {
@@ -73,10 +70,8 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 				rs = null;
 			}
 		}
-		
 
-		
-		return reachId;
+		return null;
 		
 	}
 

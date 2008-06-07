@@ -16,7 +16,7 @@ public class IDByPointResponse {
 	public String message;
 	public Integer cacheLifetime;
 	//
-	public long reachID;
+	public Long reachID;
 	private Reach reach;
 	//
 	public DataTable adjustments;
@@ -35,7 +35,7 @@ public class IDByPointResponse {
 	
 	public void setReach(Reach reach) {
 		this.reach = reach;
-		this.reachID = reach.getId(); // keep in sync
+		this.reachID = Long.valueOf(reach.getId()); // keep in sync
 	}	
 
 	public String toXML() {

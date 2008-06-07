@@ -7,6 +7,20 @@
     <title>Request Format Test</title>
   </head>
   <body>
+  
+		<form action="sp_echojs/formpost/echo" method="post" enctype="application/x-www-form-urlencoded">
+			<fieldset title="Echo JSON Request 1">
+				<label for="xml_input_1">Echo JSON as attachment call via sp_echojs post</label>
+				<p>
+				Any text is fine, even non JSON
+				</p>
+				<textarea id="xml_input_1" name="xmlreq" cols="120" rows="20">
+				This is the story of Goldilocks and the three bears
+				</textarea>
+				<input type="submit" name="submit" value="submit"/>
+			</fieldset>
+		</form>
+		
 		
 		<form action="sp_predict/formpost/xmlecho" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Prediction Request 1">

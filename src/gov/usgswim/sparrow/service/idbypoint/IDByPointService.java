@@ -14,7 +14,6 @@ import gov.usgswim.sparrow.SparrowModelProperties;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.Adjustment;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
-import gov.usgswim.sparrow.parser.DefaultGroup;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.ReachGroup;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -26,6 +25,8 @@ import gov.usgswim.sparrow.util.PropertyLoaderHelper;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,16 +42,29 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	// =============
 	// STATIC FIELDS
 	// =============
-	protected static Logger log =
+	public final static Logger log =
 		Logger.getLogger(IDByPointService.class); //logging for this class
-
-	protected static String RESPONSE_MIME_TYPE = "application/xml";
-
-
+	public final static String RESPONSE_MIME_TYPE = "application/xml";
+	public final static NumberFormat formatter = new DecimalFormat("#0.00"); // default format for numbers
+	
 	//They promise these factories are threadsafe
 	private static Object factoryLock = new Object();
 	//protected static XMLInputFactory xinFact;
 	protected static XMLOutputFactory xoFact;
+	
+	// =====================
+	// PUBLIC STATIC METHODS
+	// =====================
+	public static Double calculatePercentageChange(Double newVal, Double baseVal) {
+		if ( newVal.equals(baseVal)) {
+			// This takes care of the case when both nominal and predicted are zero
+			return 0D;
+		} else if (!baseVal.equals(0D)) {
+			return 100*(newVal - baseVal)/baseVal;
+		}
+		return Double.NaN; // what remains is division by zero because baseVal == 0 and newVal != 0
+	}
+
 
 	// ===============
 	// INSTANCE FIELDS
@@ -71,13 +85,14 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 	public XMLStreamReader getXMLStreamReader(IDByPointRequest req, boolean isNeedsFlattening) throws Exception {
 		// TODO isNeedsFlattening ignored for now because using custom flattener
-		// TODO extract to method when satisfied.
+
 		IDByPointResponse response = new IDByPointResponse();
 		
 		//Find the model ID and reach ID. Note that the model ID must be known before calling 
 		response.modelID = populateModelID(req);
 		assert(response.modelID != null);
-		response.setReach(populateReachID(req, response));
+		response.setReach(retrieveReach(req, response));
+		assert(response.reachID != null);
 	
 		// populate each of the sections
 		if (req.hasAdjustments()) {
@@ -96,11 +111,14 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 		return reader;
 	}
-
+	
+	public void shutDown() {
+		xoFact = null;
+	}
 	// =======================
 	// PRIVATE HELPER METHODS
 	// =======================
-	private Reach populateReachID(IDByPointRequest req, IDByPointResponse response) throws Exception {
+	private Reach retrieveReach(IDByPointRequest req, IDByPointResponse response) throws Exception {
 		if (req.getReachID() != null) {
 			return SharedApplication.getInstance().getReachByIDResult(new ReachID(response.modelID, req.getReachID()));
 		} else if (req.getPoint() != null) {
@@ -137,7 +155,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		AdjustmentGroups adjGroups = context.getAdjustmentGroups();
 		DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(adjGroups);
 		
-		response.adjustmentsXML = buildAdjustment(nomPredictData, adjSrc, context.getModelID(), Long.valueOf(response.reachID), adjGroups);
+		response.adjustmentsXML = buildAdjustment(nomPredictData, adjSrc, context.getModelID(), response.reachID, adjGroups);
 	}
 
 	/**
@@ -175,14 +193,13 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		int rowID = predictData.getRowForReachID(reachID);
 
 		Integer displayCol = srcMetadata.getColumnByName("DISPLAY_NAME");
-		
 		Integer unitsCol = srcMetadata.getColumnByName("UNITS");
 		Integer precisionCol = srcMetadata.getColumnByName("PRECISION");
 		// build each row
 		for (int j=0; j<srcMetadata.getRowCount(); j++) {
 			// TODO add r @id
-			String orgValString = orgSrc.getString(rowID, j);
-			String adjValString = adjSrc.getString(rowID, j);
+			Double orgVal= orgSrc.getDouble(rowID, j);
+			Double adjVal = adjSrc.getDouble(rowID, j);
 			Long id = srcMetadata.getIdForRow(j);
 			String units = srcMetadata.getString(j, unitsCol);
 			
@@ -193,7 +210,8 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			} else {
 				sb.append("<c/>");
 			}
-			sb.append("<c>").append(orgValString).append("</c>");
+			sb.append("<c>").append(formatter.format(orgVal)).append("</c>");
+			/* This commented out as we're not showing coefficients now.
 			{	// output absolute and multiplier coefficients
 				//return [coef, abs].  coef is 1D by default.
 				Double[] coefficients = getAdjustmentCoefficients(adjGroups, reachID.intValue(), id);
@@ -210,7 +228,8 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 					sb.append("<c/><c/>");
 				}
 			}
-			sb.append("<c>").append(adjValString).append("</c>");
+			*/
+			sb.append("<c>").append(formatter.format(adjVal)).append("</c>");
 			sb.append("</r>");
 		}
 
@@ -260,7 +279,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		Integer totalColumn = null;
 		
 		int rowID = nominalPrediction.getRowForId(id);
-		// Collect all the relevant column indices for this row.
+		// Collect all the relevant column indices for this row, as indicated by matching VALUE_TYPE and AGGREGATE_TYPE
 		for (int j=0; j<nominalPrediction.getColumnCount(); j++) {
 			boolean isDesiredType = typeName.equals(nominalPrediction.getProperty(j, PredictResult.VALUE_TYPE_PROP));
 			String aggType = nominalPrediction.getProperty(j, PredictResult.AGGREGATE_TYPE_PROP);
@@ -276,7 +295,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		}
 		
 		// Assume adjustedPrediction has same Column structure and rows in same order.
-		// Otherwise, we have to rewrite the following code.
+		// Otherwise, we'll have to rewrite the following code.
 		assert((adjustedPrediction == null) ||
 				(	nominalPrediction.getRowCount() == adjustedPrediction.getRowCount()
 						&& nominalPrediction.getColumnCount() == adjustedPrediction.getColumnCount())):
@@ -291,39 +310,37 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		for (Integer j : relevantColumns) {
 			String columnName = nominalPrediction.getName(j);
 			sb.append("<r><c>").append(columnName).append("</c><c>");
-			String value = nominalPrediction.getString(rowID, j);
-			value = (value == null)? "N/A": value;
-			sb.append(value).append("</c>");
+			Double nomValue = nominalPrediction.getDouble(rowID, j);
+			String nomDisplay = (nomValue == null)? "N/A": formatter.format(nomValue);
+			sb.append(nomDisplay).append("</c>");
 			
 			if (adjustedPrediction == null || adjustedPrediction.getString(rowID, j) == null) {
 				// no predicted value available
 				sb.append("<c>N/A</c><c/>");
 			} else {
 				// add predicted value
-				String predValueString = adjustedPrediction.getString(rowID, j);
-				Double predValue = Double.valueOf(predValueString);
-				Double nomValue = Double.valueOf(value);
+				Double predValue = Double.valueOf(adjustedPrediction.getDouble(rowID, j));
+				nomValue = nominalPrediction.getDouble(rowID, j);
 				Double percentChange = calculatePercentageChange(predValue, nomValue);
 				
-				sb.append("<c>").append(predValueString).append("</c><c>").append(percentChange.toString()).append("</c>");
+				sb.append("<c>").append(formatter.format(predValue)).append("</c><c>").append(formatter.format(percentChange)).append("</c>");
 			}
 
 			sb.append("</r>");
 		}
 		
 		// add in the total TODO (with predicted)
+		Double nomValue = nominalPrediction.getDouble(rowID, totalColumn);
 		sb.append("<r><c>").append(nominalPrediction.getName(totalColumn)).append("</c><c>");
-		sb.append(nominalPrediction.getString(rowID, totalColumn)).append("</c>");
+		sb.append(formatter.format(nomValue)).append("</c>");
 		if (adjustedPrediction == null || adjustedPrediction.getString(rowID, totalColumn) == null) {
 			// no predicted total available
 			sb.append("<c>N/A</c>");
 		} else {
 			// add predicted total
-			String predValueString = adjustedPrediction.getString(rowID, totalColumn);
-			Double predValue = Double.valueOf(predValueString);
-			Double nomValue = Double.valueOf(nominalPrediction.getString(rowID, totalColumn));
+			Double predValue = adjustedPrediction.getDouble(rowID, totalColumn);
 			Double percentChange = calculatePercentageChange(predValue, nomValue);
-			sb.append("<c>").append(predValueString).append("</c><c>").append(percentChange.toString()).append("</c>");
+			sb.append("<c>").append(formatter.format(predValue)).append("</c><c>").append(formatter.format(percentChange)).append("</c>");
 		}
 		sb.append("</r>");
 
@@ -332,29 +349,16 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		return sb.toString();
 	}
 
-	public static Double calculatePercentageChange(Double newVal, Double baseVal) {
-		if ( newVal.equals(baseVal)) {
-			// This takes care of the case when both nominal and predicted are zero
-			return 0D;
-		} else if (!baseVal.equals(0D)) {
-			return 100*(newVal - baseVal)/baseVal;
-		}
-		return Double.NaN; // division by zero because baseVal == 0 and newVal != 0
-	}
+
 
 	private void retrieveAttributes(IDByPointRequest req, IDByPointResponse response) throws IOException, SQLException, NamingException {
 		// TODO move to DataLoader when done debugging
-		// TODO replace with dynamic working code
-		
-		{	// HACK temporary. review later
-			// use the submitted reach id if the response was not looked up.
-			long identifier = (response.reachID == 0)? req.getReachID(): response.reachID;
-			response.reachID = identifier;
-		}
 
-		String attributesQuery = props.getText("attributesSelectClause") + " FROM MODEL_ATTRIB_VW "
-		+ " WHERE IDENTIFIER=" + response.reachID 
-		+ " AND SPARROW_MODEL_ID=" + response.modelID;
+		String attributesQuery = props.getText("attributesSQL",
+				new String[] {
+					"ReachID", Long.toString(response.reachID),
+					"ModelID", Long.toString(response.modelID),
+		});
 		
 		DataTableWritable attributes = JDBCUtil.queryToDataTable(attributesQuery);
 		// TODO [IK] This 4 is hardcoded for now. Have to go back and use SparrowModelProperties to do properly
@@ -410,8 +414,6 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		return sb;
 	}
 	
-	public void shutDown() {
-		xoFact = null;
-	}
+
 
 }

@@ -52,8 +52,11 @@ public class ReachByIDFactory extends AbstractCacheFactory {
 			
 			if (rs.next()) {
 				
-				reach = new Reach(rs.getInt("identifier"), rs.getString("reach_name"), 0,
-						rs.getDouble("MIN_LONG"), rs.getDouble("MIN_LAT"), rs.getDouble("MAX_LONG"), rs.getDouble("MAX_LAT")
+				// reaches retrieved by ID should never have distanceInMeters information
+				reach = new Reach(req.getModelID(), rs.getInt("identifier"), rs.getString("reach_name"), null,
+						rs.getDouble("MIN_LONG"), rs.getDouble("MIN_LAT"), rs.getDouble("MAX_LONG"), rs.getDouble("MAX_LAT"),
+						rs.getString("HUC2"), rs.getString("HUC2NAME"), rs.getString("HUC4"), rs.getString("HUC4NAME"),
+						rs.getString("HUC6"), rs.getString("HUC6NAME"), rs.getString("HUC8"), rs.getString("HUC8NAME")
 				);
 
 			} else {

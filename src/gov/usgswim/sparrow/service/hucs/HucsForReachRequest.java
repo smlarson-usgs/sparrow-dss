@@ -18,7 +18,7 @@ public class HucsForReachRequest implements PipelineRequest{
 		// Initialize response format
 		respFormat = new ResponseFormat();
 		respFormat.setAttachment(false);
-		respFormat.setMimeType("json");
+		respFormat.setMimeType("xml");
 
 	}
 

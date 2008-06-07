@@ -1,6 +1,12 @@
 package gov.usgswim.sparrow.service.idbypoint;
 
+import java.io.IOException;
+import java.sql.SQLException;
+
+import javax.naming.NamingException;
+
 import gov.usgswim.Immutable;
+import gov.usgswim.sparrow.service.hucs.HucsForReachPipeline;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.*;
 /**
  * Simple bean class to hold a reach that was identified by a user lat/long location.
@@ -9,17 +15,31 @@ import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.*;
  */
 @Immutable
 public class Reach {
+	private final long modelID;
 	private final int id;
 	private final String name;
-	private final int distInMeters;
+	private final transient Integer distInMeters;
 	
 	private final double minLong;
 	private final double minLat;
 	private final double maxLong;
 	private final double maxLat;
 	
-	public Reach(int id, String name, int distInMeters,
-			double minLong, double minLat, double maxLong, double maxLat) {
+	private final String huc2;
+	private final String huc2Name;
+	private final String huc4;
+	private final String huc4Name;
+	private final String huc6;
+	private final String huc6Name;
+	private final String huc8;
+	private final String huc8Name;
+	
+	public Reach(long modelID, int id, String name, Integer distInMeters,
+			double minLong, double minLat, double maxLong, double maxLat,
+			String huc2, String huc2Name, String huc4, String huc4Name,
+			String huc6, String huc6Name, String huc8, String huc8Name
+	) {
+		this.modelID = modelID;
 		this.id = id;
 		this.name = name;
 		this.distInMeters = distInMeters;
@@ -27,6 +47,14 @@ public class Reach {
 		this.minLat = minLat;
 		this.maxLong = maxLong;
 		this.maxLat = maxLat;
+		this.huc2 = huc2;
+		this.huc2Name = huc2Name;
+		this.huc4 = huc4;
+		this.huc4Name = huc4Name;
+		this.huc6 = huc6;
+		this.huc6Name = huc6Name;
+		this.huc8 = huc8;
+		this.huc8Name = huc8Name;
 	}
 	
 	public String toIdentificationXML() {
@@ -43,39 +71,71 @@ public class Reach {
 					"max-long", asString(maxLong),
 					"max-lat", asString(maxLat)
 			);
+			writeOpeningTag(in, "hucs");
+			{
+				writeClosedFullTag(in, "huc8", 
+						"id", huc8,
+						"name", huc8Name
+				);
+				writeClosedFullTag(in, "huc6", 
+						"id", huc6,
+						"name", huc6Name
+				);
+				writeClosedFullTag(in, "huc4", 
+						"id", huc4,
+						"name", huc4Name
+				);
+				writeClosedFullTag(in, "huc2", 
+						"id", huc2,
+						"name", huc2Name
+				);
+			}
+			writeClosingTag(in, "hucs");
 		}
 		writeClosingTag(in, "identification");
 		
 		return in.toString();
 	}
+	
+	public Reach cloneWithDistance(Integer distance) {
+		return new Reach(modelID, id, name, distance, minLong, minLat, maxLat, maxLat,
+				huc2, huc2Name, huc4, huc4Name, huc6, huc6Name, huc8, huc8Name );
+	}
 
+	// =================
+	// GETTERS & SETTERS
+	// =================
+	public long getModelId() {
+		return modelID;
+	}
+	
 	public int getId() {
-  	return id;
-  }
+		return id;
+	}
 
 	public int getDistanceInMeters() {
-  	return distInMeters;
-  }
+		return distInMeters;
+	}
 
 	public String getName() {
-  	return name;
-  }
+		return name;
+	}
 
 	public double getMinLong() {
-  	return minLong;
-  }
+		return minLong;
+	}
 
 	public double getMinLat() {
-  	return minLat;
-  }
+		return minLat;
+	}
 
 	public double getMaxLong() {
-  	return maxLong;
-  }
+		return maxLong;
+	}
 
 	public double getMaxLat() {
-  	return maxLat;
-  }
+		return maxLat;
+	}
 	
 	
 }

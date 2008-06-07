@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.service.echo;
 
 import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.XML;
+import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.TEXT;
 import gov.usgs.webservices.framework.formatter.IFormatter;
 import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
 import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
@@ -20,9 +21,17 @@ public class EchoPipeline extends AbstractPipeline implements Pipeline {
 
 	private String xmlParamName;
 	private String requestString;
+	private OutputType outputType = XML;
+	private boolean echoAsAttachment = false;
+	private String fileName = "data";
 
 	public EchoPipeline() {
 		super(null, null);
+	}
+	
+	public EchoPipeline(OutputType outputType) {
+		super(null, null);
+		this.outputType = outputType;
 	}
 
 	@Override
@@ -64,12 +73,19 @@ public class EchoPipeline extends AbstractPipeline implements Pipeline {
 	}
 	
 	public void dispatch(PipelineRequest o, HttpServletResponse response) throws Exception {
-		response.setContentType(XML.getMimeType());
-//		response.addHeader( "Content-Disposition","attachment; filename=" + fileName + "." + XML.getFileSuffix() );
+		response.setContentType(outputType.getMimeType());
+		if (echoAsAttachment) {
+			response.addHeader( "Content-Disposition","attachment; filename=" + fileName + "." + outputType.getFileSuffix() );
+		}
 		PrintWriter out = response.getWriter();
 		out.write(o.getXMLRequest());
 		out.flush();
 		out.close();
+	}
+	
+	public void setEchoAsAttachment(String fileName) {
+		echoAsAttachment = true;
+		this.fileName = fileName;
 	}
 
 	@Override
