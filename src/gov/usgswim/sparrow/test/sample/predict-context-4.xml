@@ -8,7 +8,7 @@ MODEL 1
 Test the logical set and huc criteria	
 -->
 		<adjustment-groups conflicts="accumulate">
-			<reach-group enabled="true" name="Northern Indiana Plants"> 
+			<reach-group enabled="true" name="Group1"> 
 				<adjustment src="5" coef=".5"/>
 				<adjustment src="4" coef=".75"/>
 				<logical-set>	
@@ -22,10 +22,10 @@ Test the logical set and huc criteria
 				</logical-set>
 			</reach-group>
 			
-			<reach-group enabled="true" name="Southern Indiana Fields">
+			<reach-group enabled="true" name="Group2">
 				<adjustment src="1" coef="2"/>
 				<logical-set>
-					<criteria attrib="reach" relation="upstream">12050002</criteria>
+					<criteria attrib="huc8">12050002</criteria>
 					<!-- CONTAINS REACHES:
 						39529
 						39526
@@ -34,7 +34,7 @@ Test the logical set and huc criteria
 					-->
 				</logical-set>
 				<logical-set>
-					<criteria attrib="reach" relation="upstream">12080001</criteria>
+					<criteria attrib="huc8">12080001</criteria>
 					<!-- CONTAINS REACHES:
 						39966
 						39968
@@ -46,6 +46,9 @@ Test the logical set and huc criteria
 					<adjustment src="1" abs="99"/> <!-- Override a reach -->
 				</reach>
 				<reach id="11861"/>	<!-- An additional added reach -->
+				<reach id="11878">
+					<adjustment src="2" abs="88"/> <!-- Added reach, override a different source -->
+				</reach>
 			</reach-group>
 		</adjustment-groups>
 		<analysis>

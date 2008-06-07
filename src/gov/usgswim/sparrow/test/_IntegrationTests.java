@@ -18,6 +18,7 @@ public class _IntegrationTests {
 		TestSuite suite;
 		suite = new TestSuite("Integration Tests");
 
+		suite.addTestSuite(LogicalAdjustmentTest.class);
 		suite.addTestSuite(ContextToPredictionTest.class);
 		suite.addTestSuite(IDServiceTest.class);
 
