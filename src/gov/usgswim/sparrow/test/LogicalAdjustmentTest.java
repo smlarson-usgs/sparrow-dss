@@ -154,7 +154,7 @@ public class LogicalAdjustmentTest extends TestCase {
 
 	
 	public PredictContextRequest buildPredictContext4() throws Exception {
-		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-context-1.xml");
+		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-context-4.xml");
 		String xml = readToString(is);
 		
 		PredictContextPipeline pipe = new PredictContextPipeline();
