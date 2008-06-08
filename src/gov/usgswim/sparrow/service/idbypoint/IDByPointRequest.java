@@ -39,15 +39,15 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 	//These two are mutually exclusive 
 	private Integer contextID;
 	private Long modelID;
-	
+
 	//These two are mutually exclusive 
 	private Point.Double point;
 	private Integer reachID;
-	
-	private boolean adjustments;
-	private boolean attributes;
-	private boolean predicted;
-	
+
+	private boolean adjustments = false;
+	private boolean attributes = false;
+	private boolean predicted = false;
+
 	// PipelineRequest fields
 	private String xmlRequest;
 	//private int numberOfResults;
@@ -57,43 +57,28 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 	// CONSTRUCTORS
 	// ============
 	public IDByPointRequest() {
-		
+
 	}
 
 	public IDByPointRequest(Long modelID, Double point) {
 		this.modelID = modelID;
 		this.point = point;
-		adjustments = true;
-		attributes = true;
-		predicted = true;
-		this.respFormat = makeDefaultResponseFormat();
 	}
-	
+
 	public IDByPointRequest(Long modelID, Integer reachID) {
 		this.modelID = modelID;
 		this.reachID = reachID;
-		adjustments = true;
-		attributes = true;
-		predicted = true;
-		this.respFormat = makeDefaultResponseFormat();
 	}
-	
+
 	public IDByPointRequest(Integer contextID, Double point) {
 		this.contextID = contextID;
 		this.point = point;
-		adjustments = true;
-		attributes = true;
-		predicted = true;
-		this.respFormat = makeDefaultResponseFormat();
+
 	}
-	
+
 	public IDByPointRequest(Integer contextID, Integer reachID) {
 		this.contextID = contextID;
 		this.reachID = reachID;
-		adjustments = true;
-		attributes = true;
-		predicted = true;
-		this.respFormat = makeDefaultResponseFormat();
 	}
 
 
@@ -101,13 +86,13 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 	// INSTANCE METHODS
 	// ================
 	public IDByPointRequest parse(XMLStreamReader in)
-			throws XMLStreamException, XMLParseValidationException {
-		
+	throws XMLStreamException, XMLParseValidationException {
+
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
 		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : this
-			.getClass().getSimpleName()
-			+ " can only parse " + MAIN_ELEMENT_NAME + " elements.";
+		.getClass().getSimpleName()
+		+ " can only parse " + MAIN_ELEMENT_NAME + " elements.";
 		boolean isStarted = false;
 
 		while (in.hasNext()) {
@@ -162,7 +147,7 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 				case END_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
-						respFormat = (respFormat == null)? makeDefaultResponseFormat(): respFormat;
+						respFormat = (respFormat == null)? makeDefaultResponseFormat(null): respFormat;
 						if  (respFormat.fileName == null) {
 							respFormat.fileName = ID_BY_POINT_FILENAME;
 						}
@@ -180,14 +165,14 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 		throw new RuntimeException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
 	}
 
-	private ResponseFormat makeDefaultResponseFormat() {
+	public static ResponseFormat makeDefaultResponseFormat(String mimetype) {
 		ResponseFormat result = new ResponseFormat();
 		result.fileName = ID_BY_POINT_FILENAME;
-		result.setMimeType("xml");
+		result.setMimeType((mimetype == null)? "xml": mimetype);
 		return result;
 	}
-	
-	
+
+
 	public void checkValidity() throws XMLParseValidationException {
 		if (!isValid()) {
 			// throw a custom error message depending on the error
@@ -205,11 +190,11 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
 	}
-	
+
 	public boolean isParseTarget(String name) {
-	  // TODO Auto-generated method stub
-	  return MAIN_ELEMENT_NAME.equals(name);
-  }
+		// TODO Auto-generated method stub
+		return MAIN_ELEMENT_NAME.equals(name);
+	}
 
 	public java.lang.Double getLatitude() {
 		return point.y;
@@ -230,11 +215,11 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 	public String getXMLRequest() {
 		return xmlRequest;
 	}
-	
+
 	public void setResponseFormat(ResponseFormat respFormat) {
 		this.respFormat = respFormat;		
 	}
-	
+
 	public void setXMLRequest(String request) {
 		this.xmlRequest = request;		
 	}
@@ -248,28 +233,40 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 
 
 	public Integer getContextID() {
-  	return contextID;
-  }
+		return contextID;
+	}
 
 
 	public boolean hasAdjustments() {
-  	return adjustments;
-  }
+		return adjustments;
+	}
 
 
 	public boolean hasAttributes() {
-  	return attributes;
-  }
+		return attributes;
+	}
 
 
 	public boolean hasPredicted() {
-  	return predicted;
-  }
+		return predicted;
+	}
 
 
 	public ResponseFormat getRespFormat() {
-  	return respFormat;
-  }
+		return respFormat;
+	}
+
+	public void setAdjustments(boolean adjustments) {
+		this.adjustments = adjustments;
+	}
+
+	public void setAttributes(boolean attributes) {
+		this.attributes = attributes;
+	}
+
+	public void setPredicted(boolean predicted) {
+		this.predicted = predicted;
+	}
 
 
 }

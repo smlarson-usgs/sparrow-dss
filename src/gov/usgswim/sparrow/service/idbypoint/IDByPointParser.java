@@ -19,7 +19,11 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 	/**
 	 * parse() overridden to handle the special case of input parameters being
 	 * placed in query string, as IDByPoint is simple enough to invoke in this way.
-	 * 
+	 * Example requests:
+	 * <ul>
+	 * 	<li>c/43245?lat=55&long=-90&json returns a json id by contextID and point request</li>
+	 * 	<li>m/22?reachID=31170&pred returns an xml id by model and reachID request with prediction</li>
+	 * </ul>
 	 * @see gov.usgswim.service.AbstractHttpRequestParser#parse(javax.servlet.http.HttpServletRequest)
 	 */
 	public IDByPointRequest idParse(HttpServletRequest request) throws Exception {
@@ -27,14 +31,26 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 		if ("GET".equals(request.getMethod()) && request.getParameter(getXmlParam()) == null) {
 			String[] paramChain = parseExtraPath(request);
 
-			if (paramChain.length == 1 && StringUtils.isNumeric(paramChain[0])) {
+			if (paramChain == null ) {
+				String modelParam = request.getParameter("model");
+				String contextParam = request.getParameter("context");
+				
+				boolean isModelRequest = (modelParam != null);
+				boolean isContextRequest = (contextParam != null);
+				
+				// This second parameter may be either a model or contextID.
+				Long modelID = (isModelRequest)? Long.parseLong(modelParam): null;
+				Integer contextID = (isContextRequest)? Integer.parseInt(contextParam): null;
 
-				Long modelID = Long.parseLong(paramChain[0]);
+				String reachIDString = request.getParameter("reach");
+				Integer reachID = (reachIDString == null)? null: Integer.valueOf(reachIDString);
+				
+				Point.Double point = new Point.Double();
+				if (reachID == null) { // if no reach id then it's a point
+					point.x = parseParamAsDouble(request, "long");
+					point.y = parseParamAsDouble(request, "lat");
+				}
 
-				//TODO:  There are four IDByPointRequest constructors that can be used here - currently only handling one possiblity
-				Point.Double point = new Point.Double();	//required
-				point.x = parseParamAsDouble(request, "long");
-				point.y = parseParamAsDouble(request, "lat");
 				
 				String paramValue = request.getParameter("adj");
 				boolean hasAdjustment = (paramValue != null);
@@ -44,9 +60,26 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 				boolean hasPrediction = (paramValue != null);
 				
 				String format = request.getParameter("format");
+				String json = request.getParameter("json");
 
-				IDByPointRequest result = new IDByPointRequest(modelID, point);
+				IDByPointRequest result = null;
+				if (isModelRequest) {
+					result = (reachID == null)? new IDByPointRequest(modelID, point): new IDByPointRequest(modelID, reachID);
+				} else if (isContextRequest) {
+					result = (reachID == null)? new IDByPointRequest(contextID, point): new IDByPointRequest(contextID, reachID);
+				}
+				
 				result.setXMLRequest(""); // no xml request, RESTlike
+				result.setAdjustments(hasAdjustment);
+				result.setAttributes(hasAttribute);
+				result.setPredicted(hasPrediction);
+				
+				String mimetype = (json == null)? null: "json";
+				mimetype = (format == null)? mimetype: format;
+				ResponseFormat rf = IDByPointRequest.makeDefaultResponseFormat(mimetype);
+				rf.setAttachment(false);
+				result.setResponseFormat(rf);
+				
 				return result;
 			} else {
 				throw new Exception("The IDByPoint Request must contain exactly one argument as part of the URL - the model ID.");
