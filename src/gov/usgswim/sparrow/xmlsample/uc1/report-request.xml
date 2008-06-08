@@ -5,7 +5,7 @@
 	
 
 <!-- 
-param names
+GET param names:
 context-id
 mime-type
 bbox
@@ -13,6 +13,7 @@ bbox
 
 	<prediction-context context-id="1231241243424"/>
 
+	<bbox>-99, 33, -95, 35</bbox>
 	
 	<response-format>
 		<!-- type are csv, EXCEL, or tab -->
