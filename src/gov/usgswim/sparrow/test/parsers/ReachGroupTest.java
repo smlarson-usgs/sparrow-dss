@@ -17,29 +17,37 @@ import junit.framework.TestCase;
  *
  */
 public class ReachGroupTest extends TestCase {
+	public static String testRequest1 = "<reach-group enabled=\"true\" name=\"Northern Indiana Plants\"> <!--  ReachGroup Object -->"
+		+ "	<desc>Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project</desc>"
+		+ "	<notes>"
+		+ "		I initially selected HUC 10040202"
+		+ "		but it looks like there are some others plants that need to be included."
+		+ ""
+		+ "		As a start, we are proposing a 10% reduction across the board,"
+		+ "		but we will tailor this later based on plant type."
+		+ "	</notes>"
+		+ "	<!-- Multiple treatments are possible -->"
+		+ "	<adjustment src=\"5\" coef=\".9\"/>	<!--  Existing Adjustment Object -->"
+		+ "	<adjustment src=\"4\" coef=\".75\"/>"
+		+ "	<logical-set>	<!--  LogicalSet Object?  (Hold Off) Used as cache key for a reach collection. -->"
+		+ "		<criteria attrib=\"huc8\">10040202</criteria>"
+		+ "	</logical-set>"
+		+ "	<logical-set>"
+		+ "		<criteria attrib=\"huc6\">101701</criteria>"
+		+ "	</logical-set>"
+		+ "	<logical-set>"
+		+ "		<criteria attrib=\"huc4\">1705</criteria>"
+		+ "	</logical-set>"
+		+ "	<logical-set>"
+		+ "		<criteria attrib=\"huc2\">10</criteria>"
+		+ "	</logical-set>"
+		+ "</reach-group>";
+	
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 
 	public void testParse1() throws Exception {
-		String testRequest = "<reach-group enabled=\"true\" name=\"Northern Indiana Plants\"> <!--  ReachGroup Object -->"
-			+ "	<desc>Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project</desc>"
-			+ "	<notes>"
-			+ "		I initially selected HUC 01746286 and 01746289,"
-			+ "		but it looks like there are some others plants that need to be included."
-			+ ""
-			+ "		As a start, we are proposing a 10% reduction across the board,"
-			+ "		but we will tailor this later based on plant type."
-			+ "	</notes>"
-			+ "	<!-- Multiple treatments are possible -->"
-			+ "	<adjustment src=\"5\" coef=\".9\"/>	<!--  Existing Adjustment Object -->"
-			+ "	<adjustment src=\"4\" coef=\".75\"/>"
-			+ "	<logical-set>	<!--  LogicalSet Object?  (Hold Off) Used as cache key for a reach collection. -->"
-			+ "		<criteria attrib=\"huc8\">01746286</criteria>"
-			+ "	</logical-set>"
-			+ "	<logical-set>"
-			+ "		<criteria attrib=\"huc8\">01746289</criteria>"
-			+ "	</logical-set>"
-			+ "</reach-group>";
-		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
+
+		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest1));
 		ReachGroup rg = new ReachGroup(1);
 		reader.next();
 		rg.parse(reader);
@@ -60,10 +68,10 @@ public class ReachGroupTest extends TestCase {
 
 		// test logical sets
 		List<LogicalSet> lSets = rg.getLogicalSets();
-		assertEquals(2, lSets.size());
+		assertEquals(4, lSets.size());
 		assertTrue(lSets.get(0).getCriteria().keySet().contains("huc8"));
-		assertEquals("01746286", lSets.get(0).getCriteria().get("huc8"));
-		assertEquals("01746289", lSets.get(1).getCriteria().get("huc8"));
+		assertEquals("10040202", lSets.get(0).getCriteria().get("huc8"));
+		assertEquals("101701", lSets.get(1).getCriteria().get("huc6"));
 
 	}
 
@@ -123,11 +131,11 @@ public class ReachGroupTest extends TestCase {
 			+ "	</notes>"
 			+ "	<adjustment src=\"2\" coef=\".75\"/>"
 			+ "	<reach id=\"483947453\">"
-			+ "		<adjustment src=\"2\" coef=\".9\"/>"
+			+ "		<adjustment src=\"2\" abs=\".9\"/>"
 			+ "	</reach>"
 			+ "	<reach id=\"947839474\">"
 			+ "		<adjustment src=\"2\" abs=\"91344\"/>"
-			+ "		<adjustment src=\"4\" coef=\".7\"/>"
+			+ "		<adjustment src=\"4\" abs=\".7\"/>"
 			+ "	</reach>"
 			+ "</reach-group>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
@@ -150,16 +158,16 @@ public class ReachGroupTest extends TestCase {
 
 		//Test the adjustments applied to these specific reaches - Reach 0:
 		assertEquals(new Integer(2), reach0.getAdjustments().get(0).getSource());
-		assertEquals(new Double(.9), reach0.getAdjustments().get(0).getCoefficient());
-		assertNull(reach0.getAdjustments().get(0).getAbsolute());
+		assertEquals(new Double(.9), reach0.getAdjustments().get(0).getAbsolute());
+		assertNull(reach0.getAdjustments().get(0).getCoefficient());
 
 		//Test the adjustments applied to these specific reaches - Reach 1 (two adj's):
 		assertEquals(new Integer(2), reach1.getAdjustments().get(0).getSource());
 		assertNull(reach1.getAdjustments().get(0).getCoefficient());
 		assertEquals(new Double(91344), reach1.getAdjustments().get(0).getAbsolute());
 		assertEquals(new Integer(4), reach1.getAdjustments().get(1).getSource());
-		assertEquals(new Double(.7), reach1.getAdjustments().get(1).getCoefficient());
-		assertNull(reach1.getAdjustments().get(1).getAbsolute());
+		assertEquals(new Double(.7), reach1.getAdjustments().get(1).getAbsolute());
+		assertNull(reach1.getAdjustments().get(1).getCoefficient());
 	}
 
 	public void testParse5() throws Exception {
@@ -182,7 +190,7 @@ public class ReachGroupTest extends TestCase {
 
 		try {
 			rg.parse(reader);
-			fail("This test should have thrown an error b/c it spec's abs and coef values in an Adjustment");
+			fail("This test should have thrown an error b/c it has both abs and coef values in a single Adjustment");
 		} catch (XMLParseValidationException e) {
 			//Expected exception
 		}

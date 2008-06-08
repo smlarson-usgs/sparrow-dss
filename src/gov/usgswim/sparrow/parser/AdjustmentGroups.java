@@ -32,14 +32,14 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	public static boolean isTargetMatch(String tagName) {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
-	
+
 	public static AdjustmentGroups parseStream(XMLStreamReader in, Long modelID)
-		throws XMLStreamException, XMLParseValidationException {
-		
+	throws XMLStreamException, XMLParseValidationException {
+
 		AdjustmentGroups ag = new AdjustmentGroups(modelID);
 		return ag.parse(in);
 	}
-	
+
 	// ===============
 	// INSTANCE FIELDS
 	// ===============
@@ -48,22 +48,22 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	private DefaultGroup defaultGroup;
 	private Integer id;
 	private String conflicts;	//This should be an enum
-	
+
 	//TODO: Parse should attempt to find the AG in the cache if it gets a ID.
-	
+
 	/**
 	 * Constructor requires a modelID
 	 */
 	public AdjustmentGroups(Long modelID) {
 		this.modelID = modelID;
 	}
-	
+
 	// ================
 	// INSTANCE METHODS
 	// ================
 	public AdjustmentGroups parse(XMLStreamReader in)
-			throws XMLStreamException, XMLParseValidationException {
-		
+	throws XMLStreamException, XMLParseValidationException {
+
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
 		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : 
@@ -113,7 +113,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
 	}
-	
+
 	public boolean isParseTarget(String name) {
 		return MAIN_ELEMENT_NAME.equals(name);
 	}
@@ -126,7 +126,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 		for (ReachGroup reachGroup: reachGroups) {
 			myClone.reachGroups.add(reachGroup.clone());
 		}
-		
+
 		if (defaultGroup != null) {
 			myClone.defaultGroup = (DefaultGroup) defaultGroup.clone();
 		}
@@ -134,43 +134,43 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 
 		return myClone;
 	}
-	
+
 	/**
 	 * Consider two instances the same if they have the same calculated hashcodes
 	 */
-  public boolean equals(Object obj) {
-	  if (obj instanceof AdjustmentGroups) {
-	  	return obj.hashCode() == hashCode();
-	  } else {
-	  	return false;
-	  }
-  }
-  
+	public boolean equals(Object obj) {
+		if (obj instanceof AdjustmentGroups) {
+			return obj.hashCode() == hashCode();
+		} else {
+			return false;
+		}
+	}
+
 	public synchronized int hashCode() {
 		if (id == null) {
 			HashCodeBuilder hash = new HashCodeBuilder(17, 13);
 			hash.append(modelID);
 			hash.append(conflicts);
-			
+
 			if (defaultGroup != null) {
 				hash.append(defaultGroup.getStateHash());
 			}
-			
+
 
 			if (reachGroups != null && reachGroups.size() > 0) {
 				for (ReachGroup rg: reachGroups) {
 					hash.append(rg.getStateHash());
 				}
-				
+
 			}
 
-			
+
 			id = hash.toHashCode();
 		} 
-		
+
 		return id;
 	}
-	
+
 	/**
 	 * Actually does the adjustment, returning sparse view that wraps the source
 	 * data in the passed PredictData.
@@ -181,105 +181,101 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	 * @throws Exception
 	 */
 	public DataTable adjust(PredictData data) throws Exception {
-		
+
 		DataTable adjusted = data.getSrc();	//start assuming there are no adjustments
-		
+
 		//Do model-wide adjustments first.  Any further adjustments will accumulate/override as appropriate
 		if (defaultGroup != null && defaultGroup.getAdjustments().size() > 0) {
 
 			ColumnCoefAdjustment colAdj = new ColumnCoefAdjustment(adjusted);
 			adjusted = colAdj;
-			
+
 			for (Adjustment adj: defaultGroup.getAdjustments()) {
 				Double coef = adj.getCoefficient();
 				Integer srcId = adj.getSource();
-				
+
 				//Logic check...
 				if (coef == null || srcId == null) {
 					throw new Exception("For a global adjustment, a source and coefficient must be specified");
 				}
-				
+
 				colAdj.setColumnMultiplier(data.getSourceIndexForSourceID(srcId), coef);
-				
+
 			}
 		}
-		
+
 		//Loop thru ReachGroups to do adjustments
 		//Here we are assuming conflict accumulate
 		if (reachGroups != null && reachGroups.size() > 0) {
-			
+
 			//Two places to adjust:  SparseCoeff allows coeff adjustments to individual
 			//reaches, SparesOverride, which wraps coef, allows absolute value adjustments
 			//to individual reaches.
 			SparseCoefficientAdjustment coefAdj = new SparseCoefficientAdjustment(adjusted);
 			SparseOverrideAdjustment overAdj = new SparseOverrideAdjustment(coefAdj);
-			
-			
+
+
 			for (ReachGroup rg: reachGroups) {
-				
-				//TODO:  [ee] loop through logical sets of reaches...
-				//TODO:  [ee] All lists should be returning non-null unmodifiable lists...
-				
-				//Loop Through the explicit set of reaches
-				for (Reach r: rg.getExplicitReaches()) {
+				if (rg.isEnabled()) {
+
+					List<Adjustment> adjustments = rg.getAdjustments();
 					
-					//apply the adjustments for this reachGroup as a whole to this reach.
-					//This needs to take place for each reach.
-					for (Adjustment adj: rg.getAdjustments()) {
-						Double coef = adj.getCoefficient();
-						Double abs = adj.getAbsolute();
-						Integer srcId = adj.getSource();
+					// Apply ReachGroup-wide adjustments to all reaches in the combined reaches.
+					if (adjustments != null) {
+						// Look up corresponding source indices for each adjustment to save some lookups
+						int[] adjSourceColumn = new int[rg.getAdjustments().size()];
+						for (int i=0; i<adjustments.size(); i++) {
+							adjSourceColumn[i] = data.getSourceIndexForSourceID(rg.getAdjustments().get(i).getSource());
+						}
 						
-						if (coef != null) {
-							
-							//if a coef already exists, the new coef is the product of the existing and the new
-							
-							Number existingCoef = coefAdj.getCoef(data.getRowForReachID(r.getId()), data.getSourceIndexForSourceID(srcId));
-							if (existingCoef != null) {
-								coef = coef.doubleValue() * existingCoef.doubleValue();
+						// Apply the adjustments to each reach in the combined logical and explicit reaches
+						for (Long reachID: rg.getCombinedReachIDs()) {
+							int row = data.getRowForReachID(reachID);
+							for (int i=0; i<adjustments.size(); i++) {
+								applyAdjustmentToReach(adjustments.get(i), row, adjSourceColumn[i], coefAdj, overAdj);
 							}
-							
-							coefAdj.setValue(coef, data.getRowForReachID(r.getId()), data.getSourceIndexForSourceID(srcId));
-						} else {
-							//We are allowing absolute value adjustments, though this is likely a user error.
-							overAdj.setValue(abs, data.getRowForReachID(r.getId()), data.getSourceIndexForSourceID(srcId));
 						}
 					}
-					
-					//apply the adjustments specified for just this reach (if any)
-					//Note:  getAdjustments() never returns null
-					for (Adjustment adj: r.getAdjustments()) {
-						Double coef = adj.getCoefficient();
-						Double abs = adj.getAbsolute();
-						Integer srcId = adj.getSource();
-						
-						if (coef != null) {
 
-							//if a coef already exists, the new coef is the product of the existing and the new
-							Number existingCoef = coefAdj.getCoef(data.getRowForReachID(r.getId()), data.getSourceIndexForSourceID(srcId));
-							if (existingCoef != null) {
-								coef = coef.doubleValue() * existingCoef.doubleValue();
-							}
-							
-							coefAdj.setValue(coef, data.getRowForReachID(r.getId()), data.getSourceIndexForSourceID(srcId));
-						} else {
-							//Since 'override' supersedes all others, its OK to just rewrite the new
-							//value into the table.
-							overAdj.setValue(abs, data.getRowForReachID(r.getId()), data.getSourceIndexForSourceID(srcId));
+
+					//Loop Through the explicit set of reaches to apply reach-specific adjustments
+					for (Reach r: rg.getExplicitReaches()) {
+						int row = data.getRowForReachID(r.getId());
+						//apply the adjustments specified for just this reach (if any)
+						//Note:  getAdjustments() never returns null
+						for (Adjustment adj: r.getAdjustments()) {
+							Integer srcId = adj.getSource();
+							applyAdjustmentToReach(adj, row, data.getSourceIndexForSourceID(srcId), coefAdj, overAdj);
 						}
 					}
 				}
-				
 			}
-			
-			
 			adjusted = overAdj;	//resulting adjustment
 		}
-		
+
 
 		return adjusted;
 	}
-	
+
+	private void applyAdjustmentToReach(Adjustment adj, int row, int col, SparseCoefficientAdjustment coefAdj, SparseOverrideAdjustment overAdj) throws Exception {
+		Double coef = adj.getCoefficient();
+		
+		if (coef != null) {
+
+			//if a coef already exists, the new coef is the product of the existing and the new
+
+			Number existingCoef = coefAdj.getCoef(row , col);
+			if (existingCoef != null) {
+				coef = coef.doubleValue() * existingCoef.doubleValue();
+			}
+
+			coefAdj.setValue(coef, row, col);
+		} else {
+			Double abs = adj.getAbsolute();
+			overAdj.setValue(abs, row, col);
+		}
+	}
+
 	public void checkValidity() throws XMLParseValidationException {
 		if (!isValid()) {
 			// throw a custom error message depending on the error
@@ -291,14 +287,14 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 		return true;
 	}
 
-	
+
 	// =================
 	// GETTERS & SETTERS
 	// =================
 	public Integer getId() {
 		return hashCode();
 	}
-	
+
 	public Long getModelID() {
 		return modelID;
 	}
@@ -316,6 +312,6 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	 * @return
 	 */
 	public DefaultGroup getDefaultGroup() {
-  	return defaultGroup;
-  }
+		return defaultGroup;
+	}
 }

@@ -247,15 +247,16 @@ public class ReachGroup implements XMLStreamParserComponent {
 	 * @return reachIds for the ith logical-set
 	 */
 	public List<Long> getLogicalReachIDs(int i) {
-		if (reachIDsByLogicalSets == null && logicalSets != null && i>=0 && logicalSets.size()>i) {
-			// valid request but reachIDsByLogicalSets not yet populated.
-			// Create an empty List for reachIDs of the correct size, filled with nulls;
-			reachIDsByLogicalSets = new ArrayList<List<Long>>(logicalSets.size());
-			for (int j=0; j<reachIDsByLogicalSets.size(); j++) {
-				reachIDsByLogicalSets.add(null);
+		if (reachIDsByLogicalSets == null) {
+			if (logicalSets != null && i>=0 && logicalSets.size()>i) {
+
+				// valid request but reachIDsByLogicalSets not yet populated.
+				// Create an empty List for reachIDs of the correct size, filled with nulls;
+				reachIDsByLogicalSets = new ArrayList<List<Long>>(logicalSets.size());
+				for (int j=0; j<logicalSets.size(); j++) {
+					reachIDsByLogicalSets.add(null);
+				}
 			}
-		} else {
-			throw new RuntimeException("out-of-bounds logical-set index [" + i + "] for logical reach id ");
 		}
 		
 		// reachIDs are only fetched at the time that they are requested
@@ -265,6 +266,30 @@ public class ReachGroup implements XMLStreamParserComponent {
 			reachIDsByLogicalSets.set(i, result);
 		}
 		return reachIDsByLogicalSets.get(i);
+	}
+	
+	public List<Long> getCombinedReachIDs(){
+		List<Long> result = new ArrayList<Long>();
+		// Start with explicit reaches
+		if (reaches != null) {
+			for (Reach reach: reaches) {
+				result.add(reach.getId());
+			}
+		}
+		
+		// add each of the logical reaches
+		for (int i=0; i<logicalSets.size(); i++) {
+			int m = result.size();
+			List<Long> lr = getLogicalReachIDs(i);
+			int n = lr.size();
+			result.addAll(lr);
+			if (result.size() < m+n) {
+				// TODO log this
+				System.out.println("WARNING: " + (m+n-result.size()) + " overlapping reaches ");
+			}
+		}
+		
+		return result;
 	}
 
 

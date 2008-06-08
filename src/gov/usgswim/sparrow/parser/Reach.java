@@ -77,6 +77,9 @@ public class Reach implements XMLStreamParserComponent {
 						
 						Adjustment adj = new Adjustment();
 						adj.parse(in);
+						if (adj.isCoefficient()) {
+							throw new XMLParseValidationException("an adjustment which is within a specific reach of a reach group may only be absolute");
+						}
 						adjs.add(adj);
 						
 					} else {

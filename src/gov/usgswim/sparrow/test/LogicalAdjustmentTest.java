@@ -2,29 +2,31 @@ package gov.usgswim.sparrow.test;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
-import gov.usgswim.sparrow.MapViewerSparrowDataProvider;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.parser.ReachGroup;
+import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointPipeline;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
+import gov.usgswim.sparrow.test.parsers.ReachGroupTest;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
+import java.util.List;
 
-import oracle.mapviewer.share.ext.NSDataSet;
-import oracle.mapviewer.share.ext.NSRow;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
 public class LogicalAdjustmentTest extends TestCase {
-
+	
+	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	LifecycleListener lifecycle = new LifecycleListener();
 	
 	protected void setUp() throws Exception {
@@ -38,9 +40,37 @@ public class LogicalAdjustmentTest extends TestCase {
 		lifecycle.contextDestroyed(null, true);
 	}
 	
-	public void testBasicPredictionValues() throws Exception {
+	public void testReachGroupLoading() throws XMLStreamException, XMLParseValidationException {
+		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(ReachGroupTest.testRequest1));
+		ReachGroup rg = new ReachGroup(1);
+		reader.next();
+		rg.parse(reader);
 
-		int CONTEXT_ID = 720751343;
+		// huc 8
+		List<Long> reaches8 = rg.getLogicalReachIDs(0);
+		assertTrue(reaches8 != null);
+		assertTrue(reaches8.size() > 0);
+
+		// huc6
+		List<Long> reaches6 = rg.getLogicalReachIDs(1);
+		assertTrue(reaches6 != null);
+		assertTrue(reaches6.size() > 0);
+
+		// huc4
+		List<Long> reaches4 = rg.getLogicalReachIDs(1);
+		assertTrue(reaches4 != null);
+		assertTrue(reaches4.size() > 0);
+
+		// huc2
+		List<Long> reaches2 = rg.getLogicalReachIDs(1);
+		assertTrue(reaches2 != null);
+		assertTrue(reaches2.size() > 0);
+
+	}
+
+public void testBasicPredictionValues() throws Exception {
+
+	int CONTEXT_ID = -1504305838;
 		
 		PredictContextRequest contextReq = buildPredictContext4();	//Build a context from a canned file
 		
@@ -65,9 +95,9 @@ public class LogicalAdjustmentTest extends TestCase {
 		PredictionContext nomContext = new PredictionContext(userContext.getModelID(), null, null, null, null);
 		
 		//Do a test of the hashcodes
-		assertEquals(CONTEXT_ID, contextReq.getPredictionContext());
-		assertEquals(CONTEXT_ID, userContext);
-		assertEquals(CONTEXT_ID, userContext.clone());
+		assertEquals(contextReq.getPredictionContext().hashCode(), userContext.hashCode());
+		assertEquals(contextReq.getPredictionContext().hashCode(), userContext.clone().hashCode());
+		assertEquals(CONTEXT_ID, contextReq.getPredictionContext().hashCode());
 		
 		//Get source values, both adjusted and nominal
 		PredictData nomData = SharedApplication.getInstance().getPredictData(userContext.getModelID());

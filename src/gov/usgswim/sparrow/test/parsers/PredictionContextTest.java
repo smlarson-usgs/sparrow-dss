@@ -220,7 +220,7 @@ public class PredictionContextTest extends TestCase {
 		+ "			</notes>"
 		+ "			<adjustment src=\"2\" coef=\".75\"/>"
 		+ "			<reach id=\"483947453\">"
-		+ "				<adjustment src=\"2\" coef=\".9\"/>"
+		+ "				<adjustment src=\"2\" abs=\".9\"/>"
 		+ "			</reach>"
 		+ "			<reach id=\"947839474\">"
 		+ "				<adjustment src=\"2\" abs=\"91344\"/>"
