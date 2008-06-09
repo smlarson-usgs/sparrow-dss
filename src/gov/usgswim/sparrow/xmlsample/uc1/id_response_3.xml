@@ -9,6 +9,13 @@
 	<identification><!-- distance-in-meters attrib not included b/c no point -->
 		<id>15</id>
 		<name>Elm River</name>
+		<bbox min-long="-77.23521" min-lat="38.966502" max-long="-77.147514" max-lat="38.982103" />
+		<hucs>
+			<huc8 id="02070008" name="MIDDLE POTOMAC-CATOCTIN" />
+			<huc6 id="020700" name="POTOMAC" />
+			<huc4 id="0207" name="POTOMAC" />
+			<huc2 id="02" name="MID ATLANTIC" />
+		</hucs>
 	</identification>
 	
 	<!-- Only this section of data is returned b/c only this section was asked for -->
