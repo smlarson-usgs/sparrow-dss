@@ -76,13 +76,7 @@ public class IDByPointComputable implements Computable<IDByPointRequest_old, Dat
 			log.debug("End ID by point query for model #" + req.getModelId() + "  Time: " + (System.currentTimeMillis() - startTime) + "ms");
 
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					//ignore
-				}
-			}
+			SharedApplication.closeConnection(conn, null);
 		}
 
 		return data;

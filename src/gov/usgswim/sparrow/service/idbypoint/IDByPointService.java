@@ -20,7 +20,6 @@ import gov.usgswim.sparrow.parser.ReachGroup;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.AggregateType;
 import gov.usgswim.sparrow.service.predict.ValueType;
-import gov.usgswim.sparrow.util.JDBCUtil;
 import gov.usgswim.sparrow.util.PropertyLoaderHelper;
 
 import java.io.IOException;
@@ -361,7 +360,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 					"ModelID", Long.toString(response.modelID),
 		});
 		
-		DataTableWritable attributes = JDBCUtil.queryToDataTable(attributesQuery);
+		DataTableWritable attributes = SharedApplication.queryToDataTable(attributesQuery);
 		// TODO [IK] This 4 is hardcoded for now. Have to go back and use SparrowModelProperties to do properly
 		response.sparrowAttributes = new FilteredDataTable(attributes, 0, 4); // first four columns
 		response.basicAttributes = new FilteredDataTable(attributes, 4, attributes.getColumnCount()- 4); // remaining columns

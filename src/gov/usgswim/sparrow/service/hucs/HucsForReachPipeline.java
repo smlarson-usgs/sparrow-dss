@@ -7,7 +7,7 @@ import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.sparrow.service.AbstractPipeline;
-import gov.usgswim.sparrow.util.JDBCUtil;
+import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.PropertyLoaderHelper;
 
 import java.io.IOException;
@@ -128,7 +128,7 @@ public class HucsForReachPipeline extends AbstractPipeline<HucsForReachRequest>{
 						"ModelID", Long.toString(modelID),
 			});
 			
-			DataTableWritable dt = JDBCUtil.queryToDataTable(hucsForReachQuery);
+			DataTableWritable dt = SharedApplication.queryToDataTable(hucsForReachQuery);
 			
 			for (int i=0; i<dt.getRowCount(); i++) {
 				String itemXML = props.getText("HUCItemXML",

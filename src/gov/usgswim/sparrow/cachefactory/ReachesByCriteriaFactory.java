@@ -4,7 +4,7 @@ import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.sparrow.parser.LogicalSet;
-import gov.usgswim.sparrow.util.JDBCUtil;
+import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +48,7 @@ public class ReachesByCriteriaFactory extends AbstractCacheFactory {
 
 			String query = "Select identifier from model_attrib_vw where "
 				+ criteriaAttrib + " = '" + huc + "'";
-			DataTableWritable dt = JDBCUtil.queryToDataTable(query);
+			DataTableWritable dt = SharedApplication.queryToDataTable(query);
 
 			TemporaryHelper.printDataTable(dt);
 			Long[] arrayResult = TemporaryHelper.getLongColumn(dt, 0);

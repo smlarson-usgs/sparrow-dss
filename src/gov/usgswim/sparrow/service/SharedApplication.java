@@ -1,6 +1,8 @@
 package gov.usgswim.sparrow.service;
 
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.sparrow.PredictComputable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
@@ -26,10 +28,13 @@ import gov.usgswim.task.ComputableCache;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import net.sf.ehcache.CacheManager;
@@ -44,7 +49,8 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		Logger.getLogger(SharedApplication.class); //logging for this class
 	
 	private static SharedApplication instance;
-	private String dsName = "jdbc/sparrowDSDS";
+	// private String dsName = "jdbc/sparrowDSDS"; old value
+	private static final String dsName = "jdbc/sparrow_dss";
 	private DataSource datasource;
 	private boolean lookupFailed = false;
 	private ComputableCache<PredictRequest, PredictResult> predictResultCache;
@@ -485,6 +491,29 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 
 	public ComputableCache<ModelRequest, ModelImm> getModelCache() {
 		return modelCache;
+	}
+
+	public static DataTableWritable queryToDataTable(String query) throws NamingException, SQLException {
+		Connection conn = getInstance().getConnection();
+		ResultSet rset = null;
+		DataTableWritable attributes = null;
+		try {
+			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			rset = st.executeQuery(query);
+			attributes = DataTableUtils.toDataTable(rset);
+		} finally {
+			closeConnection(conn, rset);
+		}
+		return attributes;
+	}
+
+	public static void closeConnection(Connection conn, ResultSet rset) {
+		try {
+			if (rset != null) rset.close();
+			if (conn != null) conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 	
 

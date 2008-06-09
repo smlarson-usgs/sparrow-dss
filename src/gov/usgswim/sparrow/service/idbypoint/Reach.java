@@ -98,7 +98,7 @@ public class Reach {
 	}
 	
 	public Reach cloneWithDistance(Integer distance) {
-		return new Reach(modelID, id, name, distance, minLong, minLat, maxLat, maxLat,
+		return new Reach(modelID, id, name, distance, minLong, minLat, maxLong, maxLat,
 				huc2, huc2Name, huc4, huc4Name, huc6, huc6Name, huc8, huc8Name );
 	}
 

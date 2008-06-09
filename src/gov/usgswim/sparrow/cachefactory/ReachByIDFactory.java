@@ -39,14 +39,15 @@ public class ReachByIDFactory extends AbstractCacheFactory {
 				new String[] { "ModelId", Long.toString(req.getModelID()), "Identifier", Integer.toString( req.getReachID() ) });
 		
 		Connection conn = SharedApplication.getInstance().getConnection();
-		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		st.setFetchSize(1);
+
 
 		ResultSet rs = null;
 		Reach reach = null;
 		
 		try {
-
+			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			st.setFetchSize(1);
+			
 			rs = st.executeQuery(query);
 			
 			if (rs.next()) {
@@ -61,16 +62,10 @@ public class ReachByIDFactory extends AbstractCacheFactory {
 			} else {
 				//no rows found - leave as null
 			}
-
 		} finally {
-			if (rs != null) {
-				rs.close();
-				rs = null;
-			}
+			SharedApplication.closeConnection(conn, rs);
 		}
-		
 
-		
 		return reach;
 		
 	}
