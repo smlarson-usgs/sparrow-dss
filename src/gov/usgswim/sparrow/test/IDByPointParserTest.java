@@ -18,7 +18,7 @@ public class IDByPointParserTest extends TestCase {
 	}
 
 	
-	public void testBasic() throws Exception {
+	public void testSimpleRequest() throws Exception {
 		
 		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
 		XMLStreamReader xsr = xinFact.createXMLStreamReader(

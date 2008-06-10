@@ -46,12 +46,12 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 				new String[] {"ModelId", modelId.toString(), "lng", lng.toString(), "lat", lat.toString()});
 		
 		Connection conn = SharedApplication.getInstance().getConnection();
-		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		st.setFetchSize(1);
 
 		ResultSet rs = null;
 		
 		try {
+			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			st.setFetchSize(1);
 
 			rs = st.executeQuery(query);
 			
@@ -64,10 +64,7 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 			}
 
 		} finally {
-			if (rs != null) {
-				rs.close();
-				rs = null;
-			}
+			SharedApplication.closeConnection(conn, rs);
 		}
 
 		return null;

@@ -38,13 +38,8 @@ public class PredictDatasetComputable implements Computable<Long, PredictData> {
 			log.debug("End loading predict data for model #" + modelId + "  Time: " + (System.currentTimeMillis() - startTime) + "ms");
 
 		} finally {
-			if (conn != null) {
-				try {
-					conn.close();
-				} catch (SQLException e) {
-					//ignore
-				}
-			}
+			// not really necessary as it's taken care of in loadMinimalPredictDataSet
+			SharedApplication.closeConnection(conn, null);
 		}
 
 		return data.toImmutable();

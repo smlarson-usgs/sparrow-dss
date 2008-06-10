@@ -2,7 +2,6 @@ package gov.usgswim.sparrow.test;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.util.DataLoader;
-import gov.usgswim.sparrow.util.JDBCUtil;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -12,6 +11,10 @@ import java.sql.SQLException;
 import junit.framework.TestCase;
 import oracle.jdbc.OracleDriver;
 
+/**
+ * @author ilinkuo
+ * @deprecated
+ */
 public class JDBCUtilMemoryTest extends TestCase {
 
 	public static class MemoryTestBench {// copied from datatable
@@ -109,9 +112,10 @@ public class JDBCUtilMemoryTest extends TestCase {
 	}
 
 	private Connection conn;
+	
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
-		
 
 		String username = "SPARROW_DSS";
 		String password = "***REMOVED***";
@@ -119,11 +123,16 @@ public class JDBCUtilMemoryTest extends TestCase {
 		DriverManager.registerDriver(new OracleDriver());
 		conn = DriverManager.getConnection(thinConn,username,password);
 	}
-
+	
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		if (conn != null ) conn.close();
+	}
+	
 	//=============
 	// TEST METHODS
 	// ============
-
 
 	public void testloadFullModelDataSet() throws Exception {
 		final int modelId = 1;
@@ -197,7 +206,4 @@ public class JDBCUtilMemoryTest extends TestCase {
 
 	}
 
-	public void testloadFullModelDataSet2() {
-
-	}
 }

@@ -32,6 +32,7 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 		TestRunner.main(args2);
 	}
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
@@ -43,6 +44,7 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 		conn = DriverManager.getConnection(thinConn,username,password);
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 

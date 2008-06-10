@@ -16,6 +16,7 @@ public class DomainSerializerTest extends TestCase {
 	public static void main(String args[]) {
 	}
 	
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		
@@ -27,6 +28,7 @@ public class DomainSerializerTest extends TestCase {
 		conn = DriverManager.getConnection(thinConn,username,password);
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		

@@ -37,34 +37,7 @@ public class IDByPointService implements HttpService<IDByPointRequest_old> {
 	public IDByPointService() {}
 	
 	
-//	/** (non-Javadoc)
-//	 * @see gov.usgswim.service.HttpRequestHandler#dispatch(java.lang.Object, javax.servlet.http.HttpServletResponse)
-//	 * @deprecated
-//	 */
-//	public void dispatch(IDByPointRequest req, HttpServletResponse response) throws Exception {
-//		response.setContentType(RESPONSE_MIME_TYPE);
-//		dispatch(req, response.getOutputStream());
-//	}
-//	
-//	/** (non-Javadoc)
-//	 * @see gov.usgswim.service.RequestHandler#dispatch(java.lang.Object, java.io.OutputStream)
-//	 * @deprecated
-//	 */
-//	public void dispatch(IDByPointRequest req, OutputStream outStream) throws Exception {
-//																																 
-//		Int2DImm result = SharedApplication.getInstance().getIdByPointCache().compute(req);
-//		
-//
-//		serializer.writeResponse(outStream, result);
-//
-//	}
-//	
-//	
-	protected Connection getConnection() throws NamingException, SQLException {
-		return SharedApplication.getInstance().getConnection();
-	}
-
-	public void shutDown() {
+public void shutDown() {
 		xoFact = null;
 	}
 	

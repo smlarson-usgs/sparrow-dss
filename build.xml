@@ -56,7 +56,7 @@
 		<property name="jarfile.path" location="deploy/${jarfile.name}"/>
 		
 		<echo>Buildings jar from ${application.webcontent.dir}/WEB-INF/classes
-			Exclusing /test and gov/usgswim/sparrow/test
+			Excluding /test and gov/usgswim/sparrow/test
 		</echo>
 		
 		<jar destfile="${jarfile.path}" >

@@ -10,6 +10,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.domain.SourceBuilder;
+import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -57,16 +58,21 @@ public class DataLoader {
 	public static PredictData loadMinimalPredictDataSet(Connection conn, int modelId)
 	throws SQLException,
 	IOException {
-
 		PredictDataBuilder dataSet = new PredictDataBuilder();
+		try {
+			
+			dataSet.setSrcMetadata( loadSrcMetadata(conn, modelId));
+			dataSet.setSys( loadSystemInfo(conn, modelId) );
+			dataSet.setTopo( loadTopo(conn, modelId) );
+			dataSet.setCoef( loadSourceReachCoef(conn, modelId, 0, dataSet.getSrcMetadata()) );
+			dataSet.setDecay( loadDecay(conn, modelId, 0) );
+			dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcMetadata()) );
 
-		dataSet.setSrcMetadata( loadSrcMetadata(conn, modelId));
-		dataSet.setSys( loadSystemInfo(conn, modelId) );
-		dataSet.setTopo( loadTopo(conn, modelId) );
-		dataSet.setCoef( loadSourceReachCoef(conn, modelId, 0, dataSet.getSrcMetadata()) );
-		dataSet.setDecay( loadDecay(conn, modelId, 0) );
-		dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcMetadata()) );
-
+		} catch (Exception e) {
+			log.error(DataLoader.class.getSimpleName() + ".loadMinimalPredictDataSet() failed with error:", e);
+		} finally {
+			SharedApplication.closeConnection(conn, null);
+		}
 		return dataSet.toImmutable();
 	}
 

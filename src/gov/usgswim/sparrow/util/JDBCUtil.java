@@ -4,18 +4,14 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
 
@@ -621,24 +617,6 @@ public abstract class JDBCUtil {
 
 
 		return modelRowCnt;
-	}
-
-	public static DataTableWritable queryToDataTable(String query) throws NamingException, SQLException {
-		Connection conn = SharedApplication.getInstance().getConnection();
-		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		ResultSet rset = st.executeQuery(query);
-		DataTableWritable attributes = DataTableUtils.toDataTable(rset);
-		JDBCUtil.closeConnection(conn, rset);
-		return attributes;
-	}
-
-	public static void closeConnection(Connection conn, ResultSet rset) {
-		try {
-			if (rset != null) rset.close();
-			if (conn != null) conn.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 	}
 	
 

@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.test;
+package gov.usgswim.sparrow.test.cachefactory;
 
 import gov.usgswim.sparrow.cachefactory.ReachByPointFactory;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
