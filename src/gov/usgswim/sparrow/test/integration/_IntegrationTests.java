@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.test;
+package gov.usgswim.sparrow.test.integration;
 
 
 import gov.usgswim.sparrow.test.parsers.AllParseTests;

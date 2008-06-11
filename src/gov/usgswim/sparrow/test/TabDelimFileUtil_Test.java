@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.test;
 
 
+import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.util.SparrowUtil;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;
@@ -25,7 +25,7 @@ public class TabDelimFileUtil_Test extends TestCase{
 		assertEquals(91d, data.getDouble(9,0), 0d);
 		assertEquals(95d, data.getDouble(9,4), 0d);
 
-		SparrowUtil.printDataTable(data, "Double: Loaded from /gov/usgswim/sparrow/tab_delimit_sample.txt");
+		TemporaryHelper.printDataTable(data, "Double: Loaded from /gov/usgswim/sparrow/tab_delimit_sample.txt");
 	}
 
 	/**
@@ -41,7 +41,7 @@ public class TabDelimFileUtil_Test extends TestCase{
 		assertEquals(91d, data.getDouble(9,0), 0d);
 		assertEquals(95d, data.getDouble(9,4), 0d);
 
-		SparrowUtil.printDataTable(data, "Double: Loaded from /gov/usgswim/sparrow/tab_delimit_sample_gap.txt");
+		TemporaryHelper.printDataTable(data, "Double: Loaded from /gov/usgswim/sparrow/tab_delimit_sample_gap.txt");
 	}
 
 	/**
@@ -104,7 +104,7 @@ public class TabDelimFileUtil_Test extends TestCase{
 		assertEquals(Integer.valueOf(91), data.getInt(9,0));
 		assertEquals(Integer.valueOf(95), data.getInt(9,4));
 
-		SparrowUtil.printDataTable(data, "Double: Loaded from /gov/usgswim/sparrow/tab_delimit_sample_gap_int.txt");
+		TemporaryHelper.printDataTable(data, "Double: Loaded from /gov/usgswim/sparrow/tab_delimit_sample_gap_int.txt");
 	}
 
 	/**

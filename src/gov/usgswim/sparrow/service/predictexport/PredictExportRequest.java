@@ -4,7 +4,6 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.parser.ParserHelper;
-import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
@@ -17,46 +16,54 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 	private static final long serialVersionUID = -53439131354L;
 	public static final String MAIN_ELEMENT_NAME = "sparrow-report-request";
 	public static final String PC_EXPORT_FILENAME = "predict_export";
-	
-	private String xmlRequest;
-	private ResponseFormat responseFormat;
-	
+
+
+
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
 	// =============================
 	public static boolean isTargetMatch(String tagName) {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
-	
+
 	public static PredictExportRequest parseStream(XMLStreamReader in)
-			throws XMLStreamException, XMLParseValidationException {
-		
+	throws XMLStreamException, XMLParseValidationException {
+
 		PredictExportRequest per = new PredictExportRequest();
 		return per.parse(in);
 	}
-	
+
 	/**
 	 * Constructs an empty instance.
 	 */
 	public PredictExportRequest() {
-	
+
 	}
-	
+
 	/**
 	 * Construct an instance w/ basic options (used for GET requests)
 	 */
 	public PredictExportRequest(Integer contextID, ResponseFormat respFormat, String bbox) {
 		this.contextID = contextID;
-		this.respFormat = respFormat;
+		this.responseFormat = respFormat;
 		this.bbox = bbox;
 	}
 
-	
+
+	public PredictExportRequest(Long modelID, ResponseFormat respFormat, String bbox2) {
+		this.modelID = modelID;
+		this.responseFormat = respFormat;
+		this.bbox = bbox;
+	}
+
+
 	// ===============
 	// INSTANCE FIELDS
 	// ===============
+	private String xmlRequest;
+	private ResponseFormat responseFormat;
 	private Integer contextID;
-	private ResponseFormat respFormat;
+	private Long modelID;
 	private String bbox;
 	private boolean includeReachAttribs = true;
 	private boolean includeSource = true;
@@ -66,13 +73,13 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 	// INSTANCE METHODS
 	// ================
 	public PredictExportRequest parse(XMLStreamReader in)
-			throws XMLStreamException, XMLParseValidationException {
-		
+	throws XMLStreamException, XMLParseValidationException {
+
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
 		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : this
-			.getClass().getSimpleName()
-			+ " can only parse " + MAIN_ELEMENT_NAME + " elements.";
+		.getClass().getSimpleName()
+		+ " can only parse " + MAIN_ELEMENT_NAME + " elements.";
 		boolean isStarted = false;
 
 		while (in.hasNext()) {
@@ -93,10 +100,10 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 						contextID = ParserHelper.parseAttribAsInt(in, "context-id", true);
 						ParserHelper.ignoreElement(in);
 					} else if (ResponseFormat.isTargetMatch(localName)) {
-						
-						respFormat = ResponseFormat.parseStream(in);
-						if (respFormat.fileName == null) respFormat.fileName = PC_EXPORT_FILENAME;
-						
+
+						responseFormat = ResponseFormat.parseStream(in);
+						if (responseFormat.fileName == null) responseFormat.fileName = PC_EXPORT_FILENAME;
+
 					} else if ("bbox".equals(localName)) {
 						bbox = ParserHelper.parseSimpleElementValue(in);
 					} else if ("response-content".equals(localName)) {
@@ -113,7 +120,7 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
 						checkValidity();
-						respFormat = (respFormat == null)? makeDefaultResponseFormat(): respFormat;
+						responseFormat = (responseFormat == null)? makeDefaultResponseFormat(): responseFormat;
 						return this; // we're done
 					} else {
 						// otherwise, error
@@ -128,7 +135,7 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
 	}
-	
+
 	public boolean isParseTarget(String name) {
 		return MAIN_ELEMENT_NAME.equals(name);
 	}
@@ -143,7 +150,7 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 	public boolean isValid() {
 		return contextID != null;
 	}
-	
+
 	private ResponseFormat makeDefaultResponseFormat() {
 		ResponseFormat result = new ResponseFormat();
 		result.fileName = PC_EXPORT_FILENAME;
@@ -152,24 +159,24 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 	}
 
 	public Integer getContextID() {
-  	return contextID;
-  }
+		return contextID;
+	}
 
 	public ResponseFormat getRespFormat() {
-  	return respFormat;
-  }
-	
+		return responseFormat;
+	}
+
 	public boolean isIncludeSource() {
-  	return includeSource;
-  }
+		return includeSource;
+	}
 
 	public boolean isIncludePredict() {
-  	return includePredict;
-  }
+		return includePredict;
+	}
 
 	public boolean isIncludeReachAttribs() {
-  	return includeReachAttribs;
-  }
+		return includeReachAttribs;
+	}
 
 	public String getXMLRequest() {
 		return xmlRequest;
@@ -183,7 +190,7 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 		this.responseFormat = respFormat;
 		responseFormat.fileName = PC_EXPORT_FILENAME;
 	}
-	
+
 	public ResponseFormat getResponseFormat() {
 		if (responseFormat == null) {
 			setResponseFormat(new ResponseFormat());
@@ -192,7 +199,17 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 	}
 
 	public String getBbox() {
-  	return bbox;
-  }
+		return bbox;
+	}
+
+	public Long getModelID() {
+		return modelID;
+	}
+
+	public void setModelID(Long modelID) {
+		this.modelID = modelID;
+	}
+
+	
 
 }

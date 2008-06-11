@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow.test;
+import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.sparrow.PredictRunner;
-import gov.usgswim.sparrow.util.SparrowUtil;
 import junit.framework.TestCase;
 
 public class PredictSimple_Test extends TestCase {
@@ -66,7 +66,6 @@ public class PredictSimple_Test extends TestCase {
 		PredictRunner predictor = new PredictRunner(topoDT, coefDT, srcDT, decayDT);
 		DataTable pred = predictor.doPredict();
 
-		SparrowUtil.printDataTable(pred, "Predicted Values"); 
-
+		TemporaryHelper.printDataTable(pred, "Predicted Values");
 	}
 }

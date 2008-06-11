@@ -48,8 +48,14 @@ public class ModelService implements HttpService<ModelRequest> {
 	}
 
 	public XMLStreamReader getXMLStreamReader(ModelRequest o, boolean needsCompleteFirstRow) throws Exception{
+		Connection conn = getConnection();
+		List<ModelBuilder> models = null;
+		try {
+			models = DataLoader.loadModelMetaData(conn);
+		} finally {
+			SharedApplication.closeConnection(conn, null);
+		}
 		
-		List<ModelBuilder> models = DataLoader.loadModelMetaData(getConnection());
 		DomainSerializer serializer = new DomainSerializer(models);
 		if (needsCompleteFirstRow) {
 			serializer.setOutputCompleteFirstRow();

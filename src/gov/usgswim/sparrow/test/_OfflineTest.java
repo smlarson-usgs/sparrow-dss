@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.test;
 
 
 import gov.usgswim.sparrow.test.parsers.AllParseTests;
+import gov.usgswim.sparrow.test.parsers.IDByPointParserTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -20,7 +21,7 @@ public class _OfflineTest {
 		suite.addTestSuite(SourceAdjustments_Test.class);
 		//suite.addTestSuite(DomainSerializerTest.class);
 		suite.addTestSuite(PredictSerializerTest.class);
-		suite.addTestSuite(IDByPointParserTest.class);
+
 
 		//suite.addTestSuite(ModelServiceTest.class);
 		//suite.addTestSuite(PredictServiceTest.class);

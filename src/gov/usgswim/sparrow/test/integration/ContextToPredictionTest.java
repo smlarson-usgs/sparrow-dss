@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.test;
+package gov.usgswim.sparrow.test.integration;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
@@ -8,13 +8,11 @@ import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointPipeline;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
+import gov.usgswim.sparrow.test.parsers.PredictionContextTest;
 
 import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 
 import oracle.mapviewer.share.ext.NSDataSet;
 import oracle.mapviewer.share.ext.NSRow;
@@ -40,9 +38,9 @@ public class ContextToPredictionTest extends TestCase {
 	
 	public void testBasicPredictionValues() throws Exception {
 
-		int CONTEXT_ID = 720751343;
+		int CONTEXT_ID = PredictionContextTest.PRED_CONTEXT_1_ID;
 		
-		PredictContextRequest contextReq = buildPredictContext1();	//Build a context from a canned file
+		PredictContextRequest contextReq = PredictionContextTest.buildPredictContext1();	//Build a context from a canned file
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PredictContextPipeline pipe = new PredictContextPipeline();
@@ -163,8 +161,8 @@ public class ContextToPredictionTest extends TestCase {
 	 */
 	public void testSourceValuesChange() throws Exception {
 
-		int CONTEXT_ID = -1926160079;
-		PredictContextRequest contextReq = buildPredictContext3();	//Build a context from a canned file
+		int CONTEXT_ID = PredictionContextTest.PRED_CONTEXT_3_ID;
+		PredictContextRequest contextReq = PredictionContextTest.buildPredictContext3();	//Build a context from a canned file
 		
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		PredictContextPipeline pipe = new PredictContextPipeline();
@@ -207,37 +205,12 @@ public class ContextToPredictionTest extends TestCase {
 	}
 	
 	public void testHashCode() throws Exception {
-		PredictionContext context1 = buildPredictContext1().getPredictionContext();
-		PredictionContext context2 = buildPredictContext1().getPredictionContext();
+		PredictionContext context1 = PredictionContextTest.buildPredictContext1().getPredictionContext();
+		PredictionContext context2 = PredictionContextTest.buildPredictContext1().getPredictionContext();
 		
 		assertEquals(context1.hashCode(), context2.hashCode());
 		assertEquals(context1.getId(), context2.getId());
 		assertEquals(context1.getId().intValue(), context2.hashCode());
-	}
-	
-	
-	public PredictContextRequest buildPredictContext1() throws Exception {
-		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-context-1.xml");
-		String xml = TestHelper.readToString(is);
-		
-		PredictContextPipeline pipe = new PredictContextPipeline();
-		return pipe.parse(xml);
-	}
-	
-	public PredictContextRequest buildPredictContext3() throws Exception {
-		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-context-3.xml");
-		String xml = TestHelper.readToString(is);
-		
-		PredictContextPipeline pipe = new PredictContextPipeline();
-		return pipe.parse(xml);
-	}
-	
-	public IDByPointRequest buildIDByPointRequest1() throws Exception {
-		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/id_request_1.xml");
-		String xml = TestHelper.readToString(is);
-		
-		IDByPointPipeline pipe = new IDByPointPipeline();
-		return pipe.parse(xml);
 	}
 
 

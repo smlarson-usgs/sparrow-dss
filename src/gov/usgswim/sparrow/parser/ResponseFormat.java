@@ -7,6 +7,8 @@ import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.codehaus.stax2.validation.XMLValidationException;
+
 public class ResponseFormat implements XMLStreamParserComponent {
 	public static final String MAIN_ELEMENT_NAME = "response-format";
 
@@ -21,7 +23,7 @@ public class ResponseFormat implements XMLStreamParserComponent {
 		ResponseFormat rf = new ResponseFormat();
 		return rf.parse(in);
 	}
-	
+
 	// ===============
 	// INSTANCE FIELDS
 	// ===============
@@ -32,7 +34,7 @@ public class ResponseFormat implements XMLStreamParserComponent {
 	protected String mimeType;
 	protected OutputType outputType;
 	protected boolean isAttachment = true;
-	
+
 	// ================
 	// INSTANCE METHODS
 	// ================
@@ -41,43 +43,45 @@ public class ResponseFormat implements XMLStreamParserComponent {
 		int eventCode = in.getEventType();
 		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : this
 			.getClass().getSimpleName()
-			+ " can only parse " + MAIN_ELEMENT_NAME + " elements.";
+		+ " can only parse " + MAIN_ELEMENT_NAME + " elements.";
 		boolean isStarted = false;
 
-		while (in.hasNext()) {
-			if (isStarted) {
-				// Don't advance past the first element.
-				eventCode = in.next();
-			} else {
-				isStarted = true;
-			}
+		try {
+			while (in.hasNext()) {
+				if (isStarted) {
+					// Don't advance past the first element.
+					eventCode = in.next();
+				} else {
+					isStarted = true;
+				}
 
-			// Main event loop -- parse until corresponding target end tag encountered.
-			switch (eventCode) {
-				case START_ELEMENT:
-					localName = in.getLocalName();
-					if ("mime-type".equals(localName) || "mimeType".equals(localName)) {
-						String mime = ParserHelper.parseSimpleElementValue(in);
-						try {
-	            setMimeType(mime);
-            } catch (RuntimeException e) {
-            	throw new XMLParseValidationException("The mime-type '" + mime + "' is unrecognized.");
-            }
-					} else if (MAIN_ELEMENT_NAME.equals(localName)) {
-						// pull out the relevant attributes in the target start tag
-						compressMethod = in.getAttributeValue(null, "compress");
-						name = in.getAttributeValue(null, "name");
-					}
-					break;
-				case END_ELEMENT:
-					localName = in.getLocalName();
-					if (MAIN_ELEMENT_NAME.equals(localName)) {
-						checkValidity();
-						return this; // we're done
-					}
-					break;
+				// Main event loop -- parse until corresponding target end tag encountered.
+				switch (eventCode) {
+					case START_ELEMENT:
+						localName = in.getLocalName();
+						if (MAIN_ELEMENT_NAME.equals(localName)) {
+							// pull out the relevant attributes in the target start tag
+							compressMethod = in.getAttributeValue(null, "compress");
+							name = in.getAttributeValue(null, "name");
+						} else if ("mime-type".equals(localName) || "mimeType".equals(localName)) {
+							setMimeType(ParserHelper.parseSimpleElementValue(in)); // performs simple checking
+						}
+						break;
+					case END_ELEMENT:
+						localName = in.getLocalName();
+						if (MAIN_ELEMENT_NAME.equals(localName)) {
+							// DO POST PROCESSING HERE IF NECESSARY
+							
+							checkValidity();
+							return this; // we're done
+						}
+						break;
+				}
 			}
+		} catch (Exception e) {
+			throw new XMLParseValidationException(e);
 		}
+
 
 		return this;
 	}
@@ -85,7 +89,7 @@ public class ResponseFormat implements XMLStreamParserComponent {
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
 	}
-	
+
 	public boolean isParseTarget(String name) {
 		return MAIN_ELEMENT_NAME.equals(name);
 	}
@@ -131,7 +135,7 @@ public class ResponseFormat implements XMLStreamParserComponent {
 	public String getCompression() {
 		return compressMethod;
 	}
-	
+
 	public boolean isAttachement() {
 		return isAttachment;
 	}

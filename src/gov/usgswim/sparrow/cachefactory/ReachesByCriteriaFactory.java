@@ -50,7 +50,6 @@ public class ReachesByCriteriaFactory extends AbstractCacheFactory {
 				+ criteriaAttrib + " = '" + huc + "'";
 			DataTableWritable dt = SharedApplication.queryToDataTable(query);
 
-			TemporaryHelper.printDataTable(dt);
 			Long[] arrayResult = TemporaryHelper.getLongColumn(dt, 0);
 			List<Long> reachIDs = Collections.unmodifiableList(Arrays.asList(arrayResult));
 			return reachIDs;

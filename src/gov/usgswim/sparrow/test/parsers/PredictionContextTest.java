@@ -1,16 +1,19 @@
 package gov.usgswim.sparrow.test.parsers;
 
-import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.ComparisonType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
+import gov.usgswim.sparrow.test.TestHelper;
+import gov.usgswim.sparrow.test.integration.LogicalAdjustmentTest;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -20,8 +23,35 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 public class PredictionContextTest extends TestCase {
-	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
+	
+	// ================
+	// STATIC CONSTANTS
+	// ================
+	public static final String PRED_CONTEXT_1 = "/gov/usgswim/sparrow/test/sample/predict-context-1.xml";
+	public static final String PRED_CONTEXT_2 = "/gov/usgswim/sparrow/test/sample/predict-context-2.xml";
+	public static final String PRED_CONTEXT_3 = "/gov/usgswim/sparrow/test/sample/predict-context-3.xml";
+	public static final String PRED_CONTEXT_BUG_1 = "/gov/usgswim/sparrow/test/sample/predict-context-bug_1.xml";
+	
+	public static final int PRED_CONTEXT_1_ID = 720751343;
+	public static final int PRED_CONTEXT_3_ID = -1926160079;
 
+	public static String contextIDRegex = "context-id=['\"]([-0-9]+)['\"]";
+	public static Pattern patt = Pattern.compile(contextIDRegex);
+
+	public static int extractContextIDFromPredictionContextResponse(String pcResponse) {
+		Matcher m = patt.matcher(pcResponse);
+		boolean isFound = m.find();
+		if (isFound) {
+			return Integer.valueOf(m.group(1));
+		} else {
+			System.err.println("Unable to extract context-id from prediction context response for test " + LogicalAdjustmentTest.class.getSimpleName());
+			return 0;
+		}
+		
+	}
+	
+	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
+	
 	public void testParseMainUseCase() throws Exception {
 		PredictionContext pCon = buildContext();
 
@@ -256,5 +286,21 @@ public class PredictionContextTest extends TestCase {
 			}
 		}
 		return sb.toString();
+	}
+
+	public static PredictContextRequest buildPredictContext3() throws Exception {
+		InputStream is = PredictionContextTest.class.getResourceAsStream(PRED_CONTEXT_3);
+		String xml = TestHelper.readToString(is);
+		
+		PredictContextPipeline pipe = new PredictContextPipeline();
+		return pipe.parse(xml);
+	}
+
+	public static PredictContextRequest buildPredictContext1() throws Exception {
+		InputStream is = PredictionContextTest.class.getResourceAsStream(PRED_CONTEXT_1);
+		String xml = TestHelper.readToString(is);
+		
+		PredictContextPipeline pipe = new PredictContextPipeline();
+		return pipe.parse(xml);
 	}
 }

@@ -102,11 +102,12 @@ public abstract class TemporaryHelper {
 //		System.out.println("=======");
 	}
 	
-	public static void printDataTable(DataTable dt) {
+	public static void printDataTable(DataTable dt, String caption) {
 		if (dt != null) {
 			// print headings
 			String[] headings = DataTableUtils.getHeadings(dt);
 			System.out.println();
+			if (caption != null) System.out.println(caption);
 			for (String heading: headings) {
 				System.out.print(heading);
 				System.out.print("\t");

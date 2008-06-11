@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.test;
+package gov.usgswim.sparrow.test.service;
 
 import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
 import gov.usgswim.datatable.DataTable;

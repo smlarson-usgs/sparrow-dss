@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow.test;
 
+import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.deprecated.IDByPointComputable;
 import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
-import gov.usgswim.sparrow.util.SparrowUtil;
 
 import java.awt.Point;
 
@@ -29,7 +29,7 @@ public class IDByPointComputableTest extends TestCase {
 		IDByPointRequest_old req = new IDByPointRequest_old(22L, new Point.Double(-93d, 45d), 5);
 		DataTable data = idc.compute(req);
 		
-		SparrowUtil.printDataTable(data, "Nearest to point:");
+		TemporaryHelper.printDataTable(data, "Nearest to point:");
 		
 		assertEquals(5, data.getRowCount());
 		

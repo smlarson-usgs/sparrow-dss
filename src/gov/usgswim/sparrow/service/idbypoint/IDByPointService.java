@@ -39,6 +39,7 @@ import org.apache.log4j.Logger;
 
 @ThreadSafe
 public class IDByPointService implements HttpService<IDByPointRequest> {
+	
 	// =============
 	// STATIC FIELDS
 	// =============
@@ -46,6 +47,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		Logger.getLogger(IDByPointService.class); //logging for this class
 	public final static String RESPONSE_MIME_TYPE = "application/xml";
 	public final static NumberFormat formatter = new DecimalFormat("#0.00"); // default format for numbers
+	private static final String PROP_FILE = "gov/usgswim/sparrow/service/idbypoint/IDByPointServiceTemplate.properties";
 	
 	//They promise these factories are threadsafe
 	private static Object factoryLock = new Object();
@@ -69,7 +71,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	// ===============
 	// INSTANCE FIELDS
 	// ===============
-	private PropertyLoaderHelper props = new PropertyLoaderHelper("gov/usgswim/sparrow/service/idbypoint/IDByPointServiceTemplate.properties");
+	private PropertyLoaderHelper props = new PropertyLoaderHelper(PROP_FILE);
 
 	// ===========
 	// CONSTRUCTOR
@@ -364,10 +366,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		// TODO [IK] This 4 is hardcoded for now. Have to go back and use SparrowModelProperties to do properly
 		response.sparrowAttributes = new FilteredDataTable(attributes, 0, 4); // first four columns
 		response.basicAttributes = new FilteredDataTable(attributes, 4, attributes.getColumnCount()- 4); // remaining columns
-		
-		TemporaryHelper.printDataTable(response.sparrowAttributes);
-		TemporaryHelper.printDataTable(response.basicAttributes);
-		
+
 		StringBuilder basicAttributesSection = toSection(response.basicAttributes, "Basic Attributes", "basic_attrib");
 		StringBuilder sparrowAttributesSection = toSection(response.sparrowAttributes, "SPARROW Attributes", "sparrow_attrib");
 

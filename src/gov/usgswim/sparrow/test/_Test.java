@@ -1,7 +1,11 @@
 package gov.usgswim.sparrow.test;
 
 
+import gov.usgswim.sparrow.test.integration._IntegrationTests;
 import gov.usgswim.sparrow.test.parsers.AllParseTests;
+import gov.usgswim.sparrow.test.parsers.IDByPointParserTest;
+import gov.usgswim.sparrow.test.service.ModelServiceTest;
+import gov.usgswim.sparrow.test.service.PredictServiceTest;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
@@ -32,8 +36,9 @@ public class _Test {
 		
 		suite.addTestSuite(SharedApplicationCaching.class);
 		
-		//parse tests
-		suite.addTest(AllParseTests.suite()); // Note: this is the way to add a suite.
+		// ===========
+		// Test Suites
+		// ===========
 		suite.addTest(_IntegrationTests.suite()); // Note: this is the way to add a suite.
 		suite.addTest(_OfflineTest.suite()); // Note: this is the way to add a suite.
 		

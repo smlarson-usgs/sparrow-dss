@@ -3,7 +3,6 @@ package gov.usgswim.sparrow.service.predictexport;
 import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.service.RequestParser;
 import gov.usgswim.sparrow.parser.ParserHelper;
-import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,15 +20,28 @@ public class PredictExportParser
 		
 		if (request.getMethod().equals("GET")) {
 			
-			String contextID = request.getParameter("context-id");
+			String modelParam = request.getParameter("model");
+			String contextIDParam = request.getParameter("context-id");
 			String mimeType = request.getParameter("mime-type");
 			String bbox = request.getParameter("bbox");
 			
-			//TODO: [ik]  This should somehow create a new instance per the passed mime-type.  How?
-			ResponseFormat respFormat = new ResponseFormat();
+			boolean isModelRequest = (modelParam != null);
+			boolean isContextRequest = (contextIDParam != null);
 			
-			req = new PredictExportRequest(
-					Integer.parseInt(contextID), respFormat, bbox);
+			Long modelID = (isModelRequest)? Long.parseLong(modelParam): null;
+			Integer contextID = (isContextRequest)? Integer.parseInt(contextIDParam): null;
+			
+			
+			ResponseFormat respFormat = new ResponseFormat();
+			respFormat.setMimeType(mimeType);
+			if (respFormat.fileName == null) respFormat.fileName = PredictExportRequest.PC_EXPORT_FILENAME;
+			
+			if (isContextRequest) {
+				req = new PredictExportRequest( contextID, respFormat, bbox);
+			} else if (isModelRequest) {
+				req = new PredictExportRequest( modelID, respFormat, bbox);
+			}
+			
 			
 			
 		} else if (request.getMethod().equals("POST")) {

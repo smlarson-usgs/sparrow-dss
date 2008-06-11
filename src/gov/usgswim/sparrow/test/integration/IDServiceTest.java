@@ -1,10 +1,11 @@
-package gov.usgswim.sparrow.test;
+package gov.usgswim.sparrow.test.integration;
 
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointPipeline;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
+import gov.usgswim.sparrow.test.parsers.PredictionContextTest;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -167,64 +168,66 @@ public class IDServiceTest extends TestCase {
 	}
 	*/
 
-	
-	public IDByPointRequest buildIDByPointRequest1() throws Exception {
-		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/id_request_1.xml");
+	// =====================================
+	// STATIC HELPER REQUEST LOADING METHODS
+	// =====================================
+	public static IDByPointRequest buildIDByPointRequest1() throws Exception {
+		InputStream is = IDServiceTest.class.getResourceAsStream("/gov/usgswim/sparrow/test/sample/id_request_1.xml");
 		String xml = readToString(is);
 		
 		IDByPointPipeline pipe = new IDByPointPipeline();
 		return pipe.parse(xml);
 	}
 	
-	public IDByPointRequest buildIDByPointRequest2() throws Exception {
-		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/id_request_2.xml");
+	public static IDByPointRequest buildIDByPointRequest2() throws Exception {
+		InputStream is = IDServiceTest.class.getResourceAsStream("/gov/usgswim/sparrow/test/sample/id_request_2.xml");
 		String xml = readToString(is);
 		
 		IDByPointPipeline pipe = new IDByPointPipeline();
 		return pipe.parse(xml);
 	}
 	
-	public IDByPointRequest buildIDByPointRequest3() throws Exception {
-		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/id_request_3.xml");
+	public static IDByPointRequest buildIDByPointRequest3() throws Exception {
+		InputStream is = IDServiceTest.class.getResourceAsStream("/gov/usgswim/sparrow/test/sample/id_request_3.xml");
 		String xml = readToString(is);
 		
 		IDByPointPipeline pipe = new IDByPointPipeline();
 		return pipe.parse(xml);
 	}
 	
-	public IDByPointRequest buildIDByPointRequest4() throws Exception {
-		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/id_request_4.xml");
+	public static IDByPointRequest buildIDByPointRequest4() throws Exception {
+		InputStream is = IDServiceTest.class.getResourceAsStream("/gov/usgswim/sparrow/test/sample/id_request_4.xml");
 		String xml = readToString(is);
 		
 		IDByPointPipeline pipe = new IDByPointPipeline();
 		return pipe.parse(xml);
 	}
 	
-	public IDByPointRequest buildIDByPointRequestBug1() throws Exception {
-		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/id_request_bug_1.xml");
+	public static IDByPointRequest buildIDByPointRequestBug1() throws Exception {
+		InputStream is = IDServiceTest.class.getResourceAsStream("/gov/usgswim/sparrow/test/sample/id_request_bug_1.xml");
 		String xml = readToString(is);
 		
 		IDByPointPipeline pipe = new IDByPointPipeline();
 		return pipe.parse(xml);
 	}
 	
-	public PredictContextRequest buildPredictContext2() throws Exception {
-		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-context-2.xml");
+	public static PredictContextRequest buildPredictContext2() throws Exception {
+		InputStream is = IDServiceTest.class.getResourceAsStream(PredictionContextTest.PRED_CONTEXT_2);
 		String xml = readToString(is);
 		
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		return pipe.parse(xml);
 	}
 	
-	public PredictContextRequest buildPredictContextBug1() throws Exception {
-		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-context-bug_1.xml");
+	public static PredictContextRequest buildPredictContextBug1() throws Exception {
+		InputStream is = PredictionContextTest.class.getResourceAsStream(PredictionContextTest.PRED_CONTEXT_BUG_1);
 		String xml = readToString(is);
 		
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		return pipe.parse(xml);
 	}
 	
-	public String readToString(InputStream is) {
+	public static String readToString(InputStream is) {
 		InputStreamReader isr = new InputStreamReader(is);
 		BufferedReader br = new BufferedReader(isr);
 

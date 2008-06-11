@@ -21,7 +21,8 @@
 		<servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
 		<init-param>
 			<param-name>pipeline-class</param-name>
-			<param-value>gov.usgswim.sparrow.service.predict.PredictPipeline</param-value>
+			<!-- <param-value>gov.usgswim.sparrow.service.predict.PredictPipeline</param-value> -->
+			<param-value>gov.usgswim.sparrow.service.predictexport.PredictExportPipeline</param-value>
 		</init-param>
 	</servlet>
 	<servlet>
