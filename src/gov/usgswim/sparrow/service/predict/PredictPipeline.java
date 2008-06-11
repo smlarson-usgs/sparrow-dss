@@ -5,21 +5,26 @@ import gov.usgs.webservices.framework.formatter.JSONFormatter;
 import gov.usgs.webservices.framework.formatter.SparrowFlatteningFormatter;
 import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgswim.sparrow.service.AbstractPipeline;
+import gov.usgswim.sparrow.service.predictexport.PredictExportParser;
+import gov.usgswim.sparrow.service.predictexport.PredictExportRequest;
+import gov.usgswim.sparrow.service.predictexport.PredictExportService;
 
-public class PredictPipeline extends AbstractPipeline<PredictServiceRequest> {
+public class PredictPipeline extends AbstractPipeline<PredictExportRequest>{
+	
 	public static JSONFormatter configure(JSONFormatter jFormatter) {
-		jFormatter.identifyRepeatedTagElement("columns", "group");
-		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "col");
-		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "r");
-		jFormatter.identifyRepeatedTagElement("data", "section");
-		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "c");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "reach-group");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "adjustment");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "logical-set");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "reach");
 		return jFormatter;
 	}
-
+	
 	public PredictPipeline(){
-		super(new PredictService(), new PredictParser());
+		super(new PredictExportService(), new PredictExportParser());
+//		super(null, null);
 	}
 	
+	@Override
 	protected IFormatter getCustomFlatteningFormatter(OutputType outputType) {
 		return new SparrowFlatteningFormatter(outputType);
 	}
@@ -28,4 +33,7 @@ public class PredictPipeline extends AbstractPipeline<PredictServiceRequest> {
 	public IFormatter getConfiguredJSONFormatter() {
 		return configure(new JSONFormatter());
 	}
+
+
+
 }
