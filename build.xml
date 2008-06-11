@@ -55,7 +55,7 @@
 		<property name="jarfile.name" value="sparrowMV.jar"/>
 		<property name="jarfile.path" location="deploy/${jarfile.name}"/>
 		
-		<echo>Buildings jar from ${application.webcontent.dir}/WEB-INF/classes
+		<echo>Building jar from ${application.webcontent.dir}/WEB-INF/classes
 			Excluding /test and gov/usgswim/sparrow/test
 		</echo>
 		

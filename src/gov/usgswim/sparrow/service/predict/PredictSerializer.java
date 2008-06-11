@@ -4,7 +4,6 @@ import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_NAMESPACE
 import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
-import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
