@@ -155,6 +155,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		// Get the adjusted source data. The original, unadjusted source data is
 		// contained within predictData
 		AdjustmentGroups adjGroups = context.getAdjustmentGroups();
+		adjGroups = (adjGroups == null)? new AdjustmentGroups(context.getModelID()): adjGroups;
 		DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(adjGroups);
 		
 		response.adjustmentsXML = buildAdjustment(nomPredictData, adjSrc, context.getModelID(), response.reachID, adjGroups);
