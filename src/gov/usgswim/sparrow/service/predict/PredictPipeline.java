@@ -16,7 +16,12 @@ public class PredictPipeline extends AbstractPipeline<PredictExportRequest>{
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "adjustment");
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "logical-set");
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "reach");
-		jFormatter.identifyRepeatedTagElement("r", "c");
+		jFormatter.identifyRepeatedTagElement("columns", "group");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "col");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "r");
+		jFormatter.identifyRepeatedTagElement("data", "section");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "c");
+
 		return jFormatter;
 	}
 	
