@@ -107,5 +107,33 @@
 			</fieldset>
 		</form>
 	
+	
+			<form action="sp_predict" method="post" enctype="application/x-www-form-urlencoded">
+			<fieldset title="Prediction Request 3 - old style">
+				<label for="xml_input_3">Prediction Request 3</label>
+				<p>
+				Reordered adjustements from #2.  This should not result in a re-run of the prediction.
+				</p>
+				<textarea id="xml_input_3" name="xmlreq" cols="120" rows="20">
+&lt;?xml version="1.0" encoding="ISO-8859-1" ?>
+&lt;sparrow-prediction-request
+  xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	&lt;predict model-id="22">
+		&lt;change-from-nominal type="perc_change">
+			&lt;source-adjustments>
+				&lt;!-- Sort order: 2 -->&lt;gross-src src="4" coef="2"/>
+				&lt;!-- Sort order: 1 -->&lt;gross-src src="1" coef=".5"/>
+				&lt;!-- Sort order: 4 -->&lt;specific src="2" reach="1787602" value="7"/>&lt;!-- VALUE WAS 315.819 -->
+				&lt;!-- Sort order: 3 -->&lt;specific src="1" reach="1787601" value="9.99"/>&lt;!-- VALUE WAS 5432.3354442 -->
+			&lt;/source-adjustments>
+		&lt;/change-from-nominal>
+	&lt;/predict>
+&lt;/sparrow-prediction-request>
+				</textarea>
+				<input type="submit" name="submit" value="submit"/>
+			</fieldset>
+		</form>
 	</body>
 </html>

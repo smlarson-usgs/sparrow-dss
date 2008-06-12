@@ -6,6 +6,7 @@ import gov.usgswim.service.pipeline.PipelineRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URLDecoder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.stream.XMLInputFactory;
@@ -87,14 +88,14 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 			return (xml == null)? "": xml;
 			
 		} else if ("POST".equals(request.getMethod())) {
-		
+			String xml = request.getParameter(xmlParam);
 			if (extraPath != null && extraPath.length() > 1) {
 				//The client may have passed the XML request as a parameter...
 				
 				extraPath = extraPath.substring(1);
 				if (extraPath.contains("formpost")) {
 				
-					String xml = request.getParameter(xmlParam);
+					xml = request.getParameter(xmlParam);
 					return (xml == null)? "": xml;
 
 				} else {
@@ -103,14 +104,24 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 				}
 	
 			}
+			if (xml != null && xml.length() > 0) {
+				// TODO Eliminate later. This handles the old way
+				return xml;
+			}
 			
-			// Read the input stream into a String
+			// TODO [IK] Read the body input stream into a String to be used as submission. Not right with form posts
 			StringBuilder result = new StringBuilder();
 			BufferedReader requestReader = request.getReader();
 			String line = null;
 			while ((line = requestReader.readLine()) != null) {
 				result.append(line).append("\n");
 			}
+			// TODO [IK] HACK Must do this properly!!! 
+			
+			String singleParamResult = result.toString();
+			if (singleParamResult.startsWith(xmlParam)) singleParamResult = singleParamResult.substring(xmlParam.length() + 1); // +1 for = sign
+			boolean isFormEncoded = singleParamResult.indexOf("%3C") > -1;
+			if (isFormEncoded) singleParamResult = URLDecoder.decode(singleParamResult);
 			return result.toString();
 			
 		} else {
