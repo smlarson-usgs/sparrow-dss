@@ -106,6 +106,8 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 			}
 			if (xml != null && xml.length() > 0) {
 				// TODO Eliminate later. This handles the old way
+				boolean isFormEncoded = xml.indexOf("%3C") > -1;
+				if (isFormEncoded) xml = URLDecoder.decode(xml);
 				return xml;
 			}
 			
