@@ -20,13 +20,13 @@ public class PredictExportParser
 		
 		if (request.getMethod().equals("GET")) {
 			
-			String modelParam = request.getParameter("model");
+			String modelParam = request.getParameter("model-id");
 			String contextIDParam = request.getParameter("context-id");
 			String mimeType = request.getParameter("mime-type");
 			String bbox = request.getParameter("bbox");
 			
-			boolean isModelRequest = (modelParam != null);
-			boolean isContextRequest = (contextIDParam != null);
+			boolean isModelRequest = (modelParam != null && modelParam.trim().length() > 0);
+			boolean isContextRequest = (contextIDParam != null && contextIDParam.trim().length() > 0);
 			
 			Long modelID = (isModelRequest)? Long.parseLong(modelParam): null;
 			Integer contextID = (isContextRequest)? Integer.parseInt(contextIDParam): null;

@@ -1,17 +1,13 @@
 package gov.usgswim.sparrow.parser;
 
-import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.adjustment.ColumnCoefAdjustment;
 import gov.usgswim.datatable.adjustment.SparseCoefficientAdjustment;
 import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
 import gov.usgswim.sparrow.PredictData;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +53,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	public AdjustmentGroups(Long modelID) {
 		this.modelID = modelID;
 	}
+	
 
 	// ================
 	// INSTANCE METHODS
@@ -110,6 +107,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 		throw new XMLParseValidationException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
 	}
 
+	
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
 	}

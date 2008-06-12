@@ -14,12 +14,29 @@
 				<p>
 				National Model w/ gross and specific adjustments.
 				</p>
-				<input type="text" name="context-id" size="26"/>
+				<table>
+					<tr>
+						<td>Context ID</td>
+						<td><input type="text" name="context-id" size="26"/></td>
+					</tr>
+					<!-- 
+					<tr>
+						<td>Model ID</td>
+						<td><input type="text" name="model-id" size="26"/></td>
+					</tr>
+					 -->
+				</table>
+				
 				<input type="submit" name="submit" value="submit"/>
+				<input type="radio" name="mime-type" value="xml" checked="checked">xml
 				<input type="radio" name="mime-type" value="csv">csv
 				<input type="radio" name="mime-type" value="tab">tab
 				<input type="radio" name="mime-type" value="excel">excel
-				<input type="radio" name="mime-type" value="json">json
+				<br/>
+				<!-- 
+				* Either context-id or model-id must be specified<br/> -->
+				<!--  &#165; format is  -->
+				
 		<!-- 	<input type="checkbox" name="compress" value="zip">zip -->	
 			</fieldset>
 		</form>
