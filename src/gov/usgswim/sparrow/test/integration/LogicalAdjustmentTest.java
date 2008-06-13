@@ -44,7 +44,7 @@ public class LogicalAdjustmentTest extends TestCase {
 	// ============
 	public void testReachGroupHUCLoading() throws XMLStreamException, XMLParseValidationException {
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(ReachGroupTest.testRequest1));
-		ReachGroup rg = new ReachGroup(1);
+		ReachGroup rg = new ReachGroup(22);
 		reader.next();
 		rg.parse(reader);
 

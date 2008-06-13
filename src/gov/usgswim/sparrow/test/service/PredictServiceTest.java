@@ -214,28 +214,32 @@ public class PredictServiceTest extends TestCase {
 		assertEquals(0d, comp.findMaxCompareValue(), 0.004d);
 	}
 
-	public void testBasicPredictionResultValidatation() throws Exception {
-
-		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
-		XMLStreamReader xsr = xinFact.createXMLStreamReader(
-				getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-0.xml"));
-		File outFile = File.createTempFile("predict-service-test", ".xml");
-		FileOutputStream fos = new FileOutputStream(outFile);
-
-		PredictService service = new PredictService();
-		PredictParser parser = new PredictParser();
-
-		PredictServiceRequest pr = parser.parse(xsr);
-
-		XMLPassThroughFormatter formatter = new XMLPassThroughFormatter();
-		XMLStreamReader in = service.getXMLStreamReader(pr, false);
-		formatter.dispatch(in, fos);
-
-		fos.close();
-		System.out.println("Result of prediction serialization written to: " + outFile.getAbsolutePath());
-
-		assertTrue(validate(outFile.getAbsolutePath()));
-	}
+	/**
+	 * @deprecated out-of-date
+	 * @throws Exception
+	 */
+//	public void testBasicPredictionResultValidatation() throws Exception {
+//
+//		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
+//		XMLStreamReader xsr = xinFact.createXMLStreamReader(
+//				getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-0.xml"));
+//		File outFile = File.createTempFile("predict-service-test", ".xml");
+//		FileOutputStream fos = new FileOutputStream(outFile);
+//
+//		PredictService service = new PredictService();
+//		PredictParser parser = new PredictParser();
+//
+//		PredictServiceRequest pr = parser.parse(xsr);
+//
+//		XMLPassThroughFormatter formatter = new XMLPassThroughFormatter();
+//		XMLStreamReader in = service.getXMLStreamReader(pr, false);
+//		formatter.dispatch(in, fos);
+//
+//		fos.close();
+//		System.out.println("Result of prediction serialization written to: " + outFile.getAbsolutePath());
+//
+//		assertTrue(validate(outFile.getAbsolutePath()));
+//	}
 
 	protected ComparePercentageView buildPredictionComparison(DataTable toBeCompared) throws Exception {
 		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict.txt");
@@ -248,6 +252,14 @@ public class PredictServiceTest extends TestCase {
 		return comp;
 	}
 
+	/**
+	 * @param path
+	 * @return
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
+	 * @throws IOException
+	 * @deprecated
+	 */
 	public boolean validate(String path) throws ParserConfigurationException, SAXException,
 	IOException {
 		// parse an XML document into a DOM tree

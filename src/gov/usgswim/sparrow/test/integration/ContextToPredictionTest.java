@@ -102,7 +102,7 @@ public class ContextToPredictionTest extends TestCase {
 		
 		//The first reach has a cumulative adjustment of the group coef and the reach coef.
 		assertEquals(
-				new Double(orgSrc.getDouble(rowForReach3074, colForSrc2).doubleValue() * .75d * .9d),
+				.9d,
 				adjSrc.getDouble(0, colForSrc2),
 				.0000001d);
 		

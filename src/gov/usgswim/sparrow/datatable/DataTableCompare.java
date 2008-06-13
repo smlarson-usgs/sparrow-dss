@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.datatable;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTable.Immutable;
+import gov.usgswim.datatable.impl.FindHelper;
 
 import java.util.Set;
 
@@ -159,36 +160,36 @@ public class DataTableCompare implements Immutable {
 		return base.getIdForRow(row);
 	}
 
-	public Double getMaxDouble() {
-		return base.getMaxDouble();
-	}
-
 	public Double getMaxDouble(int col) {
-		return base.getMaxDouble(col);
+		return FindHelper.bruteForceFindMaxDouble(this, col);
 	}
 
-	public Integer getMaxInt() {
-		return base.getMaxInt();
+	public Double getMaxDouble() {
+		return FindHelper.bruteForceFindMaxDouble(this);
 	}
 
 	public Integer getMaxInt(int col) {
-		return base.getMaxInt(col);
+		return getMaxDouble(col).intValue();
 	}
 
-	public Double getMinDouble() {
-		return base.getMinDouble();
+	public Integer getMaxInt() {
+		return getMaxDouble().intValue();
 	}
 
 	public Double getMinDouble(int col) {
-		return base.getMinDouble(col);
+		return FindHelper.bruteForceFindMinDouble(this, col);
 	}
 
-	public Integer getMinInt() {
-		return base.getMinInt();
+	public Double getMinDouble() {
+		return FindHelper.bruteForceFindMinDouble(this);
 	}
 
 	public Integer getMinInt(int col) {
-		return base.getMinInt(col);
+		return getMinDouble(col).intValue();
+	}
+
+	public Integer getMinInt() {
+		return getMinDouble().intValue();
 	}
 
 	public String getName() {

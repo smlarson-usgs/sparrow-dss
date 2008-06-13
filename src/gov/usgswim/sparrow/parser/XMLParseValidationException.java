@@ -8,6 +8,8 @@ package gov.usgswim.sparrow.parser;
  */
 public class XMLParseValidationException extends Exception {
 
+	private static final long serialVersionUID = 8675863905261919974L;
+
 	public XMLParseValidationException() {
 		//default call to superclass
 	}
