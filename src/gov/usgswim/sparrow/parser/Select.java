@@ -1,17 +1,14 @@
 package gov.usgswim.sparrow.parser;
 
+import static gov.usgswim.sparrow.parser.DataSeriesType.source_value;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-
-import java.io.Serializable;
 
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
-
-import static gov.usgswim.sparrow.parser.DataSeriesType.*;
 
 public class Select implements XMLStreamParserComponent {
 

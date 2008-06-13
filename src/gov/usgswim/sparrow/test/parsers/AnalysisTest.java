@@ -1,13 +1,12 @@
 package gov.usgswim.sparrow.test.parsers;
 
-import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.Analysis;
+import gov.usgswim.sparrow.test.TestHelper;
 
 import java.io.StringReader;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
@@ -26,12 +25,13 @@ public class AnalysisTest extends TestCase {
 	
 	public void testHashcode() throws Exception {
 
-		Analysis test1 = buildTestInstance();
-		Analysis test2 = buildTestInstance();
-		
-		assertEquals(test1.hashCode(), test2.hashCode());
-		assertEquals(test1.getId(), test2.getId());
-		assertEquals(test1.getId().intValue(), test2.hashCode());
+		Analysis analysis1 = buildTestInstance();
+		Analysis analysis2 = buildTestInstance();
+		TestHelper.testHashCode(analysis1, analysis2, analysis2.clone());
+
+		// test IDs
+		assertEquals(analysis1.hashCode(), analysis1.getId().intValue());
+		assertEquals(analysis2.hashCode(), analysis2.getId().intValue());
 	}
 	
 	

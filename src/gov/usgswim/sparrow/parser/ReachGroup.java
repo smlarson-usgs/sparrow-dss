@@ -156,7 +156,7 @@ public class ReachGroup implements XMLStreamParserComponent {
 	}
 	
 	
-	protected ReachGroup clone() throws CloneNotSupportedException {
+	public ReachGroup clone() throws CloneNotSupportedException {
 		// DONE: We are copying immutable lists during the cloning.. OK?
 		ReachGroup myClone = new ReachGroup(modelID);
 		myClone.isEnabled = isEnabled;
@@ -281,11 +281,20 @@ public class ReachGroup implements XMLStreamParserComponent {
 		for (int i=0; i<logicalSets.size(); i++) {
 			int m = result.size();
 			List<Long> lr = getLogicalReachIDs(i);
-			int n = lr.size();
-			result.addAll(lr);
-			if (result.size() < m+n) {
-				// TODO log this
-				System.out.println("WARNING: " + (m+n-result.size()) + " overlapping reaches ");
+//			int n = lr.size();
+//			result.addAll(lr);
+//			if (result.size() < m+n) {
+//				// TODO log this
+//				System.out.println("WARNING: " + (m+n-result.size()) + " overlapping reaches ");
+//			}
+			//  potential fix for nullpointer issue.
+			if (lr != null) {
+				int n = lr.size();
+				result.addAll(lr);
+				if (result.size() < m+n) {
+					// TODO log this
+					System.out.println("WARNING: " + (m+n-result.size()) + " overlapping reaches ");
+				}
 			}
 		}
 		

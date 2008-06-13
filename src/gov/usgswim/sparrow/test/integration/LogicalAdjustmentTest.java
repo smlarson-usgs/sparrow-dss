@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.test.integration;
 
+import static gov.usgswim.sparrow.test.TestHelper.getAttributeValue;
+import static gov.usgswim.sparrow.test.TestHelper.pipeDispatch;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
@@ -9,26 +11,18 @@ import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
+import gov.usgswim.sparrow.test.TestHelper;
 import gov.usgswim.sparrow.test.parsers.PredictionContextTest;
 import gov.usgswim.sparrow.test.parsers.ReachGroupTest;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-
 import junit.framework.TestCase;
-
 public class LogicalAdjustmentTest extends TestCase {
 
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
@@ -45,28 +39,31 @@ public class LogicalAdjustmentTest extends TestCase {
 		lifecycle.contextDestroyed(null, true);
 	}
 
-	public void testReachGroupLoading() throws XMLStreamException, XMLParseValidationException {
+	// ============
+	// TEST METHODS
+	// ============
+	public void testReachGroupHUCLoading() throws XMLStreamException, XMLParseValidationException {
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(ReachGroupTest.testRequest1));
 		ReachGroup rg = new ReachGroup(1);
 		reader.next();
 		rg.parse(reader);
 
-		// huc 8
+		// test huc 8 retrieval
 		List<Long> reaches8 = rg.getLogicalReachIDs(0);
 		assertTrue(reaches8 != null);
 		assertTrue(reaches8.size() > 0);
 
-		// huc6
+		// test huc 6 retrieval
 		List<Long> reaches6 = rg.getLogicalReachIDs(1);
 		assertTrue(reaches6 != null);
 		assertTrue(reaches6.size() > 0);
 
-		// huc4
+		// test huc 4 retrieval
 		List<Long> reaches4 = rg.getLogicalReachIDs(1);
 		assertTrue(reaches4 != null);
 		assertTrue(reaches4.size() > 0);
 
-		// huc2
+		// test huc 2 retrieval
 		List<Long> reaches2 = rg.getLogicalReachIDs(1);
 		assertTrue(reaches2 != null);
 		assertTrue(reaches2.size() > 0);
@@ -75,21 +72,16 @@ public class LogicalAdjustmentTest extends TestCase {
 
 	public void testHuc4_6_8Adjustment() throws Exception {
 
-		PredictContextRequest contextReq = buildPredictContext5();	//Build a context from a canned file
+		PredictContextRequest contextReq = PredictionContextTest.buildPredictContext5();	//Build a context from a canned file
 
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		PredictContextPipeline pipe = new PredictContextPipeline();
-		pipe.dispatch(contextReq, out);
-		StringBuilder sb = new StringBuilder(out.toString());
-
-		int CONTEXT_ID = PredictionContextTest.extractContextIDFromPredictionContextResponse(sb.toString());
+		String response = pipeDispatch(contextReq, new PredictContextPipeline());
+		int CONTEXT_ID = Integer.parseInt(TestHelper.getAttributeValue(response, "context-id"));
 
 		//Get the prediction context and the nominal context;
 		PredictionContext userContext = SharedApplication.getInstance().getPredictionContext(CONTEXT_ID);
 		PredictionContext nomContext = new PredictionContext(userContext.getModelID(), null, null, null, null);
 
 		//Do a test of the hashcodes
-		assertEquals(contextReq.getPredictionContext().hashCode(), userContext.hashCode());
 		assertEquals(contextReq.getPredictionContext().hashCode(), userContext.clone().hashCode());
 		assertEquals(CONTEXT_ID, contextReq.getPredictionContext().hashCode());
 
@@ -169,25 +161,10 @@ public class LogicalAdjustmentTest extends TestCase {
 
 	public void testBasicPredictionValues() throws Exception {
 
-		int CONTEXT_ID = -1504305838;
+		PredictContextRequest contextReq = PredictionContextTest.buildPredictContext4();	//Build a context from a canned file
 
-		PredictContextRequest contextReq = buildPredictContext4();	//Build a context from a canned file
-
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		PredictContextPipeline pipe = new PredictContextPipeline();
-		pipe.dispatch(contextReq, out);
-
-		System.out.println("***");
-		System.out.println("Response: " + out.toString());
-		System.out.println("PredictContextID: " + contextReq.getPredictionContext().hashCode());
-		System.out.println("***");
-
-		//Confirm that the response xml doc contains the correct context-id,
-		//which is and must be repeatable, so as long as the request doesn't change, this number is fixed.
-		assertTrue(
-				"this will likely fail initially.  Update context id to reflect new parsing.",
-				out.toString().contains( Integer.toString(CONTEXT_ID) ));
-
+		String response = pipeDispatch(contextReq, new PredictContextPipeline());
+		int CONTEXT_ID = Integer.parseInt(getAttributeValue(response, "context-id"));
 
 		//Get the prediction context and the nominal context;
 		PredictionContext userContext = SharedApplication.getInstance().getPredictionContext(CONTEXT_ID);
@@ -280,51 +257,6 @@ public class LogicalAdjustmentTest extends TestCase {
 
 
 	}
-
-	public PredictContextRequest buildPredictContext4() throws Exception {
-		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-context-4.xml");
-		String xml = readToString(is);
-
-		PredictContextPipeline pipe = new PredictContextPipeline();
-		return pipe.parse(xml);
-	}
-
-	public PredictContextRequest buildPredictContext5() throws Exception {
-		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-context-5.xml");
-		String xml = readToString(is);
-
-		PredictContextPipeline pipe = new PredictContextPipeline();
-		return pipe.parse(xml);
-	}
-
-	public String readToString(InputStream is) {
-		InputStreamReader isr = null;
-		try {
-			isr = new InputStreamReader(is, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			isr = new InputStreamReader(is);
-			System.err.println("unable to specify file encoding in input stream reader");
-			e.printStackTrace();
-		}
-		BufferedReader br = new BufferedReader(isr);
-
-		StringBuffer sb = new StringBuffer();
-		try {
-			String line = null;
-			while ((line = br.readLine()) != null) {
-				sb.append(line + "\n");
-			}
-		} catch (Exception ex) {
-			ex.getMessage();
-		} finally {
-			try {
-				is.close();
-			} catch (Exception ex) {
-			}
-		}
-		return sb.toString();
-	}
-
 
 }
 

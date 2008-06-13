@@ -9,10 +9,6 @@ import gov.usgswim.sparrow.service.DataTableSerializer;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.model.ModelService;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
-import javax.naming.NamingException;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -28,6 +24,7 @@ public class IDByPointService implements HttpService<IDByPointRequest_old> {
 	
 	
 	//They promise these factories are threadsafe
+	@SuppressWarnings("unused")
 	private static Object factoryLock = new Object();
 	//protected static XMLInputFactory xinFact;
 	protected static XMLOutputFactory xoFact;

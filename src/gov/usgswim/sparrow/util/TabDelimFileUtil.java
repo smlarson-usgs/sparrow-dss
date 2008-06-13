@@ -316,7 +316,7 @@ public abstract class TabDelimFileUtil {
 
 		try {
 
-			ArrayList list = new ArrayList(500);
+			ArrayList<double[]> list = new ArrayList<double[]>(500);
 			String[] headings = null;
 			int[] remappedColumns = null;	//indexes to map the columns to
 			String s = null;					//Single line from file
@@ -439,7 +439,7 @@ public abstract class TabDelimFileUtil {
 
 
 	static List<int[]> readDataBodyAsInt(BufferedReader br, int[] remappedColumns, int mappedColumnCount) throws NumberFormatException, IOException {
-		List rows = new ArrayList(500);
+		List<int[]> rows = new ArrayList<int[]>(500);
 		int colCount = 0; //Number of columns (minus one) - must match in each row
 		String s = null;					//Single line from file
 		while ((s=br.readLine())!=null){
@@ -555,7 +555,7 @@ public abstract class TabDelimFileUtil {
 
 
 	static List<double[]> readDataBodyAsDouble(BufferedReader br, int[] remappedColumns, int mappedColumnCount) throws NumberFormatException, IOException {
-		List<double[]> rows = new ArrayList(500);
+		List<double[]> rows = new ArrayList<double[]>(500);
 		int colCount = 0; //Number of columns (minus one) - must match in each row
 		String s = null;					//Single line from file
 		while ((s=br.readLine())!=null){

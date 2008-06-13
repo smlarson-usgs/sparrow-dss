@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.test.parsers;
 
-import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
+import gov.usgswim.sparrow.test.TestHelper;
 
 import java.io.StringReader;
 import java.util.List;
@@ -57,12 +57,15 @@ public class TerminalReachesTest extends TestCase {
 	
 	public void testHashcode() throws Exception {
 
-		TerminalReaches test1 = buildTestInstance(1L);
-		TerminalReaches test2 = buildTestInstance(1L);
+		TerminalReaches term1 = buildTestInstance(1L);
+		TerminalReaches term2 = buildTestInstance(1L);
 		
-		assertEquals(test1.hashCode(), test2.hashCode());
-		assertEquals(test1.getId(), test2.getId());
-		assertEquals(test1.getId().intValue(), test2.hashCode());
+		TestHelper.testHashCode(term1, term2);
+
+		// test IDs
+		assertEquals(term1.hashCode(), term1.getId().intValue());
+		assertEquals(term2.hashCode(), term2.getId().intValue());
+
 	}
 	
 	

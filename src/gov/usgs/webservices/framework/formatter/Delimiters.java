@@ -15,6 +15,7 @@ public class Delimiters {
 	public static final Delimiters TAB_DELIMITERS = makeTabDelimiter();
 	public static final Delimiters HTML_DELIMITERS_WITH_HEADER = makeHTMLDelimiter(true);
 	
+	@SuppressWarnings("unused")
 	private final int type;
 	private static final int HTML_TYPE = 1;
 	private static final int CSV_TYPE = 2;

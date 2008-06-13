@@ -10,7 +10,6 @@ import gov.usgswim.sparrow.util.DataLoader;
 import gov.usgswim.task.Computable;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 

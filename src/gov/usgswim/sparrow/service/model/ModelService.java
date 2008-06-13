@@ -27,6 +27,7 @@ public class ModelService implements HttpService<ModelRequest> {
 	protected static String RESPONSE_MIME_TYPE = "application/xml";
 	
 	//They promise these factories are threadsafe
+	@SuppressWarnings("unused")
 	private static Object factoryLock = new Object();
 	//protected static XMLInputFactory xinFact;
 	protected static XMLOutputFactory xoFact;

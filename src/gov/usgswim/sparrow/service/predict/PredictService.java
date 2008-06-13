@@ -45,6 +45,7 @@ public class PredictService implements HttpService<PredictServiceRequest> {
 
 
 	//They promise these factories are threadsafe
+	@SuppressWarnings("unused")
 	private static Object factoryLock = new Object();
 	//protected static XMLInputFactory xinFact;
 	protected static XMLOutputFactory xoFact;

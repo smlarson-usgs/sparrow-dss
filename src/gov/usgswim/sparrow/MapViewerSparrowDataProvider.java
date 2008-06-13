@@ -4,7 +4,6 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.ComparisonType;
 import gov.usgswim.sparrow.parser.DataSeriesType;

@@ -1,7 +1,6 @@
 package gov.usgswim.sparrow.service.echo;
 
 import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.XML;
-import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.TEXT;
 import gov.usgs.webservices.framework.formatter.IFormatter;
 import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
 import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
@@ -17,7 +16,7 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class EchoPipeline extends AbstractPipeline implements Pipeline {
+public class EchoPipeline extends AbstractPipeline<PipelineRequest> implements Pipeline {
 
 	private String xmlParamName;
 	private String requestString;

@@ -50,7 +50,7 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 	}
 
 
-	public PredictExportRequest(Long modelID, ResponseFormat respFormat, String bbox2) {
+	public PredictExportRequest(Long modelID, ResponseFormat respFormat, String bbox) {
 		this.modelID = modelID;
 		this.responseFormat = respFormat;
 		this.bbox = bbox;

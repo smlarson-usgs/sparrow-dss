@@ -1,24 +1,12 @@
 package gov.usgswim.sparrow.test;
 
-import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.service.predict.PredictParser;
-import gov.usgswim.sparrow.service.predict.PredictSerializer;
-import gov.usgswim.sparrow.service.predict.PredictService;
-import gov.usgswim.sparrow.service.predict.PredictServiceRequest;
-
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
-import org.codehaus.stax2.XMLInputFactory2;
 import org.xml.sax.SAXException;
 
 

@@ -1,8 +1,5 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgswim.sparrow.parser.AreaOfInterest;
-import gov.usgswim.sparrow.parser.ReachGroup;
-
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class BinningRequest {

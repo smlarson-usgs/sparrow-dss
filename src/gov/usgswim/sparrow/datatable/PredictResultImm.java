@@ -1,18 +1,18 @@
 package gov.usgswim.sparrow.datatable;
 
+import static gov.usgswim.sparrow.service.predict.AggregateType.sum;
+import static gov.usgswim.sparrow.service.predict.ValueType.incremental;
+import static gov.usgswim.sparrow.service.predict.ValueType.total;
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.Immutable;
 import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.PredictData;
-import static gov.usgswim.sparrow.service.predict.AggregateType.*;
-import static gov.usgswim.sparrow.service.predict.ValueType.*;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Hashtable;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 

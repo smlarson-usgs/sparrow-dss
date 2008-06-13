@@ -2,11 +2,9 @@ package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.sparrow.parser.LogicalSet;
 import gov.usgswim.sparrow.service.SharedApplication;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +45,7 @@ public class ReachesByCriteriaFactory extends AbstractCacheFactory {
 			
 
 			String query = "Select identifier from model_attrib_vw where "
-				+ criteriaAttrib + " = '" + huc + "'";
+				+ criteriaAttrib + " = '" + huc + "' and sparrow_model_id = " + modelID;
 			DataTableWritable dt = SharedApplication.queryToDataTable(query);
 
 			Long[] arrayResult = TemporaryHelper.getLongColumn(dt, 0);

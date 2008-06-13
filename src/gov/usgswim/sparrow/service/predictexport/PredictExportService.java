@@ -8,13 +8,12 @@ import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
-import gov.usgswim.sparrow.util.PropertyLoaderHelper;
 
 import javax.xml.stream.XMLStreamReader;
 
 public class PredictExportService implements HttpService<PredictExportRequest> {
 	
-	private PropertyLoaderHelper props = new PropertyLoaderHelper("gov/usgswim/sparrow/service/predictcontext/PredictContextServiceTemplate.properties");
+	//private PropertyLoaderHelper props = new PropertyLoaderHelper("gov/usgswim/sparrow/service/predictcontext/PredictContextServiceTemplate.properties");
 
 	public XMLStreamReader getXMLStreamReader(PredictExportRequest o,
 			boolean isNeedsCompleteFirstRow) throws Exception {

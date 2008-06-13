@@ -45,7 +45,7 @@ public class LogicalSet implements XMLStreamParserComponent {
 		this.criteria = new HashMap<String, String>();
 	}
 	
-	public LogicalSet(long modelID, Map crit) {
+	public LogicalSet(long modelID, Map<String, String> crit) {
 		this.modelID = modelID;
 		// Have to make this unmodifiable, and a different reference from the
 		// original otherwise there's gonna be trouble.

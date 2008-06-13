@@ -1,23 +1,20 @@
 package gov.usgswim.sparrow.test.integration;
 
+import static gov.usgswim.sparrow.test.TestHelper.pipeDispatch;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.MapViewerSparrowDataProvider;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
+import gov.usgswim.sparrow.test.TestHelper;
 import gov.usgswim.sparrow.test.parsers.PredictionContextTest;
-
-import java.io.ByteArrayOutputStream;
-
+import junit.framework.TestCase;
 import oracle.mapviewer.share.ext.NSDataSet;
 import oracle.mapviewer.share.ext.NSRow;
-
-import junit.framework.TestCase;
 
 public class ContextToPredictionTest extends TestCase {
 
@@ -36,25 +33,21 @@ public class ContextToPredictionTest extends TestCase {
 		lifecycle.contextDestroyed(null, true);
 	}
 	
+	// ============
+	// TEST METHODS
+	// ============
 	public void testBasicPredictionValues() throws Exception {
 
 		int CONTEXT_ID = PredictionContextTest.PRED_CONTEXT_1_ID;
 		
 		PredictContextRequest contextReq = PredictionContextTest.buildPredictContext1();	//Build a context from a canned file
 		
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		PredictContextPipeline pipe = new PredictContextPipeline();
-		pipe.dispatch(contextReq, out);
-		
+		String response = pipeDispatch(contextReq, new PredictContextPipeline());
 
-		System.out.println("***");
-		System.out.println("Response: " + out.toString());
-		System.out.println("PredictContextID: " + contextReq.getPredictionContext().hashCode());
-		System.out.println("***");
-		
+
 		//Confirm that the response xml doc contains the correct context-id,
 		//which is and must be repeatable, so as long as the request doesn't change, this number is fixed.
-		assertTrue(out.toString().contains( Integer.toString(CONTEXT_ID) ));
+		assertTrue(response.contains( Integer.toString(CONTEXT_ID) ));
 		
 		//
 		//The PredictionContext is now in the cache and can be accessed by its id.
@@ -88,7 +81,7 @@ public class ContextToPredictionTest extends TestCase {
 		//		<adjustment src="2" coef=".75"/>  <--- Applies to all (both) reaches in this group
 		//		
 		//		<reach id="3074">  <------------------ This is the 1st reach in the dataset (reach 0)
-		//			<adjustment src="2" coef=".9"/>
+		//			<adjustment src="2" abs=".9"/>
 		//		</reach>
 		//		<reach id="3077">	<------------------- This is the 2nd reach in the dataset (reach 1)
 		//			<adjustment src="2" abs="91344"/>
@@ -164,19 +157,11 @@ public class ContextToPredictionTest extends TestCase {
 		int CONTEXT_ID = PredictionContextTest.PRED_CONTEXT_3_ID;
 		PredictContextRequest contextReq = PredictionContextTest.buildPredictContext3();	//Build a context from a canned file
 		
-		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		PredictContextPipeline pipe = new PredictContextPipeline();
-		pipe.dispatch(contextReq, out);
-		
-
-		System.out.println("***");
-		System.out.println("Response: " + out.toString());
-		System.out.println("PredictContextID: " + contextReq.getPredictionContext().hashCode());
-		System.out.println("***");
+		String response = pipeDispatch(contextReq, new PredictContextPipeline());
 		
 		//Confirm that the response xml doc contains the correct context-id,
 		//which is and must be repeatable, so as long as the request doesn't change, this number is fixed.
-		assertTrue(out.toString().contains( Integer.toString(CONTEXT_ID) ));
+		assertTrue(response.contains( Integer.toString(CONTEXT_ID) ));
 		
 		//Get the prediction context from the cache
 		PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(CONTEXT_ID);
@@ -207,10 +192,11 @@ public class ContextToPredictionTest extends TestCase {
 	public void testHashCode() throws Exception {
 		PredictionContext context1 = PredictionContextTest.buildPredictContext1().getPredictionContext();
 		PredictionContext context2 = PredictionContextTest.buildPredictContext1().getPredictionContext();
-		
-		assertEquals(context1.hashCode(), context2.hashCode());
-		assertEquals(context1.getId(), context2.getId());
-		assertEquals(context1.getId().intValue(), context2.hashCode());
+		TestHelper.testHashCode(context1, context2, context1.clone());
+
+		// test IDs
+		assertEquals(context1.hashCode(), context1.getId().intValue());
+		assertEquals(context2.hashCode(), context2.getId().intValue());
 	}
 
 

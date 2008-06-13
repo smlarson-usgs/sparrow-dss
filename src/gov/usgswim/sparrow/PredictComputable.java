@@ -1,6 +1,5 @@
 package gov.usgswim.sparrow;
 
-import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.task.Computable;

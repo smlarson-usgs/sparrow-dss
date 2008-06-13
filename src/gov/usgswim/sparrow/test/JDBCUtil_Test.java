@@ -3,13 +3,11 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.FilteredDataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
-import gov.usgswim.sparrow.PredictRunner;
 import gov.usgswim.sparrow.datatable.DataTableCompareOld;
 import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.util.DataLoader;
-import gov.usgswim.sparrow.util.JDBCUtil;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;
@@ -19,6 +17,12 @@ import java.util.List;
 
 import junit.framework.TestCase;
 import oracle.jdbc.OracleDriver;
+
+
+/**
+ * @author ilinkuo
+ * @deprecated No longer tests the JDBCUtil class
+ */
 public class JDBCUtil_Test extends TestCase {
 	private Connection conn;
 

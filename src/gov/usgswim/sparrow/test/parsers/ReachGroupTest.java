@@ -1,12 +1,15 @@
 package gov.usgswim.sparrow.test.parsers;
 
-import gov.usgswim.sparrow.parser.*;
+import gov.usgswim.sparrow.parser.Adjustment;
+import gov.usgswim.sparrow.parser.LogicalSet;
+import gov.usgswim.sparrow.parser.Reach;
+import gov.usgswim.sparrow.parser.ReachGroup;
+import gov.usgswim.sparrow.parser.XMLParseValidationException;
 
 import java.io.StringReader;
 import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;

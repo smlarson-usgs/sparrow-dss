@@ -3,7 +3,16 @@ package gov.usgswim.sparrow.parser;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class DefaultGroup extends ReachGroup {
+/**
+ * A DefaultGroup is just a ReachGroup with a different main element and
+ * additional business rules. Hence it does not need its own class. Note that in
+ * general, we've made each class its own parser, but in this case, the Parser
+ * is separate from the parsed class.
+ * 
+ * @author ilinkuo
+ * 
+ */
+public class DefaultGroupParser extends ReachGroup {
 
 	public static final String MAIN_ELEMENT_NAME = "default-group";
 
@@ -17,7 +26,7 @@ public class DefaultGroup extends ReachGroup {
 	// ===========
 	// CONSTRUCTOR
 	// ===========
-	public DefaultGroup(long modelID) {
+	public DefaultGroupParser(long modelID) {
 		super(modelID);
 	}
 	

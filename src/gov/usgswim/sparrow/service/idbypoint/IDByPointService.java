@@ -2,7 +2,6 @@ package gov.usgswim.sparrow.service.idbypoint;
 
 import static gov.usgswim.sparrow.service.predict.ValueType.incremental;
 import static gov.usgswim.sparrow.service.predict.ValueType.total;
-import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
@@ -50,6 +49,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	private static final String PROP_FILE = "gov/usgswim/sparrow/service/idbypoint/IDByPointServiceTemplate.properties";
 	
 	//They promise these factories are threadsafe
+	@SuppressWarnings("unused")
 	private static Object factoryLock = new Object();
 	//protected static XMLInputFactory xinFact;
 	protected static XMLOutputFactory xoFact;
@@ -195,9 +195,9 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		
 		int rowID = predictData.getRowForReachID(reachID);
 
-		Integer displayCol = srcMetadata.getColumnByName("DISPLAY_NAME");
+		//Integer displayCol = srcMetadata.getColumnByName("DISPLAY_NAME");
 		Integer unitsCol = srcMetadata.getColumnByName("UNITS");
-		Integer precisionCol = srcMetadata.getColumnByName("PRECISION");
+		//Integer precisionCol = srcMetadata.getColumnByName("PRECISION");
 		// build each row
 		for (int j=0; j<srcMetadata.getRowCount(); j++) {
 			// TODO add r @id

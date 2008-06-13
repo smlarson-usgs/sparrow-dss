@@ -1,12 +1,12 @@
 package gov.usgswim.sparrow.test.parsers;
 
-import java.io.InputStream;
-
 import gov.usgswim.sparrow.deprecated.IDByPointParser;
 import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointPipeline;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.sparrow.test.TestHelper;
+
+import java.io.InputStream;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;

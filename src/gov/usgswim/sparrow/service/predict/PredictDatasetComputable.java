@@ -3,11 +3,9 @@ package gov.usgswim.sparrow.service.predict;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.DataLoader;
-import gov.usgswim.sparrow.util.JDBCUtil;
 import gov.usgswim.task.Computable;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 

@@ -1,15 +1,14 @@
 package gov.usgswim.sparrow.cachefactory;
 
+import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
+import gov.usgswim.sparrow.service.idbypoint.Reach;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
 import org.apache.log4j.Logger;
-
-import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
-import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
-import gov.usgswim.sparrow.service.idbypoint.Reach;
 
 
 

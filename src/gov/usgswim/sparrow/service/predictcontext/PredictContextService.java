@@ -1,7 +1,6 @@
 package gov.usgswim.sparrow.service.predictcontext;
 
 import gov.usgswim.service.HttpService;
-import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.PropertyLoaderHelper;

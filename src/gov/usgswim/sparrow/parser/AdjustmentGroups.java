@@ -41,7 +41,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	// ===============
 	private Long modelID;
 	private List<ReachGroup> reachGroups = new ArrayList<ReachGroup>();
-	private DefaultGroup defaultGroup;
+	private ReachGroup defaultGroup;
 	private Integer id;
 	private String conflicts;	//This should be an enum
 
@@ -87,10 +87,9 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 						ReachGroup rg = new ReachGroup(modelID);
 						rg.parse(in);
 						reachGroups.add(rg);
-					} else if (DefaultGroup.isTargetMatch(localName)) {
-						DefaultGroup dg = new DefaultGroup(modelID);
-						dg.parse(in);
-						defaultGroup = dg;
+					} else if (DefaultGroupParser.isTargetMatch(localName)) {
+						DefaultGroupParser dg = new DefaultGroupParser(modelID);
+						defaultGroup = dg.parse(in);
 					}
 					break;
 				case END_ELEMENT:
@@ -124,9 +123,8 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 		for (ReachGroup reachGroup: reachGroups) {
 			myClone.reachGroups.add(reachGroup.clone());
 		}
-
 		if (defaultGroup != null) {
-			myClone.defaultGroup = (DefaultGroup) defaultGroup.clone();
+			myClone.defaultGroup = defaultGroup.clone();
 		}
 		myClone.conflicts = conflicts;
 
@@ -161,7 +159,6 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 				}
 
 			}
-
 
 			id = hash.toHashCode();
 		} 
@@ -309,7 +306,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	 * May return null
 	 * @return
 	 */
-	public DefaultGroup getDefaultGroup() {
+	public ReachGroup getDefaultGroup() {
 		return defaultGroup;
 	}
 }

@@ -1,13 +1,11 @@
 package gov.usgswim.sparrow.service.idbypoint;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
-import javax.naming.NamingException;
-
+import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.asString;
+import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeClosedFullTag;
+import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeClosingTag;
+import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeNonNullTag;
+import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeOpeningTag;
 import gov.usgswim.Immutable;
-import gov.usgswim.sparrow.service.hucs.HucsForReachPipeline;
-import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.*;
 /**
  * Simple bean class to hold a reach that was identified by a user lat/long location.
  * @author eeverman

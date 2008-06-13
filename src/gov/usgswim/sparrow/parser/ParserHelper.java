@@ -145,9 +145,9 @@ public abstract class ParserHelper {
   public static Integer parseAttribAsInt(
   		XMLStreamReader reader, String attrib, Integer defaultVal) throws XMLStreamException {
   	
-  	Long v = parseAttribAsLong(reader, attrib, (long) defaultVal);
-  	if (v != null) {
-  		return v.intValue();
+  	Long val = parseAttribAsLong(reader, attrib, (long) defaultVal);
+  	if (val != null) {
+  		return val.intValue();
   	} else {
   		return null;
   	}
@@ -183,13 +183,11 @@ public abstract class ParserHelper {
   public static Double parseAttribAsDouble(
   		XMLStreamReader reader, String attrib, boolean require) throws XMLStreamException {
   	
-  	String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
+  	String val = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
   	
-  	if (v != null) {
-  		int iv = 0;
-  		
+  	if (val != null) {  		
   		try {
-  			return Double.parseDouble(v);
+  			return Double.parseDouble(val);
   		} catch (Exception e) {
   			throw new XMLStreamException("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be a number");
   		}

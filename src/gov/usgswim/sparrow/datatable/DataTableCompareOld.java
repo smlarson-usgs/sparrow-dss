@@ -6,7 +6,6 @@ import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.FindHelper;
 import gov.usgswim.datatable.impl.SimpleDataTableImmutable;
 
-import java.util.Arrays;
 import java.util.Set;
 
 /**

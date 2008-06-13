@@ -7,8 +7,6 @@ import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import org.codehaus.stax2.validation.XMLValidationException;
-
 public class ResponseFormat implements XMLStreamParserComponent {
 	public static final String MAIN_ELEMENT_NAME = "response-format";
 

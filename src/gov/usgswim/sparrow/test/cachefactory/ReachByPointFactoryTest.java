@@ -1,19 +1,12 @@
 package gov.usgswim.sparrow.test.cachefactory;
 
 import gov.usgswim.sparrow.cachefactory.ReachByPointFactory;
-import gov.usgswim.sparrow.parser.Adjustment;
-import gov.usgswim.sparrow.parser.LogicalSet;
-import gov.usgswim.sparrow.parser.ReachGroup;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.sparrow.service.idbypoint.Reach;
-import gov.usgswim.sparrow.test.parsers.ReachGroupTest;
 
 import java.awt.geom.Point2D.Double;
-import java.io.StringReader;
-import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 

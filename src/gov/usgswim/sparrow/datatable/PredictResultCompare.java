@@ -1,8 +1,5 @@
 package gov.usgswim.sparrow.datatable;
 
-import java.util.Set;
-
-import gov.usgswim.datatable.DataTable.Immutable;
 
 /**
  * Compares two PredictResults and returns values as either percentage increase

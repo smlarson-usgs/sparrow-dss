@@ -1,23 +1,10 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import org.apache.log4j.Logger;
-
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
-import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.PredictComputable;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.PredictDataBuilder;
-import gov.usgswim.sparrow.PredictRequest;
-import gov.usgswim.sparrow.PredictRunner;
-import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
-import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.DataLoader;
-import gov.usgswim.task.ComputableCache;
+import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 /**
  * This factory class creates adjusted source values on demand for an EHCache.

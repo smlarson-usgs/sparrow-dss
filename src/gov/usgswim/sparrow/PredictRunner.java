@@ -1,15 +1,7 @@
 package gov.usgswim.sparrow;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
-import gov.usgswim.sparrow.domain.Model;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * A simple SPARROW prediction implementation.

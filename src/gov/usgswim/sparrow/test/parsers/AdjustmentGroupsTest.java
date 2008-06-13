@@ -1,16 +1,14 @@
 package gov.usgswim.sparrow.test.parsers;
 
-import gov.usgswim.sparrow.parser.Adjustment;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
-import gov.usgswim.sparrow.parser.DefaultGroup;
 import gov.usgswim.sparrow.parser.ReachGroup;
+import gov.usgswim.sparrow.test.TestHelper;
 
 import java.io.StringReader;
 import java.util.List;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
@@ -18,6 +16,9 @@ import junit.framework.TestCase;
 public class AdjustmentGroupsTest extends TestCase {
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	
+	// ============
+	// TEST METHODS
+	// ============
 	public void testParseMainUseCase() throws Exception {
 
 		AdjustmentGroups adjGroups = buildAdjGroups(1L);
@@ -29,17 +30,17 @@ public class AdjustmentGroupsTest extends TestCase {
 		
 		assertEquals(2, adjGroups.getDefaultGroup().getAdjustments().size());
 		assertEquals(true, adjGroups.getDefaultGroup().isEnabled());
-		
-
 	}
 	
 	
-	public void testHashcode() throws Exception {
-
+	public void testHashcode() throws Exception {	
 		AdjustmentGroups adjGroups1 = buildAdjGroups(1L);
 		AdjustmentGroups adjGroups2 = buildAdjGroups(1L);
-		
-		assertEquals(adjGroups1.hashCode(), adjGroups2.hashCode());
+		TestHelper.testHashCode(adjGroups1, adjGroups2, adjGroups1.clone());
+	
+		// test IDs
+		assertEquals(adjGroups1.hashCode(), adjGroups1.getId().intValue());
+		assertEquals(adjGroups2.hashCode(), adjGroups2.getId().intValue());
 	}
 	
 	public AdjustmentGroups buildAdjGroups(long modelId) throws Exception {

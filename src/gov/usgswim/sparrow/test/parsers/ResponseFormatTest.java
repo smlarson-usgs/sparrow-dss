@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 public class ResponseFormatTest extends TestCase {
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	
-	public void testParse() throws XMLStreamException, XMLParseValidationException {
+	public void testParseMainUseCase() throws XMLStreamException, XMLParseValidationException {
 		String testRequest="<response-format name='pre-configured format name' compress='zip'>"
 			+ "	<mime-type>text</mime-type>"
 			+ "	<template>beige</template>"
@@ -65,7 +65,7 @@ public class ResponseFormatTest extends TestCase {
 
 		try {
 	    rf.setMimeType("GzIp");
-	    this.fail("This should throw an exception b/c the mime-type does not exist");
+	    this.fail("This should throw an exception b/c the mime-type does not exist yet");
     } catch (RuntimeException e) {
 	    //Expected error
     }

@@ -1,6 +1,5 @@
 package gov.usgswim.service;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.xml.stream.XMLStreamReader;
 
 /**
