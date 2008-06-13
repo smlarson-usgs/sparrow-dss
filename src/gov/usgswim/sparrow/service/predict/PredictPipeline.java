@@ -5,9 +5,6 @@ import gov.usgs.webservices.framework.formatter.JSONFormatter;
 import gov.usgs.webservices.framework.formatter.SparrowFlatteningFormatter;
 import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgswim.sparrow.service.AbstractPipeline;
-import gov.usgswim.sparrow.service.predictexport.PredictExportParser;
-import gov.usgswim.sparrow.service.predictexport.PredictExportRequest;
-import gov.usgswim.sparrow.service.predictexport.PredictExportService;
 
 public class PredictPipeline extends AbstractPipeline<PredictExportRequest>{
 	

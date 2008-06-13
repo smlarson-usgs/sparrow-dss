@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.service.predict;
+package gov.usgswim.sparrow.deprecated;
 
 import static gov.usgswim.sparrow.Adjustment.AdjustmentType.GROSS_SRC_ADJUST;
 import static gov.usgswim.sparrow.Adjustment.AdjustmentType.SPECIFIC_ADJUST;
@@ -8,8 +8,6 @@ import gov.usgswim.sparrow.Adjustment;
 import gov.usgswim.sparrow.AdjustmentSet;
 import gov.usgswim.sparrow.AdjustmentSetBuilder;
 import gov.usgswim.sparrow.PredictRequest;
-import gov.usgswim.sparrow.deprecated.IDByPointParser;
-import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
 import gov.usgswim.sparrow.parser.ParserHelper;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 
@@ -19,6 +17,10 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.StringUtils;
 
+/**
+ * @author ilinkuo
+ * @deprecated
+ */
 public class PredictParser extends AbstractHttpRequestParser<PredictServiceRequest> implements RequestParser<PredictServiceRequest> {
 		
 		public PredictParser() {

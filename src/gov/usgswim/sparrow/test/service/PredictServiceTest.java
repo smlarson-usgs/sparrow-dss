@@ -1,15 +1,13 @@
 package gov.usgswim.sparrow.test.service;
 
-import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.ComparePercentageView;
-import gov.usgswim.sparrow.service.predict.PredictParser;
-import gov.usgswim.sparrow.service.predict.PredictService;
-import gov.usgswim.sparrow.service.predict.PredictServiceRequest;
+import gov.usgswim.sparrow.deprecated.PredictParser;
+import gov.usgswim.sparrow.deprecated.PredictService;
+import gov.usgswim.sparrow.deprecated.PredictServiceRequest;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 

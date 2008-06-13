@@ -4,15 +4,15 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.deprecated.PredictParser;
+import gov.usgswim.sparrow.deprecated.PredictService;
+import gov.usgswim.sparrow.deprecated.PredictServiceRequest;
 import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.ComparisonType;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.Select;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.service.predict.PredictParser;
-import gov.usgswim.sparrow.service.predict.PredictService;
-import gov.usgswim.sparrow.service.predict.PredictServiceRequest;
 import gov.usgswim.task.ComputableCache;
 
 import java.util.Hashtable;
@@ -255,7 +255,7 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 
 
 			//Make this default to TOTAL instead of all
-			if (svsRequest.getDataSeries() == gov.usgswim.sparrow.service.predict.PredictServiceRequest.DataSeries.ALL) svsRequest.setDataSeries(gov.usgswim.sparrow.service.predict.PredictServiceRequest.DataSeries.TOTAL);
+			if (svsRequest.getDataSeries() == gov.usgswim.sparrow.deprecated.PredictServiceRequest.DataSeries.ALL) svsRequest.setDataSeries(gov.usgswim.sparrow.deprecated.PredictServiceRequest.DataSeries.TOTAL);
 
 			log.debug("Using Dataseries: " + svsRequest.getDataSeries() + " & result mode: " + svsRequest.getPredictType());
 

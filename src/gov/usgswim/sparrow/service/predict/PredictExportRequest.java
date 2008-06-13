@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.service.predictexport;
+package gov.usgswim.sparrow.service.predict;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;

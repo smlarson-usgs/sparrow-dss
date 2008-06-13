@@ -1,9 +1,8 @@
-package gov.usgswim.sparrow.service.predict;
+package gov.usgswim.sparrow.deprecated;
 
 import gov.usgswim.NotThreadSafe;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.PredictRequest;
-import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 
 /**
@@ -16,14 +15,16 @@ import gov.usgswim.sparrow.parser.ResponseFormat;
  * 
  * Most of the set methods are 'friendly' to null values.  If there is a default
  * value, an attempt to set to null is simply ignored.
+ * 
+ * @deprecated
  */
 @NotThreadSafe
 public class PredictServiceRequest implements PipelineRequest{
 
-	private ResponseFilter responseType = gov.usgswim.sparrow.service.predict.PredictServiceRequest.ResponseFilter.ALL;
-	private PredictType predictType = gov.usgswim.sparrow.service.predict.PredictServiceRequest.PredictType.VALUES;
+	private ResponseFilter responseType = gov.usgswim.sparrow.deprecated.PredictServiceRequest.ResponseFilter.ALL;
+	private PredictType predictType = gov.usgswim.sparrow.deprecated.PredictServiceRequest.PredictType.VALUES;
 	private PredictRequest predictRequest;
-	private DataSeries dataSeries = gov.usgswim.sparrow.service.predict.PredictServiceRequest.DataSeries.ALL;
+	private DataSeries dataSeries = gov.usgswim.sparrow.deprecated.PredictServiceRequest.DataSeries.ALL;
 	private IDByPointRequest_old idByPointRequest;
 	private String xmlRequest;
 	private int rowLimit;
@@ -69,7 +70,7 @@ public class PredictServiceRequest implements PipelineRequest{
 		}
 		
 		public static DataSeries find(String name) {
-			for(DataSeries type: gov.usgswim.sparrow.service.predict.PredictServiceRequest.DataSeries.values()) {
+			for(DataSeries type: gov.usgswim.sparrow.deprecated.PredictServiceRequest.DataSeries.values()) {
 				if (type._name.equalsIgnoreCase(name)) return type;
 			}
 			return null;
@@ -107,7 +108,7 @@ public class PredictServiceRequest implements PipelineRequest{
 		}
 		
 		public static PredictType find(String name) {
-			for(PredictType type: gov.usgswim.sparrow.service.predict.PredictServiceRequest.PredictType.values()) {
+			for(PredictType type: gov.usgswim.sparrow.deprecated.PredictServiceRequest.PredictType.values()) {
 				if (type._name.equalsIgnoreCase(name)) return type;
 			}
 			return null;
@@ -139,7 +140,7 @@ public class PredictServiceRequest implements PipelineRequest{
 		}
 		
 		public static ResponseFilter find(String name) {
-			for(ResponseFilter type: gov.usgswim.sparrow.service.predict.PredictServiceRequest.ResponseFilter.values()) {
+			for(ResponseFilter type: gov.usgswim.sparrow.deprecated.PredictServiceRequest.ResponseFilter.values()) {
 				if (type._name.equalsIgnoreCase(name)) return type;
 			}
 			return null;

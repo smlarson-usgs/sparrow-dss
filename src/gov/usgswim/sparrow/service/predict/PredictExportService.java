@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.service.predictexport;
+package gov.usgswim.sparrow.service.predict;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.service.HttpService;

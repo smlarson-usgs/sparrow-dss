@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.service.predict;
+package gov.usgswim.sparrow.deprecated;
 
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.ThreadSafe;
@@ -15,7 +15,6 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.task.ComputableCache;
@@ -33,6 +32,8 @@ import org.apache.log4j.Logger;
  * has a runPrediction() method that returns raw data in a DataTable format,
  * so that no inter-server communication is needed if the service is running
  * within the MapViewer server.  (similar to the EJB local interface)
+ * 
+ * @deprecated
  */
 @ThreadSafe
 public class PredictService implements HttpService<PredictServiceRequest> {
@@ -85,7 +86,7 @@ public class PredictService implements HttpService<PredictServiceRequest> {
 
 				result = new ComparePercentageView(
 						noAdjResult, adjResult,
-						req.getPredictType().equals(gov.usgswim.sparrow.service.predict.PredictServiceRequest.PredictType.DEC_CHG_FROM_NOMINAL));
+						req.getPredictType().equals(gov.usgswim.sparrow.deprecated.PredictServiceRequest.PredictType.DEC_CHG_FROM_NOMINAL));
 
 			} else {
 				//need to run only the adjusted prediction

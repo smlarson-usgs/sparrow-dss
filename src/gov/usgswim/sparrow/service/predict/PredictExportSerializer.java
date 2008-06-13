@@ -5,17 +5,16 @@ import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 
 import javax.xml.stream.XMLStreamException;
 
-public class PredictSerializer extends BasicXMLStreamReader{
+public class PredictExportSerializer extends BasicXMLStreamReader{
 
 	public static String TARGET_NAMESPACE = "http://www.usgs.gov/sparrow/prediction-response/v0_1";
 	public static String TARGET_NAMESPACE_LOCATION = "http://www.usgs.gov/sparrow/prediction-response/v0_1.xsd";
 	public static String T_PREFIX = "mod";
-	private PredictServiceRequest request;
+	private PredictExportRequest request;
 	private DataTable result;
 	private PredictData predictData;
 	//
@@ -26,9 +25,6 @@ public class PredictSerializer extends BasicXMLStreamReader{
 	// ===========
 	protected class ParseState{
 		protected int r = 0;
-		boolean writeSrcs = false;
-		DataTable src = null;
-		
 		public boolean isDataFinished() {
 			return r >= result.getRowCount();
 		}
@@ -37,15 +33,12 @@ public class PredictSerializer extends BasicXMLStreamReader{
 	// ============
 	// CONSTRUCTORS
 	// ============	
-	public PredictSerializer(PredictServiceRequest request, DataTable result, PredictData predictData) {
+	public PredictExportSerializer(PredictExportRequest request, DataTable result, PredictData predictData) {
 		super();
 		this.request = request;
 		this.result = result;
 		this.predictData = predictData;
 	}
-	
-	public PredictSerializer() {}
-
 
 	// ================
 	// INSTANCE METHODS (for pull parsing)
@@ -72,81 +65,83 @@ public class PredictSerializer extends BasicXMLStreamReader{
 			throw new XMLStreamException(e);
 		}
 	}
-	
-	@Override protected BasicTagEvent documentStartAction() {
+
+	@Override
+	protected BasicTagEvent documentStartAction() {
 		super.documentStartAction();
 		// add the namespaces
 		this.setDefaultNamespace(TARGET_NAMESPACE);
 		addNamespace(XMLSCHEMA_NAMESPACE, XMLSCHEMA_PREFIX);
-		
+
 		// opening element
 		events.add(new BasicTagEvent(START_DOCUMENT));
 		events.add(new BasicTagEvent(START_ELEMENT, "sparrow-prediction-response")
-			.addAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE + " " + TARGET_NAMESPACE_LOCATION));
+		.addAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE + " " + TARGET_NAMESPACE_LOCATION));
 
+		addOpenTag("response");
 		{
-			addOpenTag("response");
+			events.add(new BasicTagEvent(START_ELEMENT, "metadata")
+			.addAttribute("rowCount", Integer.toString(result.getRowCount()))
+			.addAttribute("columnCount", Integer.toString(result.getColumnCount())));
 			{
-				events.add(new BasicTagEvent(START_ELEMENT, "metadata")
-						.addAttribute("rowCount", Integer.toString(result.getRowCount()))
-						.addAttribute("columnCount", Integer.toString(result.getColumnCount())));
+				addOpenTag("columns");
 				{
-					addOpenTag("columns");
-					{
-						if (predictData != null && request.getDataSeries().equals(PredictServiceRequest.DataSeries.ALL)) {
 
-							//Add a group for the source columns
-							events.add(new BasicTagEvent(START_ELEMENT, "group")
-								.addAttribute("name", "Source Values"));
-							{
-								for(String head : DataTableUtils.getHeadings(predictData.getSrc())) {
-									events.add(makeNonNullBasicTag("col", "")
-											.addAttribute("name", head)
-											.addAttribute("type", "Number"));
-								}
-							}
-							addCloseTag("group");
+					if (request.isIncludeReachAttribs()) {
 
-							events.add(new BasicTagEvent(START_ELEMENT, "group")
-								.addAttribute("name", "Predicted Values"));
-							{
-								for(String head : DataTableUtils.getHeadings(result)) {
-									events.add(makeNonNullBasicTag("col", "")
-											.addAttribute("name", head)
-											.addAttribute("type", "Number"));
-								}
-							}
-							addCloseTag("group");
+						//Add a group for the source columns
+						events.add(new BasicTagEvent(START_ELEMENT, "group")
+						.addAttribute("name", "Reach Attributes"));
 
-						} else {
-							// We don't have the original predict data, so the best we can do is just the predict columns
-							// IK: shouldn't this be in a group? ADDED TODO verify with Eric
-							events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Predicted Values"));
-							{
-								for(String head : DataTableUtils.getHeadings(result)) {
-									events.add(makeNonNullBasicTag("col", "")
-											.addAttribute("name", head)
-											.addAttribute("type", "Number"));
-								}
-							}
-							addCloseTag("group");
+						for(int i=0; i<predictData.getSys().getColumnCount(); i++) {
+							events.add(makeNonNullBasicTag("col", "")
+									.addAttribute("name", predictData.getSys().getName(i))
+									.addAttribute("type", "number"));
 						}
+
+						addCloseTag("group");
+					}
+
+					if (request.isIncludeSource()) {
+
+						//Add a group for the source columns
+						events.add(new BasicTagEvent(START_ELEMENT, "group")
+						.addAttribute("name", "Source Values"));
+
+						for(int i=0; i<predictData.getSrc().getColumnCount(); i++) {
+							events.add(makeNonNullBasicTag("col", "")
+									.addAttribute("name", predictData.getSrc().getName(i) + "(" + predictData.getSrc().getUnits(i) + ")")
+									.addAttribute("type", "Number"));
+						}
+
+						addCloseTag("group");
+					}
+
+					if (request.isIncludePredict()) {
+						events.add(new BasicTagEvent(START_ELEMENT, "group")
+						.addAttribute("name", "Predicted Values"));
+
+						for(int i=0; i<result.getColumnCount(); i++) {
+							events.add(makeNonNullBasicTag("col", "")
+									.addAttribute("name", result.getName(i) + "(" + result.getUnits(i) + ")")
+									.addAttribute("type", "Number"));
+						}
+
+						addCloseTag("group");
+
 					}
 					addCloseTag("columns");
 				}
 				addCloseTag("metadata");
-				
-				// If true, write the source value columns into the data.  It should preceed the predict val columns
-				state.writeSrcs = predictData != null && request.getDataSeries().equals(PredictServiceRequest.DataSeries.ALL);
-				state.src = (state.writeSrcs)? predictData.getSrc():null;
-				
+
+
 				addOpenTag("data");
-		
+
 			}
 		}
 		return null;
 	}
-	
+
 	@Override
 	protected void documentEndAction() {
 		super.documentEndAction();
@@ -154,32 +149,39 @@ public class PredictSerializer extends BasicXMLStreamReader{
 		addCloseTag("response");
 		addCloseTag("sparrow-prediction-response");
 		events.add(new BasicTagEvent(END_DOCUMENT));
-	};
-	
+	}
+
 	protected void readRow(){
 		if (!state.isDataFinished()) {
 			// read the row
 			events.add(new BasicTagEvent(START_ELEMENT, "r")
-				.addAttribute("id", Long.valueOf(result.getIdForRow(state.r)).toString()));
-			{
-				//write source value columns (if requested)
-				if (state.writeSrcs) {
-					for (int c = 0; c < state.src.getColumnCount(); c++)  {
-						addNonNullBasicTag("c", Double.toString(state.src.getDouble(state.r, c)));
+			.addAttribute("id", Long.valueOf(result.getIdForRow(state.r)).toString()));
+			{				
+				if (request.isIncludeReachAttribs()) {
+					for (int c = 0; c < predictData.getSys().getColumnCount(); c++)  {
+						addNonNullBasicTag("c", predictData.getSys().getString(state.r, c));
 					}
 				}
 
-				//write predicted data columns
-				for (int c = 0; c < result.getColumnCount(); c++)  {
-					addNonNullBasicTag("c", Double.toString(result.getDouble(state.r, c)));
+				if (request.isIncludeSource()) {
+					for (int c = 0; c < predictData.getSrc().getColumnCount(); c++)  {
+						addNonNullBasicTag("c", predictData.getSrc().getString(state.r, c));
+					}
 				}
+
+				if (request.isIncludePredict()) {
+					for (int c = 0; c < result.getColumnCount(); c++)  {
+						addNonNullBasicTag("c", result.getString(state.r, c));
+					}
+				}
+				
 			}
 			addCloseTag("r");
 			events.add(new BasicTagEvent(SPACE));
-			
+
 		} 
 		state.r++;
-	};
+	}
 
 	@Override
 	public void close() throws XMLStreamException {
@@ -188,7 +190,7 @@ public class PredictSerializer extends BasicXMLStreamReader{
 		request = null;
 		predictData = null;
 	}
-	
+
 	// ==========================
 	// SIMPLE GETTERS AND SETTERS
 	// ==========================
