@@ -13,7 +13,6 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
 
 public class SharedApplicationCaching extends TestCase {
 

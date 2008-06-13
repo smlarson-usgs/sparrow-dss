@@ -14,6 +14,10 @@ import javax.xml.stream.XMLStreamReader;
  */
 public class DefaultGroupParser extends ReachGroup {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static final String MAIN_ELEMENT_NAME = "default-group";
 
 	// =============================

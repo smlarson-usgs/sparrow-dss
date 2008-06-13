@@ -161,32 +161,32 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		response.adjustmentsXML = buildAdjustment(nomPredictData, adjSrc, context.getModelID(), response.reachID, adjGroups);
 	}
 
-	/**
-	 * @param adjGroups
-	 * @param reachID
-	 * @param srcId 
-	 * @return an array of two coefficients, [multiplying coefficient adjustment, absolute override adjustment]
-	 */
-	private Double[] getAdjustmentCoefficients(AdjustmentGroups adjGroups, long reachID, Long srcId) {
-		Double coef = 1D;
-		Double abs = null;
-		for (ReachGroup rGrp: adjGroups.getReachGroups()) {
-			if (rGrp.contains(reachID)) {
-				// get last absolute.
-				// get prod coef
-				for (Adjustment adj: rGrp.getAdjustments()) {
-					if (adj.getSource().longValue() == srcId) {
-						if (adj.isAbsolute()) {
-							abs = adj.getAbsolute();
-						} else if (adj.isCoefficient()) {
-							coef *= adj.getCoefficient();
-						}
-					}
-				}
-			}
-		}
-		return new Double[] {coef, abs};
-	}
+//	/**
+//	 * @param adjGroups
+//	 * @param reachID
+//	 * @param srcId 
+//	 * @return an array of two coefficients, [multiplying coefficient adjustment, absolute override adjustment]
+//	 */
+//	private Double[] getAdjustmentCoefficients(AdjustmentGroups adjGroups, long reachID, Long srcId) {
+//		Double coef = 1D;
+//		Double abs = null;
+//		for (ReachGroup rGrp: adjGroups.getReachGroups()) {
+//			if (rGrp.contains(reachID)) {
+//				// get last absolute.
+//				// get prod coef
+//				for (Adjustment adj: rGrp.getAdjustments()) {
+//					if (adj.getSource().longValue() == srcId) {
+//						if (adj.isAbsolute()) {
+//							abs = adj.getAbsolute();
+//						} else if (adj.isCoefficient()) {
+//							coef *= adj.getCoefficient();
+//						}
+//					}
+//				}
+//			}
+//		}
+//		return new Double[] {coef, abs};
+//	}
 	private String buildAdjustment(PredictData predictData, DataTable adjSrc, Long modelID, Long reachID, AdjustmentGroups adjGroups) throws Exception {
 		StringBuilder sb = new StringBuilder();
 		DataTable orgSrc = predictData.getSrc();

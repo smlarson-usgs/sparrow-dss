@@ -26,6 +26,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * classes who need to include the state of their adjustments in their hashcodes.
  */
 public class ReachGroup implements XMLStreamParserComponent {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5679697265841687562L;
 	public static final String MAIN_ELEMENT_NAME = "reach-group";
 
 	// =============================

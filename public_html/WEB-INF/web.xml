@@ -48,6 +48,7 @@
 			<param-value>gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline</param-value>
 		</init-param>
 	</servlet>
+	<!-- 
 	<servlet>
 		<servlet-name>HucsForReachService</servlet-name>
 		<servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
@@ -56,6 +57,7 @@
 			<param-value>gov.usgswim.sparrow.service.hucs.HucsForReachPipeline</param-value>
 		</init-param>
 	</servlet>
+	 -->
 	<servlet>
 		<servlet-name>EchoXMLService</servlet-name>
 		<servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
@@ -113,11 +115,12 @@
 		<url-pattern>/sp_jsonify/*</url-pattern>
 	</servlet-mapping>
 	<!-- Attribute services  -->
+	<!-- 
 	<servlet-mapping>
 		<servlet-name>HucsForReachService</servlet-name>
 		<url-pattern>/sp_attrib/*</url-pattern>
 	</servlet-mapping>
-	
+	 -->
 	<!--  End Attribute services -->
 	<session-config>
 		<session-timeout>35</session-timeout>

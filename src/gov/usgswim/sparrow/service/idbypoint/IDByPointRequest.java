@@ -16,6 +16,10 @@ import javax.xml.stream.XMLStreamReader;
 
 public class IDByPointRequest implements XMLStreamParserComponent, PipelineRequest {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5107786782665328203L;
 	public static final String ID_BY_POINT_FILENAME = "idByPoint";
 	public static final String MAIN_ELEMENT_NAME = "sparrow-id-request";
 	public static final String MODELID_CHILD = "model-id";

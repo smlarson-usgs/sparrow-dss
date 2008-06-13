@@ -108,6 +108,7 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 				// TODO Eliminate later. This handles the old way
 				boolean isFormEncoded = xml.indexOf("%3C") > -1;
 				if (isFormEncoded) xml = URLDecoder.decode(xml);
+				// TODO Verify if should be ? URLDecoder.decode(xml,"UTF-8");????
 				return xml;
 			}
 			
@@ -124,6 +125,7 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 			if (singleParamResult.startsWith(xmlParam)) singleParamResult = singleParamResult.substring(xmlParam.length() + 1); // +1 for = sign
 			boolean isFormEncoded = singleParamResult.indexOf("%3C") > -1;
 			if (isFormEncoded) singleParamResult = URLDecoder.decode(singleParamResult);
+			// TODO verify if should be ? URLDecoder.decode(xml,"UTF-8");????
 			return result.toString();
 			
 		} else {

@@ -31,7 +31,6 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
 				} else {
 					// TODO [IK] Ask whether set predictionContext to null later?
 					predictionContext = new PredictionContext(o.getModelID(), null, null, null, null);
-					PredictContextPipeline pipeline = new PredictContextPipeline();
 					nominalPredictionContext = new PredictionContext(o.getModelID(), null, null, null, null);
 				}
 				

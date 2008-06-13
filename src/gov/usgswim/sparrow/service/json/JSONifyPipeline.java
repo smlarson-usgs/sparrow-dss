@@ -9,7 +9,6 @@ import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 import gov.usgswim.sparrow.service.AbstractPipeline;
-import gov.usgswim.sparrow.service.hucs.HucsForReachPipeline;
 import gov.usgswim.sparrow.service.model.ModelPipeline;
 import gov.usgswim.sparrow.service.predict.PredictPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
@@ -77,7 +76,6 @@ public class JSONifyPipeline extends AbstractPipeline implements Pipeline {
 		PredictPipeline.configure(jFormatter);
 		ModelPipeline.configure(jFormatter);
 		PredictContextPipeline.configure(jFormatter);
-		HucsForReachPipeline.configure(jFormatter);
 		
 		PrintWriter out = new PrintWriter(response);
 		XMLInputFactory inFact = XMLInputFactory.newInstance();

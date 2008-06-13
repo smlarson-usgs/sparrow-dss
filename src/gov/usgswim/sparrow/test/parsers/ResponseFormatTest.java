@@ -65,7 +65,7 @@ public class ResponseFormatTest extends TestCase {
 
 		try {
 	    rf.setMimeType("GzIp");
-	    this.fail("This should throw an exception b/c the mime-type does not exist yet");
+	    fail("This should throw an exception b/c the mime-type does not exist yet");
     } catch (RuntimeException e) {
 	    //Expected error
     }

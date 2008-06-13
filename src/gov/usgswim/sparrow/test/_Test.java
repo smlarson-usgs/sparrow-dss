@@ -11,26 +11,18 @@ import junit.framework.TestSuite;
 public class _Test {
 	public static Test suite() {
 		TestSuite suite;
-		suite = new TestSuite("Prediction Tests");
-
+		suite = new TestSuite("Sparrow Tests");
 		
-		suite.addTestSuite(ReadStreamAsIntegersTest.class);
-		
+		suite.addTest(_OfflineTest.suite()); // Note: this is the way to add a suite.
 		
 		suite.addTestSuite(JDBCUtil_Test.class);
 		suite.addTestSuite(DataLoaderTest.class);
-		
 		suite.addTestSuite(IDByPointParserTest.class);
 		
-		suite.addTestSuite(ModelServiceTest.class); // OK as is
+		suite.addTestSuite(ModelServiceTest.class);
 		suite.addTestSuite(PredictServiceTest.class);
-
 		
-		// ===========
-		// Test Suites
-		// ===========
 		suite.addTest(_IntegrationTests.suite()); // Note: this is the way to add a suite.
-		suite.addTest(_OfflineTest.suite()); // Note: this is the way to add a suite.
 		
 		return suite;
 	}

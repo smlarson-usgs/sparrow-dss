@@ -21,6 +21,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * classes who need to include the state of their adjustments in their hashcodes.
  */
 public class Adjustment implements XMLStreamParserComponent {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3978431841426344605L;
 	public static final String MAIN_ELEMENT_NAME = "adjustment";
 
 	// =============================

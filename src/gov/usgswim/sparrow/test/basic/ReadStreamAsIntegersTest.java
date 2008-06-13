@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.test;
+package gov.usgswim.sparrow.test.basic;
 
 
 import gov.usgswim.datatable.DataTableWritable;
