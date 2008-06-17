@@ -245,8 +245,7 @@ public class JSONFormatter extends AbstractFormatter implements IFormatter {
 	}
 	
 	public boolean isRepeated(String parentName, String tagName) {
-		boolean isWild = wildTags.contains(tagName);
-		return (isWild)? true: repeatedTags.contains(key(parentName, tagName));
+		return wildTags.contains(tagName) || repeatedTags.contains(key(parentName, tagName));
 	}
 
 	@Override

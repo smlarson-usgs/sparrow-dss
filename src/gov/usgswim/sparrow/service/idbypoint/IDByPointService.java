@@ -136,6 +136,10 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			PredictionContext context = SharedApplication.getInstance().getPredictionContext(req.getContextID());
 			if (context == null) throw new RuntimeException("Prediction Context with id " 
 					+ req.getContextID() + " has not been registered. Perhaps the server has been restarted?");
+			if (req.getModelID() != null && !req.getModelID().equals(context.getModelID())) {
+				throw new RuntimeException("Mismatched model-ids, prediction-context: " + context.getModelID() 
+						+ ", request: " + req.getModelID());
+			}
 			return context.getModelID();
 		} else if (req.getModelID() != null) {
 			return req.getModelID();

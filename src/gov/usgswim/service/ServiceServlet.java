@@ -131,6 +131,7 @@ public class ServiceServlet extends HttpServlet {
 										HttpServletResponse response) throws ServletException, IOException {
 		
 		doPost(request, response);
+		// TODO suggest use this to handle REST by calling parseREST()
 	}
 	
 
@@ -147,7 +148,7 @@ public class ServiceServlet extends HttpServlet {
 	public void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		PipelineRequest o = null;
-
+		// TODO suggest use this to handle POST & SOAP by calling parsePOST(), 
 		try {
 			String echoType = getEchoRequestType(request);
 			Pipeline pipe = null;

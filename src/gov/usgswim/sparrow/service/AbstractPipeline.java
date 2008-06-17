@@ -27,17 +27,18 @@ public abstract class AbstractPipeline<T extends PipelineRequest> implements Pip
 	protected final AbstractHttpRequestParser<T> parser;
 	public static final List<String> flatMimeTypes = Arrays.asList(new String[] {"csv", "tab", "excel", "html"});
 	
+	/**
+	 * @param handler: if this is null, getXMLStreamReader() should be overridden by subclass
+	 * @param parser: if this is null, parse(String) and parse(HttpServletRequest) should be overridden by subclass
+	 */
 	protected AbstractPipeline(HttpService<T> handler, AbstractHttpRequestParser<T> parser) {
 		this.handler = handler;
 		this.parser = parser;
-		if (parser == null) {
-			//TODO log the warning
-			System.out.println("when no parser is provided to the constructor, class should override parse() methods of AbstractPipeline");
-		}
 	}
 
 	public void dispatch(PipelineRequest o, OutputStream response) throws Exception {
 
+		// TODO [IK] allow o to be null
 		ResponseFormat respFormat = o.getResponseFormat();
 		boolean isNeedsFlattening = AbstractPipeline.flatMimeTypes.contains(respFormat.getMimeType());
 		XMLStreamReader reader = (handler != null)? handler.getXMLStreamReader((T)o, isNeedsFlattening): getXMLStreamReader((T)o, isNeedsFlattening);
@@ -95,7 +96,7 @@ public abstract class AbstractPipeline<T extends PipelineRequest> implements Pip
 				formatter = (formatter == null)? new JSONFormatter(): formatter;
 				break;
 			case XML:
-				// XML is the default case
+				// XML is the default case for the pipeline
 			default:
 				formatter = new XMLPassThroughFormatter();
 			break;
@@ -109,15 +110,15 @@ public abstract class AbstractPipeline<T extends PipelineRequest> implements Pip
 	protected abstract IFormatter getCustomFlatteningFormatter(OutputType outputType);
 	
 	public IFormatter getConfiguredJSONFormatter() {
-		return new JSONFormatter(); // unconfigured JSON formatter
+		return new JSONFormatter(); // unconfigured JSON formatter by default
 	}
 
 	public T parse(HttpServletRequest request) throws Exception {
-		return parser.parse(request);
+		return parser.parse(request); // TODO allow nulls
 	}
 
 	public T parse(String xmlRequest) throws Exception {
-	  return parser.parse(xmlRequest);
+	  return parser.parse(xmlRequest); // TODO allow nulls
   }
 
 	public void setXMLParamName(String xmlParamName) {
@@ -137,6 +138,8 @@ public abstract class AbstractPipeline<T extends PipelineRequest> implements Pip
 	public XMLStreamReader getXMLStreamReader(T request, boolean isNeedsCompleteFirstRow) throws Exception{
 		throw new NotImplementedException("You need to implement this method if you do not provide the Pipeline with a handler");
 	};
+	
+	// TODO [IK] makeDefaultResponseFormat
 
 
 }
