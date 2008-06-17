@@ -27,7 +27,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * reach and its associated adjustments.  This method is a convenience to parent
  * classes who need to include the state of their reaches in their hashcodes.
  */
-public class Reach implements XMLStreamParserComponent {
+public class ReachElement implements XMLStreamParserComponent {
 	/**
 	 * 
 	 */
@@ -50,7 +50,7 @@ public class Reach implements XMLStreamParserComponent {
 	// ================
 	// INSTANCE METHODS
 	// ================
-	public synchronized Reach parse(XMLStreamReader in)
+	public synchronized ReachElement parse(XMLStreamReader in)
 		throws XMLStreamException, XMLParseValidationException {
 		
 		String localName = in.getLocalName();
@@ -120,8 +120,8 @@ public class Reach implements XMLStreamParserComponent {
 	}
 	
 	//TODO:  I am just assigning the Adjustment array b/c it is unmodifiable.  Is that truely acceptable...?
-	protected Reach clone() throws CloneNotSupportedException {
-		Reach myClone = new Reach();
+	protected ReachElement clone() throws CloneNotSupportedException {
+		ReachElement myClone = new ReachElement();
 		myClone.id = id;
 		myClone.adjs = adjs;
 		return myClone;

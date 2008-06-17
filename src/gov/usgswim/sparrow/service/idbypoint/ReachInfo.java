@@ -12,7 +12,7 @@ import gov.usgswim.Immutable;
  *
  */
 @Immutable
-public class Reach {
+public class ReachInfo {
 	private final long modelID;
 	private final int id;
 	private final String name;
@@ -32,7 +32,7 @@ public class Reach {
 	private final String huc8;
 	private final String huc8Name;
 	
-	public Reach(long modelID, int id, String name, Integer distInMeters,
+	public ReachInfo(long modelID, int id, String name, Integer distInMeters,
 			double minLong, double minLat, double maxLong, double maxLat,
 			String huc2, String huc2Name, String huc4, String huc4Name,
 			String huc6, String huc6Name, String huc8, String huc8Name
@@ -95,8 +95,8 @@ public class Reach {
 		return in.toString();
 	}
 	
-	public Reach cloneWithDistance(Integer distance) {
-		return new Reach(modelID, id, name, distance, minLong, minLat, maxLong, maxLat,
+	public ReachInfo cloneWithDistance(Integer distance) {
+		return new ReachInfo(modelID, id, name, distance, minLong, minLat, maxLong, maxLat,
 				huc2, huc2Name, huc4, huc4Name, huc6, huc6Name, huc8, huc8Name );
 	}
 

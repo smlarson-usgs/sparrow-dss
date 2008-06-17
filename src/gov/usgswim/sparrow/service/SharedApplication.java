@@ -18,7 +18,7 @@ import gov.usgswim.sparrow.parser.LogicalSet;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
-import gov.usgswim.sparrow.service.idbypoint.Reach;
+import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 import gov.usgswim.sparrow.service.model.ModelRequest;
 import gov.usgswim.sparrow.service.predict.PredictDatasetComputable;
 import gov.usgswim.sparrow.util.DataSourceProxy;
@@ -432,25 +432,25 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
 	//ReachByPoint Cache
-	public Reach getReachByPointResult(ModelPoint req) {
+	public ReachInfo getReachByPointResult(ModelPoint req) {
 		return getReachByPointResult(req, false);
 	}
 	
-	public Reach getReachByPointResult(ModelPoint req, boolean quiet) {
+	public ReachInfo getReachByPointResult(ModelPoint req, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(IDENTIFY_REACH_BY_POINT);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
-		return (e != null)?((Reach) e.getObjectValue()):null;
+		return (e != null)?((ReachInfo) e.getObjectValue()):null;
 	}
 	
 	//ReachByID Cache
-	public Reach getReachByIDResult(ReachID req) {
+	public ReachInfo getReachByIDResult(ReachID req) {
 		return getReachByIDResult(req, false);
 	}
 	
-	public Reach getReachByIDResult(ReachID req, boolean quiet) {
+	public ReachInfo getReachByIDResult(ReachID req, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(IDENTIFY_REACH_BY_ID);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
-		return (e != null)?((Reach) e.getObjectValue()):null;
+		return (e != null)?((ReachInfo) e.getObjectValue()):null;
 	}
 	
 	//Adjusted Source Cache

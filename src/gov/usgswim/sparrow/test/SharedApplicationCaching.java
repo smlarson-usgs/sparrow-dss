@@ -4,10 +4,11 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.ComparePercentageView;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.datatable.DataTableCompareOld;
+import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
+import gov.usgswim.task.ComputableCache;
 
 import java.io.InputStream;
 
@@ -28,6 +29,7 @@ public class SharedApplicationCaching extends TestCase {
 
 		lifecycle.contextDestroyed(null);
 	}
+	
 	/*
 	public void testBasic() {
 		SharedApplication sa = SharedApplication.getInstance();
@@ -98,7 +100,7 @@ public class SharedApplicationCaching extends TestCase {
 //
 //	}
 
-	/*
+	
 	public void testPredictDataCache() throws Exception {
 		SharedApplication sa = SharedApplication.getInstance();
 
@@ -109,7 +111,7 @@ public class SharedApplicationCaching extends TestCase {
 		doFullCompare(pdCustomCache, pdEHCache);
 
 	}
-	 */
+	 
 
 	/**
 	 * Compares the calculated prediction results of the cache (via the PredictResultFactory)
@@ -134,36 +136,36 @@ public class SharedApplicationCaching extends TestCase {
 
 		assertEquals(0d, comp.findMaxCompareValue(), 0.004d);
 
-
 	}
 
 
 
-	@SuppressWarnings("deprecation")
+
 	public void doFullCompare(PredictData expect, PredictData data) throws Exception {
 
-		DataTableCompareOld comp = null;	//used for all comparisons
+		DataTableCompare comp = null;	//used for all comparisons
 
-		comp = new DataTableCompareOld(expect.getCoef(), data.getCoef());
-		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
+		comp = new DataTableCompare(expect.getCoef(), data.getCoef(), true);
+		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);
 
-		comp = new DataTableCompareOld(expect.getDecay(), data.getDecay());
-		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
+		comp = new DataTableCompare(expect.getDecay(), data.getDecay(), true);
+		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);
 
-		comp = new DataTableCompareOld(expect.getSrc(), data.getSrc());
-		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
+		comp = new DataTableCompare(expect.getSrc(), data.getSrc(), true);
+		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);
 
-		comp = new DataTableCompareOld(expect.getSrcMetadata(), data.getSrcMetadata());
-		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
+		// This test no longer applicable as getSrcMetadata returns primarily text columns
+//		comp = new DataTableCompare(expect.getSrcMetadata(), data.getSrcMetadata(), true);
+//		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);
 
-		comp = new DataTableCompareOld(expect.getSys(), data.getSys());
-		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
+		comp = new DataTableCompare(expect.getSys(), data.getSys(), true);
+		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);
 
-		comp = new DataTableCompareOld(expect.getTopo(), data.getTopo());
-		assertEquals(0d, comp.findMaxCompareValue(), 0.000000000000001d);
+		comp = new DataTableCompare(expect.getTopo(), data.getTopo(), true);
+		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);
 		for (int i = 0; i < comp.getColumnCount(); i++)  {
-			System.out.println("col " + i + " error: " + comp.findMaxCompareValue(i));
-			int row = comp.findMaxCompareRow(i);
+			System.out.println("col " + i + " error: " + comp.getMaxDouble(i));
+			int row = comp.getMaxInt(i);
 //			System.out.println("id: " + expect.getTopo().getIdForRow(row));
 			System.out.println("expected: " + expect.getTopo().getValue(row, i));
 			System.out.println("found: " + data.getTopo().getValue(row, i));
@@ -171,6 +173,17 @@ public class SharedApplicationCaching extends TestCase {
 
 	}
 
+	protected ComparePercentageView buildPredictionComparisonOld(DataTable toBeCompared) throws Exception {
+		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict.txt");
+		DataTable data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
+		int[] DEFAULT_COMP_COLUMN_MAP =
+			new int[] {40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 39, 15};
+
+		ComparePercentageView comp = new ComparePercentageView(toBeCompared, data, DEFAULT_COMP_COLUMN_MAP, false);
+
+		return comp;
+	}
+	
 	protected ComparePercentageView buildPredictionComparison(DataTable toBeCompared) throws Exception {
 		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict.txt");
 		DataTable data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);

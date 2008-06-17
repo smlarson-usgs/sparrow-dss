@@ -21,7 +21,7 @@ import oracle.jdbc.OracleDriver;
 
 /**
  * @author ilinkuo
- * @deprecated No longer tests the JDBCUtil class
+ * @deprecated No longer tests the JDBCUtil class. Superseded by DataLoaderTest class. Should delete
  */
 public class JDBCUtil_Test extends TestCase {
 	private Connection conn;

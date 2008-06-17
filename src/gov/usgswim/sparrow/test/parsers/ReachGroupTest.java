@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.test.parsers;
 
 import gov.usgswim.sparrow.parser.Adjustment;
 import gov.usgswim.sparrow.parser.LogicalSet;
-import gov.usgswim.sparrow.parser.Reach;
+import gov.usgswim.sparrow.parser.ReachElement;
 import gov.usgswim.sparrow.parser.ReachGroup;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 
@@ -154,8 +154,8 @@ public class ReachGroupTest extends TestCase {
 		assertEquals(2, rg.getExplicitReaches().size());
 
 		//Test the individual reaches
-		Reach reach0 = rg.getExplicitReaches().get(0);
-		Reach reach1 = rg.getExplicitReaches().get(1);
+		ReachElement reach0 = rg.getExplicitReaches().get(0);
+		ReachElement reach1 = rg.getExplicitReaches().get(1);
 		assertEquals(new Long(483947453), reach0.getId());
 		assertEquals(new Long(947839474), reach1.getId());
 

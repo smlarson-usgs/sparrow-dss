@@ -180,7 +180,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 		DataTable adjusted = data.getSrc();	//start assuming there are no adjustments
 
 		//Do model-wide adjustments first.  Any further adjustments will accumulate/override as appropriate
-		if (defaultGroup != null && defaultGroup.getAdjustments().size() > 0) {
+		if (defaultGroup != null && defaultGroup.getAdjustments().size() > 0 && defaultGroup.isEnabled()) {
 
 			ColumnCoefAdjustment colAdj = new ColumnCoefAdjustment(adjusted);
 			adjusted = colAdj;
@@ -234,7 +234,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 
 
 					//Loop Through the explicit set of reaches to apply reach-specific adjustments
-					for (Reach r: rg.getExplicitReaches()) {
+					for (ReachElement r: rg.getExplicitReaches()) {
 						int row = data.getRowForReachID(r.getId());
 						//apply the adjustments specified for just this reach (if any)
 						//Note:  getAdjustments() never returns null

@@ -17,7 +17,7 @@ public class IDByPointResponse {
 	public Integer cacheLifetime;
 	//
 	public Long reachID;
-	private Reach reach;
+	private ReachInfo reach;
 	//
 	public DataTable adjustments;
 	public DataTable predictions;
@@ -29,11 +29,11 @@ public class IDByPointResponse {
 	public String predictionsXML;
 	public String attributesXML;
 	
-	public Reach getReach() {
+	public ReachInfo getReach() {
 		return reach;
 	}
 	
-	public void setReach(Reach reach) {
+	public void setReach(ReachInfo reach) {
 		this.reach = reach;
 		this.reachID = Long.valueOf(reach.getId()); // keep in sync
 	}	

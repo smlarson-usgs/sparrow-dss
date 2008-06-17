@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.service.idbypoint.Reach;
+import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -41,7 +41,7 @@ public class ReachByIDFactory extends AbstractCacheFactory {
 
 
 		ResultSet rs = null;
-		Reach reach = null;
+		ReachInfo reach = null;
 		
 		try {
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
@@ -52,7 +52,7 @@ public class ReachByIDFactory extends AbstractCacheFactory {
 			if (rs.next()) {
 				
 				// reaches retrieved by ID should never have distanceInMeters information
-				reach = new Reach(req.getModelID(), rs.getInt("identifier"), rs.getString("reach_name"), null,
+				reach = new ReachInfo(req.getModelID(), rs.getInt("identifier"), rs.getString("reach_name"), null,
 						rs.getDouble("MIN_LONG"), rs.getDouble("MIN_LAT"), rs.getDouble("MAX_LONG"), rs.getDouble("MAX_LAT"),
 						rs.getString("HUC2"), rs.getString("HUC2NAME"), rs.getString("HUC4"), rs.getString("HUC4NAME"),
 						rs.getString("HUC6"), rs.getString("HUC6NAME"), rs.getString("HUC8"), rs.getString("HUC8NAME")

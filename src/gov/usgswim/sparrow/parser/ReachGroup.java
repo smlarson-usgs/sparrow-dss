@@ -52,12 +52,12 @@ public class ReachGroup implements XMLStreamParserComponent {
 	private String notes;
 	
 	private List<Adjustment> adjs = new ArrayList<Adjustment>();
-	private List<Reach> reaches = new ArrayList<Reach>();
+	private List<ReachElement> reaches = new ArrayList<ReachElement>();
 	private List<LogicalSet> logicalSets;
 	private transient List<List<Long>> reachIDsByLogicalSets; // transient as this is fetched from cache
 	
 	// search
-	private Set<Long> containedReachIDs;
+	private transient Set<Long> containedReachIDs; // temporary storage as convenience for searching
 	private long modelID;
 	
 	// ================
@@ -109,8 +109,8 @@ public class ReachGroup implements XMLStreamParserComponent {
 						LogicalSet ls = new LogicalSet(modelID);
 						ls.parse(in);
 						logicalSets.add(ls);
-					} else if (Reach.isTargetMatch(localName)) {
-						Reach r = new Reach();
+					} else if (ReachElement.isTargetMatch(localName)) {
+						ReachElement r = new ReachElement();
 						r.parse(in);
 						reaches.add(r);
 					} else {
@@ -196,18 +196,16 @@ public class ReachGroup implements XMLStreamParserComponent {
 	 * WARNING: do not call this method until all the reaches have been added to the group, as it will make subsequent search behavior incorrect
 	 */
 	public boolean contains(long reachID) {
-		if (reaches == null) return false;
-		// late initialize as necessary
 		if (containedReachIDs == null) {
-			containedReachIDs = new HashSet<Long>();
-			for (Reach reach: reaches) {
-				containedReachIDs.add(reach.getId());
-			}
+			// Do late initialization as necessary
+			Set<Long> result = new HashSet<Long>();
+			result.addAll(getCombinedReachIDs());
+			containedReachIDs = Collections.unmodifiableSet(result);
 		}
 		return containedReachIDs.contains(reachID);
 	}
 	
-	public boolean contains(Reach reach) {
+	public boolean contains(ReachElement reach) {
 		return contains(reach.getId());
 	}
 	
@@ -242,7 +240,7 @@ public class ReachGroup implements XMLStreamParserComponent {
 		return modelID;
 	}
 
-	public List<Reach> getExplicitReaches() {
+	public List<ReachElement> getExplicitReaches() {
 		return reaches;
 	}
 	
@@ -276,7 +274,7 @@ public class ReachGroup implements XMLStreamParserComponent {
 		List<Long> result = new ArrayList<Long>();
 		// Start with explicit reaches
 		if (reaches != null) {
-			for (Reach reach: reaches) {
+			for (ReachElement reach: reaches) {
 				result.add(reach.getId());
 			}
 		}
@@ -285,12 +283,7 @@ public class ReachGroup implements XMLStreamParserComponent {
 		for (int i=0; i<logicalSets.size(); i++) {
 			int m = result.size();
 			List<Long> lr = getLogicalReachIDs(i);
-//			int n = lr.size();
-//			result.addAll(lr);
-//			if (result.size() < m+n) {
-//				// TODO log this
-//				System.out.println("WARNING: " + (m+n-result.size()) + " overlapping reaches ");
-//			}
+
 			//  potential fix for nullpointer issue.
 			if (lr != null) {
 				int n = lr.size();
@@ -329,7 +322,7 @@ public class ReachGroup implements XMLStreamParserComponent {
 		}
 		
 		if (reaches != null) {
-			for (Reach reach : reaches) {
+			for (ReachElement reach : reaches) {
 				hcb.append(reach.getStateHash());
 			}
 		}

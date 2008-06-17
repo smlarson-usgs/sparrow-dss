@@ -12,8 +12,11 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowModelProperties;
 import gov.usgswim.sparrow.cachefactory.ReachID;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.parser.Adjustment;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.parser.ReachElement;
+import gov.usgswim.sparrow.parser.ReachGroup;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.AggregateType;
 import gov.usgswim.sparrow.service.predict.ValueType;
@@ -118,7 +121,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	// =======================
 	// PRIVATE HELPER METHODS
 	// =======================
-	private Reach retrieveReach(IDByPointRequest req, IDByPointResponse response) throws Exception {
+	private ReachInfo retrieveReach(IDByPointRequest req, IDByPointResponse response) throws Exception {
 		if (req.getReachID() != null) {
 			return SharedApplication.getInstance().getReachByIDResult(new ReachID(response.modelID, req.getReachID()));
 		} else if (req.getPoint() != null) {
@@ -159,32 +162,67 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		response.adjustmentsXML = buildAdjustment(nomPredictData, adjSrc, context.getModelID(), response.reachID, adjGroups);
 	}
 
-//	/**
-//	 * @param adjGroups
-//	 * @param reachID
-//	 * @param srcId 
-//	 * @return an array of two coefficients, [multiplying coefficient adjustment, absolute override adjustment]
-//	 */
-//	private Double[] getAdjustmentCoefficients(AdjustmentGroups adjGroups, long reachID, Long srcId) {
-//		Double coef = 1D;
-//		Double abs = null;
-//		for (ReachGroup rGrp: adjGroups.getReachGroups()) {
-//			if (rGrp.contains(reachID)) {
-//				// get last absolute.
-//				// get prod coef
-//				for (Adjustment adj: rGrp.getAdjustments()) {
-//					if (adj.getSource().longValue() == srcId) {
-//						if (adj.isAbsolute()) {
-//							abs = adj.getAbsolute();
-//						} else if (adj.isCoefficient()) {
-//							coef *= adj.getCoefficient();
-//						}
-//					}
-//				}
-//			}
-//		}
-//		return new Double[] {coef, abs};
-//	}
+	/**
+	 * @param adjGroups
+	 * @param reachID
+	 * @param srcId 
+	 * @return an array of two coefficients, [multiplying coefficient adjustment, absolute override adjustment]
+	 */
+	private Double[] getAdjustmentCoefficients(AdjustmentGroups adjGroups, long reachID, Long srcId) {
+		Double coef = 1D;
+		Double abs = null;
+		// This procedure mimics AdjustmentGroups.adjust()
+		// First, go through the defaultGroup adjustments to find applicable adjustments
+		ReachGroup defaultGroup = adjGroups.getDefaultGroup();
+		if (defaultGroup != null) {
+			if (defaultGroup.isEnabled()) {
+				for (Adjustment adj: defaultGroup.getAdjustments()) {
+					if (adj.getSource() == srcId.intValue()) {
+						// only if it's applicable to the target source reach
+						assert(adj.getCoefficient() != null): "for global adjustments, only coefs allowed, no abs";
+						coef *= adj.getCoefficient();
+					}
+				}
+			}
+		}
+		// Second, go through reachgroups, assuming conflicts accumulate
+		for (ReachGroup rGrp: adjGroups.getReachGroups()) {
+			if (rGrp.isEnabled() && rGrp.contains(reachID)) {
+				// get last applied absolute.
+				// get product of coef
+				List<Adjustment> adjustments = rGrp.getAdjustments();
+				for (Adjustment adj: adjustments) {
+					if (adj.getSource() == srcId.intValue()) {
+						// only if it's applicable to the target source reach
+						if (adj.isAbsolute()) {
+							abs = adj.getAbsolute();
+						} else if (adj.isCoefficient()) {
+							coef *= adj.getCoefficient();
+						}
+					}
+				}
+				// iterate through individual reach adjustments
+				List<ReachElement> reaches = rGrp.getExplicitReaches();
+				for (ReachElement reach: reaches) {
+					if (reach.getId()== reachID) {
+						for (Adjustment adj: reach.getAdjustments()) {
+							if (adj.getSource() == srcId.intValue()) {
+								// only if it's applicable to the target source
+								// reach
+								if (adj.isAbsolute()) {
+									abs = adj.getAbsolute();
+								} else if (adj.isCoefficient()) {
+									coef *= adj.getCoefficient();
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return new Double[] {coef, abs};
+	}
+	
 	private String buildAdjustment(PredictData predictData, DataTable adjSrc, Long modelID, Long reachID, AdjustmentGroups adjGroups) throws Exception {
 		StringBuilder sb = new StringBuilder();
 		DataTable orgSrc = predictData.getSrc();
@@ -193,12 +231,12 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		
 		int rowID = predictData.getRowForReachID(reachID);
 
-		//Integer displayCol = srcMetadata.getColumnByName("DISPLAY_NAME");
+		//Integer displayCol = srcMetadata.getColumnByName("DISPLAY_NAME"); not used now
 		Integer unitsCol = srcMetadata.getColumnByName("UNITS");
-		//Integer precisionCol = srcMetadata.getColumnByName("PRECISION");
-		// build each row
+		//Integer precisionCol = srcMetadata.getColumnByName("PRECISION"); not used now
+		
+		// build each row of the adjustment
 		for (int j=0; j<srcMetadata.getRowCount(); j++) {
-			// TODO add r @id
 			Double orgVal= orgSrc.getDouble(rowID, j);
 			Double adjVal = adjSrc.getDouble(rowID, j);
 			Long id = srcMetadata.getIdForRow(j);
@@ -212,24 +250,30 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				sb.append("<c/>");
 			}
 			sb.append("<c>").append(formatter.format(orgVal)).append("</c>");
-			/* This commented out as we're not showing coefficients now.
+			
 			{	// output absolute and multiplier coefficients
 				//return [coef, abs].  coef is 1D by default.
 				Double[] coefficients = getAdjustmentCoefficients(adjGroups, reachID.intValue(), id);
 				
-				if (!coefficients[0].equals(1D)) {
-					//coef is populated
-					sb.append("<c>").append(coefficients[0]).append("</c>");
-					sb.append("<c/>");
-				} else if (coefficients[1] != null) {
+				// output coef (of multiplier)
+//				if (!coefficients[0].equals(1D)) {
+//					//coef is populated
+//					sb.append("<c>").append(coefficients[0]).append("</c>");
+//					sb.append("<c/>");
+//				} else {
+//					sb.append("<c/><c/>");
+//				}
+				
+				// output absolute
+				if (coefficients[1] != null) {
 					//abs is populated
-					sb.append("<c/>");
+					// sb.append("<c/>"); this is for coefficients
 					sb.append("<c>").append(coefficients[1]).append("</c>");
 				} else {
-					sb.append("<c/><c/>");
+					sb.append("<c/>");
 				}
 			}
-			*/
+			
 			sb.append("<c>").append(formatter.format(adjVal)).append("</c>");
 			sb.append("</r>");
 		}

@@ -15,7 +15,7 @@ public class _Test {
 		
 		suite.addTest(_OfflineTest.suite()); // Note: this is the way to add a suite.
 		
-		suite.addTestSuite(JDBCUtil_Test.class);
+//		suite.addTestSuite(JDBCUtil_Test.class); superseded by DataLoader
 		suite.addTestSuite(DataLoaderTest.class);
 		suite.addTestSuite(IDByPointParserTest.class);
 		

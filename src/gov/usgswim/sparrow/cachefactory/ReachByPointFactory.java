@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
-import gov.usgswim.sparrow.service.idbypoint.Reach;
+import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -57,7 +57,7 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 			if (rs.next()) {
 				int reachID = rs.getInt("identifier");
 				int distance = rs.getInt("dist_in_meters");
-				Reach reach = SharedApplication.getInstance().getReachByIDResult(new ReachID(req.getModelID(), reachID));
+				ReachInfo reach = SharedApplication.getInstance().getReachByIDResult(new ReachID(req.getModelID(), reachID));
 				// add the distance information to the retrieved Reach
 				return reach.cloneWithDistance(distance);
 			}
