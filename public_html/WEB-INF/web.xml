@@ -82,10 +82,12 @@
 		<servlet-name>PredictService</servlet-name>
 		<url-pattern>/sp_predict/*</url-pattern>
 	</servlet-mapping>
+	<!-- 
 	<servlet-mapping>
 		<servlet-name>IDByPointService</servlet-name>
 		<url-pattern>/sp_idpoint/*</url-pattern>
 	</servlet-mapping>
+	 -->
 	<servlet-mapping>
 		<servlet-name>IDByPointService2</servlet-name>
 		<url-pattern>/sp_idpoint2/*</url-pattern>
