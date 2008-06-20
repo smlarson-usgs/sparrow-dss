@@ -5,6 +5,8 @@ import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeClosedFullTag
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeClosingTag;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeNonNullTag;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeOpeningTag;
+
+
 import gov.usgswim.Immutable;
 /**
  * Simple bean class to hold a reach that was identified by a user lat/long location.
@@ -22,6 +24,11 @@ public class ReachInfo {
 	private final double minLat;
 	private final double maxLong;
 	private final double maxLat;
+	private final double markerLong;
+	private final double markerLat;
+	
+	private transient Double clickedLong;
+	private transient Double clickedLat;
 	
 	private final String huc2;
 	private final String huc2Name;
@@ -32,8 +39,11 @@ public class ReachInfo {
 	private final String huc8;
 	private final String huc8Name;
 	
+
+	
 	public ReachInfo(long modelID, int id, String name, Integer distInMeters,
 			double minLong, double minLat, double maxLong, double maxLat,
+			double markLong, double markLat,
 			String huc2, String huc2Name, String huc4, String huc4Name,
 			String huc6, String huc6Name, String huc8, String huc8Name
 	) {
@@ -45,6 +55,8 @@ public class ReachInfo {
 		this.minLat = minLat;
 		this.maxLong = maxLong;
 		this.maxLat = maxLat;
+		this.markerLong = markLong;
+		this.markerLat = markLat;
 		this.huc2 = huc2;
 		this.huc2Name = huc2Name;
 		this.huc4 = huc4;
@@ -63,11 +75,18 @@ public class ReachInfo {
 		{
 			writeNonNullTag(in, "id", asString(id));
 			writeNonNullTag(in, "name", name);
+			if (clickedLong != null) {
+				writeClosedFullTag(in, "point",
+						"lat", asString(clickedLat),
+						"long", asString(clickedLong));
+			}
 			writeClosedFullTag(in, "bbox", 
 					"min-long", asString(minLong),
 					"min-lat", asString(minLat),
 					"max-long", asString(maxLong),
-					"max-lat", asString(maxLat)
+					"max-lat", asString(maxLat),
+					"marker-long", asString(markerLong),
+					"marker-lat", asString(markerLat)
 			);
 			writeOpeningTag(in, "hucs");
 			{
@@ -96,8 +115,10 @@ public class ReachInfo {
 	}
 	
 	public ReachInfo cloneWithDistance(Integer distance) {
-		return new ReachInfo(modelID, id, name, distance, minLong, minLat, maxLong, maxLat,
+		ReachInfo clone = new ReachInfo(modelID, id, name, distance, minLong, minLat, maxLong, maxLat,
+				markerLong, markerLat,
 				huc2, huc2Name, huc4, huc4Name, huc6, huc6Name, huc8, huc8Name );
+		return clone;
 	}
 
 	// =================
@@ -135,5 +156,9 @@ public class ReachInfo {
 		return maxLat;
 	}
 	
+	public void setClickedPoint(double longitude, double latitude) {
+		this.clickedLong = longitude;
+		this.clickedLat = latitude;		
+	}
 	
 }

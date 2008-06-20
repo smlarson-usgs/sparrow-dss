@@ -30,15 +30,14 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 	protected static Logger log =
 		Logger.getLogger(ReachByPointFactory.class); //logging for this class
 	
-	public Object createEntry(Object request) throws Exception {
+	@Override
+	public ReachInfo createEntry(Object request) throws Exception {
 		
 		ModelPoint req = (ModelPoint) request;
 		
 		Long modelId = req.getModelID();
 		Double lng = req.getPoint().x;
 		Double lat = req.getPoint().y;
-		
-		
 		
 		String query = getText(
 				"FindReach",
@@ -59,7 +58,9 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 				int distance = rs.getInt("dist_in_meters");
 				ReachInfo reach = SharedApplication.getInstance().getReachByIDResult(new ReachID(req.getModelID(), reachID));
 				// add the distance information to the retrieved Reach
-				return reach.cloneWithDistance(distance);
+				ReachInfo result = reach.cloneWithDistance(distance);
+				result.setClickedPoint(lng, lat);
+				return result;
 			}
 
 		} finally {

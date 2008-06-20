@@ -29,7 +29,8 @@ public class ReachByIDFactory extends AbstractCacheFactory {
 	protected static Logger log =
 		Logger.getLogger(ReachByIDFactory.class); //logging for this class
 	
-	public Object createEntry(Object request) throws Exception {
+	@Override
+	public ReachInfo createEntry(Object request) throws Exception {
 		
 		ReachID req = (ReachID) request;
 		
@@ -54,6 +55,7 @@ public class ReachByIDFactory extends AbstractCacheFactory {
 				// reaches retrieved by ID should never have distanceInMeters information
 				reach = new ReachInfo(req.getModelID(), rs.getInt("identifier"), rs.getString("reach_name"), null,
 						rs.getDouble("MIN_LONG"), rs.getDouble("MIN_LAT"), rs.getDouble("MAX_LONG"), rs.getDouble("MAX_LAT"),
+						rs.getDouble("MARKER_LONG"), rs.getDouble("MARKER_LAT"),
 						rs.getString("HUC2"), rs.getString("HUC2NAME"), rs.getString("HUC4"), rs.getString("HUC4NAME"),
 						rs.getString("HUC6"), rs.getString("HUC6NAME"), rs.getString("HUC8"), rs.getString("HUC8NAME")
 				);

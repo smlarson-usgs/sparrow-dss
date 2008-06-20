@@ -4,6 +4,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.PredictRunner;
+import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -40,7 +41,7 @@ public class PredictResultFactory implements CacheEntryFactory {
 	protected static Logger log =
 		Logger.getLogger(PredictResultFactory.class); //logging for this class
 	
-	public Object createEntry(Object predictContext) throws Exception {
+	public PredictResult createEntry(Object predictContext) throws Exception {
 		PredictionContext context = (PredictionContext)predictContext;
 		
 		PredictData data = SharedApplication.getInstance().getPredictData(context.getModelID());
@@ -63,7 +64,7 @@ public class PredictResultFactory implements CacheEntryFactory {
 				" Time: " + (System.currentTimeMillis() - startTime) + "ms, " +
 				adjData.getSrc().getRowCount() + " reaches");
 
-		return result.toImmutable();
+		return (PredictResult) result.toImmutable();
 	}
 
 	/**

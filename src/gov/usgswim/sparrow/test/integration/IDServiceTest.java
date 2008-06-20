@@ -45,52 +45,52 @@ public class IDServiceTest extends TestCase {
 	// TEST METHODS
 	// ============
 
-//	public void testModelByPoint() throws Exception {
-//
-//		IDByPointRequest req = buildIDByPointRequest1();
-//		String response = pipeDispatch(req, new IDByPointPipeline());
-//
-//		int reachID = Integer.parseInt( getElementValue(response, "id") );
-//		String reachName = getElementValue(response, "name");
-//
-//		assertEquals(EXPECTED_REACH_ID_BY_POINT, reachID);
-//		assertEquals(EXPECTED_REACH_NAME_BY_POINT, reachName);
-//		
-//	}
-//	
-//	public void testModelByID() throws Exception {
-//
-//		IDByPointRequest req = buildIDByPointRequest2();
-//		String response = pipeDispatch(req, new IDByPointPipeline());
-//		
-//		int reachID = Integer.parseInt( getElementValue(response, "id") );
-//		String reachName = getElementValue(response, "name");
-//		
-//		assertEquals(EXPECTED_REACH_ID_BY_CONTEXT, reachID);
-//		assertEquals(EXPECTED_REACH_NAME_BY_CONTEXT, reachName);
-//		
-//	}
-//	
-//	
-//
-//	
-//	public void testContextByID() throws Exception {
-//
-//		PredictContextRequest contextReq = PredictionContextTest.buildPredictContext2();	//Build a context from a canned file
-//		
-//		String response = pipeDispatch(contextReq, new PredictContextPipeline());
-//		String contextID = getAttributeValue(response, "context-id");
-//		
-//		IDByPointRequest req = buildIDByPointRequest4(Integer.parseInt(contextID));
-//		
-//		response = pipeDispatch(req, new IDByPointPipeline());
-//		int reachID = Integer.parseInt( getElementValue(response, "id") );
-//		String reachName = getElementValue(response, "name");
-//
-//		assertEquals(EXPECTED_REACH_ID_BY_CONTEXT, reachID);
-//		assertEquals(EXPECTED_REACH_NAME_BY_CONTEXT, reachName);
-//		
-//	}
+	public void testModelByPoint() throws Exception {
+
+		IDByPointRequest req = buildIDByPointRequest1();
+		String response = pipeDispatch(req, new IDByPointPipeline());
+
+		int reachID = Integer.parseInt( getElementValue(response, "id") );
+		String reachName = getElementValue(response, "name");
+
+		assertEquals(EXPECTED_REACH_ID_BY_POINT, reachID);
+		assertEquals(EXPECTED_REACH_NAME_BY_POINT, reachName);
+		
+	}
+	
+	public void testModelByID() throws Exception {
+
+		IDByPointRequest req = buildIDByPointRequest2();
+		String response = pipeDispatch(req, new IDByPointPipeline());
+		
+		int reachID = Integer.parseInt( getElementValue(response, "id") );
+		String reachName = getElementValue(response, "name");
+		
+		assertEquals(EXPECTED_REACH_ID_BY_CONTEXT, reachID);
+		assertEquals(EXPECTED_REACH_NAME_BY_CONTEXT, reachName);
+		
+	}
+	
+	
+
+	
+	public void testContextByID() throws Exception {
+
+		PredictContextRequest contextReq = PredictionContextTest.buildPredictContext2();	//Build a context from a canned file
+		
+		String response = pipeDispatch(contextReq, new PredictContextPipeline());
+		String contextID = getAttributeValue(response, "context-id");
+		
+		IDByPointRequest req = buildIDByPointRequest4(Integer.parseInt(contextID));
+		
+		response = pipeDispatch(req, new IDByPointPipeline());
+		int reachID = Integer.parseInt( getElementValue(response, "id") );
+		String reachName = getElementValue(response, "name");
+
+		assertEquals(EXPECTED_REACH_ID_BY_CONTEXT, reachID);
+		assertEquals(EXPECTED_REACH_NAME_BY_CONTEXT, reachName);
+		
+	}
 	
 	public void testContextByPoint() throws Exception {
 

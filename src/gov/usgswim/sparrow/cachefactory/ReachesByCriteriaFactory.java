@@ -29,7 +29,7 @@ public class ReachesByCriteriaFactory extends AbstractCacheFactory {
 	protected static Logger log =
 		Logger.getLogger(ReachesByCriteriaFactory.class); //logging for this class
 	
-	public Object createEntry(Object logicalSetCriteria) throws Exception {
+	public List<Long> createEntry(Object logicalSetCriteria) throws Exception {
 		LogicalSet ls = (LogicalSet) logicalSetCriteria;
 
 		assert(ls.getCriteria() != null && ls.getCriteria().size() == 1): "for now, we're only handling logical-sets with a single criteria";
@@ -42,7 +42,7 @@ public class ReachesByCriteriaFactory extends AbstractCacheFactory {
 			long modelID = ls.getModelID();
 			int hucLevel = huc.length();
 			assert(hucLevel == 2 ||  hucLevel == 4 || hucLevel == 6 || hucLevel == 8): "should be 2, 4, 6, or 8";
-			
+
 
 			String query = "Select identifier from model_attrib_vw where "
 				+ criteriaAttrib + " = '" + huc + "' and sparrow_model_id = " + modelID;
