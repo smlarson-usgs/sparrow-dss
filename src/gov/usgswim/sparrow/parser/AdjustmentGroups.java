@@ -83,13 +83,15 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
 						//id = ParserHelper.parseAttribAsInt(in, XMLStreamParserComponent.ID_ATTR, false);
 						conflicts = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "conflicts");				
-					}  else if (ReachGroup.isTargetMatch(localName)) {
+					} else if (ReachGroup.isTargetMatch(localName)) {
 						ReachGroup rg = new ReachGroup(modelID);
 						rg.parse(in);
 						reachGroups.add(rg);
 					} else if (DefaultGroupParser.isTargetMatch(localName)) {
 						DefaultGroupParser dg = new DefaultGroupParser(modelID);
 						defaultGroup = dg.parse(in);
+					} else if ("individual-group".equals(localName)) {
+						ParserHelper.ignoreElement(in);
 					}
 					break;
 				case END_ELEMENT:
