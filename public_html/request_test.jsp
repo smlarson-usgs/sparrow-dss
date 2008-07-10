@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=windows-1252"%>
 <%@ page import="java.io.*"%>
-<%@ page import="java.net.*, java.io.CharArrayWriter, java.io.PrintWriter"%>
+<%@ page import="java.net.*, java.io.CharArrayWriter, java.io.PrintWriter, java.util.Enumeration, java.util.Map.Entry"%>
 <%
 	
 	String IS_NESTED_PARAM = "is_nested_req";
@@ -98,6 +98,13 @@
 	<h4>This JSP page saw these properties of the incoming request:</h4>
 	<ul>
 		<li>getServerName() : <%=request.getServerName()%></li>
+		<li>getHeader("Host") : <%=request.getHeader("Host")%></li>
+		<li>getHeaderNames() : <% 		
+			Enumeration headers = request.getHeaderNames();
+			while (headers.hasMoreElements()) {
+				String name = (String)headers.nextElement();
+				out.println("<br/>" + name + " : " + request.getHeader(name));
+			}%></li>
 		<li>getServerPort() : <%=request.getServerPort()%></li>
 		<li>getRemoteAddr() : <%=request.getRemoteAddr()%></li>
 		<li>getContextPath() : <%=request.getContextPath()%></li>
@@ -117,6 +124,25 @@
 		<li>System.getProperty("http.proxyHost <%= System.getProperty("http.proxyHost") %></li>
 		<li>System.getProperty("http.proxyPort"): <%= System.getProperty("http.proxyPort") %></li>
 		<li>System.getProperty("http.nonProxyHosts"): <%= System.getProperty("http.nonProxyHosts") %></li>
+
+	</ul>
+	
+	<h4>All System Properties</h4>
+	<ul>
+		<% 
+			for (Entry entry: System.getProperties().entrySet()) {
+				out.println("<li><b>" + entry.getKey() + "</b> -- " + entry.getValue() + "</li>");
+			}
+		%>
+	</ul>
+	
+	<h4>All Environment Variables</h4>
+	<ul>
+		<% 
+			for (Entry entry: System.getenv().entrySet()) {
+				out.println("<li><b>" + entry.getKey() + "</b> -- " + entry.getValue() + "</li>");
+			}
+		%>
 	</ul>
 	
 	<% if (isNested) { %>
