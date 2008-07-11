@@ -2,6 +2,13 @@ package gov.usgswim.sparrow.cachefactory;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+/**
+ * A request for break-points in a set of data.
+ * 
+ * TODO:  Should include an enumeration to specify equal count or equal range.
+ * @author eeverman
+ *
+ */
 public class BinningRequest {
 	private final Integer contextID;
 	private final int binCount;

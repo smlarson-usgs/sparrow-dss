@@ -47,25 +47,49 @@ public class BinningFactory implements CacheEntryFactory {
 		}
 		
 		PredictResult adjResult = SharedApplication.getInstance().getAnalysisResult(context);
+		
+		return getEqualCountBins(request, adjResult);
+	}
+	
+	/**
+	 * Returns an equal count set of bins so that the bins define break-point boundaries
+	 * with approximately an equal number of values in each bin.
+	 * 
+	 * @param request
+	 * @param data
+	 * @return
+	 */
+	protected float[] getEqualCountBins(BinningRequest request, PredictResult data) {
 
-		adjResult.getRowCount();
-		int totalRows = adjResult.getRowCount();
-		double binSize = (double)(totalRows) / (double)(request.getBinCount());
+		int totalRows = data.getRowCount();	//Total rows of data
 		
-		float[] values = new float[totalRows];
-		float[] bins = new float[request.getBinCount() + 1];
+		//Number of rows 'contained' in each bin.  This likely will not come out even,
+		//so use a double to preserve the fractional rows.
+		double binSize = (double)(totalRows) / (double)(request.getBinCount());	
 		
+		float[] values = new float[totalRows];	//Array holding all values
+		//The bins, where each value is a fence post w/ values between, thus, there is one more 'post' than bins.
+		//The first value is the lowest value in values[], the last value is the largest value.
+		float[] bins = new float[request.getBinCount() + 1];	
+		
+		//Export all values in the specified column to values[] so they can be sorted
 		for (int r=0; r<totalRows; r++) {
-			values[r] = adjResult.getFloat(r, request.getColumnIndex());
+			values[r] = data.getFloat(r, request.getColumnIndex());
 		}
 		
 		Arrays.sort(values);
 		
+		//Assign first and last values for the bins (min and max)
 		bins[0] = values[0];
 		bins[request.getBinCount()] = values[totalRows - 1];
 		
+		//Assign the middle breaks so that equal numbers of values fall into each bin
 		for (int i=1; i<(request.getBinCount()); i++) {
+			
+			//Get the row containing the nearest integer split
 			int split = (int) ((double)i * binSize);
+			
+			//The bin boundary is the value contained at that row.
 			bins[i] = values[split];
 		}
 		
