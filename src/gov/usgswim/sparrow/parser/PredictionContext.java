@@ -3,6 +3,11 @@ package gov.usgswim.sparrow.parser;
 import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import gov.usgswim.datatable.DataTable;
+import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.datatable.DataTableCompare;
+import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.service.SharedApplication;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -165,6 +170,85 @@ public class PredictionContext implements XMLStreamParserComponent {
 	}
 	
 	/**
+	 * Centralized method to get a reference to the data table and a column in it
+	 * for use any place we need to access the data column.
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public DataColumn getDataColumn() throws Exception {
+		int dataColIndex = -1;	//The index of the data column
+		DataTable dataTable = null;		//The table containing the data column
+		
+		Select select = getAnalysis().getSelect();
+		DataSeriesType type = select.getDataSeries();
+		
+		if (type.isResultBased()) {
+
+			//We will try to get result-based series out of the analysis cache
+			PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
+			
+			switch (type) {
+			case total:
+				if (select.getSource() != null) {
+					dataColIndex = result.getTotalColForSrc(select.getSource().longValue());
+				} else {
+					dataColIndex = result.getTotalCol();
+				}
+
+				break;
+			case incremental:
+				if (select.getSource() != null) {
+					dataColIndex = result.getIncrementalColForSrc(select.getSource().longValue());
+				} else {
+					dataColIndex = result.getIncrementalCol();
+				}
+
+				break;
+			default:
+				throw new Exception("No data-series was specified in the analysis section");
+			}
+			
+			dataTable = result;
+			
+		} else {
+			
+			//Get the predict data, which is what this series is based on
+			PredictData nomPredictData = SharedApplication.getInstance().getPredictData(this.getModelID());
+			
+			switch (type) {
+			case source_value:
+				if (select.getSource() != null) {
+					
+					dataColIndex = nomPredictData.getSourceIndexForSourceID(select.getSource());
+					
+					DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(this.getAdjustmentGroups());
+					
+					if (select.getNominalComparison().isNone()) {
+						
+						dataTable = adjSrc;
+						
+					} else  {
+						
+						//working w/ either a percent or absolute comparison
+						dataTable = new DataTableCompare(
+								nomPredictData.getSrc(), adjSrc,
+								select.getNominalComparison().equals(ComparisonType.absolute));
+					}
+				} else {
+					throw new Exception("The data series 'source_value' requires a source ID to be specified.");
+				}
+				break;
+			default:
+				throw new Exception("No data-series was specified in the analysis section");
+			}
+		}
+		
+		return new DataColumn(dataTable, dataColIndex);
+	}
+	
+	
+	/**
 	 * Consider two instances the same if they have the same calculated hashcodes
 	 */
   public boolean equals(Object obj) {
@@ -300,5 +384,32 @@ public class PredictionContext implements XMLStreamParserComponent {
 
 	public AreaOfInterest getAreaOfInterest() {
 		return areaOfInterest;
+	}
+	
+	/**
+	 * An inner class to bundle a DataTable and a column index together so that
+	 * it is possible to return these two together for methods returning the
+	 * data column.
+	 * 
+	 * @author eeverman
+	 *
+	 */
+	public class DataColumn {
+		private final DataTable table;
+		private final int column;
+		
+		public DataColumn(DataTable table, int column) {
+				this.table = table;
+				this.column = column;
+		}
+
+		public DataTable getTable() {
+    	return table;
+    }
+
+		public int getColumn() {
+    	return column;
+    }
+		
 	}
 }

@@ -12,12 +12,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class BinningRequest {
 	private final Integer contextID;
 	private final int binCount;
-	private final int columnIndex;
 	
-	public BinningRequest(Integer contextID, int binCount, int columnIndex) {
+	public BinningRequest(Integer contextID, int binCount) {
 		this.contextID = contextID;
 		this.binCount = binCount;
-		this.columnIndex = columnIndex;
 		
 	}
 
@@ -27,10 +25,6 @@ public class BinningRequest {
 
 	public Integer getBinCount() {
   	return binCount;
-  }
-
-	public int getColumnIndex() {
-  	return columnIndex;
   }
 
 	
@@ -52,7 +46,6 @@ public class BinningRequest {
 		HashCodeBuilder hash = new HashCodeBuilder(197, 1343);
 		hash.append(contextID);
 		hash.append(binCount);
-		hash.append(columnIndex);
 
 		return hash.toHashCode();
 	}

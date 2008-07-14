@@ -288,67 +288,9 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 
 		PredictData nomPredictData = SharedApplication.getInstance().getPredictData(context.getModelID());
 		
-		int dataColIndex = 0;	//The column of the data in the resultTable (unknown initially)
-		DataTable resultTable = null;	//The table to get data from (could be results of prediction, source vals, or other)
+		PredictionContext.DataColumn dc = context.getDataColumn();
 		
-		
-		Select select = context.getAnalysis().getSelect();
-		DataSeriesType type = select.getDataSeries();
-		
-		if (type.isResultBased()) {
-			//We will try to get result-based series out of the analysis cache
-			PredictResult result = SharedApplication.getInstance().getAnalysisResult(context);
-			
-			switch (type) {
-			case total:
-				if (select.getSource() != null) {
-					dataColIndex = result.getTotalColForSrc(select.getSource().longValue());
-				} else {
-					dataColIndex = result.getTotalCol();
-				}
-				resultTable = result;
-				
-				break;
-			case incremental:
-				if (select.getSource() != null) {
-					dataColIndex = result.getIncrementalColForSrc(select.getSource().longValue());
-				} else {
-					dataColIndex = result.getIncrementalCol();
-				}
-				resultTable = result;
-				break;
-			default:
-				throw new Exception("No data-series was specified in the analysis section");
-			}
-			
-		} else {
-			switch (type) {
-			case source_value:
-				if (select.getSource() != null) {
-					
-					dataColIndex = nomPredictData.getSourceIndexForSourceID(select.getSource());
-					DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(context.getAdjustmentGroups());
-					
-					if (select.getNominalComparison().isNone()) {
-						
-						resultTable = adjSrc;
-						
-					} else  {
-						
-						//working w/ either a percent or absolute comparison
-						resultTable = new DataTableCompare(
-								nomPredictData.getSrc(), adjSrc,
-								select.getNominalComparison().equals(ComparisonType.absolute));
-					}
-				} else {
-					throw new Exception("The data series 'source_value' requires a source ID to be specified.");
-				}
-				break;
-			default:
-				throw new Exception("No data-series was specified in the analysis section");
-			}
-		}
-		int rowCount = resultTable.getRowCount();
+		int rowCount = dc.getTable().getRowCount();
 		NSRow[] nsRows = new NSRow[rowCount];
 
 		//TODO:  This should use row ids from the PredictResult if possible
@@ -361,7 +303,7 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 			row[0] = new Field(sysInfo.getInt(r, 0));
 			row[0].setKey(true);
 
-			row[1] = new Field(resultTable.getDouble(r, dataColIndex));	//Value
+			row[1] = new Field(dc.getTable().getDouble(r, dc.getColumn()));	//Value
 
 			NSRow nsRow = new NSRow(row);
 			nsRows[r] = nsRow;

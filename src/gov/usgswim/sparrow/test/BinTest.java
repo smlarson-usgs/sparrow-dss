@@ -42,7 +42,7 @@ public class BinTest extends TestCase {
 		BinningFactory fact = new BinningFactory();
 		
 		for (int binNumber=0; binNumber<12; binNumber++) {
-			float[] bins = (float[]) fact.createEntry(new BinningRequest(contextId, 4, binNumber));
+			float[] bins = (float[]) fact.createEntry(new BinningRequest(contextId, binNumber));
 			
 			System.out.println("- - - -");
 			System.out.println("Bins for column :" + binNumber);
