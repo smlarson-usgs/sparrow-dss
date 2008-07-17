@@ -119,6 +119,9 @@ public class LifecycleListener implements ServletContextListener {
 		SelfPopulatingCache reachesByCriteria = new SelfPopulatingCache(cm.getEhcache(SharedApplication.REACHES_BY_CRITERIA), new ReachesByCriteriaFactory());
 		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.REACHES_BY_CRITERIA), reachesByCriteria);
 		
+		//DataBinning
+        SelfPopulatingCache dataBinning = new SelfPopulatingCache(cm.getEhcache(SharedApplication.DATA_BINNING), new BinningFactory());
+        cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.DATA_BINNING), dataBinning);
 	}
 
 }

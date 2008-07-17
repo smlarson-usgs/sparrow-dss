@@ -6,6 +6,7 @@ import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.sparrow.PredictComputable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
+import gov.usgswim.sparrow.cachefactory.BinningRequest;
 import gov.usgswim.sparrow.cachefactory.ReachID;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.deprecated.IDByPointComputable;
@@ -77,13 +78,14 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	public static final String IDENTIFY_REACH_BY_POINT = "IdentifyReachByPoint";
 	public static final String IDENTIFY_REACH_BY_ID = "IdentifyReachByID";
 	public static final String REACHES_BY_CRITERIA = "ReachesByCriteria";
+	public static final String DATA_BINNING = "DataBinning";
 	
 
 	
 	private SharedApplication() {
 		super(null);
 
-		//These are now all depricated in favor of the EHCache versions
+		//These are now all deprecated in favor of the EHCache versions
 		predictResultCache = new ComputableCache<PredictRequest, PredictResult>(new PredictComputable(), "Predict Result Cache");
 		predictDatasetCache = new ComputableCache<Long, PredictData>(new PredictDatasetComputable(), "Predict Dataset Cache");
 		idByPointCache = new ComputableCache<IDByPointRequest_old, DataTable>(new IDByPointComputable(), "ID by Point Cache");
@@ -475,6 +477,16 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		return (e != null)?((List<Long>) e.getObjectValue()):null;
 	}
 	
+    //Adjusted Source Cache
+    public double[] getDataBinning(BinningRequest req) {
+        return getDataBinning(req, false);
+    }
+    
+    public double[] getDataBinning(BinningRequest req, boolean quiet) {
+        Ehcache c = CacheManager.getInstance().getEhcache(DATA_BINNING);
+        Element e  = (quiet)?c.getQuiet(req):c.get(req);
+        return (e != null)?((double[]) e.getObjectValue()):null;
+    }
 	
 	
 	public ComputableCache<PredictRequest, PredictResult> getPredictResultCache() {

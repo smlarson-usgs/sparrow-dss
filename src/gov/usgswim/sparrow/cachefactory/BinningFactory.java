@@ -1,7 +1,6 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -33,7 +32,6 @@ import org.apache.log4j.Logger;
  * (what it can consider) a single thread environment.
  * 
  * @author eeverman
- *
  */
 public class BinningFactory implements CacheEntryFactory {
 	protected static Logger log =
@@ -47,23 +45,32 @@ public class BinningFactory implements CacheEntryFactory {
 			throw new Exception("No context found for context-id '" + request.getContextID() + "'");
 		}
 
-		
 		PredictionContext.DataColumn dc = context.getDataColumn();
 		
-		return getEqualCountBins(dc.getTable(), dc.getColumn(), request.getBinCount());
+		double[] bins = null;
+		
+		// Determine type of binning to perform, calling the appropriate method
+		if (request.getBinType() == BinningRequest.BIN_TYPE.EQUAL_COUNT) {
+		    bins = getEqualCountBins(dc.getTable(), dc.getColumn(), request.getBinCount());
+		} else if (request.getBinType() == BinningRequest.BIN_TYPE.EQUAL_RANGE) {
+		    bins = getEqualRangeBins(dc.getTable(), dc.getColumn(), request.getBinCount());
+		}
+		
+		return bins;
 	}
 	
 	
 	/**
-	 * Returns an equal count set of bins so that the bins define break-point boundaries
-	 * with approximately an equal number of values in each bin.
+	 * Returns an equal count set of bins so that the bins define break-point
+	 * boundaries with approximately an equal number of values in each bin.
 	 * 
-	 * @param data
-	 * @param columnIndex
-	 * @param binCount
-	 * @return
+     * @param data Table of data containing the column to divide into bins.
+     * @param columnIndex Index of the column to divide into bins.
+     * @param binCount Number of bins to divide the column into.
+     * @return Set of bins such that the bins define break-point boundaries
+     *         with an approximately equal number of values contained within.
 	 */
-	protected float[] getEqualCountBins(DataTable data, int columnIndex, int binCount) {
+	protected double[] getEqualCountBins(DataTable data, int columnIndex, int binCount) {
 
 		int totalRows = data.getRowCount();	//Total rows of data
 		
@@ -74,7 +81,7 @@ public class BinningFactory implements CacheEntryFactory {
 		float[] values = new float[totalRows];	//Array holding all values
 		//The bins, where each value is a fence post w/ values between, thus, there is one more 'post' than bins.
 		//The first value is the lowest value in values[], the last value is the largest value.
-		float[] bins = new float[binCount + 1];	
+		double[] bins = new double[binCount + 1];	
 		
 		//Export all values in the specified column to values[] so they can be sorted
 		for (int r=0; r<totalRows; r++) {
@@ -94,9 +101,49 @@ public class BinningFactory implements CacheEntryFactory {
 			int split = (int) ((double)i * binSize);
 			
 			//The bin boundary is the value contained at that row.
-			bins[i] = values[split];
+			bins[i] = (double) values[split];
 		}
 		
 		return bins;
 	}
+	
+    /**
+     * Returns an equal range set of bins such that the bins define break-point
+     * boundaries whose values are approximately equally spaced apart.
+     *
+     * @param data Table of data containing the column to divide into bins.
+     * @param columnIndex Index of the column to divide into bins.
+     * @param binCount Number of bins to divide the column into.
+     * @return Set of bins such that the bins define break-point boundaries
+     *         whose values are approximately equally spaced apart.
+     */
+    protected double[] getEqualRangeBins(DataTable data, int columnIndex, int binCount) {
+        int totalRows = data.getRowCount(); // Total rows of data
+
+        // Grab the min and max values from the datatable
+        double minValue = Double.MAX_VALUE;
+        double maxValue = Double.MIN_VALUE;
+        for (int r = 0; r < totalRows; r++) {
+            float value = data.getFloat(r, columnIndex);
+            minValue = Math.min(value, minValue);
+            maxValue = Math.max(value, maxValue);
+        }
+
+        // Size of the range of values that will be defined by each bin
+        double binRangeSize = (maxValue - minValue) / (double)(binCount);
+
+        // The bins, where each value is a fence post with values between, thus
+        // there is one more post than bins.  The first value is the minimum,
+        // the last value is the maximum.
+        double[] bins = new double[binCount + 1];
+        bins[0] = minValue;
+        bins[binCount] = maxValue;
+
+        // Assign the breakpoints so that an equal range of values fall into each bin
+        for (int i = 1; i < binCount; i++) {
+            bins[i] = minValue + ((double)i * binRangeSize);
+        }
+
+        return bins;
+    }
 }
