@@ -74,6 +74,14 @@
 			<param-value>gov.usgswim.sparrow.service.json.JSONifyPipeline</param-value>
 		</init-param>
 	</servlet>
+	<servlet>
+        <servlet-name>BinningService</servlet-name>
+        <servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
+        <init-param>
+            <param-name>pipeline-class</param-name>
+            <param-value>gov.usgswim.sparrow.service.binning.BinningPipeline</param-value>
+        </init-param>
+	</servlet>
 	<servlet-mapping>
 		<servlet-name>ModelService</servlet-name>
 		<url-pattern>/sp_model/*</url-pattern>
@@ -107,6 +115,10 @@
 	<servlet-mapping>
 		<servlet-name>JSONifyService</servlet-name>
 		<url-pattern>/sp_jsonify/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+        <servlet-name>BinningService</servlet-name>
+        <url-pattern>/sp_binning/*</url-pattern>
 	</servlet-mapping>
 	<!-- Attribute services  -->
 	<!-- 
