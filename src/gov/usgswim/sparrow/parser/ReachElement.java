@@ -42,10 +42,10 @@ public class ReachElement implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 
-	private Long id;	//The Model Specific ID of the reach. (not the db PK).
+	protected Long id;	//The Model Specific ID of the reach. (not the db PK).
 	
 	//TODO: This should be a sorted set
-	private List<Adjustment> adjs;	//List of one or more adjustments
+	protected List<Adjustment> adjs;	//List of one or more adjustments
 	
 	// ================
 	// INSTANCE METHODS

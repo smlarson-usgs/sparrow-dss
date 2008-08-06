@@ -110,9 +110,9 @@ public class ReachGroup implements XMLStreamParserComponent {
 						ls.parse(in);
 						logicalSets.add(ls);
 					} else if (ReachElement.isTargetMatch(localName)) {
-						ReachElement r = new ReachElement();
-						r.parse(in);
-						reaches.add(r);
+						UnadjustableReachElement ur = new UnadjustableReachElement();
+						ur.parse(in);
+						reaches.add(ur);
 					} else {
 						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
 					}

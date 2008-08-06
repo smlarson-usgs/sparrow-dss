@@ -42,6 +42,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	private Long modelID;
 	private List<ReachGroup> reachGroups = new ArrayList<ReachGroup>();
 	private ReachGroup defaultGroup;
+	private ReachGroup individualGroup;
 	private Integer id;
 	private String conflicts;	//This should be an enum
 
@@ -90,8 +91,9 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 					} else if (DefaultGroupParser.isTargetMatch(localName)) {
 						DefaultGroupParser dg = new DefaultGroupParser(modelID);
 						defaultGroup = dg.parse(in);
-					} else if ("individual-group".equals(localName)) {
-						ParserHelper.ignoreElement(in);
+					} else if (IndividualGroup.isTargetMatch(localName)) {
+					    IndividualGroup ig = new IndividualGroup(modelID);
+					    individualGroup = ig.parse(in);
 					}
 					break;
 				case END_ELEMENT:
@@ -154,12 +156,14 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 				hash.append(defaultGroup.getStateHash());
 			}
 
-
 			if (reachGroups != null && reachGroups.size() > 0) {
 				for (ReachGroup rg: reachGroups) {
 					hash.append(rg.getStateHash());
 				}
-
+			}
+			
+			if (individualGroup != null) {
+			    hash.append(individualGroup.getStateHash());
 			}
 
 			id = hash.toHashCode();
@@ -201,16 +205,15 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 			}
 		}
 
+        //Two places to adjust:  SparseCoeff allows coeff adjustments to individual
+        //reaches, SparesOverride, which wraps coef, allows absolute value adjustments
+        //to individual reaches.
+        SparseCoefficientAdjustment coefAdj = new SparseCoefficientAdjustment(adjusted);
+        SparseOverrideAdjustment overAdj = new SparseOverrideAdjustment(coefAdj);
+
 		//Loop thru ReachGroups to do adjustments
 		//Here we are assuming conflict accumulate
 		if (reachGroups != null && reachGroups.size() > 0) {
-
-			//Two places to adjust:  SparseCoeff allows coeff adjustments to individual
-			//reaches, SparesOverride, which wraps coef, allows absolute value adjustments
-			//to individual reaches.
-			SparseCoefficientAdjustment coefAdj = new SparseCoefficientAdjustment(adjusted);
-			SparseOverrideAdjustment overAdj = new SparseOverrideAdjustment(coefAdj);
-
 
 			for (ReachGroup rg: reachGroups) {
 				if (rg.isEnabled()) {
@@ -233,26 +236,30 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 							}
 						}
 					}
-
-
-					//Loop Through the explicit set of reaches to apply reach-specific adjustments
-					for (ReachElement r: rg.getExplicitReaches()) {
-						int row = data.getRowForReachID(r.getId());
-						//apply the adjustments specified for just this reach (if any)
-						//Note:  getAdjustments() never returns null
-						for (Adjustment adj: r.getAdjustments()) {
-							Integer srcId = adj.getSource();
-							applyAdjustmentToReach(adj, row, data.getSourceIndexForSourceID(srcId), coefAdj, overAdj);
-						}
-					}
 				}
 			}
-			adjusted = overAdj;	//resulting adjustment
 		}
+		
+		// Do individual reach adjustments
+		if (individualGroup != null
+		        && individualGroup.getExplicitReaches().size() > 0
+		        && individualGroup.isEnabled()) {
+		    
+		    // Iterate over the explicit set of reaches and apply adjustments
+            for (ReachElement r: individualGroup.getExplicitReaches()) {
+                int row = data.getRowForReachID(r.getId());
+                // Apply the adjustments specified for just this reach (if any)
+                // Note:  getAdjustments() never returns null
+                for (Adjustment adj: r.getAdjustments()) {
+                    Integer srcId = adj.getSource();
+                    applyAdjustmentToReach(adj, row, data.getSourceIndexForSourceID(srcId), coefAdj, overAdj);
+                }
+            }
+        }
 
-
-		return adjusted;
-	}
+        adjusted = overAdj; //resulting adjustment
+        return adjusted;
+    }
 
 	private void applyAdjustmentToReach(Adjustment adj, int row, int col, SparseCoefficientAdjustment coefAdj, SparseOverrideAdjustment overAdj) throws Exception {
 		Double coef = adj.getCoefficient();
@@ -310,5 +317,9 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	 */
 	public ReachGroup getDefaultGroup() {
 		return defaultGroup;
+	}
+	
+	public ReachGroup getIndividualGroup() {
+	    return individualGroup;
 	}
 }
