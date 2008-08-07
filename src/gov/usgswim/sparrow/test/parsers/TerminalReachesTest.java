@@ -15,6 +15,18 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 public class TerminalReachesTest extends TestCase {
+    
+    /** Valid xml string represention of the terminal reaches. */
+    public static final String VALID_FRAGMENT = ""
+        + "<terminal-reaches>"
+        + "  <reach>2345642</reach>"
+        + "  <reach>3425688</reach>"
+        + "  <reach>5235424</reach>"
+        + "  <logical-set/>"
+        + "</terminal-reaches>"
+        ;
+
+    /** Used to create XMLStreamReaders from XML strings. */
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	
 	public void testParseMainUseCase() throws Exception {

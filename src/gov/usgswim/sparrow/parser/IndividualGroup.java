@@ -1,5 +1,12 @@
 package gov.usgswim.sparrow.parser;
 
+import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -34,26 +41,61 @@ public class IndividualGroup extends ReachGroup {
     @Override
     public ReachGroup parse(XMLStreamReader in) throws XMLStreamException,
     XMLParseValidationException {
+        
+        String localName = in.getLocalName();
+        int eventCode = in.getEventType();
+        assert (isParseTarget(localName) && eventCode == START_ELEMENT) : 
+            this.getClass().getSimpleName() + " can only parse " + getParseTarget() + " elements.";
+        boolean isStarted = false;
 
-        ReachGroup group = super.parse(in);
+        while (in.hasNext()) {
+            if (isStarted) {
+                // Don't advance past the first element.
+                eventCode = in.next();
+            } else {
+                isStarted = true;
+            }
 
-        if (group.getName() != null) {
-            throw new XMLParseValidationException("The individual-group does not allow a name");
-        }
-        if (group.getDescription() != null) {
-            throw new XMLParseValidationException("The individual-group does not allow a description");
-        }
-        if (group.getNotes() != null) {
-            throw new XMLParseValidationException("The individual-group does not allow a notes");
-        }
-        if (group.getAdjustments().size() > 0) {
-            throw new XMLParseValidationException("The individual-group does not allow group-wide adjustments to be specified");
-        }
-        if (group.getLogicalSets().size() > 0) {
-            throw new XMLParseValidationException("The individual-group does not allow logical sets to be specified");
-        }
+            // Main event loop -- parse until corresponding target end tag encountered.
+            switch (eventCode) {
+                case START_ELEMENT:
+                    localName = in.getLocalName();
+                    if (isParseTarget(localName)) {
+                        isEnabled = "true".equals(in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "enabled"));
+                        
+                        // Disallow the name attribute
+                        String name = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "name");
+                        if (name != null) {
+                            throw new XMLParseValidationException("The individual group is not allowed a name.");
+                        }
+                    } else if (ReachElement.isTargetMatch(localName)) {
+                        ReachElement r = new ReachElement();
+                        r.parse(in);
+                        reaches.add(r);
+                    } else {
+                        throw new XMLParseValidationException("Invalid child element <" + localName + "> for " + MAIN_ELEMENT_NAME);
+                    }
+                    break;
+                case END_ELEMENT:
+                    localName = in.getLocalName();
+                    if (isParseTarget(localName)) {
+                        
+                        //Wrap collections as unmodifiable
+                        if (reaches != null) {
+                            reaches = Collections.unmodifiableList(reaches);
+                        } else {
+                            reaches = Collections.emptyList();
+                        }
 
-        return group;
+                        checkValidity();
+                        return this; // we're done
+                    }
+                    // otherwise, error
+                    throw new XMLParseValidationException("unexpected closing tag of </" + localName + ">; expected  " + getParseTarget());
+                    //break;
+            }
+        }
+        throw new XMLParseValidationException("tag <" + getParseTarget() + "> not closed. Unexpected end of stream?");
     }
 
     @Override

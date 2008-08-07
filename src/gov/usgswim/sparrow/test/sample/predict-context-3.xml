@@ -6,8 +6,8 @@
 			<notes />
 			<adjustment src="3" coef="2" />
 			<!-- These are the 1st two reaches -->
-			<reach id="3074"/>
-			<reach id="3077"/>
+			<reach id="3074" />
+			<reach id="3077" />
 		</reach-group>
 	</adjustment-groups>
 	<analysis>

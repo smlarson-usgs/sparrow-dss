@@ -46,19 +46,19 @@ public class ReachGroup implements XMLStreamParserComponent {
 		this.modelID = modelID;
 	}
 	
-	private boolean isEnabled;
-	private String name;
-	private String description;
-	private String notes;
+	protected boolean isEnabled;
+	protected String name;
+	protected String description;
+	protected String notes;
 	
-	private List<Adjustment> adjs = new ArrayList<Adjustment>();
-	private List<ReachElement> reaches = new ArrayList<ReachElement>();
-	private List<LogicalSet> logicalSets;
-	private transient List<List<Long>> reachIDsByLogicalSets; // transient as this is fetched from cache
+	protected List<Adjustment> adjs = new ArrayList<Adjustment>();
+	protected List<ReachElement> reaches = new ArrayList<ReachElement>();
+	protected List<LogicalSet> logicalSets;
+	protected transient List<List<Long>> reachIDsByLogicalSets; // transient as this is fetched from cache
 	
 	// search
-	private transient Set<Long> containedReachIDs; // temporary storage as convenience for searching
-	private long modelID;
+	protected transient Set<Long> containedReachIDs; // temporary storage as convenience for searching
+	protected long modelID;
 	
 	// ================
 	// INSTANCE METHODS
@@ -334,7 +334,6 @@ public class ReachGroup implements XMLStreamParserComponent {
 		}
 		
 		// reachIDsByLogicalSets deliberately ignored
-		
 		return hcb.toHashCode();
 		
 	}

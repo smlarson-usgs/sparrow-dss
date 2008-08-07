@@ -89,9 +89,11 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 						rg.parse(in);
 						reachGroups.add(rg);
 					} else if (DefaultGroupParser.isTargetMatch(localName)) {
+					    // TODO: we should check for only 1 default group
 						DefaultGroupParser dg = new DefaultGroupParser(modelID);
 						defaultGroup = dg.parse(in);
 					} else if (IndividualGroup.isTargetMatch(localName)) {
+					    // TODO: we should check for only 1 individual group
 					    IndividualGroup ig = new IndividualGroup(modelID);
 					    individualGroup = ig.parse(in);
 					}
@@ -129,6 +131,9 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 		}
 		if (defaultGroup != null) {
 			myClone.defaultGroup = defaultGroup.clone();
+		}
+		if (individualGroup != null) {
+		    myClone.individualGroup = individualGroup.clone();
 		}
 		myClone.conflicts = conflicts;
 

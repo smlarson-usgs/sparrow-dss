@@ -12,6 +12,7 @@ public class AllParseTests extends TestCase {
 		suite.addTestSuite(AnalysisTest.class);
 		suite.addTestSuite(DefaultGroupTest.class);
 		suite.addTestSuite(IDByPointParserTest.class);
+		suite.addTestSuite(IndividualGroupTest.class);
 		suite.addTestSuite(ParserHelperTest.class);
 		suite.addTestSuite(PredictionContextTest.class);
 		suite.addTestSuite(ReachGroupTest.class);

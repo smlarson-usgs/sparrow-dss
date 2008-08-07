@@ -12,7 +12,23 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 public class AnalysisTest extends TestCase {
-	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
+    
+    /** Valid xml string represention of the analysis section. */
+    public static final String VALID_FRAGMENT = ""
+        + "<analysis>"
+        + "  <select>"
+        + "    <data-series source=\"1\" per=\"area\">incremental</data-series>"
+        + "    <agg-function per=\"area\">avg</agg-function>"
+        + "    <analytic-function partition=\"HUC6\">rank-desc</analytic-function>"
+        + "    <nominal-comparison type=\"percent\"/>"
+        + "  </select>"
+        + "  <limit-to>contributors</limit-to>"
+        + "  <group-by>HUC8</group-by>"
+        + "</analysis>"
+        ;
+
+    /** Used to create XMLStreamReaders from XML strings. */
+    protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	
 	public void testParse1() throws Exception {
 
@@ -37,7 +53,7 @@ public class AnalysisTest extends TestCase {
 	
 	@SuppressWarnings("static-access")
   public Analysis buildTestInstance() throws Exception {
-		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(getTestRequest()));
+		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(VALID_FRAGMENT));
 		Analysis test = new Analysis();
 		reader.next();
 		test = test.parse(reader);
@@ -48,19 +64,4 @@ public class AnalysisTest extends TestCase {
 		
 		return test;
 	}
-	
-	public String getTestRequest() {
-		String testRequest = "<analysis>"
-			+ "	<select>"
-			+ "		<data-series source=\"1\" per=\"area\">incremental</data-series>"
-			+ "		<agg-function per=\"area\">avg</agg-function>"
-			+ "		<analytic-function partition=\"HUC6\">rank-desc</analytic-function>"
-			+ "		<nominal-comparison type=\"percent\"/>"
-			+ "	</select>"
-			+ "	<limit-to>contributors</limit-to>"
-			+ "	<group-by>HUC8</group-by>"
-			+ "</analysis>";
-		return testRequest;
-	}
-
 }

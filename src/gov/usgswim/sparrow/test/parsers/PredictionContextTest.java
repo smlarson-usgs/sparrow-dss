@@ -3,7 +3,6 @@ package gov.usgswim.sparrow.test.parsers;
 import static gov.usgswim.sparrow.test.TestHelper.getAttributeValue;
 import static gov.usgswim.sparrow.test.TestHelper.pipeDispatch;
 import static gov.usgswim.sparrow.test.TestHelper.readToString;
-import gov.usgswim.sparrow.parser.ComparisonType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
@@ -23,7 +22,33 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
+
+/**
+ * Unit tests for the {@code PredictionContext} class.  The unit tests in this
+ * class test parsing functionality that is specific to the
+ * {@code PredictionContext} class and, hence, only need to ensure that a few
+ * basic items are handled properly.  The majority of the parsing functionality
+ * is handled by child-level classes who receive XML fragments from
+ * {@code PredictionContext} by way of delegation.  It is in those classes'
+ * tests that the more complicated testing occurs (e.g. adjustment calculation).
+ */
 public class PredictionContextTest extends TestCase {
+    
+    /** Valid xml string represention of the prediction context. */
+    public static final String VALID_FRAGMENT = ""
+        + "<prediction-context "
+        + "  xmlns=\"http://www.usgs.gov/sparrow/prediction-schema/v0_2\""
+        + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+        + "  model-id=\"22\">"
+        + AdjustmentGroupsTest.VALID_FRAGMENT
+        + AnalysisTest.VALID_FRAGMENT
+        + TerminalReachesTest.VALID_FRAGMENT
+        + AreaOfInterestTest.VALID_FRAGMENT
+        + "</prediction-context>"
+        ;
+    
+    /** Used to create XMLStreamReaders from XML strings. */
+    protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	
 	// ================
 	// STATIC CONSTANTS
@@ -55,18 +80,13 @@ public class PredictionContextTest extends TestCase {
 		
 	}
 	
-	protected static XMLInputFactory inFact = XMLInputFactory.newInstance();
-	
 	// ============
 	// TEST METHODS
 	// ============
 	public void testParseMainUseCase() throws Exception {
-		PredictionContext pCon = buildContext(getFullTestRequest());
+		PredictionContext pCon = buildContext(VALID_FRAGMENT);
 
 		assertEquals(Long.valueOf(22), pCon.getModelID());
-		assertEquals("HUC8", pCon.getAnalysis().getGroupBy());
-		assertEquals(3, pCon.getTerminalReaches().getReachIDs().size());
-		assertEquals(ComparisonType.absolute, pCon.getAnalysis().getSelect().getNominalComparison());
 	}
 	
 	public void testPredictContext1() throws Exception {
@@ -99,8 +119,8 @@ public class PredictionContextTest extends TestCase {
 	
 	public void testHashcode() throws Exception {
 		{
-			PredictionContext predCtxt1 = buildContext(getFullTestRequest());
-			PredictionContext prdCtxt2 = buildContext(getFullTestRequest());
+			PredictionContext predCtxt1 = buildContext(VALID_FRAGMENT);
+			PredictionContext prdCtxt2 = buildContext(VALID_FRAGMENT);
 			PredictionContext predCtxt3 = predCtxt1.clone();
 
 			TestHelper.testHashCode(predCtxt1, prdCtxt2, predCtxt1.clone());
@@ -131,11 +151,15 @@ public class PredictionContextTest extends TestCase {
 	public void testOptionalAdjustmentGroup() throws Exception {
 
 		// No error should be thrown on optional adjustmentGroup
-		String testRequest = getPredictionContextHeader()
+		String testRequest = ""
+	        + "<prediction-context "
+	        + "  xmlns=\"http://www.usgs.gov/sparrow/prediction-schema/v0_2\""
+	        + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+	        + "  model-id=\"22\">"
 			//+ getAdjustmentGroups()
-			+ getAnalysis()
-			+ getTerminalReaches()
-			+ getAreaOfInterest()
+			+ AnalysisTest.VALID_FRAGMENT
+			+ TerminalReachesTest.VALID_FRAGMENT
+			+ AreaOfInterestTest.VALID_FRAGMENT
 			+ "</prediction-context>";
 
 		buildContext(testRequest);
@@ -146,11 +170,15 @@ public class PredictionContextTest extends TestCase {
 	public void testOptionalTerminalReaches() throws Exception {
 
 		// No error should be thrown on optional adjustmentGroup
-		String testRequest = getPredictionContextHeader()
-			+ getAdjustmentGroups()
-			+ getAnalysis()
-			//+ getTerminalReaches()
-			+ getAreaOfInterest()
+		String testRequest = ""
+            + "<prediction-context "
+            + "  xmlns=\"http://www.usgs.gov/sparrow/prediction-schema/v0_2\""
+            + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            + "  model-id=\"22\">"
+			+ AdjustmentGroupsTest.VALID_FRAGMENT
+			+ AnalysisTest.VALID_FRAGMENT
+			//+ TerminalReachesTest.VALID_FRAGMENT
+			+ AreaOfInterestTest.VALID_FRAGMENT
 			+ "</prediction-context>";
 
 		buildContext(testRequest);
@@ -161,11 +189,15 @@ public class PredictionContextTest extends TestCase {
 	public void testOptionalAreaOfInterset() throws Exception {
 
 		// No error should be thrown on optional adjustmentGroup
-		String testRequest = getPredictionContextHeader()
-			+ getAdjustmentGroups()
-			+ getAnalysis()
-			+ getTerminalReaches()
-			//+ getAreaOfInterest()
+		String testRequest = ""
+            + "<prediction-context "
+            + "  xmlns=\"http://www.usgs.gov/sparrow/prediction-schema/v0_2\""
+            + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+            + "  model-id=\"22\">"
+			+ AdjustmentGroupsTest.VALID_FRAGMENT
+			+ AnalysisTest.VALID_FRAGMENT
+			+ TerminalReachesTest.VALID_FRAGMENT
+			//+ AreaOfInterestTest.VALID_FRAGMENT
 			+ "</prediction-context>";
 
 		buildContext(testRequest);
@@ -175,7 +207,7 @@ public class PredictionContextTest extends TestCase {
 	}
 	
 	public void testParserHandling() throws XMLStreamException, XMLParseValidationException {
-		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(getFullTestRequest()));
+		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(VALID_FRAGMENT));
 		PredictionContext pCon = new PredictionContext();
 		reader.next();
 		pCon.parse(reader);
@@ -189,116 +221,11 @@ public class PredictionContextTest extends TestCase {
 	// HELPER METHODS
 	// ==============
 	
-	public static PredictionContext buildContext(String pcRequestXML) throws Exception {
+	public PredictionContext buildContext(String pcRequestXML) throws Exception {
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(pcRequestXML));
 		PredictionContext pCon = new PredictionContext();
 		reader.next();
 		return pCon.parse(reader);
-	}
-	
-	public String getFullTestRequest() {
-		String testRequest = getPredictionContextHeader()
-			+ getAdjustmentGroups()
-			+ getAnalysis()
-			+ getTerminalReaches()
-			+ getAreaOfInterest()
-			+ "</prediction-context>";
-		return testRequest;
-	}
-	
-	private String getAnalysis() {
-		return "	<analysis>"
-		+ "		<select>"
-		+ "			<data-series source=\"1\" per=\"area\">incremental</data-series>"
-		+ "			<agg-function per=\"area\">avg</agg-function>"
-		+ "			<analytic-function partition=\"HUC6\">rank-desc</analytic-function>"
-		+ "			<nominal-comparison type=\"absolute\"/>"
-		+ "		</select>"
-		+ "		<limit-to>contributors | terminals | area-of-interest</limit-to>"
-		+ "		<group-by>HUC8</group-by>"
-		+ "	</analysis>";
-	}
-
-	private String getPredictionContextHeader() {
-		return "<prediction-context "
-		+ "  xmlns=\"http://www.usgs.gov/sparrow/prediction-schema/v0_2\" "
-		+ "	xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
-		+ "	model-id=\"22\">";
-	}
-
-	private String getAreaOfInterest() {
-		return "	<area-of-interest>"
-		+ "		<logical-set/>	"
-		+ "	</area-of-interest>";
-		
-	}
-
-	private String getTerminalReaches() {
-		return "	<terminal-reaches>"
-		+ "		<reach>2345642</reach>"
-		+ "		<reach>3425688</reach>"
-		+ "		<reach>5235424</reach>"
-		+ "		<logical-set/>"
-		+ "	</terminal-reaches>";
-	}
-
-	private String getAdjustmentGroups() {
-		return "	<adjustment-groups conflicts=\"accumulate\">"
-		+ "		<reach-group enabled=\"true\" name=\"Northern Indiana Plants\">"
-		+ "			<desc>Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project</desc>"
-		+ "			<notes>"
-		+ "				I initially selected HUC 01746286 and 01746289,"
-		+ "				but it looks like there are some others plants that need to be included."
-		+ "				As a start, we are proposing a 10% reduction across the board,"
-		+ "				but we will tailor this later based on plant type."
-		+ "			</notes>"
-		+ "			<adjustment src=\"5\" coef=\".9\"/>"
-		+ "			<adjustment src=\"4\" coef=\".75\"/>"
-		+ "			<logical-set>"
-		+ "				<criteria attrib=\"huc8\">01746286</criteria>"
-		+ "			</logical-set>"
-		+ "			<logical-set>"
-		+ "				<criteria attrib=\"huc8\">01746289</criteria>"
-		+ "			</logical-set>"
-		+ "		</reach-group>"
-		+ "		<reach-group enabled=\"false\" name=\"Southern Indiana Fields\">"
-		+ "			<desc>Fields in Southern Indiana</desc>"
-		+ "			<notes>"
-		+ "				The Farmer's Alminac says corn planting will be up 20% this year,"
-		+ "				which will roughly result in a 5% increase in the aggrecultural source."
-		+ "				This is an estimate so I'm leaving it out of the runs created	for the EPA."
-		+ "			</notes>"
-		+ "			<adjustment src=\"1\" coef=\"1.05\"/>"
-		+ "			<logical-set>"
-		+ "				<criteria attrib=\"reach\" relation=\"upstream\">8346289</criteria>"
-		+ "			</logical-set>"
-		+ "			<logical-set>"
-		+ "				<criteria attrib=\"reach\" relation=\"upstream\">9374562</criteria>"
-		+ "			</logical-set>"
-		+ "		</reach-group>"
-		+ "		<reach-group enabled=\"true\" name=\"Illinois\">"
-		+ "			<desc>The entire state of Illinois</desc>"
-		+ "			<notes>The Urban source for Illinois is predicted is to increase 20%.</notes>"
-		+ "			<adjustment src=\"2\" coef=\"1.2\"/>"
-		+ "			<logical-set>"
-		+ "				<criteria attrib=\"state-code\">il</criteria>"
-		+ "			</logical-set>"
-		+ "		</reach-group>"
-		+ "		<reach-group enabled=\"true\" name=\"Illinois\">"
-		+ "			<desc>Wisconsin River Plants</desc>"
-		+ "			<notes>"
-		+ "				We know of 3 plants on the Wisconsin River which have announced improved"
-		+ "				BPM implementations."
-		+ "			</notes>"
-		+ "			<adjustment src=\"2\" coef=\".75\"/>"
-		+ "			<reach id=\"483947453\">"
-		+ "				<adjustment src=\"2\" abs=\".9\"/>"
-		+ "			</reach>"
-		+ "			<reach id=\"947839474\">"
-		+ "				<adjustment src=\"2\" abs=\"91344\"/>"
-		+ "			</reach>"
-		+ "		</reach-group>"
-		+ "	</adjustment-groups>";
 	}
 	
 	public static PredictContextRequest buildPredictContext4() throws Exception {

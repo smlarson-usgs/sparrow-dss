@@ -66,12 +66,8 @@
 					BPM implementations.
 				</notes>
 				<adjustment src="2" coef=".75"/>
-				<reach id="483947453">
-					<adjustment src="2" coef=".9"/>
-				</reach>
-				<reach id="947839474">
-					<adjustment src="2" abs="91344"/>
-				</reach>
+				<reach id="483947453" />
+				<reach id="947839474" />
 			</reach-group>
 			
 			<!-- 
@@ -89,6 +85,12 @@
 				<adjustment src="4" coef=".9"/>
 				
 			</default-group>
+			
+            <individual-group>
+                <reach id="">
+                    <adjustment src="" abs="" />
+                </reach>
+    		</individual-group>
 			
 			<!-- Do we still allow gross adjustments?  -->
 			<!-- <gross-src src="4" coef="2"/> -->

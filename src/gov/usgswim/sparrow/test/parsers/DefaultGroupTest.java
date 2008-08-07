@@ -13,12 +13,21 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 /**
- * Tests everything at the ReachGroup level and below
  * @author eeverman
- *
  */
 public class DefaultGroupTest extends TestCase {
-	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
+    
+    /** Valid xml string represention of the default group. */
+    public static final String VALID_FRAGMENT = ""
+        + "<default-group enabled=\"true\">"
+        + "  <desc>description</desc>"
+        + "  <notes>notes</notes>"
+        + "  <adjustment src=\"5\" coef=\"0.9\" />"
+        + "</default-group>";
+        ;
+
+    /** Used to create XMLStreamReaders from XML strings. */
+    protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 
 	// ============
 	// TEST METHODS

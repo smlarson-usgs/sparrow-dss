@@ -57,12 +57,8 @@
 				<adjustment src="2" coef=".75"/>
 				
 				<!-- Note:  these are the first two reaches in model 1 -->
-				<reach id="3074">
-					<adjustment src="2" abs=".9"/>
-				</reach>
-				<reach id="3077">
-					<adjustment src="2" abs="91344"/>
-				</reach>
+				<reach id="3074" />
+				<reach id="3077" />
 			</reach-group>
 
 		</adjustment-groups>
