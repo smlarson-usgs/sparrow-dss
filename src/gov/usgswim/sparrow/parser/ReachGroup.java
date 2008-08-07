@@ -270,8 +270,9 @@ public class ReachGroup implements XMLStreamParserComponent {
 		return reachIDsByLogicalSets.get(i);
 	}
 	
-	public List<Long> getCombinedReachIDs(){
-		List<Long> result = new ArrayList<Long>();
+	public Set<Long> getCombinedReachIDs(){
+	    // Use a Set to avoid adding a reach more than once (because of logical sets)
+	    Set<Long> result = new HashSet<Long>();
 		// Start with explicit reaches
 		if (reaches != null) {
 			for (ReachElement reach: reaches) {
