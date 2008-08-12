@@ -248,7 +248,6 @@ public class LogicalAdjustmentTest extends TestCase {
 			//Individually added reach
 			assertEquals(nomSrc.getDouble(RCH_ROW_11861, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_11861, SRC_COL_1));
 			//Individually added reach w/ override of a different source - test all sources
-			assertEquals(nomSrc.getDouble(RCH_ROW_11878, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_11878, SRC_COL_1));
 			assertEquals(88d, adjSrc.getDouble(RCH_ROW_11878, SRC_COL_2));	//override
 			assertEquals(nomSrc.getDouble(RCH_ROW_11878, SRC_COL_3), adjSrc.getDouble(RCH_ROW_11878, SRC_COL_3));	//not adjusted
 			assertEquals(nomSrc.getDouble(RCH_ROW_11878, SRC_COL_4), adjSrc.getDouble(RCH_ROW_11878, SRC_COL_4));	//not adjusted

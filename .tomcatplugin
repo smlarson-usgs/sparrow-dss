@@ -1,26 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tomcatProjectProperties>
     <rootDir>/public_html</rootDir>
-    <exportSource>true</exportSource>
+    <exportSource>false</exportSource>
     <reloadable>true</reloadable>
-    <redirectLogger>true</redirectLogger>
+    <redirectLogger>false</redirectLogger>
     <updateXml>true</updateXml>
-    <warLocation>/datausgs/svn_root/sparrow/deploy/sparrow.war</warLocation>
+    <warLocation></warLocation>
     <extraInfo></extraInfo>
-    <webPath>sparrow</webPath>
-    <webClassPathEntries>
-        <webClassPathEntry>/sparrow_core/java_lib/apache/log4j/log4j-1.2.13.jar</webClassPathEntry>
-        <webClassPathEntry>/sparrow_core/java_lib/backport_util/usgs_core/backport-util-concurrent.jar</webClassPathEntry>
-        <webClassPathEntry>/sparrow_core/java_lib/codehaus/woodstox/usgs_core/wstx-lgpl-3.2.4.jar</webClassPathEntry>
-        <webClassPathEntry>/sparrow_core/java_lib/codehaus/woodstox/usgs_dep/stax-api-1.0.1.jar</webClassPathEntry>
-        <webClassPathEntry>/sparrow_core/java_lib/ehcache/usgs_core/ehcache.jar</webClassPathEntry>
-        <webClassPathEntry>/sparrow_core/java_lib/ehcache/usgs_dep/commons-logging-1.0.4.jar</webClassPathEntry>
-        <webClassPathEntry>/sparrow_core/java_lib/jakarta/commons_lang/commons-lang-2.1.jar</webClassPathEntry>
-        <webClassPathEntry>/sparrow_core/java_lib/junit/junit.jar</webClassPathEntry>
-        <webClassPathEntry>/sparrow_core/java_lib/junit/src.jar</webClassPathEntry>
-        <webClassPathEntry>/sparrow_core/java_lib/oracle/mapviewer_client/mvclient.jar</webClassPathEntry>
-        <webClassPathEntry>/sparrow_core/java_lib/oracle/mapviewer_client/sdovis.jar</webClassPathEntry>
-        <webClassPathEntry>/sparrow_core/java_lib/usgs/datatable/usgs_core/usgs-datatable.jar</webClassPathEntry>
-        <webClassPathEntry>ORA_JDBC_DRIVERS/ojdbc14.jar</webClassPathEntry>
-    </webClassPathEntries>
+    <webPath>/sparrow</webPath>
 </tomcatProjectProperties>

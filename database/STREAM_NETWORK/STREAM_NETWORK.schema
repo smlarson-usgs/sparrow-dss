@@ -1,7 +1,7 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
 <SCHEMA class="oracle.javatools.db.Schema" xmlns="http://xmlns.oracle.com/jdeveloper/10130/offlinedb">
    <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
-      <ID>ef7fb58b-0116-1000-8001-c0a8020182ea</ID>
+      <ID>b349b77f-011b-1000-87aa-820ba12d53a5</ID>
       <parent/>
       <type>SCHEMA</type>
    </ID>
@@ -9,7 +9,7 @@
    <properties class="java.util.HashMap">
       <Item>
          <Key>OfflineDBConstants.IMPORT_SOURCE_CONNECTION</Key>
-         <Value>STREAM_NETWORK</Value>
+         <Value>Stream_Network_widw</Value>
       </Item>
       <Item>
          <Key>OfflineDBConstants.IMPORT_SOURCE_SCHEMA</Key>

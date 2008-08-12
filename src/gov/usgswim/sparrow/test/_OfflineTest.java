@@ -9,7 +9,7 @@ public class _OfflineTest {
 	public static Test suite() {
 		TestSuite suite;
 		suite = new TestSuite("Offline Prediction Tests");
-		
+		suite.addTestSuite(AssertionsTest.class);
 		suite.addTest(AllParseTests.suite()); // Note: this is the way to add a suite.
 		
 		suite.addTestSuite(SharedApplicationCaching.class);

@@ -1,0 +1,1226 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<VIEW class="oracle.javatools.db.View" id="1" xmlns="http://xmlns.oracle.com/jdeveloper/10130/offlinedb">
+   <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID" id="0">
+      <ID>6f50882b-011b-1000-824c-820ba12d6657</ID>
+      <parent/>
+      <type>VIEW</type>
+   </ID>
+   <SQLQuery class="oracle.javatools.db.sql.NonDeclarativeSQLQuery">
+      <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+         <ID>b332c3a1-011b-1000-8029-820ba12d53a5</ID>
+         <parent idref="0"/>
+         <type>SQLQuery</type>
+      </ID>
+      <SQLText>(
+/*
+Selects attribs from MODEL_REACH and MODEL_REACH_ATTRIB
+for model reaches that have a corresponding row in the MODEL_REACH_ATTRIB table.
+*/
+SELECT
+    model.SPARROW_MODEL_ID SPARROW_MODEL_ID,
+    model.MODEL_REACH_ID MODEL_REACH_ID,
+    model.IDENTIFIER IDENTIFIER,
+    model.FULL_IDENTIFIER FULL_IDENTIFIER,
+    model.HYDSEQ HYDSEQ,
+    model.FNODE FNODE,
+    model.TNODE TNODE,
+    model.FRAC FRAC,
+    attrib.REACH_NAME REACH_NAME,
+    attrib.OPEN_WATER_NAME OPEN_WATER_NAME,
+    attrib.MEANQ MEANQ,
+    attrib.MEANV MEANV,
+    attrib.CATCH_AREA CATCH_AREA,
+    attrib.CUM_CATCH_AREA CUM_CATCH_AREA,
+    attrib.REACH_LENGTH REACH_LENGTH,
+    attrib.HUC2 HUC2,
+    attrib.HUC4 HUC4,
+    attrib.HUC6 HUC6,
+    attrib.HUC8 HUC8,
+    attrib.HEAD_REACH HEAD_REACH,
+    attrib.SHORE_REACH SHORE_REACH,
+    attrib.TERM_TRANS TERM_TRANS,
+    attrib.TERM_ESTUARY TERM_ESTUARY,
+    attrib.TERM_NONCONNECT TERM_NONCONNECT
+FROM
+    MODEL_REACH model INNER JOIN MODEL_REACH_ATTRIB attrib ON (model.MODEL_REACH_ID = attrib.MODEL_REACH_ID)
+)
+UNION ALL
+(
+/*
+Selects attribs from MODEL_REACH and ENH_ATTRIB_VW
+for model reaches that do not have a corresponding row in the MODEL_REACH_ATTRIB table,
+but do have a corresponding row in the ENH_ATTRIB_VW view.
+*/
+SELECT
+    model.SPARROW_MODEL_ID SPARROW_MODEL_ID,
+    model.MODEL_REACH_ID MODEL_REACH_ID,
+    model.IDENTIFIER IDENTIFIER,
+    model.FULL_IDENTIFIER FULL_IDENTIFIER,
+    model.HYDSEQ HYDSEQ,
+    model.FNODE FNODE,
+    model.TNODE TNODE,
+    model.FRAC FRAC,
+    attrib.REACH_NAME REACH_NAME,
+    attrib.OPEN_WATER_NAME OPEN_WATER_NAME,
+    attrib.MEANQ MEANQ,
+    attrib.MEANV MEANV,
+    attrib.CATCH_AREA CATCH_AREA,
+    attrib.CUM_CATCH_AREA CUM_CATCH_AREA,
+    attrib.REACH_LENGTH REACH_LENGTH,
+    attrib.HUC2 HUC2,
+    attrib.HUC4 HUC4,
+    attrib.HUC6 HUC6,
+    attrib.HUC8 HUC8,
+    attrib.HEAD_REACH HEAD_REACH,
+    attrib.SHORE_REACH SHORE_REACH,
+    attrib.TERM_TRANS TERM_TRANS,
+    attrib.TERM_ESTUARY TERM_ESTUARY,
+    attrib.TERM_NONCONNECT TERM_NONCONNECT
+FROM
+    MODEL_REACH model INNER JOIN STREAM_NETWORK.ENH_ATTRIB_VW attrib ON (model.ENH_REACH_ID = attrib.ENH_REACH_ID)
+WHERE
+    NOT EXISTS (SELECT MODEL_REACH_ID FROM MODEL_REACH_ATTRIB modattrib WHERE modattrib.MODEL_REACH_ID = model.MODEL_REACH_ID)
+)
+UNION ALL
+(
+/*
+Selects attribs from MODEL_REACH only, setting values normally found in the
+XXX_ATTRIB tables to null.
+Applies to cases where a model reach has no corresponding row in
+ENH_ATTRIB_VW (i.e., reach is added at the model level)  and does not have a
+row in MODEL_REACH_ATTRIB.
+This is a degenerate case:   The attribs are not provided in the
+STREAM_NETWORK schema or at the model level and are basically missing.
+*/
+SELECT
+    model.SPARROW_MODEL_ID SPARROW_MODEL_ID,
+    model.MODEL_REACH_ID MODEL_REACH_ID,
+    model.IDENTIFIER IDENTIFIER,
+    model.FULL_IDENTIFIER FULL_IDENTIFIER,
+    model.HYDSEQ HYDSEQ,
+    model.FNODE FNODE,
+    model.TNODE TNODE,
+    model.FRAC FRAC,
+    null REACH_NAME,
+    null OPEN_WATER_NAME,
+    null MEANQ,
+    null MEANV,
+    null CATCH_AREA,
+    null CUM_CATCH_AREA,
+    null REACH_LENGTH,
+    null HUC2,
+    null HUC4,
+    null HUC6,
+    null HUC8,
+    null HEAD_REACH,
+    null SHORE_REACH,
+    null TERM_TRANS,
+    null TERM_ESTUARY,
+    null TERM_NONCONNECT
+FROM
+    MODEL_REACH model
+WHERE
+    NOT EXISTS (SELECT ENH_REACH_ID FROM STREAM_NETWORK.ENH_ATTRIB_VW enhvw WHERE enhvw.ENH_REACH_ID = model.ENH_REACH_ID) AND
+    NOT EXISTS (SELECT MODEL_REACH_ID FROM MODEL_REACH_ATTRIB modattrib WHERE modattrib.MODEL_REACH_ID = model.MODEL_REACH_ID)
+)</SQLText>
+      <fromObjects class="[Loracle.javatools.db.sql.FromObject;"/>
+      <groupByObject/>
+      <name/>
+      <orderByObjects class="[Loracle.javatools.db.sql.OrderByObject;"/>
+      <parent idref="1"/>
+      <properties/>
+      <selectObjects class="[Loracle.javatools.db.sql.SelectObject;"/>
+      <view idref="1"/>
+      <whereObject/>
+   </SQLQuery>
+   <columns>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-824d-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value class="java.lang.Long">0</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="2">
+               <providerClass>oracle.javatools.db.ora.OracleDatabaseImpl</providerClass>
+               <schemaName/>
+               <typeName>NUMBER</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>SPARROW_MODEL_ID</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>SPARROW_MODEL_ID</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-824e-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value class="java.lang.Long">0</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>MODEL_REACH_ID</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>MODEL_REACH_ID</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-824f-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value class="java.lang.Long">0</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>IDENTIFIER</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>IDENTIFIER</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-8250-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">40</Value>
+               </Item>
+               <Item>
+                  <Key>unit</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID class="oracle.javatools.db.datatypes.DataTypeID" id="3">
+               <providerClass>oracle.javatools.db.ora.Oracle9i</providerClass>
+               <schemaName/>
+               <typeName>VARCHAR2</typeName>
+            </dataTypeID>
+         </dataTypeUsage>
+         <default/>
+         <name>FULL_IDENTIFIER</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>FULL_IDENTIFIER</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-8251-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value class="java.lang.Long">0</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>HYDSEQ</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>HYDSEQ</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-8252-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value class="java.lang.Long">0</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>FNODE</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>FNODE</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-8253-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>9</Value>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value class="java.lang.Long">0</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>TNODE</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>TNODE</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-8254-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value>10</Value>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value class="java.lang.Long">9</Value>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>FRAC</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>FRAC</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-8255-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">60</Value>
+               </Item>
+               <Item>
+                  <Key>unit</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="3"/>
+         </dataTypeUsage>
+         <default/>
+         <name>REACH_NAME</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>REACH_NAME</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-8256-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">60</Value>
+               </Item>
+               <Item>
+                  <Key>unit</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="3"/>
+         </dataTypeUsage>
+         <default/>
+         <name>OPEN_WATER_NAME</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>OPEN_WATER_NAME</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-8257-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value/>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>MEANQ</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>MEANQ</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-8258-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value/>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>MEANV</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>MEANV</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-8259-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value/>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>CATCH_AREA</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>CATCH_AREA</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-825a-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value/>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>CUM_CATCH_AREA</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>CUM_CATCH_AREA</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-825b-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value/>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>REACH_LENGTH</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>REACH_LENGTH</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-825c-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">2</Value>
+               </Item>
+               <Item>
+                  <Key>unit</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="3"/>
+         </dataTypeUsage>
+         <default/>
+         <name>HUC2</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>HUC2</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-825d-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">4</Value>
+               </Item>
+               <Item>
+                  <Key>unit</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="3"/>
+         </dataTypeUsage>
+         <default/>
+         <name>HUC4</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>HUC4</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-825e-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">6</Value>
+               </Item>
+               <Item>
+                  <Key>unit</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="3"/>
+         </dataTypeUsage>
+         <default/>
+         <name>HUC6</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>HUC6</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-825f-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>size</Key>
+                  <Value class="java.lang.Long">8</Value>
+               </Item>
+               <Item>
+                  <Key>unit</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="3"/>
+         </dataTypeUsage>
+         <default/>
+         <name>HUC8</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>HUC8</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-8260-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value/>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>HEAD_REACH</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>HEAD_REACH</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-8261-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value/>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>SHORE_REACH</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>SHORE_REACH</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-8262-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value/>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>TERM_TRANS</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>TERM_TRANS</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-8263-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value/>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>TERM_ESTUARY</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>TERM_ESTUARY</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+      <Item>
+         <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+            <ID>6f50882b-011b-1000-8264-820ba12d6657</ID>
+            <parent idref="0"/>
+            <type>COLUMN</type>
+         </ID>
+         <dataTypeUsage class="oracle.javatools.db.datatypes.PredefinedDataTypeUsage">
+            <attributeValues class="java.util.HashMap">
+               <Item>
+                  <Key>precision</Key>
+                  <Value/>
+               </Item>
+               <Item>
+                  <Key>scale</Key>
+                  <Value/>
+               </Item>
+            </attributeValues>
+            <dataTypeID idref="2"/>
+         </dataTypeUsage>
+         <default/>
+         <name>TERM_NONCONNECT</name>
+         <notNull>false</notNull>
+         <properties class="java.util.HashMap">
+            <Item>
+               <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+               <Value class="oracle.jdeveloper.offlinedb.marshal.GenericDBReferenceID">
+                  <ID/>
+                  <name>TERM_NONCONNECT</name>
+                  <parent class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+                     <ID/>
+                     <connectionName>sparrow_DSS</connectionName>
+                     <databaseID>67464</databaseID>
+                     <name>MODEL_ATTRIB_VW</name>
+                     <parent/>
+                     <schemaName>SPARROW_DSS</schemaName>
+                     <type>VIEW</type>
+                  </parent>
+                  <schemaName/>
+                  <type>COLUMN</type>
+               </Value>
+            </Item>
+         </properties>
+      </Item>
+   </columns>
+   <constraints class="[Loracle.javatools.db.Constraint;"/>
+   <forceOnCreate>false</forceOnCreate>
+   <name>MODEL_ATTRIB_VW</name>
+   <properties class="java.util.HashMap">
+      <Item>
+         <Key>OfflineDBConstants.IMPORT_SOURCE_CONNECTION</Key>
+         <Value>sparrow_DSS</Value>
+      </Item>
+      <Item>
+         <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+         <Value class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+            <ID/>
+            <connectionName>sparrow_DSS</connectionName>
+            <databaseID>67464</databaseID>
+            <name>MODEL_ATTRIB_VW</name>
+            <parent/>
+            <schemaName>SPARROW_DSS</schemaName>
+            <type>VIEW</type>
+         </Value>
+      </Item>
+      <Item>
+         <Key>OfflineDBConstants.IMPORT_SOURCE_NAME</Key>
+         <Value>MODEL_ATTRIB_VW</Value>
+      </Item>
+      <Item>
+         <Key>OfflineDBConstants.IMPORT_SOURCE_SCHEMA</Key>
+         <Value>SPARROW_DSS</Value>
+      </Item>
+   </properties>
+   <queryRestriction/>
+   <schema>
+      <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+         <ID>b3469a10-011b-1000-8700-820ba12d53a5</ID>
+         <parent/>
+         <type>SCHEMA</type>
+      </ID>
+      <name>SPARROW_DSS</name>
+      <properties class="java.util.HashMap">
+         <Item>
+            <Key>OfflineDBConstants.IMPORT_SOURCE_CONNECTION</Key>
+            <Value>Sparrow_dss_widw</Value>
+         </Item>
+         <Item>
+            <Key>OfflineDBConstants.IMPORT_SOURCE_SCHEMA</Key>
+            <Value>SPARROW_DSS</Value>
+         </Item>
+      </properties>
+   </schema>
+</VIEW>

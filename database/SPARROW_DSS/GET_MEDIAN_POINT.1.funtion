@@ -1,0 +1,106 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<FUNCTION class="oracle.javatools.db.Function" xmlns="http://xmlns.oracle.com/jdeveloper/10130/offlinedb">
+   <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+      <ID>b3469b97-011b-1000-8728-820ba12d53a5</ID>
+      <parent/>
+      <type>FUNCTION</type>
+   </ID>
+   <name>GET_MEDIAN_POINT</name>
+   <parameters>
+      <Item>
+         <ID/>
+         <name>GEOM</name>
+         <properties/>
+      </Item>
+   </parameters>
+   <properties class="java.util.HashMap">
+      <Item>
+         <Key>OfflineDBConstants.IMPORT_SOURCE_CONNECTION</Key>
+         <Value>Sparrow_dss_widw</Value>
+      </Item>
+      <Item>
+         <Key>OfflineDBConstants.IMPORT_SOURCE_ID</Key>
+         <Value class="oracle.jdeveloper.offlinedb.marshal.OracleDBReferenceID">
+            <ID/>
+            <connectionName>Sparrow_dss_widw</connectionName>
+            <databaseID>82388</databaseID>
+            <name>GET_MEDIAN_POINT</name>
+            <parent/>
+            <schemaName>SPARROW_DSS</schemaName>
+            <type>FUNCTION</type>
+         </Value>
+      </Item>
+      <Item>
+         <Key>OfflineDBConstants.IMPORT_SOURCE_NAME</Key>
+         <Value>GET_MEDIAN_POINT</Value>
+      </Item>
+      <Item>
+         <Key>OfflineDBConstants.IMPORT_SOURCE_SCHEMA</Key>
+         <Value>SPARROW_DSS</Value>
+      </Item>
+   </properties>
+   <returnType/>
+   <schema>
+      <ID class="oracle.jdeveloper.offlinedb.OfflineDBObjectID">
+         <ID>b3469a10-011b-1000-8700-820ba12d53a5</ID>
+         <parent/>
+         <type>SCHEMA</type>
+      </ID>
+      <name>SPARROW_DSS</name>
+      <properties class="java.util.HashMap">
+         <Item>
+            <Key>OfflineDBConstants.IMPORT_SOURCE_CONNECTION</Key>
+            <Value>Sparrow_dss_widw</Value>
+         </Item>
+         <Item>
+            <Key>OfflineDBConstants.IMPORT_SOURCE_SCHEMA</Key>
+            <Value>SPARROW_DSS</Value>
+         </Item>
+      </properties>
+   </schema>
+   <source>function get_median_point(
+	geom SDO_GEOMETRY
+) RETURN SDO_GEOMETRY
+IS
+
+	num_points NUMBER;
+	p1 SDO_GEOMETRY;
+	p2 SDO_GEOMETRY;
+	i1 INTEGER;
+
+BEGIN
+	num_points := get_num_points(geom);
+	IF num_points &lt; 2 THEN
+		RETURN get_point(geom);
+	ELSE
+
+		IF MOD(num_points,2) = 0 THEN
+			--even number of pts
+
+			SELECT cast((num_points/2) as INTEGER) INTO i1 FROM dual;
+
+			p1 := get_point(geom, i1);
+			p2 := get_point(geom, i1 + 1);
+
+			--AVG POINTS and return new point
+			RETURN
+				MDSYS.SDO_GEOMETRY(
+					2001,
+					geom.SDO_SRID,
+					SDO_POINT_TYPE(
+						(p1.sdo_point.x + p2.sdo_point.x) / 2,
+						(p1.sdo_point.y + p2.sdo_point.y) / 2,
+						NULL
+					),NULL,NULL);
+
+		ELSE
+			--odd number of pts
+			SELECT cast((num_points/2) as INTEGER) INTO i1 FROM dual;
+			RETURN get_point(geom, i1 + 1);
+
+		END IF;
+
+	END IF;
+END;
+</source>
+</FUNCTION>

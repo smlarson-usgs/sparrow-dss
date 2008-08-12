@@ -23,6 +23,7 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 		try {
 			SharedApplication.getInstance().putPredictionContext(context);
 			isSuccess = true;
+			System.out.println("PREDICTION CONTEXT: " + context.getId());
 		} catch (Exception e) {
 			// TODO need to log failure
 			e.printStackTrace();

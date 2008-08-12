@@ -44,8 +44,9 @@ public class IndividualGroup extends ReachGroup {
         
         String localName = in.getLocalName();
         int eventCode = in.getEventType();
-        assert (isParseTarget(localName) && eventCode == START_ELEMENT) : 
-            this.getClass().getSimpleName() + " can only parse " + getParseTarget() + " elements.";
+        if (!isParseTarget(localName) || eventCode != START_ELEMENT) {
+            throw new XMLParseValidationException(this.getClass().getSimpleName() + " can only parse " + getParseTarget() + " elements.");
+        }
         boolean isStarted = false;
 
         while (in.hasNext()) {
@@ -68,7 +69,7 @@ public class IndividualGroup extends ReachGroup {
                         if (name != null) {
                             throw new XMLParseValidationException("The individual group is not allowed a name.");
                         }
-                    } else if (ReachElement.isTargetMatch(localName)) {
+                   } else if (ReachElement.isTargetMatch(localName)) {
                         ReachElement r = new ReachElement();
                         r.parse(in);
                         reaches.add(r);

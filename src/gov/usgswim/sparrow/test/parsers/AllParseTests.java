@@ -22,5 +22,5 @@ public class AllParseTests extends TestCase {
 		
 		return suite;
 	}
-	
+
 }

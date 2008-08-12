@@ -26,7 +26,7 @@
 			<reach-group enabled="false" name="Southern Indiana Fields">
 				<desc>Fields in Southern Indiana</desc>
 				<notes>
-					The Farmer's Alminac says corn planting will be up 20% this year,
+					The Farmer's Almanac says corn planting will be up 20% this year,
 					which will roughly result in a 5% increase in the aggrecultural source.
 					This is an estimate so I'm leaving it out of the runs created	for the EPA.
 				</notes>
@@ -57,9 +57,27 @@
 				<adjustment src="2" coef=".75"/>
 				
 				<!-- Note:  these are the first two reaches in model 1 -->
-				<reach id="3074" />
-				<reach id="3077" />
+				<!-- 
+				<reach id="3074">
+					<adjustment src="2" abs=".9"/>
+				</reach>
+				<reach id="3077">
+					<adjustment src="2" abs="91344"/>
+				</reach>
+				 -->
 			</reach-group>
+			<individual-group enabled="true">
+				<!-- 
+				<adjustment src="2" coef=".75"/>
+				 -->
+				<!-- Note:  these are the first two reaches in model 1 -->
+				<reach id="3074">
+					<adjustment src="2" abs=".9"/>
+				</reach>
+				<reach id="3077">
+					<adjustment src="2" abs="91344"/>
+				</reach>
+			</individual-group>
 
 		</adjustment-groups>
 		<analysis>

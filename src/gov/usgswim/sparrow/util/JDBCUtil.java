@@ -149,7 +149,6 @@ public abstract class JDBCUtil {
 		String insertReachTopoStr = "INSERT INTO MODEL_REACH_TOPO (MODEL_REACH_ID, FNODE, TNODE, IFTRAN) VALUES (?,?,?,?)";
 		PreparedStatement insertReachTopo = conn.prepareStatement(insertReachTopoStr);
 
-
 		DataTable ancil = data.getAncil();
 		DataTable topo = data.getTopo();
 		int modelRows = topo.getRowCount();	//# of reaches in model
