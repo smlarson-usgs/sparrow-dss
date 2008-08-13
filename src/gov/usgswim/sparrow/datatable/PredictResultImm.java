@@ -79,12 +79,21 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 		this.sourceCount = srcIdIncMap.size();
 	}
 
+	/**
+	 * Adds appropriate metadata to the raw 2x2 array and returns the result as a DataTable
+	 * 
+	 * @param data
+	 * @param predictData
+	 * @return
+	 * @throws Exception
+	 */
 	public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData) throws Exception {
 		
 		ColumnData[] columns = new ColumnData[data[0].length];
 		int sourceCount = predictData.getSrc().getColumnCount();
 		
 		//Same definition as the instance vars
+		// Lookup table for key=source_id, value=array index of source contribution data
 		Map<Long, Integer> srcIdIncMap = new Hashtable<Long, Integer>(13, 2);
 		Map<Long, Integer> srcIdTotalMap = new Hashtable<Long, Integer>(13, 2);
 
@@ -101,21 +110,25 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 
 			if (name == null) name = "Source " + srcIndex;
 			
-			int srcIncAddIndex = srcIndex;
-			int srcTotalIndex = srcIndex + sourceCount;
+			int srcIncAddIndex = srcIndex; // index for iterating through the incremental source contributions
+			int srcTotalIndex = srcIndex + sourceCount; // index for iterating through the total source contributions
 			
 			srcIdIncMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcIncAddIndex); 
 			srcIdTotalMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcTotalIndex); 
 			
+			// Map of metadata values for inc-add column
 			Map<String, String> incProps = new HashMap<String, String>();
 			incProps.put(VALUE_TYPE_PROP, incremental.name());
 			
+			// Map of metadata values for total column
 			Map<String, String> totProps = new HashMap<String, String>();
 			totProps.put(VALUE_TYPE_PROP, total.name());
 			
 
 			columns[srcIncAddIndex] = new ImmutableDoubleColumn(data, srcIncAddIndex, name + " Inc. Addition", "units", "description", incProps);
 			columns[srcTotalIndex] = new ImmutableDoubleColumn(data, srcTotalIndex, name + " Total (w/ upstream, decayed)", "units", "description", totProps);
+		
+			
 		}
 		
 		// ------------------------------------------
