@@ -102,16 +102,51 @@ public class DataLoader {
 		return dataSet.toImmutable();
 	}
 
-	public static List<ModelBuilder> loadModelMetaData(Connection conn) throws SQLException,
-	IOException {
+	/**
+	 * Convenience method for returning all public, approved models and their
+	 * sources.
+	 * 
+	 * @param conn The JDBC connection object.
+	 * @return All public, approved models and their sources.
+	 */
+	public static List<ModelBuilder> loadModelMetaData(Connection conn)
+	throws SQLException, IOException {
+	    return loadModelMetaData(conn, true, true, false, true);
+	}
+	
+	/**
+	 * Returns all models that meet the specified criteria.  Note that the
+	 * {@code isApproved}, {@code isPublic}, and {@code isArchived} criteria are
+	 * ANDed together when retrieving models.  For example, specifying
+	 * {@code isApproved} = {@code true},
+	 * {@code isPublic} = {@code true},
+	 * {@code isArchived} = {@code false}
+	 * will return models that are approved and public, but not archived.
+	 * 
+	 * @param conn The JDBC connection object.
+	 * @param isApproved Whether or not to return approved models.
+	 * @param isPublic Whether or not to return public models.
+	 * @param isArchived Whether or not to return archived models.
+	 * @param getSources Whether or not to attach the model's sources.
+	 * @return All models that meet the specified criteria.
+	 */
+	public static List<ModelBuilder> loadModelMetaData(Connection conn,
+	        boolean isApproved, boolean isPublic, boolean isArchived,
+	        boolean getSources) throws SQLException, IOException {
+	    
 		List<ModelBuilder> models = new ArrayList<ModelBuilder>(23);
 
-		String selectModels = getQuery("SelectAllModels");
+		// Build filtering parameters and retrieve the queries from properties
+		Object[] params = {
+		    "IsApproved", (isApproved ? "T" : "F"),
+		    "IsPublic", (isPublic ? "T" : "F"),
+		    "IsArchived", (isArchived ? "T" : "F")
+		};
+		String selectModels = getQuery("SelectModelsByAccess", params);
 		String selectSources = getQuery("SelectAllSources");
 
 		Statement stmt = null;
 		ResultSet rset = null;
-
 
 		try {
 			stmt = conn.createStatement();
@@ -143,37 +178,41 @@ public class DataLoader {
 				rset.close();
 			}
 
-			try {
-				rset = stmt.executeQuery(selectSources);
-				int modelIndex = 0;
-
-				while (rset.next()) {
-					SourceBuilder s = new SourceBuilder();
-					s.setId(rset.getLong("SOURCE_ID"));
-					s.setName(rset.getString("NAME"));
-					s.setDescription(rset.getString("DESCRIPTION"));
-					s.setSortOrder(rset.getInt("SORT_ORDER"));
-					s.setModelId(rset.getLong("SPARROW_MODEL_ID"));
-					s.setIdentifier(rset.getInt("IDENTIFIER"));
-					s.setDisplayName(rset.getString("DISPLAY_NAME"));
-
-					//The models and sources are sorted by model_id, so scroll forward
-					//thru the models until we find the correct one.
-					while (
-							(models.get(modelIndex).getId() != s.getModelId()) &&
-							(modelIndex < models.size()) /* don't scoll past last model*/ )  {
-						modelIndex++;
-					}
-
-					if (modelIndex < models.size()) {
-						models.get(modelIndex).addSource(s);
-					} else {
-						log.warn("Found sources not matched to a model.  Likely caused by record insertion during the queries.");
-					}
-				}
-
-			} finally {
-				rset.close();
+			if (getSources) {
+    			try {
+    				rset = stmt.executeQuery(selectSources);
+    				int modelIndex = 0;
+    
+    				while (rset.next()) {
+    					SourceBuilder s = new SourceBuilder();
+    					s.setId(rset.getLong("SOURCE_ID"));
+    					s.setName(rset.getString("NAME"));
+    					s.setDescription(rset.getString("DESCRIPTION"));
+    					s.setSortOrder(rset.getInt("SORT_ORDER"));
+    					s.setModelId(rset.getLong("SPARROW_MODEL_ID"));
+    					s.setIdentifier(rset.getInt("IDENTIFIER"));
+    					s.setDisplayName(rset.getString("DISPLAY_NAME"));
+    					s.setConstituent(rset.getString("CONSTITUENT"));
+    					s.setUnits(rset.getString("UNITS"));
+    
+    					//The models and sources are sorted by model_id, so scroll forward
+    					//thru the models until we find the correct one.
+    					while (
+    							(models.get(modelIndex).getId() != s.getModelId()) &&
+    							(modelIndex < models.size()) /* don't scoll past last model*/ )  {
+    						modelIndex++;
+    					}
+    
+    					if (modelIndex < models.size()) {
+    						models.get(modelIndex).addSource(s);
+    					} else {
+    						log.warn("Found sources not matched to a model.  Likely caused by record insertion during the queries.");
+    					}
+    				}
+    
+    			} finally {
+    				rset.close();
+    			}
 			}
 		} finally {
 			stmt.close();
@@ -413,7 +452,7 @@ public class DataLoader {
 
 
 	/**
-	 * Returns a DataTable of all source values for for a single model.
+	 * Returns a DataTable of all source values for a single model.
 	 * <h4>Data Columns with one row per reach (sorted by HYDSEQ)</h4>
 	 * <ol>
 	 * <li>[Source Name 1] - The values for the first source in one column
@@ -430,29 +469,25 @@ public class DataLoader {
 	public static DataTableWritable loadSourceValues(Connection conn, long modelId, DataTable sources) throws SQLException,
 	IOException {
 
-		if (sources.getRowCount() == 0) {
+        int sourceCount = sources.getRowCount();
+		if (sourceCount == 0) {
 			throw new IllegalArgumentException("There must be at least one source");
 		}
 
-		int sourceCount = sources.getRowCount();
-
-		//Load column headings using the source display names
+		// Load column headings using the source display names
 		String selectNames = getQuery("SelectSourceNames", modelId);
-
-		String[] headings = new String[sourceCount];
 
 		Statement headSt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		headSt.setFetchSize(20);
 		ResultSet headRs = null;
 
+        String[] headings = new String[sourceCount];
 		try {
-
 			headRs = headSt.executeQuery(selectNames);
 			for (int i = 0; i < sourceCount; i++)  {
 				headRs.next();
 				headings[i] = headRs.getString(1);
 			}
-
 		} finally {
 			if (headRs != null) {
 				headRs.close();
@@ -463,7 +498,10 @@ public class DataLoader {
 		DataTableWritable sourceValue = new SimpleDataTableWritable();
 
 
-		for (int srcIndex=0; srcIndex<sourceCount; srcIndex++) {
+		for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++) {
+		    String constituent = sources.getString(srcIndex, sources.getColumnByName("CONSTITUENT"));
+		    String units = sources.getString(srcIndex, sources.getColumnByName("UNITS"));
+		    String precision = sources.getString(srcIndex, sources.getColumnByName("PRECISION"));
 
 			String query =
 				getQuery("SelectSourceValues", new Object[] {
@@ -475,9 +513,12 @@ public class DataLoader {
 			ResultSet rs = null;
 
 			try {
-
+                StandardNumberColumnDataWritable<Double> column = new StandardNumberColumnDataWritable<Double>(headings[srcIndex], units);
+                column.setProperty("constituent", constituent);
+                column.setProperty("precision", precision);
+                sourceValue.addColumn(column);
+                
 				rs = st.executeQuery(query);
-				sourceValue.addColumn(new StandardNumberColumnDataWritable<Double>(headings[srcIndex], null));
 				loadColumn(rs, sourceValue, 0, srcIndex);
 
 			} finally {

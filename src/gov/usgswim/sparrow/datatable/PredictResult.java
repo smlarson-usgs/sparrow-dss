@@ -11,18 +11,32 @@ import gov.usgswim.datatable.DataTable.Immutable;
  * @author eeverman
  */
 public interface PredictResult extends Immutable {
-//	public static final String SOURCE_NAME = "sourceName";
+    //	public static final String SOURCE_NAME = "sourceName";
 	// TODO [IK] add javadocs and enums
 	//  AggregateType: none | sum ValueType: incremental | total
 	/**
-	 * ColumnData property name for tracking the type of prediction result, inc or inc_total
+	 * ColumnData property name for tracking the type of prediction result, inc
+	 * or inc_total
 	 */
 	public static final String VALUE_TYPE_PROP = "type";
 	
 	/**
-	 * ColumnData property name for tracking whether a column is a total/sum column. If value is null or "none", then it is not a column.
+	 * ColumnData property name for tracking whether a column is a total/sum
+	 * column. If value is null or "none", then it is not a column.
 	 */
 	public static final String AGGREGATE_TYPE_PROP = "aggregate";
+	
+	/**
+	 * ColumnData property name for tracking the type of element that the
+	 * column's values represent.
+	 */
+	public static final String CONSTITUENT_PROP = "constituent";
+	
+	/**
+	 * ColumnData property name for tracking the precision used when reporting
+	 * the column's values for display.
+	 */
+	public static final String PRECISION_PROP = "precision";
 
 	/**
 	 * Returns the number of sources.

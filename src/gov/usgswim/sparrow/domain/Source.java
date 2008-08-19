@@ -55,4 +55,16 @@ public interface Source {
 	 * @return
 	 */
 	public Long getModelId();
+	
+	/**
+	 * The element that the source is measuring.
+	 * @return The element that the source is measuring.
+	 */
+	public String getConstituent();
+	
+	/**
+	 * The units in which the constituent is measured.
+	 * @return The units in which the constituent is measured.
+	 */
+	public String getUnits();
 }

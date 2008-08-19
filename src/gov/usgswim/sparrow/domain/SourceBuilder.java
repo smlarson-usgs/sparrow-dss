@@ -4,7 +4,8 @@ import gov.usgswim.ImmutableBuilder;
 import gov.usgswim.NotThreadSafe;
 
 /**
- * Builder implementation of Model, which is a Domain Object representing a SPARROW Model.
+ * Builder implementation of Source, which is a domain object representing a
+ * source from a SPARROW Model.
  * 
  * This class can be used to construct a model instance in a single thread,
  * which can then be copied to an immutable instance via getImmutable()
@@ -18,7 +19,8 @@ public class SourceBuilder implements Source, ImmutableBuilder<Source> {
 	private String _description;
 	private int _sortOrder;
 	private Long _modelId;
-	
+	private String _constituent;
+	private String _units;	
 	
 	public SourceBuilder() {
 	}
@@ -29,7 +31,7 @@ public class SourceBuilder implements Source, ImmutableBuilder<Source> {
 	
 	public Source toImmutable() throws IllegalStateException {
 		return new SourceImm(_id, _identifier, _name, _displayName,
-			_description, _sortOrder, _modelId);
+			_description, _sortOrder, _modelId, _constituent, _units);
 	}
 
 	public Long getId() {
@@ -59,6 +61,14 @@ public class SourceBuilder implements Source, ImmutableBuilder<Source> {
 	public Long getModelId() {
 		return _modelId;
 	}
+	
+	public String getConstituent() {
+	    return _constituent;
+	}
+	
+	public String getUnits() {
+	    return _units;
+	}
 
 	public void setId(Long id) {
 		this._id = id;
@@ -86,5 +96,13 @@ public class SourceBuilder implements Source, ImmutableBuilder<Source> {
 
 	public void setModelId(Long modelId) {
 		this._modelId = modelId;
+	}
+	
+	public void setConstituent(String constituent) {
+	    this._constituent = constituent;
+	}
+	
+	public void setUnits(String units) {
+	    this._units = units;
 	}
 }

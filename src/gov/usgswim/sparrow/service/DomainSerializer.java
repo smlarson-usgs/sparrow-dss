@@ -72,6 +72,13 @@ public class DomainSerializer extends BasicXMLStreamReader {
 			Model model = mIter.next();
 			events.add(new BasicTagEvent(START_ELEMENT, "model").addAttribute("id", model.getId().toString()));
 			{
+                addOpenTag("status");
+                {
+                    addNonNullBasicTag("approved", Boolean.toString(model.isApproved()));
+                    addNonNullBasicTag("public", Boolean.toString(model.isPublic()));
+                    addNonNullBasicTag("archived", Boolean.toString(model.isArchived()));
+                }
+                addCloseTag("status");
 				addNonNullBasicTag("name", model.getName());
 				addNonNullBasicTag("description", StringUtils.trimToNull(model.getDescription()));
 				addNonNullBasicTag("url", StringUtils.trimToNull(model.getUrl()));
@@ -98,6 +105,8 @@ public class DomainSerializer extends BasicXMLStreamReader {
 							addNonNullBasicTag("name", src.getName());
 							addNonNullBasicTag("displayName", src.getDisplayName());
 							addNonNullBasicTag("description",StringUtils.trimToNull(src.getDescription()));
+							addNonNullBasicTag("constituent", src.getConstituent());
+							addNonNullBasicTag("units", src.getUnits());
 						}
 						addCloseTag("source");
 						// add a carriage return to break up long text line
@@ -129,6 +138,8 @@ public class DomainSerializer extends BasicXMLStreamReader {
 			addNonNullBasicTag("name", "");
 			addNonNullBasicTag("displayName", "");
 			addNonNullBasicTag("description", "");
+			addNonNullBasicTag("constituent", "");
+			addNonNullBasicTag("units", "");
 		}
 		addCloseTag("source");
 		isOutputCompleteFirstRow = false;

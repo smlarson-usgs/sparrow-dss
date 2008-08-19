@@ -17,6 +17,8 @@ public class SourceImm implements Source, Serializable {
 	private final String _description;
 	private final int _sortOrder;
 	private final Long _modelId;
+	private final String _constituent;
+	private final String _units;
 	
 	/*
 	private SourceImm() {
@@ -25,7 +27,8 @@ public class SourceImm implements Source, Serializable {
 	*/
 	
 	public SourceImm(Long id, int identifier, String name, String displayName,
-			String description, int sortOrder, Long modelId) {
+			String description, int sortOrder, Long modelId, String constituent,
+			String units) {
 	
 	
 		_id = id;
@@ -35,9 +38,11 @@ public class SourceImm implements Source, Serializable {
 		_description = description;
 		_sortOrder = sortOrder;
 		_modelId = modelId;
+		_constituent = constituent;
+		_units = units;
 	}
 
-	public Long getId() {
+    public Long getId() {
 		return _id;
 	}
 
@@ -64,4 +69,12 @@ public class SourceImm implements Source, Serializable {
 	public Long getModelId() {
 		return _modelId;
 	}
+
+    public String getConstituent() {
+        return _constituent;
+    }
+
+    public String getUnits() {
+        return _units;
+    }
 }

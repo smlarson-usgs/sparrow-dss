@@ -6,6 +6,7 @@ import static gov.usgswim.sparrow.service.predict.ValueType.total;
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.Immutable;
 import gov.usgswim.datatable.ColumnData;
+import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.PredictData;
 
@@ -13,8 +14,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * An immutable implementation of PredictResult.
@@ -28,29 +27,29 @@ import org.apache.commons.lang.StringUtils;
 public class PredictResultImm extends SimpleDataTable implements PredictResult {
 	
 	/**
-	 * A mapping from a source Identifier to the column number of the column containing
-	 * the Incremental value for that source.
+	 * A mapping from a source Identifier to the column number of the column
+	 * containing the Incremental value for that source.
 	 */
 	private final Map<Long, Integer> srcIdIncMap;
 	
 	/**
-	 * A mapping from a source Identifier to the column number of the column containing
-	 * the Total value for that source.
+	 * A mapping from a source Identifier to the column number of the column
+	 * containing the Total value for that source.
 	 */
 	private final Map<Long, Integer> srcIdTotalMap;
 
 	/**
-	 * The column of the total incremental column
+	 * Index of the total Incremental column.
 	 */
 	private final int totalIncCol;
 	
 	/**
-	 * The column of the total Total column
+	 * Index of the total Total column.
 	 */
 	private final int totalTotalCol;
 	
 	/**
-	 * The number of sources
+	 * The number of sources.
 	 */
 	private final int sourceCount;
 	
@@ -88,7 +87,6 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 	 * @throws Exception
 	 */
 	public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData) throws Exception {
-		
 		ColumnData[] columns = new ColumnData[data[0].length];
 		int sourceCount = predictData.getSrc().getColumnCount();
 		
@@ -97,19 +95,25 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 		Map<Long, Integer> srcIdIncMap = new Hashtable<Long, Integer>(13, 2);
 		Map<Long, Integer> srcIdTotalMap = new Hashtable<Long, Integer>(13, 2);
 
-		// ------------------------------------------
-		// Define the source columns of the DataTable
-		// ------------------------------------------
-//		DataTable srcMetaData = predictData.getSrcMetadata();
-//		boolean hasMetaData = (srcMetaData != null); // only use the metadata if it exists
-//		Integer nameCol = (hasMetaData)? srcMetaData.getColumnByName("NAME"): -1;
+		// Get the metadata to be attached to the column definitions
+		DataTable sourceMetadata = predictData.getSrcMetadata();
+        Integer displayNameCol = sourceMetadata.getColumnByName("DISPLAY_NAME");
+        Integer constituentCol = sourceMetadata.getColumnByName("CONSTITUENT");
+        Integer unitsCol = sourceMetadata.getColumnByName("UNITS");
+        Integer precisionCol = sourceMetadata.getColumnByName("PRECISION");
 		
-		for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++)  {
-
-			String name = StringUtils.trimToNull(predictData.getSrc().getName(srcIndex));
-
-			if (name == null) name = "Source " + srcIndex;
+        // ------------------------------------------
+        // Define the source columns of the DataTable
+        // ------------------------------------------
+		for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++) {
+		    
+		    // Pull out the metadata for the source
+		    String displayName = sourceMetadata.getString(srcIndex, displayNameCol);
+		    String constituent = sourceMetadata.getString(srcIndex, constituentCol);
+		    String units = sourceMetadata.getString(srcIndex, unitsCol);
+		    Long precision = sourceMetadata.getLong(srcIndex, precisionCol);
 			
+		    //
 			int srcIncAddIndex = srcIndex; // index for iterating through the incremental source contributions
 			int srcTotalIndex = srcIndex + sourceCount; // index for iterating through the total source contributions
 			
@@ -119,16 +123,17 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 			// Map of metadata values for inc-add column
 			Map<String, String> incProps = new HashMap<String, String>();
 			incProps.put(VALUE_TYPE_PROP, incremental.name());
+			incProps.put(CONSTITUENT_PROP, constituent);
+			incProps.put(PRECISION_PROP, Long.toString(precision));
 			
 			// Map of metadata values for total column
 			Map<String, String> totProps = new HashMap<String, String>();
 			totProps.put(VALUE_TYPE_PROP, total.name());
-			
+			totProps.put(CONSTITUENT_PROP, constituent);
+			totProps.put(PRECISION_PROP, Long.toString(precision));
 
-			columns[srcIncAddIndex] = new ImmutableDoubleColumn(data, srcIncAddIndex, name + " Inc. Addition", "units", "description", incProps);
-			columns[srcTotalIndex] = new ImmutableDoubleColumn(data, srcTotalIndex, name + " Total (w/ upstream, decayed)", "units", "description", totProps);
-		
-			
+			columns[srcIncAddIndex] = new ImmutableDoubleColumn(data, srcIncAddIndex, displayName + " Inc. Addition", units, "description", incProps);
+			columns[srcTotalIndex] = new ImmutableDoubleColumn(data, srcTotalIndex, displayName + " Total (w/ upstream, decayed)", units, "description", totProps);
 		}
 		
 		// ------------------------------------------
@@ -148,45 +153,45 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 		columns[totalTotalCol] = new ImmutableDoubleColumn(data, totalTotalCol, "Grand Total (measurable)", "units", "description", grandTotalProps);
 		
 		// only get the ids if available
-		long[] ids = (predictData.getSys() != null)? TemporaryHelper.getRowIds(predictData.getSys()): null;
+		long[] ids = (predictData.getSys() != null) ? TemporaryHelper.getRowIds(predictData.getSys()) : null;
 		
 		return new PredictResultImm(columns, ids, srcIdIncMap, srcIdTotalMap, totalIncCol, totalTotalCol);
 	}
 
 	public int getSourceCount() {
-	  return sourceCount;
-  }
-	
-	public Double getIncremental(int row) {
-	  return getDouble(row, totalIncCol);
-  }
+        return sourceCount;
+    }
 
-	public int getIncrementalCol() {
-	  return totalIncCol;
-  }
-	
-	public Double getTotal(int row) {
-		return getDouble(row, totalTotalCol);
-  }
+    public Double getIncremental(int row) {
+        return getDouble(row, totalIncCol);
+    }
 
-	public int getTotalCol() {
-	  return totalTotalCol;
-  }
+    public int getIncrementalCol() {
+        return totalIncCol;
+    }
 
-	public int getIncrementalColForSrc(Long srcId) {
-	  return srcIdIncMap.get(srcId);
-  }
+    public Double getTotal(int row) {
+        return getDouble(row, totalTotalCol);
+    }
 
-	public Double getIncrementalForSrc(int row, Long srcId) {
-	  return getDouble(row, srcIdIncMap.get(srcId));
-  }
+    public int getTotalCol() {
+        return totalTotalCol;
+    }
 
-	public int getTotalColForSrc(Long srcId) {
-		return srcIdTotalMap.get(srcId);
-  }
+    public int getIncrementalColForSrc(Long srcId) {
+        return srcIdIncMap.get(srcId);
+    }
 
-	public Double getTotalForSrc(int row, Long srcId) {
-		return getDouble(row, srcIdTotalMap.get(srcId));
-  }
+    public Double getIncrementalForSrc(int row, Long srcId) {
+        return getDouble(row, srcIdIncMap.get(srcId));
+    }
+
+    public int getTotalColForSrc(Long srcId) {
+        return srcIdTotalMap.get(srcId);
+    }
+
+    public Double getTotalForSrc(int row, Long srcId) {
+        return getDouble(row, srcIdTotalMap.get(srcId));
+    }
 
 }

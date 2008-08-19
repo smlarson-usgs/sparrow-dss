@@ -17,7 +17,7 @@
 					<xsd:sequence>
 						<xsd:element name="approved" type="xsd:boolean"/>
 						<xsd:element name="public" type="xsd:boolean"/>
-						<xsd:element name="archivied" type="xsd:boolean"/>
+						<xsd:element name="archived" type="xsd:boolean"/>
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
@@ -28,12 +28,12 @@
 			<xsd:element name="contactId" type="xsd:integer"/>
 			<xsd:element name="enhNetworkId" type="xsd:integer"/>
 			<xsd:element name="bounds">
-			 <xsd:complexType>
-				<xsd:attribute name="north" use="required" type="xsd:decimal"/>
-				<xsd:attribute name="west" use="required" type="xsd:decimal"/>
-				<xsd:attribute name="south" use="required" type="xsd:decimal"/>
-				<xsd:attribute name="east" use="required" type="xsd:decimal"/>
-			 </xsd:complexType>
+			    <xsd:complexType>
+					<xsd:attribute name="north" use="required" type="xsd:decimal"/>
+					<xsd:attribute name="west" use="required" type="xsd:decimal"/>
+					<xsd:attribute name="south" use="required" type="xsd:decimal"/>
+					<xsd:attribute name="east" use="required" type="xsd:decimal"/>
+			    </xsd:complexType>
 			</xsd:element>
 			<xsd:element name="sources">
 				<xsd:complexType>
@@ -46,14 +46,16 @@
 		</xsd:sequence>
 		<xsd:attribute name="id" type="xsd:decimal" use="required"/>
 	</xsd:complexType>
-  <xsd:complexType name="SourceType">
+    <xsd:complexType name="SourceType">
 		<xsd:sequence>
 			<xsd:element name="name" type="xsd:string"/>
 			<xsd:element name="displayName" type="xsd:string"/>
 			<xsd:element name="description" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="constituent" type="xsd:string"/>
+			<xsd:element name="units" type="xsd:string" />
 		</xsd:sequence>
 		<xsd:attribute name="id" use="required" type="xsd:integer"/>
 		<xsd:attribute name="identifier" use="required" type="xsd:integer"/>
 		<xsd:attribute name="sortOrder" use="required" type="xsd:integer"/>
-  </xsd:complexType>
+    </xsd:complexType>
 </xsd:schema>

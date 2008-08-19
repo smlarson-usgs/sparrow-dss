@@ -6,6 +6,7 @@ import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.datatable.PredictResult;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -109,8 +110,12 @@ public class PredictExportSerializer extends BasicXMLStreamReader{
 						.addAttribute("name", "Source Values"));
 
 						for(int i=0; i<predictData.getSrc().getColumnCount(); i++) {
+						    String name = predictData.getSrc().getName(i);
+						    name += " (" + predictData.getSrc().getProperty(i, "constituent") + ")";
+						    name += " (" + predictData.getSrc().getUnits(i) + ")";
+						    
 							events.add(makeNonNullBasicTag("col", "")
-									.addAttribute("name", predictData.getSrc().getName(i) + "(" + predictData.getSrc().getUnits(i) + ")")
+									.addAttribute("name", name)
 									.addAttribute("type", "Number"));
 						}
 
@@ -122,8 +127,12 @@ public class PredictExportSerializer extends BasicXMLStreamReader{
 						.addAttribute("name", "Predicted Values"));
 
 						for(int i=0; i<result.getColumnCount(); i++) {
+						    String name = result.getName(i);
+						    name += " (" + result.getProperty(i, PredictResult.CONSTITUENT_PROP) + ")";
+						    name += " (" + result.getUnits(i) + ")";
+						    
 							events.add(makeNonNullBasicTag("col", "")
-									.addAttribute("name", result.getName(i) + "(" + result.getUnits(i) + ")")
+									.addAttribute("name", name)
 									.addAttribute("type", "Number"));
 						}
 

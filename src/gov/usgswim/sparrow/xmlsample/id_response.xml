@@ -24,42 +24,45 @@
 	</identification>
 	
 	<adjustments display="Treatments">
-		<metadata rowCount="5" columnCount="5" row-id-name="source_id">
+		<metadata rowCount="5" columnCount="7" row-id-name="source_id">
 			<columns>
-				
-				
 				<!--
 				Column Definitions:
 				Source Name: Name of the source
-				Units: Units for this source
+				Constituent: What is being measured
+				Units: Units of what is being measured for this source
+				Precision: Decimal places used in reporting measured values
 				Original Value: Orginal source value from the model
-				Absolute Value:  An optional absolute value specified by the user.
-					The value completely replaces the original value.  For an individual
-					reach, the user can only specify an Absolute Value or Multiplier,
-					they cannot specify both.
-				Multiplier:  A coefficient to apply to the source.  Other coeff's may
-					apply to the reach, so it is not easy to determine what the final
-					effective value is as a result of a multiplier.  For an individual
-					reach, the user can only specify an Absolute Value or Multiplier,
-					they cannot specify both.
-				Adjusted Value:  The final effective value for this source at this reach.
-					The only way to determine this value is to submit the prediction context
-					and request adjustments (i.e., request this section).
+				Absolute Value:  An optional absolute value specified by the
+				    user. The value completely replaces the original value.
+				Adjusted Value:  The final effective value for this source at
+				    this reach. The only way to determine this value is to
+				    submit the prediction context and request adjustments (i.e.,
+				    request this section).
 				-->
 				<col name="Source Name" type="String" />
+				<col name="Constituent" type="String" />
 				<col name="Units" type="String" />
+				<col name="Precision" type="Number" />
 				<col name="Original Value" type="Number" />
 				<col name="Absolute Value" type="Number" />
-				<col name="Multiplier" type="Number" />
 				<col name="Adjusted Value" type="Number" />
 			</columns>
 		</metadata>
 		<data>
-			<r id="1"><c>Point Sources</c><c>N in Tons</c><c>354564</c><c></c><c></c><c>354564</c></r>
-			<r id="2"><c>Atmospheric Deposition</c><c>N in Tons / SQ. Mile</c><c>354564</c><c></c><c></c><c>354564</c></r>
-			<r id="3"><c>Fertilizer</c><c>N in Tons / Acre</c><c>354564</c><c></c><c></c><c>354564</c></r>
-			<r id="4"><c>Waste</c><c>Tons of Garbage</c><c>354564</c><c></c><c></c><c>354564</c></r>
-			<r id="5"><c>Non-Agricultural</c><c>Total Population</c><c>354564</c><c></c><c></c><c>354564</c></r>
+			<r id="1">
+			    <c>Point Sources</c>
+			    <c>Total Nitrogen</c>
+			    <c>kg/year</c>
+                <c>2</c>
+			    <c>354564</c>
+			    <c></c>
+			    <c>354564</c>
+			</r>
+			<r id="2"><c>Atmospheric Deposition</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c></c><c>354564</c></r>
+			<r id="3"><c>Fertilizer</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c></c><c>354564</c></r>
+			<r id="4"><c>Waste</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c></c><c>354564</c></r>
+			<r id="5"><c>Non-Agricultural</c><c>Area</c><c>sqr. km</c><c>2</c><c>354564</c><c></c><c>354564</c></r>
 		</data>
 	</adjustments>
 	<attributes display="Attributes">
@@ -86,9 +89,12 @@
 		</data>
 	</attributes>
 	<predicted display="Predicted Values">
-		<metadata rowCount="12" columnCount="4">
+		<metadata rowCount="12" columnCount="7">
 			<columns>
 				<col name="Source Name" type="String" />
+                <col name="Constituent" type="String" />
+                <col name="Units" type="String" />
+                <col name="Precision" type="Number" />
 				<col name="Original Predicted Value" type="Number" />
 				<col name="Treated Predicted Value" type="Number" />
 				<col name="Percent Change" type="Percentage" />
@@ -96,20 +102,20 @@
 		</metadata>
 		<data>
 			<section display="Incremental Contribution Values" name="inc">
-				<r><c>Point Sources</c><c>354564</c><c>354564</c><c>0</c></r>
-				<r><c>Atmospheric Deposition</c><c>354564</c><c>354564</c><c>0</c></r>
-				<r><c>Fertilizer</c><c>354564</c><c>354564</c><c>0</c></r>
-				<r><c>Waste</c><c>354564</c><c>354564</c><c>0</c></r>
-				<r><c>Non-Agricultural</c><c>354564</c><c>354564</c><c>0</c></r>
-				<r><c>Total:</c><c>354564</c><c>354564</c><c>0</c></r>
+				<r><c>Point Sources</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
+				<r><c>Atmospheric Deposition</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
+				<r><c>Fertilizer</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
+				<r><c>Waste</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
+				<r><c>Non-Agricultural</c><c>Area</c><c>sqr. km</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
+				<r><c>Total:</c><c></c><c></c><c></c><c>354564</c><c>354564</c><c>0</c></r>
 			</section>
 			<section display="Total (Measurable) Values" name="total">
-				<r><c>Point Sources</c><c>354564</c><c>354564</c><c>0</c></r>
-				<r><c>Atmospheric Deposition</c><c>354564</c><c>354564</c><c>0</c></r>
-				<r><c>Fertilizer</c><c>354564</c><c>354564</c><c>0</c></r>
-				<r><c>Waste</c><c>354564</c><c>354564</c><c>0</c></r>
-				<r><c>Non-Agricultural</c><c>354564</c><c>354564</c><c>0</c></r>
-				<r><c>Total:</c><c>354564</c><c>354564</c><c>0</c></r>
+				<r><c>Point Sources</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
+				<r><c>Atmospheric Deposition</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
+				<r><c>Fertilizer</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
+				<r><c>Waste</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
+				<r><c>Non-Agricultural</c><c>Area</c><c>sqr. km</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
+				<r><c>Total:</c><c></c><c></c><c></c><c>354564</c><c>354564</c><c>0</c></r>
 			</section>
 		</data>
 	</predicted>
