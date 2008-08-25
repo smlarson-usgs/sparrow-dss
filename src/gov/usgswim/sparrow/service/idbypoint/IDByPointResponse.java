@@ -50,27 +50,29 @@ public class IDByPointResponse {
 		in.append("\n");
 		{
 			// write <status>, <message>, <cache-lifetime-seconds>
-			writeNonNullTag(in, "status", (statusOK)?"OK": "");
+			writeNonNullTag(in, "status", (statusOK) ? "OK" : "Failed");
 			writeNonNullTag(in, "message", message);
 			writeNonNullTag(in, "cache-lifetime-seconds", asString(cacheLifetime));
 			in.append("\n");
 			
-			in.append(reach.toIdentificationXML());
-			in.append("\n");
+			if (reach != null) {
+    			in.append(reach.toIdentificationXML());
+    			in.append("\n");
+			}
 
 			// TODO Replace this when populated
 			if (adjustmentsXML != null) {
 				in.append(adjustmentsXML);
+	            in.append("\n");
 			}
-			in.append("\n");
 			if (predictionsXML != null) {
 				in.append(predictionsXML);
+	            in.append("\n");
 			}
-			in.append("\n");
 			if (attributesXML != null) {
 				in.append(attributesXML);
+	            in.append("\n");
 			}
-			in.append("\n");
 		}
 		writeClosingTag(in, "sparrow-id-response");
 

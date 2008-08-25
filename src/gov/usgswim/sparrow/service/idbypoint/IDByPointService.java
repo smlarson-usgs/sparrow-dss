@@ -106,26 +106,33 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	public XMLStreamReader getXMLStreamReader(IDByPointRequest req, boolean isNeedsFlattening) throws Exception {
 		// TODO isNeedsFlattening ignored for now because using custom flattener
 
+	    // Retrieve the model ID
 		IDByPointResponse response = new IDByPointResponse();
-		
-		//Find the model ID and reach ID. Note that the model ID must be known before calling 
-		response.modelID = populateModelID(req);
-		assert(response.modelID != null);
-		response.setReach(retrieveReach(req, response));
-		assert(response.reachID != null);
-	
-		// populate each of the sections
-		if (req.hasAdjustments()) {
-			retrieveAdjustments(req.getContextID(), req, response);
+        response.modelID = populateModelID(req);
+        assert(response.modelID != null);
+    
+        // Retrieve the reach
+		ReachInfo reach = retrieveReach(req, response);
+		if (reach != null) {
+	        response.setReach(reach);
+
+	        // populate each of the sections
+	        if (req.hasAdjustments()) {
+	            retrieveAdjustments(req.getContextID(), req, response);
+	        }
+	        if (req.hasAttributes()) {
+	            retrieveAttributes(req, response);
+	        }
+	        if (req.hasPredicted()) {
+	            response.predictionsXML = retrievePredictedsForReach(req.getContextID(), req.getModelID(), Long.valueOf(response.reachID));
+	        }
+	        
+	        response.statusOK = true;
+		} else {
+		    response.statusOK = false;
+		    response.message = "No reach found near that point.";
 		}
-		if (req.hasAttributes()) {
-			retrieveAttributes(req, response);
-		}
-		if (req.hasPredicted()) {
-			response.predictionsXML = retrievePredictedsForReach(req.getContextID(), req.getModelID(), Long.valueOf(response.reachID));
-		}
-		
-		response.statusOK = true;
+
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(response.toXML()));
 
