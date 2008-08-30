@@ -16,7 +16,8 @@ import java.util.Hashtable;
 import java.util.Map;
 
 /**
- * An immutable implementation of PredictResult.
+ * An immutable implementation of PredictResult. This is simply an Immutable
+ * DataTable with convenience getXXX methods appropriate to the content
  * 
  * This will likely be the only implementation unless the PredictRunner code is
  * modified to use a builder instead of arrays.

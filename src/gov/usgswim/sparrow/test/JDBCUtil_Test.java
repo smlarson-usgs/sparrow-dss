@@ -20,7 +20,7 @@ import oracle.jdbc.OracleDriver;
 
 
 /**
- * @author ilinkuo
+ * @author eeverman
  * @deprecated No longer tests the JDBCUtil class. Superseded by DataLoaderTest class. Should delete
  */
 public class JDBCUtil_Test extends TestCase {
@@ -86,8 +86,6 @@ public class JDBCUtil_Test extends TestCase {
 		assertEquals(11, s2.getIdentifier());
 
 	}
-
-	//TODO:  Should some of these tests be turned back on?
 
 	/**
 	 * @see JDBCUtil#JDBCUtil.writePredictDataSet(PredictionDataSet data, Connection conn)

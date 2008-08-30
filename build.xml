@@ -66,5 +66,6 @@
 	  			<exclude name="gov/usgswim/sparrow/test/**"/>
 	  		</fileset>
 		</jar>
+		
 	</target>
 </project>

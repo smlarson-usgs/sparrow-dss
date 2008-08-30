@@ -24,9 +24,9 @@ import gov.usgswim.sparrow.domain.Model;
 public interface PredictData extends ImmutableBuilder<PredictData>, Serializable {
 
 	/**
-	 * Returns the soruce metadata, which includes ids, names, units, and other metadata.
+	 * Returns the source metadata, which includes ids, names, units, and other metadata.
 	 * 
-	 * SrcMetadata contains a row for each source in the model.  The source
+	 * SrcMetadata contains a row for each source type in the model.  The source type
 	 * identifier (model specific, it is not based on db ID) is the row id for each
 	 * row.  Row position in this dataset is equal to the column position of the
 	 * source  in the sourceValue dataset.
@@ -39,11 +39,11 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 * <li>DISPLAY_NAME - (String) The short name of the source, used for display
 	 * <li>DESCRIPTION - (String) A description of the source (could be long)
 	 * <li>CONSTITUENT - (String) The name of the Constituent being measured
-	 * <li>UNITS - (STring) The units the constituent is measured in
+	 * <li>UNITS - (String) The units the constituent is measured in
 	 * <li>PRECISION - (int) The number of decimal places
 	 * <li>IS_POINT_SOURCE (boolean) 'T' or 'F' values that can be mapped to boolean.
 	 * </ol>
-	 * @return
+	 * @return DataTable
 	 */
 	public DataTable getSrcMetadata();
 
@@ -61,7 +61,7 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 *
 	 * NOTE:  Node indexes that do not start at zero or have large skips will
 	 * require more memory to process.
-	 * @return The Data2D data
+	 * @return The DataTable data
 	 */
 	public DataTable getTopo();
 
@@ -71,7 +71,7 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 * <h4>Data Columns, sorted by HYDSEQ</h4>
 	 * <p>One row per reach (i = reach index).  coef[i][k] == the coefficient for source k at reach i</p>
 	 *
-	 * @return The Data2D data
+	 * @return The DataTable data
 	 */
 	public DataTable getCoef();
 
@@ -81,7 +81,7 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 * <h4>Data Columns, sorted by HYDSEQ</h4>
 	 * <p>One row per reach (i = reach index).  coef[i][k] == the source value for source k at reach i</p>
 	 *
-	 * @return The Data2D data
+	 * @return The DataTable data
 	 */
 	public DataTable getSrc();
 

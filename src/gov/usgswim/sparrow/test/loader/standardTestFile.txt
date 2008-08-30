@@ -1,0 +1,16 @@
+id	sort_order	name	display_name	description	constituent	units	precision	is_point_source
+1	1	point		1992 Point srce TSS dischrg on RF1 (kg)	Mass	kg		Y
+2	2	point_off		1992 Point srce TSS dischrg off RF1 (kg)	Mass	kg		Y
+3	3	urban_92		Urban land area 1992 (km2)	Area	km2		N
+4	4	forest_92		Forest land area 1992 (km2)	Area	km2		N
+5	5	fed		Federal land area (km2)	Area	km2		N
+6	6	fed_range_92		Federal rangeland area 1992 (km2)	Area	km2		N
+7	7	croppastor_92		Crop/Pasture/orchrd land area 1992 (km2)	Area	km2		N
+8	8	pasture		Pasture land (km2)	Area	km2		N
+9	9	wetland_92		Wetland area 1992 (km2)	Area	km2		N
+10	10	other		Non-federal range and barren land (km2)	Area	km2		N
+11	11	usle92		1992 NRI water soil erosion (kg)	Mass	kg		N
+12	12	weq92		1992 NRI wind soil erosion (kg)	Mass	kg		N
+13	13	rchlen		REACH LENGTH (METERS)	Length	m		N
+14	14	nridev_92		NRI change in urban land 1987-1992 (km2)	Area	km2		N
+15	15	load_change_scenario						

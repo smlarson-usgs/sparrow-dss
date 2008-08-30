@@ -4,15 +4,29 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.loader.Analyzer;
+import gov.usgswim.sparrow.loader.DataFileDescriptor;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -20,6 +34,8 @@ import org.apache.log4j.Logger;
  * @deprecated functionality replaced by DataLoader
  */
 public abstract class JDBCUtil {
+	public static final String SPARROW_SCHEMA = "SPARROW_DSS";
+	public static final String NETWORK_SCHEMA = "STREAM_NETWORK";
 
 
 	protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
@@ -39,20 +55,20 @@ public abstract class JDBCUtil {
 	 * delete.  The final clean-up is then to delete the reaches.
 	 *
 	 * @param modelId	The id of the model to be deleted.
-	 * @param keepModelRecord If true, the model record in SPARROW_MODEL is kept.
+	 * @param optionKeepModelRecord If true, the model record in SPARROW_MODEL is kept.
 	 */
-	public static void deleteModel(Connection conn, long modelId, boolean keepModelRecord) throws SQLException {
+	public static void deleteModel(Connection conn, long modelId, boolean optionKeepModelRecord) throws SQLException {
 
-		String  listSourceIds = "SELECT SOURCE_ID FROM SOURCE WHERE SPARROW_MODEL_ID = " + modelId;
+		String  listSourceIds = "SELECT SOURCE_ID FROM " + SPARROW_SCHEMA + ".SOURCE WHERE SPARROW_MODEL_ID = " + modelId;
 
 
-		String rmModel = "DELETE FROM SPARROW_MODEL WHERE SPARROW_MODEL_ID = ?";
+		String rmModel = "DELETE FROM " + SPARROW_SCHEMA + ".SPARROW_MODEL WHERE SPARROW_MODEL_ID = ?";
 		PreparedStatement rmModelStmt = null;
 
-		String rmReaches = "DELETE FROM MODEL_REACH WHERE SPARROW_MODEL_ID = ?";
+		String rmReaches = "DELETE FROM " + SPARROW_SCHEMA + ".MODEL_REACH WHERE SPARROW_MODEL_ID = ?";
 		PreparedStatement rmReachesStmt = null;
 
-		String rmSource = "DELETE FROM SOURCE WHERE SOURCE_ID = ?";
+		String rmSource = "DELETE FROM " + SPARROW_SCHEMA + ".SOURCE WHERE SOURCE_ID = ?";
 		PreparedStatement rmSourceStmt = null;
 
 		DataTableWritable srcIds = DataLoader.readAsInteger(conn, listSourceIds, 100);
@@ -60,57 +76,69 @@ public abstract class JDBCUtil {
 		//Delete each source (Cascades to lots of related data)
 		try {
 			rmSourceStmt = conn.prepareStatement(rmSource);
-			log.debug("Deleting model " + modelId +  " with " + srcIds.getRowCount() + " sources.");
+			log.debug("deleteModel(): Deleting model " + modelId +  " with " + srcIds.getRowCount() + " sources.");
 			for (int i = 0; i < srcIds.getRowCount(); i++)  {
 				int srcId = srcIds.getInt(i, 0);
 				rmSourceStmt.setInt(1, srcId);
 				//int cnt = rmSourceStmt.executeUpdate();
-				log.debug("Source #" + (i + 1) + " deleted (Source ID = '" + srcId + "')");
+				log.debug("deleteModel(): Source #" + (i + 1) + " deleted (Source ID = '" + srcId + "')");
 			}
 		} finally {
 			try {
 				rmSourceStmt.close();
 			} catch (SQLException e) {
-				log.error("Exception while closing statement", e);
+				log.error("deleteModel(): Exception while closing statement", e);
 			}
 		}
 
 		//Delete all the reaches in one shot (Cascades to some related data)
 		try {
 			rmReachesStmt = conn.prepareStatement(rmReaches);
-			log.debug("Deleting all model reaches...");
+			log.debug("deleteModel(): Deleting all model reaches...");
 			rmReachesStmt.setInt(1, (int) modelId);
 			int cnt = rmReachesStmt.executeUpdate();
-			log.debug("Reaches deleted.  " + cnt + " records.");
+			log.debug("deleteModel(): Reaches deleted.  " + cnt + " records.");
 		} finally {
 			try {
 				rmReachesStmt.close();
 			} catch (SQLException e) {
-				log.error("Exception while closing statement", e);
+				log.error("deleteModel(): Exception while closing statement", e);
 			}
 		}
 
 		//Optionally, delete the model record.
-		if (!keepModelRecord) {
+		if (!optionKeepModelRecord) {
 			try {
 				rmModelStmt = conn.prepareStatement(rmModel);
-				log.debug("Deleting all model record...");
+				log.debug("deleteModel(): Deleting all model record...");
 				rmModelStmt.setInt(1, (int) modelId);
 				int cnt = rmModelStmt.executeUpdate();
-				log.debug("Model deleted.  " + cnt + " records.");
+				log.debug("deleteModel(): Model deleted.  " + cnt + " records.");
 			} finally {
 				try {
 					rmModelStmt.close();
 				} catch (SQLException e) {
-					log.error("Exception while closing statement", e);
+					log.error("deleteModel(): Exception while closing statement", e);
 				}
 			}
 		} else {
-			log.debug("Model record kept.");
+			log.debug("deleteModel(): Model record kept.");
 		}
 
 	}
 
+	
+	public static void write(ResultSet rs, FileWriter fw) throws SQLException, IOException {
+		while (rs.next()) {
+			String row = "";
+			ResultSetMetaData metadata = rs.getMetaData();
+			for (int i=0; i < metadata.getColumnCount(); i++) {
+				row += rs.getString(i);
+			}
+			fw.write(row);
+		}
+	}
+	
 	/**
 	 * Loads all the model reach in the passed PredictionDataSet into the
 	 * SPARROW_DSS.MODEL_REACH table.
@@ -137,16 +165,19 @@ public abstract class JDBCUtil {
 		int stdIdNotMatched = 0;	//Number of reaches where the STD_ID is assigned, but not matched.
 
 		//Queries and PreparedStatements
-		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM STREAM_NETWORK.ENH_REACH WHERE ENH_NETWORK_ID = " + data.getModel().getEnhNetworkId().longValue();
+		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM " + NETWORK_SCHEMA + ".ENH_REACH WHERE ENH_NETWORK_ID = " 
+			+ data.getModel().getEnhNetworkId().longValue();
 		Map<Integer, Integer> enhIdMap = buildIntegerMap(conn, enhReachQuery);
 
-		String insertReachStr = "INSERT INTO MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, ENH_REACH_ID, SPARROW_MODEL_ID)" +
-		" VALUES (?,?,?,?,?," + data.getModel().getId().longValue() + ")";                 
+		String insertReachStr = "INSERT INTO " + SPARROW_SCHEMA + ".MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, ENH_REACH_ID, SPARROW_MODEL_ID)"
+			+ " VALUES (?,?,?,?,?," + data.getModel().getId().longValue() + ")";                 
 		PreparedStatement insertReach = conn.prepareStatement(insertReachStr);
 
-		String selectAlleachesQuery = "SELECT IDENTIFIER, MODEL_REACH_ID FROM MODEL_REACH WHERE SPARROW_MODEL_ID = " + data.getModel().getId();	
+		String selectAllReachesQuery = "SELECT IDENTIFIER, MODEL_REACH_ID FROM " + NETWORK_SCHEMA + ".MODEL_REACH WHERE SPARROW_MODEL_ID = " 
+			+ data.getModel().getId();	
 
-		String insertReachTopoStr = "INSERT INTO MODEL_REACH_TOPO (MODEL_REACH_ID, FNODE, TNODE, IFTRAN) VALUES (?,?,?,?)";
+		// ERROR: TODO: should be MODEL_REACH, as MODEL_REACH_TOPO should be deleted from schema.
+		String insertReachTopoStr = "INSERT INTO " + NETWORK_SCHEMA + ".MODEL_REACH_TOPO (MODEL_REACH_ID, FNODE, TNODE, IFTRAN) VALUES (?,?,?,?)";
 		PreparedStatement insertReachTopo = conn.prepareStatement(insertReachTopoStr);
 
 		DataTable ancil = data.getAncil();
@@ -226,7 +257,7 @@ public abstract class JDBCUtil {
 			//
 			// Load all inserted db row into a Map that maps IDENTIFIER(key) to the db MODEL_REACH_ID(value)
 			// We need to use these values to load topo data, and we also return this map.
-			modelIdMap = buildIntegerMap(conn, selectAlleachesQuery);
+			modelIdMap = buildIntegerMap(conn, selectAllReachesQuery);
 
 			//Test loaded reach count
 			if (modelIdMap.size() != modelRows) {
@@ -276,6 +307,7 @@ public abstract class JDBCUtil {
 
 		return modelIdMap;
 	}
+
 
 	/**
 	 * Loads all the model reach in the passed PredictionDataSet into the
@@ -351,7 +383,7 @@ public abstract class JDBCUtil {
 	 * @return
 	 * @throws SQLException
 	 */
-	private static Map<Integer, Integer> buildIntegerMap(Connection conn, String query) throws SQLException {
+	public static Map<Integer, Integer> buildIntegerMap(Connection conn, String query) throws SQLException {
 		DataTableWritable data = DataLoader.readAsInteger(conn, query, 1000);
 		int rows = data.getRowCount();
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>((int)(rows * 1.2), 1f);

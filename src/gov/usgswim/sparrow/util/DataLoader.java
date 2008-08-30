@@ -247,7 +247,7 @@ public class DataLoader {
 
 
 	/**
-	 * Returns a DataTable of all System info
+	 * Returns an ordered DataTable of all REACHes in the MODEL
 	 * <h4>Data Columns, sorted by HYDSEQ.  One row per reach (i = reach index)</h4>
 	 * <p>Row IDs duplicate the Reach Ids in column zero.</p>
 	 * <ol>
@@ -256,6 +256,8 @@ public class DataLoader {
 	 * </ol>
 	 *
 	 * Sort by HYDSEQ then IDENTIFIER, since in some cases HYDSEQ is not unique.
+	 * [IK] the use of IDENTIFIER has no significance except to guarantee some 
+	 * deterministic ordering of the results. Any other attribute would do.
 	 *
 	 * @param conn A JDBC Connection to run the query on
 	 * @param modelId The ID of the Sparrow model
@@ -283,6 +285,7 @@ public class DataLoader {
 	 * </ol>
 	 * 
 	 * TODO:  Is HYDSEQ needed here since it duplicates system info?
+	 * [IK] It seems the Topo and SystemInfo are not both needed
 	 * 
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
@@ -572,7 +575,7 @@ public class DataLoader {
 	
 	
 	/**
-	 * Returns metadata about the sources in the model.
+	 * Returns metadata about the source types in the model.
 	 * 
 	 * Typically 5-10 rows per model.
 	 *

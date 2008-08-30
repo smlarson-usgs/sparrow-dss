@@ -3,7 +3,8 @@ package gov.usgswim.sparrow.datatable;
 import gov.usgswim.datatable.DataTable.Immutable;
 
 /**
- * A Datatable of sparrow prediction results.
+ * A Datatable of sparrow prediction results with convenience getXXX methods
+ * appropriate to the content
  * 
  * SPARROW specific data access methods are provided so that clients do not need
  * to know how the data is structured in the table.
