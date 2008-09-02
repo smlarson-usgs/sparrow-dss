@@ -6,6 +6,9 @@ public class ModelDataAssumptions {
 	public static final int CONTACT_ID = 42; // default
 	public static final int ENH_NETWORK_ID = 22; // default
 	public static final int PRECISION = 2; // default
+	public static final String SEDIMENT_MODEL_SOURCE_HACK = "0"; // HACK: 0 here because sediment source data is irregular!
+	public static Long MODEL_ID = 30L;
+	
 	
 	public static String useDefaultPrecisionIfUnavailable(
 			DataFileDescriptor md, String[] inputValues) {
@@ -57,5 +60,15 @@ public class ModelDataAssumptions {
 		}
 		return result;
 	}
+
+	public static String sedimentIrregularHack(DataFileDescriptor md,
+			String line) {
+		if (line.charAt(line.length()-1) == '\t') {
+			return line + "0" + md.delimiter + "_";
+		} else {
+			return line + md.delimiter + "_";
+		}
+	}
+
 
 }
