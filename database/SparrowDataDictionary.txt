@@ -5,15 +5,13 @@ There are 4 basic objects in the schema: MODEL, REACH, SOURCE, and implicitly NO
 
 Associated to REACHes and invidual SOURCEs are actual coefficients and values which constitute the data of the model.
 
-// ===========
-// QUESTIONS:
-// ===========
-1) Are SPARROW_DSS.MDRT_DF4A$ and SPARROW_DSS.MDRT_DF52$ really necessary? They hold blobs, but what for?
 
 // ========
 // TABLES:
 // ========
-
+SPARROW_DSS.MDRT_DF4A$ and SPARROW_DSS.MDRT_DF52$:
+	Tables which hold the Spatial Indices. All spatial index tables begin with mdrt
+	
 MODEL_REACH: Reaches are connectors between two nodes -- FNODE and TNODE 
 	MODEL_REACH_ID: globally unique identifier, PK
 	SPARROW_MODEL_ID + IDENTIFIER: alternate key

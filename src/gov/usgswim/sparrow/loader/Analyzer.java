@@ -14,6 +14,11 @@ import org.apache.commons.lang.StringUtils;
 import gov.usgswim.sparrow.loader.DataFileDescriptor.DataType;
 import static gov.usgswim.sparrow.loader.DataFileDescriptor.DataType.*;
 
+/**
+ * TODO[IK] move this to DataTable jar
+ * @author ilinkuo
+ *
+ */
 public class Analyzer {
 	public static int NUMBER_OF_LINES_TO_ANALYZE = 20;
 	
@@ -31,6 +36,7 @@ public class Analyzer {
 		assert(dataFile.isFile());
 		DataFileDescriptor result = new DataFileDescriptor(dataFile.getName());
 		List<Map<DataType, Integer>> typeCountsAnalysis = gatherStats(dataFile, result);
+		result.columnCount = typeCountsAnalysis.size();
 		
 		if (result.hasColumnHeaders() && typeCountsAnalysis.size() != result.getHeaders().length) {
 			System.err.println(dataFile.getName() + ": # of headers: " + result.getHeaders().length + " != # of data columns: " + typeCountsAnalysis.size());

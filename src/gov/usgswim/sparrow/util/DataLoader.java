@@ -198,11 +198,12 @@ public class DataLoader {
     					//The models and sources are sorted by model_id, so scroll forward
     					//thru the models until we find the correct one.
     					while (
-    							(models.get(modelIndex).getId() != s.getModelId()) &&
-    							(modelIndex < models.size()) /* don't scoll past last model*/ )  {
+    							(modelIndex < models.size() && 
+    									models.get(modelIndex).getId() != s.getModelId()) /* don't scoll past last model*/ 
+    									)  {
     						modelIndex++;
     					}
-    
+
     					if (modelIndex < models.size()) {
     						models.get(modelIndex).addSource(s);
     					} else {

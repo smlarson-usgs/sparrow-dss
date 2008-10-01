@@ -1,6 +1,5 @@
 package gov.usgswim.sparrow.loader;
 
-import gov.usgswim.sparrow.util.DataLoader;
 import gov.usgswim.sparrow.util.JDBCUtil;
 import static gov.usgswim.sparrow.loader.ModelDataAssumptions.*;
 
@@ -15,8 +14,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -24,26 +25,145 @@ import java.util.TreeMap;
 import oracle.jdbc.driver.OracleDriver;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import sun.util.calendar.Era;
 
 public class ModelDataLoader {
-	private static Connection PROD_CONN = getProductionConnection();
+	private static final String MODEL_REACHES_INSERT_SQL_FILE = "model_reaches_insert.sql";
+	private static final String SRC_VALUE_INSERT_SQL_FILE = "src_value_insert.sql";
+	private static final String SRC_REACH_COEF_INSERT_SQL_FILE = "src_reach_coef_insert.sql";
+	private static final String REACH_DECAY_COEF_INSERT_SQL_FILE = "reach_decay_coef_insert.sql";
+	private static final String SRC_METADATA_INSERT_SQL_FILE = "src_metadata_insert.sql";
+	private static final String MODEL_METADATA_SQL_FILE = "model_metadata_insert.sql";
+	private static final String DELETE_SQL_FILE = "delete_all.sql";
+	private static final String THIN_LOCAL_CONNECTION = "jdbc:oracle:thin:@localhost:1521:xe";
+	private static final String THIN_WIDW_CONNECTION = "jdbc:oracle:thin:@130.11.165.152:1521:widw";
+
+	private static final String THIN_WIMAP_CONNECTION = "jdbc:oracle:thin:@130.11.165.76:1521:wimap";
 	private static Connection DEV_CONN = getDevelopmentConnection();
+	private static final String REL_LOAD_DIR = "load";
 	
 	private static final String REACH_IDENTIFIER = "local_id";
 	private static final String FULL_IDENTIFIER = "std_id";
 	public static final String[] BASIC_COEF_COLUMNS = new String[] {"ITER", "INC_DELIVF", "TOT_DELIVF", "BOOT_ERROR"};
 	
-	private static String password;
+	private static String prodPassword;
+	private static Logger logger = Logger.getLogger(ModelDataLoader.class);
 	
-	{
+	
+	static File baseDir = new File("C:\\Documents and Settings\\ilinkuo\\Desktop\\Decision_support_files_sediment\\sparrow_ds_sediment");
+	static File verificationDir = new File(baseDir.getAbsolutePath() + "/vOutput" );
+	
+	public static void main(String[] args) throws SQLException{
+		try {
+			File modelMetadata = new File(baseDir.getAbsolutePath() + "/model_metadata.txt");
+			deleteModel(ModelDataAssumptions.MODEL_ID, modelMetadata);
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			return;
+		}
+		System.out.println("====== " + DELETE_SQL_FILE + " generated ====");
 
+		try {
+			File modelMetadata = new File(baseDir.getAbsolutePath() + "/model_metadata.txt");
+			insertModelMetadata(ModelDataAssumptions.MODEL_ID, modelMetadata);
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			return;
+		}
+		System.out.println("====== " + MODEL_METADATA_SQL_FILE + " generated ====");
+
+		try {
+			File sourceMetadata = new File(baseDir.getAbsolutePath() + "/src_metadata.txt");
+			ModelDataLoader.insertSources(ModelDataAssumptions.MODEL_ID, sourceMetadata);
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			return;
+		}
+		System.out.println("====== " + SRC_METADATA_INSERT_SQL_FILE + " generated ====");
+
+		try {
+			File topoData = new File(baseDir.getAbsolutePath() + "/topo.txt");
+			File ancillaryData = new File(baseDir.getAbsolutePath() + "/ancil.txt");
+			ModelDataLoader.insertReaches(ModelDataAssumptions.MODEL_ID, topoData, ancillaryData);
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			return;
+		}
+		System.out.println("====== " + MODEL_REACHES_INSERT_SQL_FILE + " generated ====");
+		
+		Connection conn = null;
+		try {
+			File ancillaryData = new File(baseDir.getAbsolutePath() + "/ancil.txt");
+			File coefData = new File(baseDir.getAbsolutePath() + "/coef.txt");
+			conn = ModelDataLoader.getWIDWConnection();
+			ModelDataLoader.insertReachDecayCoefs(conn, ModelDataAssumptions.MODEL_ID, coefData, ancillaryData);
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			return;
+		} finally {
+			conn.close();
+		}
+		System.out.println("====== " + REACH_DECAY_COEF_INSERT_SQL_FILE + " generated ====");
+
+		try {
+			File ancillaryData = new File(baseDir.getAbsolutePath() + "/ancil.txt");
+			File coefData = new File(baseDir.getAbsolutePath() + "/coef.txt");
+			File sourceMetadata = new File(baseDir.getAbsolutePath() + "/src_metadata.txt");
+			conn = ModelDataLoader.getWIDWConnection();
+			ModelDataLoader.insertSourceReachCoefs(conn, ModelDataAssumptions.MODEL_ID, coefData, sourceMetadata, ancillaryData);
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			return;
+		} finally {
+			conn.close();
+		}
+		System.out.println("====== " + SRC_REACH_COEF_INSERT_SQL_FILE + " generated ====");
+		
+		try {
+			File ancillaryData = new File(baseDir.getAbsolutePath() + "/ancil.txt");
+			File sourceValuesData = new File(baseDir.getAbsolutePath() + "/src.txt");
+			File sourceMetadata = new File(baseDir.getAbsolutePath() + "/src_metadata.txt");
+			conn = ModelDataLoader.getWIDWConnection();
+			ModelDataLoader.insertSourceValues(conn, ModelDataAssumptions.MODEL_ID, sourceValuesData, sourceMetadata, ancillaryData);
+		} catch (Exception e) {
+			e.printStackTrace(System.err);
+			return;
+		} finally {
+			conn.close();
+		}
+		System.out.println("====== " + SRC_VALUE_INSERT_SQL_FILE + " generated ====");
+		
+	}
+	
+	public static void configureLogger(File workingFileOrDirectory) {
+		
+	}
+	
+	public static String appendDateTimeSuffixToFileName(String fileName) {
+		if (fileName == null) return null;
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
+		String dateSuffix = formatter.format(new Date());
+		return appendSuffixToFileName(fileName, "_" + dateSuffix);
+
+	}
+	
+	public static String appendSuffixToFileName(String fileName, String suffix) {
+		if (fileName == null) return null;
+		if (suffix == null) return fileName;
+		int pos = fileName.lastIndexOf(".");
+		if (pos > 0) {
+			fileName = fileName.substring(0, pos) + suffix + fileName.substring(pos);
+		} else {
+			fileName += suffix;
+		}
+		return fileName;
 	}
 	
 	public static void deleteModel(Long modelID, File modelMetadata) throws IOException {
 		
-		BufferedWriter writer = makeOutWriter(modelMetadata, "delete_all.sql");		
+		BufferedWriter writer = makeOutWriter(modelMetadata, DELETE_SQL_FILE);		
 		// ----------------
 		// GENERATE THE SQL
 		// ----------------
@@ -66,29 +186,33 @@ public class ModelDataLoader {
 	}
 	
 	public static void insertModelMetadata(Long modelID, File modelMetadata) throws IOException {
-		DataFileDescriptor fileMetaData = validateModelMetadata(modelMetadata);
-		assert(fileMetaData.lines == 1):"there should only be one line for the model metadata (excluding headers)";
+		DataFileDescriptor md = validateModelMetadata(modelMetadata);
+		assert(md.lines == 1):"there should only be one line for the model metadata (excluding headers)";
 		
 		BufferedReader reader = new BufferedReader(new FileReader(modelMetadata));
-		BufferedWriter writer = makeOutWriter(modelMetadata, "model_metadata_insert.sql");
-		advancePastHeader(fileMetaData, reader);
+		BufferedWriter writer = makeOutWriter(modelMetadata, appendDateTimeSuffixToFileName(MODEL_METADATA_SQL_FILE));
+		advancePastHeader(md, reader);
 		
+
 		// ----------------
 		// GENERATE THE SQL
 		// ----------------
 		try {
 			String line = reader.readLine();			
-			String[] inputValues = line.split(fileMetaData.delimiter);
+			String[] inputValues = line.split(md.delimiter);
 			List<String> values = new ArrayList<String>();
-			String[] allFields = {"SPARROW_MODEL_ID", "NAME","DESCRIPTION","DATE_ADDED","CONTACT_ID","ENH_NETWORK_ID"};
+			String[] allFields = {"SPARROW_MODEL_ID", "NAME","DESCRIPTION","DATE_ADDED","CONTACT_ID","ENH_NETWORK_ID", "IS_APPROVED", "IS_PUBLIC", "IS_ARCHIVED"};
 			{
 				values.add((modelID == null)? null: Long.toString(modelID));
 				// if no modelID submitted, SPARROW_MODEL_ID has an insert trigger using sequence SPARROW_MODEL_SEQ
-				values.add(quoteForSQL(inputValues[1]));
+				values.add(quoteForSQL(inputValues[md.indexOf("name")]));
 				values.add(quoteForSQL(inputValues[2]));
 				values.add("SYSDATE");
 				values.add(Integer.toString(CONTACT_ID));
 				values.add(Integer.toString(ENH_NETWORK_ID));
+				values.add(quoteForSQL("T")); // IS_APPROVED
+				values.add(quoteForSQL("T"));  // IS_PUBLIC
+				values.add(quoteForSQL("F")); // IS_ARCHIVED
 			}
 			
 			String sql = "INSERT into " + JDBCUtil.SPARROW_SCHEMA + ".SPARROW_MODEL ("
@@ -108,7 +232,7 @@ public class ModelDataLoader {
 		DataFileDescriptor md = validateSourceMetadata(sourceMetadata);
 
 		BufferedReader reader = new BufferedReader(new FileReader(sourceMetadata));
-		BufferedWriter writer = makeOutWriter(sourceMetadata, "src_metadata_insert.sql");
+		BufferedWriter writer = makeOutWriter(sourceMetadata, appendDateTimeSuffixToFileName(SRC_METADATA_INSERT_SQL_FILE));
 		advancePastHeader(md, reader);
 		
 		// ----------------
@@ -119,7 +243,7 @@ public class ModelDataLoader {
 			int identifier = 0; // FACT: identifier is 1-based and autogenerated
 			String[] allFields = {"SOURCE_ID", "NAME", "DESCRIPTION", "SORT_ORDER", "SPARROW_MODEL_ID", 
 					"IDENTIFIER", "DISPLAY_NAME", "CONSTITUENT", "UNITS", "PRECISION", 
-					"IS_POINT_SOURCE"};
+					"IS_POINT_SOURCE", "IS_APPROVED", "IS_PUBLIC"};
 			
 			while ( (line=reader.readLine()) != null) {
 				if (line.trim().length() == 0) continue;
@@ -154,7 +278,6 @@ public class ModelDataLoader {
 				writer.write(sql);
 			}
 		} finally {
-			writer.write("commit;\n");
 			writer.flush();
 			writer.close();
 			reader.close();
@@ -178,7 +301,7 @@ public class ModelDataLoader {
 		
 		BufferedReader tReader = new BufferedReader(new FileReader(topoData));
 		BufferedReader aReader = new BufferedReader(new FileReader(ancillaryData));
-		BufferedWriter writer = makeOutWriter(topoData, "model_reaches_insert.sql");
+		BufferedWriter writer = makeOutWriter(topoData, appendDateTimeSuffixToFileName(MODEL_REACHES_INSERT_SQL_FILE));
 		advancePastHeader(md, tReader);
 		
 		int stdIdMatchCount = 0;	//Number of reaches where the STD_ID matched a enh reach
@@ -258,7 +381,7 @@ public class ModelDataLoader {
 		// -----
 		BufferedReader dcReader = new BufferedReader(new FileReader(reachCoefdata));
 		BufferedReader aReader = new BufferedReader(new FileReader(ancilData));
-		BufferedWriter writer = makeOutWriter(reachCoefdata, "reach_decay_coef_insert.sql");
+		BufferedWriter writer = makeOutWriter(reachCoefdata, appendDateTimeSuffixToFileName(REACH_DECAY_COEF_INSERT_SQL_FILE));
 		Map<Integer, Integer> reachIDLookup = retrieveModelReachIDLookup(conn, modelID);
 		advancePastHeader(md, dcReader);
 		advancePastHeader(amd, aReader);
@@ -321,7 +444,7 @@ public class ModelDataLoader {
 		// -----
 		BufferedReader coefReader = new BufferedReader(new FileReader(coefData));
 		BufferedReader ancilReader = new BufferedReader(new FileReader(ancilData));
-		BufferedWriter writer = makeOutWriter(coefData, "src_reach_coef_insert.sql");
+		BufferedWriter writer = makeOutWriter(coefData, appendDateTimeSuffixToFileName(SRC_REACH_COEF_INSERT_SQL_FILE));
 		Map<Integer, Integer> reachIDLookup = retrieveModelReachIDLookup(conn, modelID);
 		Map<Integer, Integer> sourceIDLookup = retrieveSourceIDLookup(conn, modelID);
 		advancePastHeader(md, coefReader);
@@ -404,7 +527,7 @@ public class ModelDataLoader {
 		// -----
 		BufferedReader sourceReader = new BufferedReader(new FileReader(sourceValuesData));
 		BufferedReader ancilReader = new BufferedReader(new FileReader(ancilData));
-		BufferedWriter writer = makeOutWriter(sourceValuesData, "src_value_insert.sql");
+		BufferedWriter writer = makeOutWriter(sourceValuesData, appendDateTimeSuffixToFileName(SRC_VALUE_INSERT_SQL_FILE));
 		
 		Map<Integer, Integer> reachIDLookup = retrieveModelReachIDLookup(conn, modelID);
 		Map<Integer, Integer> sourceIDLookup = retrieveSourceIDLookup(conn, modelID);
@@ -456,45 +579,10 @@ public class ModelDataLoader {
 		}
 	}
 
-	public static void checkSequenceConsistency() {
-		String sql = "    select 'MODEL_REACH.MODEL_REACH_ID' as sequence_name, 'MAX' as type, max(model_reach_id) as val from model_reach "
-		+ "union all "
-		+ "    select sequence_name, 'SEQUENCE' as type, last_number as val from user_sequences "
-		+ "        where sequence_name = 'MODEL_REACH_SEQ' "
-		+ "union all "
-		+ "    select 'REACH_COEF.REACH_COEF_ID' as sequence_name, 'MAX' as type, max(REACH_COEF_ID) as val from REACH_COEF "
-		+ "union all "
-		+ "    select sequence_name, 'SEQUENCE' as type, last_number as val from user_sequences "
-		+ "        where sequence_name = 'REACH_COEF_SEQ' "
-		+ "union all "
-		+ "    select 'SOURCE_REACH_COEF.SOURCE_REACH_COEF_ID' as sequence_name, 'MAX' as type, max(SOURCE_REACH_COEF_ID) as val from SOURCE_REACH_COEF "
-		+ "union all "
-		+ "    select sequence_name, 'SEQUENCE' as type, last_number as val from user_sequences "
-		+ "        where sequence_name = 'SOURCE_REACH_COEF_SEQ' "
-		+ "union all "
-		+ "    select 'SOURCE.SOURCE_ID' as sequence_name, 'MAX' as type, max(SOURCE_ID) as val from SOURCE "
-		+ "union all "
-		+ "    select sequence_name, 'SEQUENCE' as type, last_number as val from user_sequences "
-		+ "        where sequence_name = 'SOURCE_SEQ' "
-		+ "union all "
-		+ "    select 'SOURCE_VALUE.SOURCE_VALUE_ID' as sequence_name, 'MAX' as type, max(SOURCE_VALUE_ID) as val from SOURCE_VALUE "
-		+ "union all "
-		+ "    select sequence_name, 'SEQUENCE' as type, last_number as val from user_sequences "
-		+ "        where sequence_name = 'SOURCE_VALUE_SEQ' "
-		+ "union all "
-		+ "    select 'SPARROW_MODEL.SPARROW_MODEL_ID' as sequence_name, 'MAX' as type, max(SPARROW_MODEL_ID) as val from SPARROW_MODEL "
-		+ "union all "
-		+ "    select sequence_name, 'SEQUENCE' as type, last_number as val from user_sequences "
-		+ "        where sequence_name = 'SPARROW_MODEL_SEQ' ";
-	}
-	
-	// ==========
-	// VALIDATION
-	// ==========
-	
 	public static DataFileDescriptor validateSourceData(File srcValData)
 	throws IOException {
-		assert(srcValData !=  null && srcValData.exists());
+		assert (srcValData !=  null);
+		assert (srcValData.exists()) : srcValData.getAbsolutePath() + " does not exist";
 		assert(srcValData.getName().equals("src.txt"));
 		DataFileDescriptor md = Analyzer.analyzeFile(srcValData);
 		assert(md.hasColumnHeaders());
@@ -503,7 +591,8 @@ public class ModelDataLoader {
 	
 	public static DataFileDescriptor validateCoefData(File reachCoefdata)
 			throws IOException {
-		assert(reachCoefdata !=  null && reachCoefdata.exists());
+		assert (reachCoefdata !=  null);
+		assert (reachCoefdata.exists()) : reachCoefdata.getAbsolutePath() + " does not exist";
 		assert(reachCoefdata.getName().equals("coef.txt"));
 		DataFileDescriptor md = Analyzer.analyzeFile(reachCoefdata);
 		assert(md.hasColumnHeaders());
@@ -512,7 +601,8 @@ public class ModelDataLoader {
 	}
 	public static DataFileDescriptor validateModelMetadata(File modelMetadata)
 			throws IOException {
-		assert (modelMetadata != null && modelMetadata.exists());
+		assert (modelMetadata !=  null);
+		assert (modelMetadata.exists()) : modelMetadata.getAbsolutePath() + " does not exist";
 		assert (modelMetadata.getName().equals("model_metadata.txt"));
 		DataFileDescriptor fileMetaData = Analyzer.analyzeFile(modelMetadata);
 		assert (fileMetaData.hasColumnHeaders());
@@ -523,7 +613,8 @@ public class ModelDataLoader {
 	
 	public static DataFileDescriptor validateSourceMetadata(File sourceMetadata)
 			throws IOException {
-		assert (sourceMetadata !=  null && sourceMetadata.exists());
+		assert (sourceMetadata !=  null);
+		assert (sourceMetadata.exists()) : sourceMetadata.getAbsolutePath() + " does not exist";
 		assert(sourceMetadata.getName().equals("src_metadata.txt"));
 		DataFileDescriptor md = Analyzer.analyzeFile(sourceMetadata);
 		assert(md.hasColumnHeaders());
@@ -534,7 +625,8 @@ public class ModelDataLoader {
 	
 	public static DataFileDescriptor validateTopologicalData(File topoData)
 			throws IOException {
-		assert(topoData != null && topoData.exists());
+		assert (topoData !=  null);
+		assert (topoData.exists()) : topoData.getAbsolutePath() + " does not exist";
 		assert(topoData.getName().equals("topo.txt"));
 		DataFileDescriptor tmd = Analyzer.analyzeFile(topoData);
 		assert(tmd.hasColumnHeaders());
@@ -543,7 +635,8 @@ public class ModelDataLoader {
 	}
 	public static DataFileDescriptor validateAncillaryData(File ancillaryData)
 			throws IOException {
-		assert(ancillaryData != null && ancillaryData.exists());
+		assert (ancillaryData !=  null);
+		assert (ancillaryData.exists()) : ancillaryData.getAbsolutePath() + " does not exist";
 		assert(ancillaryData.getName().equals("ancil.txt"));
 		DataFileDescriptor amd = Analyzer.analyzeFile(ancillaryData);
 		assert(amd.hasColumnHeaders());
@@ -616,7 +709,7 @@ public class ModelDataLoader {
 	public static Map<Integer, Integer> readNetworkReaches() throws SQLException {
 		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM " + JDBCUtil.NETWORK_SCHEMA + ".ENH_REACH WHERE ENH_NETWORK_ID = " 
 		+ ModelDataAssumptions.ENH_NETWORK_ID;
-		return JDBCUtil.buildIntegerMap(PROD_CONN, enhReachQuery);
+		return JDBCUtil.buildIntegerMap(getWIDWConnection(), enhReachQuery);
 	}
 	
 	// ===============
@@ -624,7 +717,10 @@ public class ModelDataLoader {
 	// ===============
 	private static BufferedWriter makeOutWriter(File sourceValuesData, String fileName)
 	throws IOException {
-		String sqlOutputFilePath = sourceValuesData.getParent() + "/" + fileName;
+		String loadScriptsDirPath = sourceValuesData.getParent() + "/" + REL_LOAD_DIR;
+		File loadScriptsDir = new File(loadScriptsDirPath);
+		if (!loadScriptsDir.exists()) throw new IOException("Please create a load scripts directory first at " + loadScriptsDirPath);
+		String sqlOutputFilePath =  loadScriptsDir + "/" + fileName;
 		File outputFile = new File(sqlOutputFilePath);
 		return new BufferedWriter(new FileWriter(outputFile), 8192);
 	}
@@ -684,22 +780,51 @@ public class ModelDataLoader {
 	}
 	
 	/**
-	 * TODO: BAD BAD BAD EVIL EVIL EVIL 
 	 * @return
 	 * @throws SQLException
 	 */
-	public static Connection getProductionConnection(){
+	public static Connection getWIDWConnection(){
 		try {
 			DriverManager.registerDriver(new OracleDriver());		
 
 			String username = "SPARROW_DSS";
-			if (password == null) {
+			if (prodPassword == null) {
 				// WARNING: don't ever hardcode this password in.
-				password = prompt("Please type the A password for user SPARROW_DSS");
+				prodPassword = prompt("Please type the A password for user SPARROW_DSS");
 			}
-			String thinConn = "jdbc:oracle:thin:@130.11.165.152:1521:widw";
+			String thinConn = THIN_WIDW_CONNECTION;
 
-			return DriverManager.getConnection(thinConn,username,password);
+			Connection result = DriverManager.getConnection(thinConn,username,prodPassword);
+			System.out.println("password accepted");
+			return result;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace(System.err);
+		} catch (IOException e) {
+			System.err.println("incorrect SPARROW_DSS password entered?");
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * @return
+	 * @throws SQLException
+	 */
+	public static Connection getWIMAPConnection(){
+		try {
+			DriverManager.registerDriver(new OracleDriver());		
+
+			String username = "SPARROW_DSS";
+			if (prodPassword == null) {
+				// WARNING: don't ever hardcode this password in.
+				prodPassword = prompt("Please type the A password for user SPARROW_DSS");
+			}
+			String thinConn = THIN_WIMAP_CONNECTION;
+
+			Connection result = DriverManager.getConnection(thinConn,username,prodPassword);
+			System.out.println("password accepted");
+			return result;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace(System.err);
@@ -716,7 +841,7 @@ public class ModelDataLoader {
 
 			String username = "SPARROW_DSS";
 			String password = "admin"; // this password doesn't matter as it's just a local password
-			String thinConn = "jdbc:oracle:thin:@localhost:1521:xe";
+			String thinConn = THIN_LOCAL_CONNECTION;
 
 			return DriverManager.getConnection(thinConn,username,password);
 		} catch (SQLException e) {
