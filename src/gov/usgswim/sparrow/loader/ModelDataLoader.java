@@ -1,7 +1,10 @@
 package gov.usgswim.sparrow.loader;
 
-import gov.usgswim.sparrow.util.JDBCUtil;
+import static gov.usgswim.sparrow.loader.ModelDataAssumptions.CONTACT_ID;
+import static gov.usgswim.sparrow.loader.ModelDataAssumptions.ENH_NETWORK_ID;
 import static gov.usgswim.sparrow.loader.ModelDataAssumptions.*;
+import gov.usgswim.sparrow.util.JDBCUtil;
+import gov.usgswim.sparrow.util.SparrowSchemaConstants;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,7 +15,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -25,11 +27,13 @@ import java.util.TreeMap;
 import oracle.jdbc.driver.OracleDriver;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 
-import sun.util.calendar.Era;
-
+/**
+ * @author ilinkuo
+ *
+ */
 public class ModelDataLoader {
+	// SQL FILE NAMES
 	private static final String MODEL_REACHES_INSERT_SQL_FILE = "model_reaches_insert.sql";
 	private static final String SRC_VALUE_INSERT_SQL_FILE = "src_value_insert.sql";
 	private static final String SRC_REACH_COEF_INSERT_SQL_FILE = "src_reach_coef_insert.sql";
@@ -37,24 +41,21 @@ public class ModelDataLoader {
 	private static final String SRC_METADATA_INSERT_SQL_FILE = "src_metadata_insert.sql";
 	private static final String MODEL_METADATA_SQL_FILE = "model_metadata_insert.sql";
 	private static final String DELETE_SQL_FILE = "delete_all.sql";
+	// CONNECTION INFO
 	private static final String THIN_LOCAL_CONNECTION = "jdbc:oracle:thin:@localhost:1521:xe";
 	private static final String THIN_WIDW_CONNECTION = "jdbc:oracle:thin:@130.11.165.152:1521:widw";
-
 	private static final String THIN_WIMAP_CONNECTION = "jdbc:oracle:thin:@130.11.165.76:1521:wimap";
-	private static Connection DEV_CONN = getDevelopmentConnection();
+	// SPECIAL DIRECTORIES
 	private static final String REL_LOAD_DIR = "load";
-	
-	private static final String REACH_IDENTIFIER = "local_id";
-	private static final String FULL_IDENTIFIER = "std_id";
-	public static final String[] BASIC_COEF_COLUMNS = new String[] {"ITER", "INC_DELIVF", "TOT_DELIVF", "BOOT_ERROR"};
-	
-	private static String prodPassword;
-	private static Logger logger = Logger.getLogger(ModelDataLoader.class);
-	
-	
-	static File baseDir = new File("C:\\Documents and Settings\\ilinkuo\\Desktop\\Decision_support_files_sediment\\sparrow_ds_sediment");
+	static File baseDir = new File("C:\\Documents and Settings\\ilinkuo\\Desktop\\DaleMRB");
 	static File verificationDir = new File(baseDir.getAbsolutePath() + "/vOutput" );
-	
+	// IMPORTANT COLUMN NAMES
+	private static final String REACH_IDENTIFIER_COL = "local_id";
+	private static final String FULL_IDENTIFIER_COL = "std_id";
+	public static final String[] BASIC_COEF_COLUMNS = new String[] {"ITER", "INC_DELIVF", "TOT_DELIVF", "BOOT_ERROR"};
+	// 
+	private static String sparrow_dss_password; // populated by user on prompt
+		
 	public static void main(String[] args) throws SQLException{
 		try {
 			File modelMetadata = new File(baseDir.getAbsolutePath() + "/model_metadata.txt");
@@ -135,31 +136,10 @@ public class ModelDataLoader {
 		}
 		System.out.println("====== " + SRC_VALUE_INSERT_SQL_FILE + " generated ====");
 		
-	}
-	
-	public static void configureLogger(File workingFileOrDirectory) {
+		System.out.println("== DONE. All SQL files successfully generated ==");
 		
 	}
 	
-	public static String appendDateTimeSuffixToFileName(String fileName) {
-		if (fileName == null) return null;
-		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
-		String dateSuffix = formatter.format(new Date());
-		return appendSuffixToFileName(fileName, "_" + dateSuffix);
-
-	}
-	
-	public static String appendSuffixToFileName(String fileName, String suffix) {
-		if (fileName == null) return null;
-		if (suffix == null) return fileName;
-		int pos = fileName.lastIndexOf(".");
-		if (pos > 0) {
-			fileName = fileName.substring(0, pos) + suffix + fileName.substring(pos);
-		} else {
-			fileName += suffix;
-		}
-		return fileName;
-	}
 	
 	public static void deleteModel(Long modelID, File modelMetadata) throws IOException {
 		
@@ -168,18 +148,15 @@ public class ModelDataLoader {
 		// GENERATE THE SQL
 		// ----------------
 		try {
-			String removeModel = "DELETE FROM " + JDBCUtil.SPARROW_SCHEMA + ".SPARROW_MODEL WHERE SPARROW_MODEL_ID = " + modelID + ";";
-			String removeReaches = "DELETE FROM " + JDBCUtil.SPARROW_SCHEMA + ".MODEL_REACH WHERE SPARROW_MODEL_ID = " + modelID + ";";
-			String removeSource = "DELETE FROM " + JDBCUtil.SPARROW_SCHEMA + ".SOURCE WHERE SPARROW_MODEL_ID = " + modelID + ";";
+			String removeModel = "DELETE FROM " + SparrowSchemaConstants.SPARROW_SCHEMA + ".SPARROW_MODEL WHERE SPARROW_MODEL_ID = " + modelID + ";";
+			String removeReaches = "DELETE FROM " + SparrowSchemaConstants.SPARROW_SCHEMA + ".MODEL_REACH WHERE SPARROW_MODEL_ID = " + modelID + ";";
+			String removeSource = "DELETE FROM " + SparrowSchemaConstants.SPARROW_SCHEMA + ".SOURCE WHERE SPARROW_MODEL_ID = " + modelID + ";";
 
-			writer.write(removeModel);
-			writer.write("\n");
-			writer.write(removeReaches);
-			writer.write("\n");
-			writer.write(removeSource);
-			writer.write("\n");
+			writer.write(removeModel); writer.write("\n");
+			writer.write(removeReaches); writer.write("\n");
+			writer.write(removeSource); writer.write("\n");
 		} finally {
-			writer.write("commit;\n");
+			writer.write("commit;\n"); // this is added in case the .sql file is to be run by say, SQL+
 			writer.flush();
 			writer.close();
 		}
@@ -193,7 +170,6 @@ public class ModelDataLoader {
 		BufferedWriter writer = makeOutWriter(modelMetadata, appendDateTimeSuffixToFileName(MODEL_METADATA_SQL_FILE));
 		advancePastHeader(md, reader);
 		
-
 		// ----------------
 		// GENERATE THE SQL
 		// ----------------
@@ -210,18 +186,18 @@ public class ModelDataLoader {
 				values.add("SYSDATE");
 				values.add(Integer.toString(CONTACT_ID));
 				values.add(Integer.toString(ENH_NETWORK_ID));
-				values.add(quoteForSQL("T")); // IS_APPROVED
-				values.add(quoteForSQL("T"));  // IS_PUBLIC
-				values.add(quoteForSQL("F")); // IS_ARCHIVED
+				values.add(quoteForSQL(ModelDataAssumptions.IS_APPROVED_DEFAULT));
+				values.add(quoteForSQL(ModelDataAssumptions.IS_PUBLIC_DEFAULT));
+				values.add(quoteForSQL(ModelDataAssumptions.IS_ARCHIVED_DEFAULT));
 			}
 			
-			String sql = "INSERT into " + JDBCUtil.SPARROW_SCHEMA + ".SPARROW_MODEL ("
+			String sql = "INSERT into " + SparrowSchemaConstants.SPARROW_SCHEMA + ".SPARROW_MODEL ("
 			+ joinInParallel(allFields, ",", values) + ")"
 			+" VALUES (" + (join(values, ",") + ");\n");
 			
 			writer.write(sql.toString());
 		} finally {
-			writer.write("commit;\n");
+			writer.write("commit;\n"); // this is added in case the .sql file is to be run by say, SQL+
 			writer.flush();
 			writer.close();
 			reader.close();
@@ -240,8 +216,11 @@ public class ModelDataLoader {
 		// ----------------
 		try {
 			String line = null;
-			int identifier = 0; // FACT: identifier is 1-based and autogenerated
-			String[] allFields = {"SOURCE_ID", "NAME", "DESCRIPTION", "SORT_ORDER", "SPARROW_MODEL_ID", 
+			int identifier = 0; // FACT: identifier is 1-based and
+								// autogenerated, forming a Unique id together
+								// with SPARROW_MODEL_ID
+			String[] allFields = { "SOURCE_ID", "NAME", "DESCRIPTION",
+					"SORT_ORDER", "SPARROW_MODEL_ID", 
 					"IDENTIFIER", "DISPLAY_NAME", "CONSTITUENT", "UNITS", "PRECISION", 
 					"IS_POINT_SOURCE", "IS_APPROVED", "IS_PUBLIC"};
 			
@@ -262,22 +241,30 @@ public class ModelDataLoader {
 					values.add(Integer.toString(identifier));
 					String displayName = useNameForDisplayNameIfUnavailable(md, inputValues);
 					values.add(displayName);
-					values.add(quoteForSQL(inputValues[md.indexOf("constituent")])); 
-					values.add(quoteForSQL(inputValues[md.indexOf("units")]));
+					
+					String constituent = useDefaultIfUnavailable(md, inputValues, "constituent", DEFAULT_CONSTITUENT);
+					values.add(quoteForSQL(constituent)); 
+					
+					String units = useDefaultIfUnavailable(md, inputValues, "units", DEFAULT_UNITS);
+					values.add(quoteForSQL(units));
+					
 					String precision = useDefaultPrecisionIfUnavailable(md, inputValues);
 					values.add(precision);
-					String isPointSource = ModelDataAssumptions.translatePointSource(inputValues[md.indexOf("is_point_source")]);
+					
+
+					String isPointSourceValue = useDefaultIfUnavailable(md, inputValues, "is_point_source", IS_POINT_SOURCE_DEFAULT);
+					String isPointSource = ModelDataAssumptions.translatePointSource(isPointSourceValue);
 					values.add(quoteForSQL(isPointSource));
 				}
 				
-				
-				String sql = "INSERT into " + JDBCUtil.SPARROW_SCHEMA 
+				String sql = "INSERT into " + SparrowSchemaConstants.SPARROW_SCHEMA 
 				+ ".SOURCE (" + joinInParallel(allFields, ",", values) + ")" // 10
 				+ " VALUES (" + join(values, ",") + ");\n";
 				
 				writer.write(sql);
 			}
 		} finally {
+			writer.write("commit;\n"); // this is added in case the .sql file is to be run by say, SQL+
 			writer.flush();
 			writer.close();
 			reader.close();
@@ -304,7 +291,7 @@ public class ModelDataLoader {
 		BufferedWriter writer = makeOutWriter(topoData, appendDateTimeSuffixToFileName(MODEL_REACHES_INSERT_SQL_FILE));
 		advancePastHeader(md, tReader);
 		
-		int stdIdMatchCount = 0;	//Number of reaches where the STD_ID matched a enh reach
+		int stdIdMatchCount = 0;	//Number of reaches where the STD_ID matched an enh reach
 		int stdIdNullCount = 0;		//Number of reaches where the STD_ID is null (actually, counting zero as null)
 		int stdIdNotMatched = 0;	//Number of reaches where the STD_ID is assigned, but not matched.
 		
@@ -331,12 +318,12 @@ public class ModelDataLoader {
 				
 				List<String> values = new ArrayList<String>();
 				{
-					values.add(ancilInputValues[amd.indexOf(REACH_IDENTIFIER)]);
-					values.add(quoteForSQL(ancilInputValues[amd.indexOf(FULL_IDENTIFIER)]));
+					values.add(ancilInputValues[amd.indexOf(REACH_IDENTIFIER_COL)]);
+					values.add(quoteForSQL(ancilInputValues[amd.indexOf(FULL_IDENTIFIER_COL)]));
 					values.add(topoInputValues[md.indexOf("hydseq")]);
 					values.add(topoInputValues[md.indexOf("iftran")]);
 					{
-						String std_id = ancilInputValues[amd.indexOf(FULL_IDENTIFIER)];
+						String std_id = ancilInputValues[amd.indexOf(FULL_IDENTIFIER_COL)];
 						if (std_id == null || std_id.length() == 0 || std_id.equals("0")) {
 							values.add(null);
 							stdIdNullCount++; // no std_id or 0 std_id provided
@@ -356,14 +343,14 @@ public class ModelDataLoader {
 					values.add(topoInputValues[md.indexOf("tnode")]);
 				}
 				
-				String sql = "INSERT INTO " + JDBCUtil.SPARROW_SCHEMA + ".MODEL_REACH "
+				String sql = "INSERT INTO " + SparrowSchemaConstants.SPARROW_SCHEMA + ".MODEL_REACH "
 				+ "(" + joinInParallel(allFields, ",", values) + ")"
 				+ " VALUES (" + join(values, ",") + ");\n";
 				
 				writer.write(sql);
 			}
 		} finally {
-			writer.write("commit;\n");
+			writer.write("commit;\n"); // this is added in case the .sql file is to be run by say, SQL+
 			writer.flush();
 			writer.close();
 			tReader.close();
@@ -406,7 +393,7 @@ public class ModelDataLoader {
 					values[2] = inputValues[md.indexOf("TOT_DELIVF")]; 
 					values[3] = inputValues[md.indexOf("BOOT_ERROR")];
 
-					Integer identifier = Integer.valueOf(ancilValues[amd.indexOf(REACH_IDENTIFIER)]);
+					Integer identifier = Integer.valueOf(ancilValues[amd.indexOf(REACH_IDENTIFIER_COL)]);
 					values[4] = Integer.toString(reachIDLookup.get(identifier));
 				}
 				
@@ -416,7 +403,7 @@ public class ModelDataLoader {
 				writer.write(sql);
 			}
 		} finally {
-			writer.write("commit;\n");
+			writer.write("commit;\n"); // this is added in case the .sql file is to be run by say, SQL+
 			writer.flush();
 			writer.close();
 			dcReader.close();
@@ -479,7 +466,7 @@ public class ModelDataLoader {
 				String[] inputValues = (line + md.delimiter + "_").split(md.delimiter);
 				String[] ancilValues = (aLine + amd.delimiter + "_").split(amd.delimiter);
 				
-				Integer identifier = Integer.valueOf(ancilValues[amd.indexOf(REACH_IDENTIFIER)]);
+				Integer identifier = Integer.valueOf(ancilValues[amd.indexOf(REACH_IDENTIFIER_COL)]);
 				Integer modelReachID = reachIDLookup.get(identifier);
 				String modelReachIDString = Integer.toString(modelReachID);
 				
@@ -492,7 +479,7 @@ public class ModelDataLoader {
 					values[3] = modelReachIDString;
 					
 					// NOTE: SOURCE_REACH_COEF_SEQ autoinserts value of SOURCE_REACH_COEF_ID
-					String sql = "INSERT into " + JDBCUtil.SPARROW_SCHEMA 
+					String sql = "INSERT into " + SparrowSchemaConstants.SPARROW_SCHEMA 
 					+ ".SOURCE_REACH_COEF (ITERATION, VALUE, SOURCE_ID, MODEL_REACH_ID)"
 					+ " VALUES (" + StringUtils.join(values, ",") + ");\n";
 					
@@ -500,7 +487,7 @@ public class ModelDataLoader {
 				}
 			}
 		} finally {
-			writer.write("commit;\n");
+			writer.write("commit;\n"); // this is added in case the .sql file is to be run by say, SQL+
 			writer.flush();
 			writer.close();
 			coefReader.close();
@@ -552,7 +539,7 @@ public class ModelDataLoader {
 				String[] inputValues = ModelDataAssumptions.sedimentIrregularHack(md, line).split(md.delimiter); // 
 				String[] ancilValues = (aLine + amd.delimiter + "_").split(amd.delimiter);
 				
-				Integer identifier = Integer.valueOf(ancilValues[amd.indexOf(REACH_IDENTIFIER)]);
+				Integer identifier = Integer.valueOf(ancilValues[amd.indexOf(REACH_IDENTIFIER_COL)]);
 				Integer modelReachID = reachIDLookup.get(identifier);
 				String modelReachIDString = Integer.toString(modelReachID);
 				
@@ -571,7 +558,7 @@ public class ModelDataLoader {
 				}
 			}
 		} finally {
-			writer.write("commit;\n");
+			writer.write("commit;\n"); // this is added in case the .sql file is to be run by say, SQL+
 			writer.flush();
 			writer.close();
 			sourceReader.close();
@@ -640,7 +627,7 @@ public class ModelDataLoader {
 		assert(ancillaryData.getName().equals("ancil.txt"));
 		DataFileDescriptor amd = Analyzer.analyzeFile(ancillaryData);
 		assert(amd.hasColumnHeaders());
-		assert(amd.hasColumns(REACH_IDENTIFIER, FULL_IDENTIFIER, "new_or_modified", "waterid", "hydseq", 
+		assert(amd.hasColumns(REACH_IDENTIFIER_COL, FULL_IDENTIFIER_COL, "new_or_modified", "waterid", "hydseq", 
 				"demiarea", "demtarea", "meanq", "delivery_target", "RR", 
 				"CONTFLAG", "PNAME", "HEADFLAG", "TERMFLAG", "RESCODE", 
 				"RCHTYPE", "station_id", "statid", "del_frac"));
@@ -652,7 +639,7 @@ public class ModelDataLoader {
 		// NOTE: unlike the other functions, this one MUST hit the database, as
 		// the model_reach_ids are generally generated via a sequence in an
 		// insert trigger
-		String selectAllReachesQuery = "SELECT IDENTIFIER, MODEL_REACH_ID FROM " + JDBCUtil.SPARROW_SCHEMA + ".MODEL_REACH WHERE SPARROW_MODEL_ID = " 
+		String selectAllReachesQuery = "SELECT IDENTIFIER, MODEL_REACH_ID FROM " + SparrowSchemaConstants.SPARROW_SCHEMA + ".MODEL_REACH WHERE SPARROW_MODEL_ID = " 
 		+ modelID;
 		Map<Integer, Integer> modelIdMap = null;
 		try {
@@ -668,7 +655,7 @@ public class ModelDataLoader {
 		// NOTE: unlike the other functions, this one MUST hit the database, as
 		// the source_ids are generally generated via a sequence in an
 		// insert trigger
-		String sourceMapQuery = "SELECT IDENTIFIER, SOURCE_ID FROM " + JDBCUtil.SPARROW_SCHEMA + ".SOURCE WHERE SPARROW_MODEL_ID = " + modelID + " ORDER BY SORT_ORDER";
+		String sourceMapQuery = "SELECT IDENTIFIER, SOURCE_ID FROM " + SparrowSchemaConstants.SPARROW_SCHEMA + ".SOURCE WHERE SPARROW_MODEL_ID = " + modelID + " ORDER BY SORT_ORDER";
 		Map<Integer, Integer> sourceIdMap = JDBCUtil.buildIntegerMap(conn, sourceMapQuery);
 		// ordered map necessary here (but probably can be avoided.
 		TreeMap<Integer, Integer> result = new TreeMap<Integer, Integer>();
@@ -707,7 +694,7 @@ public class ModelDataLoader {
 	}
 	
 	public static Map<Integer, Integer> readNetworkReaches() throws SQLException {
-		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM " + JDBCUtil.NETWORK_SCHEMA + ".ENH_REACH WHERE ENH_NETWORK_ID = " 
+		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM " + SparrowSchemaConstants.NETWORK_SCHEMA + ".ENH_REACH WHERE ENH_NETWORK_ID = " 
 		+ ModelDataAssumptions.ENH_NETWORK_ID;
 		return JDBCUtil.buildIntegerMap(getWIDWConnection(), enhReachQuery);
 	}
@@ -715,6 +702,26 @@ public class ModelDataLoader {
 	// ===============
 	// UTILITY METHODS
 	// ===============
+	public static String appendDateTimeSuffixToFileName(String fileName) {
+		if (fileName == null) return null;
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
+		String dateSuffix = formatter.format(new Date());
+		return appendSuffixToFileName(fileName, "_" + dateSuffix);
+
+	}
+	
+	public static String appendSuffixToFileName(String fileName, String suffix) {
+		if (fileName == null) return null;
+		if (suffix == null) return fileName;
+		int pos = fileName.lastIndexOf(".");
+		if (pos > 0) {
+			fileName = fileName.substring(0, pos) + suffix + fileName.substring(pos);
+		} else {
+			fileName += suffix;
+		}
+		return fileName;
+	}
+	
 	private static BufferedWriter makeOutWriter(File sourceValuesData, String fileName)
 	throws IOException {
 		String loadScriptsDirPath = sourceValuesData.getParent() + "/" + REL_LOAD_DIR;
@@ -736,7 +743,7 @@ public class ModelDataLoader {
 	public static String quoteForSQL(String value) {
 		if (value == null || value.length() == 0) return null;
 		StringBuffer quotedString = new StringBuffer("'");
-		// escape all singlequotes for SQL
+		// escape all single quotes for SQL
 		quotedString.append(value.replaceAll("'", "''")).append("'");
 		return quotedString.toString();
 	}
@@ -778,76 +785,55 @@ public class ModelDataLoader {
 		in.close();
 		return response;
 	}
-	
-	/**
-	 * @return
-	 * @throws SQLException
-	 */
+	// ==================
+	// CONNECTION METHODS
+	// ==================
+
 	public static Connection getWIDWConnection(){
-		try {
-			DriverManager.registerDriver(new OracleDriver());		
-
-			String username = "SPARROW_DSS";
-			if (prodPassword == null) {
-				// WARNING: don't ever hardcode this password in.
-				prodPassword = prompt("Please type the A password for user SPARROW_DSS");
-			}
-			String thinConn = THIN_WIDW_CONNECTION;
-
-			Connection result = DriverManager.getConnection(thinConn,username,prodPassword);
-			System.out.println("password accepted");
-			return result;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace(System.err);
-		} catch (IOException e) {
-			System.err.println("incorrect SPARROW_DSS password entered?");
-			e.printStackTrace();
-		}
-		return null;
+		return getSparrowDSSConnection(THIN_WIDW_CONNECTION, sparrow_dss_password);
 	}
-	
-	/**
-	 * @return
-	 * @throws SQLException
-	 */
+
 	public static Connection getWIMAPConnection(){
-		try {
-			DriverManager.registerDriver(new OracleDriver());		
-
-			String username = "SPARROW_DSS";
-			if (prodPassword == null) {
-				// WARNING: don't ever hardcode this password in.
-				prodPassword = prompt("Please type the A password for user SPARROW_DSS");
-			}
-			String thinConn = THIN_WIMAP_CONNECTION;
-
-			Connection result = DriverManager.getConnection(thinConn,username,prodPassword);
-			System.out.println("password accepted");
-			return result;
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace(System.err);
-		} catch (IOException e) {
-			System.err.println("incorrect SPARROW_DSS password entered?");
-			e.printStackTrace();
-		}
-		return null;
+		return getSparrowDSSConnection(THIN_WIMAP_CONNECTION, sparrow_dss_password);
 	}
 	
 	public static Connection getDevelopmentConnection() {
+		return getSparrowDSSConnection(THIN_WIMAP_CONNECTION, "admin");
+	}
+	
+	public static Connection getSparrowDSSConnection(String connectionString, String password) {
 		try {
 			DriverManager.registerDriver(new OracleDriver());		
 
 			String username = "SPARROW_DSS";
-			String password = "admin"; // this password doesn't matter as it's just a local password
-			String thinConn = THIN_LOCAL_CONNECTION;
+			if (password == null) {
+				password = promptSparrowPassword();
+			}
+			String thinConn = connectionString;
 
-			return DriverManager.getConnection(thinConn,username,password);
+			Connection result = DriverManager.getConnection(thinConn,username,password);
+			System.out.println("password accepted");
+			return result;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace(System.err);
+		} catch (IOException e) {
+			System.err.println("incorrect SPARROW_DSS password entered?");
+			e.printStackTrace();
 		}
 		return null;
 	}
+
+
+	private static String promptSparrowPassword() throws IOException {
+		if (sparrow_dss_password == null) {
+			// WARNING: don't ever hardcode this password in.
+			sparrow_dss_password = prompt("Please type the A password for user SPARROW_DSS");
+		}
+		return sparrow_dss_password;
+	}
+	
+
+	
+
 }

@@ -31,13 +31,9 @@ import org.apache.log4j.Logger;
 
 /**
  * @author eeverman
- * @deprecated functionality replaced by DataLoader
+ * @deprecated functionality replaced by DataLoader and ModelDataLoader
  */
 public abstract class JDBCUtil {
-	public static final String SPARROW_SCHEMA = "SPARROW_DSS";
-	public static final String NETWORK_SCHEMA = "STREAM_NETWORK";
-
-
 	protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
 	public static int DO_NOT_INDEX = -1;
 
@@ -59,16 +55,16 @@ public abstract class JDBCUtil {
 	 */
 	public static void deleteModel(Connection conn, long modelId, boolean optionKeepModelRecord) throws SQLException {
 
-		String  listSourceIds = "SELECT SOURCE_ID FROM " + SPARROW_SCHEMA + ".SOURCE WHERE SPARROW_MODEL_ID = " + modelId;
+		String  listSourceIds = "SELECT SOURCE_ID FROM " + SparrowSchemaConstants.SPARROW_SCHEMA + ".SOURCE WHERE SPARROW_MODEL_ID = " + modelId;
 
 
-		String rmModel = "DELETE FROM " + SPARROW_SCHEMA + ".SPARROW_MODEL WHERE SPARROW_MODEL_ID = ?";
+		String rmModel = "DELETE FROM " + SparrowSchemaConstants.SPARROW_SCHEMA + ".SPARROW_MODEL WHERE SPARROW_MODEL_ID = ?";
 		PreparedStatement rmModelStmt = null;
 
-		String rmReaches = "DELETE FROM " + SPARROW_SCHEMA + ".MODEL_REACH WHERE SPARROW_MODEL_ID = ?";
+		String rmReaches = "DELETE FROM " + SparrowSchemaConstants.SPARROW_SCHEMA + ".MODEL_REACH WHERE SPARROW_MODEL_ID = ?";
 		PreparedStatement rmReachesStmt = null;
 
-		String rmSource = "DELETE FROM " + SPARROW_SCHEMA + ".SOURCE WHERE SOURCE_ID = ?";
+		String rmSource = "DELETE FROM " + SparrowSchemaConstants.SPARROW_SCHEMA + ".SOURCE WHERE SOURCE_ID = ?";
 		PreparedStatement rmSourceStmt = null;
 
 		DataTableWritable srcIds = DataLoader.readAsInteger(conn, listSourceIds, 100);
@@ -165,19 +161,19 @@ public abstract class JDBCUtil {
 		int stdIdNotMatched = 0;	//Number of reaches where the STD_ID is assigned, but not matched.
 
 		//Queries and PreparedStatements
-		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM " + NETWORK_SCHEMA + ".ENH_REACH WHERE ENH_NETWORK_ID = " 
+		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM " + SparrowSchemaConstants.NETWORK_SCHEMA + ".ENH_REACH WHERE ENH_NETWORK_ID = " 
 			+ data.getModel().getEnhNetworkId().longValue();
 		Map<Integer, Integer> enhIdMap = buildIntegerMap(conn, enhReachQuery);
 
-		String insertReachStr = "INSERT INTO " + SPARROW_SCHEMA + ".MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, ENH_REACH_ID, SPARROW_MODEL_ID)"
+		String insertReachStr = "INSERT INTO " + SparrowSchemaConstants.SPARROW_SCHEMA + ".MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, ENH_REACH_ID, SPARROW_MODEL_ID)"
 			+ " VALUES (?,?,?,?,?," + data.getModel().getId().longValue() + ")";                 
 		PreparedStatement insertReach = conn.prepareStatement(insertReachStr);
 
-		String selectAllReachesQuery = "SELECT IDENTIFIER, MODEL_REACH_ID FROM " + NETWORK_SCHEMA + ".MODEL_REACH WHERE SPARROW_MODEL_ID = " 
+		String selectAllReachesQuery = "SELECT IDENTIFIER, MODEL_REACH_ID FROM " + SparrowSchemaConstants.NETWORK_SCHEMA + ".MODEL_REACH WHERE SPARROW_MODEL_ID = " 
 			+ data.getModel().getId();	
 
 		// ERROR: TODO: should be MODEL_REACH, as MODEL_REACH_TOPO should be deleted from schema.
-		String insertReachTopoStr = "INSERT INTO " + NETWORK_SCHEMA + ".MODEL_REACH_TOPO (MODEL_REACH_ID, FNODE, TNODE, IFTRAN) VALUES (?,?,?,?)";
+		String insertReachTopoStr = "INSERT INTO " + SparrowSchemaConstants.NETWORK_SCHEMA + ".MODEL_REACH_TOPO (MODEL_REACH_ID, FNODE, TNODE, IFTRAN) VALUES (?,?,?,?)";
 		PreparedStatement insertReachTopo = conn.prepareStatement(insertReachTopoStr);
 
 		DataTable ancil = data.getAncil();
@@ -378,6 +374,9 @@ public abstract class JDBCUtil {
 	/**
 	 * Turns a query that returns two columns into a Map<Integer, Integer>.
 	 * The first column is used as the key, the second column is used as the value.
+	 * 
+	 * TODO [IK] refactor this into DataTableUtils. This method is the last dependency on JDBCUtil
+	 * 
 	 * @param conn
 	 * @param query
 	 * @return

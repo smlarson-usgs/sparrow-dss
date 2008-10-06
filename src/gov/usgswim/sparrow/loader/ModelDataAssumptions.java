@@ -2,21 +2,30 @@ package gov.usgswim.sparrow.loader;
 
 public class ModelDataAssumptions {
 
-	// WTF? in sparrow_model
 	public static final int CONTACT_ID = 42; // default
 	public static final int ENH_NETWORK_ID = 22; // default
 	public static final int PRECISION = 2; // default
 	public static final String SEDIMENT_MODEL_SOURCE_HACK = "0"; // HACK: 0 here because sediment source data is irregular!
-	public static Long MODEL_ID = 30L;
+	public static Long MODEL_ID = 31L;
 	
+	public static final String DEFAULT_CONSTITUENT = "Phosphorus";
+	public static final String DEFAULT_UNITS = "kg/yr";
+	public static final String IS_ARCHIVED_DEFAULT = "F";
+	public static final String IS_PUBLIC_DEFAULT = "T";
+	public static final String IS_APPROVED_DEFAULT = "T";
+	public static final String IS_POINT_SOURCE_DEFAULT = "F";
 	
 	public static String useDefaultPrecisionIfUnavailable(
 			DataFileDescriptor md, String[] inputValues) {
-		String precision = inputValues[md.indexOf("precision")];
-		if (precision == null || precision.length() == 0) {
-			precision = Integer.toString(PRECISION);
-		}
-		return precision;
+		return useDefaultIfUnavailable(md, inputValues, "precision", Integer.toString(PRECISION));
+	}
+	
+	public static String useDefaultIfUnavailable(
+			DataFileDescriptor md, String[] inputValues, String key, String defaultValue) {
+		int index = md.indexOf(key);
+		String result = null;
+		if (index >= 0) result = inputValues[index];
+		return (result == null || result.length() == 0)? defaultValue: result;
 	}
 
 	public static String useNameForDisplayNameIfUnavailable(
@@ -69,6 +78,8 @@ public class ModelDataAssumptions {
 			return line + md.delimiter + "_";
 		}
 	}
+
+
 
 
 }
