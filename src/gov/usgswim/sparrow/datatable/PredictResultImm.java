@@ -79,25 +79,30 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 		this.sourceCount = srcIdIncMap.size();
 	}
 
-	/**
-	 * Adds appropriate metadata to the raw 2x2 array and returns the result as a DataTable
-	 * 
-	 * @param data
-	 * @param predictData
-	 * @return
-	 * @throws Exception
-	 */
-	public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData) throws Exception {
-		ColumnData[] columns = new ColumnData[data[0].length];
-		int sourceCount = predictData.getSrc().getColumnCount();
-		
-		//Same definition as the instance vars
-		// Lookup table for key=source_id, value=array index of source contribution data
-		Map<Long, Integer> srcIdIncMap = new Hashtable<Long, Integer>(13, 2);
-		Map<Long, Integer> srcIdTotalMap = new Hashtable<Long, Integer>(13, 2);
+    /**
+     * Adds appropriate metadata to the raw 2x2 array and returns the result as a DataTable
+     * 
+     * @param data
+     * @param predictData
+     * @return
+     * @throws Exception
+     */
+    public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData) throws Exception {
+        return buildPredictResult(data, predictData, null);
+    }
+    
+    public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData, long[] ids)
+    throws Exception {
+        ColumnData[] columns = new ColumnData[data[0].length];
+        int sourceCount = predictData.getSrc().getColumnCount();
 
-		// Get the metadata to be attached to the column definitions
-		DataTable sourceMetadata = predictData.getSrcMetadata();
+        //Same definition as the instance vars
+        // Lookup table for key=source_id, value=array index of source contribution data
+        Map<Long, Integer> srcIdIncMap = new Hashtable<Long, Integer>(13, 2);
+        Map<Long, Integer> srcIdTotalMap = new Hashtable<Long, Integer>(13, 2);
+
+        // Get the metadata to be attached to the column definitions
+        DataTable sourceMetadata = predictData.getSrcMetadata();
         Integer displayNameCol = sourceMetadata.getColumnByName("DISPLAY_NAME");
         Integer constituentCol = sourceMetadata.getColumnByName("CONSTITUENT");
         Integer unitsCol = sourceMetadata.getColumnByName("UNITS");
@@ -106,60 +111,62 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
         // ------------------------------------------
         // Define the source columns of the DataTable
         // ------------------------------------------
-		for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++) {
-		    
-		    // Pull out the metadata for the source
-		    String displayName = sourceMetadata.getString(srcIndex, displayNameCol);
-		    String constituent = sourceMetadata.getString(srcIndex, constituentCol);
-		    String units = sourceMetadata.getString(srcIndex, unitsCol);
-		    Long precision = sourceMetadata.getLong(srcIndex, precisionCol);
-			
-		    //
-			int srcIncAddIndex = srcIndex; // index for iterating through the incremental source contributions
-			int srcTotalIndex = srcIndex + sourceCount; // index for iterating through the total source contributions
-			
-			srcIdIncMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcIncAddIndex); 
-			srcIdTotalMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcTotalIndex); 
-			
-			// Map of metadata values for inc-add column
-			Map<String, String> incProps = new HashMap<String, String>();
-			incProps.put(VALUE_TYPE_PROP, incremental.name());
-			incProps.put(CONSTITUENT_PROP, constituent);
-			incProps.put(PRECISION_PROP, Long.toString(precision));
-			
-			// Map of metadata values for total column
-			Map<String, String> totProps = new HashMap<String, String>();
-			totProps.put(VALUE_TYPE_PROP, total.name());
-			totProps.put(CONSTITUENT_PROP, constituent);
-			totProps.put(PRECISION_PROP, Long.toString(precision));
+        for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++) {
 
-			columns[srcIncAddIndex] = new ImmutableDoubleColumn(data, srcIncAddIndex, displayName + " Inc. Addition", units, "description", incProps);
-			columns[srcTotalIndex] = new ImmutableDoubleColumn(data, srcTotalIndex, displayName + " Total (w/ upstream, decayed)", units, "description", totProps);
-		}
-		
-		// ------------------------------------------
-		// Define the total columns of the DataTable
-		// ------------------------------------------
-		int totalIncCol = 2 * sourceCount;	//The total inc col comes right after the two sets of source columns
-		Map<String, String> totalIncProps = new HashMap<String, String>();
-		totalIncProps.put(VALUE_TYPE_PROP, incremental.name());
-		totalIncProps.put(AGGREGATE_TYPE_PROP, sum.name());
-		
-		int totalTotalCol = totalIncCol + 1; //The grand total col comes right after the total incremental col
-		Map<String, String> grandTotalProps = new HashMap<String, String>();
-		grandTotalProps.put(VALUE_TYPE_PROP, total.name());
-		grandTotalProps.put(AGGREGATE_TYPE_PROP, sum.name());
-		
-		columns[totalIncCol] = new ImmutableDoubleColumn(data, totalIncCol, "Total Inc. (not decayed)", "units", "description", totalIncProps);
-		columns[totalTotalCol] = new ImmutableDoubleColumn(data, totalTotalCol, "Grand Total (measurable)", "units", "description", grandTotalProps);
-		
-		// only get the ids if available
-		long[] ids = (predictData.getSys() != null) ? TemporaryHelper.getRowIds(predictData.getSys()) : null;
-		
-		return new PredictResultImm(columns, ids, srcIdIncMap, srcIdTotalMap, totalIncCol, totalTotalCol);
-	}
+            // Pull out the metadata for the source
+            String displayName = sourceMetadata.getString(srcIndex, displayNameCol);
+            String constituent = sourceMetadata.getString(srcIndex, constituentCol);
+            String units = sourceMetadata.getString(srcIndex, unitsCol);
+            Long precision = sourceMetadata.getLong(srcIndex, precisionCol);
 
-	public int getSourceCount() {
+            //
+            int srcIncAddIndex = srcIndex; // index for iterating through the incremental source contributions
+            int srcTotalIndex = srcIndex + sourceCount; // index for iterating through the total source contributions
+
+            srcIdIncMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcIncAddIndex); 
+            srcIdTotalMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcTotalIndex); 
+
+            // Map of metadata values for inc-add column
+            Map<String, String> incProps = new HashMap<String, String>();
+            incProps.put(VALUE_TYPE_PROP, incremental.name());
+            incProps.put(CONSTITUENT_PROP, constituent);
+            incProps.put(PRECISION_PROP, Long.toString(precision));
+
+            // Map of metadata values for total column
+            Map<String, String> totProps = new HashMap<String, String>();
+            totProps.put(VALUE_TYPE_PROP, total.name());
+            totProps.put(CONSTITUENT_PROP, constituent);
+            totProps.put(PRECISION_PROP, Long.toString(precision));
+
+            columns[srcIncAddIndex] = new ImmutableDoubleColumn(data, srcIncAddIndex, displayName + " Inc. Addition", units, "description", incProps);
+            columns[srcTotalIndex] = new ImmutableDoubleColumn(data, srcTotalIndex, displayName + " Total (w/ upstream, decayed)", units, "description", totProps);
+        }
+
+        // ------------------------------------------
+        // Define the total columns of the DataTable
+        // ------------------------------------------
+        int totalIncCol = 2 * sourceCount;	//The total inc col comes right after the two sets of source columns
+        Map<String, String> totalIncProps = new HashMap<String, String>();
+        totalIncProps.put(VALUE_TYPE_PROP, incremental.name());
+        totalIncProps.put(AGGREGATE_TYPE_PROP, sum.name());
+
+        int totalTotalCol = totalIncCol + 1; //The grand total col comes right after the total incremental col
+        Map<String, String> grandTotalProps = new HashMap<String, String>();
+        grandTotalProps.put(VALUE_TYPE_PROP, total.name());
+        grandTotalProps.put(AGGREGATE_TYPE_PROP, sum.name());
+
+        columns[totalIncCol] = new ImmutableDoubleColumn(data, totalIncCol, "Total Inc. (not decayed)", "units", "description", totalIncProps);
+        columns[totalTotalCol] = new ImmutableDoubleColumn(data, totalTotalCol, "Grand Total (measurable)", "units", "description", grandTotalProps);
+
+        // only get the ids if available
+        if (ids == null) {
+            ids = (predictData.getSys() != null) ? TemporaryHelper.getRowIds(predictData.getSys()) : null;
+        }
+
+        return new PredictResultImm(columns, ids, srcIdIncMap, srcIdTotalMap, totalIncCol, totalTotalCol);
+    }
+
+    public int getSourceCount() {
         return sourceCount;
     }
 

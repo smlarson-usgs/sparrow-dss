@@ -4,6 +4,7 @@ import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.sparrow.AggregationRunner;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.datatable.PredictResult;
@@ -223,17 +224,29 @@ public class PredictionContext implements XMLStreamParserComponent {
 					dataColIndex = nomPredictData.getSourceIndexForSourceID(select.getSource());
 					
 					DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(this.getAdjustmentGroups());
+                                        
+                                        // Check for aggregation and run if necessary
+                                        if (getAnalysis().getGroupBy() != null && !"".equals(getAnalysis().getGroupBy())) {
+                                            AggregationRunner aggRunner = new AggregationRunner(this);
+                                            adjSrc = aggRunner.doAggregation(adjSrc);
+                                        }
 					
 					if (select.getNominalComparison().isNone()) {
 						
 						dataTable = adjSrc;
 						
 					} else  {
-						
-						//working w/ either a percent or absolute comparison
-						dataTable = new DataTableCompare(
-								nomPredictData.getSrc(), adjSrc,
-								select.getNominalComparison().equals(ComparisonType.absolute));
+                                            DataTable nomSrcData = nomPredictData.getSrc();
+                                            
+                                            // Check for aggregation and run if necessary
+                                            if (getAnalysis().getGroupBy() != null && !"".equals(getAnalysis().getGroupBy())) {
+                                                AggregationRunner aggRunner = new AggregationRunner(this);
+                                                nomSrcData = aggRunner.doAggregation(nomSrcData);
+                                            }
+
+                                            //working w/ either a percent or absolute comparison
+                                            dataTable = new DataTableCompare(nomSrcData, adjSrc,
+                                                            select.getNominalComparison().equals(ComparisonType.absolute));
 					}
 				} else {
 					throw new Exception("The data series 'source_value' requires a source ID to be specified.");

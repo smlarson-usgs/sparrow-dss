@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.cachefactory;
 
+import gov.usgswim.sparrow.AggregationRunner;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultCompare;
 import gov.usgswim.sparrow.parser.Analysis;
@@ -34,43 +35,63 @@ import org.apache.log4j.Logger;
  *
  */
 public class AnalysisResultFactory implements CacheEntryFactory {
-	protected static Logger log =
-		Logger.getLogger(AnalysisResultFactory.class); //logging for this class
-	
-	public Object createEntry(Object predictContext) throws Exception {
-		PredictionContext context = (PredictionContext)predictContext;
-		Analysis analysis = context.getAnalysis();
-		PredictResult result = null;
-		
-		PredictResult adjResult = SharedApplication.getInstance().getPredictResult(context);
 
-		switch (analysis.getSelect().getNominalComparison()) {
-			case none: {
-				result = adjResult;
-				break;
-			} case percent: {
-				
-				PredictionContext nomContext = new PredictionContext(context.getModelID(), null, null, null, null);
-				PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
-				
-				result = new PredictResultCompare(nomResult, adjResult, false);
-				
-				break;
-			} case absolute: {
-				
-				PredictionContext nomContext = new PredictionContext(context.getModelID(), null, null, null, null);
-				PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
-				
-				result = new PredictResultCompare(nomResult, adjResult, true);
-				
-				break;
-			} default: {
-				throw new Exception("Should never be in here...");
-			}
-			
-		
-		}
-		
-		return result;
-	}
+    protected static Logger log =
+            Logger.getLogger(AnalysisResultFactory.class); //logging for this class
+
+    public Object createEntry(Object predictContext) throws Exception {
+        PredictionContext context = (PredictionContext) predictContext;
+        AggregationRunner aggRunner = new AggregationRunner(context);
+        Analysis analysis = context.getAnalysis();
+        PredictResult result = null;
+
+        PredictResult adjResult = SharedApplication.getInstance().getPredictResult(context);
+
+        // Check for aggregation and run if necessary
+        if (analysis.getGroupBy() != null && !"".equals(analysis.getGroupBy())) {
+            adjResult = aggRunner.doAggregation(adjResult);
+        }
+
+        switch (analysis.getSelect().getNominalComparison()) {
+            case none: {
+                result = adjResult;
+                break;
+            }
+            case percent: {
+
+                PredictionContext nomContext = new PredictionContext(context.getModelID(), null, null, null, null);
+                PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
+
+                // Check for aggregation and run if necessary
+                if (analysis.getGroupBy() != null && !"".equals(analysis.getGroupBy())) {
+                    nomResult = aggRunner.doAggregation(nomResult);
+                }
+
+                result = new PredictResultCompare(nomResult, adjResult, false);
+
+                break;
+            }
+            case absolute: {
+
+                PredictionContext nomContext = new PredictionContext(context.getModelID(), null, null, null, null);
+                PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
+
+                // Check for aggregation and run if necessary
+                if (analysis.getGroupBy() != null && !"".equals(analysis.getGroupBy())) {
+                    nomResult = aggRunner.doAggregation(nomResult);
+                }
+
+                result = new PredictResultCompare(nomResult, adjResult, true);
+
+                break;
+            }
+            default: {
+                throw new Exception("Should never be in here...");
+            }
+
+
+        }
+
+        return result;
+    }
 }

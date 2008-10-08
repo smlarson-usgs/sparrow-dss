@@ -65,9 +65,9 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 	private Integer contextID;
 	private Long modelID;
 	private String bbox;
-	private boolean includeReachAttribs = true;
-	private boolean includeSource = true;
-	private boolean includePredict = true;
+	private boolean includeReachAttribs = false;
+	private boolean includeSource = false;
+	private boolean includePredict = false;
 
 	// ================
 	// INSTANCE METHODS
@@ -107,7 +107,16 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 					} else if ("bbox".equals(localName)) {
 						bbox = ParserHelper.parseSimpleElementValue(in);
 					} else if ("response-content".equals(localName)) {
-						ParserHelper.ignoreElement(in);
+                                            // do nothing - just a container
+                                        } else if ("attributes".equals(localName)) {
+                                            includeReachAttribs = true;
+                                            ParserHelper.ignoreElement(in);
+                                        } else if ("source-values".equals(localName)) {
+                                            includeSource = true;
+                                            ParserHelper.ignoreElement(in);
+                                        } else if ("predicted".equals(localName)) {
+                                            includePredict = true;
+                                            ParserHelper.ignoreElement(in);
 					} else if ("columns".equals(localName)) {
 						ParserHelper.ignoreElement(in);
 					} else if ("binning".equals(localName)) {
@@ -122,6 +131,8 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 						checkValidity();
 						responseFormat = (responseFormat == null)? makeDefaultResponseFormat(): responseFormat;
 						return this; // we're done
+                                        } else if ("response-content".equals(localName)) {
+                                            // ignore - just a container element
 					} else {
 						// otherwise, error
 						throw new RuntimeException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);

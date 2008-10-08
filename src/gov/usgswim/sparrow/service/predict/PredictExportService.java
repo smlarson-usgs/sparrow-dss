@@ -2,9 +2,11 @@ package gov.usgswim.sparrow.service.predict;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.service.HttpService;
+import gov.usgswim.sparrow.AggregationRunner;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -36,11 +38,26 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         PredictResult nominalPrediction = SharedApplication.getInstance().getPredictResult(nominalPredictionContext);
         PredictResult result = SharedApplication.getInstance().getAnalysisResult(predictionContext);
         PredictData data = SharedApplication.getInstance().getPredictData(predictionContext.getModelID());
+        Analysis analysis = predictionContext.getAnalysis();
 
         if (predictionContext.getAdjustmentGroups() != null) {
 
             DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(predictionContext.getAdjustmentGroups());
+            // Check for aggregation and run if necessary
+            if (analysis.getGroupBy() != null && !"".equals(analysis.getGroupBy())) {
+                AggregationRunner aggRunner = new AggregationRunner(predictionContext);
+                adjSrc = aggRunner.doAggregation(adjSrc);
+            }
+
             data = new PredictDataImm(data.getTopo(), data.getCoef(), adjSrc,
+                    data.getSrcMetadata(), data.getDecay(), data.getSys(), data
+                            .getAncil(), data.getModel());
+            
+        } else if (analysis.getGroupBy() != null && !"".equals(analysis.getGroupBy())) {
+            // Check for aggregation and run if necessary
+            AggregationRunner aggRunner = new AggregationRunner(predictionContext);
+            DataTable aggSrc = aggRunner.doAggregation(data.getSrc());
+            data = new PredictDataImm(data.getTopo(), data.getCoef(), aggSrc,
                     data.getSrcMetadata(), data.getDecay(), data.getSys(), data
                             .getAncil(), data.getModel());
         }
