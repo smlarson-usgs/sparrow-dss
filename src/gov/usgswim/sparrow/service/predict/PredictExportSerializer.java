@@ -6,8 +6,10 @@ import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
 import gov.usgswim.sparrow.datatable.PredictResult;
 
+import gov.usgswim.sparrow.service.SharedApplication;
 import javax.xml.stream.XMLStreamException;
 
 public class PredictExportSerializer extends BasicXMLStreamReader{
@@ -163,8 +165,19 @@ public class PredictExportSerializer extends BasicXMLStreamReader{
 	protected void readRow(){
 		if (!state.isDataFinished()) {
 			// read the row
-			events.add(new BasicTagEvent(START_ELEMENT, "r")
-			.addAttribute("id", Long.valueOf(result.getIdForRow(state.r)).toString()));
+                    BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
+                    if (predictData.getSrc().getProperty("aggLevelKludge") != null) {
+                        // Kludge the id into the row - temporary
+                        String aggLevel = predictData.getSrc().getProperty("aggLevelKludge");
+                        AggregateIdLookupKludge kludge = SharedApplication.getInstance().getAggregateIdLookup(aggLevel);
+                        String id = kludge.lookupId(result.getIdForRow(state.r));
+                        rowEvent.addAttribute("id", id);
+                    } else {
+                        // Get the id the old (better) way
+                        rowEvent.addAttribute("id", Long.valueOf(result.getIdForRow(state.r)).toString());
+                    }
+                    
+			events.add(rowEvent);
 			{				
 				if (request.isIncludeReachAttribs()) {
 					for (int c = 0; c < predictData.getSys().getColumnCount(); c++)  {

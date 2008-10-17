@@ -87,7 +87,8 @@ public class AggregationRunner {
             }
 
             PredictData predictData = SharedApplication.getInstance().getPredictData(context.getModelID());
-            return PredictResultImm.buildPredictResult(data, predictData, ids);
+            PredictResult aggResult = PredictResultImm.buildPredictResult(data, predictData, ids);
+            return aggResult;
         } finally {
             SharedApplication.closeConnection(conn, rs);
         }
@@ -148,9 +149,14 @@ public class AggregationRunner {
      */
     public DataTable buildDataTable(double[][] data, long[] ids, DataTable dataTable) {
 	DataTableWritable aggTable = new SimpleDataTableWritable();
+        
+        // Transfer metadata from the original DataTable
         for (String propertyName : dataTable.getPropertyNames()) {
             aggTable.setProperty(propertyName, dataTable.getProperty(propertyName));
         }
+        // Add aggregation-specific table property
+        // Here's a sweet kludge - temporary
+        aggTable.setProperty("aggLevelKludge", context.getAnalysis().getGroupBy());
         
         // Add columns to the table
         for (int j = 0; j < data[0].length; j++) {

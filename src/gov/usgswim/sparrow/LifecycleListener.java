@@ -122,6 +122,10 @@ public class LifecycleListener implements ServletContextListener {
 		//DataBinning
         SelfPopulatingCache dataBinning = new SelfPopulatingCache(cm.getEhcache(SharedApplication.DATA_BINNING), new BinningFactory());
         cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.DATA_BINNING), dataBinning);
+		
+		//AggregateIdLookupKludge - temporary
+        SelfPopulatingCache aggregateIdLookup = new SelfPopulatingCache(cm.getEhcache("AggregateIdLookup"), new AggregateIdLookupKludgeFactory());
+        cm.replaceCacheWithDecoratedCache(cm.getEhcache("AggregateIdLookup"), aggregateIdLookup);
 	}
 
 }

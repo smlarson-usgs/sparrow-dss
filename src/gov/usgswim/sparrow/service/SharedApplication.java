@@ -6,6 +6,7 @@ import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.sparrow.PredictComputable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
+import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
 import gov.usgswim.sparrow.cachefactory.BinningRequest;
 import gov.usgswim.sparrow.cachefactory.ReachID;
 import gov.usgswim.sparrow.datatable.PredictResult;
@@ -477,7 +478,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		return (e != null)?((List<Long>) e.getObjectValue()):null;
 	}
 	
-    //Adjusted Source Cache
+    //Data Binning Cache
     public double[] getDataBinning(BinningRequest req) {
         return getDataBinning(req, false);
     }
@@ -486,6 +487,17 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
         Ehcache c = CacheManager.getInstance().getEhcache(DATA_BINNING);
         Element e  = (quiet)?c.getQuiet(req):c.get(req);
         return (e != null)?((double[]) e.getObjectValue()):null;
+    }
+	
+    //Aggregate Id Lookup Kludge Cache - temporary
+    public AggregateIdLookupKludge getAggregateIdLookup(String aggLevel) {
+        return getAggregateIdLookup(aggLevel, false);
+    }
+    
+    public AggregateIdLookupKludge getAggregateIdLookup(String aggLevel, boolean quiet) {
+        Ehcache c = CacheManager.getInstance().getEhcache("AggregateIdLookup");
+        Element e  = (quiet) ? c.getQuiet(aggLevel) : c.get(aggLevel);
+        return (e != null)?((AggregateIdLookupKludge) e.getObjectValue()):null;
     }
 	
 	
