@@ -2,13 +2,13 @@ package gov.usgswim.sparrow.service.predict;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.service.HttpService;
-import gov.usgswim.sparrow.AggregationRunner;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
 
 import javax.xml.stream.XMLStreamReader;
 

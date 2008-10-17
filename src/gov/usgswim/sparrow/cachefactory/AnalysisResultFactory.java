@@ -1,11 +1,11 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgswim.sparrow.AggregationRunner;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultCompare;
 import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 import org.apache.log4j.Logger;

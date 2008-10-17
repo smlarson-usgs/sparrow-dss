@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.datatable;
 
-import static gov.usgswim.sparrow.service.predict.AggregateType.sum;
 import static gov.usgswim.sparrow.service.predict.ValueType.incremental;
 import static gov.usgswim.sparrow.service.predict.ValueType.total;
+import static gov.usgswim.sparrow.service.predict.aggregator.AggregateType.sum;
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.Immutable;
 import gov.usgswim.datatable.ColumnData;

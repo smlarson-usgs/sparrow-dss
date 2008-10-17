@@ -18,8 +18,8 @@ import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.ReachElement;
 import gov.usgswim.sparrow.parser.ReachGroup;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.service.predict.AggregateType;
 import gov.usgswim.sparrow.service.predict.ValueType;
+import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
 import gov.usgswim.sparrow.util.PropertyLoaderHelper;
 
 import java.io.IOException;
