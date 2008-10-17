@@ -10,5 +10,6 @@ public enum AggregateType {
 	avg,
 	sum,
 	max,
-	min
+	min,
+        none
 }
