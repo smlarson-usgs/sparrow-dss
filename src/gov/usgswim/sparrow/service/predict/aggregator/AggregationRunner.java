@@ -258,8 +258,12 @@ public class AggregationRunner {
                 double curVal = dataTable.getDouble(i, j);
 
                 // TODO: change string matches in enum/switch
+                // TODO: move calculations to AggregateData class
+                // aggData.addValue();
+                //aggData.addWeightedValue(value, weight);
                 if ("avg".equals(aggFunction)) {
                     curVal /= catchArea;
+                    // TODO: change to sum + count and average on demand instead
                     data[j] = ((data[j] * count) + curVal) / (count + 1);
                 } else if ("max".equals(aggFunction)) {
                     data[j] = Math.max(data[j], curVal);

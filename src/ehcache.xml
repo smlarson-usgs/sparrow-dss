@@ -226,41 +226,41 @@
 	-->
 	<defaultCache maxElementsInMemory="200" maxElementsOnDisk="10000"
 		eternal="false" overflowToDisk="true" diskSpoolBufferSizeMB="1"
-		timeToIdleSeconds="86400" timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+		timeToIdleSeconds="432000" timeToLiveSeconds="0" diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" />
 
 	<!--
 		Sparrow Bean caches. Initially all the same as the default cache...
 	-->
 	<cache name="PredictContext" maxElementsInMemory="200"
 		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="1" timeToIdleSeconds="86400"
+		diskSpoolBufferSizeMB="1" timeToIdleSeconds="432000"
 		timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" />
 		
 	<cache name="AdjustmentGroups" maxElementsInMemory="200"
 		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="1" timeToIdleSeconds="86400"
+		diskSpoolBufferSizeMB="3" timeToIdleSeconds="432000"
 		timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" />
 		
 	<cache name="Analyses" maxElementsInMemory="200"
 		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="1" timeToIdleSeconds="86400"
+		diskSpoolBufferSizeMB="1" timeToIdleSeconds="432000"
 		timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" />
 		
 	<cache name="TerminalReaches" maxElementsInMemory="200"
 		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="1" timeToIdleSeconds="86400"
+		diskSpoolBufferSizeMB="1" timeToIdleSeconds="432000"
 		timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" />
 		
 	<cache name="AreaOfInterest" maxElementsInMemory="200"
 		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="1" timeToIdleSeconds="86400"
+		diskSpoolBufferSizeMB="1" timeToIdleSeconds="432000"
 		timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" />
 
 	<!--
 		Sparrow calculated value caches.
@@ -278,54 +278,56 @@
 		
 		None of these caches use disk storage.
 	-->
-	<cache name="PredictData" maxElementsInMemory="2"
-		maxElementsOnDisk="6" eternal="false" overflowToDisk="false"
-		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
-		timeToLiveSeconds="14400" diskPersistent="false"
-		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+	<cache name="PredictData" maxElementsInMemory="10"
+		maxElementsOnDisk="10" eternal="false" overflowToDisk="false"
+		diskSpoolBufferSizeMB="32" timeToIdleSeconds="0"
+		timeToLiveSeconds="0" diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="1800" memoryStoreEvictionPolicy="LRU" />
 		
-	<cache name="AdjustedSource" maxElementsInMemory="6"
+	<cache name="AdjustedSource" maxElementsInMemory="20"
+		maxElementsOnDisk="40" eternal="false" overflowToDisk="false"
+		diskSpoolBufferSizeMB="2" timeToIdleSeconds="3600"
+		timeToLiveSeconds="14400" diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="1800" memoryStoreEvictionPolicy="LRU" />
+	
+	<cache name="PredictResult" maxElementsInMemory="20"
 		maxElementsOnDisk="40" eternal="false" overflowToDisk="false"
 		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
 		timeToLiveSeconds="14400" diskPersistent="false"
-		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+		diskExpiryThreadIntervalSeconds="1800" memoryStoreEvictionPolicy="LRU" />
 	
-	<cache name="PredictResult" maxElementsInMemory="2"
-		maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
+	<cache name="AnalysisResult" maxElementsInMemory="20"
+		maxElementsOnDisk="40" eternal="false" overflowToDisk="false"
 		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
 		timeToLiveSeconds="14400" diskPersistent="false"
-		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+		diskExpiryThreadIntervalSeconds="1800" memoryStoreEvictionPolicy="LRU" />
 	
-	<cache name="AnalysisResult" maxElementsInMemory="2"
-		maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
-		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
-		timeToLiveSeconds="14400" diskPersistent="false"
-		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
-	
-	<cache name="IdentifyReachByPoint" maxElementsInMemory="100"
+	<cache name="IdentifyReachByPoint" maxElementsInMemory="1000"
 		maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
 		diskSpoolBufferSizeMB="8" timeToIdleSeconds="3600"
-		timeToLiveSeconds="14400" diskPersistent="false"
+		timeToLiveSeconds="3600" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
 	
-	<cache name="IdentifyReachByID" maxElementsInMemory="100"
+	<cache name="IdentifyReachByID" maxElementsInMemory="1000"
 		maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
 		diskSpoolBufferSizeMB="8" timeToIdleSeconds="3600"
-		timeToLiveSeconds="14400" diskPersistent="false"
+		timeToLiveSeconds="3600" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
 	
+        <!-- Not currently used. -->
 	<cache name="ReachesByCriteria" maxElementsInMemory="100"
-		maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
+		maxElementsOnDisk="0" eternal="false" overflowToDisk="true"
 		diskSpoolBufferSizeMB="8" timeToIdleSeconds="3600"
 		timeToLiveSeconds="14400" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+        <!-- End not currently used. --> 
     
-    <cache name="DataBinning" maxElementsInMemory="100"
+    <cache name="DataBinning" maxElementsInMemory="1000"
         maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
         diskSpoolBufferSizeMB="8" timeToIdleSeconds="3600"
-        timeToLiveSeconds="14400" diskPersistent="false"
+        timeToLiveSeconds="3600" diskPersistent="false"
         diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
-    
+        
     <!-- Awesome kludge - temporary -->
     <cache name="AggregateIdLookup" maxElementsInMemory="4"
         maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
