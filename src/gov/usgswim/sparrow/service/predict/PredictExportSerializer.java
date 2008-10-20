@@ -168,12 +168,14 @@ public class PredictExportSerializer extends BasicXMLStreamReader{
                     BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
                     if (predictData.getSrc().getProperty("aggLevelKludge") != null) {
                         // Kludge the id into the row - temporary
+                    	// TODO: not efficient to do this on every row, but as this is a kludge, it's not worth it to optimize
                         String aggLevel = predictData.getSrc().getProperty("aggLevelKludge");
                         AggregateIdLookupKludge kludge = SharedApplication.getInstance().getAggregateIdLookup(aggLevel);
                         String id = kludge.lookupId(result.getIdForRow(state.r));
                         rowEvent.addAttribute("id", id);
                     } else {
                         // Get the id the old (better) way
+                    	// TODO: Hm. why Long.valueof(). Examine later. Is there null behavior involved?
                         rowEvent.addAttribute("id", Long.valueOf(result.getIdForRow(state.r)).toString());
                     }
                     
