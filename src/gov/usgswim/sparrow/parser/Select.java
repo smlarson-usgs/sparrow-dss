@@ -35,11 +35,11 @@ public class Select implements XMLStreamParserComponent {
 	private ComparisonType nominalComparison = ComparisonType.none;
 
 	public Select() {};
-	
+
 	public Select(DataSeriesType dataSeries) {
 		this.dataSeries = dataSeries;
 	}
-	
+
 	// ================
 	// INSTANCE METHODS
 	// ================
@@ -78,13 +78,13 @@ public class Select implements XMLStreamParserComponent {
 						partition = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "partition");
 						analyticFunction = ParserHelper.parseSimpleElementValue(in);
 					} else if ("nominal-comparison".equals(localName)) {
-						String type = ParserHelper.parseAttribAsString(in, "type", "none");
-						
+						String type = ParserHelper.parseAttribAsString(in, "type", ComparisonType.none.name());
+
 						try {
-	            nominalComparison = ComparisonType.valueOf(type);
-            } catch (IllegalArgumentException e) {
-	            throw new XMLParseValidationException("The nominal-comparison type '" + type + "' is unrecognized");
-            }
+							nominalComparison = ComparisonType.valueOf(type);
+						} catch (IllegalArgumentException e) {
+							throw new XMLParseValidationException("The nominal-comparison type '" + type + "' is unrecognized");
+						}
 						ParserHelper.ignoreElement(in);
 					} else {
 						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
@@ -103,7 +103,7 @@ public class Select implements XMLStreamParserComponent {
 		}
 		throw new XMLParseValidationException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
 	}
-	
+
 	public void checkValidity() throws XMLParseValidationException {
 		if (!isValid()) {
 			// Diagnose the error and throw a custom error message depending on the error
@@ -122,7 +122,7 @@ public class Select implements XMLStreamParserComponent {
 	private boolean isDataSeriesSourceNeeded() {
 		return !(dataSeries == source_value && source == null);
 	}
-	
+
 	public boolean isParseTarget(String name) {
 		return MAIN_ELEMENT_NAME.equals(name);
 	}
@@ -130,23 +130,24 @@ public class Select implements XMLStreamParserComponent {
 	/**
 	 * Consider two instances the same if they have the same calculated hashcodes
 	 */
-  public boolean equals(Object obj) {
-	  if (obj instanceof Select) {
-	  	return obj.hashCode() == hashCode();
-	  } else {
-	  	return false;
-	  }
-  }
-  
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Select) {
+			return obj.hashCode() == hashCode();
+		} else {
+			return false;
+		}
+	}
+
 	@Override
 	public int hashCode() {
 		HashCodeBuilder hash = new HashCodeBuilder(137, 1729);
-		
+
 		//Note: The hashcode of an enum is not repeatable
 		if (dataSeries != null) {
 			hash.append(dataSeries.ordinal());	//must be repeatable (thus ordinal)
 		}
-		
+
 		hash.append(source);
 		hash.append(dataSeriesPer);
 		hash.append(aggFunctionPer);
@@ -154,18 +155,18 @@ public class Select implements XMLStreamParserComponent {
 		hash.append(partition);
 		hash.append(analyticFunction);
 		hash.append(nominalComparison.ordinal());	//never null, and must be repeatable (thus ordinal)
-		
+
 		return hash.toHashCode();
 
 	}
-	
+
 	// =================
 	// GETTERS & SETTERS
 	// =================
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
 	}
-	
+
 	public String getAggFunction() {
 		return aggFunction;
 	}

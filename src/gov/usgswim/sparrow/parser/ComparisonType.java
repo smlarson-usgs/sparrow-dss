@@ -10,6 +10,6 @@ public enum ComparisonType {
 	absolute;
 	
 	public boolean isNone() {
-		return this.name().equals("none");
+		return this.equals(none);
 	}
 }

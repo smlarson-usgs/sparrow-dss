@@ -11,5 +11,5 @@ public enum AggregateType {
 	sum,
 	max,
 	min,
-        none
+	none
 }
