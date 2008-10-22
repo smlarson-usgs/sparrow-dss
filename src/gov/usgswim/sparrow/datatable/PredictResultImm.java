@@ -55,11 +55,11 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 	private final int sourceCount;
 	
 	
-	public PredictResultImm(ColumnData[] columns, long[] rowIds, 
+	public PredictResultImm(ColumnData[] columns, long[] rowIds, Map<String, String> properties, 
 				Map<Long, Integer> srcIdIncMap, Map<Long, Integer> srcIdTotalMap,
 				int totalIncCol, int totalTotalCol) {
 		
-		super(columns, "Prediction Data", "Prediction Result Data", Collections.<String, String>emptyMap(), rowIds);
+		super(columns, "Prediction Data", "Prediction Result Data", properties, rowIds);
 		
 
 		{
@@ -88,10 +88,15 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
      * @throws Exception
      */
     public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData) throws Exception {
-        return buildPredictResult(data, predictData, null);
+        return buildPredictResult(data, predictData, null, Collections.<String, String>emptyMap());
     }
     
     public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData, long[] ids)
+    throws Exception {
+        return buildPredictResult(data, predictData, ids, Collections.<String, String>emptyMap());
+    }
+    
+    public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData, long[] ids, Map<String, String> properties)
     throws Exception {
         ColumnData[] columns = new ColumnData[data[0].length];
         int sourceCount = predictData.getSrc().getColumnCount();
@@ -163,7 +168,7 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
             ids = (predictData.getSys() != null) ? TemporaryHelper.getRowIds(predictData.getSys()) : null;
         }
 
-        return new PredictResultImm(columns, ids, srcIdIncMap, srcIdTotalMap, totalIncCol, totalTotalCol);
+        return new PredictResultImm(columns, ids, properties, srcIdIncMap, srcIdTotalMap, totalIncCol, totalTotalCol);
     }
 
     public int getSourceCount() {

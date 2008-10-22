@@ -161,6 +161,23 @@ public class Analysis implements XMLStreamParserComponent {
 	public boolean isValid() {
 		return true;
 	}
+        
+        public boolean isAggregated() {
+            return getGroupBy() != null && !"".equals(getGroupBy());
+        }
+        
+        /**
+         * Convenience method for determining if the data series referenced by
+         * this {@code Analysis} object requires a weighting be applied.
+         * 
+         * @return {@code true} if the data series referenced by this
+         *         {@code Analysis} object requires a weighting, {@code false}
+         *         otherwise.
+         */
+        public boolean isWeighted() {
+            return getSelect().isWeighted();
+        }
+        
 	// =================
 	// GETTERS & SETTERS
 	// =================

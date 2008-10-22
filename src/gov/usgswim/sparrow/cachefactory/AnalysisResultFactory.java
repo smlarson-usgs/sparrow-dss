@@ -5,6 +5,7 @@ import gov.usgswim.sparrow.datatable.PredictResultCompare;
 import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.service.predict.WeightRunner;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
@@ -42,16 +43,18 @@ public class AnalysisResultFactory implements CacheEntryFactory {
     public Object createEntry(Object predictContext) throws Exception {
         PredictionContext context = (PredictionContext) predictContext;
         AggregationRunner aggRunner = new AggregationRunner(context);
-        Analysis analysis = context.getAnalysis();
-        PredictResult result = null;
 
         PredictResult adjResult = SharedApplication.getInstance().getPredictResult(context);
 
-        // Check for aggregation and run if necessary
-        if (analysis.getGroupBy() != null && !"".equals(analysis.getGroupBy())) {
+        // Check transformations called for by the Analysis section
+        Analysis analysis = context.getAnalysis();
+        if (analysis.isAggregated()) {
             adjResult = aggRunner.doAggregation(adjResult);
+        } else if (analysis.isWeighted()) {
+            adjResult = WeightRunner.doWeighting(context, adjResult);
         }
 
+        PredictResult result = null;
         switch (analysis.getSelect().getNominalComparison()) {
             case none: {
                 result = adjResult;
@@ -63,8 +66,10 @@ public class AnalysisResultFactory implements CacheEntryFactory {
                 PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
 
                 // Check for aggregation and run if necessary
-                if (analysis.getGroupBy() != null && !"".equals(analysis.getGroupBy())) {
+                if (analysis.isAggregated()) {
                     nomResult = aggRunner.doAggregation(nomResult);
+                } else if (analysis.isWeighted()) {
+                    nomResult = WeightRunner.doWeighting(nomContext, nomResult);
                 }
 
                 result = new PredictResultCompare(nomResult, adjResult, false);
@@ -77,8 +82,10 @@ public class AnalysisResultFactory implements CacheEntryFactory {
                 PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
 
                 // Check for aggregation and run if necessary
-                if (analysis.getGroupBy() != null && !"".equals(analysis.getGroupBy())) {
+                if (analysis.isAggregated()) {
                     nomResult = aggRunner.doAggregation(nomResult);
+                } else if (analysis.isWeighted()) {
+                    nomResult = WeightRunner.doWeighting(nomContext, nomResult);
                 }
 
                 result = new PredictResultCompare(nomResult, adjResult, true);

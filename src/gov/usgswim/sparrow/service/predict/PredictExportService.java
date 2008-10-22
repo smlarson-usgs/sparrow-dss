@@ -35,7 +35,6 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
             nominalPredictionContext = new PredictionContext(o.getModelID(), null, null, null, null);
         }
 
-        PredictResult nominalPrediction = SharedApplication.getInstance().getPredictResult(nominalPredictionContext);
         PredictResult result = SharedApplication.getInstance().getAnalysisResult(predictionContext);
         PredictData data = SharedApplication.getInstance().getPredictData(predictionContext.getModelID());
         Analysis analysis = predictionContext.getAnalysis();
@@ -44,7 +43,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
 
             DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(predictionContext.getAdjustmentGroups());
             // Check for aggregation and run if necessary
-            if (analysis.getGroupBy() != null && !"".equals(analysis.getGroupBy())) {
+            if (analysis.isAggregated()) {
                 AggregationRunner aggRunner = new AggregationRunner(predictionContext);
                 adjSrc = aggRunner.doAggregation(adjSrc);
             }
@@ -53,7 +52,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
                     data.getSrcMetadata(), data.getDecay(), data.getSys(), data
                             .getAncil(), data.getModel());
             
-        } else if (analysis.getGroupBy() != null && !"".equals(analysis.getGroupBy())) {
+        } else if (analysis.isAggregated()) {
             // Check for aggregation and run if necessary
             AggregationRunner aggRunner = new AggregationRunner(predictionContext);
             DataTable aggSrc = aggRunner.doAggregation(data.getSrc());

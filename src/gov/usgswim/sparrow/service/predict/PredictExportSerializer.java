@@ -69,89 +69,79 @@ public class PredictExportSerializer extends BasicXMLStreamReader{
 		}
 	}
 
-	@Override
-	protected BasicTagEvent documentStartAction() {
-		super.documentStartAction();
-		// add the namespaces
-		this.setDefaultNamespace(TARGET_NAMESPACE);
-		addNamespace(XMLSCHEMA_NAMESPACE, XMLSCHEMA_PREFIX);
+    @Override
+    protected BasicTagEvent documentStartAction() {
+        super.documentStartAction();
+        // add the namespaces
+        this.setDefaultNamespace(TARGET_NAMESPACE);
+        addNamespace(XMLSCHEMA_NAMESPACE, XMLSCHEMA_PREFIX);
 
-		// opening element
-		events.add(new BasicTagEvent(START_DOCUMENT));
-		events.add(new BasicTagEvent(START_ELEMENT, "sparrow-prediction-response")
-		.addAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE + " " + TARGET_NAMESPACE_LOCATION));
+        // opening element
+        events.add(new BasicTagEvent(START_DOCUMENT));
+        events.add(new BasicTagEvent(START_ELEMENT, "sparrow-prediction-response").addAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE + " " + TARGET_NAMESPACE_LOCATION));
 
-		addOpenTag("response");
-		{
-			events.add(new BasicTagEvent(START_ELEMENT, "metadata")
-			.addAttribute("rowCount", Integer.toString(result.getRowCount()))
-			.addAttribute("columnCount", Integer.toString(result.getColumnCount())));
-			{
-				addOpenTag("columns");
-				{
+        addOpenTag("response");
+        {
+            events.add(new BasicTagEvent(START_ELEMENT, "metadata").addAttribute("rowCount", Integer.toString(result.getRowCount())).addAttribute("columnCount", Integer.toString(result.getColumnCount())));
+            {
+                addOpenTag("columns");
+                {
 
-					if (request.isIncludeReachAttribs()) {
+                    if (request.isIncludeReachAttribs()) {
 
-						//Add a group for the source columns
-						events.add(new BasicTagEvent(START_ELEMENT, "group")
-						.addAttribute("name", "Reach Attributes"));
+                        //Add a group for the source columns
+                        events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Reach Attributes"));
 
-						for(int i=0; i<predictData.getSys().getColumnCount(); i++) {
-							events.add(makeNonNullBasicTag("col", "")
-									.addAttribute("name", predictData.getSys().getName(i))
-									.addAttribute("type", "number"));
-						}
+                        for (int i = 0; i < predictData.getSys().getColumnCount(); i++) {
+                            events.add(makeNonNullBasicTag("col", "").addAttribute("name", predictData.getSys().getName(i)).addAttribute("type", "number"));
+                        }
 
-						addCloseTag("group");
-					}
+                        addCloseTag("group");
+                    }
 
-					if (request.isIncludeSource()) {
+                    if (request.isIncludeSource()) {
 
-						//Add a group for the source columns
-						events.add(new BasicTagEvent(START_ELEMENT, "group")
-						.addAttribute("name", "Source Values"));
+                        //Add a group for the source columns
+                        events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Source Values"));
 
-						for(int i=0; i<predictData.getSrc().getColumnCount(); i++) {
-						    String name = predictData.getSrc().getName(i);
-						    name += " (" + predictData.getSrc().getProperty(i, "constituent") + ")";
-						    name += " (" + predictData.getSrc().getUnits(i) + ")";
-						    
-							events.add(makeNonNullBasicTag("col", "")
-									.addAttribute("name", name)
-									.addAttribute("type", "Number"));
-						}
+                        for (int i = 0; i < predictData.getSrc().getColumnCount(); i++) {
+                            String name = predictData.getSrc().getName(i);
+                            name += " (" + predictData.getSrc().getProperty(i, "constituent") + ")";
+                            name += " (" + predictData.getSrc().getUnits(i) + ")";
 
-						addCloseTag("group");
-					}
+                            events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
+                        }
 
-					if (request.isIncludePredict()) {
-						events.add(new BasicTagEvent(START_ELEMENT, "group")
-						.addAttribute("name", "Predicted Values"));
+                        addCloseTag("group");
+                    }
 
-						for(int i=0; i<result.getColumnCount(); i++) {
-						    String name = result.getName(i);
-						    name += " (" + result.getProperty(i, PredictResult.CONSTITUENT_PROP) + ")";
-						    name += " (" + result.getUnits(i) + ")";
-						    
-							events.add(makeNonNullBasicTag("col", "")
-									.addAttribute("name", name)
-									.addAttribute("type", "Number"));
-						}
+                    if (request.isIncludePredict()) {
+                        events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Predicted Values"));
+                        
+                        String filterColumnType = result.getProperty("filterColumnType");
 
-						addCloseTag("group");
+                        for (int i = 0; i < result.getColumnCount(); i++) {
+                            String name = result.getName(i);
+                            name += " (" + result.getProperty(i, PredictResult.CONSTITUENT_PROP) + ")";
+                            name += " (" + result.getUnits(i) + ")";
+                            
+                            String columnType = result.getProperty(i, PredictResult.VALUE_TYPE_PROP);
+                            if (!columnType.equals(filterColumnType)) {
+                                events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
+                            }
+                        }
 
-					}
-					addCloseTag("columns");
-				}
-				addCloseTag("metadata");
+                        addCloseTag("group");
 
-
-				addOpenTag("data");
-
-			}
-		}
-		return null;
-	}
+                    }
+                    addCloseTag("columns");
+                }
+                addCloseTag("metadata");
+                addOpenTag("data");
+            }
+        }
+        return null;
+    }
 
 	@Override
 	protected void documentEndAction() {
@@ -162,50 +152,54 @@ public class PredictExportSerializer extends BasicXMLStreamReader{
 		events.add(new BasicTagEvent(END_DOCUMENT));
 	}
 
-	protected void readRow(){
-		if (!state.isDataFinished()) {
-			// read the row
-                    BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
-                    if (predictData.getSrc().getProperty("aggLevelKludge") != null) {
-                        // Kludge the id into the row - temporary
-                    	// TODO: not efficient to do this on every row, but as this is a kludge, it's not worth it to optimize
-                        String aggLevel = predictData.getSrc().getProperty("aggLevelKludge");
-                        AggregateIdLookupKludge kludge = SharedApplication.getInstance().getAggregateIdLookup(aggLevel);
-                        String id = kludge.lookupId(result.getIdForRow(state.r));
-                        rowEvent.addAttribute("id", id);
-                    } else {
-                        // Get the id the old (better) way
-                    	// TODO: Hm. why Long.valueof(). Examine later. Is there null behavior involved?
-                        rowEvent.addAttribute("id", Long.valueOf(result.getIdForRow(state.r)).toString());
+    protected void readRow() {
+        if (!state.isDataFinished()) {
+            // read the row
+            BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
+            if (predictData.getSrc().getProperty("aggLevelKludge") != null) {
+                // Kludge the id into the row - temporary
+                // TODO: not efficient to do this on every row, but as this is a kludge, it's not worth it to optimize
+                String aggLevel = predictData.getSrc().getProperty("aggLevelKludge");
+                AggregateIdLookupKludge kludge = SharedApplication.getInstance().getAggregateIdLookup(aggLevel);
+                String id = kludge.lookupId(result.getIdForRow(state.r));
+                rowEvent.addAttribute("id", id);
+            } else {
+                // Get the id the old (better) way
+                // TODO: Hm. why Long.valueof(). Examine later. Is there null behavior involved?
+                rowEvent.addAttribute("id", Long.valueOf(result.getIdForRow(state.r)).toString());
+            }
+
+            events.add(rowEvent);
+            {
+                if (request.isIncludeReachAttribs()) {
+                    for (int c = 0; c < predictData.getSys().getColumnCount(); c++) {
+                        addNonNullBasicTag("c", predictData.getSys().getString(state.r, c));
                     }
-                    
-			events.add(rowEvent);
-			{				
-				if (request.isIncludeReachAttribs()) {
-					for (int c = 0; c < predictData.getSys().getColumnCount(); c++)  {
-						addNonNullBasicTag("c", predictData.getSys().getString(state.r, c));
-					}
-				}
+                }
 
-				if (request.isIncludeSource()) {
-					for (int c = 0; c < predictData.getSrc().getColumnCount(); c++)  {
-						addNonNullBasicTag("c", predictData.getSrc().getString(state.r, c));
-					}
-				}
+                if (request.isIncludeSource()) {
+                    for (int c = 0; c < predictData.getSrc().getColumnCount(); c++) {
+                        addNonNullBasicTag("c", predictData.getSrc().getString(state.r, c));
+                    }
+                }
 
-				if (request.isIncludePredict()) {
-					for (int c = 0; c < result.getColumnCount(); c++)  {
-						addNonNullBasicTag("c", result.getString(state.r, c));
-					}
-				}
-				
-			}
-			addCloseTag("r");
-			events.add(new BasicTagEvent(SPACE));
+                if (request.isIncludePredict()) {
+                    String filterColumnType = result.getProperty("filterColumnType");
+                    for (int c = 0; c < result.getColumnCount(); c++) {
+                        String columnType = result.getProperty(c, PredictResult.VALUE_TYPE_PROP);
+                        if (!columnType.equals(filterColumnType)) {
+                            addNonNullBasicTag("c", result.getString(state.r, c));
+                        }
+                    }
+                }
 
-		} 
-		state.r++;
-	}
+            }
+            addCloseTag("r");
+            events.add(new BasicTagEvent(SPACE));
+
+        }
+        state.r++;
+    }
 
 	@Override
 	public void close() throws XMLStreamException {

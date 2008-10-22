@@ -170,95 +170,111 @@ public class PredictionContext implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME.equals(name);
 	}
 	
-	/**
-	 * Centralized method to get a reference to the data table and a column in it
-	 * for use any place we need to access the data column.
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	public DataColumn getDataColumn() throws Exception {
-		int dataColIndex = -1;	//The index of the data column
-		DataTable dataTable = null;		//The table containing the data column
-		
-		Select select = getAnalysis().getSelect();
-		DataSeriesType type = select.getDataSeries();
-		
-		if (type.isResultBased()) {
+    /**
+     * Centralized method to get a reference to the data table and a column in it
+     * for use any place we need to access the data column.
+     * 
+     * @return
+     * @throws Exception
+     */
+    public DataColumn getDataColumn() throws Exception {
+        int dataColIndex = -1;	//The index of the data column
+        DataTable dataTable = null;		//The table containing the data column
 
-			//We will try to get result-based series out of the analysis cache
-			PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
-			
-			switch (type) {
-			case total:
-				if (select.getSource() != null) {
-					dataColIndex = result.getTotalColForSrc(select.getSource().longValue());
-				} else {
-					dataColIndex = result.getTotalCol();
-				}
+        Select select = getAnalysis().getSelect();
+        DataSeriesType type = select.getDataSeries();
 
-				break;
-			case incremental:
-				if (select.getSource() != null) {
-					dataColIndex = result.getIncrementalColForSrc(select.getSource().longValue());
-				} else {
-					dataColIndex = result.getIncrementalCol();
-				}
+        if (type.isResultBased()) {
 
-				break;
-			default:
-				throw new Exception("No data-series was specified in the analysis section");
-			}
-			
-			dataTable = result;
-			
-		} else {
-			
-			//Get the predict data, which is what this series is based on
-			PredictData nomPredictData = SharedApplication.getInstance().getPredictData(this.getModelID());
-			
-			switch (type) {
-			case source_value:
-				if (select.getSource() != null) {
-					
-					dataColIndex = nomPredictData.getSourceIndexForSourceID(select.getSource());
-					
-					DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(this.getAdjustmentGroups());
-                                        
-                                        // Check for aggregation and run if necessary
-                                        if (getAnalysis().getGroupBy() != null && !"".equals(getAnalysis().getGroupBy())) {
-                                            AggregationRunner aggRunner = new AggregationRunner(this);
-                                            adjSrc = aggRunner.doAggregation(adjSrc);
-                                        }
-					
-					if (select.getNominalComparison().isNone()) {
-						
-						dataTable = adjSrc;
-						
-					} else  {
-                                            DataTable nomSrcData = nomPredictData.getSrc();
-                                            
-                                            // Check for aggregation and run if necessary
-                                            if (getAnalysis().getGroupBy() != null && !"".equals(getAnalysis().getGroupBy())) {
-                                                AggregationRunner aggRunner = new AggregationRunner(this);
-                                                nomSrcData = aggRunner.doAggregation(nomSrcData);
-                                            }
+            //We will try to get result-based series out of the analysis cache
+            PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
 
-                                            //working w/ either a percent or absolute comparison
-                                            dataTable = new DataTableCompare(nomSrcData, adjSrc,
-                                                            select.getNominalComparison().equals(ComparisonType.absolute));
-					}
-				} else {
-					throw new Exception("The data series 'source_value' requires a source ID to be specified.");
-				}
-				break;
-			default:
-				throw new Exception("No data-series was specified in the analysis section");
-			}
-		}
-		
-		return new DataColumn(dataTable, dataColIndex);
-	}
+            switch (type) {
+                case total:
+                    if (select.getSource() != null) {
+                        dataColIndex = result.getTotalColForSrc(select.getSource().longValue());
+                    } else {
+                        dataColIndex = result.getTotalCol();
+                    }
+                    break;
+                    
+                case incremental:
+                    if (select.getSource() != null) {
+                        dataColIndex = result.getIncrementalColForSrc(select.getSource().longValue());
+                    } else {
+                        dataColIndex = result.getIncrementalCol();
+                    }
+                    break;
+                    
+                case incremental_yield:
+                    if (select.getSource() != null) {
+                        dataColIndex = result.getIncrementalColForSrc(select.getSource().longValue());
+                    } else {
+                        dataColIndex = result.getIncrementalCol();
+                    }
+                    break;
+                    
+                case total_concentration:
+                    if (select.getSource() != null) {
+                        dataColIndex = result.getTotalColForSrc(select.getSource().longValue());
+                    } else {
+                        dataColIndex = result.getTotalCol();
+                    }
+                    break;
+                    
+                default:
+                    throw new Exception("No data-series was specified in the analysis section");
+            }
+
+            dataTable = result;
+
+        } else {
+
+            //Get the predict data, which is what this series is based on
+            PredictData nomPredictData = SharedApplication.getInstance().getPredictData(this.getModelID());
+
+            switch (type) {
+                case source_value:
+                    if (select.getSource() != null) {
+
+                        dataColIndex = nomPredictData.getSourceIndexForSourceID(select.getSource());
+
+                        DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(this.getAdjustmentGroups());
+
+                        // Check for aggregation and run if necessary
+                        if (getAnalysis().getGroupBy() != null && !"".equals(getAnalysis().getGroupBy())) {
+                            AggregationRunner aggRunner = new AggregationRunner(this);
+                            adjSrc = aggRunner.doAggregation(adjSrc);
+                        }
+
+                        if (select.getNominalComparison().isNone()) {
+
+                            dataTable = adjSrc;
+
+                        } else {
+                            DataTable nomSrcData = nomPredictData.getSrc();
+
+                            // Check for aggregation and run if necessary
+                            if (getAnalysis().getGroupBy() != null && !"".equals(getAnalysis().getGroupBy())) {
+                                AggregationRunner aggRunner = new AggregationRunner(this);
+                                nomSrcData = aggRunner.doAggregation(nomSrcData);
+                            }
+
+                            //working w/ either a percent or absolute comparison
+                            dataTable = new DataTableCompare(nomSrcData, adjSrc,
+                                    select.getNominalComparison().equals(ComparisonType.absolute));
+                        }
+                    } else {
+                        throw new Exception("The data series 'source_value' requires a source ID to be specified.");
+                    }
+                    break;
+                default:
+                    throw new Exception("No data-series was specified in the analysis section");
+            }
+        }
+
+        return new DataColumn(dataTable, dataColIndex);
+    }
 	
 	
 	/**
