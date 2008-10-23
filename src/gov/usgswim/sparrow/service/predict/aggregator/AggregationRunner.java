@@ -74,7 +74,7 @@ public class AggregationRunner {
             rs = st.executeQuery(query);
 
             // Aggregate the data based on the query results
-            HashMap<String, AggregateData> aggregateDataMap = aggregate(result, rs);
+            HashMap<String, AggregateData> aggregateDataMap = aggregate(result, rs, true);
 
             // Move the data from hashmap to two-dimensional array
             Iterator iter = aggregateDataMap.keySet().iterator();
@@ -129,7 +129,7 @@ public class AggregationRunner {
             rs = st.executeQuery(query);
 
             // Aggregate the data based on the query results
-            HashMap<String, AggregateData> aggregateDataMap = aggregate(dataTable, rs);
+            HashMap<String, AggregateData> aggregateDataMap = aggregate(dataTable, rs, false);
 
             // Move the data from hashmap to two-dimensional array
             Iterator iter = aggregateDataMap.keySet().iterator();
@@ -236,7 +236,8 @@ public class AggregationRunner {
      * @return A map of the results where key = group/huc id and value = the
      *         calculated data row.
      */
-    private HashMap aggregate(DataTable dataTable, ResultSet rs) throws Exception {
+    private HashMap aggregate(DataTable dataTable, ResultSet rs, boolean weight)
+    throws Exception {
         // Map to hold aggregate data, and running variables for the function
         HashMap<String, AggregateData> aggregateDataMap = new HashMap<String, AggregateData>();
         int colCount = dataTable.getColumnCount();
@@ -252,19 +253,19 @@ public class AggregationRunner {
             }
 
             // Weight the value if necessary
-            double weight = 1.0D;
-            if (context.getAnalysis().isWeighted()) {
+            double weightValue = 1.0D;
+            if (weight && context.getAnalysis().isWeighted()) {
                 double catchArea = rs.getDouble("catch_area");
                 double flow = rs.getDouble("meanq");
 
                 DataSeriesType dataSeries = context.getAnalysis().getSelect().getDataSeries();
                 if (dataSeries == DataSeriesType.incremental_yield) {
-                    weight = catchArea;
+                    weightValue = catchArea;
                 } else if (dataSeries == DataSeriesType.total_concentration) {
-                    weight = flow;
+                    weightValue = flow;
                 }
             }
-            if (weight <= 0.0D) {
+            if (weightValue <= 0.0D) {
                 continue;
             }
 
@@ -285,7 +286,7 @@ public class AggregationRunner {
 
             // Iterate over the reach's predicted values (columns)
             for (int j = 0; j < colCount; j++) {
-                double curVal = dataTable.getDouble(i, j) / weight;
+                double curVal = dataTable.getDouble(i, j) / weightValue;
                 
                 // TODO: change string matches in enum/switch
                 // TODO: move calculations to AggregateData class
