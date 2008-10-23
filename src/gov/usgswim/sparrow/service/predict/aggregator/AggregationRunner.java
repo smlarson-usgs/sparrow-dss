@@ -7,13 +7,16 @@ import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
+import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.service.predict.ValueType;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import org.apache.log4j.Logger;
 
 /**
@@ -86,8 +89,18 @@ public class AggregationRunner {
                 ids[i] = Long.parseLong(id);
             }
 
+            
+            // Add a table-level filter if we're dealing with a weighted result
+            DataSeriesType dataSeries = context.getAnalysis().getSelect().getDataSeries();
+            Map<String, String> properties = new HashMap<String, String>();
+            if (dataSeries == DataSeriesType.incremental_yield) {
+                properties.put("filterColumnType", ValueType.total.name());
+            } else if (dataSeries == DataSeriesType.total_concentration) {
+                properties.put("filterColumnType", ValueType.incremental.name());
+            }
+
             PredictData predictData = SharedApplication.getInstance().getPredictData(context.getModelID());
-            PredictResult aggResult = PredictResultImm.buildPredictResult(data, predictData, ids);
+            PredictResult aggResult = PredictResultImm.buildPredictResult(data, predictData, ids, properties);
             return aggResult;
         } finally {
             SharedApplication.closeConnection(conn, rs);
@@ -200,8 +213,8 @@ public class AggregationRunner {
         
         // Build query to retrieve catchment area and huc id for every reach
         String query = ""
-            + "SELECT A.identifier, A.catch_area, A." + groupBy + ", B."
-            + groupBy + "_id AS hucId "
+            + "SELECT A.identifier, A.catch_area, A.meanq, A." + groupBy
+            + ", B." + groupBy + "_id AS hucId "
             + "FROM model_attrib_vw A, stream_network." + groupBy + "_lkp B "
             + "WHERE A.sparrow_model_id = " + modelId
             + " AND A." + groupBy + " = B." + groupBy + "(+) "
@@ -234,10 +247,27 @@ public class AggregationRunner {
 
             // Get the HUC's row if it already exists
             String id = rs.getString("hucId");
-            int catchArea = rs.getInt("catch_area");
-            if (id == null || "".equals(id.trim()) || catchArea == 0) {
+            if (id == null || "".equals(id.trim())) {
                 continue;
             }
+
+            // Weight the value if necessary
+            double weight = 1.0D;
+            if (context.getAnalysis().isWeighted()) {
+                double catchArea = rs.getDouble("catch_area");
+                double flow = rs.getDouble("meanq");
+
+                DataSeriesType dataSeries = context.getAnalysis().getSelect().getDataSeries();
+                if (dataSeries == DataSeriesType.incremental_yield) {
+                    weight = catchArea;
+                } else if (dataSeries == DataSeriesType.total_concentration) {
+                    weight = flow;
+                }
+            }
+            if (weight <= 0.0D) {
+                continue;
+            }
+
             AggregateData aggData = aggregateDataMap.get(id);
 
             // Create a new entry otherwise
@@ -255,14 +285,13 @@ public class AggregationRunner {
 
             // Iterate over the reach's predicted values (columns)
             for (int j = 0; j < colCount; j++) {
-                double curVal = dataTable.getDouble(i, j);
-
+                double curVal = dataTable.getDouble(i, j) / weight;
+                
                 // TODO: change string matches in enum/switch
                 // TODO: move calculations to AggregateData class
                 // aggData.addValue();
-                //aggData.addWeightedValue(value, weight);
+                // aggData.addWeightedValue(value, weight);
                 if ("avg".equals(aggFunction)) {
-                    curVal /= catchArea;
                     // TODO: change to sum + count and average on demand instead
                     data[j] = ((data[j] * count) + curVal) / (count + 1);
                 } else if ("max".equals(aggFunction)) {
