@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.cachefactory;
 
+import java.io.Serializable;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
@@ -7,7 +8,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * 
  * @author eeverman
  */
-public class BinningRequest {
+public class BinningRequest implements Serializable {
     
     /**
      * The types of bins that may be requested.  

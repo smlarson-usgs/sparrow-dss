@@ -114,113 +114,111 @@ public class DataLoader {
 	    return loadModelMetaData(conn, true, true, false, true);
 	}
 	
-	/**
-	 * Returns all models that meet the specified criteria.  Note that the
-	 * {@code isApproved}, {@code isPublic}, and {@code isArchived} criteria are
-	 * ANDed together when retrieving models.  For example, specifying
-	 * {@code isApproved} = {@code true},
-	 * {@code isPublic} = {@code true},
-	 * {@code isArchived} = {@code false}
-	 * will return models that are approved and public, but not archived.
-	 * 
-	 * @param conn The JDBC connection object.
-	 * @param isApproved Whether or not to return approved models.
-	 * @param isPublic Whether or not to return public models.
-	 * @param isArchived Whether or not to return archived models.
-	 * @param getSources Whether or not to attach the model's sources.
-	 * @return All models that meet the specified criteria.
-	 */
-	public static List<ModelBuilder> loadModelMetaData(Connection conn,
-	        boolean isApproved, boolean isPublic, boolean isArchived,
-	        boolean getSources) throws SQLException, IOException {
-	    
-		List<ModelBuilder> models = new ArrayList<ModelBuilder>(23);
+    /**
+     * Returns all models that meet the specified criteria.  Note that the
+     * {@code isApproved}, {@code isPublic}, and {@code isArchived} criteria are
+     * ANDed together when retrieving models.  For example, specifying
+     * {@code isApproved} = {@code true},
+     * {@code isPublic} = {@code true},
+     * {@code isArchived} = {@code false}
+     * will return models that are approved and public, but not archived.
+     * 
+     * @param conn The JDBC connection object.
+     * @param isApproved Whether or not to return approved models.
+     * @param isPublic Whether or not to return public models.
+     * @param isArchived Whether or not to return archived models.
+     * @param getSources Whether or not to attach the model's sources.
+     * @return All models that meet the specified criteria.
+     */
+    public static List<ModelBuilder> loadModelMetaData(Connection conn,
+            boolean isApproved, boolean isPublic, boolean isArchived,
+            boolean getSources) throws SQLException, IOException {
 
-		// Build filtering parameters and retrieve the queries from properties
-		Object[] params = {
-		    "IsApproved", (isApproved ? "T" : "F"),
-		    "IsPublic", (isPublic ? "T" : "F"),
-		    "IsArchived", (isArchived ? "T" : "F")
-		};
-		String selectModels = getQuery("SelectModelsByAccess", params);
-		String selectSources = getQuery("SelectAllSources");
+        List<ModelBuilder> models = new ArrayList<ModelBuilder>(23);
 
-		Statement stmt = null;
-		ResultSet rset = null;
+        // Build filtering parameters and retrieve the queries from properties
+        Object[] params = {
+            "IsApproved", (isApproved ? "T" : "F"),
+            "IsPublic", (isPublic ? "T" : "F"),
+            "IsArchived", (isArchived ? "T" : "F")
+        };
+        String selectModels = getQuery("SelectModelsByAccess", params);
+        String selectSources = getQuery("SelectAllSources");
 
-		try {
-			stmt = conn.createStatement();
-			stmt.setFetchSize(100);
+        Statement stmt = null;
+        ResultSet rset = null;
 
-			try {
-				rset = stmt.executeQuery(selectModels);
+        try {
+            stmt = conn.createStatement();
+            stmt.setFetchSize(100);
 
-				while (rset.next()) {
-					ModelBuilder m = new ModelBuilder();
-					m.setId(rset.getLong("SPARROW_MODEL_ID"));
-					m.setApproved(StringUtils.equalsIgnoreCase("T", rset.getString("IS_APPROVED")));
-					m.setPublic(StringUtils.equalsIgnoreCase("T", rset.getString("IS_PUBLIC")));
-					m.setArchived(StringUtils.equalsIgnoreCase("T", rset.getString("IS_ARCHIVED")));
-					m.setName(rset.getString("NAME"));
-					m.setDescription(rset.getString("DESCRIPTION"));
-					m.setDateAdded(rset.getDate("DATE_ADDED"));
-					m.setContactId(rset.getLong("CONTACT_ID"));
-					m.setEnhNetworkId(rset.getLong("ENH_NETWORK_ID"));
-					m.setUrl(rset.getString("URL"));
-					m.setNorthBound(rset.getDouble("BOUND_NORTH"));
-					m.setEastBound(rset.getDouble("BOUND_EAST"));
-					m.setSouthBound(rset.getDouble("BOUND_SOUTH"));
-					m.setWestBound(rset.getDouble("BOUND_WEST"));
-					models.add(m);
-				}
+            try {
+                rset = stmt.executeQuery(selectModels);
 
-			} finally {
-				rset.close();
-			}
+                while (rset.next()) {
+                    ModelBuilder m = new ModelBuilder();
+                    m.setId(rset.getLong("SPARROW_MODEL_ID"));
+                    m.setApproved(StringUtils.equalsIgnoreCase("T", rset.getString("IS_APPROVED")));
+                    m.setPublic(StringUtils.equalsIgnoreCase("T", rset.getString("IS_PUBLIC")));
+                    m.setArchived(StringUtils.equalsIgnoreCase("T", rset.getString("IS_ARCHIVED")));
+                    m.setName(rset.getString("NAME"));
+                    m.setDescription(rset.getString("DESCRIPTION"));
+                    m.setDateAdded(rset.getDate("DATE_ADDED"));
+                    m.setContactId(rset.getLong("CONTACT_ID"));
+                    m.setEnhNetworkId(rset.getLong("ENH_NETWORK_ID"));
+                    m.setUrl(rset.getString("URL"));
+                    m.setNorthBound(rset.getDouble("BOUND_NORTH"));
+                    m.setEastBound(rset.getDouble("BOUND_EAST"));
+                    m.setSouthBound(rset.getDouble("BOUND_SOUTH"));
+                    m.setWestBound(rset.getDouble("BOUND_WEST"));
+                    models.add(m);
+                }
 
-			if (getSources) {
-    			try {
-    				rset = stmt.executeQuery(selectSources);
-    				int modelIndex = 0;
-    
-    				while (rset.next()) {
-    					SourceBuilder s = new SourceBuilder();
-    					s.setId(rset.getLong("SOURCE_ID"));
-    					s.setName(rset.getString("NAME"));
-    					s.setDescription(rset.getString("DESCRIPTION"));
-    					s.setSortOrder(rset.getInt("SORT_ORDER"));
-    					s.setModelId(rset.getLong("SPARROW_MODEL_ID"));
-    					s.setIdentifier(rset.getInt("IDENTIFIER"));
-    					s.setDisplayName(rset.getString("DISPLAY_NAME"));
-    					s.setConstituent(rset.getString("CONSTITUENT"));
-    					s.setUnits(rset.getString("UNITS"));
-    
-    					//The models and sources are sorted by model_id, so scroll forward
-    					//thru the models until we find the correct one.
-    					while (
-    							(modelIndex < models.size() && 
-    									models.get(modelIndex).getId() != s.getModelId()) /* don't scoll past last model*/ 
-    									)  {
-    						modelIndex++;
-    					}
+            } finally {
+                rset.close();
+            }
 
-    					if (modelIndex < models.size()) {
-    						models.get(modelIndex).addSource(s);
-    					} else {
-    						log.warn("Found sources not matched to a model.  Likely caused by record insertion during the queries.");
-    					}
-    				}
-    
-    			} finally {
-    				rset.close();
-    			}
-			}
-		} finally {
-			stmt.close();
-		}
+            if (getSources) {
+                try {
+                    rset = stmt.executeQuery(selectSources);
 
-		return models;
-	}
+                    while (rset.next()) {
+                        SourceBuilder s = new SourceBuilder();
+                        s.setId(rset.getLong("SOURCE_ID"));
+                        s.setName(rset.getString("NAME"));
+                        s.setDescription(rset.getString("DESCRIPTION"));
+                        s.setSortOrder(rset.getInt("SORT_ORDER"));
+                        s.setModelId(rset.getLong("SPARROW_MODEL_ID"));
+                        s.setIdentifier(rset.getInt("IDENTIFIER"));
+                        s.setDisplayName(rset.getString("DISPLAY_NAME"));
+                        s.setConstituent(rset.getString("CONSTITUENT"));
+                        s.setUnits(rset.getString("UNITS"));
+
+                        //The models and sources are sorted by model_id, so scroll forward
+                        //thru the models until we find the correct one.
+                        int modelIndex = 0;
+                        while ((modelIndex < models.size() &&
+                                models.get(modelIndex).getId() != s.getModelId()) /* don't scoll past last model*/) {
+                            modelIndex++;
+                        }
+
+                        if (modelIndex < models.size()) {
+                            models.get(modelIndex).addSource(s);
+                        } else {
+                            log.warn("Found sources not matched to a model.  Likely caused by record insertion during the queries.");
+                        }
+                    }
+
+                } finally {
+                    rset.close();
+                }
+            }
+        } finally {
+            stmt.close();
+        }
+
+        return models;
+    }
 
 
 	/**
