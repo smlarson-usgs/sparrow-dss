@@ -215,7 +215,8 @@ public class BinningFactory implements CacheEntryFactory {
     	// round to zero as first option
     	if (value ==0 || (lo <=0 && hi>=0)) return 0;
     	// round to 1 digit
-    	double baseNormalizer = Math.round(Math.pow(10, Math.floor(Math.log10(value))));
+    	double exponent = Math.floor(Math.log10(value));
+    	double baseNormalizer = (exponent < 0)? Math.round(Math.pow(10, -exponent)): Math.pow(10, -exponent);
     	
     	for (double digitMultiplier: digitAccuracyMultipliers) {
     		Double result = findClosestInRange(value, lo, hi, baseNormalizer * digitMultiplier);
