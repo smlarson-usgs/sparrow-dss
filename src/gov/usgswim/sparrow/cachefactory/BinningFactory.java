@@ -67,16 +67,16 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @return
 	 */
 	protected double[] getEqualCountBins(DataTable data, int columnIndex, int binCount) {
-		return getEqualCountBins(data, columnIndex, binCount, true); // TODO set to true for now. Should take parameter from BinningRequest
+		float[] sortedValues = extractSortedValues(data, columnIndex); //sorted Array holding all values
+		return getEqualCountBins(sortedValues, binCount, true); // TODO set to true for now. Should take parameter from BinningRequest
 	}
 	
-	public static final double ALLOWABLE_BIN_SIZE_VARIANCE_RATIO = 1/10;
-	protected double[] getEqualCountBins(DataTable data, int columnIndex, int binCount, Boolean useRounding) {
-		int totalRows = data.getRowCount();	//Total rows of data
-		float[] values = extractSortedValues(data, columnIndex, totalRows); //sorted Array holding all values
+	public static final double ALLOWABLE_BIN_SIZE_VARIANCE_RATIO = 1d/10;	
+	public static double[] getEqualCountBins(float[] sortedData, int binCount, Boolean useRounding) {
+		int totalRows = sortedData.length;	//Total rows of data
 		
 		if (useRounding == null || !useRounding) {
-			return getEqualCountBins(data, binCount, values);
+			return getEqualCountBins(binCount, sortedData);
 		}
 		// adjust the bin fence posts
 		double[] bins = new double[binCount + 1];
@@ -84,25 +84,37 @@ public class BinningFactory implements CacheEntryFactory {
 		double binVariance = ( binSize * ALLOWABLE_BIN_SIZE_VARIANCE_RATIO )/2;
 		
 		// lowest value edge bin needs special handling
-		double value = values[0];
+		double value = sortedData[0];
 		int hiIndex = (int) binVariance;
-		double hi = values[hiIndex];
+		if (hiIndex == 0) {
+			hiIndex = 1; // if variance is too small, just use nearest value
+		}
+		double hi = sortedData[hiIndex];
 		double lo = value - (hi - value);
 		bins[0] = round(value, lo, value); // must not allow the lowest bin to be rounded up
 		
 		for (int i=1; i<binCount; i++) {
 			double valueIndex = i * binSize;
-			value = values[(int) valueIndex];
-			hiIndex = (int) (valueIndex + binVariance);
-			int loIndex = (int)(valueIndex - binVariance);
+			value = ( sortedData[(int) Math.floor(valueIndex)] + sortedData[(int) Math.ceil(valueIndex)])/2; // take the average of the surrounding values
+			hiIndex = (int) Math.floor((valueIndex + binVariance));
+			int loIndex = (int) Math.ceil(valueIndex - binVariance);
+			if (loIndex == hiIndex) {
+				// use the bounding elements if bins are small
+				loIndex = (int) Math.floor(valueIndex);
+				hiIndex = (int) Math.ceil(valueIndex);
+			}
 			// allow middle bins to be tweaked slightly higher or lower
-			bins[i] = round(value, values[loIndex], values[hiIndex]);
+			bins[i] = round(value, sortedData[loIndex], sortedData[hiIndex]);
 		}
 		
 		// highest value edge bin needs special handling
-		value = values[binCount];
-		int loIndex = binCount - (int) binVariance;
-		lo = values[loIndex];
+		int lastIndex = sortedData.length - 1;
+		value = sortedData[lastIndex]; // last element
+		int loIndex = lastIndex - (int) binVariance;
+		if (loIndex == lastIndex) {
+			loIndex = lastIndex - 1; // if variance is too small, just use nearest value
+		}
+		lo = sortedData[loIndex];
 		hi = value + (value - lo);
 		bins[binCount] = round(value, value, hi); // must not allow the highest bin to be rounded down
 		
@@ -119,9 +131,9 @@ public class BinningFactory implements CacheEntryFactory {
      * @return Set of bins such that the bins define break-point boundaries
      *         with an approximately equal number of values contained within.
 	 */
-	protected double[] getEqualCountBins(DataTable data, int binCount, float[] sortedValues) {
+	public static double[] getEqualCountBins(int binCount, float[] sortedValues) {
 
-		int totalRows = data.getRowCount();	//Total rows of data
+		int totalRows = sortedValues.length;	//Total rows of data
 		
 		//Number of rows 'contained' in each bin.  This likely will not come out even,
 		//so use a double to preserve the fractional rows.
@@ -140,17 +152,17 @@ public class BinningFactory implements CacheEntryFactory {
 		for (int i=1; i<(binCount); i++) {
 			
 			//Get the row containing the nearest integer split
-			int split = (int) ((double)i * binSize);
+			double split = (double)i * binSize;
 			
 			//The bin boundary is the value contained at that row.
-			bins[i] = (double) sortedValues[split];
+			bins[i] = ( sortedValues[(int) Math.floor(split)] + sortedValues[(int) Math.ceil(split)])/2; // take the average of the surrounding values
 		}
 		
 		return bins;
 	}
 
-	private float[] extractSortedValues(DataTable data, int columnIndex,
-			int totalRows) {
+	private float[] extractSortedValues(DataTable data, int columnIndex) {
+		int totalRows = data.getRowCount();
 		float[] values = new float[totalRows];	
 		//Export all values in the specified column to values[] so they can be sorted
 		for (int r=0; r<totalRows; r++) {
@@ -215,7 +227,7 @@ public class BinningFactory implements CacheEntryFactory {
     	// round to zero as first option
     	if (value ==0 || (lo <=0 && hi>=0)) return 0;
     	// round to 1 digit
-    	double exponent = Math.floor(Math.log10(value));
+    	double exponent = Math.ceil(Math.log10(Math.abs(value)));
     	double baseNormalizer = (exponent < 0)? Math.round(Math.pow(10, -exponent)): Math.pow(10, -exponent);
     	
     	for (double digitMultiplier: digitAccuracyMultipliers) {
