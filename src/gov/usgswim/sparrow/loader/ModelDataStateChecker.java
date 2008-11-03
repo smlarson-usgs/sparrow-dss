@@ -12,8 +12,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ModelDataStateChecker {
-//	public static Connection conn = ModelDataLoader.getWIDWConnection();
-	public static Connection conn = ModelDataLoader.getWIMAPConnection();
+	public static Connection conn = ModelDataLoader.getWIDWConnection();
+//	public static Connection conn = ModelDataLoader.getWIMAPConnection();
 	
 	public static void main(String[] args) throws SQLException, IOException {
 		

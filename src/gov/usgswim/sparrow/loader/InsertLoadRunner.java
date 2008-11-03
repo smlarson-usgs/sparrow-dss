@@ -25,19 +25,19 @@ public class InsertLoadRunner {
 		COMMIT_IF_NO_ERRORS, BATCH_MODE, COMMIT_AND_LOG_ERRORS, ROLLBACK_IF_ERROR
 	};
 
-	public static Connection conn = ModelDataLoader.getWIMAPConnection();
-//	public static Connection conn = ModelDataLoader.getWIDWConnection();
+//	public static Connection conn = ModelDataLoader.getWIMAPConnection();
+	public static Connection conn = ModelDataLoader.getWIDWConnection();
 //	public static Connection conn = InsertLoadRunner.getDevelopmentConnection();
 	public static String fileName = null;
 	
 	static {
-//		fileName = "model_metadata_insert_20081002_163018.sql";
-//		fileName = "src_metadata_insert_20081002_163018.sql";	
-		fileName = "model_reaches_insert_20081002_163018.sql";
+		fileName = "model_metadata_insert_20081025_211331.sql";
+		fileName = "src_metadata_insert_20081025_211331.sql";	
+		fileName = "model_reaches_insert_20081025_211331.sql";
 
-//		fileName = "reach_decay_coef_insert_20081003_120811.sql";
-//		fileName = "src_reach_coef_insert_20081003_120811.sql";
-//		fileName = "src_value_insert_20081003_120812.sql";
+		fileName = "reach_decay_coef_insert_20081025_211938.sql";
+		fileName = "src_reach_coef_insert_20081025_211939.sql";
+		fileName = "src_value_insert_20081025_211940.sql";
 
 
 		
@@ -48,18 +48,20 @@ public class InsertLoadRunner {
 //		fileName = "src_value_insert_20080930_170609.sql";
 	}
 
-	public static String baseDirectory = "C:/Documents and Settings/ilinkuo/Desktop/DaleMRB/load" ;
+	public static String baseDirectory = "D:\\CRKData\\Sparrow\\raw_data\\mrb3_tp\\load" ;
 	
 	public static void main(String[] args) throws IOException, SQLException {
 		File testInsertFile = new File(baseDirectory + "/" + fileName);
 		
 		try {
 			InsertLoadRunner.load(conn, testInsertFile);
+			
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
 		} finally {
 			if (conn != null) conn.close();
 		}
+		System.out.println("RUN COMPLETE");
 		
 	}
 	
@@ -79,7 +81,7 @@ public class InsertLoadRunner {
 
 		String line = null;
 		long lineNum = 0;
-		startDoLog(doLog, "load");
+		startDoLog(doLog, "load", conn);
 
 		while ((line = reader.readLine()) != null){
 			lineNum++;
@@ -127,11 +129,12 @@ public class InsertLoadRunner {
 			stmt.execute("commit");
 			doLog.write("committed at end: line=" + lineNum);
 		}
+
 	}
 
-	private static void startDoLog(BufferedWriter doLog, String methodName) throws IOException {
+	private static void startDoLog(BufferedWriter doLog, String methodName, Connection conn2) throws IOException, SQLException {
 		SimpleDateFormat formatter =  new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-		String logStart = "=============== " + methodName + " " + formatter.format(new Date()) + " ================\n";
+		String logStart = "=============== " + methodName + " " + formatter.format(new Date()) + " " + conn2.getMetaData().getURL() + " ================\n";
 		doLog.write(logStart);
 		doLog.flush();		
 	}

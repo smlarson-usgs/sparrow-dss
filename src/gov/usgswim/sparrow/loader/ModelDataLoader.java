@@ -1,8 +1,13 @@
 package gov.usgswim.sparrow.loader;
 
 import static gov.usgswim.sparrow.loader.ModelDataAssumptions.CONTACT_ID;
+import static gov.usgswim.sparrow.loader.ModelDataAssumptions.DEFAULT_CONSTITUENT;
+import static gov.usgswim.sparrow.loader.ModelDataAssumptions.DEFAULT_UNITS;
 import static gov.usgswim.sparrow.loader.ModelDataAssumptions.ENH_NETWORK_ID;
-import static gov.usgswim.sparrow.loader.ModelDataAssumptions.*;
+import static gov.usgswim.sparrow.loader.ModelDataAssumptions.IS_POINT_SOURCE_DEFAULT;
+import static gov.usgswim.sparrow.loader.ModelDataAssumptions.useDefaultIfUnavailable;
+import static gov.usgswim.sparrow.loader.ModelDataAssumptions.useDefaultPrecisionIfUnavailable;
+import static gov.usgswim.sparrow.loader.ModelDataAssumptions.useNameForDisplayNameIfUnavailable;
 import gov.usgswim.sparrow.util.JDBCUtil;
 import gov.usgswim.sparrow.util.SparrowSchemaConstants;
 
@@ -33,6 +38,33 @@ import org.apache.commons.lang.StringUtils;
  *
  */
 public class ModelDataLoader {
+	
+	
+	// IMPORTANT COLUMN NAMES
+	public static final String ANC_REACH_IDENTIFIER = "local_id";
+	public static final String ANC_FULL_IDENTIFIER = "std_id";
+	public static String ANC_REACH_TYPE = "RCHTYPE";
+	public static String ANC_PNAME = "PNAME";
+	public static final String MMD_NAME = "name";
+	public static final String MMD_DESCRIPTION = "DESCRIPTION";
+	public static final String COEF_BOOT_ERROR = "BOOT_ERROR";
+	public static final String COEF_TOT_DELIVF = "TOT_DELIVF";
+	public static final String COEF_INC_DELIVF = "INC_DELIVF";
+	public static final String COEF_ITER = "ITER";
+	public static final String TOPO_TNODE = "tnode";
+	public static final String TOPO_FNODE = "fnode";
+	public static final String TOPO_IFTRAN = "iftran";
+	public static final String TOPO_HYDSEQ = "hydseq";
+	public static final String SMD_IS_POINT_SOURCE = "is_point_source";
+	public static final String SMD_UNITS = "units";
+	public static final String SMD_CONSTITUENT = "constituent";
+	public static final String SMD_SORT_ORDER = "sort_order";
+	public static final String SMD_DESCRIPTION = "description";
+	public static final String SMD_NAME = "name";
+	public static final String SMD_PRECISION = "precision";
+	// 
+	public static final String[] BASIC_COEF_COLUMNS = new String[] {COEF_ITER, COEF_INC_DELIVF, COEF_TOT_DELIVF, COEF_BOOT_ERROR};
+
 	// SQL FILE NAMES
 	private static final String MODEL_REACHES_INSERT_SQL_FILE = "model_reaches_insert.sql";
 	private static final String SRC_VALUE_INSERT_SQL_FILE = "src_value_insert.sql";
@@ -47,12 +79,12 @@ public class ModelDataLoader {
 	private static final String THIN_WIMAP_CONNECTION = "jdbc:oracle:thin:@130.11.165.76:1521:wimap";
 	// SPECIAL DIRECTORIES
 	private static final String REL_LOAD_DIR = "load";
-	static File baseDir = new File("C:\\Documents and Settings\\ilinkuo\\Desktop\\DaleMRB");
+	static File baseDir = new File("D:\\CRKData\\Sparrow\\raw_data\\mrb3_tp");
 	static File verificationDir = new File(baseDir.getAbsolutePath() + "/vOutput" );
-	// IMPORTANT COLUMN NAMES
-	private static final String REACH_IDENTIFIER_COL = "local_id";
-	private static final String FULL_IDENTIFIER_COL = "std_id";
-	public static final String[] BASIC_COEF_COLUMNS = new String[] {"ITER", "INC_DELIVF", "TOT_DELIVF", "BOOT_ERROR"};
+
+	
+	
+
 	// 
 	private static String sparrow_dss_password; // populated by user on prompt
 		
@@ -93,6 +125,9 @@ public class ModelDataLoader {
 			return;
 		}
 		System.out.println("====== " + MODEL_REACHES_INSERT_SQL_FILE + " generated ====");
+		
+		// TODO insert reach attributes for ?demiarea & demtarea =? catchment_area?
+		// meanq, ...
 		
 		Connection conn = null;
 		try {
@@ -181,8 +216,8 @@ public class ModelDataLoader {
 			{
 				values.add((modelID == null)? null: Long.toString(modelID));
 				// if no modelID submitted, SPARROW_MODEL_ID has an insert trigger using sequence SPARROW_MODEL_SEQ
-				values.add(quoteForSQL(inputValues[md.indexOf("name")]));
-				values.add(quoteForSQL(inputValues[2]));
+				values.add(quoteForSQL(inputValues[md.indexOf(MMD_NAME)]));
+				values.add(quoteForSQL(inputValues[md.indexOf(MMD_DESCRIPTION)]));
 				values.add("SYSDATE");
 				values.add(Integer.toString(CONTACT_ID));
 				values.add(Integer.toString(ENH_NETWORK_ID));
@@ -234,25 +269,25 @@ public class ModelDataLoader {
 				List<String> values = new ArrayList<String>();
 				{
 					values.add(null); //SOURCE_ID has insert trigger using sequence SOURCE_SEQ
-					values.add(quoteForSQL(inputValues[md.indexOf("name")]));
-					values.add(quoteForSQL(inputValues[md.indexOf("description")])); 
-					values.add(inputValues[md.indexOf("sort_order")]);
+					values.add(quoteForSQL(inputValues[md.indexOf(SMD_NAME)]));
+					values.add(quoteForSQL(inputValues[md.indexOf(SMD_DESCRIPTION)])); 
+					values.add(inputValues[md.indexOf(SMD_SORT_ORDER)]);
 					values.add(Long.toString(modelID)); 
 					values.add(Integer.toString(identifier));
 					String displayName = useNameForDisplayNameIfUnavailable(md, inputValues);
 					values.add(displayName);
 					
-					String constituent = useDefaultIfUnavailable(md, inputValues, "constituent", DEFAULT_CONSTITUENT);
+					String constituent = useDefaultIfUnavailable(md, inputValues, SMD_CONSTITUENT, DEFAULT_CONSTITUENT);
 					values.add(quoteForSQL(constituent)); 
 					
-					String units = useDefaultIfUnavailable(md, inputValues, "units", DEFAULT_UNITS);
+					String units = useDefaultIfUnavailable(md, inputValues, SMD_UNITS, DEFAULT_UNITS);
 					values.add(quoteForSQL(units));
 					
 					String precision = useDefaultPrecisionIfUnavailable(md, inputValues);
 					values.add(precision);
 					
 
-					String isPointSourceValue = useDefaultIfUnavailable(md, inputValues, "is_point_source", IS_POINT_SOURCE_DEFAULT);
+					String isPointSourceValue = useDefaultIfUnavailable(md, inputValues, SMD_IS_POINT_SOURCE, IS_POINT_SOURCE_DEFAULT);
 					String isPointSource = ModelDataAssumptions.translatePointSource(isPointSourceValue);
 					values.add(quoteForSQL(isPointSource));
 				}
@@ -318,12 +353,12 @@ public class ModelDataLoader {
 				
 				List<String> values = new ArrayList<String>();
 				{
-					values.add(ancilInputValues[amd.indexOf(REACH_IDENTIFIER_COL)]);
-					values.add(quoteForSQL(ancilInputValues[amd.indexOf(FULL_IDENTIFIER_COL)]));
-					values.add(topoInputValues[md.indexOf("hydseq")]);
-					values.add(topoInputValues[md.indexOf("iftran")]);
+					values.add(ancilInputValues[amd.indexOf(ANC_REACH_IDENTIFIER)]);
+					values.add(quoteForSQL(ancilInputValues[amd.indexOf(ANC_FULL_IDENTIFIER)]));
+					values.add(topoInputValues[md.indexOf(TOPO_HYDSEQ)]);
+					values.add(topoInputValues[md.indexOf(TOPO_IFTRAN)]);
 					{
-						String std_id = ancilInputValues[amd.indexOf(FULL_IDENTIFIER_COL)];
+						String std_id = ancilInputValues[amd.indexOf(ANC_FULL_IDENTIFIER)];
 						if (std_id == null || std_id.length() == 0 || std_id.equals("0")) {
 							values.add(null);
 							stdIdNullCount++; // no std_id or 0 std_id provided
@@ -339,8 +374,8 @@ public class ModelDataLoader {
 						}
 					}
 					values.add(Long.toString(modelID));
-					values.add(topoInputValues[md.indexOf("fnode")]);
-					values.add(topoInputValues[md.indexOf("tnode")]);
+					values.add(topoInputValues[md.indexOf(TOPO_FNODE)]);
+					values.add(topoInputValues[md.indexOf(TOPO_TNODE)]);
 				}
 				
 				String sql = "INSERT INTO " + SparrowSchemaConstants.SPARROW_SCHEMA + ".MODEL_REACH "
@@ -388,12 +423,12 @@ public class ModelDataLoader {
 
 				String[] values = new String[5];
 				{
-					values[0] = inputValues[md.indexOf("ITER")];
-					values[1] = inputValues[md.indexOf("INC_DELIVF")]; 
-					values[2] = inputValues[md.indexOf("TOT_DELIVF")]; 
-					values[3] = inputValues[md.indexOf("BOOT_ERROR")];
+					values[0] = inputValues[md.indexOf(COEF_ITER)];
+					values[1] = inputValues[md.indexOf(COEF_INC_DELIVF)]; 
+					values[2] = inputValues[md.indexOf(COEF_TOT_DELIVF)]; 
+					values[3] = inputValues[md.indexOf(COEF_BOOT_ERROR)];
 
-					Integer identifier = Integer.valueOf(ancilValues[amd.indexOf(REACH_IDENTIFIER_COL)]);
+					Integer identifier = Integer.valueOf(ancilValues[amd.indexOf(ANC_REACH_IDENTIFIER)]);
 					values[4] = Integer.toString(reachIDLookup.get(identifier));
 				}
 				
@@ -466,15 +501,15 @@ public class ModelDataLoader {
 				String[] inputValues = (line + md.delimiter + "_").split(md.delimiter);
 				String[] ancilValues = (aLine + amd.delimiter + "_").split(amd.delimiter);
 				
-				Integer identifier = Integer.valueOf(ancilValues[amd.indexOf(REACH_IDENTIFIER_COL)]);
+				Integer identifier = Integer.valueOf(ancilValues[amd.indexOf(ANC_REACH_IDENTIFIER)]);
 				Integer modelReachID = reachIDLookup.get(identifier);
 				String modelReachIDString = Integer.toString(modelReachID);
 				
 				for (Integer i=1; i <=sourceIDLookup.size(); i++) {
 					// source ids are 1-based.
 					String[] values = new String[4];
-					values[0] = inputValues[md.indexOf("ITER")];
-					values[1] = inputValues[BASIC_COEF_COLUMNS.length + i - 1];
+					values[0] = inputValues[md.indexOf(COEF_ITER)];
+					values[1] = inputValues[BASIC_COEF_COLUMNS.length -1 + i]; // the ith coef after the last basic coef
 					values[2] = Integer.toString(sourceIDLookup.get(i));
 					values[3] = modelReachIDString;
 					
@@ -539,7 +574,7 @@ public class ModelDataLoader {
 				String[] inputValues = ModelDataAssumptions.sedimentIrregularHack(md, line).split(md.delimiter); // 
 				String[] ancilValues = (aLine + amd.delimiter + "_").split(amd.delimiter);
 				
-				Integer identifier = Integer.valueOf(ancilValues[amd.indexOf(REACH_IDENTIFIER_COL)]);
+				Integer identifier = Integer.valueOf(ancilValues[amd.indexOf(ANC_REACH_IDENTIFIER)]);
 				Integer modelReachID = reachIDLookup.get(identifier);
 				String modelReachIDString = Integer.toString(modelReachID);
 				
@@ -617,7 +652,7 @@ public class ModelDataLoader {
 		assert(topoData.getName().equals("topo.txt"));
 		DataFileDescriptor tmd = Analyzer.analyzeFile(topoData);
 		assert(tmd.hasColumnHeaders());
-		assert(tmd.hasColumns("fnode", "tnode", "iftran", "hydseq"));
+		assert(tmd.hasColumns(TOPO_FNODE, TOPO_TNODE, TOPO_IFTRAN, "hydseq"));
 		return tmd;
 	}
 	public static DataFileDescriptor validateAncillaryData(File ancillaryData)
@@ -627,10 +662,26 @@ public class ModelDataLoader {
 		assert(ancillaryData.getName().equals("ancil.txt"));
 		DataFileDescriptor amd = Analyzer.analyzeFile(ancillaryData);
 		assert(amd.hasColumnHeaders());
-		assert(amd.hasColumns(REACH_IDENTIFIER_COL, FULL_IDENTIFIER_COL, "new_or_modified", "waterid", "hydseq", 
-				"demiarea", "demtarea", "meanq", "delivery_target", "RR", 
-				"CONTFLAG", "PNAME", "HEADFLAG", "TERMFLAG", "RESCODE", 
-				"RCHTYPE", "station_id", "statid", "del_frac"));
+		assert(amd.hasColumns(ANC_REACH_IDENTIFIER, ANC_FULL_IDENTIFIER, "new_or_modified",
+				"hydseq", "demiarea", "demtarea", "meanq", "station_id", "del_frac" ));
+		if (!amd.hasColumns(ANC_REACH_TYPE)) {
+			ANC_REACH_TYPE = "rchtype";
+		}
+		if (!amd.hasColumns(ANC_PNAME)) {
+			ANC_PNAME = "pname";
+		}
+		assert(amd.hasColumns(ANC_REACH_TYPE, ANC_PNAME));
+		
+		String[] optionalColumns = {"waterid", 
+				 "delivery_target", "RR", 
+				"CONTFLAG",  "HEADFLAG", "TERMFLAG", "RESCODE", 
+				 "statid"};
+		// mrb_id rather than waterid
+		// target rather than deliver_target
+		//?? RR
+		// headflag rather than CONTFLAG
+		// staid =? statid
+		
 		return amd;
 	}
 	
@@ -645,7 +696,9 @@ public class ModelDataLoader {
 		try {
 			modelIdMap = JDBCUtil.buildIntegerMap(conn, selectAllReachesQuery);
 		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new RuntimeException("Array index out of bounds because reaches need to be inserted first into the database. Please insert reaches and rerun tests", e);
+			throw new RuntimeException("Array index out of bounds because reaches need to be inserted "
+					+ "first into the database. Please insert reaches and rerun " 
+					+ ModelDataLoader.class.getSimpleName(), e);
 		}
 		return modelIdMap;
 	}
@@ -832,6 +885,10 @@ public class ModelDataLoader {
 		}
 		return sparrow_dss_password;
 	}
+
+
+
+
 	
 
 	

@@ -22,15 +22,15 @@
 %>
 <% if (! isNested) { %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
-"http://www.w3.org/TR/html4/loose.dtd">
+	"http://www.w3.org/TR/html4/loose.dtd">
 <html>
- <head>
-   <meta http-equiv="Content-Type" content="text/html; charset=windows-1252"/>
-   <title>Request Test Page</title>
- </head>
- <body>
- <h1>Request Testing Page</h1>
- <p><a href="index.jsp" title="Back to the index page">Home &gt;&gt;</a></p>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=windows-1252"/>
+		<title>Request Test Page</title>
+	</head>
+<body>
+	<h1>Request Testing Page</h1>
+	<p><a href="index.jsp" title="Back to the index page">Home &gt;&gt;</a></p>
 <% } %>
 <% response.flushBuffer(); %>
 
@@ -94,7 +94,15 @@
 	}
 
  %>
+	<ul>
+		<li><a href="#incoming">Properties of the incoming request</a></li>
+		<li><a href="#network">Network Related System Properties</a></li>
+		<li><a href="#allSystem">All system properties</a></li>
+		<li><a href="#allEnvironment">All environment properties</a></li>
+		<li><a href="#allCookies">All cookies</a></li>
+	</ul>
 
+	<a name="incoming"></a>
 	<h4>This JSP page saw these properties of the incoming request:</h4>
 	<ul>
 		<li>getServerName() : <%=request.getServerName()%></li>
@@ -115,6 +123,7 @@
 		<li>getServletPath() : <%=request.getServletPath()%></li>
 	</ul>
 
+	<a name="network"></a>
 	<h4>Network Related System Properties taken (mostly) from <a title="Sys properties ref" href="http://java.sun.com/j2se/1.5.0/docs/guide/net/properties.html">here</a></h4>
 	<ul>
 		<li>System.getProperty("mdc_local.host"): <%= System.getProperty("mdc_local.host") %></li>
@@ -127,6 +136,7 @@
 
 	</ul>
 	
+	<a name="allSystem"></a>
 	<h4>All System Properties</h4>
 	<ul>
 		<% 
@@ -136,12 +146,30 @@
 		%>
 	</ul>
 	
+	<a name="allEnvironment"></a>
 	<h4>All Environment Variables</h4>
 	<ul>
 		<% 
 			for (Entry entry: System.getenv().entrySet()) {
 				out.println("<li><b>" + entry.getKey() + "</b> -- " + entry.getValue() + "</li>");
 			}
+		%>
+	</ul>
+
+	<a name="allCookies"></a>
+	<h4>All Cookies</h4>
+	<ul>
+		<% 
+
+			for (Cookie cookie: request.getCookies()) {
+				out.println("<li><ul>");
+				out.println("<li><b>cookie name</b>= " + cookie.getName() + "</li>");
+				out.println("<li><b>value</b>= " + cookie.getValue() + "</li>");
+				out.println("<li><b>domain</b>= " + cookie.getDomain() + "</li>");
+				out.println("<li><b>maxAge(sec)</b>= " + cookie.getMaxAge() + "</li>");
+				out.println("</ul></li>");
+			}
+			
 		%>
 	</ul>
 	
@@ -163,7 +191,7 @@
 			<label for="do_self_local_req_id">Make an internal request to this same page using 'localhost'?</label><input id="do_self_local_req_id" type="checkbox" name="do_self_local_req" value="true" <%= ("true".equalsIgnoreCase(request.getParameter("do_self_local_req")))?"checked=\"checked\"":""%>>
 		</div>
 		<div>
-			<label for="do_self_external_req_id">Make an internal request to this same page using '<%=request.getServerName()%>'?</label><input id="do_self_external_req_id" type="checkbox" name="do_self_external_req" value="true" <%= ("true".equalsIgnoreCase(request.getParameter("do_self_external_req")))?"checked=\"checked\"":""%>>
+			<label for="do_self_external_req_id">Make an external request to this same page using '<%=request.getServerName()%>'?</label><input id="do_self_external_req_id" type="checkbox" name="do_self_external_req" value="true" <%= ("true".equalsIgnoreCase(request.getParameter("do_self_external_req")))?"checked=\"checked\"":""%>>
 		</div>
 		<div>
 			<label for="address_resolve_id">Attempt to resolve an IP for: </label><input id="address_resolve_id" type="text" name="address_resolve" value="<%= userAddressResolve %>" size="60">

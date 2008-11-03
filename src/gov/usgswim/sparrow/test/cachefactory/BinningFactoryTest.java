@@ -11,16 +11,16 @@ public class BinningFactoryTest extends TestCase {
 
 	public void testRoundToSingleDigit() {
 		//rounding up
-		assertEquals(9, round(8.77, 5.2, 10.1), .001);
-		assertEquals(.9, round(.877, .52, 1.01), .001);
-		assertEquals(.09, round(.0877, .052, 1.01), .0001);
-		assertEquals(900, round(870.7, 520, 1010), .001);
+		assertEquals(10, round(8.77, 5.2, 10.1), .001);
+		assertEquals(1.0, round(.877, .52, 1.01), .001);
+		assertEquals(.1, round(.0877, .052, 1.01), .0001);
+		assertEquals(1000, round(870.7, 520, 1010), .001);
 
 		// rounding down
-		assertEquals(9, round(9.47, 5.2, 10.1), .001);
-		assertEquals(.9, round(.947, .52, 1.01), .001);
-		assertEquals(.09, round(.0947, .052, 1.01), .0001);
-		assertEquals(900, round(940.7, 520, 1010), .001);
+		assertEquals(10, round(9.47, 5.2, 10.1), .001);
+		assertEquals(1.0, round(.947, .52, 1.01), .001);
+		assertEquals(.10, round(.0947, .052, 1.01), .0001);
+		assertEquals(1000, round(940.7, 520, 1010), .001);
 	}
 
 	public void testRoundTo1_5Digits() {
@@ -92,18 +92,68 @@ public class BinningFactoryTest extends TestCase {
 	}
 	
 	public void testGetEqualCountBinsOfThree() {
-
 		double[] result = getEqualCountBins(sortedData, 3, Boolean.TRUE);
 		
-		int lastIndex = result.length;
-//		assertEquals(-100d, result[0], .00001);
-//		assertEquals(.01d, result[1], .00001);
-//		assertEquals(6d, result[lastIndex], .00001);
+		int lastIndex = result.length - 1;
+		assertEquals(-100d, result[0], .00001);
+		assertEquals(-.5d, result[1], .00001);
+		assertEquals(1.0d, result[2], .00001);
+		assertEquals(6d, result[lastIndex], .00001);
+	}
+
+	public void testGetEqualCountBinsOfFour() {
+		double[] result = getEqualCountBins(sortedData, 4, Boolean.TRUE);
+		
+		int lastIndex = result.length - 1;
+		assertEquals(-100d, result[0], .00001);
+		assertEquals(-5d, result[1], .00001);
+		assertEquals(.01, result[2], .00001);
+		assertEquals(1.3, result[3], .00001);
+		assertEquals(6d, result[lastIndex], .00001);		
+	}
+	
+	public void testGetEqualCountBinsOfFive() {
+		double[] result = getEqualCountBins(sortedData, 5, Boolean.TRUE);
+		
+		int lastIndex = result.length - 1;
+		assertEquals(-100d, result[0], .00001);
+		assertEquals(-8.75d, result[1], .00001);
+		assertEquals(0, result[2], .00001);
+		assertEquals(.094, result[3], .00001);
+		assertEquals(1.8, result[4], .00001);
+		assertEquals(6d, result[lastIndex], .00001);
+	}
+	
+	public void testGetEqualCountBinsOfSix() {
+		double[] result = getEqualCountBins(sortedData, 6, Boolean.TRUE);
+		
+		int lastIndex = result.length - 1;
+		assertEquals(-100d, result[0], .00001);
+		assertEquals(-17d, result[1], .00001);
+		assertEquals(-.5, result[2], .00001);
+		assertEquals(.01, result[3], .00001);
+		assertEquals(1.0, result[4], .00001);
+		assertEquals(1.87, result[5], .00001);
+		assertEquals(6d, result[lastIndex], .00001);
+	}
+	
+	public void testGetEqualCountBinsOfSeven() {
+
+		double[] result = getEqualCountBins(sortedData, 7, Boolean.TRUE);
+		
+		int lastIndex = result.length - 1;
+		assertEquals(-100d, result[0], .00001);
+		assertEquals(-50d, result[1], .00001);
+		assertEquals(-3, result[2], .00001);
+		assertEquals(.0054, result[3], .00001);
+		assertEquals(.08, result[4], .00001);
+		assertEquals(1.19, result[5], .00001);
+		assertEquals(1.89, result[6], .00001);
+		assertEquals(6d, result[lastIndex], .00001);
 		
 		for (int i=0; i<result.length; i++) {
 			System.out.println(i + ": " + result[i]);
 		}
 		
 	}
-
 }

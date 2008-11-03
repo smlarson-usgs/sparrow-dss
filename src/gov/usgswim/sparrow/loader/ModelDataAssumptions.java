@@ -6,7 +6,7 @@ public class ModelDataAssumptions {
 	public static final int ENH_NETWORK_ID = 22; // default
 	public static final int PRECISION = 2; // default
 	public static final String SEDIMENT_MODEL_SOURCE_HACK = "0"; // HACK: 0 here because sediment source data is irregular!
-	public static Long MODEL_ID = 31L;
+	public static Long MODEL_ID = 34L;
 	
 	public static final String DEFAULT_CONSTITUENT = "Phosphorus";
 	public static final String DEFAULT_UNITS = "kg/yr";
@@ -17,7 +17,7 @@ public class ModelDataAssumptions {
 	
 	public static String useDefaultPrecisionIfUnavailable(
 			DataFileDescriptor md, String[] inputValues) {
-		return useDefaultIfUnavailable(md, inputValues, "precision", Integer.toString(PRECISION));
+		return useDefaultIfUnavailable(md, inputValues, ModelDataLoader.SMD_PRECISION, Integer.toString(PRECISION));
 	}
 	
 	public static String useDefaultIfUnavailable(
@@ -32,7 +32,7 @@ public class ModelDataAssumptions {
 			DataFileDescriptor md, String[] inputValues) {
 		String displayName = ModelDataLoader.quoteForSQL(inputValues[md.indexOf("display_name")]);
 		if (displayName == null) {
-			displayName = ModelDataLoader.quoteForSQL(inputValues[md.indexOf("name")]);
+			displayName = ModelDataLoader.quoteForSQL(inputValues[md.indexOf(ModelDataLoader.SMD_NAME)]);
 		}
 		return displayName;
 	}
