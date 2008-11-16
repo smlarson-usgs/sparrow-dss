@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.service.binning;
 
+import java.math.BigDecimal;
+
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -16,7 +18,7 @@ public class BinningService implements HttpService<BinningRequest> {
         gov.usgswim.sparrow.cachefactory.BinningRequest request
             = new gov.usgswim.sparrow.cachefactory.BinningRequest(predictContextId, binCount, binType);
         
-        double[] bins = SharedApplication.getInstance().getDataBinning(request);
+        BigDecimal[] bins = SharedApplication.getInstance().getDataBinning(request);
         BinningSerializer ser = new BinningSerializer(o, bins);
         
         return ser;

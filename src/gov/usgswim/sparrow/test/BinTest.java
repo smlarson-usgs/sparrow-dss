@@ -10,6 +10,7 @@ import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
@@ -64,16 +65,17 @@ public class BinTest extends TestCase {
         
         // Request the bin values from the caching mechanism
         SharedApplication sharedApp = SharedApplication.getInstance();
-        double[] bins = (double[]) sharedApp.getDataBinning(new BinningRequest(
+        BigDecimal[] bins = (BigDecimal[]) sharedApp.getDataBinning(new BinningRequest(
                 contextId, 1, BinningRequest.BIN_TYPE.EQUAL_COUNT));
         
         // Test the min and max values
         // Note that if min and max values match, it follows that sequencing is
         // correct, all values will fit within the bin, and the bin count is correct.
-        assertEquals(bins[0], (double)values[0]);
-        assertEquals(bins[bins.length - 1], (double)values[values.length - 1]);
+        // The rounded range value of the bin should include all values
+        assertTrue(bins[0].doubleValue() <= (double)values[0]);
+        assertTrue(bins[bins.length - 1].doubleValue() >= (double)values[values.length - 1]);
         // Implied by previous assertions and sorting, but verifying
-        assertTrue(bins[0] <= bins[bins.length - 1]);
+        assertTrue(bins[0].doubleValue() <= bins[bins.length - 1].doubleValue());
     }
     
     /**
@@ -87,16 +89,16 @@ public class BinTest extends TestCase {
         
         // Request the bin values from the caching mechanism
         SharedApplication sharedApp = SharedApplication.getInstance();
-        double[] bins = (double[]) sharedApp.getDataBinning(new BinningRequest(
+        BigDecimal[] bins = sharedApp.getDataBinning(new BinningRequest(
                 contextId, 1, BinningRequest.BIN_TYPE.EQUAL_RANGE));
         
         // Test the min and max values
         // Note that if min and max values match, it follows that sequencing is
         // correct, all values will fit within the bin, and the bin range is correct.
-        assertEquals(bins[0], (double)values[0]);
-        assertEquals(bins[bins.length - 1], (double)values[values.length - 1]);
+        assertTrue(bins[0].doubleValue() <= (double)values[0]);
+        assertTrue(bins[bins.length - 1].doubleValue() >= (double)values[values.length - 1]);
         // Implied by previous assertions and sorting, but verifying
-        assertTrue(bins[0] <= bins[bins.length - 1]);
+        assertTrue(bins[0].doubleValue() <= bins[bins.length - 1].doubleValue());
     }
     
     /**
@@ -113,12 +115,12 @@ public class BinTest extends TestCase {
         
         // Request the bin values from the caching mechanism
         SharedApplication sharedApp = SharedApplication.getInstance();
-        double[] bins = (double[]) sharedApp.getDataBinning(new BinningRequest(
+        BigDecimal[] bins = sharedApp.getDataBinning(new BinningRequest(
                 contextId, binCount, BinningRequest.BIN_TYPE.EQUAL_COUNT));
         
         // Test the min and max values
-        assertEquals(bins[0], (double)values[0]);
-        assertEquals(bins[bins.length - 1], (double)values[values.length - 1]);
+        assertTrue(bins[0].doubleValue() <= (double)values[0]);
+        assertTrue(bins[bins.length - 1].doubleValue() >= (double)values[values.length - 1]);
     }
 	
     /**
@@ -135,12 +137,12 @@ public class BinTest extends TestCase {
         
         // Request the bin values from the caching mechanism
         SharedApplication sharedApp = SharedApplication.getInstance();
-        double[] bins = (double[]) sharedApp.getDataBinning(new BinningRequest(
+        BigDecimal[] bins = sharedApp.getDataBinning(new BinningRequest(
                 contextId, binCount, BinningRequest.BIN_TYPE.EQUAL_RANGE));
         
         // Test the min and max values
-        assertEquals(bins[0], (double)values[0]);
-        assertEquals(bins[bins.length - 1], (double)values[values.length - 1]);
+        assertTrue(bins[0].doubleValue() <= (double)values[0]);
+        assertTrue(bins[bins.length - 1].doubleValue() >= (double)values[values.length - 1]);
 	}
 	
 	/**
@@ -154,12 +156,12 @@ public class BinTest extends TestCase {
         // Request the bin values from the caching mechanism
         Integer contextId = buildPredictContextEmpty();
         SharedApplication sharedApp = SharedApplication.getInstance();
-        double[] bins = (double[]) sharedApp.getDataBinning(new BinningRequest(
+        BigDecimal[] bins = sharedApp.getDataBinning(new BinningRequest(
                 contextId, binCount, BinningRequest.BIN_TYPE.EQUAL_COUNT));
         
         // Ensure the bins are sorted properly
         for (int i = 1; i < bins.length; i++) {
-            boolean greater = bins[i] >= bins[i - 1];
+            boolean greater = bins[i].doubleValue() >= bins[i - 1].doubleValue();
             assertTrue(greater);
         }
 	}
@@ -175,12 +177,12 @@ public class BinTest extends TestCase {
         // Request the bin values from the caching mechanism
         Integer contextId = buildPredictContextEmpty();
         SharedApplication sharedApp = SharedApplication.getInstance();
-        double[] bins = (double[]) sharedApp.getDataBinning(new BinningRequest(
+        BigDecimal[] bins = sharedApp.getDataBinning(new BinningRequest(
                 contextId, binCount, BinningRequest.BIN_TYPE.EQUAL_RANGE));
         
         // Ensure the bins are sorted properly
         for (int i = 1; i < bins.length; i++) {
-            boolean greater = bins[i] >= bins[i - 1];
+            boolean greater = bins[i].doubleValue() >= bins[i - 1].doubleValue();
             assertTrue(greater);
         }
 	}
@@ -228,7 +230,7 @@ public class BinTest extends TestCase {
         
         // Request the bin values from the caching mechanism
         SharedApplication sharedApp = SharedApplication.getInstance();
-        double[] bins = (double[]) sharedApp.getDataBinning(new BinningRequest(
+        BigDecimal[] bins = sharedApp.getDataBinning(new BinningRequest(
                 contextId, binCount, BinningRequest.BIN_TYPE.EQUAL_COUNT));
         
         // Make sure the correct number of bins were returned
@@ -243,7 +245,7 @@ public class BinTest extends TestCase {
         // Iterate over the bins, determining whether the number of data points
         // between each boundary defined by the bins is approximately equal
         for (int i = 0; i < values.length; i++) {
-            if ((double)values[i] <= bins[binIndex]) {
+            if ((double)values[i] <= bins[binIndex].doubleValue()) {
                 if (count < targetCount) {
                     count++;
                 } else {
@@ -286,7 +288,7 @@ public class BinTest extends TestCase {
         // Request the bin values from the caching mechanism
         Integer contextId = buildPredictContextEmpty();
         SharedApplication sharedApp = SharedApplication.getInstance();
-        double[] bins = (double[]) sharedApp.getDataBinning(new BinningRequest(
+        BigDecimal[] bins = sharedApp.getDataBinning(new BinningRequest(
                 contextId, binCount, BinningRequest.BIN_TYPE.EQUAL_RANGE));
         
         // Make sure the correct number of bins were returned
@@ -294,12 +296,12 @@ public class BinTest extends TestCase {
 
         double prev = 0.0; // previous bin value
         double cur = 0.0; // current bin value
-        double targetDiff = (bins[0] - bins[bins.length - 1]) / (double)(binCount);
+        double targetDiff = (bins[0].doubleValue() - bins[bins.length - 1].doubleValue()) / (double)(binCount);
 
         // Iterate over the bins, determining if the range of values between two
         // bins falls within the tolerance
         for (int i = 0; i < bins.length; i++) {
-            cur = bins[i];
+            cur = bins[i].doubleValue();
             if (i > 1) {
                 double diff = cur - prev;
                 assertEquals(targetDiff, diff, EQUAL_RANGE_TOLERANCE);
@@ -324,7 +326,7 @@ public class BinTest extends TestCase {
 	}
 
 	/**
-	 * Returns the list of data values contained within the prediction context
+	 * Returns a sorted list of data values contained within the prediction context
 	 * of the specified {@code contextId}.
 	 * 
 	 * @param contextId Identifier for the prediction context.

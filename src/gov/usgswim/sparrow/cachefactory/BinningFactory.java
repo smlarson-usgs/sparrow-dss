@@ -1,10 +1,14 @@
 package gov.usgswim.sparrow.cachefactory;
 
+import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 
-import java.util.Arrays;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
 
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
@@ -47,16 +51,15 @@ public class BinningFactory implements CacheEntryFactory {
 
 		PredictionContext.DataColumn dc = context.getDataColumn();
 
-		double[] bins = null;
-
 		// Determine type of binning to perform, calling the appropriate method
-		if (request.getBinType() == BinningRequest.BIN_TYPE.EQUAL_COUNT) {
-			bins = getEqualCountBins(dc.getTable(), dc.getColumn(), request.getBinCount());
-		} else if (request.getBinType() == BinningRequest.BIN_TYPE.EQUAL_RANGE) {
-			bins = getEqualRangeBins(dc.getTable(), dc.getColumn(), request.getBinCount(), true);
+		switch(request.getBinType()) {
+			case EQUAL_COUNT:
+				return getEqualCountBins(dc.getTable(), dc.getColumn(), request.getBinCount());
+			case EQUAL_RANGE:
+				return getEqualRangeBins(dc.getTable(), dc.getColumn(), request.getBinCount(), true);
 		}
 
-		return bins;
+		return null;
 	}
 
 	/**
@@ -66,24 +69,21 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @param binCount
 	 * @return
 	 */
-	protected double[] getEqualCountBins(DataTable data, int columnIndex, int binCount) {
-		float[] sortedValues = extractSortedValues(data, columnIndex); //sorted Array holding all values
+	protected BigDecimal[] getEqualCountBins(DataTable data, int columnIndex, int binCount) {
+		float[] sortedValues = TemporaryHelper.extractSortedValues(data, columnIndex); //sorted Array holding all values
 		return getEqualCountBins(sortedValues, binCount, true); // TODO set to true for now. Should take parameter from BinningRequest
 	}
 
-	//    public static double[] getEqualRangeBins(DataTable data, int columnIndex, int binCount) {
-	//    	
-	//    }
 
 	public static final double ALLOWABLE_BIN_SIZE_VARIANCE_RATIO = 1d/10;	
-	public static double[] getEqualCountBins(float[] sortedData, int binCount, Boolean useRounding) {
+	public static BigDecimal[] getEqualCountBins(float[] sortedData, int binCount, Boolean useRounding) {
 		int totalRows = sortedData.length;	//Total rows of data
 
 		if (useRounding == null || !useRounding) {
 			return getEqualCountBins(binCount, sortedData);
 		}
 		// adjust the bin fence posts
-		double[] bins = new double[binCount + 1];
+		BigDecimal[] bins = new BigDecimal[binCount + 1];
 		double binSize = (double)(totalRows) / (double)(binCount);
 		double binVariance = ( binSize * ALLOWABLE_BIN_SIZE_VARIANCE_RATIO )/2;
 
@@ -145,8 +145,9 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @param binCount Number of bins to divide the column into.
 	 * @return Set of bins such that the bins define break-point boundaries
 	 *         with an approximately equal number of values contained within.
+	 *         TODO change name to getExactEqualCountBins
 	 */
-	public static double[] getEqualCountBins(int binCount, float[] sortedValues) {
+	public static BigDecimal[] getEqualCountBins(int binCount, float[] sortedValues) {
 
 		int totalRows = sortedValues.length;	//Total rows of data
 
@@ -157,11 +158,11 @@ public class BinningFactory implements CacheEntryFactory {
 
 		//The bins, where each value is a fence post w/ values between, thus, there is one more 'post' than bins.
 		//The first value is the lowest value in values[], the last value is the largest value.
-		double[] bins = new double[binCount + 1];	
+		BigDecimal[] bins = new BigDecimal[binCount + 1];	
 
 		//Assign first and last values for the bins (min and max)
-		bins[0] = sortedValues[0];
-		bins[binCount] = sortedValues[totalRows - 1];
+		bins[0] = new BigDecimal(sortedValues[0]);
+		bins[binCount] = new BigDecimal(sortedValues[totalRows - 1]);
 
 		//Assign the middle breaks so that equal numbers of values fall into each bin
 		for (int i=1; i<(binCount); i++) {
@@ -170,26 +171,29 @@ public class BinningFactory implements CacheEntryFactory {
 			double split = (double)i * binSize;
 
 			//The bin boundary is the value contained at that row.
-			bins[i] = ( sortedValues[(int) Math.floor(split)] + sortedValues[(int) Math.ceil(split)])/2; // take the average of the surrounding values
+			float topVal = sortedValues[(int) Math.ceil(split)];
+			float bottomVal = sortedValues[(int) Math.floor(split)];
+			
+
+			if (topVal != bottomVal) {
+				// take a rounded value inside of the surrounding range
+				bins[i] = round(bottomVal, bottomVal, topVal);
+			} else {
+				bins[i] = new BigDecimal(bottomVal);
+			}
 		}
 
 		return bins;
 	}
 
-	private float[] extractSortedValues(DataTable data, int columnIndex) {
-		int totalRows = data.getRowCount();
-		float[] values = new float[totalRows];	
-		//Export all values in the specified column to values[] so they can be sorted
-		for (int r=0; r<totalRows; r++) {
-			values[r] = data.getFloat(r, columnIndex);
-		}
-
-		Arrays.sort(values);
-		return values;
-	}
-
-
-	public static final double[] digitAccuracyMultipliers= {1,2,10, 20, 100, 200, 1000}; // multipliers for 1, 1.5, ... 3.5 digit accuracy
+	public static final BigDecimal[] digitAccuracyMultipliers= {
+		new BigDecimal(new BigInteger("1"), 0), // 0 digit
+		new BigDecimal(new BigInteger("2"), 0), // .5 digit
+		new BigDecimal(new BigInteger("10"), 0), // 1 digit
+		new BigDecimal(new BigInteger("20"), 0), // 1.5 digits
+		new BigDecimal(new BigInteger("100"), 0), // 2 digits
+		new BigDecimal(new BigInteger("200"), 0), // 2.5 digits
+		new BigDecimal(new BigInteger("1000"), 0)}; // 3 digits
 
 	/**
 	 * Rounds to the fewest digits necessary (<= 3.5 digits) within the given lo-hi range
@@ -199,20 +203,26 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @param hi
 	 * @return the original value if lo-hi range is too narrow
 	 */
-	public static double round(double value, double lo, double hi) {
+	public static BigDecimal round(double value, double lo, double hi) {
 		// round to zero as first option
-		if (value ==0 || (lo <=0 && hi>=0)) return 0;
+		if (value ==0 || (lo <=0 && hi>=0)) return new BigDecimal(0);
 		// round to 1 digit
-		double exponent = Math.ceil(Math.log10(Math.abs(value)));
-		double baseNormalizer = (exponent < 0)? Math.round(Math.pow(10, -exponent)): Math.pow(10, -exponent);
+		int exponent = Double.valueOf(Math.ceil(Math.log10(Math.abs(value)))).intValue();
 
-		for (double digitMultiplier: digitAccuracyMultipliers) {
-			Double result = findClosestInRange(value, lo, hi, baseNormalizer * digitMultiplier);
+		for (BigDecimal sigfigs: digitAccuracyMultipliers) {
+			BigDecimal result = findClosestInRange(value, lo, hi, exponent, sigfigs);
 			if (result != null) {
+				// don't return exponents of 3 or less
+				if (-3 <= result.scale() && result.scale() < 0) {
+					String rep = result.toPlainString();
+					if (result.toPlainString().length()<=4) {
+						result = result.setScale(0); // just write it out rather than use exponential notation
+					}
+				}
 				return result;
 			}
 		}
-		return value; // range is too narrow so just return original value
+		return new BigDecimal(value); // range is too narrow so just return original value
 	}
 
 	/**
@@ -225,30 +235,45 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @param denominator
 	 * @return null if no fraction within range
 	 */
-	public static Double findClosestInRange(double value, double lo, double hi, double denominator) {
-		assert(lo < hi);
-		value = value * denominator;
+	public static BigDecimal findClosestInRange(double value, double lo, double hi, int exponent, BigDecimal sigfigs) {
+		assert(lo <= value && value <= hi);
+		double normalizer = sigfigs.doubleValue() / (Math.pow(10, exponent));
+		value = value * normalizer;
 		// expect Math.abs(value) >= 0, but is ok if it isn't
-		lo = lo * denominator;
-		hi = hi * denominator;
+		lo = lo * normalizer;
+		hi = hi * normalizer;
 
 		double up = Math.ceil(value);
 		double down = Math.floor(value);
-		boolean isUpInRange = (lo <= up) && (hi >= up);
-		boolean isDownInRange = (lo <= down) && (hi >= down);
+		boolean isUpInRange = (up <= hi);
+		boolean isDownInRange = (lo <= down);
+		long upL = Double.valueOf(up).longValue();
+		long downL = Double.valueOf(down).longValue();
+		
+		// to restore value, up /normalizer = up /sigfigs w/exp shift
 
 		if (isUpInRange && isDownInRange) {
 			// return the closest of two valid alternatives
-			return (Math.abs(up - value) < Math.abs(down - value))? up/denominator: down/denominator;
+			return (Math.abs(up - value) < Math.abs(down - value))? 
+					makeBigDecimal(upL, sigfigs, exponent): 
+					makeBigDecimal(downL, sigfigs, exponent);
 		}
 		if (isUpInRange) {
-			return up/denominator;	
+			return makeBigDecimal(upL, sigfigs, exponent);
 		} else if (isDownInRange) {
-			return down/denominator;
+			return makeBigDecimal(downL, sigfigs, exponent);
 		}
 		return null;
 	}
+	
 
+	public static BigDecimal makeBigDecimal(long numerator, BigDecimal denominatorWithScale, int exp) {
+		BigDecimal num = new BigDecimal(numerator, new MathContext(denominatorWithScale.scale()));
+		BigDecimal temp = num.divide(denominatorWithScale);
+		BigDecimal result = temp.scaleByPowerOfTen(exp);
+		return result;
+	}
+	
 	// ================
 	// EQUAL RANGE BINS
 	// ================
@@ -292,39 +317,58 @@ public class BinningFactory implements CacheEntryFactory {
 //		return bins;
 //	}
 
-	public static double[] getEqualRangeBins(DataTable data, int columnIndex, int binCount, boolean useRounding) {
+	public static BigDecimal[] getEqualRangeBins(DataTable data, int columnIndex, int binCount, boolean useRounding) {
 		int totalRows = data.getRowCount(); // Total rows of data
 
-		// Grab the min and max values from the datatable
-		double minValue = data.getMinDouble(columnIndex);
-		double maxValue = data.getMaxDouble(columnIndex);
+		// TODO: check that this is implemented and then uncomment. Currently unsupported operation exception. I think this is just out of date with the latest jar
+		// Grab the min and max values from the DataTable
+//		double minValue = data.getMinDouble(columnIndex);
+//		double maxValue = data.getMaxDouble(columnIndex);
+		double minValue = 0;
+		double maxValue = 0;
+		{
+			float[] sortedValues = TemporaryHelper.extractSortedValues(data, columnIndex);
+			minValue = sortedValues[0];
+			maxValue = sortedValues[sortedValues.length - 1];
+		}
+		// Calculate the width of a single bin
+		double binWidth = (maxValue - minValue) / (double)(binCount);
 
-		// Size of the range of values that will be defined by each bin
-		double binRangeSize = (maxValue - minValue) / (double)(binCount);
-
+		// We track the bins via their dividing values (imagine each bin being surrounded by two bin posts), thus
+		// there is one more post than bins.  The first value is the minimum bin value
+		BigDecimal[] binPosts = new BigDecimal[binCount + 1];
+		BigDecimal bdBinWidth = null;
+		
 		if (useRounding) {
-			double roundedBinRangeSize = round(binRangeSize, binRangeSize, 1.1 * binRangeSize); // round up by at most 10%
-			double totalRangeDiff = roundedBinRangeSize * binCount - (maxValue - minValue); // difference in size of total range.
-			double roundedMinValue = round(minValue, minValue - totalRangeDiff, minValue); // round down by at most diff
+			double maxAllowableRangeExpansion = Math.min(.1, 1/(3*binCount)); // allow to expand by 10% or 1/3 of a bin, whichever is less
+			bdBinWidth = round(binWidth, binWidth, (1 + maxAllowableRangeExpansion) * binWidth); // round up by at most maxAllowableRangeExpansion
+			double totalRangeDiff = bdBinWidth.doubleValue() * binCount - (maxValue - minValue); // expansion in size of total range.
+			BigDecimal binsMinValue = round(minValue, minValue - totalRangeDiff, minValue); // round down by at most diff
+			BigDecimal binsMaxValue = round(maxValue, maxValue, maxValue + totalRangeDiff); // round up by at most diff
+			// TODO determine whether binsMinValue or binsMaxValue is a better
+			// rounding value by comparing the candidates for the first and last
+			// bin posts.
 
-			minValue = roundedMinValue;
-			maxValue = roundedMinValue + roundedBinRangeSize * binCount;
-			binRangeSize = roundedBinRangeSize;
+			binPosts[0] = binsMinValue; // Just using the low candidate
+			
+		} else {
+			// exact, but we still need BigDecimals rounding for display
+			int defaultPrecision = 6; // round to 6 digits by default
+			bdBinWidth = new BigDecimal(binWidth, new MathContext(defaultPrecision, RoundingMode.CEILING));// round up to be used as BigDecimal
+			BigDecimal binsMinValue = new BigDecimal(minValue, new MathContext(defaultPrecision, RoundingMode.FLOOR)); // round down 
+			// Note, there is a slight possibility that the totalRangeDiff is
+			// actually smaller than the difference between the "rounded"
+			// minValues, so that as a consequence, the top of the bin posts
+			// is actually less than the maxValue. But at 6 digit accuracy,
+			// I just don't care.
 		}
 
-		// The bins, where each value is a fence post with values between, thus
-		// there is one more post than bins.  The first value is the minimum,
-		// the last value is the maximum.
-		double[] bins = new double[binCount + 1];
-		bins[0] = minValue;
-		bins[binCount] = maxValue;
-
-		// Assign the breakpoints so that an equal range of values fall into each bin
-		for (int i = 1; i < binCount; i++) {
-			bins[i] = minValue + ((double)i * binRangeSize);
+		// Calculate the breakpoints so that each bin is of equal width
+		for (int i = 1; i <= binCount; i++) {
+			binPosts[i] = binPosts[i-1].add(bdBinWidth);
 		}
 
-		return bins;
+		return binPosts;
 	}
 
 }

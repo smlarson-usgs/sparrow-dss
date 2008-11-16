@@ -19,6 +19,7 @@ import java.io.PrintStream;
 import java.io.Writer;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 public abstract class TemporaryHelper {
 
@@ -257,6 +258,18 @@ public abstract class TemporaryHelper {
 
 	public static DataTableWritable toDataTable(File dataFile) throws SQLException, IOException {
 		return toDataTable(dataFile, null, false);
+	}
+
+	public static float[] extractSortedValues(DataTable data, int columnIndex) {
+		int totalRows = data.getRowCount();
+		float[] values = new float[totalRows];	
+		//Export all values in the specified column to values[] so they can be sorted
+		for (int r=0; r<totalRows; r++) {
+			values[r] = data.getFloat(r, columnIndex);
+		}
+	
+		Arrays.sort(values);
+		return values;
 	}
 
 }

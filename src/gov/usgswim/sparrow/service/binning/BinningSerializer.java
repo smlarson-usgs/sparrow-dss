@@ -2,6 +2,9 @@ package gov.usgswim.sparrow.service.binning;
 
 import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_NAMESPACE;
 import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
+
+import java.math.BigDecimal;
+
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 
@@ -12,7 +15,7 @@ public class BinningSerializer extends BasicXMLStreamReader {
     public static String TARGET_NAMESPACE = "http://www.usgs.gov/sparrow/binning-response/v0_1";
     public static String TARGET_NAMESPACE_LOCATION = "http://www.usgs.gov/sparrow/binning-response/v0_1.xsd";
     private BinningRequest request;
-    private double[] bins;
+    private BigDecimal[] bins;
     protected ParseState state = new ParseState();
 
     protected class ParseState{
@@ -22,7 +25,7 @@ public class BinningSerializer extends BasicXMLStreamReader {
         }
     };
     
-    public BinningSerializer(BinningRequest request, double[] bins) {
+    public BinningSerializer(BinningRequest request, BigDecimal[] bins) {
         super();
         this.request = request;
         this.bins = bins;
@@ -79,7 +82,7 @@ public class BinningSerializer extends BasicXMLStreamReader {
     protected void readValue() {
         if (!state.isDataFinished()) {
             // read the row
-            addNonNullBasicTag("bin", Double.toString(bins[state.r++]));
+            addNonNullBasicTag("bin", bins[state.r++].toString());
             events.add(new BasicTagEvent(SPACE));
         }
     }

@@ -28,6 +28,7 @@ import gov.usgswim.sparrow.util.JDBCConnectable;
 import gov.usgswim.task.ComputableCache;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -472,6 +473,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		return getReachesByCriteria(req, false);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public List<Long> getReachesByCriteria(LogicalSet req, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(REACHES_BY_CRITERIA);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
@@ -479,14 +481,14 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	}
 	
     //Data Binning Cache
-    public double[] getDataBinning(BinningRequest req) {
+    public BigDecimal[] getDataBinning(BinningRequest req) {
         return getDataBinning(req, false);
     }
     
-    public double[] getDataBinning(BinningRequest req, boolean quiet) {
+    public BigDecimal[] getDataBinning(BinningRequest req, boolean quiet) {
         Ehcache c = CacheManager.getInstance().getEhcache(DATA_BINNING);
         Element e  = (quiet)?c.getQuiet(req):c.get(req);
-        return (e != null)?((double[]) e.getObjectValue()):null;
+        return (e != null)?((BigDecimal[]) e.getObjectValue()):null;
     }
 	
     //Aggregate Id Lookup Kludge Cache - temporary

@@ -1,54 +1,60 @@
 package gov.usgswim.sparrow.test.cachefactory;
 
+import java.math.BigDecimal;
+
 import junit.framework.TestCase;
 import static gov.usgswim.sparrow.cachefactory.BinningFactory.round;
 import static gov.usgswim.sparrow.cachefactory.BinningFactory.getEqualCountBins;
 public class BinningFactoryTest extends TestCase {
 
 	public void testRoundToZero() {
-		assertEquals(0, round(.011, -.1, .44), .001);
+		assertEquals("0", round(.011, -.1, .44).toString());
 	}
 
 	public void testRoundToSingleDigit() {
 		//rounding up
-		assertEquals(10, round(8.77, 5.2, 10.1), .001);
-		assertEquals(1.0, round(.877, .52, 1.01), .001);
-		assertEquals(.1, round(.0877, .052, 1.01), .0001);
-		assertEquals(1000, round(870.7, 520, 1010), .001);
+
+		BigDecimal bd = round(8.77, 5.2, 10.1);
+		bd = bd.setScale(0);
+		System.out.println(bd.toString());
+		assertEquals("10", bd.toString());
+		assertEquals("1", round(.877, .52, 1.01).toString());
+		assertEquals("0.1", round(.0877, .052, 1.01).toString());
+		assertEquals("1000", round(870.7, 520, 1010).toString());
 
 		// rounding down
-		assertEquals(10, round(9.47, 5.2, 10.1), .001);
-		assertEquals(1.0, round(.947, .52, 1.01), .001);
-		assertEquals(.10, round(.0947, .052, 1.01), .0001);
-		assertEquals(1000, round(940.7, 520, 1010), .001);
+		assertEquals("10", round(9.47, 5.2, 10.1).toString());
+		assertEquals("1", round(.947, .52, 1.01).toString());
+		assertEquals("0.1", round(.0947, .052, 1.01).toString());
+		assertEquals("1000", round(940.7, 520, 1010).toString());
 	}
 
 	public void testRoundTo1_5Digits() {
 		// rounding up
-		assertEquals(8.5, round(8.67, 8.2, 8.91), .001);
-		assertEquals(.85, round(.867, .82, .891), .001);
-		assertEquals(.085, round(.0867, .082, .0891), .0001);
-		assertEquals(850, round(860.7, 820, 891), .001);
+		assertEquals("8.5", round(8.67, 8.2, 8.91).toString());
+		assertEquals("0.85", round(.867, .82, .891).toString());
+		assertEquals("0.085", round(.0867, .082, .0891).toString());
+		assertEquals("850", round(860.7, 820, 891).toString());
 	}
 
 	public void testRoundTo2Digits() {
 		//rounding up
-		assertEquals(8.8, round(8.77, 8.52, 8.91), .0001);
-		assertEquals(.88, round(.877, .852, .891), .0001);
-		assertEquals(.088, round(.0877, .0852, .0891), .00001);
-		assertEquals(.000088, round(.0000877, .0000852, .0000891), .00000001);
-		assertEquals(880, round(877.77, 852, 891), .0001);
+		assertEquals("8.8", round(8.77, 8.52, 8.91).toString());
+		assertEquals("0.88", round(.877, .852, .891).toString());
+		assertEquals("0.088", round(.0877, .0852, .0891).toString());
+		assertEquals("0.000088", round(.0000877, .0000852, .0000891).toString());
+		assertEquals("880", round(877.77, 852, 891).toString());
 
 		// rounding down
-		assertEquals(9.4, round(9.44, 9.25, 9.49), .0001);
-		assertEquals(.94, round(.944, .925, .949), .0001);
-		assertEquals(.094, round(.0944, .0925, .0949), .00001);
-		assertEquals(.000094, round(.0000944, .0000925, .0000949), .00000001);
-		assertEquals(940, round(940.7, 925, 949), .0001);
+		assertEquals("9.4", round(9.44, 9.25, 9.49).toString());
+		assertEquals("0.94", round(.944, .925, .949).toString());
+		assertEquals("0.094", round(.0944, .0925, .0949).toString());
+		assertEquals("0.000094", round(.0000944, .0000925, .0000949).toString());
+		assertEquals("940", round(940.7, 925, 949).toString());
 	}
 
 	public void testTooNarrowRoundingRange() {
-		assertEquals(8.77, round(8.77, 8.770052, 8.770091), .0001);
+		assertEquals("8.77", round(8.77, 8.770052, 8.770091).toString());
 	}
 
 
@@ -75,81 +81,81 @@ public class BinningFactoryTest extends TestCase {
 	}; // 100 elements
 	
 	public void testGetEqualCountBinsOfOne() {
-		double[] result = getEqualCountBins(sortedData, 1, Boolean.TRUE);
+		BigDecimal[] result = getEqualCountBins(sortedData, 1, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
-		assertEquals(-100d, result[0], .00001);
-		assertEquals(6d, result[lastIndex], .00001);
+		assertEquals("-100", result[0].toString());
+		assertEquals("6", result[lastIndex].toString());
 	}
 	
 	public void testGetEqualCountBinsOfTwo() {
-		double[] result = getEqualCountBins(sortedData, 2, Boolean.TRUE);
+		BigDecimal[] result = getEqualCountBins(sortedData, 2, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
-		assertEquals(-100d, result[0], .00001);
-		assertEquals(.01d, result[1], .00001);
-		assertEquals(6d, result[lastIndex], .00001);
+		assertEquals("-100", result[0].toString());
+		assertEquals("0.01", result[1].toString());
+		assertEquals("6", result[lastIndex].toString());
 	}
 	
 	public void testGetEqualCountBinsOfThree() {
-		double[] result = getEqualCountBins(sortedData, 3, Boolean.TRUE);
+		BigDecimal[] result = getEqualCountBins(sortedData, 3, Boolean.TRUE);
 		
 		int lastIndex = result.length - 1;
-		assertEquals(-100d, result[0], .00001);
-		assertEquals(-.5d, result[1], .00001);
-		assertEquals(1.0d, result[2], .00001);
-		assertEquals(6d, result[lastIndex], .00001);
+		assertEquals("-100", result[0].toString());
+		assertEquals("-0.5", result[1].toString());
+		assertEquals("1", result[2].toString());
+		assertEquals("6", result[lastIndex].toString());
 	}
 
 	public void testGetEqualCountBinsOfFour() {
-		double[] result = getEqualCountBins(sortedData, 4, Boolean.TRUE);
+		BigDecimal[] result = getEqualCountBins(sortedData, 4, Boolean.TRUE);
 		
 		int lastIndex = result.length - 1;
-		assertEquals(-100d, result[0], .00001);
-		assertEquals(-5d, result[1], .00001);
-		assertEquals(.01, result[2], .00001);
-		assertEquals(1.3, result[3], .00001);
-		assertEquals(6d, result[lastIndex], .00001);		
+		assertEquals("-100", result[0].toString());
+		assertEquals("-5", result[1].toString());
+		assertEquals("0.01", result[2].toString());
+		assertEquals("1.3", result[3].toString());
+		assertEquals("6", result[lastIndex].toString());		
 	}
 	
 	public void testGetEqualCountBinsOfFive() {
-		double[] result = getEqualCountBins(sortedData, 5, Boolean.TRUE);
+		BigDecimal[] result = getEqualCountBins(sortedData, 5, Boolean.TRUE);
 		
 		int lastIndex = result.length - 1;
-		assertEquals(-100d, result[0], .00001);
-		assertEquals(-8.75d, result[1], .00001);
-		assertEquals(0, result[2], .00001);
-		assertEquals(.094, result[3], .00001);
-		assertEquals(1.8, result[4], .00001);
-		assertEquals(6d, result[lastIndex], .00001);
+		assertEquals("-100", result[0].toString());
+		assertEquals("-8.75", result[1].toString());
+		assertEquals("0", result[2].toString());
+		assertEquals("0.094", result[3].toString());
+		assertEquals("1.8", result[4].toString());
+		assertEquals("6", result[lastIndex].toString());
 	}
 	
 	public void testGetEqualCountBinsOfSix() {
-		double[] result = getEqualCountBins(sortedData, 6, Boolean.TRUE);
+		BigDecimal[] result = getEqualCountBins(sortedData, 6, Boolean.TRUE);
 		
 		int lastIndex = result.length - 1;
-		assertEquals(-100d, result[0], .00001);
-		assertEquals(-17d, result[1], .00001);
-		assertEquals(-.5, result[2], .00001);
-		assertEquals(.01, result[3], .00001);
-		assertEquals(1.0, result[4], .00001);
-		assertEquals(1.87, result[5], .00001);
-		assertEquals(6d, result[lastIndex], .00001);
+		assertEquals("-100", result[0].toString());
+		assertEquals("-17", result[1].toString());
+		assertEquals("-0.5", result[2].toString());
+		assertEquals("0.01", result[3].toString());
+		assertEquals("1", result[4].toString());
+		assertEquals("1.87", result[5].toString());
+		assertEquals("6", result[lastIndex].toString());
 	}
 	
 	public void testGetEqualCountBinsOfSeven() {
 
-		double[] result = getEqualCountBins(sortedData, 7, Boolean.TRUE);
+		BigDecimal[] result = getEqualCountBins(sortedData, 7, Boolean.TRUE);
 		
 		int lastIndex = result.length - 1;
-		assertEquals(-100d, result[0], .00001);
-		assertEquals(-50d, result[1], .00001);
-		assertEquals(-3, result[2], .00001);
-		assertEquals(.0054, result[3], .00001);
-		assertEquals(.08, result[4], .00001);
-		assertEquals(1.19, result[5], .00001);
-		assertEquals(1.89, result[6], .00001);
-		assertEquals(6d, result[lastIndex], .00001);
+		assertEquals("-100", result[0].toString());
+		assertEquals("-50", result[1].toString());
+		assertEquals("-3", result[2].toString());
+		assertEquals("0.0054", result[3].toString());
+		assertEquals("0.08", result[4].toString());
+		assertEquals("1.19", result[5].toString());
+		assertEquals("1.89", result[6].toString());
+		assertEquals("6", result[lastIndex].toString());
 		
 		for (int i=0; i<result.length; i++) {
 			System.out.println(i + ": " + result[i]);
