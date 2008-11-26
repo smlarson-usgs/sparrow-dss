@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.test;
 
 
 import gov.usgswim.sparrow.test.cachefactory.BinningFactoryTest;
-import gov.usgswim.sparrow.test.misc.BigDecimalTest;
+//import gov.usgswim.sparrow.test.misc.BigDecimalTest;
 import gov.usgswim.sparrow.test.parsers.AllParseTests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -29,7 +29,7 @@ public class _OfflineTest {
 
 		
 		suite.addTestSuite(BinningFactoryTest.class);
-		suite.addTestSuite(BigDecimalTest.class);
+		//suite.addTestSuite(BigDecimalTest.class);
 		//parse tests
 		return suite;
 

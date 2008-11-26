@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="." default="default" name="sparrow-core-impl">
+    <echo message="Running ${ant.version}" />
+
+    <target name="default" description="Build entire project." depends="dist,javadoc" />
+
+    <!-- -->
+    <!-- Initialization section -->
+    <!-- -->
+    <target name="init" description="Initialize build." depends="-pre-init,-do-init,-post-init" />
+    <target name="-pre-init" />
+    <target name="-do-init">
+        <property environment="env" />
+        <property file="${user.name}.properties" />
+        <property file="build.properties" />
+
+        <!-- Setup conditional properties -->
+    </target>
+    <target name="-post-init" />
+
+    <!-- -->
+    <!-- Compile section -->
+    <!-- -->
+    <target name="compile" description="Compile project." depends="init,-pre-compile,-do-compile,-post-compile" />
+    <target name="-pre-compile" />
+    <target name="-do-compile">
+        <mkdir dir="${build.classes.dir}" />
+
+        <copy todir="${build.web.dir}">
+            <fileset dir="${web.dir}" excludes="${build.web.excludes}" />
+        </copy>
+        <copy todir="${build.web.dir}/WEB-INF/lib" flatten="true">
+            <fileset dir="${lib.dir}" includes="${build.lib.includes}" excludes="${build.lib.excludes}" />
+        </copy>
+        <javac srcdir="${src.dir}" destdir="${build.classes.dir}">
+            <classpath path="${javac.classpath}:${j2ee.classpath}" />
+        </javac>
+        <copy todir="${build.classes.dir}">
+            <fileset dir="${src.dir}" excludes="${build.classes.excludes}" />
+        </copy>
+    </target>
+    <target name="-post-compile" />
+
+    <!-- -->
+    <!-- TODO: Need compile-single target? -->
+    <!-- TODO: Need compile-jsps target? -->
+    <!-- -->
+
+    <!-- -->
+    <!-- Distribution build section -->
+    <!-- -->
+    <target name="dist" description="Build distribution." depends="init,compile,-pre-dist,-do-dist,-post-dist" />
+    <target name="-pre-dist" />
+    <target name="-do-dist">
+        <mkdir dir="${dist.dir}" />
+        <jar compress="true" jarfile="${dist.dir}/${war.name}">
+            <fileset dir="${build.web.dir}" />
+        </jar>
+    </target>
+    <target name="-post-dist" />
+
+    <!-- -->
+    <!-- Execution section -->
+    <!-- -->
+    <target name="run" description="Execute project." depends="-pre-run,-do-run" />
+    <target name="-pre-run" />
+    <target name="-do-run" />
+
+    <!-- -->
+    <!-- Test compilation section -->
+    <!-- -->
+    <target name="compile-test" description="Compile unit tests." depends="init,compile,-pre-compile-test,-do-compile-test,-post-compile-test" />
+    <target name="-pre-compile-test" />
+    <target name="-do-compile-test">
+        <mkdir dir="${build.test.classes.dir}" />
+        <javac srcdir="${src.test.dir}" destdir="${build.test.classes.dir}" debug="true">
+            <classpath path="${javac.test.classpath}:${j2ee.classpath}" />
+        </javac>
+    </target>
+    <target name="-post-compile-test" />
+
+    <!-- -->
+    <!-- Test execution section -->
+    <!-- -->
+    <target name="run-test" description="Run unit tests." depends="init,compile,compile-test,-pre-run-test,do-run-unit-test,do-run-func-test,-post-run-test" />
+    <target name="-pre-run-test" />
+    <target name="do-run-unit-test" depends="init,compile,compile-test,-pre-run-test">
+        <mkdir dir="${build.test.results.dir}" />
+        <junit errorProperty="test.failed" failureProperty="test.failed">
+            <classpath path="${run.test.classpath}:${j2ee.classpath}" />
+            <formatter type="xml" />
+            <batchtest todir="${build.test.results.dir}">
+                <fileset dir="${src.test.dir}" />
+            </batchtest>
+        </junit>
+        <fail if="test.failed" message="Tests failed.  See test reports." />
+    </target>
+    <target name="do-run-func-test" depends="init,compile,compile-test,-pre-run-test" />
+    <target name="-post-run-test" />
+
+    <!-- -->
+    <!-- Javadoc build section -->
+    <!-- -->
+    <target name="javadoc" description="Build javadoc files." depends="init,-do-javadoc" />
+    <target name="-do-javadoc">
+        <mkdir dir="${dist.javadoc.dir}" />
+        <javadoc sourcepath="${src.dir}" destdir="${dist.javadoc.dir}" author="false" version="true" failonerror="true" windowtitle="${ant.project.name}">
+            <classpath>
+                <path path="${javac.classpath}:${j2ee.classpath}" />
+            </classpath>
+        </javadoc>
+    </target>
+
+    <!-- -->
+    <!-- Clean section -->
+    <!-- -->
+    <target name="clean" description="Clean build products." depends="init,-pre-clean,-do-clean,-post-clean" />
+    <target name="-pre-clean" />
+    <target name="-do-clean">
+        <delete dir="${build.dir}" />
+        <delete dir="${dist.dir}" />
+    </target>
+    <target name="-post-clean" />
+
+</project>

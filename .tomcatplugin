@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tomcatProjectProperties>
-    <rootDir>/public_html</rootDir>
+    <rootDir>/dist/sparrow_mv.war</rootDir>
     <exportSource>false</exportSource>
     <reloadable>true</reloadable>
     <redirectLogger>false</redirectLogger>
     <updateXml>true</updateXml>
     <warLocation></warLocation>
     <extraInfo></extraInfo>
-    <webPath>/sparrow</webPath>
+    <webPath>sparrow_mv</webPath>
 </tomcatProjectProperties>
