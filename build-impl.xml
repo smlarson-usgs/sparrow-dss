@@ -76,6 +76,9 @@
         <javac srcdir="${src.test.dir}" destdir="${build.test.classes.dir}" debug="true">
             <classpath path="${javac.test.classpath}:${j2ee.classpath}" />
         </javac>
+        <copy todir="${build.test.classes.dir}">
+            <fileset dir="${src.test.dir}" excludes="${build.classes.excludes}" />
+        </copy>
     </target>
     <target name="-post-compile-test" />
 
@@ -86,7 +89,8 @@
     <target name="-pre-run-test" />
     <target name="do-run-unit-test" depends="init,compile,compile-test,-pre-run-test">
         <mkdir dir="${build.test.results.dir}" />
-        <junit errorProperty="test.failed" failureProperty="test.failed">
+        <junit errorProperty="test.failed" failureProperty="test.failed" fork="yes">
+        	<assertions><enable /></assertions>
             <classpath path="${run.test.classpath}:${j2ee.classpath}" />
             <formatter type="xml" />
             <batchtest todir="${build.test.results.dir}">
