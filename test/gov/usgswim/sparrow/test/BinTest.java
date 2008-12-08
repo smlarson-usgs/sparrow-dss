@@ -48,7 +48,8 @@ public class BinTest extends TestCase {
 	 */
 	public void testZeroBins() throws Exception {
 	    try {
-	        BinningRequest req = new BinningRequest(0, 0, BinningRequest.BIN_TYPE.EQUAL_COUNT);
+	        @SuppressWarnings("unused")
+            BinningRequest req = new BinningRequest(0, 0, BinningRequest.BIN_TYPE.EQUAL_COUNT);
 	        fail("Requesting 0 bins did not throw an exception.");
 	    } catch (IllegalArgumentException iae) {
 	    }
