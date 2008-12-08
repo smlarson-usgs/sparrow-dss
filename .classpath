@@ -13,7 +13,7 @@
 	<classpathentry kind="lib" path="java_lib/oracle/mapviewer_client/sdovis.jar"/>
 	<classpathentry kind="lib" path="java_lib/usgs/datatable/usgs_core/usgs-datatable.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre1.5.0_16"/>
-	<classpathentry kind="lib" path="java_lib/codehaus/woodstox/usgs_dep/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="java_lib/codehaus/woodstox/usgs_core/wstx-lgpl-3.2.4.jar"/>
+	<classpathentry kind="lib" path="java_lib/codehaus/woodstox/usgs_dep/stax-api-1.0.1.jar"/>
 	<classpathentry kind="output" path="build/web/WEB-INF/classes"/>
 </classpath>
