@@ -92,28 +92,28 @@
     <!-- -->
     <!-- Test execution section -->
     <!-- -->
-    <target name="run-test" description="Run unit tests." depends="init,compile,compile-test,-pre-run-test,do-run-unit-test,do-run-integ-test,-post-run-test" />
+    <target name="run-test" description="Run all tests." depends="init,compile,compile-test,-pre-run-test,run-unit-test,run-integ-test,-post-run-test" />
     <target name="-pre-run-test" />
-    <target name="do-run-unit-test" depends="init,compile,compile-test,-pre-run-test">
+    <target name="run-unit-test" description="Run unit tests." depends="init,compile,compile-test,-pre-run-test">
         <mkdir dir="${build.unit.test.results.dir}" />
-        <junit errorProperty="test.failed" failureProperty="test.failed" fork="yes">
+        <junit errorProperty="test.failed" failureProperty="test.failed" fork="yes" forkmode="once">
         	<assertions><enable /></assertions>
             <classpath path="${run.test.classpath}:${j2ee.classpath}" />
             <formatter type="xml" />
             <batchtest todir="${build.unit.test.results.dir}">
-                <fileset dir="${src.unit.test.dir}" />
+                <fileset dir="${build.unit.test.classes.dir}" includes="**/*Test.class" />
             </batchtest>
         </junit>
         <fail if="test.failed" message="Tests failed.  See test reports." />
     </target>
-    <target name="do-run-integ-test" depends="init,compile,compile-test,-pre-run-test">
+    <target name="run-integ-test" description="Run integration tests." depends="init,compile,compile-test,-pre-run-test">
         <mkdir dir="${build.integ.test.results.dir}" />
-        <junit errorProperty="test.failed" failureProperty="test.failed" fork="yes">
+        <junit errorProperty="test.failed" failureProperty="test.failed" fork="yes" forkmode="once">
             <assertions><enable /></assertions>
             <classpath path="${run.test.classpath}:${j2ee.classpath}" />
             <formatter type="xml" />
             <batchtest todir="${build.integ.test.results.dir}">
-                <fileset dir="${src.integ.test.dir}" />
+                <fileset dir="${build.integ.test.classes.dir}" includes="**/*Test.class" />
             </batchtest>
         </junit>
         <fail if="test.failed" message="Tests failed.  See test reports." />

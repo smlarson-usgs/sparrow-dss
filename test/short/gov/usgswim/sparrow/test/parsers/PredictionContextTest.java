@@ -8,8 +8,6 @@ import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 import gov.usgswim.sparrow.test.TestHelper;
-import gov.usgswim.sparrow.test.integration.IDServiceTest;
-import gov.usgswim.sparrow.test.integration.LogicalAdjustmentTest;
 
 import java.io.InputStream;
 import java.io.StringReader;
@@ -74,7 +72,7 @@ public class PredictionContextTest extends TestCase {
 		if (isFound) {
 			return Integer.valueOf(m.group(1));
 		} else {
-			System.err.println("Unable to extract context-id from prediction context response for test " + LogicalAdjustmentTest.class.getSimpleName());
+			System.err.println("Unable to extract context-id from prediction context response for test " + PredictionContextTest.class.getSimpleName());
 			return 0;
 		}
 		
@@ -243,7 +241,7 @@ public class PredictionContextTest extends TestCase {
 		return pipe.parse(xml);
 	}
 	public static PredictContextRequest buildPredictContext2() throws Exception {
-		InputStream is = IDServiceTest.class.getResourceAsStream(PredictionContextTest.PRED_CONTEXT_2);
+		InputStream is = PredictionContextTest.class.getResourceAsStream(PredictionContextTest.PRED_CONTEXT_2);
 		String xml = readToString(is);
 		
 		PredictContextPipeline pipe = new PredictContextPipeline();
