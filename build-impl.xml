@@ -72,12 +72,19 @@
     <target name="compile-test" description="Compile unit tests." depends="init,compile,-pre-compile-test,-do-compile-test,-post-compile-test" />
     <target name="-pre-compile-test" />
     <target name="-do-compile-test">
-        <mkdir dir="${build.test.classes.dir}" />
-        <javac srcdir="${src.test.dir}" destdir="${build.test.classes.dir}" debug="true">
+        <mkdir dir="${build.unit.test.classes.dir}" />
+        <mkdir dir="${build.integ.test.classes.dir}" />
+        <javac srcdir="${src.unit.test.dir}/" destdir="${build.unit.test.classes.dir}" debug="true">
             <classpath path="${javac.test.classpath}:${j2ee.classpath}" />
         </javac>
-        <copy todir="${build.test.classes.dir}">
-            <fileset dir="${src.test.dir}" excludes="${build.classes.excludes}" />
+        <javac srcdir="${src.integ.test.dir}/" destdir="${build.integ.test.classes.dir}" debug="true">
+            <classpath path="${javac.test.classpath}:${j2ee.classpath}" />
+        </javac>
+        <copy todir="${build.unit.test.classes.dir}">
+            <fileset dir="${src.unit.test.dir}" excludes="${build.classes.excludes}" />
+        </copy>
+        <copy todir="${build.integ.test.classes.dir}">
+            <fileset dir="${src.integ.test.dir}" excludes="${build.classes.excludes}" />
         </copy>
     </target>
     <target name="-post-compile-test" />
@@ -85,21 +92,32 @@
     <!-- -->
     <!-- Test execution section -->
     <!-- -->
-    <target name="run-test" description="Run unit tests." depends="init,compile,compile-test,-pre-run-test,do-run-unit-test,do-run-func-test,-post-run-test" />
+    <target name="run-test" description="Run unit tests." depends="init,compile,compile-test,-pre-run-test,do-run-unit-test,do-run-integ-test,-post-run-test" />
     <target name="-pre-run-test" />
     <target name="do-run-unit-test" depends="init,compile,compile-test,-pre-run-test">
-        <mkdir dir="${build.test.results.dir}" />
+        <mkdir dir="${build.unit.test.results.dir}" />
         <junit errorProperty="test.failed" failureProperty="test.failed" fork="yes">
         	<assertions><enable /></assertions>
             <classpath path="${run.test.classpath}:${j2ee.classpath}" />
             <formatter type="xml" />
-            <batchtest todir="${build.test.results.dir}">
-                <fileset dir="${src.test.dir}" />
+            <batchtest todir="${build.unit.test.results.dir}">
+                <fileset dir="${src.unit.test.dir}" />
             </batchtest>
         </junit>
         <fail if="test.failed" message="Tests failed.  See test reports." />
     </target>
-    <target name="do-run-func-test" depends="init,compile,compile-test,-pre-run-test" />
+    <target name="do-run-integ-test" depends="init,compile,compile-test,-pre-run-test">
+        <mkdir dir="${build.integ.test.results.dir}" />
+        <junit errorProperty="test.failed" failureProperty="test.failed" fork="yes">
+            <assertions><enable /></assertions>
+            <classpath path="${run.test.classpath}:${j2ee.classpath}" />
+            <formatter type="xml" />
+            <batchtest todir="${build.integ.test.results.dir}">
+                <fileset dir="${src.integ.test.dir}" />
+            </batchtest>
+        </junit>
+        <fail if="test.failed" message="Tests failed.  See test reports." />
+    </target>
     <target name="-post-run-test" />
 
     <!-- -->
