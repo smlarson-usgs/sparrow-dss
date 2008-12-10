@@ -1,5 +1,9 @@
 package gov.usgswim.sparrow.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.cachefactory.BinningRequest;
@@ -13,10 +17,12 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-import junit.framework.TestCase;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-public class BinTest extends TestCase {
-	LifecycleListener lifecycle = new LifecycleListener();
+public class BinTest {
+	public static LifecycleListener lifecycle = new LifecycleListener();
 	
 	/** Acceptable error in the number of values in each bin. */
 	public static final int EQUAL_COUNT_TOLERANCE = 3;
@@ -24,29 +30,18 @@ public class BinTest extends TestCase {
 	/** Acceptable error in the range of values in each bin. */
 	public static final double EQUAL_RANGE_TOLERANCE = 0.0001;
 	
-	/** Whether or not setup has been run for this instance. */
-	private boolean setUpRun = false;
-	
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		
-		if (!setUpRun) {
-		    lifecycle.contextInitialized(null, true);
-		    setUpRun = true;
-		}
+	@BeforeClass public static void setUpOnce() {
+	    lifecycle.contextInitialized(null, true);
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@AfterClass public static void tearDownOnce() {
 		lifecycle.contextDestroyed(null, true);
 	}
 	
 	/**
      * Ensure that specifying zero bins will throw an exception.
 	 */
-	public void testZeroBins() throws Exception {
+	@Test public void testZeroBins() throws Exception {
 	    try {
 	        @SuppressWarnings("unused")
             BinningRequest req = new BinningRequest(0, 0, BinningRequest.BIN_TYPE.EQUAL_COUNT);
@@ -59,7 +54,7 @@ public class BinTest extends TestCase {
      * Validate that specifying one bin returns bin values that encompass the
      * entire range of data points.
      */
-    public void testEqualCountOneBin() throws Exception {
+	@Test public void testEqualCountOneBin() throws Exception {
         // Pull prediction data from an empty context
         Integer contextId = buildPredictContextEmpty();
         float[] values = getPredictContextDataValues(contextId);
@@ -83,7 +78,7 @@ public class BinTest extends TestCase {
      * Validate that specifying one bin returns bin values that encompass the
      * entire range of data points.
      */
-    public void testEqualRangeOneBin() throws Exception {
+	@Test public void testEqualRangeOneBin() throws Exception {
         // Pull prediction data from an empty context
         Integer contextId = buildPredictContextEmpty();
         float[] values = getPredictContextDataValues(contextId);
@@ -106,7 +101,7 @@ public class BinTest extends TestCase {
      * Validate that the first and last values specified by the bin boundaries
      * are equivalent to the first and last values in the prediction data.
      */
-    public void testEqualCountMinMax() throws Exception {
+	@Test public void testEqualCountMinMax() throws Exception {
         // Pull prediction data from an empty context
         Integer contextId = buildPredictContextEmpty();
         float[] values = getPredictContextDataValues(contextId);
@@ -128,7 +123,7 @@ public class BinTest extends TestCase {
      * Validate that the first and last values specified by the bin boundaries
      * are equivalent to the first and last values in the prediction data.
      */
-	public void testEqualRangeMinMax() throws Exception {
+	@Test public void testEqualRangeMinMax() throws Exception {
         // Pull prediction data from an empty context
         Integer contextId = buildPredictContextEmpty();
         float[] values = getPredictContextDataValues(contextId);
@@ -149,7 +144,7 @@ public class BinTest extends TestCase {
 	/**
 	 * Ensure that the bin boundary values are sorted in ascending order.
 	 */
-	public void testEqualCountSequence() throws Exception {
+	@Test public void testEqualCountSequence() throws Exception {
         // Setup a random number of bins picked from [2, 100)
 	    // Note that sequencing for one bin was verified in {@code testEqualCountOneBin}
         int binCount = ((int)(Math.random() * 98.0d)) + 2;
@@ -170,7 +165,7 @@ public class BinTest extends TestCase {
     /**
      * Ensure that the bin boundary values are sorted in ascending order.
      */
-	public void testEqualRangeSequence() throws Exception {
+	@Test public void testEqualRangeSequence() throws Exception {
         // Setup a random number of bins picked from [2, 100)
         // Note that sequencing for one bin was verified in {@code testEqualRangeOneBin}
         int binCount = ((int)(Math.random() * 98.0d)) + 2;
@@ -192,7 +187,7 @@ public class BinTest extends TestCase {
 	 * Test equivalence of two {@code BinningRequest}s with identical
 	 * constructor arguments.
 	 */
-	public void testEquals() throws Exception {
+	@Test public void testEquals() throws Exception {
         BinningRequest req = new BinningRequest(0, 1, BinningRequest.BIN_TYPE.EQUAL_COUNT);
         BinningRequest req2 = new BinningRequest(0, 1, BinningRequest.BIN_TYPE.EQUAL_COUNT);
         
@@ -203,7 +198,7 @@ public class BinTest extends TestCase {
 	 * Test non-equivalence of two {@code BinningRequest}s with differing
 	 * constructor arguments.
 	 */
-	public void testNotEquals() throws Exception {
+	@Test public void testNotEquals() throws Exception {
         BinningRequest req = new BinningRequest(0, 1, BinningRequest.BIN_TYPE.EQUAL_COUNT);
         BinningRequest req2 = new BinningRequest(1, 1, BinningRequest.BIN_TYPE.EQUAL_COUNT);
         assertFalse(req.equals(req2));
@@ -221,7 +216,7 @@ public class BinTest extends TestCase {
 	 * Test to determine whether the bins created by the equal count mechanism
 	 * define bins with an approximately equal number of values.
 	 */
-	public void testEqualCountBinSize() throws Exception {
+	@Test public void testEqualCountBinSize() throws Exception {
 	    // Pull prediction data from an empty context
 		Integer contextId = buildPredictContextEmpty();
 		float[] values = getPredictContextDataValues(contextId);
@@ -282,7 +277,7 @@ public class BinTest extends TestCase {
 	 * Test to determine whether the bins created by the equal range mechanism
 	 * define bins of an approximately equal range of values.
 	 */
-    public void testEqualRangeBinRange() throws Exception {
+	@Test public void testEqualRangeBinRange() throws Exception {
         // Setup a random number of bins picked from [2, 100)
         int binCount = ((int)(Math.random() * 98.0d)) + 2;
 

@@ -7,9 +7,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import junit.framework.TestCase;
 
+import org.junit.Ignore;
 import org.xml.sax.SAXException;
 
-
+@Ignore
 public class PredictSerializerTest extends TestCase {
 	private Connection conn;
 

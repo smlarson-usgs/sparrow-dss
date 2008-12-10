@@ -125,8 +125,8 @@ public abstract class TemporaryHelper {
 		printDataTable(dt, caption, writer);
 	}
 
-	public static void printDataTable(DataTable dt, String caption,
-			Writer writer) throws IOException {
+	public static void printDataTable(DataTable dt, String caption, Writer writer)
+	throws IOException {
 		if (dt != null) {
 			// print headings
 			String[] headings = DataTableUtils.getHeadings(dt);
@@ -136,7 +136,7 @@ public abstract class TemporaryHelper {
 			}
 			{	// print headings
 				for (String heading: headings) {
-					writer.write(heading);
+					writer.write(heading == null ? "" : heading);
 					writer.write("\t");
 				}
 				writer.write("\n");

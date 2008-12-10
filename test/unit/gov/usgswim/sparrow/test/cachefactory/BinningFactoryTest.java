@@ -54,7 +54,9 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 	public void testTooNarrowRoundingRange() {
-		assertEquals("8.77", round(8.77, 8.770052, 8.770091).toString());
+	    // String.startsWith() used since representation of value is not truncated,
+	    // (i.e., 8.770009000001 is returned as 8.770009000001[2342393758713480])
+		assertTrue(round(8.770009000001, 8.770005000001, 8.770091).toString().startsWith("8.770009000001"));
 	}
 
 

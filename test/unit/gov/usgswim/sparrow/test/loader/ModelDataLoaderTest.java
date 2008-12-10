@@ -1,16 +1,17 @@
 package gov.usgswim.sparrow.test.loader;
 
 import gov.usgswim.sparrow.loader.ModelDataAssumptions;
-import gov.usgswim.sparrow.loader.ModelDataLoadComparison;
 import gov.usgswim.sparrow.loader.ModelDataLoader;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import junit.framework.TestCase;
 
+import org.junit.Ignore;
+
+@Ignore
 public class ModelDataLoaderTest extends TestCase {
 	static File baseDir = new File("C:\\Documents and Settings\\ilinkuo\\Desktop\\Decision_support_files_sediment\\sparrow_ds_sediment");
 	static File verificationDir = new File(baseDir.getAbsolutePath() + "/vOutput" );

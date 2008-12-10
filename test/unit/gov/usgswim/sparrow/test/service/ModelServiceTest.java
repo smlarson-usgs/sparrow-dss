@@ -71,7 +71,7 @@ public class ModelServiceTest extends TestCase {
         // TODO [IK] Temporarily commented out while jaxp issues are to be fixed
         // parse an XML document into a DOM tree
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setFeature("http://xml.org/sax/features/namespaces", true);
+        //dbf.setFeature("http://xml.org/sax/features/namespaces", true);
         DocumentBuilder parser = dbf.newDocumentBuilder();
 
         Document document = parser.parse(new File(path));

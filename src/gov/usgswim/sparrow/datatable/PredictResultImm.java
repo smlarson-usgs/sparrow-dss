@@ -105,24 +105,30 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
         // Lookup table for key=source_id, value=array index of source contribution data
         Map<Long, Integer> srcIdIncMap = new Hashtable<Long, Integer>(13, 2);
         Map<Long, Integer> srcIdTotalMap = new Hashtable<Long, Integer>(13, 2);
-
-        // Get the metadata to be attached to the column definitions
-        DataTable sourceMetadata = predictData.getSrcMetadata();
-        Integer displayNameCol = sourceMetadata.getColumnByName("DISPLAY_NAME");
-        Integer constituentCol = sourceMetadata.getColumnByName("CONSTITUENT");
-        Integer unitsCol = sourceMetadata.getColumnByName("UNITS");
-        Integer precisionCol = sourceMetadata.getColumnByName("PRECISION");
 		
         // ------------------------------------------
         // Define the source columns of the DataTable
         // ------------------------------------------
         for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++) {
 
-            // Pull out the metadata for the source
-            String displayName = sourceMetadata.getString(srcIndex, displayNameCol);
-            String constituent = sourceMetadata.getString(srcIndex, constituentCol);
-            String units = sourceMetadata.getString(srcIndex, unitsCol);
-            Long precision = sourceMetadata.getLong(srcIndex, precisionCol);
+            // Get the metadata to be attached to the column definitions
+            String displayName = null;
+            String constituent = null;
+            String units = null;
+            String precision = null;
+            DataTable sourceMetadata = predictData.getSrcMetadata();
+            if (sourceMetadata != null) {
+                Integer displayNameCol = sourceMetadata.getColumnByName("DISPLAY_NAME");
+                Integer constituentCol = sourceMetadata.getColumnByName("CONSTITUENT");
+                Integer unitsCol = sourceMetadata.getColumnByName("UNITS");
+                Integer precisionCol = sourceMetadata.getColumnByName("PRECISION");
+    
+                // Pull out the metadata for the source
+                displayName = sourceMetadata.getString(srcIndex, displayNameCol);
+                constituent = sourceMetadata.getString(srcIndex, constituentCol);
+                units = sourceMetadata.getString(srcIndex, unitsCol);
+                precision = sourceMetadata.getLong(srcIndex, precisionCol).toString();
+            }
 
             //
             int srcIncAddIndex = srcIndex; // index for iterating through the incremental source contributions
@@ -135,13 +141,13 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
             Map<String, String> incProps = new HashMap<String, String>();
             incProps.put(VALUE_TYPE_PROP, incremental.name());
             incProps.put(CONSTITUENT_PROP, constituent);
-            incProps.put(PRECISION_PROP, Long.toString(precision));
+            incProps.put(PRECISION_PROP, precision);
 
             // Map of metadata values for total column
             Map<String, String> totProps = new HashMap<String, String>();
             totProps.put(VALUE_TYPE_PROP, total.name());
             totProps.put(CONSTITUENT_PROP, constituent);
-            totProps.put(PRECISION_PROP, Long.toString(precision));
+            totProps.put(PRECISION_PROP, precision);
 
             columns[srcIncAddIndex] = new ImmutableDoubleColumn(data, srcIncAddIndex, displayName + " Inc. Addition", units, "description", incProps);
             columns[srcTotalIndex] = new ImmutableDoubleColumn(data, srcTotalIndex, displayName + " Total (w/ upstream, decayed)", units, "description", totProps);

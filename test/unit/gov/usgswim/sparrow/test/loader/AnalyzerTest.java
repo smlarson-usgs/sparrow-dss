@@ -8,6 +8,9 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
+import org.junit.Ignore;
+
+@Ignore
 public class AnalyzerTest extends TestCase {
 
 //	public void testAnalyze() throws IOException {

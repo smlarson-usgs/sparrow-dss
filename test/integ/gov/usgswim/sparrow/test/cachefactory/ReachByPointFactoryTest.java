@@ -1,21 +1,35 @@
 package gov.usgswim.sparrow.test.cachefactory;
 
+import static org.junit.Assert.*;
+import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.cachefactory.ReachByPointFactory;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
+import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 
-import java.awt.geom.Point2D.Double;
+import java.awt.Point;
 
 import javax.xml.stream.XMLInputFactory;
 
-import junit.framework.TestCase;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-public class ReachByPointFactoryTest extends TestCase {
-	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
+public class ReachByPointFactoryTest {
+    public static LifecycleListener lifecycle = new LifecycleListener();
+
+    protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	
-	public void testCreateEntry() throws Exception {
+    @BeforeClass public static void setUpOnce() {
+        lifecycle.contextInitialized(null, true);
+    }
+
+    @AfterClass public static void tearDownOnce() {
+        lifecycle.contextDestroyed(null, true);
+    }
+    
+	@Test public void testCreateEntry() throws Exception {
 		ReachByPointFactory factory = new ReachByPointFactory();
-		IDByPointRequest req = new IDByPointRequest(22L, new Double(-90, 45));
+		ModelPoint req = new ModelPoint(22L, new Point.Double(-90, 45));
 
 		ReachInfo reach = (ReachInfo) factory.createEntry(req);
 		
@@ -26,7 +40,7 @@ public class ReachByPointFactoryTest extends TestCase {
 		
 	}
 
-	public void testGetTextString() throws Exception {
+	@Test public void testGetTextString() throws Exception {
 		ReachByPointFactory factory = new ReachByPointFactory();
 		
 		assertTrue(factory.getText("FindReach").startsWith("SELECT * FROM ("));

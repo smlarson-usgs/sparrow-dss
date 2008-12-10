@@ -4,6 +4,9 @@ import javax.xml.stream.XMLInputFactory;
 
 import junit.framework.TestCase;
 
+import org.junit.Ignore;
+
+@Ignore
 public class AreaOfInterestTest extends TestCase {
     
     /** Valid xml string represention of the area of interest section. */

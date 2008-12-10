@@ -6,16 +6,12 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import junit.swingui.TestRunner;
+import org.junit.Ignore;
 
+@Ignore
 public class DataLoaderOfflineTest extends TestCase {
 	public DataLoaderOfflineTest(String sTestName) {
 		super(sTestName);
-	}
-
-	public static void main(String args[]) {
-		String args2[] = {"-noloading", "gov.usgswim.sparrow.test.DataLoaderOfflineTest"};
-		TestRunner.main(args2);
 	}
 
 	/**

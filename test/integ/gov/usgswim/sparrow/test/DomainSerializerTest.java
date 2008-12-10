@@ -6,6 +6,9 @@ import java.sql.DriverManager;
 import junit.framework.TestCase;
 import oracle.jdbc.OracleDriver;
 
+import org.junit.Ignore;
+
+@Ignore
 public class DomainSerializerTest extends TestCase {
 	private Connection conn;
 	

@@ -1,4 +1,5 @@
 package gov.usgswim.sparrow.test;
+
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.ColumnMappedTable;
 import gov.usgswim.datatable.adjustment.FilteredDataTable;
@@ -16,7 +17,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.List;
 
-import junit.swingui.TestRunner;
 import oracle.jdbc.OracleDriver;
 
 public class DataLoaderTest extends DataLoaderOfflineTest {
@@ -26,11 +26,6 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 
 	public DataLoaderTest(String sTestName) {
 		super(sTestName);
-	}
-
-	public static void main(String args[]) {
-		String args2[] = {"-noloading", "gov.usgswim.sparrow.test.DataLoaderTest"};
-		TestRunner.main(args2);
 	}
 
 	@Override
@@ -132,31 +127,31 @@ public class DataLoaderTest extends DataLoaderOfflineTest {
 
 		Model m = models.get(0);
 		Source s1 = m.getSource(1);	//get by identifier
-		Source s2 = m.getSource(11);	//get by identifier
+		Source s2 = m.getSource(5);	//get by identifier
 
 		//test that we get the first and last sources
 		assertEquals(s1, m.getSources().get(0));	//get via list index
-		assertEquals(s2, m.getSources().get(10));	//get via list index
+		assertEquals(s2, m.getSources().get(4));	//get via list index
 
 
 		//model
-		assertEquals(1, m.getId().intValue());
-		assertEquals("Chesapeake bay", m.getName());
-		assertEquals(11, m.getSources().size());
+		assertEquals(22, m.getId().intValue());
+		assertEquals("National Total Nitrogen Model - 1987", m.getName());
+		assertEquals(5, m.getSources().size());
 
 		//1st source
 		assertEquals(1, s1.getId().intValue());
-		assertEquals("pttn", s1.getName());
+		assertEquals("POINT", s1.getName());
 		assertEquals(1, s1.getSortOrder());
-		assertEquals(1, s1.getModelId().intValue());
+		assertEquals(22, s1.getModelId().intValue());
 		assertEquals(1, s1.getIdentifier());
 
 		//last source
-		assertEquals(11, s2.getId().intValue());
-		assertEquals("frst", s2.getName());
-		assertEquals(11, s2.getSortOrder());
-		assertEquals(1, s2.getModelId().intValue());
-		assertEquals(11, s2.getIdentifier());
+		assertEquals(5, s2.getId().intValue());
+		assertEquals("NONAGR", s2.getName());
+		assertEquals(5, s2.getSortOrder());
+		assertEquals(22, s2.getModelId().intValue());
+		assertEquals(5, s2.getIdentifier());
 
 	}
 

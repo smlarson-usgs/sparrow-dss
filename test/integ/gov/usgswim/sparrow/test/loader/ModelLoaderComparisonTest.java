@@ -1,7 +1,9 @@
 package gov.usgswim.sparrow.test.loader;
 
+import static gov.usgswim.sparrow.loader.ModelDataLoadComparison.outputCoefAsTextFiles;
+import static gov.usgswim.sparrow.loader.ModelDataLoadComparison.outputSourceValuesAsTextFile;
+import static gov.usgswim.sparrow.loader.ModelDataLoadComparison.outputTopoAsTextFile;
 import gov.usgswim.sparrow.loader.ModelDataAssumptions;
-import gov.usgswim.sparrow.loader.ModelDataLoadComparison;
 import gov.usgswim.sparrow.loader.ModelDataLoader;
 
 import java.io.File;
@@ -9,10 +11,11 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static gov.usgswim.sparrow.loader.ModelDataLoadComparison.*;
-
 import junit.framework.TestCase;
 
+import org.junit.Ignore;
+
+@Ignore
 public class ModelLoaderComparisonTest extends TestCase {
 	
 	public void testOutputModelAsTextFiles() throws SQLException, IOException {
