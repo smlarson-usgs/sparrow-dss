@@ -37,6 +37,7 @@
         </javac>
         <copy todir="${build.classes.dir}">
             <fileset dir="${src.dir}" excludes="${build.classes.excludes}" />
+        	<fileset dir="${resources.dir}" />
         </copy>
     </target>
     <target name="-post-compile" />
