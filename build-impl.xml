@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project basedir="." default="default" name="sparrow-core-impl">
+<project basedir="." default="build-all" name="sparrow-core-impl">
     <echo message="Running ${ant.version}" />
 
-    <target name="default" description="Build entire project." depends="dist,javadoc" />
+    <target name="build-all" description="Build entire project." depends="dist,javadoc" />
 
     <!-- -->
     <!-- Initialization section -->

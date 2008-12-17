@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="sparrow_core" default="default" basedir=".">
+<project name="sparrow_core" default="build-all" basedir=".">
     <description>Builds, tests, and runs the ${ant.project.name} project.</description>
     <import file="build-impl.xml" />
 	
