@@ -120,6 +120,25 @@
         <fail if="test.failed" message="Tests failed.  See test reports." />
     </target>
     <target name="-post-run-test" />
+    
+    <!-- -->
+    <!-- Metrics section -->
+    <!-- -->
+    <target name="run-metrics" description="Runs code analysis and metrics." depends="init">
+        <mkdir dir="${metrics.dir}" />
+        <path id="pmd.classpath">
+            <fileset dir="${lib.dir}">
+                <include name="**/*.jar" />
+            </fileset>
+        </path>
+        <taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpathref="pmd.classpath" />
+        <pmd rulesetfiles="unusedcode,basic">
+            <formatter type="xml" toFile="${metrics.dir}/pmd_report.xml" />
+            <fileset dir="${src.dir}">
+                <include name="**/*.java" />
+            </fileset>
+        </pmd>
+    </target>
 
     <!-- -->
     <!-- Javadoc build section -->
