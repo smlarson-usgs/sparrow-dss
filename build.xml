@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="sparrow_core" default="build-all" basedir=".">
     <description>Builds, tests, and runs the ${ant.project.name} project.</description>
-    <import file="build-impl.xml" />
+	<property name="support.ant" value="ant-support"/>
+    <import file="ant-support/build-impl.xml" />
 	
 	<target name="-post-dist">
         <copy todir="${dist.dir}">
@@ -18,9 +19,11 @@
 			<globmapper from="*" to="*.tmp" />
 		</unwar>
 
-		<xslt in="${dist.dir}/WEB-INF/conf/mapViewerConfig.xml.tmp" out="${dist.dir}/WEB-INF/conf/mapViewerConfig.xml" style="ns-datasource-merge.xsl" />
-		<xslt in="${dist.dir}/WEB-INF/web.xml.tmp" out="${dist.dir}/WEB-INF/web.xml" style="web-xml-merge.xsl">
-			<param name="includeFile" expression="${build.web.dir}/WEB-INF/web.xml" />
+		<xslt in="${dist.dir}/WEB-INF/conf/mapViewerConfig.xml.tmp" out="${dist.dir}/WEB-INF/conf/mapViewerConfig.xml" style="${support.ant}/ns-datasource-merge.xsl" />
+		<echo message="mapViewerConfig.xml merged"/>
+		<!-- TODO add a step to merge connection info from server.xml of local TOMCAT_HOME install -->
+		<xslt in="${dist.dir}/WEB-INF/web.xml.tmp" out="${dist.dir}/WEB-INF/web.xml" style="${support.ant}/web-xml-merge.xsl">
+			<param name="includeFile" expression="../${build.web.dir}/WEB-INF/web.xml" />
 		</xslt>
 		
 		<war destfile="${dist.dir}/sparrow_mv.war" update="true">
