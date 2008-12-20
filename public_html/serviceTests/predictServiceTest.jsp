@@ -7,8 +7,8 @@
     <title>Request Test</title>
   </head>
   <body>
-		
-		<form action="sp_predict/formpost" method="post" enctype="application/x-www-form-urlencoded">
+		<strong>Note these don't work because a prediction context is not defined?</strong>
+		<form action="../sp_predict/formpost" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Prediction Request 1">
 				<label for="xml_input_1">Prediction Request 1</label>
 				<p>
@@ -17,8 +17,8 @@
 				<textarea id="xml_input_1" name="xmlreq" cols="120" rows="20">
 &lt;?xml version="1.0" encoding="ISO-8859-1" ?>
 &lt;sparrow-prediction-request
-  xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	
 	&lt;predict model-id="22">
 		&lt;change-from-nominal type="perc_change">
@@ -32,6 +32,8 @@
 	&lt;/predict>
 &lt;/sparrow-prediction-request>
 				</textarea>
+				
+				<br/>
 				<input type="submit" name="submit" value="submit"/>
 				<input type="checkbox" name="mimetype" value="csv">csv
 				<input type="checkbox" name="mimetype" value="tab">tab
@@ -41,7 +43,7 @@
 			</fieldset>
 		</form>
 		
-		<form action="sp_predict/formpost" method="post" enctype="application/x-www-form-urlencoded">
+		<form action="../sp_predict/formpost" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Prediction Request 2">
 				<label for="xml_input_2">Prediction Request 2</label>
 				<p>
@@ -50,8 +52,8 @@
 				<textarea id="xml_input_2" name="xmlreq" cols="120" rows="20">
 &lt;?xml version="1.0" encoding="ISO-8859-1" ?>
 &lt;sparrow-prediction-request
-  xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	
 	&lt;predict model-id="22">
 		&lt;change-from-nominal type="perc_change">
@@ -65,6 +67,8 @@
 	&lt;/predict>
 &lt;/sparrow-prediction-request>
 				</textarea>
+				
+				<br/>
 				<input type="submit" name="submit" value="submit"/>
 				<input type="checkbox" name="mimetype" value="csv">csv
 				<input type="checkbox" name="mimetype" value="tab">tab
@@ -74,7 +78,7 @@
 			</fieldset>
 		</form>
 		
-		<form action="sp_predict/formpost" method="post" enctype="application/x-www-form-urlencoded">
+		<form action="../sp_predict/formpost" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Prediction Request 3">
 				<label for="xml_input_3">Prediction Request 3</label>
 				<p>
@@ -83,8 +87,8 @@
 				<textarea id="xml_input_3" name="xmlreq" cols="120" rows="20">
 &lt;?xml version="1.0" encoding="ISO-8859-1" ?>
 &lt;sparrow-prediction-request
-  xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	
 	&lt;predict model-id="22">
 		&lt;change-from-nominal type="perc_change">
@@ -98,6 +102,8 @@
 	&lt;/predict>
 &lt;/sparrow-prediction-request>
 				</textarea>
+				
+				<br/>
 				<input type="submit" name="submit" value="submit"/>
 				<input type="checkbox" name="mimetype" value="csv">csv
 				<input type="checkbox" name="mimetype" value="tab">tab
@@ -108,7 +114,7 @@
 		</form>
 	
 	
-			<form action="sp_predict" method="post" enctype="application/x-www-form-urlencoded">
+			<form action="../sp_predict" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Prediction Request 3 - old style">
 				<label for="xml_input_3">Prediction Request 3</label>
 				<p>
@@ -117,8 +123,8 @@
 				<textarea id="xml_input_3" name="xmlreq" cols="120" rows="20">
 &lt;?xml version="1.0" encoding="ISO-8859-1" ?>
 &lt;sparrow-prediction-request
-  xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	
 	&lt;predict model-id="22">
 		&lt;change-from-nominal type="perc_change">
@@ -132,6 +138,8 @@
 	&lt;/predict>
 &lt;/sparrow-prediction-request>
 				</textarea>
+				
+				<br/>
 				<input type="submit" name="submit" value="submit"/>
 			</fieldset>
 		</form>

@@ -236,7 +236,8 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @return null if no fraction within range
 	 */
 	public static BigDecimal findClosestInRange(double value, double lo, double hi, int exponent, BigDecimal sigfigs) {
-		assert(lo <= value && value <= hi);
+		assert(lo <= value);
+		assert(value <= hi);
 		double normalizer = sigfigs.doubleValue() / (Math.pow(10, exponent));
 		value = value * normalizer;
 		// expect Math.abs(value) >= 0, but is ok if it isn't

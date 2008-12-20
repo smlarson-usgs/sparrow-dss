@@ -23,7 +23,8 @@ public class Analyzer {
 	public static int NUMBER_OF_LINES_TO_ANALYZE = 20;
 	
 	public static List<DataFileDescriptor> analyzeDirectory(File dir) throws IOException {
-		assert(dir.exists());
+		assert(dir != null): "please pass a directory";
+		assert(dir.exists()) : "the directory " + dir.getPath() + " does not exist";
 		assert(dir.isDirectory());
 		List<DataFileDescriptor> result = new ArrayList<DataFileDescriptor>();
 		for (File file: dir.listFiles()) {

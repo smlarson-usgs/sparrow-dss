@@ -5,6 +5,9 @@ import java.math.BigDecimal;
 import junit.framework.TestCase;
 import static gov.usgswim.sparrow.cachefactory.BinningFactory.round;
 import static gov.usgswim.sparrow.cachefactory.BinningFactory.getEqualCountBins;
+import static gov.usgswim.sparrow.cachefactory.BinningFactory.digitAccuracyMultipliers;
+import static gov.usgswim.sparrow.cachefactory.BinningFactory.makeBigDecimal;
+
 public class BinningFactoryTest extends TestCase {
 
 	public void testRoundToZero() {
@@ -16,7 +19,6 @@ public class BinningFactoryTest extends TestCase {
 
 		BigDecimal bd = round(8.77, 5.2, 10.1);
 		bd = bd.setScale(0);
-		System.out.println(bd.toString());
 		assertEquals("10", bd.toString());
 		assertEquals("1", round(.877, .52, 1.01).toString());
 		assertEquals("0.1", round(.0877, .052, 1.01).toString());
@@ -54,8 +56,8 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 	public void testTooNarrowRoundingRange() {
-	    // String.startsWith() used since representation of value is not truncated,
-	    // (i.e., 8.770009000001 is returned as 8.770009000001[2342393758713480])
+		// String.startsWith() used since representation of value is not truncated,
+		// (i.e., 8.770009000001 is returned as 8.770009000001[2342393758713480])
 		assertTrue(round(8.770009000001, 8.770005000001, 8.770091).toString().startsWith("8.770009000001"));
 	}
 
@@ -81,7 +83,7 @@ public class BinningFactoryTest extends TestCase {
 		1.908f, 1.911f, 1.912f, 1.913f, 1.914f,
 		1.915f, 1.977f, 2.111f, 3.445f, 5.121f
 	}; // 100 elements
-	
+
 	public void testGetEqualCountBinsOfOne() {
 		BigDecimal[] result = getEqualCountBins(sortedData, 1, Boolean.TRUE);
 
@@ -89,7 +91,7 @@ public class BinningFactoryTest extends TestCase {
 		assertEquals("-100", result[0].toString());
 		assertEquals("6", result[lastIndex].toString());
 	}
-	
+
 	public void testGetEqualCountBinsOfTwo() {
 		BigDecimal[] result = getEqualCountBins(sortedData, 2, Boolean.TRUE);
 
@@ -98,10 +100,10 @@ public class BinningFactoryTest extends TestCase {
 		assertEquals("0.01", result[1].toString());
 		assertEquals("6", result[lastIndex].toString());
 	}
-	
+
 	public void testGetEqualCountBinsOfThree() {
 		BigDecimal[] result = getEqualCountBins(sortedData, 3, Boolean.TRUE);
-		
+
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
 		assertEquals("-0.5", result[1].toString());
@@ -111,7 +113,7 @@ public class BinningFactoryTest extends TestCase {
 
 	public void testGetEqualCountBinsOfFour() {
 		BigDecimal[] result = getEqualCountBins(sortedData, 4, Boolean.TRUE);
-		
+
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
 		assertEquals("-5", result[1].toString());
@@ -119,10 +121,10 @@ public class BinningFactoryTest extends TestCase {
 		assertEquals("1.3", result[3].toString());
 		assertEquals("6", result[lastIndex].toString());		
 	}
-	
+
 	public void testGetEqualCountBinsOfFive() {
 		BigDecimal[] result = getEqualCountBins(sortedData, 5, Boolean.TRUE);
-		
+
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
 		assertEquals("-8.75", result[1].toString());
@@ -131,10 +133,10 @@ public class BinningFactoryTest extends TestCase {
 		assertEquals("1.8", result[4].toString());
 		assertEquals("6", result[lastIndex].toString());
 	}
-	
+
 	public void testGetEqualCountBinsOfSix() {
 		BigDecimal[] result = getEqualCountBins(sortedData, 6, Boolean.TRUE);
-		
+
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
 		assertEquals("-17", result[1].toString());
@@ -144,11 +146,11 @@ public class BinningFactoryTest extends TestCase {
 		assertEquals("1.87", result[5].toString());
 		assertEquals("6", result[lastIndex].toString());
 	}
-	
+
 	public void testGetEqualCountBinsOfSeven() {
 
 		BigDecimal[] result = getEqualCountBins(sortedData, 7, Boolean.TRUE);
-		
+
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
 		assertEquals("-50", result[1].toString());
@@ -158,10 +160,88 @@ public class BinningFactoryTest extends TestCase {
 		assertEquals("1.19", result[5].toString());
 		assertEquals("1.89", result[6].toString());
 		assertEquals("6", result[lastIndex].toString());
-		
+
+		// uncomment this to see the output
+		//printBinningResult(result);
+
+	}
+
+
+
+	public void testMakeBigDecimalWith0Digit() {
+
+		BigDecimal bd = makeBigDecimal(1, digitAccuracyMultipliers[0], 0);
+		assertEquals("1 scale: 0", bd2String(bd));
+
+		bd = makeBigDecimal(0, digitAccuracyMultipliers[0], 0);
+		assertEquals("0 scale: 0", bd2String(bd));
+		bd = makeBigDecimal(-1, digitAccuracyMultipliers[0], 0);
+		assertEquals("-1 scale: 0", bd2String(bd));
+
+		bd = makeBigDecimal(1, digitAccuracyMultipliers[0], 1);
+		assertEquals("1E+1 scale: -1", bd2String(bd));
+		bd = makeBigDecimal(0, digitAccuracyMultipliers[0], 1);
+		assertEquals("0E+1 scale: -1", bd2String(bd));
+		bd = makeBigDecimal(-1, digitAccuracyMultipliers[0], 1);
+		assertEquals("-1E+1 scale: -1", bd2String(bd));
+
+		bd = makeBigDecimal(1, digitAccuracyMultipliers[0], -1);
+		assertEquals("0.1 scale: 1", bd2String(bd));
+		bd = makeBigDecimal(0, digitAccuracyMultipliers[0], -1);
+		assertEquals("0.0 scale: 1", bd2String(bd));
+		bd = makeBigDecimal(-1, digitAccuracyMultipliers[0], -1);
+		assertEquals("-0.1 scale: 1", bd2String(bd));
+	}
+
+
+	public void testMakeBigDecimalWithHalfDigit() {
+
+		BigDecimal bd = makeBigDecimal(2, digitAccuracyMultipliers[1], 0);
+		assertEquals("1 scale: 0", bd2String(bd));
+		bd = makeBigDecimal(1, digitAccuracyMultipliers[1], 0);
+		assertEquals("0.5 scale: 1", bd2String(bd));
+		bd = makeBigDecimal(0, digitAccuracyMultipliers[1], 0);
+		assertEquals("0 scale: 0", bd2String(bd));
+		bd = makeBigDecimal(-1, digitAccuracyMultipliers[1], 0);
+		assertEquals("-0.5 scale: 1", bd2String(bd));
+		bd = makeBigDecimal(-2, digitAccuracyMultipliers[1], 0);
+		assertEquals("-1 scale: 0", bd2String(bd));
+
+		bd = makeBigDecimal(2, digitAccuracyMultipliers[1], 1);
+		assertEquals("1E+1 scale: -1", bd2String(bd));
+		bd = makeBigDecimal(1, digitAccuracyMultipliers[1], 1);
+		assertEquals("5 scale: 0", bd2String(bd));
+		bd = makeBigDecimal(0, digitAccuracyMultipliers[1], 1);
+		assertEquals("0E+1 scale: -1", bd2String(bd));
+		bd = makeBigDecimal(-1, digitAccuracyMultipliers[1], 1);
+		assertEquals("-5 scale: 0", bd2String(bd));
+		bd = makeBigDecimal(-2, digitAccuracyMultipliers[1], 1);
+		assertEquals("-1E+1 scale: -1", bd2String(bd));
+
+		bd = makeBigDecimal(2, digitAccuracyMultipliers[1], -1);
+		assertEquals("0.1 scale: 1", bd2String(bd));
+		bd = makeBigDecimal(1, digitAccuracyMultipliers[1], -1);
+		assertEquals("0.05 scale: 2", bd2String(bd));
+		bd = makeBigDecimal(0, digitAccuracyMultipliers[1], -1);
+		assertEquals("0.0 scale: 1", bd2String(bd));
+		bd = makeBigDecimal(-1, digitAccuracyMultipliers[1], -1);
+		assertEquals("-0.05 scale: 2", bd2String(bd));
+		bd = makeBigDecimal(-2, digitAccuracyMultipliers[1], -1);
+		assertEquals("-0.1 scale: 1", bd2String(bd));
+	}
+
+
+	private void printBinningResult(BigDecimal[] result) {
 		for (int i=0; i<result.length; i++) {
 			System.out.println(i + ": " + result[i]);
 		}
-		
 	}
+	private void print(BigDecimal bd) {
+		System.out.println(bd2String(bd));
+	}
+
+	private String bd2String(BigDecimal bd) {
+		return bd + " scale: " + bd.scale();
+	}
+
 }

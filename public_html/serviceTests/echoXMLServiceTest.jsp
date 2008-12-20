@@ -8,23 +8,25 @@
   </head>
   <body>
   
-		<form action="sp_echojs/formpost/echo" method="post" enctype="application/x-www-form-urlencoded">
+		<form action="../sp_echojs/formpost/echo" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Echo JSON Request 1">
-				<label for="xml_input_1">Echo JSON as attachment call via sp_echojs post</label>
+				<label for="xml_input_1">Echo Test 1: JSON as attachment call via ../sp_echojs post</label>
 				<p>
 				Any text is fine, even non JSON
 				</p>
 				<textarea id="xml_input_1" name="xmlreq" cols="120" rows="20">
 				This is the story of Goldilocks and the three bears
 				</textarea>
+				<br/>
 				<input type="submit" name="submit" value="submit"/>
+				<a href="testResults/echo_test_1_result.js">result as of 2008-12-20</a>
 			</fieldset>
 		</form>
 		
 		
-		<form action="sp_predict/formpost/xmlecho" method="post" enctype="application/x-www-form-urlencoded">
+		<form action="../sp_predict/formpost/xmlecho" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Prediction Request 1">
-				<label for="xml_input_1">Echo XML Service call via sp_predict post</label>
+				<label for="xml_input_1">Echo Test 2: XML Service call via ../sp_predict post</label>
 				<p>
 				National Model w/ gross and specific adjustments.
 				</p>
@@ -54,13 +56,15 @@
 	&lt;/response-format&gt;
 &lt;/sparrow-prediction-request>
 				</textarea>
+				<br/>
 				<input type="submit" name="submit" value="submit"/>
+				<a href="testResults/echo_test_2_result.xml">result as of 2008-12-20</a>
 			</fieldset>
 		</form>
 
-	<form action="sp_model/formpost/xmlecho" method="post" enctype="application/x-www-form-urlencoded">
+	<form action="../sp_model/formpost/xmlecho" method="post" enctype="application/x-www-form-urlencoded">
 		<fieldset title="Model Request 1">
-			<label for="xml_input_1">Echo XML request via sp_model</label>
+			<label for="xml_input_1">Echo Test 3: XML request via ../sp_model</label>
 			<p>
 			National Model w/ gross and specific adjustments.
 			</p>
@@ -74,14 +78,16 @@
 	&lt;/model&gt;
 &lt;/sparrow-meta-request&gt;
 			</textarea>
+			<br/>
 			<input type="submit" name="submit" value="submit"/>
+			<a href="testResults/echo_test_3_result.xml">result as of 2008-12-20</a>
 		</fieldset>
 	</form>
 
 <hr/>
-		<form action="sp_predict/formpost/jsonecho" method="post" enctype="application/x-www-form-urlencoded">
+		<form action="../sp_predict/formpost/jsonecho" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Prediction Request 1">
-				<label for="xml_input_1">Echo JSON Service call via sp_predict post</label>
+				<label for="xml_input_1">Echo Test 4: JSON Service call via ../sp_predict post</label>
 				<p>
 				National Model w/ gross and specific adjustments.
 				</p>
@@ -111,13 +117,15 @@
 	&lt;/response-format&gt;
 &lt;/sparrow-prediction-request>
 				</textarea>
+				<br/>
 				<input type="submit" name="submit" value="submit"/>
+				<a href="testResults/echo_test_4_result.json">result as of 2008-12-20</a>
 			</fieldset>
 		</form>
 
-	<form action="sp_model/formpost/jsonecho" method="post" enctype="application/x-www-form-urlencoded">
+	<form action="../sp_model/formpost/jsonecho" method="post" enctype="application/x-www-form-urlencoded">
 		<fieldset title="Model Request 1">
-			<label for="xml_input_1">Echo JSON request via sp_model</label>
+			<label for="xml_input_1">Echo Test 5: JSON request via ../sp_model</label>
 			<p>
 			National Model w/ gross and specific adjustments.
 			</p>
@@ -131,7 +139,9 @@
 	&lt;/model&gt;
 &lt;/sparrow-meta-request&gt;
 			</textarea>
+			<br/>
 			<input type="submit" name="submit" value="submit"/>
+			<a href="testResults/echo_test_5_result.json">result as of 2008-12-20</a>
 		</fieldset>
 	</form>
 

@@ -6,29 +6,28 @@
   </head>
   <body>
   		<h3>Service Tests</h3>
+		<a href="http://privusgs2.er.usgs.gov/display/SPARROW/Service+URL+Conventions">Conventions</a> for service post submissions.
 		<ul>
-			<li><a href="model_test.jsp" title="SPARROW Model info test requests">ModelService</a></li>
-			<li><a href="predict_test.jsp" title="Basic prediction test requests">PredictService</a></li>
-			<li><a href="id_test.jsp" title="ID a reach by passing a location and a model">IDByPointService</a></li>
-			<li><a href="prediction_context_test.jsp" title="Prediction Context processing tests">PredictContextService</a></li>
-			<li><a href="echo_test.jsp" title="XML echo test">EchoXMLService</a></li>
+			<li><a href="serviceTests/modelServiceTest.jsp" title="SPARROW Model information requests">ModelService</a> (working)</li>
+			<li><a href="serviceTests/predictContextServiceTest.jsp" title="Prediction Context processing tests">PredictContextService</a></li>
+			<li><a href="serviceTests/predictServiceTest.jsp" title="Basic prediction test requests">PredictService</a> (not working)</li>
+			<li><a href="serviceTests/idByPointServiceTest.jsp" title="ID a reach by passing a location and a model">IDByPointService</a> (not working)</li>
+
+			<li><a href="serviceTests/echoXMLServiceTest.jsp" title="XML echo test">EchoXMLService</a> (working)</li>
 			<li>EchoJSONAsAttachmentService (not yet available)</li>
-			<li><a href="jsonify_test.jsp" title="JSONify test">JSONifyService</a></li>
+			<li><a href="serviceTests/jsonifyServiceTest.jsp" title="JSONify test">JSONifyService</a> (working)</li>
 			<li>BinningService (not yet available)</li>
 		</ul>
 		
 		<hr>
-		<h3>Miscellaneous Tests</h3>
+		<h3>Miscellaneous Tests (current status unverified)</h3>
+		
 		<ul>
 			<li><a href="filter_test.jsp" title="Predictions with filtered results">Filter Tests</a></li>
 			<li><a href="new_id_test.jsp" title="ID a reach by passing a location and a model">new ID Tests</a></li>
 			<li><a href="new_predict_test.jsp" title="new Predict export">new Predict Export Tests</a></li>
 			<li><a href="misc_test.jsp" title="Other types of requests and features">Misc. Tests</a></li>
 			<li><a href="response_format_test.jsp" title="Response Format processing tests">Response Format Tests</a></li>
-			<li></li>
-			<li></li>
-			<li></li>			
-			
 		</ul>
 
 		<hr />
