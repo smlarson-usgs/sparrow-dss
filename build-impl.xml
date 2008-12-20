@@ -13,7 +13,6 @@
         <property environment="env" />
         <property file="${user.name}.properties" />
         <property file="build.properties" />
-
         <!-- Setup conditional properties -->
     </target>
     <target name="-post-init" />
@@ -97,6 +96,7 @@
     <target name="-pre-run-test" />
     <target name="run-unit-test" description="Run unit tests." depends="init,compile,compile-test,-pre-run-test">
         <mkdir dir="${build.unit.test.results.dir}" />
+    	<echo message="Running unit tests ... results in ${build.unit.test.results.dir}"/>
         <junit errorProperty="test.failed" failureProperty="test.failed" fork="yes" forkmode="once">
         	<assertions><enable /></assertions>
             <classpath path="${run.test.classpath}:${j2ee.classpath}" />
@@ -109,6 +109,7 @@
     </target>
     <target name="run-integ-test" description="Run integration tests." depends="init,compile,compile-test,-pre-run-test">
         <mkdir dir="${build.integ.test.results.dir}" />
+    	<echo message="Running integration tests ... results in ${build.integ.test.results.dir}"/>
         <junit errorProperty="test.failed" failureProperty="test.failed" fork="yes" forkmode="once">
             <assertions><enable /></assertions>
             <classpath path="${run.test.classpath}:${j2ee.classpath}" />

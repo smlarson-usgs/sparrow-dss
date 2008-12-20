@@ -33,4 +33,10 @@
 			<fileset dir="${dist.dir}" excludes="**/*.war **/javadoc/**/*" />
 		</delete>
 	</target>
+	
+    <target name="-post-init" depends="check-init"/>
+	
+	<target name="check-init">
+		<fail unless="${env.TOMCAT_HOME}" message="Please define TOMCAT_HOME in your environment or {username}.properties"/>
+	</target>
 </project>
