@@ -5,21 +5,35 @@
     <title>SPARROW SERVICE TEST PAGES</title>
   </head>
   <body>
-		<p><a href="model_test.jsp" title="SPARROW Model info test requests">Model Tests</a></p>
-		<p><a href="predict_test.jsp" title="Basic prediction test requests">Predict Tests</a></p>
-		<p><a href="filter_test.jsp" title="Predictions with filtered results">Filter Tests</a></p>
-		<p><a href="id_test.jsp" title="ID a reach by passing a location and a model">ID Tests</a></p>
-		<p><a href="new_id_test.jsp" title="ID a reach by passing a location and a model">new ID Tests</a></p>
-		<p><a href="new_predict_test.jsp" title="new Predict export">new Predict Export Tests</a></p>
+  		<h3>Service Tests</h3>
+		<ul>
+			<li><a href="model_test.jsp" title="SPARROW Model info test requests">ModelService</a></li>
+			<li><a href="predict_test.jsp" title="Basic prediction test requests">PredictService</a></li>
+			<li><a href="id_test.jsp" title="ID a reach by passing a location and a model">IDByPointService</a></li>
+			<li><a href="prediction_context_test.jsp" title="Prediction Context processing tests">PredictContextService</a></li>
+			<li><a href="echo_test.jsp" title="XML echo test">EchoXMLService</a></li>
+			<li>EchoJSONAsAttachmentService (not yet available)</li>
+			<li><a href="jsonify_test.jsp" title="JSONify test">JSONifyService</a></li>
+			<li>BinningService (not yet available)</li>
+		</ul>
+		
+		<hr>
+		<h3>Miscellaneous Tests</h3>
+		<ul>
+			<li><a href="filter_test.jsp" title="Predictions with filtered results">Filter Tests</a></li>
+			<li><a href="new_id_test.jsp" title="ID a reach by passing a location and a model">new ID Tests</a></li>
+			<li><a href="new_predict_test.jsp" title="new Predict export">new Predict Export Tests</a></li>
+			<li><a href="misc_test.jsp" title="Other types of requests and features">Misc. Tests</a></li>
+			<li><a href="response_format_test.jsp" title="Response Format processing tests">Response Format Tests</a></li>
+			<li></li>
+			<li></li>
+			<li></li>			
+			
+		</ul>
 
-		<p><a href="misc_test.jsp" title="Other types of requests and features">Misc. Tests</a></p>
-		<p><a href="response_format_test.jsp" title="Response Format processing tests">Response Format Tests</a></p>
-		<p><a href="prediction_context_test.jsp" title="Prediction Context processing tests">Prediction Context Tests</a></p>
-		<p><a href="echo_test.jsp" title="XML echo test">XML Echo Tests</a></p>
-		<p><a href="jsonify_test.jsp" title="JSONify test">JSONify Tests</a></p>
 		<hr />
+		<h3>Debugging Tests</h3>
 		<p><a href="request_test.jsp" title="Basic Server info and request tests">Server Info and Request Tests</a></p>
-
 		<p><a href="jdbc_test.jsp" title="Simple tests that verify connnections via JNDI">JDBC Connection tests</a></p>
 	</body>
 </html>
