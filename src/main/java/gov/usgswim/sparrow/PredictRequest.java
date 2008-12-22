@@ -1,9 +1,8 @@
 package gov.usgswim.sparrow;
 
-import java.io.Serializable;
-
 import gov.usgswim.Immutable;
-import gov.usgswim.sparrow.AdjustmentSet;
+
+import java.io.Serializable;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 

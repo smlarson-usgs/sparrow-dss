@@ -4,13 +4,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.loader.Analyzer;
-import gov.usgswim.sparrow.loader.DataFileDescriptor;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
@@ -19,14 +13,9 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**

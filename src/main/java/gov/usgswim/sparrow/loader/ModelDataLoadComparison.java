@@ -3,7 +3,6 @@ package gov.usgswim.sparrow.loader;
 import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.util.DataLoader;
 
 import java.io.BufferedWriter;

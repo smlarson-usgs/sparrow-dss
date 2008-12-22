@@ -3,9 +3,6 @@ package gov.usgswim.sparrow;
 import gov.usgswim.ImmutableBuilder;
 import gov.usgswim.NotThreadSafe;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.Adjustment;
-import gov.usgswim.sparrow.AdjustmentSet;
-import gov.usgswim.sparrow.AdjustmentSetImm;
 
 import java.util.ArrayList;
 import java.util.List;

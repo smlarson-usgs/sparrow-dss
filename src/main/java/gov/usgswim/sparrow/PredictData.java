@@ -1,11 +1,10 @@
 package gov.usgswim.sparrow;
 
-import java.io.Serializable;
-
 import gov.usgswim.ImmutableBuilder;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.domain.Model;
+
+import java.io.Serializable;
 
 /**
  * A PredictData instance contains all the numerical data needed to run a prediction.
