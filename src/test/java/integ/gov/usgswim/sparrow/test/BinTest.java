@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
+import gov.usgswim.sparrow.cachefactory.BinningFactory;
 import gov.usgswim.sparrow.cachefactory.BinningRequest;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -23,9 +24,6 @@ import org.junit.Test;
 
 public class BinTest {
 	public static LifecycleListener lifecycle = new LifecycleListener();
-	
-	/** Acceptable error in the number of values in each bin. */
-	public static final int EQUAL_COUNT_TOLERANCE = 3;
 	
 	/** Acceptable error in the range of values in each bin. */
 	public static final double EQUAL_RANGE_TOLERANCE = 0.0001;
@@ -234,6 +232,7 @@ public class BinTest {
 
         int binIndex = 1; // current bin index
         int targetCount = values.length / binCount; // target number of data points in a bin
+        int tolerance = (int) Math.ceil(targetCount * BinningFactory.ALLOWABLE_BIN_SIZE_VARIANCE_RATIO);
         int count = 0; // number of data points in the current bin
         int adjustment = 0; // adjustment factor for sequences of equal values
         int leftoverAdj = 0; // used when length of sequence exceeds bin size
@@ -250,7 +249,7 @@ public class BinTest {
                 }
             } else {
                 // We've hit a breakpoint, validate the count
-                assertEquals(count, targetCount, EQUAL_COUNT_TOLERANCE);
+                assertEquals(count, targetCount, tolerance);
 
                 if (adjustment > targetCount) {
                     leftoverAdj = adjustment - targetCount;
@@ -270,7 +269,7 @@ public class BinTest {
         }
         
         // Be sure to validate the count of the last bin
-        assertEquals(count, targetCount, EQUAL_COUNT_TOLERANCE);
+        assertEquals(count, targetCount, tolerance);
     }
 	
 	/**
