@@ -23,7 +23,7 @@
 	<classpathentry kind="lib" path="java_lib/pmd/usgs_core/pmd.jar"/>
 	<classpathentry kind="lib" path="java_lib/pmd/usgs_dep/asm.jar"/>
 	<classpathentry kind="lib" path="java_lib/pmd/usgs_dep/jaxen.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.5.0_17"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.5"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/ojdbc14.jar"/>
 	<classpathentry kind="lib" path="java_lib/codehaus/woodstox/usgs_dep/stax-api-1.0.1.jar"/>
 	<classpathentry kind="output" path="public_html/WEB-INF/classes"/>

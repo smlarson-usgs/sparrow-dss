@@ -41,7 +41,7 @@ public class DataLoader {
 	protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
 	public static int DO_NOT_INDEX = -1;
 	public static final int SOURCE_ID_COL = 0;
-	
+
 	public DataLoader() {
 	}
 
@@ -60,7 +60,7 @@ public class DataLoader {
 	IOException {
 		PredictDataBuilder dataSet = new PredictDataBuilder();
 		try {
-			
+
 			dataSet.setSrcMetadata( loadSrcMetadata(conn, modelId));
 			dataSet.setSys( loadSystemInfo(conn, modelId) );
 			dataSet.setTopo( loadTopo(conn, modelId) );
@@ -111,114 +111,126 @@ public class DataLoader {
 	 */
 	public static List<ModelBuilder> loadModelMetaData(Connection conn)
 	throws SQLException, IOException {
-	    return loadModelMetaData(conn, true, true, false, true);
+		return loadModelMetaData(conn, true, true, false, true);
 	}
-	
-    /**
-     * Returns all models that meet the specified criteria.  Note that the
-     * {@code isApproved}, {@code isPublic}, and {@code isArchived} criteria are
-     * ANDed together when retrieving models.  For example, specifying
-     * {@code isApproved} = {@code true},
-     * {@code isPublic} = {@code true},
-     * {@code isArchived} = {@code false}
-     * will return models that are approved and public, but not archived.
-     * 
-     * @param conn The JDBC connection object.
-     * @param isApproved Whether or not to return approved models.
-     * @param isPublic Whether or not to return public models.
-     * @param isArchived Whether or not to return archived models.
-     * @param getSources Whether or not to attach the model's sources.
-     * @return All models that meet the specified criteria.
-     */
-    public static List<ModelBuilder> loadModelMetaData(Connection conn,
-            boolean isApproved, boolean isPublic, boolean isArchived,
-            boolean getSources) throws SQLException, IOException {
 
-        List<ModelBuilder> models = new ArrayList<ModelBuilder>(23);
+	/**
+	 * Returns all models that meet the specified criteria.  Note that the
+	 * {@code isApproved}, {@code isPublic}, and {@code isArchived} criteria are
+	 * ANDed together when retrieving models.  For example, specifying
+	 * {@code isApproved} = {@code true},
+	 * {@code isPublic} = {@code true},
+	 * {@code isArchived} = {@code false}
+	 * will return models that are approved and public, but not archived.
+	 * 
+	 * @param conn The JDBC connection object.
+	 * @param isApproved Whether or not to return approved models.
+	 * @param isPublic Whether or not to return public models.
+	 * @param isArchived Whether or not to return archived models.
+	 * @param getSources Whether or not to attach the model's sources.
+	 * @return All models that meet the specified criteria.
+	 */
+	public static List<ModelBuilder> loadModelMetaData(Connection conn,
+			boolean isApproved, boolean isPublic, boolean isArchived,
+			boolean getSources) throws SQLException, IOException {
 
-        // Build filtering parameters and retrieve the queries from properties
-        Object[] params = {
-            "IsApproved", (isApproved ? "T" : "F"),
-            "IsPublic", (isPublic ? "T" : "F"),
-            "IsArchived", (isArchived ? "T" : "F")
-        };
-        String selectModels = getQuery("SelectModelsByAccess", params);
-        String selectSources = getQuery("SelectAllSources");
+		List<ModelBuilder> models = new ArrayList<ModelBuilder>(23);
 
-        Statement stmt = null;
-        ResultSet rset = null;
+		// Build filtering parameters and retrieve the queries from properties
+		Object[] params = {
+				"IsApproved", (isApproved ? "T" : "F"),
+				"IsPublic", (isPublic ? "T" : "F"),
+				"IsArchived", (isArchived ? "T" : "F")
+		};
+		String selectModels = getQuery("SelectModelsByAccess", params);
 
-        try {
-            stmt = conn.createStatement();
-            stmt.setFetchSize(100);
 
-            try {
-                rset = stmt.executeQuery(selectModels);
+		Statement stmt = null;
+		ResultSet rset = null;
 
-                while (rset.next()) {
-                    ModelBuilder m = new ModelBuilder();
-                    m.setId(rset.getLong("SPARROW_MODEL_ID"));
-                    m.setApproved(StringUtils.equalsIgnoreCase("T", rset.getString("IS_APPROVED")));
-                    m.setPublic(StringUtils.equalsIgnoreCase("T", rset.getString("IS_PUBLIC")));
-                    m.setArchived(StringUtils.equalsIgnoreCase("T", rset.getString("IS_ARCHIVED")));
-                    m.setName(rset.getString("NAME"));
-                    m.setDescription(rset.getString("DESCRIPTION"));
-                    m.setDateAdded(rset.getDate("DATE_ADDED"));
-                    m.setContactId(rset.getLong("CONTACT_ID"));
-                    m.setEnhNetworkId(rset.getLong("ENH_NETWORK_ID"));
-                    m.setUrl(rset.getString("URL"));
-                    m.setNorthBound(rset.getDouble("BOUND_NORTH"));
-                    m.setEastBound(rset.getDouble("BOUND_EAST"));
-                    m.setSouthBound(rset.getDouble("BOUND_SOUTH"));
-                    m.setWestBound(rset.getDouble("BOUND_WEST"));
-                    models.add(m);
-                }
+		try {
+			stmt = conn.createStatement();
+			stmt.setFetchSize(100);
 
-            } finally {
-                rset.close();
-            }
+			try {
+				rset = stmt.executeQuery(selectModels);
 
-            if (getSources) {
-                try {
-                    rset = stmt.executeQuery(selectSources);
+				while (rset.next()) {
+					ModelBuilder m = new ModelBuilder();
+					m.setId(rset.getLong("SPARROW_MODEL_ID"));
+					m.setApproved(StringUtils.equalsIgnoreCase("T", rset.getString("IS_APPROVED")));
+					m.setPublic(StringUtils.equalsIgnoreCase("T", rset.getString("IS_PUBLIC")));
+					m.setArchived(StringUtils.equalsIgnoreCase("T", rset.getString("IS_ARCHIVED")));
+					m.setName(rset.getString("NAME"));
+					m.setDescription(rset.getString("DESCRIPTION"));
+					m.setDateAdded(rset.getDate("DATE_ADDED"));
+					m.setContactId(rset.getLong("CONTACT_ID"));
+					m.setEnhNetworkId(rset.getLong("ENH_NETWORK_ID"));
+					m.setUrl(rset.getString("URL"));
+					m.setNorthBound(rset.getDouble("BOUND_NORTH"));
+					m.setEastBound(rset.getDouble("BOUND_EAST"));
+					m.setSouthBound(rset.getDouble("BOUND_SOUTH"));
+					m.setWestBound(rset.getDouble("BOUND_WEST"));
+					models.add(m);
+				}
+			} finally {
+				rset.close();
+			}
 
-                    while (rset.next()) {
-                        SourceBuilder s = new SourceBuilder();
-                        s.setId(rset.getLong("SOURCE_ID"));
-                        s.setName(rset.getString("NAME"));
-                        s.setDescription(rset.getString("DESCRIPTION"));
-                        s.setSortOrder(rset.getInt("SORT_ORDER"));
-                        s.setModelId(rset.getLong("SPARROW_MODEL_ID"));
-                        s.setIdentifier(rset.getInt("IDENTIFIER"));
-                        s.setDisplayName(rset.getString("DISPLAY_NAME"));
-                        s.setConstituent(rset.getString("CONSTITUENT"));
-                        s.setUnits(rset.getString("UNITS"));
+			if (getSources) {
+				String inModelsWhereClause = " ";
+				if (!models.isEmpty()) {
+					List<Long> modelIds = new ArrayList<Long>();
+					for (ModelBuilder model: models) {
+						modelIds.add(model.getId());
+					}
+					inModelsWhereClause = " WHERE SPARROW_MODEL_ID in (" + StringUtils.join(modelIds.toArray(), ", ") + ") ";
 
-                        //The models and sources are sorted by model_id, so scroll forward
-                        //thru the models until we find the correct one.
-                        int modelIndex = 0;
-                        while ((modelIndex < models.size() &&
-                                models.get(modelIndex).getId() != s.getModelId()) /* don't scoll past last model*/) {
-                            modelIndex++;
-                        }
+				}
+				String selectSources = getQuery("SelectAllSources", "InModels", inModelsWhereClause);
 
-                        if (modelIndex < models.size()) {
-                            models.get(modelIndex).addSource(s);
-                        } else {
-                            log.warn("Found sources not matched to a model.  Likely caused by record insertion during the queries.");
-                        }
-                    }
+				try {
+					rset = stmt.executeQuery(selectSources);
 
-                } finally {
-                    rset.close();
-                }
-            }
-        } finally {
-            stmt.close();
-        }
+					while (rset.next()) {
+						SourceBuilder s = new SourceBuilder();
+						s.setId(rset.getLong("SOURCE_ID"));
+						s.setName(rset.getString("NAME"));
+						s.setDescription(rset.getString("DESCRIPTION"));
+						s.setSortOrder(rset.getInt("SORT_ORDER"));
+						s.setModelId(rset.getLong("SPARROW_MODEL_ID"));
+						s.setIdentifier(rset.getInt("IDENTIFIER"));
+						s.setDisplayName(rset.getString("DISPLAY_NAME"));
+						s.setConstituent(rset.getString("CONSTITUENT"));
+						s.setUnits(rset.getString("UNITS"));
 
-        return models;
-    }
+						//The models and sources are sorted by model_id, so scroll forward
+						//thru the models until we find the correct one.
+						int modelIndex = 0;
+						while ((modelIndex < models.size() &&
+								models.get(modelIndex).getId() != s.getModelId()) /* don't scroll past last model*/) {
+							modelIndex++;
+						}
+
+						if (modelIndex < models.size()) {
+							models.get(modelIndex).addSource(s);
+						} else {
+							log.warn("Found sources not matched to a model.  Likely caused by record insertion during the queries.");
+						}
+					}
+				} catch(Exception e) {
+					e.printStackTrace(System.err);
+
+				} finally {
+					rset.close();
+				}
+			}
+		} finally {
+			stmt.close();
+		}
+
+		return models;
+	}
 
 
 	/**
@@ -379,7 +391,7 @@ public class DataLoader {
 		if (sources.getRowCount() == 0) {
 			throw new IllegalArgumentException("There must be at least one source");
 		}
-		
+
 		int sourceCount = sources.getRowCount();
 
 		DataTableWritable sourceReachCoef = new SimpleDataTableWritable();
@@ -471,7 +483,7 @@ public class DataLoader {
 	public static DataTableWritable loadSourceValues(Connection conn, long modelId, DataTable sources) throws SQLException,
 	IOException {
 
-        int sourceCount = sources.getRowCount();
+		int sourceCount = sources.getRowCount();
 		if (sourceCount == 0) {
 			throw new IllegalArgumentException("There must be at least one source");
 		}
@@ -483,7 +495,7 @@ public class DataLoader {
 		headSt.setFetchSize(20);
 		ResultSet headRs = null;
 
-        String[] headings = new String[sourceCount];
+		String[] headings = new String[sourceCount];
 		try {
 			headRs = headSt.executeQuery(selectNames);
 			for (int i = 0; i < sourceCount; i++)  {
@@ -501,25 +513,25 @@ public class DataLoader {
 
 
 		for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++) {
-		    String constituent = sources.getString(srcIndex, sources.getColumnByName("CONSTITUENT"));
-		    String units = sources.getString(srcIndex, sources.getColumnByName("UNITS"));
-		    String precision = sources.getString(srcIndex, sources.getColumnByName("PRECISION"));
+			String constituent = sources.getString(srcIndex, sources.getColumnByName("CONSTITUENT"));
+			String units = sources.getString(srcIndex, sources.getColumnByName("UNITS"));
+			String precision = sources.getString(srcIndex, sources.getColumnByName("PRECISION"));
 
 			String query =
 				getQuery("SelectSourceValues", new Object[] {
 						"ModelId", modelId, "SourceId", sources.getInt(srcIndex, SOURCE_ID_COL)
 				});
-			
+
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			st.setFetchSize(2000);
 			ResultSet rs = null;
 
 			try {
-                StandardNumberColumnDataWritable<Double> column = new StandardNumberColumnDataWritable<Double>(headings[srcIndex], units);
-                column.setProperty("constituent", constituent);
-                column.setProperty("precision", precision);
-                sourceValue.addColumn(column);
-                
+				StandardNumberColumnDataWritable<Double> column = new StandardNumberColumnDataWritable<Double>(headings[srcIndex], units);
+				column.setProperty("constituent", constituent);
+				column.setProperty("precision", precision);
+				sourceValue.addColumn(column);
+
 				rs = st.executeQuery(query);
 				loadColumn(rs, sourceValue, 0, srcIndex);
 
@@ -549,30 +561,30 @@ public class DataLoader {
 	 * @return	An DataTable object contains the list of source_id's in a single column
 	 * @throws SQLException
 	 */
-//	public static DataTableWritable loadSourceIds(Connection conn, long modelId) throws SQLException,
-//	IOException {
-//
-//		String query = getQuery("SelectSourceIds", modelId);
-//
-//		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-//		st.setFetchSize(1000);
-//
-//		ResultSet rs = null;
-//
-//		try {
-//
-//			rs = st.executeQuery(query);
-//			return readAsInteger(rs, DO_NOT_INDEX);
-//
-//		} finally {
-//			if (rs != null) {
-//				rs.close();
-//				rs = null;
-//			}
-//		}
-//	}
-	
-	
+	//	public static DataTableWritable loadSourceIds(Connection conn, long modelId) throws SQLException,
+	//	IOException {
+	//
+	//		String query = getQuery("SelectSourceIds", modelId);
+	//
+	//		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+	//		st.setFetchSize(1000);
+	//
+	//		ResultSet rs = null;
+	//
+	//		try {
+	//
+	//			rs = st.executeQuery(query);
+	//			return readAsInteger(rs, DO_NOT_INDEX);
+	//
+	//		} finally {
+	//			if (rs != null) {
+	//				rs.close();
+	//				rs = null;
+	//			}
+	//		}
+	//	}
+
+
 	/**
 	 * Returns metadata about the source types in the model.
 	 * 
@@ -601,8 +613,8 @@ public class DataLoader {
 	 * @throws IOException
 	 */
 	public static DataTableWritable loadSrcMetadata(Connection conn, long modelId)
-			throws SQLException, IOException {
-	
+	throws SQLException, IOException {
+
 		String query = getQuery("SelectSourceData", modelId);
 
 		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
@@ -619,8 +631,8 @@ public class DataLoader {
 				rs = null;
 			}
 		}
-	
-			
+
+
 	}
 
 
@@ -854,7 +866,7 @@ public class DataLoader {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String getQuery(String name, Object[] params) throws IOException {
+	public static String getQuery(String name, Object... params) throws IOException {
 		String query = getQuery(name);
 
 		for (int i=0; i<params.length; i+=2) {

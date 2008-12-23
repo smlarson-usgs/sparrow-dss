@@ -63,4 +63,14 @@ public abstract class StringUtils {
 		}
 		return result.toString();
 	}
+	
+	public static String join(List<String> strings) {
+		StringBuilder result = new StringBuilder();
+		if (strings != null) {
+			for (String string: strings) {
+				result.append(string);
+			}
+		}
+		return result.toString();
+	}
 }

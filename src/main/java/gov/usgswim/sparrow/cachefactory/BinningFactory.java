@@ -288,36 +288,6 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @return Set of bins such that the bins define break-point boundaries
 	 *         whose values are approximately equally spaced apart.
 	 */
-//	protected double[] getEqualRangeBins(DataTable data, int columnIndex, int binCount) {
-//		int totalRows = data.getRowCount(); // Total rows of data
-//
-//		// Grab the min and max values from the datatable
-//		double minValue = Double.MAX_VALUE;
-//		double maxValue = Double.MIN_VALUE;
-//		for (int r = 0; r < totalRows; r++) {
-//			float value = data.getFloat(r, columnIndex);
-//			minValue = Math.min(value, minValue);
-//			maxValue = Math.max(value, maxValue);
-//		}
-//
-//		// Size of the range of values that will be defined by each bin
-//		double binRangeSize = (maxValue - minValue) / (double)(binCount);
-//
-//		// The bins, where each value is a fence post with values between, thus
-//		// there is one more post than bins.  The first value is the minimum,
-//		// the last value is the maximum.
-//		double[] bins = new double[binCount + 1];
-//		bins[0] = minValue;
-//		bins[binCount] = maxValue;
-//
-//		// Assign the breakpoints so that an equal range of values fall into each bin
-//		for (int i = 1; i < binCount; i++) {
-//			bins[i] = minValue + ((double)i * binRangeSize);
-//		}
-//
-//		return bins;
-//	}
-
 	public static BigDecimal[] getEqualRangeBins(DataTable data, int columnIndex, int binCount, boolean useRounding) {
 		int totalRows = data.getRowCount(); // Total rows of data
 

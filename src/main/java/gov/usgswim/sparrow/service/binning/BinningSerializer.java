@@ -82,7 +82,8 @@ public class BinningSerializer extends BasicXMLStreamReader {
     protected void readValue() {
         if (!state.isDataFinished()) {
             // read the row
-            addNonNullBasicTag("bin", bins[state.r++].toString());
+        	// Note that in 1.0E+4, the "+" has to be removed because Oracle mapviewer does not parse correctly
+            addNonNullBasicTag("bin", bins[state.r++].toString().replaceFirst("\\+", ""));
             events.add(new BasicTagEvent(SPACE));
         }
     }
