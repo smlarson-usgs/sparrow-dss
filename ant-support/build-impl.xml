@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project basedir="." default="build-all" name="sparrow-core-impl">
 	<echo message="Running ${ant.version}" />
+	<property name="support.ant" value="ant-support"/>
 
 	<target name="build-all" description="Build entire project." depends="dist,javadoc" />
 
@@ -11,8 +12,8 @@
 	<target name="-pre-init" />
 	<target name="-do-init">
 		<property environment="env" />
-		<property file="${user.name}.properties" />
-		<property file="build.properties" />
+		<property file="${support.ant}/${user.name}.properties" />
+		<property file="${support.ant}/build.properties" />
 	</target>
 	<target name="-post-init" />
 

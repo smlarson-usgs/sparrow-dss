@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="sparrow_core" default="build-all" basedir=".">
     <description>Builds, tests, and runs the ${ant.project.name} project.</description>
-	<property name="support.ant" value="ant-support"/>
+	
     <import file="ant-support/build-impl.xml" />
 	
 	<target name="-post-dist">
