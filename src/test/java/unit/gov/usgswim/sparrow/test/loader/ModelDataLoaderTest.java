@@ -31,6 +31,7 @@ public class ModelDataLoaderTest extends TestCase {
 //		ModelDataLoader.insertSources(ModelDataAssumptions.MODEL_ID, sourceMetadata);
 //	}
 //	
+	
 	public void testInsertReaches() throws IOException, SQLException {
 		File topoData = new File(baseDir.getAbsolutePath() + "/topo.txt");
 		File ancillaryData = new File(baseDir.getAbsolutePath() + "/ancil.txt");

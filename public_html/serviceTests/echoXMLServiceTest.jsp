@@ -19,7 +19,7 @@
 				</textarea>
 				<br/>
 				<input type="submit" name="submit" value="submit"/>
-				<a href="testResults/echo_test_1_result.js">result as of 2008-12-20</a>
+				<a href="testResults/echo_test_1_result.json">result as of 2008-12-20</a>
 			</fieldset>
 		</form>
 		

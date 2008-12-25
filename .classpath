@@ -6,10 +6,10 @@
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/el-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/annotations-api.jar"/>
 	<classpathentry kind="src" output="work" path="work"/>
-	<classpathentry kind="src" path="src/main/java"/>
-	<classpathentry kind="src" path="src/main/resources"/>
-	<classpathentry kind="src" path="src/test/java/integ"/>
-	<classpathentry kind="src" path="src/test/java/unit"/>
+	<classpathentry excluding="**.svn|.svn" kind="src" path="src/main/java"/>
+	<classpathentry excluding="**.svn" kind="src" path="src/main/resources"/>
+	<classpathentry excluding="**.svn" kind="src" path="src/test/java/integ"/>
+	<classpathentry excluding="**.svn" kind="src" path="src/test/java/unit"/>
 	<classpathentry kind="lib" path="java_lib/junit/junit.jar"/>
 	<classpathentry kind="lib" path="java_lib/usgs/datatable/usgs_core/usgs-datatable.jar"/>
 	<classpathentry kind="lib" path="java_lib/jakarta/commons_lang/commons-lang-2.1.jar"/>
