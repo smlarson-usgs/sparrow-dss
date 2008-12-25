@@ -93,6 +93,10 @@ public class PredictSerializerTest extends TestCase {
 //		}
 		return false;// eliminate this when uncommenting the rest
 	}
-
+	
+	@Ignore
+	public void testDummy() {
+		// do nothing. This is here only because Infinitest complains if a test class has no test methods.
+	}
 
 }

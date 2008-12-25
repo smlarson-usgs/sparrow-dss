@@ -50,4 +50,9 @@ public class DataLoaderOfflineTest extends TestCase {
 	
 		assertEquals(expected, query);
 	}
+	
+	@Ignore
+	public void testDummy() {
+		// do nothing. This is here only because Infinitest complains if a test class has no test methods.
+	}
 }
