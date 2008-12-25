@@ -23,7 +23,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-public class LogicalAdjustmentTest extends TestCase {
+public class LogicalAdjustmentIntegrationTest extends TestCase {
 
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	LifecycleListener lifecycle = new LifecycleListener();

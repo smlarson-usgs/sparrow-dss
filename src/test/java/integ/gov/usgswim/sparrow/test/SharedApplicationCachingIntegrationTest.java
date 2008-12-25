@@ -15,7 +15,7 @@ import java.io.InputStream;
 import junit.framework.TestCase;
 import net.sf.ehcache.CacheManager;
 
-public class SharedApplicationCaching extends TestCase {
+public class SharedApplicationCachingIntegrationTest extends TestCase {
 
 	LifecycleListener lifecycle = new LifecycleListener();
 

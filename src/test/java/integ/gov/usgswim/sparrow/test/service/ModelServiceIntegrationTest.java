@@ -29,9 +29,9 @@ import org.xml.sax.SAXException;
 /**
  * Unit tests for the {@code ModelService} class.
  */
-public class ModelServiceTest extends TestCase {
+public class ModelServiceIntegrationTest extends TestCase {
 
-    public ModelServiceTest(String sTestName) {
+    public ModelServiceIntegrationTest(String sTestName) {
         super(sTestName);
     }
 

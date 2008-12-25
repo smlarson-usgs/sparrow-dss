@@ -22,7 +22,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class BinTest {
+public class BinIntegrationTest {
 	public static LifecycleListener lifecycle = new LifecycleListener();
 	
 	/** Acceptable error in the range of values in each bin. */

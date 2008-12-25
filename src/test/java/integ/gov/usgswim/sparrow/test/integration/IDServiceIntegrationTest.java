@@ -18,7 +18,7 @@ import java.io.InputStream;
 
 import junit.framework.TestCase;
 
-public class IDServiceTest extends TestCase {
+public class IDServiceIntegrationTest extends TestCase {
 
 	private static final String EXPECTED_REACH_NAME_BY_POINT = "WESTERN RUN";
 
@@ -150,7 +150,7 @@ public class IDServiceTest extends TestCase {
 	// STATIC HELPER REQUEST LOADING METHODS
 	// =====================================
 	public static IDByPointRequest buildIDByPointRequest(String fileName) throws Exception {
-		InputStream is = IDServiceTest.class.getResourceAsStream(fileName);
+		InputStream is = IDServiceIntegrationTest.class.getResourceAsStream(fileName);
 		String xml = readToString(is);
 		
 		IDByPointPipeline pipe = new IDByPointPipeline();
@@ -158,7 +158,7 @@ public class IDServiceTest extends TestCase {
 	}
 	
 	public static IDByPointRequest buildIDByPointRequest(String fileName, int contextID) throws Exception {
-		InputStream is = IDServiceTest.class.getResourceAsStream(fileName);
+		InputStream is = IDServiceIntegrationTest.class.getResourceAsStream(fileName);
 		String xml = readToString(is);
 		xml = setElementValue(xml, "context-id", Integer.toString(contextID));
 		IDByPointPipeline pipe = new IDByPointPipeline();

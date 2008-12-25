@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 import oracle.mapviewer.share.ext.NSDataSet;
 import oracle.mapviewer.share.ext.NSRow;
 
-public class ContextToPredictionTest extends TestCase {
+public class ContextToPredictionIntegrationTest extends TestCase {
 
 	LifecycleListener lifecycle = new LifecycleListener();
 	

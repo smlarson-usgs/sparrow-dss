@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 import org.junit.Ignore;
 
 @Ignore
-public class ModelLoaderComparisonTest extends TestCase {
+public class ModelLoaderComparisonIntegrationTest extends TestCase {
 	
 	public void testOutputModelAsTextFiles() throws SQLException, IOException {
 		File outputDirectory  = new File(ModelDataLoaderTest.baseDir.getAbsolutePath() + "/out");

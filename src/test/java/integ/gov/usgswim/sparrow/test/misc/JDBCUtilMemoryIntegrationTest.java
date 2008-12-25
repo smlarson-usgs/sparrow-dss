@@ -15,7 +15,7 @@ import oracle.jdbc.OracleDriver;
  * @author ilinkuo
  * @deprecated
  */
-public class JDBCUtilMemoryTest extends TestCase {
+public class JDBCUtilMemoryIntegrationTest extends TestCase {
 
 	public static class MemoryTestBench {// copied from datatable
 		// MemoryUsageTest.java, which

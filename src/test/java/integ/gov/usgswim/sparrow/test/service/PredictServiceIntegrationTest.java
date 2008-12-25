@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 import org.codehaus.stax2.XMLInputFactory2;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-public class PredictServiceTest extends TestCase {
+public class PredictServiceIntegrationTest extends TestCase {
 
 
 	//private Connection conn;

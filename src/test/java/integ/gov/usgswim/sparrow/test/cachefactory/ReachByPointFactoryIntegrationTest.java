@@ -14,7 +14,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ReachByPointFactoryTest {
+public class ReachByPointFactoryIntegrationTest {
     public static LifecycleListener lifecycle = new LifecycleListener();
 
     protected XMLInputFactory inFact = XMLInputFactory.newInstance();

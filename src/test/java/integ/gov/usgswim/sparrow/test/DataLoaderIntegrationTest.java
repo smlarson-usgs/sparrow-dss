@@ -19,12 +19,12 @@ import java.util.List;
 
 import oracle.jdbc.OracleDriver;
 
-public class DataLoaderTest extends DataLoaderOfflineTest {
+public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 
 	private Connection conn;
 
 
-	public DataLoaderTest(String sTestName) {
+	public DataLoaderIntegrationTest(String sTestName) {
 		super(sTestName);
 	}
 

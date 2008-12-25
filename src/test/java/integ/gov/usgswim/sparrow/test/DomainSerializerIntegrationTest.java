@@ -9,10 +9,10 @@ import oracle.jdbc.OracleDriver;
 import org.junit.Ignore;
 
 @Ignore
-public class DomainSerializerTest extends TestCase {
+public class DomainSerializerIntegrationTest extends TestCase {
 	private Connection conn;
 	
-	public DomainSerializerTest(String sTestName) {
+	public DomainSerializerIntegrationTest(String sTestName) {
 		super(sTestName);
 	}
 
