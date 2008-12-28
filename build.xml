@@ -55,6 +55,22 @@
 			<arg value="-buildfile"/>
 			<arg value="${basedir}\src\test\webtest\SparrowTest.xml"/>
 		</exec>
-
+	</target>
+	
+	<target name="run-jDepend">
+		<echo message="${basedir}/public_html/WEB-INF/classes"/>
+		<!-- Note: this needs to point to classes, not source.
+		TODO: change this to depend on the compile task and point there
+		in order to eliminate test classes from the analysis. Also, change
+		parameters to eliminate jdk classes.s
+		-->
+		<java
+			classpath="${basedir}/java_lib/jDepend/lib/jdepend-2.9.jar"
+			classname="jdepend.swingui.JDepend"
+			spawn="true"
+			fork="true">
+			<arg value="${basedir}/public_html/WEB-INF/classes" />
+		</java>
+		<!-- See instructions at http://clarkware.com/software/JDepend.html -->
 	</target>
 </project>
