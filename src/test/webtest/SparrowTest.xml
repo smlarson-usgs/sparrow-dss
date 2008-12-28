@@ -1,0 +1,31 @@
+<project name="SimpleTest" basedir="." default="wt.full">
+
+  <property name="webtest.home" location="../../../java_lib/canoo/webtest" />
+  <import file="${webtest.home}/webtest.xml"/>
+
+  
+  <property name="webapp.baseURL" value="http://localhost:8088/sparrow"/>
+  
+
+  <target name="wt.testInWork">
+    <webtest name="my simple Test">
+    	<steps>
+      <invoke
+        url="${webapp.baseURL}/index.jsp"
+        description="Model selection page" />
+      <verifyTitle 
+        text="Model Selection - SPARROW Model Decision Support"
+        description="First page is Model Selection" />
+        <!--
+      <setSelectField name="model" value="22"/>
+      	This doesn't work because the select box is currently populated via ajax
+      
+      <clickButton description="submit" name="submit"/>
+      <verifyTitle 
+        text="SPARROW Model Decision Support"
+        description="second page is Model Selection" />
+        -->
+      </steps>
+    </webtest>
+  </target>
+</project>

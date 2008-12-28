@@ -44,4 +44,17 @@
 		<fail unless="${env.TOMCAT_HOME}" message="Please define TOMCAT_HOME in your environment or {username}.properties"/>
 		-->
 	</target>
+	
+	<target name="run-webtest">
+		<echo>This test only works for windows. For unix, use webtest.sh instead, branching on OS</echo>
+		<echo>TODO: Restructure based on better practices on http://webtest.canoo.com/webtest/manual/samples.html</echo>
+		<echo message="${basedir}\java_lib\canoo\webtest\bin\webtest.bat"/>
+		<echo message="${basedir}\src\test\webtest\SparrowTest.xml"/>
+		
+		<exec executable="${basedir}\java_lib\canoo\webtest\bin\webtest.bat">
+			<arg value="-buildfile"/>
+			<arg value="${basedir}\src\test\webtest\SparrowTest.xml"/>
+		</exec>
+
+	</target>
 </project>
