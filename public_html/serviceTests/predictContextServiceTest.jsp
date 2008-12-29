@@ -3,7 +3,9 @@
 <%@ page contentType="text/html;charset=ISO-8859-1"%>
 <html>
 <head>
-	   <link type="text/css" rel="stylesheet" href="http://privusgs7.er.usgs.gov/sparrow_map/css/usgs_style_main.css"/>    
+	<title>Prediction Context Service Test</title>
+	<link type="text/css" rel="stylesheet" href="http://privusgs7.er.usgs.gov/sparrow_map/css/usgs_style_main.css"/>    
+	<link rel="icon" href="../favicon.ico" >
 </head>
 <body>
       <div id="header">

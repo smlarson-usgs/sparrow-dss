@@ -5,6 +5,7 @@
 <head>
 	   <link type="text/css" rel="stylesheet" href="http://privusgs7.er.usgs.gov/sparrow_map/css/usgs_style_main.css"/>    
 		<title>Request Test</title>
+		<link rel="icon" href="favicon.ico" >
 </head>
 <body>
       <div id="header">

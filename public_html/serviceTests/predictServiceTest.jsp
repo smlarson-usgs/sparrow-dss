@@ -5,6 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
     <title>Request Test</title>
+    <link rel="icon" href="../favicon.ico" >
   </head>
   <body>
 		<strong>Note these don't work because a prediction context is not defined?</strong>

@@ -5,6 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
     <title>Misc Test</title>
+	 <link rel="icon" href="favicon.ico" >
   </head>
   <body>
 		<form action="sp_predict/xmlreq" method="post" enctype="application/x-www-form-urlencoded">

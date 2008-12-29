@@ -5,6 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
     <title>ID By Point Test</title>
+    <link rel="icon" href="favicon.ico" >
   </head>
   <body>
 		<!-- 
