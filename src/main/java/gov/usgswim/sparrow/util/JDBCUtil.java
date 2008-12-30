@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.util;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.DataTableUtils;
+import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 
 import java.io.FileWriter;

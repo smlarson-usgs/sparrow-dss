@@ -3,11 +3,11 @@ package gov.usgswim.sparrow.datatable;
 import static gov.usgswim.sparrow.service.predict.ValueType.incremental;
 import static gov.usgswim.sparrow.service.predict.ValueType.total;
 import static gov.usgswim.sparrow.service.predict.aggregator.AggregateType.sum;
-import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.Immutable;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTable;
+import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 
 import java.util.Collections;
@@ -171,7 +171,7 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 
         // only get the ids if available
         if (ids == null) {
-            ids = (predictData.getSys() != null) ? TemporaryHelper.getRowIds(predictData.getSys()) : null;
+            ids = (predictData.getSys() != null) ? DataTableUtils.getRowIds(predictData.getSys()) : null;
         }
 
         return new PredictResultImm(columns, ids, properties, srcIdIncMap, srcIdTotalMap, totalIncCol, totalTotalCol);

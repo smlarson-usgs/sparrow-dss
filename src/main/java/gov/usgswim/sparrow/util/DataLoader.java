@@ -1,11 +1,11 @@
 package gov.usgswim.sparrow.util;
 
-import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
+import gov.usgswim.datatable.utils.DataTableConverter;
+import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.domain.ModelBuilder;
@@ -281,7 +281,7 @@ public class DataLoader {
 
 		DataTableWritable data = readAsInteger(conn, query, 2000, DataLoader.DO_NOT_INDEX);
 		int[] ids = DataTableUtils.getIntColumn(data, 0);
-		return TemporaryHelper.setIds(data, ids);
+		return DataTableUtils.setIds(data, ids);
 
 	}
 
@@ -624,7 +624,7 @@ public class DataLoader {
 
 		try {
 			rs = st.executeQuery(query);
-			return DataTableUtils.toDataTable(rs, true);
+			return DataTableConverter.toDataTable(rs, true);
 		} finally {
 			if (rs != null) {
 				rs.close();

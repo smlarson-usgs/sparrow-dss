@@ -2,7 +2,8 @@ package gov.usgswim.sparrow.service;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.DataTableUtils;
+import gov.usgswim.datatable.utils.DataTableConverter;
+import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictComputable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
@@ -526,7 +527,7 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		try {
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			rset = st.executeQuery(query);
-			attributes = DataTableUtils.toDataTable(rset);
+			attributes = DataTableConverter.toDataTable(rset);
 		} finally {
 			closeConnection(conn, rset);
 		}

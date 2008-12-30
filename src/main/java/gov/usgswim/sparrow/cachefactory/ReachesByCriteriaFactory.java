@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.parser.LogicalSet;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -48,7 +48,7 @@ public class ReachesByCriteriaFactory extends AbstractCacheFactory {
 				+ criteriaAttrib + " = '" + huc + "' and sparrow_model_id = " + modelID;
 			DataTableWritable dt = SharedApplication.queryToDataTable(query);
 
-			Long[] arrayResult = TemporaryHelper.getLongColumn(dt, 0);
+			Long[] arrayResult = DataTableUtils.getWrappedLongColumn(dt, 0);
 			List<Long> reachIDs = Collections.unmodifiableList(Arrays.asList(arrayResult));
 			return reachIDs;
 		}

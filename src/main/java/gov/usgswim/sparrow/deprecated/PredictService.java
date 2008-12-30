@@ -1,12 +1,11 @@
 package gov.usgswim.sparrow.deprecated;
 
-import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.ComparePercentageView;
 import gov.usgswim.datatable.adjustment.FilteredDataTable;
-import gov.usgswim.datatable.impl.DataTableUtils;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
+import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.AdjustmentSet;
@@ -74,7 +73,7 @@ public class PredictService implements HttpService<PredictServiceRequest> {
 			ComputableCache<PredictRequest, PredictResult> pdCache = SharedApplication.getInstance().getPredictResultCache();
 			PredictResult adjResult = pdCache.compute(req.getPredictRequest());
 
-			TemporaryHelper.sampleDataTable(adjResult);
+			//DataTableUtils.printDataTableSample(adjResult);
 
 			if (req.getPredictType().isComparison()) {
 				//need to run the base prediction and the adjusted prediction
@@ -82,7 +81,7 @@ public class PredictService implements HttpService<PredictServiceRequest> {
 				PredictRequest noAdjRequest = new PredictRequest(modelId, noAdj);
 				PredictResult noAdjResult = SharedApplication.getInstance().getPredictResultCache().compute(noAdjRequest);
 
-				TemporaryHelper.sampleDataTable(noAdjResult);
+				DataTableUtils.printDataTableSample(noAdjResult, 3);
 
 				result = new ComparePercentageView(
 						noAdjResult, adjResult,
@@ -190,7 +189,7 @@ public class PredictService implements HttpService<PredictServiceRequest> {
 
 			//The IDByPointRequest returns data w/ reach Ids as IDs in the DataTable
 			ComputableCache<IDByPointRequest_old, DataTable> idByPcache = SharedApplication.getInstance().getIdByPointCache();
-			Long[] rowIds = DataTableUtils.getRowIds(idByPcache.compute(req.getIdByPointRequest()));
+			long[] rowIds = DataTableUtils.getRowIds(idByPcache.compute(req.getIdByPointRequest()));
 
 			double[][] newData = new double[rowIds.length][];
 
@@ -202,7 +201,7 @@ public class PredictService implements HttpService<PredictServiceRequest> {
 			}
 			String[] headings = DataTableUtils.getHeadings(source);
 			SimpleDataTableWritable result = new SimpleDataTableWritable(newData, headings);
-			TemporaryHelper.setIds(result, rowIds);
+			DataTableUtils.setIds(result, rowIds);
 			return result;
 			// TODO determine if necessary to add indexes
 

@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow.loader;
 
-import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.DataTableUtils;
+import gov.usgswim.datatable.utils.DataTableConverter;
+import gov.usgswim.datatable.utils.DataTableUtils;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -20,11 +20,11 @@ public class ModelDataStateChecker {
 		
 		System.out.println("==== Checking sequence consistency ====");
 		DataTable dt = checkSequenceConsistency(conn);
-		TemporaryHelper.printDataTable(dt, "Sequence Consistency");
+		DataTableUtils.printDataTable(dt, "Sequence Consistency");
 		
 		System.out.println("==== Checking Total table counts ====");
 		dt = checkTotalTableCounts(conn);
-		TemporaryHelper.printDataTable(dt, "Total counts");
+		DataTableUtils.printDataTable(dt, "Total counts");
 		
 		DataTable models = getModels(conn);
 		Integer modelIDColIndex = models.getColumnByName("SPARROW_MODEL_ID");
@@ -33,11 +33,11 @@ public class ModelDataStateChecker {
 			
 			System.out.println("==== Checking Sequence range for model " + modelID + " ====");
 			dt = checkPerModelIdentifierRanges(conn, modelID);
-			TemporaryHelper.printDataTable(dt, "Model " + modelID + " ranges");
+			DataTableUtils.printDataTable(dt, "Model " + modelID + " ranges");
 			
 			System.out.println("==== Checking table counts for model " + modelID + " ====");
 			dt = checkPerModelTableCounts(conn, modelID);
-			TemporaryHelper.printDataTable(dt, "Table counts for model " + modelID);
+			DataTableUtils.printDataTable(dt, "Table counts for model " + modelID);
 		}
 		
 	}
@@ -48,7 +48,7 @@ public class ModelDataStateChecker {
 		try {
 			stmt = conn.createStatement();
 			ResultSet rset = stmt.executeQuery(sql);
-			DataTableWritable result = DataTableUtils.toDataTable(rset);
+			DataTableWritable result = DataTableConverter.toDataTable(rset);
 			return result;
 		} finally {
 			if (stmt != null) stmt.close();
@@ -121,7 +121,7 @@ public class ModelDataStateChecker {
 		try {
 			stmt = conn.createStatement();
 			ResultSet rset = stmt.executeQuery(sql);
-			DataTableWritable result = DataTableUtils.toDataTable(rset);
+			DataTableWritable result = DataTableConverter.toDataTable(rset);
 			return result;
 		} finally {
 			if (stmt != null) stmt.close();
@@ -182,7 +182,7 @@ public class ModelDataStateChecker {
 		try {
 			stmt = conn.createStatement();
 			ResultSet rset = stmt.executeQuery(sql);
-			DataTableWritable result = DataTableUtils.toDataTable(rset);
+			DataTableWritable result = DataTableConverter.toDataTable(rset);
 			return result;
 		} finally {
 			if (stmt != null) stmt.close();
@@ -274,7 +274,7 @@ public class ModelDataStateChecker {
 		try {
 			stmt = conn.createStatement();
 			ResultSet rset = stmt.executeQuery(sql);
-			DataTableWritable result = DataTableUtils.toDataTable(rset);
+			DataTableWritable result = DataTableConverter.toDataTable(rset);
 			return result;
 		} finally {
 			if (stmt != null) stmt.close();
@@ -323,7 +323,7 @@ public class ModelDataStateChecker {
 		try {
 			stmt = conn.createStatement();
 			ResultSet rset = stmt.executeQuery(sql);
-			DataTableWritable result = DataTableUtils.toDataTable(rset);
+			DataTableWritable result = DataTableConverter.toDataTable(rset);
 			return result;
 		} finally {
 			if (stmt != null) stmt.close();

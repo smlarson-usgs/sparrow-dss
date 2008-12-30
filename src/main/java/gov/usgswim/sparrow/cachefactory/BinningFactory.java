@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgs.webservices.framework.utils.TemporaryHelper;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -70,7 +70,7 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @return
 	 */
 	protected BigDecimal[] getEqualCountBins(DataTable data, int columnIndex, int binCount) {
-		float[] sortedValues = TemporaryHelper.extractSortedValues(data, columnIndex); //sorted Array holding all values
+		float[] sortedValues = DataTableUtils.extractSortedValues(data, columnIndex); //sorted Array holding all values
 		return getEqualCountBins(sortedValues, binCount, true); // TODO set to true for now. Should take parameter from BinningRequest
 	}
 
@@ -298,7 +298,7 @@ public class BinningFactory implements CacheEntryFactory {
 		double minValue = 0;
 		double maxValue = 0;
 		{
-			float[] sortedValues = TemporaryHelper.extractSortedValues(data, columnIndex);
+			float[] sortedValues = DataTableUtils.extractSortedValues(data, columnIndex);
 			minValue = sortedValues[0];
 			maxValue = sortedValues[sortedValues.length - 1];
 		}
