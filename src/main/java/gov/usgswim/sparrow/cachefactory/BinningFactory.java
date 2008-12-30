@@ -168,7 +168,7 @@ public class BinningFactory implements CacheEntryFactory {
 		for (int i=1; i<(binCount); i++) {
 
 			//Get the row containing the nearest integer split
-			double split = (double)i * binSize;
+			double split = i * binSize;
 
 			//The bin boundary is the value contained at that row.
 			float topVal = sortedValues[(int) Math.ceil(split)];
@@ -215,7 +215,7 @@ public class BinningFactory implements CacheEntryFactory {
 				// don't return exponents of 3 or less
 				if (-3 <= result.scale() && result.scale() < 0) {
 					String rep = result.toPlainString();
-					if (result.toPlainString().length()<=4) {
+					if (rep.length()<=4) {
 						result = result.setScale(0); // just write it out rather than use exponential notation
 					}
 				}
@@ -288,8 +288,9 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @return Set of bins such that the bins define break-point boundaries
 	 *         whose values are approximately equally spaced apart.
 	 */
+	@SuppressWarnings("cast")
 	public static BigDecimal[] getEqualRangeBins(DataTable data, int columnIndex, int binCount, boolean useRounding) {
-		int totalRows = data.getRowCount(); // Total rows of data
+		//int totalRows = data.getRowCount(); // Total rows of data
 
 		// TODO: check that this is implemented and then uncomment. Currently unsupported operation exception. I think this is just out of date with the latest jar
 		// Grab the min and max values from the DataTable
@@ -315,7 +316,7 @@ public class BinningFactory implements CacheEntryFactory {
 			bdBinWidth = round(binWidth, binWidth, (1 + maxAllowableRangeExpansion) * binWidth); // round up by at most maxAllowableRangeExpansion
 			double totalRangeDiff = bdBinWidth.doubleValue() * binCount - (maxValue - minValue); // expansion in size of total range.
 			BigDecimal binsMinValue = round(minValue, minValue - totalRangeDiff, minValue); // round down by at most diff
-			BigDecimal binsMaxValue = round(maxValue, maxValue, maxValue + totalRangeDiff); // round up by at most diff
+			//BigDecimal binsMaxValue = round(maxValue, maxValue, maxValue + totalRangeDiff); // round up by at most diff
 			// TODO determine whether binsMinValue or binsMaxValue is a better
 			// rounding value by comparing the candidates for the first and last
 			// bin posts.
@@ -326,7 +327,7 @@ public class BinningFactory implements CacheEntryFactory {
 			// exact, but we still need BigDecimals rounding for display
 			int defaultPrecision = 6; // round to 6 digits by default
 			bdBinWidth = new BigDecimal(binWidth, new MathContext(defaultPrecision, RoundingMode.CEILING));// round up to be used as BigDecimal
-			BigDecimal binsMinValue = new BigDecimal(minValue, new MathContext(defaultPrecision, RoundingMode.FLOOR)); // round down 
+			//BigDecimal binsMinValue = new BigDecimal(minValue, new MathContext(defaultPrecision, RoundingMode.FLOOR)); // round down 
 			// Note, there is a slight possibility that the totalRangeDiff is
 			// actually smaller than the difference between the "rounded"
 			// minValues, so that as a consequence, the top of the bin posts

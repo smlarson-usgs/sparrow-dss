@@ -143,9 +143,8 @@ public abstract class TabDelimFileUtil {
 			if (lastRow > -1) {
 				throw new UnsupportedOperationException("must implement this");
 //				pd.setCoef( new Data2DView(pd.getCoef(), 0, lastRow + 1, 0, pd.getCoef().getColumnCount()) );
-			} else {
-				throw new IllegalStateException("Could not find the zero iteration in the data");
 			}
+			throw new IllegalStateException("Could not find the zero iteration in the data");
 		}
 
 		ModelBuilder mb = new ModelBuilder(modelId);
@@ -328,7 +327,7 @@ public abstract class TabDelimFileUtil {
 			if (mappedHeadings == null) {
 				//assign later
 			} else {
-				remappedColumns = TabDelimFileUtil.mapByColumnHeadings(headings, (String[]) mappedHeadings);
+				remappedColumns = TabDelimFileUtil.mapByColumnHeadings(headings, mappedHeadings);
 				mappedColumnCount = mappedHeadings.length;
 			}
 
@@ -375,7 +374,7 @@ public abstract class TabDelimFileUtil {
 			//copy the array list to a double[][] array
 			double[][] data = new double[list.size()][];
 			for (int i = 0; i < data.length; i++)  {
-				data[i] = (double[]) list.get(i);
+				data[i] = list.get(i);
 			}
 
 			SimpleDataTableWritable dataWritable = new SimpleDataTableWritable(data, (mappedHeadings==null)?headings:mappedHeadings);

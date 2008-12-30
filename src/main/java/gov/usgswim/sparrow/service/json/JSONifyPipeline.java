@@ -69,6 +69,7 @@ public class JSONifyPipeline extends AbstractPipeline implements Pipeline {
 		};
 	}
 
+	@Override
 	public void dispatch(PipelineRequest o, OutputStream response) throws Exception {
 		
 		// Configure the JSON formatter
@@ -87,6 +88,7 @@ public class JSONifyPipeline extends AbstractPipeline implements Pipeline {
 		out.close();
 	}
 	
+	@Override
 	public void dispatch(PipelineRequest o, HttpServletResponse response) throws Exception {
 		response.setContentType(JSON.getMimeType());
 		

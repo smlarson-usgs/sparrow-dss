@@ -62,6 +62,7 @@ public class ModelParser
 		return req;
 	}
 
+	@Override
 	public ModelRequest parse(HttpServletRequest request)throws Exception {
 		ModelRequest result = super.parse(request);
 		ResponseFormat respFormat = result.getResponseFormat();

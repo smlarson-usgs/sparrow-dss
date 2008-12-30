@@ -142,9 +142,8 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 	protected XMLStreamReader getXMLStream(String xml) throws IOException, XMLStreamException {							
 		if (xml != null) {
 			return inFact.createXMLStreamReader(new StringReader(xml));		
-		} else {
-			throw new IOException("No request data found");
-		}																										
+		}
+		throw new IOException("No request data found");																				
 	}
 
 	/**
@@ -210,9 +209,8 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 			} catch (Exception e) {
 				throw new Exception("The '" + name + "' parameter could not be converted to an double (decimal)");
 			}
-		} else {
-			return defaultVal;
 		}
+		return defaultVal;
 	}
 	
 	public static long parseParamAsLong(HttpServletRequest req, String name) throws Exception {
@@ -247,9 +245,8 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 			} catch (Exception e) {
 				throw new Exception("The '" + name + "' parameter could not be converted to an integer");
 			}
-		} else {
-			return defaultVal;
 		}
+		return defaultVal;
 	}
 	
 	/**

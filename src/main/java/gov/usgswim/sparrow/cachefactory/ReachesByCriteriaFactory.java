@@ -29,6 +29,7 @@ public class ReachesByCriteriaFactory extends AbstractCacheFactory {
 	protected static Logger log =
 		Logger.getLogger(ReachesByCriteriaFactory.class); //logging for this class
 	
+	@Override
 	public List<Long> createEntry(Object logicalSetCriteria) throws Exception {
 		LogicalSet ls = (LogicalSet) logicalSetCriteria;
 

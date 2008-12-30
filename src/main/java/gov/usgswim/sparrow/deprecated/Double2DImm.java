@@ -38,17 +38,15 @@ public class Double2DImm extends Data2DImmAbstract {
 	public Data2D buildIntImmutable(int indexCol) {
 		if (getIndexColumn() == indexCol) {
 			return this;
-		} else {
-			return new Int2DImm(getIntData(), getHeadings(), indexCol, getRowIds());
 		}
+		return new Int2DImm(getIntData(), getHeadings(), indexCol, getRowIds());
 	}
 	
 	public Data2D buildDoubleImmutable(int indexCol) {
 		if (getIndexColumn() == indexCol) {
 			return this;
-		} else {
-			return new Double2DImm(_data, getHeadings(), indexCol, getRowIds());
 		}
+		return new Double2DImm(_data, getHeadings(), indexCol, getRowIds());
 	}
 	
 	public int[][] getIntData() {
@@ -105,13 +103,10 @@ public class Double2DImm extends Data2DImmAbstract {
 			Integer i = idIndex.get(id);
 			if (i != null) {
 				return i;
-			} else {
-				return -1;
 			}
-		} else {
 			return -1;
 		}
-
+		return -1;
 	}
 	
 	private HashMap<Double, Integer> buildIndex() {
@@ -127,9 +122,8 @@ public class Double2DImm extends Data2DImmAbstract {
 			}
 			
 			return map;
-		} else {
-			return null;
 		}
+		return null;
 	}
 	
 	public int[] getIntColumn(int col) {

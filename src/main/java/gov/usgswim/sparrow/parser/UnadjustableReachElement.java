@@ -21,7 +21,8 @@ import javax.xml.stream.XMLStreamReader;
 public class UnadjustableReachElement extends ReachElement {
     private static final long serialVersionUID = -7230343316711453672L;
 
-    public synchronized ReachElement parse(XMLStreamReader in)
+    @Override
+	public synchronized ReachElement parse(XMLStreamReader in)
     throws XMLStreamException, XMLParseValidationException {
         
         ReachElement reach = super.parse(in);

@@ -64,6 +64,7 @@ public class EchoPipeline extends AbstractPipeline<PipelineRequest> implements P
 		};
 	}
 
+	@Override
 	public void dispatch(PipelineRequest o, OutputStream response) throws Exception {
 		PrintWriter out = new PrintWriter(response);
 		out.write(o.getXMLRequest());
@@ -71,6 +72,7 @@ public class EchoPipeline extends AbstractPipeline<PipelineRequest> implements P
 		out.close();
 	}
 	
+	@Override
 	public void dispatch(PipelineRequest o, HttpServletResponse response) throws Exception {
 		response.setContentType(outputType.getMimeType());
 		if (echoAsAttachment) {

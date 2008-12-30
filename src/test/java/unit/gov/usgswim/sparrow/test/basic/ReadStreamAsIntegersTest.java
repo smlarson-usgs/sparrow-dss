@@ -9,6 +9,7 @@ import java.io.InputStream;
 
 public class ReadStreamAsIntegersTest extends ReadStreamAsDoubleTest {
 
+	@Override
 	public void testBasic() throws Exception {
 		InputStream fileStream = this
 				.getClass()

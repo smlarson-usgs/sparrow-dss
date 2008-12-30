@@ -29,14 +29,15 @@ public class ModelPoint {
   	return point;
   }
 	
-  public boolean equals(Object obj) {
+  @Override
+public boolean equals(Object obj) {
 	  if (obj instanceof ModelPoint) {
 	  	return obj.hashCode() == hashCode();
-	  } else {
-	  	return false;
 	  }
+	  return false;
   }
 	
+	@Override
 	public synchronized int hashCode() {
 		int hash = new HashCodeBuilder(17, 193).
 		append(modelID).

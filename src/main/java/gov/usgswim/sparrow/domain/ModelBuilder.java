@@ -40,6 +40,7 @@ public class ModelBuilder implements Model, ImmutableBuilder<Model> {
 		_id = id;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public Model toImmutable() throws IllegalStateException {
 	
 		List<Source> tmpList = null;
@@ -215,9 +216,8 @@ public class ModelBuilder implements Model, ImmutableBuilder<Model> {
 	public List<Source> getSources() {
 		if (_sources != null) {
 			return _sources;
-		} else {
-			return (List<Source>)Collections.EMPTY_LIST;
 		}
+		return Collections.emptyList();
 	}
 	
 	public Source getSource(int identifier) {
@@ -229,8 +229,7 @@ public class ModelBuilder implements Model, ImmutableBuilder<Model> {
 			}
 			
 			return null;	//not found
-		} else {
-			return null;	//no sources
 		}
+		return null;	//no sources
 	}
 }

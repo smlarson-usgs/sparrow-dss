@@ -10,7 +10,8 @@ import javax.xml.stream.XMLStreamReader;
 public class BinningParser extends AbstractHttpRequestParser<BinningRequest> 
 implements RequestParser<BinningRequest>  {
     
-    public BinningRequest parse(HttpServletRequest request) throws Exception {
+    @Override
+	public BinningRequest parse(HttpServletRequest request) throws Exception {
         BinningRequest req = null;
         
         if (request.getMethod().equals("GET")) {

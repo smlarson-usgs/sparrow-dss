@@ -19,11 +19,13 @@ public class SharedApplicationCachingIntegrationTest extends TestCase {
 
 	LifecycleListener lifecycle = new LifecycleListener();
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		lifecycle.contextInitialized(null);
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 

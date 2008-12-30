@@ -62,12 +62,11 @@ public class BinningRequest implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-        if (obj instanceof BinningRequest) {
-            return obj.hashCode() == hashCode();
-        } else {
-            return false;
-        }
-    }
+		if (obj instanceof BinningRequest) {
+			return obj.hashCode() == hashCode();
+		}
+		return false;
+	}
 
 	@Override
 	public synchronized int hashCode() {

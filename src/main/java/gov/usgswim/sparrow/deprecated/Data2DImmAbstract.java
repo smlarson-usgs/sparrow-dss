@@ -137,17 +137,15 @@ public abstract class Data2DImmAbstract implements Data2D {
 	public String getHeading(int col, boolean trimToEmpty) {
 		if (_head != null && _head.length > col) {
 
-				if (trimToEmpty) {
-				  return StringUtils.trimToEmpty(_head[col]);
-				} else {
-				  return _head[col];
-				}
+			if (trimToEmpty) {
+				return StringUtils.trimToEmpty(_head[col]);
+			}
+			return _head[col];
 
-		} else {
-			return trimToEmpty?StringUtils.EMPTY:null;
 		}
+		return trimToEmpty?StringUtils.EMPTY:null;
 	}
-	
+
 	public int findHeading(String name) {
 		if (_head != null && name != null) {
 			for(int i=0; i<_head.length; i++) {
@@ -185,20 +183,17 @@ public abstract class Data2DImmAbstract implements Data2D {
 			Integer r = _idMap.get(id);
 			if (r != null) {
 				return r;
-			} else {
-				return -1;
 			}
-		} else {
 			return -1;
 		}
+		return -1;
 	}
 
 	public Integer getIdForRow(int row) {
 		if (_ids != null) {
 			return _ids[row];
-		} else {
-			return null;
 		}
+		return null;
 	}
 	
 	public int[] getRowIds() {
@@ -206,9 +201,8 @@ public abstract class Data2DImmAbstract implements Data2D {
 			int[] newIds = new int[_ids.length];
 			System.arraycopy(_ids, 0, newIds, 0, _ids.length);
 			return newIds;
-		} else {
-			return null;
 		}
+		return null;
 	}
 	
 }

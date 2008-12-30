@@ -101,18 +101,19 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	public boolean isParseTarget(String name) {
 		return MAIN_ELEMENT_NAME.equals(name);
 	}
-	
+
 	/**
 	 * Consider two instances the same if they have the same calculated hashcodes
 	 */
-  public boolean equals(Object obj) {
-	  if (obj instanceof TerminalReaches) {
-	  	return obj.hashCode() == hashCode();
-	  } else {
-	  	return false;
-	  }
-  }
-  
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof TerminalReaches) {
+			return obj.hashCode() == hashCode();
+		}
+		return false;
+	}
+
+	@Override
 	public synchronized int hashCode() {
 		if (id == null) {
 			HashCodeBuilder hashBuilder = new HashCodeBuilder(137, 1729);

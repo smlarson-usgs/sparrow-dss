@@ -22,8 +22,7 @@ public class ModelDataLoadComparison {
 
 
 	public static void outputTopoAsTextFile(File baseOutputDirectory, Connection conn, Long modelID) throws SQLException, IOException {
-		int modelIdInt = modelID.intValue();
-
+		//int modelIdInt = modelID.intValue();
 
 		{// write topo
 			DataTable topo = DataLoader.loadTopo(conn, modelID);
@@ -40,7 +39,7 @@ public class ModelDataLoadComparison {
 	}
 
 	public static void outputSourceValuesAsTextFile(File baseOutputDirectory, Connection conn, Long modelID) throws SQLException, IOException {
-		int modelIdInt = modelID.intValue();
+		//int modelIdInt = modelID.intValue();
 
 		{// write src
 			DataTableWritable sourceMetadata = DataLoader.loadSrcMetadata(conn, modelID);
@@ -57,7 +56,7 @@ public class ModelDataLoadComparison {
 	}
 	
 	public static void outputCoefAsTextFiles(File baseOutputDirectory, Connection conn, Long modelID) throws SQLException, IOException {
-		int modelIdInt = modelID.intValue();
+		//int modelIdInt = modelID.intValue();
 
 		{// write coef
 			DataTableWritable sourceMetadata = DataLoader.loadSrcMetadata(conn, modelID);

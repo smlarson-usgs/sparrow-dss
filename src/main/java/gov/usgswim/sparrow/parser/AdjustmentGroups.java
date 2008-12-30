@@ -143,14 +143,15 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	/**
 	 * Consider two instances the same if they have the same calculated hashcodes
 	 */
+	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof AdjustmentGroups) {
 			return obj.hashCode() == hashCode();
-		} else {
-			return false;
 		}
+		return false;
 	}
 
+	@Override
 	public synchronized int hashCode() {
 		if (id == null) {
 			HashCodeBuilder hash = new HashCodeBuilder(17, 13);

@@ -60,7 +60,7 @@ public class DataTableCompare implements Immutable {
 		return base.getColumnCount();
 	}
 
-	public Class getDataType(int col) {
+	public Class<?> getDataType(int col) {
 		return Double.class;
 	}
 
@@ -78,18 +78,16 @@ public class DataTableCompare implements Immutable {
 		
 		if (absolute) {
 			return c - b;
+		}
+		if (b != 0d) {
+			return 100d * (c - b) / b;
+		}
+		if (c > b) {
+			return 100d;
+		} else if (b > c) {
+			return -100d;
 		} else {
-			if (b != 0d) {
-				return 100d * (c - b) / b;
-			} else {
-				if (c > b) {
-					return 100d;
-				} else if (b > c) {
-					return -100d;
-				} else {
-					return 0d;
-				}
-			}
+			return 0d;
 		}
 	}
 
@@ -99,18 +97,16 @@ public class DataTableCompare implements Immutable {
 		
 		if (absolute) {
 			return (float)(c - b);
+		}
+		if (b != 0d) {
+			return (float)(100d * (c - b) / b);
+		}
+		if (c > b) {
+			return 100f;
+		} else if (b > c) {
+			return -100f;
 		} else {
-			if (b != 0d) {
-				return (float)(100d * (c - b) / b);
-			} else {
-				if (c > b) {
-					return 100f;
-				} else if (b > c) {
-					return -100f;
-				} else {
-					return 0f;
-				}
-			}
+			return 0f;
 		}
 	}
 
@@ -120,18 +116,16 @@ public class DataTableCompare implements Immutable {
 		
 		if (absolute) {
 			return (int)(c - b);
+		}
+		if (b != 0d) {
+			return (int) (100d * (c - b) / b);
+		}
+		if (c > b) {
+			return 100;
+		} else if (b > c) {
+			return -100;
 		} else {
-			if (b != 0d) {
-				return (int) (100d * (c - b) / b);
-			} else {
-				if (c > b) {
-					return 100;
-				} else if (b > c) {
-					return -100;
-				} else {
-					return 0;
-				}
-			}
+			return 0;
 		}
 	}
 
@@ -141,18 +135,16 @@ public class DataTableCompare implements Immutable {
 		
 		if (absolute) {
 			return (long)(c - b);
+		}
+		if (b != 0d) {
+			return (long)(100d * (c - b) / b);
+		}
+		if (c > b) {
+			return 100L;
+		} else if (b > c) {
+			return -100L;
 		} else {
-			if (b != 0d) {
-				return (long)(100d * (c - b) / b);
-			} else {
-				if (c > b) {
-					return 100L;
-				} else if (b > c) {
-					return -100L;
-				} else {
-					return 0L;
-				}
-			}
+			return 0L;
 		}
 	}
 	
@@ -231,9 +223,8 @@ public class DataTableCompare implements Immutable {
 	public String getUnits(int col) {
 		if (absolute) {
 			return base.getUnits(col);
-		} else {
-			return "percentage";
 		}
+		return "percentage";
 	}
 
 	public Object getValue(int row, int col) {

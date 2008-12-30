@@ -27,34 +27,31 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest_
 		
 			if (request.getParameter(getXmlParam()) != null) {
 				return super.parse(request);
-			} else {
-				String[] paramChain = parseExtraPath(request);
-				
-				
-				if (paramChain.length == 1 && StringUtils.isNumeric(paramChain[0])) {
-				
-					Long id = Long.parseLong(paramChain[0]);
-					int numResults = AbstractHttpRequestParser.parseParamAsLong(request, "result-count", 3L).intValue();
-					if (numResults > 100) numResults = 100;
-					
-					Point.Double point = new Point.Double();	//required
-					point.x = parseParamAsDouble(request, "long");
-					point.y = parseParamAsDouble(request, "lat");
-					
-					IDByPointRequest_old result = new IDByPointRequest_old(id, point, numResults);
-					result.setXMLRequest(""); // no xml request, RESTlike
-					return result;
-				} else {
-					throw new Exception("The IDByPoint Request must contain exactly one argument as part of the URL - the model ID.");
-				}
-				
 			}
+			String[] paramChain = parseExtraPath(request);
 			
-		} else {
-			return super.parse(request);
+			
+			if (paramChain.length == 1 && StringUtils.isNumeric(paramChain[0])) {
+			
+				Long id = Long.parseLong(paramChain[0]);
+				int numResults = AbstractHttpRequestParser.parseParamAsLong(request, "result-count", 3L).intValue();
+				if (numResults > 100) numResults = 100;
+				
+				Point.Double point = new Point.Double();	//required
+				point.x = parseParamAsDouble(request, "long");
+				point.y = parseParamAsDouble(request, "lat");
+				
+				IDByPointRequest_old result = new IDByPointRequest_old(id, point, numResults);
+				result.setXMLRequest(""); // no xml request, RESTlike
+				return result;
+			}
+			throw new Exception("The IDByPoint Request must contain exactly one argument as part of the URL - the model ID.");
+			
 		}
+		return super.parse(request);
 	}
 	
+	@Override
 	public IDByPointRequest_old parse(HttpServletRequest request) throws Exception {
 		IDByPointRequest_old result = idParse(request);
 		ResponseFormat respFormat = result.getResponseFormat();

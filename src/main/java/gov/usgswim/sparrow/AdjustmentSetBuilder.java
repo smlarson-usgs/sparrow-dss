@@ -83,12 +83,10 @@ public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSetImm>,
 				double coef = Double.parseDouble(adjs[i + 1]);
 				list.add(new Adjustment(Adjustment.AdjustmentType.GROSS_SRC_ADJUST, col, coef));
 			}
-
+			
 			return list;
-		} else {
-			return null;
 		}
-
+		return null;
 	}
 
 	public DataTable adjust(DataTable source, DataTable srcIndex, DataTable reachIndex) throws Exception {

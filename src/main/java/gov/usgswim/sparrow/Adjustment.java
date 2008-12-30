@@ -1,7 +1,5 @@
 package gov.usgswim.sparrow;
 
-import static gov.usgswim.sparrow.Adjustment.AdjustmentType.GROSS_SRC_ADJUST;
-import static gov.usgswim.sparrow.Adjustment.AdjustmentType.SPECIFIC_ADJUST;
 import gov.usgswim.Immutable;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
@@ -53,6 +51,7 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 			_desc = description;
 		}
 
+		@Override
 		public String toString() {
 			return _name;
 		}
@@ -160,17 +159,15 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 			if (i > -1) {
 				// Running from database, so has a sourceid table
 				return i;
-			} else  {
-				throw new Exception ("Source for id " + id + " not found");
 			}
-		} else {
-			// Running from text file so assume columns in order
-			if (id > 0) {
-				return id - 1;
-			} else {
-				throw new Exception("Invalid source id " + id + ", which must be greater then zero.");
-			}
+			throw new Exception ("Source for id " + id + " not found");
 		}
+		// Running from text file so assume columns in order
+		if (id > 0) {
+			return id - 1;
+		}
+		throw new Exception("Invalid source id " + id + ", which must be greater then zero.");
+
 	}
 
 	public int compareTo(Adjustment<K> that) {
@@ -208,9 +205,8 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 		if (object instanceof Adjustment) {
 			Adjustment that = (Adjustment) object;
 			return (_type.equals(that.getType()) && that._reachId == _reachId && that.getSrcId() == _srcId && _val == that.getValue());
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	@Override

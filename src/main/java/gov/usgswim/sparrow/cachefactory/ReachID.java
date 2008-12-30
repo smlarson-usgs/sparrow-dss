@@ -33,9 +33,8 @@ public class ReachID {
 	public boolean equals(Object obj) {
 		if (obj instanceof ReachID) {
 			return obj.hashCode() == hashCode();
-		} else {
-			return false;
 		}
+		return false;
 	}
 	
 	@Override

@@ -89,7 +89,7 @@ public class ContextToPredictionIntegrationTest extends TestCase {
 		//	</reach-group>
 		
 		//Get the Original, unadjusted source data
-		DataTable orgSrc = predictData.getSrc();
+		//DataTable orgSrc = predictData.getSrc();
 		
 		//Get the user adjusted source data, which is also cached.  The adjusted values are cached w/in
 		//PredictResultFactory by another cache call, which is handled by AdjustedSourceFactory

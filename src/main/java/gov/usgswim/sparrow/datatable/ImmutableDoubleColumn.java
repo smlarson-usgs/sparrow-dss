@@ -28,6 +28,7 @@ public class ImmutableDoubleColumn extends AbstractColumnData {
 		this.dataCol = dataCol;
 	}
 
+	@Override
 	protected Object getValues() {
 		throw new UnsupportedOperationException();
 	}

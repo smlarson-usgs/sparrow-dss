@@ -127,9 +127,8 @@ public abstract class ParserHelper {
   	Long v = parseAttribAsLong(reader, attrib, require);
   	if (v != null) {
   		return v.intValue();
-  	} else {
-  		return null;
   	}
+  	return null;
   }
 
 	/**
@@ -148,9 +147,8 @@ public abstract class ParserHelper {
   	Long val = parseAttribAsLong(reader, attrib, (long) defaultVal);
   	if (val != null) {
   		return val.intValue();
-  	} else {
-  		return null;
   	}
+  	return null;
   }
 
 	/**
@@ -211,21 +209,19 @@ public abstract class ParserHelper {
    * @throws Exception If the attribute cannot be parsed to the appropriate type.
    */
   public static Double parseAttribAsDouble(
-  		XMLStreamReader reader, String attrib, Double defaultVal) throws XMLStreamException {
-  	
-  	String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
-  	
-  	if (v != null) {
-  		try {
-  			return Double.parseDouble(v);
-  		} catch (Exception e) {
-  			throw new XMLStreamException("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be a number");
-  		}
-  		
-  	} else {
-  		return defaultVal;
-  	}
-  	
+		  XMLStreamReader reader, String attrib, Double defaultVal) throws XMLStreamException {
+
+	  String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
+
+	  if (v != null) {
+		  try {
+			  return Double.parseDouble(v);
+		  } catch (Exception e) {
+			  throw new XMLStreamException("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be a number");
+		  }
+
+	  }
+	  return defaultVal;  	
   }
 
 	/**
@@ -286,21 +282,19 @@ public abstract class ParserHelper {
    * @throws Exception If the attribute cannot be parsed to the appropriate type.
    */
   public static Long parseAttribAsLong(
-  		XMLStreamReader reader, String attrib, Long defaultVal) throws XMLStreamException {
-  	
-  	String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
-  	
-  	if (v != null) {
-  		try {
-  			return Long.parseLong(v);
-  		} catch (Exception e) {
-  			throw new XMLStreamException("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be an integer");
-  		}
-  		
-  	} else {
-  		return defaultVal;
-  	}
-  	
+		  XMLStreamReader reader, String attrib, Long defaultVal) throws XMLStreamException {
+
+	  String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
+
+	  if (v != null) {
+		  try {
+			  return Long.parseLong(v);
+		  } catch (Exception e) {
+			  throw new XMLStreamException("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be an integer");
+		  }
+
+	  }
+	  return defaultVal;
   }
   
 	/**
@@ -354,15 +348,13 @@ public abstract class ParserHelper {
    * @return
    */
   public static String parseAttribAsString(
-  		XMLStreamReader reader, String attrib, String defaultVal) {
-  	
-  	String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
-  	
-  	if (v != null && ! ("".equals(v))) {
-  		return v;
-  	} else {
-  		return defaultVal;
-  	}
-  	
+		  XMLStreamReader reader, String attrib, String defaultVal) {
+
+	  String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
+
+	  if (v != null && ! ("".equals(v))) {
+		  return v;
+	  }
+	  return defaultVal;
   }
 }

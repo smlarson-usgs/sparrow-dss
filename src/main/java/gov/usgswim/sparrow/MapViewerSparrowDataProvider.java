@@ -190,9 +190,8 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 
                 return nsData;
 
-            } else {
-                throw new RuntimeException("No PredictionContext found for ID " + contextId);
             }
+			throw new RuntimeException("No PredictionContext found for ID " + contextId);
 
         } else if (properties.containsKey(MODEL_ID) && properties.get(MODEL_ID) != null) {
 

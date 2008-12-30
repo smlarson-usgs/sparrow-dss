@@ -143,9 +143,9 @@ public class LogicalSet implements XMLStreamParserComponent {
 	public boolean equals(Object obj) {
 		if (obj instanceof LogicalSet) {
 			return obj.hashCode() == hashCode();
-		} else {
-			return false;
 		}
+		return false;
+
 //		if (obj != null && obj instanceof LogicalSet) {
 //			if (obj == null) return false;
 //			LogicalSet other = (LogicalSet) obj;

@@ -121,14 +121,15 @@ public class Analysis implements XMLStreamParserComponent {
 	/**
 	 * Consider two instances the same if they have the same calculated hashcodes
 	 */
-  public boolean equals(Object obj) {
+  @Override
+public boolean equals(Object obj) {
 	  if (obj instanceof Analysis) {
 	  	return obj.hashCode() == hashCode();
-	  } else {
-	  	return false;
 	  }
+	  return false;
   }
   
+	@Override
 	public synchronized int hashCode() {
 		if (id == null) {
 			int hash = new HashCodeBuilder(137, 1729).

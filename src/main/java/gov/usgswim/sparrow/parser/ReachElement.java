@@ -119,7 +119,8 @@ public class ReachElement implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME.equals(name);
 	}
 	
-	//TODO:  I am just assigning the Adjustment array b/c it is unmodifiable.  Is that truely acceptable...?
+	//TODO:  I am just assigning the Adjustment array b/c it is unmodifiable.  Is that truly acceptable...?
+	@Override
 	protected ReachElement clone() throws CloneNotSupportedException {
 		ReachElement myClone = new ReachElement();
 		myClone.id = id;

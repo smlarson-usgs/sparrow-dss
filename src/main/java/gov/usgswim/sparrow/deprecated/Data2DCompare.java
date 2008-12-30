@@ -109,9 +109,8 @@ public class Data2DCompare extends Data2DView {
 	protected int mapColumn(int c) {
 		if (colMap != null) {
 			return colMap[c];
-		} else {
-			return c;
 		}
+		return c;
 	}
 
 }

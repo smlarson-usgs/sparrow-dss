@@ -31,11 +31,13 @@ public class IDServiceIntegrationTest extends TestCase {
 	
 	LifecycleListener lifecycle = new LifecycleListener();
 	
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		lifecycle.contextInitialized(null, true);
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 		lifecycle.contextDestroyed(null, true);

@@ -79,16 +79,15 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 				result.setResponseFormat(rf);
 				
 				return result;
-			} else {
-				throw new Exception("The IDByPoint Request must contain exactly one argument as part of the URL - the model ID.");
 			}
+			throw new Exception("The IDByPoint Request must contain exactly one argument as part of the URL - the model ID.");
 
-		} else {
-			// Normal POST requests are handled normally by parent class
-			return super.parse(request);
 		}
+		// Normal POST requests are handled normally by parent class
+		return super.parse(request);
 	}
 	
+	@Override
 	public IDByPointRequest parse(HttpServletRequest request) throws Exception {
 		IDByPointRequest result = idParse(request);
 		ResponseFormat respFormat = result.getResponseFormat();

@@ -722,6 +722,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 			this.attributesByAlias = new HashMap<String, String>();
 		}
 		
+		@Override
 		public BasicEvent addAttribute(String name, String value) {
 			super.addAttribute(name, value);
 			// --------------------------------
@@ -738,6 +739,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 			return this;
 		}
 		
+		@Override
 		public String getAttribute(String name) {
 			String result = attributesByAlias.get(name);
 			if (result == null) {
@@ -746,6 +748,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 			return result;
 		}
 		
+		@Override
 		public String getAttributeLocalName(int i) {
 			return attributeAliases.get(i);
 		}

@@ -85,6 +85,7 @@ public class ServiceServlet extends HttpServlet {
 	// ================
 	// INSTANCE METHODS
 	// ================
+	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
 		
@@ -127,6 +128,7 @@ public class ServiceServlet extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
+	@Override
 	public void doGet(HttpServletRequest request,
 										HttpServletResponse response) throws ServletException, IOException {
 		
@@ -145,6 +147,7 @@ public class ServiceServlet extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
+	@Override
 	public void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		PipelineRequest o = null;

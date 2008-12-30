@@ -50,6 +50,7 @@ public class DomainSerializer extends BasicXMLStreamReader {
 		}
 	}
 	
+	@Override
 	protected BasicTagEvent documentStartAction() {
 		super.documentStartAction();
 		// add the namespaces

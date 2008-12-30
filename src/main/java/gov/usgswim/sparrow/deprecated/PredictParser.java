@@ -57,6 +57,7 @@ public class PredictParser extends AbstractHttpRequestParser<PredictServiceReque
 			return req;
 		}
 		
+		@Override
 		public PredictServiceRequest parse(HttpServletRequest request)throws Exception {
 			PredictServiceRequest result = super.parse(request);
 			ResponseFormat respFormat = result.getResponseFormat();

@@ -31,7 +31,7 @@ public class ReachByPointFactoryIntegrationTest {
 		ReachByPointFactory factory = new ReachByPointFactory();
 		ModelPoint req = new ModelPoint(22L, new Point.Double(-90, 45));
 
-		ReachInfo reach = (ReachInfo) factory.createEntry(req);
+		ReachInfo reach = factory.createEntry(req);
 		
 		assertNotNull(reach);
 		assertEquals(19283, reach.getId());

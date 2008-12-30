@@ -71,10 +71,9 @@ public class PredictionContextTest extends TestCase {
 		boolean isFound = m.find();
 		if (isFound) {
 			return Integer.valueOf(m.group(1));
-		} else {
-			System.err.println("Unable to extract context-id from prediction context response for test " + PredictionContextTest.class.getSimpleName());
-			return 0;
 		}
+		System.err.println("Unable to extract context-id from prediction context response for test " + PredictionContextTest.class.getSimpleName());
+		return 0;
 		
 	}
 	

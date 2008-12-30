@@ -205,9 +205,8 @@ public class PredictService implements HttpService<PredictServiceRequest> {
 			return result;
 			// TODO determine if necessary to add indexes
 
-		} else {
-			return source;
 		}
+		return source;
 	}
 
 }

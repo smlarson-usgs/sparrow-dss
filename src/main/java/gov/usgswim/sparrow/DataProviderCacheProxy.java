@@ -50,13 +50,12 @@ public class DataProviderCacheProxy {
 					sleepCount++;
 				}
 			}
-			
+
 			if (data == bogusData) {
 				invalid = true;
 				return null;
-			} else {
-				return data;
 			}
+			return data;
 		}
 	}
 	

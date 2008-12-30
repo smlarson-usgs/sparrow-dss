@@ -87,7 +87,6 @@ public class Analyzer {
 		result.delimiter = null;
 		int lineCount = 0;
 		String line;
-		String[] headers = null;
 		int width = 0;
 		BufferedReader in = new BufferedReader(new FileReader(dataFile));
 		try {
@@ -101,7 +100,7 @@ public class Analyzer {
 				if (lineCount == 1) {
 					// assume that the headers may be on the first or second line.
 					result.setHeaders(inferHeaders(line, result.delimiter));
-					if (result != null) continue;
+					continue;
 				}
 				String[] cells = line.split(result.delimiter);
 				if (cells.length == 0) continue;

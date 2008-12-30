@@ -59,10 +59,9 @@ public abstract class TestHelper {
 		boolean isFound = m.find();
 		if (isFound) {
 			return m.group(1);
-		} else {
-			System.err.println("Unable to extract attribute attributeName from xml");
-			return null;
 		}
+		System.err.println("Unable to extract attribute attributeName from xml");
+		return null;
 	}
 	
 	/**

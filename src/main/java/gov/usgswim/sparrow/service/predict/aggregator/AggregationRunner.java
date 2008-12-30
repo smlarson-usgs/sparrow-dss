@@ -236,7 +236,7 @@ public class AggregationRunner {
      * @return A map of the results where key = group/huc id and value = the
      *         calculated data row.
      */
-    private HashMap aggregate(DataTable dataTable, ResultSet rs, boolean weight)
+    private HashMap<String, AggregateData> aggregate(DataTable dataTable, ResultSet rs, boolean weight)
     throws Exception {
         // Map to hold aggregate data, and running variables for the function
         HashMap<String, AggregateData> aggregateDataMap = new HashMap<String, AggregateData>();

@@ -14,6 +14,7 @@ public class IDByPointPipeline extends AbstractPipeline<IDByPointRequest_old> {
 		super(new IDByPointService(), new IDByPointParser());
 	}
 
+	@Override
 	protected IFormatter getCustomFlatteningFormatter(OutputType outputType) {
 		return new SparrowFlatteningFormatter(outputType);
 	}

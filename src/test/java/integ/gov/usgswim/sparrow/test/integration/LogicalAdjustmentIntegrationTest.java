@@ -28,11 +28,13 @@ public class LogicalAdjustmentIntegrationTest extends TestCase {
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	LifecycleListener lifecycle = new LifecycleListener();
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		lifecycle.contextInitialized(null, true);
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 
@@ -79,7 +81,7 @@ public class LogicalAdjustmentIntegrationTest extends TestCase {
 
 		//Get the prediction context and the nominal context;
 		PredictionContext userContext = SharedApplication.getInstance().getPredictionContext(CONTEXT_ID);
-		PredictionContext nomContext = new PredictionContext(userContext.getModelID(), null, null, null, null);
+		//PredictionContext nomContext = new PredictionContext(userContext.getModelID(), null, null, null, null);
 
 		//Do a test of the hashcodes
 		assertEquals(contextReq.getPredictionContext().hashCode(), userContext.clone().hashCode());
@@ -168,7 +170,7 @@ public class LogicalAdjustmentIntegrationTest extends TestCase {
 
 		//Get the prediction context and the nominal context;
 		PredictionContext userContext = SharedApplication.getInstance().getPredictionContext(CONTEXT_ID);
-		PredictionContext nomContext = new PredictionContext(userContext.getModelID(), null, null, null, null);
+		//PredictionContext nomContext = new PredictionContext(userContext.getModelID(), null, null, null, null);
 
 		//Do a test of the hashcodes
 		assertEquals(contextReq.getPredictionContext().hashCode(), userContext.hashCode());

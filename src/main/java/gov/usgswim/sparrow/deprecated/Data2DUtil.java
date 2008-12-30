@@ -27,9 +27,8 @@ public class Data2DUtil {
 			
 			return out;
 
-		} else {
-			return Data2D.EMPTY_INT_2D_DATA;
 		}
+		return Data2D.EMPTY_INT_2D_DATA;
 	}
 	
 	public static int[][] copyToIntData(double[][] data) {
@@ -50,9 +49,8 @@ public class Data2DUtil {
 			
 			return out;
 
-		} else {
-			return Data2D.EMPTY_INT_2D_DATA;
 		}
+		return Data2D.EMPTY_INT_2D_DATA;
 	}
 	
 	public static double[][] copyToDoubleData(int[][] data) {
@@ -72,9 +70,8 @@ public class Data2DUtil {
 			
 			return out;
 
-		} else {
-			return Data2D.EMPTY_DOUBLE_2D_DATA;
 		}
+		return Data2D.EMPTY_DOUBLE_2D_DATA;
 	}
 	
 	public static double[][] copyToDoubleData(double[][] data) {
@@ -92,9 +89,8 @@ public class Data2DUtil {
 			
 			return out;
 
-		} else {
-			return Data2D.EMPTY_DOUBLE_2D_DATA;
 		}
+		return Data2D.EMPTY_DOUBLE_2D_DATA;
 	}
 	
 	
@@ -103,9 +99,8 @@ public class Data2DUtil {
 			String[] out = new String[src.length];
 			System.arraycopy(src, 0, out, 0, src.length);
 			return out;
-		} else {
-			return ArrayUtils.EMPTY_STRING_ARRAY;
 		}
+		return ArrayUtils.EMPTY_STRING_ARRAY;
 	}
 	
 

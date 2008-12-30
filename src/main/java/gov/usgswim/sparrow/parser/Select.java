@@ -138,9 +138,8 @@ public class Select implements XMLStreamParserComponent {
 	public boolean equals(Object obj) {
 		if (obj instanceof Select) {
 			return obj.hashCode() == hashCode();
-		} else {
-			return false;
 		}
+		return false;
 	}
 
 	@Override

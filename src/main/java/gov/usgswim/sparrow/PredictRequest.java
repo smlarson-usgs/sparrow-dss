@@ -67,14 +67,15 @@ public class PredictRequest implements Serializable {
 		return _adjSet2;
 	}
 
+	@Override
 	public boolean equals(Object object) {
 		if (object instanceof PredictRequest) {
 			return this.hashCode() == object.hashCode();
-		} else {
-			return false;
 		}
+		return false;
 	}
 
+	@Override
 	public int hashCode() {
 		//starts w/ some random numbers just to create unique results
 		if (hash == null) {

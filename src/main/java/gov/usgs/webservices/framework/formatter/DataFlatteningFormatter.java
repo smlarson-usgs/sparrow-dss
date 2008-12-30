@@ -401,6 +401,7 @@ public class DataFlatteningFormatter extends AbstractFormatter implements IForma
 	 * 
 	 * Note that namespaces are ignored.
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public void dispatch(XMLStreamReader in, Writer out) throws IOException {
 		ParseState state = new ParseState();

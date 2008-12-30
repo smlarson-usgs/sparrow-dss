@@ -3,7 +3,6 @@ package gov.usgswim.sparrow.service;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
-import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictComputable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
@@ -103,10 +102,12 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		return instance;
 	}
 
+	@Override
 	public Connection getConnection() throws SQLException {
 		return findConnection();
 	}
 
+	@Override
 	public Connection getConnection(String username, String password)
 	throws SQLException {
 
@@ -128,9 +129,8 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 
 		if (datasource != null) {
 			return datasource.getConnection();
-		} else {
-			return getDirectConnection();
 		}
+		return getDirectConnection();
 
 	}
 
@@ -288,17 +288,16 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 	public AdjustmentGroups getAdjustmentGroups(Integer id, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(ADJUSTMENT_GROUPS_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
-		
+
 		if (e != null) {
 			try {
-	      return ((AdjustmentGroups) e.getObjectValue()).clone();
-      } catch (CloneNotSupportedException e1) {
-      	log.error("Unexpected Clone not supported - returning null");
-      	return null;
-      }
-		} else {
-			return null;
+				return ((AdjustmentGroups) e.getObjectValue()).clone();
+			} catch (CloneNotSupportedException e1) {
+				log.error("Unexpected Clone not supported - returning null");
+				return null;
+			}
 		}
+		return null;
 	}
 	
 	//Analysis Cache
@@ -330,9 +329,8 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
       	log.error("Unexpected Clone not supported - returning null");
       	return null;
       }
-		} else {
-			return null;
 		}
+		return null;
 	}
 	
 	//TerminalReach Cache
@@ -364,9 +362,8 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
       	log.error("Unexpected Clone not supported - returning null");
       	return null;
       }
-		} else {
-			return null;
 		}
+		return null;
 	}
 	
 	//AreaOfInterest Cache
@@ -398,9 +395,8 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
       	log.error("Unexpected Clone not supported - returning null");
       	return null;
       }
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	//PredictData Cache

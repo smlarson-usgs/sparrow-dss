@@ -5,15 +5,15 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 public abstract class StringUtils {
-	private static final Pattern whiteSpaces = Pattern.compile("\\s");
+	private static final Pattern whiteSpaces = Pattern.compile("\\s+");
 	
 	public static String removeWhiteSpace(String aString) {
-		return aString.replaceAll("\\s", "");
+		return whiteSpaces.matcher(aString).replaceAll("");
 	}
 	
 	public static String normalize(String aString) {
 		aString = aString.toLowerCase();
-		return aString.replaceAll("\\s+", " ");
+		return whiteSpaces.matcher(aString).replaceAll("");
 	}
 
 	// =======================

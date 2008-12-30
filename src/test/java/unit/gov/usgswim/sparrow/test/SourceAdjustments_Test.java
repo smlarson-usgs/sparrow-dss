@@ -32,6 +32,7 @@ public class SourceAdjustments_Test extends TestCase {
 	public static void main(String args[]) {
 	}
 
+	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 
@@ -39,6 +40,7 @@ public class SourceAdjustments_Test extends TestCase {
 		data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 	}
 
+	@Override
 	protected void tearDown() throws Exception {
 		super.tearDown();
 

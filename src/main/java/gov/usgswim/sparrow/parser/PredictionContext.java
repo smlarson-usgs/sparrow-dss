@@ -152,11 +152,9 @@ public class PredictionContext implements XMLStreamParserComponent {
 						// id be calculated and populated? Here? on cache.put()?
 						checkValidity();
 						return this; // we're done
-					} else {
-						// otherwise, error
-						throw new XMLParseValidationException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);
 					}
-					//break;
+					// otherwise, error
+					throw new XMLParseValidationException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);
 			}
 		}
 		throw new XMLParseValidationException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
@@ -280,14 +278,15 @@ public class PredictionContext implements XMLStreamParserComponent {
 	/**
 	 * Consider two instances the same if they have the same calculated hashcodes
 	 */
-  public boolean equals(Object obj) {
-	  if (obj instanceof PredictionContext) {
-	  	return obj.hashCode() == hashCode();
-	  } else {
-	  	return false;
-	  }
-  }
+    @Override
+    public boolean equals(Object obj) {
+    	if (obj instanceof PredictionContext) {
+    		return obj.hashCode() == hashCode();
+    	}
+    	return false;
+    }
 	
+	@Override
 	public synchronized int hashCode() {
 		if (id == null) {
 			
@@ -310,6 +309,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	 * 
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public PredictionContext clone() throws CloneNotSupportedException {
 		
 		PredictionContext myClone = new PredictionContext();

@@ -231,11 +231,14 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 
+	@SuppressWarnings("unused")
 	private void printBinningResult(BigDecimal[] result) {
 		for (int i=0; i<result.length; i++) {
 			System.out.println(i + ": " + result[i]);
 		}
 	}
+	
+	@SuppressWarnings("unused")
 	private void print(BigDecimal bd) {
 		System.out.println(bd2String(bd));
 	}

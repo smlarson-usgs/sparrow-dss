@@ -284,7 +284,7 @@ public abstract class UsgsStAXUtils {
 		// different on Woodstox and the RI.
 		if (writeElementNS && uri != null)
 		{
-			if ( prefix == null || prefix.length() ==  0 )
+			if ( prefix.length() ==  0 )
 			{
 				writer.writeDefaultNamespace(uri);
 			}

@@ -74,9 +74,8 @@ public class ModelDataAssumptions {
 			String line) {
 		if (line.charAt(line.length()-1) == '\t') {
 			return line + "0" + md.delimiter + "_";
-		} else {
-			return line + md.delimiter + "_";
 		}
+		return line + md.delimiter + "_";
 	}
 
 

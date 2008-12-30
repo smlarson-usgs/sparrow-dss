@@ -59,15 +59,15 @@ public class BinIntegrationTest {
         
         // Request the bin values from the caching mechanism
         SharedApplication sharedApp = SharedApplication.getInstance();
-        BigDecimal[] bins = (BigDecimal[]) sharedApp.getDataBinning(new BinningRequest(
+        BigDecimal[] bins = sharedApp.getDataBinning(new BinningRequest(
                 contextId, 1, BinningRequest.BIN_TYPE.EQUAL_COUNT));
         
         // Test the min and max values
         // Note that if min and max values match, it follows that sequencing is
         // correct, all values will fit within the bin, and the bin count is correct.
         // The rounded range value of the bin should include all values
-        assertTrue(bins[0].doubleValue() <= (double)values[0]);
-        assertTrue(bins[bins.length - 1].doubleValue() >= (double)values[values.length - 1]);
+        assertTrue(bins[0].doubleValue() <= values[0]);
+        assertTrue(bins[bins.length - 1].doubleValue() >= values[values.length - 1]);
         // Implied by previous assertions and sorting, but verifying
         assertTrue(bins[0].doubleValue() <= bins[bins.length - 1].doubleValue());
     }
@@ -89,8 +89,8 @@ public class BinIntegrationTest {
         // Test the min and max values
         // Note that if min and max values match, it follows that sequencing is
         // correct, all values will fit within the bin, and the bin range is correct.
-        assertTrue(bins[0].doubleValue() <= (double)values[0]);
-        assertTrue(bins[bins.length - 1].doubleValue() >= (double)values[values.length - 1]);
+        assertTrue(bins[0].doubleValue() <= values[0]);
+        assertTrue(bins[bins.length - 1].doubleValue() >= values[values.length - 1]);
         // Implied by previous assertions and sorting, but verifying
         assertTrue(bins[0].doubleValue() <= bins[bins.length - 1].doubleValue());
     }
@@ -113,8 +113,8 @@ public class BinIntegrationTest {
                 contextId, binCount, BinningRequest.BIN_TYPE.EQUAL_COUNT));
         
         // Test the min and max values
-        assertTrue(bins[0].doubleValue() <= (double)values[0]);
-        assertTrue(bins[bins.length - 1].doubleValue() >= (double)values[values.length - 1]);
+        assertTrue(bins[0].doubleValue() <= values[0]);
+        assertTrue(bins[bins.length - 1].doubleValue() >= values[values.length - 1]);
     }
 	
     /**
@@ -135,8 +135,8 @@ public class BinIntegrationTest {
                 contextId, binCount, BinningRequest.BIN_TYPE.EQUAL_RANGE));
         
         // Test the min and max values
-        assertTrue(bins[0].doubleValue() <= (double)values[0]);
-        assertTrue(bins[bins.length - 1].doubleValue() >= (double)values[values.length - 1]);
+        assertTrue(bins[0].doubleValue() <= values[0]);
+        assertTrue(bins[bins.length - 1].doubleValue() >= values[values.length - 1]);
 	}
 	
 	/**
@@ -240,7 +240,7 @@ public class BinIntegrationTest {
         // Iterate over the bins, determining whether the number of data points
         // between each boundary defined by the bins is approximately equal
         for (int i = 0; i < values.length; i++) {
-            if ((double)values[i] <= bins[binIndex].doubleValue()) {
+            if (values[i] <= bins[binIndex].doubleValue()) {
                 if (count < targetCount) {
                     count++;
                 } else {
@@ -291,7 +291,7 @@ public class BinIntegrationTest {
 
         double prev = 0.0; // previous bin value
         double cur = 0.0; // current bin value
-        double targetDiff = (bins[0].doubleValue() - bins[bins.length - 1].doubleValue()) / (double)(binCount);
+        double targetDiff = (bins[0].doubleValue() - bins[bins.length - 1].doubleValue()) / (binCount);
 
         // Iterate over the bins, determining if the range of values between two
         // bins falls within the tolerance

@@ -131,9 +131,8 @@ public class Data2DView implements Data2D {
 	public Data2D buildDoubleImmutable(int indexCol) {
 		if (isDoubleData()) {
 			return new Double2DImm(getDoubleData(), getHeadings(), indexCol, getRowIds());
-		} else {
-			return new Int2DImm(getIntData(), getHeadings(), indexCol, getRowIds());
 		}
+		return new Int2DImm(getIntData(), getHeadings(), indexCol, getRowIds());
 	}
 	
 	public int[][] getIntData() {
@@ -155,9 +154,9 @@ public class Data2DView implements Data2D {
 			
 			return out;
 
-		} else {
-			return Data2D.EMPTY_INT_2D_DATA;
 		}
+		return Data2D.EMPTY_INT_2D_DATA;
+
 	}
 	
 	public double[][] getDoubleData() {
@@ -178,9 +177,8 @@ public class Data2DView implements Data2D {
 			
 			return out;
 
-		} else {
-			return Data2D.EMPTY_DOUBLE_2D_DATA;
 		}
+		return Data2D.EMPTY_DOUBLE_2D_DATA;
 	}
 
 	public String[] getHeadings() {
@@ -193,10 +191,8 @@ public class Data2DView implements Data2D {
 			
 			return out;
 			
-		} else {
-			return ArrayUtils.EMPTY_STRING_ARRAY;
 		}
-		
+		return ArrayUtils.EMPTY_STRING_ARRAY;
 	}
 	
 	public int findHeading(String name) {
@@ -217,29 +213,29 @@ public class Data2DView implements Data2D {
 		row+=firstRow;
 		if (col < lastCol && row < lastRow) {
 			return data.getValue(row, col);
-		} else {
-			throw new IndexOutOfBoundsException("The row/column (" + (row - firstRow) + ", " + (col - firstCol) + ") exceeds the data bounds");
 		}
+		throw new IndexOutOfBoundsException("The row/column (" + (row - firstRow) + ", " + (col - firstCol) + ") exceeds the data bounds");
+
 	}
 
 	public int getInt(int row, int col) throws IndexOutOfBoundsException {
-	  col+=firstCol;
-	  row+=firstRow;
-	  if (col < lastCol && row < lastRow) {
-	    return data.getInt(row, col);
-	  } else {
-	    throw new IndexOutOfBoundsException("The row/column (" + (row - firstRow) + ", " + (col - firstCol) + ") exceeds the data bounds");
-	  }
+		col+=firstCol;
+		row+=firstRow;
+		if (col < lastCol && row < lastRow) {
+			return data.getInt(row, col);
+		}
+		throw new IndexOutOfBoundsException("The row/column (" + (row - firstRow) + ", " + (col - firstCol) + ") exceeds the data bounds");
+
 	}
 
 	public double getDouble(int row, int col) throws IndexOutOfBoundsException {
-	  col+=firstCol;
-	  row+=firstRow;
-	  if (col < lastCol && row < lastRow) {
-	    return data.getDouble(row, col);
-	  } else {
-	    throw new IndexOutOfBoundsException("The row/column (" + (row - firstRow) + ", " + (col - firstCol) + ") exceeds the data bounds");
-	  }
+		col+=firstCol;
+		row+=firstRow;
+		if (col < lastCol && row < lastRow) {
+			return data.getDouble(row, col);
+		}
+		throw new IndexOutOfBoundsException("The row/column (" + (row - firstRow) + ", " + (col - firstCol) + ") exceeds the data bounds");
+
 	}
 
 	public int getRowCount() {
@@ -298,21 +294,19 @@ public class Data2DView implements Data2D {
 	}
 
 	public String getHeading(int col) {
-	  col+=firstCol;
-	  if (col < lastCol) {
-	    return data.getHeading(col);
-	  } else {
-	    throw new IndexOutOfBoundsException("Column " + col + " exceeds last column, " + (lastCol - 1));
-	  }
+		col+=firstCol;
+		if (col < lastCol) {
+			return data.getHeading(col);
+		}
+		throw new IndexOutOfBoundsException("Column " + col + " exceeds last column, " + (lastCol - 1));
 	}
 
 	public String getHeading(int col, boolean trimToEmpty) {
-	  col+=firstCol;
-	  if (col < lastCol) {
-	    return data.getHeading(col, trimToEmpty);
-	  } else {
-	    throw new IndexOutOfBoundsException("Column " + col + " exceeds last column, " + (lastCol - 1));
-	  }
+		col+=firstCol;
+		if (col < lastCol) {
+			return data.getHeading(col, trimToEmpty);
+		}
+		throw new IndexOutOfBoundsException("Column " + col + " exceeds last column, " + (lastCol - 1));
 	}
 
 	public int getIndexColumn() {
@@ -321,22 +315,21 @@ public class Data2DView implements Data2D {
 	
 
 	public int findRowByIndex(Double id) {
-		
+
 		synchronized (indexLock) {
-		
+
 			//lazy build
 			if (idIndex == null && indexCol > -1) rebuildIndex();
-			
+
 			if (idIndex != null) {
 				Integer i = idIndex.get(id);
 				if (i != null) {
 					return i;
-				} else {
-					return -1;
 				}
-			} else {
 				return -1;
 			}
+			return -1;
+
 		}
 
 	}
@@ -361,21 +354,18 @@ public class Data2DView implements Data2D {
 		if (r != -1) {
 			if (r >= firstRow && r < lastRow) {
 				return r - firstRow;
-			} else {
-				return -1;
 			}
-		} else {
 			return -1;
 		}
+		return -1;
 	}
 
 	public Integer getIdForRow(int row) {
-	  row+=firstRow;
-	  if (row < lastRow) {
+		row+=firstRow;
+		if (row < lastRow) {
 			return data.getIdForRow(row);
-	  } else {
-	    throw new IndexOutOfBoundsException("The row " + (row - firstRow) + " exceeds the data bounds");
-	  }
+		}
+		throw new IndexOutOfBoundsException("The row " + (row - firstRow) + " exceeds the data bounds");
 	}
 	
 	public int[] getRowIds() {

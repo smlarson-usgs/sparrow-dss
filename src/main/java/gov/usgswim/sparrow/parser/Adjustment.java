@@ -100,6 +100,7 @@ public class Adjustment implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME.equals(name);
 	}
 	
+	@Override
 	protected Adjustment clone() throws CloneNotSupportedException {
 		Adjustment myClone = new Adjustment();
 		myClone.src = src;

@@ -82,16 +82,14 @@ public class DataTableCompareOld implements DataTable{
 		if (base != null) {
 			// just return the difference of two numbers
 			return base - compData.getDouble(row, mapColumn(col));
-		} else {
-			// null returned because underlying column type is not number type.
-			String baseString = baseData.getString(row, col);
-			if (baseString != null) {
-				String compString = compData.getString(row, col);
-				return baseString.compareTo(compString);
-			} else {
-				return Double.NaN;
-			}
 		}
+		// null returned because underlying column type is not number type.
+		String baseString = baseData.getString(row, col);
+		if (baseString != null) {
+			String compString = compData.getString(row, col);
+			return baseString.compareTo(compString);
+		}
+		return Double.NaN;
 	}
 
 	public synchronized double findMaxCompareValue(int column) {
@@ -137,9 +135,8 @@ public class DataTableCompareOld implements DataTable{
 	protected int mapColumn(int c) {
 		if (colMap != null) {
 			return colMap[c];
-		} else {
-			return c;
 		}
+		return c;
 	}
 	// =================
 	// Delegated Methods
@@ -170,7 +167,7 @@ public class DataTableCompareOld implements DataTable{
 		return baseData.getColumnCount();
 	}
 
-	public Class getDataType(int col) {
+	public Class<?> getDataType(int col) {
 		return baseData.getDataType(col);
 	}
 

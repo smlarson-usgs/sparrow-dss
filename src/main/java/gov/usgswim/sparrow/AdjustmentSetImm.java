@@ -47,9 +47,8 @@ public class AdjustmentSetImm implements AdjustmentSet {
 	public int getAdjustmentCount() {
 		if (adjustments != null) {
 			return adjustments.size();
-		} else {
-			return 0;
 		}
+		return 0;
 	}
 
 	public boolean hasAdjustments() {
@@ -59,22 +58,22 @@ public class AdjustmentSetImm implements AdjustmentSet {
 	public Adjustment[] getAdjustments() {
 		if (adjustments != null) {
 			return adjustments.toArray(new Adjustment[adjustments.size()]);
-		} else {
-			return new Adjustment[0];
 		}
+		return new Adjustment[0];
 	}
 
 
+	@Override
 	public boolean equals(Object object) {
 		if (object instanceof AdjustmentSet) {
 
 			return hashCode() == object.hashCode();
 
-		} else {
-			return false;	//not an AdjustmentSet
 		}
+		return false;	//not an AdjustmentSet
 	}
 
+	@Override
 	public int hashCode() {
 
 		if (hash == null) {
@@ -131,10 +130,8 @@ public class AdjustmentSetImm implements AdjustmentSet {
 
 			return view;
 
-		} else {
-
-			return source;	//no adjustment
 		}
 
+		return source;	//no adjustment
 	}
 }

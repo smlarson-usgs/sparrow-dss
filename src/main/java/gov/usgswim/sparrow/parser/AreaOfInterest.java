@@ -74,9 +74,9 @@ public class AreaOfInterest implements XMLStreamParserComponent {
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
 						checkValidity();
 						return this; // we're done
-					} else {// otherwise, error
-						throw new XMLParseValidationException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);
 					}
+					// otherwise, error
+					throw new XMLParseValidationException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);
 					//break;
 			}
 		}
@@ -94,20 +94,21 @@ public class AreaOfInterest implements XMLStreamParserComponent {
 	/**
 	 * Consider two instances the same if they have the same calculated hashcodes
 	 */
-  public boolean equals(Object obj) {
-	  if (obj instanceof AreaOfInterest) {
-	  	return obj.hashCode() == hashCode();
-	  } else {
-	  	return false;
-	  }
-  }
-  
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof AreaOfInterest) {
+			return obj.hashCode() == hashCode();
+		}
+		return false;
+	}
+
+	@Override
 	public synchronized int hashCode() {
 		if (id == null) {
 			HashCodeBuilder hash = new HashCodeBuilder(137, 1729);
-			
+
 			hash.append(modelID);
-	
+
 			id = hash.toHashCode();
 		}
 		return id;

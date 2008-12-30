@@ -58,14 +58,15 @@ public class IDByPointRequest_old implements PipelineRequest{
 		return _point;
 	}
 	
+	@Override
 	public boolean equals(Object object) {
 		if (object instanceof IDByPointRequest_old) {
 			return this.hashCode() == object.hashCode();
-		} else {
-			return false;
 		}
+		return false;
 	}
 
+	@Override
 	public int hashCode() {
 		//starts w/ some random numbers just to create unique results
 		if (hash == null) {

@@ -20,11 +20,11 @@ public abstract class LoggingUtils {
 	public static Level level;
 	
 	public static void logInfo(String baseMessage) {
-		
+		Logger.getLogger(LOGGER_NAME).info(baseMessage);
 	}
 	
 	public static void logDebug(String baseMessage) {
-		
+		Logger.getLogger(LOGGER_NAME).debug(baseMessage);
 	}
 	
 	public static void error(Object message, Throwable t) {

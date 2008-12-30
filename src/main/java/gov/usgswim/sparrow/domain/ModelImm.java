@@ -86,7 +86,7 @@ public class ModelImm implements Model, Serializable {
 			ArrayList<Source> list = new ArrayList<Source>(sources);
 			_sources = Collections.unmodifiableList(list);
 		} else {
-			_sources = (List<Source>)Collections.EMPTY_LIST;
+			_sources = Collections.emptyList();
 		}
 	}
 
@@ -159,8 +159,7 @@ public class ModelImm implements Model, Serializable {
 			}
 			
 			return null;	//not found
-		} else {
-			return null;	//no sources
 		}
+		return null;	//no sources
 	}
 }

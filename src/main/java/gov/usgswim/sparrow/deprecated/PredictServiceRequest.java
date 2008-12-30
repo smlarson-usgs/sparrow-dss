@@ -46,6 +46,7 @@ public class PredictServiceRequest implements PipelineRequest{
 			_aggCol = aggCol;
 		}
 		
+		@Override
 		public String toString() {
 			return _name;
 		}
@@ -91,6 +92,7 @@ public class PredictServiceRequest implements PipelineRequest{
 			_compType = compType;
 		}
 		
+		@Override
 		public String toString() {
 			return _name;
 		}
@@ -127,6 +129,7 @@ public class PredictServiceRequest implements PipelineRequest{
 			_desc = description;
 		}
 		
+		@Override
 		public String toString() {
 			return _name;
 		}

@@ -327,6 +327,7 @@ public class DataLoader {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
+	@SuppressWarnings("null")
 	public static DataTableWritable loadSourceReachCoef(Connection conn, long modelId, int iteration, DataTable sources) throws SQLException,
 	IOException {
 
@@ -385,6 +386,7 @@ public class DataLoader {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
+	@SuppressWarnings("null")
 	public static DataTableWritable loadSourceReachCoef(Connection conn, long modelId, DataTable sources) throws SQLException,
 	IOException {
 
@@ -480,6 +482,7 @@ public class DataLoader {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
+	@SuppressWarnings("null")
 	public static DataTableWritable loadSourceValues(Connection conn, long modelId, DataTable sources) throws SQLException,
 	IOException {
 
@@ -756,7 +759,7 @@ public class DataLoader {
 		//copy the array list to a int[][] array
 		int[][] data = new int[list.size()][];
 		for (int i = 0; i < data.length; i++)  {
-			data[i] = (int[]) list.get(i);
+			data[i] = list.get(i);
 		}
 
 		DataTableWritable result = new SimpleDataTableWritable(data, headings);
@@ -832,7 +835,7 @@ public class DataLoader {
 		//copy the array list to a double[][] array
 		double[][] data = new double[list.size()][];
 		for (int i = 0; i < data.length; i++)  {
-			data[i] = (double[]) list.get(i);
+			data[i] = list.get(i);
 		}
 
 		DataTableWritable result = new SimpleDataTableWritable(data, headings);
