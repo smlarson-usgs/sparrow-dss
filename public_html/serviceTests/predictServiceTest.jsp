@@ -115,8 +115,8 @@
 		</form>
 	
 	
-			<form action="../sp_predict" method="post" enctype="application/x-www-form-urlencoded">
-			<fieldset title="Prediction Request 3 - old style">
+			<form action="../sp_predict/formpost" method="post" enctype="application/x-www-form-urlencoded">
+			<fieldset title="Prediction Request 3">
 				<label for="xml_input_3">Prediction Request 3</label>
 				<p>
 				Reordered adjustements from #2.  This should not result in a re-run of the prediction.

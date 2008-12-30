@@ -65,7 +65,7 @@
       </div><!-- /header -->
 <div>
 
-		<form action="sp_predict" method="get" enctype="application/x-www-form-urlencoded">
+		<form action="sp_predict/formpost" method="get" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Exporting a prediction">
 				<label for="xml_input_1">Getting a Prediction Export: National Model w/ gross and specific adjustments.</label>
 				<p>

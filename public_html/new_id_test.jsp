@@ -11,22 +11,22 @@
 		<!-- 
 		<p>
 			Requests the 7 closest reaches to lat/long 40/-100 in model 22<br>
-			xml: <a href="sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=7">sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=7</a><br>
-			excel: <a href="sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=7&mimetype=excel">sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;mimetype=excel</a><br>
+			xml: <a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7</a><br>
+			excel: <a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&mimetype=excel">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;mimetype=excel</a><br>
 			
-			csv:<a href="sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=7&mimetype=csv">sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;mimetype=csv</a><br>
-			tab:<a href="sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=7&mimetype=tab">sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;mimetype=tab</a><br>
-			json:<a href="sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=7&mimetype=json">sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;mimetype=json</a><br>
+			csv:<a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&mimetype=csv">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;mimetype=csv</a><br>
+			tab:<a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&mimetype=tab">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;mimetype=tab</a><br>
+			json:<a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&mimetype=json">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;mimetype=json</a><br>
 		
 		</p>
 		
 		<p>
 			Same as above, but there is an internal limit to 100 reaches, so the 200 will be ignored<br>
-			xml: <a href="sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=200">sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=200</a><br>
-			excel: <a href="sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=200&mimetype=excel">sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=200&amp;mimetype=excel</a><br>
-			csv:<a href="sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=200&mimetype=csv">sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=200&amp;mimetype=csv</a><br>
-			tab:<a href="sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=200&mimetype=tab">sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=200&amp;mimetype=tab</a><br>
-			json:<a href="sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=200&mimetype=json">sp_idpoint2/22&#63;lat=40&amp;long=-100&amp;result-count=200&amp;mimetype=json</a><br>
+			xml: <a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200</a><br>
+			excel: <a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&mimetype=excel">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&amp;mimetype=excel</a><br>
+			csv:<a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&mimetype=csv">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&amp;mimetype=csv</a><br>
+			tab:<a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&mimetype=tab">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&amp;mimetype=tab</a><br>
+			json:<a href="sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&mimetype=json">sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&amp;mimetype=json</a><br>
 
 		
 		</p>
@@ -34,17 +34,17 @@
 		<p>
 			The Search for nearest reaches is only performed in a 4 deg. by 4 deg. box
 			around the point, so a request like this will probably return zero points.<br>
-			xml: <a href="sp_idpoint2/22&#63;lat=4&amp;long=-4&amp;result-count=7">sp_idpoint2/22&#63;lat=4&amp;long=-4&amp;result-count=7</a><br>
-			excel: <a href="sp_idpoint2/22&#63;lat=4&amp;long=-4&amp;result-count=7&mimetype=excel">sp_idpoint2/22&#63;lat=4&amp;long=-4&amp;result-count=7&amp;mimetype=excel</a><br>
-			csv: <a href="sp_idpoint2/22&#63;lat=4&amp;long=-4&amp;result-count=7&mimetype=csv">sp_idpoint2/22&#63;lat=4&amp;long=-4&amp;result-count=7&amp;mimetype=csv</a><br>
-			tab: <a href="sp_idpoint2/22&#63;lat=4&amp;long=-4&amp;result-count=7&mimetype=tab">sp_idpoint2/22&#63;lat=4&amp;long=-4&amp;result-count=7&amp;mimetype=tab</a><br>
-			json: <a href="sp_idpoint2/22&#63;lat=4&amp;long=-4&amp;result-count=7&mimetype=json">sp_idpoint2/22&#63;lat=4&amp;long=-4&amp;result-count=7&amp;mimetype=json</a><br>
+			xml: <a href="sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7">sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7</a><br>
+			excel: <a href="sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&mimetype=excel">sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&amp;mimetype=excel</a><br>
+			csv: <a href="sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&mimetype=csv">sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&amp;mimetype=csv</a><br>
+			tab: <a href="sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&mimetype=tab">sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&amp;mimetype=tab</a><br>
+			json: <a href="sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&mimetype=json">sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&amp;mimetype=json</a><br>
 
 
 		</p>
 		
 		 -->
-	<form action="sp_idpoint2/formpost" method="post" enctype="application/x-www-form-urlencoded">
+	<form action="sp_idpoint/formpost" method="post" enctype="application/x-www-form-urlencoded">
 		<fieldset title="IDByPoint Request 1">
 			<label for="xml_input_1">new IDByPoint Request 1</label>
 			<p>

@@ -8,7 +8,7 @@
 	 <link rel="icon" href="favicon.ico" >
   </head>
   <body>
-		<form action="sp_predict/xmlreq" method="post" enctype="application/x-www-form-urlencoded">
+		<form action="sp_predict/formpost" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Prediction Request 1">
 				<label for="xml_input_1">Prediction Request 1</label>
 				<p>
