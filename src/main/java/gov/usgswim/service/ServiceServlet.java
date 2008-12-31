@@ -78,7 +78,7 @@ public class ServiceServlet extends HttpServlet {
 	 * 
 	 */
 	protected String pipelineClassName = "";
-	protected Class pipelineClass;
+	protected Class<?> pipelineClass;
 
 	protected XMLInputFactory inFact;
 
@@ -96,7 +96,7 @@ public class ServiceServlet extends HttpServlet {
 		pipelineClassName = config.getInitParameter(PIPELINE_CLASS);
 		
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		Class _theClass;
+		Class<?> _theClass;
 
 		try {
 			if (loader != null) {

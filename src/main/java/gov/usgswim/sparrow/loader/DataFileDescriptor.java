@@ -21,9 +21,9 @@ public class DataFileDescriptor {
 		public boolean isFloat;
 		public boolean isInt;
 		public String display;
-		public final Class clazz;
+		public final Class<?> clazz;
 
-		private DataType(String display, boolean isFloat, boolean isInt, Class clazz) {
+		private DataType(String display, boolean isFloat, boolean isInt, Class<?> clazz) {
 			this.display = display;
 			this.isFloat = isFloat;
 			this.isInt = isInt;

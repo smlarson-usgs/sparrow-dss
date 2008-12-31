@@ -327,7 +327,6 @@ public class DataLoader {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	@SuppressWarnings("null")
 	public static DataTableWritable loadSourceReachCoef(Connection conn, long modelId, int iteration, DataTable sources) throws SQLException,
 	IOException {
 
@@ -386,7 +385,6 @@ public class DataLoader {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	@SuppressWarnings("null")
 	public static DataTableWritable loadSourceReachCoef(Connection conn, long modelId, DataTable sources) throws SQLException,
 	IOException {
 
@@ -482,7 +480,6 @@ public class DataLoader {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	@SuppressWarnings("null")
 	public static DataTableWritable loadSourceValues(Connection conn, long modelId, DataTable sources) throws SQLException,
 	IOException {
 

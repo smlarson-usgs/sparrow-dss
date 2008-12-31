@@ -36,7 +36,7 @@ public interface AdjustmentSet {
 	 * The returned array is safe - it is not tied to the underlying storage.
 	 * @return
 	 */
-	public Adjustment[] getAdjustments();
+	public Adjustment<?>[] getAdjustments();
 
 	/**
 	 * Returns the number of adjustments

@@ -124,7 +124,6 @@ import javax.xml.XMLConstants;
 		 * @param name cannot be null
 		 * @param value
 		 */
-		@SuppressWarnings("null")
 		public BasicTagEvent addAttribute(String prefix, String namespace, String name, String value) {
 			assert(namespace != null && name != null);
 			if (name != null && value != null) {

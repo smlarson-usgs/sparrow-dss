@@ -28,12 +28,11 @@ import javax.xml.stream.XMLStreamReader;
  * @author ilinkuo
  * 
  */
-public class JSONifyPipeline extends AbstractPipeline implements Pipeline {
+public class JSONifyPipeline extends AbstractPipeline<PipelineRequest> implements Pipeline {
 
 	private String xmlParamName;
 	private String requestString;
 
-	@SuppressWarnings("unchecked")
 	public JSONifyPipeline() {
 		super(null, null);
 	}

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="sparrow_core" default="build-all" basedir=".">
     <description>Builds, tests, and runs the ${ant.project.name} project.</description>
-	
+
     <import file="ant-support/build-impl.xml" />
-	
+
 	<target name="-post-dist">
         <copy todir="${dist.dir}">
             <fileset dir="deploy" includes="mapviewer.war" />
@@ -13,7 +13,7 @@
             <fileset dir="deploy" includes="xmlparserv2.jar" />
             <globmapper from="xmlparserv2.jar" to="WEB-INF/lib/xmlparserv2.jar" />
         </copy>
-		
+
 		<unwar src="${dist.dir}/sparrow_mv.war" dest="${dist.dir}">
 		    <patternset includes="**/mapViewerConfig.xml **/web.xml" />
 			<globmapper from="*" to="*.tmp" />
@@ -25,7 +25,7 @@
 		<xslt in="${dist.dir}/WEB-INF/web.xml.tmp" out="${dist.dir}/WEB-INF/web.xml" style="${support.ant}/web-xml-merge.xsl">
 			<param name="includeFile" expression="../${build.web.dir}/WEB-INF/web.xml" />
 		</xslt>
-		
+
 		<war destfile="${dist.dir}/sparrow_mv.war" update="true">
 			<fileset dir="${dist.dir}" excludes="**/*.war **/*.tmp **/javadoc/**/*" />
             <fileset dir="${build.web.dir}" includes="WEB-INF/classes/**/*" />
@@ -36,33 +36,35 @@
 			<fileset dir="${dist.dir}" excludes="**/*.war **/javadoc/**/*" />
 		</delete>
 	</target>
-	
+
     <target name="-post-init" depends="check-init"/>
-	
+
 	<target name="check-init">
 		<!-- [IK] temporarily commented out while debugging
 		<fail unless="${env.TOMCAT_HOME}" message="Please define TOMCAT_HOME in your environment or {username}.properties"/>
 		-->
 	</target>
-	
+
 	<target name="run-webtest">
 		<echo>This test only works for windows. For unix, use webtest.sh instead, branching on OS</echo>
 		<echo>TODO: Restructure based on better practices on http://webtest.canoo.com/webtest/manual/samples.html</echo>
 		<echo message="${basedir}\java_lib\canoo\webtest\bin\webtest.bat"/>
 		<echo message="${basedir}\src\test\webtest\SparrowTest.xml"/>
-		
+
 		<exec executable="${basedir}\java_lib\canoo\webtest\bin\webtest.bat">
 			<arg value="-buildfile"/>
 			<arg value="${basedir}\src\test\webtest\SparrowTest.xml"/>
 		</exec>
 	</target>
-	
+
 	<target name="run-jDepend">
 		<echo message="${basedir}/public_html/WEB-INF/classes"/>
 		<!-- Note: this needs to point to classes, not source.
 		TODO: change this to depend on the compile task and point there
 		in order to eliminate test classes from the analysis. Also, change
-		parameters to eliminate jdk classes.s
+		parameters to eliminate jdk classes.
+
+		ALSO SEE http://ant.apache.org/manual/index.html for the jDepend ant task
 		-->
 		<java
 			classpath="${basedir}/java_lib/jDepend/lib/jdepend-2.9.jar"
@@ -72,5 +74,9 @@
 			<arg value="${basedir}/public_html/WEB-INF/classes" />
 		</java>
 		<!-- See instructions at http://clarkware.com/software/JDepend.html -->
+	</target>
+
+	<target name="run-jmeter">
+
 	</target>
 </project>

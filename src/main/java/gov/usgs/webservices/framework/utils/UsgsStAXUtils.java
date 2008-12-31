@@ -66,7 +66,7 @@ public abstract class UsgsStAXUtils {
 				return null;
 			}
 
-			public Iterator getPrefixes(String namespaceURI) {
+			public Iterator<?> getPrefixes(String namespaceURI) {
 				// TODO Auto-generated method stub
 				return null;
 			}

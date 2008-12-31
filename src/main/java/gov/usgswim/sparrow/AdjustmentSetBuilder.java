@@ -20,10 +20,10 @@ import org.apache.commons.lang.StringUtils;
 @NotThreadSafe
 public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSetImm>, AdjustmentSet {
 
-	protected TreeSet<Adjustment> adjustments;
+	protected TreeSet<Adjustment<?>> adjustments;
 
 	public AdjustmentSetBuilder() {
-		adjustments = new TreeSet<Adjustment>();
+		adjustments = new TreeSet<Adjustment<?>>();
 	}
 
 
@@ -33,9 +33,9 @@ public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSetImm>,
 	 * @param adjs A map containing adjustment names and values.
 	 * @deprecated Use addAdjustment
 	 */
-	public synchronized void addGrossSrcAdjustments(Map adjs) {
+	public synchronized void addGrossSrcAdjustments(Map<String, String> adjs) {
 
-		String val = (String) adjs.get( Adjustment.AdjustmentType.GROSS_SRC_ADJUST.toString() );
+		String val = adjs.get( Adjustment.AdjustmentType.GROSS_SRC_ADJUST.toString() );
 		adjustments.addAll(parseGrossAdj(val));
 
 	}
@@ -48,13 +48,13 @@ public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSetImm>,
 	 * 
 	 * @param adj  An adjustment to add
 	 */
-	public synchronized void addAdjustment(Adjustment adj) {
+	public synchronized void addAdjustment(Adjustment<?> adj) {
 		adjustments.add(adj);
 	}
 
 
-	public Adjustment[] getAdjustments() {
-		return adjustments.toArray(new Adjustment[adjustments.size()]);
+	public Adjustment<?>[] getAdjustments() {
+		return adjustments.toArray(new Adjustment<?>[adjustments.size()]);
 	}
 
 	public int getAdjustmentCount() {
@@ -70,13 +70,13 @@ public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSetImm>,
 	 * @param adj
 	 * @return
 	 */
-	public List<Adjustment> parseGrossAdj(String adj) {
+	public List<Adjustment<?>> parseGrossAdj(String adj) {
 
 		adj = StringUtils.trimToNull(adj);
 
 		if (adj != null ) {
 			String[] adjs = StringUtils.split(adj, ", ;:|[]{}()");
-			List<Adjustment> list = new ArrayList<Adjustment>(adjs.length / 2 + 1);
+			List<Adjustment<?>> list = new ArrayList<Adjustment<?>>(adjs.length / 2 + 1);
 
 			for (int i = 0; i < adjs.length; i+=2)  {
 				int col = Integer.parseInt(adjs[i]);
@@ -95,10 +95,10 @@ public class AdjustmentSetBuilder implements ImmutableBuilder<AdjustmentSetImm>,
 
 	public AdjustmentSetImm toImmutable() {
 		Object[] src = adjustments.toArray();
-		Adjustment[] dest = new Adjustment[src.length];
+		Adjustment<?>[] dest = new Adjustment<?>[src.length];
 
 		for (int i = 0; i < src.length; i++)  {
-			dest[i] = (Adjustment) src[i];
+			dest[i] = (Adjustment<?>) src[i];
 		}
 
 		return new AdjustmentSetImm(dest);

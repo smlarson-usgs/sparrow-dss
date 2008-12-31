@@ -77,11 +77,11 @@ public class AggregationRunner {
             HashMap<String, AggregateData> aggregateDataMap = aggregate(result, rs, true);
 
             // Move the data from hashmap to two-dimensional array
-            Iterator iter = aggregateDataMap.keySet().iterator();
+            Iterator<String> iter = aggregateDataMap.keySet().iterator();
             long[] ids = new long[aggregateDataMap.keySet().size()];
             double[][] data = new double[aggregateDataMap.size()][result.getColumnCount()];
             for (int i = 0; i < data.length; i++) {
-                String id = (String) iter.next();
+                String id = iter.next();
 
                 // Push the data into the array and add the corresponding id
                 double[] dataRow = aggregateDataMap.get(id).getData();
@@ -132,11 +132,11 @@ public class AggregationRunner {
             HashMap<String, AggregateData> aggregateDataMap = aggregate(dataTable, rs, false);
 
             // Move the data from hashmap to two-dimensional array
-            Iterator iter = aggregateDataMap.keySet().iterator();
+            Iterator<String> iter = aggregateDataMap.keySet().iterator();
             long[] ids = new long[aggregateDataMap.keySet().size()];
             double[][] data = new double[aggregateDataMap.size()][dataTable.getColumnCount()];
             for (int i = 0; i < data.length; i++) {
-                String id = (String) iter.next();
+                String id = iter.next();
 
                 // Push the data into the array and add the corresponding id
                 double[] dataRow = aggregateDataMap.get(id).getData();

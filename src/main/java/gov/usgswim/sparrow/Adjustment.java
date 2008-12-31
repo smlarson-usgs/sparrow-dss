@@ -191,19 +191,19 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 	}
 
 	/**
-	 * Returns true if the adjustment is conflicts with this adjustment.
+	 * Returns true if the adjustment conflicts with this adjustment.
 	 * 
 	 * @param that
 	 * @return
 	 */
-	public boolean isConflicting(Adjustment that) {
+	public boolean isConflicting(Adjustment<?> that) {
 		return (_type.equals(that.getType()) && that.getSrcId() == _srcId && _val != that.getValue());
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof Adjustment) {
-			Adjustment that = (Adjustment) object;
+			Adjustment<?> that = (Adjustment<?>) object;
 			return (_type.equals(that.getType()) && that._reachId == _reachId && that.getSrcId() == _srcId && _val == that.getValue());
 		}
 		return false;
