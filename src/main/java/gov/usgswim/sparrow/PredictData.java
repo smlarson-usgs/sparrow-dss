@@ -26,7 +26,7 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	public static final int FNODE_COL = 1;
 	public static final int TNODE_COL = 2;
 	public static final int IFTRAN_COL = 3;
-	public static final int HYDSEQ_COL = 3;
+	public static final int HYDSEQ_COL = 4;
 	
 	// decay columns
 	public static final int INSTREAM_DECAY_COL = 0;
