@@ -126,7 +126,7 @@ public class SourceAdjustments_Test extends TestCase {
 
 	public void testSetGrossAndSpecificAdjustment() throws Exception {
 
-		DataTable reachIndex = new SimpleDataTableWritable(rowIndexData, (String[]) null, 0, (int[]) null);
+		DataTable reachIndex = new SimpleDataTableWritable(rowIndexData, (String[]) null, 0);
 		String adjustString = "1,.5, 4,.1, 7,1, 8,0, 9,0 10,.5";
 		Map<String, String> adjMap = new HashMap<String, String>(11);
 		adjMap.put(AdjustmentType.GROSS_SRC_ADJUST.toString(), adjustString);

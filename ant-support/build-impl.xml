@@ -20,7 +20,7 @@
 	<!-- -->
 	<!-- Compile section -->
 	<!-- -->
-	<target name="compile" description="Compile project." depends="init,-pre-compile,-do-compile,-post-compile" />
+	<target name="compile" description="Compile pro   ect." depends="init,-pre-compile,-do-compile,-post-compile" />
 	<target name="-pre-compile" />
 	<target name="-do-compile">
 		<mkdir dir="${build.classes.dir}" />
