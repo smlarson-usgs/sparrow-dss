@@ -30,10 +30,6 @@ public class PredictDataBuilder extends AbstractPredictData {
 	 * <li>[i][0] REACH_ID - The system id for the reach (db unique id)
 	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number
 	 * </ol>
-	 */
-	protected DataTable sys;
-
-	/**
 	 * Invariant topographic info about each reach
 	 * i = reach index
 	 * [i][0]	from node index
@@ -101,14 +97,13 @@ public class PredictDataBuilder extends AbstractPredictData {
 	 * @param srcIDs
 	 */
 	public PredictDataBuilder(DataTable topo, DataTable coef, DataTable src, DataTable srcIDs, DataTable decay,
-			DataTable sys, DataTable ancil, Model model) {
+			DataTable ancil, Model model) {
 
 		this.model = model;
 		this.topo = topo;
 		this.coef = coef;
 		this.src = src;
 		this.decay = decay;
-		this.sys = sys;
 		this.ancil = ancil;
 
 		if (srcIDs != null) {
@@ -282,38 +277,6 @@ public class PredictDataBuilder extends AbstractPredictData {
 		return decay;
 	}
 
-	/**
-	 * Assigns the system information, which is used to correlate to other data in the db.
-	 *
-	 * <h4>Data Columns, sorted by HYDSEQ</h4>
-	 * <p>One row per reach (i = reach index)</p>
-	 * <ol>
-	 * <li>[i][0] REACH_ID - The system id for the reach (db unique id)
-	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number
-	 * </ol>
-	 *
-	 * @param sys
-	 */
-	public void setSys(DataTable sys) {
-		this.sys = sys;
-	}
-
-	/**
-	 * Returns the system information, which is used to correlate to other data in the db.
-	 *
-	 * <h4>Data Columns, sorted by HYDSEQ</h4>
-	 * <p>One row per reach (i = reach index)</p>
-	 * <ol>
-	 * <li>[i][0] REACH_ID - The system id for the reach (db unique id)
-	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number
-	 * </ol>
-	 *
-	 * @return
-	 */
-	public DataTable getSys() {
-		return sys;
-	}
-
 	public void setAncil(DataTable ancil) {
 		this.ancil = ancil;
 	}
@@ -330,7 +293,6 @@ public class PredictDataBuilder extends AbstractPredictData {
 		this.model = model;
 	}
 
-
 	public PredictData toImmutable() {
 		// TODO:  Model should have an immutable builder
 		DataTable topo2 = (getTopo() != null)?getTopo().toImmutable():null;
@@ -338,11 +300,10 @@ public class PredictDataBuilder extends AbstractPredictData {
 		DataTable source2 = (getSrc() != null)?getSrc().toImmutable():null;
 		DataTable sourceIds2 = (getSrcMetadata() != null)?getSrcMetadata().toImmutable():null;
 		DataTable decay2 = (getDecay() != null)?getDecay().toImmutable():null;
-		DataTable sys2 = (getSys() != null)?getSys().toImmutable():null;
 		DataTable ancil2 = (getAncil() != null)?getAncil().toImmutable():null;
 		Model model2 = (getModel() != null)?getModel():null;
 		
-		return new PredictDataImm(topo2, coef2, source2, sourceIds2, decay2, sys2, ancil2, model2);
+		return new PredictDataImm(topo2, coef2, source2, sourceIds2, decay2, ancil2, model2);
 
 	}
 

@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.test;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
+import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.Adjustment;
 import gov.usgswim.sparrow.AdjustmentSetBuilder;
 import gov.usgswim.sparrow.Adjustment.AdjustmentType;
@@ -159,7 +160,9 @@ public class SourceAdjustments_Test extends TestCase {
 		assertEquals(200, a.getReachId());
 		assertEquals(2.5d, a.getValue(), .00000000000001);
 
-		//Test the whole buisiness
+		// DEBUG
+		DataTableUtils.printDataTable(reachIndex, "reach index");
+		//Test the whole business
 		DataTable adjData = sas.adjust(data, null, reachIndex);
 
 

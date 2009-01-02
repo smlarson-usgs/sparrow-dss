@@ -171,7 +171,7 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 
         // only get the ids if available
         if (ids == null) {
-            ids = (predictData.getSys() != null) ? DataTableUtils.getRowIds(predictData.getSys()) : null;
+            ids = (predictData.getTopo() != null) ? DataTableUtils.getRowIds(predictData.getTopo()) : null;
         }
 
         return new PredictResultImm(columns, ids, properties, srcIdIncMap, srcIdTotalMap, totalIncCol, totalTotalCol);

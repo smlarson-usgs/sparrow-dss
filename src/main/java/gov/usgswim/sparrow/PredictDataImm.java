@@ -22,17 +22,14 @@ public class PredictDataImm extends AbstractPredictData {
 	 */
 	private final Model model;
 
-
 	/**
-	 * One row per reach (i = reach index).  Row ID is assigned same as column 0.
+	 * 	 * One row per reach (i = reach index).  Row ID is assigned same as column 0.
 	 * <ol>
 	 * <li>[i][0] REACH_ID - The system id for the reach (db unique id)
 	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number
 	 * </ol>
-	 */
-	private final DataTable sys;
-
-	/**
+	 * 
+	 * 
 	 * Invariant topographic info about each reach
 	 * i = reach index
 	 * [i][0]	from node index
@@ -98,14 +95,13 @@ public class PredictDataImm extends AbstractPredictData {
 	 * @param srcIDs
 	 */
 	public PredictDataImm(DataTable topo, DataTable coef, DataTable src, DataTable srcIDs,
-			DataTable decay, DataTable sys, DataTable ancil, Model model) {
+			DataTable decay, DataTable ancil, Model model) {
 
 		this.model = model;
 		this.topo = topo;
 		this.coef = coef;
 		this.src = src;
 		this.decay = decay;
-		this.sys = sys;
 		this.ancil = ancil;
 		this.srcMetadata = srcIDs;
 	}
@@ -128,10 +124,6 @@ public class PredictDataImm extends AbstractPredictData {
 
 	public DataTable getDecay() {
 		return decay;
-	}
-
-	public DataTable getSys() {
-		return sys;
 	}
 
 	public DataTable getAncil() {
@@ -181,7 +173,6 @@ public class PredictDataImm extends AbstractPredictData {
 			(getSrc() != null)?getSrc().toImmutable():null,
 			(getSrcMetadata() != null)?getSrcMetadata().toImmutable():null,
 			(getDecay() != null)?getDecay().toImmutable():null,
-			(getSys() != null)?getSys().toImmutable():null,
 			(getAncil() != null)?getAncil().toImmutable():null,
 			(getModel() != null)?getModel():null
 		);

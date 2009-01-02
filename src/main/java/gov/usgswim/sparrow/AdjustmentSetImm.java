@@ -15,7 +15,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * 
  * The equals() and hashCode() methods have been overridden to indicate that
  * instances w/ identical adjustments are equal.  Note that this can only be
- * done w/ this immutable implementation since the collection of Ajustments
+ * done w/ this immutable implementation since the collection of Adjustments
  * can change in a non-immutable class (thus causing the hashcode to change).
  */
 @Immutable

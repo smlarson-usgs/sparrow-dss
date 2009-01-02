@@ -120,8 +120,10 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 				if (source instanceof DataTableWritable) {
 					DataTableWritable data = (DataTableWritable)source;
 
-					int reachRow = reachIndex.findFirst(0, Integer.valueOf(_reachId));
-
+					//int reachRow = reachIndex.findFirst(0, Integer.valueOf(_reachId));
+					long reachIdLong = _reachId;
+					int reachRow = reachIndex.getRowForId(reachIdLong);
+					
 					if (reachRow != -1) {
 						data.setValue(Double.valueOf(_val), reachRow, mapSourceId(_srcId, srcIndex));
 					} else {

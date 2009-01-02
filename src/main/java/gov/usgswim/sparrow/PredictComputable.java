@@ -71,7 +71,7 @@ public class PredictComputable implements Computable<PredictRequest, PredictResu
 
 			//This method does not modify the underlying data
 			mutable.setSrc(
-					req.getAdjustmentSet().adjust(mutable.getSrc(), mutable.getSrcMetadata(), mutable.getSys())
+					req.getAdjustmentSet().adjust(mutable.getSrc(), mutable.getSrcMetadata(), mutable.getTopo())
 			);
 
 			return mutable.toImmutable();

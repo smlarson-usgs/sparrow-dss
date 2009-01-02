@@ -163,93 +163,102 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 	public void testLoadTopo() throws Exception {
 		DataTable jdbcData = DataLoader.loadTopo(conn, 1);
 		assertEquals(2339, jdbcData.getRowCount());
-		assertEquals(4, jdbcData.getColumnCount());
+		assertEquals(4 + 1, jdbcData.getColumnCount());
 
 		DataTableCompare comp = buildTopoComparison(jdbcData);
-
-		assertEquals(Integer.valueOf(0), comp.getMaxInt());
+		// 9717 is the maximum reach hydrological sequence
+		assertEquals(Integer.valueOf(2250), comp.getMaxInt(0));
+		assertEquals(Integer.valueOf(-8688), comp.getMinInt(0));
+		assertEquals(Integer.valueOf(2959), comp.getMaxInt(1));
+		assertEquals(Integer.valueOf(-3368), comp.getMinInt(1));
+		assertEquals(Integer.valueOf(9717), comp.getMaxInt(2));
+		assertEquals(Integer.valueOf(1), comp.getMinInt(2));
+		assertEquals(Integer.valueOf(0), comp.getMaxInt(3));
+		assertEquals(Integer.valueOf(-2338), comp.getMinInt(3));
+		
+		assertEquals(Integer.valueOf(9717), comp.getMaxInt());
 	}
 	
-
-
-	/**
-	 * @see DataLoader#loadSourceIds(java.sql.Connection,int)
-	 */
-	public void testLoadSource(Connection conn, int modelId) throws Exception {
-		DataTable jdbcData = DataLoader.loadSrcMetadata(conn, 1);
-		assertEquals(11, jdbcData.getRowCount());
-		assertEquals(1, jdbcData.getColumnCount());
-
-		//This basic set of sources should have id's 0 to 10.
-		for (int i = 0; i < 11; i++)  {
-			assertEquals(Integer.valueOf(i), jdbcData.getInt(i, 0));
-		}
-
-	}
-
-	/**
-	 * @see DataLoader#loadSourceReachCoef(Connection, int, int, Int2D)
-	 */
-	public void testLoadSourceReachCoef() throws Exception {
-		DataTable sources = DataLoader.loadSrcMetadata(conn, 1);
-		DataTable jdbcData = DataLoader.loadSourceReachCoef(conn, 1, 0, sources);
-
-		assertEquals(2339, jdbcData.getRowCount());
-		assertEquals(11, jdbcData.getColumnCount());
-
-		DataTableCompare comp = buildSourceReachCoefComparison(jdbcData);
-
-		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);
-	}
-
-
-	/**
-	 * @see DataLoader#loadDecay(Connection, int, int)
-	 */
-	public void testLoadDecay() throws Exception {
-		DataTable jdbcData = DataLoader.loadDecay(conn, 1, 0);
-
-		assertEquals(2339, jdbcData.getRowCount());
-		assertEquals(2, jdbcData.getColumnCount());
-
-		DataTableCompare comp = buildDecayComparison(jdbcData);
-
-		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);
-	}
-
-	/**
-	 * @see DataLoader#loadSourceValues(Connection, int, Int2D)
-	 */
-	public void testLoadSourceValues() throws Exception {
-		DataTable sources = DataLoader.loadSrcMetadata(conn, 1);
-		DataTable jdbcData = DataLoader.loadSourceValues(conn, 1, sources);
-
-		assertEquals(2339, jdbcData.getRowCount());
-		assertEquals(11, jdbcData.getColumnCount());
-
-		DataTableCompare comp = buildSourceValueComparison(jdbcData);
-
-		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);
-	}
-	
-	
-	public void testLoadMinimalPredictDataSet() throws Exception {
-		PredictData ds = DataLoader.loadMinimalPredictDataSet(conn, 1);
-		PredictRunner ps = new PredictRunner(ds);
-
-		DataTable result = ps.doPredict();
-
-		DataTableCompare comp = buildPredictionComparison(result);
-
-//		for (int i = 0; i < comp.getColumnCount(); i++)  {
-//			System.out.println("col " + i + " error: " + comp.getMaxDouble(i));
+//
+//
+//	/**
+//	 * @see DataLoader#loadSourceIds(java.sql.Connection,int)
+//	 */
+//	public void testLoadSource(Connection conn, int modelId) throws Exception {
+//		DataTable jdbcData = DataLoader.loadSrcMetadata(conn, 1);
+//		assertEquals(11, jdbcData.getRowCount());
+//		assertEquals(1, jdbcData.getColumnCount());
+//
+//		//This basic set of sources should have id's 0 to 10.
+//		for (int i = 0; i < 11; i++)  {
+//			assertEquals(Integer.valueOf(i), jdbcData.getInt(i, 0));
 //		}
-
-		assertEquals(0d, comp.getMaxDouble(), 0.004d);
-
-	}
-	
-	
+//
+//	}
+//
+//	/**
+//	 * @see DataLoader#loadSourceReachCoef(Connection, int, int, Int2D)
+//	 */
+//	public void testLoadSourceReachCoef() throws Exception {
+//		DataTable sources = DataLoader.loadSrcMetadata(conn, 1);
+//		DataTable jdbcData = DataLoader.loadSourceReachCoef(conn, 1, 0, sources);
+//
+//		assertEquals(2339, jdbcData.getRowCount());
+//		assertEquals(11, jdbcData.getColumnCount());
+//
+//		DataTableCompare comp = buildSourceReachCoefComparison(jdbcData);
+//
+//		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);
+//	}
+//
+//
+//	/**
+//	 * @see DataLoader#loadDecay(Connection, int, int)
+//	 */
+//	public void testLoadDecay() throws Exception {
+//		DataTable jdbcData = DataLoader.loadDecay(conn, 1, 0);
+//
+//		assertEquals(2339, jdbcData.getRowCount());
+//		assertEquals(2, jdbcData.getColumnCount());
+//
+//		DataTableCompare comp = buildDecayComparison(jdbcData);
+//
+//		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);
+//	}
+//
+//	/**
+//	 * @see DataLoader#loadSourceValues(Connection, int, Int2D)
+//	 */
+//	public void testLoadSourceValues() throws Exception {
+//		DataTable sources = DataLoader.loadSrcMetadata(conn, 1);
+//		DataTable jdbcData = DataLoader.loadSourceValues(conn, 1, sources);
+//
+//		assertEquals(2339, jdbcData.getRowCount());
+//		assertEquals(11, jdbcData.getColumnCount());
+//
+//		DataTableCompare comp = buildSourceValueComparison(jdbcData);
+//
+//		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);
+//	}
+//	
+//	
+//	public void testLoadMinimalPredictDataSet() throws Exception {
+//		PredictData ds = DataLoader.loadMinimalPredictDataSet(conn, 1);
+//		PredictRunner ps = new PredictRunner(ds);
+//
+//		DataTable result = ps.doPredict();
+//
+//		DataTableCompare comp = buildPredictionComparison(result);
+//
+////		for (int i = 0; i < comp.getColumnCount(); i++)  {
+////			System.out.println("col " + i + " error: " + comp.getMaxDouble(i));
+////		}
+//
+//		assertEquals(0d, comp.getMaxDouble(), 0.004d);
+//
+//	}
+//	
+//	
 	// ==============
 	// HELPER METHODS
 	// ==============

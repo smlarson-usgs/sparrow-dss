@@ -21,9 +21,21 @@ import java.io.Serializable;
  * to run.
  */
 public interface PredictData extends ImmutableBuilder<PredictData>, Serializable {
-
+	// topo columns
+	public static final int MODEL_REACH_COL=0;
+	public static final int FNODE_COL = 1;
+	public static final int TNODE_COL = 2;
+	public static final int IFTRAN_COL = 3;
+	public static final int HYDSEQ_COL = 3;
+	
+	// decay columns
+	public static final int INSTREAM_DECAY_COL = 0;
+	public static final int UPSTREAM_DECAY_COL = 1;
+	
 	/**
 	 * Returns the source metadata, which includes ids, names, units, and other metadata.
+	 * 
+	 * 
 	 * 
 	 * SrcMetadata contains a row for each source type in the model.  The source type
 	 * identifier (model specific, it is not based on db ID) is the row id for each
@@ -45,17 +57,25 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 * @return DataTable
 	 */
 	public DataTable getSrcMetadata();
+	/**
+
+	 *
+	 * @return
+	 */
 
 	/**
-	 * Returns the topo data.
+	 * Returns the topographic data
 	 *
-	 * <h4>Data Columns, sorted by HYDSEQ.</h4>
-	 * <p>One row per reach (i = reach index)</p>
+	 * <h4>Data Columns, sorted by HYDSEQ</h4>
+	 * <p>One row per reach (i = reach index).
+	 * Row ID is IDENTIFIER REACH_ID</p>
 	 * <ol>
-	 * <li>[i][0] FNODE - The from node
-	 * <li>[i][1] TNODE - The to node
-	 * <li>[i][2] IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
-	 * <li>[i][3] (optional - this column and others ignored) HYDSEQ - Sort identifier such that any lower number reach is upstream of a higher numbered one.
+	 * <li>REACH_ID - The system id for the reach (db unique id) used as a rowID, not an actual column
+	 * <li>[0][MODEL_REACH_COL] MODEL_REACH_ID - The model specific hydrological sequence number
+	 * <li>[i][1] FNODE - The from node
+	 * <li>[i][2] TNODE - The to node
+	 * <li>[i][3] IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
+	 * <li>[i][4] (optional - this column and others ignored) HYDSEQ - Sort identifier such that any lower number reach is upstream of a higher numbered one.
 	 * </ol>
 	 *
 	 * NOTE:  Node indexes that do not start at zero or have large skips will
@@ -102,22 +122,6 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 * @return
 	 */
 	public DataTable getDecay();
-
-	/**
-	 * Returns the system information, which is optional but required if the
-	 * results are to be correlated to other data in the db.
-	 *
-	 * <h4>Data Columns, sorted by HYDSEQ</h4>
-	 * <p>One row per reach (i = reach index).
-	 * Row ID is assigned same as column 0.</p>
-	 * <ol>
-	 * <li>[i][0] REACH_ID - The system id for the reach (db unique id)
-	 * <li>[i][1] HYDSEQ - The model specific hydrological sequence number
-	 * </ol>
-	 *
-	 * @return
-	 */
-	public DataTable getSys();
 
 	public DataTable getAncil();
 

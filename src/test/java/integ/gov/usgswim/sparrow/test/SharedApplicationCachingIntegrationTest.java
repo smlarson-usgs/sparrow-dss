@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.test;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.ComparePercentageView;
+import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
@@ -129,8 +130,10 @@ public class SharedApplicationCachingIntegrationTest extends TestCase {
 		//PredictResult orgResult = pdCache.compute(pr);
 
 		DataTable result = sa.getPredictResult(context);
-
+		DataTableUtils.printDataTableSample(result, 20);
+		
 		ComparePercentageView comp = buildPredictionComparison(result);
+		DataTableUtils.printDataTableSample(comp, 20);
 
 		for (int i = 0; i < comp.getColumnCount(); i++)  {
 			System.out.println("col " + i + " error: " + comp.findMaxCompareValue(i));
@@ -160,8 +163,6 @@ public class SharedApplicationCachingIntegrationTest extends TestCase {
 //		comp = new DataTableCompare(expect.getSrcMetadata(), data.getSrcMetadata(), true);
 //		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);
 
-		comp = new DataTableCompare(expect.getSys(), data.getSys(), true);
-		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);
 
 		comp = new DataTableCompare(expect.getTopo(), data.getTopo(), true);
 		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);

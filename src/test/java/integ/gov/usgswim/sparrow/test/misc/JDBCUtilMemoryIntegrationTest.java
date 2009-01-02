@@ -142,11 +142,6 @@ public class JDBCUtilMemoryIntegrationTest extends TestCase {
 				return DataLoader.loadSrcMetadata(conn, modelId);
 			}
 		};
-		ObjectFactory systemInfoFactory = new ObjectFactory() {
-			public Object makeObject() throws SQLException, IOException {
-				return DataLoader.loadSystemInfo(conn, modelId);
-			}
-		};
 		
 		ObjectFactory topoFactory = new ObjectFactory() {
 			public Object makeObject() throws SQLException, IOException {
@@ -163,9 +158,6 @@ public class JDBCUtilMemoryIntegrationTest extends TestCase {
 		MemoryTestBench mtb = new MemoryTestBench();
 		System.out.print("sourceID: ");
 		final DataTable sourceIDs = (DataTable) mtb.showMemoryUsageAndRetrieve(sourceIDFactory);
-		
-		System.out.print("systemInfo: ");
-		mtb.showMemoryUsage(systemInfoFactory);
 		
 		System.out.print("topo: ");
 		mtb.showMemoryUsage(topoFactory);

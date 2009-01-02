@@ -49,7 +49,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
             }
 
             data = new PredictDataImm(data.getTopo(), data.getCoef(), adjSrc,
-                    data.getSrcMetadata(), data.getDecay(), data.getSys(), data
+                    data.getSrcMetadata(), data.getDecay(), data
                             .getAncil(), data.getModel());
             
         } else if (analysis.isAggregated()) {
@@ -57,7 +57,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
             AggregationRunner aggRunner = new AggregationRunner(predictionContext);
             DataTable aggSrc = aggRunner.doAggregation(data.getSrc());
             data = new PredictDataImm(data.getTopo(), data.getCoef(), aggSrc,
-                    data.getSrcMetadata(), data.getDecay(), data.getSys(), data
+                    data.getSrcMetadata(), data.getDecay(), data
                             .getAncil(), data.getModel());
         }
 

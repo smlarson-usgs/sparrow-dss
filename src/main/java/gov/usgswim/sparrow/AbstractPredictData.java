@@ -75,9 +75,9 @@ public abstract class AbstractPredictData implements PredictData {
 	 */
 	public int getRowForReachID(Long id) throws Exception {
 
-		DataTable sys = this.getSys();
-		assert(sys.hasRowIds()): "assume sys has rowids";
-		int row = sys.getRowForId(id);
+		DataTable topo = this.getTopo();
+		assert(topo.hasRowIds()): "assume topo has rowids";
+		int row = topo.getRowForId(id);
 
 		if (row > -1) {
 			return row;

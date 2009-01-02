@@ -62,7 +62,6 @@ public class DataLoader {
 		try {
 
 			dataSet.setSrcMetadata( loadSrcMetadata(conn, modelId));
-			dataSet.setSys( loadSystemInfo(conn, modelId) );
 			dataSet.setTopo( loadTopo(conn, modelId) );
 			dataSet.setCoef( loadSourceReachCoef(conn, modelId, 0, dataSet.getSrcMetadata()) );
 			dataSet.setDecay( loadDecay(conn, modelId, 0) );
@@ -93,7 +92,6 @@ public class DataLoader {
 		PredictDataBuilder dataSet = new PredictDataBuilder();
 
 		dataSet.setSrcMetadata( loadSrcMetadata(conn, modelId));
-		dataSet.setSys( loadSystemInfo(conn, modelId) );
 		dataSet.setTopo( loadTopo(conn, modelId) );
 		dataSet.setCoef( loadSourceReachCoef(conn, modelId, dataSet.getSrcMetadata()) );
 		dataSet.setDecay( loadDecay(conn, modelId, 0) );
@@ -258,45 +256,26 @@ public class DataLoader {
 
 
 	/**
-	 * Returns an ordered DataTable of all REACHes in the MODEL
+	 * 	 * Returns an ordered DataTable of all REACHes in the MODEL
 	 * <h4>Data Columns, sorted by HYDSEQ.  One row per reach (i = reach index)</h4>
 	 * <p>Row IDs duplicate the Reach Ids in column zero.</p>
 	 * <ol>
-	 * <li>[i][0] IDENTIFIER - The model specific ID for this reach
-	 * <li>[i][1] REACH_ID - The system id for the reach (db unique id)
+	 * <li>id: IDENTIFIER - The model specific ID for this reach
+	 * <li>[i][0] REACH_ID - The system id for the reach (db unique id)
 	 * </ol>
 	 *
 	 * Sort by HYDSEQ then IDENTIFIER, since in some cases HYDSEQ is not unique.
 	 * [IK] the use of IDENTIFIER has no significance except to guarantee some 
 	 * deterministic ordering of the results. Any other attribute would do.
 	 *
-	 * @param conn A JDBC Connection to run the query on
-	 * @param modelId The ID of the Sparrow model
-	 * @return Fetched data - see Data Columns above.
-	 * @throws SQLException
-	 */
-	public static DataTable loadSystemInfo(Connection conn, long modelId) throws SQLException,
-	IOException {
-		String query = getQuery("SelectSystemData", modelId);
-
-		DataTableWritable data = readAsInteger(conn, query, 2000, DataLoader.DO_NOT_INDEX);
-		int[] ids = DataTableUtils.getIntColumn(data, 0);
-		return DataTableUtils.setIds(data, ids);
-
-	}
-
-	/**
 	 * Returns a DataTable of all topo data for for a single model.
 	 * <h4>Data Columns (sorted by HYDSEQ)</h4>
 	 * <ol>
-	 * <li>FNODE - The from node
-	 * <li>TNODE - The to node
-	 * <li>IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
-	 * <li>HYDSEQ - Hydrologic sequence order
+	 * <li>[i][1]FNODE - The from node
+	 * <li>[i][2]TNODE - The to node
+	 * <li>[i][3]IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
+	 * <li>[i][4]HYDSEQ - Hydrologic sequence order
 	 * </ol>
-	 * 
-	 * TODO:  Is HYDSEQ needed here since it duplicates system info?
-	 * [IK] It seems the Topo and SystemInfo are not both needed
 	 * 
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
@@ -307,8 +286,10 @@ public class DataLoader {
 	IOException {
 		String query = getQuery("SelectTopoData", modelId);
 
-
-		return readAsInteger(conn, query, 1000);
+		DataTableWritable result = readAsInteger(conn, query, 1000, 0);
+		
+		assert(result.hasRowIds()): "topo should have IDENTIFIER as row ids";
+		return result;
 	}
 
 	/**
@@ -621,7 +602,6 @@ public class DataLoader {
 		st.setFetchSize(30);
 
 		ResultSet rs = null;
-
 		try {
 			rs = st.executeQuery(query);
 			return DataTableConverter.toDataTable(rs, true);
@@ -631,8 +611,6 @@ public class DataLoader {
 				rs = null;
 			}
 		}
-
-
 	}
 
 
@@ -759,10 +737,10 @@ public class DataLoader {
 			data[i] = list.get(i);
 		}
 
-		DataTableWritable result = new SimpleDataTableWritable(data, headings);
-		if (indexCol > DO_NOT_INDEX) {
-			result.buildIndex(indexCol);
-		}
+		DataTableWritable result = new SimpleDataTableWritable(data, headings, indexCol);
+//		if (indexCol > DO_NOT_INDEX) {
+//			result.buildIndex(indexCol);
+//		}
 
 		return result;
 	}

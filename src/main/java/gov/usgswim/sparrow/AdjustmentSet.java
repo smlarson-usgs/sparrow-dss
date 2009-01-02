@@ -11,13 +11,13 @@ public interface AdjustmentSet {
 	public static final AdjustmentSet EMPTY_ADJUSTMENTSET = new AdjustmentSetImm();
 
 	/**
-	 * Creates a new Data2D source by creating a coef-view using the same underlying
+	 * Creates a new DataTable source by creating a coef-view using the same underlying
 	 * data w/ coefficients on top.  This strategy allows the underlying data
 	 * to be cached and not modified.
 	 * 
-	 * srcIndex and reachIndex are both indexed Data2D.  srcIndex should come
+	 * srcIndex and reachIndex are both indexed DataTable.  srcIndex should come
 	 * from PredictionDataSet.getSourceIds() and reachIndex should come from
-	 * PredictionDataSet.getSys(), though only the first column data is important
+	 * PredictionDataSet.getTopo(), though only the index is important
 	 * here.
 	 *
 	 * If no adjustments are made, the passed data is returned and no view is created,

@@ -144,7 +144,7 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
         PredictServiceRequest svsRequest;
         PredictRequest predictRequest;
 
-        DataTable sysInfo = null;		//row id numbers for matching the data to the geometry
+        DataTable topoInfo = null;		//row id numbers for matching the data to the geometry
         DataTable result = null;			//The prediction result (raw data)
         NSDataSet nsData = null;	//The Mapviewer data format for the data
 
@@ -264,13 +264,13 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 
         try {
             ComputableCache<Long, PredictData> pdCache = SharedApplication.getInstance().getPredictDatasetCache();
-            sysInfo = pdCache.compute(predictRequest.getModelId()).getSys();
+            topoInfo = pdCache.compute(predictRequest.getModelId()).getTopo();
         } catch (Exception e) {
             log.error("No way to indicate this error to mapViewer, so returning null", e);
             return null;
         }
 
-        nsData = copyToNSDataSet(result, sysInfo, svsRequest.getDataSeries());
+        nsData = copyToNSDataSet(result, topoInfo, svsRequest.getDataSeries());
 
         log.debug("MVSparrowDataProvider done for model #" + predictRequest + " (" + nsData.size() + " rows) Time: " + (System.currentTimeMillis() - startTime) + "ms");
 
@@ -298,7 +298,8 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
                             id = dc.getTable().getIdForRow(r);
                         } catch (NullPointerException npe) {
                             PredictData nomPredictData = SharedApplication.getInstance().getPredictData(context.getModelID());
-                            id = nomPredictData.getSys().getInt(r, 0);
+                            //id = nomPredictData.getTopo().getInt(r, 0);
+                            id = nomPredictData.getTopo().getIdForRow(r);
                         }
                         row[0] = new Field(id);
 			row[0].setKey(true);
@@ -316,7 +317,7 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 	}
 
 	@Deprecated
-	protected NSDataSet copyToNSDataSet(DataTable result, DataTable sysInfo, PredictServiceRequest.DataSeries column) {
+	protected NSDataSet copyToNSDataSet(DataTable result, DataTable topoInfo, PredictServiceRequest.DataSeries column) {
 		int rowCount = result.getRowCount();
 		NSRow[] nsRows = new NSRow[rowCount];
 
@@ -324,7 +325,8 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 
 		for (int r=0; r < rowCount; r++) {
 			Field[] row = new Field[2];	//ID
-			row[0] = new Field(sysInfo.getInt(r, 0));
+			row[0] = new Field(topoInfo.getIdForRow(r));
+			//row[0] = new Field(sysInfo.getInt(r, 0));
 			row[0].setKey(true);
 
 			row[1] = new Field(result.getDouble(r, dataColIndex));	//Value
