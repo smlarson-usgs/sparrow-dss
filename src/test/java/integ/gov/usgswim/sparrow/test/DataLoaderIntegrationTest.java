@@ -2,9 +2,9 @@ package gov.usgswim.sparrow.test;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.ColumnMappedTable;
-import gov.usgswim.datatable.adjustment.FilteredDataTable;
-import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.PredictRunner;
+import gov.usgswim.datatable.filter.ColumnRangeFilter;
+import gov.usgswim.datatable.filter.FilteredDataTable;
+import gov.usgswim.datatable.filter.RowRangeFilter;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.ModelBuilder;
@@ -275,7 +275,7 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/coef.txt");
 		DataTable data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 		int firstNonZeroRow = data.findFirst(0, Double.valueOf(1));
-		DataTable view = new FilteredDataTable(data, 0, firstNonZeroRow, 4, 11); //Crop to only iteration 0 and remove non-coef columns
+		DataTable view = new FilteredDataTable(data, new RowRangeFilter(0, firstNonZeroRow), new ColumnRangeFilter(4, 11)); //Crop to only iteration 0 and remove non-coef columns
 
 		DataTableCompare comp= new DataTableCompare(view, toBeCompared, true);
 
@@ -286,7 +286,7 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/coef.txt");
 		DataTable data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 		int firstNonZeroRow = data.findFirst(0, Double.valueOf(1));
-		DataTable view = new FilteredDataTable(data, 0, firstNonZeroRow, 1, 2);	//Crop to only iteration 0 and only the two decay columns
+		DataTable view = new FilteredDataTable(data, new RowRangeFilter(0, firstNonZeroRow), new ColumnRangeFilter(1, 2));	//Crop to only iteration 0 and only the two decay columns
 
 		DataTableCompare comp= new DataTableCompare(view, toBeCompared, true);
 

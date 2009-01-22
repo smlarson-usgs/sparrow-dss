@@ -5,7 +5,8 @@ import static gov.usgswim.sparrow.service.predict.ValueType.total;
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.adjustment.FilteredDataTable;
+import gov.usgswim.datatable.filter.ColumnRangeFilter;
+import gov.usgswim.datatable.filter.FilteredDataTable;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.PredictData;
@@ -492,8 +493,8 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		
 		DataTableWritable attributes = SharedApplication.queryToDataTable(attributesQuery);
 		// TODO [IK] This 4 is hardcoded for now. Have to go back and use SparrowModelProperties to do properly
-		response.sparrowAttributes = new FilteredDataTable(attributes, 0, 4); // first four columns
-		response.basicAttributes = new FilteredDataTable(attributes, 4, attributes.getColumnCount()- 4); // remaining columns
+		response.sparrowAttributes = new FilteredDataTable(attributes, new ColumnRangeFilter(0, 4)); // first four columns
+		response.basicAttributes = new FilteredDataTable(attributes, new ColumnRangeFilter(4, attributes.getColumnCount() - 4)); // remaining columns
 
 		StringBuilder basicAttributesSection = toSection(response.basicAttributes, "Basic Attributes", "basic_attrib");
 		StringBuilder sparrowAttributesSection = toSection(response.sparrowAttributes, "SPARROW Attributes", "sparrow_attrib");

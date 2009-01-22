@@ -11,7 +11,6 @@
 	<classpathentry excluding="**.svn" kind="src" path="src/test/java/integ"/>
 	<classpathentry excluding="**.svn" kind="src" path="src/test/java/unit"/>
 	<classpathentry kind="lib" path="java_lib/junit/junit.jar"/>
-	<classpathentry kind="lib" path="java_lib/usgs/datatable/usgs_core/usgs-datatable.jar"/>
 	<classpathentry kind="lib" path="java_lib/jakarta/commons_lang/commons-lang-2.1.jar"/>
 	<classpathentry kind="lib" path="java_lib/ehcache/usgs_core/ehcache.jar"/>
 	<classpathentry kind="lib" path="java_lib/apache/log4j/log4j-1.2.13.jar"/>
@@ -26,5 +25,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jdk1.5"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/ojdbc14.jar"/>
 	<classpathentry kind="lib" path="java_lib/codehaus/woodstox/usgs_dep/stax-api-1.0.1.jar"/>
+	<classpathentry kind="lib" path="java_lib/usgs/datatable/usgs_core/usgs-datatable.jar"/>
+	<classpathentry kind="lib" path="java_lib/usgs/datatable/usgs_dep/google-collect.jar"/>
 	<classpathentry kind="output" path="public_html/WEB-INF/classes"/>
 </classpath>

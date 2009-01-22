@@ -1,94 +1,64 @@
 package gov.usgswim.sparrow.service.predict;
 
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.filter.FilteredDataTable;
+import gov.usgswim.datatable.filter.RowFilter;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
-import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
+import gov.usgswim.sparrow.service.predict.filter.PredictExportFilter;
+
+import java.util.Map;
 
 import javax.xml.stream.XMLStreamReader;
 
 public class PredictExportService implements HttpService<PredictExportRequest> {
 
-    // private PropertyLoaderHelper props = new PropertyLoaderHelper(
-    // "gov/usgswim/sparrow/service/predictcontext/PredictContextServiceTemplate.properties"
-    // );
-
-    public XMLStreamReader getXMLStreamReader(PredictExportRequest o,
+    public XMLStreamReader getXMLStreamReader(PredictExportRequest req,
             boolean isNeedsCompleteFirstRow) throws Exception {
-        Integer predictionContextID = o.getContextID();
-        PredictionContext nominalPredictionContext;
+        Integer predictionContextID = req.getContextID();
         PredictionContext predictionContext;
 
         if (predictionContextID != null) {
-            // use prediction context to get the predicted results from
-            // cache if available
             predictionContext = SharedApplication.getInstance().getPredictionContext(predictionContextID);
-            nominalPredictionContext = new PredictionContext(predictionContext.getModelID(), null, null, null, null);
         } else {
             // TODO [IK] Ask whether set predictionContext to null later?
-            predictionContext = new PredictionContext(o.getModelID(), null, null, null, null);
-            nominalPredictionContext = new PredictionContext(o.getModelID(), null, null, null, null);
+            predictionContext = new PredictionContext(req.getModelID(), null, null, null, null);
         }
 
-        PredictResult result = SharedApplication.getInstance().getAnalysisResult(predictionContext);
+        DataTable result = SharedApplication.getInstance().getAnalysisResult(predictionContext);
         PredictData data = SharedApplication.getInstance().getPredictData(predictionContext.getModelID());
-        Analysis analysis = predictionContext.getAnalysis();
+        DataTable src = data.getSrc();
 
         if (predictionContext.getAdjustmentGroups() != null) {
-
-            DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(predictionContext.getAdjustmentGroups());
-            // Check for aggregation and run if necessary
-            if (analysis.isAggregated()) {
-                AggregationRunner aggRunner = new AggregationRunner(predictionContext);
-                adjSrc = aggRunner.doAggregation(adjSrc);
-            }
-
-            data = new PredictDataImm(data.getTopo(), data.getCoef(), adjSrc,
-                    data.getSrcMetadata(), data.getDecay(), data
-                            .getAncil(), data.getModel());
-            
-        } else if (analysis.isAggregated()) {
-            // Check for aggregation and run if necessary
-            AggregationRunner aggRunner = new AggregationRunner(predictionContext);
-            DataTable aggSrc = aggRunner.doAggregation(data.getSrc());
-            data = new PredictDataImm(data.getTopo(), data.getCoef(), aggSrc,
-                    data.getSrcMetadata(), data.getDecay(), data
-                            .getAncil(), data.getModel());
+            src = SharedApplication.getInstance().getAdjustedSource(predictionContext.getAdjustmentGroups());
         }
+        
+        if (predictionContext.getAnalysis().isAggregated()) {
+            AggregationRunner aggRunner = new AggregationRunner(predictionContext);
+            src = aggRunner.doAggregation(src);
+        }
+        
+        DataTable topo = data.getTopo();
+        if (req.getBbox() != null) {
+            
+            RowFilter filter = new PredictExportFilter(predictionContext, req.getBbox());
+            topo = new FilteredDataTable(topo, filter);
+            Map<Integer,Integer> rowMap = ((FilteredDataTable)topo).getRowMap();
+            result = new FilteredDataTable(result, rowMap, null);
+            src = new FilteredDataTable(src, rowMap, null);
+        }
+        
+        data = new PredictDataImm(topo, data.getCoef(), src,
+            data.getSrcMetadata(), data.getDecay(),
+            data.getAncil(), data.getModel());
 
-        PredictExportSerializer ser = new PredictExportSerializer(o, result, data);
-
-        return ser;
-        // PredictionContext context =
-        // SharedApplication.getInstance().getPredictionContext
-        // (o.getContextID());
-        // PredictResult result =
-        // SharedApplication.getInstance().getAnalysisResult(context);
-        // PredictData data =
-        // SharedApplication.getInstance().getPredictData(context.getModelID());
-        //		
-        // if (context.getAdjustmentGroups() != null) {
-        // DataTable adjSrc =
-        // SharedApplication.getInstance().getAdjustedSource(context
-        // .getAdjustmentGroups());
-        // data = new PredictDataImm(data.getTopo(), data.getCoef(), adjSrc,
-        // data.getSrcMetadata(), data.getDecay(),
-        // data.getSys(), data.getAncil(), data.getModel());
-        //			
-        // }
-        //		
-        // PredictExportSerializer ser = new PredictExportSerializer(o, result,
-        // data);
-        //		
-        // return ser;
+        return new PredictExportSerializer(req, result, data);
     }
 
     public void shutDown() {
-        // TODO Auto-generated method stub
     }
 }

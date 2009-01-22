@@ -3,7 +3,8 @@ package gov.usgswim.sparrow.deprecated;
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.ComparePercentageView;
-import gov.usgswim.datatable.adjustment.FilteredDataTable;
+import gov.usgswim.datatable.filter.ColumnRangeFilter;
+import gov.usgswim.datatable.filter.FilteredDataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.service.HttpService;
@@ -101,7 +102,7 @@ public class PredictService implements HttpService<PredictServiceRequest> {
 				//Return only the requested series
 				int firstAggCol = result.getColumnCount()- 2;
 				int dataCol = firstAggCol + req.getDataSeries().getAggColumnIndex();
-				return new FilteredDataTable(result, dataCol, 1);
+				return new FilteredDataTable(result, new ColumnRangeFilter(dataCol, 1));
 			} else {
 				//should handle these special - for now return all data
 				return result;

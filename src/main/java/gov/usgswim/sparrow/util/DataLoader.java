@@ -5,7 +5,6 @@ import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
-import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.domain.ModelBuilder;
@@ -492,7 +491,23 @@ public class DataLoader {
 
 		DataTableWritable sourceValue = new SimpleDataTableWritable();
 
-
+		String selectReachIds = getQuery("SelectReachIds", modelId);
+		Statement idsSt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+		idsSt.setFetchSize(2000);
+		ResultSet idsRs = null;
+		
+		try {
+		    idsRs = idsSt.executeQuery(selectReachIds);
+		    for (int i = 0; idsRs.next(); i++) {
+		        sourceValue.setRowId(idsRs.getLong(1), i);
+		    }
+		} finally {
+		    if (idsRs != null) {
+		        idsRs.close();
+		        idsRs = null;
+		    }
+		}
+        
 		for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++) {
 			String constituent = sources.getString(srcIndex, sources.getColumnByName("CONSTITUENT"));
 			String units = sources.getString(srcIndex, sources.getColumnByName("UNITS"));
@@ -515,7 +530,6 @@ public class DataLoader {
 
 				rs = st.executeQuery(query);
 				loadColumn(rs, sourceValue, 0, srcIndex);
-
 			} finally {
 				if (rs != null) {
 					rs.close();
