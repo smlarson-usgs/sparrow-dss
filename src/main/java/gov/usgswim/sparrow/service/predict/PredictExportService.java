@@ -1,17 +1,12 @@
 package gov.usgswim.sparrow.service.predict;
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.filter.FilteredDataTable;
-import gov.usgswim.datatable.filter.RowFilter;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
-import gov.usgswim.sparrow.service.predict.filter.PredictExportFilter;
-
-import java.util.Map;
 
 import javax.xml.stream.XMLStreamReader;
 
@@ -42,17 +37,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
             src = aggRunner.doAggregation(src);
         }
         
-        DataTable topo = data.getTopo();
-        if (req.getBbox() != null) {
-            
-            RowFilter filter = new PredictExportFilter(predictionContext, req.getBbox());
-            topo = new FilteredDataTable(topo, filter);
-            Map<Integer,Integer> rowMap = ((FilteredDataTable)topo).getRowMap();
-            result = new FilteredDataTable(result, rowMap, null);
-            src = new FilteredDataTable(src, rowMap, null);
-        }
-        
-        data = new PredictDataImm(topo, data.getCoef(), src,
+        data = new PredictDataImm(data.getTopo(), data.getCoef(), src,
             data.getSrcMetadata(), data.getDecay(),
             data.getAncil(), data.getModel());
 

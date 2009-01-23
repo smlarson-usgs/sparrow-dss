@@ -5,14 +5,18 @@ import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.filter.RowFilter;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
 import gov.usgswim.sparrow.datatable.PredictResult;
-
+import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.service.predict.filter.PredictExportAggFilter;
+import gov.usgswim.sparrow.service.predict.filter.PredictExportFilter;
+
 import javax.xml.stream.XMLStreamException;
 
-public class PredictExportSerializer extends BasicXMLStreamReader{
+public class PredictExportSerializer extends BasicXMLStreamReader {
 
 	public static String TARGET_NAMESPACE = "http://www.usgs.gov/sparrow/prediction-response/v0_1";
 	public static String TARGET_NAMESPACE_LOCATION = "http://www.usgs.gov/sparrow/prediction-response/v0_1.xsd";
@@ -20,6 +24,9 @@ public class PredictExportSerializer extends BasicXMLStreamReader{
 	private PredictExportRequest request;
 	private DataTable result;
 	private PredictData predictData;
+	private RowFilter filter;
+	private DataTable filterTable;
+	
 	//
 	protected ParseState state = new ParseState();
 
@@ -41,6 +48,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader{
 		this.request = request;
 		this.result = result;
 		this.predictData = predictData;
+		this.filter = createRowFilter();
 	}
 
 	// ================
@@ -158,8 +166,10 @@ public class PredictExportSerializer extends BasicXMLStreamReader{
 	}
 
 	protected void readRow() {
+	    while (!state.isDataFinished() && !filter.accept(filterTable, state.r)) {
+	        state.r++;
+	    }
 		if (!state.isDataFinished()) {
-			// read the row
 			BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
 			if (predictData.getSrc().getProperty("aggLevelKludge") != null) {
 				// Kludge the id into the row - temporary
@@ -218,6 +228,25 @@ public class PredictExportSerializer extends BasicXMLStreamReader{
 		request = null;
 		predictData = null;
 	}
+    
+    protected RowFilter createRowFilter() {
+        Integer contextId = request.getContextID();
+        PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
+        if (request.getBbox() == null) {
+            this.filterTable = predictData.getTopo();
+            return new RowFilter() {
+                public boolean accept(DataTable table, int rowNum) {
+                    return true;
+                }
+            };
+        } else if (context.getAnalysis().isAggregated()) {
+            this.filterTable = result;
+            return new PredictExportAggFilter(context, request.getBbox());
+        } else {
+            this.filterTable = predictData.getTopo();
+            return new PredictExportFilter(context.getModelID(), request.getBbox());
+        }
+    }
 
 	// ==========================
 	// SIMPLE GETTERS AND SETTERS
