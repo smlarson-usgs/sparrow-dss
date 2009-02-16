@@ -9,6 +9,20 @@ import gov.usgswim.sparrow.service.predict.PredictPipeline;
 
 public class IDByPointPipeline extends AbstractPipeline<IDByPointRequest> {
 
+	// TODO eliminate duplicate code from PredictPipeline.configure(new JSONFormatter());
+	public static JSONFormatter configure(JSONFormatter jFormatter) {
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "reach-group");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "adjustment");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "logical-set");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "reach");
+		jFormatter.identifyRepeatedTagElement("columns", "group");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "col");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "r");
+		jFormatter.identifyRepeatedTagElement("data", "section");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "c");
+
+		return jFormatter;
+	}
 
 	public IDByPointPipeline(){
 		super(new IDByPointService(), new IDByPointParser());
@@ -20,7 +34,8 @@ public class IDByPointPipeline extends AbstractPipeline<IDByPointRequest> {
 
 	@Override
 	public IFormatter getConfiguredJSONFormatter() {
-		return PredictPipeline.configure(new JSONFormatter());
+		return configure(new JSONFormatter());
 	}
+
 
 }

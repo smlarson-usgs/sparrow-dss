@@ -22,7 +22,7 @@ import java.io.Serializable;
  */
 public interface PredictData extends ImmutableBuilder<PredictData>, Serializable {
 	// topo columns
-	public static final int MODEL_REACH_COL=0;
+	public static final int MODEL_REACH_COL = 0;
 	public static final int FNODE_COL = 1;
 	public static final int TNODE_COL = 2;
 	public static final int IFTRAN_COL = 3;

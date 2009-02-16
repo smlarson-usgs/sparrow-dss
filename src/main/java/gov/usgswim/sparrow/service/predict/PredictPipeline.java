@@ -8,6 +8,7 @@ import gov.usgswim.sparrow.service.AbstractPipeline;
 
 public class PredictPipeline extends AbstractPipeline<PredictExportRequest>{
 	
+	// TODO eliminate duplicate code from IDByPointPipeline.configure(new JSONFormatter());
 	public static JSONFormatter configure(JSONFormatter jFormatter) {
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "reach-group");
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "adjustment");

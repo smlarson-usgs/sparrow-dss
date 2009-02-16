@@ -11,7 +11,7 @@ import static gov.usgswim.sparrow.PredictData.*;
  * all match, and that the reach order is such that reach(n) never flows to
  * reach(<n).
  */
-public class PredictRunner {
+public class PredictRunner implements Runner {
 	/**
 	 * The parent of all child values. If not passed in, it is created.
 	 */
@@ -68,6 +68,7 @@ public class PredictRunner {
 	 * @param topo
 	 * @param coef
 	 * @param src
+	 * TODO Refactor this like DeliveryRunner and test
 	 */
 	public PredictRunner(DataTable topo, DataTable coef, DataTable src,
 			DataTable decay) {
