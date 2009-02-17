@@ -40,7 +40,7 @@ public class DeliveryRunner implements Runner {
 	 * The source amount for each reach-source. src[i][k] == the amount added
 	 * via source k at reach i
 	 */
-	protected DataTable sourceValues;
+	protected DataTable sourceValues; // TODO remove NOT USED
 
 	/**
 	 * The stream and resevor decay. The values in the array are *actually*
@@ -58,26 +58,23 @@ public class DeliveryRunner implements Runner {
 	 * The number of nodes
 	 */
 	protected int nodeCount;
-
-	protected Set<Long> targetReaches;
 	
 	
 	// ============
 	// CONSTRUCTORS
 	// ============
 	public DeliveryRunner(DataTable topo, DataTable coef, DataTable src,
-			DataTable decay, Set<Long> targetReaches) {
+			DataTable decay) {
 		this(new PredictDataImm(topo, coef, src, null, decay,
-				null, null), targetReaches);
+				null, null));
 	}
 	
-	public DeliveryRunner(PredictData data, Set<Long> targetReaches) {
+	public DeliveryRunner(PredictData data) {
 		this.topo = data.getTopo(); // assign the passed values to the class
 									// variables
-		this.deliveryCoefficient = data.getCoef();
+		//this.deliveryCoefficient = data.getCoef();
 		this.sourceValues = data.getSrc();
 		this.decayCoefficient = data.getDecay();
-		this.targetReaches = targetReaches;
 
 		int maxNode = Math.max(topo.getMaxInt(FNODE_COL), topo
 				.getMaxInt(TNODE_COL));
@@ -86,19 +83,50 @@ public class DeliveryRunner implements Runner {
 		nodeCount = maxNode + 1;
 	}
 	
-	public void calcualteDeliveryCoefficients() {
+	public double[][] calculateDeliveryCoefficients(Set<Long> targetReaches) {
 		int maxReachRow = NavigationUtils.findMaxReachRow(targetReaches, topo);
 		PredictResultStructure prs = PredictResultStructure.analyzePredictResultStructure(maxReachRow, sourceValues);
 		
-		// Reaches to store coefficients, one for each source type
-		double incReachContribution[][] = new double[prs.reachCount][prs.rchValColCount];
-
+		// Reach incrementals do not affect delivery coefficient
+		
 		// Nodes to store coefficients, one for each source type
 		double upstreamNodeContribution[][] = new double[nodeCount][prs.sourceCount];
+		
+		for (Long reachID : targetReaches) {
+			// TODO initialize node contributions, set = 1 for all tnodes in
+			// targetReaches
+			int reach = topo.getRowForId(reachID);
+			Integer node = topo.getInt(reach, TNODE_COL);
+			for (int sourceType = 0; sourceType < prs.sourceCount; sourceType++) {
+				upstreamNodeContribution[node][sourceType] = 1;
+			}
+		}
+		
+		
+		// Iterate over all reaches in reverse hydrological sequence order
+		for (int reach = maxReachRow; reach >=0 ; reach--) {
+
+			double reachIncrementalContributionAllSourcesTotal = 0d; // incremental for all sources/ (NOT decayed)
+			double rchGrandTotal = 0d; // all sources + all from upstream node (decayed)
+
+			// Iterate over all sources
+			for (int sourceType = 0; sourceType < prs.sourceCount; sourceType++) {
+				int source = sourceType + prs.sourceCount;
+
+				// Accumulate at downstream node only if this reach transmits
+				if (topo.getInt(reach, IFTRAN_COL) != 0) {
+					double upstreamContrib = (upstreamNodeContribution[topo.getInt(reach, TNODE_COL)][sourceType] 
+						* decayCoefficient.getDouble(reach, UPSTREAM_DECAY_COL)); /* Just the decayed upstream portion */
+					upstreamNodeContribution[topo.getInt(reach, FNODE_COL)][sourceType] += upstreamContrib;
+				}
+			}
+		}
+		return upstreamNodeContribution;
 	}
 	
 	public PredictResultImm doPredict() throws Exception {
-		int maxReachRow = NavigationUtils.findMaxReachRow(targetReaches, topo);
+//		int maxReachRow = NavigationUtils.findMaxReachRow(targetReaches, topo);
+		int maxReachRow = 10000;
 		
 		PredictResultStructure prs = PredictResultStructure.analyzePredictResultStructure(maxReachRow, sourceValues);
 

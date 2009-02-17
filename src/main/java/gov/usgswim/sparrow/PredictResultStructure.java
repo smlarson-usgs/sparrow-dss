@@ -9,6 +9,8 @@ public class PredictResultStructure {
 	public int grandTotalColOffset;
 	public int reachCount;
 	public int rchValColCount;
+	
+	
 	public static PredictResultStructure analyzePredictResultStructure(int maxReachRow,
 			DataTable sourceValues) {
 		

@@ -11,17 +11,6 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 public class NavigationUtilsTest extends TestCase {
-	int[][] linearFlowTopo = {
-			{11124,11124,0,1,1}, // source
-			{13124,13124,1,2,1}, // A
-			{10124,10124,2,3,1}, // B
-			{11024,11024,3,4,1}, // C
-			{12124,12124,4,5,1}, // D
-			{16124,16124,5,6,1}, // destination
-	};
-	// PICTURE of Linear Flow Topo
-	// source -> A -> B -> C -> D -> destination
-	
 	int[][] BinaryTreeFlowTopo = {
 			{1111,11124,0,1,1},
 			{0100  ,16124,5,6,1}, 
@@ -109,7 +98,7 @@ public class NavigationUtilsTest extends TestCase {
 	
 	public void testFindUpstreamReachesSimpleLinearFlow() {
 		
-		DataTable topo = new SimpleDataTableWritable(linearFlowTopo, null, 0);
+		DataTable topo = new SimpleDataTableWritable(PredictDataTestScenarios.linearFlowTopo, null, 0);
 		PredictData pd = new PredictDataImm(topo, null, null, null, null, null, null);
 		
 		Long modelID = 22L;
@@ -137,7 +126,7 @@ public class NavigationUtilsTest extends TestCase {
 	
 	public void testFindUpstreamReachesSimpleLinearFlowWithIftranZero() {
 		
-		SimpleDataTableWritable topo = new SimpleDataTableWritable(linearFlowTopo, null, 0);
+		SimpleDataTableWritable topo = new SimpleDataTableWritable(PredictDataTestScenarios.linearFlowTopo, null, 0);
 		int brokenRow = 2;
 		topo.setValue(0, brokenRow, PredictData.IFTRAN_COL);
 		PredictData pd = new PredictDataImm(topo, null, null, null, null, null, null);
