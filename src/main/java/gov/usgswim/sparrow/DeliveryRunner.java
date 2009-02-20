@@ -83,45 +83,109 @@ public class DeliveryRunner implements Runner {
 		nodeCount = maxNode + 1;
 	}
 	
-	public double[][] calculateDeliveryCoefficients(Set<Long> targetReaches) {
+	public double[] calculateNodeTransportFraction(Set<Long> targetReaches) {
+		// TODO cache the result, based on modelID, 
 		int maxReachRow = NavigationUtils.findMaxReachRow(targetReaches, topo);
 		PredictResultStructure prs = PredictResultStructure.analyzePredictResultStructure(maxReachRow, sourceValues);
 		
 		// Reach incrementals do not affect delivery coefficient
 		
-		// Nodes to store coefficients, one for each source type
-		double upstreamNodeContribution[][] = new double[nodeCount][prs.sourceCount];
+		// Delivery fraction, one for each node and source type
+		double transportFraction[] = new double[nodeCount];
 		
 		for (Long reachID : targetReaches) {
 			// TODO initialize node contributions, set = 1 for all tnodes in
 			// targetReaches
 			int reach = topo.getRowForId(reachID);
-			Integer node = topo.getInt(reach, TNODE_COL);
-			for (int sourceType = 0; sourceType < prs.sourceCount; sourceType++) {
-				upstreamNodeContribution[node][sourceType] = 1;
-			}
+			Integer downstreamNode = topo.getInt(reach, TNODE_COL);
+			transportFraction[downstreamNode] = 1;
 		}
-		
 		
 		// Iterate over all reaches in reverse hydrological sequence order
 		for (int reach = maxReachRow; reach >=0 ; reach--) {
 
-			double reachIncrementalContributionAllSourcesTotal = 0d; // incremental for all sources/ (NOT decayed)
-			double rchGrandTotal = 0d; // all sources + all from upstream node (decayed)
+			// Accumulate at downstream node only if this reach transmits
+			if (topo.getInt(reach, IFTRAN_COL) != 0) {
+				double upstreamContrib = (transportFraction[topo.getInt(reach, TNODE_COL)] 
+				                                            * decayCoefficient.getDouble(reach, UPSTREAM_DECAY_COL)); /* Just the decayed upstream portion */
+				transportFraction[topo.getInt(reach, FNODE_COL)]+= upstreamContrib;
+			}
+
+		}
+		return transportFraction;
+	}
+	
+	public double[] calculateReachTransportFraction(Set<Long> targetReaches) {
+		int maxReachRow = topo.getRowCount() - 1;
+		PredictResultStructure prs = PredictResultStructure.analyzePredictResultStructure(maxReachRow, sourceValues);
+		double[] nodeDeliveryFraction = calculateNodeTransportFraction(targetReaches);
+
+		// Delivery fraction, one for each reach and source type
+		double[] incReachTransportFraction = new double[prs.reachCount];
+
+		// Iterate over all reaches (order irrelevant
+		for (int reach = 0; reach < prs.reachCount; reach++) {
 
 			// Iterate over all sources
 			for (int sourceType = 0; sourceType < prs.sourceCount; sourceType++) {
 				int source = sourceType + prs.sourceCount;
 
-				// Accumulate at downstream node only if this reach transmits
-				if (topo.getInt(reach, IFTRAN_COL) != 0) {
-					double upstreamContrib = (upstreamNodeContribution[topo.getInt(reach, TNODE_COL)][sourceType] 
-						* decayCoefficient.getDouble(reach, UPSTREAM_DECAY_COL)); /* Just the decayed upstream portion */
-					upstreamNodeContribution[topo.getInt(reach, FNODE_COL)][sourceType] += upstreamContrib;
-				}
+				Integer downstreamNode = topo.getInt(reach, TNODE_COL);
+
+				incReachTransportFraction[reach] = nodeDeliveryFraction[downstreamNode] * 
+				deliveryCoefficient.getDouble(reach, INSTREAM_DECAY_COL);
 			}
 		}
-		return upstreamNodeContribution;
+		return incReachTransportFraction;
+	}
+	
+	public PredictResultImm calculateDeliveredFlux(PredictResultImm flux, double[] nodeTransportFraction) throws Exception {
+		// TODO Currently, this calculates both incremental and total delivered flux. This calculation requires the nodeTransport
+		// May revisit if total delivered flux is not desired. This is because the incremental flux can be more quickly
+		// calculated using just the reachTransportFraction, but this improvement may be negligible (fewer multiplications,
+		// no extra memory allocation?
+		// TODO Create a weightedDataTableBuilder, taking DataTable & 
+		int maxReachRow = topo.getRowCount() - 1;
+		PredictResultStructure prs = PredictResultStructure.analyzePredictResultStructure(maxReachRow, sourceValues);
+		
+		double incReachDeliveredFlux[][] = new double[prs.reachCount][prs.rchValColCount];
+
+		// Iterate over all reaches
+		for (int reach = 0; reach < prs.reachCount; reach++) {
+
+			double reachIncrementalContributionAllSourcesTotal = 0d; // incremental for all sources/ (NOT decayed)
+			double rchGrandTotal = 0d; // all sources + all from upstream node (decayed)
+			
+			Integer downstreamNode = topo.getInt(reach, TNODE_COL);
+			double downstreamNodeTransportFraction = nodeTransportFraction[downstreamNode];
+
+			// Iterate over all sources
+			for (int sourceType = 0; sourceType < prs.sourceCount; sourceType++) {
+				int upstreamSource = sourceType + prs.sourceCount;
+
+				// temp var to store the incremental per source k.
+				// Land delivery and coeff both included in coef value. (NOT
+				// decayed)
+				double incrementalReachFluxContribution = deliveryCoefficient
+						.getDouble(reach, sourceType)
+						* sourceValues.getDouble(reach, sourceType);
+						
+
+				incReachDeliveredFlux[reach][sourceType] = incrementalReachFluxContribution
+					* decayCoefficient.getDouble(reach, INSTREAM_DECAY_COL)
+					* downstreamNodeTransportFraction;
+				// TODO Not calculating upstream node contribution at this time as that requires tracking nodes. Maybe later
+
+				reachIncrementalContributionAllSourcesTotal += incrementalReachFluxContribution; // add to incremental total for all sources at reach
+			}
+			incReachDeliveredFlux[reach][prs.totalIncrementalColOffset] = reachIncrementalContributionAllSourcesTotal; // incremental for all sources (NOT decayed)
+			
+			// TODO, process reachIncrementalContributionAllSourcesTotal properly
+		}
+
+		return PredictResultImm.buildPredictResult(incReachDeliveredFlux,
+				predictData);
+		
 	}
 	
 	public PredictResultImm doPredict() throws Exception {

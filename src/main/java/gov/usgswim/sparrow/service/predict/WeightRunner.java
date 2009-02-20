@@ -20,7 +20,16 @@ public class WeightRunner {
     
     /** Logging object for this class. */
     protected static Logger log = Logger.getLogger(WeightRunner.class);
-    
+
+	/**
+	 * @param context
+	 * @param result
+	 * @return
+	 * @throws Exception
+	 *             Note that result is only being used as a DataTable. There are
+	 *             no assumptions about it being a PredictResult except in the
+	 *             naming of the headers
+	 */
     public static PredictResult doWeighting(PredictionContext context, PredictResult result)
     throws Exception {
         log.debug("Entering WeightRunner.doWeighting(PredictResult).");
