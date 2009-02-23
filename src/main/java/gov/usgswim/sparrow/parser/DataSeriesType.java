@@ -5,26 +5,32 @@ package gov.usgswim.sparrow.parser;
  */
 public enum DataSeriesType {
 
-    total                 (true, false, false, 1, false, false, false),
-    incremental           (true, false, false, 1, false, false, false),
-    incremental_yield     (true, false, false, 1, false, true, false),
-    total_concentration   (true, false, false, 1, false, true, false),
-    total_no_decay        (true, false, false, 1, false, false, true),
-    total_delivered       (true, false, true, 1, true, false, false),
-    total_decay           (true, false, false, 1, false, false, true),
-    incremental_delivered (true, false, true, 1, true, false, false),
-    delivered_fraction    (false, false, true, 0, true, false, false),
-    source_value          (false, true, false, 2, false, false, false),
-    land_to_water_coef    (false, false, true, 2, false, false, false),
-    instream_decay_coef   (false, false, true, 0, false, false, false);
+    total						(true, false, false, 1, false, false, false), // active
+    incremental					(true, false, false, 1, false, false, false), //active hm, why is this result 
+    					// based, shouldn't it be just source-based?
+    incremental_yield			(true, false, false, 1, false, true, false), // active
+    total_concentration			(true, false, false, 1, false, true, false), // active
+    source_value				(false, true, false, 2, false, false, false), // active
+    incremental_delivered_yield	(true, false, true, 0, false, true, false), // inaccurate?
+    total_delivered				(true, false, true, 1, true, false, false), // inaccurate?
+    incremental_delivered_flux	(true, false, true, 1, true, false, false), // inaccurate?
+    delivered_fraction			(false, false, true, 0, true, false, false), // inaccurate?
+    total_decay					(true, false, false, 1, false, false, true),
+    total_no_decay				(true, false, false, 1, false, false, true),
+    land_to_water_coef			(false, false, true, 2, false, false, false),
+    instream_decay_coef			(false, false, true, 0, false, false, false)
+    ;
     
     private final boolean resultBased;
     private final boolean sourceBased;
     private final boolean coefBased;
     private final int srcRequirement;	//0 Not allowed, 1 allowed, 2 required
+    private static final int NO_SOURCES_ALLOWED = 0,SOURCES_ALLOWED = 1,SOURCES_REQUIRED = 2;
     private final boolean targetRequired;
     private final boolean weighted;
     private final boolean extraColumn;
+    
+
 
     DataSeriesType(boolean resultBased, boolean sourceBased, boolean coefBased,
             int srcRequirement, boolean targetRequired, boolean weighted, boolean extraColumn) {
@@ -99,7 +105,7 @@ public enum DataSeriesType {
      * @return
      */
     public boolean isSourceAllowed() {
-        return srcRequirement == 1 || srcRequirement == 2;
+        return srcRequirement == SOURCES_ALLOWED || srcRequirement == SOURCES_REQUIRED;
     }
 
     /**
@@ -109,8 +115,8 @@ public enum DataSeriesType {
      * 
      * @return
      */
-    public boolean isSourceNotAllowed() {
-        return srcRequirement == 0;
+    public boolean isSourceDisallowed() {
+        return srcRequirement == NO_SOURCES_ALLOWED;
     }
 
     /**
@@ -120,11 +126,11 @@ public enum DataSeriesType {
      * @return
      */
     public boolean isSourceRequired() {
-        return srcRequirement == 2;
+        return srcRequirement == SOURCES_REQUIRED;
     }
 
     /**
-     * This dataserives requires Target reaches to be defined.
+     * This dataseries requires Target reaches to be defined.
      * @return
      */
     public boolean isTargetRequired() {

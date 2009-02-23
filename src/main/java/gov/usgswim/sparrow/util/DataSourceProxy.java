@@ -8,13 +8,13 @@ import java.sql.SQLException;
 import javax.sql.DataSource;
 
 /**
- * Wrapper class to provide a way to supply connections either via jndi or
- * via an application defined connection.  This class or a real jndi DataSource
+ * Wrapper class to provide a way to supply connections either via JNDI or
+ * via an application defined connection.  This class or a real JNDI DataSource
  * can be passed to a client.
  * 
  * This class will then call the JDBCConnectable class when/if the actual
  * connection is needed.  It is assumed that the JDBCConnectable knows how to
- * make the actual connection, so none of the other info is passsed.
+ * make the actual connection, so none of the other info is passed.
  */
 public class DataSourceProxy implements DataSource {
 	JDBCConnectable src;
@@ -66,5 +66,17 @@ public class DataSourceProxy implements DataSource {
 
 	public int getLoginTimeout() throws SQLException {
 		return 0;
+	}
+
+	@Override
+	public boolean isWrapperFor(Class<?> iface) throws SQLException {
+		// TODO [IK] Not sure how this should behave as I'm not sure about the intent of the class. Must discuss with Eric
+		return false;
+	}
+
+	@Override
+	public <T> T unwrap(Class<T> iface) throws SQLException {
+		// TODO [IK] Not sure how this should behave as I'm not sure about the intent of the class. Must discuss with Eric
+		return null;
 	}
 }

@@ -170,7 +170,8 @@ public class PredictionContext implements XMLStreamParserComponent {
 	
     /**
      * Centralized method to get a reference to the data table and a column in it
-     * for use any place we need to access the data column.
+     * for use any place we need to access the data column. The data column will
+     * be used for the map coloring
      * 
      * @return
      * @throws Exception
@@ -181,7 +182,8 @@ public class PredictionContext implements XMLStreamParserComponent {
 
         Select select = getAnalysis().getSelect();
         DataSeriesType type = select.getDataSeries();
-
+        // Handled DataSeriesType: total, incremental, incremental_yield, total_concentration, source_values
+        
         if (type.isResultBased()) {
 
             //We will try to get result-based series out of the analysis cache

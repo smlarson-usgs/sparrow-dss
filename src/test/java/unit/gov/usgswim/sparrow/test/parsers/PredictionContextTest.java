@@ -60,7 +60,7 @@ public class PredictionContextTest extends TestCase {
 	
 	public static final int PRED_CONTEXT_1_ID = 1802649921;
 	public static final int PRED_CONTEXT_2_ID = -792246649;
-	public static final int PRED_CONTEXT_3_ID = 469295907;
+	public static final int PRED_CONTEXT_3_ID = 923106886;
 	public static final int PRED_CONTEXT_4_ID = -398183923;
 	
 	public static String contextIDRegex = "context-id=['\"]([-0-9]+)['\"]";

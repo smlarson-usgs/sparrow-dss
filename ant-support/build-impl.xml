@@ -31,9 +31,10 @@
 		<copy todir="${build.web.dir}/WEB-INF/lib" flatten="true">
 			<fileset dir="${lib.dir}" includes="${build.lib.includes}" excludes="${build.lib.excludes}" />
 		</copy>
-		<javac srcdir="${src.dir}" destdir="${build.classes.dir}">
-			<classpath path="${javac.classpath}:${j2ee.classpath}" />
-		</javac>
+    	<property name="param.javac.debug" value="off"/><!-- off by default, unless overridden with parameter -->
+        <javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="${param.javac.debug}" debuglevel="lines,vars,source">
+        	<classpath path="${javac.classpath}:${j2ee.classpath}" />
+        </javac>
 		<copy todir="${build.classes.dir}">
 			<fileset dir="${src.dir}" excludes="${build.classes.excludes}" />
 			<fileset dir="${resources.dir}" />
@@ -54,6 +55,17 @@
 	</target>
 	<target name="-post-dist" />
 
+	<target name="dist-debug" description="Build distribution." depends="init,-pre-dist,-do-dist-debug,-post-dist" />
+    <target name="-do-dist-debug" description="build debug distribution" depends="init">
+    	<mkdir dir="${dist.dir}" />
+    	<antcall target="compile">
+    		<param name="param.javac.debug" value="true"/>
+   		</antcall>
+    	<mkdir dir="${dist.dir}" />
+		<jar compress="true" jarfile="${dist.dir}/${war.name}">
+			<fileset dir="${build.web.dir}" />
+		</jar>
+    </target>
 	<!-- -->
 	<!-- Execution section -->
 	<!-- -->
