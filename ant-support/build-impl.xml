@@ -15,7 +15,9 @@
 		<property file="${support.ant}/${user.name}.properties" />
 		<property file="${support.ant}/build.properties" />
 	</target>
-	<target name="-post-init" />
+	<target name="-post-init" >
+		<echo message="JAVA_HOME=${env.JAVA_HOME}"/>
+	</target>
 
 	<!-- -->
 	<!-- Compile section -->
