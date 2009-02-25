@@ -2,6 +2,15 @@ package gov.usgswim.sparrow;
 
 import gov.usgswim.datatable.DataTable;
 
+/**
+ * The PredictResult data structure is a DataTable with internal structure. It
+ * is separated into k incremental contribution values, k cumulative
+ * contribution values, and 1 total incremental contribution value, and 1 grand
+ * total cumulative contribution value
+ * 
+ * @author ilinkuo
+ * 
+ */
 public class PredictResultStructure {
 
 	public int sourceCount;
@@ -9,7 +18,6 @@ public class PredictResultStructure {
 	public int grandTotalColOffset;
 	public int reachCount;
 	public int rchValColCount;
-	
 	
 	public static PredictResultStructure analyzePredictResultStructure(int maxReachRow,
 			DataTable sourceValues) {
@@ -19,8 +27,9 @@ public class PredictResultStructure {
 		prs.sourceCount = sourceValues.getColumnCount(); // # of sources is equal to the number of 'columns' in an
 															// arbitrary row (row zero)
 		
-		prs.totalIncrementalColOffset = 2*prs.sourceCount;
+		prs.totalIncrementalColOffset = 2 * prs.sourceCount;
 		prs.grandTotalColOffset = prs.totalIncrementalColOffset + 1;
+
 		/*
 		 * The number of predicted values per reach (k = number of sources, i =
 		 * reach #) [i, 0 ... (k-1)] incremental added at reach, per source k

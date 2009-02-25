@@ -14,10 +14,20 @@
 		<property environment="env" />
 		<property file="${support.ant}/${user.name}.properties" />
 		<property file="${support.ant}/build.properties" />
+		
+		<!-- read the database login parameters from TOMCAT's context.xml into a db.properties file for security reasons -->
+		<xslt in="${env.TOMCAT_HOME}/conf/context.xml" 
+			out="${db.properties}" 
+			style="${support.ant}/extract_db_properties.xslt" />
+		<property file="${db.properties}" />
+		<!-- we can delete this now because it's been loaded into memory -->
+		<delete file="${db.properties}" failonerror="false"/>
 	</target>
 	<target name="-post-init" >
 		<echo message="JAVA_HOME=${env.JAVA_HOME}"/>
+		<echo message="ANT_JAVA_VERSION=${ant.java.version}"/>
 	</target>
+
 
 	<!-- -->
 	<!-- Compile section -->
@@ -135,6 +145,47 @@
 	<!-- Metrics section -->
 	<!-- -->
 	<target name="run-metrics" description="Runs code analysis and metrics." depends="init,-do-run-pmd,-do-run-code-coverage" />
+
+	<target name="run-jmeter-test-task" description="run a single jmeter task, given parameters" depends="init">
+		<!-- parmeters: testplan, testplan.dir 
+			SAMPLE INVOCATION:
+			<antcall target="run-jmeter-test-task">
+				<param name="param.testplan" value="WQX_Schema_Validation"/>
+				<param name="param.testplan.dir" value="src/test/jmeter"/>
+			</antcall>
+		-->
+		<!-- remove previous test results, otherwise jmeter simply adds to previous run to give cumulative stats -->
+		<delete file="${param.testplan.dir}/${jmeter.results.relativedir}/${param.testplan}_result.jtl" quiet="true" failonerror="false"/>
+		<mkdir dir="${param.testplan.dir}/${jmeter.results.relativedir}" />		
+		<taskdef name="jmeter" classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask" classpath="${jmeter.classpath}" />
+		
+		<property name="param.driver" value="oracle.jdbc.OracleDriver"/> <!-- default value -->
+		
+		<jmeter jmeterhome="${jmeter.home}" 
+			testplan="${param.testplan.dir}/${param.testplan}.jmx" 
+			resultlog="${param.testplan.dir}/${jmeter.results.relativedir}/${param.testplan}_result.jtl">
+			<jvmarg value="-Xmx256m"/>
+			<property name="username" value="${param.username}"/>
+			<property name="password" value="${param.password}"/>
+			<property name="driver" value="${param.driver}"/>
+			<property name="connectionURL" value="${param.connectionURL}"/>
+		</jmeter>
+		<echo message="results output to ${param.testplan.dir}/${jmeter.results.relativedir}/${param.testplan}_result.jtl" />
+		<antcall target="transform-jmeter-test-results">
+			<param name="param.testplan" value="${param.testplan}"/>
+			<param name="param.testplan.dir" value="${param.testplan.dir}"/>
+		</antcall>
+		<!-- xslt task will not be necessary once Hudson jmeter integration debugged -->
+		<!-- Note that for jmeter tasks which use jars not in the standard distribution such as ojdbc14.jar, these should be placed in JMETER_HOME/lib -->
+	</target>
+	
+	<target name="transform-jmeter-test-results" description="format the jmeter test results as html">
+		<xslt 
+			in="${param.testplan.dir}/${jmeter.results.relativedir}/${param.testplan}_result.jtl"
+			out="${param.testplan.dir}/${jmeter.results.relativedir}/${param.testplan}_result.html"
+			style="${jmeter.home}/extras/jmeter-results-detail-report_21.xsl"/>
+	</target>
+	
 	<target name="-do-run-pmd" depends="init">
 		<mkdir dir="${metrics.dir}" />
 		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpath="${metrics.classpath}" />

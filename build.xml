@@ -37,7 +37,7 @@
 		</delete>
 	</target>
 
-    <target name="-post-init" depends="check-init"/>
+    <!-- <target name="-post-init" depends="check-init"/> -->
 
 	<target name="check-init">
 		<!-- [IK] temporarily commented out while debugging
