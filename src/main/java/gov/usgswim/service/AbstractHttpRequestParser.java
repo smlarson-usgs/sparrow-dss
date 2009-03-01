@@ -78,6 +78,14 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 		return defaultReadXMLRequest(request, xmlParam);
 	}
 	
+	/**
+	 * Handles service URL according to conventions at http://privusgs2.er.usgs.gov/display/SPARROW/Service+URL+Conventions
+	 * In brief: server_name/service_name[/formpost][/echo option]
+	 * @param request
+	 * @param xmlParam - the default name of the parameter containing the xml
+	 * @return
+	 * @throws IOException
+	 */
 	public static String defaultReadXMLRequest(HttpServletRequest request, String xmlParam) throws IOException {
 		String extraPath = request.getPathInfo();
 //		request.get
