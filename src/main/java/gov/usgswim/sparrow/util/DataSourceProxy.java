@@ -15,6 +15,9 @@ import javax.sql.DataSource;
  * This class will then call the JDBCConnectable class when/if the actual
  * connection is needed.  It is assumed that the JDBCConnectable knows how to
  * make the actual connection, so none of the other info is passed.
+ * 
+ * @deprecated
+ * TODO delete this class
  */
 public class DataSourceProxy implements DataSource {
 	JDBCConnectable src;

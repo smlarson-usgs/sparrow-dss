@@ -26,12 +26,25 @@
 			<param name="includeFile" expression="../${build.web.dir}/WEB-INF/web.xml" />
 		</xslt>
 
+		<!-- create war for production deployment -->
 		<war destfile="${dist.dir}/sparrow_mv.war" update="true">
 			<fileset dir="${dist.dir}" excludes="**/*.war **/*.tmp **/javadoc/**/*" />
-            <fileset dir="${build.web.dir}" includes="WEB-INF/classes/**/*" />
+            <fileset dir="${build.web.dir}" includes="WEB-INF/classes/**/*"/>
 		    <fileset dir="${build.web.dir}" includes="**/*.jar" excludes="**/mvclient.jar **/sdovis.jar **/commons*.jar" />
 		</war>
-
+		
+		<!-- create war for local use  -->
+		<copy file="${dist.dir}/sparrow_mv.war" tofile="${dist.dir}/sparrow_mv_local.war"/>
+		<war destfile="${dist.dir}/sparrow_mv_local.war" update="true">
+			<fileset dir="${dist.dir}" excludes="**/*.war **/*.tmp **/javadoc/**/*" />
+            <fileset dir="${build.web.dir}"  >
+            	<include name="WEB-INF/classes/**/*" />
+            	<include name="**/*.jsp"/>
+            	<include name="**/*.html"/>
+            </fileset>
+		    <fileset dir="${build.web.dir}" includes="**/*.jar" excludes="**/mvclient.jar **/sdovis.jar **/commons*.jar" />
+		</war>
+		
 		<delete includeemptydirs="true">
 			<fileset dir="${dist.dir}" excludes="**/*.war **/javadoc/**/*" />
 		</delete>

@@ -2,7 +2,8 @@
 <project basedir="." default="build-all" name="sparrow-core-impl">
 	<echo message="Running ${ant.version}" />
 	<property name="support.ant" value="ant-support"/>
-
+	<property name="db.properties" value="${support.ant}/NEVER-EVER-CHECK-THIS-IN-db.properties"/>
+	
 	<target name="build-all" description="Build entire project." depends="dist,javadoc" />
 
 	<!-- -->
@@ -62,7 +63,7 @@
 	<target name="-do-dist">
 		<mkdir dir="${dist.dir}" />
 		<jar compress="true" jarfile="${dist.dir}/${war.name}">
-			<fileset dir="${build.web.dir}" />
+			<fileset dir="${build.web.dir}" excludes="**/*.java" />
 		</jar>
 	</target>
 	<target name="-post-dist" />
@@ -74,6 +75,15 @@
     		<param name="param.javac.debug" value="true"/>
    		</antcall>
     	<mkdir dir="${dist.dir}" />
+    	<copy todir="${build.classes.dir}">
+    		<!-- copy source files to WEB-INF/classes -->
+    		<fileset dir="${src.dir}"/>
+    	</copy>
+    	<!--
+    	<copy todir="${build.web.dir}">
+    	
+    	</copy>
+    	-->
 		<jar compress="true" jarfile="${dist.dir}/${war.name}">
 			<fileset dir="${build.web.dir}" />
 		</jar>

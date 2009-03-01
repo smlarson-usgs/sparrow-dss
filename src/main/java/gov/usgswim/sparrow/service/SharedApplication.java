@@ -23,7 +23,6 @@ import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 import gov.usgswim.sparrow.service.model.ModelRequest;
 import gov.usgswim.sparrow.service.predict.PredictDatasetComputable;
-import gov.usgswim.sparrow.util.DataSourceProxy;
 import gov.usgswim.sparrow.util.JDBCConnectable;
 import gov.usgswim.task.ComputableCache;
 
@@ -47,7 +46,7 @@ import oracle.jdbc.driver.OracleDriver;
 
 import org.apache.log4j.Logger;
 
-public class SharedApplication extends DataSourceProxy implements JDBCConnectable {
+public class SharedApplication implements JDBCConnectable {
 	protected static Logger log =
 		Logger.getLogger(SharedApplication.class); //logging for this class
 	
@@ -85,7 +84,6 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 
 	
 	private SharedApplication() {
-		super(null);
 
 		//These are now all deprecated in favor of the EHCache versions
 		predictResultCache = new ComputableCache<PredictRequest, PredictResult>(new PredictComputable(), "Predict Result Cache");
@@ -107,7 +105,6 @@ public class SharedApplication extends DataSourceProxy implements JDBCConnectabl
 		return findConnection();
 	}
 
-	@Override
 	public Connection getConnection(String username, String password)
 	throws SQLException {
 

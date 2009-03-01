@@ -89,6 +89,7 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 			
 		} else if ("POST".equals(request.getMethod())) {
 			String xml = request.getParameter(xmlParam);
+			xml = (xml != null)? xml.trim(): xml;
 			if (extraPath != null && extraPath.length() > 1) {
 				//The client may have passed the XML request as a parameter...
 				
