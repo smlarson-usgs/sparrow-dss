@@ -121,14 +121,14 @@ public class Analysis implements XMLStreamParserComponent {
 	/**
 	 * Consider two instances the same if they have the same calculated hashcodes
 	 */
-  @Override
-public boolean equals(Object obj) {
-	  if (obj instanceof Analysis) {
-	  	return obj.hashCode() == hashCode();
-	  }
-	  return false;
-  }
-  
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Analysis) {
+			return obj.hashCode() == hashCode();
+		}
+		return false;
+	}
+
 	@Override
 	public synchronized int hashCode() {
 		if (id == null) {
@@ -163,22 +163,25 @@ public boolean equals(Object obj) {
 		return true;
 	}
         
-        public boolean isAggregated() {
-            return getGroupBy() != null && !"".equals(getGroupBy());
-        }
-        
-        /**
-         * Convenience method for determining if the data series referenced by
-         * this {@code Analysis} object requires a weighting be applied.
-         * 
-         * @return {@code true} if the data series referenced by this
-         *         {@code Analysis} object requires a weighting, {@code false}
-         *         otherwise.
-         */
-        public boolean isWeighted() {
-            return getSelect().isWeighted();
-        }
-        
+	public boolean isAggregated() {
+		return getGroupBy() != null && !"".equals(getGroupBy());
+	}
+
+	/**
+	 * Convenience method for determining if the data series referenced by
+	 * this {@code Analysis} object requires a weighting be applied.
+	 * 
+	 * @return {@code true} if the data series referenced by this
+	 *         {@code Analysis} object requires a weighting, {@code false}
+	 *         otherwise.
+	 */
+	public boolean isWeighted() {
+		return getSelect().isWeighted();
+	}
+
+	public boolean hasGroupBy() {
+		return groupBy != null && groupBy.length() > 0;
+	}
 	// =================
 	// GETTERS & SETTERS
 	// =================

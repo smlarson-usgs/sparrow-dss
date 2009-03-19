@@ -110,7 +110,7 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 
 
 	/**
-	 * Called onces at creation time.
+	 * Called once at creation time.
 	 * @param properties
 	 * @return
 	 */
@@ -121,6 +121,10 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 		return true;
 	}
 
+	/**
+	 * TODO [ik] figure out if this method is ever called. If not, we can remove
+	 * deprecated methods called by it.
+	 */
 	public NSDataSet buildDataSet(java.util.Properties params) {
 		Hashtable hash = new Hashtable(13);
 
@@ -144,9 +148,9 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
         PredictServiceRequest svsRequest;
         PredictRequest predictRequest;
 
-        DataTable topoInfo = null;		//row id numbers for matching the data to the geometry
-        DataTable result = null;			//The prediction result (raw data)
-        NSDataSet nsData = null;	//The Mapviewer data format for the data
+        DataTable topoInfo = null;	// row id numbers for matching the data to the geometry
+        DataTable result = null;	// The prediction result (raw data)
+        NSDataSet nsData = null;	// The Mapviewer data format for the data
 
         if (properties.containsKey(XML_REQUEST_KEY) && properties.get(XML_REQUEST_KEY) != null) {
             log.debug("Request treated as xml request.");
@@ -172,7 +176,7 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
             log.debug("Using Dataseries: " + svsRequest.getDataSeries() + " & result mode: " + svsRequest.getPredictType());
 
         } else if (properties.containsKey(CONTEXT_ID) && properties.get(CONTEXT_ID) != null) {
-            log.debug("Request treated as a context-id request.");
+            log.debug("Main case: Request treated as a context-id request.");
 
             Integer contextId = Integer.parseInt(properties.get(CONTEXT_ID).toString());
             PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
@@ -279,42 +283,43 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
     }
 	
 	
-	public NSDataSet copyToNSDataSet(PredictionContext context) throws Exception {
-		PredictionContext.DataColumn dc = context.getDataColumn();
-		
-		int rowCount = dc.getTable().getRowCount();
-		NSRow[] nsRows = new NSRow[rowCount];
-                
-		//Build the row of data
-		for (int r = 0; r < rowCount; r++) {
-			Field[] row = new Field[2];
+    public NSDataSet copyToNSDataSet(PredictionContext context) throws Exception {
+    	PredictionContext.DataColumn dc = context.getDataColumn();
 
-                        // Id
-                        // TODO: This is a poor way to retrieve the ids for each
-                        // row.  We need to allow getIdForRow on all data tables
-                        // that this method may access.
-                        long id = -1L;
-                        try {
-                            id = dc.getTable().getIdForRow(r);
-                        } catch (NullPointerException npe) {
-                            PredictData nomPredictData = SharedApplication.getInstance().getPredictData(context.getModelID());
-                            //id = nomPredictData.getTopo().getInt(r, 0);
-                            id = nomPredictData.getTopo().getIdForRow(r);
-                        }
-                        row[0] = new Field(id);
-			row[0].setKey(true);
-                        
-                        // Value
-			row[1] = new Field(dc.getTable().getDouble(r, dc.getColumn()));	//Value
+    	int rowCount = dc.getTable().getRowCount();
+    	NSRow[] nsRows = new NSRow[rowCount];
 
-			NSRow nsRow = new NSRow(row);
-			nsRows[r] = nsRow;
-                }
+    	//Build the row of data
+    	for (int r = 0; r < rowCount; r++) {
+    		Field[] row = new Field[2];
 
-		if (log.isDebugEnabled()) debugNSData(nsRows);
+    		long id = -1L;
+    		try {
+    			id = dc.getTable().getIdForRow(r);
+    		} catch (NullPointerException npe) {
+    			PredictData nomPredictData = SharedApplication.getInstance().getPredictData(context.getModelID());
+    			id = nomPredictData.getTopo().getIdForRow(r);
+    		}
+    		// TODO [IK] try alternate path with id as string to try to solve
+			// huc aggregation artificial key issue. This would require that the
+			// DataTable argument passed in NOT use HUC ID as a DataTable ID,
+			// which requires it to be a number, but rather as a column of data
+			// in the datatable, and that the copyToNSDataSet be smart enough
+    		// to figure out what to do.
+			row[0] = new Field(id);
+    		row[0].setKey(true);
 
-		return new NSDataSet(nsRows);
-	}
+    		// Value
+    		row[1] = new Field(dc.getTable().getDouble(r, dc.getColumn()));	//Value
+
+    		NSRow nsRow = new NSRow(row);
+    		nsRows[r] = nsRow;
+    	}
+
+    	if (log.isDebugEnabled()) debugNSData(nsRows);
+
+    	return new NSDataSet(nsRows);
+    }
 
 	@Deprecated
 	protected NSDataSet copyToNSDataSet(DataTable result, DataTable topoInfo, PredictServiceRequest.DataSeries column) {

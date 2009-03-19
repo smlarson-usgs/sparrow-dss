@@ -3,7 +3,12 @@ package gov.usgswim.sparrow.parser;
 import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.sparrow.DeliveryRunner;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.datatable.PredictResult;
@@ -19,28 +24,28 @@ public class PredictionContext implements XMLStreamParserComponent {
 
 	private static final long serialVersionUID = -5343918321449313545L;
 	public static final String MAIN_ELEMENT_NAME = "prediction-context";
-//	public static final String ADJUSTMENT_GROUPS = "adjustment-groups";
+	//	public static final String ADJUSTMENT_GROUPS = "adjustment-groups";
 
-	
+
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
 	// =============================
 	public static boolean isTargetMatch(String tagName) {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
-	
+
 	public static PredictionContext parseStream(XMLStreamReader in)
-			throws XMLStreamException, XMLParseValidationException {
-		
+	throws XMLStreamException, XMLParseValidationException {
+
 		PredictionContext ag = new PredictionContext();
 		return ag.parse(in);
 	}
-	
+
 	/**
 	 * Constructs an empty instance.
 	 */
 	public PredictionContext() {
-	
+
 	}
 	/**
 	 * Constructs a fully configured instance.
@@ -53,32 +58,32 @@ public class PredictionContext implements XMLStreamParserComponent {
 	 * @return
 	 */
 	public PredictionContext(Long modelID, AdjustmentGroups ag, Analysis anal,
-				TerminalReaches tr, AreaOfInterest aoi) {
-		
+			TerminalReaches tr, AreaOfInterest aoi) {
+
 		this.modelID = modelID;
-		
+
 		if (ag != null) {
 			this.adjustmentGroups = ag;
 			this.adjustmentGroupsID = ag.getId();
 		}
-		
+
 		if (anal != null) {
 			this.analysis = anal;
 			this.analysisID = anal.getId();
 		}
-		
+
 		if (tr != null) {
 			this.terminalReaches = tr;
 			this.terminalReachesID = tr.getId();
 		}
-		
+
 		if (aoi != null) {
 			this.areaOfInterest = aoi;
 			this.areaOfInterestID = aoi.getId();
 		}	
 
 	}
-	
+
 	// ===============
 	// INSTANCE FIELDS
 	// ===============
@@ -88,24 +93,24 @@ public class PredictionContext implements XMLStreamParserComponent {
 	private Integer analysisID;
 	private Integer terminalReachesID;
 	private Integer areaOfInterestID;
-	
+
 	private transient AdjustmentGroups adjustmentGroups;
 	private transient Analysis analysis;
 	private transient TerminalReaches terminalReaches;
 	private transient AreaOfInterest areaOfInterest;
-	
+
 
 	// ================
 	// INSTANCE METHODS
 	// ================
 	public PredictionContext parse(XMLStreamReader in)
-			throws XMLStreamException, XMLParseValidationException {
-		
+	throws XMLStreamException, XMLParseValidationException {
+
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
 		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : this
-			.getClass().getSimpleName()
-			+ " can only parse " + MAIN_ELEMENT_NAME + " elements.";
+		.getClass().getSimpleName()
+		+ " can only parse " + MAIN_ELEMENT_NAME + " elements.";
 		boolean isStarted = false;
 
 		while (in.hasNext()) {
@@ -123,7 +128,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 					if (isTargetMatch(localName)) {
 						String modelIdString = in.getAttributeValue(DEFAULT_NS_PREFIX, "model-id");
 						modelID = (modelIdString == null || modelIdString.length() == 0)? null: Long.valueOf(modelIdString);
-						
+
 						String idString = in.getAttributeValue(DEFAULT_NS_PREFIX, XMLStreamParserComponent.ID_ATTR);
 						id = (idString == null || idString.length() == 0)? null: Integer.valueOf(idString);
 					}// the following are all children matches 
@@ -163,135 +168,151 @@ public class PredictionContext implements XMLStreamParserComponent {
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
 	}
-	
+
 	public boolean isParseTarget(String name) {
 		return MAIN_ELEMENT_NAME.equals(name);
 	}
-	
-    /**
-     * Centralized method to get a reference to the data table and a column in it
-     * for use any place we need to access the data column. The data column will
-     * be used for the map coloring
-     * 
-     * @return
-     * @throws Exception
-     */
-    public DataColumn getDataColumn() throws Exception {
-        int dataColIndex = -1;	//The index of the data column
-        DataTable dataTable = null;		//The table containing the data column
 
-        Select select = getAnalysis().getSelect();
-        DataSeriesType type = select.getDataSeries();
-        // Handled DataSeriesType: total, incremental, incremental_yield, total_concentration, source_values
-        
-        if (type.isResultBased()) {
+	/**
+	 * Centralized method to get a reference to the data table and a column in it
+	 * for use any place we need to access the data column. The data column will
+	 * be used for the map coloring
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public DataColumn getDataColumn() throws Exception {
+		int dataColIndex = -1;	//The index of the data column
+		DataTable dataTable = null;		//The table containing the data column
 
-            //We will try to get result-based series out of the analysis cache
-            PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
+		Select select = getAnalysis().getSelect();
+		DataSeriesType type = select.getDataSeries();
+		// Handled DataSeriesType: total, incremental, incremental_yield, total_concentration, source_values
+		Integer source = select.getSource();
+		if (type.isDeliveryBased()) {
+			//avoid cache for now
+			// PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
+			TerminalReaches tReaches = this.getTerminalReaches();
+			Set<Long> targetReaches = new HashSet<Long>();
+			for (Integer reach: tReaches.reachIDs) {
+				targetReaches.add(reach.longValue());
+			}
+			
+			PredictData nominalPredictData = SharedApplication.getInstance().getPredictData(this.getModelID());
+			DeliveryRunner dr = new DeliveryRunner(nominalPredictData);
 
-            switch (type) {
-                case total:
-                    if (select.getSource() != null) {
-                        dataColIndex = result.getTotalColForSrc(select.getSource().longValue());
-                    } else {
-                        dataColIndex = result.getTotalCol();
-                    }
-                    break;
-                    
-                case incremental:
-                    if (select.getSource() != null) {
-                        dataColIndex = result.getIncrementalColForSrc(select.getSource().longValue());
-                    } else {
-                        dataColIndex = result.getIncrementalCol();
-                    }
-                    break;
-                    
-                case incremental_yield:
-                    if (select.getSource() != null) {
-                        dataColIndex = result.getIncrementalColForSrc(select.getSource().longValue());
-                    } else {
-                        dataColIndex = result.getIncrementalCol();
-                    }
-                    break;
-                    
-                case total_concentration:
-                    if (select.getSource() != null) {
-                        dataColIndex = result.getTotalColForSrc(select.getSource().longValue());
-                    } else {
-                        dataColIndex = result.getTotalCol();
-                    }
-                    break;
-                    
-                default:
-                    throw new Exception("No data-series was specified in the analysis section");
-            }
+			switch(type) {
+				case delivered_fraction:
+					dataColIndex = 0; // only a single column for delivery fraction as it is not source dependent
+					dataTable = dr.calculateReachTransportFractionDataTable(targetReaches);
+					break;
+				case total_delivered_flux:
+				case incremental_delivered_flux:
+				case incremental_delivered_yield:
+					break;
+				default:
+					throw new Exception("No data-series was specified in the analysis section");
+			}
 
-            dataTable = result;
+		} else if (type.isResultBased()) {
 
-        } else {
+			//We will try to get result-based series out of the analysis cache
+			PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
 
-            //Get the predict data, which is what this series is based on
-            PredictData nomPredictData = SharedApplication.getInstance().getPredictData(this.getModelID());
+			switch (type) {
+				case total: // intentional fall-through
+				case total_concentration:
+				case total_delivered_flux:
+					if (source != null) {
+						dataColIndex = result.getTotalColForSrc(source.longValue());
+					} else {
+						dataColIndex = result.getTotalCol();
+					}
+					break;
+				case incremental: // intentional fall-through
+				case incremental_yield:
+				case incremental_delivered_flux: // here, I think
+				case incremental_delivered_yield: // here, I think
+					if (source != null) {
+						dataColIndex = result.getIncrementalColForSrc(source.longValue());
+					} else {
+						dataColIndex = result.getIncrementalCol();
+					}
+					break;
+				case delivered_fraction:
+					// ignore source
+					break;
+				default:
+					throw new Exception("No data-series was specified in the analysis section");
+			}
 
-            switch (type) {
-                case source_value:
-                    if (select.getSource() != null) {
+			dataTable = result;
 
-                        dataColIndex = nomPredictData.getSourceIndexForSourceID(select.getSource());
+		} else {
 
-                        DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(this.getAdjustmentGroups());
+			//Get the predict data, which is what this series is based on
+			PredictData nomPredictData = SharedApplication.getInstance().getPredictData(this.getModelID());
 
-                        // Check for aggregation and run if necessary
-                        if (getAnalysis().getGroupBy() != null && !"".equals(getAnalysis().getGroupBy())) {
-                            AggregationRunner aggRunner = new AggregationRunner(this);
-                            adjSrc = aggRunner.doAggregation(adjSrc);
-                        }
+			switch (type) {
+				case source_value:
+					if (source != null) {
 
-                        if (select.getNominalComparison().isNone()) {
+						dataColIndex = nomPredictData.getSourceIndexForSourceID(source);
 
-                            dataTable = adjSrc;
+						DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(this.getAdjustmentGroups());
 
-                        } else {
-                            DataTable nomSrcData = nomPredictData.getSrc();
+						// Check for aggregation and run if necessary
+						adjSrc = aggregateIfNecessary(adjSrc);
 
-                            // Check for aggregation and run if necessary
-                            if (getAnalysis().getGroupBy() != null && !"".equals(getAnalysis().getGroupBy())) {
-                                AggregationRunner aggRunner = new AggregationRunner(this);
-                                nomSrcData = aggRunner.doAggregation(nomSrcData);
-                            }
+						if (select.getNominalComparison().isNone()) {
 
-                            //working w/ either a percent or absolute comparison
-                            dataTable = new DataTableCompare(nomSrcData, adjSrc,
-                                    select.getNominalComparison().equals(ComparisonType.absolute));
-                        }
-                    } else {
-                        throw new Exception("The data series 'source_value' requires a source ID to be specified.");
-                    }
-                    break;
-                default:
-                    throw new Exception("No data-series was specified in the analysis section");
-            }
-        }
+							dataTable = adjSrc;
 
-        return new DataColumn(dataTable, dataColIndex);
-    }
-	
-	
+						} else {
+							DataTable nomSrcData = nomPredictData.getSrc();
+
+							nomSrcData = aggregateIfNecessary(nomSrcData);
+
+							//working w/ either a percent or absolute comparison
+							dataTable = new DataTableCompare(nomSrcData, adjSrc,
+									select.getNominalComparison().equals(ComparisonType.absolute));
+						}
+					} else {
+						throw new Exception("The data series 'source_value' requires a source ID to be specified.");
+					}
+					break;
+				default:
+					throw new Exception("No data-series was specified in the analysis section");
+			}
+		}
+
+		return new DataColumn(dataTable, dataColIndex);
+	}
+
+	private DataTable aggregateIfNecessary(DataTable dt) throws Exception {
+		if (analysis.hasGroupBy()) {
+			AggregationRunner aggRunner = new AggregationRunner(this);
+			dt = aggRunner.doAggregation(dt);
+		}
+		return dt;
+	}
+
+
 	/**
 	 * Consider two instances the same if they have the same calculated hashcodes
 	 */
-    @Override
-    public boolean equals(Object obj) {
-    	if (obj instanceof PredictionContext) {
-    		return obj.hashCode() == hashCode();
-    	}
-    	return false;
-    }
-	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof PredictionContext) {
+			return obj.hashCode() == hashCode();
+		}
+		return false;
+	}
+
 	@Override
 	public synchronized int hashCode() {
 		if (id == null) {
-			
+
 			int hash = new HashCodeBuilder(13, 16661).
 			append(modelID).
 			append(adjustmentGroupsID).
@@ -301,7 +322,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 			toHashCode();
 			id = hash;
 		}
-		
+
 		return id;
 	}
 
@@ -313,7 +334,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	 */
 	@Override
 	public PredictionContext clone() throws CloneNotSupportedException {
-		
+
 		PredictionContext myClone = new PredictionContext();
 		myClone.modelID = modelID;
 		myClone.adjustmentGroupsID = adjustmentGroupsID;
@@ -328,7 +349,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 
 		return myClone;
 	}
-	
+
 	/**
 	 * Clones with supplied transient children. Does not clone supplied children.
 	 * 
@@ -342,20 +363,20 @@ public class PredictionContext implements XMLStreamParserComponent {
 		PredictionContext myClone = this.clone();
 		// TODO [IK] log error conditions appropriately. Return null if error?
 		// TODO [eric] Determine error behavior. Suggest return null if error.
-		
+
 		// populate the transient children only if necessary & correct
 		if (adjustmentGroupsID != null && ag != null && ag.getId().equals(adjustmentGroupsID)) {
 			myClone.adjustmentGroups = ag;
 		}
-		
+
 		if (analysisID != null && anal != null && anal.getId().equals(analysisID)) {
 			myClone.analysis = anal;
 		}
-		
+
 		if (terminalReachesID != null && tr != null && tr.getId().equals(terminalReachesID)) {
 			myClone.terminalReaches = tr;
 		}
-		
+
 		if (areaOfInterestID != null && aoi != null && aoi.getId().equals(areaOfInterestID)) {
 			myClone.areaOfInterest = aoi;
 		}	
@@ -373,7 +394,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	public boolean isValid() {
 		return true;
 	}
-	
+
 	// =================
 	// GETTERS & SETTERS
 	// =================
@@ -416,7 +437,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	public AreaOfInterest getAreaOfInterest() {
 		return areaOfInterest;
 	}
-	
+
 	/**
 	 * An inner class to bundle a DataTable and a column index together so that
 	 * it is possible to return these two together for methods returning the
@@ -428,19 +449,19 @@ public class PredictionContext implements XMLStreamParserComponent {
 	public class DataColumn {
 		private final DataTable table;
 		private final int column;
-		
+
 		public DataColumn(DataTable table, int column) {
-				this.table = table;
-				this.column = column;
+			this.table = table;
+			this.column = column;
 		}
 
 		public DataTable getTable() {
-    	return table;
-    }
+			return table;
+		}
 
 		public int getColumn() {
-    	return column;
-    }
-		
+			return column;
+		}
+
 	}
 }

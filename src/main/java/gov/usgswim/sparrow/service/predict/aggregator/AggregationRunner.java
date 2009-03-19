@@ -114,6 +114,7 @@ public class AggregationRunner {
      * @param dataTable The data to be aggregated.
      * @return A {@code DataTable} with its data aggregated by the group and
      *         function specified in the prediction context.
+     * TODO [ik] consolidate doAggregation(DataTable) with doAggregation(PredictResult)
      */
     public DataTable doAggregation(DataTable dataTable) throws Exception {
         log.debug("Entering AggregationRunner.doAggregation(DataTable).");
@@ -211,7 +212,7 @@ public class AggregationRunner {
         String modelId = Long.toString(context.getModelID());
         String groupBy = context.getAnalysis().getGroupBy();
         
-        // Build query to retrieve catchment area and huc id for every reach
+        // Build query to retrieve catchment area, flow rate, and huc id for every reach
         String query = ""
             + "SELECT A.identifier, A.catch_area, A.meanq, A." + groupBy
             + ", B." + groupBy + "_id AS hucId "

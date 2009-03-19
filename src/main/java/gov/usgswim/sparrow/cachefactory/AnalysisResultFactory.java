@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.cachefactory;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultCompare;
 import gov.usgswim.sparrow.parser.Analysis;
+import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.WeightRunner;
@@ -37,68 +38,72 @@ import org.apache.log4j.Logger;
  */
 public class AnalysisResultFactory implements CacheEntryFactory {
 
-    protected static Logger log =
-            Logger.getLogger(AnalysisResultFactory.class); //logging for this class
+	protected static Logger log =
+		Logger.getLogger(AnalysisResultFactory.class); //logging for this class
 
-    public Object createEntry(Object predictContext) throws Exception {
-        PredictionContext context = (PredictionContext) predictContext;
-        AggregationRunner aggRunner = new AggregationRunner(context);
+	public Object createEntry(Object predictContext) throws Exception {
+		PredictionContext context = (PredictionContext) predictContext;
+		AggregationRunner aggRunner = new AggregationRunner(context);
 
-        PredictResult adjResult = SharedApplication.getInstance().getPredictResult(context);
+		// TODO Factor out the analysis in the use of prediction context for caching predict results
+		// context = context.clone(context.getAdjustmentGroups(), null, context.getTerminalReaches(), context.getAreaOfInterest());
+		PredictResult adjResult = SharedApplication.getInstance().getPredictResult(context);		
+		
+		// Perform transformations called for by the Analysis section
+		Analysis analysis = context.getAnalysis();
+		DataSeriesType dataSeries = analysis.getSelect().getDataSeries();
+		if (analysis.isAggregated()) {
+			adjResult = aggRunner.doAggregation(adjResult);
+			// Aggregation can handle weighting underneath
+		} else if (analysis.isWeighted()) {
+			adjResult = WeightRunner.doWeighting(context, adjResult);
+		}
 
-        // Check transformations called for by the Analysis section
-        Analysis analysis = context.getAnalysis();
-        if (analysis.isAggregated()) {
-            adjResult = aggRunner.doAggregation(adjResult);
-        } else if (analysis.isWeighted()) {
-            adjResult = WeightRunner.doWeighting(context, adjResult);
-        }
+		PredictResult result = null;
+		switch (analysis.getSelect().getNominalComparison()) {
+			case none: {
+				result = adjResult;
+				break;
+			}
+			case percent: {
 
-        PredictResult result = null;
-        switch (analysis.getSelect().getNominalComparison()) {
-            case none: {
-                result = adjResult;
-                break;
-            }
-            case percent: {
+				PredictionContext nomContext = new PredictionContext(context.getModelID(), null, null, null, null);
+				PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
 
-                PredictionContext nomContext = new PredictionContext(context.getModelID(), null, null, null, null);
-                PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
+				// Check for aggregation and run if necessary
+				if (analysis.isAggregated()) {
+					nomResult = aggRunner.doAggregation(nomResult);
+				} else if (analysis.isWeighted()) {
+					nomResult = WeightRunner.doWeighting(nomContext, nomResult);
+				}
 
-                // Check for aggregation and run if necessary
-                if (analysis.isAggregated()) {
-                    nomResult = aggRunner.doAggregation(nomResult);
-                } else if (analysis.isWeighted()) {
-                    nomResult = WeightRunner.doWeighting(nomContext, nomResult);
-                }
+				result = new PredictResultCompare(nomResult, adjResult, false);
 
-                result = new PredictResultCompare(nomResult, adjResult, false);
+				break;
+			}
+			case absolute: {
 
-                break;
-            }
-            case absolute: {
+				PredictionContext nomContext = new PredictionContext(context.getModelID(), null, null, null, null);
+				PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
 
-                PredictionContext nomContext = new PredictionContext(context.getModelID(), null, null, null, null);
-                PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
+				// Check for aggregation and run if necessary
+				if (analysis.isAggregated()) {
+					nomResult = aggRunner.doAggregation(nomResult);
+				} else if (analysis.isWeighted()) {
+					nomResult = WeightRunner.doWeighting(nomContext, nomResult);
+				}
 
-                // Check for aggregation and run if necessary
-                if (analysis.isAggregated()) {
-                    nomResult = aggRunner.doAggregation(nomResult);
-                } else if (analysis.isWeighted()) {
-                    nomResult = WeightRunner.doWeighting(nomContext, nomResult);
-                }
+				result = new PredictResultCompare(nomResult, adjResult, true);
 
-                result = new PredictResultCompare(nomResult, adjResult, true);
-
-                break;
-            }
-            default: {
-                throw new Exception("Should never be in here...");
-            }
+				break;
+			}
+			default: {
+				throw new Exception("Should never be in here...");
+			}
 
 
-        }
+		}
 
-        return result;
-    }
+		return result;
+	}
 }
