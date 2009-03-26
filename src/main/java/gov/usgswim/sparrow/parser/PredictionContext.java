@@ -204,10 +204,27 @@ public class PredictionContext implements XMLStreamParserComponent {
 			switch(type) {
 				case delivered_fraction:
 					dataColIndex = 0; // only a single column for delivery fraction as it is not source dependent
+					// TODO get from cache
 					dataTable = dr.calculateReachTransportFractionDataTable(targetReaches);
 					break;
 				case total_delivered_flux:
+					PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
+					// NOTE: must handle aggregation and comparison before this stage
+					// Note that comparison does not make sense for delivered
+					if (source != null) {
+						dataColIndex = result.getTotalColForSrc(source.longValue());
+					} else {
+						dataColIndex = result.getTotalCol();
+					}
+					break;
 				case incremental_delivered_flux:
+					result = SharedApplication.getInstance().getAnalysisResult(this);
+					if (source != null) {
+						dataColIndex = result.getIncrementalColForSrc(source.longValue());
+					} else {
+						dataColIndex = result.getIncrementalCol();
+					}
+					break;
 				case incremental_delivered_yield:
 					break;
 				default:

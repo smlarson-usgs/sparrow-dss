@@ -61,7 +61,6 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 		
 		super(columns, "Prediction Data", "Prediction Result Data", properties, rowIds);
 		
-
 		{
 			Hashtable<Long, Integer> map = new Hashtable<Long, Integer>(srcIdIncMap.size() * 2 + 1);
 			map.putAll(srcIdIncMap);
@@ -101,14 +100,14 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
         ColumnData[] columns = new ColumnData[data[0].length];
         int sourceCount = predictData.getSrc().getColumnCount();
 
-        //Same definition as the instance vars
+        // Same definition as the instance vars
         // Lookup table for key=source_id, value=array index of source contribution data
         Map<Long, Integer> srcIdIncMap = new Hashtable<Long, Integer>(13, 2);
         Map<Long, Integer> srcIdTotalMap = new Hashtable<Long, Integer>(13, 2);
 		
-        // ------------------------------------------
-        // Define the source columns of the DataTable
-        // ------------------------------------------
+        // ----------------------------------------------------------------
+        // Define the source columns of the DataTable using the PredictData
+        // ----------------------------------------------------------------
         for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++) {
 
             // Get the metadata to be attached to the column definitions

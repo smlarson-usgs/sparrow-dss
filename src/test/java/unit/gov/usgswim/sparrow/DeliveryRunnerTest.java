@@ -8,6 +8,7 @@ import java.util.Set;
 import junit.framework.TestCase;
 
 public class DeliveryRunnerTest extends TestCase {
+	public static final String TARGET_REACH_NODE_IS_0 = "The toNode of a target reach is 0";
 	static final double TOLERANCE = .0000001;
 
 	public void testDeliveryRunnerWithLinearFlow() {
@@ -19,7 +20,7 @@ public class DeliveryRunnerTest extends TestCase {
 			double[] result = dr.calculateNodeTransportFraction(targetReaches);
 			assertEquals("7 nodes returned", 7, result.length);
 			assertEquals(.01, result[0], TOLERANCE);
-			assertEquals(1 , result[1], TOLERANCE);
+			assertEquals(TARGET_REACH_NODE_IS_0, 0 , result[1], TOLERANCE);
 		}
 		
 		{
@@ -29,7 +30,7 @@ public class DeliveryRunnerTest extends TestCase {
 			assertEquals("7 nodes returned", 7, result.length);
 			assertEquals(.01 * .04 , result[0], TOLERANCE);
 			assertEquals(.04 , result[1], TOLERANCE);
-			assertEquals(1 , result[2], TOLERANCE);
+			assertEquals(TARGET_REACH_NODE_IS_0, 0 , result[2], TOLERANCE);
 		}
 		
 		{
@@ -40,7 +41,7 @@ public class DeliveryRunnerTest extends TestCase {
 			assertEquals(.01 * .04 * .09, result[0], TOLERANCE);
 			assertEquals(.04  * .09, result[1], TOLERANCE);
 			assertEquals(.09 , result[2], TOLERANCE);
-			assertEquals(1 , result[3], TOLERANCE);
+			assertEquals(TARGET_REACH_NODE_IS_0, 0 , result[3], TOLERANCE);
 		}
 		
 		{
@@ -52,7 +53,7 @@ public class DeliveryRunnerTest extends TestCase {
 			assertEquals(.04  * .09 * .16, result[1], TOLERANCE);
 			assertEquals(.09 * .16, result[2], TOLERANCE);
 			assertEquals(.16, result[3], TOLERANCE);
-			assertEquals(1, result[4], TOLERANCE);
+			assertEquals(TARGET_REACH_NODE_IS_0, 0, result[4], TOLERANCE);
 		}
 		
 //		Set<Long> targetReaches = new HashSet<Long>();
@@ -78,7 +79,7 @@ public class DeliveryRunnerTest extends TestCase {
 			double[] result = dr.calculateNodeTransportFraction(targetReaches);
 			assertEquals("7 nodes returned", 7, result.length);
 			assertEquals(.01, result[0], TOLERANCE);
-			assertEquals(1 , result[1], TOLERANCE);
+			assertEquals(TARGET_REACH_NODE_IS_0, 0 , result[1], TOLERANCE);
 		}
 		
 		{
@@ -88,7 +89,7 @@ public class DeliveryRunnerTest extends TestCase {
 			assertEquals("7 nodes returned", 7, result.length);
 			assertEquals(.01 * .04 , result[0], TOLERANCE);
 			assertEquals(.04 , result[1], TOLERANCE);
-			assertEquals(1 , result[2], TOLERANCE);
+			assertEquals(TARGET_REACH_NODE_IS_0, 0 , result[2], TOLERANCE);
 		}
 		
 		{
@@ -99,7 +100,7 @@ public class DeliveryRunnerTest extends TestCase {
 			assertEquals(.01 * .04 * .09, result[0], TOLERANCE);
 			assertEquals(.04  * .09, result[1], TOLERANCE);
 			assertEquals(.09 , result[2], TOLERANCE);
-			assertEquals(1 , result[3], TOLERANCE);
+			assertEquals(TARGET_REACH_NODE_IS_0, 0 , result[3], TOLERANCE);
 		}
 		
 		{
@@ -111,7 +112,7 @@ public class DeliveryRunnerTest extends TestCase {
 			assertEquals(.04  * .09 * .16, result[1], TOLERANCE);
 			assertEquals(.09 * .16, result[2], TOLERANCE);
 			assertEquals(.16, result[3], TOLERANCE);
-			assertEquals(1, result[4], TOLERANCE);
+			assertEquals(TARGET_REACH_NODE_IS_0, 0, result[4], TOLERANCE);
 		}
 	}
 }

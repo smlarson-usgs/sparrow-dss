@@ -36,7 +36,6 @@ import org.apache.log4j.Logger;
  */
 public class DataLoader {
 
-
 	protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
 	public static int DO_NOT_INDEX = -1;
 	public static final int SOURCE_ID_COL = 0;
