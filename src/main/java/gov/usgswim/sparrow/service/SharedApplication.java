@@ -23,7 +23,6 @@ import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 import gov.usgswim.sparrow.service.model.ModelRequest;
 import gov.usgswim.sparrow.service.predict.PredictDatasetComputable;
-import gov.usgswim.sparrow.util.JDBCConnectable;
 import gov.usgswim.task.ComputableCache;
 
 import java.io.Serializable;
@@ -46,7 +45,7 @@ import oracle.jdbc.driver.OracleDriver;
 
 import org.apache.log4j.Logger;
 
-public class SharedApplication implements JDBCConnectable {
+public class SharedApplication  {
 	protected static Logger log =
 		Logger.getLogger(SharedApplication.class); //logging for this class
 	
@@ -100,7 +99,6 @@ public class SharedApplication implements JDBCConnectable {
 		return instance;
 	}
 
-	@Override
 	public Connection getConnection() throws SQLException {
 		return findConnection();
 	}
