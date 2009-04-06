@@ -208,6 +208,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 					dataTable = dr.calculateReachTransportFractionDataTable(targetReaches);
 					break;
 				case total_delivered_flux:
+					
 					PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
 					// NOTE: must handle aggregation and comparison before this stage
 					// Note that comparison does not make sense for delivered
