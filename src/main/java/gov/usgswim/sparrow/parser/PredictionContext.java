@@ -49,7 +49,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	}
 	/**
 	 * Constructs a fully configured instance.
-	 * 
+	 *
 	 * @param modelID
 	 * @param ag
 	 * @param anal
@@ -80,7 +80,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 		if (aoi != null) {
 			this.areaOfInterest = aoi;
 			this.areaOfInterestID = aoi.getId();
-		}	
+		}
 
 	}
 
@@ -131,7 +131,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 
 						String idString = in.getAttributeValue(DEFAULT_NS_PREFIX, XMLStreamParserComponent.ID_ATTR);
 						id = (idString == null || idString.length() == 0)? null: Integer.valueOf(idString);
-					}// the following are all children matches 
+					}// the following are all children matches
 					else if (AdjustmentGroups.isTargetMatch(localName)) {
 						this.adjustmentGroups = AdjustmentGroups.parseStream(in, modelID);
 						adjustmentGroupsID = (adjustmentGroups == null)? null: adjustmentGroups.getId();
@@ -177,7 +177,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	 * Centralized method to get a reference to the data table and a column in it
 	 * for use any place we need to access the data column. The data column will
 	 * be used for the map coloring
-	 * 
+	 *
 	 * @return
 	 * @throws Exception
 	 */
@@ -193,11 +193,10 @@ public class PredictionContext implements XMLStreamParserComponent {
 			//avoid cache for now
 			// PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
 			TerminalReaches tReaches = this.getTerminalReaches();
-			Set<Long> targetReaches = new HashSet<Long>();
-			for (Integer reach: tReaches.reachIDs) {
-				targetReaches.add(reach.longValue());
-			}
-			
+
+			assert(tReaches != null) : "client should not submit a delivery request without reaches";
+			Set<Long> targetReaches = tReaches.asSet();
+
 			PredictData nominalPredictData = SharedApplication.getInstance().getPredictData(this.getModelID());
 			DeliveryRunner dr = new DeliveryRunner(nominalPredictData);
 
@@ -208,8 +207,10 @@ public class PredictionContext implements XMLStreamParserComponent {
 					dataTable = dr.calculateReachTransportFractionDataTable(targetReaches);
 					break;
 				case total_delivered_flux:
-					
-					PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
+
+					//PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
+					PredictResult result = dr.calculateDeliveredFlux(this);
+					dataTable = result;
 					// NOTE: must handle aggregation and comparison before this stage
 					// Note that comparison does not make sense for delivered
 					if (source != null) {
@@ -219,7 +220,9 @@ public class PredictionContext implements XMLStreamParserComponent {
 					}
 					break;
 				case incremental_delivered_flux:
-					result = SharedApplication.getInstance().getAnalysisResult(this);
+					//result = SharedApplication.getInstance().getAnalysisResult(this);
+					result = dr.calculateDeliveredFlux(this);
+					dataTable = result;
 					if (source != null) {
 						dataColIndex = result.getIncrementalColForSrc(source.longValue());
 					} else {
@@ -347,7 +350,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	/**
 	 * A simple clone method, caveat emptor as it doesn't deal with transient
 	 * children.
-	 * 
+	 *
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
@@ -370,7 +373,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 
 	/**
 	 * Clones with supplied transient children. Does not clone supplied children.
-	 * 
+	 *
 	 * @param ag
 	 * @param anal
 	 * @param tr
@@ -397,7 +400,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 
 		if (areaOfInterestID != null && aoi != null && aoi.getId().equals(areaOfInterestID)) {
 			myClone.areaOfInterest = aoi;
-		}	
+		}
 
 		return myClone;
 	}
@@ -456,11 +459,21 @@ public class PredictionContext implements XMLStreamParserComponent {
 		return areaOfInterest;
 	}
 
+	// =================
+	// CACHE KEY METHODS
+	// =================
+	public PredictionContext getResultCacheKey() {
+		return new PredictionContext(modelID, this.adjustmentGroups, null, null, null);
+	}
+
+
+
+
 	/**
 	 * An inner class to bundle a DataTable and a column index together so that
 	 * it is possible to return these two together for methods returning the
 	 * data column.
-	 * 
+	 *
 	 * @author eeverman
 	 *
 	 */
@@ -482,4 +495,6 @@ public class PredictionContext implements XMLStreamParserComponent {
 		}
 
 	}
+
+
 }

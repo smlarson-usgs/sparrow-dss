@@ -10,8 +10,15 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.datatable.PredictResultCompare;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.navigation.NavigationUtils;
+import gov.usgswim.sparrow.parser.Analysis;
+import gov.usgswim.sparrow.parser.DataSeriesType;
+import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.service.predict.WeightRunner;
+import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
 
 import java.util.Set;
 
@@ -25,11 +32,11 @@ public class DeliveryRunner implements Runner {
 	 * Invariant topographic info about each reach.
 	 * i = reach index [i][0] from node index [i][1] to node index [i][2] 'if
 	 * transmit' is 1 if the reach transmits to its to-node
-	 * 
+	 *
 	 * NOTE: We assume that the node indexes start at zero and have no skips.
 	 * Thus, nodeCount must equal the largest node index + 1
 	 * @see gov.usgswim.ImmutableBuilder.PredictData#getTopo()
-	 * 
+	 *
 	 */
 	protected DataTable topo;
 
@@ -49,7 +56,7 @@ public class DeliveryRunner implements Runner {
 	 * The stream and resevor decay. The values in the array are *actually*
 	 * delivery, which is (1 - decay). I.E. the delivery calculation is already
 	 * done.
-	 * 
+	 *
 	 * src[i][0] == the instream decay at reach i. This decay is assumed to be
 	 * at mid-reach and already computed as such. That is, it would normally be
 	 * the sqr root of the instream decay, and it is assumed that this value
@@ -88,7 +95,7 @@ public class DeliveryRunner implements Runner {
 	}
 
 	public double[] calculateNodeTransportFraction(Set<Long> targetReaches) {
-		// TODO cache the result, based on modelID, 
+		// TODO cache the result, based on modelID,
 		int maxReachRow = NavigationUtils.findMaxReachRow(targetReaches, topo);
 		PredictResultStructure prs = PredictResultStructure.analyzePredictResultStructure(maxReachRow, sourceValues);
 
@@ -118,7 +125,7 @@ public class DeliveryRunner implements Runner {
 			// Don't process the target reaches as they've already been processed.
 			if (!targetReaches.contains(reachID) && topo.getInt(reach, IFTRAN_COL) != 0) {
 				Integer downstreamNode = getDownstreamNode(topo, reach);
-				double upstreamContrib = (transportFraction[downstreamNode] 
+				double upstreamContrib = (transportFraction[downstreamNode]
 				                                            * decayCoefficient.getDouble(reach, UPSTREAM_DECAY_COL)); /* Just the decayed upstream portion */
 				Integer upstreamNode = getUpstreamNode(topo, reach);
 				transportFraction[upstreamNode]+= upstreamContrib;
@@ -143,16 +150,16 @@ public class DeliveryRunner implements Runner {
 		// Iterate over all reaches (order and source irrelevant)
 		for (int reach = 0; reach < prs.reachCount; reach++) {
 			Integer downstreamNode = getDownstreamNode(topo, reach);
-			incReachTransportFraction[reach] = nodeDeliveryFraction[downstreamNode] * 
+			incReachTransportFraction[reach] = nodeDeliveryFraction[downstreamNode] *
 			decayCoefficient.getDouble(reach, INSTREAM_DECAY_COL);
 		}
-		
+
 		// target reaches must be calculated separately ( = the instream decay)
 		for (Long reachID: targetReaches) {
 			int reach = topo.getRowForId(reachID);
 			incReachTransportFraction[reach] = decayCoefficient.getDouble(reach, INSTREAM_DECAY_COL);
 		}
-		
+
 		// The target reaches calculation is slightly different (use instream decay)
 		return incReachTransportFraction;
 	}
@@ -173,32 +180,20 @@ public class DeliveryRunner implements Runner {
 		incReachTransportFraction.addColumn(dataColumn);
 
 		// Iterate over all reaches (order and source irrelevant)
-//		StringBuilder sb = new StringBuilder();
 		for (int reach = 0; reach < prs.reachCount; reach++) {
 			Integer downstreamNode = getDownstreamNode(topo, reach);
 
 			double value = nodeDeliveryFraction[downstreamNode] * decayCoefficient.getDouble(reach, INSTREAM_DECAY_COL);
 			incReachTransportFraction.setValue(value, reach , 0);
 			incReachTransportFraction.setRowId(topo.getIdForRow(reach), reach);
-			
-			// debug
-//			if (value > 0.0000001) {
-//				sb.append("\n");
-//				sb.append(reach).append(", ").append(topo.getIdForRow(reach));
-//				sb.append(", (" + getUpstreamNode(topo, reach)).append(", ").append(downstreamNode).append(") :: ");
-//				sb.append(nodeDeliveryFraction[downstreamNode]);
-//				sb.append(", <").append(decayCoefficient.getDouble(reach, UPSTREAM_DECAY_COL)+ ", " + decayCoefficient.getDouble(reach, INSTREAM_DECAY_COL) 
-//				 + "> [" + value + "]");
-//			}
 		}
-//		if (sb.length() > 10) System.out.println(sb);
-		
+
 		// Target reaches must be calculated separately
 		for (Long reachID: targetReaches) {
 			int reach = topo.getRowForId(reachID);
 			incReachTransportFraction.setValue(decayCoefficient.getDouble(reach, INSTREAM_DECAY_COL), reach , 0);
 		}
-		
+
 		return incReachTransportFraction;
 	}
 
@@ -206,13 +201,13 @@ public class DeliveryRunner implements Runner {
 		//
 	}
 	// delivery analysis sql
-//	select sparrow_model_id, count(*) as total,  
+//	select sparrow_model_id, count(*) as total,
 //	  count(case when (total_delivery > (inc_delivery * inc_delivery + .00001)) then 1 else 0 end) as tooHigh,
 //	  count(case when (total_delivery < (inc_delivery * inc_delivery - .00001)) then 1 else 0 end) as tooLow
 //	from reach_coef join model_reach on reach_coef.model_reach_id = model_reach.model_reach_id
 //	group by sparrow_model_id
 //
-//	select sparrow_model_id, fnode, tnode,reach_coef. model_reach_id, 
+//	select sparrow_model_id, fnode, tnode,reach_coef. model_reach_id,
 //	  total_delivery, inc_delivery, (total_delivery / (inc_delivery * inc_delivery)) as frac,
 //	  (total_delivery - (inc_delivery * inc_delivery)) as diff
 //	from reach_coef join model_reach on reach_coef.model_reach_id = model_reach.model_reach_id
@@ -227,29 +222,53 @@ public class DeliveryRunner implements Runner {
 //	where total_delivery=inc_delivery
 //	and iteration=0 and sparrow_model_id=34
 //	order by sparrow_model_id, fnode, model_reach_id
-	
+
 	public PredictResultImm calculateDeliveredFlux(
-			Set<Long> targetReaches, PredictResult pResult, double[] nodeTransportFraction, DataTable reachTransportFraction) 
+			Set<Long> targetReaches, PredictResult pResult, double[] nodeTransportFraction, DataTable reachTransportFraction)
 			throws Exception {
 		// TODO Currently, this calculates both incremental and total delivered flux. The calulation for the incremental del flux
 		// is easier, and can be streamlined using the reachTransportFraction as it involves only a multiplication,
 		//		inc_del_flux = inc_contrib * reach_transport_fraction
-		// However, the calculation for the total delivered flux 
+		// However, the calculation for the total delivered flux
 		//		total_del_flux = total_upstream_contrib * (node_transport_function(at downstream node) or 1 if target reach)
-		
+
 		//This calculation requires the nodeTransport
 		// May revisit if total delivered flux is not desired. This is because the incremental flux can be more quickly
 		// calculated using just the reachTransportFraction, but this improvement may be negligible (fewer multiplications,
 		// no extra memory allocation?
-		// TODO Create a weightedDataTableBuilder, taking PredictResult & weighing by nodeTransport fraction 
+		// TODO Create a weightedDataTableBuilder, taking PredictResult & weighing by nodeTransport fraction
+
 		int maxReachRow = topo.getRowCount() - 1;
 		PredictResultStructure prs = PredictResultStructure.analyzePredictResultStructure(maxReachRow, sourceValues);
+		double deliveredFlux[][] = new double[prs.reachCount][prs.rchValColCount];
+
+		assert(pResult.getRowCount() == prs.reachCount);
+		assert(pResult.getColumnCount() == prs.rchValColCount);
+
+		// Iterate over all reaches
+		for (int reach = 0; reach < prs.reachCount; reach++) {
+			Double reachDeliveryFraction = reachTransportFraction.getDouble(reach, 0);
+			Integer downstreamNode = getDownstreamNode(topo, reach);
+			double nodeDeliveryFraction = nodeTransportFraction[downstreamNode];
+
+			for (int sourceType = 0; sourceType < prs.sourceCount; sourceType++) {
+				int source = sourceType + prs.sourceCount;
+				deliveredFlux[reach][sourceType] = pResult.getDouble(reach, sourceType) * reachDeliveryFraction;
+				deliveredFlux[reach][source] = pResult.getDouble(reach, source) * nodeDeliveryFraction;
+			}
+
+			deliveredFlux[reach][prs.totalIncrementalColOffset] = pResult.getDouble(reach, prs.totalIncrementalColOffset) * reachDeliveryFraction;
+			deliveredFlux[reach][prs.grandTotalColOffset] = pResult.getDouble(reach, prs.grandTotalColOffset) * nodeDeliveryFraction;
+		}
+		return PredictResultImm.buildPredictResult(deliveredFlux, predictData);
 
 
+
+		/*{
+		int maxReachRow = topo.getRowCount() - 1;
+		PredictResultStructure prs = PredictResultStructure.analyzePredictResultStructure(maxReachRow, sourceValues);
 		double incReachDeliveredFlux[][] = new double[prs.reachCount][prs.rchValColCount];
-		/*
-		 * Array of accumulated values at nodes
-		 */
+		//Array of accumulated values at nodes
 		double upstreamNodeContribution[][] = new double[nodeCount][prs.sourceCount];
 
 
@@ -302,6 +321,7 @@ public class DeliveryRunner implements Runner {
 
 		return PredictResultImm.buildPredictResult(incReachDeliveredFlux,
 				predictData);
+	}*/
 
 	}
 
@@ -310,4 +330,90 @@ public class DeliveryRunner implements Runner {
 		return null;
 	}
 
+
+	public PredictResultImm calculateDeliveredFlux(PredictionContext context) throws Exception{
+
+		PredictResult adjResult = SharedApplication.getInstance().getPredictResult(context.getResultCacheKey());
+
+		// apply delivery fraction weights
+		assert(context.getTerminalReaches() != null) : "shouldn't reach this point if no terminal reaches";
+		Set<Long> targetReaches = context.getTerminalReaches().asSet();
+		double[] nodeTransportFraction = calculateNodeTransportFraction(targetReaches);
+		DataTable reachTransportFraction = calculateReachTransportFractionDataTable(targetReaches);
+		PredictResultImm deliveryResult = calculateDeliveredFlux(targetReaches, adjResult, nodeTransportFraction, reachTransportFraction);
+		return deliveryResult;
+	}
+
+	public Object createEntry(Object predictContext) throws Exception {
+		PredictionContext context = (PredictionContext) predictContext;
+
+		AggregationRunner aggRunner = new AggregationRunner(context);
+
+		PredictResult adjResult = SharedApplication.getInstance().getPredictResult(context.getResultCacheKey());
+
+		// apply delivery fraction weights
+		assert(context.getTerminalReaches() != null) : "shouldn't reach this point if no terminal reaches";
+		Set<Long> targetReaches = context.getTerminalReaches().asSet();
+		double[] nodeTransportFraction = calculateNodeTransportFraction(targetReaches);
+		DataTable reachTransportFraction = calculateReachTransportFractionDataTable(targetReaches);
+		PredictResultImm deliveryResult = calculateDeliveredFlux(targetReaches, adjResult, nodeTransportFraction, reachTransportFraction);
+
+
+		// Perform transformations called for by the Analysis section
+		Analysis analysis = context.getAnalysis();
+		DataSeriesType dataSeries = analysis.getSelect().getDataSeries();
+		if (analysis.isAggregated()) {
+			adjResult = aggRunner.doAggregation(adjResult);
+			// Aggregation can handle weighting underneath
+		} else if (analysis.isWeighted()) {
+			adjResult = WeightRunner.doWeighting(context, adjResult);
+		}
+
+		PredictResult result = null;
+		switch (analysis.getSelect().getNominalComparison()) {
+			case none: {
+				result = adjResult;
+				break;
+			}
+			case percent: {
+
+				PredictionContext nomContext = new PredictionContext(context.getModelID(), null, null, null, null);
+				PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
+
+				// Check for aggregation and run if necessary
+				if (analysis.isAggregated()) {
+					nomResult = aggRunner.doAggregation(nomResult);
+				} else if (analysis.isWeighted()) {
+					nomResult = WeightRunner.doWeighting(nomContext, nomResult);
+				}
+
+				result = new PredictResultCompare(nomResult, adjResult, false);
+
+				break;
+			}
+			case absolute: {
+
+				PredictionContext nomContext = new PredictionContext(context.getModelID(), null, null, null, null);
+				PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
+
+				// Check for aggregation and run if necessary
+				if (analysis.isAggregated()) {
+					nomResult = aggRunner.doAggregation(nomResult);
+				} else if (analysis.isWeighted()) {
+					nomResult = WeightRunner.doWeighting(nomContext, nomResult);
+				}
+
+				result = new PredictResultCompare(nomResult, adjResult, true);
+
+				break;
+			}
+			default: {
+				throw new Exception("Should never be in here...");
+			}
+
+
+		}
+
+		return result;
+	}
 }

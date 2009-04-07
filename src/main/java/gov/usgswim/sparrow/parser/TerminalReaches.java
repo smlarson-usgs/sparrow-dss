@@ -4,7 +4,9 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -101,7 +103,22 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	public boolean isParseTarget(String name) {
 		return MAIN_ELEMENT_NAME.equals(name);
 	}
-
+	
+	/**
+	 * Returns the terminal reaches as a set.
+	 * @return Set or reach IDs
+	 */
+	public Set<Long> asSet() {
+		// [IK] Why don't we just return the List reachIDs or just make reachIDs
+		// a set? The second option doesn't work because we want a deterministic
+		// hashcode function as we loop over the reachIDs. The first doesn't work
+		// because we want independence of reach id order.
+		Set<Long> targetReaches = new HashSet<Long>();
+		for (Integer reach: reachIDs) {
+			targetReaches.add(reach.longValue());
+		}
+		return targetReaches;
+	}
 	/**
 	 * Consider two instances the same if they have the same calculated hashcodes
 	 */
@@ -167,5 +184,7 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	public Integer getId() {
 		return hashCode();
 	}
+
+
 
 }
