@@ -230,6 +230,14 @@ public class PredictionContext implements XMLStreamParserComponent {
 					}
 					break;
 				case incremental_delivered_yield:
+					//result = SharedApplication.getInstance().getAnalysisResult(this);
+					result = dr.calculateDeliveredFlux(this);
+					dataTable = result;
+					if (source != null) {
+						dataColIndex = result.getIncrementalColForSrc(source.longValue());
+					} else {
+						dataColIndex = result.getIncrementalCol();
+					}
 					break;
 				default:
 					throw new Exception("No data-series was specified in the analysis section");

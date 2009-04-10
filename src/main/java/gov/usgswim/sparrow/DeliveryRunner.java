@@ -331,7 +331,7 @@ public class DeliveryRunner implements Runner {
 	}
 
 
-	public PredictResultImm calculateDeliveredFlux(PredictionContext context) throws Exception{
+	public PredictResult calculateDeliveredFlux(PredictionContext context) throws Exception{
 
 		PredictResult adjResult = SharedApplication.getInstance().getPredictResult(context.getResultCacheKey());
 
@@ -340,7 +340,19 @@ public class DeliveryRunner implements Runner {
 		Set<Long> targetReaches = context.getTerminalReaches().asSet();
 		double[] nodeTransportFraction = calculateNodeTransportFraction(targetReaches);
 		DataTable reachTransportFraction = calculateReachTransportFractionDataTable(targetReaches);
-		PredictResultImm deliveryResult = calculateDeliveredFlux(targetReaches, adjResult, nodeTransportFraction, reachTransportFraction);
+		PredictResult deliveryResult = calculateDeliveredFlux(targetReaches, adjResult, nodeTransportFraction, reachTransportFraction);
+
+		{
+			Analysis analysis = context.getAnalysis();
+			DataSeriesType dataSeries = analysis.getSelect().getDataSeries();
+			if (analysis.isAggregated()) {
+				AggregationRunner aggRunner = new AggregationRunner(context);
+				deliveryResult = aggRunner.doAggregation(deliveryResult);
+				// Aggregation can handle weighting underneath
+			} else if (analysis.isWeighted()) {
+				deliveryResult = WeightRunner.doWeighting(context, deliveryResult);
+			}
+		}
 		return deliveryResult;
 	}
 

@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class WeightRunner {
-    
+
     /** Logging object for this class. */
     protected static Logger log = Logger.getLogger(WeightRunner.class);
 
@@ -33,7 +33,7 @@ public class WeightRunner {
     public static PredictResult doWeighting(PredictionContext context, PredictResult result)
     throws Exception {
         log.debug("Entering WeightRunner.doWeighting(PredictResult).");
-        
+
         // Set up the query, result set, and connection
         String query = WeightRunner.buildWeightingInfoQuery(context);
         ResultSet rs = null;
@@ -43,13 +43,23 @@ public class WeightRunner {
             // Run the query
             Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             rs = st.executeQuery(query);
-            
+
             DataSeriesType dataSeries = context.getAnalysis().getSelect().getDataSeries();
-            String weightColName = dataSeries.name() + "_weight";
-            
+            String weightColName = null;
+            switch (dataSeries) {
+            	case incremental_yield:
+            	case incremental_delivered_yield:
+            		weightColName = "yield_weight";
+            		break;
+            	// case total_delivered_concentration: not a valid option
+            	case total_concentration:
+            		weightColName = "concentration_weight";
+            		break;
+            }
+
             long[] ids = new long[result.getRowCount()];
             double[][] data = new double[result.getRowCount()][result.getColumnCount()];
-            
+
             // Iterate over the reaches, weighting them appropriately
             for (int i = 0; rs.next(); i++) {
                 for (int j = 0; j < result.getColumnCount(); j++) {
@@ -62,7 +72,7 @@ public class WeightRunner {
 
                 ids[i] = result.getIdForRow(i);
             }
-            
+
             // Add a table-level filter since we're dealing with a weighted result
             Map<String, String> properties = new HashMap<String, String>();
             if (dataSeries == DataSeriesType.incremental_yield) {
@@ -84,16 +94,16 @@ public class WeightRunner {
     private static String buildWeightingInfoQuery(PredictionContext context) {
         // Get the model id
         String modelId = Long.toString(context.getModelID());
-        
+
         // Build query to retrieve catchment area and mean q (flow) for every reach
         String query = ""
             + "SELECT identifier, "
-            + " catch_area AS incremental_yield_weight, "
-            + " meanq AS total_concentration_weight "
+            + " catch_area AS yield_weight, "
+            + " meanq AS concentration_weight "
             + "FROM model_attrib_vw "
             + "WHERE sparrow_model_id = " + modelId
             + " ORDER BY hydseq, identifier";
-        
+
         return query;
     }
 }

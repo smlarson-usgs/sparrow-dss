@@ -123,9 +123,9 @@ public class Select implements XMLStreamParserComponent {
 		return !(dataSeries == source_value && source == null);
 	}
         
-        public boolean isWeighted() {
-            return getDataSeries().isWeighted();
-        }
+	public boolean isWeighted() {
+		return getDataSeries().isWeighted();
+	}
 
 	public boolean isParseTarget(String name) {
 		return MAIN_ELEMENT_NAME.equals(name);

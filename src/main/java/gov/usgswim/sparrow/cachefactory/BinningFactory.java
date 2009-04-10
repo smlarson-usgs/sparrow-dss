@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 
 /**
  * This factory class creates a binning array based on a request from EHCache.
- * 
+ *
  * Binning is the process of creating bins for a set of data.  For instance,
  * this data:<br>
  * <code>1, 2, 2, 9, 20, 29</code><br>
@@ -26,15 +26,15 @@ import org.apache.log4j.Logger;
  * Equal Range binning for two bins would result in:
  * <li>bin 1:  1 to 15
  * <li>bin 2:  15 to 29
- * 
+ *
  * This class implements CacheEntryFactory, which plugs into the caching system
  * so that the createEntry() method is only called when a entry needs to be
  * created/loaded.
- * 
+ *
  * Caching, blocking, and de-caching are all handled by the caching system, so
  * that this factory class only needs to worry about building a new entity in
  * (what it can consider) a single thread environment.
- * 
+ *
  * @author eeverman
  */
 public class BinningFactory implements CacheEntryFactory {
@@ -75,7 +75,7 @@ public class BinningFactory implements CacheEntryFactory {
 	}
 
 
-	public static final double ALLOWABLE_BIN_SIZE_VARIANCE_RATIO = 1d/10;	
+	public static final double ALLOWABLE_BIN_SIZE_VARIANCE_RATIO = 1d/10;
 	public static BigDecimal[] getEqualCountBins(float[] sortedData, int binCount, Boolean useRounding) {
 		int totalRows = sortedData.length;	//Total rows of data
 
@@ -139,7 +139,7 @@ public class BinningFactory implements CacheEntryFactory {
 	/**
 	 * Returns an equal count set of bins so that the bins define break-point
 	 * boundaries with approximately an equal number of values in each bin.
-	 * 
+	 *
 	 * @param data Table of data containing the column to divide into bins.
 	 * @param columnIndex Index of the column to divide into bins.
 	 * @param binCount Number of bins to divide the column into.
@@ -153,12 +153,12 @@ public class BinningFactory implements CacheEntryFactory {
 
 		//Number of rows 'contained' in each bin.  This likely will not come out even,
 		//so use a double to preserve the fractional rows.
-		double binSize = (double)(totalRows) / (double)(binCount);	
+		double binSize = (double)(totalRows) / (double)(binCount);
 
 
 		//The bins, where each value is a fence post w/ values between, thus, there is one more 'post' than bins.
 		//The first value is the lowest value in values[], the last value is the largest value.
-		BigDecimal[] bins = new BigDecimal[binCount + 1];	
+		BigDecimal[] bins = new BigDecimal[binCount + 1];
 
 		//Assign first and last values for the bins (min and max)
 		bins[0] = new BigDecimal(sortedValues[0]);
@@ -173,7 +173,7 @@ public class BinningFactory implements CacheEntryFactory {
 			//The bin boundary is the value contained at that row.
 			float topVal = sortedValues[(int) Math.ceil(split)];
 			float bottomVal = sortedValues[(int) Math.floor(split)];
-			
+
 
 			if (topVal != bottomVal) {
 				// take a rounded value inside of the surrounding range
@@ -197,7 +197,7 @@ public class BinningFactory implements CacheEntryFactory {
 
 	/**
 	 * Rounds to the fewest digits necessary (<= 3.5 digits) within the given lo-hi range
-	 * 
+	 *
 	 * @param value
 	 * @param lo
 	 * @param hi
@@ -210,6 +210,8 @@ public class BinningFactory implements CacheEntryFactory {
 		int exponent = Double.valueOf(Math.ceil(Math.log10(Math.abs(value)))).intValue();
 
 		for (BigDecimal sigfigs: digitAccuracyMultipliers) {
+			// debug
+			// System.out.println("lo=" + lo + "; hi=" + hi + "; value=" + value);
 			BigDecimal result = findClosestInRange(value, lo, hi, exponent, sigfigs);
 			if (result != null) {
 				// don't return exponents of 3 or less
@@ -228,7 +230,7 @@ public class BinningFactory implements CacheEntryFactory {
 	/**
 	 * Finds the fraction with the denominator which is within the lo-hi range
 	 * and closest to the value
-	 * 
+	 *
 	 * @param value
 	 * @param lo
 	 * @param hi
@@ -236,8 +238,8 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @return null if no fraction within range
 	 */
 	public static BigDecimal findClosestInRange(double value, double lo, double hi, int exponent, BigDecimal sigfigs) {
-		assert(lo <= value);
-		assert(value <= hi);
+		assert(lo <= value): "lo " + lo + " should be <= value " + value;
+		assert(value <= hi) : "lo " + lo + " should be < hi " + hi;
 		double normalizer = sigfigs.doubleValue() / (Math.pow(10, exponent));
 		value = value * normalizer;
 		// expect Math.abs(value) >= 0, but is ok if it isn't
@@ -250,13 +252,13 @@ public class BinningFactory implements CacheEntryFactory {
 		boolean isDownInRange = (lo <= down);
 		long upL = Double.valueOf(up).longValue();
 		long downL = Double.valueOf(down).longValue();
-		
+
 		// to restore value, up /normalizer = up /sigfigs w/exp shift
 
 		if (isUpInRange && isDownInRange) {
 			// return the closest of two valid alternatives
-			return (Math.abs(up - value) < Math.abs(down - value))? 
-					makeBigDecimal(upL, sigfigs, exponent): 
+			return (Math.abs(up - value) < Math.abs(down - value))?
+					makeBigDecimal(upL, sigfigs, exponent):
 					makeBigDecimal(downL, sigfigs, exponent);
 		}
 		if (isUpInRange) {
@@ -266,7 +268,7 @@ public class BinningFactory implements CacheEntryFactory {
 		}
 		return null;
 	}
-	
+
 
 	public static BigDecimal makeBigDecimal(long numerator, BigDecimal denominatorWithScale, int exp) {
 		BigDecimal num = new BigDecimal(numerator, new MathContext(denominatorWithScale.scale()));
@@ -274,7 +276,7 @@ public class BinningFactory implements CacheEntryFactory {
 		BigDecimal result = temp.scaleByPowerOfTen(exp);
 		return result;
 	}
-	
+
 	// ================
 	// EQUAL RANGE BINS
 	// ================
@@ -310,7 +312,7 @@ public class BinningFactory implements CacheEntryFactory {
 		// there is one more post than bins.  The first value is the minimum bin value
 		BigDecimal[] binPosts = new BigDecimal[binCount + 1];
 		BigDecimal bdBinWidth = null;
-		
+
 		if (useRounding) {
 			double maxAllowableRangeExpansion = Math.min(.1, 1/(3*binCount)); // allow to expand by 10% or 1/3 of a bin, whichever is less
 			bdBinWidth = round(binWidth, binWidth, (1 + maxAllowableRangeExpansion) * binWidth); // round up by at most maxAllowableRangeExpansion
@@ -322,12 +324,12 @@ public class BinningFactory implements CacheEntryFactory {
 			// bin posts.
 
 			binPosts[0] = binsMinValue; // Just using the low candidate
-			
+
 		} else {
 			// exact, but we still need BigDecimals rounding for display
 			int defaultPrecision = 6; // round to 6 digits by default
 			bdBinWidth = new BigDecimal(binWidth, new MathContext(defaultPrecision, RoundingMode.CEILING));// round up to be used as BigDecimal
-			//BigDecimal binsMinValue = new BigDecimal(minValue, new MathContext(defaultPrecision, RoundingMode.FLOOR)); // round down 
+			//BigDecimal binsMinValue = new BigDecimal(minValue, new MathContext(defaultPrecision, RoundingMode.FLOOR)); // round down
 			// Note, there is a slight possibility that the totalRangeDiff is
 			// actually smaller than the difference between the "rounded"
 			// minValues, so that as a consequence, the top of the bin posts

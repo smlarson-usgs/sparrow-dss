@@ -1,26 +1,26 @@
 package gov.usgswim.sparrow.parser;
 
 /**
- * 
+ *
  */
 public enum DataSeriesType {
 
     total						(true, false, false, 1, false, false, false, false), // active
-    incremental					(true, false, false, 1, false, false, false, false), //active hm, why is this result 
+    incremental					(true, false, false, 1, false, false, false, false), //active hm, why is this result
     					// based, shouldn't it be just source-based?
     incremental_yield			(true, false, false, 1, false, true, false, false), // active
     total_concentration			(true, false, false, 1, false, true, false, false), // active
     source_value				(false, true, false, 2, false, false, false, false), // active
     incremental_delivered_yield	(true, false, false, 1, true, true, false, true), // inaccurate?
-    total_delivered_flux		(true, false, false, 1, true, true, false, true), // inaccurate?
-    incremental_delivered_flux	(true, false, false, 1, true, true, false, true), // inaccurate?
+    total_delivered_flux		(true, false, false, 1, true, false, false, true), // inaccurate?
+    incremental_delivered_flux	(true, false, false, 1, true, false, false, true), // inaccurate?
     delivered_fraction			(true, false, false, 0, true, false, false, true), // inaccurate?
     total_decay					(true, false, false, 1, false, false, true, false),
     total_no_decay				(true, false, false, 1, false, false, true, false),
     land_to_water_coef			(false, false, true, 2, false, false, false, false),
     instream_decay_coef			(false, false, true, 0, false, false, false, false)
     ;
-    
+
     // TODO cut down the list of attributes
     private final boolean resultBased;
     private final boolean sourceBased;
@@ -31,7 +31,7 @@ public enum DataSeriesType {
     private final boolean weighted;
     private final boolean extraColumn;
     private final boolean deliveryBased;
-    
+
 
 
     DataSeriesType(boolean resultBased, boolean sourceBased, boolean coefBased,
@@ -47,15 +47,15 @@ public enum DataSeriesType {
         this.deliveryBased = deliveryBased;
     }
 
-    
+
     /**
-     * 
+     *
      * @return
      */
     public boolean isDeliveryBased() {
     	return deliveryBased;
     }
-    
+
     /**
      * Returns true if this dataSeries uses PredictResult data (possibly in
      * combination with other data) to generate the returned data.
@@ -95,7 +95,7 @@ public enum DataSeriesType {
      * Returns true if this dataseries uses coef data from PredictData (possibly in
      * combination with other data including the PredictResults) to generate the
      * returned data.
-     * 
+     *
      * An example would be instream_decay_coef, which only uses the coef's from
      * the PredictData and doesn't even use the prediction results.
      * @return
@@ -124,7 +124,7 @@ public enum DataSeriesType {
      * Returns true if this dataseries does not allow a source to be specified.
      * instream_decay_coef is an example:  There are no source specific values
      * for this coef.
-     * 
+     *
      * @return
      */
     public boolean isSourceDisallowed() {
@@ -148,11 +148,11 @@ public enum DataSeriesType {
     public boolean isTargetRequired() {
         return targetRequired;
     }
-    
+
     /**
      * Returns {@code true} if this data series requires a weighting be applied
      * to the returned data, {@code false} otherwise.
-     * 
+     *
      * @return {@code true} if this data series requires a weighting be applied
      *         to the returned data, {@code false} otherwise.
      */
