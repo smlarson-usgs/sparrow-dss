@@ -3,23 +3,26 @@ package gov.usgswim.sparrow.loader;
 public class ModelDataAssumptions {
 
 	public static final int CONTACT_ID = 42; // default
-	public static final int ENH_NETWORK_ID = 22; // default
+	public static final int ENH_NETWORK_ID = 23; // 22 for the older network, 23 for the newer network
 	public static final int PRECISION = 2; // default
+	/**
+	 * @deprecated because I can't find any reference to it and don't remember why it was used.
+	 */
 	public static final String SEDIMENT_MODEL_SOURCE_HACK = "0"; // HACK: 0 here because sediment source data is irregular!
-	public static Long MODEL_ID = 34L;
-	
-	public static final String DEFAULT_CONSTITUENT = "Phosphorus";
+	public static Long MODEL_ID = 35L; // Just choose an unused sparrow_model_id. Current largest is 35 (please verify)
+
+	public static final String DEFAULT_CONSTITUENT = "Nitrogen"; // Generally, "Nitrogen" or "Phosphorus"
 	public static final String DEFAULT_UNITS = "kg/yr";
 	public static final String IS_ARCHIVED_DEFAULT = "F";
 	public static final String IS_PUBLIC_DEFAULT = "T";
 	public static final String IS_APPROVED_DEFAULT = "T";
 	public static final String IS_POINT_SOURCE_DEFAULT = "F";
-	
+
 	public static String useDefaultPrecisionIfUnavailable(
 			DataFileDescriptor md, String[] inputValues) {
 		return useDefaultIfUnavailable(md, inputValues, ModelDataLoader.SMD_PRECISION, Integer.toString(PRECISION));
 	}
-	
+
 	public static String useDefaultIfUnavailable(
 			DataFileDescriptor md, String[] inputValues, String key, String defaultValue) {
 		int index = md.indexOf(key);
@@ -58,7 +61,7 @@ public class ModelDataAssumptions {
 	/**
 	 * Assumes that the headings for the coefficients are the names of the
 	 * sources capitalized and prefixed with "C_"
-	 * 
+	 *
 	 * @param sources
 	 * @return
 	 */

@@ -34,12 +34,19 @@ import oracle.jdbc.driver.OracleDriver;
 import org.apache.commons.lang.StringUtils;
 
 /**
+ * Generates insert .sql files for loading a model. Files must be generated in
+ * multiple stages as the preceding tables are loaded into the databases as the
+ * auto-generated ids are needed for linking.
+ *
+ * See http://privusgs2.er.usgs.gov/display/SPARROW/Model+Export+Format
+ * for inofrmation on the fields.
+ *
  * @author ilinkuo
  *
  */
 public class ModelDataLoader {
-	
-	
+
+
 	// IMPORTANT COLUMN NAMES
 	public static final String ANC_REACH_IDENTIFIER = "local_id";
 	public static final String ANC_FULL_IDENTIFIER = "std_id";
@@ -62,7 +69,7 @@ public class ModelDataLoader {
 	public static final String SMD_DESCRIPTION = "description";
 	public static final String SMD_NAME = "name";
 	public static final String SMD_PRECISION = "precision";
-	// 
+	//
 	public static final String[] BASIC_COEF_COLUMNS = new String[] {COEF_ITER, COEF_INC_DELIVF, COEF_TOT_DELIVF, COEF_BOOT_ERROR};
 
 	// SQL FILE NAMES
@@ -79,15 +86,17 @@ public class ModelDataLoader {
 	private static final String THIN_WIMAP_CONNECTION = "jdbc:oracle:thin:@130.11.165.76:1521:wimap";
 	// SPECIAL DIRECTORIES
 	private static final String REL_LOAD_DIR = "load";
-	static File baseDir = new File("D:\\CRKData\\Sparrow\\raw_data\\mrb3_tp");
+	private static final String BASE_DIR="D:\\CRKData\\Sparrow\\raw_data\\MRB2_SIMfiles_20090423";
+	static File baseDir = new File(BASE_DIR);
+	public static final File LOAD_SCRIPTS_DIR = new File(BASE_DIR, REL_LOAD_DIR);
 	static File verificationDir = new File(baseDir.getAbsolutePath() + "/vOutput" );
 
-	
-	
 
-	// 
+
+
+	//
 	private static String sparrow_dss_password; // populated by user on prompt
-		
+
 	public static void main(String[] args) throws SQLException{
 		try {
 			File modelMetadata = new File(baseDir.getAbsolutePath() + "/model_metadata.txt");
@@ -106,6 +115,7 @@ public class ModelDataLoader {
 			return;
 		}
 		System.out.println("====== " + MODEL_METADATA_SQL_FILE + " generated ====");
+		System.out.println("== " + MODEL_METADATA_SQL_FILE + " may be empty if the investigator has not provided any information. Please check ==");
 
 		try {
 			File sourceMetadata = new File(baseDir.getAbsolutePath() + "/src_metadata.txt");
@@ -115,6 +125,7 @@ public class ModelDataLoader {
 			return;
 		}
 		System.out.println("====== " + SRC_METADATA_INSERT_SQL_FILE + " generated ====");
+		System.out.println("== " + SRC_METADATA_INSERT_SQL_FILE + " may have unusual values due to incorrect tab indentation in source. Please check ==");
 
 		try {
 			File topoData = new File(baseDir.getAbsolutePath() + "/topo.txt");
@@ -125,10 +136,10 @@ public class ModelDataLoader {
 			return;
 		}
 		System.out.println("====== " + MODEL_REACHES_INSERT_SQL_FILE + " generated ====");
-		
+
 		// TODO insert reach attributes for ?demiarea & demtarea =? catchment_area?
 		// meanq, ...
-		
+
 		Connection conn = null;
 		try {
 			File ancillaryData = new File(baseDir.getAbsolutePath() + "/ancil.txt");
@@ -156,7 +167,7 @@ public class ModelDataLoader {
 			conn.close();
 		}
 		System.out.println("====== " + SRC_REACH_COEF_INSERT_SQL_FILE + " generated ====");
-		
+
 		try {
 			File ancillaryData = new File(baseDir.getAbsolutePath() + "/ancil.txt");
 			File sourceValuesData = new File(baseDir.getAbsolutePath() + "/src.txt");
@@ -170,15 +181,15 @@ public class ModelDataLoader {
 			conn.close();
 		}
 		System.out.println("====== " + SRC_VALUE_INSERT_SQL_FILE + " generated ====");
-		
+
 		System.out.println("== DONE. All SQL files successfully generated ==");
-		
+
 	}
-	
-	
+
+
 	public static void deleteModel(Long modelID, File modelMetadata) throws IOException {
-		
-		BufferedWriter writer = makeOutWriter(modelMetadata, DELETE_SQL_FILE);		
+
+		BufferedWriter writer = makeOutWriter(modelMetadata, DELETE_SQL_FILE);
 		// ----------------
 		// GENERATE THE SQL
 		// ----------------
@@ -196,20 +207,20 @@ public class ModelDataLoader {
 			writer.close();
 		}
 	}
-	
+
 	public static void insertModelMetadata(Long modelID, File modelMetadata) throws IOException {
 		DataFileDescriptor md = validateModelMetadata(modelMetadata);
 		assert(md.lines == 1):"there should only be one line for the model metadata (excluding headers)";
-		
+
 		BufferedReader reader = new BufferedReader(new FileReader(modelMetadata));
 		BufferedWriter writer = makeOutWriter(modelMetadata, appendDateTimeSuffixToFileName(MODEL_METADATA_SQL_FILE));
 		advancePastHeader(md, reader);
-		
+
 		// ----------------
 		// GENERATE THE SQL
 		// ----------------
 		try {
-			String line = reader.readLine();			
+			String line = reader.readLine();
 			String[] inputValues = line.split(md.delimiter);
 			List<String> values = new ArrayList<String>();
 			String[] allFields = {"SPARROW_MODEL_ID", "NAME","DESCRIPTION","DATE_ADDED","CONTACT_ID","ENH_NETWORK_ID", "IS_APPROVED", "IS_PUBLIC", "IS_ARCHIVED"};
@@ -225,11 +236,11 @@ public class ModelDataLoader {
 				values.add(quoteForSQL(ModelDataAssumptions.IS_PUBLIC_DEFAULT));
 				values.add(quoteForSQL(ModelDataAssumptions.IS_ARCHIVED_DEFAULT));
 			}
-			
+
 			String sql = "INSERT into " + SparrowSchemaConstants.SPARROW_SCHEMA + ".SPARROW_MODEL ("
 			+ joinInParallel(allFields, ",", values) + ")"
 			+" VALUES (" + (join(values, ",") + ");\n");
-			
+
 			writer.write(sql.toString());
 		} finally {
 			writer.write("commit;\n"); // this is added in case the .sql file is to be run by say, SQL+
@@ -245,7 +256,7 @@ public class ModelDataLoader {
 		BufferedReader reader = new BufferedReader(new FileReader(sourceMetadata));
 		BufferedWriter writer = makeOutWriter(sourceMetadata, appendDateTimeSuffixToFileName(SRC_METADATA_INSERT_SQL_FILE));
 		advancePastHeader(md, reader);
-		
+
 		// ----------------
 		// GENERATE THE SQL
 		// ----------------
@@ -255,47 +266,47 @@ public class ModelDataLoader {
 								// autogenerated, forming a Unique id together
 								// with SPARROW_MODEL_ID
 			String[] allFields = { "SOURCE_ID", "NAME", "DESCRIPTION",
-					"SORT_ORDER", "SPARROW_MODEL_ID", 
-					"IDENTIFIER", "DISPLAY_NAME", "CONSTITUENT", "UNITS", "PRECISION", 
+					"SORT_ORDER", "SPARROW_MODEL_ID",
+					"IDENTIFIER", "DISPLAY_NAME", "CONSTITUENT", "UNITS", "PRECISION",
 					"IS_POINT_SOURCE", "IS_APPROVED", "IS_PUBLIC"};
-			
+
 			while ( (line=reader.readLine()) != null) {
 				if (line.trim().length() == 0) continue;
 				identifier++;
 				// HACK: trailing "_" added because split() will drop trailing empty spaces
 				String[] inputValues = (line + md.delimiter + "_").split(md.delimiter);
 				assert(inputValues[md.indexOf("id")].equals(inputValues[md.indexOf("sort_order")]));
-				
+
 				List<String> values = new ArrayList<String>();
 				{
 					values.add(null); //SOURCE_ID has insert trigger using sequence SOURCE_SEQ
 					values.add(quoteForSQL(inputValues[md.indexOf(SMD_NAME)]));
-					values.add(quoteForSQL(inputValues[md.indexOf(SMD_DESCRIPTION)])); 
+					values.add(quoteForSQL(inputValues[md.indexOf(SMD_DESCRIPTION)]));
 					values.add(inputValues[md.indexOf(SMD_SORT_ORDER)]);
-					values.add(Long.toString(modelID)); 
+					values.add(Long.toString(modelID));
 					values.add(Integer.toString(identifier));
 					String displayName = useNameForDisplayNameIfUnavailable(md, inputValues);
 					values.add(displayName);
-					
+
 					String constituent = useDefaultIfUnavailable(md, inputValues, SMD_CONSTITUENT, DEFAULT_CONSTITUENT);
-					values.add(quoteForSQL(constituent)); 
-					
+					values.add(quoteForSQL(constituent));
+
 					String units = useDefaultIfUnavailable(md, inputValues, SMD_UNITS, DEFAULT_UNITS);
 					values.add(quoteForSQL(units));
-					
+
 					String precision = useDefaultPrecisionIfUnavailable(md, inputValues);
 					values.add(precision);
-					
+
 
 					String isPointSourceValue = useDefaultIfUnavailable(md, inputValues, SMD_IS_POINT_SOURCE, IS_POINT_SOURCE_DEFAULT);
 					String isPointSource = ModelDataAssumptions.translatePointSource(isPointSourceValue);
 					values.add(quoteForSQL(isPointSource));
 				}
-				
-				String sql = "INSERT into " + SparrowSchemaConstants.SPARROW_SCHEMA 
+
+				String sql = "INSERT into " + SparrowSchemaConstants.SPARROW_SCHEMA
 				+ ".SOURCE (" + joinInParallel(allFields, ",", values) + ")" // 10
 				+ " VALUES (" + join(values, ",") + ");\n";
-				
+
 				writer.write(sql);
 			}
 		} finally {
@@ -308,28 +319,28 @@ public class ModelDataLoader {
 
 	/**
 	 * Following JDBCUtil.writeModelReaches()
-	 * 
+	 *
 	 * @param conn
 	 * @param modelID
 	 * @param topoData
 	 * @param ancillaryData
 	 * @throws IOException
-	 * @throws SQLException 
+	 * @throws SQLException
 	 */
 	public static void insertReaches(long modelID, File topoData, File ancillaryData) throws IOException, SQLException {
-		DataFileDescriptor md = validateTopologicalData(topoData);		
+		DataFileDescriptor md = validateTopologicalData(topoData);
 		DataFileDescriptor amd = validateAncillaryData(ancillaryData);
 		assert(md.lines == amd.lines);
-		
+
 		BufferedReader tReader = new BufferedReader(new FileReader(topoData));
 		BufferedReader aReader = new BufferedReader(new FileReader(ancillaryData));
 		BufferedWriter writer = makeOutWriter(topoData, appendDateTimeSuffixToFileName(MODEL_REACHES_INSERT_SQL_FILE));
 		advancePastHeader(md, tReader);
-		
+
 		int stdIdMatchCount = 0;	//Number of reaches where the STD_ID matched an enh reach
 		int stdIdNullCount = 0;		//Number of reaches where the STD_ID is null (actually, counting zero as null)
 		int stdIdNotMatched = 0;	//Number of reaches where the STD_ID is assigned, but not matched.
-		
+
 		// ----------------
 		// GENERATE THE SQL
 		// ----------------
@@ -341,16 +352,16 @@ public class ModelDataLoader {
 			String[] allFields = {"IDENTIFIER","FULL_IDENTIFIER","HYDSEQ","IFTRAN","ENH_REACH_ID",
 					"SPARROW_MODEL_ID","FNODE","TNODE"};
 			Map<Integer, Integer> enhancedReachIDMap = readNetworkReaches();
-			
+
 			while ( (line=tReader.readLine()) != null) {
 				aline = aReader.readLine();
 				if (line.trim().length() == 0) {continue;}
-				
+
 				//identifier++;
 				// HACK: trailing "_" added because split() will drop trailing empty spaces
 				String[] topoInputValues = (line + md.delimiter + "_").split(md.delimiter);
 				String[] ancilInputValues = (aline + amd.delimiter + "_").split(amd.delimiter);
-				
+
 				List<String> values = new ArrayList<String>();
 				{
 					values.add(ancilInputValues[amd.indexOf(ANC_REACH_IDENTIFIER)]);
@@ -364,7 +375,7 @@ public class ModelDataLoader {
 							stdIdNullCount++; // no std_id or 0 std_id provided
 						} else {
 							Integer match = enhancedReachIDMap.get(Integer.valueOf(std_id));
-							if (match != null) { 
+							if (match != null) {
 								values.add(match.toString());
 								stdIdMatchCount++; // successful match
 							} else {
@@ -377,11 +388,11 @@ public class ModelDataLoader {
 					values.add(topoInputValues[md.indexOf(TOPO_FNODE)]);
 					values.add(topoInputValues[md.indexOf(TOPO_TNODE)]);
 				}
-				
+
 				String sql = "INSERT INTO " + SparrowSchemaConstants.SPARROW_SCHEMA + ".MODEL_REACH "
 				+ "(" + joinInParallel(allFields, ",", values) + ")"
 				+ " VALUES (" + join(values, ",") + ");\n";
-				
+
 				writer.write(sql);
 			}
 		} finally {
@@ -392,12 +403,12 @@ public class ModelDataLoader {
 			aReader.close();
 		}
 	}
-	
+
 	public static void insertReachDecayCoefs(Connection conn, Long modelID, File reachCoefdata, File ancilData) throws IOException, SQLException {
 		assert(conn != null) : "Connection required to do id lookups";
 		DataFileDescriptor md = validateCoefData(reachCoefdata);
 		DataFileDescriptor amd = validateAncillaryData(ancilData);
-		
+
 		// -----
 		// SETUP
 		// -----
@@ -407,7 +418,7 @@ public class ModelDataLoader {
 		Map<Integer, Integer> reachIDLookup = retrieveModelReachIDLookup(conn, modelID);
 		advancePastHeader(md, dcReader);
 		advancePastHeader(amd, aReader);
-		
+
 		// ----------------
 		// GENERATE THE SQL
 		// ----------------
@@ -424,17 +435,17 @@ public class ModelDataLoader {
 				String[] values = new String[5];
 				{
 					values[0] = inputValues[md.indexOf(COEF_ITER)];
-					values[1] = inputValues[md.indexOf(COEF_INC_DELIVF)]; 
-					values[2] = inputValues[md.indexOf(COEF_TOT_DELIVF)]; 
+					values[1] = inputValues[md.indexOf(COEF_INC_DELIVF)];
+					values[2] = inputValues[md.indexOf(COEF_TOT_DELIVF)];
 					values[3] = inputValues[md.indexOf(COEF_BOOT_ERROR)];
 
 					Integer identifier = Integer.valueOf(ancilValues[amd.indexOf(ANC_REACH_IDENTIFIER)]);
 					values[4] = Integer.toString(reachIDLookup.get(identifier));
 				}
-				
+
 				String sql = "INSERT INTO REACH_COEF (ITERATION, INC_DELIVERY, TOTAL_DELIVERY, BOOT_ERROR, MODEL_REACH_ID) "
 				+ " VALUES (" + StringUtils.join(values, ",") + ");\n";
-				
+
 				writer.write(sql);
 			}
 		} finally {
@@ -445,7 +456,7 @@ public class ModelDataLoader {
 			aReader.close();
 		}
 	}
-	
+
 	public static void insertSourceReachCoefs(Connection conn, Long modelID,
 			File coefData, File sourceMetadata, File ancilData)
 			throws IOException, SQLException {
@@ -456,7 +467,7 @@ public class ModelDataLoader {
 		DataFileDescriptor md = validateCoefData(coefData);
 		validateSourceMetadata(sourceMetadata);
 		DataFileDescriptor amd = validateAncillaryData(ancilData);
-		
+
 		String[] sources = readSourceNames(sourceMetadata);
 		String[] cappedSources = ModelDataAssumptions.addPrefixAndCapitalize(sources);
 		assert(md.hasColumns(cappedSources));
@@ -471,7 +482,7 @@ public class ModelDataLoader {
 		Map<Integer, Integer> sourceIDLookup = retrieveSourceIDLookup(conn, modelID);
 		advancePastHeader(md, coefReader);
 		advancePastHeader(amd, ancilReader);
-		
+
 		// ----------------
 		// GENERATE THE SQL
 		// ----------------
@@ -480,7 +491,7 @@ public class ModelDataLoader {
 			String aLine = null;
 
 			//int lineCount = 0;
-			
+
 			while ( (line=coefReader.readLine()) != null) {
 				// complications to handle the possibility that ancil must be
 				// looped once for each iteration
@@ -496,15 +507,15 @@ public class ModelDataLoader {
 					aLine = ancilReader.readLine();
 				}
 				if (line.trim().length() == 0 && aLine.trim().length() == 0) continue;
-				
+
 				// HACK: trailing "_" added because split() will drop trailing empty spaces
 				String[] inputValues = (line + md.delimiter + "_").split(md.delimiter);
 				String[] ancilValues = (aLine + amd.delimiter + "_").split(amd.delimiter);
-				
+
 				Integer identifier = Integer.valueOf(ancilValues[amd.indexOf(ANC_REACH_IDENTIFIER)]);
 				Integer modelReachID = reachIDLookup.get(identifier);
 				String modelReachIDString = Integer.toString(modelReachID);
-				
+
 				for (Integer i=1; i <=sourceIDLookup.size(); i++) {
 					// source ids are 1-based.
 					String[] values = new String[4];
@@ -512,12 +523,12 @@ public class ModelDataLoader {
 					values[1] = inputValues[BASIC_COEF_COLUMNS.length -1 + i]; // the ith coef after the last basic coef
 					values[2] = Integer.toString(sourceIDLookup.get(i));
 					values[3] = modelReachIDString;
-					
+
 					// NOTE: SOURCE_REACH_COEF_SEQ autoinserts value of SOURCE_REACH_COEF_ID
-					String sql = "INSERT into " + SparrowSchemaConstants.SPARROW_SCHEMA 
+					String sql = "INSERT into " + SparrowSchemaConstants.SPARROW_SCHEMA
 					+ ".SOURCE_REACH_COEF (ITERATION, VALUE, SOURCE_ID, MODEL_REACH_ID)"
 					+ " VALUES (" + StringUtils.join(values, ",") + ");\n";
-					
+
 					writer.write(sql);
 				}
 			}
@@ -529,8 +540,8 @@ public class ModelDataLoader {
 			ancilReader.close();
 		}
 	}
-	
-	public static void insertSourceValues(Connection conn, Long modelID, 
+
+	public static void insertSourceValues(Connection conn, Long modelID,
 			File sourceValuesData, File sourceMetadata, File ancilData)
 			throws IOException, SQLException {
 		// ----------
@@ -540,7 +551,7 @@ public class ModelDataLoader {
 		DataFileDescriptor md = validateSourceData(sourceValuesData);
 		validateSourceMetadata(sourceMetadata);
 		DataFileDescriptor amd = validateAncillaryData(ancilData);
-		
+
 		String[] sources = readSourceNames(sourceMetadata);
 		assert(Arrays.equals(md.getHeaders(), sources)) : "the order should be the same";
 
@@ -550,12 +561,12 @@ public class ModelDataLoader {
 		BufferedReader sourceReader = new BufferedReader(new FileReader(sourceValuesData));
 		BufferedReader ancilReader = new BufferedReader(new FileReader(ancilData));
 		BufferedWriter writer = makeOutWriter(sourceValuesData, appendDateTimeSuffixToFileName(SRC_VALUE_INSERT_SQL_FILE));
-		
+
 		Map<Integer, Integer> reachIDLookup = retrieveModelReachIDLookup(conn, modelID);
 		Map<Integer, Integer> sourceIDLookup = retrieveSourceIDLookup(conn, modelID);
 		advancePastHeader(md, sourceReader);
 		advancePastHeader(amd, ancilReader);
-		
+
 		// ----------------
 		// GENERATE THE SQL
 		// ----------------
@@ -568,26 +579,26 @@ public class ModelDataLoader {
 			while ( (line=sourceReader.readLine()) != null) {
 				aLine = ancilReader.readLine();
 				if (line.trim().length() == 0 && aLine.trim().length() == 0) continue;
-				
+
 				// HACK: trailing "_" added because split() will drop trailing empty spaces
-				String[] inputValues = ModelDataAssumptions.sedimentIrregularHack(md, line).split(md.delimiter); // 
+				String[] inputValues = ModelDataAssumptions.sedimentIrregularHack(md, line).split(md.delimiter); //
 				String[] ancilValues = (aLine + amd.delimiter + "_").split(amd.delimiter);
-				
+
 				Integer identifier = Integer.valueOf(ancilValues[amd.indexOf(ANC_REACH_IDENTIFIER)]);
 				Integer modelReachID = reachIDLookup.get(identifier);
 				String modelReachIDString = Integer.toString(modelReachID);
-				
+
 				for (Integer i=1; i <=sourceIDLookup.size(); i++) {
 					// source ids are 1-based.
 					String[] values = new String[3];
 					values[0] = inputValues[i-1];
 					values[1] = Integer.toString(sourceIDLookup.get(i));
 					values[2] = modelReachIDString;
-					
+
 					// NOTE: SOURCE_REACH_COEF_SEQ autoinserts value of SOURCE_REACH_COEF_ID
 					String sql = "INSERT INTO source_value (VALUE, SOURCE_ID, MODEL_REACH_ID) "
 					+ " VALUES (" + StringUtils.join(values, ",") + ");\n";
-					
+
 					writer.write(sql);
 				}
 			}
@@ -609,7 +620,7 @@ public class ModelDataLoader {
 		assert(md.hasColumnHeaders());
 		return md;
 	}
-	
+
 	public static DataFileDescriptor validateCoefData(File reachCoefdata)
 			throws IOException {
 		assert (reachCoefdata !=  null);
@@ -631,7 +642,7 @@ public class ModelDataLoader {
 				"constituent", "units", "precision"));
 		return fileMetaData;
 	}
-	
+
 	public static DataFileDescriptor validateSourceMetadata(File sourceMetadata)
 			throws IOException {
 		assert (sourceMetadata !=  null);
@@ -639,11 +650,11 @@ public class ModelDataLoader {
 		assert(sourceMetadata.getName().equals("src_metadata.txt"));
 		DataFileDescriptor md = Analyzer.analyzeFile(sourceMetadata);
 		assert(md.hasColumnHeaders());
-		assert(md.hasColumns("id", "sort_order", "name", "display_name", "description", 
+		assert(md.hasColumns("id", "sort_order", "name", "display_name", "description",
 				"constituent", "units", "precision", "is_point_source"));
 		return md;
 	}
-	
+
 	public static DataFileDescriptor validateTopologicalData(File topoData)
 			throws IOException {
 		assert (topoData !=  null);
@@ -670,38 +681,38 @@ public class ModelDataLoader {
 			ANC_PNAME = "pname";
 		}
 		assert(amd.hasColumns(ANC_REACH_TYPE, ANC_PNAME));
-		
-//		String[] optionalColumns = {"waterid", 
-//				 "delivery_target", "RR", 
-//				"CONTFLAG",  "HEADFLAG", "TERMFLAG", "RESCODE", 
+
+//		String[] optionalColumns = {"waterid",
+//				 "delivery_target", "RR",
+//				"CONTFLAG",  "HEADFLAG", "TERMFLAG", "RESCODE",
 //				 "statid"};
 		// mrb_id rather than waterid
 		// target rather than deliver_target
 		//?? RR
 		// headflag rather than CONTFLAG
 		// staid =? statid
-		
+
 		return amd;
 	}
-	
+
 	public static Map<Integer, Integer> retrieveModelReachIDLookup(
 			Connection conn, long modelID) throws SQLException {
 		// NOTE: unlike the other functions, this one MUST hit the database, as
 		// the model_reach_ids are generally generated via a sequence in an
 		// insert trigger
-		String selectAllReachesQuery = "SELECT IDENTIFIER, MODEL_REACH_ID FROM " + SparrowSchemaConstants.SPARROW_SCHEMA + ".MODEL_REACH WHERE SPARROW_MODEL_ID = " 
+		String selectAllReachesQuery = "SELECT IDENTIFIER, MODEL_REACH_ID FROM " + SparrowSchemaConstants.SPARROW_SCHEMA + ".MODEL_REACH WHERE SPARROW_MODEL_ID = "
 		+ modelID;
 		Map<Integer, Integer> modelIdMap = null;
 		try {
 			modelIdMap = JDBCUtil.buildIntegerMap(conn, selectAllReachesQuery);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new RuntimeException("Array index out of bounds because reaches need to be inserted "
-					+ "first into the database. Please insert reaches and rerun " 
+					+ "first into the database. Please insert reaches and rerun "
 					+ ModelDataLoader.class.getSimpleName(), e);
 		}
 		return modelIdMap;
 	}
-	
+
 	public static Map<Integer, Integer> retrieveSourceIDLookup(
 			Connection conn, long modelID) throws SQLException {
 		// NOTE: unlike the other functions, this one MUST hit the database, as
@@ -714,7 +725,7 @@ public class ModelDataLoader {
 		result.putAll(sourceIdMap);
 		return result;
 	}
-	
+
 	// ==============
 	// LOOKUP METHODS
 	// ==============
@@ -723,9 +734,9 @@ public class ModelDataLoader {
 		assert(sourceMetadata.getName().equals("src_metadata.txt"));
 		DataFileDescriptor md = Analyzer.analyzeFile(sourceMetadata);
 		assert(md.hasColumnHeaders());
-		assert(md.hasColumns("id", "sort_order", "name", "display_name", "description", 
+		assert(md.hasColumns("id", "sort_order", "name", "display_name", "description",
 				"constituent", "units", "precision", "is_point_source"));
-		
+
 		BufferedReader reader = new BufferedReader(new FileReader(sourceMetadata));
 		List<String> headers = new ArrayList<String>();
 		try {
@@ -744,13 +755,13 @@ public class ModelDataLoader {
 		}
 		return headers.toArray(new String[headers.size()]);
 	}
-	
+
 	public static Map<Integer, Integer> readNetworkReaches() throws SQLException {
-		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM " + SparrowSchemaConstants.NETWORK_SCHEMA + ".ENH_REACH WHERE ENH_NETWORK_ID = " 
+		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM " + SparrowSchemaConstants.NETWORK_SCHEMA + ".ENH_REACH WHERE ENH_NETWORK_ID = "
 		+ ModelDataAssumptions.ENH_NETWORK_ID;
 		return JDBCUtil.buildIntegerMap(getWIDWConnection(), enhReachQuery);
 	}
-	
+
 	// ===============
 	// UTILITY METHODS
 	// ===============
@@ -761,7 +772,7 @@ public class ModelDataLoader {
 		return appendSuffixToFileName(fileName, "_" + dateSuffix);
 
 	}
-	
+
 	public static String appendSuffixToFileName(String fileName, String suffix) {
 		if (fileName == null) return null;
 		if (suffix == null) return fileName;
@@ -773,7 +784,7 @@ public class ModelDataLoader {
 		}
 		return fileName;
 	}
-	
+
 	private static BufferedWriter makeOutWriter(File sourceValuesData, String fileName)
 	throws IOException {
 		String loadScriptsDirPath = sourceValuesData.getParent() + "/" + REL_LOAD_DIR;
@@ -783,14 +794,14 @@ public class ModelDataLoader {
 		File outputFile = new File(sqlOutputFilePath);
 		return new BufferedWriter(new FileWriter(outputFile), 8192);
 	}
-	
+
 	private static void advancePastHeader(DataFileDescriptor md,
 			BufferedReader coefReader) throws IOException {
 		if (md.hasColumnHeaders()) {
 			coefReader.readLine();
 		}
 	}
-	
+
 	public static String quoteForSQL(String value) {
 		if (value == null || value.length() == 0) return null;
 		StringBuffer quotedString = new StringBuffer("'");
@@ -798,7 +809,7 @@ public class ModelDataLoader {
 		quotedString.append(value.replaceAll("'", "''")).append("'");
 		return quotedString.toString();
 	}
-	
+
 	public static StringBuffer join(List<String> values, String delimiter) {
 		delimiter = (delimiter == null)? ",": delimiter;
 		StringBuffer result = new StringBuffer();
@@ -813,7 +824,7 @@ public class ModelDataLoader {
 		}
 		return result;
 	}
-	
+
 	public static StringBuffer joinInParallel(String[] values, String delimiter, List<String> governors) {
 		delimiter = (delimiter == null)? ",": delimiter;
 		StringBuffer result = new StringBuffer();
@@ -828,7 +839,7 @@ public class ModelDataLoader {
 		}
 		return result;
 	}
-	
+
 	public static String prompt(String message) throws IOException {
 		System.out.println(message);
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -847,14 +858,14 @@ public class ModelDataLoader {
 	public static Connection getWIMAPConnection(){
 		return getSparrowDSSConnection(THIN_WIMAP_CONNECTION, sparrow_dss_password);
 	}
-	
+
 	public static Connection getDevelopmentConnection() {
 		return getSparrowDSSConnection(THIN_WIMAP_CONNECTION, "admin");
 	}
-	
+
 	public static Connection getSparrowDSSConnection(String connectionString, String password) {
 		try {
-			DriverManager.registerDriver(new OracleDriver());		
+			DriverManager.registerDriver(new OracleDriver());
 
 			String username = "SPARROW_DSS";
 			if (password == null) {
@@ -887,8 +898,8 @@ public class ModelDataLoader {
 
 
 
-	
 
-	
+
+
 
 }

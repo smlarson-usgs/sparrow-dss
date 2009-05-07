@@ -34,6 +34,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -48,10 +49,10 @@ import org.apache.log4j.Logger;
 public class SharedApplication  {
 	protected static Logger log =
 		Logger.getLogger(SharedApplication.class); //logging for this class
-	
+
 	private static SharedApplication instance;
 	// private String dsName = "jdbc/sparrowDSDS"; old value
-	private static final String dsName = "jdbc/sparrow_dss";
+	private static final String dsName = "java:comp/env/jdbc/sparrow_dss";
 	private DataSource datasource;
 	private boolean lookupFailed = false;
 	private ComputableCache<PredictRequest, PredictResult> predictResultCache;
@@ -61,15 +62,15 @@ public class SharedApplication  {
 
 	//an ehcache test cache
 	public static final String SERIALIZABLE_CACHE = "PredictContext";
-	
+
 	//ehcache bean cache names
 	public static final String PREDICT_CONTEXT_CACHE = "PredictContext";
 	public static final String ADJUSTMENT_GROUPS_CACHE = "AdjustmentGroups";
 	public static final String ANALYSES_CACHE = "Analyses";
 	public static final String TERMINAL_REACHES_CACHE = "TerminalReaches";
 	public static final String AREA_OF_INTEREST_CACHE = "AreaOfInterest";
-	
-	
+
+
 	//ehcache self-populated cache names
 	public static final String PREDICT_DATA_CACHE = "PredictData";
 	public static final String ADJUSTED_SOURCE_CACHE = "AdjustedSource";
@@ -79,9 +80,9 @@ public class SharedApplication  {
 	public static final String IDENTIFY_REACH_BY_ID = "IdentifyReachByID";
 	public static final String REACHES_BY_CRITERIA = "ReachesByCriteria";
 	public static final String DATA_BINNING = "DataBinning";
-	
 
-	
+
+
 	private SharedApplication() {
 
 		//These are now all deprecated in favor of the EHCache versions
@@ -113,8 +114,10 @@ public class SharedApplication  {
 		synchronized (this) {
 			if (datasource == null && ! lookupFailed) {
 				try {
-					InitialContext context = new InitialContext();
-					datasource = (DataSource)context.lookup(dsName);
+					Context ctx = new InitialContext();
+					datasource = (DataSource) ctx.lookup(dsName);
+//					Connection connection = ds.getConnection();
+
 				} catch (Exception e) {
 					lookupFailed = true;
 				}
@@ -125,20 +128,21 @@ public class SharedApplication  {
 		if (datasource != null) {
 			return datasource.getConnection();
 		}
-		return getDirectConnection();
+		return getConnectionFromCommandLineParams();
 
 	}
 
-	private Connection getDirectConnection() throws SQLException {
+	private Connection getConnectionFromCommandLineParams() throws SQLException {
 		synchronized (this) {
 			DriverManager.registerDriver(new OracleDriver());
 		}
+		String dbuser = System.getProperty("dbuser");
+		String dbpass = System.getProperty("dbpass");
+		String url = System.getProperty("dburl");
+		Connection connection;
+		connection = DriverManager.getConnection(url, dbuser, dbpass);
+		return connection;
 
-		String username = "SPARROW_DSS";
-		String password = "***REMOVED***";
-		String thinConn = "jdbc:oracle:thin:@130.11.165.152:1521:widw";
-
-		return DriverManager.getConnection(thinConn,username,password);
 	}
 
 	public Integer putSerializable(Serializable context) {
@@ -147,17 +151,17 @@ public class SharedApplication  {
 		c.put( new Element(hash, context) );
 		return hash;
 	}
-	
+
 	public Serializable getSerializable(Integer id) {
 		return getSerializable(id, false);
 	}
-	
+
 	public Serializable getSerializable(Integer id, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(SERIALIZABLE_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
 		return (e != null)?((Serializable) e.getObjectValue()):null;
 	}
-	
+
 	//PredictContext Cache
 	public Integer putPredictionContext(PredictionContext context) {
 
@@ -167,7 +171,7 @@ public class SharedApplication  {
 			// Shouldn't happen
 			e.printStackTrace();
 		}
-		
+
 		CacheManager cm = CacheManager.getInstance();
 
 		Integer pcHash = context.hashCode();
@@ -176,43 +180,43 @@ public class SharedApplication  {
 		AdjustmentGroups ag = context.getAdjustmentGroups();
 		if (ag != null) {
 			Integer hash = ag.hashCode();
-			cm.getEhcache(ADJUSTMENT_GROUPS_CACHE).put( new Element(hash, ag) );			
+			cm.getEhcache(ADJUSTMENT_GROUPS_CACHE).put( new Element(hash, ag) );
 		}
-		
+
 		Analysis anal = context.getAnalysis();
 		if (anal != null) {
 			Integer hash = anal.hashCode();
 			cm.getEhcache(ANALYSES_CACHE).put( new Element(hash, anal) );
 		}
-		
+
 		TerminalReaches tr = context.getTerminalReaches();
 		if (tr != null) {
 			Integer hash = context.getTerminalReaches().hashCode();
 			cm.getEhcache(TERMINAL_REACHES_CACHE).put( new Element(hash, tr) );
 		}
-		
+
 		AreaOfInterest aoi = context.getAreaOfInterest();
 		if (aoi != null) {
 			Integer hash = aoi.hashCode();
 			cm.getEhcache(AREA_OF_INTEREST_CACHE).put( new Element(hash, aoi) );
 		}
-		
+
 		return pcHash;
 	}
-	
+
 	public PredictionContext getPredictionContext(Integer id) {
 		return getPredictionContext(id, false);
 	}
-	
+
 	public PredictionContext getPredictionContext(Integer id, boolean quiet) {
-		
+
 		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_CONTEXT_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
-		
+
 		if (e == null) return null;
-		
+
 		PredictionContext pc = (PredictionContext) e.getObjectValue();
-		
+
 		//TODO [IK] Code here now assumes nulls are allowed, so PredictionContext code may need to change to match.
 		// Populate transient children if necessary
 		{
@@ -261,7 +265,7 @@ public class SharedApplication  {
 		}
 		return pc;
 	}
-	
+
 	//AdjustmentGroup Cache
 	protected Integer putAdjustmentGroups(AdjustmentGroups adj) {
 		Ehcache c = CacheManager.getInstance().getEhcache(ADJUSTMENT_GROUPS_CACHE);
@@ -269,17 +273,17 @@ public class SharedApplication  {
 		c.put( new Element(hash, adj) );
 		return hash;
 	}
-	
+
 	protected boolean touchAdjustmentGroups(Integer id) {
 		Ehcache c = CacheManager.getInstance().getEhcache(ADJUSTMENT_GROUPS_CACHE);
 		Element e  = c.get(id);
 		return (e != null);
 	}
-	
+
 	public AdjustmentGroups getAdjustmentGroups(Integer id) {
 		return getAdjustmentGroups(id, false);
 	}
-	
+
 	public AdjustmentGroups getAdjustmentGroups(Integer id, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(ADJUSTMENT_GROUPS_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
@@ -294,7 +298,7 @@ public class SharedApplication  {
 		}
 		return null;
 	}
-	
+
 	//Analysis Cache
 	protected Integer putAnalysis(Analysis analysis) {
 		Ehcache c = CacheManager.getInstance().getEhcache(ANALYSES_CACHE);
@@ -302,21 +306,21 @@ public class SharedApplication  {
 		c.put( new Element(hash, analysis) );
 		return hash;
 	}
-	
+
 	protected boolean touchAnalysis(Integer id) {
 		Ehcache c = CacheManager.getInstance().getEhcache(ANALYSES_CACHE);
 		Element e  = c.get(id);
 		return (e != null);
 	}
-	
+
 	public Analysis getAnalysis(Integer id) {
 		return getAnalysis(id, false);
 	}
-	
+
 	public Analysis getAnalysis(Integer id, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(ANALYSES_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
-		
+
 		if (e != null) {
 			try {
 	      return ((Analysis) e.getObjectValue()).clone();
@@ -327,7 +331,7 @@ public class SharedApplication  {
 		}
 		return null;
 	}
-	
+
 	//TerminalReach Cache
 	protected Integer putTerminalReaches(TerminalReaches term) {
 		Ehcache c = CacheManager.getInstance().getEhcache(TERMINAL_REACHES_CACHE);
@@ -335,17 +339,17 @@ public class SharedApplication  {
 		c.put( new Element(hash, term) );
 		return hash;
 	}
-	
+
 	protected boolean touchTerminalReaches(Integer id) {
 		Ehcache c = CacheManager.getInstance().getEhcache(TERMINAL_REACHES_CACHE);
 		Element e  = c.get(id);
 		return (e != null);
 	}
-	
+
 	public TerminalReaches getTerminalReaches(Integer id) {
 		return getTerminalReaches(id, false);
 	}
-	
+
 	public TerminalReaches getTerminalReaches(Integer id, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(TERMINAL_REACHES_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
@@ -360,7 +364,7 @@ public class SharedApplication  {
 		}
 		return null;
 	}
-	
+
 	//AreaOfInterest Cache
 	protected Integer putAreaOfInterest(AreaOfInterest area) {
 		Ehcache c = CacheManager.getInstance().getEhcache(AREA_OF_INTEREST_CACHE);
@@ -368,17 +372,17 @@ public class SharedApplication  {
 		c.put( new Element(hash, area) );
 		return hash;
 	}
-	
+
 	protected boolean touchAreaOfInterest(Integer id) {
 		Ehcache c = CacheManager.getInstance().getEhcache(AREA_OF_INTEREST_CACHE);
 		Element e  = c.get(id);
 		return (e != null);
 	}
-	
+
 	public AreaOfInterest getAreaOfInterest(Integer id) {
 		return getAreaOfInterest(id, false);
 	}
-	
+
 	public AreaOfInterest getAreaOfInterest(Integer id, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(AREA_OF_INTEREST_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
@@ -398,103 +402,103 @@ public class SharedApplication  {
 	public PredictData getPredictData(Long id) {
 		return getPredictData(id, false);
 	}
-	
+
 	public PredictData getPredictData(Long id, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_DATA_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
 		return (e != null)?((PredictData) e.getObjectValue()):null;
 	}
-	
+
 	//PredictResult Cache
 	public PredictResult getPredictResult(PredictionContext context) {
 		return getPredictResult(context, false);
 	}
-	
+
 	public PredictResult getPredictResult(PredictionContext context, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_RESULT_CACHE);
 		Element e  = (quiet)?c.getQuiet(context):c.get(context);
 		return (e != null)?((PredictResult) e.getObjectValue()):null;
 	}
-	
+
 	//AnalysisResult Cache
 	public PredictResult getAnalysisResult(PredictionContext context) {
 		return getAnalysisResult(context, false);
 	}
-	
+
 	public PredictResult getAnalysisResult(PredictionContext context, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(ANALYSIS_RESULT_CACHE);
 		Element e  = (quiet)?c.getQuiet(context):c.get(context);
 		return (e != null)?((PredictResult) e.getObjectValue()):null;
 	}
-	
+
 	//ReachByPoint Cache
 	public ReachInfo getReachByPointResult(ModelPoint req) {
 		return getReachByPointResult(req, false);
 	}
-	
+
 	public ReachInfo getReachByPointResult(ModelPoint req, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(IDENTIFY_REACH_BY_POINT);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
 		return (e != null)?((ReachInfo) e.getObjectValue()):null;
 	}
-	
+
 	//ReachByID Cache
 	public ReachInfo getReachByIDResult(ReachID req) {
 		return getReachByIDResult(req, false);
 	}
-	
+
 	public ReachInfo getReachByIDResult(ReachID req, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(IDENTIFY_REACH_BY_ID);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
 		return (e != null)?((ReachInfo) e.getObjectValue()):null;
 	}
-	
+
 	//Adjusted Source Cache
 	public DataTable getAdjustedSource(AdjustmentGroups req) {
 		return getAdjustedSource(req, false);
 	}
-	
+
 	public DataTable getAdjustedSource(AdjustmentGroups req, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(ADJUSTED_SOURCE_CACHE);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
 		return (e != null)?((DataTable) e.getObjectValue()):null;
 	}
-	
+
 	//Adjusted Source Cache
 	public List<Long> getReachesByCriteria(LogicalSet req) {
 		return getReachesByCriteria(req, false);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public List<Long> getReachesByCriteria(LogicalSet req, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(REACHES_BY_CRITERIA);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
 		return (e != null)?((List<Long>) e.getObjectValue()):null;
 	}
-	
+
     //Data Binning Cache
     public BigDecimal[] getDataBinning(BinningRequest req) {
         return getDataBinning(req, false);
     }
-    
+
     public BigDecimal[] getDataBinning(BinningRequest req, boolean quiet) {
         Ehcache c = CacheManager.getInstance().getEhcache(DATA_BINNING);
         Element e  = (quiet)?c.getQuiet(req):c.get(req);
         return (e != null)?((BigDecimal[]) e.getObjectValue()):null;
     }
-	
+
     //Aggregate Id Lookup Kludge Cache - temporary
     public AggregateIdLookupKludge getAggregateIdLookup(String aggLevel) {
         return getAggregateIdLookup(aggLevel, false);
     }
-    
+
     public AggregateIdLookupKludge getAggregateIdLookup(String aggLevel, boolean quiet) {
         Ehcache c = CacheManager.getInstance().getEhcache("AggregateIdLookup");
         Element e  = (quiet) ? c.getQuiet(aggLevel) : c.get(aggLevel);
         return (e != null)?((AggregateIdLookupKludge) e.getObjectValue()):null;
     }
-	
-	
+
+
 	public ComputableCache<PredictRequest, PredictResult> getPredictResultCache() {
 		return predictResultCache;
 	}
@@ -533,7 +537,7 @@ public class SharedApplication  {
 			e.printStackTrace();
 		}
 	}
-	
+
 
 }
 

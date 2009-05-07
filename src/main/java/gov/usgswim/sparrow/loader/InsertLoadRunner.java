@@ -15,6 +15,12 @@ import java.util.Date;
 
 import oracle.jdbc.driver.OracleDriver;
 
+/**
+ * Runs the insert sql produced by ModelDataLoader
+ *
+ * @author ilinkuo
+ *
+ */
 public class InsertLoadRunner {
 
 	private static final String THIN_LOCAL_CONNECTION = "jdbc:oracle:thin:@localhost:1521:xe";
@@ -23,46 +29,33 @@ public class InsertLoadRunner {
 		COMMIT_IF_NO_ERRORS, BATCH_MODE, COMMIT_AND_LOG_ERRORS, ROLLBACK_IF_ERROR
 	};
 
-//	public static Connection conn = ModelDataLoader.getWIMAPConnection();
 	public static Connection conn = ModelDataLoader.getWIDWConnection();
-//	public static Connection conn = InsertLoadRunner.getDevelopmentConnection();
 	public static String fileName = null;
-	
+
 	static {
-		fileName = "model_metadata_insert_20081025_211331.sql";
-		fileName = "src_metadata_insert_20081025_211331.sql";	
-		fileName = "model_reaches_insert_20081025_211331.sql";
+		fileName = "model_metadata_insert_20090427_161934.sql";
+		fileName = "src_metadata_insert_20090427_164504.sql";
+		fileName = "model_reaches_insert_20090427_164504.sql";
 
-		fileName = "reach_decay_coef_insert_20081025_211938.sql";
-		fileName = "src_reach_coef_insert_20081025_211939.sql";
-		fileName = "src_value_insert_20081025_211940.sql";
-
-
-		
-//		fileName = "model_reaches_insert_20081002_163018.sql";
-//		fileName = "model_reaches_insert_20080930_170536.sql";
-//		fileName = "reach_decay_coef_insert_20080930_170552.sql";
-//		fileName = "src_reach_coef_insert_20080930_170559.sql";
-//		fileName = "src_value_insert_20080930_170609.sql";
 	}
 
-	public static String baseDirectory = "D:\\CRKData\\Sparrow\\raw_data\\mrb3_tp\\load" ;
-	
+	public static File baseDirectory = ModelDataLoader.LOAD_SCRIPTS_DIR;
+
 	public static void main(String[] args) throws IOException, SQLException {
-		File testInsertFile = new File(baseDirectory + "/" + fileName);
-		
+		File testInsertFile = new File(baseDirectory , fileName);
+
 		try {
 			InsertLoadRunner.load(conn, testInsertFile);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
 		} finally {
 			if (conn != null) conn.close();
 		}
 		System.out.println("RUN COMPLETE");
-		
+
 	}
-	
+
 	// =============================================
 	public static void load(Connection conn, File sqlFile ) throws IOException, SQLException {
 		assert(sqlFile.exists()): "no such sql file exists: " + sqlFile.getAbsolutePath();
@@ -83,7 +76,7 @@ public class InsertLoadRunner {
 
 		while ((line = reader.readLine()) != null){
 			lineNum++;
-			if (!line.startsWith("INSERT") && !line.startsWith("insert")) {
+			if (!line.startsWith("INSERT") && !line.startsWith("insert") && !line.startsWith("COMMIT")) {
 				doLog.write(line + "\n");
 				doLog.flush(); // output the line immediately
 				errorLog.write("not an insert");
@@ -134,7 +127,7 @@ public class InsertLoadRunner {
 		SimpleDateFormat formatter =  new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		String logStart = "=============== " + methodName + " " + formatter.format(new Date()) + " " + conn2.getMetaData().getURL() + " ================\n";
 		doLog.write(logStart);
-		doLog.flush();		
+		doLog.flush();
 	}
 
 	private static String removeFinalSemiColon(String line) {
@@ -165,7 +158,7 @@ public class InsertLoadRunner {
 
 	public static Connection getDevelopmentConnection() {
 		try {
-			DriverManager.registerDriver(new OracleDriver());		
+			DriverManager.registerDriver(new OracleDriver());
 
 			String username = "SPARROW_DSS";
 			String password = "admin"; // this password doesn't matter as it's just a local password
