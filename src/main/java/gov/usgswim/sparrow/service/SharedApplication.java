@@ -33,6 +33,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -529,12 +531,22 @@ public class SharedApplication  {
 		return attributes;
 	}
 
+
+	/**
+	 * Properly closing Connections and ResultSets without throwing exceptions, see the section
+	 * "Here is an example of properly written code to use a db connection obtained from a connection pool"
+	 * http://tomcat.apache.org/tomcat-6.0-doc/jndi-datasource-examples-howto.html
+	 * @param conn
+	 * @param rset
+	 */
 	public static void closeConnection(Connection conn, ResultSet rset) {
-		try {
-			if (rset != null) rset.close();
-			if (conn != null) conn.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
+		if (rset != null) {
+			try { rset.close(); } catch (SQLException e) { ; }
+			rset = null;
+		}
+		if (conn != null) {
+			try { conn.close(); } catch (SQLException e) { ; }
+			conn = null;
 		}
 	}
 

@@ -181,58 +181,55 @@ public class PredictRunner implements Runner {
 		double incReachContribution[][] = null;
 
 
-		for (int j=0; j< 200; j++) {
-			if ((j % 10) == 0) {
-				System.out.println("running iteration " + j);
-			}
-			incReachContribution = new double[reachCount][rchValColCount];
 
-			/*
-			 * Array of accumulated values at nodes
-			 */
-			double upstreamNodeContribution[][] = new double[nodeCount][sourceCount];
+		incReachContribution = new double[reachCount][rchValColCount];
+
+		/*
+		 * Array of accumulated values at nodes
+		 */
+		double upstreamNodeContribution[][] = new double[nodeCount][sourceCount];
 
 
 
 
-			// Iterate over all reaches
-			for (int reach = 0; reach < reachCount; reach++) {
+		// Iterate over all reaches
+		for (int reach = 0; reach < reachCount; reach++) {
 
-				double reachIncrementalContributionAllSourcesTotal = 0d; // incremental for all sources/ (NOT decayed)
-				double rchGrandTotal = 0d; // all sources + all from upstream node (decayed)
+			double reachIncrementalContributionAllSourcesTotal = 0d; // incremental for all sources/ (NOT decayed)
+			double rchGrandTotal = 0d; // all sources + all from upstream node (decayed)
 
-				// Iterate over all sources
-				for (int sourceType = 0; sourceType < sourceCount; sourceType++) {
-					int source = sourceType + sourceCount;
+			// Iterate over all sources
+			for (int sourceType = 0; sourceType < sourceCount; sourceType++) {
+				int source = sourceType + sourceCount;
 
-					// temp var to store the incremental per source k.
-					// Land delivery and coeff both included in coef value. (NOT
-					// decayed)
-					double incrementalReachContribution = deliveryCoefficient
-					.getDouble(reach, sourceType)
-					* sourceValues.getDouble(reach, sourceType);
+				// temp var to store the incremental per source k.
+				// Land delivery and coeff both included in coef value. (NOT
+				// decayed)
+				double incrementalReachContribution = deliveryCoefficient
+				.getDouble(reach, sourceType)
+				* sourceValues.getDouble(reach, sourceType);
 
-					incReachContribution[reach][sourceType] = incrementalReachContribution;
+				incReachContribution[reach][sourceType] = incrementalReachContribution;
 
-					// total at reach (w/ up stream contrib) per source k (Decayed)
-					incReachContribution[reach][source] =
-						(incrementalReachContribution * decayCoefficient.getDouble(reach, INSTREAM_DECAY_COL)) /* Just the decayed source */
-						+ (upstreamNodeContribution[topo.getInt(reach, FNODE_COL)][sourceType] * decayCoefficient.getDouble(reach, UPSTREAM_DECAY_COL)); /* Just the decayed upstream portion */
+				// total at reach (w/ up stream contrib) per source k (Decayed)
+				incReachContribution[reach][source] =
+					(incrementalReachContribution * decayCoefficient.getDouble(reach, INSTREAM_DECAY_COL)) /* Just the decayed source */
+					+ (upstreamNodeContribution[topo.getInt(reach, FNODE_COL)][sourceType] * decayCoefficient.getDouble(reach, UPSTREAM_DECAY_COL)); /* Just the decayed upstream portion */
 
-					// Accumulate at downstream node if this reach transmits
-					if (topo.getInt(reach, IFTRAN_COL) != 0) {
-						upstreamNodeContribution[topo.getInt(reach, TNODE_COL)][sourceType] += incReachContribution[reach][source];
-					}
-
-					reachIncrementalContributionAllSourcesTotal += incrementalReachContribution; // add to incremental total for all sources at reach
-					rchGrandTotal += incReachContribution[reach][source]; // add to grand total for all sources (w/upsteam) at reach
+				// Accumulate at downstream node if this reach transmits
+				if (topo.getInt(reach, IFTRAN_COL) != 0) {
+					upstreamNodeContribution[topo.getInt(reach, TNODE_COL)][sourceType] += incReachContribution[reach][source];
 				}
 
-				incReachContribution[reach][totalIncrementalColOffset] = reachIncrementalContributionAllSourcesTotal; // incremental for all sources (NOT decayed)
-				incReachContribution[reach][grandTotalColOffset] = rchGrandTotal; // all sources + all from upstream node (Decayed)
-
+				reachIncrementalContributionAllSourcesTotal += incrementalReachContribution; // add to incremental total for all sources at reach
+				rchGrandTotal += incReachContribution[reach][source]; // add to grand total for all sources (w/upsteam) at reach
 			}
+
+			incReachContribution[reach][totalIncrementalColOffset] = reachIncrementalContributionAllSourcesTotal; // incremental for all sources (NOT decayed)
+			incReachContribution[reach][grandTotalColOffset] = rchGrandTotal; // all sources + all from upstream node (Decayed)
+
 		}
+
 		return PredictResultImm.buildPredictResult(incReachContribution,
 				predictData);
 

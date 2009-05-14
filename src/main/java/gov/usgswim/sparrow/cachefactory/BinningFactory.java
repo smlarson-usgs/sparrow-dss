@@ -9,6 +9,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
@@ -70,13 +73,49 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @return
 	 */
 	protected BigDecimal[] getEqualCountBins(DataTable data, int columnIndex, int binCount) {
-		float[] sortedValues = DataTableUtils.extractSortedValues(data, columnIndex); //sorted Array holding all values
+		boolean isKeepZeroes = false; // TODO accept as parameter
+		Float[] sortedValues = extractSortedValues(data, columnIndex, binCount, isKeepZeroes); //sorted Array holding all values
 		return getEqualCountBins(sortedValues, binCount, true); // TODO set to true for now. Should take parameter from BinningRequest
 	}
 
+	/**
+	 * TODO put into DataTableUtils
+	 * @param data
+	 * @param columnIndex
+	 * @param isKeepZeroes
+	 * @return
+	 */
+	public static Float[] extractSortedValues(DataTable data, int columnIndex, int minValueCount, boolean isKeepZeroes) {
+		int totalRows = data.getRowCount();
+
+		boolean hasZero = false;
+		List<Float> filteredValues = new ArrayList<Float>();
+
+		for (int r=0; r<totalRows; r++) {
+			float value = data.getFloat(r, columnIndex);
+			if (Float.POSITIVE_INFINITY != value && Float.NEGATIVE_INFINITY != value ) {
+				if (value == 0F) {hasZero = true;}
+				if (isKeepZeroes || value != 0F) {
+					filteredValues.add(value);
+				}
+			}
+		}
+		if (!isKeepZeroes && hasZero) {
+			filteredValues.add(0F); // This ensures that the reaches with 0 values are at least drawn. They will not be drawn if all the nonzero reach values are of the same sign
+		}
+		// Need to make sure we have at least enough values for bins
+		while (filteredValues.size() <= minValueCount) {
+			filteredValues.add(0F);
+		}
+
+		Float[] values = new Float[filteredValues.size()];
+		values = filteredValues.toArray(values);
+		Arrays.sort(values);
+		return values;
+	}
 
 	public static final double ALLOWABLE_BIN_SIZE_VARIANCE_RATIO = 1d/10;
-	public static BigDecimal[] getEqualCountBins(float[] sortedData, int binCount, Boolean useRounding) {
+	public static BigDecimal[] getEqualCountBins(Float[] sortedData, int binCount, Boolean useRounding) {
 		int totalRows = sortedData.length;	//Total rows of data
 
 		if (useRounding == null || !useRounding) {
@@ -102,7 +141,7 @@ public class BinningFactory implements CacheEntryFactory {
 			value = ( sortedData[(int) Math.floor(valueIndex)] + sortedData[(int) Math.ceil(valueIndex)])/2; // take the average of the surrounding values
 			hiIndex = (int) Math.floor((valueIndex + binVariance));
 			int loIndex = (int) Math.ceil(valueIndex - binVariance);
-			if (loIndex == hiIndex) {
+			if (loIndex >= hiIndex) {
 				// use the bounding elements if bins are small
 				loIndex = (int) Math.floor(valueIndex);
 				hiIndex = (int) Math.ceil(valueIndex);
@@ -147,9 +186,9 @@ public class BinningFactory implements CacheEntryFactory {
 	 *         with an approximately equal number of values contained within.
 	 *         TODO change name to getExactEqualCountBins
 	 */
-	public static BigDecimal[] getEqualCountBins(int binCount, float[] sortedValues) {
+	public static BigDecimal[] getEqualCountBins(int binCount, Float[] sortedData) {
 
-		int totalRows = sortedValues.length;	//Total rows of data
+		int totalRows = sortedData.length;	//Total rows of data
 
 		//Number of rows 'contained' in each bin.  This likely will not come out even,
 		//so use a double to preserve the fractional rows.
@@ -161,8 +200,8 @@ public class BinningFactory implements CacheEntryFactory {
 		BigDecimal[] bins = new BigDecimal[binCount + 1];
 
 		//Assign first and last values for the bins (min and max)
-		bins[0] = new BigDecimal(sortedValues[0]);
-		bins[binCount] = new BigDecimal(sortedValues[totalRows - 1]);
+		bins[0] = new BigDecimal(sortedData[0]);
+		bins[binCount] = new BigDecimal(sortedData[totalRows - 1]);
 
 		//Assign the middle breaks so that equal numbers of values fall into each bin
 		for (int i=1; i<(binCount); i++) {
@@ -171,8 +210,8 @@ public class BinningFactory implements CacheEntryFactory {
 			double split = i * binSize;
 
 			//The bin boundary is the value contained at that row.
-			float topVal = sortedValues[(int) Math.ceil(split)];
-			float bottomVal = sortedValues[(int) Math.floor(split)];
+			float topVal = sortedData[(int) Math.ceil(split)];
+			float bottomVal = sortedData[(int) Math.floor(split)];
 
 
 			if (topVal != bottomVal) {
