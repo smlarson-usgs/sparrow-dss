@@ -93,7 +93,7 @@ public class BinningFactory implements CacheEntryFactory {
 
 		for (int r=0; r<totalRows; r++) {
 			float value = data.getFloat(r, columnIndex);
-			if (Float.POSITIVE_INFINITY != value && Float.NEGATIVE_INFINITY != value ) {
+			if (!Float.isNaN(value) && !Float.isInfinite(value)) {
 				if (value == 0F) {hasZero = true;}
 				if (isKeepZeroes || value != 0F) {
 					filteredValues.add(value);

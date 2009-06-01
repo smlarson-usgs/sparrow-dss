@@ -62,7 +62,7 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 
-	public static float[] sortedData = {-99.73f, -97.544f, -93.8991f, -86.773f, -85.1101f,
+	public static Float[] sortedData = {-99.73f, -97.544f, -93.8991f, -86.773f, -85.1101f,
 		-84.897f, -83.511f, -83.509f, -83.507f, -83.505f,
 		-83.404f, -83.403f, -78.011f, -72.555f, -71.77f,
 		-22.378f, -18.22f, -15.099f, -14.932f, -8.753f,
@@ -76,10 +76,10 @@ public class BinningFactoryTest extends TestCase {
 		.02334f, .06778f, .07112f, .08951f, .09234f,
 		.09443f, .09493f, .09512f, .09593f, .09607f,
 		.09889f, .09912f, 1.003f, 1.074f, 1.082f,
-		1.134f, 1.188f, 1.191f, 1.234f, 1.265f, 
+		1.134f, 1.188f, 1.191f, 1.234f, 1.265f,
 		1.277f, 1.341f, 1.456f, 1.567f, 1.612f,
-		1.789f, 1.834f, 1.8402f, 1.862f, 1.871f, 
-		1.888f, 1.891f, 1.899f, 1.902f, 1.905f, 
+		1.789f, 1.834f, 1.8402f, 1.862f, 1.871f,
+		1.888f, 1.891f, 1.899f, 1.902f, 1.905f,
 		1.908f, 1.911f, 1.912f, 1.913f, 1.914f,
 		1.915f, 1.977f, 2.111f, 3.445f, 5.121f
 	}; // 100 elements
@@ -119,7 +119,7 @@ public class BinningFactoryTest extends TestCase {
 		assertEquals("-5", result[1].toString());
 		assertEquals("0.01", result[2].toString());
 		assertEquals("1.3", result[3].toString());
-		assertEquals("6", result[lastIndex].toString());		
+		assertEquals("6", result[lastIndex].toString());
 	}
 
 	public void testGetEqualCountBinsOfFive() {
@@ -237,7 +237,7 @@ public class BinningFactoryTest extends TestCase {
 			System.out.println(i + ": " + result[i]);
 		}
 	}
-	
+
 	@SuppressWarnings("unused")
 	private void print(BigDecimal bd) {
 		System.out.println(bd2String(bd));
