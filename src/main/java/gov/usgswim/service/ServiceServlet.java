@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  * must be appened to the url.  For instance, if the servlet url is:
  * <code>/myservice</code>
  * To indicate that the XML has been passed as a parameter, modify the url to:
- * <code>/myservice/xmlreq</code>
+ * <code>/myservice/formpost</code>
  * Where xmlreq could be changed based on the 'xml-param-name' init parameter.
  */
 public class ServiceServlet extends HttpServlet {
