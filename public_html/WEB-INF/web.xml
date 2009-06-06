@@ -72,6 +72,12 @@
             <param-value>gov.usgswim.sparrow.service.binning.BinningPipeline</param-value>
         </init-param>
 	</servlet>
+	<servlet>
+        <servlet-name>FindReachService</servlet-name>
+        <servlet-class>gov.usgswim.sparrow.service.idbypoint.FindReachService</servlet-class>
+	</servlet>
+
+
 	<servlet-mapping>
 		<servlet-name>ModelService</servlet-name>
 		<url-pattern>/sp_model/*</url-pattern>
@@ -104,8 +110,12 @@
         <servlet-name>BinningService</servlet-name>
         <url-pattern>/sp_binning/*</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+        <servlet-name>FindReachService</servlet-name>
+        <url-pattern>/sp_findReach/*</url-pattern>
+	</servlet-mapping>
 	<!-- Attribute services  -->
-	<!-- 
+	<!--
 	<servlet-mapping>
 		<servlet-name>HucsForReachService</servlet-name>
 		<url-pattern>/sp_attrib/*</url-pattern>

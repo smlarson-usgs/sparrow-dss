@@ -17,7 +17,7 @@ import javax.xml.stream.XMLStreamReader;
 public class IDByPointRequest implements XMLStreamParserComponent, PipelineRequest {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 5107786782665328203L;
 	public static final String ID_BY_POINT_FILENAME = "idByPoint";
@@ -40,11 +40,11 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 
-	//These two are mutually exclusive 
+	//These two are mutually exclusive
 	private Integer contextID;
 	private Long modelID;
 
-	//These two are mutually exclusive 
+	//These two are mutually exclusive
 	private Point.Double point;
 	private Integer reachID;
 
@@ -114,7 +114,13 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 					if (isTargetMatch(localName)) {
 						//Nothing to do for the root element
 					} else if (CONTEXTID_CHILD.equals(localName)) {
-						this.contextID = Integer.decode( ParserHelper.parseSimpleElementValue(in) );
+						String value = ParserHelper.parseSimpleElementValue(in);
+						try {
+							this.contextID = Integer.decode( value );
+						} catch (NumberFormatException e) {
+							System.err.println(value + " is not a number");
+							throw e;
+						}
 					} else if (MODELID_CHILD.equals(localName)) {
 						modelID = Long.decode( ParserHelper.parseSimpleElementValue(in) );
 					} else if (POINT_CHILD.equals(localName)) {
@@ -221,11 +227,11 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 	}
 
 	public void setResponseFormat(ResponseFormat respFormat) {
-		this.respFormat = respFormat;		
+		this.respFormat = respFormat;
 	}
 
 	public void setXMLRequest(String request) {
-		this.xmlRequest = request;		
+		this.xmlRequest = request;
 	}
 	public Point.Double getPoint() {
 		return point;
