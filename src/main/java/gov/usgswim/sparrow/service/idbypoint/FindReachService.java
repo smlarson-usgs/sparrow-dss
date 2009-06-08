@@ -80,7 +80,7 @@ public class FindReachService extends HttpServlet {
 		try {
 			Connection conn = SharedApplication.getInstance().getConnection();
 
-			String sql = "Select model_reach_id, reach_name, meanq, catch_area, huc2, huc4, huc6, huc8 from model_attrib_vw "
+			String sql = "Select full_identifier, reach_name, meanq, catch_area, huc2, huc4, huc6, huc8 from model_attrib_vw "
 				+ "where sparrow_model_id = " + frReq.modelID
 				+ whereClause;
 			System.out.println(sql);
@@ -95,7 +95,7 @@ public class FindReachService extends HttpServlet {
 			while (rset.next()) {
 				outputXML.append("<reach>");
 				{
-					outputXML.append("<id>" + rset.getString("MODEL_REACH_ID") + "</id>");
+					outputXML.append("<id>" + rset.getString("FULL_IDENTIFIER") + "</id>");
 					outputXML.append("<name>" + rset.getString("REACH_NAME") + "</name>");
 					outputXML.append("<meanq>" + rset.getString("MEANQ") + "</meanq>");
 					//outputXML.append("<state>" + rset.getString("REACH_NAME") + "</state>");
@@ -177,7 +177,7 @@ public class FindReachService extends HttpServlet {
 				whereClause += " and HUC8 like '" + frReq.huc + "%'";
 			}
 		}
-		whereClause += " and rownum < 10";
+		whereClause += " and rownum < 100";
 		return whereClause;
 	}
 

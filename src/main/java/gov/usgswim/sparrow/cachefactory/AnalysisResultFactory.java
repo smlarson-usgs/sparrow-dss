@@ -14,25 +14,25 @@ import org.apache.log4j.Logger;
 
 /**
  * This factory class creates a PredictResult on demand for an EHCache.
- * 
+ *
  * When the cache receives a getAnalysisResult(PredictContext) call and it doesn't have a cache
  * entry for that request, the createEntry() method of this class is called
  * and the returned value is cached.
- * 
+ *
  * The basic process followed in this class is:
  * <ul>
  * <li>Run the prediction and if needed the nominal prediction by calling getPredictResult()
  * <li>Do the analysis based on the Analysis section of the PredictionContext.
  * </ul>
- * 
+ *
  * This class implements CacheEntryFactory, which plugs into the caching system
  * so that the createEntry() method is only called when a entry needs to be
  * created/loaded.
- * 
+ *
  * Caching, blocking, and de-caching are all handled by the caching system, so
  * that this factory class only needs to worry about building a new entity in
  * (what it can consider) a single thread environment.
- * 
+ *
  * @author eeverman
  *
  */
@@ -47,8 +47,8 @@ public class AnalysisResultFactory implements CacheEntryFactory {
 
 		// TODO Factor out the analysis in the use of prediction context for caching predict results
 		// context = context.clone(context.getAdjustmentGroups(), null, context.getTerminalReaches(), context.getAreaOfInterest());
-		PredictResult adjResult = SharedApplication.getInstance().getPredictResult(context);		
-		
+		PredictResult adjResult = SharedApplication.getInstance().getPredictResult(context);
+
 		// Perform transformations called for by the Analysis section
 		Analysis analysis = context.getAnalysis();
 		DataSeriesType dataSeries = analysis.getSelect().getDataSeries();
@@ -66,8 +66,8 @@ public class AnalysisResultFactory implements CacheEntryFactory {
 				break;
 			}
 			case percent: {
-
-				PredictionContext nomContext = new PredictionContext(context.getModelID(), null, null, null, null);
+				// TODO Recheck the intialization of nominal context
+				PredictionContext nomContext = new PredictionContext(context.getModelID(), null, context.getAnalysis(), context.getTerminalReaches(), context.getAreaOfInterest());
 				PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
 
 				// Check for aggregation and run if necessary
@@ -82,8 +82,8 @@ public class AnalysisResultFactory implements CacheEntryFactory {
 				break;
 			}
 			case absolute: {
-
-				PredictionContext nomContext = new PredictionContext(context.getModelID(), null, null, null, null);
+				// TODO Recheck the intialization of nominal context
+				PredictionContext nomContext = new PredictionContext(context.getModelID(), null, context.getAnalysis(), context.getTerminalReaches(), context.getAreaOfInterest());
 				PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
 
 				// Check for aggregation and run if necessary
