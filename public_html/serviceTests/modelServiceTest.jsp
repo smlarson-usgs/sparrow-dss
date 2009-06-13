@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
 	<title>Model Test</title>
-	<link rel="icon" href="../favicon.ico" >
+	<link rel="icon" href="../favicon.ico" />
 </head>
 <body>
 
@@ -27,12 +27,12 @@
 		</textarea>
 		<br/>
 		<input type="submit" name="submit" value="submit"/>
-		<input type="checkbox" name="mimetype" value="csv">csv
-		<input type="checkbox" name="mimetype" value="tab">tab
-		<input type="checkbox" name="mimetype" value="excel">excel
-		<input type="checkbox" name="mimetype" value="json">json
-		<input type="checkbox" name="compress" value="zip">zip
-		
+		<input type="checkbox" name="mimetype" value="csv"/>csv
+		<input type="checkbox" name="mimetype" value="tab"/>tab
+		<input type="checkbox" name="mimetype" value="excel"/>excel
+		<input type="checkbox" name="mimetype" value="json"/>json
+		<input type="checkbox" name="compress" value="zip"/>zip
+
 		<br/>
 		<a href="testResults/model.xml">result as of 2008-12-20</a>
 		</fieldset>

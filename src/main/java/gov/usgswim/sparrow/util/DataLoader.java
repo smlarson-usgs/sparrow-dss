@@ -26,8 +26,8 @@ import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 /**
- * Reads in data from the db to DataTable instances.
- * 
+ * Reads in data from the database to DataTable instances.
+ *
  * The methods in this class pull the SQL query strings from the associated
  * DataLoader.properties file.  The values in this file are read fresh for
  * each invocation, so updates will be visible.  Tests show that it takes
@@ -45,8 +45,8 @@ public class DataLoader {
 
 	/**
 	 * Loads only the data required to run a prediction.
-	 * 
-	 * 
+	 *
+	 *
 	 * @param conn
 	 * @param modelId
 	 * @return
@@ -75,12 +75,12 @@ public class DataLoader {
 
 	/**
 	 * Loads the complete dataset for a model (including bootstrap data).
-	 * 
+	 *
 	 * @param conn
 	 * @param modelId
 	 * @return
 	 * @throws SQLException
-	 * 
+	 *
 	 * TODO:  This should load the model as well....
 	 */
 	public static PredictData loadFullModelDataSet(Connection conn, int modelId)
@@ -101,7 +101,7 @@ public class DataLoader {
 	/**
 	 * Convenience method for returning all public, approved models and their
 	 * sources.
-	 * 
+	 *
 	 * @param conn The JDBC connection object.
 	 * @return All public, approved models and their sources.
 	 */
@@ -118,7 +118,7 @@ public class DataLoader {
 	 * {@code isPublic} = {@code true},
 	 * {@code isArchived} = {@code false}
 	 * will return models that are approved and public, but not archived.
-	 * 
+	 *
 	 * @param conn The JDBC connection object.
 	 * @param isApproved Whether or not to return approved models.
 	 * @param isPublic Whether or not to return public models.
@@ -263,7 +263,7 @@ public class DataLoader {
 	 * </ol>
 	 *
 	 * Sort by HYDSEQ then IDENTIFIER, since in some cases HYDSEQ is not unique.
-	 * [IK] the use of IDENTIFIER has no significance except to guarantee some 
+	 * [IK] the use of IDENTIFIER has no significance except to guarantee some
 	 * deterministic ordering of the results. Any other attribute would do.
 	 *
 	 * Returns a DataTable of all topo data for for a single model.
@@ -274,7 +274,7 @@ public class DataLoader {
 	 * <li>[i][3]IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
 	 * <li>[i][4]HYDSEQ - Hydrologic sequence order
 	 * </ol>
-	 * 
+	 *
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
 	 * @return Fetched data - see Data Columns above.
@@ -285,7 +285,7 @@ public class DataLoader {
 		String query = getQuery("SelectTopoData", modelId);
 
 		DataTableWritable result = readAsInteger(conn, query, 1000, 0);
-		
+
 		assert(result.hasRowIds()): "topo should have IDENTIFIER as row ids";
 		return result;
 	}
@@ -298,7 +298,7 @@ public class DataLoader {
 	 * <li>[Source Name 2...] - The coef's for the 2nd...
 	 * <li>...
 	 * </ol>
-	 * 
+	 *
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
 	 * @param iteration The iteration for which coef's should be returned.  Zero is the nominal value - all others are for bootstrapping.
@@ -350,14 +350,14 @@ public class DataLoader {
 	}
 
 	/**
-	 * Returns a DataTable of all source/reach coef's for for all iterationa of a model.
+	 * Returns a DataTable of all source/reach coef's for for all iterations of a model.
 	 * <h4>Data Columns with one row per reach (sorted by ITERATION then HYDSEQ)</h4>
 	 * <ol>
 	 * <li>[Source Name 1] - The coef's for the first source in one column
 	 * <li>[Source Name 2...] - The coef's for the 2nd...
 	 * <li>...
 	 * </ol>
-	 * 
+	 *
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
 	 * @param sources	An DataTable list of the sources for the model, in one column (see loadSource)
@@ -412,10 +412,10 @@ public class DataLoader {
 
 	/**
 	 * Returns a DataTable of all decay data for for a single model.
-	 * 
+	 *
 	 * <h4>Data Columns, sorted by HYDSEQ then IDENTIFIER</h4>
 	 * <p><i>Note:  These are actually delivery terms - that is 1/decay</i></p>
-	 * 
+	 *
 	 * <p>One row per reach (i = reach index)</p>
 	 * <ol>
 	 * <li>[0] == the instream decay at reach i.<br>
@@ -425,7 +425,7 @@ public class DataLoader {
 	 * <li>[1] == the upstream decay at reach i.<br>
 	 *   This decay is applied to the load coming from the upstream node.
 	 * </ol>
-	 * 
+	 *
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
 	 * @param iteration The iteration for which coef's should be returned.  Zero is the nominal value - all others are for bootstrapping.
@@ -452,7 +452,7 @@ public class DataLoader {
 	 * <li>[Source Name 2...] - The values for the 2nd...
 	 * <li>...
 	 * </ol>
-	 * 
+	 *
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
 	 * @param sources	An DataTable list of the sources for the model, in one column (see loadSource)
@@ -494,7 +494,7 @@ public class DataLoader {
 		Statement idsSt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		idsSt.setFetchSize(2000);
 		ResultSet idsRs = null;
-		
+
 		try {
 		    idsRs = idsSt.executeQuery(selectReachIds);
 		    for (int i = 0; idsRs.next(); i++) {
@@ -506,7 +506,7 @@ public class DataLoader {
 		        idsRs = null;
 		    }
 		}
-        
+
 		for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++) {
 			String constituent = sources.getString(srcIndex, sources.getColumnByName("CONSTITUENT"));
 			String units = sources.getString(srcIndex, sources.getColumnByName("UNITS"));
@@ -549,7 +549,7 @@ public class DataLoader {
 	 * <li>IDENTIFIER - The Model specific ID for the source (usually numbered starting w/ 1)
 	 * <li>SOURCE_ID - The DB ID for the source
 	 * </ol>
-	 * 
+	 *
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
 	 * @return	An DataTable object contains the list of source_id's in a single column
@@ -581,7 +581,7 @@ public class DataLoader {
 
 	/**
 	 * Returns metadata about the source types in the model.
-	 * 
+	 *
 	 * Typically 5-10 rows per model.
 	 *
 	 * <h4>Data Columns (sorted by SORT_ORDER)</h4>
@@ -596,7 +596,7 @@ public class DataLoader {
 	 * <li>PRECISION - (int) The number of decimal places
 	 * <li>IS_POINT_SOURCE (boolean) 'T' or 'F' values that can be mapped to boolean.
 	 * </ol>
-	 * 
+	 *
 	 * TODO:  Finish this load method and use instead of loadSourceIds.  Update
 	 * PredictData to have set/getSrcMetaData instead of srcIds.
 	 *
@@ -630,7 +630,7 @@ public class DataLoader {
 	/**
 	 * Loads a single column from the resultSet source to the destination DataTable.
 	 * For consistency, the from and to columns are ZERO INDEXED in both cases.
-	 * 
+	 *
 	 * @param source Resultset to load the data from.  The resultset is assumed to be before the first row.
 	 * @param dest The destination DataTable
 	 * @param fromCol The column (zero indexed) in the resultset to load from
@@ -655,9 +655,9 @@ public class DataLoader {
 
 	/**
 	 * Creates an unindexed DataTable from the passed query.
-	 * 
+	 *
 	 * All values in the source must be convertable to an integer.
-	 * 
+	 *
 	 * @param conn	A connection to use for the query
 	 * @param query The query to run
 	 * @param fetchSize Number of rows returned per fetch - use large values (1000+ for queries w/ few columns)
@@ -670,9 +670,9 @@ public class DataLoader {
 
 	/**
 	 * Creates an DataTable from the passed query with an optional index.
-	 * 
+	 *
 	 * All values in the source must be convertable to an integer.
-	 * 
+	 *
 	 * @param conn	A connection to use for the query
 	 * @param query The query to run
 	 * @param fetchSize Number of rows returned per fetch - use large values (1000+ for queries w/ few columns)
@@ -701,9 +701,9 @@ public class DataLoader {
 
 	/**
 	 * Creates an unindexed DataTable from the passed resultset.
-	 * 
+	 *
 	 * All values in the source must be convertable to an integer.
-	 * 
+	 *
 	 * @param source
 	 * @return
 	 * @throws SQLException
@@ -714,9 +714,9 @@ public class DataLoader {
 
 	/**
 	 * Creates a DataTable from the passed resultset with an optional index.
-	 * 
+	 *
 	 * All values in the source must be convertable to an integer.
-	 * 
+	 *
 	 * @param source
 	 * @param indexCol A valid column index or -1 to indicate no index
 	 * @return
@@ -725,7 +725,7 @@ public class DataLoader {
 	public static DataTableWritable readAsInteger(ResultSet source, int indexCol) throws SQLException {
 
 		ArrayList<int[]> list = new ArrayList<int[]>(500);
-		String[] headings = null;		
+		String[] headings = null;
 
 		headings = readHeadings(source.getMetaData());
 		int colCount = headings.length; //Number of columns
@@ -761,9 +761,9 @@ public class DataLoader {
 
 	/**
 	 * Creates a DataTable from the passed query.
-	 * 
+	 *
 	 * All values in the source must be convertable to a double.
-	 * 
+	 *
 	 * @param conn	A connection to use for the query
 	 * @param query The query to run
 	 * @param fetchSize Number of rows returned per fetch - use large values (1000+ for queries w/ few columns)
@@ -791,9 +791,9 @@ public class DataLoader {
 
 	/**
 	 * Creates a DataTable from the passed resultset.
-	 * 
+	 *
 	 * All values in the source must be convertable to a double.
-	 * 
+	 *
 	 * @param source
 	 * @return
 	 * @throws SQLException
@@ -846,12 +846,12 @@ public class DataLoader {
 
 	/**
 	 * Loads the named query and inserts the named values passed in params.
-	 * 
+	 *
 	 * params are passed in serial pairs as {"name1", "value1", "name2", "value2"}.
 	 * toString is called on each item, so it is OK to pass in autobox numerics.
 	 * See the DataLoader.properties file for the names of the parameters available
 	 * for the requested query.
-	 * 
+	 *
 	 * @param name	Name of the query in the properties file
 	 * @param params	An array of name and value objects to replace in the query.
 	 * @return
@@ -872,10 +872,10 @@ public class DataLoader {
 
 	/**
 	 * Loads the named query and inserts the model ID
-	 * 
+	 *
 	 * This is a simplified version of getQuery(String name, String[] params) for
 	 * the common case where the only parameter is the modelID.
-	 * 
+	 *
 	 * @param name	Name of the query in the properties file
 	 * @param modelId The ID of the model.
 	 * @return

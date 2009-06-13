@@ -19,6 +19,7 @@ import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
 public class FindReachRequest implements XMLStreamParserComponent{
 	private static final String MAIN_ELEMENT_NAME = "sparrow-reach-request";
 	public String modelID;
+	public String reachID;
 	public String reachName;
 	public String meanQLo, meanQHi;
 	public String basinAreaLo, basinAreaHi;
@@ -52,6 +53,13 @@ public class FindReachRequest implements XMLStreamParserComponent{
 		return true;
 	}
 
+	public boolean isEmptyRequest() {
+		return (reachID == null) && (reachName == null)
+				&& (meanQHi == null && meanQLo == null)
+				&& (basinAreaHi == null && basinAreaLo == null)
+				&& (huc == null);
+	}
+
 	//==================
 	//PUBLIC CONSTRUCTOR
 	//==================
@@ -82,7 +90,9 @@ public class FindReachRequest implements XMLStreamParserComponent{
 					} else if ("model-id".equals(localName)) {
 						modelID = ParserHelper.parseSimpleElementValue(in);
 					} else if ("match-query".equals(localName)) {
-						// don't do antyhing
+						// don't do anything
+					} else if ("reach-id".equals(localName)) {
+						reachID = ParserHelper.parseSimpleElementValue(in);
 					} else if ("reach-name".equals(localName)) {
 						reachName = ParserHelper.parseSimpleElementValue(in);
 					} else if ("meanQHi".equals(localName)) {

@@ -5,10 +5,10 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
     <title>Request Test</title>
-    <link rel="icon" href="favicon.ico" >
+    <link rel="icon" href="favicon.ico" />
   </head>
   <body>
-		
+
 		<form action="sp_predict/formpost" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Prediction Request 1">
 				<label for="xml_input_1">Prediction Request 1</label>
@@ -20,7 +20,7 @@
 &lt;sparrow-prediction-request
   xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
-	
+
 	&lt;predict model-id="22"&gt;
 		&lt;change-from-nominal type="perc_change"&gt;
 			&lt;source-adjustments&gt;
@@ -31,7 +31,7 @@
 			&lt;/source-adjustments&gt;
 		&lt;/change-from-nominal&gt;
 	&lt;/predict&gt;
-	
+
 	&lt;response-options&gt;
 		&lt;result-filter&gt;
 			&lt;near-point result-count="5"&gt;
@@ -42,18 +42,18 @@
 			&lt;data-series&gt;incremental&lt;/data-series&gt;
 		&lt;/result-content&gt;
 	&lt;/response-options&gt;
-	
+
 &lt;/sparrow-prediction-request&gt;
 				</textarea>
 				<input type="submit" name="submit" value="submit"/>
-				<input type="checkbox" name="mimetype" value="csv">csv
-				<input type="checkbox" name="mimetype" value="tab">tab
-				<input type="checkbox" name="mimetype" value="excel">excel
-				<input type="checkbox" name="mimetype" value="json">json
-				<input type="checkbox" name="compress" value="zip">zip
+				<input type="checkbox" name="mimetype" value="csv"/>csv
+				<input type="checkbox" name="mimetype" value="tab"/>tab
+				<input type="checkbox" name="mimetype" value="excel"/>excel
+				<input type="checkbox" name="mimetype" value="json"/>json
+				<input type="checkbox" name="compress" value="zip"/>zip
 			</fieldset>
 		</form>
-		
+
 		<form action="sp_predict/formpost" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Prediction Request 2">
 				<label for="xml_input_2">Prediction Request 2</label>
@@ -68,7 +68,7 @@
 &lt;sparrow-prediction-request
   xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
-	
+
 	&lt;predict model-id="1"&gt;
 		&lt;change-from-nominal type="perc_change"&gt;
 			&lt;source-adjustments&gt;
@@ -77,7 +77,7 @@
 			&lt;/source-adjustments&gt;
 		&lt;/change-from-nominal&gt;
 	&lt;/predict&gt;
-	
+
 	&lt;response-options&gt;
 		&lt;result-filter&gt;
 			&lt;near-point result-count="5"&gt;
@@ -88,19 +88,19 @@
 			&lt;data-series&gt;all&lt;/data-series&gt;
 		&lt;/result-content&gt;
 	&lt;/response-options&gt;
-	
+
 &lt;/sparrow-prediction-request&gt;
 				</textarea>
 				<input type="submit" name="submit" value="submit"/>
-				<input type="checkbox" name="mimetype" value="csv">csv
-				<input type="checkbox" name="mimetype" value="tab">tab
-				<input type="checkbox" name="mimetype" value="excel">excel
-				<input type="checkbox" name="mimetype" value="json">json
+				<input type="checkbox" name="mimetype" value="csv"/>csv
+				<input type="checkbox" name="mimetype" value="tab"/>tab
+				<input type="checkbox" name="mimetype" value="excel"/>excel
+				<input type="checkbox" name="mimetype" value="json"/>json
 
-				<input type="checkbox" name="compress" value="zip">zip
+				<input type="checkbox" name="compress" value="zip"/>zip
 			</fieldset>
 		</form>
-		
+
 		<form action="sp_predict/formpost" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="Prediction Request 3">
 				<label for="xml_input_3">Prediction Request 3</label>
@@ -113,7 +113,7 @@
 &lt;sparrow-prediction-request
   xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&gt;
-	
+
 	&lt;predict model-id="1"&gt;
 		&lt;change-from-nominal type="perc_change"&gt;
 			&lt;source-adjustments&gt;
@@ -122,7 +122,7 @@
 			&lt;/source-adjustments&gt;
 		&lt;/change-from-nominal&gt;
 	&lt;/predict&gt;
-	
+
 	&lt;response-options&gt;
 		&lt;result-filter&gt;
 			&lt;near-point result-count="5"&gt;
@@ -133,17 +133,17 @@
 			&lt;data-series&gt;incremental&lt;/data-series&gt;
 		&lt;/result-content&gt;
 	&lt;/response-options&gt;
-	
+
 &lt;/sparrow-prediction-request&gt;
 				</textarea>
 				<input type="submit" name="submit" value="submit"/>
-				<input type="checkbox" name="mimetype" value="csv">csv
-				<input type="checkbox" name="mimetype" value="tab">tab
-				<input type="checkbox" name="mimetype" value="excel">excel
-				<input type="checkbox" name="mimetype" value="json">json
-				<input type="checkbox" name="compress" value="zip">zip
+				<input type="checkbox" name="mimetype" value="csv"/>csv
+				<input type="checkbox" name="mimetype" value="tab"/>tab
+				<input type="checkbox" name="mimetype" value="excel"/>excel
+				<input type="checkbox" name="mimetype" value="json"/>json
+				<input type="checkbox" name="compress" value="zip"/>zip
 			</fieldset>
 		</form>
-		
+
 	</body>
 </html>
