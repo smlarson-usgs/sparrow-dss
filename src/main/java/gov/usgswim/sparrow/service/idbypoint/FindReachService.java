@@ -70,7 +70,8 @@ public class FindReachService extends HttpServlet {
 
 				String sql = "Select full_identifier, reach_name, meanq, catch_area, huc2, huc4, huc6, huc8 from model_attrib_vw "
 					+ "where sparrow_model_id = " + frReq.modelID
-					+ whereClause;
+					+ whereClause
+					+ " order by reach_name";
 				System.out.println(sql);
 				Statement stmt = conn.createStatement();
 				ResultSet rset = stmt.executeQuery(sql);
@@ -209,7 +210,7 @@ public class FindReachService extends HttpServlet {
 	public String createFindReachWhereClause(FindReachRequest frReq) {
 		String whereClause = "";
 		if (frReq.reachID != null) {
-			// TODO
+			whereClause += " and identifier=" + frReq.reachID;
 		}
 		if (frReq.reachName != null) {
 			whereClause += " and UPPER(reach_name) like '%" + frReq.reachName.toUpperCase() + "%' ";

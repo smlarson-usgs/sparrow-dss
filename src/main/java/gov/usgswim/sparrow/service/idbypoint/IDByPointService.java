@@ -38,9 +38,12 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.log4j.Logger;
 
+/**
+ * @author ilinkuo
+ */
 @ThreadSafe
 public class IDByPointService implements HttpService<IDByPointRequest> {
-	
+
 	// =============
 	// STATIC FIELDS
 	// =============
@@ -55,14 +58,14 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 	/** Resource path to the properties file for this service. */
 	private static final String PROP_FILE = "gov/usgswim/sparrow/service/idbypoint/IDByPointServiceTemplate.properties";
-	
+
 	/** They promise these factories are threadsafe */
 	@SuppressWarnings("unused")
 	private static Object factoryLock = new Object();
-	
+
 	/** protected static XMLInputFactory xinFact */
 	protected static XMLOutputFactory xoFact;
-	
+
 	// =====================
 	// PUBLIC STATIC METHODS
 	// =====================
@@ -70,7 +73,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	 * Returns the percentage difference between {@code newVal} and {@code oldVal}
 	 * with respect to {@code oldVal}.  In other words, this method returns the
 	 * percentage that {@code oldVal} has changed.
-	 * 
+	 *
 	 * @param newVal The new value.
 	 * @param oldVal The old value.
 	 * @return The percentage difference between {@code newVal} and {@code oldVal}.
@@ -111,7 +114,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		IDByPointResponse response = new IDByPointResponse();
         response.modelID = populateModelID(req);
         assert(response.modelID != null);
-    
+
         // Retrieve the reach
 		ReachInfo reach = retrieveReach(req, response);
 		if (reach != null) {
@@ -127,7 +130,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	        if (req.hasPredicted()) {
 	            response.predictionsXML = retrievePredictedsForReach(req.getContextID(), req.getModelID(), Long.valueOf(response.reachID));
 	        }
-	        
+
 	        response.statusOK = true;
 		} else {
 		    response.statusOK = false;
@@ -139,7 +142,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 		return reader;
 	}
-	
+
 	public void shutDown() {
 		xoFact = null;
 	}
@@ -159,10 +162,10 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	private Long populateModelID(IDByPointRequest req) throws Exception {
 		if (req.getContextID() != null) {
 			PredictionContext context = SharedApplication.getInstance().getPredictionContext(req.getContextID());
-			if (context == null) throw new RuntimeException("Prediction Context with id " 
+			if (context == null) throw new RuntimeException("Prediction Context with id "
 					+ req.getContextID() + " has not been registered. Perhaps the server has been restarted?");
 			if (req.getModelID() != null && !req.getModelID().equals(context.getModelID())) {
-				throw new RuntimeException("Mismatched model-ids, prediction-context: " + context.getModelID() 
+				throw new RuntimeException("Mismatched model-ids, prediction-context: " + context.getModelID()
 						+ ", request: " + req.getModelID());
 			}
 			return context.getModelID();
@@ -172,10 +175,10 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			throw new RuntimeException("A context-id or a model-id is required for a id request");
 		}
 	}
-	
+
 	/**
 	 * Populates the adjustments section in the {@code response}.
-	 * 
+	 *
 	 * @param contextId The prediction context id.
 	 * @param req The service request object.
 	 * @param response The service response object.
@@ -196,18 +199,18 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		AdjustmentGroups adjGroups = context.getAdjustmentGroups();
 		adjGroups = (adjGroups == null) ? new AdjustmentGroups(context.getModelID()) : adjGroups;
 		DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(adjGroups);
-		
+
 		// Build the xml fragment for the reach's adjustment data
 		response.adjustmentsXML = buildAdjustment(nomPredictData, adjSrc, context.getModelID(), response.reachID, adjGroups);
 	}
-	
+
 	/**
 	 * Returns an XML fragment consisting of the adjustment data for the
 	 * specified reach.  The adjustment data includes original values and
 	 * adjusted values for each source in the given model.  Metadata for each
 	 * source is also included with this fragment which includes name,
 	 * constituent, units, and precision.
-	 * 
+	 *
 	 * @param predictData The original (nominal) data set for the current
 	 *                    prediction context.
 	 * @param adjSrc The adjusted data set for the current prediction context.
@@ -219,13 +222,13 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	 */
 	private String buildAdjustment(PredictData predictData, DataTable adjSourceData,
 	        Long modelId, Long reachId, AdjustmentGroups adjGroups) throws Exception {
-	    
+
 	    // Retrieve the data tables for the original data and the source metadata
 	    // Note that the adjusted data is already in the correct format
 		DataTable origSourceData = predictData.getSrc();
 		DataTable sourceMetadata = predictData.getSrcMetadata();
 		assert(sourceMetadata.getRowCount() == origSourceData.getColumnCount());
-		
+
 		// Get the row index in the original data for the reach we're identifying
 		int rowID = predictData.getRowForReachID(reachId);
 
@@ -234,11 +237,11 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		Integer constituentCol = sourceMetadata.getColumnByName("CONSTITUENT");
 		Integer unitsCol = sourceMetadata.getColumnByName("UNITS");
 		Integer precisionCol = sourceMetadata.getColumnByName("PRECISION");
-		
+
 		// Build each row of the adjustment
 		StringBuilder adjustmentRows = new StringBuilder();
 		for (int j = 0; j < sourceMetadata.getRowCount(); j++) {
-		    
+
 		    // Pull the source's metadata
             Long sourceId = sourceMetadata.getIdForRow(j);
             String sourceName = sourceMetadata.getString(j, displayNameCol);
@@ -251,7 +254,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
             Double overrideValue = getOverrideValue(adjGroups, reachId, sourceId);
             String override = (overrideValue == null) ? "" : formatter.format(overrideValue);
 			Double adjValue = adjSourceData.getDouble(rowID, j);
-			
+
 			// Put together the XML string - columns for metadata and data
 			adjustmentRows.append("<r id=\"").append(sourceId).append("\">");
 			{
@@ -275,12 +278,12 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 		return xmlResult;
 	}
-	
+
 	/**
 	 * Returns the user-supplied override value for the specified source and
 	 * reach if it exists.  If an override value has not been specified by the
 	 * user, this method returns null.
-	 * 
+	 *
 	 * @param adjGroups The adjustment groups section of the prediction context.
 	 * @param reachId The reach we're identifying.
 	 * @param sourceId The source for which to search for an override.
@@ -288,7 +291,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	 */
     private Double getOverrideValue(AdjustmentGroups adjGroups, long reachId, Long sourceId) {
         ReachGroup individualGroup = adjGroups.getIndividualGroup();
-        
+
         // Iterate over the reaches and sources in the individual group
         if (individualGroup != null && individualGroup.isEnabled()) {
             List<ReachElement> reachList = individualGroup.getExplicitReaches();
@@ -311,7 +314,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
     /**
      * Returns an XML fragment representing the prediction results for the
      * specified reach.
-     * 
+     *
      * @param contextId Id for the prediction context on which to base the
      *                  prediction results.
      * @param modelId Id for the model supplying the base data values.
@@ -323,12 +326,12 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		// TODO move to DataLoader when done debugging
 		PredictionContext nominalPredictionContext = null;
 		PredictResult adjustedPrediction = null;
-		
+
 		if (contextId != null) {
 			// Get a nominal (unadjusted) prediction context using the model id
 			PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(contextId);
             nominalPredictionContext = new PredictionContext(contextFromCache.getModelID(), null, null, null, null);
-            
+
             // Get the adjusted prediction results
 			adjustedPrediction = SharedApplication.getInstance().getPredictResult(contextFromCache);
 		} else {
@@ -336,13 +339,13 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		}
 		// Get the nominal prediction results
 		PredictResult nominalPrediction = SharedApplication.getInstance().getPredictResult(nominalPredictionContext);
-		
+
 		// Build each section of the predicted result - incremental and total
 		String incrementalContribution = buildPredSection(nominalPrediction,
 		        adjustedPrediction, reachId, incremental, "Incremental Contribution Values", "inc");
 		String totalContribution = buildPredSection(nominalPrediction,
 		        adjustedPrediction, reachId, total, "Total (Measurable) Values", "inc");
-		
+
         // Retrieve the response template and insert the data we just built
 		String[] params = {
             "rowCount", "" + nominalPrediction.getColumnCount(),
@@ -350,13 +353,13 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
             "totalContribution", totalContribution
 		};
 		String xmlResult = props.getText("predictedXMLResponse", params);
-		
+
 		return xmlResult;
 	}
 
 	/**
 	 * Builds a section of the prediction results XML using the {@code type}.
-	 * 
+	 *
 	 * @param nominalPrediction The unadjusted results.
 	 * @param adjustedPrediction The adjusted results.
 	 * @param reachId The reach we're identifying.
@@ -369,7 +372,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	private String buildPredSection(PredictResult nominalPrediction,
 	        PredictResult adjustedPrediction, Long reachId, ValueType type,
 	        String display, String name) {
-	    
+
 		if (nominalPrediction == null || reachId == null || reachId == 0) {
 		    return "";
 		}
@@ -377,13 +380,13 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		String isTotalVal = AggregateType.sum.name();
 		List<Integer> relevantColumns = new ArrayList<Integer>();
 		Integer totalColumn = null;
-		
+
 		// Collect all the relevant column indices, as indicated by matching VALUE_TYPE and AGGREGATE_TYPE
 		for (int j = 0; j < nominalPrediction.getColumnCount(); j++) {
 			boolean isDesiredType = typeName.equals(nominalPrediction.getProperty(j, PredictResult.VALUE_TYPE_PROP));
 			String aggType = nominalPrediction.getProperty(j, PredictResult.AGGREGATE_TYPE_PROP);
 			boolean isTotal = (aggType != null ) && isTotalVal.equals(aggType);
-			
+
 			if (isDesiredType) {
 				if (isTotal) {
 					totalColumn = j;
@@ -392,22 +395,22 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				}
 			}
 		}
-		
+
 		// Assume adjustedPrediction has same Column structure and rows in same order.
 		// Otherwise, we'll have to rewrite the following code.
 		assert((adjustedPrediction == null) ||
 				(	nominalPrediction.getRowCount() == adjustedPrediction.getRowCount()
 						&& nominalPrediction.getColumnCount() == adjustedPrediction.getColumnCount())):
 							"Assume adjustedPrediction has same column structure and rows in same order";
-				
+
 		// Add root element for the section
 		StringBuilder predictRows = new StringBuilder();
 		predictRows.append("<section display=\"").append(display);
 		predictRows.append("\" name=\"").append(name).append("\">\n");
-		
+
 		// Get the row index from the original data for the reach we're identifying
         int rowID = nominalPrediction.getRowForId(reachId);
-        
+
         // Iterate over the relevant column indices, building a row of data for each
 		for (Integer j : relevantColumns) {
 		    // Calculate and format all of the data
@@ -417,17 +420,17 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			String precision = nominalPrediction.getProperty(j, PredictResult.PRECISION_PROP);
             Double nominalValue = nominalPrediction.getDouble(rowID, j);
             String nominalDisplay = (nominalValue == null)? "N/A": formatter.format(nominalValue);
-            
+
             String predictDisplay = "N/A";
             String percentDisplay = "";
             if (adjustedPrediction != null && adjustedPrediction.getString(rowID, j) != null) {
                 Double predictValue = Double.valueOf(adjustedPrediction.getDouble(rowID, j));
                 Double percentChange = calculatePercentageChange(predictValue, nominalValue);
-                
+
                 predictDisplay = formatter.format(predictValue);
                 percentDisplay = formatter.format(percentChange);
             }
-			
+
             // Put together the XML string for the predicted values
             predictRows.append("<r>");
             {
@@ -441,7 +444,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
             }
             predictRows.append("</r>");
 		}
-		
+
 		// Add a row for the total for this section
 		// TODO: (with predicted)
         String columnName = nominalPrediction.getName(totalColumn);
@@ -453,11 +456,11 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
         if (adjustedPrediction != null && adjustedPrediction.getString(rowID, totalColumn) != null) {
             Double predictValue = Double.valueOf(adjustedPrediction.getDouble(rowID, totalColumn));
             Double percentChange = calculatePercentageChange(predictValue, nominalValue);
-            
+
             predictDisplay = formatter.format(predictValue);
             percentDisplay = formatter.format(percentChange);
         }
-		
+
         // Put together the XML string for the totaled row
 		predictRows.append("<r>");
 		{
@@ -477,7 +480,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 	/**
 	 * Populates the attributes section in the {@code response}.
-	 * 
+	 *
 	 * @param req The service request object.
 	 * @param response The service response object.
 	 */
@@ -490,7 +493,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
             "ModelID", Long.toString(response.modelID),
 	    };
 		String attributesQuery = props.getText("attributesSQL", queryParams);
-		
+
 		DataTableWritable attributes = SharedApplication.queryToDataTable(attributesQuery);
 		// TODO [IK] This 4 is hardcoded for now. Have to go back and use SparrowModelProperties to do properly
 		response.sparrowAttributes = new FilteredDataTable(attributes, new ColumnRangeFilter(0, 4)); // first four columns
@@ -500,20 +503,20 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		StringBuilder sparrowAttributesSection = toSection(response.sparrowAttributes, "SPARROW Attributes", "sparrow_attrib");
 
 		// attributesXMLResponse
-		response.attributesXML = props.getText("attributesXMLResponse", 
+		response.attributesXML = props.getText("attributesXMLResponse",
 				new String[] {
 				"AttributesCount", Integer.toString(attributes.getColumnCount()),
 				"BasicAttributes", basicAttributesSection.toString(),
 				"SparrowAttributes", sparrowAttributesSection.toString(),
 		});
-		
+
 		// TODO: Create a combo XMLStreamReader to enable several streamreader
 		// to be assembled sequentially, using hasNext to query. This makes the
 		// pieces combineable.
 	}
 
 	/**
-	 * 
+	 *
 	 * @param basicAttributes
 	 * @param display
 	 * @param name
@@ -548,7 +551,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		}
 		return sb;
 	}
-	
+
 
 
 }

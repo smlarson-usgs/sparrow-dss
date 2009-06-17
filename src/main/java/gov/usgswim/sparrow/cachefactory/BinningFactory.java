@@ -339,8 +339,9 @@ public class BinningFactory implements CacheEntryFactory {
 //		double maxValue = data.getMaxDouble(columnIndex);
 		double minValue = 0;
 		double maxValue = 0;
+
 		{
-			float[] sortedValues = DataTableUtils.extractSortedValues(data, columnIndex);
+			float[] sortedValues = DataTableUtils.extractSortedValues(data, columnIndex, false);
 			minValue = sortedValues[0];
 			maxValue = sortedValues[sortedValues.length - 1];
 		}
