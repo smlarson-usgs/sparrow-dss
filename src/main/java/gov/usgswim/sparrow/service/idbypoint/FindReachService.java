@@ -68,8 +68,9 @@ public class FindReachService extends HttpServlet {
 			try {
 				Connection conn = SharedApplication.getInstance().getConnection();
 
-				String sql = "Select full_identifier, reach_name, meanq, catch_area, huc2, huc4, huc6, huc8 from model_attrib_vw "
-					+ "where sparrow_model_id = " + frReq.modelID
+				String sql = "Select full_identifier, reach_name, meanq, catch_area, huc2, huc4, huc6, huc8 from model_attrib_vw a "
+					+ ((frReq.boundingBox == null)? "": "join model_geom_vw g on a.sparrow_model_id = g.sparrow_model_id and a.identifier = g.identifier ")
+					+ "where a.sparrow_model_id = " + frReq.modelID
 					+ whereClause
 					+ " order by reach_name";
 				System.out.println(sql);
@@ -149,6 +150,7 @@ public class FindReachService extends HttpServlet {
 		frReq.meanQLo = trimToNull(frReq.meanQLo);
 		frReq.reachName = trimToNull(frReq.reachName);
 		frReq.huc = trimToNull(frReq.huc);
+		frReq.boundingBox = trimToNull(frReq.boundingBox);
 		{	// clean each field
 			frReq.reachID = cleanForSQLInjection(frReq.reachID);
 			frReq.huc = cleanForSQLInjection(frReq.huc);
@@ -167,6 +169,7 @@ public class FindReachService extends HttpServlet {
 		}
 		errors = checkHiLo(errors, frReq.basinAreaHi, frReq.basinAreaLo, "catch area");
 		errors = checkHiLo(errors, frReq.meanQHi, frReq.meanQLo, "catch area");
+		// TODO check bbox
 		return errors;
 	}
 
@@ -236,7 +239,13 @@ public class FindReachService extends HttpServlet {
 				whereClause += " and HUC8 like '" + frReq.huc + "%'";
 			}
 		}
-		whereClause += " and rownum < 1000";
+		{	// bounding box
+			if (frReq.boundingBox != null) {
+				whereClause += " and SDO_FILTER(reach_geom, SDO_GEOMETRY(2003, 8307, NULL, SDO_ELEM_INFO_ARRAY(1,1003,3), SDO_ORDINATE_ARRAY("
+					+ frReq.boundingBox + "))) = 'TRUE' ";
+			}
+		}
+		whereClause += " and rownum <= 1000";
 		return whereClause;
 	}
 

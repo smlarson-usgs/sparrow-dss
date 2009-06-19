@@ -25,6 +25,7 @@ public class FindReachRequest implements XMLStreamParserComponent{
 	public String basinAreaLo, basinAreaHi;
 	public String state;
 	public String huc;
+	public String boundingBox;
 
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
@@ -107,6 +108,8 @@ public class FindReachRequest implements XMLStreamParserComponent{
 						huc = ParserHelper.parseSimpleElementValue(in);
 					} else if ("reach-name".equals(localName)) {
 						reachName = ParserHelper.parseSimpleElementValue(in);
+					} else if ("bbox".equals(localName)) {
+						boundingBox = ParserHelper.parseSimpleElementValue(in);
 					} else if ("content".equals(localName) || "response-format".equals(localName)) {
 						// ignoring for now
 						ParserHelper.ignoreElement(in);
@@ -117,20 +120,10 @@ public class FindReachRequest implements XMLStreamParserComponent{
 				case END_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
-//						respFormat = (respFormat == null)? makeDefaultResponseFormat(null): respFormat;
-//						if  (respFormat.fileName == null) {
-//							respFormat.fileName = ID_BY_POINT_FILENAME;
-//						}
-//						checkValidity();
+
 						return this; // we're done
 					}
-//					else if (CONTENT_CHILD.equals(localName)) {
-//						//ignore - just a container element
-//					} else {
-//						// otherwise, error
-//						throw new RuntimeException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);
-//					}
-					//break;
+					break;
 			}
 		}
 		throw new RuntimeException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
