@@ -213,7 +213,7 @@ public class FindReachService extends HttpServlet {
 	public String createFindReachWhereClause(FindReachRequest frReq) {
 		String whereClause = "";
 		if (frReq.reachID != null) {
-			whereClause += " and identifier=" + frReq.reachID;
+			whereClause += " and full_identifier=" + frReq.reachID;
 		}
 		if (frReq.reachName != null) {
 			whereClause += " and UPPER(reach_name) like '%" + frReq.reachName.toUpperCase() + "%' ";
