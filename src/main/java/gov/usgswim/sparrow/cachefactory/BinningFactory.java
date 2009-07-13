@@ -354,7 +354,7 @@ public class BinningFactory implements CacheEntryFactory {
 		BigDecimal bdBinWidth = null;
 
 		if (useRounding) {
-			double maxAllowableRangeExpansion = Math.min(.1, 1/(3*binCount)); // allow to expand by 10% or 1/3 of a bin, whichever is less
+			double maxAllowableRangeExpansion = Math.min(.1, 1.0/(3.0*binCount)); // allow to expand by 10% or 1/3 of a bin, whichever is less
 			bdBinWidth = round(binWidth, binWidth, (1 + maxAllowableRangeExpansion) * binWidth); // round up by at most maxAllowableRangeExpansion
 			double totalRangeDiff = bdBinWidth.doubleValue() * binCount - (maxValue - minValue); // expansion in size of total range.
 			BigDecimal binsMinValue = round(minValue, minValue - totalRangeDiff, minValue); // round down by at most diff
