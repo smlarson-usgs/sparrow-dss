@@ -17,35 +17,30 @@ import com.meterware.servletunit.ServletUnitClient;
 
 
 public class FindReachServiceTest {
-	String sampleResponse="<sparrow-reach-response xmlns=\"http://www.usgs.gov/sparrow/id-response-schema/v0_2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" model-id=\"22\">"
-		+ "    <status>OK</status>"
-		+ "   	<reach>"
-		+ "      	<id>3541</id>"
-		+ "        <name>WESTERN RUN</name>"
-		+ "		<meanq>1234</meanq>"
-		+ "		<state>WI</state>"
-		+ "		"
-		+ "		<cumulative-catch-area>2345</cumulative-catch-area>"
-		+ "        <bbox min-long=\"-76.840216\" min-lat=\"39.492299\" max-long=\"-76.626801\" max-lat=\"39.597698\" marker-long=\"-76.7584575\" marker-lat=\"39.505502\" />"
-		+ "        <hucs>"
-		+ "            <huc8 id=\"02060003\" name=\"GUNPOWDER-PATAPSCO\" />"
-		+ "            <huc6 id=\"020600\" name=\"UPPER CHESAPEAKE\" />"
-		+ "            <huc4 id=\"0206\" name=\"UPPER CHESAPEAKE\" />"
-		+ "            <huc2 id=\"02\" name=\"MID ATLANTIC\" />"
-		+ "        </hucs>"
-		+ "        "
-		+ "        <!-- would contain attributes and predicted if specified-->"
-		+ "		<!-- <attributes/> -->"
-		+ "		<!-- <predicted/> -->"
-		+ "   	</reach>"
+	String sampleResponse = "<sparrow-reach-response xmlns=\"http://www.usgs.gov/sparrow/id-response-schema/v0_2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" model-id=\"22\">"
+		+ "	<status>OK</status>"
+		+ "	<reach>"
+		+ "		<id>3541</id>"
+		+ "		<name>WESTERN RUN</name>"
+		+ "		<meanq>90.6125</meanq>"
+		+ "		<catch-area>234</catch-area>"
+		+ "		<hucs>"
+		+ "			<huc8 id=\"02060003\" name=\"\"/>"
+		+ "			<huc6 id=\"020600\" name=\"\"/>"
+		+ "			<huc4 id=\"0206\" name=\"\"/>"
+		+ "			<huc2 id=\"02\" name=\"\"/>"
+		+ "		</hucs>"
+		+ "	</reach>"
 		+ "</sparrow-reach-response>";
+
+
 
 	String sampleRequest = "<sparrow-reach-request"
 		+ "  xmlns=\"http://www.usgs.gov/sparrow/id-point-request/v0_2\""
 		+ "	xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
 		+ "	<model-id>22</model-id>"
 		+ "	<match-query>"
-		+ "		<reach-name>wolf</reach-name>"
+		+ "		<reach-name>WESTERN RUN</reach-name>"
 		+ "		<meanQHi>123400</meanQHi>"
 		+ "		<meanQLo>1</meanQLo>"
 		+ "		<catch-area-hi>2345</catch-area-hi>"
@@ -77,8 +72,17 @@ public class FindReachServiceTest {
 		assertTrue(response != null);
 
 		assertTrue(response.getText() != null);
-		assertEquals(sampleResponse, response.getText());
+		System.out.println(response.getText());
+		System.out.println(stripWhiteSpace(response.getText()));
+		System.out.println(sampleResponse);
+		System.out.println(stripWhiteSpace(sampleResponse));
+		assertEquals(stripWhiteSpace(sampleResponse), stripWhiteSpace(response.getText()));
 
 		assertEquals("text/xml", response.getContentType());
+	}
+
+
+	public static String stripWhiteSpace(String value) {
+		return value.replaceAll("\\s", "");
 	}
 }

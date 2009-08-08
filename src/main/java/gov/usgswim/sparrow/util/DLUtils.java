@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package gov.usgswim.sparrow.util;
 
@@ -213,16 +213,12 @@ public class DLUtils{
 			int colCount = headings.length; //Number of columns
 
 			while (source.next()){
-
-
 				int[] row = new int[colCount];
 
 				for (int i=1; i<=colCount; i++) {
 					row[i - 1] = source.getInt(i);
 				}
-
 				list.add(row);
-
 			}
 
 
@@ -243,13 +239,13 @@ public class DLUtils{
 	public static String[] readHeadings(ResultSetMetaData meta) throws SQLException {
 		int count = meta.getColumnCount();
 		String[] headings = new String[count];
-	
+
 		for (int i=1; i<=count; i++) {
 			headings[i - 1] = meta.getColumnName(i);
 		}
-	
+
 		return headings;
-	
+
 	}
 
 }

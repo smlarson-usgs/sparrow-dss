@@ -21,7 +21,6 @@
 
 		<xslt in="${dist.dir}/WEB-INF/conf/mapViewerConfig.xml.tmp" out="${dist.dir}/WEB-INF/conf/mapViewerConfig.xml" style="${support.ant}/ns-datasource-merge.xsl" />
 		<echo message="mapViewerConfig.xml merged"/>
-		<!-- TODO add a step to merge connection info from server.xml of local TOMCAT_HOME install -->
 		<xslt in="${dist.dir}/WEB-INF/web.xml.tmp" out="${dist.dir}/WEB-INF/web.xml" style="${support.ant}/web-xml-merge.xsl">
 			<param name="includeFile" expression="../${build.web.dir}/WEB-INF/web.xml" />
 		</xslt>
@@ -32,7 +31,7 @@
             <fileset dir="${build.web.dir}" includes="WEB-INF/classes/**/*"/>
 		    <fileset dir="${build.web.dir}" includes="**/*.jar" excludes="**/mvclient.jar **/sdovis.jar **/commons*.jar" />
 		</war>
-		
+
 		<!-- create war for local use  -->
 		<copy file="${dist.dir}/sparrow_mv.war" tofile="${dist.dir}/sparrow_mv_local.war"/>
 		<war destfile="${dist.dir}/sparrow_mv_local.war" update="true">
@@ -44,10 +43,11 @@
             </fileset>
 		    <fileset dir="${build.web.dir}" includes="**/*.jar" excludes="**/mvclient.jar **/sdovis.jar **/commons*.jar" />
 		</war>
-		
+		<!--
 		<delete includeemptydirs="true">
 			<fileset dir="${dist.dir}" excludes="**/*.war **/javadoc/**/*" />
 		</delete>
+		-->
 	</target>
 
     <!-- <target name="-post-init" depends="check-init"/> -->
