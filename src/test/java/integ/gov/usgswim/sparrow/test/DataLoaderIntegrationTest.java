@@ -10,6 +10,7 @@ import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.util.DataLoader;
+import gov.usgswim.sparrow.util.DataLoaderOfflineTest;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;

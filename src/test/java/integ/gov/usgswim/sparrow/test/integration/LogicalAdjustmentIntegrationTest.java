@@ -6,14 +6,14 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.parser.PredictionContextTest;
 import gov.usgswim.sparrow.parser.ReachGroup;
+import gov.usgswim.sparrow.parser.ReachGroupTest;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 import gov.usgswim.sparrow.test.TestHelper;
-import gov.usgswim.sparrow.test.parsers.PredictionContextTest;
-import gov.usgswim.sparrow.test.parsers.ReachGroupTest;
 
 import java.io.StringReader;
 import java.util.List;

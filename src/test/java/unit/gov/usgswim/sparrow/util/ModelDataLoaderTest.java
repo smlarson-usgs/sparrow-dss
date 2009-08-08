@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.test.loader;
+package gov.usgswim.sparrow.util;
 
 import gov.usgswim.sparrow.loader.ModelDataAssumptions;
 import gov.usgswim.sparrow.loader.ModelDataLoader;
@@ -13,25 +13,25 @@ import org.junit.Ignore;
 
 @Ignore
 public class ModelDataLoaderTest extends TestCase {
-	static File baseDir = new File("C:\\Documents and Settings\\ilinkuo\\Desktop\\Decision_support_files_sediment\\sparrow_ds_sediment");
+	static public File baseDir = new File("C:\\Documents and Settings\\ilinkuo\\Desktop\\Decision_support_files_sediment\\sparrow_ds_sediment");
 	static File verificationDir = new File(baseDir.getAbsolutePath() + "/vOutput" );
-	
+
 //	public void testDeleteAll() throws IOException {
 //		File modelMetadata = new File(baseDir.getAbsolutePath() + "/model_metadata.txt");
 //		ModelDataLoader.deleteModel(ModelDataAssumptions.MODEL_ID, modelMetadata);
 //	}
-//	
+//
 //	public void testInsertModelMetadata() throws IOException {
 //		File modelMetadata = new File(baseDir.getAbsolutePath() + "/model_metadata.txt");
 //		ModelDataLoader.insertModelMetadata(ModelDataAssumptions.MODEL_ID, modelMetadata);
 //	}
-//	
+//
 //	public void testInsertSources() throws IOException {
 //		File sourceMetadata = new File(baseDir.getAbsolutePath() + "/src_metadata.txt");
 //		ModelDataLoader.insertSources(ModelDataAssumptions.MODEL_ID, sourceMetadata);
 //	}
-//	
-	
+//
+
 	public void testInsertReaches() throws IOException, SQLException {
 		File topoData = new File(baseDir.getAbsolutePath() + "/topo.txt");
 		File ancillaryData = new File(baseDir.getAbsolutePath() + "/ancil.txt");
@@ -56,7 +56,7 @@ public class ModelDataLoaderTest extends TestCase {
 //		ModelDataLoader.insertSourceReachCoefs(conn, ModelDataAssumptions.MODEL_ID, coefData, sourceMetadata, ancillaryData);
 //		conn.close();
 //	}
-//	
+//
 //	public void testInsertSourceValues() throws IOException, SQLException {
 //		File ancillaryData = new File(baseDir.getAbsolutePath() + "/ancil.txt");
 //		File sourceValuesData = new File(baseDir.getAbsolutePath() + "/src.txt");
@@ -66,9 +66,9 @@ public class ModelDataLoaderTest extends TestCase {
 //		ModelDataLoader.insertSourceValues(conn, ModelDataAssumptions.MODEL_ID, sourceValuesData, sourceMetadata, ancillaryData);
 //		conn.close();
 //	}
-	
 
-	
+
+
 /*
 	public void testAddPrefixAndCapitalize() {
 		fail("Not yet implemented");

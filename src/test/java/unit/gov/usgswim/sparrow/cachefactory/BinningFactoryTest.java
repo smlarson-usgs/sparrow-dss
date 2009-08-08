@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.test.cachefactory;
+package gov.usgswim.sparrow.cachefactory;
 
 import java.math.BigDecimal;
 

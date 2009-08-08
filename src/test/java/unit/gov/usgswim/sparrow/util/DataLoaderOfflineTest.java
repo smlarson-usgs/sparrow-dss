@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.test;
+package gov.usgswim.sparrow.util;
 
 import gov.usgswim.sparrow.util.DataLoader;
 

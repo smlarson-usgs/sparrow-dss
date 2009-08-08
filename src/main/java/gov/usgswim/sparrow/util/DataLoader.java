@@ -62,7 +62,7 @@ public class DataLoader {
 			dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcMetadata()) );
 
 		} catch (Exception e) {
-			log.error(DataLoader.class.getSimpleName() + ".loadMinimalPredictDataSet() failed with error:", e);
+			log.error(DataLoader.class.getSimpleName() + ".loadModelDataOnly() failed with error:", e);
 		} finally {
 			SharedApplication.closeConnection(conn, null);
 		}

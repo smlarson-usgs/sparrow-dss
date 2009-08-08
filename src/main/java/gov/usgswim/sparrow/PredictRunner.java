@@ -178,18 +178,12 @@ public class PredictRunner implements Runner {
 		 */
 
 		int rchValColCount = (sourceCount * 2) + 2;
-		double incReachContribution[][] = null;
-
-
-
-		incReachContribution = new double[reachCount][rchValColCount];
+		double incReachContribution[][] = new double[reachCount][rchValColCount];
 
 		/*
 		 * Array of accumulated values at nodes
 		 */
 		double upstreamNodeContribution[][] = new double[nodeCount][sourceCount];
-
-
 
 
 		// Iterate over all reaches

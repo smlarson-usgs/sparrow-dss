@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.test.parsers;
+package gov.usgswim.sparrow.parser;
 
 import javax.xml.stream.XMLInputFactory;
 

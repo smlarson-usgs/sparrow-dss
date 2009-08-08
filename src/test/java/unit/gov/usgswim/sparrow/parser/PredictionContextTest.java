@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.test.parsers;
+package gov.usgswim.sparrow.parser;
 
 import static gov.usgswim.sparrow.test.TestHelper.getAttributeValue;
 import static gov.usgswim.sparrow.test.TestHelper.pipeDispatch;

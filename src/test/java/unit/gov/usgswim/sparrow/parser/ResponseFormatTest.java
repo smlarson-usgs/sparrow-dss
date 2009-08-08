@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.test.parsers;
+package gov.usgswim.sparrow.parser;
 
 import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgswim.sparrow.parser.ResponseFormat;

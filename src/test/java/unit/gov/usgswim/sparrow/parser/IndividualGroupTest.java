@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.test.parsers;
+package gov.usgswim.sparrow.parser;
 
 import gov.usgswim.sparrow.parser.Adjustment;
 import gov.usgswim.sparrow.parser.IndividualGroup;

@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.test.parsers;
+package gov.usgswim.sparrow.parser;
 
 import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.test.TestHelper;

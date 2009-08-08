@@ -5,6 +5,7 @@ import static gov.usgswim.sparrow.loader.ModelDataLoadComparison.outputSourceVal
 import static gov.usgswim.sparrow.loader.ModelDataLoadComparison.outputTopoAsTextFile;
 import gov.usgswim.sparrow.loader.ModelDataAssumptions;
 import gov.usgswim.sparrow.loader.ModelDataLoader;
+import gov.usgswim.sparrow.util.ModelDataLoaderTest;
 
 import java.io.File;
 import java.io.IOException;

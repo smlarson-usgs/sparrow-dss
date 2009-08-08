@@ -7,12 +7,12 @@ import static gov.usgswim.sparrow.test.TestHelper.readToString;
 import static gov.usgswim.sparrow.test.TestHelper.setElementValue;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.parser.PredictionContextTest;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointPipeline;
 import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 import gov.usgswim.sparrow.test.TestHelper;
-import gov.usgswim.sparrow.test.parsers.PredictionContextTest;
 
 import java.io.InputStream;
 
