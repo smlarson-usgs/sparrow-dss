@@ -1,9 +1,12 @@
-package gov.usgswim.sparrow.util;
+package gov.usgswim.sparrow.deprecated;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.util.DLUtils;
+import gov.usgswim.sparrow.util.LoadTestRunner;
+import gov.usgswim.sparrow.util.SparrowSchemaConstants;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -24,7 +27,6 @@ import org.apache.log4j.Logger;
  */
 public abstract class JDBCUtil {
 	protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
-	public static int DO_NOT_INDEX = -1;
 
 	public JDBCUtil() {
 	}
@@ -56,7 +58,7 @@ public abstract class JDBCUtil {
 		String rmSource = "DELETE FROM " + SparrowSchemaConstants.SPARROW_SCHEMA + ".SOURCE WHERE SOURCE_ID = ?";
 		PreparedStatement rmSourceStmt = null;
 
-		DataTableWritable srcIds = DataLoader.readAsInteger(conn, listSourceIds, 100);
+		DataTableWritable srcIds = DLUtils.readAsInteger(conn, listSourceIds, 100);
 
 		//Delete each source (Cascades to lots of related data)
 		try {
@@ -112,7 +114,7 @@ public abstract class JDBCUtil {
 
 	}
 
-	
+
 	public static void write(ResultSet rs, FileWriter fw) throws SQLException, IOException {
 		while (rs.next()) {
 			String row = "";
@@ -123,14 +125,14 @@ public abstract class JDBCUtil {
 			fw.write(row);
 		}
 	}
-	
+
 	/**
 	 * Loads all the model reach in the passed PredictionDataSet into the
 	 * SPARROW_DSS.MODEL_REACH table.
-	 * 
+	 *
 	 * A Map is returned that maps the reach identifier (the key) to the database
 	 * MODEL_REACH_ID from the MODEL_REACH table.  Both values are Integer's.
-	 * 
+	 *
 	 * @param data
 	 * @param conn
 	 * @param batchSize
@@ -150,16 +152,16 @@ public abstract class JDBCUtil {
 		int stdIdNotMatched = 0;	//Number of reaches where the STD_ID is assigned, but not matched.
 
 		//Queries and PreparedStatements
-		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM " + SparrowSchemaConstants.NETWORK_SCHEMA + ".ENH_REACH WHERE ENH_NETWORK_ID = " 
+		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM " + SparrowSchemaConstants.NETWORK_SCHEMA + ".ENH_REACH WHERE ENH_NETWORK_ID = "
 			+ data.getModel().getEnhNetworkId().longValue();
 		Map<Integer, Integer> enhIdMap = buildIntegerMap(conn, enhReachQuery);
 
 		String insertReachStr = "INSERT INTO " + SparrowSchemaConstants.SPARROW_SCHEMA + ".MODEL_REACH (IDENTIFIER, FULL_IDENTIFIER, HYDSEQ, IFTRAN, ENH_REACH_ID, SPARROW_MODEL_ID)"
-			+ " VALUES (?,?,?,?,?," + data.getModel().getId().longValue() + ")";                 
+			+ " VALUES (?,?,?,?,?," + data.getModel().getId().longValue() + ")";
 		PreparedStatement insertReach = conn.prepareStatement(insertReachStr);
 
-		String selectAllReachesQuery = "SELECT IDENTIFIER, MODEL_REACH_ID FROM " + SparrowSchemaConstants.NETWORK_SCHEMA + ".MODEL_REACH WHERE SPARROW_MODEL_ID = " 
-			+ data.getModel().getId();	
+		String selectAllReachesQuery = "SELECT IDENTIFIER, MODEL_REACH_ID FROM " + SparrowSchemaConstants.NETWORK_SCHEMA + ".MODEL_REACH WHERE SPARROW_MODEL_ID = "
+			+ data.getModel().getId();
 
 		// ERROR: TODO: should be MODEL_REACH, as MODEL_REACH_TOPO should be deleted from schema.
 		String insertReachTopoStr = "INSERT INTO " + SparrowSchemaConstants.NETWORK_SCHEMA + ".MODEL_REACH_TOPO (MODEL_REACH_ID, FNODE, TNODE, IFTRAN) VALUES (?,?,?,?)";
@@ -297,13 +299,13 @@ public abstract class JDBCUtil {
 	/**
 	 * Loads all the model reach in the passed PredictionDataSet into the
 	 * SPARROW_DSS.MODEL_REACH table.
-	 * 
+	 *
 	 * A Map is returned that maps the source identifier (the key) to the database
 	 * SOURCE_ID from the SOURCE table.  Both values are Integer's.
 	 * The source IDENTIFIER is 1 based, and follows the column order of the
 	 * sources in the text file.  So, the first source column has an identifier
 	 * of 1 and so on.
-	 * 
+	 *
 	 * @param data
 	 * @param conn
 	 * @return
@@ -363,16 +365,16 @@ public abstract class JDBCUtil {
 	/**
 	 * Turns a query that returns two columns into a Map<Integer, Integer>.
 	 * The first column is used as the key, the second column is used as the value.
-	 * 
+	 *
 	 * TODO [IK] refactor this into DataTableUtils. This method is the last dependency on JDBCUtil
-	 * 
+	 *
 	 * @param conn
 	 * @param query
 	 * @return
 	 * @throws SQLException
 	 */
 	public static Map<Integer, Integer> buildIntegerMap(Connection conn, String query) throws SQLException {
-		DataTableWritable data = DataLoader.readAsInteger(conn, query, 1000);
+		DataTableWritable data = DLUtils.readAsInteger(conn, query, 1000);
 		int rows = data.getRowCount();
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>((int)(rows * 1.2), 1f);
 
@@ -432,7 +434,7 @@ public abstract class JDBCUtil {
 		}
 
 		//
-		//Named columns                    
+		//Named columns
 
 		//Ancil columns - really just need the local id.
 		int localIdIndexAnc = ancil.getColumnByName("local_id");
@@ -601,7 +603,7 @@ public abstract class JDBCUtil {
 					int curSourceDbId = -1;	//DB ID of the current source
 					for (int curSourceIndex = 0; curSourceIndex < modelSourceCnt; curSourceIndex++) {
 						curSourceId = curSourceIndex + 1;	//source ids are 1 based
-						curSourceDbId = sourceDbIdMap.get(curSourceId); 
+						curSourceDbId = sourceDbIdMap.get(curSourceId);
 
 						srcValue.setDouble(1, src.getDouble(curRowIndex,curSourceIndex));  //value
 						srcValue.setInt(2, curSourceDbId);  //source_id
@@ -637,6 +639,6 @@ public abstract class JDBCUtil {
 
 		return modelRowCnt;
 	}
-	
+
 
 }

@@ -29,7 +29,7 @@ public class PredictDataFactory implements CacheEntryFactory {
 		Connection conn = SharedApplication.getInstance().getConnection();
 		
 		try {
-			result = DataLoader.loadMinimalPredictDataSet(conn, id.intValue()).toImmutable();
+			result = DataLoader.loadModelDataOnly(conn, id.intValue()).toImmutable();
 		} finally {
 			SharedApplication.closeConnection(conn, null);
 		}

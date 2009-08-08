@@ -42,7 +42,7 @@ public class ModelDataLoadComparison {
 		//int modelIdInt = modelID.intValue();
 
 		{// write src
-			DataTableWritable sourceMetadata = DataLoader.loadSrcMetadata(conn, modelID);
+			DataTableWritable sourceMetadata = DataLoader.loadSourceMetadata(conn, modelID);
 			DataTable source = DataLoader.loadSourceValues(conn, modelID, sourceMetadata);
 			if (baseOutputDirectory.exists() && baseOutputDirectory.isDirectory()) {
 				File srcOutFile = ModelDataLoadComparison.getOutputSrcFile(baseOutputDirectory);
@@ -59,7 +59,7 @@ public class ModelDataLoadComparison {
 		//int modelIdInt = modelID.intValue();
 
 		{// write coef
-			DataTableWritable sourceMetadata = DataLoader.loadSrcMetadata(conn, modelID);
+			DataTableWritable sourceMetadata = DataLoader.loadSourceMetadata(conn, modelID);
 			DataTable coef = DataLoader.loadSourceReachCoef(conn, modelID, sourceMetadata);
 			if (baseOutputDirectory.exists() && baseOutputDirectory.isDirectory()) {
 				File topoOutFile = ModelDataLoadComparison.getOutputCoefFile(baseOutputDirectory);

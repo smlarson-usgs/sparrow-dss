@@ -8,7 +8,7 @@ import static gov.usgswim.sparrow.loader.ModelDataAssumptions.IS_POINT_SOURCE_DE
 import static gov.usgswim.sparrow.loader.ModelDataAssumptions.useDefaultIfUnavailable;
 import static gov.usgswim.sparrow.loader.ModelDataAssumptions.useDefaultPrecisionIfUnavailable;
 import static gov.usgswim.sparrow.loader.ModelDataAssumptions.useNameForDisplayNameIfUnavailable;
-import gov.usgswim.sparrow.util.JDBCUtil;
+import gov.usgswim.sparrow.deprecated.JDBCUtil;
 import gov.usgswim.sparrow.util.SparrowSchemaConstants;
 
 import java.io.BufferedReader;

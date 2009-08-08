@@ -52,7 +52,7 @@ public class ModelService implements HttpService<ModelRequest> {
 		Connection conn = getConnection();
 		List<ModelBuilder> models = null;
 		try {
-			models = DataLoader.loadModelMetaData(conn, o.isApproved(), o.isPublic(), o.isArchived(), o.isSources());
+			models = DataLoader.loadModelsMetaData(conn, o.isApproved(), o.isPublic(), o.isArchived(), o.isSources());
 		} finally {
 			SharedApplication.closeConnection(conn, null);
 		}

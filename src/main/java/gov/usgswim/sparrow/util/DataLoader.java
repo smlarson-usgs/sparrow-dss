@@ -14,13 +14,10 @@ import gov.usgswim.sparrow.service.SharedApplication;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -52,14 +49,13 @@ public class DataLoader {
 	 * @return
 	 * @throws SQLException
 	 */
-	//TODO This should be renamed 'loadMinimalModelDataSet'
-	public static PredictData loadMinimalPredictDataSet(Connection conn, int modelId)
+	public static PredictData loadModelDataOnly(Connection conn, int modelId)
 	throws SQLException,
 	IOException {
 		PredictDataBuilder dataSet = new PredictDataBuilder();
 		try {
 
-			dataSet.setSrcMetadata( loadSrcMetadata(conn, modelId));
+			dataSet.setSrcMetadata( loadSourceMetadata(conn, modelId));
 			dataSet.setTopo( loadTopo(conn, modelId) );
 			dataSet.setCoef( loadSourceReachCoef(conn, modelId, 0, dataSet.getSrcMetadata()) );
 			dataSet.setDecay( loadDecay(conn, modelId, 0) );
@@ -83,13 +79,13 @@ public class DataLoader {
 	 *
 	 * TODO:  This should load the model as well....
 	 */
-	public static PredictData loadFullModelDataSet(Connection conn, int modelId)
+	public static PredictData loadModelAndBootstrapData(Connection conn, int modelId)
 	throws SQLException,
 	IOException {
 
 		PredictDataBuilder dataSet = new PredictDataBuilder();
 
-		dataSet.setSrcMetadata( loadSrcMetadata(conn, modelId));
+		dataSet.setSrcMetadata( loadSourceMetadata(conn, modelId));
 		dataSet.setTopo( loadTopo(conn, modelId) );
 		dataSet.setCoef( loadSourceReachCoef(conn, modelId, dataSet.getSrcMetadata()) );
 		dataSet.setDecay( loadDecay(conn, modelId, 0) );
@@ -105,9 +101,9 @@ public class DataLoader {
 	 * @param conn The JDBC connection object.
 	 * @return All public, approved models and their sources.
 	 */
-	public static List<ModelBuilder> loadModelMetaData(Connection conn)
+	public static List<ModelBuilder> loadModelsMetaData(Connection conn)
 	throws SQLException, IOException {
-		return loadModelMetaData(conn, true, true, false, true);
+		return loadModelsMetaData(conn, true, true, false, true);
 	}
 
 	/**
@@ -126,7 +122,7 @@ public class DataLoader {
 	 * @param getSources Whether or not to attach the model's sources.
 	 * @return All models that meet the specified criteria.
 	 */
-	public static List<ModelBuilder> loadModelMetaData(Connection conn,
+	public static List<ModelBuilder> loadModelsMetaData(Connection conn,
 			boolean isApproved, boolean isPublic, boolean isArchived,
 			boolean getSources) throws SQLException, IOException {
 
@@ -229,28 +225,6 @@ public class DataLoader {
 	}
 
 
-	/**
-	 * Turns a query that returns two columns into a Map<Integer, Integer>.
-	 * The first column is used as the key, the second column is used as the value.
-	 * @param conn
-	 * @param query
-	 * @return
-	 * @throws SQLException
-	 */
-	private static Map<Integer, Integer> buildIntegerMap(Connection conn, String query) throws SQLException {
-		DataTableWritable data = readAsInteger(conn, query, 1000);
-		int rows = data.getRowCount();
-		Map<Integer, Integer> map = new HashMap<Integer, Integer>((int)(rows * 1.2), 1f);
-
-		for (int r = 0; r < rows; r++)  {
-			map.put(
-					new Integer(data.getInt(r, 0)),
-					new Integer(data.getInt(r, 1))
-			);
-		}
-
-		return map;
-	}
 
 
 	/**
@@ -284,7 +258,7 @@ public class DataLoader {
 	IOException {
 		String query = getQuery("SelectTopoData", modelId);
 
-		DataTableWritable result = readAsInteger(conn, query, 1000, 0);
+		DataTableWritable result = DLUtils.readAsInteger(conn, query, 1000, 0);
 
 		assert(result.hasRowIds()): "topo should have IDENTIFIER as row ids";
 		return result;
@@ -334,7 +308,7 @@ public class DataLoader {
 
 				rs = st.executeQuery(query);
 				sourceReachCoef.addColumn(new StandardNumberColumnDataWritable<Double>());
-				loadColumn(rs, sourceReachCoef, 0, srcIndex);
+				DLUtils.loadColumn(rs, sourceReachCoef, 0, srcIndex);
 
 			} finally {
 				if (rs != null) {
@@ -395,7 +369,7 @@ public class DataLoader {
 
 				rs = st.executeQuery(query);
 				sourceReachCoef.addColumn(new StandardNumberColumnDataWritable<Double>());
-				loadColumn(rs, sourceReachCoef, 0, srcIndex);
+				DLUtils.loadColumn(rs, sourceReachCoef, 0, srcIndex);
 
 			} finally {
 				if (rs != null) {
@@ -439,7 +413,7 @@ public class DataLoader {
 				"ModelId", modelId, "Iteration", iteration
 		});
 
-		return readAsDouble(conn, query, 2000);
+		return DLUtils.readAsDouble(conn, query, 2000);
 
 	}
 
@@ -528,7 +502,7 @@ public class DataLoader {
 				sourceValue.addColumn(column);
 
 				rs = st.executeQuery(query);
-				loadColumn(rs, sourceValue, 0, srcIndex);
+				DLUtils.loadColumn(rs, sourceValue, 0, srcIndex);
 			} finally {
 				if (rs != null) {
 					rs.close();
@@ -541,43 +515,6 @@ public class DataLoader {
 		return sourceValue;
 
 	}
-
-	/**
-	 * Returns a single column DataTable of all source IDs for a single model.
-	 * <h4>Data Columns (sorted by SORT_ORDER)</h4>
-	 * <ol>
-	 * <li>IDENTIFIER - The Model specific ID for the source (usually numbered starting w/ 1)
-	 * <li>SOURCE_ID - The DB ID for the source
-	 * </ol>
-	 *
-	 * @param conn	A JDBC Connection to run the query on
-	 * @param modelId	The ID of the Sparrow model
-	 * @return	An DataTable object contains the list of source_id's in a single column
-	 * @throws SQLException
-	 */
-	//	public static DataTableWritable loadSourceIds(Connection conn, long modelId) throws SQLException,
-	//	IOException {
-	//
-	//		String query = getQuery("SelectSourceIds", modelId);
-	//
-	//		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-	//		st.setFetchSize(1000);
-	//
-	//		ResultSet rs = null;
-	//
-	//		try {
-	//
-	//			rs = st.executeQuery(query);
-	//			return readAsInteger(rs, DO_NOT_INDEX);
-	//
-	//		} finally {
-	//			if (rs != null) {
-	//				rs.close();
-	//				rs = null;
-	//			}
-	//		}
-	//	}
-
 
 	/**
 	 * Returns metadata about the source types in the model.
@@ -606,7 +543,7 @@ public class DataLoader {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public static DataTableWritable loadSrcMetadata(Connection conn, long modelId)
+	public static DataTableWritable loadSourceMetadata(Connection conn, long modelId)
 	throws SQLException, IOException {
 
 		String query = getQuery("SelectSourceData", modelId);
@@ -625,224 +562,6 @@ public class DataLoader {
 			}
 		}
 	}
-
-
-	/**
-	 * Loads a single column from the resultSet source to the destination DataTable.
-	 * For consistency, the from and to columns are ZERO INDEXED in both cases.
-	 *
-	 * @param source Resultset to load the data from.  The resultset is assumed to be before the first row.
-	 * @param dest The destination DataTable
-	 * @param fromCol The column (zero indexed) in the resultset to load from
-	 * @param toCol The column (zero indexed) in the DataTable to load to
-	 * @throws SQLException
-	 */
-	public static void loadColumn(ResultSet source, DataTableWritable dest, int fromCol, int toCol) throws SQLException {
-
-		fromCol++;		//covert to ONE base index
-		int currentRow = 0;
-
-		while (source.next()){
-
-			Double d = source.getDouble(fromCol);
-			dest.setValue(d, currentRow,  toCol);
-			currentRow++;
-
-		}
-
-	}
-
-
-	/**
-	 * Creates an unindexed DataTable from the passed query.
-	 *
-	 * All values in the source must be convertable to an integer.
-	 *
-	 * @param conn	A connection to use for the query
-	 * @param query The query to run
-	 * @param fetchSize Number of rows returned per fetch - use large values (1000+ for queries w/ few columns)
-	 * @return
-	 * @throws SQLException
-	 */
-	public static DataTableWritable readAsInteger(Connection conn, String query, int fetchSize) throws SQLException {
-		return readAsInteger(conn, query, fetchSize, DO_NOT_INDEX);
-	}
-
-	/**
-	 * Creates an DataTable from the passed query with an optional index.
-	 *
-	 * All values in the source must be convertable to an integer.
-	 *
-	 * @param conn	A connection to use for the query
-	 * @param query The query to run
-	 * @param fetchSize Number of rows returned per fetch - use large values (1000+ for queries w/ few columns)
-	 * @param indexCol A valid column index or -1 to indicate no index
-	 * @return
-	 * @throws SQLException
-	 */
-	public static DataTableWritable readAsInteger(Connection conn, String query, int fetchSize, int indexCol) throws SQLException {
-		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		st.setFetchSize(fetchSize);
-
-		ResultSet rs = null;
-
-		try {
-
-			rs = st.executeQuery(query);
-			return readAsInteger(rs, indexCol);
-
-		} finally {
-			if (rs != null) {
-				rs.close();
-				rs = null;
-			}
-		}
-	}
-
-	/**
-	 * Creates an unindexed DataTable from the passed resultset.
-	 *
-	 * All values in the source must be convertable to an integer.
-	 *
-	 * @param source
-	 * @return
-	 * @throws SQLException
-	 */
-	public static DataTableWritable readAsInteger(ResultSet source) throws SQLException {
-		return readAsInteger(source, DO_NOT_INDEX);
-	}
-
-	/**
-	 * Creates a DataTable from the passed resultset with an optional index.
-	 *
-	 * All values in the source must be convertable to an integer.
-	 *
-	 * @param source
-	 * @param indexCol A valid column index or -1 to indicate no index
-	 * @return
-	 * @throws SQLException
-	 */
-	public static DataTableWritable readAsInteger(ResultSet source, int indexCol) throws SQLException {
-
-		ArrayList<int[]> list = new ArrayList<int[]>(500);
-		String[] headings = null;
-
-		headings = readHeadings(source.getMetaData());
-		int colCount = headings.length; //Number of columns
-
-		while (source.next()){
-
-
-			int[] row = new int[colCount];
-
-			for (int i=1; i<=colCount; i++) {
-				row[i - 1] = source.getInt(i);
-			}
-
-			list.add(row);
-
-		}
-
-
-		//copy the array list to a int[][] array
-		int[][] data = new int[list.size()][];
-		for (int i = 0; i < data.length; i++)  {
-			data[i] = list.get(i);
-		}
-
-		DataTableWritable result = new SimpleDataTableWritable(data, headings, indexCol);
-//		if (indexCol > DO_NOT_INDEX) {
-//			result.buildIndex(indexCol);
-//		}
-
-		return result;
-	}
-
-
-	/**
-	 * Creates a DataTable from the passed query.
-	 *
-	 * All values in the source must be convertable to a double.
-	 *
-	 * @param conn	A connection to use for the query
-	 * @param query The query to run
-	 * @param fetchSize Number of rows returned per fetch - use large values (1000+ for queries w/ few columns)
-	 * @return
-	 * @throws SQLException
-	 */
-	public static DataTableWritable readAsDouble(Connection conn, String query, int fetchSize) throws SQLException {
-		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		st.setFetchSize(fetchSize);
-
-		ResultSet rs = null;
-
-		try {
-
-			rs = st.executeQuery(query);
-			return readAsDouble(rs);
-
-		} finally {
-			if (rs != null) {
-				rs.close();
-				rs = null;
-			}
-		}
-	}
-
-	/**
-	 * Creates a DataTable from the passed resultset.
-	 *
-	 * All values in the source must be convertable to a double.
-	 *
-	 * @param source
-	 * @return
-	 * @throws SQLException
-	 */
-	public static DataTableWritable readAsDouble(ResultSet source) throws SQLException {
-
-		ArrayList<double[]> list = new ArrayList<double[]>(500);
-		String[] headings = null;
-
-		headings = readHeadings(source.getMetaData());
-		int colCount = headings.length; //Number of columns
-
-		while (source.next()){
-
-
-			double[] row = new double[colCount];
-
-			for (int i=1; i<=colCount; i++) {
-				row[i - 1] = source.getDouble(i);
-			}
-
-			list.add(row);
-
-		}
-
-
-		//copy the array list to a double[][] array
-		double[][] data = new double[list.size()][];
-		for (int i = 0; i < data.length; i++)  {
-			data[i] = list.get(i);
-		}
-
-		DataTableWritable result = new SimpleDataTableWritable(data, headings);
-
-		return result;
-	}
-
-	private static String[] readHeadings(ResultSetMetaData meta) throws SQLException {
-		int count = meta.getColumnCount();
-		String[] headings = new String[count];
-
-		for (int i=1; i<=count; i++) {
-			headings[i - 1] = meta.getColumnName(i);
-		}
-
-		return headings;
-
-	}
-
 
 	/**
 	 * Loads the named query and inserts the named values passed in params.

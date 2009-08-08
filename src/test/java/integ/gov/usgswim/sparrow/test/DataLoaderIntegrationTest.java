@@ -123,7 +123,7 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 
 	// ======================================================
 	public void testReadModelMetadata() throws Exception {
-		List<ModelBuilder> models = DataLoader.loadModelMetaData(conn);
+		List<ModelBuilder> models = DataLoader.loadModelsMetaData(conn);
 
 		Model m = models.get(0);
 		Source s1 = m.getSource(1);	//get by identifier

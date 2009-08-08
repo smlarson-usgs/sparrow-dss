@@ -32,7 +32,7 @@ public class PredictDatasetComputable implements Computable<Long, PredictData> {
 			long startTime = System.currentTimeMillis();
 			log.debug("Begin loading predict data for model #" + modelId);
 
-			data = DataLoader.loadMinimalPredictDataSet(conn, modelId.intValue());
+			data = DataLoader.loadModelDataOnly(conn, modelId.intValue());
 
 			log.debug("End loading predict data for model #" + modelId + "  Time: " + (System.currentTimeMillis() - startTime) + "ms");
 

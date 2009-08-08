@@ -139,7 +139,7 @@ public class JDBCUtilMemoryIntegrationTest extends TestCase {
 		System.out.println("======= Testing loadFullModelDataSet Components Memory Usage =======");
 		ObjectFactory sourceIDFactory = new ObjectFactory() {
 			public Object makeObject() throws SQLException, IOException {
-				return DataLoader.loadSrcMetadata(conn, modelId);
+				return DataLoader.loadSourceMetadata(conn, modelId);
 			}
 		};
 		
@@ -187,7 +187,7 @@ public class JDBCUtilMemoryIntegrationTest extends TestCase {
 		
 		ObjectFactory fullModelDataSetFactory = new ObjectFactory() {
 			public Object makeObject() throws SQLException, IOException {
-				return DataLoader.loadFullModelDataSet(conn, modelId);
+				return DataLoader.loadModelAndBootstrapData(conn, modelId);
 			}
 		};
 		

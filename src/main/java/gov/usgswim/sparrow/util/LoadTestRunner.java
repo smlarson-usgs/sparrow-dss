@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.util;
 
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
+import gov.usgswim.sparrow.deprecated.JDBCUtil;
 import gov.usgswim.sparrow.domain.Model;
 import gov.usgswim.sparrow.domain.ModelBuilder;
 

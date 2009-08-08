@@ -6,7 +6,7 @@ import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.PredictDatasetComputable;
-import gov.usgswim.sparrow.util.DataLoader;
+import gov.usgswim.sparrow.util.DLUtils;
 import gov.usgswim.task.Computable;
 
 import java.sql.Connection;
@@ -25,7 +25,7 @@ import org.apache.log4j.Logger;
  * be found 'nearby'*, the number of rows can be less and can be zero rows.
  *
  * *'nearby' is defined arbitrarily to improve database responsiveness.
- * 
+ *
  * By implementing Computable, this task can be put in a ComputableCache, which
  * executes the task if the result does not already exist.
  */
@@ -53,7 +53,7 @@ public class IDByPointComputable implements Computable<IDByPointRequest_old, Dat
 			}
 
 			//Load the data
-			DataTableWritable load = DataLoader.readAsInteger(conn, query, 100);
+			DataTableWritable load = DLUtils.readAsInteger(conn, query, 100);
 
 			//data has reach IDs in the first column and distances in the 2nd.
 			//Convert to reachIDs as actual IDs and distance in the first column
@@ -61,7 +61,7 @@ public class IDByPointComputable implements Computable<IDByPointRequest_old, Dat
 //			DataTable view = new FilteredDataTable(data, 1, 1);	//Create view of only 2nd column (column 1)
 //			int[][] intData = view.getIntData();	//Grab the data array of the view's data
 //			data = SimpleDataTableWritable(new Int2DImm(intData, view.getHeadings(), -1, ids);
-			
+
 			SimpleDataTableWritable result = new SimpleDataTableWritable();
 			data = result;
 			result.addColumn(new StandardNumberColumnDataWritable<Integer>(load.getName(1), null));
