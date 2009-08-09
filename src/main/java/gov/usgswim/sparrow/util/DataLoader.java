@@ -4,7 +4,9 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
+import gov.usgswim.datatable.impl.StandardStringColumnDataWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
+import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.domain.ModelBuilder;
@@ -36,8 +38,21 @@ public class DataLoader {
 	protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
 	public static int DO_NOT_INDEX = -1;
 	public static final int SOURCE_ID_COL = 0;
+	public static final DataTable modelIndex = initModelIndex();
+
 
 	public DataLoader() {
+	}
+
+	/**
+	 * Loads an index of model aliases and ids from the file system.
+	 * @return
+	 */
+	static DataTable initModelIndex() {
+		DataTableWritable table = new SimpleDataTableWritable()
+			.addColumn(new StandardStringColumnDataWritable("modelName", null))
+			.addColumn(new StandardStringColumnDataWritable("modelID", null));
+		return DataTableUtils.fill(table, "models/modelIndex.txt", false, "\t", true);
 	}
 
 	/**
@@ -262,6 +277,18 @@ public class DataLoader {
 
 		assert(result.hasRowIds()): "topo should have IDENTIFIER as row ids";
 		return result;
+	}
+
+	public static DataTableWritable loadTopo(long modelId) throws SQLException,
+	IOException {
+		String modelFolder = "models/" + modelId + "/";
+		String topoFolder = modelFolder + "topo.txt";
+		String query = getQuery("SelectTopoData", modelId);
+
+//		DataTableWritable result = DLUtils.readAsInteger(conn, query, 1000, 0);
+//
+//		assert(result.hasRowIds()): "topo should have IDENTIFIER as row ids";
+		return null;
 	}
 
 	/**

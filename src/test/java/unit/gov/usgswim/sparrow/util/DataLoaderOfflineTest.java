@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.util;
 
+import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.util.DataLoader;
 
 import java.io.IOException;
@@ -14,6 +15,17 @@ public class DataLoaderOfflineTest extends TestCase {
 		super(sTestName);
 	}
 
+	public void testInitModelIndex() {
+		DataTable modelIndex = DataLoader.initModelIndex();
+
+		assertNotNull(modelIndex);
+		assertEquals(2, modelIndex.getColumnCount());
+		assertTrue(modelIndex.getRowCount() >= 3);
+	}
+
+	//============================
+	// TODO determine whether these xtest methods are still relevant
+	//==============================
 	/**
 	 * @see DataLoader#getQuery(String,Object[])
 	 */
@@ -22,7 +34,7 @@ public class DataLoaderOfflineTest extends TestCase {
 
 		String expected =
 		"SELECT MODEL_REACH_ID as MODEL_REACH, HYDSEQ FROM MODEL_REACH WHERE SPARROW_MODEL_ID = $ModelId$ ORDER BY HYDSEQ";
-		
+
 		assertEquals(expected, query);
 	}
 
@@ -34,7 +46,7 @@ public class DataLoaderOfflineTest extends TestCase {
 
 		String expected =
 		"SELECT MODEL_REACH_ID as MODEL_REACH, HYDSEQ FROM MODEL_REACH WHERE SPARROW_MODEL_ID = 999 ORDER BY HYDSEQ";
-		
+
 		assertEquals(expected, query);
 	}
 
@@ -44,13 +56,13 @@ public class DataLoaderOfflineTest extends TestCase {
 	public void xtestGetQueryWOtherParams() throws IOException {
 		String query = DataLoader.getQuery(
 			"SelectReachCoef", new Object[] {"ModelId", 999, "Iteration", 888, "SourceId", 777});
-		
+
 		String expected =
 		"SELECT coef.VALUE AS Value FROM SOURCE_REACH_COEF coef INNER JOIN MODEL_REACH rch ON coef.MODEL_REACH_ID = rch.MODEL_REACH_ID WHERE rch.SPARROW_MODEL_ID = 999 AND coef.Iteration = 888 AND coef.SOURCE_ID = 777 ORDER BY rch.HYDSEQ";
-	
+
 		assertEquals(expected, query);
 	}
-	
+
 	@Ignore
 	public void testDummy() {
 		// do nothing. This is here only because Infinitest complains if a test class has no test methods.
