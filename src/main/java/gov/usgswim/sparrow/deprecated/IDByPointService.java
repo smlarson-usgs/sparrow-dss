@@ -19,25 +19,25 @@ import org.apache.log4j.Logger;
 public class IDByPointService implements HttpService<IDByPointRequest_old> {
 	protected static Logger log =
 		Logger.getLogger(ModelService.class); //logging for this class
-		
+
 	protected static String RESPONSE_MIME_TYPE = "application/xml";
-	
-	
+
+
 	//They promise these factories are threadsafe
 	@SuppressWarnings("unused")
 	private static Object factoryLock = new Object();
 	//protected static XMLInputFactory xinFact;
 	protected static XMLOutputFactory xoFact;
-	
 
-	
+
+
 	public IDByPointService() {}
-	
-	
+
+
 public void shutDown() {
 		xoFact = null;
 	}
-	
+
 	public XMLStreamReader getXMLStreamReader(IDByPointRequest_old req, boolean isNeedsFlattening) throws Exception {
 		// TODO isNeedsFlattening ignored for now because using custom flattener
 		DataTable result = SharedApplication.getInstance().getIdByPointCache().compute(req);
@@ -45,10 +45,10 @@ public void shutDown() {
 		BasicXMLStreamReader reader = new DataTableSerializer(req, result);
 		return reader;
 	}
-	
+
 	public void dispatch(PipelineRequest request, HttpServletResponse response) throws Exception {
 		// TODO remove this simple redirection method by better use of generics
-		dispatch((IDByPointRequest_old) request, response);
+		dispatch(request, response);
 	}
 
 

@@ -24,11 +24,11 @@ import javax.xml.stream.XMLStreamReader;
 
 /**
  * Accepts known xml formats and outputs JSON
- * 
+ *
  * @author ilinkuo
- * 
+ *
  */
-public class JSONifyPipeline extends AbstractPipeline<PipelineRequest> implements Pipeline {
+public class JSONifyPipeline extends AbstractPipeline<PipelineRequest> {
 
 	private String xmlParamName;
 	private String requestString;
@@ -46,7 +46,7 @@ public class JSONifyPipeline extends AbstractPipeline<PipelineRequest> implement
 	@Override
 	public PipelineRequest parse(HttpServletRequest request) throws Exception {
 		requestString = AbstractHttpRequestParser.defaultReadXMLRequest(request, xmlParamName);
-		
+
 		return new PipelineRequest() {
 
 			public ResponseFormat getResponseFormat() {
@@ -64,44 +64,44 @@ public class JSONifyPipeline extends AbstractPipeline<PipelineRequest> implement
 			public void setXMLRequest(String request) {
 				requestString = request;
 			}
-			
+
 		};
 	}
 
 	@Override
 	public void dispatch(PipelineRequest o, OutputStream response) throws Exception {
-		
+
 		// Configure the JSON formatter
 		JSONFormatter jFormatter = new JSONFormatter();
 		PredictPipeline.configure(jFormatter);
 		ModelPipeline.configure(jFormatter);
 		PredictContextPipeline.configure(jFormatter);
-		
+
 		PrintWriter out = new PrintWriter(response);
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
 		XMLStreamReader in = inFact.createXMLStreamReader(new StringReader(o.getXMLRequest()));
 		jFormatter.dispatch(in, out);
-		
+
 		// TODO might have to remove these
 		out.flush();
 		out.close();
 	}
-	
+
 	@Override
 	public void dispatch(PipelineRequest o, HttpServletResponse response) throws Exception {
 		response.setContentType(JSON.getMimeType());
-		
+
 		// Configure the JSON formatter
 		JSONFormatter jFormatter = new JSONFormatter();
 		PredictPipeline.configure(jFormatter);
 		ModelPipeline.configure(jFormatter);
 		PredictContextPipeline.configure(jFormatter);
-		
+
 		PrintWriter out = response.getWriter();
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
 		XMLStreamReader in = inFact.createXMLStreamReader(new StringReader(o.getXMLRequest()));
 		jFormatter.dispatch(in, out);
-		
+
 		// TODO might have to remove these
 		out.flush();
 		out.close();

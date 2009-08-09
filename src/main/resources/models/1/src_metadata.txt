@@ -1,0 +1,8 @@
+id	sort_order	name	display_name	description	constituent	units	precision	is_point_source
+1	1	SUM90POP		TOTAL POPULATION - 1990 BRAKEBILL				
+2	2	WFCORNSOYA_P						
+3	3	WFOTHER_P		P FARM OTHER FERTILIZER (KG)				
+4	4	Confined						
+5	5	Unconfined						
+6	6	FOREST						
+7	7	bSHRUB						

@@ -33,8 +33,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -103,12 +101,6 @@ public class SharedApplication  {
 	}
 
 	public Connection getConnection() throws SQLException {
-		return findConnection();
-	}
-
-	public Connection getConnection(String username, String password)
-	throws SQLException {
-
 		return findConnection();
 	}
 

@@ -16,7 +16,7 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class EchoPipeline extends AbstractPipeline<PipelineRequest> implements Pipeline {
+public class EchoPipeline extends AbstractPipeline<PipelineRequest> implements Pipeline<PipelineRequest> {
 
 	private String xmlParamName;
 	private String requestString;
@@ -27,7 +27,7 @@ public class EchoPipeline extends AbstractPipeline<PipelineRequest> implements P
 	public EchoPipeline() {
 		super(null, null);
 	}
-	
+
 	public EchoPipeline(OutputType outputType) {
 		super(null, null);
 		this.outputType = outputType;
@@ -42,7 +42,7 @@ public class EchoPipeline extends AbstractPipeline<PipelineRequest> implements P
 	@Override
 	public PipelineRequest parse(HttpServletRequest request) throws Exception {
 		requestString = AbstractHttpRequestParser.defaultReadXMLRequest(request, xmlParamName);
-		
+
 		return new PipelineRequest() {
 
 			public ResponseFormat getResponseFormat() {
@@ -60,7 +60,7 @@ public class EchoPipeline extends AbstractPipeline<PipelineRequest> implements P
 			public void setXMLRequest(String request) {
 				requestString = request;
 			}
-			
+
 		};
 	}
 
@@ -71,7 +71,7 @@ public class EchoPipeline extends AbstractPipeline<PipelineRequest> implements P
 		out.flush();
 		out.close();
 	}
-	
+
 	@Override
 	public void dispatch(PipelineRequest o, HttpServletResponse response) throws Exception {
 		response.setContentType(outputType.getMimeType());
@@ -83,7 +83,7 @@ public class EchoPipeline extends AbstractPipeline<PipelineRequest> implements P
 		out.flush();
 		out.close();
 	}
-	
+
 	public void setEchoAsAttachment(String fileName) {
 		echoAsAttachment = true;
 		this.fileName = fileName;

@@ -2,16 +2,12 @@ package gov.usgswim.sparrow.service.idbypoint;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-
-import java.awt.Point;
+import gov.usgswim.sparrow.parser.ParserHelper;
+import gov.usgswim.sparrow.parser.XMLParseValidationException;
+import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import gov.usgswim.sparrow.parser.ParserHelper;
-import gov.usgswim.sparrow.parser.ResponseFormat;
-import gov.usgswim.sparrow.parser.XMLParseValidationException;
-import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
 
 
 

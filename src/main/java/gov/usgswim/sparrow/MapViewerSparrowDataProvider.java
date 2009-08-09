@@ -95,9 +95,9 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 	 * The value is returned a decimal percentage (ie, if the value doubled, 1 would be returned)
 	 */
 	public static final String RESULT_MODE_DEC_PERC_CHG = "dec_perc_chg";
-	
+
 	public static final String CONTEXT_ID = "context-id";
-	
+
 	/**
 	 * The model id.  This is an alternate to CONTEXT_ID when a context-id is not
 	 * available.
@@ -114,6 +114,7 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 	 * @param properties
 	 * @return
 	 */
+	@Override
 	public boolean init(Properties properties) {
 		predictService = new PredictService();
 		predictParser = new PredictParser();
@@ -125,6 +126,7 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 	 * TODO [ik] figure out if this method is ever called. If not, we can remove
 	 * deprecated methods called by it.
 	 */
+	@Override
 	public NSDataSet buildDataSet(java.util.Properties params) {
 		Hashtable hash = new Hashtable(13);
 
@@ -281,8 +283,8 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
         return nsData;
 
     }
-	
-	
+
+
     public NSDataSet copyToNSDataSet(PredictionContext context) throws Exception {
     	PredictionContext.DataColumn dc = context.getDataColumn();
 
@@ -366,6 +368,7 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 	/**
 	 * Called once when this instance is destroyed
 	 */
+	@Override
 	public void destroy() {
 		predictService.shutDown();
 		predictService = null;

@@ -7,13 +7,12 @@ import java.io.IOException;
 
 import junit.framework.TestCase;
 
-import org.junit.Ignore;
 
-@Ignore
 public class DataLoaderOfflineTest extends TestCase {
 	public DataLoaderOfflineTest(String sTestName) {
 		super(sTestName);
 	}
+
 
 	public void testInitModelIndex() {
 		DataTable modelIndex = DataLoader.initModelIndex();
@@ -63,8 +62,4 @@ public class DataLoaderOfflineTest extends TestCase {
 		assertEquals(expected, query);
 	}
 
-	@Ignore
-	public void testDummy() {
-		// do nothing. This is here only because Infinitest complains if a test class has no test methods.
-	}
 }

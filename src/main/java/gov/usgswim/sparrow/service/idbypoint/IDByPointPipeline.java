@@ -5,7 +5,6 @@ import gov.usgs.webservices.framework.formatter.JSONFormatter;
 import gov.usgs.webservices.framework.formatter.SparrowFlatteningFormatter;
 import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgswim.sparrow.service.AbstractPipeline;
-import gov.usgswim.sparrow.service.predict.PredictPipeline;
 
 public class IDByPointPipeline extends AbstractPipeline<IDByPointRequest> {
 
@@ -28,6 +27,7 @@ public class IDByPointPipeline extends AbstractPipeline<IDByPointRequest> {
 		super(new IDByPointService(), new IDByPointParser());
 	}
 
+	@Override
 	protected IFormatter getCustomFlatteningFormatter(OutputType outputType) {
 		return new SparrowFlatteningFormatter(outputType);
 	}
