@@ -42,9 +42,9 @@ public abstract class TabDelimFileUtil {
 	/**
 	 * Loads all PredictionDataSet data from text files based on either a
 	 * classpath package or a filesystem directory.
-	 * 
+	 *
 	 * All iterations and the ancil data is included.
-	 * 
+	 *
 	 * @param rootPackage
 	 * @param rootDir
 	 * @param modelId
@@ -65,9 +65,9 @@ public abstract class TabDelimFileUtil {
 	/**
 	 * Loads a minimal PredictionDataSet from text files based on either a
 	 * classpath package or a filesystem directory.
-	 * 
+	 *
 	 * Only the first iteration is included.  Ancil data IS included.
-	 * 
+	 *
 	 * @param rootPackage
 	 * @param rootDir
 	 * @param modelId
@@ -88,12 +88,12 @@ public abstract class TabDelimFileUtil {
 	/**
 	 * Loads a PredictionDataSet from text files based on either a classpath package
 	 * or a filesystem directory.
-	 * 
+	 *
 	 * A lastIncludedIteration value can be passed so that only a portion of the
 	 * iterations are visible.  This value is the last iteration included, so passing
 	 * a value of zero will include only the zero iteration.  Passing -1 will
 	 * include all iterations.  The iteration passed must exist.
-	 * 
+	 *
 	 * @param rootPackage
 	 * @param rootDir
 	 * @param modelId
@@ -163,9 +163,9 @@ public abstract class TabDelimFileUtil {
 	public static DataTable readAsDouble(File file, boolean hasHeadings, String[] mappedHeadings, int indexCol)
 	throws FileNotFoundException, IOException, NumberFormatException  {
 		if (indexCol > -1) {
-			return read(file, hasHeadings, mappedHeadings).buildIndex(indexCol);	
+			return read(file, hasHeadings, mappedHeadings).buildIndex(indexCol);
 		}
-		return read(file, hasHeadings, mappedHeadings);	
+		return read(file, hasHeadings, mappedHeadings);
 	}
 	public static DataTableWritable readAsDouble(InputStream source, boolean hasHeadings, int indexCol)
 	throws FileNotFoundException, IOException, NumberFormatException  {
@@ -188,19 +188,19 @@ public abstract class TabDelimFileUtil {
 
 			String[] headings = (hasHeadings)? TabDelimFileUtil.readHeadings(br): null;
 
-			
+
 			if (mappedHeadings != null) {
 				remappedColumns = TabDelimFileUtil.mapByColumnHeadings(headings, mappedHeadings);
 				mappedColumnCount = mappedHeadings.length;
 			}
 
 			List<double[]> rows = TabDelimFileUtil.readDataBodyAsDouble(br, remappedColumns, mappedColumnCount);
-			
+
 			// If there is exactly one extra column, then it's the ID column and it's first.
 			boolean hasIDColumnFirst =(mappedColumnCount == 0 && headings != null && rows.get(0).length == headings.length + 1);
-			
+
 			//copy the array list to a double[][] array
-			
+
 			DataTableWritable builder = new SimpleDataTableWritable();
 			// Configure the columns
 			int numColumns = (headings != null)? headings.length: rows.get(0).length;
@@ -211,7 +211,7 @@ public abstract class TabDelimFileUtil {
 				ColumnDataWritable column = new StandardNumberColumnDataWritable<Double>(heading, null);
 				builder.addColumn(column);
 			}
-			
+
 			// Add the data
 			boolean debug = false;
 			for (int i=0; i<rows.size(); i++) {
@@ -241,16 +241,16 @@ public abstract class TabDelimFileUtil {
 	public static DataTable readAsDouble(File file, boolean hasHeadings, int indexCol)
 	throws FileNotFoundException, IOException, NumberFormatException  {
 		if (indexCol > -1) {
-			return read(file, hasHeadings, null).buildIndex(indexCol);	
+			return read(file, hasHeadings, null).buildIndex(indexCol);
 		}
-		return read(file, hasHeadings, null);	
+		return read(file, hasHeadings, null);
 	}
-	
+
 	public static DataTableWritable read(File file, boolean hasHeadings, String[] mappedHeadings)
 	throws FileNotFoundException, IOException, NumberFormatException  {
-		return readAsDouble(new FileInputStream(file), hasHeadings, mappedHeadings);		
+		return readAsDouble(new FileInputStream(file), hasHeadings, mappedHeadings);
 	}
-	
+
 	public static DataTable readAsInteger(File file, boolean hasHeadings, String[] mappedHeadings, int indexCol)
 	throws FileNotFoundException, IOException, NumberFormatException  {
 		if (indexCol > -1) {
@@ -293,18 +293,16 @@ public abstract class TabDelimFileUtil {
 	}
 
 	public static DataTableWritable read(File file, boolean hasHeadings)
-	throws FileNotFoundException, IOException, NumberFormatException  {
-
+		throws FileNotFoundException, IOException, NumberFormatException  {
 		FileInputStream fis = new FileInputStream(file);
-		return read(fis, hasHeadings, null);		
+		return read(fis, hasHeadings, null);
 	}
 
 	public static DataTableWritable read(InputStream source, boolean hasHeadings)
 	throws FileNotFoundException, IOException, NumberFormatException  {
-
 		return readAsDouble(source, hasHeadings, null);
 	}
-	
+
 	public static DataTableWritable read(InputStream source, boolean hasHeadings, String[] mappedHeadings)
 	throws FileNotFoundException, IOException, NumberFormatException  {
 
@@ -443,9 +441,9 @@ public abstract class TabDelimFileUtil {
 		String s = null;					//Single line from file
 		while ((s=br.readLine())!=null){
 			String src[] = s.split("\t");
-	
+
 			if ( TabDelimFileUtil.isNonEmptyLine(src) ) {
-	
+
 				if (colCount == 0) {
 					colCount = src.length; // initialize column count
 					if (remappedColumns == null) {
@@ -454,7 +452,7 @@ public abstract class TabDelimFileUtil {
 						for (int i = 0; i < colCount; i++)  {
 							remappedColumns[i] = i;
 						}
-	
+
 						mappedColumnCount = colCount;
 					}
 				} else {
@@ -462,9 +460,9 @@ public abstract class TabDelimFileUtil {
 						throw new IllegalStateException("Each row in the file must have the same number of delimiters");
 					}
 				}
-	
+
 				int[] row = new int[mappedColumnCount];
-	
+
 				for (int i = 0; i < src.length; i++)  {
 					if (remappedColumns[i] != -1) {
 						if (src[i].length() > 0) {
@@ -474,7 +472,7 @@ public abstract class TabDelimFileUtil {
 						}
 					}
 				}
-	
+
 				rows.add(row);
 			} else {
 				//ignore empty lines
@@ -500,31 +498,31 @@ public abstract class TabDelimFileUtil {
 
 
 	/**
-	 * Returns an array of column indexes mapping the file headings to the 
+	 * Returns an array of column indexes mapping the file headings to the
 	 * required headings.
-	 * 
+	 *
 	 * The use case would be where only certain columns should be read in from the
 	 * text file and the files can be named.  This method will take the list
 	 * of columns that you want to import (mappedHeadings) and locates them in
 	 * the headings from the file (fileHeadings).
-	 * 
+	 *
 	 * The returned int array maps the column indexes in the file to the output.
 	 * Columns that are not needed in the output contain a mapping value of -1.
-	 * 
+	 *
 	 * For instance, a return array may look like this:
 	 * {-1, 2, -1, 0, 1}
-	 * 
+	 *
 	 * Which would mean that columns 0 and 2 are not needed in the output, and
 	 * columns 1, 3, and 4 are mapped to output columns 2, 0, and 1 respectively.
-	 * 
+	 *
 	 * The return array will be the same length as fileHeadings.
-	 * 
+	 *
 	 * Comparisons are case insensitive and a IllegalStateException is thrown if
 	 * a heading in mappedHeadings is not found in fileHeadings.
-	 * 
+	 *
 	 * In the case of duplicate column names in the fileHeadings, only the first
 	 * index is returned.
-	 * 
+	 *
 	 * @param fileHeadings
 	 * @param mappedHeadings
 	 * @return
@@ -532,10 +530,10 @@ public abstract class TabDelimFileUtil {
 	public static int[] mapByColumnHeadings(String[] fileHeadings, String[] mappedHeadings) {
 		int[] hIndex = new int[fileHeadings.length];
 		Arrays.fill(hIndex, -1);
-	
+
 		for(int i=0; i<mappedHeadings.length; i++) {
 			boolean found = false;
-	
+
 			for(int j=0; j<fileHeadings.length; j++) {
 				if (mappedHeadings[i].equalsIgnoreCase(fileHeadings[j])) {
 					hIndex[j] = i;
@@ -543,12 +541,12 @@ public abstract class TabDelimFileUtil {
 					break;
 				}
 			}
-	
+
 			if (!found) {
 				throw new IllegalArgumentException("The mapped heading '" + mappedHeadings[i] + "' was not found in the source file.");
 			}
 		}
-	
+
 		return hIndex;
 	}
 
@@ -559,9 +557,9 @@ public abstract class TabDelimFileUtil {
 		String s = null;					//Single line from file
 		while ((s=br.readLine())!=null){
 			String src[] = s.split("\t");
-	
+
 			if ( isNonEmptyLine(src) ) {
-	
+
 				if (colCount == 0) {
 					colCount = src.length; // initialize column count
 					if (remappedColumns == null) {
@@ -570,7 +568,7 @@ public abstract class TabDelimFileUtil {
 						for (int i = 0; i < colCount; i++)  {
 							remappedColumns[i] = i;
 						}
-	
+
 						mappedColumnCount = colCount;
 					}
 				} else {
@@ -578,9 +576,9 @@ public abstract class TabDelimFileUtil {
 						throw new IllegalStateException("Each row in the file must have the same number of delimiters");
 					}
 				}
-	
+
 				double[] row = new double[mappedColumnCount];
-	
+
 				for (int i = 0; i < src.length; i++)  {
 					if (remappedColumns[i] != -1) {
 						if (src[i].length() > 0) {
@@ -590,7 +588,7 @@ public abstract class TabDelimFileUtil {
 						}
 					}
 				}
-	
+
 				rows.add(row);
 			} else {
 				//ignore empty lines
@@ -602,30 +600,30 @@ public abstract class TabDelimFileUtil {
 
 	public static DataTableWritable readAsInt(InputStream source, boolean hasHeadings, String[] mappedHeadings)
 	throws FileNotFoundException, IOException, NumberFormatException  {
-	
+
 		InputStreamReader isr = new InputStreamReader(source);
 		BufferedReader br = new BufferedReader(isr);
-	
+
 		try {
-	
+
 			int[] remappedColumns = null;	//indexes to map the columns to
 			int mappedColumnCount = 0;	//Number of columns in the output
-	
+
 			String[] headings = (hasHeadings)? readHeadings(br): null;
-	
-			
+
+
 			if (mappedHeadings != null) {
 				remappedColumns = mapByColumnHeadings(headings, mappedHeadings);
 				mappedColumnCount = mappedHeadings.length;
 			}
-	
+
 			List<int[]> rows = readDataBodyAsInt(br, remappedColumns, mappedColumnCount);
-			
+
 			// If there is exactly one extra column, then it's the ID column and it's first.
 			boolean hasIDColumnFirst =(headings != null && rows.get(0).length == headings.length + 1);
-			
+
 			//copy the array list to a double[][] array
-			
+
 			DataTableWritable builder = new SimpleDataTableWritable();
 			// Configure the columns
 			int numColumns = (headings != null)? headings.length: rows.get(0).length;
@@ -635,7 +633,7 @@ public abstract class TabDelimFileUtil {
 				ColumnDataWritable column = new StandardNumberColumnDataWritable<Double>(heading, null);
 				builder.addColumn(column);
 			}
-			
+
 			// Add the data
 			for (int i=0; i<rows.size(); i++) {
 				int[] row = rows.get(i);
@@ -649,7 +647,7 @@ public abstract class TabDelimFileUtil {
 				}
 			}
 			return builder;
-	
+
 		} finally {
 			try {
 				br.close();
