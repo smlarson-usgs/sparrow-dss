@@ -283,7 +283,7 @@ public class DataLoader {
 	IOException {
 		String modelFolder = "models/" + modelId + "/";
 		String topoFolder = modelFolder + "topo.txt";
-		String query = getQuery("SelectTopoData", modelId);
+
 
 //		DataTableWritable result = DLUtils.readAsInteger(conn, query, 1000, 0);
 //

@@ -6,6 +6,8 @@ package gov.usgswim.sparrow.util;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -195,46 +197,59 @@ public class DLUtils{
 	}
 
 	/**
-		 * Creates a DataTable from the passed resultset with an optional index.
-		 *
-		 * All values in the source must be convertable to an integer.
-		 *
-		 * @param source
-		 * @param indexCol A valid column index or -1 to indicate no index
-		 * @return
-		 * @throws SQLException
-		 */
-		public static DataTableWritable readAsInteger(ResultSet source, int indexCol) throws SQLException {
+	 * Creates a DataTable from the passed resultset with an optional index.
+	 *
+	 * All values in the source must be convertable to an integer.
+	 *
+	 * @param source
+	 * @param indexCol A valid column index or -1 to indicate no index
+	 * @return
+	 * @throws SQLException
+	 */
+	public static DataTableWritable readAsInteger(ResultSet source, int indexCol) throws SQLException {
 
-			ArrayList<int[]> list = new ArrayList<int[]>(500);
-			String[] headings = null;
+		ArrayList<int[]> list = new ArrayList<int[]>(500);
+		String[] headings = null;
 
-			headings = readHeadings(source.getMetaData());
-			int colCount = headings.length; //Number of columns
+		headings = readHeadings(source.getMetaData());
+		int colCount = headings.length; //Number of columns
 
-			while (source.next()){
-				int[] row = new int[colCount];
+		while (source.next()){
+			int[] row = new int[colCount];
 
-				for (int i=1; i<=colCount; i++) {
-					row[i - 1] = source.getInt(i);
-				}
-				list.add(row);
+			for (int i=1; i<=colCount; i++) {
+				row[i - 1] = source.getInt(i);
 			}
-
-
-			//copy the array list to a int[][] array
-			int[][] data = new int[list.size()][];
-			for (int i = 0; i < data.length; i++)  {
-				data[i] = list.get(i);
-			}
-
-			DataTableWritable result = new SimpleDataTableWritable(data, headings, indexCol);
-	//		if (indexCol > DO_NOT_INDEX) {
-	//			result.buildIndex(indexCol);
-	//		}
-
-			return result;
+			list.add(row);
 		}
+
+
+		//copy the array list to a int[][] array
+		int[][] data = new int[list.size()][];
+		for (int i = 0; i < data.length; i++)  {
+			data[i] = list.get(i);
+		}
+
+		DataTableWritable result = new SimpleDataTableWritable(data, headings, indexCol);
+		//		if (indexCol > DO_NOT_INDEX) {
+		//			result.buildIndex(indexCol);
+		//		}
+
+		return result;
+	}
+
+	public static DataTableWritable readAsInteger(BufferedReader source, int indexCol, String delimiter) throws IOException {
+		// Assume that it has headings
+		String line = source.readLine();
+		String[] headings = line.split(delimiter);
+		if (indexCol >=0) {
+		//	Arrays
+		}
+		//DataTableWritable result = new SimpleDataTableWritable(headings, indexCol);
+
+
+		return null;
+	}
 
 	public static String[] readHeadings(ResultSetMetaData meta) throws SQLException {
 		int count = meta.getColumnCount();
