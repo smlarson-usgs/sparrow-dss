@@ -2,11 +2,10 @@ package gov.usgswim.sparrow.util;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.impl.BuilderHelper;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
-import gov.usgswim.datatable.impl.StandardStringColumnDataWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
-import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.domain.ModelBuilder;
@@ -38,21 +37,7 @@ public class DataLoader {
 	protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
 	public static int DO_NOT_INDEX = -1;
 	public static final int SOURCE_ID_COL = 0;
-	public static final DataTable modelIndex = initModelIndex(); // TODO Might change this to properties?
-
-
 	public DataLoader() {
-	}
-
-	/**
-	 * Loads an index of model aliases and ids from the file system.
-	 * @return
-	 */
-	static DataTable initModelIndex() {
-		DataTableWritable table = new SimpleDataTableWritable()
-			.addColumn(new StandardStringColumnDataWritable("modelName", null))
-			.addColumn(new StandardStringColumnDataWritable("modelID", null));
-		return DataTableUtils.fill(table, "models/modelIndex.txt", false, "\t", true);
 	}
 
 	/**
@@ -279,18 +264,6 @@ public class DataLoader {
 		return result;
 	}
 
-	public static DataTableWritable loadTopo(long modelId) throws SQLException,
-	IOException {
-		String modelFolder = "models/" + modelId + "/";
-		String topoFolder = modelFolder + "topo.txt";
-
-
-//		DataTableWritable result = DLUtils.readAsInteger(conn, query, 1000, 0);
-//
-//		assert(result.hasRowIds()): "topo should have IDENTIFIER as row ids";
-		return null;
-	}
-
 	/**
 	 * Returns a DataTable of all source/reach coef's for for a single iteration of a model.
 	 * <h4>Data Columns with one row per reach (sorted by HYDSEQ)</h4>
@@ -410,7 +383,7 @@ public class DataLoader {
 
 	}
 
-
+	
 	/**
 	 * Returns a DataTable of all decay data for for a single model.
 	 *
@@ -443,7 +416,6 @@ public class DataLoader {
 		return DLUtils.readAsDouble(conn, query, 2000);
 
 	}
-
 
 	/**
 	 * Returns a DataTable of all source values for a single model.
@@ -556,7 +528,7 @@ public class DataLoader {
 	 * <li>DISPLAY_NAME - (String) The short name of the source, used for display
 	 * <li>DESCRIPTION - (String) A description of the source (could be long)
 	 * <li>CONSTITUENT - (String) The name of the Constituent being measured
-	 * <li>UNITS - (STring) The units the constituent is measured in
+	 * <li>UNITS - (String) The units the constituent is measured in
 	 * <li>PRECISION - (int) The number of decimal places
 	 * <li>IS_POINT_SOURCE (boolean) 'T' or 'F' values that can be mapped to boolean.
 	 * </ol>

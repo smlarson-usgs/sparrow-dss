@@ -1,8 +1,5 @@
 package gov.usgswim.sparrow.util;
 
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.util.DataLoader;
-
 import java.io.IOException;
 
 import junit.framework.TestCase;
@@ -13,14 +10,6 @@ public class DataLoaderOfflineTest extends TestCase {
 		super(sTestName);
 	}
 
-
-	public void testInitModelIndex() {
-		DataTable modelIndex = DataLoader.initModelIndex();
-
-		assertNotNull(modelIndex);
-		assertEquals(2, modelIndex.getColumnCount());
-		assertTrue(modelIndex.getRowCount() >= 3);
-	}
 
 	//============================
 	// TODO determine whether these xtest methods are still relevant
