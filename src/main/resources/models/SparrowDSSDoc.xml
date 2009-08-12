@@ -33,7 +33,7 @@
 		<SPARROW_fact_sheet>
 			<Link link="http://pubs.usgs.gov/fs/2009/3019/pdf/fs_2009_3019.pdf"/>
 			<Citation_mods>
-				<identifier type=""></identifier>
+				<identifier type="">myid</identifier>
 				<identifier type=""></identifier>
 				<identifier type=""></identifier>
 				<genre></genre>
