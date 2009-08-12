@@ -1,4 +1,10 @@
 modelName	modelID
-test	1
-sediment	22
-chesepeake	23
+test	0
+ChesapeakeBay	1
+ChesapeakeBay_v2	21
+NatTotNitrogen_1987	22
+NatSuspSediment_1992	30
+MRB4TotNitrogen_2002	32
+MRB4TotPhosphorus_2002	33
+MRB3Phosphorus	42
+MRB7Nitrogen	43
