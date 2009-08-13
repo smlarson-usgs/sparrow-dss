@@ -76,6 +76,15 @@
         <servlet-name>FindReachService</servlet-name>
         <servlet-class>gov.usgswim.sparrow.service.idbypoint.FindReachService</servlet-class>
 	</servlet>
+	<servlet>
+        <servlet-name>SessionService</servlet-name>
+        <servlet-class>gov.usgswim.sparrow.service.metadata.SavedSessionService</servlet-class>
+	</servlet>
+	<servlet>
+        <servlet-name>DocumentationService</servlet-name>
+        <servlet-class>gov.usgswim.sparrow.service.doc.DocumentationService</servlet-class>
+	</servlet>
+
 
 
 	<servlet-mapping>
@@ -114,6 +123,15 @@
         <servlet-name>FindReachService</servlet-name>
         <url-pattern>/sp_findReach/*</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>DocumentationService</servlet-name>
+		<url-pattern>/sp_doc/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>SessionService</servlet-name>
+		<url-pattern>/sp_session/*</url-pattern>
+	</servlet-mapping>
+
 	<!-- Attribute services  -->
 	<!--
 	<servlet-mapping>
