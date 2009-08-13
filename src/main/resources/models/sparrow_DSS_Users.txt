@@ -3,17 +3,21 @@ List of SPARROW metadata users might be interested in:
 Scientist
 	Calculations, formulas, expressions, variables, assumptions…
 	Location of monitoring stations
-	Calibration and Uncertainty, scale coarseness
-	Stream network info
+	Calibration and Uncertainty
+	Stream network info - EPA's Reach File Version 1.0 (RF1)
 	Papers, references
-	what year the data was collected
+	Year(s) the data was collected
+
 Public Policy Official
-	Land use
-	Cities
-	Uncertainty
+	Land use - 
+	Cities - map
+	Uncertainty - USGS NAWQA Uncertainty http://www.usgs.gov/nawqa/sparrow/nutrient_yields/faq.html#4
+
 Reporter/Fact Checker
 	Stream network info/accuracy
-	Base year definition
+	Base year definition - USGS NAWQA Uncertainty
+	Applications of the sparrow model
+
 Student
 	Calculations, formulas, expressions
 	Land Use
@@ -21,3 +25,5 @@ Student
 	Precipitation
 	Stream Velocity
 	Papers, references
+
+
