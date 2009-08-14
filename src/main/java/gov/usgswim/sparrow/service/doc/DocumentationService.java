@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.service.doc;
 
+import gov.usgswim.sparrow.util.DataResourceLoader;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -31,10 +33,33 @@ public class DocumentationService extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		String modelString = req.getParameter("model");
+		String itemString = req.getParameter("item");
+		Integer modelID = parseInt(modelString);
+		Integer itemID = parseInt(itemString);
+		modelID =  (modelID == null)? lookup(modelString): modelID;
+		itemID =  (itemID == null)? lookup(modelID, itemString): itemID;
 		// TODO Auto-generated method stub
 		PrintWriter out = resp.getWriter();
 		out.write("hello world");
 		out.flush();
+	}
+
+	private Integer lookup(Integer modelID, String itemString) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public static Integer lookup(String modelString) {
+		return DataResourceLoader.modelIndex.findFirst(0, modelString);
+	}
+
+	public static Integer parseInt(String value) {
+		try {
+			return Integer.parseInt(value);
+		} catch (NumberFormatException e) {
+			return null;
+		}
 	}
 
 

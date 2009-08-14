@@ -1,5 +1,5 @@
 modelName	modelID
-test	0
+test	-1
 ChesapeakeBay	1
 ChesapeakeBay_v2	21
 NatTotNitrogen_1987	22

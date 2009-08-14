@@ -383,7 +383,7 @@ public class DataLoader {
 
 	}
 
-	
+
 	/**
 	 * Returns a DataTable of all decay data for for a single model.
 	 *

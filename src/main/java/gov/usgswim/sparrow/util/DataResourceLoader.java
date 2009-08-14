@@ -16,6 +16,10 @@ public class DataResourceLoader {
 		String modelFolder = "models/" + modelId + "/";
 		return modelFolder + fileName;
 	}
+	
+	public static String loadModelResource(Integer modelID, String itemKey) {
+		return null;
+	}
 
 	public static DataTableWritable makeSourceMetaStructure() {
 		// Note that the topo.txt file from the modelers does not have the reach id

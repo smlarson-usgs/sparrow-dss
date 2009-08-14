@@ -9,8 +9,6 @@ import java.sql.SQLException;
 
 import org.junit.Test;
 
-import junit.framework.TestCase;
-
 public class DataResourceLoaderTest {
 
 	@Test
@@ -24,7 +22,7 @@ public class DataResourceLoaderTest {
 
 	@Test
 	public void testLoadTopoFromResources() throws SQLException, IOException {
-		DataTableWritable topo = DataResourceLoader.loadTopo(1);
+		DataTableWritable topo = DataResourceLoader.loadTopo(-1);
 
 		assertTrue(topo != null);
 		assertEquals(5, topo.getColumnCount());
