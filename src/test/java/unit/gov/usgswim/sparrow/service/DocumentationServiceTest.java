@@ -14,12 +14,16 @@ import com.meterware.servletunit.ServletUnitClient;
 
 public class DocumentationServiceTest {
 
+	private static final String DOC_SERVICE_URL = "http://localhost:8088/sp_doc";
+
 	@Test
-	public void testDocService() throws IOException, SAXException {
+	public void testDocServiceWithFieldIDAndModelID() throws IOException, SAXException {
 		ServletRunner servletRunner = new ServletRunner(new File(WEB_XML_LOCATION));      // (1) use the web.xml file to define mappings
         ServletUnitClient client = servletRunner.newClient();               // (2) create a client to invoke the application
 
-        WebResponse response = client.getResponse( "http://localhost:8088/sp_doc" );
+        String queryString = "?model=-1&";
+
+        WebResponse response = client.getResponse( DOC_SERVICE_URL + queryString);
         System.out.println(response.getText());
 
 

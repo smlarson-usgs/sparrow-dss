@@ -7,19 +7,9 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
-import gov.usgswim.datatable.impl.StandardStringColumnDataWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
 
 public class DataResourceLoader {
-
-	public static String getModelBasePath(long modelId, String fileName) {
-		String modelFolder = "models/" + modelId + "/";
-		return modelFolder + fileName;
-	}
-	
-	public static String loadModelResource(Integer modelID, String itemKey) {
-		return null;
-	}
 
 	public static DataTableWritable makeSourceMetaStructure() {
 		// Note that the topo.txt file from the modelers does not have the reach id
@@ -30,14 +20,14 @@ public class DataResourceLoader {
 	}
 
 	public static DataTableWritable loadSourceMetadata(long modelId){
-		String sourceMetaFolder = getModelBasePath(modelId, "src_metadata.txt");
+		String sourceMetaFolder = DataResourceUtils.getModelResourceFilePath(modelId, "src_metadata.txt");
 		DataTableWritable sourceMeta = makeSourceMetaStructure();
 		return DataTableUtils.fill(sourceMeta, sourceMetaFolder, false, "\t", true);
 	}
 
 	public static DataTableWritable loadTopo(long modelId) throws SQLException,
 	IOException {
-		String topoFile = getModelBasePath(modelId, "topo.txt");
+		String topoFile = DataResourceUtils.getModelResourceFilePath(modelId, "topo.txt");
 		DataTableWritable topo = makeTopoStructure();
 		DataTableUtils.fill(topo, topoFile, false, "\t", true);
 		return topo;
@@ -70,21 +60,8 @@ public class DataResourceLoader {
 			// may need to add names
 		}
 		// may need to add id
-		String coefFile = getModelBasePath(modelId, "coef.txt");
+		String coefFile = DataResourceUtils.getModelResourceFilePath(modelId, "coef.txt");
 		return DataTableUtils.fill(result, coefFile, false, "\t", true);
 	}
-
-	/**
-	 * Loads an index of model aliases and ids from the file system.
-	 * @return
-	 */
-	static DataTable initModelIndex() {
-		DataTableWritable table = new SimpleDataTableWritable()
-			.addColumn(new StandardStringColumnDataWritable("modelName", null))
-			.addColumn(new StandardStringColumnDataWritable("modelID", null));
-		return DataTableUtils.fill(table, "models/modelIndex.txt", false, "\t", true);
-	}
-
-	public static final DataTable modelIndex = initModelIndex(); // TODO Might change this to properties?
 
 }

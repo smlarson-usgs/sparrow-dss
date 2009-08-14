@@ -13,7 +13,7 @@ public class DataResourceLoaderTest {
 
 	@Test
 	public void testInitModelIndex() {
-		DataTable modelIndex = DataResourceLoader.initModelIndex();
+		DataTable modelIndex = DataResourceUtils.initModelIndex();
 
 		assertNotNull(modelIndex);
 		assertEquals(2, modelIndex.getColumnCount());

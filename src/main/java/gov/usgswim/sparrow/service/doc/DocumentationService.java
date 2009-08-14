@@ -1,10 +1,12 @@
 package gov.usgswim.sparrow.service.doc;
 
-import gov.usgswim.sparrow.util.DataResourceLoader;
+import gov.usgswim.sparrow.util.DataResourceUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,6 +26,8 @@ import com.meterware.servletunit.ServletUnitClient;
  */
 public class DocumentationService extends HttpServlet {
 
+	protected static Map<Integer, Object>modelMetadata = new HashMap<Integer, Object>();
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -37,21 +41,31 @@ public class DocumentationService extends HttpServlet {
 		String itemString = req.getParameter("item");
 		Integer modelID = parseInt(modelString);
 		Integer itemID = parseInt(itemString);
-		modelID =  (modelID == null)? lookup(modelString): modelID;
-		itemID =  (itemID == null)? lookup(modelID, itemString): itemID;
+		modelID =  (modelID == null)? lookupModelID(modelString): modelID;
+		if (modelID == null) {
+			throw new ServletException("nonexistent model " + modelString);
+		}
+		itemID =  (itemID == null)? lookupItem(modelID, itemString): itemID;
 		// TODO Auto-generated method stub
 		PrintWriter out = resp.getWriter();
 		out.write("hello world");
 		out.flush();
 	}
 
-	private Integer lookup(Integer modelID, String itemString) {
-		// TODO Auto-generated method stub
+	private Integer lookupItem(Integer modelID, String itemString) {
+//		modelInfo = modelMetadata.
 		return null;
 	}
 
-	public static Integer lookup(String modelString) {
-		return DataResourceLoader.modelIndex.findFirst(0, modelString);
+	private void retrieveModelMetadata(Integer id) {
+//		Object mmd = modelMetadata.get(id);
+//		if (mmd == null) {
+//			D
+//		}
+	}
+
+	public static Integer lookupModelID(String modelString) {
+		return DataResourceUtils.modelIndex.findFirst(0, modelString);
 	}
 
 	public static Integer parseInt(String value) {
