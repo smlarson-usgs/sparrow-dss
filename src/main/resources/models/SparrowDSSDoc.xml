@@ -9,7 +9,7 @@
 				<identifier type=""></identifier>
 				<genre></genre>
 				<titleInfo>
-					<title>SPARROW Surface Walter-Quality Modeling Nutrients in Watersheds of the Coterminous United States</title>
+					<title>SPARROW Surface Water-Quality Modeling Nutrients in Watersheds of the Coterminous United States</title>
 				</titleInfo>
 				<originInfo>
 					<dateOther>1997-01-01 00:00:00.0</dateOther>
@@ -25,7 +25,7 @@
 					<form></form>
 					<form></form>
 				</physicalDescription>
-				<note type="citation/reference">Smith, R.A. et al. 1997. SPARROW Surface Walter-Quality Modeling Nutrients in Watersheds of the Coterminous United States. Regional interpretation of water-quality monitoring data, Water Resources Research, v. 33, no. 12, pp.2781-2798</note>
+				<note type="citation/reference">Smith, R.A. et al. 1997. SPARROW Surface Water-Quality Modeling Nutrients in Watersheds of the Coterminous United States. Regional interpretation of water-quality monitoring data, Water Resources Research, v. 33, no. 12, pp.2781-2798</note>
 				<edition></edition>
 				<languageTerm>ENGLISH</languageTerm>
 			</Citation_mods>
@@ -54,7 +54,7 @@
 					<form></form>
 					<form></form>
 				</physicalDescription>
-				<note type="citation/reference">Preston, S.D., Alexander, R.B., Woodside, M.D., and Hamilton, P.A., 2009, SPARROW MODELING—Enhancing Understanding of the Nation’s Water Quality: U.S. Geological Survey Fact Sheet 2009–3019, 6 p.</note>
+				<note type="citation/reference">Preston, S.D., Alexander, R.B., Woodside, M.D., and Hamilton, P.A., 2009, SPARROW MODELING-Enhancing Understanding of the Nation's Water Quality: U.S. Geological Survey Fact Sheet 2009-3019, 6 p.</note>
 				<edition></edition>
 				<languageTerm>ENGLISH</languageTerm>
 			</Citation_mods>
@@ -175,15 +175,15 @@
 						<identifier type=""></identifier>
 						<genre></genre>
 						<titleInfo>
-							<title>SPARROW Surface Walter-Quality Modeling Nutrients in Watersheds of the Coterminous United States</title>
+							<title></title>
 						</titleInfo>
 						<originInfo>
-							<dateOther>1997-01-01 00:00:00.0</dateOther>
+							<dateOther></dateOther>
 							<publisher></publisher>
 							<placeTerm></placeTerm>
 						</originInfo>
 						<name>
-							<namePart>Smith, R.A., G.E. Schwarz, and R.B. Alexander</namePart>
+							<namePart></namePart>
 							<role>Author</role>
 						</name>
 						<physicalDescription>
@@ -191,9 +191,462 @@
 							<form></form>
 							<form></form>
 						</physicalDescription>
-						<note type="citation/reference">Smith, R.A. et al. 1997. SPARROW Surface Walter-Quality Modeling Nutrients in Watersheds of the Coterminous United States. Regional interpretation of water-quality monitoring data, Water Resources Research, v. 33, no. 12, pp.2781-2798</note>
+						<note type="citation/reference"></note>
 						<edition></edition>
-						<languageTerm>ENGLISH</languageTerm>
+						<languageTerm></languageTerm>
+					</Citation_mods>
+				</Model_papers>
+			</Model>
+			<Model id="42">
+				<Authors>
+					<Author link="">First name, last name</Author>
+				</Authors>
+				<Model_metadata>
+					<Model_name>MRB03 Phosphorus</Model_name>
+					<MRB>MRB03</MRB>
+					<Constituent>
+						<Name>Phosphorus</Name>
+						<Units>kg/yr</Units>
+						<Description> </Description>
+					</Constituent>
+					<Source source="All">
+						<Name>All</Name>
+						<Units>kg/year</Units>
+						<Description>All sources combined.</Description>
+					</Source>
+					<Source source="pcs_02_t">
+						<Name>pcs_02_t</Name>
+						<Units>kg/year</Units>
+						<Description>PCS phosphorus 2002, kg (total)</Description>
+					</Source>
+					<Source source="manc_p">
+						<Name>manc_p</Name>
+						<Units>kg/year</Units>
+						<Description>Sum of total Phosphorus from Manure in Confined Operations (kg)</Description>
+					</Source>
+					<Source source="manu_p">
+						<Name>manu_p</Name>
+						<Units>kg/year</Units>
+						<Description>Sum of total Phosphorus from Manure in Unconfined Operations (kg)</Description>
+					</Source>
+					<Source source="Farm_P">
+						<Name>Farm_P</Name>
+						<Units>kg/year</Units>
+						<Description>Sum total of Phosphorus from Farms (kg)</Description>
+					</Source>
+					<Source source="wetwood">
+						<Name>wetwood</Name>
+						<Units>kg/year</Units>
+						<Description></Description>
+					</Source>
+					<Source source="urban">
+						<Name>urban</Name>
+						<Units>kg/year</Units>
+						<Description></Description>
+					</Source>
+				</Model_metadata>
+				<Model_papers>
+					<Link link=""/>
+					<Citation_mods>
+						<identifier type=""></identifier>
+						<identifier type=""></identifier>
+						<identifier type=""></identifier>
+						<genre></genre>
+						<titleInfo>
+							<title></title>
+						</titleInfo>
+						<originInfo>
+							<dateOther></dateOther>
+							<publisher></publisher>
+							<placeTerm></placeTerm>
+						</originInfo>
+						<name>
+							<namePart></namePart>
+							<role>Author</role>
+						</name>
+						<physicalDescription>
+							<form></form>
+							<form></form>
+							<form></form>
+						</physicalDescription>
+						<note type="citation/reference"></note>
+						<edition></edition>
+						<languageTerm></languageTerm>
+					</Citation_mods>
+				</Model_papers>
+			</Model>
+			<Model id="43">
+				<Authors>
+					<Author link="">First name, last name</Author>
+				</Authors>
+				<Model_metadata>
+					<Model_name>MRB07 Nitrogen</Model_name>
+					<MRB>MRB07</MRB>
+					<Constituent>
+						<Name>Nitrogen</Name>
+						<Units>kg/yr</Units>
+						<Description> </Description>
+					</Constituent>
+					<Source source="All">
+						<Name>All</Name>
+						<Units></Units>
+						<Description>All sources combined.</Description>
+					</Source>
+					<Source source="boundary_">
+						<Name>boundary_</Name>
+						<Units></Units>
+						<Description></Description>
+					</Source>
+					<Source source="canbasin">
+						<Name>canbasin</Name>
+						<Units></Units>
+						<Description></Description>
+					</Source>
+					<Source source="atdep_loa">
+						<Name>atdep_loa</Name>
+						<Units>kg/year</Units>
+						<Description>Average annual inorganic nitrogen (kg) atmospheric (wet) deposition</Description>
+					</Source>
+					<Source source="ps_n_02_a">
+						<Name>ps_n_02_a</Name>
+						<Units>kg/year</Units>
+						<Description>Sum of total nitrogen loading from all point sources for WY 2002 (kg)</Description>
+					</Source>
+					<Source source="farm_n">
+						<Name>farm_n</Name>
+						<Units>kg/year</Units>
+						<Description>Sum total of Fertilizer Nitrogen from farms (kg)</Description>
+					</Source>
+					<Source source="total_man">
+						<Name>total_man</Name>
+						<Units>kg/year</Units>
+						<Description>Total manure loading of nitrogen (kg)</Description>
+					</Source>
+					<Source source="nlcd_deve">
+						<Name>nlcd_deve</Name>
+						<Units>km2</Units>
+						<Description>area of developed land (square kilometers)</Description>
+					</Source>
+					<Source source="west_nlcd">
+						<Name>west_nlcd</Name>
+						<Units>km2</Units>
+						<Description>area of west-side forested land (square kilometers)</Description>
+					</Source>
+					<Source source="east_nlcd">
+						<Name>east_nlcd</Name>
+						<Units>km2</Units>
+						<Description>area of east-side forested land (square kilometers)</Description>
+					</Source>
+				</Model_metadata>
+				<Model_papers>
+					<Link link=""/>
+					<Citation_mods>
+						<identifier type=""></identifier>
+						<identifier type=""></identifier>
+						<identifier type=""></identifier>
+						<genre></genre>
+						<titleInfo>
+							<title></title>
+						</titleInfo>
+						<originInfo>
+							<dateOther></dateOther>
+							<publisher></publisher>
+							<placeTerm></placeTerm>
+						</originInfo>
+						<name>
+							<namePart></namePart>
+							<role>Author</role>
+						</name>
+						<physicalDescription>
+							<form></form>
+							<form></form>
+							<form></form>
+						</physicalDescription>
+						<note type="citation/reference"></note>
+						<edition></edition>
+						<languageTerm></languageTerm>
+					</Citation_mods>
+				</Model_papers>
+			</Model>
+			<Model id="21">
+				<Authors>
+					<Author link="">First name, last name</Author>
+				</Authors>
+				<Model_metadata>
+					<Model_name>Chesapeake bay v2</Model_name>
+					<MRB></MRB>
+					<Constituent>
+						<Name></Name>
+						<Units>kg/yr</Units>
+						<Description></Description>
+					</Constituent>
+					<Source source="">
+						<Name></Name>
+						<Units></Units>
+						<Description></Description>
+					</Source>
+				</Model_metadata>
+				<Model_papers>
+					<Link link=""/>
+					<Citation_mods>
+						<identifier type=""></identifier>
+						<identifier type=""></identifier>
+						<identifier type=""></identifier>
+						<genre></genre>
+						<titleInfo>
+							<title></title>
+						</titleInfo>
+						<originInfo>
+							<dateOther></dateOther>
+							<publisher></publisher>
+							<placeTerm></placeTerm>
+						</originInfo>
+						<name>
+							<namePart></namePart>
+							<role>Author</role>
+						</name>
+						<physicalDescription>
+							<form></form>
+							<form></form>
+							<form></form>
+						</physicalDescription>
+						<note type="citation/reference"></note>
+						<edition></edition>
+						<languageTerm></languageTerm>
+					</Citation_mods>
+				</Model_papers>
+			</Model>
+			<Model id="30">
+				<Authors>
+					<Author link="">First name, last name</Author>
+				</Authors>
+				<Model_metadata>
+					<Model_name>National Suspended Sediment Model - 1992</Model_name>
+					<MRB></MRB>
+					<Constituent>
+						<Name>Suspended Sediment</Name>
+						<Units>kg/yr</Units>
+						<Description></Description>
+					</Constituent>
+					<Source source="All">
+						<Name>All</Name>
+						<Units>kg/year</Units>
+						<Description>All sources combined.</Description>
+					</Source>
+					<Source source="point (N/A)">
+						<Name>point (N/A)</Name>
+						<Units>kg/year</Units>
+						<Description>1992 Point srce TSS dischrge on RF1 (kg)</Description>
+					</Source>
+					<Source source="point_off (N/A)">
+						<Name>point_off (N/A)</Name>
+						<Units>kg/year</Units>
+						<Description>1992 Point srce TSS dischrge off RF1 (kg)</Description>
+					</Source>
+					<Source source="Urban land">
+						<Name>Urban Land</Name>
+						<Units>km2</Units>
+						<Description>Urban land area 1992 (km2)</Description>
+					</Source>
+					<Source source="Forest land">
+						<Name>Forest land</Name>
+						<Units>km2</Units>
+						<Description>Forest land area 1992 (km2)</Description>
+					</Source>
+					<Source source="Federal land">
+						<Name>Federal land</Name>
+						<Units>km2</Units>
+						<Description>Federal land area 1992 (km2)</Description>
+					</Source>
+					<Source source="fed_range_92 (N/A)">
+						<Name>fed_range_92 (N/A)</Name>
+						<Units>km2</Units>
+						<Description>Federal rangeland area 1992 (km2)</Description>
+					</Source>
+					<Source source="Crop/pasture/orchard">
+						<Name>Crop/pasture/orchard</Name>
+						<Units>km2</Units>
+						<Description>Crop/pasture/orchrd land area 1992 (km2)</Description>
+					</Source>
+					<Source source="pasture (N/A)">
+						<Name>pasture (N/A)</Name>
+						<Units>km2</Units>
+						<Description>Pasture land (km2)</Description>
+					</Source>
+					<Source source="wetland_92">
+						<Name>wetland_92</Name>
+						<Units>km2</Units>
+						<Description>wetland area 1992 (km2)</Description>
+					</Source>
+					<Source source="Non-fed rangeland">
+						<Name>Non-fed rangeland</Name>
+						<Units>km2</Units>
+						<Description>Non-federal range and barren land (km2)</Description>
+					</Source>
+					<Source source="usle92 (N/A)">
+						<Name>usle92 (N/A)</Name>
+						<Units>kg/year</Units>
+						<Description>1992 NRI water Soil erosion (kg)</Description>
+					</Source>
+					<Source source="weq92 (N/A)">
+						<Name>weq92 (N/A)</Name>
+						<Units>km2</Units>
+						<Description>1992 NRI wind soil erosion (kg)</Description>
+					</Source>
+					<Source source="Reach length">
+						<Name>Reach length</Name>
+						<Units>m</Units>
+						<Description>REACH LENGTH (METERS)</Description>
+					</Source>
+					<Source source="nridev_92 (N/A)">
+						<Name>nridev_92 (N/A)</Name>
+						<Units>km2</Units>
+						<Description>NRI change in urban land 1987 - 1992 (km2)</Description>
+					</Source>
+				</Model_metadata>
+				<Model_papers>
+					<Link link=""/>
+					<Citation_mods>
+						<identifier type=""></identifier>
+						<identifier type=""></identifier>
+						<identifier type=""></identifier>
+						<genre></genre>
+						<titleInfo>
+							<title></title>
+						</titleInfo>
+						<originInfo>
+							<dateOther></dateOther>
+							<publisher></publisher>
+							<placeTerm></placeTerm>
+						</originInfo>
+						<name>
+							<namePart></namePart>
+							<role>Author</role>
+						</name>
+						<physicalDescription>
+							<form></form>
+							<form></form>
+							<form></form>
+						</physicalDescription>
+						<note type="citation/reference"></note>
+						<edition></edition>
+						<languageTerm></languageTerm>
+					</Citation_mods>
+				</Model_papers>
+			</Model>
+			<Model id="32">
+				<Authors>
+					<Author link="">First name, last name</Author>
+				</Authors>
+				<Model_metadata>
+					<Model_name>MRB4 Total Nitrogen Model - 2002</Model_name>
+					<MRB>MRB04</MRB>
+					<Constituent>
+						<Name>Nitrogen</Name>
+						<Units>kg/yr</Units>
+						<Description></Description>
+					</Constituent>
+					<Source source="All">
+						<Name>All</Name>
+						<Units>kg/year</Units>
+						<Description>All sources combined.</Description>
+					</Source>
+					<Source source="Atm. deposition">
+						<Name>Atm. deposition</Name>
+						<Units>kg/year</Units>
+						<Description>Total load of atmospheric deposition per subbasin (kg)*/</Description>
+					</Source>
+					<Source source="Fertilizer (manure)">
+						<Name>Fertilizer (manure)</Name>
+						<Units>kg/year</Units>
+						<Description>Sum total of Nitrogen from manure (Confined and Unconfined) and Farm Fertilizer</Description>
+					</Source>
+					<Source source="Point Sources">
+						<Name>Point Sources</Name>
+						<Units>kg/year</Units>
+						<Description>1992, 1997, and 2002 average kilograms of nitrogen released by point sources</Description>
+					</Source>
+					<Source source="Developed Area">
+						<Name>Developed Area</Name>
+						<Units>sqkm</Units>
+						<Description>Total Developed Area (sqkm)</Description>
+					</Source>
+				</Model_metadata>
+				<Model_papers>
+					<Link link=""/>
+					<Citation_mods>
+						<identifier type=""></identifier>
+						<identifier type=""></identifier>
+						<identifier type=""></identifier>
+						<genre></genre>
+						<titleInfo>
+							<title></title>
+						</titleInfo>
+						<originInfo>
+							<dateOther></dateOther>
+							<publisher></publisher>
+							<placeTerm></placeTerm>
+						</originInfo>
+						<name>
+							<namePart></namePart>
+							<role>Author</role>
+						</name>
+						<physicalDescription>
+							<form></form>
+							<form></form>
+							<form></form>
+						</physicalDescription>
+						<note type="citation/reference"></note>
+						<edition></edition>
+						<languageTerm></languageTerm>
+					</Citation_mods>
+				</Model_papers>
+			</Model>
+			<Model id="33">
+				<Authors>
+					<Author link="">First name, last name</Author>
+				</Authors>
+				<Model_metadata>
+					<Model_name>MRB04 Total Phosphorus Model - 2002</Model_name>
+					<MRB>MRB04</MRB>
+					<Constituent>
+						<Name>Phosphorus</Name>
+						<Units>kg/yr</Units>
+						<Description></Description>
+					</Constituent>
+					<Source source="">
+						<Name></Name>
+						<Units></Units>
+						<Description></Description>
+					</Source>
+				</Model_metadata>
+				<Model_papers>
+					<Link link=""/>
+					<Citation_mods>
+						<identifier type=""></identifier>
+						<identifier type=""></identifier>
+						<identifier type=""></identifier>
+						<genre></genre>
+						<titleInfo>
+							<title></title>
+						</titleInfo>
+						<originInfo>
+							<dateOther></dateOther>
+							<publisher></publisher>
+							<placeTerm></placeTerm>
+						</originInfo>
+						<name>
+							<namePart></namePart>
+							<role>Author</role>
+						</name>
+						<physicalDescription>
+							<form></form>
+							<form></form>
+							<form></form>
+						</physicalDescription>
+						<note type="citation/reference"></note>
+						<edition></edition>
+						<languageTerm></languageTerm>
 					</Citation_mods>
 				</Model_papers>
 			</Model>
