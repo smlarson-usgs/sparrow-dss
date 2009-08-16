@@ -24,7 +24,7 @@ import com.meterware.servletunit.ServletUnitClient;
  * @author ilinkuo
  *
  */
-public class DocumentationService extends HttpServlet {
+public class HelpService extends HttpServlet {
 
 	protected static Map<Integer, Object>modelMetadata = new HashMap<Integer, Object>();
 

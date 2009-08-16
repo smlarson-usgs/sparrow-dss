@@ -82,8 +82,6 @@ public class PredictService implements HttpService<PredictServiceRequest> {
 				PredictRequest noAdjRequest = new PredictRequest(modelId, noAdj);
 				PredictResult noAdjResult = SharedApplication.getInstance().getPredictResultCache().compute(noAdjRequest);
 
-				DataTableUtils.printDataTableSample(noAdjResult, 3);
-
 				result = new ComparePercentageView(
 						noAdjResult, adjResult,
 						req.getPredictType().equals(gov.usgswim.sparrow.deprecated.PredictServiceRequest.PredictType.DEC_CHG_FROM_NOMINAL));

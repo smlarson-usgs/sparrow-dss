@@ -12,7 +12,7 @@ import com.meterware.httpunit.WebResponse;
 import com.meterware.servletunit.ServletRunner;
 import com.meterware.servletunit.ServletUnitClient;
 
-public class DocumentationServiceTest {
+public class HelpServiceTest {
 
 	private static final String DOC_SERVICE_URL = "http://localhost:8088/sp_doc";
 

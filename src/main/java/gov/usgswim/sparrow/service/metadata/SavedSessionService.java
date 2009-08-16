@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
  *
  * Take a model ID/name
  * Return list of associated sessions
+ *
+ * Implementation Note: Sessions are saved as model resources
  */
 
 /**

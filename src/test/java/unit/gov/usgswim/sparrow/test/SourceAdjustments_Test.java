@@ -53,7 +53,7 @@ public class SourceAdjustments_Test extends TestCase {
 	 *
 	 * The test file src.txt contains 11 sources.  Here we'll adjust some randomly
 	 * and see if the coefficient adjustment matches normal multiplied values.
-	 * 
+	 *
 	 * Also, we'll set some specific values using a minimal index table into
 	 * the the first 10 rows.
 	 */
@@ -160,8 +160,6 @@ public class SourceAdjustments_Test extends TestCase {
 		assertEquals(200, a.getReachId());
 		assertEquals(2.5d, a.getValue(), .00000000000001);
 
-		// DEBUG
-		DataTableUtils.printDataTable(reachIndex, "reach index");
 		//Test the whole business
 		DataTable adjData = sas.adjust(data, null, reachIndex);
 

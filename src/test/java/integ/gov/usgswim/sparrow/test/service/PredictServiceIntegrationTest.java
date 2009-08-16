@@ -203,18 +203,9 @@ public class PredictServiceIntegrationTest extends TestCase {
 
 		PredictServiceRequest pr = parser.parse(xsr);
 		DataTable result = service.runPrediction(pr);
-		
-		DataTableUtils.printDataTableSample(result, 20);
-
 		ComparePercentageView comp = buildPredictionComparison(result);
-		DataTableUtils.printDataTableSample(comp, 20);
-//
-//		for (int i = 0; i < comp.getColumnCount(); i++)  {
-//			System.out.println("col " + i + " error: " + comp.findMaxCompareValue(i));
-//		}
-		
+
 		System.out.println("col 11 error: " + comp.findMaxCompareValue(11)); //11, 13, 15, 16
-		
 
 		System.out.println(comp.findMaxCompareValue());
 		assertEquals(0d, comp.findMaxCompareValue(), 0.004d);

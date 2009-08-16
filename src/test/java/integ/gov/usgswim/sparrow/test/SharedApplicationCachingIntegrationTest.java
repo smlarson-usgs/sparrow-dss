@@ -125,25 +125,15 @@ public class SharedApplicationCachingIntegrationTest extends TestCase {
 		CacheManager.getInstance().clearAll();
 		PredictionContext context = new PredictionContext(1L, null, null, null, null);
 
-
-		//ComputableCache<PredictRequest, PredictResult> pdCache = SharedApplication.getInstance().getPredictResultCache();
-		//PredictResult orgResult = pdCache.compute(pr);
-
 		DataTable result = sa.getPredictResult(context);
-		DataTableUtils.printDataTableSample(result, 20);
-		
 		ComparePercentageView comp = buildPredictionComparison(result);
-		DataTableUtils.printDataTableSample(comp, 20);
 
 		for (int i = 0; i < comp.getColumnCount(); i++)  {
 			System.out.println("col " + i + " error: " + comp.findMaxCompareValue(i));
 		}
 
 		assertEquals(0d, comp.findMaxCompareValue(), 0.004d);
-
 	}
-
-
 
 
 	public void doFullCompare(PredictData expect, PredictData data) throws Exception {
