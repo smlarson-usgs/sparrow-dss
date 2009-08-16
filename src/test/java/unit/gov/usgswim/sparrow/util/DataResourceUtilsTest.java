@@ -17,4 +17,9 @@ public class DataResourceUtilsTest {
 		assertEquals(2, modelIndex.getColumnCount());
 		assertTrue(modelIndex.getRowCount() >= 3);
 	}
+
+	@Test
+	public void testLoadHelp() {
+
+	}
 }

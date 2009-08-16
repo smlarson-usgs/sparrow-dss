@@ -5,6 +5,7 @@ import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardStringColumnDataWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
+import gov.usgswim.sparrow.service.help.Model;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -42,7 +43,11 @@ public abstract class DataResourceUtils {
 		return ResourceLoaderUtils.loadResourceAsProperties(in);
 	}
 
-
+	public static <T> T loadHelp(Long modelId){
+		String helpFilePath = getModelResourceFilePath(modelId, "help.xml");
+		ResourceLoaderUtils.loadResourceXMLFileAsObject(helpFilePath, Model.class, null);
+		return null;
+	}
 
 	/**
 	 * Loads an index of model aliases and ids from the file system.

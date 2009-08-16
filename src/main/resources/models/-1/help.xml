@@ -1,0 +1,18 @@
+<Model>
+  <Model__metadata>
+    <Name>National Total Nitrogen Model - 1987</Name>
+    <MRB></MRB>
+    <Constituent>
+      <name>Total Nitrogen</name>
+      <units>kg/yr</units>
+      <description></description>
+    </Constituent>
+    <sources>
+      <Source>
+        <name>ALL</name>
+        <units>kg/yr</units>
+        <description>All nitrogen sources - POINT, ATMDEP, FERTILIZER, WASTE, and NANAGR.</description>
+      </Source>
+    </sources>
+  </Model__metadata>
+</Model>

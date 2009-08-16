@@ -35,6 +35,9 @@ public class DataResourceLoaderTest {
 			  this.lastname = lastname;
 		  }
 	}
+	// =============
+	// The following don't belong
+	// ==========================
 
 	@Test
 	public void testXStreamToXML() {
@@ -58,6 +61,8 @@ public class DataResourceLoaderTest {
 		Person ilin = (Person) xstream.fromXML(ilinXML);
 		System.out.println(ilin.firstname + " " + ilin.lastname);
 	}
+
+
 
 
 
