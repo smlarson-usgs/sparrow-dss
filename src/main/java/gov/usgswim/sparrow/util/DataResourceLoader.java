@@ -20,14 +20,14 @@ public class DataResourceLoader {
 	}
 
 	public static DataTableWritable loadSourceMetadata(long modelId){
-		String sourceMetaFolder = DataResourceUtils.getModelResourceFilePath(modelId, "src_metadata.txt");
+		String sourceMetaFolder = SparrowResourceUtils.getModelResourceFilePath(modelId, "src_metadata.txt");
 		DataTableWritable sourceMeta = makeSourceMetaStructure();
 		return DataTableUtils.fill(sourceMeta, sourceMetaFolder, false, "\t", true);
 	}
 
 	public static DataTableWritable loadTopo(long modelId) throws SQLException,
 	IOException {
-		String topoFile = DataResourceUtils.getModelResourceFilePath(modelId, "topo.txt");
+		String topoFile = SparrowResourceUtils.getModelResourceFilePath(modelId, "topo.txt");
 		DataTableWritable topo = makeTopoStructure();
 		DataTableUtils.fill(topo, topoFile, false, "\t", true);
 		return topo;
@@ -60,7 +60,7 @@ public class DataResourceLoader {
 			// may need to add names
 		}
 		// may need to add id
-		String coefFile = DataResourceUtils.getModelResourceFilePath(modelId, "coef.txt");
+		String coefFile = SparrowResourceUtils.getModelResourceFilePath(modelId, "coef.txt");
 		return DataTableUtils.fill(result, coefFile, false, "\t", true);
 	}
 

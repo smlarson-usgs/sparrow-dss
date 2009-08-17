@@ -14,13 +14,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public abstract class DataResourceUtils {
+public abstract class SparrowResourceUtils {
 	public static final DataTable modelIndex = initModelIndex(); // TODO Might change this to properties?
 	private static final Map<Long, Properties> modelProperties = new HashMap<Long, Properties>();
 	private static final String PROPERTIES_FILE = "model.properties";
 	private static final String XML_File = "model.xml";
 
-	private DataResourceUtils() {/* private constructor to prevent instances */ }
+	private SparrowResourceUtils() {/* private constructor to prevent instances */ }
 
 	public static String getModelResourceFilePath(Long modelId, String fileName) {
 		String modelFolder = "models/" + modelId + "/";
@@ -48,7 +48,17 @@ public abstract class DataResourceUtils {
 		ResourceLoaderUtils.loadResourceXMLFileAsObject(helpFilePath, Model.class, null);
 		return null;
 	}
-
+	
+//	public static Long lookupModel(String model) {
+//		Long result = null;
+//		try {
+//			result = Long.parseLong(model);
+//		} catch (Exception e) { /* Do Nothing */};
+//		if (result == null) {
+//			
+//		}
+//	}
+	
 	/**
 	 * Loads an index of model aliases and ids from the file system.
 	 * @return
@@ -59,6 +69,8 @@ public abstract class DataResourceUtils {
 			.addColumn(new StandardStringColumnDataWritable("modelID", null));
 		return DataTableUtils.fill(table, "models/modelIndex.txt", false, "\t", true);
 	}
+	
+
 
 
 }

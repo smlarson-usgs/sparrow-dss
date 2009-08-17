@@ -51,7 +51,7 @@ public class AnalysisResultFactory implements CacheEntryFactory {
 
 		// Perform transformations called for by the Analysis section
 		Analysis analysis = context.getAnalysis();
-		DataSeriesType dataSeries = analysis.getSelect().getDataSeries();
+		//DataSeriesType dataSeries = analysis.getSelect().getDataSeries();
 		if (analysis.isAggregated()) {
 			adjResult = aggRunner.doAggregation(adjResult);
 			// Aggregation can handle weighting underneath

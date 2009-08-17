@@ -40,6 +40,7 @@ public class SavedSessionService extends HttpServlet {
 	}
 
 	public void getSessionsList(Long modelID) {
+		
 
 	}
 

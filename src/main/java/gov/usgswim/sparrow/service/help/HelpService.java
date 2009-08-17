@@ -1,8 +1,7 @@
 package gov.usgswim.sparrow.service.help;
 
-import gov.usgswim.sparrow.util.DataResourceUtils;
+import gov.usgswim.sparrow.util.SparrowResourceUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -12,9 +11,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.meterware.servletunit.ServletRunner;
-import com.meterware.servletunit.ServletUnitClient;
 
 // Specs:
 // Take a field/item id and a model name
@@ -65,7 +61,7 @@ public class HelpService extends HttpServlet {
 	}
 
 	public static Integer lookupModelID(String modelString) {
-		return DataResourceUtils.modelIndex.findFirst(0, modelString);
+		return SparrowResourceUtils.modelIndex.findFirst(0, modelString);
 	}
 
 	public static Integer parseInt(String value) {

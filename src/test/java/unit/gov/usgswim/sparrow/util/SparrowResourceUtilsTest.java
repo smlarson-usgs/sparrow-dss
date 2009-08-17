@@ -8,10 +8,10 @@ import gov.usgswim.datatable.DataTable;
 import org.junit.Test;
 
 
-public class DataResourceUtilsTest {
+public class SparrowResourceUtilsTest {
 	@Test
 	public void testInitModelIndex() {
-		DataTable modelIndex = DataResourceUtils.initModelIndex();
+		DataTable modelIndex = SparrowResourceUtils.initModelIndex();
 
 		assertNotNull(modelIndex);
 		assertEquals(2, modelIndex.getColumnCount());
