@@ -27,3 +27,12 @@ Student
 	Papers, references
 
 
+
+Combined List:
+-location of monitoring stations and other info
+-uncertainty
+-city/state map
+-land use
+-papers/references for model calculations
+-base year definition
+-applications of the sparrow model
