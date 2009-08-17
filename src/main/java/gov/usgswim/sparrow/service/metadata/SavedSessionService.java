@@ -38,4 +38,12 @@ public class SavedSessionService extends HttpServlet {
 		out.write("hello world");
 		out.flush();
 	}
+
+	public void getSessionsList(Long modelID) {
+
+	}
+
+	public void getSession(Long modelID, String sessionNameOrId) {
+
+	}
 }
