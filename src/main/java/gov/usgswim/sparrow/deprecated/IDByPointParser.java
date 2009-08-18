@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.deprecated;
 
 import gov.usgswim.service.AbstractHttpRequestParser;
-import gov.usgswim.sparrow.parser.ParserHelper;
 import gov.usgswim.sparrow.parser.ResponseFormat;
+import gov.usgswim.sparrow.util.ParserHelper;
 
 import java.awt.Point;
 

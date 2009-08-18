@@ -29,7 +29,7 @@ public class SavedSessionServiceTest extends HTTPServiceTestHelper{
 	@Test
 	public void testNoModelSubmitted() throws IOException, SAXException {
         WebResponse response = client.getResponse( SESSION_SERVICE_URL );
-        assertTrue("response should contain 'invalid'", response.getText().contains("invalid"));
+        assertTrue("Response should contain 'invalid'", response.getText().contains("invalid"));
 
 	}
 

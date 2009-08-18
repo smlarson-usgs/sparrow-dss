@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.parser;
 import static gov.usgswim.sparrow.parser.DataSeriesType.source_value;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import gov.usgswim.sparrow.util.ParserHelper;
 
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;

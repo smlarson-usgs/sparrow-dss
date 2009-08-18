@@ -2,8 +2,8 @@ package gov.usgswim.sparrow.service.predict;
 
 import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.service.RequestParser;
-import gov.usgswim.sparrow.parser.ParserHelper;
 import gov.usgswim.sparrow.parser.ResponseFormat;
+import gov.usgswim.sparrow.util.ParserHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.stream.XMLStreamReader;

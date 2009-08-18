@@ -11,11 +11,8 @@ public class DataLoaderOfflineTest extends TestCase {
 	}
 
 
-	//============================
-	// TODO determine whether these xtest methods are still relevant
-	//==============================
 	/**
-	 * @see DataLoader#getQuery(String)
+	 * @see DataLoader#retrieveQuery(String)
 	 */
 	public void testGetSelectReachCoefQueryWithParams() throws IOException {
 		String query = DataLoader.getQuery(

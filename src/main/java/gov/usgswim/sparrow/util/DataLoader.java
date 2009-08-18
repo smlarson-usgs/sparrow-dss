@@ -18,7 +18,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -33,6 +32,7 @@ import org.apache.log4j.Logger;
  */
 public class DataLoader {
 
+	public static final String PROPERTIES_FILE = "gov/usgswim/sparrow/util/DataLoader.properties";
 	protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
 	public static int DO_NOT_INDEX = -1;
 	public static final int SOURCE_ID_COL = 0;
@@ -295,9 +295,9 @@ public class DataLoader {
 		for (int srcIndex=0; srcIndex<sourceCount; srcIndex++) {
 
 			String query =
-				getQuery("SelectReachCoef", new Object[] {
+				getQuery("SelectReachCoef",
 						"ModelId", modelId, "Iteration", iteration, "SourceId", sources.getInt(srcIndex, SOURCE_ID_COL)
-				});
+				);
 
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			st.setFetchSize(2000);
@@ -356,9 +356,9 @@ public class DataLoader {
 		for (int srcIndex=0; srcIndex<sourceCount; srcIndex++) {
 
 			String query =
-				getQuery("SelectAllReachCoef", new Object[] {
+				getQuery("SelectAllReachCoef",
 						"ModelId", modelId, "SourceId", sources.getInt(srcIndex, SOURCE_ID_COL)
-				});
+				);
 
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			st.setFetchSize(2000);
@@ -408,9 +408,9 @@ public class DataLoader {
 	public static DataTableWritable loadDecay(Connection conn, long modelId, int iteration) throws SQLException,
 	IOException {
 
-		String query = getQuery("SelectDecayCoef", new Object[] {
+		String query = getQuery("SelectDecayCoef",
 				"ModelId", modelId, "Iteration", iteration
-		});
+		);
 
 		return DLUtils.readAsDouble(conn, query, 2000);
 
@@ -485,9 +485,9 @@ public class DataLoader {
 			String precision = sources.getString(srcIndex, sources.getColumnByName("PRECISION"));
 
 			String query =
-				getQuery("SelectSourceValues", new Object[] {
+				getQuery("SelectSourceValues",
 						"ModelId", modelId, "SourceId", sources.getInt(srcIndex, SOURCE_ID_COL)
-				});
+				);
 
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			st.setFetchSize(2000);
@@ -575,16 +575,7 @@ public class DataLoader {
 	 * @throws IOException
 	 */
 	public static String getQuery(String name, Object... params) throws IOException {
-		String query = getQuery(name);
-
-		for (int i=0; i<params.length; i+=2) {
-			String n = "$" + params[i].toString() + "$";
-			String v = params[i+1].toString();
-
-			query = StringUtils.replace(query, n, v);
-		}
-
-		return query;
+		return ResourceLoaderUtils.loadParametrizedProperty(PROPERTIES_FILE, name, params);
 	}
 
 	/**
@@ -599,17 +590,8 @@ public class DataLoader {
 	 * @throws IOException
 	 */
 	public static String getQuery(String name, long modelId) throws IOException {
-		String baseQuery = getQuery(name);
-
-		return StringUtils.replace(baseQuery, "$ModelId$", Long.toString(modelId));
+		return ResourceLoaderUtils.loadParametrizedProperty(PROPERTIES_FILE, name, "$ModelId$", Long.toString(modelId));
 	}
 
-	public static String getQuery(String name) throws IOException {
-		Properties props = new Properties();
-
-		props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("gov/usgswim/sparrow/util/DataLoader.properties"));
-
-		return props.getProperty(name);
-	}
 }
 

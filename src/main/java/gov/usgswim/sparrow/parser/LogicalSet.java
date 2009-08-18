@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.parser;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.Immutable;
+import gov.usgswim.sparrow.util.ParserHelper;
 
 import java.util.Collections;
 import java.util.HashMap;

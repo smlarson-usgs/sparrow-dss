@@ -5,7 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -20,6 +23,14 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  */
 public class ResourceLoaderUtils {
 
+	/**
+	 * Loads the resource as an instance of the given class
+	 * @param <T>
+	 * @param resourceFilePath
+	 * @param clazz the desired return class
+	 * @param objectElementName
+	 * @return
+	 */
 	public static <T> T loadResourceXMLFileAsObject(String resourceFilePath, Class<T> clazz, String objectElementName) {
 		InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceFilePath);
 		BufferedReader in = new BufferedReader(new InputStreamReader(stream));
@@ -30,6 +41,18 @@ public class ResourceLoaderUtils {
 		XStream xstream = new XStream(new DomDriver());
 		xstream.alias(objectElementName, clazz);
 		return clazz.cast(xstream.fromXML(inStream));
+	}
+
+
+	public static SmartXMLProperties loadResourceAsSmartXML(String resourceFilePath) {
+		InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceFilePath);
+		BufferedReader in = new BufferedReader(new InputStreamReader(stream));
+		return ResourceLoaderUtils.loadResourceAsSmartXML(in);
+	}
+
+	public static SmartXMLProperties loadResourceAsSmartXML(Reader inStream) {
+
+		return null;
 	}
 
 	/**
@@ -43,12 +66,10 @@ public class ResourceLoaderUtils {
 		Properties modelProperty  = new Properties();
 		try {
 			modelProperty.load(inStream);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-			try {
-				inStream.close();
-			} catch (IOException e1) {
-				// don't do anything
+			if (inStream != null) {
+				try {inStream.close();} catch (IOException e1) { /* do nothing */}
 			}
 		}
 		return modelProperty;
@@ -70,15 +91,12 @@ public class ResourceLoaderUtils {
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (stream != null) {
-				try {
-					stream.close();
-				} catch (IOException e1) {
-					// do nothing
-				}
+				try {stream.close();} catch (IOException e1) { /* do nothing */}
 			}
 			return new Properties(); // return an empty Properties
 		}
 	}
+
 
 	public static String loadProperty(String resourceFilePath, String key) {
 		Properties props = loadResourceAsProperties(resourceFilePath);
@@ -97,15 +115,39 @@ public class ResourceLoaderUtils {
 	 * @throws IOException
 	 */
 	public static String loadParametrizedProperty(String resourceFilePath, String key, Object... params) {
+		return loadParametrizedProperty(resourceFilePath, key, pairsToMap(params));
+	}
+
+	/**
+	 * @see ResourceLoaderUtils.loadParametrizedProperty()
+	 * @param resourceFilePath
+	 * @param key
+	 * @param substitutions
+	 * @return
+	 */
+	public static String loadParametrizedProperty(String resourceFilePath, String key, Map<Object, Object> substitutions) {
 		String query = ResourceLoaderUtils.loadProperty(resourceFilePath, key);
 
-		for (int i=0; i<params.length; i+=2) {
-			String n = "$" + params[i].toString() + "$";
-			String v = params[i+1].toString();
-
-			query = StringUtils.replace(query, n, v);
+		for (Entry<Object, Object> entry: substitutions.entrySet()) {
+			query = replaceParam(query, entry.getKey().toString(), entry.getValue().toString());
 		}
 
 		return query;
+	}
+
+	public static String replaceParam(String value, String paramName, String paramValue) {
+		paramName = "$" + paramName + "$";
+		return StringUtils.replace(value, paramName, paramValue);
+	}
+
+	public static <T> Map<T, T> pairsToMap(T[] params){
+		Map<T, T> map = new HashMap<T, T>();
+		for (int i=1; i<params.length; i+=2) {
+			T value = params[i];
+			if (value != null) {
+				map.put(params[i-1], value);
+			}
+		}
+		return map;
 	}
 }

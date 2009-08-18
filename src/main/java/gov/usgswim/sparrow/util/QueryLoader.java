@@ -4,9 +4,19 @@ import java.io.IOException;
 
 public class QueryLoader {
 	private String location;
+	private Object[] defaults;
 
 	public QueryLoader(String propFilePath) {
 		this.location = propFilePath;
+	}
+
+	/**
+	 * @param propFilePath
+	 * @param defaultParams substitution parameters added to every retrieved property
+	 */
+	public QueryLoader(String propFilePath, Object... defaultParams) {
+		this.location = propFilePath;
+		this.defaults = defaultParams;
 	}
 
 	/**
@@ -22,8 +32,16 @@ public class QueryLoader {
 	 * @return
 	 * @throws IOException
 	 */
-	public String getParametrizedQuery(String name, Object[] params) throws IOException {
-		return ResourceLoaderUtils.loadParametrizedProperty(location, name, params);
+	public String getParametrizedQuery(String name, Object... params) throws IOException {
+		String result = ResourceLoaderUtils.loadParametrizedProperty(location, name, params);
+		if (defaults != null) {
+			// apply the defaults
+			for (int i=0; i<defaults.length; i+=2) {
+				result = ResourceLoaderUtils.replaceParam(result, defaults[i].toString(), defaults[i+1].toString());
+			}
+		}
+
+		return result;
 	}
 
 }
