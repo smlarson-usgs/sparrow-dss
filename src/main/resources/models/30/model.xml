@@ -1,6 +1,6 @@
 <Model id="30">
 		<Authors>
-			<Author link="">First name, last name</Author>
+			<Author link="" id="1">First name, last name</Author>
 		</Authors>
 		<Model_name>National Suspended Sediment Model - 1992</Model_name>
 		<MRB></MRB>
