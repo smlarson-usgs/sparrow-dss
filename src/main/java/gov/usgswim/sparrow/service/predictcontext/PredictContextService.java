@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.service.predictcontext;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.PropertyLoaderHelper;
+import gov.usgswim.sparrow.util.QueryLoader;
 
 import java.io.StringReader;
 
@@ -11,8 +11,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 public class PredictContextService implements HttpService<PredictContextRequest> {
-	
-	private PropertyLoaderHelper props = new PropertyLoaderHelper("gov/usgswim/sparrow/service/predictcontext/PredictContextServiceTemplate.properties");
+
+	private QueryLoader props = new QueryLoader("gov/usgswim/sparrow/service/predictcontext/PredictContextServiceTemplate.properties");
 
 	public XMLStreamReader getXMLStreamReader(PredictContextRequest o,
 			boolean isNeedsCompleteFirstRow) throws Exception {
@@ -34,24 +34,24 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 			String adjustmentGroups = "";
 			String terminalReaches = "";
 			String areaOfInterest = "";
-			
+
 			if (context.getAdjustmentGroups() != null) {
 				String contextId = Integer.toString(context.getAdjustmentGroups().hashCode());
-				adjustmentGroups = props.getText("adjustment-groups", 
+				adjustmentGroups = props.getParametrizedQuery("adjustment-groups",
 						new String[] { "AdjustmentContextId",  contextId });
 			}
 			if (context.getTerminalReaches() != null) {
 				String contextId = Integer.toString(context.getTerminalReaches().hashCode());
-				terminalReaches = props.getText("terminal-reaches", 
+				terminalReaches = props.getParametrizedQuery("terminal-reaches",
 						new String[] { "TerminalContextId",  contextId });
 			}
 			if (context.getAreaOfInterest() != null) {
 				String contextId = Integer.toString(context.getAreaOfInterest().hashCode());
-				areaOfInterest = props.getText("area-of-interest", 
+				areaOfInterest = props.getParametrizedQuery("area-of-interest",
 						new String[] { "AreaOfInterstContextId",  contextId });
 			}
-			
-			String response = props.getText("ResponseOK", 
+
+			String response = props.getParametrizedQuery("ResponseOK",
 				new String[] {
 					"ModelId", context.getModelID().toString(),
 					"ContextId", Integer.toString( context.hashCode() ),
@@ -61,7 +61,7 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 					"terminal-reaches", terminalReaches,
 					"area-of-interest", areaOfInterest
 			});
-			
+
 			return inFact.createXMLStreamReader(new StringReader(response));
 		}
 		// failure
@@ -72,7 +72,7 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 		// TODO Auto-generated method stub
 
 	}
-	
+
 
 
 }

@@ -21,7 +21,7 @@ import gov.usgswim.sparrow.parser.ReachGroup;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.ValueType;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
-import gov.usgswim.sparrow.util.PropertyLoaderHelper;
+import gov.usgswim.sparrow.util.QueryLoader;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -93,7 +93,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	// INSTANCE FIELDS
 	// ===============
 	/** Properties helper for this object. */
-	private PropertyLoaderHelper props = new PropertyLoaderHelper(PROP_FILE);
+	private QueryLoader props = new QueryLoader(PROP_FILE);
 
 	// ===========
 	// CONSTRUCTOR
@@ -274,7 +274,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
                 "rowCount", "" + sourceMetadata.getRowCount(),
                 "adjustments", adjustmentRows.toString()
         };
-		String xmlResult = props.getText("adjustmentsXMLResponse", params);
+		String xmlResult = props.getParametrizedQuery("adjustmentsXMLResponse", params);
 
 		return xmlResult;
 	}
@@ -352,7 +352,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
             "incContribution", incrementalContribution,
             "totalContribution", totalContribution
 		};
-		String xmlResult = props.getText("predictedXMLResponse", params);
+		String xmlResult = props.getParametrizedQuery("predictedXMLResponse", params);
 
 		return xmlResult;
 	}
@@ -492,7 +492,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
             "ReachID", Long.toString(response.reachID),
             "ModelID", Long.toString(response.modelID),
 	    };
-		String attributesQuery = props.getText("attributesSQL", queryParams);
+		String attributesQuery = props.getParametrizedQuery("attributesSQL", queryParams);
 
 		DataTableWritable attributes = SharedApplication.queryToDataTable(attributesQuery);
 		// TODO [IK] This 4 is hardcoded for now. Have to go back and use SparrowModelProperties to do properly
@@ -503,7 +503,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		StringBuilder sparrowAttributesSection = toSection(response.sparrowAttributes, "SPARROW Attributes", "sparrow_attrib");
 
 		// attributesXMLResponse
-		response.attributesXML = props.getText("attributesXMLResponse",
+		response.attributesXML = props.getParametrizedQuery("attributesXMLResponse",
 				new String[] {
 				"AttributesCount", Integer.toString(attributes.getColumnCount()),
 				"BasicAttributes", basicAttributesSection.toString(),

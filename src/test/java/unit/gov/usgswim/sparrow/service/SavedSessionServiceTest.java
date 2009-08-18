@@ -1,47 +1,47 @@
 package gov.usgswim.sparrow.service;
 
-import static gov.usgswim.sparrow.service.ServiceTestConstants.WEB_XML_LOCATION;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.IOException;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import com.meterware.httpunit.WebResponse;
-import com.meterware.servletunit.ServletRunner;
-import com.meterware.servletunit.ServletUnitClient;
 
 
-public class SavedSessionServiceTest {
+public class SavedSessionServiceTest extends HTTPServiceTestHelper{
 
 	private static final String SESSION_SERVICE_URL = "http://localhost:8088/sp_session";
-	static ServletRunner servletRunner;
-	static ServletUnitClient client;
 
 	@BeforeClass
 	public static void setupClass() throws IOException, SAXException {
-		servletRunner = new ServletRunner(new File(WEB_XML_LOCATION));
-		client = servletRunner.newClient();
+		setupHTTPUnitTest();
+	}
+
+	@AfterClass
+	public static void teardownClass() {
+		teardownHTTPUnitTest();
 	}
 
 	@Test
 	public void testNoModelSubmitted() throws IOException, SAXException {
         WebResponse response = client.getResponse( SESSION_SERVICE_URL );
         assertTrue("response should contain 'invalid'", response.getText().contains("invalid"));
+
 	}
 
 	@Test
 	public void testRetrieveAllSessions() throws IOException, SAXException {
-        WebResponse response = client.getResponse( SESSION_SERVICE_URL + "?model=-1");
+        WebResponse response = client.getResponse( SESSION_SERVICE_URL + "?model=" + TEST_MODEL);
         assertTrue("Response should contain a <sessions> element", response.getText().contains("<sessions>"));
 	}
 
 	@Test
 	public void testRetrieveDesignatedSession() throws IOException, SAXException {
-        WebResponse response = client.getResponse( SESSION_SERVICE_URL + "?model=-1&session=mySession" );
+        WebResponse response = client.getResponse( SESSION_SERVICE_URL + "?model=" + TEST_MODEL + "&session=mySession" );
         assertTrue("Response should contain a JSON object (but is currently hello world)", response.getText().contains("hello world"));
 	}
 }

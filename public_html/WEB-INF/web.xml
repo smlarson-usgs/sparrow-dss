@@ -81,8 +81,8 @@
         <servlet-class>gov.usgswim.sparrow.service.metadata.SavedSessionService</servlet-class>
 	</servlet>
 	<servlet>
-        <servlet-name>DocumentationService</servlet-name>
-        <servlet-class>gov.usgswim.sparrow.service.doc.DocumentationService</servlet-class>
+        <servlet-name>HelpService</servlet-name>
+        <servlet-class>gov.usgswim.sparrow.service.help.HelpService</servlet-class>
 	</servlet>
 
 
@@ -124,8 +124,8 @@
         <url-pattern>/sp_findReach/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
-		<servlet-name>DocumentationService</servlet-name>
-		<url-pattern>/sp_doc/*</url-pattern>
+		<servlet-name>HelpService</servlet-name>
+		<url-pattern>/sp_help/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>SessionService</servlet-name>
