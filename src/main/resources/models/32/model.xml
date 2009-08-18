@@ -1,70 +1,70 @@
 <Model id="32">
-		<Authors>
-			<Author link="" id="1">First name, last name</Author>
-		</Authors>
-		<Model_name>MRB4 Total Nitrogen Model - 2002</Model_name>
-		<MRB>MRB04</MRB>
-		<Constituent>
-			<Name>Nitrogen</Name>
-			<Units>kg/yr</Units>
-			<Description></Description>
-		</Constituent>
-		<Sources>
-			<Source id="All">
-				<Name>All</Name>
-				<Units>kg/year</Units>
-				<Description>All sources combined.</Description>
-			</Source>
-			<Source id="Atm. deposition">
-				<Name>Atm. deposition</Name>
-				<Units>kg/year</Units>
-				<Description>Total load of atmospheric deposition per subbasin (kg)*/</Description>
-			</Source>
-			<Source id="Fertilizer (manure)">
-				<Name>Fertilizer (manure)</Name>
-				<Units>kg/year</Units>
-				<Description>Sum total of Nitrogen from manure (Confined and Unconfined) and Farm Fertilizer</Description>
-			</Source>
-			<Source id="Point Sources">
-				<Name>Point Sources</Name>
-				<Units>kg/year</Units>
-				<Description>1992, 1997, and 2002 average kilograms of nitrogen released by point sources</Description>
-			</Source>
-			<Source id="Developed Area">
-				<Name>Developed Area</Name>
-				<Units>sqkm</Units>
-				<Description>Total Developed Area (sqkm)</Description>
-			</Source>
-		</Sources>
-		<Model_papers>
-			<Paper id="1">
+	<Authors>
+		<Author link="" id="1">First name, last name</Author>
+	</Authors>
+	<Model_name>MRB4 Total Nitrogen Model - 2002</Model_name>
+	<MRB>MRB04</MRB>
+	<Constituent>
+		<Name>Nitrogen</Name>
+		<Units>kg/yr</Units>
+		<Description/>
+	</Constituent>
+	<Sources>
+		<Source id="All">
+			<Name>All</Name>
+			<Units>kg/year</Units>
+			<Description>All sources combined.</Description>
+		</Source>
+		<Source id="Atm. deposition">
+			<Name>Atm. deposition</Name>
+			<Units>kg/year</Units>
+			<Description>Total load of atmospheric deposition per subbasin (kg)*/</Description>
+		</Source>
+		<Source id="Fertilizer (manure)">
+			<Name>Fertilizer (manure)</Name>
+			<Units>kg/year</Units>
+			<Description>Sum total of Nitrogen from manure (Confined and Unconfined) and Farm Fertilizer</Description>
+		</Source>
+		<Source id="Point Sources">
+			<Name>Point Sources</Name>
+			<Units>kg/year</Units>
+			<Description>1992, 1997, and 2002 average kilograms of nitrogen released by point sources</Description>
+		</Source>
+		<Source id="Developed Area">
+			<Name>Developed Area</Name>
+			<Units>sqkm</Units>
+			<Description>Total Developed Area (sqkm)</Description>
+		</Source>
+	</Sources>
+	<Model_papers>
+		<Paper id="1">
 			<Link link=""/>
 			<Citation_mods>
-				<identifier type=""></identifier>
-				<identifier type=""></identifier>
-				<identifier type=""></identifier>
-				<genre></genre>
+				<identifier type=""/>
+				<identifier type=""/>
+				<identifier type=""/>
+				<genre/>
 				<titleInfo>
-					<title></title>
+					<title/>
 				</titleInfo>
 				<originInfo>
-					<dateOther></dateOther>
-					<publisher></publisher>
-					<placeTerm></placeTerm>
+					<dateOther/>
+					<publisher/>
+					<placeTerm/>
 				</originInfo>
 				<name>
-					<namePart></namePart>
+					<namePart/>
 					<role>Author</role>
 				</name>
 				<physicalDescription>
-					<form></form>
-					<form></form>
-					<form></form>
+					<form/>
+					<form/>
+					<form/>
 				</physicalDescription>
-				<note type="citation/reference"></note>
-				<edition></edition>
-				<languageTerm></languageTerm>
+				<note type="citation/reference"/>
+				<edition/>
+				<languageTerm/>
 			</Citation_mods>
-			</Paper>
-		</Model_papers>
+		</Paper>
+	</Model_papers>
 </Model>

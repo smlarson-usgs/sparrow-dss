@@ -1,95 +1,95 @@
 <Model id="43">
-			<Authors>
-				<Author link="" id="1">First name, last name</Author>
-			</Authors>
-			<Model_name>MRB07 Nitrogen</Model_name>
-			<MRB>MRB07</MRB>
-			<Constituent>
-				<Name>Nitrogen</Name>
-				<Units>kg/yr</Units>
-				<Description> </Description>
-			</Constituent>
-			<Sources>
-					<Source id="All">
-						<Name>All</Name>
-						<Units></Units>
-						<Description>All sources combined.</Description>
-					</Source>
-					<Source id="boundary_">
-						<Name>boundary_</Name>
-						<Units></Units>
-						<Description></Description>
-					</Source>
-					<Source id="canbasin">
-						<Name>canbasin</Name>
-						<Units></Units>
-						<Description></Description>
-					</Source>
-					<Source id="atdep_loa">
-						<Name>atdep_loa</Name>
-						<Units>kg/year</Units>
-						<Description>Average annual inorganic nitrogen (kg) atmospheric (wet) deposition</Description>
-					</Source>
-					<Source id="ps_n_02_a">
-						<Name>ps_n_02_a</Name>
-						<Units>kg/year</Units>
-						<Description>Sum of total nitrogen loading from all point sources for WY 2002 (kg)</Description>
-					</Source>
-					<Source id="farm_n">
-						<Name>farm_n</Name>
-						<Units>kg/year</Units>
-						<Description>Sum total of Fertilizer Nitrogen from farms (kg)</Description>
-					</Source>
-					<Source id="total_man">
-						<Name>total_man</Name>
-						<Units>kg/year</Units>
-						<Description>Total manure loading of nitrogen (kg)</Description>
-					</Source>
-					<Source id="nlcd_deve">
-						<Name>nlcd_deve</Name>
-						<Units>km2</Units>
-						<Description>area of developed land (square kilometers)</Description>
-					</Source>
-					<Source id="west_nlcd">
-						<Name>west_nlcd</Name>
-						<Units>km2</Units>
-						<Description>area of west-side forested land (square kilometers)</Description>
-					</Source>
-					<Source id="east_nlcd">
-						<Name>east_nlcd</Name>
-						<Units>km2</Units>
-						<Description>area of east-side forested land (square kilometers)</Description>
-					</Source>
-			</Sources>
-			<Model_papers>
-					<Paper id="1">
-					<Link link=""/>
-					<Citation_mods>
-						<identifier type=""></identifier>
-						<identifier type=""></identifier>
-						<identifier type=""></identifier>
-						<genre></genre>
-						<titleInfo>
-							<title></title>
-						</titleInfo>
-						<originInfo>
-							<dateOther></dateOther>
-							<publisher></publisher>
-							<placeTerm></placeTerm>
-						</originInfo>
-						<name>
-							<namePart></namePart>
-							<role>Author</role>
-						</name>
-						<physicalDescription>
-							<form></form>
-							<form></form>
-							<form></form>
-						</physicalDescription>
-						<note type="citation/reference"></note>
-						<edition></edition>
-						<languageTerm></languageTerm>
-					</Citation_mods>
-					</Paper>
-			</Model_papers>
+	<Authors>
+		<Author link="" id="1">First name, last name</Author>
+	</Authors>
+	<Model_name>MRB07 Nitrogen</Model_name>
+	<MRB>MRB07</MRB>
+	<Constituent>
+		<Name>Nitrogen</Name>
+		<Units>kg/yr</Units>
+		<Description> </Description>
+	</Constituent>
+	<Sources>
+		<Source id="All">
+			<Name>All</Name>
+			<Units/>
+			<Description>All sources combined.</Description>
+		</Source>
+		<Source id="boundary_">
+			<Name>boundary_</Name>
+			<Units/>
+			<Description/>
+		</Source>
+		<Source id="canbasin">
+			<Name>canbasin</Name>
+			<Units/>
+			<Description/>
+		</Source>
+		<Source id="atdep_loa">
+			<Name>atdep_loa</Name>
+			<Units>kg/year</Units>
+			<Description>Average annual inorganic nitrogen (kg) atmospheric (wet) deposition</Description>
+		</Source>
+		<Source id="ps_n_02_a">
+			<Name>ps_n_02_a</Name>
+			<Units>kg/year</Units>
+			<Description>Sum of total nitrogen loading from all point sources for WY 2002 (kg)</Description>
+		</Source>
+		<Source id="farm_n">
+			<Name>farm_n</Name>
+			<Units>kg/year</Units>
+			<Description>Sum total of Fertilizer Nitrogen from farms (kg)</Description>
+		</Source>
+		<Source id="total_man">
+			<Name>total_man</Name>
+			<Units>kg/year</Units>
+			<Description>Total manure loading of nitrogen (kg)</Description>
+		</Source>
+		<Source id="nlcd_deve">
+			<Name>nlcd_deve</Name>
+			<Units>km2</Units>
+			<Description>area of developed land (square kilometers)</Description>
+		</Source>
+		<Source id="west_nlcd">
+			<Name>west_nlcd</Name>
+			<Units>km2</Units>
+			<Description>area of west-side forested land (square kilometers)</Description>
+		</Source>
+		<Source id="east_nlcd">
+			<Name>east_nlcd</Name>
+			<Units>km2</Units>
+			<Description>area of east-side forested land (square kilometers)</Description>
+		</Source>
+	</Sources>
+	<Model_papers>
+		<Paper id="1">
+			<Link link=""/>
+			<Citation_mods>
+				<identifier type=""/>
+				<identifier type=""/>
+				<identifier type=""/>
+				<genre/>
+				<titleInfo>
+					<title/>
+				</titleInfo>
+				<originInfo>
+					<dateOther/>
+					<publisher/>
+					<placeTerm/>
+				</originInfo>
+				<name>
+					<namePart/>
+					<role>Author</role>
+				</name>
+				<physicalDescription>
+					<form/>
+					<form/>
+					<form/>
+				</physicalDescription>
+				<note type="citation/reference"/>
+				<edition/>
+				<languageTerm/>
+			</Citation_mods>
+		</Paper>
+	</Model_papers>
 </Model>

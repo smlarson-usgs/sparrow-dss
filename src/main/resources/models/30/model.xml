@@ -1,120 +1,120 @@
 <Model id="30">
-		<Authors>
-			<Author link="" id="1">First name, last name</Author>
-		</Authors>
-		<Model_name>National Suspended Sediment Model - 1992</Model_name>
-		<MRB></MRB>
-		<Constituent>
-			<Name>Suspended Sediment</Name>
-			<Units>kg/yr</Units>
-			<Description></Description>
-		</Constituent>
-		<Sources>
-			<Source id="All">
-				<Name>All</Name>
-				<Units>kg/year</Units>
-				<Description>All sources combined.</Description>
-			</Source>
-			<Source id="point (N/A)">
-				<Name>point (N/A)</Name>
-				<Units>kg/year</Units>
-				<Description>1992 Point srce TSS dischrge on RF1 (kg)</Description>
-			</Source>
-			<Source id="point_off (N/A)">
-				<Name>point_off (N/A)</Name>
-				<Units>kg/year</Units>
-				<Description>1992 Point srce TSS dischrge off RF1 (kg)</Description>
-			</Source>
-			<Source id="Urban land">
-				<Name>Urban Land</Name>
-				<Units>km2</Units>
-				<Description>Urban land area 1992 (km2)</Description>
-			</Source>
-			<Source id="Forest land">
-				<Name>Forest land</Name>
-				<Units>km2</Units>
-				<Description>Forest land area 1992 (km2)</Description>
-			</Source>
-			<Source id="Federal land">
-				<Name>Federal land</Name>
-				<Units>km2</Units>
-				<Description>Federal land area 1992 (km2)</Description>
-			</Source>
-			<Source id="fed_range_92 (N/A)">
-				<Name>fed_range_92 (N/A)</Name>
-				<Units>km2</Units>
-				<Description>Federal rangeland area 1992 (km2)</Description>
-			</Source>
-			<Source id="Crop/pasture/orchard">
-				<Name>Crop/pasture/orchard</Name>
-				<Units>km2</Units>
-				<Description>Crop/pasture/orchrd land area 1992 (km2)</Description>
-			</Source>
-			<Source id="pasture (N/A)">
-				<Name>pasture (N/A)</Name>
-				<Units>km2</Units>
-				<Description>Pasture land (km2)</Description>
-			</Source>
-			<Source id="wetland_92">
-				<Name>wetland_92</Name>
-				<Units>km2</Units>
-				<Description>wetland area 1992 (km2)</Description>
-			</Source>
-			<Source id="Non-fed rangeland">
-				<Name>Non-fed rangeland</Name>
-				<Units>km2</Units>
-				<Description>Non-federal range and barren land (km2)</Description>
-			</Source>
-			<Source id="usle92 (N/A)">
-				<Name>usle92 (N/A)</Name>
-				<Units>kg/year</Units>
-				<Description>1992 NRI water Soil erosion (kg)</Description>
-			</Source>
-			<Source id="weq92 (N/A)">
-				<Name>weq92 (N/A)</Name>
-				<Units>km2</Units>
-				<Description>1992 NRI wind soil erosion (kg)</Description>
-			</Source>
-			<Source id="Reach length">
-				<Name>Reach length</Name>
-				<Units>m</Units>
-				<Description>REACH LENGTH (METERS)</Description>
-			</Source>
-			<Source id="nridev_92 (N/A)">
-				<Name>nridev_92 (N/A)</Name>
-				<Units>km2</Units>
-				<Description>NRI change in urban land 1987 - 1992 (km2)</Description>
-			</Source>
-		</Sources>
-		<Model_papers>
-			<Paper id="1">
+	<Authors>
+		<Author link="" id="1">First name, last name</Author>
+	</Authors>
+	<Model_name>National Suspended Sediment Model - 1992</Model_name>
+	<MRB/>
+	<Constituent>
+		<Name>Suspended Sediment</Name>
+		<Units>kg/yr</Units>
+		<Description/>
+	</Constituent>
+	<Sources>
+		<Source id="All">
+			<Name>All</Name>
+			<Units>kg/year</Units>
+			<Description>All sources combined.</Description>
+		</Source>
+		<Source id="point (N/A)">
+			<Name>point (N/A)</Name>
+			<Units>kg/year</Units>
+			<Description>1992 Point srce TSS dischrge on RF1 (kg)</Description>
+		</Source>
+		<Source id="point_off (N/A)">
+			<Name>point_off (N/A)</Name>
+			<Units>kg/year</Units>
+			<Description>1992 Point srce TSS dischrge off RF1 (kg)</Description>
+		</Source>
+		<Source id="Urban land">
+			<Name>Urban Land</Name>
+			<Units>km2</Units>
+			<Description>Urban land area 1992 (km2)</Description>
+		</Source>
+		<Source id="Forest land">
+			<Name>Forest land</Name>
+			<Units>km2</Units>
+			<Description>Forest land area 1992 (km2)</Description>
+		</Source>
+		<Source id="Federal land">
+			<Name>Federal land</Name>
+			<Units>km2</Units>
+			<Description>Federal land area 1992 (km2)</Description>
+		</Source>
+		<Source id="fed_range_92 (N/A)">
+			<Name>fed_range_92 (N/A)</Name>
+			<Units>km2</Units>
+			<Description>Federal rangeland area 1992 (km2)</Description>
+		</Source>
+		<Source id="Crop/pasture/orchard">
+			<Name>Crop/pasture/orchard</Name>
+			<Units>km2</Units>
+			<Description>Crop/pasture/orchrd land area 1992 (km2)</Description>
+		</Source>
+		<Source id="pasture (N/A)">
+			<Name>pasture (N/A)</Name>
+			<Units>km2</Units>
+			<Description>Pasture land (km2)</Description>
+		</Source>
+		<Source id="wetland_92">
+			<Name>wetland_92</Name>
+			<Units>km2</Units>
+			<Description>wetland area 1992 (km2)</Description>
+		</Source>
+		<Source id="Non-fed rangeland">
+			<Name>Non-fed rangeland</Name>
+			<Units>km2</Units>
+			<Description>Non-federal range and barren land (km2)</Description>
+		</Source>
+		<Source id="usle92 (N/A)">
+			<Name>usle92 (N/A)</Name>
+			<Units>kg/year</Units>
+			<Description>1992 NRI water Soil erosion (kg)</Description>
+		</Source>
+		<Source id="weq92 (N/A)">
+			<Name>weq92 (N/A)</Name>
+			<Units>km2</Units>
+			<Description>1992 NRI wind soil erosion (kg)</Description>
+		</Source>
+		<Source id="Reach length">
+			<Name>Reach length</Name>
+			<Units>m</Units>
+			<Description>REACH LENGTH (METERS)</Description>
+		</Source>
+		<Source id="nridev_92 (N/A)">
+			<Name>nridev_92 (N/A)</Name>
+			<Units>km2</Units>
+			<Description>NRI change in urban land 1987 - 1992 (km2)</Description>
+		</Source>
+	</Sources>
+	<Model_papers>
+		<Paper id="1">
 			<Link link=""/>
 			<Citation_mods>
-				<identifier type=""></identifier>
-				<identifier type=""></identifier>
-				<identifier type=""></identifier>
-				<genre></genre>
+				<identifier type=""/>
+				<identifier type=""/>
+				<identifier type=""/>
+				<genre/>
 				<titleInfo>
-					<title></title>
+					<title/>
 				</titleInfo>
 				<originInfo>
-					<dateOther></dateOther>
-					<publisher></publisher>
-					<placeTerm></placeTerm>
+					<dateOther/>
+					<publisher/>
+					<placeTerm/>
 				</originInfo>
 				<name>
-					<namePart></namePart>
+					<namePart/>
 					<role>Author</role>
 				</name>
 				<physicalDescription>
-					<form></form>
-					<form></form>
-					<form></form>
+					<form/>
+					<form/>
+					<form/>
 				</physicalDescription>
-				<note type="citation/reference"></note>
-				<edition></edition>
-				<languageTerm></languageTerm>
+				<note type="citation/reference"/>
+				<edition/>
+				<languageTerm/>
 			</Citation_mods>
-			</Paper>
-		</Model_papers>
+		</Paper>
+	</Model_papers>
 </Model>

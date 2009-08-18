@@ -1,64 +1,64 @@
 <Documentation>
-<General/>
+	<General/>
 	<SPARROW_model>
 		<SPARROW_papers>
 			<Paper id="paper">
-			<Link link="http://water.usgs.gov/nawqa/sparrow/wrr97/results.html"/>
-			<Citation_mods>
-				<identifier type=""></identifier>
-				<identifier type=""></identifier>
-				<identifier type=""></identifier>
-				<genre></genre>
-				<titleInfo>
-					<title>SPARROW Surface Water-Quality Modeling Nutrients in Watersheds of the Coterminous United States</title>
-				</titleInfo>
-				<originInfo>
-					<dateOther>1997-01-01 00:00:00.0</dateOther>
-					<publisher>Apress</publisher>
-					<placeTerm></placeTerm>
-				</originInfo>
-				<name>
-					<namePart>Smith, R.A., G.E. Schwarz, and R.B. Alexander</namePart>
-					<role>Author</role>
-				</name>
-				<physicalDescription>
-					<form></form>
-					<form></form>
-					<form></form>
-				</physicalDescription>
-				<note type="citation/reference">Smith, R.A. et al. 1997. SPARROW Surface Water-Quality Modeling Nutrients in Watersheds of the Coterminous United States. Regional interpretation of water-quality monitoring data, Water Resources Research, v. 33, no. 12, pp.2781-2798</note>
-				<edition></edition>
-				<languageTerm>ENGLISH</languageTerm>
-			</Citation_mods>
+				<Link link="http://water.usgs.gov/nawqa/sparrow/wrr97/results.html"/>
+				<Citation_mods>
+					<identifier type=""/>
+					<identifier type=""/>
+					<identifier type=""/>
+					<genre/>
+					<titleInfo>
+						<title>SPARROW Surface Water-Quality Modeling Nutrients in Watersheds of the Coterminous United States</title>
+					</titleInfo>
+					<originInfo>
+						<dateOther>1997-01-01 00:00:00.0</dateOther>
+						<publisher>Apress</publisher>
+						<placeTerm/>
+					</originInfo>
+					<name>
+						<namePart>Smith, R.A., G.E. Schwarz, and R.B. Alexander</namePart>
+						<role>Author</role>
+					</name>
+					<physicalDescription>
+						<form/>
+						<form/>
+						<form/>
+					</physicalDescription>
+					<note type="citation/reference">Smith, R.A. et al. 1997. SPARROW Surface Water-Quality Modeling Nutrients in Watersheds of the Coterminous United States. Regional interpretation of water-quality monitoring data, Water Resources Research, v. 33, no. 12, pp.2781-2798</note>
+					<edition/>
+					<languageTerm>ENGLISH</languageTerm>
+				</Citation_mods>
 			</Paper>
 			<Paper id="factsheet">
-			<Link link="http://pubs.usgs.gov/fs/2009/3019/pdf/fs_2009_3019.pdf"/>
-			<Citation_mods>
-				<identifier type="">myid</identifier>
-				<identifier type=""></identifier>
-				<identifier type=""></identifier>
-				<genre></genre>
-				<titleInfo>
-					<title>SPARROW MODELING - Enhancing Understanding of the Nation's Water Quality</title>
-				</titleInfo>
-				<originInfo>
-					<dateOther>2009-03-01 00:00:00.0</dateOther>
-					<publisher>U.S. Geological Survey</publisher>
-					<placeTerm></placeTerm>
-				</originInfo>
-				<name>
-					<namePart>Preston, S.D., Alexander, R.B., Woodside, M.D., and Hamilton, P.A.</namePart>
-					<role>Author</role>
-				</name>
-				<physicalDescription>
-					<form></form>
-					<form></form>
-					<form></form>
-				</physicalDescription>
-				<note type="citation/reference">Preston, S.D., Alexander, R.B., Woodside, M.D., and Hamilton, P.A., 2009, SPARROW MODELING-Enhancing Understanding of the Nation's Water Quality: U.S. Geological Survey Fact Sheet 2009-3019, 6 p.</note>
-				<edition></edition>
-				<languageTerm>ENGLISH</languageTerm>
-			</Citation_mods>
+				<Link link="http://pubs.usgs.gov/fs/2009/3019/pdf/fs_2009_3019.pdf"/>
+				<Citation_mods>
+					<identifier type="">myid</identifier>
+					<identifier type=""/>
+					<identifier type=""/>
+					<genre/>
+					<titleInfo>
+						<title>SPARROW MODELING - Enhancing Understanding of the Nation's Water Quality</title>
+					</titleInfo>
+					<originInfo>
+						<dateOther>2009-03-01 00:00:00.0</dateOther>
+						<publisher>U.S. Geological Survey</publisher>
+						<placeTerm/>
+					</originInfo>
+					<name>
+						<namePart>Preston, S.D., Alexander, R.B., Woodside, M.D., and Hamilton, P.A.</namePart>
+						<role>Author</role>
+					</name>
+					<physicalDescription>
+						<form/>
+						<form/>
+						<form/>
+					</physicalDescription>
+					<note type="citation/reference">Preston, S.D., Alexander, R.B., Woodside, M.D., and Hamilton, P.A., 2009, SPARROW MODELING-Enhancing Understanding of the Nation's Water Quality: U.S. Geological Survey Fact Sheet 2009-3019, 6 p.</note>
+					<edition/>
+					<languageTerm>ENGLISH</languageTerm>
+				</Citation_mods>
 			</Paper>
 		</SPARROW_papers>
 	</SPARROW_model>
@@ -125,7 +125,5 @@
 				<Definition>Calculates the average, maximum, minimum, or sum of the model output when the map displays over HUC.</Definition>
 			</Term>
 		</Common_terms>
-		<Models>
-		</Models>
 	</DSS>
 </Documentation>
