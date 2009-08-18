@@ -1,0 +1,81 @@
+<Model id="42">
+				<Authors>
+					<Author link="" id="1">First name, last name</Author>
+				</Authors>
+
+				<Model_name>MRB03 Phosphorus</Model_name>
+				<MRB>MRB03</MRB>
+				<Constituent>
+					<Name>Phosphorus</Name>
+					<Units>kg/yr</Units>
+					<Description> </Description>
+				</Constituent>
+				<Sources>
+					<Source id="All">
+						<Name>All</Name>
+						<Units>kg/year</Units>
+						<Description>All sources combined.</Description>
+					</Source>
+					<Source id="pcs_02_t">
+						<Name>pcs_02_t</Name>
+						<Units>kg/year</Units>
+						<Description>PCS phosphorus 2002, kg (total)</Description>
+					</Source>
+					<Source id="manc_p">
+						<Name>manc_p</Name>
+						<Units>kg/year</Units>
+						<Description>Sum of total Phosphorus from Manure in Confined Operations (kg)</Description>
+					</Source>
+					<Source id="manu_p">
+						<Name>manu_p</Name>
+						<Units>kg/year</Units>
+						<Description>Sum of total Phosphorus from Manure in Unconfined Operations (kg)</Description>
+					</Source>
+					<Source id="Farm_P">
+						<Name>Farm_P</Name>
+						<Units>kg/year</Units>
+						<Description>Sum total of Phosphorus from Farms (kg)</Description>
+					</Source>
+					<Source id="wetwood">
+						<Name>wetwood</Name>
+						<Units>kg/year</Units>
+						<Description></Description>
+					</Source>
+					<Source id="urban">
+						<Name>urban</Name>
+						<Units>kg/year</Units>
+						<Description></Description>
+					</Source>
+				</Sources>
+				<Model_papers>
+					<Paper id="1">
+					<Link link=""/>
+					<Citation_mods>
+						<identifier type=""></identifier>
+						<identifier type=""></identifier>
+						<identifier type=""></identifier>
+						<genre></genre>
+						<titleInfo>
+							<title></title>
+						</titleInfo>
+						<originInfo>
+							<dateOther></dateOther>
+							<publisher></publisher>
+							<placeTerm></placeTerm>
+						</originInfo>
+						<name>
+							<namePart></namePart>
+							<role>Author</role>
+						</name>
+						<physicalDescription>
+							<form></form>
+							<form></form>
+							<form></form>
+						</physicalDescription>
+						<note type="citation/reference"></note>
+						<edition></edition>
+						<languageTerm></languageTerm>
+					</Citation_mods>
+					</Paper>
+				</Model_papers>
+			</Model>
