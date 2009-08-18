@@ -3,8 +3,7 @@
  */
 package gov.usgswim.sparrow.util;
 
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.*;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -34,17 +33,17 @@ public class ParseState{
 	}
 
 	public boolean isOnRoot() {
-		return depth==0 && stream.getEventType() == START_ELEMENT;
+		return (depth == 0) && (stream.getEventType()) == START_ELEMENT;
 	}
 
 	public boolean isOnRootChildEnd() {
-		return (depth == 1) && (stream.getEventType() == END_ELEMENT);
+		return (depth == 0) && (stream.getEventType() == END_ELEMENT);
 	}
 
 	public void parseToNextRootChildStart() throws XMLStreamException {
 		while (stream.hasNext()) {
-			int currentEvent = next();
-			if (depth == 1 && currentEvent == START_ELEMENT) {
+			next();
+			if (isOnRootChildStart()) {
 				return;
 			}
 		}
@@ -53,17 +52,30 @@ public class ParseState{
 	public void parseToRootChildEnd() throws XMLStreamException {
 		assert(isOnRootChildStart()): "Parsing to the end should only be called when on a start element of a root child";
 		content = new StringBuilder();
-		writeCurentEvent(stream, content);
 		while (stream.hasNext()) {
-			int currentEvent = next();
-			writeCurentEvent(stream, content);
-			if (depth == 1 && currentEvent == END_ELEMENT) {
+			next();
+			if (isOnRootChildEnd()) {
 				return;
 			}
+			writeCurentEvent(stream, content);
 		}
 	}
 
 	public static void writeCurentEvent(XMLStreamReader in, StringBuilder record) {
+		int current = in.getEventType();
+		switch(current) {
+			case START_ELEMENT:
+				record.append("<" + in.getLocalName() + ">");
+				break;
+			case END_ELEMENT:
+				record.append("</" + in.getLocalName() + ">");
+				break;
+			case CHARACTERS:
+				String text = in.getText();
+				text = (text == null)? "" : text.trim();
+				record.append(text);
+				break;
+		}
 
 	}
 

@@ -63,74 +63,19 @@ public class SmartXMLProperties {
 
 		while(in.hasNext()) {
 			if (state.isOnRoot()) {
+				System.out.println("on Root: " + in.getLocalName());
 				state.parseToNextRootChildStart();
 			} else if (state.isOnRootChildStart()){
+				System.out.println("on Child Start: " + in.getLocalName());
 				state.parseToRootChildEnd();
 			} else if (state.isOnRootChildEnd()) {
+				System.out.println("on Child End: " + in.getLocalName());
+				System.out.println(state.content.toString());
 				state.parseToNextRootChildStart();
 			} else {
 				throw new IllegalStateException("the above should be the only legal states");
 			}
 		}
-
-
-
-
-
-
-
-//		boolean isStarted = false;
-//
-//		while (in.hasNext()) {
-//			if (isStarted) {
-//				// Don't advance past the first element.
-//				eventCode = in.next();
-//			} else {
-//				isStarted = true;
-//			}
-//
-//			// Main event loop -- parse until corresponding target end tag encountered.
-//			switch (eventCode) {
-//				case START_ELEMENT:
-//					localName = in.getLocalName();
-//					if (isTargetMatch(localName)) {
-//						String modelIdString = in.getAttributeValue(DEFAULT_NS_PREFIX, "model-id");
-//						modelID = (modelIdString == null || modelIdString.length() == 0)? null: Long.valueOf(modelIdString);
-//
-//						String idString = in.getAttributeValue(DEFAULT_NS_PREFIX, XMLStreamParserComponent.ID_ATTR);
-//						id = (idString == null || idString.length() == 0)? null: Integer.valueOf(idString);
-//					}// the following are all children matches
-//					else if (AdjustmentGroups.isTargetMatch(localName)) {
-//						this.adjustmentGroups = AdjustmentGroups.parseStream(in, modelID);
-//						adjustmentGroupsID = (adjustmentGroups == null)? null: adjustmentGroups.getId();
-//					} else if (TerminalReaches.isTargetMatch(localName)) {
-//						this.terminalReaches = TerminalReaches.parseStream(in, modelID);
-//						terminalReachesID = (terminalReaches == null)? null: terminalReaches.getId();
-//					} else if (Analysis.isTargetMatch(localName)) {
-//						this.analysis = Analysis.parseStream(in);
-//						analysisID = (analysis == null)? null: analysis.getId();
-//					} else if (AreaOfInterest.isTargetMatch(localName)) {
-//						this.areaOfInterest = AreaOfInterest.parseStream(in, modelID);
-//						areaOfInterestID = (areaOfInterest == null)? null: areaOfInterest.getId();
-//					} else {
-//						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
-//					}
-//					break;
-//				case END_ELEMENT:
-//					localName = in.getLocalName();
-//					if (MAIN_ELEMENT_NAME.equals(localName)) {
-//						// TODO [IK] Might want to calculate PC id here.
-//						// TODO [eric] If the ID is unavailable because this is
-//						// a new PContext, when in the object lifecycle should
-//						// id be calculated and populated? Here? on cache.put()?
-//						checkValidity();
-//						return this; // we're done
-//					}
-//					// otherwise, error
-//					throw new XMLParseValidationException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);
-//			}
-//		}
-//		throw new XMLParseValidationException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
 	}
 
 }
