@@ -3,7 +3,6 @@ package gov.usgswim.sparrow.cachefactory;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultCompare;
 import gov.usgswim.sparrow.parser.Analysis;
-import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.WeightRunner;

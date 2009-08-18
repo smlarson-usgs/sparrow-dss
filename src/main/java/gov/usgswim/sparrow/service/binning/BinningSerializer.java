@@ -2,11 +2,10 @@ package gov.usgswim.sparrow.service.binning;
 
 import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_NAMESPACE;
 import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
-
-import java.math.BigDecimal;
-
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
+
+import java.math.BigDecimal;
 
 import javax.xml.stream.XMLStreamException;
 

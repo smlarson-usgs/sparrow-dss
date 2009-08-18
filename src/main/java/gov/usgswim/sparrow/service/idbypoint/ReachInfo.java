@@ -5,8 +5,6 @@ import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeClosedFullTag
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeClosingTag;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeNonNullTag;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeOpeningTag;
-
-
 import gov.usgswim.Immutable;
 /**
  * Simple bean class to hold a reach that was identified by a user lat/long location.

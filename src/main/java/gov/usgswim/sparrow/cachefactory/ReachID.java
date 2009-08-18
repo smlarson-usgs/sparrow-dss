@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
 import gov.usgswim.Immutable;
+
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Simple bean class to hold reach identification that was identified by a user

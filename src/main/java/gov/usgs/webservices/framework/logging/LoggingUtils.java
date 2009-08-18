@@ -1,12 +1,11 @@
 package gov.usgs.webservices.framework.logging;
 
 
+import static org.apache.log4j.Level.WARN;
 import gov.usgs.webservices.framework.utils.StringUtils;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-
-import static org.apache.log4j.Level.*;
 
 /**
  * Logging class to hide dependence on choice of logging framework -- log4j or

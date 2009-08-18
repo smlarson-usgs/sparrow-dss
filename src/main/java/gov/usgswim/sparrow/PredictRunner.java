@@ -1,8 +1,12 @@
 package gov.usgswim.sparrow;
 
+import static gov.usgswim.sparrow.PredictData.FNODE_COL;
+import static gov.usgswim.sparrow.PredictData.IFTRAN_COL;
+import static gov.usgswim.sparrow.PredictData.INSTREAM_DECAY_COL;
+import static gov.usgswim.sparrow.PredictData.TNODE_COL;
+import static gov.usgswim.sparrow.PredictData.UPSTREAM_DECAY_COL;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
-import static gov.usgswim.sparrow.PredictData.*;
 
 /**
  * A simple SPARROW prediction implementation.

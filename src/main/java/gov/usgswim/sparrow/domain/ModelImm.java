@@ -3,7 +3,6 @@ package gov.usgswim.sparrow.domain;
 import gov.usgswim.Immutable;
 
 import java.io.Serializable;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;

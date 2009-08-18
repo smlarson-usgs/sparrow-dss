@@ -1,5 +1,14 @@
 package gov.usgswim.sparrow.loader;
 
+import static gov.usgswim.sparrow.loader.DataFileDescriptor.DataType.ByteType;
+import static gov.usgswim.sparrow.loader.DataFileDescriptor.DataType.DoubleType;
+import static gov.usgswim.sparrow.loader.DataFileDescriptor.DataType.FloatType;
+import static gov.usgswim.sparrow.loader.DataFileDescriptor.DataType.IntType;
+import static gov.usgswim.sparrow.loader.DataFileDescriptor.DataType.LongType;
+import static gov.usgswim.sparrow.loader.DataFileDescriptor.DataType.ShortType;
+import static gov.usgswim.sparrow.loader.DataFileDescriptor.DataType.StringType;
+import gov.usgswim.sparrow.loader.DataFileDescriptor.DataType;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,8 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import gov.usgswim.sparrow.loader.DataFileDescriptor.DataType;
-import static gov.usgswim.sparrow.loader.DataFileDescriptor.DataType.*;
 
 /**
  * TODO[IK] move this to DataTable jar

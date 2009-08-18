@@ -1,11 +1,12 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import java.sql.Connection;
-
-import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.DataLoader;
+
+import java.sql.Connection;
+
+import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 /**
  * Loads data the data needed to run predictions for a SPARROW model.

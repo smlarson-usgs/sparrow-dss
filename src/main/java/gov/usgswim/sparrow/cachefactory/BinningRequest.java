@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import java.io.Serializable;
+
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**

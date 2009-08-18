@@ -3,9 +3,9 @@ package gov.usgswim.sparrow.cachefactory;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
-
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
+
+import org.apache.commons.lang.StringUtils;
 
 public abstract class AbstractCacheFactory implements CacheEntryFactory {
 

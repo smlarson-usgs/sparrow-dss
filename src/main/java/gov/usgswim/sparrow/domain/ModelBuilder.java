@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.domain;
 
-import gov.usgswim.NotThreadSafe;
 import gov.usgswim.ImmutableBuilder;
+import gov.usgswim.NotThreadSafe;
 
 import java.util.ArrayList;
 import java.util.Collections;

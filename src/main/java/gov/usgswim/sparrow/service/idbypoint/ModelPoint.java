@@ -1,10 +1,10 @@
 package gov.usgswim.sparrow.service.idbypoint;
 
+import gov.usgswim.Immutable;
+
 import java.awt.Point;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
-
-import gov.usgswim.Immutable;
 
 /**
  * Simple bean class to hold a reach that was identified by a user lat/long location.

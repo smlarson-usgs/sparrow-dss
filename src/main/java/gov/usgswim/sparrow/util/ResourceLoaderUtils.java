@@ -37,6 +37,11 @@ public class ResourceLoaderUtils {
 			modelProperty.load(inStream);
 		} catch (IOException e) {
 			e.printStackTrace();
+			try {
+				inStream.close();
+			} catch (IOException e1) {
+				// don't do anything
+			}
 		}
 		return modelProperty;
 	}
@@ -49,12 +54,20 @@ public class ResourceLoaderUtils {
 	 * @return Properties, possibly empty
 	 */
 	public static Properties loadResourceAsProperties(String resourceFilePath) {
+		InputStream stream = null;
 		try {
-			InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceFilePath);
+			stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceFilePath);
 			BufferedReader in = new BufferedReader(new InputStreamReader(stream));
 			return loadResourceAsProperties(in);
 		} catch (Exception e) {
 			e.printStackTrace();
+			if (stream != null) {
+				try {
+					stream.close();
+				} catch (IOException e1) {
+					// do nothing
+				}
+			}
 			return new Properties(); // return an empty Properties
 		}
 	}

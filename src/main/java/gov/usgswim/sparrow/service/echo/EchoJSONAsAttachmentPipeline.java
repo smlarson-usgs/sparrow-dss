@@ -1,6 +1,5 @@
 package gov.usgswim.sparrow.service.echo;
 
-import gov.usgswim.service.pipeline.Pipeline;
 import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.JSON;
 public class EchoJSONAsAttachmentPipeline extends EchoPipeline {
 

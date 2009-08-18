@@ -1,6 +1,14 @@
 package gov.usgswim.sparrow;
 
-import gov.usgswim.sparrow.cachefactory.*;
+import gov.usgswim.sparrow.cachefactory.AdjustedSourceFactory;
+import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludgeFactory;
+import gov.usgswim.sparrow.cachefactory.AnalysisResultFactory;
+import gov.usgswim.sparrow.cachefactory.BinningFactory;
+import gov.usgswim.sparrow.cachefactory.PredictDataFactory;
+import gov.usgswim.sparrow.cachefactory.PredictResultFactory;
+import gov.usgswim.sparrow.cachefactory.ReachByIDFactory;
+import gov.usgswim.sparrow.cachefactory.ReachByPointFactory;
+import gov.usgswim.sparrow.cachefactory.ReachesByCriteriaFactory;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import javax.servlet.ServletContextEvent;

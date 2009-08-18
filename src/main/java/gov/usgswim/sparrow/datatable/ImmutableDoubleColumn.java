@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow.datatable;
 
-import java.util.Map;
-
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.impl.AbstractColumnData;
+
+import java.util.Map;
 
 /**
  * This is a wrapper datacolumn that takes its data as a double[][] and a column

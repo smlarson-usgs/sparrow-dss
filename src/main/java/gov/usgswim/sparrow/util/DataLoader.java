@@ -2,7 +2,6 @@ package gov.usgswim.sparrow.util;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.BuilderHelper;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;

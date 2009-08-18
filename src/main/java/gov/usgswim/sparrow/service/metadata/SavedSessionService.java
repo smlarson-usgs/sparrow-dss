@@ -6,12 +6,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static gov.usgswim.sparrow.util.SparrowResourceUtils.*;
 /* Specs:
  * Take a model ID/name & session id/name
  * Return JSON object
@@ -28,6 +30,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class SavedSessionService extends HttpServlet {
 
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -37,35 +41,42 @@ public class SavedSessionService extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		// The current exposed Sparrow RESTlike interface isn't very RESTful, but
+		// in the future, these would be components of the URL rather than query
+		// parameters
 		String model = req.getParameter("model");
-//		modelID =
-//		String session = req.getParameter("session");
-//
-//		PrintWriter out = resp.getWriter();
-//		if (model == null) {
-//			out.write("model is a required parameter");
-//			out.flush();
-//			return;
-//		}
-//		if (session == null) {
-//			model
-//			// get
-//			sessions = getSessions(model);
-//		}
-		// TODO Auto-generated method stub
+		Long modelID = lookupModelID(model);
+		String session = req.getParameter("session");
+
 		PrintWriter out = resp.getWriter();
-		out.write("hello world");
+
+		if (modelID == null) {
+			out.write("invalid required parameter value for model: " + model);
+			out.flush();
+			return;
+		}
+		if (session == null) {
+			// output a list of all sessions for the model
+			// TODO may need to convert this to JSON
+			Set<Entry<Object, Object>> sessionList = retrieveSavedSessions(modelID.toString());
+			if (sessionList != null && !sessionList.isEmpty()) {
+				out.write("<sessions>");
+				for (Entry<Object, Object> entry: sessionList) {
+					out.write("<session key=\"" + entry.getKey().toString() + "\"/>\n");
+				}
+				out.write("</sessions>");
+			} else {
+				// TODO what to return in case of empty?
+			}
+			return;
+		} else {
+			// output the named session
+			String result = retrieveSavedSession(modelID.toString(), session);
+			// TODO decide on what to return if no session found
+			// Note that this result is already in JSON
+			out.write(result);
+		}
 		out.flush();
-	}
-
-	public Set<Object> getSessions(Long modelID) {
-		Properties props = SparrowResourceUtils.loadResourceAsProperties(modelID, "sessions.properties");
-		return props.keySet();
-	}
-
-	public Object getSession(Long modelID, String sessionNameOrId) {
-		Properties props = SparrowResourceUtils.loadResourceAsProperties(modelID, "sessions.properties");
-		return props.get(modelID.toString());
 	}
 
 

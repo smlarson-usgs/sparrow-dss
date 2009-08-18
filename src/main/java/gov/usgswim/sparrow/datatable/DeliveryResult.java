@@ -1,13 +1,13 @@
 package gov.usgswim.sparrow.datatable;
 
-import java.util.List;
-import java.util.Map;
-
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.ColumnDataWritable;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTable;
+
+import java.util.List;
+import java.util.Map;
 
 public class DeliveryResult extends SimpleDataTable {
 	// ============

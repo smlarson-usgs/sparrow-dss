@@ -1,10 +1,10 @@
 package gov.usgswim.sparrow.service.binning;
 
-import java.math.BigDecimal;
-
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.SharedApplication;
+
+import java.math.BigDecimal;
 
 import javax.xml.stream.XMLStreamReader;
 

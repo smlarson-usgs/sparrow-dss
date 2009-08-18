@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.service.SharedApplication;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;

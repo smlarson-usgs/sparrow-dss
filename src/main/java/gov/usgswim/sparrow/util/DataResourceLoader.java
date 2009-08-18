@@ -1,13 +1,13 @@
 package gov.usgswim.sparrow.util;
 
-import java.io.IOException;
-import java.sql.SQLException;
-
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 public class DataResourceLoader {
 

@@ -1,7 +1,5 @@
 package gov.usgswim.sparrow.service.help;
 
-import gov.usgswim.sparrow.util.SparrowResourceUtils;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -61,7 +59,8 @@ public class HelpService extends HttpServlet {
 	}
 
 	public static Integer lookupModelID(String modelString) {
-		return SparrowResourceUtils.modelIndex.findFirst(0, modelString);
+//		return SparrowResourceUtils.modelIndex.findFirst(0, modelString);
+		return 0;
 	}
 
 	public static Integer parseInt(String value) {
