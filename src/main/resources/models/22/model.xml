@@ -1,0 +1,75 @@
+<Model id="22">
+				<Authors>
+					<Author link="" id="1">First name, last name</Author>
+				</Authors>
+				<Model_metadata>
+					<Model_name>National Total Nitrogen Model - 1987</Model_name>
+					<MRB> </MRB>
+					<Constituent>
+						<Name>Total Nitrogen</Name>
+						<Units>kg/yr</Units>
+						<Description> </Description>
+					</Constituent>
+					<Source id="ALL">
+						<Name>ALL</Name>
+						<Units>kg/year</Units>
+						<Description>All nitrogen sources - POINT, ATMDEP, FERTILIZER, WASTE, and NANAGR.</Description>
+					</Source>
+					<Source id="POINT">
+						<Name>POINT</Name>
+						<Units>kg/year</Units>
+						<Description>Point sources of nitrogen, e.g. wastewater treatment plant</Description>
+					</Source>
+					<Source id="ATMDEP">
+						<Name>ATMDEP</Name>
+						<Units>kg/year</Units>
+						<Description>Atmospheric deposition</Description>
+					</Source>
+					<Source id="FERTILIZER">
+						<Name>FERTILIZER</Name>
+						<Units>kg/year</Units>
+						<Description>Fertilizer, typically applied to agricultural fields</Description>
+					</Source>
+					<Source id="WASTE">
+						<Name>WASTE</Name>
+						<Units>kg/year</Units>
+						<Description>Animal waste from agricultural livestock</Description>
+					</Source>
+					<Source id="NONAGR">
+						<Name>NONAGR</Name>
+						<Units>kg/year</Units>
+						<Description>Non-agricultural nitrogen sources, e.g. urban/suburban storm water</Description>
+					</Source>
+				</Model_metadata>
+				<Model_papers>
+					<Paper id="1">
+					<Link link=""/>
+					<Citation_mods>
+						<identifier type=""></identifier>
+						<identifier type=""></identifier>
+						<identifier type=""></identifier>
+						<genre></genre>
+						<titleInfo>
+							<title></title>
+						</titleInfo>
+						<originInfo>
+							<dateOther></dateOther>
+							<publisher></publisher>
+							<placeTerm></placeTerm>
+						</originInfo>
+						<name>
+							<namePart></namePart>
+							<role>Author</role>
+						</name>
+						<physicalDescription>
+							<form></form>
+							<form></form>
+							<form></form>
+						</physicalDescription>
+						<note type="citation/reference"></note>
+						<edition></edition>
+						<languageTerm></languageTerm>
+					</Citation_mods>
+					</Paper>
+				</Model_papers>
+			</Model>
