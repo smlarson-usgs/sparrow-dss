@@ -46,11 +46,10 @@ public class FindReachService extends HttpServlet {
 		+ "   	</reach>"
 		+ "</sparrow-reach-response>";
 
-	@Override
+    @Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 	throws ServletException, IOException {
 		doPost(req, resp);
-
 	}
 
 	@Override
@@ -213,7 +212,8 @@ public class FindReachService extends HttpServlet {
 	public String createFindReachWhereClause(FindReachRequest frReq) {
 		String whereClause = "";
 		if (frReq.reachID != null) {
-			whereClause += " and full_identifier=" + frReq.reachID;
+		    String reachIds = frReq.reachID.replaceAll("[\\D]+", ",");
+			whereClause += " and full_identifier IN (" + reachIds + ")";
 		}
 		if (frReq.reachName != null) {
 			whereClause += " and UPPER(reach_name) like '%" + frReq.reachName.toUpperCase() + "%' ";
