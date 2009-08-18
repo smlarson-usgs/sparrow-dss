@@ -1,15 +1,15 @@
 <Model id="22">
-				<Authors>
-					<Author link="" id="1">First name, last name</Author>
-				</Authors>
-				<Model_metadata>
-					<Model_name>National Total Nitrogen Model - 1987</Model_name>
-					<MRB> </MRB>
-					<Constituent>
-						<Name>Total Nitrogen</Name>
-						<Units>kg/yr</Units>
-						<Description> </Description>
-					</Constituent>
+			<Authors>
+				<Author link="" id="1">First name, last name</Author>
+			</Authors>
+			<Model_name>National Total Nitrogen Model - 1987</Model_name>
+			<MRB> </MRB>
+			<Constituent>
+				<Name>Total Nitrogen</Name>
+				<Units>kg/yr</Units>
+				<Description> </Description>
+			</Constituent>
+			<Sources>
 					<Source id="ALL">
 						<Name>ALL</Name>
 						<Units>kg/year</Units>
@@ -40,8 +40,8 @@
 						<Units>kg/year</Units>
 						<Description>Non-agricultural nitrogen sources, e.g. urban/suburban storm water</Description>
 					</Source>
-				</Model_metadata>
-				<Model_papers>
+			</Sources>
+			<Model_papers>
 					<Paper id="1">
 					<Link link=""/>
 					<Citation_mods>
@@ -71,5 +71,5 @@
 						<languageTerm></languageTerm>
 					</Citation_mods>
 					</Paper>
-				</Model_papers>
-			</Model>
+			</Model_papers>
+</Model>
