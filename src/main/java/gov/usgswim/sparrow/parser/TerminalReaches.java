@@ -38,7 +38,7 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	// INSTANCE FIELDS
 	// ===============
 	private Long modelID;
-	protected List<Integer> reachIDs = new ArrayList<Integer>();
+	protected List<Long> reachIDs = new ArrayList<Long>();
 	private Integer id;
 	
 	/**
@@ -73,9 +73,10 @@ public class TerminalReaches implements XMLStreamParserComponent {
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
 						id = ParserHelper.parseAttribAsInt(in, XMLStreamParserComponent.ID_ATTR, false);
-					} else if (REACHES_CHILD.equals(localName)) {
-						String reachID = ParserHelper.parseSimpleElementValue(in);
-						reachIDs.add(Integer.parseInt(reachID));
+                    } else if (ReachElement.isTargetMatch(localName)) {
+                        ReachElement r = new ReachElement();
+                        r.parse(in);
+						reachIDs.add(r.getId());
 					} else if ("logical-set".equals(localName)) {
 						ParserHelper.ignoreElement(in);
 					} else {
@@ -116,8 +117,8 @@ public class TerminalReaches implements XMLStreamParserComponent {
 		// hashcode function as we loop over the reachIDs. The first doesn't work
 		// because we want independence of reach id order.
 		Set<Long> targetReaches = new HashSet<Long>();
-		for (Integer reach: reachIDs) {
-			targetReaches.add(reach.longValue());
+		for (Long reach: reachIDs) {
+			targetReaches.add(reach);
 		}
 		return targetReaches;
 	}
@@ -138,7 +139,7 @@ public class TerminalReaches implements XMLStreamParserComponent {
 			HashCodeBuilder hashBuilder = new HashCodeBuilder(137, 1729);
 			
 			hashBuilder.append(modelID);
-			for (Integer idValue: reachIDs) {
+			for (Long idValue: reachIDs) {
 				hashBuilder.append(idValue);
 			}
 			int hash = hashBuilder.toHashCode();
@@ -152,8 +153,8 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	@Override
 	public TerminalReaches clone() throws CloneNotSupportedException {
 		TerminalReaches myClone = new TerminalReaches(modelID);
-		myClone.reachIDs = new ArrayList<Integer>(reachIDs.size());
-		for (Integer reachID: reachIDs) {
+		myClone.reachIDs = new ArrayList<Long>(reachIDs.size());
+		for (Long reachID: reachIDs) {
 			myClone.reachIDs.add(reachID);
 		}
 		
@@ -174,7 +175,7 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	// =================
 	// GETTERS & SETTERS
 	// =================
-	public List<Integer> getReachIDs(){
+	public List<Long> getReachIDs(){
 		//TODO: [ee] This should be wrapped as an immutable (same for all lists)
 		return reachIDs;
 	}

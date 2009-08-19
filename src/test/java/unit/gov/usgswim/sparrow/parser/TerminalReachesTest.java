@@ -33,11 +33,11 @@ public class TerminalReachesTest extends TestCase {
 
 		TerminalReaches termReaches = buildTestInstance(1L);
 		
-		List<Integer> reachIDs = termReaches.getReachIDs();
+		List<Long> reachIDs = termReaches.getReachIDs();
 		assertEquals(3, reachIDs.size());
-		assertEquals(Integer.valueOf(2345642), reachIDs.get(0));
-		assertEquals(Integer.valueOf(3425688), reachIDs.get(1));
-		assertEquals(Integer.valueOf(5235424), reachIDs.get(2));
+		assertEquals(Long.valueOf(2345642), reachIDs.get(0));
+		assertEquals(Long.valueOf(3425688), reachIDs.get(1));
+		assertEquals(Long.valueOf(5235424), reachIDs.get(2));
 
 	}
 	
