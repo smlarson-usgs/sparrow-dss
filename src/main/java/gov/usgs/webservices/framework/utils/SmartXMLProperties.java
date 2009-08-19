@@ -54,9 +54,18 @@ public class SmartXMLProperties {
 			if (state.isOnRoot()) {
 				state.parseToNextRootChildStart();
 			} else if (state.isOnRootChildStart()){
-				state.parseToRootChildEnd();
+				state.parseToRootChildEndOrGrandChildStart();
 			} else if (state.isOnRootChildEnd()) {
 				state.parseToNextRootChildStart();
+			} else if (state.isOnRootGrandChildStart()) {
+				if (state.isGrandChildAListElement()) {
+					// get all the grandchildren
+					state.parseToRootGrandChildEnd();
+					state.parseToNextGrandChildListElementOrEnd();
+				} else {
+					// continue parsing to end
+					state.parseToRootChildEnd();
+				}
 			} else {
 				throw new IllegalStateException("the above should be the only legal states");
 			}

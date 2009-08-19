@@ -31,6 +31,9 @@ public class ParseState{
 	public boolean isOnRootChildStart() {
 		return (depth == 1) && (stream.getEventType() == START_ELEMENT);
 	}
+	public boolean isOnRootGrandChildStart() {
+		return (depth == 2) && (stream.getEventType() == START_ELEMENT);
+	}
 
 	public boolean isOnRoot() {
 		return (depth == 0) && (stream.getEventType()) == START_ELEMENT;
@@ -50,8 +53,15 @@ public class ParseState{
 	}
 
 	public void parseToRootChildEnd() throws XMLStreamException {
-		assert(isOnRootChildStart()): "Parsing to the end should only be called when on a start element of a root child";
-		content = new StringBuilder();
+		assert(isOnRootChildStart() || isOnRootGrandChildStart()): "These are the only allowed states to call this method";
+		if (isOnRootChildStart()) {
+			// Refresh the content
+			content = new StringBuilder();
+		} else { // isOnRootGrandChildStart() == true
+			// Just continue recording
+			writeCurentEvent(stream, content);
+		}
+
 		while (stream.hasNext()) {
 			next();
 			if (isOnRootChildEnd()) {
@@ -74,7 +84,6 @@ public class ParseState{
 						record.append(" " + in.getAttributeName(i) + "=\"" + in.getAttributeValue(i)+ "\"" );
 					}
 				}
-
 				break;
 			case END_ELEMENT:
 				record.append("</" + in.getLocalName() + ">");
@@ -85,6 +94,32 @@ public class ParseState{
 				record.append(text);
 				break;
 		}
+
+	}
+
+	public void parseToRootChildEndOrGrandChildStart() throws XMLStreamException {
+		assert(isOnRootChildStart()): "Parsing to the end should only be called when on a start element of a root child";
+		content = new StringBuilder();
+		while (stream.hasNext()) {
+			next();
+			if (isOnRootChildEnd() || isOnRootGrandChildStart()) {
+				return;
+			}
+			writeCurentEvent(stream, content);
+		}
+	}
+
+	public boolean isGrandChildAListElement() {
+		return isOnRootGrandChildStart() && (stream.getAttributeValue("", "id") != null);
+	}
+
+	public void parseToRootGrandChildEnd() {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void parseToNextGrandChildListElementOrEnd() {
+		// TODO Auto-generated method stub
 
 	}
 
