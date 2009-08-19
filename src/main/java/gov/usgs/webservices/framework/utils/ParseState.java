@@ -1,7 +1,7 @@
 /**
  *
  */
-package gov.usgswim.sparrow.util;
+package gov.usgs.webservices.framework.utils;
 
 import static javax.xml.stream.XMLStreamConstants.*;
 
@@ -9,13 +9,13 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 public class ParseState{
-	int depth;
-	XMLStreamReader stream;
-	StringBuilder content;
+	public int depth;
+	public XMLStreamReader stream;
+	public StringBuilder content;
 
-	ParseState(XMLStreamReader in){this.stream = in;}
+	public ParseState(XMLStreamReader in){this.stream = in;}
 
-	int next() throws XMLStreamException {
+	public int next() throws XMLStreamException {
 		int result = stream.next();
 		switch(result) {
 			case START_ELEMENT:
@@ -28,7 +28,7 @@ public class ParseState{
 		return result;
 	}
 
-	boolean isOnRootChildStart() {
+	public boolean isOnRootChildStart() {
 		return (depth == 1) && (stream.getEventType() == START_ELEMENT);
 	}
 
@@ -63,9 +63,18 @@ public class ParseState{
 
 	public static void writeCurentEvent(XMLStreamReader in, StringBuilder record) {
 		int current = in.getEventType();
+		// TODO adjust this so that the result is valid xml. Escape the appropriate 5 entities
 		switch(current) {
 			case START_ELEMENT:
-				record.append("<" + in.getLocalName() + ">");
+				if (in.getAttributeCount() == 0) {
+					record.append("<" + in.getLocalName() + ">");
+				} else {
+					record.append("<" + in.getLocalName());
+					for (int i=0; i<in.getAttributeCount(); i++) {
+						record.append(" " + in.getAttributeName(i) + "=\"" + in.getAttributeValue(i)+ "\"" );
+					}
+				}
+
 				break;
 			case END_ELEMENT:
 				record.append("</" + in.getLocalName() + ">");

@@ -1,10 +1,11 @@
 package gov.usgswim.sparrow.service.metadata;
 
-import gov.usgswim.sparrow.util.SparrowResourceUtils;
+import static gov.usgswim.sparrow.util.SparrowResourceUtils.lookupModelID;
+import static gov.usgswim.sparrow.util.SparrowResourceUtils.retrieveSavedSession;
+import static gov.usgswim.sparrow.util.SparrowResourceUtils.retrieveSavedSessions;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Properties;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -12,17 +13,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import static gov.usgswim.sparrow.util.SparrowResourceUtils.*;
-/* Specs:
- * Take a model ID/name & session id/name
- * Return JSON object
- *
- * Take a model ID/name
- * Return list of associated sessions
- *
- * Implementation Note: Sessions are saved as model resources
- */
 
 /**
  * @author ilinkuo

@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.util;
 
+import gov.usgs.webservices.framework.utils.ResourceLoaderUtils;
+
 import java.io.IOException;
 
 public class QueryLoader {
@@ -33,6 +35,18 @@ public class QueryLoader {
 	 * @throws IOException
 	 */
 	public String getParametrizedQuery(String name, Object... params) throws IOException {
+		String result = ResourceLoaderUtils.loadParametrizedProperty(location, name, params);
+		if (defaults != null) {
+			// apply the defaults
+			for (int i=0; i<defaults.length; i+=2) {
+				result = ResourceLoaderUtils.replaceParam(result, defaults[i].toString(), defaults[i+1].toString());
+			}
+		}
+
+		return result;
+	}
+
+	public String getParametrizedQuery(String name, String... params) throws IOException {
 		String result = ResourceLoaderUtils.loadParametrizedProperty(location, name, params);
 		if (defaults != null) {
 			// apply the defaults

@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.util;
 
+import gov.usgs.webservices.framework.utils.ResourceLoaderUtils;
 import gov.usgswim.sparrow.service.help.Model;
 
 import java.util.Properties;

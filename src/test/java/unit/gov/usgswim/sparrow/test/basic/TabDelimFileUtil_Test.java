@@ -2,7 +2,6 @@ package gov.usgswim.sparrow.test.basic;
 
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;

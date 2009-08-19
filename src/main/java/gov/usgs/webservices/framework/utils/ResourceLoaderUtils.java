@@ -1,4 +1,5 @@
-package gov.usgswim.sparrow.util;
+package gov.usgs.webservices.framework.utils;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -115,6 +116,10 @@ public class ResourceLoaderUtils {
 	 * @throws IOException
 	 */
 	public static String loadParametrizedProperty(String resourceFilePath, String key, Object... params) {
+		return loadParametrizedProperty(resourceFilePath, key, pairsToMap(params));
+	}
+
+	public static String loadParametrizedProperty(String resourceFilePath, String key, String... params) {
 		return loadParametrizedProperty(resourceFilePath, key, pairsToMap(params));
 	}
 

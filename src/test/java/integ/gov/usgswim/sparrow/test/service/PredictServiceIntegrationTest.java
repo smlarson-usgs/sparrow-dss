@@ -2,7 +2,6 @@ package gov.usgswim.sparrow.test.service;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.ComparePercentageView;
-import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.deprecated.PredictParser;
 import gov.usgswim.sparrow.deprecated.PredictService;
 import gov.usgswim.sparrow.deprecated.PredictServiceRequest;

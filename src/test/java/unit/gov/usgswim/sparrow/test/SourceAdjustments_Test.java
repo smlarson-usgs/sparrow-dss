@@ -1,7 +1,6 @@
 package gov.usgswim.sparrow.test;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
-import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.Adjustment;
 import gov.usgswim.sparrow.AdjustmentSetBuilder;
 import gov.usgswim.sparrow.Adjustment.AdjustmentType;

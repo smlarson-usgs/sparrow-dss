@@ -2,7 +2,6 @@ package gov.usgswim.sparrow.test;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.ComparePercentageView;
-import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
@@ -32,7 +31,7 @@ public class SharedApplicationCachingIntegrationTest extends TestCase {
 
 		lifecycle.contextDestroyed(null);
 	}
-	
+
 	/*
 	public void testBasic() {
 		SharedApplication sa = SharedApplication.getInstance();
@@ -103,7 +102,7 @@ public class SharedApplicationCachingIntegrationTest extends TestCase {
 //
 //	}
 
-	
+
 	public void testPredictDataCache() throws Exception {
 		SharedApplication sa = SharedApplication.getInstance();
 
@@ -114,7 +113,7 @@ public class SharedApplicationCachingIntegrationTest extends TestCase {
 		doFullCompare(pdCustomCache, pdEHCache);
 
 	}
-	 
+
 
 	/**
 	 * Compares the calculated prediction results of the cache (via the PredictResultFactory)
@@ -176,7 +175,7 @@ public class SharedApplicationCachingIntegrationTest extends TestCase {
 
 		return comp;
 	}
-	
+
 	protected ComparePercentageView buildPredictionComparison(DataTable toBeCompared) throws Exception {
 		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict.txt");
 		DataTable data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
