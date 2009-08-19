@@ -12,6 +12,8 @@ public class ParseState{
 	public int depth;
 	public XMLStreamReader stream;
 	public StringBuilder content;
+	private String rootChild;
+	private boolean isListElement;
 
 	public ParseState(XMLStreamReader in){this.stream = in;}
 
@@ -83,6 +85,7 @@ public class ParseState{
 					for (int i=0; i<in.getAttributeCount(); i++) {
 						record.append(" " + in.getAttributeName(i) + "=\"" + in.getAttributeValue(i)+ "\"" );
 					}
+					record.append(">");
 				}
 				break;
 			case END_ELEMENT:
@@ -109,17 +112,64 @@ public class ParseState{
 		}
 	}
 
-	public boolean isGrandChildAListElement() {
+	public boolean isOnListElementStart() {
 		return isOnRootGrandChildStart() && (stream.getAttributeValue("", "id") != null);
 	}
 
-	public void parseToRootGrandChildEnd() {
-		// TODO Auto-generated method stub
-
+	public boolean isOnListElementEnd() {
+		return (depth == 1) && (stream.getEventType() == END_ELEMENT);
 	}
 
-	public void parseToNextGrandChildListElementOrEnd() {
-		// TODO Auto-generated method stub
+	public void parseToListElementEnd() throws XMLStreamException {
+		assert(isOnListElementStart()): "Only call this from the beginning of a List Element";
+		content = new StringBuilder();
+		writeCurentEvent(stream, content);
+		while (stream.hasNext()) {
+			next();
+			writeCurentEvent(stream, content);
+			if (isOnListElementEnd()) {
+				return;
+			}
+
+		}
+	}
+
+	public void parseToNextListElementOrRootChildEnd() throws XMLStreamException {
+		assert(isOnListElementEnd() || isOnListElementStart()): "Only call this from the end or beginning of a List Element";
+
+		while (stream.hasNext()) {
+			next();
+			if (isOnListElementStart()) {
+				content = new StringBuilder();
+			}
+			writeCurentEvent(stream, content);
+			if (isOnListElementEnd()) {
+				return;
+			}
+			if (isOnRootChildEnd()) {
+				content = new StringBuilder(); // clear the StringBuffer
+				return;
+			}
+		}
+	}
+
+	public void setAsRootChild(String rootChildName) {
+		rootChild = rootChildName;
+		isListElement = false;
+	}
+
+	public void setAsListElement() {
+		isListElement = true;
+	}
+
+	public StringBuilder getContentAsNode() {
+		if (isListElement) {
+			return content;
+		}
+		String rootChildStartTag = "<" + rootChild + ">";
+		content.insert(0, rootChildStartTag);
+		content.append("</" + rootChild + ">");
+		return content;
 
 	}
 

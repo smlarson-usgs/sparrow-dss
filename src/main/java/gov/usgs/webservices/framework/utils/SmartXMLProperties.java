@@ -52,20 +52,33 @@ public class SmartXMLProperties {
 
 		while(in.hasNext()) {
 			if (state.isOnRoot()) {
+				System.out.println("ROOT: " + in.getLocalName());
 				state.parseToNextRootChildStart();
 			} else if (state.isOnRootChildStart()){
+				System.out.println("  CHILD START: " + in.getLocalName());
+				state.setAsRootChild(in.getLocalName());
 				state.parseToRootChildEndOrGrandChildStart();
 			} else if (state.isOnRootChildEnd()) {
+				System.out.println("    CHILD CONTENT: " + state.content);
+				System.out.println("    CHILD NODE: " + state.getContentAsNode());
+				System.out.println("  CHILD END: " + in.getLocalName());
 				state.parseToNextRootChildStart();
 			} else if (state.isOnRootGrandChildStart()) {
-				if (state.isGrandChildAListElement()) {
+				if (state.isOnListElementStart()) {
+					System.out.println("    LIST ELMT START: " + in.getLocalName());
+					state.setAsListElement();
 					// get all the grandchildren
-					state.parseToRootGrandChildEnd();
-					state.parseToNextGrandChildListElementOrEnd();
+					state.parseToListElementEnd();
 				} else {
 					// continue parsing to end
 					state.parseToRootChildEnd();
+//					System.out.println("    CHILD CONTENT: " + state.content);
+//					System.out.println("    CHILD NODE: " + state.getContentAsNode());
 				}
+			} else if (state.isOnListElementEnd()) {
+				System.out.println("      LIST ELMT CONTENT: " + state.content);
+				System.out.println("      LIST ELMT NODE: " + state.getContentAsNode());
+				state.parseToNextListElementOrRootChildEnd();
 			} else {
 				throw new IllegalStateException("the above should be the only legal states");
 			}
