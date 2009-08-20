@@ -4,8 +4,8 @@ import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_NAMESPACE
 import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
-import gov.usgswim.sparrow.domain.Model;
-import gov.usgswim.sparrow.domain.ModelBuilder;
+import gov.usgswim.sparrow.domain.SparrowModel;
+import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 import gov.usgswim.sparrow.domain.Source;
 
 import java.util.Iterator;
@@ -19,11 +19,11 @@ public class DomainSerializer extends BasicXMLStreamReader {
 	public static String TARGET_NAMESPACE = "http://www.usgs.gov/sparrow/meta_response/v0_1";
 	public static String TARGET_NAMESPACE_LOCATION = "http://www.usgs.gov/sparrow/meta_response.xsd";
 
-	private List<ModelBuilder> models;
-	private Iterator<ModelBuilder> mIter;
+	private List<SparrowModelBuilder> models;
+	private Iterator<SparrowModelBuilder> mIter;
 	private boolean isOutputCompleteFirstRow;
 
-	public DomainSerializer(List<ModelBuilder> models) {
+	public DomainSerializer(List<SparrowModelBuilder> models) {
 		this.models = models;
 	}
 
@@ -70,7 +70,7 @@ public class DomainSerializer extends BasicXMLStreamReader {
 
 	private void readModel() {
 		if (mIter.hasNext()) {
-			Model model = mIter.next();
+			SparrowModel model = mIter.next();
 			events.add(new BasicTagEvent(START_ELEMENT, "model").addAttribute("id", model.getId().toString()));
 			{
                 addOpenTag("status");

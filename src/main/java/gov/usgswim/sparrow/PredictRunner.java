@@ -63,44 +63,44 @@ public class PredictRunner implements Runner {
 	 */
 	protected int nodeCount;
 
-	/**
-	 * Construct a new instance.
-	 *
-	 * This constructor figures out the number of nodes, which is non-ideal for
-	 * larger data sets.
-	 *
-	 * @param topo
-	 * @param coef
-	 * @param src
-	 * TODO Refactor this like DeliveryRunner and test
-	 */
-	public PredictRunner(DataTable topo, DataTable coef, DataTable src,
-			DataTable decay) {
-		this.topo = topo; // assign the passed values to the class variables
-		this.deliveryCoefficient = coef;
-		this.sourceValues = src;
-		this.decayCoefficient = decay;
-
-		int maxNode = Math.max(topo.getMaxInt(FNODE_COL), topo
-				.getMaxInt(TNODE_COL));
-		{ // IK: Efficiency checks disabled for now as they cause failing tests,
-			// and I'm not sure if I want to do this optimization as it doesn't
-			// have sufficient benefit. Basically, we are allocating an array of
-			// node values based on the maximum index of the nodes. In an ideal
-			// world, that number should be slightly more than the number of
-			// reaches.
-			// TODO Add this check to data loading process
-			boolean isCheckEfficiency = false;
-			if (isCheckEfficiency) {
-				checkEfficiency(maxNode);
-			}
-		}
-
-		this.predictData = new PredictDataImm(topo, coef, src, null, decay,
-				null, null);
-
-		nodeCount = maxNode + 1;
-	}
+//	/**
+//	 * Construct a new instance.
+//	 *
+//	 * This constructor figures out the number of nodes, which is non-ideal for
+//	 * larger data sets.
+//	 *
+//	 * @param topo
+//	 * @param coef
+//	 * @param src
+//	 * TODO Refactor this like DeliveryRunner and test
+//	 */
+//	public PredictRunner(DataTable topo, DataTable coef, DataTable src,
+//			DataTable decay) {
+//		this.topo = topo; // assign the passed values to the class variables
+//		this.deliveryCoefficient = coef;
+//		this.sourceValues = src;
+//		this.decayCoefficient = decay;
+//
+//		int maxNode = Math.max(topo.getMaxInt(FNODE_COL), topo
+//				.getMaxInt(TNODE_COL));
+//		{ // IK: Efficiency checks disabled for now as they cause failing tests,
+//			// and I'm not sure if I want to do this optimization as it doesn't
+//			// have sufficient benefit. Basically, we are allocating an array of
+//			// node values based on the maximum index of the nodes. In an ideal
+//			// world, that number should be slightly more than the number of
+//			// reaches.
+//			// TODO Add this check to data loading process
+//			boolean isCheckEfficiency = false;
+//			if (isCheckEfficiency) {
+//				checkEfficiency(maxNode);
+//			}
+//		}
+//
+//		this.predictData = new PredictDataImm(topo, coef, src, null, decay,
+//				null, null);
+//
+//		nodeCount = maxNode + 1;
+//	}
 
 	// /**
 	// * Construct a new instance using a PredictionDataSet.
@@ -129,11 +129,13 @@ public class PredictRunner implements Runner {
 	// }
 
 	public PredictRunner(PredictData data) {
-		this.topo = data.getTopo(); // assign the passed values to the class
-		// variables
-		this.deliveryCoefficient = data.getCoef();
-		this.sourceValues = data.getSrc();
-		this.decayCoefficient = data.getDecay();
+		{// assign the passed values to the class variables
+			this.topo = data.getTopo();
+			this.deliveryCoefficient = data.getCoef();
+			this.sourceValues = data.getSrc();
+			this.decayCoefficient = data.getDecay();
+		}
+
 
 		int maxNode = Math.max(topo.getMaxInt(FNODE_COL), topo
 				.getMaxInt(TNODE_COL));

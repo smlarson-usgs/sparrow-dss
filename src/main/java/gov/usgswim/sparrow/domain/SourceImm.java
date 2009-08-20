@@ -5,7 +5,7 @@ import gov.usgswim.Immutable;
 import java.io.Serializable;
 
 /**
- * Immutable implementation of Source, which is a single source (used by many reaches) for a SPARROW Model.
+ * Immutable implementation of Source, which is a single source (used by many reaches) for a SPARROW SparrowModel.
  */
 @Immutable
 public class SourceImm implements Source, Serializable {

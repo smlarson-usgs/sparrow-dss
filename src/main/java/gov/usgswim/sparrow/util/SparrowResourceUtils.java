@@ -34,7 +34,7 @@ public abstract class SparrowResourceUtils {
 	public static String retrieveHelp(String model, String helpItem) {
 		Long modelID = lookupModelID(model);
 		String resourceFilePath = getModelResourceFilePath(modelID, HELP_FILE);
-		Model help = ResourceLoaderUtils.loadResourceXMLFileAsObject(resourceFilePath, Model.class, "Model");
+		Model help = ResourceLoaderUtils.loadResourceXMLFileAsObject(resourceFilePath, Model.class, "SparrowModel");
 		String item = help.getOne(helpItem.getClass());
 		// TODO later handle lists/multiple retrievals using help.getMany()?
 		return item;

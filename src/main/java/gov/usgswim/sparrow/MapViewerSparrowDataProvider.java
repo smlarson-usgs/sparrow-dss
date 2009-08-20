@@ -128,7 +128,7 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 	 */
 	@Override
 	public NSDataSet buildDataSet(java.util.Properties params) {
-		Hashtable hash = new Hashtable(13);
+		Hashtable<Object,Object> hash = new Hashtable<Object,Object>(13);
 
 		for (Object key : params.keySet()) {
 			hash.put(key, params.get(key));
@@ -143,7 +143,7 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
      * @param properties
      * @return
      */
-    public NSDataSet buildDataSet(Hashtable properties) {
+    public NSDataSet buildDataSet(Hashtable<?,?> properties) {
         long startTime = System.currentTimeMillis();	//Time started
 
         //All request info is stored in this class

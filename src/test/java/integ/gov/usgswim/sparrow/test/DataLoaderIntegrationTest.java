@@ -6,8 +6,8 @@ import gov.usgswim.datatable.filter.ColumnRangeFilter;
 import gov.usgswim.datatable.filter.FilteredDataTable;
 import gov.usgswim.datatable.filter.RowRangeFilter;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
-import gov.usgswim.sparrow.domain.Model;
-import gov.usgswim.sparrow.domain.ModelBuilder;
+import gov.usgswim.sparrow.domain.SparrowModel;
+import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.util.DataLoader;
 import gov.usgswim.sparrow.util.DataLoaderOfflineTest;
@@ -124,9 +124,9 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 
 	// ======================================================
 	public void testReadModelMetadata() throws Exception {
-		List<ModelBuilder> models = DataLoader.loadModelsMetaData(conn);
+		List<SparrowModelBuilder> models = DataLoader.loadModelsMetaData(conn);
 
-		Model m = models.get(0);
+		SparrowModel m = models.get(0);
 		Source s1 = m.getSource(1);	//get by identifier
 		Source s2 = m.getSource(5);	//get by identifier
 
@@ -137,7 +137,7 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 
 		//model
 		assertEquals(22, m.getId().intValue());
-		assertEquals("National Total Nitrogen Model - 1987", m.getName());
+		assertEquals("National Total Nitrogen SparrowModel - 1987", m.getName());
 		assertEquals(5, m.getSources().size());
 
 		//1st source

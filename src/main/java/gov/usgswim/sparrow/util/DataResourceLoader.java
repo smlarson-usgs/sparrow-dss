@@ -14,7 +14,7 @@ public class DataResourceLoader {
 	public static DataTableWritable makeSourceMetaStructure() {
 		// Note that the topo.txt file from the modelers does not have the reach id
 		String[] headings = {"SOURCE_ID", "NAME", "DISPLAY_NAME", "DESCRIPTION", "CONSTITUENT", "UNITS", "PRECISION", "IS_POINT_SOURCE"};
-	
+
 		Class<?>[] types= {Long.class, String.class, String.class, String.class, String.class, String.class, Integer.class, Integer.class};
 		return new SimpleDataTableWritable(headings, null, types);
 	}
@@ -37,11 +37,11 @@ public class DataResourceLoader {
 		// This is really a part of coef
 		// Only two columns, instream and total decay
 		return null;
-	
+
 	}
 
 	public static DataTableWritable loadSourceReachCoef(long modelId) {
-	
+
 		return null;
 	}
 
@@ -62,6 +62,11 @@ public class DataResourceLoader {
 		// may need to add id
 		String coefFile = SparrowResourceUtils.getModelResourceFilePath(modelId, "coef.txt");
 		return DataTableUtils.fill(result, coefFile, false, "\t", true);
+	}
+
+	public static DataTableWritable loadSourceValues(int testModel) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

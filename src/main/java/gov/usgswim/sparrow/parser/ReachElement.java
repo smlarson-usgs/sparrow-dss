@@ -19,7 +19,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Represents a single reach as part of a PredictionContext.
- * A Reach has a model-specific Identifier that identifies a specific reach w/in a Model,
+ * A Reach has a model-specific Identifier that identifies a specific reach w/in a SparrowModel,
  * but the ID is not a DB PK.  Reaches may have one or more Adjustments that
  * are applied to the reach.
  * 
@@ -44,7 +44,7 @@ public class ReachElement implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 
-	protected Long id;	//The Model Specific ID of the reach. (not the db PK).
+	protected Long id;	//The SparrowModel Specific ID of the reach. (not the db PK).
 	
 	//TODO: This should be a sorted set
 	protected List<Adjustment> adjs;	//List of one or more adjustments

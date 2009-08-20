@@ -2,7 +2,7 @@ package gov.usgswim.sparrow;
 
 import gov.usgswim.Immutable;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.domain.Model;
+import gov.usgswim.sparrow.domain.SparrowModel;
 
 /**
  * An immutable implementation of PredictData.
@@ -20,7 +20,7 @@ public class PredictDataImm extends AbstractPredictData {
 	/**
 	 * Contains the metadata for the model
 	 */
-	private final Model model;
+	private final SparrowModel model;
 
 	/**
 	 * 	 * One row per reach (i = reach index).  Row ID is assigned same as column 0.
@@ -95,7 +95,7 @@ public class PredictDataImm extends AbstractPredictData {
 	 * @param srcIDs
 	 */
 	public PredictDataImm(DataTable topo, DataTable coef, DataTable src, DataTable srcIDs,
-			DataTable decay, DataTable ancil, Model model) {
+			DataTable decay, DataTable ancil, SparrowModel model) {
 
 		this.model = model;
 		this.topo = topo;
@@ -130,7 +130,7 @@ public class PredictDataImm extends AbstractPredictData {
 		return ancil;
 	}
 
-	public Model getModel() {
+	public SparrowModel getModel() {
 		return model;
 	}
 
@@ -139,7 +139,7 @@ public class PredictDataImm extends AbstractPredictData {
 	}
 
 //	public PredictData2 getImmutable(boolean forceImmutableMembers) {
-//	//TODO:  Model should have an immutable builder
+//	//TODO:  SparrowModel should have an immutable builder
 //	if (forceImmutableMembers) {
 //	return new PredictData2Imm(
 //	(getTopo() != null)?getTopo().toImmutable():null,

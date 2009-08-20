@@ -7,8 +7,8 @@ import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
-import gov.usgswim.sparrow.domain.Model;
-import gov.usgswim.sparrow.domain.ModelBuilder;
+import gov.usgswim.sparrow.domain.SparrowModel;
+import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -147,9 +147,9 @@ public abstract class TabDelimFileUtil {
 			throw new IllegalStateException("Could not find the zero iteration in the data");
 		}
 
-		ModelBuilder mb = new ModelBuilder(modelId);
+		SparrowModelBuilder mb = new SparrowModelBuilder(modelId);
 		mb.setEnhNetworkId(enhNetworkId);
-		Model model = mb.toImmutable();
+		SparrowModel model = mb.toImmutable();
 
 		pd.setModel( model );
 

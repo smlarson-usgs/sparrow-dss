@@ -9,7 +9,7 @@ import javax.xml.stream.XMLStreamReader;
 /**
  * Represents a single reach as part of a reach group within a PredictionContext.
  * A Reach has a model-specific Identifier that identifies a specific reach
- * within a Model, but the ID is not a DB PK.  Unadjustable reaches (reaches
+ * within a SparrowModel, but the ID is not a DB PK.  Unadjustable reaches (reaches
  * within a reach group) are not allowed adjustments.
  * 
  * Note that a Reach is not an independent entity and thus does not override 

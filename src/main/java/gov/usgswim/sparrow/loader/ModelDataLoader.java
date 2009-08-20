@@ -9,6 +9,7 @@ import static gov.usgswim.sparrow.loader.ModelDataAssumptions.useDefaultIfUnavai
 import static gov.usgswim.sparrow.loader.ModelDataAssumptions.useDefaultPrecisionIfUnavailable;
 import static gov.usgswim.sparrow.loader.ModelDataAssumptions.useNameForDisplayNameIfUnavailable;
 import gov.usgswim.sparrow.deprecated.JDBCUtil;
+import gov.usgswim.sparrow.util.DLUtils;
 import gov.usgswim.sparrow.util.SparrowSchemaConstants;
 
 import java.io.BufferedReader;
@@ -38,7 +39,7 @@ import org.apache.commons.lang.StringUtils;
  * multiple stages as the preceding tables are loaded into the databases as the
  * auto-generated ids are needed for linking.
  *
- * See http://privusgs2.er.usgs.gov/display/SPARROW/Model+Export+Format
+ * See http://privusgs2.er.usgs.gov/display/SPARROW/SparrowModel+Export+Format
  * for inofrmation on the fields.
  *
  * @author ilinkuo
@@ -704,7 +705,7 @@ public class ModelDataLoader {
 		+ modelID;
 		Map<Integer, Integer> modelIdMap = null;
 		try {
-			modelIdMap = JDBCUtil.buildIntegerMap(conn, selectAllReachesQuery);
+			modelIdMap = DLUtils.buildIntegerMap(conn, selectAllReachesQuery);
 		} catch (ArrayIndexOutOfBoundsException e) {
 			throw new RuntimeException("Array index out of bounds because reaches need to be inserted "
 					+ "first into the database. Please insert reaches and rerun "
@@ -719,7 +720,7 @@ public class ModelDataLoader {
 		// the source_ids are generally generated via a sequence in an
 		// insert trigger
 		String sourceMapQuery = "SELECT IDENTIFIER, SOURCE_ID FROM " + SparrowSchemaConstants.SPARROW_SCHEMA + ".SOURCE WHERE SPARROW_MODEL_ID = " + modelID + " ORDER BY SORT_ORDER";
-		Map<Integer, Integer> sourceIdMap = JDBCUtil.buildIntegerMap(conn, sourceMapQuery);
+		Map<Integer, Integer> sourceIdMap = DLUtils.buildIntegerMap(conn, sourceMapQuery);
 		// ordered map necessary here (but probably can be avoided.
 		TreeMap<Integer, Integer> result = new TreeMap<Integer, Integer>();
 		result.putAll(sourceIdMap);
@@ -759,7 +760,7 @@ public class ModelDataLoader {
 	public static Map<Integer, Integer> readNetworkReaches() throws SQLException {
 		String enhReachQuery = "SELECT IDENTIFIER, ENH_REACH_ID FROM " + SparrowSchemaConstants.NETWORK_SCHEMA + ".ENH_REACH WHERE ENH_NETWORK_ID = "
 		+ ModelDataAssumptions.ENH_NETWORK_ID;
-		return JDBCUtil.buildIntegerMap(getWIDWConnection(), enhReachQuery);
+		return DLUtils.buildIntegerMap(getWIDWConnection(), enhReachQuery);
 	}
 
 	// ===============

@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow;
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.domain.Model;
+import gov.usgswim.sparrow.domain.SparrowModel;
 
 /**
  * A mutable implementation of PredictData.
@@ -21,7 +21,7 @@ public class PredictDataBuilder extends AbstractPredictData {
 	/**
 	 * Contains the metadata for the model
 	 */
-	protected Model model;
+	protected SparrowModel model;
 
 
 	/**
@@ -97,7 +97,7 @@ public class PredictDataBuilder extends AbstractPredictData {
 	 * @param srcIDs
 	 */
 	public PredictDataBuilder(DataTable topo, DataTable coef, DataTable src, DataTable srcIDs, DataTable decay,
-			DataTable ancil, Model model) {
+			DataTable ancil, SparrowModel model) {
 
 		this.model = model;
 		this.topo = topo;
@@ -123,7 +123,7 @@ public class PredictDataBuilder extends AbstractPredictData {
 	 * source  in the sourceValue dataset.
 	 * 
 	 * <h4>Data Columns (sorted by SORT_ORDER)</h4>
-	 * <h5>IDENTIFIER - The Row ID (not a column). The Model specific ID for the source (starting w/ 1)</h5>
+	 * <h5>IDENTIFIER - The Row ID (not a column). The SparrowModel specific ID for the source (starting w/ 1)</h5>
 	 * <ol>
 	 * <li>SOURCE_ID - (long) The database unique ID for the source
 	 * <li>NAME - (String) The full (long text) name of the source
@@ -285,23 +285,23 @@ public class PredictDataBuilder extends AbstractPredictData {
 		return ancil;
 	}
 
-	public Model getModel() {
+	public SparrowModel getModel() {
 		return model;
 	}
 
-	public void setModel(Model model) {
+	public void setModel(SparrowModel model) {
 		this.model = model;
 	}
 
 	public PredictData toImmutable() {
-		// TODO:  Model should have an immutable builder
+		// TODO:  SparrowModel should have an immutable builder
 		DataTable topo2 = (getTopo() != null)?getTopo().toImmutable():null;
 		DataTable coef2 = (getCoef() != null)?getCoef().toImmutable():null;
 		DataTable source2 = (getSrc() != null)?getSrc().toImmutable():null;
 		DataTable sourceIds2 = (getSrcMetadata() != null)?getSrcMetadata().toImmutable():null;
 		DataTable decay2 = (getDecay() != null)?getDecay().toImmutable():null;
 		DataTable ancil2 = (getAncil() != null)?getAncil().toImmutable():null;
-		Model model2 = (getModel() != null)?getModel():null;
+		SparrowModel model2 = (getModel() != null)?getModel():null;
 		
 		return new PredictDataImm(topo2, coef2, source2, sourceIds2, decay2, ancil2, model2);
 

@@ -2,7 +2,7 @@ package gov.usgswim.sparrow;
 
 import gov.usgswim.ImmutableBuilder;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.domain.Model;
+import gov.usgswim.sparrow.domain.SparrowModel;
 
 import java.io.Serializable;
 
@@ -43,7 +43,7 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 * source  in the sourceValue dataset.
 	 * 
 	 * <h4>Data Columns (sorted by SORT_ORDER)</h4>
-	 * <h5>IDENTIFIER - The Row ID (not a column). The Model specific ID for the source (starting w/ 1)</h5>
+	 * <h5>IDENTIFIER - The Row ID (not a column). The SparrowModel specific ID for the source (starting w/ 1)</h5>
 	 * <ol>
 	 * <li>SOURCE_ID - (long) The database unique ID for the source
 	 * <li>NAME - (String) The full (long text) name of the source
@@ -125,7 +125,7 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 
 	public DataTable getAncil();
 
-	public Model getModel();
+	public SparrowModel getModel();
 
 	/**
 	 * Returns an editable copy of the current PredictionDataSet.

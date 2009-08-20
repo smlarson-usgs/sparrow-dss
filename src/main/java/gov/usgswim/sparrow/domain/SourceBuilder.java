@@ -5,7 +5,7 @@ import gov.usgswim.NotThreadSafe;
 
 /**
  * Builder implementation of Source, which is a domain object representing a
- * source from a SPARROW Model.
+ * source from a SPARROW SparrowModel.
  * 
  * This class can be used to construct a model instance in a single thread,
  * which can then be copied to an immutable instance via getImmutable()

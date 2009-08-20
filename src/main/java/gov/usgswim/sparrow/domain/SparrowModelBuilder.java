@@ -9,13 +9,13 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Builder implementation of Model, which is a Domain Object representing a SPARROW Model.
+ * Builder implementation of SparrowModel, which is a Domain Object representing a SPARROW SparrowModel.
  *
  * This class can be used to construct a model instance in a single thread,
  * which can then be copied to an immutable instance via getImmutable()
  */
 @NotThreadSafe
-public class ModelBuilder implements Model, ImmutableBuilder<Model> {
+public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<SparrowModel> {
 	protected Long _id;
 	protected boolean _approved;
 	protected boolean _public;
@@ -33,15 +33,15 @@ public class ModelBuilder implements Model, ImmutableBuilder<Model> {
 	protected List<Source> _sources;
 	
 	
-	public ModelBuilder() {
+	public SparrowModelBuilder() {
 	}
 	
-	public ModelBuilder(long id) {
+	public SparrowModelBuilder(long id) {
 		_id = id;
 	}
 	
 	@SuppressWarnings("unchecked")
-	public Model toImmutable() throws IllegalStateException {
+	public SparrowModel toImmutable() throws IllegalStateException {
 	
 		List<Source> tmpList = null;
 		
@@ -58,7 +58,7 @@ public class ModelBuilder implements Model, ImmutableBuilder<Model> {
 			}
 		}
 	
-		return new ModelImm(
+		return new SparrowModelImm(
 			_id, _approved, _public, _archived, _name, _description, _url,
 			_dateAdded, _contactId, _enhNetworkId,
 			_northBound, _eastBound, _southBound, _westBound, tmpList);

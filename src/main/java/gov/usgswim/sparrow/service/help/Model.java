@@ -32,7 +32,7 @@ public class Model {
  	protected static final XStreamConfigurer configurer= new XStreamConfigurer() {
 			@Override
 	 		public XStream configure(XStream xstream) {
-	 			xstream.alias("Model", Model.class);
+	 			xstream.alias("SparrowModel", Model.class);
 	 			xstream.aliasField("Model_metadata", Model.class, "md");
 	 			xstream.aliasField("MRB", MetaData.class, "mrb");
 	 			xstream.aliasField("Name", MetaData.class, "modelName");

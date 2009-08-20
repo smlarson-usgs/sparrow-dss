@@ -119,10 +119,6 @@ public class ResourceLoaderUtils {
 		return loadParametrizedProperty(resourceFilePath, key, pairsToMap(params));
 	}
 
-	public static String loadParametrizedProperty(String resourceFilePath, String key, String... params) {
-		return loadParametrizedProperty(resourceFilePath, key, pairsToMap(params));
-	}
-
 	/**
 	 * @see ResourceLoaderUtils.loadParametrizedProperty()
 	 * @param resourceFilePath

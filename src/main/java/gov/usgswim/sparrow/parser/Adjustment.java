@@ -35,7 +35,7 @@ public class Adjustment implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 
-	private Integer src;	//The Model Specific source ID (not any sort of db ID for the source)
+	private Integer src;	//The SparrowModel Specific source ID (not any sort of db ID for the source)
 	private Double abs;		//A new value for the source, overriding any coef's applied
 	private Double coef;	//A coefficient to multiply the source by. 
 	

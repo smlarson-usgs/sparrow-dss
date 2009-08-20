@@ -33,7 +33,7 @@ public class ModelDataStateChecker {
 
 			System.out.println("==== Checking Sequence range for model " + modelID + " ====");
 			dt = checkPerModelIdentifierRanges(conn, modelID);
-			DataTableUtils.printDataTable(dt, "Model " + modelID + " ranges");
+			DataTableUtils.printDataTable(dt, "SparrowModel " + modelID + " ranges");
 
 			System.out.println("==== Checking table counts for model " + modelID + " ====");
 			dt = checkPerModelTableCounts(conn, modelID);

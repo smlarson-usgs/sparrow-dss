@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow.domain;
 
 /**
- * Domain Object representing a single source (used by many reaches) for a SPARROW Model.
+ * Domain Object representing a single source (used by many reaches) for a SPARROW SparrowModel.
  * 
- * Note that there no link back to the Model - this is a one-way metadata
+ * Note that there no link back to the SparrowModel - this is a one-way metadata
  * class.  There *is* a getModelId method, thought this is mostly to completely
  * represent the db columns then a back-reference.
  */

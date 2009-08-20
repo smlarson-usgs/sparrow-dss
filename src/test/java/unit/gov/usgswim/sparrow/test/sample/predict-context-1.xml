@@ -4,25 +4,25 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	model-id="1">
 		<adjustment-groups conflicts="accumulate | supersede">
-			<reach-group enabled="true" name="Northern Indiana Plants"> 
+			<reach-group enabled="true" name="Northern Indiana Plants">
 				<desc>Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project</desc>
 				<notes>
 					I initially selected HUC 01746286 and 01746289,
 					but it looks like there are some others plants that need to be included.
-					
+
 					As a start, we are proposing a 10% reduction across the board,
 					but we will tailor this later based on plant type.
 				</notes>
 				<adjustment src="5" coef=".9"/>
 				<adjustment src="4" coef=".75"/>
-				<logical-set>	
+				<logical-set>
 					<criteria attrib="huc8">01746286</criteria>
 				</logical-set>
 				<logical-set>
 					<criteria attrib="huc8">01746289</criteria>
 				</logical-set>
 			</reach-group>
-			
+
 			<reach-group enabled="false" name="Southern Indiana Fields">
 				<desc>Fields in Southern Indiana</desc>
 				<notes>
@@ -38,7 +38,7 @@
 					<criteria attrib="reach" relation="upstream">9374562</criteria>
 				</logical-set>
 			</reach-group>
-			
+
 			<reach-group enabled="true" name="Illinois">
 				<desc>The entire state of Illinois</desc>
 				<notes>The Urban source for Illinois is predicted is to increase 20%.</notes>
@@ -47,7 +47,7 @@
 					<criteria attrib="state-code">il</criteria>
 				</logical-set>
 			</reach-group>
-			
+
 			<reach-group enabled="true" name="Wisconsin">
 				<desc>Wisconsin River Plants</desc>
 				<notes>
@@ -55,9 +55,9 @@
 					BPM implementations.
 				</notes>
 				<adjustment src="2" coef=".75"/>
-				
+
 				<!-- Note:  these are the first two reaches in model 1 -->
-				<!-- 
+				<!--
 				<reach id="3074">
 					<adjustment src="2" abs=".9"/>
 				</reach>
@@ -67,7 +67,7 @@
 				 -->
 			</reach-group>
 			<individual-group enabled="true">
-				<!-- 
+				<!--
 				<adjustment src="2" coef=".75"/>
 				 -->
 				<!-- Note:  these are the first two reaches in model 1 -->
@@ -92,19 +92,19 @@
 			<limit-to>contributors | terminals | area-of-interest</limit-to>
 
 			<group-by>HUC8</group-by>
-			
+
 		</analysis>
-		
+
 		<terminal-reaches>
-			<reach>2345642</reach>
-			<reach>3425688</reach>
-			<reach>5235424</reach>
+			<reach id="2345642"></reach>
+			<reach id="3425688"></reach>
+			<reach id="5235424"></reach>
 			or
 			<logical-set/>
 		</terminal-reaches>
-		
+
 		<area-of-interest>
-			<logical-set/>	
+			<logical-set/>
 		</area-of-interest>
 
 </prediction-context>

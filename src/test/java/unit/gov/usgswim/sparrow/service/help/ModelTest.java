@@ -16,7 +16,7 @@ public class ModelTest {
 		Model model = new Model();
 		{
 			Constituent constituent = new Constituent("Total Nitrogen", "kg/yr", "");
-			model.md = new MetaData("National Total Nitrogen Model - 1987", "", constituent);
+			model.md = new MetaData("National Total Nitrogen SparrowModel - 1987", "", constituent);
 			Source source = new Source("ALL", "kg/yr", "All nitrogen sources - POINT, ATMDEP, FERTILIZER, WASTE, and NANAGR.");
 			model.md.sources.add(source);
 		}

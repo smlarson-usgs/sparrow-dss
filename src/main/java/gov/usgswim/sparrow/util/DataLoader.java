@@ -8,7 +8,7 @@ import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
-import gov.usgswim.sparrow.domain.ModelBuilder;
+import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 import gov.usgswim.sparrow.domain.SourceBuilder;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
 public class DataLoader {
 
 	public static final String PROPERTIES_FILE = "gov/usgswim/sparrow/util/DataLoader.properties";
-	protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
+	protected static Logger log = Logger.getLogger(DataLoader.class); //logging for this class
 	public static int DO_NOT_INDEX = -1;
 	public static final int SOURCE_ID_COL = 0;
 	public DataLoader() {
@@ -101,7 +101,7 @@ public class DataLoader {
 	 * @param conn The JDBC connection object.
 	 * @return All public, approved models and their sources.
 	 */
-	public static List<ModelBuilder> loadModelsMetaData(Connection conn)
+	public static List<SparrowModelBuilder> loadModelsMetaData(Connection conn)
 	throws SQLException, IOException {
 		return loadModelsMetaData(conn, true, true, false, true);
 	}
@@ -122,14 +122,14 @@ public class DataLoader {
 	 * @param getSources Whether or not to attach the model's sources.
 	 * @return All models that meet the specified criteria.
 	 */
-	public static List<ModelBuilder> loadModelsMetaData(Connection conn,
+	public static List<SparrowModelBuilder> loadModelsMetaData(Connection conn,
 			boolean isApproved, boolean isPublic, boolean isArchived,
 			boolean getSources) throws SQLException, IOException {
 
-		List<ModelBuilder> models = new ArrayList<ModelBuilder>(23);
+		List<SparrowModelBuilder> models = new ArrayList<SparrowModelBuilder>(23);
 
 		// Build filtering parameters and retrieve the queries from properties
-		Object[] params = {
+		String[] params = {
 				"IsApproved", (isApproved ? "T" : "F"),
 				"IsPublic", (isPublic ? "T" : "F"),
 				"IsArchived", (isArchived ? "T" : "F")
@@ -148,7 +148,7 @@ public class DataLoader {
 				rset = stmt.executeQuery(selectModels);
 
 				while (rset.next()) {
-					ModelBuilder m = new ModelBuilder();
+					SparrowModelBuilder m = new SparrowModelBuilder();
 					m.setId(rset.getLong("SPARROW_MODEL_ID"));
 					m.setApproved(StringUtils.equalsIgnoreCase("T", rset.getString("IS_APPROVED")));
 					m.setPublic(StringUtils.equalsIgnoreCase("T", rset.getString("IS_PUBLIC")));
@@ -173,7 +173,7 @@ public class DataLoader {
 				String inModelsWhereClause = " ";
 				if (!models.isEmpty()) {
 					List<Long> modelIds = new ArrayList<Long>();
-					for (ModelBuilder model: models) {
+					for (SparrowModelBuilder model: models) {
 						modelIds.add(model.getId());
 					}
 					inModelsWhereClause = " WHERE SPARROW_MODEL_ID in (" + StringUtils.join(modelIds.toArray(), ", ") + ") ";
@@ -521,7 +521,7 @@ public class DataLoader {
 	 * Typically 5-10 rows per model.
 	 *
 	 * <h4>Data Columns (sorted by SORT_ORDER)</h4>
-	 * <h5>IDENTIFIER - The Row ID (not a column). The Model specific ID for the source (starting w/ 1)</h5>
+	 * <h5>IDENTIFIER - The Row ID (not a column). The SparrowModel specific ID for the source (starting w/ 1)</h5>
 	 * <ol>
 	 * <li>SOURCE_ID - (long) The database unique ID for the source
 	 * <li>NAME - (String) The full (long text) name of the source
@@ -576,6 +576,10 @@ public class DataLoader {
 	 * @throws IOException
 	 */
 	public static String getQuery(String name, Object... params) throws IOException {
+		return ResourceLoaderUtils.loadParametrizedProperty(PROPERTIES_FILE, name, params);
+	}
+
+	public static String getQuery(String name, String... params) throws IOException {
 		return ResourceLoaderUtils.loadParametrizedProperty(PROPERTIES_FILE, name, params);
 	}
 

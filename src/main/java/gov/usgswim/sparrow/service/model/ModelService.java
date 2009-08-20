@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.service.model;
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
-import gov.usgswim.sparrow.domain.ModelBuilder;
+import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 import gov.usgswim.sparrow.service.DomainSerializer;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.DataLoader;
@@ -50,7 +50,7 @@ public class ModelService implements HttpService<ModelRequest> {
 
 	public XMLStreamReader getXMLStreamReader(ModelRequest o, boolean needsCompleteFirstRow) throws Exception{
 		Connection conn = getConnection();
-		List<ModelBuilder> models = null;
+		List<SparrowModelBuilder> models = null;
 		try {
 			models = DataLoader.loadModelsMetaData(conn, o.isApproved(), o.isPublic(), o.isArchived(), o.isSources());
 		} finally {

@@ -27,7 +27,7 @@ public class DLUtils{
 	 * @return
 	 * @throws SQLException
 	 */
-	private static Map<Integer, Integer> buildIntegerMap(Connection conn, String query) throws SQLException {
+	public static Map<Integer, Integer> buildIntegerMap(Connection conn, String query) throws SQLException {
 		DataTableWritable data = readAsInteger(conn, query, 1000);
 		int rows = data.getRowCount();
 		Map<Integer, Integer> map = new HashMap<Integer, Integer>((int)(rows * 1.2), 1f);

@@ -9,10 +9,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Immutable implementation of Model, which is a Domain Object representing a SPARROW Model.
+ * Immutable implementation of SparrowModel, which is a Domain Object representing a SPARROW SparrowModel.
  */
 @Immutable
-public class ModelImm implements Model, Serializable {
+public class SparrowModelImm implements SparrowModel, Serializable {
 	private static final long serialVersionUID = 4501741342624409074L;
 	private final Long _id;
 	private final boolean _approved;
@@ -31,13 +31,13 @@ public class ModelImm implements Model, Serializable {
 	private final List<Source> _sources;
 
 	/*
-	private ModelImm() {
+	private SparrowModelImm() {
 		//some tools need a no-arg constructor.  Not really usable w/o reflection.
 	}
 	*/
 	
 	/**
-	 * Constructs an immutable Model instance.
+	 * Constructs an immutable SparrowModel instance.
 	 * 
 	 * Note:  To be truely immmutable, the Sources in the passed list must be
 	 * immutable - this is the caller's responsibility.  The passed list does
@@ -59,7 +59,7 @@ public class ModelImm implements Model, Serializable {
 	 * @param westBound
 	 * @param sources
 	 */
-	public ModelImm(Long id, boolean approved, boolean isPublic, boolean archived,
+	public SparrowModelImm(Long id, boolean approved, boolean isPublic, boolean archived,
 				String name, String description, String url, Date dateAdded,
 				Long contactId, Long enhNetworkId,
 				Double northBound, Double eastBound, Double southBound, Double westBound,

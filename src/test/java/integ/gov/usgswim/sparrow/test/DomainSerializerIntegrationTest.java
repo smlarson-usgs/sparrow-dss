@@ -43,7 +43,7 @@ public class DomainSerializerIntegrationTest extends TestCase {
 //	 * @see DomainSerializer#writeModels(XMLStreamWriter,List)
 //	 */
 //	public void testWriteModelsStream() throws SQLException, XMLStreamException {
-//		List<ModelBuilder> models = JDBCUtil.loadModelMetaData(conn);
+//		List<SparrowModelBuilder> models = JDBCUtil.loadModelMetaData(conn);
 //		
 //		DomainSerializer ds = new DomainSerializer();
 //		
@@ -54,7 +54,7 @@ public class DomainSerializerIntegrationTest extends TestCase {
 //	 * @see gov.usgswim.sparrow.service.DomainSerializer#writeModels(javax.xml.stream.XMLEventWriter,List)
 //	 */
 //	public void testWriteModelsEvents() throws SQLException, XMLStreamException {
-//		List<ModelBuilder> models = JDBCUtil.loadModelMetaData(conn);
+//		List<SparrowModelBuilder> models = JDBCUtil.loadModelMetaData(conn);
 //		XMLOutputFactory fact = XMLOutputFactory.newInstance();
 //		
 //		WstxEventWriter evtWriter = (WstxEventWriter) fact.createXMLEventWriter(System.out);

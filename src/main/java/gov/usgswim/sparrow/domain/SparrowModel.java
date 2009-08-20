@@ -4,9 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Domain Object representing a SPARROW Model.
+ * Domain Object representing a SPARROW SparrowModel.
  */
-public interface Model {
+public interface SparrowModel {
 
 	/**
 	 * The UUID for this source.  This is the database srcId.

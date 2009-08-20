@@ -12,7 +12,7 @@ import gov.usgswim.sparrow.cachefactory.ReachID;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.deprecated.IDByPointComputable;
 import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
-import gov.usgswim.sparrow.domain.ModelImm;
+import gov.usgswim.sparrow.domain.SparrowModelImm;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.AreaOfInterest;
@@ -56,9 +56,9 @@ public class SharedApplication  {
 	private DataSource datasource;
 	private boolean lookupFailed = false;
 	private ComputableCache<PredictRequest, PredictResult> predictResultCache;
-	private ComputableCache<Long, PredictData> predictDatasetCache;	//Long is the Model ID
+	private ComputableCache<Long, PredictData> predictDatasetCache;	//Long is the SparrowModel ID
 	private ComputableCache<IDByPointRequest_old, DataTable> idByPointCache;
-	private ComputableCache<ModelRequest, ModelImm> modelCache;
+	private ComputableCache<ModelRequest, SparrowModelImm> modelCache;
 
 	//an ehcache test cache
 	public static final String SERIALIZABLE_CACHE = "PredictContext";
@@ -89,7 +89,7 @@ public class SharedApplication  {
 		predictResultCache = new ComputableCache<PredictRequest, PredictResult>(new PredictComputable(), "Predict Result Cache");
 		predictDatasetCache = new ComputableCache<Long, PredictData>(new PredictDatasetComputable(), "Predict Dataset Cache");
 		idByPointCache = new ComputableCache<IDByPointRequest_old, DataTable>(new IDByPointComputable(), "ID by Point Cache");
-		//modelCache = new ComputableCache<ModelRequest, ModelImm>(new ModelComputable(), "Model Cache");
+		//modelCache = new ComputableCache<ModelRequest, SparrowModelImm>(new ModelComputable(), "SparrowModel Cache");
 	}
 
 	public static synchronized SharedApplication getInstance() {
@@ -505,7 +505,7 @@ public class SharedApplication  {
 		return idByPointCache;
 	}
 
-	public ComputableCache<ModelRequest, ModelImm> getModelCache() {
+	public ComputableCache<ModelRequest, SparrowModelImm> getModelCache() {
 		return modelCache;
 	}
 

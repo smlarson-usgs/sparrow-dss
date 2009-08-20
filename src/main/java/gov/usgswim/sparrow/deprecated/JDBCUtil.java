@@ -5,7 +5,6 @@ import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.util.DLUtils;
-import gov.usgswim.sparrow.util.LoadTestRunner;
 import gov.usgswim.sparrow.util.SparrowSchemaConstants;
 
 import java.io.FileWriter;
@@ -26,7 +25,7 @@ import org.apache.log4j.Logger;
  * @deprecated functionality replaced by DataLoader and ModelDataLoader
  */
 public abstract class JDBCUtil {
-	protected static Logger log = Logger.getLogger(LoadTestRunner.class); //logging for this class
+	protected static Logger log = Logger.getLogger(JDBCUtil.class); //logging for this class
 
 	public JDBCUtil() {
 	}
@@ -100,7 +99,7 @@ public abstract class JDBCUtil {
 				log.debug("deleteModel(): Deleting all model record...");
 				rmModelStmt.setInt(1, (int) modelId);
 				int cnt = rmModelStmt.executeUpdate();
-				log.debug("deleteModel(): Model deleted.  " + cnt + " records.");
+				log.debug("deleteModel(): SparrowModel deleted.  " + cnt + " records.");
 			} finally {
 				try {
 					rmModelStmt.close();
@@ -109,7 +108,7 @@ public abstract class JDBCUtil {
 				}
 			}
 		} else {
-			log.debug("deleteModel(): Model record kept.");
+			log.debug("deleteModel(): SparrowModel record kept.");
 		}
 
 	}
@@ -410,11 +409,11 @@ public abstract class JDBCUtil {
 		int iterationCnt = coefRowCnt / modelRowCnt;	//# of iterations
 		int modelSourceCnt = src.getColumnCount();	//# of sources in the dataset
 
-		log.debug("- - Model Startup Stats - -");
-		log.debug("- Model reach count: " + modelRowCnt);
-		log.debug("- Model coef row count: " + coefRowCnt);
-		log.debug("- Model iteration count: " + iterationCnt);
-		log.debug("- Model source count: " + modelSourceCnt);
+		log.debug("- - SparrowModel Startup Stats - -");
+		log.debug("- SparrowModel reach count: " + modelRowCnt);
+		log.debug("- SparrowModel coef row count: " + coefRowCnt);
+		log.debug("- SparrowModel iteration count: " + iterationCnt);
+		log.debug("- SparrowModel source count: " + modelSourceCnt);
 
 		//Check:  coefRows should equal modelRows * iterations AND
 		//        coefRows should be an even multiple of modelRows
