@@ -19,18 +19,18 @@ import org.apache.log4j.Logger;
 /**
  * A thin servlet that takes requests for a service and allows them to be
  * handled by a configurable handler class.
- * 
+ *
  * This servlet attempts to turn the incoming request into an XML stream, or,
  * in the case of a GET request, it looks for a configurable parameter to
  * contain the xml request (which it also turns into a stream).
- * 
+ *
  * For GET requests:  The XML request must be passed as a properly escaped XML
  * document using the parameter name defined in the servlet configuration.
- * 
+ *
  * For POST requests:  The XML request document may be passed as the content of the
  * POST request itself with no parameter name.  Not all frameworks will support
  * creating requests in this way so the XML document may also be included as
- * a parameter, using the parameter name defined by the 'xml-param-name' 
+ * a parameter, using the parameter name defined by the 'xml-param-name'
  * servlet init param, which defaults to xmlreq.  To indicate that the XML
  * request document is passed as a parameter, the name of the parameter
  * must be appened to the url.  For instance, if the servlet url is:
@@ -51,22 +51,22 @@ public class ServiceServlet extends HttpServlet {
 	 * The name of the optional init parameter that defines the name of the http request
 	 * parameter that contains the XML request.  If not specified as an init
 	 * parameter to this servlet, it defaults to 'xmlreq'.
-	 * 
+	 *
 	 * For GET requests, the parameter defined here is required to pass the
 	 * request content.  See the class documentation for details regarding
 	 * GET and POST requests.
 	 */
 	public static final String XML_PARAM_NAME = "xml-param-name";
-	
+
 	//Default value of XML_PARAM_NAME
 	public static final String DEFAULT_XML_PARAM_NAME = "xmlreq";
 	protected String xmlParamName = DEFAULT_XML_PARAM_NAME;
-	
+
 	/**
 	 * The name of an init parameter which must contain the fully qualified
 	 * class name of the Pipeline class that will handle requests to
 	 * this servlet.
-	 * 
+	 *
 	 * The name class must implement the Pipeline interface.
 	 */
 	public static final String PIPELINE_CLASS = "pipeline-class";
@@ -75,7 +75,7 @@ public class ServiceServlet extends HttpServlet {
 	/**
 	 * The fully qualified class name of the Pipeline class that will
 	 * handle requests to this servlet.
-	 * 
+	 *
 	 */
 	protected String pipelineClassName = "";
 	protected Class<?> pipelineClass;
@@ -88,13 +88,13 @@ public class ServiceServlet extends HttpServlet {
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		
+
 		if (config.getInitParameter(XML_PARAM_NAME) != null) {
 			xmlParamName = config.getInitParameter(XML_PARAM_NAME);
 		}
-		
+
 		pipelineClassName = config.getInitParameter(PIPELINE_CLASS);
-		
+
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		Class<?> _theClass;
 
@@ -131,17 +131,17 @@ public class ServiceServlet extends HttpServlet {
 	@Override
 	public void doGet(HttpServletRequest request,
 										HttpServletResponse response) throws ServletException, IOException {
-		
+
 		doPost(request, response);
 		// TODO suggest use this to handle REST by calling parseREST()
 	}
-	
+
 
 
 	/**
 	 * Delegates to the HttpRequestParser to get a request, then passes the request
 	 * to the HttpRequestHandler.
-	 * 
+	 *
 	 * @param request
 	 * @param response
 	 * @throws ServletException
@@ -151,7 +151,7 @@ public class ServiceServlet extends HttpServlet {
 	public void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		PipelineRequest o = null;
-		// TODO suggest use this to handle POST & SOAP by calling parsePOST(), 
+		// TODO suggest use this to handle POST & SOAP by calling parsePOST(),
 		try {
 			String echoType = getEchoRequestType(request);
 			Pipeline pipe = null;
@@ -162,6 +162,7 @@ public class ServiceServlet extends HttpServlet {
 			}
 			pipe.setXMLParamName(xmlParamName);
 			o = pipe.parse(request);
+			// TODO seems like a double dispatch|covariant dispatch issue. Perhaps to be better solved by visitor pattern
 			pipe.dispatch(o, response);
 		} catch (Exception e) {
 			throw new ServletException(e);
