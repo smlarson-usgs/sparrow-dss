@@ -68,11 +68,11 @@ public class SourceAdjustments_Test extends TestCase {
 
 		sas.addGrossSrcAdjustments(adjMap);
 
-		Adjustment<?>[] adjList = sas.getAdjustments();
+		Adjustment[] adjList = sas.getAdjustments();
 
 		//Test a few of the adjustment values
 		//these values will be sorted by ID, so 10 will be the last ID and .5 the last value
-		Adjustment<?> a = adjList[0];
+		Adjustment a = adjList[0];
 		assertEquals(AdjustmentType.GROSS_SRC_ADJUST, a.getType());
 		assertEquals(1, a.getSrcId());
 		assertEquals(.5d, a.getValue(), .00000000000001);
@@ -138,11 +138,11 @@ public class SourceAdjustments_Test extends TestCase {
 		sas.addGrossSrcAdjustments(adjMap);
 		sas.addAdjustment(new Adjustment(Adjustment.AdjustmentType.SPECIFIC_ADJUST, 2, 200, 2.5d));	//(1,1)
 
-		Adjustment<?>[] adjList = sas.getAdjustments();
+		Adjustment[] adjList = sas.getAdjustments();
 
 		//Test a few of the adjustment values.  In particular, the specific adjustments
 		//must go last.
-		Adjustment<?> a = adjList[0];
+		Adjustment a = adjList[0];
 		assertEquals(AdjustmentType.GROSS_SRC_ADJUST, a.getType());
 		assertEquals(1, a.getSrcId());
 		assertEquals(.5d, a.getValue(), .00000000000001);

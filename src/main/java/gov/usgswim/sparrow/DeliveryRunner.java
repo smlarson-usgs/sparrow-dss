@@ -264,66 +264,6 @@ public class DeliveryRunner implements Runner {
 		return PredictResultImm.buildPredictResult(deliveredFlux, predictData);
 
 
-
-		/*{
-		int maxReachRow = topo.getRowCount() - 1;
-		PredictResultStructure prs = PredictResultStructure.analyzePredictResultStructure(maxReachRow, sourceValues);
-		double incReachDeliveredFlux[][] = new double[prs.reachCount][prs.rchValColCount];
-		//Array of accumulated values at nodes
-		double upstreamNodeContribution[][] = new double[nodeCount][prs.sourceCount];
-
-
-		// Iterate over all reaches
-		for (int reach = 0; reach < prs.reachCount; reach++) {
-
-			double reachIncrementalContributionAllSourcesTotal = 0d; // incremental for all sources/ (NOT decayed)
-			double rchGrandTotal = 0d; // all sources + all from upstream node (decayed)
-
-			Integer downstreamNode = getDownstreamNode(topo, reach);
-			double downstreamNodeTransportFraction = nodeTransportFraction[downstreamNode];
-
-			// Iterate over all sources
-			for (int sourceType = 0; sourceType < prs.sourceCount; sourceType++) {
-				int source = sourceType + prs.sourceCount;
-				int upstreamSource = sourceType + prs.sourceCount;
-
-				// temp var to store the incremental per source k.
-				// Land delivery and coeff both included in coef value. (NOT
-				// decayed)
-				double incrementalReachFluxContribution = deliveryCoefficient.getDouble(reach, sourceType)
-					* sourceValues.getDouble(reach, sourceType);
-				{
-					Long reachID = topo.getIdForRow(reach);
-					double deliveredFlux = 0;
-					if (targetReaches.contains(reachID)) {
-						deliveredFlux = incrementalReachFluxContribution * decayCoefficient.getDouble(reach, INSTREAM_DECAY_COL);
-					}
-					else  {
-						deliveredFlux = nodeTransportFraction[downstreamNode] * incrementalReachFluxContribution * decayCoefficient.getDouble(reach, INSTREAM_DECAY_COL);
-						// Note that the same formula cannot be used for both cases because the
-						// nodeTransportFraction[downstreamNode] is not ==1 for a
-						// target reach. The fraction at the tnode of a target reach should not
-						// be ==1, otherwise other reaches ending at that same node will be
-						// treated as a target reach as well.
-					}
-					incReachDeliveredFlux[reach][source] = deliveredFlux;
-				}
-				incReachDeliveredFlux[reach][sourceType] = incrementalReachFluxContribution
-					* decayCoefficient.getDouble(reach, INSTREAM_DECAY_COL)
-					* downstreamNodeTransportFraction;
-				// TODO Not calculating upstream node contribution at this time as that requires tracking nodes or doing a WeightedDataTable. Maybe later
-
-				reachIncrementalContributionAllSourcesTotal += incrementalReachFluxContribution; // add to incremental total for all sources at reach
-			}
-			incReachDeliveredFlux[reach][prs.totalIncrementalColOffset] = reachIncrementalContributionAllSourcesTotal; // incremental for all sources (NOT decayed)
-
-			// TODO, process reachIncrementalContributionAllSourcesTotal properly
-		}
-
-		return PredictResultImm.buildPredictResult(incReachDeliveredFlux,
-				predictData);
-	}*/
-
 	}
 
 	public PredictResultImm doPredict() throws Exception {

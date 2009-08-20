@@ -11,8 +11,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 public class BinningRequest implements XMLStreamParserComponent, PipelineRequest{
-    
-    private String xmlRequest;
+
+	private static final long serialVersionUID = 1L;
+	private String xmlRequest;
     private ResponseFormat responseFormat;
     private Integer contextId;
     private Integer binCount;
@@ -26,7 +27,7 @@ public class BinningRequest implements XMLStreamParserComponent, PipelineRequest
         responseFormat.setMimeType("xml");
         responseFormat.setAttachment(false);
     }
-    
+
     public Integer getContextId() {
         return contextId;
     }
@@ -60,7 +61,7 @@ public class BinningRequest implements XMLStreamParserComponent, PipelineRequest
     }
 
     public void setXMLRequest(String request) {
-        xmlRequest = request;       
+        xmlRequest = request;
     }
 
     public void setResponseFormat(ResponseFormat respFormat) {

@@ -28,6 +28,7 @@ import javax.xml.stream.XMLStreamReader;
  */
 public class FindReachService extends HttpServlet {
 
+	private static final long serialVersionUID = 1L;
 	public static String sampleResponse="<sparrow-reach-response xmlns=\"http://www.usgs.gov/sparrow/id-response-schema/v0_2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" model-id=\"22\">"
 		+ "    <status>OK</status>"
 		+ "   	<reach>"

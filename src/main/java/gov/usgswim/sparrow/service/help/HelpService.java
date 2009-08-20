@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class HelpService extends HttpServlet {
 
+	private static final long serialVersionUID = 1L;
 	protected static Map<Integer, Object>modelMetadata = new HashMap<Integer, Object>();
 
 	@Override

@@ -13,7 +13,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * Represents a single adjustment to a source
  */
 @Immutable
-public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustment<K>>, Serializable {
+public class Adjustment implements Comparable<Adjustment>, Serializable {
 
 	private static final long serialVersionUID = 8157974235794300226L;
 	private final int _srcId;
@@ -123,7 +123,7 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 					//int reachRow = reachIndex.findFirst(0, Integer.valueOf(_reachId));
 					long reachIdLong = _reachId;
 					int reachRow = reachIndex.getRowForId(reachIdLong);
-					
+
 					if (reachRow != -1) {
 						data.setValue(Double.valueOf(_val), reachRow, mapSourceId(_srcId, srcIndex));
 					} else {
@@ -142,11 +142,11 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 
 	/**
 	 * Maps a source id to its column index in the src data.
-	 * 
+	 *
 	 * If there is no source id map, it is assumed that there are no IDs for the sources (i.e.,
 	 * the prediction is being run from a text file), and ID are auto generated
 	 * such that the first column of the sources is given an id of 1 (not zero).
-	 * 
+	 *
 	 * See the PredictionDataSet class, which implements the same strategy (and should
 	 * be kept in sync).
 	 * @param id
@@ -172,7 +172,7 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 
 	}
 
-	public int compareTo(Adjustment<K> that) {
+	public int compareTo(Adjustment that) {
 		final int BEFORE = 1;
 		final int EQUAL = 0;
 		final int AFTER = -1;
@@ -194,18 +194,18 @@ public class Adjustment<K extends Comparable<K>> implements Comparable<Adjustmen
 
 	/**
 	 * Returns true if the adjustment conflicts with this adjustment.
-	 * 
+	 *
 	 * @param that
 	 * @return
 	 */
-	public boolean isConflicting(Adjustment<?> that) {
+	public boolean isConflicting(Adjustment that) {
 		return (_type.equals(that.getType()) && that.getSrcId() == _srcId && _val != that.getValue());
 	}
 
 	@Override
 	public boolean equals(Object object) {
 		if (object instanceof Adjustment) {
-			Adjustment<?> that = (Adjustment<?>) object;
+			Adjustment that = (Adjustment) object;
 			return (_type.equals(that.getType()) && that._reachId == _reachId && that.getSrcId() == _srcId && _val == that.getValue());
 		}
 		return false;

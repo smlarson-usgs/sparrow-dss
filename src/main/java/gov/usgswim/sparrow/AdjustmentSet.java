@@ -6,7 +6,7 @@ import gov.usgswim.datatable.DataTable;
  * A collection of adjustments to make on the sources for a project
  */
 public interface AdjustmentSet {
-	
+
 	//Reusable empty adjustmentset
 	public static final AdjustmentSet EMPTY_ADJUSTMENTSET = new AdjustmentSetImm();
 
@@ -14,7 +14,7 @@ public interface AdjustmentSet {
 	 * Creates a new DataTable source by creating a coef-view using the same underlying
 	 * data w/ coefficients on top.  This strategy allows the underlying data
 	 * to be cached and not modified.
-	 * 
+	 *
 	 * srcIndex and reachIndex are both indexed DataTable.  srcIndex should come
 	 * from PredictionDataSet.getSourceIds() and reachIndex should come from
 	 * PredictionDataSet.getTopo(), though only the index is important
@@ -32,11 +32,11 @@ public interface AdjustmentSet {
 
 	/**
 	 * Returns all the adjustments in the correct order.
-	 * 
+	 *
 	 * The returned array is safe - it is not tied to the underlying storage.
 	 * @return
 	 */
-	public Adjustment<?>[] getAdjustments();
+	public Adjustment[] getAdjustments();
 
 	/**
 	 * Returns the number of adjustments

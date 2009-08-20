@@ -224,8 +224,8 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 
             //Build the prediction request
             AdjustmentSetBuilder adjBuilder = new AdjustmentSetBuilder();
-            List<Adjustment<?>> adjs = adjBuilder.parseGrossAdj((String) properties.get(GROSS_SOURCE_ADJUST_KEY));
-            for (Adjustment<?> a : adjs) {
+            List<Adjustment> adjs = adjBuilder.parseGrossAdj((String) properties.get(GROSS_SOURCE_ADJUST_KEY));
+            for (Adjustment a : adjs) {
                 adjBuilder.addAdjustment(a);
             }
 
