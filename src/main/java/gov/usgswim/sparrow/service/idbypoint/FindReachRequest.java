@@ -13,6 +13,8 @@ import javax.xml.stream.XMLStreamReader;
 
 
 public class FindReachRequest implements XMLStreamParserComponent{
+
+	private static final long serialVersionUID = 1L;
 	private static final String MAIN_ELEMENT_NAME = "sparrow-reach-request";
 	public String modelID;
 	public String reachID;

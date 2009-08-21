@@ -4,6 +4,7 @@ import gov.usgswim.sparrow.parser.XMLParseValidationException;
 
 import java.io.IOException;
 import java.io.StringBufferInputStream;
+import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -74,6 +75,10 @@ public class SmartXMLPropertiesTest {
 	public void testSimpleChild() throws XMLStreamException, XMLParseValidationException {
 		SmartXMLProperties props = new SmartXMLProperties();
 		props.parse(TEST_XML);
+		
+		for (Entry<String, String> entry: props.entrySet()) {
+			System.out.println(entry.getKey() + "=" + entry.getValue());
+		}
 	}
 
 //	@Test

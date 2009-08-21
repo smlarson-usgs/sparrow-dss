@@ -14,6 +14,8 @@ public class ParseState{
 	public StringBuilder content;
 	private String rootChild;
 	private boolean isListElement;
+	private String listElementName;
+	private String id;
 
 	public ParseState(XMLStreamReader in){this.stream = in;}
 
@@ -160,6 +162,16 @@ public class ParseState{
 
 	public void setAsListElement() {
 		isListElement = true;
+		listElementName = stream.getLocalName();
+		id = stream.getAttributeValue("", "id");
+	}
+
+	public String getRootChildName() {
+		return (isListElement)? rootChild: null;
+	}
+
+	public String getListElementName() {
+		return (isListElement)? listElementName + "." + id: null;
 	}
 
 	public StringBuilder getContentAsNode() {
@@ -171,6 +183,10 @@ public class ParseState{
 		content.append("</" + rootChild + ">");
 		return content;
 
+	}
+
+	public String getId() {
+		return id;
 	}
 
 }
