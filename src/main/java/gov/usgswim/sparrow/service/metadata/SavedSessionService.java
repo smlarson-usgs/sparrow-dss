@@ -45,7 +45,7 @@ public class SavedSessionService extends HttpServlet {
 			out.flush();
 			return;
 		}
-		if (session == null) {
+		if (session == null || session.length() == 0) {
 			// output a list of all sessions for the model
 			// TODO may need to convert this to JSON
 			Set<Entry<Object, Object>> sessionList = retrieveSavedSessions(modelID.toString());
@@ -57,6 +57,7 @@ public class SavedSessionService extends HttpServlet {
 				out.write("</sessions>");
 			} else {
 				// TODO what to return in case of empty?
+				out.write("No sessions found");
 			}
 			return;
 		} else {

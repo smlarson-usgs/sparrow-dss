@@ -92,4 +92,22 @@
 	<target name="run-jmeter">
 
 	</target>
+
+	<target name="move-libs" depends="init" description="copy jar dependencies for local Tomcat">
+		<description>Copies jar dependencies to WEB-INF/lib to allow Eclipse and local Tomcat to work together</description>
+		<echo message="${basedir}/public_html/WEB-INF/lib"/>
+		<echo message="${lib.dir}"/>
+		<echo message="includes ${build.lib.includes}"/>
+		<echo message="excludes ${build.lib.excludes}"/>
+		<copy todir="${basedir}/public_html/WEB-INF/lib" flatten="true" description="copy the jars to WEB-INF/lib">
+			<path>
+				<pathelement path="${build.lib.includes}"/>
+			</path>
+		</copy>
+		<!--
+		<copy todir="${basedir}/public_html/WEB-INF/lib" flatten="true">
+			<fileset dir="${lib.dir}" includes="${build.lib.includes}" excludes="${build.lib.excludes}" />
+		</copy>
+		-->
+	</target>
 </project>

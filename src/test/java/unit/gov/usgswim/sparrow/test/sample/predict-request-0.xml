@@ -2,7 +2,7 @@
 <sparrow-prediction-request
   xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<predict model-id="1">
+	<predict model-id="21">
 		<raw-value/>
 	</predict>
 </sparrow-prediction-request>

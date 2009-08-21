@@ -137,8 +137,9 @@ public class ResourceLoaderUtils {
 	}
 
 	public static String replaceParam(String value, String paramName, String paramValue) {
-		paramName = "$" + paramName + "$";
-		return StringUtils.replace(value, paramName, paramValue);
+		if (paramName.charAt(0) != '\\') paramName = "\\$" + paramName + "\\$";
+		return value.replaceAll(paramName, paramValue);
+//		return StringUtils.replace(value, paramName, paramValue);
 	}
 
 	public static <T> Map<T, T> pairsToMap(T[] params){

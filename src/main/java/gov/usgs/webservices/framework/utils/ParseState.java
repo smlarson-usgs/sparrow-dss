@@ -102,12 +102,17 @@ public class ParseState{
 
 	}
 
-	public void parseToRootChildEndOrGrandChildStart() throws XMLStreamException {
+	public void parseToRootChildEndOrListElementStart() throws XMLStreamException {
 		assert(isOnRootChildStart()): "Parsing to the end should only be called when on a start element of a root child";
 		content = new StringBuilder();
+		boolean stopAtRootGrandChild = true;
 		while (stream.hasNext()) {
 			next();
-			if (isOnRootChildEnd() || isOnRootGrandChildStart()) {
+			if ( isOnRootGrandChildStart() && stopAtRootGrandChild ) {
+				if (isOnListElementStart()) return;
+				stopAtRootGrandChild = false;
+			}
+			if (isOnRootChildEnd()) {
 				return;
 			}
 			writeCurentEvent(stream, content);
@@ -132,17 +137,18 @@ public class ParseState{
 			if (isOnListElementEnd()) {
 				return;
 			}
-
 		}
 	}
 
 	public void parseToNextListElementOrRootChildEnd() throws XMLStreamException {
-		assert(isOnListElementEnd() || isOnListElementStart()): "Only call this from the end or beginning of a List Element";
+		assert(isOnListElementEnd() || isOnListElementStart()):
+			"Only call this from the end or beginning of a List Element";
 
 		while (stream.hasNext()) {
 			next();
 			if (isOnListElementStart()) {
 				content = new StringBuilder();
+				return;
 			}
 			writeCurentEvent(stream, content);
 			if (isOnListElementEnd()) {
@@ -163,7 +169,12 @@ public class ParseState{
 	public void setAsListElement() {
 		isListElement = true;
 		listElementName = stream.getLocalName();
+		String idChange= "old: " + id;
+
 		id = stream.getAttributeValue("", "id");
+		idChange += "; new: " + id;
+		System.out.println(idChange);
+
 	}
 
 	public String getRootChildName() {

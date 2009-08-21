@@ -20,17 +20,34 @@ import javax.xml.stream.XMLStreamReader;
  */
 public class SmartXMLProperties implements Map<String, String>{
 	protected Map<String, String> props = new HashMap<String, String>();
-
-	public void add() {
-
-	}
+	//protected Map<String, String> values = new HashMap<String, String>();
 
 	public String get(String simpleOrCompoundKey) {
+		if (simpleOrCompoundKey == null) return null;
+		if (isCompoundKey(simpleOrCompoundKey)) {
+			return props.get(simpleOrCompoundKey);
+		}
 		return null;
 	}
 
-	public String get(String childType, String id) {
-		return null;
+//	public String getAsXMLFragment() {
+//
+//	}
+//	public String getAsFullXMLNode() {
+//
+//	}
+//
+//	public Object getAsObject(Class<?> itemClass) {
+//
+//	}
+
+
+	public boolean isCompoundKey(String key) {
+		return key.indexOf('.') > 0;
+	}
+
+	public boolean isListKey(String key) {
+
 	}
 
 	public void parse(String xml) throws XMLStreamException, XMLParseValidationException {
@@ -45,6 +62,8 @@ public class SmartXMLProperties implements Map<String, String>{
 		parseToStartTag(in); // setup to parse
 
 		ParseState state = new ParseState(in);
+		// We assume now that we are at the root
+
 		while(in.hasNext()) {
 			if (state.isOnRoot()) {
 				System.out.println("ROOT: " + in.getLocalName());
@@ -52,7 +71,7 @@ public class SmartXMLProperties implements Map<String, String>{
 			} else if (state.isOnRootChildStart()){
 				System.out.println("  CHILD START: " + in.getLocalName());
 				state.setAsRootChild(in.getLocalName());
-				state.parseToRootChildEndOrGrandChildStart();
+				state.parseToRootChildEndOrListElementStart();
 			} else if (state.isOnRootChildEnd()) {
 				System.out.println("    CHILD CONTENT: " + state.content);
 				System.out.println("    CHILD NODE: " + state.getContentAsNode());
@@ -61,18 +80,22 @@ public class SmartXMLProperties implements Map<String, String>{
 				props.put(in.getLocalName(), state.content.toString());
 
 				state.parseToNextRootChildStart();
-			} else if (state.isOnRootGrandChildStart()) {
-				if (state.isOnListElementStart()) {
-					System.out.println("    LIST ELMT START: " + in.getLocalName());
-					state.setAsListElement();
-					// get all the grandchildren
-					state.parseToListElementEnd();
-				} else {
-					// continue parsing to end
-					state.parseToRootChildEnd();
-//					System.out.println("    CHILD CONTENT: " + state.content);
-//					System.out.println("    CHILD NODE: " + state.getContentAsNode());
-				}
+			} else if (state.isOnListElementStart()) {
+				state.setAsListElement();
+				state.parseToListElementEnd();
+				//
+//			} else if (state.isOnRootGrandChildStart()) {
+//				if (state.isOnListElementStart()) {
+//					System.out.println("    LIST ELMT START: " + in.getLocalName());
+//					state.setAsListElement();
+//					// get all the grandchildren
+//					state.parseToListElementEnd();
+//				} else {
+//					// continue parsing to end
+//					state.parseToRootChildEnd();
+////					System.out.println("    CHILD CONTENT: " + state.content);
+////					System.out.println("    CHILD NODE: " + state.getContentAsNode());
+//				}
 			} else if (state.isOnListElementEnd()) {
 				System.out.println("      LIST ELMT CONTENT: " + state.content);
 				System.out.println("      LIST ELMT NODE: " + state.getContentAsNode());
@@ -101,7 +124,9 @@ public class SmartXMLProperties implements Map<String, String>{
 	public Set<java.util.Map.Entry<String, String>> entrySet() { return props.entrySet();}
 
 	@Override
-	public String get(Object key) { return props.get(key);}
+	public String get(Object key) {
+		return (key == null)? null: get(key.toString());
+	}
 
 	@Override
 	public boolean isEmpty() {return props.isEmpty();}

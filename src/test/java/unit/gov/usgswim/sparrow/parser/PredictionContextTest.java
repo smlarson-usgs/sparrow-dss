@@ -31,7 +31,7 @@ import junit.framework.TestCase;
  * tests that the more complicated testing occurs (e.g. adjustment calculation).
  */
 public class PredictionContextTest extends TestCase {
-    
+
     /** Valid xml string represention of the prediction context. */
     public static final String VALID_FRAGMENT = ""
         + "<prediction-context "
@@ -44,10 +44,10 @@ public class PredictionContextTest extends TestCase {
         + AreaOfInterestTest.VALID_FRAGMENT
         + "</prediction-context>"
         ;
-    
+
     /** Used to create XMLStreamReaders from XML strings. */
     protected XMLInputFactory inFact = XMLInputFactory.newInstance();
-	
+
 	// ================
 	// STATIC CONSTANTS
 	// ================
@@ -57,12 +57,12 @@ public class PredictionContextTest extends TestCase {
 	public static final String PRED_CONTEXT_4 = "/gov/usgswim/sparrow/test/sample/predict-context-4.xml";
 	public static final String PRED_CONTEXT_5 = "/gov/usgswim/sparrow/test/sample/predict-context-5.xml";
 	public static final String PRED_CONTEXT_BUG_1 = "/gov/usgswim/sparrow/test/sample/predict-context-bug_1.xml";
-	
+
 	public static final int PRED_CONTEXT_1_ID = 1143562390;
 	public static final int PRED_CONTEXT_2_ID = -792246649;
 	public static final int PRED_CONTEXT_3_ID = 923106886;
 	public static final int PRED_CONTEXT_4_ID = -398183923;
-	
+
 	public static String contextIDRegex = "context-id=['\"]([-0-9]+)['\"]";
 	public static Pattern patt = Pattern.compile(contextIDRegex);
 
@@ -74,9 +74,9 @@ public class PredictionContextTest extends TestCase {
 		}
 		System.err.println("Unable to extract context-id from prediction context response for test " + PredictionContextTest.class.getSimpleName());
 		return 0;
-		
+
 	}
-	
+
 	// ============
 	// TEST METHODS
 	// ============
@@ -85,35 +85,35 @@ public class PredictionContextTest extends TestCase {
 
 		assertEquals(Long.valueOf(22), pCon.getModelID());
 	}
-	
+
 	public void testPredictContext1() throws Exception {
 		PredictContextRequest contextReq = buildPredictContext1();	//Build a context from a canned file
-		
+
 		String response = pipeDispatch(contextReq, new PredictContextPipeline());
 		assertEquals("PredictionContext parsing has likely changed.", PRED_CONTEXT_1_ID, Integer.parseInt(getAttributeValue(response, "context-id")));
 	}
-	
+
 	public void testPredictContext2() throws Exception {
 		PredictContextRequest contextReq = buildPredictContext2();	//Build a context from a canned file
-		
+
 		String response = pipeDispatch(contextReq, new PredictContextPipeline());
 		assertEquals("PredictionContext parsing has likely changed.", PRED_CONTEXT_2_ID, Integer.parseInt(getAttributeValue(response, "context-id")));
 	}
 
 	public void testPredictContext3() throws Exception {
 		PredictContextRequest contextReq = buildPredictContext3();	//Build a context from a canned file
-		
+
 		String response = pipeDispatch(contextReq, new PredictContextPipeline());
 		assertEquals("PredictionContext parsing has likely changed.", PRED_CONTEXT_3_ID, Integer.parseInt(getAttributeValue(response, "context-id")));
 	}
-	
+
 	public void testPredictContext4() throws Exception {
 		PredictContextRequest contextReq = buildPredictContext4();	//Build a context from a canned file
-		
+
 		String response = pipeDispatch(contextReq, new PredictContextPipeline());
 		assertEquals("PredictionContext parsing has likely changed.", PRED_CONTEXT_4_ID, Integer.parseInt(getAttributeValue(response, "context-id")));
 	}
-	
+
 	public void testHashcode() throws Exception {
 		{
 			PredictionContext predCtxt1 = buildContext(VALID_FRAGMENT);
@@ -144,7 +144,7 @@ public class PredictionContextTest extends TestCase {
 		}
 
 	}
-	
+
 	public void testOptionalAdjustmentGroup() throws Exception {
 
 		// No error should be thrown on optional adjustmentGroup
@@ -163,7 +163,7 @@ public class PredictionContextTest extends TestCase {
 		// successful parse is passing test
 		assertTrue(true);
 	}
-	
+
 	public void testOptionalTerminalReaches() throws Exception {
 
 		// No error should be thrown on optional adjustmentGroup
@@ -182,7 +182,7 @@ public class PredictionContextTest extends TestCase {
 		// successful parse is passing test
 		assertTrue(true);
 	}
-	
+
 	public void testOptionalAreaOfInterset() throws Exception {
 
 		// No error should be thrown on optional adjustmentGroup
@@ -198,66 +198,66 @@ public class PredictionContextTest extends TestCase {
 			+ "</prediction-context>";
 
 		buildContext(testRequest);
-		
+
 		// successful parse is passing test
 		assertTrue(true);
 	}
-	
+
 	public void testParserHandling() throws XMLStreamException, XMLParseValidationException {
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(VALID_FRAGMENT));
 		PredictionContext pCon = new PredictionContext();
 		reader.next();
 		pCon.parse(reader);
-		
+
 		// should have stopped at the end tag
 		assertTrue(reader.getEventType() == XMLStreamConstants.END_ELEMENT);
 		assertEquals(PredictionContext.MAIN_ELEMENT_NAME, reader.getLocalName());
 	}
-	
+
 	// ==============
 	// HELPER METHODS
 	// ==============
-	
+
 	public PredictionContext buildContext(String pcRequestXML) throws Exception {
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(pcRequestXML));
 		PredictionContext pCon = new PredictionContext();
 		reader.next();
 		return pCon.parse(reader);
 	}
-	
+
 	public static PredictContextRequest buildPredictContext4() throws Exception {
 		InputStream is = PredictionContextTest.class.getResourceAsStream(PRED_CONTEXT_4);
 		String xml = TestHelper.readToString(is);
-		
+
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		return pipe.parse(xml);
 	}
 	public static PredictContextRequest buildPredictContext3() throws Exception {
 		InputStream is = PredictionContextTest.class.getResourceAsStream(PRED_CONTEXT_3);
 		String xml = TestHelper.readToString(is);
-		
+
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		return pipe.parse(xml);
 	}
 	public static PredictContextRequest buildPredictContext2() throws Exception {
 		InputStream is = PredictionContextTest.class.getResourceAsStream(PredictionContextTest.PRED_CONTEXT_2);
 		String xml = readToString(is);
-		
+
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		return pipe.parse(xml);
 	}
 	public static PredictContextRequest buildPredictContext1() throws Exception {
 		InputStream is = PredictionContextTest.class.getResourceAsStream(PRED_CONTEXT_1);
 		String xml = TestHelper.readToString(is);
-		
+
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		return pipe.parse(xml);
 	}
-	
+
 	public static PredictContextRequest buildPredictContext5() throws Exception {
 		InputStream is = PredictionContextTest.class.getResourceAsStream(PRED_CONTEXT_5);
 		String xml = TestHelper.readToString(is);
-		
+
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		return pipe.parse(xml);
 	}

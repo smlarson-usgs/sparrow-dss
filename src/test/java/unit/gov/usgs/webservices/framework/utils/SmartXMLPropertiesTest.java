@@ -75,7 +75,8 @@ public class SmartXMLPropertiesTest {
 	public void testSimpleChild() throws XMLStreamException, XMLParseValidationException {
 		SmartXMLProperties props = new SmartXMLProperties();
 		props.parse(TEST_XML);
-		
+
+		System.out.println();
 		for (Entry<String, String> entry: props.entrySet()) {
 			System.out.println(entry.getKey() + "=" + entry.getValue());
 		}

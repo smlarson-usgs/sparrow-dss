@@ -18,7 +18,7 @@
 				<br/>
 				<input type="submit" name="submit" value="submit"/>
 				<br/>
-				<a href="testResults/jsonify.json">result as of 2009-08-16</a>
+				<a href="testResults/jsonify.json">result as of 2009-08-16</a> <i>Note: Use 32 for the model, as it's the only one with anything in it</i>
 			</fieldset>
 		</form>
 	</body>

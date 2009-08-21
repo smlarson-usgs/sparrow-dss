@@ -595,7 +595,7 @@ public class DataLoader {
 	 * @throws IOException
 	 */
 	public static String getQuery(String name, long modelId) throws IOException {
-		return ResourceLoaderUtils.loadParametrizedProperty(PROPERTIES_FILE, name, "$ModelId$", Long.toString(modelId));
+		return ResourceLoaderUtils.loadParametrizedProperty(PROPERTIES_FILE, name, "ModelId", Long.toString(modelId));
 	}
 
 }

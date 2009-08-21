@@ -2,8 +2,8 @@
 <sparrow-prediction-request
   xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	
-	<predict model-id="1">
+
+	<predict model-id="21">
 		<raw-value>
 			<source-adjustments>
 			<specific src="2" reach="2049" value="7.77"/><!-- VALUE WAS 0 -->
@@ -12,11 +12,11 @@
 			</source-adjustments>
 		</raw-value>
 	</predict>
-	
+
 	<response-options>
 		<result-content>
 			<data-series>total</data-series>
 		</result-content>
 	</response-options>
-	
+
 </sparrow-prediction-request>
