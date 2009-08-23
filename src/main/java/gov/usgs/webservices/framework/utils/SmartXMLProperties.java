@@ -6,6 +6,7 @@ import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,7 +21,8 @@ import javax.xml.stream.XMLStreamReader;
  */
 public class SmartXMLProperties implements Map<String, String>{
 	protected Map<String, String> props = new HashMap<String, String>();
-	//protected Map<String, String> values = new HashMap<String, String>();
+	protected Map<String, String> values = new HashMap<String, String>();
+	protected Set<String> listNames = new HashSet<String>();
 
 	public String get(String simpleOrCompoundKey) {
 		if (simpleOrCompoundKey == null) return null;
