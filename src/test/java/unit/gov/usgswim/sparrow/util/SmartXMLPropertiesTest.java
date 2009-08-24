@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.util;
 
+import gov.usgs.webservices.framework.utils.SmartXMLProperties;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 
 import javax.xml.stream.XMLStreamException;
@@ -34,7 +35,7 @@ public class SmartXMLPropertiesTest {
 	public void testSimpleChild() throws XMLStreamException, XMLParseValidationException {
 		SmartXMLProperties props = new SmartXMLProperties();
 		props.parse(TEST_XML);
-		
-		
+
+
 	}
 }

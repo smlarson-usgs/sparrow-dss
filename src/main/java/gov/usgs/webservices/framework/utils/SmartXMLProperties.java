@@ -48,9 +48,9 @@ public class SmartXMLProperties implements Map<String, String>{
 		return key.indexOf('.') > 0;
 	}
 
-	public boolean isListKey(String key) {
-
-	}
+//	public boolean isListKey(String key) {
+//
+//	}
 
 	public void parse(String xml) throws XMLStreamException, XMLParseValidationException {
 		// TODO replace this by SourceToStreamConverter calls
