@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.test.misc;
 
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.DataLoader;
 
 import java.io.IOException;
@@ -117,11 +118,7 @@ public class JDBCUtilMemoryIntegrationTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		String username = "SPARROW_DSS";
-		String password = "***REMOVED***";
-		String thinConn = "jdbc:oracle:thin:@130.11.165.152:1521:widw";
-		DriverManager.registerDriver(new OracleDriver());
-		conn = DriverManager.getConnection(thinConn,username,password);
+		conn = SharedApplication.getConnectionFromCommandLineParams();
 	}
 
 	@Override

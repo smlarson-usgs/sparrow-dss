@@ -50,8 +50,7 @@ public class DataLoader {
 	 * @throws SQLException
 	 */
 	public static PredictData loadModelDataOnly(Connection conn, int modelId)
-	throws SQLException,
-	IOException {
+	throws SQLException, IOException {
 		PredictDataBuilder dataSet = new PredictDataBuilder();
 		try {
 

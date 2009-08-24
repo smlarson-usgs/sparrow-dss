@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.test;
+package gov.usgswim.sparrow.util;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.ColumnMappedTable;
@@ -10,6 +10,7 @@ import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 import gov.usgswim.sparrow.domain.Source;
+import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.DataLoader;
 import gov.usgswim.sparrow.util.DataLoaderOfflineTest;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
@@ -35,12 +36,7 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-
-		String username = "SPARROW_DSS";
-		String password = "***REMOVED***";
-		String thinConn = "jdbc:oracle:thin:@130.11.165.152:1521:widw";
-		DriverManager.registerDriver(new OracleDriver());
-		conn = DriverManager.getConnection(thinConn,username,password);
+		conn = SharedApplication.getConnectionFromCommandLineParams();
 	}
 
 	@Override
@@ -162,7 +158,7 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 	public void testLoadSourceMetadata() throws Exception {
 		DataTable jdbcData = DataLoader.loadSourceMetadata(conn, TEST_MODEL);
 		System.out.println("  -- Printing Source Metadata --");
-		DataTableUtils.printDataTableSample(jdbcData, 30);
+		DataTableUtils.printDataTableSample(jdbcData, 30, 30);
 	}
 
 	/**
@@ -171,7 +167,7 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 	public void testLoadTopo() throws Exception {
 		DataTable jdbcData = DataLoader.loadTopo(conn, TEST_MODEL);
 		System.out.println("  -- Printing Topo --");
-		DataTableUtils.printDataTableSample(jdbcData, 30);
+		DataTableUtils.printDataTableSample(jdbcData, 30, 30);
 
 //		assertEquals(2339, jdbcData.getRowCount());
 //		assertEquals(4 + 1, jdbcData.getColumnCount());
@@ -195,20 +191,20 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 		DataTable sourceMetadata = DataLoader.loadSourceMetadata(conn, TEST_MODEL);
 		DataTable jdbcData = DataLoader.loadSourceReachCoef(conn, TEST_MODEL, sourceMetadata);
 		System.out.println("  -- Printing Source Reach Coefficients --");
-		DataTableUtils.printDataTableSample(jdbcData, 30);
+		DataTableUtils.printDataTableSample(jdbcData, 30, 30);
 	}
 
 	public void testLoadDecay() throws Exception {
 		DataTable jdbcData = DataLoader.loadDecay(conn, TEST_MODEL, 0);
 		System.out.println("  -- Printing Decay Coefficients --");
-		DataTableUtils.printDataTableSample(jdbcData, 30);
+		DataTableUtils.printDataTableSample(jdbcData, 30, 30);
 	}
 
 	public void testSourceValues() throws Exception {
 		DataTable sourceMetadata = DataLoader.loadSourceMetadata(conn, TEST_MODEL);
 		DataTable jdbcData = DataLoader.loadSourceValues(conn, TEST_MODEL, sourceMetadata);
 		System.out.println("  -- Printing Decay Coefficients --");
-		DataTableUtils.printDataTableSample(jdbcData, 30);
+		DataTableUtils.printDataTableSample(jdbcData, 30, 30);
 	}
 
 

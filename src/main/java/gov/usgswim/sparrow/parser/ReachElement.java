@@ -22,8 +22,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * A Reach has a model-specific Identifier that identifies a specific reach w/in a SparrowModel,
  * but the ID is not a DB PK.  Reaches may have one or more Adjustments that
  * are applied to the reach.
- * 
- * Note that a Reach is not an independent entity and thus does not override 
+ *
+ * Note that a Reach is not an independent entity and thus does not override
  * equals or the hashcode.  It does, however, provide a getStateHash method
  * which generates a repeatable hashcode representing the state of the
  * reach and its associated adjustments.  This method is a convenience to parent
@@ -31,7 +31,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  */
 public class ReachElement implements XMLStreamParserComponent {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -7230343316711453671L;
 
@@ -45,19 +45,19 @@ public class ReachElement implements XMLStreamParserComponent {
 	}
 
 	protected Long id;	//The SparrowModel Specific ID of the reach. (not the db PK).
-	
+
 	//TODO: This should be a sorted set
 	protected List<Adjustment> adjs;	//List of one or more adjustments
-	
+
 	// ================
 	// INSTANCE METHODS
 	// ================
 	public synchronized ReachElement parse(XMLStreamReader in)
 		throws XMLStreamException, XMLParseValidationException {
-		
+
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
-		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : 
+		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) :
 			this.getClass().getSimpleName()
 			+ " can only parse " + MAIN_ELEMENT_NAME + " elements.";
 		boolean isStarted = false;
@@ -75,19 +75,20 @@ public class ReachElement implements XMLStreamParserComponent {
 				case START_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
+
 						id = ParserHelper.parseAttribAsLong(in, "id");
 					} else if ("adjustment".equals(localName)) {
-						
+
 						//Lazy build the arrayList
 						if (adjs == null) adjs = new ArrayList<Adjustment>();
-						
+
 						Adjustment adj = new Adjustment();
 						adj.parse(in);
 						if (adj.isCoefficient()) {
 							throw new XMLParseValidationException("an adjustment which is within a specific reach of a reach group may only be absolute");
 						}
 						adjs.add(adj);
-						
+
 					} else {
 						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
 					}
@@ -95,7 +96,7 @@ public class ReachElement implements XMLStreamParserComponent {
 				case END_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
-						
+
 						//Wrap collection as unmodifiable
 						if (adjs != null) {
 							adjs = Collections.unmodifiableList(adjs);
@@ -116,11 +117,11 @@ public class ReachElement implements XMLStreamParserComponent {
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
 	}
-	
+
 	public boolean isParseTarget(String name) {
 		return MAIN_ELEMENT_NAME.equals(name);
 	}
-	
+
 	//TODO:  I am just assigning the Adjustment array b/c it is unmodifiable.  Is that truly acceptable...?
 	@Override
 	protected ReachElement clone() throws CloneNotSupportedException {
@@ -140,7 +141,7 @@ public class ReachElement implements XMLStreamParserComponent {
 	public boolean isValid() {
 		return true;
 	}
-	
+
 	// =================
 	// GETTERS & SETTERS
 	// =================
@@ -154,7 +155,7 @@ public class ReachElement implements XMLStreamParserComponent {
 
 	/**
 	 * Returns a hashcode that fully represents the state of this adjustment.
-	 * 
+	 *
 	 * This hashcode is not intended to be unique (others will have the same) and
 	 * is not intended to be used for identity.
 	 * @return
@@ -171,5 +172,5 @@ public class ReachElement implements XMLStreamParserComponent {
 		}
 		return hcb.toHashCode();
 	}
-	
+
 }

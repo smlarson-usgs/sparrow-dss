@@ -23,5 +23,9 @@ public class DataLoaderOfflineTest extends TestCase {
 
 		assertEquals("Has the query changed?", expected, query);
 	}
+	
+	public void testPrintSample() {
+		
+	}
 
 }

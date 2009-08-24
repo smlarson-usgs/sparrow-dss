@@ -126,8 +126,9 @@ public class SharedApplication  {
 
 	}
 
-	private Connection getConnectionFromCommandLineParams() throws SQLException {
-		synchronized (this) {
+	public static Connection getConnectionFromCommandLineParams() throws SQLException {
+		//synchronized (this) {
+		{
 			DriverManager.registerDriver(new OracleDriver());
 		}
 		String dbuser = System.getProperty("dbuser");
