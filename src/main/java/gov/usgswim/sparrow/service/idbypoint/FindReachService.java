@@ -143,7 +143,7 @@ public class FindReachService extends HttpServlet {
 	public static Pattern hucRegEx = Pattern.compile("[0-9]+");
 	public static List<String> cleanAndCheckValidityFindReachRequest(FindReachRequest frReq) {
 		List<String> errors = new ArrayList<String>();
-		frReq.reachID = trimToNull(frReq.reachID);
+		frReq.reachIDs = trimToNull(frReq.reachIDs);
 		frReq.basinAreaHi = trimToNull(frReq.basinAreaHi);
 		frReq.basinAreaLo = trimToNull(frReq.basinAreaLo);
 		frReq.meanQHi = trimToNull(frReq.meanQHi);
@@ -152,7 +152,7 @@ public class FindReachService extends HttpServlet {
 		frReq.huc = trimToNull(frReq.huc);
 		frReq.boundingBox = trimToNull(frReq.boundingBox);
 		{	// clean each field
-			frReq.reachID = cleanForSQLInjection(frReq.reachID);
+			frReq.reachIDs = cleanForSQLInjection(frReq.reachIDs);
 			frReq.huc = cleanForSQLInjection(frReq.huc);
 			if (frReq.huc != null) {
 				frReq.huc = cleanForSQLInjection(frReq.huc);
@@ -212,8 +212,8 @@ public class FindReachService extends HttpServlet {
 
 	public String createFindReachWhereClause(FindReachRequest frReq) {
 		String whereClause = "";
-		if (frReq.reachID != null) {
-		    String reachIds = frReq.reachID.replaceAll("[\\D]+", ",");
+		if (frReq.reachIDs != null) {
+		    String reachIds = frReq.reachIDs.replaceAll("[\\D]+", ",");
 			whereClause += " and full_identifier IN (" + reachIds + ")";
 		}
 		if (frReq.reachName != null) {

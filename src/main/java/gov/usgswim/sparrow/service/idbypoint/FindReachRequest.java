@@ -17,7 +17,7 @@ public class FindReachRequest implements XMLStreamParserComponent{
 	private static final long serialVersionUID = 1L;
 	private static final String MAIN_ELEMENT_NAME = "sparrow-reach-request";
 	public String modelID;
-	public String reachID;
+	public String reachIDs;
 	public String reachName;
 	public String meanQLo, meanQHi;
 	public String basinAreaLo, basinAreaHi;
@@ -53,7 +53,7 @@ public class FindReachRequest implements XMLStreamParserComponent{
 	}
 
 	public boolean isEmptyRequest() {
-		return (reachID == null) && (reachName == null)
+		return (reachIDs == null) && (reachName == null)
 				&& (meanQHi == null && meanQLo == null)
 				&& (basinAreaHi == null && basinAreaLo == null)
 				&& (huc == null);
@@ -90,8 +90,9 @@ public class FindReachRequest implements XMLStreamParserComponent{
 						modelID = ParserHelper.parseSimpleElementValue(in);
 					} else if ("match-query".equals(localName)) {
 						// don't do anything
-					} else if ("reach-id".equals(localName)) {
-						reachID = ParserHelper.parseSimpleElementValue(in);
+					} else if ("reach-ids".equals(localName)) {
+						// TODO change this to reach-ids
+						reachIDs = ParserHelper.parseSimpleElementValue(in);
 					} else if ("reach-name".equals(localName)) {
 						reachName = ParserHelper.parseSimpleElementValue(in);
 					} else if ("meanQHi".equals(localName)) {

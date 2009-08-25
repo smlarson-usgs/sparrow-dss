@@ -215,7 +215,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	 *                    prediction context.
 	 * @param adjSrc The adjusted data set for the current prediction context.
 	 * @param MODEL_ID Current model id.
-	 * @param reachID Id for the reach we're identifying.
+	 * @param reachIDs Id for the reach we're identifying.
 	 * @param adjGroups Adjustment request.
 	 * @return An XML fragment containing the adjustment data for the specified
 	 *         reach.
