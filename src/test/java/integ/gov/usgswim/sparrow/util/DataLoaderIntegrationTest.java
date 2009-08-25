@@ -23,7 +23,7 @@ import java.util.List;
 import oracle.jdbc.OracleDriver;
 
 public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
-	public static final Long TEST_MODEL = 21L;
+	public static final Long TEST_MODEL = 32L;
 
 	private Connection conn;
 

@@ -41,6 +41,7 @@ public class SavedSessionService extends HttpServlet {
 		PrintWriter out = resp.getWriter();
 
 		if (modelID == null) {
+			resp.setContentType("text/plain");
 			out.write("invalid required parameter value for model: " + model);
 			out.flush();
 			return;
@@ -50,18 +51,21 @@ public class SavedSessionService extends HttpServlet {
 			// TODO may need to convert this to JSON
 			Set<Entry<Object, Object>> sessionList = retrieveSavedSessions(modelID.toString());
 			if (sessionList != null && !sessionList.isEmpty()) {
+				resp.setContentType("text/xml");
 				out.write("<sessions>");
 				for (Entry<Object, Object> entry: sessionList) {
 					out.write("<session key=\"" + entry.getKey().toString() + "\"/>\n");
 				}
 				out.write("</sessions>");
 			} else {
+				resp.setContentType("text/plain");
 				// TODO what to return in case of empty?
 				out.write("No sessions found");
 			}
 			return;
 		} else {
 			// output the named session
+			resp.setContentType("text/html");
 			String result = retrieveSavedSession(modelID.toString(), session);
 			// TODO decide on what to return if no session found
 			// Note that this result is already in JSON
