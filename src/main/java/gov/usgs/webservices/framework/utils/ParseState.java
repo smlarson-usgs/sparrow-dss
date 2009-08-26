@@ -51,8 +51,8 @@ public class ParseState{
 	}
 
 	public boolean isInList() {
-		// TODO Auto-generated method stub
-		return false;
+		// if a list element has been set, then it's in a list
+		return isListElement;
 	}
 
 	public boolean isOnListElementStart() {
@@ -72,16 +72,17 @@ public class ParseState{
 		isListElement = false;
 	}
 
+	public void clearRootChild() {
+		rootChild = null;
+		isListElement = false;
+	}
+
 	public void setAsListElement() {
 		isListElement = true;
 		listElementName = stream.getLocalName();
-		String idChange= "old: " + id;
-
 		id = stream.getAttributeValue("", "id");
-		idChange += "; new: " + id;
-		System.out.println(idChange);
-
 	}
+
 	// =============
 	// PARSE METHODS
 	// =============
@@ -135,13 +136,13 @@ public class ParseState{
 	public void parseToListElementEnd() throws XMLStreamException {
 		assert(isOnListElementStart()): "Only call this from the beginning of a List Element";
 		content = new StringBuilder();
-		writeCurentEvent(stream, content);
+		//writeCurentEvent(stream, content);
 		while (stream.hasNext()) {
 			next();
-			writeCurentEvent(stream, content);
 			if (isOnListElementEnd()) {
 				return;
 			}
+			writeCurentEvent(stream, content);
 		}
 	}
 
@@ -206,7 +207,11 @@ public class ParseState{
 
 	public StringBuilder getContentAsNode() {
 		if (isListElement) {
-			return content;
+			StringBuilder result = new StringBuilder();
+			result.append("<" + listElementName + " id=\"" + id + "\">");
+			result.append(content);
+			result.append("</" + listElementName);
+			return result;
 		}
 		String rootChildStartTag = "<" + rootChild + ">";
 		content.insert(0, rootChildStartTag);

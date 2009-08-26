@@ -14,10 +14,11 @@ public class PredictRunnerTest {
 	@Test
 	public void testDoPredict() throws Exception {
 		// TODO This test doesn't work yet.
+		DataTableWritable src_metadata = DataResourceLoader.loadSourceMetadata(TEST_MODEL);
 		DataTableWritable topo = DataResourceLoader.loadTopo(TEST_MODEL);
-		DataTableWritable deliveryCoef = DataResourceLoader.loadSourceReachCoef(TEST_MODEL);
+		DataTableWritable deliveryCoef = DataResourceLoader.loadSourceReachCoef(TEST_MODEL, src_metadata);
 		DataTableWritable sourceValues = DataResourceLoader.loadSourceValues(TEST_MODEL);
-		DataTableWritable decayCoefficients = DataResourceLoader.loadDecay(TEST_MODEL);;
+		DataTableWritable decayCoefficients = DataResourceLoader.loadDecay(TEST_MODEL);
 
 		PredictData predictData = new PredictDataImm(topo, deliveryCoef, sourceValues, null, decayCoefficients,
 				null, null);

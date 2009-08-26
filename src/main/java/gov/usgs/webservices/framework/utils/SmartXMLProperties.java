@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -58,8 +59,24 @@ public class SmartXMLProperties implements Map<String, String>{
 		if (!isCompoundKey(simpleOrCompoundKey)) {
 			return props.get(simpleOrCompoundKey);
 		}
-		String mapKey = parseListKey(simpleOrCompoundKey);
-		return maps.get(mapKey).toString(); // change this later
+		String listKey = parseListKey(simpleOrCompoundKey);
+		return getListAsFullXMLNode(listKey);
+
+	}
+
+	private String getListAsFullXMLNode(String listKey) {
+		Map<String, String> map = maps.get(listKey);
+		StringBuilder result = new StringBuilder();
+		if (map != null && !map.isEmpty()) {
+			for (Entry<String, String> entry: map.entrySet()) {
+				result.append(entry.getValue());
+			}
+		}
+		if (result.length() > 0) {
+			result.insert(0, "<" + listKey + ">");
+			result.append("</" + listKey + ">");
+		}
+		return result.toString();
 	}
 
 //	public String getAsXMLFragment() {
@@ -109,6 +126,7 @@ public class SmartXMLProperties implements Map<String, String>{
 					props.put(in.getLocalName(), state.content.toString());
 				}
 
+				state.clearRootChild();
 				state.parseToNextRootChildStart();
 			} else if (state.isOnListElementStart()) {
 				state.setAsListElement();
