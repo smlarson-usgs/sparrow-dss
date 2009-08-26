@@ -36,7 +36,7 @@ public abstract class SparrowResourceUtils {
 		String resourceFilePath = getModelResourceFilePath(modelID, HELP_FILE);
 		Model help = ResourceLoaderUtils.loadResourceXMLFileAsObject(resourceFilePath, Model.class, "SparrowModel");
 		String item = help.getOne(helpItem.getClass());
-		// TODO later handle lists/multiple retrievals using help.getMany()?
+		// TODO later handle maps/multiple retrievals using help.getMany()?
 		return item;
 	}
 

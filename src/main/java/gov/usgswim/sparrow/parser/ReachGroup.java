@@ -163,7 +163,7 @@ public class ReachGroup implements XMLStreamParserComponent {
 	
 	@Override
 	public ReachGroup clone() throws CloneNotSupportedException {
-		// DONE: We are copying immutable lists during the cloning.. OK?
+		// DONE: We are copying immutable maps during the cloning.. OK?
 		ReachGroup myClone = new ReachGroup(modelID);
 		myClone.isEnabled = isEnabled;
 		myClone.name = name;

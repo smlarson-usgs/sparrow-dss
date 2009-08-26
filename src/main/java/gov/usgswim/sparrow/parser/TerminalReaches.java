@@ -176,7 +176,7 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	// GETTERS & SETTERS
 	// =================
 	public List<Long> getReachIDs(){
-		//TODO: [ee] This should be wrapped as an immutable (same for all lists)
+		//TODO: [ee] This should be wrapped as an immutable (same for all maps)
 		return reachIDs;
 	}
 	

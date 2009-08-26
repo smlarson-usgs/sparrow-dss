@@ -32,6 +32,9 @@ public class ParseState{
 		return result;
 	}
 
+	// ===========================
+	// CURRENT STATE QUERY METHODS
+	// ===========================
 	public boolean isOnRootChildStart() {
 		return (depth == 1) && (stream.getEventType() == START_ELEMENT);
 	}
@@ -47,6 +50,41 @@ public class ParseState{
 		return (depth == 0) && (stream.getEventType() == END_ELEMENT);
 	}
 
+	public boolean isInList() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public boolean isOnListElementStart() {
+		return isOnRootGrandChildStart() && (stream.getAttributeValue("", "id") != null);
+	}
+
+	public boolean isOnListElementEnd() {
+		return (depth == 1) && (stream.getEventType() == END_ELEMENT);
+	}
+
+	// ============================
+	// CURRENT STATE CHANGE METHODS
+	// ============================
+
+	public void setAsRootChild(String rootChildName) {
+		rootChild = rootChildName;
+		isListElement = false;
+	}
+
+	public void setAsListElement() {
+		isListElement = true;
+		listElementName = stream.getLocalName();
+		String idChange= "old: " + id;
+
+		id = stream.getAttributeValue("", "id");
+		idChange += "; new: " + id;
+		System.out.println(idChange);
+
+	}
+	// =============
+	// PARSE METHODS
+	// =============
 	public void parseToNextRootChildStart() throws XMLStreamException {
 		while (stream.hasNext()) {
 			next();
@@ -75,32 +113,6 @@ public class ParseState{
 		}
 	}
 
-	public static void writeCurentEvent(XMLStreamReader in, StringBuilder record) {
-		int current = in.getEventType();
-		// TODO adjust this so that the result is valid xml. Escape the appropriate 5 entities
-		switch(current) {
-			case START_ELEMENT:
-				if (in.getAttributeCount() == 0) {
-					record.append("<" + in.getLocalName() + ">");
-				} else {
-					record.append("<" + in.getLocalName());
-					for (int i=0; i<in.getAttributeCount(); i++) {
-						record.append(" " + in.getAttributeName(i) + "=\"" + in.getAttributeValue(i)+ "\"" );
-					}
-					record.append(">");
-				}
-				break;
-			case END_ELEMENT:
-				record.append("</" + in.getLocalName() + ">");
-				break;
-			case CHARACTERS:
-				String text = in.getText();
-				text = (text == null)? "" : text.trim();
-				record.append(text);
-				break;
-		}
-
-	}
 
 	public void parseToRootChildEndOrListElementStart() throws XMLStreamException {
 		assert(isOnRootChildStart()): "Parsing to the end should only be called when on a start element of a root child";
@@ -119,13 +131,6 @@ public class ParseState{
 		}
 	}
 
-	public boolean isOnListElementStart() {
-		return isOnRootGrandChildStart() && (stream.getAttributeValue("", "id") != null);
-	}
-
-	public boolean isOnListElementEnd() {
-		return (depth == 1) && (stream.getEventType() == END_ELEMENT);
-	}
 
 	public void parseToListElementEnd() throws XMLStreamException {
 		assert(isOnListElementStart()): "Only call this from the beginning of a List Element";
@@ -161,21 +166,35 @@ public class ParseState{
 		}
 	}
 
-	public void setAsRootChild(String rootChildName) {
-		rootChild = rootChildName;
-		isListElement = false;
+	// =============
+	public static void writeCurentEvent(XMLStreamReader in, StringBuilder record) {
+		int current = in.getEventType();
+		// TODO adjust this so that the result is valid xml. Escape the appropriate 5 entities
+		switch(current) {
+			case START_ELEMENT:
+				if (in.getAttributeCount() == 0) {
+					record.append("<" + in.getLocalName() + ">");
+				} else {
+					record.append("<" + in.getLocalName());
+					for (int i=0; i<in.getAttributeCount(); i++) {
+						record.append(" " + in.getAttributeName(i) + "=\"" + in.getAttributeValue(i)+ "\"" );
+					}
+					record.append(">");
+				}
+				break;
+			case END_ELEMENT:
+				record.append("</" + in.getLocalName() + ">");
+				break;
+			case CHARACTERS:
+				String text = in.getText();
+				text = (text == null)? "" : text.trim();
+				record.append(text);
+				break;
+		}
+
 	}
 
-	public void setAsListElement() {
-		isListElement = true;
-		listElementName = stream.getLocalName();
-		String idChange= "old: " + id;
-
-		id = stream.getAttributeValue("", "id");
-		idChange += "; new: " + id;
-		System.out.println(idChange);
-
-	}
+	// =====================
 
 	public String getRootChildName() {
 		return (isListElement)? rootChild: null;
@@ -199,5 +218,7 @@ public class ParseState{
 	public String getId() {
 		return id;
 	}
+
+
 
 }

@@ -6,7 +6,6 @@ import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,16 +19,47 @@ import javax.xml.stream.XMLStreamReader;
  *
  */
 public class SmartXMLProperties implements Map<String, String>{
-	protected Map<String, String> props = new HashMap<String, String>();
-	protected Map<String, String> values = new HashMap<String, String>();
-	protected Set<String> listNames = new HashSet<String>();
 
-	public String get(String simpleOrCompoundKey) {
-		if (simpleOrCompoundKey == null) return null;
-		if (isCompoundKey(simpleOrCompoundKey)) {
-			return props.get(simpleOrCompoundKey);
+
+	// ==============
+	// STATIC METHODS
+	// ==============
+	public static boolean isCompoundKey(String key) {
+		return key.indexOf('.') > 0;
+	}
+
+	public static String parseListKey(String compoundKey) {
+		if (isCompoundKey(compoundKey)) {
+			 return compoundKey.split("\\.")[0];
 		}
 		return null;
+	}
+
+	public static String parseItemKey(String simpleOrCompoundKey) {
+		if (isCompoundKey(simpleOrCompoundKey)) {
+			 return simpleOrCompoundKey.split("\\.")[1];
+		}
+		return simpleOrCompoundKey;
+	}
+
+	// ======================
+	// INSTANCE MEMBER FIELDS
+	// ======================
+	protected Map<String, String> props = new HashMap<String, String>();
+	protected Map<String, String> nodes = new HashMap<String, String>();
+	protected Map<String, Map<String, String>> maps = new HashMap<String, Map<String, String>>();
+
+
+	// ================
+	// INSTANCE METHODS
+	// ================
+	public String get(String simpleOrCompoundKey) {
+		if (simpleOrCompoundKey == null) return null;
+		if (!isCompoundKey(simpleOrCompoundKey)) {
+			return props.get(simpleOrCompoundKey);
+		}
+		String mapKey = parseListKey(simpleOrCompoundKey);
+		return maps.get(mapKey).toString(); // change this later
 	}
 
 //	public String getAsXMLFragment() {
@@ -44,13 +74,9 @@ public class SmartXMLProperties implements Map<String, String>{
 //	}
 
 
-	public boolean isCompoundKey(String key) {
-		return key.indexOf('.') > 0;
+	public boolean isListKey(String key) {
+		return maps.containsKey(key);
 	}
-
-//	public boolean isListKey(String key) {
-//
-//	}
 
 	public void parse(String xml) throws XMLStreamException, XMLParseValidationException {
 		// TODO replace this by SourceToStreamConverter calls
@@ -79,30 +105,25 @@ public class SmartXMLProperties implements Map<String, String>{
 				System.out.println("    CHILD NODE: " + state.getContentAsNode());
 				System.out.println("  CHILD END: " + in.getLocalName());
 
-				props.put(in.getLocalName(), state.content.toString());
+				if (!state.isInList()) {
+					props.put(in.getLocalName(), state.content.toString());
+				}
 
 				state.parseToNextRootChildStart();
 			} else if (state.isOnListElementStart()) {
 				state.setAsListElement();
 				state.parseToListElementEnd();
-				//
-//			} else if (state.isOnRootGrandChildStart()) {
-//				if (state.isOnListElementStart()) {
-//					System.out.println("    LIST ELMT START: " + in.getLocalName());
-//					state.setAsListElement();
-//					// get all the grandchildren
-//					state.parseToListElementEnd();
-//				} else {
-//					// continue parsing to end
-//					state.parseToRootChildEnd();
-////					System.out.println("    CHILD CONTENT: " + state.content);
-////					System.out.println("    CHILD NODE: " + state.getContentAsNode());
-//				}
 			} else if (state.isOnListElementEnd()) {
 				System.out.println("      LIST ELMT CONTENT: " + state.content);
 				System.out.println("      LIST ELMT NODE: " + state.getContentAsNode());
 				props.put(state.getRootChildName() + "." + state.getId(), state.content.toString());
-				props.put(state.getListElementName(), state.content.toString());
+				Map<String, String> map = maps.get(state.getRootChildName());
+				if (map == null) {
+					map = new HashMap<String, String>();
+					maps.put(state.getRootChildName(), map);
+				}
+				map.put(state.getId(), state.getContentAsNode().toString());
+				//props.put(state.getListElementName(), state.content.toString());
 				state.parseToNextListElementOrRootChildEnd();
 			} else {
 				throw new IllegalStateException("the above should be the only legal states");
