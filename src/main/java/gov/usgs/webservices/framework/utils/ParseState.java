@@ -206,17 +206,18 @@ public class ParseState{
 	}
 
 	public StringBuilder getContentAsNode() {
+		StringBuilder result = new StringBuilder();
 		if (isListElement) {
-			StringBuilder result = new StringBuilder();
+
 			result.append("<" + listElementName + " id=\"" + id + "\">");
 			result.append(content);
-			result.append("</" + listElementName);
+			result.append("</" + listElementName + ">");
 			return result;
 		}
-		String rootChildStartTag = "<" + rootChild + ">";
-		content.insert(0, rootChildStartTag);
-		content.append("</" + rootChild + ">");
-		return content;
+		result.append("<" + rootChild + ">");
+		result.append(content);
+		result.append("</" + rootChild + ">");
+		return result;
 
 	}
 

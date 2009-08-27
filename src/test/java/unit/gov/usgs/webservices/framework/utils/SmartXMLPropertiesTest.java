@@ -14,7 +14,7 @@ public class SmartXMLPropertiesTest {
 	+ "<root>"
 	+ "	<name>Winnie the Poo</name>"
 	+ "	<friends>"
-	+ "		<friend id=\"Tigger\">Tigger the tiger</friend>"
+	+ "		<bestFriend id=\"Tigger\">Tigger the tiger</bestFriend>"
 	+ "		<friend id=\"Piglet\">Piglet the pig</friend>"
 	+ "		<friend id=\"ChristopherRobin\">Christopher Robin<basedOn>Christopher Robin Milne, son of A. A. Milne</basedOn>"
 	+ "		</friend>"
@@ -63,9 +63,21 @@ public class SmartXMLPropertiesTest {
 		SmartXMLProperties props = new SmartXMLProperties();
 		props.parse(TEST_XML);
 
-		System.out.println();
+		System.out.println("== PROPS: ==");
 		for (Entry<String, String> entry: props.entrySet()) {
 			System.out.println(entry.getKey() + "=" + entry.getValue());
+		}
+
+		System.out.println();
+		System.out.println("== PROPS.get(): ==");
+		for (String key: props.keySet()) {
+			System.out.println(key + "=" + props.get(key));
+		}
+
+		System.out.println();
+		System.out.println("== PROPSgetAsFullXMLNode(): ==");
+		for (String key: props.keySet()) {
+			System.out.println(key + "=" + props.getAsFullXMLNode(key));
 		}
 	}
 

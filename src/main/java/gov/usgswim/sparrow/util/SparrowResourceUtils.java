@@ -7,6 +7,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang.NotImplementedException;
+
 public abstract class SparrowResourceUtils {
 	public static final String HELP_FILE = "help.xml";
 	public static final String SESSIONS_FILE = "sessions.properties";
@@ -55,6 +57,22 @@ public abstract class SparrowResourceUtils {
 			} catch (Exception ex) { /* do nothing. Let someone else deal with bad lookup value */ }
 		}
 		return null;
+	}
+
+	public static String lookupModelName(String model) {
+		if (model == null) return null;
+		try {
+			Long id = Long.parseLong(model);
+			return ""; // TODO use bimap to lookup by value
+		} catch (Exception e) {
+			return model;
+		}
+
+	}
+
+	public static String lookupModelName(Long modelID) {
+		// TODO implement this
+		throw new NotImplementedException();
 	}
 
 	private SparrowResourceUtils() {/* private constructor to prevent instantiation */ }

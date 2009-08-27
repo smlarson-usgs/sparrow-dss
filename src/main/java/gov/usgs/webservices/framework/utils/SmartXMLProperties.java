@@ -8,7 +8,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -54,13 +53,31 @@ public class SmartXMLProperties implements Map<String, String>{
 	// ================
 	// INSTANCE METHODS
 	// ================
-	public String get(String simpleOrCompoundKey) {
-		if (simpleOrCompoundKey == null) return null;
-		if (!isCompoundKey(simpleOrCompoundKey)) {
-			return props.get(simpleOrCompoundKey);
+	public String get(String key) {
+		if (key == null) return null;
+		if (isListKey(key)) {
+			return getListAsFullXMLNode(key);
 		}
-		String listKey = parseListKey(simpleOrCompoundKey);
-		return getListAsFullXMLNode(listKey);
+		return props.get(key);
+//		String listKey = parseListKey(simpleOrCompoundKey);
+//		return getListAsFullXMLNode(listKey);
+	}
+	public String getAsFullXMLNode(String key) {
+		if (key == null) return null;
+		if (isListKey(key)) {
+			return getListAsFullXMLNode(key);
+		}
+		String content = props.get(key);
+		if (content == null) return null;
+		if (isCompoundKey(key)) {
+			String listName = parseListKey(key);
+			Map<String, String> map = maps.get(listName);
+			if (map != null && !map.isEmpty()) {
+				String itemKey = parseItemKey(key);
+				return map.get(itemKey);
+			}
+		}
+		return "<" + key + ">" + content + "</" + key + ">";
 
 	}
 
@@ -82,9 +99,7 @@ public class SmartXMLProperties implements Map<String, String>{
 //	public String getAsXMLFragment() {
 //
 //	}
-//	public String getAsFullXMLNode() {
-//
-//	}
+
 //
 //	public Object getAsObject(Class<?> itemClass) {
 //
