@@ -52,12 +52,19 @@ public class HelpService extends HttpServlet {
 		return null;
 	}
 
-	private void retrieveModelMetadata(Integer id) {
-//		Object mmd = modelMetadata.get(id);
-//		if (mmd == null) {
-//			D
-//		}
+	public void getSimpleKeys(String model) {
+
 	}
+
+	public void getListKeys(String model) {
+
+	}
+
+	public void getList(String model, String key ) {
+
+	}
+
+
 
 	public static Integer lookupModelID(String modelString) {
 //		return SparrowResourceUtils.modelIndex.findFirst(0, modelString);
