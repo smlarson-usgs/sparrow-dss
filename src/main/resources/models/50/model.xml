@@ -1,9 +1,9 @@
-<Model id="43">
+<Model id="50">
 	<Authors>
 		<Author link="" id="1">First name, last name</Author>
 	</Authors>
-	<Model_name>MRB07 Nitrogen</Model_name>
-	<MRB>MRB07</MRB>
+	<Model_name>MRB02 Nitrogen</Model_name>
+	<MRB>MRB02</MRB>
 	<Constituent>
 		<Name>Nitrogen</Name>
 		<Units>kg/yr</Units>
@@ -15,50 +15,30 @@
 			<Units/>
 			<Description>All sources combined.</Description>
 		</Source>
-		<Source id="boundary_">
+		<Source id="kgn_02">
 			<Name>boundary_</Name>
-			<Units/>
-			<Description/>
+			<Units>kg</Units>
+			<Description>N load from point source dischargers in 2002, kg, Terziotti, 10-200.</Description>
 		</Source>
-		<Source id="canbasin">
-			<Name>canbasin</Name>
-			<Units/>
-			<Description/>
+		<Source id="nadp_kg">
+			<Name>nadp_kg</Name>
+			<Units>kg</Units>
+			<Description>Wet deposition of inorganic nitrogen (ammonia and nitrate), kg, detrended to 2002, K. Savvas, USGS, 2006</Description>
 		</Source>
-		<Source id="atdep_loa">
-			<Name>atdep_loa</Name>
-			<Units>kg/year</Units>
-			<Description>Average annual inorganic nitrogen (kg) atmospheric (wet) deposition</Description>
+		<Source id="is_km_01NLCD">
+			<Name>is_km_01NLCD</Name>
+			<Units>sqkm</Units>
+			<Description>Impervious surface area, square kilometers, NLCD01 based, Terziotti 12-2008</Description>
 		</Source>
-		<Source id="ps_n_02_a">
-			<Name>ps_n_02_a</Name>
-			<Units>kg/year</Units>
-			<Description>Sum of total nitrogen loading from all point sources for WY 2002 (kg)</Description>
+		<Source id="fert02_01nlcd">
+			<Name>fert02_01nlcd</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen fertilizer on farmland 2002, kg - NLCD01 - area-based method Terziotti 10-2008</Description>
 		</Source>
-		<Source id="farm_n">
-			<Name>farm_n</Name>
-			<Units>kg/year</Units>
-			<Description>Sum total of Fertilizer Nitrogen from farms (kg)</Description>
-		</Source>
-		<Source id="total_man">
-			<Name>total_man</Name>
-			<Units>kg/year</Units>
-			<Description>Total manure loading of nitrogen (kg)</Description>
-		</Source>
-		<Source id="nlcd_deve">
-			<Name>nlcd_deve</Name>
-			<Units>km2</Units>
-			<Description>area of developed land (square kilometers)</Description>
-		</Source>
-		<Source id="west_nlcd">
-			<Name>west_nlcd</Name>
-			<Units>km2</Units>
-			<Description>area of west-side forested land (square kilometers)</Description>
-		</Source>
-		<Source id="east_nlcd">
-			<Name>east_nlcd</Name>
-			<Units>km2</Units>
-			<Description>area of east-side forested land (square kilometers)</Description>
+		<Source id="man02_01nlcd">
+			<Name>man02_01nlcd</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen in livestock waste 2002, kg - NLCD01 - area-based method Terziotti 10-2008</Description>
 		</Source>
 	</Sources>
 	<Model_papers>
