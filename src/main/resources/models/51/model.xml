@@ -1,11 +1,11 @@
-<Model id="50">
+<Model id="51">
 	<Authors>
 		<Author link="" id="1">First name, last name</Author>
 	</Authors>
-	<Model_name>MRB02 Nitrogen</Model_name>
-	<MRB>MRB02</MRB>
+	<Model_name>MRB01 Phosphorus</Model_name>
+	<MRB>MRB01</MRB>
 	<Constituent>
-		<Name>Nitrogen</Name>
+		<Name>Phosphorus</Name>
 		<Units>kg/yr</Units>
 		<Description> </Description>
 	</Constituent>
@@ -15,30 +15,35 @@
 			<Units/>
 			<Description>All sources combined.</Description>
 		</Source>
-		<Source id="kgn_02">
-			<Name>boundary_</Name>
+		<Source id="pSEWER">
+			<Name>pSEWER</Name>
 			<Units>kg</Units>
-			<Description>N load from point source dischargers in 2002, kg, Terziotti, 10-200.</Description>
+			<Description/>
 		</Source>
-		<Source id="nadp_kg">
-			<Name>nadp_kg</Name>
+		<Source id="forest">
+			<Name>forest</Name>
 			<Units>kg</Units>
-			<Description>Wet deposition of inorganic nitrogen (ammonia and nitrate), kg, detrended to 2002, K. Savvas, USGS, 2006</Description>
+			<Description/>
 		</Source>
-		<Source id="is_km_01NLCD">
-			<Name>is_km_01NLCD</Name>
+		<Source id="corn_soy_alfpf">
+			<Name>corn_soy_alfpf</Name>
 			<Units>sqkm</Units>
-			<Description>Impervious surface area, square kilometers, NLCD01 based, Terziotti 12-2008</Description>
+			<Description/>
 		</Source>
-		<Source id="fert02_01nlcd">
-			<Name>fert02_01nlcd</Name>
+		<Source id="DEVEL">
+			<Name>DEVEL</Name>
 			<Units>kg</Units>
-			<Description>Nitrogen fertilizer on farmland 2002, kg - NLCD01 - area-based method Terziotti 10-2008</Description>
+			<Description/>
 		</Source>
-		<Source id="man02_01nlcd">
-			<Name>man02_01nlcd</Name>
+		<Source id="man_p">
+			<Name>man_p</Name>
 			<Units>kg</Units>
-			<Description>Nitrogen in livestock waste 2002, kg - NLCD01 - area-based method Terziotti 10-2008</Description>
+			<Description/>
+		</Source>
+		<Source id="OTHER_pFERT">
+			<Name>OTHER_pFERT</Name>
+			<Units>kg</Units>
+			<Description/>
 		</Source>
 	</Sources>
 	<Model_papers>
