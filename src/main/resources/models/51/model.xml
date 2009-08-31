@@ -1,0 +1,75 @@
+<Model id="50">
+	<Authors>
+		<Author link="" id="1">First name, last name</Author>
+	</Authors>
+	<Model_name>MRB02 Nitrogen</Model_name>
+	<MRB>MRB02</MRB>
+	<Constituent>
+		<Name>Nitrogen</Name>
+		<Units>kg/yr</Units>
+		<Description> </Description>
+	</Constituent>
+	<Sources>
+		<Source id="All">
+			<Name>All</Name>
+			<Units/>
+			<Description>All sources combined.</Description>
+		</Source>
+		<Source id="kgn_02">
+			<Name>boundary_</Name>
+			<Units>kg</Units>
+			<Description>N load from point source dischargers in 2002, kg, Terziotti, 10-200.</Description>
+		</Source>
+		<Source id="nadp_kg">
+			<Name>nadp_kg</Name>
+			<Units>kg</Units>
+			<Description>Wet deposition of inorganic nitrogen (ammonia and nitrate), kg, detrended to 2002, K. Savvas, USGS, 2006</Description>
+		</Source>
+		<Source id="is_km_01NLCD">
+			<Name>is_km_01NLCD</Name>
+			<Units>sqkm</Units>
+			<Description>Impervious surface area, square kilometers, NLCD01 based, Terziotti 12-2008</Description>
+		</Source>
+		<Source id="fert02_01nlcd">
+			<Name>fert02_01nlcd</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen fertilizer on farmland 2002, kg - NLCD01 - area-based method Terziotti 10-2008</Description>
+		</Source>
+		<Source id="man02_01nlcd">
+			<Name>man02_01nlcd</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen in livestock waste 2002, kg - NLCD01 - area-based method Terziotti 10-2008</Description>
+		</Source>
+	</Sources>
+	<Model_papers>
+		<Paper id="1">
+			<Link link=""/>
+			<Citation_mods>
+				<identifier type=""/>
+				<identifier type=""/>
+				<identifier type=""/>
+				<genre/>
+				<titleInfo>
+					<title/>
+				</titleInfo>
+				<originInfo>
+					<dateOther/>
+					<publisher/>
+					<placeTerm/>
+				</originInfo>
+				<name>
+					<namePart/>
+					<role>Author</role>
+				</name>
+				<physicalDescription>
+					<form/>
+					<form/>
+					<form/>
+				</physicalDescription>
+				<note type="citation/reference"/>
+				<edition/>
+				<languageTerm/>
+			</Citation_mods>
+		</Paper>
+	</Model_papers>
+</Model>
