@@ -16,7 +16,8 @@
 				<label for="session">[optional] session:</label>
 				<input name="session" type="text" />
 				<br/>
-				<input type="submit" name="submit" value="submit"/>
+				<input type="submit" name="submit" value="submit as post"/>
+				<input type="button" name="get" value="submit as get" onclick="this.form.method='get'"/>
 				<br/>
 				<a href="testResults/jsonify.json">result as of 2009-08-16</a> <i>Note: Use 32 for the model, as it's the only one with anything in it</i>
 			</fieldset>

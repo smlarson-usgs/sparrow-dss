@@ -41,6 +41,21 @@ public class HelpService extends HttpServlet {
 			throw new ServletException("nonexistent model " + modelString);
 		}
 		itemID =  (itemID == null)? lookupItem(modelID, itemString): itemID;
+
+
+		String pathInfo = req.getPathInfo();
+		if (pathInfo.contains("lookup")) {
+			lookupItem(modelID, itemString);
+		} else if (pathInfo.contains("getSimpleKeys")) {
+			getSimpleKeys(modelID);
+		} else if (pathInfo.contains("getListKeys")) {
+			getListKeys(modelID);
+		} else if (pathInfo.contains("getList")) {
+			getList(modelID, req.getParameter("listKey"));
+		}
+
+
+
 		// TODO Auto-generated method stub
 		PrintWriter out = resp.getWriter();
 		out.write("hello world");
@@ -52,15 +67,15 @@ public class HelpService extends HttpServlet {
 		return null;
 	}
 
-	public void getSimpleKeys(String model) {
+	public void getSimpleKeys(Integer model) {
 
 	}
 
-	public void getListKeys(String model) {
+	public void getListKeys(Integer model) {
 
 	}
 
-	public void getList(String model, String key ) {
+	public void getList(Integer model, String key ) {
 
 	}
 
