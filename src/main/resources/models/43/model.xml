@@ -15,8 +15,8 @@
 			<Units/>
 			<Description>All sources combined.</Description>
 		</Source>
-		<Source id="boundary_">
-			<Name>boundary_</Name>
+		<Source id="boundary_n">
+			<Name>boundary_n</Name>
 			<Units/>
 			<Description/>
 		</Source>
@@ -25,13 +25,13 @@
 			<Units/>
 			<Description/>
 		</Source>
-		<Source id="atdep_loa">
-			<Name>atdep_loa</Name>
+		<Source id="atdep_load">
+			<Name>atdep_load</Name>
 			<Units>kg/year</Units>
-			<Description>Average annual inorganic nitrogen (kg) atmospheric (wet) deposition</Description>
+			<Description>Average annual inorganic nitrogen (kg) atmospheric (wet) deposition for 1985 through 2001</Description>
 		</Source>
-		<Source id="ps_n_02_a">
-			<Name>ps_n_02_a</Name>
+		<Source id="ps_n_02_all">
+			<Name>ps_n_02_all</Name>
 			<Units>kg/year</Units>
 			<Description>Sum of total nitrogen loading from all point sources for WY 2002 (kg)</Description>
 		</Source>
@@ -45,18 +45,18 @@
 			<Units>kg/year</Units>
 			<Description>Total manure loading of nitrogen (kg)</Description>
 		</Source>
-		<Source id="nlcd_deve">
-			<Name>nlcd_deve</Name>
+		<Source id="nlcd_devel_km2">
+			<Name>nlcd_devel_km2</Name>
 			<Units>km2</Units>
 			<Description>area of developed land (square kilometers)</Description>
 		</Source>
-		<Source id="west_nlcd">
-			<Name>west_nlcd</Name>
+		<Source id="west_nlcd_forest_km2">
+			<Name>west_nlcd_forest_km2</Name>
 			<Units>km2</Units>
 			<Description>area of west-side forested land (square kilometers)</Description>
 		</Source>
-		<Source id="east_nlcd">
-			<Name>east_nlcd</Name>
+		<Source id="east_nlcd_forest_km2">
+			<Name>east_nlcd_forest_km2</Name>
 			<Units>km2</Units>
 			<Description>area of east-side forested land (square kilometers)</Description>
 		</Source>
