@@ -1,6 +1,11 @@
 package gov.usgs.webservices.framework.utils;
 
 
+import edu.emory.mathcs.backport.java.util.Arrays;
+import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.impl.SimpleDataTableWritable;
+import gov.usgswim.datatable.utils.DataTableUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,13 +52,26 @@ public class ResourceLoaderUtils {
 
 	public static SmartXMLProperties loadResourceAsSmartXML(String resourceFilePath) {
 		InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceFilePath);
-		BufferedReader in = new BufferedReader(new InputStreamReader(stream));
-		return ResourceLoaderUtils.loadResourceAsSmartXML(in);
+		return ResourceLoaderUtils.loadResourceAsSmartXML(new InputStreamReader(stream));
 	}
 
 	public static SmartXMLProperties loadResourceAsSmartXML(Reader inStream) {
+		BufferedReader in = new BufferedReader(inStream);
+		return ResourceLoaderUtils.loadResourceAsSmartXML(in);
+	}
 
-		return null;
+	public static DataTable loadResourcesAsDataTable(Reader instream, int cols) {
+
+		Class<?>[] types = new Class<?>[cols];
+		Arrays.fill(types, String.class);
+
+		String[] headings = new String[cols];
+		for (int i=0; i<cols; i++) {
+			headings[i] = "col" + i;
+		}
+
+		SimpleDataTableWritable dataTable = new SimpleDataTableWritable(headings, null, types);
+		return DataTableUtils.fill(dataTable, new BufferedReader(instream), false, "	", true);
 	}
 
 	/**

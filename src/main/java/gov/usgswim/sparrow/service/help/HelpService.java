@@ -1,5 +1,8 @@
 package gov.usgswim.sparrow.service.help;
 
+import gov.usgs.webservices.framework.utils.ResourceLoaderUtils;
+import gov.usgswim.sparrow.util.SparrowResourceUtils;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -36,16 +39,18 @@ public class HelpService extends HttpServlet {
 		String itemString = req.getParameter("item");
 		Integer modelID = parseInt(modelString);
 		Integer itemID = parseInt(itemString);
-		modelID =  (modelID == null)? lookupModelID(modelString): modelID;
+		modelID = (modelID == null)? lookupModelID(modelString): modelID;
 		if (modelID == null) {
 			throw new ServletException("nonexistent model " + modelString);
 		}
-		itemID =  (itemID == null)? lookupItem(modelID, itemString): itemID;
+		//itemID =  (itemID == null)? lookupItem(modelID, itemString): itemID;
 
 
 		String pathInfo = req.getPathInfo();
+
+		String result = null;
 		if (pathInfo.contains("lookup")) {
-			lookupItem(modelID, itemString);
+			result = lookupItem(modelID, itemString);
 		} else if (pathInfo.contains("getSimpleKeys")) {
 			getSimpleKeys(modelID);
 		} else if (pathInfo.contains("getListKeys")) {
@@ -58,13 +63,12 @@ public class HelpService extends HttpServlet {
 
 		// TODO Auto-generated method stub
 		PrintWriter out = resp.getWriter();
-		out.write("hello world");
+		out.write(result);
 		out.flush();
 	}
 
-	private Integer lookupItem(Integer modelID, String itemString) {
-//		modelInfo = modelMetadata.
-		return null;
+	private String lookupItem(Integer modelID, String itemString) {
+		return SparrowResourceUtils.retrieveHelp(modelID.toString(), itemString);
 	}
 
 	public void getSimpleKeys(Integer model) {

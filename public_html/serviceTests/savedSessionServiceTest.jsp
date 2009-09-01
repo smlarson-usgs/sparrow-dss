@@ -8,16 +8,15 @@
 		<link rel="icon" href="../favicon.ico" />
 	</head>
 	<body>
-		<form action="../sp_session/formpost" method="post" enctype="application/x-www-form-urlencoded">
+		<form action="../sp_session/formpost" method="get" enctype="application/x-www-form-urlencoded" name="testForm">
 			<fieldset title="Saved Session Request">
-				<label for="model">[required] model:</label>
+				<label for="model">[required][integer] model:</label>
 				<input name="model" type="text" />
 				<br/>
-				<label for="session">[optional] session:</label>
+				<label for="session">[optional][string] session:</label>
 				<input name="session" type="text" />
 				<br/>
-				<input type="submit" name="submit" value="submit as post"/>
-				<input type="button" name="get" value="submit as get" onclick="this.form.method='get'"/>
+				<input type="submit" name="submit" value="submit as get"/>
 				<br/>
 				<a href="testResults/jsonify.json">result as of 2009-08-16</a> <i>Note: Use 32 for the model, as it's the only one with anything in it</i>
 			</fieldset>

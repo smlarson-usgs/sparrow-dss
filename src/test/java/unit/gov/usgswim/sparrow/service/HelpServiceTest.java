@@ -4,13 +4,11 @@ import java.io.IOException;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
 import com.meterware.httpunit.WebResponse;
 
-@Ignore
 public class HelpServiceTest extends HTTPServiceTestHelper{
 
 	private static final String HELP_SERVICE_URL = "http://localhost:8088/sp_help";
@@ -33,7 +31,6 @@ public class HelpServiceTest extends HTTPServiceTestHelper{
         WebResponse response = client.getResponse( HELP_SERVICE_URL + queryString);
         System.out.println(response.getText());
         // TODO make this a real test
-
 	}
 
 	@Test

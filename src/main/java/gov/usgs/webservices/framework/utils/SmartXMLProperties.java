@@ -49,7 +49,6 @@ public class SmartXMLProperties implements Map<String, String>{
 	protected Map<String, String> nodes = new HashMap<String, String>();
 	protected Map<String, Map<String, String>> maps = new HashMap<String, Map<String, String>>();
 
-
 	// ================
 	// INSTANCE METHODS
 	// ================
