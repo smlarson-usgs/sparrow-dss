@@ -7,18 +7,37 @@ import gov.usgswim.datatable.DataTableWritable;
 import java.io.IOException;
 import java.sql.SQLException;
 
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
+@Ignore
 public class DataResourceLoaderTest {
+	public static final int TEST_MODEL = -1;
+	public static DataTableWritable sourceMetaData;
 
 
+	@BeforeClass
+	public static void loadSourceMetadata() throws SQLException, IOException {
+		sourceMetaData = DataResourceLoader.loadSourceMetadata(TEST_MODEL);
+	}
 
 	@Test
-	public void testLoadTopoFromResources() throws SQLException, IOException {
-		DataTableWritable topo = DataResourceLoader.loadTopo(-1);
+	public void testLoadSourceMetadata() {
+		assertTrue(sourceMetaData != null);
+		assertEquals(8, sourceMetaData.getColumnCount());
+		assertEquals("SOURCE_ID", sourceMetaData.getName(0));
+		assertEquals("IS_POINT_SOURCE", sourceMetaData.getName(7));
+		assertTrue("A real model should have at least 4 sources", sourceMetaData.getRowCount() >= 4);
+//		DataTableUtils.printDataTable(sourceMetaData, "source metadata");
+	}
+
+	@Test
+	public void testLoadTopo() throws SQLException, IOException {
+		DataTableWritable topo = DataResourceLoader.loadTopo(TEST_MODEL);
 
 		assertTrue(topo != null);
 		assertEquals(5, topo.getColumnCount());
@@ -26,6 +45,40 @@ public class DataResourceLoaderTest {
 		assertTrue(topo.getRowCount() > 10);
 	}
 
+	@Test
+	public void testLoadSourceReachCoefficients() throws SQLException, IOException {
+		DataTableWritable reachCoefficients = DataResourceLoader.loadSourceReachCoef(TEST_MODEL, sourceMetaData);
+
+		assertTrue(reachCoefficients != null);
+		assertEquals(5, reachCoefficients.getColumnCount());
+		assertEquals("fnode", reachCoefficients.getName(1));
+		assertTrue(reachCoefficients.getRowCount() > 10);
+	}
+
+	@Test
+	public void testLoadDecay() throws SQLException, IOException {
+		DataTableWritable decay = DataResourceLoader.loadDecay(TEST_MODEL);
+
+		assertTrue(decay != null);
+		assertEquals(5, decay.getColumnCount());
+		assertEquals("fnode", decay.getName(1));
+		assertTrue(decay.getRowCount() > 10);
+	}
+
+	@Test
+	public void testLoadSourceValues() throws SQLException, IOException {
+		DataTableWritable sourceValues = DataResourceLoader.loadSourceValues(TEST_MODEL);
+
+		assertTrue(sourceValues != null);
+		assertEquals(5, sourceValues.getColumnCount());
+		assertEquals("fnode", sourceValues.getName(1));
+		assertTrue(sourceValues.getRowCount() > 10);
+	}
+
+
+	// ==========================
+	// The following don't belong
+	// ==========================
 	public static class Person {
 		  private String firstname;
 		  private String lastname;
@@ -35,9 +88,6 @@ public class DataResourceLoaderTest {
 			  this.lastname = lastname;
 		  }
 	}
-	// ==========================
-	// The following don't belong
-	// ==========================
 
 	@Test
 	public void testXStreamToXML() {
