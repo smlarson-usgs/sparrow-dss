@@ -6,6 +6,7 @@ import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,13 +46,13 @@ public class SmartXMLProperties implements Map<String, String>{
 	// ======================
 	// INSTANCE MEMBER FIELDS
 	// ======================
-	protected Map<String, String> props = new HashMap<String, String>();
-	protected Map<String, String> nodes = new HashMap<String, String>();
+	protected Map<String, String> props = new LinkedHashMap<String, String>();
+	protected Map<String, String> nodes = new LinkedHashMap<String, String>();
 	protected Map<String, Map<String, String>> maps = new HashMap<String, Map<String, String>>();
 
-	// ================
-	// INSTANCE METHODS
-	// ================
+	// ====================
+	// INSTANCE GET METHODS
+	// ====================
 	public String get(String key) {
 		if (key == null) return null;
 		if (isListKey(key)) {
@@ -95,10 +96,9 @@ public class SmartXMLProperties implements Map<String, String>{
 		return result.toString();
 	}
 
-//	public String getAsXMLFragment() {
-//
-//	}
-
+	public Set<String> listKeySet() {
+		return maps.keySet();
+	}
 //
 //	public Object getAsObject(Class<?> itemClass) {
 //
@@ -109,6 +109,9 @@ public class SmartXMLProperties implements Map<String, String>{
 		return maps.containsKey(key);
 	}
 
+	// =============
+	// PARSE METHODS
+	// =============
 	public void parse(String xml) throws XMLStreamException, XMLParseValidationException {
 		// TODO replace this by SourceToStreamConverter calls
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
@@ -151,7 +154,7 @@ public class SmartXMLProperties implements Map<String, String>{
 				props.put(state.getRootChildName() + "." + state.getId(), state.content.toString());
 				Map<String, String> map = maps.get(state.getRootChildName());
 				if (map == null) {
-					map = new HashMap<String, String>();
+					map = new LinkedHashMap<String, String>();
 					maps.put(state.getRootChildName(), map);
 				}
 				map.put(state.getId(), state.getContentAsNode().toString());

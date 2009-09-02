@@ -26,7 +26,7 @@ public class HelpServiceTest extends HTTPServiceTestHelper{
 
 	@Test
 	public void testLookupWithFieldIDAndModelID() throws IOException, SAXException {
-        String queryString = "lookup?model=" + TEST_MODEL;
+        String queryString = "/lookup?model=" + TEST_MODEL;
 
         WebResponse response = client.getResponse( HELP_SERVICE_URL + queryString);
         System.out.println(response.getText());
@@ -35,7 +35,7 @@ public class HelpServiceTest extends HTTPServiceTestHelper{
 
 	@Test
 	public void testgetSimpleKeys() throws IOException, SAXException {
-        String queryString = "getSimpleKeys?model=" + TEST_MODEL;
+        String queryString = "/getSimpleKeys?model=" + TEST_MODEL;
 
         WebResponse response = client.getResponse( HELP_SERVICE_URL + queryString);
         System.out.println(response.getText());
@@ -45,7 +45,7 @@ public class HelpServiceTest extends HTTPServiceTestHelper{
 
 	@Test
 	public void testgetListKeys() throws IOException, SAXException {
-        String queryString = "getListKeys?model=" + TEST_MODEL;
+        String queryString = "/getListKeys?model=" + TEST_MODEL;
 
         WebResponse response = client.getResponse( HELP_SERVICE_URL + queryString);
         System.out.println(response.getText());
@@ -55,7 +55,7 @@ public class HelpServiceTest extends HTTPServiceTestHelper{
 
 	@Test
 	public void testgetList() throws IOException, SAXException {
-        String queryString = "getList?model=" + TEST_MODEL;
+        String queryString = "/getList?model=" + TEST_MODEL;
 
         WebResponse response = client.getResponse( HELP_SERVICE_URL + queryString);
         System.out.println(response.getText());

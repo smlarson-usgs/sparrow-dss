@@ -2,14 +2,50 @@ package gov.usgs.webservices.framework.utils;
 
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.xml.stream.XMLStreamException;
 
+import junit.framework.Assert;
+
+import org.junit.BeforeClass;
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 
 public class SmartXMLPropertiesTest {
+
+	static SmartXMLProperties props = new SmartXMLProperties();
+	static String[] simplePropKeys = {"name",
+		"friends.Tigger",
+		"friends.Piglet",
+		"friends.ChristopherRobin",
+		"friends.Eeyore",
+		"Creator",
+		"eats.honey"};
+
+	static String[] simplePropValues = {"Winnie the Poo",
+		"Tigger the tiger",
+		"Piglet the pig",
+		"Christopher Robin<basedOn>Christopher Robin Milne, son of A. A. Milne</basedOn>",
+		"Eeyore the Donkey",
+		"<name>A. A. Milne</name><lifetime><born>18 January 1882</born><died>31 January 1956</died></lifetime>",
+		"Pooh's favorite"
+	};
+
+	static String[] nodeValues= {"<name>Winnie the Poo</name>",
+		"<bestFriend id=\"Tigger\">Tigger the tiger</bestFriend>",
+		"<friend id=\"Piglet\">Piglet the pig</friend>",
+		"<friend id=\"ChristopherRobin\">Christopher Robin<basedOn>Christopher Robin Milne, son of A. A. Milne</basedOn></friend>",
+		"<friend id=\"Eeyore\">Eeyore the Donkey</friend>",
+		"<Creator><name>A. A. Milne</name><lifetime><born>18 January 1882</born><died>31 January 1956</died></lifetime></Creator>",
+		"<food id=\"honey\">Pooh's favorite</food>"
+	};
+
+
 	static String TEST_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
 	+ "<root>"
 	+ "	<name>Winnie the Poo</name>"
@@ -32,41 +68,86 @@ public class SmartXMLPropertiesTest {
 	+ "	</eats>"
 	+ "</root>";
 
-	public static final String SAMPLE_XML = "<inventory>"
-	+ "    <book year=\"2000\">"
-	+ "        <title>Snow Crash</title>"
-	+ "        <author>Neal Stephenson</author>"
-	+ "        <publisher>Spectra</publisher>"
-	+ "        <isbn>0553380958</isbn>"
-	+ "        <price>14.95</price>"
-	+ "    </book>"
-	+ "    <book year=\"2005\">"
-	+ "        <title>Burning Tower</title>"
-	+ "        <author>Larry Niven</author>"
-	+ "        <author>Jerry Pournelle</author>"
-	+ "        <publisher>Pocket</publisher>"
-	+ "        <isbn>0743416910</isbn>"
-	+ "        <price>5.99</price>"
-	+ "    </book>"
-	+ "    <book year=\"1995\">"
-	+ "        <title>Zodiac</title>"
-	+ "        <author>Neal Stephenson</author>"
-	+ "        <publisher>Spectra</publisher>"
-	+ "        <isbn>0553573862</isbn>"
-	+ "        <price>7.50</price>"
-	+ "    </book>"
-	+ "    <!-- more books... -->"
-	+ "</inventory>";
+//	public static final String SAMPLE_XML = "<inventory>"
+//	+ "    <book year=\"2000\">"
+//	+ "        <title>Snow Crash</title>"
+//	+ "        <author>Neal Stephenson</author>"
+//	+ "        <publisher>Spectra</publisher>"
+//	+ "        <isbn>0553380958</isbn>"
+//	+ "        <price>14.95</price>"
+//	+ "    </book>"
+//	+ "    <book year=\"2005\">"
+//	+ "        <title>Burning Tower</title>"
+//	+ "        <author>Larry Niven</author>"
+//	+ "        <author>Jerry Pournelle</author>"
+//	+ "        <publisher>Pocket</publisher>"
+//	+ "        <isbn>0743416910</isbn>"
+//	+ "        <price>5.99</price>"
+//	+ "    </book>"
+//	+ "    <book year=\"1995\">"
+//	+ "        <title>Zodiac</title>"
+//	+ "        <author>Neal Stephenson</author>"
+//	+ "        <publisher>Spectra</publisher>"
+//	+ "        <isbn>0553573862</isbn>"
+//	+ "        <price>7.50</price>"
+//	+ "    </book>"
+//	+ "    <!-- more books... -->"
+//	+ "</inventory>";
+
+	@BeforeClass
+	public static void setup() throws XMLStreamException, XMLParseValidationException {
+		props = new SmartXMLProperties();
+		props.parse(TEST_XML);
+		assertEquals("Checking setup: number of values should = number of keys", simplePropValues.length, simplePropKeys.length);
+		assertEquals("Checking setup: number of nodes should = number of values", nodeValues.length, simplePropKeys.length);
+
+	}
+	@Test
+	public void testKeySet() {
+		Set<String> keys = props.keySet();
+		assertEquals("Should be 7 keys total", simplePropKeys.length, keys.size());
+		assertTrue("Should contain specified property keys", props.keySet().containsAll(Arrays.asList(simplePropKeys)));
+		assertArrayEquals("Keys should be in this order", keys.toArray(new String[0]), simplePropKeys);
+	}
+
+	@Test
+	public void testKeyValues() {
+		Set<Entry<String, String>> entries = props.entrySet();
+		Iterator<Entry<String, String>> iter = entries.iterator();
+		for (int i=0; i<simplePropValues.length; i++) {
+			Entry<String, String> entry = iter.next();
+			assertEquals(simplePropValues[i], entry.getValue());
+		}
+	}
+
+	@Test
+	public void testGetReturnsSameAsEntrySet() {
+		Set<Entry<String, String>> entries = props.entrySet();
+		Iterator<Entry<String, String>> iter = entries.iterator();
+		for (int i=0; i<simplePropValues.length; i++) {
+			Entry<String, String> entry = iter.next();
+			assertEquals(entry.getValue(), props.get(entry.getKey()));
+		}
+	}
+
+	@Test
+	public void testGetFullXMLNodeOnSimpleProperties() {
+		Set<Entry<String, String>> entries = props.entrySet();
+		Iterator<Entry<String, String>> iter = entries.iterator();
+		for (int i=0; i<nodeValues.length; i++) {
+			Entry<String, String> entry = iter.next();
+			assertEquals(nodeValues[i], props.getAsFullXMLNode(entry.getKey()));
+		}
+	}
 
 	@Test
 	public void testSimpleChild() throws XMLStreamException, XMLParseValidationException {
-		SmartXMLProperties props = new SmartXMLProperties();
-		props.parse(TEST_XML);
 
-		System.out.println("== PROPS: ==");
-		for (Entry<String, String> entry: props.entrySet()) {
-			System.out.println(entry.getKey() + "=" + entry.getValue());
-		}
+//		System.out.println("== PROPS: ==");
+//		for (Entry<String, String> entry: props.entrySet()) {
+//			System.out.println(entry.getKey() + "=" + entry.getValue());
+//		}
+
 
 		System.out.println();
 		System.out.println("== PROPS.get(): ==");
