@@ -99,6 +99,10 @@ public class SmartXMLProperties implements Map<String, String>{
 	public Set<String> listKeySet() {
 		return maps.keySet();
 	}
+
+	public Map<String, String> getListAsMap(String listKey){
+		return maps.get(listKey);
+	}
 //
 //	public Object getAsObject(Class<?> itemClass) {
 //

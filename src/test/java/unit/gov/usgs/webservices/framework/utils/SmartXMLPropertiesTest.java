@@ -1,25 +1,24 @@
 package gov.usgs.webservices.framework.utils;
 
+import static org.junit.Assert.*;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
 import javax.xml.stream.XMLStreamException;
 
-import junit.framework.Assert;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 
 public class SmartXMLPropertiesTest {
 
 	static SmartXMLProperties props = new SmartXMLProperties();
-	static String[] simplePropKeys = {"name",
+	static final String[] simplePropKeys = {"name",
 		"friends.Tigger",
 		"friends.Piglet",
 		"friends.ChristopherRobin",
@@ -27,7 +26,7 @@ public class SmartXMLPropertiesTest {
 		"Creator",
 		"eats.honey"};
 
-	static String[] simplePropValues = {"Winnie the Poo",
+	static final String[] simplePropValues = {"Winnie the Poo",
 		"Tigger the tiger",
 		"Piglet the pig",
 		"Christopher Robin<basedOn>Christopher Robin Milne, son of A. A. Milne</basedOn>",
@@ -36,7 +35,7 @@ public class SmartXMLPropertiesTest {
 		"Pooh's favorite"
 	};
 
-	static String[] nodeValues= {"<name>Winnie the Poo</name>",
+	static final String[] nodeValues= {"<name>Winnie the Poo</name>",
 		"<bestFriend id=\"Tigger\">Tigger the tiger</bestFriend>",
 		"<friend id=\"Piglet\">Piglet the pig</friend>",
 		"<friend id=\"ChristopherRobin\">Christopher Robin<basedOn>Christopher Robin Milne, son of A. A. Milne</basedOn></friend>",
@@ -44,6 +43,8 @@ public class SmartXMLPropertiesTest {
 		"<Creator><name>A. A. Milne</name><lifetime><born>18 January 1882</born><died>31 January 1956</died></lifetime></Creator>",
 		"<food id=\"honey\">Pooh's favorite</food>"
 	};
+
+	static final String [] listKeySet = {"friends", "eats"};
 
 
 	static String TEST_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
@@ -139,6 +140,27 @@ public class SmartXMLPropertiesTest {
 			assertEquals(nodeValues[i], props.getAsFullXMLNode(entry.getKey()));
 		}
 	}
+
+	@Test
+	public void testListKeySet() {
+		Set<String> listKeys = props.listKeySet();
+		String[] retrievedKeys = listKeys.toArray(new String[0]);
+		assertArrayEquals(listKeySet, retrievedKeys);
+	}
+
+	@Test
+	public void testGetListAsMap() {
+		for (String key: props.keySet()) {
+			if (SmartXMLProperties.isCompoundKey(key)) {
+				String listKey = SmartXMLProperties.parseListKey(key);
+				String itemKey = SmartXMLProperties.parseItemKey(key);
+
+				Map<String, String> list = props.getListAsMap(listKey);
+				assertEquals("should match for " + key, props.getAsFullXMLNode(key), list.get(itemKey));
+			}
+		}
+	}
+
 
 	@Test
 	public void testSimpleChild() throws XMLStreamException, XMLParseValidationException {
