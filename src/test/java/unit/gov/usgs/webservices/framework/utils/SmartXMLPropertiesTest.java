@@ -162,28 +162,6 @@ public class SmartXMLPropertiesTest {
 	}
 
 
-	@Test
-	public void testSimpleChild() throws XMLStreamException, XMLParseValidationException {
-
-//		System.out.println("== PROPS: ==");
-//		for (Entry<String, String> entry: props.entrySet()) {
-//			System.out.println(entry.getKey() + "=" + entry.getValue());
-//		}
-
-
-		System.out.println();
-		System.out.println("== PROPS.get(): ==");
-		for (String key: props.keySet()) {
-			System.out.println(key + "=" + props.get(key));
-		}
-
-		System.out.println();
-		System.out.println("== PROPSgetAsFullXMLNode(): ==");
-		for (String key: props.keySet()) {
-			System.out.println(key + "=" + props.getAsFullXMLNode(key));
-		}
-	}
-
 //	@Test
 //	public void testXPath() throws ParserConfigurationException, SAXException, IOException, XPathExpressionException {
 //		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

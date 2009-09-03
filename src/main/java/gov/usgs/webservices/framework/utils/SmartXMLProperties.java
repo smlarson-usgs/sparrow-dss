@@ -174,7 +174,11 @@ public class SmartXMLProperties implements Map<String, String>{
 	// Map interface methods
 	// =====================
 	@Override
-	public void clear() { props.clear();}
+	public void clear() {
+		props.clear();
+		nodes.clear();
+		maps.clear();
+	}
 
 	@Override
 	public boolean containsKey(Object key) {return props.containsKey(key);}
