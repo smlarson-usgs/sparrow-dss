@@ -66,14 +66,6 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	/** protected static XMLInputFactory xinFact */
 	protected static XMLOutputFactory xoFact;
 
-
-//	<polygon points="220,100 300,210 170,250 123,234"
-//	style="fill:#cccccc;
-//	stroke:#000000;stroke-width:1"/>
-
-//	<polyline points="0,0 0,20 20,20 20,40 40,40 40,60"
-//		style="fill:white;stroke:red;stroke-width:2"/>
-
 	// =====================
 	// PUBLIC STATIC METHODS
 	// =====================

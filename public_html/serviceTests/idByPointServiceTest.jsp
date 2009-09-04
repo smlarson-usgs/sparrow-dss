@@ -8,70 +8,32 @@
       <link rel="icon" href="../favicon.ico" />
 	</head>
 	<body>
-		<p>
-			<strong>Probably fails because prediction context needed </strong>
-		</p>
-		<h3>Requests the 7 closest reaches to lat/long 40/-100 in model 22</h3>
-		<ul>
-			<li>xml:
-				<a href="../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7">../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7</a>
-			</li>
-			<li>excel:
-				<a href="../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&mimetype=excel">../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;mimetype=excel</a>
-			</li>
-			<li>csv:
-				<a href="../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&mimetype=csv">../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;mimetype=csv</a>
-			</li>
-			<li>tab:
-				<a href="../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&mimetype=tab">../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;mimetype=tab</a>
-			</li>
-			<li>json:
-				<a href="../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&mimetype=json">../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=7&amp;mimetype=json</a>
-			</li>
 
-		</ul>
 
-		<h3>Same as above, but there is an internal limit to 100 reaches, so the 200 will be ignored</h3>
-		<ul>
-			<li>xml:
-				<a href="../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200">../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200</a>
-			</li>
-			<li>excel:
-				<a href="../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&mimetype=excel">../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&amp;mimetype=excel</a>
-			</li>
-			<li>csv:
-				<a href="../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&mimetype=csv">../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&amp;mimetype=csv</a>
-			</li>
-			<li>tab:
-				<a href="../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&mimetype=tab">../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&amp;mimetype=tab</a>
-			</li>
-			<li>json:
-				<a href="../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&mimetype=json">../sp_idpoint/22&#63;lat=40&amp;long=-100&amp;result-count=200&amp;mimetype=json</a>
-			</li>
+		<form method="post" action="../sp_idpoint/formpost" enctype="application/x-www-form-urlencoded">
+			<fieldset title="Prediction Context Request 1">
+				<label for="xml_input_1">identify Request Format</label>
+				<p>Identify by Point</p>
+				<p>Note that a preliminary prediction context request will probably need to be submitted first, otherwise this may fail. </p>
+				<textarea id="xml_input_1" name="xmlreq" cols="120" rows="20">
+<sparrow-id-request xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<context-id>1943959558</context-id>
+	<point lat="42.34130859375" long="-95.767822265625"/>
+	<content>
+		<adjustments/>
+		<attributes/>
+	</content>
+	<response-format>
+		<mime-type>xml</mime-type>
+	</response-format>
+</sparrow-id-request>
+				</textarea>
+				<input type="submit" name="submit" value="submit"/>
 
-		</ul>
+			</fieldset>
+		</form>
 
-		<p>
-			<strong>The Search for nearest reaches is only performed in a 4 deg. by 4 deg. box
-				around the point, so a request like this will probably return zero points.</strong>
-		</p>
-		<ul>
-			<li>xml:
-				<a href="../sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7">../sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7</a>
-			</li>
-			<li>excel:
-				<a href="../sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&mimetype=excel">../sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&amp;mimetype=excel</a>
-			</li>
-			<li>csv:
-				<a href="../sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&mimetype=csv">../sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&amp;mimetype=csv</a>
-			</li>
-			<li>tab:
-				<a href="../sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&mimetype=tab">../sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&amp;mimetype=tab</a>
-			</li>
-			<li>json:
-				<a href="../sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&mimetype=json">../sp_idpoint/22&#63;lat=4&amp;long=-4&amp;result-count=7&amp;mimetype=json</a>
-			</li>
-		</ul>
+
 
 	</body>
 </html>

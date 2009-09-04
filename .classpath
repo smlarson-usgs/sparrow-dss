@@ -40,5 +40,6 @@
 			<attribute name="javadoc_location" value="file:/C:/Documents and Settings/ikuoikuo/My Documents/workspace/projects/usgs/sparrow_core/java_lib/google/collect/javadoc/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="java_lib/oracle/mapviewer_client/sdoapi.jar"/>
 	<classpathentry kind="output" path="public_html/WEB-INF/classes"/>
 </classpath>

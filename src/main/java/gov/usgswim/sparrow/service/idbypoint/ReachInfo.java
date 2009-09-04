@@ -17,17 +17,17 @@ public class ReachInfo {
 	private final int id;
 	private final String name;
 	private final transient Integer distInMeters;
-	
+
 	private final double minLong;
 	private final double minLat;
 	private final double maxLong;
 	private final double maxLat;
 	private final double markerLong;
 	private final double markerLat;
-	
+
 	private transient Double clickedLong;
 	private transient Double clickedLat;
-	
+
 	private final String huc2;
 	private final String huc2Name;
 	private final String huc4;
@@ -36,9 +36,11 @@ public class ReachInfo {
 	private final String huc6Name;
 	private final String huc8;
 	private final String huc8Name;
-	
 
-	
+	private double[] _ordinates;
+
+
+
 	public ReachInfo(long modelID, int id, String name, Integer distInMeters,
 			double minLong, double minLat, double maxLong, double maxLat,
 			double markLong, double markLat,
@@ -64,11 +66,11 @@ public class ReachInfo {
 		this.huc8 = huc8;
 		this.huc8Name = huc8Name;
 	}
-	
+
 	public String toIdentificationXML() {
 		StringBuilder in = new StringBuilder();
 		// write <identification>
-		writeOpeningTag(in, "identification", 
+		writeOpeningTag(in, "identification",
 				"distance-in-meters", asString(distInMeters));
 		{
 			writeNonNullTag(in, "id", asString(id));
@@ -78,7 +80,8 @@ public class ReachInfo {
 						"lat", asString(clickedLat),
 						"long", asString(clickedLong));
 			}
-			writeClosedFullTag(in, "bbox", 
+
+			writeClosedFullTag(in, "bbox",
 					"min-long", asString(minLong),
 					"min-lat", asString(minLat),
 					"max-long", asString(maxLong),
@@ -86,21 +89,50 @@ public class ReachInfo {
 					"marker-long", asString(markerLong),
 					"marker-lat", asString(markerLat)
 			);
+			if (_ordinates != null && _ordinates.length > 0) {
+				int dimensions = 2; // This is an assumption
+				int numberOfPoints = _ordinates.length/dimensions;
+
+				StringBuilder coordinates = new StringBuilder();
+				for (int i=0; i<_ordinates.length; i=i+2) {
+					coordinates.append(_ordinates[i])
+					.append(",")
+					.append(_ordinates[i+1])
+					.append(" ");
+				}
+
+//				for (int i=0; i<numberOfPoints; i++) {
+//					System.out.print("  [" + (i+1) + "]  (");
+//					for (int j=0; j<dimensions; j++) {
+//						System.out.print(_ordinates[i*dimensions + j]);
+//						if (j<dimensions - 1) {
+//							System.out.print(", ");
+//						}
+//					}
+//					System.out.println(")");
+//
+//				}
+
+
+
+				writeClosedFullTag(in, "polygon",
+						"points", coordinates.toString());
+			}
 			writeOpeningTag(in, "hucs");
 			{
-				writeClosedFullTag(in, "huc8", 
+				writeClosedFullTag(in, "huc8",
 						"id", huc8,
 						"name", huc8Name
 				);
-				writeClosedFullTag(in, "huc6", 
+				writeClosedFullTag(in, "huc6",
 						"id", huc6,
 						"name", huc6Name
 				);
-				writeClosedFullTag(in, "huc4", 
+				writeClosedFullTag(in, "huc4",
 						"id", huc4,
 						"name", huc4Name
 				);
-				writeClosedFullTag(in, "huc2", 
+				writeClosedFullTag(in, "huc2",
 						"id", huc2,
 						"name", huc2Name
 				);
@@ -108,14 +140,15 @@ public class ReachInfo {
 			writeClosingTag(in, "hucs");
 		}
 		writeClosingTag(in, "identification");
-		
+
 		return in.toString();
 	}
-	
+
 	public ReachInfo cloneWithDistance(Integer distance) {
 		ReachInfo clone = new ReachInfo(modelID, id, name, distance, minLong, minLat, maxLong, maxLat,
 				markerLong, markerLat,
 				huc2, huc2Name, huc4, huc4Name, huc6, huc6Name, huc8, huc8Name );
+		clone._ordinates = _ordinates;
 		return clone;
 	}
 
@@ -125,7 +158,7 @@ public class ReachInfo {
 	public long getModelId() {
 		return modelID;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -153,10 +186,14 @@ public class ReachInfo {
 	public double getMaxLat() {
 		return maxLat;
 	}
-	
+
 	public void setClickedPoint(double longitude, double latitude) {
 		this.clickedLong = longitude;
-		this.clickedLat = latitude;		
+		this.clickedLat = latitude;
 	}
-	
+
+	public void setOrdinates(double[] ordinates) {
+		this._ordinates = ordinates;
+	}
+
 }
