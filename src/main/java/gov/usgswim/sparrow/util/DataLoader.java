@@ -461,8 +461,10 @@ public class DataLoader {
 //				headRs = null;
 //			}
 //		}
-
-		String[] headings = DataTableUtils.getStringColumn(sources, sources.getColumnByName("display_name"));
+		// TODO need to add display name to source_metadata to eliminate the magic number of 2
+		Integer display_name_col = sources.getColumnByName("display_name");
+		display_name_col = (display_name_col == null)? 2: display_name_col;
+		String[] headings = DataTableUtils.getStringColumn(sources, display_name_col);
 		// end of new code :)
 
 		DataTableWritable sourceValue = new SimpleDataTableWritable();
