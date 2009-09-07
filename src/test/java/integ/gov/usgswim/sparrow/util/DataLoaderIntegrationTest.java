@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.util;
 
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.adjustment.ColumnMappedTable;
 import gov.usgswim.datatable.filter.ColumnRangeFilter;
 import gov.usgswim.datatable.filter.FilteredDataTable;
@@ -202,7 +203,8 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 
 	public void testSourceValues() throws Exception {
 		DataTable sourceMetadata = DataLoader.loadSourceMetadata(conn, TEST_MODEL);
-		DataTable jdbcData = DataLoader.loadSourceValues(conn, TEST_MODEL, sourceMetadata);
+		DataTableWritable topo = DataLoader.loadTopo(conn, TEST_MODEL);
+		DataTable jdbcData = DataLoader.loadSourceValues(conn, TEST_MODEL, sourceMetadata, topo);
 		System.out.println("  -- Printing Decay Coefficients --");
 		DataTableUtils.printDataTableSample(jdbcData, 30, 30);
 	}

@@ -59,7 +59,7 @@ public class DataLoader {
 			dataSet.setTopo( loadTopo(conn, modelId) );
 			dataSet.setCoef( loadSourceReachCoef(conn, modelId, 0, dataSet.getSrcMetadata()) );
 			dataSet.setDecay( loadDecay(conn, modelId, 0) );
-			dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcMetadata()) );
+			dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcMetadata(), dataSet.getTopo()) );
 
 		} catch (Exception e) {
 			log.error(DataLoader.class.getSimpleName() + ".loadModelDataOnly() failed with error:", e);
@@ -89,7 +89,8 @@ public class DataLoader {
 		dataSet.setTopo( loadTopo(conn, modelId) );
 		dataSet.setCoef( loadSourceReachCoef(conn, modelId, dataSet.getSrcMetadata()) );
 		dataSet.setDecay( loadDecay(conn, modelId, 0) );
-		dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcMetadata()) );
+		// TODO fix: this actually is going to fail for multiple iterations
+		dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcMetadata(), dataSet.getTopo()) );
 
 		return dataSet.toImmutable();
 	}
@@ -432,7 +433,7 @@ public class DataLoader {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static DataTableWritable loadSourceValues(Connection conn, long modelId, DataTable sources) throws SQLException,
+	public static DataTableWritable loadSourceValues(Connection conn, long modelId, DataTable sources, DataTable topo) throws SQLException,
 	IOException {
 
 		int sourceCount = sources.getRowCount();
@@ -442,25 +443,6 @@ public class DataLoader {
 
 		// Load column headings using the source display names
 
-//		String selectNames = getQuery("SelectSourceNames", modelId);
-//
-//		Statement headSt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-//		headSt.setFetchSize(20);
-//		ResultSet headRs = null;
-//
-//		String[] headings = new String[sourceCount];
-//		try {
-//			headRs = headSt.executeQuery(selectNames);
-//			for (int i = 0; i < sourceCount; i++)  {
-//				headRs.next();
-//				headings[i] = headRs.getString(1);
-//			}
-//		} finally {
-//			if (headRs != null) {
-//				headRs.close();
-//				headRs = null;
-//			}
-//		}
 		// TODO need to add display name to source_metadata to eliminate the magic number of 2
 		Integer display_name_col = sources.getColumnByName("display_name");
 		display_name_col = (display_name_col == null)? 2: display_name_col;
@@ -469,21 +451,11 @@ public class DataLoader {
 
 		DataTableWritable sourceValue = new SimpleDataTableWritable();
 
-		String selectReachIds = getQuery("SelectReachIds", modelId);
-		Statement idsSt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		idsSt.setFetchSize(2000);
-		ResultSet idsRs = null;
-
-		try {
-		    idsRs = idsSt.executeQuery(selectReachIds);
-		    for (int i = 0; idsRs.next(); i++) {
-		        sourceValue.setRowId(idsRs.getLong(1), i);
-		    }
-		} finally {
-		    if (idsRs != null) {
-		        idsRs.close();
-		        idsRs = null;
-		    }
+		{	// use identifiers from topo to set source value ids
+			int size = topo.getRowCount();
+			for (int i=0; i<size; i++) {
+				sourceValue.setRowId(topo.getLong(i, 0), i);
+			}
 		}
 
 		for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++) {

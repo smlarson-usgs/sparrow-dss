@@ -154,6 +154,7 @@ public class JDBCUtilMemoryIntegrationTest extends TestCase {
 
 		MemoryTestBench mtb = new MemoryTestBench();
 		System.out.print("sourceID: ");
+		final DataTable topo = DataLoader.loadTopo(conn, modelId);
 		final DataTable sourceIDs = (DataTable) mtb.showMemoryUsageAndRetrieve(sourceIDFactory);
 
 		System.out.print("topo: ");
@@ -170,7 +171,7 @@ public class JDBCUtilMemoryIntegrationTest extends TestCase {
 
 		ObjectFactory sourceValuesFactory = new ObjectFactory() {
 			public Object makeObject() throws SQLException, IOException {
-				return DataLoader.loadSourceValues(conn, modelId, sourceIDs);
+				return DataLoader.loadSourceValues(conn, modelId, sourceIDs, topo);
 			}
 		};
 

@@ -30,11 +30,11 @@ public class ModelDataLoadComparison {
 				File topoOutFile = ModelDataLoadComparison.getOutputTopoFile(baseOutputDirectory);
 				Writer writer = new BufferedWriter(new FileWriter(topoOutFile), 8192);
 				// writer.write("fnode	tnode	iftran	hydseq\n");
-				
+
 				DataTableUtils.printDataTable(topo, null, writer);
 				writer.flush();
 				writer.close();
-			}			
+			}
 		}
 	}
 
@@ -43,7 +43,8 @@ public class ModelDataLoadComparison {
 
 		{// write src
 			DataTableWritable sourceMetadata = DataLoader.loadSourceMetadata(conn, modelID);
-			DataTable source = DataLoader.loadSourceValues(conn, modelID, sourceMetadata);
+			DataTableWritable topo = DataLoader.loadTopo(conn, modelID);
+			DataTable source = DataLoader.loadSourceValues(conn, modelID, sourceMetadata, topo);
 			if (baseOutputDirectory.exists() && baseOutputDirectory.isDirectory()) {
 				File srcOutFile = ModelDataLoadComparison.getOutputSrcFile(baseOutputDirectory);
 				Writer writer = new BufferedWriter(new FileWriter(srcOutFile), 8192);
@@ -51,10 +52,10 @@ public class ModelDataLoadComparison {
 
 				writer.flush();
 				writer.close();
-			}			
+			}
 		}
 	}
-	
+
 	public static void outputCoefAsTextFiles(File baseOutputDirectory, Connection conn, Long modelID) throws SQLException, IOException {
 		//int modelIdInt = modelID.intValue();
 
@@ -73,7 +74,7 @@ public class ModelDataLoadComparison {
 
 				writer.flush();
 				writer.close();
-			}			
+			}
 		}
 
 	}
