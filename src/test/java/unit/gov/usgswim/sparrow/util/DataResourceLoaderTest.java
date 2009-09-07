@@ -8,13 +8,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-@Ignore
+
 public class DataResourceLoaderTest {
 	public static final int TEST_MODEL = -1;
 	public static DataTableWritable sourceMetaData;
@@ -50,9 +49,8 @@ public class DataResourceLoaderTest {
 		DataTableWritable reachCoefficients = DataResourceLoader.loadSourceReachCoef(TEST_MODEL, sourceMetaData);
 
 		assertTrue(reachCoefficients != null);
-		assertEquals(5, reachCoefficients.getColumnCount());
-		assertEquals("fnode", reachCoefficients.getName(1));
-		assertTrue(reachCoefficients.getRowCount() > 10);
+		assertEquals(sourceMetaData.getRowCount(), reachCoefficients.getColumnCount());
+
 	}
 
 	@Test
@@ -60,14 +58,13 @@ public class DataResourceLoaderTest {
 		DataTableWritable decay = DataResourceLoader.loadDecay(TEST_MODEL);
 
 		assertTrue(decay != null);
-		assertEquals(5, decay.getColumnCount());
-		assertEquals("fnode", decay.getName(1));
-		assertTrue(decay.getRowCount() > 10);
+		assertEquals(2, decay.getColumnCount());
+
 	}
 
 	@Test
 	public void testLoadSourceValues() throws SQLException, IOException {
-		DataTableWritable sourceValues = DataResourceLoader.loadSourceValues(TEST_MODEL);
+		DataTableWritable sourceValues = DataResourceLoader.loadSourceValues(TEST_MODEL, sourceMetaData);
 
 		assertTrue(sourceValues != null);
 		assertEquals(5, sourceValues.getColumnCount());

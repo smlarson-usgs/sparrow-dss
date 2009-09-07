@@ -48,7 +48,9 @@ public class DataResourceLoader {
 		final String UNITS = null;
 		SimpleDataTableWritable result = new SimpleDataTableWritable();
 		for (int srcIndex = 0; srcIndex < sourceMetaData.getRowCount(); srcIndex++) {
-			result.addColumn(new StandardNumberColumnDataWritable<Double>(sourceMetaData.getString(srcIndex, NAME_COL), UNITS));
+			StandardNumberColumnDataWritable<Double> newCol = new StandardNumberColumnDataWritable<Double>(sourceMetaData.getString(srcIndex, NAME_COL), UNITS);
+			newCol.setType(Double.class);
+			result.addColumn(newCol);
 			// may need to add names
 		}
 		// may need to add id
@@ -65,8 +67,18 @@ public class DataResourceLoader {
 	}
 
 	public static DataTableWritable makeDecayStructure() {
-		// TODO Auto-generated method stub
-		return null;
+		final String UNITS = null;
+		SimpleDataTableWritable decayStructure = new SimpleDataTableWritable();
+		{
+			// Decay structure has only two columns: instream decay and upstream decay
+			StandardNumberColumnDataWritable<Double> newCol = new StandardNumberColumnDataWritable<Double>("instreamDecay", UNITS);
+			newCol.setType(Double.class);
+			decayStructure.addColumn(newCol);
+			newCol = new StandardNumberColumnDataWritable<Double>("upstreamDecay", UNITS);
+			newCol.setType(Double.class);
+			decayStructure.addColumn(newCol);
+		}
+		return decayStructure;
 	}
 
 	public static DataTableWritable makeTopoStructure() {
@@ -79,7 +91,7 @@ public class DataResourceLoader {
 
 
 
-	public static DataTableWritable loadSourceValues(int testModel) {
+	public static DataTableWritable loadSourceValues(long modelId, DataTable sourceMetaData) {
 		// TODO Auto-generated method stub
 		return null;
 	}

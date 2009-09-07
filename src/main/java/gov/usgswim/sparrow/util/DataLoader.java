@@ -6,6 +6,7 @@ import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
+import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.domain.SparrowModelBuilder;
@@ -440,25 +441,29 @@ public class DataLoader {
 		}
 
 		// Load column headings using the source display names
-		String selectNames = getQuery("SelectSourceNames", modelId);
 
-		Statement headSt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		headSt.setFetchSize(20);
-		ResultSet headRs = null;
+//		String selectNames = getQuery("SelectSourceNames", modelId);
+//
+//		Statement headSt = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+//		headSt.setFetchSize(20);
+//		ResultSet headRs = null;
+//
+//		String[] headings = new String[sourceCount];
+//		try {
+//			headRs = headSt.executeQuery(selectNames);
+//			for (int i = 0; i < sourceCount; i++)  {
+//				headRs.next();
+//				headings[i] = headRs.getString(1);
+//			}
+//		} finally {
+//			if (headRs != null) {
+//				headRs.close();
+//				headRs = null;
+//			}
+//		}
 
-		String[] headings = new String[sourceCount];
-		try {
-			headRs = headSt.executeQuery(selectNames);
-			for (int i = 0; i < sourceCount; i++)  {
-				headRs.next();
-				headings[i] = headRs.getString(1);
-			}
-		} finally {
-			if (headRs != null) {
-				headRs.close();
-				headRs = null;
-			}
-		}
+		String[] headings = DataTableUtils.getStringColumn(sources, sources.getColumnByName("display_name"));
+		// end of new code :)
 
 		DataTableWritable sourceValue = new SimpleDataTableWritable();
 
