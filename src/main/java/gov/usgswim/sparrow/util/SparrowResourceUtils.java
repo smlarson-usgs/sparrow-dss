@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.util;
 
 import gov.usgs.webservices.framework.utils.ResourceLoaderUtils;
-import gov.usgswim.sparrow.service.help.Model;
+import gov.usgs.webservices.framework.utils.SmartXMLProperties;
 
 import java.util.Properties;
 import java.util.Set;
@@ -13,7 +13,6 @@ public abstract class SparrowResourceUtils {
 	public static final String HELP_FILE = "help.xml";
 	public static final String SESSIONS_FILE = "sessions.properties";
 	private static final Properties modelIndex = ResourceLoaderUtils.loadResourceAsProperties("models/modelIndex.txt");
-	private static final String XML_File = "model.xml";
 
 	public static String getModelResourceFilePath(Long modelId, String fileName) {
 		String modelFolder = "models/" + modelId + "/";
@@ -36,8 +35,8 @@ public abstract class SparrowResourceUtils {
 	public static String retrieveHelp(String model, String helpItem) {
 		Long modelID = lookupModelID(model);
 		String resourceFilePath = getModelResourceFilePath(modelID, HELP_FILE);
-		Model help = ResourceLoaderUtils.loadResourceXMLFileAsObject(resourceFilePath, Model.class, "SparrowModel");
-		String item = help.getOne(helpItem.getClass());
+		SmartXMLProperties help = ResourceLoaderUtils.loadResourceAsSmartXML(resourceFilePath);
+		String item = help.get(helpItem);
 		// TODO later handle maps/multiple retrievals using help.getMany()?
 		return item;
 	}

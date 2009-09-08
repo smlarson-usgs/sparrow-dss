@@ -58,9 +58,9 @@ public class PredictionContextTest extends TestCase {
 	public static final String PRED_CONTEXT_5 = "/gov/usgswim/sparrow/test/sample/predict-context-5.xml";
 	public static final String PRED_CONTEXT_BUG_1 = "/gov/usgswim/sparrow/test/sample/predict-context-bug_1.xml";
 
-	public static final int PRED_CONTEXT_1_ID = 1143562390;
+	public static final int PRED_CONTEXT_1_ID = -502672355;
 	public static final int PRED_CONTEXT_2_ID = -792246649;
-	public static final int PRED_CONTEXT_3_ID = 923106886;
+	public static final int PRED_CONTEXT_3_ID = -1079747594;
 	public static final int PRED_CONTEXT_4_ID = -398183923;
 
 	public static String contextIDRegex = "context-id=['\"]([-0-9]+)['\"]";

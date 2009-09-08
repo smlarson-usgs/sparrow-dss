@@ -26,7 +26,7 @@ public class HelpServiceTest extends HTTPServiceTestHelper{
 
 	@Test
 	public void testLookupWithFieldIDAndModelID() throws IOException, SAXException {
-        String queryString = "/lookup?model=" + TEST_MODEL;
+        String queryString = "/lookup?model=" + TEST_MODEL + "&item=Name";
 
         WebResponse response = client.getResponse( HELP_SERVICE_URL + queryString);
         System.out.println(response.getText());

@@ -5,6 +5,7 @@ import edu.emory.mathcs.backport.java.util.Arrays;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
+import gov.usgswim.sparrow.parser.XMLParseValidationException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
+
+import javax.xml.stream.XMLStreamException;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -57,7 +60,14 @@ public class ResourceLoaderUtils {
 
 	public static SmartXMLProperties loadResourceAsSmartXML(Reader inStream) {
 		BufferedReader in = new BufferedReader(inStream);
-		return ResourceLoaderUtils.loadResourceAsSmartXML(in);
+		SmartXMLProperties props = new SmartXMLProperties();
+		try {
+			props.parse(in);
+			return props;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Unable to parse resource as SmartXMLProperties");
+		}
 	}
 
 	public static DataTable loadResourcesAsDataTable(Reader instream, int cols) {

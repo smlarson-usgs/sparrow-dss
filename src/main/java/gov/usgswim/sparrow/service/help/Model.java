@@ -5,6 +5,10 @@ import java.util.List;
 
 import com.thoughtworks.xstream.XStream;
 
+/**
+ * @author ikuoikuo
+ * TODO delete this class. Used for testing pruposes only
+ */
 public class Model {
 	List<Author> authors;
  	MetaData md;

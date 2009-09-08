@@ -3,6 +3,7 @@ package gov.usgs.webservices.framework.utils;
 import static gov.usgswim.sparrow.util.ParserHelper.parseToStartTag;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 
+import java.io.Reader;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashMap;
@@ -121,6 +122,12 @@ public class SmartXMLProperties implements Map<String, String>{
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(xml));
 		parse(reader);
+	}
+
+	public void parse(Reader reader) throws XMLStreamException, XMLParseValidationException {
+		XMLInputFactory inFact = XMLInputFactory.newInstance();
+		XMLStreamReader xReader = inFact.createXMLStreamReader(reader);
+		parse(xReader);
 	}
 
 	public void parse(XMLStreamReader in)
