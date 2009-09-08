@@ -1,12 +1,14 @@
 package gov.usgswim.sparrow.service.help;
 
 import gov.usgs.webservices.framework.utils.ResourceLoaderUtils;
+import gov.usgs.webservices.framework.utils.SmartXMLProperties;
 import gov.usgswim.sparrow.util.SparrowResourceUtils;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -24,6 +26,17 @@ import javax.servlet.http.HttpServletResponse;
 public class HelpService extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
+	private static final String HELP_RESPONSE= "<help-response model=\"%s\">"
+	+ "	<request-type>%s</request-type>"
+	+ "	<params>"
+	+ "		<item>%s</item>"
+	+ "	</params>"
+	+ "	%s"
+	+ "</help-response>";
+	private static final String ITEM="<item>%s</item>";
+	private static final String KEYS="<keys>%s</keys>";
+	private static final String KEY="<key>%s</key>"; // repeatable
+
 	protected static Map<Integer, Object>modelMetadata = new HashMap<Integer, Object>();
 
 	@Override
@@ -38,7 +51,7 @@ public class HelpService extends HttpServlet {
 		String modelString = req.getParameter("model");
 		String itemString = req.getParameter("item");
 		Integer modelID = parseInt(modelString);
-		Integer itemID = parseInt(itemString);
+
 		modelID = (modelID == null)? lookupModelID(modelString): modelID;
 		if (modelID == null) {
 			throw new ServletException("nonexistent model " + modelString);
@@ -49,38 +62,63 @@ public class HelpService extends HttpServlet {
 		String pathInfo = req.getPathInfo();
 
 		String result = null;
+		String type = null;
 		if (pathInfo.contains("lookup")) {
+			type = "lookup";
 			result = lookupItem(modelID, itemString);
 		} else if (pathInfo.contains("getSimpleKeys")) {
-			getSimpleKeys(modelID);
+			type = "getSimpleKeys";
+			result = getSimpleKeys(modelID);
 		} else if (pathInfo.contains("getListKeys")) {
-			getListKeys(modelID);
+			type = "getListKeys";
+			result = getListKeys(modelID);
 		} else if (pathInfo.contains("getList")) {
-			getList(modelID, req.getParameter("listKey"));
+			type = "getList";
+			itemString = req.getParameter("listKey");
+			result = getList(modelID, itemString);
 		}
-
-
+		String response = String.format(HELP_RESPONSE,
+				modelString,
+				type,
+				itemString,
+				(result == null)? "<error>not found</error>": result
+			);
 
 		// TODO Auto-generated method stub
 		PrintWriter out = resp.getWriter();
-		out.write(result);
+		out.write(response);
 		out.flush();
 	}
 
 	private String lookupItem(Integer modelID, String itemString) {
-		return SparrowResourceUtils.retrieveHelp(modelID.toString(), itemString);
+		String result = SparrowResourceUtils.lookupHelp(modelID.toString(), itemString);
+		return (result == null)? null: String.format(ITEM, result);
 	}
 
-	public void getSimpleKeys(Integer model) {
-
+	public String getSimpleKeys(Integer model) {
+		SmartXMLProperties help = SparrowResourceUtils.retrieveHelp(model.toString());
+		return asKeyXML(help.keySet());
 	}
 
-	public void getListKeys(Integer model) {
-
+	public String getListKeys(Integer model) {
+		SmartXMLProperties help = SparrowResourceUtils.retrieveHelp(model.toString());
+		return asKeyXML(help.listKeySet());
 	}
 
-	public void getList(Integer model, String key ) {
+	private String asKeyXML(Set<String> set) {
+		StringBuilder result = new StringBuilder();
+		for (String key: set){
+			result.append(String.format(KEY, key));
+		}
+		return (result.length() == 0)? null: String.format(KEYS, result);
+	}
 
+	public String getList(Integer model, String key ) {
+		SmartXMLProperties help = SparrowResourceUtils.retrieveHelp(model.toString());
+		if (help.isListKey(key)) {
+			return help.get(key);
+		}
+		return null;
 	}
 
 

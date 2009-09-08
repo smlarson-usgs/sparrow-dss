@@ -139,16 +139,16 @@ public class SmartXMLProperties implements Map<String, String>{
 
 		while(in.hasNext()) {
 			if (state.isOnRoot()) {
-				System.out.println("ROOT: " + in.getLocalName());
+//				System.out.println("ROOT: " + in.getLocalName());
 				state.parseToNextRootChildStart();
 			} else if (state.isOnRootChildStart()){
-				System.out.println("  CHILD START: " + in.getLocalName());
+//				System.out.println("  CHILD START: " + in.getLocalName());
 				state.setAsRootChild(in.getLocalName());
 				state.parseToRootChildEndOrListElementStart();
 			} else if (state.isOnRootChildEnd()) {
-				System.out.println("    CHILD CONTENT: " + state.content);
-				System.out.println("    CHILD NODE: " + state.getContentAsNode());
-				System.out.println("  CHILD END: " + in.getLocalName());
+//				System.out.println("    CHILD CONTENT: " + state.content);
+//				System.out.println("    CHILD NODE: " + state.getContentAsNode());
+//				System.out.println("  CHILD END: " + in.getLocalName());
 
 				if (!state.isInList()) {
 					props.put(in.getLocalName(), state.content.toString());
@@ -160,8 +160,8 @@ public class SmartXMLProperties implements Map<String, String>{
 				state.setAsListElement();
 				state.parseToListElementEnd();
 			} else if (state.isOnListElementEnd()) {
-				System.out.println("      LIST ELMT CONTENT: " + state.content);
-				System.out.println("      LIST ELMT NODE: " + state.getContentAsNode());
+//				System.out.println("      LIST ELMT CONTENT: " + state.content);
+//				System.out.println("      LIST ELMT NODE: " + state.getContentAsNode());
 				props.put(state.getRootChildName() + "." + state.getId(), state.content.toString());
 				Map<String, String> map = maps.get(state.getRootChildName());
 				if (map == null) {

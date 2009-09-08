@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.service;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 
 import org.junit.AfterClass;
@@ -12,6 +14,7 @@ import com.meterware.httpunit.WebResponse;
 public class HelpServiceTest extends HTTPServiceTestHelper{
 
 	private static final String HELP_SERVICE_URL = "http://localhost:8088/sp_help";
+
 
 
 	@BeforeClass
@@ -29,8 +32,10 @@ public class HelpServiceTest extends HTTPServiceTestHelper{
         String queryString = "/lookup?model=" + TEST_MODEL + "&item=Name";
 
         WebResponse response = client.getResponse( HELP_SERVICE_URL + queryString);
-        System.out.println(response.getText());
-        // TODO make this a real test
+        String responseBody = response.getText();
+        assertFalse(responseBody.contains("error"));
+        assertTrue(response.getText().contains("Test Model"));
+
 	}
 
 	@Test
@@ -39,6 +44,9 @@ public class HelpServiceTest extends HTTPServiceTestHelper{
 
         WebResponse response = client.getResponse( HELP_SERVICE_URL + queryString);
         System.out.println(response.getText());
+
+        String responseBody = response.getText();
+        assertFalse(responseBody.contains("error"));
         // TODO make this a real test
 
 	}
@@ -49,16 +57,22 @@ public class HelpServiceTest extends HTTPServiceTestHelper{
 
         WebResponse response = client.getResponse( HELP_SERVICE_URL + queryString);
         System.out.println(response.getText());
+
+        String responseBody = response.getText();
+        assertFalse(responseBody.contains("error"));
         // TODO make this a real test
 
 	}
 
 	@Test
 	public void testgetList() throws IOException, SAXException {
-        String queryString = "/getList?model=" + TEST_MODEL;
+        String queryString = "/getList?model=" + TEST_MODEL + "listKey=sources";
 
         WebResponse response = client.getResponse( HELP_SERVICE_URL + queryString);
         System.out.println(response.getText());
+
+        String responseBody = response.getText();
+        assertFalse(responseBody.contains("error"));
         // TODO make this a real test
 
 	}

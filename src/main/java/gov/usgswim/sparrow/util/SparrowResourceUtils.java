@@ -32,13 +32,15 @@ public abstract class SparrowResourceUtils {
 		return props.entrySet();
 	}
 
-	public static String retrieveHelp(String model, String helpItem) {
+	public static String lookupHelp(String model, String helpItem) {
+		SmartXMLProperties help = retrieveHelp(model);
+		return help.get(helpItem);
+	}
+
+	public static SmartXMLProperties retrieveHelp(String model) {
 		Long modelID = lookupModelID(model);
 		String resourceFilePath = getModelResourceFilePath(modelID, HELP_FILE);
-		SmartXMLProperties help = ResourceLoaderUtils.loadResourceAsSmartXML(resourceFilePath);
-		String item = help.get(helpItem);
-		// TODO later handle maps/multiple retrievals using help.getMany()?
-		return item;
+		return ResourceLoaderUtils.loadResourceAsSmartXML(resourceFilePath);
 	}
 
 	/**
