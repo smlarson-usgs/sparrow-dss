@@ -447,14 +447,13 @@ public class DataLoader {
 		Integer display_name_col = sources.getColumnByName("display_name");
 		display_name_col = (display_name_col == null)? 2: display_name_col;
 		String[] headings = DataTableUtils.getStringColumn(sources, display_name_col);
-		// end of new code :)
 
-		DataTableWritable sourceValue = new SimpleDataTableWritable();
+		DataTableWritable sourceValues = new SimpleDataTableWritable();
 
 		{	// use identifiers from topo to set source value ids
 			int size = topo.getRowCount();
 			for (int i=0; i<size; i++) {
-				sourceValue.setRowId(topo.getLong(i, 0), i);
+				sourceValues.setRowId(topo.getLong(i, 0), i);
 			}
 		}
 
@@ -476,10 +475,10 @@ public class DataLoader {
 				StandardNumberColumnDataWritable<Double> column = new StandardNumberColumnDataWritable<Double>(headings[srcIndex], units);
 				column.setProperty("constituent", constituent);
 				column.setProperty("precision", precision);
-				sourceValue.addColumn(column);
+				sourceValues.addColumn(column);
 
 				rs = st.executeQuery(query);
-				DLUtils.loadColumn(rs, sourceValue, 0, srcIndex);
+				DLUtils.loadColumn(rs, sourceValues, 0, srcIndex);
 			} finally {
 				if (rs != null) {
 					rs.close();
@@ -489,7 +488,7 @@ public class DataLoader {
 
 		}
 
-		return sourceValue;
+		return sourceValues;
 
 	}
 

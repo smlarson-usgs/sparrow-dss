@@ -64,17 +64,18 @@ public class DataResourceLoaderTest {
 
 	@Test
 	public void testLoadSourceValues() throws SQLException, IOException {
-		DataTableWritable sourceValues = DataResourceLoader.loadSourceValues(TEST_MODEL, sourceMetaData);
+		DataTableWritable topo = DataResourceLoader.loadTopo(TEST_MODEL);
+		DataTableWritable sourceValues = DataResourceLoader.loadSourceValues(TEST_MODEL, sourceMetaData, topo);
 
 		assertTrue(sourceValues != null);
-		assertEquals(5, sourceValues.getColumnCount());
-		assertEquals("fnode", sourceValues.getName(1));
+		assertTrue(sourceValues.hasRowIds());
+		assertEquals("There should be one value for each source", sourceMetaData.getRowCount(), sourceValues.getColumnCount());
 		assertTrue(sourceValues.getRowCount() > 10);
 	}
 
 
 	// ==========================
-	// The following don't belong
+	// The following don't belong TODO delete later
 	// ==========================
 	public static class Person {
 		  private String firstname;

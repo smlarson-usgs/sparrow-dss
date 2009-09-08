@@ -1,5 +1,3 @@
 id	name	display_name	description	constituent	units	precision	is_point_source
 357	atdep_mean_res	Atm. deposition	Total load of atmospheric deposition per subbasin (kg)*/	Phosphorus	kg/yr	2	F
 358	manfert_n	Fertilizer (manure)	Sum total of Nitrogen from Manure (Confined and Unconfined) and Farm Fertilizer	Phosphorus	kg/yr	2	F
-359	avgkgn_929702ss	Point sources	1992, 1997, and 2002 average kilograms of nitrogen released by point sources	Phosphorus	kg/yr	2	F
-360	nlcd_devlp	Developed area	Total Developed Area (sqkm)	Phosphorus	kg/yr	2	F

@@ -7,7 +7,9 @@ import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
 
 import java.io.IOException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -20,7 +22,7 @@ public class DataResourceLoader {
 	public static final String DECAY_COEF_FILE = "decay_coef.txt";
 	public static final List<String> SOURCE_META_HEADINGS = Collections.unmodifiableList(
 			Arrays.asList("SOURCE_ID", "NAME", "DISPLAY_NAME", "DESCRIPTION", "CONSTITUENT", "UNITS", "PRECISION", "IS_POINT_SOURCE"));
-
+	public static final int SOURCE_ID_COL = 0;
 
 	public static DataTableWritable makeSourceMetaStructure() {
 		// Note that the topo.txt file from the modelers does not have the reach id
@@ -90,10 +92,50 @@ public class DataResourceLoader {
 	}
 
 
+	public static DataTableWritable loadSourceValues(long modelId, DataTable sourceMetaData, DataTable topo) {
+		int sourceCount = sourceMetaData.getRowCount();
+		if (sourceCount == 0) {
+			throw new IllegalArgumentException("There must be at least one source");
+		}
 
-	public static DataTableWritable loadSourceValues(long modelId, DataTable sourceMetaData) {
-		// TODO Auto-generated method stub
-		return null;
+		// Load column headings using the source display names
+		// TODO need to add display name to source_metadata to eliminate the magic number of 2
+		Integer display_name_col = sourceMetaData.getColumnByName("display_name");
+		display_name_col = (display_name_col == null)? 2: display_name_col;
+		String[] headings = DataTableUtils.getStringColumn(sourceMetaData, display_name_col);
+
+		DataTableWritable sourceValues = new SimpleDataTableWritable();
+
+		{	// use identifiers from topo to set source value ids
+			int size = topo.getRowCount();
+			for (int i=0; i<size; i++) {
+				sourceValues.setRowId(topo.getLong(i, 0), i);
+			}
+		}
+
+		// Create columns
+		sourceValues = makeSourceValueStructure(sourceMetaData,  headings,	sourceValues);
+		String sourceValuesFile = SparrowResourceUtils.getModelResourceFilePath(modelId, SOURCE_VALUES_FILE);
+		DataTableUtils.fill(sourceValues, sourceValuesFile, false, "\t", true);
+
+		return sourceValues;
+	}
+
+	private static DataTableWritable makeSourceValueStructure(DataTable sourceMetaData,
+			String[] headings, DataTableWritable sourceValues) {
+		int sourceCount = sourceMetaData.getRowCount();
+		for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++) {
+			String constituent = sourceMetaData.getString(srcIndex, sourceMetaData.getColumnByName("CONSTITUENT"));
+			String units = sourceMetaData.getString(srcIndex, sourceMetaData.getColumnByName("UNITS"));
+			String precision = sourceMetaData.getString(srcIndex, sourceMetaData.getColumnByName("PRECISION"));
+
+			StandardNumberColumnDataWritable<Double> column = new StandardNumberColumnDataWritable<Double>(headings[srcIndex], units);
+			column.setProperty("constituent", constituent);
+			column.setProperty("precision", precision);
+			column.setType(Double.class);
+			sourceValues.addColumn(column);
+		}
+		return sourceValues;
 	}
 
 }

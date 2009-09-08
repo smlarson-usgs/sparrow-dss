@@ -17,7 +17,7 @@ public class PredictRunnerTest {
 		DataTableWritable src_metadata = DataResourceLoader.loadSourceMetadata(TEST_MODEL);
 		DataTableWritable topo = DataResourceLoader.loadTopo(TEST_MODEL);
 		DataTableWritable deliveryCoef = DataResourceLoader.loadSourceReachCoef(TEST_MODEL, src_metadata);
-		DataTableWritable sourceValues = DataResourceLoader.loadSourceValues(TEST_MODEL, src_metadata);
+		DataTableWritable sourceValues = DataResourceLoader.loadSourceValues(TEST_MODEL, src_metadata, topo);
 		DataTableWritable decayCoefficients = DataResourceLoader.loadDecay(TEST_MODEL);
 
 		PredictData predictData = new PredictDataImm(topo, deliveryCoef, sourceValues, null, decayCoefficients,
