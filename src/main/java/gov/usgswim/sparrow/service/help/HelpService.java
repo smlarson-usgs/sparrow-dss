@@ -36,6 +36,7 @@ public class HelpService extends HttpServlet {
 	private static final String ITEM="<item>%s</item>";
 	private static final String KEYS="<keys>%s</keys>";
 	private static final String KEY="<key>%s</key>"; // repeatable
+	private static final String LIST="<list>%s</list>";
 
 	protected static Map<Integer, Object>modelMetadata = new HashMap<Integer, Object>();
 
@@ -77,6 +78,7 @@ public class HelpService extends HttpServlet {
 			itemString = req.getParameter("listKey");
 			result = getList(modelID, itemString);
 		}
+
 		String response = String.format(HELP_RESPONSE,
 				modelString,
 				type,
@@ -116,7 +118,8 @@ public class HelpService extends HttpServlet {
 	public String getList(Integer model, String key ) {
 		SmartXMLProperties help = SparrowResourceUtils.retrieveHelp(model.toString());
 		if (help.isListKey(key)) {
-			return help.get(key);
+			String result = help.get(key);
+			return (result == null)? null: String.format(LIST, result);
 		}
 		return null;
 	}

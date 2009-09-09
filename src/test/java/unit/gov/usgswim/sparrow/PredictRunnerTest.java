@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow;
 
+import static org.junit.Assert.fail;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.util.DataResourceLoader;
@@ -26,6 +27,7 @@ public class PredictRunnerTest {
 
 		PredictResultImm results = runner.doPredict();
 
+		fail();
 	}
 
 }

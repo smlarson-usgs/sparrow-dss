@@ -16,6 +16,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
 
 public class DataResourceLoaderTest {
 	public static final int TEST_MODEL = -1;
+	public static final int NUMBER_OF_TEST_SOURCES = 2;
 	public static DataTableWritable sourceMetaData;
 
 
@@ -30,8 +31,8 @@ public class DataResourceLoaderTest {
 		assertEquals(8, sourceMetaData.getColumnCount());
 		assertEquals("SOURCE_ID", sourceMetaData.getName(0));
 		assertEquals("IS_POINT_SOURCE", sourceMetaData.getName(7));
-		assertTrue("A real model should have at least 4 sources", sourceMetaData.getRowCount() >= 4);
-//		DataTableUtils.printDataTable(sourceMetaData, "source metadata");
+		assertEquals("The test model only has only " + NUMBER_OF_TEST_SOURCES + " sources for simplicity",
+				NUMBER_OF_TEST_SOURCES, sourceMetaData.getRowCount());
 	}
 
 	@Test
@@ -70,7 +71,7 @@ public class DataResourceLoaderTest {
 		assertTrue(sourceValues != null);
 		assertTrue(sourceValues.hasRowIds());
 		assertEquals("There should be one value for each source", sourceMetaData.getRowCount(), sourceValues.getColumnCount());
-		assertTrue(sourceValues.getRowCount() > 10);
+		assertEquals("Only two sources in the test model", NUMBER_OF_TEST_SOURCES, sourceValues.getColumnCount());
 	}
 
 

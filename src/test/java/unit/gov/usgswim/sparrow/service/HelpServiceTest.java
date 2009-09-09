@@ -47,7 +47,8 @@ public class HelpServiceTest extends HTTPServiceTestHelper{
 
         String responseBody = response.getText();
         assertFalse(responseBody.contains("error"));
-        // TODO make this a real test
+        assertTrue(responseBody.contains("<keys>"));
+        assertTrue(responseBody.contains(">sources.POINT<"));
 
 	}
 
@@ -60,20 +61,22 @@ public class HelpServiceTest extends HTTPServiceTestHelper{
 
         String responseBody = response.getText();
         assertFalse(responseBody.contains("error"));
-        // TODO make this a real test
+        assertTrue(responseBody.contains("<keys>"));
+        assertTrue(responseBody.contains(">sources<"));
 
 	}
 
 	@Test
 	public void testgetList() throws IOException, SAXException {
-        String queryString = "/getList?model=" + TEST_MODEL + "listKey=sources";
+        String queryString = "/getList?model=" + TEST_MODEL + "&listKey=sources";
 
         WebResponse response = client.getResponse( HELP_SERVICE_URL + queryString);
         System.out.println(response.getText());
 
         String responseBody = response.getText();
         assertFalse(responseBody.contains("error"));
-        // TODO make this a real test
+        assertTrue(responseBody.contains("<list>"));
+        assertTrue(responseBody.contains("<sources>"));
 
 	}
 }
