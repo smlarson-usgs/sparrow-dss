@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -52,6 +53,21 @@ public class ResourceLoaderUtils {
 		return clazz.cast(xstream.fromXML(inStream));
 	}
 
+	public static String loadResourceAsString(String resourceFilePath) {
+		InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceFilePath);
+		BufferedReader in = new BufferedReader(new InputStreamReader(stream));
+		StringBuilder result = new StringBuilder();
+		String line = null;
+		try {
+			while ( (line = in.readLine()) != null) {
+				result.append(line);
+			}
+		} catch (IOException e) {
+			System.err.println("Trouble reading resource from " + resourceFilePath);
+			e.printStackTrace();
+		}
+		return result.toString();
+	}
 
 	public static SmartXMLProperties loadResourceAsSmartXML(String resourceFilePath) {
 		InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceFilePath);

@@ -19,6 +19,11 @@ public abstract class SparrowResourceUtils {
 		return modelFolder + fileName;
 	}
 
+	public static String getResourceFilePath(String fileName) {
+		String modelFolder = "models/";
+		return modelFolder + fileName;
+	}
+
 	public static String retrieveSavedSession(String model, String sessionName) {
 		Long modelID = lookupModelID(model);
 		Properties props = ResourceLoaderUtils.loadResourceAsProperties(getModelResourceFilePath(modelID, SESSIONS_FILE));
