@@ -38,6 +38,7 @@ public class ReachInfo {
 	private final String huc8Name;
 
 	private double[] _ordinates;
+	private double[] _simplified_ordinates;
 
 
 
@@ -90,34 +91,16 @@ public class ReachInfo {
 					"marker-lat", asString(markerLat)
 			);
 			if (_ordinates != null && _ordinates.length > 0) {
-				int dimensions = 2; // This is an assumption
-				int numberOfPoints = _ordinates.length/dimensions;
-
-				StringBuilder coordinates = new StringBuilder();
-				for (int i=0; i<_ordinates.length; i=i+2) {
-					coordinates.append(_ordinates[i])
-					.append(",")
-					.append(_ordinates[i+1])
-					.append(" ");
-				}
-
-//				for (int i=0; i<numberOfPoints; i++) {
-//					System.out.print("  [" + (i+1) + "]  (");
-//					for (int j=0; j<dimensions; j++) {
-//						System.out.print(_ordinates[i*dimensions + j]);
-//						if (j<dimensions - 1) {
-//							System.out.print(", ");
-//						}
-//					}
-//					System.out.println(")");
-//
-//				}
-
-
-
+				StringBuilder coordinates = toPointsString(_ordinates);
 				writeClosedFullTag(in, "polygon",
 						"points", coordinates.toString());
 			}
+			if (_simplified_ordinates != null && _simplified_ordinates.length > 0) {
+				StringBuilder coordinates = toPointsString(_simplified_ordinates);
+				writeClosedFullTag(in, "simp-polygon",
+						"points", coordinates.toString());
+			}
+
 			writeOpeningTag(in, "hucs");
 			{
 				writeClosedFullTag(in, "huc8",
@@ -144,11 +127,26 @@ public class ReachInfo {
 		return in.toString();
 	}
 
+	private StringBuilder toPointsString(double[] geomOrdinates) {
+		int dimensions = 2; // This is an assumption
+		int numberOfPoints = _ordinates.length/dimensions;
+
+		StringBuilder coordinates = new StringBuilder();
+		for (int i=0; i<geomOrdinates.length; i=i+2) {
+			coordinates.append(_ordinates[i])
+			.append(",")
+			.append(_ordinates[i+1])
+			.append(" ");
+		}
+		return coordinates;
+	}
+
 	public ReachInfo cloneWithDistance(Integer distance) {
 		ReachInfo clone = new ReachInfo(modelID, id, name, distance, minLong, minLat, maxLong, maxLat,
 				markerLong, markerLat,
 				huc2, huc2Name, huc4, huc4Name, huc6, huc6Name, huc8, huc8Name );
 		clone._ordinates = _ordinates;
+		clone._simplified_ordinates = _simplified_ordinates;
 		return clone;
 	}
 
@@ -194,6 +192,10 @@ public class ReachInfo {
 
 	public void setOrdinates(double[] ordinates) {
 		this._ordinates = ordinates;
+	}
+
+	public void setSimplifiedOrdinates(double[] simpOrdinates) {
+		this._simplified_ordinates = simpOrdinates;
 	}
 
 }

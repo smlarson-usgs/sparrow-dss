@@ -18,14 +18,14 @@ that one.
         id="sparrowPredict" class="gov.usgswim.sparrow.MapViewerSparrowDataProvider" >
 
         <parameters>
-          <!-- <parameter name="datasource-name" value="jdbc/Sparrow" /> --> 
+          <!-- <parameter name="datasource-name" value="jdbc/Sparrow" /> -->
         <parameter name="jdbc-driver" value="oracle.jdbc.OracleDriver" />
-        <parameter name="jdbc-url" value="jdbc:oracle:thin:@130.11.165.152:1521:widw" /> 
-        <parameter name="jdbc-user" value="SPARROW_DSS" />
-        <parameter name="jdbc-pwd" value="***REMOVED***" />
+        <parameter name="jdbc-url" value="jdbc:oracle:thin:@130.11.165.152:1521:widw" />
+        <parameter name="jdbc-user" value="sparrow_tester1" />
+        <parameter name="jdbc-pwd" value="usgs-787" />
         </parameters>
 
-      </ns_data_provider> 
+      </ns_data_provider>
 ================================================================================
 
 4.  Add the following xml chunks to [Mapviewer Deployment]/web/WEB-INF/web.xml.

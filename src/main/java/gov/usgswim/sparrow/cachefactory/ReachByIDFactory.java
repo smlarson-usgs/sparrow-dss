@@ -73,6 +73,12 @@ public class ReachByIDFactory extends AbstractCacheFactory {
 					double[] ordinates = jGeom.getOrdinatesArray();
 					reach.setOrdinates(ordinates);
 				}
+				{	// set the simplified catchment geometry
+					STRUCT struct = (STRUCT) rs.getObject("simp_geom");
+					JGeometry jGeom = JGeometry.load(struct);
+					double[] ordinates = jGeom.getOrdinatesArray();
+					reach.setSimplifiedOrdinates(ordinates);
+				}
 
 			} else {
 				//no rows found - leave as null
