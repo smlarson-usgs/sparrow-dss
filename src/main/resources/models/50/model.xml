@@ -1,6 +1,9 @@
 <Model id="50">
 	<Authors>
-		<Author link="" id="1">First name, last name</Author>
+		<Author id="1">
+			<Name>First name, last name</Name>
+			<Link/>
+		</Author>
 	</Authors>
 	<Model_name>MRB02 Nitrogen</Model_name>
 	<MRB>MRB02</MRB>

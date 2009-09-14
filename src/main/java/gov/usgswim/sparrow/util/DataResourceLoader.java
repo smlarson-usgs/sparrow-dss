@@ -5,11 +5,12 @@ import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
+import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.PredictDataBuilder;
+import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +25,18 @@ public class DataResourceLoader {
 			Arrays.asList("SOURCE_ID", "NAME", "DISPLAY_NAME", "DESCRIPTION", "CONSTITUENT", "UNITS", "PRECISION", "IS_POINT_SOURCE"));
 	public static final int SOURCE_ID_COL = 0;
 
+	public static PredictData loadModelData(long modelId) {
+		PredictDataBuilder dataSet = new PredictDataBuilder();
+		{
+			dataSet.setSrcMetadata( loadSourceMetadata(modelId));
+			dataSet.setTopo( loadTopo(modelId) );
+			dataSet.setCoef( loadSourceReachCoef(modelId, dataSet.getSrcMetadata()) );
+			dataSet.setDecay( loadDecay( modelId) );
+			dataSet.setSrc( loadSourceValues( modelId, dataSet.getSrcMetadata(), dataSet.getTopo()) );
+		}
+		return dataSet.toImmutable();
+	}
+
 	public static DataTableWritable makeSourceMetaStructure() {
 		// Note that the topo.txt file from the modelers does not have the reach id
 		Class<?>[] types= {Long.class, String.class, String.class, String.class, String.class, String.class, Integer.class, String.class};
@@ -33,12 +46,14 @@ public class DataResourceLoader {
 	public static DataTableWritable loadSourceMetadata(long modelId){
 		String sourceMetaFolder = SparrowResourceUtils.getModelResourceFilePath(modelId, SOURCE_METADATA_FILE);
 		DataTableWritable sourceMeta = makeSourceMetaStructure();
-		return DataTableUtils.fill(sourceMeta, sourceMetaFolder, false, "\t", true);
+		DataTableWritable result = DataTableUtils.fill(sourceMeta, sourceMetaFolder, false, "\t", true);
+		// first column of sources is ids. Must set
+		long[] ids = DataTableUtils.getLongColumn(result, 0);
+		return DataTableUtils.setIds(result, ids);
 		// TODO May need to go through and clean the data first
 	}
 
-	public static DataTableWritable loadTopo(long modelId) throws SQLException,
-	IOException {
+	public static DataTableWritable loadTopo(long modelId) {
 		String topoFile = SparrowResourceUtils.getModelResourceFilePath(modelId, TOPO_FILE);
 		DataTableWritable topo = makeTopoStructure();
 		DataTableUtils.fill(topo, topoFile, false, "\t", true);

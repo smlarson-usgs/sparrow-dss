@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.sparrow.PredictData;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -13,16 +14,18 @@ import org.junit.Test;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
+import static gov.usgswim.sparrow.util.DataResourceLoader.*;
+
 
 public class DataResourceLoaderTest {
-	public static final int TEST_MODEL = -1;
+	public static final long TEST_MODEL = -1;
 	public static final int NUMBER_OF_TEST_SOURCES = 2;
 	public static DataTableWritable sourceMetaData;
 
 
 	@BeforeClass
-	public static void loadSourceMetadata() throws SQLException, IOException {
-		sourceMetaData = DataResourceLoader.loadSourceMetadata(TEST_MODEL);
+	public static void loadMetadata() throws SQLException, IOException {
+		sourceMetaData = loadSourceMetadata(TEST_MODEL);
 	}
 
 	@Test
@@ -37,7 +40,7 @@ public class DataResourceLoaderTest {
 
 	@Test
 	public void testLoadTopo() throws SQLException, IOException {
-		DataTableWritable topo = DataResourceLoader.loadTopo(TEST_MODEL);
+		DataTableWritable topo = loadTopo(TEST_MODEL);
 
 		assertTrue(topo != null);
 		assertEquals(5, topo.getColumnCount());
@@ -47,7 +50,7 @@ public class DataResourceLoaderTest {
 
 	@Test
 	public void testLoadSourceReachCoefficients() throws SQLException, IOException {
-		DataTableWritable reachCoefficients = DataResourceLoader.loadSourceReachCoef(TEST_MODEL, sourceMetaData);
+		DataTableWritable reachCoefficients = loadSourceReachCoef(TEST_MODEL, sourceMetaData);
 
 		assertTrue(reachCoefficients != null);
 		assertEquals(sourceMetaData.getRowCount(), reachCoefficients.getColumnCount());
@@ -56,7 +59,7 @@ public class DataResourceLoaderTest {
 
 	@Test
 	public void testLoadDecay() throws SQLException, IOException {
-		DataTableWritable decay = DataResourceLoader.loadDecay(TEST_MODEL);
+		DataTableWritable decay = loadDecay(TEST_MODEL);
 
 		assertTrue(decay != null);
 		assertEquals(2, decay.getColumnCount());
@@ -65,13 +68,24 @@ public class DataResourceLoaderTest {
 
 	@Test
 	public void testLoadSourceValues() throws SQLException, IOException {
-		DataTableWritable topo = DataResourceLoader.loadTopo(TEST_MODEL);
-		DataTableWritable sourceValues = DataResourceLoader.loadSourceValues(TEST_MODEL, sourceMetaData, topo);
+		DataTableWritable topo = loadTopo(TEST_MODEL);
+		DataTableWritable sourceValues = loadSourceValues(TEST_MODEL, sourceMetaData, topo);
 
 		assertTrue(sourceValues != null);
 		assertTrue(sourceValues.hasRowIds());
 		assertEquals("There should be one value for each source", sourceMetaData.getRowCount(), sourceValues.getColumnCount());
 		assertEquals("Only two sources in the test model", NUMBER_OF_TEST_SOURCES, sourceValues.getColumnCount());
+	}
+
+	@Test
+	public void testDataConsistency() throws SQLException, IOException {
+		PredictData predictData = loadModelData(TEST_MODEL);
+
+		int numberOfReaches = predictData.getTopo().getRowCount();
+		assertEquals("There should be a pair of decay coefficients for each reach", numberOfReaches, predictData.getDecay().getRowCount());
+		assertEquals("There should be a set of reach coefficients for each reach", numberOfReaches, predictData.getCoef().getRowCount());
+		assertEquals("There should be a set of source values for each reach", numberOfReaches, predictData.getSrc().getRowCount());
+
 	}
 
 
@@ -94,7 +108,7 @@ public class DataResourceLoaderTest {
 		xstream.alias("person", Person.class);
 
 		Person ilin = new Person("I-Lin", "Kuo");
-		System.out.println(xstream.toXML(ilin));
+		//System.out.println(xstream.toXML(ilin));
 	}
 
 	@Test
@@ -108,7 +122,7 @@ public class DataResourceLoaderTest {
 				"	</person>";
 
 		Person ilin = (Person) xstream.fromXML(ilinXML);
-		System.out.println(ilin.firstname + " " + ilin.lastname);
+		//System.out.println(ilin.firstname + " " + ilin.lastname);
 	}
 
 

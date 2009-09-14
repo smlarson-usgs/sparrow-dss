@@ -18,21 +18,21 @@ import java.util.Map;
 /**
  * An immutable implementation of PredictResult. This is simply an Immutable
  * DataTable with convenience getXXX methods appropriate to the content
- * 
+ *
  * This will likely be the only implementation unless the PredictRunner code is
  * modified to use a builder instead of arrays.
- * 
+ *
  * @author eeverman
  */
 @Immutable
 public class PredictResultImm extends SimpleDataTable implements PredictResult {
-	
+
 	/**
 	 * A mapping from a source Identifier to the column number of the column
 	 * containing the Incremental value for that source.
 	 */
 	private final Map<Long, Integer> srcIdIncMap;
-	
+
 	/**
 	 * A mapping from a source Identifier to the column number of the column
 	 * containing the Total value for that source.
@@ -43,24 +43,24 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 	 * Index of the total Incremental column.
 	 */
 	private final int totalIncCol;
-	
+
 	/**
 	 * Index of the total Total column.
 	 */
 	private final int totalTotalCol;
-	
+
 	/**
 	 * The number of sources.
 	 */
 	private final int sourceCount;
-	
-	
-	public PredictResultImm(ColumnData[] columns, long[] rowIds, Map<String, String> properties, 
+
+
+	public PredictResultImm(ColumnData[] columns, long[] rowIds, Map<String, String> properties,
 				Map<Long, Integer> srcIdIncMap, Map<Long, Integer> srcIdTotalMap,
 				int totalIncCol, int totalTotalCol) {
-		
+
 		super(columns, "Prediction Data", "Prediction Result Data", properties, rowIds);
-		
+
 		{
 			Hashtable<Long, Integer> map = new Hashtable<Long, Integer>(srcIdIncMap.size() * 2 + 1);
 			map.putAll(srcIdIncMap);
@@ -72,7 +72,7 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 			map.putAll(srcIdTotalMap);
 			this.srcIdTotalMap = map;
 		}
-		
+
 		this.totalIncCol = totalIncCol;
 		this.totalTotalCol = totalTotalCol;
 		this.sourceCount = srcIdIncMap.size();
@@ -80,7 +80,7 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 
     /**
      * Adds appropriate metadata to the raw 2x2 array and returns the result as a DataTable
-     * 
+     *
      * @param data
      * @param predictData
      * @return
@@ -89,12 +89,12 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
     public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData) throws Exception {
         return buildPredictResult(data, predictData, null, Collections.<String, String>emptyMap());
     }
-    
+
     public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData, long[] ids)
     throws Exception {
         return buildPredictResult(data, predictData, ids, Collections.<String, String>emptyMap());
     }
-    
+
     public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData, long[] ids, Map<String, String> properties)
     throws Exception {
         ColumnData[] columns = new ColumnData[data[0].length];
@@ -104,7 +104,7 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
         // Lookup table for key=source_id, value=array index of source contribution data
         Map<Long, Integer> srcIdIncMap = new Hashtable<Long, Integer>(13, 2);
         Map<Long, Integer> srcIdTotalMap = new Hashtable<Long, Integer>(13, 2);
-		
+
         // ----------------------------------------------------------------
         // Define the source columns of the DataTable using the PredictData
         // ----------------------------------------------------------------
@@ -121,7 +121,7 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
                 Integer constituentCol = sourceMetadata.getColumnByName("CONSTITUENT");
                 Integer unitsCol = sourceMetadata.getColumnByName("UNITS");
                 Integer precisionCol = sourceMetadata.getColumnByName("PRECISION");
-    
+
                 // Pull out the metadata for the source
                 displayName = sourceMetadata.getString(srcIndex, displayNameCol);
                 constituent = sourceMetadata.getString(srcIndex, constituentCol);
@@ -133,8 +133,8 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
             int srcIncAddIndex = srcIndex; // index for iterating through the incremental source contributions
             int srcTotalIndex = srcIndex + sourceCount; // index for iterating through the total source contributions
 
-            srcIdIncMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcIncAddIndex); 
-            srcIdTotalMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcTotalIndex); 
+            srcIdIncMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcIncAddIndex);
+            srcIdTotalMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcTotalIndex);
 
             // Map of metadata values for inc-add column
             Map<String, String> incProps = new HashMap<String, String>();
@@ -211,5 +211,7 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
     public Double getTotalForSrc(int row, Long srcId) {
         return getDouble(row, srcIdTotalMap.get(srcId));
     }
+
+
 
 }

@@ -63,71 +63,12 @@ public class PredictRunner implements Runner {
 	 */
 	protected int nodeCount;
 
-//	/**
-//	 * Construct a new instance.
-//	 *
-//	 * This constructor figures out the number of nodes, which is non-ideal for
-//	 * larger data sets.
-//	 *
-//	 * @param topo
-//	 * @param coef
-//	 * @param src
-//	 * TODO Refactor this like DeliveryRunner and test
-//	 */
-//	public PredictRunner(DataTable topo, DataTable coef, DataTable src,
-//			DataTable decay) {
-//		this.topo = topo; // assign the passed values to the class variables
-//		this.deliveryCoefficient = coef;
-//		this.sourceValues = src;
-//		this.decayCoefficient = decay;
-//
-//		int maxNode = Math.max(topo.getMaxInt(FNODE_COL), topo
-//				.getMaxInt(TNODE_COL));
-//		{ // IK: Efficiency checks disabled for now as they cause failing tests,
-//			// and I'm not sure if I want to do this optimization as it doesn't
-//			// have sufficient benefit. Basically, we are allocating an array of
-//			// node values based on the maximum index of the nodes. In an ideal
-//			// world, that number should be slightly more than the number of
-//			// reaches.
-//			// TODO Add this check to data loading process
-//			boolean isCheckEfficiency = false;
-//			if (isCheckEfficiency) {
-//				checkEfficiency(maxNode);
-//			}
-//		}
-//
-//		this.predictData = new PredictDataImm(topo, coef, src, null, decay,
-//				null, null);
-//
-//		nodeCount = maxNode + 1;
-//	}
-
-	// /**
-	// * Construct a new instance using a PredictionDataSet.
-	// *
-	// * This constructor figures out the number of nodes, which is non-ideal
-	// for
-	// * larger data sets.
-	// * @deprecated
-	// * @param data An all-in-one data object
-	// *
-	// */
-	// public PredictRunner(PredictData data) {
-	// this.topo = BuilderHelper.fill(new
-	// SimpleDataTableWritable(),data.getTopo().getIntData(), null); //assign
-	// the passed values to the class variables
-	// this.coef = BuilderHelper.fill(new
-	// SimpleDataTableWritable(),data.getCoef().getDoubleData(), null);
-	// this.src = BuilderHelper.fill(new
-	// SimpleDataTableWritable(),data.getSrc().getDoubleData(), null);
-	// this.decay = BuilderHelper.fill(new
-	// SimpleDataTableWritable(),data.getDecay().getDoubleData(), null);
-	//
-	// int maxNode = topo.getMaxInt();
-	//
-	// nodeCount = maxNode + 1;
-	// }
-
+	 /**
+	 * Construct a new instance using a PredictionDataSet.
+	 *
+	 * @param data An all-in-one data object
+	 *
+	 */
 	public PredictRunner(PredictData data) {
 		{// assign the passed values to the class variables
 			this.topo = data.getTopo();
@@ -156,16 +97,6 @@ public class PredictRunner implements Runner {
 		nodeCount = maxNode + 1;
 	}
 
-	private void checkEfficiency(int maxNode) {
-		int minNode = Math.min(topo.getMinInt(FNODE_COL), topo
-				.getMinInt(TNODE_COL));
-		assert (minNode < 2) : "too high a starting point for the node indices leads to large memory consumption";
-
-		double ratio = (double) maxNode / (double) topo.getRowCount();
-		assert (ratio < 1.2) : "large gaps in the indices" + maxNode
-		+ " - " + +topo.getRowCount()
-		+ "results in inefficient memory consumption";
-	}
 
 	public PredictResultImm doPredict() throws Exception {
 		int reachCount = topo.getRowCount(); // # of reaches is equal to the number of 'rows' in topo
@@ -235,4 +166,19 @@ public class PredictRunner implements Runner {
 
 	}
 
+	/**
+	 * Method to check the efficiency/density of the node ids. Ideally, they would all be consecutive
+	 *
+	 * @param maxNode
+	 */
+	private void checkEfficiency(int maxNode) {
+		int minNode = Math.min(topo.getMinInt(FNODE_COL), topo
+				.getMinInt(TNODE_COL));
+		assert (minNode < 2) : "too high a starting point for the node indices leads to large memory consumption";
+
+		double ratio = (double) maxNode / (double) topo.getRowCount();
+		assert (ratio < 1.2) : "large gaps in the indices" + maxNode
+		+ " - " + +topo.getRowCount()
+		+ "results in inefficient memory consumption";
+	}
 }

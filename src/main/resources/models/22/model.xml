@@ -1,9 +1,12 @@
 <Model id="22">
 	<Authors>
-		<Author link="" id="1">First name, last name</Author>
+		<Author id="1">
+			<Name>First name, last name</Name>
+			<Link/>
+		</Author>
 	</Authors>
 	<Model_name>National Total Nitrogen Model - 1987</Model_name>
-	<MRB> </MRB>
+	<MRB>ALL</MRB>
 	<Constituent>
 		<Name>Total Nitrogen</Name>
 		<Units>kg/yr</Units>
