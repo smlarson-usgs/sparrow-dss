@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.NotImplementedException;
 
 public abstract class SparrowResourceUtils {
-	public static final String HELP_FILE = "help.xml";
+	public static final String HELP_FILE = "model.xml";
 	public static final String SESSIONS_FILE = "sessions.properties";
 	private static final Properties modelIndex = ResourceLoaderUtils.loadResourceAsProperties("models/modelIndex.txt");
 
@@ -39,7 +39,7 @@ public abstract class SparrowResourceUtils {
 
 	public static String lookupHelp(String model, String helpItem) {
 		SmartXMLProperties help = retrieveHelp(model);
-		return help.get(helpItem);
+		return help.getAsFullXMLNode(helpItem);
 	}
 
 	public static SmartXMLProperties retrieveHelp(String model) {

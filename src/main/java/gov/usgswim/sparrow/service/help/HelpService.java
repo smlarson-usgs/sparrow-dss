@@ -86,7 +86,7 @@ public class HelpService extends HttpServlet {
 				(result == null)? "<error>not found</error>": result
 			);
 
-		// TODO Auto-generated method stub
+		resp.setContentType("text/xml");
 		PrintWriter out = resp.getWriter();
 		out.write(response);
 		out.flush();
