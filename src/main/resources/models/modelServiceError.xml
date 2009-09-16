@@ -7,6 +7,7 @@
 		</status>
 		<!-- %s -->
 		<name>test</name>
+		<alias>test</alias>
 		<description>Test Model</description>
 		<dateAdded>2009-09-03</dateAdded>
 		<contactId>21</contactId>

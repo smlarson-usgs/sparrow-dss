@@ -7,6 +7,7 @@ import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 import gov.usgswim.sparrow.domain.Source;
+import gov.usgswim.sparrow.util.SparrowResourceUtils;
 
 import java.util.Iterator;
 import java.util.List;
@@ -27,7 +28,7 @@ public class DomainSerializer extends BasicXMLStreamReader {
 		this.models = models;
 	}
 
-	
+
 	/* Override because there's no resultset
 	 * @see gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader#readNext()
 	 */
@@ -49,7 +50,7 @@ public class DomainSerializer extends BasicXMLStreamReader {
 			throw new XMLStreamException(e);
 		}
 	}
-	
+
 	@Override
 	protected BasicTagEvent documentStartAction() {
 		super.documentStartAction();
@@ -59,7 +60,7 @@ public class DomainSerializer extends BasicXMLStreamReader {
 		// opening element
 		events.add(new BasicTagEvent(START_DOCUMENT));
 		// TODO need to add encoding and version xw.add( evtFact.createStartDocument(ENCODING, XML_VERSION) );
-		
+
 		events.add(new BasicTagEvent(START_ELEMENT, "models")
 			.addAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE + " " + TARGET_NAMESPACE_LOCATION));
 
@@ -81,6 +82,7 @@ public class DomainSerializer extends BasicXMLStreamReader {
                 }
                 addCloseTag("status");
 				addNonNullBasicTag("name", model.getName());
+				addNonNullBasicTag("alias", SparrowResourceUtils.lookupModelName(model.getId().toString()));
 				addNonNullBasicTag("description", StringUtils.trimToNull(model.getDescription()));
 				addNonNullBasicTag("url", StringUtils.trimToNull(model.getUrl()));
 				addNonNullBasicTag("dateAdded", DateFormatUtils.ISO_DATE_FORMAT.format(model.getDateAdded()));
@@ -121,7 +123,7 @@ public class DomainSerializer extends BasicXMLStreamReader {
 			isDataDone = true;
 		}
 	}
-	
+
 	@Override
 	protected void documentEndAction() {
 		super.documentEndAction();
@@ -149,7 +151,7 @@ public class DomainSerializer extends BasicXMLStreamReader {
 	public void setOutputCompleteFirstRow() {
 		isOutputCompleteFirstRow = true;
 	}
-	
+
 	@Override
 	public void close() throws XMLStreamException {
 		// TODO Auto-generated method stub
