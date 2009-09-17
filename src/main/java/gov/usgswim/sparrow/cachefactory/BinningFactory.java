@@ -118,9 +118,23 @@ public class BinningFactory implements CacheEntryFactory {
 	public static BigDecimal[] getEqualCountBins(Float[] sortedData, int binCount, Boolean useRounding) {
 		int totalRows = sortedData.length;	//Total rows of data
 
-		if (useRounding == null || !useRounding) {
-			return getEqualCountBins(binCount, sortedData);
+		//Handle small numbers of values as a special case
+		if (totalRows <= binCount) {
+			return buildEqualCountBinsSmallSet(sortedData, binCount, useRounding);
 		}
+		
+		float minValue = sortedData[0];
+		float maxValue = sortedData[sortedData.length -1];
+		
+		//Handle case of all duplicate values
+		if (minValue == maxValue) {
+			return buildEqualCountBinsSmallSet(sortedData, binCount, useRounding);
+		}
+		
+		if (useRounding == null || !useRounding) {
+			return getExactEqualCountBins(binCount, sortedData);
+		}
+		
 		// adjust the bin fence posts
 		BigDecimal[] bins = new BigDecimal[binCount + 1];
 		double binSize = (double)(totalRows) / (double)(binCount);
@@ -174,6 +188,76 @@ public class BinningFactory implements CacheEntryFactory {
 
 		return bins;
 	}
+	
+	/**
+	 * Does equal count for situations where the number of values is equal or
+	 * less than the number of bins.
+	 * 
+	 * @param sortedData The dataset, which must be sorted
+	 * @param binCount	The number of bins to construct
+	 * @param useRounding Round the bin values.
+	 * @return
+	 */
+	public static BigDecimal[] buildEqualCountBinsSmallSet(
+			Float[] sortedData, int binCount, Boolean useRounding) {
+		
+		BigDecimal[] bins = new BigDecimal[binCount + 1];
+		
+		//Default values incase we have no data
+		float highValue = 0;
+		float lowValue = 0;
+
+		if (sortedData.length > 0) {
+			highValue = sortedData[sortedData.length - 1];
+			lowValue = sortedData[0];
+		}
+		
+		
+		if (highValue == 0 && lowValue == 0) {
+			//CASE 1: All the values are zero.  Generate bins as:
+			//0 to 1, 1 to 2, etc., for as many bins as requested
+			for (int i=0; i<=binCount; i++) {
+				bins[i] = new BigDecimal(i);
+			}
+		} else if (highValue == lowValue) {
+			//Case 2: All the values are equal.  Generate bins as:
+			//0 to ceil(highValue), ceil(highValue) to 2Xceil(highValue), etc.
+			
+			//Generate a bin range such that the highValue is guaranteed to be
+			//in the range 0 to binRange.
+			double maxedAbsDataValue = Math.ceil(Math.abs((double)highValue));
+			double binRange = Math.copySign(maxedAbsDataValue, highValue);
+			BigDecimal bigBinRange = new BigDecimal(binRange);
+			
+			for (int i=0; i<=binCount; i++) {
+				bins[i] = bigBinRange.multiply(new BigDecimal(i));
+			}
+			
+			if (highValue < 0) {
+				bins = reverseBins(bins);
+			}
+			
+		} else {
+			//Case 3:  Values vary, but we have as many or more bins than values.
+			//Generate bins as equal range
+			bins = getEqualRangeBins(lowValue, highValue, binCount, useRounding);
+			
+		}
+		
+		
+		return bins;
+	}
+	
+	public static BigDecimal[] reverseBins(BigDecimal[] bins) {
+		int lastBin = bins.length - 1;
+		BigDecimal[] revBins = new BigDecimal[bins.length];
+		
+		for (int i=0; i<bins.length; i++ ) {
+			revBins[lastBin - i] = bins[i];
+		}
+		
+		return revBins;
+	}
 
 	/**
 	 * Returns an equal count set of bins so that the bins define break-point
@@ -184,9 +268,8 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @param binCount Number of bins to divide the column into.
 	 * @return Set of bins such that the bins define break-point boundaries
 	 *         with an approximately equal number of values contained within.
-	 *         TODO change name to getExactEqualCountBins
 	 */
-	public static BigDecimal[] getEqualCountBins(int binCount, Float[] sortedData) {
+	public static BigDecimal[] getExactEqualCountBins(int binCount, Float[] sortedData) {
 
 		int totalRows = sortedData.length;	//Total rows of data
 
@@ -319,6 +402,7 @@ public class BinningFactory implements CacheEntryFactory {
 	// ================
 	// EQUAL RANGE BINS
 	// ================
+	
 	/**
 	 * Returns an equal range set of bins such that the bins define break-point
 	 * boundaries whose values are approximately equally spaced apart.
@@ -331,20 +415,26 @@ public class BinningFactory implements CacheEntryFactory {
 	 */
 	@SuppressWarnings("cast")
 	public static BigDecimal[] getEqualRangeBins(DataTable data, int columnIndex, int binCount, boolean useRounding) {
+		float[] sortedValues = DataTableUtils.extractSortedValues(data, columnIndex, false);
+		float minValue = sortedValues[0];
+		float maxValue = sortedValues[sortedValues.length - 1];
+		return getEqualRangeBins(minValue, maxValue, binCount, useRounding);
+	}
+	/**
+	 * Returns an equal range set of bins such that the bins define break-point
+	 * boundaries whose values are approximately equally spaced apart.
+	 *
+	 * @param data Table of data containing the column to divide into bins.
+	 * @param columnIndex Index of the column to divide into bins.
+	 * @param binCount Number of bins to divide the column into.
+	 * @return Set of bins such that the bins define break-point boundaries
+	 *         whose values are approximately equally spaced apart.
+	 */
+	@SuppressWarnings("cast")
+	public static BigDecimal[] getEqualRangeBins(double minValue, double maxValue, int binCount, boolean useRounding) {
 		//int totalRows = data.getRowCount(); // Total rows of data
 
-		// TODO: check that this is implemented and then uncomment. Currently unsupported operation exception. I think this is just out of date with the latest jar
-		// Grab the min and max values from the DataTable
-//		double minValue = data.getMinDouble(columnIndex);
-//		double maxValue = data.getMaxDouble(columnIndex);
-		double minValue = 0;
-		double maxValue = 0;
 
-		{
-			float[] sortedValues = DataTableUtils.extractSortedValues(data, columnIndex, false);
-			minValue = sortedValues[0];
-			maxValue = sortedValues[sortedValues.length - 1];
-		}
 		// Calculate the width of a single bin
 		double binWidth = (maxValue - minValue) / (double)(binCount);
 

@@ -62,7 +62,7 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 
-	public static Float[] sortedData = {-99.73f, -97.544f, -93.8991f, -86.773f, -85.1101f,
+	public static Float[] sortedData100Normal = {-99.73f, -97.544f, -93.8991f, -86.773f, -85.1101f,
 		-84.897f, -83.511f, -83.509f, -83.507f, -83.505f,
 		-83.404f, -83.403f, -78.011f, -72.555f, -71.77f,
 		-22.378f, -18.22f, -15.099f, -14.932f, -8.753f,
@@ -83,9 +83,32 @@ public class BinningFactoryTest extends TestCase {
 		1.908f, 1.911f, 1.912f, 1.913f, 1.914f,
 		1.915f, 1.977f, 2.111f, 3.445f, 5.121f
 	}; // 100 elements
+	
+	public static Float[] sortedData2 = { 2f, 4f };
+	public static Float[] sortedData2a = { 0f, 0f };
+	public static Float[] sortedData2b = { 4f, 4f };
+	public static Float[] sortedData2c = { 0f, 4f };
+	
+	public static Float[] sortedData2d = { -4f, -2f };
+	public static Float[] sortedData2e = { -4f, -4f };
+	public static Float[] sortedData2f = { -4f, 0f };
+	
+	public static Float[] sortedData2g = { -4f, 4f };
+	
+	//Two values w/ decimals
+	public static Float[] sortedData2_ = { 2.1f, 4.3f };
+	public static Float[] sortedData2a_ = { 0.1f, 0.1f };
+	public static Float[] sortedData2b_ = { 4.1f, 4.1f };
+	public static Float[] sortedData2c_ = { 0f, 4.1f };
+	
+	public static Float[] sortedData2d_ = { -4.1f, -2.1f };
+	public static Float[] sortedData2e_ = { -4.1f, -4.1f };
+	public static Float[] sortedData2f_ = { -4.1f, 0f };
+	
+	public static Float[] sortedData2g_ = { -4.1f, 4.1f };
 
 	public void testGetEqualCountBinsOfOne() {
-		BigDecimal[] result = getEqualCountBins(sortedData, 1, Boolean.TRUE);
+		BigDecimal[] result = getEqualCountBins(sortedData100Normal, 1, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -93,7 +116,7 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 	public void testGetEqualCountBinsOfTwo() {
-		BigDecimal[] result = getEqualCountBins(sortedData, 2, Boolean.TRUE);
+		BigDecimal[] result = getEqualCountBins(sortedData100Normal, 2, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -102,7 +125,7 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 	public void testGetEqualCountBinsOfThree() {
-		BigDecimal[] result = getEqualCountBins(sortedData, 3, Boolean.TRUE);
+		BigDecimal[] result = getEqualCountBins(sortedData100Normal, 3, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -112,7 +135,7 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 	public void testGetEqualCountBinsOfFour() {
-		BigDecimal[] result = getEqualCountBins(sortedData, 4, Boolean.TRUE);
+		BigDecimal[] result = getEqualCountBins(sortedData100Normal, 4, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -123,7 +146,7 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 	public void testGetEqualCountBinsOfFive() {
-		BigDecimal[] result = getEqualCountBins(sortedData, 5, Boolean.TRUE);
+		BigDecimal[] result = getEqualCountBins(sortedData100Normal, 5, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -135,7 +158,7 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 	public void testGetEqualCountBinsOfSix() {
-		BigDecimal[] result = getEqualCountBins(sortedData, 6, Boolean.TRUE);
+		BigDecimal[] result = getEqualCountBins(sortedData100Normal, 6, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -149,7 +172,7 @@ public class BinningFactoryTest extends TestCase {
 
 	public void testGetEqualCountBinsOfSeven() {
 
-		BigDecimal[] result = getEqualCountBins(sortedData, 7, Boolean.TRUE);
+		BigDecimal[] result = getEqualCountBins(sortedData100Normal, 7, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -161,9 +184,129 @@ public class BinningFactoryTest extends TestCase {
 		assertEquals("1.89", result[6].toString());
 		assertEquals("6", result[lastIndex].toString());
 
-		// uncomment this to see the output
-		//printBinningResult(result);
+	}
+	
+	
+	////////////////////////////////////
+	// Try small datasets
+	////////////////////////////////////
+	public void testGetEqualCountBinsOfOneSmall() {
+		
+		final int bins = 1;
+		final boolean round = true;
+		
+		BigDecimal[] result = getEqualCountBins(sortedData2, bins, round);
+		printBinningResult("2 values --> 1 EQ Bins:", result);
+		isEqual(result, 0, 5);
+		
+		result = getEqualCountBins(sortedData2_, bins, round);
+		printBinningResult("2 decimal values --> 1 EQ Bins:", result);
+		isEqual(result, 0, 5);
+		
+		result = getEqualCountBins(sortedData2a, bins, round);
+		printBinningResult("2 (a) values --> 1 EQ Bins:", result);
+		isEqual(result, 0, 1);
+		
+		result = getEqualCountBins(sortedData2a_, bins, round);
+		printBinningResult("2 (a) decimal values --> 1 EQ Bins:", result);
+		isEqual(result, 0, 1);
+		
+		result = getEqualCountBins(sortedData2b, bins, round);
+		printBinningResult("2 (b) values --> 1 EQ Bins:", result);
+		isEqual(result, 0, 4);
+		
+		result = getEqualCountBins(sortedData2b_, bins, round);
+		printBinningResult("2 (b) decimal values --> 1 EQ Bins:", result);
+		isEqual(result, 0, 5);
+		
+		result = getEqualCountBins(sortedData2c, bins, round);
+		printBinningResult("2 (c) values --> 1 EQ Bins:", result);
+		isEqual(result, 0, 5);	//Not ideal: should be 4
+		
+		result = getEqualCountBins(sortedData2c_, bins, round);
+		printBinningResult("2 (c) decimal values --> 1 EQ Bins:", result);
+		isEqual(result, 0, 5);
+		
+		result = getEqualCountBins(sortedData2d, bins, round);
+		printBinningResult("2 (d) values --> 1 EQ Bins:", result);
+		isEqual(result, -5, 0); //should be -4 to -2
+		
+		result = getEqualCountBins(sortedData2d_, bins, round);
+		printBinningResult("2 (d) decimal values --> 1 EQ Bins:", result);
+		isEqual(result, -5, -2);
+		
+		result = getEqualCountBins(sortedData2e, bins, round);
+		printBinningResult("2 (e) values --> 1 EQ Bins:", result);
+		isEqual(result, -4, 0);
+		
+		result = getEqualCountBins(sortedData2e_, bins, round);
+		printBinningResult("2 (e) decimal values --> 1 EQ Bins:", result);
+		isEqual(result, -5, 0);
+		
+		result = getEqualCountBins(sortedData2f, bins, round);
+		printBinningResult("2 (f) values --> 1 EQ Bins:", result);
+		isEqual(result, -5, 0);	//should be -4 to 0
+		
+		result = getEqualCountBins(sortedData2f_, bins, round);
+		printBinningResult("2 (f) decimal values --> 1 EQ Bins:", result);
+		isEqual(result, -5, 0);
+		
+		result = getEqualCountBins(sortedData2g, bins, round);
+		printBinningResult("2 (g) values --> 1 EQ Bins:", result);
+		isEqual(result, -10, 10);	//should be -4 to 4
+		
+		result = getEqualCountBins(sortedData2g_, bins, round);
+		printBinningResult("2 (g) decimal values --> 1 EQ Bins:", result);
+		isEqual(result, -10, 10);	//should be -5 to 5
+	}
 
+	public void testGetEqualCountBinsOfTwoSmall() {
+		BigDecimal[] result = getEqualCountBins(sortedData2, 2, Boolean.TRUE);
+
+		printBinningResult("2 values --> 2 EQ Bins:", result);
+		
+		int lastIndex = result.length - 1;
+		assertEquals("2", result[0].toString());
+		assertEquals("3", result[1].toString());
+		assertEquals("4", result[lastIndex].toString());
+	}
+
+	public void testGetEqualCountBinsOfThreeSmall() {
+		BigDecimal[] result = getEqualCountBins(sortedData2, 3, Boolean.TRUE);
+
+//		int lastIndex = result.length - 1;
+//		assertEquals("2", result[0].toString());
+//		assertEquals("-0.5", result[1].toString());
+//		assertEquals("1", result[2].toString());
+//		assertEquals("6", result[lastIndex].toString());
+		printBinningResult("2 values --> 3 EQ Bins:", result);
+	}
+
+	public void testGetEqualCountBinsOfFourSmall() {
+		BigDecimal[] result = getEqualCountBins(sortedData2, 4, Boolean.TRUE);
+
+//		int lastIndex = result.length - 1;
+//		assertEquals("-100", result[0].toString());
+//		assertEquals("-5", result[1].toString());
+//		assertEquals("0.01", result[2].toString());
+//		assertEquals("1.3", result[3].toString());
+//		assertEquals("6", result[lastIndex].toString());
+		
+		printBinningResult("2 values --> 4 EQ Bins:", result);
+	}
+
+	public void testGetEqualCountBinsOfFiveSmall() {
+		BigDecimal[] result = getEqualCountBins(sortedData2, 5, Boolean.TRUE);
+
+//		int lastIndex = result.length - 1;
+//		assertEquals("-100", result[0].toString());
+//		assertEquals("-8.75", result[1].toString());
+//		assertEquals("0", result[2].toString());
+//		assertEquals("0.094", result[3].toString());
+//		assertEquals("1.8", result[4].toString());
+//		assertEquals("6", result[lastIndex].toString());
+		
+		printBinningResult("2 values --> 5 EQ Bins:", result);
 	}
 
 
@@ -232,7 +375,8 @@ public class BinningFactoryTest extends TestCase {
 
 
 	@SuppressWarnings("unused")
-	private void printBinningResult(BigDecimal[] result) {
+	private void printBinningResult(String message, BigDecimal[] result) {
+		System.out.println(message);
 		for (int i=0; i<result.length; i++) {
 			System.out.println(i + ": " + result[i]);
 		}
@@ -245,6 +389,16 @@ public class BinningFactoryTest extends TestCase {
 
 	private String bd2String(BigDecimal bd) {
 		return bd + " scale: " + bd.scale();
+	}
+	
+	private void isEqual(BigDecimal[] calculatedBins, double... expectedBins) {
+		for (int i=0; i<calculatedBins.length; i++) {
+			double calced = calculatedBins[i].doubleValue();
+			double expect = expectedBins[i];
+			double precision = expect / 10000d;
+			
+			assertEquals(expect, calced, precision);
+		}
 	}
 
 }
