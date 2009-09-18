@@ -1,28 +1,23 @@
+
 package gov.usgswim.sparrow.util;
 
-import java.io.IOException;
-import java.io.PrintStream;
+import gov.usgs.webservices.framework.utils.ResourceLoaderUtils;
+
 import java.util.Properties;
 
-import gov.usgswim.sparrow.service.HTTPServiceTestHelper;
-
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 
 public class ResourceLoaderUtilsTest {
+	public static final String NONEXISTENT_FILE = "IDONOTEXIST.xml";
+
 
 	@Test
-	public void testLoad() {
-		String resourceFilePath = SparrowResourceUtils.getModelResourceFilePath(HTTPServiceTestHelper.TEST_MODEL, "models.xml");
-
+	public void testLoadResourceAsPropertiesOfNonExistentModel() {
+		Properties props = ResourceLoaderUtils.loadResourceAsProperties(NONEXISTENT_FILE);
+		assertNotNull(props);
+		assertTrue("loadResourceAsProperties() should return empty properties if file resource does not exist", props.isEmpty());
 	}
 
-//	@Test
-//	public void testPropertiesAsXML() throws IOException {
-//		String propFilePath = SparrowResourceUtils.getModelResourceFilePath(HTTPServiceTestHelper.TEST_MODEL, "sessions.properties");
-//		Properties props = ResourceLoaderUtils.loadResourceAsProperties(propFilePath);
-//		PrintStream out = System.out;
-//		props.storeToXML(out, "my comments");
-//		out.flush();
-//	}
 }
