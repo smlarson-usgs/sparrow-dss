@@ -2,14 +2,21 @@ package gov.usgswim.sparrow.cachefactory;
 
 import java.math.BigDecimal;
 
+import org.apache.commons.lang.ArrayUtils;
+
+import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 import static gov.usgswim.sparrow.cachefactory.BinningFactory.round;
 import static gov.usgswim.sparrow.cachefactory.BinningFactory.getEqualCountBins;
 import static gov.usgswim.sparrow.cachefactory.BinningFactory.digitAccuracyMultipliers;
 import static gov.usgswim.sparrow.cachefactory.BinningFactory.makeBigDecimal;
+import static gov.usgswim.sparrow.cachefactory.BinningFactory.getUniqueValueCount;
 
 public class BinningFactoryTest extends TestCase {
 
+	public final static boolean ENABLE_ALL_LOG_OUTPUT = false;
+	public final static boolean ENABLE_FAILURE_LOG_OUTPUT = true;
+	
 	public void testRoundToZero() {
 		assertEquals("0", round(.011, -.1, .44).toString());
 	}
@@ -190,85 +197,58 @@ public class BinningFactoryTest extends TestCase {
 	////////////////////////////////////
 	// Try small datasets
 	////////////////////////////////////
-	public void testGetEqualCountBinsOfOneSmall() {
+	public void testEqualCount_SmallDataset_OneBin() {
 		
 		final int bins = 1;
 		final boolean round = true;
 		
-		BigDecimal[] result = getEqualCountBins(sortedData2, bins, round);
-		printBinningResult("2 values --> 1 EQ Bins:", result);
-		isEqual(result, 0, 5);
-		
-		result = getEqualCountBins(sortedData2_, bins, round);
-		printBinningResult("2 decimal values --> 1 EQ Bins:", result);
-		isEqual(result, 0, 5);
-		
-		result = getEqualCountBins(sortedData2a, bins, round);
-		printBinningResult("2 (a) values --> 1 EQ Bins:", result);
-		isEqual(result, 0, 1);
-		
-		result = getEqualCountBins(sortedData2a_, bins, round);
-		printBinningResult("2 (a) decimal values --> 1 EQ Bins:", result);
-		isEqual(result, 0, 1);
-		
-		result = getEqualCountBins(sortedData2b, bins, round);
-		printBinningResult("2 (b) values --> 1 EQ Bins:", result);
-		isEqual(result, 0, 4);
-		
-		result = getEqualCountBins(sortedData2b_, bins, round);
-		printBinningResult("2 (b) decimal values --> 1 EQ Bins:", result);
-		isEqual(result, 0, 5);
-		
-		result = getEqualCountBins(sortedData2c, bins, round);
-		printBinningResult("2 (c) values --> 1 EQ Bins:", result);
-		isEqual(result, 0, 5);	//Not ideal: should be 4
-		
-		result = getEqualCountBins(sortedData2c_, bins, round);
-		printBinningResult("2 (c) decimal values --> 1 EQ Bins:", result);
-		isEqual(result, 0, 5);
-		
-		result = getEqualCountBins(sortedData2d, bins, round);
-		printBinningResult("2 (d) values --> 1 EQ Bins:", result);
-		isEqual(result, -5, 0); //should be -4 to -2
-		
-		result = getEqualCountBins(sortedData2d_, bins, round);
-		printBinningResult("2 (d) decimal values --> 1 EQ Bins:", result);
-		isEqual(result, -5, -2);
-		
-		result = getEqualCountBins(sortedData2e, bins, round);
-		printBinningResult("2 (e) values --> 1 EQ Bins:", result);
-		isEqual(result, -4, 0);
-		
-		result = getEqualCountBins(sortedData2e_, bins, round);
-		printBinningResult("2 (e) decimal values --> 1 EQ Bins:", result);
-		isEqual(result, -5, 0);
-		
-		result = getEqualCountBins(sortedData2f, bins, round);
-		printBinningResult("2 (f) values --> 1 EQ Bins:", result);
-		isEqual(result, -5, 0);	//should be -4 to 0
-		
-		result = getEqualCountBins(sortedData2f_, bins, round);
-		printBinningResult("2 (f) decimal values --> 1 EQ Bins:", result);
-		isEqual(result, -5, 0);
-		
-		result = getEqualCountBins(sortedData2g, bins, round);
-		printBinningResult("2 (g) values --> 1 EQ Bins:", result);
-		isEqual(result, -10, 10);	//should be -4 to 4
-		
-		result = getEqualCountBins(sortedData2g_, bins, round);
-		printBinningResult("2 (g) decimal values --> 1 EQ Bins:", result);
-		isEqual(result, -10, 10);	//should be -5 to 5
+		//Comments following the asserts indicate a preferred binning result,
+		//though the tested values a acceptable.  Who's to say??
+		doEqualCountAssert(sortedData2, bins, round, 0, 5);	//2 to 4
+		doEqualCountAssert(sortedData2_, bins, round, 0, 5); //2 to 5
+		doEqualCountAssert(sortedData2a, bins, round, 0, 1);
+		doEqualCountAssert(sortedData2a_, bins, round, 0, .11);	//0 to .1
+		doEqualCountAssert(sortedData2b, bins, round, 0, 4);
+		doEqualCountAssert(sortedData2b_, bins, round, 0, 4.5);	//0 to 5
+		doEqualCountAssert(sortedData2c, bins, round, 0, 5);	//0 to 4
+		doEqualCountAssert(sortedData2c_, bins, round, 0, 5);
+		doEqualCountAssert(sortedData2d, bins, round, -5, -0);
+		doEqualCountAssert(sortedData2d_, bins, round, -5, -2);
+		doEqualCountAssert(sortedData2e, bins, round, -4, 0);
+		doEqualCountAssert(sortedData2e_, bins, round, -4.5, 0);
+		doEqualCountAssert(sortedData2f, bins, round, -5, 0);	//-4 to 0
+		doEqualCountAssert(sortedData2f_, bins, round, -5, 0);
+		doEqualCountAssert(sortedData2g, bins, round, -10, 10);	//-4 to 4
+		doEqualCountAssert(sortedData2g_, bins, round, -10, 10);	//-5 to 5
 	}
 
-	public void testGetEqualCountBinsOfTwoSmall() {
-		BigDecimal[] result = getEqualCountBins(sortedData2, 2, Boolean.TRUE);
-
-		printBinningResult("2 values --> 2 EQ Bins:", result);
+	public void testEqualCount_SmallDataset_TwoBins() {
+		final int bins = 2;
+		final boolean round = true;
 		
-		int lastIndex = result.length - 1;
-		assertEquals("2", result[0].toString());
-		assertEquals("3", result[1].toString());
-		assertEquals("4", result[lastIndex].toString());
+		//Comments following the asserts indicate a preferred binning result,
+		//though the tested values a acceptable.  Who's to say??
+		doEqualCountAssert(sortedData2, bins, round, 2, 3, 4);
+		doEqualCountAssert(sortedData2_, bins, round, 2, 3.2, 4.4);
+		doEqualCountAssert(sortedData2a, bins, round, 0, 1, 2);
+		doEqualCountAssert(sortedData2a_, bins, round, 0, .055, .11);
+		doEqualCountAssert(sortedData2b, bins, round, 0, 2, 4);
+		doEqualCountAssert(sortedData2b_, bins, round, 0, 2.1, 4.2);
+		doEqualCountAssert(sortedData2c, bins, round, 0, 2, 4);
+		doEqualCountAssert(sortedData2c_, bins, round, 0, 2.1, 4.2);
+		doEqualCountAssert(sortedData2d, bins, round, -4, -3, -2);
+		
+		//Ugly
+		//Values like -4.0999999904 should be rounded to -4.1, but how???
+		doEqualCountAssert(sortedData2d_, bins, round, -4.1, -3.1, 2.1);
+		
+		
+		doEqualCountAssert(sortedData2e, bins, round, -4, -2, 0);
+		doEqualCountAssert(sortedData2e_, bins, round, -4.1, -2, 0.1);
+		doEqualCountAssert(sortedData2f, bins, round, -4, -2, 0);
+		doEqualCountAssert(sortedData2f_, bins, round, -4.1, -2, .1);
+		doEqualCountAssert(sortedData2g, bins, round, -4, 0, 4);
+		doEqualCountAssert(sortedData2g_, bins, round, -4.5, 0, 4.5);
 	}
 
 	public void testGetEqualCountBinsOfThreeSmall() {
@@ -372,6 +352,42 @@ public class BinningFactoryTest extends TestCase {
 		bd = makeBigDecimal(-2, digitAccuracyMultipliers[1], -1);
 		assertEquals("-0.1 scale: 1", bd2String(bd));
 	}
+	
+	public void testUniqueValueCount() {
+		Float[] data0 = new Float[] {}; 
+		Float[] data1 = new Float[] { 1f }; 
+		Float[] data2a = new Float[] { 0f, 0f };
+		Float[] data2b = new Float[] { 0f, 1f };
+		Float[] data2c = new Float[] { -4f, 4f };
+		Float[] data4a = new Float[] { 0f, 0f, 1f, 1f }; 
+		Float[] data4b = new Float[] { 0f, 1f, 2f, 3f };
+		
+		assertEquals(0, getUniqueValueCount(data0, 0));
+		assertEquals(0, getUniqueValueCount(data0, 10));
+		
+		assertEquals(1, getUniqueValueCount(data1, 0));
+		assertEquals(1, getUniqueValueCount(data1, 2));
+		
+		assertEquals(1, getUniqueValueCount(data2a, 0));
+		assertEquals(1, getUniqueValueCount(data2a, 1));
+		assertEquals(2, getUniqueValueCount(data2b, 0));
+		assertEquals(1, getUniqueValueCount(data2b, 1));
+		assertEquals(2, getUniqueValueCount(data2b, 2));
+		assertEquals(1, getUniqueValueCount(data2c, 1));
+		assertEquals(2, getUniqueValueCount(data2c, 2));
+		assertEquals(2, getUniqueValueCount(data2c, 3));
+		
+		assertEquals(2, getUniqueValueCount(data4a, 0));
+		assertEquals(1, getUniqueValueCount(data4a, 1));
+		assertEquals(2, getUniqueValueCount(data4a, 2));
+		assertEquals(2, getUniqueValueCount(data4a, 3));
+		assertEquals(4, getUniqueValueCount(data4b, 0));
+		assertEquals(1, getUniqueValueCount(data4b, 1));
+		assertEquals(2, getUniqueValueCount(data4b, 2));
+		assertEquals(3, getUniqueValueCount(data4b, 3));
+		assertEquals(4, getUniqueValueCount(data4b, 4));
+		assertEquals(4, getUniqueValueCount(data4b, 5));
+	}
 
 
 	@SuppressWarnings("unused")
@@ -391,13 +407,67 @@ public class BinningFactoryTest extends TestCase {
 		return bd + " scale: " + bd.scale();
 	}
 	
-	private void isEqual(BigDecimal[] calculatedBins, double... expectedBins) {
-		for (int i=0; i<calculatedBins.length; i++) {
-			double calced = calculatedBins[i].doubleValue();
-			double expect = expectedBins[i];
-			double precision = expect / 10000d;
+	private void doEqualCountAssert(Float[] sorted, int binCount,
+			boolean round, double... expectedBins) {
+		
+		assertEquals(
+				"TEST IS INCORRECTLY SETUP: " +
+				"THE NUMBER OF BINS SHOULD MATCH (n + 1) THE EXPECTED BINS",
+				binCount + 1, expectedBins.length);
+		
+		BigDecimal[] result = getEqualCountBins(sorted, binCount, round);
+		
+		String dataDesc = null;
+		String binDesc = null;
+		if (sorted.length < 10) {
+			dataDesc = ArrayUtils.toString(sorted);
+		} else {
+			dataDesc =
+				"{" + sorted[0] + " to " + sorted[sorted.length - 1] + "} " +
+				"(" + sorted.length + " values)";
+		}
+		
+		binDesc = "" + (expectedBins.length - 1) + " bins: " +
+			ArrayUtils.toString(expectedBins);
+		
+		String desc = "Data " + dataDesc + " Eq. Cnt. binned to " + binDesc;
+		
+		doAssert(desc, result, expectedBins);
+	}
+	
+	private void doAssert(String description, BigDecimal[] calculatedBins, double... expectedBins) {
+		
+		if (ENABLE_FAILURE_LOG_OUTPUT || ENABLE_ALL_LOG_OUTPUT) {
 			
-			assertEquals(expect, calced, precision);
+		}
+		
+		boolean testFailed = false;
+		
+		try {
+			for (int i=0; i<calculatedBins.length; i++) {
+				double calced = calculatedBins[i].doubleValue();
+				double expect = expectedBins[i];
+				double precision = expect / 10000d;
+			
+				try {
+					assertEquals(expect, calced, precision);
+				} catch (AssertionFailedError e) {
+					testFailed = true;
+					throw e;
+				}
+			}
+		} finally {
+			if (testFailed && (ENABLE_FAILURE_LOG_OUTPUT || ENABLE_ALL_LOG_OUTPUT)) {
+				System.out.println("FAILED: " + description + ".  Calculated Bins:");
+				for (int i=0; i<calculatedBins.length; i++) {
+					System.out.println(i + ": " + calculatedBins[i]);
+				}
+			} else if (ENABLE_ALL_LOG_OUTPUT) {
+				System.out.println(description + ".  Calculated Bins:");
+				for (int i=0; i<calculatedBins.length; i++) {
+					System.out.println(i + ": " + calculatedBins[i]);
+				}
+			}
 		}
 	}
 

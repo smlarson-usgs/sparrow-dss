@@ -117,17 +117,12 @@ public class BinningFactory implements CacheEntryFactory {
 	public static final double ALLOWABLE_BIN_SIZE_VARIANCE_RATIO = 1d/10;
 	public static BigDecimal[] getEqualCountBins(Float[] sortedData, int binCount, Boolean useRounding) {
 		int totalRows = sortedData.length;	//Total rows of data
-
-		//Handle small numbers of values as a special case
-		if (totalRows <= binCount) {
-			return buildEqualCountBinsSmallSet(sortedData, binCount, useRounding);
-		}
 		
-		float minValue = sortedData[0];
-		float maxValue = sortedData[sortedData.length -1];
+		//Number of unique values in data, maxing at at the number of bins.
+		int uniqueValues = getUniqueValueCount(sortedData, binCount + 1);
 		
-		//Handle case of all duplicate values
-		if (minValue == maxValue) {
+		//Handle small numbers of distinct values as a special case
+		if (uniqueValues <= binCount) {
 			return buildEqualCountBinsSmallSet(sortedData, binCount, useRounding);
 		}
 		
@@ -223,20 +218,26 @@ public class BinningFactory implements CacheEntryFactory {
 			//Case 2: All the values are equal.  Generate bins as:
 			//0 to ceil(highValue), ceil(highValue) to 2Xceil(highValue), etc.
 			
+			if (highValue > 0) {
+				bins = getEqualRangeBins(0, highValue, binCount, useRounding);
+			} else {
+				bins = getEqualRangeBins(lowValue, 0, binCount, useRounding);
+			}
+			
 			//Generate a bin range such that the highValue is guaranteed to be
 			//in the range 0 to binRange.
-			double maxedAbsDataValue = Math.ceil(Math.abs((double)highValue));
-			double binRange = Math.copySign(maxedAbsDataValue, highValue);
-			BigDecimal bigBinRange = new BigDecimal(binRange);
-			
-			for (int i=0; i<=binCount; i++) {
-				bins[i] = bigBinRange.multiply(new BigDecimal(i));
-			}
-			
-			if (highValue < 0) {
-				bins = reverseBins(bins);
-			}
-			
+//			double maxedAbsDataValue = Math.ceil(Math.abs((double)highValue));
+//			double binRange = Math.copySign(maxedAbsDataValue, highValue);
+//			BigDecimal bigBinRange = new BigDecimal(binRange);
+//			
+//			for (int i=0; i<=binCount; i++) {
+//				bins[i] = bigBinRange.multiply(new BigDecimal(i));
+//			}
+//			
+//			if (highValue < 0) {
+//				bins = reverseBins(bins);
+//			}
+//			
 		} else {
 			//Case 3:  Values vary, but we have as many or more bins than values.
 			//Generate bins as equal range
@@ -473,5 +474,47 @@ public class BinningFactory implements CacheEntryFactory {
 
 		return binPosts;
 	}
+	
+	/**
+	 * Calculates the number of unique values in a set of sorted numbers.
+	 * If maxCount is greater than zero, it will 'give up' counting when it
+	 * reaches that max count and will return the maxValue.  For instance,
+	 * if maxCount is 5, as soon as five unique values are found, 5 is returned.
+	 * 
+	 * @param sortedData The data to inspect, sorted low to high.
+	 * @param maxCount The number of values to stop counting at.
+	 * 		Set 0 or less to disable.
+	 * @return The number of unique values or maxCount if reached.
+	 */
+	protected static int getUniqueValueCount(Float[] sortedData, int maxCount) {
+		
+		
+		if (sortedData.length == 0) {
+			//Special case of no values
+			return 0;
+		} else if (sortedData.length == 1) {
+			return 1;
+		}
+		
+		if (maxCount < 1) {
+			//force maxCount large enough to be ignored
+			maxCount = sortedData.length + 1;
+		}	
+		
+		int i = 1;		//index in sortedData, start at 2nd value
+		int cnt = 1;	//count of unique values (1st value is unique)
+		float last = sortedData[0];	//last value was 1st value
+		
+		while (i < sortedData.length && cnt < maxCount) {
+			if (last != sortedData[i]) {
+				cnt++;
+				last = sortedData[i];
+			}
+			i++;
+		}
+		
+		return cnt;
+	}
+	
 
 }
