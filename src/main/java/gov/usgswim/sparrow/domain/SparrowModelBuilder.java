@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
 
 /**
  * Builder implementation of SparrowModel, which is a Domain Object representing a SPARROW SparrowModel.
@@ -31,24 +33,25 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 	protected Double _southBound;
 	protected Double _westBound;
 	protected List<Source> _sources;
-	
-	
+	private Set<Entry<Object, Object>> _sessions;
+
+
 	public SparrowModelBuilder() {
 	}
-	
+
 	public SparrowModelBuilder(long id) {
 		_id = id;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public SparrowModel toImmutable() throws IllegalStateException {
-	
+
 		List<Source> tmpList = null;
-		
+
 		//Need a list of immutable sources
 		if (_sources != null) {
 			tmpList = new ArrayList<Source>(_sources.size());
-			
+
 			for (int i = 0; i < _sources.size(); i++)  {
 				Source s = _sources.get(i);
 				if (s instanceof ImmutableBuilder) {
@@ -57,137 +60,98 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 				tmpList.add(s);
 			}
 		}
-	
+
 		return new SparrowModelImm(
 			_id, _approved, _public, _archived, _name, _description, _url,
 			_dateAdded, _contactId, _enhNetworkId,
-			_northBound, _eastBound, _southBound, _westBound, tmpList);
+			_northBound, _eastBound, _southBound, _westBound, _sessions, tmpList);
 	}
 
-	public void setId(Long id) {
-		_id = id;
-	}
-	public Long getId() {
-		return _id;
-	}
+	public void setId(Long id) {_id = id;}
 
-	public void setApproved(boolean approved) {
-		this._approved = approved;
-	}
+	@Override
+	public Long getId() {return _id;}
 
-	public boolean isApproved() {
-		return _approved;
-	}
+	public void setApproved(boolean approved) {this._approved = approved;}
 
-	public void setPublic(boolean p) {
-		this._public = p;
-	}
+	public boolean isApproved() {return _approved;}
 
-	public boolean isPublic() {
-		return _public;
-	}
+	public void setPublic(boolean p) {this._public = p;}
 
-	public void setArchived(boolean archived) {
-		this._archived = archived;
-	}
+	public boolean isPublic() {return _public;}
 
-	public boolean isArchived() {
-		return _archived;
-	}
+	public void setArchived(boolean archived) {this._archived = archived;}
 
-	public void setName(String name) {
-		this._name = name;
-	}
+	public boolean isArchived() {return _archived;}
 
-	public String getName() {
-		return _name;
-	}
+	public void setName(String name) {this._name = name;}
 
-	public void setDescription(String description) {
-		this._description = description;
-	}
+	@Override
+	public String getName() {return _name;}
 
-	public String getDescription() {
-		return _description;
-	}
+	public void setDescription(String description) {this._description = description;}
 
-	public void setUrl(String url) {
-		this._url = url;
-	}
+	@Override
+	public String getDescription() {return _description;}
 
-	public String getUrl() {
-		return _url;
-	}
+	public void setUrl(String url) {this._url = url;}
 
-	public void setDateAdded(Date dateAdded) {
-		this._dateAdded = dateAdded;
-	}
+	@Override
+	public String getUrl() {return _url;}
 
-	public Date getDateAdded() {
-		return _dateAdded;
-	}
+	public void setDateAdded(Date dateAdded) {this._dateAdded = dateAdded;}
 
-	public void setContactId(Long contactId) {
-		this._contactId = contactId;
-	}
+	@Override
+	public Date getDateAdded() {return _dateAdded;}
 
-	public Long getContactId() {
-		return _contactId;
-	}
+	public void setContactId(Long contactId) {this._contactId = contactId;}
 
-	public void setEnhNetworkId(Long enhNetworkId) {
-		this._enhNetworkId = enhNetworkId;
-	}
+	@Override
+	public Long getContactId() {return _contactId;}
 
-	public Long getEnhNetworkId() {
-		return _enhNetworkId;
-	}
+	public void setEnhNetworkId(Long enhNetworkId) {this._enhNetworkId = enhNetworkId;}
 
-	public void setNorthBound(Double northBound) {
-		this._northBound = northBound;
-	}
+	@Override
+	public Long getEnhNetworkId() {return _enhNetworkId;}
 
-	public Double getNorthBound() {
-		return _northBound;
-	}
+	public void setNorthBound(Double northBound) {this._northBound = northBound;}
 
-	public void setEastBound(Double eastBound) {
-		this._eastBound = eastBound;
-	}
+	@Override
+	public Double getNorthBound() {return _northBound;}
 
-	public Double getEastBound() {
-		return _eastBound;
-	}
+	public void setEastBound(Double eastBound) {this._eastBound = eastBound;}
 
-	public void setSouthBound(Double southBound) {
-		this._southBound = southBound;
-	}
+	@Override
+	public Double getEastBound() {return _eastBound;}
 
-	public Double getSouthBound() {
-		return _southBound;
-	}
+	public void setSouthBound(Double southBound) {this._southBound = southBound;}
 
-	public void setWestBound(Double westBound) {
-		this._westBound = westBound;
-	}
+	@Override
+	public Double getSouthBound() {return _southBound;}
 
-	public Double getWestBound() {
-		return _westBound;
-	}
+	public void setWestBound(Double westBound) {this._westBound = westBound;}
+
+	@Override
+	public Double getWestBound() {return _westBound;}
+
+	public void setSessions(Set<Entry<Object, Object>> sessions) {_sessions = sessions;}
+
+	@Override
+	public Set<Entry<Object, Object>> getSessions() {return _sessions;}
 
 	/**
 	 * This method does no checking for source ordering and is reserved for
 	 * Hibernate use.
-	 * 
+	 *
 	 * @param sources
 	 */
 	private void setSources(List<Source> sources) {
 		_sources = sources;
 	}
-	
+
 	/**
 	 * Adds a source and ensures that the ordering of the set is correct.
-	 * 
+	 *
 	 * @param s
 	 */
 	public void addSource(Source s) {
@@ -195,7 +159,7 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 			_sources = new ArrayList<Source>(7);
 			_sources.add(s);
 		} else {
-		
+
 			//insert source at proper index.  Assuming this is loaded from the db
 			//in order, it will usually go at the end of the list.
 			int sortIndex = s.getSortOrder();
@@ -205,31 +169,35 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 					return;
 				}
 			}
-			
+
 			//Didn't find a place to insert, so the Source must belong at the start of the list
 			_sources.add(0, s);
 
 		}
-				
+
 	}
-	
+
+	@Override
 	public List<Source> getSources() {
 		if (_sources != null) {
 			return _sources;
 		}
 		return Collections.emptyList();
 	}
-	
+
+	@Override
 	public Source getSource(int identifier) {
 		if (_sources != null) {
-		
+
 			for (int i = 0; i < _sources.size(); i++)  {
 				Source s = _sources.get(i);
 				if (s.getIdentifier() == identifier) return s;
 			}
-			
+
 			return null;	//not found
 		}
 		return null;	//no sources
 	}
+
+
 }

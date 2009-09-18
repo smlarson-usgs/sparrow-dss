@@ -12,6 +12,7 @@ import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 import gov.usgswim.sparrow.domain.SourceBuilder;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.service.metadata.SavedSessionService;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -150,6 +151,7 @@ public class DataLoader {
 
 				while (rset.next()) {
 					SparrowModelBuilder m = new SparrowModelBuilder();
+					long modelID = rset.getLong("SPARROW_MODEL_ID");
 					m.setId(rset.getLong("SPARROW_MODEL_ID"));
 					m.setApproved(StringUtils.equalsIgnoreCase("T", rset.getString("IS_APPROVED")));
 					m.setPublic(StringUtils.equalsIgnoreCase("T", rset.getString("IS_PUBLIC")));
@@ -164,6 +166,9 @@ public class DataLoader {
 					m.setEastBound(rset.getDouble("BOUND_EAST"));
 					m.setSouthBound(rset.getDouble("BOUND_SOUTH"));
 					m.setWestBound(rset.getDouble("BOUND_WEST"));
+					
+					StringBuilder sessions = SavedSessionService.retrieveAllSavedSessionsXML(Long.toBinaryString(modelID));
+					
 					models.add(m);
 				}
 			} finally {

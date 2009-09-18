@@ -14,6 +14,8 @@ import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.naming.NamingException;
 import javax.xml.stream.XMLInputFactory;
@@ -74,6 +76,13 @@ public class ModelService implements HttpService<ModelRequest> {
 			models = DataLoader.loadModelsMetaData(conn, o.isApproved(), o.isPublic(), o.isArchived(), o.isSources());
 		} finally {
 			SharedApplication.closeConnection(conn, null);
+		}
+
+		// Have to do an extra step here to look up all the sessions and set them
+		for (SparrowModelBuilder builder: models) {
+			Long modelID = builder.getId();
+			Set<Entry<Object, Object>> sessions = SparrowResourceUtils.retrieveAllSavedSessions(modelID.toString());
+			builder.setSessions(sessions);
 		}
 
 		DomainSerializer serializer = new DomainSerializer(models);

@@ -11,6 +11,7 @@ import gov.usgswim.sparrow.util.SparrowResourceUtils;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -23,6 +24,8 @@ public class DomainSerializer extends BasicXMLStreamReader {
 	private List<SparrowModelBuilder> models;
 	private Iterator<SparrowModelBuilder> mIter;
 	private boolean isOutputCompleteFirstRow;
+	private boolean isSessionFirstRowOutput;
+	private boolean isSourcesFirstRowOutput;
 
 	public DomainSerializer(List<SparrowModelBuilder> models) {
 		this.models = models;
@@ -93,11 +96,22 @@ public class DomainSerializer extends BasicXMLStreamReader {
 					.addAttribute("west", model.getWestBound().toString())
 					.addAttribute("south", model.getSouthBound().toString())
 					.addAttribute("east", model.getEastBound().toString()));
+				addOpenTag("sessions");
+				{
+					for ( Entry<Object,Object> session: model.getSessions()) {
+						if (isOutputCompleteFirstRow && !isSessionFirstRowOutput) {
+							outputEmptySessionsForHeaders();
+							isSessionFirstRowOutput = true;
+						}
+					}
+				}
 				addOpenTag("sources");
 				{
 					for (Source src : model.getSources()) {
-						if (isOutputCompleteFirstRow) {
+						if (isOutputCompleteFirstRow && !isSourcesFirstRowOutput) {
 							outputEmptySourceForHeaders();
+							isSourcesFirstRowOutput = true;
+							isOutputCompleteFirstRow = false; // Not sure if this is proper. Must rethink;
 						}
 						events.add(new BasicTagEvent(START_ELEMENT, "source")
 							.addAttribute("id", src.getId().toString())
@@ -145,7 +159,13 @@ public class DomainSerializer extends BasicXMLStreamReader {
 			addNonNullBasicTag("units", "");
 		}
 		addCloseTag("source");
-		isOutputCompleteFirstRow = false;
+		// isOutputCompleteFirstRow = false; [IK] This side effect is bad and should be no longer needed.
+	}
+
+	private void outputEmptySessionsForHeaders() {
+		events.add(new BasicTagEvent(START_ELEMENT, "session")
+				.addAttribute("key", ""));
+		addCloseTag("session");
 	}
 
 	public void setOutputCompleteFirstRow() {

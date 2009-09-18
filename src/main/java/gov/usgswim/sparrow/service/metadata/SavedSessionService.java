@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.service.metadata;
 
 import static gov.usgswim.sparrow.util.SparrowResourceUtils.lookupModelID;
 import static gov.usgswim.sparrow.util.SparrowResourceUtils.retrieveSavedSession;
-import static gov.usgswim.sparrow.util.SparrowResourceUtils.retrieveSavedSessions;
+import static gov.usgswim.sparrow.util.SparrowResourceUtils.retrieveAllSavedSessions;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,8 +20,24 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class SavedSessionService extends HttpServlet {
 
+	public static StringBuilder retrieveAllSavedSessionsXML(String modelID) {
+		StringBuilder result = new StringBuilder();
+		Set<Entry<Object, Object>> sessionList = retrieveAllSavedSessions(modelID);
+		if (sessionList != null && !sessionList.isEmpty()) {
+			result.append("<sessions>");
+			for (Entry<Object, Object> entry: sessionList) {
+				result.append("<session key=\"" + entry.getKey().toString() + "\"/>\n");
+			}
+			result.append("</sessions>");
+		}
+		return result;
+	}
+
 	private static final long serialVersionUID = 1L;
 
+	// ================
+	// Instance Methods
+	// ================
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -49,14 +65,11 @@ public class SavedSessionService extends HttpServlet {
 		if (session == null || session.length() == 0) {
 			// output a list of all sessions for the model
 			// TODO may need to convert this to JSON
-			Set<Entry<Object, Object>> sessionList = retrieveSavedSessions(modelID.toString());
-			if (sessionList != null && !sessionList.isEmpty()) {
+
+			StringBuilder sessions = retrieveAllSavedSessionsXML(modelID.toString());
+			if (sessions.length() > 0) {
 				resp.setContentType("text/xml");
-				out.write("<sessions>");
-				for (Entry<Object, Object> entry: sessionList) {
-					out.write("<session key=\"" + entry.getKey().toString() + "\"/>\n");
-				}
-				out.write("</sessions>");
+				out.write(sessions.toString());
 			} else {
 				resp.setContentType("text/plain");
 				// TODO what to return in case of empty?
@@ -73,6 +86,5 @@ public class SavedSessionService extends HttpServlet {
 		}
 		out.flush();
 	}
-
 
 }

@@ -15,6 +15,7 @@ public abstract class SparrowResourceUtils {
 	private static final Properties modelIndex = ResourceLoaderUtils.loadResourceAsProperties("models/modelIndex.txt");
 
 	public static String getModelResourceFilePath(Long modelId, String fileName) {
+		if (modelId == null || fileName == null) return null;
 		String modelFolder = "models/" + modelId + "/";
 		return modelFolder + fileName;
 	}
@@ -31,7 +32,7 @@ public abstract class SparrowResourceUtils {
 		return props.getProperty(sessionName, defaultValue);
 	}
 
-	public static Set<Entry<Object, Object>> retrieveSavedSessions(String model) {
+	public static Set<Entry<Object, Object>> retrieveAllSavedSessions(String model) {
 		Long modelID = lookupModelID(model);
 		Properties props = ResourceLoaderUtils.loadResourceAsProperties(getModelResourceFilePath(modelID, SESSIONS_FILE));
 		return props.entrySet();
