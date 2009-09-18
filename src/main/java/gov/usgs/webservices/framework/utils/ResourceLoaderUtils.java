@@ -131,15 +131,19 @@ public class ResourceLoaderUtils {
 		InputStream stream = null;
 		try {
 			stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceFilePath);
-			BufferedReader in = new BufferedReader(new InputStreamReader(stream));
-			return loadResourceAsProperties(in);
+			if (stream == null) {
+				System.err.println("Unable to loadResourceAsProperties(" + resourceFilePath + ")");
+			} else {
+				BufferedReader in = new BufferedReader(new InputStreamReader(stream));
+				return loadResourceAsProperties(in);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			if (stream != null) {
 				try {stream.close();} catch (IOException e1) { /* do nothing */}
 			}
-			return new Properties(); // return an empty Properties
 		}
+		return new Properties(); // return an empty Properties
 	}
 
 

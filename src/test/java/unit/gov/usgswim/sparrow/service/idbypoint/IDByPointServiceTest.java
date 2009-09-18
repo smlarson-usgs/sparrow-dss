@@ -132,12 +132,6 @@ public class IDByPointServiceTest {
 				System.out.println();
 			}
 
-
-
-
-
-
-
 		}
 
 

@@ -413,7 +413,6 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @return Set of bins such that the bins define break-point boundaries
 	 *         whose values are approximately equally spaced apart.
 	 */
-	@SuppressWarnings("cast")
 	public static BigDecimal[] getEqualRangeBins(DataTable data, int columnIndex, int binCount, boolean useRounding) {
 		float[] sortedValues = DataTableUtils.extractSortedValues(data, columnIndex, false);
 		float minValue = sortedValues[0];

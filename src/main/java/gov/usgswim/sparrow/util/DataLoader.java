@@ -171,6 +171,8 @@ public class DataLoader {
 					
 					models.add(m);
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			} finally {
 				rset.close();
 			}

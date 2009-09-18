@@ -14,20 +14,21 @@
             <xsl:apply-templates select="srs_mapping"/>
             <xsl:apply-templates select="wms_config"/>
             <xsl:apply-templates select="ns_data_provider[@id!='sparrowPredict']"/>
-            <ns_data_provider id="sparrowPredict" class="gov.usgswim.sparrow.MapViewerSparrowDataProvider" />
+            	<ns_data_provider id="sparrowPredict"
+            					  class="gov.usgswim.sparrow.MapViewerSparrowDataProvider" />
             <xsl:apply-templates select="s_data_provider"/>
             <xsl:apply-templates select="map_cache_server"/>
-            <xsl:apply-templates select="map_data_source[@id!='sparrow']"/>
-            <map_data_source name="sparrow"
-                jdbc_host="130.11.165.152"
-                jdbc_sid="widw"
-                jdbc_port="1521"
-                jdbc_user="sparrow_tester1"
-                jdbc_password="usgs-787"
-                jdbc_mode="thin"
-                max_connections="40"
-                number_of_mappers="20"
-            />
+            <xsl:apply-templates select="map_data_source[@name!='sparrow']"/>
+            	<map_data_source name="sparrow"
+            	    jdbc_host="130.11.165.152"
+                	jdbc_sid="widw"
+                	jdbc_port="1521"
+                	jdbc_user="SPARROW_DSS"
+                	jdbc_password="!***REMOVED***"
+                	jdbc_mode="thin"
+                	max_connections="40"
+                	number_of_mappers="30"
+            	/>
         </MapperConfig>
     </xsl:template>
     <xsl:template match="*">

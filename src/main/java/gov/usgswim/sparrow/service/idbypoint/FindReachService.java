@@ -47,7 +47,7 @@ public class FindReachService extends HttpServlet {
 		+ "   	</reach>"
 		+ "</sparrow-reach-response>";
 
-    @Override
+	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 	throws ServletException, IOException {
 		doPost(req, resp);
@@ -73,12 +73,13 @@ public class FindReachService extends HttpServlet {
 					+ "where a.sparrow_model_id = " + frReq.modelID
 					+ whereClause
 					+ " order by reach_name";
-				System.out.println(sql);
+				//System.out.println(sql);
 				Statement stmt = conn.createStatement();
 				ResultSet rset = stmt.executeQuery(sql);
 
 				while (rset.next()) {
 					outputXML.append("<reach>");
+
 					{
 						outputXML.append("<id>" + rset.getString("FULL_IDENTIFIER") + "</id>");
 						outputXML.append("<name>" + rset.getString("REACH_NAME") + "</name>");
@@ -143,16 +144,22 @@ public class FindReachService extends HttpServlet {
 	public static Pattern hucRegEx = Pattern.compile("[0-9]+");
 	public static List<String> cleanAndCheckValidityFindReachRequest(FindReachRequest frReq) {
 		List<String> errors = new ArrayList<String>();
-		frReq.reachIDs = trimToNull(frReq.reachIDs);
-		frReq.basinAreaHi = trimToNull(frReq.basinAreaHi);
-		frReq.basinAreaLo = trimToNull(frReq.basinAreaLo);
-		frReq.meanQHi = trimToNull(frReq.meanQHi);
-		frReq.meanQLo = trimToNull(frReq.meanQLo);
-		frReq.reachName = trimToNull(frReq.reachName);
-		frReq.huc = trimToNull(frReq.huc);
-		frReq.boundingBox = trimToNull(frReq.boundingBox);
+		{ // trim each field
+			frReq.reachIDs = trimToNull(frReq.reachIDs);
+			frReq.basinAreaHi = trimToNull(frReq.basinAreaHi);
+			frReq.basinAreaLo = trimToNull(frReq.basinAreaLo);
+			frReq.meanQHi = trimToNull(frReq.meanQHi);
+			frReq.meanQLo = trimToNull(frReq.meanQLo);
+			frReq.reachName = trimToNull(frReq.reachName);
+			frReq.huc = trimToNull(frReq.huc);
+			frReq.boundingBox = trimToNull(frReq.boundingBox);
+			frReq.edaCode = trimToNull(frReq.edaCode);
+			frReq.edaName = trimToNull(frReq.edaName);
+		}
+
 		{	// clean each field
 			frReq.reachIDs = cleanForSQLInjection(frReq.reachIDs);
+			frReq.reachName = cleanForSQLInjection(frReq.reachName);
 			frReq.huc = cleanForSQLInjection(frReq.huc);
 			if (frReq.huc != null) {
 				frReq.huc = cleanForSQLInjection(frReq.huc);
@@ -166,7 +173,11 @@ public class FindReachService extends HttpServlet {
 				errors.add("at least one search parameter is required");
 				return errors;
 			}
+			frReq.edaCode = cleanForSQLInjection(frReq.edaCode);
+			frReq.edaName = cleanForSQLInjection(frReq.edaName);
+
 		}
+
 		errors = checkHiLo(errors, frReq.basinAreaHi, frReq.basinAreaLo, "catch area");
 		errors = checkHiLo(errors, frReq.meanQHi, frReq.meanQLo, "catch area");
 		// TODO check bbox
@@ -213,7 +224,7 @@ public class FindReachService extends HttpServlet {
 	public String createFindReachWhereClause(FindReachRequest frReq) {
 		String whereClause = "";
 		if (frReq.reachIDs != null) {
-		    String reachIds = frReq.reachIDs.replaceAll("[\\D]+", ",");
+			String reachIds = frReq.reachIDs.replaceAll("[\\D]+", ",");
 			whereClause += " and full_identifier IN (" + reachIds + ")";
 		}
 		if (frReq.reachName != null) {
@@ -244,6 +255,16 @@ public class FindReachService extends HttpServlet {
 			if (frReq.boundingBox != null) {
 				whereClause += " and SDO_FILTER(reach_geom, SDO_GEOMETRY(2003, 8307, NULL, SDO_ELEM_INFO_ARRAY(1,1003,3), SDO_ORDINATE_ARRAY("
 					+ frReq.boundingBox + "))) = 'TRUE' ";
+			}
+		}
+		{	// eda code
+			if (frReq.edaCode != null) {
+				whereClause += " and EDACODE like '" + frReq.edaCode + "%'";
+			}
+		}
+		{	// eda name
+			if (frReq.edaName != null) {
+				whereClause += " and EDANAME like '" + frReq.edaName + "%'";
 			}
 		}
 		whereClause += " and rownum <= 1000";

@@ -2,6 +2,10 @@ package gov.usgswim.sparrow.service.idbypoint;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
 import gov.usgswim.sparrow.util.ParserHelper;
@@ -24,6 +28,9 @@ public class FindReachRequest implements XMLStreamParserComponent{
 	public String state;
 	public String huc;
 	public String boundingBox;
+	public String edaName;
+	public String edaCode;
+	public Map<String, String> ancilValues = new HashMap<String, String>();
 
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
@@ -112,7 +119,17 @@ public class FindReachRequest implements XMLStreamParserComponent{
 					} else if ("content".equals(localName) || "response-format".equals(localName)) {
 						// ignoring for now
 						ParserHelper.ignoreElement(in);
-					} else {
+					} else if ("edaname".equals(localName)) {
+						edaName = ParserHelper.parseSimpleElementValue(in);
+					} else if ("edacode".equals(localName)) {
+						edaCode = ParserHelper.parseSimpleElementValue(in);
+					} else if (localName.startsWith("ancil_")) {
+						String key = localName.substring("ancil_".length());
+						String value = ParserHelper.parseSimpleElementValue(in);
+						ancilValues.put(key, value);
+					}
+					// add more here
+					else {
 						throw new RuntimeException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
 					}
 					break;

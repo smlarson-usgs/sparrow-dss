@@ -103,8 +103,12 @@ public class DomainSerializer extends BasicXMLStreamReader {
 							outputEmptySessionsForHeaders();
 							isSessionFirstRowOutput = true;
 						}
+						events.add(new BasicTagEvent("session", null)
+							.addAttribute("key", session.getKey().toString())
+						);
 					}
 				}
+				addCloseTag("sessions");
 				addOpenTag("sources");
 				{
 					for (Source src : model.getSources()) {
