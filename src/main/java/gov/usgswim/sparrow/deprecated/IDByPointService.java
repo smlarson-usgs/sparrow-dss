@@ -5,7 +5,6 @@ import gov.usgswim.ThreadSafe;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
-import gov.usgswim.sparrow.service.DataTableSerializer;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.model.ModelService;
 
@@ -34,7 +33,7 @@ public class IDByPointService implements HttpService<IDByPointRequest_old> {
 	public IDByPointService() {}
 
 
-public void shutDown() {
+	public void shutDown() {
 		xoFact = null;
 	}
 
