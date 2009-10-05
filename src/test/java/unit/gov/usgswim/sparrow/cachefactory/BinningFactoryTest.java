@@ -1,13 +1,16 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import gov.usgswim.datatable.impl.SimpleDataTableWritable;
+import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 
 import org.apache.commons.lang.ArrayUtils;
 
 import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
 import static gov.usgswim.sparrow.cachefactory.BinningFactory.round;
-import static gov.usgswim.sparrow.cachefactory.BinningFactory.getEqualCountBins;
 import static gov.usgswim.sparrow.cachefactory.BinningFactory.digitAccuracyMultipliers;
 import static gov.usgswim.sparrow.cachefactory.BinningFactory.makeBigDecimal;
 import static gov.usgswim.sparrow.cachefactory.BinningFactory.getUniqueValueCount;
@@ -16,6 +19,14 @@ public class BinningFactoryTest extends TestCase {
 
 	public final static boolean ENABLE_ALL_LOG_OUTPUT = false;
 	public final static boolean ENABLE_FAILURE_LOG_OUTPUT = true;
+	
+	/**
+	 * Max is redundant, but there is no max negative value double constant,
+	 * so we create them both here.
+	 */
+	public final static double MAX_DOUBLE = Double.MAX_VALUE;
+	public final static double MIN_DOUBLE = Double.MAX_VALUE * -1d;
+
 	
 	public void testRoundToZero() {
 		assertEquals("0", round(.011, -.1, .44).toString());
@@ -69,53 +80,83 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 
-	public static Float[] sortedData100Normal = {-99.73f, -97.544f, -93.8991f, -86.773f, -85.1101f,
-		-84.897f, -83.511f, -83.509f, -83.507f, -83.505f,
-		-83.404f, -83.403f, -78.011f, -72.555f, -71.77f,
-		-22.378f, -18.22f, -15.099f, -14.932f, -8.753f,
-		-8.7519f, -8.7498f, -7.412f, -6.071f, -5.873f,
-		-4.332f, -3.256f, -3.225f, -3.0012f, -2.983f,
-		-1.455f, -.8896f, -.7337f, -.6332f, -.2219f,
-		-.2189f, -.20166f, -.20133f, -.200988f, -.20977f,
-		.004334f, .005112f, .005339f, .005455f, .0056711f,
-		.0093443f, .0094775f, .0094993f, .009554f, .0096798f,
-		.01003f, .01025f, .010378f, .010408f, .01153f,
-		.02334f, .06778f, .07112f, .08951f, .09234f,
-		.09443f, .09493f, .09512f, .09593f, .09607f,
-		.09889f, .09912f, 1.003f, 1.074f, 1.082f,
-		1.134f, 1.188f, 1.191f, 1.234f, 1.265f,
-		1.277f, 1.341f, 1.456f, 1.567f, 1.612f,
-		1.789f, 1.834f, 1.8402f, 1.862f, 1.871f,
-		1.888f, 1.891f, 1.899f, 1.902f, 1.905f,
-		1.908f, 1.911f, 1.912f, 1.913f, 1.914f,
-		1.915f, 1.977f, 2.111f, 3.445f, 5.121f
+	public static double[] sortedData100Normal = {-99.73d, -97.544d, -93.8991d, -86.773d, -85.1101d,
+		-84.897d, -83.511d, -83.509d, -83.507d, -83.505d,
+		-83.404d, -83.403d, -78.011d, -72.555d, -71.77d,
+		-22.378d, -18.22d, -15.099d, -14.932d, -8.753d,
+		-8.7519d, -8.7498d, -7.412d, -6.071d, -5.873d,
+		-4.332d, -3.256d, -3.225d, -3.0012d, -2.983d,
+		-1.455d, -.8896d, -.7337d, -.6332d, -.2219d,
+		-.2189d, -.20166d, -.20133d, -.200988d, -.20977d,
+		.004334d, .005112d, .005339d, .005455d, .0056711d,
+		.0093443d, .0094775d, .0094993d, .009554d, .0096798d,
+		.01003d, .01025d, .010378d, .010408d, .01153d,
+		.02334d, .06778d, .07112d, .08951d, .09234d,
+		.09443d, .09493d, .09512d, .09593d, .09607d,
+		.09889d, .09912d, 1.003d, 1.074d, 1.082d,
+		1.134d, 1.188d, 1.191d, 1.234d, 1.265d,
+		1.277d, 1.341d, 1.456d, 1.567d, 1.612d,
+		1.789d, 1.834d, 1.8402d, 1.862d, 1.871d,
+		1.888d, 1.891d, 1.899d, 1.902d, 1.905d,
+		1.908d, 1.911d, 1.912d, 1.913d, 1.914d,
+		1.915d, 1.977d, 2.111d, 3.445d, 5.121d
 	}; // 100 elements
 	
-	public static Float[] sortedData2 = { 2f, 4f };
-	public static Float[] sortedData2a = { 0f, 0f };
-	public static Float[] sortedData2b = { 4f, 4f };
-	public static Float[] sortedData2c = { 0f, 4f };
+	public static double[] sortedData2 = { 2d, 4d };
+	public static double[] sortedData2a = { 0d, 0d };
+	public static double[] sortedData2b = { 4d, 4d };
+	public static double[] sortedData2c = { 0d, 4d };
 	
-	public static Float[] sortedData2d = { -4f, -2f };
-	public static Float[] sortedData2e = { -4f, -4f };
-	public static Float[] sortedData2f = { -4f, 0f };
+	public static double[] sortedData2d = { -4d, -2d };
+	public static double[] sortedData2e = { -4d, -4d };
+	public static double[] sortedData2f = { -4d, 0d };
 	
-	public static Float[] sortedData2g = { -4f, 4f };
+	public static double[] sortedData2g = { -4d, 4d };
 	
 	//Two values w/ decimals
-	public static Float[] sortedData2_ = { 2.1f, 4.3f };
-	public static Float[] sortedData2a_ = { 0.1f, 0.1f };
-	public static Float[] sortedData2b_ = { 4.1f, 4.1f };
-	public static Float[] sortedData2c_ = { 0f, 4.1f };
+	public static double[] sortedData2_ = { 2.1d, 4.3d };
+	public static double[] sortedData2a_ = { 0.1d, 0.1d };
+	public static double[] sortedData2b_ = { 4.1d, 4.1d };
+	public static double[] sortedData2c_ = { 0d, 4.1d };
 	
-	public static Float[] sortedData2d_ = { -4.1f, -2.1f };
-	public static Float[] sortedData2e_ = { -4.1f, -4.1f };
-	public static Float[] sortedData2f_ = { -4.1f, 0f };
+	public static double[] sortedData2d_ = { -4.1d, -2.1d };
+	public static double[] sortedData2e_ = { -4.1d, -4.1d };
+	public static double[] sortedData2f_ = { -4.1d, 0d };
 	
-	public static Float[] sortedData2g_ = { -4.1f, 4.1f };
+	public static double[] sortedData2g_ = { -4.1d, 4.1d };
+	
+	//empty arrays, NAN, +/-infinity, and other odd combos
+	public static double[] sortedDataEmpty_ = new double[0];
+	
+	//Non sorted data tables with 'odd' values
+	public static SimpleDataTableWritable tblEmpty =
+		new SimpleDataTableWritable();
+	static {
+		StandardNumberColumnDataWritable col = new StandardNumberColumnDataWritable();
+		tblEmpty.addColumn(col);
+	}
+	public static DataTable tblOneNAN =
+		new SimpleDataTableWritable(transpose(Double.NaN), null);
+	public static DataTable tblAllNAN = 
+		new SimpleDataTableWritable(transpose(Double.NaN, Double.NaN, Double.NaN), null);
+	public static DataTable tblMixNAN =
+		new SimpleDataTableWritable(transpose(4d, Double.NaN, -4, Double.NaN), null);
+	public static DataTable tblMixAll_1 =
+		new SimpleDataTableWritable(
+		transpose(Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NaN), null);
+	public static DataTable tblMixAll_2 =
+		new SimpleDataTableWritable(
+		transpose(Double.NaN, 1.2d, Double.POSITIVE_INFINITY, -9d, Double.NEGATIVE_INFINITY, Double.NaN), null);
+	public static DataTable tblMixAll_3 =
+		new SimpleDataTableWritable(
+		transpose(Double.NaN, 1.2d, Double.POSITIVE_INFINITY, -9d, Double.NaN, Double.NaN), null);
+	public static DataTable tblMixAll_4 =
+		new SimpleDataTableWritable(
+		transpose(Double.NaN, Double.NEGATIVE_INFINITY, -9d, Double.NaN, Double.NaN), null);
+	
 
 	public void testGetEqualCountBinsOfOne() {
-		BigDecimal[] result = getEqualCountBins(sortedData100Normal, 1, Boolean.TRUE);
+		BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData100Normal, 1, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -123,7 +164,7 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 	public void testGetEqualCountBinsOfTwo() {
-		BigDecimal[] result = getEqualCountBins(sortedData100Normal, 2, Boolean.TRUE);
+		BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData100Normal, 2, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -132,7 +173,7 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 	public void testGetEqualCountBinsOfThree() {
-		BigDecimal[] result = getEqualCountBins(sortedData100Normal, 3, Boolean.TRUE);
+		BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData100Normal, 3, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -142,7 +183,7 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 	public void testGetEqualCountBinsOfFour() {
-		BigDecimal[] result = getEqualCountBins(sortedData100Normal, 4, Boolean.TRUE);
+		BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData100Normal, 4, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -153,7 +194,7 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 	public void testGetEqualCountBinsOfFive() {
-		BigDecimal[] result = getEqualCountBins(sortedData100Normal, 5, Boolean.TRUE);
+		BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData100Normal, 5, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -165,7 +206,7 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 	public void testGetEqualCountBinsOfSix() {
-		BigDecimal[] result = getEqualCountBins(sortedData100Normal, 6, Boolean.TRUE);
+		BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData100Normal, 6, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -179,7 +220,7 @@ public class BinningFactoryTest extends TestCase {
 
 	public void testGetEqualCountBinsOfSeven() {
 
-		BigDecimal[] result = getEqualCountBins(sortedData100Normal, 7, Boolean.TRUE);
+		BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData100Normal, 7, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -207,19 +248,40 @@ public class BinningFactoryTest extends TestCase {
 		doEqualCountAssert(sortedData2, bins, round, 0, 5);	//2 to 4
 		doEqualCountAssert(sortedData2_, bins, round, 0, 5); //2 to 5
 		doEqualCountAssert(sortedData2a, bins, round, 0, 1);
-		doEqualCountAssert(sortedData2a_, bins, round, 0, .11);	//0 to .1
+		doEqualCountAssert(sortedData2a_, bins, round, 0, .1);
 		doEqualCountAssert(sortedData2b, bins, round, 0, 4);
-		doEqualCountAssert(sortedData2b_, bins, round, 0, 4.5);	//0 to 5
+		doEqualCountAssert(sortedData2b_, bins, round, 0, 4.1);	//0 to 5
 		doEqualCountAssert(sortedData2c, bins, round, 0, 5);	//0 to 4
 		doEqualCountAssert(sortedData2c_, bins, round, 0, 5);
 		doEqualCountAssert(sortedData2d, bins, round, -5, -0);
 		doEqualCountAssert(sortedData2d_, bins, round, -5, -2);
 		doEqualCountAssert(sortedData2e, bins, round, -4, 0);
-		doEqualCountAssert(sortedData2e_, bins, round, -4.5, 0);
+		doEqualCountAssert(sortedData2e_, bins, round, -4.1, 0);
 		doEqualCountAssert(sortedData2f, bins, round, -5, 0);	//-4 to 0
 		doEqualCountAssert(sortedData2f_, bins, round, -5, 0);
 		doEqualCountAssert(sortedData2g, bins, round, -10, 10);	//-4 to 4
 		doEqualCountAssert(sortedData2g_, bins, round, -10, 10);	//-5 to 5
+		doEqualCountAssert(sortedDataEmpty_, bins, round, 0d, 1d);
+		
+		//Test datatables with non-standard double values
+		doEqualCountAssert(tblEmpty, bins, round, 0d, 1d);
+		doEqualCountAssert(tblOneNAN, bins, round, 0d, 1d);
+		doEqualCountAssert(tblAllNAN, bins, round, 0d, 1d);
+		doEqualCountAssert(tblMixNAN, bins, round, -10d, 10d);
+		doEqualCountAssert(tblMixAll_1, bins, round, MIN_DOUBLE, MAX_DOUBLE);
+		doEqualCountAssert(tblMixAll_2, bins, round, MIN_DOUBLE, MAX_DOUBLE);
+		doEqualCountAssert(tblMixAll_3, bins, round, -10d, MAX_DOUBLE);
+		doEqualCountAssert(tblMixAll_4, bins, round, MIN_DOUBLE, 0d);
+	}
+	
+	private static double[][] transpose(double... in) {
+		int size = in.length;
+		double[][] out = new double[size][1];
+		
+		for (int i=0; i < size; i++) {
+			out[i][0] = in[i];
+		}
+		return out;
 	}
 
 	public void testEqualCount_SmallDataset_TwoBins() {
@@ -228,67 +290,130 @@ public class BinningFactoryTest extends TestCase {
 		
 		//Comments following the asserts indicate a preferred binning result,
 		//though the tested values a acceptable.  Who's to say??
-		doEqualCountAssert(sortedData2, bins, round, 2, 3, 4);
-		doEqualCountAssert(sortedData2_, bins, round, 2, 3.2, 4.4);
-		doEqualCountAssert(sortedData2a, bins, round, 0, 1, 2);
-		doEqualCountAssert(sortedData2a_, bins, round, 0, .055, .11);
-		doEqualCountAssert(sortedData2b, bins, round, 0, 2, 4);
-		doEqualCountAssert(sortedData2b_, bins, round, 0, 2.1, 4.2);
-		doEqualCountAssert(sortedData2c, bins, round, 0, 2, 4);
-		doEqualCountAssert(sortedData2c_, bins, round, 0, 2.1, 4.2);
-		doEqualCountAssert(sortedData2d, bins, round, -4, -3, -2);
+		doEqualCountAssert(sortedData2, bins, round, 2d, 3d, 4d);
+		doEqualCountAssert(sortedData2_, bins, round, 2.1d, 3.2d, 4.3d);
+		doEqualCountAssert(sortedData2a, bins, round, 0d, 1d, 2d);
+		doEqualCountAssert(sortedData2a_, bins, round, 0d, .05d, .1d);
+		doEqualCountAssert(sortedData2b, bins, round, 0d, 2d, 4d);
+		doEqualCountAssert(sortedData2b_, bins, round, 0d, 2.05d, 4.1d);
+		doEqualCountAssert(sortedData2c, bins, round, 0d, 2d, 4d);
+		doEqualCountAssert(sortedData2c_, bins, round, 0d, 2.05d, 4.1d);
+		doEqualCountAssert(sortedData2d, bins, round, -4d, -3d, -2d);
 		
-		//Ugly
-		//Values like -4.0999999904 should be rounded to -4.1, but how???
-		doEqualCountAssert(sortedData2d_, bins, round, -4.1, -3.1, 2.1);
+		//Some specific values that have caused issues
+		doEqualCountAssert(sortedData2d_, bins, round, -4.1, -3.1, -2.1);
+		doEqualCountAssert(new double[] {-4.1d, -2.1d}, bins, round, -4.1d, -3.1d, -2.1d);
+		doEqualCountAssert(new double[] {-4.3d, -2.1d}, bins, round, -4.3d, -3.2d, -2.1d);
 		
 		
-		doEqualCountAssert(sortedData2e, bins, round, -4, -2, 0);
-		doEqualCountAssert(sortedData2e_, bins, round, -4.1, -2, 0.1);
-		doEqualCountAssert(sortedData2f, bins, round, -4, -2, 0);
-		doEqualCountAssert(sortedData2f_, bins, round, -4.1, -2, .1);
-		doEqualCountAssert(sortedData2g, bins, round, -4, 0, 4);
-		doEqualCountAssert(sortedData2g_, bins, round, -4.5, 0, 4.5);
+		doEqualCountAssert(sortedData2e, bins, round, -4d, -2d, 0d);
+		doEqualCountAssert(sortedData2e_, bins, round, -4.1d, -2.05d, 0d);
+		doEqualCountAssert(sortedData2f, bins, round, -4d, -2d, 0d);
+		doEqualCountAssert(sortedData2f_, bins, round, -4.1d, -2.05d, 0d);
+		doEqualCountAssert(sortedData2g, bins, round, -4d, 0d, 4d);
+		doEqualCountAssert(sortedData2g_, bins, round, -4.1d, 0d, 4.1d);
+		doEqualCountAssert(sortedDataEmpty_, bins, round, 0d, 1d, 2d);
 	}
+	
 
 	public void testGetEqualCountBinsOfThreeSmall() {
-		BigDecimal[] result = getEqualCountBins(sortedData2, 3, Boolean.TRUE);
-
-//		int lastIndex = result.length - 1;
-//		assertEquals("2", result[0].toString());
-//		assertEquals("-0.5", result[1].toString());
-//		assertEquals("1", result[2].toString());
-//		assertEquals("6", result[lastIndex].toString());
-		printBinningResult("2 values --> 3 EQ Bins:", result);
-	}
-
-	public void testGetEqualCountBinsOfFourSmall() {
-		BigDecimal[] result = getEqualCountBins(sortedData2, 4, Boolean.TRUE);
-
-//		int lastIndex = result.length - 1;
-//		assertEquals("-100", result[0].toString());
-//		assertEquals("-5", result[1].toString());
-//		assertEquals("0.01", result[2].toString());
-//		assertEquals("1.3", result[3].toString());
-//		assertEquals("6", result[lastIndex].toString());
+		final int bins = 3;
+		final boolean round = true;
 		
-		printBinningResult("2 values --> 4 EQ Bins:", result);
+
+		doEqualCountAssert(sortedData2, bins, round, 2d, 2.67d, 3.34d, 4.01d);
+		doEqualCountAssert(sortedData2_, bins, round, 2.1d, 2.84d, 3.58d, 4.32d);
+		doEqualCountAssert(sortedData2a, bins, round, 0d, 1d, 2d, 3d);
+		doEqualCountAssert(sortedData2a_, bins, round, 0d, .034d, .068d, .102d);
+		doEqualCountAssert(sortedData2b, bins, round, 0d, 1.34d, 2.68d, 4.02d);
+		doEqualCountAssert(sortedData2b_, bins, round, 0d, 1.37d, 2.74d, 4.11d);
+		doEqualCountAssert(sortedData2c, bins, round, 0d, 1.34d, 2.68d, 4.02d);
+		doEqualCountAssert(sortedData2c_, bins, round, 0d, 1.37d, 2.74d, 4.11d);
+		doEqualCountAssert(sortedData2d, bins, round, -4d, -3.33d, -2.66d, -1.99d);
+		doEqualCountAssert(sortedData2d_, bins, round, -4.1d, -3.43d, -2.76d, -2.09d);
+		doEqualCountAssert(sortedData2e, bins, round, -4d, -2.66d, -1.32d, .02d);
+		doEqualCountAssert(sortedData2e_, bins, round, -4.1d, -2.73d, -1.36d, .01d);
+		doEqualCountAssert(sortedData2f, bins, round, -4d, -2.66d, -1.32d, .02d);
+		doEqualCountAssert(sortedData2f_, bins, round, -4.1d, -2.73d, -1.36d, .01d);
+		doEqualCountAssert(sortedData2g, bins, round, -4d, -1.33d, 1.34d, 4.01d);
+		doEqualCountAssert(sortedData2g_, bins, round, -4.1d, -1.36d, 1.38d, 4.12d);
+		doEqualCountAssert(sortedDataEmpty_, bins, round, 0d, 1d, 2d, 3d);
+
 	}
 
-	public void testGetEqualCountBinsOfFiveSmall() {
-		BigDecimal[] result = getEqualCountBins(sortedData2, 5, Boolean.TRUE);
-
-//		int lastIndex = result.length - 1;
-//		assertEquals("-100", result[0].toString());
-//		assertEquals("-8.75", result[1].toString());
-//		assertEquals("0", result[2].toString());
-//		assertEquals("0.094", result[3].toString());
-//		assertEquals("1.8", result[4].toString());
-//		assertEquals("6", result[lastIndex].toString());
+	
+	public void testSimpleRound() {
 		
-		printBinningResult("2 values --> 5 EQ Bins:", result);
-	}
+		//Round UP to the nearest 1000, treat any value less than or equal to 10 as 'small' (2 places right of 1000)
+		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1000d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1000.000001d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1010d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("2000", BinningFactory.roundToScale(new BigDecimal(1010.000000001d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("2000", BinningFactory.roundToScale(new BigDecimal(1100d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(999.999999d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(9.999999d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(10d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(10.0000001d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1000d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1000.000001d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1010d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("-2000", BinningFactory.roundToScale(new BigDecimal(-1010.000000001d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("-2000", BinningFactory.roundToScale(new BigDecimal(-1100d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-999.999999d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(-9.999999d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(-10d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-10.0000001d), 3, 2, RoundingMode.UP).toPlainString());
+		
+		//Round Down to the nearest 1000, treat any value less than or equal to 10 as 'small' (2 places right of 1000)
+		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1000d), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1100d), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(989.999999999d), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(990d), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(990.0000000001), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1000d), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1100d), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(-989.999999999d), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(-990d), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-990.0000000001), 3, 2, RoundingMode.DOWN).toPlainString());
+		
+		//Round CEILING to the nearest 1000, treat any value less than or equal to 10 as 'small' (2 places right of 1000)
+		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1000d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1010d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("2000", BinningFactory.roundToScale(new BigDecimal(1010.000000001d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(999.999999d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(10d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(10.0000001d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1000d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1011d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1990d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("-2000", BinningFactory.roundToScale(new BigDecimal(-1990.000000001d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-999.999999d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(-10d), 3, 2, RoundingMode.CEILING).toPlainString());
+		
+		//Round FLOOR to the nearest 1000, treat any value less than or equal to 10 as 'small' (2 places right of 1000)
+		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1000d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1990d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("2000", BinningFactory.roundToScale(new BigDecimal(1990.000000001d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(10d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1000d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1010d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("-2000", BinningFactory.roundToScale(new BigDecimal(-1010.00001d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-999.999999d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(-10d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		
+		//Zero rounding test
+		assertEquals("0", BinningFactory.roundToScale(new BigDecimal("0"), -2, 2, RoundingMode.FLOOR).toPlainString());
 
+		
+		//Some random samples
+		assertEquals("1346000", BinningFactory.roundToScale(new BigDecimal(1345456d), 3, 3, RoundingMode.UP).toPlainString());
+		assertEquals("1345500000", BinningFactory.roundToScale(new BigDecimal(1345456863d), 5, 6, RoundingMode.UP).toPlainString());
+		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(.0002345d), 3, 8, RoundingMode.UP).toPlainString());
+		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(.0000001d), 3, 10, RoundingMode.UP).toPlainString());
+		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(.00000011d), 3, 10, RoundingMode.UP).toPlainString());
+		
+		
+	}
 
 
 	public void testMakeBigDecimalWith0Digit() {
@@ -354,13 +479,13 @@ public class BinningFactoryTest extends TestCase {
 	}
 	
 	public void testUniqueValueCount() {
-		Float[] data0 = new Float[] {}; 
-		Float[] data1 = new Float[] { 1f }; 
-		Float[] data2a = new Float[] { 0f, 0f };
-		Float[] data2b = new Float[] { 0f, 1f };
-		Float[] data2c = new Float[] { -4f, 4f };
-		Float[] data4a = new Float[] { 0f, 0f, 1f, 1f }; 
-		Float[] data4b = new Float[] { 0f, 1f, 2f, 3f };
+		double[] data0 = new double[] {}; 
+		double[] data1 = new double[] { 1f }; 
+		double[] data2a = new double[] { 0f, 0f };
+		double[] data2b = new double[] { 0f, 1f };
+		double[] data2c = new double[] { -4f, 4f };
+		double[] data4a = new double[] { 0f, 0f, 1f, 1f }; 
+		double[] data4b = new double[] { 0f, 1f, 2f, 3f };
 		
 		assertEquals(0, getUniqueValueCount(data0, 0));
 		assertEquals(0, getUniqueValueCount(data0, 10));
@@ -407,7 +532,7 @@ public class BinningFactoryTest extends TestCase {
 		return bd + " scale: " + bd.scale();
 	}
 	
-	private void doEqualCountAssert(Float[] sorted, int binCount,
+	private void doEqualCountAssert(DataTable data, int binCount,
 			boolean round, double... expectedBins) {
 		
 		assertEquals(
@@ -415,24 +540,42 @@ public class BinningFactoryTest extends TestCase {
 				"THE NUMBER OF BINS SHOULD MATCH (n + 1) THE EXPECTED BINS",
 				binCount + 1, expectedBins.length);
 		
-		BigDecimal[] result = getEqualCountBins(sorted, binCount, round);
+		BigDecimal[] result = BinningFactory.buildEqualCountBins(data, 0, binCount);
+		String desc = buildDescription(
+				BinningFactory.extractSortedValues(data, 0), expectedBins);
+
+		doAssert(desc, result, expectedBins);
+	}
+	
+	private void doEqualCountAssert(double[] sorted, int binCount,
+			boolean round, double... expectedBins) {
 		
+		assertEquals(
+				"TEST IS INCORRECTLY SETUP: " +
+				"THE NUMBER OF BINS SHOULD MATCH (n + 1) THE EXPECTED BINS",
+				binCount + 1, expectedBins.length);
+		
+		BigDecimal[] result = BinningFactory.buildEqualCountBins(sorted, binCount, round);
+		String desc = buildDescription(sorted, expectedBins);
+
+		doAssert(desc, result, expectedBins);
+	}
+	
+	private static String buildDescription(double[] data, double[] expectedBins) {
 		String dataDesc = null;
 		String binDesc = null;
-		if (sorted.length < 10) {
-			dataDesc = ArrayUtils.toString(sorted);
+		if (data.length < 10) {
+			dataDesc = ArrayUtils.toString(data);
 		} else {
 			dataDesc =
-				"{" + sorted[0] + " to " + sorted[sorted.length - 1] + "} " +
-				"(" + sorted.length + " values)";
+				"{" + data[0] + " to " + data[data.length - 1] + "} " +
+				"(" + data.length + " values)";
 		}
 		
 		binDesc = "" + (expectedBins.length - 1) + " bins: " +
 			ArrayUtils.toString(expectedBins);
 		
-		String desc = "Data " + dataDesc + " Eq. Cnt. binned to " + binDesc;
-		
-		doAssert(desc, result, expectedBins);
+		return "Data " + dataDesc + " Eq. Cnt. binned to " + binDesc;
 	}
 	
 	private void doAssert(String description, BigDecimal[] calculatedBins, double... expectedBins) {
