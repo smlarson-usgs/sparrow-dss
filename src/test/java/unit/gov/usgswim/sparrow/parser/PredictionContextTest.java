@@ -48,6 +48,8 @@ public class PredictionContextTest extends TestCase {
     /** Used to create XMLStreamReaders from XML strings. */
     protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 
+	public static final Long TEST_MODEL_ID = 22L;
+
 	// ================
 	// STATIC CONSTANTS
 	// ================

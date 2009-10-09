@@ -207,13 +207,13 @@ public class PredictServiceIntegrationTest extends TestCase {
 		System.out.println("col 11 error: " + comp.findMaxCompareValue(11)); //11, 13, 15, 16
 
 		System.out.println(comp.findMaxCompareValue());
-		assertEquals(0d, comp.findMaxCompareValue(), 0.004d);
+		assertEquals("There should be no differences as nothing has changed.", 0d, comp.findMaxCompareValue(), 0.004d);
 	}
 
-	/**
-	 * @deprecated out-of-date
-	 * @throws Exception
-	 */
+//	/**
+//	 * @deprecated out-of-date
+//	 * @throws Exception
+//	 */
 //	public void testBasicPredictionResultValidatation() throws Exception {
 //
 //		XMLInputFactory xinFact = XMLInputFactory2.newInstance();

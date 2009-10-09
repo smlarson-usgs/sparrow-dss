@@ -166,9 +166,9 @@ public class DataLoader {
 					m.setEastBound(rset.getDouble("BOUND_EAST"));
 					m.setSouthBound(rset.getDouble("BOUND_SOUTH"));
 					m.setWestBound(rset.getDouble("BOUND_WEST"));
-					
-					StringBuilder sessions = SavedSessionService.retrieveAllSavedSessionsXML(Long.toBinaryString(modelID));
-					
+
+					StringBuilder sessions = SavedSessionService.retrieveAllSavedSessionsXML(Long.toString(modelID));
+
 					models.add(m);
 				}
 			} catch (Exception e) {

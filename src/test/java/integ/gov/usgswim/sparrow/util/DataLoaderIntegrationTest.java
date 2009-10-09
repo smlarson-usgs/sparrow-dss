@@ -136,7 +136,8 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 
 		//model
 		assertEquals(22, m.getId().intValue());
-		assertEquals("National Total Nitrogen Model - 1987", m.getName());
+		// was "National Total Nitrogen Model - 1987"
+		assertEquals("National Total Nitrogen Model", m.getName());
 		assertEquals(5, m.getSources().size());
 
 		//1st source
