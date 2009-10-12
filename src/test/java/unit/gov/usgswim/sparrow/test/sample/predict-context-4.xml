@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<prediction-context
+<PredictionContext
   xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	model-id="22">
 <!--
 MODEL 22
-Test the logical set and huc criteria	
+Test the logical set and huc criteria
 -->
 		<adjustment-groups conflicts="accumulate">
-			<reach-group enabled="true" name="Group1"> 
+			<reach-group enabled="true" name="Group1">
 				<adjustment src="5" coef=".5"/>
 				<adjustment src="4" coef=".75"/>
-				<logical-set>	
+				<logical-set>
 					<criteria attrib="huc8">11090104</criteria>
 					<!-- CONTAINS REACHES:
 						36347
@@ -21,7 +21,7 @@ Test the logical set and huc criteria
 					-->
 				</logical-set>
 			</reach-group>
-			
+
 			<reach-group enabled="true" name="Group2">
 				<adjustment src="1" coef="2"/>
 				<logical-set>
@@ -58,4 +58,4 @@ Test the logical set and huc criteria
 				<data-series>incremental</data-series>
 			</select>
 		</analysis>
-</prediction-context>
+</PredictionContext>

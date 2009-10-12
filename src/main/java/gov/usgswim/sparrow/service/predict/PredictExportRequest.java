@@ -96,7 +96,7 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 					localName = in.getLocalName();
 					if (isTargetMatch(localName)) {
 						//nothing to do
-					} else if ("prediction-context".equals(localName)) {
+					} else if ("PredictionContext".equals(localName)) {
 						contextID = ParserHelper.parseAttribAsInt(in, "context-id", true);
 						ParserHelper.ignoreElement(in);
 					} else if (ResponseFormat.isTargetMatch(localName)) {

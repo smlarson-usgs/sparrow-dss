@@ -31,11 +31,11 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 	 * Synchronize all access to _paramName on this lock.
 	 */
 	protected Object PARAM_NAME_LOCK = new Object();
-	
+
 	private String _paramName;	//TODO Shouldn't this have a default?
-	
+
 	protected XMLInputFactory inFact;
-	
+
 	public AbstractHttpRequestParser() {
 		inFact = XMLInputFactory.newInstance();
 		inFact.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES,
@@ -45,7 +45,7 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 		inFact.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);
 
 	}
-	
+
 	public T parse(HttpServletRequest request) throws Exception {
 		String xmlRequest = readInputXMLRequest(request);
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(xmlRequest));
@@ -60,24 +60,24 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 		result.setXMLRequest(in);
 		return result;
 	}
-	
+
 	public void setXmlParam(String paramName) {
 		synchronized (PARAM_NAME_LOCK) {
 			_paramName = paramName;
 		}
 	}
-	
+
 	public String getXmlParam() {
 		synchronized (PARAM_NAME_LOCK) {
 			return _paramName;
 		}
 	}
-	
+
 	public String readXMLRequest(HttpServletRequest request, String xmlParam) throws IOException {
 		//just use the default implementation
 		return defaultReadXMLRequest(request, xmlParam);
 	}
-	
+
 	/**
 	 * Handles service URL according to conventions at http://privusgs2.er.usgs.gov/display/SPARROW/Service+URL+Conventions
 	 * In brief: server_name/service_name[/formpost][/echo option]
@@ -89,21 +89,21 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 	public static String defaultReadXMLRequest(HttpServletRequest request, String xmlParam) throws IOException {
 		String extraPath = request.getPathInfo();
 //		request.get
-		
+
 		if ("GET".equals(request.getMethod())) {
-		
+
 			String xml = request.getParameter(xmlParam);
 			return (xml == null)? "": xml;
-			
+
 		} else if ("POST".equals(request.getMethod())) {
 			String xml = request.getParameter(xmlParam);
 			xml = (xml == null)?  xml: xml.trim();
 			if (extraPath != null && extraPath.length() > 1) {
 				//The client may have passed the XML request as a parameter...
-				
+
 				extraPath = extraPath.substring(1);
 				if (extraPath.contains("formpost")) {
-				
+
 					xml = request.getParameter(xmlParam);
 					return (xml == null)? "": xml;
 
@@ -111,7 +111,7 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 					//ignore the extra url info (it may be asking for echo service)
 					//fall thru to code below
 				}
-	
+
 			}
 			if (xml != null && xml.length() > 0) {
 				// TODO Eliminate later. This handles the old way
@@ -120,7 +120,7 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 				// TODO Verify if should be ? URLDecoder.decode(xml,"UTF-8");????
 				return xml;
 			}
-			
+
 			// TODO [IK] Read the body input stream into a String to be used as submission. Not right with form posts
 			StringBuilder result = new StringBuilder();
 			BufferedReader requestReader = request.getReader();
@@ -128,37 +128,37 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 			while ((line = requestReader.readLine()) != null) {
 				result.append(line).append("\n");
 			}
-			// TODO [IK] HACK Must do this properly!!! 
-			
+			// TODO [IK] HACK Must do this properly!!!
+
 			String singleParamResult = result.toString();
 			if (singleParamResult.startsWith(xmlParam)) singleParamResult = singleParamResult.substring(xmlParam.length() + 1); // +1 for = sign
 			boolean isFormEncoded = singleParamResult.indexOf("%3C") > -1;
 			if (isFormEncoded) singleParamResult = URLDecoder.decode(singleParamResult);
 			// TODO verify if should be ? URLDecoder.decode(xml,"UTF-8");????
 			return result.toString();
-			
+
 		} else {
 			throw new IOException("Unsupported request method '" + request.getMethod() + "'");
 		}
 	}
-	
+
 	private String readInputXMLRequest(HttpServletRequest request) throws IOException {
 		return defaultReadXMLRequest(request, getXmlParam());
 	}
 
 
 
-	protected XMLStreamReader getXMLStream(String xml) throws IOException, XMLStreamException {							
+	protected XMLStreamReader getXMLStream(String xml) throws IOException, XMLStreamException {
 		if (xml != null) {
-			return inFact.createXMLStreamReader(new StringReader(xml));		
+			return inFact.createXMLStreamReader(new StringReader(xml));
 		}
-		throw new IOException("No request data found");																				
+		throw new IOException("No request data found");
 	}
 
 	/**
 	 * Returns the double value found in the specified parameter of the HTTPRequest.
 	 * If the parameter does not exist or cannot be parsed as a number, an error is thrown.
-	 * 
+	 *
 	 * @param req
 	 * @param name
 	 * @return
@@ -167,13 +167,13 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 	public static double parseParamAsDouble(HttpServletRequest req, String name) throws Exception {
 		return parseParamAsDouble(req, name, true);
 	}
-	
+
 	/**
 	 * Returns the double value found in the specified parameter of the HTTPRequest.
 	 * If require is true and the parameter does not exist, an error
 	 * is thrown.  If the parameter does not exist or is empty and
 	 * require is not true, null is returned.
-	 * 
+	 *
 	 * @param req
 	 * @param name
 	 * @param require
@@ -181,28 +181,28 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 	 * @throws Exception If the value cannot be converted to a Double
 	 */
 	public static Double parseParamAsDouble(HttpServletRequest req, String name, boolean require) throws Exception {
-	
+
 		String v = req.getParameter(name);
-		
+
 		if (v != null) {
 			try {
 				return Double.parseDouble(v);
 			} catch (Exception e) {
 				throw new Exception("The '" + name + "' parameter could not be converted to an integer");
 			}
-			
+
 		} else if (require) {
 			throw new Exception("A double (decimal) '" + name + "' parameter is required as part of the request");
 		} else {
 			return null;
 		}
-			
+
 	}
-	
+
 	/**
 	 * Returns the double value found in the specified parameter of the HTTPRequest.
 	 * If the attribute does not exist, the default value is returned.
-	 * 
+	 *
 	 * @param req
 	 * @param name
 	 * @param defaultVal
@@ -211,7 +211,7 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 	 */
 	public static Double parseParamAsDouble(HttpServletRequest req, String name, Double defaultVal) throws Exception {
 		String v = req.getParameter(name);
-		
+
 		if (v != null) {
 			try {
 				return Double.parseDouble(v);
@@ -221,33 +221,33 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 		}
 		return defaultVal;
 	}
-	
+
 	public static long parseParamAsLong(HttpServletRequest req, String name) throws Exception {
 		return parseParamAsLong(req, name, true);
 	}
-	
+
 	public static Long parseParamAsLong(HttpServletRequest req, String name, boolean require) throws Exception {
-	
+
 		String v = req.getParameter(name);
-		
+
 		if (v != null) {
 			try {
 				return Long.parseLong(v);
 			} catch (Exception e) {
 				throw new Exception("The '" + name + "' parameter could not be converted to an integer");
 			}
-			
+
 		} else if (require) {
 			throw new Exception("An integer '" + name + "' parameter is required as part of the request");
 		} else {
 			return null;
 		}
-			
+
 	}
-	
+
 	public static Long parseParamAsLong(HttpServletRequest req, String name, Long defaultVal) throws Exception {
 		String v = req.getParameter(name);
-		
+
 		if (v != null) {
 			try {
 				return Long.parseLong(v);
@@ -257,10 +257,10 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 		}
 		return defaultVal;
 	}
-	
+
 	/**
 	 * Splits the extra path into pieces separated by '/'
-	 * 
+	 *
 	 * @param request
 	 * @return
 	 * @throws Exception

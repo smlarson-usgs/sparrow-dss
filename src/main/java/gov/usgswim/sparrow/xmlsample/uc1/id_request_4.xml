@@ -4,7 +4,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	
 	<!-- The user now has a prediction context, so use it. -->
-	<prediction-context context-id="389392"/>
+	<PredictionContext context-id="389392"/>
 	
 	<!-- We now know the ID of the reach, so use it. -->
 	<reach id="15"/>

@@ -12,7 +12,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class AreaOfInterest implements XMLStreamParserComponent {
 
 	private static final long serialVersionUID = 1L;
-	public static final String MAIN_ELEMENT_NAME = "area-of-interest";
+	public static final String MAIN_ELEMENT_NAME = "areaOfInterest";
 
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
@@ -20,32 +20,32 @@ public class AreaOfInterest implements XMLStreamParserComponent {
 	public static boolean isTargetMatch(String tagName) {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
-	
+
 	public static AreaOfInterest parseStream(XMLStreamReader in, Long modelID) throws XMLStreamException, XMLParseValidationException {
 		AreaOfInterest aoi = new AreaOfInterest(modelID);
 		return aoi.parse(in);
 	}
-	
+
 	// ===============
 	// INSTANCE FIELDS
 	// ===============
 	private Long modelID;
 	private Integer id;
-	
+
 	/**
 	 * Constructor requires a modelID
 	 */
 	public AreaOfInterest(Long modelID) {
 		this.modelID = modelID;
 	}
-	
+
 	// ================
 	// INSTANCE METHODS
 	// ================
 	public AreaOfInterest parse(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
-		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : 
+		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) :
 			this.getClass().getSimpleName()
 			+ " can only parse " + MAIN_ELEMENT_NAME + " elements.";
 		boolean isStarted = false;
@@ -87,11 +87,11 @@ public class AreaOfInterest implements XMLStreamParserComponent {
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
 	}
-	
+
 	public boolean isParseTarget(String name) {
 		return MAIN_ELEMENT_NAME.equals(name);
 	}
-	
+
 	/**
 	 * Consider two instances the same if they have the same calculated hashcodes
 	 */
@@ -114,7 +114,7 @@ public class AreaOfInterest implements XMLStreamParserComponent {
 		}
 		return id;
 	}
-	
+
 	@Override
 	public AreaOfInterest clone() throws CloneNotSupportedException {
 		AreaOfInterest myClone = new AreaOfInterest(modelID);
@@ -131,7 +131,7 @@ public class AreaOfInterest implements XMLStreamParserComponent {
 	public boolean isValid() {
 		return true;
 	}
-	
+
 	// =================
 	// GETTERS & SETTERS
 	// =================
@@ -139,7 +139,7 @@ public class AreaOfInterest implements XMLStreamParserComponent {
 	public Integer getId() {
 		return hashCode();
 	}
-	
+
 	public Long getModelID() {
 		return modelID;
 	}

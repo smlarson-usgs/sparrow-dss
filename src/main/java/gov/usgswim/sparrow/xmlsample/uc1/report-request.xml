@@ -11,7 +11,7 @@ mime-type
 bbox
 -->
 
-	<prediction-context context-id="1231241243424"/>
+	<PredictionContext context-id="1231241243424"/>
 
 	<bbox>-99, 33, -95, 35</bbox>
 	

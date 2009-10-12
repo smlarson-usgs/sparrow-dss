@@ -17,7 +17,7 @@
 				</p>
 				<textarea id="xml_input_1" name="xmlreq" cols="120" rows="20">
 &lt;?xml version="1.0" encoding="ISO-8859-1" ?&gt;
-&lt;prediction-context
+&lt;PredictionContext
   xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	model-id="22"&gt;
@@ -91,7 +91,7 @@
 
 				&lt;nominal-comparison type="percent | absolute"/&gt;
 			&lt;/select&gt;
-			&lt;limit-to&gt;contributors | terminals | area-of-interest&lt;/limit-to&gt;
+			&lt;limit-to&gt;contributors | terminals | areaOfInterest&lt;/limit-to&gt;
 
 			&lt;group-by&gt;HUC8&lt;/group-by&gt;
 
@@ -105,11 +105,11 @@
 			&lt;logical-set/&gt;
 		&lt;/terminal-reaches&gt;
 
-		&lt;area-of-interest&gt;
+		&lt;areaOfInterest&gt;
 			&lt;logical-set/&gt;
-		&lt;/area-of-interest&gt;
+		&lt;/areaOfInterest&gt;
 
-&lt;/prediction-context&gt;
+&lt;/PredictionContext&gt;
 				</textarea>
 				<br/>
 				<input type="submit" name="submit" value="submit"/>

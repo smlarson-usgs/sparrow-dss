@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<prediction-context-response
+<PredictionContext-response
   xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	model-id="22" context-id="389392"><!-- This is the context-id for the whole Prediction Context (389392) -->
@@ -14,4 +14,4 @@
 	<adjustment-groups context-id="982398"/>
 	<analysis context-id="1093474"/>
 
-</prediction-context-response>
+</PredictionContext-response>

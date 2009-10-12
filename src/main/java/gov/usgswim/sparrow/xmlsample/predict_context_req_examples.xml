@@ -5,42 +5,42 @@
 	Exports include incremental values for all sources.
 	One row per reach - row IDs are reach IDs.
 	-->
-	<prediction-context
+	<PredictionContext
 		xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		model-id="22">
-		
+
 			<!-- Bunch of treatments applied here -->
 			<adjustment-groups conflicts="accumulate"/>
-	
+
 			<analysis>
 				<select>
 					<data-series>incremental</data-series>
 				</select>
-			</analysis>	
-	</prediction-context>
-	
+			</analysis>
+	</PredictionContext>
+
 	<!--	EXAMPLE 2
 	Map the % change from nominal of the incremental contribution of src 2.
 	Exports:  include % change from nominal of the incremental contribution of all sources & total.
 	One row per reach.  Row IDs are reach IDs.
 	-->
-	<prediction-context
+	<PredictionContext
 		xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		model-id="22">
-		
+
 			<!-- Bunch of treatments applied here -->
 			<adjustment-groups conflicts="accumulate"/>
-	
+
 			<analysis>
 				<select>
 					<data-series source="2">incremental</data-series>
 					<nominal_comparison type="percent"/>
 				</select>
 			</analysis>
-	</prediction-context>
-	
+	</PredictionContext>
+
 	<!--	EXAMPLE 3
 	Map the incremental yield of source '2', aggregated to the HUC8 level.
 	Exports: include the incremental yield of all sources & total.
@@ -49,14 +49,14 @@
 	non-aggregated values it would be the data-series element.  Is there any way
 	around this?
 	-->
-	<prediction-context
+	<PredictionContext
 		xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		model-id="22">
-		
+
 			<!-- Bunch of treatments applied here -->
 			<adjustment-groups conflicts="accumulate"/>
-	
+
 			<analysis>
 				<select>
 					<data-series source="2">incremental</data-series>
@@ -65,19 +65,19 @@
 
 				<group-by>HUC8</group-by>
 			</analysis>
-	
-	</prediction-context>
-	
+
+	</PredictionContext>
+
 	<!--	EXAMPLE 4		Same as ex. 3, but now showing the % change of the those values.
 	-->
-	<prediction-context
+	<PredictionContext
 		xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		model-id="22">
-		
+
 			<!-- Bunch of treatments applied here -->
 			<adjustment-groups conflicts="accumulate"/>
-	
+
 			<analysis>
 				<select>
 					<data-series source="2">incremental</data-series>
@@ -87,9 +87,9 @@
 
 				<group-by>HUC8</group-by>
 			</analysis>
-	
-	</prediction-context>
-	
+
+	</PredictionContext>
+
 	<!--	EXAMPLE 5
 	Map total concentration for source 2, aggregated to the HUC8 level.  Aggregate using
 	'max', which is an approximation - ideally map the most downstream reach of
@@ -98,14 +98,14 @@
 	Exports: include concentrations for each source well as total	concentration.
 	One row per HUC8.  Row IDs are HUC8s.
 	-->
-	<prediction-context
+	<PredictionContext
 		xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		model-id="22">
-		
+
 			<!-- Bunch of treatments applied here -->
 			<adjustment-groups conflicts="accumulate"/>
-	
+
 			<analysis>
 				<select>
 					<!-- divide each incremental value by the MQF for that reach -->
@@ -115,24 +115,24 @@
 
 				<group-by>HUC8</group-by>
 			</analysis>
-	
-	</prediction-context>
-	
+
+	</PredictionContext>
+
 	<!--	EXAMPLE 6		An alternate version of 5:
 	Here we limit (a WHERE like clause) the reaches that are returned.
-	
+
 	Map total concentration for source 2 at selected terminal reaches.
 	Exports: include concentrations for each source well as total	concentration (ONLY 3 ROWS).
 	One row per reach, but only 3 reaches are included.  Row IDs are reach IDs.
 	-->
-	<prediction-context
+	<PredictionContext
 		xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		model-id="22">
-		
+
 			<!-- Bunch of treatments applied here -->
 			<adjustment-groups conflicts="accumulate"/>
-	
+
 			<analysis>
 				<select>
 					<!-- divide each incremental value by the MQF for that reach -->
@@ -141,32 +141,32 @@
 
 				<limit-to>terminals</limit-to>
 			</analysis>
-			
+
 			<!-- A list of terminal reaches we are interested in -->
 			<terminal-reaches>
 				<reach>2345642</reach>
 				<reach>3425688</reach>
 				<reach>5235424</reach>
 			</terminal-reaches>
-	
-	</prediction-context>
-	
+
+	</PredictionContext>
+
 	<!--	EXAMPLE 7		An alternate version of 6:
 	Similar to above, but we want to return HUC8 IDs instead, so we aggregate on
 	HUC8s and use MAX as an arbitray agg function.
-	
+
 	Map total concentration for source 2 at selected terminal reaches.
 	Exports: include concentrations for each source well as total	concentration (ONLY 3 ROWS).
 	One row per HUC8, but only 3 HUC8s are included - row IDs are HUC8s.
 	-->
-	<prediction-context
+	<PredictionContext
 		xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		model-id="22">
-		
+
 			<!-- Bunch of treatments applied here -->
 			<adjustment-groups conflicts="accumulate"/>
-	
+
 			<analysis>
 				<select>
 					<!-- divide each incremental value by the MQF for that reach -->
@@ -177,37 +177,37 @@
 				<limit-to>terminals</limit-to>
 				<group-by>HUC8</group-by>
 			</analysis>
-			
+
 			<!-- A list of terminal reaches we are interested in -->
 			<terminal-reaches>
 				<reach>2345642</reach>
 				<reach>3425688</reach>
 				<reach>5235424</reach>
 			</terminal-reaches>
-	
-	</prediction-context>
-	
-	
+
+	</PredictionContext>
+
+
 	<!--	EXAMPLE 8
 	Map Total delivered yield.
 	Exports: include total delivered yield for all sources and total.
 	One row per reach.  Row IDs are reach ids.
 	-->
-	<prediction-context
+	<PredictionContext
 		xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		model-id="22">
-		
+
 			<!-- Bunch of treatments applied here -->
 			<adjustment-groups conflicts="accumulate"/>
-	
+
 			<analysis>
 				<select>
 					<data-series per="area">total-delivered</data-series>
 				</select>
 			</analysis>
-	</prediction-context>
-	
+	</PredictionContext>
+
 	<!--	EXAMPLE 9
 	Map Ranked Total delivered yield to a set of target reaches.  Aggregate the reaches
 	at HUC8 level and rank each HUC8 w.r.t. the delivered yield of the other HUC8s
@@ -215,143 +215,143 @@
 	Only HUC8s contributing to the target reaches are returned.
 	Exports: include ranking, total delivered yield for all sources, and total del. yield.
 	One row per HUC8.  Row IDs are HUC8s.
-	
+
 	NOTES:  How would a HUC8 that delivers to two terminals be handled?
 	-->
-	<prediction-context
+	<PredictionContext
 		xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		model-id="22">
-		
+
 			<!-- Bunch of treatments applied here -->
 			<adjustment-groups conflicts="accumulate"/>
-	
+
 			<analysis>
 				<select>
 					<data-series>total-delivered</data-series>
 					<agg-function per="area">sum</agg-function> <!-- rank would be rank of the group within the whole -->
 					<analytic-function partition="terminals">rank-desc</analytic-function>
 				</select>
-			
+
 				<limit-to>contributors</limit-to>
 				<group-by>HUC8</group-by>
 			</analysis>
-			
+
 			<terminal-reaches>
 				<reach>2345642</reach>
 				<reach>3425688</reach>
 				<reach>5235424</reach>
 			</terminal-reaches>
-			
-	</prediction-context>
-	
+
+	</PredictionContext>
+
 	<!--	EXAMPLE 10
 	Map Ranked Total values of a set of target reaches.
 	Only target reaches are returned.
 	Exports: include ranking, total for all sources, and total.
 	One row per reach (only 3 reaches).  Row IDs are reach IDs
 	-->
-	<prediction-context
+	<PredictionContext
 		xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		model-id="22">
-		
+
 			<!-- Bunch of treatments applied here -->
 			<adjustment-groups conflicts="accumulate"/>
-	
+
 			<analysis>
 				<select>
 					<data-series>total</data-series>
 					<analytic-function>rank-desc</analytic-function>
 				</select>
-			
+
 				<limit-to>contributors</limit-to>
 			</analysis>
-			
+
 			<terminal-reaches>
 				<reach>2345642</reach>
 				<reach>3425688</reach>
 				<reach>5235424</reach>
 			</terminal-reaches>
-			
-	</prediction-context>
-	
+
+	</PredictionContext>
+
 	<!--	EXAMPLE 11
 	Map which source is the dominate source in terms of incremental delivered yield to the terminal reaches, aggregating at the HUC8 level.
 	Only reaches (and thus HUCs) that contribute to the the terminals are returned.
 	Exports: max source ID, incremental delivered yield for all sources, and total incremental delivered yield.
 	One row per HUC8.  Row IDs are HUC8s.
 	-->
-	<prediction-context
+	<PredictionContext
 		xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		model-id="22">
-		
+
 			<!-- Bunch of treatments applied here -->
 			<adjustment-groups conflicts="accumulate"/>
-	
+
 			<analysis>
 				<select>
 					<data-series>incremental-delivered</data-series>
 					<agg-function per="area">sum</agg-function>
 					<analytic-function>max-source</analytic-function>
 				</select>
-			
+
 				<limit-to>contributors</limit-to><!-- all reaches that flow to the selected terms -->
 				<group-by>HUC8</group-by>
 			</analysis>
-			
+
 			<terminal-reaches>
 				<reach>2345642</reach>
 				<reach>3425688</reach>
 				<reach>5235424</reach>
 			</terminal-reaches>
-			
-			<area-of-interest/>
-	
-	</prediction-context>
-	
+
+			<areaOfInterest/>
+
+	</PredictionContext>
+
 	<!--	EXAMPLE 12
 	Map which source is the dominate source in terms of total at the terminal.
 	Only terminal reaches are returned.
 	Exports: max source ID, total for all sources, and 'total' total.
 	One row per reach (only 3 reaches).  Row IDs are reach IDs
 	-->
-	<prediction-context
+	<PredictionContext
 		xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		model-id="22">
-		
+
 			<!-- Bunch of treatments applied here -->
 			<adjustment-groups conflicts="accumulate"/>
-	
+
 			<analysis>
 				<select>
 					<data-series>total</data-series>
 					<analytic-function>max-source</analytic-function>
 				</select>
-			
+
 				<limit-to>terminals</limit-to><!-- all reaches that flow to the selected terms -->
 			</analysis>
-			
+
 			<terminal-reaches>
 				<reach>2345642</reach>
 				<reach>3425688</reach>
 				<reach>5235424</reach>
 			</terminal-reaches>
 
-	</prediction-context>
+	</PredictionContext>
 </samples>
 
 <!--
-	<prediction-context
+	<PredictionContext
 		xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		model-id="22">
-		
+
 			<! - - Bunch of treatments applied here - - >
 			<adjustment-groups conflicts="accumulate"/>
-	
+
 			<analysis>
 				<select>
 					<data-series source="1" per="area" >incremental</data-series>
@@ -359,11 +359,11 @@
 					<analytic-function partition="HUC6">rank-desc</analytic-function>
 					<nominal_comparison type="percent | absolute"/>
 				</select>
-			
-				<limit-to>contributors | terminals | area-of-interest</limit-to>
+
+				<limit-to>contributors | terminals | areaOfInterest</limit-to>
 				<group-by>HUC8</group-by>
 			</analysis>
-			
+
 			<terminal-reaches>
 				<reach>2345642</reach>
 				<reach>3425688</reach>
@@ -371,8 +371,8 @@
 				or
 				<logical-set/>
 			</terminal-reaches>
-			
-			<area-of-interest/>
-	
-	</prediction-context>
+
+			<areaOfInterest/>
+
+	</PredictionContext>
 -->

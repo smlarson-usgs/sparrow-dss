@@ -1,4 +1,4 @@
-<prediction-context xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+<PredictionContext xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="22">
 	<adjustment-groups conflicts="accumulate | supersede">
 		<reach-group enabled="true" name="kjbk">
@@ -15,9 +15,9 @@
 			<analytic-function partition="HUC6">rank-desc</analytic-function>
 			<nominal-comparison />
 		</select>
-		<limit-to>contributors | terminals | area-of-interest</limit-to>
+		<limit-to>contributors | terminals | areaOfInterest</limit-to>
 		<group-by>HUC8</group-by>
 	</analysis>
 	<terminal-reaches />
-	<area-of-interest />
-</prediction-context>
+	<areaOfInterest />
+</PredictionContext>

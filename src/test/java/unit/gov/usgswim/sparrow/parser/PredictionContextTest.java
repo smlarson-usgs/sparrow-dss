@@ -34,7 +34,7 @@ public class PredictionContextTest extends TestCase {
 
     /** Valid xml string represention of the prediction context. */
     public static final String VALID_FRAGMENT = ""
-        + "<prediction-context "
+        + "<PredictionContext "
         + "  xmlns=\"http://www.usgs.gov/sparrow/prediction-schema/v0_2\""
         + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
         + "  model-id=\"22\">"
@@ -42,7 +42,7 @@ public class PredictionContextTest extends TestCase {
         + AnalysisTest.VALID_FRAGMENT
         + TerminalReachesTest.VALID_FRAGMENT
         + AreaOfInterestTest.VALID_FRAGMENT
-        + "</prediction-context>"
+        + "</PredictionContext>"
         ;
 
     /** Used to create XMLStreamReaders from XML strings. */
@@ -131,7 +131,7 @@ public class PredictionContextTest extends TestCase {
 		}
 
 		{
-			// test prediction-context-1
+			// test PredictionContext-1
 			PredictionContext predCtxt1 = buildPredictContext1().getPredictionContext();
 			PredictionContext prdCtxt2 = buildPredictContext1().getPredictionContext();
 			PredictionContext predCtxt3 = predCtxt1.clone();
@@ -151,7 +151,7 @@ public class PredictionContextTest extends TestCase {
 
 		// No error should be thrown on optional adjustmentGroup
 		String testRequest = ""
-	        + "<prediction-context "
+	        + "<PredictionContext "
 	        + "  xmlns=\"http://www.usgs.gov/sparrow/prediction-schema/v0_2\""
 	        + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
 	        + "  model-id=\"22\">"
@@ -159,7 +159,7 @@ public class PredictionContextTest extends TestCase {
 			+ AnalysisTest.VALID_FRAGMENT
 			+ TerminalReachesTest.VALID_FRAGMENT
 			+ AreaOfInterestTest.VALID_FRAGMENT
-			+ "</prediction-context>";
+			+ "</PredictionContext>";
 
 		buildContext(testRequest);
 		// successful parse is passing test
@@ -170,7 +170,7 @@ public class PredictionContextTest extends TestCase {
 
 		// No error should be thrown on optional adjustmentGroup
 		String testRequest = ""
-            + "<prediction-context "
+            + "<PredictionContext "
             + "  xmlns=\"http://www.usgs.gov/sparrow/prediction-schema/v0_2\""
             + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
             + "  model-id=\"22\">"
@@ -178,7 +178,7 @@ public class PredictionContextTest extends TestCase {
 			+ AnalysisTest.VALID_FRAGMENT
 			//+ TerminalReachesTest.VALID_FRAGMENT
 			+ AreaOfInterestTest.VALID_FRAGMENT
-			+ "</prediction-context>";
+			+ "</PredictionContext>";
 
 		buildContext(testRequest);
 		// successful parse is passing test
@@ -189,7 +189,7 @@ public class PredictionContextTest extends TestCase {
 
 		// No error should be thrown on optional adjustmentGroup
 		String testRequest = ""
-            + "<prediction-context "
+            + "<PredictionContext "
             + "  xmlns=\"http://www.usgs.gov/sparrow/prediction-schema/v0_2\""
             + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
             + "  model-id=\"22\">"
@@ -197,7 +197,7 @@ public class PredictionContextTest extends TestCase {
 			+ AnalysisTest.VALID_FRAGMENT
 			+ TerminalReachesTest.VALID_FRAGMENT
 			//+ AreaOfInterestTest.VALID_FRAGMENT
-			+ "</prediction-context>";
+			+ "</PredictionContext>";
 
 		buildContext(testRequest);
 

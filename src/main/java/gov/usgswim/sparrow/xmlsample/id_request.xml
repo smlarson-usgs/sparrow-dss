@@ -5,7 +5,7 @@
 	<!-- Eliminated the result-count from the root element - it only makes sense to return one reach -->
 	
 	<!--
-	A prediction-context is used when the user has established a prediction context.
+	A PredictionContext is used when the user has established a prediction context.
 	If the user has no prediction context, the model-id element can be passed instead,
 	which just returns nominal information.
 	-->

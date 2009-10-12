@@ -47,7 +47,7 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 			}
 			if (context.getAreaOfInterest() != null) {
 				String contextId = Integer.toString(context.getAreaOfInterest().hashCode());
-				areaOfInterest = props.getParametrizedQuery("area-of-interest",
+				areaOfInterest = props.getParametrizedQuery("areaOfInterest",
 						new String[] { "AreaOfInterstContextId",  contextId });
 			}
 
@@ -59,13 +59,13 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 					"adjustment-groups", adjustmentGroups,
 					"AnalysisContextId", Integer.toString( context.getAnalysis().hashCode() ),
 					"terminal-reaches", terminalReaches,
-					"area-of-interest", areaOfInterest
+					"areaOfInterest", areaOfInterest
 			});
 
 			return inFact.createXMLStreamReader(new StringReader(response));
 		}
 		// failure
-		return inFact.createXMLStreamReader(new StringReader("<prediction-context-response><status>Failed</status></prediction-context-response>"));
+		return inFact.createXMLStreamReader(new StringReader("<PredictionContext-response><status>Failed</status></PredictionContext-response>"));
 	}
 
 	public void shutDown() {
