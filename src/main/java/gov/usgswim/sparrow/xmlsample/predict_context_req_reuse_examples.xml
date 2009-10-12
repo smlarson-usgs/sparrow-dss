@@ -25,7 +25,7 @@
 		being stored in a cache on the server.
 		-->
 
-		<adjustment-groups predefined="957648"/>
+		<adjustmentGroups predefined="957648"/>
 		<analysis context-id="1093474"/>
 
 		<!--
@@ -54,7 +54,7 @@
 		* analysis may be refered to by named analysis types.
 		-->
 
-		<adjustment-groups predefined="957648"/>
+		<adjustmentGroups predefined="957648"/>
 
 		<!--
 		required element

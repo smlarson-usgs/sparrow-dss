@@ -37,7 +37,7 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 
 			if (context.getAdjustmentGroups() != null) {
 				String contextId = Integer.toString(context.getAdjustmentGroups().hashCode());
-				adjustmentGroups = props.getParametrizedQuery("adjustment-groups",
+				adjustmentGroups = props.getParametrizedQuery("adjustmentGroups",
 						new String[] { "AdjustmentContextId",  contextId });
 			}
 			if (context.getTerminalReaches() != null) {
@@ -56,7 +56,7 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 					"ModelId", context.getModelID().toString(),
 					"ContextId", Integer.toString( context.hashCode() ),
 					"RowIdType", "reach",
-					"adjustment-groups", adjustmentGroups,
+					"adjustmentGroups", adjustmentGroups,
 					"AnalysisContextId", Integer.toString( context.getAnalysis().hashCode() ),
 					"terminal-reaches", terminalReaches,
 					"areaOfInterest", areaOfInterest

@@ -22,7 +22,6 @@ public class PredictionContext implements XMLStreamParserComponent {
 
 	private static final long serialVersionUID = -5343918321449313545L;
 	public static final String MAIN_ELEMENT_NAME = "PredictionContext";
-	//	public static final String ADJUSTMENT_GROUPS = "adjustment-groups";
 
 
 	// =============================

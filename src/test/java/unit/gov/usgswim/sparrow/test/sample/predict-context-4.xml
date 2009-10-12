@@ -7,7 +7,7 @@
 MODEL 22
 Test the logical set and huc criteria
 -->
-		<adjustment-groups conflicts="accumulate">
+		<adjustmentGroups conflicts="accumulate">
 			<reach-group enabled="true" name="Group1">
 				<adjustment src="5" coef=".5"/>
 				<adjustment src="4" coef=".75"/>
@@ -44,15 +44,15 @@ Test the logical set and huc criteria
 				</logical-set>
 				<reach id="11861"/>	<!-- An additional added reach -->
 			</reach-group>
-			<individual-group enabled="true">
+			<individualGroup enabled="true">
 				<reach id="39529">
 					<adjustment src="1" abs="99"/> <!-- Override a reach -->
 				</reach>
 				<reach id="11878">
 					<adjustment src="2" abs="88"/> <!-- Added reach, override a different source -->
 				</reach>
-			</individual-group>
-		</adjustment-groups>
+			</individualGroup>
+		</adjustmentGroups>
 		<analysis>
 			<select>
 				<data-series>incremental</data-series>

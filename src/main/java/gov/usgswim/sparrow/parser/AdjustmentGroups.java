@@ -20,7 +20,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class AdjustmentGroups implements XMLStreamParserComponent {
 
 	private static final long serialVersionUID = 1L;
-	public static final String MAIN_ELEMENT_NAME = "adjustment-groups";
+	public static final String MAIN_ELEMENT_NAME = "adjustmentGroups";
 
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
@@ -54,7 +54,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	public AdjustmentGroups(Long modelID) {
 		this.modelID = modelID;
 	}
-	
+
 
 	// ================
 	// INSTANCE METHODS
@@ -64,7 +64,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
-		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : 
+		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) :
 			this.getClass().getSimpleName()
 			+ " can only parse " + MAIN_ELEMENT_NAME + " elements.";
 		boolean isStarted = false;
@@ -83,7 +83,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
 						//id = ParserHelper.parseAttribAsInt(in, XMLStreamParserComponent.ID_ATTR, false);
-						conflicts = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "conflicts");				
+						conflicts = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "conflicts");
 					} else if (ReachGroup.isTargetMatch(localName)) {
 						ReachGroup rg = new ReachGroup(modelID);
 						rg.parse(in);
@@ -112,7 +112,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 		throw new XMLParseValidationException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
 	}
 
-	
+
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
 	}
@@ -167,13 +167,13 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 					hash.append(rg.getStateHash());
 				}
 			}
-			
+
 			if (individualGroup != null) {
 			    hash.append(individualGroup.getStateHash());
 			}
 
 			id = hash.toHashCode();
-		} 
+		}
 
 		return id;
 	}
@@ -181,7 +181,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	/**
 	 * Actually does the adjustment, returning sparse view that wraps the source
 	 * data in the passed PredictData.
-	 * 
+	 *
 	 * @param source
 	 * @param srcIndex
 	 * @param reachIndex
@@ -225,7 +225,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 				if (rg.isEnabled()) {
 
 					List<Adjustment> adjustments = rg.getAdjustments();
-					
+
 					// Apply ReachGroup-wide adjustments to all reaches in the combined reaches.
 					if (adjustments != null) {
 						// Look up corresponding source indices for each adjustment to save some lookups
@@ -233,7 +233,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 						for (int i=0; i<adjustments.size(); i++) {
 							adjSourceColumn[i] = data.getSourceIndexForSourceID(rg.getAdjustments().get(i).getSource());
 						}
-						
+
 						// Apply the adjustments to each reach in the combined logical and explicit reaches
 						for (Long reachID: rg.getCombinedReachIDs()) {
 							int row = data.getRowForReachID(reachID);
@@ -245,12 +245,12 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 				}
 			}
 		}
-		
+
 		// Do individual reach adjustments
 		if (individualGroup != null
 		        && individualGroup.getExplicitReaches().size() > 0
 		        && individualGroup.isEnabled()) {
-		    
+
 		    // Iterate over the explicit set of reaches and apply adjustments
             for (ReachElement r: individualGroup.getExplicitReaches()) {
                 int row = data.getRowForReachID(r.getId());
@@ -269,7 +269,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 
 	private void applyAdjustmentToReach(Adjustment adj, int row, int col, SparseCoefficientAdjustment coefAdj, SparseOverrideAdjustment overAdj) throws Exception {
 		Double coef = adj.getCoefficient();
-		
+
 		if (coef != null) {
 
 			//if a coef already exists, the new coef is the product of the existing and the new
@@ -324,7 +324,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	public ReachGroup getDefaultGroup() {
 		return defaultGroup;
 	}
-	
+
 	public ReachGroup getIndividualGroup() {
 	    return individualGroup;
 	}

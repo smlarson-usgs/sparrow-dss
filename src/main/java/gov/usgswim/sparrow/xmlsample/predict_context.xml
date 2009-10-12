@@ -13,7 +13,7 @@
 		nominal, however, this structure allows for the comparison of multiple
 		adjusted predictions by adding another source-adjustments element.
 		-->
-		<adjustment-groups conflicts="accumulate | supersede">	<!--  AdjustmentGroup Object?  Cached. -->
+		<adjustmentGroups conflicts="accumulate | supersede">	<!--  AdjustmentGroup Object?  Cached. -->
 			<reach-group enabled="true" name="Northern Indiana Plants"> <!--  ReachGroup Object -->
 				<desc>Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project</desc>
 				<notes>
@@ -86,15 +86,15 @@
 
 			</default-group>
 
-            <individual-group>
+            <individualGroup>
                 <reach id="">
                     <adjustment src="" abs="" />
                 </reach>
-    		</individual-group>
+    		</individualGroup>
 
 			<!-- Do we still allow gross adjustments?  -->
 			<!-- <gross-src src="4" coef="2"/> -->
-		</adjustment-groups>
+		</adjustmentGroups>
 
 		<!--
 

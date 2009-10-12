@@ -18,10 +18,10 @@ import javax.xml.stream.XMLStreamReader;
 public class IndividualGroup extends ReachGroup {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 1L;
-    public static final String MAIN_ELEMENT_NAME = "individual-group";
+    public static final String MAIN_ELEMENT_NAME = "individualGroup";
 
     // =============================
     // PUBLIC STATIC UTILITY METHODS
@@ -36,11 +36,11 @@ public class IndividualGroup extends ReachGroup {
     public IndividualGroup(long modelID) {
         super(modelID);
     }
-    
+
     @Override
     public ReachGroup parse(XMLStreamReader in) throws XMLStreamException,
     XMLParseValidationException {
-        
+
         String localName = in.getLocalName();
         int eventCode = in.getEventType();
         if (!isParseTarget(localName) || eventCode != START_ELEMENT) {
@@ -62,7 +62,7 @@ public class IndividualGroup extends ReachGroup {
                     localName = in.getLocalName();
                     if (isParseTarget(localName)) {
                         isEnabled = "true".equals(in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "enabled"));
-                        
+
                         // Disallow the name attribute
                         String name = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "name");
                         if (name != null) {
@@ -79,7 +79,7 @@ public class IndividualGroup extends ReachGroup {
                 case END_ELEMENT:
                     localName = in.getLocalName();
                     if (isParseTarget(localName)) {
-                        
+
                         //Wrap collections as unmodifiable
                         if (reaches != null) {
                             reaches = Collections.unmodifiableList(reaches);

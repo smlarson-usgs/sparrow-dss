@@ -4,7 +4,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	model-id="22">
 
-		<adjustment-groups conflicts="accumulate">
+		<adjustmentGroups conflicts="accumulate">
 			<reach-group enabled="true" name="Illinois">
 				<desc>Some point sources located somewhere...</desc>
 				<notes>
@@ -21,9 +21,9 @@
 					<adjustment src="3" abs="1348351"/>
 				</reach>
 			</reach-group>
-		</adjustment-groups>
-		
-		
+		</adjustmentGroups>
+
+
 		<!--
 		This analysis section specifies that we want the total value to be the
 		data value when maps are generated.  This is the default mapping value.

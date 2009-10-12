@@ -1,8 +1,8 @@
 <PredictionContext xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="22">
-	<adjustment-groups conflicts="accumulate | supersede">
-		<individual-group enabled="true"></individual-group>
-	</adjustment-groups>
+	<adjustmentGroups conflicts="accumulate | supersede">
+		<individualGroup enabled="true"></individualGroup>
+	</adjustmentGroups>
 	<analysis>
 		<select>
 			<data-series per="area">total</data-series>

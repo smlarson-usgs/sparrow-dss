@@ -21,7 +21,7 @@
   xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	model-id="22"&gt;
-		&lt;adjustment-groups conflicts="accumulate | supersede"&gt;
+		&lt;adjustmentGroups conflicts="accumulate | supersede"&gt;
 			&lt;reach-group enabled="true" name="Northern Indiana Plants"&gt;
 				&lt;desc&gt;Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project&lt;/desc&gt;
 				&lt;notes&gt;
@@ -81,7 +81,7 @@
 				&lt;/reach&gt;
 			&lt;/reach-group&gt;
 
-		&lt;/adjustment-groups&gt;
+		&lt;/adjustmentGroups&gt;
 		&lt;analysis&gt;
 			&lt;select&gt;
 

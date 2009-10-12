@@ -1,6 +1,6 @@
 <PredictionContext xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="21">
-	<adjustment-groups conflicts="accumulate">
+	<adjustmentGroups conflicts="accumulate">
 		<reach-group enabled="true" name="Some Adjustments">
 			<desc />
 			<notes />
@@ -9,7 +9,7 @@
 			<reach id="3074" />
 			<reach id="3077" />
 		</reach-group>
-	</adjustment-groups>
+	</adjustmentGroups>
 	<analysis>
 		<select>
 			<data-series source="3">source_value</data-series>
