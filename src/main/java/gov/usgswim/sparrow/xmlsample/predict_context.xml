@@ -14,7 +14,7 @@
 		adjusted predictions by adding another source-adjustments element.
 		-->
 		<adjustmentGroups conflicts="accumulate | supersede">	<!--  AdjustmentGroup Object?  Cached. -->
-			<reach-group enabled="true" name="Northern Indiana Plants"> <!--  ReachGroup Object -->
+			<reachGroup enabled="true" name="Northern Indiana Plants"> <!--  ReachGroup Object -->
 				<desc>Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project</desc>
 				<notes>
 					I initially selected HUC 01746286 and 01746289,
@@ -26,15 +26,15 @@
 				<!-- Multiple treatments are possible -->
 				<adjustment src="5" coef=".9"/>	<!--  Existing Adjustment Object -->
 				<adjustment src="4" coef=".75"/>
-				<logical-set>	<!--  LogicalSet Object?  (Hold Off) Used as cache key for a reach collection. -->
+				<logicalSet>	<!--  LogicalSet Object?  (Hold Off) Used as cache key for a reach collection. -->
 					<criteria attrib="huc8">01746286</criteria>
-				</logical-set>
-				<logical-set>
+				</logicalSet>
+				<logicalSet>
 					<criteria attrib="huc8">01746289</criteria>
-				</logical-set>
-			</reach-group>
+				</logicalSet>
+			</reachGroup>
 
-			<reach-group enabled="false" name="Southern Indiana Fields">
+			<reachGroup enabled="false" name="Southern Indiana Fields">
 				<desc>Fields in Southern Indiana</desc>
 				<notes>
 					The Farmer's Alminac says corn planting will be up 20% this year,
@@ -42,24 +42,24 @@
 					This is an estimate so I'm leaving it out of the runs created	for the EPA.
 				</notes>
 				<adjustment src="1" coef="1.05"/>
-				<logical-set>
+				<logicalSet>
 					<criteria attrib="reach" relation="upstream">8346289</criteria>
-				</logical-set>
-				<logical-set>
+				</logicalSet>
+				<logicalSet>
 					<criteria attrib="reach" relation="upstream">9374562</criteria>
-				</logical-set>
-			</reach-group>
+				</logicalSet>
+			</reachGroup>
 
-			<reach-group enabled="true" name="Illinois">
+			<reachGroup enabled="true" name="Illinois">
 				<desc>The entire state of Illinois</desc>
 				<notes>The Urban source for Illinois is predicted is to increase 20%.</notes>
 				<adjustment src="2" coef="1.2"/>
-				<logical-set>
+				<logicalSet>
 					<criteria attrib="state-code">il</criteria>
-				</logical-set>
-			</reach-group>
+				</logicalSet>
+			</reachGroup>
 
-			<reach-group enabled="true" name="Illinois">
+			<reachGroup enabled="true" name="Illinois">
 				<desc>Wisconsin River Plants</desc>
 				<notes>
 					We know of 3 plants on the Wisconsin River which have announced improved
@@ -68,12 +68,12 @@
 				<adjustment src="2" coef=".75"/>
 				<reach id="483947453" />
 				<reach id="947839474" />
-			</reach-group>
+			</reachGroup>
 
 			<!--
 			The default-group allows model-wide adjustments.  This is basically the
 			replacement for the 'gross-adjust' from the previous schema.
-			The only children allowed are desc, notes, and adjustment.  No logical-set's
+			The only children allowed are desc, notes, and adjustment.  No logicalSet's
 			or reach element are allowed.
 			It allows an 'enabled' attribute, but not a name.
 			-->
@@ -165,16 +165,16 @@
 				+ Optional column(s) only calculated when requested
 				! Requires 2nd pass network 'climbing' to calculate
 				-->
-				<data-series source="1" per="area">incremental</data-series>
+				<dataSeries source="1" per="area">incremental</dataSeries>
 				<!--  source and per are optional. -->
 
 				<!--
-				Required if group-by is specified.  Applies an aggregate function to the
-				data-series specified to return a single calculated value for each group.
+				Required if groupBy is specified.  Applies an aggregate function to the
+				dataSeries specified to return a single calculated value for each group.
 				An aggregate function (as defined here) is a function that can be calculated
 				solely based on the values within the group.  Thus, rankings are not
 				supported as an aggregate function b/c they cannot be calculated from the
-				values within the group (see analytic-function).
+				values within the group (see analyticFunction).
 
 				The 'per' attribute does the same aggregate function on a physical
 				property and divides the aggregated value by the aggregated 'per' value.
@@ -189,29 +189,29 @@
 				stddev
 
 				- - Examples - -
-				1.	data-series:  incremental
-						group-by:  HUC8
-						agg-function:  sum
-						agg-function[per]:  area
+				1.	dataSeries:  incremental
+						groupBy:  HUC8
+						aggFunction:  sum
+						aggFunction[per]:  area
 
 				Within each HUC8, sum the incremental value for each reach and divide by
 				the sum the areas.  This would generate an incremental yeild value for the
 				entire HUC8.  One row is returned per	HUC8 and the row id is the HUC8 ID.
 
-				2.	data-series:  total
-						group-by: HUC8
-						agg-function: max
+				2.	dataSeries:  total
+						groupBy: HUC8
+						aggFunction: max
 				Within each HUC8, find the maximum total value.  One row is returned per
 				HUC8 and the row id is the HUC8 ID.  This would be a good approximation
 				of the HUC8 total value.
 
 				-->
-				<agg-function per="area">avg</agg-function> <!-- rank would be rank of the group within the whole -->
+				<aggFunction per="area">avg</aggFunction> <!-- rank would be rank of the group within the whole -->
 
 				<!--
 				The analytic function is applied after grouping and the aggregate function
 				takes plus, thus, one 'row' for the analytic function is the already
-				aggregated results from the aggregate function.  If there is no	group-by,
+				aggregated results from the aggregate function.  If there is no	groupBy,
 				each reach is considered its own group.
 
 				The analytic function can compare the rows (ranking) within the entire
@@ -228,7 +228,7 @@
 
 				The source-share function calculates the fraction of each calculated
 				source value to the total value.  The data column is the source identified
-				in the data-series 'source' attribute, which must be present (err if not).
+				in the dataSeries 'source' attribute, which must be present (err if not).
 
 
 				- - Values - -
@@ -245,10 +245,10 @@
 
 				Examples:
 				1.
-				data-series: incremental (defined above)
-				group-by: HUC8 (return one row per HUC8)
-				agg-function: avg
-				analytic-function: rank-desc
+				dataSeries: incremental (defined above)
+				groupBy: HUC8 (return one row per HUC8)
+				aggFunction: avg
+				analyticFunction: rank-desc
 				window: HUC6 (calculate w/in the context of each HUC6)
 
 				The incremental value is calculated for each reach and is averaged at
@@ -257,10 +257,10 @@
 				Thus, within each HUC6, HUC8's will be given values 1-n.
 
 				2.
-				data-series: incremental (defined above)
-				group-by: -not defined- (return one row per reach)
-				agg-function: -not defined-
-				analytic-function: rank-desc
+				dataSeries: incremental (defined above)
+				groupBy: -not defined- (return one row per reach)
+				aggFunction: -not defined-
+				analyticFunction: rank-desc
 				window: HUC6 (calculate w/in the context of each HUC6)
 
 				The incremental value is calculated for each reach.  That value is then
@@ -268,10 +268,10 @@
 				Thus, within each HUC6, each reach will be given values 1-n.
 
 				3.
-				data-series: incremental (defined above)
-				group-by: HUC8 (return one row per HUC8)
-				agg-function: sum
-				analytic-function: max
+				dataSeries: incremental (defined above)
+				groupBy: HUC8 (return one row per HUC8)
+				aggFunction: sum
+				analyticFunction: max
 				partition: HUC6 (calculate w/in the context of each HUC6)
 
 				The incremental value is calculated for each reach and is averaged at
@@ -280,19 +280,19 @@
 				Thus, within each HUC6, HUC8's will be given values 1-n.
 
 				-->
-				<analytic-function partition="HUC6">rank-desc</analytic-function>
+				<analyticFunction partition="HUC6">rank-desc</analyticFunction>
 
 				<!--  Needed in first iteration -->
-				<nominal-comparison type="percent | absolute"/>
+				<nominalComparison type="percent | absolute"/>
 			</select>
 
 
 			<!--	Restrict results considered.  Similar to WHERE clause.	-->
-			<limit-to>contributors | terminals | areaOfInterest</limit-to>
+			<limitTo>contributors | terminals | areaOfInterest</limitTo>
 
 			<!--
-			Similar to the SQL GROUP BY clause.  Whenever group-by is specified, one
-			row per group is returned rathen then one row per reach.  If group-by is
+			Similar to the SQL GROUP BY clause.  Whenever groupBy is specified, one
+			row per group is returned rathen then one row per reach.  If groupBy is
 			specified, an aggregate-function must be provided.
 
 			Possible Values:
@@ -300,17 +300,17 @@
 			state, county
 			terminals (what happens at splits such as near the end of the mississippi?)
 			-->
-			<group-by>HUC8</group-by>
+			<groupBy>HUC8</groupBy>
 
 		</analysis>
 
-		<terminal-reaches>	<!--  TerminalReaches Object.  (hold off)  Cached. -->
+		<terminalReaches>	<!--  TerminalReaches Object.  (hold off)  Cached. -->
 			<reach>2345642</reach>
 			<reach>3425688</reach>
 			<reach>5235424</reach>
 			or
-			<logical-set/>
-		</terminal-reaches>
+			<logicalSet/>
+		</terminalReaches>
 
 		<areaOfInterest>	<!--  AreaOfInterest Object.  (hold off)  Cached. -->
 
@@ -320,7 +320,7 @@
 			HUC
 			or individual set of reaches
 			-->
-			<logical-set/>
+			<logicalSet/>
 		</areaOfInterest>
 
 </PredictionContext>

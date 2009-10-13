@@ -15,7 +15,7 @@
 
 			<analysis>
 				<select>
-					<data-series>incremental</data-series>
+					<dataSeries>incremental</dataSeries>
 				</select>
 			</analysis>
 	</PredictionContext>
@@ -35,7 +35,7 @@
 
 			<analysis>
 				<select>
-					<data-series source="2">incremental</data-series>
+					<dataSeries source="2">incremental</dataSeries>
 					<nominal_comparison type="percent"/>
 				</select>
 			</analysis>
@@ -46,7 +46,7 @@
 	Exports: include the incremental yield of all sources & total.
 	One row per HUC8.  Row IDs are HUC8s.
 	NOTE:  This is a bit confusing to have the 'per' moved to the aggregate funct. since for
-	non-aggregated values it would be the data-series element.  Is there any way
+	non-aggregated values it would be the dataSeries element.  Is there any way
 	around this?
 	-->
 	<PredictionContext
@@ -59,11 +59,11 @@
 
 			<analysis>
 				<select>
-					<data-series source="2">incremental</data-series>
-					<agg-function per="area">sum</agg-function>
+					<dataSeries source="2">incremental</dataSeries>
+					<aggFunction per="area">sum</aggFunction>
 				</select>
 
-				<group-by>HUC8</group-by>
+				<groupBy>HUC8</groupBy>
 			</analysis>
 
 	</PredictionContext>
@@ -80,12 +80,12 @@
 
 			<analysis>
 				<select>
-					<data-series source="2">incremental</data-series>
-					<agg-function per="area">sum</agg-function>
+					<dataSeries source="2">incremental</dataSeries>
+					<aggFunction per="area">sum</aggFunction>
 					<nominal_comparison type="percent"/>
 				</select>
 
-				<group-by>HUC8</group-by>
+				<groupBy>HUC8</groupBy>
 			</analysis>
 
 	</PredictionContext>
@@ -109,11 +109,11 @@
 			<analysis>
 				<select>
 					<!-- divide each incremental value by the MQF for that reach -->
-					<data-series source="2" per="flow">total</data-series>
-					<agg-function>max</agg-function>
+					<dataSeries source="2" per="flow">total</dataSeries>
+					<aggFunction>max</aggFunction>
 				</select>
 
-				<group-by>HUC8</group-by>
+				<groupBy>HUC8</groupBy>
 			</analysis>
 
 	</PredictionContext>
@@ -136,18 +136,18 @@
 			<analysis>
 				<select>
 					<!-- divide each incremental value by the MQF for that reach -->
-					<data-series source="2" per="flow">total</data-series>
+					<dataSeries source="2" per="flow">total</dataSeries>
 				</select>
 
-				<limit-to>terminals</limit-to>
+				<limitTo>terminals</limitTo>
 			</analysis>
 
 			<!-- A list of terminal reaches we are interested in -->
-			<terminal-reaches>
+			<terminalReaches>
 				<reach>2345642</reach>
 				<reach>3425688</reach>
 				<reach>5235424</reach>
-			</terminal-reaches>
+			</terminalReaches>
 
 	</PredictionContext>
 
@@ -170,20 +170,20 @@
 			<analysis>
 				<select>
 					<!-- divide each incremental value by the MQF for that reach -->
-					<data-series source="2" per="flow">total</data-series>
-					<agg-function>max</agg-function>
+					<dataSeries source="2" per="flow">total</dataSeries>
+					<aggFunction>max</aggFunction>
 				</select>
 
-				<limit-to>terminals</limit-to>
-				<group-by>HUC8</group-by>
+				<limitTo>terminals</limitTo>
+				<groupBy>HUC8</groupBy>
 			</analysis>
 
 			<!-- A list of terminal reaches we are interested in -->
-			<terminal-reaches>
+			<terminalReaches>
 				<reach>2345642</reach>
 				<reach>3425688</reach>
 				<reach>5235424</reach>
-			</terminal-reaches>
+			</terminalReaches>
 
 	</PredictionContext>
 
@@ -203,7 +203,7 @@
 
 			<analysis>
 				<select>
-					<data-series per="area">total-delivered</data-series>
+					<dataSeries per="area">total-delivered</dataSeries>
 				</select>
 			</analysis>
 	</PredictionContext>
@@ -228,20 +228,20 @@
 
 			<analysis>
 				<select>
-					<data-series>total-delivered</data-series>
-					<agg-function per="area">sum</agg-function> <!-- rank would be rank of the group within the whole -->
-					<analytic-function partition="terminals">rank-desc</analytic-function>
+					<dataSeries>total-delivered</dataSeries>
+					<aggFunction per="area">sum</aggFunction> <!-- rank would be rank of the group within the whole -->
+					<analyticFunction partition="terminals">rank-desc</analyticFunction>
 				</select>
 
-				<limit-to>contributors</limit-to>
-				<group-by>HUC8</group-by>
+				<limitTo>contributors</limitTo>
+				<groupBy>HUC8</groupBy>
 			</analysis>
 
-			<terminal-reaches>
+			<terminalReaches>
 				<reach>2345642</reach>
 				<reach>3425688</reach>
 				<reach>5235424</reach>
-			</terminal-reaches>
+			</terminalReaches>
 
 	</PredictionContext>
 
@@ -261,18 +261,18 @@
 
 			<analysis>
 				<select>
-					<data-series>total</data-series>
-					<analytic-function>rank-desc</analytic-function>
+					<dataSeries>total</dataSeries>
+					<analyticFunction>rank-desc</analyticFunction>
 				</select>
 
-				<limit-to>contributors</limit-to>
+				<limitTo>contributors</limitTo>
 			</analysis>
 
-			<terminal-reaches>
+			<terminalReaches>
 				<reach>2345642</reach>
 				<reach>3425688</reach>
 				<reach>5235424</reach>
-			</terminal-reaches>
+			</terminalReaches>
 
 	</PredictionContext>
 
@@ -292,20 +292,20 @@
 
 			<analysis>
 				<select>
-					<data-series>incremental-delivered</data-series>
-					<agg-function per="area">sum</agg-function>
-					<analytic-function>max-source</analytic-function>
+					<dataSeries>incremental-delivered</dataSeries>
+					<aggFunction per="area">sum</aggFunction>
+					<analyticFunction>max-source</analyticFunction>
 				</select>
 
-				<limit-to>contributors</limit-to><!-- all reaches that flow to the selected terms -->
-				<group-by>HUC8</group-by>
+				<limitTo>contributors</limitTo><!-- all reaches that flow to the selected terms -->
+				<groupBy>HUC8</groupBy>
 			</analysis>
 
-			<terminal-reaches>
+			<terminalReaches>
 				<reach>2345642</reach>
 				<reach>3425688</reach>
 				<reach>5235424</reach>
-			</terminal-reaches>
+			</terminalReaches>
 
 			<areaOfInterest/>
 
@@ -327,18 +327,18 @@
 
 			<analysis>
 				<select>
-					<data-series>total</data-series>
-					<analytic-function>max-source</analytic-function>
+					<dataSeries>total</dataSeries>
+					<analyticFunction>max-source</analyticFunction>
 				</select>
 
-				<limit-to>terminals</limit-to><!-- all reaches that flow to the selected terms -->
+				<limitTo>terminals</limitTo><!-- all reaches that flow to the selected terms -->
 			</analysis>
 
-			<terminal-reaches>
+			<terminalReaches>
 				<reach>2345642</reach>
 				<reach>3425688</reach>
 				<reach>5235424</reach>
-			</terminal-reaches>
+			</terminalReaches>
 
 	</PredictionContext>
 </samples>
@@ -354,23 +354,23 @@
 
 			<analysis>
 				<select>
-					<data-series source="1" per="area" >incremental</data-series>
-					<agg-function per="area">avg</agg-function>
-					<analytic-function partition="HUC6">rank-desc</analytic-function>
+					<dataSeries source="1" per="area" >incremental</dataSeries>
+					<aggFunction per="area">avg</aggFunction>
+					<analyticFunction partition="HUC6">rank-desc</analyticFunction>
 					<nominal_comparison type="percent | absolute"/>
 				</select>
 
-				<limit-to>contributors | terminals | areaOfInterest</limit-to>
-				<group-by>HUC8</group-by>
+				<limitTo>contributors | terminals | areaOfInterest</limitTo>
+				<groupBy>HUC8</groupBy>
 			</analysis>
 
-			<terminal-reaches>
+			<terminalReaches>
 				<reach>2345642</reach>
 				<reach>3425688</reach>
 				<reach>5235424</reach>
 				or
-				<logical-set/>
-			</terminal-reaches>
+				<logicalSet/>
+			</terminalReaches>
 
 			<areaOfInterest/>
 

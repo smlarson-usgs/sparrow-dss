@@ -15,7 +15,7 @@
 
 	<response-options>
 		<result-content>
-			<data-series>total</data-series>
+			<dataSeries>total</dataSeries>
 		</result-content>
 	</response-options>
 

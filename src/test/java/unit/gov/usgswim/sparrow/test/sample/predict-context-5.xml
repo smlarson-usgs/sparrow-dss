@@ -8,10 +8,10 @@ MODEL 22
 Test the logical set and huc criteria
 -->
 		<adjustmentGroups conflicts="accumulate">
-			<reach-group enabled="true" name="Group1">
+			<reachGroup enabled="true" name="Group1">
 				<adjustment src="5" coef=".6"/>
 				<adjustment src="4" coef=".8"/>
-				<logical-set>
+				<logicalSet>
 					<criteria attrib="huc6">080201</criteria>
 					<!-- CONTAINS REACHES:
 						1849909
@@ -19,12 +19,12 @@ Test the logical set and huc criteria
 						1849911
 						1849910
 					-->
-				</logical-set>
-			</reach-group>
+				</logicalSet>
+			</reachGroup>
 
-			<reach-group enabled="true" name="Group2">
+			<reachGroup enabled="true" name="Group2">
 				<adjustment src="1" coef="2"/>
-				<logical-set>
+				<logicalSet>
 					<criteria attrib="huc4">0111</criteria>
 					<!-- CONTAINS REACHES:
 						1847536
@@ -32,8 +32,8 @@ Test the logical set and huc criteria
 						1790443
 						1790405
 					-->
-				</logical-set>
-				<logical-set>
+				</logicalSet>
+				<logicalSet>
 					<criteria attrib="huc2">09</criteria>
 					<!-- CONTAINS REACHES:
 						1825732
@@ -41,12 +41,12 @@ Test the logical set and huc criteria
 						1825449
 						1825917
 					-->
-				</logical-set>
-			</reach-group>
+				</logicalSet>
+			</reachGroup>
 		</adjustmentGroups>
 		<analysis>
 			<select>
-				<data-series>incremental</data-series>
+				<dataSeries>incremental</dataSeries>
 			</select>
 		</analysis>
 </PredictionContext>

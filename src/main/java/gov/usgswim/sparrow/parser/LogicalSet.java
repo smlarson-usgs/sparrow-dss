@@ -13,8 +13,8 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
- * Simple bean class to hold logical-set identification serving as a key to
- * cached logical-set set of reaches.
+ * Simple bean class to hold logicalSet identification serving as a key to
+ * cached logicalSet set of reaches.
  * 
  * @author eeverman
  * 
@@ -23,7 +23,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class LogicalSet implements XMLStreamParserComponent {
 
 	private static final long serialVersionUID = 4020487873395320955L;
-	public static final String MAIN_ELEMENT_NAME = "logical-set";
+	public static final String MAIN_ELEMENT_NAME = "logicalSet";
 
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
@@ -83,7 +83,7 @@ public class LogicalSet implements XMLStreamParserComponent {
 						continue;
 					} else if ("criteria".equals(localName)) {
 						if (criteria.size() > 0) {
-							throw new XMLParseValidationException("only one criteria allowed per logical-set, at the moment");
+							throw new XMLParseValidationException("only one criteria allowed per logicalSet, at the moment");
 						}
 						String attrib = in.getAttributeValue("","attrib");
 						String value = ParserHelper.parseSimpleElementValue(in);

@@ -26,9 +26,9 @@ public class ReachGroupTest extends TestCase {
         + "  <notes>notes</notes>"
         + "  <adjustment src=\"5\" coef=\"0.9\" />"
         + "  <reach id=\"12345\" />"
-        + "  <logical-set>"
+        + "  <logicalSet>"
         + "    <criteria attrib=\"huc2\">10</criteria>"
-        + "  </logical-set>"
+        + "  </logicalSet>"
         + "</reachGroup>";
         ;
 
@@ -47,18 +47,18 @@ public class ReachGroupTest extends TestCase {
 		+ "	<!-- Multiple treatments are possible -->"
 		+ "	<adjustment src=\"5\" coef=\".9\"/>	<!--  Existing Adjustment Object -->"
 		+ "	<adjustment src=\"4\" coef=\".75\"/>"
-		+ "	<logical-set>	<!--  LogicalSet Object?  (Hold Off) Used as cache key for a reach collection. -->"
+		+ "	<logicalSet>	<!--  LogicalSet Object?  (Hold Off) Used as cache key for a reach collection. -->"
 		+ "		<criteria attrib=\"huc8\">10040202</criteria>"
-		+ "	</logical-set>"
-		+ "	<logical-set>"
+		+ "	</logicalSet>"
+		+ "	<logicalSet>"
 		+ "		<criteria attrib=\"huc6\">101701</criteria>"
-		+ "	</logical-set>"
-		+ "	<logical-set>"
+		+ "	</logicalSet>"
+		+ "	<logicalSet>"
 		+ "		<criteria attrib=\"huc4\">1705</criteria>"
-		+ "	</logical-set>"
-		+ "	<logical-set>"
+		+ "	</logicalSet>"
+		+ "	<logicalSet>"
 		+ "		<criteria attrib=\"huc2\">10</criteria>"
-		+ "	</logical-set>"
+		+ "	</logicalSet>"
 		+ "</reachGroup>";
 
 	public void testParse1() throws Exception {
@@ -100,12 +100,12 @@ public class ReachGroupTest extends TestCase {
 			+ "		This is an estimate so I'm leaving it out of the runs created	for the EPA."
 			+ "	</notes>"
 			+ "	<adjustment src=\"1\" coef=\"1.05\"/>"
-			+ "	<logical-set>"
+			+ "	<logicalSet>"
 			+ "		<criteria attrib=\"reach\" relation=\"upstream\">8346289</criteria>"
-			+ "	</logical-set>"
-			+ "	<logical-set>"
+			+ "	</logicalSet>"
+			+ "	<logicalSet>"
 			+ "		<criteria attrib=\"reach\" relation=\"upstream\">9374562</criteria>"
-			+ "	</logical-set>"
+			+ "	</logicalSet>"
 			+ "</reachGroup>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 		ReachGroup rg = new ReachGroup(1);
@@ -123,9 +123,9 @@ public class ReachGroupTest extends TestCase {
 			+ "	<desc>The entire state of Illinois</desc>"
 			+ "	<notes>The Urban source for Illinois is predicted is to increase 20%.</notes>"
 			+ "	<adjustment src=\"2\" coef=\"1.2\"/>"
-			+ "	<logical-set>"
+			+ "	<logicalSet>"
 			+ "		<criteria attrib=\"state-code\">il</criteria>"
-			+ "	</logical-set>"
+			+ "	</logicalSet>"
 			+ "</reachGroup>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 		ReachGroup rg = new ReachGroup(1);

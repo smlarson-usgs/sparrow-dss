@@ -11,7 +11,7 @@ public class PredictContextPipeline extends AbstractPipeline<PredictContextReque
 	public static JSONFormatter configure(JSONFormatter jFormatter) {
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "reachGroup");
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "adjustment");
-		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "logical-set");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "logicalSet");
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "reach");
 		return jFormatter;
 	}

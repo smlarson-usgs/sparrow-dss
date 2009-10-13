@@ -1,21 +1,21 @@
 <PredictionContext xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="21">
 	<adjustmentGroups conflicts="accumulate">
-		<reach-group enabled="true" name="Some Adjustments">
+		<reachGroup enabled="true" name="Some Adjustments">
 			<desc />
 			<notes />
 			<adjustment src="3" coef="2" />
 			<!-- These are the 1st two reaches -->
 			<reach id="3074" />
 			<reach id="3077" />
-		</reach-group>
+		</reachGroup>
 	</adjustmentGroups>
 	<analysis>
 		<select>
-			<data-series source="3">source_value</data-series>
-			<nominal-comparison type="percent" />
+			<dataSeries source="3">source_value</dataSeries>
+			<nominalComparison type="percent" />
 		</select>
 	</analysis>
-	<terminal-reaches />
+	<terminalReaches />
 	<areaOfInterest />
 </PredictionContext>

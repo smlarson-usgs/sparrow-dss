@@ -446,9 +446,9 @@ public class IndividualGroupTest extends TestCase {
         try {
             String fragment = ""
                 + "<individualGroup enabled=\"true\">"
-                + "  <logical-set>"
+                + "  <logicalSet>"
                 + "    <criteria attrib=\"huc8\">01746286</criteria>"
-                + "  </logical-set>"
+                + "  </logicalSet>"
                 + "  <reach id=\"12345\">"
                 + "    <adjustment src=\"1\" abs=\"111\" />"
                 + "  </reach>"

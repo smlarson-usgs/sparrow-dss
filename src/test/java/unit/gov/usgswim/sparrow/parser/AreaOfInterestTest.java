@@ -12,7 +12,7 @@ public class AreaOfInterestTest extends TestCase {
     /** Valid xml string represention of the area of interest section. */
     public static final String VALID_FRAGMENT = ""
         + "<areaOfInterest>"
-        + "  <logical-set />"
+        + "  <logicalSet />"
         + "</areaOfInterest>";
         ;
 

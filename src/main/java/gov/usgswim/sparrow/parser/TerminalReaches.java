@@ -77,7 +77,7 @@ public class TerminalReaches implements XMLStreamParserComponent {
                         ReachElement r = new ReachElement();
                         r.parse(in);
 						reachIDs.add(r.getId());
-					} else if ("logical-set".equals(localName)) {
+					} else if ("logicalSet".equals(localName)) {
 						ParserHelper.ignoreElement(in);
 					} else {
 						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);

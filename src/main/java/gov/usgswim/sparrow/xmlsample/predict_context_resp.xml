@@ -27,7 +27,7 @@
 	<!-- Here a predefined treatment group was used, so both IDs are returned -->
 	<adjustmentGroups predefined="957648" context-id="982398"/>
 	<analysis context-id="1093474"/>
-	<terminal-reaches context-id="127830"/>
+	<terminalReaches context-id="127830"/>
 	<areaOfInterest context-id="2947593"/>
 
 </PredictionContext-response>

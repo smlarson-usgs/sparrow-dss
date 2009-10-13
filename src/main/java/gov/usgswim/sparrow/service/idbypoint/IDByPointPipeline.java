@@ -12,7 +12,7 @@ public class IDByPointPipeline extends AbstractPipeline<IDByPointRequest> {
 	public static JSONFormatter configure(JSONFormatter jFormatter) {
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "reachGroup");
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "adjustment");
-		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "logical-set");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "logicalSet");
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "reach");
 		jFormatter.identifyRepeatedTagElement("columns", "group");
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "col");

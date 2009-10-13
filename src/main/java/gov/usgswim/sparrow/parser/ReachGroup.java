@@ -248,7 +248,7 @@ public class ReachGroup implements XMLStreamParserComponent {
 
 	/**
 	 * @param i
-	 * @return reachIds for the ith logical-set
+	 * @return reachIds for the ith logicalSet
 	 */
 	public List<Long> getLogicalReachIDs(int i) {
 		if (reachIDsByLogicalSets == null) {

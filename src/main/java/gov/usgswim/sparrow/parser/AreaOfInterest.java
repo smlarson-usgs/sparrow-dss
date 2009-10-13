@@ -64,7 +64,7 @@ public class AreaOfInterest implements XMLStreamParserComponent {
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
 						id = ParserHelper.parseAttribAsInt(in, XMLStreamParserComponent.ID_ATTR, false);
-					} else if ("logical-set".equals(localName)) {
+					} else if ("logicalSet".equals(localName)) {
 						ParserHelper.ignoreElement(in);
 					} else {
 						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);

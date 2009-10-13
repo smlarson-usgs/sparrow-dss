@@ -33,12 +33,12 @@
 				&lt;/notes&gt;
 				&lt;adjustment src="5" coef=".9"/&gt;
 				&lt;adjustment src="4" coef=".75"/&gt;
-				&lt;logical-set&gt;
+				&lt;logicalSet&gt;
 					&lt;criteria attrib="huc8"&gt;01746286&lt;/criteria&gt;
-				&lt;/logical-set&gt;
-				&lt;logical-set&gt;
+				&lt;/logicalSet&gt;
+				&lt;logicalSet&gt;
 					&lt;criteria attrib="huc8"&gt;01746289&lt;/criteria&gt;
-				&lt;/logical-set&gt;
+				&lt;/logicalSet&gt;
 			&lt;/reachGroup&gt;
 
 			&lt;reachGroup enabled="false" name="Southern Indiana Fields"&gt;
@@ -49,21 +49,21 @@
 					This is an estimate so I'm leaving it out of the runs created	for the EPA.
 				&lt;/notes&gt;
 				&lt;adjustment src="1" coef="1.05"/&gt;
-				&lt;logical-set&gt;
+				&lt;logicalSet&gt;
 					&lt;criteria attrib="reach" relation="upstream"&gt;8346289&lt;/criteria&gt;
-				&lt;/logical-set&gt;
-				&lt;logical-set&gt;
+				&lt;/logicalSet&gt;
+				&lt;logicalSet&gt;
 					&lt;criteria attrib="reach" relation="upstream"&gt;9374562&lt;/criteria&gt;
-				&lt;/logical-set&gt;
+				&lt;/logicalSet&gt;
 			&lt;/reachGroup&gt;
 
 			&lt;reachGroup enabled="true" name="Illinois"&gt;
 				&lt;desc&gt;The entire state of Illinois&lt;/desc&gt;
 				&lt;notes&gt;The Urban source for Illinois is predicted is to increase 20%.&lt;/notes&gt;
 				&lt;adjustment src="2" coef="1.2"/&gt;
-				&lt;logical-set&gt;
+				&lt;logicalSet&gt;
 					&lt;criteria attrib="state-code"&gt;il&lt;/criteria&gt;
-				&lt;/logical-set&gt;
+				&lt;/logicalSet&gt;
 			&lt;/reachGroup&gt;
 
 			&lt;reachGroup enabled="true" name="Illinois"&gt;
@@ -102,11 +102,11 @@
 			&lt;reach&gt;3425688&lt;/reach&gt;
 			&lt;reach&gt;5235424&lt;/reach&gt;
 			or
-			&lt;logical-set/&gt;
+			&lt;logicalSet/&gt;
 		&lt;/terminalReaches&gt;
 
 		&lt;areaOfInterest&gt;
-			&lt;logical-set/&gt;
+			&lt;logicalSet/&gt;
 		&lt;/areaOfInterest&gt;
 
 &lt;/PredictionContext&gt;

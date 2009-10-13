@@ -26,7 +26,7 @@
 	Really only for export or ID
 	response-content gives the ability to controls what rows and columns are returned.
 	result-filter removes columns based on a criteria.
-	data-series allows only a subset of data to be returned, or allows additional
+	dataSeries allows only a subset of data to be returned, or allows additional
 	series of data to be added (such as the source values used to calculate the
 	predicted data.
 	-->
@@ -72,7 +72,7 @@
 		
 			<!--
 			A request to return binning data based on the analysis column.
-			Can be combined w/ data-series.  Data is returned in the metadata section
+			Can be combined w/ dataSeries.  Data is returned in the metadata section
 			of the response document.
 			
 			count:	The number of bins created

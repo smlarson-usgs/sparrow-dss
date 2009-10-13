@@ -5,13 +5,13 @@
 	model-id="22">
 		<adjustmentGroups conflicts="accumulate">
 
-			<reach-group enabled="true" name="Wisconsin">
+			<reachGroup enabled="true" name="Wisconsin">
 				<desc>Wisconsin River Plants</desc>
 				<notes>
 					We know of 3 plants on the Wisconsin River which have announced improved
 					BPM implementations.
 				</notes>
-			</reach-group>
+			</reachGroup>
 			<individualGroup enabled="true">
 				<!-- Note:  these are the first two reaches in model 1 -->
 				<reach id="4428">
@@ -23,15 +23,15 @@
 		<analysis>
 			<select>
 
-				<data-series source="1" per="area">incremental</data-series>
-				<agg-function per="area">avg</agg-function> <!-- rank would be rank of the group within the whole -->
-				<analytic-function partition="HUC6">rank-desc</analytic-function>
+				<dataSeries source="1" per="area">incremental</dataSeries>
+				<aggFunction per="area">avg</aggFunction> <!-- rank would be rank of the group within the whole -->
+				<analyticFunction partition="HUC6">rank-desc</analyticFunction>
 
-				<nominal-comparison type="absolute"/>
+				<nominalComparison type="absolute"/>
 			</select>
-			<limit-to>contributors | terminals | areaOfInterest</limit-to>
+			<limitTo>contributors | terminals | areaOfInterest</limitTo>
 
-			<group-by>HUC8</group-by>
+			<groupBy>HUC8</groupBy>
 
 		</analysis>
 

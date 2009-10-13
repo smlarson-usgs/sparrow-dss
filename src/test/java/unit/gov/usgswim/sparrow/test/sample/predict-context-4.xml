@@ -8,10 +8,10 @@ MODEL 22
 Test the logical set and huc criteria
 -->
 		<adjustmentGroups conflicts="accumulate">
-			<reach-group enabled="true" name="Group1">
+			<reachGroup enabled="true" name="Group1">
 				<adjustment src="5" coef=".5"/>
 				<adjustment src="4" coef=".75"/>
-				<logical-set>
+				<logicalSet>
 					<criteria attrib="huc8">11090104</criteria>
 					<!-- CONTAINS REACHES:
 						36347
@@ -19,12 +19,12 @@ Test the logical set and huc criteria
 						36344
 						36345
 					-->
-				</logical-set>
-			</reach-group>
+				</logicalSet>
+			</reachGroup>
 
-			<reach-group enabled="true" name="Group2">
+			<reachGroup enabled="true" name="Group2">
 				<adjustment src="1" coef="2"/>
-				<logical-set>
+				<logicalSet>
 					<criteria attrib="huc8">12050002</criteria>
 					<!-- CONTAINS REACHES:
 						39529
@@ -32,8 +32,8 @@ Test the logical set and huc criteria
 						39528
 						39527
 					-->
-				</logical-set>
-				<logical-set>
+				</logicalSet>
+				<logicalSet>
 					<criteria attrib="huc8">12080001</criteria>
 					<!-- CONTAINS REACHES:
 						39966
@@ -41,9 +41,9 @@ Test the logical set and huc criteria
 						39967
 						39965
 					-->
-				</logical-set>
+				</logicalSet>
 				<reach id="11861"/>	<!-- An additional added reach -->
-			</reach-group>
+			</reachGroup>
 			<individualGroup enabled="true">
 				<reach id="39529">
 					<adjustment src="1" abs="99"/> <!-- Override a reach -->
@@ -55,7 +55,7 @@ Test the logical set and huc criteria
 		</adjustmentGroups>
 		<analysis>
 			<select>
-				<data-series>incremental</data-series>
+				<dataSeries>incremental</dataSeries>
 			</select>
 		</analysis>
 </PredictionContext>

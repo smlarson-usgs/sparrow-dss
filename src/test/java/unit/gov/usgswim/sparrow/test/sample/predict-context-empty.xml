@@ -5,14 +5,14 @@
 	</adjustmentGroups>
 	<analysis>
 		<select>
-			<data-series per="area">total</data-series>
-			<agg-function per="area">avg</agg-function>
-			<analytic-function partition="HUC6">rank-desc</analytic-function>
-			<nominal-comparison type="none"></nominal-comparison>
+			<dataSeries per="area">total</dataSeries>
+			<aggFunction per="area">avg</aggFunction>
+			<analyticFunction partition="HUC6">rank-desc</analyticFunction>
+			<nominalComparison type="none"></nominalComparison>
 		</select>
-		<limit-to>contributors | terminals | areaOfInterest</limit-to>
-		<group-by>HUC8</group-by>
+		<limitTo>contributors | terminals | areaOfInterest</limitTo>
+		<groupBy>HUC8</groupBy>
 	</analysis>
-	<terminal-reaches></terminal-reaches>
+	<terminalReaches></terminalReaches>
 	<areaOfInterest></areaOfInterest>
 </PredictionContext>

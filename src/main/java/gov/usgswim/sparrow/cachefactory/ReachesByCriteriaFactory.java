@@ -33,7 +33,7 @@ public class ReachesByCriteriaFactory extends AbstractCacheFactory {
 	public List<Long> createEntry(Object logicalSetCriteria) throws Exception {
 		LogicalSet ls = (LogicalSet) logicalSetCriteria;
 
-		assert(ls.getCriteria() != null && ls.getCriteria().size() == 1): "for now, we're only handling logical-sets with a single criteria";
+		assert(ls.getCriteria() != null && ls.getCriteria().size() == 1): "for now, we're only handling logicalSets with a single criteria";
 		String criteriaAttrib = ls.getCriteria().keySet().iterator().next(); 
 		String criteriaValue = ls.getCriteria().get(criteriaAttrib);
 		

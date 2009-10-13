@@ -5,7 +5,7 @@
 	model-id="22">
 
 		<adjustmentGroups conflicts="accumulate">
-			<reach-group enabled="true" name="Illinois">
+			<reachGroup enabled="true" name="Illinois">
 				<desc>Some point sources located somewhere...</desc>
 				<notes>
 					We know of 3 plants that have announced changes in outputs.
@@ -20,7 +20,7 @@
 				<reach id="15">
 					<adjustment src="3" abs="1348351"/>
 				</reach>
-			</reach-group>
+			</reachGroup>
 		</adjustmentGroups>
 
 
@@ -30,7 +30,7 @@
 		-->
 		<analysis>
 			<select>
-				<data-series>total</data-series>
+				<dataSeries>total</dataSeries>
 			</select>
 		</analysis>
 

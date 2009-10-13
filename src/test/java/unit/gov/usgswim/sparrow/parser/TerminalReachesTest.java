@@ -22,7 +22,7 @@ public class TerminalReachesTest extends TestCase {
         + "  <reach id='2345642'></reach>"
         + "  <reach id='3425688'></reach>"
         + "  <reach id='5235424'></reach>"
-        + "  <logical-set/>"
+        + "  <logicalSet/>"
         + "</terminalReaches>"
         ;
 
@@ -43,7 +43,7 @@ public class TerminalReachesTest extends TestCase {
 
 	public void testAcceptsLogicalSet() throws XMLStreamException, XMLParseValidationException {
 		String testRequest = "<terminalReaches>"
-		+ "	<logical-set/>"
+		+ "	<logicalSet/>"
 		+ "</terminalReaches>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 		TerminalReaches termReaches = new TerminalReaches(1L);

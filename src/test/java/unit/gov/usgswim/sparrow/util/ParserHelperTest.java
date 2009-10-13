@@ -22,12 +22,12 @@ public class ParserHelperTest extends TestCase {
 		+ "	<!-- Multiple treatments are possible -->"
 		+ "	<adjustment src=\"5\" coef=\".9\"/>	<!--  Existing Adjustment Object -->"
 		+ "	<adjustment src=\"4\" coef=\".75\"/>"
-		+ "	<logical-set>	<!--  LogicalSet Object?  (Hold Off) Used as cache key for a reach collection. -->"
+		+ "	<logicalSet>	<!--  LogicalSet Object?  (Hold Off) Used as cache key for a reach collection. -->"
 		+ "		<criteria attrib=\"huc8\">01746286</criteria>"
-		+ "	</logical-set>"
-		+ "	<logical-set>"
+		+ "	</logicalSet>"
+		+ "	<logicalSet>"
 		+ "		<criteria attrib=\"huc8\">01746289</criteria>"
-		+ "	</logical-set>"
+		+ "	</logicalSet>"
 		+ "</reachGroup>";
 
 	public void testParseToDesignatedStartTag() throws XMLStreamException {

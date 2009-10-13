@@ -1,23 +1,23 @@
 <PredictionContext xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="22">
 	<adjustmentGroups conflicts="accumulate | supersede">
-		<reach-group enabled="true" name="kjbk">
+		<reachGroup enabled="true" name="kjbk">
 			<desc>jkj</desc>
 			<notes />
 			<adjustment src="2" coef="1.5" />
 			<reach id="3074" />
-		</reach-group>
+		</reachGroup>
 	</adjustmentGroups>
 	<analysis>
 		<select>
-			<data-series per="area">incremental</data-series>
-			<agg-function per="area">avg</agg-function>
-			<analytic-function partition="HUC6">rank-desc</analytic-function>
-			<nominal-comparison />
+			<dataSeries per="area">incremental</dataSeries>
+			<aggFunction per="area">avg</aggFunction>
+			<analyticFunction partition="HUC6">rank-desc</analyticFunction>
+			<nominalComparison />
 		</select>
-		<limit-to>contributors | terminals | areaOfInterest</limit-to>
-		<group-by>HUC8</group-by>
+		<limitTo>contributors | terminals | areaOfInterest</limitTo>
+		<groupBy>HUC8</groupBy>
 	</analysis>
-	<terminal-reaches />
+	<terminalReaches />
 	<areaOfInterest />
 </PredictionContext>

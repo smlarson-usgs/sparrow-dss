@@ -30,7 +30,7 @@
 
 		<!--
 		These two elements are optional:
-		<terminal-reaches/>
+		<terminalReaches/>
 		<areaOfInterest/>
 		-->
 
@@ -68,7 +68,7 @@
 		optional element
 		context-id refers to a set of terminal reaches previously stored (not permanently stored)
 		-->
-		<terminal-reaches context-id="1093474" />
+		<terminalReaches context-id="1093474" />
 
 		<!--
 		optional element

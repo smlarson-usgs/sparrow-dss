@@ -15,7 +15,7 @@
 
 	<response-options>
 		<result-content>
-			<data-series>incremental</data-series>
+			<dataSeries>incremental</dataSeries>
 		</result-content>
 	</response-options>
 
