@@ -42,7 +42,7 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 			}
 			if (context.getTerminalReaches() != null) {
 				String contextId = Integer.toString(context.getTerminalReaches().hashCode());
-				terminalReaches = props.getParametrizedQuery("terminal-reaches",
+				terminalReaches = props.getParametrizedQuery("terminalReaches",
 						new String[] { "TerminalContextId",  contextId });
 			}
 			if (context.getAreaOfInterest() != null) {
@@ -58,7 +58,7 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 					"RowIdType", "reach",
 					"adjustmentGroups", adjustmentGroups,
 					"AnalysisContextId", Integer.toString( context.getAnalysis().hashCode() ),
-					"terminal-reaches", terminalReaches,
+					"terminalReaches", terminalReaches,
 					"areaOfInterest", areaOfInterest
 			});
 

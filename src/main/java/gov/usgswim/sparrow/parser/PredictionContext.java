@@ -237,7 +237,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 					}
 					break;
 				default:
-					throw new Exception("No data-series was specified in the analysis section");
+					throw new Exception("No dataSeries was specified in the analysis section");
 			}
 
 		} else if (type.isResultBased()) {
@@ -269,7 +269,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 					// ignore source
 					break;
 				default:
-					throw new Exception("No data-series was specified in the analysis section");
+					throw new Exception("No dataSeries was specified in the analysis section");
 			}
 
 			dataTable = result;
@@ -308,7 +308,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 					}
 					break;
 				default:
-					throw new Exception("No data-series was specified in the analysis section");
+					throw new Exception("No dataSeries was specified in the analysis section");
 			}
 		}
 

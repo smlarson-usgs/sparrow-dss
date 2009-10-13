@@ -74,7 +74,7 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
 	/**
 	 * Determines which column to map.
 	 */
-	public static final String DATA_SERIES = "data-series";
+	public static final String DATA_SERIES = "dataSeries";
 
 	/**
 	 * A possible value for the RESULT_MODE_KEY parameter.

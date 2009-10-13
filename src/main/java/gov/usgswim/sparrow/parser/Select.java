@@ -48,7 +48,7 @@ public class Select implements XMLStreamParserComponent {
 	public Select parse(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
-		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : 
+		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) :
 			this.getClass().getSimpleName()
 			+ " can only parse " + MAIN_ELEMENT_NAME + " elements.";
 		boolean isStarted = false;
@@ -66,25 +66,25 @@ public class Select implements XMLStreamParserComponent {
 				case START_ELEMENT:
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
-					} else if ("data-series".equals(localName)) {
+					} else if ("dataSeries".equals(localName)) {
 						source = ParserHelper.parseAttribAsInt(in, "source", false);
 						dataSeriesPer = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "per");
 						String dataSeriesString = ParserHelper.parseSimpleElementValue(in);
-						dataSeries = (dataSeriesString != null)? 
+						dataSeries = (dataSeriesString != null)?
 								Enum.valueOf(DataSeriesType.class, dataSeriesString): null;
-					} else if ("agg-function".equals(localName)) {
+					} else if ("aggFunction".equals(localName)) {
 						aggFunctionPer = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "per");
 						aggFunction = ParserHelper.parseSimpleElementValue(in);
-					} else if ("analytic-function".equals(localName)) {
+					} else if ("analyticFunction".equals(localName)) {
 						partition = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "partition");
 						analyticFunction = ParserHelper.parseSimpleElementValue(in);
-					} else if ("nominal-comparison".equals(localName)) {
+					} else if ("nominalComparison".equals(localName)) {
 						String type = ParserHelper.parseAttribAsString(in, "type", ComparisonType.none.name());
 
 						try {
 							nominalComparison = ComparisonType.valueOf(type);
 						} catch (IllegalArgumentException e) {
-							throw new XMLParseValidationException("The nominal-comparison type '" + type + "' is unrecognized");
+							throw new XMLParseValidationException("The nominalComparison type '" + type + "' is unrecognized");
 						}
 						ParserHelper.ignoreElement(in);
 					} else {
@@ -110,7 +110,7 @@ public class Select implements XMLStreamParserComponent {
 			// Diagnose the error and throw a custom error message depending on the error
 			StringBuilder errors = new StringBuilder();
 			if (isDataSeriesSourceNeeded()) {
-				errors.append("@source must be specified when data-series == \"" + source_value.name() + "\"; ");
+				errors.append("@source must be specified when dataSeries == \"" + source_value.name() + "\"; ");
 			}
 			throw new XMLParseValidationException(errors.toString());
 		}
@@ -123,7 +123,7 @@ public class Select implements XMLStreamParserComponent {
 	private boolean isDataSeriesSourceNeeded() {
 		return !(dataSeries == source_value && source == null);
 	}
-        
+
 	public boolean isWeighted() {
 		return getDataSeries().isWeighted();
 	}

@@ -12,24 +12,24 @@ import javax.xml.stream.XMLStreamReader;
 import junit.framework.TestCase;
 
 public class AnalysisTest extends TestCase {
-    
+
     /** Valid xml string represention of the analysis section. */
     public static final String VALID_FRAGMENT = ""
         + "<analysis>"
         + "  <select>"
-        + "    <data-series source=\"1\" per=\"area\">incremental</data-series>"
-        + "    <agg-function per=\"area\">avg</agg-function>"
-        + "    <analytic-function partition=\"HUC6\">rank-desc</analytic-function>"
-        + "    <nominal-comparison type=\"percent\"/>"
+        + "    <dataSeries source=\"1\" per=\"area\">incremental</dataSeries>"
+        + "    <aggFunction per=\"area\">avg</aggFunction>"
+        + "    <analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
+        + "    <nominalComparison type=\"percent\"/>"
         + "  </select>"
-        + "  <limit-to>contributors</limit-to>"
-        + "  <group-by>HUC8</group-by>"
+        + "  <limitTo>contributors</limitTo>"
+        + "  <groupBy>HUC8</groupBy>"
         + "</analysis>"
         ;
 
     /** Used to create XMLStreamReaders from XML strings. */
     protected XMLInputFactory inFact = XMLInputFactory.newInstance();
-	
+
 	public void testParse1() throws Exception {
 
 		Analysis anal = buildTestInstance();
@@ -38,7 +38,7 @@ public class AnalysisTest extends TestCase {
 		assertEquals("HUC8", anal.getGroupBy());
 
 	}
-	
+
 	public void testHashcode() throws Exception {
 
 		Analysis analysis1 = buildTestInstance();
@@ -49,19 +49,19 @@ public class AnalysisTest extends TestCase {
 		assertEquals(analysis1.hashCode(), analysis1.getId().intValue());
 		assertEquals(analysis2.hashCode(), analysis2.getId().intValue());
 	}
-	
-	
+
+
 	@SuppressWarnings("static-access")
   public Analysis buildTestInstance() throws Exception {
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(VALID_FRAGMENT));
 		Analysis test = new Analysis();
 		reader.next();
 		test = test.parse(reader);
-		
+
 		// should have stopped at the end tag
 		assertTrue(reader.getEventType() == XMLStreamConstants.END_ELEMENT);
 		assertEquals(test.MAIN_ELEMENT_NAME, reader.getLocalName());
-		
+
 		return test;
 	}
 }

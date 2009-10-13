@@ -18,12 +18,12 @@ public class TerminalReachesTest extends TestCase {
 
     /** Valid xml string represention of the terminal reaches. */
     public static final String VALID_FRAGMENT = ""
-        + "<terminal-reaches>"
+        + "<terminalReaches>"
         + "  <reach id='2345642'></reach>"
         + "  <reach id='3425688'></reach>"
         + "  <reach id='5235424'></reach>"
         + "  <logical-set/>"
-        + "</terminal-reaches>"
+        + "</terminalReaches>"
         ;
 
     /** Used to create XMLStreamReaders from XML strings. */
@@ -42,9 +42,9 @@ public class TerminalReachesTest extends TestCase {
 	}
 
 	public void testAcceptsLogicalSet() throws XMLStreamException, XMLParseValidationException {
-		String testRequest = "<terminal-reaches>"
+		String testRequest = "<terminalReaches>"
 		+ "	<logical-set/>"
-		+ "</terminal-reaches>";
+		+ "</terminalReaches>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 		TerminalReaches termReaches = new TerminalReaches(1L);
 		reader.next();
@@ -53,9 +53,9 @@ public class TerminalReachesTest extends TestCase {
 	}
 
 	public void testDoesNotAcceptsBadTag() throws XMLStreamException, XMLParseValidationException {
-		String testRequest = "<terminal-reaches>"
+		String testRequest = "<terminalReaches>"
 		+ "	<bad-tag/>"
-		+ "</terminal-reaches>";
+		+ "</terminalReaches>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 		TerminalReaches termReaches = new TerminalReaches(1L);
 		reader.next();
@@ -96,11 +96,11 @@ public class TerminalReachesTest extends TestCase {
 	}
 
 	public String getTestRequest() {
-		String testRequest = "<terminal-reaches>"
+		String testRequest = "<terminalReaches>"
 			+ "	<reach id='2345642'></reach>"
 			+ "	<reach id='3425688'></reach>"
 			+ "	<reach id='5235424'></reach>"
-			+ "</terminal-reaches>";
+			+ "</terminalReaches>";
 		return testRequest;
 	}
 }

@@ -18,10 +18,10 @@ import junit.framework.TestCase;
  * @author eeverman
  */
 public class ReachGroupTest extends TestCase {
-    
+
     /** Valid xml string represention of a reach group. */
     public static final String VALID_FRAGMENT = ""
-        + "<reach-group enabled=\"true\" name=\"Northern Indiana Plants\">"
+        + "<reachGroup enabled=\"true\" name=\"Northern Indiana Plants\">"
         + "  <desc>description</desc>"
         + "  <notes>notes</notes>"
         + "  <adjustment src=\"5\" coef=\"0.9\" />"
@@ -29,13 +29,13 @@ public class ReachGroupTest extends TestCase {
         + "  <logical-set>"
         + "    <criteria attrib=\"huc2\">10</criteria>"
         + "  </logical-set>"
-        + "</reach-group>";
+        + "</reachGroup>";
         ;
 
     /** Used to create XMLStreamReaders from XML strings. */
     protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 
-    public static String testRequest1 = "<reach-group enabled=\"true\" name=\"Northern Indiana Plants\"> <!--  ReachGroup Object -->"
+    public static String testRequest1 = "<reachGroup enabled=\"true\" name=\"Northern Indiana Plants\"> <!--  ReachGroup Object -->"
 		+ "	<desc>Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project</desc>"
 		+ "	<notes>"
 		+ "		I initially selected HUC 10040202"
@@ -59,8 +59,8 @@ public class ReachGroupTest extends TestCase {
 		+ "	<logical-set>"
 		+ "		<criteria attrib=\"huc2\">10</criteria>"
 		+ "	</logical-set>"
-		+ "</reach-group>";
-	
+		+ "</reachGroup>";
+
 	public void testParse1() throws Exception {
 
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest1));
@@ -92,7 +92,7 @@ public class ReachGroupTest extends TestCase {
 	}
 
 	public void testParse2() throws Exception {
-		String testRequest = "<reach-group enabled=\"false\" name=\"Southern Indiana Fields\">"
+		String testRequest = "<reachGroup enabled=\"false\" name=\"Southern Indiana Fields\">"
 			+ "	<desc>Fields in Southern Indiana</desc>"
 			+ "	<notes>"
 			+ "		The Farmer's Alminac says corn planting will be up 20% this year,"
@@ -106,7 +106,7 @@ public class ReachGroupTest extends TestCase {
 			+ "	<logical-set>"
 			+ "		<criteria attrib=\"reach\" relation=\"upstream\">9374562</criteria>"
 			+ "	</logical-set>"
-			+ "</reach-group>";
+			+ "</reachGroup>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 		ReachGroup rg = new ReachGroup(1);
 		reader.next();
@@ -119,14 +119,14 @@ public class ReachGroupTest extends TestCase {
 	}
 
 	public void testParse3() throws Exception {
-		String testRequest = "<reach-group enabled=\"true\" name=\"Illinois\">"
+		String testRequest = "<reachGroup enabled=\"true\" name=\"Illinois\">"
 			+ "	<desc>The entire state of Illinois</desc>"
 			+ "	<notes>The Urban source for Illinois is predicted is to increase 20%.</notes>"
 			+ "	<adjustment src=\"2\" coef=\"1.2\"/>"
 			+ "	<logical-set>"
 			+ "		<criteria attrib=\"state-code\">il</criteria>"
 			+ "	</logical-set>"
-			+ "</reach-group>";
+			+ "</reachGroup>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 		ReachGroup rg = new ReachGroup(1);
 		reader.next();
@@ -139,7 +139,7 @@ public class ReachGroupTest extends TestCase {
 	}
 
 	public void testParse4() throws Exception {
-		String testRequest = "<reach-group enabled=\"true\" name=\"Illinois\">"
+		String testRequest = "<reachGroup enabled=\"true\" name=\"Illinois\">"
 			+ "	<desc>Wisconsin River Plants</desc>"
 			+ "	<notes>"
 			+ "		We know of 3 plants on the Wisconsin River which have announced improved"
@@ -148,7 +148,7 @@ public class ReachGroupTest extends TestCase {
 			+ "	<adjustment src=\"2\" coef=\".75\"/>"
 			+ "	<reach id=\"483947453\" />"
 			+ "	<reach id=\"947839474\" />"
-			+ "</reach-group>";
+			+ "</reachGroup>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 		ReachGroup rg = new ReachGroup(1);
 		reader.next();

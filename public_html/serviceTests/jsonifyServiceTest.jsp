@@ -22,7 +22,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	model-id="22"&gt;
 		&lt;adjustmentGroups conflicts="accumulate | supersede"&gt;
-			&lt;reach-group enabled="true" name="Northern Indiana Plants"&gt;
+			&lt;reachGroup enabled="true" name="Northern Indiana Plants"&gt;
 				&lt;desc&gt;Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project&lt;/desc&gt;
 				&lt;notes&gt;
 					I initially selected HUC 01746286 and 01746289,
@@ -39,9 +39,9 @@
 				&lt;logical-set&gt;
 					&lt;criteria attrib="huc8"&gt;01746289&lt;/criteria&gt;
 				&lt;/logical-set&gt;
-			&lt;/reach-group&gt;
+			&lt;/reachGroup&gt;
 
-			&lt;reach-group enabled="false" name="Southern Indiana Fields"&gt;
+			&lt;reachGroup enabled="false" name="Southern Indiana Fields"&gt;
 				&lt;desc&gt;Fields in Southern Indiana&lt;/desc&gt;
 				&lt;notes&gt;
 					The Farmer's Alminac says corn planting will be up 20% this year,
@@ -55,18 +55,18 @@
 				&lt;logical-set&gt;
 					&lt;criteria attrib="reach" relation="upstream"&gt;9374562&lt;/criteria&gt;
 				&lt;/logical-set&gt;
-			&lt;/reach-group&gt;
+			&lt;/reachGroup&gt;
 
-			&lt;reach-group enabled="true" name="Illinois"&gt;
+			&lt;reachGroup enabled="true" name="Illinois"&gt;
 				&lt;desc&gt;The entire state of Illinois&lt;/desc&gt;
 				&lt;notes&gt;The Urban source for Illinois is predicted is to increase 20%.&lt;/notes&gt;
 				&lt;adjustment src="2" coef="1.2"/&gt;
 				&lt;logical-set&gt;
 					&lt;criteria attrib="state-code"&gt;il&lt;/criteria&gt;
 				&lt;/logical-set&gt;
-			&lt;/reach-group&gt;
+			&lt;/reachGroup&gt;
 
-			&lt;reach-group enabled="true" name="Illinois"&gt;
+			&lt;reachGroup enabled="true" name="Illinois"&gt;
 				&lt;desc&gt;Wisconsin River Plants&lt;/desc&gt;
 				&lt;notes&gt;
 					We know of 3 plants on the Wisconsin River which have announced improved
@@ -79,31 +79,31 @@
 				&lt;reach id="947839474"&gt;
 					&lt;adjustment src="2" abs="91344"/&gt;
 				&lt;/reach&gt;
-			&lt;/reach-group&gt;
+			&lt;/reachGroup&gt;
 
 		&lt;/adjustmentGroups&gt;
 		&lt;analysis&gt;
 			&lt;select&gt;
 
-				&lt;data-series source="1" per="area"&gt;incremental&lt;/data-series&gt;
-				&lt;agg-function per="area"&gt;avg&lt;/agg-function&gt; &lt;!-- rank would be rank of the group within the whole --&gt;
-				&lt;analytic-function partition="HUC6"&gt;rank-desc&lt;/analytic-function&gt;
+				&lt;dataSeries source="1" per="area"&gt;incremental&lt;/dataSeries&gt;
+				&lt;aggFunction per="area"&gt;avg&lt;/aggFunction&gt; &lt;!-- rank would be rank of the group within the whole --&gt;
+				&lt;analyticFunction partition="HUC6"&gt;rank-desc&lt;/analyticFunction&gt;
 
-				&lt;nominal-comparison type="percent | absolute"/&gt;
+				&lt;nominalComparison type="percent | absolute"/&gt;
 			&lt;/select&gt;
-			&lt;limit-to&gt;contributors | terminals | areaOfInterest&lt;/limit-to&gt;
+			&lt;limitTo&gt;contributors | terminals | areaOfInterest&lt;/limitTo&gt;
 
-			&lt;group-by&gt;HUC8&lt;/group-by&gt;
+			&lt;groupBy&gt;HUC8&lt;/groupBy&gt;
 
 		&lt;/analysis&gt;
 
-		&lt;terminal-reaches&gt;
+		&lt;terminalReaches&gt;
 			&lt;reach&gt;2345642&lt;/reach&gt;
 			&lt;reach&gt;3425688&lt;/reach&gt;
 			&lt;reach&gt;5235424&lt;/reach&gt;
 			or
 			&lt;logical-set/&gt;
-		&lt;/terminal-reaches&gt;
+		&lt;/terminalReaches&gt;
 
 		&lt;areaOfInterest&gt;
 			&lt;logical-set/&gt;

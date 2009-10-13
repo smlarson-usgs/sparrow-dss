@@ -39,7 +39,7 @@
 			&lt;/near-point&gt;
 		&lt;/result-filter&gt;
 		&lt;result-content&gt;
-			&lt;data-series&gt;incremental&lt;/data-series&gt;
+			&lt;dataSeries&gt;incremental&lt;/dataSeries&gt;
 		&lt;/result-content&gt;
 	&lt;/response-options&gt;
 
@@ -85,7 +85,7 @@
 			&lt;/near-point&gt;
 		&lt;/result-filter&gt;
 		&lt;result-content&gt;
-			&lt;data-series&gt;all&lt;/data-series&gt;
+			&lt;dataSeries&gt;all&lt;/dataSeries&gt;
 		&lt;/result-content&gt;
 	&lt;/response-options&gt;
 
@@ -130,7 +130,7 @@
 			&lt;/near-point&gt;
 		&lt;/result-filter&gt;
 		&lt;result-content&gt;
-			&lt;data-series&gt;incremental&lt;/data-series&gt;
+			&lt;dataSeries&gt;incremental&lt;/dataSeries&gt;
 		&lt;/result-content&gt;
 	&lt;/response-options&gt;
 

@@ -7,20 +7,20 @@ import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgswim.sparrow.service.AbstractPipeline;
 
 public class PredictContextPipeline extends AbstractPipeline<PredictContextRequest>{
-	
+
 	public static JSONFormatter configure(JSONFormatter jFormatter) {
-		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "reach-group");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "reachGroup");
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "adjustment");
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "logical-set");
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "reach");
 		return jFormatter;
 	}
-	
+
 	public PredictContextPipeline(){
 		super(new PredictContextService(), new PredictContextParser());
 //		super(null, null);
 	}
-	
+
 	@Override
 	protected IFormatter getCustomFlatteningFormatter(OutputType outputType) {
 		// no flattening for PredictContext pipeline

@@ -19,10 +19,10 @@ public class SelectTest extends TestCase {
 
 	public void testParse1() throws XMLStreamException, XMLParseValidationException {
 		String testRequest = "<select>"
-			+ "		<data-series source=\"1\" per=\"area\">incremental</data-series>"
-			+ "		<agg-function per=\"area\">avg</agg-function>"
-			+ "		<analytic-function partition=\"HUC6\">rank-desc</analytic-function>"
-			+ "		<nominal-comparison type=\"percent\"/>"
+			+ "		<dataSeries source=\"1\" per=\"area\">incremental</dataSeries>"
+			+ "		<aggFunction per=\"area\">avg</aggFunction>"
+			+ "		<analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
+			+ "		<nominalComparison type=\"percent\"/>"
 			+ "	</select>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 		Select select = new Select();
@@ -42,13 +42,13 @@ public class SelectTest extends TestCase {
 		assertTrue(reader.getEventType() == XMLStreamConstants.END_ELEMENT);
 		assertEquals(Select.MAIN_ELEMENT_NAME, reader.getLocalName());
 	}
-	
+
 	public void testParse2() throws XMLStreamException, XMLParseValidationException {
 		String testRequest = "<select>"
-			+ "		<data-series source=\"1\" per=\"area\">incremental</data-series>"
-			+ "		<agg-function per=\"area\">avg</agg-function>"
-			+ "		<analytic-function partition=\"HUC6\">rank-desc</analytic-function>"
-			+ "		<nominal-comparison type=\"absolute\"/>"
+			+ "		<dataSeries source=\"1\" per=\"area\">incremental</dataSeries>"
+			+ "		<aggFunction per=\"area\">avg</aggFunction>"
+			+ "		<analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
+			+ "		<nominalComparison type=\"absolute\"/>"
 			+ "	</select>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 		Select select = new Select();
@@ -59,13 +59,13 @@ public class SelectTest extends TestCase {
 		assertEquals(ComparisonType.absolute, select.getNominalComparison());
 
 	}
-	
+
 	public void testParse3() throws XMLStreamException, XMLParseValidationException {
 		String testRequest = "<select>"
-			+ "		<data-series source=\"1\" per=\"area\">incremental</data-series>"
-			+ "		<agg-function per=\"area\">avg</agg-function>"
-			+ "		<analytic-function partition=\"HUC6\">rank-desc</analytic-function>"
-			+ "		<nominal-comparison type=\"none\"/>"
+			+ "		<dataSeries source=\"1\" per=\"area\">incremental</dataSeries>"
+			+ "		<aggFunction per=\"area\">avg</aggFunction>"
+			+ "		<analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
+			+ "		<nominalComparison type=\"none\"/>"
 			+ "	</select>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 		Select select = new Select();
@@ -75,12 +75,12 @@ public class SelectTest extends TestCase {
 		assertEquals(ComparisonType.none, select.getNominalComparison());
 
 	}
-	
+
 	public void testParse4() throws XMLStreamException, XMLParseValidationException {
 		String testRequest = "<select>"
-			+ "		<data-series source=\"1\" per=\"area\">incremental</data-series>"
-			+ "		<agg-function per=\"area\">avg</agg-function>"
-			+ "		<analytic-function partition=\"HUC6\">rank-desc</analytic-function>"
+			+ "		<dataSeries source=\"1\" per=\"area\">incremental</dataSeries>"
+			+ "		<aggFunction per=\"area\">avg</aggFunction>"
+			+ "		<analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
 			+ "	</select>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 		Select select = new Select();
@@ -97,10 +97,10 @@ public class SelectTest extends TestCase {
 	public void testMissingDataSeriesSourceParse() throws XMLStreamException, XMLParseValidationException {
 		{
 			String testRequest = "<select>"
-				+ "		<data-series per=\"area\">incremental</data-series>"
-				+ "		<agg-function per=\"area\">avg</agg-function>"
-				+ "		<analytic-function partition=\"HUC6\">rank-desc</analytic-function>"
-				+ "		<nominal-comparison type=\"percent\"/>"
+				+ "		<dataSeries per=\"area\">incremental</dataSeries>"
+				+ "		<aggFunction per=\"area\">avg</aggFunction>"
+				+ "		<analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
+				+ "		<nominalComparison type=\"percent\"/>"
 				+ "	</select>";
 			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 			Select select = new Select();
@@ -108,23 +108,23 @@ public class SelectTest extends TestCase {
 			try {
 				select.parse(reader);
 			} catch (Exception e) {
-				fail("No exception should be thrown for missing data-series@source when data-series value is not \"source_value\"");
+				fail("No exception should be thrown for missing dataSeries@source when dataSeries value is not \"source_value\"");
 			}
 		}
 
 		{
 			String testRequest = "<select>"
-				+ "		<data-series per=\"area\">source_value</data-series>"
-				+ "		<agg-function per=\"area\">avg</agg-function>"
-				+ "		<analytic-function partition=\"HUC6\">rank-desc</analytic-function>"
-				+ "		<nominal-comparison type=\"percent\"/>"
+				+ "		<dataSeries per=\"area\">source_value</dataSeries>"
+				+ "		<aggFunction per=\"area\">avg</aggFunction>"
+				+ "		<analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
+				+ "		<nominalComparison type=\"percent\"/>"
 				+ "	</select>";
 			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 			Select select = new Select();
 			reader.next();
 			try {
 				select.parse(reader);
-				fail("A parsing error should have been thrown with no data-series@source when data-series value is \"source_value\"");
+				fail("A parsing error should have been thrown with no dataSeries@source when dataSeries value is \"source_value\"");
 			} catch (Exception e) {
 				// expected exception thrown
 			}

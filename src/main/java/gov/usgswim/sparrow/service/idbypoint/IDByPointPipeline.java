@@ -10,7 +10,7 @@ public class IDByPointPipeline extends AbstractPipeline<IDByPointRequest> {
 
 	// TODO eliminate duplicate code from PredictPipeline.configure(new JSONFormatter());
 	public static JSONFormatter configure(JSONFormatter jFormatter) {
-		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "reach-group");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "reachGroup");
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "adjustment");
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "logical-set");
 		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "reach");

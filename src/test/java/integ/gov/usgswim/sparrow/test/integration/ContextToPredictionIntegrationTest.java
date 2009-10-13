@@ -77,7 +77,7 @@ public class ContextToPredictionIntegrationTest extends TestCase {
 		// were actually made.  Other types of adjustments are in the xml file,
 		// but these are the only ones that are implemented:
 		//
-		// <reach-group enabled="true" name="Wisconsin">
+		// <reachGroup enabled="true" name="Wisconsin">
 		//		<adjustment src="2" coef=".75"/>  <--- Applies to all (both) reaches in this group
 		//
 		//		<reach id="3074">  <------------------ This is the 1st reach in the dataset (reach 0)
@@ -86,7 +86,7 @@ public class ContextToPredictionIntegrationTest extends TestCase {
 		//		<reach id="3077">	<------------------- This is the 2nd reach in the dataset (reach 1)
 		//			<adjustment src="2" abs="91344"/>
 		//		</reach>
-		//	</reach-group>
+		//	</reachGroup>
 
 		//Get the Original, unadjusted source data
 		//DataTable orgSrc = predictData.getSrc();

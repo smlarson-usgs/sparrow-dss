@@ -11,7 +11,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Top-level child of PredictionContext.
- * 
+ *
  * This child is unique, b/c it does NOT include the modelID, which all the other
  * top-level-children do.  This is because Analysis is (almost) sharable between
  * models, so it seems reasonable to allow users to reuse a type of analysis
@@ -23,10 +23,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class Analysis implements XMLStreamParserComponent {
 
 	private static final long serialVersionUID = 6047046812440162869L;
-	private static final String GROUP_BY_CHILD = "group-by";
-	private static final String LIMIT_TO_CHILD = "limit-to";
+	private static final String GROUP_BY_CHILD = "groupBy";
+	private static final String LIMIT_TO_CHILD = "limitTo";
 	public static final String MAIN_ELEMENT_NAME = "analysis";
-	
+
 	public static final Analysis DEFAULT_TOTAL_INSTANCE = new Analysis(new Select(DataSeriesType.total));
 
 	// =============================
@@ -35,23 +35,23 @@ public class Analysis implements XMLStreamParserComponent {
 	public static boolean isTargetMatch(String tagName) {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
-	
-	
+
+
 	public Analysis() {};
-	
+
 	public Analysis(Select select) {
 		this.select = select;
 	};
-	
+
 	public static Analysis getDefaultTotalAnalysis() {
 		return DEFAULT_TOTAL_INSTANCE;
 	}
-	
+
 	public static Analysis parseStream(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
 		Analysis anal = new Analysis();
 		return anal.parse(in);
 	}
-	
+
 	// ===============
 	// INSTANCE FIELDS
 	// ===============
@@ -66,7 +66,7 @@ public class Analysis implements XMLStreamParserComponent {
 	public Analysis parse(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
-		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : 
+		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) :
 			this.getClass().getSimpleName()
 			+ " can only parse " + MAIN_ELEMENT_NAME + " elements.";
 		boolean isStarted = false;
@@ -114,11 +114,11 @@ public class Analysis implements XMLStreamParserComponent {
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
 	}
-	
+
 	public boolean isParseTarget(String name) {
 		return MAIN_ELEMENT_NAME.equals(name);
 	}
-	
+
 	/**
 	 * Consider two instances the same if they have the same calculated hashcodes
 	 */
@@ -142,8 +142,8 @@ public class Analysis implements XMLStreamParserComponent {
 			id = hash;
 		}
 		return id;
-	}	
-	
+	}
+
 	@Override
 	public Analysis clone() throws CloneNotSupportedException {
 		Analysis myClone = new Analysis();
@@ -152,7 +152,7 @@ public class Analysis implements XMLStreamParserComponent {
 		myClone.select = select;
 		return myClone;
 	}
-	
+
 	public void checkValidity() throws XMLParseValidationException {
 		if (!isValid()) {
 			// throw a custom error message depending on the error
@@ -163,7 +163,7 @@ public class Analysis implements XMLStreamParserComponent {
 	public boolean isValid() {
 		return true;
 	}
-        
+
 	public boolean isAggregated() {
 		return getGroupBy() != null && !"".equals(getGroupBy());
 	}
@@ -171,7 +171,7 @@ public class Analysis implements XMLStreamParserComponent {
 	/**
 	 * Convenience method for determining if the data series referenced by
 	 * this {@code Analysis} object requires a weighting be applied.
-	 * 
+	 *
 	 * @return {@code true} if the data series referenced by this
 	 *         {@code Analysis} object requires a weighting, {@code false}
 	 *         otherwise.
@@ -189,11 +189,11 @@ public class Analysis implements XMLStreamParserComponent {
 	public String getLimitTo(){
 		return limitTo;
 	}
-	
+
 	public String getGroupBy(){
 		return groupBy;
 	}
-	
+
 	public Select getSelect(){
 		return select;
 	}

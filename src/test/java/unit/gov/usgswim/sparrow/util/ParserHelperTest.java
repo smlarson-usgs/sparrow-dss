@@ -15,7 +15,7 @@ import junit.framework.TestCase;
 public class ParserHelperTest extends TestCase {
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 
-	public final String TEST_REQUEST = "<reach-group enabled=\"true\" name=\"Northern Indiana Plants\"> <!--  ReachGroup Object -->"
+	public final String TEST_REQUEST = "<reachGroup enabled=\"true\" name=\"Northern Indiana Plants\"> <!--  ReachGroup Object -->"
 		+ "	<desc>Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project</desc>"
 		+ "	<notes>"
 		+ "	</notes>"
@@ -28,7 +28,7 @@ public class ParserHelperTest extends TestCase {
 		+ "	<logical-set>"
 		+ "		<criteria attrib=\"huc8\">01746289</criteria>"
 		+ "	</logical-set>"
-		+ "</reach-group>";
+		+ "</reachGroup>";
 
 	public void testParseToDesignatedStartTag() throws XMLStreamException {
 		XMLStreamReader in = inFact.createXMLStreamReader(new StringReader(TEST_REQUEST));
@@ -54,11 +54,11 @@ public class ParserHelperTest extends TestCase {
 
 		ParserHelper.parseToStartTag(in);
 		assertEquals(XMLStreamConstants.START_ELEMENT, in.getEventType());
-		assertEquals("Should be on first element of stream", "reach-group", in.getLocalName());
+		assertEquals("Should be on first element of stream", "reachGroup", in.getLocalName());
 
 		ParserHelper.parseToStartTag(in);
 		assertEquals(XMLStreamConstants.START_ELEMENT, in.getEventType());
-		assertEquals("Another call should not advanced the stream since we're already on a start element", "reach-group", in.getLocalName());
+		assertEquals("Another call should not advanced the stream since we're already on a start element", "reachGroup", in.getLocalName());
 
 		in.next();
 		ParserHelper.parseToStartTag(in);
