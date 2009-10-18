@@ -63,7 +63,8 @@ public class FindReachRequest implements XMLStreamParserComponent{
 		return (reachIDs == null) && (reachName == null)
 				&& (meanQHi == null && meanQLo == null)
 				&& (basinAreaHi == null && basinAreaLo == null)
-				&& (huc == null);
+				&& (huc == null)
+				&& (edaCode == null) && (edaName == null);
 	}
 
 	//==================

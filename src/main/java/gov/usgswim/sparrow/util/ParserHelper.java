@@ -11,6 +11,8 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.commons.lang.StringUtils;
 
 public abstract class ParserHelper {
+	public static final String PARSE_NUMBER_ERROR_MESSAGE ="The '%s' attribute for element '%s' must be %s but was %s";
+	public static final String MUST_EXIST_ERROR_MESSAGE = "The '%s' attribute is required for element '%s'";
 
 	public static String parseSimpleElementValue(XMLStreamReader in) throws XMLStreamException {
 		assert(in.getEventType() == START_ELEMENT): "only start elements accepted";
@@ -204,7 +206,7 @@ public abstract class ParserHelper {
   		try {
   			return Double.parseDouble(val);
   		} catch (Exception e) {
-  			throw new XMLStreamException("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be a number");
+  			throw new XMLStreamException(String.format(PARSE_NUMBER_ERROR_MESSAGE, attrib, reader.getLocalName(), "a number", val));
   		}
 
   	} else if (require) {
@@ -234,7 +236,7 @@ public abstract class ParserHelper {
 		  try {
 			  return Double.parseDouble(v);
 		  } catch (Exception e) {
-			  throw new XMLStreamException("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be a number");
+			  throw new XMLStreamException(String.format(PARSE_NUMBER_ERROR_MESSAGE, attrib, reader.getLocalName(), "a number", v));
 		  }
 
 	  }
@@ -277,11 +279,12 @@ public abstract class ParserHelper {
   		try {
   			return Long.parseLong(v);
   		} catch (Exception e) {
-  			throw new XMLStreamException("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be an integer");
+  			;
+  			throw new XMLStreamException(String.format(PARSE_NUMBER_ERROR_MESSAGE, attrib, reader.getLocalName(), "an integer", v));
   		}
 
   	} else if (require) {
-  		throw new XMLStreamException("The '" + attrib + "' attribute must exist for element '" + reader.getLocalName() + "'");
+  		throw new XMLStreamException(String.format(MUST_EXIST_ERROR_MESSAGE, attrib, reader.getLocalName()));
   	} else {
   		return null;
   	}
@@ -307,7 +310,7 @@ public abstract class ParserHelper {
 		  try {
 			  return Long.parseLong(v);
 		  } catch (Exception e) {
-			  throw new XMLStreamException("The '" + attrib + "' attribute for element '" + reader.getLocalName() + "' must be an integer");
+			  throw new XMLStreamException(String.format(PARSE_NUMBER_ERROR_MESSAGE, attrib, reader.getLocalName(), "an integer", v));
 		  }
 
 	  }
@@ -348,7 +351,7 @@ public abstract class ParserHelper {
   	if (v != null && ! ("".equals(v))) {
   		return v;
   	} else if (require) {
-  		throw new XMLStreamException("The '" + attrib + "' attribute must exist and be non-empty for element '" + reader.getLocalName() + "'");
+  		throw new XMLStreamException(String.format(MUST_EXIST_ERROR_MESSAGE, attrib, reader.getLocalName()));
   	} else {
   		return null;
   	}

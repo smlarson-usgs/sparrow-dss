@@ -53,6 +53,64 @@ public class FindReachRequestTest {
 
 	}
 
+
+//	return (reachIDs == null) && (reachName == null)
+//	&& (meanQHi == null && meanQLo == null)
+//	&& (basinAreaHi == null && basinAreaLo == null)
+//	&& (huc == null)
+//	&& (edaCode == null) && (edaName == null);
+
+	public void testIsEmptySucceedsForFields() {
+		FindReachRequest request = null;
+
+		{
+			request = new FindReachRequest();
+			request.meanQHi = "75";
+			assertFalse(request.isEmptyRequest());
+		}
+		{
+			request = new FindReachRequest();
+			request.meanQLo = "65";
+			assertFalse(request.isEmptyRequest());
+		}
+		{
+			request = new FindReachRequest();
+			request.basinAreaHi = "75";
+			assertFalse(request.isEmptyRequest());
+		}
+		{
+			request = new FindReachRequest();
+			request.basinAreaLo = "65";
+			assertFalse(request.isEmptyRequest());
+		}
+		{
+			request = new FindReachRequest();
+			request.huc = "75";
+			assertFalse(request.isEmptyRequest());
+		}
+		{
+			request = new FindReachRequest();
+			request.edaCode = "75";
+			assertFalse(request.isEmptyRequest());
+		}
+		{
+			request = new FindReachRequest();
+			request.edaName = "75";
+			assertFalse(request.isEmptyRequest());
+		}
+
+	}
+
+	public void testIsEmptyFails() {
+		FindReachRequest request = null;
+
+		{	// completely empty request
+			request = new FindReachRequest();
+			assertTrue(request.isEmptyRequest());
+		}
+	}
+
+
 	/**
 	 * TODO move this out of here , back to SourceToStreamConverter
 	 * @param XMLString
