@@ -31,7 +31,7 @@ public class PredictRequest implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private final Long _modelId;
 	private final AdjustmentSet _adjSet2;
-	private Integer hash;	//Not strictly threadsafe, but recalculation is cheap and non-destructive
+	private final Integer hash;
 
 	/**
 	 * @param modelId
@@ -45,6 +45,8 @@ public class PredictRequest implements Serializable {
 		} else {
 			_adjSet2 = AdjustmentSet.EMPTY_ADJUSTMENTSET;
 		}
+		
+		hash = hashCode();
 	}
 
 	/**
@@ -77,15 +79,16 @@ public class PredictRequest implements Serializable {
 
 	@Override
 	public int hashCode() {
-		//starts w/ some random numbers just to create unique results
-		if (hash == null) {
-			hash = new HashCodeBuilder(97317, 1169401).
+		if (hash != null) {
+			return hash;
+		} else {
+			//only accessed via constructor
+			int newHash = new HashCodeBuilder(97317, 1169401).
 			append(_modelId).
 			append(_adjSet2).
 			toHashCode();
+			return newHash;
 		}
-
-		return hash;
 	}
 
 }
