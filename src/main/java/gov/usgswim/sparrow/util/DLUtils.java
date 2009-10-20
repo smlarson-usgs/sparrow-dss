@@ -15,7 +15,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class DLUtils{
 
@@ -199,7 +201,7 @@ public class DLUtils{
 	/**
 	 * Creates a DataTable from the passed resultset with an optional index.
 	 *
-	 * All values in the source must be convertable to an integer.
+	 * All values in the source must be convertible to an integer.
 	 *
 	 * @param source
 	 * @param indexCol A valid column index or -1 to indicate no index
@@ -213,12 +215,22 @@ public class DLUtils{
 
 		headings = readHeadings(source.getMetaData());
 		int colCount = headings.length; //Number of columns
-
+		Set<Integer> invalidColumns = new HashSet<Integer>();
 		while (source.next()){
 			int[] row = new int[colCount];
 
 			for (int i=1; i<=colCount; i++) {
-				row[i - 1] = source.getInt(i);
+				if (!invalidColumns.contains(i)) {
+					try {
+						row[i - 1] = source.getInt(i);
+					} catch (Exception e) {
+						invalidColumns.add(i);
+						System.err.print(DLUtils.class.getSimpleName()
+								+ ".readAsInteger() attempted to read invalid value in column i for heading "
+								+ headings[i]);
+						row[i - 1] = -1;
+					}
+				}
 			}
 			list.add(row);
 		}
