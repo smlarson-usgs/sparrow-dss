@@ -1,14 +1,6 @@
 package gov.usgswim.sparrow;
 
-import gov.usgswim.sparrow.cachefactory.AdjustedSourceFactory;
-import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludgeFactory;
-import gov.usgswim.sparrow.cachefactory.AnalysisResultFactory;
-import gov.usgswim.sparrow.cachefactory.BinningFactory;
-import gov.usgswim.sparrow.cachefactory.PredictDataFactory;
-import gov.usgswim.sparrow.cachefactory.PredictResultFactory;
-import gov.usgswim.sparrow.cachefactory.ReachByIDFactory;
-import gov.usgswim.sparrow.cachefactory.ReachByPointFactory;
-import gov.usgswim.sparrow.cachefactory.ReachesByCriteriaFactory;
+import gov.usgswim.sparrow.cachefactory.*;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import javax.servlet.ServletContextEvent;
@@ -34,6 +26,9 @@ import org.apache.log4j.Logger;
  * the event methods should still be called with null contexts.  Failure to 
  * call the contextDestroyed event will cause the cache to become corrupted and
  * objects cached to disk will be discarded when the application restarts.
+ * 
+ * Note that the named caches listed here must be configured in the root
+ * ehcache.xml file.
  * 
  * @author eeverman
  *
@@ -134,6 +129,10 @@ public class LifecycleListener implements ServletContextListener {
 		//AggregateIdLookupKludge - temporary
         SelfPopulatingCache aggregateIdLookup = new SelfPopulatingCache(cm.getEhcache("AggregateIdLookup"), new AggregateIdLookupKludgeFactory());
         cm.replaceCacheWithDecoratedCache(cm.getEhcache("AggregateIdLookup"), aggregateIdLookup);
+        
+        //UncertaintyData
+        SelfPopulatingCache uncertaintyData = new SelfPopulatingCache(cm.getEhcache("UncertaintyData"), new UncertaintyDataFactory());
+        cm.replaceCacheWithDecoratedCache(cm.getEhcache("UncertaintyData"), uncertaintyData);
 	}
 
 }

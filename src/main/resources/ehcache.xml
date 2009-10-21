@@ -3,6 +3,13 @@
 	xsi:noNamespaceSchemaLocation="ehcache.xsd">
 
 	<!--
+	Note:  For caches with factories (all of them for this project), 
+	you must create the factory-cache association in the
+	gov.usgswim.sparrow.LifecycleListener class.
+	
+	-->
+
+	<!--
 		CacheManager Configuration
 		==========================
 		An ehcache.xml corresponds to a single CacheManager.
@@ -313,7 +320,7 @@
 		diskSpoolBufferSizeMB="8" timeToIdleSeconds="3600"
 		timeToLiveSeconds="3600" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
-	
+		
         <!-- Not currently used. -->
 	<cache name="ReachesByCriteria" maxElementsInMemory="100"
 		maxElementsOnDisk="0" eternal="false" overflowToDisk="true"
@@ -335,6 +342,11 @@
         timeToLiveSeconds="0" diskPersistent="false"
         diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
 	
-
+	<cache name="UncertaintyData" maxElementsInMemory="10"
+		maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
+		diskSpoolBufferSizeMB="8" timeToIdleSeconds="3600"
+		timeToLiveSeconds="3600" diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+	
 
 </ehcache>
