@@ -38,7 +38,7 @@ public class ReachInfo {
 	private final String huc8Name;
 
 	private double[] _ordinates;
-	private double[] _simplified_ordinates;
+//	private double[] _simplified_ordinates;
 
 
 
@@ -95,11 +95,11 @@ public class ReachInfo {
 				writeClosedFullTag(in, "polygon",
 						"points", coordinates.toString());
 			}
-			if (_simplified_ordinates != null && _simplified_ordinates.length > 0) {
-				StringBuilder coordinates = toPointsString(_simplified_ordinates);
-				writeClosedFullTag(in, "simp-polygon",
-						"points", coordinates.toString());
-			}
+//			if (_simplified_ordinates != null && _simplified_ordinates.length > 0) {
+//				StringBuilder coordinates = toPointsString(_simplified_ordinates);
+//				writeClosedFullTag(in, "simp-polygon",
+//						"points", coordinates.toString());
+//			}
 
 			writeOpeningTag(in, "hucs");
 			{
@@ -128,6 +128,7 @@ public class ReachInfo {
 	}
 
 	private StringBuilder toPointsString(double[] geomOrdinates) {
+		assert(_ordinates != null) : "It is the caller's responsibility to check _ordinates not null";
 		int dimensions = 2; // This is an assumption
 		int numberOfPoints = _ordinates.length/dimensions;
 
@@ -146,7 +147,7 @@ public class ReachInfo {
 				markerLong, markerLat,
 				huc2, huc2Name, huc4, huc4Name, huc6, huc6Name, huc8, huc8Name );
 		clone._ordinates = _ordinates;
-		clone._simplified_ordinates = _simplified_ordinates;
+		//clone._simplified_ordinates = _simplified_ordinates;
 		return clone;
 	}
 
@@ -194,8 +195,8 @@ public class ReachInfo {
 		this._ordinates = ordinates;
 	}
 
-	public void setSimplifiedOrdinates(double[] simpOrdinates) {
-		this._simplified_ordinates = simpOrdinates;
-	}
+//	public void setSimplifiedOrdinates(double[] simpOrdinates) {
+//		this._simplified_ordinates = simpOrdinates;
+//	}
 
 }

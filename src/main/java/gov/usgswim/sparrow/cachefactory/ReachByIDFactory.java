@@ -44,6 +44,8 @@ public class ReachByIDFactory extends AbstractCacheFactory {
 		String query = getText(
 				"FindReach",
 				new String[] { "ModelId", Long.toString(req.getModelID()), "Identifier", Integer.toString( req.getReachID() ) });
+		System.out.println("SPRW reachById: " + query);
+
 
 		Connection conn = SharedApplication.getInstance().getConnection();
 
@@ -69,16 +71,18 @@ public class ReachByIDFactory extends AbstractCacheFactory {
 
 				{	// set the catchment geometry
 					STRUCT struct = (STRUCT) rs.getObject("catch_geom");
-					JGeometry jGeom = JGeometry.load(struct);
-					double[] ordinates = jGeom.getOrdinatesArray();
-					reach.setOrdinates(ordinates);
+					if (struct != null) {
+						JGeometry jGeom = JGeometry.load(struct);
+						double[] ordinates = jGeom.getOrdinatesArray();
+						reach.setOrdinates(ordinates);
+					}
 				}
-				{	// set the simplified catchment geometry
-					STRUCT struct = (STRUCT) rs.getObject("simp_geom");
-					JGeometry jGeom = JGeometry.load(struct);
-					double[] ordinates = jGeom.getOrdinatesArray();
-					reach.setSimplifiedOrdinates(ordinates);
-				}
+//				{	// set the simplified catchment geometry
+//					STRUCT struct = (STRUCT) rs.getObject("simp_geom");
+//					JGeometry jGeom = JGeometry.load(struct);
+//					double[] ordinates = jGeom.getOrdinatesArray();
+//					reach.setSimplifiedOrdinates(ordinates);
+//				}
 
 			} else {
 				//no rows found - leave as null

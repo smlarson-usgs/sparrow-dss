@@ -43,6 +43,9 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 				"FindReach",
 				new String[] {"ModelId", modelId.toString(), "lng", lng.toString(), "lat", lat.toString()});
 
+		// debug
+		System.out.println("SPRW idByPoint: " + query);
+
 		Connection conn = SharedApplication.getInstance().getConnection();
 
 		ResultSet rs = null;
