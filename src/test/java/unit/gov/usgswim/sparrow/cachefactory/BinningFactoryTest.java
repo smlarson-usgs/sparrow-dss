@@ -80,7 +80,7 @@ public class BinningFactoryTest extends TestCase {
 	}
 
 
-	public static double[] sortedData100Normal = {-99.73d, -97.544d, -93.8991d, -86.773d, -85.1101d,
+	public static Double[] sortedData100Normal = {-99.73d, -97.544d, -93.8991d, -86.773d, -85.1101d,
 		-84.897d, -83.511d, -83.509d, -83.507d, -83.505d,
 		-83.404d, -83.403d, -78.011d, -72.555d, -71.77d,
 		-22.378d, -18.22d, -15.099d, -14.932d, -8.753d,
@@ -102,31 +102,31 @@ public class BinningFactoryTest extends TestCase {
 		1.915d, 1.977d, 2.111d, 3.445d, 5.121d
 	}; // 100 elements
 	
-	public static double[] sortedData2 = { 2d, 4d };
-	public static double[] sortedData2a = { 0d, 0d };
-	public static double[] sortedData2b = { 4d, 4d };
-	public static double[] sortedData2c = { 0d, 4d };
+	public static Double[] sortedData2 = { 2d, 4d };
+	public static Double[] sortedData2a = { 0d, 0d };
+	public static Double[] sortedData2b = { 4d, 4d };
+	public static Double[] sortedData2c = { 0d, 4d };
 	
-	public static double[] sortedData2d = { -4d, -2d };
-	public static double[] sortedData2e = { -4d, -4d };
-	public static double[] sortedData2f = { -4d, 0d };
+	public static Double[] sortedData2d = { -4d, -2d };
+	public static Double[] sortedData2e = { -4d, -4d };
+	public static Double[] sortedData2f = { -4d, 0d };
 	
-	public static double[] sortedData2g = { -4d, 4d };
+	public static Double[] sortedData2g = { -4d, 4d };
 	
 	//Two values w/ decimals
-	public static double[] sortedData2_ = { 2.1d, 4.3d };
-	public static double[] sortedData2a_ = { 0.1d, 0.1d };
-	public static double[] sortedData2b_ = { 4.1d, 4.1d };
-	public static double[] sortedData2c_ = { 0d, 4.1d };
+	public static Double[] sortedData2_ = { 2.1d, 4.3d };
+	public static Double[] sortedData2a_ = { 0.1d, 0.1d };
+	public static Double[] sortedData2b_ = { 4.1d, 4.1d };
+	public static Double[] sortedData2c_ = { 0d, 4.1d };
 	
-	public static double[] sortedData2d_ = { -4.1d, -2.1d };
-	public static double[] sortedData2e_ = { -4.1d, -4.1d };
-	public static double[] sortedData2f_ = { -4.1d, 0d };
+	public static Double[] sortedData2d_ = { -4.1d, -2.1d };
+	public static Double[] sortedData2e_ = { -4.1d, -4.1d };
+	public static Double[] sortedData2f_ = { -4.1d, 0d };
 	
-	public static double[] sortedData2g_ = { -4.1d, 4.1d };
+	public static Double[] sortedData2g_ = { -4.1d, 4.1d };
 	
 	//empty arrays, NAN, +/-infinity, and other odd combos
-	public static double[] sortedDataEmpty_ = new double[0];
+	public static Double[] sortedDataEmpty_ = new Double[0];
 	
 	//Non sorted data tables with 'odd' values
 	public static SimpleDataTableWritable tblEmpty =
@@ -245,22 +245,22 @@ public class BinningFactoryTest extends TestCase {
 		
 		//Comments following the asserts indicate a preferred binning result,
 		//though the tested values a acceptable.  Who's to say??
-		doEqualCountAssert(sortedData2, bins, round, 0, 5);	//2 to 4
-		doEqualCountAssert(sortedData2_, bins, round, 0, 5); //2 to 5
-		doEqualCountAssert(sortedData2a, bins, round, 0, 1);
-		doEqualCountAssert(sortedData2a_, bins, round, 0, .1);
-		doEqualCountAssert(sortedData2b, bins, round, 0, 4);
-		doEqualCountAssert(sortedData2b_, bins, round, 0, 4.1);	//0 to 5
-		doEqualCountAssert(sortedData2c, bins, round, 0, 5);	//0 to 4
-		doEqualCountAssert(sortedData2c_, bins, round, 0, 5);
-		doEqualCountAssert(sortedData2d, bins, round, -5, -0);
-		doEqualCountAssert(sortedData2d_, bins, round, -5, -2);
-		doEqualCountAssert(sortedData2e, bins, round, -4, 0);
-		doEqualCountAssert(sortedData2e_, bins, round, -4.1, 0);
-		doEqualCountAssert(sortedData2f, bins, round, -5, 0);	//-4 to 0
-		doEqualCountAssert(sortedData2f_, bins, round, -5, 0);
-		doEqualCountAssert(sortedData2g, bins, round, -10, 10);	//-4 to 4
-		doEqualCountAssert(sortedData2g_, bins, round, -10, 10);	//-5 to 5
+		doEqualCountAssert(sortedData2, bins, round, 0d, 5d);	//2 to 4
+		doEqualCountAssert(sortedData2_, bins, round, 0d, 5d); //2 to 5
+		doEqualCountAssert(sortedData2a, bins, round, 0d, 1d);
+		doEqualCountAssert(sortedData2a_, bins, round, 0d, .1d);
+		doEqualCountAssert(sortedData2b, bins, round, 0d, 4d);
+		doEqualCountAssert(sortedData2b_, bins, round, 0d, 4.1d);	//0 to 5
+		doEqualCountAssert(sortedData2c, bins, round, 0d, 5d);	//0 to 4
+		doEqualCountAssert(sortedData2c_, bins, round, 0d, 5d);
+		doEqualCountAssert(sortedData2d, bins, round, -5d, -0d);
+		doEqualCountAssert(sortedData2d_, bins, round, -5d, -2d);
+		doEqualCountAssert(sortedData2e, bins, round, -4d, 0d);
+		doEqualCountAssert(sortedData2e_, bins, round, -4.1d, 0d);
+		doEqualCountAssert(sortedData2f, bins, round, -5d, 0d);	//-4 to 0
+		doEqualCountAssert(sortedData2f_, bins, round, -5d, 0d);
+		doEqualCountAssert(sortedData2g, bins, round, -10d, 10d);	//-4 to 4
+		doEqualCountAssert(sortedData2g_, bins, round, -10d, 10d);	//-5 to 5
 		doEqualCountAssert(sortedDataEmpty_, bins, round, 0d, 1d);
 		
 		//Test datatables with non-standard double values
@@ -302,8 +302,8 @@ public class BinningFactoryTest extends TestCase {
 		
 		//Some specific values that have caused issues
 		doEqualCountAssert(sortedData2d_, bins, round, -4.1, -3.1, -2.1);
-		doEqualCountAssert(new double[] {-4.1d, -2.1d}, bins, round, -4.1d, -3.1d, -2.1d);
-		doEqualCountAssert(new double[] {-4.3d, -2.1d}, bins, round, -4.3d, -3.2d, -2.1d);
+		doEqualCountAssert(new Double[] {-4.1d, -2.1d}, bins, round, -4.1d, -3.1d, -2.1d);
+		doEqualCountAssert(new Double[] {-4.3d, -2.1d}, bins, round, -4.3d, -3.2d, -2.1d);
 		
 		
 		doEqualCountAssert(sortedData2e, bins, round, -4d, -2d, 0d);
@@ -479,13 +479,13 @@ public class BinningFactoryTest extends TestCase {
 	}
 	
 	public void testUniqueValueCount() {
-		double[] data0 = new double[] {}; 
-		double[] data1 = new double[] { 1f }; 
-		double[] data2a = new double[] { 0f, 0f };
-		double[] data2b = new double[] { 0f, 1f };
-		double[] data2c = new double[] { -4f, 4f };
-		double[] data4a = new double[] { 0f, 0f, 1f, 1f }; 
-		double[] data4b = new double[] { 0f, 1f, 2f, 3f };
+		Double[] data0 = new Double[] {}; 
+		Double[] data1 = new Double[] { 1D }; 
+		Double[] data2a = new Double[] { 0D, 0d };
+		Double[] data2b = new Double[] { 0d, 1d };
+		Double[] data2c = new Double[] { -4d, 4d };
+		Double[] data4a = new Double[] { 0d, 0d, 1d, 1d }; 
+		Double[] data4b = new Double[] { 0d, 1d, 2d, 3d };
 		
 		assertEquals(0, getUniqueValueCount(data0, 0));
 		assertEquals(0, getUniqueValueCount(data0, 10));
@@ -533,22 +533,22 @@ public class BinningFactoryTest extends TestCase {
 	}
 	
 	private void doEqualCountAssert(DataTable data, int binCount,
-			boolean round, double... expectedBins) {
+			boolean round, Double... expectedBins) {
 		
 		assertEquals(
 				"TEST IS INCORRECTLY SETUP: " +
 				"THE NUMBER OF BINS SHOULD MATCH (n + 1) THE EXPECTED BINS",
 				binCount + 1, expectedBins.length);
 		
-		BigDecimal[] result = BinningFactory.buildEqualCountBins(data, 0, binCount);
+		BigDecimal[] result = BinningFactory.buildEqualCountBins(data, 0, binCount, true);
 		String desc = buildDescription(
-				BinningFactory.extractSortedValues(data, 0), expectedBins);
+				BinningFactory.extractSortedValues(data, 0, expectedBins.length, true), expectedBins);
 
 		doAssert(desc, result, expectedBins);
 	}
 	
-	private void doEqualCountAssert(double[] sorted, int binCount,
-			boolean round, double... expectedBins) {
+	private void doEqualCountAssert(Double[] sorted, int binCount,
+			boolean round, Double... expectedBins) {
 		
 		assertEquals(
 				"TEST IS INCORRECTLY SETUP: " +
@@ -561,7 +561,7 @@ public class BinningFactoryTest extends TestCase {
 		doAssert(desc, result, expectedBins);
 	}
 	
-	private static String buildDescription(double[] data, double[] expectedBins) {
+	private static String buildDescription(Double[] data, Double[] expectedBins) {
 		String dataDesc = null;
 		String binDesc = null;
 		if (data.length < 10) {
@@ -578,7 +578,7 @@ public class BinningFactoryTest extends TestCase {
 		return "Data " + dataDesc + " Eq. Cnt. binned to " + binDesc;
 	}
 	
-	private void doAssert(String description, BigDecimal[] calculatedBins, double... expectedBins) {
+	private void doAssert(String description, BigDecimal[] calculatedBins, Double... expectedBins) {
 		
 		if (ENABLE_FAILURE_LOG_OUTPUT || ENABLE_ALL_LOG_OUTPUT) {
 			

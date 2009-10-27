@@ -64,9 +64,9 @@ public class BinningFactory implements CacheEntryFactory {
 		// Determine type of binning to perform, calling the appropriate method
 		switch(request.getBinType()) {
 			case EQUAL_COUNT:
-				return buildEqualCountBins(dc.getTable(), dc.getColumn(), request.getBinCount());
+				return buildEqualCountBins(dc.getTable(), dc.getColumn(), request.getBinCount(), false);
 			case EQUAL_RANGE:
-				return getEqualRangeBins(dc.getTable(), dc.getColumn(), request.getBinCount(), true);
+				return getEqualRangeBins(dc.getTable(), dc.getColumn(), request.getBinCount(), false, true);
 		}
 
 		return null;
@@ -79,13 +79,16 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @param binCount The number of bins to create.  Must be greater than zero.
 	 * @return
 	 */
-	public static BigDecimal[] buildEqualCountBins(DataTable data, int columnIndex, int binCount) {
+	public static BigDecimal[] buildEqualCountBins(DataTable data, int columnIndex, int binCount, boolean keepZeroes) {
 
 		if (binCount < 1) {
 			throw new IllegalArgumentException("The binCount must be greater than zero.");
 		}
 
-		double[] sortedValues = extractSortedValues(data, columnIndex); //sorted Array holding all values
+		// This works
+		//double[] sortedValues = extractSortedValues(data, columnIndex); //sorted Array holding all values
+		// This probably won't
+		Double[] sortedValues = extractSortedValues(data, columnIndex, binCount, keepZeroes);
 		return buildEqualCountBins(sortedValues, binCount, true);
 	}
 
@@ -101,7 +104,7 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @param useRounding True if the bins should be rounded, false to use precise bins.
 	 * @return
 	 */
-	public static BigDecimal[] buildEqualCountBins(double[] sortedData, int binCount, Boolean useRounding) {
+	public static BigDecimal[] buildEqualCountBins(Double[] sortedData, int binCount, Boolean useRounding) {
 
 		if (binCount < 1) {
 			throw new IllegalArgumentException("The binCount must be greater than zero.");
@@ -192,7 +195,7 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @return
 	 */
 	protected static BigDecimal[] buildEqualCountBinsSmallSet(
-			double[] sortedData, int binCount, Boolean useRounding) {
+			Double[] sortedData, int binCount, Boolean useRounding) {
 
 		BigDecimal[] bins = new BigDecimal[binCount + 1];
 
@@ -259,7 +262,7 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @return Set of bins such that the bins define break-point boundaries
 	 *         with an approximately equal number of values contained within.
 	 */
-	public static BigDecimal[] getExactEqualCountBins(int binCount, double[] sortedData) {
+	public static BigDecimal[] getExactEqualCountBins(int binCount, Double[] sortedData) {
 
 		int totalRows = sortedData.length;	//Total rows of data
 
@@ -415,7 +418,7 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @return Set of bins such that the bins define break-point boundaries
 	 *         whose values are approximately equally spaced apart.
 	 */
-	public static BigDecimal[] getEqualRangeBins(DataTable data, int columnIndex, int binCount, boolean useRounding) {
+	public static BigDecimal[] getEqualRangeBins(DataTable data, int columnIndex, int binCount, boolean keepZeroes, boolean useRounding) {
 
 		//Find min and max values
 		//
@@ -557,7 +560,7 @@ public class BinningFactory implements CacheEntryFactory {
 	 * 		Set 0 or less to disable.
 	 * @return The number of unique values or maxCount if reached.
 	 */
-	protected static int getUniqueValueCount(double[] sortedData, int maxCount) {
+	protected static int getUniqueValueCount(Double[] sortedData, int maxCount) {
 
 
 		if (sortedData.length == 0) {
@@ -760,63 +763,105 @@ public class BinningFactory implements CacheEntryFactory {
 		}
 	}
 
-
 	/**
 	 * Extracts a column from a DataTable as a sorted (ascending) double[].
-	 *
+	 * 
 	 * NaN values are skipped, so the resulting array may have fewer rows than
-	 * the DataTable.  Positive and negative infinity are converted to the
+	 * the DataTable. Positive and negative infinity are converted to the
 	 * largest and smallest double values, respectively.
-	 *
+	 * 
 	 * TODO: put into DataTableUtils
-	 * @param data The source DataTable
-	 * @param columnIndex The column to extract data from
+	 * 
+	 * @param data
+	 *            The source DataTable
+	 * @param columnIndex
+	 *            The column to extract data from
 	 * @return sorted data, 'cleaned' of NANs and +/- infinity.
+	 * 
+	 *         TODO This incorrectly replaced the other version of
+	 *         extractSortedValues() without keeping the capability to remove
+	 *         zeroes. Must reexamine
 	 */
-	public static double[] extractSortedValues(DataTable data, int columnIndex) {
+//	public static double[] extractSortedValues(DataTable data, int columnIndex) {
+//		int totalRows = data.getRowCount();
+//
+//		int skippedValueCount = 0;	//Number of values skipped b/c they are Not a Number
+//		int addedValueCount = 0;	//Number of values added
+//
+//		//Initialize to at least a size of 1
+//		double[] values = new double[(totalRows > 0)?totalRows:1];
+//
+//		for (int r=0; r<totalRows; r++) {
+//			Double value = data.getDouble(r, columnIndex);
+//			if (value.isNaN()) {
+//				skippedValueCount++;
+//			} else if (value.equals(Double.POSITIVE_INFINITY)) {
+//				values[addedValueCount] = Double.MAX_VALUE;
+//				addedValueCount++;
+//			} else if (value.equals(Double.NEGATIVE_INFINITY)) {
+//				values[addedValueCount] = Double.MAX_VALUE * -1d;
+//				addedValueCount++;
+//			} else {
+//				values[addedValueCount] = value;
+//				addedValueCount++;
+//			}
+//		}
+//
+//		//If no values were added (all were NAN), add one 'fake' zero value.
+//		if (addedValueCount == 0) {
+//			values[0] = 0d;
+//			addedValueCount = 1;
+//		}
+//
+//		double[] trimmedValues = null;
+//
+//		if (skippedValueCount > 0) {
+//			trimmedValues = Arrays.copyOfRange(values, 0, addedValueCount);
+//		} else {
+//			trimmedValues = values;
+//		}
+//
+//		Arrays.sort(trimmedValues);
+//
+//		return trimmedValues;
+//	}
+
+	/**
+	 * TODO put into DataTableUtils
+	 * @param data
+	 * @param columnIndex
+	 * @param isKeepZeroes
+	 * @return
+	 */
+	public static Double[] extractSortedValues(DataTable data, int columnIndex, int minValueCount, boolean isKeepZeroes) {
 		int totalRows = data.getRowCount();
 
-		int skippedValueCount = 0;	//Number of values skipped b/c they are Not a Number
-		int addedValueCount = 0;	//Number of values added
-
-		//Initialize to at least a size of 1
-		double[] values = new double[(totalRows > 0)?totalRows:1];
+		boolean hasZero = false;
+		List<Double> filteredValues = new ArrayList<Double>();
 
 		for (int r=0; r<totalRows; r++) {
 			Double value = data.getDouble(r, columnIndex);
-			if (value.isNaN()) {
-				skippedValueCount++;
-			} else if (value.equals(Double.POSITIVE_INFINITY)) {
-				values[addedValueCount] = Double.MAX_VALUE;
-				addedValueCount++;
-			} else if (value.equals(Double.NEGATIVE_INFINITY)) {
-				values[addedValueCount] = Double.MAX_VALUE * -1d;
-				addedValueCount++;
-			} else {
-				values[addedValueCount] = value;
-				addedValueCount++;
+			if (!Double.isNaN(value) && !Double.isInfinite(value)) {
+				if (value == 0F) {hasZero = true;}
+				if (isKeepZeroes || value != 0D) {
+					filteredValues.add(value);
+				}
 			}
 		}
-
-		//If no values were added (all were NAN), add one 'fake' zero value.
-		if (addedValueCount == 0) {
-			values[0] = 0d;
-			addedValueCount = 1;
+		if (!isKeepZeroes && hasZero) {
+			filteredValues.add(0D); // This ensures that the reaches with 0 values are at least drawn. They will not be drawn if all the nonzero reach values are of the same sign
+		}
+		// Need to make sure we have at least enough values for bins
+		while (filteredValues.size() <= minValueCount) {
+			filteredValues.add(0D);
 		}
 
-		double[] trimmedValues = null;
-
-		if (skippedValueCount > 0) {
-			trimmedValues = Arrays.copyOfRange(values, 0, addedValueCount);
-		} else {
-			trimmedValues = values;
-		}
-
-		Arrays.sort(trimmedValues);
-
-		return trimmedValues;
+		Double[] values = new Double[filteredValues.size()];
+		values = filteredValues.toArray(values);
+		Arrays.sort(values);
+		return values;
 	}
-
+	
 	/**
 	 * Cleans infinite values from doubles, replacing them with the max value
 	 * with the appropriate sign.  Values which are NaN are returned as NaN.
