@@ -125,7 +125,9 @@ public class BinningFactoryTest extends TestCase {
 	
 	public static Double[] sortedData2g_ = { -4.1d, 4.1d };
 	
-	//empty arrays, NAN, +/-infinity, and other odd combos
+	public static Double[] sortedData3SignZero = { 0d, 100d, 110d, 120d };
+	
+	//empty array
 	public static Double[] sortedDataEmpty_ = new Double[0];
 	
 	//Non sorted data tables with 'odd' values
@@ -268,10 +270,18 @@ public class BinningFactoryTest extends TestCase {
 		doEqualCountAssert(tblOneNAN, bins, round, 0d, 1d);
 		doEqualCountAssert(tblAllNAN, bins, round, 0d, 1d);
 		doEqualCountAssert(tblMixNAN, bins, round, -10d, 10d);
+		
+		//These Tests all require that INFINITE values be considered in
+		//creating bins.
 		doEqualCountAssert(tblMixAll_1, bins, round, MIN_DOUBLE, MAX_DOUBLE);
 		doEqualCountAssert(tblMixAll_2, bins, round, MIN_DOUBLE, MAX_DOUBLE);
 		doEqualCountAssert(tblMixAll_3, bins, round, -10d, MAX_DOUBLE);
 		doEqualCountAssert(tblMixAll_4, bins, round, MIN_DOUBLE, 0d);
+		
+		
+		//This is an strange binning:  Why would zero be included in the generated bins?
+		doEqualCountAssert(new Double[] {100000D, 1000000D}, bins, round, 0d, 1000000D);
+		
 	}
 	
 	private static double[][] transpose(double... in) {
@@ -313,6 +323,11 @@ public class BinningFactoryTest extends TestCase {
 		doEqualCountAssert(sortedData2g, bins, round, -4d, 0d, 4d);
 		doEqualCountAssert(sortedData2g_, bins, round, -4.1d, 0d, 4.1d);
 		doEqualCountAssert(sortedDataEmpty_, bins, round, 0d, 1d, 2d);
+		
+		doEqualCountAssert(sortedData3SignZero, bins, round, 0d, 110d, 120d);
+		
+		
+		
 	}
 	
 
@@ -541,8 +556,7 @@ public class BinningFactoryTest extends TestCase {
 				binCount + 1, expectedBins.length);
 		
 		BigDecimal[] result = BinningFactory.buildEqualCountBins(data, 0, binCount, true);
-		String desc = buildDescription(
-				BinningFactory.extractSortedValues(data, 0, expectedBins.length, true), expectedBins);
+		String desc = buildDescription(data, 0, expectedBins);
 
 		doAssert(desc, result, expectedBins);
 	}
@@ -561,6 +575,34 @@ public class BinningFactoryTest extends TestCase {
 		doAssert(desc, result, expectedBins);
 	}
 	
+	private static String buildDescription(DataTable data, int columnIndex, Double[] expectedBins) {
+		String dataDesc = null;
+		String binDesc = null;
+		
+		int rowCount = data.getRowCount();
+		
+		if (rowCount == 0) {
+			dataDesc = "[empty]";
+		} else if (rowCount < 10) {
+			StringBuffer sb = new StringBuffer();
+			for (int r=0; r< data.getRowCount(); r++) {
+				sb.append(data.getDouble(r, columnIndex));
+				sb.append(", ");
+			}
+			dataDesc = "(" + sb.substring(0, sb.length() - 1) + ")";
+		} else {
+			dataDesc =
+				"{" + data.getDouble(0, columnIndex) +
+				" to " + data.getDouble(rowCount - 1, columnIndex) + "} " +
+				"(" + rowCount + " values)";
+		}
+		
+		binDesc = "" + (expectedBins.length - 1) + " bins: " +
+			ArrayUtils.toString(expectedBins);
+		
+		return "Data " + dataDesc + " Eq. Cnt. binned to " + binDesc;
+	}
+	
 	private static String buildDescription(Double[] data, Double[] expectedBins) {
 		String dataDesc = null;
 		String binDesc = null;
@@ -577,6 +619,7 @@ public class BinningFactoryTest extends TestCase {
 		
 		return "Data " + dataDesc + " Eq. Cnt. binned to " + binDesc;
 	}
+	
 	
 	private void doAssert(String description, BigDecimal[] calculatedBins, Double... expectedBins) {
 		
