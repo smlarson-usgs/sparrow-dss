@@ -13,6 +13,9 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.assertNull;
 
 public class SelectTest extends TestCase {
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
@@ -132,4 +135,109 @@ public class SelectTest extends TestCase {
 
 	}
 
+
+	public void testErrorEstimateSeries() throws XMLStreamException, XMLParseValidationException {
+		{
+			String testRequest = "<select>"
+				+ "		<dataSeries>total_std_error_estimate</dataSeries>"
+				+ "		<nominalComparison type=\"percent\"/>"
+				+ "	</select>";
+			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
+			Select select = new Select();
+			reader.next();
+			select.parse(reader);
+			
+			assertEquals(DataSeriesType.total_std_error_estimate, select.getDataSeries());
+			assertNull(select.getSource());
+			assertTrue(select.isValid());
+		}
+		
+		{
+			String testRequest = "<select>"
+				+ "		<dataSeries source=\"1\">total_std_error_estimate</dataSeries>"
+				+ "		<nominalComparison type=\"percent\"/>"
+				+ "	</select>";
+			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
+			Select select = new Select();
+			reader.next();
+			select.parse(reader);
+			
+			assertEquals(DataSeriesType.total_std_error_estimate, select.getDataSeries());
+			assertEquals(Integer.valueOf(1), select.getSource());
+			assertTrue(select.isValid());
+		}
+		
+		{
+			String testRequest = "<select>"
+				+ "		<dataSeries source=\"1\">total_std_error_estimate</dataSeries>"
+				+ "		<aggFunction per=\"area\">avg</aggFunction>"
+				+ "		<nominalComparison type=\"percent\"/>"
+				+ "	</select>";
+			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
+			Select select = new Select();
+			reader.next();
+			
+			
+			try {
+				select.parse(reader);
+				fail("This was supposed to throw a parse exception.");
+			} catch (XMLParseValidationException e) {
+				//expected
+			}
+			
+			assertEquals(DataSeriesType.total_std_error_estimate, select.getDataSeries());
+			assertFalse(select.isValid());
+		}
+
+		{
+			String testRequest = "<select>"
+				+ "		<dataSeries>incremental_std_error_estimate</dataSeries>"
+				+ "		<nominalComparison type=\"percent\"/>"
+				+ "	</select>";
+			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
+			Select select = new Select();
+			reader.next();
+			select.parse(reader);
+			
+			assertEquals(DataSeriesType.incremental_std_error_estimate, select.getDataSeries());
+			assertTrue(select.isValid());
+		}
+		
+		{
+			String testRequest = "<select>"
+				+ "		<dataSeries source=\"1\">incremental_std_error_estimate</dataSeries>"
+				+ "		<nominalComparison type=\"percent\"/>"
+				+ "	</select>";
+			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
+			Select select = new Select();
+			reader.next();
+			select.parse(reader);
+			
+			assertEquals(DataSeriesType.incremental_std_error_estimate, select.getDataSeries());
+			assertEquals(Integer.valueOf(1), select.getSource());
+			assertTrue(select.isValid());
+		}
+		
+		{
+			String testRequest = "<select>"
+				+ "		<dataSeries source=\"1\">incremental_std_error_estimate</dataSeries>"
+				+ "		<analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
+				+ "		<nominalComparison type=\"percent\"/>"
+				+ "	</select>";
+			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
+			Select select = new Select();
+			reader.next();
+			
+			try {
+				select.parse(reader);
+				fail("This was supposed to throw a parse exception.");
+			} catch (XMLParseValidationException e) {
+				//expected
+			}
+			
+			assertEquals(DataSeriesType.incremental_std_error_estimate, select.getDataSeries());
+			assertFalse(select.isValid());
+		}
+
+	}
 }

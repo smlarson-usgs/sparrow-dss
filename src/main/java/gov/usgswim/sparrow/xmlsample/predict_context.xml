@@ -149,15 +149,17 @@
 				<!--
 				- - Possible Values - -
 				total*
+				total_std_error_estimate*
 				incremental*
-				total-no-decay*+
-				total-delivered*! (not included in Greg's email)
-				total-decay+
-				incremental-delivered*!
-				delivered-fraction***!
-				source-value**
-				land-to-water-coef
-				instream-decay-coef***
+				incremental_std_error_estimate*
+				total_no_decay*+
+				total_delivered*! (not included in Greg's email)
+				total_decay+
+				incremental_delivered*!
+				delivered_fraction***!
+				source_value**
+				land_to_water_coef
+				instream_decay_coef***
 
 				* Available by source
 				** Only available by source

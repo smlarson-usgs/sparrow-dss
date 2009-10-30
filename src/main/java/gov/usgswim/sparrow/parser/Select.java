@@ -44,7 +44,7 @@ public class Select implements XMLStreamParserComponent {
 	// ================
 	// INSTANCE METHODS
 	// ================
-	//TODO:  A DataSeries of source_value should throw an exception if no source is specified.
+	//TODO:  There are several cases where sources are required or not permitted - should throw err.
 	public Select parse(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
@@ -106,22 +106,54 @@ public class Select implements XMLStreamParserComponent {
 	}
 
 	public void checkValidity() throws XMLParseValidationException {
-		if (!isValid()) {
-			// Diagnose the error and throw a custom error message depending on the error
-			StringBuilder errors = new StringBuilder();
-			if (isDataSeriesSourceNeeded()) {
-				errors.append("@source must be specified when dataSeries == \"" + source_value.name() + "\"; ");
-			}
-			throw new XMLParseValidationException(errors.toString());
+		
+		
+		//DataSeries is required
+		if (dataSeries == null) {
+			throw new XMLParseValidationException(
+			"A dataSeries was not found or was not recognized.  A dataSeries is always required.");
 		}
+		
+		//Some series require a source
+		if (dataSeries.isSourceRequired() && source == null) {
+			throw new XMLParseValidationException(
+				"The dataSeries '" + dataSeries + "' requires a source, " +
+				"which is specified as an attribute, i.e. source=\"1\".");
+		}
+		
+		//Some series cannot have a source
+		if (dataSeries.isSourceDisallowed() && source != null) {
+			throw new XMLParseValidationException(
+				"The dataSeries '" + dataSeries + "' does not allow a source.");
+		}
+		
+		//Some series do not allow any type of aggregate or post analysis.
+		//Error estimates are one example.
+		if (dataSeries.isAnalysisDisallowed() && aggFunction != null) {
+			throw new XMLParseValidationException(
+				"The dataSeries '" + dataSeries + "' does not allow analysis like aggregation.");
+		}
+		
+		//Some series do not allow any type of aggregate or post analysis.
+		//Error estimates are one example.
+		if (dataSeries.isAnalysisDisallowed() && analyticFunction != null) {
+			throw new XMLParseValidationException(
+				"The dataSeries '" + dataSeries + "' does not allow analytic functions.");
+		}
+		
 	}
 
 	public boolean isValid() {
-		return isDataSeriesSourceNeeded();
+		try {
+			checkValidity();
+			return true;
+		} catch (XMLParseValidationException e) {
+			return false;
+		}
 	}
 
 	private boolean isDataSeriesSourceNeeded() {
-		return !(dataSeries == source_value && source == null);
+		return !(dataSeries.isSourceBasedOnly() && source == null);
 	}
 
 	public boolean isWeighted() {
