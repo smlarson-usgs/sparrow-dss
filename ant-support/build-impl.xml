@@ -3,7 +3,10 @@
 	<echo message="Running ${ant.version}" />
 	<property name="support.ant" value="ant-support"/>
 	<property name="db.properties" value="${support.ant}/NEVER-EVER-CHECK-THIS-IN-db.properties"/>
-	
+
+
+
+
 	<target name="build-all" description="Build entire project." depends="dist,javadoc" />
 
 	<!-- -->
@@ -15,19 +18,30 @@
 		<property environment="env" />
 		<property file="${support.ant}/${user.name}.properties" />
 		<property file="${support.ant}/build.properties" />
-		
+
 		<!-- read the database login parameters from TOMCAT's context.xml into a db.properties file for security reasons -->
-		<xslt in="${env.TOMCAT_HOME}/conf/context.xml" 
-			out="${db.properties}" 
+		<xslt in="${env.TOMCAT_HOME}/conf/context.xml"
+			out="${db.properties}"
 			style="${support.ant}/extract_db_properties.xslt" />
 		<property file="${db.properties}" />
 		<!-- we can delete this now because it's been loaded into memory -->
 		<delete file="${db.properties}" failonerror="false"/>
 	</target>
-	<target name="-post-init" >
+	<target name="-post-init"  depends="-do-init, -svnant-init">
 		<echo message="JAVA_HOME=${env.JAVA_HOME}"/>
 		<echo message="ANT_JAVA_VERSION=${ant.java.version}"/>
 	</target>
+
+	<target name="-svnant-init" depends="-do-init">
+		<path id="svnant.classpath">
+			<pathelement location="${svnjavahl.jar}" />
+			<pathelement location="${svnant.jar}" />
+			<pathelement location="${svnClientAdapter.jar}" />
+		</path>
+		<taskdef resource="svntask.properties" classpathref="svnant.classpath"/>
+	</target>
+
+
 
 
 	<!-- -->
@@ -81,7 +95,7 @@
     	</copy>
     	<!--
     	<copy todir="${build.web.dir}">
-    	
+
     	</copy>
     	-->
 		<jar compress="true" jarfile="${dist.dir}/${war.name}">
@@ -157,7 +171,7 @@
 	<target name="run-metrics" description="Runs code analysis and metrics." depends="init,-do-run-pmd,-do-run-code-coverage" />
 
 	<target name="run-jmeter-test-task" description="run a single jmeter task, given parameters" depends="init">
-		<!-- parmeters: testplan, testplan.dir 
+		<!-- parmeters: testplan, testplan.dir
 			SAMPLE INVOCATION:
 			<antcall target="run-jmeter-test-task">
 				<param name="param.testplan" value="WQX_Schema_Validation"/>
@@ -166,13 +180,13 @@
 		-->
 		<!-- remove previous test results, otherwise jmeter simply adds to previous run to give cumulative stats -->
 		<delete file="${param.testplan.dir}/${jmeter.results.relativedir}/${param.testplan}_result.jtl" quiet="true" failonerror="false"/>
-		<mkdir dir="${param.testplan.dir}/${jmeter.results.relativedir}" />		
+		<mkdir dir="${param.testplan.dir}/${jmeter.results.relativedir}" />
 		<taskdef name="jmeter" classname="org.programmerplanet.ant.taskdefs.jmeter.JMeterTask" classpath="${jmeter.classpath}" />
-		
+
 		<property name="param.driver" value="oracle.jdbc.OracleDriver"/> <!-- default value -->
-		
-		<jmeter jmeterhome="${jmeter.home}" 
-			testplan="${param.testplan.dir}/${param.testplan}.jmx" 
+
+		<jmeter jmeterhome="${jmeter.home}"
+			testplan="${param.testplan.dir}/${param.testplan}.jmx"
 			resultlog="${param.testplan.dir}/${jmeter.results.relativedir}/${param.testplan}_result.jtl">
 			<jvmarg value="-Xmx256m"/>
 			<property name="username" value="${param.username}"/>
@@ -188,14 +202,14 @@
 		<!-- xslt task will not be necessary once Hudson jmeter integration debugged -->
 		<!-- Note that for jmeter tasks which use jars not in the standard distribution such as ojdbc14.jar, these should be placed in JMETER_HOME/lib -->
 	</target>
-	
+
 	<target name="transform-jmeter-test-results" description="format the jmeter test results as html">
-		<xslt 
+		<xslt
 			in="${param.testplan.dir}/${jmeter.results.relativedir}/${param.testplan}_result.jtl"
 			out="${param.testplan.dir}/${jmeter.results.relativedir}/${param.testplan}_result.html"
 			style="${jmeter.home}/extras/jmeter-results-detail-report_21.xsl"/>
 	</target>
-	
+
 	<target name="-do-run-pmd" depends="init">
 		<mkdir dir="${metrics.dir}" />
 		<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask" classpath="${metrics.classpath}" />
