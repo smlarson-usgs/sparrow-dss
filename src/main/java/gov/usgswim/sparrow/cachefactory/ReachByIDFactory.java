@@ -70,19 +70,20 @@ public class ReachByIDFactory extends AbstractCacheFactory {
 				);
 
 				{	// set the catchment geometry
-					STRUCT struct = (STRUCT) rs.getObject("catch_geom");
-					if (struct != null) {
-						JGeometry jGeom = JGeometry.load(struct);
+					STRUCT catch_geom_struct = (STRUCT) rs.getObject("catch_geom");
+					if (catch_geom_struct != null) {
+						JGeometry jGeom = JGeometry.load(catch_geom_struct);
 						double[] ordinates = jGeom.getOrdinatesArray();
-						reach.setOrdinates(ordinates);
+						reach.setCatchGeometryOrdinates(ordinates);
+					} else { // use the reach geometry instead
+						STRUCT reach_geom_struct = (STRUCT) rs.getObject("r_geom");
+						if (reach_geom_struct != null) {
+							JGeometry jGeom = JGeometry.load(reach_geom_struct);
+							double[] ordinates = jGeom.getOrdinatesArray();
+							reach.setReachGeometryOrdinates(ordinates);
+						}
 					}
 				}
-//				{	// set the simplified catchment geometry
-//					STRUCT struct = (STRUCT) rs.getObject("simp_geom");
-//					JGeometry jGeom = JGeometry.load(struct);
-//					double[] ordinates = jGeom.getOrdinatesArray();
-//					reach.setSimplifiedOrdinates(ordinates);
-//				}
 
 			} else {
 				//no rows found - leave as null

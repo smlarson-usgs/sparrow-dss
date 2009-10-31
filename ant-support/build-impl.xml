@@ -38,8 +38,14 @@
 			<pathelement location="${svnant.jar}" />
 			<pathelement location="${svnClientAdapter.jar}" />
 		</path>
-		<taskdef resource="svntask.properties" classpathref="svnant.classpath"/>
+		<taskdef resource="org/tigris/subversion/svnant/svnantlib.xml" classpathref="svnant.classpath"/>
+		<svn svnkit="true" javahl="false">
+			<info target="." />
+		</svn>
+		<echoproperties prefix="svn"/>
 	</target>
+
+	<target name="test-svnant" depends="-svnant-init" description="test svnant"/>
 
 
 

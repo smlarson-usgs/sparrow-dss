@@ -37,9 +37,9 @@ public class ReachInfo {
 	private final String huc8;
 	private final String huc8Name;
 
-	private double[] _ordinates;
-//	private double[] _simplified_ordinates;
-
+	private double[] _catchOrdinates;
+	private double[] _reachOrdinates;
+	// IMPORTANT: If new fields are added, remember to clone them
 
 
 	public ReachInfo(long modelID, int id, String name, Integer distInMeters,
@@ -90,16 +90,15 @@ public class ReachInfo {
 					"marker-long", asString(markerLong),
 					"marker-lat", asString(markerLat)
 			);
-			if (_ordinates != null && _ordinates.length > 0) {
-				StringBuilder coordinates = toPointsString(_ordinates);
+			if (_catchOrdinates != null && _catchOrdinates.length > 0) {
+				StringBuilder coordinates = toPointsString(_catchOrdinates);
 				writeClosedFullTag(in, "polygon",
 						"points", coordinates.toString());
+			} else if (_reachOrdinates != null && _reachOrdinates.length > 0) {
+				StringBuilder coordinates = toPointsString(_reachOrdinates);
+				writeClosedFullTag(in, "polyLine",
+						"points", coordinates.toString());
 			}
-//			if (_simplified_ordinates != null && _simplified_ordinates.length > 0) {
-//				StringBuilder coordinates = toPointsString(_simplified_ordinates);
-//				writeClosedFullTag(in, "simp-polygon",
-//						"points", coordinates.toString());
-//			}
 
 			writeOpeningTag(in, "hucs");
 			{
@@ -128,15 +127,15 @@ public class ReachInfo {
 	}
 
 	private StringBuilder toPointsString(double[] geomOrdinates) {
-		assert(_ordinates != null) : "It is the caller's responsibility to check _ordinates not null";
+		assert(geomOrdinates != null && geomOrdinates.length > 0) : "It is the caller's responsibility to check geomOrdinates not null";
 		int dimensions = 2; // This is an assumption
-		int numberOfPoints = _ordinates.length/dimensions;
+		//int numberOfPoints = geomOrdinates.length/dimensions;
 
 		StringBuilder coordinates = new StringBuilder();
 		for (int i=0; i<geomOrdinates.length; i=i+2) {
-			coordinates.append(_ordinates[i])
+			coordinates.append(geomOrdinates[i])
 			.append(",")
-			.append(_ordinates[i+1])
+			.append(geomOrdinates[i+1])
 			.append(" ");
 		}
 		return coordinates;
@@ -146,8 +145,9 @@ public class ReachInfo {
 		ReachInfo clone = new ReachInfo(modelID, id, name, distance, minLong, minLat, maxLong, maxLat,
 				markerLong, markerLat,
 				huc2, huc2Name, huc4, huc4Name, huc6, huc6Name, huc8, huc8Name );
-		clone._ordinates = _ordinates;
-		//clone._simplified_ordinates = _simplified_ordinates;
+		// IMPORTANT: If new fields are added here, remember to clone them
+		clone._catchOrdinates = _catchOrdinates;
+		clone._reachOrdinates = _reachOrdinates;
 		return clone;
 	}
 
@@ -191,12 +191,12 @@ public class ReachInfo {
 		this.clickedLat = latitude;
 	}
 
-	public void setOrdinates(double[] ordinates) {
-		this._ordinates = ordinates;
+	public void setCatchGeometryOrdinates(double[] ordinates) {
+		this._catchOrdinates = ordinates;
 	}
 
-//	public void setSimplifiedOrdinates(double[] simpOrdinates) {
-//		this._simplified_ordinates = simpOrdinates;
-//	}
+	public void setReachGeometryOrdinates(double[] ordinates) {
+		this._reachOrdinates = ordinates;
+	}
 
 }
