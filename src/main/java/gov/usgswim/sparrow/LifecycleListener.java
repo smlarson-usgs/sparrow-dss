@@ -131,8 +131,8 @@ public class LifecycleListener implements ServletContextListener {
         cm.replaceCacheWithDecoratedCache(cm.getEhcache("AggregateIdLookup"), aggregateIdLookup);
         
         //UncertaintyData
-        SelfPopulatingCache uncertaintyData = new SelfPopulatingCache(cm.getEhcache("UncertaintyData"), new UncertaintyDataFactory());
-        cm.replaceCacheWithDecoratedCache(cm.getEhcache("UncertaintyData"), uncertaintyData);
+        SelfPopulatingCache uncertaintyData = new SelfPopulatingCache(cm.getEhcache("StandardErrorEstimateData"), new UncertaintyDataFactory());
+        cm.replaceCacheWithDecoratedCache(cm.getEhcache("StandardErrorEstimateData"), uncertaintyData);
 	}
 
 }

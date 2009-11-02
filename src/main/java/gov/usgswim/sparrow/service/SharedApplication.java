@@ -6,6 +6,8 @@ import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.PredictComputable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRequest;
+import gov.usgswim.sparrow.UncertaintyData;
+import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
 import gov.usgswim.sparrow.cachefactory.BinningRequest;
 import gov.usgswim.sparrow.cachefactory.ReachID;
@@ -73,6 +75,7 @@ public class SharedApplication  {
 
 	//ehcache self-populated cache names
 	public static final String PREDICT_DATA_CACHE = "PredictData";
+	public static final String STANDARD_ERROR_ESTIMATE_DATA = "StandardErrorEstimateData";
 	public static final String ADJUSTED_SOURCE_CACHE = "AdjustedSource";
 	public static final String PREDICT_RESULT_CACHE = "PredictResult";
 	public static final String ANALYSIS_RESULT_CACHE = "AnalysisResult";
@@ -402,6 +405,16 @@ public class SharedApplication  {
 		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_DATA_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
 		return (e != null)?((PredictData) e.getObjectValue()):null;
+	}
+	
+	public UncertaintyData getStandardErrorEstimateData(UncertaintyDataRequest req) {
+		return getStandardErrorEstimateData(req, false);
+	}
+	
+	public UncertaintyData getStandardErrorEstimateData(UncertaintyDataRequest req, boolean quiet) {
+		Ehcache c = CacheManager.getInstance().getEhcache(STANDARD_ERROR_ESTIMATE_DATA);
+		Element e  = (quiet)?c.getQuiet(req):c.get(req);
+		return (e != null)?((UncertaintyData) e.getObjectValue()):null;
 	}
 
 	//PredictResult Cache

@@ -342,7 +342,7 @@
         timeToLiveSeconds="0" diskPersistent="false"
         diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
 	
-	<cache name="UncertaintyData" maxElementsInMemory="10"
+	<cache name="StandardErrorEstimateData" maxElementsInMemory="10"
 		maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
 		diskSpoolBufferSizeMB="8" timeToIdleSeconds="3600"
 		timeToLiveSeconds="3600" diskPersistent="false"
