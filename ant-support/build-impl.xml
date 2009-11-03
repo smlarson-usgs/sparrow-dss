@@ -60,6 +60,10 @@
 
 		<copy todir="${build.web.dir}">
 			<fileset dir="${web.dir}" excludes="${build.web.excludes}" />
+			<filterset>
+				<filter token="buildNo" value="${svn.info.lastRev}"/>
+				<filter token="lastDate" value="${svn.info.lastDate}"/>
+			</filterset>
 		</copy>
 		<copy todir="${build.web.dir}/WEB-INF/lib" flatten="true">
 			<fileset dir="${lib.dir}" includes="${build.lib.includes}" excludes="${build.lib.excludes}" />

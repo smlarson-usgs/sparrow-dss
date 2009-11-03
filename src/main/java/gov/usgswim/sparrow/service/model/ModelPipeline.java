@@ -11,6 +11,7 @@ public class ModelPipeline extends AbstractPipeline<ModelRequest> {
 	public static JSONFormatter configure(JSONFormatter jFormatter) {
 		jFormatter.identifyRepeatedTagElement("models", "model");
 		jFormatter.identifyRepeatedTagElement("sources", "source");
+		jFormatter.identifyRepeatedTagElement("sessions", "session");
 		return jFormatter;
 	}
 
