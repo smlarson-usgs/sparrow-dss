@@ -4,7 +4,6 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTable.Immutable;
 import gov.usgswim.datatable.impl.FindHelper;
 
-import java.util.Set;
 
 /**
  * Compares two PredictResults and returns values as either percentage increase
@@ -21,9 +20,8 @@ import java.util.Set;
  * @author eeverman
  *
  */
-public class DataTableCompare implements Immutable {
+public class DataTableCompare extends AbstractDataTableBase implements Immutable {
 	
-	protected final DataTable base;
 	protected final DataTable compare;
 	protected final boolean absolute;
 	
@@ -35,41 +33,16 @@ public class DataTableCompare implements Immutable {
 	 * the values are (compare - base) / base.
 	 */
 	public DataTableCompare(DataTable base, DataTable compare, boolean isAbsolute) {
-		this.base = base.toImmutable();
+		super(base);
 		this.compare = compare.toImmutable();
 		this.absolute = isAbsolute;
 	}
 
-	public int[] findAll(int col, Object value) {
-		return base.findAll(col, value);
-	}
-
-	public int findFirst(int col, Object value) {
-		return base.findFirst(col, value);
-	}
-
-	public int findLast(int col, Object value) {
-		return base.findLast(col, value);
-	}
-
-	public Integer getColumnByName(String name) {
-		return base.getColumnByName(name);
-	}
-
-	public int getColumnCount() {
-		return base.getColumnCount();
-	}
-
+	/**
+	 * Actual type is a mixture, but when the comparison is done, resolution is Double.
+	 */
 	public Class<?> getDataType(int col) {
 		return Double.class;
-	}
-
-	public String getDescription() {
-		return base.getDescription();
-	}
-
-	public String getDescription(int col) {
-		return base.getDescription(col);
 	}
 
 	public Double getDouble(int row, int col) {
@@ -82,6 +55,9 @@ public class DataTableCompare implements Immutable {
 		if (b != 0d) {
 			return 100d * (c - b) / b;
 		}
+		
+		//TODO:  Increase or decreases from zero are considered +/-100%.
+		//Is that correct?  JIRA isse filed: http://privusgs4.er.usgs.gov//browse/SPDSS-313
 		if (c > b) {
 			return 100d;
 		} else if (b > c) {
@@ -148,24 +124,12 @@ public class DataTableCompare implements Immutable {
 		}
 	}
 	
-	public Long getIdForRow(int row) {
-		return base.getIdForRow(row);
-	}
-
 	public Double getMaxDouble(int col) {
 		return FindHelper.bruteForceFindMaxDouble(this, col);
 	}
 
 	public Double getMaxDouble() {
 		return FindHelper.bruteForceFindMaxDouble(this);
-	}
-
-	public Integer getMaxInt(int col) {
-		return getMaxDouble(col).intValue();
-	}
-
-	public Integer getMaxInt() {
-		return getMaxDouble().intValue();
 	}
 
 	public Double getMinDouble(int col) {
@@ -176,71 +140,28 @@ public class DataTableCompare implements Immutable {
 		return FindHelper.bruteForceFindMinDouble(this);
 	}
 
-	public Integer getMinInt(int col) {
-		return getMinDouble(col).intValue();
-	}
-
-	public Integer getMinInt() {
-		return getMinDouble().intValue();
-	}
-
-	public String getName() {
-		return base.getName();
-	}
-
-	public String getName(int col) {
-		return base.getName(col);
-	}
-
-	public String getProperty(String name) {
-		return base.getProperty(name);
-	}
-
-	public String getProperty(int col, String name) {
-		return base.getProperty(col, name);
-	}
-
-	public Set<String> getPropertyNames() {
-		return base.getPropertyNames();
-	}
-
-	public Set<String> getPropertyNames(int col) {
-		return base.getPropertyNames(col);
-	}
-
-	public int getRowCount() {
-		return base.getRowCount();
-	}
-
-	public int getRowForId(Long id) {
-		return base.getRowForId(id);
-	}
-
 	public String getString(int row, int col) {
 		return Double.toString(getDouble(row, col));
 	}
 
+	/**
+	 * For absolute comparisons, the unit of the column in the base table is returned.
+	 * For percentage comparisons, 'Percentage' is returned.
+	 */
 	public String getUnits(int col) {
 		if (absolute) {
 			return base.getUnits(col);
 		}
-		return "percentage";
+		return "Percentage";
 	}
 
 	public Object getValue(int row, int col) {
 		return getDouble(row, col);
 	}
-
-	public boolean hasRowIds() {
-		return base.hasRowIds();
-	}
-
-	public boolean isIndexed(int col) {
-		return base.isIndexed(col);
-	}
-
+	
+	@Override
 	public boolean isValid() {
-		return base.isValid() && compare.isValid();
+		return super.isValid() && compare.isValid();
 	}
 
 	public Immutable toImmutable() {

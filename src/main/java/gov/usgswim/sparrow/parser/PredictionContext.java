@@ -4,10 +4,10 @@ import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.DeliveryRunner;
-import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.*;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.datatable.StdErrorEstTable;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
 
@@ -244,25 +244,33 @@ public class PredictionContext implements XMLStreamParserComponent {
 
 			//We will try to get result-based series out of the analysis cache
 			PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
-
+			UncertaintySeries impliedUncertaintySeries = null;
+			
 			switch (type) {
 				case total: // intentional fall-through
+				case total_std_error_estimate:
 				case total_concentration:
 				case total_delivered_flux:
 					if (source != null) {
 						dataColIndex = result.getTotalColForSrc(source.longValue());
+						impliedUncertaintySeries = UncertaintySeries.TOTAL_PER_SOURCE;
 					} else {
 						dataColIndex = result.getTotalCol();
+						impliedUncertaintySeries = UncertaintySeries.TOTAL;
 					}
 					break;
+					
 				case incremental: // intentional fall-through
+				case incremental_std_error_estimate:
 				case incremental_yield:
 				case incremental_delivered_flux: // here, I think
 				case incremental_delivered_yield: // here, I think
 					if (source != null) {
 						dataColIndex = result.getIncrementalColForSrc(source.longValue());
+						impliedUncertaintySeries = UncertaintySeries.INCREMENTAL_PER_SOURCE;
 					} else {
 						dataColIndex = result.getIncrementalCol();
+						impliedUncertaintySeries = UncertaintySeries.INCREMENTAL;
 					}
 					break;
 				case delivered_fraction:
@@ -271,8 +279,23 @@ public class PredictionContext implements XMLStreamParserComponent {
 				default:
 					throw new Exception("No dataSeries was specified in the analysis section");
 			}
+			
+			if (type.isStandardErrorEstimateBased()) {
+				UncertaintyDataRequest req = new UncertaintyDataRequest(
+						getModelID(), impliedUncertaintySeries, source);
+				UncertaintyData errData = SharedApplication.getInstance().getStandardErrorEstimateData(req);
+				
+				//Construct a datatable that calculates the error for each
+				//value on demand.
+				dataTable = new StdErrorEstTable(result, errData,
+						dataColIndex, true, 0d);
+				
+			} else {
+				dataTable = result;
+			}
 
-			dataTable = result;
+
+			
 
 		} else {
 

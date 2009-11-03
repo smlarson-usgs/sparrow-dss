@@ -1,167 +1,197 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.usgs.gov/sparrow/prediction-schema/v0_2" xmlns:v0_2="http://www.usgs.gov/sparrow/prediction-schema/v0_2">
-  <xs:element name="PredictionContext">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="v0_2:adjustmentGroups" minOccurs="0"/>
-        <xs:element ref="v0_2:analysis"/>
-      	<xs:element ref="v0_2:terminalReaches" minOccurs="0"/>
-         <xs:element ref="v0_2:areaOfInterest" minOccurs="0"/>
-      </xs:sequence>
-      <xs:attribute name="model-id" use="required">
-      	<xs:simpleType>
-      		<xs:restriction base="xs:integer">
-      	<xs:minInclusive value="0"/>
-      			</xs:restriction>
-      		</xs:simpleType>
-      </xs:attribute>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="adjustmentGroups">
-    <xs:complexType>
+	<xs:element name="PredictionContext">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="v0_2:adjustmentGroups" minOccurs="0"/>
+				<xs:element ref="v0_2:analysis"/>
+				<xs:element ref="v0_2:terminalReaches" minOccurs="0"/>
+				<xs:element ref="v0_2:areaOfInterest" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="model-id" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="adjustmentGroups">
+		<xs:complexType>
 			<xs:sequence>
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="v0_2:reachGroup" />
 				<xs:element minOccurs="0" maxOccurs="unbounded" ref="v0_2:individualGroup" />
 			</xs:sequence>
-      <xs:attribute name="conflicts" use="required">
-      	  <xs:simpleType>
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="accumulate"/>
-      <xs:enumeration value="supersede"/>
-    </xs:restriction>
-  </xs:simpleType>
-      	
-      </xs:attribute>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="reachGroup">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:sequence minOccurs="0">
-          <xs:element ref="v0_2:desc"/>
-          <xs:element ref="v0_2:notes"/>
-        </xs:sequence>
-        <xs:element minOccurs="0" maxOccurs="unbounded" ref="v0_2:adjustment"/>
-        <xs:element minOccurs="0" maxOccurs="unbounded" ref="v0_2:logicalSet"/>
-        <xs:element minOccurs="0" maxOccurs="unbounded" ref="v0_2:reach"/>
-      </xs:sequence>
-      <xs:attribute name="enabled" use="required" type="xs:boolean"/>
-      <xs:attribute name="name" use="required"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="desc" type="xs:string"/>
-  <xs:element name="notes" type="xs:string"/>
-  <xs:element name="individualGroup">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element maxOccurs="unbounded" ref="v0_2:reach"/>
-      </xs:sequence>
-      <xs:attribute name="enabled" use="required" type="xs:boolean"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="analysis">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="v0_2:select"/>
-        <xs:sequence minOccurs="0">
-          <xs:element ref="v0_2:limitTo"/>
-          <xs:element ref="v0_2:groupBy"/>
-        </xs:sequence>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="select">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element ref="v0_2:dataSeries"/>
-        <xs:sequence minOccurs="0">
-          <xs:element ref="v0_2:aggFunction"/>
-          <xs:element ref="v0_2:analyticFunction"/>
-        </xs:sequence>
-        <xs:element minOccurs="0" ref="v0_2:nominalComparison"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="dataSeries">
-    <xs:complexType>
-      <xs:simpleContent>
-        <xs:extension base="xs:NCName">
-          <xs:attribute name="per" type="xs:NCName"/>
-          <xs:attribute name="source" type="xs:integer"/>
-        </xs:extension>
-      </xs:simpleContent>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="aggFunction">
-    <xs:complexType>
-      <xs:simpleContent>
-        <xs:extension base="xs:NCName">
-          <xs:attribute name="per" use="required" type="xs:NCName"/>
-        </xs:extension>
-      </xs:simpleContent>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="analyticFunction">
-    <xs:complexType>
-      <xs:simpleContent>
-        <xs:extension base="xs:NCName">
-          <xs:attribute name="partition" use="required" type="xs:NCName"/>
-        </xs:extension>
-      </xs:simpleContent>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="nominalComparison">
-    <xs:complexType>
-      <xs:attribute name="type" use="required" type="xs:NCName"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="limitTo" type="xs:string"/>
-  <xs:element name="groupBy" type="xs:NCName"/>
-  <xs:element name="terminalReaches">
-    <xs:complexType mixed="true">
-      <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element ref="v0_2:logicalSet"/>
-        <xs:element ref="v0_2:reach"/>
-      </xs:choice>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="areaOfInterest">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" ref="v0_2:logicalSet"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="adjustment">
-    <xs:complexType>
-      <xs:attribute name="abs" type="xs:decimal"/>
-      <xs:attribute name="coef" type="xs:decimal"/>
-      <xs:attribute name="src" use="required" type="xs:integer"/>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="logicalSet">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" ref="v0_2:criteria"/>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="criteria">
-    <xs:complexType>
-      <xs:simpleContent>
-        <xs:extension base="xs:NMTOKEN">
-          <xs:attribute name="attrib" use="required" type="xs:NCName"/>
-          <xs:attribute name="relation" type="xs:NCName"/>
-        </xs:extension>
-      </xs:simpleContent>
-    </xs:complexType>
-  </xs:element>
-  <xs:element name="reach">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element minOccurs="0" maxOccurs="unbounded" ref="v0_2:adjustment"/>
-      </xs:sequence>
-      <xs:attribute name="id" use="required" type="xs:integer"/>
-    </xs:complexType>
-  </xs:element>
+			<xs:attribute name="conflicts" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="accumulate"/>
+						<xs:enumeration value="supersede"/>
+					</xs:restriction>
+				</xs:simpleType>
+				
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="reachGroup">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:sequence minOccurs="0">
+					<xs:element ref="v0_2:desc"/>
+					<xs:element ref="v0_2:notes"/>
+				</xs:sequence>
+				<xs:element minOccurs="0" maxOccurs="unbounded" ref="v0_2:adjustment"/>
+				<xs:element minOccurs="0" maxOccurs="unbounded" ref="v0_2:logicalSet"/>
+				<xs:element minOccurs="0" maxOccurs="unbounded" ref="v0_2:reach"/>
+			</xs:sequence>
+			<xs:attribute name="enabled" use="required" type="xs:boolean"/>
+			<xs:attribute name="name" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="desc" type="xs:string"/>
+	<xs:element name="notes" type="xs:string"/>
+	<xs:element name="individualGroup">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element maxOccurs="unbounded" ref="v0_2:reach"/>
+			</xs:sequence>
+			<xs:attribute name="enabled" use="required" type="xs:boolean"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="analysis">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="v0_2:select"/>
+				<xs:sequence minOccurs="0">
+					<xs:element ref="v0_2:limitTo"/>
+					<xs:element ref="v0_2:groupBy"/>
+				</xs:sequence>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="select">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element  name="dataSeries" type="v0_2:dataSeries"/>
+				<xs:sequence minOccurs="0">
+					<xs:element ref="v0_2:aggFunction"/>
+					<xs:element ref="v0_2:analyticFunction"/>
+				</xs:sequence>
+				<xs:element minOccurs="0" ref="v0_2:nominalComparison"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="aggFunction">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:NCName">
+					<xs:attribute name="per" use="required" type="xs:NCName"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="analyticFunction">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:NCName">
+					<xs:attribute name="partition" use="required" type="xs:NCName"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="nominalComparison">
+		<xs:complexType>
+			<xs:attribute name="type" use="required" type="xs:NCName"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="limitTo" type="xs:string"/>
+	<xs:element name="groupBy" type="xs:NCName"/>
+	<xs:element name="terminalReaches">
+		<xs:complexType mixed="true">
+			<xs:choice minOccurs="0" maxOccurs="unbounded">
+				<xs:element ref="v0_2:logicalSet"/>
+				<xs:element ref="v0_2:reach"/>
+			</xs:choice>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="areaOfInterest">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="0" ref="v0_2:logicalSet"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="adjustment">
+		<xs:complexType>
+			<xs:attribute name="abs" type="xs:decimal"/>
+			<xs:attribute name="coef" type="xs:decimal"/>
+			<xs:attribute name="src" use="required" type="xs:integer"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="logicalSet">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="0" ref="v0_2:criteria"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="criteria">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:NMTOKEN">
+					<xs:attribute name="attrib" use="required" type="xs:NCName"/>
+					<xs:attribute name="relation" type="xs:NCName"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="reach">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element minOccurs="0" maxOccurs="unbounded" ref="v0_2:adjustment"/>
+			</xs:sequence>
+			<xs:attribute name="id" use="required" type="xs:integer"/>
+		</xs:complexType>
+	</xs:element>
+	
+	
+	<!-- Global Definitions -->
+	<xs:complexType name="dataSeries">
+		<xs:simpleContent>
+			<xs:extension base="v0_2:dataSeriesEnum">
+				<xs:attribute name="per"  type="v0_2:perEnum" use="optional"/>
+				<xs:attribute name="source" type="xs:integer" use="optional"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="dataSeriesEnum">
+		<xs:annotation><xs:documentation>This is the intended way to generate yeild or concentration numbers.</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="total"/>
+			<xs:enumeration value="total_std_error_estimate"/>
+			<xs:enumeration value="incremental"/>
+			<xs:enumeration value="incremental_std_error_estimate"/>
+			<xs:enumeration value="incremental_yield"/>
+			<xs:enumeration value="total_concentration"/>
+			<xs:enumeration value="source_value"/>
+			<xs:enumeration value="incremental_delivered_yield"/>
+			<xs:enumeration value="total_delivered_flux"/>
+			<xs:enumeration value="incremental_delivered_flux"/>
+			<xs:enumeration value="delivered_fraction"/>
+			<xs:enumeration value="total_decay"/>
+			<xs:enumeration value="total_no_decay"/>
+			<xs:enumeration value="land_to_water_coef"/>
+			<xs:enumeration value="instream_decay_coef"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="perEnum">
+		<xs:annotation><xs:documentation>This is the intended way to generate yeild or concentration numbers.</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="area"/>
+			<xs:enumeration value="flow"/>
+		</xs:restriction>
+	</xs:simpleType>
 </xs:schema>
