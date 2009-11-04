@@ -60,6 +60,10 @@
 
 		<copy todir="${build.web.dir}">
 			<fileset dir="${web.dir}" excludes="${build.web.excludes}" />
+		</copy>
+		<copy todir="${build.web.dir}" overwrite="true">
+			<fileset dir="${web.dir}" includes="**/*.jsp,**/*.htm,**/*.html,**/*.txt,**/*.xml"/>
+			<!-- Be careful to only apply token replacement to text files, not binary files-->
 			<filterset>
 				<filter token="buildNo" value="${svn.info.lastRev}"/>
 				<filter token="lastDate" value="${svn.info.lastDate}"/>
