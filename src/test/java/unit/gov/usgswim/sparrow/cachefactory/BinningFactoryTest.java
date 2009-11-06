@@ -273,6 +273,8 @@ public class BinningFactoryTest extends TestCase {
 		
 		//These Tests all require that INFINITE values be considered in
 		//creating bins.
+		//TODO:  This test is broken until we actually figure out how to handle
+		//infinite values.
 		doEqualCountAssert(tblMixAll_1, bins, round, MIN_DOUBLE, MAX_DOUBLE);
 		doEqualCountAssert(tblMixAll_2, bins, round, MIN_DOUBLE, MAX_DOUBLE);
 		doEqualCountAssert(tblMixAll_3, bins, round, -10d, MAX_DOUBLE);

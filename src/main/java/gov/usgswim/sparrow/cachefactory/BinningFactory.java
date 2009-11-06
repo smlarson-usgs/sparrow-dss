@@ -85,10 +85,7 @@ public class BinningFactory implements CacheEntryFactory {
 			throw new IllegalArgumentException("The binCount must be greater than zero.");
 		}
 
-		// This works
-		//double[] sortedValues = extractSortedValues(data, columnIndex); //sorted Array holding all values
-		// This probably won't
-		Double[] sortedValues = extractSortedValues(data, columnIndex, binCount, keepZeroes);
+		Double[] sortedValues = extractSortedValues(data, columnIndex, keepZeroes);
 		return buildEqualCountBins(sortedValues, binCount, true);
 	}
 
@@ -435,7 +432,7 @@ public class BinningFactory implements CacheEntryFactory {
 			for (int r=0; r < totalRows; r++) {
 				Double value = data.getDouble(r, columnIndex);
 
-				if (value.isNaN()) {
+				if (value == null || value.isNaN()) {
 					//skip
 				} else if (value.equals(Double.POSITIVE_INFINITY)) {
 					maxValue = Double.MAX_VALUE;
@@ -456,9 +453,9 @@ public class BinningFactory implements CacheEntryFactory {
 		}
 
 		//Three situations are possible:
-		//zero non-NAN values --> no values being set
-		//one non-NAN value --> only the min value being set
-		//two or more non-NAN values --> min & max values being set (good)
+		//zero non-NAN/null values --> no values being set
+		//one non-NAN/null value --> only the min value being set
+		//two or more non-NAN/null values --> min & max values being set (good)
 		if ((! minSet) && (!maxSet)) {
 			minValue = 0d;
 			maxValue = 0d;
@@ -833,7 +830,7 @@ public class BinningFactory implements CacheEntryFactory {
 	 * @param isKeepZeroes
 	 * @return
 	 */
-	public static Double[] extractSortedValues(DataTable data, int columnIndex, int minValueCount, boolean isKeepZeroes) {
+	public static Double[] extractSortedValues(DataTable data, int columnIndex, boolean isKeepZeroes) {
 		int totalRows = data.getRowCount();
 
 		boolean hasZero = false;
@@ -841,19 +838,20 @@ public class BinningFactory implements CacheEntryFactory {
 
 		for (int r=0; r<totalRows; r++) {
 			Double value = data.getDouble(r, columnIndex);
-			if (!Double.isNaN(value) && !Double.isInfinite(value)) {
-				if (value == 0F) {hasZero = true;}
-				if (isKeepZeroes || value != 0D) {
-					filteredValues.add(value);
+			
+			if (value != null) {
+				if (!Double.isNaN(value) && !Double.isInfinite(value)) {
+					if (value == 0F) {hasZero = true;}
+					if (isKeepZeroes || value != 0D) {
+						filteredValues.add(value);
+					}
 				}
-			}
+			} /* else {	}
+			 Nulls can be safely skipped - they contain no data.
+			*/
 		}
 		if (!isKeepZeroes && hasZero) {
 			filteredValues.add(0D); // This ensures that the reaches with 0 values are at least drawn. They will not be drawn if all the nonzero reach values are of the same sign
-		}
-		// Need to make sure we have at least enough values for bins
-		while (filteredValues.size() <= minValueCount) {
-			filteredValues.add(0D);
 		}
 
 		Double[] values = new Double[filteredValues.size()];
