@@ -44,6 +44,18 @@ public class PredictionContextTest extends TestCase {
         + AreaOfInterestTest.VALID_FRAGMENT
         + "</PredictionContext>"
         ;
+    
+    public static final String VALID_FRAGMENT_BUG_1 = ""
+    + "<PredictionContext "
+    + "  xmlns=\"http://www.usgs.gov/sparrow/prediction-schema/v0_2\""
+    + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
+    + "  model-id=\"22\">"
+    + AdjustmentGroupsTest.VALID_FRAGMENT
+    + AnalysisTest.VALID_FRAGMENT_BUG_1
+    + TerminalReachesTest.VALID_FRAGMENT
+    + AreaOfInterestTest.VALID_FRAGMENT
+    + "</PredictionContext>"
+    ;
 
     /** Used to create XMLStreamReaders from XML strings. */
     protected XMLInputFactory inFact = XMLInputFactory.newInstance();
@@ -114,6 +126,15 @@ public class PredictionContextTest extends TestCase {
 
 		String response = pipeDispatch(contextReq, new PredictContextPipeline());
 		assertEquals("PredictionContext parsing has likely changed.", PRED_CONTEXT_4_ID, Integer.parseInt(getAttributeValue(response, "context-id")));
+	}
+	
+	public void testBug1() throws Exception {
+		PredictionContext context = buildContext(VALID_FRAGMENT_BUG_1);
+		
+		assertEquals(DataSeriesType.incremental_std_error_estimate, 
+				context.getAnalysis().getSelect().getDataSeries());
+		assertTrue(context.isValid());
+		
 	}
 
 	public void testHashcode() throws Exception {

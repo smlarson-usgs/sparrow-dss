@@ -312,8 +312,14 @@ public class MapViewerSparrowDataProvider  implements NSDataProvider {
     		row[0].setKey(true);
 
     		// Value
-    		row[1] = new Field(dc.getTable().getDouble(r, dc.getColumn()));	//Value
-
+    		Double val = dc.getTable().getDouble(r, dc.getColumn());
+    		if (val != null) {
+    			row[1] = new Field(val);
+    		} else {
+    			row[1] = new Field();
+    			row[1].setNull();
+    		}
+    		
     		NSRow nsRow = new NSRow(row);
     		nsRows[r] = nsRow;
     	}

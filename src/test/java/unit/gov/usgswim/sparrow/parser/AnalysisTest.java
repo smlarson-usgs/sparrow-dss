@@ -26,23 +26,42 @@ public class AnalysisTest extends TestCase {
         + "  <groupBy>HUC8</groupBy>"
         + "</analysis>"
         ;
+    
+    public static final String VALID_FRAGMENT_BUG_1 = "" +
+        "<analysis>" +
+	        "<select>" +
+		        "<dataSeries>incremental_std_error_estimate</dataSeries>" +
+		        "<nominalComparison type=\"none\"></nominalComparison>" +
+	        "</select>" +
+	        "<groupBy></groupBy>" +
+        "</analysis>";
 
     /** Used to create XMLStreamReaders from XML strings. */
     protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 
 	public void testParse1() throws Exception {
 
-		Analysis anal = buildTestInstance();
+		Analysis anal = buildTestInstance(VALID_FRAGMENT);
 
 		assertEquals("contributors", anal.getLimitTo());
 		assertEquals("HUC8", anal.getGroupBy());
 
 	}
+	
+	public void testBug1() throws Exception {
+
+		Analysis anal = buildTestInstance(VALID_FRAGMENT_BUG_1);
+
+		assertEquals(DataSeriesType.incremental_std_error_estimate,  anal.getSelect().getDataSeries());
+		assertNull(anal.getGroupBy());
+		assertTrue(anal.isValid());
+
+	}
 
 	public void testHashcode() throws Exception {
 
-		Analysis analysis1 = buildTestInstance();
-		Analysis analysis2 = buildTestInstance();
+		Analysis analysis1 = buildTestInstance(VALID_FRAGMENT);
+		Analysis analysis2 = buildTestInstance(VALID_FRAGMENT);
 		TestHelper.testHashCode(analysis1, analysis2, analysis2.clone());
 
 		// test IDs
@@ -52,8 +71,8 @@ public class AnalysisTest extends TestCase {
 
 
 	@SuppressWarnings("static-access")
-  public Analysis buildTestInstance() throws Exception {
-		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(VALID_FRAGMENT));
+  public Analysis buildTestInstance(String stringToParse) throws Exception {
+		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(stringToParse));
 		Analysis test = new Analysis();
 		reader.next();
 		test = test.parse(reader);
