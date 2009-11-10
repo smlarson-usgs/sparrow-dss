@@ -38,20 +38,38 @@ public class PredictionContext implements XMLStreamParserComponent {
 		return ag.parse(in);
 	}
 
+	// ===============
+	// INSTANCE FIELDS
+	// ===============
+	private Integer id;
+	private Long modelID;
+	private Integer adjustmentGroupsID;
+	private Integer analysisID;
+	private Integer terminalReachesID;
+	private Integer areaOfInterestID;
+
+	private transient AdjustmentGroups adjustmentGroups;
+	private transient Analysis analysis;
+	private transient TerminalReaches terminalReaches;
+	private transient AreaOfInterest areaOfInterest;
+
+	// ============
+	// CONSTRUCTORS
+	// ============
 	/**
 	 * Constructs an empty instance.
 	 */
 	public PredictionContext() {
-
+		// empty constructor
 	}
 	/**
 	 * Constructs a fully configured instance.
 	 *
 	 * @param modelID
-	 * @param ag
-	 * @param anal
-	 * @param tr
-	 * @param aoi
+	 * @param ag adjustment groups
+	 * @param anal analysis
+	 * @param tr terminal reaches
+	 * @param aoi area of interest
 	 * @return
 	 */
 	public PredictionContext(Long modelID, AdjustmentGroups ag, Analysis anal,
@@ -80,22 +98,6 @@ public class PredictionContext implements XMLStreamParserComponent {
 		}
 
 	}
-
-	// ===============
-	// INSTANCE FIELDS
-	// ===============
-	private Integer id;
-	private Long modelID;
-	private Integer adjustmentGroupsID;
-	private Integer analysisID;
-	private Integer terminalReachesID;
-	private Integer areaOfInterestID;
-
-	private transient AdjustmentGroups adjustmentGroups;
-	private transient Analysis analysis;
-	private transient TerminalReaches terminalReaches;
-	private transient AreaOfInterest areaOfInterest;
-
 
 	// ================
 	// INSTANCE METHODS
@@ -245,7 +247,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 			//We will try to get result-based series out of the analysis cache
 			PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
 			UncertaintySeries impliedUncertaintySeries = null;
-			
+
 			switch (type) {
 				case total: // intentional fall-through
 				case total_std_error_estimate:
@@ -259,7 +261,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 						impliedUncertaintySeries = UncertaintySeries.TOTAL;
 					}
 					break;
-					
+
 				case incremental: // intentional fall-through
 				case incremental_std_error_estimate:
 				case incremental_yield:
@@ -279,23 +281,23 @@ public class PredictionContext implements XMLStreamParserComponent {
 				default:
 					throw new Exception("No dataSeries was specified in the analysis section");
 			}
-			
+
 			if (type.isStandardErrorEstimateBased()) {
 				UncertaintyDataRequest req = new UncertaintyDataRequest(
 						getModelID(), impliedUncertaintySeries, source);
 				UncertaintyData errData = SharedApplication.getInstance().getStandardErrorEstimateData(req);
-				
+
 				//Construct a datatable that calculates the error for each
 				//value on demand.
 				dataTable = new StdErrorEstTable(result, errData,
 						dataColIndex, true, 0d);
-				
+
 			} else {
 				dataTable = result;
 			}
 
 
-			
+
 
 		} else {
 
@@ -443,6 +445,17 @@ public class PredictionContext implements XMLStreamParserComponent {
 	public boolean isValid() {
 		return true;
 	}
+	// ===========
+	// KEY METHODS
+	// ===========
+	public PredictionContext getTargetContextOnly() {
+		return new PredictionContext(modelID, null, null, terminalReaches, null);
+	}
+
+	public PredictionContext getAdjustedContextOnly() {
+		return new PredictionContext(modelID, this.adjustmentGroups, null, null, null);
+	}
+
 
 	// =================
 	// GETTERS & SETTERS
@@ -486,14 +499,6 @@ public class PredictionContext implements XMLStreamParserComponent {
 	public AreaOfInterest getAreaOfInterest() {
 		return areaOfInterest;
 	}
-
-	// =================
-	// CACHE KEY METHODS
-	// =================
-	public PredictionContext getResultCacheKey() {
-		return new PredictionContext(modelID, this.adjustmentGroups, null, null, null);
-	}
-
 
 
 
