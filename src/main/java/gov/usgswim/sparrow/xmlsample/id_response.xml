@@ -22,7 +22,7 @@
 			<huc2 id="02" name="MID ATLANTIC" />
 		</hucs>
 	</identification>
-	
+
 	<adjustments display="Treatments">
 		<metadata rowCount="5" columnCount="7" row-id-name="source_id">
 			<columns>
@@ -101,7 +101,7 @@
 			</columns>
 		</metadata>
 		<data>
-			<section display="Incremental Contribution Values" name="inc">
+			<section display="Incremental Flux Contributed from Adjacent Catchment" name="inc">
 				<r><c>Point Sources</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
 				<r><c>Atmospheric Deposition</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
 				<r><c>Fertilizer</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
@@ -109,7 +109,7 @@
 				<r><c>Non-Agricultural</c><c>Area</c><c>sqr. km</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
 				<r><c>Total:</c><c></c><c></c><c></c><c>354564</c><c>354564</c><c>0</c></r>
 			</section>
-			<section display="Total (Measurable) Values" name="total">
+			<section display="Total Instream Flux" name="total">
 				<r><c>Point Sources</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
 				<r><c>Atmospheric Deposition</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
 				<r><c>Fertilizer</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>

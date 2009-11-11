@@ -7,12 +7,12 @@ import java.io.Serializable;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
- * Encapsilates all required info for a prediction request.
- * 
+ * Encapsulates all required info for a prediction request.
+ *
  * This class contains the ID of the model to run, adjustment information,
  * and the type of prediction to run.  It does not contain the actual model
  * data (@see PredictData).
- * 
+ *
  * Also, this class does not contain any info about what portion of the results
  * to present, how the results should be filtered, or what
  * additional metadata should be returned to the user
@@ -45,7 +45,7 @@ public class PredictRequest implements Serializable {
 		} else {
 			_adjSet2 = AdjustmentSet.EMPTY_ADJUSTMENTSET;
 		}
-		
+
 		hash = hashCode();
 	}
 
@@ -59,7 +59,7 @@ public class PredictRequest implements Serializable {
 
 	/**
 	 * Returns the AdjustmentSet associated w/ this request.
-	 * 
+	 *
 	 * This method will never return null - it will just return an empty
 	 * AdjustmentSet if there are no adjustments.
 	 * @return

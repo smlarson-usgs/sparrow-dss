@@ -20,7 +20,7 @@
 			<huc2 id="02" name="MID ATLANTIC" />
 		</hucs>
 	</identification>
-	
+
 	<!-- Only this section of data is returned b/c only this section was asked for -->
 	<predicted display="Predicted Values">
 		<metadata rowCount="12" columnCount="4">
@@ -32,7 +32,7 @@
 			</columns>
 		</metadata>
 		<data>
-			<section display="Incremental Contribution Values" name="inc">
+			<section display="Incremental Flux Contributed from Adjacent Catchment" name="inc">
 				<r><c>Point Sources</c><c>354564</c><c>354564</c><c>0</c></r>
 				<r><c>Atmospheric Deposition</c><c>354564</c><c>354564</c><c>0</c></r>
 				<r><c>Fertilizer</c><c>354564</c><c>354564</c><c>0</c></r>
@@ -40,7 +40,7 @@
 				<r><c>Non-Agricultural</c><c>354564</c><c>354564</c><c>0</c></r>
 				<r><c>Total:</c><c>354564</c><c>354564</c><c>0</c></r>
 			</section>
-			<section display="Total (Measurable) Values" name="total">
+			<section display="Total Instream Flux" name="total">
 				<r><c>Point Sources</c><c>354564</c><c>354564</c><c>0</c></r>
 				<r><c>Atmospheric Deposition</c><c>354564</c><c>354564</c><c>0</c></r>
 				<r><c>Fertilizer</c><c>354564</c><c>354564</c><c>0</c></r>
