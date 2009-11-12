@@ -6,9 +6,10 @@ package gov.usgswim.sparrow.revised;
  *
  */
 public class RunModeController {
-	private static volatile boolean isCacheOn;
-	private static volatile boolean useRevisedEngine;
-	
+	public static volatile boolean isCacheOn;
+	public static volatile boolean useRevisedEngine;
+	public static volatile boolean checkDeprecation;
+
 	public static void enableCache() {
 		isCacheOn = false;
 	}
@@ -27,5 +28,20 @@ public class RunModeController {
 	}
 	public static boolean useRevisedEngine() {
 		return useRevisedEngine;
+	}
+
+	public static void setDeprecationCheck() {
+		checkDeprecation = true;
+	}
+
+	public static void checkDeprecation() {
+		if (checkDeprecation) {
+			try {
+				throw new Exception("DEPRECATION CHECK: Running possibly deprecated code. Print Stack trace and terminate");
+			} catch (Exception e) {
+				// Just a hack to get hold of the stack trace. There's probably a more elegant way to do this.
+				e.printStackTrace(System.err);
+			}
+		}
 	}
 }

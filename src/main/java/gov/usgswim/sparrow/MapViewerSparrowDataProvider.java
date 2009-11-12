@@ -7,6 +7,7 @@ import gov.usgswim.sparrow.deprecated.PredictService;
 import gov.usgswim.sparrow.deprecated.PredictServiceRequest;
 import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.revised.RunModeController;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.task.ComputableCache;
 
@@ -158,7 +159,7 @@ implements NSDataProvider
 
 		if (properties.containsKey(XML_REQUEST_KEY) && properties.get(XML_REQUEST_KEY) != null) {
 			log.debug("Request treated as xml request.");
-
+			RunModeController.checkDeprecation();
 			//find the xml request as a property of the request
 			String xmlReq = properties.get(XML_REQUEST_KEY).toString();
 
@@ -202,7 +203,7 @@ implements NSDataProvider
 			throw new RuntimeException("No PredictionContext found for ID " + contextId);
 
 		} else if (properties.containsKey(MODEL_ID) && properties.get(MODEL_ID) != null) {
-
+			RunModeController.checkDeprecation();
 			Long modelId = Long.parseLong(properties.get(MODEL_ID).toString());
 			PredictionContext context = new PredictionContext(modelId, null, Analysis.getDefaultTotalAnalysis(), null, null);
 
@@ -221,7 +222,7 @@ implements NSDataProvider
 
 		} else {
 			log.debug("Request treated as parameter request.");
-
+			RunModeController.checkDeprecation();
 			long modelId = Long.parseLong(properties.get(MODEL_ID_KEY).toString());
 
 			//Build the prediction request
