@@ -9,14 +9,9 @@
 		</reachGroup>
 	</adjustmentGroups>
 	<analysis>
-		<select>
-			<dataSeries per="area">incremental</dataSeries>
-			<aggFunction per="area">avg</aggFunction>
-			<analyticFunction partition="HUC6">rank-desc</analyticFunction>
-			<nominalComparison />
-		</select>
-		<limitTo>contributors | terminals | areaOfInterest</limitTo>
-		<groupBy>HUC8</groupBy>
+		<dataSeries>incremental_std_error_estimate</dataSeries>
+		<nominalComparison />
+		<groupBy>huc8</groupBy>
 	</analysis>
 	<terminalReaches />
 	<areaOfInterest />

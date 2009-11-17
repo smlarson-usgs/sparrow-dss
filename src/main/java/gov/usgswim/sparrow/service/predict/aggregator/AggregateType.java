@@ -12,7 +12,8 @@ public enum AggregateType {
 	max,
 	min,
 	none;
-
+//TODO:  This really should be specified in the parse pkg, where all the other domain info is.
+	//And should be part of the Analysis data.
 	public static AggregateType parse(String value) {
 		if (value == null) {
 			return none;

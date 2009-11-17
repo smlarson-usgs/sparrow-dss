@@ -9,7 +9,7 @@ import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.deprecated.PredictParser;
 import gov.usgswim.sparrow.deprecated.PredictService;
 import gov.usgswim.sparrow.deprecated.PredictServiceRequest;
-import gov.usgswim.sparrow.parser.Analysis;
+import gov.usgswim.sparrow.parser.AdvancedAnalysis;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.task.ComputableCache;
@@ -270,7 +270,7 @@ implements NSDataProvider
 	private NSDataSet handleModelIDRequest(Hashtable<?, ?> properties,
 			long startTime, NSDataSet nsData) {
 		Long modelId = Long.parseLong(properties.get(MODEL_ID).toString());
-		PredictionContext context = new PredictionContext(modelId, null, Analysis.getDefaultTotalAnalysis(), null, null);
+		PredictionContext context = new PredictionContext(modelId, null, AdvancedAnalysis.getDefaultTotalAnalysis(), null, null);
 
 		log.debug("MVDP model-id request (map calibrated state).  PC hash = " + context.hashCode());
 

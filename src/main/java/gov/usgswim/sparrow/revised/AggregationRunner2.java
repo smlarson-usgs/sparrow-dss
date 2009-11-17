@@ -246,7 +246,7 @@ public class AggregationRunner2 {
 		HashMap<String, AggregateData> aggregateDataMap = new HashMap<String, AggregateData>();
 		int colCount = dataTable.getColumnCount();
 
-		AggregateType aggFunction = AggregateType.parse(context.getAnalysis().getSelect().getAggFunction());
+		AggregateType aggFunction = AggregateType.parse(context.getAnalysis().getAggFunction());
 		assert(aggFunction != AggregateType.none);
 
 		DataSeriesType dataSeries = context.getAnalysis().getSelect().getDataSeries();

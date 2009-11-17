@@ -16,6 +16,7 @@ import gov.usgswim.sparrow.deprecated.IDByPointComputable;
 import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
 import gov.usgswim.sparrow.domain.SparrowModelImm;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
+import gov.usgswim.sparrow.parser.AdvancedAnalysis;
 import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.AreaOfInterest;
 import gov.usgswim.sparrow.parser.LogicalSet;
@@ -298,7 +299,7 @@ public class SharedApplication  {
 	}
 
 	//Analysis Cache
-	protected Integer putAnalysis(Analysis analysis) {
+	protected Integer putAnalysis(AdvancedAnalysis analysis) {
 		Ehcache c = CacheManager.getInstance().getEhcache(ANALYSES_CACHE);
 		int hash = analysis.hashCode();
 		c.put( new Element(hash, analysis) );

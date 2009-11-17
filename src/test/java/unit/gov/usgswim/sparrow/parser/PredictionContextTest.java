@@ -32,14 +32,14 @@ import junit.framework.TestCase;
  */
 public class PredictionContextTest extends TestCase {
 
-    /** Valid xml string represention of the prediction context. */
+    /** Valid xml string representation of the prediction context. */
     public static final String VALID_FRAGMENT = ""
         + "<PredictionContext "
         + "  xmlns=\"http://www.usgs.gov/sparrow/prediction-schema/v0_2\""
         + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
         + "  model-id=\"22\">"
         + AdjustmentGroupsTest.VALID_FRAGMENT
-        + AnalysisTest.VALID_FRAGMENT
+        + AnalysisTest.VALID_ADV_FRAGMENT_1
         + TerminalReachesTest.VALID_FRAGMENT
         + AreaOfInterestTest.VALID_FRAGMENT
         + "</PredictionContext>"
@@ -51,7 +51,7 @@ public class PredictionContextTest extends TestCase {
     + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
     + "  model-id=\"22\">"
     + AdjustmentGroupsTest.VALID_FRAGMENT
-    + AnalysisTest.VALID_FRAGMENT_BUG_1
+    + AnalysisTest.VALID_ADV_FRAGMENT_BUG_1
     + TerminalReachesTest.VALID_FRAGMENT
     + AreaOfInterestTest.VALID_FRAGMENT
     + "</PredictionContext>"
@@ -72,11 +72,13 @@ public class PredictionContextTest extends TestCase {
 	public static final String PRED_CONTEXT_5 = "/gov/usgswim/sparrow/test/sample/predict-context-5.xml";
 	public static final String PRED_CONTEXT_BUG_1 = "/gov/usgswim/sparrow/test/sample/predict-context-bug_1.xml";
 
-	public static final int PRED_CONTEXT_1_ID = 1804619348;
-	public static final int PRED_CONTEXT_2_ID = 1515045054;
-	public static final int PRED_CONTEXT_3_ID = 1315708392;
-	public static final int PRED_CONTEXT_4_ID = -1347939578;
+	public static final int PRED_CONTEXT_1_ID = 1016602416;
+	public static final int PRED_CONTEXT_2_ID = -1958009077;
+	public static final int PRED_CONTEXT_3_ID = -1967709720;
+	public static final int PRED_CONTEXT_4_ID = 982821702;
 
+
+	
 	public static String contextIDRegex = "context-id=['\"]([-0-9]+)['\"]";
 	public static Pattern patt = Pattern.compile(contextIDRegex);
 
@@ -103,6 +105,7 @@ public class PredictionContextTest extends TestCase {
 	public void testPredictContext1() throws Exception {
 		PredictContextRequest contextReq = buildPredictContext1();	//Build a context from a canned file
 
+		assertTrue(contextReq.getPredictionContext().isValid());
 		String response = pipeDispatch(contextReq, new PredictContextPipeline());
 		assertEquals("PredictionContext parsing has likely changed.", PRED_CONTEXT_1_ID, Integer.parseInt(getAttributeValue(response, "context-id")));
 	}
@@ -110,6 +113,7 @@ public class PredictionContextTest extends TestCase {
 	public void testPredictContext2() throws Exception {
 		PredictContextRequest contextReq = buildPredictContext2();	//Build a context from a canned file
 
+		assertTrue(contextReq.getPredictionContext().isValid());
 		String response = pipeDispatch(contextReq, new PredictContextPipeline());
 		assertEquals("PredictionContext parsing has likely changed.", PRED_CONTEXT_2_ID, Integer.parseInt(getAttributeValue(response, "context-id")));
 	}
@@ -132,7 +136,7 @@ public class PredictionContextTest extends TestCase {
 		PredictionContext context = buildContext(VALID_FRAGMENT_BUG_1);
 		
 		assertEquals(DataSeriesType.incremental_std_error_estimate, 
-				context.getAnalysis().getSelect().getDataSeries());
+				context.getAnalysis().getDataSeries());
 		assertTrue(context.isValid());
 		
 	}
@@ -177,7 +181,7 @@ public class PredictionContextTest extends TestCase {
 	        + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
 	        + "  model-id=\"22\">"
 			//+ getAdjustmentGroups()
-			+ AnalysisTest.VALID_FRAGMENT
+			+ AnalysisTest.VALID_ADV_FRAGMENT_1
 			+ TerminalReachesTest.VALID_FRAGMENT
 			+ AreaOfInterestTest.VALID_FRAGMENT
 			+ "</PredictionContext>";
@@ -196,7 +200,7 @@ public class PredictionContextTest extends TestCase {
             + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
             + "  model-id=\"22\">"
 			+ AdjustmentGroupsTest.VALID_FRAGMENT
-			+ AnalysisTest.VALID_FRAGMENT
+			+ AnalysisTest.VALID_ADV_FRAGMENT_1
 			//+ TerminalReachesTest.VALID_FRAGMENT
 			+ AreaOfInterestTest.VALID_FRAGMENT
 			+ "</PredictionContext>";
@@ -215,7 +219,7 @@ public class PredictionContextTest extends TestCase {
             + "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""
             + "  model-id=\"22\">"
 			+ AdjustmentGroupsTest.VALID_FRAGMENT
-			+ AnalysisTest.VALID_FRAGMENT
+			+ AnalysisTest.VALID_ADV_FRAGMENT_1
 			+ TerminalReachesTest.VALID_FRAGMENT
 			//+ AreaOfInterestTest.VALID_FRAGMENT
 			+ "</PredictionContext>";

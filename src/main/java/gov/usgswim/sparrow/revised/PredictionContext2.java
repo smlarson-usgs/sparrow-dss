@@ -9,7 +9,7 @@ import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.StdErrorEstTable;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
-import gov.usgswim.sparrow.parser.Analysis;
+import gov.usgswim.sparrow.parser.AdvancedAnalysis;
 import gov.usgswim.sparrow.parser.AreaOfInterest;
 import gov.usgswim.sparrow.parser.ComparisonType;
 import gov.usgswim.sparrow.parser.DataSeriesType;
@@ -58,7 +58,7 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 	private Integer areaOfInterestID;
 
 	private transient AdjustmentGroups adjustmentGroups;
-	private transient Analysis analysis;
+	private transient AdvancedAnalysis analysis;
 	private transient TerminalReaches terminalReaches;
 	private transient AreaOfInterest areaOfInterest;
 
@@ -81,7 +81,7 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 	 * @param aoi area of interest
 	 * @return
 	 */
-	public PredictionContext2(Long modelID, AdjustmentGroups ag, Analysis anal,
+	public PredictionContext2(Long modelID, AdjustmentGroups ag, AdvancedAnalysis anal,
 			TerminalReaches tr, AreaOfInterest aoi) {
 
 		this.modelID = modelID;
@@ -146,8 +146,8 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 					} else if (TerminalReaches.isTargetMatch(localName)) {
 						this.terminalReaches = TerminalReaches.parseStream(in, modelID);
 						terminalReachesID = (terminalReaches == null)? null: terminalReaches.getId();
-					} else if (Analysis.isTargetMatch(localName)) {
-						this.analysis = Analysis.parseStream(in);
+					} else if (AdvancedAnalysis.isTargetMatch(localName)) {
+						this.analysis = AdvancedAnalysis.parseStream(in);
 						analysisID = (analysis == null)? null: analysis.getId();
 					} else if (AreaOfInterest.isTargetMatch(localName)) {
 						this.areaOfInterest = AreaOfInterest.parseStream(in, modelID);
@@ -421,7 +421,7 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 	 * @return
 	 * @throws CloneNotSupportedException
 	 */
-	public PredictionContext2 clone(AdjustmentGroups ag, Analysis anal, TerminalReaches tr, AreaOfInterest aoi) throws CloneNotSupportedException {
+	public PredictionContext2 clone(AdjustmentGroups ag, AdvancedAnalysis anal, TerminalReaches tr, AreaOfInterest aoi) throws CloneNotSupportedException {
 		PredictionContext2 myClone = this.clone();
 		// TODO [IK] log error conditions appropriately. Return null if error?
 		// TODO [eric] Determine error behavior. Suggest return null if error.
@@ -471,7 +471,7 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 	// =================
 	// GETTERS & SETTERS
 	// =================
-	public Analysis getAnalysis() {
+	public AdvancedAnalysis getAnalysis() {
 		return analysis;
 	}
 

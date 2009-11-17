@@ -137,8 +137,11 @@ public class PredictionContext implements XMLStreamParserComponent {
 					} else if (TerminalReaches.isTargetMatch(localName)) {
 						this.terminalReaches = TerminalReaches.parseStream(in, modelID);
 						terminalReachesID = (terminalReaches == null)? null: terminalReaches.getId();
-					} else if (Analysis.isTargetMatch(localName)) {
-						this.analysis = Analysis.parseStream(in);
+					} else if (AdvancedAnalysis.isTargetMatch(localName)) {
+						this.analysis = AdvancedAnalysis.parseStream(in);
+						analysisID = (analysis == null)? null: analysis.getId();
+					} else if (BasicAnalysis.isTargetMatch(localName)) {
+						this.analysis = BasicAnalysis.parseStream(in);
 						analysisID = (analysis == null)? null: analysis.getId();
 					} else if (AreaOfInterest.isTargetMatch(localName)) {
 						this.areaOfInterest = AreaOfInterest.parseStream(in, modelID);
@@ -184,10 +187,11 @@ public class PredictionContext implements XMLStreamParserComponent {
 		int dataColIndex = -1;	//The index of the data column
 		DataTable dataTable = null;		//The table containing the data column
 
-		Select select = getAnalysis().getSelect();
-		DataSeriesType type = select.getDataSeries();
+		DataSeriesType type = analysis.getDataSeries();
+		Integer source = analysis.getSource();
+		
+
 		// Handled DataSeriesType: total, incremental, incremental_yield, total_concentration, source_values
-		Integer source = select.getSource();
 		if (type.isDeliveryBased()) {
 			//avoid cache for now
 			// PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
@@ -315,7 +319,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 						// Check for aggregation and run if necessary
 						adjSrc = aggregateIfNecessary(adjSrc);
 
-						if (select.getNominalComparison().isNone()) {
+						if (analysis.getNominalComparison().isNone()) {
 
 							dataTable = adjSrc;
 
@@ -326,7 +330,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 
 							//working w/ either a percent or absolute comparison
 							dataTable = new DataTableCompare(nomSrcData, adjSrc,
-									select.getNominalComparison().equals(ComparisonType.absolute));
+									analysis.getNominalComparison().equals(ComparisonType.absolute));
 						}
 					} else {
 						throw new Exception("The data series 'source_value' requires a source ID to be specified.");

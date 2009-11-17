@@ -1,167 +1,85 @@
 package gov.usgswim.sparrow.parser;
 
-import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
-import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.sparrow.util.ParserHelper;
 
+import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
- * Top-level child of PredictionContext.
- *
- * This child is unique, b/c it does NOT include the modelID, which all the other
- * top-level-children do.  This is because Analysis is (almost) sharable between
- * models, so it seems reasonable to allow users to reuse a type of analysis
- * across models.  The exception to this is that source numbers vary b/t models,
- * so there is the possibility of an error, either logical or runtime.
+ * A super class for Analysis to allow Advanced and Basic types of Analysis.
+ * 
  * @author eeverman
  *
  */
-public class Analysis implements XMLStreamParserComponent {
-
-	private static final long serialVersionUID = 6047046812440162869L;
-	private static final String GROUP_BY_CHILD = "groupBy";
-	private static final String LIMIT_TO_CHILD = "limitTo";
-	public static final String MAIN_ELEMENT_NAME = "analysis";
-
-	public static final Analysis DEFAULT_TOTAL_INSTANCE = new Analysis(new Select(DataSeriesType.total));
-
-	// =============================
-	// PUBLIC STATIC UTILITY METHODS
-	// =============================
-	public static boolean isTargetMatch(String tagName) {
-		return MAIN_ELEMENT_NAME.equals(tagName);
-	}
-
-
-	public Analysis() {};
-
-	public Analysis(Select select) {
-		this.select = select;
-	};
-
-	public static Analysis getDefaultTotalAnalysis() {
-		return DEFAULT_TOTAL_INSTANCE;
-	}
-
-	public static Analysis parseStream(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
-		Analysis anal = new Analysis();
-		return anal.parse(in);
-	}
-
-	// ===============
-	// INSTANCE FIELDS
-	// ===============
-	private String groupBy;
-	private String limitTo;
-	private Integer id;
-	private Select select;
-
-	// ================
-	// INSTANCE METHODS
-	// ================
-	public Analysis parse(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
-		String localName = in.getLocalName();
-		int eventCode = in.getEventType();
-		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) :
-			this.getClass().getSimpleName()
-			+ " can only parse " + MAIN_ELEMENT_NAME + " elements.";
-		boolean isStarted = false;
-
-		while (in.hasNext()) {
-			if (isStarted) {
-				// Don't advance past the first element.
-				eventCode = in.next();
-			} else {
-				isStarted = true;
-			}
-
-			// Main event loop -- parse until corresponding target end tag encountered.
-			switch (eventCode) {
-				case START_ELEMENT:
-					localName = in.getLocalName();
-					if (MAIN_ELEMENT_NAME.equals(localName)) {
-						id = ParserHelper.parseAttribAsInt(in, XMLStreamParserComponent.ID_ATTR, false);
-					} else if ("select".equals(localName)) {
-						Select selectElement = new Select();
-						selectElement.parse(in);
-						this.select = selectElement;
-					} else if (LIMIT_TO_CHILD.equals(localName)) {
-						limitTo = ParserHelper.parseSimpleElementValue(in);
-					} else if (GROUP_BY_CHILD.equals(localName)) {
-						groupBy = ParserHelper.parseSimpleElementValue(in);
-					} else {
-						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
-					}
-					break;
-				case END_ELEMENT:
-					localName = in.getLocalName();
-					if (MAIN_ELEMENT_NAME.equals(localName)) {
-						checkValidity();
-						return this; // we're done
-					}
-					// otherwise, error
-					throw new XMLParseValidationException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);
-					//break;
-			}
-		}
-		throw new XMLParseValidationException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
-	}
-
-	public String getParseTarget() {
-		return MAIN_ELEMENT_NAME;
-	}
-
-	public boolean isParseTarget(String name) {
-		return MAIN_ELEMENT_NAME.equals(name);
-	}
+public abstract class Analysis implements XMLStreamParserComponent {
 
 	/**
-	 * Consider two instances the same if they have the same calculated hashcodes
+	 * Serialization ID
 	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof Analysis) {
-			return obj.hashCode() == hashCode();
+	private static final long serialVersionUID = 1L;
+	
+	
+	protected String groupBy;
+	protected String aggFunction;
+
+	public Analysis() {
+		super();
+	}
+	
+	/**
+	 * Utility method to parse Analysis instances w/o needing to known what type
+	 * they are.  Primarily used for testing.
+	 * @param in
+	 * @return
+	 * @throws XMLStreamException
+	 * @throws XMLParseValidationException
+	 */
+	public static Analysis parseAnyAnalysis(XMLStreamReader in)
+			throws XMLStreamException, XMLParseValidationException {
+		
+		String localName = in.getLocalName();
+		
+		if (AdvancedAnalysis.isTargetMatch(localName)) {
+			AdvancedAnalysis a = new AdvancedAnalysis();
+			try {
+				a.parse(in);
+			} catch (XMLParseValidationException e) {
+				//Continue, ignoring a validation exception
+			}
+			return a;
+		} else if (BasicAnalysis.isTargetMatch(localName)) {
+			BasicAnalysis a = new BasicAnalysis();
+			try {
+				a.parse(in);
+			} catch (XMLParseValidationException e) {
+				//Continue, ignoring a validation exception
+			}
+			return a;
+		} else {
+			throw new XMLParseValidationException("tag <" + localName + "> not a valid type of analysis.");
 		}
-		return false;
+		
 	}
+	
+	/**
+	 * Parses the GroupBy Element.
+	 * Does no checking to determine if the correct element was passed and
+	 * does not advance the parsing.
+	 * @param in
+	 * @throws XMLStreamException
+	 */
+	protected void parseGroupBy(XMLStreamReader in) throws XMLStreamException {
+		aggFunction = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "aggFunction");
+		groupBy = ParserHelper.parseSimpleElementValue(in);
+		
 
-	@Override
-	public synchronized int hashCode() {
-		if (id == null) {
-			int hash = new HashCodeBuilder(137, 1729).
-			append(groupBy).
-			append(limitTo).
-			append(select).
-			toHashCode();
-
-			id = hash;
-		}
-		return id;
 	}
-
-	@Override
-	public Analysis clone() throws CloneNotSupportedException {
-		Analysis myClone = new Analysis();
-		myClone.groupBy = groupBy;
-		myClone.limitTo = limitTo;
-		myClone.select = select;
-		return myClone;
-	}
-
-	public void checkValidity() throws XMLParseValidationException {
-		if (!isValid()) {
-			// throw a custom error message depending on the error
-			throw new XMLParseValidationException(MAIN_ELEMENT_NAME + " is not valid");
-		}
-	}
-
-	public boolean isValid() {
-		return true;
+	
+	public Integer getId() {
+		return hashCode();
 	}
 
 	public boolean isAggregated() {
@@ -176,29 +94,97 @@ public class Analysis implements XMLStreamParserComponent {
 	 *         {@code Analysis} object requires a weighting, {@code false}
 	 *         otherwise.
 	 */
-	public boolean isWeighted() {
-		return getSelect().isWeighted();
-	}
+	public abstract boolean isWeighted();
 
 	public boolean hasGroupBy() {
 		return groupBy != null && groupBy.length() > 0;
 	}
-	// =================
-	// GETTERS & SETTERS
-	// =================
-	public String getLimitTo(){
-		return limitTo;
-	}
 
-	public String getGroupBy(){
+	/**
+	 * Returns the grouping level, typically a HUC.
+	 * TODO: THis should really be an enum w/ a NONE default value.
+	 * @return
+	 */
+	public String getGroupBy() {
 		return groupBy;
 	}
-
-	public Select getSelect(){
-		return select;
+	
+	/**
+	 * The function (min, max, etc) by which grouping is done.
+	 * Should be one of type AggregateType, but that is currently in another
+	 * package.
+	 * @return
+	 */
+	public String getAggFunction() {
+		return aggFunction;
 	}
-
-	public Integer getId() {
-		return hashCode();
+	
+	@Override
+	public void checkValidity() throws XMLParseValidationException {
+		if (groupBy != null && aggFunction == null) {
+			throw new XMLParseValidationException(
+					"An aggFunction attribute must be specified if a groupBy" +
+					"  element is present.");
+		}
 	}
+	
+	@Override
+	public boolean isValid() {
+		try {
+			checkValidity();
+			return true;
+		} catch (XMLParseValidationException e) {
+			return false;
+		}
+		
+	}
+	
+	/**
+	 * Creates a unique and repeatable hash for just the fields within the
+	 * Analysis class.  Subclasses should either include these fields or
+	 * include the hash value from this function.
+	 */
+	@Override
+	public synchronized int hashCode() {
+		int hash = new HashCodeBuilder(137, 1729).
+		append(groupBy).
+		append(aggFunction).
+		toHashCode();
+		return hash;
+	}
+	
+	/**
+	 * The dataseries this Analysis is based on.
+	 * The AdvancedAnalysis will nest the actual dataseries father down the
+	 * hierarchy while the BasicAnalysis stores it directly, so this API
+	 * unifies them here.
+	 * @return A DataSeriesType
+	 */
+	abstract public DataSeriesType getDataSeries();
+	
+	/**
+	 * The source this Analysis is based on.
+	 * The AdvancedAnalysis will nest the actual source father down the
+	 * hierarchy while the BasicAnalysis stores it directly, so this API
+	 * unifies them here.
+	 * @return An integer indicating which source (if any) the data is based on.
+	 * Null if not applicable.
+	 */
+	abstract public Integer getSource();
+	
+	/**
+	 * The comparison type used in this Analysis.
+	 * The AdvancedAnalysis will nest the actual comparison father down the
+	 * hierarchy while the BasicAnalysis stores it directly, so this API
+	 * unifies them here.
+	 * @return A ComparisonType indicating the type of comparison.
+	 * Null is never returned - type None is returned if not specified.
+	 */
+	abstract public ComparisonType getNominalComparison();
+	
+	@Override
+	abstract public Analysis clone() throws CloneNotSupportedException;
+
+
+
 }

@@ -11,10 +11,8 @@
 		</reachGroup>
 	</adjustmentGroups>
 	<analysis>
-		<select>
-			<dataSeries source="3">source_value</dataSeries>
-			<nominalComparison type="percent" />
-		</select>
+		<dataSeries source="3">source_value</dataSeries>
+		<nominalComparison>percent</nominalComparison>
 	</analysis>
 	<terminalReaches />
 	<areaOfInterest />

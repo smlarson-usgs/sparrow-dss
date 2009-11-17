@@ -285,7 +285,6 @@ public class DeliveryRunner implements Runner {
 
 		{
 			Analysis analysis = context.getAnalysis();
-			DataSeriesType dataSeries = analysis.getSelect().getDataSeries();
 			if (analysis.isAggregated()) {
 				AggregationRunner aggRunner = new AggregationRunner(context);
 				deliveryResult = aggRunner.doAggregation(deliveryResult);
@@ -314,7 +313,7 @@ public class DeliveryRunner implements Runner {
 
 		// Perform transformations called for by the Analysis section
 		Analysis analysis = context.getAnalysis();
-		DataSeriesType dataSeries = analysis.getSelect().getDataSeries();
+		DataSeriesType dataSeries = analysis.getDataSeries();
 		if (analysis.isAggregated()) {
 			adjResult = aggRunner.doAggregation(adjResult);
 			// Aggregation can handle weighting underneath
@@ -323,7 +322,7 @@ public class DeliveryRunner implements Runner {
 		}
 
 		PredictResult result = null;
-		switch (analysis.getSelect().getNominalComparison()) {
+		switch (analysis.getNominalComparison()) {
 			case none: {
 				result = adjResult;
 				break;

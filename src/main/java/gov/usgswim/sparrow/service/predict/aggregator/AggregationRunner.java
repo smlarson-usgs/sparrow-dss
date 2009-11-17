@@ -93,7 +93,7 @@ public class AggregationRunner {
 
 
 			// Add a table-level filter if we're dealing with a weighted result
-			DataSeriesType dataSeries = context.getAnalysis().getSelect().getDataSeries();
+			DataSeriesType dataSeries = context.getAnalysis().getDataSeries();
 			Map<String, String> properties = new HashMap<String, String>();
 			if (dataSeries == DataSeriesType.incremental_yield) {
 				properties.put("filterColumnType", ValueType.total.name());
@@ -245,10 +245,10 @@ public class AggregationRunner {
 		HashMap<String, AggregateData> aggregateDataMap = new HashMap<String, AggregateData>();
 		int colCount = dataTable.getColumnCount();
 
-		AggregateType aggFunction = AggregateType.parse(context.getAnalysis().getSelect().getAggFunction());
+		AggregateType aggFunction = AggregateType.parse(context.getAnalysis().getAggFunction());
 		assert(aggFunction != AggregateType.none);
 
-		DataSeriesType dataSeries = context.getAnalysis().getSelect().getDataSeries();
+		DataSeriesType dataSeries = context.getAnalysis().getDataSeries();
 		String weightColumn = null;
 		{	// Determine the correct weight to pull
 			if (weight && context.getAnalysis().isWeighted()) {

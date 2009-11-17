@@ -19,7 +19,6 @@ import gov.usgswim.sparrow.datatable.PredictResultCompare;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.navigation.NavigationUtils;
 import gov.usgswim.sparrow.parser.Analysis;
-import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.WeightRunner;
@@ -102,7 +101,9 @@ public class DeliveryRunner2 implements Runner {
 	public double[] calculateNodeTransportFraction(Set<Long> targetReaches) {
 		// TODO cache the result, based on modelID,
 		int maxReachRow = NavigationUtils.findMaxReachRow(targetReaches, topo);
-		PredictResultStructure prs = PredictResultStructure.analyzePredictResultStructure(maxReachRow, sourceValues);
+		
+		//TODO:  Commented out by ee - never used.
+		//PredictResultStructure prs = PredictResultStructure.analyzePredictResultStructure(maxReachRow, sourceValues);
 
 		// Reach incrementals do not affect delivery coefficient
 
@@ -290,7 +291,6 @@ public class DeliveryRunner2 implements Runner {
 
 		{
 			Analysis analysis = context.getAnalysis();
-			DataSeriesType dataSeries = analysis.getSelect().getDataSeries();
 			if (analysis.isAggregated()) {
 				AggregationRunner2 aggRunner = new AggregationRunner2(context);
 				deliveryResult = aggRunner.doAggregation(deliveryResult);
@@ -311,15 +311,16 @@ public class DeliveryRunner2 implements Runner {
 
 		// apply delivery fraction weights
 		assert(context.getTerminalReaches() != null) : "shouldn't reach this point if no terminal reaches";
-		Set<Long> targetReaches = context.getTerminalReaches().asSet();
-		double[] nodeTransportFraction = calculateNodeTransportFraction(targetReaches);
-		DataTable reachTransportFraction = calculateReachTransportFractionDataTable(targetReaches);
-		PredictResultImm deliveryResult = calculateDeliveredFlux(targetReaches, adjResult, nodeTransportFraction, reachTransportFraction);
+		
+		//TODO:  ee commented these out - never used.
+		//Set<Long> targetReaches = context.getTerminalReaches().asSet();
+		//double[] nodeTransportFraction = calculateNodeTransportFraction(targetReaches);
+		//DataTable reachTransportFraction = calculateReachTransportFractionDataTable(targetReaches);
+		//PredictResultImm deliveryResult = calculateDeliveredFlux(targetReaches, adjResult, nodeTransportFraction, reachTransportFraction);
 
 
 		// Perform transformations called for by the Analysis section
 		Analysis analysis = context.getAnalysis();
-		DataSeriesType dataSeries = analysis.getSelect().getDataSeries();
 		if (analysis.isAggregated()) {
 			adjResult = aggRunner.doAggregation(adjResult);
 			// Aggregation can handle weighting underneath
@@ -328,7 +329,7 @@ public class DeliveryRunner2 implements Runner {
 		}
 
 		PredictResult result = null;
-		switch (analysis.getSelect().getNominalComparison()) {
+		switch (analysis.getNominalComparison()) {
 			case none: {
 				result = adjResult;
 				break;

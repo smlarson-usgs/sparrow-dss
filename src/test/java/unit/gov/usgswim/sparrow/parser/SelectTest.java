@@ -23,9 +23,8 @@ public class SelectTest extends TestCase {
 	public void testParse1() throws XMLStreamException, XMLParseValidationException {
 		String testRequest = "<select>"
 			+ "		<dataSeries source=\"1\" per=\"area\">incremental</dataSeries>"
-			+ "		<aggFunction per=\"area\">avg</aggFunction>"
 			+ "		<analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
-			+ "		<nominalComparison type=\"percent\"/>"
+			+ "		<nominalComparison>percent</nominalComparison>"
 			+ "	</select>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 		Select select = new Select();
@@ -35,8 +34,6 @@ public class SelectTest extends TestCase {
 		assertEquals(new Integer(1), select.getSource());
 		assertEquals("area", select.getDataSeriesPer());
 		assertEquals(DataSeriesType.incremental, select.getDataSeries());
-		assertEquals("area", select.getAggFunctionPer());
-		assertEquals("avg", select.getAggFunction());
 		assertEquals("HUC6", select.getPartition());
 		assertEquals("rank-desc", select.getAnalyticFunction());
 		assertEquals(ComparisonType.percent, select.getNominalComparison());
@@ -49,9 +46,8 @@ public class SelectTest extends TestCase {
 	public void testParse2() throws XMLStreamException, XMLParseValidationException {
 		String testRequest = "<select>"
 			+ "		<dataSeries source=\"1\" per=\"area\">incremental</dataSeries>"
-			+ "		<aggFunction per=\"area\">avg</aggFunction>"
 			+ "		<analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
-			+ "		<nominalComparison type=\"absolute\"/>"
+			+ "		<nominalComparison>absolute</nominalComparison>"
 			+ "	</select>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 		Select select = new Select();
@@ -66,9 +62,8 @@ public class SelectTest extends TestCase {
 	public void testParse3() throws XMLStreamException, XMLParseValidationException {
 		String testRequest = "<select>"
 			+ "		<dataSeries source=\"1\" per=\"area\">incremental</dataSeries>"
-			+ "		<aggFunction per=\"area\">avg</aggFunction>"
 			+ "		<analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
-			+ "		<nominalComparison type=\"none\"/>"
+			+ "		<nominalComparison>none</nominalComparison>"
 			+ "	</select>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 		Select select = new Select();
@@ -82,7 +77,6 @@ public class SelectTest extends TestCase {
 	public void testParse4() throws XMLStreamException, XMLParseValidationException {
 		String testRequest = "<select>"
 			+ "		<dataSeries source=\"1\" per=\"area\">incremental</dataSeries>"
-			+ "		<aggFunction per=\"area\">avg</aggFunction>"
 			+ "		<analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
 			+ "	</select>";
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
@@ -101,9 +95,8 @@ public class SelectTest extends TestCase {
 		{
 			String testRequest = "<select>"
 				+ "		<dataSeries per=\"area\">incremental</dataSeries>"
-				+ "		<aggFunction per=\"area\">avg</aggFunction>"
 				+ "		<analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
-				+ "		<nominalComparison type=\"percent\"/>"
+				+ "		<nominalComparison>percent</nominalComparison>"
 				+ "	</select>";
 			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 			Select select = new Select();
@@ -118,9 +111,8 @@ public class SelectTest extends TestCase {
 		{
 			String testRequest = "<select>"
 				+ "		<dataSeries per=\"area\">source_value</dataSeries>"
-				+ "		<aggFunction per=\"area\">avg</aggFunction>"
 				+ "		<analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
-				+ "		<nominalComparison type=\"percent\"/>"
+				+ "		<nominalComparison>percent</nominalComparison>"
 				+ "	</select>";
 			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 			Select select = new Select();
@@ -140,7 +132,7 @@ public class SelectTest extends TestCase {
 		{
 			String testRequest = "<select>"
 				+ "		<dataSeries>total_std_error_estimate</dataSeries>"
-				+ "		<nominalComparison type=\"percent\"/>"
+				+ "		<nominalComparison>percent</nominalComparison>"
 				+ "	</select>";
 			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 			Select select = new Select();
@@ -155,7 +147,7 @@ public class SelectTest extends TestCase {
 		{
 			String testRequest = "<select>"
 				+ "		<dataSeries source=\"1\">total_std_error_estimate</dataSeries>"
-				+ "		<nominalComparison type=\"percent\"/>"
+				+ "		<nominalComparison>percent</nominalComparison>"
 				+ "	</select>";
 			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 			Select select = new Select();
@@ -170,8 +162,8 @@ public class SelectTest extends TestCase {
 		{
 			String testRequest = "<select>"
 				+ "		<dataSeries source=\"1\">total_std_error_estimate</dataSeries>"
-				+ "		<aggFunction per=\"area\">avg</aggFunction>"
-				+ "		<nominalComparison type=\"percent\"/>"
+				+ "		<analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
+				+ "		<nominalComparison>percent</nominalComparison>"
 				+ "	</select>";
 			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 			Select select = new Select();
@@ -180,7 +172,7 @@ public class SelectTest extends TestCase {
 			
 			try {
 				select.parse(reader);
-				fail("This was supposed to throw a parse exception.");
+				fail("This was supposed to throw a parse exception - analytics not allowed.");
 			} catch (XMLParseValidationException e) {
 				//expected
 			}
@@ -192,7 +184,7 @@ public class SelectTest extends TestCase {
 		{
 			String testRequest = "<select>"
 				+ "		<dataSeries>incremental_std_error_estimate</dataSeries>"
-				+ "		<nominalComparison type=\"percent\"/>"
+				+ "		<nominalComparison>percent</nominalComparison>"
 				+ "	</select>";
 			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 			Select select = new Select();
@@ -206,7 +198,7 @@ public class SelectTest extends TestCase {
 		{
 			String testRequest = "<select>"
 				+ "		<dataSeries source=\"1\">incremental_std_error_estimate</dataSeries>"
-				+ "		<nominalComparison type=\"percent\"/>"
+				+ "		<nominalComparison>percent</nominalComparison>"
 				+ "	</select>";
 			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 			Select select = new Select();
@@ -222,7 +214,7 @@ public class SelectTest extends TestCase {
 			String testRequest = "<select>"
 				+ "		<dataSeries source=\"1\">incremental_std_error_estimate</dataSeries>"
 				+ "		<analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
-				+ "		<nominalComparison type=\"percent\"/>"
+				+ "		<nominalComparison>percent</nominalComparison>"
 				+ "	</select>";
 			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 			Select select = new Select();

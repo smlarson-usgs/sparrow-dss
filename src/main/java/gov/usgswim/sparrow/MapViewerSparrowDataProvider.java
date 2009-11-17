@@ -5,7 +5,7 @@ import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.sparrow.deprecated.PredictParser;
 import gov.usgswim.sparrow.deprecated.PredictService;
 import gov.usgswim.sparrow.deprecated.PredictServiceRequest;
-import gov.usgswim.sparrow.parser.Analysis;
+import gov.usgswim.sparrow.parser.AdvancedAnalysis;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.revised.RunModeController;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -205,7 +205,7 @@ implements NSDataProvider
 		} else if (properties.containsKey(MODEL_ID) && properties.get(MODEL_ID) != null) {
 			RunModeController.checkDeprecation();
 			Long modelId = Long.parseLong(properties.get(MODEL_ID).toString());
-			PredictionContext context = new PredictionContext(modelId, null, Analysis.getDefaultTotalAnalysis(), null, null);
+			PredictionContext context = new PredictionContext(modelId, null, AdvancedAnalysis.getDefaultTotalAnalysis(), null, null);
 
 			log.debug("MVDP model-id request (map calibrated state).  PC hash = " + context.hashCode());
 

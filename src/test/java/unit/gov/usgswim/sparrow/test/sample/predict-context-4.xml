@@ -54,8 +54,6 @@ Test the logical set and huc criteria
 			</individualGroup>
 		</adjustmentGroups>
 		<analysis>
-			<select>
-				<dataSeries>incremental</dataSeries>
-			</select>
+			<dataSeries>incremental</dataSeries>
 		</analysis>
 </PredictionContext>

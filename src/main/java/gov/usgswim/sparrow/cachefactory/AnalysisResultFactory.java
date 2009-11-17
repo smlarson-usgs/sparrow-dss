@@ -59,7 +59,7 @@ public class AnalysisResultFactory implements CacheEntryFactory {
 		}
 
 		PredictResult result = null;
-		switch (analysis.getSelect().getNominalComparison()) {
+		switch (analysis.getNominalComparison()) {
 			case none: {
 				result = adjResult;
 				break;

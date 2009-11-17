@@ -29,8 +29,6 @@ public class Select implements XMLStreamParserComponent {
 	private DataSeriesType dataSeries;
 	private Integer source;
 	private String dataSeriesPer;
-	private String aggFunctionPer;
-	private String aggFunction;
 	private String partition;
 	private String analyticFunction;
 	private ComparisonType nominalComparison = ComparisonType.none;
@@ -72,21 +70,19 @@ public class Select implements XMLStreamParserComponent {
 						String dataSeriesString = ParserHelper.parseSimpleElementValue(in);
 						dataSeries = (dataSeriesString != null)?
 								Enum.valueOf(DataSeriesType.class, dataSeriesString): null;
-					} else if ("aggFunction".equals(localName)) {
-						aggFunctionPer = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "per");
-						aggFunction = ParserHelper.parseSimpleElementValue(in);
 					} else if ("analyticFunction".equals(localName)) {
 						partition = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "partition");
 						analyticFunction = ParserHelper.parseSimpleElementValue(in);
 					} else if ("nominalComparison".equals(localName)) {
-						String type = ParserHelper.parseAttribAsString(in, "type", ComparisonType.none.name());
+						String type = ParserHelper.parseSimpleElementValue(in);
 
-						try {
-							nominalComparison = ComparisonType.valueOf(type);
-						} catch (IllegalArgumentException e) {
-							throw new XMLParseValidationException("The nominalComparison type '" + type + "' is unrecognized");
+						if (type != null) {
+							try {
+								nominalComparison = ComparisonType.valueOf(type);
+							} catch (IllegalArgumentException e) {
+								throw new XMLParseValidationException("The nominalComparison type '" + type + "' is unrecognized");
+							}
 						}
-						ParserHelper.ignoreElement(in);
 					} else {
 						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
 					}
@@ -129,13 +125,6 @@ public class Select implements XMLStreamParserComponent {
 		
 		//Some series do not allow any type of aggregate or post analysis.
 		//Error estimates are one example.
-		if (dataSeries.isAnalysisDisallowed() && aggFunction != null) {
-			throw new XMLParseValidationException(
-				"The dataSeries '" + dataSeries + "' does not allow analysis like aggregation.");
-		}
-		
-		//Some series do not allow any type of aggregate or post analysis.
-		//Error estimates are one example.
 		if (dataSeries.isAnalysisDisallowed() && analyticFunction != null) {
 			throw new XMLParseValidationException(
 				"The dataSeries '" + dataSeries + "' does not allow analytic functions.");
@@ -152,7 +141,7 @@ public class Select implements XMLStreamParserComponent {
 		}
 	}
 
-	private boolean isDataSeriesSourceNeeded() {
+	public boolean isDataSeriesSourceNeeded() {
 		return !(dataSeries.isSourceBasedOnly() && source == null);
 	}
 
@@ -186,8 +175,6 @@ public class Select implements XMLStreamParserComponent {
 
 		hash.append(source);
 		hash.append(dataSeriesPer);
-		hash.append(aggFunctionPer);
-		hash.append(aggFunction);
 		hash.append(partition);
 		hash.append(analyticFunction);
 		hash.append(nominalComparison.ordinal());	//never null, and must be repeatable (thus ordinal)
@@ -201,14 +188,6 @@ public class Select implements XMLStreamParserComponent {
 	// =================
 	public String getParseTarget() {
 		return MAIN_ELEMENT_NAME;
-	}
-
-	public String getAggFunction() {
-		return aggFunction;
-	}
-
-	public String getAggFunctionPer() {
-		return aggFunctionPer;
 	}
 
 	public String getAnalyticFunction() {

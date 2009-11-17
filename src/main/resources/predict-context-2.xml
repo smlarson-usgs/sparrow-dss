@@ -3,7 +3,7 @@
   xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	model-id="22">
-		<adjustmentGroups conflicts="accumulate | supersede">
+		<adjustmentGroups conflicts="accumulate">
 			<reachGroup enabled="true" name="Northern Indiana Plants">
 				<desc>Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project</desc>
 				<notes>
@@ -80,15 +80,11 @@
 			</individualGroup>
 
 		</adjustmentGroups>
-		<advancedAnalysis>
-			<select>
-				<dataSeries source="1" per="area">incremental</dataSeries>
-				<analyticFunction partition="huc6">rank-desc</analyticFunction>
-				<nominalComparison>absolute</nominalComparison>
-			</select>
-			<limitTo>contributors | terminals | areaOfInterest</limitTo>
-			<groupBy aggFunction="avg">huc8</groupBy>
-		</advancedAnalysis>
+		<analysis>
+			<dataSeries source="1">incremental</dataSeries>
+			<groupBy>huc8</groupBy>
+			<nominalComparison>absolute</nominalComparison>
+		</analysis>
 
 		<terminalReaches>
 			<reach id="2345642"></reach>

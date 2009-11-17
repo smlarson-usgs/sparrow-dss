@@ -46,7 +46,7 @@ public class WeightRunner {
             Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             rs = st.executeQuery(query);
 
-            DataSeriesType dataSeries = context.getAnalysis().getSelect().getDataSeries();
+            DataSeriesType dataSeries = context.getAnalysis().getDataSeries();
             String weightColName = null;
             switch (dataSeries) {
             	case incremental_yield:
