@@ -9,16 +9,16 @@ import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.StdErrorEstTable;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
+import gov.usgswim.sparrow.parser.Analysis;
+import gov.usgswim.sparrow.parser.BasicAnalysis;
 import gov.usgswim.sparrow.parser.AdvancedAnalysis;
 import gov.usgswim.sparrow.parser.AreaOfInterest;
 import gov.usgswim.sparrow.parser.ComparisonType;
 import gov.usgswim.sparrow.parser.DataSeriesType;
-import gov.usgswim.sparrow.parser.Select;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
 
 import java.util.Set;
 
@@ -58,7 +58,7 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 	private Integer areaOfInterestID;
 
 	private transient AdjustmentGroups adjustmentGroups;
-	private transient AdvancedAnalysis analysis;
+	private transient Analysis analysis;
 	private transient TerminalReaches terminalReaches;
 	private transient AreaOfInterest areaOfInterest;
 
@@ -81,7 +81,7 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 	 * @param aoi area of interest
 	 * @return
 	 */
-	public PredictionContext2(Long modelID, AdjustmentGroups ag, AdvancedAnalysis anal,
+	public PredictionContext2(Long modelID, AdjustmentGroups ag, Analysis anal,
 			TerminalReaches tr, AreaOfInterest aoi) {
 
 		this.modelID = modelID;
@@ -149,6 +149,9 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 					} else if (AdvancedAnalysis.isTargetMatch(localName)) {
 						this.analysis = AdvancedAnalysis.parseStream(in);
 						analysisID = (analysis == null)? null: analysis.getId();
+					} else if (BasicAnalysis.isTargetMatch(localName)) {
+						this.analysis = BasicAnalysis.parseStream(in);
+						analysisID = (analysis == null)? null: analysis.getId();
 					} else if (AreaOfInterest.isTargetMatch(localName)) {
 						this.areaOfInterest = AreaOfInterest.parseStream(in, modelID);
 						areaOfInterestID = (areaOfInterest == null)? null: areaOfInterest.getId();
@@ -193,10 +196,11 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 		int dataColIndex = -1;	//The index of the data column
 		DataTable dataTable = null;		//The table containing the data column
 
-		Select select = getAnalysis().getSelect();
-		DataSeriesType type = select.getDataSeries();
+		DataSeriesType type = analysis.getDataSeries();
+		Integer source = analysis.getSource();
+		
+
 		// Handled DataSeriesType: total, incremental, incremental_yield, total_concentration, source_values
-		Integer source = select.getSource();
 		if (type.isDeliveryBased()) {
 			//avoid cache for now
 			// PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
@@ -255,6 +259,8 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 
 			//We will try to get result-based series out of the analysis cache
 			// PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
+			//TODO:  ee - I think you are trying to skip the cache here.
+			//Preferable to just use the analysis cache.
 			PredictResult result = CacheAvoider.avoidAnalysisCache(this);
 
 			UncertaintySeries impliedUncertaintySeries = null;
@@ -421,7 +427,7 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 	 * @return
 	 * @throws CloneNotSupportedException
 	 */
-	public PredictionContext2 clone(AdjustmentGroups ag, AdvancedAnalysis anal, TerminalReaches tr, AreaOfInterest aoi) throws CloneNotSupportedException {
+	public PredictionContext2 clone(AdjustmentGroups ag, Analysis anal, TerminalReaches tr, AreaOfInterest aoi) throws CloneNotSupportedException {
 		PredictionContext2 myClone = this.clone();
 		// TODO [IK] log error conditions appropriately. Return null if error?
 		// TODO [eric] Determine error behavior. Suggest return null if error.
@@ -457,7 +463,7 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 		return true;
 	}
 	// ===========
-	// KEY METHODS
+	// KEY METHODS - USED TO RETRIEVE CACHE-KEY VERSIONS W/ ONLY DATA RELATED TO A SPECIFIC CACHE
 	// ===========
 	public PredictionContext2 getTargetContextOnly() {
 		return new PredictionContext2(modelID, null, null, terminalReaches, null);
@@ -471,7 +477,7 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 	// =================
 	// GETTERS & SETTERS
 	// =================
-	public AdvancedAnalysis getAnalysis() {
+	public Analysis getAnalysis() {
 		return analysis;
 	}
 

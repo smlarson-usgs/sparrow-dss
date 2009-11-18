@@ -47,6 +47,8 @@ public class WeightRunner {
             rs = st.executeQuery(query);
 
             DataSeriesType dataSeries = context.getAnalysis().getDataSeries();
+            //TODO:  This should really come off from a flag on the analysis
+            //which indicates weighting by area or flow.
             String weightColName = null;
             switch (dataSeries) {
             	case incremental_yield:
