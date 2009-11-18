@@ -1,116 +1,30 @@
 package gov.usgswim.sparrow;
 
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.service.AbstractHttpRequestParser;
-import gov.usgswim.sparrow.deprecated.PredictParser;
-import gov.usgswim.sparrow.deprecated.PredictService;
-import gov.usgswim.sparrow.deprecated.PredictServiceRequest;
-import gov.usgswim.sparrow.parser.AdvancedAnalysis;
 import gov.usgswim.sparrow.parser.PredictionContext;
-import gov.usgswim.sparrow.revised.RunModeController;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.task.ComputableCache;
 
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Properties;
-
-import javax.xml.stream.XMLStreamException;
 
 import oracle.mapviewer.share.Field;
 import oracle.mapviewer.share.ext.NSDataProvider;
 import oracle.mapviewer.share.ext.NSDataSet;
 import oracle.mapviewer.share.ext.NSRow;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-public class MapViewerSparrowDataProvider
-implements NSDataProvider
-{
+public class MapViewerSparrowDataProvider implements NSDataProvider {
 	protected static Logger log =
 		Logger.getLogger(MapViewerSparrowDataProvider.class); //logging for this class
 
 
-	PredictService predictService;
-	AbstractHttpRequestParser<PredictServiceRequest> predictParser;
-
-
 	//Request parameter key constants
-
-	/**
-	 * If a non-empty value is passed for this key value, all other parameters
-	 * are ignored and the contents are assumed to be an xml request of type
-	 * http://www.usgs.gov/sparrow/prediction-response/v0_1
-	 */
-	public static final String XML_REQUEST_KEY = "xml";
-
-	/**
-	 * The db unique id of the Sparrow model.  Required.
-	 */
-	public static final String MODEL_ID_KEY = "model_id";
-
-	/**
-	 * A string containing a delimited list, in pairs, of the source srcId and the
-	 * decimal percentage to adjust it.  It is an error to provide a string that
-	 * contains anything other then numbers and delimiters, or that contains
-	 * an odd number of values.
-	 *
-	 * Example:  "1,.25,4,2,8,0"
-	 *
-	 * In this example:
-	 * <ul>
-	 * <li>Source #1 has its value multiplied by .25
-	 * <li>Source #4 has its value multiplied by 2
-	 * <li>Source #8 has its value multiplied by 0 (effectively turning it off)
-	 * <li>ALL other sources not listed as assumed to be unchanged
-	 * (that is, they are multiplied by 1).
-	 * <ul>
-	 */
-	public static final String GROSS_SOURCE_ADJUST_KEY = "gross_src_adj";
-
-	/**
-	 * Determines what data is returned.  Valid values are the
-	 * RESULT_MODE_VALUE_XXX constants.
-	 */
-	public static final String RESULT_MODE_KEY = "result_mode";
-
-	/**
-	 * Determines which column to map.
-	 */
-	public static final String DATA_SERIES = "dataSeries";
-
-	/**
-	 * A possible value for the RESULT_MODE_KEY parameter.
-	 * This mode returns the new calculated value.
-	 */
-	public static final String RESULT_MODE_VALUE = "value";
-
-	/**
-	 * A possible value for the RESULT_MODE_KEY parameter.
-	 * This mode returns the percentage change from the original model predicted value.
-	 * The value is returned a whole percentage (ie, if the value doubled, 100 would be returned)
-	 */
-	public static final String RESULT_MODE_PERC_CHG = "perc_chg";
-
-	/**
-	 * A possible value for the RESULT_MODE_KEY parameter.
-	 * This mode returns the percentage change from the original model predicted value.
-	 * The value is returned a decimal percentage (ie, if the value doubled, 1 would be returned)
-	 */
-	public static final String RESULT_MODE_DEC_PERC_CHG = "dec_perc_chg";
-
 	public static final String CONTEXT_ID = "context-id";
 
-	/**
-	 * The model id.  This is an alternate to CONTEXT_ID when a context-id is not
-	 * available.
-	 */
-	public static final String MODEL_ID = "model-id";
-
+	
 	public MapViewerSparrowDataProvider() {
 	}
-
-
 
 	/**
 	 * Called once at creation time.
@@ -119,15 +33,15 @@ implements NSDataProvider
 	 */
 	@Override
 	public boolean init(Properties properties) {
-		predictService = new PredictService();
-		predictParser = new PredictParser();
-
 		return true;
 	}
-
+	
 	/**
-	 * TODO [ik] figure out if this method is ever called. If not, we can remove
-	 * deprecated methods called by it.
+	 * This is the 10G Interface method.  Starting w/ 11G, only the
+	 * <code>buildDataSet(Hashtable)</code> signature is supported.
+	 * 
+	 * For now we can keep... at least until we upgrade the library to 11G.
+	 * @deprecated
 	 */
 	@Override
 	public NSDataSet buildDataSet(java.util.Properties params) {
@@ -142,148 +56,83 @@ implements NSDataProvider
 
 
 	/**
-	 * Called for each request.
-	 * @param properties
-	 * @return
+	 * This method creates and returns an instance of NSDataSet which contains
+	 * all the Non-Spatial attribute data produced by this provider, based on
+	 * the given parameters for a specific incoming map request.
+	 * 
+	 * [Documentation taken directly from Oracle javadocs]
+	 * 
+	 * Unlike the properties passed into the init() method which are global ones,
+	 * the parameters here are specific to one map request. Note that starting
+	 * with 11g, the params has changed from a Properties class to the Hashtable
+	 * class. This change enables MapViewer to pass two context objects:
+	 * HttpServletRequest and HttpSession (if one exists) to your implementation.
+	 * These two objects are accessed through the key "mv-oms-request" and
+	 * "mv-http-session" respectively. All other NSDP parameters embedded in a
+	 *  map request can still be accessed from the params object using the same
+	 *  key by calling the get(key) method of the hashtable. You may however
+	 *  need to cast the return object into String type for these regular NSDP
+	 *  parameters.
+	 *  
+	 *  MapViewer calls this method when processing any map request that
+	 *  contains a Non-spatial data provider tag that refrences this
+	 *  implementation. As such this method needs to be reentrant.
+	 *  
+	 * @param params - to be used when creating a data set.
+	 * @return an instance of NSDataSet; null if failed.
 	 */
-	public NSDataSet buildDataSet(Hashtable<?,?> properties) {
+	public NSDataSet buildDataSet(Hashtable<?,?> params) {
 		long startTime = System.currentTimeMillis();	//Time started
-
-		//All request info is stored in this class
-		PredictServiceRequest svsRequest;
-		PredictRequest predictRequest;
-
-		DataTable topoInfo = null;	// row id numbers for matching the data to the geometry
-		DataTable result = null;	// The prediction result (raw data)
-		NSDataSet nsData = null;	// The Mapviewer data format for the data
-
-		if (properties.containsKey(XML_REQUEST_KEY) && properties.get(XML_REQUEST_KEY) != null) {
-			log.debug("Request treated as xml request.");
-			RunModeController.checkDeprecation();
-			//find the xml request as a property of the request
-			String xmlReq = properties.get(XML_REQUEST_KEY).toString();
-
+		
+		String idString = (String) params.get(CONTEXT_ID);
+		idString = StringUtils.trimToNull(idString);
+		
+		if (idString != null) {
+			log.debug("MapViewerSparrowDataProvider request received w/ context-id = '"
+					+ idString + "'");
+			
+			Integer contextId;	//The context indetifier to locate the context.
+			
 			try {
-				svsRequest = predictParser.parse(xmlReq);
-
-				//Make this default to TOTAL instead of all
-				if (svsRequest.getDataSeries() == PredictServiceRequest.DataSeries.ALL) {
-					svsRequest.setDataSeries(PredictServiceRequest.DataSeries.TOTAL);
-				}
-
-				predictRequest = svsRequest.getPredictRequest();
-			} catch (XMLStreamException e) {
-				throw new RuntimeException("Error reading the passed XML data", e);
-			} catch (Exception e) {
-				throw new RuntimeException("Error while handling request", e);
+				contextId = Integer.parseInt(idString);
+			} catch (NumberFormatException e1) {
+				log.error("MapViewerSparrowDataProvider could not convert passed " +
+				"context-id '" + idString + "' to an integer.", e1);
+				return null;
 			}
-
-			log.debug("Using Dataseries: " + svsRequest.getDataSeries() + " & result mode: " + svsRequest.getPredictType());
-
-		} else if (properties.containsKey(CONTEXT_ID) && properties.get(CONTEXT_ID) != null) {
-			log.debug("Main case: Request treated as a context-id request.");
-
-			Integer contextId = Integer.parseInt(properties.get(CONTEXT_ID).toString());
+			
 			PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
 
 			if (context != null) {
 
+				NSDataSet nsData = null;	// The Mapviewer data format for the data
+				
 				try {
 					nsData = copyToNSDataSet(context);
-				} catch (Exception e) {
-					e.printStackTrace();
-					throw new RuntimeException(e);
+				} catch (Exception e1) {
+					log.error("MapViewerSparrowDataProvider errored while copying " +
+							"data for context-id '" + idString, e1);
+					return null;
 				}
 
-				log.debug("MVSparrowDataProvider done for model #" + context.getModelID() + " (" + nsData.size() + " rows) Time: " + (System.currentTimeMillis() - startTime) + "ms");
+				log.info("MapViewerSparrowDataProvider done for model #" +
+						context.getModelID() + " (" + nsData.size() + " rows) Time: "
+						+ (System.currentTimeMillis() - startTime) + "ms");
 
 				return nsData;
 
+			} else {
+				log.info("MapViewerSparrowDataProvider could not find a " +
+						"context for id: " + contextId + ".  It may have expired.");
+				return null;
 			}
-			throw new RuntimeException("No PredictionContext found for ID " + contextId);
-
-		} else if (properties.containsKey(MODEL_ID) && properties.get(MODEL_ID) != null) {
-			RunModeController.checkDeprecation();
-			Long modelId = Long.parseLong(properties.get(MODEL_ID).toString());
-			PredictionContext context = new PredictionContext(modelId, null, AdvancedAnalysis.getDefaultTotalAnalysis(), null, null);
-
-			log.debug("MVDP model-id request (map calibrated state).  PC hash = " + context.hashCode());
-
-			try {
-				nsData = copyToNSDataSet(context);
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new RuntimeException(e);
-			}
-
-			log.debug("MVSparrowDataProvider done for model #" + context.getModelID() + " (" + nsData.size() + " rows) Time: " + (System.currentTimeMillis() - startTime) + "ms");
-
-			return nsData;
 
 		} else {
-			log.debug("Request treated as parameter request.");
-			RunModeController.checkDeprecation();
-			long modelId = Long.parseLong(properties.get(MODEL_ID_KEY).toString());
+			log.error("MapViewerSparrowDataProvider request received w/o" +
+					" a context-id parameter.");
 
-			//Build the prediction request
-			AdjustmentSetBuilder adjBuilder = new AdjustmentSetBuilder();
-			List<Adjustment> adjs = adjBuilder.parseGrossAdj((String) properties.get(GROSS_SOURCE_ADJUST_KEY));
-			for (Adjustment a : adjs) {
-				adjBuilder.addAdjustment(a);
-			}
-
-			predictRequest = new PredictRequest(modelId, adjBuilder.toImmutable());
-
-			//Build the service request
-			svsRequest = new PredictServiceRequest();
-			svsRequest.setPredictRequest(predictRequest);
-
-			//this should work, but we are trying to be compatable w/ existing app
-			//svsRequest.setPredictType(PredictServiceRequest.PredictType.find((String) properties.get(RESULT_MODE_KEY)) );
-			//
-			//Set resultType using old style parameters
-			String predType = (String) properties.get(RESULT_MODE_KEY);
-			if (RESULT_MODE_VALUE.equals(predType)) {
-				svsRequest.setPredictType(PredictServiceRequest.PredictType.VALUES);
-			} else if (RESULT_MODE_PERC_CHG.equals(predType)) {
-				svsRequest.setPredictType(PredictServiceRequest.PredictType.PERC_CHG_FROM_NOMINAL);
-			} else {
-				//default
-				svsRequest.setPredictType(PredictServiceRequest.PredictType.PERC_CHG_FROM_NOMINAL);
-			}
-
-
-			//new version still compatible w/ old here.
-			svsRequest.setDataSeries(PredictServiceRequest.DataSeries.find((String) properties.get(DATA_SERIES)));
-
-
-			//Make this default to TOTAL instead of all
-			if (svsRequest.getDataSeries() == gov.usgswim.sparrow.deprecated.PredictServiceRequest.DataSeries.ALL) {
-				svsRequest.setDataSeries(gov.usgswim.sparrow.deprecated.PredictServiceRequest.DataSeries.TOTAL);
-			}
-			log.debug("Using Dataseries: " + svsRequest.getDataSeries() + " & result mode: " + svsRequest.getPredictType());
-
-		}
-
-
-
-		//RUN THE SERVICE REQUEST
-		result = predictService.runPrediction(svsRequest);
-
-
-		try {
-			ComputableCache<Long, PredictData> pdCache = SharedApplication.getInstance().getPredictDatasetCache();
-			topoInfo = pdCache.compute(predictRequest.getModelId()).getTopo();
-		} catch (Exception e) {
-			log.error("No way to indicate this error to mapViewer, so returning null", e);
 			return null;
 		}
-
-		nsData = copyToNSDataSet(result, topoInfo, svsRequest.getDataSeries());
-
-		log.debug("MVSparrowDataProvider done for model #" + predictRequest + " (" + nsData.size() + " rows) Time: " + (System.currentTimeMillis() - startTime) + "ms");
-
-		return nsData;
 
 	}
 
@@ -332,31 +181,6 @@ implements NSDataProvider
 		return new NSDataSet(nsRows);
 	}
 
-	@Deprecated
-	protected NSDataSet copyToNSDataSet(DataTable result, DataTable topoInfo, PredictServiceRequest.DataSeries column) {
-		int rowCount = result.getRowCount();
-		NSRow[] nsRows = new NSRow[rowCount];
-
-		final int dataColIndex = 0;	//we always place the data in the first column
-
-		for (int r=0; r < rowCount; r++) {
-			Field[] row = new Field[2];	//ID
-			row[0] = new Field(topoInfo.getIdForRow(r));
-			//row[0] = new Field(sysInfo.getInt(r, 0));
-			row[0].setKey(true);
-
-			row[1] = new Field(result.getDouble(r, dataColIndex));	//Value
-			//row[1].setLabelText(true);
-
-			NSRow nsRow = new NSRow(row);
-			nsRows[r] = nsRow;
-		}
-
-		if (log.isDebugEnabled()) debugNSData(nsRows);
-
-		return new NSDataSet(nsRows);
-	}
-
 	protected void debugNSData(NSRow[] nsRows) {
 		int maxRow = 10;
 		if (maxRow > nsRows.length) maxRow = nsRows.length;
@@ -379,9 +203,7 @@ implements NSDataProvider
 	 */
 	@Override
 	public void destroy() {
-		predictService.shutDown();
-		predictService = null;
-		predictParser = null;
+		//Nothing to do
 	}
 
 
