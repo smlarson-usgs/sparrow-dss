@@ -82,7 +82,7 @@
 		</adjustmentGroups>
 		<analysis>
 			<dataSeries source="1">incremental</dataSeries>
-			<groupBy>huc8</groupBy>
+			<groupBy aggFunction="avg">huc8</groupBy>
 			<nominalComparison>absolute</nominalComparison>
 		</analysis>
 
