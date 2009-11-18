@@ -58,7 +58,6 @@ public class BasicAnalysis extends Analysis {
 	private Integer id;
 	private DataSeriesType dataSeries;
 	private Integer source;
-	private ComparisonType nominalComparison = ComparisonType.none;
 
 	// ================
 	// INSTANCE METHODS
@@ -94,15 +93,7 @@ public class BasicAnalysis extends Analysis {
 					} else if (GROUP_BY_CHILD.equals(localName)) {
 						parseGroupBy(in);
 					} else if ("nominalComparison".equals(localName)) {
-						String type = ParserHelper.parseSimpleElementValue(in);
-
-						if (type != null) {
-							try {
-								nominalComparison = ComparisonType.valueOf(type);
-							} catch (IllegalArgumentException e) {
-								throw new XMLParseValidationException("The nominalComparison type '" + type + "' is unrecognized");
-							}
-						}
+						parseNominalComparison(in);
 					} else {
 						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
 					}
@@ -160,7 +151,6 @@ public class BasicAnalysis extends Analysis {
 			}
 			
 			hash.append(source);
-			hash.append(nominalComparison.ordinal());
 			hash.append(super.hashCode());
 			
 			id = hash.toHashCode();
@@ -187,11 +177,6 @@ public class BasicAnalysis extends Analysis {
 	@Override
 	public Integer getSource() {
 		return source;
-	}
-	
-	@Override
-	public ComparisonType getNominalComparison() {
-		return nominalComparison;
 	}
 
 }

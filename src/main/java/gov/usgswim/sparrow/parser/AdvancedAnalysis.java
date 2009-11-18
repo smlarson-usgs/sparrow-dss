@@ -23,7 +23,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  */
 public class AdvancedAnalysis extends Analysis {
 
-	private static final long serialVersionUID = 6047046812440162869L;
+	private static final long serialVersionUID = 1L;
 	private static final String GROUP_BY_CHILD = "groupBy";
 	private static final String LIMIT_TO_CHILD = "limitTo";
 	public static final String MAIN_ELEMENT_NAME = "advancedAnalysis";
@@ -90,6 +90,8 @@ public class AdvancedAnalysis extends Analysis {
 						limitTo = ParserHelper.parseSimpleElementValue(in);
 					} else if (GROUP_BY_CHILD.equals(localName)) {
 						parseGroupBy(in);
+					} else if ("nominalComparison".equals(localName)) {
+						parseNominalComparison(in);
 					} else {
 						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
 					}
@@ -151,6 +153,7 @@ public class AdvancedAnalysis extends Analysis {
 		AdvancedAnalysis myClone = new AdvancedAnalysis();
 		myClone.groupBy = groupBy;
 		myClone.aggFunction = aggFunction;
+		myClone.nominalComparison = nominalComparison;
 		myClone.limitTo = limitTo;
 		myClone.select = select;
 		return myClone;
@@ -193,9 +196,4 @@ public class AdvancedAnalysis extends Analysis {
 		return select.getSource();
 	}
 
-
-	@Override
-	public ComparisonType getNominalComparison() {
-		return select.getNominalComparison();
-	}
 }

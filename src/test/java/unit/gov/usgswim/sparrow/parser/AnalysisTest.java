@@ -21,10 +21,10 @@ public class AnalysisTest extends TestCase {
         + "  <select>"
         + "    <dataSeries source=\"1\" per=\"area\">incremental</dataSeries>"
         + "    <analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
-        + "    <nominalComparison>percent</nominalComparison>"
         + "  </select>"
         + "  <limitTo>contributors</limitTo>"
         + "  <groupBy aggFunction=\"avg\">huc8</groupBy>"
+        + "  <nominalComparison>percent</nominalComparison>"
         + "</advancedAnalysis>"
         ;
     
@@ -33,7 +33,6 @@ public class AnalysisTest extends TestCase {
         + "  <select>"
         + "    <dataSeries source=\"1\" per=\"area\">incremental</dataSeries>"
         + "    <analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
-        + "    <nominalComparison>percent</nominalComparison>"
         + "  </select>"
         + "  <limitTo>contributors</limitTo>"
         + "  <groupBy/>"
@@ -45,10 +44,10 @@ public class AnalysisTest extends TestCase {
         + "  <select>"
         + "    <dataSeries source=\"1\" per=\"area\">incremental</dataSeries>"
         + "    <analyticFunction partition=\"HUC6\">rank-desc</analyticFunction>"
-        + "    <nominalComparison>percent</nominalComparison>"
         + "  </select>"
         + "  <limitTo>contributors</limitTo>"
         + "  <groupBy>huc8</groupBy>"
+        + "  <nominalComparison></nominalComparison>"
         + "</advancedAnalysis>"
         ;
     
@@ -56,9 +55,9 @@ public class AnalysisTest extends TestCase {
         "<advancedAnalysis>" +
 	        "<select>" +
 		        "<dataSeries>incremental_std_error_estimate</dataSeries>" +
-		        "<nominalComparison type=\"none\"></nominalComparison>" +
 	        "</select>" +
 	        "<groupBy></groupBy>" +
+	        "<nominalComparison>none</nominalComparison>" +
         "</advancedAnalysis>";
     public static final String VALID_BASIC_FRAGMENT_1 = ""
 	    + "<analysis>"
@@ -94,6 +93,7 @@ public class AnalysisTest extends TestCase {
 		assertEquals("contributors", advAnal.getLimitTo());
 		assertEquals("huc8", anal.getGroupBy());
 		assertEquals("avg", anal.getAggFunction());
+		assertEquals(ComparisonType.percent, anal.getNominalComparison());
 		assertTrue(anal.isValid());
 		
 		anal = buildTestInstance(VALID_ADV_FRAGMENT_2);
@@ -102,6 +102,7 @@ public class AnalysisTest extends TestCase {
 		assertEquals("contributors", advAnal.getLimitTo());
 		assertNull(anal.getGroupBy());
 		assertNull(anal.getAggFunction());
+		assertEquals(ComparisonType.none, anal.getNominalComparison());
 		assertTrue(anal.isValid());
 		
 		anal = buildTestInstance(INVALID_ADV_FRAGMENT_1);
@@ -110,6 +111,7 @@ public class AnalysisTest extends TestCase {
 		assertEquals("contributors", advAnal.getLimitTo());
 		assertEquals("huc8", anal.getGroupBy());
 		assertNull(anal.getAggFunction());
+		assertEquals(ComparisonType.none, anal.getNominalComparison());
 		assertFalse(anal.isValid());
 	}
 	
@@ -121,6 +123,7 @@ public class AnalysisTest extends TestCase {
 		assertEquals(DataSeriesType.incremental_std_error_estimate,  advAnal.getSelect().getDataSeries());
 		assertEquals(DataSeriesType.incremental_std_error_estimate,  anal.getDataSeries());
 		assertNull(anal.getGroupBy());
+		assertEquals(ComparisonType.none, anal.getNominalComparison());
 		assertTrue(anal.isValid());
 
 	}

@@ -31,7 +31,6 @@ public class Select implements XMLStreamParserComponent {
 	private String dataSeriesPer;
 	private String partition;
 	private String analyticFunction;
-	private ComparisonType nominalComparison = ComparisonType.none;
 
 	public Select() {};
 
@@ -73,16 +72,6 @@ public class Select implements XMLStreamParserComponent {
 					} else if ("analyticFunction".equals(localName)) {
 						partition = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "partition");
 						analyticFunction = ParserHelper.parseSimpleElementValue(in);
-					} else if ("nominalComparison".equals(localName)) {
-						String type = ParserHelper.parseSimpleElementValue(in);
-
-						if (type != null) {
-							try {
-								nominalComparison = ComparisonType.valueOf(type);
-							} catch (IllegalArgumentException e) {
-								throw new XMLParseValidationException("The nominalComparison type '" + type + "' is unrecognized");
-							}
-						}
 					} else {
 						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
 					}
@@ -177,7 +166,6 @@ public class Select implements XMLStreamParserComponent {
 		hash.append(dataSeriesPer);
 		hash.append(partition);
 		hash.append(analyticFunction);
-		hash.append(nominalComparison.ordinal());	//never null, and must be repeatable (thus ordinal)
 
 		return hash.toHashCode();
 
@@ -200,10 +188,6 @@ public class Select implements XMLStreamParserComponent {
 
 	public String getDataSeriesPer() {
 		return dataSeriesPer;
-	}
-
-	public ComparisonType getNominalComparison() {
-		return nominalComparison;
 	}
 
 	public String getPartition() {

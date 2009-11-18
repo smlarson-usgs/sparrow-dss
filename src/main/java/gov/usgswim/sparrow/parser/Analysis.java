@@ -24,6 +24,7 @@ public abstract class Analysis implements XMLStreamParserComponent {
 	
 	protected String groupBy;
 	protected String aggFunction;
+	protected ComparisonType nominalComparison = ComparisonType.none;
 
 	public Analysis() {
 		super();
@@ -74,8 +75,25 @@ public abstract class Analysis implements XMLStreamParserComponent {
 	protected void parseGroupBy(XMLStreamReader in) throws XMLStreamException {
 		aggFunction = in.getAttributeValue(XMLConstants.DEFAULT_NS_PREFIX, "aggFunction");
 		groupBy = ParserHelper.parseSimpleElementValue(in);
-		
+	}
+	
+	/**
+	 * Parses the nominalComparison Element.
+	 * Does no checking to determine if the correct element was passed and
+	 * does not advance the parsing.
+	 * @param in
+	 * @throws XMLStreamException
+	 */
+	protected void parseNominalComparison(XMLStreamReader in) throws XMLStreamException {
+		String type = ParserHelper.parseSimpleElementValue(in);
 
+		if (type != null) {
+			try {
+				nominalComparison = ComparisonType.valueOf(type);
+			} catch (IllegalArgumentException e) {
+				throw new XMLStreamException("The nominalComparison type '" + type + "' is unrecognized");
+			}
+		}
 	}
 	
 	public Integer getId() {
@@ -119,6 +137,15 @@ public abstract class Analysis implements XMLStreamParserComponent {
 		return aggFunction;
 	}
 	
+	/**
+	 * The comparison type used in this Analysis.
+	 * @return A ComparisonType indicating the type of comparison.
+	 * Null is never returned - type None is returned if not specified.
+	 */
+	public ComparisonType getNominalComparison() {
+		return nominalComparison;
+	}
+	
 	@Override
 	public void checkValidity() throws XMLParseValidationException {
 		if (groupBy != null && aggFunction == null) {
@@ -149,6 +176,7 @@ public abstract class Analysis implements XMLStreamParserComponent {
 		int hash = new HashCodeBuilder(137, 1729).
 		append(groupBy).
 		append(aggFunction).
+		append(nominalComparison.ordinal()).
 		toHashCode();
 		return hash;
 	}
@@ -171,16 +199,6 @@ public abstract class Analysis implements XMLStreamParserComponent {
 	 * Null if not applicable.
 	 */
 	abstract public Integer getSource();
-	
-	/**
-	 * The comparison type used in this Analysis.
-	 * The AdvancedAnalysis will nest the actual comparison father down the
-	 * hierarchy while the BasicAnalysis stores it directly, so this API
-	 * unifies them here.
-	 * @return A ComparisonType indicating the type of comparison.
-	 * Null is never returned - type None is returned if not specified.
-	 */
-	abstract public ComparisonType getNominalComparison();
 	
 	@Override
 	abstract public Analysis clone() throws CloneNotSupportedException;

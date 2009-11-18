@@ -72,10 +72,10 @@ public class PredictionContextTest extends TestCase {
 	public static final String PRED_CONTEXT_5 = "/gov/usgswim/sparrow/test/sample/predict-context-5.xml";
 	public static final String PRED_CONTEXT_BUG_1 = "/gov/usgswim/sparrow/test/sample/predict-context-bug_1.xml";
 
-	public static final int PRED_CONTEXT_1_ID = 1016602416;
-	public static final int PRED_CONTEXT_2_ID = -1958009077;
-	public static final int PRED_CONTEXT_3_ID = -1967709720;
-	public static final int PRED_CONTEXT_4_ID = 982821702;
+	public static final int PRED_CONTEXT_1_ID = -1585278160;
+	public static final int PRED_CONTEXT_2_ID = -1444522549;
+	public static final int PRED_CONTEXT_3_ID = 613309032;
+	public static final int PRED_CONTEXT_4_ID = -1667982906;
 
 
 	

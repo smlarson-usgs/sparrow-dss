@@ -326,7 +326,7 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 						// Check for aggregation and run if necessary
 						adjSrc = aggregateIfNecessary(adjSrc);
 
-						if (select.getNominalComparison().isNone()) {
+						if (getAnalysis().getNominalComparison().isNone()) {
 
 							dataTable = adjSrc;
 
@@ -337,7 +337,7 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 
 							//working w/ either a percent or absolute comparison
 							dataTable = new DataTableCompare(nomSrcData, adjSrc,
-									select.getNominalComparison().equals(ComparisonType.absolute));
+									getAnalysis().getNominalComparison().equals(ComparisonType.absolute));
 						}
 					} else {
 						throw new Exception("The data series 'source_value' requires a source ID to be specified.");

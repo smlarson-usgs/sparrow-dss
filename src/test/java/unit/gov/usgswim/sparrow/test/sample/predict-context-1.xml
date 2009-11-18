@@ -84,10 +84,10 @@
 			<select>
 				<dataSeries source="1" per="area">incremental</dataSeries>
 				<analyticFunction partition="huc6">rank-desc</analyticFunction>
-				<nominalComparison>absolute</nominalComparison>
 			</select>
 			<limitTo>contributors | terminals | areaOfInterest</limitTo>
 			<groupBy aggFunction="avg">huc8</groupBy>
+			<nominalComparison>absolute</nominalComparison>
 		</advancedAnalysis>
 
 		<terminalReaches>

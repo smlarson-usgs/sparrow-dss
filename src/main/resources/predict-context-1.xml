@@ -82,11 +82,8 @@
 		</adjustmentGroups>
 		<advancedAnalysis>
 			<select>
-
 				<advancedDataSeries source="1" per="area">incremental</advancedDataSeries>
-				<aggFunction per="area">avg</aggFunction> <!-- rank would be rank of the group within the whole -->
-				<analyticFunction partition="HUC6">rank-desc</analyticFunction>
-				
+				<analyticFunction partition="huc6">rank-desc</analyticFunction>
 			</select>
 			<limitTo>contributors | terminals | areaOfInterest</limitTo>
 
