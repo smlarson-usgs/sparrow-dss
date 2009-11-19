@@ -82,7 +82,7 @@
 		</adjustmentGroups>
 		<advancedAnalysis>
 			<select>
-				<advancedDataSeries source="1" per="area">incremental</advancedDataSeries>
+				<advancedDataSeries source="1" per="cumulativeArea" delivery="toTarget" weight="flow" stdErrorEst="stdError">incremental</advancedDataSeries>
 				<analyticFunction partition="huc6">rank-desc</analyticFunction>
 			</select>
 			<limitTo>contributors | terminals | areaOfInterest</limitTo>

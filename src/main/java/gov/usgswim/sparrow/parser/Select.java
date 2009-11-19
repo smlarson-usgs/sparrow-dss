@@ -130,10 +130,6 @@ public class Select implements XMLStreamParserComponent {
 		}
 	}
 
-	public boolean isDataSeriesSourceNeeded() {
-		return !(dataSeries.isSourceBasedOnly() && source == null);
-	}
-
 	public boolean isWeighted() {
 		return getDataSeries().isWeighted();
 	}

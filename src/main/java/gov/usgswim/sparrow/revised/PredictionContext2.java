@@ -255,7 +255,7 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 					throw new Exception("No dataSeries was specified in the analysis section");
 			}
 
-		} else if (type.isResultBased()) {
+		} else if (type.isPredictionBased()) {
 
 			//We will try to get result-based series out of the analysis cache
 			// PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);

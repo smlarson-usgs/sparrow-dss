@@ -176,8 +176,11 @@
 	<xs:complexType name="normalizedDataSeries">
 		<xs:simpleContent>
 			<xs:extension base="v0_2:dataSeriesEnum">
-				<xs:attribute name="per"  type="v0_2:perEnum" use="optional"/>
 				<xs:attribute name="source" type="xs:integer" use="optional"/>
+				<xs:attribute name="per"  type="v0_2:perEnum" use="optional"/>
+				<xs:attribute name="delivery"  type="v0_2:deliveryEnum" use="optional"/>
+				<xs:attribute name="weight"  type="v0_2:perEnum" use="optional"/>
+				<xs:attribute name="stdErrorEst"  type="v0_2:stdErrorEstEnum" use="optional"/>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
@@ -214,8 +217,39 @@
 	<xs:simpleType name="perEnum">
 		<xs:annotation><xs:documentation>This is the intended way to generate yeild or concentration numbers.</xs:documentation></xs:annotation>
 		<xs:restriction base="xs:string">
-			<xs:enumeration value="area"/>
+			<xs:enumeration value="none"/>
+			<xs:enumeration value="cumulativeArea"/>
+			<xs:enumeration value="catchmentArea"/>
 			<xs:enumeration value="flow"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="weightEnum">
+		<xs:annotation><xs:documentation>This is the intended way to generate yeild or concentration numbers.</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="none"/>
+			<xs:enumeration value="cumulativeArea"/>
+			<xs:enumeration value="catchmentArea"/>
+			<xs:enumeration value="flow"/>
+			<xs:enumeration value="deliveryFraction"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="deliveryEnum">
+		<xs:annotation><xs:documentation>This is the intended way to generate yeild or concentration numbers.</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="none"/>
+			<xs:enumeration value="toTarget"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stdErrorEstEnum">
+		<xs:annotation><xs:documentation>This is the intended way to generate yeild or concentration numbers.</xs:documentation></xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="none"/>
+			<xs:enumeration value="stdError"/>
+			<xs:enumeration value="upperBound"/>
+			<xs:enumeration value="lowerBound"/>
 		</xs:restriction>
 	</xs:simpleType>
 	
