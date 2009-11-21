@@ -22,7 +22,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	//Request parameter key constants
 	public static final String CONTEXT_ID = "context-id";
 
-	
+
 	public MapViewerSparrowDataProvider() {
 	}
 
@@ -35,11 +35,11 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	public boolean init(Properties properties) {
 		return true;
 	}
-	
+
 	/**
 	 * This is the 10G Interface method.  Starting w/ 11G, only the
 	 * <code>buildDataSet(Hashtable)</code> signature is supported.
-	 * 
+	 *
 	 * For now we can keep... at least until we upgrade the library to 11G.
 	 * @deprecated
 	 */
@@ -59,9 +59,9 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 * This method creates and returns an instance of NSDataSet which contains
 	 * all the Non-Spatial attribute data produced by this provider, based on
 	 * the given parameters for a specific incoming map request.
-	 * 
+	 *
 	 * [Documentation taken directly from Oracle javadocs]
-	 * 
+	 *
 	 * Unlike the properties passed into the init() method which are global ones,
 	 * the parameters here are specific to one map request. Note that starting
 	 * with 11g, the params has changed from a Properties class to the Hashtable
@@ -73,26 +73,26 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 *  key by calling the get(key) method of the hashtable. You may however
 	 *  need to cast the return object into String type for these regular NSDP
 	 *  parameters.
-	 *  
+	 *
 	 *  MapViewer calls this method when processing any map request that
 	 *  contains a Non-spatial data provider tag that refrences this
 	 *  implementation. As such this method needs to be reentrant.
-	 *  
+	 *
 	 * @param params - to be used when creating a data set.
 	 * @return an instance of NSDataSet; null if failed.
 	 */
 	public NSDataSet buildDataSet(Hashtable<?,?> params) {
 		long startTime = System.currentTimeMillis();	//Time started
-		
+
 		String idString = (String) params.get(CONTEXT_ID);
 		idString = StringUtils.trimToNull(idString);
-		
+
 		if (idString != null) {
 			log.debug("MapViewerSparrowDataProvider request received w/ context-id = '"
 					+ idString + "'");
-			
-			Integer contextId;	//The context indetifier to locate the context.
-			
+
+			Integer contextId;	//The context indentifier to locate the context.
+
 			try {
 				contextId = Integer.parseInt(idString);
 			} catch (NumberFormatException e1) {
@@ -100,13 +100,13 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 				"context-id '" + idString + "' to an integer.", e1);
 				return null;
 			}
-			
+
 			PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
 
 			if (context != null) {
 
 				NSDataSet nsData = null;	// The Mapviewer data format for the data
-				
+
 				try {
 					nsData = copyToNSDataSet(context);
 				} catch (Exception e1) {

@@ -29,7 +29,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/sparrow_core/java_lib/dbunit/usgs-opt/dbunit-2.4.5-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="TOMCAT_HOME/lib/ojdbc6_g.jar"/>
 	<classpathentry kind="lib" path="java_lib/httpunit/usgs_core/httpunit.jar"/>
 	<classpathentry kind="lib" path="java_lib/httpunit/usgs_dep/js-1.6R5.jar"/>
 	<classpathentry kind="lib" path="java_lib/httpunit/usgs_dep/nekohtml-0.9.5.jar"/>
@@ -41,5 +40,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="java_lib/oracle/mapviewer_client/sdoapi.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/ojdbc14.jar"/>
 	<classpathentry kind="output" path="public_html/WEB-INF/classes"/>
 </classpath>
