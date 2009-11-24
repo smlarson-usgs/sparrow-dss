@@ -3,18 +3,13 @@ package gov.usgswim.sparrow.service;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
-import gov.usgswim.sparrow.PredictComputable;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.PredictRequest;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
 import gov.usgswim.sparrow.cachefactory.BinningRequest;
 import gov.usgswim.sparrow.cachefactory.ReachID;
 import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.deprecated.IDByPointComputable;
-import gov.usgswim.sparrow.deprecated.IDByPointRequest_old;
-import gov.usgswim.sparrow.domain.SparrowModelImm;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.AdvancedAnalysis;
 import gov.usgswim.sparrow.parser.Analysis;
@@ -24,9 +19,6 @@ import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
-import gov.usgswim.sparrow.service.model.ModelRequest;
-import gov.usgswim.sparrow.service.predict.PredictDatasetComputable;
-import gov.usgswim.task.ComputableCache;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -59,10 +51,6 @@ public class SharedApplication  {
 	private static final String dsName = "java:comp/env/jdbc/sparrow_dss";
 	private DataSource datasource;
 	private boolean lookupFailed = false;
-	private ComputableCache<PredictRequest, PredictResult> predictResultCache;
-	private ComputableCache<Long, PredictData> predictDatasetCache;	//Long is the SparrowModel ID
-	private ComputableCache<IDByPointRequest_old, DataTable> idByPointCache;
-	private ComputableCache<ModelRequest, SparrowModelImm> modelCache;
 
 	//an ehcache test cache
 	public static final String SERIALIZABLE_CACHE = "PredictContext";
@@ -91,11 +79,6 @@ public class SharedApplication  {
 
 	private SharedApplication() {
 
-		//These are now all deprecated in favor of the EHCache versions
-		predictResultCache = new ComputableCache<PredictRequest, PredictResult>(new PredictComputable(), "Predict Result Cache");
-		predictDatasetCache = new ComputableCache<Long, PredictData>(new PredictDatasetComputable(), "Predict Dataset Cache");
-		idByPointCache = new ComputableCache<IDByPointRequest_old, DataTable>(new IDByPointComputable(), "ID by Point Cache");
-		//modelCache = new ComputableCache<ModelRequest, SparrowModelImm>(new ModelComputable(), "SparrowModel Cache");
 	}
 
 	public static synchronized SharedApplication getInstance() {
@@ -519,23 +502,6 @@ public class SharedApplication  {
         Element e  = (quiet) ? c.getQuiet(aggLevel) : c.get(aggLevel);
         return (e != null)?((AggregateIdLookupKludge) e.getObjectValue()):null;
     }
-
-
-	public ComputableCache<PredictRequest, PredictResult> getPredictResultCache() {
-		return predictResultCache;
-	}
-
-	public ComputableCache<Long, PredictData> getPredictDatasetCache() {
-		return predictDatasetCache;
-	}
-
-	public ComputableCache<IDByPointRequest_old, DataTable> getIdByPointCache() {
-		return idByPointCache;
-	}
-
-	public ComputableCache<ModelRequest, SparrowModelImm> getModelCache() {
-		return modelCache;
-	}
 
 	public static DataTableWritable queryToDataTable(String query) throws NamingException, SQLException {
 		Connection conn = getInstance().getConnection();

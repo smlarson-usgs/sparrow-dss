@@ -1,7 +1,5 @@
 package gov.usgswim.sparrow.parser;
 
-import gov.usgswim.sparrow.deprecated.PredictServiceRequest.DataSeries;
-import gov.usgswim.sparrow.parser.AdvancedAnalysis;
 import gov.usgswim.sparrow.test.TestHelper;
 
 import java.io.StringReader;

@@ -1,19 +1,11 @@
 package gov.usgswim.sparrow.test;
 
-import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
-import gov.usgswim.sparrow.deprecated.PredictParser;
-import gov.usgswim.sparrow.deprecated.PredictService;
-import gov.usgswim.sparrow.deprecated.PredictServiceRequest;
-
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.validation.Schema;
@@ -22,7 +14,6 @@ import javax.xml.validation.Validator;
 
 import junit.framework.TestCase;
 
-import org.codehaus.stax2.XMLInputFactory2;
 import org.junit.Ignore;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -36,36 +27,6 @@ public class PredictSerializerTest extends TestCase {
 	}
 
 	public static void main(String args[]) {
-	}
-
-
-	/**
-	 * Not really much of a test - it just writes the document out to a temp file,
-	 * but it does validate it.
-	 * @throws Exception
-	 */
-	public void testBasicPrediction() throws Exception {
-		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
-		XMLStreamReader xsr = xinFact.createXMLStreamReader(
-				this.getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-0.xml"));
-
-		PredictService service = new PredictService();
-		PredictParser parser = new PredictParser();
-		PredictServiceRequest pr = parser.parse(xsr);
-		File outFile = File.createTempFile("predict-serilizer-test", ".xml");
-		FileOutputStream fos = new FileOutputStream(outFile);
-
-		XMLPassThroughFormatter formatter = new XMLPassThroughFormatter();
-		formatter.dispatch(service.getXMLStreamReader(pr, false), fos);
-
-		fos.close();
-		System.out.println("Result of prediction serialization written to: " + outFile.getAbsolutePath());
-
-		// TODO need to assign schemalocation via resolver
-		// to D:/sparrow-main/classes/gov/usgswim/sparrow/prediction_result.xsd
-		assertTrue(validate(outFile.getAbsolutePath()));
-
-
 	}
 	
 

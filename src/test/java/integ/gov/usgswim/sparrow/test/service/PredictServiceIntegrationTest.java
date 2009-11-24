@@ -2,9 +2,6 @@ package gov.usgswim.sparrow.test.service;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.ComparePercentageView;
-import gov.usgswim.sparrow.deprecated.PredictParser;
-import gov.usgswim.sparrow.deprecated.PredictService;
-import gov.usgswim.sparrow.deprecated.PredictServiceRequest;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.File;
@@ -14,8 +11,6 @@ import java.io.InputStream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.validation.Schema;
@@ -24,7 +19,6 @@ import javax.xml.validation.Validator;
 
 import junit.framework.TestCase;
 
-import org.codehaus.stax2.XMLInputFactory2;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 public class PredictServiceIntegrationTest extends TestCase {
@@ -191,24 +185,6 @@ public class PredictServiceIntegrationTest extends TestCase {
 
 //	}
 
-	public void testBasicPredictionValues() throws Exception {
-
-		XMLInputFactory xinFact = XMLInputFactory2.newInstance();
-		XMLStreamReader xsr = xinFact.createXMLStreamReader(
-				getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-request-0.xml"));
-
-		PredictService service = new PredictService();
-		PredictParser parser = new PredictParser();
-
-		PredictServiceRequest pr = parser.parse(xsr);
-		DataTable result = service.runPrediction(pr);
-		ComparePercentageView comp = buildPredictionComparison(result);
-
-		System.out.println("col 11 error: " + comp.findMaxCompareValue(11)); //11, 13, 15, 16
-
-		System.out.println(comp.findMaxCompareValue());
-		assertEquals("There should be no differences as nothing has changed.", 0d, comp.findMaxCompareValue(), 0.004d);
-	}
 
 //	/**
 //	 * @deprecated out-of-date

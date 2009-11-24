@@ -103,16 +103,6 @@ public class SharedApplicationCachingIntegrationTest extends TestCase {
 //	}
 
 
-	public void testPredictDataCache() throws Exception {
-		SharedApplication sa = SharedApplication.getInstance();
-
-		PredictData pdEHCache = sa.getPredictData(22L);
-		ComputableCache<Long, PredictData> pdCache = sa.getPredictDatasetCache();
-		PredictData pdCustomCache = pdCache.compute(22L);
-
-		doFullCompare(pdCustomCache, pdEHCache);
-
-	}
 
 
 	/**
