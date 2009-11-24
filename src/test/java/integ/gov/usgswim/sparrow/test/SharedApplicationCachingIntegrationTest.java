@@ -122,7 +122,7 @@ public class SharedApplicationCachingIntegrationTest extends TestCase {
 	public void testBasicPredictionValues() throws Exception {
 		SharedApplication sa = SharedApplication.getInstance();
 		CacheManager.getInstance().clearAll();
-		PredictionContext context = new PredictionContext(21L, null, null, null, null);
+		PredictionContext context = new PredictionContext(21L, null, null, null, null, null);
 
 		DataTable result = sa.getPredictResult(context);
 		ComparePercentageView comp = buildPredictionComparison(result);

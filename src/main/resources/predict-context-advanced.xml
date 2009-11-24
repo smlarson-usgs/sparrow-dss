@@ -88,7 +88,6 @@
 			<limitTo>contributors | terminals | areaOfInterest</limitTo>
 
 			<groupBy aggFunction="max">huc8</groupBy>
-			<nominalComparison>absolute</nominalComparison>
 
 		</advancedAnalysis>
 
@@ -103,5 +102,7 @@
 		<areaOfInterest>
 			<logicalSet/>
 		</areaOfInterest>
+	
+		<nominalComparison type="absolute"/>
 
 </PredictionContext>

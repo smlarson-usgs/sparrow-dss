@@ -21,10 +21,11 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
             predictionContext = SharedApplication.getInstance().getPredictionContext(predictionContextID);
         } else {
             // TODO [IK] Ask whether set predictionContext to null later?
-            predictionContext = new PredictionContext(req.getModelID(), null, null, null, null);
+            predictionContext = new PredictionContext(req.getModelID(), null, null, null, null, null);
         }
 
-        DataTable result = SharedApplication.getInstance().getAnalysisResult(predictionContext);
+        DataTable result = SharedApplication.getInstance().
+        	getAnalysisResult(predictionContext.getNoComparisonVersion()).getTable();
         PredictData data = SharedApplication.getInstance().getPredictData(predictionContext.getModelID());
         DataTable src = data.getSrc();
 

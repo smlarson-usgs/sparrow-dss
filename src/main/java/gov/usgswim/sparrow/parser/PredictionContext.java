@@ -18,9 +18,21 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+/**
+ * The entire info needed to run a prediction and analize the results.
+ * 
+ * TODO: Serialization does not seem to be setup correctly.  Weren't the IDs
+ * supposed to allow the main components to be placed in other caches so that
+ * this would only hold onto the IDs?  Seems like that original idea might no
+ * longer be needed, since there is not really anything to associate with those
+ * caches.
+ * 
+ * @author eeverman
+ *
+ */
 public class PredictionContext implements XMLStreamParserComponent {
 
-	private static final long serialVersionUID = -5343918321449313545L;
+	private static final long serialVersionUID = 1L;
 	public static final String MAIN_ELEMENT_NAME = "PredictionContext";
 
 
@@ -47,11 +59,15 @@ public class PredictionContext implements XMLStreamParserComponent {
 	private Integer analysisID;
 	private Integer terminalReachesID;
 	private Integer areaOfInterestID;
+	private Integer comparisonID;
 
 	private transient AdjustmentGroups adjustmentGroups;
 	private transient Analysis analysis;
 	private transient TerminalReaches terminalReaches;
 	private transient AreaOfInterest areaOfInterest;
+	
+	//This is not transient - see no reason to cache this separately.
+	private Comparison comparison;
 
 	// ============
 	// CONSTRUCTORS
@@ -73,7 +89,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	 * @return
 	 */
 	public PredictionContext(Long modelID, AdjustmentGroups ag, Analysis anal,
-			TerminalReaches tr, AreaOfInterest aoi) {
+			TerminalReaches tr, AreaOfInterest aoi, Comparison comp) {
 
 		this.modelID = modelID;
 
@@ -95,6 +111,13 @@ public class PredictionContext implements XMLStreamParserComponent {
 		if (aoi != null) {
 			this.areaOfInterest = aoi;
 			this.areaOfInterestID = aoi.getId();
+		}
+		
+		if (comp != null) {
+			this.comparison = comp;
+			this.comparisonID = comp.getId();
+		} else {
+			this.comparison = NominalComparison.getNoComparisonInstance();
 		}
 
 	}
@@ -146,6 +169,14 @@ public class PredictionContext implements XMLStreamParserComponent {
 					} else if (AreaOfInterest.isTargetMatch(localName)) {
 						this.areaOfInterest = AreaOfInterest.parseStream(in, modelID);
 						areaOfInterestID = (areaOfInterest == null)? null: areaOfInterest.getId();
+					} else if (NominalComparison.isTargetMatch(localName)) {
+						NominalComparison comp = new NominalComparison();
+						this.comparison = comp.parse(in);
+						comparisonID = (comparison == null)? null: comparison.getId();
+					} else if (AdvancedComparison.isTargetMatch(localName)) {
+						AdvancedComparison comp = new AdvancedComparison();
+						this.comparison = comp.parse(in);
+						comparisonID = (comparison == null)? null: comparison.getId();
 					} else {
 						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
 					}
@@ -157,6 +188,12 @@ public class PredictionContext implements XMLStreamParserComponent {
 						// TODO [eric] If the ID is unavailable because this is
 						// a new PContext, when in the object lifecycle should
 						// id be calculated and populated? Here? on cache.put()?
+						
+						if (comparison == null) {
+							comparison = NominalComparison.getNoComparisonInstance();
+							comparisonID = comparison.getId();
+						}
+						
 						checkValidity();
 						return this; // we're done
 					}
@@ -184,164 +221,13 @@ public class PredictionContext implements XMLStreamParserComponent {
 	 * @throws Exception
 	 */
 	public DataColumn getDataColumn() throws Exception {
-		int dataColIndex = -1;	//The index of the data column
-		DataTable dataTable = null;		//The table containing the data column
-
-		DataSeriesType type = analysis.getDataSeries();
-		Integer source = analysis.getSource();
 		
-
-		// Handled DataSeriesType: total, incremental, incremental_yield, total_concentration, source_values
-		if (type.isDeliveryBased()) {
-			//avoid cache for now
-			// PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
-			TerminalReaches tReaches = this.getTerminalReaches();
-
-			assert(tReaches != null) : "client should not submit a delivery request without reaches";
-			Set<Long> targetReaches = tReaches.asSet();
-
-			PredictData nominalPredictData = SharedApplication.getInstance().getPredictData(this.getModelID());
-			DeliveryRunner dr = new DeliveryRunner(nominalPredictData);
-
-			switch(type) {
-				case delivered_fraction:
-					dataColIndex = 0; // only a single column for delivery fraction as it is not source dependent
-					// TODO get from cache
-					dataTable = dr.calculateReachTransportFractionDataTable(targetReaches);
-					break;
-				case total_delivered_flux:
-
-					//PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
-					PredictResult result = dr.calculateDeliveredFlux(this);
-					dataTable = result;
-					// NOTE: must handle aggregation and comparison before this stage
-					// Note that comparison does not make sense for delivered
-					if (source != null) {
-						dataColIndex = result.getTotalColForSrc(source.longValue());
-					} else {
-						dataColIndex = result.getTotalCol();
-					}
-					break;
-				case incremental_delivered_flux:
-					//result = SharedApplication.getInstance().getAnalysisResult(this);
-					result = dr.calculateDeliveredFlux(this);
-					dataTable = result;
-					if (source != null) {
-						dataColIndex = result.getIncrementalColForSrc(source.longValue());
-					} else {
-						dataColIndex = result.getIncrementalCol();
-					}
-					break;
-				case incremental_delivered_yield:
-					//result = SharedApplication.getInstance().getAnalysisResult(this);
-					result = dr.calculateDeliveredFlux(this);
-					dataTable = result;
-					if (source != null) {
-						dataColIndex = result.getIncrementalColForSrc(source.longValue());
-					} else {
-						dataColIndex = result.getIncrementalCol();
-					}
-					break;
-				default:
-					throw new Exception("No dataSeries was specified in the analysis section");
-			}
-
-		} else if (type.isPredictionBased()) {
-
-			//We will try to get result-based series out of the analysis cache
-			PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
-			UncertaintySeries impliedUncertaintySeries = null;
-
-			switch (type) {
-				case total: // intentional fall-through
-				case total_std_error_estimate:
-				case total_concentration:
-				case total_delivered_flux:
-					if (source != null) {
-						dataColIndex = result.getTotalColForSrc(source.longValue());
-						impliedUncertaintySeries = UncertaintySeries.TOTAL_PER_SOURCE;
-					} else {
-						dataColIndex = result.getTotalCol();
-						impliedUncertaintySeries = UncertaintySeries.TOTAL;
-					}
-					break;
-
-				case incremental: // intentional fall-through
-				case incremental_std_error_estimate:
-				case incremental_yield:
-				case incremental_delivered_flux: // here, I think
-				case incremental_delivered_yield: // here, I think
-					if (source != null) {
-						dataColIndex = result.getIncrementalColForSrc(source.longValue());
-						impliedUncertaintySeries = UncertaintySeries.INCREMENTAL_PER_SOURCE;
-					} else {
-						dataColIndex = result.getIncrementalCol();
-						impliedUncertaintySeries = UncertaintySeries.INCREMENTAL;
-					}
-					break;
-				case delivered_fraction:
-					// ignore source
-					break;
-				default:
-					throw new Exception("No dataSeries was specified in the analysis section");
-			}
-
-			if (type.isStandardErrorEstimateBased()) {
-				UncertaintyDataRequest req = new UncertaintyDataRequest(
-						getModelID(), impliedUncertaintySeries, source);
-				UncertaintyData errData = SharedApplication.getInstance().getStandardErrorEstimateData(req);
-
-				//Construct a datatable that calculates the error for each
-				//value on demand.
-				dataTable = new StdErrorEstTable(result, errData,
-						dataColIndex, true, 0d);
-
-			} else {
-				dataTable = result;
-			}
-
-
-
-
+		if (ComparisonType.none.equals(comparison.getComparisonType())) {
+			return SharedApplication.getInstance().getAnalysisResult(this);
 		} else {
-
-			//Get the predict data, which is what this series is based on
-			PredictData nomPredictData = SharedApplication.getInstance().getPredictData(this.getModelID());
-
-			switch (type) {
-				case source_value:
-					if (source != null) {
-
-						dataColIndex = nomPredictData.getSourceIndexForSourceID(source);
-
-						DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(this.getAdjustmentGroups());
-
-						// Check for aggregation and run if necessary
-						adjSrc = aggregateIfNecessary(adjSrc);
-
-						if (analysis.getNominalComparison().isNone()) {
-
-							dataTable = adjSrc;
-
-						} else {
-							DataTable nomSrcData = nomPredictData.getSrc();
-
-							nomSrcData = aggregateIfNecessary(nomSrcData);
-
-							//working w/ either a percent or absolute comparison
-							dataTable = new DataTableCompare(nomSrcData, adjSrc,
-									analysis.getNominalComparison().equals(ComparisonType.absolute));
-						}
-					} else {
-						throw new Exception("The data series 'source_value' requires a source ID to be specified.");
-					}
-					break;
-				default:
-					throw new Exception("No dataSeries was specified in the analysis section");
-			}
+			return SharedApplication.getInstance().getComparisonResult(this);
 		}
-
-		return new DataColumn(dataTable, dataColIndex);
+		
 	}
 
 	private DataTable aggregateIfNecessary(DataTable dt) throws Exception {
@@ -374,6 +260,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 			append(analysisID).
 			append(terminalReachesID).
 			append(areaOfInterestID).
+			append(comparisonID).
 			toHashCode();
 			id = hash;
 		}
@@ -396,11 +283,13 @@ public class PredictionContext implements XMLStreamParserComponent {
 		myClone.analysisID = analysisID;
 		myClone.terminalReachesID = terminalReachesID;
 		myClone.areaOfInterestID = areaOfInterestID;
+		myClone.comparisonID = comparisonID;
 
 		myClone.adjustmentGroups = (adjustmentGroups == null)? null: adjustmentGroups.clone();
 		myClone.analysis = (analysis == null)? null: analysis.clone();
 		myClone.terminalReaches = (terminalReaches == null)? null: terminalReaches.clone();
 		myClone.areaOfInterest = (areaOfInterest == null)? null: areaOfInterest.clone();
+		myClone.comparison = comparison;	//immutable
 
 		return myClone;
 	}
@@ -453,11 +342,21 @@ public class PredictionContext implements XMLStreamParserComponent {
 	// KEY METHODS
 	// ===========
 	public PredictionContext getTargetContextOnly() {
-		return new PredictionContext(modelID, null, null, terminalReaches, null);
+		return new PredictionContext(modelID, null, null, terminalReaches, null, comparison);
 	}
 
 	public PredictionContext getAdjustedContextOnly() {
-		return new PredictionContext(modelID, this.adjustmentGroups, null, null, null);
+		return new PredictionContext(modelID, adjustmentGroups, null, null, null, comparison);
+	}
+	
+	public PredictionContext getNoComparisonVersion() {
+		return new PredictionContext(modelID, adjustmentGroups, analysis,
+				terminalReaches, areaOfInterest, NominalComparison.NO_COMPARISON);
+	}
+	
+	public PredictionContext getNoAdjustmentVersion() {
+		return new PredictionContext(modelID, null, analysis,
+				terminalReaches, areaOfInterest, comparison);
 	}
 
 
@@ -503,6 +402,14 @@ public class PredictionContext implements XMLStreamParserComponent {
 	public AreaOfInterest getAreaOfInterest() {
 		return areaOfInterest;
 	}
+	
+	public Integer getComparisonID() {
+		return comparisonID;
+	}
+
+	public Comparison getComparison() {
+		return comparison;
+	}
 
 
 
@@ -514,7 +421,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	 * @author eeverman
 	 *
 	 */
-	public class DataColumn {
+	public static class DataColumn {
 		private final DataTable table;
 		private final int column;
 

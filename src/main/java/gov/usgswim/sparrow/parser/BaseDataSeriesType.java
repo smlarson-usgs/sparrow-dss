@@ -33,35 +33,41 @@ public enum BaseDataSeriesType {
 	 */
 	
 	//Total (i.e. includes upstream) predicted load.  
-    total						(true, false, false, 1, false), // active
+    total						(true, false, false, false, 1, false), // active
     
     //Incremental (i.e. does not include upstream) predicted load.  
-    incremental					(true, false, false, 1, false), //active
+    incremental					(true, false, false, false, 1, false), //active
     
-    delivered_fraction			(false, false, true, 0, false), //fraction delivered - calc w/o prediction
-    total_decay					(true, false, false, 1, true),	//The amount decayed in the stream
-    total_no_decay				(true, false, false, 1, true),	//Total as it would be w/o decay
-    source_value				(false, true, false, 2, false), // active
-    land_to_water_coef			(false, true, false, 2, false),
-    instream_decay_coef			(false, true, false, 0, false)
+    delivered_fraction			(false, false, true, false, 0, false), //fraction delivered - calc w/o prediction
+
+    source_value				(false, true, false, false, 2, false), // active
+
+    std_error_estimate_coef		(false, false, false, true, 1, false),
+    
+    total_decay					(true, false, false, false, 1, true),	//The amount decayed in the stream
+    total_no_decay				(true, false, false, false, 1, true),	//Total as it would be w/o decay
+    land_to_water_coef			(false, true, false, false, 2, false),
+    instream_decay_coef			(false, true, false, false, 0, false)
     ;
 
-    // TODO cut down the list of attributes
+
     private final boolean predictionBased;
-    private final boolean dataBased;
+    private final boolean predictDataBased;
     private final boolean deliveryBased;
+    private final boolean stdErrorCoefBased;
     private final int srcRequirement;	//0 Not allowed, 1 allowed, 2 required
     private static final int NO_SOURCES_ALLOWED = 0,SOURCES_ALLOWED = 1,SOURCES_REQUIRED = 2;
     private final boolean nonstandardPrediction;
 
 
 
-    BaseDataSeriesType(boolean predictionBased, boolean dataBased, boolean deliveryBased,
-    		int srcRequirement, boolean nonstandardPrediction) {
+    BaseDataSeriesType(boolean predictionBased, boolean predictDataBased, boolean deliveryBased,
+    		boolean stdErrorCoefBased, int srcRequirement, boolean nonstandardPrediction) {
 
         this.predictionBased = predictionBased;
-        this.dataBased = dataBased;
+        this.predictDataBased = predictDataBased;
         this.deliveryBased = deliveryBased;
+        this.stdErrorCoefBased = stdErrorCoefBased;
         this.srcRequirement = srcRequirement;
         this.nonstandardPrediction = nonstandardPrediction;
         
@@ -82,8 +88,8 @@ public enum BaseDataSeriesType {
      * pulled directly from the db are examples.
      * @return
      */
-    public boolean isDataBased() {
-        return dataBased;
+    public boolean isPredictDataBased() {
+        return predictDataBased;
     }
     
     /**
@@ -96,6 +102,18 @@ public enum BaseDataSeriesType {
      */
     public boolean isDeliveryBased() {
     	return deliveryBased;
+    }
+    
+    /**
+     * Returns true if the actual data being mapped is the standard error
+     * coef.
+     * This is only true if the actual data is the error coef, not for
+     * predicted standard errors, which are based on predicted data, then
+     * multiplied by std error coefs.
+     * @return
+     */
+    public boolean isStdErrorCoefBased() {
+    	return stdErrorCoefBased;
     }
 
     /**

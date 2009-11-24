@@ -65,7 +65,7 @@ public class ContextToPredictionIntegrationTest extends TestCase {
 		PredictData predictData = SharedApplication.getInstance().getPredictData(contextFromCache.getModelID());
 
 		//Also for comparison, get the nominal predicted values
-		PredictionContext nomContext = new PredictionContext(contextFromCache.getModelID(), null, null, null, null);
+		PredictionContext nomContext = new PredictionContext(contextFromCache.getModelID(), null, null, null, null, null);
 		PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
 
 		assertEquals(PredictionContextTest.TEST_MODEL_ID, contextFromCache.getModelID());

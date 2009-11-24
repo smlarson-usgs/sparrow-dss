@@ -83,7 +83,6 @@
 		<analysis>
 			<dataSeries source="1">incremental</dataSeries>
 			<groupBy aggFunction="avg">huc8</groupBy>
-			<nominalComparison>absolute</nominalComparison>
 		</analysis>
 
 		<terminalReaches>
@@ -98,4 +97,5 @@
 			<logicalSet/>
 		</areaOfInterest>
 
+		<nominalComparison type="percentage"/>
 </PredictionContext>

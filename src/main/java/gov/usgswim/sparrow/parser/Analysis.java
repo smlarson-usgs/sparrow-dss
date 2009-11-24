@@ -24,7 +24,6 @@ public abstract class Analysis implements XMLStreamParserComponent {
 	
 	protected String groupBy;
 	protected String aggFunction;
-	protected ComparisonType nominalComparison = ComparisonType.none;
 
 	public Analysis() {
 		super();
@@ -77,24 +76,6 @@ public abstract class Analysis implements XMLStreamParserComponent {
 		groupBy = ParserHelper.parseSimpleElementValue(in);
 	}
 	
-	/**
-	 * Parses the nominalComparison Element.
-	 * Does no checking to determine if the correct element was passed and
-	 * does not advance the parsing.
-	 * @param in
-	 * @throws XMLStreamException
-	 */
-	protected void parseNominalComparison(XMLStreamReader in) throws XMLStreamException {
-		String type = ParserHelper.parseSimpleElementValue(in);
-
-		if (type != null) {
-			try {
-				nominalComparison = ComparisonType.valueOf(type);
-			} catch (IllegalArgumentException e) {
-				throw new XMLStreamException("The nominalComparison type '" + type + "' is unrecognized");
-			}
-		}
-	}
 	
 	public Integer getId() {
 		return hashCode();
@@ -108,9 +89,17 @@ public abstract class Analysis implements XMLStreamParserComponent {
 	 * Convenience method for determining if the data series referenced by
 	 * this {@code Analysis} object requires a weighting be applied.
 	 *
+	 * TODO:  This method does not really indicate the correct meaning:
+	 * weighting is multiplying (i.e., a larger area counts more).  Currently
+	 * this is being used to indicate that it is divided (per) by something.
+	 * See the terminology and values available in the predict context schema
+	 * on the AdvancedDataSeries element.
+	 * 
 	 * @return {@code true} if the data series referenced by this
 	 *         {@code Analysis} object requires a weighting, {@code false}
 	 *         otherwise.
+	 *         
+	 *
 	 */
 	public abstract boolean isWeighted();
 
@@ -135,15 +124,6 @@ public abstract class Analysis implements XMLStreamParserComponent {
 	 */
 	public String getAggFunction() {
 		return aggFunction;
-	}
-	
-	/**
-	 * The comparison type used in this Analysis.
-	 * @return A ComparisonType indicating the type of comparison.
-	 * Null is never returned - type None is returned if not specified.
-	 */
-	public ComparisonType getNominalComparison() {
-		return nominalComparison;
 	}
 	
 	@Override
@@ -176,7 +156,6 @@ public abstract class Analysis implements XMLStreamParserComponent {
 		int hash = new HashCodeBuilder(137, 1729).
 		append(groupBy).
 		append(aggFunction).
-		append(nominalComparison.ordinal()).
 		toHashCode();
 		return hash;
 	}

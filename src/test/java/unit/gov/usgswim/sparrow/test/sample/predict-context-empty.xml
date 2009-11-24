@@ -8,11 +8,11 @@
 			<dataSeries per="area">total</dataSeries>
 			<aggFunction per="area">avg</aggFunction>
 			<analyticFunction partition="HUC6">rank-desc</analyticFunction>
-			<nominalComparison type="none"></nominalComparison>
 		</select>
 		<limitTo>contributors | terminals | areaOfInterest</limitTo>
 		<groupBy>HUC8</groupBy>
 	</analysis>
 	<terminalReaches></terminalReaches>
 	<areaOfInterest></areaOfInterest>
+	<nominalComparison type="none"/>
 </PredictionContext>

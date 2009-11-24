@@ -10,6 +10,14 @@
 				</xs:choice>
 				<xs:element ref="v0_2:terminalReaches" minOccurs="0"/>
 				<xs:element ref="v0_2:areaOfInterest" minOccurs="0"/>
+				<xs:choice minOccurs="0">
+					<xs:element name="nominalComparison">
+						<xs:complexType>
+							<xs:attribute name="type" use="required" type="v0_2:comparisonTypeEnum"/>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="comparison" type="v0_2:comparison"/>
+				</xs:choice>
 			</xs:sequence>
 			<xs:attribute name="model-id" use="required">
 				<xs:simpleType>
@@ -67,7 +75,6 @@
 			<xs:sequence>
 				<xs:element name="dataSeries" type="v0_2:denormalizedDataSeries"/>
 				<xs:element name="groupBy" type="v0_2:groupBy" minOccurs="0"/>
-				<xs:element name="nominalComparison" type="v0_2:nominalComparison" minOccurs="0"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -77,7 +84,6 @@
 				<xs:element ref="v0_2:select"/>
 				<xs:element ref="v0_2:limitTo" minOccurs="0"/>
 				<xs:element name="groupBy" type="v0_2:groupBy" minOccurs="0"/>
-				<xs:element name="nominalComparison" type="v0_2:nominalComparison" minOccurs="0"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
@@ -109,12 +115,13 @@
 			</xs:simpleContent>
 		</xs:complexType>
 	</xs:element>
-	<xs:simpleType name="nominalComparison">
-		<xs:restriction base="xs:string">
-			<xs:enumeration value="absolute"/>
-			<xs:enumeration value="percentage"/>
-		</xs:restriction>
-	</xs:simpleType>
+	<xs:complexType name="comparison">
+		<xs:sequence>
+			<xs:element ref="v0_2:PredictionContext"/>
+		</xs:sequence>
+		<xs:attribute name="contextId" type="xs:integer"/>
+		<xs:attribute name="type" type="v0_2:comparisonTypeEnum"  use="required"/>
+	</xs:complexType>
 	<xs:element name="limitTo" type="xs:string"/>
 	<xs:complexType name="groupBy">
 		<xs:simpleContent>
@@ -266,5 +273,11 @@
 				<xs:enumeration value="huc4"/>
 				<xs:enumeration value="huc2"/>
 			</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="comparisonTypeEnum">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="absolute"/>
+			<xs:enumeration value="percentage"/>
+		</xs:restriction>
 	</xs:simpleType>
 </xs:schema>

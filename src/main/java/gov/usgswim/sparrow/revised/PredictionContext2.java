@@ -29,7 +29,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class PredictionContext2 implements XMLStreamParserComponent {
 
-	private static final long serialVersionUID = -5343918321449313545L;
+	private static final long serialVersionUID = -1L;
 	public static final String MAIN_ELEMENT_NAME = "PredictionContext";
 
 
@@ -331,20 +331,23 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 
 						// Check for aggregation and run if necessary
 						adjSrc = aggregateIfNecessary(adjSrc);
-
-						if (getAnalysis().getNominalComparison().isNone()) {
-
-							dataTable = adjSrc;
-
-						} else {
-							DataTable nomSrcData = nomPredictData.getSrc();
-
-							nomSrcData = aggregateIfNecessary(nomSrcData);
-
-							//working w/ either a percent or absolute comparison
-							dataTable = new DataTableCompare(nomSrcData, adjSrc,
-									getAnalysis().getNominalComparison().equals(ComparisonType.absolute));
-						}
+						dataTable = adjSrc;
+						//ee - this is hacked (code below removed).
+						//I think this class will just be deleted.
+						
+//						if (this. .getNominalComparison().isNone()) {
+//
+//							dataTable = adjSrc;
+//
+//						} else {
+//							DataTable nomSrcData = nomPredictData.getSrc();
+//
+//							nomSrcData = aggregateIfNecessary(nomSrcData);
+//
+//							//working w/ either a percent or absolute comparison
+//							dataTable = new DataTableCompare(nomSrcData, adjSrc,
+//									getAnalysis().getNominalComparison().equals(ComparisonType.absolute));
+//						}
 					} else {
 						throw new Exception("The data series 'source_value' requires a source ID to be specified.");
 					}

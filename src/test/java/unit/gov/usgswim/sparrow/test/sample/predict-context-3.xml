@@ -12,8 +12,9 @@
 	</adjustmentGroups>
 	<analysis>
 		<dataSeries source="3">source_value</dataSeries>
-		<nominalComparison>percent</nominalComparison>
 	</analysis>
 	<terminalReaches />
 	<areaOfInterest />
+	
+	<nominalComparison type="percent"/>
 </PredictionContext>

@@ -10,7 +10,6 @@
 	</adjustmentGroups>
 	<analysis>
 		<dataSeries>incremental_std_error_estimate</dataSeries>
-		<nominalComparison />
 		<groupBy>huc8</groupBy>
 	</analysis>
 	<terminalReaches />

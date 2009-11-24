@@ -328,51 +328,6 @@ public class DeliveryRunner2 implements Runner {
 			adjResult = WeightRunner.doWeighting(context, adjResult);
 		}
 
-		PredictResult result = null;
-		switch (analysis.getNominalComparison()) {
-			case none: {
-				result = adjResult;
-				break;
-			}
-			case percent: {
-
-				PredictionContext nomContext = new PredictionContext(context.getModelID(), null, null, null, null);
-				PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
-
-				// Check for aggregation and run if necessary
-				if (analysis.isAggregated()) {
-					nomResult = aggRunner.doAggregation(nomResult);
-				} else if (analysis.isWeighted()) {
-					nomResult = WeightRunner.doWeighting(nomContext, nomResult);
-				}
-
-				result = new PredictResultCompare(nomResult, adjResult, false);
-
-				break;
-			}
-			case absolute: {
-
-				PredictionContext nomContext = new PredictionContext(context.getModelID(), null, null, null, null);
-				PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
-
-				// Check for aggregation and run if necessary
-				if (analysis.isAggregated()) {
-					nomResult = aggRunner.doAggregation(nomResult);
-				} else if (analysis.isWeighted()) {
-					nomResult = WeightRunner.doWeighting(nomContext, nomResult);
-				}
-
-				result = new PredictResultCompare(nomResult, adjResult, true);
-
-				break;
-			}
-			default: {
-				throw new Exception("Should never be in here...");
-			}
-
-
-		}
-
-		return result;
+		return adjResult;
 	}
 }

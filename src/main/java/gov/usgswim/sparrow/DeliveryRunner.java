@@ -301,69 +301,24 @@ public class DeliveryRunner implements Runner {
 
 		AggregationRunner aggRunner = new AggregationRunner(context);
 
-		PredictResult adjResult = SharedApplication.getInstance().getPredictResult(context.getTargetContextOnly());
+		PredictResult result = SharedApplication.getInstance().getPredictResult(context.getTargetContextOnly());
 
 		// apply delivery fraction weights
 		assert(context.getTerminalReaches() != null) : "shouldn't reach this point if no terminal reaches";
 		Set<Long> targetReaches = context.getTerminalReaches().asSet();
 		double[] nodeTransportFraction = calculateNodeTransportFraction(targetReaches);
 		DataTable reachTransportFraction = calculateReachTransportFractionDataTable(targetReaches);
-		PredictResultImm deliveryResult = calculateDeliveredFlux(targetReaches, adjResult, nodeTransportFraction, reachTransportFraction);
+		PredictResultImm deliveryResult = calculateDeliveredFlux(targetReaches, result, nodeTransportFraction, reachTransportFraction);
 
 
 		// Perform transformations called for by the Analysis section
 		Analysis analysis = context.getAnalysis();
 		DataSeriesType dataSeries = analysis.getDataSeries();
 		if (analysis.isAggregated()) {
-			adjResult = aggRunner.doAggregation(adjResult);
+			result = aggRunner.doAggregation(result);
 			// Aggregation can handle weighting underneath
 		} else if (analysis.isWeighted()) {
-			adjResult = WeightRunner.doWeighting(context, adjResult);
-		}
-
-		PredictResult result = null;
-		switch (analysis.getNominalComparison()) {
-			case none: {
-				result = adjResult;
-				break;
-			}
-			case percent: {
-
-				PredictionContext nomContext = new PredictionContext(context.getModelID(), null, null, null, null);
-				PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
-
-				// Check for aggregation and run if necessary
-				if (analysis.isAggregated()) {
-					nomResult = aggRunner.doAggregation(nomResult);
-				} else if (analysis.isWeighted()) {
-					nomResult = WeightRunner.doWeighting(nomContext, nomResult);
-				}
-
-				result = new PredictResultCompare(nomResult, adjResult, false);
-
-				break;
-			}
-			case absolute: {
-
-				PredictionContext nomContext = new PredictionContext(context.getModelID(), null, null, null, null);
-				PredictResult nomResult = SharedApplication.getInstance().getPredictResult(nomContext);
-
-				// Check for aggregation and run if necessary
-				if (analysis.isAggregated()) {
-					nomResult = aggRunner.doAggregation(nomResult);
-				} else if (analysis.isWeighted()) {
-					nomResult = WeightRunner.doWeighting(nomContext, nomResult);
-				}
-
-				result = new PredictResultCompare(nomResult, adjResult, true);
-
-				break;
-			}
-			default: {
-				throw new Exception("Should never be in here...");
-			}
-
-
+			result = WeightRunner.doWeighting(context, result);
 		}
 
 		return result;

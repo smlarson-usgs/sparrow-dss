@@ -29,8 +29,7 @@
 			</select>
 			<limitTo>contributors | terminals | areaOfInterest</limitTo>
 			<groupBy aggFunction="sum">huc8</groupBy>
-			<nominalComparison>absolute</nominalComparison>
 		</advancedAnalysis>
 
-
+		<nominalComparison type="absolute"/>
 </PredictionContext>

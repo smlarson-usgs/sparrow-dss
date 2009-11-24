@@ -67,7 +67,7 @@ public enum DataSeriesType implements Serializable {
      * @return
      */
     public boolean isDataBased() {
-        return baseType.isDataBased();
+        return baseType.isPredictDataBased();
     }
     
     /**

@@ -330,12 +330,12 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		if (contextId != null) {
 			// Get a nominal (unadjusted) prediction context using the model id
 			PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(contextId);
-            nominalPredictionContext = new PredictionContext(contextFromCache.getModelID(), null, null, null, null);
+            nominalPredictionContext = new PredictionContext(contextFromCache.getModelID(), null, null, null, null, null);
 
             // Get the adjusted prediction results
 			adjustedPrediction = SharedApplication.getInstance().getPredictResult(contextFromCache);
 		} else {
-			nominalPredictionContext = new PredictionContext(modelId, null, null, null, null);
+			nominalPredictionContext = new PredictionContext(modelId, null, null, null, null, null);
 		}
 		// Get the nominal prediction results
 		PredictResult nominalPrediction = SharedApplication.getInstance().getPredictResult(nominalPredictionContext);

@@ -90,8 +90,6 @@ public class AdvancedAnalysis extends Analysis {
 						limitTo = ParserHelper.parseSimpleElementValue(in);
 					} else if (GROUP_BY_CHILD.equals(localName)) {
 						parseGroupBy(in);
-					} else if ("nominalComparison".equals(localName)) {
-						parseNominalComparison(in);
 					} else {
 						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
 					}
@@ -153,7 +151,6 @@ public class AdvancedAnalysis extends Analysis {
 		AdvancedAnalysis myClone = new AdvancedAnalysis();
 		myClone.groupBy = groupBy;
 		myClone.aggFunction = aggFunction;
-		myClone.nominalComparison = nominalComparison;
 		myClone.limitTo = limitTo;
 		myClone.select = select;
 		return myClone;

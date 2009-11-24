@@ -92,8 +92,6 @@ public class BasicAnalysis extends Analysis {
 						
 					} else if (GROUP_BY_CHILD.equals(localName)) {
 						parseGroupBy(in);
-					} else if ("nominalComparison".equals(localName)) {
-						parseNominalComparison(in);
 					} else {
 						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
 					}
@@ -165,7 +163,6 @@ public class BasicAnalysis extends Analysis {
 		myClone.aggFunction = aggFunction;
 		myClone.dataSeries = dataSeries;
 		myClone.source = source;
-		myClone.nominalComparison = nominalComparison;
 		return myClone;
 	}
 	

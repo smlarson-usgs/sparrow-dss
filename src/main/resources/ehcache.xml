@@ -245,6 +245,18 @@
 		timeToLiveSeconds="0" diskPersistent="true"
 		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" />
 		
+	<cache name="ComparisonResult" maxElementsInMemory="10"
+		maxElementsOnDisk="40" eternal="false" overflowToDisk="false"
+		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
+		timeToLiveSeconds="14400" diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="1800" memoryStoreEvictionPolicy="LRU" />
+		
+	<cache name="AnalysisResult" maxElementsInMemory="20"
+		maxElementsOnDisk="40" eternal="false" overflowToDisk="false"
+		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
+		timeToLiveSeconds="14400" diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="1800" memoryStoreEvictionPolicy="LRU" />
+		
 	<cache name="AdjustmentGroups" maxElementsInMemory="200"
 		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
 		diskSpoolBufferSizeMB="3" timeToIdleSeconds="432000"
@@ -298,12 +310,6 @@
 		diskExpiryThreadIntervalSeconds="1800" memoryStoreEvictionPolicy="LRU" />
 	
 	<cache name="PredictResult" maxElementsInMemory="20"
-		maxElementsOnDisk="40" eternal="false" overflowToDisk="false"
-		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
-		timeToLiveSeconds="14400" diskPersistent="false"
-		diskExpiryThreadIntervalSeconds="1800" memoryStoreEvictionPolicy="LRU" />
-	
-	<cache name="AnalysisResult" maxElementsInMemory="20"
 		maxElementsOnDisk="40" eternal="false" overflowToDisk="false"
 		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
 		timeToLiveSeconds="14400" diskPersistent="false"

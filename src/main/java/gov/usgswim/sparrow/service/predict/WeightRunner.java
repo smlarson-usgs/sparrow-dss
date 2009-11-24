@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.service.predict;
 
+import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
@@ -32,7 +33,7 @@ public class WeightRunner {
 	 *             no assumptions about it being a PredictResult except in the
 	 *             naming of the headers
 	 */
-    public static PredictResult doWeighting(PredictionContext context, PredictResult result)
+    public static PredictResult doWeighting(PredictionContext context, DataTable result)
     throws Exception {
         log.debug("Entering WeightRunner.doWeighting(PredictResult).");
 

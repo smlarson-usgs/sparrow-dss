@@ -93,6 +93,13 @@ public class LifecycleListener implements ServletContextListener {
 			cm.clearAll();
 		}
 		
+		//ComparisonResultCache
+		SelfPopulatingCache comparisonCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.COMPARISON_RESULT_CACHE), new ComparisonResultFactory());
+		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.COMPARISON_RESULT_CACHE), comparisonCache);
+		
+		//AnalysisResultCache
+		SelfPopulatingCache predictAnalysisCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.ANALYSIS_RESULT_CACHE), new AnalysisResultFactory());
+		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.ANALYSIS_RESULT_CACHE), predictAnalysisCache);
 		
 		//PredictDataCache
 		SelfPopulatingCache predictDataCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.PREDICT_DATA_CACHE), new PredictDataFactory());
@@ -105,10 +112,6 @@ public class LifecycleListener implements ServletContextListener {
 		//PredictResultCache
 		SelfPopulatingCache predictResultCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.PREDICT_RESULT_CACHE), new PredictResultFactory());
 		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.PREDICT_RESULT_CACHE), predictResultCache);
-		
-		//AnalysisResultCache
-		SelfPopulatingCache predictAnalysisCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.ANALYSIS_RESULT_CACHE), new AnalysisResultFactory());
-		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.ANALYSIS_RESULT_CACHE), predictAnalysisCache);
 		
 		//IdentifyReachByPoint
 		SelfPopulatingCache reachByPointCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.IDENTIFY_REACH_BY_POINT), new ReachByPointFactory());

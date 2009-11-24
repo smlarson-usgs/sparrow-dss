@@ -49,6 +49,7 @@ import oracle.jdbc.driver.OracleDriver;
 
 import org.apache.log4j.Logger;
 
+//TODO:  This class contains a lot of unused caches...
 public class SharedApplication  {
 	protected static Logger log =
 		Logger.getLogger(SharedApplication.class); //logging for this class
@@ -75,11 +76,12 @@ public class SharedApplication  {
 
 
 	//ehcache self-populated cache names
+	public static final String COMPARISON_RESULT_CACHE = "ComparisonResult";
+	public static final String ANALYSIS_RESULT_CACHE = "AnalysisResult";
 	public static final String PREDICT_DATA_CACHE = "PredictData";
 	public static final String STANDARD_ERROR_ESTIMATE_DATA = "StandardErrorEstimateData";
 	public static final String ADJUSTED_SOURCE_CACHE = "AdjustedSource";
 	public static final String PREDICT_RESULT_CACHE = "PredictResult";
-	public static final String ANALYSIS_RESULT_CACHE = "AnalysisResult";
 	public static final String IDENTIFY_REACH_BY_POINT = "IdentifyReachByPoint";
 	public static final String IDENTIFY_REACH_BY_ID = "IdentifyReachByID";
 	public static final String REACHES_BY_CRITERIA = "ReachesByCriteria";
@@ -428,16 +430,27 @@ public class SharedApplication  {
 		Element e  = (quiet)?c.getQuiet(context):c.get(context);
 		return (e != null)?((PredictResult) e.getObjectValue()):null;
 	}
+	
+	//ComparisonResult Cache
+	public PredictionContext.DataColumn getComparisonResult(PredictionContext context) {
+		return getComparisonResult(context, false);
+	}
+
+	public PredictionContext.DataColumn getComparisonResult(PredictionContext context, boolean quiet) {
+		Ehcache c = CacheManager.getInstance().getEhcache(COMPARISON_RESULT_CACHE);
+		Element e  = (quiet)?c.getQuiet(context):c.get(context);
+		return (e != null)?((PredictionContext.DataColumn) e.getObjectValue()):null;
+	}
 
 	//AnalysisResult Cache
-	public PredictResult getAnalysisResult(PredictionContext context) {
+	public PredictionContext.DataColumn getAnalysisResult(PredictionContext context) {
 		return getAnalysisResult(context, false);
 	}
 
-	public PredictResult getAnalysisResult(PredictionContext context, boolean quiet) {
+	public PredictionContext.DataColumn getAnalysisResult(PredictionContext context, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(ANALYSIS_RESULT_CACHE);
 		Element e  = (quiet)?c.getQuiet(context):c.get(context);
-		return (e != null)?((PredictResult) e.getObjectValue()):null;
+		return (e != null)?((PredictionContext.DataColumn) e.getObjectValue()):null;
 	}
 
 	//ReachByPoint Cache
