@@ -38,6 +38,7 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import oracle.jdbc.driver.OracleDriver;
+import oracle.mapviewer.share.ext.NSDataSet;
 
 import org.apache.log4j.Logger;
 
@@ -64,6 +65,7 @@ public class SharedApplication  {
 
 
 	//ehcache self-populated cache names
+	public static final String NS_DATASET_CACHE = "NSDataSet";
 	public static final String COMPARISON_RESULT_CACHE = "ComparisonResult";
 	public static final String ANALYSIS_RESULT_CACHE = "AnalysisResult";
 	public static final String PREDICT_DATA_CACHE = "PredictData";
@@ -382,6 +384,19 @@ public class SharedApplication  {
 		return null;
 	}
 
+	
+	//NSDataSet Cache
+	public NSDataSet getNSDataSet(PredictionContext context) {
+		return getNSDataSet(context, false);
+	}
+
+	public NSDataSet getNSDataSet(PredictionContext context, boolean quiet) {
+		Ehcache c = CacheManager.getInstance().getEhcache(NS_DATASET_CACHE);
+		Element e  = (quiet)?c.getQuiet(context):c.get(context);
+		return (e != null)?((NSDataSet) e.getObjectValue()):null;
+	}
+	
+	
 	//PredictData Cache
 	public PredictData getPredictData(Long id) {
 		return getPredictData(id, false);
@@ -393,6 +408,7 @@ public class SharedApplication  {
 		return (e != null)?((PredictData) e.getObjectValue()):null;
 	}
 	
+	//Uncertainty Data
 	public UncertaintyData getStandardErrorEstimateData(UncertaintyDataRequest req) {
 		return getStandardErrorEstimateData(req, false);
 	}

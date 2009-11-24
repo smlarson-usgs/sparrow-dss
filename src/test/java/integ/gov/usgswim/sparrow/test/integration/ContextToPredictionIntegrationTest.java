@@ -5,6 +5,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.MapViewerSparrowDataProvider;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.cachefactory.NSDataSetFactory;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.PredictionContextTest;
@@ -166,10 +167,9 @@ public class ContextToPredictionIntegrationTest extends TestCase {
 		//Get the prediction context from the cache
 		PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(CONTEXT_ID);
 
+		NSDataSetFactory nsFactory = new NSDataSetFactory();
 
-		MapViewerSparrowDataProvider nsProvider = new MapViewerSparrowDataProvider();
-
-		NSDataSet data = nsProvider.copyToNSDataSet(contextFromCache);
+		NSDataSet data = nsFactory.copyToNSDataSet(contextFromCache);
 
 		int zeros = 0;
 		int nonZeros = 0;

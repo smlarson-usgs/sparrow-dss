@@ -93,6 +93,11 @@ public class LifecycleListener implements ServletContextListener {
 			cm.clearAll();
 		}
 		
+		
+		//ComparisonResultCache
+		SelfPopulatingCache nsDataSetCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.NS_DATASET_CACHE), new NSDataSetFactory());
+		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.NS_DATASET_CACHE), nsDataSetCache);
+		
 		//ComparisonResultCache
 		SelfPopulatingCache comparisonCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.COMPARISON_RESULT_CACHE), new ComparisonResultFactory());
 		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.COMPARISON_RESULT_CACHE), comparisonCache);

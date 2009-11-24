@@ -82,8 +82,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 * @return an instance of NSDataSet; null if failed.
 	 */
 	public NSDataSet buildDataSet(Hashtable<?,?> params) {
-		long startTime = System.currentTimeMillis();	//Time started
-
+		
 		String idString = (String) params.get(CONTEXT_ID);
 		idString = StringUtils.trimToNull(idString);
 
@@ -108,16 +107,12 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 				NSDataSet nsData = null;	// The Mapviewer data format for the data
 
 				try {
-					nsData = copyToNSDataSet(context);
+					nsData = SharedApplication.getInstance().getNSDataSet(context);
 				} catch (Exception e1) {
 					log.error("MapViewerSparrowDataProvider errored while copying " +
 							"data for context-id '" + idString, e1);
 					return null;
 				}
-
-				log.info("MapViewerSparrowDataProvider done for model #" +
-						context.getModelID() + " (" + nsData.size() + " rows) Time: "
-						+ (System.currentTimeMillis() - startTime) + "ms");
 
 				return nsData;
 
@@ -134,68 +129,6 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 			return null;
 		}
 
-	}
-
-
-	public NSDataSet copyToNSDataSet(PredictionContext context) throws Exception {
-		PredictionContext.DataColumn dc = context.getDataColumn();
-
-		int rowCount = dc.getTable().getRowCount();
-		NSRow[] nsRows = new NSRow[rowCount];
-
-		//Build the row of data
-		for (int r = 0; r < rowCount; r++) {
-			Field[] row = new Field[2];
-
-			long id = -1L;
-			try {
-				id = dc.getTable().getIdForRow(r);
-			} catch (NullPointerException npe) {
-				PredictData nomPredictData = SharedApplication.getInstance().getPredictData(context.getModelID());
-				id = nomPredictData.getTopo().getIdForRow(r);
-			}
-			// TODO [IK] try alternate path with id as string to try to solve
-			// huc aggregation artificial key issue. This would require that the
-			// DataTable argument passed in NOT use HUC ID as a DataTable ID,
-			// which requires it to be a number, but rather as a column of data
-			// in the datatable, and that the copyToNSDataSet be smart enough
-			// to figure out what to do.
-			row[0] = new Field(id);
-			row[0].setKey(true);
-
-			// Value
-			Double val = dc.getTable().getDouble(r, dc.getColumn());
-			if (val != null) {
-				row[1] = new Field(val);
-			} else {
-				row[1] = new Field();
-				row[1].setNull();
-			}
-
-			NSRow nsRow = new NSRow(row);
-			nsRows[r] = nsRow;
-		}
-
-		if (log.isDebugEnabled()) debugNSData(nsRows);
-
-		return new NSDataSet(nsRows);
-	}
-
-	protected void debugNSData(NSRow[] nsRows) {
-		int maxRow = 10;
-		if (maxRow > nsRows.length) maxRow = nsRows.length;
-
-		log.debug("MVSparrowDataProvider These are the first ten rows of data: ");
-		for (int r = 0; r < maxRow; r++)  {
-			StringBuffer sb = new StringBuffer();
-			for (int c = 0; c < nsRows[0].size(); c++)  {
-				sb.append(nsRows[r].get(c).toString());
-				if (nsRows[r].get(c).isKey()) sb.append("[Key] ");
-				if (nsRows[r].get(c).isLabelText()) sb.append("[Lab] ");
-				if ((c + 1) < nsRows[0].size()) sb.append("| ");
-			}
-			log.debug(sb.toString());
-		}
 	}
 
 	/**
