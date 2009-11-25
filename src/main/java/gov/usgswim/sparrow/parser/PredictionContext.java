@@ -19,14 +19,14 @@ import javax.xml.stream.XMLStreamReader;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
- * The entire info needed to run a prediction and analize the results.
- * 
+ * The entire info needed to run a prediction and analyze the results.
+ *
  * TODO: Serialization does not seem to be setup correctly.  Weren't the IDs
  * supposed to allow the main components to be placed in other caches so that
  * this would only hold onto the IDs?  Seems like that original idea might no
  * longer be needed, since there is not really anything to associate with those
  * caches.
- * 
+ *
  * @author eeverman
  *
  */
@@ -65,7 +65,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	private transient Analysis analysis;
 	private transient TerminalReaches terminalReaches;
 	private transient AreaOfInterest areaOfInterest;
-	
+
 	//This is not transient - see no reason to cache this separately.
 	private Comparison comparison;
 
@@ -112,7 +112,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 			this.areaOfInterest = aoi;
 			this.areaOfInterestID = aoi.getId();
 		}
-		
+
 		if (comp != null) {
 			this.comparison = comp;
 			this.comparisonID = comp.getId();
@@ -188,12 +188,12 @@ public class PredictionContext implements XMLStreamParserComponent {
 						// TODO [eric] If the ID is unavailable because this is
 						// a new PContext, when in the object lifecycle should
 						// id be calculated and populated? Here? on cache.put()?
-						
+
 						if (comparison == null) {
 							comparison = NominalComparison.getNoComparisonInstance();
 							comparisonID = comparison.getId();
 						}
-						
+
 						checkValidity();
 						return this; // we're done
 					}
@@ -221,13 +221,13 @@ public class PredictionContext implements XMLStreamParserComponent {
 	 * @throws Exception
 	 */
 	public DataColumn getDataColumn() throws Exception {
-		
+
 		if (ComparisonType.none.equals(comparison.getComparisonType())) {
 			return SharedApplication.getInstance().getAnalysisResult(this);
 		} else {
 			return SharedApplication.getInstance().getComparisonResult(this);
 		}
-		
+
 	}
 
 	private DataTable aggregateIfNecessary(DataTable dt) throws Exception {
@@ -348,12 +348,12 @@ public class PredictionContext implements XMLStreamParserComponent {
 	public PredictionContext getAdjustedContextOnly() {
 		return new PredictionContext(modelID, adjustmentGroups, null, null, null, comparison);
 	}
-	
+
 	public PredictionContext getNoComparisonVersion() {
 		return new PredictionContext(modelID, adjustmentGroups, analysis,
 				terminalReaches, areaOfInterest, NominalComparison.NO_COMPARISON);
 	}
-	
+
 	public PredictionContext getNoAdjustmentVersion() {
 		return new PredictionContext(modelID, null, analysis,
 				terminalReaches, areaOfInterest, comparison);
@@ -402,7 +402,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	public AreaOfInterest getAreaOfInterest() {
 		return areaOfInterest;
 	}
-	
+
 	public Integer getComparisonID() {
 		return comparisonID;
 	}

@@ -75,14 +75,14 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 *  parameters.
 	 *
 	 *  MapViewer calls this method when processing any map request that
-	 *  contains a Non-spatial data provider tag that refrences this
+	 *  contains a Non-spatial data provider tag that references this
 	 *  implementation. As such this method needs to be reentrant.
 	 *
 	 * @param params - to be used when creating a data set.
 	 * @return an instance of NSDataSet; null if failed.
 	 */
 	public NSDataSet buildDataSet(Hashtable<?,?> params) {
-		
+
 		String idString = (String) params.get(CONTEXT_ID);
 		idString = StringUtils.trimToNull(idString);
 
