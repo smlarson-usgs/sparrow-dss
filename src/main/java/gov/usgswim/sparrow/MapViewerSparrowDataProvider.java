@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.sparrow.cachefactory.NSDataSetFactory;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -82,7 +83,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 * @return an instance of NSDataSet; null if failed.
 	 */
 	public NSDataSet buildDataSet(Hashtable<?,?> params) {
-
+		
 		String idString = (String) params.get(CONTEXT_ID);
 		idString = StringUtils.trimToNull(idString);
 
@@ -100,14 +101,20 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 				return null;
 			}
 
-			PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
+			PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);			
 
 			if (context != null) {
 
 				NSDataSet nsData = null;	// The Mapviewer data format for the data
 
 				try {
-					nsData = SharedApplication.getInstance().getNSDataSet(context);
+					
+					//Temp trying to bypass the factory
+					//nsData = SharedApplication.getInstance().getNSDataSet(context);
+					NSDataSetFactory factory = new NSDataSetFactory();
+					nsData = (NSDataSet) factory.buildDataSet(context);
+					
+					
 				} catch (Exception e1) {
 					log.error("MapViewerSparrowDataProvider errored while copying " +
 							"data for context-id '" + idString, e1);

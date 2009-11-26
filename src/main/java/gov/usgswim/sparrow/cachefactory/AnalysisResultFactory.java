@@ -206,19 +206,17 @@ public class AnalysisResultFactory implements CacheEntryFactory {
 
 		} else {
 
-			//Get the predict data, which is what this series is based on
-			PredictData nomPredictData = SharedApplication.getInstance().getPredictData(context.getModelID());
+			
 
 			switch (type) {
 				case source_value:
 					if (source != null) {
 
+						//Get the predict data, which uses the PredictData interface
+						PredictData nomPredictData = SharedApplication.getInstance().getPredictData(context.getModelID());
 						dataColIndex = nomPredictData.getSourceIndexForSourceID(source);
 
-						DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(context.getAdjustmentGroups());
-
-						//Now done in the calling method
-						//dataTable = aggregateIfNecessary(context, adjSrc);
+						dataTable = SharedApplication.getInstance().getAdjustedSource(context.getAdjustmentGroups());
 
 					} else {
 						throw new Exception("The data series 'source_value' requires a source ID to be specified.");
