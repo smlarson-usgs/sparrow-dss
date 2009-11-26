@@ -83,7 +83,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 * @return an instance of NSDataSet; null if failed.
 	 */
 	public NSDataSet buildDataSet(Hashtable<?,?> params) {
-		
+
 		String idString = (String) params.get(CONTEXT_ID);
 		idString = StringUtils.trimToNull(idString);
 
@@ -91,7 +91,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 			log.debug("MapViewerSparrowDataProvider request received w/ context-id = '"
 					+ idString + "'");
 
-			Integer contextId;	//The context indentifier to locate the context.
+			Integer contextId;	//The context identifier to locate the context.
 
 			try {
 				contextId = Integer.parseInt(idString);
@@ -101,20 +101,22 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 				return null;
 			}
 
-			PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);			
+			PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
 
 			if (context != null) {
 
-				NSDataSet nsData = null;	// The Mapviewer data format for the data
+				NSDataSet nsData = null;	// The MapViewer data format for the data
 
 				try {
-					
-					//Temp trying to bypass the factory
-					//nsData = SharedApplication.getInstance().getNSDataSet(context);
+
+					// Bypassing the cache because the NSData structure doesn't seem to
+					// be cacheable, contrary to LJ.
+					// TODO ask LJ
+					// nsData = SharedApplication.getInstance().getNSDataSet(context);
 					NSDataSetFactory factory = new NSDataSetFactory();
 					nsData = (NSDataSet) factory.buildDataSet(context);
-					
-					
+
+
 				} catch (Exception e1) {
 					log.error("MapViewerSparrowDataProvider errored while copying " +
 							"data for context-id '" + idString, e1);

@@ -268,6 +268,11 @@ public class DataLoader {
 
 		DataTableWritable result = DLUtils.readAsInteger(conn, query, 1000, 0);
 
+		if (log.isDebugEnabled()) {
+			log.debug("Printing sample of topo ...");
+			log.debug(DataTableUtils.sampleDataTable(result, 10, 10));
+		}
+
 		assert(result.hasRowIds()): "topo should have IDENTIFIER as row ids";
 		return result;
 	}
@@ -325,6 +330,11 @@ public class DataLoader {
 				}
 			}
 
+		}
+
+		if (log.isDebugEnabled()) {
+			log.debug("Printing sample of sourceReachCoef ...");
+			log.debug(DataTableUtils.sampleDataTable(sourceReachCoef, 10, 10));
 		}
 
 		return sourceReachCoef;
@@ -387,6 +397,11 @@ public class DataLoader {
 			}
 		}
 
+		if (log.isDebugEnabled()) {
+			log.debug("Printing sample of sourceReachCoef ...");
+			log.debug(DataTableUtils.sampleDataTable(sourceReachCoef, 10, 10));
+		}
+
 		return sourceReachCoef;
 
 	}
@@ -421,8 +436,12 @@ public class DataLoader {
 				"ModelId", modelId, "Iteration", iteration
 		);
 
-		return DLUtils.readAsDouble(conn, query, 2000);
-
+		DataTableWritable decay = DLUtils.readAsDouble(conn, query, 2000);
+		if (log.isDebugEnabled()) {
+			log.debug("Printing sample of decay ...");
+			log.debug(DataTableUtils.sampleDataTable(decay, 10, 10));
+		}
+		return decay;
 	}
 
 	/**
@@ -460,7 +479,7 @@ public class DataLoader {
 		{	// use identifiers from topo to set source value ids
 			int size = topo.getRowCount();
 			for (int i=0; i<size; i++) {
-				sourceValues.setRowId(topo.getLong(i, 0), i);
+				sourceValues.setRowId(topo.getIdForRow(i), i);
 			}
 		}
 
@@ -494,7 +513,10 @@ public class DataLoader {
 			}
 
 		}
-
+		if (log.isDebugEnabled()) {
+			log.debug("Printing sample of sources ...");
+			log.debug(DataTableUtils.sampleDataTable(sourceValues, 10, 10));
+		}
 		return sourceValues;
 
 	}
@@ -535,15 +557,23 @@ public class DataLoader {
 		st.setFetchSize(30);
 
 		ResultSet rs = null;
+		DataTableWritable result = null;
 		try {
 			rs = st.executeQuery(query);
-			return DataTableConverter.toDataTable(rs, true);
+			result = DataTableConverter.toDataTable(rs, true);
 		} finally {
 			if (rs != null) {
 				rs.close();
 				rs = null;
 			}
 		}
+		if (result == null) {
+			log.error("UNABLE to loadsource metadata from " + DataLoader.class.getSimpleName() + "loadSourceMetadata()");
+		} else if (log.isDebugEnabled()) {
+			log.debug("Printing sample of source metadata ...");
+			log.debug(DataTableUtils.sampleDataTable(result, 10, 10));
+		}
+		return result;
 	}
 
 	/**
