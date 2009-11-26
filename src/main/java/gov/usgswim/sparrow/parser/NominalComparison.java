@@ -10,9 +10,9 @@ import javax.xml.stream.XMLStreamReader;
 public class NominalComparison extends Comparison {
 
 	private static final long serialVersionUID = 1L;
-
+	
 	public static final String MAIN_ELEMENT_NAME = "nominalComparison";
-
+	
 	public static final NominalComparison NO_COMPARISON = new NominalComparison();
 
 	// =============================
@@ -21,7 +21,7 @@ public class NominalComparison extends Comparison {
 	public static boolean isTargetMatch(String tagName) {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
-
+	
 	public static NominalComparison getNoComparisonInstance() {
 		return NO_COMPARISON;
 	}
@@ -54,22 +54,20 @@ public class NominalComparison extends Comparison {
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
 						String comparisonString =
-							ParserHelper.parseSimpleElementValue(in);
+							ParserHelper.parseAttribAsString(in, "type", false);
 						comparisonType = ComparisonType.valueOf(comparisonString);
-
-							checkValidity();
-
-
 					} else {
 						throw new XMLParseValidationException(
 								"unrecognized child element of <"
 								+ localName + "> for " + MAIN_ELEMENT_NAME);
 					}
-					return this; // we're done
+					break;
 				case END_ELEMENT:
-					// SHOULDN'T get to this point
 					localName = in.getLocalName();
-
+					if (MAIN_ELEMENT_NAME.equals(localName)) {
+						checkValidity();
+						return this; // we're done
+					}
 					// otherwise, error
 					throw new XMLParseValidationException(
 							"unexpected closing tag of </"
