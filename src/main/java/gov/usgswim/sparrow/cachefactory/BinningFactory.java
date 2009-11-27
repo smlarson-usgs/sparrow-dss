@@ -1,7 +1,6 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -762,19 +761,19 @@ public class BinningFactory implements CacheEntryFactory {
 
 	/**
 	 * Extracts a column from a DataTable as a sorted (ascending) double[].
-	 * 
+	 *
 	 * NaN values are skipped, so the resulting array may have fewer rows than
 	 * the DataTable. Positive and negative infinity are converted to the
 	 * largest and smallest double values, respectively.
-	 * 
+	 *
 	 * TODO: put into DataTableUtils
-	 * 
+	 *
 	 * @param data
 	 *            The source DataTable
 	 * @param columnIndex
 	 *            The column to extract data from
 	 * @return sorted data, 'cleaned' of NANs and +/- infinity.
-	 * 
+	 *
 	 *         TODO This incorrectly replaced the other version of
 	 *         extractSortedValues() without keeping the capability to remove
 	 *         zeroes. Must reexamine
@@ -838,7 +837,7 @@ public class BinningFactory implements CacheEntryFactory {
 
 		for (int r=0; r<totalRows; r++) {
 			Double value = data.getDouble(r, columnIndex);
-			
+
 			if (value != null) {
 				if (!Double.isNaN(value) && !Double.isInfinite(value)) {
 					if (value == 0F) {hasZero = true;}
@@ -859,7 +858,7 @@ public class BinningFactory implements CacheEntryFactory {
 		Arrays.sort(values);
 		return values;
 	}
-	
+
 	/**
 	 * Cleans infinite values from doubles, replacing them with the max value
 	 * with the appropriate sign.  Values which are NaN are returned as NaN.

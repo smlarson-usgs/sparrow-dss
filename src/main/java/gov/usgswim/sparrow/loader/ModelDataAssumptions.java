@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.loader;
 
+import gov.usgswim.datatable.utils.DataFileDescriptor;
+
 public class ModelDataAssumptions {
 
 	public static final int CONTACT_ID = 42; // default
