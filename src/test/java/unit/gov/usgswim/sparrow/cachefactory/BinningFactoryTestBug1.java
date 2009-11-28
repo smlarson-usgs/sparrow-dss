@@ -1,19 +1,8 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import gov.usgswim.datatable.impl.SimpleDataTableWritable;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 
-import org.apache.commons.lang.ArrayUtils;
-
-import junit.framework.AssertionFailedError;
 import junit.framework.TestCase;
-import static gov.usgswim.sparrow.cachefactory.BinningFactory.round;
-import static gov.usgswim.sparrow.cachefactory.BinningFactory.digitAccuracyMultipliers;
-import static gov.usgswim.sparrow.cachefactory.BinningFactory.makeBigDecimal;
-import static gov.usgswim.sparrow.cachefactory.BinningFactory.getUniqueValueCount;
 
 public class BinningFactoryTestBug1 extends TestCase {
 
@@ -56,24 +45,21 @@ public class BinningFactoryTestBug1 extends TestCase {
 		-0.00414923419372545d, -0.004147452148546877d, -0.004087863022382116d,
 		0.0
 	};	//106 values
-	
+
 
 
 
 	public void testGetEqualCountBinsOfOne() {
 		BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedDataBug1, 5, Boolean.TRUE);
-		
+
 		for (BigDecimal val : result) {
 			BigDecimal cleaned = val.stripTrailingZeros();
-			int scale = Math.abs(cleaned.scale());
-			
-			if (scale > 5) {
+
+			if (cleaned.precision() > 5) {
 				printBinningResult("These bins contain too many digits - recorded as a JUnit failure.", result);
-				fail("The value " + val + " has way too many digits.  Please fix.");
+				fail("The value " + val + " has way too many digits of precision.  Please fix.");
 			}
 		}
-		
-		//
 	}
 
 	@SuppressWarnings("unused")

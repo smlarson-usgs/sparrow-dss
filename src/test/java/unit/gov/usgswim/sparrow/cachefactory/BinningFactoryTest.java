@@ -2,10 +2,13 @@ package gov.usgswim.sparrow.cachefactory;
 
 import static gov.usgswim.sparrow.cachefactory.BinningFactory.digitAccuracyMultipliers;
 import static gov.usgswim.sparrow.cachefactory.BinningFactory.getUniqueValueCount;
-import static gov.usgswim.sparrow.cachefactory.BinningFactory.makeBigDecimal;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
+import gov.usgswim.sparrow.util.BigDecimalUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -14,7 +17,6 @@ import junit.framework.AssertionFailedError;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class BinningFactoryTest {
 
@@ -71,6 +73,7 @@ public class BinningFactoryTest {
 		new SimpleDataTableWritable(transpose(Double.NaN, Double.NaN, Double.NaN), null);
 	public static DataTable tblMixNAN =
 		new SimpleDataTableWritable(transpose(4d, Double.NaN, -4, Double.NaN), null);
+
 	public static DataTable tblMixAll_1 =
 		new SimpleDataTableWritable(
 		transpose(Double.NaN, Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NaN), null);
@@ -84,7 +87,14 @@ public class BinningFactoryTest {
 		new SimpleDataTableWritable(
 		transpose(Double.NaN, Double.NEGATIVE_INFINITY, -9d, Double.NaN, Double.NaN), null);
 
+	// ==============
 
+	@Test public void testInfinityAssumptions() {
+		assertTrue(Double.isInfinite(Double.POSITIVE_INFINITY));
+		assertTrue(Double.isInfinite(Double.NEGATIVE_INFINITY));
+		assertFalse(Double.isInfinite(Double.MAX_VALUE));
+		assertFalse(Double.isInfinite(Double.MAX_VALUE * -1d));
+	}
 
 
 	////////////////////////////////////
@@ -117,13 +127,19 @@ public class BinningFactoryTest {
 
 		//Test datatables with non-standard double values
 		doEqualCountAssert(tblEmpty, bins, round, 0d, 1d);
-		doEqualCountAssert(tblOneNAN, bins, round, 0d, 1d);
-		doEqualCountAssert(tblAllNAN, bins, round, 0d, 1d);
-		doEqualCountAssert(tblMixNAN, bins, round, -10d, 10d);
+
 
 		//This is an strange binning:  Why would zero be included in the generated bins?
 		doEqualCountAssert(new Double[] {100000D, 1000000D}, bins, round, 0d, 1000000D);
+	}
 
+	@Test public void testNaNHandling() {
+		final int bins = 1;
+		final boolean round = true;
+
+		doEqualCountAssert(tblOneNAN, bins, round, 0d, 1d);
+		doEqualCountAssert(tblAllNAN, bins, round, 0d, 1d);
+		doEqualCountAssert(tblMixNAN, bins, round, -10d, 10d);
 	}
 
 	@Test public void testInfinityHandling() {
@@ -211,134 +227,134 @@ public class BinningFactoryTest {
 	@Test public void testSimpleRound() {
 
 		//Round UP to the nearest 1000, treat any value less than or equal to 10 as 'small' (2 places right of 1000)
-		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1000d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1000.000001d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1010d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("2000", BinningFactory.roundToScale(new BigDecimal(1010.000000001d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("2000", BinningFactory.roundToScale(new BigDecimal(1100d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(999.999999d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(9.999999d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(10d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(10.0000001d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1000d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1000.000001d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1010d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("-2000", BinningFactory.roundToScale(new BigDecimal(-1010.000000001d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("-2000", BinningFactory.roundToScale(new BigDecimal(-1100d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-999.999999d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(-9.999999d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(-10d), 3, 2, RoundingMode.UP).toPlainString());
-		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-10.0000001d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("1000", BigDecimalUtils.roundToScale(new BigDecimal(1000d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("1000", BigDecimalUtils.roundToScale(new BigDecimal(1000.000001d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("1000", BigDecimalUtils.roundToScale(new BigDecimal(1010d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("2000", BigDecimalUtils.roundToScale(new BigDecimal(1010.000000001d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("2000", BigDecimalUtils.roundToScale(new BigDecimal(1100d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("1000", BigDecimalUtils.roundToScale(new BigDecimal(999.999999d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("0", BigDecimalUtils.roundToScale(new BigDecimal(9.999999d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("0", BigDecimalUtils.roundToScale(new BigDecimal(10d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("1000", BigDecimalUtils.roundToScale(new BigDecimal(10.0000001d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("-1000", BigDecimalUtils.roundToScale(new BigDecimal(-1000d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("-1000", BigDecimalUtils.roundToScale(new BigDecimal(-1000.000001d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("-1000", BigDecimalUtils.roundToScale(new BigDecimal(-1010d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("-2000", BigDecimalUtils.roundToScale(new BigDecimal(-1010.000000001d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("-2000", BigDecimalUtils.roundToScale(new BigDecimal(-1100d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("-1000", BigDecimalUtils.roundToScale(new BigDecimal(-999.999999d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("0", BigDecimalUtils.roundToScale(new BigDecimal(-9.999999d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("0", BigDecimalUtils.roundToScale(new BigDecimal(-10d), 3, 2, RoundingMode.UP).toPlainString());
+		assertEquals("-1000", BigDecimalUtils.roundToScale(new BigDecimal(-10.0000001d), 3, 2, RoundingMode.UP).toPlainString());
 
 		//Round Down to the nearest 1000, treat any value less than or equal to 10 as 'small' (2 places right of 1000)
-		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1000d), 3, 2, RoundingMode.DOWN).toPlainString());
-		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1100d), 3, 2, RoundingMode.DOWN).toPlainString());
-		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(989.999999999d), 3, 2, RoundingMode.DOWN).toPlainString());
-		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(990d), 3, 2, RoundingMode.DOWN).toPlainString());
-		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(990.0000000001), 3, 2, RoundingMode.DOWN).toPlainString());
-		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1000d), 3, 2, RoundingMode.DOWN).toPlainString());
-		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1100d), 3, 2, RoundingMode.DOWN).toPlainString());
-		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(-989.999999999d), 3, 2, RoundingMode.DOWN).toPlainString());
-		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(-990d), 3, 2, RoundingMode.DOWN).toPlainString());
-		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-990.0000000001), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("1000", BigDecimalUtils.roundToScale(new BigDecimal(1000d), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("1000", BigDecimalUtils.roundToScale(new BigDecimal(1100d), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("0", BigDecimalUtils.roundToScale(new BigDecimal(989.999999999d), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("0", BigDecimalUtils.roundToScale(new BigDecimal(990d), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("1000", BigDecimalUtils.roundToScale(new BigDecimal(990.0000000001), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("-1000", BigDecimalUtils.roundToScale(new BigDecimal(-1000d), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("-1000", BigDecimalUtils.roundToScale(new BigDecimal(-1100d), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("0", BigDecimalUtils.roundToScale(new BigDecimal(-989.999999999d), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("0", BigDecimalUtils.roundToScale(new BigDecimal(-990d), 3, 2, RoundingMode.DOWN).toPlainString());
+		assertEquals("-1000", BigDecimalUtils.roundToScale(new BigDecimal(-990.0000000001), 3, 2, RoundingMode.DOWN).toPlainString());
 
 		//Round CEILING to the nearest 1000, treat any value less than or equal to 10 as 'small' (2 places right of 1000)
-		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1000d), 3, 2, RoundingMode.CEILING).toPlainString());
-		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1010d), 3, 2, RoundingMode.CEILING).toPlainString());
-		assertEquals("2000", BinningFactory.roundToScale(new BigDecimal(1010.000000001d), 3, 2, RoundingMode.CEILING).toPlainString());
-		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(999.999999d), 3, 2, RoundingMode.CEILING).toPlainString());
-		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(10d), 3, 2, RoundingMode.CEILING).toPlainString());
-		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(10.0000001d), 3, 2, RoundingMode.CEILING).toPlainString());
-		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1000d), 3, 2, RoundingMode.CEILING).toPlainString());
-		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1011d), 3, 2, RoundingMode.CEILING).toPlainString());
-		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1990d), 3, 2, RoundingMode.CEILING).toPlainString());
-		assertEquals("-2000", BinningFactory.roundToScale(new BigDecimal(-1990.000000001d), 3, 2, RoundingMode.CEILING).toPlainString());
-		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-999.999999d), 3, 2, RoundingMode.CEILING).toPlainString());
-		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(-10d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("1000", BigDecimalUtils.roundToScale(new BigDecimal(1000d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("1000", BigDecimalUtils.roundToScale(new BigDecimal(1010d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("2000", BigDecimalUtils.roundToScale(new BigDecimal(1010.000000001d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("1000", BigDecimalUtils.roundToScale(new BigDecimal(999.999999d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("0", BigDecimalUtils.roundToScale(new BigDecimal(10d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("1000", BigDecimalUtils.roundToScale(new BigDecimal(10.0000001d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("-1000", BigDecimalUtils.roundToScale(new BigDecimal(-1000d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("-1000", BigDecimalUtils.roundToScale(new BigDecimal(-1011d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("-1000", BigDecimalUtils.roundToScale(new BigDecimal(-1990d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("-2000", BigDecimalUtils.roundToScale(new BigDecimal(-1990.000000001d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("-1000", BigDecimalUtils.roundToScale(new BigDecimal(-999.999999d), 3, 2, RoundingMode.CEILING).toPlainString());
+		assertEquals("0", BigDecimalUtils.roundToScale(new BigDecimal(-10d), 3, 2, RoundingMode.CEILING).toPlainString());
 
 		//Round FLOOR to the nearest 1000, treat any value less than or equal to 10 as 'small' (2 places right of 1000)
-		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1000d), 3, 2, RoundingMode.FLOOR).toPlainString());
-		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(1990d), 3, 2, RoundingMode.FLOOR).toPlainString());
-		assertEquals("2000", BinningFactory.roundToScale(new BigDecimal(1990.000000001d), 3, 2, RoundingMode.FLOOR).toPlainString());
-		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(10d), 3, 2, RoundingMode.FLOOR).toPlainString());
-		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1000d), 3, 2, RoundingMode.FLOOR).toPlainString());
-		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-1010d), 3, 2, RoundingMode.FLOOR).toPlainString());
-		assertEquals("-2000", BinningFactory.roundToScale(new BigDecimal(-1010.00001d), 3, 2, RoundingMode.FLOOR).toPlainString());
-		assertEquals("-1000", BinningFactory.roundToScale(new BigDecimal(-999.999999d), 3, 2, RoundingMode.FLOOR).toPlainString());
-		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(-10d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("1000", BigDecimalUtils.roundToScale(new BigDecimal(1000d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("1000", BigDecimalUtils.roundToScale(new BigDecimal(1990d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("2000", BigDecimalUtils.roundToScale(new BigDecimal(1990.000000001d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("0", BigDecimalUtils.roundToScale(new BigDecimal(10d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("-1000", BigDecimalUtils.roundToScale(new BigDecimal(-1000d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("-1000", BigDecimalUtils.roundToScale(new BigDecimal(-1010d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("-2000", BigDecimalUtils.roundToScale(new BigDecimal(-1010.00001d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("-1000", BigDecimalUtils.roundToScale(new BigDecimal(-999.999999d), 3, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("0", BigDecimalUtils.roundToScale(new BigDecimal(-10d), 3, 2, RoundingMode.FLOOR).toPlainString());
 
 		//Zero rounding test
-		assertEquals("0", BinningFactory.roundToScale(new BigDecimal("0"), -2, 2, RoundingMode.FLOOR).toPlainString());
+		assertEquals("0", BigDecimalUtils.roundToScale(new BigDecimal("0"), -2, 2, RoundingMode.FLOOR).toPlainString());
 
 
 		//Some random samples
-		assertEquals("1346000", BinningFactory.roundToScale(new BigDecimal(1345456d), 3, 3, RoundingMode.UP).toPlainString());
-		assertEquals("1345500000", BinningFactory.roundToScale(new BigDecimal(1345456863d), 5, 6, RoundingMode.UP).toPlainString());
-		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(.0002345d), 3, 8, RoundingMode.UP).toPlainString());
-		assertEquals("0", BinningFactory.roundToScale(new BigDecimal(.0000001d), 3, 10, RoundingMode.UP).toPlainString());
-		assertEquals("1000", BinningFactory.roundToScale(new BigDecimal(.00000011d), 3, 10, RoundingMode.UP).toPlainString());
+		assertEquals("1346000", BigDecimalUtils.roundToScale(new BigDecimal(1345456d), 3, 3, RoundingMode.UP).toPlainString());
+		assertEquals("1345500000", BigDecimalUtils.roundToScale(new BigDecimal(1345456863d), 5, 6, RoundingMode.UP).toPlainString());
+		assertEquals("1000", BigDecimalUtils.roundToScale(new BigDecimal(.0002345d), 3, 8, RoundingMode.UP).toPlainString());
+		assertEquals("0", BigDecimalUtils.roundToScale(new BigDecimal(.0000001d), 3, 10, RoundingMode.UP).toPlainString());
+		assertEquals("1000", BigDecimalUtils.roundToScale(new BigDecimal(.00000011d), 3, 10, RoundingMode.UP).toPlainString());
 	}
 
 
 	@Test public void testMakeBigDecimalWith0Digit() {
 
-		BigDecimal bd = makeBigDecimal(1, digitAccuracyMultipliers[0], 0);
+		BigDecimal bd = BigDecimalUtils.makeBigDecimal(1, digitAccuracyMultipliers[0], 0);
 		assertEquals("1 scale: 0", bd2String(bd));
 
-		bd = makeBigDecimal(0, digitAccuracyMultipliers[0], 0);
+		bd = BigDecimalUtils.makeBigDecimal(0, digitAccuracyMultipliers[0], 0);
 		assertEquals("0 scale: 0", bd2String(bd));
-		bd = makeBigDecimal(-1, digitAccuracyMultipliers[0], 0);
+		bd = BigDecimalUtils.makeBigDecimal(-1, digitAccuracyMultipliers[0], 0);
 		assertEquals("-1 scale: 0", bd2String(bd));
 
-		bd = makeBigDecimal(1, digitAccuracyMultipliers[0], 1);
+		bd = BigDecimalUtils.makeBigDecimal(1, digitAccuracyMultipliers[0], 1);
 		assertEquals("1E+1 scale: -1", bd2String(bd));
-		bd = makeBigDecimal(0, digitAccuracyMultipliers[0], 1);
+		bd = BigDecimalUtils.makeBigDecimal(0, digitAccuracyMultipliers[0], 1);
 		assertEquals("0E+1 scale: -1", bd2String(bd));
-		bd = makeBigDecimal(-1, digitAccuracyMultipliers[0], 1);
+		bd = BigDecimalUtils.makeBigDecimal(-1, digitAccuracyMultipliers[0], 1);
 		assertEquals("-1E+1 scale: -1", bd2String(bd));
 
-		bd = makeBigDecimal(1, digitAccuracyMultipliers[0], -1);
+		bd = BigDecimalUtils.makeBigDecimal(1, digitAccuracyMultipliers[0], -1);
 		assertEquals("0.1 scale: 1", bd2String(bd));
-		bd = makeBigDecimal(0, digitAccuracyMultipliers[0], -1);
+		bd = BigDecimalUtils.makeBigDecimal(0, digitAccuracyMultipliers[0], -1);
 		assertEquals("0.0 scale: 1", bd2String(bd));
-		bd = makeBigDecimal(-1, digitAccuracyMultipliers[0], -1);
+		bd = BigDecimalUtils.makeBigDecimal(-1, digitAccuracyMultipliers[0], -1);
 		assertEquals("-0.1 scale: 1", bd2String(bd));
 	}
 
 
 	@Test public void testMakeBigDecimalWithHalfDigit() {
 
-		BigDecimal bd = makeBigDecimal(2, digitAccuracyMultipliers[1], 0);
+		BigDecimal bd = BigDecimalUtils.makeBigDecimal(2, digitAccuracyMultipliers[1], 0);
 		assertEquals("1 scale: 0", bd2String(bd));
-		bd = makeBigDecimal(1, digitAccuracyMultipliers[1], 0);
+		bd = BigDecimalUtils.makeBigDecimal(1, digitAccuracyMultipliers[1], 0);
 		assertEquals("0.5 scale: 1", bd2String(bd));
-		bd = makeBigDecimal(0, digitAccuracyMultipliers[1], 0);
+		bd = BigDecimalUtils.makeBigDecimal(0, digitAccuracyMultipliers[1], 0);
 		assertEquals("0 scale: 0", bd2String(bd));
-		bd = makeBigDecimal(-1, digitAccuracyMultipliers[1], 0);
+		bd = BigDecimalUtils.makeBigDecimal(-1, digitAccuracyMultipliers[1], 0);
 		assertEquals("-0.5 scale: 1", bd2String(bd));
-		bd = makeBigDecimal(-2, digitAccuracyMultipliers[1], 0);
+		bd = BigDecimalUtils.makeBigDecimal(-2, digitAccuracyMultipliers[1], 0);
 		assertEquals("-1 scale: 0", bd2String(bd));
 
-		bd = makeBigDecimal(2, digitAccuracyMultipliers[1], 1);
+		bd = BigDecimalUtils.makeBigDecimal(2, digitAccuracyMultipliers[1], 1);
 		assertEquals("1E+1 scale: -1", bd2String(bd));
-		bd = makeBigDecimal(1, digitAccuracyMultipliers[1], 1);
+		bd = BigDecimalUtils.makeBigDecimal(1, digitAccuracyMultipliers[1], 1);
 		assertEquals("5 scale: 0", bd2String(bd));
-		bd = makeBigDecimal(0, digitAccuracyMultipliers[1], 1);
+		bd = BigDecimalUtils.makeBigDecimal(0, digitAccuracyMultipliers[1], 1);
 		assertEquals("0E+1 scale: -1", bd2String(bd));
-		bd = makeBigDecimal(-1, digitAccuracyMultipliers[1], 1);
+		bd = BigDecimalUtils.makeBigDecimal(-1, digitAccuracyMultipliers[1], 1);
 		assertEquals("-5 scale: 0", bd2String(bd));
-		bd = makeBigDecimal(-2, digitAccuracyMultipliers[1], 1);
+		bd = BigDecimalUtils.makeBigDecimal(-2, digitAccuracyMultipliers[1], 1);
 		assertEquals("-1E+1 scale: -1", bd2String(bd));
 
-		bd = makeBigDecimal(2, digitAccuracyMultipliers[1], -1);
+		bd = BigDecimalUtils.makeBigDecimal(2, digitAccuracyMultipliers[1], -1);
 		assertEquals("0.1 scale: 1", bd2String(bd));
-		bd = makeBigDecimal(1, digitAccuracyMultipliers[1], -1);
+		bd = BigDecimalUtils.makeBigDecimal(1, digitAccuracyMultipliers[1], -1);
 		assertEquals("0.05 scale: 2", bd2String(bd));
-		bd = makeBigDecimal(0, digitAccuracyMultipliers[1], -1);
+		bd = BigDecimalUtils.makeBigDecimal(0, digitAccuracyMultipliers[1], -1);
 		assertEquals("0.0 scale: 1", bd2String(bd));
-		bd = makeBigDecimal(-1, digitAccuracyMultipliers[1], -1);
+		bd = BigDecimalUtils.makeBigDecimal(-1, digitAccuracyMultipliers[1], -1);
 		assertEquals("-0.05 scale: 2", bd2String(bd));
-		bd = makeBigDecimal(-2, digitAccuracyMultipliers[1], -1);
+		bd = BigDecimalUtils.makeBigDecimal(-2, digitAccuracyMultipliers[1], -1);
 		assertEquals("-0.1 scale: 1", bd2String(bd));
 	}
 
@@ -404,7 +420,7 @@ public class BinningFactoryTest {
 				"THE NUMBER OF BINS SHOULD MATCH (n + 1) THE EXPECTED BINS",
 				binCount + 1, expectedBins.length);
 
-		BigDecimal[] result = BinningFactory.buildEqualCountBins(data, 0, binCount, true);
+		BigDecimal[] result = BinningFactory.buildEqualCountBins(data, 0, binCount, true, true);
 		String desc = buildDescription(data, 0, expectedBins);
 
 		doAssert(desc, result, expectedBins);

@@ -1,8 +1,10 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.util.BigDecimalUtils;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -60,10 +62,12 @@ public class BinningFactory implements CacheEntryFactory {
 
 		PredictionContext.DataColumn dc = context.getDataColumn();
 
+		boolean keepZeroes = false; // TODO read this from the request
+		boolean keepExtremeValues = false; // TODO read this from the request
 		// Determine type of binning to perform, calling the appropriate method
 		switch(request.getBinType()) {
 			case EQUAL_COUNT:
-				return buildEqualCountBins(dc.getTable(), dc.getColumn(), request.getBinCount(), false);
+				return buildEqualCountBins(dc.getTable(), dc.getColumn(), request.getBinCount(), keepZeroes, keepExtremeValues);
 			case EQUAL_RANGE:
 				return getEqualRangeBins(dc.getTable(), dc.getColumn(), request.getBinCount(), false, true);
 		}
@@ -72,19 +76,33 @@ public class BinningFactory implements CacheEntryFactory {
 	}
 
 	/**
-	 * Builds equal count bins from the data in the specified column of the passed DataTable.
-	 * @param data The DataTable containing the data to partion.
-	 * @param columnIndex The column (zero based) of the dataTable containing the data or interest.
-	 * @param binCount The number of bins to create.  Must be greater than zero.
+	 * Builds equal count bins from the data in the specified column of the
+	 * passed DataTable.
+	 *
+	 * @param data
+	 *            The DataTable containing the data to partion.
+	 * @param columnIndex
+	 *            The column (zero based) of the dataTable containing the data
+	 *            or interest.
+	 * @param binCount
+	 *            The number of bins to create. Must be greater than zero.
+	 * @param keepZeroes
+	 * @param keepExtremeValues
+	 *            -- for right now, keep extreme values means to keep NaNs and
+	 *            infinities. In the future, it will mean to keep 1-99
+	 *            percentile
 	 * @return
 	 */
-	public static BigDecimal[] buildEqualCountBins(DataTable data, int columnIndex, int binCount, boolean keepZeroes) {
+	public static BigDecimal[] buildEqualCountBins(DataTable data, int columnIndex, int binCount, boolean keepZeroes, boolean keepExtremeValues) {
 
 		if (binCount < 1) {
 			throw new IllegalArgumentException("The binCount must be greater than zero.");
 		}
 
-		Double[] sortedValues = extractSortedValues(data, columnIndex, keepZeroes);
+		Double[] sortedValues = DataTableUtils.extractSortedFilteredDoubleValues(data, columnIndex, keepExtremeValues, null);
+		if (keepExtremeValues) {
+			sortedValues = cleanInfinity(sortedValues);
+		}
 		return buildEqualCountBins(sortedValues, binCount, true);
 	}
 
@@ -105,7 +123,6 @@ public class BinningFactory implements CacheEntryFactory {
 		if (binCount < 1) {
 			throw new IllegalArgumentException("The binCount must be greater than zero.");
 		}
-
 
 		int totalRows = sortedData.length;	//Total rows of data
 
@@ -137,7 +154,7 @@ public class BinningFactory implements CacheEntryFactory {
 		double hi = sortedData[hiIndex];
 		//set lower rounding bound to be one 'unit' lower.  Could result in -Infinity.
 		double lo = cleanInfinity(value - (hi - value));
-		bins[0] = round(value, lo, value); // must not allow the lowest bin to be rounded up
+		bins[0] = BigDecimalUtils.round(value, lo, value); // must not allow the lowest bin to be rounded up
 
 		for (int i=1; i<binCount; i++) {
 			double valueIndex = i * binSize;
@@ -148,6 +165,15 @@ public class BinningFactory implements CacheEntryFactory {
 				// use the bounding elements if bins are small
 				loIndex = (int) Math.floor(valueIndex);
 				hiIndex = (int) Math.ceil(valueIndex);
+//			} else if (loIndex + 1 == hiIndex && binVariance > 1) {
+//				// In this case, the conservative bounds of floor and ceiling
+//				// are too close together as they differ only by 1. Adjust so
+//				// this difference is 2.
+//				if (Math.abs(valueIndex - loIndex) < Math.abs(hiIndex - valueIndex)) {
+//					loIndex--;
+//				} else {
+//					hiIndex++;
+//				}
 			}
 			if (loIndex == hiIndex) {
 				// This only happens if valueIndex is an integer
@@ -157,10 +183,10 @@ public class BinningFactory implements CacheEntryFactory {
 				hiIndex += 1;
 				double hiVal = value + binVariance * (sortedData[hiIndex] - value)/2;
 				double loVal = value - binVariance * (value - sortedData[loIndex])/2;
-				bins[i] = round(value, loVal, hiVal);
+				bins[i] = BigDecimalUtils.round(value, loVal, hiVal);
 			} else {
 				// allow middle bins to be tweaked slightly higher or lower
-				bins[i] = round(value, sortedData[loIndex], sortedData[hiIndex]);
+				bins[i] = BigDecimalUtils.round(value, sortedData[loIndex], sortedData[hiIndex]);
 			}
 		}
 
@@ -173,7 +199,7 @@ public class BinningFactory implements CacheEntryFactory {
 		}
 		lo = sortedData[loIndex];
 		hi = cleanInfinity(value + (value - lo));
-		bins[binCount] = round(value, value, hi); // must not allow the highest bin to be rounded down
+		bins[binCount] = BigDecimalUtils.round(value, value, hi); // must not allow the highest bin to be rounded down
 
 		return bins;
 	}
@@ -232,23 +258,6 @@ public class BinningFactory implements CacheEntryFactory {
 	}
 
 	/**
-	 * Reverses the passed array of BigDecimals.
-	 *
-	 * @param values
-	 * @return
-	 */
-	public static BigDecimal[] reverseValues(BigDecimal[] values) {
-		int lastBin = values.length - 1;
-		BigDecimal[] rev = new BigDecimal[values.length];
-
-		for (int i=0; i<values.length; i++ ) {
-			rev[lastBin - i] = values[i];
-		}
-
-		return rev;
-	}
-
-	/**
 	 * Returns an equal count set of bins so that the bins define break-point
 	 * boundaries with approximately an equal number of values in each bin.
 	 *
@@ -288,7 +297,7 @@ public class BinningFactory implements CacheEntryFactory {
 
 			if (topVal != bottomVal) {
 				// take a rounded value inside of the surrounding range
-				bins[i] = round(bottomVal, bottomVal, topVal);
+				bins[i] = BigDecimalUtils.round(bottomVal, bottomVal, topVal);
 			} else {
 				bins[i] = new BigDecimal(bottomVal);
 			}
@@ -297,6 +306,8 @@ public class BinningFactory implements CacheEntryFactory {
 		return bins;
 	}
 
+
+
 	public static final BigDecimal[] digitAccuracyMultipliers= {
 		new BigDecimal(new BigInteger("1"), 0), // 0 digit
 		new BigDecimal(new BigInteger("2"), 0), // .5 digit
@@ -304,46 +315,10 @@ public class BinningFactory implements CacheEntryFactory {
 		new BigDecimal(new BigInteger("20"), 0), // 1.5 digits
 		new BigDecimal(new BigInteger("100"), 0), // 2 digits
 		new BigDecimal(new BigInteger("200"), 0), // 2.5 digits
-		new BigDecimal(new BigInteger("1000"), 0)}; // 3 digits
-
-	/**
-	 * Rounds to the fewest digits necessary (<= 3.5 digits) within the given lo-hi range
-	 *
-	 * @param value
-	 * @param lo
-	 * @param hi
-	 * @return the original value if lo-hi range is too narrow
-	 */
-	public static BigDecimal round(double value, double lo, double hi) {
-
-
-		if (value == lo && value == hi) {
-			//No rounding possible
-			return new BigDecimal(value);
-		} else if (value ==0 || (lo <=0 && hi>=0)) {
-			// round to zero as first option
-			if (value ==0 || (lo <=0 && hi>=0)) return BigDecimal.ZERO;
-		}
-
-		// round to 1 digit
-		int exponent = Double.valueOf(Math.ceil(Math.log10(Math.abs(value)))).intValue();
-
-		for (BigDecimal sigfigs: digitAccuracyMultipliers) {
-			BigDecimal result = findClosestInRange(value, lo, hi, exponent, sigfigs);
-			if (result != null) {
-				// don't return exponents of 3 or less
-				if (-3 <= result.scale() && result.scale() < 0) {
-					String rep = result.toPlainString();
-					if (rep.length()<=4) {
-						result = result.setScale(0); // just write it out rather than use exponential notation
-					}
-				}
-				return result;
-			}
-		}
-
-		return new BigDecimal(value); // range is too narrow so just return original value
-	}
+		new BigDecimal(new BigInteger("1000"), 0), // 3 digits
+		new BigDecimal(new BigInteger("10000"), 0), // 4 digits
+		new BigDecimal(new BigInteger("100000"), 0) // 5 digits
+	};
 
 	/**
 	 * Finds the fraction with the denominator which is within the lo-hi range
@@ -381,28 +356,17 @@ public class BinningFactory implements CacheEntryFactory {
 		if (isUpInRange && isDownInRange) {
 			// return the closest of two valid alternatives
 			return (Math.abs(up - value) < Math.abs(down - value))?
-					makeBigDecimal(upL, sigfigs, exponent):
-					makeBigDecimal(downL, sigfigs, exponent);
+					BigDecimalUtils.makeBigDecimal(upL, sigfigs, exponent):
+					BigDecimalUtils.makeBigDecimal(downL, sigfigs, exponent);
 		}
 		if (isUpInRange) {
-			return makeBigDecimal(upL, sigfigs, exponent);
+			return BigDecimalUtils.makeBigDecimal(upL, sigfigs, exponent);
 		} else if (isDownInRange) {
-			return makeBigDecimal(downL, sigfigs, exponent);
+			return BigDecimalUtils.makeBigDecimal(downL, sigfigs, exponent);
 		}
 		return null;
 	}
 
-
-	public static BigDecimal makeBigDecimal(long numerator, BigDecimal denominatorWithScale, int exp) {
-		BigDecimal num = new BigDecimal(numerator, new MathContext(denominatorWithScale.scale()));
-		BigDecimal temp = num.divide(denominatorWithScale);
-		BigDecimal result = temp.scaleByPowerOfTen(exp);
-		return result;
-	}
-
-	// ================
-	// EQUAL RANGE BINS
-	// ================
 
 	/**
 	 * Returns an equal range set of bins such that the bins define break-point
@@ -518,14 +482,14 @@ public class BinningFactory implements CacheEntryFactory {
 			scale = scale - relativeScale;
 
 
-			adjustedMinValue = roundToScale(new BigDecimal(minValue), scale, relativeSmallValueScale, RoundingMode.FLOOR);
-			adjustedMaxValue = roundToScale(new BigDecimal(maxValue), scale, relativeSmallValueScale, RoundingMode.CEILING);
+			adjustedMinValue = BigDecimalUtils.roundToScale(new BigDecimal(minValue), scale, relativeSmallValueScale, RoundingMode.FLOOR);
+			adjustedMaxValue = BigDecimalUtils.roundToScale(new BigDecimal(maxValue), scale, relativeSmallValueScale, RoundingMode.CEILING);
 
 			//Precisely calc binWidth (34 digits of precision) - round later
 			binWidth = adjustedMaxValue.subtract(adjustedMinValue).divide(new BigDecimal(binCount), MathContext.DECIMAL128);
 
 			//round the binWidth, since it could be an odd decimal
-			binWidth = roundToScale(binWidth, scale, relativeSmallValueScale, RoundingMode.UP);
+			binWidth = BigDecimalUtils.roundToScale(binWidth, scale, relativeSmallValueScale, RoundingMode.UP);
 		} else {
 			binWidth = new BigDecimal((maxValue - minValue) / (double)(binCount));
 			adjustedMinValue = new BigDecimal(minValue);
@@ -588,278 +552,6 @@ public class BinningFactory implements CacheEntryFactory {
 
 
 	/**
-	 * Does a simple round to the nearest increment of the specified scale.
-	 *
-	 * For instance, a roundToScale of 3 (thousands place) would round to the
-	 * nearest thousand.  The roundMode specifies rounding up (away from zero)
-	 * or down (towards zero).  Other RoundingModes are not supported.
-	 *
-	 * reallySmallRelativeScale allows rounding to a 'bigger' value to be
-	 * ignored for very small overages. For instance, if rounding 2000.000001
-	 * UP to the nearest thousand, the result would nominally be 3000.  In this
-	 * case it may be preferable to not round up, rounding instead to 2000.
-	 *
-	 * reallySmallRelativeScale is relative to roundToScale.  If roundToScale
-	 * is 3 (nearest thousand), a reallySmallRelativeScale of two would mean
-	 * that the digit place two to the right (tens) are considered 'really
-	 * small'.  Continuing this UP rounding example (rTS = 3, rSRS = 2), 1011
-	 * rounds to 2000, 1010 rounds to 1000, 1010.00001 rounds to 2000.
-	 *
-	 * @param value
-	 * @param roundToScale
-	 * @param reallySmallRelativeScale
-	 * @param roundMode  RoundingModes UP, DOWN, CEILING, and FLOOR are supported.
-	 * @return
-	 */
-	public static BigDecimal roundToScale(BigDecimal value, int roundToScale, int reallySmallRelativeScale, RoundingMode roundMode) {
-		//Handle values that are 'really close' to an interval of the roundToScale
-		//eg: scale is 3, reallySmallThresholdScale is 4, 1000.00001 --> 1000.
-
-		if (reallySmallRelativeScale < 0) {
-			throw new IllegalArgumentException("The reallySmallRelativeScale value cannot be less than 1.");
-		}
-
-		//The value to round by (i.e., nearest '1000') with the same sign as the value.
-		BigDecimal roundingUnitValue = BigDecimal.ONE.scaleByPowerOfTen(roundToScale);
-
-		//copy value sign to roundingUnitValue.  If value is zero, leave positive.
-		if (value.compareTo(BigDecimal.ZERO) != 0) {
-			roundingUnitValue = roundingUnitValue.multiply(new BigDecimal(value.signum()));
-		}
-
-
-		BigDecimal reallySmallThreshold = BigDecimal.ONE.scaleByPowerOfTen(roundToScale - reallySmallRelativeScale);
-		BigDecimal invertSmallThreshold = roundingUnitValue.abs().subtract(reallySmallThreshold);
-		BigDecimal roundRemainder = value.remainder(roundingUnitValue);	//negative if val is negative
-		BigDecimal absRemainder = roundRemainder.abs();
-		boolean isPositive = (value.compareTo(BigDecimal.ZERO) == 1);
-		BigDecimal truncatedValue =
-			value.divideToIntegralValue(roundingUnitValue).multiply(roundingUnitValue);
-		BigDecimal roundedValue = null;
-
-		switch (roundMode) {
-			case CEILING: {
-				//Rounding mode to round towards positive infinity.
-
-				//Pos vals go up unless *just* over the last round interval
-				//Neg vals round toward zero unless *almost* to next round interval (-.9999 --> -1)
-
-				//(roundRemainder is Neg for neg values)
-				if (roundRemainder.compareTo(reallySmallThreshold) == 1) {
-					//roundRemainder is greater than reallySmallThreshold (happens for pos vals only)
-					roundedValue = truncatedValue.add(roundingUnitValue);
-				} else if (!isPositive && absRemainder.compareTo(invertSmallThreshold) == 1) {
-					//roundRemainder is greater than reallySmallThreshold (happens for neg vals only)
-					roundedValue = truncatedValue.add(roundingUnitValue);	//adding a neg value
-				} else {
-					roundedValue = truncatedValue;
-				}
-			}
-			break;
-			case DOWN: {
-				//Rounding mode to round towards zero.
-				//Normally this would be the trunkated value, however,
-				//if the value is *really close* to the next step, round UP.
-
-				if (absRemainder.compareTo(invertSmallThreshold) == 1) {
-					//For neg numbers, we are adding a neg number
-					roundedValue = truncatedValue.add(roundingUnitValue);
-				} else {
-					roundedValue = truncatedValue;
-				}
-			}
-			break;
-			case FLOOR: {
-				//Rounding mode to round towards negative infinity.
-
-				//Pos vals truncate unless *almost* to the next round interval (1.9999 --> 2)
-				//Neg vals round away from zero unless *just* over that last round interval
-
-				//(roundRemainder is Neg for neg values)
-				if (roundRemainder.compareTo(invertSmallThreshold) == 1) {
-					//roundRemainder is greater than invertSmallThreshold (happens for pos vals only)
-					roundedValue = truncatedValue.add(roundingUnitValue);
-				} else if (!isPositive && absRemainder.compareTo(reallySmallThreshold) == 1) {
-					//absRemainder is greater than reallySmallThreshold (happens for neg vals only)
-					roundedValue = truncatedValue.add(roundingUnitValue);	//adding a neg value
-				} else {
-					roundedValue = truncatedValue;
-				}
-			}
-			break;
-			case HALF_DOWN: {
-				//Rounding mode to round towards "nearest neighbor" unless both
-				//neighbors are equidistant, in which case round down.
-				//Neg values are rounded away from zero, Pos values are trunkated.
-
-				//Untested, so unsupported.
-				throw new UnsupportedOperationException("The HALF_DOWN rounding option is not supported.");
-
-
-				//Equadistant or close to trunkated number so round down (trunkate)
-//				if (absRemainder.compareTo(fiveXSmallThreshold) < 1) {
-//					roundedValue = trunkatedValue;
-//				} else {
-//					//For neg numbers, we are adding a neg number
-//					roundedValue = trunkatedValue.add(roundingUnitValue);
-//				}
-			}
-			//break;	//unreachable
-			case HALF_EVEN: {
-				//Rounding mode to round towards the "nearest neighbor" unless
-				//both neighbors are equidistant, in which case,
-				//round towards the even neighbor.
-				throw new UnsupportedOperationException("The HALF_EVEN rounding option is not supported.");
-			}
-			//break; //unreachable
-			case HALF_UP: {
-				//Rounding mode to round towards "nearest neighbor" unless both
-				//neighbors are equidistant, in which case round up.
-				//Neg values are rounded away from zero, Pos values are trunkated.
-
-				//Untested, so unsupported.
-				throw new UnsupportedOperationException("The HALF_DOWN rounding option is not supported.");
-
-
-				//closeR to trunkated number so round down (trunkate)
-//				if (absRemainder.compareTo(fiveXSmallThreshold) == -1) {
-//					roundedValue = trunkatedValue;
-//				} else {
-//					//For neg numbers, we are adding a neg number
-//					roundedValue = trunkatedValue.add(roundingUnitValue);
-//				}
-			}
-			//break; //unreachable
-			case UNNECESSARY: {
-				throw new UnsupportedOperationException("The UNNECESSARY rounding option is not supported.");
-			}
-			//break; //unreachable
-			case UP : {
-				//Rounding mode to round away from zero.
-				if (absRemainder.compareTo(reallySmallThreshold) == 1) {
-					//For neg numbers, we are adding a neg number
-					roundedValue = truncatedValue.add(roundingUnitValue);
-				} else {
-					roundedValue = truncatedValue;
-				}
-			}
-			break;
-			default: {
-				throw new IllegalArgumentException("Unreacognized RoundingMode");
-			}
-
-		}
-
-		if (roundedValue.compareTo(BigDecimal.ZERO) == 0) {
-			//Bug http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6480539
-			//results in trailing zeros not being trimmed from '0.000000'.
-			return BigDecimal.ZERO;
-		} else {
-			return roundedValue.stripTrailingZeros();
-		}
-	}
-
-	/**
-	 * Extracts a column from a DataTable as a sorted (ascending) double[].
-	 *
-	 * NaN values are skipped, so the resulting array may have fewer rows than
-	 * the DataTable. Positive and negative infinity are converted to the
-	 * largest and smallest double values, respectively.
-	 *
-	 * TODO: put into DataTableUtils
-	 *
-	 * @param data
-	 *            The source DataTable
-	 * @param columnIndex
-	 *            The column to extract data from
-	 * @return sorted data, 'cleaned' of NANs and +/- infinity.
-	 *
-	 *         TODO This incorrectly replaced the other version of
-	 *         extractSortedValues() without keeping the capability to remove
-	 *         zeroes. Must reexamine
-	 */
-//	public static double[] extractSortedValues(DataTable data, int columnIndex) {
-//		int totalRows = data.getRowCount();
-//
-//		int skippedValueCount = 0;	//Number of values skipped b/c they are Not a Number
-//		int addedValueCount = 0;	//Number of values added
-//
-//		//Initialize to at least a size of 1
-//		double[] values = new double[(totalRows > 0)?totalRows:1];
-//
-//		for (int r=0; r<totalRows; r++) {
-//			Double value = data.getDouble(r, columnIndex);
-//			if (value.isNaN()) {
-//				skippedValueCount++;
-//			} else if (value.equals(Double.POSITIVE_INFINITY)) {
-//				values[addedValueCount] = Double.MAX_VALUE;
-//				addedValueCount++;
-//			} else if (value.equals(Double.NEGATIVE_INFINITY)) {
-//				values[addedValueCount] = Double.MAX_VALUE * -1d;
-//				addedValueCount++;
-//			} else {
-//				values[addedValueCount] = value;
-//				addedValueCount++;
-//			}
-//		}
-//
-//		//If no values were added (all were NAN), add one 'fake' zero value.
-//		if (addedValueCount == 0) {
-//			values[0] = 0d;
-//			addedValueCount = 1;
-//		}
-//
-//		double[] trimmedValues = null;
-//
-//		if (skippedValueCount > 0) {
-//			trimmedValues = Arrays.copyOfRange(values, 0, addedValueCount);
-//		} else {
-//			trimmedValues = values;
-//		}
-//
-//		Arrays.sort(trimmedValues);
-//
-//		return trimmedValues;
-//	}
-
-	/**
-	 * TODO put into DataTableUtils
-	 * @param data
-	 * @param columnIndex
-	 * @param isKeepZeroes
-	 * @return
-	 */
-	public static Double[] extractSortedValues(DataTable data, int columnIndex, boolean isKeepZeroes) {
-		int totalRows = data.getRowCount();
-
-		boolean hasZero = false;
-		List<Double> filteredValues = new ArrayList<Double>();
-
-		for (int r=0; r<totalRows; r++) {
-			Double value = data.getDouble(r, columnIndex);
-
-			if (value != null) {
-				if (!Double.isNaN(value) && !Double.isInfinite(value)) {
-					if (value == 0F) {hasZero = true;}
-					if (isKeepZeroes || value != 0D) {
-						filteredValues.add(value);
-					}
-				}
-			} /* else {	}
-			 Nulls can be safely skipped - they contain no data.
-			*/
-		}
-		if (!isKeepZeroes && hasZero) {
-			filteredValues.add(0D); // This ensures that the reaches with 0 values are at least drawn. They will not be drawn if all the nonzero reach values are of the same sign
-		}
-
-		Double[] values = new Double[filteredValues.size()];
-		values = filteredValues.toArray(values);
-		Arrays.sort(values);
-		return values;
-	}
-
-	/**
 	 * Cleans infinite values from doubles, replacing them with the max value
 	 * with the appropriate sign.  Values which are NaN are returned as NaN.
 	 *
@@ -875,6 +567,19 @@ public class BinningFactory implements CacheEntryFactory {
 			//Return normal values and NaNs
 			return value;
 		}
+	}
+
+	/**
+	 * Applies {@link #cleanInfinity(Double)} to each of the values in the array.
+	 * @param values
+	 * @return
+	 */
+	public static Double[] cleanInfinity(Double[] values) {
+		for (int i=0; i<values.length; i++) {
+			values[i] = cleanInfinity(values[i]);
+			assert(!Double.isInfinite(values[i]));
+		}
+		return values;
 	}
 
 
