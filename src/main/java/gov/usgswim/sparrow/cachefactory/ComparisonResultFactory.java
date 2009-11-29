@@ -43,20 +43,20 @@ public class ComparisonResultFactory implements CacheEntryFactory {
 	public Object createEntry(Object predictContext) throws Exception {
 		PredictionContext fullContext = (PredictionContext) predictContext;
 		Comparison comparison = fullContext.getComparison();
-
+		
 		PredictionContext noCompContext = fullContext.getNoComparisonVersion();
 		PredictionContext baseContext = null;	//TBD based on type of comparison
-
+		
 		if (comparison instanceof NominalComparison) {
 			baseContext = noCompContext.getNoAdjustmentVersion();
 		} else if (comparison instanceof AdvancedComparison) {
 			AdvancedComparison ac = (AdvancedComparison) comparison;
 			baseContext = ac.getBasePredictionContext();
-
+			
 			if (baseContext == null) {
 				Integer id = ac.getPredictionContextId();
-				SharedApplication.getInstance().getPredictionContext(id);
-
+				baseContext = SharedApplication.getInstance().getPredictionContext(id);
+				
 				if (baseContext == null) {
 					throw new Exception("Unable to locate context id '"
 							+ id + "' for comparison.");
@@ -67,7 +67,7 @@ public class ComparisonResultFactory implements CacheEntryFactory {
 			throw new Exception("Unrecognized Comparison Subclass '"
 					+ comparison.getClass().getName() + "'");
 		}
-
+		
 		//Get analysis results from analysis cache
 		PredictionContext.DataColumn baseCol = SharedApplication.getInstance().getAnalysisResult(baseContext);
 		PredictionContext.DataColumn compCol = SharedApplication.getInstance().getAnalysisResult(noCompContext);
