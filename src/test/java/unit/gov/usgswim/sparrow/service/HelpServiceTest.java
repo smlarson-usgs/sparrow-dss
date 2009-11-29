@@ -69,9 +69,9 @@ public class HelpServiceTest extends HTTPServiceTestHelper{
         String queryString = "/getList?model=" + TEST_MODEL + "&listKey=Sources";
 
         WebResponse response = client.getResponse( HELP_SERVICE_URL + queryString);
-        System.out.println(response.getText());
 
         String responseBody = response.getText();
+        //System.out.println(responseBody);
         assertFalse(responseBody.contains("error"));
         assertTrue(responseBody.contains("<list>"));
         assertTrue(responseBody.contains("<Sources>"));

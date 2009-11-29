@@ -21,7 +21,7 @@ public class PredictRunnerTest {
 		PredictRunner runner = new PredictRunner(predictData);
 
 		PredictResultImm results = runner.doPredict();
-		DataTableUtils.printDataTable(results, "");
+		//DataTableUtils.printDataTable(results, "");
 
 		DataTableWritable expected = DataTableUtils.cloneBaseStructure(results);
 		String previousPredictResultsFile = SparrowResourceUtils.getModelResourceFilePath(TEST_MODEL, "simplePredictResult.txt");

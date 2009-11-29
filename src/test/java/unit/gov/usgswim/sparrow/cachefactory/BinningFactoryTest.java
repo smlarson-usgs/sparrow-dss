@@ -397,7 +397,7 @@ public class BinningFactoryTest {
 
 	@SuppressWarnings("unused")
 	private void printBinningResult(String message, BigDecimal[] result) {
-		System.out.println(message);
+		//System.out.println(message);
 		for (int i=0; i<result.length; i++) {
 			System.out.println(i + ": " + result[i]);
 		}
@@ -405,7 +405,7 @@ public class BinningFactoryTest {
 
 	@SuppressWarnings("unused")
 	private void print(BigDecimal bd) {
-		System.out.println(bd2String(bd));
+		//System.out.println(bd2String(bd));
 	}
 
 	private String bd2String(BigDecimal bd) {

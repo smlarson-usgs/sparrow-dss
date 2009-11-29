@@ -8,11 +8,10 @@ import org.junit.Test;
 
 import com.thoughtworks.xstream.XStream;
 
-
 public class ModelTest {
 
 	@Test
-	public void testModelSerialization() {
+	public void testModelSerializationViaXStream() {
 		Model model = new Model();
 		{
 			Constituent constituent = new Constituent("Total Nitrogen", "kg/yr", "");
@@ -24,8 +23,8 @@ public class ModelTest {
 		XStream xstream = new XStream();
 		XStreamConfigurer configurer = Model.getXStreamConfigurer(xstream);
 		configurer.configure(xstream);
-		System.out.println(xstream.toXML(model));
+		// No asserts here. Running this test just to try out XStream
+		// System.out.println(xstream.toXML(model));
 	}
-
 
 }

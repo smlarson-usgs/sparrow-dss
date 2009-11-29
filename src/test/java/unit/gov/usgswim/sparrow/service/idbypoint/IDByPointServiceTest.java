@@ -12,14 +12,17 @@ import oracle.jdbc.OracleResultSet;
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 
 public class IDByPointServiceTest {
 
-	//@Test
-	// exploration
-	public void testSDOGeometry() throws SQLException {
+
+	// Exploration while creating the id by point service. Trying to understand
+	// the output of Oracle's GEOM type
+	@Ignore
+	@Test public void testSDOGeometry() throws SQLException {
 		Connection conn = SharedApplication.getConnectionFromCommandLineParams();
 		String sqlQuery = "SELECT "
 			+ "	geo.reach_geom, "
