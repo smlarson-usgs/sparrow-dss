@@ -7,10 +7,7 @@ import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
-import gov.usgswim.sparrow.service.SharedApplication;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

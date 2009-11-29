@@ -1,28 +1,24 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import java.util.Set;
-
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.DeliveryRunner;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.UncertaintySeries;
-import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.datatable.PredictResultCompare;
 import gov.usgswim.sparrow.datatable.StdErrorEstTable;
 import gov.usgswim.sparrow.parser.Analysis;
-import gov.usgswim.sparrow.parser.Comparison;
-import gov.usgswim.sparrow.parser.ComparisonType;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.parser.PredictionContext.DataColumn;
-import gov.usgswim.sparrow.revised.AggregationRunner2;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.WeightRunner;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
+
+import java.util.Set;
+
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 import org.apache.log4j.Logger;
@@ -59,7 +55,7 @@ public class AnalysisResultFactory implements CacheEntryFactory {
 	public Object createEntry(Object predictContext) throws Exception {
 		PredictionContext context = (PredictionContext) predictContext;
 		Analysis analysis = context.getAnalysis();
-		
+
 		DataColumn unAggResult = getDataColumn(context);
 		DataTable aggResult = null;
 
@@ -72,10 +68,10 @@ public class AnalysisResultFactory implements CacheEntryFactory {
 		} else {
 			aggResult = unAggResult.getTable();
 		}
-		
+
 		return new PredictionContext.DataColumn(aggResult, unAggResult.getColumn());
 	}
-	
+
 	/**
 	 * Centralized method to get a reference to the data table and a column in it
 	 * for use any place we need to access the data column. The data column will
@@ -90,7 +86,7 @@ public class AnalysisResultFactory implements CacheEntryFactory {
 
 		DataSeriesType type = context.getAnalysis().getDataSeries();
 		Integer source = context.getAnalysis().getSource();
-		
+
 
 		// Handled DataSeriesType: total, incremental, incremental_yield, total_concentration, source_values
 		if (type.isDeliveryBased()) {
@@ -206,7 +202,7 @@ public class AnalysisResultFactory implements CacheEntryFactory {
 
 		} else {
 
-			
+
 
 			switch (type) {
 				case source_value:
@@ -229,7 +225,7 @@ public class AnalysisResultFactory implements CacheEntryFactory {
 
 		return new PredictionContext.DataColumn(dataTable, dataColIndex);
 	}
-	
+
 //	private DataTable aggregateIfNecessary(PredictionContext context, DataTable dt) throws Exception {
 //		if (context.getAnalysis().hasGroupBy()) {
 //			AggregationRunner aggRunner = new AggregationRunner(context);

@@ -93,13 +93,15 @@ public class DataResourceLoaderTest {
 	// The following don't belong TODO delete later
 	// ==========================
 	public static class Person {
-		  private String firstname;
-		  private String lastname;
+		@SuppressWarnings("unused")
+		private String firstname;
+		@SuppressWarnings("unused")
+		private String lastname;
 
-		  public Person(String firstname, String lastname) {
-			  this.firstname = firstname;
-			  this.lastname = lastname;
-		  }
+		public Person(String firstname, String lastname) {
+			this.firstname = firstname;
+			this.lastname = lastname;
+		}
 	}
 
 	@Test
@@ -117,9 +119,9 @@ public class DataResourceLoaderTest {
 		xstream.alias("person", Person.class);
 
 		String ilinXML = "	<person>\r\n" +
-				"	  <firstname>I-Lin</firstname>\r\n" +
-				"	  <lastname>Kuo</lastname>\r\n" +
-				"	</person>";
+		"	  <firstname>I-Lin</firstname>\r\n" +
+		"	  <lastname>Kuo</lastname>\r\n" +
+		"	</person>";
 
 		Person ilin = (Person) xstream.fromXML(ilinXML);
 		//System.out.println(ilin.firstname + " " + ilin.lastname);

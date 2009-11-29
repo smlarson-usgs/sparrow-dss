@@ -18,9 +18,9 @@ import javax.xml.XMLConstants;
 	 * a start tag, a close tag, or a combination (start tag, character content,
 	 * close tag). It is also necessary to represent a whitespace event in
 	 * order that the resulting xml does not run afoul of linelength limitations.
-	 * 
+	 *
 	 * @author ilinkuo
-	 * 
+	 *
 	 */
 	public class BasicTagEvent {
 		public int type;
@@ -29,7 +29,7 @@ import javax.xml.XMLConstants;
 		List<String> attributeNamespaces;
 		List<String> attributePrefixes;
 		List<String> attributeNames;
-		
+
 		// consider using a case-insensitive lookup
 		Map<String, String> attributesByName;
 
@@ -38,7 +38,7 @@ import javax.xml.XMLConstants;
 		protected int MAX_STATE; // this should be set by Combo Events
 		protected boolean isComboTagEvent;
 		String tagContent;
-		
+
 		// ------------
 		// CONSTRUCTORS
 		// ------------
@@ -68,14 +68,14 @@ import javax.xml.XMLConstants;
 			this.type = type;
 			initializeAttributes();
 		}
-		
+
 		/**
 		 * Creates a combo event (start tag, char content, end tag)
 		 * @param name
 		 * @param content
 		 */
 		public BasicTagEvent(String name, String content){
-			
+
 			this(START_ELEMENT ,name);
 			// This creates a combination tag: start tag, String tag content, end tag
 			// combination tag
@@ -86,9 +86,9 @@ import javax.xml.XMLConstants;
 			}
 			// 1 for start, 2 for char content, 3 for end
 			state = 1;
-			MAX_STATE = 3;  
+			MAX_STATE = 3;
 		}
-		
+
 		/**
 		 * addAttribute() adds a non-null attribute-value pair
 		 * @param name cannot be null
@@ -98,7 +98,7 @@ import javax.xml.XMLConstants;
 			assert(name != null && (isComboTagEvent || type == START_ELEMENT));
 			return addAttribute(XMLConstants.DEFAULT_NS_PREFIX, XMLConstants.NULL_NS_URI, name, value);
 		}
-		
+
 		/**
 		 * addAttributes() adds an array of non-null attribute-value pairs.
 		 * @param name cannot be null
@@ -117,7 +117,7 @@ import javax.xml.XMLConstants;
 			this.attributeNames = new ArrayList<String>();
 			this.attributesByName = new HashMap<String, String>();
 		}
-		
+
 		/**
 		 * addAttribute() adds a non-null attribute-value pair, with namespace
 		 * @param namespace cannot be null, but may be XMLConstants.NULL_NS_URI
@@ -126,7 +126,7 @@ import javax.xml.XMLConstants;
 		 */
 		public BasicTagEvent addAttribute(String prefix, String namespace, String name, String value) {
 			assert(namespace != null && name != null);
-			if (name != null && value != null) {
+			if (value != null) {
 				if (attributeValues == null) {
 					initializeAttributes();
 				}
@@ -139,7 +139,7 @@ import javax.xml.XMLConstants;
 			}
 			return this;
 		}
-		
+
 		// -----------------------
 
 		/**
@@ -171,40 +171,40 @@ import javax.xml.XMLConstants;
 		public boolean hasNext() {
 			return state > 0 && state < MAX_STATE; // the end tag does not have a next event
 		}
-		
+
 		public boolean isEmpty() {
 			if (!isComboTagEvent) {
 				throw new UnsupportedOperationException("isEmpty() method may not be called on non combo tag ");
 			}
 			return (tagContent == null || tagContent.length() == 0);
 		}
-		
+
 		/*
 		 * Note that Combo Events allow access to attributes even if CHAR or END tag.
 		 */
 		public String getAttributeValues(int i) {
 			return attributeValues.get(i);
 		}
-		
+
 		public String getAttribute(String name) {
 			return attributesByName.get(name);
 		}
-		
+
 		public String getAttributeLocalName(int i) {
 			return attributeNames.get(i);
 		}
-		
+
 		public String getAttributeNamespace(int i) {
 			return attributeNamespaces.get(i);
 		}
-		
+
 		public String getAttributePrefix(int i) {
 			return attributePrefixes.get(i);
 		}
-		
+
 		public int getAttributeCount() {
 			return attributeValues.size();
 		}
-		
+
 
 	}

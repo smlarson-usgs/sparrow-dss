@@ -5,22 +5,16 @@ import edu.emory.mathcs.backport.java.util.Arrays;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
-import gov.usgswim.sparrow.parser.XMLParseValidationException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
-
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.commons.lang.StringUtils;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
@@ -187,7 +181,6 @@ public class ResourceLoaderUtils {
 	public static String replaceParam(String value, String paramName, String paramValue) {
 		if (paramName.charAt(0) != '\\') paramName = "\\$" + paramName + "\\$";
 		return value.replaceAll(paramName, paramValue);
-//		return StringUtils.replace(value, paramName, paramValue);
 	}
 
 	public static <T> Map<T, T> pairsToMap(T[] params){

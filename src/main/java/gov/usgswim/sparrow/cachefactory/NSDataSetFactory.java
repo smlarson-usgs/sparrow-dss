@@ -1,24 +1,13 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import java.util.Hashtable;
-
-import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.datatable.DataTableCompare;
-import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.datatable.PredictResultCompare;
-import gov.usgswim.sparrow.parser.AdvancedComparison;
-import gov.usgswim.sparrow.parser.Comparison;
-import gov.usgswim.sparrow.parser.NominalComparison;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
-
 import oracle.mapviewer.share.Field;
 import oracle.mapviewer.share.ext.NSDataSet;
 import oracle.mapviewer.share.ext.NSRow;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -55,7 +44,7 @@ public class NSDataSetFactory implements CacheEntryFactory {
 
 		return buildDataSet(context);
 	}
-	
+
 	/**
 	 * This method creates and returns an instance of NSDataSet which contains
 	 * all the Non-Spatial attribute data produced by this provider, based on
@@ -148,7 +137,7 @@ public class NSDataSetFactory implements CacheEntryFactory {
 
 		return new NSDataSet(nsRows);
 	}
-	
+
 	protected void debugNSData(NSRow[] nsRows) {
 		int maxRow = 10;
 		if (maxRow > nsRows.length) maxRow = nsRows.length;

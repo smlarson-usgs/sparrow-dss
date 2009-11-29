@@ -62,7 +62,6 @@ public class BinningFactoryTestBug1 extends TestCase {
 		}
 	}
 
-	@SuppressWarnings("unused")
 	private void printBinningResult(String message, BigDecimal[] result) {
 		System.out.println(message);
 		for (int i=0; i<result.length; i++) {

@@ -1,6 +1,5 @@
 package gov.usgswim.sparrow.parser;
 
-import static gov.usgswim.sparrow.parser.DataSeriesType.source_value;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.sparrow.util.ParserHelper;
@@ -91,34 +90,34 @@ public class Select implements XMLStreamParserComponent {
 	}
 
 	public void checkValidity() throws XMLParseValidationException {
-		
-		
+
+
 		//DataSeries is required
 		if (dataSeries == null) {
 			throw new XMLParseValidationException(
 			"A dataSeries was not found or was not recognized.  A dataSeries is always required.");
 		}
-		
+
 		//Some series require a source
 		if (dataSeries.isSourceRequired() && source == null) {
 			throw new XMLParseValidationException(
 				"The dataSeries '" + dataSeries + "' requires a source, " +
 				"which is specified as an attribute, i.e. source=\"1\".");
 		}
-		
+
 		//Some series cannot have a source
 		if (dataSeries.isSourceDisallowed() && source != null) {
 			throw new XMLParseValidationException(
 				"The dataSeries '" + dataSeries + "' does not allow a source.");
 		}
-		
+
 		//Some series do not allow any type of aggregate or post analysis.
 		//Error estimates are one example.
 		if (dataSeries.isAnalysisDisallowed() && analyticFunction != null) {
 			throw new XMLParseValidationException(
 				"The dataSeries '" + dataSeries + "' does not allow analytic functions.");
 		}
-		
+
 	}
 
 	public boolean isValid() {

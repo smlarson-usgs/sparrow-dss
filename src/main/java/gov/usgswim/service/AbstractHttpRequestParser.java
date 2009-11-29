@@ -107,10 +107,10 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 					xml = request.getParameter(xmlParam);
 					return (xml == null)? "": xml;
 
-				} else {
-					//ignore the extra url info (it may be asking for echo service)
-					//fall thru to code below
 				}
+				//ignore the extra url info (it may be asking for echo service)
+				//fall thru to code below
+
 
 			}
 			if (xml != null && xml.length() > 0) {

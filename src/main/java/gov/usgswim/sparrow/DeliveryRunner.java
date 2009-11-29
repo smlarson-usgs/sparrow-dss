@@ -11,7 +11,6 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.datatable.PredictResultCompare;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.navigation.NavigationUtils;
 import gov.usgswim.sparrow.parser.Analysis;

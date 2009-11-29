@@ -76,14 +76,14 @@ public class SavedSessionService extends HttpServlet {
 				out.write("No sessions found");
 			}
 			return;
-		} else {
-			// output the named session
-			resp.setContentType("text/html");
-			String result = retrieveSavedSession(modelID.toString(), session);
-			// TODO decide on what to return if no session found
-			// Note that this result is already in JSON
-			out.write(result);
 		}
+		// output the named session
+		resp.setContentType("text/html");
+		String result = retrieveSavedSession(modelID.toString(), session);
+		// TODO decide on what to return if no session found
+		// Note that this result is already in JSON
+		out.write(result);
+
 		out.flush();
 	}
 

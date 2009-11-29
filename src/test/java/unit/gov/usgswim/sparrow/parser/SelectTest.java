@@ -1,10 +1,5 @@
 package gov.usgswim.sparrow.parser;
 
-import gov.usgswim.sparrow.parser.ComparisonType;
-import gov.usgswim.sparrow.parser.DataSeriesType;
-import gov.usgswim.sparrow.parser.Select;
-import gov.usgswim.sparrow.parser.XMLParseValidationException;
-
 import java.io.StringReader;
 
 import javax.xml.stream.XMLInputFactory;
@@ -13,9 +8,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.assertNull;
 
 public class SelectTest extends TestCase {
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
@@ -116,12 +108,12 @@ public class SelectTest extends TestCase {
 			Select select = new Select();
 			reader.next();
 			select.parse(reader);
-			
+
 			assertEquals(DataSeriesType.total_std_error_estimate, select.getDataSeries());
 			assertNull(select.getSource());
 			assertTrue(select.isValid());
 		}
-		
+
 		{
 			String testRequest = "<select>"
 				+ "		<dataSeries source=\"1\">total_std_error_estimate</dataSeries>"
@@ -130,12 +122,12 @@ public class SelectTest extends TestCase {
 			Select select = new Select();
 			reader.next();
 			select.parse(reader);
-			
+
 			assertEquals(DataSeriesType.total_std_error_estimate, select.getDataSeries());
 			assertEquals(Integer.valueOf(1), select.getSource());
 			assertTrue(select.isValid());
 		}
-		
+
 		{
 			String testRequest = "<select>"
 				+ "		<dataSeries source=\"1\">total_std_error_estimate</dataSeries>"
@@ -144,15 +136,15 @@ public class SelectTest extends TestCase {
 			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 			Select select = new Select();
 			reader.next();
-			
-			
+
+
 			try {
 				select.parse(reader);
 				fail("This was supposed to throw a parse exception - analytics not allowed.");
 			} catch (XMLParseValidationException e) {
 				//expected
 			}
-			
+
 			assertEquals(DataSeriesType.total_std_error_estimate, select.getDataSeries());
 			assertFalse(select.isValid());
 		}
@@ -165,11 +157,11 @@ public class SelectTest extends TestCase {
 			Select select = new Select();
 			reader.next();
 			select.parse(reader);
-			
+
 			assertEquals(DataSeriesType.incremental_std_error_estimate, select.getDataSeries());
 			assertTrue(select.isValid());
 		}
-		
+
 		{
 			String testRequest = "<select>"
 				+ "		<dataSeries source=\"1\">incremental_std_error_estimate</dataSeries>"
@@ -178,12 +170,12 @@ public class SelectTest extends TestCase {
 			Select select = new Select();
 			reader.next();
 			select.parse(reader);
-			
+
 			assertEquals(DataSeriesType.incremental_std_error_estimate, select.getDataSeries());
 			assertEquals(Integer.valueOf(1), select.getSource());
 			assertTrue(select.isValid());
 		}
-		
+
 		{
 			String testRequest = "<select>"
 				+ "		<dataSeries source=\"1\">incremental_std_error_estimate</dataSeries>"
@@ -192,14 +184,14 @@ public class SelectTest extends TestCase {
 			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
 			Select select = new Select();
 			reader.next();
-			
+
 			try {
 				select.parse(reader);
 				fail("This was supposed to throw a parse exception.");
 			} catch (XMLParseValidationException e) {
 				//expected
 			}
-			
+
 			assertEquals(DataSeriesType.incremental_std_error_estimate, select.getDataSeries());
 			assertFalse(select.isValid());
 		}

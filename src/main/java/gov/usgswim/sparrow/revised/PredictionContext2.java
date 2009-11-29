@@ -4,16 +4,17 @@ import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.*;
-import gov.usgswim.sparrow.datatable.DataTableCompare;
+import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.UncertaintyData;
+import gov.usgswim.sparrow.UncertaintyDataRequest;
+import gov.usgswim.sparrow.UncertaintySeries;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.StdErrorEstTable;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
-import gov.usgswim.sparrow.parser.Analysis;
-import gov.usgswim.sparrow.parser.BasicAnalysis;
 import gov.usgswim.sparrow.parser.AdvancedAnalysis;
+import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.AreaOfInterest;
-import gov.usgswim.sparrow.parser.ComparisonType;
+import gov.usgswim.sparrow.parser.BasicAnalysis;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
@@ -198,7 +199,7 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 
 		DataSeriesType type = analysis.getDataSeries();
 		Integer source = analysis.getSource();
-		
+
 
 		// Handled DataSeriesType: total, incremental, incremental_yield, total_concentration, source_values
 		if (type.isDeliveryBased()) {
@@ -334,7 +335,7 @@ public class PredictionContext2 implements XMLStreamParserComponent {
 						dataTable = adjSrc;
 						//ee - this is hacked (code below removed).
 						//I think this class will just be deleted.
-						
+
 //						if (this. .getNominalComparison().isNone()) {
 //
 //							dataTable = adjSrc;

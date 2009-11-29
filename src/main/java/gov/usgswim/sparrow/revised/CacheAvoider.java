@@ -1,7 +1,6 @@
 package gov.usgswim.sparrow.revised;
 
 import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.service.SharedApplication;
 
 public class CacheAvoider {
 

@@ -4,7 +4,6 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.sparrow.util.ParserHelper;
 
-import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -26,7 +25,7 @@ public class BasicAnalysis extends Analysis {
 	private static final long serialVersionUID = 1L;
 	private static final String GROUP_BY_CHILD = "groupBy";
 	private static final String DATA_SERIES = "dataSeries";
-	
+
 	/**
 	 * The element name doesn't match the class name b/c we want the XML to be
 	 * as simple as possible for users.
@@ -89,7 +88,7 @@ public class BasicAnalysis extends Analysis {
 						String dataSeriesString = ParserHelper.parseSimpleElementValue(in);
 						dataSeries = (dataSeriesString != null)?
 								Enum.valueOf(DataSeriesType.class, dataSeriesString): null;
-						
+
 					} else if (GROUP_BY_CHILD.equals(localName)) {
 						parseGroupBy(in);
 					} else {
@@ -109,11 +108,12 @@ public class BasicAnalysis extends Analysis {
 		}
 		throw new XMLParseValidationException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
 	}
-	
+
+	@Override
 	public DataSeriesType getDataSeries() {
 		return dataSeries;
 	}
-	
+
 	@Override
 	public boolean isWeighted() {
 		return dataSeries.isWeighted();
@@ -142,15 +142,15 @@ public class BasicAnalysis extends Analysis {
 	public synchronized int hashCode() {
 		if (id == null) {
 			HashCodeBuilder hash = new HashCodeBuilder(137, 1729);
-			
+
 			//Note: The hashcode of an enum is not repeatable
 			if (dataSeries != null) {
 				hash.append(dataSeries.ordinal());	//must be repeatable (thus ordinal)
 			}
-			
+
 			hash.append(source);
 			hash.append(super.hashCode());
-			
+
 			id = hash.toHashCode();
 		}
 		return id;
@@ -165,7 +165,7 @@ public class BasicAnalysis extends Analysis {
 		myClone.source = source;
 		return myClone;
 	}
-	
+
 	@Override
 	public void checkValidity() throws XMLParseValidationException {
 		super.checkValidity();

@@ -3,7 +3,6 @@ package gov.usgswim.sparrow.test.integration;
 import static gov.usgswim.sparrow.test.TestHelper.pipeDispatch;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
-import gov.usgswim.sparrow.MapViewerSparrowDataProvider;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.cachefactory.NSDataSetFactory;
 import gov.usgswim.sparrow.datatable.PredictResult;

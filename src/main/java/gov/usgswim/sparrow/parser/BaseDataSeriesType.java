@@ -1,6 +1,5 @@
 package gov.usgswim.sparrow.parser;
 
-import java.io.Serializable;
 
 /**
  *
@@ -9,12 +8,12 @@ public enum BaseDataSeriesType {
 
 	//Note:  I am removing the error_estimate types here.  I'm thinking that
 	//error (of different types) can be added as a generic flag on the analysis rather than a series.
-	
+
 	//flags:
 	//delievered (multiply the resulting amount by the delivery fraction)
 	//Per total-area/catch-area/flow (divide the result by the this amount)
 	//error [est, bootstrap]
-	
+
 	//Delivered:
 	/*
 	 * Delivery Fraction
@@ -23,7 +22,7 @@ public enum BaseDataSeriesType {
 	 * Total Delivered Yield
 	 * Incremental Delivered Yield
 	 */
-	
+
 	//Other
 	/*
 	 * total-area
@@ -31,19 +30,19 @@ public enum BaseDataSeriesType {
 	 * flow
 	 * delivery_fraction
 	 */
-	
-	//Total (i.e. includes upstream) predicted load.  
+
+	//Total (i.e. includes upstream) predicted load.
     total						(true, false, false, false, 1, false), // active
-    
-    //Incremental (i.e. does not include upstream) predicted load.  
+
+    //Incremental (i.e. does not include upstream) predicted load.
     incremental					(true, false, false, false, 1, false), //active
-    
+
     delivered_fraction			(false, false, true, false, 0, false), //fraction delivered - calc w/o prediction
 
     source_value				(false, true, false, false, 2, false), // active
 
     std_error_estimate_coef		(false, false, false, true, 1, false),
-    
+
     total_decay					(true, false, false, false, 1, true),	//The amount decayed in the stream
     total_no_decay				(true, false, false, false, 1, true),	//Total as it would be w/o decay
     land_to_water_coef			(false, true, false, false, 2, false),
@@ -70,7 +69,7 @@ public enum BaseDataSeriesType {
         this.stdErrorCoefBased = stdErrorCoefBased;
         this.srcRequirement = srcRequirement;
         this.nonstandardPrediction = nonstandardPrediction;
-        
+
     }
 
     /**
@@ -91,7 +90,7 @@ public enum BaseDataSeriesType {
     public boolean isPredictDataBased() {
         return predictDataBased;
     }
-    
+
     /**
      * Returns true if the actual data being mapped is the delivery fraction.
      * This is unrelated to is the delivery fraction is used in the calculation
@@ -103,7 +102,7 @@ public enum BaseDataSeriesType {
     public boolean isDeliveryBased() {
     	return deliveryBased;
     }
-    
+
     /**
      * Returns true if the actual data being mapped is the standard error
      * coef.

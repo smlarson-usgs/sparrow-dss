@@ -244,9 +244,9 @@ public class BigDecimalUtils {
 				//Bug http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6480539
 				//results in trailing zeros not being trimmed from '0.000000'.
 				return BigDecimal.ZERO;
-			} else {
-				return roundedValue.stripTrailingZeros();
 			}
+			return roundedValue.stripTrailingZeros();
+
 		}
 
 }

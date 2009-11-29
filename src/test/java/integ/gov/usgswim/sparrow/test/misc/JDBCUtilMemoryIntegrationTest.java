@@ -6,11 +6,9 @@ import gov.usgswim.sparrow.util.DataLoader;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import junit.framework.TestCase;
-import oracle.jdbc.OracleDriver;
 
 /**
  * @author ilinkuo

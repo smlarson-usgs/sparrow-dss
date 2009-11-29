@@ -4,7 +4,6 @@ import static junit.framework.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 import gov.usgswim.sparrow.service.HTTPServiceTestHelper;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.junit.AfterClass;

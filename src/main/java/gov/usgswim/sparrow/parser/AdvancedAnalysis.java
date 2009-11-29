@@ -4,7 +4,6 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.sparrow.util.ParserHelper;
 
-import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
@@ -107,7 +106,7 @@ public class AdvancedAnalysis extends Analysis {
 		}
 		throw new XMLParseValidationException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
 	}
-	
+
 	@Override
 	public boolean isWeighted() {
 		return getSelect().isWeighted();
@@ -155,17 +154,17 @@ public class AdvancedAnalysis extends Analysis {
 		myClone.select = select;
 		return myClone;
 	}
-	
+
 	@Override
 	public void checkValidity() throws XMLParseValidationException {
 		super.checkValidity();
 		select.checkValidity();
-		
+
 		//Some series do not allow any type of aggregate or post analysis.
 		//Error estimates are one example.
 		if (getDataSeries().isAnalysisDisallowed() && aggFunction != null) {
 			throw new XMLParseValidationException(
-				"The dataSeries '" + getDataSeries() + 
+				"The dataSeries '" + getDataSeries() +
 				"' does not allow analysis like aggregation.");
 		}
 	}

@@ -8,9 +8,10 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.DataSeriesType;
-import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.ValueType;
+import gov.usgswim.sparrow.service.predict.aggregator.AggregateData;
+import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -20,8 +21,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import gov.usgswim.sparrow.service.predict.aggregator.AggregateData;
-import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
 /**
  * Utility class used to run aggregations against {@code DataTable} objects.
  */

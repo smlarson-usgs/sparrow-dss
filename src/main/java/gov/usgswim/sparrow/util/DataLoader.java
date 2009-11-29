@@ -593,9 +593,9 @@ public class DataLoader {
 		return ResourceLoaderUtils.loadParametrizedProperty(PROPERTIES_FILE, name, params);
 	}
 
-	public static String getQuery(String name, String... params) throws IOException {
-		return ResourceLoaderUtils.loadParametrizedProperty(PROPERTIES_FILE, name, params);
-	}
+//	public static String getQuery(String name, String... params) throws IOException {
+//		return ResourceLoaderUtils.loadParametrizedProperty(PROPERTIES_FILE, name, params);
+//	}
 
 	/**
 	 * Loads the named query and inserts the model ID

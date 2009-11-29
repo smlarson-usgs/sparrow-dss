@@ -32,14 +32,14 @@ import javax.xml.stream.XMLStreamReader;
  * single namespace. Space is paid attention to in only a very limited fashion,
  * as a single carriage return in order that the resulting XML does not all
  * appear on a single line (to avoid violating line length constraints).
- * 
+ *
  * As a consequence, the only StAX events returned by this reader are:
  * StartDocument, StartElement, EndElement, EndDocument, characters, space
- * 
+ *
  * TODO make ignore namespaces an option??
- * 
+ *
  * @author ilinkuo
- * 
+ *
  */
 public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	protected static final int NOT_YET_BEGUN_PARSING = 0;
@@ -47,7 +47,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	protected Map<String, String> namespacePrefixes;
 	// defaultNamespace really exists at the scope of the tag, but we're simplifying here.
 	protected String defaultNamespace = XMLConstants.NULL_NS_URI;
-	
+
 	// current parse state variables
 	protected Queue<BasicTagEvent> events = new LinkedList<BasicTagEvent>();
 	protected BasicTagEvent currentEvent;
@@ -56,20 +56,20 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	protected boolean isEnded;
 	protected boolean isDataDone;
 	protected int startElementCount;
-	
+
 	// OPTIMIZATION
 	protected Map<String, String> attributeNameCache = new HashMap<String, String>();
 
-	
+
 	public static class Attribute{
 		public String name;
 		public String value;
-		
+
 		public Attribute(String name, String value) {
 			this.name = name;
 			this.value = value;
 		}
-		
+
 		public boolean isEmpty() {
 			return (name == null && value == null);
 		}
@@ -92,7 +92,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	/**
 	 * This is the most important method to override. It should populate the
 	 * event queue but not touch currentEvent.
-	 * 
+	 *
 	 * @throws XMLStreamException
 	 */
 	public void readNext() throws XMLStreamException {
@@ -103,17 +103,17 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 						documentStartAction();
 					}
 					rowStartAction();
-					
-					readRow(_rset);		
-					
+
+					readRow(_rset);
+
 					rowEndAction();
 				} else {
 					// document has started and there is no more next row, so it must be the end of the document
 					if (isStarted) {
 						documentEndAction();
 					}
-					
-					
+
+
 					ResultSet resultSet = _rset;
 					_rset = null;
 					resultSet.close();
@@ -124,14 +124,14 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 			throw new XMLStreamException(e);
 		}
 	}
-	
+
 	// These may be overridden as necessary
 	protected BasicTagEvent documentStartAction() {
 		isStarted = true;
 		return null;
 	}
 	protected BasicTagEvent rowStartAction() throws SQLException { return null;}
-	protected void readRow(ResultSet rset) throws SQLException {}
+	protected void readRow(@SuppressWarnings("unused") ResultSet rset) throws SQLException {}
 	protected void rowEndAction() {}
 	protected void documentEndAction() {
 		isEnded = true;
@@ -157,7 +157,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		if (currentState == NOT_YET_BEGUN_PARSING) {
 			assert(false);	// this shouldn't happen, or rather, it happens
 			// only when there were never any events in the queue.
-			// IK: Throwing an exception here seems extremely unfriendly, 
+			// IK: Throwing an exception here seems extremely unfriendly,
 			// but that's what the StAX documentation says I should do.
 			throw new XMLStreamException("expected start or end tag");
 		} else if (currentState == END_DOCUMENT){
@@ -166,7 +166,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		}
 		return currentState;
 	}
-	
+
 	public int next() throws XMLStreamException{
 		// check combo events first before checking queue.
 		if (currentEvent != null && currentEvent.hasNext()) {
@@ -178,7 +178,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		}
 		throw new IllegalStateException("next() cannot be called when stream is empty");
 	}
-	
+
 	protected int trackReturnState(int i) {
 		if (i == XMLStreamConstants.START_ELEMENT) {
 			startElementCount++;
@@ -193,18 +193,18 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	/**
 	 * Returns a combo open tag, content, closed tag event if tagContent is not
 	 * null. Note that all makeXXX() methods do not add to the events queue.
-	 * 
+	 *
 	 * @param tagName
 	 * @param tagContent
 	 */
 	public BasicTagEvent makeNonNullBasicTag(String tagName, String tagContent) {
 		return (tagContent == null)? null : new BasicTagEvent(tagName, tagContent);
 	}
-	
+
 	/**
 	 * Returns a combo tag if either tagContent is not null or attributes not
 	 * empty. Note that all makeXXX() methods do not add to the events queue.
-	 * 
+	 *
 	 * @param tagName
 	 * @param tagContent
 	 * @param attributes
@@ -222,7 +222,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Returns a combo tag if tagContent is not null. The existence or
 	 * nonexistence of attributes does not affect whether a null is returned,
@@ -230,7 +230,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	 * makeNonNullBasicTag(String tagName, String tagContent) except that
 	 * attributes are allowed. Note that all makeXXX() methods do not add to the
 	 * events queue.
-	 * 
+	 *
 	 * @param tagName
 	 * @param tagContent
 	 * @param attributes
@@ -239,12 +239,12 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	public BasicTagEvent makeNonNullBasicTagIgnoreAttributes(String tagName, String tagContent, Attribute... attributes ) {
 		return (tagContent != null)? makeNonNullBasicTag(tagName, tagContent, attributes): null;
 	}
-	
+
 	/**
 	 * Adds an open tag, content, closed tag event to the event stream if
 	 * tagContent is not null. Note that all addXXX() methods add to the events
 	 * queue immediately hence return void
-	 * 
+	 *
 	 * @param tagName
 	 * @param tagContent
 	 */
@@ -253,12 +253,12 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 			events.add(new BasicTagEvent(tagName, tagContent));
 		}
 	}
-	
+
 	/**
 	 * Adds an open tag, content, closed tag event to the event stream if
 	 * tagContent or attributes are not null. Note that all addXXX() methods add
 	 * to the events queue immediately hence return void
-	 * 
+	 *
 	 * @param tagName
 	 * @param tagContent
 	 */
@@ -273,14 +273,14 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 			events.add(result);
 		}
 	}
-	
+
 	/**
 	 * Adds an open tag, content, closed tag event to the event stream if
 	 * tagContent is not null. The existence or nonexistence of attributes does
 	 * not affect whether a null is returned, only the form of the returned tag.
 	 * It is similar to makeNonNullBasicTagIgnoreAttributes(). Note that all
 	 * addXXX() methods add to the events queue immediately hence return void
-	 * 
+	 *
 	 * @param tagName
 	 * @param tagContent
 	 */
@@ -289,7 +289,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 			addNonNullBasicTag(tagName, tagContent, attributes);
 		}
 	}
-	
+
 	protected boolean hasContent(String tagContent, Attribute... attributes) {
 		boolean hasContent = tagContent != null;
 		if (!hasContent) {
@@ -299,12 +299,12 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		}
 		return hasContent;
 	}
-	
+
 	/**
 	 * Adds a tag to the events queue if all the child elements are non-null.
 	 * Note that all addXXX() methods add to the events queue immediately hence
 	 * return void
-	 * 
+	 *
 	 * @param tagName
 	 * @param basicTagEvents
 	 */
@@ -327,17 +327,17 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		}
 		addCloseTag(tagName);
 	}
-	
+
 	/**
 	 * Adds a close tag (END_ELEMENT) to the events queue. Note that all
 	 * addXXX() methods add to the events queue immediately hence return void
-	 * 
+	 *
 	 * @param tagName
 	 */
 	public void addCloseTag(String tagName) {
 		events.add(new BasicTagEvent(END_ELEMENT, tagName));
 	}
-	
+
 	/**
 	 * Adds a open tag (START_ELEMENT) to the events queue. Note that all addXXX() methods add to the events queue immediately
 	 * @param tagName
@@ -345,7 +345,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	public void addOpenTag(String tagName) {
 		events.add(new BasicTagEvent(START_ELEMENT, tagName));
 	}
-	
+
 	// ================
 	// UTILITY METHODS (trimmed versions)
 	// ================
@@ -362,7 +362,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 			}
 		}
 	}
-	
+
 	/**
 	 * Returns a combo open tag, content, closed tag event to the event stream if trimmed tagContent is not null
 	 * @param tagName
@@ -377,7 +377,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		}
 		return null;
 	}
-	
+
 	// =======================================
 	// (must override) XMLStreamReader METHODS
 	// =======================================
@@ -386,7 +386,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	 * unnecessary (methods are already required by the XMLStreamReader
 	 * interface), they are placed here to provide a guide for what probably
 	 * needs to be overridden
-	 * 
+	 *
 	 */
 	public abstract void close() throws XMLStreamException;
 	public String getAttributeLocalName(int index) {
@@ -450,10 +450,10 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		// namespaces ignored by Basic reader, so this is just local name
 		return new QName(XMLConstants.NULL_NS_URI, currentEvent.eventName, XMLConstants.DEFAULT_NS_PREFIX);
 	}
-	
 
 
-	
+
+
 	// ========================================
 	// FULLY IMPLEMENTED XMLStreamReader METHODS (no need to implement)
 	// ========================================
@@ -468,7 +468,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		return currentEvent.type == XMLStreamConstants.START_ELEMENT
 				|| currentEvent.type == XMLStreamConstants.END_ELEMENT;
 	}
-	
+
 	public final int getAttributeCount() {
 		XMLStreamReaderMethod.getAttributeCount.check(currentEvent.type);
 		return currentEvent.getAttributeCount();
@@ -534,7 +534,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		// not keeping track of whitespace now
 		return false;
 	}
-	
+
 	public String getElementText() throws XMLStreamException {
 		if (!XMLStreamReaderMethod.getElementText.isAllowed(currentEvent.type)) {
 			throw new XMLStreamException();
@@ -547,14 +547,14 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	protected String makeErrorMessage(String methodName) {
 		return makeErrorMessage(methodName, UsgsStAXUtils.eventNames.get(currentEvent.type));
 	}
-	
+
 	protected String makeErrorMessage(String methodName, String stateName) {
 		StringBuffer sb = new StringBuffer(methodName);
 		sb.append("() may not be called when current state is ")
 			.append(stateName);
 		return sb.toString();
 	}
-	
+
 	// =================
 	// NAMESPACE METHODS
 	// =================
@@ -564,7 +564,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		}
 		this.defaultNamespace = namespace;
 	}
-	
+
 	public void addNamespace(String namespace, String prefix) {
 		if (prefix.indexOf(':') >= 0) {
 			throw new IllegalArgumentException("illegal prefix: " + prefix);
@@ -578,7 +578,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 
 		namespacePrefixes.put(namespace, prefix);
 	}
-	
+
 	/*
 	 * @see javax.xml.stream.XMLStreamReader#getNamespaceCount()
 	 */
@@ -598,18 +598,18 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		return (hasDefaultNamespace())? namespacePrefixCount + 1: namespacePrefixCount;
 //		return 0;
 	}
-	
+
 	public boolean hasDefaultNamespace() {
 		return !(defaultNamespace == null || defaultNamespace == XMLConstants.NULL_NS_URI);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see javax.xml.stream.XMLStreamReader#getNamespaceURI()
 	 */
 	public String getNamespaceURI() {
 		return defaultNamespace;
 	}
-	
+
 	public String getNamespacePrefix(int index) {
 		if (hasDefaultNamespace()) {
 			// the defaultNamespace is assigned to index 0, if it exists.
@@ -659,17 +659,17 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		}
 		return XMLConstants.NULL_NS_URI; // namespace not found
 	}
-	
+
 	public String getPrefix() {
 		return null; // prefixes ignored by Basic reader
 	}
-	
+
 	public void require(int type, String namespaceURI, String localName)
 			throws XMLStreamException {
 		// namespaces ignored by Basic reader
 	}
-	
-	
+
+
 	// ========================================
 	// (Unimplemented)XMLStreamReader METHODS
 	// ========================================
@@ -680,7 +680,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		// no properties defined for this basic implementation, but has future potential
 		return null;
 	}
-	
+
 
 	// ==================================================
 	// (Unused/ignored) XMLStreamReader MISCELLANEOUS METHODS
@@ -692,18 +692,18 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	public String getPITarget() {
 		return null; // PIs ignored
 	}
-	
+
 	public String getVersion() {
 		return null; // version ignored
 	}
-	
+
 	// =======================
 	// INNER CLASS
 	// =======================
 	public class BasicEvent extends BasicTagEvent{
 		List<String> attributeAliases;
 		Map<String, String> attributesByAlias;
-		
+
 		public BasicEvent(int type){
 			super(type);
 			this.attributeAliases = new ArrayList<String>();
@@ -715,13 +715,13 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 			this.attributeAliases = new ArrayList<String>();
 			this.attributesByAlias = new HashMap<String, String>();
 		}
-		
+
 		public BasicEvent(String name, String content){
 			super(name, content);
 			this.attributeAliases = new ArrayList<String>();
 			this.attributesByAlias = new HashMap<String, String>();
 		}
-		
+
 		@Override
 		public BasicEvent addAttribute(String name, String value) {
 			super.addAttribute(name, value);
@@ -738,7 +738,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 			attributesByAlias.put(key, value);
 			return this;
 		}
-		
+
 		@Override
 		public String getAttribute(String name) {
 			String result = attributesByAlias.get(name);
@@ -747,11 +747,11 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 			}
 			return result;
 		}
-		
+
 		@Override
 		public String getAttributeLocalName(int i) {
 			return attributeAliases.get(i);
 		}
 	}
-	
+
 }

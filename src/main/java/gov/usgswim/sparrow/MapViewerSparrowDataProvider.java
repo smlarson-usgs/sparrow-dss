@@ -7,10 +7,8 @@ import gov.usgswim.sparrow.service.SharedApplication;
 import java.util.Hashtable;
 import java.util.Properties;
 
-import oracle.mapviewer.share.Field;
 import oracle.mapviewer.share.ext.NSDataProvider;
 import oracle.mapviewer.share.ext.NSDataSet;
-import oracle.mapviewer.share.ext.NSRow;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -114,7 +112,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 					// TODO ask LJ
 					// nsData = SharedApplication.getInstance().getNSDataSet(context);
 					NSDataSetFactory factory = new NSDataSetFactory();
-					nsData = (NSDataSet) factory.buildDataSet(context);
+					nsData = factory.buildDataSet(context);
 
 
 				} catch (Exception e1) {
@@ -125,18 +123,15 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 
 				return nsData;
 
-			} else {
-				log.info("MapViewerSparrowDataProvider could not find a " +
-						"context for id: " + contextId + ".  It may have expired.");
-				return null;
 			}
-
-		} else {
-			log.error("MapViewerSparrowDataProvider request received w/o" +
-					" a context-id parameter.");
-
+			log.info("MapViewerSparrowDataProvider could not find a " +
+					"context for id: " + contextId + ".  It may have expired.");
 			return null;
 		}
+		log.error("MapViewerSparrowDataProvider request received w/o" +
+		" a context-id parameter.");
+
+		return null;
 
 	}
 

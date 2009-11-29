@@ -15,7 +15,6 @@ import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.PredictResultStructure;
 import gov.usgswim.sparrow.Runner;
 import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.datatable.PredictResultCompare;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.navigation.NavigationUtils;
 import gov.usgswim.sparrow.parser.Analysis;
@@ -101,7 +100,7 @@ public class DeliveryRunner2 implements Runner {
 	public double[] calculateNodeTransportFraction(Set<Long> targetReaches) {
 		// TODO cache the result, based on modelID,
 		int maxReachRow = NavigationUtils.findMaxReachRow(targetReaches, topo);
-		
+
 		//TODO:  Commented out by ee - never used.
 		//PredictResultStructure prs = PredictResultStructure.analyzePredictResultStructure(maxReachRow, sourceValues);
 
@@ -311,7 +310,7 @@ public class DeliveryRunner2 implements Runner {
 
 		// apply delivery fraction weights
 		assert(context.getTerminalReaches() != null) : "shouldn't reach this point if no terminal reaches";
-		
+
 		//TODO:  ee commented these out - never used.
 		//Set<Long> targetReaches = context.getTerminalReaches().asSet();
 		//double[] nodeTransportFraction = calculateNodeTransportFraction(targetReaches);

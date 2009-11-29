@@ -3,10 +3,8 @@ package gov.usgswim.sparrow.test;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 
 import junit.framework.TestCase;
-import oracle.jdbc.OracleDriver;
 
 import org.junit.Ignore;
 

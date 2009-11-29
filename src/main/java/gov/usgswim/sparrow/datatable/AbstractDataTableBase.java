@@ -1,9 +1,8 @@
 package gov.usgswim.sparrow.datatable;
 
-import java.util.Set;
-
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTable.Immutable;
+
+import java.util.Set;
 
 public abstract class AbstractDataTableBase implements DataTable {
 
@@ -11,7 +10,7 @@ public abstract class AbstractDataTableBase implements DataTable {
 
 	public AbstractDataTableBase(DataTable base) {
 		super();
-		
+
 		this.base = base;
 	}
 

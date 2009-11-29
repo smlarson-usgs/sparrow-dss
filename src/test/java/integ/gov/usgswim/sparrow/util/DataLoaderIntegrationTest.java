@@ -8,20 +8,14 @@ import gov.usgswim.datatable.filter.FilteredDataTable;
 import gov.usgswim.datatable.filter.RowRangeFilter;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
+import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.SparrowModelBuilder;
-import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.DataLoader;
-import gov.usgswim.sparrow.util.DataLoaderOfflineTest;
-import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.util.List;
-
-import oracle.jdbc.OracleDriver;
 
 public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 	public static final Long TEST_MODEL = 32L;

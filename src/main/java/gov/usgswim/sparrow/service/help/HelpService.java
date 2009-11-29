@@ -1,6 +1,5 @@
 package gov.usgswim.sparrow.service.help;
 
-import gov.usgs.webservices.framework.utils.ResourceLoaderUtils;
 import gov.usgs.webservices.framework.utils.SmartXMLProperties;
 import gov.usgswim.sparrow.util.SparrowResourceUtils;
 

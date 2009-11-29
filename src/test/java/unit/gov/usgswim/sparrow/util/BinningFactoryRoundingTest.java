@@ -54,9 +54,32 @@ public class BinningFactoryRoundingTest{
 		assertEquals("940", BigDecimalUtils.round(940.7, 925, 949).toString());
 	}
 
+	@Test public void testRoundTo4Digits() {
+		//rounding up
+		assertEquals("8.888", BigDecimalUtils.round(8.8877, 8.8871, 8.8887).toString());
+		assertEquals("0.8888", BigDecimalUtils.round(.88877, .88852, .88891).toString());
+		assertEquals("0.08888", BigDecimalUtils.round(.088877, .088852, .088891).toString());
+		assertEquals("0.00008888", BigDecimalUtils.round(.000088877, .000088852, .000088891).toString());
+		assertEquals("8.888E+4", BigDecimalUtils.round(88877.77, 88852, 88891).toString());
+
+		// rounding down
+		assertEquals("9.488", BigDecimalUtils.round(9.4884, 9.48725, 9.4889).toString());
+		assertEquals("0.9488", BigDecimalUtils.round(.94884, .948725, .94889).toString());
+		assertEquals("0.09488", BigDecimalUtils.round(.09488, .0948725, .094889).toString());
+		assertEquals("0.00009488", BigDecimalUtils.round(.000094884, .0000948725, .000094889).toString());
+		assertEquals("9.488E+4", BigDecimalUtils.round(94880.7, 94872.5, 94889).toString());
+	}
+
+	@Test public void testRoundTo6Digits() {
+		// 6-digit rounding now supported
+		System.out.println(BigDecimalUtils.round(8.770009000001, 8.770005000001, 8.770091).toString());
+		assertTrue(BigDecimalUtils.round(8.770009000001, 8.770005000001, 8.770091).toString().startsWith("8.77001"));
+	}
+
 	@Test public void testTooNarrowRoundingRange() {
 		// String.startsWith() used since representation of value is not truncated,
 		// (i.e., 8.770009000001 is returned as 8.770009000001[2342393758713480])
-		assertTrue(BigDecimalUtils.round(8.770009000001, 8.770005000001, 8.770091).toString().startsWith("8.770009000001"));
+		System.out.println(BigDecimalUtils.round(8.7700019000001, 8.7700015000001, 8.77000191).toString());
+		assertTrue(BigDecimalUtils.round(8.7700019000001, 8.7700015000001, 8.77000191).toString().startsWith("8.77000190000"));
 	}
 }

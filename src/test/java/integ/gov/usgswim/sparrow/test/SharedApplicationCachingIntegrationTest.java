@@ -8,7 +8,6 @@ import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
-import gov.usgswim.task.ComputableCache;
 
 import java.io.InputStream;
 

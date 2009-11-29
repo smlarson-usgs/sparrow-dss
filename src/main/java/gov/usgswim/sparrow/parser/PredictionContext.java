@@ -4,14 +4,7 @@ import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.*;
-import gov.usgswim.sparrow.datatable.DataTableCompare;
-import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.datatable.StdErrorEstTable;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
-
-import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -224,20 +217,10 @@ public class PredictionContext implements XMLStreamParserComponent {
 
 		if (ComparisonType.none.equals(comparison.getComparisonType())) {
 			return SharedApplication.getInstance().getAnalysisResult(this);
-		} else {
-			return SharedApplication.getInstance().getComparisonResult(this);
 		}
+		return SharedApplication.getInstance().getComparisonResult(this);
 
 	}
-
-	private DataTable aggregateIfNecessary(DataTable dt) throws Exception {
-		if (analysis.hasGroupBy()) {
-			AggregationRunner aggRunner = new AggregationRunner(this);
-			dt = aggRunner.doAggregation(dt);
-		}
-		return dt;
-	}
-
 
 	/**
 	 * Consider two instances the same if they have the same calculated hashcodes

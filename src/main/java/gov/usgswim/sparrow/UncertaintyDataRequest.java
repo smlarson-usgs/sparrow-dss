@@ -8,7 +8,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Encapsulates all required info to load a series of uncertainty data.
- * 
+ *
  * An UncertaintyDataRequest is passed to the UncertaintyDataFactory which
  * loads the data into an UncertaintyData instance.  The UncertaintyData can
  * be used with a PredictionResult from the same model to generate an
@@ -24,7 +24,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class UncertaintyDataRequest implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private final Long _modelId;
 	private final UncertaintySeries _uncertaintySeries;
 	private final Integer _sourceId;
@@ -33,10 +33,10 @@ public class UncertaintyDataRequest implements Serializable {
 
 	/**
 	 * Creates a new request with all required data.
-	 * 
+	 *
 	 * Note that the sourceNumber is the zero based source index as defined in
 	 * PredictData.getSourceIdForSourceIndex().
-	 * 
+	 *
 	 * @param modelId
 	 * @param uncertaintySeries
 	 * @param sourceId
@@ -45,7 +45,7 @@ public class UncertaintyDataRequest implements Serializable {
 		_modelId = modelId;
 		_uncertaintySeries = uncertaintySeries;
 		_sourceId = sourceId;
-		
+
 		if (_uncertaintySeries.isSourceSpecific()) {
 			if (_sourceId == null || _sourceId < 0) {
 				throw new IllegalArgumentException(
@@ -57,7 +57,7 @@ public class UncertaintyDataRequest implements Serializable {
 					"A source number is not allowed for Total type uncertainty series.");
 			}
 		}
-		
+
 		hash = hashCode();
 	}
 
@@ -68,11 +68,11 @@ public class UncertaintyDataRequest implements Serializable {
 	public Long getModelId() {
 		return _modelId;
 	}
-	
+
 	/**
 	 * Returns the UncertaintySeries to be loaded.
 	 * Source specific series are incomplete without a source specification.
-	 * 
+	 *
 	 * @return The UncertaintySeries to be loaded.
 	 */
 	public UncertaintySeries getUncertaintySeries() {
@@ -81,12 +81,12 @@ public class UncertaintyDataRequest implements Serializable {
 
 	/**
 	 * The source for which we want uncertainty data.
-	 * 
+	 *
 	 * This only applies to UncertaintySeries that are source specific.
 	 * Note that the sourceId is a per-model id for the source.  Typically
 	 * models will number sources 1-x as defined in
 	 * PredictData.getSourceIdForSourceIndex().
-	 * 
+	 *
 	 * @return The specified source id.
 	 */
 	public Integer getSourceId() {
@@ -106,15 +106,15 @@ public class UncertaintyDataRequest implements Serializable {
 	public int hashCode() {
 		if (hash != null) {
 			return hash;
-		} else {
-			//Only accessed from the constructor
-			int newHash = new HashCodeBuilder(97317, 1169401).
-			append(_modelId).
-			append(_uncertaintySeries).
-			append(_sourceId).
-			toHashCode();
-			return newHash;
 		}
+		//Only accessed from the constructor
+		int newHash = new HashCodeBuilder(97317, 1169401).
+		append(_modelId).
+		append(_uncertaintySeries).
+		append(_sourceId).
+		toHashCode();
+		return newHash;
+
 	}
 
 }
