@@ -217,9 +217,9 @@ public class PredictionContext implements XMLStreamParserComponent {
 
 		if (ComparisonType.none.equals(comparison.getComparisonType())) {
 			return SharedApplication.getInstance().getAnalysisResult(this);
+		} else {
+			return SharedApplication.getInstance().getComparisonResult(this);
 		}
-		return SharedApplication.getInstance().getComparisonResult(this);
-
 	}
 
 	/**
