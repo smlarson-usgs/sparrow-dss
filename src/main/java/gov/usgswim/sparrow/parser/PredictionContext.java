@@ -338,7 +338,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	}
 
 	public PredictionContext getNoAdjustmentVersion() {
-		return new PredictionContext(modelID, null, analysis,
+		return new PredictionContext(modelID, new AdjustmentGroups(modelID), analysis,
 				terminalReaches, areaOfInterest, comparison);
 	}
 

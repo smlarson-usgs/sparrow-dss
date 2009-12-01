@@ -5,8 +5,10 @@ import gov.usgswim.service.pipeline.PipelineRequest;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -130,6 +132,42 @@ public abstract class TestHelper {
 		pipe.dispatch(req, out);
 		String response = out.toString();
 		return response;
+	}
+	
+	/**
+	 * Loads an xml resource file as a string.
+	 * 
+	 * The xml file is assumed to have the same name as the passed class,
+	 * but with a '.xml' extension.  An additional name suffix may be added to
+	 * allow multiple files for the same class.
+	 * 
+	 * Example 1: If the class is named <code>com.foo.MyClass</code>,
+	 * the file <code>com/foo/MyClass.xml</code> would be read.
+	 * 
+	 * Example 2: If the class is named <code>com.foo.MyClass</code> and the
+	 * name suffix 'file1' is passed,
+	 * the file <code>com/foo/MyClass_file1.xml</code> would be read.  Note the
+	 * automatic addition of the underscore.
+	 * 
+	 * @param forClass The class for which to look for a similar named xml resource.
+	 * @param fileSuffix A name fragment added to the end of the class name w/ an underscore.
+	 * @return An xml string loaded from the xml file.
+	 * @throws IOException
+	 */
+	public static String getXmlAsString(Class forClass, String fileSuffix) throws IOException {
+		Properties props = new Properties();
+
+		String basePath = forClass.getName().replace('.', '/');
+		if (fileSuffix != null) {
+			basePath = basePath + "_" + fileSuffix;
+		}
+		basePath = basePath + ".xml";
+		
+		InputStream is = Thread.currentThread().getContextClassLoader().
+				getResourceAsStream(basePath);
+		
+		String xml = readToString(is);
+		return xml;
 	}
 	
 	/**
