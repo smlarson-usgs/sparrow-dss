@@ -9,23 +9,23 @@
 	</head>
 	<body>
 
-		<form method="get" action="../sp_findReachSupport/formpost" enctype="application/x-www-form-urlencoded">
+		<form method="get" action="../sp_findReachSupport" enctype="application/x-www-form-urlencoded">
 			<fieldset>
 				<legend><b>Find Reach Support(GET) get EDA Names</b></legend>
 				<input type="text" name="model"/>
 				<input type="hidden" name="get" value="name"/>
 
-				<input type="submit" name="Get edanames" value="post"/>
+				<input type="submit" name="submit" value="Get edanames"/>
 
 			</fieldset>
 		</form>
-		<form method="get" action="../sp_findReachSupport/formpost" enctype="application/x-www-form-urlencoded">
+		<form method="get" action="../sp_findReachSupport" enctype="application/x-www-form-urlencoded">
 			<fieldset>
 				<legend><b>Find Reach Support(GET) get EDA Codes</b></legend>
 				<input type="text" name="model"/>
 				<input type="hidden" name="get" value="code"/>
 
-				<input type="submit" name="Get edacodes" value="post"/>
+				<input type="submit" name="submit" value="Get edacodes"/>
 
 			</fieldset>
 		</form>

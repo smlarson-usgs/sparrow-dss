@@ -127,7 +127,8 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 		// Retrieve the model ID
 		IDByPointResponse response = new IDByPointResponse();
-		response.modelID = populateModelID(req);
+		updateRequestModelIDIfNecessary(req);
+		response.modelID = req.getModelID();
 		assert(response.modelID != null);
 
 		// Retrieve the reach
@@ -174,18 +175,40 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		}
 	}
 
-	private Long populateModelID(IDByPointRequest req) throws Exception {
+//	private Long populateModelID(IDByPointRequest req) throws Exception {
+//		if (req.getContextID() != null) {
+//			PredictionContext context = SharedApplication.getInstance().getPredictionContext(req.getContextID());
+//			if (context == null) throw new RuntimeException("Prediction Context with id "
+//					+ req.getContextID() + " has not been registered. Perhaps the server has been restarted?");
+//			if (req.getModelID() != null && !req.getModelID().equals(context.getModelID())) {
+//				throw new RuntimeException("Mismatched model-ids, PredictionContext: " + context.getModelID()
+//						+ ", request: " + req.getModelID());
+//			}
+//			return context.getModelID();
+//		} else if (req.getModelID() != null) {
+//			return req.getModelID();
+//		} else {
+//			throw new RuntimeException("A context-id or a model-id is required for a id request");
+//		}
+//	}
+	
+	private void updateRequestModelIDIfNecessary(IDByPointRequest req) {
 		if (req.getContextID() != null) {
 			PredictionContext context = SharedApplication.getInstance().getPredictionContext(req.getContextID());
 			if (context == null) throw new RuntimeException("Prediction Context with id "
 					+ req.getContextID() + " has not been registered. Perhaps the server has been restarted?");
-			if (req.getModelID() != null && !req.getModelID().equals(context.getModelID())) {
+			
+			else if (req.getModelID() != null && !req.getModelID().equals(context.getModelID())) {
 				throw new RuntimeException("Mismatched model-ids, PredictionContext: " + context.getModelID()
 						+ ", request: " + req.getModelID());
+			} else if (req.getModelID() == null) {
+				if (!req.updateModelId(context)) {
+					throw new RuntimeException("Unable to update "
+							+ req.getClass().getSimpleName() + " model-id via associated PredictionContext");
+				}
 			}
-			return context.getModelID();
 		} else if (req.getModelID() != null) {
-			return req.getModelID();
+			// do nothing, just return
 		} else {
 			throw new RuntimeException("A context-id or a model-id is required for a id request");
 		}

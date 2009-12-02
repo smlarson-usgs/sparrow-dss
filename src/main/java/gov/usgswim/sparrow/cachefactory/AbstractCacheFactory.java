@@ -32,7 +32,7 @@ public abstract class AbstractCacheFactory implements CacheEntryFactory {
 	 * @return
 	 * @throws IOException
 	 */
-	public String getText(String name, Object[] params) throws IOException {
+	public String getTextWithParamSubstitution(String name, Object... params) throws IOException {
 //		String query = getText(name);
 //
 //		for (int i=0; i<params.length; i+=2) {
@@ -43,7 +43,7 @@ public abstract class AbstractCacheFactory implements CacheEntryFactory {
 //		}
 //
 //		return query;
-		return getText(name, this.getClass());
+		return getTextWithParamSubstitution(name, this.getClass(), params);
 	}
 
 	/**
@@ -66,7 +66,7 @@ public abstract class AbstractCacheFactory implements CacheEntryFactory {
 	 *
 	 * TODO move this to a utils class of some sort
 	 */
-	public static String getText(String name, Class<?> clazz, Object[] params) throws IOException {
+	public static String getTextWithParamSubstitution(String name, Class<?> clazz, Object... params) throws IOException {
 		String query = getText(name, clazz);
 
 		for (int i=0; i<params.length; i+=2) {

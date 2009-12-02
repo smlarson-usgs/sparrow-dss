@@ -39,7 +39,7 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 		Double lng = req.getPoint().x;
 		Double lat = req.getPoint().y;
 
-		String query = getText(
+		String query = getTextWithParamSubstitution(
 				"FindReach",
 				new String[] {"ModelId", modelId.toString(), "lng", lng.toString(), "lat", lat.toString()});
 

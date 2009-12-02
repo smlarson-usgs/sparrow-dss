@@ -37,7 +37,7 @@ public class ReachByIDFactory extends AbstractCacheFactory {
 
 		ReachID req = (ReachID) request;
 
-		String query = getText(
+		String query = getTextWithParamSubstitution(
 				"FindReach",
 				new String[] { "ModelId", Long.toString(req.getModelID()), "Identifier", Integer.toString( req.getReachID() ) });
 		System.out.println("SPRW reachById: " + query);

@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.service.idbypoint;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
@@ -192,6 +193,24 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 
 	public boolean isValid() {
 		return true;
+	}
+	
+	/**
+	 * Updates the model id of the request with the model id of the given
+	 * context if consistent, and returns the success status of the update.
+	 * 
+	 * @param context
+	 * @return true if update was successful
+	 */
+	public boolean updateModelId(PredictionContext context) {
+		if (context != null) {
+			if (modelID == null && context.getId().equals(contextID)) {
+				modelID = context.getModelID();
+				return true;
+			}
+			return (modelID.equals(context.getModelID()));
+		}
+		return false;
 	}
 
 	// =================
