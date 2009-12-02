@@ -1,30 +1,15 @@
 package gov.usgswim.sparrow.test.integration;
 
-import static gov.usgswim.sparrow.test.TestHelper.getAttributeValue;
-import static gov.usgswim.sparrow.test.TestHelper.getElementValue;
-import static gov.usgswim.sparrow.test.TestHelper.pipeDispatch;
-import static gov.usgswim.sparrow.test.TestHelper.readToString;
-import static gov.usgswim.sparrow.test.TestHelper.setElementValue;
 import gov.usgswim.sparrow.LifecycleListener;
-import gov.usgswim.sparrow.cachefactory.AnalysisResultFactory;
-import gov.usgswim.sparrow.cachefactory.ComparisonResultFactory;
 import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
-import gov.usgswim.sparrow.parser.PredictionContext;
-import gov.usgswim.sparrow.parser.PredictionContextTest;
 import gov.usgswim.sparrow.service.binning.BinningPipeline;
 import gov.usgswim.sparrow.service.binning.BinningRequest;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointPipeline;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 import gov.usgswim.sparrow.test.TestHelper;
-import org.custommonkey.xmlunit.*;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import junit.framework.TestCase;
+import org.custommonkey.xmlunit.XMLTestCase;
+import org.custommonkey.xmlunit.XMLUnit;
 
 /**
  * This test was created to recreate an error that seems to occur when a
