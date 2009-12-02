@@ -68,6 +68,22 @@
 		</Term>
 		<Term id="Data Series">
 			Model condition, simulation, or reach impact output for specified sources, treatments, and regions
+			The <em>Data Series</em> specifies what data is drawn on the map.
+			The SPARROW model contains many types of data:
+			Data used as inputs for the calculations, the result of the calculations, and other types of values coming out of the model.
+			<ul>
+				<li>Total Instream Flux</li>
+                <li>Incremental Flux</li>
+                <li>Incremental Yield</li>
+                <li>Concentration</li>
+                <li>Source Value</li>
+                <li>Delivery Fraction</li>
+                <li>Incremental Delivered Flux</li>
+                <li>Total Delivered Flux</li>
+                <li>Incremental Delivered Yield</li>
+                <li>Total Standard Err Estimate</li>
+                <li>Incremental Standard Err Estimate</li>
+			</ul>
 		</Term>
 		<Term id="Total">
 			Takes into account constituent sources upstream and degradation to describe the annual load of the constituent being transported by national surface waters. Units are typically kilograms/year.
@@ -105,10 +121,10 @@
 		<Term id="Nominal">
 			The nominal SPARROW DSS model condition is based on source values and streamflow of the model base year.
 		</Term>
-		<Term id="Buckets">
+		<Term id="Bins">
 			Choose or generate a custom range over which the model output is to be grouped and displayed on the map.
 		</Term>
-		<Term id="Map">
+		<Term id="Map Options">
 			Choose a map feature for the model output ot be displayed on.
 		</Term>
 		<Term id="Reach">

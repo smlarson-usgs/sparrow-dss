@@ -1,4 +1,8 @@
 <Model id="21">
+	<!--
+	Note:  This xml file is used in tests, since it is the default file.
+	If you make changes, please check tests.
+	-->
 	<Authors>
 		<Author link="" id="1">First name, last name</Author>
 	</Authors>
@@ -10,8 +14,8 @@
 		<Description/>
 	</Constituent>
 	<Sources>
-		<Source id="">
-			<Name/>
+		<Source id="1">
+			<Name>People</Name>
 			<Units/>
 			<Description/>
 		</Source>
@@ -47,4 +51,9 @@
 			</Citation_mods>
 		</Paper>
 	</Model_papers>
+	<CommonTerms>
+		<Term id="MRB">
+			<p>This sample model is only in one of the MRBs.</p>
+		</Term>
+	</CommonTerms>
 </Model>

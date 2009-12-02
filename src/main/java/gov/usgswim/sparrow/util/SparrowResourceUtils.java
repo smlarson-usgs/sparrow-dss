@@ -38,14 +38,48 @@ public abstract class SparrowResourceUtils {
 		return props.entrySet();
 	}
 
-	public static String lookupHelp(String model, String helpItem) {
-		SmartXMLProperties help = retrieveHelp(model);
-		return help.getAsFullXMLNode(helpItem);
+	public static String lookupMergedHelp(String model, String helpItem, String wrapXMLElement) {
+		String genHelp = lookupGeneralHelp(helpItem);
+		String modelHelp = lookupModelHelp(model, helpItem);
+		
+		StringBuffer merged = new StringBuffer();
+		if (genHelp != null) {
+			merged.append(genHelp);
+		}
+		
+		if (modelHelp != null) {
+			merged.append(modelHelp);
+		}
+		
+		if (merged.length() > 0) {
+			if (wrapXMLElement != null && wrapXMLElement.length() > 0) {
+				return "<" + wrapXMLElement + ">" + merged.toString() + "</" + wrapXMLElement + ">";
+			} else {
+				return merged.toString();
+			}
+		} else {
+			return null;
+		}
+	}
+	
+	public static String lookupGeneralHelp(String helpItem) {
+		SmartXMLProperties help = retrieveGeneralHelp();
+		return help.get(helpItem);
+	}
+	
+	public static String lookupModelHelp(String model, String helpItem) {
+		SmartXMLProperties help = retrieveModelHelp(model);
+		return help.get(helpItem);
 	}
 
-	public static SmartXMLProperties retrieveHelp(String model) {
+	public static SmartXMLProperties retrieveModelHelp(String model) {
 		Long modelID = lookupModelID(model);
 		String resourceFilePath = getModelResourceFilePath(modelID, HELP_FILE);
+		return ResourceLoaderUtils.loadResourceAsSmartXML(resourceFilePath);
+	}
+	
+	public static SmartXMLProperties retrieveGeneralHelp() {
+		String resourceFilePath = getResourceFilePath(HELP_FILE);
 		return ResourceLoaderUtils.loadResourceAsSmartXML(resourceFilePath);
 	}
 

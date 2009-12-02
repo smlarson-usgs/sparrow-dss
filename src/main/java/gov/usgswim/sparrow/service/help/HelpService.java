@@ -28,11 +28,11 @@ public class HelpService extends HttpServlet {
 	private static final String HELP_RESPONSE= "<help-response model=\"%s\">"
 	+ "	<request-type>%s</request-type>"
 	+ "	<params>"
-	+ "		<item>%s</item>"
+	+ "		<param>%s</param>"
 	+ "	</params>"
 	+ "	%s"
 	+ "</help-response>";
-	private static final String ITEM="<item>%s</item>";
+	private static final String ITEM="<item><![CDATA[%s]]></item>";
 	private static final String KEYS="<keys>%s</keys>";
 	private static final String KEY="<key>%s</key>"; // repeatable
 	private static final String LIST="<list>%s</list>";
@@ -92,17 +92,17 @@ public class HelpService extends HttpServlet {
 	}
 
 	private String lookupItem(Integer modelID, String itemString) {
-		String result = SparrowResourceUtils.lookupHelp(modelID.toString(), itemString);
+		String result = SparrowResourceUtils.lookupMergedHelp(modelID.toString(), itemString, "div");
 		return (result == null)? null: String.format(ITEM, result);
 	}
 
 	public String getSimpleKeys(Integer model) {
-		SmartXMLProperties help = SparrowResourceUtils.retrieveHelp(model.toString());
+		SmartXMLProperties help = SparrowResourceUtils.retrieveModelHelp(model.toString());
 		return asKeyXML(help.keySet());
 	}
 
 	public String getListKeys(Integer model) {
-		SmartXMLProperties help = SparrowResourceUtils.retrieveHelp(model.toString());
+		SmartXMLProperties help = SparrowResourceUtils.retrieveModelHelp(model.toString());
 		return asKeyXML(help.listKeySet());
 	}
 
@@ -115,7 +115,7 @@ public class HelpService extends HttpServlet {
 	}
 
 	public String getList(Integer model, String key ) {
-		SmartXMLProperties help = SparrowResourceUtils.retrieveHelp(model.toString());
+		SmartXMLProperties help = SparrowResourceUtils.retrieveModelHelp(model.toString());
 		if (help.isListKey(key)) {
 			String result = help.get(key);
 			return (result == null)? null: String.format(LIST, result);
