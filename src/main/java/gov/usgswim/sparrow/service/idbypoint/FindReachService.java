@@ -77,7 +77,9 @@ public class FindReachService extends HttpServlet {
 				Statement stmt = conn.createStatement();
 				ResultSet rset = stmt.executeQuery(sql);
 
+				boolean hasFoundResults = false;
 				while (rset.next()) {
+					hasFoundResults = true;
 					outputXML.append("<reach>");
 
 					{
@@ -97,7 +99,11 @@ public class FindReachService extends HttpServlet {
 					}
 					outputXML.append("</reach>");
 				}
-				status = "OK";
+				if (hasFoundResults) {
+					status = "OK";
+				} else {
+					status = "ERROR: SORRY. No reaches were found matching your criteria";
+				}
 			} catch (SQLException e) {
 				status = "ERROR: " + e.getMessage();
 				outputXML = new StringBuilder(); // clear the output

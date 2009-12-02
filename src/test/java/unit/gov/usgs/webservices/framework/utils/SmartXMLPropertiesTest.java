@@ -18,6 +18,7 @@ import org.junit.Test;
 public class SmartXMLPropertiesTest {
 
 	static SmartXMLProperties props = new SmartXMLProperties();
+	// Complete list of simple property keys for the test document
 	static final String[] simplePropKeys = {"name",
 		"friends.Tigger",
 		"friends.Piglet",
@@ -26,6 +27,7 @@ public class SmartXMLPropertiesTest {
 		"Creator",
 		"eats.honey"};
 
+	// Complete list of simple property values for the test document
 	static final String[] simplePropValues = {"Winnie the Poo",
 		"Tigger the tiger",
 		"Piglet the pig",
@@ -35,6 +37,7 @@ public class SmartXMLPropertiesTest {
 		"Pooh's favorite"
 	};
 
+	// Complete list of node values for the test document
 	static final String[] nodeValues= {"<name>Winnie the Poo</name>",
 		"<bestFriend id=\"Tigger\">Tigger the tiger</bestFriend>",
 		"<friend id=\"Piglet\">Piglet the pig</friend>",
@@ -44,6 +47,7 @@ public class SmartXMLPropertiesTest {
 		"<food id=\"honey\">Pooh's favorite</food>"
 	};
 
+	// Complete list of list keys for the document
 	static final String [] listKeySet = {"friends", "eats"};
 
 

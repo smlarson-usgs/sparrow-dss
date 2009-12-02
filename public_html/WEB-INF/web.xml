@@ -77,6 +77,10 @@
         <servlet-class>gov.usgswim.sparrow.service.idbypoint.FindReachService</servlet-class>
 	</servlet>
 	<servlet>
+        <servlet-name>FindReachSupportService</servlet-name>
+        <servlet-class>gov.usgswim.sparrow.service.idbypoint.FindReachSupportService</servlet-class>
+	</servlet>
+	<servlet>
         <servlet-name>SessionService</servlet-name>
         <servlet-class>gov.usgswim.sparrow.service.metadata.SavedSessionService</servlet-class>
 	</servlet>
@@ -122,6 +126,10 @@
 	<servlet-mapping>
         <servlet-name>FindReachService</servlet-name>
         <url-pattern>/sp_findReach/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+        <servlet-name>FindReachSupportService</servlet-name>
+        <url-pattern>/sp_findReachSupport/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>HelpService</servlet-name>
