@@ -8,8 +8,9 @@ import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 import gov.usgswim.sparrow.test.TestHelper;
 
-import org.custommonkey.xmlunit.XMLTestCase;
+import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.*;
 
 /**
  * This test was created to recreate an error that seems to occur when a
@@ -18,25 +19,24 @@ import org.custommonkey.xmlunit.XMLUnit;
  * @author eeverman
  * TODO: This should really use a canned project, rather than MRB2
  */
-public class SourceComparisonErrorTest extends XMLTestCase {
+public class SourceComparisonErrorTest {
 	
-	LifecycleListener lifecycle = new LifecycleListener();
+	static LifecycleListener lifecycle = new LifecycleListener();
 	
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
+	@BeforeClass
+	public static void setUp() throws Exception {
 		lifecycle.contextInitialized(null, true);
 		
 		XMLUnit.setIgnoreWhitespace(true);
 		
 	}
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+	@AfterClass
+	public static void tearDown() throws Exception {
 		lifecycle.contextDestroyed(null, true);
 	}
 	
+	@Test
 	public void testComparison() throws Exception {
 		String xmlContextReq = TestHelper.getXmlAsString(this.getClass(), "context");
 		String xmlContextResp = TestHelper.getXmlAsString(this.getClass(), "contextResp");
@@ -46,7 +46,7 @@ public class SourceComparisonErrorTest extends XMLTestCase {
 		String actualContextResponse = TestHelper.pipeDispatch(contextReq, pipe);
 
 		
-		assertXMLEqual(xmlContextResp, actualContextResponse);
+		XMLAssert.assertXMLEqual(xmlContextResp, actualContextResponse);
 		
 		
 		///Try to build bins from a GET request that looks like this:
@@ -56,7 +56,7 @@ public class SourceComparisonErrorTest extends XMLTestCase {
 		BinningPipeline binPipe = new BinningPipeline();
 		String actualBinResponse = TestHelper.pipeDispatch(binReq, binPipe);
 		String xmlBinResp = TestHelper.getXmlAsString(this.getClass(), "binResp");
-		assertXMLEqual(xmlBinResp, actualBinResponse);
+		XMLAssert.assertXMLEqual(xmlBinResp, actualBinResponse);
 
 	}
 	
