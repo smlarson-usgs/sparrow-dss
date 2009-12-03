@@ -67,23 +67,30 @@
 			<p>The US is divided into 8 major river basins: New England and Mid-Atlantic; South Atlantic-Gulf and Tennessee; Great Lakes, Ohio, Upper Mississippi and Souris-Red-Rainy; Missouri; Lower Mississippi, Arkansas-White-Red and Texas-Gulf; Rio Grande, Colorado and Great Basin; Pacific Northwest; and California.</p>
 		</Term>
 		<Term id="Data Series">
-			Model condition, simulation, or reach impact output for specified sources, treatments, and regions
-			The <em>Data Series</em> specifies what data is drawn on the map.
-			The SPARROW model contains many types of data:
-			Data used as inputs for the calculations, the result of the calculations, and other types of values coming out of the model.
-			<ul>
-				<li>Total Instream Flux</li>
-                <li>Incremental Flux</li>
-                <li>Incremental Yield</li>
-                <li>Concentration</li>
-                <li>Source Value</li>
-                <li>Delivery Fraction</li>
-                <li>Incremental Delivered Flux</li>
-                <li>Total Delivered Flux</li>
-                <li>Incremental Delivered Yield</li>
-                <li>Total Standard Err Estimate</li>
-                <li>Incremental Standard Err Estimate</li>
-			</ul>
+			<p>The <em>Data Series</em> specifies what data is drawn on the map.
+			The most common model output is the <em>Total Instream Flux</em>,
+			which is the average amount of the constituent you would expect to
+			find in a stream, as predicted by the model.</p>
+			<p>The complete of data series:</p>
+			<dl>
+				<dt>Total Instream Flux</dt>
+					<dd>The average daily amount of the constituent leaving each
+						stream reach, as predicted by the model.
+						This is also called the <i>measurable flux</i> since
+						this is the hypothetical value you could measure in the
+						stream, if there was a way to measure daily average.
+					 </dd>
+                <dt>Incremental Flux</dt>
+                <dt>Incremental Yield</dt>
+                <dt>Concentration</dt>
+                <dt>Source Value</dt>
+                <dt>Delivery Fraction</dt>
+                <dt>Incremental Delivered Flux</dt>
+                <dt>Total Delivered Flux</dt>
+                <dt>Incremental Delivered Yield</dt>
+                <dt>Total Standard Err Estimate</dt>
+                <dt>Incremental Standard Err Estimate</dt>
+			</dl>
 		</Term>
 		<Term id="Total">
 			Takes into account constituent sources upstream and degradation to describe the annual load of the constituent being transported by national surface waters. Units are typically kilograms/year.
