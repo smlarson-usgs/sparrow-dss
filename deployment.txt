@@ -1,0 +1,18 @@
+Run move-libs, clean, and the dist tasks in build.xml.
+
+For sparrow_core, the sparrow_mv_local includes the JSP (service test) pages,
+so this is generally the one to deploy until we are in full production.
+
+Currently there are two servers:
+
+>> BBG - Development (Stable Releases for collaborator testing) <<
+Tomcat Manager: http://igsarmewfsbbg.er.usgs.gov:8080/manager/html
+Manager login: tc_admin (see an administrator for the pwd)
+To restart, ssh to machine and as the tomcat user (see an administrator for the pwd).
+In your home directory, look for ~/bin/startup.sh or shutdown.sh
+
+>> MV1A - Test (Unstable testing deployments) <<
+Tomcat Manager: http://igsarmewwbmv1a.er.usgs.gov:8080/manager/html
+Manager login: tc_admin (see an administrator for the pwd)
+This server was setup by John Anderson and has some goofy configuration.
+Don't attempt to restart it - if problems, ask John or an admin to restart.
