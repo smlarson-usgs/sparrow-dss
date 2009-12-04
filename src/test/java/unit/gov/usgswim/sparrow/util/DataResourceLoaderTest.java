@@ -82,7 +82,7 @@ public class DataResourceLoaderTest {
 		PredictData predictData = loadModelData(TEST_MODEL);
 
 		int numberOfReaches = predictData.getTopo().getRowCount();
-		assertEquals("There should be a pair of decay coefficients for each reach", numberOfReaches, predictData.getDecay().getRowCount());
+		assertEquals("There should be a pair of decay coefficients for each reach", numberOfReaches, predictData.getDelivery().getRowCount());
 		assertEquals("There should be a set of reach coefficients for each reach", numberOfReaches, predictData.getCoef().getRowCount());
 		assertEquals("There should be a set of source values for each reach", numberOfReaches, predictData.getSrc().getRowCount());
 

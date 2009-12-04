@@ -131,7 +131,7 @@ public class SharedApplicationCachingIntegrationTest extends TestCase {
 		comp = new DataTableCompare(expect.getCoef(), data.getCoef(), true);
 		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);
 
-		comp = new DataTableCompare(expect.getDecay(), data.getDecay(), true);
+		comp = new DataTableCompare(expect.getDelivery(), data.getDelivery(), true);
 		assertEquals(0d, comp.getMaxDouble(), 0.000000000000001d);
 
 		comp = new DataTableCompare(expect.getSrc(), data.getSrc(), true);

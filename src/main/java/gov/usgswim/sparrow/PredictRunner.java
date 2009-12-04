@@ -37,7 +37,7 @@ public class PredictRunner implements Runner {
 	 * The coef's for each reach-source. coef[i][k] == the coefficient for
 	 * source k at reach i
 	 */
-	protected DataTable deliveryCoefficient;
+	protected DataTable sourceCoefficient;
 
 	/**
 	 * The source amount for each reach-source. src[i][k] == the amount added
@@ -46,17 +46,9 @@ public class PredictRunner implements Runner {
 	protected DataTable sourceValues;
 
 	/**
-	 * The stream and reservoir decay. The values in the array are *actually*
-	 * delivery, which is (1 - decay). I.E. the delivery calculation is already
-	 * done.
-	 *
-	 * src[i][0] == the instream decay at reach i. This decay is assumed to be
-	 * at mid-reach and already computed as such. That is, it would normally be
-	 * the sqrt root of the instream decay, and it is assumed that this value
-	 * already has the square root taken. src[i][1] == the upstream decay at
-	 * reach i. This decay is applied to the load coming from the upstream node.
+	 * @see PredictData#getDelivery()
 	 */
-	protected DataTable decayCoefficient;
+	protected DataTable deliveryCoefficient;
 
 	/**
 	 * The number of nodes
@@ -72,9 +64,9 @@ public class PredictRunner implements Runner {
 	public PredictRunner(PredictData data) {
 		{// assign the passed values to the class variables
 			this.topo = data.getTopo();
-			this.deliveryCoefficient = data.getCoef();
+			this.sourceCoefficient = data.getCoef();
 			this.sourceValues = data.getSrc();
-			this.decayCoefficient = data.getDecay();
+			this.deliveryCoefficient = data.getDelivery();
 		}
 
 
@@ -136,7 +128,7 @@ public class PredictRunner implements Runner {
 				// temp var to store the incremental per source k.
 				// Land delivery and coeff both included in coef value. (NOT
 				// decayed)
-				double incrementalReachContribution = deliveryCoefficient
+				double incrementalReachContribution = sourceCoefficient
 				.getDouble(reach, sourceType)
 				* sourceValues.getDouble(reach, sourceType);
 
@@ -144,8 +136,8 @@ public class PredictRunner implements Runner {
 
 				// total at reach (w/ up stream contrib) per source k (Decayed)
 				incReachContribution[reach][source] =
-					(incrementalReachContribution * decayCoefficient.getDouble(reach, INSTREAM_DECAY_COL)) /* Just the decayed source */
-					+ (upstreamNodeContribution[topo.getInt(reach, FNODE_COL)][sourceType] * decayCoefficient.getDouble(reach, UPSTREAM_DECAY_COL)); /* Just the decayed upstream portion */
+					(incrementalReachContribution * deliveryCoefficient.getDouble(reach, INSTREAM_DECAY_COL)) /* Just the decayed source */
+					+ (upstreamNodeContribution[topo.getInt(reach, FNODE_COL)][sourceType] * deliveryCoefficient.getDouble(reach, UPSTREAM_DECAY_COL)); /* Just the decayed upstream portion */
 
 				// Accumulate at downstream node if this reach transmits
 				if (topo.getInt(reach, IFTRAN_COL) != 0) {

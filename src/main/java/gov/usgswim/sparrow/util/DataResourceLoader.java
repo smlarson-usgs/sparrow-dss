@@ -28,7 +28,7 @@ public class DataResourceLoader {
 			dataSet.setSrcMetadata( loadSourceMetadata(modelId));
 			dataSet.setTopo( loadTopo(modelId) );
 			dataSet.setCoef( loadSourceReachCoef(modelId, dataSet.getSrcMetadata()) );
-			dataSet.setDecay( loadDecay( modelId) );
+			dataSet.setDelivery( loadDecay( modelId) );
 			dataSet.setSrc( loadSourceValues( modelId, dataSet.getSrcMetadata(), dataSet.getTopo()) );
 		}
 		return dataSet.toImmutable();

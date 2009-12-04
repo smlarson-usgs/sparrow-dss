@@ -146,7 +146,7 @@ public class JDBCUtilMemoryIntegrationTest extends TestCase {
 
 		ObjectFactory decayFactory = new ObjectFactory() {
 			public Object makeObject() throws SQLException, IOException {
-				return DataLoader.loadDecay(conn, modelId, 0);
+				return DataLoader.loadDelivery(conn, modelId, 0);
 			}
 		};
 

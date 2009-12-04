@@ -110,18 +110,29 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 * <h4>Data Columns, sorted by HYDSEQ</h4>
 	 * <p>One row per reach (i = reach index)</p>
 	 * <ol>
-	 * <li>[i][0] == the instream decay at reach i.<br>
-	 * This decay is assumed to be at mid-reach and already computed as such.
-	 * That is, it would normally be the sqr root of the instream decay, and
-	 * it is assumed that this value already has the square root taken.
-	 * <li>src[i][1] == the upstream decay at reach i.<br>
-	 * This decay is applied to the load coming from the upstream node.
+	 * <li>[i][0] == the instream delivery at reach i.<br>
+	 * This delivery is assumed to be at mid-reach and already computed as such.
+	 * That is, it would normally be 1 minus the sqr root of the total decay,
+	 * but this conversion is already done for this value.
+	 * 
+	 * <li>src[i][1] == the upstream delivery at reach i.<br>
+	 * This delivery is applied to the load coming from the upstream node.
+	 * This is really a combined term, [frac] * [total delivery].  Think of
+	 * nodes as having two sides, an upper side that accumulates all the load
+	 * from the upstream reach or (in the case of a confluence) reaches, and a
+	 * lower side of that has the load entering this reach.  Frac is the
+	 * fraction of the load on the 'top' of the upstream node that enters this
+	 * reach.  Frac is typically 1 unless the river splits.  Total delivery
+	 * is the fraction entering the top of this reach that makes it to the,
+	 * bottom, i.e., the converse of total decay.
+	 * Thus, our combined upstream delivery is the fraction of the load reaching
+	 * the 'top' of the upstream node that makes it to the bottom of this reach.
 	 * <li>Additional columns ignored
 	 * </ol>
 	 *
 	 * @return
 	 */
-	public DataTable getDecay();
+	public DataTable getDelivery();
 
 	public DataTable getAncil();
 

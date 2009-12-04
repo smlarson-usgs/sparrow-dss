@@ -57,18 +57,9 @@ public class PredictDataBuilder extends AbstractPredictData {
 	protected DataTable srcMetadata;
 
 	/**
-	 * The stream and resevor decay.  The values in the array are *actually* 
-	 * delivery, which is (1 - decay).  I.E. the delivery calculation is already
-	 * done.
-	 * 
-	 * src[i][0] == the instream decay at reach i.
-	 *   This decay is assumed to be at mid-reach and already computed as such.
-	 *   That is, it would normally be the sqr root of the instream decay, and
-	 *   it is assumed that this value already has the square root taken.
-	 * src[i][1] == the upstream decay at reach i.
-	 *   This decay is applied to the load coming from the upstream node.
+	 * @see PredictData#getDelivery()
 	 */
-	protected DataTable decay;
+	protected DataTable delivery;
 
 	/**
 	 * Optional ancillary data.
@@ -103,7 +94,7 @@ public class PredictDataBuilder extends AbstractPredictData {
 		this.topo = topo;
 		this.coef = coef;
 		this.src = src;
-		this.decay = decay;
+		this.delivery = decay;
 		this.ancil = ancil;
 
 		if (srcIDs != null) {
@@ -236,45 +227,19 @@ public class PredictDataBuilder extends AbstractPredictData {
 	}
 
 	/**
-	 * Assigns the decay values.
-	 * 
-	 * <h4>Data Columns, sorted by HYDSEQ</h4>
-	 * <p>One row per reach (i = reach index)</p>
-	 * <ol>
-	 * <li>[i][0] == the instream decay at reach i.<br>
-	 *   This decay is assumed to be at mid-reach and already computed as such.
-	 *   That is, it would normally be the sqr root of the instream decay, and
-	 *   it is assumed that this value already has the square root taken.
-	 * <li>src[i][1] == the upstream decay at reach i.<br>
-	 *   This decay is applied to the load coming from the upstream node.
-	 * <li>Additional columns ignored
-	 * </ol>
-	 * 
-	 * @param decay
+	 * Assigns the Delivery terms.
+	 * @see PredictData#getDelivery()
+	 * @param delivery
 	 */
-	public void setDecay(DataTable decay) {
-		this.decay = decay;
+	public void setDelivery(DataTable delivery) {
+		this.delivery = delivery;
 	}
 
 	/**
-	 * Returns the decay data.
-	 * 
-	 * <h4>Data Columns, sorted by HYDSEQ</h4>
-	 * <p>One row per reach (i = reach index)</p>
-	 * <ol>
-	 * <li>[i][0] == the instream decay at reach i.<br>
-	 *   This decay is assumed to be at mid-reach and already computed as such.
-	 *   That is, it would normally be the sqr root of the instream decay, and
-	 *   it is assumed that this value already has the square root taken.
-	 * <li>src[i][1] == the upstream decay at reach i.<br>
-	 *   This decay is applied to the load coming from the upstream node.
-	 * <li>Additional columns ignored
-	 * </ol>
-	 * 
-	 * @return
+	 * {@inheritDoc}
 	 */
-	public DataTable getDecay() {
-		return decay;
+	public DataTable getDelivery() {
+		return delivery;
 	}
 
 	public void setAncil(DataTable ancil) {
@@ -299,7 +264,7 @@ public class PredictDataBuilder extends AbstractPredictData {
 		DataTable coef2 = (getCoef() != null)?getCoef().toImmutable():null;
 		DataTable source2 = (getSrc() != null)?getSrc().toImmutable():null;
 		DataTable sourceIds2 = (getSrcMetadata() != null)?getSrcMetadata().toImmutable():null;
-		DataTable decay2 = (getDecay() != null)?getDecay().toImmutable():null;
+		DataTable decay2 = (getDelivery() != null)?getDelivery().toImmutable():null;
 		DataTable ancil2 = (getAncil() != null)?getAncil().toImmutable():null;
 		SparrowModel model2 = (getModel() != null)?getModel():null;
 		

@@ -58,18 +58,9 @@ public class PredictDataImm extends AbstractPredictData {
 	private final DataTable srcMetadata;
 
 	/**
-	 * The stream and resevor decay.  The values in the array are *actually* 
-	 * delivery, which is (1 - decay).  I.E. the delivery calculation is already
-	 * done.
-	 * 
-	 * src[i][0] == the instream decay at reach i.
-	 *   This decay is assumed to be at mid-reach and already computed as such.
-	 *   That is, it would normally be the sqr root of the instream decay, and
-	 *   it is assumed that this value already has the square root taken.
-	 * src[i][1] == the upstream decay at reach i.
-	 *   This decay is applied to the load coming from the upstream node.
+	 * @see PredictData#getDelivery()
 	 */
-	private final DataTable decay;
+	private final DataTable delivery;
 
 	/**
 	 * Optional ancillary data.
@@ -101,7 +92,7 @@ public class PredictDataImm extends AbstractPredictData {
 		this.topo = topo;
 		this.coef = coef;
 		this.src = src;
-		this.decay = decay;
+		this.delivery = decay;
 		this.ancil = ancil;
 		this.srcMetadata = srcIDs;
 	}
@@ -122,8 +113,8 @@ public class PredictDataImm extends AbstractPredictData {
 		return src;
 	}
 
-	public DataTable getDecay() {
-		return decay;
+	public DataTable getDelivery() {
+		return delivery;
 	}
 
 	public DataTable getAncil() {
@@ -172,7 +163,7 @@ public class PredictDataImm extends AbstractPredictData {
 			(getCoef() != null)?getCoef().toImmutable():null,
 			(getSrc() != null)?getSrc().toImmutable():null,
 			(getSrcMetadata() != null)?getSrcMetadata().toImmutable():null,
-			(getDecay() != null)?getDecay().toImmutable():null,
+			(getDelivery() != null)?getDelivery().toImmutable():null,
 			(getAncil() != null)?getAncil().toImmutable():null,
 			(getModel() != null)?getModel():null
 		);

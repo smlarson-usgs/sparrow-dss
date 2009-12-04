@@ -84,7 +84,7 @@ public class DeliveryRunner implements Runner {
 		// variables
 		//this.deliveryCoefficient = data.getCoef();
 		this.sourceValues = data.getSrc();
-		this.decayCoefficient = data.getDecay();
+		this.decayCoefficient = data.getDelivery();
 		this.deliveryCoefficient = data.getCoef();
 
 		int maxNode = Math.max(topo.getMaxInt(FNODE_COL), topo

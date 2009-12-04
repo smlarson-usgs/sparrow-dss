@@ -48,7 +48,7 @@ public class PredictDataTestScenarios {
 			pd.setSrcMetadata( null);
 			pd.setTopo( topo);
 			pd.setCoef( src );
-			pd.setDecay( decay );
+			pd.setDelivery( decay );
 			pd.setSrc( src);
 		}
 		return pd;

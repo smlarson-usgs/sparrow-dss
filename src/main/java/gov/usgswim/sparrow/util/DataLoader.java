@@ -59,7 +59,7 @@ public class DataLoader {
 			dataSet.setSrcMetadata( loadSourceMetadata(conn, modelId));
 			dataSet.setTopo( loadTopo(conn, modelId) );
 			dataSet.setCoef( loadSourceReachCoef(conn, modelId, 0, dataSet.getSrcMetadata()) );
-			dataSet.setDecay( loadDecay(conn, modelId, 0) );
+			dataSet.setDelivery( loadDelivery(conn, modelId, 0) );
 			dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcMetadata(), dataSet.getTopo()) );
 
 		} catch (Exception e) {
@@ -89,7 +89,7 @@ public class DataLoader {
 		dataSet.setSrcMetadata( loadSourceMetadata(conn, modelId));
 		dataSet.setTopo( loadTopo(conn, modelId) );
 		dataSet.setCoef( loadSourceReachCoef(conn, modelId, dataSet.getSrcMetadata()) );
-		dataSet.setDecay( loadDecay(conn, modelId, 0) );
+		dataSet.setDelivery( loadDelivery(conn, modelId, 0) );
 		// TODO fix: this actually is going to fail for multiple iterations
 		dataSet.setSrc( loadSourceValues(conn, modelId, dataSet.getSrcMetadata(), dataSet.getTopo()) );
 
@@ -408,20 +408,13 @@ public class DataLoader {
 
 
 	/**
-	 * Returns a DataTable of all decay data for for a single model.
+	 * Returns a DataTable of all delivery data for for a single model.
 	 *
 	 * <h4>Data Columns, sorted by HYDSEQ then IDENTIFIER</h4>
-	 * <p><i>Note:  These are actually delivery terms - that is 1/decay</i></p>
-	 *
+	 * 
 	 * <p>One row per reach (i = reach index)</p>
-	 * <ol>
-	 * <li>[0] == the instream decay at reach i.<br>
-	 *   This decay is assumed to be at mid-reach and already computed as such.
-	 *   That is, it would normally be the sqr root of the instream decay, and
-	 *   it is assumed that this value already has the square root taken.
-	 * <li>[1] == the upstream decay at reach i.<br>
-	 *   This decay is applied to the load coming from the upstream node.
-	 * </ol>
+	 * For data definitions, please see:
+	 * @see gov.usgswim.sparrow.PredictData#getDelivery()
 	 *
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
@@ -429,10 +422,10 @@ public class DataLoader {
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static DataTableWritable loadDecay(Connection conn, long modelId, int iteration) throws SQLException,
+	public static DataTableWritable loadDelivery(Connection conn, long modelId, int iteration) throws SQLException,
 	IOException {
 
-		String query = getQuery("SelectDecayCoef",
+		String query = getQuery("SelectDeliveryCoef",
 				"ModelId", modelId, "Iteration", iteration
 		);
 

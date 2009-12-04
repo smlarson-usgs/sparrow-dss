@@ -191,7 +191,7 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 	}
 
 	public void testLoadDecay() throws Exception {
-		DataTable jdbcData = DataLoader.loadDecay(conn, TEST_MODEL, 0);
+		DataTable jdbcData = DataLoader.loadDelivery(conn, TEST_MODEL, 0);
 		System.out.println("  -- Printing Decay Coefficients --");
 		DataTableUtils.printDataTableSample(jdbcData, 30, 30);
 	}

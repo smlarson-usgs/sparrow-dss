@@ -39,7 +39,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         }
         
         data = new PredictDataImm(data.getTopo(), data.getCoef(), src,
-            data.getSrcMetadata(), data.getDecay(),
+            data.getSrcMetadata(), data.getDelivery(),
             data.getAncil(), data.getModel());
 
         return new PredictExportSerializer(req, result, data);
