@@ -6,6 +6,7 @@ import gov.usgswim.datatable.adjustment.ColumnMappedTable;
 import gov.usgswim.datatable.filter.ColumnRangeFilter;
 import gov.usgswim.datatable.filter.FilteredDataTable;
 import gov.usgswim.datatable.filter.RowRangeFilter;
+import gov.usgswim.datatable.utils.DataTablePrinter;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.domain.Source;
@@ -154,7 +155,7 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 	public void testLoadSourceMetadata() throws Exception {
 		DataTable jdbcData = DataLoader.loadSourceMetadata(conn, TEST_MODEL);
 		System.out.println("  -- Printing Source Metadata --");
-		DataTableUtils.printDataTableSample(jdbcData, 30, 30);
+		DataTablePrinter.printDataTableSample(jdbcData, 30, 30);
 	}
 
 	/**
@@ -163,7 +164,7 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 	public void testLoadTopo() throws Exception {
 		DataTable jdbcData = DataLoader.loadTopo(conn, TEST_MODEL);
 		System.out.println("  -- Printing Topo --");
-		DataTableUtils.printDataTableSample(jdbcData, 30, 30);
+		DataTablePrinter.printDataTableSample(jdbcData, 30, 30);
 
 //		assertEquals(2339, jdbcData.getRowCount());
 //		assertEquals(4 + 1, jdbcData.getColumnCount());
@@ -187,13 +188,13 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 		DataTable sourceMetadata = DataLoader.loadSourceMetadata(conn, TEST_MODEL);
 		DataTable jdbcData = DataLoader.loadSourceReachCoef(conn, TEST_MODEL, sourceMetadata);
 		System.out.println("  -- Printing Source Reach Coefficients --");
-		DataTableUtils.printDataTableSample(jdbcData, 30, 30);
+		DataTablePrinter.printDataTableSample(jdbcData, 30, 30);
 	}
 
 	public void testLoadDecay() throws Exception {
 		DataTable jdbcData = DataLoader.loadDelivery(conn, TEST_MODEL, 0);
 		System.out.println("  -- Printing Decay Coefficients --");
-		DataTableUtils.printDataTableSample(jdbcData, 30, 30);
+		DataTablePrinter.printDataTableSample(jdbcData, 30, 30);
 	}
 
 	public void testSourceValues() throws Exception {
@@ -201,7 +202,7 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 		DataTableWritable topo = DataLoader.loadTopo(conn, TEST_MODEL);
 		DataTable jdbcData = DataLoader.loadSourceValues(conn, TEST_MODEL, sourceMetadata, topo);
 		System.out.println("  -- Printing Decay Coefficients --");
-		DataTableUtils.printDataTableSample(jdbcData, 30, 30);
+		DataTablePrinter.printDataTableSample(jdbcData, 30, 30);
 	}
 
 

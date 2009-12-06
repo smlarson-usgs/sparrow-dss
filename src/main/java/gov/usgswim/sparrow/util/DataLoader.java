@@ -6,6 +6,7 @@ import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
+import gov.usgswim.datatable.utils.DataTablePrinter;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
@@ -270,7 +271,7 @@ public class DataLoader {
 
 		if (log.isDebugEnabled()) {
 			log.debug("Printing sample of topo ...");
-			log.debug(DataTableUtils.sampleDataTable(result, 10, 10));
+			log.debug(DataTablePrinter.sampleDataTable(result, 10, 10));
 		}
 
 		assert(result.hasRowIds()): "topo should have IDENTIFIER as row ids";
@@ -334,7 +335,7 @@ public class DataLoader {
 
 		if (log.isDebugEnabled()) {
 			log.debug("Printing sample of sourceReachCoef ...");
-			log.debug(DataTableUtils.sampleDataTable(sourceReachCoef, 10, 10));
+			log.debug(DataTablePrinter.sampleDataTable(sourceReachCoef, 10, 10));
 		}
 
 		return sourceReachCoef;
@@ -399,7 +400,7 @@ public class DataLoader {
 
 		if (log.isDebugEnabled()) {
 			log.debug("Printing sample of sourceReachCoef ...");
-			log.debug(DataTableUtils.sampleDataTable(sourceReachCoef, 10, 10));
+			log.debug(DataTablePrinter.sampleDataTable(sourceReachCoef, 10, 10));
 		}
 
 		return sourceReachCoef;
@@ -432,7 +433,7 @@ public class DataLoader {
 		DataTableWritable decay = DLUtils.readAsDouble(conn, query, 2000);
 		if (log.isDebugEnabled()) {
 			log.debug("Printing sample of decay ...");
-			log.debug(DataTableUtils.sampleDataTable(decay, 10, 10));
+			log.debug(DataTablePrinter.sampleDataTable(decay, 10, 10));
 		}
 		return decay;
 	}
@@ -508,7 +509,7 @@ public class DataLoader {
 		}
 		if (log.isDebugEnabled()) {
 			log.debug("Printing sample of sources ...");
-			log.debug(DataTableUtils.sampleDataTable(sourceValues, 10, 10));
+			log.debug(DataTablePrinter.sampleDataTable(sourceValues, 10, 10));
 		}
 		return sourceValues;
 
@@ -564,7 +565,7 @@ public class DataLoader {
 			log.error("UNABLE to loadsource metadata from " + DataLoader.class.getSimpleName() + "loadSourceMetadata()");
 		} else if (log.isDebugEnabled()) {
 			log.debug("Printing sample of source metadata ...");
-			log.debug(DataTableUtils.sampleDataTable(result, 10, 10));
+			log.debug(DataTablePrinter.sampleDataTable(result, 10, 10));
 		}
 		return result;
 	}

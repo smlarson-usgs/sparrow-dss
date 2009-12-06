@@ -42,7 +42,6 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 * For now we can keep... at least until we upgrade the library to 11G.
 	 * @deprecated
 	 */
-	@Override
 	public NSDataSet buildDataSet(java.util.Properties params) {
 		Hashtable<Object,Object> hash = new Hashtable<Object,Object>(13);
 
@@ -80,7 +79,8 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 * @param params - to be used when creating a data set.
 	 * @return an instance of NSDataSet; null if failed.
 	 */
-	public NSDataSet buildDataSet(Hashtable<?,?> params) {
+	@Override
+	public NSDataSet buildDataSet(Hashtable params) {
 
 		String idString = (String) params.get(CONTEXT_ID);
 		idString = StringUtils.trimToNull(idString);

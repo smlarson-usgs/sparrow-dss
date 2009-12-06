@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.loader;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
+import gov.usgswim.datatable.utils.DataTablePrinter;
 import gov.usgswim.datatable.utils.DataTableUtils;
 
 import java.io.IOException;
@@ -20,11 +21,11 @@ public class ModelDataStateChecker {
 
 		System.out.println("==== Checking sequence consistency ====");
 		DataTable dt = checkSequenceConsistency(conn);
-		DataTableUtils.printDataTable(dt, "Sequence Consistency");
+		DataTablePrinter.printDataTable(dt, "Sequence Consistency");
 
 		System.out.println("==== Checking Total table counts ====");
 		dt = checkTotalTableCounts(conn);
-		DataTableUtils.printDataTable(dt, "Total counts");
+		DataTablePrinter.printDataTable(dt, "Total counts");
 
 		DataTable models = getModels(conn);
 		Integer modelIDColIndex = models.getColumnByName("SPARROW_MODEL_ID");
@@ -33,11 +34,11 @@ public class ModelDataStateChecker {
 
 			System.out.println("==== Checking Sequence range for model " + modelID + " ====");
 			dt = checkPerModelIdentifierRanges(conn, modelID);
-			DataTableUtils.printDataTable(dt, "SparrowModel " + modelID + " ranges");
+			DataTablePrinter.printDataTable(dt, "SparrowModel " + modelID + " ranges");
 
 			System.out.println("==== Checking table counts for model " + modelID + " ====");
 			dt = checkPerModelTableCounts(conn, modelID);
-			DataTableUtils.printDataTable(dt, "Table counts for model " + modelID);
+			DataTablePrinter.printDataTable(dt, "Table counts for model " + modelID);
 
 			System.out.println("==== Checking model_attrib_vw decomposition for model " + modelID + " ====");
 			String[] rowResult = analyzeModelAttribVwStructure(conn, modelID);

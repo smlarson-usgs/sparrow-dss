@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.loader;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.utils.DataTablePrinter;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.util.DataLoader;
 
@@ -31,7 +32,7 @@ public class ModelDataLoadComparison {
 				Writer writer = new BufferedWriter(new FileWriter(topoOutFile), 8192);
 				// writer.write("fnode	tnode	iftran	hydseq\n");
 
-				DataTableUtils.printDataTable(topo, null, writer);
+				DataTablePrinter.printDataTable(topo, null, writer);
 				writer.flush();
 				writer.close();
 			}
@@ -48,7 +49,7 @@ public class ModelDataLoadComparison {
 			if (baseOutputDirectory.exists() && baseOutputDirectory.isDirectory()) {
 				File srcOutFile = ModelDataLoadComparison.getOutputSrcFile(baseOutputDirectory);
 				Writer writer = new BufferedWriter(new FileWriter(srcOutFile), 8192);
-				DataTableUtils.printDataTable(source, null, writer);
+				DataTablePrinter.printDataTable(source, null, writer);
 
 				writer.flush();
 				writer.close();
@@ -70,7 +71,7 @@ public class ModelDataLoadComparison {
 					writer.write("\t");
 				}
 				writer.write("\n");
-				DataTableUtils.printDataTable(coef, null, writer);
+				DataTablePrinter.printDataTable(coef, null, writer);
 
 				writer.flush();
 				writer.close();
