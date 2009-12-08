@@ -79,7 +79,6 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 * @param params - to be used when creating a data set.
 	 * @return an instance of NSDataSet; null if failed.
 	 */
-	@Override
 	public NSDataSet buildDataSet(Hashtable params) {
 
 		String idString = (String) params.get(CONTEXT_ID);
