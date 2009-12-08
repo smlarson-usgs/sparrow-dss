@@ -425,6 +425,10 @@ public class DataLoader {
 	 * <p>One row per reach (i = reach index)</p>
 	 * For data definitions, please see:
 	 * @see gov.usgswim.sparrow.PredictData#getDelivery()
+	 * 
+	 * TODO:  All the other 'per reach' data tables load row ids, which allows
+	 * a consistency check to be done.  This is not done yet for this b/c
+	 * there is no direct loadAsDouble() method that supports loading an index.
 	 *
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
