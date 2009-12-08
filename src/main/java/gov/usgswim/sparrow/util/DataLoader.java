@@ -306,6 +306,12 @@ public class DataLoader {
 
 		int sourceCount = sources.getRowCount();
 		DataTableWritable sourceReachCoef = new SimpleDataTableWritable();
+		
+		//Assign row IDs directly from the base query
+		String rowIdQuery =
+			getQuery("SelectReachCoef",
+					"ModelId", modelId, "Iteration", iteration, "SourceId", sources.getInt(0, SOURCE_ID_COL));
+		loadIndexValues(conn, sourceReachCoef, rowIdQuery, "Identifier");
 
 		for (int srcIndex=0; srcIndex<sourceCount; srcIndex++) {
 
@@ -313,6 +319,9 @@ public class DataLoader {
 				getQuery("SelectReachCoef",
 						"ModelId", modelId, "Iteration", iteration, "SourceId", sources.getInt(srcIndex, SOURCE_ID_COL)
 				);
+			
+			//The query has two columns and we only want the Value column
+			query = "Select Value from ( " + query + " )";
 
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			st.setFetchSize(2000);
@@ -442,6 +451,7 @@ public class DataLoader {
 	 * Returns a DataTable of all source values for a single model.
 	 * <h4>Data Columns with one row per reach (sorted by HYDSEQ)</h4>
 	 * <ol>
+	 * <li>id: IDENTIFIER - The model specific ID for this reach (loaded w/ query for data check)
 	 * <li>[Source Name 1] - The values for the first source in one column
 	 * <li>[Source Name 2...] - The values for the 2nd...
 	 * <li>...
@@ -469,13 +479,13 @@ public class DataLoader {
 		String[] headings = DataTableUtils.getStringColumn(sources, display_name_col);
 
 		DataTableWritable sourceValues = new SimpleDataTableWritable();
-
-		{	// use identifiers from topo to set source value ids
-			int size = topo.getRowCount();
-			for (int i=0; i<size; i++) {
-				sourceValues.setRowId(topo.getIdForRow(i), i);
-			}
-		}
+		
+		//Assign row IDs directly from the base query
+		String rowIdQuery =
+			getQuery("SelectSourceValues",
+					"ModelId", modelId, "SourceId", sources.getInt(0, SOURCE_ID_COL)
+			);
+		loadIndexValues(conn, sourceValues, rowIdQuery, "Identifier");
 
 		for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++) {
 			String constituent = sources.getString(srcIndex, sources.getColumnByName("CONSTITUENT"));
@@ -486,6 +496,9 @@ public class DataLoader {
 				getQuery("SelectSourceValues",
 						"ModelId", modelId, "SourceId", sources.getInt(srcIndex, SOURCE_ID_COL)
 				);
+			
+			//The query has two columns and we only want the Value column
+			query = "Select Value from ( " + query + " )";
 
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			st.setFetchSize(2000);
@@ -568,6 +581,26 @@ public class DataLoader {
 			log.debug(DataTablePrinter.sampleDataTable(result, 10, 10));
 		}
 		return result;
+	}
+	
+	protected static void loadIndexValues(Connection conn, DataTableWritable table,
+			String baseQuery, String indexColumnName) throws SQLException {
+		//Grab the query for the first source, but only taking the ID vals
+
+		String query = "Select " + indexColumnName + " from ( " + baseQuery + " )";
+		
+		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+		st.setFetchSize(2000);
+		ResultSet rs = null;
+		try {
+			rs = st.executeQuery(query);
+			DLUtils.loadIndex(rs, table, 0);
+		} finally {
+			if (rs != null) {
+				rs.close();
+				rs = null;
+			}
+		}
 	}
 
 	/**

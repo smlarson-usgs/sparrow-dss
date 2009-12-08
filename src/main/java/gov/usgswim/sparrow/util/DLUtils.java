@@ -66,6 +66,28 @@ public class DLUtils{
 		}
 
 	}
+	
+	/**
+	 * Loads a single column from the resultSet source to the destination DataTable as the table's index.
+	 * For consistency, the from columns is ZERO INDEXED.
+	 *
+	 * @param source Resultset to load the data from.  The resultset is assumed to be before the first row.
+	 * @param dest The destination DataTable
+	 * @param fromCol The column (zero indexed) in the resultset to load from
+	 * @throws SQLException
+	 */
+	public static void loadIndex(ResultSet source, DataTableWritable dest, int fromCol) throws SQLException {
+
+		fromCol++;		//covert to ONE base index
+		int currentRow = 0;
+
+		while (source.next()){
+			long id = source.getLong(fromCol);
+			dest.setRowId(id, currentRow);
+			currentRow++;
+		}
+
+	}
 
 	/**
 	 * Creates an unindexed DataTable from the passed query.
