@@ -70,8 +70,8 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 * <p>One row per reach (i = reach index).
 	 * Row ID is IDENTIFIER REACH_ID</p>
 	 * <ol>
-	 * <li>REACH_ID - The system id for the reach (db unique id) used as a rowID, not an actual column
-	 * <li>[0][MODEL_REACH_COL] MODEL_REACH_ID - The model specific hydrological sequence number
+	 * <li>Index: - The model specific reach identifier
+	 * <li>[0][0] MODEL_REACH_ID - The system id for the reach (db unique id)
 	 * <li>[i][1] FNODE - The from node
 	 * <li>[i][2] TNODE - The to node
 	 * <li>[i][3] IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
