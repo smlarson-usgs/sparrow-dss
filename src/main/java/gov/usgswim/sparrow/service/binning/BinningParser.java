@@ -7,12 +7,12 @@ import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.stream.XMLStreamReader;
 
-public class BinningParser extends AbstractHttpRequestParser<BinningRequest> 
-implements RequestParser<BinningRequest>  {
+public class BinningParser extends AbstractHttpRequestParser<BinningServiceRequest> 
+implements RequestParser<BinningServiceRequest>  {
     
     @Override
-	public BinningRequest parse(HttpServletRequest request) throws Exception {
-        BinningRequest req = null;
+	public BinningServiceRequest parse(HttpServletRequest request) throws Exception {
+        BinningServiceRequest req = null;
         
         if (request.getMethod().equals("GET")) {
             String contextId = request.getParameter("context-id");
@@ -24,7 +24,7 @@ implements RequestParser<BinningRequest>  {
                 binTypeValue = BIN_TYPE.EQUAL_RANGE;
             }
             
-            req = new BinningRequest(Integer.valueOf(contextId), Integer.valueOf(binCount), binTypeValue);
+            req = new BinningServiceRequest(Integer.valueOf(contextId), Integer.valueOf(binCount), binTypeValue);
         } else {
             throw new Exception("Unsupported HTTP method.");
         }
@@ -32,10 +32,10 @@ implements RequestParser<BinningRequest>  {
         return req;
     }
 
-    public BinningRequest parse(XMLStreamReader in) throws Exception {
+    public BinningServiceRequest parse(XMLStreamReader in) throws Exception {
         throw new Exception("Unsupported request format.");
         /*
-        BinningRequest br = new BinningRequest();
+        BinningServiceRequest br = new BinningServiceRequest();
         // pre-parse to set the stream at the appropriate spot before handing off to XMLParserComponent, which expects to be at its start tag.
         ParserHelper.parseToStartTag(in, PredictExportRequest.MAIN_ELEMENT_NAME);
         br.parse(in);

@@ -13,7 +13,7 @@ public class BinningSerializer extends BasicXMLStreamReader {
     
     public static String TARGET_NAMESPACE = "http://www.usgs.gov/sparrow/binning-response/v0_1";
     public static String TARGET_NAMESPACE_LOCATION = "http://www.usgs.gov/sparrow/binning-response/v0_1.xsd";
-    private BinningRequest request;
+    private BinningServiceRequest request;
     private BigDecimal[] bins;
     protected ParseState state = new ParseState();
 
@@ -24,7 +24,7 @@ public class BinningSerializer extends BasicXMLStreamReader {
         }
     };
     
-    public BinningSerializer(BinningRequest request, BigDecimal[] bins) {
+    public BinningSerializer(BinningServiceRequest request, BigDecimal[] bins) {
         super();
         this.request = request;
         this.bins = bins;

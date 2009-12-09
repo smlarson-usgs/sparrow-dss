@@ -5,7 +5,7 @@ import gov.usgs.webservices.framework.formatter.XMLPassThroughFormatter;
 import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgswim.sparrow.service.AbstractPipeline;
 
-public class BinningPipeline extends AbstractPipeline<BinningRequest> {
+public class BinningPipeline extends AbstractPipeline<BinningServiceRequest> {
     public BinningPipeline() {
         super(new BinningService(), new BinningParser());
     }

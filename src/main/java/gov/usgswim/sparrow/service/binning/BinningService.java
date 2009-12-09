@@ -8,8 +8,8 @@ import java.math.BigDecimal;
 
 import javax.xml.stream.XMLStreamReader;
 
-public class BinningService implements HttpService<BinningRequest> {
-    public XMLStreamReader getXMLStreamReader(BinningRequest o, boolean isNeedsCompleteFirstRow)
+public class BinningService implements HttpService<BinningServiceRequest> {
+    public XMLStreamReader getXMLStreamReader(BinningServiceRequest o, boolean isNeedsCompleteFirstRow)
     throws Exception {
         Integer predictContextId = o.getContextId();
         Integer binCount = o.getBinCount();

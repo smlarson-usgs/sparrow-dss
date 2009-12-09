@@ -10,7 +10,7 @@ import gov.usgswim.sparrow.service.predict.PredictExportRequest;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class BinningRequest implements XMLStreamParserComponent, PipelineRequest{
+public class BinningServiceRequest implements XMLStreamParserComponent, PipelineRequest{
 
 	private static final long serialVersionUID = 1L;
 	private String xmlRequest;
@@ -19,7 +19,7 @@ public class BinningRequest implements XMLStreamParserComponent, PipelineRequest
     private Integer binCount;
     private BIN_TYPE binType;
 
-    public BinningRequest(Integer contextId, Integer binCount, BIN_TYPE binType) {
+    public BinningServiceRequest(Integer contextId, Integer binCount, BIN_TYPE binType) {
         this.contextId = contextId;
         this.binCount = binCount;
         this.binType = binType;
