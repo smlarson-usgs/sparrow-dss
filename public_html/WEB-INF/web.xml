@@ -149,7 +149,7 @@
 	 -->
 	<!--  End Attribute services -->
 	<session-config>
-		<session-timeout>35</session-timeout>
+		<session-timeout>1</session-timeout>
 	</session-config>
 	<mime-mapping>
 		<extension>html</extension>
