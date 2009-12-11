@@ -19,7 +19,11 @@ public class DataLoaderOfflineTest extends TestCase {
 			"SelectReachCoef", new Object[] {"ModelId", 999, "Iteration", 888, "SourceId", 777});
 
 		String expected =
-		"SELECT coef.VALUE AS Value FROM SOURCE_REACH_COEF coef INNER JOIN MODEL_REACH rch ON coef.MODEL_REACH_ID = rch.MODEL_REACH_ID WHERE rch.SPARROW_MODEL_ID = 999 AND coef.Iteration = 888 AND coef.SOURCE_ID = 777 ORDER BY rch.HYDSEQ, rch.IDENTIFIER";
+		"SELECT coef.VALUE AS Value, rch.Identifier as Identifier " +
+		"FROM SOURCE_REACH_COEF coef INNER JOIN MODEL_REACH rch " +
+		"ON coef.MODEL_REACH_ID = rch.MODEL_REACH_ID " +
+		"WHERE rch.SPARROW_MODEL_ID = 999 AND coef.Iteration = 888 " +
+		"AND coef.SOURCE_ID = 777 ORDER BY rch.HYDSEQ, rch.IDENTIFIER";
 
 		assertEquals("Has the query changed?", expected, query);
 	}
