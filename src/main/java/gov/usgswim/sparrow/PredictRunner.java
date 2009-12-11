@@ -89,13 +89,15 @@ public class PredictRunner implements Runner {
 		nodeCount = maxNode + 1;
 	}
 
-
+	/**
+	 * runs the actual prediction.
+	 */
 	public PredictResultImm doPredict() throws Exception {
+		
 		int reachCount = topo.getRowCount(); // # of reaches is equal to the number of 'rows' in topo
 		int sourceCount = sourceValues.getColumnCount(); // # of sources is equal to the number of 'columns' in an
-		// arbitrary row (row zero)
-		int totalIncrementalColOffset = 2*sourceCount;
-		int grandTotalColOffset = totalIncrementalColOffset + 1;
+		int outputColumnCount = (sourceCount * 2) + 2;	//The # of output columns
+		
 		/*
 		 * The number of predicted values per reach (k = number of sources, i =
 		 * reach #) [i, 0 ... (k-1)] incremental added at reach, per source k
@@ -105,57 +107,65 @@ public class PredictRunner implements Runner {
 		 * total at reach (incremental + from node). Comparable to measured.
 		 * (decayed)
 		 */
-
-		int rchValColCount = (sourceCount * 2) + 2;
-		double incReachContribution[][] = new double[reachCount][rchValColCount];
-
-		/*
-		 * Array of accumulated values at nodes
-		 */
-		double upstreamNodeContribution[][] = new double[nodeCount][sourceCount];
-
+		
+		//The output array for all data, one row per reach and in the same order.
+		double outputArray[][] = new double[reachCount][outputColumnCount];
+		
+		//Array of accumulated values at nodes, row number correspond to nodes
+		//defined by fnode and tnode.
+		double upstreamNodeLoad[][] = new double[nodeCount][sourceCount];
+		
+		//in outputArray, the column of the combined incremental contribution (not decayed, all sources)
+		int totalIncrementalColumnIndex = 2*sourceCount;
+		
+		//in outputArray, the column of the combined total load (decayed, all sources)
+		int totalTotalColumnIndex = totalIncrementalColumnIndex + 1;
 
 		// Iterate over all reaches
-		for (int reach = 0; reach < reachCount; reach++) {
+		for (int reachRow = 0; reachRow < reachCount; reachRow++) {
 
-			double reachIncrementalContributionAllSourcesTotal = 0d; // incremental for all sources/ (NOT decayed)
+			double totalIncrementalLoad = 0d; // incremental for all sources/ (NOT decayed)
 			double rchGrandTotal = 0d; // all sources + all from upstream node (decayed)
 
-			// Iterate over all sources
-			for (int sourceType = 0; sourceType < sourceCount; sourceType++) {
-				int source = sourceType + sourceCount;
+			//Iterate over all sources.
+			//currentSourceIndex indexes to the incremental per source in the output array.
+			for (int currentSourceIndex = 0; currentSourceIndex < sourceCount; currentSourceIndex++) {
+				
+				//Index to the total (w/ upstream decayed) for this source
+				int currentTotalSourceIndex = currentSourceIndex + sourceCount;
 
-				// temp var to store the incremental per source k.
-				// Land delivery and coeff both included in coef value. (NOT
-				// decayed)
-				double incrementalReachContribution = sourceCoefficient
-				.getDouble(reach, sourceType)
-				* sourceValues.getDouble(reach, sourceType);
+				//Land delivery & coef both included in coef value. (NOT decayed)
+				double incrementalLoadForThisSource = 
+					sourceCoefficient.getDouble(reachRow, currentSourceIndex)
+					* sourceValues.getDouble(reachRow, currentSourceIndex);
 
-				incReachContribution[reach][sourceType] = incrementalReachContribution;
+				outputArray[reachRow][currentSourceIndex] = incrementalLoadForThisSource;
 
-				// total at reach (w/ up stream contrib) per source k (Decayed)
-				incReachContribution[reach][source] =
-					(incrementalReachContribution * deliveryCoefficient.getDouble(reach, INSTREAM_DECAY_COL)) /* Just the decayed source */
-					+ (upstreamNodeContribution[topo.getInt(reach, FNODE_COL)][sourceType] * deliveryCoefficient.getDouble(reach, UPSTREAM_DECAY_COL)); /* Just the decayed upstream portion */
+				//total (w/ upstream contrib) for this source (Decayed)
+				outputArray[reachRow][currentTotalSourceIndex] =
+					(incrementalLoadForThisSource * deliveryCoefficient.getDouble(reachRow, INSTREAM_DECAY_COL))
+					/* (incremental addition of this source, decayed by 1/2 stream travel) */
+					+
+					/* (upstream load decayed by full stream travel (includes delivery fraction)) */
+					(upstreamNodeLoad[topo.getInt(reachRow, FNODE_COL)][currentSourceIndex]
+					* deliveryCoefficient.getDouble(reachRow, UPSTREAM_DECAY_COL));
 
 				// Accumulate at downstream node if this reach transmits
-				if (topo.getInt(reach, IFTRAN_COL) != 0) {
-					upstreamNodeContribution[topo.getInt(reach, TNODE_COL)][sourceType] += incReachContribution[reach][source];
+				if (topo.getInt(reachRow, IFTRAN_COL) != 0) {
+					upstreamNodeLoad[topo.getInt(reachRow, TNODE_COL)][currentSourceIndex]
+					+= outputArray[reachRow][currentTotalSourceIndex];
 				}
 
-				reachIncrementalContributionAllSourcesTotal += incrementalReachContribution; // add to incremental total for all sources at reach
-				rchGrandTotal += incReachContribution[reach][source]; // add to grand total for all sources (w/upsteam) at reach
+				totalIncrementalLoad += incrementalLoadForThisSource; // add to incremental total for all sources at reach
+				rchGrandTotal += outputArray[reachRow][currentTotalSourceIndex]; // add to grand total for all sources (w/upsteam) at reach
 			}
 
-			incReachContribution[reach][totalIncrementalColOffset] = reachIncrementalContributionAllSourcesTotal; // incremental for all sources (NOT decayed)
-			incReachContribution[reach][grandTotalColOffset] = rchGrandTotal; // all sources + all from upstream node (Decayed)
+			outputArray[reachRow][totalIncrementalColumnIndex] = totalIncrementalLoad; // incremental for all sources (NOT decayed)
+			outputArray[reachRow][totalTotalColumnIndex] = rchGrandTotal; // all sources + all from upstream node (Decayed)
 
 		}
 
-		return PredictResultImm.buildPredictResult(incReachContribution,
-				predictData);
-
+		return PredictResultImm.buildPredictResult(outputArray,	predictData);
 	}
 
 	/**
