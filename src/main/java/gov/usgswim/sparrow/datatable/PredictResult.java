@@ -41,78 +41,102 @@ public interface PredictResult extends Immutable {
 
 	/**
 	 * Returns the number of sources.
-	 * @return
+	 * @return A count.
 	 */
 	public int getSourceCount();
 	
 	/**
-	 * Returns the index for the total incremental column.
-	 * @return
+	 * Returns the column index for the incremental column.
+	 * @return A column index.
 	 */
 	public int getIncrementalCol();
 	
 	/**
-	 * Returns the total incremental value for the specified row.
-	 * @param row
-	 * @return
+	 * Returns the incremental addition of the model constituent for all sources
+	 * at this reach, as identified by the specified row.
+	 * 
+	 * Note that the incremental addition is not decayed by the instream decay
+	 * coef.:  It is the amount of load enter this reach, not the incremental
+	 * amount leaving the reach.
+	 * 
+	 * @param row The row number of the reach
+	 * @return The incremental addition from all sources at this reach
 	 */
 	public Double getIncremental(int row);
 	
 	/**
-	 * Returns the column index of the incremental values of the specified source id (the IDENTIFIER of that source).
+	 * Returns the column index of the incremental values of the specified source.
 	 * 
-	 * If the prediction data is loaded from a file and does not have an IDENTIFIER,
-	 * the ordinal position of the source (1 based) is used as the identifier.
+	 * If the predict data is loaded from a file and does not have source IDs,
+	 * the 1 based ordinal position of the source is used as the source ID.
 	 * 
-	 * @param srcId
+	 * @param srcId The source id, or if none due to a file loaded dataset,
+	 * the 1 based ordinal of the source.
 	 * @return
 	 */
 	public int getIncrementalColForSrc(Long srcId);
 	
 	/**
-	 * Returns the incremental value for the specified source id (the IDENTIFIER of that source) and row.
+	 * Returns the incremental addition of the model constituent for the
+	 * specified source at this reach, as specified by the source id.
+	 * at this reach, as identified by the specified row.
 	 * 
-	 * If the prediction data is loaded from a file and does not have an IDENTIFIER,
-	 * the ordinal position of the source (1 based) is used as the identifier.
+	 * Note that the incremental addition is not decayed by the instream decay
+	 * coef.:  It is the amount of load enter this reach, not the incremental
+	 * amount leaving the reach.
 	 * 
-	 * @param srcId
-	 * @return
+	 * If the predict data is loaded from a file and does not have source IDs,
+	 * the 1 based ordinal position of the source is used as the source ID.
+	 * 
+	 * @param srcId The source id, or if none due to a file loaded dataset,
+	 * the 1 based ordinal of the source.
+	 * @return The incremental addition from the specified source at this reach
 	 */
 	public Double getIncrementalForSrc(int row, Long srcId);
 	
 	/**
-	 * Returns the index of the total Total column.
-	 * @return
+	 * Returns the index of the total load column.
+	 * @return A column index value.
 	 */
 	public int getTotalCol();
 	
 	/**
-	 * Returns the total Total value for the specified row.
+	 * Returns the Total load (including upstream load) for all sources arriving
+	 * at the bottom of this reach.
 	 * 
-	 * @param row
-	 * @return
+	 * This is also called the 'measurable' load, since this is the load that
+	 * you could theoretically measure (if you could measure a average value from
+	 * a past year) in the stream.  It is also the value that is used to calibrate
+	 * the model to the calibration sites.
+	 * 
+	 * @param row The row number of the reach
+	 * @return The total load with upstream load, combined for all sources.
 	 */
 	public Double getTotal(int row);
 	
 	/**
-	 * Returns the column index of the total values of the specified source ID (the IDENTIFIER of that source).
+	 * Returns the index of the Total column for the specified source.
 	 * 
-	 * If the prediction data is loaded from a file and does not have an IDENTIFIER,
-	 * the ordinal position of the source (1 based) is used as the identifier.
+	 * If the predict data is loaded from a file and does not have source IDs,
+	 * the 1 based ordinal position of the source is used as the source ID.
 	 * 
-	 * @param srcId
-	 * @return
+	 * @param srcId The source id, or if none due to a file loaded dataset,
+	 * the 1 based ordinal of the source.
+	 * @return The index of the total column for the spec'ed source.
 	 */
 	public int getTotalColForSrc(Long srcId);
 	
 	/**
-	 * Returns the total value for the specified source id (the IDENTIFIER of that source) and row.
+	 * Returns the Total load (including upstream load) for a specified source
+	 * arriving at the bottom of this reach.
 	 * 
-	 * If the prediction data is loaded from a file and does not have an IDENTIFIER,
-	 * the ordinal position of the source (1 based) is used as the identifier.
+	 * If the predict data is loaded from a file and does not have source IDs,
+	 * the 1 based ordinal position of the source is used as the source ID.
 	 * 
-	 * @param srcId
-	 * @return
+	 * @param row The row number of the reach
+	 * @param srcId The source identifier, or if none due to a file loaded dataset,
+	 * the 1 based ordinal of the source.
+	 * @return The total load with upstream load, for a specified source.
 	 */
 	public Double getTotalForSrc(int row, Long srcId);
 	
