@@ -210,7 +210,10 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 
 			}
 		}
-
+		
+		//TODO: This seems wasteful - shouldn't we only create these types of
+		//adjustments if there actually are adjustments of the specific type?
+		
         //Two places to adjust:  SparseCoeff allows coeff adjustments to individual
         //reaches, SparesOverride, which wraps coef, allows absolute value adjustments
         //to individual reaches.
