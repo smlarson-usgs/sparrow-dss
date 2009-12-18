@@ -67,8 +67,7 @@ public class PredictDataImm extends AbstractPredictData {
 	 * The structure of this data is not currently defined.
 	 */
 	private final DataTable ancil;
-
-
+	
 	/**
 	 * Constructs a new dataset w/ all data tables defined.
 	 * See matching method docs for complete definitions of each parameter.
@@ -79,20 +78,19 @@ public class PredictDataImm extends AbstractPredictData {
 	 * @param topo
 	 * @param coef
 	 * @param src
-	 * @param decay
-	 * @param sys
+	 * @param srcIDs
+	 * @param delivery
 	 * @param ancil
 	 * @param model
-	 * @param srcIDs
 	 */
 	public PredictDataImm(DataTable topo, DataTable coef, DataTable src, DataTable srcIDs,
-			DataTable decay, DataTable ancil, SparrowModel model) {
+			DataTable delivery, DataTable ancil, SparrowModel model) {
 
 		this.model = model;
 		this.topo = topo;
 		this.coef = coef;
 		this.src = src;
-		this.delivery = decay;
+		this.delivery = delivery;
 		this.ancil = ancil;
 		this.srcMetadata = srcIDs;
 	}
