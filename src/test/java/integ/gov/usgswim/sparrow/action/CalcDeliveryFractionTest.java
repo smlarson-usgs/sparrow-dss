@@ -60,7 +60,7 @@ public class CalcDeliveryFractionTest {
 		
 		//Turns on detailed logging
 		log.setLevel(Level.DEBUG);
-		log.getLogger(CalcDeliveryFraction.class).setLevel(Level.DEBUG);
+		log.getLogger(Action.class).setLevel(Level.DEBUG);
 		
 		lifecycle.contextInitialized(null, true);
 		XMLUnit.setIgnoreWhitespace(true);
@@ -99,7 +99,7 @@ public class CalcDeliveryFractionTest {
 		lifecycle.contextDestroyed(null, true);
 	}
 	
-
+	//TODO:  THis is really obsolete, just need to yank the other delivery out.
 	@Test
 	public void testComparison() throws Exception {
 		
@@ -112,8 +112,10 @@ public class CalcDeliveryFractionTest {
 		DeliveryRunner dr = new DeliveryRunner(predictData);
 		DataTable dataTableOld = dr.calculateReachTransportFractionDataTable(targetSet);
 		
-		ColumnData deliveryFracNew = (ColumnData) CalcDeliveryFraction.calcDelivery(predictData,
-				targetSet);
+		CalcDeliveryFraction action = new CalcDeliveryFraction();
+		action.setPredictData(predictData);
+		action.setTargetReachIds(targetSet);
+		ColumnData deliveryFracNew = action.run();
 		
 		SimpleDataTable dataTableNew = new SimpleDataTable(
 			new ColumnData[] {deliveryFracNew}, "new", "new", null, null
@@ -140,8 +142,10 @@ public class CalcDeliveryFractionTest {
 		targetList.add(9682L);
 		TerminalReaches targets = new TerminalReaches(MODEL_ID, targetList);
 		
-		ColumnData deliveryFrac = (ColumnData) CalcDeliveryFraction.calcDelivery(predictData,
-				targets.asSet());
+		CalcDeliveryFraction action = new CalcDeliveryFraction();
+		action.setPredictData(predictData);
+		action.setTargetReachIds(targets.asSet());
+		ColumnData deliveryFrac = action.run();
 		
 		//Some stats
 		int inSheet = 0;
@@ -189,8 +193,10 @@ public class CalcDeliveryFractionTest {
 		targetList.add(9674L);
 		TerminalReaches targets = new TerminalReaches(MODEL_ID, targetList);
 		
-		ColumnData deliveryFrac = (ColumnData) CalcDeliveryFraction.calcDelivery(predictData,
-				targets.asSet());
+		CalcDeliveryFraction action = new CalcDeliveryFraction();
+		action.setPredictData(predictData);
+		action.setTargetReachIds(targets.asSet());
+		ColumnData deliveryFrac = action.run();
 		
 
 		//Some stats
@@ -239,8 +245,10 @@ public class CalcDeliveryFractionTest {
 		targetList.add(9674L);
 		TerminalReaches targets = new TerminalReaches(MODEL_ID, targetList);
 		
-		ColumnData deliveryFrac = (ColumnData) CalcDeliveryFraction.calcDelivery(predictData,
-				targets.asSet());
+		CalcDeliveryFraction action = new CalcDeliveryFraction();
+		action.setPredictData(predictData);
+		action.setTargetReachIds(targets.asSet());
+		ColumnData deliveryFrac = action.run();
 		
 		//Some stats
 		int inSheet = 0;
@@ -287,8 +295,10 @@ public class CalcDeliveryFractionTest {
 		targetList.add(9687L);
 		TerminalReaches targets = new TerminalReaches(MODEL_ID, targetList);
 		
-		ColumnData deliveryFrac = (ColumnData) CalcDeliveryFraction.calcDelivery(predictData,
-				targets.asSet());
+		CalcDeliveryFraction action = new CalcDeliveryFraction();
+		action.setPredictData(predictData);
+		action.setTargetReachIds(targets.asSet());
+		ColumnData deliveryFrac = action.run();
 		
 		//Some stats
 		int nonZeroCount = 0;

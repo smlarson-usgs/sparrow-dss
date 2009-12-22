@@ -16,8 +16,6 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-
 /**
  * This action creates a ColumnData containing the delivery
  * fractions to the set of Target reaches.
@@ -25,16 +23,35 @@ import org.apache.log4j.Logger;
  * @author eeverman
  *
  */
-public class CalcDeliveryFraction {
+public class CalcDeliveryFraction extends Action<ColumnData> {
 
-	protected static Logger log =
-		Logger.getLogger(CalcDeliveryFraction.class); //logging for this class
-
+	protected PredictData predictData;
+	protected Set<Long> targetReachIds;
+	protected String msg = null;
 	
-	public static ColumnData calcDelivery(PredictData predictData,
-			Set<Long> targetReachIds) throws Exception {
+	/**
+	 * Sets the predictData used to calc the delivery fraction.
+	 * @param predictData
+	 */
+	public void setPredictData(PredictData predictData) {
+		this.predictData = predictData;
+	}
 
-		
+	/**
+	 * The targets to calc the delivery fraction w/ respect to.
+	 * @param targetReachIds
+	 */
+	public void setTargetReachIds(Set<Long> targetReachIds) {
+		this.targetReachIds = targetReachIds;
+	}
+	
+	@Override
+	protected String getPostMessage() {
+		return msg;
+	}
+	
+	@Override
+	protected ColumnData doAction() throws Exception {
 		//Hash containing rows as keys and DeliveryReaches as values.
 		HashMap<Integer, DeliveryReach> deliveries = calcDeliveryHash(predictData, targetReachIds);
 		int baseRows = predictData.getTopo().getRowCount();
@@ -78,7 +95,6 @@ public class CalcDeliveryFraction {
 	}
 	
 	
-	
 	/**
 	 * Calculates the delivery fractions for reaches upstream of a specified targets.
 	 * A list of all upstream reaches are return, some of which may contain
@@ -89,19 +105,10 @@ public class CalcDeliveryFraction {
 	 * @return
 	 * @throws Exception
 	 */
-	public static HashMap<Integer, DeliveryReach> calcDeliveryHash(
+	protected HashMap<Integer, DeliveryReach> calcDeliveryHash(
 			PredictData predictData, Set<Long> targetReachIds) throws Exception {
 		
 		DataTable topo = predictData.getTopo();
-		
-		long startTime = 0L;
-		if (log.isDebugEnabled()) {
-			log.debug("Start calcDelivery for model " +
-				"unknown" + " with " + topo.getRowCount() +
-				" rows. " + targetReachIds.size() + " targets."
-			);
-			startTime = System.currentTimeMillis();
-		}
 		
 		Iterator<Long> targetIdIterator = targetReachIds.iterator();
 		
@@ -143,14 +150,9 @@ public class CalcDeliveryFraction {
 			}
 		}
 		
-		if (log.isDebugEnabled()) {
-			log.debug("Finish calcDelivery for model " +
-				"unknown" + " with " + topo.getRowCount() +
-				" rows. " + targetReachIds.size() + " targets.  " +
-				"Found " + mergedDeliveryFractions.size() + " upstream reaches.  " +
-				"Total time " + (System.currentTimeMillis() - startTime)
-			);
-		}
+		msg = "Delivery Details:  Model size:  " + topo.getRowCount() +
+				" rows, " + targetReachIds.size() + " targets.  " +
+				"Found " + mergedDeliveryFractions.size() + " upstream reaches.";
 		
 		return mergedDeliveryFractions;
 	}
@@ -165,7 +167,7 @@ public class CalcDeliveryFraction {
 	 * @return A list of DeliveryReaches which are upstream of the targetReach
 	 * @throws Exception
 	 */
-	public static List<DeliveryReach> calcDeliveryForSingleTarget(
+	protected List<DeliveryReach> calcDeliveryForSingleTarget(
 			PredictData predictData, DeliveryReach targetReach) throws Exception {
 		
 		DataTable topo = predictData.getTopo();
@@ -218,7 +220,7 @@ public class CalcDeliveryFraction {
 	 * @param predictData The predict data to seach within
 	 * @param current The current reach for which to find immediate upstream reaches
 	 */
-	public static void addUpstreamReachesToQueue(Queue<DeliveryReach> upstreamReaches,
+	protected void addUpstreamReachesToQueue(Queue<DeliveryReach> upstreamReaches,
 			PredictData predictData, DeliveryReach current) {
 		
 		DataTable topo = predictData.getTopo();

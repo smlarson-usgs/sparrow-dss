@@ -11,19 +11,16 @@ import java.util.Set;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 /**
- * This factory class creates a ColumnData containing the delivery
- * fractions to the set of Target reaches on demand for an EHCache.
+ * An EHCache CacheEntryFactory to run a SPARROW calculation when the results
+ * are not present in the cache.
+ * 
+ * This class is a thin wrapper over the action CalcDeliveryFraction and is only
+ * needed to provide compatibility w/ the EHCache framework.  See the action
+ * class for implementation details.
  *
- * This class implements CacheEntryFactory, which plugs into the caching system
- * so that the createEntry() method is only called when a entry needs to be
- * created/loaded.
- *
- * Caching, blocking, and de-caching are all handled by the caching system, so
- * that this factory class only needs to worry about building a new entity in
- * (what it can consider) a single thread environment.
+ * Caching, blocking, and de-caching are all handled by the caching system.
  *
  * @author eeverman
- *
  */
 public class CalcDeliveryFractionFactory implements CacheEntryFactory {
 
@@ -34,8 +31,11 @@ public class CalcDeliveryFractionFactory implements CacheEntryFactory {
 			getPredictData(new Long(targets.getModelID()));
 		Set<Long> targetReachIds = targets.asSet();
 		
-		ColumnData accumulatedDeliveryFrac =
-			CalcDeliveryFraction.calcDelivery(predictData, targetReachIds);
+		CalcDeliveryFraction action = new CalcDeliveryFraction();
+		action.setPredictData(predictData);
+		action.setTargetReachIds(targetReachIds);
+		
+		ColumnData accumulatedDeliveryFrac = action.run();
 		
 		return accumulatedDeliveryFrac;
 	}
