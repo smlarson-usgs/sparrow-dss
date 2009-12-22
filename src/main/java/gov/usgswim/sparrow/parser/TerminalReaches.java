@@ -47,6 +47,20 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	public TerminalReaches(Long modelID) {
 		this.modelID = modelID;
 	}
+	
+	/**
+	 * Creates a fully specified TerminalReach instance.
+	 * 
+	 * targetReachIDs are copied to ensure immutability.
+	 * 
+	 * @param modelID
+	 * @param targetReachIDs
+	 */
+	public TerminalReaches(Long modelID, List<Long> targetReachIDs) {
+		this.modelID = modelID;
+		
+		reachIDs.addAll(targetReachIDs);
+	}
 
 	// ================
 	// INSTANCE METHODS
