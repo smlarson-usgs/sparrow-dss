@@ -53,7 +53,7 @@ public class DeliveryRunner implements Runner {
 	protected DataTable sourceValues; // TODO remove NOT USED
 
 	/**
-	 * The stream and resevor decay. The values in the array are *actually*
+	 * The stream and reservoir decay. The values in the array are *actually*
 	 * delivery, which is (1 - decay). I.E. the delivery calculation is already
 	 * done.
 	 *

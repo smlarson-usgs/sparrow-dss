@@ -8,13 +8,18 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+
 import junit.framework.TestCase;
 
 /**
  * @author ilinkuo
  * @deprecated
  */
-public class JDBCUtilMemoryIntegrationTest extends TestCase {
+public class JDBCUtilMemoryIntegrationTest{
 
 	public static class MemoryTestBench {// copied from datatable
 		// MemoryUsageTest.java, which
@@ -112,16 +117,13 @@ public class JDBCUtilMemoryIntegrationTest extends TestCase {
 
 	private Connection conn;
 
-	@Override
+	@Before
 	protected void setUp() throws Exception {
-		super.setUp();
-
 		conn = SharedApplication.getConnectionFromCommandLineParams();
 	}
 
-	@Override
+	@After
 	protected void tearDown() throws Exception {
-		super.tearDown();
 		if (conn != null ) conn.close();
 	}
 
@@ -129,6 +131,8 @@ public class JDBCUtilMemoryIntegrationTest extends TestCase {
 	// TEST METHODS
 	// ============
 
+	@Test
+	@Ignore // for now
 	public void testloadFullModelDataSet() throws Exception {
 		final int modelId = 21;
 		System.out.println("======= Testing loadFullModelDataSet Components Memory Usage =======");
