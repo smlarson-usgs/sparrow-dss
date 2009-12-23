@@ -218,6 +218,11 @@ public abstract class AbstractDataTableBase implements DataTable {
 	public boolean isValid() {
 		return base.isValid();
 	}
+	
+	@Override
+	public boolean isValid(int columnIndex) {
+		return base.isValid(columnIndex);
+	}
 
 	@Override
 	public Class<?> getDataType(int col) {
