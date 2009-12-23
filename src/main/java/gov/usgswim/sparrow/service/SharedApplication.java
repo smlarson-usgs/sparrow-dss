@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.service;
 
+import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
@@ -65,10 +66,11 @@ public class SharedApplication  {
 
 
 	//ehcache self-populated cache names
+	public static final String PREDICT_DATA_CACHE = "PredictData";
+	public static final String DELIVERY_FRACTION_CACHE = "DeliveryFraction";
 	public static final String NS_DATASET_CACHE = "NSDataSet";
 	public static final String COMPARISON_RESULT_CACHE = "ComparisonResult";
 	public static final String ANALYSIS_RESULT_CACHE = "AnalysisResult";
-	public static final String PREDICT_DATA_CACHE = "PredictData";
 	public static final String STANDARD_ERROR_ESTIMATE_DATA = "StandardErrorEstimateData";
 	public static final String ADJUSTED_SOURCE_CACHE = "AdjustedSource";
 	public static final String PREDICT_RESULT_CACHE = "PredictResult";
@@ -397,7 +399,7 @@ public class SharedApplication  {
 	}
 	
 	
-	//PredictData Cache
+	//PredictData
 	public PredictData getPredictData(Long id) {
 		return getPredictData(id, false);
 	}
@@ -406,6 +408,17 @@ public class SharedApplication  {
 		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_DATA_CACHE);
 		Element e  = (quiet)?c.getQuiet(id):c.get(id);
 		return (e != null)?((PredictData) e.getObjectValue()):null;
+	}
+	
+	//DeliveryFraction
+	public ColumnData getDeliveryFraction(TerminalReaches targets) {
+		return getDeliveryFraction(targets, false);
+	}
+
+	public ColumnData getDeliveryFraction(TerminalReaches targets, boolean quiet) {
+		Ehcache c = CacheManager.getInstance().getEhcache(DELIVERY_FRACTION_CACHE);
+		Element e  = (quiet)?c.getQuiet(targets):c.get(targets);
+		return (e != null)?((ColumnData) e.getObjectValue()):null;
 	}
 	
 	//Uncertainty Data

@@ -110,6 +110,10 @@ public class LifecycleListener implements ServletContextListener {
 		SelfPopulatingCache predictDataCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.PREDICT_DATA_CACHE), new PredictDataFactory());
 		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.PREDICT_DATA_CACHE), predictDataCache);
 		
+		//DeliveryFraction
+		SelfPopulatingCache deliveryFractionCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.DELIVERY_FRACTION_CACHE), new DeliveryFractionFactory());
+		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.DELIVERY_FRACTION_CACHE), deliveryFractionCache);
+		
 		//adjustedDataCache
 		SelfPopulatingCache adjustedDataCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.ADJUSTED_SOURCE_CACHE), new AdjustedSourceFactory());
 		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.ADJUSTED_SOURCE_CACHE), adjustedDataCache);

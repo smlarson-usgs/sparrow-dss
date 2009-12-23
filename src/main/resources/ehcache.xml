@@ -309,6 +309,12 @@
 		timeToLiveSeconds="0" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="1800" memoryStoreEvictionPolicy="LRU" />
 		
+	<cache name="DeliveryFraction" maxElementsInMemory="30"
+		maxElementsOnDisk="100" eternal="false" overflowToDisk="false"
+		diskSpoolBufferSizeMB="32" timeToIdleSeconds="0"
+		timeToLiveSeconds="0" diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="1800" memoryStoreEvictionPolicy="LRU" />
+		
 	<cache name="AdjustedSource" maxElementsInMemory="20"
 		maxElementsOnDisk="40" eternal="false" overflowToDisk="false"
 		diskSpoolBufferSizeMB="2" timeToIdleSeconds="3600"

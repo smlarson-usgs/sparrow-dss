@@ -1,12 +1,15 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.DeliveryRunner;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.UncertaintySeries;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.datatable.StdErrorEstTable;
 import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.DataSeriesType;
@@ -94,48 +97,51 @@ public class CalcAnalysis extends Action<PredictionContext.DataColumn>{
 			assert(tReaches != null) : "client should not submit a delivery request without reaches";
 			Set<Long> targetReaches = tReaches.asSet();
 
+			
 			PredictData nominalPredictData = SharedApplication.getInstance().getPredictData(context.getModelID());
-			DeliveryRunner dr = new DeliveryRunner(nominalPredictData);
+			
+			ColumnData delFracColumn = SharedApplication.getInstance().getDeliveryFraction(tReaches);
+			
+			//DeliveryRunner dr = new DeliveryRunner(nominalPredictData);
 
 			switch(type) {
-				case delivered_fraction:
+				case delivered_fraction: {
 					dataColIndex = 0; // only a single column for delivery fraction as it is not source dependent
-					// TODO get from cache
-					dataTable = dr.calculateReachTransportFractionDataTable(targetReaches);
+					
+					SimpleDataTable sdt = new SimpleDataTable(
+							new ColumnData[] {delFracColumn}, "Delivery Fraction",
+							"A single column table containing the delivery fraction" +
+							" to a target reach or reaches.", null, null
+						);
+					
+					dataTable = sdt;
 					break;
-				case total_delivered_flux:
+				}
+				case total_delivered_flux:	{
 
-					//PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
-					PredictResult result = dr.calculateDeliveredFlux(context);
-					dataTable = result;
-					// NOTE: must handle aggregation and comparison before this stage
-					// Note that comparison does not make sense for delivered
+					PredictResult result = SharedApplication.getInstance().getPredictResult(context);
+					
+					//What column in the results do we point to?
 					if (source != null) {
 						dataColIndex = result.getTotalColForSrc(source.longValue());
 					} else {
 						dataColIndex = result.getTotalCol();
 					}
+					
+					SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(
+							result, delFracColumn, dataColIndex);
+					
+					dataTable = view;
 					break;
-				case incremental_delivered_flux:
-					//result = SharedApplication.getInstance().getAnalysisResult(this);
-					result = dr.calculateDeliveredFlux(context);
-					dataTable = result;
-					if (source != null) {
-						dataColIndex = result.getIncrementalColForSrc(source.longValue());
-					} else {
-						dataColIndex = result.getIncrementalCol();
-					}
+				}
+				case incremental_delivered_flux: {
+						//Not implemented
 					break;
-				case incremental_delivered_yield:
-					//result = SharedApplication.getInstance().getAnalysisResult(this);
-					result = dr.calculateDeliveredFlux(context);
-					dataTable = result;
-					if (source != null) {
-						dataColIndex = result.getIncrementalColForSrc(source.longValue());
-					} else {
-						dataColIndex = result.getIncrementalCol();
-					}
+				}
+				case incremental_delivered_yield: {
+					//Not implemented
 					break;
+				}
 				default:
 					throw new Exception("No dataSeries was specified in the analysis section");
 			}

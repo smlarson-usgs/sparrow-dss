@@ -22,7 +22,7 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
  *
  * @author eeverman
  */
-public class CalcDeliveryFractionFactory implements CacheEntryFactory {
+public class DeliveryFractionFactory implements CacheEntryFactory {
 
 	public Object createEntry(Object terminalReaches) throws Exception {
 		TerminalReaches targets = (TerminalReaches) terminalReaches;
