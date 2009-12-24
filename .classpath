@@ -4,7 +4,6 @@
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jasper.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/jsp-api.jar"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/el-api.jar"/>
-	<classpathentry kind="src" output="work" path="work"/>
 	<classpathentry kind="var" path="TOMCAT_HOME/lib/annotations-api.jar"/>
 	<classpathentry excluding="**.svn|.svn" kind="src" path="src/main/java"/>
 	<classpathentry excluding="**.svn" kind="src" path="src/main/resources"/>
