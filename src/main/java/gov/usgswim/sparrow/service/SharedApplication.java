@@ -433,13 +433,13 @@ public class SharedApplication  {
 	}
 
 	//PredictResult Cache
-	public PredictResult getPredictResult(PredictionContext context) {
-		return getPredictResult(context, false);
+	public PredictResult getPredictResult(AdjustmentGroups adjustments) {
+		return getPredictResult(adjustments, false);
 	}
 
-	public PredictResult getPredictResult(PredictionContext context, boolean quiet) {
+	public PredictResult getPredictResult(AdjustmentGroups adjustments, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(PREDICT_RESULT_CACHE);
-		Element e  = (quiet)?c.getQuiet(context):c.get(context);
+		Element e  = (quiet)?c.getQuiet(adjustments):c.get(adjustments);
 		return (e != null)?((PredictResult) e.getObjectValue()):null;
 	}
 	

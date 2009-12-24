@@ -352,7 +352,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	/**
 	 * Returns an XML fragment representing the prediction results for the
 	 * specified reach.
-	 *
+	 * 
 	 * @param contextId Id for the prediction context on which to base the
 	 *                  prediction results.
 	 * @param modelId Id for the model supplying the base data values.
@@ -362,21 +362,26 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	 */
 	private String retrievePredictedsForReach(Integer contextId, Long modelId, Long reachId) throws IOException {
 		// TODO move to DataLoader when done debugging
-		PredictionContext nominalPredictionContext = null;
+		//PredictionContext nominalPredictionContext = null;
 		PredictResult adjustedPrediction = null;
+		AdjustmentGroups nonAdjusted;
+		
+		
 
 		if (contextId != null) {
 			// Get a nominal (unadjusted) prediction context using the model id
 			PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(contextId);
-			nominalPredictionContext = new PredictionContext(contextFromCache.getModelID(), null, null, null, null, null);
+			nonAdjusted = contextFromCache.getAdjustmentGroups().getNoAdjustmentVersion();
 
 			// Get the adjusted prediction results
-			adjustedPrediction = SharedApplication.getInstance().getPredictResult(contextFromCache);
+			adjustedPrediction = SharedApplication.getInstance().getPredictResult(contextFromCache.getAdjustmentGroups());
 		} else {
-			nominalPredictionContext = new PredictionContext(modelId, null, null, null, null, null);
+			nonAdjusted = new AdjustmentGroups(modelId);
+			
 		}
+		
 		// Get the nominal prediction results
-		PredictResult nominalPrediction = SharedApplication.getInstance().getPredictResult(nominalPredictionContext);
+		PredictResult nominalPrediction = SharedApplication.getInstance().getPredictResult(nonAdjusted);
 
 		// Build each section of the predicted result - incremental and total
 		String incrementalContribution = buildPredSection(nominalPrediction,

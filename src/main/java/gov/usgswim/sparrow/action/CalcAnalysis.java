@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.action;
 
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.impl.ColumnFromTable;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.DeliveryRunner;
 import gov.usgswim.sparrow.PredictData;
@@ -119,7 +120,8 @@ public class CalcAnalysis extends Action<PredictionContext.DataColumn>{
 				}
 				case total_delivered_flux:	{
 
-					PredictResult result = SharedApplication.getInstance().getPredictResult(context);
+					PredictResult result = SharedApplication.getInstance().
+						getPredictResult(context.getAdjustmentGroups());
 					
 					//What column in the results do we point to?
 					if (source != null) {
@@ -135,7 +137,37 @@ public class CalcAnalysis extends Action<PredictionContext.DataColumn>{
 					break;
 				}
 				case incremental_delivered_flux: {
-						//Not implemented
+					
+					//
+					// incremental delivered flux ==
+					// Delivery Fraction X Incremental Flux X Instream Delivery
+					// This is built w/ two coef table views:  delFrac X inc Flux,
+					// then that result times Instream Delivery.
+					//
+					
+					PredictResult result = SharedApplication.getInstance().getPredictResult(context.getAdjustmentGroups());
+					
+					//Grab the instream delivery (called decay) as a column
+					ColumnData incDeliveryCol = new ColumnFromTable(nominalPredictData.getDelivery(), PredictData.INSTREAM_DECAY_COL);
+					
+					//What column in the results do we point to?
+					if (source != null) {
+						dataColIndex = result.getIncrementalColForSrc(source.longValue());
+					} else {
+						dataColIndex = result.getIncrementalCol();
+					}
+					
+
+					// Delivery Fraction X Incremental Flux
+					SingleColumnCoefDataTable incTimesDelFrac = new SingleColumnCoefDataTable(
+							result, delFracColumn, dataColIndex);
+					
+
+					// The above result X Instream Delivery
+					SingleColumnCoefDataTable incDelivered = new SingleColumnCoefDataTable(
+							incTimesDelFrac, incDeliveryCol, dataColIndex);
+					
+					dataTable = incDelivered;
 					break;
 				}
 				case incremental_delivered_yield: {
@@ -149,7 +181,7 @@ public class CalcAnalysis extends Action<PredictionContext.DataColumn>{
 		} else if (type.isPredictionBased()) {
 
 			//We will try to get result-based series out of the analysis cache
-			PredictResult result = SharedApplication.getInstance().getPredictResult(context);
+			PredictResult result = SharedApplication.getInstance().getPredictResult(context.getAdjustmentGroups());
 			UncertaintySeries impliedUncertaintySeries = null;
 
 			switch (type) {

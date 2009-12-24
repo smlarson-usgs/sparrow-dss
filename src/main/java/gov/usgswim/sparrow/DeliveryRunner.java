@@ -273,7 +273,7 @@ public class DeliveryRunner implements Runner {
 
 	public PredictResult calculateDeliveredFlux(PredictionContext context) throws Exception{
 
-		PredictResult adjResult = SharedApplication.getInstance().getPredictResult(context.getTargetContextOnly());
+		PredictResult adjResult = SharedApplication.getInstance().getPredictResult(context.getAdjustmentGroups());
 
 		// apply delivery fraction weights
 		assert(context.getTerminalReaches() != null) : "shouldn't reach this point if no terminal reaches";
@@ -300,7 +300,7 @@ public class DeliveryRunner implements Runner {
 
 		AggregationRunner aggRunner = new AggregationRunner(context);
 
-		PredictResult result = SharedApplication.getInstance().getPredictResult(context.getTargetContextOnly());
+		PredictResult result = SharedApplication.getInstance().getPredictResult(context.getAdjustmentGroups());
 
 		// apply delivery fraction weights
 		assert(context.getTerminalReaches() != null) : "shouldn't reach this point if no terminal reaches";

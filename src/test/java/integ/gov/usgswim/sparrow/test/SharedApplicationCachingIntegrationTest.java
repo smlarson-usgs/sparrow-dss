@@ -5,6 +5,7 @@ import gov.usgswim.datatable.adjustment.ComparePercentageView;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
+import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
@@ -113,7 +114,7 @@ public class SharedApplicationCachingIntegrationTest extends TestCase {
 		CacheManager.getInstance().clearAll();
 		PredictionContext context = new PredictionContext(21L, null, null, null, null, null);
 
-		DataTable result = sa.getPredictResult(context);
+		DataTable result = sa.getPredictResult(new AdjustmentGroups(21L));
 		ComparePercentageView comp = buildPredictionComparison(result);
 
 		for (int i = 0; i < comp.getColumnCount(); i++)  {

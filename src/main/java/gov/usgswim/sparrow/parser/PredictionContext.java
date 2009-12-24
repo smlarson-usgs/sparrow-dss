@@ -146,6 +146,10 @@ public class PredictionContext implements XMLStreamParserComponent {
 
 						String idString = in.getAttributeValue(DEFAULT_NS_PREFIX, XMLStreamParserComponent.ID_ATTR);
 						id = (idString == null || idString.length() == 0)? null: Integer.valueOf(idString);
+						
+						//Immediately create an adjustment group to ensure non-null
+						this.adjustmentGroups = new AdjustmentGroups(modelID);
+						
 					}// the following are all children matches
 					else if (AdjustmentGroups.isTargetMatch(localName)) {
 						this.adjustmentGroups = AdjustmentGroups.parseStream(in, modelID);
@@ -329,7 +333,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	}
 
 	public PredictionContext getAdjustedContextOnly() {
-		return new PredictionContext(modelID, adjustmentGroups, null, null, null, comparison);
+		return new PredictionContext(modelID, adjustmentGroups, null, null, null, NominalComparison.NO_COMPARISON);
 	}
 
 	public PredictionContext getNoComparisonVersion() {

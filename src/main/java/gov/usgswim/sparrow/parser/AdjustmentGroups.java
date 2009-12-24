@@ -53,6 +53,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	 */
 	public AdjustmentGroups(Long modelID) {
 		this.modelID = modelID;
+		this.conflicts = "accumulate";		//arbitrary, but didn't want to leave null
 	}
 
 
@@ -137,6 +138,12 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 		}
 		myClone.conflicts = conflicts;
 
+		return myClone;
+	}
+	
+	public AdjustmentGroups getNoAdjustmentVersion() {
+		AdjustmentGroups myClone = new AdjustmentGroups(modelID);
+		myClone.conflicts = "accumulate";	//Arbitrary - it doesn't matter.
 		return myClone;
 	}
 

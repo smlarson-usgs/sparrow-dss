@@ -6,6 +6,7 @@ import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.PredictRunner;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
+import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
@@ -41,28 +42,26 @@ public class PredictResultFactory implements CacheEntryFactory {
 	protected static Logger log =
 		Logger.getLogger(PredictResultFactory.class); //logging for this class
 	
-	public PredictResult createEntry(Object predictContext) throws Exception {
-		PredictionContext context = (PredictionContext)predictContext;
+	public PredictResult createEntry(Object adjustmentGroups) throws Exception {
+		AdjustmentGroups adjs = (AdjustmentGroups) adjustmentGroups;
 		
-		PredictData data = SharedApplication.getInstance().getPredictData(context.getModelID());
-		PredictData adjData = data;	//assume no adjustments
+		PredictData nomPredictData = SharedApplication.getInstance().getPredictData(adjs.getModelID());
+		PredictData adjPredictData = nomPredictData;	//assume no adjustments
 		
-		if (context.getAdjustmentGroups() != null) {
-			DataTable src = SharedApplication.getInstance().getAdjustedSource(context.getAdjustmentGroups());
-			
-			PredictDataBuilder mutable = data.getBuilder();
-			mutable.setSrc(src);
-			adjData = mutable.toImmutable();
-		}
+		DataTable adjustedSources = SharedApplication.getInstance().getAdjustedSource(adjs);
+		
+		PredictDataBuilder mutable = nomPredictData.getBuilder();
+		mutable.setSrc(adjustedSources);
+		adjPredictData = mutable.toImmutable();
 
 		long startTime = System.currentTimeMillis();			
 
-		PredictResultImm result = runPrediction(context, data, adjData);
+		PredictResultImm result = runPrediction(adjPredictData);
 
 		log.debug(
-				"Prediction done for model #" + context.getModelID() + 
+				"Prediction done for model #" + adjs.getModelID() + 
 				" Time: " + (System.currentTimeMillis() - startTime) + "ms, " +
-				adjData.getSrc().getRowCount() + " reaches");
+				adjPredictData.getSrc().getRowCount() + " reaches");
 
 		return (PredictResult) result.toImmutable();
 	}
@@ -76,7 +75,7 @@ public class PredictResultFactory implements CacheEntryFactory {
 	 * @return
 	 */
 	//TODO:  [eric] need to fill out the analysis section to really detect what type of prediction we are doing
-	public PredictResultImm runPrediction(PredictionContext context, PredictData baseData, PredictData adjData) throws Exception {
+	public PredictResultImm runPrediction(PredictData adjData) throws Exception {
 		PredictRunner adjPredict = new PredictRunner(adjData);
 		PredictResultImm result = adjPredict.doPredict();
 		return result;
