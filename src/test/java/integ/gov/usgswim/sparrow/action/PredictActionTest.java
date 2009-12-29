@@ -210,14 +210,6 @@ public class PredictActionTest {
 		
 	}
 	
-	protected void writeBadMatch(DataTable spreadsheet, PredictData predictData,
-			int predictDataRow, Double expectedDelFrac, Double actualDelFrac) {
-		
-		log.debug("-- Comp Fail --");
-		log.debug("Row in Predict Data: " + predictDataRow);
-		log.debug("rowId: " + predictData.getTopo().getIdForRow(predictDataRow));
-		log.debug("Expected vs Actual: " + expectedDelFrac + " / " + actualDelFrac);
-	}
 	
 	public void printRow(DataTable table, int row, String tableName) {
 		
