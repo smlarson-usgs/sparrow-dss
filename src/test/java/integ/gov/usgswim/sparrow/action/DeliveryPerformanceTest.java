@@ -84,7 +84,7 @@ public class DeliveryPerformanceTest {
 	public void testComparison() throws Exception {
 
 		//Number of times to loop
-		final int ITERATION_COUNT = 50;
+		final int ITERATION_COUNT = 100;
 		
 		
 		//Force the predict data to be loaded
@@ -154,16 +154,25 @@ public class DeliveryPerformanceTest {
 		double copyTimeRatio = Math.abs(predictCopyTotalTime - deliveryCopyTotalTime)/
 			(double)predictCopyTotalTime;
 	
+		int countNonZeroDels = 0;
+		
+		for (int r=0; r<deliveryFrac.getRowCount(); r++) {
+			if (deliveryFrac.getDouble(r) > 0d) countNonZeroDels++;
+		}
+		
+		
 		System.out.println("Calc time ratio = " + calcTimeRatio);
 		System.out.println("Copy time ratio = " + copyTimeRatio);
+		System.out.println("Number of non-zero delivery fractions = " + countNonZeroDels);
+		System.out.println("Topo is indexed? " + predictData.getTopo().isIndexed(PredictData.TNODE_COL));
 		
-		//The time to run the prediction and delivery should not very by more
-		//than 1500% (16 times as long)
-		assertTrue(calcTimeRatio < 15d);
+		//The time to run the delivery should not be an increase of more than
+		//150% of the time to run the prediction (2.5 times as long)
+		assertTrue(calcTimeRatio < 1.5d);
 		
-		//The time to copy the prediction and delivery data should not very by more
-		//than 50% (1.5 times as long)
-		assertTrue(copyTimeRatio < .5d);
+		//The time to run the delivery should not be an increase of more than
+		//100% of the time to run the prediction (2 times as long)
+		assertTrue(copyTimeRatio < 1d);
 	}
 	
 	protected void report(long time, String description, int iterationCount) {

@@ -131,7 +131,7 @@ public class CalcDeliveryFraction extends Action<ColumnData> {
 		while (! targetProcessingQue.isEmpty()) {
 			DeliveryReach currentTarget = targetProcessingQue.poll();
 			
-			if (! mergedDeliveryFractions.containsKey(currentTarget.getRow())) {
+			if (mergedDeliveryFractions.get(currentTarget.getRow()) == null) {
 				List<DeliveryReach> currentCalcs =
 					calcDeliveryForSingleTarget(predictData, currentTarget);
 				
@@ -226,8 +226,8 @@ public class CalcDeliveryFraction extends Action<ColumnData> {
 		DataTable topo = predictData.getTopo();
 		long fnode = topo.getLong(current.getRow(), PredictData.FNODE_COL);
 		
-		//TODO: The underlying search implementation could be improved
-		int[] upstream = topo.findAll(PredictData.TNODE_COL, fnode);
+		//The index requires that an Integer be used.
+		int[] upstream = topo.findAll(PredictData.TNODE_COL, new Integer((int)fnode));
 		
 		for (int rowNum : upstream) {
 			

@@ -202,11 +202,12 @@ public class PredictActionTest {
 			
 		}
 		
-		
 		System.out.println("Comparison Results for model " + MODEL_ID +  " (" + result.getRowCount() + " rows)");
 		System.out.println("Non Matching Incremental Values: " + incValueFail +  " (" + incRowFail + ")");
 		System.out.println("Non Matching Total Values: " + totalValueFail +  " (" + totalRowFail + ")");
 		System.out.println("Non Matching Values (all): " + anyValueFail + " (" + anyRowFail + ")");
+		
+		assertEquals("There should be zero rows w/ non-matching values", 0, anyRowFail);
 		
 	}
 	

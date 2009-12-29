@@ -252,6 +252,7 @@ public class DataLoader {
 	 * Returns a DataTable of all topo data for for a single model.
 	 * <h4>Data Columns (sorted by HYDSEQ)</h4>
 	 * <ol>
+	 * <li>[i][0]MODEL_REACH - The db id for this reach
 	 * <li>[i][1]FNODE - The from node
 	 * <li>[i][2]TNODE - The to node
 	 * <li>[i][3]IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
@@ -268,6 +269,9 @@ public class DataLoader {
 		String query = getQuery("SelectTopoData", modelId);
 
 		DataTableWritable result = DLUtils.readAsInteger(conn, query, 1000, 0);
+		
+		/** TNODE is used heavily during delivery calcs to find reaches, so index */
+		result.buildIndex(PredictData.TNODE_COL);
 
 		if (log.isDebugEnabled()) {
 			log.debug("Printing sample of topo ...");
@@ -275,6 +279,7 @@ public class DataLoader {
 		}
 
 		assert(result.hasRowIds()): "topo should have IDENTIFIER as row ids";
+		//assert(result.isIndexed(PredictData.TNODE_COL)): "topo tnodes should be indexed";
 		return result;
 	}
 
