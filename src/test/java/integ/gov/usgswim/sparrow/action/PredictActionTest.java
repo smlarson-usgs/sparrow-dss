@@ -103,7 +103,7 @@ public class PredictActionTest {
 		int anyRowFail = 0;
 		
 		int goodIncRows = 0;
-		
+		int goodTotalRows = 0;
 		
 		for (int r=0; r < stdData.getRowCount(); r++) {
 			//The first column of stdData is the IDENTIFIER
@@ -180,19 +180,30 @@ public class PredictActionTest {
 				
 				//Print the first 10 good INC rows
 				if (goodIncRows < 10) {
-					printGoodRow(stdData, r, result, predictDataRow);
+					//printGoodIncRow(stdData, r, result, predictDataRow);
 				}
 			} else {
 				incRowFail++;
-				printRow(stdData, r, result, predictDataRow);
+				printBadIncRow(stdData, r, result, predictDataRow);
 				//printRow(result, predictDataRow, "Predicted");
 			}
 			
-			if (! totalMatches) totalRowFail++;
+			if (totalMatches) {
+				goodTotalRows++;
+				
+				//Print the first 10 good INC rows
+				if (goodTotalRows < 10) {
+					printGoodTotalRow(stdData, r, result, predictDataRow);
+				}
+			} else {
+				totalRowFail++;
+				printBadTotalRow(stdData, r, result, predictDataRow);
+			}
 			
 		}
 		
 		
+		System.out.println("Comparison Results for model " + MODEL_ID +  " (" + result.getRowCount() + " rows)");
 		System.out.println("Non Matching Incremental Values: " + incValueFail +  " (" + incRowFail + ")");
 		System.out.println("Non Matching Total Values: " + totalValueFail +  " (" + totalRowFail + ")");
 		System.out.println("Non Matching Values (all): " + anyValueFail + " (" + anyRowFail + ")");
@@ -238,7 +249,7 @@ public class PredictActionTest {
 		
 	}
 	
-	public void printRow(DataTable std, int stdRow, PredictResult pred, int predRow) {
+	public void printBadIncRow(DataTable std, int stdRow, PredictResult pred, int predRow) {
 		
 		long id = pred.getIdForRow(predRow);
 		System.out.println("** Failed INC values for reach ID " + id);
@@ -258,10 +269,9 @@ public class PredictActionTest {
 			line = line + " " + stdVal + " | " + predictVal;
 			System.out.println(line);
 		}
-		
 	}
 	
-	public void printGoodRow(DataTable std, int stdRow, PredictResult pred, int predRow) {
+	public void printGoodIncRow(DataTable std, int stdRow, PredictResult pred, int predRow) {
 		
 		long id = pred.getIdForRow(predRow);
 		System.out.println("** Good INC values for reach ID " + id);
@@ -281,6 +291,79 @@ public class PredictActionTest {
 			line = line + " " + stdVal + " | " + predictVal;
 			System.out.println(line);
 		}
+		
+	}
+	
+	public void printBadTotalRow(DataTable std, int stdRow, PredictResult pred, int predRow) {
+		
+		long id = pred.getIdForRow(predRow);
+		System.out.println("** Failed Total values for reach ID " + id);
+		
+		//Compare Incremental Values (c is column in std data)
+		for (int c=6; c < 11; c++) {
+			double stdVal = stdData.getDouble(stdRow, c);
+			double predictVal = pred.getDouble(predRow, c - 1);
+			
+			String line;
+			if (Math.abs(stdVal - predictVal) < 0.0001d) {
+				line = ". . Tot " + c;
+			} else {
+				line = "*** Tot " + c;
+			}
+			
+			line = line + " " + stdVal + " | " + predictVal;
+			System.out.println(line);
+		}
+		
+		//total total column
+		double stdVal = stdData.getDouble(stdRow, 12);
+		double predictVal = pred.getDouble(predRow, 11);
+		
+		String line;
+		if (Math.abs(stdVal - predictVal) < 0.0001d) {
+			line = ". . Tot T";
+		} else {
+			line = "*** Tot T";
+		}
+		
+		line = line + " " + stdVal + " | " + predictVal;
+		System.out.println(line);
+	}
+	
+	public void printGoodTotalRow(DataTable std, int stdRow, PredictResult pred, int predRow) {
+		
+		long id = pred.getIdForRow(predRow);
+		System.out.println("** Good Total values for reach ID " + id);
+		
+		//Compare Incremental Values (c is column in std data)
+		for (int c=6; c < 11; c++) {
+			double stdVal = stdData.getDouble(stdRow, c);
+			double predictVal = pred.getDouble(predRow, c - 1);
+			
+			String line;
+			if (Math.abs(stdVal - predictVal) < 0.0001d) {
+				line = ". . Tot " + c;
+			} else {
+				line = "*** Tot " + c;
+			}
+			
+			line = line + " " + stdVal + " | " + predictVal;
+			System.out.println(line);
+		}
+		
+		//total total column
+		double stdVal = stdData.getDouble(stdRow, 12);
+		double predictVal = pred.getDouble(predRow, 11);
+		
+		String line;
+		if (Math.abs(stdVal - predictVal) < 0.0001d) {
+			line = ". . Tot T";
+		} else {
+			line = "*** Tot T";
+		}
+		
+		line = line + " " + stdVal + " | " + predictVal;
+		System.out.println(line);
 		
 	}
 	
