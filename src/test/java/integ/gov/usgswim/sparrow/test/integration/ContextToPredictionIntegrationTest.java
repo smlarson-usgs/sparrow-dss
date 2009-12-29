@@ -4,8 +4,10 @@ import static gov.usgswim.sparrow.test.TestHelper.pipeDispatch;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.action.NSDataSetBuilder;
 import gov.usgswim.sparrow.cachefactory.NSDataSetFactory;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.PredictionContextTest;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -165,15 +167,16 @@ public class ContextToPredictionIntegrationTest extends TestCase {
 		//Get the prediction context from the cache
 		PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(CONTEXT_ID);
 
-		NSDataSetFactory nsFactory = new NSDataSetFactory();
-
-		NSDataSet data = nsFactory.copyToNSDataSet(contextFromCache);
+		NSDataSetBuilder builder = new NSDataSetBuilder();
+		DataColumn data = contextFromCache.getDataColumn();
+		builder.setData(data);
+		NSDataSet result = builder.run();
 
 		int zeros = 0;
 		int nonZeros = 0;
 
-		while (data.next()) {
-			NSRow row = data.getRow();
+		while (result.next()) {
+			NSRow row = result.getRow();
 			double v = row.get(1).getDouble();
 			if (v == 0d) {
 				zeros++;

@@ -15,6 +15,7 @@ import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.AdvancedAnalysis;
 import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.AreaOfInterest;
+import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.LogicalSet;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
@@ -444,25 +445,25 @@ public class SharedApplication  {
 	}
 	
 	//ComparisonResult Cache
-	public PredictionContext.DataColumn getComparisonResult(PredictionContext context) {
+	public DataColumn getComparisonResult(PredictionContext context) {
 		return getComparisonResult(context, false);
 	}
 
-	public PredictionContext.DataColumn getComparisonResult(PredictionContext context, boolean quiet) {
+	public DataColumn getComparisonResult(PredictionContext context, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(COMPARISON_RESULT_CACHE);
 		Element e  = (quiet)?c.getQuiet(context):c.get(context);
-		return (e != null)?((PredictionContext.DataColumn) e.getObjectValue()):null;
+		return (e != null)?((DataColumn) e.getObjectValue()):null;
 	}
 
 	//AnalysisResult Cache
-	public PredictionContext.DataColumn getAnalysisResult(PredictionContext context) {
+	public DataColumn getAnalysisResult(PredictionContext context) {
 		return getAnalysisResult(context, false);
 	}
 
-	public PredictionContext.DataColumn getAnalysisResult(PredictionContext context, boolean quiet) {
+	public DataColumn getAnalysisResult(PredictionContext context, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(ANALYSIS_RESULT_CACHE);
 		Element e  = (quiet)?c.getQuiet(context):c.get(context);
-		return (e != null)?((PredictionContext.DataColumn) e.getObjectValue()):null;
+		return (e != null)?((DataColumn) e.getObjectValue()):null;
 	}
 
 	//ReachByPoint Cache

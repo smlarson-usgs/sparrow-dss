@@ -13,10 +13,10 @@ import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.datatable.StdErrorEstTable;
 import gov.usgswim.sparrow.parser.Analysis;
+import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
-import gov.usgswim.sparrow.parser.PredictionContext.DataColumn;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.WeightRunner;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
@@ -36,7 +36,7 @@ import org.apache.log4j.Logger;
  * @author eeverman
  *
  */
-public class CalcAnalysis extends Action<PredictionContext.DataColumn>{
+public class CalcAnalysis extends Action<DataColumn>{
 
 
 	protected static Logger log =
@@ -54,7 +54,7 @@ public class CalcAnalysis extends Action<PredictionContext.DataColumn>{
 	}
 	
 	@Override
-	protected PredictionContext.DataColumn doAction() throws Exception {
+	protected DataColumn doAction() throws Exception {
 		Analysis analysis = context.getAnalysis();
 
 		DataColumn unAggResult = getDataColumn(context);
@@ -70,7 +70,7 @@ public class CalcAnalysis extends Action<PredictionContext.DataColumn>{
 			aggResult = unAggResult.getTable();
 		}
 
-		return new PredictionContext.DataColumn(aggResult, unAggResult.getColumn());
+		return new DataColumn(aggResult, unAggResult.getColumn(), context.getId());
 	}
 
 	/**
@@ -258,6 +258,6 @@ public class CalcAnalysis extends Action<PredictionContext.DataColumn>{
 			}
 		}
 
-		return new PredictionContext.DataColumn(dataTable, dataColIndex);
+		return new DataColumn(dataTable, dataColIndex, context.getId());
 	}
 }

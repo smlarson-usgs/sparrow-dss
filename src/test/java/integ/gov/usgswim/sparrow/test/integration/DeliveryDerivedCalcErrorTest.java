@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.test.integration;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
-import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.service.binning.BinningPipeline;
 import gov.usgswim.sparrow.service.binning.BinningServiceRequest;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
@@ -49,7 +49,7 @@ public class DeliveryDerivedCalcErrorTest {
 		PredictContextRequest contextReq = pipe.parse(xmlContextReq);
 		String actualResponse = TestHelper.pipeDispatch(contextReq, pipe);
 		XMLAssert.assertXMLEqual(xmlContextResp, actualResponse);
-		PredictionContext.DataColumn totalData = contextReq.getPredictionContext().getDataColumn();
+		DataColumn totalData = contextReq.getPredictionContext().getDataColumn();
 		
 		//Test delivery fraction
 		xmlContextReq = TestHelper.getXmlAsString(this.getClass(), "DelFracContext");
@@ -57,7 +57,7 @@ public class DeliveryDerivedCalcErrorTest {
 		contextReq = pipe.parse(xmlContextReq);
 		actualResponse = TestHelper.pipeDispatch(contextReq, pipe);
 		XMLAssert.assertXMLEqual(xmlContextResp, actualResponse);
-		PredictionContext.DataColumn delFracData = contextReq.getPredictionContext().getDataColumn();
+		DataColumn delFracData = contextReq.getPredictionContext().getDataColumn();
 
 		//Test Total Delivery Flux
 		xmlContextReq = TestHelper.getXmlAsString(this.getClass(), "DelTotalContext");
@@ -65,7 +65,7 @@ public class DeliveryDerivedCalcErrorTest {
 		contextReq = pipe.parse(xmlContextReq);
 		actualResponse = TestHelper.pipeDispatch(contextReq, pipe);
 		XMLAssert.assertXMLEqual(xmlContextResp, actualResponse);
-		PredictionContext.DataColumn delTotalData = contextReq.getPredictionContext().getDataColumn();
+		DataColumn delTotalData = contextReq.getPredictionContext().getDataColumn();
 		
 		DataTable totalTable = totalData.getTable();
 		int totalCol = totalData.getColumn();

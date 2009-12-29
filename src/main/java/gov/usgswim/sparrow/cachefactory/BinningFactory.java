@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.utils.DataTableUtils;
+import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.BigDecimalUtils;
@@ -57,7 +58,7 @@ public class BinningFactory implements CacheEntryFactory {
 			throw new Exception("No context found for context-id '" + request.getContextID() + "'");
 		}
 
-		PredictionContext.DataColumn dc = context.getDataColumn();
+		DataColumn dc = context.getDataColumn();
 
 		boolean keepZeroes = false; // TODO read this from the request
 		boolean keepExtremeValues = false; // TODO read this from the request

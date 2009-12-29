@@ -1,6 +1,8 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.sparrow.action.NSDataSetBuilder;
 import gov.usgswim.sparrow.cachefactory.NSDataSetFactory;
+import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -110,8 +112,10 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 					// be cacheable, contrary to LJ.
 					// TODO ask LJ
 					// nsData = SharedApplication.getInstance().getNSDataSet(context);
-					NSDataSetFactory factory = new NSDataSetFactory();
-					nsData = factory.buildDataSet(context);
+					NSDataSetBuilder builder = new NSDataSetBuilder();
+					DataColumn data = context.getDataColumn();
+					builder.setData(data);
+					nsData = builder.run();
 
 
 				} catch (Exception e1) {

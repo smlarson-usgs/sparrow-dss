@@ -8,6 +8,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.cachefactory.BinningFactory;
 import gov.usgswim.sparrow.cachefactory.BinningRequest;
+import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
@@ -331,7 +332,7 @@ public class BinIntegrationTest {
 	public float[] getPredictContextDataValues(Integer contextId) throws Exception {
 	    // Retrieve the data table from the prediction context id
         PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
-        PredictionContext.DataColumn dc = context.getDataColumn();
+        DataColumn dc = context.getDataColumn();
         DataTable data = dc.getTable();
         
         // Export all values in the specified column to values[] and sort them

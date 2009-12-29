@@ -3,7 +3,6 @@ package gov.usgswim.sparrow.parser;
 import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
-import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import javax.xml.stream.XMLStreamException;
@@ -396,35 +395,6 @@ public class PredictionContext implements XMLStreamParserComponent {
 
 	public Comparison getComparison() {
 		return comparison;
-	}
-
-
-
-	/**
-	 * An inner class to bundle a DataTable and a column index together so that
-	 * it is possible to return these two together for methods returning the
-	 * data column.
-	 *
-	 * @author eeverman
-	 *
-	 */
-	public static class DataColumn {
-		private final DataTable table;
-		private final int column;
-
-		public DataColumn(DataTable table, int column) {
-			this.table = table;
-			this.column = column;
-		}
-
-		public DataTable getTable() {
-			return table;
-		}
-
-		public int getColumn() {
-			return column;
-		}
-
 	}
 
 

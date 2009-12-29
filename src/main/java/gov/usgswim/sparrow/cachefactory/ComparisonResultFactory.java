@@ -4,6 +4,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.parser.AdvancedComparison;
 import gov.usgswim.sparrow.parser.Comparison;
+import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.NominalComparison;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -69,8 +70,8 @@ public class ComparisonResultFactory implements CacheEntryFactory {
 		}
 		
 		//Get analysis results from analysis cache
-		PredictionContext.DataColumn baseCol = SharedApplication.getInstance().getAnalysisResult(baseContext);
-		PredictionContext.DataColumn compCol = SharedApplication.getInstance().getAnalysisResult(noCompContext);
+		DataColumn baseCol = SharedApplication.getInstance().getAnalysisResult(baseContext);
+		DataColumn compCol = SharedApplication.getInstance().getAnalysisResult(noCompContext);
 		DataTable baseResult = baseCol.getTable();
 		DataTable compResult = compCol.getTable();
 
@@ -96,6 +97,6 @@ public class ComparisonResultFactory implements CacheEntryFactory {
 
 		}
 
-		return new PredictionContext.DataColumn(resultTable, compCol.getColumn());
+		return new DataColumn(resultTable, compCol.getColumn(), fullContext.getId());
 	}
 }
