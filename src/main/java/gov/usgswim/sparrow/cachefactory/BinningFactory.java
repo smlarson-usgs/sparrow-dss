@@ -1,6 +1,8 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.utils.DataTablePrinter;
+import gov.usgswim.datatable.utils.DataTableSorter;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.PredictionContext;
@@ -97,7 +99,7 @@ public class BinningFactory implements CacheEntryFactory {
 			throw new IllegalArgumentException("The binCount must be greater than zero.");
 		}
 
-		Double[] sortedValues = DataTableUtils.extractSortedFilteredDoubleValues(data, columnIndex, keepExtremeValues, null);
+		Double[] sortedValues = DataTableSorter.extractSortedFilteredDoubleValues(data, columnIndex, keepExtremeValues, null);
 		if (keepExtremeValues) {
 			sortedValues = cleanInfinity(sortedValues);
 		}
