@@ -65,8 +65,9 @@ public class FindReachService extends HttpServlet {
 		if (errors.size() == 0) {
 			String whereClause = createFindReachWhereClause(frReq);
 
+			Connection conn = null;
 			try {
-				Connection conn = SharedApplication.getInstance().getConnection();
+				conn = SharedApplication.getInstance().getConnection();
 
 				String sql = "Select full_identifier, reach_name, meanq, catch_area, huc2, huc4, huc6, huc8 from model_attrib_vw a "
 					+ ((frReq.boundingBox == null)? "": "join model_geom_vw g on a.sparrow_model_id = g.sparrow_model_id and a.identifier = g.identifier ")
@@ -108,6 +109,14 @@ public class FindReachService extends HttpServlet {
 				status = "ERROR: " + e.getMessage();
 				outputXML = new StringBuilder(); // clear the output
 				e.printStackTrace();
+			} finally {
+				if (conn != null) {
+					try {
+						conn.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		} else { // return error response
 			status = "ERROR";
