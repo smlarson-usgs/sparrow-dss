@@ -1,41 +1,15 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
-import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
-import gov.usgswim.datatable.impl.SimpleDataTable;
-import gov.usgswim.datatable.impl.SparseDoubleColumnData;
-import gov.usgswim.datatable.impl.StandardDoubleColumnData;
-import gov.usgswim.sparrow.DeliveryRunner;
-import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.PredictDataImm;
-import gov.usgswim.sparrow.action.CalcDeliveryFraction;
-import gov.usgswim.sparrow.datatable.DataTableCompare;
+import gov.usgswim.sparrow.SparrowDBTest;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
-import gov.usgswim.sparrow.parser.Analysis;
-import gov.usgswim.sparrow.parser.AreaOfInterest;
-import gov.usgswim.sparrow.parser.Comparison;
-import gov.usgswim.sparrow.parser.PredictionContext;
-import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.test.TestHelper;
 import gov.usgswim.sparrow.util.DLUtils;
-import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
-import java.io.InputStream;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -45,14 +19,9 @@ import org.junit.Test;
  * to the base data (i.e. total flux).
  * 
  * @author eeverman
- * TODO: This should really use a canned project, rather than MRB2
  */
-public class PredictActionTest {
-	protected static Logger log =
-		Logger.getLogger(PredictActionTest.class); //logging for this class
-	
-	static LifecycleListener lifecycle = new LifecycleListener();
-	
+public class PredictActionTest extends SparrowDBTest {
+
 	static final Long MODEL_ID = 50L;	//MRB 2
 	
 	static PredictData unmodifiedPredictData;
@@ -60,32 +29,11 @@ public class PredictActionTest {
 	
 	static DataTable stdData;
 	
-	static Connection conn;
-	
 	@BeforeClass
 	public static void setUp() throws Exception {
-		
-		//Turns on detailed logging
-		log.setLevel(Level.DEBUG);
-		log.getLogger(Action.class).setLevel(Level.DEBUG);
-		
-		lifecycle.contextInitialized(null, true);
-		XMLUnit.setIgnoreWhitespace(true);
-		
-		
 		String stdDataQuery = TestHelper.getFileAsString(PredictActionTest.class, "query", "sql");
-		conn = SharedApplication.getInstance().getConnection();
-		stdData = DLUtils.readAsDouble(conn, stdDataQuery, 40);
 
-	}
-
-	@AfterClass
-	public static void tearDown() throws Exception {
-		lifecycle.contextDestroyed(null, true);
-		
-		if (conn != null) {
-			conn.close();
-		}
+		stdData = DLUtils.readAsDouble(getConnection(), stdDataQuery, 40);
 	}
 	
 	@Test
@@ -185,7 +133,6 @@ public class PredictActionTest {
 			} else {
 				incRowFail++;
 				printBadIncRow(stdData, r, result, predictDataRow);
-				//printRow(result, predictDataRow, "Predicted");
 			}
 			
 			if (totalMatches) {
@@ -193,7 +140,7 @@ public class PredictActionTest {
 				
 				//Print the first 10 good INC rows
 				if (goodTotalRows < 10) {
-					printGoodTotalRow(stdData, r, result, predictDataRow);
+					//printGoodTotalRow(stdData, r, result, predictDataRow);
 				}
 			} else {
 				totalRowFail++;
