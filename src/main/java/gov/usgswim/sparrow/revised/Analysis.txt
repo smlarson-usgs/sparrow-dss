@@ -1,0 +1,27 @@
+Single column data
+	indexed by reach or by huc
+
+FullTable data
+	indexed by reach or  by huc
+	Includes a total column
+
+Topo data
+
+
+Data Gathering
+	Pull in predict data
+
+Ancil Data Gathering?
+
+Incremental Calculation
+
+FluxTransport Calculation (output upstream, output downstream)
+
+
+Weight Gathering (needs ancil data gathering)
+	-
+
+
+========================
+SOURCE
+	Needs: PredictData
