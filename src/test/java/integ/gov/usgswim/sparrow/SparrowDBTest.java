@@ -61,7 +61,7 @@ public class SparrowDBTest {
 		}
 	}
 	
-	public Connection getConnection() throws SQLException {
+	public static Connection getConnection() throws SQLException {
 		
 		if (sparrowDBTestConn == null || sparrowDBTestConn.isClosed()) {
 			
