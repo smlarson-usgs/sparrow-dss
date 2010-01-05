@@ -4,7 +4,6 @@ import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.ColumnFromTable;
 import gov.usgswim.datatable.impl.SimpleDataTable;
-import gov.usgswim.sparrow.DeliveryRunner;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
@@ -23,8 +22,6 @@ import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
 
 import java.util.Set;
 
-import org.apache.log4j.Logger;
-
 
 /**
  *  Calculates the analysis.
@@ -37,10 +34,6 @@ import org.apache.log4j.Logger;
  *
  */
 public class CalcAnalysis extends Action<DataColumn>{
-
-
-	protected static Logger log =
-		Logger.getLogger(CalcAnalysis.class); //logging for this class
 
 	protected PredictionContext context;
 	
