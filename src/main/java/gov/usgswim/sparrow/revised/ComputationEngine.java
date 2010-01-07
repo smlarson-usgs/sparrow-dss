@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.revised;
 
-import gov.usgswim.sparrow.revised.EngineInstructions.CalculationStage;
+import gov.usgswim.sparrow.revised.EngineInstructions;
 import gov.usgswim.sparrow.revised.ProductTypes.Product;
 import gov.usgswim.sparrow.revised.steps.AggregatePreviousResultStep;
 import gov.usgswim.sparrow.revised.steps.ApplyWeightsStep;
@@ -111,10 +111,10 @@ public class ComputationEngine {
 	}
 	public static Object execute(EngineInstructions plan) {
 		Object lastResult = null;
-		for (CalculationStage stage: plan.stages) {
+		for (CalculationStage stage: plan.getStages()) {
 			Step step = stage.step;
 			Object result = null;
-			switch(stage.step.type) {
+			switch(stage.step.operation) {
 				case applyWeights:
 					Product[] weights = ((ApplyWeightsStep) step).weights;
 					result = applyWeights(step.product, weights);
