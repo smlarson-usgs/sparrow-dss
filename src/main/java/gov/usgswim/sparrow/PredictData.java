@@ -214,5 +214,12 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 */
 	public int getRowForReachID(Integer id) throws Exception;
 
+	/**
+	 * Returns a reach Identifier for the row (not the db ID)
+	 *
+	 * @param row The zero based row number
+	 * @return reach ID for the row.
+	 */
+	public Long getIdForRow(int row);
 }
 

@@ -118,14 +118,12 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
             DataTable sourceMetadata = predictData.getSrcMetadata();
             if (sourceMetadata != null) {
                 Integer displayNameCol = sourceMetadata.getColumnByName("DISPLAY_NAME");
-                Integer constituentCol = sourceMetadata.getColumnByName("CONSTITUENT");
-                Integer unitsCol = sourceMetadata.getColumnByName("UNITS");
                 Integer precisionCol = sourceMetadata.getColumnByName("PRECISION");
 
                 // Pull out the metadata for the source
                 displayName = sourceMetadata.getString(srcIndex, displayNameCol);
-                constituent = sourceMetadata.getString(srcIndex, constituentCol);
-                units = sourceMetadata.getString(srcIndex, unitsCol);
+                constituent = "";
+                units = "kg/year";
                 precision = sourceMetadata.getLong(srcIndex, precisionCol).toString();
             }
 

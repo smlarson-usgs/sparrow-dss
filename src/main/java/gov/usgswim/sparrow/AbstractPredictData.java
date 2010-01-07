@@ -87,6 +87,13 @@ public abstract class AbstractPredictData implements PredictData {
 		throw new Exception("Invalid reach id " + id + ", not found in the model.");
 
 	}
+	
+	public Long getIdForRow(int row) {
+		DataTable topo = this.getTopo();
+		assert(topo.hasRowIds()): "assume topo has rowids";
+		Long id = topo.getIdForRow(row);
+		return id;
+	}
 
 
 
