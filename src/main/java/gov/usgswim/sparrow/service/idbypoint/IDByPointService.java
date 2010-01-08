@@ -387,7 +387,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		String incrementalContribution = buildPredSection(nominalPrediction,
 				adjustedPrediction, reachId, incremental, "Incremental Flux Contributed from Adjacent Catchment", "inc");
 		String totalContribution = buildPredSection(nominalPrediction,
-				adjustedPrediction, reachId, total, "Total Instream Flux", "inc");
+				adjustedPrediction, reachId, total, "Total Instream Flux", "total");
 
 		// Retrieve the response template and insert the data we just built
 		String[] params = {
@@ -427,6 +427,10 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		// Collect all the relevant column indices, as indicated by matching VALUE_TYPE and AGGREGATE_TYPE
 		for (int j = 0; j < nominalPrediction.getColumnCount(); j++) {
 			boolean isDesiredType = typeName.equals(nominalPrediction.getProperty(j, PredictResult.VALUE_TYPE_PROP));
+			
+			//TODO:  This is dangerous:  The AGG types are really for roll-up values.
+			//The total value refered to here is really a row total, which could have a completely different name
+			//in the future.  Suggest adding a row_value_type property to indicate if it is a row sum.
 			String aggType = nominalPrediction.getProperty(j, PredictResult.AGGREGATE_TYPE_PROP);
 			boolean isTotal = (aggType != null ) && isTotalVal.equals(aggType);
 
