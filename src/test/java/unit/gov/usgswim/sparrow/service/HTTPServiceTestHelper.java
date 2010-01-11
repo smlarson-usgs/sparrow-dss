@@ -13,6 +13,13 @@ public abstract class HTTPServiceTestHelper {
 	public static final Long TEST_MODEL = -1L;
 	public static final String WEB_XML_LOCATION = "public_html/WEB-INF/web.xml";
 
+	// ============
+	// SERVICE URLS
+	// ============
+	public static final String PREDICT_CONTEXT_SERVICE_URL = "http://localhost:8088/sp_predictcontext";
+	public static final String BINNING_SERVICE_URL = "http://localhost:8088/sp_binning";
+
+
 	protected static ServletRunner servletRunner;
 	protected static ServletUnitClient client;
 
@@ -24,6 +31,7 @@ public abstract class HTTPServiceTestHelper {
 	public static void teardownHTTPUnitTest() {
 		servletRunner.shutDown();
 	}
+
 
 
 

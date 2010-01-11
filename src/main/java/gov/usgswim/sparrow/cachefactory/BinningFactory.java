@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
+import java.util.Arrays;
 
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
@@ -99,13 +100,50 @@ public class BinningFactory implements CacheEntryFactory {
 			throw new IllegalArgumentException("The binCount must be greater than zero.");
 		}
 
-		Double[] sortedValues = DataTableSorter.extractSortedFilteredDoubleValues(data, columnIndex, keepExtremeValues, null);
+//		DataTableSorter.SortFilter zeroRejector = new DataTableSorter.SortFilter() {
+//			public boolean accept(Number value){return value.doubleValue() != 0D;}
+//		};
+
+
+//		DataTableSorter.extractSortedFilteredDoubleValues(data, columnIndex, keepExtremeValues, null);
+		Double[] sortedValues = extractSortedFilteredDoubleValues(data, columnIndex, keepExtremeValues);
 		if (keepExtremeValues) {
 			sortedValues = cleanInfinity(sortedValues);
 		}
 		return buildEqualCountBins(sortedValues, binCount, true);
 	}
 
+	/**
+	 * Note: Moved this method back in here from DataTableSorter because it contains a non-generalizable effect of adding a zero back in.
+	 *
+	 * @param data
+	 * @param columnIndex
+	 * @param keepInfinities
+	 * @return
+	 */
+	public static Double[] extractSortedFilteredDoubleValues(DataTable data, int columnIndex, boolean keepInfinities) {
+		int totalRows = data.getRowCount();
+		Double[] tempResult = new Double[totalRows];
+		int count = 0;
+
+
+		//Export all values in the specified column to values[] so they can be sorted
+		for (int r=0; r<totalRows; r++) {
+			double value = data.getDouble(r, columnIndex);
+			if (!Double.isNaN(value) && value != 0D &&
+					( keepInfinities || !Double.isInfinite(value) )
+					) {
+				tempResult[count]=value;
+				count++;
+			}
+		}
+		// add back a zero. This makes the method non-generalizable
+		if (count < totalRows) tempResult[count] = 0d;
+
+		Double[] values = Arrays.copyOf(tempResult, count);
+		Arrays.sort(values);
+		return values;
+	}
 
 	/**
 	 * Builds equal count bins for the passed data.
