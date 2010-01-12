@@ -385,9 +385,9 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 		// Build each section of the predicted result - incremental and total
 		String incrementalContribution = buildPredSection(nominalPrediction,
-				adjustedPrediction, reachId, incremental, "Incremental Flux Contributed from Adjacent Catchment", "inc");
+				adjustedPrediction, reachId, incremental, "Incremental Flux Contributed at Reach (no instream decay applied)", "inc");
 		String totalContribution = buildPredSection(nominalPrediction,
-				adjustedPrediction, reachId, total, "Total Instream Flux", "total");
+				adjustedPrediction, reachId, total, "Total Instream Flux (theoretical measurable value)", "total");
 
 		// Retrieve the response template and insert the data we just built
 		String[] params = {
