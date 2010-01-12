@@ -51,7 +51,7 @@ public class SourceComparisonErrorTest {
 		
 		///Try to build bins from a GET request that looks like this:
 		//context/
-		//getBins?_dc=1259617459336&context-id=-1930836194&bin-count=5&bin-type=EQUAL_RANGE
+		//getBins?_dc=1259617459336&context-id=-1930836194&bin-count=5&bin-operation=EQUAL_RANGE
 		BinningServiceRequest binReq = new BinningServiceRequest(new Integer(714573086), 2, BIN_TYPE.EQUAL_RANGE);
 		BinningPipeline binPipe = new BinningPipeline();
 		String actualBinResponse = TestHelper.pipeDispatch(binReq, binPipe);

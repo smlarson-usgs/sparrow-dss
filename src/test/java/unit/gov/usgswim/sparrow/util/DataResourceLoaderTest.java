@@ -76,6 +76,11 @@ public class DataResourceLoaderTest {
 		assertEquals("There should be one value for each source", sourceMetaData.getRowCount(), sourceValues.getColumnCount());
 		assertEquals("Only two sources in the test model", NUMBER_OF_TEST_SOURCES, sourceValues.getColumnCount());
 	}
+	
+	@Test
+	public void testLoadAncil() {
+		// TODO functionality not available yet but planned
+	}
 
 	@Test
 	public void testDataConsistency() throws SQLException, IOException {
@@ -87,6 +92,8 @@ public class DataResourceLoaderTest {
 		assertEquals("There should be a set of source values for each reach", numberOfReaches, predictData.getSrc().getRowCount());
 
 	}
+	
+
 
 
 	// ==========================

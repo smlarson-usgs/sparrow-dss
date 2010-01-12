@@ -44,7 +44,7 @@ public class FindReachServiceTest extends HTTPServiceTestHelper{
 		+ "		<adjustments/>"
 		+ "	</content>"
 		+ "	<response-format>"
-		+ "		<mime-type>XML</mime-type>"
+		+ "		<mime-operation>XML</mime-operation>"
 		+ "	</response-format>"
 		+ "</sparrow-reach-request>";
 
@@ -75,7 +75,7 @@ public class FindReachServiceTest extends HTTPServiceTestHelper{
 		+ "		<adjustments/>"
 		+ "	</content>"
 		+ "	<response-format>"
-		+ "		<mime-type>XML</mime-type>"
+		+ "		<mime-operation>XML</mime-operation>"
 		+ "	</response-format>"
 		+ "</sparrow-reach-request>";
 

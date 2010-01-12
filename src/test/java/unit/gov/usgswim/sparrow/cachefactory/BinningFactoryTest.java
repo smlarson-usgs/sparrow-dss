@@ -16,6 +16,7 @@ import java.math.RoundingMode;
 import junit.framework.AssertionFailedError;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class BinningFactoryTest {
@@ -394,6 +395,83 @@ public class BinningFactoryTest {
 		assertEquals(4, getUniqueValueCount(data4b, 5));
 	}
 
+    @Test public void testBuildEqualCountBinsSmallSet_HighestValueRoundDownPrevention() {
+
+        Double[] sortedData = {0.1, 0.11, 0.13, 0.15, 0.151, 0.1522, 0.15223, 0.1523, 0.154, 0.1542, 0.16, 6000.1};
+        int binCount = 3;
+        BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData, binCount, true);
+//        for (BigDecimal bin: result) {
+//            System.out.println(bin);
+//        }
+        assertTrue(sortedData[sortedData.length - 1] <= result[result.length-1].doubleValue());
+
+    }
+
+    @Test public void testBuildEqualCountBins_HighestValueRoundDownPrevention() {
+
+        Double[] sortedData = {0.1, 0.11, 0.13, 0.15, 0.151, 0.1522, 0.15223, 0.1523, 0.154, 0.1542, 0.16, 6000.1, 6000.1, 6000.1, 6000.1};
+        int binCount = 5;
+        BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData, binCount, true);
+//        for (BigDecimal bin: result) {
+//            System.out.println(bin);
+//        }
+        assertTrue(sortedData[sortedData.length - 1] <= result[result.length-1].doubleValue());
+
+    }
+
+    @Test public void testBigDecimalDouble_RoundtripBehavior() {
+    	for (double value = 0; value < 2; value += .001) {
+    		BigDecimal bd = new BigDecimal(value);
+    		assertTrue("Assuming absolute equality for " + value, value >= bd.doubleValue());
+    		assertTrue("Assuming absolute equality for " + value, value <= bd.doubleValue());
+    	}
+    }
+
+    @Test public void testBigDecimalFloat_RoundtripBehavior() {
+    	for (float value = 0; value < 2; value += .001) {
+    		BigDecimal bd = new BigDecimal(value);
+    		assertTrue("Assuming absolute equality for " + value, value >= bd.floatValue());
+    		assertTrue("Assuming absolute equality for " + value, value <= bd.floatValue());
+    	}
+    }
+
+    @Test public void testBigDecimalFloatDouble_RoundtripBehavior() {
+    	for (float value = 0; value < 2; value += .001) {
+    		BigDecimal bd = new BigDecimal(value);
+    		assertTrue("Assuming absolute equality for " + value, value >= bd.doubleValue());
+    		assertTrue("Assuming absolute equality for " + value, value <= bd.doubleValue());
+    	}
+    }
+
+    @Ignore // TEST fails, as expected
+    @Test public void testBigDecimalDoubleFloat_RoundtripBehavior() {
+    	for (double value = 0; value < 2; value += .001) {
+    		BigDecimal bd = new BigDecimal(value);
+    		assertTrue("Assuming absolute equality for " + value, value >= bd.floatValue());
+    		assertTrue("Assuming absolute equality for " + value, value <= bd.floatValue());
+    	}
+    }
+
+    @Test public void testBigDecimalDoubleStringParse_RoundtripBehavior() {
+    	for (double value = 0; value < 2; value += .001) {
+    		BigDecimal bd = new BigDecimal(value);
+    		Double doubleValue = Double.parseDouble(bd.toPlainString());
+
+    		assertTrue("Even the String parsing roundtrip behavior should be equal", doubleValue >= bd.doubleValue());
+    		assertTrue("Even the String parsing roundtrip behavior should be equal", doubleValue <= bd.doubleValue());
+    	}
+    }
+
+    @Ignore // TEST fails, as expected
+    @Test public void testBigDecimalFloatStringParse_RoundtripBehavior() {
+    	for (double value = 0; value < 2; value += .001) {
+    		BigDecimal bd = new BigDecimal(value);
+    		Float floatValue = Float.parseFloat(bd.toPlainString());
+
+    		assertTrue("Even the String parsing roundtrip behavior should be equal for " + floatValue, floatValue >= bd.doubleValue());
+    		assertTrue("Even the String parsing roundtrip behavior should be equal for " + floatValue, floatValue <= bd.doubleValue());
+    	}
+    }
 
 	@SuppressWarnings("unused")
 	private void printBinningResult(String message, BigDecimal[] result) {

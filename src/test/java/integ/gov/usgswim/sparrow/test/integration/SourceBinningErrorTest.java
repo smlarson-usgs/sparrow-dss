@@ -60,7 +60,7 @@ public class SourceBinningErrorTest {
 		
 		///Try to build bins from a GET request that looks like this:
 		//context/
-		//getBins?_dc=1259617459336&context-id=-1930836194&bin-count=5&bin-type=EQUAL_RANGE
+		//getBins?_dc=1259617459336&context-id=-1930836194&bin-count=5&bin-operation=EQUAL_RANGE
 		
 		PredictData pd = SharedApplication.getInstance().getPredictData(modelId);
 		DataTable src = pd.getSrc();

@@ -31,7 +31,7 @@ public class FindReachRequestTest {
 		+ "	<content>"
 		+ "	</content>"
 		+ "	<response-format>"
-		+ "		<mime-type>XML</mime-type>"
+		+ "		<mime-operation>XML</mime-operation>"
 		+ "	</response-format>"
 		+ "</sparrow-reach-request>";
 

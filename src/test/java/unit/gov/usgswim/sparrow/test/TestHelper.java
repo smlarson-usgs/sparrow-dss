@@ -155,7 +155,7 @@ public abstract class TestHelper {
 	 * @return An inputstream from the specified file.
 	 * @throws IOException
 	 */
-	public static InputStream getResource(Class forClass, String fileSuffix, String fileExtension) throws IOException {
+	public static InputStream getResource(Class<?> forClass, String fileSuffix, String fileExtension) throws IOException {
 		Properties props = new Properties();
 
 		String basePath = forClass.getName().replace('.', '/');
@@ -171,7 +171,7 @@ public abstract class TestHelper {
 	}
 	
 	/**
-	 * Loads any type of text resource file as a string.
+	 * Loads any operation of text resource file as a string.
 	 * 
 	 * The file is assumed to have the same name as the passed class,
 	 * but with specified extension.  An additional name suffix may be added to
@@ -191,7 +191,7 @@ public abstract class TestHelper {
 	 * @return A string loaded from the specified file.
 	 * @throws IOException
 	 */
-	public static String getFileAsString(Class forClass, String fileSuffix, String fileExtension) throws IOException {
+	public static String getFileAsString(Class<?> forClass, String fileSuffix, String fileExtension) throws IOException {
 		
 		InputStream is = getResource(forClass, fileSuffix, fileExtension);
 		
@@ -219,7 +219,7 @@ public abstract class TestHelper {
 	 * @return An xml string loaded from the xml file.
 	 * @throws IOException
 	 */
-	public static String getXmlAsString(Class forClass, String fileSuffix) throws IOException {
+	public static String getXmlAsString(Class<?> forClass, String fileSuffix) throws IOException {
 		
 		InputStream is = getResource(forClass, fileSuffix, "xml");
 		

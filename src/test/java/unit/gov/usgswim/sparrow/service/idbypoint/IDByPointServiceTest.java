@@ -20,7 +20,7 @@ public class IDByPointServiceTest {
 
 
 	// Exploration while creating the id by point service. Trying to understand
-	// the output of Oracle's GEOM type
+	// the output of Oracle's GEOM operation
 	@Ignore
 	@Test public void testSDOGeometry() throws SQLException {
 		Connection conn = SharedApplication.getConnectionFromCommandLineParams();
@@ -90,7 +90,7 @@ public class IDByPointServiceTest {
 
 		{
 			// output stuff
-			System.out.println("type: " + type);
+			System.out.println("operation: " + type);
 			System.out.println("srid: " + srid);
 			System.out.println("dimensions: " + dimensions);
 			System.out.println("numberOfPoints: " + numberOfPoints);

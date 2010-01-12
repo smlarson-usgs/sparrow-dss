@@ -62,7 +62,7 @@ public class DefaultGroupTest extends TestCase {
 		assertEquals("default-group", rg.getParseTarget());
 		assertTrue(rg.isEnabled());
 		assertTrue(rg.getDescription().contains("Clean' Project") );
-		assertTrue(rg.getNotes().contains("based on plant type"));
+		assertTrue(rg.getNotes().contains("based on plant operation"));
 	}
 
 	public void testParse2() throws Exception {
@@ -73,7 +73,7 @@ public class DefaultGroupTest extends TestCase {
 			+ "		but it looks like there are some others plants that need to be included."
 			+ ""
 			+ "		As a start, we are proposing a 10% reduction across the board,"
-			+ "		but we will tailor this later based on plant type."
+			+ "		but we will tailor this later based on plant operation."
 			+ "	</notes>"
 			+ "	<adjustment src=\"5\" coef=\".9\"/>	<!--  Existing Adjustment Object -->"
 			+ "	<adjustment src=\"4\" coef=\".75\"/>"
@@ -125,7 +125,7 @@ public class DefaultGroupTest extends TestCase {
 			+ "		but it looks like there are some others plants that need to be included."
 			+ ""
 			+ "		As a start, we are proposing a 10% reduction across the board,"
-			+ "		but we will tailor this later based on plant type."
+			+ "		but we will tailor this later based on plant operation."
 			+ "	</notes>"
 			+ "	<adjustment src=\"5\" coef=\".9\"/>	<!--  Existing Adjustment Object -->"
 			+ "	<adjustment src=\"4\" coef=\".75\"/>"

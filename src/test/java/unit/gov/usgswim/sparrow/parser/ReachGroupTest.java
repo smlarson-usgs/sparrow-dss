@@ -42,7 +42,7 @@ public class ReachGroupTest extends TestCase {
 		+ "		but it looks like there are some others plants that need to be included."
 		+ ""
 		+ "		As a start, we are proposing a 10% reduction across the board,"
-		+ "		but we will tailor this later based on plant type."
+		+ "		but we will tailor this later based on plant operation."
 		+ "	</notes>"
 		+ "	<!-- Multiple treatments are possible -->"
 		+ "	<adjustment src=\"5\" coef=\".9\"/>	<!--  Existing Adjustment Object -->"
@@ -72,7 +72,7 @@ public class ReachGroupTest extends TestCase {
 		assertTrue(rg.isEnabled());
 		assertEquals("Northern Indiana Plants", rg.getName());
 		assertTrue(rg.getDescription().contains("Clean' Project") );
-		assertTrue(rg.getNotes().contains("based on plant type"));
+		assertTrue(rg.getNotes().contains("based on plant operation"));
 
 		// test adjustments
 		List<Adjustment> adj = rg.getAdjustments();

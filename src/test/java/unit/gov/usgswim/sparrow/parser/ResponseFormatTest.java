@@ -17,7 +17,7 @@ public class ResponseFormatTest extends TestCase {
 	
 	public void testParseMainUseCase() throws XMLStreamException, XMLParseValidationException {
 		String testRequest="<response-format name='pre-configured format name' compress='zip'>"
-			+ "	<mime-type>text</mime-type>"
+			+ "	<mime-operation>text</mime-operation>"
 			+ "	<template>beige</template>"
 			+ "	<params>"
 			+ "		<param name='gov.usgswim.WordGenerator.marin-top'>1.5in</param>"
@@ -56,7 +56,7 @@ public class ResponseFormatTest extends TestCase {
 	public void testSetMimeType() {
 		ResponseFormat rf = new ResponseFormat();
 		rf.setMimeType("csv");
-		// output type is set implicitly
+		// output operation is set implicitly
 		assertEquals(OutputType.CSV, rf.getOutputType());
 	}
 
@@ -65,7 +65,7 @@ public class ResponseFormatTest extends TestCase {
 
 		try {
 	    rf.setMimeType("GzIp");
-	    fail("This should throw an exception b/c the mime-type does not exist yet");
+	    fail("This should throw an exception b/c the mime-operation does not exist yet");
     } catch (RuntimeException e) {
 	    //Expected error
     }
