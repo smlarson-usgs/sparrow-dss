@@ -44,6 +44,7 @@ public class DataResourceLoader {
 		String sourceMetaFolder = SparrowResourceUtils.getModelResourceFilePath(modelId, SOURCE_METADATA_FILE);
 		DataTableWritable sourceMeta = makeSourceMetaStructure();
 		DataTableWritable result = DataTableUtils.fill(sourceMeta, sourceMetaFolder, false, "\t", true);
+		result.setName("sourceMetadata");
 		// first column of sources is ids. Must set
 		long[] ids = DataTableUtils.getLongColumn(result, 0);
 		return DataTableUtils.setIds(result, ids);
@@ -53,6 +54,7 @@ public class DataResourceLoader {
 	public static DataTableWritable loadTopo(long modelId) {
 		String topoFile = SparrowResourceUtils.getModelResourceFilePath(modelId, TOPO_FILE);
 		DataTableWritable topo = makeTopoStructure();
+
 		DataTableUtils.fill(topo, topoFile, false, "\t", true);
 		return topo;
 	}
@@ -69,6 +71,7 @@ public class DataResourceLoader {
 		}
 		// may need to add id
 		String coefFile = SparrowResourceUtils.getModelResourceFilePath(modelId, SOURCE_COEF_FILE);
+		result.setName("coef");
 		return DataTableUtils.fill(result, coefFile, false, "\t", true);
 	}
 
@@ -92,6 +95,7 @@ public class DataResourceLoader {
 			newCol.setType(Double.class);
 			decayStructure.addColumn(newCol);
 		}
+		decayStructure.setName("decay");
 		return decayStructure;
 	}
 
@@ -100,6 +104,7 @@ public class DataResourceLoader {
 		String[] headings = {"reachID", "fnode", "tnode", "iftran", "hydseq"}; // TODO check name of reach id
 		Class<?>[] types= {Integer.class, Integer.class, Integer.class, Integer.class, Integer.class};
 		DataTableWritable result = new SimpleDataTableWritable(headings, null, types);
+		result.setName("topo");
 		return result;
 	}
 
@@ -147,6 +152,8 @@ public class DataResourceLoader {
 			column.setType(Double.class);
 			sourceValues.addColumn(column);
 		}
+
+		sourceValues.setName("source");
 		return sourceValues;
 	}
 

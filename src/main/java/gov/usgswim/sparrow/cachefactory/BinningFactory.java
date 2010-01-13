@@ -210,9 +210,10 @@ public class BinningFactory implements CacheEntryFactory {
 				// use the elements one removed, but scale
 				loIndex += -1;
 				hiIndex += 1;
-				double hiVal = value + binVariance * (sortedData[hiIndex] - value)/2;
-				double loVal = value - binVariance * (value - sortedData[loIndex])/2;
-				bins[i] = BigDecimalUtils.round(value, loVal, hiVal);
+				double hiBound = value + binVariance * (sortedData[hiIndex] - value)/2;
+				double loBound = value - binVariance * (value - sortedData[loIndex])/2;
+				hiBound = perturbIfEqual(hiBound, loBound);
+				bins[i] = BigDecimalUtils.round(value, loBound, hiBound);
 			} else if (loIndex + 1 == hiIndex && binVariance > 1 ) {
 				// In this case, the conservative bounds of floor and ceiling
 				// are too close together as they differ only by 1. Adjust so
@@ -221,25 +222,29 @@ public class BinningFactory implements CacheEntryFactory {
 					// use loIndex - .5 if possible
 					if (loIndex > 0) {
 						// adjust
-						Double loBound = (sortedData[loIndex-1] + sortedData[loIndex])/2;
-						bins[i] = BigDecimalUtils.round((loBound + sortedData[hiIndex])/2, loBound, sortedData[hiIndex]);
+						double loBound = (sortedData[loIndex-1] + sortedData[loIndex])/2;
+						double hiBound = perturbIfEqual(sortedData[hiIndex], loBound);
+						bins[i] = BigDecimalUtils.round((loBound + sortedData[hiIndex])/2, loBound, hiBound);
 					} else {// Already at lowest, can't adjust
-						bins[i] = BigDecimalUtils.round(value, sortedData[loIndex], sortedData[hiIndex]);
+						double hiBound = perturbIfEqual(sortedData[hiIndex], sortedData[loIndex]);
+						bins[i] = BigDecimalUtils.round(value, sortedData[loIndex], hiBound);
 					}
 
 				} else {
 					// use hiIndex + .5 if possible
 					if (hiIndex < totalRows - 1) {
 						// adjust t
-						Double hiBound = (sortedData[hiIndex] + sortedData[hiIndex + 1])/2;
+						double hiBound = perturbIfEqual((sortedData[hiIndex] + sortedData[hiIndex + 1])/2, sortedData[loIndex]);
 						bins[i] = BigDecimalUtils.round((hiBound + sortedData[loIndex])/2, sortedData[loIndex], hiBound);
 					} else {// Already at lowest, can't adjust
-						bins[i] = BigDecimalUtils.round(value, sortedData[loIndex], sortedData[hiIndex]);
+						double hiBound = perturbIfEqual(sortedData[hiIndex], sortedData[loIndex]);
+						bins[i] = BigDecimalUtils.round(value, sortedData[loIndex], hiBound);
 					}
 				}
 			} else {
 				// allow middle bins to be tweaked slightly higher or lower
-				bins[i] = BigDecimalUtils.round(value, sortedData[loIndex], sortedData[hiIndex]);
+				double hiBound = perturbIfEqual(sortedData[hiIndex], sortedData[loIndex]);
+				bins[i] = BigDecimalUtils.round(value, sortedData[loIndex], hiBound);
 			}
 		}
 
@@ -252,9 +257,21 @@ public class BinningFactory implements CacheEntryFactory {
 		}
 		lo = sortedData[loIndex];
 		hi = cleanInfinity(value + (value - lo));
+		hi = perturbIfEqual(hi, value);
 		bins[binCount] = BigDecimalUtils.round(value, value, hi); // must not allow the highest bin to be rounded down
 
 		return bins;
+	}
+
+	/**
+	 * Perturbs the hiVal by .1% upward if the two bounds are equal
+	 * @param hiVal
+	 * @param loVal
+	 * @return
+	 */
+	private static double perturbIfEqual(double hiVal, double loVal) {
+		if (hiVal > loVal) return hiVal;
+		return hiVal + hiVal * .0001;
 	}
 
 	/**
