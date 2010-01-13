@@ -31,6 +31,7 @@ public class FindReachService extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	public static String sampleResponse="<sparrow-reach-response xmlns=\"http://www.usgs.gov/sparrow/id-response-schema/v0_2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" model-id=\"22\">"
 		+ "    <status>OK</status>"
+		+ "    <status>message</status>"
 		+ "   	<reach>"
 		+ "      	<id>3541</id>"
 		+ "        <name>WESTERN RUN</name>"
@@ -60,6 +61,7 @@ public class FindReachService extends HttpServlet {
 		FindReachRequest frReq = parseRequest(req);
 		StringBuilder outputXML = new StringBuilder();
 		String status = "error";
+		String message = "";
 
 		List<String> errors = cleanAndCheckValidityFindReachRequest(frReq);
 		if (errors.size() == 0) {
@@ -103,10 +105,12 @@ public class FindReachService extends HttpServlet {
 				if (hasFoundResults) {
 					status = "OK";
 				} else {
-					status = "ERROR: SORRY. No reaches were found matching your criteria";
+					status = "EMPTY";
+					message = "Sorry, no reaches were found matching your criteria";
 				}
 			} catch (SQLException e) {
-				status = "ERROR: " + e.getMessage();
+				status = "ERROR";
+				message = e.getMessage();
 				outputXML = new StringBuilder(); // clear the output
 				e.printStackTrace();
 			} finally {
@@ -121,21 +125,23 @@ public class FindReachService extends HttpServlet {
 		} else { // return error response
 			status = "ERROR";
 			for (String error: errors) {
-				status += ";" + error;
+				message += ";" + error;
 			}
 		}
 
-		outputXML = getResponseXMLHeader(frReq.modelID, status).append(outputXML).append("</sparrow-reach-response>");
+		outputXML = getResponseXMLHeader(frReq.modelID, status, message)
+			.append(outputXML).append("</sparrow-reach-response>");
 		ServletOutputStream out = resp.getOutputStream();
 		out.print(outputXML.toString());
 	}
 
-	public static StringBuilder getResponseXMLHeader(String modelID, String status) {
+	public static StringBuilder getResponseXMLHeader(String modelID, String status, String message) {
 		StringBuilder result = new StringBuilder();
 		result.append("<sparrow-reach-response xmlns=\"http://www.usgs.gov/sparrow/id-response-schema/v0_2\"");
 		result.append(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
 		result.append("model-id=\"" + modelID + "\">");
 		result.append("<status>" + status + "</status>");
+		result.append("<message>" + message + "</message>");
 		return result;
 	}
 
