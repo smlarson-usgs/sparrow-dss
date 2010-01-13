@@ -133,6 +133,10 @@ public class SharedApplication  {
 		return connection;
 
 	}
+	
+	public void clearAllCaches() {
+		CacheManager.getInstance().clearAll();
+	}
 
 	public Integer putSerializable(Serializable context) {
 		Ehcache c = CacheManager.getInstance().getEhcache(SERIALIZABLE_CACHE);
