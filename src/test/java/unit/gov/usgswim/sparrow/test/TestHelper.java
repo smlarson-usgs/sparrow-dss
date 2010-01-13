@@ -171,7 +171,7 @@ public abstract class TestHelper {
 	}
 	
 	/**
-	 * Loads any operation of text resource file as a string.
+	 * Loads any type of text resource file as a string.
 	 * 
 	 * The file is assumed to have the same name as the passed class,
 	 * but with specified extension.  An additional name suffix may be added to
