@@ -50,6 +50,7 @@ public class FindReachServiceTest extends HTTPServiceTestHelper{
 
 	String sampleResponse1 = "<sparrow-reach-response xmlns=\"http://www.usgs.gov/sparrow/id-response-schema/v0_2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" model-id=\"22\">"
 		+ "	<status>OK</status>"
+		+ " <message></message"
 		+ "	<reach>"
 		+ "		<id>3541</id>"
 		+ "		<name>WESTERN RUN</name>"
