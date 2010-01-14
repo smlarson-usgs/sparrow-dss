@@ -59,7 +59,7 @@ public class DataResourceLoaderTest {
 
 	@Test
 	public void testLoadDecay() throws SQLException, IOException {
-		DataTableWritable decay = loadDecay(TEST_MODEL);
+		DataTableWritable decay = loadDelivery(TEST_MODEL);
 
 		assertTrue(decay != null);
 		assertEquals(2, decay.getColumnCount());

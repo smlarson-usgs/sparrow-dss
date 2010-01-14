@@ -17,7 +17,7 @@ public class DataResourceLoader {
 	public static final String TOPO_FILE = "topo.txt";
 	public static final String SOURCE_COEF_FILE = "source_coef.txt";
 	public static final String SOURCE_VALUES_FILE = "source_values.txt";
-	public static final String DECAY_COEF_FILE = "decay_coef.txt";
+	public static final String DELIVERY_COEF_FILE = "decay_coef.txt";
 	public static final List<String> SOURCE_META_HEADINGS = Collections.unmodifiableList(
 			Arrays.asList("SOURCE_ID", "NAME", "DISPLAY_NAME", "DESCRIPTION", "CONSTITUENT", "UNITS", "PRECISION", "IS_POINT_SOURCE"));
 	public static final int SOURCE_ID_COL = 0;
@@ -28,7 +28,7 @@ public class DataResourceLoader {
 			dataSet.setSrcMetadata( loadSourceMetadata(modelId));
 			dataSet.setTopo( loadTopo(modelId) );
 			dataSet.setCoef( loadSourceReachCoef(modelId, dataSet.getSrcMetadata()) );
-			dataSet.setDelivery( loadDecay( modelId) );
+			dataSet.setDelivery( loadDelivery( modelId) );
 			dataSet.setSrc( loadSourceValues( modelId, dataSet.getSrcMetadata(), dataSet.getTopo()) );
 		}
 		return dataSet.toImmutable();
@@ -75,28 +75,28 @@ public class DataResourceLoader {
 		return DataTableUtils.fill(result, coefFile, false, "\t", true);
 	}
 
-	public static DataTableWritable loadDecay(long modelId) {
-		String decayFile = SparrowResourceUtils.getModelResourceFilePath(modelId, DECAY_COEF_FILE);
-		DataTableWritable decay = makeDecayStructure();
-		DataTableUtils.fill(decay, decayFile, false, "\t", true);
-		return decay;
+	public static DataTableWritable loadDelivery(long modelId) {
+		String deliveryFile = SparrowResourceUtils.getModelResourceFilePath(modelId, DELIVERY_COEF_FILE);
+		DataTableWritable delivery = makeDeliveryStructure();
+		DataTableUtils.fill(delivery, deliveryFile, false, "\t", true);
+		return delivery;
 
 	}
 
-	public static DataTableWritable makeDecayStructure() {
+	public static DataTableWritable makeDeliveryStructure() {
 		final String UNITS = null;
-		SimpleDataTableWritable decayStructure = new SimpleDataTableWritable();
+		SimpleDataTableWritable deliveryStructure = new SimpleDataTableWritable();
 		{
 			// Decay structure has only two columns: instream decay and upstream decay
 			StandardNumberColumnDataWritable<Double> newCol = new StandardNumberColumnDataWritable<Double>("instreamDecay", UNITS);
 			newCol.setType(Double.class);
-			decayStructure.addColumn(newCol);
+			deliveryStructure.addColumn(newCol);
 			newCol = new StandardNumberColumnDataWritable<Double>("upstreamDecay", UNITS);
 			newCol.setType(Double.class);
-			decayStructure.addColumn(newCol);
+			deliveryStructure.addColumn(newCol);
 		}
-		decayStructure.setName("decay");
-		return decayStructure;
+		deliveryStructure.setName("delivery");
+		return deliveryStructure;
 	}
 
 	public static DataTableWritable makeTopoStructure() {
