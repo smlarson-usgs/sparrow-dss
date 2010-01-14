@@ -99,13 +99,7 @@ public class BinningFactory implements CacheEntryFactory {
 		if (binCount < 1) {
 			throw new IllegalArgumentException("The binCount must be greater than zero.");
 		}
-
-//		DataTableSorter.SortFilter zeroRejector = new DataTableSorter.SortFilter() {
-//			public boolean accept(Number value){return value.doubleValue() != 0D;}
-//		};
-
-
-//		DataTableSorter.extractSortedFilteredDoubleValues(data, columnIndex, keepExtremeValues, null);
+		
 		Double[] sortedValues = extractSortedFilteredDoubleValues(data, columnIndex, keepExtremeValues);
 		if (keepExtremeValues) {
 			sortedValues = cleanInfinity(sortedValues);
@@ -130,7 +124,9 @@ public class BinningFactory implements CacheEntryFactory {
 		//Export all values in the specified column to values[] so they can be sorted
 		for (int r=0; r<totalRows; r++) {
 			double value = data.getDouble(r, columnIndex);
-			if (!Double.isNaN(value) && value != 0D &&
+			if (!Double.isNaN(value) 
+					&& value != 0D 
+					&&
 					( keepInfinities || !Double.isInfinite(value) )
 					) {
 				tempResult[count]=value;
@@ -138,7 +134,7 @@ public class BinningFactory implements CacheEntryFactory {
 			}
 		}
 		// add back a zero. This makes the method non-generalizable
-		if (count < totalRows) tempResult[count] = 0d;
+		if (count < totalRows) tempResult[count++] = 0d;
 
 		Double[] values = Arrays.copyOf(tempResult, count);
 		Arrays.sort(values);

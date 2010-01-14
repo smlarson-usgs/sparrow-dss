@@ -5,9 +5,12 @@ import static gov.usgswim.sparrow.cachefactory.BinningFactory.getUniqueValueCoun
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import gov.usgswim.datatable.ColumnDataWritable;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.impl.BuilderHelper;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
+import gov.usgswim.datatable.utils.DataTablePrinter;
 import gov.usgswim.sparrow.util.BigDecimalUtils;
 
 import java.math.BigDecimal;
@@ -134,7 +137,8 @@ public class BinningFactoryTest {
 		doEqualCountAssert(new Double[] {100000D, 1000000D}, bins, round, 0d, 1000000D);
 	}
 
-	@Test public void testNaNHandling() {
+	// NaNs are now removed instead of "handled", but left test in in case reversion desired
+	@Test @Ignore public void testNaNHandling() {
 		final int bins = 1;
 		final boolean round = true;
 
@@ -143,7 +147,8 @@ public class BinningFactoryTest {
 		doEqualCountAssert(tblMixNAN, bins, round, -10d, 10d);
 	}
 
-	@Test public void testInfinityHandling() {
+	// Infinitys are now removed instead of "handled", but left test in in case reversion desired
+	@Test @Ignore public void testInfinityHandling() {
 		final int bins = 1;
 		final boolean round = true;
 		//These Tests all require that INFINITE values be considered in
@@ -395,6 +400,28 @@ public class BinningFactoryTest {
 		assertEquals(4, getUniqueValueCount(data4b, 5));
 	}
 
+	/**
+	 * The <code>extractSortedData()</code> method will remove all the zeroes in
+	 * the data and add back a single zero if any were removed
+	 */
+	@Test public void testExtractSortedData_RestoresASingleZero() {
+		double[] unSortedData = {0.1, 0.11, 0, 0, 0.13, 0.15, 0.151, 0, 0.1522, 0.15223, 0.1523, 0.154, 0.1542, 0.16, 6000.1};
+		ColumnDataWritable dataCol = makeColumnData(unSortedData, "", "");
+		SimpleDataTableWritable table = new SimpleDataTableWritable();
+		table.addColumn(dataCol);
+		Double[] result = BinningFactory.extractSortedFilteredDoubleValues(table, 0, false);
+		assertEquals("Three zeroes were removed and one added back in", unSortedData.length - 3 + 1, result.length);
+	}
+	
+	public ColumnDataWritable makeColumnData(double[] data, String heading, String units ) {
+		StandardNumberColumnDataWritable<Double> result = new StandardNumberColumnDataWritable<Double>();
+		result.setName(heading);
+		for (int i=0; i<data.length; i++) {
+			result.setValue(data[i], i);
+		}
+		return result;
+	}
+	
     @Test public void testBuildEqualCountBinsSmallSet_HighestValueRoundDownPrevention() {
 
         Double[] sortedData = {0.1, 0.11, 0.13, 0.15, 0.151, 0.1522, 0.15223, 0.1523, 0.154, 0.1542, 0.16, 6000.1};
@@ -403,8 +430,19 @@ public class BinningFactoryTest {
 //        for (BigDecimal bin: result) {
 //            System.out.println(bin);
 //        }
-        assertTrue(sortedData[sortedData.length - 1] <= result[result.length-1].doubleValue());
+        BigDecimal largestBin = result[result.length-1];
+        assertTrue(sortedData[sortedData.length - 1] <= largestBin.doubleValue());
+    }
+    
+    @Test public void testBuildEqualCountBinsSmallSet_BinRounding() {
 
+        Double[] sortedData = {0.1, 0.11, 0.13, 0.15, 0.151, 0.1522, 0.15223, 0.1523, 0.154, 0.1542, 0.16, 6000.1};
+        int binCount = 3;
+        BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData, binCount, true);
+        for (BigDecimal bin: result) {
+            String stringResult = bin.toPlainString();
+            assertTrue(stringResult.length() <=6);
+        }
     }
 
     @Test public void testBuildEqualCountBins_HighestValueRoundDownPrevention() {
@@ -412,11 +450,20 @@ public class BinningFactoryTest {
         Double[] sortedData = {0.1, 0.11, 0.13, 0.15, 0.151, 0.1522, 0.15223, 0.1523, 0.154, 0.1542, 0.16, 6000.1, 6000.1, 6000.1, 6000.1};
         int binCount = 5;
         BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData, binCount, true);
-//        for (BigDecimal bin: result) {
-//            System.out.println(bin);
-//        }
-        assertTrue(sortedData[sortedData.length - 1] <= result[result.length-1].doubleValue());
+        BigDecimal largestBin = result[result.length-1];
+        assertTrue(sortedData[sortedData.length - 1] <= largestBin.doubleValue());
+        assertEquals("6000.1", largestBin.toPlainString());
+    }
+    
+    @Test public void testBuildEqualCountBins_BinRounding() {
 
+        Double[] sortedData = {0.1, 0.11, 0.13, 0.15, 0.151, 0.1522, 0.15223, 0.1523, 0.154, 0.1542, 0.16, 6000.1, 6000.1, 6000.1, 6000.1};
+        int binCount = 5;
+        BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData, binCount, true);
+        for (BigDecimal bin: result) {
+            String stringResult = bin.toPlainString();
+            assertTrue(stringResult.length() <=7);
+        }
     }
 
     @Test public void testBigDecimalDouble_RoundtripBehavior() {
