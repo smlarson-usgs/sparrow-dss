@@ -28,11 +28,14 @@
 					</tr>
 				</table>
 				
+				<p>
 				<select name="bin-type" >
 					<option value="EQUAL_COUNT">EQUAL_COUNT</option>
 					<option value="EQUAL_RANGE">EQUAL_RANGE</option>
 				</select>
 				<br />
+				<input type="submit" name="submit" value="post"/>
+				</p>
 			</fieldset>
 		</form>
 
