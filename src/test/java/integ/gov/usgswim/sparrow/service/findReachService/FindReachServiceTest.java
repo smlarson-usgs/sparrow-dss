@@ -70,7 +70,7 @@ public class FindReachServiceTest extends HTTPServiceTestHelper{
 		+ "	xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">"
 		+ "	<model-id>22</model-id>"
 		+ "	<match-query>"
-		+ "		<reach-id>36580 36598 50557</reach-id>"
+		+ "		<reach-ids>36580 36598 50557</reach-ids>"
 		+ "	</match-query>"
 		+ "	<content>"
 		+ "		<adjustments/>"
