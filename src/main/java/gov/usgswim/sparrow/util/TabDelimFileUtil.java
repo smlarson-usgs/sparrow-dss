@@ -554,8 +554,10 @@ public abstract class TabDelimFileUtil {
 	static List<double[]> readDataBodyAsDouble(BufferedReader br, int[] remappedColumns, int mappedColumnCount) throws NumberFormatException, IOException {
 		List<double[]> rows = new ArrayList<double[]>(500);
 		int colCount = 0; //Number of columns (minus one) - must match in each row
+		int curRow = 0;	//Current row number - 0 based;
 		String s = null;					//Single line from file
-		while ((s=br.readLine())!=null){
+		
+		while ((s=br.readLine())!=null) {
 			String src[] = s.split("\t");
 
 			if ( isNonEmptyLine(src) ) {
@@ -573,7 +575,9 @@ public abstract class TabDelimFileUtil {
 					}
 				} else {
 					if (src.length != colCount) {
-						throw new IllegalStateException("Each row in the file must have the same number of delimiters");
+						throw new IllegalStateException("Parse Error: Row " +
+								curRow + 1 + " has " + src.length +
+								" columns, previous columns had " + colCount + " columns.");
 					}
 				}
 
@@ -593,6 +597,8 @@ public abstract class TabDelimFileUtil {
 			} else {
 				//ignore empty lines
 			}
+			
+			curRow++;
 		}
 		return rows;
 	}
