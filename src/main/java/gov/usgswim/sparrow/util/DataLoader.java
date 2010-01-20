@@ -175,7 +175,8 @@ public class DataLoader {
 			} catch (Exception e) {
 				e.printStackTrace();
 			} finally {
-				rset.close();
+				// rset can be null if there is an sql error. This has happened with the renaming of a field
+				if (rset != null) rset.close();
 			}
 
 			if (getSources) {
@@ -269,7 +270,7 @@ public class DataLoader {
 		String query = getQuery("SelectTopoData", modelId);
 
 		DataTableWritable result = DLUtils.readAsInteger(conn, query, 1000, 0);
-		
+
 		/** TNODE is used heavily during delivery calcs to find reaches, so index */
 		result.buildIndex(PredictData.TNODE_COL);
 
@@ -311,7 +312,7 @@ public class DataLoader {
 
 		int sourceCount = sources.getRowCount();
 		DataTableWritable sourceReachCoef = new SimpleDataTableWritable();
-		
+
 		//Assign row IDs directly from the base query
 		String rowIdQuery =
 			getQuery("SelectReachCoef",
@@ -324,7 +325,7 @@ public class DataLoader {
 				getQuery("SelectReachCoef",
 						"ModelId", modelId, "Iteration", iteration, "SourceId", sources.getInt(srcIndex, SOURCE_ID_COL)
 				);
-			
+
 			//The query has two columns and we only want the Value column
 			query = "Select Value from ( " + query + " )";
 
@@ -426,11 +427,11 @@ public class DataLoader {
 	 * Returns a DataTable of all delivery data for for a single model.
 	 *
 	 * <h4>Data Columns, sorted by HYDSEQ then IDENTIFIER</h4>
-	 * 
+	 *
 	 * <p>One row per reach (i = reach index)</p>
 	 * For data definitions, please see:
 	 * @see gov.usgswim.sparrow.PredictData#getDelivery()
-	 * 
+	 *
 	 * TODO:  All the other 'per reach' data tables load row ids, which allows
 	 * a consistency check to be done.  This is not done yet for this b/c
 	 * there is no direct loadAsDouble() method that supports loading an index.
@@ -488,7 +489,7 @@ public class DataLoader {
 		String[] headings = DataTableUtils.getStringColumn(sources, display_name_col);
 
 		DataTableWritable sourceValues = new SimpleDataTableWritable();
-		
+
 		//Assign row IDs directly from the base query
 		String rowIdQuery =
 			getQuery("SelectSourceValues",
@@ -505,7 +506,7 @@ public class DataLoader {
 				getQuery("SelectSourceValues",
 						"ModelId", modelId, "SourceId", sources.getInt(srcIndex, SOURCE_ID_COL)
 				);
-			
+
 			//The query has two columns and we only want the Value column
 			query = "Select Value from ( " + query + " )";
 
@@ -591,13 +592,13 @@ public class DataLoader {
 		}
 		return result;
 	}
-	
+
 	protected static void loadIndexValues(Connection conn, DataTableWritable table,
 			String baseQuery, String indexColumnName) throws SQLException {
 		//Grab the query for the first source, but only taking the ID vals
 
 		String query = "Select " + indexColumnName + " from ( " + baseQuery + " )";
-		
+
 		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		st.setFetchSize(2000);
 		ResultSet rs = null;

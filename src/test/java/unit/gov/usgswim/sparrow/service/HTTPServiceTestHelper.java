@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 
 import org.xml.sax.SAXException;
 
@@ -30,6 +31,14 @@ public abstract class HTTPServiceTestHelper {
 
 	public static void teardownHTTPUnitTest() {
 		servletRunner.shutDown();
+	}
+	
+	public static void sendGetRequest(String URL) {
+		
+	}
+	
+	public static void sendPostRequest(String URL, Map<String, String> params) {
+		
 	}
 
 
