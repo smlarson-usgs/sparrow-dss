@@ -25,7 +25,6 @@ public class PredictPipeline extends AbstractPipeline<PredictExportRequest>{
 
 	public PredictPipeline(){
 		super(new PredictExportService(), new PredictExportParser());
-//		super(null, null);
 	}
 
 	@Override

@@ -4,10 +4,10 @@
 
     <import file="ant-support/build-impl.xml" />
 
-	<target name="-pre-dist" depends="move-libs">
+	<target name="-pre-dist-test" depends="move-libs">
 		<description>Ensures that the libraries are copied over fresh for each run</description>
 	</target>
-	
+
 	<target name="-post-dist">
         <copy todir="${dist.dir}">
             <fileset dir="deploy" includes="mapviewer11gr1_revised.zip" />
@@ -23,26 +23,30 @@
 			<globmapper from="*" to="*.tmp" />
 		</unwar>
 
+
 		<xslt in="${dist.dir}/WEB-INF/conf/mapViewerConfig.xml.tmp" out="${dist.dir}/WEB-INF/conf/mapViewerConfig.xml" style="${support.ant}/ns-datasource-merge.xsl" />
 		<echo message="mapViewerConfig.xml merged"/>
 		<xslt in="${dist.dir}/WEB-INF/web.xml.tmp" out="${dist.dir}/WEB-INF/web.xml" style="${support.ant}/web-xml-merge.xsl">
 			<param name="includeFile" expression="../${build.web.dir}/WEB-INF/web.xml" />
 		</xslt>
 
+
 		<!-- create war for production deployment -->
 		<war destfile="${dist.dir}/sparrow_mv.war" update="true">
 			<fileset dir="${dist.dir}" excludes="**/*.war **/*.tmp **/javadoc/**/*" />
-            <fileset dir="${build.web.dir}" includes="WEB-INF/classes/**/*"/>
+            <fileset dir="${build.web.dir}" includes="WEB-INF/classes/**/*" excludes="${build.classes.excludes}"/>
 		    <fileset dir="${build.web.dir}" includes="**/*.jar" excludes="**/mvclient.jar **/sdovis.jar **/commons*.jar" />
 		</war>
 
 		<!-- create war for local use  -->
 		<copy file="${dist.dir}/sparrow_mv.war" tofile="${dist.dir}/sparrow_mv_with_jsps.war"/>
+		<delete dir="${build.web.dir}" includes="${build.classes.excludes}" verbose="true"/>
 		<war destfile="${dist.dir}/sparrow_mv_with_jsps.war" update="true">
 			<fileset dir="${dist.dir}" excludes="**/*.war **/*.tmp **/javadoc/**/*" />
             <fileset dir="${build.web.dir}"  >
             	<include name="WEB-INF/classes/**/*" />
             	<include name="**/*.jsp"/>
+            	<include name="**/app-info.txt"/>
             	<include name="**/*.html"/>
             </fileset>
 		    <fileset dir="${build.web.dir}" includes="**/*.jar" excludes="**/mvclient.jar **/sdovis.jar **/commons*.jar" />
@@ -102,11 +106,11 @@
 		<echo message="Deleting the contents of ${basedir}/public_html/WEB-INF/lib and replacing w/ all jars on the build.lib.includes classpath"/>
 		<echo message="The lib directory: ${lib.dir}"/>
 		<echo message="Includes: ${build.lib.includes}"/>
-		
+
 		  <delete includeemptydirs="true">
 		    <fileset dir="${basedir}/public_html/WEB-INF/lib" includes="**/*"/>
 		  </delete>
-		
+
 		<copy todir="${basedir}/public_html/WEB-INF/lib" flatten="true" description="copy the jars to WEB-INF/lib">
 			<path>
 				<pathelement path="${build.lib.includes}"/>
