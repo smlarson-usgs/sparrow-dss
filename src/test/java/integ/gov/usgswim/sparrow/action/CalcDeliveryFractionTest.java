@@ -11,7 +11,6 @@ import gov.usgswim.sparrow.DeliveryRunner;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
-import gov.usgswim.sparrow.action.CalcDeliveryFraction;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
