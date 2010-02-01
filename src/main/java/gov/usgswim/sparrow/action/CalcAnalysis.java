@@ -78,25 +78,29 @@ public class CalcAnalysis extends Action<DataColumn>{
 		int dataColIndex = -1;	//The index of the data column
 		DataTable dataTable = null;		//The table containing the data column
 
+		//This will be created anyway, so just grab reference here
+		PredictData nominalPredictData = SharedApplication.getInstance().getPredictData(context.getModelID());
+		
 		DataSeriesType type = context.getAnalysis().getDataSeries();
 		Integer source = context.getAnalysis().getSource();
-
-
-		// Handled DataSeriesType: total, incremental, incremental_yield, total_concentration, source_values
-		if (type.isDeliveryBased()) {
+		ColumnData delFracColumn = null;	//will be populated if required
+		
+		
+		//populate delivery if needed
+		if (type.isDeliveryRequired()) {
 			//avoid cache for now
 			// PredictResult result = SharedApplication.getInstance().getAnalysisResult(this);
 			TerminalReaches tReaches = context.getTerminalReaches();
 
 			assert(tReaches != null) : "client should not submit a delivery request without reaches";
 			Set<Long> targetReaches = tReaches.asSet();
+			
+			delFracColumn = SharedApplication.getInstance().getDeliveryFraction(tReaches);
+		}
 
-			
-			PredictData nominalPredictData = SharedApplication.getInstance().getPredictData(context.getModelID());
-			
-			ColumnData delFracColumn = SharedApplication.getInstance().getDeliveryFraction(tReaches);
-			
-			//DeliveryRunner dr = new DeliveryRunner(nominalPredictData);
+
+		// Handled DataSeriesType: total, incremental, incremental_yield, total_concentration, source_values
+		if (type.isDeliveryBased()) {
 
 			switch(type) {
 				case delivered_fraction: {
@@ -111,62 +115,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 					dataTable = sdt;
 					break;
 				}
-				case total_delivered_flux:	{
 
-					PredictResult result = SharedApplication.getInstance().
-						getPredictResult(context.getAdjustmentGroups());
-					
-					//What column in the results do we point to?
-					if (source != null) {
-						dataColIndex = result.getTotalColForSrc(source.longValue());
-					} else {
-						dataColIndex = result.getTotalCol();
-					}
-					
-					SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(
-							result, delFracColumn, dataColIndex);
-					
-					dataTable = view;
-					break;
-				}
-				case incremental_delivered_flux: {
-					
-					//
-					// incremental delivered flux ==
-					// Delivery Fraction X Incremental Flux X Instream Delivery
-					// This is built w/ two coef table views:  delFrac X inc Flux,
-					// then that result times Instream Delivery.
-					//
-					
-					PredictResult result = SharedApplication.getInstance().getPredictResult(context.getAdjustmentGroups());
-					
-					//Grab the instream delivery (called decay) as a column
-					ColumnData incDeliveryCol = new ColumnFromTable(nominalPredictData.getDelivery(), PredictData.INSTREAM_DECAY_COL);
-					
-					//What column in the results do we point to?
-					if (source != null) {
-						dataColIndex = result.getIncrementalColForSrc(source.longValue());
-					} else {
-						dataColIndex = result.getIncrementalCol();
-					}
-					
-
-					// Delivery Fraction X Incremental Flux
-					SingleColumnCoefDataTable incTimesDelFrac = new SingleColumnCoefDataTable(
-							result, delFracColumn, dataColIndex);
-					
-
-					// The above result X Instream Delivery
-					SingleColumnCoefDataTable incDelivered = new SingleColumnCoefDataTable(
-							incTimesDelFrac, incDeliveryCol, dataColIndex);
-					
-					dataTable = incDelivered;
-					break;
-				}
-				case incremental_delivered_yield: {
-					//Not implemented
-					break;
-				}
 				default:
 					throw new Exception("No dataSeries was specified in the analysis section");
 			}
@@ -176,12 +125,16 @@ public class CalcAnalysis extends Action<DataColumn>{
 			//We will try to get result-based series out of the analysis cache
 			PredictResult result = SharedApplication.getInstance().getPredictResult(context.getAdjustmentGroups());
 			UncertaintySeries impliedUncertaintySeries = null;
+			DataTable predictionBasedResult = null;
 
 			switch (type) {
 				case total: // intentional fall-through
 				case total_std_error_estimate:
 				case total_concentration:
 				case total_delivered_flux:
+					//
+					//Note:  All TOTAL type series fall through to this point
+					//
 					if (source != null) {
 						dataColIndex = result.getTotalColForSrc(source.longValue());
 						impliedUncertaintySeries = UncertaintySeries.TOTAL_PER_SOURCE;
@@ -189,6 +142,19 @@ public class CalcAnalysis extends Action<DataColumn>{
 						dataColIndex = result.getTotalCol();
 						impliedUncertaintySeries = UncertaintySeries.TOTAL;
 					}
+					
+					
+					if (type.equals(DataSeriesType.total_delivered_flux)) {
+						//Create a new datatable that overlays the delFracColumn
+						//on top of the column selected above
+						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(
+								result, delFracColumn, dataColIndex);
+						
+						predictionBasedResult = view;
+					} else {
+						predictionBasedResult = result;
+					}
+					
 					break;
 
 				case incremental: // intentional fall-through
@@ -196,6 +162,9 @@ public class CalcAnalysis extends Action<DataColumn>{
 				case incremental_yield:
 				case incremental_delivered_flux: // here, I think
 				case incremental_delivered_yield: // here, I think
+					//
+					//Note:  All INC type series fall through to this point
+					//
 					if (source != null) {
 						dataColIndex = result.getIncrementalColForSrc(source.longValue());
 						impliedUncertaintySeries = UncertaintySeries.INCREMENTAL_PER_SOURCE;
@@ -203,9 +172,35 @@ public class CalcAnalysis extends Action<DataColumn>{
 						dataColIndex = result.getIncrementalCol();
 						impliedUncertaintySeries = UncertaintySeries.INCREMENTAL;
 					}
-					break;
-				case delivered_fraction:
-					// ignore source
+					
+					
+					if (type.equals(DataSeriesType.incremental_delivered_flux)) {
+
+						// incremental delivered flux =
+						// Delivery Fraction X Incremental Flux X Instream Delivery
+						// This is built w/ two coef table views:  delFrac X inc Flux,
+						// then that result times Instream Delivery.
+						
+						//Grab the instream delivery (called decay) as a column
+						ColumnData incDeliveryCol = new ColumnFromTable(nominalPredictData.getDelivery(), PredictData.INSTREAM_DECAY_COL);
+						
+
+						// Delivery Fraction X Incremental Flux
+						SingleColumnCoefDataTable incTimesDelFrac = new SingleColumnCoefDataTable(
+								result, delFracColumn, dataColIndex);
+						
+
+						// The above result X Instream Delivery
+						SingleColumnCoefDataTable incDelivered = new SingleColumnCoefDataTable(
+								incTimesDelFrac, incDeliveryCol, dataColIndex);
+						
+						predictionBasedResult = incDelivered;
+					} else {
+						predictionBasedResult = result;
+					}
+					
+					
+					
 					break;
 				default:
 					throw new Exception("No dataSeries was specified in the analysis section");
@@ -218,15 +213,13 @@ public class CalcAnalysis extends Action<DataColumn>{
 
 				//Construct a datatable that calculates the error for each
 				//value on demand.
-				dataTable = new StdErrorEstTable(result, errData,
+				predictionBasedResult = new StdErrorEstTable(result, errData,
 						dataColIndex, true, 0d);
 
-			} else {
-				dataTable = result;
 			}
 
 
-
+			dataTable = predictionBasedResult;
 
 		} else {
 

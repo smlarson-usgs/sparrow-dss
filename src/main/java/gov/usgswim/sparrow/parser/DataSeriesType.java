@@ -31,7 +31,7 @@ public enum DataSeriesType implements Serializable {
     // TODO cut down the list of attributes
     private final BaseDataSeriesType baseType;
     private final boolean errEstBased;
-    private final boolean targetRequired;
+    private final boolean deliveryRequired;
     private final boolean weighted;
     private final boolean extraColumn;
     private final boolean analysisAllowed;
@@ -39,13 +39,13 @@ public enum DataSeriesType implements Serializable {
 
 
     DataSeriesType(BaseDataSeriesType baseType,
-            boolean errEstBased, boolean targetRequired,
+            boolean errEstBased, boolean deliveryRequired,
             boolean weighted, boolean extraColumn,
             boolean analysisAllowed) {
 
     	this.baseType = baseType;
         this.errEstBased = errEstBased;
-        this.targetRequired = targetRequired;
+        this.deliveryRequired = deliveryRequired;
         this.weighted = weighted;
         this.extraColumn = extraColumn;
         this.analysisAllowed = analysisAllowed;
@@ -120,11 +120,13 @@ public enum DataSeriesType implements Serializable {
     }
 
     /**
-     * This dataseries requires Target reaches to be defined.
+     * This dataseries requires delivery to calculate, thus a set of
+     * Target reaches must to be defined as well.
+     * 
      * @return
      */
-    public boolean isTargetRequired() {
-        return targetRequired;
+    public boolean isDeliveryRequired() {
+        return deliveryRequired;
     }
 
     /**
