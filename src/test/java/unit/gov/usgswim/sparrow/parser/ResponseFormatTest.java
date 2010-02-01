@@ -17,7 +17,7 @@ public class ResponseFormatTest extends TestCase {
 	
 	public void testParseMainUseCase() throws XMLStreamException, XMLParseValidationException {
 		String testRequest="<response-format name='pre-configured format name' compress='zip'>"
-			+ "	<mime-operation>text</mime-operation>"
+			+ "	<mime-type>text</mime-type>"
 			+ "	<template>beige</template>"
 			+ "	<params>"
 			+ "		<param name='gov.usgswim.WordGenerator.marin-top'>1.5in</param>"
