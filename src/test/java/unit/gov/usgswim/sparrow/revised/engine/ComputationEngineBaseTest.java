@@ -114,7 +114,7 @@ public class ComputationEngineBaseTest {
 			assertNull(result.nsDataSet);
 			assertNull(result.prevResult);
 		}
-		assertEquals("decay", result.table.getName());
+		assertEquals("delivery", result.table.getName());
 	}
 	@Test
 	public void testLoad_PREDICT_DATA_SOURCE() {
