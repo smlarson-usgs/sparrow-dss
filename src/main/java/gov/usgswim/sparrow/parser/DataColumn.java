@@ -32,5 +32,72 @@ public class DataColumn {
 	public Integer getContextId() {
 		return contextId;
 	}
+	
+	/**
+	 * Shortcut to get a double value w/o digging to the table.
+	 * @param row
+	 * @return
+	 */
+	public Double getDouble(int row) {
+		return table.getDouble(row, column);
+	}
+	
+	/**
+	 * Shortcut to determine if there are row IDs w/o digging to the table.
+	 * @return
+	 */
+	public boolean hasRowIds() {
+		return table.hasRowIds();
+	}
+	
+	/**
+	 * Shortcut to get a row ID w/o digging to the table.
+	 * @param row
+	 * @return
+	 */
+	public Long getIdForRow(int row) {
+		return table.getIdForRow(row);
+	}
+	
+	/**
+	 * Shortcut to get the units of data column w/o digging to the table.
+	 * @return
+	 */
+	public String getUnits() {
+		return table.getUnits(column);
+	}
+	
+	/**
+	 * Shortcut to get the name of data column w/o digging to the table.
+	 * @return
+	 */
+	public String getColumnName() {
+		return table.getName(column);
+	}
+	
+	/**
+	 * Shortcut to get a property of data table w/o digging to the table.
+	 * @param name
+	 * @return
+	 */
+	public String getTableProperty(String name) {
+		return table.getProperty(name);
+	}
+	
+	/**
+	 * Shortcut to the table rowCount.
+	 * @return
+	 */
+	public int getRowCount() {
+		return table.getRowCount();
+	}
+	
+	/**
+	 * Shortcut to the table columnCount.
+	 * @return
+	 */
+	public int getColumnCount() {
+		return table.getColumnCount();
+	}
 
 }
