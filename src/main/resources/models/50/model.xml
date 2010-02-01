@@ -75,4 +75,28 @@
 			</Citation_mods>
 		</Paper>
 	</Model_papers>
+	<CommonTerms>
+		<Term id="For Source">
+			Each model has different sources that were determined by statistically significant by the modeler.
+			Choose a source from the list to present data only from that source.  This model contains these sources:
+			
+			<dl>
+				<!-- These names could be improved, do we have updated info from Greg? -->
+				<dt><i>All</i></dt>
+				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
+				<dt>Point Sources</dt>
+				<dd>Nitrogen load from point source dischargers in 2002, kg, Terziotti, 10-200.  Reported in kg.</dd>
+				<dt>nadp_kg</dt>
+				<dd>Wet deposition of inorganic nitrogen (ammonia and nitrate), kg, detrended to 2002, K. Savvas, USGS, 2006.  Reported in kg.</dd>
+				<dt>is_km_01NLCD</dt>
+				<dd>Impervious surface area, square kilometers, NLCD01 based, Terziotti 12-2008.  Reported in sqkm.</dd>
+				<dt>fert02_01nlcd</dt>
+				<dd>Nitrogen fertilizer on farmland 2002, kg - NLCD01 - area-based method Terziotti 10-2008.  Reported in kg.</dd>				
+				<dt>man02_01nlcd</dt>
+				<dd>Nitrogen in livestock waste 2002, kg - NLCD01 - area-based method Terziotti 10-2008.  Reported in kg.</dd>
+
+			</dl>
+		</Term>
+	</CommonTerms>
+		
 </Model>
