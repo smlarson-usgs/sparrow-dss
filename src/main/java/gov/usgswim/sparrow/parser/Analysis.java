@@ -29,6 +29,12 @@ public abstract class Analysis implements XMLStreamParserComponent {
 		super();
 	}
 	
+	public Analysis(String groupBy, String aggFunction) {
+		super();
+		this.groupBy = groupBy;
+		this.aggFunction = aggFunction;
+	}
+	
 	/**
 	 * Utility method to parse Analysis instances w/o needing to known what type
 	 * they are.  Primarily used for testing.

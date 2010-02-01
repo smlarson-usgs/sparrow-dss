@@ -35,6 +35,12 @@ public class BasicAnalysis extends Analysis {
 	//TODO:  Do we need a default?  If so, this wouldn't be it.
 	public static final AdvancedAnalysis DEFAULT_TOTAL_INSTANCE = new AdvancedAnalysis(new Select(DataSeriesType.total));
 
+	
+	private Integer id;
+	private DataSeriesType dataSeries;
+	private Integer source;
+	
+	
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
 	// =============================
@@ -44,6 +50,14 @@ public class BasicAnalysis extends Analysis {
 
 
 	public BasicAnalysis() {};
+	
+	public BasicAnalysis(DataSeriesType dataSeries, Integer source,
+			String groupBy, String aggFunction) {
+		
+		super(groupBy, aggFunction);
+		this.dataSeries = dataSeries;
+		this.source = source;
+	}
 
 	public static AdvancedAnalysis getDefaultTotalAnalysis() {
 		return DEFAULT_TOTAL_INSTANCE;
@@ -54,9 +68,7 @@ public class BasicAnalysis extends Analysis {
 		return anal.parse(in);
 	}
 
-	private Integer id;
-	private DataSeriesType dataSeries;
-	private Integer source;
+
 
 	// ================
 	// INSTANCE METHODS
