@@ -1,0 +1,102 @@
+<Model id="50">
+	<Authors>
+		<Author id="1">
+			<Name>First name, last name</Name>
+			<Link/>
+		</Author>
+	</Authors>
+	<Model_name>MRB02 Nitrogen</Model_name>
+	<MRB>MRB02</MRB>
+	<Constituent>
+		<Name>Nitrogen</Name>
+		<Units>kg/yr</Units>
+		<Description> 2002 Total Nitrogen Model for the southeastern U.S. (MRB2) </Description>
+	</Constituent>
+	<Sources>
+		<Source id="All">
+			<Name>All</Name>
+			<Units/>
+			<Description>All sources combined.</Description>
+		</Source>
+		<Source id="1">
+			<Name>Wastewater discharge</Name>
+			<Units>kg/yr</Units>
+			<Description>Wastewater discharge (nitrogen) 2002, from Terziotti 20-2008</Description>
+		</Source>
+		<Source id="2">
+			<Name>Wet dep. of inorg. nitrogen</Name>
+			<Units>kg/yr</Units>
+			<Description>Wet deposition of inorganic nitrogen (ammonia and nitrate) 2002, from K. Savvas, USGS, 2006</Description>
+		</Source>
+		<Source id="3">
+			<Name>Imp. surf. area</Name>
+			<Units>sq km</Units>
+			<Description>Impervious surface area 2001 NLCD, Terziotti 12-2008</Description>
+		</Source>
+		<Source id="4">
+			<Name>Fert. applied to agric. land</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen fertilizer on farmland 2002, kg - NLCD01 - area-based method Terziotti 10-2008</Description>
+		</Source>
+		<Source id="5">
+			<Name>Livestock manure</Name>
+			<Units>kg/yr</Units>
+			<Description>Nitrogen in livestock waste 2002 Ag Census, NLCD01 - based spatial distribution, Terziotti 10-2008</Description>
+		</Source>
+	</Sources>
+	<Model_papers>
+		<Paper id="1">
+			<Link link=""/>
+			<Citation_mods>
+				<identifier type=""/>
+				<identifier type=""/>
+				<identifier type=""/>
+				<genre/>
+				<titleInfo>
+					<title/>
+				</titleInfo>
+				<originInfo>
+					<dateOther/>
+					<publisher/>
+					<placeTerm/>
+				</originInfo>
+				<name>
+					<namePart/>
+					<role>Author</role>
+				</name>
+				<physicalDescription>
+					<form/>
+					<form/>
+					<form/>
+				</physicalDescription>
+				<note type="citation/reference"/>
+				<edition/>
+				<languageTerm/>
+			</Citation_mods>
+		</Paper>
+	</Model_papers>
+	<CommonTerms>
+		<Term id="For Source">
+			Each model has different sources that were determined by statistically significant by the modeler.
+			Choose a source from the list to present data only from that source.  This model contains these sources:
+			
+			<dl>
+				<!-- These names could be improved, do we have updated info from Greg? -->
+				<dt><i>All</i></dt>
+				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
+				<dt>Wastewater discharge</dt>
+				<dd>Nitrogen load from point source dischargers in 2002, kg, Terziotti, 10-200.  Reported in kg.</dd>
+				<dt>Wet dep. of inorg. nitrogen</dt>
+				<dd>Wet deposition of inorganic nitrogen (ammonia and nitrate), kg, detrended to 2002, K. Savvas, USGS, 2006.  Reported in kg.</dd>
+				<dt>Imp. surf. area</dt>
+				<dd>Impervious surface area, square kilometers, NLCD01 based, Terziotti 12-2008.  Reported in sqkm.</dd>
+				<dt>Fert. applied to agric. land</dt>
+				<dd>Nitrogen fertilizer on farmland 2002, kg - NLCD01 - area-based method Terziotti 10-2008.  Reported in kg.</dd>				
+				<dt>Livestock manure</dt>
+				<dd>Nitrogen in livestock waste 2002, kg - NLCD01 - area-based method Terziotti 10-2008.  Reported in kg.</dd>
+
+			</dl>
+		</Term>
+	</CommonTerms>
+		
+</Model>

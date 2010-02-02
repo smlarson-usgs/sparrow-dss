@@ -5,7 +5,7 @@
 			<Link/>
 		</Author>
 	</Authors>
-	<Model_name>MRB03 Phosphorus</Model_name>
+	<Model_name>2002 Total Phosphorus Model for MRB3</Model_name>
 	<MRB>MRB03</MRB>
 	<Constituent>
 		<Name>Phosphorus</Name>
@@ -18,35 +18,35 @@
 			<Units>kg/year</Units>
 			<Description>All sources combined.</Description>
 		</Source>
-		<Source id="pcs_02_t">
-			<Name>pcs_02_t</Name>
-			<Units>kg/year</Units>
-			<Description>PCS phosphorus 2002, kg (total)</Description>
+		<Source id="1">
+			<Name>Point Sources (Total)</Name>
+			<Units>kg</Units>
+			<Description>PCS Phosphorus 2002, kg (total)</Description>
 		</Source>
-		<Source id="manc_p">
-			<Name>manc_p</Name>
-			<Units>kg/year</Units>
+		<Source id="2">
+			<Name>Manure (confined)</Name>
+			<Units>kg</Units>
 			<Description>Sum of total Phosphorus from Manure in Confined Operations (kg)</Description>
 		</Source>
-		<Source id="manu_p">
-			<Name>manu_p</Name>
-			<Units>kg/year</Units>
+		<Source id="3">
+			<Name>Manure (unconfined)</Name>
+			<Units>kg</Units>
 			<Description>Sum of total Phosphorus from Manure in Unconfined Operations (kg)</Description>
 		</Source>
-		<Source id="Farm_P">
-			<Name>Farm_P</Name>
-			<Units>kg/year</Units>
+		<Source id="4">
+			<Name>Fertilizers (farm)</Name>
+			<Units>kg</Units>
 			<Description>Sum total of Phosphorus from Farms (kg)</Description>
 		</Source>
-		<Source id="wetwood">
-			<Name>wetwood</Name>
-			<Units>kg/year</Units>
-			<Description/>
+		<Source id="5">
+			<Name>Forest, Wetland, Scrub</Name>
+			<Units>kg/m2</Units>
+			<Description>Forest, wetland, Scrub </Description>
 		</Source>
-		<Source id="urban">
-			<Name>urban</Name>
-			<Units>kg/year</Units>
-			<Description/>
+		<Source id="6">
+			<Name>Urban, Open</Name>
+			<Units>kg/m2</Units>
+			<Description>Urban, Open</Description>
 		</Source>
 	</Sources>
 	<Model_papers>
@@ -80,4 +80,29 @@
 			</Citation_mods>
 		</Paper>
 	</Model_papers>
+	<CommonTerms>
+			<Term id="For Source">
+				Each model has different sources that were determined by statistically significant by the modeler.
+				Choose a source from the list to present data only from that source.  This model contains these sources:
+				
+				<dl>
+					<!-- These names could be improved, do we have updated info from Greg? -->
+					<dt><i>All</i></dt>
+					<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
+					<dt>Point Sources (Total)</dt>
+					<dd>PCS Phosphorus 2002, kg (total)</dd>
+					<dt>Manure (confined)</dt>
+					<dd>Sum total of Phosphorus from Manure in Confined Operations (kg)</dd>
+					<dt>Manure (unconfined)</dt>
+					<dd>Sum total of Phosphorus from Manure in Unconfined Operations (kg)</dd>
+					<dt>Fertilizers (farm)</dt>
+					<dd>Sum total of Phosphorus from Farms (kg)</dd>				
+					<dt>Forest, Wetland, Scrub</dt>
+					<dd>Forest, Wetland, Scrub (kg/m2)</dd>
+					<dt>Urban, Open</dt>
+					<dd>Urban, Open (kg/m2)</dd>
+				</dl>
+			</Term>
+		</CommonTerms>
+		
 </Model>
