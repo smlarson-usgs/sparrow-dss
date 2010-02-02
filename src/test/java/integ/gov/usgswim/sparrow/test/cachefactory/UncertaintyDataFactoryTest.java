@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.test.cachefactory;
 
 import static org.junit.Assert.assertEquals;
+import gov.usgswim.sparrow.SparrowDBTest;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.UncertaintySeries;
@@ -12,7 +13,7 @@ import org.junit.Test;
  * @author eeverman
  *
  */
-public class UncertaintyDataFactoryTest {
+public class UncertaintyDataFactoryTest extends SparrowDBTest {
 
 	@Test
 	public void testLoad() throws Exception {
@@ -46,6 +47,11 @@ public class UncertaintyDataFactoryTest {
 
 				//System.out.println("*** Series " + series + ", non source specific ***");
 				//printFirstTest(data);
+				
+				if (series.equals(UncertaintySeries.TOTAL)) {
+					//Check for a zero value in here
+					assertEquals(0d, data.getMean(1374), .000000000d);
+				}
 			}
 
 		}
