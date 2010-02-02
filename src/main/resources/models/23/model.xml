@@ -5,12 +5,12 @@
 			<Link/>
 		</Author>
 	</Authors>
-	<Model_name>National Total Nitrogen Model - 1992</Model_name>
+	<Model_name>National Total Phosphorus Model - 1992</Model_name>
 	<MRB>ALL</MRB>
 	<Constituent>
 		<Name>Total Nitrogen</Name>
 		<Units>kg/yr</Units>
-		<Description> 1992 Total Nitrogen Model for the Conterminous U.S. </Description>
+		<Description> 1992 Total Phosphorus Model for the Conterminous U.S. </Description>
 	</Constituent>
 	<Sources>
 		<Source id="ALL">
@@ -24,48 +24,38 @@
 			<Description>1990 total population</Description>
 		</Source>
 		<Source id="2">
-			<Name>NO3_Atm_Dep</Name>
+			<Name>P_fertilizer_corn_soy</Name>
 			<Units>kg/year</Units>
-			<Description>1992 Nitrate wet atmospheric deposition (kg)</Description>
+			<Description>1992 P fertilizer applied to corn/soybean (kg)</Description>
 		</Source>
 		<Source id="3">
-			<Name>N_fertilizer_corn_soy</Name>
-			<Units>kg/year</Units>
-			<Description>1992 N fertilizer applied to corn/soybean (kg)</Description>
-		</Source>
-		<Source id="4">
 			<Name>N_fertilizer_alfalfa</Name>
 			<Units>kg/year</Units>
 			<Description>1992 N alfalfa fertilizer (kg)</Description>
 		</Source>
-		<Source id="5">
-			<Name>N_fertilizer_wheat</Name>
+		<Source id="4">
+			<Name>P_fertilizer_other</Name>
 			<Units>kg/year</Units>
-			<Description>1992 N fertilizer applied to wheat (kg)</Description>
+			<Description>1992 P farm other fertilizer (kg)</Description>
+		</Source>
+		<Source id="5">
+			<Name>P_animal_waste</Name>
+			<Units>kg/year</Units>
+			<Description>1992 P animal waste (kg)</Description>
 		</Source>
 		<Source id="6">
-			<Name>N_fertilizer_other</Name>
-			<Units>kg/year</Units>
-			<Description>1992 N farm other fertilizer (kg)</Description>
-		</Source>
-		<Source id="7">
-			<Name>N_animal_waste</Name>
-			<Units>kg/year</Units>
-			<Description>1992 N animal waste (kg)</Description>
-		</Source>
-		<Source id="8">
 			<Name>Forested_land</Name>
-			<Units>kg/year</Units>
+			<Units>km2</Units>
 			<Description>1992 NLCD forested land (km2)</Description>
 		</Source>
-		<Source id="9">
+		<Source id="7">
 			<Name>Barren_land</Name>
-			<Units>kg/year</Units>
+			<Units>km2</Units>
 			<Description>1992 NLCD barren land (km2)</Description>
 		</Source>
-		<Source id="10">
+		<Source id="8">
 			<Name>Shrub_land</Name>
-			<Units>kg/year</Units>
+			<Units>km2</Units>
 			<Description>1992 NLCD shrub land (km2)</Description>
 		</Source>
 	</Sources>
@@ -111,25 +101,20 @@
 				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
 				<dt>Population</dt>
 				<dd>1990 total population, capita</dd>
-				<dt>NO3_Atm_Dep</dt>
-				<dd>1992 Nitrate wet atmospheric deposition (kg)</dd>
-				<dt>N_fertilizer_corn_soy</dt>
+				<dt>P fertilizer corn soy</dt>
 				<dd>1992 N fertilizer applied to corn/soybean (kg)</dd>
-				<dt>N_fertilizer_alfalfa</dt>
-				<dd>1992 N alfalfa fertilizer (kg)</dd>				
-				<dt>N_fertilizer_wheat</dt>
-				<dd>1992 N fertilizer applied to wheat (kg)</dd>
-				<dt>N_fertilizer_other</dt>
-				<dd>1992 N farm other fertilizer (kg)</dd>
-				<dt>N_animal_waste</dt>
-				<dd>1992 N animal waste (kg)</dd>
-				<dt>Forested_land</dt>
+				<dt>P fertilizer_alfalfa</dt>
+				<dd>1992 P alfalfa fertilizer (kg)</dd>
+				<dt>P fertilizer other</dt>
+				<dd>1992 P farm other fertilizer (kg)</dd>				
+				<dt>P animal waste</dt>
+				<dd>1992 P animal waste (kg)</dd>
+				<dt>Forested land</dt>
 				<dd>1992 NLCD forested land (km2)</dd>
-				<dt>Barren_land</dt>
+				<dt>Barren land</dt>
 				<dd>1992 NLCD barren land (km2)</dd>
-				<dt>Shrub_land</dt>
+				<dt>Shrub land</dt>
 				<dd>1992 NLCD shrub land (km2)</dd>
-
 			</dl>
 		</Term>
 	</CommonTerms>
