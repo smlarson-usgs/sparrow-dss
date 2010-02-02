@@ -86,7 +86,7 @@
 	<!-- -->
 	<!-- Distribution build section -->
 	<!-- -->
-	<target name="dist" description="Build distribution." depends="init,compile,-pre-dist,-do-dist,-post-dist" />
+	<target name="dist" description="Build distribution." depends="init,clean,compile,-pre-dist,-do-dist,-post-dist" />
 	<target name="-pre-dist" />
 	<target name="-do-dist">
 		<mkdir dir="${dist.dir}" />
@@ -98,7 +98,7 @@
 	<target name="-post-dist" />
 
 
-	<target name="dist-debug" description="Build distribution." depends="init,-pre-dist,-do-dist-debug,-post-dist" />
+	<target name="dist-debug" description="Build distribution." depends="init,clean,-pre-dist,-do-dist-debug,-post-dist" />
     <target name="-do-dist-debug" description="build debug distribution" depends="init">
     	<mkdir dir="${dist.dir}" />
     	<antcall target="compile">
