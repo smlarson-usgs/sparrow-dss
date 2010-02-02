@@ -6,10 +6,19 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
+import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.action.CalcAnalysis;
 import gov.usgswim.sparrow.cachefactory.BinningFactory;
 import gov.usgswim.sparrow.cachefactory.BinningRequest;
+import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
+import gov.usgswim.sparrow.parser.AdjustmentGroups;
+import gov.usgswim.sparrow.parser.AreaOfInterest;
+import gov.usgswim.sparrow.parser.BasicAnalysis;
 import gov.usgswim.sparrow.parser.DataColumn;
+import gov.usgswim.sparrow.parser.DataSeriesType;
+import gov.usgswim.sparrow.parser.NominalComparison;
 import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
@@ -23,19 +32,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class BinIntegrationTest {
+public class BinIntegrationTest extends SparrowDBTest {
 	public static LifecycleListener lifecycle = new LifecycleListener();
 	
 	/** Acceptable error in the range of values in each bin. */
 	public static final double EQUAL_RANGE_TOLERANCE = 0.0001;
-	
-	@BeforeClass public static void setUpOnce() {
-	    lifecycle.contextInitialized(null, true);
-	}
-
-	@AfterClass public static void tearDownOnce() {
-		lifecycle.contextDestroyed(null, true);
-	}
 	
 	/**
      * Ensure that specifying zero bins will throw an exception.
@@ -307,6 +308,30 @@ public class BinIntegrationTest {
             prev = cur;
         }
     }
+	
+	/**
+	 * Replicate a bug where the the uncertainty estimates can generate
+	 * null values, which causes binning to die.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testNullUncertaintyValues() throws Exception {
+		
+		
+		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.total_std_error_estimate, null, null, null);
+		PredictionContext context = new PredictionContext(TEST_MODEL_ID,
+				new AdjustmentGroups(TEST_MODEL_ID), analysis,
+				new TerminalReaches(TEST_MODEL_ID), 
+				new AreaOfInterest(TEST_MODEL_ID),
+				NominalComparison.getNoComparisonInstance());
+		
+		SharedApplication.getInstance().putPredictionContext(context);
+		BigDecimal[] bins = SharedApplication.getInstance().getDataBinning(new BinningRequest(
+				context.getId(), 4, BinningRequest.BIN_TYPE.EQUAL_COUNT));
+
+		assertEquals(5, bins.length);
+	}
 	
 	public Integer buildPredictContextEmpty() throws Exception {
 		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-context-empty.xml");

@@ -123,8 +123,8 @@ public class BinningFactory implements CacheEntryFactory {
 
 		//Export all values in the specified column to values[] so they can be sorted
 		for (int r=0; r<totalRows; r++) {
-			double value = data.getDouble(r, columnIndex);
-			if (!Double.isNaN(value) 
+			Double value = data.getDouble(r, columnIndex);
+			if (value != null && !Double.isNaN(value) 
 					&& value != 0D 
 					&&
 					( keepInfinities || !Double.isInfinite(value) )
