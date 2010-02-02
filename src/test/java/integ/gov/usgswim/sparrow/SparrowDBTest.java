@@ -72,7 +72,9 @@ public class SparrowDBTest {
 	}
 	
 	protected static void setProperties() {
-		System.setProperty("dburl", "jdbc:oracle:thin:@igsarmewdbdev.er.usgs.gov:1521:widev");
+		//130.11.165.154
+		//igsarmewdbdev.er.usgs.gov
+		System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.154:1521:widev");
 		System.setProperty("dbuser", "sparrow_dss");
 		System.setProperty("dbpass", "***REMOVED***");
 	}
