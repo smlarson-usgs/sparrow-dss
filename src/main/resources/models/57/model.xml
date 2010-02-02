@@ -1,16 +1,16 @@
-<Model id="50">
+<Model id="57">
 	<Authors>
 		<Author id="1">
 			<Name>First name, last name</Name>
 			<Link/>
 		</Author>
 	</Authors>
-	<Model_name>MRB02 Nitrogen</Model_name>
-	<MRB>MRB02</MRB>
+	<Model_name>1992 Total Nitrogen SPARROW Model for the Missouri River Basin</Model_name>
+	<MRB>MRB04</MRB>
 	<Constituent>
 		<Name>Nitrogen</Name>
 		<Units>kg/yr</Units>
-		<Description> 2002 Total Nitrogen Model for the southeastern U.S. (MRB2) </Description>
+		<Description> 1992 regional E2RF1 total nitrogen model, includes U.S. portion of Oldman River Basin and the Missouri River Basin</Description>
 	</Constituent>
 	<Sources>
 		<Source id="All">
@@ -19,29 +19,29 @@
 			<Description>All sources combined.</Description>
 		</Source>
 		<Source id="1">
-			<Name>Wastewater discharge</Name>
-			<Units>kg/yr</Units>
-			<Description>Wastewater discharge (nitrogen) 2002, from Terziotti 20-2008</Description>
+			<Name>Atmospheric N</Name>
+			<Units>kg</Units>
+			<Description>Total inorganic nitrogen from atmospheric deposition</Description>
 		</Source>
 		<Source id="2">
-			<Name>Wet dep. of inorg. nitrogen</Name>
-			<Units>kg/yr</Units>
-			<Description>Wet deposition of inorganic nitrogen (ammonia and nitrate) 2002, from K. Savvas, USGS, 2006</Description>
+			<Name>Manure N</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen from Manure</Description>
 		</Source>
 		<Source id="3">
-			<Name>Imp. surf. area</Name>
-			<Units>sq km</Units>
-			<Description>Impervious surface area 2001 NLCD, Terziotti 12-2008</Description>
+			<Name>Farm Fertilizer N</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen from Farm Fertilizer</Description>
 		</Source>
 		<Source id="4">
-			<Name>Fert. applied to agric. land</Name>
+			<Name>Point sources N</Name>
 			<Units>kg</Units>
-			<Description>Nitrogen fertilizer on farmland 2002, kg - NLCD01 - area-based method Terziotti 10-2008</Description>
+			<Description>Nitrogen from point sources</Description>
 		</Source>
 		<Source id="5">
-			<Name>Livestock manure</Name>
-			<Units>kg/yr</Units>
-			<Description>Nitrogen in livestock waste 2002 Ag Census, NLCD01 - based spatial distribution, Terziotti 10-2008</Description>
+			<Name>Developed Land</Name>
+			<Units>sqkm</Units>
+			<Description>2001 NLCD developed land area</Description>
 		</Source>
 	</Sources>
 	<Model_papers>
@@ -84,16 +84,16 @@
 				<!-- These names could be improved, do we have updated info from Greg? -->
 				<dt><i>All</i></dt>
 				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
-				<dt>Wastewater discharge</dt>
-				<dd>Nitrogen load from point source dischargers in 2002, kg, Terziotti, 10-200.  Reported in kg.</dd>
-				<dt>Wet dep. of inorg. nitrogen</dt>
-				<dd>Wet deposition of inorganic nitrogen (ammonia and nitrate), kg, detrended to 2002, K. Savvas, USGS, 2006.  Reported in kg.</dd>
-				<dt>Imp. surf. area</dt>
-				<dd>Impervious surface area, square kilometers, NLCD01 based, Terziotti 12-2008.  Reported in sqkm.</dd>
-				<dt>Fert. applied to agric. land</dt>
-				<dd>Nitrogen fertilizer on farmland 2002, kg - NLCD01 - area-based method Terziotti 10-2008.  Reported in kg.</dd>				
-				<dt>Livestock manure</dt>
-				<dd>Nitrogen in livestock waste 2002, kg - NLCD01 - area-based method Terziotti 10-2008.  Reported in kg.</dd>
+				<dt>Atmospheric N</dt>
+				<dd>Total inorganic nitrogen from atmospheric deposition</dd>
+				<dt>Manure N</dt>
+				<dd>Nitrogen from Manure</dd>
+				<dt>Farm Fertilizer N</dt>
+				<dd>Nitrogen from Farm Fertilizer</dd>
+				<dt>Point sources N</dt>
+				<dd>Nitrogen from point sources</dd>				
+				<dt>Developed Land</dt>
+				<dd>2001 NLCD developed land area</dd>
 
 			</dl>
 		</Term>
