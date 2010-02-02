@@ -55,17 +55,17 @@
 		</Source>
 		<Source id="8">
 			<Name>Forested_land</Name>
-			<Units>kg/year</Units>
+			<Units>km2</Units>
 			<Description>1992 NLCD forested land (km2)</Description>
 		</Source>
 		<Source id="9">
 			<Name>Barren_land</Name>
-			<Units>kg/year</Units>
+			<Units>km2</Units>
 			<Description>1992 NLCD barren land (km2)</Description>
 		</Source>
 		<Source id="10">
 			<Name>Shrub_land</Name>
-			<Units>kg/year</Units>
+			<Units>km2</Units>
 			<Description>1992 NLCD shrub land (km2)</Description>
 		</Source>
 	</Sources>
