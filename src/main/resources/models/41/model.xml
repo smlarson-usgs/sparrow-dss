@@ -30,7 +30,7 @@
 		</Source>
 		<Source id="3">
 			<Name>Manure (confined)</Name>
-			<Units>kg/Units>
+			<Units>kg</Units>
 			<Description>Sum total of Nitrogen from Manure in Confined Operations (kg)</Description>
 		</Source>
 		<Source id="4">
