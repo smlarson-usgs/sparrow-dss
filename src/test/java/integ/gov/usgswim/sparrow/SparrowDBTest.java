@@ -22,6 +22,8 @@ import org.junit.BeforeClass;
  */
 public class SparrowDBTest {
 
+	public static final Long TEST_MODEL_ID = 50L;
+	
 	private static Connection sparrowDBTestConn;
 	
 	protected static Logger log =
