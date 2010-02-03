@@ -111,23 +111,23 @@
 				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
 				<dt>Population</dt>
 				<dd>1990 total population, capita</dd>
-				<dt>NO3_Atm_Dep</dt>
+				<dt>Nitrate wet atm. deposition</dt>
 				<dd>1992 Nitrate wet atmospheric deposition (kg)</dd>
-				<dt>N_fertilizer_corn_soy</dt>
+				<dt>N fertilizer corn/soy</dt>
 				<dd>1992 N fertilizer applied to corn/soybean (kg)</dd>
-				<dt>N_fertilizer_alfalfa</dt>
+				<dt>N alfalfa fertilizer</dt>
 				<dd>1992 N alfalfa fertilizer (kg)</dd>				
-				<dt>N_fertilizer_wheat</dt>
+				<dt>N fertilizer wheat</dt>
 				<dd>1992 N fertilizer applied to wheat (kg)</dd>
-				<dt>N_fertilizer_other</dt>
+				<dt>N farm other fertilizer</dt>
 				<dd>1992 N farm other fertilizer (kg)</dd>
-				<dt>N_animal_waste</dt>
+				<dt>N animal waste</dt>
 				<dd>1992 N animal waste (kg)</dd>
-				<dt>Forested_land</dt>
+				<dt>NLCD Forested land</dt>
 				<dd>1992 NLCD forested land (km2)</dd>
-				<dt>Barren_land</dt>
+				<dt>NLCD Barren land</dt>
 				<dd>1992 NLCD barren land (km2)</dd>
-				<dt>Shrub_land</dt>
+				<dt>NLCD Shrub land</dt>
 				<dd>1992 NLCD shrub land (km2)</dd>
 
 			</dl>
