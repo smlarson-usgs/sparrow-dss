@@ -189,7 +189,8 @@
 			You must define bins before a map is generated.
 		</Term>
 		<Term id="Map Options">
-			Choose a map feature for the model output ot be displayed on.
+			Controls basic features of how the map is rendered.
+			Click the headings of the subsections for more information on each feature.
 		</Term>
 		<Term id="Reach">
 			Stream segments that extend between confluence with other streams.
@@ -202,6 +203,12 @@
 		</Term>
 		<Term id="Aggregate Function">
 			Calculates the average, maximum, minimum, or sum of the model output when the map displays over HUC.
+		</Term>
+		<Term id="Reaches Or Catchments">
+			Selecting 'Reaches' will draw individual reach lines on the map.
+			Selecting 'Catchments' will draw the filled polygons of each catchment.
+			In both cases, the color used to render the reach or catchment is based
+			on the binning selection under the 'What to map' section.
 		</Term>
 	</CommonTerms>
 </Documentation>
