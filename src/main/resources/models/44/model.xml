@@ -1,0 +1,106 @@
+<Model id="44">
+	<Authors>
+		<Author id="1">
+			<Name>First name, last name</Name>
+			<Link/>
+		</Author>
+	</Authors>
+	<Model_name>2002 Total Phosphorus Model for the U.S. Pacific Northwest</Model_name>
+	<MRB>MRB07</MRB>
+	<Constituent>
+		<Name>Phosphorus</Name>
+		<Units>kg/yr</Units>
+		<Description> </Description>
+	</Constituent>
+	<Sources>
+		<Source id="All">
+			<Name>All</Name>
+			<Units/>
+			<Description>All sources combined.</Description>
+		</Source>
+		<Source id="1">
+			<Name>Boundary</Name>
+			<Units>kg</Units>
+			<Description>Loads meaasured at calibration sites near the Canadian border</Description>
+		</Source>
+		<Source id="2">
+			<Name>Canadian</Name>
+			<Units>sqkm</Units>
+			<Description>Area of drainages located mostly in Canada (no calibration sites)</Description>
+		</Source>
+		<Source id="3">
+			<Name>Point Sources</Name>
+			<Units>kg</Units>
+			<Description>Point Sources Sum of total nitrogen loading from all point sources (2002)</Description>
+		</Source>
+		<Source id="4">
+			<Name>Fertilizer and manure</Name>
+			<Units>kg</Units>
+			<Description>Sum total of fertilizer nitrogen from farms and manure loading of nitrogen (2001)</Description>
+		</Source>
+		<Source id="5">
+			<Name>Area of developed land</Name>
+			<Units>sqkm</Units>
+			<Description>Area of developed land</Description>
+		</Source>
+		<Source id="6">
+			<Name>Natural phosphorus</Name>
+			<Units>ppm x sqkm</Units>
+			<Description>Index representing the contribution from geologic source of phosphorus</Description>
+	</Sources>
+	<Model_papers>
+		<Paper id="1">
+			<Link link=""/>
+			<Citation_mods>
+				<identifier type=""/>
+				<identifier type=""/>
+				<identifier type=""/>
+				<genre/>
+				<titleInfo>
+					<title/>
+				</titleInfo>
+				<originInfo>
+					<dateOther/>
+					<publisher/>
+					<placeTerm/>
+				</originInfo>
+				<name>
+					<namePart/>
+					<role>Author</role>
+				</name>
+				<physicalDescription>
+					<form/>
+					<form/>
+					<form/>
+				</physicalDescription>
+				<note type="citation/reference"/>
+				<edition/>
+				<languageTerm/>
+			</Citation_mods>
+		</Paper>
+	</Model_papers>
+	<CommonTerms>
+			<Term id="For Source">
+				Each model has different sources that were determined by statistically significant by the modeler.
+				Choose a source from the list to present data only from that source.  This model contains these sources:
+				
+				<dl>
+					<!-- These names could be improved, do we have updated info from Greg? -->
+					<dt><i>All</i></dt>
+					<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
+					<dt>Loads measured at calibration sites near the Canadian border</dt>
+					<dd>These loads were established as boundary conditions for the model. They represented the upstream contribution from Canadian land for which no geospatial data were available. This variable was used for monitored drainages only.</dd>
+					<dt>Area of drainages located mostly in Canada (no calibration sites)</dt>
+					<dd>This variable represented the upstream contribution from Canadian land for which no geospatial data were available. This variable was used for non-monitored drainages where more than 50% of the upstream area was in Canada. For non-monitored drainages where less than 50% of the upstream area was in Canada the geospatial data for the U.S. portion was extrapolated to the entire drainage.</dd>
+					<dt>Point sources sum of total phosphorus loading from all point sources (2002)</dt>
+					<dd>These estimates were based on data obtained from the US EPA and state water-quality permitting data bases.</dd>
+					<dt>Sum total of fertilizer phosphorus from farms and manure loading of nitrogen (2001)</dt>
+					<dd>These estimates were based on data obtained from the USDA, NRCS, and USGS.</dd>				
+					<dt>Area of developed land</dt>
+					<dd>These values are from the National Land Cover Data Base.</dd>
+					<dt>Index representing the contribution from geologic source of phosphorus</dt>
+					<dd>These values were based on measurements made by the National Geochemical Survey (NGS) of phosphorus concentrations in the bed sediment of streams that were minimally impacted by anthropogenic sources. The NGS measurements were extrapolated to the entire study domain.</dd>
+				</dl>
+			</Term>
+	</CommonTerms>
+</Model>
