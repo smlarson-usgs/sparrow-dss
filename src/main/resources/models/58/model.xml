@@ -5,7 +5,7 @@
 			<Link/>
 		</Author>
 	</Authors>
-	<Model_name>1992 Total Phosphorus SPARROW Model for the Missouri River Basin</Model_name>
+	<Model_name>2002 Total Phosphorus SPARROW Model for the Missouri River Basin</Model_name>
 	<MRB>MRB04</MRB>
 	<Constituent>
 		<Name>Phosphorus</Name>
