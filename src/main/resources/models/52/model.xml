@@ -1,16 +1,16 @@
-<Model id="51">
+<Model id="52">
 	<Authors>
 		<Author id="1">
 			<Name>First name, last name</Name>
 			<Link/>
 		</Author>
 	</Authors>
-	<Model_name>MRB01 Nitrogen</Model_name>
+	<Model_name>MRB01 Phosphorus</Model_name>
 	<MRB>MRB01</MRB>
 	<Constituent>
-		<Name>Nitrogen</Name>
+		<Name>Phosphorus</Name>
 		<Units>kg/yr</Units>
-		<Description>2002 Total Nitrogen Model for Northeast and Mid Atlantic Regions</Description>
+		<Description>2002 Total Phosphorus Model for Northeast and Mid Atlantic Regions</Description>
 	</Constituent>
 	<Sources>
 		<Source id="All">
@@ -95,19 +95,17 @@
 				<dt><i>All</i></dt>
 				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
 				<dt>Municipal Point Source</dt>
-				<dd>Nitrogen mass in permitted wastewater discharge</dd>
+				<dd>Phosphorus mass in permitted wastewater discharge</dd>
+				<dt>Forested Land</dt>
+				<dd>Area of forested land</dd>
 				<dt>Fertilizer Corn Soy</dt>
-				<dd>Nitrogen mass in commerical fertilizer applied to agricultural land in corn / soybeans / alfalfa</dd>
-				<dt>TIN_02</dt>
-				<dd/>
-				<dt>Fixation Soy Alfalfa</dt>
-				<dd>Nitrogen mass from fixation by soybeans</dd>				
-				<dt>Manure</dt>
-				<dd>Nitrogen mass in manure from livestock production</dd>
+				<dd>Phosphorus mass in commercial fertilizer applied to agricultural land in corn / soybeans / alfalfa</dd>
 				<dt>Developed Land</dt>
-				<dd>Area of developed land</dd>
+				<dd>Area of developed land</dd>				
+				<dt>Manure</dt>
+				<dd>Phosphorus mass in manure from livestock production</dd>
 				<dt>Fertilizer Other</dt>
-				<dd>Nitrogen mass in commercial fertilizer applied to agricultural land in other crops</dd>
+				<dd>Phosphorus mass in commercial fertilizer applied to agricultural land in other crops</dd>
 			</dl>
 		</Term>
 	</CommonTerms>
