@@ -47,6 +47,7 @@
 			<Name>Natural phosphorus</Name>
 			<Units>ppm x sqkm</Units>
 			<Description>Index representing the contribution from geologic source of phosphorus</Description>
+		</Source>
 	</Sources>
 	<Model_papers>
 		<Paper id="1">
