@@ -1,0 +1,130 @@
+<Model id="35">
+	<Authors>
+		<Author id="1">
+			<Name>First name, last name</Name>
+			<Link/>
+		</Author>
+	</Authors>
+	<Model_name>2002 MRB5 Total Nitrogen Model</Model_name>
+	<MRB>MRB5</MRB>
+	<Constituent>
+		<Name>Total Nitrogen</Name>
+		<Units>kg/yr</Units>
+		<Description> 2002 MRB5 Total Nitrogen Model</Description>
+	</Constituent>
+	<Sources>
+		<Source id="ALL">
+			<Name>ALL</Name>
+			<Units>kg/year</Units>
+			<Description>All nitrogen sources</Description>
+		</Source>
+		<Source id="1">
+			<Name>Population</Name>
+			<Units>capita</Units>
+			<Description>1990 total population</Description>
+		</Source>
+		<Source id="2">
+			<Name>NO3_Atm_Dep</Name>
+			<Units>kg/year</Units>
+			<Description>1992 Nitrate wet atmospheric deposition (kg)</Description>
+		</Source>
+		<Source id="3">
+			<Name>N_fertilizer_corn_soy</Name>
+			<Units>kg/year</Units>
+			<Description>1992 N fertilizer applied to corn/soybean (kg)</Description>
+		</Source>
+		<Source id="4">
+			<Name>N_fertilizer_alfalfa</Name>
+			<Units>kg/year</Units>
+			<Description>1992 N alfalfa fertilizer (kg)</Description>
+		</Source>
+		<Source id="5">
+			<Name>N_fertilizer_wheat</Name>
+			<Units>kg/year</Units>
+			<Description>1992 N fertilizer applied to wheat (kg)</Description>
+		</Source>
+		<Source id="6">
+			<Name>N_fertilizer_other</Name>
+			<Units>kg/year</Units>
+			<Description>1992 N farm other fertilizer (kg)</Description>
+		</Source>
+		<Source id="7">
+			<Name>N_animal_waste</Name>
+			<Units>kg/year</Units>
+			<Description>1992 N animal waste (kg)</Description>
+		</Source>
+		<Source id="8">
+			<Name>Forested_land</Name>
+			<Units>km2</Units>
+			<Description>1992 NLCD forested land (km2)</Description>
+		</Source>
+		<Source id="9">
+			<Name>Barren_land</Name>
+			<Units>km2</Units>
+			<Description>1992 NLCD barren land (km2)</Description>
+		</Source>
+		<Source id="10">
+			<Name>Shrub_land</Name>
+			<Units>km2</Units>
+			<Description>1992 NLCD shrub land (km2)</Description>
+		</Source>
+	</Sources>
+	<Model_papers>
+		<Paper id="1">
+			<Link link=""/>
+			<Citation_mods>
+				<identifier type=""/>
+				<identifier type=""/>
+				<identifier type=""/>
+				<genre/>
+				<titleInfo>
+					<title/>
+				</titleInfo>
+				<originInfo>
+					<dateOther/>
+					<publisher/>
+					<placeTerm/>
+				</originInfo>
+				<name>
+					<namePart/>
+					<role>Author</role>
+				</name>
+				<physicalDescription>
+					<form/>
+					<form/>
+					<form/>
+				</physicalDescription>
+				<note type="citation/reference"/>
+				<edition/>
+				<languageTerm/>
+			</Citation_mods>
+		</Paper>
+	</Model_papers>
+	<CommonTerms>
+		<Term id="For Source">
+			Each model has different sources that were determined by statistically significant by the modeler.
+			Choose a source from the list to present data only from that source.  This model contains these sources:
+			
+			<dl>
+				<!-- These names could be improved, do we have updated info from Greg? -->
+				<dt><i>All</i></dt>
+				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
+				<dt>Upper Miss TN load</dt>
+				<dd>Combined total nitrogen loads from USGS NASQAN sites, Mississippi River at Thebes, Ill, and Ohio River at Dam 53 near Grand Chain, Ill.  This combined load was a boundary condition in the MRB5 TN model representing loads from the Upper Mississippi River basin in order for the MRB5 model to account for all mass entering the study area.</dd>
+				<dt>Atmospheric deposition</dt>
+				<dd>Nitrogen from atmospheric deposition came from 28 active USGS NADP/NTN wet deposition sites located in the MRB5 study area.  The total inorganic nitrogen wet deposition data were detrended for 2002.</dd>
+				<dt>Point Souces</dt>
+				<dd>Total nitrogen loads for 2002 from point sources came from USEPA PCS database.  Relevant municipal and industrial point sources were included.</dd>
+				<dt>Urban Runoff</dt>
+				<dd>Nitrogen from nonpoint source urban runoff was estimated based on land use categories from the 2001 NLCD.  The four cateogries included were nlcd_dvlow, nlcd_dvmed, nlcd_dvhig, and nlcd_dvopn.</dd>				
+				<dt>Manure - feedlots</dt>
+				<dd>Nitrogen from manure from confined animal oeprations applied to fertilizer were based on 2002 USDA NASS ag census data.</dd>
+				<dt>Manure - pasture</dt>
+				<dd>Nitrogen from manure from pastures (unconfined) were based on 2002 USDA NASS ag census data.</dd>
+				<dt>Fertilizer</dt>
+				<dd>Nitrogen from fertilizer were based on county fertilizer sales from the 2002 USDA NASS ag census data.</dd>
+
+			</dl>
+		</Term>
+	</CommonTerms>
+</Model>
