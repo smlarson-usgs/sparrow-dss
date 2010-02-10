@@ -109,19 +109,6 @@ public class ComparePredictionToText {
 		SharedApplication.getInstance().clearAllCaches();
 	}
 	
-	//@Test
-	public void test999() throws Exception {
-		URL url = getTextURL(999L);
-		DataTable t = loadTextPredict(url);
-		String idColStr = t.getProperty(ID_COL_KEY);
-		int idCol = Integer.parseInt(idColStr);
-		
-		Long id = 900890018L;
-		
-		assertEquals(0, t.findFirst(idCol, id));
-		
-	}
-	
 	@Test
 	public void testAll() throws Exception {
 		
@@ -534,7 +521,7 @@ public class ComparePredictionToText {
 			
 			Long id = pred.getIdForRow(r);
 			
-			int txtRow = txt.findFirst(idCol, id.doubleValue());
+			int txtRow = txt.findFirst(idCol, id);
 			
 			if (txtRow < 0) {
 				log.error("Couldn't find the ID " + id);
