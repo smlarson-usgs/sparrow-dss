@@ -133,9 +133,9 @@ public class DataLoader {
 
 		// Build filtering parameters and retrieve the queries from properties
 		String[] params = {
-				"IsApproved", (isApproved ? "T" : "F"),
-				"IsPublic", (isPublic ? "T" : "F"),
-				"IsArchived", (isArchived ? "T" : "F")
+				"IsApproved", (isApproved ? "T" : "%"),
+				"IsPublic", (isPublic ? "T" : "%"),
+				"IsArchived", (isArchived ? "T" : "%")
 		};
 		String selectModels = getQuery("SelectModelsByAccess", params);
 
