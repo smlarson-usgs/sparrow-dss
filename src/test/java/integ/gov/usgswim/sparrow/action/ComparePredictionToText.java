@@ -1,10 +1,15 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.*;
+import java.util.Arrays;
+
+import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.ColumnDataWritable;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
+import gov.usgswim.datatable.impl.StandardLongColumnData;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
@@ -22,15 +27,19 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -100,11 +109,24 @@ public class ComparePredictionToText {
 		SharedApplication.getInstance().clearAllCaches();
 	}
 	
+	//@Test
+	public void test999() throws Exception {
+		URL url = getTextURL(999L);
+		DataTable t = loadTextPredict(url);
+		String idColStr = t.getProperty(ID_COL_KEY);
+		int idCol = Integer.parseInt(idColStr);
+		
+		Long id = 900890018L;
+		
+		assertEquals(0, t.findFirst(idCol, id));
+		
+	}
+	
 	@Test
 	public void testAll() throws Exception {
 		
 		int failCount = 0;
-		//22
+
 		for (long id = firstModelId; id <= lastModelId; id++) {
 			URL url = getTextURL(id);
 			if (url != null) {
@@ -222,10 +244,6 @@ public class ComparePredictionToText {
 		
 		assertTrue(pass);
 
-
-
-		
-
 	}
 	
 
@@ -277,48 +295,12 @@ public class ComparePredictionToText {
 	
 	public DataTable loadTextPredict(URL url) throws Exception {
 		InputStream is = url.openStream();
+		DataTable dt = null;
 		
-		
-		
-		DataTableWritable dt = readAsDouble(is, true, -1);
-		Integer idCol = -1;
-		
-		idCol = dt.getColumnByName("local_id");
-		if (idCol != null) {
-			dt.buildIndex(idCol);
-			dt.setProperty(ID_COL_KEY, Integer.toString(idCol));
-		}
-		
-		if (idCol == null) {
-			idCol = dt.getColumnByName("mrb_id");
-			
-			if (idCol != null) {
-				dt.buildIndex(idCol);
-				dt.setProperty(ID_COL_KEY, Integer.toString(idCol));
-			}
-		}
-		
-		if (idCol == null) {
-			idCol = dt.getColumnByName("waterid");
-			
-			if (idCol != null) {
-				dt.buildIndex(idCol);
-				dt.setProperty(ID_COL_KEY, Integer.toString(idCol));
-			}
-		}
-		
-		if (idCol == null) {
-			idCol = dt.getColumnByName("reach");
-			
-			if (idCol != null) {
-				dt.buildIndex(idCol);
-				dt.setProperty(ID_COL_KEY, Integer.toString(idCol));
-			}
-		}
-		
-		if (idCol == null) {
-			log.error("No local_id, mrb_id, or waterid column was found for model " + url.toExternalForm());
-			return null;
+		try {
+			dt = readAsDouble(is, true);
+		} catch (Exception e) {
+			throw new Exception("Error reading: " + url.toString(), e);
 		}
 		
 		return dt;
@@ -330,18 +312,39 @@ public class ComparePredictionToText {
 		return url;
 	}
 	
-
-	public static DataTableWritable readAsDouble(InputStream source, boolean hasHeadings, int indexCol)
-	throws FileNotFoundException, IOException, NumberFormatException  {
-		if (indexCol > -1) {
-			return readAsDouble(source, hasHeadings, null).buildIndex(indexCol);
+	public static Integer findIdColumn(String[] headings) {
+		int idCol = -1;
+		
+		
+		idCol = ArrayUtils.indexOf(headings, "local_id");
+		if (idCol > -1) {
+			return idCol;
 		}
-		return readAsDouble(source, hasHeadings, null);
+		
+
+		idCol = ArrayUtils.indexOf(headings, "mrb_id");
+		if (idCol > -1) {
+			return idCol;
+		}
+		
+
+		idCol = ArrayUtils.indexOf(headings, "waterid");
+		if (idCol > -1) {
+			return idCol;
+		}
+		
+		idCol = ArrayUtils.indexOf(headings, "reach");
+		if (idCol > -1) {
+			return idCol;
+		}
+		
+		return -1;
 	}
 
-	public static DataTableWritable readAsDouble(InputStream source, boolean hasHeadings, String[] mappedHeadings)
-	throws FileNotFoundException, IOException, NumberFormatException  {
+	public static DataTable readAsDouble(InputStream source, boolean hasHeadings)
+		throws Exception  {
 
+		int indexCol;
 		InputStreamReader isr = new InputStreamReader(source);
 		BufferedReader br = new BufferedReader(isr);
 
@@ -351,17 +354,13 @@ public class ComparePredictionToText {
 			int mappedColumnCount = 0;	//Number of columns in the output
 
 			String[] headings = (hasHeadings)? TabDelimFileUtil.readHeadings(br): null;
+			indexCol = findIdColumn(headings);
 
-
-			if (mappedHeadings != null) {
-				remappedColumns = TabDelimFileUtil.mapByColumnHeadings(headings, mappedHeadings);
-				mappedColumnCount = mappedHeadings.length;
+			if (indexCol < 0) {
+				throw new Exception("Could not find an ID Column");
 			}
-
+			
 			List<double[]> rows = readDataBodyAsDouble(br, remappedColumns, mappedColumnCount);
-
-			// If there is exactly one extra column, then it's the ID column and it's first.
-			boolean hasIDColumnFirst =(mappedColumnCount == 0 && headings != null && rows.get(0).length == headings.length + 1);
 
 			//copy the array list to a double[][] array
 
@@ -371,6 +370,7 @@ public class ComparePredictionToText {
 			numColumns = (mappedColumnCount > 0)? mappedColumnCount: numColumns;
 			for (int i=0; i< numColumns; i++) {
 				// no units in this test
+				
 				String heading = (headings != null)? headings[i]: null;
 				ColumnDataWritable column = new StandardNumberColumnDataWritable<Double>(heading, null);
 				builder.addColumn(column);
@@ -381,15 +381,29 @@ public class ComparePredictionToText {
 			for (int i=0; i<rows.size(); i++) {
 				double[] row = rows.get(i);
 				int offset = 0;
-				if (hasIDColumnFirst) {
-					builder.setRowId(Double.valueOf(row[0]).longValue(), i);
-					offset = 1;
-				}
+
 				for (int j = 0; j<numColumns; j++) {
 					builder.setValue(Double.valueOf(row[j + offset]), i, j);
 				}
 			}
-			return builder;
+			
+			//builder.buildIndex(indexCol);
+			builder.setProperty(ID_COL_KEY, Integer.toString(indexCol));
+			
+			//return builder;
+			ColumnData[] cols = new ColumnData[builder.getColumns().length];
+			
+			System.arraycopy(builder.getColumns(), 0, cols, 0, builder.getColumns().length);
+			
+			ColumnData oldCol = cols[indexCol];
+			StandardLongColumnData newCol = new StandardLongColumnData(oldCol, true, 0L);
+			cols[indexCol] = newCol;
+
+
+			//SimpleDataTable(ColumnData[] columns, String name, String description, Map<String, String> properties, long[] rowIds)
+			SimpleDataTable table = new SimpleDataTable(cols, builder.getName(), builder.getDescription(), builder.getProperties(), null);
+			
+			return table;
 
 		} finally {
 			try {
