@@ -59,7 +59,11 @@ public class LoadReachHucsTest extends SparrowDBTest {
 			
 			assertTrue(reachesInHuc.contains(intReachId));
 		}
-		
+
+		assertEquals("HUC Level 8 aggregation data for model " + MODEL_ID,
+				result.getName());
+		assertEquals(MODEL_ID.toString(), result.getProperty("model_id"));
+		assertEquals("8", result.getProperty("huc_level"));
 	}
 	
 }
