@@ -70,7 +70,7 @@ public class CalcDeliveryFraction extends Action<ColumnData> {
 					"The fraction of the load arriving at the " + 
 					"bottom of a reach that will arrive at the " + 
 					"bottom of the specified target reach(es).",
-					null, null);
+					null, false);
 			
 			return column;
 		} else {
