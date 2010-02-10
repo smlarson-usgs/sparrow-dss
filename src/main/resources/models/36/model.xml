@@ -117,8 +117,8 @@
 				<dd>Phosphorus from nonpoint source urban runoff was estimated based on land use categories from the 2001 NLCD.  The four cateogries included were nlcd_dvlow, nlcd_dvmed, nlcd_dvhig, and nlcd_dvopn.</dd>
 				<dt>Fertilizer</dt>
 				<dd>Phosphorus from fertilizer were based on county fertilizer sales from the 2002 USDA NASS ag census data.</dd>				
-				<dt>Manure - feedlots and pastures/dt>
-				<dd>Phosphorus from manure comnbined from confined animal operations applied to fertilizer and from pasturelands were based on 2002 USDA NASS ag census data.</dd>
+				<dt>Manure - feedlots and pastures</dt>
+				<dd>Phosphorus from manure combined from confined animal operations applied to fertilizer and from pasturelands were based on 2002 USDA NASS ag census data.</dd>
 				<dt>Stream length - sediment P</dt>
 				<dd>Stream lengths for reaches with average annual flows greater than 50 cfs were statistically significant in the MRB5 TP model indicating that phosphorus attached to sediment from medium to large streams was a source of phosphrus in MRB5 streams.</dd>
 				<dt>Forests</dt>
