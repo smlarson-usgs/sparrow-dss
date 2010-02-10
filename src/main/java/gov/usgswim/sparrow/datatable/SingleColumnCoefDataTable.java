@@ -74,7 +74,7 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 		super(sourceData);
 		
 		StandardDoubleColumnData cc = new StandardDoubleColumnData(
-				coefValues, null, null, null, null, null);
+				coefValues, null, null, null, null, false);
 		coefCol = cc;
 		
 		colIndexNum = coefColumnIndex;

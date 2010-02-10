@@ -28,7 +28,7 @@ public class SingleColumnCoefDataTest {
 		
 		coefColumn = new
 			StandardDoubleColumnData(coefs, "myName", "myUnits", "myDesc",
-				null, null); 
+				null, false); 
 		
 		
 		baseHeadings = new String[] { "one", "two", "three", "four" };
@@ -81,7 +81,7 @@ public class SingleColumnCoefDataTest {
 		
 		StandardDoubleColumnData badCoefColumn = new
 			StandardDoubleColumnData(badCoefs, "myName", "myUnits", "myDesc",
-				null, null); 
+				null, false); 
 		
 		table = new SingleColumnCoefDataTable(baseDataTable, badCoefColumn, 1);
 	}

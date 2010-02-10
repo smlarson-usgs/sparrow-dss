@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.datatable;
 
 import gov.usgswim.datatable.DataTable;
 
+import java.util.Map;
 import java.util.Set;
 
 public abstract class AbstractDataTableBase implements DataTable {
@@ -232,6 +233,15 @@ public abstract class AbstractDataTableBase implements DataTable {
 	@Override
 	public String getUnits(int col) {
 		return base.getUnits(col);
+	}
+
+	@Override
+	public Map<String, String> getProperties() {
+		return base.getProperties();
+	}
+	@Override
+	public Map<String, String> getProperties(int col) {
+		return base.getProperties(col);
 	}
 
 }
