@@ -8,9 +8,9 @@ import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.impl.SparseDoubleColumnData;
 import gov.usgswim.datatable.impl.StandardDoubleColumnData;
 import gov.usgswim.sparrow.DeliveryRunner;
-import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
+import gov.usgswim.sparrow.SparrowDBTest;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -23,10 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -38,13 +34,7 @@ import org.junit.Test;
  * @author eeverman
  * TODO: This should really use a canned project, rather than MRB2
  */
-public class CalcDeliveryFractionTest {
-	protected static Logger log =
-		Logger.getLogger(CalcDeliveryFractionTest.class); //logging for this class
-	
-	static LifecycleListener lifecycle = new LifecycleListener();
-	
-	static final Long MODEL_ID = 50L;
+public class CalcDeliveryFractionTest extends SparrowDBTest {
 	
 	static PredictData unmodifiedPredictData;
 	static PredictData predictData;
@@ -56,13 +46,6 @@ public class CalcDeliveryFractionTest {
 	
 	@BeforeClass
 	public static void setUp() throws Exception {
-		
-		//Turns on detailed logging
-		log.setLevel(Level.DEBUG);
-		log.getLogger(Action.class).setLevel(Level.DEBUG);
-		
-		lifecycle.contextInitialized(null, true);
-		XMLUnit.setIgnoreWhitespace(true);
 		
 		InputStream baseDataStream = TestHelper.getResource(CalcDeliveryFractionTest.class, "data", "tab");
 		stdData = TabDelimFileUtil.readAsDouble(baseDataStream, true, -1);
@@ -77,7 +60,7 @@ public class CalcDeliveryFractionTest {
 		stdDelFracToBoth = TabDelimFileUtil.readAsDouble(stdDelFracToBothStream, true, -1);
 		
 		//Lets hack the predictData to Turn off transport for reach ID 9681
-		unmodifiedPredictData = SharedApplication.getInstance().getPredictData(MODEL_ID);
+		unmodifiedPredictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		DataTable topo = unmodifiedPredictData.getTopo();
 		SparseOverrideAdjustment adjTopo = new SparseOverrideAdjustment(topo);
 		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9681), PredictData.IFTRAN_COL);
@@ -89,13 +72,6 @@ public class CalcDeliveryFractionTest {
 				unmodifiedPredictData.getAncil(),
 				unmodifiedPredictData.getModel());
 		
-		
-		
-	}
-
-	@AfterClass
-	public static void tearDown() throws Exception {
-		lifecycle.contextDestroyed(null, true);
 	}
 	
 	//TODO:  THis is really obsolete, just need to yank the other delivery out.
@@ -139,7 +115,7 @@ public class CalcDeliveryFractionTest {
 	public void testFracFactoryTo9682() throws Exception {
 		List<Long> targetList = new ArrayList<Long>();
 		targetList.add(9682L);
-		TerminalReaches targets = new TerminalReaches(MODEL_ID, targetList);
+		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
 		CalcDeliveryFraction action = new CalcDeliveryFraction();
 		action.setPredictData(predictData);
@@ -190,7 +166,7 @@ public class CalcDeliveryFractionTest {
 	public void testFracFactoryTo9674() throws Exception {
 		List<Long> targetList = new ArrayList<Long>();
 		targetList.add(9674L);
-		TerminalReaches targets = new TerminalReaches(MODEL_ID, targetList);
+		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
 		CalcDeliveryFraction action = new CalcDeliveryFraction();
 		action.setPredictData(predictData);
@@ -242,7 +218,7 @@ public class CalcDeliveryFractionTest {
 		List<Long> targetList = new ArrayList<Long>();
 		targetList.add(9682L);
 		targetList.add(9674L);
-		TerminalReaches targets = new TerminalReaches(MODEL_ID, targetList);
+		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
 		CalcDeliveryFraction action = new CalcDeliveryFraction();
 		action.setPredictData(predictData);
@@ -292,7 +268,7 @@ public class CalcDeliveryFractionTest {
 	public void testTargetWith4UpstreamReaches() throws Exception {
 		List<Long> targetList = new ArrayList<Long>();
 		targetList.add(9687L);
-		TerminalReaches targets = new TerminalReaches(MODEL_ID, targetList);
+		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
 		CalcDeliveryFraction action = new CalcDeliveryFraction();
 		action.setPredictData(predictData);

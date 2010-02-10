@@ -1,25 +1,18 @@
 package gov.usgswim.sparrow.action;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
 import gov.usgswim.datatable.impl.SimpleDataTable;
-import gov.usgswim.datatable.impl.SparseDoubleColumnData;
-import gov.usgswim.datatable.impl.StandardDoubleColumnData;
-import gov.usgswim.sparrow.DeliveryRunner;
-import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowDBTest;
-import gov.usgswim.sparrow.action.CalcDeliveryFraction;
-import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
-import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.AreaOfInterest;
 import gov.usgswim.sparrow.parser.BasicAnalysis;
-import gov.usgswim.sparrow.parser.Comparison;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.NominalComparison;
@@ -31,18 +24,13 @@ import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -62,13 +50,8 @@ import org.junit.Test;
  * reaches which could be incorrect.
  * 
  * @author eeverman
- * TODO: This should really use a canned project, rather than MRB2
  */
 public class CalcAnalysisTest  extends SparrowDBTest {
-	
-	static LifecycleListener lifecycle = new LifecycleListener();
-	
-	static final Long MODEL_ID = 50L;
 	
 	static PredictData unmodifiedPredictData;
 	static PredictData modifiedPredictData;
@@ -84,6 +67,9 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 	@BeforeClass
 	public static void setUp() throws Exception {
 		
+		//Uncomment to debug
+		//setLogLevel(Level.DEBUG);
+		
 		InputStream stdDelFracTo9682Stream = TestHelper.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9682", "tab");
 		stdDelFracTo9682 = TabDelimFileUtil.readAsDouble(stdDelFracTo9682Stream, true, -1);
 		
@@ -94,7 +80,7 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		stdDelFracToBoth = TabDelimFileUtil.readAsDouble(stdDelFracToBothStream, true, -1);
 		
 		//Lets hack the predictData to Turn off transport for reach ID 9681
-		unmodifiedPredictData = SharedApplication.getInstance().getPredictData(MODEL_ID);
+		unmodifiedPredictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		DataTable topo = unmodifiedPredictData.getTopo();
 		SparseOverrideAdjustment adjTopo = new SparseOverrideAdjustment(topo);
 		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9681), PredictData.IFTRAN_COL);
@@ -110,18 +96,18 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		//Targets set 1
 		List<Long> targetList = new ArrayList<Long>();
 		targetList.add(9682L);
-		target9682 = new TerminalReaches(MODEL_ID, targetList);
+		target9682 = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
 		//Targets set 2
 		targetList = new ArrayList<Long>();
 		targetList.add(9674L);
-		target9674 = new TerminalReaches(MODEL_ID, targetList);
+		target9674 = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
 		//Targets set for both
 		targetList = new ArrayList<Long>();
 		targetList.add(9682L);
 		targetList.add(9674L);
-		targetBoth = new TerminalReaches(MODEL_ID, targetList);
+		targetBoth = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
 	}
 	
@@ -131,7 +117,6 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		//
 		//delivery to 9682 data
 		//check columns
-		System.out.println("--" + stdDelFracTo9682.getName(0) + "--");
 		assertEquals(0, stdDelFracTo9682.getColumnByName("IDENTIFIER").intValue());
 		assertEquals(8, stdDelFracTo9682.getColumnByName("DEL_FRAC").intValue());
 		//Row 0
@@ -187,8 +172,8 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		switchToModifiedPredictData();
 		
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.incremental_delivered_flux, null, null, null);
-		PredictionContext context = new PredictionContext(MODEL_ID, new AdjustmentGroups(MODEL_ID), analysis,
-				target9682, new AreaOfInterest(MODEL_ID), NominalComparison.getNoComparisonInstance());
+		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
+				target9682, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -206,8 +191,8 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		switchToModifiedPredictData();
 		
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.incremental_delivered_flux, 1, null, null);
-		PredictionContext context = new PredictionContext(MODEL_ID, new AdjustmentGroups(MODEL_ID), analysis,
-				target9682, new AreaOfInterest(MODEL_ID), NominalComparison.getNoComparisonInstance());
+		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
+				target9682, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -233,8 +218,8 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		switchToUnmodifiedPredictData();
 
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.total_delivered_flux, null, null, null);
-		PredictionContext context = new PredictionContext(MODEL_ID, new AdjustmentGroups(MODEL_ID), analysis,
-				target9682, new AreaOfInterest(MODEL_ID), NominalComparison.getNoComparisonInstance());
+		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
+				target9682, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -245,10 +230,12 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		doComparison(stdDelFracTo9682, ssCol, result, unmodifiedPredictData, false);
 		assertEquals(SingleColumnCoefDataTable.class, result.getTable().getClass());
 		
-		log.error("***** testTotalDeliveredTo9682 Debug Output *****");
-		debugReach(MODEL_ID, 9686L, target9682);
-		debugReach(MODEL_ID, 9681L, target9682);
-		debugReach(MODEL_ID, 9100L, target9682);
+		if (log.isDebugEnabled()) {
+			log.debug("***** testTotalDeliveredTo9682 Debug Output *****");
+			debugReach(TEST_MODEL_ID, 9686L, target9682);
+			debugReach(TEST_MODEL_ID, 9681L, target9682);
+			debugReach(TEST_MODEL_ID, 9100L, target9682);
+		}
 		
 		//Some spot checks of other reaches that should all be zero.
 		DataTable tab = result.getTable();
@@ -269,8 +256,8 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		switchToUnmodifiedPredictData();
 
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.total_delivered_flux, 1, null, null);
-		PredictionContext context = new PredictionContext(MODEL_ID, new AdjustmentGroups(MODEL_ID), analysis,
-				target9682, new AreaOfInterest(MODEL_ID), NominalComparison.getNoComparisonInstance());
+		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
+				target9682, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -297,8 +284,8 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		switchToModifiedPredictData();
 		
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.incremental_delivered_flux, null, null, null);
-		PredictionContext context = new PredictionContext(MODEL_ID, new AdjustmentGroups(MODEL_ID), analysis,
-				target9674, new AreaOfInterest(MODEL_ID), NominalComparison.getNoComparisonInstance());
+		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
+				target9674, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -316,8 +303,8 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		switchToModifiedPredictData();
 		
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.incremental_delivered_flux, 1, null, null);
-		PredictionContext context = new PredictionContext(MODEL_ID, new AdjustmentGroups(MODEL_ID), analysis,
-				target9674, new AreaOfInterest(MODEL_ID), NominalComparison.getNoComparisonInstance());
+		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
+				target9674, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -343,8 +330,8 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		switchToUnmodifiedPredictData();
 
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.total_delivered_flux, null, null, null);
-		PredictionContext context = new PredictionContext(MODEL_ID, new AdjustmentGroups(MODEL_ID), analysis,
-				target9674, new AreaOfInterest(MODEL_ID), NominalComparison.getNoComparisonInstance());
+		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
+				target9674, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -373,8 +360,8 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		switchToUnmodifiedPredictData();
 
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.total_delivered_flux, 1, null, null);
-		PredictionContext context = new PredictionContext(MODEL_ID, new AdjustmentGroups(MODEL_ID), analysis,
-				target9674, new AreaOfInterest(MODEL_ID), NominalComparison.getNoComparisonInstance());
+		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
+				target9674, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -403,8 +390,8 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		switchToModifiedPredictData();
 		
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.incremental_delivered_flux, null, null, null);
-		PredictionContext context = new PredictionContext(MODEL_ID, new AdjustmentGroups(MODEL_ID), analysis,
-				targetBoth, new AreaOfInterest(MODEL_ID), NominalComparison.getNoComparisonInstance());
+		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
+				targetBoth, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -422,8 +409,8 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		switchToModifiedPredictData();
 		
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.incremental_delivered_flux, 1, null, null);
-		PredictionContext context = new PredictionContext(MODEL_ID, new AdjustmentGroups(MODEL_ID), analysis,
-				targetBoth, new AreaOfInterest(MODEL_ID), NominalComparison.getNoComparisonInstance());
+		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
+				targetBoth, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -449,8 +436,8 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		switchToUnmodifiedPredictData();
 
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.total_delivered_flux, null, null, null);
-		PredictionContext context = new PredictionContext(MODEL_ID, new AdjustmentGroups(MODEL_ID), analysis,
-				targetBoth, new AreaOfInterest(MODEL_ID), NominalComparison.getNoComparisonInstance());
+		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
+				targetBoth, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -479,8 +466,8 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		switchToUnmodifiedPredictData();
 
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.total_delivered_flux, 1, null, null);
-		PredictionContext context = new PredictionContext(MODEL_ID, new AdjustmentGroups(MODEL_ID), analysis,
-				targetBoth, new AreaOfInterest(MODEL_ID), NominalComparison.getNoComparisonInstance());
+		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
+				targetBoth, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -509,7 +496,7 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 	protected void doComparison(DataTable stdData, int stdCol,
 				DataColumn result, PredictData predictData, boolean missingDataShouldBeZero) {
 		
-		System.out.println("Comparing results w/ " + result.getRowCount() + " rows.");
+		log.debug("Comparing results w/ " + result.getRowCount() + " rows.");
 		result.getRowCount();
 		assertEquals(predictData.getTopo().getRowCount(), result.getRowCount());
 		result.getIdForRow(8320);
@@ -564,7 +551,7 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 	
 	protected void switchToUnmodifiedPredictData() {
 			Ehcache pdc = CacheManager.getInstance().getEhcache(SharedApplication.PREDICT_DATA_CACHE);
-			Element e  = new Element(MODEL_ID, unmodifiedPredictData);
+			Element e  = new Element(TEST_MODEL_ID, unmodifiedPredictData);
 			pdc.put(e);
 
 			CacheManager.getInstance().getEhcache(SharedApplication.PREDICT_RESULT_CACHE).removeAll();
@@ -576,7 +563,7 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 	
 	protected void switchToModifiedPredictData() {
 		Ehcache pdc = CacheManager.getInstance().getEhcache(SharedApplication.PREDICT_DATA_CACHE);
-		Element e  = new Element(MODEL_ID, modifiedPredictData);
+		Element e  = new Element(TEST_MODEL_ID, modifiedPredictData);
 		pdc.put(e);
 
 		CacheManager.getInstance().getEhcache(SharedApplication.PREDICT_RESULT_CACHE).removeAll();
@@ -614,10 +601,10 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 	protected void writeBadMatch(DataTable spreadsheet, PredictData predictData,
 			int predictDataRow, Double expectedDelFrac, Double actualDelFrac) {
 		
-		log.debug("-- Comp Fail --");
-		log.debug("Row in Predict Data: " + predictDataRow);
-		log.debug("rowId: " + predictData.getTopo().getIdForRow(predictDataRow));
-		log.debug("Expected vs Actual: " + expectedDelFrac + " / " + actualDelFrac);
+		log.error("-- Comp Fail --");
+		log.error("Row in Predict Data: " + predictDataRow);
+		log.error("rowId: " + predictData.getTopo().getIdForRow(predictDataRow));
+		log.error("Expected vs Actual: " + expectedDelFrac + " / " + actualDelFrac);
 	}
 	
 	public void debugReach(Long modelId, Long reachId, TerminalReaches terminalReaches) throws Exception {
@@ -656,7 +643,7 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 	}
 	
 	public void debugTable(DataTable table, int row, String description) throws Exception {
-		log.error(" - - " + description + " - - ");
+		log.debug(" - - " + description + " - - ");
 		
 		if (table != null) {
 			if (row < table.getRowCount()) {
@@ -666,15 +653,15 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 						label = "(" + Integer.toString(col) + ")";
 					}
 					
-					log.error(label + " " + table.getString(row, col));
+					log.debug(label + " " + table.getString(row, col));
 				}
 			} else {
-				log.error("[Row " + row +
+				log.debug("[Row " + row +
 						" requested, however, the table only contains " +
 						table.getRowCount() + " rows.]");
 			}
 		} else {
-			log.error("[This table was null]");
+			log.debug("[This table was null]");
 		}
 	}
 	
