@@ -642,27 +642,51 @@ public class ComparePredictionToText {
 	}
 	
 	
-	public int getIncCol(int srcNum, DataTable txt) {
+	public int getIncCol(int srcNum, DataTable txt) throws Exception {
 		String incName = "i" + srcNum;
-		int incCol = txt.getColumnByName(incName);
+		Integer incCol = txt.getColumnByName(incName);
+		
+		if (incCol == null) {
+			throw new Exception("The incremental column for source " + srcNum +
+					" (i" +  srcNum + ") was not found in the file.");
+		}
+		
 		return incCol;
 	}
 	
-	public int getIncAllCol(DataTable txt) {
+	public int getIncAllCol(DataTable txt) throws Exception {
 		String incName = "ia";
-		int incCol = txt.getColumnByName(incName);
+		Integer incCol = txt.getColumnByName(incName);
+		
+		if (incCol == null) {
+			throw new Exception("The incremental column for all sources " +
+					" (ia) was not found in the file.");
+		}
+		
 		return incCol;
 	}
 	
-	public int getTotalCol(int srcNum, DataTable txt) {
+	public int getTotalCol(int srcNum, DataTable txt) throws Exception {
 		String totalName = "t" + srcNum;
-		int totalCol = txt.getColumnByName(totalName);
+		Integer totalCol = txt.getColumnByName(totalName);
+		
+		if (totalCol == null) {
+			throw new Exception("The total column for source " + srcNum +
+					" (t" +  srcNum + ") was not found in the file.");
+		}
+		
 		return totalCol;
 	}
 	
-	public int getTotalAllCol(int srcNum, DataTable txt) {
+	public int getTotalAllCol(DataTable txt) throws Exception {
 		String totalName = "ta";
-		int totalCol = txt.getColumnByName(totalName);
+		Integer totalCol = txt.getColumnByName(totalName);
+		
+		if (totalCol == null) {
+			throw new Exception("The total column for all sources" + 
+					" (ta) was not found in the file.");
+		}
+		
 		return totalCol;
 	}
 	
@@ -679,7 +703,7 @@ public class ComparePredictionToText {
 		}
 	}
 	
-	public void printBadIncRow(DataTable txt, int txtRow, PredictResult pred, int predRow, double instreamDecay) {
+	public void printBadIncRow(DataTable txt, int txtRow, PredictResult pred, int predRow, double instreamDecay) throws Exception {
 		
 		long id = pred.getIdForRow(predRow);
 		log.debug("** Failed INC values for reach ID " + id + " (row " + predRow + ")");
@@ -704,7 +728,7 @@ public class ComparePredictionToText {
 	}
 	
 	
-	public void printBadTotalRow(DataTable txt, int txtRow, PredictResult pred, int predRow) {
+	public void printBadTotalRow(DataTable txt, int txtRow, PredictResult pred, int predRow) throws Exception {
 		
 		long id = pred.getIdForRow(predRow);
 		log.debug("** Failed TOTAL values for reach ID " + id + " (row " + predRow + ")");
