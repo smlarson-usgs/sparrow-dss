@@ -1,17 +1,14 @@
-package gov.usgswim.sparrow.test.integration;
+package gov.usgswim.sparrow.service.idbypoint;
 
 import static gov.usgswim.sparrow.test.TestHelper.getAttributeValue;
 import static gov.usgswim.sparrow.test.TestHelper.getElementValue;
 import static gov.usgswim.sparrow.test.TestHelper.pipeDispatch;
 import static gov.usgswim.sparrow.test.TestHelper.readToString;
 import static gov.usgswim.sparrow.test.TestHelper.setElementValue;
-import static org.junit.Assert.*;
-import gov.usgswim.sparrow.LifecycleListener;
+import static org.junit.Assert.assertEquals;
 import gov.usgswim.sparrow.SparrowDBTest;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.PredictionContextTest;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointPipeline;
-import gov.usgswim.sparrow.service.idbypoint.IDByPointRequest;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 import gov.usgswim.sparrow.test.TestHelper;
@@ -19,10 +16,7 @@ import gov.usgswim.sparrow.test.TestHelper;
 import java.io.InputStream;
 
 import org.apache.log4j.Level;
-import org.junit.Ignore;
 import org.junit.Test;
-
-import junit.framework.TestCase;
 
 public class IDServiceIntegrationTest extends SparrowDBTest {
 
