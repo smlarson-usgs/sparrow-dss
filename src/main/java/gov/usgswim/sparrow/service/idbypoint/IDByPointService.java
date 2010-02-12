@@ -126,36 +126,77 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		// TODO isNeedsFlattening ignored for now because using custom flattener
 
 		// Retrieve the model ID
-		IDByPointResponse response = new IDByPointResponse();
+		
 		updateRequestModelIDIfNecessary(req);
-		response.modelID = req.getModelID();
-		assert(response.modelID != null);
+		assert(req.getModelID() != null);
 
 		// Retrieve the reach
-		ReachInfo reach = retrieveReach(req, response);
-		if (reach != null) {
-			response.setReach(reach);
+		ReachInfo[] reach = retrieveReaches(req);
+		IDByPointResponse[] response = new IDByPointResponse[reach.length];
+		
+		//Aggregate status, since there may be many reaches.
+		boolean aggStatusOK = true;
+		String aggMessage = null;
+		
+		if (reach.length > 0) {
+			
+			for (int i = 0; i < reach.length; i++) {
+				response[i] = new IDByPointResponse();
+				response[i].modelID = req.getModelID();
+				
+				if (reach[i] != null) {
+					response[i].setReach(reach[i]);
+	
+					// populate each of the sections
+					if (req.hasAdjustments()) {
+						retrieveAdjustments(req.getContextID(), req, response[i]);
+					}
+					if (req.hasAttributes()) {
+						retrieveAttributes(req, response[i]);
+					}
+					if (req.hasPredicted()) {
+						response[i].predictionsXML = retrievePredictedsForReach(req.getContextID(), req.getModelID(), Long.valueOf(response[i].reachID));
+					}
+					
+					response[i].statusOK = true;
+				} else {
+					response[i].statusOK = false;
+					response[i].message = "Could not find a reach near the specified point or given ID";
+				}
+			}
 
-			// populate each of the sections
-			if (req.hasAdjustments()) {
-				retrieveAdjustments(req.getContextID(), req, response);
-			}
-			if (req.hasAttributes()) {
-				retrieveAttributes(req, response);
-			}
-			if (req.hasPredicted()) {
-				response.predictionsXML = retrievePredictedsForReach(req.getContextID(), req.getModelID(), Long.valueOf(response.reachID));
-			}
-
-			response.statusOK = true;
 		} else {
-			response.statusOK = false;
-			response.message = "No reach found near that point.";
+			//No reaches were found, so create one placeholder response instance
+			response = new IDByPointResponse[1];
+			response[0] = new IDByPointResponse();
+			response[0].modelID = req.getModelID();
+			response[0].statusOK = false;
+			response[0].message = "No reach found near that point.";
 		}
-
+		
+		//Build agg status
+		for (IDByPointResponse resp : response) {
+			if (resp == null) {
+				aggStatusOK = false;
+			} else if (resp.statusOK == false) {
+				aggMessage = resp.message;
+			}
+		}
+		
+		//Build full output string
+		StringBuffer aggResponse = new StringBuffer();
+		
+		aggResponse.append(
+			IDByPointResponse.writeXMLHead(aggStatusOK, aggMessage, req.getModelID(), req.getContextID())
+		);
+		for (IDByPointResponse resp : response) {
+			aggResponse.append(resp.toXML());
+		}
+		aggResponse.append(IDByPointResponse.writeXMLFoot());
+		
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
-		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(response.toXML()));
-
+		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(aggResponse.toString()));
+		
 		return reader;
 	}
 
@@ -165,11 +206,36 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	// =======================
 	// PRIVATE HELPER METHODS
 	// =======================
-	private ReachInfo retrieveReach(IDByPointRequest req, IDByPointResponse response) throws Exception {
+	
+	/**
+	 * If a point has no close streams, an empty array is returned.
+	 * If reach IDs are used, an array of the same size as the list of IDs is
+	 * returned, but some of those results may be zero if they are not found.
+	 */
+	private ReachInfo[] retrieveReaches(IDByPointRequest req) throws Exception {
 		if (req.getReachID() != null) {
-			return SharedApplication.getInstance().getReachByIDResult(new ReachID(response.modelID, req.getReachID()));
+			int[] reachIds = req.getReachID();
+			ReachInfo[] reachResults = new ReachInfo[reachIds.length];
+			
+			for (int i = 0; i < reachIds.length; i++) {
+				reachResults[i] = SharedApplication.getInstance().getReachByIDResult(
+						new ReachID(req.getModelID(), reachIds[i]));
+			}
+			return reachResults;
 		} else if (req.getPoint() != null) {
-			return SharedApplication.getInstance().getReachByPointResult(new ModelPoint(response.modelID, req.getPoint()));
+			
+			ReachInfo[] reachResults = null;
+			
+			ReachInfo ri = SharedApplication.getInstance().getReachByPointResult(
+					new ModelPoint(req.getModelID(), req.getPoint()));
+			
+			if (ri != null) {
+				reachResults = new ReachInfo[] { ri };
+			} else {
+				reachResults = new ReachInfo[0]; //default empty response
+			}
+			
+			return reachResults;
 		} else {
 			throw new Exception("A context-id or a model-id is required for a id request");
 		}

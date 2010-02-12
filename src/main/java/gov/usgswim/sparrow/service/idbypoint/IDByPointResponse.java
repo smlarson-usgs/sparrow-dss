@@ -39,17 +39,32 @@ public class IDByPointResponse {
 	public void setReach(ReachInfo reach) {
 		this.reach = reach;
 		this.reachID = Long.valueOf(reach.getId()); // keep in sync
-	}	
+	}
+	
+	public static String writeXMLHead(boolean statusOK, String message, Long modelId, Integer contextId) {
+		StringBuilder in = new StringBuilder();
+		writeOpeningTag(in, "sparrow-id-response", 
+				"xmlns", "http://www.usgs.gov/sparrow/id-response-schema/v0_2",
+				"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance",
+				"model-id", asString(modelId),
+				"context-id", asString(contextId));
+		in.append("\n");
+		
+		writeNonNullTag(in, "status", (statusOK) ? "OK" : "Failed");
+		writeNonNullTag(in, "message", message);
+		
+		writeOpeningTag(in, "results");
+		in.append("\n");
+		
+		return in.toString();
+	}
 
 	public String toXML() {
 
 		// create root element <sparrow-id-response>
 		StringBuilder in = new StringBuilder();
-		writeOpeningTag(in, "sparrow-id-response", 
-				"xmlns", "http://www.usgs.gov/sparrow/id-response-schema/v0_2",
-				"xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance",
-				"model-id", asString(modelID),
-				"context-id", asString(contextID));
+		
+		writeOpeningTag(in, "result");
 		in.append("\n");
 		{
 			// write <status>, <message>, <cache-lifetime-seconds>
@@ -77,8 +92,18 @@ public class IDByPointResponse {
 	            in.append("\n");
 			}
 		}
-		writeClosingTag(in, "sparrow-id-response");
+		writeClosingTag(in, "result");
 
+		return in.toString();
+	}
+	
+	public static String writeXMLFoot() {
+		StringBuilder in = new StringBuilder();
+
+		writeClosingTag(in, "results");
+		in.append("\n");
+		writeClosingTag(in, "sparrow-id-response");
+		
 		return in.toString();
 	}
 

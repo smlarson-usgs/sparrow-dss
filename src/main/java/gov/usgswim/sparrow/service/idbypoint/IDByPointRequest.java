@@ -15,12 +15,14 @@ import java.awt.geom.Point2D.Double;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.commons.lang.ArrayUtils;
+
 public class IDByPointRequest implements XMLStreamParserComponent, PipelineRequest {
 
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = 5107786782665328203L;
+	private static final long serialVersionUID = 1L;
 	public static final String ID_BY_POINT_FILENAME = "idByPoint";
 	public static final String MAIN_ELEMENT_NAME = "sparrow-id-request";
 	public static final String MODELID_CHILD = "model-id";
@@ -47,7 +49,7 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 
 	//These two are mutually exclusive
 	private Point.Double point;
-	private Integer reachID;
+	private int[] reachIDs;
 
 	private boolean adjustments = false;
 	private boolean attributes = false;
@@ -70,9 +72,9 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 		this.point = point;
 	}
 
-	public IDByPointRequest(Long modelID, Integer reachID) {
+	public IDByPointRequest(Long modelID, int reachID) {
 		this.modelID = modelID;
-		this.reachID = reachID;
+		this.reachIDs = new int[] {reachID};
 	}
 
 	public IDByPointRequest(Integer contextID, Double point) {
@@ -81,9 +83,14 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 
 	}
 
-	public IDByPointRequest(Integer contextID, Integer reachID) {
+	public IDByPointRequest(Integer contextID, int reachID) {
 		this.contextID = contextID;
-		this.reachID = reachID;
+		this.reachIDs = new int[] { reachID };
+	}
+	
+	public IDByPointRequest(Integer contextID, int[] reachIDs) {
+		this.contextID = contextID;
+		this.reachIDs = reachIDs;
 	}
 
 
@@ -131,7 +138,15 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 						point.y = ParserHelper.parseAttribAsDouble(in, "lat");
 						ParserHelper.ignoreElement(in);
 					} else if (REACH_CHILD.equals(localName)) {
-						reachID = ParserHelper.parseAttribAsInt(in, "id");
+						
+						int newReachId = ParserHelper.parseAttribAsInt(in, "id");
+
+						if (reachIDs == null) {
+							reachIDs = new int[] { newReachId };
+						} else {
+							reachIDs = ArrayUtils.add(reachIDs, newReachId);
+						}
+
 						ParserHelper.ignoreElement(in);
 					} else if (CONTENT_CHILD.equals(localName)) {
 						//do nothing - just a container
@@ -233,8 +248,8 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 		return point.x;
 	}
 
-	public Integer getReachID() {
-		return reachID;
+	public int[] getReachID() {
+		return reachIDs;
 	}
 
 	public ResponseFormat getResponseFormat() {
