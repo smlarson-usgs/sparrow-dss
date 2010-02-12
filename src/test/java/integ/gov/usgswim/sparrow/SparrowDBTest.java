@@ -6,6 +6,9 @@ package gov.usgswim.sparrow;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.service.SharedApplication;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Enumeration;
@@ -26,6 +29,12 @@ import org.apache.log4j.PatternLayout;
  */
 public class SparrowDBTest {
 
+	/**
+	 * Name of a system property that if "true" will switch to the production
+	 * db and prompt for a password.
+	 */
+	private static final String SYS_PROP_USE_PRODUCTION_DB = "USE_PRODUCTION_DB";
+	
 	/** The model ID of MRB2 in the test db */
 	public static final Long TEST_MODEL_ID = 50L;
 	
@@ -80,12 +89,36 @@ public class SparrowDBTest {
 		return sparrowDBTestConn;
 	}
 	
-	protected static void setProperties() {
-		//130.11.165.154
-		//igsarmewdbdev.er.usgs.gov
-		System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.154:1521:widev");
-		System.setProperty("dbuser", "sparrow_dss");
-		System.setProperty("dbpass", "***REMOVED***");
+	protected static void setProperties() throws IOException {
+		
+		
+		String strUseProd = System.getProperty(SYS_PROP_USE_PRODUCTION_DB);
+		boolean useProd = false;
+		
+		if (strUseProd != null) {
+			strUseProd = strUseProd.toLowerCase();
+			if ("yes".equals(strUseProd) || "true".equals(strUseProd)) {
+				useProd = true;
+			}
+		}
+		
+		if (! useProd) {
+			//130.11.165.154
+			//igsarmewdbdev.er.usgs.gov
+			System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.154:1521:widev");
+			System.setProperty("dbuser", "sparrow_dss");
+			System.setProperty("dbpass", "***REMOVED***");
+		} else {
+			
+			String pwd = prompt(SYS_PROP_USE_PRODUCTION_DB +
+					" is set to 'true', requesting the production db be used." +
+					" Enter the production db password: ");
+			
+			//Production Properties
+			System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.152:1521:widw");
+			System.setProperty("dbuser", "sparrow_dss");
+			System.setProperty("dbpass", pwd);
+		}
 	}
 	
 	protected static void setLogLevel(Level level) {
@@ -94,6 +127,19 @@ public class SparrowDBTest {
 		
 		//Generically set level for all Actions
 		Logger.getLogger(Action.class).setLevel(level);
+	}
+	
+	protected static String prompt(String prompt) throws IOException {
+
+		// prompt the user to enter their name
+		System.out.print(prompt);
+
+		// open up standard input
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		String val = null;
+		val = br.readLine();
+		return val;
 	}
 	
 }
