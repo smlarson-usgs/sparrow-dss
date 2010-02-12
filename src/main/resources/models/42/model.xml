@@ -5,7 +5,7 @@
 			<Link/>
 		</Author>
 	</Authors>
-	<Model_name>2002 Total Phosphorus Model for MRB3</Model_name>
+	<Model_name>2002 Total Phosphorus Model for MRB3 </Model_name>
 	<MRB>MRB03</MRB>
 	<Constituent>
 		<Name>Phosphorus</Name>
