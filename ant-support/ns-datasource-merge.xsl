@@ -9,13 +9,13 @@
             <xsl:apply-templates select="web_proxy"/>
             <xsl:apply-templates select="security_config"/>
             <xsl:apply-templates select="global_map_config"/>
-            <spatial_data_cache max_cache_size="128" report_stats="false" />
+            <spatial_data_cache max_cache_size="512" report_stats="true" />
             <xsl:apply-templates select="custom_image_renderer"/>
             <xsl:apply-templates select="srs_mapping"/>
             <xsl:apply-templates select="wms_config"/>
             <xsl:apply-templates select="ns_data_provider[@id!='sparrowPredict']"/>
             	<ns_data_provider id="sparrowPredict"
-            					  class="gov.usgswim.sparrow.MapViewerSparrowDataProvider" />
+            		class="gov.usgswim.sparrow.MapViewerSparrowDataProvider" />
             <xsl:apply-templates select="s_data_provider"/>
             <xsl:apply-templates select="map_cache_server"/>
             <xsl:apply-templates select="map_data_source[@name!='sparrow']"/>
@@ -26,8 +26,8 @@
                 	jdbc_user="SPARROW_DSS"
                 	jdbc_password="!***REMOVED***"
                 	jdbc_mode="thin"
-                	max_connections="40"
-                	number_of_mappers="30"
+                	max_connections="2"
+                	number_of_mappers="15"
             	/>
         </MapperConfig>
     </xsl:template>
