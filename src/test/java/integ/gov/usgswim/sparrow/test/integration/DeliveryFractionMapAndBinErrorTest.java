@@ -3,13 +3,13 @@ package gov.usgswim.sparrow.test.integration;
 import static org.junit.Assert.*;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.MapViewerSparrowDataProvider;
+import gov.usgswim.sparrow.TestHelper;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.binning.BinningPipeline;
 import gov.usgswim.sparrow.service.binning.BinningServiceRequest;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
-import gov.usgswim.sparrow.test.TestHelper;
 
 import java.util.Hashtable;
 

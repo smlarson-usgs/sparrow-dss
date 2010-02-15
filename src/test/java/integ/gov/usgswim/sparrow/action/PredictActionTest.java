@@ -4,10 +4,10 @@ import static org.junit.Assert.assertEquals;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.TestHelper;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.test.TestHelper;
 import gov.usgswim.sparrow.util.DLUtils;
 
 import org.junit.BeforeClass;

@@ -1,13 +1,13 @@
 package gov.usgswim.sparrow.parser;
 
-import static gov.usgswim.sparrow.test.TestHelper.getAttributeValue;
-import static gov.usgswim.sparrow.test.TestHelper.pipeDispatch;
-import static gov.usgswim.sparrow.test.TestHelper.readToString;
+import static gov.usgswim.sparrow.TestHelper.getAttributeValue;
+import static gov.usgswim.sparrow.TestHelper.pipeDispatch;
+import static gov.usgswim.sparrow.TestHelper.readToString;
+import gov.usgswim.sparrow.TestHelper;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
-import gov.usgswim.sparrow.test.TestHelper;
 
 import java.io.InputStream;
 import java.io.StringReader;

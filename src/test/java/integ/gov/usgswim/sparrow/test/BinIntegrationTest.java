@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.TestHelper;
 import gov.usgswim.sparrow.action.CalcAnalysis;
 import gov.usgswim.sparrow.cachefactory.BinningFactory;
 import gov.usgswim.sparrow.cachefactory.BinningRequest;

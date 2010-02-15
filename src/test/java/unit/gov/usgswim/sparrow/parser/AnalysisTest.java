@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.parser;
 
-import gov.usgswim.sparrow.test.TestHelper;
+import gov.usgswim.sparrow.TestHelper;
 
 import java.io.StringReader;
 

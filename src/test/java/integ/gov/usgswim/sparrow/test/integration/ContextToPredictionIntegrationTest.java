@@ -1,9 +1,10 @@
 package gov.usgswim.sparrow.test.integration;
 
-import static gov.usgswim.sparrow.test.TestHelper.pipeDispatch;
+import static gov.usgswim.sparrow.TestHelper.pipeDispatch;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.TestHelper;
 import gov.usgswim.sparrow.action.NSDataSetBuilder;
 import gov.usgswim.sparrow.cachefactory.NSDataSetFactory;
 import gov.usgswim.sparrow.datatable.PredictResult;
@@ -13,7 +14,6 @@ import gov.usgswim.sparrow.parser.PredictionContextTest;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
-import gov.usgswim.sparrow.test.TestHelper;
 import junit.framework.TestCase;
 import oracle.mapviewer.share.ext.NSDataSet;
 import oracle.mapviewer.share.ext.NSRow;

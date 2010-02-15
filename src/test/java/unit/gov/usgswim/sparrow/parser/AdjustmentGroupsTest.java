@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.parser;
 
+import gov.usgswim.sparrow.TestHelper;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.ReachGroup;
-import gov.usgswim.sparrow.test.TestHelper;
 
 import java.io.StringReader;
 import java.util.List;

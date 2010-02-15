@@ -11,6 +11,7 @@ import gov.usgswim.sparrow.DeliveryRunner;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
+import gov.usgswim.sparrow.TestHelper;
 import gov.usgswim.sparrow.action.CalcDeliveryFraction;
 import gov.usgswim.sparrow.cachefactory.PredictResultFactory;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
@@ -23,7 +24,6 @@ import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.test.TestHelper;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;

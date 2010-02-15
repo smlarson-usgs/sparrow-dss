@@ -1,10 +1,11 @@
 package gov.usgswim.sparrow.test.integration;
 
-import static gov.usgswim.sparrow.test.TestHelper.getAttributeValue;
-import static gov.usgswim.sparrow.test.TestHelper.pipeDispatch;
+import static gov.usgswim.sparrow.TestHelper.getAttributeValue;
+import static gov.usgswim.sparrow.TestHelper.pipeDispatch;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.TestHelper;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.PredictionContextTest;
 import gov.usgswim.sparrow.parser.ReachGroup;
@@ -13,7 +14,6 @@ import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
-import gov.usgswim.sparrow.test.TestHelper;
 
 import java.io.StringReader;
 import java.util.List;
