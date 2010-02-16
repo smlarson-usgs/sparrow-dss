@@ -2,21 +2,29 @@ package gov.usgswim.sparrow;
 
 import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.parser.PredictionContext;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
 import org.apache.commons.lang.StringUtils;
 
 public abstract class TestHelper {
+	
+	/** The package containing standard requests and resources for tests */
+	public static final String SHARED_TEST_RESOURCE_PACKAGE = "gov/usgswim/sparrow/test/shared/";
 
 	/**
 	 * Convenience method for reading the contents of an input stream to a
@@ -200,6 +208,73 @@ public abstract class TestHelper {
 	}
 	
 	/**
+	 * Returns the specified file, which must exist in the package specified
+	 * by SHARED_TEST_RESOURCE_PACKAGE.
+	 * 
+	 * @param fileName Just the file name and extension.
+	 * @return
+	 * @throws IOException
+	 */
+	public static String getSharedTestResource(String fileName) throws IOException {
+		return getAnyResource(SHARED_TEST_RESOURCE_PACKAGE + fileName);
+	}
+	
+	/**
+	 * Returns the specified xml file as an XMLStreamReader.  The file must
+	 * exist in the package specified by SHARED_TEST_RESOURCE_PACKAGE.
+	 * 
+	 * @param fileName Just the file name and extension.
+	 * @return
+	 * @throws IOException
+	 */
+	public static XMLStreamReader getSharedXMLAsReader(String fileName)
+			throws Exception {
+		return getAnyXMLAsReader(SHARED_TEST_RESOURCE_PACKAGE + fileName);
+	}
+	
+	
+	/**
+	 * Returns the content of the specified file on the classpath, as a string.
+	 * 
+	 * The fullPath must be spec'ed in the format:
+	 * <path>my.package.file_name</path>
+	 * or in the case more likely case that the file name contains a 'dot':
+	 * <path>/my/package/file_name.xml</path>
+	 * 
+	 * @param fullPath Full 'getResourceAsStream' compliant path to a file.
+	 * @return
+	 * @throws IOException
+	 */
+	public static String getAnyResource(String fullPath) throws IOException {
+		InputStream is = Thread.currentThread().getContextClassLoader().
+			getResourceAsStream(fullPath);
+		
+		String content = readToString(is);
+		return content;
+	}
+	
+	/**
+	 * Returns an XMLStreamReader for any classpath xml resource.
+	 * 
+	 * The fullPath must be spec'ed in the format:
+	 * <path>my.package.file_name</path>
+	 * or in the case more likely case that the file name contains a 'dot':
+	 * <path>/my/package/file_name.xml</path>
+	 * 
+	 * @param fullPath
+	 * @return
+	 * @throws Exception
+	 */
+	public static XMLStreamReader getAnyXMLAsReader(String fullPath)
+			throws Exception {
+		
+		XMLInputFactory inFact = XMLInputFactory.newInstance();
+		String xml = getAnyResource(fullPath);
+		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(xml));
+		return reader;
+	}
+	
+	/**
 	 * Loads an xml resource file as a string.
 	 * 
 	 * The xml file is assumed to have the same name as the passed class,
@@ -225,6 +300,52 @@ public abstract class TestHelper {
 		
 		String xml = readToString(is);
 		return xml;
+	}
+	
+	/**
+	 * Loads a text file matched to the passed class,
+	 * optionally replacing '$' enclosed parmeters.
+	 * 
+	 * Text file names are expected to derived as follows:
+	 * my/package/My.class with the nameSuffix of 'request_1.xml' would result in
+	 * loading the file:
+	 * <code>my/package/My_request_1.xml</code>
+	 * <br><br>
+	 * params are passed in serial pairs as {"name1", "value1", "name2",
+	 * "value2"}. toString is called on each item, so it is OK to pass in
+	 * autobox numerics. See the DataLoader.properties file for the names of the
+	 * parameters available for the requested query.
+	 *
+	 * @param nameSuffix
+	 *            Name chunk tacked onto the end of the class name.
+	 * @param clazz
+	 * @param params
+	 *            An array of name and value objects to replace in the query.
+	 * @return
+	 * @throws IOException
+	 *
+	 * TODO move this to a utils class of some sort
+	 */
+	public static String getAnyResourceWithSubstitutions(String nameSuffix,
+			Class<?> clazz, Object... params) throws IOException {
+		
+		String path = clazz.getName().replace('.', '/');
+
+		path = path + "_" + nameSuffix;
+		
+		InputStream is = Thread.currentThread().getContextClassLoader().
+				getResourceAsStream(path);
+		
+		String content = readToString(is);
+
+		for (int i=0; i<params.length; i+=2) {
+			String n = "$" + params[i].toString() + "$";
+			String v = params[i+1].toString();
+
+			content = StringUtils.replace(content, n, v);
+		}
+
+		return content;
 	}
 	
 	/**
