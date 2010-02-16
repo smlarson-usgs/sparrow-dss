@@ -125,9 +125,9 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	public XMLStreamReader getXMLStreamReader(IDByPointRequest req, boolean isNeedsFlattening) throws Exception {
 		// TODO isNeedsFlattening ignored for now because using custom flattener
 
-		// Retrieve the model ID
-		
+		// Retrieve the model ID		
 		updateRequestModelIDIfNecessary(req);
+		
 		assert(req.getModelID() != null);
 
 		// Retrieve the reach
@@ -218,8 +218,9 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			ReachInfo[] reachResults = new ReachInfo[reachIds.length];
 			
 			for (int i = 0; i < reachIds.length; i++) {
-				reachResults[i] = SharedApplication.getInstance().getReachByIDResult(
-						new ReachID(req.getModelID(), reachIds[i]));
+				ReachID reach = new ReachID(req.getModelID(), reachIds[i]);
+				
+				reachResults[i] = SharedApplication.getInstance().getReachByIDResult(reach);
 			}
 			return reachResults;
 		} else if (req.getPoint() != null) {
