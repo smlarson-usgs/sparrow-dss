@@ -113,7 +113,7 @@ public class ComparePredictionToText {
 	public void beforeTest() {
 		SharedApplication.getInstance().clearAllCaches();
 	}
-	
+
 	@Test
 	public void testAll() throws Exception {
 		
@@ -695,6 +695,18 @@ public class ComparePredictionToText {
 		return totalCol;
 	}
 	
+	@Test
+	public void checkComparison() {
+		assertTrue(comp(0d, 0d));
+		assertTrue(comp(1000d, 1000.1d));
+		assertTrue(comp(1000d, 1000.9999d));
+		assertFalse(comp(1000d, 1001.1d));
+		assertTrue(comp(.1d, .101d));
+		assertFalse(comp(.1d, .1011d));
+		assertTrue(comp(1d, 1.005d));
+		assertFalse(comp(1d, 1.0051d));
+	}
+	
 	/**
 	 * Compares two values and returns true if they are considered equal.
 	 * Note that only positive values are expected.  If a negative value
@@ -715,7 +727,13 @@ public class ComparePredictionToText {
 		
 		double diff = Math.abs(compare - expect);
 		double baseValue = Math.max(expect, compare);
-		double frac = diff / baseValue;
+		
+		if (diff == 0) {
+			return true;	//no further comparison required
+		}
+		
+		double frac = diff / baseValue;	//we are sure at this point that baseValue > 0
+		
 		
 		if (baseValue < 1) {
 			return frac < (REQUIRED_COMPARISON_FRACTION * 10L);
