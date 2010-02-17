@@ -41,7 +41,7 @@
 						<c>4.48</c>
 					</r>
 					<r id="2">
-						<c>Wet dep. of inorg.ni</c>
+						<c>Wet dep. of inorg.nitrogen</c>
 						<c>Nitrogen</c>
 						<c>kg/yr</c>
 						<c>2</c>
@@ -59,7 +59,7 @@
 						<c>0.35</c>
 					</r>
 					<r id="4">
-						<c>Fert. applied to agr</c>
+						<c>Fert. applied to agric. land</c>
 						<c>Nitrogen</c>
 						<c>kg/yr</c>
 						<c>2</c>
@@ -104,7 +104,7 @@
 							<c>0.00</c>
 						</r>
 						<r>
-							<c>Wet dep. of inorg.ni Inc. Addition</c>
+							<c>Wet dep. of inorg.nitrogen Inc. Addition</c>
 							<c />
 							<c>kg/year</c>
 							<c>2</c>
@@ -122,7 +122,7 @@
 							<c>100.00</c>
 						</r>
 						<r>
-							<c>Fert. applied to agr Inc. Addition</c>
+							<c>Fert. applied to agric. land Inc. Addition</c>
 							<c />
 							<c>kg/year</c>
 							<c>2</c>
@@ -161,7 +161,7 @@
 							<c>0.00</c>
 						</r>
 						<r>
-							<c>Wet dep. of inorg.ni Total (w/ upstream, decayed)</c>
+							<c>Wet dep. of inorg.nitrogen Total (w/ upstream, decayed)</c>
 							<c />
 							<c>kg/year</c>
 							<c>2</c>
@@ -179,7 +179,7 @@
 							<c>100.00</c>
 						</r>
 						<r>
-							<c>Fert. applied to agr Total (w/ upstream, decayed)</c>
+							<c>Fert. applied to agric. land Total (w/ upstream, decayed)</c>
 							<c />
 							<c>kg/year</c>
 							<c>2</c>
@@ -235,7 +235,7 @@
 						</r>
 						<r>
 							<c>Open Water Name</c>
-							<c>N/A</c>
+							<c></c>
 							<c />
 						</r>
 						<r>
@@ -373,7 +373,7 @@
 						<c>0.00</c>
 					</r>
 					<r id="2">
-						<c>Wet dep. of inorg.ni</c>
+						<c>Wet dep. of inorg.nitrogen</c>
 						<c>Nitrogen</c>
 						<c>kg/yr</c>
 						<c>2</c>
@@ -391,7 +391,7 @@
 						<c>7.96</c>
 					</r>
 					<r id="4">
-						<c>Fert. applied to agr</c>
+						<c>Fert. applied to agric. land</c>
 						<c>Nitrogen</c>
 						<c>kg/yr</c>
 						<c>2</c>
@@ -436,7 +436,7 @@
 							<c>0.00</c>
 						</r>
 						<r>
-							<c>Wet dep. of inorg.ni Inc. Addition</c>
+							<c>Wet dep. of inorg.nitrogen Inc. Addition</c>
 							<c />
 							<c>kg/year</c>
 							<c>2</c>
@@ -454,7 +454,7 @@
 							<c>100.00</c>
 						</r>
 						<r>
-							<c>Fert. applied to agr Inc. Addition</c>
+							<c>Fert. applied to agric. land Inc. Addition</c>
 							<c />
 							<c>kg/year</c>
 							<c>2</c>
@@ -493,7 +493,7 @@
 							<c>0.00</c>
 						</r>
 						<r>
-							<c>Wet dep. of inorg.ni Total (w/ upstream, decayed)</c>
+							<c>Wet dep. of inorg.nitrogen Total (w/ upstream, decayed)</c>
 							<c />
 							<c>kg/year</c>
 							<c>2</c>
@@ -511,7 +511,7 @@
 							<c>52.71</c>
 						</r>
 						<r>
-							<c>Fert. applied to agr Total (w/ upstream, decayed)</c>
+							<c>Fert. applied to agric. land Total (w/ upstream, decayed)</c>
 							<c />
 							<c>kg/year</c>
 							<c>2</c>
@@ -567,7 +567,7 @@
 						</r>
 						<r>
 							<c>Open Water Name</c>
-							<c>N/A</c>
+							<c></c>
 							<c />
 						</r>
 						<r>

@@ -46,7 +46,7 @@ public class IDServiceIntegrationTest extends SparrowDBTest {
 	public void testModelByPoint() throws Exception {
 
 		String response = runRequest(getXmlAsString(this.getClass(), "req1"));
-		log.debug("Req 1 response: " + response);
+		//log.debug("Req 1 response: " + response);
 		
 		int reachID = Integer.parseInt( getElementValue(response, "id") );
 		String reachName = getElementValue(response, "name");
@@ -102,14 +102,15 @@ public class IDServiceIntegrationTest extends SparrowDBTest {
 		String expectedResponse = getXmlAsString(this.getClass(), "resp4");
 		String actualResponse = runRequest(contextBasedIDReq);
 
+		//log.debug(expectedResponse);
 		//log.debug(actualResponse);
-		//XMLAssert.assertXMLEqual(expectedResponse, actualResponse);
+		XMLAssert.assertXMLEqual(expectedResponse, actualResponse);
 		
 		//Rerun - should be instant b/c we don't ask for attributes.
 		long start = System.currentTimeMillis();
 		actualResponse = runRequest(contextBasedIDReq);
 		long end = System.currentTimeMillis();
-		//XMLAssert.assertXMLEqual(expectedResponse, actualResponse);
+		XMLAssert.assertXMLEqual(expectedResponse, actualResponse);
 		assertTrue(end - start < 500L);
 	}
 	
@@ -122,8 +123,5 @@ public class IDServiceIntegrationTest extends SparrowDBTest {
 		return response;
 	}
 	
-	//  TODO add testing for parsing REST requests
-	
-
 }
 
