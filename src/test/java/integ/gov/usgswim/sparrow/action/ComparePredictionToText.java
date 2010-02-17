@@ -705,7 +705,10 @@ public class ComparePredictionToText {
 		assertFalse(comp(.1d, .111d));
 		assertTrue(comp(1d, 1.005d));
 		assertFalse(comp(1d, 1.0051d));
+		
+		//Specific comparisons
 		assertTrue(comp(.00073676269211912d, 0d));
+		assertTrue(comp(2.1328272875115d, 2.1402908936369247d));
 	}
 	
 	/**
@@ -739,9 +742,9 @@ public class ComparePredictionToText {
 			frac = diff / expect;	//we are sure at this point that baseValue > 0
 		}
 		
-		if (expect < 2) {
+		if (expect < 10) {
 			return frac < (REQUIRED_COMPARISON_FRACTION * 5L);
-		} else if (expect < 10) {
+		} else if (expect < 20) {
 			return frac < (REQUIRED_COMPARISON_FRACTION * 2L);
 		} else {
 			return frac < REQUIRED_COMPARISON_FRACTION;
