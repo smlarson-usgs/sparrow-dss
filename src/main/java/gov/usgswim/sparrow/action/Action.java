@@ -1,6 +1,12 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgswim.sparrow.service.SharedApplication;
+
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -35,6 +41,9 @@ public abstract class Action<R extends Object> {
 	 * The run number of the current instance, based on staticRunCount.
 	 */
 	private int runNumber = 0;
+	
+	/** A connection that will be closed when the action completes */
+	private Connection conn = null;
 	
 	private long startTime;		//Time the action starts
 	
@@ -117,6 +126,93 @@ public abstract class Action<R extends Object> {
 				}
 			}
 			
+		}
+		
+		//Close the connection, if not null
+		if (conn != null) {
+			try {
+				if (! conn.isClosed()) {
+					try {
+						conn.close();
+					} catch (Exception ee) {
+						//ignore
+						log.error("Unable to close a connection", ee);
+					}
+				}
+			} catch (SQLException e) {
+				//ignore
+				log.error("Good grief, I just tried to find out if the connection was open or closed...", e);
+			} finally {
+				conn = null;
+			}
+		}
+	}
+	
+	protected Connection getConnection() throws SQLException {
+		if (conn == null) {
+			conn = SharedApplication.getInstance().getConnection();
+		}
+		
+		return conn;
+	}
+	
+	/**
+	 * Taken From:
+	 * Properly closing Connections and ResultSets without throwing exceptions, see the section
+	 * "Here is an example of properly written code to use a db connection obtained from a connection pool"
+	 * http://tomcat.apache.org/tomcat-6.0-doc/jndi-datasource-examples-howto.html
+	 * @param conn
+	 */
+	protected static void close(Connection conn) {
+		if (conn != null) {
+			try {
+				conn.close();
+			} catch (SQLException e) {
+				log.error("Unable to close a jdbc connection", e);
+			}
+			conn = null;
+		}
+	}
+	
+	/**
+	 * Taken From:
+	 * Properly closing Connections and ResultSets without throwing exceptions, see the section
+	 * "Here is an example of properly written code to use a db connection obtained from a connection pool"
+	 * http://tomcat.apache.org/tomcat-6.0-doc/jndi-datasource-examples-howto.html
+	 * 
+	 * Note that this method makes no attempt to close the parent connection
+	 * or statement.
+	 * @param statement
+	 */
+	protected static void close(Statement statement) {
+		if (statement != null) {
+			try {
+				statement.close();
+			} catch (SQLException e) {
+				log.error("Unable to close a jdbc statement", e);
+			}
+			statement = null;
+		}
+	}
+	
+	/**
+	 * Taken From:
+	 * Properly closing Connections and ResultSets without throwing exceptions, see the section
+	 * "Here is an example of properly written code to use a db connection obtained from a connection pool"
+	 * http://tomcat.apache.org/tomcat-6.0-doc/jndi-datasource-examples-howto.html
+	 * 
+	 * Note that this method makes no attempt to close the parent connection
+	 * or statement.
+	 * @param rset
+	 */
+	protected static void close(ResultSet rset) {
+		if (rset != null) {
+			try {
+				rset.close();
+			} catch (SQLException e) {
+				log.error("Unable to close a jdbc resultset", e);
+			}
+			rset = null;
 		}
 	}
 	
