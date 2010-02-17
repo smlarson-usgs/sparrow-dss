@@ -200,8 +200,6 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 
 		int ssCol = stdDelFracTo9682.getColumnByName("INC_DEL_FLUX_1");
 		
-		//This fails for reach 9685 which is zero in the spreadsheet, but should
-		//probably not be.  Run query to get full value.
 		doComparison(stdDelFracTo9682, ssCol, result, modifiedPredictData, true);
 		assertEquals(SingleColumnCoefDataTable.class, result.getTable().getClass());
 	}
