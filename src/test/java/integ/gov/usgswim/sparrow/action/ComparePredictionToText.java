@@ -51,6 +51,11 @@ import org.junit.Test;
  */
 public class ComparePredictionToText {
 	
+	/**
+	 * The required comparison accuracy (expected - actual)/(max(expected, actual))
+	 * This value is slightly relaxed for values less than 1.
+	 */
+	final double REQUIRED_COMPARISON_FRACTION = .001d;	//comp fraction
 	
 	protected static Logger log =
 		Logger.getLogger(ComparePredictionToText.class); //logging for this class
@@ -690,16 +695,36 @@ public class ComparePredictionToText {
 		return totalCol;
 	}
 	
+	/**
+	 * Compares two values and returns true if they are considered equal.
+	 * Note that only positive values are expected.  If a negative value
+	 * is received for any value, false is returned.
+	 * 
+	 * The comparison is done on a sliding scale:  values less than ten require
+	 * a bit less accuracy.
+	 * 
+	 * @param expect
+	 * @param compare
+	 * @return
+	 */
 	public boolean comp(double expect, double compare) {
-		final double REQUIRED_FRACTION = .001d;	//comp fraction
 		
-		if (expect == 0d) {
-			return compare == 0;
+		if (expect < 0 || compare < 0) {
+			return false;
+		}
+		
+		double diff = Math.abs(compare - expect);
+		double baseValue = Math.max(expect, compare);
+		double frac = diff / baseValue;
+		
+		if (baseValue < 1) {
+			return frac < (REQUIRED_COMPARISON_FRACTION * 10L);
+		} else if (baseValue < 2) {
+			return frac < (REQUIRED_COMPARISON_FRACTION * 5L);
+		} else if (baseValue < 10) {
+			return frac < (REQUIRED_COMPARISON_FRACTION * 2L);
 		} else {
-			double diff = Math.abs(compare - expect);
-			double baseValue = Math.abs(expect);
-			double frac = diff / baseValue;
-			return frac < REQUIRED_FRACTION;
+			return frac < REQUIRED_COMPARISON_FRACTION;
 		}
 	}
 	
