@@ -599,16 +599,9 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	 * @param response The service response object.
 	 */
 	private void retrieveAttributes(IDByPointRequest req, IDByPointResponse response)
-	throws IOException, SQLException, NamingException {
-		// TODO move to DataLoader when done debugging
+			throws Exception {
 
-		String[] queryParams = {
-				"ReachID", Long.toString(response.reachID),
-				"ModelID", Long.toString(response.modelID),
-		};
-		String attributesQuery = props.getParametrizedQuery("attributesSQL", queryParams);
-
-		DataTableWritable attributes = SharedApplication.queryToDataTable(attributesQuery);
+		DataTable attributes = getAttributeData(response.modelID, response.reachID);
 
 		// TODO [IK] This 4 is hardcoded for now. Have to go back and use SparrowModelProperties to do properly
 		response.sparrowAttributes = new FilteredDataTable(attributes, new ColumnRangeFilter(0, 4)); // first four columns
@@ -624,6 +617,11 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				"BasicAttributes", basicAttributesSection.toString(),
 				"SparrowAttributes", sparrowAttributesSection.toString(),
 		});
+	}
+	
+	public DataTable getAttributeData(long modelId, long reachId) throws Exception {
+		DataTable tab = SharedApplication.getInstance().getReachAttributes(new ReachID(modelId, reachId));
+		return tab;
 	}
 
 

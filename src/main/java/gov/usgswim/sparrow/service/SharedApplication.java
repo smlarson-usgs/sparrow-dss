@@ -77,6 +77,7 @@ public class SharedApplication  {
 	public static final String PREDICT_RESULT_CACHE = "PredictResult";
 	public static final String IDENTIFY_REACH_BY_POINT = "IdentifyReachByPoint";
 	public static final String IDENTIFY_REACH_BY_ID = "IdentifyReachByID";
+	public static final String LOAD_REACH_ATTRIBUTES = "LoadReachAttributes";
 	public static final String REACHES_BY_CRITERIA = "ReachesByCriteria";
 	public static final String DATA_BINNING = "DataBinning";
 
@@ -490,6 +491,17 @@ public class SharedApplication  {
 		Ehcache c = CacheManager.getInstance().getEhcache(IDENTIFY_REACH_BY_ID);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
 		return (e != null)?((ReachInfo) e.getObjectValue()):null;
+	}
+	
+	//LoadReachAttributes
+	public DataTable getReachAttributes(ReachID req) {
+		return getReachAttributes(req, false);
+	}
+	
+	public DataTable getReachAttributes(ReachID req, boolean quiet) {
+		Ehcache c = CacheManager.getInstance().getEhcache(LOAD_REACH_ATTRIBUTES);
+		Element e  = (quiet)?c.getQuiet(req):c.get(req);
+		return (e != null)?((DataTable) e.getObjectValue()):null;
 	}
 
 	//Adjusted Source Cache

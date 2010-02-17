@@ -1,14 +1,19 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.datatable.DataTable;
 import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.parser.PredictionContext;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -19,9 +24,15 @@ import javax.xml.stream.XMLStreamReader;
 
 import junit.framework.TestCase;
 
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 public abstract class TestHelper {
+	
+	/** Logging.  Log messages will use the name of the subclass */
+	protected static Logger log =
+		Logger.getLogger(TestHelper.class); //logging for this class
 	
 	/** The package containing standard requests and resources for tests */
 	public static final String SHARED_TEST_RESOURCE_PACKAGE = "gov/usgswim/sparrow/test/shared/";
@@ -208,6 +219,53 @@ public abstract class TestHelper {
 	}
 	
 	/**
+	 * Loads a serialized object from a file.
+	 * 
+	 * The file is assumed to have the same name as the passed class,
+	 * but with specified extension.  An additional name suffix may be added to
+	 * allow multiple files for the same class.
+	 * 
+	 * Example 1: If the class is named <code>com.foo.MyClass</code>,
+	 * the file <code>com/foo/MyClass.[passed extension]</code> would be read.
+	 * 
+	 * Example 2: If the class is named <code>com.foo.MyClass</code>, the
+	 * extension "tab", and the name suffix 'file1' is passed,
+	 * the file <code>com/foo/MyClass_file1.tab</code> would be read.  Note the
+	 * automatic addition of the underscore.
+	 * 
+	 * @param forClass The class for which to look for a similar named resource.
+	 * @param fileSuffix A name fragment added to the end of the class name w/ an underscore.
+	 * @param fileExtension The file extension (after the dot, don't include the dot) of the file.
+	 * @return A string loaded from the specified file.
+	 * @throws IOException
+	 */
+	public static Object getFileAsObject(Class<?> forClass, String fileSuffix,
+				String fileExtension) throws Exception {
+		InputStream is = getResource(forClass, fileSuffix, fileExtension);
+        ObjectInputStream ois = new ObjectInputStream(is);
+        Object o = ois.readObject();
+        ois.close();
+        return o;
+	}
+	
+	/**
+	 * Write an object instance to a specified file.
+	 * This method is intended to be used for writing data instances to a file
+	 * so they can be used as a nominal value for comparisons in tests via the
+	 * getFileAsObject() method.
+	 * 
+	 * @param o
+	 * @param filePath
+	 * @throws Exception
+	 */
+	public void writeObjectToFile(Serializable o, String filePath) throws Exception {
+        FileOutputStream fos = new FileOutputStream(filePath);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(o);
+        oos.close();
+	}
+	
+	/**
 	 * Returns the specified file, which must exist in the package specified
 	 * by SHARED_TEST_RESOURCE_PACKAGE.
 	 * 
@@ -361,6 +419,34 @@ public abstract class TestHelper {
 			String message = "hashCode comparison failed for item " + i;
 			TestCase.assertEquals(message, objects[0].hashCode(), objects[i].hashCode());
 		}
+	}
+	
+	/**
+	 * Compares two datatables, returning true if they are equal.
+	 * 
+	 * Any mismatched values are logged as errors. (log.error)
+	 * 
+	 * @param expected
+	 * @param actual
+	 * @return
+	 */
+	public boolean compareTables(DataTable expected, DataTable actual) {
+		boolean match = true;
+		
+		for (int r = 0; r < expected.getRowCount(); r++) {
+			for (int c = 0; c < expected.getColumnCount(); c++) {
+				Object orgValue = expected.getValue(r, c);
+				Object newValue = actual.getValue(r, c);
+				
+				if (! ObjectUtils.equals(orgValue, newValue)) {
+					match = false;
+					log.error("Mismatch : " + r + "," + c + ") [" + orgValue + "] [" + newValue + "]");
+				}
+				//assertEquals(original.getValue(r, c), newVersion.getValue(r, c));
+			}
+		}
+		
+		return match;
 	}
 
 }

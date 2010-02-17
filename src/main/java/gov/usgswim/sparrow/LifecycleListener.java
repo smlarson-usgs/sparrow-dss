@@ -130,6 +130,10 @@ public class LifecycleListener implements ServletContextListener {
 		SelfPopulatingCache reachByIDCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.IDENTIFY_REACH_BY_ID), new ReachByIDFactory());
 		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.IDENTIFY_REACH_BY_ID), reachByIDCache);
 
+		//IdentifyReachByID
+		SelfPopulatingCache loadReachAttributesCache = new SelfPopulatingCache(cm.getEhcache(SharedApplication.LOAD_REACH_ATTRIBUTES), new LoadReachAttributesFactory());
+		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.LOAD_REACH_ATTRIBUTES), loadReachAttributesCache);
+		
 		//ReachesByCriteria
 		SelfPopulatingCache reachesByCriteria = new SelfPopulatingCache(cm.getEhcache(SharedApplication.REACHES_BY_CRITERIA), new ReachesByCriteriaFactory());
 		cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.REACHES_BY_CRITERIA), reachesByCriteria);

@@ -14,9 +14,9 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @Immutable
 public class ReachID {
 	private final long modelID;
-	private final int reachID;
+	private final long reachID;
 
-	public ReachID(long modelID, int reachID) {
+	public ReachID(long modelID, long reachID) {
 		this.modelID = modelID;
 		this.reachID = reachID;
 	}
@@ -25,7 +25,7 @@ public class ReachID {
 		return modelID;
 	}
 
-	public int getReachID() {
+	public long getReachID() {
 		return reachID;
 	}
 

@@ -339,6 +339,12 @@
 		timeToLiveSeconds="3600" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
 		
+	<cache name="LoadReachAttributes" maxElementsInMemory="1000"
+		maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
+		diskSpoolBufferSizeMB="8" timeToIdleSeconds="3600"
+		timeToLiveSeconds="3600" diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+		
         <!-- Not currently used. -->
 	<cache name="ReachesByCriteria" maxElementsInMemory="100"
 		maxElementsOnDisk="0" eternal="false" overflowToDisk="true"

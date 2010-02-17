@@ -41,10 +41,6 @@ public class SparrowDBTest extends TestHelper {
 	/** A connection, shared for this class and autoclosed */
 	private static Connection sparrowDBTestConn;
 	
-	/** Logging.  Log messages will use the name of the subclass */
-	protected static Logger log =
-		Logger.getLogger(SparrowDBTest.class); //logging for this class
-	
 	/** lifecycle listener handles startup / shutdown */
 	static LifecycleListener lifecycle = new LifecycleListener();
 
