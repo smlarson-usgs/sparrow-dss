@@ -113,7 +113,7 @@ public class ComparePredictionToText {
 	public void beforeTest() {
 		SharedApplication.getInstance().clearAllCaches();
 	}
-
+	
 	@Test
 	public void testAll() throws Exception {
 		
@@ -701,10 +701,11 @@ public class ComparePredictionToText {
 		assertTrue(comp(1000d, 1000.1d));
 		assertTrue(comp(1000d, 1000.9999d));
 		assertFalse(comp(1000d, 1001.1d));
-		assertTrue(comp(.1d, .101d));
-		assertFalse(comp(.1d, .1011d));
+		assertTrue(comp(.1d, .11d));
+		assertFalse(comp(.1d, .111d));
 		assertTrue(comp(1d, 1.005d));
 		assertFalse(comp(1d, 1.0051d));
+		assertTrue(comp(.00073676269211912d, 0d));
 	}
 	
 	/**
@@ -726,20 +727,21 @@ public class ComparePredictionToText {
 		}
 		
 		double diff = Math.abs(compare - expect);
-		double baseValue = Math.max(expect, compare);
+		double frac = 0;
 		
 		if (diff == 0) {
 			return true;	//no further comparison required
 		}
 		
-		double frac = diff / baseValue;	//we are sure at this point that baseValue > 0
+		if (expect < 1d) {
+			return (diff < (REQUIRED_COMPARISON_FRACTION * 10d));
+		} else {
+			frac = diff / expect;	//we are sure at this point that baseValue > 0
+		}
 		
-		
-		if (baseValue < 1) {
-			return frac < (REQUIRED_COMPARISON_FRACTION * 10L);
-		} else if (baseValue < 2) {
+		if (expect < 2) {
 			return frac < (REQUIRED_COMPARISON_FRACTION * 5L);
-		} else if (baseValue < 10) {
+		} else if (expect < 10) {
 			return frac < (REQUIRED_COMPARISON_FRACTION * 2L);
 		} else {
 			return frac < REQUIRED_COMPARISON_FRACTION;
