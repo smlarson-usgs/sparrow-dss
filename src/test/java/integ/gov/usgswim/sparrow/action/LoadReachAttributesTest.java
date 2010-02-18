@@ -61,7 +61,7 @@ public class LoadReachAttributesTest  extends SparrowDBTest {
 	 * Tests the results of loading the attributes against a serialized table.
 	 * @throws Exception
 	 */
-	//@Test
+	@Test
 	public void compareToOriginal() throws Exception {
 		LoadReachAttributes action = new LoadReachAttributes();
 		action.setModelId(SparrowDBTest.TEST_MODEL_ID);
@@ -73,20 +73,6 @@ public class LoadReachAttributesTest  extends SparrowDBTest {
 		
 	}
 	
-	/**
-	 * Writes the current version of the datatable to a file located somewhere
-	 * local... possibly your home directory, possibly the root of this project.
-	 * Use to create or update the datatable for the test.
-	 * @throws Exception
-	 */
-	public void saveCurrentTableToFile() throws Exception {
-		LoadReachAttributes action = new LoadReachAttributes();
-		action.setModelId(SparrowDBTest.TEST_MODEL_ID);
-		action.setReachId(9190);
-		DataTable newVersion = action.doAction();
-		
-		writeObjectToFile(newVersion, "LoadReachAttributesTest_tab.ser");
-	}
 	
 	/**
 	 * This is a test of using the action (which uses a PreparedStatement)
