@@ -11,6 +11,7 @@ import gov.usgswim.sparrow.DeliveryRunner;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
+import gov.usgswim.sparrow.SparrowDBTest;
 import gov.usgswim.sparrow.TestHelper;
 import gov.usgswim.sparrow.action.CalcDeliveryFraction;
 import gov.usgswim.sparrow.cachefactory.PredictResultFactory;
@@ -45,13 +46,10 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class DeliveryPerformanceTest {
-	protected static Logger log =
-		Logger.getLogger(DeliveryPerformanceTest.class); //logging for this class
+public class DeliveryPerformanceTest extends SparrowDBTest {
 	
 	static LifecycleListener lifecycle = new LifecycleListener();
 	
-	static final Long MODEL_ID = 50L;
 	static PredictionContext context;
 	
 	@BeforeClass
@@ -63,48 +61,61 @@ public class DeliveryPerformanceTest {
 		//Turn off logging for actions, which might affect performance
 		log.getLogger(Action.class).setLevel(Level.ERROR);
 		
-		lifecycle.contextInitialized(null, true);
 		
-		AdjustmentGroups emptyAdjustments = new AdjustmentGroups(MODEL_ID);
-		context = new PredictionContext(MODEL_ID, emptyAdjustments, null,
+		AdjustmentGroups emptyAdjustments = new AdjustmentGroups(TEST_MODEL_ID);
+		context = new PredictionContext(TEST_MODEL_ID, emptyAdjustments, null,
 				null, null, null);
 		SharedApplication.getInstance().putPredictionContext(context);
 		
-		
-		XMLUnit.setIgnoreWhitespace(true);
-		
 	}
 
-	@AfterClass
-	public static void tearDown() throws Exception {
-		lifecycle.contextDestroyed(null, true);
-	}
 	
 	@Test
 	public void testComparison() throws Exception {
 
+		long startTime = 0;
+		long endTime = 0;
 		//Number of times to loop
 		final int ITERATION_COUNT = 100;
 		
 		
 		//Force the predict data to be loaded
-		PredictData predictData = SharedApplication.getInstance().getPredictData(MODEL_ID);
+		startTime = System.currentTimeMillis();
+		PredictData predictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
+		endTime = System.currentTimeMillis();
+		report(endTime - startTime, "Initial Load of model data", 1);
+		assertTrue("It should take less then 40 seconds to load model 50, even on a slow connection.", 
+				(endTime - startTime) < 40000);
+		
+		
+		startTime = System.currentTimeMillis();
+		for (int i = 0; i < 100; i++) {
+			predictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
+		}
+		endTime = System.currentTimeMillis();
+		report(endTime - startTime, "Reload model data from cache", 100);
+		assertTrue("Predict data is now cached, it should be faster than 100ms for 100 'loads'.", 
+				(endTime - startTime) < 50);
+		
 		
 		PredictResultFactory prFactory = new PredictResultFactory();
-		AdjustmentGroups emptyAdjustments = new AdjustmentGroups(MODEL_ID);
+		AdjustmentGroups emptyAdjustments = new AdjustmentGroups(TEST_MODEL_ID);
 		PredictResult predictResults = null;
 		NSDataSetBuilder nsDataSetBuilder = new NSDataSetBuilder();
 		CalcDeliveryFraction delAction = new CalcDeliveryFraction();
 		DataColumn dataColumn = null;
 		
 		//Run the prediction
-		long startTime = System.currentTimeMillis();
+		startTime = System.currentTimeMillis();
 		for (int i=0; i< ITERATION_COUNT;  i++) {
 			predictResults = prFactory.createEntry(emptyAdjustments);
 		}
-		long endTime = System.currentTimeMillis();
+		endTime = System.currentTimeMillis();
 		long predictTotalTime = endTime - startTime;
 		report(predictTotalTime, "Run Prediction", ITERATION_COUNT);
+		assertTrue("Run Prediction should be less than 5 seconds for 100 runs.", 
+				predictTotalTime < 5000);
+		
 		
 		//Copy the prediction results to an NSDataSet
 		dataColumn =
@@ -117,11 +128,14 @@ public class DeliveryPerformanceTest {
 		endTime = System.currentTimeMillis();
 		long predictCopyTotalTime = endTime - startTime;
 		report(predictCopyTotalTime, "Copy predict result to NSDataset", ITERATION_COUNT);
+		assertTrue("Copying the data to the NSDataset should be less than 500ms for 100 iterations.", 
+				predictCopyTotalTime < 500);
+		
 		
 		//Run Delivery
 		List<Long> targetList = new ArrayList<Long>();
 		targetList.add(9682L);
-		TerminalReaches targets = new TerminalReaches(MODEL_ID, targetList);
+		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		delAction.setPredictData(predictData);
 		delAction.setTargetReachIds(targets.asSet());
 		ColumnData deliveryFrac = null;
@@ -132,47 +146,13 @@ public class DeliveryPerformanceTest {
 		endTime = System.currentTimeMillis();
 		long deliveryTotalTime = endTime - startTime;
 		report(deliveryTotalTime, "Run Delivery", ITERATION_COUNT);
-		
-		//Copy the delivery to NSDataSet
-		SimpleDataTable delFracTable = new SimpleDataTable(
-				new ColumnData[] {deliveryFrac}, "Delivery Fraction",
-				"A single column table containing the delivery fraction" +
-				" to a target reach or reaches.", null, null
-			);
-		dataColumn = new DataColumn(delFracTable, 0, context.getId());
-		nsDataSetBuilder.setData(dataColumn);
-		startTime = System.currentTimeMillis();
-		for (int i=0; i< ITERATION_COUNT;  i++) {
-			nsDataSetBuilder.run();
-		}
-		endTime = System.currentTimeMillis();
-		long deliveryCopyTotalTime = endTime - startTime;
-		report(deliveryCopyTotalTime, "Copy Delivery to NSDataset", ITERATION_COUNT);
-		
-		double calcTimeRatio = Math.abs(predictTotalTime - deliveryTotalTime)/
-			(double)predictTotalTime;
-		double copyTimeRatio = Math.abs(predictCopyTotalTime - deliveryCopyTotalTime)/
-			(double)predictCopyTotalTime;
-	
-		int countNonZeroDels = 0;
-		
-		for (int r=0; r<deliveryFrac.getRowCount(); r++) {
-			if (deliveryFrac.getDouble(r) > 0d) countNonZeroDels++;
-		}
+		assertTrue("Delivery calc time should be less than 500ms for 100 iterations.", 
+				deliveryTotalTime < 500);
 		
 		
-		System.out.println("Calc time ratio = " + calcTimeRatio);
-		System.out.println("Copy time ratio = " + copyTimeRatio);
-		System.out.println("Number of non-zero delivery fractions = " + countNonZeroDels);
-		System.out.println("Topo is indexed? " + predictData.getTopo().isIndexed(PredictData.TNODE_COL));
 		
-		//The time to run the delivery should not be an increase of more than
-		//150% of the time to run the prediction (2.5 times as long)
-		assertTrue(calcTimeRatio < 1.5d);
-		
-		//The time to run the delivery should not be an increase of more than
-		//100% of the time to run the prediction (2 times as long)
-		assertTrue(copyTimeRatio < 1d);
+		assertTrue("Topo table should be indexed", predictData.getTopo().isIndexed(PredictData.TNODE_COL));
+
 	}
 	
 	protected void report(long time, String description, int iterationCount) {
