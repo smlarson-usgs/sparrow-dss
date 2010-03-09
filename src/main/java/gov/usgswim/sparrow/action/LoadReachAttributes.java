@@ -65,7 +65,7 @@ public class LoadReachAttributes extends Action<DataTable> {
 		Connection conn = getConnection();	//Auto closed (resultsets and statements are not)
 		PreparedStatement st =
 			conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY,
-			ResultSet.CONCUR_READ_ONLY, ResultSet.CLOSE_CURSORS_AT_COMMIT);
+			ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
 		
 		st.setLong(1, reachId);
 		st.setLong(2, modelId);
