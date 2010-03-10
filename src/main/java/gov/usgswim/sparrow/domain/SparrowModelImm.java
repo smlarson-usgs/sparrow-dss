@@ -30,6 +30,8 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	private final Double _eastBound;
 	private final Double _southBound;
 	private final Double _westBound;
+	private final String _constituent;
+	private final String _units;
 	private final List<Source> _sources;
 	private final Set<Entry<Object, Object>> _sessions;
 
@@ -42,7 +44,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	/**
 	 * Constructs an immutable SparrowModel instance.
 	 *
-	 * Note:  To be truely immmutable, the Sources in the passed list must be
+	 * Note:  To be truly immutable, the Sources in the passed list must be
 	 * immutable - this is the caller's responsibility.  The passed list does
 	 * not need to be immutable b/c the values will be copied out.
 	 *
@@ -60,13 +62,16 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	 * @param eastBound
 	 * @param southBound
 	 * @param westBound
-	 * @param _sessions
+	 * @param constituent
+	 * @param units
+	 * @param sessions
 	 * @param sources
 	 */
 	public SparrowModelImm(Long id, boolean approved, boolean isPublic, boolean archived,
 				String name, String description, String url, Date dateAdded,
 				Long contactId, Long enhNetworkId,
 				Double northBound, Double eastBound, Double southBound, Double westBound,
+				String constituent, String units,
 				Set<Entry<Object, Object>> sessions, List<Source> sources) {
 
 		_id = id;
@@ -83,6 +88,8 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 		_eastBound = eastBound;
 		_southBound = southBound;
 		_westBound = westBound;
+		_constituent = constituent;
+		_units = units;
 		_sessions = Collections.unmodifiableSet(sessions);
 
 		//copy out the sources into an immutable list
@@ -133,6 +140,12 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 
 	@Override
 	public Double getWestBound() { return _westBound;}
+
+	@Override
+	public String getConstituent() { return _constituent;}
+	
+	@Override
+	public String getUnits() { return _units;}
 
 	@Override
 	public Set<Entry<Object, Object>> getSessions() { return _sessions;}

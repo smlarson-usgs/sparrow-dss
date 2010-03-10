@@ -32,6 +32,8 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 	protected Double _eastBound;
 	protected Double _southBound;
 	protected Double _westBound;
+	protected String _constituent;
+	protected String _units;
 	protected List<Source> _sources;
 	private Set<Entry<Object, Object>> _sessions;
 
@@ -64,7 +66,8 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 		return new SparrowModelImm(
 			_id, _approved, _public, _archived, _name, _description, _url,
 			_dateAdded, _contactId, _enhNetworkId,
-			_northBound, _eastBound, _southBound, _westBound, _sessions, tmpList);
+			_northBound, _eastBound, _southBound, _westBound, _constituent, _units, 
+			_sessions, tmpList);
 	}
 
 	public void setId(Long id) {_id = id;}
@@ -133,6 +136,16 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 
 	@Override
 	public Double getWestBound() {return _westBound;}
+
+	public void setConstituent(String constituent) {this._constituent = constituent;}
+
+	@Override
+	public String getConstituent() {return _constituent;}
+
+	public void setUnits(String units) {this._units = units;}
+
+	@Override
+	public String getUnits() {return _units;}
 
 	public void setSessions(Set<Entry<Object, Object>> sessions) {_sessions = sessions;}
 

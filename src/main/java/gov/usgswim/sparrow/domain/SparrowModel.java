@@ -102,6 +102,20 @@ public interface SparrowModel {
 	public Double getWestBound();
 
 	/**
+	 * Constituent of the model.
+	 *
+	 * @return
+	 */
+	public String getConstituent();
+
+	/**
+	 * Units of the model.
+	 *
+	 * @return
+	 */
+	public String getUnits();
+	
+	/**
 	 * Returns a list of saved sessions associated to this model.
 	 *
 	 * @return

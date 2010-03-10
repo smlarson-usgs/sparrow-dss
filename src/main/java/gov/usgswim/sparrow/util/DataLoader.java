@@ -167,6 +167,8 @@ public class DataLoader {
 					m.setEastBound(rset.getDouble("BOUND_EAST"));
 					m.setSouthBound(rset.getDouble("BOUND_SOUTH"));
 					m.setWestBound(rset.getDouble("BOUND_WEST"));
+					m.setConstituent(rset.getString("CONSTITUENT"));
+					m.setUnits(rset.getString("UNITS"));
 
 					StringBuilder sessions = SavedSessionService.retrieveAllSavedSessionsXML(Long.toString(modelID));
 
