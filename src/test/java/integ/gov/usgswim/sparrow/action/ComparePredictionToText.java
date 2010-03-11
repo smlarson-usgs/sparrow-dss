@@ -74,6 +74,8 @@ public class ComparePredictionToText {
 	static LifecycleListener lifecycle = new LifecycleListener();
 	
 	final static String TEXT_PATH = "/model_predict/";
+	
+	static boolean abort = false;	//A global way to bail out based on user response.
 
 	public static void main(String[] args) {
 		org.junit.runner.JUnitCore.runClasses(ComparePredictionToText.class);
@@ -82,9 +84,27 @@ public class ComparePredictionToText {
 	@BeforeClass
 	public static void setUp() throws Exception {
 
+		System.out.println("Please enter info for the ComparePredictionToText test.  Enter 'quit' for any response to abort.");
 		String firstIdStr  = prompt("Enter the ID of the first model to test:");
+		
+		if ("quit".equalsIgnoreCase(firstIdStr)) {
+			abort = true;
+			return;
+		}
+		
 		String lastIdStr  = prompt("Enter the ID of the last model to test:");
+		
+		if ("quit".equalsIgnoreCase(lastIdStr)) {
+			abort = true;
+			return;
+		}
+		
 		String pwd = prompt("Enter the db password:");
+		
+		if ("quit".equalsIgnoreCase(pwd)) {
+			abort = true;
+			return;
+		}
 		
 		firstModelId = Integer.parseInt(firstIdStr);
 		lastModelId = Integer.parseInt(lastIdStr);
@@ -119,26 +139,28 @@ public class ComparePredictionToText {
 	@Test
 	public void testAll() throws Exception {
 		
-		int failCount = 0;
-		
-		try {
-			Connection conn = SharedApplication.getInstance().getConnection();
-			assertTrue(!conn.isClosed());
-		} catch (Exception e) {
-			throw new Exception("Oops, a bad pwd, or lack of network access to the db?", e);
-		}
-
-		for (long id = firstModelId; id <= lastModelId; id++) {
-			URL url = getTextURL(id);
-			if (url != null) {
-				
-				boolean pass = testSingleMmodel(url, id);
-				if (!pass) failCount++;
-
+		if (! abort) {
+			int failCount = 0;
+			
+			try {
+				Connection conn = SharedApplication.getInstance().getConnection();
+				assertTrue(!conn.isClosed());
+			} catch (Exception e) {
+				throw new Exception("Oops, a bad pwd, or lack of network access to the db?", e);
 			}
-		}
+	
+			for (long id = firstModelId; id <= lastModelId; id++) {
+				URL url = getTextURL(id);
+				if (url != null) {
+					
+					boolean pass = testSingleMmodel(url, id);
+					if (!pass) failCount++;
+	
+				}
+			}
 		
-		assertEquals(0, failCount);
+			assertEquals(0, failCount);
+		}
 	}
 	
 	
@@ -250,43 +272,48 @@ public class ComparePredictionToText {
 
 	public boolean testSingleMmodel(URL predictFile, Long modelId) throws Exception {
 		
-		boolean pass = false;	//assume we fail until we pass
+		boolean pass = true;
 		
-		DataTable t = loadTextPredict(predictFile);
-		
-		if (t != null) {
-			AdjustmentGroups ags = new AdjustmentGroups(modelId);
-			PredictResult prs = SharedApplication.getInstance().getPredictResult(ags);
-			PredictData pd = SharedApplication.getInstance().getPredictData(modelId);
+		if (! abort) {
 			
-			log.setLevel(Level.FATAL);	//Turn off logging
-			int noDecayFailures = testComparison(t, prs, pd, false, modelId);
-			int decayFailures = testComparison(t, prs, pd, true, modelId);
-			log.setLevel(Level.DEBUG);	//Turn back on
+			pass = false;	//assume we fail until we pass
 			
-			if (decayFailures < noDecayFailures) {
-				if (decayFailures == 0) {
-					log.debug("++++++++ Model #" + modelId + " PASSED using DECAYED incremental values +++++++++");
-					pass = true;
-				} else {
-					log.debug("++++++++ Model #" + modelId + " FAILED using DECAYED incremental values.  Details: ++++++++");
-					testComparison(t, prs, pd, true, modelId);
-				}
-			} else if (noDecayFailures < decayFailures) {
-				if (noDecayFailures == 0) {
-					log.debug("++++++++ Model #" + modelId + " PASSED using NON-DECAYED incremental values +++++++++");
-					pass = true;
-				} else {
-					log.debug("++++++++ Model #" + modelId + " FAILED using NON-DECAYED incremental values.  Details: ++++++++");
+			DataTable t = loadTextPredict(predictFile);
+			
+			if (t != null) {
+				AdjustmentGroups ags = new AdjustmentGroups(modelId);
+				PredictResult prs = SharedApplication.getInstance().getPredictResult(ags);
+				PredictData pd = SharedApplication.getInstance().getPredictData(modelId);
+				
+				log.setLevel(Level.FATAL);	//Turn off logging
+				int noDecayFailures = testComparison(t, prs, pd, false, modelId);
+				int decayFailures = testComparison(t, prs, pd, true, modelId);
+				log.setLevel(Level.DEBUG);	//Turn back on
+				
+				if (decayFailures < noDecayFailures) {
+					if (decayFailures == 0) {
+						log.debug("++++++++ Model #" + modelId + " PASSED using DECAYED incremental values +++++++++");
+						pass = true;
+					} else {
+						log.debug("++++++++ Model #" + modelId + " FAILED using DECAYED incremental values.  Details: ++++++++");
+						testComparison(t, prs, pd, true, modelId);
+					}
+				} else if (noDecayFailures < decayFailures) {
+					if (noDecayFailures == 0) {
+						log.debug("++++++++ Model #" + modelId + " PASSED using NON-DECAYED incremental values +++++++++");
+						pass = true;
+					} else {
+						log.debug("++++++++ Model #" + modelId + " FAILED using NON-DECAYED incremental values.  Details: ++++++++");
+						testComparison(t, prs, pd, false, modelId);
+					}
+				} else if (noDecayFailures == decayFailures) {
+					//Equal failures mean there is a row count or other type of error
+					log.debug("++++++++ Model #" + modelId + " FAILED.  MAJOR ISSUE - SEE DETAILS: ++++++++");
 					testComparison(t, prs, pd, false, modelId);
 				}
-			} else if (noDecayFailures == decayFailures) {
-				//Equal failures mean there is a row count or other type of error
-				log.debug("++++++++ Model #" + modelId + " FAILED.  MAJOR ISSUE - SEE DETAILS: ++++++++");
-				testComparison(t, prs, pd, false, modelId);
+			} else {
+				log.debug("++++++++ Model #" + modelId + " FAILED.  MAJOR ISSUE - SEE DETAILS (above) ++++++++");
 			}
-		} else {
-			log.debug("++++++++ Model #" + modelId + " FAILED.  MAJOR ISSUE - SEE DETAILS (above) ++++++++");
 		}
 		
 		return pass;
