@@ -101,6 +101,8 @@ public class DataLoader {
 	 * Convenience method for returning all public, approved models and their
 	 * sources.
 	 *
+	 * @deprecated Use action.LoadSparrowModels
+	 * @see gov.usgswim.sparrow.action.LoadSparrowModels
 	 * @param conn The JDBC connection object.
 	 * @return All public, approved models and their sources.
 	 */
@@ -118,6 +120,8 @@ public class DataLoader {
 	 * {@code isArchived} = {@code false}
 	 * will return models that are approved and public, but not archived.
 	 *
+	 * @deprecated Use action.LoadSparrowModels
+	 * @see gov.usgswim.sparrow.action.LoadSparrowModels
 	 * @param conn The JDBC connection object.
 	 * @param isApproved Whether or not to return approved models.
 	 * @param isPublic Whether or not to return public models.
@@ -171,6 +175,7 @@ public class DataLoader {
 					m.setUnits(rset.getString("UNITS"));
 
 					StringBuilder sessions = SavedSessionService.retrieveAllSavedSessionsXML(Long.toString(modelID));
+					//TODO: ^^ What is this doing? Cause right now it's nothing.
 
 					models.add(m);
 				}

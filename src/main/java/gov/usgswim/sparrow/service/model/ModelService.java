@@ -4,6 +4,7 @@ import gov.usgs.webservices.framework.utils.ResourceLoaderUtils;
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.action.LoadSparrowModels;
 import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 import gov.usgswim.sparrow.service.DomainSerializer;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -57,9 +58,11 @@ public class ModelService implements HttpService<ModelRequest> {
 	}
 
 	public XMLStreamReader getXMLStreamReader(ModelRequest o, boolean needsCompleteFirstRow) throws Exception{
-		Connection conn = null;
+		
+		List<SparrowModelBuilder> models = null;
+		
 		try {
-			conn = getConnection();
+			models = new LoadSparrowModels(o.isApproved(), o.isPublic(), o.isArchived(), o.isSources()).run();
 		} catch (Exception e) {
 			System.err.println(this.getClass().getSimpleName() + " unable to get a connection");
 			e.printStackTrace();
@@ -69,13 +72,6 @@ public class ModelService implements HttpService<ModelRequest> {
 			XMLInputFactory inFact = XMLInputFactory.newInstance();
 			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(String.format(errorResponseTemplate, e.getMessage())));
 			return reader;
-		}
-
-		List<SparrowModelBuilder> models = null;
-		try {
-			models = DataLoader.loadModelsMetaData(conn, o.isApproved(), o.isPublic(), o.isArchived(), o.isSources());
-		} finally {
-			SharedApplication.closeConnection(conn, null);
 		}
 
 		// Have to do an extra step here to look up all the sessions and set them

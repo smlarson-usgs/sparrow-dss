@@ -5,9 +5,7 @@ import gov.usgswim.sparrow.SparrowDBTest;
 import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.SparrowModelBuilder;
-import gov.usgswim.sparrow.util.DataLoader;
 
-import java.sql.Connection;
 import java.util.List;
 
 import org.junit.Test;
@@ -28,14 +26,11 @@ public class LoadSparrowModelsTest extends SparrowDBTest {
 	 */
 	@Test
 	public void testLoadPublicModels() throws Exception {
-		Connection conn = getConnection();
 		
-		List<SparrowModelBuilder> models = DataLoader.loadModelsMetaData(conn);
+		List<SparrowModelBuilder> models = new LoadSparrowModels().run();
 
 		SparrowModel m = models.get(0);
 		checkTestModel(m);
-		
-		models = DataLoader.loadModelsMetaData(conn);
 
 	}
 	
@@ -49,15 +44,11 @@ public class LoadSparrowModelsTest extends SparrowDBTest {
 	 */
 	@Test
 	public void testLoadNonPublicModels() throws Exception {
-		Connection conn = getConnection();
 		
-		List<SparrowModelBuilder> models = DataLoader.loadModelsMetaData(conn,
-				true, false, false, true);
+		List<SparrowModelBuilder> models = new LoadSparrowModels(true, false, false, true).run();
 
 		SparrowModel m = models.get(0);
 		checkTestModel(m);
-		
-		models = DataLoader.loadModelsMetaData(conn);
 
 	}
 	
