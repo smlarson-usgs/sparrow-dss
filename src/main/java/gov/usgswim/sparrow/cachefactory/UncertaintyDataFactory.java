@@ -90,8 +90,14 @@ public class UncertaintyDataFactory extends AbstractCacheFactory {
 				"SelectReachCount",
 				new String[] {"ModelId", Long.toString(modelId)});
 
-		Connection conn = SharedApplication.getInstance().getConnection();
-		Integer rchCount = DLUtils.readAsInteger(conn, query, 1).getInt(0, 0);
+		Connection conn = null;
+		Integer rchCount = null;
+		try {
+			conn = SharedApplication.getInstance().getConnection();
+			rchCount = DLUtils.readAsInteger(conn, query, 1).getInt(0, 0);
+		} finally {
+			SharedApplication.closeConnection(conn, null);
+		}
 		
 		return rchCount;
 	}
