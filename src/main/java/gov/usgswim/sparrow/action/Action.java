@@ -4,9 +4,12 @@ import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -46,6 +49,8 @@ public abstract class Action<R extends Object> {
 	private Connection conn = null;
 	
 	private long startTime;		//Time the action starts
+	
+	private List<PreparedStatement> preparedStatements;
 	
 	public Action() {
 		staticRunCount++;
@@ -128,6 +133,25 @@ public abstract class Action<R extends Object> {
 			
 		}
 		
+		//Close any open prepared statements
+		if (preparedStatements != null) {
+			for (PreparedStatement ps : preparedStatements) {
+				try {
+					if (ps != null && ! ps.isClosed()) {
+						try {
+							ps.close();
+						} catch (SQLException ee) {
+							log.error("Trying to close a prepared statement", ee);
+						}
+					}
+				} catch (SQLException e) {
+					log.error("Good grief, I just tried to find out if the prepared statement was open or closed...", e);
+				}
+			}
+			
+			preparedStatements.clear();
+		}
+		
 		//Close the connection, if not null
 		if (conn != null) {
 			try {
@@ -146,14 +170,55 @@ public abstract class Action<R extends Object> {
 				conn = null;
 			}
 		}
+		
+
 	}
 	
+	/**
+	 * Returns a connection which is guaranteed to be closed regardless of how
+	 * the action completes.
+	 * 
+	 * In generally this method will reuse the same connection for the same
+	 * Action execution if called multiple times during a single run() invocation.
+	 * However, this method will check to ensure that the Connection is not
+	 * closed before handing it out.
+	 * 
+	 * @return A JDBC Connection which will be auto-closed at Action completion.
+	 * @throws SQLException
+	 */
 	protected Connection getConnection() throws SQLException {
 		if (conn == null) {
 			conn = SharedApplication.getInstance().getConnection();
 		}
 		
 		return conn;
+	}
+	
+	/**
+	 * Returns a new read-only prepared statement using the passed sql.
+	 * This statement and its connection is guaranteed to be closed regardless
+	 * of how the action completes.  Any ResultSet created from the Statement
+	 * is also close automatically when the Statement is closed (see jdbc docs
+	 * for Statement).
+	 * 
+	 * @param sql The SQL statement, which may contain '?' parameters.
+	 * @return A JDBC PreparedStatement which will be auto-closed at Action completion.
+	 * @throws SQLException
+	 */
+	protected PreparedStatement getNewROPreparedStatement(String sql) throws SQLException {
+		Connection conn = getConnection();
+		
+		PreparedStatement st =
+			conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY,
+			ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
+		
+		if (preparedStatements == null) {
+			preparedStatements = new ArrayList<PreparedStatement>();
+		}
+		
+		preparedStatements.add(st);
+		
+		return st;
 	}
 	
 	/**

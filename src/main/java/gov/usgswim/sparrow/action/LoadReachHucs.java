@@ -6,6 +6,7 @@ import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -44,32 +45,21 @@ public class LoadReachHucs extends Action<DataTable>{
 
 		log.debug("Reach-Huc query to be run: " + query);
 		
-		Connection conn = SharedApplication.getInstance().getConnection();
-		ResultSet rs = null;
+		PreparedStatement ps = getNewROPreparedStatement(query);
+		ps.setFetchSize(200);
+
+		ResultSet rs = ps.executeQuery();	//auto-closed
 
 
-		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-		st.setFetchSize(200);
-
-		rs = st.executeQuery(query);
-
-		try {
-			rs = st.executeQuery(query);
-			DataTableWritable writeable = DataTableConverter.toDataTable(rs, true);
-			writeable.setName("HUC Level " + request.getHucLevel() +
-					" aggregation data for model " + request.getModelID());
-			writeable.setProperty("model_id", request.getModelID().toString());
-			writeable.setProperty("huc_level", request.getHucLevel().toString());
-			
-			result = writeable.toImmutable();
-		} finally {
-			if (rs != null) {
-				rs.close();
-				rs = null;
-			}
-			conn.close();
-		}
+		DataTableWritable writeable = DataTableConverter.toDataTable(rs, true);
+		writeable.setName("HUC Level " + request.getHucLevel() +
+				" aggregation data for model " + request.getModelID());
+		writeable.setProperty("model_id", request.getModelID().toString());
+		writeable.setProperty("huc_level", request.getHucLevel().toString());
 		
+		result = writeable.toImmutable();
+
+	
 		if (result == null) {
 			log.error("UNABLE to load HUC data for model " +
 					request.getModelID() + ", HUC level " + request.getHucLevel());

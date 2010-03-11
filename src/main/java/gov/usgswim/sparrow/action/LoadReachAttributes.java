@@ -4,7 +4,6 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -42,10 +41,7 @@ public class LoadReachAttributes extends Action<DataTable> {
 	@Override
 	protected DataTable doAction() throws Exception {
 		String sql = this.getText(QUERY_NAME);
-		Connection conn = getConnection();	//Auto closed (resultsets and statements are not)
-		PreparedStatement st =
-			conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY,
-			ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
+		PreparedStatement st = getNewROPreparedStatement(sql);
 		
 		st.setLong(1, reachId);
 		st.setLong(2, modelId);
@@ -53,16 +49,11 @@ public class LoadReachAttributes extends Action<DataTable> {
 		
 		ResultSet rset = null;
 		DataTableWritable attributes = null;
-		try {
-			rset = st.executeQuery();
-			attributes = DataTableConverter.toDataTable(rset);
-		} finally {
-			close(st);
-			close(rset);
-			//Connection is auto-closed
-		}
+
+		rset = st.executeQuery();	//auto-closed
+		attributes = DataTableConverter.toDataTable(rset);
+
 		return attributes;
-		
 	}
 
 
