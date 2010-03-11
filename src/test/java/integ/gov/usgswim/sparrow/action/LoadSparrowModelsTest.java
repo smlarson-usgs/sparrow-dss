@@ -77,6 +77,8 @@ public class LoadSparrowModelsTest extends SparrowDBTest {
 		//model data
 		assertEquals(TEST_MODEL_ID.longValue(), model.getId().longValue());
 		assertEquals("MRB02 Nitrogen", model.getName());
+		assertEquals("Nitrogen", model.getConstituent());
+		assertEquals("kg/year", model.getUnits());
 		assertEquals(5, model.getSources().size());
 
 		//1st source
