@@ -1,6 +1,8 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.*;
+
+import java.sql.Connection;
 import java.util.Arrays;
 
 import gov.usgswim.datatable.ColumnData;
@@ -118,6 +120,13 @@ public class ComparePredictionToText {
 	public void testAll() throws Exception {
 		
 		int failCount = 0;
+		
+		try {
+			Connection conn = SharedApplication.getInstance().getConnection();
+			assertTrue(!conn.isClosed());
+		} catch (Exception e) {
+			throw new Exception("Oops, a bad pwd, or lack of network access to the db?", e);
+		}
 
 		for (long id = firstModelId; id <= lastModelId; id++) {
 			URL url = getTextURL(id);
