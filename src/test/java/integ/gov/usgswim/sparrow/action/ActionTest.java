@@ -60,7 +60,14 @@ public class ActionTest  extends SparrowDBTest {
 	
 	@Test
 	public void testSimpleAction2() throws Exception {
-		SimpleAction1 action = new SimpleAction1();
+		SimpleAction2 action = new SimpleAction2();
+		action.run();
+		assertTrue(action.passed);
+	}
+	
+	@Test
+	public void testSimpleAction3() throws Exception {
+		SimpleAction3 action = new SimpleAction3();
 		action.run();
 		assertTrue(action.passed);
 	}
@@ -145,6 +152,7 @@ public class ActionTest  extends SparrowDBTest {
 			
 			//Get new statement
 			state2 = getNewROPreparedStatement(sql);
+			conn3 = getConnection();
 			//These should be the same conneciton
 			if (conn2 != conn3) {
 				passed = false;
@@ -169,6 +177,50 @@ public class ActionTest  extends SparrowDBTest {
 				if (! conn3.isClosed()) passed = false;
 				if (! state1.isClosed()) passed = false;
 				if (! state2.isClosed()) passed = false;
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				passed = false;
+			}
+		}
+	}
+	
+	//Only creates a single prepared statement, but throws an error during execution
+	public static class SimpleAction3 extends LoadReachAttributes {
+
+		public boolean passed = true;
+		
+		Connection conn1;		
+		PreparedStatement state1;
+		
+		@Override
+		protected DataTable doAction() throws Exception {
+			String sql = this.getText(QUERY_NAME, LoadReachAttributes.class);
+			
+			conn1 = getConnection();
+			state1 = getNewROPreparedStatement(sql);
+			
+			state1.setLong(1, 9190);
+			state1.setLong(2, SparrowDBTest.TEST_MODEL_ID);
+			ResultSet rset = state1.executeQuery();	//auto-closed
+			
+			//Here we throw an exception...
+			Integer zero = 0;
+			int divideError = 10 / zero;
+			assertTrue(false);	//should never reach this point
+			
+			DataTableWritable attributes = null;
+			attributes = DataTableConverter.toDataTable(rset);
+			return attributes;
+		}
+		
+		@Override
+		protected void postAction(boolean success, Exception error) {
+			super.postAction(success, error);
+			
+			try {
+				if (! conn1.isClosed()) passed = false;
+				if (! state1.isClosed()) passed = false;
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

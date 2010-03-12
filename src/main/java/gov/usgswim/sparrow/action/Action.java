@@ -104,6 +104,16 @@ public abstract class Action<R extends Object> {
 		return null;
 	}
 	
+	/**
+	 * This method is called at the completion of the action, regardless of
+	 * how it completes.
+	 * 
+	 * This method cleans up resources and does logging for the completion of
+	 * the action.  Subclasses may override, but must call the super
+	 * implementation to ensure that JDBC resources are cleaned up.
+	 * @param success Pass true to indicate that the action completed normally.
+	 * @param error Pass an error that might have occurred for logging.
+	 */
 	protected void postAction(boolean success, Exception error) {
 		if (log.isDebugEnabled()) {
 			long totalTime = System.currentTimeMillis() - startTime;
@@ -153,25 +163,7 @@ public abstract class Action<R extends Object> {
 		}
 		
 		//Close the connection, if not null
-		if (conn != null) {
-			try {
-				if (! conn.isClosed()) {
-					try {
-						conn.close();
-					} catch (Exception ee) {
-						//ignore
-						log.error("Unable to close a connection", ee);
-					}
-				}
-			} catch (SQLException e) {
-				//ignore
-				log.error("Good grief, I just tried to find out if the connection was open or closed...", e);
-			} finally {
-				conn = null;
-			}
-		}
-		
-
+		close(conn);
 	}
 	
 	/**
@@ -189,6 +181,10 @@ public abstract class Action<R extends Object> {
 	protected Connection getConnection() throws SQLException {
 		if (conn == null) {
 			conn = SharedApplication.getInstance().getConnection();
+		} else {
+			if (conn.isClosed()) {
+				conn = SharedApplication.getInstance().getConnection();
+			}
 		}
 		
 		return conn;
