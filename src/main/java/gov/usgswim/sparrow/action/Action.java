@@ -147,15 +147,9 @@ public abstract class Action<R extends Object> {
 		if (preparedStatements != null) {
 			for (PreparedStatement ps : preparedStatements) {
 				try {
-					if (ps != null && ! ps.isClosed()) {
-						try {
-							ps.close();
-						} catch (SQLException ee) {
-							log.error("Trying to close a prepared statement", ee);
-						}
-					}
-				} catch (SQLException e) {
-					log.error("Good grief, I just tried to find out if the prepared statement was open or closed...", e);
+					ps.close();
+				} catch (Exception e) {
+					log.warn("Good grief, I just tried to close a preparedstatement, should this really throw an exception?", e);
 				}
 			}
 			
