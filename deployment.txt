@@ -3,6 +3,18 @@ Run move-libs, clean, and the dist tasks in build.xml.
 For sparrow_core, the sparrow_mv_local includes the JSP (service test) pages,
 so this is generally the one to deploy until we are in full production.
 
+>>>>> Database Connection Configuration <<<<<
+The embedded Map Viewer server uses its own connection pool.  The config file
+for Map Viewer is constructed using XSLT, so there is an .xsl file to edit:
+ant-support/ms-datasource-merge.xsl
+(note the multi-splendor of the database related attributes)
+
+Aside from drawing maps, the application itself uses a JNDI connection named:
+java:comp/env/jdbc/sparrow_dss
+Configuring where this name points needs to be done on the server that the
+application is running on (i.e., Tomcat)
+
+>>>>> Servers <<<<<
 Currently there are two test servers:
 
 >> BBG - Development (Test Releases for in-office testing) <<
