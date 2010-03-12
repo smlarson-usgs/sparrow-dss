@@ -52,21 +52,21 @@ import org.junit.Test;
 public class ActionTest  extends SparrowDBTest {
 	
 	@Test
-	public void testSimpleAction1() throws Exception {
+	public void closeASingleConnectionAndStatement() throws Exception {
 		SimpleAction1 action = new SimpleAction1();
 		action.run();
 		assertTrue(action.passed);
 	}
 	
 	@Test
-	public void testSimpleAction2() throws Exception {
+	public void closeMultipleStatementsAndConnections() throws Exception {
 		SimpleAction2 action = new SimpleAction2();
 		action.run();
 		assertTrue(action.passed);
 	}
 	
 	@Test
-	public void testSimpleAction3() throws Exception {
+	public void closeConnectionsEvenIfError() throws Exception {
 		SimpleAction3 action = new SimpleAction3();
 		action.run();
 		assertTrue(action.passed);
