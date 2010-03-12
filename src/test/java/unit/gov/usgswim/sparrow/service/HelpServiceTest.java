@@ -11,7 +11,7 @@ import org.xml.sax.SAXException;
 
 import com.meterware.httpunit.WebResponse;
 
-public class HelpServiceTest extends HTTPServiceTestHelper{
+public class HelpServiceTest extends SparrowServiceTest{
 
 	private static final String HELP_SERVICE_URL = "http://localhost:8088/sp_help";
 
