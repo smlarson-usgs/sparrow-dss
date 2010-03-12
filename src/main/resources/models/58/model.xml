@@ -85,15 +85,15 @@
 				<dt><i>All</i></dt>
 				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
 				<dt>Manure P</dt>
-				<dd>Phosphorus from Manure</dd>
+				<dd>Sum total of Phosphorus from Manure in Confined and Unconfined Operations (kg)</dd>
 				<dt>Farm Fertilizer P</dt>
-				<dd>Phosphorus from Farm Fertilizer</dd>
+				<dd>Sum total of Phosphorous Fertilizer from Farms (kg)</dd>
 				<dt>Developed Land</dt>
-				<dd>2001 NLCD developed land area</dd>
+				<dd>2001 NLCD developed land area, includes developed open space, low, medium, and high intensity (sqkm)</dd>
 				<dt>Channel Length</dt>
-				<dd>Reach length of channels (Q>1.13 cms)</dd>				
+				<dd>Reach length of channels in streams with discharge greater than 1.13 cms (m)</dd>				
 				<dt>Point Sources</dt>
-				<dd>Phosphorus from point sources</dd>
+				<dd>Sum total of phosphorus from point sources (average of 1992, 1997, and 2002 data) (kg)</dd>
 
 			</dl>
 		</Term>

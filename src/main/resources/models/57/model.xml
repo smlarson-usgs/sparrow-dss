@@ -85,15 +85,15 @@
 				<dt><i>All</i></dt>
 				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
 				<dt>Atmospheric N</dt>
-				<dd>Total inorganic nitrogen from atmospheric deposition</dd>
+				<dd>Average Total Inorganic Nitrogen atmospheric (wet) deposition detrended for 2002 per Subbasin (kg)</dd>
 				<dt>Manure N</dt>
-				<dd>Nitrogen from Manure</dd>
+				<dd>Sum total of Nitrogen from Manure in Confined and Unconfined Operations (kg)</dd>
 				<dt>Farm Fertilizer N</dt>
-				<dd>Nitrogen from Farm Fertilizer</dd>
+				<dd>Sum total of Nitrogen Fertilizer from Farms (kg)</dd>
 				<dt>Point sources N</dt>
-				<dd>Nitrogen from point sources</dd>				
+				<dd>Sum total of nitrogen from point sources (average of 1992, 1997, and 2002 data) (kg)</dd>				
 				<dt>Developed Land</dt>
-				<dd>2001 NLCD developed land area</dd>
+				<dd>2001 NLCD developed land area, includes developed open space, low, medium, and high intensity (sqkm)</dd>
 
 			</dl>
 		</Term>
