@@ -43,6 +43,7 @@ import oracle.jdbc.driver.OracleDriver;
 import oracle.mapviewer.share.ext.NSDataSet;
 
 import org.apache.log4j.Logger;
+import com.jamonapi.proxy.MonProxyFactory;
 
 //TODO:  This class contains a lot of unused caches...
 public class SharedApplication  {
@@ -115,7 +116,7 @@ public class SharedApplication  {
 
 
 		if (datasource != null) {
-			return datasource.getConnection();
+			return MonProxyFactory.monitor(datasource.getConnection());
 		}
 		return getConnectionFromCommandLineParams();
 
@@ -130,7 +131,7 @@ public class SharedApplication  {
 		String dbpass = System.getProperty("dbpass");
 		String url = System.getProperty("dburl");
 		Connection connection;
-		connection = DriverManager.getConnection(url, dbuser, dbpass);
+		connection = MonProxyFactory.monitor(DriverManager.getConnection(url, dbuser, dbpass));
 		return connection;
 
 	}

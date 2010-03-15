@@ -48,6 +48,7 @@
             	<include name="**/*.jsp"/>
             	<include name="**/app-info.txt"/>
             	<include name="**/*.html"/>
+            	<include name="**/jamon/**"/>
             </fileset>
 		    <fileset dir="${build.web.dir}" includes="**/*.jar" excludes="**/mvclient.jar **/sdovis.jar **/commons*.jar" />
 		</war>
