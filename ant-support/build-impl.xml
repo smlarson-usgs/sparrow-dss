@@ -56,11 +56,14 @@
 	<target name="compile" description="Compile pro   ect." depends="init,-pre-compile,-do-compile,-post-compile" />
 	<target name="-pre-compile" />
 	<target name="-do-compile">
+		<echo message="Starting -do-compile"/>
 		<mkdir dir="${build.classes.dir}" />
 
+		<!--
 		<copy todir="${build.web.dir}">
-			<fileset dir="${web.dir}" excludes="${build.web.excludes}" />
+			<fileset dir="${web.dir}" excludes="${build.web.excludes}:${web.dir}/WEB-INF" />
 		</copy>
+		-->
 		<copy todir="${build.web.dir}" overwrite="true">
 			<fileset dir="${web.dir}" includes="**/*.jsp,**/*.htm,**/*.html,**/*.txt,**/*.xml"/>
 			<!-- Be careful to only apply token replacement to text files, not binary files-->
@@ -69,8 +72,12 @@
 				<filter token="lastDate" value="${svn.info.lastDate}"/>
 			</filterset>
 		</copy>
-		<copy todir="${build.web.dir}/WEB-INF/lib" flatten="true">
-			<fileset dir="${lib.dir}" includes="${build.lib.includes}" excludes="${build.lib.excludes}" />
+		<echo message="Copyinging the java libs..."/>
+		
+		<copy todir="${build.web.dir}/WEB-INF/lib" flatten="true" verbose="true">
+			<path>
+				<pathelement path="${build.lib.includes}"/>
+			</path>
 		</copy>
     	<property name="param.javac.debug" value="off"/><!-- off by default, unless overridden with parameter -->
         <javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="${param.javac.debug}" debuglevel="lines,vars,source">
