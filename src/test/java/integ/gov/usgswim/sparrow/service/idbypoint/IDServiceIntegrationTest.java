@@ -13,6 +13,7 @@ import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.PredictionContextTest;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.service.SparrowServiceTest;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 import gov.usgswim.sparrow.util.ParserHelper;
@@ -28,20 +29,16 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-public class IDServiceIntegrationTest extends SparrowDBTest {
+public class IDServiceIntegrationTest extends SparrowServiceTest {
 
 	@BeforeClass
 	public static void localInit() {
-		log.setLevel(Level.DEBUG	);
 		Logger.getLogger(IDByPointService.class).setLevel(Level.TRACE);
 	}
 	
 	// ============
 	// TEST METHODS
 	// ============
-
-	//TODO:  The spatial indexes on widev need to be fixed, at which point
-	//This test will (should) work.  Modify to make this test look like the others.
 	@Test
 	public void testModelByPoint() throws Exception {
 
@@ -61,7 +58,6 @@ public class IDServiceIntegrationTest extends SparrowDBTest {
 	public void testModelByReachId() throws Exception {
 		String expectedResponse = getXmlAsString(this.getClass(), "resp2");
 		String actualResponse = runRequest(getXmlAsString(this.getClass(), "req2"));
-
 		XMLAssert.assertXMLEqual(expectedResponse, actualResponse);
 		
 		//Rerun - should be instant b/c we don't ask for attributes.

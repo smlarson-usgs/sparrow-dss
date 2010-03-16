@@ -1,0 +1,13 @@
+<sparrow-reach-request xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<model-id>50</model-id>
+	<match-query>
+		<reach-ids>10444 6576 5233 5235</reach-ids>
+	</match-query>
+	<content>
+		<adjustments />
+	</content>
+	<response-format>
+		<mime-operation>XML</mime-operation>
+	</response-format>
+</sparrow-reach-request>

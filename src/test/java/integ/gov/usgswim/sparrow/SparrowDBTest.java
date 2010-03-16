@@ -17,6 +17,7 @@ import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -43,36 +44,69 @@ public class SparrowDBTest extends TestHelper {
 	
 	/** lifecycle listener handles startup / shutdown */
 	static LifecycleListener lifecycle = new LifecycleListener();
+	
+	//True until the firstRun is complete (used for onetime init)
+	//Cannot use the @BeforeClass since we need the ability to override methods.
+	private static boolean firstRun = true;
 
 	
-	@BeforeClass
-	public static void sparrowDBTestSetUp() throws Exception {
-		
-		//log.getAppender("dest1").setLayout(arg0)
-		
-		//Turns on detailed logging
+	@Before
+	public void sparrowDBTestSetUp() throws Exception {
+		if (firstRun) {
+			doLogSetup();
+			doLifecycleSetup();
+			doDbSetup();
+			doGeneralSetup();
+		}
+	}
+	
+	@After
+	public void sparrowDBTestTearDown() throws Exception {
+		if (firstRun) {
+			firstRun = false;
+			doLogTearDown();
+			doLifecycleTearDown();
+			doDbTearDown();
+			doGeneralTearDown();
+		}
+	}
+	
+	protected void doLogSetup() {
 		setLogLevel(Level.ERROR);
-		
+	}
+	
+	protected void doLifecycleSetup() {
 		lifecycle.contextInitialized(null, true);
-		
-		//For comparing xml docs
-		XMLUnit.setIgnoreWhitespace(true);
-		
+	}
+	
+	protected void doDbSetup() throws Exception {
 		if (System.getProperty("dburl") == null) {
 			setProperties();
 		}
 	}
-
-	@AfterClass
-	public static void sparrowDBTestTearDown() throws Exception {
+	
+	protected void doGeneralSetup() {
+		XMLUnit.setIgnoreWhitespace(true);
+		XMLUnit.setIgnoreComments(true);
+	}
+	
+	protected void doLogTearDown() {
+		//nothing to do
+	}
+	
+	protected void doLifecycleTearDown() {
 		lifecycle.contextDestroyed(null, true);
-		
+	}
+	
+	protected void doDbTearDown() throws Exception {
 		if (sparrowDBTestConn != null) {
-			if (! sparrowDBTestConn.isClosed()) {
-				sparrowDBTestConn.close();
-				sparrowDBTestConn = null;
-			}
+			sparrowDBTestConn.close();
+			sparrowDBTestConn = null;
 		}
+	}
+	
+	protected void doGeneralTearDown() {
+		//nothing to do
 	}
 	
 	public static Connection getConnection() throws SQLException {
