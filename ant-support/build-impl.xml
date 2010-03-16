@@ -3,9 +3,7 @@
 	<echo message="Running ${ant.version}" />
 	<property name="support.ant" value="ant-support"/>
 	<property name="db.properties" value="${support.ant}/NEVER-EVER-CHECK-THIS-IN-db.properties"/>
-
-
-
+	
 
 	<target name="build-all" description="Build entire project." depends="dist,javadoc" />
 
@@ -56,7 +54,6 @@
 	<target name="compile" description="Compile pro   ect." depends="init,-pre-compile,-do-compile,-post-compile" />
 	<target name="-pre-compile" />
 	<target name="-do-compile">
-		<echo message="Starting -do-compile"/>
 		<mkdir dir="${build.classes.dir}" />
 
 		<!--
@@ -64,17 +61,25 @@
 			<fileset dir="${web.dir}" excludes="${build.web.excludes}:${web.dir}/WEB-INF" />
 		</copy>
 		-->
+		
+		<!-- copy just the text files w/ text replacement -->
 		<copy todir="${build.web.dir}" overwrite="true">
-			<fileset dir="${web.dir}" includes="**/*.jsp,**/*.htm,**/*.html,**/*.txt,**/*.xml"/>
+			<fileset dir="${web.dir}" includes="${web.copy.text.types}"/>
 			<!-- Be careful to only apply token replacement to text files, not binary files-->
 			<filterset>
 				<filter token="buildNo" value="${svn.info.lastRev}"/>
 				<filter token="lastDate" value="${svn.info.lastDate}"/>
 			</filterset>
 		</copy>
+		
+		<!-- Copy just the non-text web files (images, etc) -->
+		<copy todir="${build.web.dir}" overwrite="true">
+			<fileset dir="${web.dir}" excludes="${web.copy.text.types},WEB-INF/lib, WEB-INF/lib/**, WEB-INF/classes, WEB-INF/classes/**"/>
+		</copy>
+					
 		<echo message="Copyinging the java libs..."/>
 		
-		<copy todir="${build.web.dir}/WEB-INF/lib" flatten="true" verbose="true">
+		<copy todir="${build.web.dir}/WEB-INF/lib" flatten="true">
 			<path>
 				<pathelement path="${build.lib.includes}"/>
 			</path>
