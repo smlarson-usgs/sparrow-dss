@@ -40,7 +40,7 @@
 
 		<!-- create war for local use  -->
 		<copy file="${dist.dir}/sparrow_mv.war" tofile="${dist.dir}/sparrow_mv_with_jsps.war"/>
-		<delete dir="${build.web.dir}" includes="${build.classes.excludes}" verbose="true"/>
+		<delete dir="${build.web.dir}" includes="${build.classes.excludes}"/>
 		<war destfile="${dist.dir}/sparrow_mv_with_jsps.war" update="true">
 			<fileset dir="${dist.dir}" excludes="**/*.war **/*.tmp **/javadoc/**/*" />
             <fileset dir="${build.web.dir}"  >
