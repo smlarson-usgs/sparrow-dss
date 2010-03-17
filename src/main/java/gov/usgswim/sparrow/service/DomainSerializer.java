@@ -5,7 +5,6 @@ import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.sparrow.domain.SparrowModel;
-import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.util.SparrowResourceUtils;
 
@@ -21,13 +20,13 @@ public class DomainSerializer extends BasicXMLStreamReader {
 	public static String TARGET_NAMESPACE = "http://www.usgs.gov/sparrow/meta_response/v0_1";
 	public static String TARGET_NAMESPACE_LOCATION = "http://www.usgs.gov/sparrow/meta_response.xsd";
 
-	private List<SparrowModelBuilder> models;
-	private Iterator<SparrowModelBuilder> mIter;
+	private List<SparrowModel> models;
+	private Iterator<SparrowModel> mIter;
 	private boolean isOutputCompleteFirstRow;
 	private boolean isSessionFirstRowOutput;
 	private boolean isSourcesFirstRowOutput;
 
-	public DomainSerializer(List<SparrowModelBuilder> models) {
+	public DomainSerializer(List<SparrowModel> models) {
 		this.models = models;
 	}
 

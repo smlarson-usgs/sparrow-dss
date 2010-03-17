@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.service.model;
 
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.cachefactory.ModelRequestCacheKey;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 
 import org.apache.commons.lang.BooleanUtils;
@@ -82,5 +83,10 @@ public class ModelRequest implements PipelineRequest{
 			setResponseFormat(new ResponseFormat());
 		}
 		return responseFormat;
+	}
+	
+	public ModelRequestCacheKey toCacheKey() {
+		ModelRequestCacheKey result = new ModelRequestCacheKey(_public, _approved, _archived, _sources);
+		return result;
 	}
 }

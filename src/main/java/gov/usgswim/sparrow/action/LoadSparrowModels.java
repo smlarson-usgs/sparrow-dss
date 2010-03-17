@@ -7,31 +7,64 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import gov.usgswim.sparrow.domain.SourceBuilder;
-import gov.usgswim.sparrow.domain.SparrowModelBuilder;
-import gov.usgswim.sparrow.service.metadata.SavedSessionService;
+import com.google.common.collect.ImmutableList;
 
-public class LoadSparrowModels extends Action<List<SparrowModelBuilder>> {
+import gov.usgswim.sparrow.cachefactory.ModelRequestCacheKey;
+import gov.usgswim.sparrow.domain.SourceBuilder;
+import gov.usgswim.sparrow.domain.SparrowModel;
+import gov.usgswim.sparrow.domain.SparrowModelBuilder;
+import gov.usgswim.sparrow.util.SparrowResourceUtils;
+
+public class LoadSparrowModels extends Action<List<SparrowModel>> {
 	
 	private boolean isApproved, isPublic, isArchived, getSources;
+	private long sparrowModelId;
 
+	public LoadSparrowModels(ModelRequestCacheKey key) {
+		this.sparrowModelId = key.getModelId();
+		this.isPublic = key.isPublic();
+		this.isApproved = key.isApproved();
+		this.isArchived = key.isArchived();
+		this.getSources = key.isGetSources();
+	}
+	
 	public LoadSparrowModels(boolean isApproved, boolean isPublic, boolean isArchived, boolean getSources) {
+		this.sparrowModelId = -1L;
 		this.isApproved = isApproved;
 		this.isPublic = isPublic;
 		this.isArchived = isArchived;
 		this.getSources = getSources;
 	}
 	
+	/**
+	 * Constructs an action with defaults taken from loadModelsMetaData in the DataLoader class
+	 * @param isPublic true
+	 * @param isApproved true
+	 * @param isArchived false
+	 * @param getSources true
+	 */
 	public LoadSparrowModels() {
 		this(true, true, false, true); // Default behavior defined by loadModelsMetaData(Connection)
 	}
 	
+	public LoadSparrowModels(long id) {
+		this(id, true);
+	}
+	
+	public LoadSparrowModels(long id, boolean getSources) {
+		this.sparrowModelId = id;
+		this.getSources = getSources;
+	}
+	
+	/**
+	 * @return ImmutableList of immutable SparrowModels
+	 */
 	@Override
-	protected List<SparrowModelBuilder> doAction() throws Exception {
+	protected List<SparrowModel> doAction() throws Exception {
 		
 		//***************** COPIED CODE *******************
 		
-		List<SparrowModelBuilder> models = new ArrayList<SparrowModelBuilder>(23);
+		List<SparrowModelBuilder> models = new ArrayList<SparrowModelBuilder>(23);//magic number
 
 		// Build filtering parameters and retrieve the queries from properties
 		String[] params = {
@@ -39,7 +72,14 @@ public class LoadSparrowModels extends Action<List<SparrowModelBuilder>> {
 				"IsPublic", (isPublic ? "T" : "%"),
 				"IsArchived", (isArchived ? "T" : "%")
 		};
-		String selectModels = getTextWithParamSubstitution("SelectModelsByAccess", params);
+		String selectModels = null;
+		
+		if (sparrowModelId > 0) { //specific model
+			params = new String[] {"SparrowModelId", "" + sparrowModelId};
+			selectModels = getTextWithParamSubstitution("SelectModelsById", params);
+		} else { //default ID
+			selectModels = getTextWithParamSubstitution("SelectModelsByAccess", params);
+		}
 
 		Statement stmt = null;
 		ResultSet rset = null;
@@ -71,9 +111,12 @@ public class LoadSparrowModels extends Action<List<SparrowModelBuilder>> {
 					m.setConstituent(rset.getString("CONSTITUENT"));
 					m.setUnits(rset.getString("UNITS"));
 
-					StringBuilder sessions = SavedSessionService.retrieveAllSavedSessionsXML(Long.toString(modelID));
-					//TODO: ^^ What is this doing? Cause right now it's nothing.
-
+					//************* END COPIED CODE ****************
+					//StringBuilder sessions = SavedSessionService.retrieveAllSavedSessionsXML(Long.toString(modelID));
+					// ^^ What is this doing? Cause right now it's nothing.
+					m.setSessions(SparrowResourceUtils.retrieveAllSavedSessions(Long.toString(modelID)));
+					
+					//***************** COPIED CODE *******************
 					models.add(m);
 				}
 			} catch (Exception e) {
@@ -134,8 +177,16 @@ public class LoadSparrowModels extends Action<List<SparrowModelBuilder>> {
 		} finally {
 			stmt.close();
 		}
+		
+		//************* END COPIED CODE ****************
+		
+		List<SparrowModel> result = new ArrayList<SparrowModel>();
+		for (SparrowModelBuilder builder: models) {
+			result.add(builder.toImmutable());
+		}
 
-		return models;
+		//Returns an ImmutableList of immutable SparrowModels.
+		return ImmutableList.copyOf(result);
 	}
 
 }

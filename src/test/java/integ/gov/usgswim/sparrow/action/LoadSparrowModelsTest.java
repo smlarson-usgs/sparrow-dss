@@ -1,10 +1,9 @@
 package gov.usgswim.sparrow.action;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 import gov.usgswim.sparrow.SparrowDBTest;
 import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.domain.SparrowModel;
-import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 
 import java.util.List;
 
@@ -27,8 +26,8 @@ public class LoadSparrowModelsTest extends SparrowDBTest {
 	@Test
 	public void testLoadPublicModels() throws Exception {
 		
-		List<SparrowModelBuilder> models = new LoadSparrowModels().run();
-
+		List<SparrowModel> models = new LoadSparrowModels().run(); //TODO this test currently returns the same as non public.  is that correct?
+		
 		SparrowModel m = models.get(0);
 		checkTestModel(m);
 
@@ -45,11 +44,27 @@ public class LoadSparrowModelsTest extends SparrowDBTest {
 	@Test
 	public void testLoadNonPublicModels() throws Exception {
 		
-		List<SparrowModelBuilder> models = new LoadSparrowModels(true, false, false, true).run();
-
+		List<SparrowModel> models = new LoadSparrowModels(true, false, false, true).run();
+		
 		SparrowModel m = models.get(0);
 		checkTestModel(m);
 
+	}
+	
+	@Test
+	public void testLoadSpecificModel() throws Exception {
+		List<SparrowModel> models = new LoadSparrowModels(TEST_MODEL_ID, true).run();
+		
+		assertEquals(1, models.size());
+		
+		SparrowModel model = models.get(0);
+		
+		//model data
+		assertEquals(TEST_MODEL_ID.longValue(), model.getId().longValue());
+		assertEquals("MRB02 Nitrogen", model.getName());
+		assertEquals("Nitrogen", model.getConstituent());
+		assertEquals("kg/year", model.getUnits());
+		assertEquals(5, model.getSources().size());
 	}
 	
 	/**

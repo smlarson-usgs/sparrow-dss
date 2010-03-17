@@ -149,6 +149,10 @@ public class LifecycleListener implements ServletContextListener {
         //UncertaintyData
         SelfPopulatingCache uncertaintyData = new SelfPopulatingCache(cm.getEhcache("StandardErrorEstimateData"), new UncertaintyDataFactory());
         cm.replaceCacheWithDecoratedCache(cm.getEhcache("StandardErrorEstimateData"), uncertaintyData);
+        
+        //SparrowModel
+        SelfPopulatingCache sparrowModels = new SelfPopulatingCache(cm.getEhcache(SharedApplication.LOAD_SPARROW_MODELS), new SparrowModelFactory());
+        cm.replaceCacheWithDecoratedCache(cm.getEhcache(SharedApplication.LOAD_SPARROW_MODELS), sparrowModels);
 	}
 
 }

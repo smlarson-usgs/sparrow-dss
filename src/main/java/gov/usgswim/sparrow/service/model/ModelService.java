@@ -4,19 +4,15 @@ import gov.usgs.webservices.framework.utils.ResourceLoaderUtils;
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
-import gov.usgswim.sparrow.action.LoadSparrowModels;
-import gov.usgswim.sparrow.domain.SparrowModelBuilder;
+import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.service.DomainSerializer;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.DataLoader;
 import gov.usgswim.sparrow.util.SparrowResourceUtils;
 
 import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import javax.naming.NamingException;
 import javax.xml.stream.XMLInputFactory;
@@ -59,10 +55,10 @@ public class ModelService implements HttpService<ModelRequest> {
 
 	public XMLStreamReader getXMLStreamReader(ModelRequest o, boolean needsCompleteFirstRow) throws Exception{
 		
-		List<SparrowModelBuilder> models = null;
+		List<SparrowModel> models = null;
 		
 		try {
-			models = new LoadSparrowModels(o.isApproved(), o.isPublic(), o.isArchived(), o.isSources()).run();
+			models = SharedApplication.getInstance().getSparrowModels(o.toCacheKey());
 		} catch (Exception e) {
 			System.err.println(this.getClass().getSimpleName() + " unable to get a connection");
 			e.printStackTrace();
@@ -72,13 +68,6 @@ public class ModelService implements HttpService<ModelRequest> {
 			XMLInputFactory inFact = XMLInputFactory.newInstance();
 			XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(String.format(errorResponseTemplate, e.getMessage())));
 			return reader;
-		}
-
-		// Have to do an extra step here to look up all the sessions and set them
-		for (SparrowModelBuilder builder: models) {
-			Long modelID = builder.getId();
-			Set<Entry<Object, Object>> sessions = SparrowResourceUtils.retrieveAllSavedSessions(modelID.toString());
-			builder.setSessions(sessions);
 		}
 
 		DomainSerializer serializer = new DomainSerializer(models);

@@ -9,8 +9,10 @@ import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
 import gov.usgswim.sparrow.cachefactory.BinningRequest;
+import gov.usgswim.sparrow.cachefactory.ModelRequestCacheKey;
 import gov.usgswim.sparrow.cachefactory.ReachID;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.AdvancedAnalysis;
 import gov.usgswim.sparrow.parser.Analysis;
@@ -81,6 +83,7 @@ public class SharedApplication  {
 	public static final String LOAD_REACH_ATTRIBUTES = "LoadReachAttributes";
 	public static final String REACHES_BY_CRITERIA = "ReachesByCriteria";
 	public static final String DATA_BINNING = "DataBinning";
+	public static final String LOAD_SPARROW_MODELS = "LoadSparrowModels";
 
 
 
@@ -503,6 +506,17 @@ public class SharedApplication  {
 		Ehcache c = CacheManager.getInstance().getEhcache(LOAD_REACH_ATTRIBUTES);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
 		return (e != null)?((DataTable) e.getObjectValue()):null;
+	}
+	
+	//LoadSparrowModels
+	public List<SparrowModel> getSparrowModels(ModelRequestCacheKey req) {
+		return getSparrowModels(req, false);
+	}
+	
+	public List<SparrowModel> getSparrowModels(ModelRequestCacheKey req, boolean quiet) {
+		Ehcache c = CacheManager.getInstance().getEhcache(LOAD_SPARROW_MODELS);
+		Element e  = (quiet)?c.getQuiet(req):c.get(req);
+		return (e != null)?((List<SparrowModel>) e.getObjectValue()):null;
 	}
 
 	//Adjusted Source Cache
