@@ -4,8 +4,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -15,16 +13,6 @@ import com.meterware.httpunit.WebResponse;
 public class SavedSessionServiceTest extends SparrowServiceTest{
 
 	private static final String SESSION_SERVICE_URL = "http://localhost:8088/sp_session";
-
-	@BeforeClass
-	public static void setupClass() throws IOException, SAXException {
-		setupHTTPUnitTest();
-	}
-
-	@AfterClass
-	public static void teardownClass() {
-		teardownHTTPUnitTest();
-	}
 
 	@Test
 	public void testNoModelSubmitted() throws IOException, SAXException {

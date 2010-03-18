@@ -1,11 +1,10 @@
 package gov.usgswim.sparrow.service;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -14,18 +13,6 @@ import com.meterware.httpunit.WebResponse;
 public class HelpServiceTest extends SparrowServiceTest{
 
 	private static final String HELP_SERVICE_URL = "http://localhost:8088/sp_help";
-
-
-
-	@BeforeClass
-	public static void setupClass() throws IOException, SAXException {
-		setupHTTPUnitTest();
-	}
-
-	@AfterClass
-	public static void teardownClass() {
-		teardownHTTPUnitTest();
-	}
 
 	@Test
 	public void testLookupWithFieldIDAndModelID() throws IOException, SAXException {
