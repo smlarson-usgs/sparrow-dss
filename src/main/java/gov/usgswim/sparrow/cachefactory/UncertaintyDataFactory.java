@@ -52,9 +52,7 @@ public class UncertaintyDataFactory extends AbstractCacheFactory {
 			
 			String query = getTextWithParamSubstitution(
 				req.getUncertaintySeries().name(),
-				new String[] {
-					"ModelId", Long.toString(req.getModelId()),
-					"SourceId", srcId });
+				"ModelId", Long.toString(req.getModelId()), "SourceId", srcId );
 
 			//System.out.println("Query: " + query);
 			
@@ -88,7 +86,7 @@ public class UncertaintyDataFactory extends AbstractCacheFactory {
 	protected int calcReachCount(long modelId) throws IOException, SQLException {
 		String query = getTextWithParamSubstitution(
 				"SelectReachCount",
-				new String[] {"ModelId", Long.toString(modelId)});
+				"ModelId", Long.toString(modelId));
 
 		Connection conn = null;
 		Integer rchCount = null;

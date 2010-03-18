@@ -136,12 +136,11 @@ public class DataLoader {
 		List<SparrowModelBuilder> models = new ArrayList<SparrowModelBuilder>(23);
 
 		// Build filtering parameters and retrieve the queries from properties
-		String[] params = {
+
+		String selectModels = getQuery("SelectModelsByAccess", 
 				"IsApproved", (isApproved ? "T" : "%"),
 				"IsPublic", (isPublic ? "T" : "%"),
-				"IsArchived", (isArchived ? "T" : "%")
-		};
-		String selectModels = getQuery("SelectModelsByAccess", params);
+				"IsArchived", (isArchived ? "T" : "%"));
 
 
 		Statement stmt = null;

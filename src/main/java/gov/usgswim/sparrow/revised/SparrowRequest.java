@@ -1,6 +1,5 @@
 package gov.usgswim.sparrow.revised;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import gov.usgswim.sparrow.revised.SparrowRequestProcessor.DataSeriesTypes;
 import gov.usgswim.sparrow.revised.steps.aggregation.AggregationFunction;
 import gov.usgswim.sparrow.revised.steps.aggregation.AggregationFunction.Levels;
@@ -20,9 +19,7 @@ public class SparrowRequest {
 	}
 
 	public SparrowRequest asDataRequest() {
-		// TODO Implement this later
-		throw new NotImplementedException();
-		//return null;
+		throw new UnsupportedOperationException("Implement this later");
 	}
 
 	// ===========

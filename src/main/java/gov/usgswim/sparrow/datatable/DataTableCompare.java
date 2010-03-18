@@ -41,10 +41,12 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 	/**
 	 * Actual type is a mixture, but when the comparison is done, resolution is Double.
 	 */
+	@Override
 	public Class<?> getDataType(int col) {
 		return Double.class;
 	}
 
+	@Override
 	public Double getDouble(int row, int col) {
 		double b = base.getDouble(row, col);
 		double c = compare.getDouble(row, col);
@@ -67,6 +69,7 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 		}
 	}
 
+	@Override
 	public Float getFloat(int row, int col) {
 		double b = base.getDouble(row, col);
 		double c = compare.getDouble(row, col);
@@ -86,6 +89,7 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 		}
 	}
 
+	@Override
 	public Integer getInt(int row, int col) {
 		double b = base.getDouble(row, col);
 		double c = compare.getDouble(row, col);
@@ -105,6 +109,7 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 		}
 	}
 
+	@Override
 	public Long getLong(int row, int col) {
 		double b = base.getDouble(row, col);
 		double c = compare.getDouble(row, col);
@@ -124,22 +129,27 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 		}
 	}
 	
+	@Override
 	public Double getMaxDouble(int col) {
 		return FindHelper.bruteForceFindMaxDouble(this, col);
 	}
 
+	@Override
 	public Double getMaxDouble() {
 		return FindHelper.bruteForceFindMaxDouble(this);
 	}
 
+	@Override
 	public Double getMinDouble(int col) {
 		return FindHelper.bruteForceFindMinDouble(this, col);
 	}
 
+	@Override
 	public Double getMinDouble() {
 		return FindHelper.bruteForceFindMinDouble(this);
 	}
 
+	@Override
 	public String getString(int row, int col) {
 		return Double.toString(getDouble(row, col));
 	}
@@ -148,6 +158,7 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 	 * For absolute comparisons, the unit of the column in the base table is returned.
 	 * For percentage comparisons, 'Percentage' is returned.
 	 */
+	@Override
 	public String getUnits(int col) {
 		if (absolute) {
 			return base.getUnits(col);
@@ -155,6 +166,7 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 		return "Percentage";
 	}
 
+	@Override
 	public Object getValue(int row, int col) {
 		return getDouble(row, col);
 	}

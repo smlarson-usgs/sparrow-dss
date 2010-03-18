@@ -293,6 +293,11 @@ public abstract class Action<R extends Object> {
 			throws IOException {
 		return getTextWithParamSubstitution(name, this.getClass(), params);
 	}
+	
+	public String getTextWithParamSubstitution(String name, String... params)
+	throws IOException {
+		return getTextWithParamSubstitution(name, this.getClass(), (Object[]) params);
+	}
 
 	/**
 	 * Loads the named text chunk from the properties file in the same package

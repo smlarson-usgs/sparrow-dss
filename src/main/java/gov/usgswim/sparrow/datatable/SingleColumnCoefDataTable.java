@@ -97,6 +97,7 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 	 * @Deprecated Use at your own risk. The result may be inaccurate if rows have been adjusted
 	 *  because of rounding
 	 */
+	@Override
 	public int[] findAll(int col, Object value) {
 		return FindHelper.bruteForceFindAll(this, col, value);
 	}
@@ -106,6 +107,7 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 	 * @deprecated Use at your own risk. The result may be inaccurate if columns have been adjusted
 	 *  because of rounding.
 	 */
+	@Override
 	public int findFirst(int col, Object value) {
 		return FindHelper.bruteForceFindFirst(this, col, value);
 	}
@@ -115,6 +117,7 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 	 * @deprecated Use at your own risk. The result may be inaccurate if columns have been adjusted
 	 *  because of rounding
 	 */
+	@Override
 	public int findLast(int col, Object value) {
 		return FindHelper.bruteForceFindLast(this, col, value);
 	}
@@ -122,18 +125,22 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 	// ========================
 	// Adjusted Max-Min Methods
 	// ========================
+	@Override
 	public Double getMaxDouble(int col) {
 		return FindHelper.bruteForceFindMaxDouble(this, col);
 	}
 
+	@Override
 	public Double getMaxDouble() {
 		return FindHelper.bruteForceFindMaxDouble(this);
 	}
 
+	@Override
 	public Double getMinDouble(int col) {
 		return FindHelper.bruteForceFindMinDouble(this, col);
 	}
 
+	@Override
 	public Double getMinDouble() {
 		return FindHelper.bruteForceFindMinDouble(this);
 	}
@@ -141,6 +148,7 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 	// =================
 	// Adjusted getXXX()
 	// =================
+	@Override
 	public Object getValue(int row, int col) {
 		Object value = base.getValue(row, col);
 		if (col == colIndexNum) {
@@ -150,6 +158,7 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 		}
 	}
 	
+	@Override
 	public Double getDouble(int row, int col) {
 		Double value = base.getDouble(row, col);
 		if (col == colIndexNum) {
@@ -160,6 +169,7 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 	}
 	
 
+	@Override
 	public boolean isIndexed(int col) {
 		if (col == colIndexNum) {
 			return false;

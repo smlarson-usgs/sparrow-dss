@@ -47,7 +47,7 @@ public class QueryLoader {
 	}
 
 	public String getParametrizedQuery(String name, String... params) throws IOException {
-		String result = ResourceLoaderUtils.loadParametrizedProperty(location, name, params);
+		String result = ResourceLoaderUtils.loadParametrizedProperty(location, name, (Object[]) params);
 		if (defaults != null) {
 			// apply the defaults
 			for (int i=0; i<defaults.length; i+=2) {

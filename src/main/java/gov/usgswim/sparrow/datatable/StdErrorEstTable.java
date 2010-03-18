@@ -49,10 +49,12 @@ public class StdErrorEstTable extends AbstractDataTableBase implements Immutable
 	/**
 	 * Actual type is a mixture, but when the comparison is done, resolution is Double.
 	 */
+	@Override
 	public Class<?> getDataType(int col) {
 		return Double.class;
 	}
 
+	@Override
 	public Double getDouble(int row, int col) {
 
 		if (col != validColumnIndex) {
@@ -76,6 +78,7 @@ public class StdErrorEstTable extends AbstractDataTableBase implements Immutable
 
 	}
 
+	@Override
 	public Float getFloat(int row, int col) {
 
 		if (col != validColumnIndex) {
@@ -96,6 +99,7 @@ public class StdErrorEstTable extends AbstractDataTableBase implements Immutable
 
 	}
 
+	@Override
 	public Integer getInt(int row, int col) {
 
 		if (col != validColumnIndex) {
@@ -115,6 +119,7 @@ public class StdErrorEstTable extends AbstractDataTableBase implements Immutable
 		return (int) nullValue;
 	}
 
+	@Override
 	public Long getLong(int row, int col) {
 
 		if (col != validColumnIndex) {
@@ -135,30 +140,37 @@ public class StdErrorEstTable extends AbstractDataTableBase implements Immutable
 
 	}
 
+	@Override
 	public Double getMaxDouble(int col) {
 		return FindHelper.bruteForceFindMaxDouble(this, col);
 	}
 
+	@Override
 	public Double getMaxDouble() {
 		return FindHelper.bruteForceFindMaxDouble(this);
 	}
 
+	@Override
 	public Double getMinDouble(int col) {
 		return FindHelper.bruteForceFindMinDouble(this, col);
 	}
 
+	@Override
 	public Double getMinDouble() {
 		return FindHelper.bruteForceFindMinDouble(this);
 	}
 
+	@Override
 	public String getString(int row, int col) {
 		return Double.toString(getDouble(row, col));
 	}
 
+	@Override
 	public String getUnits(int col) {
 		return "Unitless";
 	}
 
+	@Override
 	public Object getValue(int row, int col) {
 		return getDouble(row, col);
 	}

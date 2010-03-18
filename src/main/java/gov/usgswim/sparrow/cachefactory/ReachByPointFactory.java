@@ -41,7 +41,7 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 
 		String query = getTextWithParamSubstitution(
 				"FindReach",
-				new String[] {"ModelId", modelId.toString(), "lng", lng.toString(), "lat", lat.toString()});
+				"ModelId", modelId.toString(), "lng", lng.toString(), "lat", lat.toString());
 
 		// debug
 		System.out.println("SPRW idByPoint: " + query);
