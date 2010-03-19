@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.service.predictcontext;
 
 import gov.usgswim.service.HttpService;
+import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.QueryLoader;
@@ -50,6 +51,10 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 				areaOfInterest = props.getParametrizedQuery("areaOfInterest",
 						new String[] { "AreaOfInterstContextId",  contextId });
 			}
+			
+			// TODO Get these from Eric.
+			String displayUnits = "UNITS";
+			String displayConstituent = "CONSTITUENT";
 
 			String response = props.getParametrizedQuery("ResponseOK",
 				new String[] {
@@ -59,7 +64,9 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 					"adjustmentGroups", adjustmentGroups,
 					"AnalysisContextId", Integer.toString( context.getAnalysis().hashCode() ),
 					"terminalReaches", terminalReaches,
-					"areaOfInterest", areaOfInterest
+					"areaOfInterest", areaOfInterest,
+					"displayUnits", displayUnits,
+					"displayConstituent", displayConstituent
 			});
 
 			return inFact.createXMLStreamReader(new StringReader(response));

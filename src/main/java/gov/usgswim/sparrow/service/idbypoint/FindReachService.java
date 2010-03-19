@@ -27,6 +27,8 @@ import javax.xml.stream.XMLStreamReader;
  * TODO This service was not implemented via the Pipeline idiom like the others. Decide whether or not to maintain the idiom.
  */
 public class FindReachService extends HttpServlet {
+	
+	private static final int maxReturnSize = 200;
 
 	private static final long serialVersionUID = 1L;
 	public static String sampleResponse="<sparrow-reach-response xmlns=\"http://www.usgs.gov/sparrow/id-response-schema/v0_2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" model-id=\"22\">"
@@ -81,7 +83,10 @@ public class FindReachService extends HttpServlet {
 				ResultSet rset = stmt.executeQuery(sql);
 
 				boolean hasFoundResults = false;
+				int returnSize = 0;
 				while (rset.next()) {
+					if(++returnSize > maxReturnSize)
+						break;
 					hasFoundResults = true;
 					outputXML.append("<reach>");
 
@@ -101,6 +106,12 @@ public class FindReachService extends HttpServlet {
 						outputXML.append("</hucs>");
 					}
 					outputXML.append("</reach>");
+				}
+				if(returnSize > maxReturnSize) {
+					outputXML.append("<size exceeded = \"y\"/>");
+				}
+				else {
+					outputXML.append("<size exceeded = \"n\"/>");
 				}
 				if (hasFoundResults) {
 					status = "OK";
@@ -288,7 +299,7 @@ public class FindReachService extends HttpServlet {
 				whereClause += " and EDANAME like '" + frReq.edaName + "%'";
 			}
 		}
-		whereClause += " and rownum <= 1000";
+		whereClause += " and rownum <= " + Integer.toString(maxReturnSize+1);
 		return whereClause;
 	}
 
