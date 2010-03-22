@@ -107,15 +107,13 @@ public class FindReachService extends HttpServlet {
 					}
 					outputXML.append("</reach>");
 				}
-				if(returnSize > maxReturnSize) {
-					outputXML.append("<size exceeded = \"y\"/>");
+				if (hasFoundResults && returnSize <= maxReturnSize) {
+					status = "OK";
+				}
+				else if (hasFoundResults && returnSize > maxReturnSize) {
+					status = "EXCEEDED";
 				}
 				else {
-					outputXML.append("<size exceeded = \"n\"/>");
-				}
-				if (hasFoundResults) {
-					status = "OK";
-				} else {
 					status = "EMPTY";
 					message = "Sorry, no reaches were found matching your criteria";
 				}
