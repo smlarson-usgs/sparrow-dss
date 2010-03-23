@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.parser;
 
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.sparrow.datatable.TableProperties;
 
 /**
  * An inner class to bundle a DataTable and a column index together so that
@@ -65,6 +66,14 @@ public class DataColumn {
 	 */
 	public String getUnits() {
 		return table.getUnits(column);
+	}
+	
+	/**
+	 * Returns the thing being measured.
+	 * @return
+	 */
+	public String getConstituent() {
+		return table.getProperty(TableProperties.CONSTITUENT.name());
 	}
 	
 	/**

@@ -1,7 +1,8 @@
 package gov.usgswim.sparrow.datatable;
 
 public enum TableProperties implements NamedEnum<TableProperties>{
-	ROW_LEVEL("row_level", HucLevel.class, "Each row in the table represents a reach, a huc2/4/6/8, other?");
+	ROW_LEVEL("row_level", HucLevel.class, "Each row in the table represents a reach, a huc2/4/6/8, other?"),
+	CONSTITUENT("constituent", null, "Name of the thing being measured.");
 	
 	private String name;
 	private String description;
