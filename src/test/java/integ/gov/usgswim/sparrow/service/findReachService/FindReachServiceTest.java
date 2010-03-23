@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.service.findReachService;
 
 import static org.junit.Assert.assertEquals;
+import gov.usgswim.sparrow.service.ReturnStatus;
 import gov.usgswim.sparrow.service.SparrowServiceTest;
 
 import java.io.IOException;
@@ -79,7 +80,8 @@ public class FindReachServiceTest extends SparrowServiceTest {
 		//XPath processor is apparently XPath 1.0.
 		assertXpathEvaluatesTo("50", "/*[local-name()='sparrow-reach-response']/@model-id", actualResponse);
 		assertXpathEvaluatesTo("200", "count(//*[local-name()='reach'])", actualResponse);
-		assertXpathEvaluatesTo("OK - PARTIAL", "/*[local-name()='sparrow-reach-response']/*[local-name()='status']", actualResponse);
+		assertXpathEvaluatesTo(ReturnStatus.OK_PARTIAL.toString(),
+				"/*[local-name()='sparrow-reach-response']/*[local-name()='status']", actualResponse);
 	}
 	
 }
