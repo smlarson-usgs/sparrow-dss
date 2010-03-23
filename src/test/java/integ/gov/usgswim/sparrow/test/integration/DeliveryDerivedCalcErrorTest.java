@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.test.integration;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
+import gov.usgswim.sparrow.SparrowDBTest;
 import gov.usgswim.sparrow.TestHelper;
 import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.parser.DataColumn;
@@ -23,20 +24,8 @@ import static org.junit.Assert.*;
  * @author eeverman
  * TODO: This should really use a canned project, rather than MRB2
  */
-public class DeliveryDerivedCalcErrorTest {
+public class DeliveryDerivedCalcErrorTest extends SparrowDBTest {
 	
-	static LifecycleListener lifecycle = new LifecycleListener();
-	
-	@BeforeClass
-	public static void setUp() throws Exception {
-		lifecycle.contextInitialized(null, true);
-		XMLUnit.setIgnoreWhitespace(true);
-	}
-
-	@AfterClass
-	public static void tearDown() throws Exception {
-		lifecycle.contextDestroyed(null, true);
-	}
 	
 	@Test
 	public void testComparison() throws Exception {

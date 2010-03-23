@@ -52,15 +52,11 @@ public class PerformanceTest extends SparrowDBTest {
 	
 	static PredictionContext context;
 	
-	@BeforeClass
-	public static void setUp() throws Exception {
+	@Override
+	public void doSetup() throws Exception {
 		
 		//Turns on detailed logging
-		log.setLevel(Level.DEBUG);
-		
-		//Turn off logging for actions, which might affect performance
-		log.getLogger(Action.class).setLevel(Level.ERROR);
-		
+		//log.setLevel(Level.DEBUG);
 		
 		AdjustmentGroups emptyAdjustments = new AdjustmentGroups(TEST_MODEL_ID);
 		context = new PredictionContext(TEST_MODEL_ID, emptyAdjustments, null,

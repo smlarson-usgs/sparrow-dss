@@ -24,7 +24,23 @@ import org.junit.BeforeClass;
 import org.apache.log4j.PatternLayout;
 
 /**
- * A base test class that sets properties needed for a db connection.
+ * A base test class that sets properties needed for a db connection, cache
+ * configuration and other application lifecycle aspects.
+ * 
+ * Crazy Aspects:
+ * JUnit has some nasty features.  There are BeforeClass & AfterClass annotations,
+ * however, its not possible to allow these methods to be overridden so there
+ * are places where this doesn't work for us (in particular, one aspect of the
+ * lifecycle cannot be used for Services so it needs to be overridden by the
+ * SparrowServiceTest class).  I tried using a 'firstRun' flag to simualte this
+ * feature, however, firstrun is always reset to true because another JUnit
+ * 'feature' is to create a new instance for every test.  Thus, all instance
+ * variables are always reset.
+ * 
+ * So...  This class uses static variables as if they were instance variables.
+ * This *should* work as long as JUnit is single threaded in running the tests
+ * (a requirement that I think is pretty safe).
+ * 
  * @author eeverman
  *
  */
@@ -46,10 +62,13 @@ public class SparrowDBTest extends TestHelper {
 	static LifecycleListener lifecycle = new LifecycleListener();
 	
 	//True until the firstRun is complete (used for onetime init)
-	//Cannot use the @BeforeClass since we need the ability to override methods.
 	private static boolean firstRun = true;
+	
+	/** A single instance which is destroyed in teardown */
+	private static SparrowDBTest singleInstanceToTearDown;
 
 	
+	//Cannot use the @BeforeClass since we need the ability to override methods.
 	@Before
 	public void sparrowDBTestSetUp() throws Exception {
 		if (firstRun) {
@@ -57,25 +76,28 @@ public class SparrowDBTest extends TestHelper {
 			doLifecycleSetup();
 			doDbSetup();
 			doGeneralSetup();
-		}
-	}
-	
-	@After
-	public void sparrowDBTestTearDown() throws Exception {
-		if (firstRun) {
+			doSetup();	//intended for subclass setup
+			singleInstanceToTearDown = this;
 			firstRun = false;
-			doLogTearDown();
-			doLifecycleTearDown();
-			doDbTearDown();
-			doGeneralTearDown();
 		}
 	}
 	
-	protected void doLogSetup() {
+	@AfterClass
+	public static void sparrowDBTestTearDown() throws Exception {
+		singleInstanceToTearDown.doLogTearDown();
+		singleInstanceToTearDown.doLifecycleTearDown();
+		singleInstanceToTearDown.doDbTearDown();
+		singleInstanceToTearDown.doGeneralTearDown();
+		singleInstanceToTearDown.doTearDown();
+		singleInstanceToTearDown = null;
+		firstRun = true;	//reset this flag since it shared by all instances
+	}
+	
+	protected void doLogSetup() throws Exception {
 		setLogLevel(Level.ERROR);
 	}
 	
-	protected void doLifecycleSetup() {
+	protected void doLifecycleSetup() throws Exception {
 		lifecycle.contextInitialized(null, true);
 	}
 	
@@ -85,9 +107,13 @@ public class SparrowDBTest extends TestHelper {
 		}
 	}
 	
-	protected void doGeneralSetup() {
+	protected void doGeneralSetup() throws Exception {
 		XMLUnit.setIgnoreWhitespace(true);
 		XMLUnit.setIgnoreComments(true);
+	}
+	
+	protected void doSetup() throws Exception {
+		//nothing to do and no need to call super if overriding.
 	}
 	
 	protected void doLogTearDown() {
@@ -107,6 +133,10 @@ public class SparrowDBTest extends TestHelper {
 	
 	protected void doGeneralTearDown() {
 		//nothing to do
+	}
+	
+	protected void doTearDown() throws Exception {
+		//nothing to do and no need to call super if overriding.
 	}
 	
 	public static Connection getConnection() throws SQLException {

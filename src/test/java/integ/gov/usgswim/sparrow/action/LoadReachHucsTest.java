@@ -23,8 +23,8 @@ public class LoadReachHucsTest extends SparrowDBTest {
 	static HashSet<Integer> reachesInHuc = new HashSet<Integer>();
 	
 	
-	@BeforeClass
-	public static void setUp() throws Exception {
+	@Override
+	public void doSetup() throws Exception {
 		
 		//reaches in HUC8 #03030001
 		reachesInHuc.add(81039);

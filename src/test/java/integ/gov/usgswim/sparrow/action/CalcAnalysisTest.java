@@ -64,8 +64,8 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 	static TerminalReaches target9674;
 	static TerminalReaches targetBoth;
 	
-	@BeforeClass
-	public static void setUp() throws Exception {
+	@Override
+	public void doSetup() throws Exception {
 		
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);

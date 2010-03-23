@@ -44,8 +44,8 @@ public class CalcDeliveryFractionTest extends SparrowDBTest {
 	static DataTable stdDelFracTo9674;
 	static DataTable stdDelFracToBoth;
 	
-	@BeforeClass
-	public static void setUp() throws Exception {
+	@Override
+	public void doSetup() throws Exception {
 		
 		InputStream baseDataStream = TestHelper.getResource(CalcDeliveryFractionTest.class, "data", "tab");
 		stdData = TabDelimFileUtil.readAsDouble(baseDataStream, true, -1);
