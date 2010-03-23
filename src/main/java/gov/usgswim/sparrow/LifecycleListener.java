@@ -78,10 +78,6 @@ public class LifecycleListener implements ServletContextListener {
 			//Nothing to do
 		}
 		
-		//Calling create here is not required, but gives a single place to customize
-		//the creation of the singleton instance.
-		CacheManager.create();
-		
 		//
 		//Set up ehcaches that have decorators
 		//
