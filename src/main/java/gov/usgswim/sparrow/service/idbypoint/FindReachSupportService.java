@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.service.idbypoint;
 
 import gov.usgswim.service.ServiceServlet;
 import gov.usgswim.sparrow.cachefactory.AbstractCacheFactory;
+import gov.usgswim.sparrow.service.ReturnStatus;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.IOException;
@@ -68,7 +69,8 @@ public class FindReachSupportService extends HttpServlet {
 		String modelID = req.getParameter("model");
 		String attrib = req.getParameter("get");
 		StringBuilder outputXML = new StringBuilder();
-		String status = "error";
+		ReturnStatus status = ReturnStatus.ERROR;
+		String message = "";
 		String rootElement = "eda" + attrib + "s-response";
 		try {
 			// TODO need to put this in properties file using getText per conventions
@@ -85,15 +87,18 @@ public class FindReachSupportService extends HttpServlet {
 				outputXML.append(openTag).append(rset.getString(1)).append(closeTag);
 			}
 			if (hasFoundResults) {
-				status = "OK";
+				status = ReturnStatus.OK;
 			} else {
-				status = "ERROR: SORRY. No eda" + attrib + "s found for model " + modelID;
+				status = ReturnStatus.ERROR;
+				message = "No eda " + attrib + "s found for model " + modelID;
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			status = ReturnStatus.ERROR;
+			message = e.getMessage();
+			outputXML = new StringBuilder(); // clear the output
 			e.printStackTrace();
 		}
-		outputXML = getResponseXMLHeader(rootElement, modelID, status).append(outputXML);
+		outputXML = getResponseXMLHeader(rootElement, modelID, status, message).append(outputXML);
 		outputXML.append("</").append(rootElement).append(">");
 		ServletOutputStream out = resp.getOutputStream();
 		out.print(outputXML.toString());
@@ -241,10 +246,12 @@ public class FindReachSupportService extends HttpServlet {
 
 	}
 
-	public static final String RESPONSE_HEADER = "<%s model-id=\"%s\"><status>%s</status>";
-	public static StringBuilder getResponseXMLHeader(String rootElement, String modelID, String status) {
+	public static final String RESPONSE_HEADER = "<%s model-id=\"%s\"><status>%s</status><message>%s</message>";
+	public static StringBuilder getResponseXMLHeader(String rootElement,
+			String modelID, ReturnStatus status, String message) {
+		
 		StringBuilder result = new StringBuilder();
-		result.append(String.format(RESPONSE_HEADER, rootElement, modelID, status));
+		result.append(String.format(RESPONSE_HEADER, rootElement, modelID, status, message));
 		return result;
 	}
 

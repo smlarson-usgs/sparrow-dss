@@ -26,6 +26,8 @@ public class HelpService extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	private static final String HELP_RESPONSE= "<help-response model=\"%s\">"
+	+ " <status>OK</status>"
+	+ " <message></message>"
 	+ "	<request-type>%s</request-type>"
 	+ "	<params>"
 	+ "		<param>%s</param>"

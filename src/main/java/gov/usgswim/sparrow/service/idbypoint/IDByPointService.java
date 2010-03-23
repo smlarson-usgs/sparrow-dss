@@ -4,7 +4,6 @@ import static gov.usgswim.sparrow.service.predict.ValueType.incremental;
 import static gov.usgswim.sparrow.service.predict.ValueType.total;
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.filter.ColumnRangeFilter;
 import gov.usgswim.datatable.filter.FilteredDataTable;
 import gov.usgswim.service.HttpService;
@@ -18,6 +17,7 @@ import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.ReachElement;
 import gov.usgswim.sparrow.parser.ReachGroup;
+import gov.usgswim.sparrow.service.ReturnStatus;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.ValueType;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
@@ -25,7 +25,6 @@ import gov.usgswim.sparrow.util.QueryLoader;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -33,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.naming.NamingException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamReader;
@@ -135,7 +133,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		IDByPointResponse[] response = new IDByPointResponse[reach.length];
 		
 		//Aggregate status, since there may be many reaches.
-		boolean aggStatusOK = true;
+		ReturnStatus aggStatus = ReturnStatus.OK;
 		String aggMessage = null;
 		
 		if (reach.length > 0) {
@@ -158,10 +156,15 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 						response[i].predictionsXML = retrievePredictedsForReach(req.getContextID(), req.getModelID(), Long.valueOf(response[i].reachID));
 					}
 					
-					response[i].statusOK = true;
+					response[i].status = ReturnStatus.OK;
 				} else {
-					response[i].statusOK = false;
-					response[i].message = "Could not find a reach near the specified point or given ID";
+					if (req.getReachID() != null) {
+						response[i].status = ReturnStatus.ID_NOT_FOUND;
+						response[i].message = "Could not find a reach with the specified ID";
+					} else {
+						response[i].status = ReturnStatus.OK_EMPTY;
+						response[i].message = "Could not find a reach near the specified point";
+					}
 				}
 			}
 
@@ -170,15 +173,22 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			response = new IDByPointResponse[1];
 			response[0] = new IDByPointResponse();
 			response[0].modelID = req.getModelID();
-			response[0].statusOK = false;
-			response[0].message = "No reach found near that point.";
+			if (req.getReachID() != null) {
+				response[0].status = ReturnStatus.ID_NOT_FOUND;
+				response[0].message = "Could not find a reach with the specified ID";
+			} else {
+				response[0].status = ReturnStatus.OK_EMPTY;
+				response[0].message = "Could not find a reach near the specified point";
+			}
 		}
 		
 		//Build agg status
 		for (IDByPointResponse resp : response) {
 			if (resp == null) {
-				aggStatusOK = false;
-			} else if (resp.statusOK == false) {
+				aggStatus = ReturnStatus.ERROR;
+			} else if (! ReturnStatus.OK.equals(resp.status)) {
+				//Take any non-OK status as the full status
+				aggStatus = resp.status;
 				aggMessage = resp.message;
 			}
 		}
@@ -187,7 +197,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		StringBuffer aggResponse = new StringBuffer();
 		
 		aggResponse.append(
-			IDByPointResponse.writeXMLHead(aggStatusOK, aggMessage, req.getModelID(), req.getContextID())
+			IDByPointResponse.writeXMLHead(aggStatus, aggMessage, req.getModelID(), req.getContextID())
 		);
 		for (IDByPointResponse resp : response) {
 			aggResponse.append(resp.toXML());

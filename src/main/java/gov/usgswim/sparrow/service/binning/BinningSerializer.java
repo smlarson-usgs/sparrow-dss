@@ -4,6 +4,7 @@ import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_NAMESPACE
 import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
+import gov.usgswim.sparrow.service.ReturnStatus;
 
 import java.math.BigDecimal;
 
@@ -64,6 +65,8 @@ public class BinningSerializer extends BasicXMLStreamReader {
         //.addAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE + " " + TARGET_NAMESPACE_LOCATION));
         
         addNonNullBasicTag("contextId", request.getContextId().toString());
+        addNonNullBasicTag("status", ReturnStatus.OK.toString());
+        addNonNullBasicTag("message", "");
         addNonNullBasicTag("binType", request.getBinType().toString());
         
         addOpenTag("bins");

@@ -5,6 +5,7 @@ import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeClosingTag;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeNonNullTag;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeOpeningTag;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.sparrow.service.ReturnStatus;
 
 /**
  * A simple Bean object with a 
@@ -15,7 +16,7 @@ import gov.usgswim.datatable.DataTable;
 public class IDByPointResponse {
 	public Long modelID;
 	public Integer contextID;
-	public boolean statusOK;
+	public ReturnStatus status;
 	public String message;
 	public Integer cacheLifetime;
 	//
@@ -41,7 +42,7 @@ public class IDByPointResponse {
 		this.reachID = Long.valueOf(reach.getId()); // keep in sync
 	}
 	
-	public static String writeXMLHead(boolean statusOK, String message, Long modelId, Integer contextId) {
+	public static String writeXMLHead(ReturnStatus status, String message, Long modelId, Integer contextId) {
 		StringBuilder in = new StringBuilder();
 		writeOpeningTag(in, "sparrow-id-response", 
 				"xmlns", "http://www.usgs.gov/sparrow/id-response-schema/v0_2",
@@ -50,7 +51,7 @@ public class IDByPointResponse {
 				"context-id", asString(contextId));
 		in.append("\n");
 		
-		writeNonNullTag(in, "status", (statusOK) ? "OK" : "Failed");
+		writeNonNullTag(in, "status", status.toString());
 		writeNonNullTag(in, "message", message);
 		
 		writeOpeningTag(in, "results");
@@ -68,7 +69,7 @@ public class IDByPointResponse {
 		in.append("\n");
 		{
 			// write <status>, <message>, <cache-lifetime-seconds>
-			writeNonNullTag(in, "status", (statusOK) ? "OK" : "Failed");
+			writeNonNullTag(in, "status", status.toString());
 			writeNonNullTag(in, "message", message);
 			writeNonNullTag(in, "cache-lifetime-seconds", asString(cacheLifetime));
 			in.append("\n");

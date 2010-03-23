@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.service.predictcontext;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.service.ReturnStatus;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.QueryLoader;
 
@@ -72,7 +73,8 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 			return inFact.createXMLStreamReader(new StringReader(response));
 		}
 		// failure
-		return inFact.createXMLStreamReader(new StringReader("<PredictionContext-response><status>Failed</status></PredictionContext-response>"));
+		return inFact.createXMLStreamReader(
+				new StringReader("<PredictionContext-response><status>" + ReturnStatus.ERROR + "</status></PredictionContext-response>"));
 	}
 
 	public void shutDown() {
