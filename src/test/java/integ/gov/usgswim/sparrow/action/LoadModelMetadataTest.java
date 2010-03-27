@@ -17,7 +17,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class LoadSparrowModelsTest extends SparrowDBTest {
+public class LoadModelMetadataTest extends SparrowDBTest {
 
 	/**
 	 * Loads all public models (1) from the test db.
@@ -26,7 +26,7 @@ public class LoadSparrowModelsTest extends SparrowDBTest {
 	@Test
 	public void testLoadPublicModels() throws Exception {
 		
-		List<SparrowModel> models = new LoadSparrowModels().run(); //TODO this test currently returns the same as non public.  is that correct?
+		List<SparrowModel> models = new LoadModelMetadata().run();
 		
 		SparrowModel m = models.get(0);
 		checkTestModel(m);
@@ -44,7 +44,7 @@ public class LoadSparrowModelsTest extends SparrowDBTest {
 	@Test
 	public void testLoadNonPublicModels() throws Exception {
 		
-		List<SparrowModel> models = new LoadSparrowModels(true, false, false, true).run();
+		List<SparrowModel> models = new LoadModelMetadata(true, false, false, true).run();
 		
 		SparrowModel m = models.get(0);
 		checkTestModel(m);
@@ -53,7 +53,7 @@ public class LoadSparrowModelsTest extends SparrowDBTest {
 	
 	@Test
 	public void testLoadSpecificModel() throws Exception {
-		List<SparrowModel> models = new LoadSparrowModels(TEST_MODEL_ID, true).run();
+		List<SparrowModel> models = new LoadModelMetadata(TEST_MODEL_ID, true).run();
 		
 		assertEquals(1, models.size());
 		

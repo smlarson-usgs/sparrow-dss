@@ -21,6 +21,8 @@ import java.util.Set;
 
 public class DLUtils{
 
+	public static int DO_NOT_INDEX = -1;
+	
 	/**
 	 * Turns a query that returns two columns into a Map<Integer, Integer>.
 	 * The first column is used as the key, the second column is used as the value.
@@ -101,7 +103,7 @@ public class DLUtils{
 	 * @throws SQLException
 	 */
 	public static DataTableWritable readAsInteger(Connection conn, String query, int fetchSize) throws SQLException {
-		return readAsInteger(conn, query, fetchSize, DataLoader.DO_NOT_INDEX);
+		return readAsInteger(conn, query, fetchSize, DO_NOT_INDEX);
 	}
 
 	/**
@@ -217,7 +219,7 @@ public class DLUtils{
 	 * @throws SQLException
 	 */
 	public static DataTableWritable readAsInteger(ResultSet source) throws SQLException {
-		return readAsInteger(source, DataLoader.DO_NOT_INDEX);
+		return readAsInteger(source, DO_NOT_INDEX);
 	}
 
 	/**

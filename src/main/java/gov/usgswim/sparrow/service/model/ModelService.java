@@ -58,7 +58,7 @@ public class ModelService implements HttpService<ModelRequest> {
 		List<SparrowModel> models = null;
 		
 		try {
-			models = SharedApplication.getInstance().getSparrowModels(o.toCacheKey());
+			models = SharedApplication.getInstance().getModelMetadata(o.toCacheKey());
 		} catch (Exception e) {
 			System.err.println(this.getClass().getSimpleName() + " unable to get a connection");
 			e.printStackTrace();

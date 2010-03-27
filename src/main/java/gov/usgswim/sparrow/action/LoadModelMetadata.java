@@ -15,12 +15,12 @@ import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 import gov.usgswim.sparrow.util.SparrowResourceUtils;
 
-public class LoadSparrowModels extends Action<List<SparrowModel>> {
+public class LoadModelMetadata extends Action<List<SparrowModel>> {
 	
 	private boolean isApproved, isPublic, isArchived, getSources;
-	private long sparrowModelId;
+	private Long sparrowModelId;
 
-	public LoadSparrowModels(ModelRequestCacheKey key) {
+	public LoadModelMetadata(ModelRequestCacheKey key) {
 		this.sparrowModelId = key.getModelId();
 		this.isPublic = key.isPublic();
 		this.isApproved = key.isApproved();
@@ -28,8 +28,8 @@ public class LoadSparrowModels extends Action<List<SparrowModel>> {
 		this.getSources = key.isGetSources();
 	}
 	
-	public LoadSparrowModels(boolean isApproved, boolean isPublic, boolean isArchived, boolean getSources) {
-		this.sparrowModelId = -1L;
+	public LoadModelMetadata(boolean isApproved, boolean isPublic, boolean isArchived, boolean getSources) {
+		this.sparrowModelId = null;
 		this.isApproved = isApproved;
 		this.isPublic = isPublic;
 		this.isArchived = isArchived;
@@ -43,15 +43,11 @@ public class LoadSparrowModels extends Action<List<SparrowModel>> {
 	 * @param isArchived false
 	 * @param getSources true
 	 */
-	public LoadSparrowModels() {
+	public LoadModelMetadata() {
 		this(true, true, false, true); // Default behavior defined by loadModelsMetaData(Connection)
 	}
 	
-	public LoadSparrowModels(long id) {
-		this(id, true);
-	}
-	
-	public LoadSparrowModels(long id, boolean getSources) {
+	public LoadModelMetadata(Long id, boolean getSources) {
 		this.sparrowModelId = id;
 		this.getSources = getSources;
 	}
@@ -74,7 +70,7 @@ public class LoadSparrowModels extends Action<List<SparrowModel>> {
 		};
 		String selectModels = null;
 		
-		if (sparrowModelId > 0) { //specific model
+		if (sparrowModelId != null) { //specific model
 			params = new String[] {"SparrowModelId", "" + sparrowModelId};
 			selectModels = getTextWithParamSubstitution("SelectModelsById", params);
 		} else { //default ID

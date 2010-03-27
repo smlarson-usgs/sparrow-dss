@@ -1,30 +1,26 @@
-package gov.usgswim.sparrow.util;
+package gov.usgswim.sparrow.action;
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.adjustment.ColumnMappedTable;
 import gov.usgswim.datatable.filter.ColumnRangeFilter;
 import gov.usgswim.datatable.filter.FilteredDataTable;
 import gov.usgswim.datatable.filter.RowRangeFilter;
 import gov.usgswim.datatable.utils.DataTablePrinter;
-import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
-import gov.usgswim.sparrow.domain.Source;
-import gov.usgswim.sparrow.domain.SparrowModel;
-import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.util.LoadModelPredictDataOfflineTest;
+import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;
 import java.sql.Connection;
-import java.util.List;
 
-public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
+public class LoadModelPredictDataTest extends LoadModelPredictDataOfflineTest {
 	public static final Long TEST_MODEL = 32L;
 
 	private Connection conn;
 
 
-	public DataLoaderIntegrationTest(String sTestName) {
+	public LoadModelPredictDataTest(String sTestName) {
 		super(sTestName);
 	}
 
@@ -48,7 +44,7 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 	 * @see DataLoader#loadTopo(Connection,int)
 	 */
 	public void testLoadTopo() throws Exception {
-		DataTable jdbcData = DataLoader.loadTopo(conn, TEST_MODEL);
+		DataTable jdbcData = LoadModelPredictData.loadTopo(conn, TEST_MODEL);
 		System.out.println("  -- Printing Topo --");
 		DataTablePrinter.printDataTableSample(jdbcData, 30, 30);
 
@@ -71,22 +67,21 @@ public class DataLoaderIntegrationTest extends DataLoaderOfflineTest {
 
 
 	public void testLoadSourceReachCoef() throws Exception {
-		DataTable sourceMetadata = DataLoader.loadSourceMetadata(conn, TEST_MODEL);
-		DataTable jdbcData = DataLoader.loadSourceReachCoef(conn, TEST_MODEL, sourceMetadata);
+		DataTable sourceMetadata = LoadModelPredictData.loadSourceMetadata(conn, TEST_MODEL);
+		DataTable jdbcData = LoadModelPredictData.loadSourceReachCoef(conn, TEST_MODEL, sourceMetadata);
 		System.out.println("  -- Printing Source Reach Coefficients --");
 		DataTablePrinter.printDataTableSample(jdbcData, 30, 30);
 	}
 
 	public void testLoadDecay() throws Exception {
-		DataTable jdbcData = DataLoader.loadDelivery(conn, TEST_MODEL, 0);
+		DataTable jdbcData = LoadModelPredictData.loadDelivery(conn, TEST_MODEL, 0);
 		System.out.println("  -- Printing Decay Coefficients --");
 		DataTablePrinter.printDataTableSample(jdbcData, 30, 30);
 	}
 
 	public void testSourceValues() throws Exception {
-		DataTable sourceMetadata = DataLoader.loadSourceMetadata(conn, TEST_MODEL);
-		DataTableWritable topo = DataLoader.loadTopo(conn, TEST_MODEL);
-		DataTable jdbcData = DataLoader.loadSourceValues(conn, TEST_MODEL, sourceMetadata, topo);
+		DataTable sourceMetadata = LoadModelPredictData.loadSourceMetadata(conn, TEST_MODEL);
+		DataTable jdbcData = LoadModelPredictData.loadSourceValues(conn, TEST_MODEL, sourceMetadata);
 		System.out.println("  -- Printing Decay Coefficients --");
 		DataTablePrinter.printDataTableSample(jdbcData, 30, 30);
 	}

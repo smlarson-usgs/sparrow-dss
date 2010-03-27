@@ -1,11 +1,8 @@
 package gov.usgswim.sparrow.service.predict;
 
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.DataLoader;
+import gov.usgswim.sparrow.action.LoadModelPredictData;
 import gov.usgswim.task.Computable;
-
-import java.sql.Connection;
 
 import org.apache.log4j.Logger;
 
@@ -24,22 +21,15 @@ public class PredictDatasetComputable implements Computable<Long, PredictData> {
 	}
 
 	public PredictData compute(Long modelId) throws Exception {
-		Connection conn = null;
 		PredictData data = null;
-		try {
-			conn = SharedApplication.getInstance().getConnection();
+		LoadModelPredictData loader = new LoadModelPredictData(modelId, true);
 
-			long startTime = System.currentTimeMillis();
-			log.debug("Begin loading predict data for model #" + modelId);
+		long startTime = System.currentTimeMillis();
+		log.debug("Begin loading predict data for model #" + modelId);
 
-			data = DataLoader.loadModelDataOnly(conn, modelId.intValue());
+		data = loader.run();
 
-			log.debug("End loading predict data for model #" + modelId + "  Time: " + (System.currentTimeMillis() - startTime) + "ms");
-
-		} finally {
-			// not really necessary as it's taken care of in loadMinimalPredictDataSet
-			SharedApplication.closeConnection(conn, null);
-		}
+		log.debug("End loading predict data for model #" + modelId + "  Time: " + (System.currentTimeMillis() - startTime) + "ms");
 
 		return data.toImmutable();
 

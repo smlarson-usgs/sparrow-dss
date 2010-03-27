@@ -83,7 +83,7 @@ public class SharedApplication  {
 	public static final String LOAD_REACH_ATTRIBUTES = "LoadReachAttributes";
 	public static final String REACHES_BY_CRITERIA = "ReachesByCriteria";
 	public static final String DATA_BINNING = "DataBinning";
-	public static final String LOAD_SPARROW_MODELS = "LoadSparrowModels";
+	public static final String LOAD_MODEL_METADATA = "LoadModelMetadata";
 
 
 
@@ -508,13 +508,14 @@ public class SharedApplication  {
 		return (e != null)?((DataTable) e.getObjectValue()):null;
 	}
 	
-	//LoadSparrowModels
-	public List<SparrowModel> getSparrowModels(ModelRequestCacheKey req) {
-		return getSparrowModels(req, false);
+	//LoadModelMetadata
+	public List<SparrowModel> getModelMetadata(ModelRequestCacheKey req) {
+		return getModelMetadata(req, false);
 	}
 	
-	public List<SparrowModel> getSparrowModels(ModelRequestCacheKey req, boolean quiet) {
-		Ehcache c = CacheManager.getInstance().getEhcache(LOAD_SPARROW_MODELS);
+	@SuppressWarnings("unchecked")
+	public List<SparrowModel> getModelMetadata(ModelRequestCacheKey req, boolean quiet) {
+		Ehcache c = CacheManager.getInstance().getEhcache(LOAD_MODEL_METADATA);
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
 		return (e != null)?((List<SparrowModel>) e.getObjectValue()):null;
 	}

@@ -3,8 +3,7 @@ package gov.usgswim.sparrow.loader;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTablePrinter;
-import gov.usgswim.datatable.utils.DataTableUtils;
-import gov.usgswim.sparrow.util.DataLoader;
+import gov.usgswim.sparrow.action.LoadModelPredictData;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -26,7 +25,7 @@ public class ModelDataLoadComparison {
 		//int modelIdInt = modelID.intValue();
 
 		{// write topo
-			DataTable topo = DataLoader.loadTopo(conn, modelID);
+			DataTable topo = LoadModelPredictData.loadTopo(conn, modelID);
 			if (baseOutputDirectory.exists() && baseOutputDirectory.isDirectory()) {
 				File topoOutFile = ModelDataLoadComparison.getOutputTopoFile(baseOutputDirectory);
 				Writer writer = new BufferedWriter(new FileWriter(topoOutFile), 8192);
@@ -43,9 +42,8 @@ public class ModelDataLoadComparison {
 		//int modelIdInt = modelID.intValue();
 
 		{// write src
-			DataTableWritable sourceMetadata = DataLoader.loadSourceMetadata(conn, modelID);
-			DataTableWritable topo = DataLoader.loadTopo(conn, modelID);
-			DataTable source = DataLoader.loadSourceValues(conn, modelID, sourceMetadata, topo);
+			DataTableWritable sourceMetadata = LoadModelPredictData.loadSourceMetadata(conn, modelID);
+			DataTable source = LoadModelPredictData.loadSourceValues(conn, modelID, sourceMetadata);
 			if (baseOutputDirectory.exists() && baseOutputDirectory.isDirectory()) {
 				File srcOutFile = ModelDataLoadComparison.getOutputSrcFile(baseOutputDirectory);
 				Writer writer = new BufferedWriter(new FileWriter(srcOutFile), 8192);
@@ -61,8 +59,8 @@ public class ModelDataLoadComparison {
 		//int modelIdInt = modelID.intValue();
 
 		{// write coef
-			DataTableWritable sourceMetadata = DataLoader.loadSourceMetadata(conn, modelID);
-			DataTable coef = DataLoader.loadSourceReachCoef(conn, modelID, sourceMetadata);
+			DataTableWritable sourceMetadata = LoadModelPredictData.loadSourceMetadata(conn, modelID);
+			DataTable coef = LoadModelPredictData.loadSourceReachCoef(conn, modelID, sourceMetadata);
 			if (baseOutputDirectory.exists() && baseOutputDirectory.isDirectory()) {
 				File topoOutFile = ModelDataLoadComparison.getOutputCoefFile(baseOutputDirectory);
 				Writer writer = new BufferedWriter(new FileWriter(topoOutFile), 8192);

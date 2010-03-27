@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.test.misc;
 
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.sparrow.action.LoadModelPredictData;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.DataLoader;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -12,8 +12,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import junit.framework.TestCase;
 
 /**
  * @author ilinkuo
@@ -138,25 +136,24 @@ public class JDBCUtilMemoryIntegrationTest{
 		System.out.println("======= Testing loadFullModelDataSet Components Memory Usage =======");
 		ObjectFactory sourceIDFactory = new ObjectFactory() {
 			public Object makeObject() throws SQLException, IOException {
-				return DataLoader.loadSourceMetadata(conn, modelId);
+				return LoadModelPredictData.loadSourceMetadata(conn, modelId);
 			}
 		};
 
 		ObjectFactory topoFactory = new ObjectFactory() {
 			public Object makeObject() throws SQLException, IOException {
-				return DataLoader.loadTopo(conn, modelId);
+				return LoadModelPredictData.loadTopo(conn, modelId);
 			}
 		};
 
 		ObjectFactory decayFactory = new ObjectFactory() {
 			public Object makeObject() throws SQLException, IOException {
-				return DataLoader.loadDelivery(conn, modelId, 0);
+				return LoadModelPredictData.loadDelivery(conn, modelId, 0);
 			}
 		};
 
 		MemoryTestBench mtb = new MemoryTestBench();
 		System.out.print("sourceID: ");
-		final DataTable topo = DataLoader.loadTopo(conn, modelId);
 		final DataTable sourceIDs = (DataTable) mtb.showMemoryUsageAndRetrieve(sourceIDFactory);
 
 		System.out.print("topo: ");
@@ -167,13 +164,13 @@ public class JDBCUtilMemoryIntegrationTest{
 
 		ObjectFactory sourceReachCoefFactory = new ObjectFactory() {
 			public Object makeObject() throws SQLException, IOException {
-				return DataLoader.loadSourceReachCoef(conn, modelId, sourceIDs);
+				return LoadModelPredictData.loadSourceReachCoef(conn, modelId, sourceIDs);
 			}
 		};
 
 		ObjectFactory sourceValuesFactory = new ObjectFactory() {
 			public Object makeObject() throws SQLException, IOException {
-				return DataLoader.loadSourceValues(conn, modelId, sourceIDs, topo);
+				return LoadModelPredictData.loadSourceValues(conn, modelId, sourceIDs);
 			}
 		};
 
@@ -186,8 +183,8 @@ public class JDBCUtilMemoryIntegrationTest{
 
 
 		ObjectFactory fullModelDataSetFactory = new ObjectFactory() {
-			public Object makeObject() throws SQLException, IOException {
-				return DataLoader.loadModelAndBootstrapData(conn, modelId);
+			public Object makeObject() throws Exception {
+				return new LoadModelPredictData((long) modelId, false).run();
 			}
 		};
 

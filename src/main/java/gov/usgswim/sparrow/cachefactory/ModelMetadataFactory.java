@@ -1,14 +1,14 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgswim.sparrow.action.LoadSparrowModels;
+import gov.usgswim.sparrow.action.LoadModelMetadata;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
-public class SparrowModelFactory implements CacheEntryFactory {
+public class ModelMetadataFactory implements CacheEntryFactory {
 
 	@Override
 	public Object createEntry(Object modelRequestCacheKey) throws Exception {
 		ModelRequestCacheKey key = (ModelRequestCacheKey) modelRequestCacheKey;
-		Object result = new LoadSparrowModels(key).run();
+		Object result = new LoadModelMetadata(key).run();
 		return result;
 	}
 

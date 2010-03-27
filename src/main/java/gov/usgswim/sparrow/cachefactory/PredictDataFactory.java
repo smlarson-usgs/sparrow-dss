@@ -1,10 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.DataLoader;
-
-import java.sql.Connection;
+import gov.usgswim.sparrow.action.LoadModelPredictData;
 
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
@@ -27,13 +24,8 @@ public class PredictDataFactory implements CacheEntryFactory {
 	public Object createEntry(Object modelId) throws Exception {
 		Long id = (Long)modelId;
 		PredictData result = null;
-		Connection conn = SharedApplication.getInstance().getConnection();
 		
-		try {
-			result = DataLoader.loadModelDataOnly(conn, id.intValue()).toImmutable();
-		} finally {
-			SharedApplication.closeConnection(conn, null);
-		}
+		result = new LoadModelPredictData(id, true).run();
 		
 		return result;
 	}

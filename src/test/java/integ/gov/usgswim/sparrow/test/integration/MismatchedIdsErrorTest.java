@@ -1,27 +1,14 @@
 package gov.usgswim.sparrow.test.integration;
 
 import static org.junit.Assert.assertEquals;
+
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.SimpleDataTableWritable;
-import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.TestHelper;
-import gov.usgswim.sparrow.parser.PredictionContext;
-import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
-import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
-import gov.usgswim.sparrow.util.DataLoader;
+import gov.usgswim.sparrow.action.LoadModelPredictData;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-
-import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -52,8 +39,7 @@ public class MismatchedIdsErrorTest {
 
 	@Test
 	public void testLoadSources() throws Exception {
-		Connection conn = SharedApplication.getInstance().getConnection();
-		PredictData pd = DataLoader.loadModelDataOnly(conn, 42);
+		PredictData pd = new LoadModelPredictData(42L, true).run();
 		
 		DataTable topo = pd.getTopo();
 		DataTable source = pd.getSrc();

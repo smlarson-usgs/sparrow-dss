@@ -1,22 +1,20 @@
 package gov.usgswim.sparrow.util;
 
+import gov.usgswim.sparrow.action.LoadModelPredictData;
+
 import java.io.IOException;
 
 import junit.framework.TestCase;
 
 
-public class DataLoaderOfflineTest extends TestCase {
-	public DataLoaderOfflineTest(String sTestName) {
+public class LoadModelPredictDataOfflineTest extends TestCase {
+	public LoadModelPredictDataOfflineTest(String sTestName) {
 		super(sTestName);
 	}
 
-
-	/**
-	 * @see DataLoader#retrieveQuery(String)
-	 */
 	public void testGetSelectReachCoefQueryWithParams() throws IOException {
-		String query = DataLoader.getQuery(
-			"SelectReachCoef", new Object[] {"ModelId", 999, "Iteration", 888, "SourceId", 777});
+		String query = LoadModelPredictData.getTextWithParamSubstitution("SelectReachCoef", LoadModelPredictData.class,
+				new Object[] {"ModelId", 999, "Iteration", 888, "SourceId", 777});
 
 		String expected =
 		"SELECT coef.VALUE AS Value, rch.Identifier as Identifier " +

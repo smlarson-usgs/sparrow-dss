@@ -4,7 +4,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
-import gov.usgswim.sparrow.util.DataLoader;
+import gov.usgswim.sparrow.util.DLUtils;
 
 public class PredictDataTestScenarios {
 
@@ -42,8 +42,8 @@ public class PredictDataTestScenarios {
 		{		
 			DataTable topo = new SimpleDataTableWritable(PredictDataTestScenarios.linearFlowTopo, null, 0);
 			DataTable coef = null;
-			DataTable src = new SimpleDataTableWritable(PredictDataTestScenarios.singleSource, PredictDataTestScenarios.singleSourceHeadings, DataLoader.DO_NOT_INDEX);
-			DataTable decay = new SimpleDataTableWritable(PredictDataTestScenarios.singleDecay, null, DataLoader.DO_NOT_INDEX);
+			DataTable src = new SimpleDataTableWritable(PredictDataTestScenarios.singleSource, PredictDataTestScenarios.singleSourceHeadings, DLUtils.DO_NOT_INDEX);
+			DataTable decay = new SimpleDataTableWritable(PredictDataTestScenarios.singleDecay, null, DLUtils.DO_NOT_INDEX);
 
 			pd.setSrcMetadata( null);
 			pd.setTopo( topo);

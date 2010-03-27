@@ -3,16 +3,14 @@ package gov.usgswim.sparrow.debug;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictRunner;
+import gov.usgswim.sparrow.action.LoadModelPredictData;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
-import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.DataLoader;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.sql.Connection;
 import java.sql.SQLException;
 
 /**
@@ -32,20 +30,14 @@ public class WriteDataToTSVFiles {
 		if (!baseDirectory.exists())
 			throw new RuntimeException("The base directory specified ["
 					+ BASE_DIRECTORY + "] does not exist!");
-		Connection conn = SharedApplication.getInstance().getConnection();
 
-		try {
+		PredictData predictData = new LoadModelPredictData((long) modelID, true).run();
+		writePredictDataToFiles(predictData, modelID, baseDirectory, WORK_REL_PATH);
 
-			PredictData predictData = DataLoader.loadModelDataOnly(conn, modelID);
-			writePredictDataToFiles(predictData, modelID, baseDirectory, WORK_REL_PATH);
+		PredictRunner predictRunner = new PredictRunner(predictData);
+		PredictResultImm predictResult = predictRunner.doPredict();
+		writeToFile(predictResult,  baseDirectory, WORK_REL_PATH, modelID + "_predict.txt", true);
 
-			PredictRunner predictRunner = new PredictRunner(predictData);
-			PredictResultImm predictResult = predictRunner.doPredict();
-			writeToFile(predictResult,  baseDirectory, WORK_REL_PATH, modelID + "_predict.txt", true);
-
-		} finally {
-			SharedApplication.closeConnection(conn, null);
-		}
 
 		System.out.println("DONE!");
 	}

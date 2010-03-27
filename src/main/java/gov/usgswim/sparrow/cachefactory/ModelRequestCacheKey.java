@@ -11,7 +11,7 @@ public class ModelRequestCacheKey {
 	private final boolean _approved;
 	private final boolean _archived;
 	private final boolean _sources;
-	private final long _modelId;
+	private final Long _modelId;
 	
 	/**
 	 * Constructs a CacheKey with defaults taken from
@@ -22,23 +22,23 @@ public class ModelRequestCacheKey {
 	 * @param getSources false
 	 */
 	public ModelRequestCacheKey() {
-		this(-1L, true, true, false, false);
+		this(null, true, true, false, false);
 	}
 	
-	public ModelRequestCacheKey(long modelId) {
+	public ModelRequestCacheKey(Long modelId) {
 		this(modelId, true, true, false, false);
 	}
 	
 	public ModelRequestCacheKey(boolean isPublic, boolean isApproved, boolean isArchived, boolean getSources) {
-		this(-1L, isPublic, isApproved, isArchived, getSources);
+		this(null, isPublic, isApproved, isArchived, getSources);
 	}
 	
-	public ModelRequestCacheKey(long modelId, boolean isPublic, boolean isApproved, boolean isArchived, boolean getSources) {
+	public ModelRequestCacheKey(Long modelId, boolean isPublic, boolean isApproved, boolean isArchived, boolean getSources) {
 		this._public = isPublic;
 		this._approved = isApproved;
 		this._archived = isArchived;
 		this._sources = getSources;
-		this._modelId = (modelId > 0) ? modelId : -1L;
+		this._modelId = modelId;
 	}
 	
 	public boolean isPublic() {
@@ -57,7 +57,7 @@ public class ModelRequestCacheKey {
 		return this._sources;
 	}
 
-	public long getModelId() {
+	public Long getModelId() {
 		return this._modelId;
 	}
 	

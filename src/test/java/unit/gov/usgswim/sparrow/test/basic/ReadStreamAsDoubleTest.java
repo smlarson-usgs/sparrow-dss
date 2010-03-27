@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.test.basic;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
-import gov.usgswim.sparrow.util.DataLoader;
+import gov.usgswim.sparrow.util.DLUtils;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;
@@ -18,7 +18,7 @@ public class ReadStreamAsDoubleTest extends TestCase {
 			getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_heading.txt");
 
 		DataTableWritable dt = TabDelimFileUtil.readAsDouble(fileStream,
-				true, DataLoader.DO_NOT_INDEX);
+				true, DLUtils.DO_NOT_INDEX);
 		// NOTE: in current implementation, the existence/need for indices is
 		// deduced in the read. In the future, read as Double should not do so.
 		
