@@ -19,7 +19,7 @@ import gov.usgswim.sparrow.util.DLUtils;
 
 public class LoadModelPredictData extends Action<PredictData>{
 
-	private boolean dataOnly;
+	private boolean bootstrap;
 	private Long modelId;
 	
 	public static final int SOURCE_ID_COL = 0;
@@ -27,11 +27,11 @@ public class LoadModelPredictData extends Action<PredictData>{
 	/**
 	 * Creates a Action to load the entire model
 	 * @param modelId the ID of the Sparrow Model to load
-	 * @param dataOnly	<b>true</b>		to load only the data required to run a prediction.
+	 * @param bootstrap	<b>true</b>		to load only the data required to run a prediction.
 	 * 					<b>false</b>	to load the complete dataset for a model (including bootstrap data). 
 	 */
-	public LoadModelPredictData(Long modelId, boolean dataOnly) {
-		this.dataOnly = dataOnly;
+	public LoadModelPredictData(Long modelId, boolean bootstrap) {
+		this.bootstrap = bootstrap;
 		this.modelId = modelId;
 	}
 	
@@ -42,7 +42,7 @@ public class LoadModelPredictData extends Action<PredictData>{
 		
 		dataSet.setSrcMetadata( loadSourceMetadata(con, modelId));
 		dataSet.setTopo( loadTopo(con, modelId) );
-		if (this.dataOnly) {
+		if (!this.bootstrap) {
 			dataSet.setCoef( loadSourceReachCoef(con, modelId, 0, dataSet.getSrcMetadata()) );
 		} else {
 			dataSet.setCoef( loadSourceReachCoef(con, modelId, dataSet.getSrcMetadata()) );
@@ -426,12 +426,12 @@ public class LoadModelPredictData extends Action<PredictData>{
 		}
 	}
 
-	public boolean isDataOnly() {
-		return this.dataOnly;
+	public boolean isLoadBootstrap() {
+		return this.bootstrap;
 	}
 
-	public void setDataOnly(boolean dataOnly) {
-		this.dataOnly = dataOnly;
+	public void setLoadBootstrap(boolean dataOnly) {
+		this.bootstrap = dataOnly;
 	}
 
 	public Long getModelId() {

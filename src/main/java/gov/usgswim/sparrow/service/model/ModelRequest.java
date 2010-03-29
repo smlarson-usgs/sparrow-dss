@@ -10,11 +10,12 @@ public class ModelRequest implements PipelineRequest{
 	boolean _public = true;
 	boolean _approved = true;
 	boolean _archived = false;
-	boolean _sources = false;
+	Long id;
 	private String xmlRequest;
 	private ResponseFormat responseFormat;
 
 	public ModelRequest() {
+		this.id = null;
 	}
 
 	public void setPublic(boolean p) {
@@ -52,17 +53,17 @@ public class ModelRequest implements PipelineRequest{
 	public boolean isArchived() {
 		return _archived;
 	}
-
-	public void setSources(boolean sources) {
-		this._sources = sources;
+	
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public void setSources(String sources) {
-		this._sources = BooleanUtils.toBoolean(sources);
+	public void setId(String id) {
+		this.id = Long.parseLong(id);
 	}
 
-	public boolean isSources() {
-		return _sources;
+	public Long getId() {
+		return this.id;
 	}
 
 	public String getXMLRequest() {
@@ -86,7 +87,7 @@ public class ModelRequest implements PipelineRequest{
 	}
 	
 	public ModelRequestCacheKey toCacheKey() {
-		ModelRequestCacheKey result = new ModelRequestCacheKey(_public, _approved, _archived, _sources);
+		ModelRequestCacheKey result = new ModelRequestCacheKey(id, _public, _approved, _archived);
 		return result;
 	}
 }

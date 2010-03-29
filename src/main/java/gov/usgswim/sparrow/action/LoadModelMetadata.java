@@ -25,7 +25,7 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 		this.isPublic = key.isPublic();
 		this.isApproved = key.isApproved();
 		this.isArchived = key.isArchived();
-		this.getSources = key.isGetSources();
+		this.getSources = true;
 	}
 	
 	public LoadModelMetadata(boolean isApproved, boolean isPublic, boolean isArchived, boolean getSources) {

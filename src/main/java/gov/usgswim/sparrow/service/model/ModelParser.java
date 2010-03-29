@@ -38,6 +38,8 @@ public class ModelParser
 								req.setApproved(val);
 							} else if ("archived".equals(name)) {
 								req.setArchived(val);
+							} else if ("id".equals(name)) {
+								req.setId(val);
 							}
 						}
 						
@@ -45,8 +47,6 @@ public class ModelParser
 					}
 					
 					
-				} else if ("source".equals(lName)) {
-					req.setSources(true);
 				} else if (ResponseFormat.isTargetMatch(lName)) {
 					ResponseFormat respFormat = new ResponseFormat();
 					respFormat.setMimeType("xml"); // default
