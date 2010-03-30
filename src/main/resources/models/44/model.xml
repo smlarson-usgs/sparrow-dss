@@ -82,12 +82,12 @@
 	</Model_papers>
 	<CommonTerms>
 			<Term id="For Source">
-				Each model has different sources that were determined by statistically significant by the modeler.
+				Each model has different sources that the modeler has determined to be statistically significant.
 				Choose a source from the list to present data only from that source.  This model contains these sources:
 				
 				<dl>
 					<!-- These names could be improved, do we have updated info from Greg? -->
-					<dt><i>All</i></dt>
+					<dt>All</dt>
 					<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
 					<dt>Loads measured at calibration sites near the Canadian border</dt>
 					<dd>These loads were established as boundary conditions for the model. They represented the upstream contribution from Canadian land for which no geospatial data were available. This variable was used for monitored drainages only.</dd>

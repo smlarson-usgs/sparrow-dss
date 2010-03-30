@@ -102,12 +102,12 @@
 	</Model_papers>
 	<CommonTerms>
 		<Term id="For Source">
-			Each model has different sources that were determined by statistically significant by the modeler.
+			Each model has different sources that the modeler has determined to be statistically significant.
 			Choose a source from the list to present data only from that source.  This model contains these sources:
 			
 			<dl>
 				<!-- These names could be improved, do we have updated info from Greg? -->
-				<dt><i>All</i></dt>
+				<dt>All</dt>
 				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
 				<dt>Upper Miss TN load</dt>
 				<dd>Combined total nitrogen loads from USGS NASQAN sites, Mississippi River at Thebes, Ill, and Ohio River at Dam 53 near Grand Chain, Ill.  This combined load was a boundary condition in the MRB5 TN model representing loads from the Upper Mississippi River basin in order for the MRB5 model to account for all mass entering the study area.</dd>

@@ -67,26 +67,39 @@
 			<p>The US is divided into 8 major river basins: New England and Mid-Atlantic; South Atlantic-Gulf and Tennessee; Great Lakes, Ohio, Upper Mississippi and Souris-Red-Rainy; Missouri; Lower Mississippi, Arkansas-White-Red and Texas-Gulf; Rio Grande, Colorado and Great Basin; Pacific Northwest; and California.</p>
 		</Term>
 		<Term id="Data Series">
-			<p>The <em>Data Series</em> specifies what data is drawn on the map.
-			The most common model output is the <em>Total Instream Flux</em>,
+			<p>The <i>Data Series</i> specifies what data is drawn on the map.
+			The most common model output is the <i>Total Flux</i>,
 			which is the average amount of the constituent you would expect to
 			find in a stream, as predicted by the model.</p>
-			<p>The complete of data series:</p>
+			<p>The complete list of data series:</p>
 			<ul>
-				<li><b>Total Instream Flux</b><br/>
+				<li><b>Total Flux</b><br/>
 					The average daily load of the constituent leaving each
 					stream reach, as predicted by the model.
 					This is also called the <i>measurable flux</i> since
 					this is the hypothetical value you could measure in the
-					stream, if there was a way to measure daily average.
+					stream, if there were a way to measure daily average.
 				</li>
+                <li><b>Standard Error of Total Flux</b><br/>
+                	An estimate of error, based on the model, of the
+                	<i>Total Flux</i>.  This is only an estimate and should
+                	not be used for any purpose.
+                	For actual error values, contact the hydrologist for the model.
+                </li>
                 <li><b>Incremental Flux</b><br/>
 					The average daily load of the constituent added at each
-					stream reach.  Or, the amount of load that each reach is
+					stream reach, or the amount of load that each reach is
 					responsible for contributing to the river system.
 					The presented value is not 'decayed' by travel down
 					the reach.
                 </li>
+                <li><b>Standard Error of Incremental Flux</b><br/>
+                    An estimate of error, based on the model, of the
+                	<i>Incremental Flux</i>.  This is only an estimate and should
+                	not be used for any purpose.
+                	For actual error values, contact the hydrologist for the model.
+                </li>
+                <!--
                 <li><b>Incremental Yield</b><br/>
                 	The <i>Incremental Flux</i> divided by the drainage area of
                 	the reach.
@@ -95,10 +108,11 @@
                 	The <i>Total Instream Flux</i> divided by the average daily
                 	flow of the reach.
                 </li>
+                -->
                 <li><b>Source Value</b><br/>
                 	The source value is the amount of a particular source
-                	added in the reaches drainage area - you must choose a
-                	source when you choose this data series.  If you have created
+                	added in the reach's drainage area - you must choose a
+                	source to map this data series.  If you have created
                 	adjustments as part of a 'what if' scenario, the adjusted
                 	source values are presented. 
                 </li>
@@ -107,21 +121,20 @@
                 	downstream end of a selected target reach.  You must choose
                 	a target reach if you select this series.
                 </li>
-                <li><b>Incremental Delivered Flux</b><br/>Not currently supported</li>
-                <li><b>Total Delivered Flux</b><br/>Not currently supported</li>
-                <li><b>Incremental Delivered Yield</b><br/>Not currently supported</li>
-                <li><b>Total Standard Err Estimate</b><br/>
-                	An estimate of error, based on the model, of the
-                	<i>Total Instream Flux</i>.  This is only an estimate and should
-                	not be used for any purpose.
-                	For actual error values, contact the hydrologist for the model.
+                <li><b>Incremental Delivered Flux</b><br/>
+                	The average daily load of the constituent added at each stream reach
+                	that arrives at the downstream end of a selected target reach. You must
+                	choose a target reach if you select this series.
                 </li>
-                <li><b>Incremental Standard Err Estimate</b><br/>
-                    An estimate of error, based on the model, of the
-                	<i>Incremental Flux</i>.  This is only an estimate and should
-                	not be used for any purpose.
-                	For actual error values, contact the hydrologist for the model.
+                <li><b>Total Delivered Flux</b><br/>
+                	The average daily load of the constituent leaving each
+					stream reach that arrives at the downstream end of a selected target reach.
+				</li>
+				<!--
+                <li><b>Incremental Delivered Yield</b><br/>
+                	Not currently supported
                 </li>
+                -->
 			</ul>
 		</Term>
 		<Term id="Total">
@@ -152,12 +165,15 @@
 			Displays the incremental yield that is delivered to a target reach of interest. Units are typically kilograms/square kilometer-year.
 		</Term>
 		<Term id="For Source">
-			Each model has different sources that were determined by statistically significant by the modeler.
+			<!--
+			Each model has different sources that the modeler has determined to be statistically significant.
 			Choose a constituent source from the list to present data only from that source.
+			-->
 		</Term>
 		<Term id="Comparison">
-			For the selected <i>Data Series</i>, the result generated by your
-			adjusted values can be compared to the result of the unadjusted model.
+			For the selected <i>Data Series</i>, the model prediction based on your adjusted values
+			can be compared to the model prediction based on the original unadjusted values (i.e. the 
+			<i>nominal</i> model prediction).<br/>
 			Two options are available:
 			<ul>
 			<li><b>Absolute change from nominal</b> subtracts the
@@ -173,7 +189,7 @@
 			The nominal SPARROW DSS model condition is based on source values and streamflow of the model base year.
 		</Term>
 		<Term id="Bins">
-			The bins determine how values grouped and displayed on the map.
+			<b>Bins</b> determine how values are grouped and displayed on the map.
 			For instance, you might	create bins 0-10 and 10-100 and
 			have the values in the 0-10 bin colored grey and values in the 10-100
 			bin colored as red.
@@ -183,7 +199,7 @@
 			number of data values fall within each bin.  Because the values
 			are sometimes clustered, it is often not possible to generate bins
 			with an even distribution of values into each bin.</li>
-			<li><b>Equal Range</b> construct bins such that each bin has an
+			<li><b>Equal Range</b> constructs bins such that each bin has an
 			equal size or range.</li>
 			</ul>
 			You must define bins before a map is generated.
@@ -205,10 +221,10 @@
 			Calculates the average, maximum, minimum, or sum of the model output when the map displays over HUC.
 		</Term>
 		<Term id="Reaches Or Catchments">
-			Selecting 'Reaches' will draw individual reach lines on the map.
-			Selecting 'Catchments' will draw the filled polygons of each catchment.
+			Selecting <b>Reaches</b> will draw individual reach lines (water bodies) on the map.
+			Selecting <b>Catchments</b> will draw each catchment region (land area surrounding each reach).
 			In both cases, the color used to render the reach or catchment is based
-			on the binning selection under the 'What to map' section.
+			on the binning scheme selected on the <b>Map Controls</b> tab.
 		</Term>
 	</CommonTerms>
 </Documentation>
