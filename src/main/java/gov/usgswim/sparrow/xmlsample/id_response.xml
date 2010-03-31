@@ -109,7 +109,7 @@
 				<r><c>Non-Agricultural</c><c>Area</c><c>sqr. km</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
 				<r><c>Total:</c><c></c><c></c><c></c><c>354564</c><c>354564</c><c>0</c></r>
 			</section>
-			<section display="Total Instream Flux" name="total">
+			<section display="Total Flux" name="total">
 				<r><c>Point Sources</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
 				<r><c>Atmospheric Deposition</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>
 				<r><c>Fertilizer</c><c>Total Nitrogen</c><c>kg/year</c><c>2</c><c>354564</c><c>354564</c><c>0</c></r>

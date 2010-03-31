@@ -63,6 +63,31 @@
 		</SPARROW_papers>
 	</SPARROW_model>
 	<CommonTerms>
+		<Term id="Adjustments">
+			Adjustments allow different management scenarios (changes in model source inputs) 
+			to be evaluated with respect to predicted total and incremental flux. Adjustments
+			can be made in one of two ways: by adjusting individual reaches or by adjusting groups
+			of reaches.<br/>
+			<ul>
+				<li>To adjust an individual reach's source inputs, first identify the reach on the map.
+				You can identify a reach either by clicking on it with the <b>Identify Reach</b> tool
+				or by searching for it via the <b>Find a reach...</b> button. Once the reach has been
+				identified, navigate to the <b>Model Source Inputs</b> tab, enter the desired input
+				values into the <b>Override</b> column, and click <b>Apply</b>.<br/></li>
+				<li>To adjust a group of reaches, you must first create an <i>adjustment group</i> 
+				of reaches. After identifying a candidate reach on the map, navigate to the 
+				<b>Group / Target Membership</b> tab to add it to a group. Once groups are created, 
+				right-click the group name on the <b>Adjustments</b> tab and then apply the desired treatments.</li>
+			</ul>
+		</Term>
+		<Term id="Targets">
+			Targets are used to determine the fraction of flux from upstream reaches delivered 
+			to a specified downstream reach or water body. To specify a target, identify the 
+			desired reach on the map (using the <b>Identify Reach</b> tool) and then navigate 
+			to the <b>Group / Target Membership</b> tab. Then check the box labeled <i>Reach is
+			a target</i> and click <b>Apply</b>. Alternatively, you may specify targets 
+			either individually or all at once using the <b>Find a reach...</b> button.
+		</Term>
 		<Term id="MRB">
 			<p>The US is divided into 8 major river basins: New England and Mid-Atlantic; South Atlantic-Gulf and Tennessee; Great Lakes, Ohio, Upper Mississippi and Souris-Red-Rainy; Missouri; Lower Mississippi, Arkansas-White-Red and Texas-Gulf; Rio Grande, Colorado and Great Basin; Pacific Northwest; and California.</p>
 		</Term>
@@ -105,7 +130,7 @@
                 	the reach.
                 </li>
                 <li><b>Concentration</b><br/>
-                	The <i>Total Instream Flux</i> divided by the average daily
+                	The <i>Total Flux</i> divided by the average daily
                 	flow of the reach.
                 </li>
                 -->
@@ -200,9 +225,13 @@
 			are sometimes clustered, it is often not possible to generate bins
 			with an even distribution of values into each bin.</li>
 			<li><b>Equal Range</b> constructs bins such that each bin has an
-			equal size or range.</li>
+			equal numerical interval or range.</li>
 			</ul>
-			You must define bins before a map is generated.
+			You must define bins before a map is generated.<br/>
+			If you check <b>Use automatic binning</b>, SPARROW DSS will choose a binning scheme for you
+			based on the map options you have selected. The recommended binning will consist of 5 bins of
+			either equal count or equal range. To specify a custom binning scheme, or to edit colors,
+			uncheck this option and click on the <b>Edit Custom Bins...</b> button.
 		</Term>
 		<Term id="Map Options">
 			Controls basic features of how the map is rendered.

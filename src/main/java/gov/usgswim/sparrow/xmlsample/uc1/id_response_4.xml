@@ -40,7 +40,7 @@
 				<r><c>Non-Agricultural</c><c>354564</c><c>354564</c><c>0</c></r>
 				<r><c>Total:</c><c>354564</c><c>354564</c><c>0</c></r>
 			</section>
-			<section display="Total Instream Flux" name="total">
+			<section display="Total Flux" name="total">
 				<r><c>Point Sources</c><c>354564</c><c>354564</c><c>0</c></r>
 				<r><c>Atmospheric Deposition</c><c>354564</c><c>354564</c><c>0</c></r>
 				<r><c>Fertilizer</c><c>354564</c><c>354564</c><c>0</c></r>

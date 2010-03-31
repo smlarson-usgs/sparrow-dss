@@ -149,7 +149,7 @@
 							<c>1.79</c>
 						</r>
 					</section>
-					<section display="Total Instream Flux (theoretical measurable value)"
+					<section display="Total Flux (theoretical measurable value)"
 						name="total">
 						<r>
 							<c>Wastewater discharge Total (w/ upstream, decayed)</c>
@@ -481,7 +481,7 @@
 							<c>8.33</c>
 						</r>
 					</section>
-					<section display="Total Instream Flux (theoretical measurable value)"
+					<section display="Total Flux (theoretical measurable value)"
 						name="total">
 						<r>
 							<c>Wastewater discharge Total (w/ upstream, decayed)</c>
