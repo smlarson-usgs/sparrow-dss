@@ -9,7 +9,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -209,6 +211,100 @@ public abstract class Action<R extends Object> {
 		preparedStatements.add(st);
 		
 		return st;
+	}
+	
+	/**
+	 * Meant to be a PreparedStatement version of getTextWithParamSubstitution(...).
+	 * @param name
+	 * @param clazz
+	 * @param params String variableName, Object value
+	 * @return
+	 * @throws SQLException
+	 * @throws IOException
+	 */
+	protected PreparedStatement getPSFromPropertiesFile(String name, Class<?> clazz, Map<String, Object> params) throws SQLException, IOException {
+		PreparedStatement result = null;
+		ArrayList<String> variables = new ArrayList<String>();
+		String sql = null;
+		
+		//Get the text from the properties file
+		sql = getText(name, (clazz != null)? clazz : this.getClass());
+		
+		//Go through in order and get the variables, replace with question marks.
+		SQLString temp = processSql(sql);
+		sql = temp.sql.toString();
+		variables = temp.variables;
+		
+		//getNewROPreparedStatement with the readied string
+		result = getNewROPreparedStatement(sql);
+		
+		//Set the params with setObject
+		Iterator<String> it = variables.iterator();
+		for (int i = 1; it.hasNext(); i++) {
+			String variable = it.next();
+			if (params.containsKey(variable)) {
+				result.setObject(i, params.get(variable));
+			}
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Quick implementation of what's more or less a "tuple".  
+	 * no functionality, just storage.
+	 * 
+	 * Created so the process can be testable, without using
+	 * side-effects to implement functionality.
+	 * @author dmsibley
+	 *
+	 */
+	public static class SQLString {
+		public StringBuilder sql;
+		public ArrayList<String> variables;
+		
+		public SQLString() {
+			this.sql = new StringBuilder();
+			this.variables = new ArrayList<String>();
+		}
+	}
+	
+	/**
+	 * Takes a string with $variable$'s and returns a
+	 * PreparedStatement-ready string and a list of variable names
+	 * in order.
+	 * @param sqlWithVariables
+	 * @return
+	 */
+	public static SQLString processSql(String sqlWithVariables) {
+		SQLString result = new SQLString();
+		char[] sqlChars = sqlWithVariables.toCharArray();
+		StringBuilder variableBuffer = new StringBuilder();
+		
+		boolean isVariableName = false;
+		for (int i = 0; i < sqlChars.length; i++) {
+			if (sqlChars[i] != '$') {
+				if (isVariableName) {
+					//Store the variable
+					variableBuffer.append(sqlChars[i]);
+				} else {
+					//store the sql
+					result.sql.append(sqlChars[i]);
+				}
+			} else {
+				//Start or End variable
+				if (isVariableName) {
+					//End of variable, store the name
+					result.variables.add(variableBuffer.toString());
+					//Clear the buffer
+					variableBuffer = new StringBuilder();
+					//add ? placeholder
+					result.sql.append('?');
+				}
+				isVariableName = !isVariableName;
+			}
+		}
+		return result;
 	}
 	
 	/**
