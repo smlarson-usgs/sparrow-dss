@@ -2,7 +2,6 @@ package gov.usgswim.sparrow.action;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,20 +121,25 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 		}
 
 		if (getSources) {
-			String inModelsWhereClause = " ";
+			StringBuilder inModelsWhereClause = new StringBuilder();
+			Map<String, Object> modelIds = new HashMap<String, Object>();
+			inModelsWhereClause.append(" ");
 			if (!models.isEmpty()) {
-				List<Long> modelIds = new ArrayList<Long>();
-				for (SparrowModelBuilder model: models) {
-					modelIds.add(model.getId());
+				inModelsWhereClause.append(" WHERE SPARROW_MODEL_ID in (");
+				for (int i = 0; i < models.size(); i++) {
+					modelIds.put("" + i, models.get(i).getId());
+					inModelsWhereClause.append("$" + i + "$, ");
 				}
-				inModelsWhereClause = " WHERE SPARROW_MODEL_ID in (" + StringUtils.join(modelIds.toArray(), ", ") + ") ";
+				// kill the last comma
+				inModelsWhereClause.delete(inModelsWhereClause.length() - 2, inModelsWhereClause.length());
+				inModelsWhereClause.append(") ");
 
 			}
 			String selectSources = getTextWithParamSubstitution("SelectAllSources", "InModels", inModelsWhereClause);
 
 			try {
-				Statement stmt = getConnection().createStatement();
-				rset = stmt.executeQuery(selectSources);
+				
+				rset = getPSFromString(selectSources, modelIds).executeQuery();
 
 				while (rset.next()) {
 					SourceBuilder s = new SourceBuilder();

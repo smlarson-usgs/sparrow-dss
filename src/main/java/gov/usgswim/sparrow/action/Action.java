@@ -223,12 +223,16 @@ public abstract class Action<R extends Object> {
 	 * @throws IOException
 	 */
 	protected PreparedStatement getPSFromPropertiesFile(String name, Class<?> clazz, Map<String, Object> params) throws SQLException, IOException {
+		//Get the text from the properties file
+		String sql = getText(name, (clazz != null)? clazz : this.getClass());
+		
+		//Let the other method do the magic
+		return getPSFromString(sql, params);
+	}
+	
+	protected PreparedStatement getPSFromString(String sql, Map<String, Object> params) throws SQLException, IOException {
 		PreparedStatement result = null;
 		ArrayList<String> variables = new ArrayList<String>();
-		String sql = null;
-		
-		//Get the text from the properties file
-		sql = getText(name, (clazz != null)? clazz : this.getClass());
 		
 		//Go through in order and get the variables, replace with question marks.
 		SQLString temp = processSql(sql);
