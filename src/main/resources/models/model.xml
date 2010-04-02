@@ -64,6 +64,7 @@
 	</SPARROW_model>
 	<CommonTerms>
 		<Term id="Adjustments">
+			<h2>Adjustments</h2><br/>
 			Adjustments allow different management scenarios (changes in model source inputs) 
 			to be evaluated with respect to predicted total and incremental flux. Adjustments
 			can be made in one of two ways: by adjusting individual reaches or by adjusting groups
@@ -81,6 +82,7 @@
 			</ul>
 		</Term>
 		<Term id="Targets">
+			<h2>Targets</h2><br/>
 			Targets are used to determine the fraction of flux from upstream reaches delivered 
 			to a specified downstream reach or water body. To specify a target, identify the 
 			desired reach on the map (using the <b>Identify Reach</b> tool) and then navigate 
@@ -92,6 +94,7 @@
 			<p>The US is divided into 8 major river basins: New England and Mid-Atlantic; South Atlantic-Gulf and Tennessee; Great Lakes, Ohio, Upper Mississippi and Souris-Red-Rainy; Missouri; Lower Mississippi, Arkansas-White-Red and Texas-Gulf; Rio Grande, Colorado and Great Basin; Pacific Northwest; and California.</p>
 		</Term>
 		<Term id="Data Series">
+			<h2>Data Series</h2><br/>
 			<p>The <i>Data Series</i> specifies what data is drawn on the map.
 			The most common model output is the <i>Total Flux</i>,
 			which is the average amount of the constituent you would expect to
@@ -190,12 +193,14 @@
 			Displays the incremental yield that is delivered to a target reach of interest. Units are typically kilograms/square kilometer-year.
 		</Term>
 		<Term id="For Source">
+			<h2>Model Source</h2><br/>
 			<!--
 			Each model has different sources that the modeler has determined to be statistically significant.
 			Choose a constituent source from the list to present data only from that source.
 			-->
 		</Term>
 		<Term id="Comparison">
+			<h2>Comparison To Nominal Model</h2><br/>
 			For the selected <i>Data Series</i>, the model prediction based on your adjusted values
 			can be compared to the model prediction based on the original unadjusted values (i.e. the 
 			<i>nominal</i> model prediction).<br/>
@@ -214,10 +219,11 @@
 			The nominal SPARROW DSS model condition is based on source values and streamflow of the model base year.
 		</Term>
 		<Term id="Bins">
+			<h2>Binning for Map Color and Legend</h2><br/>
 			<b>Bins</b> determine how values are grouped and displayed on the map.
-			For instance, you might	create bins 0-10 and 10-100 and
-			have the values in the 0-10 bin colored grey and values in the 10-100
-			bin colored as red.
+			Data are grouped into bins by their values, and data in each bin are
+			displayed with a specific color on the map. By modifying the binning
+			scheme, you can change the way information is presented on your map.<br/>
 			Two auto-generation options are available:
 			<ul>
 			<li><b>Equal Count</b> attempts to construct bins such that an equal
@@ -227,7 +233,6 @@
 			<li><b>Equal Range</b> constructs bins such that each bin has an
 			equal numerical interval or range.</li>
 			</ul>
-			You must define bins before a map is generated.<br/>
 			If you check <b>Use automatic binning</b>, SPARROW DSS will choose a binning scheme for you
 			based on the map options you have selected. The recommended binning will consist of 5 bins of
 			either equal count or equal range. To specify a custom binning scheme, or to edit colors,
@@ -250,6 +255,7 @@
 			Calculates the average, maximum, minimum, or sum of the model output when the map displays over HUC.
 		</Term>
 		<Term id="Reaches Or Catchments">
+			<h2>Display Reaches or Catchments</h2><br/>
 			Selecting <b>Reaches</b> will draw individual reach lines (water bodies) on the map.
 			Selecting <b>Catchments</b> will draw each catchment region (land area surrounding each reach).
 			In both cases, the color used to render the reach or catchment is based
