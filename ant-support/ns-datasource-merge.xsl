@@ -3,7 +3,12 @@
     <xsl:output method="xml" indent="yes" />
     <xsl:template match="/MapperConfig">
         <MapperConfig>
-            <xsl:apply-templates select="logging"/>
+            <!-- <xsl:apply-templates select="logging"/>  -->
+            <logging log_level="info" log_thread_name="true" log_time="true"> 
+				<log_output name="System.err" /> 
+				<log_output name="../logs/sparrow_mv/mapviewer2.log" /> 
+				<!--  ../../../../logs/sparrow_mv/mapviewer.log -->
+			</logging>
             <xsl:apply-templates select="save_images_at"/>
             <xsl:apply-templates select="ip_monitor"/>
             <xsl:apply-templates select="web_proxy"/>

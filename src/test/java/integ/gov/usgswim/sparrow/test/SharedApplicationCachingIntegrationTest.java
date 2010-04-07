@@ -4,6 +4,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.ComparePercentageView;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.PredictionContext;
@@ -35,8 +36,8 @@ public class SharedApplicationCachingIntegrationTest extends TestCase {
 	/*
 	public void testBasic() {
 		SharedApplication sa = SharedApplication.getInstance();
-		CacheManager.getInstance().clearAll();
-		Ehcache c = CacheManager.getInstance().getEhcache(SharedApplication.SERIALIZABLE_CACHE);
+		SparrowCacheManager.getInstance().clearAll();
+		Ehcache c = SparrowCacheManager.getInstance().getEhcache(SharedApplication.SERIALIZABLE_CACHE);
 
 		//change to 1 second for disk eviction
 		c.getCacheConfiguration().setDiskExpiryThreadIntervalSeconds(1);
@@ -80,9 +81,9 @@ public class SharedApplicationCachingIntegrationTest extends TestCase {
 	 */
 //	public void testAcrossRestart() {
 //		SharedApplication sa = SharedApplication.getInstance();
-//		CacheManager.getInstance().clearAll();
+//		SparrowCacheManager.getInstance().clearAll();
 //		@SuppressWarnings("unused")
-//		Ehcache c = CacheManager.getInstance().getEhcache(SharedApplication.SERIALIZABLE_CACHE);
+//		Ehcache c = SparrowCacheManager.getInstance().getEhcache(SharedApplication.SERIALIZABLE_CACHE);
 //
 //		//change to 1 second for disk eviction
 //
@@ -111,7 +112,7 @@ public class SharedApplicationCachingIntegrationTest extends TestCase {
 	 */
 	public void testBasicPredictionValues() throws Exception {
 		SharedApplication sa = SharedApplication.getInstance();
-		CacheManager.getInstance().clearAll();
+		SparrowCacheManager.getInstance().clearAll();
 		PredictionContext context = new PredictionContext(21L, null, null, null, null, null);
 
 		DataTable result = sa.getPredictResult(new AdjustmentGroups(21L));

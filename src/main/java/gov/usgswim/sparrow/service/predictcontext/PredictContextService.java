@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.service.predictcontext;
 
+import gov.usgs.cida.config.DynamicReadOnlyProperties;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
@@ -8,6 +9,8 @@ import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.QueryLoader;
 
 import java.io.StringReader;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;

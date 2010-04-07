@@ -31,6 +31,68 @@
 		
 		Subdirectories can be specified below the property e.g. java.io.tmpdir/one
 	-->
+	<!-- Distributed caches. Quoted from bottom of http://ehcache.org/documentation/distributed_caching.html
+	
+			Use of Time To Idle
+
+			Time To Idle is inconsistent with distributed caching. Time-to-idle makes 
+			some entries live longer on some nodes than in others because of cache 
+			usage patterns. However, the cache entry "last touched" timestamp is 
+			not replicated across the distributed cache.
+
+			Do not use Time To Idle with distributed caching, unless you do not 
+			care about inconsistent data across nodes. 
+	 -->
+	<!-- Distributed caches. See SharedApplication.putPredictionContext(), line 176
+	
+		Typical Sparrow configuration value for:
+		cacheManagerPeerProviderFactory.class=
+			"net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+				||
+			"gov.usgswim.sparrow.clustering.DummyCacheManagerPeerProviderFactory"
+		
+		
+		cacheManagerPeerProviderFactory.properties=
+			"peerDiscovery=manual,rmiUrls=//130.11.165.157:1099/PredictContext|//130.11.165.157:1099/AdjustmentGroups|//130.11.165.157:1099/Analyses|//130.11.165.157:1099/TerminalReaches|//130.11.165.157:1099/AreaOfInterest"
+	 			||
+	 		""
+	 		
+	 	cacheManagerPeerListenerFactory.class=
+			"net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"
+				||
+			"gov.usgswim.sparrow.clustering.DummyCacheManagerPeerListenerFactory"
+			
+			
+		cacheManagerPeerListenerFactory.properties=
+			"port=1099,socketTimeoutMillis=2000"
+				||
+			""
+	 	
+	 	For clustered operation using RMI syncing, choose the first value option.
+	 	For local non-clustered development operation, choose the second set of value options.
+	 	
+	 	This will be set in a JNDI property in order to maintain WAR invariance. 
+	 		(override = true to allow WAR to override JNDI in special cases. See )
+	 		For example: 
+	 		<Environment 
+	 			 name="cacheManagerPeerProviderFactory.class" 
+	 			 value="cida.usgs.gov"
+        		 type="java.lang.String"
+        		 override="true"
+        	/>
+	<cacheManagerPeerProviderFactory
+ 			class="${cacheManagerPeerProviderFactory.class}"
+			properties="${cacheManagerPeerProviderFactory.properties}"/>
+ 	<cacheManagerPeerListenerFactory
+			class="${cacheManagerPeerListenerFactory.class}"
+			properties="${cacheManagerPeerListenerFactory.properties}"/>
+	 -->
+	<cacheManagerPeerProviderFactory
+ 			class="${cacheManagerPeerProviderFactory.class}"
+			properties="${cacheManagerPeerProviderFactory.properties}"/>
+ 	<cacheManagerPeerListenerFactory
+			class="${cacheManagerPeerListenerFactory.class}"
+			properties="${cacheManagerPeerListenerFactory.properties}"/>
 	<diskStore path="java.io.tmpdir/ehcache_diskstore" />
 
 
@@ -102,9 +164,9 @@
 		put, remove, update, and expire.
 		
 		* bootstrapCacheLoaderFactory - Specifies a BootstrapCacheLoader, which is called by a
-		cache on initialisation to prepopulate itself.
+		cache on initialization to pre-populate itself.
 		
-		* cacheExtensionFactory - Specifies a CacheExtension, a generic mechansim to tie a class
+		* cacheExtensionFactory - Specifies a CacheExtension, a generic mechanism to tie a class
 		which holds a reference to a cache to the cache lifecycle.
 		
 		* cacheExceptionHandlerFactory - Specifies a CacheExceptionHandler, which is called when
@@ -129,7 +191,7 @@
 		asynchronousReplicationIntervalMillis=<number of milliseconds"
 		propertySeparator="," />
 		
-		The RMICacheReplicatorFactory recognises the following properties:
+		The RMICacheReplicatorFactory recognizes the following properties:
 		
 		* replicatePuts=true|false - whether new elements placed in a cache are
 		replicated to others. Defaults to true.
@@ -160,7 +222,7 @@
 		properties="bootstrapAsynchronously=true, maximumChunkSizeBytes=5000000"
 		propertySeparator="," />
 		
-		The RMIBootstrapCacheLoaderFactory recognises the following optional properties:
+		The RMIBootstrapCacheLoaderFactory recognizes the following optional properties:
 		
 		* bootstrapAsynchronously=true|false - whether the bootstrap happens in the background
 		after the cache has started. If false, bootstrapping must complete before the cache is
@@ -218,7 +280,7 @@
 
 	<!--
 		Mandatory Default Cache configuration. These settings will be applied to caches
-		created programmtically using CacheManager.add(String cacheName).
+		created programmatically using CacheManager.add(String cacheName).
 		
 		The defaultCache has an implicit name "default" which is a reserved cache name.
 		
@@ -239,17 +301,90 @@
 	<!--
 		Sparrow Bean caches. Initially all the same as the default cache...
 	-->
-	<cache name="NSDataSet" maxElementsInMemory="3"
-		maxElementsOnDisk="20" eternal="false" overflowToDisk="false"
-		diskSpoolBufferSizeMB="32" timeToIdleSeconds="60"
-		timeToLiveSeconds="0" diskPersistent="false"
-		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" />
+	
+	<!-- Distributed caches. Quoted from bottom of http://ehcache.org/documentation/distributed_caching.html
+	
+		Use of Time To Idle
+
+			Time To Idle is inconsistent with distributed caching. Time-to-idle makes 
+		some entries live longer on some nodes than in others because of cache 
+		usage patterns. However, the cache entry "last touched" timestamp is 
+		not replicated across the distributed cache.
+
+			Do not use Time To Idle with distributed caching, unless you do not 
+		care about inconsistent data across nodes. 
+	 -->
+	<!-- 
+		Distributed caches. See SharedApplication.putPredictionContext(), line 176
 		
+		Typical Sparrow configuration value for:
+		cacheEventListenerFactory.class=
+			"net.sf.ehcache.distribution.RMICacheReplicatorFactory"
+				||
+			"gov.usgswim.sparrow.clustering.DummyCacheEventListenerFactory"
+		
+		cacheEventListenerFactory.properties=
+			"replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=true, replicateRemovals=true, asynchronousReplicationIntervalMillis=10"
+				||
+			""
+		
+		
+		As before, choose the first option for clustered operation using sync via RMI.
+		Choose the second option for local development non-clustered operation.
+		<cacheEventListenerFactory
+			class="${cacheEventListenerFactory.class}"
+    		properties="${cacheEventListenerFactory.properties}"/>
+	 -->
 	<cache name="PredictContext" maxElementsInMemory="200"
 		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="1" timeToIdleSeconds="432000"
+		diskSpoolBufferSizeMB="1" timeToIdleSeconds="0"
 		timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" />
+		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" >
+		
+		<cacheEventListenerFactory
+			class="${cacheEventListenerFactory.class}"
+    		properties="${cacheEventListenerFactory.properties}"/>
+ 	</cache>
+
+	<cache name="AdjustmentGroups" maxElementsInMemory="200"
+		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
+		diskSpoolBufferSizeMB="3" timeToIdleSeconds="0"
+		timeToLiveSeconds="0" diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU">
+		<cacheEventListenerFactory
+			class="${cacheEventListenerFactory.class}"
+    		properties="${cacheEventListenerFactory.properties}"/>
+	</cache>
+		
+	<cache name="Analyses" maxElementsInMemory="200"
+		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
+		diskSpoolBufferSizeMB="1" timeToIdleSeconds="0"
+		timeToLiveSeconds="0" diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" >
+		<cacheEventListenerFactory
+			class="${cacheEventListenerFactory.class}"
+    		properties="${cacheEventListenerFactory.properties}"/>
+    </cache>
+		
+	<cache name="TerminalReaches" maxElementsInMemory="200"
+		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
+		diskSpoolBufferSizeMB="1" timeToIdleSeconds="0"
+		timeToLiveSeconds="0" diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU">
+		<cacheEventListenerFactory
+			class="${cacheEventListenerFactory.class}"
+    		properties="${cacheEventListenerFactory.properties}"/>
+    </cache>
+		
+	<cache name="AreaOfInterest" maxElementsInMemory="200"
+		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
+		diskSpoolBufferSizeMB="1" timeToIdleSeconds="0"
+		timeToLiveSeconds="0" diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU">
+		<cacheEventListenerFactory
+			class="${cacheEventListenerFactory.class}"
+    		properties="${cacheEventListenerFactory.properties}"/>
+    </cache>
 		
 	<cache name="ComparisonResult" maxElementsInMemory="10"
 		maxElementsOnDisk="40" eternal="false" overflowToDisk="false"
@@ -263,30 +398,11 @@
 		timeToLiveSeconds="14400" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="1800" memoryStoreEvictionPolicy="LRU" />
 		
-	<cache name="AdjustmentGroups" maxElementsInMemory="200"
-		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="3" timeToIdleSeconds="432000"
-		timeToLiveSeconds="0" diskPersistent="true"
+	<cache name="NSDataSet" maxElementsInMemory="3"
+		maxElementsOnDisk="20" eternal="false" overflowToDisk="false"
+		diskSpoolBufferSizeMB="32" timeToIdleSeconds="60"
+		timeToLiveSeconds="0" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" />
-		
-	<cache name="Analyses" maxElementsInMemory="200"
-		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="1" timeToIdleSeconds="432000"
-		timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" />
-		
-	<cache name="TerminalReaches" maxElementsInMemory="200"
-		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="1" timeToIdleSeconds="432000"
-		timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" />
-		
-	<cache name="AreaOfInterest" maxElementsInMemory="200"
-		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="1" timeToIdleSeconds="432000"
-		timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" />
-
 	<!--
 		Sparrow calculated value caches.
 		These caches will all use the SelfPopulatingCache decorator, which

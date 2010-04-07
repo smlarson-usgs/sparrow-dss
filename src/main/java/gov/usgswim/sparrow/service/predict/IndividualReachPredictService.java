@@ -1,8 +1,5 @@
 package gov.usgswim.sparrow.service.predict;
 
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.utils.DataTablePrinter;
-import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -29,7 +26,7 @@ public class IndividualReachPredictService extends HttpServlet{
 		String model = req.getParameter("model");
 		String reachId = req.getParameter("reachID");
 		IndividualReachPredictionRequest request = new IndividualReachPredictionRequest(contextId, model, reachId);
-
+		
 		PredictionContext context = request.retrievePredictionContext();
 		PredictResult result = SharedApplication.getInstance().getPredictResult(context.getAdjustmentGroups());
 
@@ -41,11 +38,16 @@ public class IndividualReachPredictService extends HttpServlet{
 		{
 			int columns = result.getColumnCount();
 			String resultFormat = "<result name=\"%s\">%s</result>";
-			int row = result.getRowForId(request.reachId);
-			for (int col = 0; col < columns; col++) {
-				String output = String.format(resultFormat, result.getName(col), result.getDouble(row, col));
-				writer.write(output.toCharArray());
+			Integer row = result.getRowForId(request.reachId);
+			if (row != null) {
+				for (int col = 0; col < columns; col++) {
+					String output = String.format(resultFormat, result.getName(col), result.getDouble(row, col));
+					writer.write(output.toCharArray());
+				}
+			} else {
+				writer.write("<error>No reach found with reachId=" + reachId + "</error>");
 			}
+
 		}
 
 		writer.write("</Sparrow-Individual-Reach-Prediction-Response>");

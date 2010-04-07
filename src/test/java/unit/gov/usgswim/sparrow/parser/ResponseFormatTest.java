@@ -10,11 +10,14 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.junit.Test;
+
 import junit.framework.TestCase;
 
 public class ResponseFormatTest extends TestCase {
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	
+	@Test
 	public void testParseMainUseCase() throws XMLStreamException, XMLParseValidationException {
 		String testRequest="<response-format name='pre-configured format name' compress='zip'>"
 			+ "	<mime-type>text</mime-type>"
@@ -33,6 +36,7 @@ public class ResponseFormatTest extends TestCase {
 		
 	}
 	
+	@Test
 	public void testAlternateMimetypeString() throws XMLStreamException, XMLParseValidationException {
 		String testRequest="<response-format name='pre-configured format name' compress='zip'>"
 			+ "	<mimeType>text</mimeType>"
@@ -53,6 +57,7 @@ public class ResponseFormatTest extends TestCase {
 //
 //	}
 
+	@Test
 	public void testSetMimeType() {
 		ResponseFormat rf = new ResponseFormat();
 		rf.setMimeType("csv");
@@ -60,6 +65,7 @@ public class ResponseFormatTest extends TestCase {
 		assertEquals(OutputType.CSV, rf.getOutputType());
 	}
 
+	@Test
 	public void testSetCompression() {
 		ResponseFormat rf = new ResponseFormat();
 

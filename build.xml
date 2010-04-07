@@ -8,6 +8,10 @@
 		<description>Ensures that the libraries are copied over fresh for each run</description>
 	</target>
 
+	<target name="transform" description="testing">
+		<xslt in="dist/WEB-INF/conf/mapViewerConfig.xml.tmp" out="dist/WEB-INF/conf/mapViewerConfig.xml" style="ant-support/ns-datasource-merge.xsl" />
+	
+	</target>
 	<target name="-post-dist">
         <copy todir="${dist.dir}">
             <fileset dir="deploy" includes="mapviewer11gr1_revised.zip" />

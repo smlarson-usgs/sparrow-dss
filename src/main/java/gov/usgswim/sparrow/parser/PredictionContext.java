@@ -324,6 +324,8 @@ public class PredictionContext implements XMLStreamParserComponent {
 	public boolean isValid() {
 		return true;
 	}
+	
+
 	// ===========
 	// KEY METHODS
 	// ===========

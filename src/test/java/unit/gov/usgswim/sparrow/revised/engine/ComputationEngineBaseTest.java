@@ -35,7 +35,7 @@ public class ComputationEngineBaseTest {
 		}
 	}
 
-	
+
 	@Test
 	public void testLoad_PREDICT_DATA_TOPO() {
 		SparrowContext context = new SparrowContext(TEST_MODEL_ID);
@@ -97,7 +97,7 @@ public class ComputationEngineBaseTest {
 		assertEquals("sourceMetadata", result.table.getName());
 	}
 	@Test
-	public void testLoad_PREDICT_DATA_DECAY() {
+	public void testLoad_PREDICT_DATA_DELIVERY() {
 		SparrowContext context = new SparrowContext(TEST_MODEL_ID);
 
 		ComputationEngineBase engine = new ComputationEngineBase(context);
@@ -136,7 +136,7 @@ public class ComputationEngineBaseTest {
 		}
 		assertEquals("source", result.table.getName());
 	}
-	
+
 	@Test
 	public void testCalculate_INCREMENTAL_FLUX() {
 		SparrowContext context = new SparrowContext(TEST_MODEL_ID);
@@ -148,7 +148,7 @@ public class ComputationEngineBaseTest {
 		//CalculationResultTest.assertResultComponentsNullness(result, false, true, true, true, true, true);
 		{ // simple assertions
 			assertNotNull(result);
-			assertNotNull(result.predictData); 
+			assertNotNull(result.predictData);
 			assertNull(result.column);
 			assertNull(result.table);
 			assertNull(result.weights);

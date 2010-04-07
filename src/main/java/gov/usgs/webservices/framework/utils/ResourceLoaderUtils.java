@@ -172,6 +172,7 @@ public class ResourceLoaderUtils {
 		String query = ResourceLoaderUtils.loadProperty(resourceFilePath, key);
 
 		for (Entry<Object, Object> entry: substitutions.entrySet()) {
+			System.out.println(entry.getKey() + ": " + entry.getValue());
 			query = replaceParam(query, entry.getKey().toString(), entry.getValue().toString());
 		}
 

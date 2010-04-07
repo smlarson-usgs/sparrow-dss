@@ -16,7 +16,7 @@
 		<property environment="env" />
 		<property file="${support.ant}/${user.name}.properties" />
 		<property file="${support.ant}/build.properties" />
-
+		
 		<!-- read the database login parameters from TOMCAT's context.xml into a db.properties file for security reasons -->
 		<xslt in="${env.TOMCAT_HOME}/conf/context.xml"
 			out="${db.properties}"

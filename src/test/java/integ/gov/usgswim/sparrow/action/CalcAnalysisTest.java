@@ -10,6 +10,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowDBTest;
 import gov.usgswim.sparrow.TestHelper;
+import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.AreaOfInterest;
@@ -548,24 +549,24 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 	}
 	
 	protected void switchToUnmodifiedPredictData() {
-			Ehcache pdc = CacheManager.getInstance().getEhcache(SharedApplication.PREDICT_DATA_CACHE);
+			Ehcache pdc = SparrowCacheManager.getInstance().getEhcache(SharedApplication.PREDICT_DATA_CACHE);
 			Element e  = new Element(TEST_MODEL_ID, unmodifiedPredictData);
 			pdc.put(e);
 
-			CacheManager.getInstance().getEhcache(SharedApplication.PREDICT_RESULT_CACHE).removeAll();
-			CacheManager.getInstance().getEhcache(SharedApplication.DELIVERY_FRACTION_CACHE).removeAll();
+			SparrowCacheManager.getInstance().getEhcache(SharedApplication.PREDICT_RESULT_CACHE).removeAll();
+			SparrowCacheManager.getInstance().getEhcache(SharedApplication.DELIVERY_FRACTION_CACHE).removeAll();
 			
 			assertNull(SharedApplication.getInstance().getDeliveryFraction(target9674, true));
 			assertNull(SharedApplication.getInstance().getDeliveryFraction(target9682, true));
 	}
 	
 	protected void switchToModifiedPredictData() {
-		Ehcache pdc = CacheManager.getInstance().getEhcache(SharedApplication.PREDICT_DATA_CACHE);
+		Ehcache pdc = SparrowCacheManager.getInstance().getEhcache(SharedApplication.PREDICT_DATA_CACHE);
 		Element e  = new Element(TEST_MODEL_ID, modifiedPredictData);
 		pdc.put(e);
 
-		CacheManager.getInstance().getEhcache(SharedApplication.PREDICT_RESULT_CACHE).removeAll();
-		CacheManager.getInstance().getEhcache(SharedApplication.DELIVERY_FRACTION_CACHE).removeAll();
+		SparrowCacheManager.getInstance().getEhcache(SharedApplication.PREDICT_RESULT_CACHE).removeAll();
+		SparrowCacheManager.getInstance().getEhcache(SharedApplication.DELIVERY_FRACTION_CACHE).removeAll();
 		
 		assertNull(SharedApplication.getInstance().getDeliveryFraction(target9674, true));
 		assertNull(SharedApplication.getInstance().getDeliveryFraction(target9682, true));
