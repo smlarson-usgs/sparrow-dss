@@ -11,6 +11,7 @@ import javax.servlet.ServletContextListener;
 
 import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Status;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 
 import org.apache.log4j.Logger;
@@ -59,7 +60,10 @@ public class LifecycleListener implements ServletContextListener {
 		
 		if (clearCache) {
 			log.info("Clearing the cache as requested");
-			SparrowCacheManager.getInstance().clearAll();
+			CacheManager cacheManager = SparrowCacheManager.getInstance();
+			if ( cacheManager.getStatus() == Status.STATUS_ALIVE) {
+				cacheManager.clearAll();
+			} 
 		}
 		
 		SparrowCacheManager.getInstance().shutdown();

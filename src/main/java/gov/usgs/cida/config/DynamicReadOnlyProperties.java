@@ -256,8 +256,6 @@ public class DynamicReadOnlyProperties extends Properties {
 		// Assuming default encoding for InputStream, not necessarily a good assumption
 		StringBuilder input = readStream2StringBuilder(in);
 		String result = this.expand(input.toString());
-		// DEBUG
-		System.out.println(result);
 		ByteArrayInputStream byteStream = new ByteArrayInputStream(result.getBytes());
 		return byteStream;
 	}
@@ -292,6 +290,7 @@ public class DynamicReadOnlyProperties extends Properties {
 					}
 				}
 			} catch (NamingException e) {
+				System.err.println("Error accessing JNDI -- No JNDI in this environment? Printing stacktrace...");
 				e.printStackTrace();
 			}
 		}

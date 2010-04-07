@@ -31,7 +31,7 @@
 		
 		Subdirectories can be specified below the property e.g. java.io.tmpdir/one
 	-->
-	<!-- Distributed caches. Quoted from bottom of http://ehcache.org/documentation/distributed_caching.html
+	<!-- DISTRIBUTED CACHE CONFIGURATION:  Quoted from bottom of http://ehcache.org/documentation/distributed_caching.html
 	
 			Use of Time To Idle
 
@@ -43,7 +43,7 @@
 			Do not use Time To Idle with distributed caching, unless you do not 
 			care about inconsistent data across nodes. 
 	 -->
-	<!-- Distributed caches. See SharedApplication.putPredictionContext(), line 176
+	<!-- DISTRIBUTED CACHE CONFIGURATION:  See SharedApplication.putPredictionContext(), line 176
 	
 		Typical Sparrow configuration value for:
 		cacheManagerPeerProviderFactory.class=
@@ -87,12 +87,18 @@
 			class="${cacheManagerPeerListenerFactory.class}"
 			properties="${cacheManagerPeerListenerFactory.properties}"/>
 	 -->
+	 <!-- DISTRIBUTED CACHE CONFIGURATION ${cacheManagerPeerProviderFactory} /END -->
+	 	
+	 <!-- DISTRIBUTED CACHE CONFIGURATION  ${cacheManagerPeerListenerFactory} /END -->
+	 <!-- 
 	<cacheManagerPeerProviderFactory
  			class="${cacheManagerPeerProviderFactory.class}"
 			properties="${cacheManagerPeerProviderFactory.properties}"/>
  	<cacheManagerPeerListenerFactory
 			class="${cacheManagerPeerListenerFactory.class}"
 			properties="${cacheManagerPeerListenerFactory.properties}"/>
+			 -->
+			
 	<diskStore path="java.io.tmpdir/ehcache_diskstore" />
 
 
@@ -341,9 +347,8 @@
 		timeToLiveSeconds="0" diskPersistent="true"
 		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" >
 		
-		<cacheEventListenerFactory
-			class="${cacheEventListenerFactory.class}"
-    		properties="${cacheEventListenerFactory.properties}"/>
+		<!--  DISTRIBUTED CACHE CONFIGURATION ${cacheEventListenerFactory} /END -->
+
  	</cache>
 
 	<cache name="AdjustmentGroups" maxElementsInMemory="200"
@@ -351,9 +356,8 @@
 		diskSpoolBufferSizeMB="3" timeToIdleSeconds="0"
 		timeToLiveSeconds="0" diskPersistent="true"
 		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU">
-		<cacheEventListenerFactory
-			class="${cacheEventListenerFactory.class}"
-    		properties="${cacheEventListenerFactory.properties}"/>
+		<!--  DISTRIBUTED CACHE CONFIGURATION ${cacheEventListenerFactory} /END -->
+
 	</cache>
 		
 	<cache name="Analyses" maxElementsInMemory="200"
@@ -361,9 +365,8 @@
 		diskSpoolBufferSizeMB="1" timeToIdleSeconds="0"
 		timeToLiveSeconds="0" diskPersistent="true"
 		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" >
-		<cacheEventListenerFactory
-			class="${cacheEventListenerFactory.class}"
-    		properties="${cacheEventListenerFactory.properties}"/>
+		<!--  DISTRIBUTED CACHE CONFIGURATION ${cacheEventListenerFactory} /END -->
+
     </cache>
 		
 	<cache name="TerminalReaches" maxElementsInMemory="200"
@@ -371,9 +374,8 @@
 		diskSpoolBufferSizeMB="1" timeToIdleSeconds="0"
 		timeToLiveSeconds="0" diskPersistent="true"
 		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU">
-		<cacheEventListenerFactory
-			class="${cacheEventListenerFactory.class}"
-    		properties="${cacheEventListenerFactory.properties}"/>
+		<!--  DISTRIBUTED CACHE CONFIGURATION ${cacheEventListenerFactory} /END -->
+
     </cache>
 		
 	<cache name="AreaOfInterest" maxElementsInMemory="200"
@@ -381,9 +383,8 @@
 		diskSpoolBufferSizeMB="1" timeToIdleSeconds="0"
 		timeToLiveSeconds="0" diskPersistent="true"
 		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU">
-		<cacheEventListenerFactory
-			class="${cacheEventListenerFactory.class}"
-    		properties="${cacheEventListenerFactory.properties}"/>
+		<!--  DISTRIBUTED CACHE CONFIGURATION ${cacheEventListenerFactory} /END -->
+
     </cache>
 		
 	<cache name="ComparisonResult" maxElementsInMemory="10"
