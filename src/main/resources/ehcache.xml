@@ -71,7 +71,8 @@
 	 	For clustered operation using RMI syncing, choose the first value option.
 	 	For local non-clustered development operation, choose the second set of value options.
 	 	
-	 	This will be set in a JNDI property in order to maintain WAR invariance. 
+	 	For each of the above configuration choices, this will be set in a JNDI 
+	 	property in order to maintain WAR invariance. 
 	 		(override = true to allow WAR to override JNDI in special cases. See )
 	 		For example: 
 	 		<Environment 
@@ -80,24 +81,18 @@
         		 type="java.lang.String"
         		 override="true"
         	/>
-	<cacheManagerPeerProviderFactory
- 			class="${cacheManagerPeerProviderFactory.class}"
-			properties="${cacheManagerPeerProviderFactory.properties}"/>
- 	<cacheManagerPeerListenerFactory
-			class="${cacheManagerPeerListenerFactory.class}"
-			properties="${cacheManagerPeerListenerFactory.properties}"/>
+        
+        The places in the ehcache.xml below would then be filled by something similar
+			<cacheManagerPeerProviderFactory
+ 				class="${cacheManagerPeerProviderFactory.class}"
+				properties="${cacheManagerPeerProviderFactory.properties}"/>
+ 			<cacheManagerPeerListenerFactory
+				class="${cacheManagerPeerListenerFactory.class}"
+				properties="${cacheManagerPeerListenerFactory.properties}"/>
 	 -->
 	 <!-- DISTRIBUTED CACHE CONFIGURATION ${cacheManagerPeerProviderFactory} /END -->
 	 	
 	 <!-- DISTRIBUTED CACHE CONFIGURATION  ${cacheManagerPeerListenerFactory} /END -->
-	 <!-- 
-	<cacheManagerPeerProviderFactory
- 			class="${cacheManagerPeerProviderFactory.class}"
-			properties="${cacheManagerPeerProviderFactory.properties}"/>
- 	<cacheManagerPeerListenerFactory
-			class="${cacheManagerPeerListenerFactory.class}"
-			properties="${cacheManagerPeerListenerFactory.properties}"/>
-			 -->
 			
 	<diskStore path="java.io.tmpdir/ehcache_diskstore" />
 

@@ -1,7 +1,6 @@
 package gov.usgswim.sparrow.clustering;
 
 import gov.usgs.cida.config.DynamicReadOnlyProperties;
-import gov.usgs.cida.config.DynamicReadOnlyProperties.NullKeyHandlingOption;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,14 +8,23 @@ import java.lang.management.ManagementFactory;
 
 import javax.management.MBeanServer;
 
-import org.apache.commons.lang.text.StrBuilder;
+import net.sf.ehcache.CacheException;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
+import net.sf.ehcache.management.ManagementService;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.sf.ehcache.CacheException;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.management.ManagementService;
-
+/**
+ * The purpose of this class is to decorate the configuration loading of the
+ * ehcache CacheManager by performing property substitution on the ehcache.xml
+ * configuration file. As a result of doing this, the CacheManager no longer
+ * will manage its singleton, so that must be managed here.
+ * 
+ * @author ilinkuo
+ * 
+ */
 public class SparrowCacheManager {
 	public static final String[] EXPECTED_JNDI_CONFIG_VALUES = 
 		{	"cacheManagerPeerProviderFactory.class",
@@ -52,10 +60,10 @@ public class SparrowCacheManager {
 		synchronized (CacheManager.class) {
 			if (singleton == null) {
 				// CacheManager created in this way will not have JNDI property substitution
-				LOG.debug("Creating new SparrowCacheManager with default config");
+				LOG.warn("Creating new SparrowCacheManager with default config, no JNDI property substitution");
 				singleton = new CacheManager();
 			} else {
-				LOG.debug("Attempting to create an existing singleton. Existing singleton returned.");
+				LOG.debug("Attempting to create an existing singleton unneeded. Existing singleton returned.");
 			}
 			return singleton;
 		}
@@ -83,6 +91,10 @@ public class SparrowCacheManager {
 			
 			try {
 			    singleton = new CacheManager(in);
+			    singleton.setName("SparrowCacheManager");
+
+			} catch (Exception e){
+				LOG.error("SparrowCacheManager was not able to create configured cache manager");
 			} finally {
 			    in.close();
 			}

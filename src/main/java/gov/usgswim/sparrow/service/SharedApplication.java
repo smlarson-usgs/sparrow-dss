@@ -92,6 +92,7 @@ public class SharedApplication  {
 	public static final String LOAD_REACH_ATTRIBUTES = "LoadReachAttributes";
 	public static final String REACHES_BY_CRITERIA = "ReachesByCriteria";
 	public static final String DATA_BINNING = "DataBinning";
+	public static final String AGGREGATED_ID_LOOKUP = "AggregateIdLookup";
 	public static final String LOAD_MODEL_METADATA = "LoadModelMetadata";
 
 	// This list is based on ehcache.xml configuration. Updating this list requires updating the ehcache.xml configuration as well.
@@ -695,6 +696,7 @@ public class SharedApplication  {
 	@SuppressWarnings("unchecked")
 	public List<SparrowModel> getModelMetadata(ModelRequestCacheKey req, boolean quiet) {
 		Ehcache c = CacheManager.getInstance().getEhcache(LOAD_MODEL_METADATA);
+		System.out.println("DEBUG: class = " + c.getClass());
 		Element e  = (quiet)?c.getQuiet(req):c.get(req);
 		return (e != null)?((List<SparrowModel>) e.getObjectValue()):null;
 	}
