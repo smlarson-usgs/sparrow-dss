@@ -8,7 +8,9 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
  * {@code AggregateIdLookupKludge} upon request.
  */
 public class AggregateIdLookupKludgeFactory implements CacheEntryFactory {
-    public Object createEntry(Object aggLevel) throws Exception {
+	
+	@Override
+    public AggregateIdLookupKludge createEntry(Object aggLevel) throws Exception {
         AggregateIdLookupKludge kludge = new AggregateIdLookupKludge((String) aggLevel);
         return kludge;
     }

@@ -13,6 +13,7 @@ public abstract class AbstractCacheFactory implements CacheEntryFactory {
 	 * Override to supply a new cached value, calculated from the passed in
 	 * key value.
 	 */
+	@Override
 	public abstract Object createEntry(Object key) throws Exception;
 
 	/**

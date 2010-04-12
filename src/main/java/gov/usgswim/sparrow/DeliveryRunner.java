@@ -295,7 +295,8 @@ public class DeliveryRunner implements Runner {
 		return deliveryResult;
 	}
 
-	public Object createEntry(Object predictContext) throws Exception {
+
+	public PredictResult createEntry(Object predictContext) throws Exception {
 		PredictionContext context = (PredictionContext) predictContext;
 
 		AggregationRunner aggRunner = new AggregationRunner(context);

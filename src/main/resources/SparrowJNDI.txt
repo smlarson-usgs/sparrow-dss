@@ -1,0 +1,69 @@
+
+<Environment 
+			name="cacheManagerPeerProviderFactory.class" 
+			value="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+         type="java.lang.String" 
+         override="true"
+/>
+<Environment 
+			name="cacheManagerPeerProviderFactory.properties" 
+			value="peerDiscovery=manual,rmiUrls=//130.11.165.157:1099/PredictContext|//130.11.165.157:1099/AdjustmentGroups|//130.11.165.157:1099/Analyses|//130.11.165.157:1099/TerminalReaches|//130.11.165.157:1099/AreaOfInterest"
+         type="java.lang.String" 
+         override="true"
+/>
+<Environment 
+			name="cacheManagerPeerListenerFactory.class" 
+			value="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"
+         type="java.lang.String" 
+         override="true"
+/>
+<Environment 
+			name="cacheManagerPeerListenerFactory.properties" 
+			value="port=1099,socketTimeoutMillis=2000"
+         type="java.lang.String" 
+         override="true"
+/>
+<Environment 
+			name="cacheEventListenerFactory.class" 
+			value="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
+         type="java.lang.String" 
+         override="true"
+/>
+<Environment 
+			name="cacheEventListenerFactory.properties" 
+			value="replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=true, replicateRemovals=true, asynchronousReplicationIntervalMillis=10"
+         type="java.lang.String" 
+         override="true"
+/>
+
+<Environment 
+			name="cacheManagerPeerProviderFactory" 
+			value="	--&gt;
+			&lt;cacheManagerPeerProviderFactory
+ 			class='${cacheManagerPeerProviderFactory.class}'
+			properties='${cacheManagerPeerProviderFactory.properties}'/&gt;
+			&lt;!--"
+         type="java.lang.String" 
+         override="true"
+/>
+<Environment 
+			name="cacheManagerPeerListenerFactory" 
+			value="	--&gt;
+				&lt;cacheManagerPeerListenerFactory
+ 				class='${cacheManagerPeerListenerFactory.class}'
+				properties='${cacheManagerPeerListenerFactory.properties}'/&gt;
+				&lt;!--"
+         type="java.lang.String" 
+         override="true"
+/>
+<Environment 
+			name="cacheEventListenerFactory" 
+			value="	--&gt;
+				&lt;cacheEventListenerFactory
+ 				class='${cacheEventListenerFactory.class}'
+				properties='${cacheEventListenerFactory.properties}'/&gt;
+				&lt;!--"
+         type="java.lang.String" 
+         override="true"
+/>
+

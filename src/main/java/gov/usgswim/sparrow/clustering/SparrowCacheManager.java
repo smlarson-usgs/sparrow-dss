@@ -35,6 +35,8 @@ public class SparrowCacheManager {
 			"cacheEventListenerFactory.properties"
 		};
 	
+	public static final String DEFAULT_EHCACHE_CONFIG_LOCATION = "/ehcache.xml";
+	
 	private static final Logger LOG = LoggerFactory.getLogger(CacheManager.class);
 
 	/**
@@ -81,15 +83,10 @@ public class SparrowCacheManager {
 		synchronized (CacheManager.class) {
 			LOG.debug("Creating new SparrowCacheManager from resource " + resourceName);
 			
-			InputStream in = SparrowCacheManager.class.getResourceAsStream(resourceName);
-			if (in == null) {
-				LOG.error(" resource " + resourceName + " not found. Make sure your resource name contains a '/'");
-				throw new CacheException("unable to initialize cache due to resource " +  resourceName + " not found");
-			}
-			DynamicReadOnlyProperties dynProps = getProperties();
-			in = dynProps.expand(in);
+			InputStream in = null;
 			
 			try {
+				in = getConfigurationStream(resourceName);
 			    singleton = new CacheManager(in);
 			    singleton.setName("SparrowCacheManager");
 
@@ -106,6 +103,31 @@ public class SparrowCacheManager {
 			return singleton;
 		}
 	}
+
+
+	/**
+	 * @param resourceName optional. If not used or null passed in, then DEFAULT_EHCACHE_CONFIG_LOCATION is used.
+	 * @return
+	 * @throws IOException
+	 */
+	public static InputStream getConfigurationStream(String... resourceName)
+			throws IOException {
+		String resName = DEFAULT_EHCACHE_CONFIG_LOCATION;
+		if (resourceName != null && resourceName.length > 0 && resourceName[0] != null ) {
+			resName = resourceName[0];
+		}
+		
+		InputStream in = SparrowCacheManager.class.getResourceAsStream(resName);
+		if (in == null) {
+			LOG.error(" resource " + resName + " not found. Make sure your resource name contains a '/'");
+			throw new CacheException("unable to initialize cache due to resource " +  resName + " not found");
+		}
+		DynamicReadOnlyProperties dynProps = getProperties();
+		in = dynProps.expand(in);
+		return in;
+	}
+	
+
 	
 	public static DynamicReadOnlyProperties getProperties() {
 		DynamicReadOnlyProperties dynProps = new DynamicReadOnlyProperties();

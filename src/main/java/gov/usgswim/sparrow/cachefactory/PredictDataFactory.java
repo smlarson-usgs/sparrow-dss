@@ -21,7 +21,8 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
  */
 public class PredictDataFactory implements CacheEntryFactory {
 
-	public Object createEntry(Object modelId) throws Exception {
+	@Override
+	public PredictData createEntry(Object modelId) throws Exception {
 		Long id = (Long)modelId;
 		PredictData result = null;
 		

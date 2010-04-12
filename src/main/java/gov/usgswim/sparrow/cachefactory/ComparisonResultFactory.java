@@ -41,7 +41,8 @@ public class ComparisonResultFactory implements CacheEntryFactory {
 	protected static Logger log =
 		Logger.getLogger(ComparisonResultFactory.class); //logging for this class
 
-	public Object createEntry(Object predictContext) throws Exception {
+	@Override
+	public DataColumn createEntry(Object predictContext) throws Exception {
 		PredictionContext fullContext = (PredictionContext) predictContext;
 		Comparison comparison = fullContext.getComparison();
 		

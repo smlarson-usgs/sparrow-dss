@@ -19,7 +19,8 @@ import oracle.mapviewer.share.ext.NSDataSet;
  */
 public class NSDataSetFactory implements CacheEntryFactory {
 
-	public Object createEntry(Object predictContext) throws Exception {
+	@Override
+	public NSDataSet createEntry(Object predictContext) throws Exception {
 		PredictionContext context = (PredictionContext) predictContext;
 
 		NSDataSetBuilder action = new NSDataSetBuilder();

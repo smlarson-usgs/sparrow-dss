@@ -34,7 +34,7 @@ import net.sf.ehcache.Element;
 import org.apache.log4j.Level;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
+import static gov.usgswim.sparrow.service.ConfiguredCache.*;
 
 
 /**
@@ -84,7 +84,7 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		unmodifiedPredictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		DataTable topo = unmodifiedPredictData.getTopo();
 		SparseOverrideAdjustment adjTopo = new SparseOverrideAdjustment(topo);
-		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9681), PredictData.IFTRAN_COL);
+		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9681), gov.usgswim.sparrow.PredictData.IFTRAN_COL);
 		
 		modifiedPredictData = new PredictDataImm(
 				adjTopo.toImmutable(), unmodifiedPredictData.getCoef(),
@@ -549,24 +549,24 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 	}
 	
 	protected void switchToUnmodifiedPredictData() {
-			Ehcache pdc = SparrowCacheManager.getInstance().getEhcache(SharedApplication.PREDICT_DATA_CACHE);
+			Ehcache pdc = SparrowCacheManager.getInstance().getEhcache(PredictData.name());
 			Element e  = new Element(TEST_MODEL_ID, unmodifiedPredictData);
 			pdc.put(e);
 
-			SparrowCacheManager.getInstance().getEhcache(SharedApplication.PREDICT_RESULT_CACHE).removeAll();
-			SparrowCacheManager.getInstance().getEhcache(SharedApplication.DELIVERY_FRACTION_CACHE).removeAll();
+			SparrowCacheManager.getInstance().getEhcache(PredictResult.name()).removeAll();
+			SparrowCacheManager.getInstance().getEhcache(DeliveryFraction.name()).removeAll();
 			
 			assertNull(SharedApplication.getInstance().getDeliveryFraction(target9674, true));
 			assertNull(SharedApplication.getInstance().getDeliveryFraction(target9682, true));
 	}
 	
 	protected void switchToModifiedPredictData() {
-		Ehcache pdc = SparrowCacheManager.getInstance().getEhcache(SharedApplication.PREDICT_DATA_CACHE);
+		Ehcache pdc = SparrowCacheManager.getInstance().getEhcache(PredictData.name());
 		Element e  = new Element(TEST_MODEL_ID, modifiedPredictData);
 		pdc.put(e);
 
-		SparrowCacheManager.getInstance().getEhcache(SharedApplication.PREDICT_RESULT_CACHE).removeAll();
-		SparrowCacheManager.getInstance().getEhcache(SharedApplication.DELIVERY_FRACTION_CACHE).removeAll();
+		SparrowCacheManager.getInstance().getEhcache(PredictResult.name()).removeAll();
+		SparrowCacheManager.getInstance().getEhcache(DeliveryFraction.name()).removeAll();
 		
 		assertNull(SharedApplication.getInstance().getDeliveryFraction(target9674, true));
 		assertNull(SharedApplication.getInstance().getDeliveryFraction(target9682, true));

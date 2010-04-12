@@ -42,6 +42,7 @@ public class PredictResultFactory implements CacheEntryFactory {
 	protected static Logger log =
 		Logger.getLogger(PredictResultFactory.class); //logging for this class
 	
+	@Override
 	public PredictResult createEntry(Object adjustmentGroups) throws Exception {
 		AdjustmentGroups adjs = (AdjustmentGroups) adjustmentGroups;
 		

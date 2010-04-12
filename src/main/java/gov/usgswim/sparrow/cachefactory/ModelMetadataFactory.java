@@ -1,14 +1,17 @@
 package gov.usgswim.sparrow.cachefactory;
 
+import java.util.List;
+
 import gov.usgswim.sparrow.action.LoadModelMetadata;
+import gov.usgswim.sparrow.domain.SparrowModel;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 public class ModelMetadataFactory implements CacheEntryFactory {
 
 	@Override
-	public Object createEntry(Object modelRequestCacheKey) throws Exception {
+	public List<SparrowModel> createEntry(Object modelRequestCacheKey) throws Exception {
 		ModelRequestCacheKey key = (ModelRequestCacheKey) modelRequestCacheKey;
-		Object result = new LoadModelMetadata(key).run();
+		List<SparrowModel> result = new LoadModelMetadata(key).run();
 		return result;
 	}
 

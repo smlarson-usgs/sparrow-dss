@@ -89,6 +89,8 @@
  			<cacheManagerPeerListenerFactory
 				class="${cacheManagerPeerListenerFactory.class}"
 				properties="${cacheManagerPeerListenerFactory.properties}"/>
+		
+		For an example configuration of javadev, see SparrowJNDI.txt in src/main/resources
 	 -->
 	 <!-- DISTRIBUTED CACHE CONFIGURATION ${cacheManagerPeerProviderFactory} /END -->
 	 	

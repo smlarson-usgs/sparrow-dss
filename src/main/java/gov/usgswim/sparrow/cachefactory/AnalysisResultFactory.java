@@ -25,7 +25,8 @@ public class AnalysisResultFactory implements CacheEntryFactory {
 	 * @param predictContext the PredictionContext to build the results for.
 	 * @return A PredictionContext.DataColumn containing the single column results.
 	 */
-	public Object createEntry(Object predictContext) throws Exception {
+	@Override
+	public DataColumn createEntry(Object predictContext) throws Exception {
 		PredictionContext context = (PredictionContext) predictContext;
 
 		CalcAnalysis action = new CalcAnalysis();

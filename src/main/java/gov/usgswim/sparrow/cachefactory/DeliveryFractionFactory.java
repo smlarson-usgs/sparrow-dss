@@ -24,7 +24,8 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
  */
 public class DeliveryFractionFactory implements CacheEntryFactory {
 
-	public Object createEntry(Object terminalReaches) throws Exception {
+	@Override
+	public ColumnData createEntry(Object terminalReaches) throws Exception {
 		TerminalReaches targets = (TerminalReaches) terminalReaches;
 		
 		PredictData predictData = SharedApplication.getInstance().

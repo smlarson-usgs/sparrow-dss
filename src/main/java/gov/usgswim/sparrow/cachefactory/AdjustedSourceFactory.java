@@ -25,8 +25,8 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
  *
  */
 public class AdjustedSourceFactory implements CacheEntryFactory {
-	
-	public Object createEntry(Object adjustmentGroups) throws Exception {
+	@Override
+	public DataTable createEntry(Object adjustmentGroups) throws Exception {
 		AdjustmentGroups groups = (AdjustmentGroups)adjustmentGroups;
 		
 		PredictData data = SharedApplication.getInstance().getPredictData(groups.getModelID());

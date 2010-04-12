@@ -12,7 +12,8 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
  */
 public class LoadReachAttributesFactory implements CacheEntryFactory {
 	
-	public Object createEntry(Object reachID) throws Exception {
+	@Override
+	public DataTable createEntry(Object reachID) throws Exception {
 		ReachID rid = (ReachID)reachID;
 		
 		LoadReachAttributes action = new LoadReachAttributes();

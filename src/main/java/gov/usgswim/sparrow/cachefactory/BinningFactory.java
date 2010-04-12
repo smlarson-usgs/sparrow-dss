@@ -53,7 +53,8 @@ public class BinningFactory implements CacheEntryFactory {
 	 */
 	public static final double ALLOWABLE_BIN_SIZE_VARIANCE_RATIO = 1d/10;
 
-	public Object createEntry(Object binningRequest) throws Exception {
+	@Override
+	public BigDecimal[] createEntry(Object binningRequest) throws Exception {
 		BinningRequest request = (BinningRequest)binningRequest;
 		PredictionContext context = SharedApplication.getInstance().getPredictionContext(request.getContextID());
 
