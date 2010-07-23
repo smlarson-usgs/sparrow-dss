@@ -28,7 +28,7 @@ public enum DataSeriesType implements Serializable {
     instream_decay_coef			(BaseDataSeriesType.instream_decay_coef, false, false, false, false, true),
     
     catch_area					(BaseDataSeriesType.catch_area, false, false, false, true, true),
-    catch_area_cum				(BaseDataSeriesType.catch_area_cum, false, false, false, true, true),
+    cumulative_catch_area		(BaseDataSeriesType.cumulative_catch_area, false, false, false, true, true),
     huc_area					(BaseDataSeriesType.huc_area, false, false, false, true, true),
     ;
 
