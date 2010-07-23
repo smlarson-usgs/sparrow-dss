@@ -13,7 +13,7 @@ public enum DataSeriesType implements Serializable {
     
     //Incremental (i.e. does not include upstream) predicted load.  
     incremental					(BaseDataSeriesType.incremental, false, false, false, false, true), //active
-    incremental_no_decay		(BaseDataSeriesType.incremental_no_decay, false, false, false, false, true),
+    decayed_incremental			(BaseDataSeriesType.decayed_incremental, false, false, false, false, true),
     incremental_std_error_estimate	(BaseDataSeriesType.incremental, true, false, false, true, false), //active
     
     incremental_yield			(BaseDataSeriesType.incremental, false, false, true, false, true), // active

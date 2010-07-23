@@ -37,6 +37,7 @@ public class DeliveryDerivedCalcErrorTest extends SparrowDBTest {
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		PredictContextRequest contextReq = pipe.parse(xmlContextReq);
 		String actualResponse = TestHelper.pipeDispatch(contextReq, pipe);
+		System.out.println("actual: " + actualResponse);
 		XMLAssert.assertXMLEqual(xmlContextResp, actualResponse);
 		DataColumn totalData = contextReq.getPredictionContext().getDataColumn();
 		

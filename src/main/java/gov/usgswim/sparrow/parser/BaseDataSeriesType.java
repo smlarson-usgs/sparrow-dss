@@ -36,7 +36,7 @@ public enum BaseDataSeriesType {
 
     //Incremental (i.e. does not include upstream) predicted load.
     incremental					(true, false, false, false, 1, false), //active
-    incremental_no_decay		(true, false, false, false, 1, false),
+    decayed_incremental			(true, false, false, false, 1, false),
 
     delivered_fraction			(false, false, true, false, 0, false), //fraction delivered - calc w/o prediction
 
