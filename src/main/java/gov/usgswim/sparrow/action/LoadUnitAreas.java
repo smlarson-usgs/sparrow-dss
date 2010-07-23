@@ -5,7 +5,6 @@ import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.datatable.HucLevel;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
@@ -22,7 +21,7 @@ public class LoadUnitAreas extends Action<DataTable> {
 	//public static final String QUERY_NAME = "attributesSQL";
 	
 	protected long modelId;
-	protected HucLevel hucLevel = HucLevel.HUC_NONE;	//Default to indivicual reaches
+	protected HucLevel hucLevel = HucLevel.HUC_NONE;	//Default to individual reaches
 	protected boolean cumulative = false;
 	
 	
