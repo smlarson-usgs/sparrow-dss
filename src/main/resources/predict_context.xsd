@@ -201,7 +201,7 @@
 	</xs:complexType>
 	
 	<xs:simpleType name="dataSeriesEnum">
-		<xs:annotation><xs:documentation>This is the intended way to generate yeild or concentration numbers.</xs:documentation></xs:annotation>
+		<xs:annotation><xs:documentation>This is the intended way to generate yield or concentration numbers.</xs:documentation></xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="total"/>
 			<xs:enumeration value="total_std_error_estimate"/>
@@ -225,7 +225,7 @@
 	</xs:simpleType>
 	
 	<xs:simpleType name="perEnum">
-		<xs:annotation><xs:documentation>This is the intended way to generate yeild or concentration numbers.</xs:documentation></xs:annotation>
+		<xs:annotation><xs:documentation>This is the intended way to generate yield or concentration numbers.</xs:documentation></xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="none"/>
 			<xs:enumeration value="cumulativeArea"/>

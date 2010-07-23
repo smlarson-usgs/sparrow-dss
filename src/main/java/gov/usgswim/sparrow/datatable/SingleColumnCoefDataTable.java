@@ -1,7 +1,5 @@
 package gov.usgswim.sparrow.datatable;
 
-import java.util.Map;
-
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.FindHelper;
@@ -17,11 +15,16 @@ import gov.usgswim.datatable.impl.StandardDoubleColumnData;
  */
 public class SingleColumnCoefDataTable extends AbstractDataTableBase implements DataTable.Immutable {
 	
+	private static final long serialVersionUID = 1L;
+
 	/** A column of coefficients that are multiplied by values in the specified column */
 	private ColumnData coefCol;	
 	
 	/** The index of the column (zero based) that the coefCol should be applied to */
 	private int colIndexNum;
+	
+	/** Whether to divide by the coefficient column instead of multiply */
+	private boolean invertCoef = false;
 
 	/**
 	 * Create a new instance.
@@ -78,6 +81,30 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 		coefCol = cc;
 		
 		colIndexNum = coefColumnIndex;
+	}
+	
+	/**
+	 * @param sourceData
+	 * @param coefValues
+	 * @param coefColumnIndex
+	 * @param invertCoefficient
+	 */
+	public SingleColumnCoefDataTable(
+			DataTable sourceData, ColumnData coefColumn, int coefColumnIndex, boolean invertCoefficient) {
+		super(sourceData);
+		coefCol = coefColumn;
+		colIndexNum = coefColumnIndex;
+		invertCoef = invertCoefficient;
+		
+		if (coefCol.getRowCount() != sourceData.getRowCount()) {
+			throw new IllegalArgumentException(
+					"The number of rows in the sourceData table " +
+					"and the coefColumn must be the same.");
+		} else if (coefColumnIndex < 0 || coefColumnIndex >= sourceData.getColumnCount()) {
+			throw new IllegalArgumentException(
+					"The coefColumnIndex cannot be less than zero or beyond " +
+					"the last column of the sourceData.");
+		}
 	}
 	
 	protected Double getCoefficient(int row) {
@@ -152,7 +179,12 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 	public Object getValue(int row, int col) {
 		Object value = base.getValue(row, col);
 		if (col == colIndexNum) {
-			return ((Number) value).doubleValue() * coefCol.getDouble(row);
+			if(!invertCoef) {
+				return ((Number) value).doubleValue() * coefCol.getDouble(row);
+			}
+			else {
+				return ((Number) value).doubleValue() / coefCol.getDouble(row);
+			}
 		} else {
 			return value;
 		}
@@ -162,7 +194,12 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 	public Double getDouble(int row, int col) {
 		Double value = base.getDouble(row, col);
 		if (col == colIndexNum) {
-			return value * coefCol.getDouble(row);
+			if(!invertCoef) {
+				return value * coefCol.getDouble(row);
+			}
+			else {
+				return value / coefCol.getDouble(row);
+			}
 		} else {
 			return value;
 		}

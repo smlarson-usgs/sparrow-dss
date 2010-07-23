@@ -174,8 +174,16 @@ public class CalcAnalysis extends Action<DataColumn>{
 						impliedUncertaintySeries = UncertaintySeries.INCREMENTAL;
 					}
 					
-					
-					if (type.equals(DataSeriesType.incremental_delivered_flux)) {
+					if (type.equals(DataSeriesType.incremental_yield)) {
+						// incremental yield = incremental flux / catchment area
+						LoadUnitAreas lua = new LoadUnitAreas(context.getModelID(), HucLevel.HUC_NONE, false);
+						DataTable catchmentAreaTable = lua.run();
+						ColumnData catchmentAreaColumn = new ColumnFromTable(catchmentAreaTable, 1);
+						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(
+								result, catchmentAreaColumn, dataColIndex, true);
+						predictionBasedResult = view;
+					} else if (type.equals(DataSeriesType.incremental_delivered_flux)
+							|| type.equals(DataSeriesType.incremental_delivered_yield)) {
 
 						// incremental delivered flux =
 						// Delivery Fraction X Incremental Flux X Instream Delivery
@@ -192,10 +200,22 @@ public class CalcAnalysis extends Action<DataColumn>{
 						
 
 						// The above result X Instream Delivery
-						SingleColumnCoefDataTable incDelivered = new SingleColumnCoefDataTable(
+						SingleColumnCoefDataTable incDeliveredFlux = new SingleColumnCoefDataTable(
 								incTimesDelFrac, incDeliveryCol, dataColIndex);
+												
+						if (type.equals(DataSeriesType.incremental_delivered_yield)) {
+							// inc. del. yield is inc. del. flux / catchment area
+							LoadUnitAreas lua = new LoadUnitAreas(context.getModelID(), HucLevel.HUC_NONE, false);
+							DataTable catchmentAreaTable = lua.run();
+							ColumnData catchmentAreaColumn = new ColumnFromTable(catchmentAreaTable, 1);
+							SingleColumnCoefDataTable incDeliveredYield = new SingleColumnCoefDataTable(
+									incDeliveredFlux, catchmentAreaColumn, dataColIndex, true);
+							predictionBasedResult = incDeliveredYield;
+						}
+						else {
+							predictionBasedResult = incDeliveredFlux;
+						}
 						
-						predictionBasedResult = incDelivered;
 					} else {
 						predictionBasedResult = result;
 					}
