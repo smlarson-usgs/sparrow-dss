@@ -56,7 +56,8 @@ public class DynamicReadOnlyProperties extends Properties {
 	public static final String[] DEFAULT_JNDI_CONTEXTS = {"java:", "java:/comp/env"};
 	public static enum NullKeyHandlingOption {DO_NOTHING, RETURN_EMPTY_STRING};
 	public static final NullKeyHandlingOption DEFAULT_HANDLING_OPTION = NullKeyHandlingOption.DO_NOTHING;
-
+	private static volatile boolean hasOutputJNDIError;
+	
 	/**
 	 * Converts a set of properties to a Map<String, String>
 	 * @param props
@@ -290,8 +291,11 @@ public class DynamicReadOnlyProperties extends Properties {
 					}
 				}
 			} catch (NamingException e) {
-				System.err.println("Error accessing JNDI -- No JNDI in this environment? Printing stacktrace...");
-				e.printStackTrace();
+				if (!hasOutputJNDIError) {
+					hasOutputJNDIError = true;
+					System.err.println("Error accessing JNDI -- No JNDI in this environment? Printing stacktrace...");
+					e.printStackTrace();
+				}
 			}
 		}
 		this.putAll(expand(map));
