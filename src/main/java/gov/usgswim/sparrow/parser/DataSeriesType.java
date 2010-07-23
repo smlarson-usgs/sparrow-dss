@@ -25,7 +25,11 @@ public enum DataSeriesType implements Serializable {
     total_no_decay				(BaseDataSeriesType.total_no_decay, false, false, false, true, true),
     source_value				(BaseDataSeriesType.source_value, false, false, false, false, true), // active
     land_to_water_coef			(BaseDataSeriesType.land_to_water_coef, false, false, false, false, true),
-    instream_decay_coef			(BaseDataSeriesType.instream_decay_coef, false, false, false, false, true)
+    instream_decay_coef			(BaseDataSeriesType.instream_decay_coef, false, false, false, false, true),
+    
+    catch_area					(BaseDataSeriesType.catch_area, false, false, false, true, true),
+    catch_area_cum				(BaseDataSeriesType.catch_area_cum, false, false, false, true, true),
+    huc_area					(BaseDataSeriesType.huc_area, false, false, false, true, true),
     ;
 
     // TODO cut down the list of attributes
