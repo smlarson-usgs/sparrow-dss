@@ -218,6 +218,9 @@
 			<xs:enumeration value="total_no_decay"/>
 			<xs:enumeration value="land_to_water_coef"/>
 			<xs:enumeration value="instream_decay_coef"/>
+			<xs:enumeration value="catch_area"/>
+			<xs:enumeration value="cumulative_catch_area"/>
+			<xs:enumeration value="huc_area"/>
 		</xs:restriction>
 	</xs:simpleType>
 	
