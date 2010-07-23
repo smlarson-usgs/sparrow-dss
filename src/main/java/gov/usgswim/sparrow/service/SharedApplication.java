@@ -7,6 +7,7 @@ import static gov.usgswim.sparrow.service.ConfiguredCache.Analyses;
 import static gov.usgswim.sparrow.service.ConfiguredCache.AreaOfInterest;
 import static gov.usgswim.sparrow.service.ConfiguredCache.ComparisonResult;
 import static gov.usgswim.sparrow.service.ConfiguredCache.DataBinning;
+import static gov.usgswim.sparrow.service.ConfiguredCache.CatchmentAreas;
 import static gov.usgswim.sparrow.service.ConfiguredCache.DeliveryFraction;
 import static gov.usgswim.sparrow.service.ConfiguredCache.IdentifyReachByID;
 import static gov.usgswim.sparrow.service.ConfiguredCache.IdentifyReachByPoint;
@@ -28,6 +29,7 @@ import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
 import gov.usgswim.sparrow.cachefactory.BinningRequest;
+import gov.usgswim.sparrow.cachefactory.CatchmentArea;
 import gov.usgswim.sparrow.cachefactory.ModelRequestCacheKey;
 import gov.usgswim.sparrow.cachefactory.ReachID;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
@@ -537,6 +539,15 @@ public class SharedApplication  {
 
 	public BigDecimal[] getDataBinning(BinningRequest req, boolean quiet) {
 		return (BigDecimal[]) DataBinning.get(req, quiet);
+	}
+
+	//Catchment Area Cache
+	public DataTable getCatchmentAreas(CatchmentArea req) {
+		return getCatchmentAreas(req, false);
+	}
+	
+	public DataTable getCatchmentAreas(CatchmentArea req, boolean quiet) {
+		return (DataTable) CatchmentAreas.get(req, quiet);
 	}
 
 	//Aggregate Id Lookup Kludge Cache - temporary

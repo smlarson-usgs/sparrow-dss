@@ -3,12 +3,11 @@
  */
 package gov.usgswim.sparrow.service;
 
-import static gov.usgswim.sparrow.service.ConfiguredCache.NSDataSet;
-import oracle.mapviewer.share.ext.NSDataSet;
 import gov.usgswim.sparrow.cachefactory.AdjustedSourceFactory;
 import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludgeFactory;
 import gov.usgswim.sparrow.cachefactory.AnalysisResultFactory;
 import gov.usgswim.sparrow.cachefactory.BinningFactory;
+import gov.usgswim.sparrow.cachefactory.CatchmentAreaFactory;
 import gov.usgswim.sparrow.cachefactory.ComparisonResultFactory;
 import gov.usgswim.sparrow.cachefactory.DeliveryFractionFactory;
 import gov.usgswim.sparrow.cachefactory.LoadReachAttributesFactory;
@@ -50,7 +49,9 @@ public enum ConfiguredCache{
 	ReachesByCriteria(false, new ReachesByCriteriaFactory()),
 	DataBinning(false, new BinningFactory()),
 	AggregateIdLookup(false, new AggregateIdLookupKludgeFactory()),
-	LoadModelMetadata(false, new ModelMetadataFactory())
+	LoadModelMetadata(false, new ModelMetadataFactory()),
+	
+	CatchmentAreas(false, new CatchmentAreaFactory())
 	;
 	
 	public final boolean isDistributed;

@@ -8,6 +8,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.UncertaintySeries;
+import gov.usgswim.sparrow.cachefactory.CatchmentArea;
 import gov.usgswim.sparrow.datatable.HucLevel;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
@@ -159,6 +160,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 					break;
 
 				case incremental: // intentional fall-through
+				case decayed_incremental:
 				case incremental_std_error_estimate:
 				case incremental_yield:
 				case incremental_delivered_flux: // here, I think
@@ -175,13 +177,33 @@ public class CalcAnalysis extends Action<DataColumn>{
 					}
 					
 					if (type.equals(DataSeriesType.incremental_yield)) {
+						
 						// incremental yield = incremental flux / catchment area
-						LoadUnitAreas lua = new LoadUnitAreas(context.getModelID(), HucLevel.HUC_NONE, false);
-						DataTable catchmentAreaTable = lua.run();
+						// assume decayed inc. flux
+						ColumnData instDecay = new ColumnFromTable(
+								nominalPredictData.getDelivery(), PredictData.INSTREAM_DECAY_COL);
+						SingleColumnCoefDataTable decayedFlux = 
+							new SingleColumnCoefDataTable(result, instDecay, dataColIndex);
+						
+						CatchmentArea ca = new CatchmentArea(context.getModelID(), HucLevel.HUC_NONE, false);
+						DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(ca);
 						ColumnData catchmentAreaColumn = new ColumnFromTable(catchmentAreaTable, 1);
 						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(
-								result, catchmentAreaColumn, dataColIndex, true);
+								decayedFlux, catchmentAreaColumn, dataColIndex, true);
+						
 						predictionBasedResult = view;
+						
+					} else if (type.equals(DataSeriesType.decayed_incremental)) {
+						
+						// decayed inc. flux is inc. flux multiplied by instream decay
+						
+						ColumnData instDecay = new ColumnFromTable(
+								nominalPredictData.getDelivery(), PredictData.INSTREAM_DECAY_COL);
+						SingleColumnCoefDataTable decayedFlux = 
+							new SingleColumnCoefDataTable(result, instDecay, dataColIndex);
+						
+						predictionBasedResult = decayedFlux;
+						
 					} else if (type.equals(DataSeriesType.incremental_delivered_flux)
 							|| type.equals(DataSeriesType.incremental_delivered_yield)) {
 
@@ -205,8 +227,8 @@ public class CalcAnalysis extends Action<DataColumn>{
 												
 						if (type.equals(DataSeriesType.incremental_delivered_yield)) {
 							// inc. del. yield is inc. del. flux / catchment area
-							LoadUnitAreas lua = new LoadUnitAreas(context.getModelID(), HucLevel.HUC_NONE, false);
-							DataTable catchmentAreaTable = lua.run();
+							CatchmentArea ca = new CatchmentArea(context.getModelID(), HucLevel.HUC_NONE, false);
+							DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(ca);
 							ColumnData catchmentAreaColumn = new ColumnFromTable(catchmentAreaTable, 1);
 							SingleColumnCoefDataTable incDeliveredYield = new SingleColumnCoefDataTable(
 									incDeliveredFlux, catchmentAreaColumn, dataColIndex, true);
@@ -261,8 +283,8 @@ public class CalcAnalysis extends Action<DataColumn>{
 					}
 					break;
 				case catch_area:
-					LoadUnitAreas lua = new LoadUnitAreas(context.getModelID(), HucLevel.HUC_NONE, false);
-					dataTable = lua.run();
+					CatchmentArea ca = new CatchmentArea(context.getModelID(), HucLevel.HUC_NONE, false);
+					dataTable = SharedApplication.getInstance().getCatchmentAreas(ca);
 					dataColIndex = 1;
 					break;
 				default:
