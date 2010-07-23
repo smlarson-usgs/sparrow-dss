@@ -17,7 +17,7 @@ public enum DataSeriesType implements Serializable {
     incremental_std_error_estimate	(BaseDataSeriesType.incremental, true, false, false, true, false), //active
     
     incremental_yield			(BaseDataSeriesType.incremental, false, false, true, false, true), // active
-    total_concentration			(BaseDataSeriesType.total, false, false, true, false, true), // active
+    total_concentration			(BaseDataSeriesType.total, false, false, true, true, true),
     incremental_delivered_yield	(BaseDataSeriesType.incremental, false, true, true, false, true), // inaccurate?
     total_delivered_flux		(BaseDataSeriesType.total, false, true, false, false, true), // inaccurate?
     incremental_delivered_flux	(BaseDataSeriesType.incremental, false, true, false, false, true), // inaccurate?
@@ -31,6 +31,7 @@ public enum DataSeriesType implements Serializable {
     catch_area					(BaseDataSeriesType.catch_area, false, false, false, true, true),
     cumulative_catch_area		(BaseDataSeriesType.cumulative_catch_area, false, false, false, true, true),
     huc_area					(BaseDataSeriesType.huc_area, false, false, false, true, true),
+    flux						(BaseDataSeriesType.flux, false, false, false, true, true)
     ;
 
     // TODO cut down the list of attributes

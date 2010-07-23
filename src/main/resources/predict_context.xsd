@@ -206,6 +206,7 @@
 			<xs:enumeration value="total"/>
 			<xs:enumeration value="total_std_error_estimate"/>
 			<xs:enumeration value="incremental"/>
+			<xs:enumeration value="decayed_incremental"/>
 			<xs:enumeration value="incremental_std_error_estimate"/>
 			<xs:enumeration value="incremental_yield"/>
 			<xs:enumeration value="total_concentration"/>
@@ -221,6 +222,7 @@
 			<xs:enumeration value="catch_area"/>
 			<xs:enumeration value="cumulative_catch_area"/>
 			<xs:enumeration value="huc_area"/>
+			<xs:enumeration value="flux"/>
 		</xs:restriction>
 	</xs:simpleType>
 	

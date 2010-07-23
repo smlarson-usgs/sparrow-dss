@@ -53,6 +53,7 @@ public enum BaseDataSeriesType {
     land_to_water_coef			(false, false, false, false, 2, false),	//l_to_w is not a predictive value for us
     instream_decay_coef			(false, false, false, false, 0, false),	//instream decay is not predictive for us
     catch_area					(false, false, false, false, 0, false),	//area of a catchment
+    flux						(false, false, false, false, 0, false),	//avg flow per day
     
     /* cumulative_catch_area and huc_area not supported as of 07/23/2010 */
     cumulative_catch_area		(false, false, false, false, 0, false),	//cumulative area of a catchment (include upstream)
