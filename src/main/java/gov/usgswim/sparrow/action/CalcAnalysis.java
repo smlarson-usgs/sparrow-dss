@@ -8,6 +8,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.UncertaintySeries;
+import gov.usgswim.sparrow.datatable.HucLevel;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.datatable.StdErrorEstTable;
@@ -222,8 +223,8 @@ public class CalcAnalysis extends Action<DataColumn>{
 			dataTable = predictionBasedResult;
 
 		} else {
-
-
+			
+			// not delivery based, prediction based, or standard error estimate based
 
 			switch (type) {
 				case source_value:
@@ -238,6 +239,11 @@ public class CalcAnalysis extends Action<DataColumn>{
 					} else {
 						throw new Exception("The data series 'source_value' requires a source ID to be specified.");
 					}
+					break;
+				case catch_area:
+					LoadUnitAreas lua = new LoadUnitAreas(context.getModelID(), HucLevel.HUC_NONE, false);
+					dataTable = lua.run();
+					dataColIndex = 1;
 					break;
 				default:
 					throw new Exception("No dataSeries was specified in the analysis section");

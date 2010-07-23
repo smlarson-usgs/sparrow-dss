@@ -158,6 +158,7 @@
 				incremental_delivered*!
 				delivered_fraction***!
 				source_value**
+				catch_area***
 				land_to_water_coef
 				instream_decay_coef***
 
