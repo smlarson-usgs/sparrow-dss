@@ -22,8 +22,6 @@ import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.WeightRunner;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
 
-import java.util.Set;
-
 
 /**
  *  Calculates the analysis.
@@ -95,7 +93,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 			TerminalReaches tReaches = context.getTerminalReaches();
 
 			assert(tReaches != null) : "client should not submit a delivery request without reaches";
-			Set<Long> targetReaches = tReaches.asSet();
+//			Set<Long> targetReaches = tReaches.asSet();
 			
 			delFracColumn = SharedApplication.getInstance().getDeliveryFraction(tReaches);
 		}
@@ -152,6 +150,12 @@ public class CalcAnalysis extends Action<DataColumn>{
 						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(
 								result, delFracColumn, dataColIndex);
 						
+						predictionBasedResult = view;
+					} else if (type.equals(DataSeriesType.total_concentration)){
+						// total conc. is total load / flux(stream flow).
+						DataTable fluxTable = SharedApplication.getInstance().getFlux(context.getModelID());
+						ColumnData fluxColumn = new ColumnFromTable(fluxTable, 1);
+						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(result, fluxColumn, dataColIndex, true);
 						predictionBasedResult = view;
 					} else {
 						predictionBasedResult = result;
@@ -285,6 +289,10 @@ public class CalcAnalysis extends Action<DataColumn>{
 				case catch_area:
 					CatchmentArea ca = new CatchmentArea(context.getModelID(), HucLevel.HUC_NONE, false);
 					dataTable = SharedApplication.getInstance().getCatchmentAreas(ca);
+					dataColIndex = 1;
+					break;
+				case flux:
+					dataTable = SharedApplication.getInstance().getFlux(context.getModelID());
 					dataColIndex = 1;
 					break;
 				default:

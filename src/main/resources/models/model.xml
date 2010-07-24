@@ -118,7 +118,7 @@
 					The average daily load of the constituent added at each
 					stream reach, or the amount of load that each reach is
 					responsible for contributing to the river system.
-					The presented value is not 'decayed' by travel down
+					The presented value is 'decayed' by travel down
 					the reach.
                 </li>
                 <li><b>Standard Error of Incremental Flux</b><br/>
@@ -127,22 +127,26 @@
                 	not be used for any purpose.
                 	For actual error values, contact the hydrologist for the model.
                 </li>
-                <!--
                 <li><b>Incremental Yield</b><br/>
-                	The <i>Incremental Flux</i> divided by the drainage area of
-                	the reach.
+                	The <i>Incremental Flux</i> divided by the drainage (catchment) 
+                	area of the reach.
                 </li>
                 <li><b>Concentration</b><br/>
                 	The <i>Total Flux</i> divided by the average daily
                 	flow of the reach.
                 </li>
-                -->
                 <li><b>Source Value</b><br/>
                 	The source value is the amount of a particular source
                 	added in the reach's drainage area - you must choose a
                 	source to map this data series.  If you have created
                 	adjustments as part of a 'what if' scenario, the adjusted
                 	source values are presented. 
+                </li>
+                <li><b>Catchment Area</b><br/>
+                	The amount of drainage area surrounding each reach.
+                </li>
+                <li><b>Stream Flow</b><br/>
+                	The average daily flow of the reach.
                 </li>
                 <li><b>Delivery Fraction</b><br/>
                 	The fraction of the load leaving a reach that arrives at the
@@ -158,11 +162,10 @@
                 	The average daily load of the constituent leaving each
 					stream reach that arrives at the downstream end of a selected target reach.
 				</li>
-				<!--
                 <li><b>Incremental Delivered Yield</b><br/>
-                	Not currently supported
+                	The <i>Incremental Delivered Flux</i> divided by the drainage (catchment) 
+                	area of the reach.
                 </li>
-                -->
 			</ul>
 		</Term>
 		<Term id="Total">

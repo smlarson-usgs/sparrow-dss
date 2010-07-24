@@ -497,6 +497,12 @@
 		diskSpoolBufferSizeMB="8" timeToIdleSeconds="300"
 		timeToLiveSeconds="300" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
+		
+	<cache name="Flux" maxElementsInMemory="10"
+		maxElementsOnDisk="0" eternal="false" overflowToDisk="false"
+		diskSpoolBufferSizeMB="8" timeToIdleSeconds="300"
+		timeToLiveSeconds="300" diskPersistent="false"
+		diskExpiryThreadIntervalSeconds="600" memoryStoreEvictionPolicy="LRU" />
 	
 
 </ehcache>

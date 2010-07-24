@@ -183,7 +183,14 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 				return ((Number) value).doubleValue() * coefCol.getDouble(row);
 			}
 			else {
-				return ((Number) value).doubleValue() / coefCol.getDouble(row);
+				Double retval = null;
+				try {
+					retval = ((Number) value).doubleValue() / coefCol.getDouble(row);
+				}
+				catch (ArithmeticException e) {
+					retval = Double.NaN;
+				}
+				return retval;
 			}
 		} else {
 			return value;
@@ -198,7 +205,14 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 				return value * coefCol.getDouble(row);
 			}
 			else {
-				return value / coefCol.getDouble(row);
+				Double retval = null;
+				try {
+					retval = value / coefCol.getDouble(row);
+				}
+				catch (ArithmeticException e) {
+					retval = Double.NaN;
+				}
+				return retval;
 			}
 		} else {
 			return value;

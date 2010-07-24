@@ -20,7 +20,7 @@ public class LoadUnitAreasTest extends SparrowDBTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void testLoadUnitAreasGetters() throws Exception {
+	public void testLoadUnitAreasSetters() throws Exception {
 		
 		LoadUnitAreas lua = new LoadUnitAreas();
 		assertEquals(HucLevel.HUC_NONE, lua.getHucLevel());
@@ -34,7 +34,6 @@ public class LoadUnitAreasTest extends SparrowDBTest {
 	
 	/**
 	 * Tests the columns.
-	 * 
 	 * @throws Exception
 	 */
 	@Test
@@ -61,7 +60,6 @@ public class LoadUnitAreasTest extends SparrowDBTest {
 	
 	/**
 	 * Tests the data.
-	 * 
 	 * @throws Exception
 	 */
 	@Test

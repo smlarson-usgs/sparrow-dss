@@ -10,6 +10,7 @@ import gov.usgswim.sparrow.cachefactory.BinningFactory;
 import gov.usgswim.sparrow.cachefactory.CatchmentAreaFactory;
 import gov.usgswim.sparrow.cachefactory.ComparisonResultFactory;
 import gov.usgswim.sparrow.cachefactory.DeliveryFractionFactory;
+import gov.usgswim.sparrow.cachefactory.FluxFactory;
 import gov.usgswim.sparrow.cachefactory.LoadReachAttributesFactory;
 import gov.usgswim.sparrow.cachefactory.ModelMetadataFactory;
 import gov.usgswim.sparrow.cachefactory.NSDataSetFactory;
@@ -51,7 +52,8 @@ public enum ConfiguredCache{
 	AggregateIdLookup(false, new AggregateIdLookupKludgeFactory()),
 	LoadModelMetadata(false, new ModelMetadataFactory()),
 	
-	CatchmentAreas(false, new CatchmentAreaFactory())
+	CatchmentAreas(false, new CatchmentAreaFactory()),
+	Flux(false, new FluxFactory())
 	;
 	
 	public final boolean isDistributed;
