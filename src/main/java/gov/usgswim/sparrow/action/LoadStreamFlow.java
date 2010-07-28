@@ -16,16 +16,16 @@ import java.sql.ResultSet;
  * @author klangsto
  *
  */
-public class LoadFlux extends Action<DataTable> {
+public class LoadStreamFlow extends Action<DataTable> {
 	
 	protected long modelId;
 	
-	public LoadFlux(long modelId) {
+	public LoadStreamFlow(long modelId) {
 		super();
 		this.modelId = modelId;
 	}
 
-	public LoadFlux() {
+	public LoadStreamFlow() {
 		super();
 	}
 
@@ -35,7 +35,6 @@ public class LoadFlux extends Action<DataTable> {
 		String queryName = "LoadMeanQ";
 		String colName = "Stream Flow";
 		String colDesc = "Averaged flow of the stream reach";
-		String colCons = "Water";
 		
 		String sql = getText(queryName);
 		PreparedStatement st = getNewROPreparedStatement(sql);
@@ -45,7 +44,6 @@ public class LoadFlux extends Action<DataTable> {
 		ResultSet rset = st.executeQuery();	//auto-closed
 		DataTableWritable values = null;
 		values = DataTableConverter.toDataTable(rset);
-		values.buildIndex(0);
 		
 		//Set column attributes
 		values.getColumns()[1].setName(colName);

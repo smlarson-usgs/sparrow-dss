@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.action.LoadFlux;
+import gov.usgswim.sparrow.action.LoadStreamFlow;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 /**
@@ -10,13 +10,13 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
  * @author klangsto
  *
  */
-public class FluxFactory implements CacheEntryFactory {
+public class StreamFlowFactory implements CacheEntryFactory {
 
 	@Override
 	public DataTable createEntry(Object inModelId) throws Exception {
 		Long modelId = (Long)inModelId;
 		DataTable dt = null;
-		LoadFlux lf = new LoadFlux(modelId);
+		LoadStreamFlow lf = new LoadStreamFlow(modelId);
 		dt = lf.run();
 		return dt;
 	}

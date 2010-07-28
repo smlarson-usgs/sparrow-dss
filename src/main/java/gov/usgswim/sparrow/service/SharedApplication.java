@@ -6,7 +6,7 @@ import static gov.usgswim.sparrow.service.ConfiguredCache.AggregateIdLookup;
 import static gov.usgswim.sparrow.service.ConfiguredCache.Analyses;
 import static gov.usgswim.sparrow.service.ConfiguredCache.AreaOfInterest;
 import static gov.usgswim.sparrow.service.ConfiguredCache.CatchmentAreas;
-import static gov.usgswim.sparrow.service.ConfiguredCache.Flux;
+import static gov.usgswim.sparrow.service.ConfiguredCache.StreamFlow;
 import static gov.usgswim.sparrow.service.ConfiguredCache.ComparisonResult;
 import static gov.usgswim.sparrow.service.ConfiguredCache.DataBinning;
 import static gov.usgswim.sparrow.service.ConfiguredCache.DeliveryFraction;
@@ -557,7 +557,7 @@ public class SharedApplication  {
 	}
 	
 	public DataTable getFlux(Long req, boolean quiet) {
-		return (DataTable) Flux.get(req, quiet);
+		return (DataTable) StreamFlow.get(req, quiet);
 	}
 
 	//Aggregate Id Lookup Kludge Cache - temporary
