@@ -3,6 +3,8 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
+import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.parser.DataSeriesType;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -31,7 +33,9 @@ public class LoadFlux extends Action<DataTable> {
 	protected DataTable doAction() throws Exception {
 		
 		String queryName = "LoadMeanQ";
-		String fluxColumnName = "Average Daily Flux";
+		String colName = "Stream Flow";
+		String colDesc = "Averaged flow of the stream reach";
+		String colCons = "Water";
 		
 		String sql = getText(queryName);
 		PreparedStatement st = getNewROPreparedStatement(sql);
@@ -42,8 +46,14 @@ public class LoadFlux extends Action<DataTable> {
 		DataTableWritable values = null;
 		values = DataTableConverter.toDataTable(rset);
 		values.buildIndex(0);
+		
+		//Set column attributes
+		values.getColumns()[1].setName(colName);
+		values.getColumns()[1].setDescription(colDesc);
 		values.getColumns()[1].setUnits("cu ft/s");
-		values.getColumns()[1].setName(fluxColumnName);
+		values.getColumns()[1].setProperty(TableProperties.DATA_SERIES.getPublicName(), DataSeriesType.flux.name());
+		values.getColumns()[1].setProperty(TableProperties.CONSTITUENT.getPublicName(), "Water");
+		
 
 		return values.toImmutable();
 		
