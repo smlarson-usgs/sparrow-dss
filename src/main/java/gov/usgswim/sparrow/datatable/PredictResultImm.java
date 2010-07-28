@@ -9,6 +9,10 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.parser.DataSeriesType;
+import gov.usgswim.sparrow.service.predict.ValueType;
+import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -104,6 +108,10 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
         // Lookup table for key=source_id, value=array index of source contribution data
         Map<Long, Integer> srcIdIncMap = new Hashtable<Long, Integer>(13, 2);
         Map<Long, Integer> srcIdTotalMap = new Hashtable<Long, Integer>(13, 2);
+        
+        DataTable srcMetadata = predictData.getSrcMetadata();
+        String modelUnits = predictData.getModel().getUnits();
+        String modelConstituent = predictData.getModel().getConstituent();
 
         // ----------------------------------------------------------------
         // Define the source columns of the DataTable using the PredictData
@@ -112,19 +120,18 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 
             // Get the metadata to be attached to the column definitions
             String displayName = null;
-            String constituent = null;
-            String units = null;
+            String srcConstituent = null;
             String precision = null;
-            DataTable sourceMetadata = predictData.getSrcMetadata();
-            if (sourceMetadata != null) {
-                Integer displayNameCol = sourceMetadata.getColumnByName("DISPLAY_NAME");
-                Integer precisionCol = sourceMetadata.getColumnByName("PRECISION");
+            
+            
+            if (srcMetadata != null) {
+                Integer displayNameCol = srcMetadata.getColumnByName("DISPLAY_NAME");
+                Integer precisionCol = srcMetadata.getColumnByName("PRECISION");
 
                 // Pull out the metadata for the source
-                displayName = sourceMetadata.getString(srcIndex, displayNameCol);
-                constituent = "";
-                units = "kg/year";
-                precision = sourceMetadata.getLong(srcIndex, precisionCol).toString();
+                displayName = srcMetadata.getString(srcIndex, displayNameCol);
+                srcConstituent = displayName;
+                precision = srcMetadata.getLong(srcIndex, precisionCol).toString();
             }
 
             //
@@ -136,18 +143,29 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 
             // Map of metadata values for inc-add column
             Map<String, String> incProps = new HashMap<String, String>();
-            incProps.put(VALUE_TYPE_PROP, incremental.name());
-            incProps.put(CONSTITUENT_PROP, constituent);
-            incProps.put(PRECISION_PROP, precision);
-
+            incProps.put(TableProperties.DATA_TYPE.getPublicName(), ValueType.incremental.name());
+            incProps.put(TableProperties.DATA_SERIES.getPublicName(), DataSeriesType.incremental.name());
+            incProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
+            incProps.put(TableProperties.PRECISION.getPublicName(), precision);
+            String incDesc = "Load added at this reach and decayed to the end of the reach. " +
+            	"Reported in " + modelUnits + " of " +
+            	modelConstituent + " for the " + srcConstituent + " source.";
+            
+            
             // Map of metadata values for total column
             Map<String, String> totProps = new HashMap<String, String>();
-            totProps.put(VALUE_TYPE_PROP, total.name());
-            totProps.put(CONSTITUENT_PROP, constituent);
-            totProps.put(PRECISION_PROP, precision);
+            totProps.put(TableProperties.DATA_TYPE.getPublicName(), ValueType.total.name());
+            totProps.put(TableProperties.DATA_SERIES.getPublicName(), DataSeriesType.total.name());
+            totProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
+            totProps.put(TableProperties.PRECISION.getPublicName(), precision);
+            String totDesc = "Total load decayed from all upstream reaches decayed to the end of this reach. " +
+            	"Reported in " + modelUnits + " of " +
+        		modelConstituent + " for the " + srcConstituent + " source.";
+            
+            
 
-            columns[srcIncAddIndex] = new ImmutableDoubleColumn(data, srcIncAddIndex, displayName + " Inc. Addition", units, "description", incProps);
-            columns[srcTotalIndex] = new ImmutableDoubleColumn(data, srcTotalIndex, displayName + " Total (w/ upstream, decayed)", units, "description", totProps);
+            columns[srcIncAddIndex] = new ImmutableDoubleColumn(data, srcIncAddIndex, displayName + " Inc. Flux (undecayed)", modelUnits, incDesc, incProps);
+            columns[srcTotalIndex] = new ImmutableDoubleColumn(data, srcTotalIndex, displayName + " Total Flux (w/ upstream, decayed)", modelUnits, totDesc, totProps);
         }
 
         // ------------------------------------------
@@ -155,16 +173,24 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
         // ------------------------------------------
         int totalIncCol = 2 * sourceCount;	//The total inc col comes right after the two sets of source columns
         Map<String, String> totalIncProps = new HashMap<String, String>();
-        totalIncProps.put(VALUE_TYPE_PROP, incremental.name());
-        totalIncProps.put(AGGREGATE_TYPE_PROP, sum.name());
-
+        totalIncProps.put(TableProperties.DATA_TYPE.getPublicName(), ValueType.incremental.name());
+        totalIncProps.put(TableProperties.DATA_SERIES.getPublicName(), DataSeriesType.incremental.name());
+        totalIncProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent );
+        totalIncProps.put(TableProperties.ROW_AGG_TYPE.getPublicName(), AggregateType.sum.name());
+        String incDesc = "Load added at this reach for all sources and decayed to the end of the reach. " +
+    		"Reported in " + modelUnits + " of " + modelConstituent + ".";
+        
         int totalTotalCol = totalIncCol + 1; //The grand total col comes right after the total incremental col
         Map<String, String> grandTotalProps = new HashMap<String, String>();
-        grandTotalProps.put(VALUE_TYPE_PROP, total.name());
-        grandTotalProps.put(AGGREGATE_TYPE_PROP, sum.name());
+        grandTotalProps.put(TableProperties.DATA_TYPE.getPublicName(), ValueType.total.name());
+        grandTotalProps.put(TableProperties.DATA_SERIES.getPublicName(), DataSeriesType.total.name());
+        grandTotalProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
+        grandTotalProps.put(TableProperties.ROW_AGG_TYPE.getPublicName(), AggregateType.sum.name());
+        String totDesc = "Total load from all upstream reaches from all sources and decayed to the end of this reach. " +
+		"Reported in " + modelUnits + " of " + modelConstituent + ".";
 
-        columns[totalIncCol] = new ImmutableDoubleColumn(data, totalIncCol, "Total Inc. (not decayed)", "units", "description", totalIncProps);
-        columns[totalTotalCol] = new ImmutableDoubleColumn(data, totalTotalCol, "Grand Total (measurable)", "units", "description", grandTotalProps);
+        columns[totalIncCol] = new ImmutableDoubleColumn(data, totalIncCol, "Total Inc. Flux (not decayed)", modelUnits, incDesc, totalIncProps);
+        columns[totalTotalCol] = new ImmutableDoubleColumn(data, totalTotalCol, "Total Flux", modelUnits, totDesc, grandTotalProps);
 
         // only get the ids if available
         if (ids == null) {

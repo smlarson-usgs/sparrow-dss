@@ -12,6 +12,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowModelProperties;
 import gov.usgswim.sparrow.cachefactory.ReachID;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.parser.Adjustment;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.PredictionContext;
@@ -503,12 +504,9 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 		// Collect all the relevant column indices, as indicated by matching VALUE_TYPE and AGGREGATE_TYPE
 		for (int j = 0; j < nominalPrediction.getColumnCount(); j++) {
-			boolean isDesiredType = typeName.equals(nominalPrediction.getProperty(j, PredictResult.VALUE_TYPE_PROP));
+			boolean isDesiredType = typeName.equals(nominalPrediction.getProperty(j, TableProperties.DATA_TYPE.getPublicName()));
 			
-			//TODO:  This is dangerous:  The AGG types are really for roll-up values.
-			//The total value refered to here is really a row total, which could have a completely different name
-			//in the future.  Suggest adding a row_value_type property to indicate if it is a row sum.
-			String aggType = nominalPrediction.getProperty(j, PredictResult.AGGREGATE_TYPE_PROP);
+			String aggType = nominalPrediction.getProperty(j, TableProperties.ROW_AGG_TYPE.getPublicName());
 			boolean isTotal = (aggType != null ) && isTotalVal.equals(aggType);
 
 			if (isDesiredType) {
@@ -539,9 +537,9 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		for (Integer j : relevantColumns) {
 			// Calculate and format all of the data
 			String columnName = nominalPrediction.getName(j);
-			String constituent = nominalPrediction.getProperty(j, PredictResult.CONSTITUENT_PROP);
+			String constituent = nominalPrediction.getProperty(j, TableProperties.CONSTITUENT.getPublicName());
 			String units = nominalPrediction.getUnits(j);
-			String precision = nominalPrediction.getProperty(j, PredictResult.PRECISION_PROP);
+			String precision = nominalPrediction.getProperty(j, TableProperties.PRECISION.getPublicName());
 			Double nominalValue = nominalPrediction.getDouble(rowID, j);
 			String nominalDisplay = (nominalValue == null)? "N/A": formatter.format(nominalValue);
 

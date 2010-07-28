@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.service.predictcontext;
 
 import gov.usgs.cida.config.DynamicReadOnlyProperties;
 import gov.usgswim.service.HttpService;
+import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.ReturnStatus;
@@ -36,10 +37,17 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
 		if (isSuccess) {
+			
+			DataColumn dataColumn = context.getDataColumn();	//The actual response data
+			
 			String adjustmentGroups = "";
 			String terminalReaches = "";
 			String areaOfInterest = "";
-
+			String units = dataColumn.getUnits();
+			String constituent = dataColumn.getConstituent();
+			String name = dataColumn.getColumnName();
+			String description = dataColumn.getDescription();
+			
 			if (context.getAdjustmentGroups() != null) {
 				String contextId = Integer.toString(context.getAdjustmentGroups().hashCode());
 				adjustmentGroups = props.getParametrizedQuery("adjustmentGroups",
@@ -56,9 +64,19 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 						new String[] { "AreaOfInterstContextId",  contextId });
 			}
 			
-			// TODO Get these from Eric.
-			String displayUnits = "UNITS";
-			String displayConstituent = "CONSTITUENT";
+			if (units == null) {
+				units = "Units Unknown";
+			}
+			
+			if (constituent == null) {
+				constituent = "";	//keep it empty so it won't display on client
+			}
+			
+			if (description == null) {
+				description = "";	//keep it empty so it won't display on client
+			}
+			
+			
 
 			String response = props.getParametrizedQuery("ResponseOK",
 				new String[] {
@@ -69,8 +87,10 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 					"AnalysisContextId", Integer.toString( context.getAnalysis().hashCode() ),
 					"terminalReaches", terminalReaches,
 					"areaOfInterest", areaOfInterest,
-					"displayUnits", displayUnits,
-					"displayConstituent", displayConstituent
+					"displayName", name,
+					"displayDescription", description,
+					"displayUnits", units,
+					"displayConstituent", constituent
 			});
 
 			return inFact.createXMLStreamReader(new StringReader(response));

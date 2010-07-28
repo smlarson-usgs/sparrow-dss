@@ -9,6 +9,7 @@ import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.UncertaintySeries;
 import gov.usgswim.sparrow.cachefactory.CatchmentArea;
+import gov.usgswim.sparrow.datatable.ColumnAttribsBuilder;
 import gov.usgswim.sparrow.datatable.HucLevel;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
@@ -19,7 +20,6 @@ import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.service.predict.WeightRunner;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
 
 
@@ -51,19 +51,15 @@ public class CalcAnalysis extends Action<DataColumn>{
 		Analysis analysis = context.getAnalysis();
 
 		DataColumn unAggResult = getDataColumn(context);
-		DataTable aggResult = null;
 
 		if (analysis.isAggregated()) {
 			AggregationRunner aggRunner = new AggregationRunner(context);
-			aggResult = aggRunner.doAggregation(unAggResult.getTable());
-			// Aggregation can handle weighting underneath
-		} else if (analysis.isWeighted()) {
-			aggResult = WeightRunner.doWeighting(context, unAggResult.getTable());
-		} else {
-			aggResult = unAggResult.getTable();
-		}
+			DataTable aggResult = aggRunner.doAggregation(unAggResult.getTable());
+			return new DataColumn(aggResult, unAggResult.getColumn(), context.getId());
 
-		return new DataColumn(aggResult, unAggResult.getColumn(), context.getId());
+		} else {
+			return unAggResult;
+		}
 	}
 
 	/**
@@ -132,9 +128,11 @@ public class CalcAnalysis extends Action<DataColumn>{
 				case total_std_error_estimate:
 				case total_concentration:
 				case total_delivered_flux:
-					//
-					//Note:  All TOTAL type series fall through to this point
-					//
+					//All TOTAL type series fall through to this point
+					
+					
+					//All total series share the ability to be about a specific
+					//source.
 					if (source != null) {
 						dataColIndex = result.getTotalColForSrc(source.longValue());
 						impliedUncertaintySeries = UncertaintySeries.TOTAL_PER_SOURCE;
@@ -147,15 +145,29 @@ public class CalcAnalysis extends Action<DataColumn>{
 					if (type.equals(DataSeriesType.total_delivered_flux)) {
 						//Create a new datatable that overlays the delFracColumn
 						//on top of the column selected above
+						
+						ColumnAttribsBuilder ca = new ColumnAttribsBuilder();
+						ca.setName("Total Delivered Flux");
+						ca.setDescription("The load arriving at the " + 
+								"bottom of this reach that will arrive at the " + 
+								"bottom of the specified target reach(es)");
+						
 						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(
-								result, delFracColumn, dataColIndex);
+								result, delFracColumn, dataColIndex, ca);
 						
 						predictionBasedResult = view;
 					} else if (type.equals(DataSeriesType.total_concentration)){
 						// total conc. is total load / flux(stream flow).
+						
+						ColumnAttribsBuilder ca = new ColumnAttribsBuilder();
+						ca.setName("Concentration");
+						ca.setDescription("The flux of the constituent divided " +
+								"by the stream flow.");
+						ca.setUnits("mg/L");
+						
 						DataTable fluxTable = SharedApplication.getInstance().getFlux(context.getModelID());
 						ColumnData fluxColumn = new ColumnFromTable(fluxTable, 1);
-						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(result, fluxColumn, dataColIndex, true);
+						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(result, fluxColumn, dataColIndex, ca, true);
 						predictionBasedResult = view;
 					} else {
 						predictionBasedResult = result;
@@ -184,16 +196,22 @@ public class CalcAnalysis extends Action<DataColumn>{
 						
 						// incremental yield = incremental flux / catchment area
 						// assume decayed inc. flux
+						
+						ColumnAttribsBuilder ca = new ColumnAttribsBuilder();
+						ca.setName("Incremental Yield");
+						ca.setDescription("Incremental Flux (decayed) divided by the catchment area.");
+						ca.setUnits("kg/sqr km");
+						
 						ColumnData instDecay = new ColumnFromTable(
 								nominalPredictData.getDelivery(), PredictData.INSTREAM_DECAY_COL);
 						SingleColumnCoefDataTable decayedFlux = 
-							new SingleColumnCoefDataTable(result, instDecay, dataColIndex);
+							new SingleColumnCoefDataTable(result, instDecay, dataColIndex, null);
 						
-						CatchmentArea ca = new CatchmentArea(context.getModelID(), HucLevel.HUC_NONE, false);
-						DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(ca);
+						CatchmentArea catchArea = new CatchmentArea(context.getModelID(), HucLevel.HUC_NONE, false);
+						DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(catchArea);
 						ColumnData catchmentAreaColumn = new ColumnFromTable(catchmentAreaTable, 1);
 						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(
-								decayedFlux, catchmentAreaColumn, dataColIndex, true);
+								decayedFlux, catchmentAreaColumn, dataColIndex, ca, true);
 						
 						predictionBasedResult = view;
 						
@@ -201,10 +219,15 @@ public class CalcAnalysis extends Action<DataColumn>{
 						
 						// decayed inc. flux is inc. flux multiplied by instream decay
 						
+						ColumnAttribsBuilder ca = new ColumnAttribsBuilder();
+						ca.setName("Incremental Flux (Decayed)");
+						ca.setDescription("Incremental Flux, decayed to the end of the reach.");
+						ca.setUnits(null);	//default is correct
+						
 						ColumnData instDecay = new ColumnFromTable(
 								nominalPredictData.getDelivery(), PredictData.INSTREAM_DECAY_COL);
 						SingleColumnCoefDataTable decayedFlux = 
-							new SingleColumnCoefDataTable(result, instDecay, dataColIndex);
+							new SingleColumnCoefDataTable(result, instDecay, dataColIndex, ca);
 						
 						predictionBasedResult = decayedFlux;
 						
@@ -216,26 +239,42 @@ public class CalcAnalysis extends Action<DataColumn>{
 						// This is built w/ two coef table views:  delFrac X inc Flux,
 						// then that result times Instream Delivery.
 						
+						ColumnAttribsBuilder DelFluxCa = new ColumnAttribsBuilder();
+						DelFluxCa.setName("Incremental Delivered Flux");
+						DelFluxCa.setDescription("Flux from an individual reach that arrives at the downstream end of the target.");
+						DelFluxCa.setUnits(null);	//default is correct
+						
+						
+						
 						//Grab the instream delivery (called decay) as a column
 						ColumnData incDeliveryCol = new ColumnFromTable(nominalPredictData.getDelivery(), PredictData.INSTREAM_DECAY_COL);
 						
 
 						// Delivery Fraction X Incremental Flux
+						// Column is slightly misnamed, but is never used.
 						SingleColumnCoefDataTable incTimesDelFrac = new SingleColumnCoefDataTable(
-								result, delFracColumn, dataColIndex);
+								result, delFracColumn, dataColIndex, null);
 						
 
 						// The above result X Instream Delivery
 						SingleColumnCoefDataTable incDeliveredFlux = new SingleColumnCoefDataTable(
-								incTimesDelFrac, incDeliveryCol, dataColIndex);
+								incTimesDelFrac, incDeliveryCol, dataColIndex, DelFluxCa);
 												
 						if (type.equals(DataSeriesType.incremental_delivered_yield)) {
 							// inc. del. yield is inc. del. flux / catchment area
+							
+							ColumnAttribsBuilder DelYieldCa = new ColumnAttribsBuilder();
+							DelYieldCa.setName("Incremental Delivered Yield");
+							DelYieldCa.setDescription("Flux divided by area for " +
+									"an individual reach, that arrives at the " +
+									"downstream end of the target");
+							DelYieldCa.setUnits("Del Yield Units");
+							
 							CatchmentArea ca = new CatchmentArea(context.getModelID(), HucLevel.HUC_NONE, false);
 							DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(ca);
 							ColumnData catchmentAreaColumn = new ColumnFromTable(catchmentAreaTable, 1);
 							SingleColumnCoefDataTable incDeliveredYield = new SingleColumnCoefDataTable(
-									incDeliveredFlux, catchmentAreaColumn, dataColIndex, true);
+									incDeliveredFlux, catchmentAreaColumn, dataColIndex, DelYieldCa, true);
 							predictionBasedResult = incDeliveredYield;
 						}
 						else {

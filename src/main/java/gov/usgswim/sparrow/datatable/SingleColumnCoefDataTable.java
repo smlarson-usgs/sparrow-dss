@@ -1,5 +1,8 @@
 package gov.usgswim.sparrow.datatable;
 
+import java.util.Map;
+import java.util.Set;
+
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.FindHelper;
@@ -25,6 +28,9 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 	
 	/** Whether to divide by the coefficient column instead of multiply */
 	private boolean invertCoef = false;
+	
+	/** Specifies the columns for the specified column, allowing overwrites */
+	private ColumnAttribs colAttribs;
 
 	/**
 	 * Create a new instance.
@@ -37,11 +43,17 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 	 * getValue(row, column) == getValue(row, column) if column != coefColumnIndex.
 	 * getValue(row, column) == coefColumn.getDouble(column) * getValue(row, column) if column == coefColumnIndex.
 	 * 
+	 * The attributes for the specified column (colAttribs) can be left null,
+	 * in which each the attribs of the underlying sourceData column will be used.
+	 * If a colAttribs instance is passed, any null (by not empty) values will
+	 * be pulled from the sourceData column.
+	 * 
 	 * @param sourceData
 	 * @param coefColumn
 	 * @param coefColumnIndex
+	 * @param colAttribs Attributes for the specified column
 	 */
-	public SingleColumnCoefDataTable(DataTable sourceData, ColumnData coefColumn, int coefColumnIndex) {
+	public SingleColumnCoefDataTable(DataTable sourceData, ColumnData coefColumn, int coefColumnIndex, ColumnAttribs colAttribs) {
 		super(sourceData);
 		coefCol = coefColumn;
 		colIndexNum = coefColumnIndex;
@@ -54,6 +66,12 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 			throw new IllegalArgumentException(
 					"The coefColumnIndex cannot be less than zero or beyond " +
 					"the last column of the sourceData.");
+		}
+		
+		if (colAttribs != null) {
+			this.colAttribs = colAttribs.toImmutable();
+		} else {
+			this.colAttribs = new ColumnAttribsImm();
 		}
 	}
 	
@@ -68,12 +86,17 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 	 * getValue(row, column) == getValue(row, column) if column != coefColumnIndex.
 	 * getValue(row, column) == coefValues[column] * getValue(row, column) if column == coefColumnIndex.
 	 * 
+	 * The attributes for the specified column (colAttribs) can be left null,
+	 * in which each the attribs of the underlying sourceData column will be used.
+	 * If a colAttribs instance is passed, any null (by not empty) values will
+	 * be pulled from the sourceData column.
 	 * 
 	 * @param sourceData
 	 * @param coefValues
 	 * @param coefColumnIndex
+	 * @param colAttribs Attributes for the specified column
 	 */
-	public SingleColumnCoefDataTable(DataTable sourceData, double[] coefValues, int coefColumnIndex) {
+	public SingleColumnCoefDataTable(DataTable sourceData, double[] coefValues, int coefColumnIndex, ColumnAttribs colAttribs) {
 		super(sourceData);
 		
 		StandardDoubleColumnData cc = new StandardDoubleColumnData(
@@ -81,16 +104,28 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 		coefCol = cc;
 		
 		colIndexNum = coefColumnIndex;
+		
+		if (colAttribs != null) {
+			this.colAttribs = colAttribs.toImmutable();
+		} else {
+			this.colAttribs = new ColumnAttribsImm();
+		}
 	}
 	
 	/**
+	 * The attributes for the specified column (colAttribs) can be left null,
+	 * in which each the attribs of the underlying sourceData column will be used.
+	 * If a colAttribs instance is passed, any null (by not empty) values will
+	 * be pulled from the sourceData column.
+	 * 
 	 * @param sourceData
 	 * @param coefValues
 	 * @param coefColumnIndex
+	 * @param colAttribs Attributes for the specified column
 	 * @param invertCoefficient
 	 */
 	public SingleColumnCoefDataTable(
-			DataTable sourceData, ColumnData coefColumn, int coefColumnIndex, boolean invertCoefficient) {
+			DataTable sourceData, ColumnData coefColumn, int coefColumnIndex, ColumnAttribs colAttribs, boolean invertCoefficient) {
 		super(sourceData);
 		coefCol = coefColumn;
 		colIndexNum = coefColumnIndex;
@@ -105,6 +140,12 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 					"The coefColumnIndex cannot be less than zero or beyond " +
 					"the last column of the sourceData.");
 		}
+		
+		if (colAttribs != null) {
+			this.colAttribs = colAttribs.toImmutable();
+		} else {
+			this.colAttribs = new ColumnAttribsImm();
+		}
 	}
 	
 	protected Double getCoefficient(int row) {
@@ -113,7 +154,7 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 	}
 	
 	public DataTable.Immutable toImmutable() {
-		return new SingleColumnCoefDataTable(base.toImmutable(), coefCol.toImmutable(), colIndexNum);
+		return new SingleColumnCoefDataTable(base.toImmutable(), coefCol.toImmutable(), colIndexNum, colAttribs);
 	}
 	
 	// ==========================
@@ -226,6 +267,42 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 			return false;
 		} else {
 			return super.isIndexed(col);
+		}
+	}
+
+	@Override
+	public String getDescription(int col) {
+		if (col == colIndexNum) {
+			return colAttribs.getDescription(super.getDescription(col));
+		} else {
+			return super.getDescription(col);
+		}
+	}
+
+	@Override
+	public String getName(int col) {
+		if (col == colIndexNum) {
+			return colAttribs.getName(super.getName(col));
+		} else {
+			return super.getName(col);
+		}
+	}
+
+	@Override
+	public String getProperty(int col, String name) {
+		if (col == colIndexNum) {
+			return colAttribs.getProperty(name, super.getProperty(col, name));
+		} else {
+			return super.getProperty(col, name);
+		}
+	}
+
+	@Override
+	public String getUnits(int col) {
+		if (col == colIndexNum) {
+			return colAttribs.getUnits(super.getUnits(col));
+		} else {
+			return super.getUnits(col);
 		}
 	}
 	
