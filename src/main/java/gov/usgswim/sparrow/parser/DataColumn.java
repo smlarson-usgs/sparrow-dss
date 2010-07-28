@@ -73,7 +73,15 @@ public class DataColumn {
 	 * @return
 	 */
 	public String getConstituent() {
-		return table.getProperty(TableProperties.CONSTITUENT.name());
+		return table.getProperty(column, TableProperties.CONSTITUENT.getPublicName());
+	}
+	
+	/**
+	 * Shortcut to get the description of data column w/o digging to the table.
+	 * @return
+	 */
+	public String getDescription() {
+		return table.getDescription(column);
 	}
 	
 	/**
