@@ -8,5 +8,6 @@ package gov.usgswim.sparrow.service.predict;
  */
 public enum ValueType {
 	incremental,
-	total
+	total,
+	other;
 }
