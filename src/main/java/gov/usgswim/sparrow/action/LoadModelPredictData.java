@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
@@ -15,6 +16,9 @@ import gov.usgswim.datatable.utils.DataTablePrinter;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
+import gov.usgswim.sparrow.cachefactory.ModelRequestCacheKey;
+import gov.usgswim.sparrow.domain.SparrowModel;
+import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.DLUtils;
 
 public class LoadModelPredictData extends Action<PredictData>{
@@ -50,6 +54,12 @@ public class LoadModelPredictData extends Action<PredictData>{
 		dataSet.setDelivery( loadDelivery(con, modelId, 0) );
 		// TODO fix: this actually is going to fail for multiple iterations
 		dataSet.setSrc( loadSourceValues(con, modelId, dataSet.getSrcMetadata()) );
+		
+		//Add the model metadata
+		ModelRequestCacheKey modelKey = new ModelRequestCacheKey(modelId, false, false, false);
+		SparrowModel model = SharedApplication.getInstance().getModelMetadata(modelKey).get(0);
+		dataSet.setModel(model);
+		
 		return dataSet.toImmutable();
 	}
 	
