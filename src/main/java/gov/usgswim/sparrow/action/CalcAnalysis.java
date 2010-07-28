@@ -13,6 +13,7 @@ import gov.usgswim.sparrow.datatable.ColumnAttribsBuilder;
 import gov.usgswim.sparrow.datatable.HucLevel;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
+import gov.usgswim.sparrow.datatable.SingleValueDoubleColumnData;
 import gov.usgswim.sparrow.datatable.StdErrorEstTable;
 import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.DataColumn;
@@ -157,7 +158,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 						
 						predictionBasedResult = view;
 					} else if (type.equals(DataSeriesType.total_concentration)){
-						// total conc. is total load / flux(stream flow).
+						// total conc. is (total load / (stream flow)) * 0.0011198
 						
 						ColumnAttribsBuilder ca = new ColumnAttribsBuilder();
 						ca.setName("Concentration");
@@ -165,9 +166,17 @@ public class CalcAnalysis extends Action<DataColumn>{
 								"by the stream flow.");
 						ca.setUnits("mg/L");
 						
+						ColumnAttribsBuilder coefAttribs = new ColumnAttribsBuilder();
+						coefAttribs.setName("Conversion Coef");
+						coefAttribs.setUnits("Unknown");
+						SingleValueDoubleColumnData conversionCoef =
+							new SingleValueDoubleColumnData(.0011198d, result.getRowCount(), coefAttribs);
+						
 						DataTable fluxTable = SharedApplication.getInstance().getFlux(context.getModelID());
 						ColumnData fluxColumn = new ColumnFromTable(fluxTable, 1);
 						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(result, fluxColumn, dataColIndex, ca, true);
+						view = new SingleColumnCoefDataTable(view, conversionCoef, dataColIndex, ca);
+						
 						predictionBasedResult = view;
 					} else {
 						predictionBasedResult = result;
