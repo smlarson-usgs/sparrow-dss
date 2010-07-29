@@ -29,6 +29,7 @@ public class IDByPointResponse {
 	public DataTable sparrowAttributes;
 
 	// TODO remove these when working code successfully populates DataTable fields dynamically
+	public String mapValueXML;
 	public String adjustmentsXML;
 	public String predictionsXML;
 	public String attributesXML;
@@ -78,8 +79,12 @@ public class IDByPointResponse {
     			in.append(reach.toIdentificationXML());
     			in.append("\n");
 			}
+			
+			if (mapValueXML != null) {
+				in.append(mapValueXML);
+	            in.append("\n");
+			}
 
-			// TODO Replace this when populated
 			if (adjustmentsXML != null) {
 				in.append(adjustmentsXML);
 	            in.append("\n");

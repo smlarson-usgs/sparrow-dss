@@ -15,6 +15,7 @@ import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.parser.Adjustment;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
+import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.ReachElement;
 import gov.usgswim.sparrow.parser.ReachGroup;
@@ -147,6 +148,8 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 					response[i].setReach(reach[i]);
 	
 					// populate each of the sections
+					response[i].mapValueXML = buildValueSection(req, i);
+					
 					if (req.hasAdjustments()) {
 						retrieveAdjustments(req.getContextID(), req, response[i]);
 					}
@@ -217,6 +220,34 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	// =======================
 	// PRIVATE HELPER METHODS
 	// =======================
+	
+	
+	/**
+	 * Builds the xml section for the predicted value or null if there is no context.
+	 * @throws IOException 
+	 */
+	private String buildValueSection(IDByPointRequest req, int idIndex) throws IOException {
+		if (req.getContextID() != null) {
+			PredictionContext pc =
+				SharedApplication.getInstance().getPredictionContext(req.getContextID());
+			
+			if (pc != null) {
+				DataColumn data = SharedApplication.getInstance().getAnalysisResult(pc);
+				
+				int row = data.getTable().getRowForId((long) req.getReachID()[idIndex]);
+				String val = data.getDouble(row).toString();
+				
+				
+				String[] params = {
+						"mappedValue", val
+				};
+				String xmlResult = props.getParametrizedQuery("mappedXMLResponse", params);
+				return xmlResult;
+			}
+			
+		}
+		return null;
+	}
 	
 	/**
 	 * If a point has no close streams, an empty array is returned.
@@ -291,6 +322,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			throw new RuntimeException("A context-id or a model-id is required for a id request");
 		}
 	}
+	
 
 	/**
 	 * Populates the adjustments section in the {@code response}.
