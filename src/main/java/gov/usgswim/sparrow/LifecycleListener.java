@@ -1,19 +1,16 @@
 package gov.usgswim.sparrow;
 
-import java.io.IOException;
-
-import gov.usgswim.sparrow.cachefactory.*;
+import gov.usgswim.sparrow.cachefactory.EhCacheConfigurationReader;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.service.ConfiguredCache;
-import gov.usgswim.sparrow.service.SharedApplication;
 
-import javax.management.RuntimeErrorException;
+import java.io.IOException;
+
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
 import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Status;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 
