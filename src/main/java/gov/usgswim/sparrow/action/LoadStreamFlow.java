@@ -4,6 +4,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 
 import java.sql.PreparedStatement;
@@ -16,7 +17,7 @@ import java.sql.ResultSet;
  * @author klangsto
  *
  */
-public class LoadStreamFlow extends Action<DataTable> {
+public class LoadStreamFlow extends Action<DataColumn> {
 	
 	protected long modelId;
 	
@@ -30,7 +31,7 @@ public class LoadStreamFlow extends Action<DataTable> {
 	}
 
 	@Override
-	protected DataTable doAction() throws Exception {
+	protected DataColumn doAction() throws Exception {
 		
 		String queryName = "LoadMeanQ";
 		String colName = "Stream Flow";
@@ -53,7 +54,8 @@ public class LoadStreamFlow extends Action<DataTable> {
 		values.getColumns()[1].setProperty(TableProperties.CONSTITUENT.getPublicName(), "Water");
 		
 
-		return values.toImmutable();
+		DataColumn retColumn = new DataColumn(values.toImmutable(), 1, null, modelId);
+		return retColumn;
 		
 	}
 

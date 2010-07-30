@@ -1,11 +1,11 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.action.LoadStreamFlow;
+import gov.usgswim.sparrow.parser.DataColumn;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 /**
- * Loads data for flux (avg. daily stream flow).
+ * Loads data for stream flow.
  * 
  * @author klangsto
  *
@@ -13,12 +13,12 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 public class StreamFlowFactory implements CacheEntryFactory {
 
 	@Override
-	public DataTable createEntry(Object inModelId) throws Exception {
+	public DataColumn createEntry(Object inModelId) throws Exception {
 		Long modelId = (Long)inModelId;
-		DataTable dt = null;
+		DataColumn dc = null;
 		LoadStreamFlow lf = new LoadStreamFlow(modelId);
-		dt = lf.run();
-		return dt;
+		dc = lf.run();
+		return dc;
 	}
 
 }

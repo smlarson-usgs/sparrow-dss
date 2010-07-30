@@ -121,6 +121,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 
 			//We will try to get result-based series out of the analysis cache
 			PredictResult result = SharedApplication.getInstance().getPredictResult(context.getAdjustmentGroups());
+			DataColumn predictResultColumn = new DataColumn(result, dataColIndex, context.getId());
 			UncertaintySeries impliedUncertaintySeries = null;
 			DataTable predictionBasedResult = null;
 
@@ -159,25 +160,14 @@ public class CalcAnalysis extends Action<DataColumn>{
 						predictionBasedResult = view;
 					} else if (type.equals(DataSeriesType.total_concentration)){
 						// total conc. is (total load / (stream flow)) * 0.0011198
+
+						DataColumn streamFlowData = SharedApplication.getInstance().getStreamFlow(context.getModelID());
+						CalcConcentration calc = new CalcConcentration();
+						calc.setBaseData(predictResultColumn);
+						calc.setStreamFlowData(streamFlowData);
+						DataColumn calcResult = calc.run();
 						
-						ColumnAttribsBuilder ca = new ColumnAttribsBuilder();
-						ca.setName("Concentration");
-						ca.setDescription("The flux of the constituent divided " +
-								"by the stream flow.");
-						ca.setUnits("mg/L");
-						
-						ColumnAttribsBuilder coefAttribs = new ColumnAttribsBuilder();
-						coefAttribs.setName("Conversion Coef");
-						coefAttribs.setUnits("Unknown");
-						SingleValueDoubleColumnData conversionCoef =
-							new SingleValueDoubleColumnData(.0011198d, result.getRowCount(), coefAttribs);
-						
-						DataTable fluxTable = SharedApplication.getInstance().getFlux(context.getModelID());
-						ColumnData fluxColumn = new ColumnFromTable(fluxTable, 1);
-						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(result, fluxColumn, dataColIndex, ca, true);
-						view = new SingleColumnCoefDataTable(view, conversionCoef, dataColIndex, ca);
-						
-						predictionBasedResult = view;
+						predictionBasedResult = calcResult.getTable();
 					} else {
 						predictionBasedResult = result;
 					}
@@ -340,8 +330,9 @@ public class CalcAnalysis extends Action<DataColumn>{
 					dataColIndex = 1;
 					break;
 				case flux:
-					dataTable = SharedApplication.getInstance().getFlux(context.getModelID());
-					dataColIndex = 1;
+					DataColumn flow = SharedApplication.getInstance().getStreamFlow(context.getModelID());
+					dataTable = flow.getTable();
+					dataColIndex = flow.getColumn();
 					break;
 				default:
 					throw new Exception("No dataSeries was specified in the analysis section");

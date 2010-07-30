@@ -14,12 +14,20 @@ import gov.usgswim.sparrow.datatable.TableProperties;
 public class DataColumn {
 	private final DataTable table;
 	private final int column;
-	private Integer contextId;
+	private Integer contextId;	//Defined when we have a context
+	private Long modelId;	//Defined only when we have a modelID but no context
 
 	public DataColumn(DataTable table, int column, Integer contextId) {
 		this.table = table;
 		this.column = column;
 		this.contextId = contextId;
+	}
+	
+	public DataColumn(DataTable table, int column, Integer contextId, Long modelId) {
+		this.table = table;
+		this.column = column;
+		this.contextId = contextId;
+		this.modelId = modelId;
 	}
 
 	public DataTable getTable() {
@@ -30,8 +38,26 @@ public class DataColumn {
 		return column;
 	}
 
+	/**
+	 * The PredictionContext ID this datacolumn is for.
+	 * 
+	 * It may be null in the case we are holding data that is model specific but
+	 * not context specific, such as stream flow or other attribute data.
+	 * @return
+	 */
 	public Integer getContextId() {
 		return contextId;
+	}
+	
+	/**
+	 * The SparrowModel ID this datacolumn is for.
+	 * 
+	 * It may be null in the case we are holding data that is context specific,
+	 * such as predicted data.  If we have a contextID, the model ID can be null.
+	 * @return
+	 */
+	public Long getModelId() {
+		return modelId;
 	}
 	
 	/**

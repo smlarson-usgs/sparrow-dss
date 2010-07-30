@@ -552,12 +552,12 @@ public class SharedApplication  {
 	}
 
 	//Flux (Stream Flow) Cache
-	public DataTable getFlux(Long req) {
-		return getFlux(req, false);
+	public DataColumn getStreamFlow(Long req) {
+		return getStreamFlow(req, false);
 	}
 	
-	public DataTable getFlux(Long req, boolean quiet) {
-		return (DataTable) StreamFlow.get(req, quiet);
+	public DataColumn getStreamFlow(Long req, boolean quiet) {
+		return (DataColumn) StreamFlow.get(req, quiet);
 	}
 
 	//Aggregate Id Lookup Kludge Cache - temporary

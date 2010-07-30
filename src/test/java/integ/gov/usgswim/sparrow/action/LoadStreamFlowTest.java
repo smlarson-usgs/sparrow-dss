@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.SparrowDBTest;
 import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 
 import org.junit.Test;
@@ -37,7 +38,9 @@ public class LoadStreamFlowTest extends SparrowDBTest {
 	public void testLoadFluxColumns() throws Exception {
 		
 		LoadStreamFlow lf = new LoadStreamFlow();
-		DataTable dt = lf.run();
+		DataColumn dataColumn = lf.run();
+		DataTable dt = dataColumn.getTable();
+		
 		assertEquals(2, dt.getColumnCount());
 		assertEquals(null, dt.getUnits(0));
 		assertEquals("IDENTIFIER", dt.getName(0));
@@ -60,7 +63,9 @@ public class LoadStreamFlowTest extends SparrowDBTest {
 	public void testLoadFluxData() throws Exception {
 		
 		LoadStreamFlow lf = new LoadStreamFlow(50);
-		DataTable dt = lf.run();
+		DataColumn dataColumn = lf.run();
+		DataTable dt = dataColumn.getTable();
+		
 		assertEquals(8321, dt.getRowCount());
 		int row = dt.findFirst(0, 9388);
 		assertEquals((Double) 1063.71, dt.getDouble(row, 1));

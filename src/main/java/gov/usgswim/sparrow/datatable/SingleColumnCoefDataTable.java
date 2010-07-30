@@ -227,8 +227,8 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 				Double retval = null;
 				try {
 					retval = ((Number) value).doubleValue() / coefCol.getDouble(row);
-				}
-				catch (ArithmeticException e) {
+				} catch (NullPointerException e) {
+					//Arithmetic exceptions do not happen for doubles
 					retval = Double.NaN;
 				}
 				return retval;
@@ -249,8 +249,8 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 				Double retval = null;
 				try {
 					retval = value / coefCol.getDouble(row);
-				}
-				catch (ArithmeticException e) {
+				} catch (NullPointerException e) {
+					//Arithmetic exceptions do not happen for doubles
 					retval = Double.NaN;
 				}
 				return retval;
