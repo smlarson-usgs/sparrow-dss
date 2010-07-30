@@ -1,0 +1,2 @@
+network	name	description	constituent	units	precision
+MRB2 Enhanced RF1 version 2 (MRB2_ERF1)	2002 Total Nitrogen Model for the southeastern U.S. (MRB2)	2002 TN model for southeastern U.S., published 2009 (HYP), if_adjust = no	Total nitrogen	kg/yr	0
