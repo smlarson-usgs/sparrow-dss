@@ -134,7 +134,7 @@ public class LoadModelPredictData extends Action<PredictData>{
 	 * Returns a DataTable of all topo data for for a single model.
 	 * <h4>Data Columns (sorted by HYDSEQ)</h4>
 	 * <ol>
-	 * <li>[i][0]MODEL_REACH - The db id for this reach
+	 * <li>[i][0]MODEL_REACH - The db id for this reach (the actual identifier is used as the index)
 	 * <li>[i][1]FNODE - The from node
 	 * <li>[i][2]TNODE - The to node
 	 * <li>[i][3]IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
