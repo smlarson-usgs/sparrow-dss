@@ -68,10 +68,10 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 *
 	 * <h4>Data Columns, sorted by HYDSEQ</h4>
 	 * <p>One row per reach (i = reach index).
-	 * Row ID is IDENTIFIER REACH_ID</p>
+	 * Row ID is IDENTIFIER (not the db model_reach_id)</p>
 	 * <ol>
 	 * <li>Index: - The model specific reach identifier
-	 * <li>[0][0] MODEL_REACH_ID - The system id for the reach (db unique id)
+	 * <li>[i][0  MODEL_REACH - The db id for this reach (the actual identifier is used as the index)
 	 * <li>[i][1] FNODE - The from node
 	 * <li>[i][2] TNODE - The to node
 	 * <li>[i][3] IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
