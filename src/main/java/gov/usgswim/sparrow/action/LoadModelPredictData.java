@@ -81,8 +81,6 @@ public class LoadModelPredictData extends Action<PredictData>{
 	 * <li>IS_POINT_SOURCE (boolean) 'T' or 'F' values that can be mapped to boolean.
 	 * </ol>
 	 *
-	 * TODO:  Finish this load method and use instead of loadSourceIds.  Update
-	 * PredictData to have set/getSrcMetaData instead of srcIds.
 	 *
 	 * @param conn
 	 * @param modelId
@@ -119,27 +117,25 @@ public class LoadModelPredictData extends Action<PredictData>{
 	}
 	
 	/**
-	 * 	 * Returns an ordered DataTable of all REACHes in the MODEL
-	 * <h4>Data Columns, sorted by HYDSEQ.  One row per reach (i = reach index)</h4>
-	 * <p>Row IDs duplicate the Reach Ids in column zero.</p>
-	 * <ol>
-	 * <li>id: IDENTIFIER - The model specific ID for this reach
-	 * <li>[i][0] REACH_ID - The system id for the reach (db unique id)
-	 * </ol>
-	 *
-	 * Sort by HYDSEQ then IDENTIFIER, since in some cases HYDSEQ is not unique.
-	 * [IK] the use of IDENTIFIER has no significance except to guarantee some
-	 * deterministic ordering of the results. Any other attribute would do.
-	 *
-	 * Returns a DataTable of all topo data for for a single model.
-	 * <h4>Data Columns (sorted by HYDSEQ)</h4>
+	 * Returns an ordered DataTable of all topological data in the MODEL
+	 * <h4>Data Columns</h4>
+	 * One row per reach (i = reach index)
+	 * <h5>Row ID: IDENTIFIER from DB</h5>
 	 * <ol>
 	 * <li>[i][0]MODEL_REACH - The db id for this reach (the actual identifier is used as the index)
 	 * <li>[i][1]FNODE - The from node
 	 * <li>[i][2]TNODE - The to node
 	 * <li>[i][3]IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
-	 * <li>[i][4]HYDSEQ - Hydrologic sequence order
+	 * <li>[i][4]HYDSEQ - Hydrologic sequence order (starting at 1, no gaps)
 	 * </ol>
+	 * 
+	 * <h4>Sorting</h4>
+	 * Sorted by HYDSEQ then IDENTIFIER, since in some cases HYDSEQ is not unique.
+	 * The use of IDENTIFIER has no significance except to guarantee
+	 * deterministic ordering of the results.
+	 *
+	 * For complete data definitions, please see:
+	 * @see gov.usgswim.sparrow.PredictData#getTopo()
 	 *
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
@@ -166,13 +162,24 @@ public class LoadModelPredictData extends Action<PredictData>{
 	}
 	
 	/**
-	 * Returns a DataTable of all source/reach coef's for for a single iteration of a model.
-	 * <h4>Data Columns with one row per reach (sorted by HYDSEQ)</h4>
+	 * Returns a DataTable of all source/reach coef's.
+	 * 
+	 * <h4>Data Columns</h4>
+	 * <p>One row per reach (i = reach index).
+	 * Row ID is IDENTIFIER (not the db model_reach_id)</p>
 	 * <ol>
-	 * <li>[Source Name 1] - The coef's for the first source in one column
-	 * <li>[Source Name 2...] - The coef's for the 2nd...
-	 * <li>...
+	 * <li>[i][Source 1] - The coef for the first source of reach i
+	 * <li>[i][Source 2] - The coef's for the 2nd source of reach i
+	 * <li>[i][Source 2] - The coef's for the 3rd...
+	 * <li>...as many columns as there are sources.
 	 * </ol>
+	 * For complete data definitions, please see:
+	 * @see gov.usgswim.sparrow.PredictData#getDeliverygetCoef()
+	 * 
+	 * <h4>Sorting</h4>
+	 * Sorted by HYDSEQ then IDENTIFIER, since in some cases HYDSEQ is not unique.
+	 * The use of IDENTIFIER has no significance except to guarantee
+	 * deterministic ordering of the results.
 	 *
 	 * @param conn	A JDBC Connection to run the query on
 	 * @param modelId	The ID of the Sparrow model
@@ -241,9 +248,10 @@ public class LoadModelPredictData extends Action<PredictData>{
 	/**
 	 * Returns a DataTable of all source/reach coef's for for all iterations of a model.
 	 * <h4>Data Columns with one row per reach (sorted by ITERATION then HYDSEQ)</h4>
+	 * No row id is used in this table.
 	 * <ol>
-	 * <li>[Source Name 1] - The coef's for the first source in one column
-	 * <li>[Source Name 2...] - The coef's for the 2nd...
+	 * <li>[Source 1] - The coef's for the first source in one column
+	 * <li>[Source 2...] - The coef's for the 2nd...
 	 * <li>...
 	 * </ol>
 	 *
@@ -306,10 +314,18 @@ public class LoadModelPredictData extends Action<PredictData>{
 	/**
 	 * Returns a DataTable of all delivery data for for a single model.
 	 *
-	 * <h4>Data Columns, sorted by HYDSEQ then IDENTIFIER</h4>
-	 *
+	 * <h4>Data Columns</h4>
 	 * <p>One row per reach (i = reach index)</p>
-	 * For data definitions, please see:
+	 * <ol>
+	 * <li>[i][0] == the instream delivery at reach i
+	 * <li>[i][1] == the upstream delivery at reach i.
+	 * </ol>
+	 * <h4>Sorting</h4>
+	 * Sorted by HYDSEQ then IDENTIFIER, since in some cases HYDSEQ is not unique.
+	 * The use of IDENTIFIER has no significance except to guarantee
+	 * deterministic ordering of the results.
+	 *
+	 * For complete data definitions, please see:
 	 * @see gov.usgswim.sparrow.PredictData#getDelivery()
 	 *
 	 * TODO:  All the other 'per reach' data tables load row ids, which allows
@@ -342,8 +358,8 @@ public class LoadModelPredictData extends Action<PredictData>{
 	 * <h4>Data Columns with one row per reach (sorted by HYDSEQ)</h4>
 	 * <ol>
 	 * <li>id: IDENTIFIER - The model specific ID for this reach (loaded w/ query for data check)
-	 * <li>[Source Name 1] - The values for the first source in one column
-	 * <li>[Source Name 2...] - The values for the 2nd...
+	 * <li>[Source 1] - The values for the first source in one column
+	 * <li>[Source 2...] - The values for the 2nd...
 	 * <li>...
 	 * </ol>
 	 *

@@ -117,33 +117,49 @@ public abstract class Action<R extends Object> {
 	 * @param error Pass an error that might have occurred for logging.
 	 */
 	protected void postAction(boolean success, Exception error) {
-		if (log.isDebugEnabled()) {
-			long totalTime = System.currentTimeMillis() - startTime;
-			
-			String msg = getPostMessage();
-			if (msg != null) {
-				log.debug(msg + "  (Run Number: " + runNumber + ")");
-			}
-			
-			if (success && error == null) {
-				log.debug("Action completed for " + this.getClass().getName() +
-						".  Total Time: " + totalTime + "ms, Run Number: " +
-						runNumber);
-			} else {
-				if (error != null) {
-					log.error("Action FAILED w/ an exception for " +
+		
+		if (success) {
+			if (log.isDebugEnabled()) {
+				long totalTime = System.currentTimeMillis() - startTime;
+				
+				String msg = getPostMessage();
+				if (msg != null) {
+					log.debug(msg + "  (Run Number: " + runNumber + ")");
+				}
+				
+				if (error == null) {
+					log.debug("Action completed for " + this.getClass().getName() +
+							".  Total Time: " + totalTime + "ms, Run Number: " +
+							runNumber);
+				} else {
+					log.warn("Action completed, but generated an exception for " +
 							this.getClass().getName() + ".  Total Time: " +
 							totalTime + "ms, Run Number: " +
 							runNumber, error);
-				} else {
-					log.debug("Action FAILED, returning null, for " +
-							this.getClass().getName() + ".  Total Time: " +
-							totalTime + "ms, Run Number: " +
-							runNumber);
 				}
+				
+			}
+		} else {
+			
+			String msg = getPostMessage();
+			if (msg != null) {
+				msg = "  Message from the action: " + msg;
+			} else {
+				msg = "  (no message from the action)";
 			}
 			
+			if (error != null) {
+				log.error("Action FAILED w/ an exception for " +
+						this.getClass().getName() + ".  Run Number: " +
+						runNumber + msg, error);
+			} else {
+				log.debug("Action FAILED but did not generate an error for " +
+						this.getClass().getName() + ".  Run Number: " +
+						runNumber + msg);
+			}
+
 		}
+
 		
 		//Close any open prepared statements
 		if (preparedStatements != null) {

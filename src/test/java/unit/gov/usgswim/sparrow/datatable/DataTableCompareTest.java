@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.datatable;
 
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 
 import org.junit.*;
@@ -62,6 +63,7 @@ public class DataTableCompareTest {
 		assertEquals(.1d, comp.getDouble(0, 0), 0d);
 		assertEquals(0d, comp.getDouble(0, 3), 0d);
 		
+		
 		//Row 2
 		assertEquals(0d, comp.getDouble(2, 0), 0d);
 		assertEquals(2.4d, comp.getDouble(2, 3), 0d);
@@ -73,6 +75,10 @@ public class DataTableCompareTest {
 		//Row 4
 		assertEquals(0d, comp.getDouble(4, 0), 0d);
 		assertEquals(-2.2d, comp.getDouble(4, 3), 0d);
+		
+		//Max values
+		assertEquals(.1d, comp.getMaxDouble(0), .000000000001d);
+		assertEquals(-3.4d, comp.getMaxDouble(3), .000000000001d);
 		
 		//Headings and other stuff...
 		assertEquals("one", comp.getName(0));
@@ -118,6 +124,49 @@ public class DataTableCompareTest {
 		assertEquals(Double.class, comp.getDataType(0));
 		assertEquals("Percentage", comp.getUnits(0));
 		
+	}
+	
+	@Test
+	public void compareMixedColumns() throws Exception {
+		String[] headings = new String[] {
+				"ZERO",	//DOUBLE
+				"ONE"	//STRING
+		};
+		
+		Class<?>[] types= {
+				Double.class,
+				String.class
+				};
+		DataTableWritable base =
+			new SimpleDataTableWritable(headings, null, types);
+		base.setValue(0.5d, 0, 0);
+		base.setValue("test_0", 0, 1);
+		base.setValue(1.5d, 1, 0);
+		base.setValue("test_1", 1, 1);
+		base.setValue(2.5d, 2, 0);
+		base.setValue((String)null, 2, 1);
+		base.setValue(3.5d, 3, 0);
+		base.setValue("test_3", 3, 1);
+		
+		DataTableWritable compareTo =
+			new SimpleDataTableWritable(headings, null, types);
+		compareTo.setValue(0.5d, 0, 0);
+		compareTo.setValue("test_0", 0, 1);
+		compareTo.setValue(1.4d, 1, 0);
+		compareTo.setValue("test_1asdf", 1, 1);
+		compareTo.setValue(2.6d, 2, 0);
+		compareTo.setValue("test_2", 2, 1);
+		compareTo.setValue(3.5d, 3, 0);
+		compareTo.setValue("", 3, 1);
+		
+		
+		DataTableCompare comp = new DataTableCompare(base,
+				compareTo, true);
+		
+		assertEquals(0d, comp.getDouble(0, 1), 0.000000000000001d);
+		assertEquals(4d, comp.getDouble(1, 1), 0.000000000000001d);
+		assertEquals(6d, comp.getDouble(2, 1), 0.000000000000001d);
+		assertEquals(6d, comp.getDouble(3, 1), 0.000000000000001d);
 	}
 
 }

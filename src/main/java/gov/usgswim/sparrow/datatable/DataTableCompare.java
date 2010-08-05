@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.datatable;
 
+import org.apache.commons.lang.StringUtils;
+
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTable.Immutable;
 import gov.usgswim.datatable.impl.FindHelper;
@@ -34,7 +36,7 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 	 */
 	public DataTableCompare(DataTable base, DataTable compare, boolean isAbsolute) {
 		super(base);
-		this.compare = compare.toImmutable();
+		this.compare = compare;
 		this.absolute = isAbsolute;
 	}
 
@@ -48,95 +50,118 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 
 	@Override
 	public Double getDouble(int row, int col) {
-		double b = base.getDouble(row, col);
-		double c = compare.getDouble(row, col);
 		
-		if (absolute) {
-			return c - b;
-		}
-		if (b != 0d) {
-			return 100d * (c - b) / b;
-		}
-		
-		//TODO:  Increase or decreases from zero are considered +/-100%.
-		//Is that correct?  JIRA isse filed: http://privusgs4.er.usgs.gov//browse/SPDSS-313
-		if (c > b) {
-			return 100d;
-		} else if (b > c) {
-			return -100d;
+		if (isStringCol(col)) {
+			return new Double(getString(row, col));
 		} else {
-			return 0d;
+			double b = base.getDouble(row, col);
+			double c = compare.getDouble(row, col);
+			
+			if (absolute) {
+				return c - b;
+			}
+			if (b != 0d) {
+				return 100d * (c - b) / b;
+			}
+			
+			//TODO:  Increase or decreases from zero are considered +/-100%.
+			//Is that correct?  JIRA isse filed: http://privusgs4.er.usgs.gov//browse/SPDSS-313
+			if (c > b) {
+				return 100d;
+			} else if (b > c) {
+				return -100d;
+			} else {
+				return 0d;
+			}
 		}
+
 	}
 
 	@Override
 	public Float getFloat(int row, int col) {
-		double b = base.getDouble(row, col);
-		double c = compare.getDouble(row, col);
 		
-		if (absolute) {
-			return (float)(c - b);
-		}
-		if (b != 0d) {
-			return (float)(100d * (c - b) / b);
-		}
-		if (c > b) {
-			return 100f;
-		} else if (b > c) {
-			return -100f;
+		if (isStringCol(col)) {
+			return new Float(getString(row, col));
 		} else {
-			return 0f;
+			double b = base.getDouble(row, col);
+			double c = compare.getDouble(row, col);
+			
+			if (absolute) {
+				return (float)(c - b);
+			}
+			if (b != 0d) {
+				return (float)(100d * (c - b) / b);
+			}
+			if (c > b) {
+				return 100f;
+			} else if (b > c) {
+				return -100f;
+			} else {
+				return 0f;
+			}
 		}
+
 	}
 
 	@Override
 	public Integer getInt(int row, int col) {
-		double b = base.getDouble(row, col);
-		double c = compare.getDouble(row, col);
 		
-		if (absolute) {
-			return (int)(c - b);
-		}
-		if (b != 0d) {
-			return (int) (100d * (c - b) / b);
-		}
-		if (c > b) {
-			return 100;
-		} else if (b > c) {
-			return -100;
+		if (isStringCol(col)) {
+			return new Integer(getString(row, col));
 		} else {
-			return 0;
+			double b = base.getDouble(row, col);
+			double c = compare.getDouble(row, col);
+			
+			if (absolute) {
+				return (int)(c - b);
+			}
+			if (b != 0d) {
+				return (int) (100d * (c - b) / b);
+			}
+			if (c > b) {
+				return 100;
+			} else if (b > c) {
+				return -100;
+			} else {
+				return 0;
+			}
 		}
+
 	}
 
 	@Override
 	public Long getLong(int row, int col) {
-		double b = base.getDouble(row, col);
-		double c = compare.getDouble(row, col);
 		
-		if (absolute) {
-			return (long)(c - b);
-		}
-		if (b != 0d) {
-			return (long)(100d * (c - b) / b);
-		}
-		if (c > b) {
-			return 100L;
-		} else if (b > c) {
-			return -100L;
+		if (isStringCol(col)) {
+			return new Long(getString(row, col));
 		} else {
-			return 0L;
+			double b = base.getDouble(row, col);
+			double c = compare.getDouble(row, col);
+			
+			if (absolute) {
+				return (long)(c - b);
+			}
+			if (b != 0d) {
+				return (long)(100d * (c - b) / b);
+			}
+			if (c > b) {
+				return 100L;
+			} else if (b > c) {
+				return -100L;
+			} else {
+				return 0L;
+			}
 		}
 	}
 	
 	@Override
 	public Double getMaxDouble(int col) {
-		return FindHelper.bruteForceFindMaxDouble(this, col);
+		return bruteForceFindMaxDouble(this, col);
 	}
 
 	@Override
 	public Double getMaxDouble() {
-		return FindHelper.bruteForceFindMaxDouble(this);
+		return bruteForceFindMaxDouble(this);
 	}
 
 	@Override
@@ -149,9 +174,34 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 		return FindHelper.bruteForceFindMinDouble(this);
 	}
 
+	/**
+	 * For columns that are strings in both tables, this returns the
+	 * Levenshtein distance between the two strings.  When calculating distance,
+	 * null strings are considered empty, though comparing an empty to a null
+	 * String will result in a distance of 1.
+	 * 
+	 * If both columns are not Strings, a double comparison is done.
+	 */
 	@Override
 	public String getString(int row, int col) {
-		return Double.toString(getDouble(row, col));
+		if (isStringCol(col)) {
+			String org = base.getString(row, col);
+			String comp = compare.getString(row, col);
+			
+			if (org != null && comp != null) {
+				return Integer.toString(StringUtils.getLevenshteinDistance(org, comp));
+			} else if (org == null && comp == null) {
+				return "0";
+			} else if (org == null) {
+				return (comp.length()==0)?"1":Integer.toString(comp.length());
+			} else {
+				return (org.length()==0)?"1":Integer.toString(org.length());
+			}
+			
+		} else {
+			return Double.toString(getDouble(row, col));
+		}
+		
 	}
 
 	/**
@@ -178,6 +228,38 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 
 	public Immutable toImmutable() {
 		return this;
+	}
+	
+	private boolean isStringCol(int index) {
+		return (compare.getDataType(index) == String.class && super.getDataType(index) == String.class);
+	}
+	
+	protected Double bruteForceFindMaxDouble(DataTable dt, int col) {
+		Double max = 0d;
+		int rows = dt.getRowCount();
+		for (int row=0; row < rows; row++) {
+			Double value = dt.getDouble(row, col);
+			if (value != null) {
+				if (Math.abs(value) > Math.abs(max)) {
+					max = value;
+				}
+			}
+		}
+		return max;
+	}
+	
+	protected Double bruteForceFindMaxDouble(DataTable dt) {
+		Double max = 0d;
+		int cols = dt.getColumnCount();
+		for (int col=0; col < cols; col++) {
+			Double value = dt.getMaxDouble(col);
+			if (value != null) {
+				if (Math.abs(value) > Math.abs(max)) {
+					max = value;
+				}
+			}
+		}
+		return max;
 	}
 
 }

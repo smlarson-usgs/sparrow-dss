@@ -66,7 +66,7 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	/**
 	 * Returns the topographic data
 	 *
-	 * <h4>Data Columns, sorted by HYDSEQ</h4>
+	 * <h4>Data Columns</h4>
 	 * <p>One row per reach (i = reach index).
 	 * Row ID is IDENTIFIER (not the db model_reach_id)</p>
 	 * <ol>
@@ -75,21 +75,41 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 * <li>[i][1] FNODE - The from node
 	 * <li>[i][2] TNODE - The to node
 	 * <li>[i][3] IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
-	 * <li>[i][4] (optional - this column and others ignored) HYDSEQ - Sort identifier such that any lower number reach is upstream of a higher numbered one.
+	 * <li>[i][4] HYDSEQ - Hydrologic sequence order (starting at 1, no gaps)
 	 * </ol>
 	 *
-	 * NOTE:  Node indexes that do not start at zero or have large skips will
-	 * require more memory to process.
+	 * <h4>Sorting</h4>
+	 * Sorted by HYDSEQ then IDENTIFIER, since in some cases HYDSEQ is not unique.
+	 * The use of IDENTIFIER has no significance except to guarantee
+	 * deterministic ordering of the results.
+	 * 
 	 * @return The DataTable data
 	 */
 	public DataTable getTopo();
 
 	/**
-	 * Returns the coef data.
-	 *
-	 * <h4>Data Columns, sorted by HYDSEQ</h4>
-	 * <p>One row per reach (i = reach index).  coef[i][k] == the coefficient for source k at reach i</p>
-	 *
+	 * Returns a DataTable of all source/reach coef's.
+	 * 
+	 * <h4>Data Columns</h4>
+	 * <p>One row per reach (i = reach index).
+	 * Row ID is IDENTIFIER (not the db model_reach_id)</p>
+	 * <ol>
+	 * <li>[i][Source 1] - The coef for the first source of reach i
+	 * <li>[i][Source 2] - The coef's for the 2nd source of reach i
+	 * <li>[i][Source 2] - The coef's for the 3rd...
+	 * <li>...as many columns as there are sources.
+	 * </ol>
+	 * Each coef converts the source value in what every units its in (could
+	 * be something like population or land area) into the predictive units
+	 * of the model (something like kg/year of Nitrogen).  This coef combines
+	 * several model coefs, including land to water delivery, into a single coef
+	 * for use in a simplified form in this tool.
+	 * 
+	 * <h4>Sorting</h4>
+	 * Sorted by HYDSEQ then IDENTIFIER, since in some cases HYDSEQ is not unique.
+	 * The use of IDENTIFIER has no significance except to guarantee
+	 * deterministic ordering of the results.
+	 * 
 	 * @return The DataTable data
 	 */
 	public DataTable getCoef();
@@ -105,9 +125,9 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	public DataTable getSrc();
 
 	/**
-	 * Returns the decay data.
+	 * Returns the delivery data.
 	 *
-	 * <h4>Data Columns, sorted by HYDSEQ</h4>
+	 * <h4>Data Columns</h4>
 	 * <p>One row per reach (i = reach index)</p>
 	 * <ol>
 	 * <li>[i][0] == the instream delivery at reach i.<br>
@@ -115,7 +135,7 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 * That is, it would normally be 1 minus the sqr root of the total decay,
 	 * but this conversion is already done for this value.
 	 * 
-	 * <li>src[i][1] == the upstream delivery at reach i.<br>
+	 * <li>[i][1] == the upstream delivery at reach i.<br>
 	 * This delivery is applied to the load coming from the upstream node.
 	 * This is really a combined term, [frac] * [total delivery].  Think of
 	 * nodes as having two sides, an upper side that accumulates all the load
@@ -129,6 +149,10 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 * the 'top' of the upstream node that makes it to the bottom of this reach.
 	 * <li>Additional columns ignored
 	 * </ol>
+	 * <h4>Sorting</h4>
+	 * Sorted by HYDSEQ then IDENTIFIER, since in some cases HYDSEQ is not unique.
+	 * The use of IDENTIFIER has no significance except to guarantee
+	 * deterministic ordering of the results.
 	 *
 	 * @return
 	 */
