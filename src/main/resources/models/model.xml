@@ -101,27 +101,41 @@
 			find in a stream, as predicted by the model.</p>
 			<p>The complete list of data series:</p>
 			<ul>
-				<li><b>Total Flux</b><br/>
-					The average daily load of the constituent leaving each
-					stream reach, as predicted by the model.
-					This is also called the <i>measurable flux</i> since
-					this is the hypothetical value you could measure in the
-					stream, if there were a way to measure daily average.
+				<li><b>Total Load</b><br/>
+					The mean annual load of the constituent (in mass per year)
+					leaving each stream reach, as predicted by the model. 
+					The load reflects the accumulated mass of the constituent 
+					contributed by all sources in the total drainage area upstream 
+					of the reach outlet. The load includes the effects of in-stream
+					attenuation processes in all upstream reaches. 
+					The mean annual load is a standardized measure of the constituent
+					mass in the stream that reflects the mean quantities of mass
+					that are likely to occur during a specified base year under
+					long-term mean streamflow conditions. 
+					Spatial variations in the standardized loads are generally
+					indicative of conditions during higher-flow periods of
+					the year that often occur during the winter and spring.  
+					The mean annual conditions described by the model 
+					predictions also primarily reflect the effects of natural
+					and human-related processes that supply and remove 
+					constituent mass in watersheds over long time periods. 
+					The predicted load is also "unadjusted" for measured 
+					stream load values at monitoring sites; measured loads 
+					are commonly substituted for model predictions ("adjusted" loads) 
+					in the calibration procedure to ensure accurate estimation of the model.
 				</li>
-                <li><b>Standard Error of Total Flux</b><br/>
-                	An estimate of error, based on the model, of the
-                	<i>Total Flux</i>.  This is only an estimate and should
-                	not be used for any purpose.
-                	For actual error values, contact the hydrologist for the model.
+                <li><b>Standard Error of Total Load</b><br/>
+                	An estimate of the prediction error associated with the total load, 
+                	based on the model calibration (in units of percent of the total load). 
                 </li>
-                <li><b>Incremental Flux</b><br/>
+                <li><b>Incremental Load</b><br/>
 					The average daily load of the constituent added at each
 					stream reach, or the amount of load that each reach is
 					responsible for contributing to the river system.
 					The presented value is 'decayed' by travel down
 					the reach.
                 </li>
-                <li><b>Standard Error of Incremental Flux</b><br/>
+                <li><b>Standard Error of Incremental Load</b><br/>
                     An estimate of error, based on the model, of the
                 	<i>Incremental Flux</i>.  This is only an estimate and should
                 	not be used for any purpose.
@@ -142,10 +156,10 @@
                 	adjustments as part of a 'what if' scenario, the adjusted
                 	source values are presented. 
                 </li>
-                <li><b>Catchment Area</b><br/>
+                <li><b>Incremental Area</b><br/>
                 	The amount of drainage area surrounding each reach.
                 </li>
-                <li><b>Stream Flow</b><br/>
+                <li><b>Streamflow</b><br/>
                 	The average daily flow of the reach.
                 </li>
                 <li><b>Delivery Fraction</b><br/>
@@ -153,12 +167,12 @@
                 	downstream end of a selected target reach.  You must choose
                 	a target reach if you select this series.
                 </li>
-                <li><b>Incremental Delivered Flux</b><br/>
+                <li><b>Incremental Delivered Load</b><br/>
                 	The average daily load of the constituent added at each stream reach
                 	that arrives at the downstream end of a selected target reach. You must
                 	choose a target reach if you select this series.
                 </li>
-                <li><b>Total Delivered Flux</b><br/>
+                <li><b>Total Delivered Load</b><br/>
                 	The average daily load of the constituent leaving each
 					stream reach that arrives at the downstream end of a selected target reach.
 				</li>
