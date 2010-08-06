@@ -122,7 +122,6 @@ public class CalcAnalysis extends Action<DataColumn>{
 
 			//We will try to get result-based series out of the analysis cache
 			PredictResult result = SharedApplication.getInstance().getPredictResult(context.getAdjustmentGroups());
-			DataColumn predictResultColumn = new DataColumn(result, dataColIndex, context.getId());
 			UncertaintySeries impliedUncertaintySeries = null;
 			DataTable predictionBasedResult = null;
 
@@ -144,7 +143,6 @@ public class CalcAnalysis extends Action<DataColumn>{
 						impliedUncertaintySeries = UncertaintySeries.TOTAL;
 					}
 					
-					
 					if (type.equals(DataSeriesType.total_delivered_flux)) {
 						//Create a new datatable that overlays the delFracColumn
 						//on top of the column selected above
@@ -158,6 +156,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 						
 						predictionBasedResult = view;
 					} else if (type.equals(DataSeriesType.total_concentration)){
+						DataColumn predictResultColumn = new DataColumn(result, dataColIndex, context.getId());
 						DataColumn streamFlowData = SharedApplication.getInstance().getStreamFlow(context.getModelID());
 						CalcConcentration calc = new CalcConcentration();
 						calc.setBaseData(predictResultColumn);
