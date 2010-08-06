@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.DataSeriesType;
@@ -34,8 +35,6 @@ public class LoadStreamFlow extends Action<DataColumn> {
 	protected DataColumn doAction() throws Exception {
 		
 		String queryName = "LoadMeanQ";
-		String colName = "Stream Flow";
-		String colDesc = "Averaged flow of the stream reach";
 		
 		String sql = getText(queryName);
 		PreparedStatement st = getNewROPreparedStatement(sql);
@@ -47,9 +46,9 @@ public class LoadStreamFlow extends Action<DataColumn> {
 		values = DataTableConverter.toDataTable(rset);
 		
 		//Set column attributes
-		values.getColumns()[1].setName(colName);
-		values.getColumns()[1].setDescription(colDesc);
-		values.getColumns()[1].setUnits("cu ft/s");
+		values.getColumns()[1].setName(getDataSeriesProperty(DataSeriesType.flux, false));
+		values.getColumns()[1].setDescription(getDataSeriesProperty(DataSeriesType.flux, true));
+		values.getColumns()[1].setUnits(SparrowUnits.CFS.getUserName());
 		values.getColumns()[1].setProperty(TableProperties.DATA_SERIES.getPublicName(), DataSeriesType.flux.name());
 		values.getColumns()[1].setProperty(TableProperties.CONSTITUENT.getPublicName(), "Water");
 		

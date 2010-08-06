@@ -2,10 +2,12 @@ package gov.usgswim.sparrow.action;
 
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.impl.ColumnFromTable;
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.ColumnAttribsBuilder;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.datatable.SingleValueDoubleColumnData;
 import gov.usgswim.sparrow.parser.DataColumn;
+import gov.usgswim.sparrow.parser.DataSeriesType;
 
 /**
  * This action creates a ColumnData containing the concentration of the
@@ -40,11 +42,20 @@ public class CalcConcentration extends Action<DataColumn> {
 	protected DataColumn doAction() throws Exception {
 		// total conc. is (total load / (stream flow)) * 0.0011198
 		
+		//For our conversion to work properly, we are depending on some specific
+		//units, so we check...
+		if (! SparrowUnits.KG_PER_YEAR.isSame(baseData.getUnits())) {
+			throw new Exception("The base units must be in 'kg/year' or the conversion to mg/L will not be correct.");
+		}
+		
+		if (! SparrowUnits.CFS.isSame(streamFlowData.getUnits())) {
+			throw new Exception("The streamflow units must be in 'cu ft/s' or the conversion to mg/L will not be correct.");
+		}
+		
 		ColumnAttribsBuilder concAttribs = new ColumnAttribsBuilder();
-		concAttribs.setName("Concentration");
-		concAttribs.setDescription("The total load of the constituent divided " +
-				"by the stream flow.");
-		concAttribs.setUnits("mg/L");
+		concAttribs.setName(getDataSeriesProperty(DataSeriesType.total_concentration, false));
+		concAttribs.setDescription(getDataSeriesProperty(DataSeriesType.total_concentration, true));
+		concAttribs.setUnits(SparrowUnits.MG_PER_L.getUserName());
 		
 		ColumnAttribsBuilder coefAttribs = new ColumnAttribsBuilder();
 		coefAttribs.setName("Conversion Coef");

@@ -1,9 +1,14 @@
 package gov.usgswim.sparrow.datatable;
 
+import java.io.IOException;
+
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTable.Immutable;
 import gov.usgswim.datatable.impl.FindHelper;
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.UncertaintyData;
+import gov.usgswim.sparrow.action.Action;
+import gov.usgswim.sparrow.parser.DataSeriesType;
 
 
 /**
@@ -27,6 +32,7 @@ public class StdErrorEstTable extends AbstractDataTableBase implements Immutable
 	private int validColumnIndex;
 	private boolean useNullForNonValues;
 	private double nullValue;
+	private DataSeriesType dataSeriesType;
 
 	/**
 	 * Constructs a new Immutable StdErrorEstCoefTable instance.
@@ -38,12 +44,16 @@ public class StdErrorEstTable extends AbstractDataTableBase implements Immutable
 	 * @param nullValue If useNullForNonValues if false, return this double value.
 	 */
 	public StdErrorEstTable(DataTable base, UncertaintyData uncertaintyData,
-			int validColumnIndex, boolean useNullForNonValues, double nullValue) {
+			int validColumnIndex, boolean useNullForNonValues, double nullValue, DataSeriesType dataSeriesType) {
 		super(base);
 		this.uncertaintyData = uncertaintyData.toImmutable();
 		this.validColumnIndex = validColumnIndex;
 		this.useNullForNonValues= useNullForNonValues;
 		this.nullValue = nullValue;
+		this.dataSeriesType = dataSeriesType;
+		
+		//TODO:  The name and description of this table are not right.
+		
 	}
 
 	/**
@@ -167,7 +177,27 @@ public class StdErrorEstTable extends AbstractDataTableBase implements Immutable
 
 	@Override
 	public String getUnits(int col) {
-		return "Unitless";
+		return SparrowUnits.PERCENT.getUserName();
+	}
+	
+	@Override
+	public String getDescription(int col) {
+		try {
+			return Action.getDataSeriesProperty(dataSeriesType, true);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+
+	@Override
+	public String getName(int col) {
+		try {
+			return Action.getDataSeriesProperty(dataSeriesType, false);
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "";
+		}
 	}
 
 	@Override
@@ -183,5 +213,7 @@ public class StdErrorEstTable extends AbstractDataTableBase implements Immutable
 	public Immutable toImmutable() {
 		return this;
 	}
+
+
 
 }

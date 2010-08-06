@@ -3,7 +3,10 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.HucLevel;
+import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.parser.DataSeriesType;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -49,14 +52,16 @@ public class LoadUnitAreas extends Action<DataTable> {
 		String queryName = null;
 		String areaColumnName = null;
 		
+		//TODO: These should really be treated as different dataseries (which they are)
+		//rather than a flag in the unit areas.
 		switch (hucLevel) {
 		case HUC_NONE:
 			if (cumulative == false) {
 				queryName = "LoadCatchArea";
-				areaColumnName = "Catchment Area";
+				areaColumnName = getDataSeriesProperty(DataSeriesType.catch_area, false);
 			} else {
 				queryName = "LoadCumCatchArea";
-				areaColumnName = "Cumulative Catchment Area";
+				areaColumnName = getDataSeriesProperty(DataSeriesType.cumulative_catch_area, false);
 			}
 			break;
 		
@@ -73,9 +78,10 @@ public class LoadUnitAreas extends Action<DataTable> {
 		DataTableWritable values = null;
 		values = DataTableConverter.toDataTable(rset);
 		values.buildIndex(0);
-		values.getColumns()[1].setUnits("sqr km");
+		values.getColumns()[1].setUnits(SparrowUnits.SQR_KM.toString());
 		values.getColumns()[1].setName(areaColumnName);
-
+		values.getColumns()[1].setProperty(TableProperties.CONSTITUENT.getPublicName(), "land area");
+		
 		return values.toImmutable();
 		
 	}

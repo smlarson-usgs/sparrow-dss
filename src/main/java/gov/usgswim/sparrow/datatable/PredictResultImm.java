@@ -9,6 +9,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.service.predict.ValueType;
@@ -119,7 +120,7 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
         for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++) {
 
             // Get the metadata to be attached to the column definitions
-            String displayName = null;
+            String srcName = null;
             String srcConstituent = null;
             String precision = null;
             
@@ -129,8 +130,8 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
                 Integer precisionCol = srcMetadata.getColumnByName("PRECISION");
 
                 // Pull out the metadata for the source
-                displayName = srcMetadata.getString(srcIndex, displayNameCol);
-                srcConstituent = displayName;
+                srcName = srcMetadata.getString(srcIndex, displayNameCol);
+                srcConstituent = srcName;
                 precision = srcMetadata.getLong(srcIndex, precisionCol).toString();
             }
 
@@ -144,7 +145,8 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
             // Map of metadata values for inc-add column
             Map<String, String> incProps = new HashMap<String, String>();
             incProps.put(TableProperties.DATA_TYPE.getPublicName(), ValueType.incremental.name());
-            incProps.put(TableProperties.DATA_SERIES.getPublicName(), DataSeriesType.incremental.name());
+            incProps.put(TableProperties.DATA_SERIES.getPublicName(),
+            		Action.getDataSeriesProperty(DataSeriesType.incremental, false));
             incProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
             incProps.put(TableProperties.PRECISION.getPublicName(), precision);
             String incDesc = "Load added at this reach and decayed to the end of the reach. " +
@@ -155,7 +157,8 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
             // Map of metadata values for total column
             Map<String, String> totProps = new HashMap<String, String>();
             totProps.put(TableProperties.DATA_TYPE.getPublicName(), ValueType.total.name());
-            totProps.put(TableProperties.DATA_SERIES.getPublicName(), DataSeriesType.total.name());
+            totProps.put(TableProperties.DATA_SERIES.getPublicName(),
+            		Action.getDataSeriesProperty(DataSeriesType.total, false));
             totProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
             totProps.put(TableProperties.PRECISION.getPublicName(), precision);
             String totDesc = "Total load decayed from all upstream reaches decayed to the end of this reach. " +
@@ -164,8 +167,8 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
             
             
 
-            columns[srcIncAddIndex] = new ImmutableDoubleColumn(data, srcIncAddIndex, displayName + " Inc. Flux (undecayed)", modelUnits, incDesc, incProps);
-            columns[srcTotalIndex] = new ImmutableDoubleColumn(data, srcTotalIndex, displayName + " Total Flux (w/ upstream, decayed)", modelUnits, totDesc, totProps);
+            columns[srcIncAddIndex] = new ImmutableDoubleColumn(data, srcIncAddIndex, srcName + " Incremental Load", modelUnits, incDesc, incProps);
+            columns[srcTotalIndex] = new ImmutableDoubleColumn(data, srcTotalIndex, srcName + " Total Load", modelUnits, totDesc, totProps);
         }
 
         // ------------------------------------------
@@ -174,23 +177,28 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
         int totalIncCol = 2 * sourceCount;	//The total inc col comes right after the two sets of source columns
         Map<String, String> totalIncProps = new HashMap<String, String>();
         totalIncProps.put(TableProperties.DATA_TYPE.getPublicName(), ValueType.incremental.name());
-        totalIncProps.put(TableProperties.DATA_SERIES.getPublicName(), DataSeriesType.incremental.name());
+        totalIncProps.put(TableProperties.DATA_SERIES.getPublicName(),
+        		Action.getDataSeriesProperty(DataSeriesType.incremental, false));
         totalIncProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent );
         totalIncProps.put(TableProperties.ROW_AGG_TYPE.getPublicName(), AggregateType.sum.name());
-        String incDesc = "Load added at this reach for all sources and decayed to the end of the reach. " +
-    		"Reported in " + modelUnits + " of " + modelConstituent + ".";
+
         
         int totalTotalCol = totalIncCol + 1; //The grand total col comes right after the total incremental col
         Map<String, String> grandTotalProps = new HashMap<String, String>();
         grandTotalProps.put(TableProperties.DATA_TYPE.getPublicName(), ValueType.total.name());
-        grandTotalProps.put(TableProperties.DATA_SERIES.getPublicName(), DataSeriesType.total.name());
+        grandTotalProps.put(TableProperties.DATA_SERIES.getPublicName(),
+        		Action.getDataSeriesProperty(DataSeriesType.total, false));
         grandTotalProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
         grandTotalProps.put(TableProperties.ROW_AGG_TYPE.getPublicName(), AggregateType.sum.name());
-        String totDesc = "Total load from all upstream reaches from all sources and decayed to the end of this reach. " +
-		"Reported in " + modelUnits + " of " + modelConstituent + ".";
 
-        columns[totalIncCol] = new ImmutableDoubleColumn(data, totalIncCol, "Total Inc. Flux (not decayed)", modelUnits, incDesc, totalIncProps);
-        columns[totalTotalCol] = new ImmutableDoubleColumn(data, totalTotalCol, "Total Flux", modelUnits, totDesc, grandTotalProps);
+
+        columns[totalIncCol] = new ImmutableDoubleColumn(data, totalIncCol, 
+        		Action.getDataSeriesProperty(DataSeriesType.decayed_incremental, false),
+        		modelUnits, Action.getDataSeriesProperty(DataSeriesType.decayed_incremental, true), totalIncProps);
+        columns[totalTotalCol] = new ImmutableDoubleColumn(data, totalTotalCol,
+        		Action.getDataSeriesProperty(DataSeriesType.total, false),
+        		modelUnits, Action.getDataSeriesProperty(DataSeriesType.total, true),
+        		grandTotalProps);
 
         // only get the ids if available
         if (ids == null) {

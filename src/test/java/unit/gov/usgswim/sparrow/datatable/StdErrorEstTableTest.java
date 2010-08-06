@@ -2,12 +2,16 @@ package gov.usgswim.sparrow.datatable;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataImm;
+import gov.usgswim.sparrow.action.Action;
+import gov.usgswim.sparrow.parser.DataSeriesType;
 
 import org.junit.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 public class StdErrorEstTableTest {
 
@@ -53,7 +57,7 @@ public class StdErrorEstTableTest {
 	@Test
 	public void stdErrorNullForZeroTest() throws Exception {
 		StdErrorEstTable stdErr = 
-			new StdErrorEstTable(baseDataTable, uncertaintyData, 0, true, 0);
+			new StdErrorEstTable(baseDataTable, uncertaintyData, 0, true, 0, DataSeriesType.total_std_error_estimate);
 		
 		//The first value
 		assertEquals(.1d * (.1f/1f), stdErr.getDouble(0, 0), 0d);
@@ -68,14 +72,15 @@ public class StdErrorEstTableTest {
 		assertEquals(0d, stdErr.getDouble(4, 0), 0d);
 		
 		//Headings and other stuff...
-		assertEquals("one", stdErr.getName(0));
+		assertEquals(
+				Action.getDataSeriesProperty(DataSeriesType.total_std_error_estimate, false),
+				stdErr.getName(0));
 		assertEquals("BaseTable", stdErr.getName());
 		assertEquals("The BaseTable", stdErr.getDescription());
 		assertEquals("prop1Value", stdErr.getProperty("prop1"));
 		assertEquals(0, stdErr.getRowForId(1L));
-		assertEquals(0, stdErr.getColumnByName("one").intValue());
 		assertEquals(Double.class, stdErr.getDataType(0));
-		assertEquals("Unitless", stdErr.getUnits(0));
+		assertTrue(SparrowUnits.PERCENT.isSame(stdErr.getUnits(0)));
 		
 	}
 	

@@ -5,6 +5,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.ColumnFromTable;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.UncertaintySeries;
@@ -149,18 +150,14 @@ public class CalcAnalysis extends Action<DataColumn>{
 						//on top of the column selected above
 						
 						ColumnAttribsBuilder ca = new ColumnAttribsBuilder();
-						ca.setName("Total Delivered Flux");
-						ca.setDescription("The load arriving at the " + 
-								"bottom of this reach that will arrive at the " + 
-								"bottom of the specified target reach(es)");
+						ca.setName(getDataSeriesProperty(type, false));
+						ca.setDescription(getDataSeriesProperty(type, true));
 						
 						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(
 								result, delFracColumn, dataColIndex, ca);
 						
 						predictionBasedResult = view;
 					} else if (type.equals(DataSeriesType.total_concentration)){
-						// total conc. is (total load / (stream flow)) * 0.0011198
-
 						DataColumn streamFlowData = SharedApplication.getInstance().getStreamFlow(context.getModelID());
 						CalcConcentration calc = new CalcConcentration();
 						calc.setBaseData(predictResultColumn);
@@ -195,11 +192,13 @@ public class CalcAnalysis extends Action<DataColumn>{
 						
 						// incremental yield = incremental flux / catchment area
 						// assume decayed inc. flux
+						//
+						//TODO:  Need a conversion constant here
 						
 						ColumnAttribsBuilder ca = new ColumnAttribsBuilder();
-						ca.setName("Incremental Yield");
-						ca.setDescription("Incremental Flux (decayed) divided by the catchment area.");
-						ca.setUnits("kg/sqr km");
+						ca.setName(getDataSeriesProperty(type, false));
+						ca.setDescription(getDataSeriesProperty(type, true));
+						ca.setUnits(SparrowUnits.KG_PER_SQR_KM_PER_YEAR.getUserName());
 						
 						ColumnData instDecay = new ColumnFromTable(
 								nominalPredictData.getDelivery(), PredictData.INSTREAM_DECAY_COL);
@@ -219,8 +218,8 @@ public class CalcAnalysis extends Action<DataColumn>{
 						// decayed inc. flux is inc. flux multiplied by instream decay
 						
 						ColumnAttribsBuilder ca = new ColumnAttribsBuilder();
-						ca.setName("Incremental Flux (Decayed)");
-						ca.setDescription("Incremental Flux, decayed to the end of the reach.");
+						ca.setName(getDataSeriesProperty(type, false));
+						ca.setDescription(getDataSeriesProperty(type, true));
 						ca.setUnits(null);	//default is correct
 						
 						ColumnData instDecay = new ColumnFromTable(
@@ -239,8 +238,8 @@ public class CalcAnalysis extends Action<DataColumn>{
 						// then that result times Instream Delivery.
 						
 						ColumnAttribsBuilder DelFluxCa = new ColumnAttribsBuilder();
-						DelFluxCa.setName("Incremental Delivered Flux");
-						DelFluxCa.setDescription("Flux from an individual reach that arrives at the downstream end of the target.");
+						DelFluxCa.setName(getDataSeriesProperty(type, false));
+						DelFluxCa.setDescription(getDataSeriesProperty(type, true));
 						DelFluxCa.setUnits(null);	//default is correct
 						
 						
@@ -263,11 +262,9 @@ public class CalcAnalysis extends Action<DataColumn>{
 							// inc. del. yield is inc. del. flux / catchment area
 							
 							ColumnAttribsBuilder DelYieldCa = new ColumnAttribsBuilder();
-							DelYieldCa.setName("Incremental Delivered Yield");
-							DelYieldCa.setDescription("Flux divided by area for " +
-									"an individual reach, that arrives at the " +
-									"downstream end of the target");
-							DelYieldCa.setUnits("Del Yield Units");
+							DelYieldCa.setName(getDataSeriesProperty(type, false));
+							DelYieldCa.setDescription(getDataSeriesProperty(type, true));
+							DelYieldCa.setUnits(SparrowUnits.KG_PER_SQR_KM_PER_YEAR.getUserName());
 							
 							CatchmentArea ca = new CatchmentArea(context.getModelID(), HucLevel.HUC_NONE, false);
 							DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(ca);
@@ -299,7 +296,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 				//Construct a datatable that calculates the error for each
 				//value on demand.
 				predictionBasedResult = new StdErrorEstTable(result, errData,
-						dataColIndex, true, 0d);
+						dataColIndex, true, 0d, type);
 
 			}
 

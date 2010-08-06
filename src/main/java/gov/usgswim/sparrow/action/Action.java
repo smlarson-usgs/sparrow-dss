@@ -1,8 +1,10 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,6 +38,9 @@ import org.apache.log4j.Logger;
 public abstract class Action<R extends Object> {
 	protected static Logger log =
 		Logger.getLogger(Action.class); //logging for this class
+	
+	//synch access on this class
+	private static Properties dataSeriesProperties;
 	
 	/**
 	 * A shared run count that increments when a new instance is created.
@@ -480,8 +485,94 @@ public abstract class Action<R extends Object> {
 		Properties props = new Properties();
 
 		String path = clazz.getName().replace('.', '/') + ".properties";
-		props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(path));
+		InputStream ins = getResourceAsStream(path);
+		props.load(ins);
 
 		return props.getProperty(name);
+	}
+
+	/**
+	 * Fetches a dataseries related property from the dataseries properties
+	 * file.  Each series has a user readable name, or if isDescription, a
+	 * description that can be fetched.  If the value is not found, an empty
+	 * String is returned.
+	 * 
+	 * @param dataSeriesType
+	 * @param isDescription	True to get the description
+	 * @return
+	 */
+	public static String getDataSeriesProperty (DataSeriesType dataSeriesType, boolean isDescription) throws IOException {
+		String name = dataSeriesType.name();
+		if (isDescription) name += "_description";
+		return getDataSeriesProperty().getProperty(name, "");
+	}
+	
+	/**
+	 * Fetches a dataseries related property from the dataseries properties
+	 * file.  Each series has a user readable name, or if isDescription, a
+	 * description that can be fetched.  If the value is not found, an empty
+	 * String is returned.
+	 * 
+	 * @param name
+	 * @param isDescription	True to get the description
+	 * @return
+	 */
+	public static String getDataSeriesProperty (String name, boolean isDescription) throws IOException {
+		if (isDescription) name += "_description";
+		return getDataSeriesProperty().getProperty(name, "");
+	}
+	
+	/**
+	 * Fetches a dataseries related property from the dataseries properties
+	 * file.  Each series has a user readable name, or if isDescription, a
+	 * description that can be fetched.
+	 * 
+	 * @param dataSeriesType
+	 * @param isDescription	True to get the description
+	 * @param defaultValue is returned if no property is found
+	 * @return
+	 */
+	public static String getDataSeriesProperty (DataSeriesType dataSeriesType, boolean isDescription, String defaultValue) throws IOException {
+		String name = dataSeriesType.name();
+		if (isDescription) name += "_description";
+		return getDataSeriesProperty().getProperty(name, defaultValue);
+	}
+	
+	/**
+	 * Fetches a dataseries related property from the dataseries properties
+	 * file.  Each series has a user readable name, or if isDescription, a
+	 * description that can be fetched.
+	 * 
+	 * @param name
+	 * @param isDescription	True to get the description
+	 * @param defaultValue is returned if no property is found
+	 * @return
+	 */
+	public static String getDataSeriesProperty (String name, boolean isDescription, String defaultValue) throws IOException {
+		if (isDescription) name += "_description";
+		return getDataSeriesProperty().getProperty(name, defaultValue);
+	}
+	
+	private static synchronized Properties getDataSeriesProperty() throws IOException{
+		if (dataSeriesProperties == null) {
+			Properties props = new Properties();
+			
+			String path = "/gov/usgswim/sparrow/DataSeriesType.properties";
+			InputStream ins = getResourceAsStream(path);
+
+			props.load(ins);
+			
+			dataSeriesProperties = props;
+		}
+		
+		return dataSeriesProperties;
+	}
+	
+	protected static InputStream getResourceAsStream(String path) {
+		InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+		if (ins == null) {
+			ins = Action.class.getResourceAsStream(path);
+		}
+		return ins;
 	}
 }
