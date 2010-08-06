@@ -148,7 +148,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 					response[i].setReach(reach[i]);
 	
 					// populate each of the sections
-					response[i].mapValueXML = buildValueSection(req, i);
+					response[i].mapValueXML = buildValueSection(req, i, reach[i]);
 					
 					if (req.hasAdjustments()) {
 						retrieveAdjustments(req.getContextID(), req, response[i]);
@@ -226,7 +226,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	 * Builds the xml section for the predicted value or null if there is no context.
 	 * @throws IOException 
 	 */
-	private String buildValueSection(IDByPointRequest req, int idIndex) throws IOException {
+	private String buildValueSection(IDByPointRequest req, int idIndex, ReachInfo reachInfo) throws IOException {
 		if (req.getContextID() != null) {
 			PredictionContext pc =
 				SharedApplication.getInstance().getPredictionContext(req.getContextID());
@@ -234,12 +234,32 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			if (pc != null) {
 				DataColumn data = SharedApplication.getInstance().getAnalysisResult(pc);
 				
-				int row = data.getTable().getRowForId((long) req.getReachID()[idIndex]);
-				String val = data.getDouble(row).toString();
+				int row = data.getTable().getRowForId((long) reachInfo.getId());
 				
+				String value = data.getDouble(row).toString();
+				String units = data.getUnits();
+				String constituent = data.getConstituent();
+				String name = data.getColumnName();
+				String description = data.getDescription();
+				
+				if (units == null) {
+					units = "Units Unknown";
+				}
+				
+				if (constituent == null) {
+					constituent = "";	//keep it empty so it won't display on client
+				}
+				
+				if (description == null) {
+					description = "";	//keep it empty so it won't display on client
+				}
 				
 				String[] params = {
-						"mappedValue", val
+						"value", value,
+						"name", name,
+						"description", description,
+						"units", units,
+						"constituent", constituent
 				};
 				String xmlResult = props.getParametrizedQuery("mappedXMLResponse", params);
 				return xmlResult;

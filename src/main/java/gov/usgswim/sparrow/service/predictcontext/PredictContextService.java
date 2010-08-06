@@ -87,10 +87,10 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 					"AnalysisContextId", Integer.toString( context.getAnalysis().hashCode() ),
 					"terminalReaches", terminalReaches,
 					"areaOfInterest", areaOfInterest,
-					"displayName", name,
-					"displayDescription", description,
-					"displayUnits", units,
-					"displayConstituent", constituent
+					"name", name,
+					"description", description,
+					"units", units,
+					"constituent", constituent
 			});
 
 			return inFact.createXMLStreamReader(new StringReader(response));
