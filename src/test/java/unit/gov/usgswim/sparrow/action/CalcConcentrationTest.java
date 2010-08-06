@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.action.DeliveryReach;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.util.DLUtils;
@@ -55,9 +56,14 @@ public class CalcConcentrationTest {
 	@Test
 	public void testWithNoZeroDivisors() throws Exception {
 
+		int baseColIndex = 0;
+		int flowColIndex = 1;
 		
-		DataColumn baseCol = new DataColumn(baseTable, 0, EXAMPLE_CONTEXT_ID);
-		DataColumn flowCol = new DataColumn(baseTable, 1, null, EXAMPLE_MODEL_ID);
+		baseTable.getColumns()[baseColIndex].setUnits(SparrowUnits.KG_PER_YEAR.getUserName());
+		baseTable.getColumns()[flowColIndex].setUnits(SparrowUnits.CFS.getUserName());
+		
+		DataColumn baseCol = new DataColumn(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
+		DataColumn flowCol = new DataColumn(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
 		
 		CalcConcentration calc = new CalcConcentration();
 		calc.setBaseData(baseCol);
@@ -75,9 +81,15 @@ public class CalcConcentrationTest {
 	@Test
 	public void testWithZeroDivisor() throws Exception {
 
+		int baseColIndex = 1;
+		int flowColIndex = 0;
 		
-		DataColumn baseCol = new DataColumn(baseTable, 1, EXAMPLE_CONTEXT_ID);
-		DataColumn flowCol = new DataColumn(baseTable, 0, null, EXAMPLE_MODEL_ID);
+		baseTable.getColumns()[baseColIndex].setUnits(SparrowUnits.KG_PER_YEAR.getUserName());
+		baseTable.getColumns()[flowColIndex].setUnits(SparrowUnits.CFS.getUserName());
+		
+		
+		DataColumn baseCol = new DataColumn(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
+		DataColumn flowCol = new DataColumn(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
 		
 		CalcConcentration calc = new CalcConcentration();
 		calc.setBaseData(baseCol);
@@ -95,9 +107,15 @@ public class CalcConcentrationTest {
 	@Test
 	public void testWithNotANumber() throws Exception {
 
-		baseTable.setValue(Double.NaN, 0, 0);
-		DataColumn baseCol = new DataColumn(baseTable, 1, EXAMPLE_CONTEXT_ID);
-		DataColumn flowCol = new DataColumn(baseTable, 0, null, EXAMPLE_MODEL_ID);
+		int baseColIndex = 1;
+		int flowColIndex = 0;
+		
+		baseTable.getColumns()[baseColIndex].setUnits(SparrowUnits.KG_PER_YEAR.getUserName());
+		baseTable.getColumns()[flowColIndex].setUnits(SparrowUnits.CFS.getUserName());
+		
+		baseTable.setValue(Double.NaN, 0, baseColIndex);
+		DataColumn baseCol = new DataColumn(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
+		DataColumn flowCol = new DataColumn(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
 		
 		CalcConcentration calc = new CalcConcentration();
 		calc.setBaseData(baseCol);
@@ -110,6 +128,46 @@ public class CalcConcentrationTest {
 		assertEquals((11d / 10d) * CONV_FACTOR, result.getDouble(1), OK_ERR);
 		assertEquals((91d / 90d) * CONV_FACTOR, result.getDouble(9), OK_ERR);
 		
+	}
+	
+	@Test
+	public void testWithWrongLoadUnit() throws Exception {
+
+		int baseColIndex = 1;
+		int flowColIndex = 0;
+		
+		baseTable.getColumns()[baseColIndex].setUnits(SparrowUnits.SQR_KM.getUserName());	//wrong
+		baseTable.getColumns()[flowColIndex].setUnits(SparrowUnits.CFS.getUserName());
+		
+		DataColumn baseCol = new DataColumn(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
+		DataColumn flowCol = new DataColumn(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
+		
+		CalcConcentration calc = new CalcConcentration();
+		calc.setBaseData(baseCol);
+		calc.setStreamFlowData(flowCol);
+		
+		DataColumn result = calc.run();
+		assertNull(result);
+	}
+	
+	@Test
+	public void testWithWrongFlowUnit() throws Exception {
+
+		int baseColIndex = 1;
+		int flowColIndex = 0;
+		
+		baseTable.getColumns()[baseColIndex].setUnits(SparrowUnits.KG_PER_YEAR.getUserName());	//wrong
+		baseTable.getColumns()[flowColIndex].setUnits(SparrowUnits.MG_PER_L.getUserName());
+		
+		DataColumn baseCol = new DataColumn(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
+		DataColumn flowCol = new DataColumn(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
+		
+		CalcConcentration calc = new CalcConcentration();
+		calc.setBaseData(baseCol);
+		calc.setStreamFlowData(flowCol);
+		
+		DataColumn result = calc.run();
+		assertNull(result);
 	}
 	
 
