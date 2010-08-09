@@ -3,6 +3,8 @@ package gov.usgswim.sparrow.util;
 import gov.usgs.webservices.framework.utils.ResourceLoaderUtils;
 import gov.usgs.webservices.framework.utils.SmartXMLProperties;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -29,13 +31,20 @@ public abstract class SparrowResourceUtils {
 		Long modelID = lookupModelID(model);
 		Properties props = ResourceLoaderUtils.loadResourceAsProperties(getModelResourceFilePath(modelID, SESSIONS_FILE));
 		String defaultValue = null; // TODO decide on default value for session not found
-		return props.getProperty(sessionName, defaultValue);
+		return props.getProperty(sessionName.replace(' ', '_'), defaultValue);
 	}
 
 	public static Set<Entry<Object, Object>> retrieveAllSavedSessions(String model) {
 		Long modelID = lookupModelID(model);
 		Properties props = ResourceLoaderUtils.loadResourceAsProperties(getModelResourceFilePath(modelID, SESSIONS_FILE));
-		return props.entrySet();
+		Set<Entry<Object, Object>> sessionList = props.entrySet();
+		Map<Object, Object> newMap = new HashMap<Object, Object>(sessionList.size());
+		if (sessionList != null && !sessionList.isEmpty()) {
+			for (Entry<Object, Object> entry: sessionList) {
+				newMap.put(entry.getKey().toString().replace('_', ' '), entry.getValue());
+			}
+		}
+		return newMap.entrySet();
 	}
 
 	public static String lookupMergedHelp(String model, String helpItem, String wrapXMLElement) {
