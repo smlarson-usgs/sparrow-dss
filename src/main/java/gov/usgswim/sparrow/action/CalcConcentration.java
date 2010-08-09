@@ -52,6 +52,10 @@ public class CalcConcentration extends Action<DataColumn> {
 			throw new Exception("The streamflow units must be in 'cu ft/s' or the conversion to mg/L will not be correct.");
 		}
 		
+		if (! baseData.hasRowIds()) {
+			throw new Exception("The baseData must have row IDs or Identify will not work for this series.");
+		}
+		
 		ColumnAttribsBuilder concAttribs = new ColumnAttribsBuilder();
 		concAttribs.setName(getDataSeriesProperty(DataSeriesType.total_concentration, false));
 		concAttribs.setDescription(getDataSeriesProperty(DataSeriesType.total_concentration, true));

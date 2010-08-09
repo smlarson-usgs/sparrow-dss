@@ -41,6 +41,11 @@ public class CalcConcentrationTest {
 		baseTable = TabDelimFileUtil.readAsDouble(fileStream,
 				true, DLUtils.DO_NOT_INDEX);
 		
+		//build row IDs matching the row index
+		for (int i=0; i< baseTable.getRowCount(); i++) {
+			baseTable.setRowId(i, i);
+		}
+		
 
 	}
 	
@@ -50,6 +55,7 @@ public class CalcConcentrationTest {
 		assertEquals(10, baseTable.getRowCount());
 		assertEquals(0d, baseTable.getDouble(0, 0), OK_ERR);
 		assertEquals(94d, baseTable.getDouble(9, 4), OK_ERR);
+		assertTrue(baseTable.hasRowIds());
 	}
 	
 

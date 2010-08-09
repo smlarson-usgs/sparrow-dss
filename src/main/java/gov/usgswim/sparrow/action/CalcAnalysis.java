@@ -14,6 +14,7 @@ import gov.usgswim.sparrow.datatable.ColumnAttribsBuilder;
 import gov.usgswim.sparrow.datatable.HucLevel;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
+import gov.usgswim.sparrow.datatable.SingleColumnOverrideDataTable;
 import gov.usgswim.sparrow.datatable.SingleValueDoubleColumnData;
 import gov.usgswim.sparrow.datatable.StdErrorEstTable;
 import gov.usgswim.sparrow.parser.Analysis;
@@ -102,15 +103,19 @@ public class CalcAnalysis extends Action<DataColumn>{
 
 			switch(type) {
 				case delivered_fraction: {
-					dataColIndex = 0; // only a single column for delivery fraction as it is not source dependent
+					//We get the data from a ColumnData object containing just
+					//the del frac, however, we also need row IDs so that
+					//identify will work for this data series.  To do that,
+					//we overlay the del frac column on topo, which provides
+					//the row IDs for free.
 					
-					SimpleDataTable sdt = new SimpleDataTable(
-							new ColumnData[] {delFracColumn}, "Delivery Fraction",
-							"A single column table containing the delivery fraction" +
-							" to a target reach or reaches.", null, null
-						);
+					dataColIndex = 4; //An overriden column of topo (was hydseq)
 					
-					dataTable = sdt;
+					SingleColumnOverrideDataTable override = new SingleColumnOverrideDataTable(
+							nominalPredictData.getTopo(),
+							delFracColumn, 4, null);
+					
+					dataTable = override;
 					break;
 				}
 
