@@ -7,11 +7,16 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SparseDoubleColumnData;
 import gov.usgswim.datatable.impl.StandardDoubleColumnData;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.SparrowUnits;
+import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.parser.BaseDataSeriesType;
+import gov.usgswim.sparrow.parser.DataSeriesType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
@@ -56,6 +61,12 @@ public class CalcDeliveryFraction extends Action<ColumnData> {
 		HashMap<Integer, DeliveryReach> deliveries = calcDeliveryHash(predictData, targetReachIds);
 		int baseRows = predictData.getTopo().getRowCount();
 		
+		//Props for the returned column
+		Map<String, String> props = new HashMap<String, String>();
+		props.put(TableProperties.CONSTITUENT.getPublicName(), predictData.getModel().getConstituent());
+		props.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.delivered_fraction.name());
+		props.put(TableProperties.DATA_SERIES.getPublicName(), DataSeriesType.delivered_fraction.name());
+		
 		if (deliveries.size() > (baseRows / 9)) {
 			double[] vals2d = new double[baseRows];
 			
@@ -63,14 +74,16 @@ public class CalcDeliveryFraction extends Action<ColumnData> {
 				vals2d[dr.getRow()] = dr.getDelivery();
 			}
 			
+
+			
 			//Todo:  It would be nice to have a standard property name for the
 			//model that this relates to and what the rows are related to.
 			StandardDoubleColumnData column = new StandardDoubleColumnData(
-					vals2d, "Delivery Fraction", "unitless",
-					"The fraction of the load arriving at the " + 
-					"bottom of a reach that will arrive at the " + 
-					"bottom of the specified target reach(es).",
-					null, false);
+					vals2d,
+					getDataSeriesProperty(DataSeriesType.delivered_fraction, false),
+					SparrowUnits.FRACTION.getUserName(),
+					getDataSeriesProperty(DataSeriesType.delivered_fraction, true),
+					props, false);
 			
 			return column;
 		} else {
@@ -84,11 +97,11 @@ public class CalcDeliveryFraction extends Action<ColumnData> {
 			}
 			
 			SparseDoubleColumnData column = new SparseDoubleColumnData(
-					delFracs, "Delivery Fraction", "unitless",
-					"The fraction of the load arriving at the " + 
-					"bottom of a reach that will arrive at the " + 
-					"bottom of the specified target reach(es).",
-					null, null, predictData.getTopo().getRowCount(), 0d);
+					delFracs,
+					getDataSeriesProperty(DataSeriesType.delivered_fraction, false),
+					SparrowUnits.FRACTION.getUserName(),
+					getDataSeriesProperty(DataSeriesType.delivered_fraction, true),
+					props, null, predictData.getTopo().getRowCount(), 0d);
 			
 			return column;
 		}

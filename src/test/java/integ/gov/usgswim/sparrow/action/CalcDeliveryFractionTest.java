@@ -11,8 +11,11 @@ import gov.usgswim.sparrow.DeliveryRunner;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.TestHelper;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
+import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
@@ -121,6 +124,13 @@ public class CalcDeliveryFractionTest extends SparrowDBTest {
 		action.setPredictData(predictData);
 		action.setTargetReachIds(targets.asSet());
 		ColumnData deliveryFrac = action.run();
+		
+		//check metadata of delivery fraction
+		assertEquals(Action.getDataSeriesProperty(DataSeriesType.delivered_fraction, false), deliveryFrac.getName());
+		assertEquals(Action.getDataSeriesProperty(DataSeriesType.delivered_fraction, true), deliveryFrac.getDescription());
+		assertEquals(SparrowUnits.FRACTION.getUserName(), deliveryFrac.getUnits());
+		assertEquals(unmodifiedPredictData.getModel().getConstituent(), deliveryFrac.getProperty(TableProperties.CONSTITUENT.getPublicName()));
+
 		
 		//Some stats
 		int inSheet = 0;

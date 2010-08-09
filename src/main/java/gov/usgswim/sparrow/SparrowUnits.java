@@ -6,7 +6,8 @@ public enum SparrowUnits {
 	MG_PER_L("mg/L", "mg / L"),
 	SQR_KM("sqr km", "square km"),
 	KG_PER_SQR_KM_PER_YEAR("kg/sqr km/yr", "kg / square km / year"),
-	PERCENT("%", "percent");
+	PERCENT("%", "percent"),
+	FRACTION("fraction", "fraction");
 
 	private String name;
 	private String description;
