@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.SparrowDBTest;
 import gov.usgswim.sparrow.datatable.TableProperties;
@@ -17,6 +18,17 @@ import org.junit.Test;
 
 public class LoadStreamFlowTest extends SparrowDBTest {
 
+	
+	static DataColumn model50Flow;
+	
+	@Override
+	public void doSetup() throws Exception {
+		LoadStreamFlow lf = new LoadStreamFlow();
+		lf.setModelId(SparrowDBTest.TEST_MODEL_ID);
+		model50Flow = lf.run();
+	}
+	
+	
 	/**
 	 * Tests the basic getter and setter functionality.
 	 * @throws Exception
@@ -25,9 +37,8 @@ public class LoadStreamFlowTest extends SparrowDBTest {
 	public void testLoadFluxSetters() throws Exception {
 
 		LoadStreamFlow lf = new LoadStreamFlow();
-		lf.setModelId(50);
-		assertEquals(50, lf.getModelId());
-
+		lf.setModelId(SparrowDBTest.TEST_MODEL_ID);
+		assertEquals(SparrowDBTest.TEST_MODEL_ID.longValue(), lf.getModelId());
 	}
 	
 	/**
@@ -37,21 +48,17 @@ public class LoadStreamFlowTest extends SparrowDBTest {
 	@Test
 	public void testLoadFluxColumns() throws Exception {
 		
-		LoadStreamFlow lf = new LoadStreamFlow();
-		DataColumn dataColumn = lf.run();
-		DataTable dt = dataColumn.getTable();
+		DataTable dt = model50Flow.getTable();
 		
-		assertEquals(2, dt.getColumnCount());
-		assertEquals(null, dt.getUnits(0));
-		assertEquals("IDENTIFIER", dt.getName(0));
+		assertEquals(1, dt.getColumnCount());
+		assertTrue(dt.hasRowIds());
 		
-		assertEquals("Stream Flow", dt.getName(1));
-		assertEquals("Averaged flow of the stream reach", dt.getDescription(1));
+		assertEquals(Action.getDataSeriesProperty(DataSeriesType.flux, false), dt.getName(0));
+		assertEquals(Action.getDataSeriesProperty(DataSeriesType.flux, true), dt.getDescription(0));
 		assertEquals(DataSeriesType.flux.name(),
-				dt.getProperty(1, TableProperties.DATA_SERIES.getPublicName()));
+				dt.getProperty(0, TableProperties.DATA_SERIES.getPublicName()));
 		assertEquals("Water",
-				dt.getProperty(1, TableProperties.CONSTITUENT.getPublicName()));
-		
+				dt.getProperty(0, TableProperties.CONSTITUENT.getPublicName()));
 
 	}
 	
@@ -62,15 +69,13 @@ public class LoadStreamFlowTest extends SparrowDBTest {
 	@Test
 	public void testLoadFluxData() throws Exception {
 		
-		LoadStreamFlow lf = new LoadStreamFlow(50);
-		DataColumn dataColumn = lf.run();
-		DataTable dt = dataColumn.getTable();
+		DataTable dt = model50Flow.getTable();
 		
 		assertEquals(8321, dt.getRowCount());
-		int row = dt.findFirst(0, 9388);
-		assertEquals((Double) 1063.71, dt.getDouble(row, 1));
-		row = dt.findFirst(0, 9390);
-		assertEquals((Double) 741.45, dt.getDouble(row, 1));
+		int row = dt.getRowForId(9388L);
+		assertEquals((Double) 1063.71, dt.getDouble(row, 0));
+		row = dt.getRowForId(9390L);
+		assertEquals((Double) 741.45, dt.getDouble(row, 0));
 
 	}
 	

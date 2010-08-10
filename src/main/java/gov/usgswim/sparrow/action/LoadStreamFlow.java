@@ -43,17 +43,17 @@ public class LoadStreamFlow extends Action<DataColumn> {
 		
 		ResultSet rset = st.executeQuery();	//auto-closed
 		DataTableWritable values = null;
-		values = DataTableConverter.toDataTable(rset);
+		values = DataTableConverter.toDataTable(rset, null, true);
 		
 		//Set column attributes
-		values.getColumns()[1].setName(getDataSeriesProperty(DataSeriesType.flux, false));
-		values.getColumns()[1].setDescription(getDataSeriesProperty(DataSeriesType.flux, true));
-		values.getColumns()[1].setUnits(SparrowUnits.CFS.getUserName());
-		values.getColumns()[1].setProperty(TableProperties.DATA_SERIES.getPublicName(), DataSeriesType.flux.name());
-		values.getColumns()[1].setProperty(TableProperties.CONSTITUENT.getPublicName(), "Water");
+		values.getColumns()[0].setName(getDataSeriesProperty(DataSeriesType.flux, false));
+		values.getColumns()[0].setDescription(getDataSeriesProperty(DataSeriesType.flux, true));
+		values.getColumns()[0].setUnits(SparrowUnits.CFS.getUserName());
+		values.getColumns()[0].setProperty(TableProperties.DATA_SERIES.getPublicName(), DataSeriesType.flux.name());
+		values.getColumns()[0].setProperty(TableProperties.CONSTITUENT.getPublicName(), "Water");
 		
 
-		DataColumn retColumn = new DataColumn(values.toImmutable(), 1, null, modelId);
+		DataColumn retColumn = new DataColumn(values.toImmutable(), 0, null, modelId);
 		return retColumn;
 		
 	}
