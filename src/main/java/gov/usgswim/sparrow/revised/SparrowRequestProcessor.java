@@ -21,6 +21,8 @@ public class SparrowRequestProcessor {
 	 * @author ilinkuo
 	 *
 	 */
+	//TODO:  Is this really used?  There is a DataSeriesType enum that should
+	//be used in preference to this if this is in use.
 	public static enum DataSeriesTypes {
 		SOURCE,
 		INCR_FLUX,
