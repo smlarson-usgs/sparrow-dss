@@ -50,7 +50,7 @@ public class SparrowDBTest extends TestHelper {
 	 * Name of a system property that if "true" will switch to the production
 	 * db and prompt for a password.
 	 */
-	private static final String SYS_PROP_USE_PRODUCTION_DB = "USE_PRODUCTION_DB";
+	public static final String SYS_PROP_USE_PRODUCTION_DB = "USE_PRODUCTION_DB";
 	
 	/** The model ID of MRB2 in the test db */
 	public static final Long TEST_MODEL_ID = 50L;
