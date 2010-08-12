@@ -14,7 +14,7 @@ import gov.usgswim.Immutable;
 @Immutable
 public class ReachInfo {
 	private final long modelID;
-	private final int id;
+	private final long id;
 	private final String name;
 	private final transient Integer distInMeters;
 
@@ -42,7 +42,7 @@ public class ReachInfo {
 	// IMPORTANT: If new fields are added, remember to clone them
 
 
-	public ReachInfo(long modelID, int id, String name, Integer distInMeters,
+	public ReachInfo(long modelID, long id, String name, Integer distInMeters,
 			double minLong, double minLat, double maxLong, double maxLat,
 			double markLong, double markLat,
 			String huc2, String huc2Name, String huc4, String huc4Name,
@@ -158,7 +158,7 @@ public class ReachInfo {
 		return modelID;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -184,6 +184,56 @@ public class ReachInfo {
 
 	public double getMaxLat() {
 		return maxLat;
+	}
+	
+	
+
+	public long getModelID() {
+		return modelID;
+	}
+
+	public Integer getDistInMeters() {
+		return distInMeters;
+	}
+
+	public double getMarkerLong() {
+		return markerLong;
+	}
+
+	public double getMarkerLat() {
+		return markerLat;
+	}
+
+	public String getHuc2() {
+		return huc2;
+	}
+
+	public String getHuc2Name() {
+		return huc2Name;
+	}
+
+	public String getHuc4() {
+		return huc4;
+	}
+
+	public String getHuc4Name() {
+		return huc4Name;
+	}
+
+	public String getHuc6() {
+		return huc6;
+	}
+
+	public String getHuc6Name() {
+		return huc6Name;
+	}
+
+	public String getHuc8() {
+		return huc8;
+	}
+
+	public String getHuc8Name() {
+		return huc8Name;
 	}
 
 	public void setClickedPoint(double longitude, double latitude) {
