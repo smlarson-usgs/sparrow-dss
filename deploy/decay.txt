@@ -1,8 +1,0 @@
-Incremental Decay	Upstream Decay
-.02	.04
-.02	.04
-.02	.04
-.02	.04
-.02	.04
-.02	.04
-.02	.04
