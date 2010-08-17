@@ -226,15 +226,17 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	 * Builds the xml section for the predicted value or null if there is no context.
 	 * @throws IOException 
 	 */
-	private String buildValueSection(IDByPointRequest req, int idIndex, ReachInfo reachInfo) throws IOException {
+	private String buildValueSection(IDByPointRequest req, int idIndex, ReachInfo reachInfo) throws Exception {
 		if (req.getContextID() != null) {
 			PredictionContext pc =
 				SharedApplication.getInstance().getPredictionContext(req.getContextID());
 			
 			if (pc != null) {
+				PredictData pd = SharedApplication.getInstance().getPredictData(pc.getModelID());
+				
 				DataColumn data = SharedApplication.getInstance().getAnalysisResult(pc);
 				
-				int row = data.getTable().getRowForId((long) reachInfo.getId());
+				int row = pd.getRowForReachID(reachInfo.getId());
 				
 				String value = data.getDouble(row).toString();
 				String units = data.getUnits();
