@@ -56,6 +56,11 @@
             </fileset>
 		    <fileset dir="${build.web.dir}" includes="**/*.jar" excludes="**/mvclient.jar **/sdovis.jar **/commons*.jar" />
 		</war>
+		
+		<!-- Create a complete local directory to run from -->
+		<unwar src="${dist.dir}/sparrow_mv_with_jsps.war" dest="${build.dir}/complete_local_web" overwrite="true" />
+		
+		
 		<!--
 		<delete includeemptydirs="true">
 			<fileset dir="${dist.dir}" excludes="**/*.war **/javadoc/**/*" />

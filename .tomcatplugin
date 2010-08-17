@@ -1,11 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tomcatProjectProperties>
-    <rootDir>/public_html</rootDir>
+    <rootDir>/build/complete_local_web</rootDir>
     <exportSource>false</exportSource>
     <reloadable>true</reloadable>
     <redirectLogger>true</redirectLogger>
     <updateXml>true</updateXml>
     <warLocation></warLocation>
     <extraInfo></extraInfo>
-    <webPath>/sparrow_mv</webPath>
+    <webPath>sparrow_mv</webPath>
+    <webClassPathEntries>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/apache/log4j/log4j-1.2.13.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/backport_util/usgs_core/backport-util-concurrent.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/codehaus/woodstox/usgs_core/wstx-lgpl-3.2.4.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/codehaus/xstream/xstream-1.3.1.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/dbunit/usgs-core/dbunit-2.4.5.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/ehcache/usgs_core/ehcache-core-2.0.0-beta.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/google/collect/usgs_core/google-collect-1.0-rc2.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/httpunit/usgs_dep/js-1.6R5.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/httpunit/usgs_dep/nekohtml-0.9.5.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/jakarta/commons_lang/usgs_core/commons-lang.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/jamon/usgs_core/jamon-2.7.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/jamon/usgs_dep/fdsapi-1.2.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/jamon/usgs_dep/jakarta-oro-2.0.8.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/oracle/mapviewer_client/mvclient.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/oracle/mapviewer_client/sdoapi.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/oracle/mapviewer_client/sdovis.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/pmd/usgs_core/pmd.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/pmd/usgs_dep/asm.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/pmd/usgs_dep/jaxen.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/slf4j/slf4j-api-1.5.10.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/slf4j/slf4j-log4j12-1.5.10.jar</webClassPathEntry>
+        <webClassPathEntry>/sparrow_core_always_trunk/java_lib/usgs/datatable/usgs_core/usgs-datatable.jar</webClassPathEntry>
+    </webClassPathEntries>
 </tomcatProjectProperties>
