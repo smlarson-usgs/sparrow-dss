@@ -235,7 +235,11 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				
 				int row = pd.getRowForReachID(reachInfo.getId());
 				
-				String value = data.getDouble(row).toString();
+				Double value = data.getDouble(row);
+				String displayValue = "[No Value Calculated]";	//only if null
+				if (value != null) {
+					displayValue = formatter.format(value);
+				}
 				String units = data.getUnits();
 				String constituent = data.getConstituent();
 				String name = data.getColumnName();
@@ -254,7 +258,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				}
 				
 				String[] params = {
-						"value", value,
+						"value", displayValue,
 						"name", name,
 						"description", description,
 						"units", units,
