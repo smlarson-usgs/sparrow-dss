@@ -4,6 +4,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
+import gov.usgswim.sparrow.parser.BaseDataSeriesType;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -81,9 +82,9 @@ public class WeightRunner {
             // Add a table-level filter since we're dealing with a weighted result
             Map<String, String> properties = new HashMap<String, String>();
             if (dataSeries == DataSeriesType.incremental_yield) {
-                properties.put("filterColumnType", ValueType.total.name());
+                properties.put("filterColumnType", BaseDataSeriesType.total.name());
             } else if (dataSeries == DataSeriesType.total_concentration) {
-                properties.put("filterColumnType", ValueType.incremental.name());
+                properties.put("filterColumnType", BaseDataSeriesType.incremental.name());
             }
 
             // Build a new PredictResult based on the weighted data

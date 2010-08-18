@@ -170,4 +170,22 @@ public enum DataSeriesType implements Serializable {
     public boolean isAnalysisDisallowed() {
     	return ! analysisAllowed;
     }
+
+	/**
+	 * Returns the more generic base type of this type.
+	 * @return the baseType
+	 */
+	public BaseDataSeriesType getBaseType() {
+		return baseType;
+	}
+
+	/**
+	 * Returns true if the series is error estimate based.
+	 * @return the errEstBased
+	 */
+	public boolean isErrEstBased() {
+		return errEstBased;
+	}
+    
+    
 }

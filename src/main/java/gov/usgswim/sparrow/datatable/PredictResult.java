@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.datatable;
 
 import gov.usgswim.datatable.DataTable.Immutable;
+import gov.usgswim.sparrow.PredictData;
 
 /**
  * A Datatable of sparrow prediction results with convenience getXXX methods
@@ -26,17 +27,24 @@ public interface PredictResult extends Immutable {
 	public int getIncrementalCol();
 	
 	/**
-	 * Returns the incremental addition of the model constituent for all sources
-	 * at this reach, as identified by the specified row.
+	 * Returns the incremental addition (not decayed by instream decay) of the
+	 * model constituent for all sources at this reach, for the specified row.
 	 * 
-	 * Note that the incremental addition is not decayed by the instream decay
-	 * coef.:  It is the amount of load enter this reach, not the incremental
-	 * amount leaving the reach.
-	 * 
-	 * @param row The row number of the reach
+	 * @param row The row index (zero based) of the reach
 	 * @return The incremental addition from all sources at this reach
 	 */
 	public Double getIncremental(int row);
+	
+	/**
+	 * Returns the decayed incremental addition (decayed by instream decay) of the
+	 * model constituent for all sources at this reach, for the specified row.
+	 * 
+	 * @param row The row index (zero based) of the reach
+	 * @param predictData The prediction data to use to look up the instream
+	 * decay coefficient for the reach.
+	 * @return The incremental addition from all sources at this reach
+	 */
+	public Double getDecayedIncremental(int row, PredictData predictData);
 	
 	/**
 	 * Returns the column index of the incremental values of the specified source.
@@ -51,22 +59,36 @@ public interface PredictResult extends Immutable {
 	public int getIncrementalColForSrc(Long srcId);
 	
 	/**
-	 * Returns the incremental addition of the model constituent for the
-	 * specified source at this reach, as specified by the source id.
-	 * at this reach, as identified by the specified row.
-	 * 
-	 * Note that the incremental addition is not decayed by the instream decay
-	 * coef.:  It is the amount of load enter this reach, not the incremental
-	 * amount leaving the reach.
+	 * Returns the incremental addition (not decayed by instream decay) of the
+	 * model constituent for the specified source at this reach, as specified by
+	 * the source id.
 	 * 
 	 * If the predict data is loaded from a file and does not have source IDs,
 	 * the 1 based ordinal position of the source is used as the source ID.
 	 * 
+	 * @param row The row index (zero based) of the reach
 	 * @param srcId The source id, or if none due to a file loaded dataset,
 	 * the 1 based ordinal of the source.
 	 * @return The incremental addition from the specified source at this reach
 	 */
 	public Double getIncrementalForSrc(int row, Long srcId);
+	
+	/**
+	 * Returns the decayed incremental addition (decayed by instream decay) of the
+	 * model constituent for the specified source at this reach, as specified by
+	 * the source id.
+	 * 
+	 * If the predict data is loaded from a file and does not have source IDs,
+	 * the 1 based ordinal position of the source is used as the source ID.
+	 * 
+	 * @param row The row index (zero based) of the reach
+	 * @param srcId The source id, or if none due to a file loaded dataset,
+	 * the 1 based ordinal of the source.
+	 * @param predictData The prediction data to use to look up the instream
+	 * decay coefficient for the reach.
+	 * @return The incremental load at the downstream end of the specified reach.
+	 */
+	public Double getDecayedIncrementalForSrc(int row, Long srcId, PredictData predictData);
 	
 	/**
 	 * Returns the index of the total load column.

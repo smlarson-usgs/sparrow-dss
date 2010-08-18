@@ -1,7 +1,5 @@
 package gov.usgswim.sparrow.datatable;
 
-import static gov.usgswim.sparrow.service.predict.ValueType.incremental;
-import static gov.usgswim.sparrow.service.predict.ValueType.total;
 import static gov.usgswim.sparrow.service.predict.aggregator.AggregateType.sum;
 import gov.usgswim.Immutable;
 import gov.usgswim.datatable.ColumnData;
@@ -11,8 +9,8 @@ import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.parser.BaseDataSeriesType;
 import gov.usgswim.sparrow.parser.DataSeriesType;
-import gov.usgswim.sparrow.service.predict.ValueType;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
 
 import java.util.Collections;
@@ -144,7 +142,7 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 
             // Map of metadata values for inc-add column
             Map<String, String> incProps = new HashMap<String, String>();
-            incProps.put(TableProperties.DATA_TYPE.getPublicName(), ValueType.incremental.name());
+            incProps.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.incremental.name());
             incProps.put(TableProperties.DATA_SERIES.getPublicName(),
             		Action.getDataSeriesProperty(DataSeriesType.incremental, false));
             incProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
@@ -156,7 +154,7 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
             
             // Map of metadata values for total column
             Map<String, String> totProps = new HashMap<String, String>();
-            totProps.put(TableProperties.DATA_TYPE.getPublicName(), ValueType.total.name());
+            totProps.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.total.name());
             totProps.put(TableProperties.DATA_SERIES.getPublicName(),
             		Action.getDataSeriesProperty(DataSeriesType.total, false));
             totProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
@@ -176,7 +174,7 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
         // ------------------------------------------
         int totalIncCol = 2 * sourceCount;	//The total inc col comes right after the two sets of source columns
         Map<String, String> totalIncProps = new HashMap<String, String>();
-        totalIncProps.put(TableProperties.DATA_TYPE.getPublicName(), ValueType.incremental.name());
+        totalIncProps.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.incremental.name());
         totalIncProps.put(TableProperties.DATA_SERIES.getPublicName(),
         		Action.getDataSeriesProperty(DataSeriesType.incremental, false));
         totalIncProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent );
@@ -185,7 +183,7 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
         
         int totalTotalCol = totalIncCol + 1; //The grand total col comes right after the total incremental col
         Map<String, String> grandTotalProps = new HashMap<String, String>();
-        grandTotalProps.put(TableProperties.DATA_TYPE.getPublicName(), ValueType.total.name());
+        grandTotalProps.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.total.name());
         grandTotalProps.put(TableProperties.DATA_SERIES.getPublicName(),
         		Action.getDataSeriesProperty(DataSeriesType.total, false));
         grandTotalProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
@@ -215,6 +213,13 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
     public Double getIncremental(int row) {
         return getDouble(row, totalIncCol);
     }
+    
+	@Override
+	public Double getDecayedIncremental(int row, PredictData predictData) {
+		Double inc = getIncremental(row);
+		Double coef = predictData.getDelivery().getDouble(row, PredictData.INSTREAM_DECAY_COL);
+		return inc * coef;
+	}
 
     public int getIncrementalCol() {
         return totalIncCol;
@@ -235,6 +240,14 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
     public Double getIncrementalForSrc(int row, Long srcId) {
         return getDouble(row, srcIdIncMap.get(srcId));
     }
+    
+	@Override
+	public Double getDecayedIncrementalForSrc(int row, Long srcId,
+			PredictData predictData) {
+		Double inc = getIncrementalForSrc(row, srcId);
+		Double coef = predictData.getDelivery().getDouble(row, PredictData.INSTREAM_DECAY_COL);
+		return inc * coef;
+	}
 
     public int getTotalColForSrc(Long srcId) {
         return srcIdTotalMap.get(srcId);

@@ -1,7 +1,5 @@
 package gov.usgswim.sparrow.service.idbypoint;
 
-import static gov.usgswim.sparrow.service.predict.ValueType.incremental;
-import static gov.usgswim.sparrow.service.predict.ValueType.total;
 import gov.usgswim.ThreadSafe;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.filter.ColumnRangeFilter;
@@ -10,26 +8,25 @@ import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowModelProperties;
+import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.cachefactory.ReachID;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.parser.Adjustment;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.DataColumn;
+import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.ReachElement;
 import gov.usgswim.sparrow.parser.ReachGroup;
 import gov.usgswim.sparrow.service.ReturnStatus;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.service.predict.ValueType;
-import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
 import gov.usgswim.sparrow.util.QueryLoader;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -491,12 +488,14 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	 * @param reachId Id for the reach we're identifying.
 	 * @return An XML fragment representing the prediction results for the
 	 *         specified reach.
+	 * @throws Exception 
 	 */
-	private String retrievePredictedsForReach(Integer contextId, Long modelId, Long reachId) throws IOException {
+	private String retrievePredictedsForReach(Integer contextId, Long modelId, Long reachId) throws Exception {
 		// TODO move to DataLoader when done debugging
 		//PredictionContext nominalPredictionContext = null;
 		PredictResult adjustedPrediction = null;
 		AdjustmentGroups nonAdjusted;
+		PredictData predictData = SharedApplication.getInstance().getPredictData(modelId);
 		
 		
 
@@ -517,9 +516,9 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 		// Build each section of the predicted result - incremental and total
 		String incrementalContribution = buildPredSection(nominalPrediction,
-				adjustedPrediction, reachId, incremental, "Incremental Flux Contributed at Reach (no instream decay applied)", "inc");
+				adjustedPrediction, reachId, DataSeriesType.decayed_incremental, predictData);
 		String totalContribution = buildPredSection(nominalPrediction,
-				adjustedPrediction, reachId, total, "Total Flux (theoretical measurable value)", "total");
+				adjustedPrediction, reachId, DataSeriesType.total, predictData);
 
 		// Retrieve the response template and insert the data we just built
 		String[] params = {
@@ -531,7 +530,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 		return xmlResult;
 	}
-
+	
 	/**
 	 * Builds a section of the prediction results XML using the {@code type}.
 	 *
@@ -539,38 +538,19 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	 * @param adjustedPrediction The adjusted results.
 	 * @param reachId The reach we're identifying.
 	 * @param type The type of results we're building for this section.
-	 * @param display The displayed title of the section.
-	 * @param name The name of the section.
+	 * @param predictData Used to convert from decayed to non-decayed values.
 	 * @return A fragment of the prediction results XML based on the specified
 	 *         {@code type}.
+	 * @throws Exception 
 	 */
 	private String buildPredSection(PredictResult nominalPrediction,
-			PredictResult adjustedPrediction, Long reachId, ValueType type,
-			String display, String name) {
+			PredictResult adjustedPrediction, Long reachId, DataSeriesType type,
+			PredictData predictData) throws Exception {
 
 		if (nominalPrediction == null || reachId == null || reachId == 0) {
 			return "";
 		}
-		String typeName = (type == null) ? "" : type.name();
-		String isTotalVal = AggregateType.sum.name();
-		List<Integer> relevantColumns = new ArrayList<Integer>();
-		Integer totalColumn = null;
 
-		// Collect all the relevant column indices, as indicated by matching VALUE_TYPE and AGGREGATE_TYPE
-		for (int j = 0; j < nominalPrediction.getColumnCount(); j++) {
-			boolean isDesiredType = typeName.equals(nominalPrediction.getProperty(j, TableProperties.DATA_TYPE.getPublicName()));
-			
-			String aggType = nominalPrediction.getProperty(j, TableProperties.ROW_AGG_TYPE.getPublicName());
-			boolean isTotal = (aggType != null ) && isTotalVal.equals(aggType);
-
-			if (isDesiredType) {
-				if (isTotal) {
-					totalColumn = j;
-				} else {
-					relevantColumns.add(j);
-				}
-			}
-		}
 
 		// Assume adjustedPrediction has same Column structure and rows in same order.
 		// Otherwise, we'll have to rewrite the following code.
@@ -581,26 +561,76 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 		// Add root element for the section
 		StringBuilder predictRows = new StringBuilder();
-		predictRows.append("<section display=\"").append(display);
-		predictRows.append("\" name=\"").append(name).append("\">\n");
+		predictRows.append("<section display=\"").append(Action.getDataSeriesProperty(type, false));
+		predictRows.append("\" name=\"").append(type.name()).append("\">\n");
 
+		
 		// Get the row index from the original data for the reach we're identifying
 		int rowID = nominalPrediction.getRowForId(reachId);
 
 		// Iterate over the relevant column indices, building a row of data for each
-		for (Integer j : relevantColumns) {
+		for (Integer srcIndex=0; srcIndex < nominalPrediction.getSourceCount(); srcIndex++) {
+			
+			Long srcId = predictData.getSourceIdForSourceIndex(srcIndex);
+			int colForIncSource = nominalPrediction.getIncrementalColForSrc(srcId);
+			int colForTotalSource = nominalPrediction.getTotalColForSrc(srcId);
+			
 			// Calculate and format all of the data
-			String columnName = nominalPrediction.getName(j);
-			String constituent = nominalPrediction.getProperty(j, TableProperties.CONSTITUENT.getPublicName());
-			String units = nominalPrediction.getUnits(j);
-			String precision = nominalPrediction.getProperty(j, TableProperties.PRECISION.getPublicName());
-			Double nominalValue = nominalPrediction.getDouble(rowID, j);
-			String nominalDisplay = (nominalValue == null)? "N/A": formatter.format(nominalValue);
-
+			String columnName = "";	//fetch based on series
+			String constituent = nominalPrediction.getProperty(colForIncSource, TableProperties.CONSTITUENT.getPublicName());
+			String units = "";	//fetch based on series
+			String precision = "";	//fetch based on series
+			Double nominalValue = null;
+			Double predictValue = null;
+			String nominalDisplay = "N/A";
 			String predictDisplay = "N/A";
 			String percentDisplay = "";
-			if (adjustedPrediction != null && adjustedPrediction.getString(rowID, j) != null) {
-				Double predictValue = Double.valueOf(adjustedPrediction.getDouble(rowID, j));
+			
+			switch (type) {
+			case decayed_incremental:
+				//All these attribs are the same, decayed or not
+				columnName = nominalPrediction.getName(colForIncSource);
+				units = nominalPrediction.getUnits(colForIncSource);
+				precision = nominalPrediction.getProperty(colForIncSource, TableProperties.PRECISION.getPublicName());
+				
+				nominalValue = nominalPrediction.getDecayedIncrementalForSrc(rowID, srcId, predictData);
+				
+				if (adjustedPrediction != null) {
+					predictValue = adjustedPrediction.getDecayedIncrementalForSrc(rowID, srcId, predictData);
+				}
+				break;
+			case incremental:
+				columnName = nominalPrediction.getName(colForIncSource);
+				units = nominalPrediction.getUnits(colForIncSource);
+				precision = nominalPrediction.getProperty(colForIncSource, TableProperties.PRECISION.getPublicName());
+				
+				nominalValue = nominalPrediction.getIncrementalForSrc(rowID, srcId);
+				
+				if (adjustedPrediction != null) {
+					predictValue = adjustedPrediction.getIncrementalForSrc(rowID, srcId);
+				}
+				break;
+			case total:
+				columnName = nominalPrediction.getName(colForTotalSource);
+				units = nominalPrediction.getUnits(colForTotalSource);
+				precision = nominalPrediction.getProperty(colForTotalSource, TableProperties.PRECISION.getPublicName());
+				
+				nominalValue = nominalPrediction.getTotalForSrc(rowID, srcId);
+				
+				if (adjustedPrediction != null) {
+					predictValue = adjustedPrediction.getTotalForSrc(rowID, srcId);
+				}
+				break;
+			default:
+				throw new Exception("Unsupported type " + type + " for building source values.");
+			}
+			
+			
+			if (nominalValue != null) {
+				nominalDisplay = formatter.format(nominalValue);
+			}
+			
+			if (nominalValue != null && predictValue != null) {
 				Double percentChange = calculatePercentageChange(predictValue, nominalValue);
 
 				predictDisplay = formatter.format(predictValue);
@@ -621,16 +651,75 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			predictRows.append("</r>");
 		}
 
-		// Add a row for the total for this section
-		// TODO: (with predicted)
-		String columnName = nominalPrediction.getName(totalColumn);
-		Double nominalValue = nominalPrediction.getDouble(rowID, totalColumn);
-		String nominalDisplay = (nominalValue == null) ? "N/A" : formatter.format(nominalValue);
-
+		
+		int colForInc = nominalPrediction.getIncrementalCol();
+		int colForTotal = nominalPrediction.getTotalCol();
+		
+		// Calculate and format all of the data
+		String columnName = "";	//fetch based on series
+		String constituent = nominalPrediction.getProperty(colForInc, TableProperties.CONSTITUENT.getPublicName());
+		String units = "";	//fetch based on series
+		String precision = "";	//fetch based on series
+		Double nominalValue = null;
+		Double predictValue = null;
+		String nominalDisplay = "N/A";
 		String predictDisplay = "N/A";
 		String percentDisplay = "";
-		if (adjustedPrediction != null && adjustedPrediction.getString(rowID, totalColumn) != null) {
-			Double predictValue = Double.valueOf(adjustedPrediction.getDouble(rowID, totalColumn));
+		
+		// Add a row for the total for this section
+		// TODO: (with predicted)
+//		String columnName = nominalPrediction.getName(totalColumn);
+//		Double nominalValue = nominalPrediction.getDouble(rowID, totalColumn);
+//		String nominalDisplay = (nominalValue == null) ? "N/A" : formatter.format(nominalValue);
+//
+//		String predictDisplay = "N/A";
+//		String percentDisplay = "";
+		
+		
+		switch (type) {
+		case decayed_incremental:
+			//All these attribs are the same, decayed or not
+			columnName = nominalPrediction.getName(colForInc);
+			units = nominalPrediction.getUnits(colForInc);
+			precision = nominalPrediction.getProperty(colForInc, TableProperties.PRECISION.getPublicName());
+			
+			nominalValue = nominalPrediction.getDecayedIncremental(rowID, predictData);
+			
+			if (adjustedPrediction != null) {
+				predictValue = adjustedPrediction.getDecayedIncremental(rowID, predictData);
+			}
+			break;
+		case incremental:
+			columnName = nominalPrediction.getName(colForInc);
+			units = nominalPrediction.getUnits(colForInc);
+			precision = nominalPrediction.getProperty(colForInc, TableProperties.PRECISION.getPublicName());
+			
+			nominalValue = nominalPrediction.getIncremental(rowID);
+			
+			if (adjustedPrediction != null) {
+				predictValue = adjustedPrediction.getIncremental(rowID);
+			}
+			break;
+		case total:
+			columnName = nominalPrediction.getName(colForTotal);
+			units = nominalPrediction.getUnits(colForTotal);
+			precision = nominalPrediction.getProperty(colForTotal, TableProperties.PRECISION.getPublicName());
+			
+			nominalValue = nominalPrediction.getTotal(rowID);
+			
+			if (adjustedPrediction != null) {
+				predictValue = adjustedPrediction.getTotal(rowID);
+			}
+			break;
+		default:
+			throw new Exception("Unsupported type " + type + " for building source values.");
+		}
+		
+		if (nominalValue != null) {
+			nominalDisplay = formatter.format(nominalValue);
+		}
+		
+		if (nominalValue != null && predictValue != null) {
 			Double percentChange = calculatePercentageChange(predictValue, nominalValue);
 
 			predictDisplay = formatter.format(predictValue);
@@ -641,9 +730,9 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		predictRows.append("<r>");
 		{
 			predictRows.append("<c>").append(columnName).append("</c>");
-			predictRows.append("<c></c>");
-			predictRows.append("<c></c>");
-			predictRows.append("<c></c>");
+			predictRows.append("<c>").append(constituent).append("</c>");
+			predictRows.append("<c>").append(units).append("</c>");
+			predictRows.append("<c>").append(precision).append("</c>");
 			predictRows.append("<c>").append(nominalDisplay).append("</c>");
 			predictRows.append("<c>").append(predictDisplay).append("</c>");
 			predictRows.append("<c>").append(percentDisplay).append("</c>");
