@@ -26,7 +26,6 @@
             <xsl:apply-templates select="map_data_source[@name!='sparrow']"/>
             
                 <!-- This points to the production db -->
-            	<!-- 
             	<map_data_source name="sparrow"
             	    jdbc_host="130.11.165.152"
                 	jdbc_sid="widw"
@@ -37,9 +36,9 @@
                 	max_connections="2"
                 	number_of_mappers="15"
             	/>
-            	-->
             	
                 <!-- This points to a clone of the production db (use for testing) -->
+                <!-- 
             	<map_data_source name="sparrow"
             	    jdbc_host="130.11.165.154"
                 	jdbc_sid="widw"
@@ -50,6 +49,7 @@
                 	max_connections="2"
                 	number_of_mappers="15"
             	/>
+            	-->
             	
 
         </MapperConfig>
