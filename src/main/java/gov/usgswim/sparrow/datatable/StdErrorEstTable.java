@@ -175,9 +175,12 @@ public class StdErrorEstTable extends AbstractDataTableBase implements Immutable
 		return Double.toString(getDouble(row, col));
 	}
 
+	/**
+	 * The units are the same as the base data - its a variance, not a percentage.
+	 */
 	@Override
 	public String getUnits(int col) {
-		return SparrowUnits.PERCENT.getUserName();
+		return base.getUnits(validColumnIndex);
 	}
 	
 	@Override

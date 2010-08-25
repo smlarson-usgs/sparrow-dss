@@ -80,7 +80,7 @@ public class StdErrorEstTableTest {
 		assertEquals("prop1Value", stdErr.getProperty("prop1"));
 		assertEquals(0, stdErr.getRowForId(1L));
 		assertEquals(Double.class, stdErr.getDataType(0));
-		assertTrue(SparrowUnits.PERCENT.isSame(stdErr.getUnits(0)));
+		assertEquals(baseDataTable.getUnits(0), stdErr.getUnits(0));
 		
 	}
 	
