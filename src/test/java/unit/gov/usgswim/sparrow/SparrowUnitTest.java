@@ -29,11 +29,11 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-public abstract class TestHelper {
+public abstract class SparrowUnitTest {
 	
 	/** Logging.  Log messages will use the name of the subclass */
 	protected static Logger log =
-		Logger.getLogger(TestHelper.class); //logging for this class
+		Logger.getLogger(SparrowUnitTest.class); //logging for this class
 	
 	/** The package containing standard requests and resources for tests */
 	public static final String SHARED_TEST_RESOURCE_PACKAGE = "gov/usgswim/sparrow/test/shared/";

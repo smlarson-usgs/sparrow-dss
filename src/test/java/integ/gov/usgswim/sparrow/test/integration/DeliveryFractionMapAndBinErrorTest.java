@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.test.integration;
 import static org.junit.Assert.*;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.MapViewerSparrowDataProvider;
-import gov.usgswim.sparrow.TestHelper;
+import gov.usgswim.sparrow.SparrowUnitTest;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.binning.BinningPipeline;
@@ -62,17 +62,17 @@ public class DeliveryFractionMapAndBinErrorTest {
 		final Integer context_id = 515774381;	//ID of the context we load
 		
 		//Register context from canned file
-		String xmlContextReq = TestHelper.getXmlAsString(this.getClass(), "context");
+		String xmlContextReq = SparrowUnitTest.getXmlAsString(this.getClass(), "context");
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		PredictContextRequest contextReq = pipe.parse(xmlContextReq);
-		String actualResponse = TestHelper.pipeDispatch(contextReq, pipe);
+		String actualResponse = SparrowUnitTest.pipeDispatch(contextReq, pipe);
 		System.out.println(actualResponse);
 		assertTrue(actualResponse.indexOf(context_id.toString()) > -1);
 		
 		//Run a binning request on that same context ID
 		BinningPipeline binPipe = new BinningPipeline();
 		BinningServiceRequest binSvsReq = new BinningServiceRequest(context_id, 5, BIN_TYPE.EQUAL_COUNT);
-		actualResponse = TestHelper.pipeDispatch(binSvsReq, binPipe);
+		actualResponse = SparrowUnitTest.pipeDispatch(binSvsReq, binPipe);
 		System.out.println("bin response: " + actualResponse);
 		assertTrue(actualResponse.indexOf("<bin>0</bin>") > -1);
 

@@ -1,11 +1,11 @@
 package gov.usgswim.sparrow.test.integration;
 
-import static gov.usgswim.sparrow.TestHelper.getAttributeValue;
-import static gov.usgswim.sparrow.TestHelper.pipeDispatch;
+import static gov.usgswim.sparrow.SparrowUnitTest.getAttributeValue;
+import static gov.usgswim.sparrow.SparrowUnitTest.pipeDispatch;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.TestHelper;
+import gov.usgswim.sparrow.SparrowUnitTest;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.PredictionContextTest;
 import gov.usgswim.sparrow.parser.ReachGroup;
@@ -77,7 +77,7 @@ public class LogicalAdjustmentIntegrationTest extends TestCase {
 		PredictContextRequest contextReq = PredictionContextTest.buildPredictContext5();	//Build a context from a canned file
 
 		String response = pipeDispatch(contextReq, new PredictContextPipeline());
-		int CONTEXT_ID = Integer.parseInt(TestHelper.getAttributeValue(response, "context-id"));
+		int CONTEXT_ID = Integer.parseInt(SparrowUnitTest.getAttributeValue(response, "context-id"));
 
 		//Get the prediction context and the nominal context;
 		PredictionContext userContext = SharedApplication.getInstance().getPredictionContext(CONTEXT_ID);

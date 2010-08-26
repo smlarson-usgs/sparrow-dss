@@ -46,7 +46,7 @@ import org.apache.log4j.PatternLayout;
  * @author eeverman
  *
  */
-public class SparrowDBTest extends TestHelper {
+public class SparrowDBTest extends SparrowUnitTest {
 
 	/**
 	 * Name of a system property that if "true" will switch to the production

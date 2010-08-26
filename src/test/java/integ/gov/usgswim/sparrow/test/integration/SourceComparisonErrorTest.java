@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.test.integration;
 
 import gov.usgswim.sparrow.LifecycleListener;
-import gov.usgswim.sparrow.TestHelper;
+import gov.usgswim.sparrow.SparrowUnitTest;
 import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.binning.BinningPipeline;
 import gov.usgswim.sparrow.service.binning.BinningServiceRequest;
@@ -38,12 +38,12 @@ public class SourceComparisonErrorTest {
 	
 	@Test
 	public void testComparison() throws Exception {
-		String xmlContextReq = TestHelper.getXmlAsString(this.getClass(), "context");
-		String xmlContextResp = TestHelper.getXmlAsString(this.getClass(), "contextResp");
+		String xmlContextReq = SparrowUnitTest.getXmlAsString(this.getClass(), "context");
+		String xmlContextResp = SparrowUnitTest.getXmlAsString(this.getClass(), "contextResp");
 		
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		PredictContextRequest contextReq = pipe.parse(xmlContextReq);
-		String actualContextResponse = TestHelper.pipeDispatch(contextReq, pipe);
+		String actualContextResponse = SparrowUnitTest.pipeDispatch(contextReq, pipe);
 
 		
 		XMLAssert.assertXMLEqual(xmlContextResp, actualContextResponse);
@@ -54,8 +54,8 @@ public class SourceComparisonErrorTest {
 		//getBins?_dc=1259617459336&context-id=-1930836194&bin-count=5&bin-operation=EQUAL_RANGE
 		BinningServiceRequest binReq = new BinningServiceRequest(new Integer(714573086), 2, BIN_TYPE.EQUAL_RANGE);
 		BinningPipeline binPipe = new BinningPipeline();
-		String actualBinResponse = TestHelper.pipeDispatch(binReq, binPipe);
-		String xmlBinResp = TestHelper.getXmlAsString(this.getClass(), "binResp");
+		String actualBinResponse = SparrowUnitTest.pipeDispatch(binReq, binPipe);
+		String xmlBinResp = SparrowUnitTest.getXmlAsString(this.getClass(), "binResp");
 		XMLAssert.assertXMLEqual(xmlBinResp, actualBinResponse);
 
 	}

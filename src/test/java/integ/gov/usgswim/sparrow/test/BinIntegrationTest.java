@@ -7,7 +7,7 @@ import static org.junit.Assert.fail;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.SparrowDBTest;
-import gov.usgswim.sparrow.TestHelper;
+import gov.usgswim.sparrow.SparrowUnitTest;
 import gov.usgswim.sparrow.action.CalcAnalysis;
 import gov.usgswim.sparrow.cachefactory.BinningFactory;
 import gov.usgswim.sparrow.cachefactory.BinningRequest;
@@ -336,7 +336,7 @@ public class BinIntegrationTest extends SparrowDBTest {
 	
 	public Integer buildPredictContextEmpty() throws Exception {
 		InputStream is = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/predict-context-empty.xml");
-		String xml = TestHelper.readToString(is);
+		String xml = SparrowUnitTest.readToString(is);
 		
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		PredictContextRequest contextReq = pipe.parse(xml);

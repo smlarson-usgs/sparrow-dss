@@ -12,7 +12,7 @@ import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowDBTest;
-import gov.usgswim.sparrow.TestHelper;
+import gov.usgswim.sparrow.SparrowUnitTest;
 import gov.usgswim.sparrow.action.CalcDeliveryFraction;
 import gov.usgswim.sparrow.cachefactory.PredictResultFactory;
 import gov.usgswim.sparrow.datatable.DataTableCompare;

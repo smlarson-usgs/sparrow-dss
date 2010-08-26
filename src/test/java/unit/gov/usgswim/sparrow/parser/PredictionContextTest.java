@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow.parser;
 
-import static gov.usgswim.sparrow.TestHelper.getAttributeValue;
-import static gov.usgswim.sparrow.TestHelper.pipeDispatch;
-import static gov.usgswim.sparrow.TestHelper.readToString;
-import gov.usgswim.sparrow.TestHelper;
+import static gov.usgswim.sparrow.SparrowUnitTest.getAttributeValue;
+import static gov.usgswim.sparrow.SparrowUnitTest.pipeDispatch;
+import static gov.usgswim.sparrow.SparrowUnitTest.readToString;
+import gov.usgswim.sparrow.SparrowUnitTest;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
@@ -147,7 +147,7 @@ public class PredictionContextTest extends TestCase {
 			PredictionContext prdCtxt2 = buildContext(VALID_FRAGMENT);
 			PredictionContext predCtxt3 = predCtxt1.clone();
 
-			TestHelper.testHashCode(predCtxt1, prdCtxt2, predCtxt1.clone());
+			SparrowUnitTest.testHashCode(predCtxt1, prdCtxt2, predCtxt1.clone());
 
 			// test IDs
 			assertEquals(predCtxt1.hashCode(), predCtxt1.getId().intValue());
@@ -162,7 +162,7 @@ public class PredictionContextTest extends TestCase {
 			PredictionContext predCtxt3 = predCtxt1.clone();
 
 
-			TestHelper.testHashCode(predCtxt1, prdCtxt2, predCtxt1.clone());
+			SparrowUnitTest.testHashCode(predCtxt1, prdCtxt2, predCtxt1.clone());
 
 			// test IDs
 			assertEquals(predCtxt1.hashCode(), predCtxt1.getId().intValue());
@@ -254,14 +254,14 @@ public class PredictionContextTest extends TestCase {
 
 	public static PredictContextRequest buildPredictContext4() throws Exception {
 		InputStream is = PredictionContextTest.class.getResourceAsStream(PRED_CONTEXT_4);
-		String xml = TestHelper.readToString(is);
+		String xml = SparrowUnitTest.readToString(is);
 
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		return pipe.parse(xml);
 	}
 	public static PredictContextRequest buildPredictContext3() throws Exception {
 		InputStream is = PredictionContextTest.class.getResourceAsStream(PRED_CONTEXT_3);
-		String xml = TestHelper.readToString(is);
+		String xml = SparrowUnitTest.readToString(is);
 
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		return pipe.parse(xml);
@@ -275,7 +275,7 @@ public class PredictionContextTest extends TestCase {
 	}
 	public static PredictContextRequest buildPredictContext1() throws Exception {
 		InputStream is = PredictionContextTest.class.getResourceAsStream(PRED_CONTEXT_1);
-		String xml = TestHelper.readToString(is);
+		String xml = SparrowUnitTest.readToString(is);
 
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		return pipe.parse(xml);
@@ -283,7 +283,7 @@ public class PredictionContextTest extends TestCase {
 
 	public static PredictContextRequest buildPredictContext5() throws Exception {
 		InputStream is = PredictionContextTest.class.getResourceAsStream(PRED_CONTEXT_5);
-		String xml = TestHelper.readToString(is);
+		String xml = SparrowUnitTest.readToString(is);
 
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		return pipe.parse(xml);

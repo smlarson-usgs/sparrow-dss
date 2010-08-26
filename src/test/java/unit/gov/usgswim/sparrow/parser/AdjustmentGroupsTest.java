@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.parser;
 
-import gov.usgswim.sparrow.TestHelper;
+import gov.usgswim.sparrow.SparrowUnitTest;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.ReachGroup;
 
@@ -46,7 +46,7 @@ public class AdjustmentGroupsTest extends TestCase {
 	public void testHashcode() throws Exception {
 		AdjustmentGroups adjGroups1 = buildAdjGroups(1L);
 		AdjustmentGroups adjGroups2 = buildAdjGroups(1L);
-		TestHelper.testHashCode(adjGroups1, adjGroups2, adjGroups1.clone());
+		SparrowUnitTest.testHashCode(adjGroups1, adjGroups2, adjGroups1.clone());
 
 		// test IDs
 		assertEquals(adjGroups1.hashCode(), adjGroups1.getId().intValue());

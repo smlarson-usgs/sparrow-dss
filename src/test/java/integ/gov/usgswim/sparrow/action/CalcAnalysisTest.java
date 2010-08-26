@@ -9,7 +9,7 @@ import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowDBTest;
-import gov.usgswim.sparrow.TestHelper;
+import gov.usgswim.sparrow.SparrowUnitTest;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
@@ -71,13 +71,13 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);
 		
-		InputStream stdDelFracTo9682Stream = TestHelper.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9682", "tab");
+		InputStream stdDelFracTo9682Stream = SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9682", "tab");
 		stdDelFracTo9682 = TabDelimFileUtil.readAsDouble(stdDelFracTo9682Stream, true, -1);
 		
-		InputStream stdDelFracTo9674Stream = TestHelper.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9674", "tab");
+		InputStream stdDelFracTo9674Stream = SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9674", "tab");
 		stdDelFracTo9674 = TabDelimFileUtil.readAsDouble(stdDelFracTo9674Stream, true, -1);
 		
-		InputStream stdDelFracToBothStream = TestHelper.getResource(CalcDeliveryFractionTest.class, "stdDelFracToBoth", "tab");
+		InputStream stdDelFracToBothStream = SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "stdDelFracToBoth", "tab");
 		stdDelFracToBoth = TabDelimFileUtil.readAsDouble(stdDelFracToBothStream, true, -1);
 		
 		//Lets hack the predictData to Turn off transport for reach ID 9681

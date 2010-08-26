@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.TestHelper;
+import gov.usgswim.sparrow.SparrowUnitTest;
 import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.cachefactory.BinningRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -45,12 +45,12 @@ public class SourceBinningErrorTest {
 	
 	@Test
 	public void testComparison() throws Exception {
-		String xmlContextReq = TestHelper.getXmlAsString(this.getClass(), "context");
-		String xmlContextResp = TestHelper.getXmlAsString(this.getClass(), "contextResp");
+		String xmlContextReq = SparrowUnitTest.getXmlAsString(this.getClass(), "context");
+		String xmlContextResp = SparrowUnitTest.getXmlAsString(this.getClass(), "contextResp");
 		
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		PredictContextRequest contextReq = pipe.parse(xmlContextReq);
-		String actualContextResponse = TestHelper.pipeDispatch(contextReq, pipe);
+		String actualContextResponse = SparrowUnitTest.pipeDispatch(contextReq, pipe);
 
 		long modelId = 50;
 		int contextId = -612942945;
@@ -80,7 +80,7 @@ public class SourceBinningErrorTest {
 		long startTime = System.currentTimeMillis();
 		BinningServiceRequest binSvsReq = new BinningServiceRequest(new Integer(contextId), 2, BIN_TYPE.EQUAL_RANGE);
 		BinningPipeline binPipe = new BinningPipeline();
-		String actualBinResponse = TestHelper.pipeDispatch(binSvsReq, binPipe);
+		String actualBinResponse = SparrowUnitTest.pipeDispatch(binSvsReq, binPipe);
 		long endTime = System.currentTimeMillis();
 		assertTrue("These results should be in cache, thus almost instant response", endTime - startTime < 500L);
 		assertTrue(actualBinResponse.contains("<bin>" + bins[0].toString() + "</bin>"));

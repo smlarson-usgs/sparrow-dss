@@ -1,10 +1,10 @@
 package gov.usgswim.sparrow.test.integration;
 
-import static gov.usgswim.sparrow.TestHelper.pipeDispatch;
+import static gov.usgswim.sparrow.SparrowUnitTest.pipeDispatch;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.TestHelper;
+import gov.usgswim.sparrow.SparrowUnitTest;
 import gov.usgswim.sparrow.action.NSDataSetBuilder;
 import gov.usgswim.sparrow.cachefactory.NSDataSetFactory;
 import gov.usgswim.sparrow.datatable.PredictResult;
@@ -193,7 +193,7 @@ public class ContextToPredictionIntegrationTest extends TestCase {
 	public void testHashCode() throws Exception {
 		PredictionContext context1 = PredictionContextTest.buildPredictContext1().getPredictionContext();
 		PredictionContext context2 = PredictionContextTest.buildPredictContext1().getPredictionContext();
-		TestHelper.testHashCode(context1, context2, context1.clone());
+		SparrowUnitTest.testHashCode(context1, context2, context1.clone());
 
 		// test IDs
 		assertEquals(context1.hashCode(), context1.getId().intValue());

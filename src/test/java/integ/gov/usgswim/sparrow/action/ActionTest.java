@@ -12,7 +12,7 @@ import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowDBTest;
-import gov.usgswim.sparrow.TestHelper;
+import gov.usgswim.sparrow.SparrowUnitTest;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.AreaOfInterest;

@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.test.integration;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.SparrowDBTest;
-import gov.usgswim.sparrow.TestHelper;
+import gov.usgswim.sparrow.SparrowUnitTest;
 import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.service.binning.BinningPipeline;
@@ -32,28 +32,28 @@ public class DeliveryDerivedCalcErrorTest extends SparrowDBTest {
 		
 		
 		//Test total context (total flux)
-		String xmlContextReq = TestHelper.getXmlAsString(this.getClass(), "TotalContext");
-		String xmlContextResp = TestHelper.getXmlAsString(this.getClass(), "TotalContextResp");
+		String xmlContextReq = SparrowUnitTest.getXmlAsString(this.getClass(), "TotalContext");
+		String xmlContextResp = SparrowUnitTest.getXmlAsString(this.getClass(), "TotalContextResp");
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		PredictContextRequest contextReq = pipe.parse(xmlContextReq);
-		String actualResponse = TestHelper.pipeDispatch(contextReq, pipe);
+		String actualResponse = SparrowUnitTest.pipeDispatch(contextReq, pipe);
 		System.out.println("actual: " + actualResponse);
 		XMLAssert.assertXMLEqual(xmlContextResp, actualResponse);
 		DataColumn totalData = contextReq.getPredictionContext().getDataColumn();
 		
 		//Test delivery fraction
-		xmlContextReq = TestHelper.getXmlAsString(this.getClass(), "DelFracContext");
-		xmlContextResp = TestHelper.getXmlAsString(this.getClass(), "DelFracContextResp");
+		xmlContextReq = SparrowUnitTest.getXmlAsString(this.getClass(), "DelFracContext");
+		xmlContextResp = SparrowUnitTest.getXmlAsString(this.getClass(), "DelFracContextResp");
 		contextReq = pipe.parse(xmlContextReq);
-		actualResponse = TestHelper.pipeDispatch(contextReq, pipe);
+		actualResponse = SparrowUnitTest.pipeDispatch(contextReq, pipe);
 		XMLAssert.assertXMLEqual(xmlContextResp, actualResponse);
 		DataColumn delFracData = contextReq.getPredictionContext().getDataColumn();
 
 		//Test Total Delivery Flux
-		xmlContextReq = TestHelper.getXmlAsString(this.getClass(), "DelTotalContext");
-		xmlContextResp = TestHelper.getXmlAsString(this.getClass(), "DelTotalContextResp");
+		xmlContextReq = SparrowUnitTest.getXmlAsString(this.getClass(), "DelTotalContext");
+		xmlContextResp = SparrowUnitTest.getXmlAsString(this.getClass(), "DelTotalContextResp");
 		contextReq = pipe.parse(xmlContextReq);
-		actualResponse = TestHelper.pipeDispatch(contextReq, pipe);
+		actualResponse = SparrowUnitTest.pipeDispatch(contextReq, pipe);
 		XMLAssert.assertXMLEqual(xmlContextResp, actualResponse);
 		DataColumn delTotalData = contextReq.getPredictionContext().getDataColumn();
 		
