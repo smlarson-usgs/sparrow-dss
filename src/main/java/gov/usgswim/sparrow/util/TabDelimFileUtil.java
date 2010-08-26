@@ -59,7 +59,7 @@ public abstract class TabDelimFileUtil {
 
 
 		return loadPredictDataSet(rootPackage, rootDir, modelId, enhNetworkId,
-				false, true);
+				true);
 	}
 
 	/**
@@ -82,7 +82,7 @@ public abstract class TabDelimFileUtil {
 
 
 		return loadPredictDataSet(rootPackage, rootDir, modelId, enhNetworkId,
-				true, true);
+				true);
 	}
 
 	/**
@@ -106,7 +106,7 @@ public abstract class TabDelimFileUtil {
 	 */
 	public static PredictData loadPredictDataSet(
 			String rootPackage, String rootDir, long modelId, long enhNetworkId,
-			boolean onlyZeroIteration, boolean includeAncilData)
+			boolean onlyZeroIteration)
 	throws FileNotFoundException, IOException {
 
 		PredictDataBuilder pd = new PredictDataBuilder();
@@ -114,9 +114,6 @@ public abstract class TabDelimFileUtil {
 		if (rootPackage != null) {
 			if (! rootPackage.endsWith("/")) rootPackage = rootPackage + "/";
 
-			if (includeAncilData) {
-				pd.setAncil( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "ancil.txt"), true, ANCIL_HEADINGS, ANCIL_INDEX_COLUMN_INDEX) );
-			}
 			pd.setCoef( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "coef.txt"), true, -1) );
 			pd.setSrc( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "src.txt"), true, -1) );
 			pd.setTopo( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "topo.txt"), true, TOPO_HEADINGS, -1) );
@@ -124,9 +121,6 @@ public abstract class TabDelimFileUtil {
 		} else if (rootDir != null){
 			File root = new File(rootDir);
 
-			if (includeAncilData) {
-				pd.setAncil( TabDelimFileUtil.readAsInteger(new File(root, "ancil.txt"), true, ANCIL_HEADINGS, ANCIL_INDEX_COLUMN_INDEX) );
-			}
 			pd.setCoef( TabDelimFileUtil.readAsDouble(new File(root, "coef.txt"), true, -1) );
 			pd.setSrc( TabDelimFileUtil.readAsDouble(new File(root, "src.txt"), true, -1) );
 			pd.setTopo( TabDelimFileUtil.readAsDouble(new File(root, "topo.txt"), true, TOPO_HEADINGS, -1) );

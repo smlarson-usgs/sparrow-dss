@@ -76,7 +76,7 @@ public class DeliveryRunner implements Runner {
 	public DeliveryRunner(DataTable topo, DataTable coef, DataTable src,
 			DataTable decay) {
 		this(new PredictDataImm(topo, coef, src, null, decay,
-				null, null));
+				null));
 	}
 
 	public DeliveryRunner(PredictData data) {

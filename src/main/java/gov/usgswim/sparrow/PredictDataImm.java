@@ -62,11 +62,6 @@ public class PredictDataImm extends AbstractPredictData {
 	 */
 	private final DataTable delivery;
 
-	/**
-	 * Optional ancillary data.
-	 * The structure of this data is not currently defined.
-	 */
-	private final DataTable ancil;
 	
 	/**
 	 * Constructs a new dataset w/ all data tables defined.
@@ -84,14 +79,13 @@ public class PredictDataImm extends AbstractPredictData {
 	 * @param model
 	 */
 	public PredictDataImm(DataTable topo, DataTable coef, DataTable src, DataTable srcIDs,
-			DataTable delivery, DataTable ancil, SparrowModel model) {
+			DataTable delivery, SparrowModel model) {
 
 		this.model = model;
 		this.topo = topo;
 		this.coef = coef;
 		this.src = src;
 		this.delivery = delivery;
-		this.ancil = ancil;
 		this.srcMetadata = srcIDs;
 	}
 
@@ -113,10 +107,6 @@ public class PredictDataImm extends AbstractPredictData {
 
 	public DataTable getDelivery() {
 		return delivery;
-	}
-
-	public DataTable getAncil() {
-		return ancil;
 	}
 
 	public SparrowModel getModel() {
@@ -162,7 +152,6 @@ public class PredictDataImm extends AbstractPredictData {
 			(getSrc() != null)?getSrc().toImmutable():null,
 			(getSrcMetadata() != null)?getSrcMetadata().toImmutable():null,
 			(getDelivery() != null)?getDelivery().toImmutable():null,
-			(getAncil() != null)?getAncil().toImmutable():null,
 			(getModel() != null)?getModel():null
 		);
 	}

@@ -114,6 +114,11 @@ public class SparrowDBTest extends TestHelper {
 		XMLUnit.setIgnoreComments(true);
 	}
 	
+	/**
+	 * Called only before the first test.
+	 * Intended to be overridden for one-time initiation.
+	 * @throws Exception
+	 */
 	protected void doSetup() throws Exception {
 		//nothing to do and no need to call super if overriding.
 	}

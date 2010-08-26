@@ -15,6 +15,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -424,25 +425,80 @@ public abstract class TestHelper {
 	/**
 	 * Compares two datatables, returning true if they are equal.
 	 * 
-	 * Any mismatched values are logged as errors. (log.error)
+	 * Any mismatched values or rowIDs are logged as errors (log.error) and
+	 * will cause false to be returned.
 	 * 
 	 * @param expected
 	 * @param actual
 	 * @return
 	 */
 	public boolean compareTables(DataTable expected, DataTable actual) {
+		return compareTables(expected, actual, null, true);
+	}
+	
+	/**
+	 * Compare two tables, ignoring any column indexes listed in the ignoreColumn array.
+	 * Row IDs are compared if compareIds is true.
+	 * 
+	 * @param expected
+	 * @param actual
+	 * @param ignoreColumn
+	 * @param compareIds
+	 * @return
+	 */
+	public boolean compareTables(DataTable expected, DataTable actual,
+			int[] ignoreColumn, boolean compareIds) {
+		
 		boolean match = true;
+		boolean checkIds = false;
+		
+		if (ignoreColumn == null) {
+			ignoreColumn = new int[]{};
+		} else {
+			Arrays.sort(ignoreColumn);
+		}
+		
+		if (compareIds) {
+			if (expected.hasRowIds() && actual.hasRowIds()) {
+				checkIds = true;
+			} else if (expected.hasRowIds() || actual.hasRowIds()) {
+				log.error("One table has row IDs and the other does not.");
+				return false;
+			}
+		}
 		
 		for (int r = 0; r < expected.getRowCount(); r++) {
 			for (int c = 0; c < expected.getColumnCount(); c++) {
-				Object orgValue = expected.getValue(r, c);
-				Object newValue = actual.getValue(r, c);
 				
-				if (! ObjectUtils.equals(orgValue, newValue)) {
-					match = false;
-					log.error("Mismatch : " + r + "," + c + ") [" + orgValue + "] [" + newValue + "]");
+				if (Arrays.binarySearch(ignoreColumn, c) < 0) {
+					
+					Object orgValue = expected.getValue(r, c);
+					Object newValue = actual.getValue(r, c);
+					
+					if (! ObjectUtils.equals(orgValue, newValue)) {
+						match = false;
+						log.error("Mismatch : " + r + "," + c + ") [" + orgValue + "] [" + newValue + "]");
+					}
+				} else {
+					//skip comparison, its listed in the ignore column
 				}
-				//assertEquals(original.getValue(r, c), newVersion.getValue(r, c));
+			}
+			
+			if (checkIds) {
+				Long expectId = expected.getIdForRow(r);
+				Long actualId = actual.getIdForRow(r);
+				
+				if (expectId == null && actualId == null) {
+					//ok - skip
+				} else if (expectId == null || actualId == null) {
+					match = false;
+					log.error("Mismatched ID for row " + r + " [" + expectId + "] [" + actualId + "]");
+				} else if (expectId.equals(actualId)) {
+					//ok - skip
+				} else {
+					//neither are null, but they have different values
+					log.error("Mismatched ID for row " + r + " [" + expectId + "] [" + actualId + "]");
+				}
 			}
 		}
 		

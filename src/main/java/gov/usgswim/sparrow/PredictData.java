@@ -158,8 +158,6 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 */
 	public DataTable getDelivery();
 
-	public DataTable getAncil();
-
 	public SparrowModel getModel();
 
 	/**

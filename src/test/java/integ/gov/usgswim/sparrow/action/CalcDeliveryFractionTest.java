@@ -72,7 +72,6 @@ public class CalcDeliveryFractionTest extends SparrowDBTest {
 				unmodifiedPredictData.getSrc(),
 				unmodifiedPredictData.getSrcMetadata(),
 				unmodifiedPredictData.getDelivery(),
-				unmodifiedPredictData.getAncil(),
 				unmodifiedPredictData.getModel());
 		
 	}

@@ -91,7 +91,6 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 				unmodifiedPredictData.getSrc(),
 				unmodifiedPredictData.getSrcMetadata(),
 				unmodifiedPredictData.getDelivery(),
-				unmodifiedPredictData.getAncil(),
 				unmodifiedPredictData.getModel());
 		
 		//Targets set 1
@@ -638,7 +637,6 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 		debugTable(pd.getSrc(), row, "Source Data");
 		debugTable(pd.getCoef(), row, "Coef Data");
 		debugTable(pd.getDelivery(), row, "Delivery Data");
-		debugTable(pd.getAncil(), row, "Ancil Data");
 	}
 	
 	public void debugTable(DataTable table, int row, String description) throws Exception {

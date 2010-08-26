@@ -61,12 +61,6 @@ public class PredictDataBuilder extends AbstractPredictData {
 	 */
 	protected DataTable delivery;
 
-	/**
-	 * Optional ancillary data.
-	 * The structure of this data is not currently defined.
-	 */
-	protected DataTable ancil;
-
 	public PredictDataBuilder() {
 	}
 
@@ -88,14 +82,13 @@ public class PredictDataBuilder extends AbstractPredictData {
 	 * @param srcIDs
 	 */
 	public PredictDataBuilder(DataTable topo, DataTable coef, DataTable src, DataTable srcIDs, DataTable decay,
-			DataTable ancil, SparrowModel model) {
+			SparrowModel model) {
 
 		this.model = model;
 		this.topo = topo;
 		this.coef = coef;
 		this.src = src;
 		this.delivery = decay;
-		this.ancil = ancil;
 
 		if (srcIDs != null) {
 			this.srcMetadata = srcIDs.toImmutable();
@@ -242,14 +235,6 @@ public class PredictDataBuilder extends AbstractPredictData {
 		return delivery;
 	}
 
-	public void setAncil(DataTable ancil) {
-		this.ancil = ancil;
-	}
-
-	public DataTable getAncil() {
-		return ancil;
-	}
-
 	public SparrowModel getModel() {
 		return model;
 	}
@@ -265,10 +250,9 @@ public class PredictDataBuilder extends AbstractPredictData {
 		DataTable source2 = (getSrc() != null)?getSrc().toImmutable():null;
 		DataTable sourceIds2 = (getSrcMetadata() != null)?getSrcMetadata().toImmutable():null;
 		DataTable decay2 = (getDelivery() != null)?getDelivery().toImmutable():null;
-		DataTable ancil2 = (getAncil() != null)?getAncil().toImmutable():null;
 		SparrowModel model2 = (getModel() != null)?getModel():null;
 		
-		return new PredictDataImm(topo2, coef2, source2, sourceIds2, decay2, ancil2, model2);
+		return new PredictDataImm(topo2, coef2, source2, sourceIds2, decay2, model2);
 
 	}
 
