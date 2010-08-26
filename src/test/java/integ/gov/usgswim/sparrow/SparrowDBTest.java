@@ -16,11 +16,13 @@ import java.util.Enumeration;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.xml.sax.SAXException;
 import org.apache.log4j.PatternLayout;
 
 /**
@@ -200,6 +202,30 @@ public class SparrowDBTest extends TestHelper {
 		String val = null;
 		val = br.readLine();
 		return val;
+	}
+	
+	/**
+	 * Constructs a XmlUnit Diff object for the two passed xml strings.  The
+	 * comparison ignores the 'context-id' element so that responses are less
+	 * sensitive to PredictionContext implememntation changes.
+	 * 
+	 * @param controlDocument
+	 * @param testDocument
+	 * @return
+	 * @throws Exception
+	 */
+	public static Diff compareXMLIgnoreContextId(String controlDocument,
+			String testDocument) throws Exception {
+		
+		Diff diff = new Diff(controlDocument, testDocument);
+		diff.overrideDifferenceListener(new IgnoreContextIdDifferenceListener());
+		return diff;
+	}
+	
+	public static boolean similarXMLIgnoreContextId(String controlDocument,
+			String testDocument) throws Exception {
+		Diff diff = compareXMLIgnoreContextId(controlDocument, testDocument);
+		return diff.similar();
 	}
 	
 }

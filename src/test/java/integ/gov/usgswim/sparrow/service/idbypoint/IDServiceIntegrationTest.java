@@ -1,39 +1,23 @@
 package gov.usgswim.sparrow.service.idbypoint;
 
-import static gov.usgswim.sparrow.TestHelper.getAttributeValue;
-import static gov.usgswim.sparrow.TestHelper.getElementValue;
-import static gov.usgswim.sparrow.TestHelper.pipeDispatch;
-import static gov.usgswim.sparrow.TestHelper.readToString;
-import static gov.usgswim.sparrow.TestHelper.setElementValue;
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
-import gov.usgswim.sparrow.SparrowDBTest;
-import gov.usgswim.sparrow.TestHelper;
-import gov.usgswim.sparrow.action.Action;
+import static org.junit.Assert.assertTrue;
 import gov.usgswim.sparrow.parser.PredictionContext;
-import gov.usgswim.sparrow.parser.PredictionContextTest;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.SparrowServiceTest;
-import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
-import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 import gov.usgswim.sparrow.util.ParserHelper;
-
-import java.io.InputStream;
 
 import javax.xml.stream.XMLStreamReader;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class IDServiceIntegrationTest extends SparrowServiceTest {
 
 	@BeforeClass
 	public static void localInit() {
-		Logger.getLogger(IDByPointService.class).setLevel(Level.TRACE);
+		//Logger.getLogger(IDByPointService.class).setLevel(Level.TRACE);
 	}
 	
 	// ============
@@ -41,7 +25,6 @@ public class IDServiceIntegrationTest extends SparrowServiceTest {
 	// ============
 	@Test
 	public void testModelByPoint() throws Exception {
-
 		String response = runRequest(getXmlAsString(this.getClass(), "req1"));
 		//log.debug("Req 1 response: " + response);
 		
@@ -58,12 +41,14 @@ public class IDServiceIntegrationTest extends SparrowServiceTest {
 	public void testModelByReachId() throws Exception {
 		String expectedResponse = getXmlAsString(this.getClass(), "resp2");
 		String actualResponse = runRequest(getXmlAsString(this.getClass(), "req2"));
+		log.debug("Req 2 response: " + actualResponse);
 		XMLAssert.assertXMLEqual(expectedResponse, actualResponse);
 		
 		//Rerun - should be instant b/c we don't ask for attributes.
 		long start = System.currentTimeMillis();
 		actualResponse = runRequest(getXmlAsString(this.getClass(), "req2"));
 		long end = System.currentTimeMillis();
+		
 		XMLAssert.assertXMLEqual(expectedResponse, actualResponse);
 		assertTrue(end - start < 500L);
 	}
@@ -97,16 +82,15 @@ public class IDServiceIntegrationTest extends SparrowServiceTest {
 		
 		String expectedResponse = getXmlAsString(this.getClass(), "resp4");
 		String actualResponse = runRequest(contextBasedIDReq);
+		log.debug("Req 4 response: " + actualResponse);
 
-		//log.debug(expectedResponse);
-		//log.debug(actualResponse);
-		XMLAssert.assertXMLEqual(expectedResponse, actualResponse);
+		assertTrue(similarXMLIgnoreContextId(expectedResponse, actualResponse));
 		
 		//Rerun - should be instant b/c we don't ask for attributes.
 		long start = System.currentTimeMillis();
 		actualResponse = runRequest(contextBasedIDReq);
 		long end = System.currentTimeMillis();
-		XMLAssert.assertXMLEqual(expectedResponse, actualResponse);
+		assertTrue(similarXMLIgnoreContextId(expectedResponse, actualResponse));
 		assertTrue(end - start < 500L);
 	}
 	

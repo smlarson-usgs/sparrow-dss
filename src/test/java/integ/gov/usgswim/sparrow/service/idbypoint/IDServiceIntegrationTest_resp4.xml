@@ -1,5 +1,5 @@
 <sparrow-id-response xmlns="http://www.usgs.gov/sparrow/id-response-schema/v0_2"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="50" context-id="77292851">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="50" context-id="ignore">
 	<status>OK</status>
 	<results>
 		<result>
@@ -18,6 +18,14 @@
 					<huc2 id="03" name="SOUTH ATLANTIC-GULF" />
 				</hucs>
 			</identification>
+			<!-- See the PredictionContext-response for value metadata -->
+			<mapped-value>
+				<value>0.35</value>
+				<name>Imp. surf. area</name>
+				<description />
+				<units>sq km</units>
+				<constituent>Land area</constituent>
+			</mapped-value>
 			<adjustments display="Adjustments">
 				<metadata rowCount="5" columnCount="7" row-id-name="source_id">
 					<columns>
@@ -91,69 +99,10 @@
 					</columns>
 				</metadata>
 				<data>
-					<section
-						display="Incremental Flux Contributed at Reach (no instream decay applied)"
-						name="inc">
+					<section display="Incremental Load" name="decayed_incremental">
 						<r>
-							<c>Wastewater discharge Inc. Addition</c>
-							<c />
-							<c>kg/year</c>
-							<c>2</c>
-							<c>3.72</c>
-							<c>3.72</c>
-							<c>0.00</c>
-						</r>
-						<r>
-							<c>Wet dep. of inorg.nitrogen Inc. Addition</c>
-							<c />
-							<c>kg/year</c>
-							<c>2</c>
-							<c>19881.22</c>
-							<c>19881.22</c>
-							<c>0.00</c>
-						</r>
-						<r>
-							<c>Imp. surf. area Inc. Addition</c>
-							<c />
-							<c>kg/year</c>
-							<c>2</c>
-							<c>638.50</c>
-							<c>1276.99</c>
-							<c>100.00</c>
-						</r>
-						<r>
-							<c>Fert. applied to agric. land Inc. Addition</c>
-							<c />
-							<c>kg/year</c>
-							<c>2</c>
-							<c>12291.36</c>
-							<c>12291.36</c>
-							<c>0.00</c>
-						</r>
-						<r>
-							<c>Livestock manure Inc. Addition</c>
-							<c />
-							<c>kg/year</c>
-							<c>2</c>
-							<c>2894.64</c>
-							<c>2894.64</c>
-							<c>0.00</c>
-						</r>
-						<r>
-							<c>Total Inc. (not decayed)</c>
-							<c />
-							<c />
-							<c />
-							<c>35709.44</c>
-							<c>36347.94</c>
-							<c>1.79</c>
-						</r>
-					</section>
-					<section display="Total Flux (theoretical measurable value)"
-						name="total">
-						<r>
-							<c>Wastewater discharge Total (w/ upstream, decayed)</c>
-							<c />
+							<c>Wastewater discharge Incremental Load</c>
+							<c>Nitrogen</c>
 							<c>kg/year</c>
 							<c>2</c>
 							<c>3.46</c>
@@ -161,8 +110,8 @@
 							<c>0.00</c>
 						</r>
 						<r>
-							<c>Wet dep. of inorg.nitrogen Total (w/ upstream, decayed)</c>
-							<c />
+							<c>Wet dep. of inorg.nitrogen Incremental Load</c>
+							<c>Nitrogen</c>
 							<c>kg/year</c>
 							<c>2</c>
 							<c>18456.23</c>
@@ -170,8 +119,8 @@
 							<c>0.00</c>
 						</r>
 						<r>
-							<c>Imp. surf. area Total (w/ upstream, decayed)</c>
-							<c />
+							<c>Imp. surf. area Incremental Load</c>
+							<c>Nitrogen</c>
 							<c>kg/year</c>
 							<c>2</c>
 							<c>592.73</c>
@@ -179,8 +128,8 @@
 							<c>100.00</c>
 						</r>
 						<r>
-							<c>Fert. applied to agric. land Total (w/ upstream, decayed)</c>
-							<c />
+							<c>Fert. applied to agric. land Incremental Load</c>
+							<c>Nitrogen</c>
 							<c>kg/year</c>
 							<c>2</c>
 							<c>11410.37</c>
@@ -188,8 +137,8 @@
 							<c>0.00</c>
 						</r>
 						<r>
-							<c>Livestock manure Total (w/ upstream, decayed)</c>
-							<c />
+							<c>Livestock manure Incremental Load</c>
+							<c>Nitrogen</c>
 							<c>kg/year</c>
 							<c>2</c>
 							<c>2687.16</c>
@@ -197,10 +146,66 @@
 							<c>0.00</c>
 						</r>
 						<r>
-							<c>Grand Total (measurable)</c>
-							<c />
-							<c />
-							<c />
+							<c>Incremental Load</c>
+							<c>Nitrogen</c>
+							<c>kg/year</c>
+							<c>null</c>
+							<c>33149.95</c>
+							<c>33742.68</c>
+							<c>1.79</c>
+						</r>
+					</section>
+					<section display="Total Load" name="total">
+						<r>
+							<c>Wastewater discharge Total Load</c>
+							<c>Nitrogen</c>
+							<c>kg/year</c>
+							<c>2</c>
+							<c>3.46</c>
+							<c>3.46</c>
+							<c>0.00</c>
+						</r>
+						<r>
+							<c>Wet dep. of inorg.nitrogen Total Load</c>
+							<c>Nitrogen</c>
+							<c>kg/year</c>
+							<c>2</c>
+							<c>18456.23</c>
+							<c>18456.23</c>
+							<c>0.00</c>
+						</r>
+						<r>
+							<c>Imp. surf. area Total Load</c>
+							<c>Nitrogen</c>
+							<c>kg/year</c>
+							<c>2</c>
+							<c>592.73</c>
+							<c>1185.46</c>
+							<c>100.00</c>
+						</r>
+						<r>
+							<c>Fert. applied to agric. land Total Load</c>
+							<c>Nitrogen</c>
+							<c>kg/year</c>
+							<c>2</c>
+							<c>11410.37</c>
+							<c>11410.37</c>
+							<c>0.00</c>
+						</r>
+						<r>
+							<c>Livestock manure Total Load</c>
+							<c>Nitrogen</c>
+							<c>kg/year</c>
+							<c>2</c>
+							<c>2687.16</c>
+							<c>2687.16</c>
+							<c>0.00</c>
+						</r>
+						<r>
+							<c>Total Load</c>
+							<c>Nitrogen</c>
+							<c>kg/year</c>
+							<c>null</c>
 							<c>33149.95</c>
 							<c>33742.68</c>
 							<c>1.79</c>
@@ -235,7 +240,7 @@
 						</r>
 						<r>
 							<c>Open Water Name</c>
-							<c></c>
+							<c />
 							<c />
 						</r>
 						<r>
@@ -350,6 +355,14 @@
 					<huc2 id="03" name="SOUTH ATLANTIC-GULF" />
 				</hucs>
 			</identification>
+			<!-- See the PredictionContext-response for value metadata -->
+			<mapped-value>
+				<value>7.96</value>
+				<name>Imp. surf. area</name>
+				<description />
+				<units>sq km</units>
+				<constituent>Land area</constituent>
+			</mapped-value>
 			<adjustments display="Adjustments">
 				<metadata rowCount="5" columnCount="7" row-id-name="source_id">
 					<columns>
@@ -423,12 +436,10 @@
 					</columns>
 				</metadata>
 				<data>
-					<section
-						display="Incremental Flux Contributed at Reach (no instream decay applied)"
-						name="inc">
+					<section display="Incremental Load" name="decayed_incremental">
 						<r>
-							<c>Wastewater discharge Inc. Addition</c>
-							<c />
+							<c>Wastewater discharge Incremental Load</c>
+							<c>Nitrogen</c>
 							<c>kg/year</c>
 							<c>2</c>
 							<c>0.00</c>
@@ -436,56 +447,55 @@
 							<c>0.00</c>
 						</r>
 						<r>
-							<c>Wet dep. of inorg.nitrogen Inc. Addition</c>
-							<c />
+							<c>Wet dep. of inorg.nitrogen Incremental Load</c>
+							<c>Nitrogen</c>
 							<c>kg/year</c>
 							<c>2</c>
-							<c>32949.16</c>
-							<c>32949.16</c>
+							<c>30792.70</c>
+							<c>30792.70</c>
 							<c>0.00</c>
 						</r>
 						<r>
-							<c>Imp. surf. area Inc. Addition</c>
-							<c />
+							<c>Imp. surf. area Incremental Load</c>
+							<c>Nitrogen</c>
 							<c>kg/year</c>
 							<c>2</c>
-							<c>7621.30</c>
-							<c>15242.60</c>
+							<c>7122.50</c>
+							<c>14245.00</c>
 							<c>100.00</c>
 						</r>
 						<r>
-							<c>Fert. applied to agric. land Inc. Addition</c>
-							<c />
+							<c>Fert. applied to agric. land Incremental Load</c>
+							<c>Nitrogen</c>
 							<c>kg/year</c>
 							<c>2</c>
-							<c>6809.69</c>
-							<c>6809.69</c>
+							<c>6364.01</c>
+							<c>6364.01</c>
 							<c>0.00</c>
 						</r>
 						<r>
-							<c>Livestock manure Inc. Addition</c>
-							<c />
+							<c>Livestock manure Incremental Load</c>
+							<c>Nitrogen</c>
 							<c>kg/year</c>
 							<c>2</c>
-							<c>44118.54</c>
-							<c>44118.54</c>
+							<c>41231.06</c>
+							<c>41231.06</c>
 							<c>0.00</c>
 						</r>
 						<r>
-							<c>Total Inc. (not decayed)</c>
-							<c />
-							<c />
-							<c />
-							<c>91498.69</c>
-							<c>99119.99</c>
+							<c>Incremental Load</c>
+							<c>Nitrogen</c>
+							<c>kg/year</c>
+							<c>null</c>
+							<c>85510.26</c>
+							<c>92632.76</c>
 							<c>8.33</c>
 						</r>
 					</section>
-					<section display="Total Flux (theoretical measurable value)"
-						name="total">
+					<section display="Total Load" name="total">
 						<r>
-							<c>Wastewater discharge Total (w/ upstream, decayed)</c>
-							<c />
+							<c>Wastewater discharge Total Load</c>
+							<c>Nitrogen</c>
 							<c>kg/year</c>
 							<c>2</c>
 							<c>0.00</c>
@@ -493,8 +503,8 @@
 							<c>0.00</c>
 						</r>
 						<r>
-							<c>Wet dep. of inorg.nitrogen Total (w/ upstream, decayed)</c>
-							<c />
+							<c>Wet dep. of inorg.nitrogen Total Load</c>
+							<c>Nitrogen</c>
 							<c>kg/year</c>
 							<c>2</c>
 							<c>61189.16</c>
@@ -502,8 +512,8 @@
 							<c>0.00</c>
 						</r>
 						<r>
-							<c>Imp. surf. area Total (w/ upstream, decayed)</c>
-							<c />
+							<c>Imp. surf. area Total Load</c>
+							<c>Nitrogen</c>
 							<c>kg/year</c>
 							<c>2</c>
 							<c>13513.74</c>
@@ -511,8 +521,8 @@
 							<c>52.71</c>
 						</r>
 						<r>
-							<c>Fert. applied to agric. land Total (w/ upstream, decayed)</c>
-							<c />
+							<c>Fert. applied to agric. land Total Load</c>
+							<c>Nitrogen</c>
 							<c>kg/year</c>
 							<c>2</c>
 							<c>13616.29</c>
@@ -520,8 +530,8 @@
 							<c>0.00</c>
 						</r>
 						<r>
-							<c>Livestock manure Total (w/ upstream, decayed)</c>
-							<c />
+							<c>Livestock manure Total Load</c>
+							<c>Nitrogen</c>
 							<c>kg/year</c>
 							<c>2</c>
 							<c>86664.67</c>
@@ -529,10 +539,10 @@
 							<c>0.00</c>
 						</r>
 						<r>
-							<c>Grand Total (measurable)</c>
-							<c />
-							<c />
-							<c />
+							<c>Total Load</c>
+							<c>Nitrogen</c>
+							<c>kg/year</c>
+							<c>null</c>
 							<c>174983.85</c>
 							<c>182106.35</c>
 							<c>4.07</c>
@@ -567,7 +577,7 @@
 						</r>
 						<r>
 							<c>Open Water Name</c>
-							<c></c>
+							<c />
 							<c />
 						</r>
 						<r>
