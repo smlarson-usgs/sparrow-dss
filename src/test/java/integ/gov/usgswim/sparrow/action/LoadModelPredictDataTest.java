@@ -68,7 +68,7 @@ public class LoadModelPredictDataTest extends LoadModelPredictDataOfflineTest {
 
 	public void testLoadSourceReachCoef() throws Exception {
 		DataTable sourceMetadata = LoadModelPredictData.loadSourceMetadata(conn, TEST_MODEL);
-		DataTable jdbcData = LoadModelPredictData.loadSourceReachCoef(conn, TEST_MODEL, sourceMetadata);
+		DataTable jdbcData = LoadModelPredictData.loadSourceReachCoef(conn, TEST_MODEL, 0, sourceMetadata);
 		System.out.println("  -- Printing Source Reach Coefficients --");
 		DataTablePrinter.printDataTableSample(jdbcData, 30, 30);
 	}

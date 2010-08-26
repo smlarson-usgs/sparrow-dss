@@ -164,7 +164,7 @@ public class JDBCUtilMemoryIntegrationTest{
 
 		ObjectFactory sourceReachCoefFactory = new ObjectFactory() {
 			public Object makeObject() throws SQLException, IOException {
-				return LoadModelPredictData.loadSourceReachCoef(conn, modelId, sourceIDs);
+				return LoadModelPredictData.loadSourceReachCoef(conn, modelId, 0, sourceIDs);
 			}
 		};
 
@@ -184,7 +184,7 @@ public class JDBCUtilMemoryIntegrationTest{
 
 		ObjectFactory fullModelDataSetFactory = new ObjectFactory() {
 			public Object makeObject() throws Exception {
-				return new LoadModelPredictData((long) modelId, false).run();
+				return new LoadModelPredictData((long) modelId).run();
 			}
 		};
 

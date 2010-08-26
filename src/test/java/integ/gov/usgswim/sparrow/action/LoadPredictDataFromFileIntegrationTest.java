@@ -18,8 +18,8 @@ public class LoadPredictDataFromFileIntegrationTest extends SparrowDBTest {
 		//Normally we would load via the SharedApplication, which uses the cache.
 		//However, since we want to ensure we are comparing db values to the text
 		//file value, we call the Actions directly.
-		LoadModelPredictData loadFromDb = new LoadModelPredictData(TEST_MODEL_ID, false);
-		LoadModelPredictDataFromFile loadFromFile = new LoadModelPredictDataFromFile(TEST_MODEL_ID, false);
+		LoadModelPredictData loadFromDb = new LoadModelPredictData(TEST_MODEL_ID);
+		LoadModelPredictDataFromFile loadFromFile = new LoadModelPredictDataFromFile(TEST_MODEL_ID);
 		dbPredictData = loadFromDb.doAction();
 		filePredictData = loadFromFile.doAction();
 	}

@@ -39,7 +39,7 @@ public class MismatchedIdsErrorTest {
 
 	@Test
 	public void testLoadSources() throws Exception {
-		PredictData pd = new LoadModelPredictData(42L, true).run();
+		PredictData pd = new LoadModelPredictData(42L).run();
 		
 		DataTable topo = pd.getTopo();
 		DataTable source = pd.getSrc();

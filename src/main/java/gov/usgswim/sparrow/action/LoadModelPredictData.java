@@ -23,19 +23,16 @@ import gov.usgswim.sparrow.util.DLUtils;
 
 public class LoadModelPredictData extends Action<PredictData>{
 
-	private boolean bootstrap;
 	private Long modelId;
 	
 	public static final int SOURCE_ID_COL = 0;
 	
 	/**
-	 * Creates a Action to load the entire model
+	 * Creates a Action to load the entire model.
+	 * Only the iteration zero set of coef's are loaded for coef data.
 	 * @param modelId the ID of the Sparrow Model to load
-	 * @param bootstrap	<b>true</b>		to load only the data required to run a prediction.
-	 * 					<b>false</b>	to load the complete dataset for a model (including bootstrap data). 
 	 */
-	public LoadModelPredictData(Long modelId, boolean bootstrap) {
-		this.bootstrap = bootstrap;
+	public LoadModelPredictData(Long modelId) {
 		this.modelId = modelId;
 	}
 	
@@ -46,11 +43,7 @@ public class LoadModelPredictData extends Action<PredictData>{
 		
 		dataSet.setSrcMetadata( loadSourceMetadata(con, modelId));
 		dataSet.setTopo( loadTopo(con, modelId) );
-		if (!this.bootstrap) {
-			dataSet.setCoef( loadSourceReachCoef(con, modelId, 0, dataSet.getSrcMetadata()) );
-		} else {
-			dataSet.setCoef( loadSourceReachCoef(con, modelId, dataSet.getSrcMetadata()) );
-		}
+		dataSet.setCoef( loadSourceReachCoef(con, modelId, 0, dataSet.getSrcMetadata()) );
 		dataSet.setDelivery( loadDelivery(con, modelId, 0) );
 		// TODO fix: this actually is going to fail for multiple iterations
 		dataSet.setSrc( loadSourceValues(con, modelId, dataSet.getSrcMetadata()) );
@@ -245,71 +238,6 @@ public class LoadModelPredictData extends Action<PredictData>{
 
 	}
 	
-	/**
-	 * Returns a DataTable of all source/reach coef's for for all iterations of a model.
-	 * <h4>Data Columns with one row per reach (sorted by ITERATION then HYDSEQ)</h4>
-	 * No row id is used in this table.
-	 * <ol>
-	 * <li>[Source 1] - The coef's for the first source in one column
-	 * <li>[Source 2...] - The coef's for the 2nd...
-	 * <li>...
-	 * </ol>
-	 *
-	 * @param conn	A JDBC Connection to run the query on
-	 * @param modelId	The ID of the Sparrow model
-	 * @param sources	An DataTable list of the sources for the model, in one column (see loadSource)
-	 * @return Fetched data - see Data Columns above.
-	 * @throws SQLException
-	 */
-	public static DataTableWritable loadSourceReachCoef(Connection conn, long modelId, DataTable sources) throws SQLException,
-	IOException {
-
-		if (sources.getRowCount() == 0) {
-			throw new IllegalArgumentException("There must be at least one source");
-		}
-
-		int sourceCount = sources.getRowCount();
-
-		DataTableWritable sourceReachCoef = new SimpleDataTableWritable();
-		//new double[reachCount * itCount][sourceCount]);
-		// TODO [eric] The query needs to be revised to not retrieve all the
-		// iterations at once otherwise it is likely to cause an out-of-memory
-		// exception. In previous experience, 62382 reaches * 51 iterations * 5
-		// sources * 8 bytes per double primitive ~128M!
-
-		for (int srcIndex=0; srcIndex<sourceCount; srcIndex++) {
-
-			String query =
-				getTextWithParamSubstitution("SelectAllReachCoef", LoadModelPredictData.class,
-						"ModelId", modelId, "SourceId", sources.getInt(srcIndex, SOURCE_ID_COL)
-				);
-
-			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-			st.setFetchSize(2000);
-			ResultSet rs = null;
-
-			try {
-
-				rs = st.executeQuery(query);
-				sourceReachCoef.addColumn(new StandardNumberColumnDataWritable<Double>());
-				DLUtils.loadColumn(rs, sourceReachCoef, 0, srcIndex);
-
-			} finally {
-				if (rs != null) {
-					rs.close();
-					rs = null;
-				}
-			}
-		}
-
-		if (log.isDebugEnabled()) {
-			log.debug("Printing sample of sourceReachCoef ...");
-			log.debug(DataTablePrinter.sampleDataTable(sourceReachCoef, 10, 10));
-		}
-
-		return sourceReachCoef;
-
-	}
 	
 	/**
 	 * Returns a DataTable of all delivery data for for a single model.
@@ -450,14 +378,6 @@ public class LoadModelPredictData extends Action<PredictData>{
 				rs = null;
 			}
 		}
-	}
-
-	public boolean isLoadBootstrap() {
-		return this.bootstrap;
-	}
-
-	public void setLoadBootstrap(boolean dataOnly) {
-		this.bootstrap = dataOnly;
 	}
 
 	public Long getModelId() {

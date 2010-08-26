@@ -47,7 +47,6 @@ public class LoadModelPredictDataFromFile extends Action<PredictData>{
 	
 	
 	//Instance
-	private boolean bootstrap;
 	private Long modelId;
 	
 
@@ -58,8 +57,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData>{
 	 * @param bootstrap	<b>true</b>		to load only the data required to run a prediction.
 	 * 					<b>false</b>	to load the complete dataset for a model (including bootstrap data). 
 	 */
-	public LoadModelPredictDataFromFile(Long modelId, boolean bootstrap) {
-		this.bootstrap = bootstrap;
+	public LoadModelPredictDataFromFile(Long modelId) {
 		this.modelId = modelId;
 	}
 	
@@ -69,10 +67,6 @@ public class LoadModelPredictDataFromFile extends Action<PredictData>{
 		
 		dataSet.setSrcMetadata( loadSourceMetadata(modelId));
 		dataSet.setTopo( loadTopo(modelId) );
-		
-		if (this.bootstrap) {
-			throw new java.lang.Exception("Loading bootstrap data is not implemented.");
-		}
 		
 		
 		//Source coefs and delivery are stored in one file, so load and filter.
@@ -408,14 +402,6 @@ public class LoadModelPredictDataFromFile extends Action<PredictData>{
 			long id = table.getLong(i, columnIndex);
 			table.setRowId(id, i);
 		}
-	}
-
-	public boolean isLoadBootstrap() {
-		return this.bootstrap;
-	}
-
-	public void setLoadBootstrap(boolean dataOnly) {
-		this.bootstrap = dataOnly;
 	}
 
 	public Long getModelId() {

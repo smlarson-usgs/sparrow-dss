@@ -31,7 +31,7 @@ public class WriteDataToTSVFiles {
 			throw new RuntimeException("The base directory specified ["
 					+ BASE_DIRECTORY + "] does not exist!");
 
-		PredictData predictData = new LoadModelPredictData((long) modelID, true).run();
+		PredictData predictData = new LoadModelPredictData((long) modelID).run();
 		writePredictDataToFiles(predictData, modelID, baseDirectory, WORK_REL_PATH);
 
 		PredictRunner predictRunner = new PredictRunner(predictData);

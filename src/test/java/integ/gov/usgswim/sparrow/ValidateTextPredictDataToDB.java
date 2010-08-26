@@ -70,7 +70,7 @@ public class ValidateTextPredictDataToDB  extends SparrowDBTest {
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);
 		
-		LoadModelPredictDataFromFile action = new LoadModelPredictDataFromFile(TEST_MODEL_ID, false);
+		LoadModelPredictDataFromFile action = new LoadModelPredictDataFromFile(TEST_MODEL_ID);
 
 		//Lets hack the predictData to Turn off transport for reach ID 9681
 		dbPredictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);

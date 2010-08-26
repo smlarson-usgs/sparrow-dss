@@ -26,7 +26,7 @@ public class PredictDataFactory implements CacheEntryFactory {
 		Long id = (Long)modelId;
 		PredictData result = null;
 		
-		result = new LoadModelPredictData(id, true).run();
+		result = new LoadModelPredictData(id).run();
 		
 		return result;
 	}

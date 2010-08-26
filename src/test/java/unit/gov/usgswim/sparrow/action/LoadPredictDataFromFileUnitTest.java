@@ -38,7 +38,7 @@ public class LoadPredictDataFromFileUnitTest {
 		
 		
 		
-		LoadModelPredictDataFromFile action = new LoadModelPredictDataFromFile(50L, false);
+		LoadModelPredictDataFromFile action = new LoadModelPredictDataFromFile(50L);
 		model50 = action.run();
 	}
 	

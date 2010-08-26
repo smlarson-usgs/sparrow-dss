@@ -60,7 +60,7 @@ public class ModelDataLoadComparison {
 
 		{// write coef
 			DataTableWritable sourceMetadata = LoadModelPredictData.loadSourceMetadata(conn, modelID);
-			DataTable coef = LoadModelPredictData.loadSourceReachCoef(conn, modelID, sourceMetadata);
+			DataTable coef = LoadModelPredictData.loadSourceReachCoef(conn, modelID, 0, sourceMetadata);
 			if (baseOutputDirectory.exists() && baseOutputDirectory.isDirectory()) {
 				File topoOutFile = ModelDataLoadComparison.getOutputCoefFile(baseOutputDirectory);
 				Writer writer = new BufferedWriter(new FileWriter(topoOutFile), 8192);
