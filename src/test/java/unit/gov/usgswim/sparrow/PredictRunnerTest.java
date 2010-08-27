@@ -4,6 +4,7 @@ import static gov.usgswim.sparrow.util.DataResourceLoaderTest.TEST_MODEL;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
+import gov.usgswim.sparrow.action.PredictRunner;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.util.DataResourceLoader;
 import gov.usgswim.sparrow.util.SparrowResourceUtils;

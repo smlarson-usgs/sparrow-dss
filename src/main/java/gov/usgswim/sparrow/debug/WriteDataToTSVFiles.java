@@ -2,8 +2,8 @@ package gov.usgswim.sparrow.debug;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.PredictRunner;
 import gov.usgswim.sparrow.action.LoadModelPredictData;
+import gov.usgswim.sparrow.action.PredictRunner;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 
 import java.io.BufferedWriter;

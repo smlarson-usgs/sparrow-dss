@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow;
+package gov.usgswim.sparrow.action;
 
 import static gov.usgswim.sparrow.PredictData.FNODE_COL;
 import static gov.usgswim.sparrow.PredictData.IFTRAN_COL;
@@ -6,7 +6,11 @@ import static gov.usgswim.sparrow.PredictData.INSTREAM_DECAY_COL;
 import static gov.usgswim.sparrow.PredictData.TNODE_COL;
 import static gov.usgswim.sparrow.PredictData.UPSTREAM_DECAY_COL;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.Runner;
+import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
+import gov.usgswim.sparrow.parser.DataColumn;
 
 /**
  * A simple SPARROW prediction implementation.
@@ -15,7 +19,7 @@ import gov.usgswim.sparrow.datatable.PredictResultImm;
  * all match, and that the reach order is such that reach(n) never flows to
  * reach(<n).
  */
-public class PredictRunner implements Runner {
+public class PredictRunner extends Action<PredictResult> {
 	/**
 	 * The parent of all child values. If not passed in, it is created.
 	 */
@@ -87,6 +91,11 @@ public class PredictRunner implements Runner {
 		}
 		this.predictData = data;
 		nodeCount = maxNode + 1;
+	}
+	
+	@Override
+	protected PredictResult doAction() throws Exception {
+		return doPredict();
 	}
 
 	/**
@@ -183,4 +192,6 @@ public class PredictRunner implements Runner {
 		+ " - " + +topo.getRowCount()
 		+ "results in inefficient memory consumption";
 	}
+
+
 }

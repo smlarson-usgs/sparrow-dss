@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.cachefactory;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
-import gov.usgswim.sparrow.PredictRunner;
+import gov.usgswim.sparrow.action.PredictRunner;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
