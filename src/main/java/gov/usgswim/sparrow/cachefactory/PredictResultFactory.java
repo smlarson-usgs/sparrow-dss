@@ -55,31 +55,11 @@ public class PredictResultFactory implements CacheEntryFactory {
 		mutable.setSrc(adjustedSources);
 		adjPredictData = mutable.toImmutable();
 
-		long startTime = System.currentTimeMillis();			
-
-		PredictResultImm result = runPrediction(adjPredictData);
-
-		log.debug(
-				"Prediction done for model #" + adjs.getModelID() + 
-				" Time: " + (System.currentTimeMillis() - startTime) + "ms, " +
-				adjPredictData.getSrc().getRowCount() + " reaches");
+		CalcPrediction adjPredict = new CalcPrediction(adjPredictData);
+		PredictResult result = adjPredict.run();
+		
 
 		return (PredictResult) result.toImmutable();
-	}
-
-	/**
-	 * Runs the actual prediction.
-	 * 
-	 * @param context
-	 * @param baseData
-	 * @param adjData
-	 * @return
-	 */
-	//TODO:  [eric] need to fill out the analysis section to really detect what type of prediction we are doing
-	public PredictResultImm runPrediction(PredictData adjData) throws Exception {
-		CalcPrediction adjPredict = new CalcPrediction(adjData);
-		PredictResultImm result = adjPredict.doPredict();
-		return result;
 	}
 
 }

@@ -7,10 +7,7 @@ import static gov.usgswim.sparrow.PredictData.TNODE_COL;
 import static gov.usgswim.sparrow.PredictData.UPSTREAM_DECAY_COL;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.Runner;
-import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
-import gov.usgswim.sparrow.parser.DataColumn;
 
 /**
  * A simple SPARROW prediction implementation.
@@ -19,7 +16,7 @@ import gov.usgswim.sparrow.parser.DataColumn;
  * all match, and that the reach order is such that reach(n) never flows to
  * reach(<n).
  */
-public class CalcPrediction extends Action<PredictResult> {
+public class CalcPrediction extends Action<PredictResultImm> {
 	/**
 	 * The parent of all child values. If not passed in, it is created.
 	 */
@@ -94,15 +91,7 @@ public class CalcPrediction extends Action<PredictResult> {
 	}
 	
 	@Override
-	protected PredictResult doAction() throws Exception {
-		return doPredict();
-	}
-
-	/**
-	 * runs the actual prediction.
-	 */
-	public PredictResultImm doPredict() throws Exception {
-		
+	protected PredictResultImm doAction() throws Exception {
 		int reachCount = topo.getRowCount(); // # of reaches is equal to the number of 'rows' in topo
 		int sourceCount = sourceValues.getColumnCount(); // # of sources is equal to the number of 'columns' in an
 		int outputColumnCount = (sourceCount * 2) + 2;	//The # of output columns

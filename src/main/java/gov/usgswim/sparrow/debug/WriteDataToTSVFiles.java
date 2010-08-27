@@ -35,7 +35,7 @@ public class WriteDataToTSVFiles {
 		writePredictDataToFiles(predictData, modelID, baseDirectory, WORK_REL_PATH);
 
 		CalcPrediction calcPrediction = new CalcPrediction(predictData);
-		PredictResultImm predictResult = calcPrediction.doPredict();
+		PredictResultImm predictResult = calcPrediction.run();
 		writeToFile(predictResult,  baseDirectory, WORK_REL_PATH, modelID + "_predict.txt", true);
 
 

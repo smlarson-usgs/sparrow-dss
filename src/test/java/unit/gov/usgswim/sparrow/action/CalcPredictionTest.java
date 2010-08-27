@@ -22,7 +22,7 @@ public class CalcPredictionTest {
 
 		CalcPrediction runner = new CalcPrediction(predictData);
 
-		PredictResultImm results = runner.doPredict();
+		PredictResultImm results = runner.run();
 		//DataTableUtils.printDataTable(results, "");
 
 		DataTableWritable expected = DataTableUtils.cloneBaseStructure(results);
