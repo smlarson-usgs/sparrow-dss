@@ -19,7 +19,7 @@ import gov.usgswim.sparrow.parser.DataColumn;
  * all match, and that the reach order is such that reach(n) never flows to
  * reach(<n).
  */
-public class PredictRunner extends Action<PredictResult> {
+public class CalcPrediction extends Action<PredictResult> {
 	/**
 	 * The parent of all child values. If not passed in, it is created.
 	 */
@@ -65,7 +65,7 @@ public class PredictRunner extends Action<PredictResult> {
 	 * @param data An all-in-one data object
 	 *
 	 */
-	public PredictRunner(PredictData data) {
+	public CalcPrediction(PredictData data) {
 		{// assign the passed values to the class variables
 			this.topo = data.getTopo();
 			this.sourceCoefficient = data.getCoef();

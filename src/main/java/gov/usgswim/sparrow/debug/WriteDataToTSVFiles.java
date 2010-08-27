@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.debug;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.action.LoadModelPredictData;
-import gov.usgswim.sparrow.action.PredictRunner;
+import gov.usgswim.sparrow.action.CalcPrediction;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 
 import java.io.BufferedWriter;
@@ -34,8 +34,8 @@ public class WriteDataToTSVFiles {
 		PredictData predictData = new LoadModelPredictData((long) modelID).run();
 		writePredictDataToFiles(predictData, modelID, baseDirectory, WORK_REL_PATH);
 
-		PredictRunner predictRunner = new PredictRunner(predictData);
-		PredictResultImm predictResult = predictRunner.doPredict();
+		CalcPrediction calcPrediction = new CalcPrediction(predictData);
+		PredictResultImm predictResult = calcPrediction.doPredict();
 		writeToFile(predictResult,  baseDirectory, WORK_REL_PATH, modelID + "_predict.txt", true);
 
 

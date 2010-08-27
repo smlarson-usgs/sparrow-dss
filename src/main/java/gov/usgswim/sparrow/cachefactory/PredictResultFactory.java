@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.cachefactory;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
-import gov.usgswim.sparrow.action.PredictRunner;
+import gov.usgswim.sparrow.action.CalcPrediction;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
@@ -77,7 +77,7 @@ public class PredictResultFactory implements CacheEntryFactory {
 	 */
 	//TODO:  [eric] need to fill out the analysis section to really detect what type of prediction we are doing
 	public PredictResultImm runPrediction(PredictData adjData) throws Exception {
-		PredictRunner adjPredict = new PredictRunner(adjData);
+		CalcPrediction adjPredict = new CalcPrediction(adjData);
 		PredictResultImm result = adjPredict.doPredict();
 		return result;
 	}

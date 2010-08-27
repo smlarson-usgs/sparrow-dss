@@ -1,10 +1,11 @@
-package gov.usgswim.sparrow;
+package gov.usgswim.sparrow.action;
 
 import static gov.usgswim.sparrow.util.DataResourceLoaderTest.TEST_MODEL;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
-import gov.usgswim.sparrow.action.PredictRunner;
+import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.action.CalcPrediction;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.util.DataResourceLoader;
 import gov.usgswim.sparrow.util.SparrowResourceUtils;
@@ -13,13 +14,13 @@ import java.util.List;
 
 import org.junit.Test;
 
-public class PredictRunnerTest {
+public class CalcPredictionTest {
 
 	@Test
 	public void testDoPredictWithDataResourceLoader() throws Exception{
 		PredictData predictData = DataResourceLoader.loadModelData(TEST_MODEL);
 
-		PredictRunner runner = new PredictRunner(predictData);
+		CalcPrediction runner = new CalcPrediction(predictData);
 
 		PredictResultImm results = runner.doPredict();
 		//DataTableUtils.printDataTable(results, "");
