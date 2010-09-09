@@ -273,7 +273,13 @@ public class DynamicReadOnlyProperties extends Properties {
 	 * @param contexts default = STANDARD_JNDI_CONTEXTS
 	 */
 	public void addJNDIContexts(String... contexts) {
-		isUsingJNDI = true;
+		
+		if ("true".equals(System.getProperty(EXPECT_NON_JNDI_ENVIRONMENT))) {
+			return;
+		} else {
+			isUsingJNDI = true;
+		}
+		
 		if (contexts == null || contexts.length == 0 || ( contexts.length == 1 && contexts[0] == null)) {
 			contexts = DEFAULT_JNDI_CONTEXTS;
 		}
@@ -300,12 +306,8 @@ public class DynamicReadOnlyProperties extends Properties {
 				if (!hasOutputJNDIError) {
 					hasOutputJNDIError = true;
 					
-					if ("true".equals(System.getProperty(EXPECT_NON_JNDI_ENVIRONMENT))) {
-						//silently ignore
-					} else {
-						System.err.println("Error accessing JNDI -- No JNDI in this environment? Printing stacktrace...");
-						e.printStackTrace();
-					}
+					System.err.println("Error accessing JNDI -- No JNDI in this environment? Printing stacktrace...");
+					e.printStackTrace();
 				}
 			}
 		}

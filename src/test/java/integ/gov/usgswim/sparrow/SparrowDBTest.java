@@ -50,76 +50,26 @@ public class SparrowDBTest extends SparrowUnitTest {
 	
 	/** A connection, shared for this class and autoclosed */
 	private static Connection sparrowDBTestConn;
-	
-	/** lifecycle listener handles startup / shutdown */
-	static LifecycleListener lifecycle = new LifecycleListener();
-	
-	//True until the firstRun is complete (used for onetime init)
-	private static boolean firstRun = true;
+
 	
 	/** A single instance which is destroyed in teardown */
 	private static SparrowDBTest singleInstanceToTearDown;
 
 	
-	//Cannot use the @BeforeClass since we need the ability to override methods.
-	@Before
-	public void sparrowDBTestSetUp() throws Exception {
-		if (firstRun) {
-			doLogSetup();
-			doLifecycleSetup();
-			doDbSetup();
-			doGeneralSetup();
-			doSetup();	//intended for subclass setup
-			singleInstanceToTearDown = this;
-			firstRun = false;
-		}
+	public void doOneTimeCustomSetup() throws Exception {
+		doDbSetup();
+		singleInstanceToTearDown = this;
 	}
 	
-	@AfterClass
-	public static void sparrowDBTestTearDown() throws Exception {
-		singleInstanceToTearDown.doLogTearDown();
-		singleInstanceToTearDown.doLifecycleTearDown();
+	public void doOneTimeCustomTearDown() throws Exception {
 		singleInstanceToTearDown.doDbTearDown();
-		singleInstanceToTearDown.doGeneralTearDown();
-		singleInstanceToTearDown.doTearDown();
 		singleInstanceToTearDown = null;
-		firstRun = true;	//reset this flag since it shared by all instances
-	}
-	
-	protected void doLogSetup() throws Exception {
-		setLogLevel(Level.ERROR);
-	}
-	
-	protected void doLifecycleSetup() throws Exception {
-		lifecycle.contextInitialized(null, true);
 	}
 	
 	protected void doDbSetup() throws Exception {
 		if (System.getProperty("dburl") == null) {
-			setProperties();
+			setDbProperties();
 		}
-	}
-	
-	protected void doGeneralSetup() throws Exception {
-		XMLUnit.setIgnoreWhitespace(true);
-		XMLUnit.setIgnoreComments(true);
-	}
-	
-	/**
-	 * Called only before the first test.
-	 * Intended to be overridden for one-time initiation.
-	 * @throws Exception
-	 */
-	protected void doSetup() throws Exception {
-		//nothing to do and no need to call super if overriding.
-	}
-	
-	protected void doLogTearDown() {
-		//nothing to do
-	}
-	
-	protected void doLifecycleTearDown() {
-		lifecycle.contextDestroyed(null, true);
 	}
 	
 	protected void doDbTearDown() throws Exception {
@@ -129,25 +79,15 @@ public class SparrowDBTest extends SparrowUnitTest {
 		}
 	}
 	
-	protected void doGeneralTearDown() {
-		//nothing to do
-	}
-	
-	protected void doTearDown() throws Exception {
-		//nothing to do and no need to call super if overriding.
-	}
-	
 	public static Connection getConnection() throws SQLException {
-		
 		if (sparrowDBTestConn == null || sparrowDBTestConn.isClosed()) {
-			
 			sparrowDBTestConn = SharedApplication.getInstance().getConnection();
 		}
 		
 		return sparrowDBTestConn;
 	}
 	
-	protected static void setProperties() throws IOException {
+	protected static void setDbProperties() throws IOException {
 		
 		
 		String strUseProd = System.getProperty(SYS_PROP_USE_PRODUCTION_DB);
@@ -177,14 +117,6 @@ public class SparrowDBTest extends SparrowUnitTest {
 			System.setProperty("dbuser", "sparrow_dss");
 			System.setProperty("dbpass", pwd);
 		}
-	}
-	
-	protected static void setLogLevel(Level level) {
-		//Turns on detailed logging
-		log.setLevel(level);
-		
-		//Generically set level for all Actions
-		Logger.getLogger(Action.class).setLevel(level);
 	}
 	
 	protected static String prompt(String prompt) throws IOException {

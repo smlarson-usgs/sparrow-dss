@@ -7,6 +7,7 @@ import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.action.LoadModelPredictDataFromFile;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
@@ -34,13 +35,21 @@ import junit.framework.TestCase;
 
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.custommonkey.xmlunit.XMLUnit;
+import org.junit.AfterClass;
+import org.junit.Before;
 
 public abstract class SparrowUnitTest {
 	
 	/** Logging.  Log messages will use the name of the subclass */
 	protected static Logger log =
 		Logger.getLogger(SparrowUnitTest.class); //logging for this class
+	
+	/** lifecycle listener handles startup / shutdown */
+	static LifecycleListener lifecycle = new LifecycleListener();
+	
 	
 	/** The model ID of MRB2 in the test db */
 	public static final Long TEST_MODEL_ID = 50L;
@@ -59,6 +68,110 @@ public abstract class SparrowUnitTest {
 	
 	private static PredictResult testModelPredictResults;
 	private static PredictData testModelPredictData;
+	
+	//True until the firstRun is complete (used for onetime init)
+	private static boolean firstRun = true;
+	
+	/** A single instance which is destroyed in teardown */
+	private static SparrowUnitTest singleInstanceToTearDown;
+
+	
+	//Cannot use the @BeforeClass since we need the ability to override methods.
+	@Before
+	public void SparrowUnitTestSetUp() throws Exception {
+		if (firstRun) {
+			doOneTimeSetup();
+			firstRun = false;
+			singleInstanceToTearDown = this;
+		}
+	}
+	
+
+	@AfterClass
+	public static void SparrowUnitTestTearDown() throws Exception {
+		singleInstanceToTearDown.doOneTimeTearDown();
+	}
+	
+	protected void doOneTimeSetup() throws Exception {
+		doOneTimeLogSetup();
+		doOneTimeGeneralSetup();
+		doOneTimeLifecycleSetup();
+		doOneTimeCustomSetup();	//intended for subclass setup
+	}
+	
+	protected void doOneTimeTearDown() throws Exception {
+		singleInstanceToTearDown.doOneTimeCustomTearDown();	//for subclasses
+		singleInstanceToTearDown.doOneTimeLifecycleTearDown();
+		singleInstanceToTearDown.doOneTimeGeneralTearDown();
+		singleInstanceToTearDown.doOneTimeLogTearDown();
+		
+		singleInstanceToTearDown = null;
+		firstRun = true;	//reset this flag since it shared by all instances
+	}
+	
+	protected void doOneTimeLogSetup() throws Exception {
+		setLogLevel(Level.ERROR);
+	}
+	
+	protected void doOneTimeGeneralSetup() throws Exception {
+		
+		//Tell JNDI config to not expect JNDI props
+		System.setProperty(
+				"gov.usgs.cida.config.DynamicReadOnlyProperties.EXPECT_NON_JNDI_ENVIRONMENT",
+				"true");
+		
+		
+		XMLUnit.setIgnoreWhitespace(true);
+		XMLUnit.setIgnoreComments(true);
+	}
+	
+	protected void doOneTimeLifecycleSetup() throws Exception {
+		lifecycle.contextInitialized(null, true);
+	}
+
+	
+	/**
+	 * Called only before the first test.
+	 * Intended to be overridden for one-time initiation.
+	 * @throws Exception
+	 */
+	protected void doOneTimeCustomSetup() throws Exception {
+		//nothing to do and no need to call super if overriding.
+	}
+	
+	protected void doOneTimeLogTearDown() {
+		//nothing to do
+	}
+	
+	protected void doOneTimeLifecycleTearDown() {
+		lifecycle.contextDestroyed(null, true);
+	}
+	
+	
+	protected void doOneTimeGeneralTearDown() {
+		//nothing to do
+	}
+	
+	/**
+	 * For sublclasses to override
+	 * @throws Exception
+	 */
+	protected void doOneTimeCustomTearDown() throws Exception {
+		//nothing to do and no need to call super if overriding.
+	}
+	
+	protected static void setLogLevel(Level level) {
+		//Turns on detailed logging
+		log.setLevel(level);
+		
+		
+		//The LifecycleListener is set for info level logging by default.
+		Logger.getLogger(LifecycleListener.class).setLevel(level);
+		
+		//Generically set level for all Actions
+		Logger.getLogger(Action.class).setLevel(level);
+	}
+	
 
 	/**
 	 * Convenience method for reading the contents of an input stream to a

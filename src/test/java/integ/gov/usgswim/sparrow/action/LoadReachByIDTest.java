@@ -60,7 +60,7 @@ public class LoadReachByIDTest  extends SparrowDBTest {
 	static ReachID reachId;
 	
 	@Override
-	public void doSetup() throws Exception {
+	public void doOneTimeCustomSetup() throws Exception {
 		
 		//Uncomment to debug
 		setLogLevel(Level.DEBUG);

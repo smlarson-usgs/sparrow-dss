@@ -13,7 +13,7 @@ public class LoadPredictDataFromFileIntegrationTest extends SparrowDBTest {
 	static PredictData filePredictData;
 	
 	@Override
-	public void doSetup() throws Exception {
+	public void doOneTimeCustomSetup() throws Exception {
 		
 		//Normally we would load via the SharedApplication, which uses the cache.
 		//However, since we want to ensure we are comparing db values to the text

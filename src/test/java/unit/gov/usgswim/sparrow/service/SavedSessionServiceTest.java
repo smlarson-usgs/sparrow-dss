@@ -10,7 +10,7 @@ import org.xml.sax.SAXException;
 import com.meterware.httpunit.WebResponse;
 
 
-public class SavedSessionServiceTest extends SparrowServiceTest {
+public class SavedSessionServiceTest extends SparrowServiceUnitTest {
 
 	private static final String SESSION_SERVICE_URL = "http://localhost:8088/sp_session";
 

@@ -65,7 +65,7 @@ public class ValidateTextPredictDataToDB  extends SparrowDBTest {
 
 	
 	@Override
-	public void doSetup() throws Exception {
+	public void doOneTimeCustomSetup() throws Exception {
 		
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);

@@ -1,6 +1,9 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.*;
+
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
@@ -152,7 +155,12 @@ public class CalcConcentrationTest {
 		calc.setBaseData(baseCol);
 		calc.setStreamFlowData(flowCol);
 		
+		//Run the action w/ logging turned off
+		Level actionLogLevel = Logger.getLogger(Action.class).getLevel();
+		Logger.getLogger(Action.class).setLevel(Level.FATAL);
 		DataColumn result = calc.run();
+		Logger.getLogger(Action.class).setLevel(actionLogLevel);
+		
 		assertNull(result);
 	}
 	
@@ -172,7 +180,12 @@ public class CalcConcentrationTest {
 		calc.setBaseData(baseCol);
 		calc.setStreamFlowData(flowCol);
 		
+		//Run the action w/ logging turned off
+		Level actionLogLevel = Logger.getLogger(Action.class).getLevel();
+		Logger.getLogger(Action.class).setLevel(Level.FATAL);
 		DataColumn result = calc.run();
+		Logger.getLogger(Action.class).setLevel(actionLogLevel);
+		
 		assertNull(result);
 	}
 	

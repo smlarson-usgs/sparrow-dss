@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.service;
 
-import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.SparrowUnitTest;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,11 +14,12 @@ import com.meterware.servletunit.ServletRunner;
 import com.meterware.servletunit.ServletUnitClient;
 
 /**
- * A base class for JUnit tests that access services.
+ * A base class for JUnit tests that access services, but do not require a
+ * db connection.
  * @author eeverman
  *
  */
-public abstract class SparrowServiceTest extends SparrowDBTest {
+public abstract class SparrowServiceUnitTest extends SparrowUnitTest {
 
 	
 	public static final Long SERVICE_TEST_MODEL = -1L;
@@ -34,16 +35,32 @@ public abstract class SparrowServiceTest extends SparrowDBTest {
 	protected static ServletRunner servletRunner;
 	protected static ServletUnitClient client;
 	
-	@BeforeClass
-	public static void setupHTTPUnitTest() throws IOException, SAXException {
+	
+	@Override
+	protected void doOneTimeLifecycleSetup() throws Exception {
+		//Do nothing - the lifecycle is setup via the servlet
+	}
+
+	@Override
+	protected void doOneTimeLifecycleTearDown() {
+		//Do nothing - the lifecycle is handled via the servlet
+	}
+	
+	
+	@Override
+	protected void doOneTimeCustomSetup() throws Exception {
 		servletRunner =  new ServletRunner(new File(SparrowServiceTest.WEB_XML_LOCATION));
 		client = servletRunner.newClient();
 	}
 
-	@AfterClass
-	public static void teardownHTTPUnitTest() {
+	/* (non-Javadoc)
+	 * @see gov.usgswim.sparrow.SparrowUnitTest#doTearDown()
+	 */
+	@Override
+	protected void doOneTimeCustomTearDown() throws Exception {
 		servletRunner.shutDown();
 	}
+	
 	
 	public static void sendGetRequest(String URL) {
 		
@@ -51,16 +68,6 @@ public abstract class SparrowServiceTest extends SparrowDBTest {
 	
 	public static void sendPostRequest(String URL, Map<String, String> params) {
 		
-	}
-
-	@Override
-	protected void doOneTimeLifecycleSetup() {
-		//do nothing - the servlet container is handling the lifecycle
-	}
-
-	@Override
-	protected void doOneTimeLifecycleTearDown() {
-		//do nothing - the servlet container is handling the lifecycle
 	}
 
 

@@ -53,7 +53,7 @@ public class PerformanceTest extends SparrowDBTest {
 	static PredictionContext context;
 	
 	@Override
-	public void doSetup() throws Exception {
+	public void doOneTimeCustomSetup() throws Exception {
 		
 		//Turns on detailed logging
 		//log.setLevel(Level.DEBUG);
