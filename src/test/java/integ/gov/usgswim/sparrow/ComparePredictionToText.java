@@ -1,10 +1,8 @@
 package gov.usgswim.sparrow;
 
-import static org.junit.Assert.*;
-
-import java.sql.Connection;
-import java.util.Arrays;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.ColumnDataWritable;
 import gov.usgswim.datatable.DataTable;
@@ -13,8 +11,6 @@ import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardLongColumnData;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
-import gov.usgswim.sparrow.LifecycleListener;
-import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
@@ -24,25 +20,20 @@ import gov.usgswim.sparrow.util.TabDelimFileUtil;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -67,101 +58,189 @@ public class ComparePredictionToText {
 	
 	final static int NUMBER_OF_BAD_INCREMENTALS_TO_PRINT = 5;
 	final static int NUMBER_OF_BAD_TOTALS_TO_PRINT = 6;
+	final static String QUIT = "quit";
 	
-	static int firstModelId;
-	static int lastModelId;
+	String singleModelPath;
+	String activeModelDirectory;
+	String dbPwd;
+	
+	int firstModelId = -1;
+	int lastModelId = -1;
 	
 	//Application lifecycle listener handles startup / shutdown
 	static LifecycleListener lifecycle = new LifecycleListener();
 	
-	final static String TEXT_PATH = "/model_predict/";
-	
-	static boolean abort = false;	//A global way to bail out based on user response.
 
-	public static void main(String[] args) {
-		org.junit.runner.JUnitCore.runClasses(ComparePredictionToText.class);
+
+	public static void main(String[] args) throws Exception {
+		//org.junit.runner.JUnitCore.runClasses(ComparePredictionToText.class);
+		
+		ComparePredictionToText runner = new ComparePredictionToText();
+		runner.oneTimeUserInput();
+		
+		if (runner.singleModelPath != null && runner.dbPwd != null) {
+			//run one model
+			System.out.println("Running one model...");
+			
+			runner.oneTimeConfig();
+			runner.runTheTests();
+			
+		} else if (runner.activeModelDirectory != null && runner.firstModelId > 0 &&
+				runner.lastModelId > 0 && runner.dbPwd != null) {
+			//run a set of models
+			System.out.println("Running a directory of models...");
+			
+			runner.oneTimeConfig();
+			runner.runTheTests();
+			
+		} else {
+			//we are quitting
+			System.out.println("I'm out of here...  Quit was entered or there are missing values.");
+		}
+		
+		
 	}
 	
-	@BeforeClass
-	public static void setUp() throws Exception {
 
-		System.out.println("Please enter info for the ComparePredictionToText test.  Enter 'quit' for any response to abort.");
-		String firstIdStr  = prompt("Enter the ID of the first model to test:");
+	public void oneTimeUserInput() throws Exception {
 		
-		if ("quit".equalsIgnoreCase(firstIdStr)) {
-			abort = true;
-			return;
-		}
+		promptIntro();
+		promptPathOrDir();
+		promptPwd();
+	}
+	
+	public void oneTimeConfig() {
 		
-		String lastIdStr  = prompt("Enter the ID of the last model to test:");
+		//Tell JNDI config to not expect JNDI props
+		System.setProperty(
+				"gov.usgs.cida.config.DynamicReadOnlyProperties.EXPECT_NON_JNDI_ENVIRONMENT",
+				"true");
 		
-		if ("quit".equalsIgnoreCase(lastIdStr)) {
-			abort = true;
-			return;
-		}
+		//Production Properties
+		System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.152:1521:widw");
+		System.setProperty("dbuser", "sparrow_dss");
+		System.setProperty("dbpass", dbPwd);
 		
-		String pwd = prompt("Enter the db password:");
-		
-		if ("quit".equalsIgnoreCase(pwd)) {
-			abort = true;
-			return;
-		}
-		
-		firstModelId = Integer.parseInt(firstIdStr);
-		lastModelId = Integer.parseInt(lastIdStr);
+		//Test DB Properties - igsarmewdbdev.er.usgs.gov
+//		System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.154:1521:widev");
+//		System.setProperty("dbuser", "sparrow_dss");
 		
 		//Turns on detailed logging
 		log.setLevel(Level.DEBUG);
 		
 		//Generically turn on logging for Actions
-		log.getLogger(Action.class).setLevel(Level.DEBUG);
+		//log.getLogger(Action.class).setLevel(Level.DEBUG);
 		
 		//Turn off logging for the lifecycle
 		log.getLogger(LifecycleListener.class).setLevel(Level.ERROR);
 		
 		lifecycle.contextInitialized(null, true);
-		
-		//Production Properties
-		System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.152:1521:widw");
-		System.setProperty("dbuser", "sparrow_dss");
-		System.setProperty("dbpass", pwd);
-		
-		//Test DB Properties - igsarmewdbdev.er.usgs.gov
-//		System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.154:1521:widev");
-//		System.setProperty("dbuser", "sparrow_dss");
-
 	}
 	
-	@Before
-	public void beforeTest() {
+	
+	public void promptIntro() {
+		System.out.println("- - Welcome to the new and improved model validator - -");
+		System.out.println("The validator works in two modes:");
+		System.out.println("1) Test a single model by entering the complete path to a single model (ending with .txt), or");
+		System.out.println("2) Test several models from a directory by entering a directoy (ending with '/' or '\')");
+		System.out.println("If you enter a directory, you will be prompted for a start and end model number.");
+		System.out.println("Enter 'quit' for any response to stop.");
+		System.out.println("");
+	}
+	
+	public void promptPathOrDir() {
+		String pathOrDir  = prompt("Enter a direcotry containing models or the complete path to a single model:");
+		
+		pathOrDir = pathOrDir.trim();
+		if (QUIT.equalsIgnoreCase(pathOrDir)) return;
+
+		if (pathOrDir.endsWith(".txt")) {
+			//we have a single path
+			singleModelPath = pathOrDir;
+		} else if (pathOrDir.endsWith(File.separator)) {
+			activeModelDirectory = pathOrDir;
+			promptFirstLastModel();
+		} else {
+			System.out.println("Unrecognized response - please try again.");
+			promptPathOrDir();
+		}
+	}
+	
+	public void promptFirstLastModel() {
+		try {
+			String firstIdStr  = prompt("Enter the ID of the first model to test:");
+			if (QUIT.equalsIgnoreCase(firstIdStr)) return;
+			firstModelId = Integer.parseInt(firstIdStr);
+			
+			String lastIdStr  = prompt("Enter the ID of the last model to test:");
+			if (QUIT.equalsIgnoreCase(lastIdStr)) return;
+			lastModelId = Integer.parseInt(lastIdStr);
+		} catch (Exception e) {
+			System.out.println("I really need numbers for this part.  Lets try that again.");
+			promptFirstLastModel();
+		}
+	}
+	
+	public void promptPwd() {
+		String pwd = prompt("Enter the db password:");
+		if (QUIT.equalsIgnoreCase(pwd)) return;
+		dbPwd = pwd;
+	}
+	
+	public void beforeEachTest() {
 		SharedApplication.getInstance().clearAllCaches();
 	}
 	
-	@Test
-	public void testAll() throws Exception {
+	public void runTheTests() throws Exception {
 		
-		if (! abort) {
-			int failCount = 0;
-			
-			try {
-				Connection conn = SharedApplication.getInstance().getConnection();
-				assertTrue(!conn.isClosed());
-			} catch (Exception e) {
-				throw new Exception("Oops, a bad pwd, or lack of network access to the db?", e);
+		int failCount = 0;
+		
+		try {
+			Connection conn = SharedApplication.getInstance().getConnection();
+			assertTrue(!conn.isClosed());
+			conn.close();
+		} catch (Exception e) {
+			throw new Exception("Oops, a bad pwd, or lack of network access to the db?", e);
+		}
+
+		if (singleModelPath != null) {
+			File file = new File(singleModelPath);
+			if (file.exists()) {
+				
+				String idString = singleModelPath.substring(0, singleModelPath.lastIndexOf('.'));
+				idString = idString.substring(idString.lastIndexOf(File.separatorChar) + 1);
+				long id = Long.parseLong(idString);
+				
+				boolean pass = testSingleMmodel(file.toURL(), id);
+				if (!pass) failCount++;
+			} else {
+				throw new Exception("The specified model path does not exist!");
 			}
-	
+			
+		} else {
+			
+			int modelCount = 0;
 			for (long id = firstModelId; id <= lastModelId; id++) {
-				URL url = getTextURL(id);
-				if (url != null) {
-					
-					boolean pass = testSingleMmodel(url, id);
+				
+				String filePath = activeModelDirectory + id + ".txt";
+				File file = new File(filePath);
+				
+				if (file.exists()) {
+					modelCount++;
+					boolean pass = testSingleMmodel(file.toURL(), id);
 					if (!pass) failCount++;
-	
 				}
 			}
-		
-			assertEquals(0, failCount);
+			
+			if (modelCount == 0) {
+				throw new Exception("The specified directory does not contain any models within the first & last model IDs!");
+			}
+			
 		}
+		
+
+	
+		assertEquals(0, failCount);
 	}
 	
 	
@@ -257,64 +336,49 @@ public class ComparePredictionToText {
 		
 	}
 	
-	//@Test
-	public void test22FromFolder() throws Exception {
-		
-		///datausgs/tmp/tp_dss_folder/predict_edit_headings.txt
-		long id = 23;
-		URL url = new URL("file:///datausgs/tmp/tp_dss_folder/predict_edit_headings.txt");
-
-		boolean pass = testSingleMmodel(url, id);
-		
-		assertTrue(pass);
-
-	}
-	
 
 	public boolean testSingleMmodel(URL predictFile, Long modelId) throws Exception {
-		
+		beforeEachTest();
 		boolean pass = true;
 		
-		if (! abort) {
 			
-			pass = false;	//assume we fail until we pass
+		pass = false;	//assume we fail until we pass
+		
+		DataTable t = loadTextPredict(predictFile);
+		
+		if (t != null) {
+			AdjustmentGroups ags = new AdjustmentGroups(modelId);
+			PredictResult prs = SharedApplication.getInstance().getPredictResult(ags);
+			PredictData pd = SharedApplication.getInstance().getPredictData(modelId);
 			
-			DataTable t = loadTextPredict(predictFile);
+			log.setLevel(Level.FATAL);	//Turn off logging
+			int noDecayFailures = testComparison(t, prs, pd, false, modelId);
+			int decayFailures = testComparison(t, prs, pd, true, modelId);
+			log.setLevel(Level.DEBUG);	//Turn back on
 			
-			if (t != null) {
-				AdjustmentGroups ags = new AdjustmentGroups(modelId);
-				PredictResult prs = SharedApplication.getInstance().getPredictResult(ags);
-				PredictData pd = SharedApplication.getInstance().getPredictData(modelId);
-				
-				log.setLevel(Level.FATAL);	//Turn off logging
-				int noDecayFailures = testComparison(t, prs, pd, false, modelId);
-				int decayFailures = testComparison(t, prs, pd, true, modelId);
-				log.setLevel(Level.DEBUG);	//Turn back on
-				
-				if (decayFailures < noDecayFailures) {
-					if (decayFailures == 0) {
-						log.debug("++++++++ Model #" + modelId + " PASSED using DECAYED incremental values +++++++++");
-						pass = true;
-					} else {
-						log.debug("++++++++ Model #" + modelId + " FAILED using DECAYED incremental values.  Details: ++++++++");
-						testComparison(t, prs, pd, true, modelId);
-					}
-				} else if (noDecayFailures < decayFailures) {
-					if (noDecayFailures == 0) {
-						log.debug("++++++++ Model #" + modelId + " PASSED using NON-DECAYED incremental values +++++++++");
-						pass = true;
-					} else {
-						log.debug("++++++++ Model #" + modelId + " FAILED using NON-DECAYED incremental values.  Details: ++++++++");
-						testComparison(t, prs, pd, false, modelId);
-					}
-				} else if (noDecayFailures == decayFailures) {
-					//Equal failures mean there is a row count or other type of error
-					log.debug("++++++++ Model #" + modelId + " FAILED.  MAJOR ISSUE - SEE DETAILS: ++++++++");
+			if (decayFailures < noDecayFailures) {
+				if (decayFailures == 0) {
+					log.debug("++++++++ Model #" + modelId + " PASSED using DECAYED incremental values +++++++++");
+					pass = true;
+				} else {
+					log.debug("++++++++ Model #" + modelId + " FAILED using DECAYED incremental values.  Details: ++++++++");
+					testComparison(t, prs, pd, true, modelId);
+				}
+			} else if (noDecayFailures < decayFailures) {
+				if (noDecayFailures == 0) {
+					log.debug("++++++++ Model #" + modelId + " PASSED using NON-DECAYED incremental values +++++++++");
+					pass = true;
+				} else {
+					log.debug("++++++++ Model #" + modelId + " FAILED using NON-DECAYED incremental values.  Details: ++++++++");
 					testComparison(t, prs, pd, false, modelId);
 				}
-			} else {
-				log.debug("++++++++ Model #" + modelId + " FAILED.  MAJOR ISSUE - SEE DETAILS (above) ++++++++");
+			} else if (noDecayFailures == decayFailures) {
+				//Equal failures mean there is a row count or other type of error
+				log.debug("++++++++ Model #" + modelId + " FAILED.  MAJOR ISSUE - SEE DETAILS: ++++++++");
+				testComparison(t, prs, pd, false, modelId);
 			}
+		} else {
+			log.debug("++++++++ Model #" + modelId + " FAILED.  MAJOR ISSUE - SEE DETAILS (above) ++++++++");
 		}
 		
 		return pass;
@@ -335,11 +399,6 @@ public class ComparePredictionToText {
 		return dt;
 	}
 	
-	public URL getTextURL(Long modelId) throws Exception {
-		String modelPath = TEXT_PATH + modelId.toString() + ".txt";
-		URL url = this.getClass().getResource(modelPath);
-		return url;
-	}
 	
 	public static Integer findIdColumn(String[] headings) {
 		int idCol = -1;
@@ -578,9 +637,9 @@ public class ComparePredictionToText {
 			for (int s = 1; s <= maxSrc; s++) {
 			
 				double txtIncValue =
-						txt.getDouble(txtRow, getIncCol(s, txt));
+						txt.getDouble(txtRow, getIncCol(s, txt, predData));
 				double txtTotalValue =
-						txt.getDouble(txtRow, getTotalCol(s, txt));
+						txt.getDouble(txtRow, getTotalCol(s, txt, predData));
 
 				
 				double predIncValue =
@@ -654,7 +713,7 @@ public class ComparePredictionToText {
 				incRowFail++;
 				
 				if (incRowFail <= NUMBER_OF_BAD_INCREMENTALS_TO_PRINT) {
-					printBadIncRow(txt, txtRow, pred, r, instreamDecay);
+					printBadIncRow(txt, txtRow, pred, r, instreamDecay, predData);
 				}
 			}
 			
@@ -668,7 +727,7 @@ public class ComparePredictionToText {
 			} else {
 				totalRowFail++;
 				if (totalRowFail <= NUMBER_OF_BAD_TOTALS_TO_PRINT) {
-					printBadTotalRow(txt, txtRow, pred, r);
+					printBadTotalRow(txt, txtRow, pred, r, predData);
 				}
 			}
 			
@@ -684,13 +743,19 @@ public class ComparePredictionToText {
 	}
 	
 	
-	public int getIncCol(int srcNum, DataTable txt) throws Exception {
+	public int getIncCol(int srcNum, DataTable txt, PredictData predictData) throws Exception {
 		String incName = "i" + srcNum;
 		Integer incCol = txt.getColumnByName(incName);
 		
 		if (incCol == null) {
-			throw new Exception("The incremental column for source " + srcNum +
-					" (i" +  srcNum + ") was not found in the file.");
+			//try alt name
+			incName = "PLOAD_INC_" + predictData.getSrcMetadata().getString(srcNum - 1, 1);
+			incCol = txt.getColumnByName(incName.toUpperCase());
+			
+			if (incCol == null) {
+				throw new Exception("The incremental column for source " + srcNum +
+						" (i" +  srcNum + ") was not found in the file.");
+			}
 		}
 		
 		return incCol;
@@ -701,20 +766,31 @@ public class ComparePredictionToText {
 		Integer incCol = txt.getColumnByName(incName);
 		
 		if (incCol == null) {
-			throw new Exception("The incremental column for all sources " +
-					" (ia) was not found in the file.");
+			//try alt name
+			incCol = txt.getColumnByName("PLOAD_INC_TOTAL");
+			
+			if (incCol == null) {
+				throw new Exception("The incremental column for all sources " +
+						" (ia) was not found in the file.");
+			}
 		}
 		
 		return incCol;
 	}
 	
-	public int getTotalCol(int srcNum, DataTable txt) throws Exception {
+	public int getTotalCol(int srcNum, DataTable txt, PredictData predictData) throws Exception {
 		String totalName = "t" + srcNum;
 		Integer totalCol = txt.getColumnByName(totalName);
 		
 		if (totalCol == null) {
-			throw new Exception("The total column for source " + srcNum +
-					" (t" +  srcNum + ") was not found in the file.");
+			//try alt name
+			totalName = "PLOAD_" + predictData.getSrcMetadata().getString(srcNum - 1, 1);
+			totalCol = txt.getColumnByName(totalName.toUpperCase());	
+			
+			if (totalCol == null) {
+				throw new Exception("The total column for source " + srcNum +
+						" (t" +  srcNum + ") was not found in the file.");
+			}
 		}
 		
 		return totalCol;
@@ -724,9 +800,15 @@ public class ComparePredictionToText {
 		String totalName = "ta";
 		Integer totalCol = txt.getColumnByName(totalName);
 		
+		
 		if (totalCol == null) {
-			throw new Exception("The total column for all sources" + 
-					" (ta) was not found in the file.");
+			//try alt name
+
+			totalCol = txt.getColumnByName("PLOAD_TOTAL");	
+			if (totalCol == null) {
+				throw new Exception("The total column for all sources" + 
+				" (ta) was not found in the file.");
+			}
 		}
 		
 		return totalCol;
@@ -788,7 +870,8 @@ public class ComparePredictionToText {
 		}
 	}
 	
-	public void printBadIncRow(DataTable txt, int txtRow, PredictResult pred, int predRow, double instreamDecay) throws Exception {
+	public void printBadIncRow(DataTable txt, int txtRow, PredictResult pred,
+			int predRow, double instreamDecay, PredictData predictData) throws Exception {
 		
 		long id = pred.getIdForRow(predRow);
 		log.debug("** Failed INC values for reach ID " + id + " (row " + predRow + ")");
@@ -796,7 +879,7 @@ public class ComparePredictionToText {
 		//Compare Incremental Values (c is column in std data)
 		for (int s=1; s <= pred.getSourceCount(); s++) {
 			
-			double txtIncValue = txt.getDouble(txtRow, getIncCol(s, txt));
+			double txtIncValue = txt.getDouble(txtRow, getIncCol(s, txt, predictData));
 			double predIncValue = pred.getDouble(predRow, pred.getIncrementalColForSrc((long) s));
 			predIncValue = predIncValue * instreamDecay;	//correct for instrem decay
 
@@ -813,7 +896,8 @@ public class ComparePredictionToText {
 	}
 	
 	
-	public void printBadTotalRow(DataTable txt, int txtRow, PredictResult pred, int predRow) throws Exception {
+	public void printBadTotalRow(DataTable txt, int txtRow, PredictResult pred,
+			int predRow, PredictData predictData) throws Exception {
 		
 		long id = pred.getIdForRow(predRow);
 		log.debug("** Failed TOTAL values for reach ID " + id + " (row " + predRow + ")");
@@ -821,7 +905,7 @@ public class ComparePredictionToText {
 		//Compare Incremental Values (c is column in std data)
 		for (int s=1; s <= pred.getSourceCount(); s++) {
 
-			double txtTotalValue = txt.getDouble(txtRow, getTotalCol(s, txt));
+			double txtTotalValue = txt.getDouble(txtRow, getTotalCol(s, txt, predictData));
 			double predTotalValue = pred.getDouble(predRow, pred.getTotalColForSrc((long) s));
 
 			String line;

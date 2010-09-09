@@ -56,6 +56,12 @@ public class DynamicReadOnlyProperties extends Properties {
 	public static final String[] DEFAULT_JNDI_CONTEXTS = {"java:", "java:/comp/env"};
 	public static enum NullKeyHandlingOption {DO_NOTHING, RETURN_EMPTY_STRING};
 	public static final NullKeyHandlingOption DEFAULT_HANDLING_OPTION = NullKeyHandlingOption.DO_NOTHING;
+	
+	//System property name which, if set 'true', will silently ignore missing
+	//JNDI configuration (used for test environment).
+	public static final String EXPECT_NON_JNDI_ENVIRONMENT =
+		"gov.usgs.cida.config.DynamicReadOnlyProperties.EXPECT_NON_JNDI_ENVIRONMENT";
+	
 	private static volatile boolean hasOutputJNDIError;
 	
 	/**
@@ -293,8 +299,13 @@ public class DynamicReadOnlyProperties extends Properties {
 			} catch (NamingException e) {
 				if (!hasOutputJNDIError) {
 					hasOutputJNDIError = true;
-					System.err.println("Error accessing JNDI -- No JNDI in this environment? Printing stacktrace...");
-					e.printStackTrace();
+					
+					if ("true".equals(System.getProperty(EXPECT_NON_JNDI_ENVIRONMENT))) {
+						//silently ignore
+					} else {
+						System.err.println("Error accessing JNDI -- No JNDI in this environment? Printing stacktrace...");
+						e.printStackTrace();
+					}
 				}
 			}
 		}
