@@ -132,7 +132,7 @@ public class ComparePredictionToText {
 		//log.getLogger(Action.class).setLevel(Level.DEBUG);
 		
 		//Turn off logging for the lifecycle
-		log.getLogger(LifecycleListener.class).setLevel(Level.ERROR);
+		Logger.getLogger(LifecycleListener.class).setLevel(Level.ERROR);
 		
 		lifecycle.contextInitialized(null, true);
 	}
@@ -142,7 +142,7 @@ public class ComparePredictionToText {
 		System.out.println("- - Welcome to the new and improved model validator - -");
 		System.out.println("The validator works in two modes:");
 		System.out.println("1) Test a single model by entering the complete path to a single model (ending with .txt), or");
-		System.out.println("2) Test several models from a directory by entering a directoy (ending with '/' or '\')");
+		System.out.println("2) Test several models from a directory by entering a directoy (ending with '/' or '\\')");
 		System.out.println("If you enter a directory, you will be prompted for a start and end model number.");
 		System.out.println("Enter 'quit' for any response to stop.");
 		System.out.println("");
