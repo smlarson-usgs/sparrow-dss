@@ -97,13 +97,17 @@ public class CalcPrediction extends Action<PredictResultImm> {
 		int outputColumnCount = (sourceCount * 2) + 2;	//The # of output columns
 		
 		/*
-		 * The number of predicted values per reach (k = number of sources, i =
-		 * reach #) [i, 0 ... (k-1)] incremental added at reach, per source k
-		 * (NOT decayed, just showing what comes in) [i, k ... (2k-1)] total at
-		 * reach (w/ up stream contrib), per source k (decayed) [i, (2k)] total
-		 * incremental contribution at reach (NOT decayed) [i, (2k + 1)] grand
-		 * total at reach (incremental + from node). Comparable to measured.
-		 * (decayed)
+		 * Array definitions
+		 * inc:  Incremental, NOT DECAYED.
+		 * k:  the number of sources
+		 * i:  a give reach, which is a row in the array
+		 * Total row count = 2k + 2
+		 * 
+		 * The Array is made up of data in these blocks
+		 * [i, 0 ... (k-1)] inc added at reach, per source k. NOT decayed.
+		 * [i, k ... (2k-1)] total (w/ up stream contrib), per source k (decayed)
+		 * [i, (2k)] total incremental contribution at reach (NOT decayed)
+		 * [i, (2k + 1)] grand total at reach (decayed inc + upstream load)
 		 */
 		
 		//The output array for all data, one row per reach and in the same order.

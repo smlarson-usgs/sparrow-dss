@@ -1,9 +1,15 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.datatable.ColumnDataWritable;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.impl.SimpleDataTableWritable;
+import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRequest;
-import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.action.LoadModelPredictDataFromFile;
+import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.datatable.PredictResultImm;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -15,6 +21,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -35,8 +42,23 @@ public abstract class SparrowUnitTest {
 	protected static Logger log =
 		Logger.getLogger(SparrowUnitTest.class); //logging for this class
 	
+	/** The model ID of MRB2 in the test db */
+	public static final Long TEST_MODEL_ID = 50L;
+	
+	//Files associated w/ the test model
+	public static final String SOURCE_METADATA_FILE = "src_metadata.txt";
+	public static final String TOPO_FILE = "topo.txt";
+	public static final String SOURCE_COEF_FILE = "coef.txt";
+	public static final String SOURCE_VALUES_FILE = "src.txt";
+	public static final String PREDICT_RESULTS_FILE = "predict.txt";
+	
 	/** The package containing standard requests and resources for tests */
 	public static final String SHARED_TEST_RESOURCE_PACKAGE = "gov/usgswim/sparrow/test/shared/";
+	public static final String BASE_MODEL_FILE_PATH =
+		SHARED_TEST_RESOURCE_PACKAGE + "model50/";
+	
+	private static PredictResult testModelPredictResults;
+	private static PredictData testModelPredictData;
 
 	/**
 	 * Convenience method for reading the contents of an input stream to a
@@ -433,21 +455,46 @@ public abstract class SparrowUnitTest {
 	 * @return
 	 */
 	public boolean compareTables(DataTable expected, DataTable actual) {
-		return compareTables(expected, actual, null, true);
+		return compareTables(expected, actual, null, true, 0d);
+	}
+	
+	/**
+	 * Compares two datatables, returning true if they are equal.
+	 * 
+	 * Any mismatched values or rowIDs are logged as errors (log.error) and
+	 * will cause false to be returned.
+	 * 
+	 * @param expected
+	 * @param actual
+	 * @param compareIds
+	 * @param fractionalDeltaAllowed The fractional difference allowed, wrt the expected value.
+	 * @return
+	 */
+	public boolean compareTables(DataTable expected, DataTable actual, 
+			boolean compareIds, double fractionalDeltaAllowed) {
+		
+		return compareTables(expected, actual, null, compareIds,
+				fractionalDeltaAllowed);
 	}
 	
 	/**
 	 * Compare two tables, ignoring any column indexes listed in the ignoreColumn array.
 	 * Row IDs are compared if compareIds is true.
 	 * 
+	 * The fractionalDeltaAllowed allows small variances to be considered equal.
+	 * The fractionalDeltaAllowed is multiplied by the expected value and then
+	 * the actual value is allowed to be the expected value +/- the product.
+	 * For an exact comparison, use the value zero.
+	 * 
 	 * @param expected
 	 * @param actual
 	 * @param ignoreColumn
 	 * @param compareIds
+	 * @param fractionalDeltaAllowed The fractional difference allowed, wrt the expected value.
 	 * @return
 	 */
 	public boolean compareTables(DataTable expected, DataTable actual,
-			int[] ignoreColumn, boolean compareIds) {
+			int[] ignoreColumn, boolean compareIds, double fractionalDeltaAllowed) {
 		
 		boolean match = true;
 		boolean checkIds = false;
@@ -475,7 +522,7 @@ public abstract class SparrowUnitTest {
 					Object orgValue = expected.getValue(r, c);
 					Object newValue = actual.getValue(r, c);
 					
-					if (! ObjectUtils.equals(orgValue, newValue)) {
+					if (! isEqual(orgValue, newValue, fractionalDeltaAllowed)) {
 						match = false;
 						log.error("Mismatch : " + r + "," + c + ") [" + orgValue + "] [" + newValue + "]");
 					}
@@ -504,5 +551,176 @@ public abstract class SparrowUnitTest {
 		
 		return match;
 	}
+	
+	public static boolean isEqual(Object expected, Object actual, double fractionalDeltaAllowed) {
+		if (expected instanceof Number && actual instanceof Number) {
+			Double e = ((Number) expected).doubleValue();
+			Double a = ((Number) actual).doubleValue();
+			
+			if (e == null || a == null) {
+				if (e == null && a == null) {
+					return true;
+				} else {
+					return false;
+				}
+			} else {
+				if (fractionalDeltaAllowed == 0d) {
+					return e.equals(a);
+				} else {
+					
+
+					if (e.isNaN() || a.isNaN()) {
+						return e.isNaN() && a.isNaN();
+					} else if (e.isInfinite() || a.isInfinite() || e.equals(0d)) {
+						return e.equals(a);
+					}
+					
+					double variance = Math.abs( e * fractionalDeltaAllowed );
+					double top = e + variance;
+					double bot = e - variance;
+					
+					if (top > bot) {
+						return top > a && a > bot;
+					} else {
+						return bot > a && a > top;
+					}
+				}
+				
+			}
+		} else {
+			return ObjectUtils.equals(expected, actual);
+		}
+	}
+	
+	/**
+	 * Builds the path to the specified model resource.
+	 * @param modelId
+	 * @param fileName
+	 * @return
+	 */
+	public static String getModelResourceFilePath(Long modelId, String fileName) {
+		//Ignore the model - we always return model 50
+		return BASE_MODEL_FILE_PATH + fileName;
+	}
+	
+	public static synchronized PredictResult getTestModelPredictResult() throws Exception {
+		if (testModelPredictResults != null) {
+			return testModelPredictResults;
+		} else {
+			//143 columns, but treat the first one as a row ID
+			final int COL_COUNT = 143 - 1;
+			final int SRC_COUNT = 5;
+			final int OUTPUT_COL_COUNT = (SRC_COUNT * 2) + 2;
+			
+			final int TOTAL_LOAD_START_COL = 34;
+			final int INC_LOAD_START_COL = 46;	//DECAYED
+			final int TOTAL_COL = 33;
+			final int INC_TOTAL_COL = 45;	//DECAYED
+			
+			String[] headings = new String[COL_COUNT];
+			
+			//Set most columns as String
+			Class<?>[] types = new Class<?>[COL_COUNT];
+			Arrays.fill(types, String.class);
+			
+			
+			//Assign types for total & inc by source
+			for (int src=0; src < SRC_COUNT; src++) {
+				types[src + TOTAL_LOAD_START_COL] = Double.class;
+				types[src + INC_LOAD_START_COL] = Double.class;
+			}
+			
+			//Assign types for total and inc total
+			types[TOTAL_COL] = Double.class;
+			types[INC_TOTAL_COL] = Double.class;
+			
+			
+			DataTableWritable predictResults =
+				new SimpleDataTableWritable(headings, null, types);
+			
+			String filePath = getModelResourceFilePath(TEST_MODEL_ID, PREDICT_RESULTS_FILE);
+			DataTableUtils.fill(predictResults, filePath, true, "\t", true);
+			
+			
+
+			
+			//Removed Unused Columns & reorder columns
+			ArrayList<ColumnDataWritable> cols = new ArrayList<ColumnDataWritable>();
+			ColumnDataWritable[] colArray = predictResults.getColumns();
+			
+			//Add all the inc add columns
+			for (int src=0; src < SRC_COUNT; src++) {
+				cols.add(colArray[src + INC_LOAD_START_COL]);
+			}
+			
+			//Add all the total columns
+			for (int src=0; src < SRC_COUNT; src++) {
+				cols.add(colArray[src + TOTAL_LOAD_START_COL]);
+			}
+			
+			//Add the total column
+			cols.add(colArray[INC_TOTAL_COL]);
+			cols.add(colArray[TOTAL_COL]);
+			
+			//cleanup a bit
+			colArray = null;
+			predictResults = null;
+			
+			
+			//!!!! This needs to be flipped so the rows are in the first dimension
+			//create data array [row index][col index]
+			//!!!!
+			int rowCount = cols.get(0).getRowCount();
+			int colCount = cols.size();
+			double[][] colDatas = new double[rowCount][];
+			for (int rowIndex = 0; rowIndex < rowCount; rowIndex++) {
+			
+				double[] oneRowData = new double[colCount];
+				for (int colIndex = 0; colIndex < colCount; colIndex++) {
+					double oneVal = cols.get(colIndex).getDouble(rowIndex);
+					oneRowData[colIndex] = oneVal;
+				}
+				colDatas[rowIndex] = oneRowData;
+			}
+			
+			//
+			//Need to convert from decayed to non-decayed inc load
+			PredictData pd = getTestModelPredictData();
+			
+//			for (int row = 0; row < rowCount; row++) {
+//				
+//				double totalNonDecayed = 0d;
+//				
+//				for (int src=0; src < SRC_COUNT; src++) {
+//					double decayedVal = colDatas[row][src];
+//					double delivery = pd.getDelivery().getDouble(row, PredictData.INSTREAM_DECAY_COL);
+//					double nonDecayedVal = decayedVal / delivery;
+//					colDatas[row][src] = nonDecayedVal;
+//					totalNonDecayed += nonDecayedVal;
+//				}
+//				
+//				colDatas[row][(SRC_COUNT * 2)] = totalNonDecayed;
+//				
+//			}
+			
+			
+			
+			PredictResultImm pr = PredictResultImm.buildPredictResult(colDatas, pd);
+			testModelPredictResults = pr;
+			return testModelPredictResults;
+			
+		}
+	}
+	
+	public static synchronized PredictData getTestModelPredictData() throws Exception {
+		if (testModelPredictData != null) {
+			return testModelPredictData;
+		} else {
+			LoadModelPredictDataFromFile action = new LoadModelPredictDataFromFile(TEST_MODEL_ID);
+			testModelPredictData = action.run();
+			return testModelPredictData;
+		}
+	}
+	
 
 }

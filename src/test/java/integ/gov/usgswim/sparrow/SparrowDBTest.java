@@ -11,19 +11,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Enumeration;
 
-import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.xml.sax.SAXException;
-import org.apache.log4j.PatternLayout;
 
 /**
  * A base test class that sets properties needed for a db connection, cache
@@ -53,9 +47,6 @@ public class SparrowDBTest extends SparrowUnitTest {
 	 * db and prompt for a password.
 	 */
 	public static final String SYS_PROP_USE_PRODUCTION_DB = "USE_PRODUCTION_DB";
-	
-	/** The model ID of MRB2 in the test db */
-	public static final Long TEST_MODEL_ID = 50L;
 	
 	/** A connection, shared for this class and autoclosed */
 	private static Connection sparrowDBTestConn;

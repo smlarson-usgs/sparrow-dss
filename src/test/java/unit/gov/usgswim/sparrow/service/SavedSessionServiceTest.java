@@ -10,7 +10,7 @@ import org.xml.sax.SAXException;
 import com.meterware.httpunit.WebResponse;
 
 
-public class SavedSessionServiceTest extends SparrowServiceTest{
+public class SavedSessionServiceTest extends SparrowServiceTest {
 
 	private static final String SESSION_SERVICE_URL = "http://localhost:8088/sp_session";
 
@@ -23,13 +23,14 @@ public class SavedSessionServiceTest extends SparrowServiceTest{
 
 	@Test
 	public void testRetrieveAllSessions() throws IOException, SAXException {
-        WebResponse response = client.getResponse( SESSION_SERVICE_URL + "?model=" + TEST_MODEL);
+        WebResponse response = client.getResponse( SESSION_SERVICE_URL + "?model=" + SERVICE_TEST_MODEL);
         assertTrue("Response should contain a <sessions> element", response.getText().contains("<sessions>"));
 	}
 
 	@Test
 	public void testRetrieveDesignatedSession() throws IOException, SAXException {
-        WebResponse response = client.getResponse( SESSION_SERVICE_URL + "?model=" + TEST_MODEL + "&session=mySession" );
-        assertTrue("Response should contain a JSON object (but is currently hello world)", response.getText().contains("hello world"));
+        WebResponse response = client.getResponse( SESSION_SERVICE_URL + "?model=" + SERVICE_TEST_MODEL + "&session=mySession" );
+        String strResponse = response.getText();
+        assertTrue("Response should contain a JSON object (but is currently hello world)", strResponse.contains("hello_world"));
 	}
 }

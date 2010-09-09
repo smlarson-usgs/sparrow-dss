@@ -17,7 +17,6 @@ import gov.usgswim.sparrow.revised.steps.Step;
 import gov.usgswim.sparrow.revised.steps.aggregation.AggregationFunction;
 import gov.usgswim.sparrow.revised.steps.aggregation.AggregationFunction.Levels;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.DataResourceLoader;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -54,7 +53,10 @@ public class ComputationEngineBase {
 			switch(product.type) {
 				case PREDICT_DATA:
 //					PredictData data = DataLoader.loadModelDataOnly(conn, context.getModelId());
-					PredictData data = DataResourceLoader.loadModelData(context.getModelId());
+					//PredictData data = DataResourceLoader.loadModelData(context.getModelId());
+					//TODO:  I'm removing the resource loader's ability to load models,
+					//so this functionality will be broken.
+					PredictData data = null;
 					result.predictData = data;
 					result.table = retrievePredictDataVariant(data, product.variant);
 					break;

@@ -1,37 +1,28 @@
 package gov.usgswim.sparrow.action;
 
-import java.io.IOException;
+import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.filter.ColumnRangeFilter;
+import gov.usgswim.datatable.filter.FilteredDataTable;
+import gov.usgswim.datatable.impl.SimpleDataTableWritable;
+import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
+import gov.usgswim.datatable.utils.DataTableUtils;
+import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.PredictDataBuilder;
+import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.domain.SourceBuilder;
+import gov.usgswim.sparrow.domain.SparrowModel;
+import gov.usgswim.sparrow.domain.SparrowModelBuilder;
+import gov.usgswim.sparrow.util.DLUtils;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.commons.lang.ArrayUtils;
-
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.ColumnDataWritable;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.filter.ColumnRangeFilter;
-import gov.usgswim.datatable.filter.FilteredDataTable;
-import gov.usgswim.datatable.filter.RowRangeFilter;
-import gov.usgswim.datatable.impl.SimpleDataTableWritable;
-import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
-import gov.usgswim.datatable.utils.DataTableConverter;
-import gov.usgswim.datatable.utils.DataTablePrinter;
-import gov.usgswim.datatable.utils.DataTableUtils;
-import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.PredictDataBuilder;
-import gov.usgswim.sparrow.cachefactory.ModelRequestCacheKey;
-import gov.usgswim.sparrow.datatable.TableProperties;
-import gov.usgswim.sparrow.domain.SparrowModel;
-import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.DLUtils;
-import gov.usgswim.sparrow.util.SparrowResourceUtils;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Map.Entry;
 
 public class LoadModelPredictDataFromFile extends Action<PredictData>{
 
@@ -66,6 +57,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData>{
 		PredictDataBuilder dataSet = new PredictDataBuilder();
 		
 		dataSet.setSrcMetadata( loadSourceMetadata(modelId));
+		dataSet.setModel( loadSparrowModel(modelId, dataSet.getSrcMetadata()) );
 		dataSet.setTopo( loadTopo(modelId) );
 		
 		
@@ -75,7 +67,6 @@ public class LoadModelPredictDataFromFile extends Action<PredictData>{
 		dataSet.setDelivery(this.filterForDelivery(allCoefs));
 		
 		dataSet.setSrc( loadSourceValues(modelId, dataSet.getSrcMetadata()) );
-		
 		
 		return dataSet.toImmutable();
 	}
@@ -89,6 +80,41 @@ public class LoadModelPredictDataFromFile extends Action<PredictData>{
 	public String getModelResourceFilePath(Long modelId, String fileName) {
 		//Ignore the model - we always return model 50
 		return BASE_MODEL_FILE_PATH + fileName;
+	}
+	
+	public SparrowModel loadSparrowModel(long modelId, DataTable srcMetaData) {
+		SparrowModelBuilder model = new SparrowModelBuilder();
+		model.setApproved(true);
+		model.setArchived(false);
+		model.setPublic(true);
+		model.setConstituent("Nitrogen");
+		model.setContactId(50L);
+		model.setDateAdded(new Date());
+		model.setName("MRB02 Nitrogen");
+		model.setDescription("2002 Total Nitrogen Model for the Southeastern U.S. (MRB2)");
+		model.setEastBound(-88.2);
+		model.setWestBound(-76.2);
+		model.setNorthBound(36.4);
+		model.setSouthBound(25.6);
+		model.setEnhNetworkId(23L);
+		model.setId(50L);
+		model.setUnits("kg/year");
+		
+		for (int r=0; r< srcMetaData.getRowCount(); r++) {
+			SourceBuilder src = new SourceBuilder();
+			src.setId(srcMetaData.getLong(r, 0));
+			src.setSortOrder(r + 1);
+			src.setName(srcMetaData.getString(r, 1));
+			src.setDisplayName(srcMetaData.getString(r, 2));
+			src.setDescription(srcMetaData.getString(r, 3));
+			src.setConstituent(srcMetaData.getString(r, 4));
+			src.setUnits(srcMetaData.getString(r, 5));
+			model.addSource(src);
+		}
+		
+		model.setSessions(new HashSet<Entry<Object, Object>>());
+		
+		return model.toImmutable();
 	}
 	
 	/**
@@ -131,8 +157,8 @@ public class LoadModelPredictDataFromFile extends Action<PredictData>{
 		
 		Class<?>[] types= {
 				Long.class,		//SOURCE_ID - (long) The database unique ID for the source
+				Integer.class,	//SORT_ORDER - Don't include
 				String.class,	//NAME - (String) The full (long text) name of the source
-				String.class,	//SORT_ORDER - Don't include
 				String.class,	//DISPLAY_NAME - (String) The short name of the source, used for display
 				String.class,	//DESCRIPTION - (String) A description of the source (could be long)
 				String.class,	//CONSTITUENT - (String) The name of the Constituent being measured

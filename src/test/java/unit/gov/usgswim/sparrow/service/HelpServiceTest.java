@@ -16,7 +16,7 @@ public class HelpServiceTest extends SparrowServiceTest{
 
 	@Test
 	public void testLookupWithFieldIDAndModelID() throws IOException, SAXException {
-        String queryString = "/lookup?model=" + TEST_MODEL + "&item=Model_name";
+        String queryString = "/lookup?model=" + SERVICE_TEST_MODEL + "&item=Model_name";
 
         WebResponse response = client.getResponse( HELP_SERVICE_URL + queryString);
         String responseBody = response.getText();
@@ -27,7 +27,7 @@ public class HelpServiceTest extends SparrowServiceTest{
 
 	@Test
 	public void testgetSimpleKeys() throws IOException, SAXException {
-        String queryString = "/getSimpleKeys?model=" + TEST_MODEL;
+        String queryString = "/getSimpleKeys?model=" + SERVICE_TEST_MODEL;
 
         WebResponse response = client.getResponse( HELP_SERVICE_URL + queryString);
 
@@ -40,7 +40,7 @@ public class HelpServiceTest extends SparrowServiceTest{
 
 	@Test
 	public void testgetListKeys() throws IOException, SAXException {
-        String queryString = "/getListKeys?model=" + TEST_MODEL;
+        String queryString = "/getListKeys?model=" + SERVICE_TEST_MODEL;
 
         WebResponse response = client.getResponse( HELP_SERVICE_URL + queryString);
 
@@ -53,7 +53,7 @@ public class HelpServiceTest extends SparrowServiceTest{
 
 	@Test
 	public void testgetList() throws IOException, SAXException {
-        String queryString = "/getList?model=" + TEST_MODEL + "&listKey=Sources";
+        String queryString = "/getList?model=" + SERVICE_TEST_MODEL + "&listKey=Sources";
 
         WebResponse response = client.getResponse( HELP_SERVICE_URL + queryString);
 

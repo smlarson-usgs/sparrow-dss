@@ -20,7 +20,8 @@ import com.meterware.servletunit.ServletUnitClient;
  */
 public abstract class SparrowServiceTest extends SparrowDBTest {
 
-	public static final Long TEST_MODEL = -1L;
+	
+	public static final Long SERVICE_TEST_MODEL = -1L;
 	public static final String WEB_XML_LOCATION = "public_html/WEB-INF/web.xml";
 
 	// ============

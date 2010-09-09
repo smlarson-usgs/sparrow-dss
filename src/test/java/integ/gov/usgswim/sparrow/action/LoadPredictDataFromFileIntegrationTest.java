@@ -30,7 +30,7 @@ public class LoadPredictDataFromFileIntegrationTest extends SparrowDBTest {
 		DataTable file = filePredictData.getTopo();
 		
 		//compare, skipping column zero, which has db row ids.
-		assertTrue(compareTables(db, file, new int[] {0}, true));
+		assertTrue(compareTables(db, file, new int[] {0}, true, 0d));
 	}
 	
 	@Test
@@ -46,7 +46,7 @@ public class LoadPredictDataFromFileIntegrationTest extends SparrowDBTest {
 		DataTable file = filePredictData.getDelivery();
 		
 		//The text file version has row IDs, but we don't care.
-		assertTrue(compareTables(db, file, null, false));
+		assertTrue(compareTables(db, file, null, false, 0d));
 	}
 	
 	@Test
@@ -62,7 +62,7 @@ public class LoadPredictDataFromFileIntegrationTest extends SparrowDBTest {
 		DataTable file = filePredictData.getSrcMetadata();
 		
 		//Ignore column 0, which is the db id column
-		assertTrue(compareTables(db, file, new int[]{0}, true));
+		assertTrue(compareTables(db, file, new int[]{0}, true, 0d));
 	}
 
 }
