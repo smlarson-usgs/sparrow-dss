@@ -3,7 +3,10 @@ package gov.usgswim.sparrow.action;
 import static org.junit.Assert.assertEquals;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.HucLevel;
+import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.parser.DataSeriesType;
 
 import org.junit.Test;
 
@@ -44,8 +47,12 @@ public class LoadUnitAreasTest extends SparrowDBTest {
 		assertEquals(2, dt.getColumnCount());
 		assertEquals(null, dt.getUnits(0));
 		assertEquals("IDENTIFIER", dt.getName(0));
-		assertEquals("sqr km", dt.getUnits(1));
-		assertEquals("Catchment Area", dt.getName(1));
+		
+		assertEquals(SparrowUnits.SQR_KM.toString(), dt.getUnits(1));
+		assertEquals(Action.getDataSeriesProperty(DataSeriesType.catch_area, false), dt.getName(1));
+		assertEquals(Action.getDataSeriesProperty(DataSeriesType.catch_area, true), dt.getDescription(1));
+		assertEquals(DataSeriesType.catch_area.name(), dt.getProperty(1, TableProperties.DATA_SERIES.getPublicName()));
+		assertEquals("land area", dt.getProperty(1, TableProperties.CONSTITUENT.getPublicName()));
 		
 		lua = new LoadUnitAreas();
 		lua.setCumulative(true);
@@ -53,8 +60,12 @@ public class LoadUnitAreasTest extends SparrowDBTest {
 		assertEquals(2, dt.getColumnCount());
 		assertEquals(null, dt.getUnits(0));
 		assertEquals("IDENTIFIER", dt.getName(0));
-		assertEquals("sqr km", dt.getUnits(1));
-		assertEquals("Cumulative Catchment Area", dt.getName(1));
+		
+		assertEquals(SparrowUnits.SQR_KM.toString(), dt.getUnits(1));
+		assertEquals(Action.getDataSeriesProperty(DataSeriesType.cumulative_catch_area, false), dt.getName(1));
+		assertEquals(Action.getDataSeriesProperty(DataSeriesType.cumulative_catch_area, true), dt.getDescription(1));
+		assertEquals(DataSeriesType.cumulative_catch_area.name(), dt.getProperty(1, TableProperties.DATA_SERIES.getPublicName()));
+		assertEquals("land area", dt.getProperty(1, TableProperties.CONSTITUENT.getPublicName()));
 
 	}
 	

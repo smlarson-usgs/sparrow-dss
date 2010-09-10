@@ -50,7 +50,9 @@ public class LoadUnitAreas extends Action<DataTable> {
 	public DataTable doAction() throws Exception {
 		
 		String queryName = null;
-		String areaColumnName = null;
+		String areaColName = null;
+		String areaColDesc = null;
+		String areaColDataSeries = null;
 		
 		//TODO: These should really be treated as different dataseries (which they are)
 		//rather than a flag in the unit areas.
@@ -58,10 +60,14 @@ public class LoadUnitAreas extends Action<DataTable> {
 		case HUC_NONE:
 			if (cumulative == false) {
 				queryName = "LoadCatchArea";
-				areaColumnName = getDataSeriesProperty(DataSeriesType.catch_area, false);
+				areaColName = getDataSeriesProperty(DataSeriesType.catch_area, false);
+				areaColDesc = getDataSeriesProperty(DataSeriesType.catch_area, true);
+				areaColDataSeries = DataSeriesType.catch_area.name();
 			} else {
 				queryName = "LoadCumCatchArea";
-				areaColumnName = getDataSeriesProperty(DataSeriesType.cumulative_catch_area, false);
+				areaColName = getDataSeriesProperty(DataSeriesType.cumulative_catch_area, false);
+				areaColDesc = getDataSeriesProperty(DataSeriesType.cumulative_catch_area, true);
+				areaColDataSeries = DataSeriesType.cumulative_catch_area.name();
 			}
 			break;
 		
@@ -79,9 +85,11 @@ public class LoadUnitAreas extends Action<DataTable> {
 		values = DataTableConverter.toDataTable(rset);
 		values.buildIndex(0);
 		values.getColumns()[1].setUnits(SparrowUnits.SQR_KM.toString());
-		values.getColumns()[1].setName(areaColumnName);
+		values.getColumns()[1].setName(areaColName);
+		values.getColumns()[1].setDescription(areaColDesc);
+		values.getColumns()[1].setProperty(TableProperties.DATA_SERIES.getPublicName(), areaColDataSeries);
 		values.getColumns()[1].setProperty(TableProperties.CONSTITUENT.getPublicName(), "land area");
-		
+
 		return values.toImmutable();
 		
 	}
