@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Map.Entry;
 
-public class LoadModelPredictDataFromFile extends Action<PredictData> {
+public class LoadModelPredictDataFromFile extends Action<PredictData> implements ILoadModelPredictData {
 
 	//Constants
 	public static final String SOURCE_METADATA_FILE = "src_metadata.txt";
@@ -40,7 +40,8 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> {
 	//Instance
 	private Long modelId;
 	
-
+	public LoadModelPredictDataFromFile() {
+	}
 	
 	/**
 	 * Creates a Action to load the entire model

@@ -52,7 +52,7 @@ import static gov.usgswim.sparrow.service.ConfiguredCache.*;
  * 
  * @author eeverman
  */
-public class CalcAnalysisTest  extends SparrowDBTest {
+public class CalcAnalysisTest  extends SparrowUnitTest {
 	
 	static PredictData unmodifiedPredictData;
 	static PredictData modifiedPredictData;
@@ -67,6 +67,7 @@ public class CalcAnalysisTest  extends SparrowDBTest {
 	
 	@Override
 	public void doOneTimeCustomSetup() throws Exception {
+		
 		
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);
