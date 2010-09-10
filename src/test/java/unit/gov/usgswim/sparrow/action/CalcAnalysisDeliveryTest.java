@@ -52,7 +52,7 @@ import static gov.usgswim.sparrow.service.ConfiguredCache.*;
  * 
  * @author eeverman
  */
-public class CalcAnalysisTest  extends SparrowUnitTest {
+public class CalcAnalysisDeliveryTest  extends SparrowUnitTest {
 	
 	static PredictData unmodifiedPredictData;
 	static PredictData modifiedPredictData;
