@@ -4,16 +4,12 @@ import static org.junit.Assert.assertEquals;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
-import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.impl.SparseDoubleColumnData;
 import gov.usgswim.datatable.impl.StandardDoubleColumnData;
-import gov.usgswim.sparrow.DeliveryRunner;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
-import gov.usgswim.sparrow.SparrowDBTest;
-import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.SparrowUnitTest;
-import gov.usgswim.sparrow.datatable.DataTableCompare;
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.TerminalReaches;
@@ -22,22 +18,19 @@ import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * This test was created to recreate a calc error where delivery based calcs
- * (like total delivered flux) were resulting in mapped values identical
- * to the base data (i.e. total flux).
+ * Compares calculated delivery fractions to hand calculated values stored in
+ * a few text files.  The network is 'cut' at reach 9681 by turning off transport
+ * at that reach so that the delivery below that point is a small set of reaches
+ * that can be calculated by hand.
  * 
  * @author eeverman
- * TODO: This should really use a canned project, rather than MRB2
  */
-public class CalcDeliveryFractionTest extends SparrowDBTest {
+public class CalcDeliveryFractionTest extends SparrowUnitTest {
 	
 	static PredictData unmodifiedPredictData;
 	static PredictData predictData;
@@ -49,6 +42,8 @@ public class CalcDeliveryFractionTest extends SparrowDBTest {
 	
 	@Override
 	public void doOneTimeCustomSetup() throws Exception {
+		
+		super.doOneTimeCustomSetup();
 		
 		InputStream baseDataStream = SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "data", "tab");
 		stdData = TabDelimFileUtil.readAsDouble(baseDataStream, true, -1);
@@ -74,43 +69,6 @@ public class CalcDeliveryFractionTest extends SparrowDBTest {
 				unmodifiedPredictData.getDelivery(),
 				unmodifiedPredictData.getModel());
 		
-	}
-	
-	//TODO:  THis is really obsolete, just need to yank the other delivery out.
-	@Test
-	public void testComparison() throws Exception {
-		
-		
-		List<Long> targets = new ArrayList<Long>();
-		targets.add(9682L);
-		Set<Long> targetSet = new HashSet<Long>();
-		targetSet.addAll(targets);
-		
-		DeliveryRunner dr = new DeliveryRunner(predictData);
-		DataTable dataTableOld = dr.calculateReachTransportFractionDataTable(targetSet);
-		
-		CalcDeliveryFraction action = new CalcDeliveryFraction();
-		action.setPredictData(predictData);
-		action.setTargetReachIds(targetSet);
-		ColumnData deliveryFracNew = action.run();
-		
-		SimpleDataTable dataTableNew = new SimpleDataTable(
-			new ColumnData[] {deliveryFracNew}, "new", "new", null, null
-		);
-		
-		DataTableCompare compare = new DataTableCompare(dataTableOld, dataTableNew, true);
-		
-		int match = 0;
-		int noMatch = 0;
-		for (int r=0; r<compare.getRowCount(); r++) {
-			if (compare.getDouble(r, 0).equals(0d)) {
-				match++;
-			} else {
-				noMatch++;
-			}
-		}
-		
-		log.debug("Old vs New Comparison: Matches: " + match + ", non-matching: " + noMatch);
 	}
 	
 	@Test

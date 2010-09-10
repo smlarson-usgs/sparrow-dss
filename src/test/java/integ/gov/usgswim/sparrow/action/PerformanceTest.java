@@ -1,43 +1,21 @@
 package gov.usgswim.sparrow.action;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
-import gov.usgswim.datatable.impl.SimpleDataTable;
-import gov.usgswim.datatable.impl.SparseDoubleColumnData;
-import gov.usgswim.datatable.impl.StandardDoubleColumnData;
-import gov.usgswim.sparrow.DeliveryRunner;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowDBTest;
-import gov.usgswim.sparrow.SparrowUnitTest;
-import gov.usgswim.sparrow.action.CalcDeliveryFraction;
 import gov.usgswim.sparrow.cachefactory.PredictResultFactory;
-import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
-import gov.usgswim.sparrow.parser.Analysis;
-import gov.usgswim.sparrow.parser.AreaOfInterest;
-import gov.usgswim.sparrow.parser.Comparison;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**

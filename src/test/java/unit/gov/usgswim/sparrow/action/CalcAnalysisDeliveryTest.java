@@ -1,5 +1,8 @@
 package gov.usgswim.sparrow.action;
 
+import static gov.usgswim.sparrow.service.ConfiguredCache.DeliveryFraction;
+import static gov.usgswim.sparrow.service.ConfiguredCache.PredictData;
+import static gov.usgswim.sparrow.service.ConfiguredCache.PredictResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import gov.usgswim.datatable.ColumnData;
@@ -8,7 +11,6 @@ import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
-import gov.usgswim.sparrow.SparrowDBTest;
 import gov.usgswim.sparrow.SparrowUnitTest;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
@@ -27,17 +29,18 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
-import org.apache.log4j.Level;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import static gov.usgswim.sparrow.service.ConfiguredCache.*;
 
 
 /**
+ * This test is similar to the CalcDeliveryFractionTest, but it actually tests
+ * the incremental and total values, not just the delivery fraction.  Also, this
+ * test hits the CalcAnalysis action rather that the CalcDeliveryFraction Action,
+ * so its more of an integrated/higher level test of the derived values.
+ * 
  * There is one 'hole' in this set of tests.  To save a bit of work, we did not
  * manually load all upstream values into the .tab files - we stopped at reach 9681.
  * For incremental tests, we turn off transport for 9681 allowing the test to
