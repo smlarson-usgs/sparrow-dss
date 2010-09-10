@@ -219,6 +219,16 @@ public abstract class Action<R extends Object> implements IAction<R> {
 			conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY,
 			ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
 		
+		//In general we have a small number of columns in our data.
+		//Test results over a DSL+VPN+ssh+Proxifier:
+		//Fetch Size | Seconds to return a 2 col data set of a few K rows
+		// 10  | 193
+		// 100 | 19
+		// 200 | 11
+		// 400 | 7
+		//Note that 10 rows is the default for the oracle jdbc driver (!)
+		st.setFetchSize(200);
+		
 		if (preparedStatements == null) {
 			preparedStatements = new ArrayList<PreparedStatement>();
 		}
