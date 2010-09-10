@@ -86,6 +86,23 @@ public class SingleColumnCoefDataTest {
 		assertEquals("col1_val1", table.getProperty(1, "col1_prop1"));
 	}
 	
+	@Test
+	public void divideByZeroTest() throws Exception {
+		double[] coefs = new double[] {0d,0d,0d,0d,0d};
+		StandardDoubleColumnData coefColumn = new
+		StandardDoubleColumnData(coefs, "myName", "myUnits", "myDesc",
+			null, false);
+		
+		table = new SingleColumnCoefDataTable(baseDataTable, coefColumn, 0, null, true);
+		
+		
+		assertEquals(Double.POSITIVE_INFINITY, table.getDouble(0, 0), .0000000000001d);
+		assertEquals(Double.POSITIVE_INFINITY, table.getDouble(1, 0), .0000000000001d);
+		assertEquals(Double.POSITIVE_INFINITY, table.getDouble(2, 0), .0000000000001d);
+		assertEquals(Double.NaN, table.getDouble(3, 0), .0000000000001d);
+		assertEquals(Double.NaN, table.getDouble(4, 0), .0000000000001d);
+	}
+	
 
 	@Test
 	public void OverrideColumnAttributes() throws Exception {
