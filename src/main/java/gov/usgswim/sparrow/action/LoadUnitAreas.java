@@ -20,9 +20,6 @@ import java.sql.ResultSet;
  */
 public class LoadUnitAreas extends Action<DataTable> {
 	
-	/** Name of the query in the classname matched properties file */
-	//public static final String QUERY_NAME = "attributesSQL";
-	
 	protected long modelId;
 	protected HucLevel hucLevel = HucLevel.HUC_NONE;	//Default to individual reaches
 	protected boolean cumulative = false;
@@ -53,9 +50,7 @@ public class LoadUnitAreas extends Action<DataTable> {
 		String areaColName = null;
 		String areaColDesc = null;
 		String areaColDataSeries = null;
-		
-		//TODO: These should really be treated as different dataseries (which they are)
-		//rather than a flag in the unit areas.
+
 		switch (hucLevel) {
 		case HUC_NONE:
 			if (cumulative == false) {
