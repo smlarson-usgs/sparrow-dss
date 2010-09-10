@@ -38,6 +38,7 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -67,8 +68,19 @@ public class ActionTest  extends SparrowDBTest {
 	
 	@Test
 	public void closeConnectionsEvenIfError() throws Exception {
+		
 		SimpleAction3 action = new SimpleAction3();
+		
+		//Turn off logging for Actions - Its intended to throw an exception
+		Level orgLevel = Logger.getLogger(Action.class).getLevel();
+		Logger.getLogger(Action.class).setLevel(Level.FATAL);
+		
 		action.run();
+		
+		//restore logging
+		Logger.getLogger(Action.class).setLevel(orgLevel);
+		
+		
 		assertTrue(action.passed);
 	}
 	

@@ -61,8 +61,7 @@ public class SparrowDBTest extends SparrowUnitTest {
 		
 		//Remove this prop (set by SparrowUnitTest), which will allow predict
 		//data to be loaded from the DB, not from text files.
-		System.setProperty(
-				PredictDataFactory.ACTION_IMPLEMENTATION_CLASS, null);
+		System.clearProperty(PredictDataFactory.ACTION_IMPLEMENTATION_CLASS);
 		
 		doDbSetup();
 		singleInstanceToTearDown = this;

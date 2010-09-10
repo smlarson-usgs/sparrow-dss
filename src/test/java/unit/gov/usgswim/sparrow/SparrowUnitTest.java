@@ -97,11 +97,22 @@ public abstract class SparrowUnitTest {
 		doOneTimeLogSetup();
 		doOneTimeGeneralSetup();
 		doOneTimeLifecycleSetup();
-		doOneTimeCustomSetup();	//intended for subclass setup
+		
+		try {
+			doOneTimeCustomSetup();	//intended for subclass setup
+		} catch (Exception e) {
+			log.fatal("Custom test setup doOneTimeCustomSetup() is throwing an exception!", e);
+		}
 	}
 	
 	protected void doOneTimeTearDown() throws Exception {
-		singleInstanceToTearDown.doOneTimeCustomTearDown();	//for subclasses
+		
+		try {
+			singleInstanceToTearDown.doOneTimeCustomTearDown();	//for subclasses
+		} catch (Exception e) {
+			log.fatal("Custom test teardown doOneTimeCustomTearDown() is throwing an exception!", e);
+		}
+
 		singleInstanceToTearDown.doOneTimeLifecycleTearDown();
 		singleInstanceToTearDown.doOneTimeGeneralTearDown();
 		singleInstanceToTearDown.doOneTimeLogTearDown();
