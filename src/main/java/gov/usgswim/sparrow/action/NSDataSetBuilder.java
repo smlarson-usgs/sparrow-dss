@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.PredictionContext;
@@ -31,7 +32,9 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 	public NSDataSet doAction() throws Exception {
 		//PredictionContext.DataColumn dc = context.getDataColumn();
 
-		int rowCount = data.getTable().getRowCount();
+		DataTable table = data.getTable();
+		int rowCount = table.getRowCount();
+			
 		nsRows = new NSRow[rowCount];
 		PredictData predictData = null;	//Only loaded if needed
 
@@ -41,7 +44,7 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 
 			long id = -1L;
 			try {
-				id = data.getTable().getIdForRow(r);
+				id = table.getIdForRow(r);
 			} catch (NullPointerException npe) {
 				//This data is likely not coming from a regular prediction,
 				//Which would have row IDs assigned to it.
@@ -52,7 +55,7 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 					PredictionContext pc = SharedApplication.getInstance().getPredictionContext(cId);
 					predictData = SharedApplication.getInstance().getPredictData(pc.getModelID());
 					
-					log.debug("NSDataSetBuilder found that there were no row IDs" +
+					log.warn("NSDataSetBuilder found that there were no row IDs" +
 							"for model " +	pc.getModelID() + ", context " + cId +
 							".  Using row IDs from the PredictionData instead.");
 
@@ -60,23 +63,21 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 				
 				id = predictData.getTopo().getIdForRow(r);
 			}
-			// TODO [IK] try alternate path with id as string to try to solve
-			// huc aggregation artificial key issue. This would require that the
-			// DataTable argument passed in NOT use HUC ID as a DataTable ID,
-			// which requires it to be a number, but rather as a column of data
-			// in the datatable, and that the copyToNSDataSet be smart enough
-			// to figure out what to do.
+
 			row[0] = new Field(id);
 			row[0].setKey(true);
 
 			// Value
-			Double val = data.getTable().getDouble(r, data.getColumn());
-			if (val != null) {
-				row[1] = new Field(val);
-			} else {
+			Double val = data.getDouble(r);
+
+			if (val == null || val.isInfinite() || val.isNaN()) {
 				row[1] = new Field();
 				row[1].setNull();
+			} else {
+				row[1] = new Field(val);
 			}
+			row[1] = new Field(val);
+
 
 			NSRow nsRow = new NSRow(row);
 			nsRows[r] = nsRow;
