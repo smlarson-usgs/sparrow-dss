@@ -9,6 +9,7 @@ import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.action.LoadModelPredictDataFromFile;
+import gov.usgswim.sparrow.cachefactory.PredictDataFactory;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 
@@ -119,6 +120,12 @@ public abstract class SparrowUnitTest {
 		System.setProperty(
 				"gov.usgs.cida.config.DynamicReadOnlyProperties.EXPECT_NON_JNDI_ENVIRONMENT",
 				"true");
+		
+		
+		//Specifies to use text files instead of loading PredictData from the DB.
+		System.setProperty(
+				PredictDataFactory.ACTION_IMPLEMENTATION_CLASS,
+				"gov.usgswim.sparrow.action.LoadModelPredictDataFromFile");
 		
 		
 		XMLUnit.setIgnoreWhitespace(true);

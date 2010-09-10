@@ -39,7 +39,7 @@ public class LoadReachAttributes extends Action<DataTable> {
 
 
 	@Override
-	protected DataTable doAction() throws Exception {
+	public DataTable doAction() throws Exception {
 		String sql = this.getText(QUERY_NAME);
 		PreparedStatement st = getNewROPreparedStatement(sql);
 		

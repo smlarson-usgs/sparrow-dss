@@ -32,7 +32,7 @@ public class LoadStreamFlow extends Action<DataColumn> {
 	}
 
 	@Override
-	protected DataColumn doAction() throws Exception {
+	public DataColumn doAction() throws Exception {
 		
 		String queryName = "LoadMeanQ";
 		

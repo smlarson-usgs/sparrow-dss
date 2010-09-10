@@ -24,7 +24,7 @@ public class LoadReachByPoint extends Action<ReachInfo>{
 	}
 	
 	@Override
-	protected ReachInfo doAction() throws Exception {
+	public ReachInfo doAction() throws Exception {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("ModelId", this.modelId);
 		params.put("lat", this.lat);

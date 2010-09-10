@@ -66,7 +66,7 @@ public class CalcAggregate extends Action<DataColumn> {
 	}
 	
 	@Override
-	protected DataColumn doAction() throws Exception {
+	public DataColumn doAction() throws Exception {
 		
 		//If none type, return the base data.
 		//This could be an error, but its logically consistent.

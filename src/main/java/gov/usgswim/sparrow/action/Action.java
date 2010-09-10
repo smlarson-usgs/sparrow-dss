@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  *
  * @param <R>
  */
-public abstract class Action<R extends Object> {
+public abstract class Action<R extends Object> implements IAction<R> {
 	protected static Logger log =
 		Logger.getLogger(Action.class); //logging for this class
 	
@@ -64,15 +64,10 @@ public abstract class Action<R extends Object> {
 		runNumber = staticRunCount;
 	}
 	
-	/**
-	 * Generic public run method, invokes pre, do, and post action.
-	 * 
-	 * Actions may decide to return null to indicate a fail, or may choose
-	 * to throw an error.
-	 * 
-	 * @return R as specified by the subclass.
-	 * @throws Exception If the action throws an exception, post is still called.
+	/* (non-Javadoc)
+	 * @see gov.usgswim.sparrow.action.IAction#run()
 	 */
+	@Override
 	public R run() throws Exception {
 		preAction();
 		
@@ -97,7 +92,6 @@ public abstract class Action<R extends Object> {
 		}
 	}
 	
-	protected abstract R doAction() throws Exception;
 	
 	/**
 	 * An optional message to add to the log on completion.  Only called

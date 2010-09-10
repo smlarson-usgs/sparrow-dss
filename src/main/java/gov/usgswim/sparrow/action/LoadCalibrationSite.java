@@ -9,7 +9,7 @@ import gov.usgswim.sparrow.domain.CalibrationSiteBuilder;
 public class LoadCalibrationSite extends Action<CalibrationSite> {
 
 	@Override
-	protected CalibrationSite doAction() throws Exception {
+	public CalibrationSite doAction() throws Exception {
 		CalibrationSiteBuilder result = null;
 		
 		String[] params = new String[] {"ReachId", ""}; //TODO

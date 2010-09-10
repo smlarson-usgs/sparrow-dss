@@ -37,7 +37,7 @@ public class LoadReachHucs extends Action<DataTable>{
 	}
 
 	@Override
-	protected DataTable doAction() throws Exception {
+	public DataTable doAction() throws Exception {
 		query = getTextWithParamSubstitution(
 				"LoadHucs",
 				"ModelId", request.getModelID().toString(),

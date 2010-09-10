@@ -58,7 +58,7 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 	 * @return ImmutableList of immutable SparrowModels
 	 */
 	@Override
-	protected List<SparrowModel> doAction() throws Exception {
+	public List<SparrowModel> doAction() throws Exception {
 
 		//***************** COPIED CODE *******************
 

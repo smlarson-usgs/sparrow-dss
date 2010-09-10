@@ -39,7 +39,7 @@ public class CalcConcentration extends Action<DataColumn> {
 	}
 	
 	@Override
-	protected DataColumn doAction() throws Exception {
+	public DataColumn doAction() throws Exception {
 		// total conc. is (total load / (stream flow)) * 0.0011198
 		
 		//For our conversion to work properly, we are depending on some specific

@@ -4,6 +4,7 @@
 package gov.usgswim.sparrow;
 
 import gov.usgswim.sparrow.action.Action;
+import gov.usgswim.sparrow.cachefactory.PredictDataFactory;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.BufferedReader;
@@ -57,6 +58,12 @@ public class SparrowDBTest extends SparrowUnitTest {
 
 	
 	public void doOneTimeCustomSetup() throws Exception {
+		
+		//Remove this prop (set by SparrowUnitTest), which will allow predict
+		//data to be loaded from the DB, not from text files.
+		System.setProperty(
+				PredictDataFactory.ACTION_IMPLEMENTATION_CLASS, null);
+		
 		doDbSetup();
 		singleInstanceToTearDown = this;
 	}

@@ -47,7 +47,7 @@ public class LoadUnitAreas extends Action<DataTable> {
 
 
 	@Override
-	protected DataTable doAction() throws Exception {
+	public DataTable doAction() throws Exception {
 		
 		String queryName = null;
 		String areaColumnName = null;

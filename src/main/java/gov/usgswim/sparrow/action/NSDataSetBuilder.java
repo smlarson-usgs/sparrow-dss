@@ -28,7 +28,7 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 
 	
 	@Override
-	protected NSDataSet doAction() throws Exception {
+	public NSDataSet doAction() throws Exception {
 		//PredictionContext.DataColumn dc = context.getDataColumn();
 
 		int rowCount = data.getTable().getRowCount();

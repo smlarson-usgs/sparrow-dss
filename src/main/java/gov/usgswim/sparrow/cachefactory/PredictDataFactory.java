@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.action.ILoadModelPredictData;
 import gov.usgswim.sparrow.action.LoadModelPredictData;
 
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
@@ -21,12 +22,26 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
  */
 public class PredictDataFactory implements CacheEntryFactory {
 
+	public static final String ACTION_IMPLEMENTATION_CLASS =
+		PredictDataFactory.class.getName() + ".ACTION_IMPLEMENTATION_CLASS";
+	
 	@Override
 	public PredictData createEntry(Object modelId) throws Exception {
 		Long id = (Long)modelId;
 		PredictData result = null;
 		
-		result = new LoadModelPredictData(id).run();
+		ILoadModelPredictData action = null;
+		
+		String impClass = System.getProperty(ACTION_IMPLEMENTATION_CLASS);
+		if (impClass == null) {
+			action = new LoadModelPredictData();
+		} else {
+			getClass();
+			action = (ILoadModelPredictData) Class.forName(impClass).newInstance();
+		}
+		
+		action.setModelId(id);
+		result = action.run();
 		
 		return result;
 	}

@@ -91,7 +91,7 @@ public class CalcPrediction extends Action<PredictResultImm> {
 	}
 	
 	@Override
-	protected PredictResultImm doAction() throws Exception {
+	public PredictResultImm doAction() throws Exception {
 		int reachCount = topo.getRowCount(); // # of reaches is equal to the number of 'rows' in topo
 		int sourceCount = sourceValues.getColumnCount(); // # of sources is equal to the number of 'columns' in an
 		int outputColumnCount = (sourceCount * 2) + 2;	//The # of output columns

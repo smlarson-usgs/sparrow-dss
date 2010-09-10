@@ -83,7 +83,7 @@ public class ActionTest  extends SparrowDBTest {
 		PreparedStatement state1;
 		
 		@Override
-		protected DataTable doAction() throws Exception {
+		public DataTable doAction() throws Exception {
 			String sql = this.getText(QUERY_NAME, LoadReachAttributes.class);
 			
 			conn1 = getConnection();
@@ -131,7 +131,7 @@ public class ActionTest  extends SparrowDBTest {
 		PreparedStatement state2;
 		
 		@Override
-		protected DataTable doAction() throws Exception {
+		public DataTable doAction() throws Exception {
 			String sql = this.getText(QUERY_NAME, LoadReachAttributes.class);
 			
 			conn1 = getConnection();
@@ -194,7 +194,7 @@ public class ActionTest  extends SparrowDBTest {
 		PreparedStatement state1;
 		
 		@Override
-		protected DataTable doAction() throws Exception {
+		public DataTable doAction() throws Exception {
 			String sql = this.getText(QUERY_NAME, LoadReachAttributes.class);
 			
 			conn1 = getConnection();

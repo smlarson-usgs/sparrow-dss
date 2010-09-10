@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Map.Entry;
 
-public class LoadModelPredictDataFromFile extends Action<PredictData>{
+public class LoadModelPredictDataFromFile extends Action<PredictData> {
 
 	//Constants
 	public static final String SOURCE_METADATA_FILE = "src_metadata.txt";
@@ -53,7 +53,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData>{
 	}
 	
 	@Override
-	protected PredictData doAction() throws Exception {
+	public PredictData doAction() throws Exception {
 		PredictDataBuilder dataSet = new PredictDataBuilder();
 		
 		dataSet.setSrcMetadata( loadSourceMetadata(modelId));

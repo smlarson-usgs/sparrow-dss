@@ -1,12 +1,5 @@
 package gov.usgswim.sparrow.action;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
@@ -21,11 +14,20 @@ import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.DLUtils;
 
-public class LoadModelPredictData extends Action<PredictData>{
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class LoadModelPredictData extends Action<PredictData> implements ILoadModelPredictData {
 
 	private Long modelId;
 	
 	public static final int SOURCE_ID_COL = 0;
+	
+	public LoadModelPredictData() {
+	}
 	
 	/**
 	 * Creates a Action to load the entire model.
@@ -37,7 +39,7 @@ public class LoadModelPredictData extends Action<PredictData>{
 	}
 	
 	@Override
-	protected PredictData doAction() throws Exception {
+	public PredictData doAction() throws Exception {
 		PredictDataBuilder dataSet = new PredictDataBuilder();
 		Connection con = this.getConnection();
 		
@@ -380,10 +382,16 @@ public class LoadModelPredictData extends Action<PredictData>{
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see gov.usgswim.sparrow.action.ILoadModelPredictData#getModelId()
+	 */
 	public Long getModelId() {
 		return this.modelId;
 	}
 
+	/* (non-Javadoc)
+	 * @see gov.usgswim.sparrow.action.ILoadModelPredictData#setModelId(java.lang.Long)
+	 */
 	public void setModelId(Long modelId) {
 		this.modelId = modelId;
 	}

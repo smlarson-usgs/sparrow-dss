@@ -56,7 +56,7 @@ public class CalcDeliveryFraction extends Action<ColumnData> {
 	}
 	
 	@Override
-	protected ColumnData doAction() throws Exception {
+	public ColumnData doAction() throws Exception {
 		//Hash containing rows as keys and DeliveryReaches as values.
 		HashMap<Integer, DeliveryReach> deliveries = calcDeliveryHash(predictData, targetReachIds);
 		int baseRows = predictData.getTopo().getRowCount();
