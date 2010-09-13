@@ -15,6 +15,7 @@ import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.util.DLUtils;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.BufferedReader;
@@ -25,6 +26,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -211,7 +215,9 @@ public class ComparePredictionToText {
 				idString = idString.substring(idString.lastIndexOf(File.separatorChar) + 1);
 				long id = Long.parseLong(idString);
 				
-				boolean pass = testSingleMmodel(file.toURL(), id);
+				boolean pass = true;
+				pass = pass & testSingleModelDataQuality(id);
+				pass = pass & testSingleMmodel(file.toURL(), id);
 				if (!pass) failCount++;
 			} else {
 				throw new Exception("The specified model path does not exist!");
@@ -227,7 +233,11 @@ public class ComparePredictionToText {
 				
 				if (file.exists()) {
 					modelCount++;
-					boolean pass = testSingleMmodel(file.toURL(), id);
+					
+					boolean pass = true;
+					pass = pass & testSingleModelDataQuality(id);
+					pass = pass & testSingleMmodel(file.toURL(), id);
+					
 					if (!pass) failCount++;
 				}
 			}
@@ -239,7 +249,11 @@ public class ComparePredictionToText {
 		}
 		
 
-	
+		if (failCount == 0) {
+			log.debug("+ + + + + EVERYTHING LOOKS GREAT! + + + + +");
+		} else {
+			log.error("- - - - - AT LEAST ONE MODEL FAILED VALIDATION.  PLEASE REVIEW THE LOG MESSAGES TO FIND THE VALIDATION ERRORS. + + + + +");
+		}
 		assertEquals(0, failCount);
 	}
 	
@@ -336,6 +350,69 @@ public class ComparePredictionToText {
 		
 	}
 	
+	/**
+	 * Runs QA checks against the data.
+	 * @param modelId
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean testSingleModelDataQuality(Long modelId) throws Exception {
+		Connection conn = SharedApplication.getInstance().getConnection();
+		
+		boolean passed = true;
+		try {
+			passed = passed & testSingleModelDataQuality(modelId, "CheckNullEnhReach", conn);
+			passed = passed & testSingleModelDataQuality(modelId, "CheckNullCalculationAttribs", conn);
+			passed = passed & testSingleModelDataQuality(modelId, "CheckNullHucAttribs", conn);
+			passed = passed & testSingleModelDataQuality(modelId, "CheckForMissingAttributeRows", conn);
+			passed = passed & testSingleModelDataQuality(modelId, "CheckForNullTerminations", conn);
+			
+		} finally {
+			SharedApplication.closeConnection(conn, null);
+		}
+		
+		if (passed) {
+			log.debug("++++++++ Model #" + modelId + " PASSED all data validation tests ++++++++");
+		} else {
+			//The fail message is printed in the deligated method, so no need to reprint here.
+		}
+		return passed;
+	}
+	
+	/**
+	 * Runs a single QA check.
+	 * @param modelId
+	 * @param queryName
+	 * @param conn
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean testSingleModelDataQuality(Long modelId, String queryName, Connection conn) throws Exception {
+
+		String[] params = new String[] {"MODEL_ID", modelId.toString()};
+		String sql = Action.getTextWithParamSubstitution(queryName, this.getClass(), params);
+		
+		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+		ResultSet rs = null;
+		
+		try {
+			rs = st.executeQuery(sql);
+				
+			if (rs.next()) {
+				log.debug("-------- Model #" + modelId + " FAILED the data validation test '" + queryName + "' - See the properties file for the exact validation query --------");
+				return false;
+			} else {
+				return true;
+			}
+		} catch (Exception e) {
+			log.error("-------- Model #" + modelId + " FAILED the data validation test '" + queryName + "' with a SQL Error --------", e);
+			return false;
+		} finally {
+			rs.close();
+			st.close();
+		}
+	}
+	
 
 	public boolean testSingleMmodel(URL predictFile, Long modelId) throws Exception {
 		beforeEachTest();
@@ -361,7 +438,7 @@ public class ComparePredictionToText {
 					log.debug("++++++++ Model #" + modelId + " PASSED using DECAYED incremental values +++++++++");
 					pass = true;
 				} else {
-					log.debug("++++++++ Model #" + modelId + " FAILED using DECAYED incremental values.  Details: ++++++++");
+					log.debug("-------- Model #" + modelId + " FAILED using DECAYED incremental values.  Details: --------");
 					testComparison(t, prs, pd, true, modelId);
 				}
 			} else if (noDecayFailures < decayFailures) {
@@ -369,16 +446,16 @@ public class ComparePredictionToText {
 					log.debug("++++++++ Model #" + modelId + " PASSED using NON-DECAYED incremental values +++++++++");
 					pass = true;
 				} else {
-					log.debug("++++++++ Model #" + modelId + " FAILED using NON-DECAYED incremental values.  Details: ++++++++");
+					log.debug("-------- Model #" + modelId + " FAILED using NON-DECAYED incremental values.  Details: --------");
 					testComparison(t, prs, pd, false, modelId);
 				}
 			} else if (noDecayFailures == decayFailures) {
 				//Equal failures mean there is a row count or other type of error
-				log.debug("++++++++ Model #" + modelId + " FAILED.  MAJOR ISSUE - SEE DETAILS: ++++++++");
+				log.debug("-------- Model #" + modelId + " FAILED.  MAJOR ISSUE - SEE DETAILS: --------");
 				testComparison(t, prs, pd, false, modelId);
 			}
 		} else {
-			log.debug("++++++++ Model #" + modelId + " FAILED.  MAJOR ISSUE - SEE DETAILS (above) ++++++++");
+			log.debug("-------- Model #" + modelId + " FAILED.  MAJOR ISSUE - SEE DETAILS (above) --------");
 		}
 		
 		return pass;
