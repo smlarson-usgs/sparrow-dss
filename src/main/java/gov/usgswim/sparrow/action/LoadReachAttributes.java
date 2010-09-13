@@ -9,8 +9,9 @@ import java.sql.ResultSet;
 
 
 /**
- *  Loads a table containing reach attributes.
-
+ * Loads a table containing reach attributes.
+ * TODO:  The headreach info is returned as null, which converts to zero.
+ * (This seems to be a data issue)
  * @author eeverman
  *
  */
