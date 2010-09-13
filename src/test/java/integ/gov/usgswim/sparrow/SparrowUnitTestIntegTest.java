@@ -7,6 +7,12 @@ import gov.usgswim.sparrow.datatable.PredictResult;
 
 import org.junit.Test;
 
+/**
+ * Tests the SparrowUnitTest base class by validating the data loaded from
+ * text files against the data loaded from the db.
+ * @author eeverman
+ *
+ */
 public class SparrowUnitTestIntegTest extends SparrowDBTest {
 	@Test
 	public void testLoadPredictResultsFromFile() throws Exception {
