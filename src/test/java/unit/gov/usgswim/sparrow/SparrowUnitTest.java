@@ -99,6 +99,11 @@ public abstract class SparrowUnitTest {
 		doOneTimeLifecycleSetup();
 		
 		try {
+			//The frameworks can override the FrameworkSetup, allowing
+			//endpoint tests (ie the classes actually containing the tests)
+			//to override CustomSetup w/o having to worry about calling super
+			//(or the results of failing to call it).
+			doOneTimeFrameworkSetup();	//Intended for framework subclasses (like SparrowDBTest) to override
 			doOneTimeCustomSetup();	//intended for subclass setup
 		} catch (Exception e) {
 			log.fatal("Custom test setup doOneTimeCustomSetup() is throwing an exception!", e);
@@ -108,7 +113,9 @@ public abstract class SparrowUnitTest {
 	protected void doOneTimeTearDown() throws Exception {
 		
 		try {
-			singleInstanceToTearDown.doOneTimeCustomTearDown();	//for subclasses
+			
+			singleInstanceToTearDown.doOneTimeCustomTearDown();	//for endpoint test classes
+			singleInstanceToTearDown.doOneTimeFrameworkTearDown();	//for framework test classes
 		} catch (Exception e) {
 			log.fatal("Custom test teardown doOneTimeCustomTearDown() is throwing an exception!", e);
 		}
@@ -149,8 +156,19 @@ public abstract class SparrowUnitTest {
 
 	
 	/**
+	 * Intended to be overridden by framework subclasses like SparrowDBTest.
+	 * If frameworks use this method, endpoint subclasses do not need to call
+	 * super if they use doOneTimeCustomSetup().
+	 * @throws Exception
+	 */
+	protected void doOneTimeFrameworkSetup() throws Exception {
+		//nothing to do and no need to call super if overriding.
+	}
+	
+	/**
 	 * Called only before the first test.
-	 * Intended to be overridden for one-time initiation.
+	 * Intended to be overridden for one-time initiation by endpoint test classes.
+	 * Those methods should not need to call super() for this method.
 	 * @throws Exception
 	 */
 	protected void doOneTimeCustomSetup() throws Exception {
@@ -170,8 +188,13 @@ public abstract class SparrowUnitTest {
 		//nothing to do
 	}
 	
+	protected void doOneTimeFrameworkTearDown() throws Exception {
+		//Nothing to do
+	}
+	
 	/**
-	 * For sublclasses to override
+	 * For endpoint sublclasses to override.
+	 * implementers do not need to call super().
 	 * @throws Exception
 	 */
 	protected void doOneTimeCustomTearDown() throws Exception {

@@ -56,8 +56,8 @@ public class SparrowDBTest extends SparrowUnitTest {
 	/** A single instance which is destroyed in teardown */
 	private static SparrowDBTest singleInstanceToTearDown;
 
-	
-	public void doOneTimeCustomSetup() throws Exception {
+	@Override
+	public void doOneTimeFrameworkSetup() throws Exception {
 		
 		//Remove this prop (set by SparrowUnitTest), which will allow predict
 		//data to be loaded from the DB, not from text files.
@@ -67,7 +67,8 @@ public class SparrowDBTest extends SparrowUnitTest {
 		singleInstanceToTearDown = this;
 	}
 	
-	public void doOneTimeCustomTearDown() throws Exception {
+	@Override
+	public void doOneTimeFrameworkTearDown() throws Exception {
 		singleInstanceToTearDown.doDbTearDown();
 		singleInstanceToTearDown = null;
 	}

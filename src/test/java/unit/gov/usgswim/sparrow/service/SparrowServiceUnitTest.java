@@ -46,9 +46,8 @@ public abstract class SparrowServiceUnitTest extends SparrowUnitTest {
 		//Do nothing - the lifecycle is handled via the servlet
 	}
 	
-	
 	@Override
-	protected void doOneTimeCustomSetup() throws Exception {
+	protected void doOneTimeFrameworkSetup() throws Exception {
 		servletRunner =  new ServletRunner(new File(SparrowServiceTest.WEB_XML_LOCATION));
 		client = servletRunner.newClient();
 	}
@@ -57,7 +56,7 @@ public abstract class SparrowServiceUnitTest extends SparrowUnitTest {
 	 * @see gov.usgswim.sparrow.SparrowUnitTest#doTearDown()
 	 */
 	@Override
-	protected void doOneTimeCustomTearDown() throws Exception {
+	protected void doOneTimeFrameworkTearDown() throws Exception {
 		servletRunner.shutDown();
 	}
 	
