@@ -1,9 +1,16 @@
 package gov.usgswim.sparrow.action;
 
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
+
+import java.text.SimpleDateFormat;
+import java.util.List;
+
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.domain.Source;
+import gov.usgswim.sparrow.domain.SparrowModel;
 
 import org.junit.Test;
 
@@ -22,6 +29,51 @@ public class LoadPredictDataFromFileIntegrationTest extends SparrowDBTest {
 		LoadModelPredictDataFromFile loadFromFile = new LoadModelPredictDataFromFile(TEST_MODEL_ID);
 		dbPredictData = loadFromDb.doAction();
 		filePredictData = loadFromFile.doAction();
+	}
+	
+	@Test
+	public void testModelMetadata() throws Exception {
+		
+		SimpleDateFormat dataFormat = new SimpleDateFormat("MM-d-yyyy");
+		
+		SparrowModel dbMod = dbPredictData.getModel();
+		SparrowModel fileMod = filePredictData.getModel();
+		
+
+		assertEquals(dbMod.getConstituent(), fileMod.getConstituent());
+		assertEquals(dbMod.getContactId(), fileMod.getContactId());
+		
+		assertEquals(dataFormat.format(dbMod.getDateAdded()), dataFormat.format(fileMod.getDateAdded()));
+		assertEquals(dbMod.getDescription(), fileMod.getDescription());
+		assertEquals(dbMod.getEastBound(), fileMod.getEastBound());
+		assertEquals(dbMod.getEnhNetworkId(), fileMod.getEnhNetworkId());
+		assertEquals(dbMod.getId(), fileMod.getId());
+		assertEquals(dbMod.getName(), fileMod.getName());
+		assertEquals(dbMod.getNorthBound(), fileMod.getNorthBound());
+		//assertEquals(dbMod.getSessions(), fileMod.getSessions());
+		assertEquals(dbMod.getSouthBound(), fileMod.getSouthBound());
+		assertEquals(dbMod.getUnits(), fileMod.getUnits());
+		assertEquals(dbMod.getUrl(), fileMod.getUrl());
+		assertEquals(dbMod.getWestBound(), fileMod.getWestBound());
+		
+		List<Source> dbSrcs = dbMod.getSources();
+		List<Source> fileSrcs = fileMod.getSources();
+		for (int i = 0; i < dbSrcs.size(); i++) {
+			Source dbSrc = dbSrcs.get(i);
+			Source fileSrc = fileSrcs.get(i);
+			
+			assertEquals(dbSrc.getConstituent(), fileSrc.getConstituent());
+			assertEquals(dbSrc.getDescription(), fileSrc.getDescription());
+			assertEquals(dbSrc.getDisplayName(), fileSrc.getDisplayName());
+			assertEquals(dbSrc.getId(), fileSrc.getId());
+			assertEquals(dbSrc.getIdentifier(), fileSrc.getIdentifier());
+			assertEquals(dbSrc.getModelId(), fileSrc.getModelId());
+			assertEquals(dbSrc.getName(), fileSrc.getName());
+			assertEquals(dbSrc.getSortOrder(), fileSrc.getSortOrder());
+			assertEquals(dbSrc.getUnits(), fileSrc.getUnits());
+			
+		}
+
 	}
 	
 	@Test

@@ -21,11 +21,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Map.Entry;
 
 public class LoadModelPredictDataFromFile extends Action<PredictData> implements ILoadModelPredictData {
 
+	public static final long MODEL_ID = 50L;
+	
 	//Constants
 	public static final String SOURCE_METADATA_FILE = "src_metadata.txt";
 	public static final String TOPO_FILE = "topo.txt";
@@ -89,8 +92,8 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 		model.setArchived(false);
 		model.setPublic(true);
 		model.setConstituent("Nitrogen");
-		model.setContactId(50L);
-		model.setDateAdded(new Date());
+		model.setContactId(MODEL_ID);
+		model.setDateAdded(new GregorianCalendar(2009, 9, 6).getTime());
 		model.setName("MRB02 Nitrogen");
 		model.setDescription("2002 Total Nitrogen Model for the Southeastern U.S. (MRB2)");
 		model.setEastBound(-88.2);
@@ -98,12 +101,14 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 		model.setNorthBound(36.4);
 		model.setSouthBound(25.6);
 		model.setEnhNetworkId(23L);
-		model.setId(50L);
+		model.setId(MODEL_ID);
 		model.setUnits("kg/year");
 		
 		for (int r=0; r< srcMetaData.getRowCount(); r++) {
 			SourceBuilder src = new SourceBuilder();
 			src.setId(srcMetaData.getLong(r, 0));
+			src.setIdentifier(r + 1);	//1 based
+			src.setModelId(MODEL_ID);
 			src.setSortOrder(r + 1);
 			src.setName(srcMetaData.getString(r, 1));
 			src.setDisplayName(srcMetaData.getString(r, 2));
