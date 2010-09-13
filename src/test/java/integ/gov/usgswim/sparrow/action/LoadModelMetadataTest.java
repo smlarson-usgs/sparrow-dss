@@ -12,8 +12,10 @@ import org.junit.Test;
 /**
  * Tests the gov.usgswim.sparrow.util.DataLoader loadModelsMetaData methods.
  * 
- * This test is soon to be out of date - this functionality is being moved to
- * an Action.
+ * This test validates some of the data returned by the action, but does not
+ * fully verify that the correct models are returned based on the specified
+ * criteria.
+ * TODO:  Clearly, to check that we get the right models back.
  * 
  * @author eeverman
  */
@@ -59,12 +61,7 @@ public class LoadModelMetadataTest extends SparrowDBTest {
 		
 		SparrowModel model = models.get(0);
 		
-		//model data
-		assertEquals(TEST_MODEL_ID.longValue(), model.getId().longValue());
-		assertEquals("MRB02 Nitrogen", model.getName());
-		assertEquals("Nitrogen", model.getConstituent());
-		assertEquals("kg/year", model.getUnits());
-		assertEquals(5, model.getSources().size());
+		checkTestModel(model);
 	}
 	
 	/**
