@@ -639,7 +639,7 @@ public abstract class SparrowUnitTest {
 		if (compareIds) {
 			if (expected.hasRowIds() && actual.hasRowIds()) {
 				checkIds = true;
-			} else if (expected.hasRowIds() || actual.hasRowIds()) {
+			} else if (expected.hasRowIds() ^ actual.hasRowIds()) {
 				log.error("One table has row IDs and the other does not.");
 				return false;
 			}
@@ -719,7 +719,13 @@ public abstract class SparrowUnitTest {
 				
 			}
 		} else {
-			return ObjectUtils.equals(expected, actual);
+			//there seems to be a bug in the ObjectUtils class where
+			//two null values are not considered equal
+			if (expected == null && actual == null) {
+				return true;
+			} else {
+				return ObjectUtils.equals(expected, actual);
+			}
 		}
 	}
 	
