@@ -91,12 +91,17 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 	protected static Map<String, DisplayRule> getDisplayRules(){
 		Map<String, DisplayRule> result = new HashMap<String, DisplayRule>();
-		result.put("Mean Q", new TruncateDecimal(2));
-		result.put("Head Reach", new ZeroOneAsTrueFalse());
-		result.put("Shore Reach", new ZeroOneAsTrueFalse());
-		result.put("Terminal Trans", new ZeroOneAsTrueFalse());
-		result.put("Terminal Estuary", new ZeroOneAsTrueFalse());
-		result.put("Terminal Nonconnect", new ZeroOneAsTrueFalse());
+//		result.put("Incremental Delivery", new TruncateDecimal(6));
+//		result.put("Total Delivery", new TruncateDecimal(6));
+//		result.put("Split Fraction", new TruncateDecimal(2));
+//		result.put("Total Delivery", new TruncateDecimal(6));
+//		
+//		
+//		result.put("Mean Flow", new TruncateDecimal(2));
+//		result.put("Shore Reach", new ZeroOneAsTrueFalse());
+		result.put("Terminates in Transport", new ZeroOneAsTrueFalse());
+		result.put("Terminates in Estuary", new ZeroOneAsTrueFalse());
+		result.put("Terminates in No Cconnection", new ZeroOneAsTrueFalse());
 		return result ;
 	}
 
@@ -759,8 +764,8 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		DataTable attributes = getAttributeData(response.modelID, response.reachID);
 
 		// TODO [IK] This 4 is hardcoded for now. Have to go back and use SparrowModelProperties to do properly
-		response.sparrowAttributes = new FilteredDataTable(attributes, new ColumnRangeFilter(0, 4)); // first four columns
-		response.basicAttributes = new FilteredDataTable(attributes, new ColumnRangeFilter(4, attributes.getColumnCount() - 4)); // remaining columns
+		response.basicAttributes = new FilteredDataTable(attributes, new ColumnRangeFilter(0, 13)); // first four columns
+		response.sparrowAttributes = new FilteredDataTable(attributes, new ColumnRangeFilter(13, attributes.getColumnCount() - 4)); // remaining columns
 
 		StringBuilder basicAttributesSection = toSection(response.basicAttributes, "Basic Attributes", "basic_attrib", DISPLAY_RULES);
 		StringBuilder sparrowAttributesSection = toSection(response.sparrowAttributes, "SPARROW Attributes", "sparrow_attrib", DISPLAY_RULES);
@@ -800,17 +805,23 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 				// apply applicable display rules
 				DisplayRule rule = displayRules.get(columnName);
-				if (rule != null) value = rule.apply(value);
+				String precision = basicAttributes.getProperty(j, TableProperties.PRECISION.getPublicName());
+				if (rule != null) {
+					value = rule.apply(value);
+				} else if (precision != null) {
+					try {
+						int p = Integer.parseInt(precision);
+						TruncateDecimal td = new TruncateDecimal(p);
+						value = td.apply(value);
+					} catch (Exception e) {
+						//could be a misc property stuck in the precision field - ok to ignore
+					}
+				}
 
 				// null values are displayed as "N/A"
 				value = (value == null)? "N/A": value;
 				sb.append(value).append("</c>");
 				String units = basicAttributes.getUnits(j);
-				// HACK look up the units if not available in DataTable attributes
-				// TODO [IK] Should populate the DataTable units property rather
-				// than do lookup, but right now that would
-				// touch too many classes and needs to be tested.
-				units = (units == null)? SparrowModelProperties.HARDCODED_ATTRIBUTE_UNITS.get(columnName): units;
 
 				if (units != null) {
 					sb.append("<c>").append(units).append("</c>");

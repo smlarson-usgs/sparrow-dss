@@ -1,11 +1,16 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgswim.datatable.ColumnDataWritable;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
+import gov.usgswim.sparrow.SparrowUnits;
+import gov.usgswim.sparrow.datatable.TableProperties;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -41,20 +46,47 @@ public class LoadReachAttributes extends Action<DataTable> {
 
 	@Override
 	public DataTable doAction() throws Exception {
-		String sql = this.getText(QUERY_NAME);
-		PreparedStatement st = getNewROPreparedStatement(sql);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("ModelId", this.modelId);
+		params.put("ReachId", this.reachId);
 		
-		st.setLong(1, reachId);
-		st.setLong(2, modelId);
-		
+//		String sql = this.getText(QUERY_NAME);
+//		PreparedStatement st = getNewROPreparedStatement(sql);
+//		st.setLong(1, reachId);
+//		st.setLong(2, modelId);
+
+		PreparedStatement st = getPSFromPropertiesFile(QUERY_NAME, this.getClass(), params);
 		
 		ResultSet rset = null;
-		DataTableWritable attributes = null;
+		DataTableWritable attribs = null;
 
 		rset = st.executeQuery();	//auto-closed
-		attributes = DataTableConverter.toDataTable(rset);
-
-		return attributes;
+		attribs = DataTableConverter.toDataTable(rset);
+		
+		//Set column props
+		ColumnDataWritable[] cols = attribs.getColumns();
+		
+		cols[8].setUnits(SparrowUnits.METERS.getUserName());	//Reach Length
+		cols[8].setProperty(TableProperties.PRECISION.getPublicName(), "1");
+		
+		cols[9].setUnits(SparrowUnits.CFS.getUserName());	//Mean Flow
+		cols[9].setProperty(TableProperties.PRECISION.getPublicName(), "2");
+		cols[10].setUnits(SparrowUnits.FPS.getUserName());	//Mean Velocity
+		cols[10].setProperty(TableProperties.PRECISION.getPublicName(), "2");
+		
+		cols[11].setUnits(SparrowUnits.SQR_KM.getUserName());	//Incremental Area
+		cols[11].setProperty(TableProperties.PRECISION.getPublicName(), "2");
+		cols[12].setUnits(SparrowUnits.SQR_KM.getUserName());	//Cumulative Drainage Area
+		cols[12].setProperty(TableProperties.PRECISION.getPublicName(), "2");
+		
+		cols[13].setUnits(SparrowUnits.FRACTION.getUserName());	//Incremental Delivery
+		cols[13].setProperty(TableProperties.PRECISION.getPublicName(), "6");
+		cols[14].setUnits(SparrowUnits.FRACTION.getUserName());	//TOTAL Delivery
+		cols[14].setProperty(TableProperties.PRECISION.getPublicName(), "6");
+		cols[15].setUnits(SparrowUnits.FRACTION.getUserName());	//Split Fraction
+		cols[15].setProperty(TableProperties.PRECISION.getPublicName(), "2");
+		
+		return attribs;
 	}
 
 

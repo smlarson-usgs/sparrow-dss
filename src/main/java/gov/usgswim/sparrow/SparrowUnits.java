@@ -1,13 +1,15 @@
 package gov.usgswim.sparrow;
 
 public enum SparrowUnits {
+	METERS("m", "meters"),
 	CFS("cu ft/sec", "cubic feet / second"),
+	FPS("ft/sec", "feet / second"),
 	KG_PER_YEAR("kg/year", "kg / year"),
 	MG_PER_L("mg/L", "mg / L"),
 	SQR_KM("sqr km", "square km"),
 	KG_PER_SQR_KM_PER_YEAR("kg/sqr km/yr", "kg / square km / year"),
 	PERCENT("%", "percent"),
-	FRACTION("fraction", "fraction");
+	FRACTION("(fraction)", "fraction");
 
 	private String name;
 	private String description;
