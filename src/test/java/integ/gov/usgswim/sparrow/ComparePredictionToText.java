@@ -367,7 +367,7 @@ public class ComparePredictionToText {
 			passed = passed & testSingleModelDataQuality(modelId, "CheckForMissingAttributeRows", conn);
 			passed = passed & testSingleModelDataQuality(modelId, "CheckForNullTerminations", conn);
 			passed = passed & testSingleModelDataQuality(modelId, "CheckForNullGeometry", conn);
-			
+			passed = passed & testSingleModelDataQuality(modelId, "CheckForDuplicateEnhIdsWithNoModelReachGeom", conn);
 			
 		} finally {
 			SharedApplication.closeConnection(conn, null);
