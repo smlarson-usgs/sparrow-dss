@@ -3,29 +3,15 @@ package gov.usgswim.sparrow.test.service.predict;
 import static org.junit.Assert.fail;
 import gov.usgswim.sparrow.service.SparrowServiceTest;
 
-import java.io.IOException;
-
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.xml.sax.SAXException;
 
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 
-public class IndividualReachPredictServiceTest extends SparrowServiceTest{
+public class IndividualReachPredictServiceTest extends SparrowServiceTest {
 
 	private static final String INDIV_PREDICT_SERVICE_URL = "http://localhost:8088/sp_indivReachPredict";
 
-	@BeforeClass
-	public static void setupClass() throws IOException, SAXException {
-		setupHTTPUnitTest();
-	}
-
-	@AfterClass
-	public static void teardownClass() {
-		teardownHTTPUnitTest();
-	}
 
 	@Test
 	public void testDoGetHttpServletRequestHttpServletResponse() {
