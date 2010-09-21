@@ -47,5 +47,7 @@
 	<classpathentry kind="lib" path="java_lib/jamon/usgs_dep/fdsapi-1.2.jar"/>
 	<classpathentry kind="lib" path="java_lib/jamon/usgs_dep/jakarta-oro-2.0.8.jar"/>
 	<classpathentry kind="lib" path="java_lib/jamon/usgs_dep/hsqldb.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/lib/catalina.jar"/>
+	<classpathentry kind="var" path="TOMCAT_HOME/bin/tomcat-juli.jar"/>
 	<classpathentry kind="output" path="build/complete_local_web/WEB-INF/classes"/>
 </classpath>
