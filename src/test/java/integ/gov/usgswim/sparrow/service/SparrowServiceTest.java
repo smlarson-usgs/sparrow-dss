@@ -34,14 +34,18 @@ public abstract class SparrowServiceTest extends SparrowDBTest {
 	protected static ServletRunner servletRunner;
 	protected static ServletUnitClient client;
 	
-	@BeforeClass
-	public static void setupHTTPUnitTest() throws IOException, SAXException {
+	@Override
+	public void doOneTimeFrameworkSetup() throws Exception {
+		super.doOneTimeFrameworkSetup();
+		
 		servletRunner =  new ServletRunner(new File(SparrowServiceTest.WEB_XML_LOCATION));
 		client = servletRunner.newClient();
 	}
 
-	@AfterClass
-	public static void teardownHTTPUnitTest() {
+	@Override
+	public void doOneTimeFrameworkTearDown() throws Exception {
+		super.doOneTimeFrameworkTearDown();
+		
 		servletRunner.shutDown();
 	}
 	
