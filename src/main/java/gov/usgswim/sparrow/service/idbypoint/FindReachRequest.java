@@ -3,8 +3,7 @@ package gov.usgswim.sparrow.service.idbypoint;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
 
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
@@ -12,6 +11,9 @@ import gov.usgswim.sparrow.util.ParserHelper;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 
 
 
@@ -25,12 +27,11 @@ public class FindReachRequest implements XMLStreamParserComponent{
 	public String reachName;
 	public String meanQLo, meanQHi;
 	public String basinAreaLo, basinAreaHi;
-	public String state;
 	public String huc;
-	public String boundingBox;
+	//public String boundingBox;
 	public String edaName;
 	public String edaCode;
-	public Map<String, String> ancilValues = new HashMap<String, String>();
+	//public Map<String, String> ancilValues = new HashMap<String, String>();
 
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
@@ -58,6 +59,19 @@ public class FindReachRequest implements XMLStreamParserComponent{
 		// TODO fill in later
 		return true;
 	}
+	
+	public void trimToNull() {
+		modelID = StringUtils.trimToNull(modelID);
+		reachIDs = StringUtils.trimToNull(reachIDs);
+		reachName = StringUtils.trimToNull(reachName);
+		meanQLo = StringUtils.trimToNull(meanQLo);
+		meanQHi = StringUtils.trimToNull(meanQHi);
+		basinAreaLo = StringUtils.trimToNull(basinAreaLo);
+		basinAreaHi = StringUtils.trimToNull(basinAreaHi);
+		huc = StringUtils.trimToNull(huc);
+		edaName = StringUtils.trimToNull(edaName);
+		edaCode = StringUtils.trimToNull(edaCode);
+	}
 
 	public boolean isEmptyRequest() {
 		return (reachIDs == null) && (reachName == null)
@@ -66,13 +80,46 @@ public class FindReachRequest implements XMLStreamParserComponent{
 				&& (huc == null)
 				&& (edaCode == null) && (edaName == null);
 	}
+	
+	public String[] getEdaNameArray() {
+		edaName = StringUtils.trimToNull(edaName);
+		return split(edaName);
+	}
+	
+	public String[] getEdaCodeArray() {
+		edaCode = StringUtils.trimToNull(edaCode);
+		return split(edaCode);
+	}
+	
+	public String[] getReachIDArray() {
+		reachIDs = StringUtils.trimToNull(reachIDs);
+		return split(reachIDs);
+	}
+	
+	private String[] split(String splitMe) {
+		if (splitMe == null) {
+			return ArrayUtils.EMPTY_STRING_ARRAY;
+		} else {
+			String[] result = splitMe.split("[,]");
+			ArrayList<String> list = new ArrayList<String>();
+			
+			for (int i = 0; i < result.length; i++) {
+				result[i] = StringUtils.trimToNull(result[i]);
+				if (result[i] != null) {
+					list.add(result[i]);
+				}
+			}
+			
+			return list.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
 
-	//==================
-	//PUBLIC CONSTRUCTOR
-	//==================
+		}
+	}
+	
+
+
 	@Override
 	public FindReachRequest parse(XMLStreamReader in)
-	throws XMLStreamException, XMLParseValidationException {
+		throws XMLStreamException, XMLParseValidationException {
 
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
@@ -115,8 +162,8 @@ public class FindReachRequest implements XMLStreamParserComponent{
 						huc = ParserHelper.parseSimpleElementValue(in);
 					} else if ("reach-name".equals(localName)) {
 						reachName = ParserHelper.parseSimpleElementValue(in);
-					} else if ("bbox".equals(localName)) {
-						boundingBox = ParserHelper.parseSimpleElementValue(in);
+//					} else if ("bbox".equals(localName)) {
+//						boundingBox = ParserHelper.parseSimpleElementValue(in);
 					} else if ("content".equals(localName) || "response-format".equals(localName)) {
 						// ignoring for now
 						ParserHelper.ignoreElement(in);
@@ -124,11 +171,12 @@ public class FindReachRequest implements XMLStreamParserComponent{
 						edaName = ParserHelper.parseSimpleElementValue(in);
 					} else if ("edacode".equals(localName)) {
 						edaCode = ParserHelper.parseSimpleElementValue(in);
-					} else if (localName.startsWith("ancil_")) {
-						String key = localName.substring("ancil_".length());
-						String value = ParserHelper.parseSimpleElementValue(in);
-						ancilValues.put(key, value);
 					}
+//					else if (localName.startsWith("ancil_")) {
+//						String key = localName.substring("ancil_".length());
+//						String value = ParserHelper.parseSimpleElementValue(in);
+//						ancilValues.put(key, value);
+//					}
 					// add more here
 					else {
 						throw new RuntimeException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);

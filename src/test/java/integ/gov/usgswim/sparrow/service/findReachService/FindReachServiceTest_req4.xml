@@ -2,12 +2,16 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<model-id>50</model-id>
 	<match-query>
-		<reach-ids>10444, 6576,  5233 , 5235</reach-ids>
+		<edaname>Albemarle Sound,Altamaha  River</edaname>
+		<meanQLo>200</meanQLo>
+		<catch-area-lo>100</catch-area-lo>
+		<reach-name>cr</reach-name>
+		<huc>030102</huc>
 	</match-query>
 	<content>
 		<adjustments />
 	</content>
 	<response-format>
-		<mime-operation>XML</mime-operation>
+		<mime-type>XML</mime-type>
 	</response-format>
 </sparrow-reach-request>
