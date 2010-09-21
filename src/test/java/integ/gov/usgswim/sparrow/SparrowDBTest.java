@@ -3,7 +3,6 @@
  */
 package gov.usgswim.sparrow;
 
-import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.cachefactory.PredictDataFactory;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -12,13 +11,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Properties;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+
+import oracle.jdbc.pool.OracleDataSource;
+
 import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.AfterClass;
-import org.junit.Before;
 
 /**
  * A base test class that sets properties needed for a db connection, cache
@@ -55,6 +55,9 @@ public class SparrowDBTest extends SparrowUnitTest {
 	
 	/** A single instance which is destroyed in teardown */
 	private static SparrowDBTest singleInstanceToTearDown;
+	
+	/** A caching datasource */
+	private OracleDataSource oracleDataSource;
 
 	@Override
 	public void doOneTimeFrameworkSetup() throws Exception {
@@ -74,16 +77,81 @@ public class SparrowDBTest extends SparrowUnitTest {
 	}
 	
 	protected void doDbSetup() throws Exception {
-		if (System.getProperty("dburl") == null) {
-			setDbProperties();
+		
+		OracleDataSource ds = new OracleDataSource(); 
+		
+		
+		ds.setConnectionCachingEnabled(true);
+
+        
+        
+		String strUseProd = System.getProperty(SYS_PROP_USE_PRODUCTION_DB);
+		boolean useProd = false;
+		
+		if (strUseProd != null) {
+			strUseProd = strUseProd.toLowerCase();
+			if ("yes".equals(strUseProd) || "true".equals(strUseProd)) {
+				useProd = true;
+			}
 		}
+		
+		if (! useProd) {
+			//130.11.165.154
+			//igsarmewdbdev.er.usgs.gov
+			ds.setURL("jdbc:oracle:thin:@130.11.165.154:1521:widev");
+			ds.setUser("sparrow_dss");
+			ds.setPassword("***REMOVED***");
+		} else {
+			
+			String pwd = prompt(SYS_PROP_USE_PRODUCTION_DB +
+					" is set to 'true', requesting the production db be used." +
+					" Enter the production db password: ");
+			
+			//Production Properties
+			ds.setURL("jdbc:oracle:thin:@130.11.165.152:1521:widw");
+			ds.setUser("sparrow_dss");
+			ds.setPassword(pwd);
+		}
+		
+		//Set implicite cache properties
+        Properties cacheProps = new Properties();
+        cacheProps.setProperty("MinLimit", "0");
+        cacheProps.setProperty("MaxLimit", "3"); 
+        cacheProps.setProperty("InitialLimit", "0");	//# of conns on startup 
+        cacheProps.setProperty("ConnectionWaitTimeout", "15");
+        cacheProps.setProperty("ValidateConnection", "false");
+        ds.setConnectionCacheProperties(cacheProps);
+        ds.setImplicitCachingEnabled(true);
+        ds.setConnectionCachingEnabled(true);
+		
+        oracleDataSource = ds;
+        
+        System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
+                "org.apache.naming.java.javaURLContextFactory");
+            System.setProperty(Context.URL_PKG_PREFIXES, 
+                "org.apache.naming");   
+        Context ctx = new InitialContext();
+        ctx.createSubcontext("java:");
+        ctx.createSubcontext("java:comp");
+        ctx.createSubcontext("java:comp/env");
+        ctx.createSubcontext("java:comp/env/jdbc");
+        
+        ctx.bind("java:comp/env/jdbc/sparrow_dss", ds);
+
+        
+//		if (System.getProperty("dburl") == null) {
+//			setDbProperties();
+//		}
 	}
 	
 	protected void doDbTearDown() throws Exception {
-		if (sparrowDBTestConn != null) {
-			sparrowDBTestConn.close();
-			sparrowDBTestConn = null;
-		}
+		oracleDataSource.close();
+		oracleDataSource = null;
+		
+//		if (sparrowDBTestConn != null) {
+//			sparrowDBTestConn.close();
+//			sparrowDBTestConn = null;
+//		}
 	}
 	
 	public static Connection getConnection() throws SQLException {
