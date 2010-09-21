@@ -272,7 +272,22 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		for (int i = 1; it.hasNext(); i++) {
 			String variable = it.next();
 			if (params.containsKey(variable)) {
-				result.setObject(i, params.get(variable));
+				Object val = params.get(variable);
+				
+				if (val instanceof String) {
+					result.setString(i, val.toString());
+				} else if (val instanceof Long) {
+					result.setLong(i, (Long) val);
+				} else if (val instanceof Integer) {
+					result.setInt(i, (Integer) val);
+				} else if (val instanceof Float) {
+					result.setFloat(i, (Float) val);
+				} else if (val instanceof Double) {
+					result.setDouble(i, (Double) val);
+				} else {
+					result.setObject(i, val);
+				}
+				
 			}
 		}
 		
