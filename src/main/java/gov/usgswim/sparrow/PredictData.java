@@ -32,6 +32,9 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	public static final int INSTREAM_DECAY_COL = 0;
 	public static final int UPSTREAM_DECAY_COL = 1;
 	
+	//Source metadata columns
+	public static final int SOURCE_META_ID_COL = 0;
+	
 	/**
 	 * Returns the source metadata, which includes ids, names, units, and other metadata.
 	 * 
