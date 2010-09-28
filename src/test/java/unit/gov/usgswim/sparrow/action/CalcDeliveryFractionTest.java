@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Level;
 import org.junit.Test;
 
 /**
@@ -42,7 +43,7 @@ public class CalcDeliveryFractionTest extends SparrowUnitTest {
 	
 	@Override
 	public void doOneTimeCustomSetup() throws Exception {
-		
+		//log.setLevel(Level.DEBUG);
 		super.doOneTimeCustomSetup();
 		
 		InputStream baseDataStream = SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "data", "tab");
@@ -271,7 +272,7 @@ public class CalcDeliveryFractionTest extends SparrowUnitTest {
 		assertEquals(7, stdData.getColumnByName("IFTRAN").intValue());
 		//Row 0
 		assertEquals(9674, stdData.getInt(0, 0).intValue());
-		assertEquals(1d, stdData.getInt(0, 7).doubleValue(), .00000001d);
+		assertEquals(0d, stdData.getInt(0, 7).doubleValue(), .00000001d);
 		//Row 24 (the last)
 		assertEquals(658420, stdData.getInt(24, 0).intValue());
 		assertEquals(1d, stdData.getInt(24, 7).doubleValue(), .00000001d);
