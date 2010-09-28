@@ -16,15 +16,15 @@ import gov.usgswim.sparrow.util.DLUtils;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 
 public class LoadModelPredictData extends Action<PredictData> implements ILoadModelPredictData {
 
 	private Long modelId;
-	
-	public static final int SOURCE_ID_COL = 0;
 	
 	public LoadModelPredictData() {
 	}
@@ -124,6 +124,10 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 	 * <li>[i][4]HYDSEQ - Hydrologic sequence order (starting at 1, no gaps)
 	 * </ol>
 	 * 
+	 * Note: Frac is also available, but is not used for calculations b/c it
+	 * is included in the Total Delivery value.  Frac is non-one when a reach is
+ 	 * at a split and some of the load travels down another leg of the split.
+	 * 
 	 * <h4>Sorting</h4>
 	 * Sorted by HYDSEQ then IDENTIFIER, since in some cases HYDSEQ is not unique.
 	 * The use of IDENTIFIER has no significance except to guarantee
@@ -137,12 +141,20 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static DataTableWritable loadTopo(Connection conn, long modelId) throws SQLException,
+	public DataTableWritable loadTopo(Connection conn, long modelId) throws SQLException,
 	IOException {
-		String query = getTextWithParamSubstitution("SelectTopoData", LoadModelPredictData.class, "ModelId", "" + modelId);
-
-		DataTableWritable result = DLUtils.readAsInteger(conn, query, 1000, 0);
-
+		
+		//Create param map
+		HashMap<String, Object> params = new HashMap<String, Object>(1, 1);
+		params.put("ModelId", "" + modelId);
+		
+		//Expected column types
+		Class<?>[] colTypes = {Integer.class, Integer.class, Integer.class, Integer.class, Integer.class};
+		
+		PreparedStatement statement = getPSFromPropertiesFile("SelectTopoData", this.getClass(), params);
+		ResultSet rset = statement.executeQuery();
+		DataTableWritable result = DataTableConverter.toDataTable(rset, colTypes, true);
+		
 		/** TNODE is used heavily during delivery calcs to find reaches, so index */
 		result.buildIndex(PredictData.TNODE_COL);
 
@@ -199,14 +211,14 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 		//Assign row IDs directly from the base query
 		String rowIdQuery =
 			getTextWithParamSubstitution("SelectReachCoef", LoadModelPredictData.class,
-					"ModelId", modelId, "Iteration", iteration, "SourceId", sources.getInt(0, SOURCE_ID_COL));
+					"ModelId", modelId, "Iteration", iteration, "SourceId", sources.getInt(0, PredictData.SOURCE_META_ID_COL));
 		loadIndexValues(conn, sourceReachCoef, rowIdQuery, "Identifier");
 
 		for (int srcIndex=0; srcIndex<sourceCount; srcIndex++) {
 
 			String query =
 				getTextWithParamSubstitution("SelectReachCoef", LoadModelPredictData.class,
-						"ModelId", modelId, "Iteration", iteration, "SourceId", sources.getInt(srcIndex, SOURCE_ID_COL)
+						"ModelId", modelId, "Iteration", iteration, "SourceId", sources.getInt(srcIndex, PredictData.SOURCE_META_ID_COL)
 				);
 
 			//The query has two columns and we only want the Value column
@@ -318,7 +330,7 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 
 		//Assign row IDs directly from the base query
 		String rowIdQuery = getTextWithParamSubstitution("SelectSourceValues", LoadModelPredictData.class,
-					"ModelId", modelId, "SourceId", sources.getInt(0, SOURCE_ID_COL)
+					"ModelId", modelId, "SourceId", sources.getInt(0, PredictData.SOURCE_META_ID_COL)
 			);
 		loadIndexValues(conn, sourceValues, rowIdQuery, "Identifier");
 
@@ -328,7 +340,7 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 			String precision = sources.getString(srcIndex, sources.getColumnByName("PRECISION"));
 
 			String query = getTextWithParamSubstitution("SelectSourceValues", LoadModelPredictData.class,
-						"ModelId", modelId, "SourceId", sources.getInt(srcIndex, SOURCE_ID_COL)
+						"ModelId", modelId, "SourceId", sources.getInt(srcIndex, PredictData.SOURCE_META_ID_COL)
 				);
 
 			//The query has two columns and we only want the Value column
