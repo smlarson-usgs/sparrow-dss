@@ -142,7 +142,7 @@ public class JDBCUtilMemoryIntegrationTest{
 
 		ObjectFactory topoFactory = new ObjectFactory() {
 			public Object makeObject() throws SQLException, IOException {
-				return LoadModelPredictData.loadTopo(conn, modelId);
+				return new LoadModelPredictData().loadTopo(conn, modelId);
 			}
 		};
 
