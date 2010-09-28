@@ -62,7 +62,9 @@ public class CalcDeliveryFractionTest extends SparrowUnitTest {
 		unmodifiedPredictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		DataTable topo = unmodifiedPredictData.getTopo();
 		SparseOverrideAdjustment adjTopo = new SparseOverrideAdjustment(topo);
-		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9681), PredictData.IFTRAN_COL);
+		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9619), PredictData.IFTRAN_COL);
+		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9100), PredictData.IFTRAN_COL);
+		
 		predictData = new PredictDataImm(
 				adjTopo, unmodifiedPredictData.getCoef(),
 				unmodifiedPredictData.getSrc(),
@@ -128,6 +130,9 @@ public class CalcDeliveryFractionTest extends SparrowUnitTest {
 		
 		assertEquals(StandardDoubleColumnData.class, deliveryFrac.getClass());
 		
+		//Check that the del frac for the 'turned off' reaches is zero
+		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9619L)), .0000000000000001d);
+		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9100L)), .0000000000000001d);
 	}
 	
 	@Test
@@ -179,6 +184,10 @@ public class CalcDeliveryFractionTest extends SparrowUnitTest {
 				"(expected vs actual) which do not match", 0, noMatch + expectedZeroNoMatch);
 		
 		assertEquals(StandardDoubleColumnData.class, deliveryFrac.getClass());
+		
+		//Check that the del frac for the 'turned off' reaches is zero
+		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9619L)), .0000000000000001d);
+		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9100L)), .0000000000000001d);
 	}
 	
 	@Test
@@ -230,6 +239,10 @@ public class CalcDeliveryFractionTest extends SparrowUnitTest {
 				"(expected vs actual) which do not match", 0, noMatch + expectedZeroNoMatch);
 		
 		assertEquals(StandardDoubleColumnData.class, deliveryFrac.getClass());
+		
+		//Check that the del frac for the 'turned off' reaches is zero
+		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9619L)), .0000000000000001d);
+		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9100L)), .0000000000000001d);
 	}
 	
 	@Test

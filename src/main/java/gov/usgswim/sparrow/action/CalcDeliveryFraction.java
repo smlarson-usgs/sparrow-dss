@@ -204,13 +204,22 @@ public class CalcDeliveryFraction extends Action<ColumnData> {
 			for (DeliveryReach downstream : current.getDownstreamReaches()) {
 				int downstreamRow = downstream.getRow();
 				
-				double downstreamDeliveryFrac = downstream.getDelivery();
-				double downstreamInstreamDelivery = predictData.getDelivery().
+				//complete calculated delivery frac of one of the reaches
+				//downstream of the current reach.
+				//In the case of a split there would be multiple.
+				double downstrmCalcedDeliveryFrac = downstream.getDelivery();
+				
+				//Total delivery (that is, the inverse of total decay) for  the
+				//downstream reach.  NOTE that in our data, total delivery
+				//is already multiplied by the fraction in the cases of a split.
+				double downstrmTotalDelivery = predictData.getDelivery().
 					getDouble(downstreamRow, UPSTREAM_DECAY_COL);
-				double downstreamIfTran = topo.getDouble(downstreamRow, IFTRAN_COL);
+				
+				//Zero if the reach has no transport to the downstream reach.
+				double ifTran = topo.getDouble(current.getRow(), IFTRAN_COL);
 				
 				double addedDelivery =
-					downstreamInstreamDelivery * downstreamDeliveryFrac * downstreamIfTran;
+					downstrmCalcedDeliveryFrac * downstrmTotalDelivery * ifTran;
 				
 				current.addDelivery(addedDelivery);
 			}
