@@ -91,17 +91,12 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 	protected static Map<String, DisplayRule> getDisplayRules(){
 		Map<String, DisplayRule> result = new HashMap<String, DisplayRule>();
-//		result.put("Incremental Delivery", new TruncateDecimal(6));
-//		result.put("Total Delivery", new TruncateDecimal(6));
-//		result.put("Split Fraction", new TruncateDecimal(2));
-//		result.put("Total Delivery", new TruncateDecimal(6));
-//		
-//		
-//		result.put("Mean Flow", new TruncateDecimal(2));
-//		result.put("Shore Reach", new ZeroOneAsTrueFalse());
+
+		result.put("Transmits", new ZeroOneAsTrueFalse());
+		result.put("Shore Reach", new ZeroOneAsTrueFalse());
 		result.put("Terminates in Transport", new ZeroOneAsTrueFalse());
 		result.put("Terminates in Estuary", new ZeroOneAsTrueFalse());
-		result.put("Terminates in No Cconnection", new ZeroOneAsTrueFalse());
+		result.put("Terminates in No Connection", new ZeroOneAsTrueFalse());
 		return result ;
 	}
 

@@ -1,5 +1,5 @@
 <sparrow-id-response xmlns="http://www.usgs.gov/sparrow/id-response-schema/v0_2"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="50" context-id="ignore">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="50" context-id="-982932512">
 	<status>OK</status>
 	<results>
 		<result>
@@ -214,7 +214,7 @@
 				</data>
 			</predicted>
 			<attributes display="Attributes">
-				<metadata rowCount="22" columnCount="3">
+				<metadata rowCount="24" columnCount="3">
 					<columns>
 						<col name="Name" type="String" />
 						<col name="Value" type="String" />
@@ -244,24 +244,24 @@
 							<c />
 						</r>
 						<r>
-							<c>Mean Q</c>
-							<c>36.73</c>
-							<c>cu ft/s</c>
+							<c>HUC 2</c>
+							<c>03  (SOUTH ATLANTIC-GULF)</c>
+							<c />
 						</r>
 						<r>
-							<c>Mean V</c>
-							<c>0.63</c>
-							<c>ft/s</c>
+							<c>HUC 4</c>
+							<c>0316  (MOBILE-TOMBIGBEE)</c>
+							<c />
 						</r>
 						<r>
-							<c>Catch Area</c>
-							<c>62.14</c>
-							<c>sq km</c>
+							<c>HUC 6</c>
+							<c>031601  (BLACK WARRIOR-TOMBIGBEE)</c>
+							<c />
 						</r>
 						<r>
-							<c>Cumulative Catch Area</c>
-							<c>62.139999</c>
-							<c>sq km</c>
+							<c>HUC 8</c>
+							<c>03160101  (UPPER TOMBIGBEE)</c>
+							<c />
 						</r>
 						<r>
 							<c>Reach Length</c>
@@ -269,29 +269,41 @@
 							<c>m</c>
 						</r>
 						<r>
-							<c>HUC2</c>
-							<c>03</c>
-							<c />
+							<c>Mean Flow</c>
+							<c>36.73</c>
+							<c>cu ft/sec</c>
 						</r>
 						<r>
-							<c>HUC4</c>
-							<c>0316</c>
-							<c />
+							<c>Mean Velocity</c>
+							<c>0.63</c>
+							<c>ft/sec</c>
 						</r>
 						<r>
-							<c>HUC6</c>
-							<c>031601</c>
-							<c />
+							<c>Incremental Area</c>
+							<c>62.14</c>
+							<c>sqr km</c>
 						</r>
 						<r>
-							<c>HUC8</c>
-							<c>03160101</c>
-							<c />
+							<c>Cumulative Drainage Area</c>
+							<c>62.13</c>
+							<c>sqr km</c>
+						</r>
+					</section>
+					<section display="SPARROW Attributes" name="sparrow_attrib">
+						<r>
+							<c>Incremental Delivery Fraction</c>
+							<c>0.928324</c>
+							<c>(fraction)</c>
 						</r>
 						<r>
-							<c>Head Reach</c>
-							<c>false</c>
-							<c />
+							<c>Total Delivery Fraction</c>
+							<c>0.861786</c>
+							<c>(fraction)</c>
+						</r>
+						<r>
+							<c>Split Fraction</c>
+							<c>1.0</c>
+							<c>(fraction)</c>
 						</r>
 						<r>
 							<c>Shore Reach</c>
@@ -299,30 +311,28 @@
 							<c />
 						</r>
 						<r>
-							<c>Terminal Trans</c>
+							<c>Terminates in Transport</c>
 							<c>true</c>
 							<c />
 						</r>
 						<r>
-							<c>Terminal Estuary</c>
+							<c>Terminates in Estuary</c>
 							<c>false</c>
 							<c />
 						</r>
 						<r>
-							<c>Terminal Nonconnect</c>
+							<c>Terminates in No Connection</c>
 							<c>false</c>
 							<c />
 						</r>
-					</section>
-					<section display="SPARROW Attributes" name="sparrow_attrib">
 						<r>
-							<c>Hydrological Seq</c>
+							<c>Transmits</c>
+							<c>true</c>
+							<c />
+						</r>
+						<r>
+							<c>Hydrological Sequence</c>
 							<c>4167</c>
-							<c />
-						</r>
-						<r>
-							<c>Fraction</c>
-							<c>1.0</c>
 							<c />
 						</r>
 						<r>
@@ -551,7 +561,7 @@
 				</data>
 			</predicted>
 			<attributes display="Attributes">
-				<metadata rowCount="22" columnCount="3">
+				<metadata rowCount="24" columnCount="3">
 					<columns>
 						<col name="Name" type="String" />
 						<col name="Value" type="String" />
@@ -581,24 +591,24 @@
 							<c />
 						</r>
 						<r>
-							<c>Mean Q</c>
-							<c>221.8</c>
-							<c>cu ft/s</c>
+							<c>HUC 2</c>
+							<c>03  (SOUTH ATLANTIC-GULF)</c>
+							<c />
 						</r>
 						<r>
-							<c>Mean V</c>
-							<c>1.06</c>
-							<c>ft/s</c>
+							<c>HUC 4</c>
+							<c>0307  (ALTAMAHA-ST. MARYS)</c>
+							<c />
 						</r>
 						<r>
-							<c>Catch Area</c>
-							<c>187.03</c>
-							<c>sq km</c>
+							<c>HUC 6</c>
+							<c>030701  (ALTAMAHA)</c>
+							<c />
 						</r>
 						<r>
-							<c>Cumulative Catch Area</c>
-							<c>388.09</c>
-							<c>sq km</c>
+							<c>HUC 8</c>
+							<c>03070101  (UPPER OCONEE)</c>
+							<c />
 						</r>
 						<r>
 							<c>Reach Length</c>
@@ -606,29 +616,41 @@
 							<c>m</c>
 						</r>
 						<r>
-							<c>HUC2</c>
-							<c>03</c>
-							<c />
+							<c>Mean Flow</c>
+							<c>221.8</c>
+							<c>cu ft/sec</c>
 						</r>
 						<r>
-							<c>HUC4</c>
-							<c>0307</c>
-							<c />
+							<c>Mean Velocity</c>
+							<c>1.06</c>
+							<c>ft/sec</c>
 						</r>
 						<r>
-							<c>HUC6</c>
-							<c>030701</c>
-							<c />
+							<c>Incremental Area</c>
+							<c>187.03</c>
+							<c>sqr km</c>
 						</r>
 						<r>
-							<c>HUC8</c>
-							<c>03070101</c>
-							<c />
+							<c>Cumulative Drainage Area</c>
+							<c>388.09</c>
+							<c>sqr km</c>
+						</r>
+					</section>
+					<section display="SPARROW Attributes" name="sparrow_attrib">
+						<r>
+							<c>Incremental Delivery Fraction</c>
+							<c>0.934551</c>
+							<c>(fraction)</c>
 						</r>
 						<r>
-							<c>Head Reach</c>
-							<c>false</c>
-							<c />
+							<c>Total Delivery Fraction</c>
+							<c>0.873387</c>
+							<c>(fraction)</c>
+						</r>
+						<r>
+							<c>Split Fraction</c>
+							<c>1.0</c>
+							<c>(fraction)</c>
 						</r>
 						<r>
 							<c>Shore Reach</c>
@@ -636,30 +658,28 @@
 							<c />
 						</r>
 						<r>
-							<c>Terminal Trans</c>
+							<c>Terminates in Transport</c>
 							<c>true</c>
 							<c />
 						</r>
 						<r>
-							<c>Terminal Estuary</c>
+							<c>Terminates in Estuary</c>
 							<c>false</c>
 							<c />
 						</r>
 						<r>
-							<c>Terminal Nonconnect</c>
+							<c>Terminates in No Connection</c>
 							<c>false</c>
 							<c />
 						</r>
-					</section>
-					<section display="SPARROW Attributes" name="sparrow_attrib">
 						<r>
-							<c>Hydrological Seq</c>
+							<c>Transmits</c>
+							<c>true</c>
+							<c />
+						</r>
+						<r>
+							<c>Hydrological Sequence</c>
 							<c>2007</c>
-							<c />
-						</r>
-						<r>
-							<c>Fraction</c>
-							<c>1.0</c>
 							<c />
 						</r>
 						<r>
