@@ -58,7 +58,8 @@ public class CalcDeliveryFractionTest extends SparrowUnitTest {
 		InputStream stdDelFracToBothStream = SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "stdDelFracToBoth", "tab");
 		stdDelFracToBoth = TabDelimFileUtil.readAsDouble(stdDelFracToBothStream, true, -1);
 		
-		//Lets hack the predictData to Turn off transport for reach ID 9681
+		//Lets hack the predictData to Turn off transport for the two
+		//reaches above reach 9681
 		unmodifiedPredictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		DataTable topo = unmodifiedPredictData.getTopo();
 		SparseOverrideAdjustment adjTopo = new SparseOverrideAdjustment(topo);

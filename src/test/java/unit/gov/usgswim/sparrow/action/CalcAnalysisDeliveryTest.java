@@ -37,9 +37,10 @@ import org.junit.Test;
 
 /**
  * This test is similar to the CalcDeliveryFractionTest, but it actually tests
- * the incremental and total values, not just the delivery fraction.  Also, this
- * test hits the CalcAnalysis action rather that the CalcDeliveryFraction Action,
- * so its more of an integrated/higher level test of the derived values.
+ * the incremental delivered and total delivered values, not just the delivery
+ * fraction.  Also, this test hits the CalcAnalysis action rather that the
+ * CalcDeliveryFraction Action, so its more of an integrated/higher level test
+ * of the derived values.
  * 
  * There is one 'hole' in this set of tests.  To save a bit of work, we did not
  * manually load all upstream values into the .tab files - we stopped at reach 9681.
@@ -74,6 +75,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTest {
 		
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);
+		super.doOneTimeCustomSetup();
 		
 		InputStream stdDelFracTo9682Stream = SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9682", "tab");
 		stdDelFracTo9682 = TabDelimFileUtil.readAsDouble(stdDelFracTo9682Stream, true, -1);
@@ -84,11 +86,14 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTest {
 		InputStream stdDelFracToBothStream = SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "stdDelFracToBoth", "tab");
 		stdDelFracToBoth = TabDelimFileUtil.readAsDouble(stdDelFracToBothStream, true, -1);
 		
-		//Lets hack the predictData to Turn off transport for reach ID 9681
+		//Lets hack the predictData to Turn off transport for the two
+		//reaches above reach 9681
 		unmodifiedPredictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		DataTable topo = unmodifiedPredictData.getTopo();
 		SparseOverrideAdjustment adjTopo = new SparseOverrideAdjustment(topo);
-		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9681), gov.usgswim.sparrow.PredictData.IFTRAN_COL);
+		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9619), gov.usgswim.sparrow.PredictData.IFTRAN_COL);
+		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9100), gov.usgswim.sparrow.PredictData.IFTRAN_COL);
+		
 		
 		modifiedPredictData = new PredictDataImm(
 				adjTopo.toImmutable(), unmodifiedPredictData.getCoef(),
