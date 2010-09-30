@@ -1,20 +1,19 @@
 package gov.usgswim.sparrow.test.integration;
 
-import static gov.usgswim.sparrow.SparrowUnitTest.getAttributeValue;
-import static gov.usgswim.sparrow.SparrowUnitTest.pipeDispatch;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.SparrowDBTest;
 import gov.usgswim.sparrow.SparrowUnitTest;
 import gov.usgswim.sparrow.parser.PredictionContext;
-import gov.usgswim.sparrow.parser.PredictionContextTest;
 import gov.usgswim.sparrow.parser.ReachGroup;
-import gov.usgswim.sparrow.parser.ReachGroupTest;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
 
@@ -22,31 +21,27 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import junit.framework.TestCase;
-public class LogicalAdjustmentIntegrationTest extends TestCase {
+import org.junit.Test;
+
+public class LogicalAdjustmentIntegrationTest extends SparrowDBTest {
 
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
-	LifecycleListener lifecycle = new LifecycleListener();
 
+	static final double VARIANCE = .00000000001d;
+	
 	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		lifecycle.contextInitialized(null, true);
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-
-		lifecycle.contextDestroyed(null, true);
+	public boolean loadModelDataFromFile() {
+		return true;
 	}
 
 	// ============
 	// TEST METHODS
 	// ============
-	public void testReachGroupHUCLoading() throws XMLStreamException, XMLParseValidationException {
-		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(ReachGroupTest.testRequest1));
-		ReachGroup rg = new ReachGroup(22);
+	@Test
+	public void testReachGroupHUCLoading() throws XMLStreamException, XMLParseValidationException, IOException {
+		String xmlReq = getXmlAsString(this.getClass(), "req1");
+		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(xmlReq));
+		ReachGroup rg = new ReachGroup(TEST_MODEL_ID);
 		reader.next();
 		rg.parse(reader);
 
@@ -61,20 +56,23 @@ public class LogicalAdjustmentIntegrationTest extends TestCase {
 		assertTrue(reaches6.size() > 0);
 
 		// test huc 4 retrieval
-		List<Long> reaches4 = rg.getLogicalReachIDs(1);
+		List<Long> reaches4 = rg.getLogicalReachIDs(2);
 		assertTrue(reaches4 != null);
 		assertTrue(reaches4.size() > 0);
 
 		// test huc 2 retrieval
-		List<Long> reaches2 = rg.getLogicalReachIDs(1);
+		List<Long> reaches2 = rg.getLogicalReachIDs(3);
 		assertTrue(reaches2 != null);
 		assertTrue(reaches2.size() > 0);
 
 	}
 
+	@Test
 	public void testHuc4_6_8Adjustment() throws Exception {
-
-		PredictContextRequest contextReq = PredictionContextTest.buildPredictContext5();	//Build a context from a canned file
+		String xmlReq = getXmlAsString(this.getClass(), "req2");
+		PredictContextPipeline pipe = new PredictContextPipeline();
+		PredictContextRequest contextReq = pipe.parse(xmlReq);
+		
 
 		String response = pipeDispatch(contextReq, new PredictContextPipeline());
 		int CONTEXT_ID = Integer.parseInt(SparrowUnitTest.getAttributeValue(response, "context-id"));
@@ -93,171 +91,133 @@ public class LogicalAdjustmentIntegrationTest extends TestCase {
 		DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(userContext.getAdjustmentGroups());
 
 		//Constants for tests
-		//Reaches in Group1: huc6
-		int RCH_ROW_21580 = nomData.getRowForReachID(21580);
-		int RCH_ROW_21581 = nomData.getRowForReachID(21581);
-		int RCH_ROW_21578 = nomData.getRowForReachID(21578);
-		int RCH_ROW_21579 = nomData.getRowForReachID(21579);
-		//Reaches in Group2: huc4 
-		int RCH_ROW_1638 = nomData.getRowForReachID(1638);
-		int RCH_ROW_2157 = nomData.getRowForReachID(2157);
-		int RCH_ROW_1655 = nomData.getRowForReachID(1655);
-		int RCH_ROW_65179 = nomData.getRowForReachID(65179);
-		//Reaches in Group2: huc2
-		int RCH_ROW_38707 = nomData.getRowForReachID(38707);
-		int RCH_ROW_38711 = nomData.getRowForReachID(38711);
-		int RCH_ROW_38533 = nomData.getRowForReachID(38533);
-		int RCH_ROW_38666 = nomData.getRowForReachID(38666);
+		//Reaches in Group1: huc4
+		int RCH_ROW_8166 = nomData.getRowForReachID(8166);
+		int RCH_ROW_8167 = nomData.getRowForReachID(8167);
+		int RCH_ROW_8171 = nomData.getRowForReachID(8171);
+		int RCH_ROW_8172 = nomData.getRowForReachID(8172);
+		
+		//Reaches in Group2: huc8
+		int RCH_ROW_7764 = nomData.getRowForReachID(7764);
+		int RCH_ROW_7765 = nomData.getRowForReachID(7765);
+		int RCH_ROW_7766 = nomData.getRowForReachID(7766);
+		int RCH_ROW_7767 = nomData.getRowForReachID(7767);
+		//Reaches in Group2: huc6
+		//Same as group1 huc4 (they overlap)
+		
+		//Reaches in Group3 (huc8)
+		//This group overlaps Group2 huc6 above and should accumulate a
+		//coef for source 1.
+		int RCH_ROW_8236 = nomData.getRowForReachID(8236);
+		int RCH_ROW_8237 = nomData.getRowForReachID(8237);
+		int RCH_ROW_8238 = nomData.getRowForReachID(8238);
+		int RCH_ROW_8239 = nomData.getRowForReachID(8239);
+		
+		//This reach is in group2, but has its source 1 overridden to 99.
+		int RCH_ROW_7775 = nomData.getRowForReachID(7775);
+		
+		//This reach is in no other group and had its source 2 overridden to 88
+		int RCH_ROW_8572 = nomData.getRowForReachID(8572);
+		
+		//Reaches not in any Group
+		int RCH_ROW_8569 = nomData.getRowForReachID(8569);
+		int RCH_ROW_8570 = nomData.getRowForReachID(8570);
 
+		//sources
 		int SRC_COL_1 = nomData.getSourceIndexForSourceID(1);
 		int SRC_COL_2 = nomData.getSourceIndexForSourceID(2);
 		int SRC_COL_3 = nomData.getSourceIndexForSourceID(3);
 		int SRC_COL_4 = nomData.getSourceIndexForSourceID(4);
 		int SRC_COL_5 = nomData.getSourceIndexForSourceID(5);
 
+		
+		{
+			//Test reaches that should have no adjustments at all
+			
+			assertEquals(nomSrc.getDouble(RCH_ROW_8569, SRC_COL_1), adjSrc.getDouble(RCH_ROW_8569, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8569, SRC_COL_2), adjSrc.getDouble(RCH_ROW_8569, SRC_COL_2), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8569, SRC_COL_3), adjSrc.getDouble(RCH_ROW_8569, SRC_COL_3), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8569, SRC_COL_4), adjSrc.getDouble(RCH_ROW_8569, SRC_COL_4), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8569, SRC_COL_5), adjSrc.getDouble(RCH_ROW_8569, SRC_COL_5), VARIANCE);
+			
+			assertEquals(nomSrc.getDouble(RCH_ROW_8570, SRC_COL_1), adjSrc.getDouble(RCH_ROW_8570, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8570, SRC_COL_2), adjSrc.getDouble(RCH_ROW_8570, SRC_COL_2), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8570, SRC_COL_3), adjSrc.getDouble(RCH_ROW_8570, SRC_COL_3), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8570, SRC_COL_4), adjSrc.getDouble(RCH_ROW_8570, SRC_COL_4), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8570, SRC_COL_5), adjSrc.getDouble(RCH_ROW_8570, SRC_COL_5), VARIANCE);
+		}
+		
 		{
 			//Test Group1
 			double SRC_COEF_4 = .8D;
 			double SRC_COEF_5 = .6D;
 			// test first row item
-			assertEquals(nomSrc.getDouble(RCH_ROW_21580, SRC_COL_1), adjSrc.getDouble(RCH_ROW_21580, SRC_COL_1));	//not adjusted
-			assertEquals(nomSrc.getDouble(RCH_ROW_21580, SRC_COL_4) * SRC_COEF_4, adjSrc.getDouble(RCH_ROW_21580, SRC_COL_4));
-			assertEquals(nomSrc.getDouble(RCH_ROW_21580, SRC_COL_5) * SRC_COEF_5, adjSrc.getDouble(RCH_ROW_21580, SRC_COL_5));
+			assertEquals(nomSrc.getDouble(RCH_ROW_8166, SRC_COL_3), adjSrc.getDouble(RCH_ROW_8166, SRC_COL_3), VARIANCE);	//not adjusted
+			assertEquals(nomSrc.getDouble(RCH_ROW_8166, SRC_COL_4) * SRC_COEF_4, adjSrc.getDouble(RCH_ROW_8166, SRC_COL_4), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8166, SRC_COL_5) * SRC_COEF_5, adjSrc.getDouble(RCH_ROW_8166, SRC_COL_5), VARIANCE);
 			//
-			assertEquals(nomSrc.getDouble(RCH_ROW_21581, SRC_COL_1), adjSrc.getDouble(RCH_ROW_21581, SRC_COL_1));	//not adjusted
-			assertEquals(nomSrc.getDouble(RCH_ROW_21581, SRC_COL_4) * SRC_COEF_4, adjSrc.getDouble(RCH_ROW_21581, SRC_COL_4));
-			assertEquals(nomSrc.getDouble(RCH_ROW_21581, SRC_COL_5) * SRC_COEF_5, adjSrc.getDouble(RCH_ROW_21581, SRC_COL_5));
+			assertEquals(nomSrc.getDouble(RCH_ROW_8167, SRC_COL_3), adjSrc.getDouble(RCH_ROW_8167, SRC_COL_3), VARIANCE);	//not adjusted
+			assertEquals(nomSrc.getDouble(RCH_ROW_8167, SRC_COL_4) * SRC_COEF_4, adjSrc.getDouble(RCH_ROW_8167, SRC_COL_4), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8167, SRC_COL_5) * SRC_COEF_5, adjSrc.getDouble(RCH_ROW_8167, SRC_COL_5), VARIANCE);
 			//
-			assertEquals(nomSrc.getDouble(RCH_ROW_21578, SRC_COL_4) * SRC_COEF_4, adjSrc.getDouble(RCH_ROW_21578, SRC_COL_4));
-			assertEquals(nomSrc.getDouble(RCH_ROW_21578, SRC_COL_5) * SRC_COEF_5, adjSrc.getDouble(RCH_ROW_21578, SRC_COL_5));
+			assertEquals(nomSrc.getDouble(RCH_ROW_8171, SRC_COL_4) * SRC_COEF_4, adjSrc.getDouble(RCH_ROW_8171, SRC_COL_4), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8171, SRC_COL_5) * SRC_COEF_5, adjSrc.getDouble(RCH_ROW_8171, SRC_COL_5), VARIANCE);
 			//
-			assertEquals(nomSrc.getDouble(RCH_ROW_21579, SRC_COL_4) * SRC_COEF_4, adjSrc.getDouble(RCH_ROW_21579, SRC_COL_4));
-			assertEquals(nomSrc.getDouble(RCH_ROW_21579, SRC_COL_5) * SRC_COEF_5, adjSrc.getDouble(RCH_ROW_21579, SRC_COL_5));
+			assertEquals(nomSrc.getDouble(RCH_ROW_8172, SRC_COL_4) * SRC_COEF_4, adjSrc.getDouble(RCH_ROW_8172, SRC_COL_4), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8172, SRC_COL_5) * SRC_COEF_5, adjSrc.getDouble(RCH_ROW_8172, SRC_COL_5), VARIANCE);
+
 		}
 
 		{
 			//Test Group2: huc4
 			double SRC_COEF_1 = 2D;
-			// test all the columns of the first row item
-			assertEquals(nomSrc.getDouble(RCH_ROW_1638, SRC_COL_2), adjSrc.getDouble(RCH_ROW_1638, SRC_COL_2));	//not adjusted
-			assertEquals(nomSrc.getDouble(RCH_ROW_1638, SRC_COL_3), adjSrc.getDouble(RCH_ROW_1638, SRC_COL_3));	//not adjusted
-			assertEquals(nomSrc.getDouble(RCH_ROW_1638, SRC_COL_4), adjSrc.getDouble(RCH_ROW_1638, SRC_COL_4));	//not adjusted
-			assertEquals(nomSrc.getDouble(RCH_ROW_1638, SRC_COL_5), adjSrc.getDouble(RCH_ROW_1638, SRC_COL_5));	//not adjusted
+			//non-adjusted vales for first reach
+			assertEquals(nomSrc.getDouble(RCH_ROW_7764, SRC_COL_2), adjSrc.getDouble(RCH_ROW_7764, SRC_COL_2), VARIANCE);	//not adjusted
+			assertEquals(nomSrc.getDouble(RCH_ROW_7764, SRC_COL_3), adjSrc.getDouble(RCH_ROW_7764, SRC_COL_3), VARIANCE);	//not adjusted
+			assertEquals(nomSrc.getDouble(RCH_ROW_7764, SRC_COL_4), adjSrc.getDouble(RCH_ROW_7764, SRC_COL_4), VARIANCE);	//not adjusted
+			assertEquals(nomSrc.getDouble(RCH_ROW_7764, SRC_COL_5), adjSrc.getDouble(RCH_ROW_7764, SRC_COL_5), VARIANCE);	//not adjusted
 
 			// 1st logical set
-			assertEquals(nomSrc.getDouble(RCH_ROW_1638, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_1638, SRC_COL_1));
-			assertEquals(nomSrc.getDouble(RCH_ROW_2157, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_2157, SRC_COL_1));
-			assertEquals(nomSrc.getDouble(RCH_ROW_1655, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_1655, SRC_COL_1));
-			assertEquals(nomSrc.getDouble(RCH_ROW_65179, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_65179, SRC_COL_1));
+			assertEquals(nomSrc.getDouble(RCH_ROW_7764, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_7764, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_7765, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_7765, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_7766, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_7766, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_7767, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_7767, SRC_COL_1), VARIANCE);
 			//2nd logical set
-			assertEquals(nomSrc.getDouble(RCH_ROW_38707, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_38707, SRC_COL_1));
-			assertEquals(nomSrc.getDouble(RCH_ROW_38711, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_38711, SRC_COL_1));
-			assertEquals(nomSrc.getDouble(RCH_ROW_38533, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_38533, SRC_COL_1));
-			assertEquals(nomSrc.getDouble(RCH_ROW_38666, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_38666, SRC_COL_1));
+			assertEquals(nomSrc.getDouble(RCH_ROW_8166, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_8166, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8167, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_8167, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8171, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_8171, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8172, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_8172, SRC_COL_1), VARIANCE);
+		}
+		
+		{
+			//Test Group3: huc6
+			//This group has a cumulative adjustment on source 1
+			double SRC_COEF_1 = 4D; //2 X 2
+			double SRC_COEF_3 = 9D;
+
+			//Source 1 for all reaches
+			assertEquals(nomSrc.getDouble(RCH_ROW_8236, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_8236, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8237, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_8237, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8238, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_8238, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8239, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_8239, SRC_COL_1), VARIANCE);
+			
+			
+			//Source 3 for all reaches
+			assertEquals(nomSrc.getDouble(RCH_ROW_8236, SRC_COL_3) * SRC_COEF_3, adjSrc.getDouble(RCH_ROW_8236, SRC_COL_3), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8237, SRC_COL_3) * SRC_COEF_3, adjSrc.getDouble(RCH_ROW_8237, SRC_COL_3), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8238, SRC_COL_3) * SRC_COEF_3, adjSrc.getDouble(RCH_ROW_8238, SRC_COL_3), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8239, SRC_COL_3) * SRC_COEF_3, adjSrc.getDouble(RCH_ROW_8239, SRC_COL_3), VARIANCE);
+		}
+		
+		{
+			//Test the two override reaches
+			assertEquals(99d, adjSrc.getDouble(RCH_ROW_7775, SRC_COL_1), VARIANCE);
+			assertEquals(88d, adjSrc.getDouble(RCH_ROW_8572, SRC_COL_2), VARIANCE);
 		}
 
 
 	}
 
-
-
-	public void testBasicPredictionValues() throws Exception {
-
-		PredictContextRequest contextReq = PredictionContextTest.buildPredictContext4();	//Build a context from a canned file
-
-		String response = pipeDispatch(contextReq, new PredictContextPipeline());
-		int CONTEXT_ID = Integer.parseInt(getAttributeValue(response, "context-id"));
-
-		//Get the prediction context and the nominal context;
-		PredictionContext userContext = SharedApplication.getInstance().getPredictionContext(CONTEXT_ID);
-		//PredictionContext nomContext = new PredictionContext(userContext.getModelID(), null, null, null, null);
-
-		//Do a test of the hashcodes
-		assertEquals(contextReq.getPredictionContext().hashCode(), userContext.hashCode());
-		assertEquals(contextReq.getPredictionContext().hashCode(), userContext.clone().hashCode());
-		assertEquals(CONTEXT_ID, contextReq.getPredictionContext().hashCode());
-
-		//Get source values, both adjusted and nominal
-		PredictData nomData = SharedApplication.getInstance().getPredictData(userContext.getModelID());
-		DataTable nomSrc = nomData.getSrc();
-		DataTable adjSrc = SharedApplication.getInstance().getAdjustedSource(userContext.getAdjustmentGroups());
-
-		//Constants for tests
-		//Reaches in Group1
-		int RCH_ROW_36347 = nomData.getRowForReachID(36347);
-		int RCH_ROW_36346 = nomData.getRowForReachID(36346);
-		int RCH_ROW_36344 = nomData.getRowForReachID(36344);
-		int RCH_ROW_36345 = nomData.getRowForReachID(36345);
-		//Reaches in Group2, logical set 1
-		int RCH_ROW_39529 = nomData.getRowForReachID(39529);
-		int RCH_ROW_39526 = nomData.getRowForReachID(39526);
-		int RCH_ROW_39528 = nomData.getRowForReachID(39528);
-		int RCH_ROW_39527 = nomData.getRowForReachID(39527);
-		//Reaches in Group2, logical set 2
-		int RCH_ROW_39966 = nomData.getRowForReachID(39966);
-		int RCH_ROW_39968 = nomData.getRowForReachID(39968);
-		int RCH_ROW_39967 = nomData.getRowForReachID(39967);
-		int RCH_ROW_39965 = nomData.getRowForReachID(39965);
-		//Reaches in Group2, individually added reaches
-		//int RCH_ROW_39529 = nomData.getRowForReachID(39529);	//override adjust - already defined above.
-		int RCH_ROW_11861 = nomData.getRowForReachID(11861);	//additional reach for this group
-		int RCH_ROW_11878 = nomData.getRowForReachID(11878);	//additional reach for this group
-
-		int SRC_COL_1 = nomData.getSourceIndexForSourceID(1);
-		int SRC_COL_2 = nomData.getSourceIndexForSourceID(2);
-		int SRC_COL_3 = nomData.getSourceIndexForSourceID(3);
-		int SRC_COL_4 = nomData.getSourceIndexForSourceID(4);
-		int SRC_COL_5 = nomData.getSourceIndexForSourceID(5);
-
-		{
-			//Test Group1
-			double SRC_COEF_4 = .75D;
-			double SRC_COEF_5 = .5D;
-			//
-			assertEquals(nomSrc.getDouble(RCH_ROW_36347, SRC_COL_1), adjSrc.getDouble(RCH_ROW_36347, SRC_COL_1));	//not adjusted
-			assertEquals(nomSrc.getDouble(RCH_ROW_36347, SRC_COL_4) * SRC_COEF_4, adjSrc.getDouble(RCH_ROW_36347, SRC_COL_4));
-			assertEquals(nomSrc.getDouble(RCH_ROW_36347, SRC_COL_5) * SRC_COEF_5, adjSrc.getDouble(RCH_ROW_36347, SRC_COL_5));
-			//
-			assertEquals(nomSrc.getDouble(RCH_ROW_36346, SRC_COL_1), adjSrc.getDouble(RCH_ROW_36346, SRC_COL_1));	//not adjusted
-			assertEquals(nomSrc.getDouble(RCH_ROW_36346, SRC_COL_4) * SRC_COEF_4, adjSrc.getDouble(RCH_ROW_36346, SRC_COL_4));
-			assertEquals(nomSrc.getDouble(RCH_ROW_36346, SRC_COL_5) * SRC_COEF_5, adjSrc.getDouble(RCH_ROW_36346, SRC_COL_5));
-			//
-			assertEquals(nomSrc.getDouble(RCH_ROW_36344, SRC_COL_4) * SRC_COEF_4, adjSrc.getDouble(RCH_ROW_36344, SRC_COL_4));
-			assertEquals(nomSrc.getDouble(RCH_ROW_36344, SRC_COL_5) * SRC_COEF_5, adjSrc.getDouble(RCH_ROW_36344, SRC_COL_5));
-			//
-			assertEquals(nomSrc.getDouble(RCH_ROW_36345, SRC_COL_4) * SRC_COEF_4, adjSrc.getDouble(RCH_ROW_36345, SRC_COL_4));
-			assertEquals(nomSrc.getDouble(RCH_ROW_36345, SRC_COL_5) * SRC_COEF_5, adjSrc.getDouble(RCH_ROW_36345, SRC_COL_5));
-		}
-
-		{
-			//Test Group2
-			double SRC_COEF_1 = 2D;
-			//Test all sources for the 1st reach, which has an override adjustment
-			assertEquals(99d, adjSrc.getDouble(RCH_ROW_39529, SRC_COL_1));	//an override adj
-			assertEquals(nomSrc.getDouble(RCH_ROW_39529, SRC_COL_2), adjSrc.getDouble(RCH_ROW_39529, SRC_COL_2));	//not adjusted
-			assertEquals(nomSrc.getDouble(RCH_ROW_39529, SRC_COL_3), adjSrc.getDouble(RCH_ROW_39529, SRC_COL_3));	//not adjusted
-			assertEquals(nomSrc.getDouble(RCH_ROW_39529, SRC_COL_4), adjSrc.getDouble(RCH_ROW_39529, SRC_COL_4));	//not adjusted
-			assertEquals(nomSrc.getDouble(RCH_ROW_39529, SRC_COL_5), adjSrc.getDouble(RCH_ROW_39529, SRC_COL_5));	//not adjusted
-			//
-			assertEquals(nomSrc.getDouble(RCH_ROW_39526, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_39526, SRC_COL_1));
-			assertEquals(nomSrc.getDouble(RCH_ROW_39528, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_39528, SRC_COL_1));
-			assertEquals(nomSrc.getDouble(RCH_ROW_39527, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_39527, SRC_COL_1));
-			//2nd logical set
-			assertEquals(nomSrc.getDouble(RCH_ROW_39966, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_39966, SRC_COL_1));
-			assertEquals(nomSrc.getDouble(RCH_ROW_39968, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_39968, SRC_COL_1));
-			assertEquals(nomSrc.getDouble(RCH_ROW_39967, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_39967, SRC_COL_1));
-			assertEquals(nomSrc.getDouble(RCH_ROW_39965, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_39965, SRC_COL_1));
-			//Individually added reach
-			assertEquals(nomSrc.getDouble(RCH_ROW_11861, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_11861, SRC_COL_1));
-			//Individually added reach w/ override of a different source - test all sources
-			assertEquals(88d, adjSrc.getDouble(RCH_ROW_11878, SRC_COL_2));	//override
-			assertEquals(nomSrc.getDouble(RCH_ROW_11878, SRC_COL_3), adjSrc.getDouble(RCH_ROW_11878, SRC_COL_3));	//not adjusted
-			assertEquals(nomSrc.getDouble(RCH_ROW_11878, SRC_COL_4), adjSrc.getDouble(RCH_ROW_11878, SRC_COL_4));	//not adjusted
-			assertEquals(nomSrc.getDouble(RCH_ROW_11878, SRC_COL_5), adjSrc.getDouble(RCH_ROW_11878, SRC_COL_5));	//not adjusted
-		}
-
-
-	}
 
 }
 
