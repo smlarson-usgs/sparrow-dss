@@ -58,13 +58,25 @@ public class SparrowDBTest extends SparrowUnitTest {
 	
 	/** A caching datasource */
 	private OracleDataSource oracleDataSource;
+	
+	/**
+	 * Override to return true if your test should use the file based predict
+	 * data instead of the database.  If set to true, only data for model 50 will
+	 * be available.
+	 * @return
+	 */
+	public boolean loadModelDataFromFile() {
+		return false;
+	}
 
 	@Override
 	public void doOneTimeFrameworkSetup() throws Exception {
 		
-		//Remove this prop (set by SparrowUnitTest), which will allow predict
-		//data to be loaded from the DB, not from text files.
-		System.clearProperty(PredictDataFactory.ACTION_IMPLEMENTATION_CLASS);
+		if (!loadModelDataFromFile()) {
+			//Remove this prop (set by SparrowUnitTest), which will allow predict
+			//data to be loaded from the DB, not from text files.
+			System.clearProperty(PredictDataFactory.ACTION_IMPLEMENTATION_CLASS);
+		}
 		
 		doDbSetup();
 		singleInstanceToTearDown = this;
@@ -147,6 +159,14 @@ public class SparrowDBTest extends SparrowUnitTest {
 	protected void doDbTearDown() throws Exception {
 		oracleDataSource.close();
 		oracleDataSource = null;
+		
+		Context ctx = new InitialContext();
+        ctx.destroySubcontext("java:comp/env/jdbc");
+        ctx.destroySubcontext("java:comp/env");
+        ctx.destroySubcontext("java:comp");
+        ctx.destroySubcontext("java:");
+        
+        
 		
 //		if (sparrowDBTestConn != null) {
 //			sparrowDBTestConn.close();

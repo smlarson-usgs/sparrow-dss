@@ -99,14 +99,21 @@ public abstract class SparrowUnitTest {
 		doOneTimeLifecycleSetup();
 		
 		try {
-			//The frameworks can override the FrameworkSetup, allowing
-			//endpoint tests (ie the classes actually containing the tests)
+			//The junit framework subclasses can override the FrameworkSetup,
+			//allowing endpoint tests (ie the classes actually containing the tests)
 			//to override CustomSetup w/o having to worry about calling super
 			//(or the results of failing to call it).
 			doOneTimeFrameworkSetup();	//Intended for framework subclasses (like SparrowDBTest) to override
-			doOneTimeCustomSetup();	//intended for subclass setup
+		} catch (Exception e) {
+			log.fatal("Custom test setup doOneTimeFrameworkSetup() is throwing an exception!", e);
+			throw e;
+		}
+		
+		try {
+			doOneTimeCustomSetup();	//intended endpoint test subclasses to use for setup
 		} catch (Exception e) {
 			log.fatal("Custom test setup doOneTimeCustomSetup() is throwing an exception!", e);
+			throw e;
 		}
 	}
 	
