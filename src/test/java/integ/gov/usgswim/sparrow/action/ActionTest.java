@@ -1,45 +1,18 @@
 package gov.usgswim.sparrow.action;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import gov.usgswim.datatable.ColumnData;
+import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
-import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.utils.DataTableConverter;
-import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowDBTest;
-import gov.usgswim.sparrow.SparrowUnitTest;
-import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
-import gov.usgswim.sparrow.parser.AdjustmentGroups;
-import gov.usgswim.sparrow.parser.AreaOfInterest;
-import gov.usgswim.sparrow.parser.BasicAnalysis;
-import gov.usgswim.sparrow.parser.DataColumn;
-import gov.usgswim.sparrow.parser.DataSeriesType;
-import gov.usgswim.sparrow.parser.NominalComparison;
-import gov.usgswim.sparrow.parser.PredictionContext;
-import gov.usgswim.sparrow.parser.TerminalReaches;
-import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 
@@ -87,6 +60,7 @@ public class ActionTest  extends SparrowDBTest {
 	//Only creates a single prepared statement, doesn't attempt any local closing
 	public static class SimpleAction1 extends LoadReachAttributes {
 
+		private String sql = "SELECT IDENTIFIER FROM MODEL_ATTRIB_VW WHERE IDENTIFIER=? AND SPARROW_MODEL_ID=?";
 		public boolean passed = true;
 		
 		Connection conn1;
@@ -96,8 +70,6 @@ public class ActionTest  extends SparrowDBTest {
 		
 		@Override
 		public DataTable doAction() throws Exception {
-			String sql = this.getText(QUERY_NAME, LoadReachAttributes.class);
-			
 			conn1 = getConnection();
 			state1 = getNewROPreparedStatement(sql);
 			conn2 = getConnection();
@@ -133,6 +105,7 @@ public class ActionTest  extends SparrowDBTest {
 	//Creates two prepared statements, closing connections between
 	public static class SimpleAction2 extends LoadReachAttributes {
 
+		private String sql = "SELECT IDENTIFIER FROM MODEL_ATTRIB_VW WHERE IDENTIFIER=? AND SPARROW_MODEL_ID=?";
 		public boolean passed = true;
 		
 		Connection conn1;
@@ -144,8 +117,7 @@ public class ActionTest  extends SparrowDBTest {
 		
 		@Override
 		public DataTable doAction() throws Exception {
-			String sql = this.getText(QUERY_NAME, LoadReachAttributes.class);
-			
+
 			conn1 = getConnection();
 			conn1.close();
 			state1 = getNewROPreparedStatement(sql);
@@ -200,6 +172,7 @@ public class ActionTest  extends SparrowDBTest {
 	//Only creates a single prepared statement, but throws an error during execution
 	public static class SimpleAction3 extends LoadReachAttributes {
 
+		private String sql = "SELECT IDENTIFIER FROM MODEL_ATTRIB_VW WHERE IDENTIFIER=? AND SPARROW_MODEL_ID=?";
 		public boolean passed = true;
 		
 		Connection conn1;		
@@ -207,8 +180,7 @@ public class ActionTest  extends SparrowDBTest {
 		
 		@Override
 		public DataTable doAction() throws Exception {
-			String sql = this.getText(QUERY_NAME, LoadReachAttributes.class);
-			
+
 			conn1 = getConnection();
 			state1 = getNewROPreparedStatement(sql);
 			
