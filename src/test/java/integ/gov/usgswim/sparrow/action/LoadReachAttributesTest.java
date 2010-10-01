@@ -32,7 +32,7 @@ public class LoadReachAttributesTest  extends SparrowDBTest {
 		
 		InputStream ins = getResource(this.getClass(), null, "tab");
 		DataTable original = DataTableSerializerUtils.deserializeFromText(ins);
-		DataTable newVersion = action.doAction();
+		DataTable newVersion = action.run();
 		assertTrue(compareTables(original, newVersion));
 		
 	}
@@ -49,7 +49,7 @@ public class LoadReachAttributesTest  extends SparrowDBTest {
 		LoadReachAttributes action = new LoadReachAttributes();
 		action.setModelId(SparrowDBTest.TEST_MODEL_ID);
 		action.setReachId(9190);
-		DataTable newVersion = action.doAction();
+		DataTable newVersion = action.run();
 		
 		File f = new File("/datausgs/tmp/LoadReachAttributesTest.tab");
 		//f.createNewFile();

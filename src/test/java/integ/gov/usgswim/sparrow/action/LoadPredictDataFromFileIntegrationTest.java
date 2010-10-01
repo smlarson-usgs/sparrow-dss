@@ -27,8 +27,8 @@ public class LoadPredictDataFromFileIntegrationTest extends SparrowDBTest {
 		//file value, we call the Actions directly.
 		LoadModelPredictData loadFromDb = new LoadModelPredictData(TEST_MODEL_ID);
 		LoadModelPredictDataFromFile loadFromFile = new LoadModelPredictDataFromFile(TEST_MODEL_ID);
-		dbPredictData = loadFromDb.doAction();
-		filePredictData = loadFromFile.doAction();
+		dbPredictData = loadFromDb.run();
+		filePredictData = loadFromFile.run();
 	}
 	
 	@Test

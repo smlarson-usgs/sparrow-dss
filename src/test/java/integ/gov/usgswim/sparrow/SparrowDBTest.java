@@ -15,6 +15,7 @@ import java.util.Properties;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.sql.DataSource;
 
 import oracle.jdbc.pool.OracleDataSource;
 
@@ -56,8 +57,6 @@ public class SparrowDBTest extends SparrowUnitTest {
 	/** A single instance which is destroyed in teardown */
 	private static SparrowDBTest singleInstanceToTearDown;
 	
-	/** A caching datasource */
-	private OracleDataSource oracleDataSource;
 	
 	/**
 	 * Override to return true if your test should use the file based predict
@@ -90,91 +89,108 @@ public class SparrowDBTest extends SparrowUnitTest {
 	
 	protected void doDbSetup() throws Exception {
 		
-		OracleDataSource ds = new OracleDataSource(); 
-		
-		
-		ds.setConnectionCachingEnabled(true);
-
-        
-        
-		String strUseProd = System.getProperty(SYS_PROP_USE_PRODUCTION_DB);
-		boolean useProd = false;
-		
-		if (strUseProd != null) {
-			strUseProd = strUseProd.toLowerCase();
-			if ("yes".equals(strUseProd) || "true".equals(strUseProd)) {
-				useProd = true;
-			}
-		}
-		
-		if (! useProd) {
-			//130.11.165.154
-			//igsarmewdbdev.er.usgs.gov
-			ds.setURL("jdbc:oracle:thin:@130.11.165.154:1521:widev");
-			ds.setUser("sparrow_dss");
-			ds.setPassword("***REMOVED***");
-		} else {
-			
-			String pwd = prompt(SYS_PROP_USE_PRODUCTION_DB +
-					" is set to 'true', requesting the production db be used." +
-					" Enter the production db password: ");
-			
-			//Production Properties
-			ds.setURL("jdbc:oracle:thin:@130.11.165.152:1521:widw");
-			ds.setUser("sparrow_dss");
-			ds.setPassword(pwd);
-		}
-		
-		//Set implicite cache properties
-        Properties cacheProps = new Properties();
-        cacheProps.setProperty("MinLimit", "0");
-        cacheProps.setProperty("MaxLimit", "3"); 
-        cacheProps.setProperty("InitialLimit", "0");	//# of conns on startup 
-        cacheProps.setProperty("ConnectionWaitTimeout", "15");
-        cacheProps.setProperty("ValidateConnection", "false");
-        ds.setConnectionCacheProperties(cacheProps);
-        ds.setImplicitCachingEnabled(true);
-        ds.setConnectionCachingEnabled(true);
-		
-        oracleDataSource = ds;
-        
+		//OK to set these props each time
         System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
-                "org.apache.naming.java.javaURLContextFactory");
-            System.setProperty(Context.URL_PKG_PREFIXES, 
-                "org.apache.naming");   
-        Context ctx = new InitialContext();
-        ctx.createSubcontext("java:");
-        ctx.createSubcontext("java:comp");
-        ctx.createSubcontext("java:comp/env");
-        ctx.createSubcontext("java:comp/env/jdbc");
-        
-        ctx.bind("java:comp/env/jdbc/sparrow_dss", ds);
+        	"org.apache.naming.java.javaURLContextFactory");
+        System.setProperty(Context.URL_PKG_PREFIXES, 
+        	"org.apache.naming");   
 
+
+		Context ctx = new InitialContext();
+		DataSource testDs = null;
+		
+		try {
+			testDs = (DataSource) ctx.lookup("java:comp/env/jdbc/sparrow_dss");
+		} catch (Exception e) {
+			//Ignore
+		}
+		
+		if (testDs == null) {
+			OracleDataSource ds = new OracleDataSource(); 
+			
+			
+			ds.setConnectionCachingEnabled(true);
+	
+	        
+	        
+			String strUseProd = System.getProperty(SYS_PROP_USE_PRODUCTION_DB);
+			boolean useProd = false;
+			
+			if (strUseProd != null) {
+				strUseProd = strUseProd.toLowerCase();
+				if ("yes".equals(strUseProd) || "true".equals(strUseProd)) {
+					useProd = true;
+				}
+			}
+			
+			if (! useProd) {
+				//130.11.165.154
+				//igsarmewdbdev.er.usgs.gov
+				ds.setURL("jdbc:oracle:thin:@130.11.165.154:1521:widev");
+				ds.setUser("sparrow_dss");
+				ds.setPassword("***REMOVED***");
+			} else {
+				
+				String pwd = prompt(SYS_PROP_USE_PRODUCTION_DB +
+						" is set to 'true', requesting the production db be used." +
+						" Enter the production db password: ");
+				
+				//Production Properties
+				ds.setURL("jdbc:oracle:thin:@130.11.165.152:1521:widw");
+				ds.setUser("sparrow_dss");
+				ds.setPassword(pwd);
+			}
+			
+			//Set implicite cache properties
+	        Properties cacheProps = new Properties();
+	        cacheProps.setProperty("MinLimit", "0");
+	        cacheProps.setProperty("MaxLimit", "3"); 
+	        cacheProps.setProperty("InitialLimit", "0");	//# of conns on startup 
+	        cacheProps.setProperty("ConnectionWaitTimeout", "15");
+	        cacheProps.setProperty("ValidateConnection", "false");
+	        ds.setConnectionCacheProperties(cacheProps);
+	        ds.setImplicitCachingEnabled(true);
+	        ds.setConnectionCachingEnabled(true);
+	        
+	        ctx.createSubcontext("java:");
+	        ctx.createSubcontext("java:comp");
+	        ctx.createSubcontext("java:comp/env");
+	        ctx.createSubcontext("java:comp/env/jdbc");
+	        
+	        ctx.bind("java:comp/env/jdbc/sparrow_dss", ds);
+		}
         
-//		if (System.getProperty("dburl") == null) {
-//			setDbProperties();
-//		}
 	}
 	
 	protected void doDbTearDown() throws Exception {
-		oracleDataSource.close();
-		oracleDataSource = null;
 		
-		Context ctx = new InitialContext();
-        ctx.destroySubcontext("java:comp/env/jdbc");
-        ctx.destroySubcontext("java:comp/env");
-        ctx.destroySubcontext("java:comp");
-        ctx.destroySubcontext("java:");
-        
-        
+		try {
+			if (sparrowDBTestConn != null) {
+				sparrowDBTestConn.close();
+				sparrowDBTestConn = null;
+			}
+		} catch (Exception e) {
+			log.warn("Exception thrown trying to close the test connection", e);
+		}
 		
-//		if (sparrowDBTestConn != null) {
-//			sparrowDBTestConn.close();
-//			sparrowDBTestConn = null;
-//		}
+		//It *seems* like closing the connection pool would be the right thing
+		//to do, but it seems that the call to close() is ignored.
+		//Rather than fight, I'll let the pool stay open for all the tests being
+		//run, which means it doesn't have to create a new set of conn's for
+		//each test.
+//		oracleDataSource.close();
+//		oracleDataSource = null;
+//		
+//		Context ctx = new InitialContext();
+//        ctx.destroySubcontext("java:comp/env/jdbc");
+//        ctx.destroySubcontext("java:comp/env");
+//        ctx.destroySubcontext("java:comp");
+//        ctx.destroySubcontext("java:");
+        
+
 	}
 	
-	public static Connection getConnection() throws SQLException {
+	public static Connection getSingleAutoCloseTestConnection() throws SQLException {
 		if (sparrowDBTestConn == null || sparrowDBTestConn.isClosed()) {
 			sparrowDBTestConn = SharedApplication.getInstance().getConnection();
 		}

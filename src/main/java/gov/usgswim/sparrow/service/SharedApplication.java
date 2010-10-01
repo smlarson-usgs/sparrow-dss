@@ -81,6 +81,9 @@ public class SharedApplication  {
 	private static final String dsName = "java:comp/env/jdbc/sparrow_dss";
 	private DataSource datasource;
 	private boolean lookupFailed = false;
+	
+	//Number of times a connection has been requested
+	private int connectionRequestCount = 0;
 
 	//an ehcache test cache
 	public static final String SERIALIZABLE_CACHE = PredictContext.name();
@@ -117,7 +120,33 @@ public class SharedApplication  {
 	// ================
 
 	public Connection getConnection() throws SQLException {
-		return findConnection();
+		connectionRequestCount++;
+		
+		Connection c = findConnection();
+		
+		if (c != null) {
+			if (! c.isClosed()) {
+				if (log.isTraceEnabled()) {
+					Exception e = new Exception("Exception created only for stacktrace");
+					e.fillInStackTrace();
+					log.trace("Fetching connection #" + connectionRequestCount, e);
+				} else if (log.isDebugEnabled()) {
+					log.debug("Fetching connection #" + connectionRequestCount);
+				}
+			} else {
+				SQLException e = new SQLException("The datasource returned a CLOSED CONNECTION for #" + connectionRequestCount);
+				e.fillInStackTrace();
+				log.error(e);
+				throw e;
+			}
+		} else {
+			SQLException e = new SQLException("The datasource returned a NULL CONNECTION for #" + connectionRequestCount);
+			e.fillInStackTrace();
+			log.error(e);
+			throw e;
+		}
+		
+		return c;
 	}
 
 	private Connection findConnection() throws SQLException {
@@ -132,12 +161,15 @@ public class SharedApplication  {
 					lookupFailed = true;
 				}
 			}
+			
+			if (datasource != null) {
+				return MonProxyFactory.monitor(datasource.getConnection());
+			}
 		}
 
 
-		if (datasource != null) {
-			return MonProxyFactory.monitor(datasource.getConnection());
-		}
+		//if we fall through from above, fetching from cmd line does
+		//not need to be sync'ed
 		return getConnectionFromCommandLineParams();
 
 	}

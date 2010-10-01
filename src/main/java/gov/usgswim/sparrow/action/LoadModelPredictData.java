@@ -47,8 +47,12 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 		dataSet.setTopo( loadTopo(con, modelId) );
 		dataSet.setCoef( loadSourceReachCoef(con, modelId, 0, dataSet.getSrcMetadata()) );
 		dataSet.setDelivery( loadDelivery(con, modelId, 0) );
-		// TODO fix: this actually is going to fail for multiple iterations
 		dataSet.setSrc( loadSourceValues(con, modelId, dataSet.getSrcMetadata()) );
+		
+		//At this point we no longer need a connection for this action.
+		//release it back to the pool so  we don't hold a connection while
+		//calling getModelMetadata.
+		close(con);
 		
 		//Add the model metadata
 		ModelRequestCacheKey modelKey = new ModelRequestCacheKey(modelId, false, false, false);
