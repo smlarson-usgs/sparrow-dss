@@ -49,11 +49,6 @@ public class LoadReachAttributes extends Action<DataTable> {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("ModelId", this.modelId);
 		params.put("ReachId", this.reachId);
-		
-//		String sql = this.getText(QUERY_NAME);
-//		PreparedStatement st = getNewROPreparedStatement(sql);
-//		st.setLong(1, reachId);
-//		st.setLong(2, modelId);
 
 		PreparedStatement st = getPSFromPropertiesFile(QUERY_NAME, this.getClass(), params);
 		
