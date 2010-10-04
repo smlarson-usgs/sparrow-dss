@@ -316,7 +316,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 
 	}
     
-    protected RowFilter createRowFilter() {
+    protected RowFilter createRowFilter() throws Exception {
         Integer contextId = request.getContextID();
         PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
         if (request.getBbox() == null) {

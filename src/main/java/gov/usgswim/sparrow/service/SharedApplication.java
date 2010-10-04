@@ -28,6 +28,7 @@ import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
+import gov.usgswim.sparrow.action.LoadReachesInBBox;
 import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
 import gov.usgswim.sparrow.cachefactory.BinningRequest;
 import gov.usgswim.sparrow.cachefactory.CatchmentArea;
@@ -35,6 +36,7 @@ import gov.usgswim.sparrow.cachefactory.ModelRequestCacheKey;
 import gov.usgswim.sparrow.cachefactory.ReachID;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.domain.ModelBBox;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.AdvancedAnalysis;
@@ -600,6 +602,21 @@ public class SharedApplication  {
 	public AggregateIdLookupKludge getAggregateIdLookup(String aggLevel, boolean quiet) {
 		return (AggregateIdLookupKludge) AggregateIdLookup.get(aggLevel, quiet);
 	}
+	
+	/////////////////////////////////////////////
+	// Non-Cached items
+	/////////////////////////////////////////////
+	public Long[] getReachesInBBox(ModelBBox modelBBox) throws Exception {
+		return getReachesInBBox(modelBBox, false);
+	}
+
+	public Long[] getReachesInBBox(ModelBBox modelBBox, boolean quiet) throws Exception {
+		LoadReachesInBBox action = new LoadReachesInBBox();
+		action.setModelBBox(modelBBox);
+		Long[] result = action.run();
+		return result;
+	}
+	
 
 	public static DataTableWritable queryToDataTable(String query) throws NamingException, SQLException {
 		Connection conn = getInstance().getConnection();

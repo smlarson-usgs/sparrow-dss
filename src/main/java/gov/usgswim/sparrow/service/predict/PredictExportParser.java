@@ -34,6 +34,7 @@ public class PredictExportParser
 			
 			ResponseFormat respFormat = new ResponseFormat();
 			respFormat.setMimeType(mimeType);
+			respFormat.setAttachment(true);
 			if (respFormat.fileName == null) respFormat.fileName = PredictExportRequest.PC_EXPORT_FILENAME;
 			
 			if (isContextRequest) {
