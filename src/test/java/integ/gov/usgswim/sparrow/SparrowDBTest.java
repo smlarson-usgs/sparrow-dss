@@ -19,8 +19,6 @@ import javax.sql.DataSource;
 
 import oracle.jdbc.pool.OracleDataSource;
 
-import org.custommonkey.xmlunit.Diff;
-
 /**
  * A base test class that sets properties needed for a db connection, cache
  * configuration and other application lifecycle aspects.
@@ -243,28 +241,5 @@ public class SparrowDBTest extends SparrowUnitTest {
 		return val;
 	}
 	
-	/**
-	 * Constructs a XmlUnit Diff object for the two passed xml strings.  The
-	 * comparison ignores the 'context-id' element so that responses are less
-	 * sensitive to PredictionContext implememntation changes.
-	 * 
-	 * @param controlDocument
-	 * @param testDocument
-	 * @return
-	 * @throws Exception
-	 */
-	public static Diff compareXMLIgnoreContextId(String controlDocument,
-			String testDocument) throws Exception {
-		
-		Diff diff = new Diff(controlDocument, testDocument);
-		diff.overrideDifferenceListener(new IgnoreContextIdDifferenceListener());
-		return diff;
-	}
-	
-	public static boolean similarXMLIgnoreContextId(String controlDocument,
-			String testDocument) throws Exception {
-		Diff diff = compareXMLIgnoreContextId(controlDocument, testDocument);
-		return diff.similar();
-	}
 	
 }

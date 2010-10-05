@@ -2,12 +2,11 @@ package gov.usgswim.sparrow;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.sparrow.service.SparrowServiceTest;
 
 import org.custommonkey.xmlunit.Diff;
 import org.junit.Test;
 
-public class IgnoreContextIdDifferenceListenerTest extends SparrowServiceTest {
+public class IgnoreContextIdDifferenceListenerTest extends SparrowUnitTest {
 
 	static String base = "<root attrib=\"attrib_val\"><row context-id=\"1\">row1_value</row></root>";
 	
