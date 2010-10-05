@@ -1,7 +1,6 @@
 package gov.usgswim.sparrow;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.ColumnDataWritable;
@@ -15,30 +14,24 @@ import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.DLUtils;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.junit.Test;
 
 /**
  * This test was created to recreate a calc error where delivery based calcs
@@ -257,98 +250,6 @@ public class ComparePredictionToText {
 		assertEquals(0, failCount);
 	}
 	
-	
-	//@Test
-	public void testFileRead() throws Exception {
-		final int readSize = 8192;
-		
-		String testFile = "/datausgs/eclipse galileo workspace/sparrow_core/src/test/resources/integ/model_predict/23.txt";
-		File file = new File(testFile);
-		FileInputStream is = new FileInputStream(file);
-		
-		
-		InputStreamReader isr = new InputStreamReader(is);
-		BufferedReader br = new BufferedReader(isr);
-		
-		StringBuffer curLine = new StringBuffer();
-		StringBuffer nextLine = new StringBuffer();
-		char cbuf[] = new char[readSize];	//current chunk
-		int cbufCount = -1;
-		HashSet<String> lineTerms = new HashSet<String>();
-		int singleCharLineTerms = 0;
-		int lineCount = 0;
-		
-		cbufCount = br.read(cbuf);
-		
-		while (cbufCount > 0) {
-			boolean lastCharRN = false;
-			boolean inRNSection = false;
-			String combinedRNSection = "";
-			
-			for (int i=0; i < cbufCount; i++) {
-				char c = cbuf[i];
-				
-				if (c == '\r' || c == '\n') {
-					if (lastCharRN || inRNSection) {
-						combinedRNSection = combinedRNSection + c;
-						inRNSection = true;
-					} else {
-						lastCharRN = true;
-						combinedRNSection = combinedRNSection + c;
-					}
-				} else {
-					if (lastCharRN && ! inRNSection) {
-						//We failed to have two in a row - this is an issue
-						singleCharLineTerms++;
-						
-						combinedRNSection = "";
-						inRNSection = false;
-						lastCharRN = false;
-					} else if (inRNSection) {
-						lineTerms.add(combinedRNSection);
-						
-						//current line is complete
-						lineCount++;
-						
-						combinedRNSection = "";
-						inRNSection = false;
-						lastCharRN = false;
-					} else {
-						//curLine.append(c);
-					}
-				}
-				
-				
-			}
-			
-			cbufCount = br.read(cbuf);
-			
-		}
-		
-		
-		System.out.println(lineCount + " Lines");
-		System.out.println(singleCharLineTerms + " Single char line terms");
-		
-		
-		Iterator<String> it = lineTerms.iterator();
-		while (it.hasNext()) {
-			String line = it.next();
-			String outLine = "";
-			
-			for (int i=0; i < line.length(); i++) {
-				if (line.charAt(i) == '\r') {
-					outLine = outLine + "r";
-				} else if (line.charAt(i) == '\n') {
-					outLine = outLine + "n";
-				} else {
-					outLine = outLine + "x";
-				}
-				
-			}
-			System.out.println(outLine);
-		}
-		
-	}
 	
 	/**
 	 * Runs QA checks against the data.
@@ -891,22 +792,6 @@ public class ComparePredictionToText {
 		}
 		
 		return totalCol;
-	}
-	
-	@Test
-	public void checkComparison() {
-		assertTrue(comp(0d, 0d));
-		assertTrue(comp(1000d, 1000.1d));
-		assertTrue(comp(1000d, 1000.9999d));
-		assertFalse(comp(1000d, 1001.1d));
-		assertTrue(comp(.1d, .11d));
-		assertFalse(comp(.1d, .111d));
-		assertTrue(comp(1d, 1.005d));
-		assertFalse(comp(1d, 1.0051d));
-		
-		//Specific comparisons
-		assertTrue(comp(.00073676269211912d, 0d));
-		assertTrue(comp(2.1328272875115d, 2.1402908936369247d));
 	}
 	
 	/**
