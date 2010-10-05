@@ -40,6 +40,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.custommonkey.xmlunit.XpathEngine;
 import org.junit.AfterClass;
 import org.junit.Before;
 
@@ -912,6 +913,13 @@ public abstract class SparrowUnitTest {
 			String testDocument) throws Exception {
 		Diff diff = compareXMLIgnoreContextId(controlDocument, testDocument);
 		return diff.similar();
+	}
+	
+	public static String getXPathValue(String xPath, String xmlDocument) throws Exception {
+        XpathEngine xpath = XMLUnit.newXpathEngine();
+        String value =
+        	xpath.evaluate(xPath, XMLUnit.buildControlDocument(xmlDocument));
+        return value;
 	}
 
 }
