@@ -1,0 +1,14 @@
+<PredictionContext-response xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="50" context-id="ignore">
+	<status>OK</status>
+	<message/>
+	<cache-lifetime-seconds>86400</cache-lifetime-seconds>
+	<row-ids>reach</row-ids>
+	<adjustmentGroups context-id="-1993783632"/>
+	<terminalReaches context-id="409645419"/>
+	<areaOfInterest context-id="236923"/>
+	<name>Total Delivered Load</name>
+	<description>The total load associated with a stream reach that arrives at the downstream end of a selected target reach (in units of kilograms per year).</description>
+	<units>kg/year</units>
+	<constituent>Nitrogen</constituent>
+</PredictionContext-response>
