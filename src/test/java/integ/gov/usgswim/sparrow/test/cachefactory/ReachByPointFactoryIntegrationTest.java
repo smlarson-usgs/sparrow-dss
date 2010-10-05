@@ -1,7 +1,8 @@
 package gov.usgswim.sparrow.test.cachefactory;
 
-import static org.junit.Assert.*;
-import gov.usgswim.sparrow.LifecycleListener;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import gov.usgswim.sparrow.SparrowDBTest;
 import gov.usgswim.sparrow.cachefactory.ReachByPointFactory;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
@@ -10,40 +11,27 @@ import java.awt.Point;
 
 import javax.xml.stream.XMLInputFactory;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class ReachByPointFactoryIntegrationTest {
-    public static LifecycleListener lifecycle = new LifecycleListener();
+public class ReachByPointFactoryIntegrationTest extends SparrowDBTest {
 
     protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	
-    @BeforeClass public static void setUpOnce() {
-        lifecycle.contextInitialized(null, true);
-    }
 
-    @AfterClass public static void tearDownOnce() {
-        lifecycle.contextDestroyed(null, true);
-    }
     
 	@Test public void testCreateEntry() throws Exception {
 		ReachByPointFactory factory = new ReachByPointFactory();
-		ModelPoint req = new ModelPoint(22L, new Point.Double(-90, 45));
+		ModelPoint req = new ModelPoint(
+				TEST_MODEL_ID,
+				new Point.Double(-84.9D, 32.9D));
 
+		
 		ReachInfo reach = factory.createEntry(req);
 		
 		assertNotNull(reach);
-		assertEquals(19283, reach.getId());
-		assertEquals("BLACK CR", reach.getName());
-		assertEquals(1641, reach.getDistanceInMeters());
-		
-	}
-
-	@Test public void testGetTextString() throws Exception {
-		ReachByPointFactory factory = new ReachByPointFactory();
-		
-		assertTrue(factory.getText("FindReach").startsWith("SELECT * FROM ("));
+		assertEquals(7887L, reach.getId());
+		assertEquals("FLAT SHOAL CR", reach.getName());
+		assertEquals(5292, reach.getDistanceInMeters());
 	}
 
 	
