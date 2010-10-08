@@ -1,16 +1,15 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import static gov.usgswim.sparrow.cachefactory.BinningFactory.digitAccuracyMultipliers;
-import static gov.usgswim.sparrow.cachefactory.BinningFactory.getUniqueValueCount;
+import static gov.usgswim.sparrow.action.CalcBinning.digitAccuracyMultipliers;
+import static gov.usgswim.sparrow.action.CalcBinning.getUniqueValueCount;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.ColumnDataWritable;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.impl.BuilderHelper;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
-import gov.usgswim.datatable.utils.DataTablePrinter;
+import gov.usgswim.sparrow.action.CalcBinning;
 import gov.usgswim.sparrow.util.BigDecimalUtils;
 
 import java.math.BigDecimal;
@@ -409,7 +408,7 @@ public class BinningFactoryTest {
 		ColumnDataWritable dataCol = makeColumnData(unSortedData, "", "");
 		SimpleDataTableWritable table = new SimpleDataTableWritable();
 		table.addColumn(dataCol);
-		Double[] result = BinningFactory.extractSortedFilteredDoubleValues(table, 0, false);
+		Double[] result = CalcBinning.extractSortedFilteredDoubleValues(table, 0, false);
 		assertEquals("Three zeroes were removed and one added back in", unSortedData.length - 3 + 1, result.length);
 	}
 	
@@ -426,7 +425,7 @@ public class BinningFactoryTest {
 
         Double[] sortedData = {0.1, 0.11, 0.13, 0.15, 0.151, 0.1522, 0.15223, 0.1523, 0.154, 0.1542, 0.16, 6000.1};
         int binCount = 3;
-        BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData, binCount, true);
+        BigDecimal[] result = CalcBinning.buildEqualCountBins(sortedData, binCount, true);
 //        for (BigDecimal bin: result) {
 //            System.out.println(bin);
 //        }
@@ -438,7 +437,7 @@ public class BinningFactoryTest {
 
         Double[] sortedData = {0.1, 0.11, 0.13, 0.15, 0.151, 0.1522, 0.15223, 0.1523, 0.154, 0.1542, 0.16, 6000.1};
         int binCount = 3;
-        BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData, binCount, true);
+        BigDecimal[] result = CalcBinning.buildEqualCountBins(sortedData, binCount, true);
         for (BigDecimal bin: result) {
             String stringResult = bin.toPlainString();
             assertTrue(stringResult.length() <=6);
@@ -449,7 +448,7 @@ public class BinningFactoryTest {
 
         Double[] sortedData = {0.1, 0.11, 0.13, 0.15, 0.151, 0.1522, 0.15223, 0.1523, 0.154, 0.1542, 0.16, 6000.1, 6000.1, 6000.1, 6000.1};
         int binCount = 5;
-        BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData, binCount, true);
+        BigDecimal[] result = CalcBinning.buildEqualCountBins(sortedData, binCount, true);
         BigDecimal largestBin = result[result.length-1];
         assertTrue(sortedData[sortedData.length - 1] <= largestBin.doubleValue());
         assertEquals("6000.1", largestBin.toPlainString());
@@ -459,7 +458,7 @@ public class BinningFactoryTest {
 
         Double[] sortedData = {0.1, 0.11, 0.13, 0.15, 0.151, 0.1522, 0.15223, 0.1523, 0.154, 0.1542, 0.16, 6000.1, 6000.1, 6000.1, 6000.1};
         int binCount = 5;
-        BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData, binCount, true);
+        BigDecimal[] result = CalcBinning.buildEqualCountBins(sortedData, binCount, true);
         for (BigDecimal bin: result) {
             String stringResult = bin.toPlainString();
             assertTrue(stringResult.length() <=7);
@@ -545,7 +544,7 @@ public class BinningFactoryTest {
 				"THE NUMBER OF BINS SHOULD MATCH (n + 1) THE EXPECTED BINS",
 				binCount + 1, expectedBins.length);
 
-		BigDecimal[] result = BinningFactory.buildEqualCountBins(data, 0, binCount, true, true);
+		BigDecimal[] result = CalcBinning.buildEqualCountBins(data, 0, binCount, true, true);
 		String desc = buildDescription(data, 0, expectedBins);
 
 		doAssert(desc, result, expectedBins);
@@ -559,7 +558,7 @@ public class BinningFactoryTest {
 				"THE NUMBER OF BINS SHOULD MATCH (n + 1) THE EXPECTED BINS",
 				binCount + 1, expectedBins.length);
 
-		BigDecimal[] result = BinningFactory.buildEqualCountBins(sorted, binCount, round);
+		BigDecimal[] result = CalcBinning.buildEqualCountBins(sorted, binCount, round);
 		String desc = buildDescription(sorted, expectedBins);
 
 		doAssert(desc, result, expectedBins);
@@ -645,6 +644,81 @@ public class BinningFactoryTest {
 				}
 			}
 		}
+	}
+	
+
+	@Test public void testRoundToZero() {
+		assertEquals("0", CalcBinning.round(.011, -.1, .44).toString());
+	}
+
+	@Test public void testRoundToSingleDigit() {
+		//rounding up
+
+		BigDecimal bd = CalcBinning.round(8.77, 5.2, 10.1);
+		bd = bd.setScale(0);
+		assertEquals("10", bd.toString());
+		assertEquals("1", CalcBinning.round(.877, .52, 1.01).toString());
+		assertEquals("0.1", CalcBinning.round(.0877, .052, 1.01).toString());
+		assertEquals("1000", CalcBinning.round(870.7, 520, 1010).toString());
+
+		// rounding down
+		assertEquals("10", CalcBinning.round(9.47, 5.2, 10.1).toString());
+		assertEquals("1", CalcBinning.round(.947, .52, 1.01).toString());
+		assertEquals("0.1", CalcBinning.round(.0947, .052, 1.01).toString());
+		assertEquals("1000", CalcBinning.round(940.7, 520, 1010).toString());
+	}
+
+	@Test public void testRoundTo1_5Digits() {
+		// rounding up
+		assertEquals("8.5", CalcBinning.round(8.67, 8.2, 8.91).toString());
+		assertEquals("0.85", CalcBinning.round(.867, .82, .891).toString());
+		assertEquals("0.085", CalcBinning.round(.0867, .082, .0891).toString());
+		assertEquals("850", CalcBinning.round(860.7, 820, 891).toString());
+	}
+
+	@Test public void testRoundTo2Digits() {
+		//rounding up
+		assertEquals("8.8", CalcBinning.round(8.77, 8.52, 8.91).toString());
+		assertEquals("0.88", CalcBinning.round(.877, .852, .891).toString());
+		assertEquals("0.088", CalcBinning.round(.0877, .0852, .0891).toString());
+		assertEquals("0.000088", CalcBinning.round(.0000877, .0000852, .0000891).toString());
+		assertEquals("880", CalcBinning.round(877.77, 852, 891).toString());
+
+		// rounding down
+		assertEquals("9.4", CalcBinning.round(9.44, 9.25, 9.49).toString());
+		assertEquals("0.94", CalcBinning.round(.944, .925, .949).toString());
+		assertEquals("0.094", CalcBinning.round(.0944, .0925, .0949).toString());
+		assertEquals("0.000094", CalcBinning.round(.0000944, .0000925, .0000949).toString());
+		assertEquals("940", CalcBinning.round(940.7, 925, 949).toString());
+	}
+
+	@Test public void testRoundTo4Digits() {
+		//rounding up
+		assertEquals("8.888", CalcBinning.round(8.8877, 8.8871, 8.8887).toString());
+		assertEquals("0.8888", CalcBinning.round(.88877, .88852, .88891).toString());
+		assertEquals("0.08888", CalcBinning.round(.088877, .088852, .088891).toString());
+		assertEquals("0.00008888", CalcBinning.round(.000088877, .000088852, .000088891).toString());
+		assertEquals("8.888E+4", CalcBinning.round(88877.77, 88852, 88891).toString());
+
+		// rounding down
+		assertEquals("9.488", CalcBinning.round(9.4884, 9.48725, 9.4889).toString());
+		assertEquals("0.9488", CalcBinning.round(.94884, .948725, .94889).toString());
+		assertEquals("0.09488", CalcBinning.round(.09488, .0948725, .094889).toString());
+		assertEquals("0.00009488", CalcBinning.round(.000094884, .0000948725, .000094889).toString());
+		assertEquals("9.488E+4", CalcBinning.round(94880.7, 94872.5, 94889).toString());
+	}
+
+	@Test public void testRoundTo6Digits() {
+		// 6-digit rounding now supported
+		System.out.println(CalcBinning.round(8.770009000001, 8.770005000001, 8.770091).toString());
+		assertTrue(CalcBinning.round(8.770009000001, 8.770005000001, 8.770091).toString().startsWith("8.77001"));
+	}
+
+	@Test public void testTooNarrowRoundingRange() {
+		// String.startsWith() used since representation of value is not truncated,
+		// (i.e., 8.770009000001 is returned as 8.770009000001[2342393758713480])
+		System.out.println(CalcBinning.round(8.7700019000001, 8.7700015000001, 8.77000191).toString());
+		assertTrue(CalcBinning.round(8.7700019000001, 8.7700015000001, 8.77000191).toString().startsWith("8.77000190000"));
 	}
 
 }

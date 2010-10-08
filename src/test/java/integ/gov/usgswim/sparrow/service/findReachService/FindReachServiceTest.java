@@ -2,8 +2,8 @@ package gov.usgswim.sparrow.service.findReachService;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.assertEquals;
+import gov.usgswim.sparrow.SparrowServiceTest;
 import gov.usgswim.sparrow.service.ReturnStatus;
-import gov.usgswim.sparrow.service.SparrowServiceTest;
 
 import java.io.IOException;
 

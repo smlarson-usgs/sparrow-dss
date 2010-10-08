@@ -677,6 +677,24 @@ public abstract class SparrowUnitTest {
 			}
 		}
 		
+		//check the column metadata
+		for (int c = 0; c < expected.getColumnCount(); c++) {
+			if (! isEqual(expected.getName(c), actual.getName(c), fractionalDeltaAllowed)) {
+				match = false;
+				log.error("Mismatch : column name " + c + ") [" + expected.getName(c) + "] [" + actual.getName(c) + "]");
+			}
+			
+			if (! isEqual(expected.getUnits(c), actual.getUnits(c), fractionalDeltaAllowed)) {
+				match = false;
+				log.error("Mismatch : units " + c + ") [" + expected.getUnits(c) + "] [" + actual.getUnits(c) + "]");
+			}
+			
+			if (! isEqual(expected.getDataType(c), actual.getDataType(c), fractionalDeltaAllowed)) {
+				match = false;
+				log.error("Mismatch : data type " + c + ") [" + expected.getDataType(c) + "] [" + actual.getDataType(c) + "]");
+			}
+		}
+		
 		for (int r = 0; r < expected.getRowCount(); r++) {
 			for (int c = 0; c < expected.getColumnCount(); c++) {
 				
@@ -920,6 +938,13 @@ public abstract class SparrowUnitTest {
         String value =
         	xpath.evaluate(xPath, XMLUnit.buildControlDocument(xmlDocument));
         return value;
+	}
+	
+	public static Integer getContextIdFromContext(String xmlPreictionContext) throws Exception {
+		String contextIdString =
+			getXPathValue("//*[local-name() = 'PredictionContext-response' ]/@context-id", xmlPreictionContext); 
+		
+		return Integer.parseInt(contextIdString);
 	}
 
 }

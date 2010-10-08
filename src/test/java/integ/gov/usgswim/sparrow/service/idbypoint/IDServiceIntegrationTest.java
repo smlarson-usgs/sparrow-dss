@@ -2,23 +2,18 @@ package gov.usgswim.sparrow.service.idbypoint;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import gov.usgswim.sparrow.SparrowServiceTest;
+import gov.usgswim.sparrow.SparrowServiceTestWithCannedModel50;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.service.SparrowServiceTest;
 import gov.usgswim.sparrow.util.ParserHelper;
 
 import javax.xml.stream.XMLStreamReader;
 
 import org.custommonkey.xmlunit.XMLAssert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-public class IDServiceIntegrationTest extends SparrowServiceTest {
-
-	@BeforeClass
-	public static void localInit() {
-		//Logger.getLogger(IDByPointService.class).setLevel(Level.TRACE);
-	}
+public class IDServiceIntegrationTest extends SparrowServiceTestWithCannedModel50 {
 	
 	// ============
 	// TEST METHODS

@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.service;
 
+import gov.usgswim.sparrow.SparrowServiceTest;
 import gov.usgswim.sparrow.SparrowUnitTest;
 
 import java.io.File;

@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.util;
 
+import gov.usgswim.sparrow.action.CalcBinning;
 import gov.usgswim.sparrow.cachefactory.BinningFactory;
 
 import java.math.BigDecimal;
@@ -15,50 +16,6 @@ public class BigDecimalUtils {
 		return result;
 	}
 
-	/**
-	 * Rounds to the fewest digits necessary (<= 3.5 digits) within the given lo-hi range
-	 *
-	 * @param value
-	 * @param lo
-	 * @param hi
-	 * @return the original value if lo-hi range is too narrow
-	 */
-	public static BigDecimal round(double value, double lo, double hi) {
-		assert(value >= lo &&  value <= hi): "value " + value + " is not between lo " + lo + " and " + hi + " hi";
-		if (value == lo && value == hi) {
-			//No rounding possible
-			return new BigDecimal(value);
-		} else if (value ==0 || (lo <=0 && hi>=0)) {
-			// round to zero as first option
-			if (value ==0 || (lo <=0 && hi>=0)) return BigDecimal.ZERO;
-		}
-
-		// round to 1 digit
-		int exponent = Double.valueOf(Math.ceil(Math.log10(Math.abs(value)))).intValue();
-
-		for (BigDecimal sigfigs: BinningFactory.digitAccuracyMultipliers) {
-			BigDecimal result = BinningFactory.findClosestInRange(value, lo, hi, exponent, sigfigs);
-			if (result != null) {
-				// don't return exponents of 3 or less
-				if (-3 <= result.scale() && result.scale() < 0) {
-					String rep = result.toPlainString();
-					if (rep.length()<=4) {
-						result = result.setScale(0); // just write it out rather than use exponential notation
-					}
-				}
-				return result;
-			}
-		}
-
-		BigDecimal result = null;
-		try {
-			result = new BigDecimal(value);
-		} catch (NumberFormatException e) {
-			System.err.println("Invalid BigDecimal value " + value);
-			throw e;
-		}
-		return result; // range is too narrow so just return original value
-	}
 
 	/**
 	 * Reverses the passed array of BigDecimals.

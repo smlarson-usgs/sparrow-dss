@@ -1,12 +1,12 @@
 package gov.usgswim.sparrow.test.integration;
 
-import static gov.usgswim.sparrow.SparrowUnitTest.pipeDispatch;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowUnitTest;
 import gov.usgswim.sparrow.action.NSDataSetBuilder;
-import gov.usgswim.sparrow.cachefactory.NSDataSetFactory;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.PredictionContext;
@@ -14,26 +14,11 @@ import gov.usgswim.sparrow.parser.PredictionContextTest;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
-import junit.framework.TestCase;
 import oracle.mapviewer.share.ext.NSDataSet;
 import oracle.mapviewer.share.ext.NSRow;
 
-public class ContextToPredictionIntegrationTest extends TestCase {
+public class ContextToPredictionIntegrationTest extends SparrowUnitTest {
 
-	LifecycleListener lifecycle = new LifecycleListener();
-
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		lifecycle.contextInitialized(null, true);
-	}
-
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
-
-		lifecycle.contextDestroyed(null, true);
-	}
 
 	// ============
 	// TEST METHODS

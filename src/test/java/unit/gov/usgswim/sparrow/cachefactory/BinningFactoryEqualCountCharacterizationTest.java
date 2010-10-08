@@ -2,6 +2,8 @@ package gov.usgswim.sparrow.cachefactory;
 
 import static org.junit.Assert.assertEquals;
 
+import gov.usgswim.sparrow.action.CalcBinning;
+
 import java.math.BigDecimal;
 
 import org.junit.Test;
@@ -32,7 +34,7 @@ public class BinningFactoryEqualCountCharacterizationTest {
 	
 
 	@Test public void testGetEqualCountBinsOfOne() {
-		BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData100Normal, 1, Boolean.TRUE);
+		BigDecimal[] result = CalcBinning.buildEqualCountBins(sortedData100Normal, 1, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -40,7 +42,7 @@ public class BinningFactoryEqualCountCharacterizationTest {
 	}
 
 	@Test public void testGetEqualCountBinsOfTwo() {
-		BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData100Normal, 2, Boolean.TRUE);
+		BigDecimal[] result = CalcBinning.buildEqualCountBins(sortedData100Normal, 2, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -49,7 +51,7 @@ public class BinningFactoryEqualCountCharacterizationTest {
 	}
 
 	@Test public void testGetEqualCountBinsOfThree() {
-		BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData100Normal, 3, Boolean.TRUE);
+		BigDecimal[] result = CalcBinning.buildEqualCountBins(sortedData100Normal, 3, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -59,7 +61,7 @@ public class BinningFactoryEqualCountCharacterizationTest {
 	}
 
 	@Test public void testGetEqualCountBinsOfFour() {
-		BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData100Normal, 4, Boolean.TRUE);
+		BigDecimal[] result = CalcBinning.buildEqualCountBins(sortedData100Normal, 4, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -70,7 +72,7 @@ public class BinningFactoryEqualCountCharacterizationTest {
 	}
 
 	@Test public void testGetEqualCountBinsOfFive() {
-		BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData100Normal, 5, Boolean.TRUE);
+		BigDecimal[] result = CalcBinning.buildEqualCountBins(sortedData100Normal, 5, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -82,7 +84,7 @@ public class BinningFactoryEqualCountCharacterizationTest {
 	}
 
 	@Test public void testGetEqualCountBinsOfSix() {
-		BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData100Normal, 6, Boolean.TRUE);
+		BigDecimal[] result = CalcBinning.buildEqualCountBins(sortedData100Normal, 6, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());
@@ -96,7 +98,7 @@ public class BinningFactoryEqualCountCharacterizationTest {
 
 	@Test public void testGetEqualCountBinsOfSeven() {
 
-		BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedData100Normal, 7, Boolean.TRUE);
+		BigDecimal[] result = CalcBinning.buildEqualCountBins(sortedData100Normal, 7, Boolean.TRUE);
 
 		int lastIndex = result.length - 1;
 		assertEquals("-100", result[0].toString());

@@ -1,23 +1,21 @@
 package gov.usgswim.sparrow.test.integration;
 
-import java.math.BigDecimal;
-
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowUnitTest;
-import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.cachefactory.BinningRequest;
+import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.binning.BinningPipeline;
 import gov.usgswim.sparrow.service.binning.BinningServiceRequest;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.XMLUnit;
-import org.junit.*;
-import static org.junit.Assert.*;
+import java.math.BigDecimal;
+
+import org.junit.Test;
 
 /**
  * This test was created to recreate an error that seems to occur when a
@@ -26,22 +24,7 @@ import static org.junit.Assert.*;
  * @author eeverman
  * TODO: This should really use a canned project, rather than MRB2
  */
-public class SourceBinningErrorTest {
-	
-	static LifecycleListener lifecycle = new LifecycleListener();
-	
-	@BeforeClass
-	public static void setUp() throws Exception {
-		lifecycle.contextInitialized(null, true);
-		
-		XMLUnit.setIgnoreWhitespace(true);
-		
-	}
-
-	@AfterClass
-	public static void tearDown() throws Exception {
-		lifecycle.contextDestroyed(null, true);
-	}
+public class SourceBinningErrorTest extends SparrowUnitTest {
 	
 	@Test
 	public void testComparison() throws Exception {
@@ -52,17 +35,18 @@ public class SourceBinningErrorTest {
 		PredictContextRequest contextReq = pipe.parse(xmlContextReq);
 		String actualContextResponse = SparrowUnitTest.pipeDispatch(contextReq, pipe);
 
-		long modelId = 50;
-		int contextId = -612942945;
-		//System.out.println(actualContextResponse);
-		XMLAssert.assertXMLEqual(xmlContextResp, actualContextResponse);
+		System.out.println(actualContextResponse);
+		
+		assertTrue(similarXMLIgnoreContextId(xmlContextResp, actualContextResponse));
+		Integer contextId = getContextIdFromContext(actualContextResponse);
+
 		
 		
 		///Try to build bins from a GET request that looks like this:
 		//context/
 		//getBins?_dc=1259617459336&context-id=-1930836194&bin-count=5&bin-operation=EQUAL_RANGE
 		
-		PredictData pd = SharedApplication.getInstance().getPredictData(modelId);
+		PredictData pd = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		DataTable src = pd.getSrc();
 		
 		//Get min and max values for source 1

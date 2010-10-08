@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
+import gov.usgswim.sparrow.action.CalcBinning;
+
 import java.math.BigDecimal;
 
 import junit.framework.TestCase;
@@ -50,7 +52,7 @@ public class BinningFactoryTestBug1 extends TestCase {
 
 
 	public void testGetEqualCountBinsOfOne() {
-		BigDecimal[] result = BinningFactory.buildEqualCountBins(sortedDataBug1, 5, Boolean.TRUE);
+		BigDecimal[] result = CalcBinning.buildEqualCountBins(sortedDataBug1, 5, Boolean.TRUE);
 
 		for (BigDecimal val : result) {
 			BigDecimal cleaned = val.stripTrailingZeros();
