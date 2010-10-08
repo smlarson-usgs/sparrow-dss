@@ -1,4 +1,4 @@
-MRB_ID	kgn_02	nadp_kg	is_km_01NLCD	fert02_01nlcd	man02_01nlcd
+MRB_ID	Wastewater discharge	Wet dep. of inorg.nitrogen	Imp. surf. area	Fert. applied to agric. land	Livestock manure
 81014	0	4304.9664	0.0032850005	9452.625	7698.0601
 81015	0	72951.6056	0.4580909547	163717.2969	5187.5981
 81016	0	8155.248	0.00063	4438.3721	140.6357

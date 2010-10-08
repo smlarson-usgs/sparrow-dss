@@ -162,7 +162,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 		};
 		
 		Class<?>[] types= {
-				Long.class,		//SOURCE_ID - (long) The database unique ID for the source
+				Integer.class,	//SOURCE_ID - (int) The database unique ID for the source
 				Integer.class,	//SORT_ORDER - Don't include
 				String.class,	//NAME - (String) The full (long text) name of the source
 				String.class,	//DISPLAY_NAME - (String) The short name of the source, used for display
@@ -278,8 +278,8 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 		ArrayList<Class<?>> types = new ArrayList<Class<?>>();
 		
 		headings.add("ITER");		//The iteration - is removed
-		headings.add("INC_DELIVF");
-		headings.add("TOT_DELIVF");
+		headings.add("INC_DELIVERY");
+		headings.add("TOTAL_DELIVERY");
 		headings.add("BOOT_ERROR");
 
 		types.add(Integer.class);		//ITER
@@ -291,7 +291,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 
 		for (int srcIndex = 0; srcIndex < sourceMetaData.getRowCount(); srcIndex++) {
 			String name = sourceMetaData.getString(srcIndex, SRC_META_NAME_COL);
-			StandardNumberColumnDataWritable<Double> newCol = new StandardNumberColumnDataWritable<Double>(name, null);
+			StandardNumberColumnDataWritable<Double> newCol = new StandardNumberColumnDataWritable<Double>(null, null);
 			newCol.setType(Double.class);
 			result.addColumn(newCol);
 			// may need to add names
@@ -389,7 +389,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 		DataTableWritable sourceValues = new SimpleDataTableWritable();
 
 		for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++) {
-			String name = sourceMetaData.getString(srcIndex, sourceMetaData.getColumnByName("NAME"));
+			String name = sourceMetaData.getString(srcIndex, sourceMetaData.getColumnByName("DISPLAY_NAME"));
 			String constituent = sourceMetaData.getString(srcIndex, sourceMetaData.getColumnByName("CONSTITUENT"));
 			String units = sourceMetaData.getString(srcIndex, sourceMetaData.getColumnByName("UNITS"));
 			String precision = sourceMetaData.getString(srcIndex, sourceMetaData.getColumnByName("PRECISION"));
