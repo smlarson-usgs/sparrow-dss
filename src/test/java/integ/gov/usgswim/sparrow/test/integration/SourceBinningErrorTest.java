@@ -34,8 +34,6 @@ public class SourceBinningErrorTest extends SparrowUnitTest {
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		PredictContextRequest contextReq = pipe.parse(xmlContextReq);
 		String actualContextResponse = SparrowUnitTest.pipeDispatch(contextReq, pipe);
-
-		System.out.println(actualContextResponse);
 		
 		assertTrue(similarXMLIgnoreContextId(xmlContextResp, actualContextResponse));
 		Integer contextId = getContextIdFromContext(actualContextResponse);
