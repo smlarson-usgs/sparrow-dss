@@ -25,7 +25,8 @@ import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
-import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,13 +78,19 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTest {
 		//setLogLevel(Level.DEBUG);
 		super.doOneTimeCustomSetup();
 		
-		InputStream stdDelFracTo9682Stream = SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9682", "tab");
+		BufferedReader stdDelFracTo9682Stream = new BufferedReader(new InputStreamReader(
+				SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9682", "tab")
+			));
 		stdDelFracTo9682 = TabDelimFileUtil.readAsDouble(stdDelFracTo9682Stream, true, -1);
 		
-		InputStream stdDelFracTo9674Stream = SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9674", "tab");
+		BufferedReader stdDelFracTo9674Stream = new BufferedReader(new InputStreamReader(
+				SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9674", "tab")
+			));
 		stdDelFracTo9674 = TabDelimFileUtil.readAsDouble(stdDelFracTo9674Stream, true, -1);
 		
-		InputStream stdDelFracToBothStream = SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "stdDelFracToBoth", "tab");
+		BufferedReader stdDelFracToBothStream = new BufferedReader(new InputStreamReader(
+				SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "stdDelFracToBoth", "tab")
+			));
 		stdDelFracToBoth = TabDelimFileUtil.readAsDouble(stdDelFracToBothStream, true, -1);
 		
 		//Lets hack the predictData to Turn off transport for the two

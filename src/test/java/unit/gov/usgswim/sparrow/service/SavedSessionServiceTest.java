@@ -2,6 +2,8 @@ package gov.usgswim.sparrow.service;
 
 import static org.junit.Assert.assertTrue;
 
+import gov.usgswim.sparrow.SparrowServiceUnitTest;
+
 import java.io.IOException;
 
 import org.junit.Test;

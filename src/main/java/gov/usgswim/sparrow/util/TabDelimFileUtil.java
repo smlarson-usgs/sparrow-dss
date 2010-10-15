@@ -5,19 +5,13 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
-import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.PredictDataBuilder;
-import gov.usgswim.sparrow.domain.SparrowModel;
-import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -26,129 +20,8 @@ import java.util.List;
 
 public abstract class TabDelimFileUtil {
 
-	public final static String[] ANCIL_HEADINGS = new String[] {
-		"LOCAL_ID", "STD_ID", "LOCAL_SAME"
-	};
-
-	public final static int ANCIL_INDEX_COLUMN_INDEX = 0;
-
-	public final static String[] TOPO_HEADINGS = new String[] {
-		"FNODE", "TNODE", "IFTRAN", "HYDSEQ"
-	};
 
 	private TabDelimFileUtil() { /* no instances */}
-
-
-	/**
-	 * Loads all PredictionDataSet data from text files based on either a
-	 * classpath package or a filesystem directory.
-	 *
-	 * All iterations and the ancil data is included.
-	 *
-	 * @param rootPackage
-	 * @param rootDir
-	 * @param modelId
-	 * @param enhNetworkId
-	 * @return
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	public static PredictData loadFullPredictDataSet(
-			String rootPackage, String rootDir, long modelId, long enhNetworkId)
-	throws FileNotFoundException, IOException {
-
-
-		return loadPredictDataSet(rootPackage, rootDir, modelId, enhNetworkId,
-				true);
-	}
-
-	/**
-	 * Loads a minimal PredictionDataSet from text files based on either a
-	 * classpath package or a filesystem directory.
-	 *
-	 * Only the first iteration is included.  Ancil data IS included.
-	 *
-	 * @param rootPackage
-	 * @param rootDir
-	 * @param modelId
-	 * @param enhNetworkId
-	 * @return
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	public static PredictData loadMinimalPredictDataSet(
-			String rootPackage, String rootDir, long modelId, long enhNetworkId)
-	throws FileNotFoundException, IOException {
-
-
-		return loadPredictDataSet(rootPackage, rootDir, modelId, enhNetworkId,
-				true);
-	}
-
-	/**
-	 * Loads a PredictionDataSet from text files based on either a classpath package
-	 * or a filesystem directory.
-	 *
-	 * A lastIncludedIteration value can be passed so that only a portion of the
-	 * iterations are visible.  This value is the last iteration included, so passing
-	 * a value of zero will include only the zero iteration.  Passing -1 will
-	 * include all iterations.  The iteration passed must exist.
-	 *
-	 * @param rootPackage
-	 * @param rootDir
-	 * @param modelId
-	 * @param enhNetworkId
-	 * @param onlyZeroIteration
-	 * @param includeAncilData
-	 * @return
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	public static PredictData loadPredictDataSet(
-			String rootPackage, String rootDir, long modelId, long enhNetworkId,
-			boolean onlyZeroIteration)
-	throws FileNotFoundException, IOException {
-
-		PredictDataBuilder pd = new PredictDataBuilder();
-
-		if (rootPackage != null) {
-			if (! rootPackage.endsWith("/")) rootPackage = rootPackage + "/";
-
-			pd.setCoef( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "coef.txt"), true, -1) );
-			pd.setSrc( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "src.txt"), true, -1) );
-			pd.setTopo( TabDelimFileUtil.readAsDouble(TabDelimFileUtil.class.getResourceAsStream(rootDir + "topo.txt"), true, TOPO_HEADINGS, -1) );
-
-		} else if (rootDir != null){
-			File root = new File(rootDir);
-
-			pd.setCoef( TabDelimFileUtil.readAsDouble(new File(root, "coef.txt"), true, -1) );
-			pd.setSrc( TabDelimFileUtil.readAsDouble(new File(root, "src.txt"), true, -1) );
-			pd.setTopo( TabDelimFileUtil.readAsDouble(new File(root, "topo.txt"), true, TOPO_HEADINGS, -1) );
-
-			root = null;
-		} else {
-			throw new IllegalArgumentException("Must specify a rootPackage or rootDir.");
-		}
-
-		if (onlyZeroIteration) {
-			//Find the last row containing this iteration
-			int lastRow = pd.getCoef().findLast(0, 0);
-
-			if (lastRow > -1) {
-				throw new UnsupportedOperationException("must implement this");
-//				pd.setCoef( new Data2DView(pd.getCoef(), 0, lastRow + 1, 0, pd.getCoef().getColumnCount()) );
-			}
-			throw new IllegalStateException("Could not find the zero iteration in the data");
-		}
-
-		SparrowModelBuilder mb = new SparrowModelBuilder(modelId);
-		mb.setEnhNetworkId(enhNetworkId);
-		SparrowModel model = mb.toImmutable();
-
-		pd.setModel( model );
-
-		return pd.toImmutable();
-	}
 
 
 	// =================
@@ -161,7 +34,7 @@ public abstract class TabDelimFileUtil {
 		}
 		return read(file, hasHeadings, mappedHeadings);
 	}
-	public static DataTableWritable readAsDouble(InputStream source, boolean hasHeadings, int indexCol)
+	public static DataTableWritable readAsDouble(BufferedReader source, boolean hasHeadings, int indexCol)
 	throws FileNotFoundException, IOException, NumberFormatException  {
 		if (indexCol > -1) {
 			return readAsDouble(source, hasHeadings, null).buildIndex(indexCol);
@@ -169,18 +42,15 @@ public abstract class TabDelimFileUtil {
 		return readAsDouble(source, hasHeadings, null);
 	}
 
-	public static DataTableWritable readAsDouble(InputStream source, boolean hasHeadings, String[] mappedHeadings)
+	public static DataTableWritable readAsDouble(BufferedReader reader, boolean hasHeadings, String[] mappedHeadings)
 	throws FileNotFoundException, IOException, NumberFormatException  {
-
-		InputStreamReader isr = new InputStreamReader(source);
-		BufferedReader br = new BufferedReader(isr);
 
 		try {
 
 			int[] remappedColumns = null;	//indexes to map the columns to
 			int mappedColumnCount = 0;	//Number of columns in the output
 
-			String[] headings = (hasHeadings)? TabDelimFileUtil.readHeadings(br): null;
+			String[] headings = (hasHeadings)? TabDelimFileUtil.readHeadings(reader): null;
 
 
 			if (mappedHeadings != null) {
@@ -188,7 +58,7 @@ public abstract class TabDelimFileUtil {
 				mappedColumnCount = mappedHeadings.length;
 			}
 
-			List<double[]> rows = TabDelimFileUtil.readDataBodyAsDouble(br, remappedColumns, mappedColumnCount);
+			List<double[]> rows = TabDelimFileUtil.readDataBodyAsDouble(reader, remappedColumns, mappedColumnCount);
 
 			// If there is exactly one extra column, then it's the ID column and it's first.
 			boolean hasIDColumnFirst =(mappedColumnCount == 0 && headings != null && rows.get(0).length == headings.length + 1);
@@ -224,14 +94,15 @@ public abstract class TabDelimFileUtil {
 
 		} finally {
 			try {
-				br.close();
+				reader.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 				//At this point we ignore.
 			}
-			br = null;
+			reader = null;
 		}
 	}
+	
 	public static DataTable readAsDouble(File file, boolean hasHeadings, int indexCol)
 	throws FileNotFoundException, IOException, NumberFormatException  {
 		if (indexCol > -1) {
@@ -242,7 +113,11 @@ public abstract class TabDelimFileUtil {
 
 	public static DataTableWritable read(File file, boolean hasHeadings, String[] mappedHeadings)
 	throws FileNotFoundException, IOException, NumberFormatException  {
-		return readAsDouble(new FileInputStream(file), hasHeadings, mappedHeadings);
+		
+		FileReader fr = new FileReader(file);
+		BufferedReader br = new BufferedReader(fr);
+		
+		return readAsDouble(br, hasHeadings, mappedHeadings);
 	}
 
 	public static DataTable readAsInteger(File file, boolean hasHeadings, String[] mappedHeadings, int indexCol)
@@ -253,7 +128,7 @@ public abstract class TabDelimFileUtil {
 		return read(file, hasHeadings, mappedHeadings);
 
 	}
-	public static DataTable readAsDouble(InputStream source, boolean hasHeadings, String[] mappedHeadings, int indexCol)
+	public static DataTable readAsDouble(BufferedReader source, boolean hasHeadings, String[] mappedHeadings, int indexCol)
 	throws FileNotFoundException, IOException, NumberFormatException  {
 		if (indexCol > -1) {
 			return readAsDouble(source, hasHeadings, mappedHeadings).buildIndex(indexCol);
@@ -272,7 +147,7 @@ public abstract class TabDelimFileUtil {
 
 	}
 
-	public static DataTableWritable readAsInteger(InputStream source, boolean hasHeadings, int indexCol)
+	public static DataTableWritable readAsInteger(BufferedReader source, boolean hasHeadings, int indexCol)
 	throws FileNotFoundException, IOException, NumberFormatException  {
 		if (indexCol > -1) {
 			return TabDelimFileUtil.readAsInt(source, hasHeadings, null).buildIndex(indexCol);
@@ -280,7 +155,7 @@ public abstract class TabDelimFileUtil {
 		return TabDelimFileUtil.readAsInt(source, hasHeadings, null);
 	}
 
-	public static DataTable readAsInteger(InputStream source, boolean hasHeadings, String[] mappedHeadings, int indexCol)
+	public static DataTable readAsInteger(BufferedReader source, boolean hasHeadings, String[] mappedHeadings, int indexCol)
 	throws FileNotFoundException, IOException, NumberFormatException  {
 
 		return read(source, hasHeadings, mappedHeadings);
@@ -288,21 +163,18 @@ public abstract class TabDelimFileUtil {
 
 	public static DataTableWritable read(File file, boolean hasHeadings)
 		throws FileNotFoundException, IOException, NumberFormatException  {
-		FileInputStream fis = new FileInputStream(file);
-		return read(fis, hasHeadings, null);
+		FileReader fr = new FileReader(file);
+		BufferedReader br = new BufferedReader(fr);
+		return read(br, hasHeadings, null);
 	}
 
-	public static DataTableWritable read(InputStream source, boolean hasHeadings)
+	public static DataTableWritable read(BufferedReader source, boolean hasHeadings)
 	throws FileNotFoundException, IOException, NumberFormatException  {
 		return readAsDouble(source, hasHeadings, null);
 	}
 
-	public static DataTableWritable read(InputStream source, boolean hasHeadings, String[] mappedHeadings)
+	public static DataTableWritable read(BufferedReader source, boolean hasHeadings, String[] mappedHeadings)
 	throws FileNotFoundException, IOException, NumberFormatException  {
-
-
-		InputStreamReader isr = new InputStreamReader(source);
-		BufferedReader br = new BufferedReader(isr);
 
 
 		try {
@@ -314,7 +186,7 @@ public abstract class TabDelimFileUtil {
 			int colCount = 0; //Number of columns (minus one) - must match in each row
 			int mappedColumnCount = 0;	//Number of columns in the output
 
-			if (hasHeadings) headings = TabDelimFileUtil.readHeadings(br);
+			if (hasHeadings) headings = TabDelimFileUtil.readHeadings(source);
 
 			if (mappedHeadings == null) {
 				//assign later
@@ -323,7 +195,7 @@ public abstract class TabDelimFileUtil {
 				mappedColumnCount = mappedHeadings.length;
 			}
 
-			while ((s=br.readLine())!=null){
+			while ((s=source.readLine())!=null){
 				String src[] = s.split("\t");
 
 				if ( src.length > 0 && !(src.length == 1 && ("".equals(src[0]))) ) {
@@ -375,11 +247,11 @@ public abstract class TabDelimFileUtil {
 
 		} finally {
 			try {
-				br.close();
+				source.close();
 			} catch (IOException e) {
 				//At this point we ignore.
 			}
-			br = null;
+			source = null;
 		}
 	}
 
@@ -598,18 +470,15 @@ public abstract class TabDelimFileUtil {
 	}
 
 
-	public static DataTableWritable readAsInt(InputStream source, boolean hasHeadings, String[] mappedHeadings)
+	public static DataTableWritable readAsInt(BufferedReader source, boolean hasHeadings, String[] mappedHeadings)
 	throws FileNotFoundException, IOException, NumberFormatException  {
-
-		InputStreamReader isr = new InputStreamReader(source);
-		BufferedReader br = new BufferedReader(isr);
 
 		try {
 
 			int[] remappedColumns = null;	//indexes to map the columns to
 			int mappedColumnCount = 0;	//Number of columns in the output
 
-			String[] headings = (hasHeadings)? readHeadings(br): null;
+			String[] headings = (hasHeadings)? readHeadings(source): null;
 
 
 			if (mappedHeadings != null) {
@@ -617,7 +486,7 @@ public abstract class TabDelimFileUtil {
 				mappedColumnCount = mappedHeadings.length;
 			}
 
-			List<int[]> rows = readDataBodyAsInt(br, remappedColumns, mappedColumnCount);
+			List<int[]> rows = readDataBodyAsInt(source, remappedColumns, mappedColumnCount);
 
 			// If there is exactly one extra column, then it's the ID column and it's first.
 			boolean hasIDColumnFirst =(headings != null && rows.get(0).length == headings.length + 1);
@@ -650,11 +519,11 @@ public abstract class TabDelimFileUtil {
 
 		} finally {
 			try {
-				br.close();
+				source.close();
 			} catch (IOException e) {
 				//At this point we ignore.
 			}
-			br = null;
+			source = null;
 		}
 	}
 

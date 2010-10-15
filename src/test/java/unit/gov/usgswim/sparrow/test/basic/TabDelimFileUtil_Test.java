@@ -4,7 +4,8 @@ package gov.usgswim.sparrow.test.basic;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
-import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 
 import junit.framework.TestCase;
@@ -16,7 +17,10 @@ public class TabDelimFileUtil_Test extends TestCase{
 	}
 
 	public void testDouble1() throws Exception {
-		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample.txt");
+
+		BufferedReader fileStream = new BufferedReader(new InputStreamReader(
+				getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample.txt")
+		));
 		DataTable data = TabDelimFileUtil.readAsDouble(fileStream, false, -1);
 
 		assertEquals(1d, data.getDouble(0, 0), 0d);
@@ -32,7 +36,9 @@ public class TabDelimFileUtil_Test extends TestCase{
 	 * @throws Exception
 	 */
 	public void testDouble2() throws Exception {
-		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_gap.txt");
+		BufferedReader fileStream = new BufferedReader(new InputStreamReader(
+				getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_gap.txt")
+		));
 		DataTable data = TabDelimFileUtil.readAsDouble(fileStream, false, -1);
 
 		assertEquals(1d, data.getDouble(0,0), 0d);
@@ -48,7 +54,10 @@ public class TabDelimFileUtil_Test extends TestCase{
 	 * @throws Exception
 	 */
 	public void testDouble3() throws Exception {
-		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_heading.txt");
+		BufferedReader fileStream = new BufferedReader(new InputStreamReader(
+			getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_heading.txt")
+		));
+		
 		DataTable data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 
 //		old reading, first column is not index, 5 total columns
@@ -76,7 +85,10 @@ public class TabDelimFileUtil_Test extends TestCase{
 	 * @throws Exception
 	 */
 	public void testDoubleColumnCountError() throws Exception {
-		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_err1.txt");
+		
+		BufferedReader fileStream = new BufferedReader(new InputStreamReader(
+			getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_err1.txt")
+		));
 
 
 		try {
@@ -95,7 +107,9 @@ public class TabDelimFileUtil_Test extends TestCase{
 	 * @throws Exception
 	 */
 	public void testInteger1() throws Exception {
-		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_gap_int.txt");
+		BufferedReader fileStream = new BufferedReader(new InputStreamReader(
+			getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_gap_int.txt")
+		));
 		DataTable data = TabDelimFileUtil.readAsInteger(fileStream, false, -1);
 
 		assertEquals(Integer.valueOf(1), data.getInt(0,0));
@@ -111,7 +125,9 @@ public class TabDelimFileUtil_Test extends TestCase{
 	 * @throws Exception
 	 */
 	public void testInteger2() throws Exception {
-		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_heading.txt");
+		BufferedReader fileStream = new BufferedReader(new InputStreamReader(
+			getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/tab_delimit_sample_heading.txt")
+		));
 		DataTable data = TabDelimFileUtil.readAsInteger(fileStream, true, -1);
 		// old reading, first column is not index data, 5 columns
 //		assertEquals(Integer.valueOf(1), data.getInt(0,0));
@@ -156,7 +172,9 @@ public class TabDelimFileUtil_Test extends TestCase{
 				"LOCAL_ID", "STD_ID", "LOCAL_SAME"
 		};
 
-		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/ancil.txt");
+		BufferedReader fileStream = new BufferedReader(new InputStreamReader(
+			getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/ancil.txt")
+		));
 		DataTable data = TabDelimFileUtil.readAsInteger(fileStream, true, mappedHeadings, -1);
 
 		assertEquals(3, data.getColumnCount());
@@ -172,7 +190,9 @@ public class TabDelimFileUtil_Test extends TestCase{
 		//now try mapping a bad column
 		try {
 			mappedHeadings = new String[] {"LOCAL_ID", "STD_ID", "LOCAL_SAME", "lkjhdlkfhlkhlskdfh"};
-			fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/ancil.txt");
+			fileStream = new BufferedReader(new InputStreamReader(
+				getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/ancil.txt")
+			));
 			data = TabDelimFileUtil.readAsInteger(fileStream, true, mappedHeadings, -1);
 			fail("Should have thrown an exception b/c the column does not exist.");
 		} catch (IllegalArgumentException e) {
@@ -187,7 +207,9 @@ public class TabDelimFileUtil_Test extends TestCase{
 				"LOCAL_ID", "STD_ID", "LOCAL_SAME"
 		};
 
-		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/ancil.txt");
+		BufferedReader fileStream = new BufferedReader(new InputStreamReader(
+			getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/ancil.txt")
+		));
 		DataTable data = TabDelimFileUtil.readAsDouble(fileStream, true, mappedHeadings, -1);
 
 		assertEquals(3, data.getColumnCount());
@@ -202,7 +224,9 @@ public class TabDelimFileUtil_Test extends TestCase{
 		//now try mapping a bad column
 		try {
 			mappedHeadings = new String[] {"LOCAL_ID", "STD_ID", "LOCAL_SAME", "lkjhdlkfhlkhlskdfh"};
-			fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/ancil.txt");
+			fileStream = new BufferedReader(new InputStreamReader(
+				getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/ancil.txt")
+			));
 			data = TabDelimFileUtil.readAsDouble(fileStream, true, mappedHeadings, -1);
 			fail("Should have thrown an exception b/c the column does not exist.");
 		} catch (IllegalArgumentException e) {

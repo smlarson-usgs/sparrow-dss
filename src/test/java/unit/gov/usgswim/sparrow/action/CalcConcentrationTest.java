@@ -1,23 +1,21 @@
 package gov.usgswim.sparrow.action;
 
-import static org.junit.Assert.*;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.junit.Before;
-import gov.usgswim.datatable.DataTable;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.sparrow.SparrowUnits;
-import gov.usgswim.sparrow.action.DeliveryReach;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.util.DLUtils;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.BufferedReader;
 import java.io.InputStream;
-import java.util.PriorityQueue;
+import java.io.InputStreamReader;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -41,7 +39,11 @@ public class CalcConcentrationTest {
 		InputStream fileStream =
 			getClass().getResourceAsStream("/gov/usgswim/sparrow/tab_delimit_sample_data.txt");
 
-		baseTable = TabDelimFileUtil.readAsDouble(fileStream,
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+				fileStream
+			));
+		
+		baseTable = TabDelimFileUtil.readAsDouble(br,
 				true, DLUtils.DO_NOT_INDEX);
 		
 		//build row IDs matching the row index

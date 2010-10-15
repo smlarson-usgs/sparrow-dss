@@ -2,7 +2,8 @@ package gov.usgswim.sparrow.test.basic;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
-import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 import junit.framework.TestCase;
 
@@ -16,7 +17,10 @@ public class DataTableBuilderTest extends TestCase {
 	}
 
 	@Override public void setUp() throws Exception {
-		InputStream fileStream = getClass().getResourceAsStream(TEST_FILE);
+
+		BufferedReader fileStream = new BufferedReader(new InputStreamReader(
+				getClass().getResourceAsStream(TEST_FILE)
+			));
 		table = TabDelimFileUtil.read(fileStream, true);
 	}
 

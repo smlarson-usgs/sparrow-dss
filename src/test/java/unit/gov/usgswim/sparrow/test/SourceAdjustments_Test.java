@@ -6,7 +6,8 @@ import gov.usgswim.sparrow.AdjustmentSetBuilder;
 import gov.usgswim.sparrow.Adjustment.AdjustmentType;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
-import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,7 +37,9 @@ public class SourceAdjustments_Test extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		InputStream fileStream = getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/src.txt");
+		BufferedReader fileStream = new BufferedReader(new InputStreamReader(
+			getClass().getResourceAsStream("/gov/usgswim/sparrow/test/sample/src.txt")
+		));
 		data = TabDelimFileUtil.readAsDouble(fileStream, true, -1);
 	}
 
