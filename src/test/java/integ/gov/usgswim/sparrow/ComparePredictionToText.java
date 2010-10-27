@@ -53,8 +53,12 @@ public class ComparePredictionToText {
 	
 	public final static String ID_COL_KEY = "id_col";	//Table property of the key column
 	
-	final static int NUMBER_OF_BAD_INCREMENTALS_TO_PRINT = 5;
-	final static int NUMBER_OF_BAD_TOTALS_TO_PRINT = 6;
+	//final static int NUMBER_OF_BAD_INCREMENTALS_TO_PRINT = 5;
+	//final static int NUMBER_OF_BAD_TOTALS_TO_PRINT = 6;
+	//The 'print all non-matching values' option:
+	final static int NUMBER_OF_BAD_INCREMENTALS_TO_PRINT = Integer.MAX_VALUE;
+	final static int NUMBER_OF_BAD_TOTALS_TO_PRINT = Integer.MAX_VALUE;
+	
 	final static String QUIT = "quit";
 	
 	String singleModelPath;
