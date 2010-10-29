@@ -4,7 +4,8 @@
     <xsl:template match="/MapperConfig">
         <MapperConfig>
             <!-- <xsl:apply-templates select="logging"/>  -->
-            <logging log_level="info" log_thread_name="true" log_time="true"> 
+            <!-- Use FINEST to log SQL query statement forms -->
+            <logging log_level="INFO" log_thread_name="true" log_time="true"> 
 				<log_output name="System.err" /> 
 				<log_output name="../logs/sparrow_mv/mapviewer2.log" /> 
 				<!--  ../../../../logs/sparrow_mv/mapviewer.log -->
@@ -14,7 +15,7 @@
             <xsl:apply-templates select="web_proxy"/>
             <xsl:apply-templates select="security_config"/>
             <xsl:apply-templates select="global_map_config"/>
-            <spatial_data_cache max_cache_size="768" report_stats="true" />
+            <spatial_data_cache max_cache_size="1800" report_stats="true" />
             <xsl:apply-templates select="custom_image_renderer"/>
             <xsl:apply-templates select="srs_mapping"/>
             <xsl:apply-templates select="wms_config"/>
@@ -34,7 +35,7 @@
                 	jdbc_password="!***REMOVED***"
                 	jdbc_mode="thin"
                 	max_connections="2"
-                	number_of_mappers="15"
+                	number_of_mappers="20"
             	/>
             	
                 <!-- This points to a clone of the production db (use for testing) -->
@@ -47,7 +48,7 @@
                 	jdbc_password="!***REMOVED***"
                 	jdbc_mode="thin"
                 	max_connections="2"
-                	number_of_mappers="15"
+                	number_of_mappers="20"
             	/>
             	-->
 

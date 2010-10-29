@@ -10,7 +10,9 @@
             <xsl:apply-templates select="distributable"/>
             <xsl:apply-templates select="context-param"/>
             <xsl:apply-templates select="filter"/>
+            <xsl:copy-of select="document($includeFile)/j2ee:web-app/j2ee:filter"/>
             <xsl:apply-templates select="filter-mapping"/>
+            <xsl:copy-of select="document($includeFile)/j2ee:web-app/j2ee:filter-mapping"/>
             <xsl:apply-templates select="listener"/>
             <xsl:copy-of select="document($includeFile)/j2ee:web-app/j2ee:listener"/>
             <xsl:apply-templates select="servlet"/>

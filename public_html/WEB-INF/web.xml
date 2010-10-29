@@ -8,6 +8,24 @@
 	<listener>
 		<listener-class>gov.usgswim.sparrow.LifecycleListener</listener-class>
 	</listener>
+	
+	
+	<filter>
+		<description>
+			MapViewer has a really bad habit of creating a session for all of
+			its mapping requests.  This filter kills those sessions immediately
+			as they are created.  Since all these requests are served through
+			a proxy, the sessions are never used anyway.
+		</description>
+		<filter-name>noMapViewerSessions</filter-name>
+		<filter-class>gov.usgswim.sparrow.NoMapViewerSessions</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>noMapViewerSessions</filter-name>
+		<url-pattern>/omserver/*</url-pattern>
+	</filter-mapping>
+	
+	
 	<servlet>
 		<servlet-name>ModelService</servlet-name>
 		<servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
@@ -156,8 +174,9 @@
 	</servlet-mapping>
 	 -->
 	<!--  End Attribute services -->
+	
 	<session-config>
-		<session-timeout>1</session-timeout>
+		<session-timeout>90</session-timeout>
 	</session-config>
 	<mime-mapping>
 		<extension>html</extension>
@@ -168,3 +187,4 @@
 		<mime-type>text/plain</mime-type>
 	</mime-mapping>
 </web-app>
+
