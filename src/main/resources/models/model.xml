@@ -96,13 +96,19 @@
 		<Term id="Data Series">
 			<h2>Data Series</h2><br/>
 			<p>The <i>Data Series</i> specifies what data is drawn on the map.
-			The most common model output is the <i>Total Flux</i>,
+			The most common model output is the <i>Total Load</i>,
 			which is the average amount of the constituent you would expect to
 			find in a stream, as predicted by the model.</p>
+			
+			<p>
+				
+				
+			</p>
 			<p>The complete list of data series:</p>
+			<!-- This list updated oct 29, 2010 by ee -->
 			<ul>
 				<li><b>Total Load</b><br/>
-					The mean annual load of the constituent (in mass per year)
+					The mean annual load of the constituent (mass per year)
 					leaving each stream reach, as predicted by the model. 
 					The load reflects the accumulated mass of the constituent 
 					contributed by all sources in the total drainage area upstream 
@@ -125,60 +131,82 @@
 					in the calibration procedure to ensure accurate estimation of the model.
 				</li>
                 <li><b>Standard Error of Total Load</b><br/>
-                	An estimate of the prediction error associated with the total load, 
-                	based on the model calibration (in units of percent of the total load). 
+                	An estimate of the prediction error associated with the <i>Total load</i>, 
+                	based on the model calibration.
+                	Units are the same as the units for <i>Total load</i>.
                 </li>
                 <li><b>Incremental Load</b><br/>
-					The average daily load of the constituent added at each
-					stream reach, or the amount of load that each reach is
-					responsible for contributing to the river system.
-					The presented value is 'decayed' by travel down
-					the reach.
+					The mean annual load of the constituent (mass per year)
+					entering the stream reach from sources in the incremental
+					drainage area of the reach.
+					The load value reflects the effects of in-stream attenuation
+					processes associated with one half of the reach time of travel
+					(this assumes that the load at approximately the center of reach on average).
+					You can select 'All Sources' or an individual model source to
+					map the incremental load for all of the sources together,
+					or the theoretical load due to a single source.
                 </li>
                 <li><b>Standard Error of Incremental Load</b><br/>
-                    An estimate of error, based on the model, of the
-                	<i>Incremental Flux</i>.  This is only an estimate and should
-                	not be used for any purpose.
-                	For actual error values, contact the hydrologist for the model.
-                </li>
+					An estimate of the prediction error associated with the <i>Incremental Load</i>,
+					based on the model calibration.
+					Units are the same as the units for <i>Incremental Load</i>.
+				</li>
                 <li><b>Incremental Yield</b><br/>
-                	The <i>Incremental Flux</i> divided by the drainage (catchment) 
-                	area of the reach.
+                	The <i>Incremental Load</i> divided by the incremental
+                	drainage area of the reach.
+                	Units are mass per square kilometer per year.
                 </li>
                 <li><b>Concentration</b><br/>
-                	The <i>Total Flux</i> divided by the average daily
-                	flow of the reach.
+                	The average concentration of the constituent in the reach
+                	in units of volume per time.  This is calculated by dividing
+                	the <i>Total Load</i> by the mean annual flow of the reach.
                 </li>
                 <li><b>Source Value</b><br/>
                 	The source value is the amount of a particular source
                 	added in the reach's drainage area - you must choose a
                 	source to map this data series.  If you have created
                 	adjustments as part of a 'what if' scenario, the adjusted
-                	source values are presented. 
+                	source values are presented.<br/>
+                	In many cases the 'source' is not a constituent
+                	source.  For instance, land area or population could be a source
+                	term if it was determined to be a statistically significant
+                	surrogate for the constituent.<br/>
+                	Also, consider that some source terms may be interdependent.
+                	Increasing a hypothetical <i>Agricultural Land Area</i>
+                	source value may require decreasing a <i>Developed Land Area</i> source
+                	for the set of adjusted reaches.
                 </li>
                 <li><b>Incremental Area</b><br/>
-                	The amount of drainage area surrounding each reach.
+                	The portion of the area that drains directly to the reach
+                	without passing through another reach.
+                	This area is independent of the drainage area associated with upstream reaches.
                 </li>
                 <li><b>Streamflow</b><br/>
-                	The average daily flow of the reach.
+                	The mean annual stream flow of the reach, in units of volume per time.
                 </li>
                 <li><b>Delivery Fraction</b><br/>
                 	The fraction of the load leaving a reach that arrives at the
-                	downstream end of a selected target reach.  You must choose
-                	a target reach if you select this series.
+                	downstream end of a selected target reach without any removal
+                	by natural attenuation processes
+                	(e.g., long-term storage; denitrification).
+                	You must choose a target reach if you select this series.
+                	<i>This definition may not be correct - isn't the attenuation what the DF actually shows?</i>
                 </li>
                 <li><b>Incremental Delivered Load</b><br/>
-                	The average daily load of the constituent added at each stream reach
-                	that arrives at the downstream end of a selected target reach. You must
-                	choose a target reach if you select this series.
+                	The incremental load associated with a stream reach that arrives
+                	at the downstream end of a selected target reach, in units
+                	of mass per year.
+                	You must choose a target reach if you select this series.
                 </li>
                 <li><b>Total Delivered Load</b><br/>
-                	The average daily load of the constituent leaving each
-					stream reach that arrives at the downstream end of a selected target reach.
+                	The total load associated with a stream reach that arrives at
+                	the downstream end of a selected target reach, in units of mass per year.
+                	You must choose a target reach if you select this series.
 				</li>
                 <li><b>Incremental Delivered Yield</b><br/>
-                	The <i>Incremental Delivered Flux</i> divided by the drainage (catchment) 
-                	area of the reach.
+                	The <i>Incremental Delivered Load</i> divided by the drainage
+                	area of the reach, in units of mass per square kilometer per year.
+                	You must choose a target reach if you select this series.
                 </li>
 			</ul>
 		</Term>
