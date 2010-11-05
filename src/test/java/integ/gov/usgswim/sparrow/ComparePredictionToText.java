@@ -11,6 +11,8 @@ import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardLongColumnData;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.action.Action;
+import gov.usgswim.sparrow.action.CalcAnalysis;
+import gov.usgswim.sparrow.action.CalcPrediction;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -23,10 +25,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.text.StrTokenizer;
@@ -99,7 +104,11 @@ public class ComparePredictionToText {
 			System.out.println("I'm out of here...  Quit was entered or there are missing values.");
 		}
 		
-		
+		System.out.println();
+		System.out.println("*****************************************");
+		System.out.println("*****************************************");
+		System.out.println("REMEMBER -");
+		System.out.println("For a model to map, the MODEL_GEOM_XX_VW must be created and registered in MapBuilder.");
 	}
 	
 
@@ -295,15 +304,18 @@ public class ComparePredictionToText {
 	 * @throws Exception
 	 */
 	public boolean testSingleModelDataQuality(Long modelId, String queryName, Connection conn) throws Exception {
-
-		String[] params = new String[] {"MODEL_ID", modelId.toString()};
-		String sql = Action.getTextWithParamSubstitution(queryName, this.getClass(), params);
+		CalcAnalysis action = new CalcAnalysis();
+		//String[] params = new String[] {"MODEL_ID", modelId.toString()};
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("MODEL_ID", modelId);
+		//String sql = Action.getTextWithParamSubstitution(queryName, this.getClass(), params);
+		PreparedStatement st = action.getPSFromPropertiesFile(queryName, this.getClass(), params);
 		
-		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+		//Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		ResultSet rs = null;
 		
 		try {
-			rs = st.executeQuery(sql);
+			rs = st.executeQuery();
 				
 			if (rs.next()) {
 				log.debug("-------- Model #" + modelId + " FAILED the data validation test '" + queryName + "' - See the properties file for the exact validation query --------");

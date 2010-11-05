@@ -30,7 +30,7 @@ public class LoadReachesInBBox extends Action<Long[]> {
 	@Override
 	public Long[] doAction() throws Exception {
 		HashMap<String, Object> params = new HashMap<String, Object>();
-		params.put("modelId", modelBBox.getModelId());
+		params.put("ModelId", modelBBox.getModelId());
 		params.put("leftLong", modelBBox.getLeftLongBound());
 		params.put("rightLong", modelBBox.getRightLongBound());
 		params.put("upperLat", modelBBox.getUpperLatBound());

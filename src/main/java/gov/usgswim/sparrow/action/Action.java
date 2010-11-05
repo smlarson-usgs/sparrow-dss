@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -247,7 +248,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	protected PreparedStatement getPSFromPropertiesFile(String name, Class<?> clazz, Map<String, Object> params) throws SQLException, IOException {
+	public PreparedStatement getPSFromPropertiesFile(String name, Class<?> clazz, Map<String, Object> params) throws SQLException, IOException {
 		//Get the text from the properties file
 		String sql = getText(name, (clazz != null)? clazz : this.getClass());
 		
@@ -260,7 +261,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		ArrayList<String> variables = new ArrayList<String>();
 		
 		//Go through in order and get the variables, replace with question marks.
-		SQLString temp = processSql(sql);
+		SQLString temp = processSql(sql, params);
 		sql = temp.sql.toString();
 		variables = temp.variables;
 		
@@ -314,13 +315,23 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	}
 	
 	/**
-	 * Takes a string with $variable$'s and returns a
-	 * PreparedStatement-ready string and a list of variable names
-	 * in order.
-	 * @param sqlWithVariables
+	 * Processes a SQL string template with two types of replacements.
+	 * 
+	 * SQL parameters embedded in the SQL in the form '$sqlParamName$' are
+	 * replaced with a '?' and the actual name is pushed into an array list,
+	 * in the order it was found.
+	 * 
+	 * 
+	 * Non-SQL parameters embedded in the SQL in the form '@nonSqlParamName@'
+	 * are replaced with the value of the matching parameter from the params
+	 * Map.  This can be used to replace table names in the SQL string, or
+	 * other pieces of SQL that cannot be parameterized in a prepared statemetn.
+	 * 
+	 * @param sqlWithVariables A SQL string template with variables to be replaced.
+	 * @param params A map of parameter values.
 	 * @return
 	 */
-	public static SQLString processSql(String sqlWithVariables) {
+	public static SQLString processSql(String sqlWithVariables, Map<String, Object> params) {
 		SQLString result = new SQLString();
 		char[] sqlChars = sqlWithVariables.toCharArray();
 		StringBuilder variableBuffer = new StringBuilder();
@@ -348,8 +359,19 @@ public abstract class Action<R extends Object> implements IAction<R> {
 				isVariableName = !isVariableName;
 			}
 		}
+		
+		String sql = result.sql.toString();
+		
+		for (Entry<String, Object> entry : params.entrySet()) {
+			String key = "@" + entry.getKey() + "@";
+			sql = sql.replaceAll(key, entry.getValue().toString());
+		}
+		
+		result.sql = new StringBuilder(sql);
+		
 		return result;
 	}
+	
 	
 	/**
 	 * Taken From:

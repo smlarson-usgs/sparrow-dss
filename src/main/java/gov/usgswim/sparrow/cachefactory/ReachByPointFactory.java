@@ -32,49 +32,6 @@ public class ReachByPointFactory extends AbstractCacheFactory {
 		ModelPoint req = (ModelPoint) request;
 
 		return new LoadReachByPoint(req).run();
-//		Long modelId = req.getModelID();
-//		Double lng = req.getPoint().x;
-//		Double lat = req.getPoint().y;
-//
-//		String query = getTextWithParamSubstitution(
-//				"FindReach",
-//				"ModelId", modelId.toString(), "lng", lng.toString(), "lat", lat.toString());
-//
-//		// debug
-////		System.out.println("SPRW idByPoint: " + query);
-//
-//		Connection conn = SharedApplication.getInstance().getConnection();
-//
-//		ResultSet rs = null;
-//
-//		try {
-//			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
-//			st.setFetchSize(1);
-//
-//			rs = st.executeQuery(query);
-//
-//			Integer reachID = null; Integer distance = null;
-//			if (rs.next()) {
-//				reachID = rs.getInt("identifier");
-//				distance = rs.getInt("dist_in_meters");
-//			}
-//			{	// Clean up the connection before going to next step, which might wind up using the same connection
-//				rs.close();
-//				rs = null;
-//			}
-//			if (reachID != null) {
-//				ReachInfo reach = SharedApplication.getInstance().getReachByIDResult(new ReachID(req.getModelID(), reachID));
-//				// add the distance information to the retrieved Reach
-//				ReachInfo result = reach.cloneWithDistance(distance);
-//				result.setClickedPoint(lng, lat);
-//				return result;
-//			}
-//
-//		} finally {
-//			SharedApplication.closeConnection(conn, rs);
-//		}
-//
-//		return null;
 
 	}
 
