@@ -15,7 +15,7 @@
             <xsl:apply-templates select="web_proxy"/>
             <xsl:apply-templates select="security_config"/>
             <xsl:apply-templates select="global_map_config"/>
-            <spatial_data_cache max_cache_size="1800" report_stats="true" />
+            <spatial_data_cache max_cache_size="2000" report_stats="true" />
             <xsl:apply-templates select="custom_image_renderer"/>
             <xsl:apply-templates select="srs_mapping"/>
             <xsl:apply-templates select="wms_config"/>
