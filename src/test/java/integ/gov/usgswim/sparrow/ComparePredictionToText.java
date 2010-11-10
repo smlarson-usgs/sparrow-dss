@@ -370,11 +370,11 @@ public class ComparePredictionToText {
 				}
 			} else if (noDecayFailures == decayFailures) {
 				//Equal failures mean there is a row count or other type of error
-				log.debug("-------- Model #" + modelId + " FAILED.  MAJOR ISSUE - SEE DETAILS: --------");
+				log.debug("-------- Model #" + modelId + " FAILED.  MAJOR ISSUE (no decay matches decay) - SEE DETAILS: --------");
 				testComparison(t, prs, pd, false, modelId);
 			}
 		} else {
-			log.debug("-------- Model #" + modelId + " FAILED.  MAJOR ISSUE - SEE DETAILS (above) --------");
+			log.debug("-------- Model #" + modelId + " FAILED.  MAJOR ISSUE (couldn't load file) - SEE DETAILS (above) --------");
 		}
 		
 		return pass;
