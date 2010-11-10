@@ -370,6 +370,7 @@ public class ComparePredictionToText {
 				}
 			} else if (noDecayFailures == decayFailures) {
 				//Equal failures mean there is a row count or other type of error
+				log.debug("Hey, found these no decay fails: " + noDecayFailures + " and these decay fails: " + decayFailures);
 				log.debug("-------- Model #" + modelId + " FAILED.  MAJOR ISSUE (no decay matches decay) - SEE DETAILS: --------");
 				testComparison(t, prs, pd, false, modelId);
 			}
