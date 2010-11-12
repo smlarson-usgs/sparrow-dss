@@ -35,6 +35,7 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 		DataTable table = data.getTable();
 		int rowCount = table.getRowCount();
 			
+		
 		nsRows = new NSRow[rowCount];
 		PredictData predictData = null;	//Only loaded if needed
 
@@ -76,7 +77,6 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 			} else {
 				row[1] = new Field(val);
 			}
-			row[1] = new Field(val);
 
 
 			NSRow nsRow = new NSRow(row);
