@@ -1,44 +1,57 @@
 package gov.usgswim.sparrow.service.predictcontext;
 
-import gov.usgs.cida.config.DynamicReadOnlyProperties;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.parser.DataColumn;
-import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.ReturnStatus;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.QueryLoader;
 
 import java.io.StringReader;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
-public class PredictContextService implements HttpService<PredictContextRequest> {
+import org.apache.log4j.Logger;
 
+public class PredictContextService implements HttpService<PredictContextRequest> {
+	protected static Logger log =
+		Logger.getLogger(PredictContextService.class);
+	
 	private QueryLoader props = new QueryLoader("gov/usgswim/sparrow/service/predictcontext/PredictContextServiceTemplate.properties");
 
 	public XMLStreamReader getXMLStreamReader(PredictContextRequest o,
 			boolean isNeedsCompleteFirstRow) throws Exception {
 
+		XMLInputFactory inFact = XMLInputFactory.newInstance();
+		
 		//Store to cache
 		PredictionContext context = o.getPredictionContext();
 		boolean isSuccess = false;
 		try {
 			SharedApplication.getInstance().putPredictionContext(context);
 			isSuccess = true;
-			System.out.println("PREDICTION CONTEXT: " + context.getId());
+			log.trace("Created and put new prediction context:" + context.getId());
 		} catch (Exception e) {
-			// TODO need to log failure
 			e.printStackTrace();
+			log.error("Could not put the new prediction context" + context.getId(), e);
 		}
 
-		XMLInputFactory inFact = XMLInputFactory.newInstance();
 		if (isSuccess) {
+			DataColumn dataColumn = null;
 			
-			DataColumn dataColumn = context.getDataColumn();	//The actual response data
+			dataColumn = context.getDataColumn();	//The actual response data
+
+			if (dataColumn == null) {
+				//A calc fail returns a null data column
+				String response = props.getParametrizedQuery("ResponseCalcFail",
+						new String[] {
+						"ModelId", context.getModelID().toString(),
+				});
+
+				return inFact.createXMLStreamReader(new StringReader(response));
+			}
+			
 			
 			String adjustmentGroups = "";
 			String terminalReaches = "";
