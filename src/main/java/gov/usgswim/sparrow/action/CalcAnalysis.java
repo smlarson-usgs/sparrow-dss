@@ -95,6 +95,10 @@ public class CalcAnalysis extends Action<DataColumn>{
 //			Set<Long> targetReaches = tReaches.asSet();
 			
 			delFracColumn = SharedApplication.getInstance().getDeliveryFraction(tReaches);
+			
+			if (delFracColumn == null) {
+				throw new Exception("Unable to find the specified reach(es) in the model.");
+			}
 		}
 
 
