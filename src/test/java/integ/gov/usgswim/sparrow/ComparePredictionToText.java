@@ -299,19 +299,6 @@ public class ComparePredictionToText {
 		} finally {
 			SharedApplication.closeConnection(conn, null);
 		}
-
-//		try {
-//			passed = passed & testSingleModelDataQuality(modelId, "CheckNullEnhReach", conn);
-//			passed = passed & testSingleModelDataQuality(modelId, "CheckNullCalculationAttribs", conn);
-//			passed = passed & testSingleModelDataQuality(modelId, "CheckNullHucAttribs", conn);
-//			passed = passed & testSingleModelDataQuality(modelId, "CheckForMissingAttributeRows", conn);
-//			passed = passed & testSingleModelDataQuality(modelId, "CheckForNullTerminations", conn);
-//			passed = passed & testSingleModelDataQuality(modelId, "CheckForNullGeometry", conn);
-//			passed = passed & testSingleModelDataQuality(modelId, "CheckForDuplicateEnhIdsWithNoModelReachGeom", conn);
-//			
-//		} finally {
-//			SharedApplication.closeConnection(conn, null);
-//		}
 		
 		if (passed) {
 			log.debug("++++++++ Model #" + modelId + " PASSED all data validation tests ++++++++");
