@@ -293,6 +293,7 @@ public class ComparePredictionToText {
 		try {
 			while (elements.hasMoreElements()) {
 				String queryName = elements.nextElement().toString();
+				log.debug("Running data validation test " + queryName + "'...");
 				passed = passed & testSingleModelDataQuality(modelId, queryName, conn);
 			}
 		} finally {
@@ -344,8 +345,11 @@ public class ComparePredictionToText {
 			String numString = queryName.substring(splitPos + 1);
 			NumberUtils.isDigits(numString);
 
+			log.debug("Query '" + queryName + "' is expecting '" + numString + "' in the first column.");
 			expectedValue = Integer.parseInt(numString);
 			expectZeroRows = false;
+		} else {
+			log.debug("Query '" + queryName + "' is expecting no return rows.");
 		}
 		
 		
