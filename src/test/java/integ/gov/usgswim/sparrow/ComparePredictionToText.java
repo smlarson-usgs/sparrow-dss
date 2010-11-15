@@ -287,7 +287,7 @@ public class ComparePredictionToText {
 		}
 		props.load(ins);
 
-		Enumeration<Object> elements = props.elements();
+		Enumeration<?> elements = props.propertyNames();
 		boolean passed = true;
 		
 		try {
