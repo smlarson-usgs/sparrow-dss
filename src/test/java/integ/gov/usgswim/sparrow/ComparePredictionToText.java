@@ -29,11 +29,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -273,19 +277,40 @@ public class ComparePredictionToText {
 	public boolean testSingleModelDataQuality(Long modelId) throws Exception {
 		Connection conn = SharedApplication.getInstance().getConnection();
 		
+		//Get list of queries in properties file
+		Properties props = new Properties();
+
+		String path = this.getClass().getName().replace('.', '/') + ".properties";
+		InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+		if (ins == null) {
+			ins = Action.class.getResourceAsStream(path);
+		}
+		props.load(ins);
+
+		Enumeration<Object> elements = props.elements();
 		boolean passed = true;
+		
 		try {
-			passed = passed & testSingleModelDataQuality(modelId, "CheckNullEnhReach", conn);
-			passed = passed & testSingleModelDataQuality(modelId, "CheckNullCalculationAttribs", conn);
-			passed = passed & testSingleModelDataQuality(modelId, "CheckNullHucAttribs", conn);
-			passed = passed & testSingleModelDataQuality(modelId, "CheckForMissingAttributeRows", conn);
-			passed = passed & testSingleModelDataQuality(modelId, "CheckForNullTerminations", conn);
-			passed = passed & testSingleModelDataQuality(modelId, "CheckForNullGeometry", conn);
-			passed = passed & testSingleModelDataQuality(modelId, "CheckForDuplicateEnhIdsWithNoModelReachGeom", conn);
-			
+			while (elements.hasMoreElements()) {
+				String queryName = elements.nextElement().toString();
+				passed = passed & testSingleModelDataQuality(modelId, queryName, conn);
+			}
 		} finally {
 			SharedApplication.closeConnection(conn, null);
 		}
+
+//		try {
+//			passed = passed & testSingleModelDataQuality(modelId, "CheckNullEnhReach", conn);
+//			passed = passed & testSingleModelDataQuality(modelId, "CheckNullCalculationAttribs", conn);
+//			passed = passed & testSingleModelDataQuality(modelId, "CheckNullHucAttribs", conn);
+//			passed = passed & testSingleModelDataQuality(modelId, "CheckForMissingAttributeRows", conn);
+//			passed = passed & testSingleModelDataQuality(modelId, "CheckForNullTerminations", conn);
+//			passed = passed & testSingleModelDataQuality(modelId, "CheckForNullGeometry", conn);
+//			passed = passed & testSingleModelDataQuality(modelId, "CheckForDuplicateEnhIdsWithNoModelReachGeom", conn);
+//			
+//		} finally {
+//			SharedApplication.closeConnection(conn, null);
+//		}
 		
 		if (passed) {
 			log.debug("++++++++ Model #" + modelId + " PASSED all data validation tests ++++++++");
@@ -304,6 +329,26 @@ public class ComparePredictionToText {
 	 * @throws Exception
 	 */
 	public boolean testSingleModelDataQuality(Long modelId, String queryName, Connection conn) throws Exception {
+		
+		
+		//There are two types of queries:
+		//The 'normal' type returns zero rows to indicate that all is OK.
+		//The Alt type can return a single column of a type convertable to int.
+		//The 'alt' type is indicated by having the query name include the sufix
+		// queryName_XXX where XXX is the integer value expected in the first column.
+		boolean expectZeroRows = true;
+		int expectedValue = 0;
+		
+		int splitPos = queryName.lastIndexOf('_');
+		if (splitPos > 0 && splitPos < (queryName.length() - 1)) {
+			String numString = queryName.substring(splitPos + 1);
+			NumberUtils.isDigits(numString);
+
+			expectedValue = Integer.parseInt(numString);
+			expectZeroRows = false;
+		}
+		
+		
 		CalcAnalysis action = new CalcAnalysis();
 		//String[] params = new String[] {"MODEL_ID", modelId.toString()};
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -317,11 +362,26 @@ public class ComparePredictionToText {
 		try {
 			rs = st.executeQuery();
 				
-			if (rs.next()) {
-				log.debug("-------- Model #" + modelId + " FAILED the data validation test '" + queryName + "' - See the properties file for the exact validation query --------");
-				return false;
+			if (expectZeroRows) {
+				if (rs.next()) {
+					log.debug("-------- Model #" + modelId + " FAILED the data validation test '" + queryName + "' - See the properties file for the exact validation query --------");
+					return false;
+				} else {
+					return true;
+				}
 			} else {
-				return true;
+				if (! rs.next()) {
+					log.debug("-------- Model #" + modelId + " FAILED the data validation test '" + queryName + "' - One row was expected --------");
+					return false;
+				} else {
+					int value = rs.getInt(1);
+					if (expectedValue != value) {
+						log.debug("-------- Model #" + modelId + " FAILED the data validation test '" + queryName + "' - expected to find one value of '" + expectedValue + "--------");
+						return false;
+					} else {
+						return true;
+					}
+				}
 			}
 		} catch (Exception e) {
 			log.error("-------- Model #" + modelId + " FAILED the data validation test '" + queryName + "' with a SQL Error --------", e);
@@ -331,6 +391,8 @@ public class ComparePredictionToText {
 			st.close();
 		}
 	}
+	
+
 	
 
 	public boolean testSingleMmodel(URL predictFile, Long modelId) throws Exception {
