@@ -111,8 +111,6 @@ public class ComparePredictionToText {
 		System.out.println();
 		System.out.println("*****************************************");
 		System.out.println("*****************************************");
-		System.out.println("REMEMBER -");
-		System.out.println("For a model to map, the MODEL_GEOM_XX_VW must be created and registered in MapBuilder.");
 	}
 	
 
