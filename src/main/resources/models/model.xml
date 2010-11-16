@@ -106,8 +106,8 @@
 			</p>
 			<p>The complete list of data series:</p>
 			<!-- This list updated oct 29, 2010 by ee -->
-			<ul>
-				<li><b>Total Load</b><br/>
+			<dl>
+				<dt>Total Load</dt><dd>
 					The mean annual load of the constituent (mass per year)
 					leaving each stream reach, as predicted by the model. 
 					The load reflects the accumulated mass of the constituent 
@@ -129,13 +129,13 @@
 					stream load values at monitoring sites; measured loads 
 					are commonly substituted for model predictions ("adjusted" loads) 
 					in the calibration procedure to ensure accurate estimation of the model.
-				</li>
-                <li><b>Standard Error of Total Load</b><br/>
+				</dd>
+                <dt>Standard Error of Total Load</dt><dd>
                 	An estimate of the prediction error associated with the <i>Total load</i>, 
                 	based on the model calibration.
                 	Units are the same as the units for <i>Total load</i>.
-                </li>
-                <li><b>Incremental Load</b><br/>
+                </dd>
+                <dt>Incremental Load</dt><dd>
 					The mean annual load of the constituent (mass per year)
 					entering the stream reach from sources in the incremental
 					drainage area of the reach.
@@ -145,24 +145,24 @@
 					You can select 'All Sources' or an individual model source to
 					map the incremental load for all of the sources together,
 					or the theoretical load due to a single source.
-                </li>
-                <li><b>Standard Error of Incremental Load</b><br/>
+                </dd>
+                <dt>Standard Error of Incremental Load</dt><dd>
 					An estimate of the prediction error associated with the <i>Incremental Load</i>,
 					based on the model calibration.
 					Units are the same as the units for <i>Incremental Load</i>.
-				</li>
-                <li><b>Incremental Yield</b><br/>
+				</dd>
+                <dt>Incremental Yield</dt><dd>
                 	The <i>Incremental Load</i> divided by the incremental
                 	drainage area of the reach.
                 	Units are mass per square kilometer per year.
-                </li>
-                <li><b>Concentration</b><br/>
+                </dd>
+                <dt>Concentration</dt><dd>
                 	The average concentration of the constituent in the reach
                 	in units of mass per volume.  This is calculated by dividing
                 	the <i>Total Load</i> by the <i>Streamflow</i> and converting
                 	to a standard unit.
-                </li>
-                <li><b>Source Value</b><br/>
+                </dd>
+                <dt>Source Value</dt><dd>
                 	The source value is the amount of a particular source
                 	added in the reach's drainage area - you must choose a
                 	source to map this data series.  If you have created
@@ -176,40 +176,40 @@
                 	Increasing a hypothetical <i>Agricultural Land Area</i>
                 	source value may require decreasing a <i>Developed Land Area</i> source
                 	for the set of adjusted reaches.
-                </li>
-                <li><b>Incremental Area</b><br/>
+                </dd>
+                <dt>Incremental Area</dt><dd>
                 	The portion of the area that drains directly to the reach
                 	without passing through another reach.
                 	This area is independent of the drainage area associated with upstream reaches.
-                </li>
-                <li><b>Streamflow</b><br/>
+                </dd>
+                <dt>Streamflow</dt><dd>
                 	The mean annual stream flow of the reach, in units of volume per time.
-                </li>
-                <li><b>Delivery Fraction</b><br/>
+                </dd>
+                <dt>Delivery Fraction</dt><dd>
                 	The fraction of the load leaving a reach that arrives at the
                 	downstream end of a selected target reach without any removal
                 	by natural attenuation processes
                 	(e.g., long-term storage; denitrification).
                 	You must choose a target reach if you select this series.
                 	<i>This definition may not be correct - isn't the attenuation what the DF actually shows?</i>
-                </li>
-                <li><b>Incremental Delivered Load</b><br/>
+                </dd>
+                <dt>Incremental Delivered Load</dt><dd>
                 	The incremental load associated with a stream reach that arrives
                 	at the downstream end of a selected target reach, in units
                 	of mass per year.
                 	You must choose a target reach if you select this series.
-                </li>
-                <li><b>Total Delivered Load</b><br/>
+                </dd>
+                <dt>Total Delivered Load</dt><dd>
                 	The total load associated with a stream reach that arrives at
                 	the downstream end of a selected target reach, in units of mass per year.
                 	You must choose a target reach if you select this series.
-				</li>
-                <li><b>Incremental Delivered Yield</b><br/>
+				</dd>
+                <dt>Incremental Delivered Yield</dt><dd>
                 	The <i>Incremental Delivered Load</i> divided by the drainage
                 	area of the reach, in units of mass per square kilometer per year.
                 	You must choose a target reach if you select this series.
-                </li>
-			</ul>
+                </dd>
+			</dl>
 		</Term>
 		<Term id="Total">
 			Takes into account constituent sources upstream and degradation to describe the annual load of the constituent being transported by national surface waters. Units are typically kilograms/year.
@@ -251,15 +251,17 @@
 			can be compared to the model prediction based on the original unadjusted values (i.e. the 
 			<i>nominal</i> model prediction).<br/>
 			Two options are available:
-			<ul>
-			<li><b>Absolute change from nominal</b> subtracts the
-			nominal (unadjusted) model result from the adjusted model result.</li>
-			<li><b>% change from nominal</b> presents the percent increase of
+			<dl>
+			<dt>Absolute change from nominal</dt>
+			<dd>Subtracts the
+			nominal (unadjusted) model result from the adjusted model result.</dd>
+			<dt>% change from nominal</dt>
+			<dd>Presents the percent increase of
 			the adjusted model result over the nominal model result.  That is:<br/>
 			<code>100 X (adjusted - nominal) / nominal</code><br/>
 			Any increase from a nominal value of zero is considered a 100% change.
-			Any decrease from a nominal value of zero is considered a -100% change.</li>
-			</ul>
+			Any decrease from a nominal value of zero is considered a -100% change.</dd>
+			</dl>
 		</Term>
 		<Term id="Nominal">
 			The nominal SPARROW DSS model condition is based on source values and streamflow of the model base year.
@@ -271,14 +273,16 @@
 			displayed with a specific color on the map. By modifying the binning
 			scheme, you can change the way information is presented on your map.<br/>
 			Two auto-generation options are available:
-			<ul>
-			<li><b>Equal Count</b> attempts to construct bins such that an equal
+			<dl>
+			<dt>Equal Count</dt>
+			<dd>Attempt to construct bins such that an equal
 			number of data values fall within each bin.  Because the values
 			are sometimes clustered, it is often not possible to generate bins
-			with an even distribution of values into each bin.</li>
-			<li><b>Equal Range</b> constructs bins such that each bin has an
-			equal numerical interval or range.</li>
-			</ul>
+			with an even distribution of values into each bin.</dd>
+			<dt>Equal Range</dt>
+			<dd>Construct bins such that each bin has an
+			equal numerical interval or range.</dd>
+			</dl>
 			If you check <b>Use automatic binning</b>, SPARROW DSS will choose a binning scheme for you
 			based on the map options you have selected. The recommended binning will consist of 5 bins of
 			either equal count or equal range. To specify a custom binning scheme, or to edit colors,
