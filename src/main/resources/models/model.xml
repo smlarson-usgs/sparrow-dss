@@ -158,8 +158,9 @@
                 </li>
                 <li><b>Concentration</b><br/>
                 	The average concentration of the constituent in the reach
-                	in units of volume per time.  This is calculated by dividing
-                	the <i>Total Load</i> by the mean annual flow of the reach.
+                	in units of mass per volume.  This is calculated by dividing
+                	the <i>Total Load</i> by the <i>Streamflow</i> and converting
+                	to a standard unit.
                 </li>
                 <li><b>Source Value</b><br/>
                 	The source value is the amount of a particular source
