@@ -39,17 +39,19 @@ public abstract class AbstractFormatter implements IFormatter {
 			case HTML:
 			case JSON:
 			case XML:
+				response.setCharacterEncoding(in.getCharacterEncodingScheme());
+				
 				if (isAttachment) {
 					response.addHeader(
 					        "Content-Disposition","attachment; filename=" + fileName + "." + outputType.getFileSuffix() );
 				}
 				break;
-				default:
-					// xml by default
-					if (isAttachment) {
-						response.addHeader(
-						        "Content-Disposition","attachment; filename=" + fileName + "." + OutputType.XML.getFileSuffix() );
-					}
+			default:
+				// xml by default
+				if (isAttachment) {
+					response.addHeader(
+					        "Content-Disposition","attachment; filename=" + fileName + "." + OutputType.XML.getFileSuffix() );
+				}
 		}
 		dispatch(in, response.getWriter());
 	}

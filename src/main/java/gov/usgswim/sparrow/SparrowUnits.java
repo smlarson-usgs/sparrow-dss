@@ -2,12 +2,12 @@ package gov.usgswim.sparrow;
 
 public enum SparrowUnits {
 	METERS("m", "meters"),
-	CFS("cu ft/sec", "cubic feet / second"),
-	FPS("ft/sec", "feet / second"),
-	KG_PER_YEAR("kg/year", "kg / year"),
-	MG_PER_L("mg/L", "mg / L"),
-	SQR_KM("sqr km", "square km"),
-	KG_PER_SQR_KM_PER_YEAR("kg/sqr km/yr", "kg / square km / year"),
+	CFS("ft³⋅sec⁻¹", "feet³ ⋅ second⁻¹"),
+	FPS("ft⋅sec⁻¹", "feet ⋅ second⁻¹"),
+	KG_PER_YEAR("kg⋅year⁻¹", "kg ⋅ year⁻¹"),
+	MG_PER_L("mg⋅L⁻¹", "mg ⋅ L⁻¹"),
+	SQR_KM("km²", "km²"),
+	KG_PER_SQR_KM_PER_YEAR("kg⋅km⁻²⋅yr⁻¹", "kg ⋅ km⁻² ⋅ year⁻¹"),
 	PERCENT("%", "percent"),
 	FRACTION("(fraction)", "fraction");
 
