@@ -261,7 +261,8 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 //			}
 			
 			//Aggregated rows are not working right now...
-			rowEvent.addAttribute("id", refPredictData.getIdForRow(state.r).toString());
+			Long rowId = refPredictData.getIdForRow(state.r);
+			rowEvent.addAttribute("id", rowId.toString());
 
 			events.add(rowEvent);
 			{
