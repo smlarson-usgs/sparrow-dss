@@ -9,6 +9,7 @@ import gov.usgswim.datatable.utils.DataTablePrinter;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.cachefactory.ModelRequestCacheKey;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -107,11 +108,24 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 			}
 		}
 		if (result == null) {
-			log.error("UNABLE to loadsource metadata from " + LoadModelPredictData.class.getSimpleName() + "loadSourceMetadata()");
-		} else if (log.isDebugEnabled()) {
+			String err = "UNABLE to loadsource metadata from " + LoadModelPredictData.class.getSimpleName() + "loadSourceMetadata()";
+			log.error(err);
+			throw new IOException(err);
+		} else {
+			//Update unit to be the user displayable form
+			for (int r = 0; r < result.getRowCount(); r++) {
+				SparrowUnits unit = SparrowUnits.parse(result.getString(r, PredictData.SOURCE_META_UNIT_COL));
+				result.setValue(unit.getUserName(), r, PredictData.SOURCE_META_UNIT_COL);
+			}
+
+		}
+			
+			
+		if (log.isDebugEnabled()) {
 			log.debug("Printing sample of source metadata ...");
 			log.debug(DataTablePrinter.sampleDataTable(result, 10, 10));
 		}
+		
 		return result;
 	}
 	

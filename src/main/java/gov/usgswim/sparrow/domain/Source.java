@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.domain;
 
+import gov.usgswim.sparrow.SparrowUnits;
+
 /**
  * Domain Object representing a single source (used by many reaches) for a SPARROW SparrowModel.
  * 
@@ -66,5 +68,5 @@ public interface Source {
 	 * The units in which the constituent is measured.
 	 * @return The units in which the constituent is measured.
 	 */
-	public String getUnits();
+	public SparrowUnits getUnits();
 }

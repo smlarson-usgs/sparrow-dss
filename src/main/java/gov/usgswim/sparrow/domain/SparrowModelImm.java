@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.domain;
 
 import gov.usgswim.Immutable;
+import gov.usgswim.sparrow.SparrowUnits;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -15,7 +16,7 @@ import java.util.Map.Entry;
 @Immutable
 public class SparrowModelImm implements SparrowModel, Serializable {
 
-	private static final long serialVersionUID = 2997975797864712530L;
+	private static final long serialVersionUID = 1L;
 	private final Long _id;
 	private final boolean _approved;
 	private final boolean _public;
@@ -31,7 +32,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	private final Double _southBound;
 	private final Double _westBound;
 	private final String _constituent;
-	private final String _units;
+	private final SparrowUnits _units;
 	private final List<Source> _sources;
 	private final Set<Entry<Object, Object>> _sessions;
 
@@ -71,7 +72,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 				String name, String description, String url, Date dateAdded,
 				Long contactId, Long enhNetworkId,
 				Double northBound, Double eastBound, Double southBound, Double westBound,
-				String constituent, String units,
+				String constituent, SparrowUnits units,
 				Set<Entry<Object, Object>> sessions, List<Source> sources) {
 
 		_id = id;
@@ -145,7 +146,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	public String getConstituent() { return _constituent;}
 	
 	@Override
-	public String getUnits() { return _units;}
+	public SparrowUnits getUnits() { return _units;}
 
 	@Override
 	public Set<Entry<Object, Object>> getSessions() { return _sessions;}

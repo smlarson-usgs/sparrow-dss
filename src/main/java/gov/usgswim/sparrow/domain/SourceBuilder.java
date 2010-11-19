@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.domain;
 
 import gov.usgswim.ImmutableBuilder;
 import gov.usgswim.NotThreadSafe;
+import gov.usgswim.sparrow.SparrowUnits;
 
 /**
  * Builder implementation of Source, which is a domain object representing a
@@ -20,7 +21,7 @@ public class SourceBuilder implements Source, ImmutableBuilder<Source> {
 	private int _sortOrder;
 	private Long _modelId;
 	private String _constituent;
-	private String _units;	
+	private SparrowUnits _units;	
 	
 	public SourceBuilder() {
 	}
@@ -66,7 +67,7 @@ public class SourceBuilder implements Source, ImmutableBuilder<Source> {
 	    return _constituent;
 	}
 	
-	public String getUnits() {
+	public SparrowUnits getUnits() {
 	    return _units;
 	}
 
@@ -102,7 +103,7 @@ public class SourceBuilder implements Source, ImmutableBuilder<Source> {
 	    this._constituent = constituent;
 	}
 	
-	public void setUnits(String units) {
+	public void setUnits(SparrowUnits units) {
 	    this._units = units;
 	}
 }

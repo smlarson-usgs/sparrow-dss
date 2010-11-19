@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.domain;
 
 import gov.usgswim.Immutable;
+import gov.usgswim.sparrow.SparrowUnits;
 
 import java.io.Serializable;
 
@@ -18,7 +19,7 @@ public class SourceImm implements Source, Serializable {
 	private final int _sortOrder;
 	private final Long _modelId;
 	private final String _constituent;
-	private final String _units;
+	private final SparrowUnits _units;
 	
 	/*
 	private SourceImm() {
@@ -28,7 +29,7 @@ public class SourceImm implements Source, Serializable {
 	
 	public SourceImm(Long id, int identifier, String name, String displayName,
 			String description, int sortOrder, Long modelId, String constituent,
-			String units) {
+			SparrowUnits units) {
 	
 	
 		_id = id;
@@ -74,7 +75,7 @@ public class SourceImm implements Source, Serializable {
         return _constituent;
     }
 
-    public String getUnits() {
+    public SparrowUnits getUnits() {
         return _units;
     }
 }

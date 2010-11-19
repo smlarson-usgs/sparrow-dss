@@ -15,6 +15,7 @@ import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 
 import java.math.BigDecimal;
 
+import org.apache.log4j.Level;
 import org.junit.Test;
 
 /**

@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.InputStream;
 
+import org.apache.log4j.Level;
 import org.junit.Test;
 
 
@@ -26,6 +27,7 @@ public class LoadReachAttributesTest  extends SparrowDBTest {
 	 */
 	@Test
 	public void compareToCannedResult() throws Exception {
+		//log.setLevel(Level.DEBUG);
 		LoadReachAttributes action = new LoadReachAttributes();
 		action.setModelId(SparrowDBTest.TEST_MODEL_ID);
 		action.setReachId(9190);

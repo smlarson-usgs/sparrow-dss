@@ -9,6 +9,6 @@
 	<areaOfInterest context-id="236923"/>
 	<name>Wastewater discharge</name>
 	<description/>
-	<units>kg/yr</units>
+	<units>kg⋅year⁻¹</units>
 	<constituent>Nitrogen</constituent>
 </PredictionContext-response>

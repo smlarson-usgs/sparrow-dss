@@ -109,7 +109,7 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
         Map<Long, Integer> srcIdTotalMap = new Hashtable<Long, Integer>(13, 2);
         
         DataTable srcMetadata = predictData.getSrcMetadata();
-        String modelUnits = predictData.getModel().getUnits();
+        String modelUnits = predictData.getModel().getUnits().getUserName();
         String modelConstituent = predictData.getModel().getConstituent();
 
         // ----------------------------------------------------------------

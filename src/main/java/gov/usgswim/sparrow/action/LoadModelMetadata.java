@@ -11,6 +11,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.google.common.collect.ImmutableList;
 
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.cachefactory.ModelRequestCacheKey;
 import gov.usgswim.sparrow.domain.SourceBuilder;
 import gov.usgswim.sparrow.domain.SparrowModel;
@@ -103,14 +104,19 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 				m.setSouthBound(rset.getDouble("BOUND_SOUTH"));
 				m.setWestBound(rset.getDouble("BOUND_WEST"));
 				m.setConstituent(rset.getString("CONSTITUENT"));
-				m.setUnits(rset.getString("UNITS"));
+				String sUnits = rset.getString("UNITS");
+				
+				//assume the string form of the unit is the enum name
+				SparrowUnits unit = SparrowUnits.parse(sUnits);
+				m.setUnits(unit);
+				
 
 				//************* END COPIED CODE ****************
 				//StringBuilder sessions = SavedSessionService.retrieveAllSavedSessionsXML(Long.toString(modelID));
 				// ^^ What is this doing? Cause right now it's nothing.
 				m.setSessions(SparrowResourceUtils.retrieveAllSavedSessions(Long.toString(modelID)));
 
-				//***************** COPIED CODE *******************
+				
 				models.add(m);
 			}
 		} catch (Exception e) {
@@ -151,7 +157,7 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 					s.setIdentifier(rset.getInt("IDENTIFIER"));
 					s.setDisplayName(rset.getString("DISPLAY_NAME"));
 					s.setConstituent(rset.getString("CONSTITUENT"));
-					s.setUnits(rset.getString("UNITS"));
+					s.setUnits(SparrowUnits.parse(rset.getString("UNITS")));
 
 					//The models and sources are sorted by model_id, so scroll forward
 					//thru the models until we find the correct one.

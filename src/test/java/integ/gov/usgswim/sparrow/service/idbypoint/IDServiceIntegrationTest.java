@@ -10,6 +10,7 @@ import gov.usgswim.sparrow.util.ParserHelper;
 
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.log4j.Level;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.Test;
 
@@ -77,7 +78,8 @@ public class IDServiceIntegrationTest extends SparrowServiceTestWithCannedModel5
 		
 		String expectedResponse = getXmlAsString(this.getClass(), "resp4");
 		String actualResponse = runRequest(contextBasedIDReq);
-		log.debug("Req 4 response: " + actualResponse);
+//		log.setLevel(Level.DEBUG);
+//		log.debug("Req 4 response: " + actualResponse);
 
 		assertTrue(similarXMLIgnoreContextId(expectedResponse, actualResponse));
 		

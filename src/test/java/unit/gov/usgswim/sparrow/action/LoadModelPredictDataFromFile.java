@@ -9,6 +9,7 @@ import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.SourceBuilder;
 import gov.usgswim.sparrow.domain.SparrowModel;
@@ -102,7 +103,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 		model.setSouthBound(25.6);
 		model.setEnhNetworkId(23L);
 		model.setId(MODEL_ID);
-		model.setUnits("kg/year");
+		model.setUnits(SparrowUnits.KG_PER_YEAR);
 		
 		for (int r=0; r< srcMetaData.getRowCount(); r++) {
 			SourceBuilder src = new SourceBuilder();
@@ -114,7 +115,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 			src.setDisplayName(srcMetaData.getString(r, 2));
 			src.setDescription(srcMetaData.getString(r, 3));
 			src.setConstituent(srcMetaData.getString(r, 4));
-			src.setUnits(srcMetaData.getString(r, 5));
+			src.setUnits(SparrowUnits.parse(srcMetaData.getString(r, 5)));
 			model.addSource(src);
 		}
 		
@@ -180,6 +181,12 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 		result.removeColumn(1);
 		copyColumnAsRowId(result, 0);
 		result.setName("sourceMetadata");
+		
+		//Update unit to be the user displayable form
+		for (int r = 0; r < result.getRowCount(); r++) {
+			SparrowUnits unit = SparrowUnits.parse(result.getString(r, PredictData.SOURCE_META_UNIT_COL));
+			result.setValue(unit.getUserName(), r, PredictData.SOURCE_META_UNIT_COL);
+		}
 		
 
 		return result.toImmutable();

@@ -9,6 +9,6 @@
 	<areaOfInterest context-id="IsIgnored"/>
 	<name>Incremental Delivered Yield</name>
 	<description>The incremental yield (units of kilograms per square kilometer per year) associated with a stream reach that arrives at the downstream end of a selected target reach.</description>
-	<units>kg/sqr km/yr</units>
+	<units>kg⋅km⁻²⋅yr⁻¹</units>
 	<constituent>Nitrogen</constituent>
 </PredictionContext-response>

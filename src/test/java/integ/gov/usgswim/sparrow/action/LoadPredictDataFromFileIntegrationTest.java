@@ -9,6 +9,7 @@ import java.util.List;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.domain.SparrowModel;
 
@@ -70,7 +71,10 @@ public class LoadPredictDataFromFileIntegrationTest extends SparrowDBTest {
 			assertEquals(dbSrc.getModelId(), fileSrc.getModelId());
 			assertEquals(dbSrc.getName(), fileSrc.getName());
 			assertEquals(dbSrc.getSortOrder(), fileSrc.getSortOrder());
-			assertEquals(dbSrc.getUnits(), fileSrc.getUnits());
+			
+			SparrowUnits dbSrcUnit = dbSrc.getUnits();
+			SparrowUnits fileSrcUnit = fileSrc.getUnits();
+			assertEquals(dbSrcUnit, fileSrcUnit);
 			
 		}
 

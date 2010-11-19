@@ -34,6 +34,7 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	
 	//Source metadata columns
 	public static final int SOURCE_META_ID_COL = 0;
+	public static final int SOURCE_META_UNIT_COL = 5;
 	
 	/**
 	 * Returns the source metadata, which includes ids, names, units, and other metadata.

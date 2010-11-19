@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
+import gov.usgswim.sparrow.SparrowUnits;
 
 /**
  * Domain Object representing a SPARROW SparrowModel.
@@ -113,7 +114,7 @@ public interface SparrowModel {
 	 *
 	 * @return
 	 */
-	public String getUnits();
+	public SparrowUnits getUnits();
 	
 	/**
 	 * Returns a list of saved sessions associated to this model.

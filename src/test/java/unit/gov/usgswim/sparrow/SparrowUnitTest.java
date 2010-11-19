@@ -930,6 +930,11 @@ public abstract class SparrowUnitTest {
 	public static boolean similarXMLIgnoreContextId(String controlDocument,
 			String testDocument) throws Exception {
 		Diff diff = compareXMLIgnoreContextId(controlDocument, testDocument);
+		
+		if (log.isDebugEnabled()) {
+			log.debug("Differences found: " + diff.toString());
+		}
+		
 		return diff.similar();
 	}
 	

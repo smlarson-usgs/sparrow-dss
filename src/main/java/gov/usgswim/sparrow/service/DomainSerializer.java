@@ -91,7 +91,7 @@ public class DomainSerializer extends BasicXMLStreamReader {
 				addNonNullBasicTag("contactId", model.getContactId().toString());
 				addNonNullBasicTag("enhNetworkId", model.getEnhNetworkId().toString());
 				addNonNullBasicTag("constituent", model.getConstituent());
-				addNonNullBasicTag("units", model.getUnits());
+				addNonNullBasicTag("units", model.getUnits().getUserName());
 				events.add(new BasicTagEvent("bounds", null)
 					.addAttribute("north", model.getNorthBound().toString())
 					.addAttribute("west", model.getWestBound().toString())
@@ -128,7 +128,7 @@ public class DomainSerializer extends BasicXMLStreamReader {
 							addNonNullBasicTag("displayName", src.getDisplayName());
 							addNonNullBasicTag("description",StringUtils.trimToNull(src.getDescription()));
 							addNonNullBasicTag("constituent", src.getConstituent());
-							addNonNullBasicTag("units", src.getUnits());
+							addNonNullBasicTag("units", src.getUnits().toString());
 						}
 						addCloseTag("source");
 						// add a carriage return to break up long text line

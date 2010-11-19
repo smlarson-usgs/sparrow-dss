@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.*;
 import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.domain.SparrowModel;
 
@@ -81,7 +82,7 @@ public class LoadModelMetadataTest extends SparrowDBTest {
 		assertEquals(TEST_MODEL_ID.longValue(), model.getId().longValue());
 		assertEquals("MRB02 Nitrogen", model.getName());
 		assertEquals("Nitrogen", model.getConstituent());
-		assertEquals("kg/year", model.getUnits());
+		assertEquals(SparrowUnits.KG_PER_YEAR, model.getUnits());
 		assertEquals(5, model.getSources().size());
 
 		//1st source

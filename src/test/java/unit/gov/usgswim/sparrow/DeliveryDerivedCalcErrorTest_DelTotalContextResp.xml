@@ -9,6 +9,6 @@
 	<areaOfInterest context-id="236923"/>
 	<name>Total Delivered Load</name>
 	<description>The total load associated with a stream reach that arrives at the downstream end of a selected target reach (in units of kilograms per year).</description>
-	<units>kg/year</units>
+	<units>kg⋅year⁻¹</units>
 	<constituent>Nitrogen</constituent>
 </PredictionContext-response>

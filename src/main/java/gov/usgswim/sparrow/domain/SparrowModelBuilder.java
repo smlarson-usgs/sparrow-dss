@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.domain;
 
 import gov.usgswim.ImmutableBuilder;
 import gov.usgswim.NotThreadSafe;
+import gov.usgswim.sparrow.SparrowUnits;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +34,7 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 	protected Double _southBound;
 	protected Double _westBound;
 	protected String _constituent;
-	protected String _units;
+	protected SparrowUnits _units;
 	protected List<Source> _sources;
 	private Set<Entry<Object, Object>> _sessions;
 
@@ -142,10 +143,10 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 	@Override
 	public String getConstituent() {return _constituent;}
 
-	public void setUnits(String units) {this._units = units;}
+	public void setUnits(SparrowUnits units) {this._units = units;}
 
 	@Override
-	public String getUnits() {return _units;}
+	public SparrowUnits getUnits() {return _units;}
 
 	public void setSessions(Set<Entry<Object, Object>> sessions) {_sessions = sessions;}
 
