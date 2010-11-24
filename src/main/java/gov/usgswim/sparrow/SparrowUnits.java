@@ -8,6 +8,8 @@ public enum SparrowUnits {
 	KG_PER_YEAR("kg⋅year⁻¹", "kg ⋅ year⁻¹"),
 	MG_PER_L("mg⋅L⁻¹", "mg ⋅ L⁻¹"),
 	SQR_KM("km²", "km²"),
+	SQR_M("m²", "m²"),
+	HECTARE("hectare", "hectare"),
 	KG_PER_SQR_KM_PER_YEAR("kg⋅km⁻²⋅yr⁻¹", "kg ⋅ km⁻² ⋅ year⁻¹"),
 	PERCENT("%", "percent"),
 	FRACTION("(fraction)", "fraction"),
