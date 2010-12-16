@@ -5,6 +5,7 @@
 		MapViewer application, so the entries in this web.xml file would be copied
 		into MapViewer's web.xml file.
 	</description>
+	<display-name>Sparrow Services and Mapping {Owner: NB, Coder: EE}</display-name>
 	<listener>
 		<listener-class>gov.usgswim.sparrow.LifecycleListener</listener-class>
 	</listener>
