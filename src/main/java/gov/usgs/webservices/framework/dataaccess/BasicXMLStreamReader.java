@@ -473,8 +473,12 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		XMLStreamReaderMethod.getAttributeCount.check(currentEvent.type);
 		return currentEvent.getAttributeCount();
 	}
+	
+	/**
+	 * UTF-8 is a good assumption - implementations are free to override.
+	 */
 	public String getCharacterEncodingScheme() {
-		return null;
+		return "UTF-8";
 	}
 
 	public String getEncoding() {

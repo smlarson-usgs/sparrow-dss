@@ -39,7 +39,13 @@ public abstract class AbstractFormatter implements IFormatter {
 			case HTML:
 			case JSON:
 			case XML:
-				response.setCharacterEncoding(in.getCharacterEncodingScheme());
+				String encoding = in.getCharacterEncodingScheme();
+				
+				if (encoding == null) {
+					encoding = "UTF-8";
+				}
+				
+				response.setCharacterEncoding(encoding);
 				
 				if (isAttachment) {
 					response.addHeader(
