@@ -1,0 +1,31 @@
+"sampler_label","aggregate_report_count","average","aggregate_report_median","aggregate_report_90%_line","aggregate_report_min","aggregate_report_max","aggregate_report_error%","aggregate_report_rate","aggregate_report_bandwidth"
+"Cntx ID (Basic)",16,205,168,319,129,443,0,0.05,0.09
+"Bins (Basic)",16,175,180,182,134,191,0,0.05,0.02
+"Map (Basic R)",32,837,662,1366,496,1443,0,0.11,1.21
+"Map (Basic C)",32,921,677,1372,448,3631,0,0.11,0.98
+"Reach ID (Adjust and Target)",16,1113,966,1480,657,2804,0,0.05,0.38
+"Cntx ID (Adjusted)",16,295,230,412,161,490,0,0.05,0.09
+"Bins (Adjusted)",16,173,182,198,123,228,0,0.05,0.02
+"Map (Target-Total R)",32,841,680,1431,422,1595,0,0.11,1.21
+"Map (Target-Total C)",32,892,689,1249,442,3176,0,0.11,0.97
+"Cntx ID (Adjusted Chg)",16,312,221,526,167,702,0,0.06,0.1
+"Bins (Adjusted Chg)",16,176,182,188,131,233,0,0.06,0.02
+"Map (Target-Total Chg R)",32,778,643,1288,333,1481,0,0.11,0.72
+"Map (Target-Total Chg C)",32,681,506,1119,399,1263,0,0.11,0.28
+"Cntx ID (Inc Del Yield)",16,261,198,405,144,451,0,0.06,0.04
+"Bins (Inc Del Yield)",16,178,184,193,97,215,0,0.06,0.02
+"Map (Inc Del Yield R)",32,812,622,1237,438,1438,0,0.11,0.76
+"Map (Inc Del Yield C)",32,698,566,1101,370,1235,0,0.11,0.28
+"Cntx ID (Inc Del Yield Chg)",16,266,205,379,159,524,0,0.06,0.1
+"Bins (In Del Yield Chg)",16,176,182,186,120,234,0,0.06,0.02
+"Map (Inc Del Yield Chg R)",32,779,614,1329,449,1441,0,0.11,0.73
+"Map (Inc Del Yield Chg C)",32,705,526,1140,406,1380,0,0.11,0.28
+"TOTAL",496,620,542,1220,97,3631,0,1.6,7.82
+,,,,,,,,,
+"sampler_label","Number User","Map R","Map C","Context",,,,"aggregate_report_rate","aggregate_report_bandwidth"
+"Map R",1,809.4,779.4,16,,,,,
+"Map C",2,1108,1041,,,,,,
+,3,1441.2,1417.6,,,,,,
+,4,1621.6,1703.8,,,,,,
+,5,1949.4,1967.2,,,,,,
+,6,"Err:502","Err:502",,,,,,

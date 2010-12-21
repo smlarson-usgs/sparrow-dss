@@ -1,0 +1,789 @@
+1288374865093,737,Reach from Materialized,Thread Group 1-1,true,36,0
+1288374865837,95,Catch from Materialized,Thread Group 1-1,false,0,0
+1288374865933,2096,Reach from Old,Thread Group 1-1,true,36,0
+1288374868030,1221,Catch from Old,Thread Group 1-1,false,0,4
+1288374869252,1300,Reach from Model View,Thread Group 1-1,true,36,1
+1288374870553,973,Catch from Model View,Thread Group 1-1,false,0,1
+1288374871528,91,Reach from Materialized,Thread Group 1-1,true,37,1
+1288374871619,34,Catch from Materialized,Thread Group 1-1,false,0,1
+1288374871653,2031,Reach from Old,Thread Group 1-1,true,37,1
+1288374873684,1113,Catch from Old,Thread Group 1-1,false,0,1
+1288374874798,1373,Reach from Model View,Thread Group 1-1,true,37,0
+1288374876171,995,Catch from Model View,Thread Group 1-1,false,0,1
+1288374877169,402,Reach from Materialized,Thread Group 1-1,true,37,1
+1288374877571,106,Catch from Materialized,Thread Group 1-1,true,34,2
+1288374877677,20833,Reach from Old,Thread Group 1-1,true,37,1
+1288374898511,6959,Catch from Old,Thread Group 1-1,true,34,1
+1288374905470,6985,Reach from Model View,Thread Group 1-1,true,37,1
+1288374912456,6832,Catch from Model View,Thread Group 1-1,true,34,1
+1288374919290,405,Reach from Materialized,Thread Group 1-1,true,37,0
+1288374919695,64,Catch from Materialized,Thread Group 1-1,true,34,1
+1288374919759,6653,Reach from Old,Thread Group 1-1,true,37,1
+1288374926413,6727,Catch from Old,Thread Group 1-1,true,34,0
+1288374933141,6530,Reach from Model View,Thread Group 1-1,true,37,1
+1288374939671,6571,Catch from Model View,Thread Group 1-1,true,34,1
+1288374946245,172,Reach from Materialized,Thread Group 1-1,true,36,0
+1288374946418,35,Catch from Materialized,Thread Group 1-1,false,0,1
+1288374946453,2761,Reach from Old,Thread Group 1-1,true,36,1
+1288374949215,166,Catch from Old,Thread Group 1-1,false,0,2
+1288374949381,2602,Reach from Model View,Thread Group 1-1,true,36,1
+1288374951983,132,Catch from Model View,Thread Group 1-1,false,0,1
+1288374952118,107,Reach from Materialized,Thread Group 1-1,true,37,1
+1288374952225,65,Catch from Materialized,Thread Group 1-1,false,0,2
+1288374952291,4135,Reach from Old,Thread Group 1-1,true,37,1
+1288374956426,115,Catch from Old,Thread Group 1-1,false,0,2
+1288374956542,2588,Reach from Model View,Thread Group 1-1,true,37,1
+1288374959131,75,Catch from Model View,Thread Group 1-1,false,0,1
+1288374959209,483,Reach from Materialized,Thread Group 1-1,true,34,1
+1288374959693,104,Catch from Materialized,Thread Group 1-1,true,33,1
+1288374959797,7531,Reach from Old,Thread Group 1-1,true,34,1
+1288374967329,7284,Catch from Old,Thread Group 1-1,true,33,1
+1288374974613,7088,Reach from Model View,Thread Group 1-1,true,34,1
+1288374981702,8978,Catch from Model View,Thread Group 1-1,true,33,1
+1288374990683,103,Reach from Materialized,Thread Group 1-1,true,37,1
+1288374990787,49,Catch from Materialized,Thread Group 1-1,false,0,1
+1288374990836,2364,Reach from Old,Thread Group 1-1,true,37,1
+1288374993200,1346,Catch from Old,Thread Group 1-1,false,0,1
+1288374994546,1553,Reach from Model View,Thread Group 1-1,true,37,1
+1288374996100,1159,Catch from Model View,Thread Group 1-1,false,0,1
+1288374997262,188,Reach from Materialized,Thread Group 1-1,true,37,1
+1288374997451,38,Catch from Materialized,Thread Group 1-1,false,0,1
+1288374997489,2004,Reach from Old,Thread Group 1-1,true,37,5
+1288374999493,1309,Catch from Old,Thread Group 1-1,false,0,2
+1288375000802,1337,Reach from Model View,Thread Group 1-1,true,37,1
+1288375002139,1048,Catch from Model View,Thread Group 1-1,false,0,1
+1288375003190,236,Reach from Materialized,Thread Group 1-1,true,37,0
+1288375003426,119,Catch from Materialized,Thread Group 1-1,true,34,2
+1288375003545,6728,Reach from Old,Thread Group 1-1,true,37,2
+1288375010274,6679,Catch from Old,Thread Group 1-1,true,34,1
+1288375016954,6670,Reach from Model View,Thread Group 1-1,true,37,1
+1288375023625,6607,Catch from Model View,Thread Group 1-1,true,34,1
+1288375030234,206,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375030440,61,Catch from Materialized,Thread Group 1-1,true,34,1
+1288375030502,6892,Reach from Old,Thread Group 1-1,true,37,1
+1288375037395,6613,Catch from Old,Thread Group 1-1,true,34,1
+1288375044009,6967,Reach from Model View,Thread Group 1-1,true,37,1
+1288375050977,6712,Catch from Model View,Thread Group 1-1,true,34,1
+1288375057692,119,Reach from Materialized,Thread Group 1-1,true,36,0
+1288375057811,39,Catch from Materialized,Thread Group 1-1,false,0,1
+1288375057850,2598,Reach from Old,Thread Group 1-1,true,36,1
+1288375060449,1241,Catch from Old,Thread Group 1-1,false,0,1
+1288375061691,2571,Reach from Model View,Thread Group 1-1,true,36,1
+1288375064262,1152,Catch from Model View,Thread Group 1-1,false,0,1
+1288375094697,64,Reach from Materialized,Thread Group 1-1,true,36,0
+1288375094761,38,Catch from Materialized,Thread Group 1-1,false,0,0
+1288375094799,1446,Reach from Old,Thread Group 1-1,true,36,0
+1288375096246,1065,Catch from Old,Thread Group 1-1,false,0,0
+1288375097311,1269,Reach from Model View,Thread Group 1-1,true,36,1
+1288375098581,1085,Catch from Model View,Thread Group 1-1,false,0,1
+1288375099668,90,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375099759,35,Catch from Materialized,Thread Group 1-1,false,0,1
+1288375099794,1536,Reach from Old,Thread Group 1-1,true,37,1
+1288375101330,1104,Catch from Old,Thread Group 1-1,false,0,1
+1288375102435,1338,Reach from Model View,Thread Group 1-1,true,37,1
+1288375103774,949,Catch from Model View,Thread Group 1-1,false,0,1
+1288375104725,431,Reach from Materialized,Thread Group 1-1,true,36,1
+1288375105157,98,Catch from Materialized,Thread Group 1-1,true,34,1
+1288375219481,69,Reach from Materialized,Thread Group 1-1,true,37,0
+1288375219550,39,Catch from Materialized,Thread Group 1-1,false,0,0
+1288375219590,1398,Reach from Old,Thread Group 1-1,true,37,0
+1288375220989,1024,Catch from Old,Thread Group 1-1,false,0,0
+1288375222013,1626,Reach from Model View,Thread Group 1-1,true,37,2
+1288375223640,1537,Catch from Model View,Thread Group 1-1,false,0,1
+1288375225178,39,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288375225217,37,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375225255,1007,Reach from Old Hint,Thread Group 1-1,true,37,2
+1288375226262,477,Catch from Old Hint,Thread Group 1-1,false,0,2
+1288375226740,67,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288375226807,9,Catch from Materialized Hint,Thread Group 1-1,false,0,2
+1288375226819,92,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375226912,39,Catch from Materialized,Thread Group 1-1,false,0,2
+1288375226952,1483,Reach from Old,Thread Group 1-1,true,37,1
+1288375228435,1006,Catch from Old,Thread Group 1-1,false,0,1
+1288375229441,1308,Reach from Model View,Thread Group 1-1,true,37,1
+1288375230749,943,Catch from Model View,Thread Group 1-1,false,0,1
+1288375231692,43,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288375231736,28,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375231764,701,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288375232465,450,Catch from Old Hint,Thread Group 1-1,false,0,2
+1288375232915,63,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288375232979,8,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375232989,409,Reach from Materialized,Thread Group 1-1,true,36,1
+1288375233399,97,Catch from Materialized,Thread Group 1-1,true,34,1
+1288375233497,6803,Reach from Old,Thread Group 1-1,true,36,1
+1288375240301,6706,Catch from Old,Thread Group 1-1,true,34,1
+1288375247007,6635,Reach from Model View,Thread Group 1-1,true,36,1
+1288375253642,6486,Catch from Model View,Thread Group 1-1,true,34,1
+1288375260128,54,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288375260183,49,Catch from Materialized Hint,Thread Group 1-1,true,34,1
+1288375260232,696,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288375260929,332,Catch from Old Hint,Thread Group 1-1,true,34,1
+1288375261262,62,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288375261325,29,Catch from Materialized Hint,Thread Group 1-1,true,34,1
+1288375261357,292,Reach from Materialized,Thread Group 1-1,true,36,0
+1288375261650,84,Catch from Materialized,Thread Group 1-1,true,34,1
+1288375261735,6423,Reach from Old,Thread Group 1-1,true,36,1
+1288375268159,6555,Catch from Old,Thread Group 1-1,true,34,1
+1288375274714,6365,Reach from Model View,Thread Group 1-1,true,36,2
+1288375281080,6197,Catch from Model View,Thread Group 1-1,true,34,1
+1288375287278,43,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288375287322,39,Catch from Materialized Hint,Thread Group 1-1,true,34,1
+1288375287362,436,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288375287799,357,Catch from Old Hint,Thread Group 1-1,true,34,1
+1288375288157,60,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288375288218,26,Catch from Materialized Hint,Thread Group 1-1,true,34,1
+1288375288246,60,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375288306,32,Catch from Materialized,Thread Group 1-1,false,0,1
+1288375288338,2581,Reach from Old,Thread Group 1-1,true,37,1
+1288375290920,126,Catch from Old,Thread Group 1-1,false,0,1
+1288375291047,2531,Reach from Model View,Thread Group 1-1,true,37,1
+1288375293578,86,Catch from Model View,Thread Group 1-1,false,0,1
+1288375293664,43,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288375293707,22,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375293729,3324,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288375297054,593,Catch from Old Hint,Thread Group 1-1,false,0,1
+1288375297647,2581,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288375300228,5,Catch from Materialized Hint,Thread Group 1-1,false,0,2
+1288375300236,112,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375300349,29,Catch from Materialized,Thread Group 1-1,false,0,1
+1288375300379,2617,Reach from Old,Thread Group 1-1,true,37,1
+1288375302996,94,Catch from Old,Thread Group 1-1,false,0,1
+1288375303090,2464,Reach from Model View,Thread Group 1-1,true,37,1
+1288375305554,60,Catch from Model View,Thread Group 1-1,false,0,1
+1288375305614,35,Reach from Materialized Hint,Thread Group 1-1,true,37,2
+1288375305650,25,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375305676,3180,Reach from Old Hint,Thread Group 1-1,true,37,2
+1288375308856,620,Catch from Old Hint,Thread Group 1-1,false,0,2
+1288375309477,2545,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288375312023,5,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375312031,269,Reach from Materialized,Thread Group 1-1,true,36,0
+1288375312301,206,Catch from Materialized,Thread Group 1-1,true,33,1
+1288375312507,11717,Reach from Old,Thread Group 1-1,true,36,2
+1288375324225,7491,Catch from Old,Thread Group 1-1,true,33,1
+1288375331716,7957,Reach from Model View,Thread Group 1-1,true,36,1
+1288375339673,8686,Catch from Model View,Thread Group 1-1,true,33,1
+1288375348359,47,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288375348407,57,Catch from Materialized Hint,Thread Group 1-1,true,33,0
+1288375348465,1054,Reach from Old Hint,Thread Group 1-1,true,36,0
+1288375349520,387,Catch from Old Hint,Thread Group 1-1,true,33,0
+1288375349907,110,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288375350018,48,Catch from Materialized Hint,Thread Group 1-1,true,33,0
+1288375350070,147,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375350218,40,Catch from Materialized,Thread Group 1-1,false,0,1
+1288375350259,2083,Reach from Old,Thread Group 1-1,true,37,1
+1288375352343,1820,Catch from Old,Thread Group 1-1,false,0,1
+1288375354164,2324,Reach from Model View,Thread Group 1-1,true,37,2
+1288375356488,1702,Catch from Model View,Thread Group 1-1,false,0,2
+1288375358190,55,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288375358245,43,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375358289,538,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288375358828,506,Catch from Old Hint,Thread Group 1-1,false,0,1
+1288375359334,86,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288375359420,7,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375359430,159,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375359590,50,Catch from Materialized,Thread Group 1-1,false,0,1
+1288375359640,1958,Reach from Old,Thread Group 1-1,true,37,1
+1288375361599,1413,Catch from Old,Thread Group 1-1,false,0,1
+1288375363012,1614,Reach from Model View,Thread Group 1-1,true,37,1
+1288375364628,1362,Catch from Model View,Thread Group 1-1,false,0,3
+1288375365991,77,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288375366068,36,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375366104,1011,Reach from Old Hint,Thread Group 1-1,true,37,5
+1288375367116,886,Catch from Old Hint,Thread Group 1-1,false,0,1
+1288375368003,114,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288375368118,9,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375368129,323,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375368453,91,Catch from Materialized,Thread Group 1-1,true,34,1
+1288375368545,9532,Reach from Old,Thread Group 1-1,true,37,1
+1288375378078,11018,Catch from Old,Thread Group 1-1,true,34,1
+1288375389096,8995,Reach from Model View,Thread Group 1-1,true,37,1
+1288375398091,10861,Catch from Model View,Thread Group 1-1,true,34,1
+1288375408953,67,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288375409021,57,Catch from Materialized Hint,Thread Group 1-1,true,34,1
+1288375409079,452,Reach from Old Hint,Thread Group 1-1,true,37,2
+1288375409532,220,Catch from Old Hint,Thread Group 1-1,true,34,1
+1288375409752,81,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288375409834,56,Catch from Materialized Hint,Thread Group 1-1,true,34,1
+1288375409893,354,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375410248,146,Catch from Materialized,Thread Group 1-1,true,34,1
+1288375410394,11140,Reach from Old,Thread Group 1-1,true,37,1
+1288375421535,10315,Catch from Old,Thread Group 1-1,true,34,1
+1288375431851,10731,Reach from Model View,Thread Group 1-1,true,37,1
+1288375442582,11709,Catch from Model View,Thread Group 1-1,true,34,2
+1288375454291,96,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288375454387,87,Catch from Materialized Hint,Thread Group 1-1,true,34,1
+1288375454474,370,Reach from Old Hint,Thread Group 1-1,true,37,2
+1288375454844,215,Catch from Old Hint,Thread Group 1-1,true,34,1
+1288375455060,114,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288375455175,56,Catch from Materialized Hint,Thread Group 1-1,true,34,1
+1288375455235,136,Reach from Materialized,Thread Group 1-1,true,37,0
+1288375455372,45,Catch from Materialized,Thread Group 1-1,false,0,2
+1288375455418,4185,Reach from Old,Thread Group 1-1,true,37,1
+1288375459603,276,Catch from Old,Thread Group 1-1,false,0,1
+1288375459880,4345,Reach from Model View,Thread Group 1-1,true,37,1
+1288375464226,260,Catch from Model View,Thread Group 1-1,false,0,1
+1288375464486,67,Reach from Materialized Hint,Thread Group 1-1,true,37,2
+1288375464553,45,Catch from Materialized Hint,Thread Group 1-1,false,0,2
+1288375464599,4215,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288375468814,360,Catch from Old Hint,Thread Group 1-1,false,0,2
+1288375469175,3181,Reach from Model View Hint,Thread Group 1-1,true,37,2
+1288375472356,5,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375516540,92,Reach from Materialized,Thread Group 1-1,true,37,0
+1288375516632,43,Catch from Materialized,Thread Group 1-1,false,0,0
+1288375516675,1940,Reach from Old,Thread Group 1-1,true,37,0
+1288375518616,1373,Catch from Old,Thread Group 1-1,false,0,0
+1288375519990,1542,Reach from Model View,Thread Group 1-1,true,37,1
+1288375521532,1373,Catch from Model View,Thread Group 1-1,false,0,1
+1288375522905,69,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288375522975,37,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375523013,345,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288375523358,225,Catch from Old Hint,Thread Group 1-1,false,0,1
+1288375523583,84,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288375523668,58,Catch from Model View Hint,Thread Group 1-1,false,0,1
+1288375523728,208,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375523936,260,Catch from Materialized,Thread Group 1-1,false,0,1
+1288375524197,1632,Reach from Old,Thread Group 1-1,true,37,1
+1288375525829,1268,Catch from Old,Thread Group 1-1,false,0,1
+1288375527098,1640,Reach from Model View,Thread Group 1-1,true,37,1
+1288375528738,1397,Catch from Model View,Thread Group 1-1,false,0,1
+1288375530136,55,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288375530192,39,Catch from Materialized Hint,Thread Group 1-1,false,0,0
+1288375530231,195,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288375530427,210,Catch from Old Hint,Thread Group 1-1,false,0,1
+1288375530637,107,Reach from Model View Hint,Thread Group 1-1,true,37,2
+1288375530744,66,Catch from Model View Hint,Thread Group 1-1,false,0,1
+1288375530813,295,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375531109,102,Catch from Materialized,Thread Group 1-1,true,34,1
+1288375531211,9259,Reach from Old,Thread Group 1-1,true,37,1
+1288375540471,10186,Catch from Old,Thread Group 1-1,true,34,1
+1288375550657,8218,Reach from Model View,Thread Group 1-1,true,37,1
+1288375558875,8243,Catch from Model View,Thread Group 1-1,true,34,1
+1288375567118,82,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288375567200,58,Catch from Materialized Hint,Thread Group 1-1,true,34,2
+1288375567258,251,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288375567509,318,Catch from Old Hint,Thread Group 1-1,true,34,1
+1288375567827,89,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288375567916,80,Catch from Model View Hint,Thread Group 1-1,true,34,1
+1288375567998,163,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375568161,77,Catch from Materialized,Thread Group 1-1,true,34,1
+1288375568239,10148,Reach from Old,Thread Group 1-1,true,37,1
+1288375578388,11114,Catch from Old,Thread Group 1-1,true,34,1
+1288375589503,9660,Reach from Model View,Thread Group 1-1,true,37,1
+1288375599164,10248,Catch from Model View,Thread Group 1-1,true,34,1
+1288375609412,63,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288375609475,51,Catch from Materialized Hint,Thread Group 1-1,true,34,1
+1288375609527,173,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288375609701,130,Catch from Old Hint,Thread Group 1-1,true,34,1
+1288375609831,69,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288375609900,105,Catch from Model View Hint,Thread Group 1-1,true,34,2
+1288375610008,220,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375610229,60,Catch from Materialized,Thread Group 1-1,false,0,1
+1288375610289,3795,Reach from Old,Thread Group 1-1,true,37,1
+1288375614085,1415,Catch from Old,Thread Group 1-1,false,0,1
+1288375615500,4357,Reach from Model View,Thread Group 1-1,true,37,1
+1288375619858,1394,Catch from Model View,Thread Group 1-1,false,0,1
+1288375621253,70,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288375621324,41,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375621365,4878,Reach from Old Hint,Thread Group 1-1,true,37,2
+1288375626244,1811,Catch from Old Hint,Thread Group 1-1,false,0,1
+1288375628055,3391,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288375631446,1160,Catch from Model View Hint,Thread Group 1-1,false,0,1
+1288375632610,141,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375632751,42,Catch from Materialized,Thread Group 1-1,false,0,1
+1288375632793,3313,Reach from Old,Thread Group 1-1,true,37,1
+1288375636107,443,Catch from Old,Thread Group 1-1,false,0,1
+1288375636550,3414,Reach from Model View,Thread Group 1-1,true,37,1
+1288375639964,349,Catch from Model View,Thread Group 1-1,false,0,1
+1288375640313,49,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288375640362,47,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375640409,3857,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288375644267,742,Catch from Old Hint,Thread Group 1-1,false,0,1
+1288375645009,3553,Reach from Model View Hint,Thread Group 1-1,true,37,2
+1288375648563,438,Catch from Model View Hint,Thread Group 1-1,false,0,0
+1288375649004,461,Reach from Materialized,Thread Group 1-1,true,36,1
+1288375649466,163,Catch from Materialized,Thread Group 1-1,true,33,0
+1288375649629,10090,Reach from Old,Thread Group 1-1,true,36,2
+1288375659720,9962,Catch from Old,Thread Group 1-1,true,33,1
+1288375669683,9412,Reach from Model View,Thread Group 1-1,true,36,0
+1288375679096,9259,Catch from Model View,Thread Group 1-1,true,33,0
+1288375688355,96,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288375688451,113,Catch from Materialized Hint,Thread Group 1-1,true,33,1
+1288375688564,1761,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288375690326,990,Catch from Old Hint,Thread Group 1-1,true,33,1
+1288375691316,95,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288375691412,136,Catch from Model View Hint,Thread Group 1-1,true,33,1
+1288375691551,91,Reach from Materialized,Thread Group 1-1,true,36,1
+1288375691642,47,Catch from Materialized,Thread Group 1-1,false,0,3
+1288375691690,1848,Reach from Old,Thread Group 1-1,true,36,2
+1288375693538,1456,Catch from Old,Thread Group 1-1,false,0,1
+1288375694995,1786,Reach from Model View,Thread Group 1-1,true,36,1
+1288375696781,1165,Catch from Model View,Thread Group 1-1,false,0,1
+1288375697946,76,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288375698023,48,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375698072,145,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288375698217,72,Catch from Old Hint,Thread Group 1-1,false,0,1
+1288375698289,60,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288375698350,43,Catch from Model View Hint,Thread Group 1-1,false,0,0
+1288375698395,56,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375698451,51,Catch from Materialized,Thread Group 1-1,false,0,1
+1288375698502,1834,Reach from Old,Thread Group 1-1,true,37,1
+1288375700337,1304,Catch from Old,Thread Group 1-1,false,0,0
+1288375701642,1574,Reach from Model View,Thread Group 1-1,true,37,1
+1288375703216,1340,Catch from Model View,Thread Group 1-1,false,0,1
+1288375704556,65,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288375704621,30,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375704652,304,Reach from Old Hint,Thread Group 1-1,true,37,0
+1288375704956,308,Catch from Old Hint,Thread Group 1-1,false,0,1
+1288375705264,111,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288375705375,58,Catch from Model View Hint,Thread Group 1-1,false,0,1
+1288375705434,66,Reach from Materialized,Thread Group 1-1,true,36,1
+1288375705501,65,Catch from Materialized,Thread Group 1-1,true,34,0
+1288375705567,8861,Reach from Old,Thread Group 1-1,true,36,0
+1288375714429,9289,Catch from Old,Thread Group 1-1,true,34,0
+1288375723719,8613,Reach from Model View,Thread Group 1-1,true,36,1
+1288375732333,7964,Catch from Model View,Thread Group 1-1,true,34,1
+1288375740297,48,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288375740346,59,Catch from Materialized Hint,Thread Group 1-1,true,34,1
+1288375740405,449,Reach from Old Hint,Thread Group 1-1,true,36,2
+1288375740855,408,Catch from Old Hint,Thread Group 1-1,true,34,1
+1288375741264,74,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288375741339,64,Catch from Model View Hint,Thread Group 1-1,true,34,1
+1288375741406,373,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375741779,113,Catch from Materialized,Thread Group 1-1,true,34,1
+1288375741893,9326,Reach from Old,Thread Group 1-1,true,37,1
+1288375751219,9018,Catch from Old,Thread Group 1-1,true,34,1
+1288375760238,9074,Reach from Model View,Thread Group 1-1,true,37,112
+1288375769313,9664,Catch from Model View,Thread Group 1-1,true,34,1
+1288375778977,83,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288375779060,65,Catch from Materialized Hint,Thread Group 1-1,true,34,1
+1288375779125,482,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288375779608,420,Catch from Old Hint,Thread Group 1-1,true,34,1
+1288375780029,95,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288375780124,84,Catch from Model View Hint,Thread Group 1-1,true,34,2
+1288375780211,100,Reach from Materialized,Thread Group 1-1,true,37,1
+1288375780312,48,Catch from Materialized,Thread Group 1-1,false,0,1
+1288375780361,4078,Reach from Old,Thread Group 1-1,true,37,1
+1288375784440,239,Catch from Old,Thread Group 1-1,false,0,1
+1288375784679,4390,Reach from Model View,Thread Group 1-1,true,37,1
+1288375789069,180,Catch from Model View,Thread Group 1-1,false,0,1
+1288375789250,38,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288375789289,39,Catch from Materialized Hint,Thread Group 1-1,false,0,1
+1288375789329,4351,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288375793683,303,Catch from Old Hint,Thread Group 1-1,false,0,1
+1288375793987,3522,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288375797509,147,Catch from Model View Hint,Thread Group 1-1,false,0,1
+1288376228872,122,Reach from Materialized,Thread Group 1-1,true,37,0
+1288376228995,1401,Reach from Old,Thread Group 1-1,true,37,0
+1288376230396,1294,Reach from Model View,Thread Group 1-1,true,37,0
+1288376231690,45,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288376231736,86,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288376231823,59,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288376231884,76,Reach from Materialized,Thread Group 1-1,true,35,1
+1288376231960,1301,Reach from Old,Thread Group 1-1,true,35,1
+1288376233261,1346,Reach from Model View,Thread Group 1-1,true,35,1
+1288376234607,63,Reach from Materialized Hint,Thread Group 1-1,true,35,1
+1288376234671,177,Reach from Old Hint,Thread Group 1-1,true,35,0
+1288376234849,63,Reach from Model View Hint,Thread Group 1-1,true,35,1
+1288376234915,56,Reach from Materialized,Thread Group 1-1,true,37,1
+1288376234971,6569,Reach from Old,Thread Group 1-1,true,37,1
+1288376241541,8621,Reach from Model View,Thread Group 1-1,true,37,1
+1288376250162,44,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288376250206,100,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288376250307,63,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288376250372,219,Reach from Materialized,Thread Group 1-1,true,36,1
+1288376250591,6816,Reach from Old,Thread Group 1-1,true,36,1
+1288376257407,6617,Reach from Model View,Thread Group 1-1,true,36,1
+1288376264025,54,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288376264079,106,Reach from Old Hint,Thread Group 1-1,true,36,2
+1288376264185,70,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288376264257,84,Reach from Materialized,Thread Group 1-1,true,37,0
+1288376264341,2601,Reach from Old,Thread Group 1-1,true,37,1
+1288376266942,2520,Reach from Model View,Thread Group 1-1,true,37,1
+1288376269463,34,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288376269498,2589,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288376272088,2544,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288376274636,65,Reach from Materialized,Thread Group 1-1,true,36,0
+1288376274702,2586,Reach from Old,Thread Group 1-1,true,36,1
+1288376277289,2483,Reach from Model View,Thread Group 1-1,true,36,1
+1288376279773,38,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288376279811,2661,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288376282473,2572,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288376285048,299,Reach from Materialized,Thread Group 1-1,true,36,1
+1288376285348,7253,Reach from Old,Thread Group 1-1,true,36,1
+1288376292601,6818,Reach from Model View,Thread Group 1-1,true,36,2
+1288376299420,59,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288376299479,759,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288376300238,79,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288376300321,85,Reach from Materialized,Thread Group 1-1,true,36,0
+1288376300406,1421,Reach from Old,Thread Group 1-1,true,36,1
+1288376301827,1339,Reach from Model View,Thread Group 1-1,true,36,1
+1288376303166,48,Reach from Materialized Hint,Thread Group 1-1,true,36,2
+1288376303215,139,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288376303355,55,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288376303413,46,Reach from Materialized,Thread Group 1-1,true,36,0
+1288376303459,1333,Reach from Old,Thread Group 1-1,true,36,1
+1288376304793,1345,Reach from Model View,Thread Group 1-1,true,36,1
+1288376306139,43,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288376306183,94,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288376306278,61,Reach from Model View Hint,Thread Group 1-1,true,36,0
+1288376306342,63,Reach from Materialized,Thread Group 1-1,true,37,0
+1288376306405,6557,Reach from Old,Thread Group 1-1,true,37,2
+1288376312962,6498,Reach from Model View,Thread Group 1-1,true,37,1
+1288376319460,45,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288376319505,122,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288376319627,67,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288376319699,64,Reach from Materialized,Thread Group 1-1,true,37,1
+1288376319764,6536,Reach from Old,Thread Group 1-1,true,37,1
+1288376326300,6543,Reach from Model View,Thread Group 1-1,true,37,2
+1288376332843,40,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288376332884,99,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288376332984,59,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288376333046,95,Reach from Materialized,Thread Group 1-1,true,37,1
+1288376333142,2583,Reach from Old,Thread Group 1-1,true,37,1
+1288376335725,2527,Reach from Model View,Thread Group 1-1,true,37,1
+1288376338253,47,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288376338300,2686,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288376340987,2547,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288379976483,48,Catch from Materialized,Thread Group 1-1,false,0,0
+1288379976540,27,Catch from Materialized,Thread Group 1-1,false,0,0
+1288379976569,153,Catch from Materialized,Thread Group 1-1,true,34,0
+1288379976724,86,Catch from Materialized,Thread Group 1-1,true,34,0
+1288379976812,31,Catch from Materialized,Thread Group 1-1,false,0,0
+1288379976845,31,Catch from Materialized,Thread Group 1-1,false,0,0
+1288379976878,128,Catch from Materialized,Thread Group 1-1,true,33,0
+1288379977009,31,Catch from Materialized,Thread Group 1-1,false,0,0
+1288379977042,32,Catch from Materialized,Thread Group 1-1,false,0,0
+1288379977076,74,Catch from Materialized,Thread Group 1-1,true,34,0
+1288379977152,63,Catch from Materialized,Thread Group 1-1,true,34,0
+1288379977217,32,Catch from Materialized,Thread Group 1-1,false,0,0
+1288381629448,46,Catch from Materialized,Thread Group 1-1,false,0,0
+1288381629502,60,Catch from Materialized,Thread Group 1-1,false,0,0
+1288381629565,82,Catch from Materialized,Thread Group 1-1,true,34,0
+1288381629650,92,Catch from Materialized,Thread Group 1-1,true,34,0
+1288381629744,40,Catch from Materialized,Thread Group 1-1,false,0,0
+1288381629786,49,Catch from Materialized,Thread Group 1-1,false,0,0
+1288381629837,237,Catch from Materialized,Thread Group 1-1,true,33,0
+1288381630078,38,Catch from Materialized,Thread Group 1-1,false,0,0
+1288381630118,33,Catch from Materialized,Thread Group 1-1,false,0,0
+1288381630153,66,Catch from Materialized,Thread Group 1-1,true,34,0
+1288381630221,53,Catch from Materialized,Thread Group 1-1,true,34,0
+1288381630276,72,Catch from Materialized,Thread Group 1-1,false,0,0
+1288382475978,118,Reach from Materialized,Thread Group 1-1,true,37,0
+1288382476104,1294,Reach from Old,Thread Group 1-1,true,37,0
+1288382477398,1423,Reach from Model View,Thread Group 1-1,true,37,0
+1288382478822,48,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382478871,74,Reach from Old Hint,Thread Group 1-1,true,37,0
+1288382478946,54,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288382479003,49,Reach from Materialized,Thread Group 1-1,true,37,1
+1288382479053,1514,Reach from Old,Thread Group 1-1,true,37,1
+1288382480568,1271,Reach from Model View,Thread Group 1-1,true,37,3
+1288382481840,45,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382481885,190,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382482076,63,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288382482142,62,Reach from Materialized,Thread Group 1-1,true,36,1
+1288382482205,7111,Reach from Old,Thread Group 1-1,true,36,1
+1288382489317,6742,Reach from Model View,Thread Group 1-1,true,36,2
+1288382496059,54,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288382496114,97,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288382496211,70,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288382496284,246,Reach from Materialized,Thread Group 1-1,true,37,0
+1288382496531,7129,Reach from Old,Thread Group 1-1,true,37,1
+1288382503660,7096,Reach from Model View,Thread Group 1-1,true,37,1
+1288382510757,35,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382510793,319,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382511113,87,Reach from Model View Hint,Thread Group 1-1,true,37,2
+1288382511202,226,Reach from Materialized,Thread Group 1-1,true,37,1
+1288382511428,2959,Reach from Old,Thread Group 1-1,true,37,2
+1288382514387,2512,Reach from Model View,Thread Group 1-1,true,37,1
+1288382516900,41,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382516941,2776,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382519718,2612,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288382522333,60,Reach from Materialized,Thread Group 1-1,true,37,1
+1288382522394,2685,Reach from Old,Thread Group 1-1,true,37,2
+1288382525079,2492,Reach from Model View,Thread Group 1-1,true,37,3
+1288382527571,33,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382527605,2622,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382530228,2608,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288382532838,213,Reach from Materialized,Thread Group 1-1,true,35,1
+1288382533051,6920,Reach from Old,Thread Group 1-1,true,35,1
+1288382539971,6742,Reach from Model View,Thread Group 1-1,true,35,1
+1288382546714,61,Reach from Materialized Hint,Thread Group 1-1,true,35,1
+1288382546775,664,Reach from Old Hint,Thread Group 1-1,true,35,1
+1288382547439,80,Reach from Model View Hint,Thread Group 1-1,true,35,2
+1288382547522,176,Reach from Materialized,Thread Group 1-1,true,36,0
+1288382547699,7142,Reach from Old,Thread Group 1-1,true,36,1
+1288382554842,6874,Reach from Model View,Thread Group 1-1,true,36,1
+1288382561716,63,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288382561780,491,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288382562271,77,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288382562351,2394,Reach from Materialized,Thread Group 1-1,true,38,0
+1288382564746,3918,Reach from Old,Thread Group 1-1,true,38,1
+1288382568665,740,Reach from Model View,Thread Group 1-1,true,38,1
+1288382569406,651,Reach from Materialized Hint,Thread Group 1-1,true,38,1
+1288382570058,723,Reach from Old Hint,Thread Group 1-1,true,38,0
+1288382570781,697,Reach from Model View Hint,Thread Group 1-1,true,38,1
+1288382571481,3478,Reach from Materialized,Thread Group 1-1,true,36,1
+1288382574960,4503,Reach from Old,Thread Group 1-1,true,36,1
+1288382579463,921,Reach from Model View,Thread Group 1-1,true,36,1
+1288382580384,772,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288382581156,920,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288382582077,887,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288382582967,382,Reach from Materialized,Thread Group 1-1,true,37,1
+1288382583349,30429,Reach from Old,Thread Group 1-1,true,37,2
+1288382613779,12621,Reach from Model View,Thread Group 1-1,true,37,1
+1288382626401,53,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382626454,622,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382627077,67,Reach from Model View Hint,Thread Group 1-1,true,37,0
+1288382627146,307,Reach from Materialized,Thread Group 1-1,true,37,1
+1288382627454,10902,Reach from Old,Thread Group 1-1,true,37,1
+1288382638357,10742,Reach from Model View,Thread Group 1-1,true,37,1
+1288382649100,54,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382649155,686,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382649841,90,Reach from Model View Hint,Thread Group 1-1,true,37,2
+1288382649934,396,Reach from Materialized,Thread Group 1-1,true,37,0
+1288382650330,2268,Reach from Old,Thread Group 1-1,true,37,1
+1288382652598,1310,Reach from Model View,Thread Group 1-1,true,37,1
+1288382653909,34,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382653944,59,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382654004,54,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288382654060,238,Reach from Materialized,Thread Group 1-1,true,36,1
+1288382654299,1371,Reach from Old,Thread Group 1-1,true,36,1
+1288382655671,1241,Reach from Model View,Thread Group 1-1,true,36,1
+1288382656913,34,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288382656947,115,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288382657063,56,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288382657122,32,Reach from Materialized,Thread Group 1-1,true,37,1
+1288382657155,1444,Reach from Old,Thread Group 1-1,true,37,1
+1288382658600,1288,Reach from Model View,Thread Group 1-1,true,37,1
+1288382659889,30,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382659920,64,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382659985,46,Reach from Model View Hint,Thread Group 1-1,true,37,0
+1288382660035,178,Reach from Materialized,Thread Group 1-1,true,37,0
+1288382660213,1320,Reach from Old,Thread Group 1-1,true,37,2
+1288382661534,1274,Reach from Model View,Thread Group 1-1,true,37,1
+1288382662809,40,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382662850,204,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382663054,63,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288382663120,100,Reach from Materialized,Thread Group 1-1,true,37,0
+1288382663220,6726,Reach from Old,Thread Group 1-1,true,37,1
+1288382669947,6503,Reach from Model View,Thread Group 1-1,true,37,1
+1288382676450,41,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382676492,312,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382676804,62,Reach from Model View Hint,Thread Group 1-1,true,37,2
+1288382676869,52,Reach from Materialized,Thread Group 1-1,true,37,1
+1288382676922,8168,Reach from Old,Thread Group 1-1,true,37,1
+1288382685091,6776,Reach from Model View,Thread Group 1-1,true,37,1
+1288382691867,64,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382691931,115,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382692046,53,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288382692102,116,Reach from Materialized,Thread Group 1-1,true,37,1
+1288382692219,2571,Reach from Old,Thread Group 1-1,true,37,1
+1288382694790,2549,Reach from Model View,Thread Group 1-1,true,37,1
+1288382697340,39,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382697379,2715,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382700095,2549,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288382702646,249,Reach from Materialized,Thread Group 1-1,true,37,1
+1288382702895,2585,Reach from Old,Thread Group 1-1,true,37,2
+1288382705481,2553,Reach from Model View,Thread Group 1-1,true,37,1
+1288382708034,40,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382708074,2646,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382710721,2583,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288382713307,210,Reach from Materialized,Thread Group 1-1,true,38,0
+1288382713527,6690,Reach from Old,Thread Group 1-1,true,38,2
+1288382720218,6977,Reach from Model View,Thread Group 1-1,true,38,1
+1288382727195,50,Reach from Materialized Hint,Thread Group 1-1,true,38,1
+1288382727245,376,Reach from Old Hint,Thread Group 1-1,true,38,1
+1288382727621,70,Reach from Model View Hint,Thread Group 1-1,true,38,2
+1288382727693,224,Reach from Materialized,Thread Group 1-1,true,35,1
+1288382727917,11183,Reach from Old,Thread Group 1-1,true,35,1
+1288382739101,12703,Reach from Model View,Thread Group 1-1,true,35,1
+1288382751804,62,Reach from Materialized Hint,Thread Group 1-1,true,35,1
+1288382751867,193,Reach from Old Hint,Thread Group 1-1,true,35,1
+1288382752061,83,Reach from Model View Hint,Thread Group 1-1,true,35,1
+1288382752147,1668,Reach from Materialized,Thread Group 1-1,true,37,0
+1288382753815,1866,Reach from Old,Thread Group 1-1,true,37,1
+1288382755681,792,Reach from Model View,Thread Group 1-1,true,37,1
+1288382756474,739,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382757213,818,Reach from Old Hint,Thread Group 1-1,true,37,2
+1288382758032,843,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288382758878,3252,Reach from Materialized,Thread Group 1-1,true,36,0
+1288382762131,4161,Reach from Old,Thread Group 1-1,true,36,1
+1288382766293,858,Reach from Model View,Thread Group 1-1,true,36,1
+1288382767152,785,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288382767938,846,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288382768784,839,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288382769626,429,Reach from Materialized,Thread Group 1-1,true,37,0
+1288382770055,9430,Reach from Old,Thread Group 1-1,true,37,1
+1288382779486,9554,Reach from Model View,Thread Group 1-1,true,37,1
+1288382789040,38,Reach from Materialized Hint,Thread Group 1-1,true,37,2
+1288382789078,197,Reach from Old Hint,Thread Group 1-1,true,37,2
+1288382789276,59,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288382789337,233,Reach from Materialized,Thread Group 1-1,true,37,0
+1288382789570,9372,Reach from Old,Thread Group 1-1,true,37,1
+1288382798943,9364,Reach from Model View,Thread Group 1-1,true,37,1
+1288382808308,43,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382808352,179,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382808531,71,Reach from Model View Hint,Thread Group 1-1,true,37,2
+1288382808605,153,Reach from Materialized,Thread Group 1-1,true,37,1
+1288382808759,1494,Reach from Old,Thread Group 1-1,true,37,1
+1288382810254,1287,Reach from Model View,Thread Group 1-1,true,37,1
+1288382811542,28,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382811571,83,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382811654,49,Reach from Model View Hint,Thread Group 1-1,true,37,2
+1288382811705,262,Reach from Materialized,Thread Group 1-1,true,37,1
+1288382811967,1289,Reach from Old,Thread Group 1-1,true,37,1
+1288382813257,1340,Reach from Model View,Thread Group 1-1,true,37,1
+1288382814598,40,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382814638,94,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382814732,57,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288382814791,59,Reach from Materialized,Thread Group 1-1,true,37,1
+1288382814850,1330,Reach from Old,Thread Group 1-1,true,37,1
+1288382816181,1493,Reach from Model View,Thread Group 1-1,true,37,1
+1288382817675,78,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382817754,370,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382818124,141,Reach from Model View Hint,Thread Group 1-1,true,37,2
+1288382818268,109,Reach from Materialized,Thread Group 1-1,true,37,1
+1288382818378,1298,Reach from Old,Thread Group 1-1,true,37,1
+1288382819677,1230,Reach from Model View,Thread Group 1-1,true,37,1
+1288382820907,35,Reach from Materialized Hint,Thread Group 1-1,true,37,2
+1288382820942,72,Reach from Old Hint,Thread Group 1-1,true,37,2
+1288382821015,54,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288382821072,79,Reach from Materialized,Thread Group 1-1,true,36,1
+1288382821151,6659,Reach from Old,Thread Group 1-1,true,36,1
+1288382827810,6590,Reach from Model View,Thread Group 1-1,true,36,1
+1288382834401,43,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288382834444,101,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288382834545,62,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288382834609,55,Reach from Materialized,Thread Group 1-1,true,36,1
+1288382834664,6739,Reach from Old,Thread Group 1-1,true,36,1
+1288382841404,6816,Reach from Model View,Thread Group 1-1,true,36,1
+1288382848221,35,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288382848257,85,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288382848342,57,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288382848401,109,Reach from Materialized,Thread Group 1-1,true,37,1
+1288382848510,2582,Reach from Old,Thread Group 1-1,true,37,1
+1288382851092,2552,Reach from Model View,Thread Group 1-1,true,37,2
+1288382853645,34,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382853679,2654,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382856333,2582,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288382858918,220,Reach from Materialized,Thread Group 1-1,true,36,1
+1288382859138,2545,Reach from Old,Thread Group 1-1,true,36,1
+1288382861684,2557,Reach from Model View,Thread Group 1-1,true,36,0
+1288382864241,43,Reach from Materialized Hint,Thread Group 1-1,true,36,2
+1288382864284,2574,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288382866859,3032,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288382869893,77,Reach from Materialized,Thread Group 1-1,true,36,1
+1288382869971,8077,Reach from Old,Thread Group 1-1,true,36,1
+1288382878048,6865,Reach from Model View,Thread Group 1-1,true,36,1
+1288382884914,57,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288382884972,123,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288382885095,74,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288382885171,143,Reach from Materialized,Thread Group 1-1,true,36,1
+1288382885315,6970,Reach from Old,Thread Group 1-1,true,36,1
+1288382892286,7377,Reach from Model View,Thread Group 1-1,true,36,1
+1288382899664,51,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288382899716,112,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288382899828,187,Reach from Model View Hint,Thread Group 1-1,true,36,2
+1288382900018,2384,Reach from Materialized,Thread Group 1-1,true,36,1
+1288382902402,2505,Reach from Old,Thread Group 1-1,true,36,1
+1288382904907,1352,Reach from Model View,Thread Group 1-1,true,36,1
+1288382906259,972,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288382907232,1100,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288382908332,1384,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288382909719,1984,Reach from Materialized,Thread Group 1-1,true,36,1
+1288382911703,2351,Reach from Old,Thread Group 1-1,true,36,2
+1288382914054,2256,Reach from Model View,Thread Group 1-1,true,36,2
+1288382916310,2209,Reach from Materialized Hint,Thread Group 1-1,true,36,2
+1288382918519,967,Reach from Old Hint,Thread Group 1-1,true,36,1
+1288382919487,2051,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288382921541,608,Reach from Materialized,Thread Group 1-1,true,37,1
+1288382922150,18533,Reach from Old,Thread Group 1-1,true,37,1
+1288382940684,9610,Reach from Model View,Thread Group 1-1,true,37,1
+1288382950295,43,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288382950338,235,Reach from Old Hint,Thread Group 1-1,true,37,1
+1288382950574,59,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629470495,155,Reach from Materialized Hint,Thread Group 1-1,true,37,0
+1288629470651,276,Reach from Model View Hint,Thread Group 1-1,true,37,0
+1288629470929,166,Reach from Materialized Hint,Thread Group 1-1,true,37,0
+1288629471096,389,Reach from Model View Hint,Thread Group 1-1,true,37,0
+1288629471487,181,Reach from Materialized Hint,Thread Group 1-1,true,35,0
+1288629471669,405,Reach from Model View Hint,Thread Group 1-1,true,35,0
+1288629472076,433,Reach from Materialized Hint,Thread Group 1-1,true,36,0
+1288629474632,122,Reach from Materialized Hint,Thread Group 1-1,true,37,0
+1288629474755,560,Reach from Model View Hint,Thread Group 1-1,true,37,0
+1288629475318,271,Reach from Materialized Hint,Thread Group 1-1,true,37,0
+1288629475590,617,Reach from Model View Hint,Thread Group 1-1,true,37,0
+1288629476210,267,Reach from Materialized Hint,Thread Group 1-1,true,37,0
+1288629476478,1073,Reach from Model View Hint,Thread Group 1-1,true,37,0
+1288629477553,210,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288629477763,218,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288629477984,270,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288629478255,1491,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629479749,189,Reach from Materialized Hint,Thread Group 1-1,true,37,0
+1288629479939,1240,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629481182,212,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288629481394,392,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288629481789,413,Reach from Materialized Hint,Thread Group 1-1,true,36,0
+1288629482202,1926,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288629484131,2544,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288629486676,3009,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288629489688,755,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288629490444,845,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288629491293,87,Reach from Materialized Hint,Thread Group 1-1,true,37,0
+1288629491380,247,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629491630,206,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288629491837,224,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629492064,179,Reach from Materialized Hint,Thread Group 1-1,true,36,0
+1288629492243,434,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288629492680,272,Reach from Materialized Hint,Thread Group 1-1,true,37,0
+1288629492953,249,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629493205,142,Reach from Materialized Hint,Thread Group 1-1,true,37,0
+1288629493347,131,Reach from Model View Hint,Thread Group 1-1,true,37,2
+1288629493481,121,Reach from Materialized Hint,Thread Group 1-1,true,36,0
+1288629493602,160,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288629493766,67,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288629493833,225,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629494061,139,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288629494200,1046,Reach from Model View Hint,Thread Group 1-1,true,37,2
+1288629495249,197,Reach from Materialized Hint,Thread Group 1-1,true,37,0
+1288629495447,218,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629495667,126,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288629495793,645,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629496441,196,Reach from Materialized Hint,Thread Group 1-1,true,35,1
+1288629496637,566,Reach from Model View Hint,Thread Group 1-1,true,35,2
+1288629497206,95,Reach from Materialized Hint,Thread Group 1-1,true,36,2
+1288629497302,161,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288629497465,2235,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288629499701,3466,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288629503171,1084,Reach from Materialized Hint,Thread Group 1-1,true,38,1
+1288629504256,1138,Reach from Model View Hint,Thread Group 1-1,true,38,1
+1288629505397,70,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288629505468,447,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629505918,514,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288629506433,1594,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629508030,121,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288629508152,227,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629508382,53,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288629508435,525,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629508963,291,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288629509255,317,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629509575,56,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288629509632,386,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629510027,319,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288629510347,587,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629510937,117,Reach from Materialized Hint,Thread Group 1-1,true,37,0
+1288629511055,373,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629511431,67,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288629511499,241,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629511742,165,Reach from Materialized Hint,Thread Group 1-1,true,37,1
+1288629511907,453,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629512362,654,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288629513016,1086,Reach from Model View Hint,Thread Group 1-1,true,36,1
+1288629514105,81,Reach from Materialized Hint,Thread Group 1-1,true,35,0
+1288629514186,245,Reach from Model View Hint,Thread Group 1-1,true,35,1
+1288629514434,1269,Reach from Materialized Hint,Thread Group 1-1,true,37,0
+1288629515704,2152,Reach from Model View Hint,Thread Group 1-1,true,37,1
+1288629517859,1187,Reach from Materialized Hint,Thread Group 1-1,true,38,1
+1288629519046,2270,Reach from Model View Hint,Thread Group 1-1,true,38,1
+1288629521319,487,Reach from Materialized Hint,Thread Group 1-1,true,36,1
+1288629521807,1075,Reach from Model View Hint,Thread Group 1-1,true,36,2

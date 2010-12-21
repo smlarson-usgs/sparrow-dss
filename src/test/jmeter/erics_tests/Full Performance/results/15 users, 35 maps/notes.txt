@@ -1,0 +1,1 @@
+This test was stopped about half way through after running for about 4 hours.  The numbers seemed fairly stable.
