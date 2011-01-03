@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<sparrow-report-request   xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">   
+	<PredictionContext context-id="$contextId$"/>   
+	<!-- <bbox>-83.660888671875,27.80914306640625,-81.749267578125,28.399658203125</bbox> -->   
+	<response-content>    
+		<attributes />    
+		<source-values />
+		<predicted />  
+	</response-content>  
+	<response-format>    
+		<mime-type>csv</mime-type>   
+	</response-format> 
+</sparrow-report-request>
