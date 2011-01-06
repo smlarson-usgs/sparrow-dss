@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.parser;
+package gov.usgswim.sparrow.domain;
 
 public enum PredefinedSessionType {
 	/** FEATURED are listed on the project home page */

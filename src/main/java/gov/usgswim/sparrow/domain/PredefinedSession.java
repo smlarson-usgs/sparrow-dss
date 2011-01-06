@@ -1,4 +1,7 @@
-package gov.usgswim.sparrow.parser;
+package gov.usgswim.sparrow.domain;
+
+import gov.usgswim.sparrow.parser.XMLParseValidationException;
+import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;

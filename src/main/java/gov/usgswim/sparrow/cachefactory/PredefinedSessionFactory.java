@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.action.LoadPredefinedSessions;
-import gov.usgswim.sparrow.parser.PredefinedSession;
+import gov.usgswim.sparrow.domain.PredefinedSession;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgswim.sparrow.parser.PredefinedSession;
-import gov.usgswim.sparrow.parser.PredefinedSessionType;
+import gov.usgswim.sparrow.domain.PredefinedSession;
+import gov.usgswim.sparrow.domain.PredefinedSessionType;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

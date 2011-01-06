@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.usgswim.sparrow.SparrowDBTest;
-import gov.usgswim.sparrow.parser.PredefinedSession;
-import gov.usgswim.sparrow.parser.PredefinedSessionType;
+import gov.usgswim.sparrow.domain.PredefinedSession;
+import gov.usgswim.sparrow.domain.PredefinedSessionType;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.sql.Date;

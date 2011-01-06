@@ -13,11 +13,11 @@ import com.google.common.collect.ImmutableList;
 
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.cachefactory.ModelRequestCacheKey;
+import gov.usgswim.sparrow.domain.PredefinedSession;
+import gov.usgswim.sparrow.domain.PredefinedSessionType;
 import gov.usgswim.sparrow.domain.SourceBuilder;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.SparrowModelBuilder;
-import gov.usgswim.sparrow.parser.PredefinedSession;
-import gov.usgswim.sparrow.parser.PredefinedSessionType;
 import gov.usgswim.sparrow.util.SparrowResourceUtils;
 
 /**
