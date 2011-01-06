@@ -50,7 +50,7 @@ public class LoadReachAttributes extends Action<DataTable> {
 		params.put("ModelId", this.modelId);
 		params.put("ReachId", this.reachId);
 
-		PreparedStatement st = getPSFromPropertiesFile(QUERY_NAME, this.getClass(), params);
+		PreparedStatement st = getROPSFromPropertiesFile(QUERY_NAME, this.getClass(), params);
 		
 		ResultSet rset = null;
 		DataTableWritable attribs = null;

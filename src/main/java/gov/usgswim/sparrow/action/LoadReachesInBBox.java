@@ -36,7 +36,7 @@ public class LoadReachesInBBox extends Action<Long[]> {
 		params.put("upperLat", modelBBox.getUpperLatBound());
 		params.put("lowerLat", modelBBox.getLowerLatBound());
 
-		PreparedStatement st = getPSFromPropertiesFile(QUERY_NAME, this.getClass(), params);
+		PreparedStatement st = getROPSFromPropertiesFile(QUERY_NAME, this.getClass(), params);
 		
 		ResultSet rset = null;
 

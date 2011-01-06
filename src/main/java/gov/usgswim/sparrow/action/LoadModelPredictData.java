@@ -169,7 +169,7 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 		//Expected column types
 		Class<?>[] colTypes = {Integer.class, Integer.class, Integer.class, Integer.class, Integer.class};
 		
-		PreparedStatement statement = getPSFromPropertiesFile("SelectTopoData", this.getClass(), params);
+		PreparedStatement statement = getROPSFromPropertiesFile("SelectTopoData", this.getClass(), params);
 		ResultSet rset = statement.executeQuery();
 		DataTableWritable result = DataTableConverter.toDataTable(rset, colTypes, true);
 		

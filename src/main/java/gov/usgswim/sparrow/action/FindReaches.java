@@ -44,7 +44,7 @@ public class FindReaches extends Action<DataTable> {
 				"ORDER BY reach_name, identifier";
 			
 				sql = "SELECT * FROM (" + sql + ") WHERE ROWNUM < " + (maxReturnSize + 1);
-				PreparedStatement ps = getPSFromString(sql, query.props);
+				PreparedStatement ps = getROPSFromString(sql, query.props);
 				
 				ResultSet rs = ps.executeQuery();
 				

@@ -343,7 +343,7 @@ public class ComparePredictionToText {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("MODEL_ID", modelId);
 		//String sql = Action.getTextWithParamSubstitution(queryName, this.getClass(), params);
-		PreparedStatement st = action.getPSFromPropertiesFile(queryName, this.getClass(), params);
+		PreparedStatement st = action.getROPSFromPropertiesFile(queryName, this.getClass(), params);
 		
 		//Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 		ResultSet rs = null;

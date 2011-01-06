@@ -30,7 +30,7 @@ public class LoadReachByPoint extends Action<ReachInfo>{
 		params.put("lat", this.lat);
 		params.put("lng", this.lng);
 		
-		ResultSet rs = getPSFromPropertiesFile("FindReach", getClass(), params).executeQuery();
+		ResultSet rs = getROPSFromPropertiesFile("FindReach", getClass(), params).executeQuery();
 		
 		Integer reachID = null; Integer distance = null;
 		if (rs.next()) {

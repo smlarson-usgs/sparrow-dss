@@ -40,7 +40,7 @@ public class LoadReachByID extends Action<ReachInfo> {
 		
 		ReachInfo result = null;
 		
-		ResultSet rs = getPSFromPropertiesFile("LoadScalerAttribs", getClass(), params).executeQuery();
+		ResultSet rs = getROPSFromPropertiesFile("LoadScalerAttribs", getClass(), params).executeQuery();
 		
 		//Scaler attribs we need to temp store
 		String reachName = null;
@@ -71,7 +71,7 @@ public class LoadReachByID extends Action<ReachInfo> {
 		
 		rs.close();
 		
-		rs = getPSFromPropertiesFile("LoadSpatialAttribs", getClass(), params).executeQuery();
+		rs = getROPSFromPropertiesFile("LoadSpatialAttribs", getClass(), params).executeQuery();
 		
 		if (rs.next()) {
 

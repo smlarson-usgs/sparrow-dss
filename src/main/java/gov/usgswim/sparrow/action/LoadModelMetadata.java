@@ -76,9 +76,9 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 		if (sparrowModelId != null) { //specific model
 			paramMap = new HashMap<String, Object>();
 			paramMap.put("SparrowModelId", new Long(sparrowModelId));
-			selectModels = getPSFromPropertiesFile("SelectModelsById", null, paramMap);
+			selectModels = getROPSFromPropertiesFile("SelectModelsById", null, paramMap);
 		} else { //default ID
-			selectModels = getPSFromPropertiesFile("SelectModelsByAccess", null, paramMap);
+			selectModels = getROPSFromPropertiesFile("SelectModelsByAccess", null, paramMap);
 		}
 
 		ResultSet rset = null;
@@ -145,7 +145,7 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 
 			try {
 				
-				rset = getPSFromString(selectSources, modelIds).executeQuery();
+				rset = getROPSFromString(selectSources, modelIds).executeQuery();
 
 				while (rset.next()) {
 					SourceBuilder s = new SourceBuilder();

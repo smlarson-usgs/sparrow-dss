@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -42,6 +44,9 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	
 	//synch access on this class
 	private static Properties dataSeriesProperties;
+	
+	//A string that Action implementations can set to record outcomes for logging
+	private String postMessage;
 	
 	/**
 	 * A shared run count that increments when a new instance is created.
@@ -103,7 +108,15 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 * @return
 	 */
 	protected String getPostMessage() {
-		return null;
+		return postMessage;
+	}
+	
+	/**
+	 * Assigns the post message
+	 * @param msg
+	 */
+	protected void setPostMessage(String msg) {
+		postMessage = msg;
 	}
 	
 	/**
@@ -240,7 +253,36 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	}
 	
 	/**
-	 * Meant to be a PreparedStatement version of getTextWithParamSubstitution(...).
+	 * Returns a new read/write prepared statement using the passed sql.
+	 * This statement and its connection is guaranteed to be closed regardless
+	 * of how the action completes.  Any ResultSet created from the Statement
+	 * is also close automatically when the Statement is closed (see jdbc docs
+	 * for Statement).
+	 * 
+	 * @param sql The SQL statement, which may contain '?' parameters.
+	 * @return A JDBC PreparedStatement which will be auto-closed at Action completion.
+	 * @throws SQLException
+	 */
+	protected PreparedStatement getNewRWPreparedStatement(String sql) throws SQLException {
+		Connection conn = getConnection();
+		
+		PreparedStatement st =
+			conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY,
+			ResultSet.CONCUR_UPDATABLE, ResultSet.HOLD_CURSORS_OVER_COMMIT);
+		
+		st.setFetchSize(200);
+		
+		if (preparedStatements == null) {
+			preparedStatements = new ArrayList<PreparedStatement>();
+		}
+		
+		preparedStatements.add(st);
+		
+		return st;
+	}
+	
+	/**
+	 * Creates a read-only PreparedStatement with named parameter substitutions.
 	 * @param name
 	 * @param clazz
 	 * @param params String variableName, Object value
@@ -248,27 +290,102 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public PreparedStatement getPSFromPropertiesFile(String name, Class<?> clazz, Map<String, Object> params) throws SQLException, IOException {
+	public PreparedStatement getROPSFromPropertiesFile(
+			String name, Class<?> clazz, Map<String, Object> params)
+			throws SQLException, IOException {
+		
 		//Get the text from the properties file
 		String sql = getText(name, (clazz != null)? clazz : this.getClass());
 		
 		//Let the other method do the magic
-		return getPSFromString(sql, params);
+		return getROPSFromString(sql, params);
 	}
 	
-	protected PreparedStatement getPSFromString(String sql, Map<String, Object> params) throws SQLException, IOException {
-		PreparedStatement result = null;
-		ArrayList<String> variables = new ArrayList<String>();
+	/**
+	 * Creates a read-write PreparedStatement with named parameter substitutions.
+	 * @param name
+	 * @param clazz
+	 * @param params String variableName, Object value
+	 * @return
+	 * @throws SQLException
+	 * @throws IOException
+	 */
+	public PreparedStatement getRWPSFromPropertiesFile(
+			String name, Class<?> clazz, Map<String, Object> params)
+			throws SQLException, IOException {
 		
+		//Get the text from the properties file
+		String sql = getText(name, (clazz != null)? clazz : this.getClass());
+		
+		//Let the other method do the magic
+		return getRWPSFromString(sql, params);
+	}
+	
+	protected PreparedStatement getROPSFromString(
+			String sql, Map<String, Object> params)
+			throws SQLException, IOException {
+
+		PreparedStatement statement = null;
+
 		//Go through in order and get the variables, replace with question marks.
 		SQLString temp = processSql(sql, params);
 		sql = temp.sql.toString();
-		variables = temp.variables;
 		
-		//getNewROPreparedStatement with the readied string
-		result = getNewROPreparedStatement(sql);
+		//getNewRWPreparedStatement with the processed string
+		statement = getNewROPreparedStatement(sql);
 		
-		//Set the params with setObject
+		assignParameters(statement, temp, params);
+		
+		return statement;
+	}
+	
+	/**
+	 * Creates a read/writeable prepared statement with named parameter substitutions.
+	 * 
+	 * @param sql
+	 * @param params
+	 * @return
+	 * @throws SQLException
+	 * @throws IOException
+	 */
+	protected PreparedStatement getRWPSFromString(
+			String sql, Map<String, Object> params)
+			throws SQLException, IOException {
+		
+		PreparedStatement statement = null;
+
+		//Go through in order and get the variables, replace with question marks.
+		SQLString temp = processSql(sql, params);
+		sql = temp.sql.toString();
+		
+		//getNewRWPreparedStatement with the processed string
+		statement = getNewRWPreparedStatement(sql);
+		
+		assignParameters(statement, temp, params);
+		
+		return statement;
+	}
+	
+	/**
+	 * Assigns the passed parameters to the PreparedStatement.
+	 * The parameters are passed in two forms:  sqlString contains the parameters
+	 * by name (only) in the order they need to be placed in the statement, that
+	 * is, the order matches the question marks in the statement; params contains
+	 * the name and value pairs.
+	 * 
+	 * @param statement
+	 * @param sqlString
+	 * @param params
+	 * @throws SQLException
+	 */
+	protected void assignParameters(PreparedStatement statement,
+			SQLString sqlString, Map<String, Object> params) throws SQLException {
+		
+		ArrayList<String> variables = new ArrayList<String>();
+		
+		//Go through in order and get the variables, replace with question marks.
+		variables = sqlString.variables;
+		
 		Iterator<String> it = variables.iterator();
 		for (int i = 1; it.hasNext(); i++) {
 			String variable = it.next();
@@ -276,23 +393,27 @@ public abstract class Action<R extends Object> implements IAction<R> {
 				Object val = params.get(variable);
 				
 				if (val instanceof String) {
-					result.setString(i, val.toString());
+					statement.setString(i, val.toString());
 				} else if (val instanceof Long) {
-					result.setLong(i, (Long) val);
+					statement.setLong(i, (Long) val);
 				} else if (val instanceof Integer) {
-					result.setInt(i, (Integer) val);
+					statement.setInt(i, (Integer) val);
 				} else if (val instanceof Float) {
-					result.setFloat(i, (Float) val);
+					statement.setFloat(i, (Float) val);
 				} else if (val instanceof Double) {
-					result.setDouble(i, (Double) val);
+					statement.setDouble(i, (Double) val);
+				} else if (val instanceof Date) {
+					statement.setDate(i, (Date) val);
+				
+				} else if (val instanceof Time) {
+					statement.setTime(i, (Time) val);
 				} else {
-					result.setObject(i, val);
+					statement.setObject(i, val);
 				}
 				
 			}
 		}
 		
-		return result;
 	}
 	
 	/**
