@@ -3,23 +3,7 @@
  */
 package gov.usgswim.sparrow.service;
 
-import gov.usgswim.sparrow.cachefactory.AdjustedSourceFactory;
-import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludgeFactory;
-import gov.usgswim.sparrow.cachefactory.AnalysisResultFactory;
-import gov.usgswim.sparrow.cachefactory.BinningFactory;
-import gov.usgswim.sparrow.cachefactory.CatchmentAreaFactory;
-import gov.usgswim.sparrow.cachefactory.ComparisonResultFactory;
-import gov.usgswim.sparrow.cachefactory.DeliveryFractionFactory;
-import gov.usgswim.sparrow.cachefactory.StreamFlowFactory;
-import gov.usgswim.sparrow.cachefactory.LoadReachAttributesFactory;
-import gov.usgswim.sparrow.cachefactory.ModelMetadataFactory;
-import gov.usgswim.sparrow.cachefactory.NSDataSetFactory;
-import gov.usgswim.sparrow.cachefactory.PredictDataFactory;
-import gov.usgswim.sparrow.cachefactory.PredictResultFactory;
-import gov.usgswim.sparrow.cachefactory.ReachByIDFactory;
-import gov.usgswim.sparrow.cachefactory.ReachByPointFactory;
-import gov.usgswim.sparrow.cachefactory.ReachesByCriteriaFactory;
-import gov.usgswim.sparrow.cachefactory.UncertaintyDataFactory;
+import gov.usgswim.sparrow.cachefactory.*;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
@@ -32,6 +16,7 @@ public enum ConfiguredCache{
 	Analyses(true),
 	TerminalReaches(true),
 	AreaOfInterest(true),
+	PredefinedSessions(true, new PredefinedSessionFactory()),
 	
 	// non-distributed caches
 	PredictData(false, new PredictDataFactory()),

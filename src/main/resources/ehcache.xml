@@ -383,6 +383,14 @@
 		<!--  DISTRIBUTED CACHE CONFIGURATION ${cacheEventListenerFactory} /END -->
 
     </cache>
+    
+    <cache name="PredefinedSessions" maxElementsInMemory="2"
+		maxElementsOnDisk="2" eternal="false" overflowToDisk="true"
+		diskSpoolBufferSizeMB="5" timeToIdleSeconds="0"
+		timeToLiveSeconds="0" diskPersistent="true"
+		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU">
+		<!--  DISTRIBUTED CACHE CONFIGURATION ${cacheEventListenerFactory} /END -->
+    </cache>
 		
 	<cache name="ComparisonResult" maxElementsInMemory="10"
 		maxElementsOnDisk="40" eternal="false" overflowToDisk="false"

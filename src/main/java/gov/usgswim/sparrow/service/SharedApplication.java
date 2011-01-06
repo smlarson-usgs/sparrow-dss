@@ -1,26 +1,6 @@
 package gov.usgswim.sparrow.service;
 
-import static gov.usgswim.sparrow.service.ConfiguredCache.AdjustedSource;
-import static gov.usgswim.sparrow.service.ConfiguredCache.AdjustmentGroups;
-import static gov.usgswim.sparrow.service.ConfiguredCache.AggregateIdLookup;
-import static gov.usgswim.sparrow.service.ConfiguredCache.Analyses;
-import static gov.usgswim.sparrow.service.ConfiguredCache.AreaOfInterest;
-import static gov.usgswim.sparrow.service.ConfiguredCache.CatchmentAreas;
-import static gov.usgswim.sparrow.service.ConfiguredCache.StreamFlow;
-import static gov.usgswim.sparrow.service.ConfiguredCache.ComparisonResult;
-import static gov.usgswim.sparrow.service.ConfiguredCache.DataBinning;
-import static gov.usgswim.sparrow.service.ConfiguredCache.DeliveryFraction;
-import static gov.usgswim.sparrow.service.ConfiguredCache.IdentifyReachByID;
-import static gov.usgswim.sparrow.service.ConfiguredCache.IdentifyReachByPoint;
-import static gov.usgswim.sparrow.service.ConfiguredCache.LoadModelMetadata;
-import static gov.usgswim.sparrow.service.ConfiguredCache.LoadReachAttributes;
-import static gov.usgswim.sparrow.service.ConfiguredCache.NSDataSet;
-import static gov.usgswim.sparrow.service.ConfiguredCache.PredictContext;
-import static gov.usgswim.sparrow.service.ConfiguredCache.PredictData;
-import static gov.usgswim.sparrow.service.ConfiguredCache.PredictResult;
-import static gov.usgswim.sparrow.service.ConfiguredCache.ReachesByCriteria;
-import static gov.usgswim.sparrow.service.ConfiguredCache.StandardErrorEstimateData;
-import static gov.usgswim.sparrow.service.ConfiguredCache.TerminalReaches;
+import static gov.usgswim.sparrow.service.ConfiguredCache.*;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
@@ -44,6 +24,7 @@ import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.AreaOfInterest;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.LogicalSet;
+import gov.usgswim.sparrow.parser.PredefinedSession;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
@@ -446,7 +427,19 @@ public class SharedApplication  {
 		return null;
 	}
 
+	//PredefinedSessions Cache
+	public List<PredefinedSession> getAllPredefinedSessions() {
+		return getAllPredefinedSessions(false);
+	}
 
+	@SuppressWarnings("unchecked")
+	public List<PredefinedSession> getAllPredefinedSessions(boolean quiet) {
+		//In order to provide a key the cache system can use, we just use
+		//a constant since we always load all the values.
+		return (List<PredefinedSession>) PredefinedSessions.get(new Integer(1), quiet);
+	}
+	
+	
 	//NSDataSet Cache
 	public NSDataSet getNSDataSet(PredictionContext context) {
 		return getNSDataSet(context, false);
