@@ -1,17 +1,23 @@
 package gov.usgswim.sparrow.action;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import gov.usgswim.sparrow.SparrowDBTest;
-import gov.usgswim.sparrow.domain.PredefinedSession;
+import gov.usgswim.sparrow.clustering.SparrowCacheManager;
+import gov.usgswim.sparrow.domain.IPredefinedSession;
+import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
 import gov.usgswim.sparrow.domain.PredefinedSessionType;
+import gov.usgswim.sparrow.request.PredefinedSessionRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.apache.log4j.Level;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,19 +29,23 @@ import org.junit.Test;
  */
 public class PredefinedSessionsTest extends SparrowDBTest {
 	
-	private PredefinedSession ps1;
-	private PredefinedSession ps2;
-	private PredefinedSession ps3;
-	private PredefinedSession savedPs1;
-	private PredefinedSession savedPs2;
-	private PredefinedSession savedPs3;
+	private PredefinedSessionBuilder ps1;
+	private PredefinedSessionBuilder ps2;
+	private PredefinedSessionBuilder ps3;
+	private IPredefinedSession savedPs1;
+	private IPredefinedSession savedPs2;
+	private IPredefinedSession savedPs3;
 	private GregorianCalendar today;
 	private GregorianCalendar yesterday;
 	
 	@Before
 	public void initSessions() throws Exception {
 		
-		this.setLogLevel(Level.DEBUG);
+		//this.setLogLevel(Level.DEBUG);
+		
+		//We do some cache testing that is independant by test method,
+		//so we need to clear the cache before each test
+		SparrowCacheManager.getInstance().clearAll();
 		
 		//Construct a calendar date for today that does not include time.
 		today = new GregorianCalendar();
@@ -51,7 +61,7 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		yesterday.add(Calendar.DAY_OF_MONTH, -1);
 		
 		
-		ps1 = new PredefinedSession();
+		ps1 = new PredefinedSessionBuilder();
 		ps1.setAddBy("Eric");
 		ps1.setAddContactInfo("608.821.1111");
 		//ps1.setAddDate(new Date(today.getTimeInMillis()));	//is autoset
@@ -67,7 +77,7 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		//ps1.setUniqueCode("veryUnique1");	//auto-create unique code
 		
 		//
-		ps2 = new PredefinedSession();
+		ps2 = new PredefinedSessionBuilder();
 		ps2.setAddBy("I-Lin");
 		ps2.setAddContactInfo("608.821.1112");
 		ps2.setAddDate(new Date(yesterday.getTimeInMillis()));	//should be ignored - reset to today
@@ -83,7 +93,7 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		ps2.setUniqueCode("veryUnique2");	//auto-create unique code
 		
 		//
-		ps3 = new PredefinedSession();
+		ps3 = new PredefinedSessionBuilder();
 		ps3.setAddBy("Lorraine");
 		ps3.setAddContactInfo("608.821.1113");
 		//ps3.setAddDate(new Date(yesterday.getTimeInMillis()));	//should be ignored - reset to today
@@ -99,13 +109,11 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		ps3.setUniqueCode("veryUnique3");	//auto-create unique code
 		
 		//Save them all
-		SavePredefinedSession saveAction3 = new SavePredefinedSession(ps3);
-		SavePredefinedSession saveAction2 = new SavePredefinedSession(ps2);
-		SavePredefinedSession saveAction1 = new SavePredefinedSession(ps1);
+		IPredefinedSession[] saved = saveSessions(ps1, ps2, ps3);
 		
-		savedPs3 = saveAction3.run();
-		savedPs2 = saveAction2.run();
-		savedPs1 = saveAction1.run();
+		savedPs1 = saved[0];
+		savedPs2 = saved[1];
+		savedPs3 = saved[2];
 	}
 	
 	@After
@@ -169,7 +177,7 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		//////////////////
 		//Try loading all three sessions
 		LoadPredefinedSessions loadAction = new LoadPredefinedSessions(50L);
-		List<PredefinedSession> sessionList = loadAction.run();
+		List<IPredefinedSession> sessionList = loadAction.run();
 		
 		//They should be in the specified sort order
 		assertEquals(savedPs1.getId(), sessionList.get(0).getId());
@@ -194,7 +202,7 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		loadAction = new LoadPredefinedSessions(50L);
 		sessionList = loadAction.run();
 		
-		for (PredefinedSession session : sessionList) {
+		for (IPredefinedSession session : sessionList) {
 			if (
 					session.getId().equals(savedPs1.getId()) ||
 					session.getId().equals(savedPs2.getId()) ||
@@ -208,32 +216,34 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 	@Test
 	public void saveAndUpdateASession() throws Exception {
 
-		savedPs1.setApproved(true);
-		SavePredefinedSession saveAction1 = new SavePredefinedSession(savedPs1);
+		PredefinedSessionBuilder updatedPs1 = new PredefinedSessionBuilder(savedPs1);
+		
+		updatedPs1.setApproved(true);
+		SavePredefinedSession saveAction1 = new SavePredefinedSession(updatedPs1);
 		saveAction1.run();
 		
 		//Load the session back and verify
 		LoadPredefinedSessions loadAction = new LoadPredefinedSessions(50L);
-		List<PredefinedSession> sessionList = loadAction.run();
+		List<IPredefinedSession> sessionList = loadAction.run();
 		sessionList = loadAction.run();
 		
-		PredefinedSession updatedPs1 = sessionList.get(0);
+		IPredefinedSession reloadedPs1 = sessionList.get(0);
 		
 		//
-		assertEquals(ps1.getAddBy(), updatedPs1.getAddBy());
-		assertEquals(ps1.getAddContactInfo(), updatedPs1.getAddContactInfo());
-		assertEquals(today.getTime().getTime(), updatedPs1.getAddDate().getTime());
-		assertEquals(ps1.getAddNote(), updatedPs1.getAddNote());
-		assertEquals(true, updatedPs1.getApproved());
-		assertEquals(ps1.getContextString(), updatedPs1.getContextString());
-		assertEquals(ps1.getDescription(), updatedPs1.getDescription());
-		assertEquals(ps1.getGroupName(), updatedPs1.getGroupName());
-		assertEquals(ps1.getModelId(), updatedPs1.getModelId());
-		assertEquals(ps1.getName(), updatedPs1.getName());
-		assertEquals(ps1.getPredefinedSessionType(), updatedPs1.getPredefinedSessionType());
-		assertEquals(ps1.getSortOrder(), updatedPs1.getSortOrder());
-		assertTrue(updatedPs1.getUniqueCode().length() == 5);
-		assertTrue(updatedPs1.getId() != 0 && updatedPs1.getId() != null);
+		assertEquals(savedPs1.getAddBy(), reloadedPs1.getAddBy());
+		assertEquals(savedPs1.getAddContactInfo(), reloadedPs1.getAddContactInfo());
+		assertEquals(today.getTime().getTime(), reloadedPs1.getAddDate().getTime());
+		assertEquals(savedPs1.getAddNote(), reloadedPs1.getAddNote());
+		assertEquals(true, reloadedPs1.getApproved());
+		assertEquals(savedPs1.getContextString(), reloadedPs1.getContextString());
+		assertEquals(savedPs1.getDescription(), reloadedPs1.getDescription());
+		assertEquals(savedPs1.getGroupName(), reloadedPs1.getGroupName());
+		assertEquals(savedPs1.getModelId(), reloadedPs1.getModelId());
+		assertEquals(savedPs1.getName(), reloadedPs1.getName());
+		assertEquals(savedPs1.getPredefinedSessionType(), reloadedPs1.getPredefinedSessionType());
+		assertEquals(savedPs1.getSortOrder(), reloadedPs1.getSortOrder());
+		assertEquals(savedPs1.getUniqueCode(), reloadedPs1.getUniqueCode());
+		assertEquals(savedPs1.getId(), reloadedPs1.getId());
 		
 	}
 	
@@ -241,21 +251,21 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 	public void loadFromCache() throws Exception {
 		
 		long startTime = System.currentTimeMillis();
-		List<PredefinedSession> sessionList = SharedApplication.getInstance().getPredefinedSessions(50L, true);
+		List<IPredefinedSession> sessionList = SharedApplication.getInstance().loadPredefinedSessions(50L, true);
 		long endTime = System.currentTimeMillis();
 		//Very fast - just checks that there is nothing there
 		assertTrue(endTime - startTime < 10L);
 		
 		//Load now for the first time
 		startTime = System.currentTimeMillis();
-		sessionList = SharedApplication.getInstance().getPredefinedSessions(50L);
+		sessionList = SharedApplication.getInstance().loadPredefinedSessions(50L);
 		endTime = System.currentTimeMillis();
 		//System.out.println("Time to fill cache: " + (endTime - startTime));
 		assertEquals(3, sessionList.size());
 		
 		//Load again - should be instant
 		startTime = System.currentTimeMillis();
-		sessionList = SharedApplication.getInstance().getPredefinedSessions(50L);
+		sessionList = SharedApplication.getInstance().loadPredefinedSessions(50L);
 		endTime = System.currentTimeMillis();
 		//Very fast - just checks that there is nothing there
 		//System.out.println("Time to load from cache (prepopulated): " + (endTime - startTime));
@@ -267,17 +277,18 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 	public void cacheIsFlushedAfterUpdateOrDelete() throws Exception {
 		
 		//Force sessions to be loaded to cache
-		List<PredefinedSession> orgSessionList =
-			SharedApplication.getInstance().getPredefinedSessions(50L);
+		List<IPredefinedSession> orgSessionList =
+			SharedApplication.getInstance().loadPredefinedSessions(50L);
 		assertFalse(orgSessionList.get(0).getApproved());
 		
 		//Update one of the sessions
-		savedPs1.setApproved(true);
-		SharedApplication.getInstance().savePredefinedSession(savedPs1);
+		PredefinedSessionBuilder updatedPs1 = new PredefinedSessionBuilder(savedPs1);
+		updatedPs1.setApproved(true);
+		SharedApplication.getInstance().savePredefinedSession(updatedPs1);
 		
 		//Reload session list and check for update
-		List<PredefinedSession> updatedSessionList =
-			SharedApplication.getInstance().getPredefinedSessions(50L);
+		List<IPredefinedSession> updatedSessionList =
+			SharedApplication.getInstance().loadPredefinedSessions(50L);
 		
 		assertTrue(updatedSessionList.get(0).getApproved());
 		
@@ -285,15 +296,88 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		SharedApplication.getInstance().deletePredefinedSession(updatedSessionList.get(0));
 		
 		//Check that its gone
-		List<PredefinedSession> deletedSessionList =
-			SharedApplication.getInstance().getPredefinedSessions(50L);
+		List<IPredefinedSession> deletedSessionList =
+			SharedApplication.getInstance().loadPredefinedSessions(50L);
 		assertTrue(deletedSessionList.size() == orgSessionList.size() - 1);
 	}
 	
-	protected void deleteSessions(PredefinedSession... sessions) throws Exception {
+	@Test
+	public void checkFilteredResults() throws Exception {
+		PredefinedSessionBuilder set2ps1 = new PredefinedSessionBuilder(ps1);
+		PredefinedSessionBuilder set2ps2 = new PredefinedSessionBuilder(ps2);
+		PredefinedSessionBuilder set2ps3 = new PredefinedSessionBuilder(ps3);
+		PredefinedSessionBuilder set3ps1 = new PredefinedSessionBuilder(ps1);
+		PredefinedSessionBuilder set3ps2 = new PredefinedSessionBuilder(ps2);
+		PredefinedSessionBuilder set3ps3 = new PredefinedSessionBuilder(ps3);
+		
+		PredefinedSessionBuilder[] newSessions = stripUniqueness(
+			set2ps1, set2ps2, set2ps3, set3ps1, set3ps2, set3ps3);
+		
+		//Assign some group names
+		newSessions[0].setGroupName("set2");
+		newSessions[1].setGroupName("set2");
+		newSessions[2].setGroupName("set2");
+		newSessions[3].setGroupName("set3");
+		newSessions[4].setGroupName("set3");
+		newSessions[5].setGroupName("set3");
+		
+		//Our set2ps1 style references are now old
+		newSessions = toBuilder(saveSessions(newSessions));
+		
+		//Set a few approved
+		newSessions[0].setApproved(true);
+		newSessions[1].setApproved(false);
+		newSessions[2].setApproved(false);
+		newSessions[3].setApproved(false);
+		newSessions[4].setApproved(true);
+		newSessions[5].setApproved(true);
+		
+		newSessions = toBuilder(saveSessions(newSessions));
+		
+		PredefinedSessionRequest request = new PredefinedSessionRequest(50L);
+		//Should be nine all together (no criteria)
+		List<IPredefinedSession> result = 
+			SharedApplication.getInstance().getPredefinedSessions(request);
+		assertEquals(9, result.size());
+		
+		//Should be 3 approved
+		request = new PredefinedSessionRequest(50L, true);
+		result = SharedApplication.getInstance().getPredefinedSessions(request);
+		assertEquals(3, result.size());
+		
+		//Should be 1 approved & FEATURED
+		request = new PredefinedSessionRequest(50L, true, PredefinedSessionType.FEATURED);
+		result = SharedApplication.getInstance().getPredefinedSessions(request);
+		assertEquals(1, result.size());
+		assertEquals(newSessions[0].getId(), result.get(0).getId());
+		
+		//Should be 2 approved & in group 'set3'
+		request = new PredefinedSessionRequest(50L, true, "set3");
+		result = SharedApplication.getInstance().getPredefinedSessions(request);
+		assertEquals(2, result.size());
+		assertEquals(newSessions[4].getId(), result.get(0).getId());
+		assertEquals(newSessions[5].getId(), result.get(1).getId());
+		
+		//Should be 2 NOT approved & in group 'set2'
+		request = new PredefinedSessionRequest(50L, false, "set2");
+		result = SharedApplication.getInstance().getPredefinedSessions(request);
+		assertEquals(2, result.size());
+		assertEquals(newSessions[1].getId(), result.get(0).getId());
+		assertEquals(newSessions[2].getId(), result.get(1).getId());
+		
+		//Should be 1 approved, in group 'set3', and UNLISTED
+		request = new PredefinedSessionRequest(50L, true, PredefinedSessionType.UNLISTED, "set3");
+		result = SharedApplication.getInstance().getPredefinedSessions(request);
+		assertEquals(1, result.size());
+		assertEquals(newSessions[5].getId(), result.get(0).getId());
+		
+		deleteSessions(newSessions);
+	}
+	
+	protected void deleteSessions(IPredefinedSession... sessions) throws Exception {
 		Exception wasThrown = null;
 		
-		for (PredefinedSession session : sessions) {
+		for (IPredefinedSession session : sessions) {
 			if (session.getId() != null) {
 				//If the session still has an ID, it wasn't deleted
 				try {
@@ -310,6 +394,51 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		if (wasThrown != null) {
 			throw wasThrown;
 		}
+	}
+	
+	protected IPredefinedSession[] saveSessions(IPredefinedSession... sessions) throws Exception {
+		Exception wasThrown = null;
+		
+		ArrayList<IPredefinedSession> results = new ArrayList<IPredefinedSession>();
+		
+		for (IPredefinedSession session : sessions) {
+
+			try {
+				SavePredefinedSession saveAction = new SavePredefinedSession(session);
+				results.add(saveAction.run());
+			} catch (Exception e) {
+				wasThrown = e;
+			}
+
+		}
+		
+		if (wasThrown != null) {
+			throw wasThrown;
+		}
+		
+		return results.toArray(new IPredefinedSession[0]);
+	}
+	
+	protected PredefinedSessionBuilder[] toBuilder(IPredefinedSession... sessions) {
+		ArrayList<PredefinedSessionBuilder> results =
+			new ArrayList<PredefinedSessionBuilder>(sessions.length);
+		
+		for (IPredefinedSession s : sessions) {
+			PredefinedSessionBuilder sb = new PredefinedSessionBuilder(s);
+			results.add(sb);
+		}
+		
+		return results.toArray(new PredefinedSessionBuilder[0]);
+	}
+	
+	protected PredefinedSessionBuilder[] stripUniqueness(PredefinedSessionBuilder... sessions) {
+		
+		for (PredefinedSessionBuilder s : sessions) {
+			s.setId(null);
+			s.setUniqueCode(null);
+		}
+		
+		return sessions;
 	}
 	
 }

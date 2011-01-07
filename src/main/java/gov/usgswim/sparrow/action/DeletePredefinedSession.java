@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgswim.sparrow.domain.PredefinedSession;
+import gov.usgswim.sparrow.domain.IPredefinedSession;
+import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
 
 import java.sql.PreparedStatement;
 import java.util.HashMap;
@@ -12,19 +13,19 @@ import java.util.Map;
  * @author eeverman
  *
  */
-public class DeletePredefinedSession extends Action<PredefinedSession> {
+public class DeletePredefinedSession extends Action<IPredefinedSession> {
 
-	PredefinedSession session;
+	PredefinedSessionBuilder session;
 
-	public DeletePredefinedSession(PredefinedSession session) {
-		this.session = session;
+	public DeletePredefinedSession(IPredefinedSession session) {
+		this.session = new PredefinedSessionBuilder(session);
 	}
 
 	/**
 	 * @return The predefined session that was deleted.
 	 */
 	@Override
-	public PredefinedSession doAction() throws Exception {
+	public IPredefinedSession doAction() throws Exception {
 
 
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -52,7 +53,7 @@ public class DeletePredefinedSession extends Action<PredefinedSession> {
 		//The ID is no longer valid, so zap it.
 		session.setId(null);
 		
-		return session;
+		return session.toImmutable();
 	}
 
 }

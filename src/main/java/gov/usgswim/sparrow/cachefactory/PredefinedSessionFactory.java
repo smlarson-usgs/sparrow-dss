@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.action.LoadPredefinedSessions;
-import gov.usgswim.sparrow.domain.PredefinedSession;
+import gov.usgswim.sparrow.domain.IPredefinedSession;
 
 import java.util.List;
 
@@ -16,9 +16,9 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 public class PredefinedSessionFactory implements CacheEntryFactory {
 
 	@Override
-	public List<PredefinedSession> createEntry(Object modelId) throws Exception {
+	public List<IPredefinedSession> createEntry(Object modelId) throws Exception {
 		LoadPredefinedSessions action = new LoadPredefinedSessions((Long) modelId);
-		List<PredefinedSession> sessionList = action.run();
+		List<IPredefinedSession> sessionList = action.run();
 
 		sessionList = action.run();
 		

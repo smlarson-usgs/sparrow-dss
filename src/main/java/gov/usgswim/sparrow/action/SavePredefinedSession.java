@@ -1,8 +1,12 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgswim.sparrow.domain.IPredefinedSession;
+import gov.usgswim.sparrow.domain.PredefinedSession;
+import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
+
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -10,36 +14,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-
-import com.google.common.collect.ImmutableList;
 import org.apache.commons.lang.RandomStringUtils;
 
-import gov.usgswim.sparrow.SparrowUnits;
-import gov.usgswim.sparrow.cachefactory.ModelRequestCacheKey;
-import gov.usgswim.sparrow.domain.PredefinedSession;
-import gov.usgswim.sparrow.domain.PredefinedSessionType;
-import gov.usgswim.sparrow.domain.SourceBuilder;
-import gov.usgswim.sparrow.domain.SparrowModel;
-import gov.usgswim.sparrow.domain.SparrowModelBuilder;
-import gov.usgswim.sparrow.util.SparrowResourceUtils;
+public class SavePredefinedSession extends Action<IPredefinedSession> {
 
-public class SavePredefinedSession extends Action<PredefinedSession> {
+	PredefinedSessionBuilder session;
 
-	PredefinedSession session;
-
-	public SavePredefinedSession(PredefinedSession session) {
-		this.session = session;
+	public SavePredefinedSession(IPredefinedSession session) {
+		this.session = new PredefinedSessionBuilder(session);
 	}
 
 	/**
 	 * @return ImmutableList of immutable SparrowModels
 	 */
 	@Override
-	public PredefinedSession doAction() throws Exception {
+	public IPredefinedSession doAction() throws Exception {
 
 		String actionName = null;
-		PredefinedSession newSession = null;
+		IPredefinedSession newSession = null;
 		
 		//Empty params
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -128,7 +120,7 @@ public class SavePredefinedSession extends Action<PredefinedSession> {
 		}
 		
 		LoadPredefinedSessions lps = new LoadPredefinedSessions(session.getUniqueCode());
-		List<PredefinedSession> sessionList = lps.run();
+		List<IPredefinedSession> sessionList = lps.run();
 		
 		
 		if (sessionList.size() != 1) {

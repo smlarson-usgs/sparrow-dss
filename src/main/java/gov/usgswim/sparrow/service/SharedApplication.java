@@ -1,6 +1,27 @@
 package gov.usgswim.sparrow.service;
 
-import static gov.usgswim.sparrow.service.ConfiguredCache.*;
+import static gov.usgswim.sparrow.service.ConfiguredCache.AdjustedSource;
+import static gov.usgswim.sparrow.service.ConfiguredCache.AdjustmentGroups;
+import static gov.usgswim.sparrow.service.ConfiguredCache.AggregateIdLookup;
+import static gov.usgswim.sparrow.service.ConfiguredCache.Analyses;
+import static gov.usgswim.sparrow.service.ConfiguredCache.AreaOfInterest;
+import static gov.usgswim.sparrow.service.ConfiguredCache.CatchmentAreas;
+import static gov.usgswim.sparrow.service.ConfiguredCache.ComparisonResult;
+import static gov.usgswim.sparrow.service.ConfiguredCache.DataBinning;
+import static gov.usgswim.sparrow.service.ConfiguredCache.DeliveryFraction;
+import static gov.usgswim.sparrow.service.ConfiguredCache.IdentifyReachByID;
+import static gov.usgswim.sparrow.service.ConfiguredCache.IdentifyReachByPoint;
+import static gov.usgswim.sparrow.service.ConfiguredCache.LoadModelMetadata;
+import static gov.usgswim.sparrow.service.ConfiguredCache.LoadReachAttributes;
+import static gov.usgswim.sparrow.service.ConfiguredCache.NSDataSet;
+import static gov.usgswim.sparrow.service.ConfiguredCache.PredefinedSessions;
+import static gov.usgswim.sparrow.service.ConfiguredCache.PredictContext;
+import static gov.usgswim.sparrow.service.ConfiguredCache.PredictData;
+import static gov.usgswim.sparrow.service.ConfiguredCache.PredictResult;
+import static gov.usgswim.sparrow.service.ConfiguredCache.ReachesByCriteria;
+import static gov.usgswim.sparrow.service.ConfiguredCache.StandardErrorEstimateData;
+import static gov.usgswim.sparrow.service.ConfiguredCache.StreamFlow;
+import static gov.usgswim.sparrow.service.ConfiguredCache.TerminalReaches;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
@@ -9,6 +30,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.action.DeletePredefinedSession;
+import gov.usgswim.sparrow.action.FilterPredefinedSessions;
 import gov.usgswim.sparrow.action.LoadReachesInBBox;
 import gov.usgswim.sparrow.action.SavePredefinedSession;
 import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
@@ -18,8 +40,8 @@ import gov.usgswim.sparrow.cachefactory.ModelRequestCacheKey;
 import gov.usgswim.sparrow.cachefactory.ReachID;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.ModelBBox;
-import gov.usgswim.sparrow.domain.PredefinedSession;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.AdvancedAnalysis;
@@ -29,6 +51,7 @@ import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.LogicalSet;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
+import gov.usgswim.sparrow.request.PredefinedSessionRequest;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 
@@ -430,14 +453,21 @@ public class SharedApplication  {
 	}
 
 	//PredefinedSessions Cache
-	public List<PredefinedSession> getPredefinedSessions(Long modelId) {
-		return getPredefinedSessions(modelId, false);
+	public List<IPredefinedSession> loadPredefinedSessions(Long modelId) {
+		return loadPredefinedSessions(modelId, false);
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<PredefinedSession> getPredefinedSessions(Long modelId, boolean quiet) {
-		return (List<PredefinedSession>) PredefinedSessions.get(modelId, quiet);
+	public List<IPredefinedSession> loadPredefinedSessions(Long modelId, boolean quiet) {
+		return (List<IPredefinedSession>) PredefinedSessions.get(modelId, quiet);
 	}
+	
+	public List<IPredefinedSession> getPredefinedSessions(PredefinedSessionRequest request) throws Exception {
+		FilterPredefinedSessions action = new FilterPredefinedSessions(request);
+		return action.run();
+	}
+	
+	
 	
 	/**
 	 * Deletes the passed session from the database, invalidates the cache,
@@ -450,9 +480,9 @@ public class SharedApplication  {
 	 * @return
 	 * @throws Exception 
 	 */
-	public PredefinedSession deletePredefinedSession(PredefinedSession session) throws Exception {
+	public IPredefinedSession deletePredefinedSession(IPredefinedSession session) throws Exception {
 		DeletePredefinedSession action = new DeletePredefinedSession(session);
-		PredefinedSession deleted = action.run();
+		IPredefinedSession deleted = action.run();
 		
 		if (deleted != null) {
 			//Removed all cached PS's for the specified model
@@ -473,9 +503,9 @@ public class SharedApplication  {
 	 * @return
 	 * @throws Exception 
 	 */
-	public PredefinedSession savePredefinedSession(PredefinedSession session) throws Exception {
+	public IPredefinedSession savePredefinedSession(IPredefinedSession session) throws Exception {
 		SavePredefinedSession action = new SavePredefinedSession(session);
-		PredefinedSession saved = action.run();
+		IPredefinedSession saved = action.run();
 		
 		if (saved != null) {
 			//Removed all cached PS's for the specified model

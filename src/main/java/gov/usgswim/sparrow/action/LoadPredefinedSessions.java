@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgswim.sparrow.domain.PredefinedSession;
+import gov.usgswim.sparrow.domain.IPredefinedSession;
+import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
 import gov.usgswim.sparrow.domain.PredefinedSessionType;
 
 import java.sql.PreparedStatement;
@@ -12,7 +13,7 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
 
-public class LoadPredefinedSessions extends Action<List<PredefinedSession>> {
+public class LoadPredefinedSessions extends Action<List<IPredefinedSession>> {
 
 	/**
 	 * A unique, user specified code that IDs a session.
@@ -34,7 +35,7 @@ public class LoadPredefinedSessions extends Action<List<PredefinedSession>> {
 	 * @return ImmutableList of immutable SparrowModels
 	 */
 	@Override
-	public List<PredefinedSession> doAction() throws Exception {
+	public List<IPredefinedSession> doAction() throws Exception {
 
 
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -54,7 +55,7 @@ public class LoadPredefinedSessions extends Action<List<PredefinedSession>> {
 
 		PreparedStatement selectSessions = null;
 		ResultSet rset = null;
-		List<PredefinedSession> sessions = new ArrayList<PredefinedSession>();
+		List<IPredefinedSession> sessions = new ArrayList<IPredefinedSession>();
 
 		selectSessions = getROPSFromPropertiesFile(queryName, null, paramMap);
 
@@ -71,12 +72,12 @@ public class LoadPredefinedSessions extends Action<List<PredefinedSession>> {
 		return ImmutableList.copyOf(sessions);
 	}
 	
-	public List<PredefinedSession> hydrate(ResultSet rset) throws Exception {
+	public List<IPredefinedSession> hydrate(ResultSet rset) throws Exception {
 
-		List<PredefinedSession> sessions = new ArrayList<PredefinedSession>();
+		List<IPredefinedSession> sessions = new ArrayList<IPredefinedSession>();
 		
 		while (rset.next()) {
-			PredefinedSession s = new PredefinedSession();
+			PredefinedSessionBuilder s = new PredefinedSessionBuilder();
 			s.setId(rset.getLong("PREDEFINED_SESSION_ID"));
 			s.setUniqueCode(rset.getString("UNIQUE_CODE"));
 			s.setModelId(rset.getLong("SPARROW_MODEL_ID"));
@@ -100,7 +101,7 @@ public class LoadPredefinedSessions extends Action<List<PredefinedSession>> {
 			s.setGroupName(rset.getString("GROUP_NAME"));
 			
 			
-			sessions.add(s);
+			sessions.add(s.toImmutable());
 		}
 
 
