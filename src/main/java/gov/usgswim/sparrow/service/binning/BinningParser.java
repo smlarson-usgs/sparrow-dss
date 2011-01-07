@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.service.binning;
 
 import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.service.RequestParser;
-import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
+import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.stream.XMLStreamReader;

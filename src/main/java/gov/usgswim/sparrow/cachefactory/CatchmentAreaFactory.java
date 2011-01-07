@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.action.LoadUnitAreas;
+import gov.usgswim.sparrow.request.CatchmentArea;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 /**

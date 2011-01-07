@@ -6,6 +6,7 @@ import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
+import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.service.ConfiguredCache;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 

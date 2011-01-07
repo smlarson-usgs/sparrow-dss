@@ -1,10 +1,10 @@
 package gov.usgswim.sparrow.service.binning;
 
 import gov.usgswim.service.pipeline.PipelineRequest;
-import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
+import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.predict.PredictExportRequest;
 
 import javax.xml.stream.XMLStreamException;

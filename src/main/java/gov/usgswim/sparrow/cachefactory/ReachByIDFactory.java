@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.action.LoadReachByID;
+import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 
 import org.apache.log4j.Logger;

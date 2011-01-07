@@ -12,10 +12,10 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.collect.ImmutableList;
 
 import gov.usgswim.sparrow.SparrowUnits;
-import gov.usgswim.sparrow.cachefactory.ModelRequestCacheKey;
 import gov.usgswim.sparrow.domain.SourceBuilder;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.SparrowModelBuilder;
+import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.util.SparrowResourceUtils;
 
 public class LoadModelMetadata extends Action<List<SparrowModel>> {

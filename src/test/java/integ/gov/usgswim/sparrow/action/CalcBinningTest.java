@@ -3,7 +3,6 @@ package gov.usgswim.sparrow.action;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.sparrow.SparrowServiceTestWithCannedModel50;
-import gov.usgswim.sparrow.cachefactory.BinningRequest;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.AreaOfInterest;
 import gov.usgswim.sparrow.parser.BasicAnalysis;
@@ -12,6 +11,7 @@ import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.NominalComparison;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
+import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.math.BigDecimal;

@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.test.integration;
 
 import gov.usgswim.sparrow.SparrowDBTestWithCannedModel50;
 import gov.usgswim.sparrow.SparrowUnitTest;
-import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
+import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.binning.BinningPipeline;
 import gov.usgswim.sparrow.service.binning.BinningServiceRequest;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;

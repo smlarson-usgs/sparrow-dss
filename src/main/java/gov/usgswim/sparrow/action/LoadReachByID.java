@@ -7,7 +7,7 @@ import java.util.Map;
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
 
-import gov.usgswim.sparrow.cachefactory.ReachID;
+import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 
 public class LoadReachByID extends Action<ReachInfo> {

@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.service.model;
 
 import gov.usgswim.service.pipeline.PipelineRequest;
-import gov.usgswim.sparrow.cachefactory.ModelRequestCacheKey;
 import gov.usgswim.sparrow.parser.ResponseFormat;
+import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 
 import org.apache.commons.lang.BooleanUtils;
 

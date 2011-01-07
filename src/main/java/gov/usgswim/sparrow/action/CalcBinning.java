@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.action;
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.cachefactory.BinningRequest;
 import gov.usgswim.sparrow.parser.DataColumn;
+import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.util.BigDecimalUtils;
 
 import java.math.BigDecimal;

@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.cachefactory;
+package gov.usgswim.sparrow.request;
 
 import gov.usgswim.Immutable;
 import gov.usgswim.sparrow.datatable.HucLevel;

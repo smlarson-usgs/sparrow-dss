@@ -9,7 +9,6 @@ import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.UncertaintySeries;
-import gov.usgswim.sparrow.cachefactory.CatchmentArea;
 import gov.usgswim.sparrow.datatable.ColumnAttribsBuilder;
 import gov.usgswim.sparrow.datatable.HucLevel;
 import gov.usgswim.sparrow.datatable.PredictResult;
@@ -22,6 +21,7 @@ import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
+import gov.usgswim.sparrow.request.CatchmentArea;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
 

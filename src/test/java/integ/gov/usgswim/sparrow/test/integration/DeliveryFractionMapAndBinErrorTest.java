@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 import gov.usgswim.sparrow.MapViewerSparrowDataProvider;
 import gov.usgswim.sparrow.SparrowDBTest;
 import gov.usgswim.sparrow.SparrowUnitTest;
-import gov.usgswim.sparrow.cachefactory.BinningRequest.BIN_TYPE;
+import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.binning.BinningPipeline;
 import gov.usgswim.sparrow.service.binning.BinningServiceRequest;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;

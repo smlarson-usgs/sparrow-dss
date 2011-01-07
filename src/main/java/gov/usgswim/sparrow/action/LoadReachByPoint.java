@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import gov.usgswim.sparrow.cachefactory.ReachID;
+import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
