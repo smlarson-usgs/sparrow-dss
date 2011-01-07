@@ -54,7 +54,7 @@ public class PredefinedSessionRequest implements Serializable {
 	public PredefinedSessionRequest(Long modelId, Boolean approved, PredefinedSessionType predefinedSessionType, String groupName) {
 		this.modelId = modelId;
 		this.approved = approved;
-		this.predefinedSessionType = null;
+		this.predefinedSessionType = predefinedSessionType;
 		this.groupName = groupName;
 		this.uniqueCode = null;
 	}
