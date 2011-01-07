@@ -8,7 +8,9 @@ import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
+import gov.usgswim.sparrow.action.DeletePredefinedSession;
 import gov.usgswim.sparrow.action.LoadReachesInBBox;
+import gov.usgswim.sparrow.action.SavePredefinedSession;
 import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
 import gov.usgswim.sparrow.cachefactory.BinningRequest;
 import gov.usgswim.sparrow.cachefactory.CatchmentArea;
@@ -428,15 +430,59 @@ public class SharedApplication  {
 	}
 
 	//PredefinedSessions Cache
-	public List<PredefinedSession> getAllPredefinedSessions() {
-		return getAllPredefinedSessions(false);
+	public List<PredefinedSession> getPredefinedSessions(Long modelId) {
+		return getPredefinedSessions(modelId, false);
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<PredefinedSession> getAllPredefinedSessions(boolean quiet) {
-		//In order to provide a key the cache system can use, we just use
-		//a constant since we always load all the values.
-		return (List<PredefinedSession>) PredefinedSessions.get(new Integer(1), quiet);
+	public List<PredefinedSession> getPredefinedSessions(Long modelId, boolean quiet) {
+		return (List<PredefinedSession>) PredefinedSessions.get(modelId, quiet);
+	}
+	
+	/**
+	 * Deletes the passed session from the database, invalidates the cache,
+	 * and returns the db version of the session.  The returned session
+	 * will have a null ID.
+	 * 
+	 * An exception is thrown if it cannot be deleted.
+	 * 
+	 * @param session
+	 * @return
+	 * @throws Exception 
+	 */
+	public PredefinedSession deletePredefinedSession(PredefinedSession session) throws Exception {
+		DeletePredefinedSession action = new DeletePredefinedSession(session);
+		PredefinedSession deleted = action.run();
+		
+		if (deleted != null) {
+			//Removed all cached PS's for the specified model
+			PredefinedSessions.remove(session.getModelId());
+		}
+		
+		return deleted;
+	}
+	
+	/**
+	 * Creates or Updates the passed session to the database, invalidates the cache,
+	 * and returns the db version of the session.  The returned session
+	 * will have a non-null ID.
+	 * 
+	 * An exception is thrown if it cannot be saved.
+	 * 
+	 * @param session
+	 * @return
+	 * @throws Exception 
+	 */
+	public PredefinedSession savePredefinedSession(PredefinedSession session) throws Exception {
+		SavePredefinedSession action = new SavePredefinedSession(session);
+		PredefinedSession saved = action.run();
+		
+		if (saved != null) {
+			//Removed all cached PS's for the specified model
+			PredefinedSessions.remove(session.getModelId());
+		}
+		
+		return saved;
 	}
 	
 	

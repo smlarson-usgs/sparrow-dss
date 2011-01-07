@@ -58,4 +58,16 @@ public enum ConfiguredCache{
 		Element e  = (quiet)? c.getQuiet(key): c.get(key);
 		return (e != null)? e.getObjectValue(): null;
 	}
+	
+	/**
+	 * Removes an item from the cache using the cache key.
+	 * 
+	 * This method should notify all peer caches to remove it as well.
+	 * @param key
+	 * @return True if removed, false if it was not in the cache.
+	 */
+	public boolean remove(Object key) {
+		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
+		return c.remove(key);
+	}
 }

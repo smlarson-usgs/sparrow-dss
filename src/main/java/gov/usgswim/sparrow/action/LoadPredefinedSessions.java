@@ -18,9 +18,12 @@ public class LoadPredefinedSessions extends Action<List<PredefinedSession>> {
 	 * A unique, user specified code that IDs a session.
 	 */
 	String uniqueCode;
+	
+	/** Id of the model the session is for.	 */
+	Long modelId;
 
-	public LoadPredefinedSessions() {
-		//default to loading all sessions
+	public LoadPredefinedSessions(Long modelId) {
+		this.modelId = modelId;
 	}
 	
 	public LoadPredefinedSessions(String uniqueCode) {
@@ -37,13 +40,16 @@ public class LoadPredefinedSessions extends Action<List<PredefinedSession>> {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		String queryName = null;	//The name of the query to run
 		
-		if (uniqueCode != null) {
+		if (modelId != null) {
+			//Select all records for a single model
+			paramMap.put("SPARROW_MODEL_ID", modelId);
+			queryName = "LoadByModelIdSQL";
+		} else if (uniqueCode != null) {
 			//Select a single record based on the code
 			paramMap.put("UNIQUE_CODE", uniqueCode);
 			queryName = "LoadByUniqueCodeSQL";
 		} else{
-			//Select all records
-			queryName = "LoadAllSQL";
+			throw new Exception("Either the modelId or the uniqueCode must not be null");
 		}
 
 		PreparedStatement selectSessions = null;

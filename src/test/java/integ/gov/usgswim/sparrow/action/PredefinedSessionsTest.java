@@ -1,8 +1,6 @@
 package gov.usgswim.sparrow.action;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import gov.usgswim.sparrow.SparrowDBTest;
 import gov.usgswim.sparrow.domain.PredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSessionType;
@@ -19,7 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * An integration test of the CRUD operation actions for PredefinedSession.
+ * An integration test of the CRUD actions for PredefinedSession.
  * @author eeverman
  *
  */
@@ -118,9 +116,8 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 	
 	
 	@Test
-	public void saveAndDeleteSessions() throws Exception {
+	public void verifyValuesAndDeleteSessions() throws Exception {
 
-		
 		//
 		assertEquals(ps1.getAddBy(), savedPs1.getAddBy());
 		assertEquals(ps1.getAddContactInfo(), savedPs1.getAddContactInfo());
@@ -171,7 +168,7 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		
 		//////////////////
 		//Try loading all three sessions
-		LoadPredefinedSessions loadAction = new LoadPredefinedSessions();
+		LoadPredefinedSessions loadAction = new LoadPredefinedSessions(50L);
 		List<PredefinedSession> sessionList = loadAction.run();
 		
 		//They should be in the specified sort order
@@ -194,7 +191,7 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		deleteSessions(savedPs1, savedPs2, savedPs3);
 		
 		//The db should now be empty
-		loadAction = new LoadPredefinedSessions();
+		loadAction = new LoadPredefinedSessions(50L);
 		sessionList = loadAction.run();
 		
 		for (PredefinedSession session : sessionList) {
@@ -216,7 +213,7 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		saveAction1.run();
 		
 		//Load the session back and verify
-		LoadPredefinedSessions loadAction = new LoadPredefinedSessions();
+		LoadPredefinedSessions loadAction = new LoadPredefinedSessions(50L);
 		List<PredefinedSession> sessionList = loadAction.run();
 		sessionList = loadAction.run();
 		
@@ -244,38 +241,69 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 	public void loadFromCache() throws Exception {
 		
 		long startTime = System.currentTimeMillis();
-		List<PredefinedSession> sessionList = SharedApplication.getInstance().getAllPredefinedSessions(true);
+		List<PredefinedSession> sessionList = SharedApplication.getInstance().getPredefinedSessions(50L, true);
 		long endTime = System.currentTimeMillis();
 		//Very fast - just checks that there is nothing there
 		assertTrue(endTime - startTime < 10L);
 		
 		//Load now for the first time
 		startTime = System.currentTimeMillis();
-		sessionList = SharedApplication.getInstance().getAllPredefinedSessions();
+		sessionList = SharedApplication.getInstance().getPredefinedSessions(50L);
 		endTime = System.currentTimeMillis();
 		//System.out.println("Time to fill cache: " + (endTime - startTime));
 		assertEquals(3, sessionList.size());
 		
 		//Load again - should be instant
 		startTime = System.currentTimeMillis();
-		sessionList = SharedApplication.getInstance().getAllPredefinedSessions();
+		sessionList = SharedApplication.getInstance().getPredefinedSessions(50L);
 		endTime = System.currentTimeMillis();
 		//Very fast - just checks that there is nothing there
 		//System.out.println("Time to load from cache (prepopulated): " + (endTime - startTime));
 		assertTrue(endTime - startTime < 10L);
 		assertEquals(3, sessionList.size());
-		
 	}
 	
-	private void deleteSessions(PredefinedSession... sessions) throws Exception {
+	@Test
+	public void cacheIsFlushedAfterUpdateOrDelete() throws Exception {
+		
+		//Force sessions to be loaded to cache
+		List<PredefinedSession> orgSessionList =
+			SharedApplication.getInstance().getPredefinedSessions(50L);
+		assertFalse(orgSessionList.get(0).getApproved());
+		
+		//Update one of the sessions
+		savedPs1.setApproved(true);
+		SharedApplication.getInstance().savePredefinedSession(savedPs1);
+		
+		//Reload session list and check for update
+		List<PredefinedSession> updatedSessionList =
+			SharedApplication.getInstance().getPredefinedSessions(50L);
+		
+		assertTrue(updatedSessionList.get(0).getApproved());
+		
+		//Delete a session
+		SharedApplication.getInstance().deletePredefinedSession(updatedSessionList.get(0));
+		
+		//Check that its gone
+		List<PredefinedSession> deletedSessionList =
+			SharedApplication.getInstance().getPredefinedSessions(50L);
+		assertTrue(deletedSessionList.size() == orgSessionList.size() - 1);
+	}
+	
+	protected void deleteSessions(PredefinedSession... sessions) throws Exception {
 		Exception wasThrown = null;
 		
 		for (PredefinedSession session : sessions) {
-			try {
-				DeletePredefinedSession deleteAction = new DeletePredefinedSession(session);
-				deleteAction.run();
-			} catch (Exception e) {
-				wasThrown = e;
+			if (session.getId() != null) {
+				//If the session still has an ID, it wasn't deleted
+				try {
+					DeletePredefinedSession deleteAction = new DeletePredefinedSession(session);
+					deleteAction.run();
+				} catch (Exception e) {
+					wasThrown = e;
+				}
+			} else {
+				//The session was already deleted/disassociated from the db
 			}
 		}
 		

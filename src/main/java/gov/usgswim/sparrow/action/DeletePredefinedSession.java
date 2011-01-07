@@ -1,24 +1,10 @@
 package gov.usgswim.sparrow.action;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.google.common.collect.ImmutableList;
-
-import gov.usgswim.sparrow.SparrowUnits;
-import gov.usgswim.sparrow.cachefactory.ModelRequestCacheKey;
 import gov.usgswim.sparrow.domain.PredefinedSession;
-import gov.usgswim.sparrow.domain.PredefinedSessionType;
-import gov.usgswim.sparrow.domain.SourceBuilder;
-import gov.usgswim.sparrow.domain.SparrowModel;
-import gov.usgswim.sparrow.domain.SparrowModelBuilder;
-import gov.usgswim.sparrow.util.SparrowResourceUtils;
+
+import java.sql.PreparedStatement;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Deletes the passed PredefinedSession from the db and returns it.
@@ -59,9 +45,12 @@ public class DeletePredefinedSession extends Action<PredefinedSession> {
 		}
 		
 		if (updateCount != 1) {
-			throw new Exception("The delete should effect exactly one record. " +
-				"Instead, " + updateCount + " records were affected.");
+			log.warn("No matching record was found to delete for ID: " +
+				session.getId());
 		}
+		
+		//The ID is no longer valid, so zap it.
+		session.setId(null);
 		
 		return session;
 	}
