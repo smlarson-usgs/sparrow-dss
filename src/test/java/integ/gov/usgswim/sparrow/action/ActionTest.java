@@ -70,9 +70,9 @@ public class ActionTest  extends SparrowDBTest {
 		
 		@Override
 		public DataTable doAction() throws Exception {
-			conn1 = getConnection();
+			conn1 = getROConnection();
 			state1 = getNewROPreparedStatement(sql);
-			conn2 = getConnection();
+			conn2 = getROConnection();
 			
 			if (conn1 != conn2) {
 				passed = false;
@@ -118,10 +118,10 @@ public class ActionTest  extends SparrowDBTest {
 		@Override
 		public DataTable doAction() throws Exception {
 
-			conn1 = getConnection();
+			conn1 = getROConnection();
 			conn1.close();
 			state1 = getNewROPreparedStatement(sql);
-			conn2 = getConnection();
+			conn2 = getROConnection();
 			
 			if (conn1 == conn2) {
 				passed = false;
@@ -136,7 +136,7 @@ public class ActionTest  extends SparrowDBTest {
 			
 			//Get new statement
 			state2 = getNewROPreparedStatement(sql);
-			conn3 = getConnection();
+			conn3 = getROConnection();
 			//These should be the same conneciton
 			if (conn2 != conn3) {
 				passed = false;
@@ -181,7 +181,7 @@ public class ActionTest  extends SparrowDBTest {
 		@Override
 		public DataTable doAction() throws Exception {
 
-			conn1 = getConnection();
+			conn1 = getROConnection();
 			state1 = getNewROPreparedStatement(sql);
 			
 			state1.setLong(1, 9190);

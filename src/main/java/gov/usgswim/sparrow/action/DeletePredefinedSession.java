@@ -10,6 +10,12 @@ import java.util.Map;
 /**
  * Deletes the passed PredefinedSession from the db and returns it.
  * Only the ID is used from the session, so its ok to pass 'fake' instances.
+ * 
+ * Note that other communication uses the uniqueCode, not the ID.  This is
+ * intentional.  Delete may never be opened up as a service-enabled operation,
+ * so this provides backdoor access for testing to delete entries during test
+ * runs.
+ * 
  * @author eeverman
  *
  */

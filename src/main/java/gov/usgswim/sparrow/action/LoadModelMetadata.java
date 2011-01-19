@@ -12,10 +12,14 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.collect.ImmutableList;
 
 import gov.usgswim.sparrow.SparrowUnits;
+import gov.usgswim.sparrow.domain.IPredefinedSession;
+import gov.usgswim.sparrow.domain.PredefinedSessionType;
 import gov.usgswim.sparrow.domain.SourceBuilder;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
+import gov.usgswim.sparrow.request.PredefinedSessionRequest;
+import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.SparrowResourceUtils;
 
 public class LoadModelMetadata extends Action<List<SparrowModel>> {
@@ -86,6 +90,8 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 		try {
 			rset = selectModels.executeQuery();
 
+			
+			
 			while (rset.next()) {
 				SparrowModelBuilder m = new SparrowModelBuilder();
 				long modelID = rset.getLong("SPARROW_MODEL_ID");
@@ -114,8 +120,11 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 				//************* END COPIED CODE ****************
 				//StringBuilder sessions = SavedSessionService.retrieveAllSavedSessionsXML(Long.toString(modelID));
 				// ^^ What is this doing? Cause right now it's nothing.
-				m.setSessions(SparrowResourceUtils.retrieveAllSavedSessions(Long.toString(modelID)));
+				//m.setSessions(SparrowResourceUtils.retrieveAllSavedSessions(Long.toString(modelID)));
 
+				PredefinedSessionRequest psRequest = new PredefinedSessionRequest(modelID, true, PredefinedSessionType.FEATURED);
+				List<IPredefinedSession> sessions = SharedApplication.getInstance().getPredefinedSessions(psRequest);
+				m.setSessions(sessions);
 				
 				models.add(m);
 			}

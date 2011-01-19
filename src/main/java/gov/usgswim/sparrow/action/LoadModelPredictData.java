@@ -42,7 +42,7 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 	@Override
 	public PredictData doAction() throws Exception {
 		PredictDataBuilder dataSet = new PredictDataBuilder();
-		Connection con = this.getConnection();
+		Connection con = this.getROConnection();
 		
 		dataSet.setSrcMetadata( loadSourceMetadata(con, modelId));
 		dataSet.setTopo( loadTopo(con, modelId) );

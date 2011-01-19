@@ -36,7 +36,7 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 	protected String _constituent;
 	protected SparrowUnits _units;
 	protected List<Source> _sources;
-	private Set<Entry<Object, Object>> _sessions;
+	private List<IPredefinedSession> _sessions;
 
 
 	public SparrowModelBuilder() {
@@ -148,10 +148,10 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 	@Override
 	public SparrowUnits getUnits() {return _units;}
 
-	public void setSessions(Set<Entry<Object, Object>> sessions) {_sessions = sessions;}
+	public void setSessions(List<IPredefinedSession> sessions) {_sessions = sessions;}
 
 	@Override
-	public Set<Entry<Object, Object>> getSessions() {return _sessions;}
+	public List<IPredefinedSession> getSessions() {return _sessions;}
 
 	/**
 	 * This method does no checking for source ordering and is reserved for

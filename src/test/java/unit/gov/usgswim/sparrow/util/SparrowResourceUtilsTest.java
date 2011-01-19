@@ -40,13 +40,6 @@ public class SparrowResourceUtilsTest extends XMLTestCase {
 	}
 
 	@Test
-	public void testRetrieveAllSavedSessionsForNonExistentModel() {
-		Set<Entry<Object, Object>> sessions = SparrowResourceUtils.retrieveAllSavedSessions(NONEXISTENT_MODEL);
-		assertNotNull(sessions);
-		assertTrue(sessions.isEmpty());
-	}
-	
-	@Test
 	public void testRetrieveValuesFromDefaultModel() throws Exception {
 		String source1 = SparrowResourceUtils.lookupModelHelp("-1", "Sources.1");
 		System.out.println(source1);

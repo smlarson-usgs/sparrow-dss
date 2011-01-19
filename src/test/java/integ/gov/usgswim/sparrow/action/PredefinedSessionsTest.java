@@ -12,6 +12,7 @@ import gov.usgswim.sparrow.domain.PredefinedSessionType;
 import gov.usgswim.sparrow.request.PredefinedSessionRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 
+import java.sql.Connection;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,14 +39,11 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 	private GregorianCalendar today;
 	private GregorianCalendar yesterday;
 	
+	
 	@Before
 	public void initSessions() throws Exception {
 		
 		//this.setLogLevel(Level.DEBUG);
-		
-		//We do some cache testing that is independant by test method,
-		//so we need to clear the cache before each test
-		SparrowCacheManager.getInstance().clearAll();
 		
 		//Construct a calendar date for today that does not include time.
 		today = new GregorianCalendar();
@@ -61,55 +59,18 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		yesterday.add(Calendar.DAY_OF_MONTH, -1);
 		
 		
-		ps1 = new PredefinedSessionBuilder();
-		ps1.setAddBy("Eric");
-		ps1.setAddContactInfo("608.821.1111");
-		//ps1.setAddDate(new Date(today.getTimeInMillis()));	//is autoset
-		ps1.setAddNote("Please approve me");
-		//ps1.setApproved(false);	//should default to false and not allow 'true' on new records
-		ps1.setContextString("context");
-		ps1.setDescription("desc");
-		ps1.setGroupName("myGroup");
-		ps1.setModelId(50L);
-		ps1.setName("Session 1");
-		ps1.setPredefinedSessionType(PredefinedSessionType.FEATURED);
-		ps1.setSortOrder(1);
-		//ps1.setUniqueCode("veryUnique1");	//auto-create unique code
+		//We do some cache testing that is independant by test method,
+		//so we need to clear the cache before each test
+		SparrowCacheManager.getInstance().clearAll();
 		
-		//
-		ps2 = new PredefinedSessionBuilder();
-		ps2.setAddBy("I-Lin");
-		ps2.setAddContactInfo("608.821.1112");
-		ps2.setAddDate(new Date(yesterday.getTimeInMillis()));	//should be ignored - reset to today
-		ps2.setAddNote("Please approve me");
-		ps2.setApproved(true);	//ignored and set to false
-		ps2.setContextString("context");
-		ps2.setDescription("desc");
-		ps2.setGroupName("myGroup");
-		ps2.setModelId(50L);
-		ps2.setName("Session 2");
-		ps2.setPredefinedSessionType(PredefinedSessionType.LISTED);
-		ps2.setSortOrder(4);
-		ps2.setUniqueCode("veryUnique2");	//auto-create unique code
+		PredefinedSessionBuilder[] pss = createUnsavedPredefinedSessions();
 		
-		//
-		ps3 = new PredefinedSessionBuilder();
-		ps3.setAddBy("Lorraine");
-		ps3.setAddContactInfo("608.821.1113");
-		//ps3.setAddDate(new Date(yesterday.getTimeInMillis()));	//should be ignored - reset to today
-		ps3.setAddNote("Please approve me");
-		ps3.setApproved(false);
-		ps3.setContextString("context");
-		ps3.setDescription("desc");
-		ps3.setGroupName("myGroup");
-		ps3.setModelId(50L);
-		ps3.setName("Session 3");
-		ps3.setPredefinedSessionType(PredefinedSessionType.UNLISTED);
-		ps3.setSortOrder(6);
-		ps3.setUniqueCode("veryUnique3");	//auto-create unique code
+		ps1 = pss[0];
+		ps2 = pss[1];
+		ps3 = pss[2];
 		
 		//Save them all
-		IPredefinedSession[] saved = saveSessions(ps1, ps2, ps3);
+		IPredefinedSession[] saved = saveSessions(pss);
 		
 		savedPs1 = saved[0];
 		savedPs2 = saved[1];
@@ -374,7 +335,7 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		deleteSessions(newSessions);
 	}
 	
-	protected void deleteSessions(IPredefinedSession... sessions) throws Exception {
+	public static void deleteSessions(IPredefinedSession... sessions) throws Exception {
 		Exception wasThrown = null;
 		
 		for (IPredefinedSession session : sessions) {
@@ -396,7 +357,7 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		}
 	}
 	
-	protected IPredefinedSession[] saveSessions(IPredefinedSession... sessions) throws Exception {
+	public static IPredefinedSession[] saveSessions(IPredefinedSession... sessions) throws Exception {
 		Exception wasThrown = null;
 		
 		ArrayList<IPredefinedSession> results = new ArrayList<IPredefinedSession>();
@@ -419,7 +380,7 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		return results.toArray(new IPredefinedSession[0]);
 	}
 	
-	protected PredefinedSessionBuilder[] toBuilder(IPredefinedSession... sessions) {
+	public static PredefinedSessionBuilder[] toBuilder(IPredefinedSession... sessions) {
 		ArrayList<PredefinedSessionBuilder> results =
 			new ArrayList<PredefinedSessionBuilder>(sessions.length);
 		
@@ -431,7 +392,7 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		return results.toArray(new PredefinedSessionBuilder[0]);
 	}
 	
-	protected PredefinedSessionBuilder[] stripUniqueness(PredefinedSessionBuilder... sessions) {
+	public static PredefinedSessionBuilder[] stripUniqueness(PredefinedSessionBuilder... sessions) {
 		
 		for (PredefinedSessionBuilder s : sessions) {
 			s.setId(null);
@@ -439,6 +400,81 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		}
 		
 		return sessions;
+	}
+	
+	/**
+	 * Creates three PredefinedSEssionBuilders.
+	 * This may be used by other classes
+	 * @return
+	 */
+	public static PredefinedSessionBuilder[] createUnsavedPredefinedSessions() {
+		
+		PredefinedSessionBuilder ps1;
+		PredefinedSessionBuilder ps2;
+		PredefinedSessionBuilder ps3;
+		
+		//Construct a calendar date for today that does not include time.
+		GregorianCalendar today = new GregorianCalendar();
+		
+		today = new GregorianCalendar(
+				today.get(Calendar.YEAR),
+				today.get(Calendar.MONTH),
+				today.get(Calendar.DAY_OF_MONTH));
+		GregorianCalendar yesterday = new GregorianCalendar(
+				today.get(Calendar.YEAR),
+				today.get(Calendar.MONTH),
+				today.get(Calendar.DAY_OF_MONTH));
+		yesterday.add(Calendar.DAY_OF_MONTH, -1);
+		
+		
+		ps1 = new PredefinedSessionBuilder();
+		ps1.setAddBy("Eric");
+		ps1.setAddContactInfo("608.821.1111");
+		//ps1.setAddDate(new Date(today.getTimeInMillis()));	//is autoset
+		ps1.setAddNote("Please approve me");
+		//ps1.setApproved(false);	//should default to false and not allow 'true' on new records
+		ps1.setContextString("context");
+		ps1.setDescription("desc");
+		ps1.setGroupName("myGroup");
+		ps1.setModelId(50L);
+		ps1.setName("Session 1");
+		ps1.setPredefinedSessionType(PredefinedSessionType.FEATURED);
+		ps1.setSortOrder(1);
+		//ps1.setUniqueCode("veryUnique1");	//auto-create unique code
+		
+		//
+		ps2 = new PredefinedSessionBuilder();
+		ps2.setAddBy("I-Lin");
+		ps2.setAddContactInfo("608.821.1112");
+		ps2.setAddDate(new Date(yesterday.getTimeInMillis()));	//should be ignored - reset to today
+		ps2.setAddNote("Please approve me");
+		ps2.setApproved(true);	//ignored and set to false
+		ps2.setContextString("context");
+		ps2.setDescription("desc");
+		ps2.setGroupName("myGroup");
+		ps2.setModelId(50L);
+		ps2.setName("Session 2");
+		ps2.setPredefinedSessionType(PredefinedSessionType.LISTED);
+		ps2.setSortOrder(4);
+		ps2.setUniqueCode("veryUnique2");	//auto-create unique code
+		
+		//
+		ps3 = new PredefinedSessionBuilder();
+		ps3.setAddBy("Lorraine");
+		ps3.setAddContactInfo("608.821.1113");
+		//ps3.setAddDate(new Date(yesterday.getTimeInMillis()));	//should be ignored - reset to today
+		ps3.setAddNote("Please approve me");
+		ps3.setApproved(false);
+		ps3.setContextString("context");
+		ps3.setDescription("desc");
+		ps3.setGroupName("myGroup");
+		ps3.setModelId(50L);
+		ps3.setName("Session 3");
+		ps3.setPredefinedSessionType(PredefinedSessionType.UNLISTED);
+		ps3.setSortOrder(6);
+		ps3.setUniqueCode("veryUnique3");	//auto-create unique code
+		
+		return new PredefinedSessionBuilder[] {ps1, ps2, ps3};
 	}
 	
 }

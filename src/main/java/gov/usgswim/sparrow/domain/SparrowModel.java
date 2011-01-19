@@ -121,7 +121,7 @@ public interface SparrowModel {
 	 *
 	 * @return
 	 */
-	public Set<Entry<Object, Object>> getSessions();
+	public List<IPredefinedSession> getSessions();
 
 
 	/**

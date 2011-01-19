@@ -19,7 +19,7 @@ public class LoadCalibrationSite extends Action<CalibrationSite> {
 		Statement stmt = null;
 		ResultSet rset = null;
 		
-		stmt = getConnection().createStatement();
+		stmt = getROConnection().createStatement();
 		
 		rset = stmt.executeQuery(query);
 		

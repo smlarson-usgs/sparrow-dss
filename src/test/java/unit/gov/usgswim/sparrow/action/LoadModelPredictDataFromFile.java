@@ -11,6 +11,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.SourceBuilder;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.SparrowModelBuilder;
@@ -21,10 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.HashSet;
-import java.util.Map.Entry;
 
 public class LoadModelPredictDataFromFile extends Action<PredictData> implements ILoadModelPredictData {
 
@@ -119,7 +117,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 			model.addSource(src);
 		}
 		
-		model.setSessions(new HashSet<Entry<Object, Object>>());
+		model.setSessions(new ArrayList<IPredefinedSession>());
 		
 		return model.toImmutable();
 	}

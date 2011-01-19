@@ -34,7 +34,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	private final String _constituent;
 	private final SparrowUnits _units;
 	private final List<Source> _sources;
-	private final Set<Entry<Object, Object>> _sessions;
+	private final List<IPredefinedSession> _sessions;
 
 	/*
 	private SparrowModelImm() {
@@ -73,7 +73,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 				Long contactId, Long enhNetworkId,
 				Double northBound, Double eastBound, Double southBound, Double westBound,
 				String constituent, SparrowUnits units,
-				Set<Entry<Object, Object>> sessions, List<Source> sources) {
+				List<IPredefinedSession> sessions, List<Source> sources) {
 
 		_id = id;
 		_approved = approved;
@@ -91,7 +91,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 		_westBound = westBound;
 		_constituent = constituent;
 		_units = units;
-		_sessions = Collections.unmodifiableSet(sessions);
+		_sessions = Collections.unmodifiableList(sessions);
 
 		//copy out the sources into an immutable list
 		if (sources != null) {
@@ -149,7 +149,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	public SparrowUnits getUnits() { return _units;}
 
 	@Override
-	public Set<Entry<Object, Object>> getSessions() { return _sessions;}
+	public List<IPredefinedSession> getSessions() { return _sessions;}
 
 	@Override
 	public List<Source> getSources() { return _sources;}

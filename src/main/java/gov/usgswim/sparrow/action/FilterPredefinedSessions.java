@@ -33,29 +33,23 @@ public class FilterPredefinedSessions extends Action<List<IPredefinedSession>> {
 	@Override
 	public List<IPredefinedSession> doAction() throws Exception {
 
-		
-		List<IPredefinedSession> unfiltered =
-			SharedApplication.getInstance().loadPredefinedSessions(request.getModelId());
-		
+		List<IPredefinedSession> unfiltered = null;
 		List<IPredefinedSession> filtered = null;
 		
-		
-		//if a uniqueCode is spec'ed, there is no other filtering to do,
-		//just find the one record
-		if (request.getUniqueCode() != null) {
+		if (request.getModelId() != null) {
+			unfiltered =
+				SharedApplication.getInstance().loadPredefinedSessions(request.getModelId());
 			
-			filtered = new ArrayList<IPredefinedSession>(1);
-			
-			for (IPredefinedSession s : unfiltered) {
-				if (request.getUniqueCode().equalsIgnoreCase(s.getUniqueCode())) {
-					filtered.add(s);
-				}
-			}
-			
-			return filtered;
-		} else {
-			//Otherwise apply the other filters
 			filtered = filter(unfiltered);
+		} else if (request.getUniqueCode() != null) {
+			unfiltered =
+				SharedApplication.getInstance().loadPredefinedSessions(request.getUniqueCode());
+			
+			if (unfiltered.size() == 1) {
+				filtered = new ArrayList<IPredefinedSession>(1);
+				filtered.add(unfiltered.get(0));
+			}
+
 		}
 
 		return filtered;

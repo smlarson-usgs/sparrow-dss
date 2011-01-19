@@ -27,25 +27,25 @@ public abstract class SparrowResourceUtils {
 		return modelFolder + fileName;
 	}
 
-	public static String retrieveSavedSession(String model, String sessionName) {
-		Long modelID = lookupModelID(model);
-		Properties props = ResourceLoaderUtils.loadResourceAsProperties(getModelResourceFilePath(modelID, SESSIONS_FILE));
-		String defaultValue = null; // TODO decide on default value for session not found
-		return props.getProperty(sessionName.replace(' ', '_'), defaultValue);
-	}
-
-	public static Set<Entry<Object, Object>> retrieveAllSavedSessions(String model) {
-		Long modelID = lookupModelID(model);
-		Properties props = ResourceLoaderUtils.loadResourceAsProperties(getModelResourceFilePath(modelID, SESSIONS_FILE));
-		Set<Entry<Object, Object>> sessionList = props.entrySet();
-		Map<Object, Object> newMap = new HashMap<Object, Object>(sessionList.size());
-		if (sessionList != null && !sessionList.isEmpty()) {
-			for (Entry<Object, Object> entry: sessionList) {
-				newMap.put(entry.getKey().toString().replace('_', ' '), entry.getValue());
-			}
-		}
-		return newMap.entrySet();
-	}
+//	public static String retrieveSavedSession(String model, String sessionName) {
+//		Long modelID = lookupModelID(model);
+//		Properties props = ResourceLoaderUtils.loadResourceAsProperties(getModelResourceFilePath(modelID, SESSIONS_FILE));
+//		String defaultValue = null; // TODO decide on default value for session not found
+//		return props.getProperty(sessionName.replace(' ', '_'), defaultValue);
+//	}
+//
+//	public static Set<Entry<Object, Object>> retrieveAllSavedSessions(String model) {
+//		Long modelID = lookupModelID(model);
+//		Properties props = ResourceLoaderUtils.loadResourceAsProperties(getModelResourceFilePath(modelID, SESSIONS_FILE));
+//		Set<Entry<Object, Object>> sessionList = props.entrySet();
+//		Map<Object, Object> newMap = new HashMap<Object, Object>(sessionList.size());
+//		if (sessionList != null && !sessionList.isEmpty()) {
+//			for (Entry<Object, Object> entry: sessionList) {
+//				newMap.put(entry.getKey().toString().replace('_', ' '), entry.getValue());
+//			}
+//		}
+//		return newMap.entrySet();
+//	}
 
 	public static String lookupMergedHelp(String model, String helpItem, String wrapXMLElement) {
 		String genHelp = lookupGeneralHelp(helpItem);

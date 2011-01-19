@@ -4,6 +4,7 @@ import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_NAMESPACE
 import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
+import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.util.SparrowResourceUtils;
@@ -99,13 +100,15 @@ public class DomainSerializer extends BasicXMLStreamReader {
 					.addAttribute("east", model.getEastBound().toString()));
 				addOpenTag("sessions");
 				{
-					for ( Entry<Object,Object> session: model.getSessions()) {
+					for ( IPredefinedSession session: model.getSessions()) {
 						if (isOutputCompleteFirstRow && !isSessionFirstRowOutput) {
 							outputEmptySessionsForHeaders();
 							isSessionFirstRowOutput = true;
 						}
 						events.add(new BasicTagEvent("session", null)
-							.addAttribute("key", session.getKey().toString())
+							.addAttribute("key", session.getUniqueCode())
+							.addAttribute("name", session.getName())
+							.addAttribute("description", session.getDescription())
 						);
 					}
 				}
