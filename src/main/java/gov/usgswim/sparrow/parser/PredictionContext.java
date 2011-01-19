@@ -53,10 +53,10 @@ public class PredictionContext implements XMLStreamParserComponent {
 	private Integer areaOfInterestID;
 	private Integer comparisonID;
 
-	private transient AdjustmentGroups adjustmentGroups;
-	private transient Analysis analysis;
-	private transient TerminalReaches terminalReaches;
-	private transient AreaOfInterest areaOfInterest;
+	private AdjustmentGroups adjustmentGroups;
+	private Analysis analysis;
+	private TerminalReaches terminalReaches;
+	private AreaOfInterest areaOfInterest;
 
 	//This is not transient - see no reason to cache this separately.
 	private Comparison comparison;
