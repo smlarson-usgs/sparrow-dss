@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.action;
 
+import java.sql.Connection;
+
 /**
  * An Action is intended to be a single use, non-threadsafe instance that is
  * used to run a calculation, build, and or load data.
@@ -35,5 +37,21 @@ public interface IAction<R extends Object> {
 	 * @throws Exception
 	 */
 	public R run() throws Exception;
+	
+	/**
+	 * This method is the method callers should call.
+	 * 
+	 * The passed connections are used instead of fetching new connections.
+	 * These connections are not closed, however, any statements created via the
+	 * getRXStatement() will be closed.
+	 * 
+	 * A base class should handle logging and error recovery.  The base class
+	 * should call doAction on subclasses.
+	 * @param readOnlyConnection
+	 * @param readWriteConnection
+	 * @return
+	 * @throws Exception
+	 */
+	public R run(Connection readOnlyConnection, Connection readWriteConnection) throws Exception;
 
 }

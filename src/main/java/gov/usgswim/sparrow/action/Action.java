@@ -58,8 +58,17 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 */
 	private int runNumber = 0;
 	
-	/** A connection that will be closed when the action completes */
-	private Connection conn = null;
+	/** A read-only connection that will be closed when the action completes */
+	private Connection roConn = null;
+	
+	/** A read-write connection that will be closed when the action completes */
+	private Connection rwConn = null;
+	
+	/** true if the read-only db connection was passed in, thus should not be closed */
+	private boolean externallyOwnedROConn = false;
+	
+	/** true if the read-write db connection was passed in, thus should not be closed */
+	private boolean externallyOwnedRWConn = false;
 	
 	private long startTime;		//Time the action starts
 	
@@ -87,6 +96,21 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		}
 		postAction(r != null, e);
 		return r;
+	}
+	
+	public R run(Connection readOnlyConnection, Connection readWriteConnection)
+			throws Exception {
+		if (readOnlyConnection != null) {
+			externallyOwnedROConn = true;
+			roConn = readOnlyConnection;
+		}
+		
+		if (readWriteConnection != null) {
+			externallyOwnedRWConn = true;
+			rwConn = readWriteConnection;
+		}
+		
+		return run();
 	}
 	
 	protected void preAction() {
@@ -187,32 +211,71 @@ public abstract class Action<R extends Object> implements IAction<R> {
 			preparedStatements.clear();
 		}
 		
-		//Close the connection, if not null
-		close(conn);
+		//Close the connections, if not null
+		if (! externallyOwnedROConn) close(roConn);
+		if (! externallyOwnedRWConn) close(rwConn);
 	}
 	
 	/**
-	 * Returns a connection which is guaranteed to be closed regardless of how
+	 * Returns a connection intended for read-only access.
+	 * 
+	 * RO access may not be enfored, however, likely there will be two dbs:  a
+	 * warehouse db and a transactional db, which may have different tables.
+	 * This connection is guaranteed to be closed regardless of how
 	 * the action completes.
 	 * 
-	 * In generally this method will reuse the same connection for the same
+	 * This method will reuse the same connection for the same
 	 * Action execution if called multiple times during a single run() invocation.
 	 * However, this method will check to ensure that the Connection is not
 	 * closed before handing it out.
 	 * 
+	 * If a RO connection is passed into the run method, it will not be closed.
+	 * 
 	 * @return A JDBC Connection which will be auto-closed at Action completion.
 	 * @throws SQLException
 	 */
-	protected Connection getConnection() throws SQLException {
-		if (conn == null) {
-			conn = SharedApplication.getInstance().getConnection();
+	protected Connection getROConnection() throws SQLException {
+		if (roConn == null) {
+			roConn = SharedApplication.getInstance().getConnection();
 		} else {
-			if (conn.isClosed()) {
-				conn = SharedApplication.getInstance().getConnection();
+			if (roConn.isClosed()) {
+				roConn = SharedApplication.getInstance().getConnection();
 			}
 		}
 		
-		return conn;
+		return roConn;
+	}
+	
+	/**
+	 * Returns a connection intended for read-only access.
+	 * 
+	 * RO access may not be enfored, however, likely there will be two dbs:  a
+	 * warehouse db and a transactional db, which may have different tables.
+	 * This connection is guaranteed to be closed regardless of how
+	 * the action completes.
+	 * 
+	 * This method will return the same rw connection for the life of the Action,
+	 * unless the connection is closed.
+	 * If transaction support is needed, simply start a transaction at the beginning
+	 * of the action, then call commit or rollback when the action is complete.
+	 * If commit is never called, the auto-close of the connection will force
+	 * a rollback.
+	 * 
+	 * If a RW connection is passed into the run method, it will not be closed.
+	 * 
+	 * @return A JDBC Connection which will be auto-closed at Action completion.
+	 * @throws SQLException
+	 */
+	protected Connection getRWConnection() throws SQLException {
+		if (rwConn == null) {
+			rwConn = SharedApplication.getInstance().getRWConnection();
+		} else {
+			if (rwConn.isClosed()) {
+				rwConn = SharedApplication.getInstance().getRWConnection();
+			}
+		}
+		
+		return rwConn;
 	}
 	
 	/**
@@ -227,7 +290,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 * @throws SQLException
 	 */
 	protected PreparedStatement getNewROPreparedStatement(String sql) throws SQLException {
-		Connection conn = getConnection();
+		Connection conn = getROConnection();
 		
 		PreparedStatement st =
 			conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY,
@@ -264,7 +327,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 * @throws SQLException
 	 */
 	protected PreparedStatement getNewRWPreparedStatement(String sql) throws SQLException {
-		Connection conn = getConnection();
+		Connection conn = getRWConnection();
 		
 		PreparedStatement st =
 			conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY,

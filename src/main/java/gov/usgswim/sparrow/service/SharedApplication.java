@@ -109,7 +109,7 @@ public class SharedApplication  {
 		return instance;
 	}
 
-	public static Connection getConnectionFromCommandLineParams() throws SQLException {
+	private static Connection getROConnectionFromCommandLineParams() throws SQLException {
 		//synchronized (this) {
 		{
 			DriverManager.registerDriver(new OracleDriver());
@@ -130,7 +130,7 @@ public class SharedApplication  {
 	public Connection getConnection() throws SQLException {
 		connectionRequestCount++;
 		
-		Connection c = findConnection();
+		Connection c = findROConnection();
 		
 		if (c != null) {
 			if (! c.isClosed()) {
@@ -156,8 +156,12 @@ public class SharedApplication  {
 		
 		return c;
 	}
+	
+	public Connection getRWConnection() throws SQLException {
+		return getConnection();
+	}
 
-	private Connection findConnection() throws SQLException {
+	private Connection findROConnection() throws SQLException {
 		synchronized (this) {
 			if (datasource == null && ! lookupFailed) {
 				try {
@@ -178,7 +182,7 @@ public class SharedApplication  {
 
 		//if we fall through from above, fetching from cmd line does
 		//not need to be sync'ed
-		return getConnectionFromCommandLineParams();
+		return getROConnectionFromCommandLineParams();
 
 	}
 
@@ -456,10 +460,19 @@ public class SharedApplication  {
 	public List<IPredefinedSession> loadPredefinedSessions(Long modelId) {
 		return loadPredefinedSessions(modelId, false);
 	}
+	
+	public List<IPredefinedSession> loadPredefinedSessions(String uniqueCode) {
+		return loadPredefinedSessions(uniqueCode, false);
+	}
 
 	@SuppressWarnings("unchecked")
 	public List<IPredefinedSession> loadPredefinedSessions(Long modelId, boolean quiet) {
 		return (List<IPredefinedSession>) PredefinedSessions.get(modelId, quiet);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<IPredefinedSession> loadPredefinedSessions(String uniqueCode, boolean quiet) {
+		return (List<IPredefinedSession>) PredefinedSessions.get(uniqueCode, quiet);
 	}
 	
 	public List<IPredefinedSession> getPredefinedSessions(PredefinedSessionRequest request) throws Exception {
