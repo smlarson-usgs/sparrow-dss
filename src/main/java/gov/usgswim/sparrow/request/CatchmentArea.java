@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.request;
 
+import java.io.Serializable;
+
 import gov.usgswim.Immutable;
 import gov.usgswim.sparrow.datatable.HucLevel;
 
@@ -13,7 +15,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * 
  */
 @Immutable
-public class CatchmentArea {
+public class CatchmentArea implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	
 	private final long modelID;
 	private final HucLevel hucLevel;
 	private final boolean cumulative;

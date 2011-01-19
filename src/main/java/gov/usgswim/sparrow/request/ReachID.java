@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.request;
 
+import java.io.Serializable;
+
 import gov.usgswim.Immutable;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -12,7 +14,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * 
  */
 @Immutable
-public class ReachID {
+public class ReachID implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
 	private final long modelID;
 	private final long reachID;
 

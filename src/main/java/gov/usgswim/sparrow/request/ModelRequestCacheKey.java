@@ -1,11 +1,15 @@
 package gov.usgswim.sparrow.request;
 
+import java.io.Serializable;
+
 import gov.usgswim.Immutable;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Immutable
-public class ModelRequestCacheKey {
+public class ModelRequestCacheKey implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	
 	private final boolean _public;
 	private final boolean _approved;
@@ -47,10 +51,10 @@ public class ModelRequestCacheKey {
 	public int hashCode() {
 		HashCodeBuilder result = new HashCodeBuilder();
 		
-		result.append(isPublic());
-		result.append(isApproved());
-		result.append(isArchived());
-		result.append(getModelId());
+		result.append(_public);
+		result.append(_approved);
+		result.append(_archived);
+		result.append(_modelId);
 		
 		return result.toHashCode();
 	}

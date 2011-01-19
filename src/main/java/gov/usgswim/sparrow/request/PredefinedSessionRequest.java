@@ -1,10 +1,22 @@
 package gov.usgswim.sparrow.request;
 
+import gov.usgswim.Immutable;
 import gov.usgswim.sparrow.domain.PredefinedSessionType;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
+/**
+ * A request for PredefinedSession's.
+ * @author eeverman
+ *
+ */
+@Immutable
 public class PredefinedSessionRequest implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
 	private final Long modelId;
 	private final Boolean approved;
 	private final PredefinedSessionType predefinedSessionType;
@@ -90,6 +102,31 @@ public class PredefinedSessionRequest implements Serializable {
 	 */
 	public String getUniqueCode() {
 		return uniqueCode;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof PredefinedSessionRequest) {
+			return obj.hashCode() == hashCode();
+		}
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		HashCodeBuilder hash = new HashCodeBuilder(197, 1343);
+		hash.append(modelId);
+		hash.append(approved);
+		hash.append(predefinedSessionType);
+		hash.append(groupName);
+		hash.append(uniqueCode);
+		return hash.toHashCode();
 	}
 
 }

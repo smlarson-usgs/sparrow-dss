@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.request;
 
+import gov.usgswim.Immutable;
+
 import java.io.Serializable;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -9,6 +11,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  *
  * @author eeverman
  */
+@Immutable
 public class BinningRequest implements Serializable {
 
 	private static final long serialVersionUID = 1L;
