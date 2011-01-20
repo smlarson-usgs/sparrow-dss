@@ -237,7 +237,7 @@ public class SparrowDBTest extends SparrowUnitTest {
 	
 	public static Connection getSingleAutoCloseTestConnection() throws SQLException {
 		if (sparrowDBTestConn == null || sparrowDBTestConn.isClosed()) {
-			sparrowDBTestConn = SharedApplication.getInstance().getConnection();
+			sparrowDBTestConn = SharedApplication.getInstance().getROConnection();
 		}
 		
 		return sparrowDBTestConn;

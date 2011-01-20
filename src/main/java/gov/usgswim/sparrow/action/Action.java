@@ -242,10 +242,10 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 */
 	protected Connection getROConnection() throws SQLException {
 		if (roConn == null) {
-			roConn = SharedApplication.getInstance().getConnection();
+			roConn = SharedApplication.getInstance().getROConnection();
 		} else {
 			if (roConn.isClosed()) {
-				roConn = SharedApplication.getInstance().getConnection();
+				roConn = SharedApplication.getInstance().getROConnection();
 			}
 		}
 		

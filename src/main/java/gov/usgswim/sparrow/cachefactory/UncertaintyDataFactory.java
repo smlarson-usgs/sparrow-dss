@@ -40,7 +40,7 @@ public class UncertaintyDataFactory extends AbstractCacheFactory {
 		float data[][] = null;
 		
 
-		Connection conn = SharedApplication.getInstance().getConnection();
+		Connection conn = SharedApplication.getInstance().getROConnection();
 		ResultSet rs = null;
 
 		try {
@@ -91,7 +91,7 @@ public class UncertaintyDataFactory extends AbstractCacheFactory {
 		Connection conn = null;
 		Integer rchCount = null;
 		try {
-			conn = SharedApplication.getInstance().getConnection();
+			conn = SharedApplication.getInstance().getROConnection();
 			rchCount = DLUtils.readAsInteger(conn, query, 1).getInt(0, 0);
 		} finally {
 			SharedApplication.closeConnection(conn, null);

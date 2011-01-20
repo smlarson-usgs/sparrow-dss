@@ -208,7 +208,7 @@ public class ComparePredictionToText {
 		int failCount = 0;
 		
 		try {
-			Connection conn = SharedApplication.getInstance().getConnection();
+			Connection conn = SharedApplication.getInstance().getROConnection();
 			assertTrue(!conn.isClosed());
 			conn.close();
 		} catch (Exception e) {
@@ -273,7 +273,7 @@ public class ComparePredictionToText {
 	 * @throws Exception
 	 */
 	public boolean testSingleModelDataQuality(Long modelId) throws Exception {
-		Connection conn = SharedApplication.getInstance().getConnection();
+		Connection conn = SharedApplication.getInstance().getROConnection();
 		
 		//Get list of queries in properties file
 		Properties props = new Properties();

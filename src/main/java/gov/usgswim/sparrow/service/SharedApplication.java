@@ -145,7 +145,7 @@ public class SharedApplication  {
 	// INSTANCE METHODS
 	// ================
 
-	public Connection getConnection() throws SQLException {
+	public Connection getROConnection() throws SQLException {
 		roConnectionRequestCount++;
 		
 		Connection c = findROConnection();
@@ -701,7 +701,7 @@ public class SharedApplication  {
 	
 
 	public static DataTableWritable queryToDataTable(String query) throws NamingException, SQLException {
-		Connection conn = getInstance().getConnection();
+		Connection conn = getInstance().getROConnection();
 		ResultSet rset = null;
 		DataTableWritable attributes = null;
 		try {

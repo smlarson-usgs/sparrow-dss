@@ -75,7 +75,7 @@ public class FindReachSupportService extends HttpServlet {
 		try {
 			// TODO need to put this in properties file using getText per conventions
 			String edanameQuery = String.format(QUERIES.get(attrib), modelID);
-			Connection conn = SharedApplication.getInstance().getConnection();
+			Connection conn = SharedApplication.getInstance().getROConnection();
 			Statement stmt = conn.createStatement();
 			ResultSet rset = stmt.executeQuery(edanameQuery);
 

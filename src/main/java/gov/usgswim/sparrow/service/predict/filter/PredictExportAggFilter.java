@@ -70,7 +70,7 @@ public class PredictExportAggFilter implements RowFilter {
                     + "  ) = 'TRUE' "
                     ;
             
-            conn = SharedApplication.getInstance().getConnection();
+            conn = SharedApplication.getInstance().getROConnection();
             Statement statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             statement.setFetchSize(2000);
     

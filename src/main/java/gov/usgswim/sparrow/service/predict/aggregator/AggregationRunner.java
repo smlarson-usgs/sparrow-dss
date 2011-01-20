@@ -68,7 +68,7 @@ public class AggregationRunner {
 		// Set up the query, result set, and connection
 		String query = buildAggregateInfoQuery();
 		ResultSet rs = null;
-		Connection conn = SharedApplication.getInstance().getConnection();
+		Connection conn = SharedApplication.getInstance().getROConnection();
 
 		try {
 			// Run the query
@@ -124,7 +124,7 @@ public class AggregationRunner {
 		// Set up the query, result set, and connection
 		String query = buildAggregateInfoQuery();
 		ResultSet rs = null;
-		Connection conn = SharedApplication.getInstance().getConnection();
+		Connection conn = SharedApplication.getInstance().getROConnection();
 
 		try {
 			// Run the query

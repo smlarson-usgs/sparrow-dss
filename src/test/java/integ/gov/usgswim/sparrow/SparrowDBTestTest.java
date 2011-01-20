@@ -23,8 +23,8 @@ public class SparrowDBTestTest extends SparrowDBTest {
 		Connection conn2 = null;
 		
 		try {
-			conn1 = SharedApplication.getInstance().getConnection();
-			conn2 = SharedApplication.getInstance().getConnection();
+			conn1 = SharedApplication.getInstance().getROConnection();
+			conn2 = SharedApplication.getInstance().getROConnection();
 			
 			assertNotNull(conn1);
 			assertNotNull(conn2);
@@ -49,12 +49,12 @@ public class SparrowDBTestTest extends SparrowDBTest {
 		Connection conn4 = null;
 		
 		try {
-			conn1 = SharedApplication.getInstance().getConnection();
-			conn2 = SharedApplication.getInstance().getConnection();
-			conn3 = SharedApplication.getInstance().getConnection();
+			conn1 = SharedApplication.getInstance().getROConnection();
+			conn2 = SharedApplication.getInstance().getROConnection();
+			conn3 = SharedApplication.getInstance().getROConnection();
 			
 			//Only three connections are available, so this should throw an exception
-			conn4 = SharedApplication.getInstance().getConnection();
+			conn4 = SharedApplication.getInstance().getROConnection();
 		} finally {
 			SharedApplication.closeConnection(conn1, null);
 			SharedApplication.closeConnection(conn2, null);

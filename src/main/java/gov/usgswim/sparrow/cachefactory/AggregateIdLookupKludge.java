@@ -57,7 +57,7 @@ public class AggregateIdLookupKludge {
         
         try {
             // Run the query
-            conn = SharedApplication.getInstance().getConnection();
+            conn = SharedApplication.getInstance().getROConnection();
             Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
             rs = st.executeQuery(query);
             

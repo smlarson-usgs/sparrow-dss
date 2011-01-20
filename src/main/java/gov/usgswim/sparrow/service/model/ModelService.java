@@ -41,7 +41,7 @@ public class ModelService implements HttpService<ModelRequest> {
 	public ModelService() {}
 
 	protected Connection getConnection() throws NamingException, SQLException {
-		return SharedApplication.getInstance().getConnection();
+		return SharedApplication.getInstance().getROConnection();
 	}
 
 	public void shutDown() {
