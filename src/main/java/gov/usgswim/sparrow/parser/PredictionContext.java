@@ -288,7 +288,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	 * @return
 	 * @throws CloneNotSupportedException
 	 */
-	public PredictionContext clone(AdjustmentGroups ag, Analysis anal, TerminalReaches tr, AreaOfInterest aoi) throws CloneNotSupportedException {
+	public PredictionContext cloneWithSuppliedChildren(AdjustmentGroups ag, Analysis anal, TerminalReaches tr, AreaOfInterest aoi) throws CloneNotSupportedException {
 		PredictionContext myClone = this.clone();
 		// TODO [IK] log error conditions appropriately. Return null if error?
 		// TODO [eric] Determine error behavior. Suggest return null if error.

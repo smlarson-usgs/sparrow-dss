@@ -312,7 +312,7 @@ public class SharedApplication  {
 					aoi = aoi.clone();
 				}
 
-				pc = pc.clone(ags, analysis, terminalReaches, aoi);
+				pc = pc.cloneWithSuppliedChildren(ags, analysis, terminalReaches, aoi);
 
 
 			} catch (CloneNotSupportedException e1) {
