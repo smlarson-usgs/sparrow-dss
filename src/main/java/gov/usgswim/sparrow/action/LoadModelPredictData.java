@@ -159,7 +159,7 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public DataTableWritable loadTopo(Connection conn, long modelId) throws SQLException,
+	public DataTableWritable loadTopo(Connection conn, long modelId) throws Exception,
 	IOException {
 		
 		//Create param map

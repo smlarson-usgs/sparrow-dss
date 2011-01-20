@@ -3,8 +3,13 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.service.SharedApplication;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,6 +17,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -355,7 +361,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 */
 	public PreparedStatement getROPSFromPropertiesFile(
 			String name, Class<?> clazz, Map<String, Object> params)
-			throws SQLException, IOException {
+			throws Exception {
 		
 		//Get the text from the properties file
 		String sql = getText(name, (clazz != null)? clazz : this.getClass());
@@ -375,7 +381,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 */
 	public PreparedStatement getRWPSFromPropertiesFile(
 			String name, Class<?> clazz, Map<String, Object> params)
-			throws SQLException, IOException {
+			throws Exception {
 		
 		//Get the text from the properties file
 		String sql = getText(name, (clazz != null)? clazz : this.getClass());
@@ -386,7 +392,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	
 	protected PreparedStatement getROPSFromString(
 			String sql, Map<String, Object> params)
-			throws SQLException, IOException {
+			throws Exception {
 
 		PreparedStatement statement = null;
 
@@ -413,7 +419,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 */
 	protected PreparedStatement getRWPSFromString(
 			String sql, Map<String, Object> params)
-			throws SQLException, IOException {
+			throws Exception {
 		
 		PreparedStatement statement = null;
 
@@ -442,7 +448,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 * @throws SQLException
 	 */
 	protected void assignParameters(PreparedStatement statement,
-			SQLString sqlString, Map<String, Object> params) throws SQLException {
+			SQLString sqlString, Map<String, Object> params) throws Exception {
 		
 		ArrayList<String> variables = new ArrayList<String>();
 		
@@ -465,11 +471,14 @@ public abstract class Action<R extends Object> implements IAction<R> {
 					statement.setFloat(i, (Float) val);
 				} else if (val instanceof Double) {
 					statement.setDouble(i, (Double) val);
+				} else if (val instanceof Timestamp) {
+					statement.setTimestamp(i, (Timestamp) val);
 				} else if (val instanceof Date) {
 					statement.setDate(i, (Date) val);
-				
 				} else if (val instanceof Time) {
 					statement.setTime(i, (Time) val);
+				} else if (val instanceof SerializableBlobWrapper) {
+					statement.setBytes(i, ((SerializableBlobWrapper)val).getBytes());
 				} else {
 					statement.setObject(i, val);
 				}
@@ -800,4 +809,5 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		}
 		return ins;
 	}
+	
 }
