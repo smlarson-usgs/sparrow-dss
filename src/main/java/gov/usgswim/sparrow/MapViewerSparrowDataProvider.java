@@ -51,7 +51,9 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 			hash.put(key, params.get(key));
 		}
 
+
 		return buildDataSet(hash);
+
 	}
 
 
@@ -80,6 +82,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 	 *
 	 * @param params - to be used when creating a data set.
 	 * @return an instance of NSDataSet; null if failed.
+	 * @throws Exception 
 	 */
 	public NSDataSet buildDataSet(Hashtable params) {
 
@@ -100,7 +103,14 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 				return null;
 			}
 
-			PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
+			PredictionContext context;
+			try {
+				context = SharedApplication.getInstance().getPredictionContext(contextId);
+			} catch (Exception e) {
+				log.error("Could not fetch PredictionContext from storage.  " +
+						"context-id '" + idString, e);
+				return null;
+			}
 
 			if (context != null) {
 

@@ -26,12 +26,22 @@ public class IndividualReachPredictService extends HttpServlet{
 		String model = req.getParameter("model");
 		String reachId = req.getParameter("reachID");
 		IndividualReachPredictionRequest request = new IndividualReachPredictionRequest(contextId, model, reachId);
+		PrintWriter writer = resp.getWriter();
 		
-		PredictionContext context = request.retrievePredictionContext();
+		PredictionContext context;
+		try {
+			context = request.retrievePredictionContext();
+		} catch (Exception e) {
+			resp.setContentType("text/plain");
+			resp.setCharacterEncoding("UTF-8");
+			writer.print("Could not find the specified PredictionContext");
+			return;
+		}
 		PredictResult result = SharedApplication.getInstance().getPredictResult(context.getAdjustmentGroups());
 
 		resp.setContentType("text/xml");
-		PrintWriter writer = resp.getWriter();
+		resp.setCharacterEncoding("UTF-8");
+		
 		String responseHeadFormat = "<Sparrow-Individual-Reach-Prediction-Response reachId=\"%s\" model=\"%s\" contextId=\"%s\">";
 		writer.write(String.format(responseHeadFormat, reachId, model, contextId));
 

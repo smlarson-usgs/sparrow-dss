@@ -11,12 +11,12 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 public enum ConfiguredCache{
 	// distributed caches
-	PredictContext(true),
-	AdjustmentGroups(true),
-	Analyses(true),
-	TerminalReaches(true),
-	AreaOfInterest(true),
-	PredefinedSessions(true, new PredefinedSessionFactory()),
+	PredictContext(false),
+	AdjustmentGroups(false),
+	Analyses(false),
+	TerminalReaches(false),
+	AreaOfInterest(false),
+	PredefinedSessions(false, new PredefinedSessionFactory()),
 	
 	// non-distributed caches
 	PredictData(false, new PredictDataFactory()),
@@ -53,10 +53,109 @@ public enum ConfiguredCache{
 		}
 	}
 	
+	/**
+	 * Fetch an object by its key.
+	 * 
+	 * No type checking is done, so callers must ensure they are using the correct
+	 * class types.
+	 * @param key
+	 * @param quiet
+	 * @return
+	 */
 	public Object get(Object key, boolean quiet) {
 		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
 		Element e  = (quiet)? c.getQuiet(key): c.get(key);
 		return (e != null)? e.getObjectValue(): null;
+	}
+	
+	/**
+	 * Fetch an object by its key.
+	 * 
+	 * No type checking is done, so callers must ensure they are using the correct
+	 * class types.
+	 * @param key
+	 * @param quiet
+	 * @return
+	 */
+	public Object get(Long key, boolean quiet) {
+		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
+		Element e  = (quiet)? c.getQuiet(key): c.get(key);
+		return (e != null)? e.getObjectValue(): null;
+	}
+	
+	/**
+	 * Fetch an object by its key.
+	 * 
+	 * No type checking is done, so callers must ensure they are using the correct
+	 * class types.
+	 * @param key An Integer key is converted to a long.
+	 * @param quiet
+	 * @return
+	 */
+	public Object get(Integer key, boolean quiet) {
+		return get(new Long(key), quiet);
+	}
+	
+	/**
+	 * Put an object and its key.
+	 * 
+	 * No type checking is done, so callers must ensure they are using the correct
+	 * class types.
+	 * @param key
+	 * @param quiet
+	 * @return
+	 */
+	public void put(Long key, Object value) {
+		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
+		Element e  = new Element(key, value);
+		c.put(e);
+	}
+	
+	/**
+	 * Put an object and its key.
+	 * 
+	 * No type checking is done, so callers must ensure they are using the correct
+	 * class types.
+	 * @param key A key that is converted to a Long
+	 * @param quiet
+	 * @return
+	 */
+	public void put(Integer key, Object value) {
+		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
+		Element e  = new Element(new Long(key), value);
+		c.put(e);
+	}
+	
+	/**
+	 * Forces the last access time and other stats to be updated on an entry.
+	 * 
+	 * This is done by first attempting to get the item.  If its not found, it
+	 * is put into the cache.
+	 * 
+	 * @param key
+	 * @param value
+	 */
+	public void touch(Long key, Object value) {
+		Object o = get(key, false);
+		if (o == null) {
+			put(key, value);
+		}
+	}
+	
+	/**
+	 * Forces the last access time and other stats to be updated on an entry.
+	 * 
+	 * This is done by first attempting to get the item.  If its not found, it
+	 * is put into the cache.
+	 * 
+	 * @param key The key is converted to a Long.
+	 * @param value
+	 */
+	public void touch(Integer key, Object value) {
+		Object o = get(new Long(key), false);
+		if (o == null) {
+			put(new Long(key), value);
+		}
 	}
 	
 	/**

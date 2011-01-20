@@ -95,9 +95,10 @@
 	 <!-- DISTRIBUTED CACHE CONFIGURATION ${cacheManagerPeerProviderFactory} /END -->
 	 	
 	 <!-- DISTRIBUTED CACHE CONFIGURATION  ${cacheManagerPeerListenerFactory} /END -->
-			
+	
+	<!--		
 	<diskStore path="java.io.tmpdir/ehcache_diskstore" />
-
+	-->
 
 	<!--
 		Cache configuration
@@ -297,9 +298,9 @@
 		LRU = Least Recently Used
 	-->
 	<defaultCache maxElementsInMemory="200" maxElementsOnDisk="10000"
-		eternal="false" overflowToDisk="true" diskSpoolBufferSizeMB="1"
-		timeToIdleSeconds="432000" timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" />
+		eternal="false" overflowToDisk="false" diskSpoolBufferSizeMB="1"
+		timeToIdleSeconds="432000" timeToLiveSeconds="0" diskPersistent="false"
+		memoryStoreEvictionPolicy="LRU" />
 
 	<!--
 		Sparrow Bean caches. Initially all the same as the default cache...
@@ -317,98 +318,25 @@
 			Do not use Time To Idle with distributed caching, unless you do not 
 		care about inconsistent data across nodes. 
 	 -->
-	<!-- 
-		Distributed caches. See SharedApplication.putPredictionContext(), line 176
-		
-		Typical Sparrow configuration value for:
-		cacheEventListenerFactory.class=
-			"net.sf.ehcache.distribution.RMICacheReplicatorFactory"
-				||
-			"gov.usgswim.sparrow.clustering.DummyCacheEventListenerFactory"
-		
-		cacheEventListenerFactory.properties=
-			"replicateAsynchronously=true, replicatePuts=true, replicateUpdates=true, replicateUpdatesViaCopy=true, replicateRemovals=true, asynchronousReplicationIntervalMillis=10"
-				||
-			""
-		
-		
-		As before, choose the first option for clustered operation using sync via RMI.
-		Choose the second option for local development non-clustered operation.
-		<cacheEventListenerFactory
-			class="${cacheEventListenerFactory.class}"
-    		properties="${cacheEventListenerFactory.properties}"/>
-	 -->
-	<cache name="PredictContext" maxElementsInMemory="200"
-		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="1" timeToIdleSeconds="0"
-		timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" >
-		
-		<!--  DISTRIBUTED CACHE CONFIGURATION ${cacheEventListenerFactory} /END -->
-
- 	</cache>
-
-	<cache name="AdjustmentGroups" maxElementsInMemory="200"
-		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="3" timeToIdleSeconds="0"
-		timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU">
-		<!--  DISTRIBUTED CACHE CONFIGURATION ${cacheEventListenerFactory} /END -->
-
-	</cache>
-		
-	<cache name="Analyses" maxElementsInMemory="200"
-		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="1" timeToIdleSeconds="0"
-		timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" >
-		<!--  DISTRIBUTED CACHE CONFIGURATION ${cacheEventListenerFactory} /END -->
-
-    </cache>
-		
-	<cache name="TerminalReaches" maxElementsInMemory="200"
-		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="1" timeToIdleSeconds="0"
-		timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU">
-		<!--  DISTRIBUTED CACHE CONFIGURATION ${cacheEventListenerFactory} /END -->
-
-    </cache>
-		
-	<cache name="AreaOfInterest" maxElementsInMemory="200"
-		maxElementsOnDisk="10000" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="1" timeToIdleSeconds="0"
-		timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU">
-		<!--  DISTRIBUTED CACHE CONFIGURATION ${cacheEventListenerFactory} /END -->
-
-    </cache>
+	
+	<!-- PredictionContext related caches -->
+	<cache name="PredictContext" maxElementsInMemory="200"/>
+	<cache name="AdjustmentGroups" maxElementsInMemory="200"/>
+	<cache name="Analyses" maxElementsInMemory="200"/>
+	<cache name="TerminalReaches" maxElementsInMemory="200"/>
+	<cache name="AreaOfInterest" maxElementsInMemory="200"/>
     
-    <cache name="PredefinedSessions" maxElementsInMemory="2"
-		maxElementsOnDisk="2" eternal="false" overflowToDisk="true"
-		diskSpoolBufferSizeMB="5" timeToIdleSeconds="0"
-		timeToLiveSeconds="0" diskPersistent="true"
-		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU">
-		<!--  DISTRIBUTED CACHE CONFIGURATION ${cacheEventListenerFactory} /END -->
-    </cache>
+    <cache name="PredefinedSessions" maxElementsInMemory="200"/>
 		
 	<cache name="ComparisonResult" maxElementsInMemory="10"
-		maxElementsOnDisk="40" eternal="false" overflowToDisk="false"
-		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
-		timeToLiveSeconds="14400" diskPersistent="false"
-		diskExpiryThreadIntervalSeconds="1800" memoryStoreEvictionPolicy="LRU" />
+		timeToIdleSeconds="120" timeToLiveSeconds="0"/>
 		
 	<cache name="AnalysisResult" maxElementsInMemory="20"
-		maxElementsOnDisk="40" eternal="false" overflowToDisk="false"
-		diskSpoolBufferSizeMB="32" timeToIdleSeconds="3600"
-		timeToLiveSeconds="14400" diskPersistent="false"
-		diskExpiryThreadIntervalSeconds="1800" memoryStoreEvictionPolicy="LRU" />
+		timeToIdleSeconds="3600" timeToLiveSeconds="14400" />
 		
 	<cache name="NSDataSet" maxElementsInMemory="3"
-		maxElementsOnDisk="20" eternal="false" overflowToDisk="false"
-		diskSpoolBufferSizeMB="32" timeToIdleSeconds="60"
-		timeToLiveSeconds="0" diskPersistent="false"
-		diskExpiryThreadIntervalSeconds="7200" memoryStoreEvictionPolicy="LRU" />
+		timeToIdleSeconds="60" timeToLiveSeconds="0"/>
+		
 	<!--
 		Sparrow calculated value caches.
 		These caches will all use the SelfPopulatingCache decorator, which

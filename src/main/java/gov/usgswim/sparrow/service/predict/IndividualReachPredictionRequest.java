@@ -17,7 +17,7 @@ public class IndividualReachPredictionRequest {
 		this.reachId = (reachId != null && reachId.length() > 0)? Long.parseLong(reachId): null;	}
 
 
-	public PredictionContext retrievePredictionContext() {
+	public PredictionContext retrievePredictionContext() throws Exception {
 		PredictionContext pc = null;
 		if (contextId != null) {
 			pc = SharedApplication.getInstance().getPredictionContext(contextId);

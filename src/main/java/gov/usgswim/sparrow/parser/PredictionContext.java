@@ -280,7 +280,16 @@ public class PredictionContext implements XMLStreamParserComponent {
 	}
 
 	/**
-	 * Clones with supplied transient children. Does not clone supplied children.
+	 * Clones with supplied transient children.
+	 * 
+	 * The children must be the correct ones - ie, they must have ID numbers
+	 * matching the ID numbers the PredictionContext is expecting.
+	 * 
+	 * This method is needed b/c the PredictionContext can nullify its children
+	 * and fetch them from separate caches when needed.  The child is not assigned
+	 * if the ID does not match.
+	 * 
+	 * TODO:  Do we still need this if the children are not transient?
 	 *
 	 * @param ag
 	 * @param anal
@@ -290,8 +299,6 @@ public class PredictionContext implements XMLStreamParserComponent {
 	 */
 	public PredictionContext cloneWithSuppliedChildren(AdjustmentGroups ag, Analysis anal, TerminalReaches tr, AreaOfInterest aoi) throws CloneNotSupportedException {
 		PredictionContext myClone = this.clone();
-		// TODO [IK] log error conditions appropriately. Return null if error?
-		// TODO [eric] Determine error behavior. Suggest return null if error.
 
 		// populate the transient children only if necessary & correct
 		if (adjustmentGroupsID != null && ag != null && ag.getId().equals(adjustmentGroupsID)) {

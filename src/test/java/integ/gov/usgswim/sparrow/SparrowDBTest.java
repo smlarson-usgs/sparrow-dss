@@ -3,6 +3,7 @@
  */
 package gov.usgswim.sparrow;
 
+import gov.usgswim.sparrow.action.PredictionContextHandler;
 import gov.usgswim.sparrow.cachefactory.PredictDataFactory;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -65,6 +66,17 @@ public class SparrowDBTest extends SparrowUnitTest {
 	public boolean loadModelDataFromFile() {
 		return false;
 	}
+	
+	/**
+	 * If this method returns true, db access for PredictionContexts is turned
+	 * off, resulting in only the local memory cache being used.  Unless testing
+	 * is being done of the PC storage system itself, it should be OK in all
+	 * cases to let this be disabled.
+	 * @return
+	 */
+	public boolean disablePredictionContextPersistentStorage() {
+		return true;
+	}
 
 	@Override
 	public void doOneTimeFrameworkSetup() throws Exception {
@@ -74,6 +86,16 @@ public class SparrowDBTest extends SparrowUnitTest {
 			//data to be loaded from the DB, not from text files.
 			System.clearProperty(PredictDataFactory.ACTION_IMPLEMENTATION_CLASS);
 		}
+		
+		
+		if (disablePredictionContextPersistentStorage()) {
+			//turn of db access
+			System.setProperty(PredictionContextHandler.DISABLE_DB_ACCESS, "true");
+		} else {
+			//Clear to allow the PredictionContext to be stored to persistent storage
+			System.clearProperty(PredictionContextHandler.DISABLE_DB_ACCESS);
+		}
+		
 		
 		doDbSetup();
 		singleInstanceToTearDown = this;
@@ -95,32 +117,30 @@ public class SparrowDBTest extends SparrowUnitTest {
 
 
 		Context ctx = new InitialContext();
-		DataSource testDs = null;
+		DataSource testRoDs = null;
+		DataSource testRwDs = null;
 		
 		try {
-			testDs = (DataSource) ctx.lookup("java:comp/env/jdbc/sparrow_dss");
+			testRoDs = (DataSource) ctx.lookup(SharedApplication.READ_ONLY_JNDI_DS_NAME);
+			testRwDs = (DataSource) ctx.lookup(SharedApplication.READ_WRITE_JNDI_DS_NAME);
 		} catch (Exception e) {
 			//Ignore
 		}
 		
-		if (testDs == null) {
+		String strUseProd = System.getProperty(SYS_PROP_USE_PRODUCTION_DB);
+		boolean useProd = false;
+		if (strUseProd != null) {
+			strUseProd = strUseProd.toLowerCase();
+			if ("yes".equals(strUseProd) || "true".equals(strUseProd)) {
+				useProd = true;
+			}
+		}
+		
+		if (testRoDs == null) {
 			OracleDataSource ds = new OracleDataSource(); 
 			
-			
 			ds.setConnectionCachingEnabled(true);
-	
-	        
-	        
-			String strUseProd = System.getProperty(SYS_PROP_USE_PRODUCTION_DB);
-			boolean useProd = false;
-			
-			if (strUseProd != null) {
-				strUseProd = strUseProd.toLowerCase();
-				if ("yes".equals(strUseProd) || "true".equals(strUseProd)) {
-					useProd = true;
-				}
-			}
-			
+
 			if (! useProd) {
 				//130.11.165.154
 				//igsarmewdbdev.er.usgs.gov
@@ -138,26 +158,53 @@ public class SparrowDBTest extends SparrowUnitTest {
 				ds.setUser("sparrow_dss");
 				ds.setPassword(pwd);
 			}
+			initDataSource(ds, ctx, "sparrow_dss");
+		}
+		
+		if (testRwDs == null) {
+			OracleDataSource ds = new OracleDataSource(); 
 			
-			//Set implicite cache properties
-	        Properties cacheProps = new Properties();
-	        cacheProps.setProperty("MinLimit", "0");
-	        cacheProps.setProperty("MaxLimit", "3"); 
-	        cacheProps.setProperty("InitialLimit", "0");	//# of conns on startup 
-	        cacheProps.setProperty("ConnectionWaitTimeout", "15");
-	        cacheProps.setProperty("ValidateConnection", "false");
-	        ds.setConnectionCacheProperties(cacheProps);
-	        ds.setImplicitCachingEnabled(true);
-	        ds.setConnectionCachingEnabled(true);
-	        
+			ds.setConnectionCachingEnabled(true);
+
+			//ALWAYS USE THE TEST DB FOR TRANSACTIONAL SUPPORT.
+			//130.11.165.154
+			//igsarmewdbdev.er.usgs.gov
+			ds.setURL("jdbc:oracle:thin:@130.11.165.154:1521:widev");
+			ds.setUser("sparrow_dss");
+			ds.setPassword("***REMOVED***");
+
+			initDataSource(ds, ctx, "sparrow_dss_trans");
+		}
+	}
+	
+	protected void initDataSource(OracleDataSource ds, Context ctx, String localName) throws Exception {
+
+		
+		//Set implicite cache properties
+        Properties cacheProps = new Properties();
+        cacheProps.setProperty("MinLimit", "0");
+        cacheProps.setProperty("MaxLimit", "3"); 
+        cacheProps.setProperty("InitialLimit", "0");	//# of conns on startup 
+        cacheProps.setProperty("ConnectionWaitTimeout", "15");
+        cacheProps.setProperty("ValidateConnection", "false");
+        ds.setConnectionCacheProperties(cacheProps);
+        ds.setImplicitCachingEnabled(true);
+        ds.setConnectionCachingEnabled(true);
+        
+        Object subcontext = null;
+        try {
+        	subcontext = ctx.lookup("java:comp/env/jdbc");
+        } catch (Exception e) {
+        	//Ignore - just means it does not yet exist
+        }
+        if (subcontext == null) {
 	        ctx.createSubcontext("java:");
 	        ctx.createSubcontext("java:comp");
 	        ctx.createSubcontext("java:comp/env");
 	        ctx.createSubcontext("java:comp/env/jdbc");
-	        
-	        ctx.bind("java:comp/env/jdbc/sparrow_dss", ds);
-		}
+        }
         
+        ctx.bind("java:comp/env/jdbc/" + localName, ds);
 	}
 	
 	protected void doDbTearDown() throws Exception {

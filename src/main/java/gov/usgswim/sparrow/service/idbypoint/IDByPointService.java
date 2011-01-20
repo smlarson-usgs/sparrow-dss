@@ -324,7 +324,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 //		}
 //	}
 	
-	private void updateRequestModelIDIfNecessary(IDByPointRequest req) {
+	private void updateRequestModelIDIfNecessary(IDByPointRequest req) throws Exception {
 		if (req.getContextID() != null) {
 			PredictionContext context = SharedApplication.getInstance().getPredictionContext(req.getContextID());
 			if (context == null) throw new RuntimeException("Prediction Context with id "

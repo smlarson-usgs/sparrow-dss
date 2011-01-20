@@ -12,9 +12,26 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+/**
+ * Handles all DB CRUD operations for PredictionContext.
+ * 
+ * This is intended to be used for a db backed cached.
+ * 
+ * Note:  During unit testing, a system property can be set to disable the db
+ * operations.  All operations will then not attempt to touch the db and will
+ * just return a minimal response.
+ * @author eeverman
+ *
+ */
 public class PredictionContextHandler extends Action<List<PredictionContext>> {
 
+	/** 
+	 * Set a system property of this name to 'true' to disable db access.
+	 * All caching will then only be done locally.
+	 */
+	public final static String DISABLE_DB_ACCESS =
+		"gov.usgswim.sparrow.action.PredictionContextHandler.DisableDbAccess";
+	
 	private final static String INSERT_STATEMENT_NAME = "Insert";
 	private final static String TOUCH_STATEMENT_NAME = "Touch";
 	private final static String SELECT_ONE_STATEMENT_NAME = "SelectOne";
@@ -48,6 +65,10 @@ public class PredictionContextHandler extends Action<List<PredictionContext>> {
 	
 	protected List<PredictionContext> selectOne(Long id) throws Exception {
 		
+		if (isDisabled()) {
+			return new ArrayList<PredictionContext>(0);
+		}
+		
 		PreparedStatement statement = null;
 		ResultSet rset = null;
 
@@ -66,6 +87,10 @@ public class PredictionContextHandler extends Action<List<PredictionContext>> {
 	 * Saves one record to the db and returns the number of records updated.
 	 */
 	protected int saveOne(PredictionContext pc) throws Exception {
+		
+		if (isDisabled()) {
+			return 1;
+		}
 		
 		if (selectOne(new Long(pc.hashCode())).size() == 1) {
 			//If it already exists, just update the timestamp
@@ -86,7 +111,10 @@ public class PredictionContextHandler extends Action<List<PredictionContext>> {
 	
 	protected List<PredictionContext> selectSinceTime(Timestamp time) throws Exception {
 		
-
+		if (isDisabled()) {
+			return new ArrayList<PredictionContext>(0);
+		}
+		
 		PreparedStatement statement = null;
 		
 		Map<String, Object> paramMap = new HashMap<String, Object>();
@@ -122,7 +150,7 @@ public class PredictionContextHandler extends Action<List<PredictionContext>> {
 	 * @return
 	 * @throws Exception
 	 */
-	List<PredictionContext> hydrate(ResultSet rst, int estCount) throws Exception {
+	protected List<PredictionContext> hydrate(ResultSet rst, int estCount) throws Exception {
 		
 		List<PredictionContext> list = new ArrayList<PredictionContext>(estCount);
 		
@@ -135,6 +163,12 @@ public class PredictionContextHandler extends Action<List<PredictionContext>> {
 		}
 		
 		return list;
+	}
+	
+	protected boolean isDisabled() {
+		String da = System.getProperty(DISABLE_DB_ACCESS);
+		
+		return ("true".equals(da));
 	}
 
 }

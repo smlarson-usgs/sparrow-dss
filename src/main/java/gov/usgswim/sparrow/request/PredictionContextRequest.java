@@ -34,6 +34,16 @@ public class PredictionContextRequest implements Serializable {
 		this.timeSince = null;
 	}
 	
+	/**
+	 * Convienence construrtor b/c we are using Ints for context IDs.
+	 * @param contextId
+	 */
+	public PredictionContextRequest(Integer contextId) {
+		this.contextId = new Long(contextId);
+		this.context = null;
+		this.timeSince = null;
+	}
+	
 	public PredictionContextRequest(PredictionContext context) {
 		this.contextId = null;
 		this.context = context;

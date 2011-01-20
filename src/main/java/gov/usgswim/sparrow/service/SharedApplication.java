@@ -32,6 +32,7 @@ import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.action.DeletePredefinedSession;
 import gov.usgswim.sparrow.action.FilterPredefinedSessions;
 import gov.usgswim.sparrow.action.LoadReachesInBBox;
+import gov.usgswim.sparrow.action.PredictionContextHandler;
 import gov.usgswim.sparrow.action.SavePredefinedSession;
 import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
@@ -40,7 +41,6 @@ import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.ModelBBox;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
-import gov.usgswim.sparrow.parser.AdvancedAnalysis;
 import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.AreaOfInterest;
 import gov.usgswim.sparrow.parser.DataColumn;
@@ -51,6 +51,7 @@ import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.request.CatchmentArea;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.request.PredefinedSessionRequest;
+import gov.usgswim.sparrow.request.PredictionContextRequest;
 import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
@@ -69,7 +70,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import oracle.jdbc.driver.OracleDriver;
@@ -86,12 +86,18 @@ public class SharedApplication  {
 
 	private static SharedApplication instance;
 
-	private static final String dsName = "java:comp/env/jdbc/sparrow_dss";
-	private DataSource datasource;
-	private boolean lookupFailed = false;
+	//Warehouse (read-only) db connection info
+	public static final String READ_ONLY_JNDI_DS_NAME = "java:comp/env/jdbc/sparrow_dss";
+	private DataSource roDatasource;
+	private boolean roLookupFailed = false;
+	
+	//Transactional db connection info
+	public static final String READ_WRITE_JNDI_DS_NAME = "java:comp/env/jdbc/sparrow_dss_trans";
+	private DataSource rwDatasource;
+	private boolean rwLookupFailed = false;
 	
 	//Number of times a connection has been requested
-	private int connectionRequestCount = 0;
+	private int roConnectionRequestCount = 0;
 
 	//an ehcache test cache
 	public static final String SERIALIZABLE_CACHE = PredictContext.name();
@@ -120,7 +126,19 @@ public class SharedApplication  {
 		Connection connection;
 		connection = MonProxyFactory.monitor(DriverManager.getConnection(url, dbuser, dbpass));
 		return connection;
-
+	}
+	
+	private static Connection getRWConnectionFromCommandLineParams() throws SQLException {
+		//synchronized (this) {
+		{
+			DriverManager.registerDriver(new OracleDriver());
+		}
+		String dbuser = System.getProperty("rw_dbuser");
+		String dbpass = System.getProperty("rw_dbpass");
+		String url = System.getProperty("rw_dburl");
+		Connection connection;
+		connection = MonProxyFactory.monitor(DriverManager.getConnection(url, dbuser, dbpass));
+		return connection;
 	}
 	
 	// ================
@@ -128,7 +146,7 @@ public class SharedApplication  {
 	// ================
 
 	public Connection getConnection() throws SQLException {
-		connectionRequestCount++;
+		roConnectionRequestCount++;
 		
 		Connection c = findROConnection();
 		
@@ -137,18 +155,18 @@ public class SharedApplication  {
 				if (log.isTraceEnabled()) {
 					Exception e = new Exception("Exception created only for stacktrace");
 					e.fillInStackTrace();
-					log.trace("Fetching connection #" + connectionRequestCount, e);
+					log.trace("Fetching connection #" + roConnectionRequestCount, e);
 				} else if (log.isDebugEnabled()) {
-					log.debug("Fetching connection #" + connectionRequestCount);
+					log.debug("Fetching connection #" + roConnectionRequestCount);
 				}
 			} else {
-				SQLException e = new SQLException("The datasource returned a CLOSED CONNECTION for #" + connectionRequestCount);
+				SQLException e = new SQLException("The datasource returned a CLOSED CONNECTION for #" + roConnectionRequestCount);
 				e.fillInStackTrace();
 				log.error(e);
 				throw e;
 			}
 		} else {
-			SQLException e = new SQLException("The datasource returned a NULL CONNECTION for #" + connectionRequestCount);
+			SQLException e = new SQLException("The datasource returned a NULL CONNECTION for #" + roConnectionRequestCount);
 			e.fillInStackTrace();
 			log.error(e);
 			throw e;
@@ -158,24 +176,48 @@ public class SharedApplication  {
 	}
 	
 	public Connection getRWConnection() throws SQLException {
-		return getConnection();
+		return findRWConnection();
+	}
+	
+	private Connection findRWConnection() throws SQLException {
+		synchronized (this) {
+			if (rwDatasource == null && ! rwLookupFailed) {
+				try {
+					Context ctx = new InitialContext();
+					rwDatasource = (DataSource) ctx.lookup(READ_WRITE_JNDI_DS_NAME);
+					//					Connection connection = ds.getConnection();
+
+				} catch (Exception e) {
+					rwLookupFailed = true;
+				}
+			}
+			
+			if (rwDatasource != null) {
+				return MonProxyFactory.monitor(rwDatasource.getConnection());
+			}
+		}
+
+
+		//if we fall through from above, fetching from cmd line does
+		//not need to be sync'ed
+		return getRWConnectionFromCommandLineParams();
 	}
 
 	private Connection findROConnection() throws SQLException {
 		synchronized (this) {
-			if (datasource == null && ! lookupFailed) {
+			if (roDatasource == null && ! roLookupFailed) {
 				try {
 					Context ctx = new InitialContext();
-					datasource = (DataSource) ctx.lookup(dsName);
+					roDatasource = (DataSource) ctx.lookup(READ_ONLY_JNDI_DS_NAME);
 					//					Connection connection = ds.getConnection();
 
 				} catch (Exception e) {
-					lookupFailed = true;
+					roLookupFailed = true;
 				}
 			}
 			
-			if (datasource != null) {
-				return MonProxyFactory.monitor(datasource.getConnection());
+			if (roDatasource != null) {
+				return MonProxyFactory.monitor(roDatasource.getConnection());
 			}
 		}
 
@@ -183,7 +225,6 @@ public class SharedApplication  {
 		//if we fall through from above, fetching from cmd line does
 		//not need to be sync'ed
 		return getROConnectionFromCommandLineParams();
-
 	}
 
 
@@ -210,7 +251,7 @@ public class SharedApplication  {
 	}
 
 	//PredictContext Cache
-	public Integer putPredictionContext(PredictionContext context) {
+	public Integer putPredictionContext(PredictionContext context) throws Exception {
 
 		try {
 			context = context.clone();
@@ -218,124 +259,122 @@ public class SharedApplication  {
 			// Shouldn't happen
 			e.printStackTrace();
 		}
-
-		CacheManager cm = SparrowCacheManager.getInstance();
-
-		// ===============
-		// CAVEAT: The prediction context is placed in a distributed cache
-		// across all the nodes in the cluster. All of its "children" also have
-		// to be distributed.
-		//
-		// ===============
-		Integer pcHash = context.hashCode();
-		cm.getEhcache(PredictContext.name()).put( new Element(pcHash, context) );
-
+		
+		PredictionContextRequest req = new PredictionContextRequest(context);
+		PredictionContextHandler action = new PredictionContextHandler(req);
+		List<PredictionContext> pcList = action.run();
+		
+		if (pcList.size() == 1) {
+			context = pcList.get(0);
+			putPredictionContextInLocalCache(context);
+			return context.getId();
+		} else {
+			throw new Exception("Unable to store PredictionContext to persistant storage.");
+		}
+	}
+	
+	private void putPredictionContextInLocalCache(PredictionContext context) {
+		ConfiguredCache.PredictContext.put(context.getId(), context);
+		
 		AdjustmentGroups ag = context.getAdjustmentGroups();
 		if (ag != null) {
-			Integer hash = ag.hashCode();
-			cm.getEhcache(AdjustmentGroups.name()).put( new Element(hash, ag) );
+			ConfiguredCache.AdjustmentGroups.put(ag.getId(), ag);
 		}
 
 		Analysis anal = context.getAnalysis();
 		if (anal != null) {
-			Integer hash = anal.hashCode();
-			cm.getEhcache(Analyses.name()).put( new Element(hash, anal) );
+			ConfiguredCache.Analyses.put(anal.getId(), anal);
 		}
 
 		TerminalReaches tr = context.getTerminalReaches();
 		if (tr != null) {
-			Integer hash = context.getTerminalReaches().hashCode();
-			cm.getEhcache(TerminalReaches.name()).put( new Element(hash, tr) );
+			ConfiguredCache.TerminalReaches.put(tr.getId(), tr);
 		}
 
 		AreaOfInterest aoi = context.getAreaOfInterest();
 		if (aoi != null) {
-			Integer hash = aoi.hashCode();
-			cm.getEhcache(AreaOfInterest.name()).put( new Element(hash, aoi) );
+			ConfiguredCache.AreaOfInterest.put(aoi.getId(), aoi);
+		}
+	}
+	
+	/**
+	 * Touches the PredictionContext and all of its children.
+	 * 
+	 * This is the same as calling get and if not found, calling put on each
+	 * item.
+	 * @param context
+	 */
+	private void touchPredictionContextInLocalCache(PredictionContext context) {
+		ConfiguredCache.PredictContext.touch(context.getId(), context);
+		
+		AdjustmentGroups ag = context.getAdjustmentGroups();
+		if (ag != null) {
+			ConfiguredCache.AdjustmentGroups.touch(ag.getId(), ag);
 		}
 
-		return pcHash;
+		Analysis anal = context.getAnalysis();
+		if (anal != null) {
+			ConfiguredCache.Analyses.touch(anal.getId(), anal);
+		}
+
+		TerminalReaches tr = context.getTerminalReaches();
+		if (tr != null) {
+			ConfiguredCache.TerminalReaches.touch(tr.getId(), tr);
+		}
+
+		AreaOfInterest aoi = context.getAreaOfInterest();
+		if (aoi != null) {
+			ConfiguredCache.AreaOfInterest.touch(aoi.getId(), aoi);
+		}
 	}
 
-	public PredictionContext getPredictionContext(Integer id) {
+	public PredictionContext getPredictionContext(Integer id) throws Exception {
 		return getPredictionContext(id, false);
 	}
 
-	public PredictionContext getPredictionContext(Integer id, boolean quiet) {
+	/**
+	 * If quiet, it will not check the persistent storage.
+	 * @param id
+	 * @param quiet
+	 * @return
+	 * @throws Exception 
+	 */
+	public PredictionContext getPredictionContext(Integer id, boolean quiet) throws Exception {
 
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(PredictContext.name());
-		Element e  = (quiet)?c.getQuiet(id):c.get(id);
+		PredictionContext context = (PredictionContext)
+				ConfiguredCache.PredictContext.get(id, quiet);
 
-		if (e == null) return null;
 
-		PredictionContext pc = (PredictionContext) e.getObjectValue();
+		if (context != null) {
 
-		//TODO [IK] Code here now assumes nulls are allowed, so PredictionContext code may need to change to match.
-		// Populate transient children if necessary
-		{
-			AdjustmentGroups ags = pc.getAdjustmentGroups();
-			Analysis analysis = pc.getAnalysis();
-			TerminalReaches terminalReaches = pc.getTerminalReaches();
-			AreaOfInterest aoi = pc.getAreaOfInterest();
-
-			try {
-				String retrievalMessage = "PredCtxt " + pc.getId() + " successfully retrieved %s %s : %s" ;
-				if (ags == null && pc.getAdjustmentGroupsID() != null) {
-					ags = getAdjustmentGroups(pc.getAdjustmentGroupsID());
-					log.info(String.format(retrievalMessage, "adjGrp",pc.getAdjustmentGroupsID(),(ags != null)));
-				} else if (ags != null){
-					touchAdjustmentGroups(ags.getId());	//refresh in cache
-					ags = ags.clone();
+			touchPredictionContextInLocalCache(context);
+			return context.clone();
+			
+		} else {
+			
+			if (quiet) {
+				//Bail if null & quite - caller just check if in local cache.
+				return null;
+			} else {
+				PredictionContextRequest req = new PredictionContextRequest(id);
+				PredictionContextHandler action = new PredictionContextHandler(req);
+				List<PredictionContext> pcList = action.run();
+				
+				if (pcList.size() == 1) {
+					//found it in the persistent storage
+					context = pcList.get(0);
+					
+					//put into the local cache
+					touchPredictionContextInLocalCache(context);
+					return context.clone();
+				} else {
+					//Couldn't find in persistent storage
+					return null;
 				}
-
-				if (analysis == null && pc.getAnalysisID() != null) {
-					analysis = getAnalysis(pc.getAnalysisID());
-					log.info(String.format(retrievalMessage, "analysis ",pc.getAnalysisID(),(analysis != null)));
-				} else if (analysis != null){
-					touchAnalysis(analysis.getId());	//refresh in cache
-					analysis = analysis.clone();
-				}
-
-				if (terminalReaches == null && pc.getTerminalReachesID() != null) {
-					terminalReaches = getTerminalReaches(pc.getTerminalReachesID());
-					log.info(String.format(retrievalMessage, "termReaches",pc.getTerminalReachesID(),(terminalReaches != null)));
-				} else if (terminalReaches != null) {
-					touchTerminalReaches(terminalReaches.getId());	//refresh in cache
-					terminalReaches = terminalReaches.clone();
-				}
-
-				if (aoi == null && pc.getAreaOfInterestID() != null) {
-					aoi = getAreaOfInterest(pc.getAreaOfInterestID());
-					log.info(String.format(retrievalMessage, "areaOfInt",pc.getAreaOfInterestID(),(aoi != null)));
-				} else if (aoi != null) {
-					touchAreaOfInterest(aoi.getId());	//refresh in cache
-					aoi = aoi.clone();
-				}
-
-				pc = pc.cloneWithSuppliedChildren(ags, analysis, terminalReaches, aoi);
-
-
-			} catch (CloneNotSupportedException e1) {
-				log.error("Unexpected Clone not supported - returning null");
-				pc = null;
 			}
+			
 		}
-		return pc;
-	}
 
-
-	//AdjustmentGroup Cache
-	protected Integer putAdjustmentGroups(AdjustmentGroups adj) {
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(AdjustmentGroups.name());
-		int hash = adj.hashCode();
-		c.put( new Element(hash, adj) );
-		return hash;
-	}
-
-	protected boolean touchAdjustmentGroups(Integer id) {
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(AdjustmentGroups.name());
-		Element e  = c.get(id);
-		return (e != null);
 	}
 
 	public AdjustmentGroups getAdjustmentGroups(Integer id) {
@@ -358,19 +397,6 @@ public class SharedApplication  {
 	}
 
 	//Analysis Cache
-	protected Integer putAnalysis(AdvancedAnalysis analysis) {
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(Analyses.name());
-		int hash = analysis.hashCode();
-		c.put( new Element(hash, analysis) );
-		return hash;
-	}
-
-	protected boolean touchAnalysis(Integer id) {
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(Analyses.name());
-		Element e  = c.get(id);
-		return (e != null);
-	}
-
 	public Analysis getAnalysis(Integer id) {
 		return getAnalysis(id, false);
 	}
@@ -391,19 +417,6 @@ public class SharedApplication  {
 	}
 
 	//TerminalReach Cache
-	protected Integer putTerminalReaches(TerminalReaches term) {
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(TerminalReaches.name());
-		int hash = term.hashCode();
-		c.put( new Element(hash, term) );
-		return hash;
-	}
-
-	protected boolean touchTerminalReaches(Integer id) {
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(TerminalReaches.name());
-		Element e  = c.get(id);
-		return (e != null);
-	}
-
 	public TerminalReaches getTerminalReaches(Integer id) {
 		return getTerminalReaches(id, false);
 	}
@@ -424,19 +437,6 @@ public class SharedApplication  {
 	}
 
 	//AreaOfInterest Cache
-	protected Integer putAreaOfInterest(AreaOfInterest area) {
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(AreaOfInterest.name());
-		int hash = area.hashCode();
-		c.put( new Element(hash, area) );
-		return hash;
-	}
-
-	protected boolean touchAreaOfInterest(Integer id) {
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(AreaOfInterest.name());
-		Element e  = c.get(id);
-		return (e != null);
-	}
-
 	public AreaOfInterest getAreaOfInterest(Integer id) {
 		return getAreaOfInterest(id, false);
 	}

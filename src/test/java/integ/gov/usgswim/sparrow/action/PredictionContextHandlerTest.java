@@ -25,6 +25,16 @@ import org.junit.Test;
 public class PredictionContextHandlerTest extends SparrowDBTest {
 
 	
+	
+	/* We are actually testing the storage mechanism, so do not disable
+	 * storage to the db.  (non-Javadoc)
+	 * @see gov.usgswim.sparrow.SparrowDBTest#disablePredictionContextPersistentStorage()
+	 */
+	@Override
+	public boolean disablePredictionContextPersistentStorage() {
+		return false;
+	}
+
 	/**
 	 * Tests inserting and retrieving from the db.
 	 * @throws Exception
