@@ -255,8 +255,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	}
 
 	/**
-	 * A simple clone method, caveat emptor as it doesn't deal with transient
-	 * children.
+	 * A simple clone method.
 	 *
 	 * @see java.lang.Object#clone()
 	 */
