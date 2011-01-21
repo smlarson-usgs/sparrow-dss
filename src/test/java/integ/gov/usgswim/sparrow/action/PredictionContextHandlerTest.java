@@ -14,6 +14,7 @@ import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.request.PredictionContextRequest;
+import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.ParserHelper;
 
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class PredictionContextHandlerTest extends SparrowDBTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void addAndFetchFromDB() throws Exception {
+	public void addAndFetchFromDBviaAction() throws Exception {
 
 		XMLStreamReader contextReader = getSharedXMLAsReader("predict-context-1.xml");
 		ParserHelper.parseToStartTag(contextReader, PredictionContext.MAIN_ELEMENT_NAME);
@@ -65,9 +66,35 @@ public class PredictionContextHandlerTest extends SparrowDBTest {
 		assertEquals(pc.getId(), pcFromDb.getId());
 		assertEquals(pc.getModelID(), pcFromDb.getModelID());
 		assertEquals(pc.getAnalysis().getDataSeries(), pcFromDb.getAnalysis().getDataSeries());
-		
 	}
 	
-	
+	@Test
+	public void addAndFetchFromDBviaSharedApplication() throws Exception {
+
+		XMLStreamReader contextReader = getSharedXMLAsReader("predict-context-1.xml");
+		ParserHelper.parseToStartTag(contextReader, PredictionContext.MAIN_ELEMENT_NAME);
+		PredictionContext pc = PredictionContext.parseStream(contextReader);
+		
+		//Save to db
+		SharedApplication.getInstance().putPredictionContext(pc);
+		
+		//Fetch from cache
+		PredictionContext fromCache = SharedApplication.getInstance().getPredictionContext(pc.getId());
+		assertEquals(pc.getId(), fromCache.getId());
+		assertEquals(pc.getModelID(), fromCache.getModelID());
+		assertEquals(pc.getAnalysis().getDataSeries(), fromCache.getAnalysis().getDataSeries());
+		
+		//Fetch directly from db
+		PredictionContextRequest req = new PredictionContextRequest(new Long(pc.getId()));
+		PredictionContextHandler action = new PredictionContextHandler(req);
+		List<PredictionContext> list = action.run();
+		assertTrue(list.size() == 1);
+		PredictionContext pcFromDb = list.get(0);
+		pcFromDb = list.get(0);
+		
+		assertEquals(pc.getId(), pcFromDb.getId());
+		assertEquals(pc.getModelID(), pcFromDb.getModelID());
+		assertEquals(pc.getAnalysis().getDataSeries(), pcFromDb.getAnalysis().getDataSeries());
+	}
 }
 
