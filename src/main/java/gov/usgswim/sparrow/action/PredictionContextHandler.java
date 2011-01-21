@@ -76,7 +76,7 @@ public class PredictionContextHandler extends Action<List<PredictionContext>> {
 		paramMap.put("KEY", id);
 		paramMap.put("VALUE_CLASS", PredictionContext.class.getName());
 		
-		statement = getROPSFromPropertiesFile(SELECT_ONE_STATEMENT_NAME, null, paramMap);
+		statement = getRWPSFromPropertiesFile(SELECT_ONE_STATEMENT_NAME, null, paramMap);
 		rset = statement.executeQuery();
 		List<PredictionContext> list = hydrate(rset, 1);
 		
