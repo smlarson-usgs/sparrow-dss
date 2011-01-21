@@ -353,15 +353,13 @@
 		
 		None of these caches use disk storage.
 	-->
-	<cache name="PredictData" maxElementsInMemory="10"
-		maxElementsOnDisk="10" eternal="false" overflowToDisk="false"
-		diskSpoolBufferSizeMB="32" timeToIdleSeconds="0"
+	<cache name="PredictData" maxElementsInMemory="20"
+		timeToIdleSeconds="0"
 		timeToLiveSeconds="0" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="1800" memoryStoreEvictionPolicy="LRU" />
 		
 	<cache name="DeliveryFraction" maxElementsInMemory="30"
-		maxElementsOnDisk="100" eternal="false" overflowToDisk="false"
-		diskSpoolBufferSizeMB="32" timeToIdleSeconds="0"
+		timeToIdleSeconds="0"
 		timeToLiveSeconds="0" diskPersistent="false"
 		diskExpiryThreadIntervalSeconds="1800" memoryStoreEvictionPolicy="LRU" />
 		
