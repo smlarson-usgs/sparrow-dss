@@ -85,7 +85,7 @@
 			</path>
 		</copy>
     	<property name="param.javac.debug" value="true"/><!-- on by default, unless overridden with parameter -->
-        <javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="${param.javac.debug}" debuglevel="lines,vars,source">
+        <javac srcdir="${src.dir}" destdir="${build.classes.dir}" debug="true" debuglevel="lines,vars,source">
         	<classpath path="${javac.classpath}:${j2ee.classpath}" />
         </javac>
 		<copy todir="${build.classes.dir}">
