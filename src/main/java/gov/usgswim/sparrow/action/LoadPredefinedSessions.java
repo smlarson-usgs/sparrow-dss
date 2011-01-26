@@ -13,6 +13,13 @@ import java.util.Map;
 
 import com.google.common.collect.ImmutableList;
 
+/**
+ * Note that the RW connection is used b/c it is likely pointed to a transactional
+ * db separate from the RO database.
+ * 
+ * @author eeverman
+ *
+ */
 public class LoadPredefinedSessions extends Action<List<IPredefinedSession>> {
 
 	/**
@@ -57,7 +64,7 @@ public class LoadPredefinedSessions extends Action<List<IPredefinedSession>> {
 		ResultSet rset = null;
 		List<IPredefinedSession> sessions = new ArrayList<IPredefinedSession>();
 
-		selectSessions = getROPSFromPropertiesFile(queryName, null, paramMap);
+		selectSessions = getRWPSFromPropertiesFile(queryName, null, paramMap);
 
 		try {
 			rset = selectSessions.executeQuery();
