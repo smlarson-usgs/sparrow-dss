@@ -9,7 +9,7 @@
   </head>
   <body>
 
-		<form action="../sp_session" method="PUT" enctype="application/x-www-form-urlencoded">
+		<form action="../sp_session" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="New Predefined Context">
 				<div class="input-group">
 					<label for="code">Unique Code</label>
@@ -23,9 +23,9 @@
 				
 				<div class="input-group">
 					<label for="type">Type</label>
-					<input type="radio" name="type" value="UNLISTED" checked="checked"/>
-					<input type="radio" name="type" value="FEATURED"/>
-					<input type="radio" name="type" value="LISTED"/>
+					<p><input type="radio" name="type" value="UNLISTED" checked="checked"/> Unlisted</p>
+					<p><input type="radio" name="type" value="FEATURED"/> Featured</p>
+					<p><input type="radio" name="type" value="LISTED"/> Listed</p>
 				</div>
 				
 				<div class="input-group">
@@ -35,7 +35,7 @@
 				
 				<div class="input-group">
 					<label for="description">Description</label>
-					<textarea name="description" ></textarea>
+					<textarea rows="5" cols="60" name="description" ></textarea>
 				</div>
 				
 				<div class="input-group">
@@ -58,11 +58,11 @@
 				</div>
 				<div class="input-group">
 					<label for="add_note">Notes - Why is this Predefined Session needed?</label>
-					<input type="text" name="add_note" />
+					<textarea rows="5" cols="60" name="add_note" ></textarea>
 				</div>
 				<div class="input-group">
 					<label for="context_string">Context String (paste from a saved file)</label>
-					<textarea name="context_string" ></textarea>
+					<textarea rows="20" cols="60" name="context_string" ></textarea>
 				</div>
 				
 
