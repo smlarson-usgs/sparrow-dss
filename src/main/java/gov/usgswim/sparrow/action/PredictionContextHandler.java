@@ -5,6 +5,7 @@ import gov.usgswim.sparrow.request.PredictionContextRequest;
 
 import java.io.ObjectInputStream;
 import java.sql.Blob;
+import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import oracle.jdbc.OracleTypes;
 /**
  * Handles all DB CRUD operations for PredictionContext.
  * 
@@ -63,22 +66,36 @@ public class PredictionContextHandler extends Action<List<PredictionContext>> {
 		}
 	}
 	
+	/**
+	 * Selects one PredictionContext from the db and implicitly updates the
+	 * timestamp via a db procedure.
+	 * 
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
 	protected List<PredictionContext> selectOne(Long id) throws Exception {
 		
 		if (isDisabled()) {
 			return new ArrayList<PredictionContext>(0);
 		}
 		
-		PreparedStatement statement = null;
-		ResultSet rset = null;
-
-		Map<String, Object> paramMap = new HashMap<String, Object>();
-		paramMap.put("KEY", id);
-		paramMap.put("VALUE_CLASS", PredictionContext.class.getName());
+		String query = getText(SELECT_ONE_STATEMENT_NAME, getClass());
+		CallableStatement stmt = this.getRWConnection().prepareCall(query);
+		addStatementForAutoClose(stmt);	//register it for autoclose
 		
-		statement = getRWPSFromPropertiesFile(SELECT_ONE_STATEMENT_NAME, null, paramMap);
-		rset = statement.executeQuery();
-		List<PredictionContext> list = hydrate(rset, 1);
+		// set the in params 'key' and 'value_class'
+		stmt.setLong(1, id);
+		stmt.setString(2, PredictionContext.class.getName());
+
+		// register the type of the out param - an Oracle specific type
+		stmt.registerOutParameter(3, OracleTypes.CURSOR);
+
+		// execute and retrieve the result set
+		stmt.execute();
+		ResultSet rs = (ResultSet)stmt.getObject(3);
+		
+		List<PredictionContext> list = hydrate(rs, 1);
 		
 		return list;
 	}
@@ -94,7 +111,7 @@ public class PredictionContextHandler extends Action<List<PredictionContext>> {
 		
 		if (selectOne(new Long(pc.hashCode())).size() == 1) {
 			//If it already exists, just update the timestamp
-			return touch(pc);
+			return 0;
 		} else {
 			PreparedStatement statement = null;
 			
