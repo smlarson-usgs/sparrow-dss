@@ -78,7 +78,8 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	
 	private long startTime;		//Time the action starts
 	
-	private List<PreparedStatement> preparedStatements;
+	/** A list of statements to be closed when the action completes */
+	private List<Statement> autoCloseStatements;
 	
 	public Action() {
 		staticRunCount++;
@@ -205,16 +206,16 @@ public abstract class Action<R extends Object> implements IAction<R> {
 
 		
 		//Close any open prepared statements
-		if (preparedStatements != null) {
-			for (PreparedStatement ps : preparedStatements) {
+		if (autoCloseStatements != null) {
+			for (Statement ps : autoCloseStatements) {
 				try {
-					ps.close();
+					if (ps != null)	ps.close();
 				} catch (Exception e) {
-					log.warn("Good grief, I just tried to close a preparedstatement, should this really throw an exception?", e);
+					log.warn("Good grief, I just tried to close a SQL Statement, should this really throw an exception?", e);
 				}
 			}
 			
-			preparedStatements.clear();
+			autoCloseStatements.clear();
 		}
 		
 		//Close the connections, if not null
@@ -312,11 +313,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		//Note that 10 rows is the default for the oracle jdbc driver (!)
 		st.setFetchSize(200);
 		
-		if (preparedStatements == null) {
-			preparedStatements = new ArrayList<PreparedStatement>();
-		}
-		
-		preparedStatements.add(st);
+		addStatementForAutoClose(st);
 		
 		return st;
 	}
@@ -341,11 +338,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		
 		st.setFetchSize(200);
 		
-		if (preparedStatements == null) {
-			preparedStatements = new ArrayList<PreparedStatement>();
-		}
-		
-		preparedStatements.add(st);
+		addStatementForAutoClose(st);
 		
 		return st;
 	}
@@ -489,6 +482,24 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	}
 	
 	/**
+	 * Adds a SQL Statement to a list of statements that will be closed automatically
+	 * when the action completes, regardless of how the action completes.
+	 * 
+	 * This is opened up as a protected method so that actions can add their own
+	 * statements for which there may not be direct creation support for (i.e.
+	 * CallableStatements).
+	 * 
+	 * @param statement
+	 */
+	protected void addStatementForAutoClose(Statement statement) {
+		if (autoCloseStatements == null) {
+			autoCloseStatements = new ArrayList<Statement>();
+		}
+		
+		autoCloseStatements.add(statement);
+	}
+	
+	/**
 	 * Quick implementation of what's more or less a "tuple".  
 	 * no functionality, just storage.
 	 * 
@@ -518,7 +529,9 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 * Non-SQL parameters embedded in the SQL in the form '@nonSqlParamName@'
 	 * are replaced with the value of the matching parameter from the params
 	 * Map.  This can be used to replace table names in the SQL string, or
-	 * other pieces of SQL that cannot be parameterized in a prepared statemetn.
+	 * other pieces of SQL that cannot be parameterized in a prepared statement.
+	 * Since the query parameters and the non-query params share the same Map,
+	 * the names must be unique.
 	 * 
 	 * @param sqlWithVariables A SQL string template with variables to be replaced.
 	 * @param params A map of parameter values.
@@ -557,7 +570,11 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		
 		for (Entry<String, Object> entry : params.entrySet()) {
 			String key = "@" + entry.getKey() + "@";
-			sql = sql.replaceAll(key, entry.getValue().toString());
+			if (entry.getValue() != null) {
+				sql = sql.replaceAll(key, entry.getValue().toString());
+			} else {
+				sql = sql.replaceAll(key, "");
+			}
 		}
 		
 		result.sql = new StringBuilder(sql);
