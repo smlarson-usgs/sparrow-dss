@@ -16,15 +16,12 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 public class PredefinedSessionFactory implements CacheEntryFactory {
 
 	@Override
-	public List<IPredefinedSession> createEntry(Object modelIdOrUniqueCode) throws Exception {
+	public List<IPredefinedSession> createEntry(Object modelId) throws Exception {
 		
 		LoadPredefinedSessions action = null;
 		
-		if (modelIdOrUniqueCode instanceof Long) {
-			action = new LoadPredefinedSessions((Long) modelIdOrUniqueCode);
-		} else {
-			action = new LoadPredefinedSessions(modelIdOrUniqueCode.toString());
-		}
+		action = new LoadPredefinedSessions((Long) modelId);
+
 		
 		List<IPredefinedSession> sessionList = action.run();
 

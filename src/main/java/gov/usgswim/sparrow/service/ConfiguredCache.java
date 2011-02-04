@@ -3,6 +3,8 @@
  */
 package gov.usgswim.sparrow.service;
 
+import java.util.List;
+
 import gov.usgswim.sparrow.cachefactory.*;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import net.sf.ehcache.Ehcache;
@@ -94,6 +96,16 @@ public enum ConfiguredCache{
 	 */
 	public Object get(Integer key, boolean quiet) {
 		return get(new Long(key), quiet);
+	}
+	
+	/**
+	 * Returns all non-expired keys in the cache.
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public List getKeysWithExpiryCheck() {
+		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
+		return c.getKeysWithExpiryCheck();
 	}
 	
 	/**

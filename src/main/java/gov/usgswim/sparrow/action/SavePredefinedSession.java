@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
+import gov.usgswim.sparrow.request.PredefinedSessionUniqueRequest;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -119,15 +120,12 @@ public class SavePredefinedSession extends Action<IPredefinedSession> {
 				"Instead, " + updateCount + " records were affected.");
 		}
 		
-		LoadPredefinedSessions lps = new LoadPredefinedSessions(session.getUniqueCode());
-		List<IPredefinedSession> sessionList = lps.run();
 		
+		PredefinedSessionUniqueRequest req = 
+			new PredefinedSessionUniqueRequest(session.getUniqueCode());
+		LoadPredefinedSession lps = new LoadPredefinedSession(req);
+		newSession = lps.run();
 		
-		if (sessionList.size() != 1) {
-			throw new Exception("Unable to retrieve the saved PredefinedSession back from the db.");
-		}
-		
-		newSession = lps.run().get(0);
 		
 		if (newSession == null || ! session.getUniqueCode().equals(newSession.getUniqueCode())) {
 			throw new Exception(

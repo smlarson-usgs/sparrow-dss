@@ -30,8 +30,14 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 import junit.framework.TestCase;
 
@@ -44,6 +50,8 @@ import org.custommonkey.xmlunit.XMLUnit;
 import org.custommonkey.xmlunit.XpathEngine;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 
 public abstract class SparrowUnitTest {
 	
@@ -319,18 +327,31 @@ public abstract class SparrowUnitTest {
 	}
 	
 	/**
-	 * Retrieves value for first appearance of element in xml. Beware this is
-	 * regexp parsing, not true xml parsing, so will pickup values in comments.
-	 * 
-	 * @param xml
-	 * @param elementName
+	 * Returns the string value of the XPath expression.
+	 * This is namespace aware.
+	 * @param xpathExpression
+	 * @param xmlDocument
 	 * @return
+	 * @throws Exception
 	 */
-	public static String getElementValue(String xml, String elementName) {
-		assert(elementName != null): "element name required!";	
-		return StringUtils.substringBetween(xml, "<" + elementName + ">", "</" + elementName + ">" );
+	public static String getXPathValue(String xpathExpression, String xmlDocument) throws Exception {
+		Document document = getW3cXmlDocumentFromString(xmlDocument);
+		XPath xPath = XPathFactory.newInstance().newXPath();
+		String value = (String) xPath.evaluate(xpathExpression, document, XPathConstants.STRING);
+		return value;
 	}
 	
+	/**
+	 * Returns a wc3 XML Document from an xml string.
+	 * @param xmlDocument
+	 * @return
+	 * @throws Exception
+	 */
+	public static Document getW3cXmlDocumentFromString(String xmlDocument) throws Exception {
+		
+		Document document = XMLUnit.buildControlDocument(xmlDocument);
+		return document;
+	}
 	/**
 	 * Convenience method for returning a string from a pipe request call.
 	 * 
@@ -943,13 +964,6 @@ public abstract class SparrowUnitTest {
 		}
 		
 		return diff.similar();
-	}
-	
-	public static String getXPathValue(String xPath, String xmlDocument) throws Exception {
-        XpathEngine xpath = XMLUnit.newXpathEngine();
-        String value =
-        	xpath.evaluate(xPath, XMLUnit.buildControlDocument(xmlDocument));
-        return value;
 	}
 	
 	public static Integer getContextIdFromContext(String xmlPreictionContext) throws Exception {

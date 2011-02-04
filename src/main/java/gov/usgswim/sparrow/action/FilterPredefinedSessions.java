@@ -1,20 +1,12 @@
 package gov.usgswim.sparrow.action;
 
+import static gov.usgswim.sparrow.service.ConfiguredCache.PredefinedSessions;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
-import gov.usgswim.sparrow.domain.PredefinedSession;
-import gov.usgswim.sparrow.domain.PredefinedSessionType;
 import gov.usgswim.sparrow.request.PredefinedSessionRequest;
-import gov.usgswim.sparrow.service.SharedApplication;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
-
-import com.google.common.collect.ImmutableList;
 
 public class FilterPredefinedSessions extends Action<List<IPredefinedSession>> {
 
@@ -38,22 +30,24 @@ public class FilterPredefinedSessions extends Action<List<IPredefinedSession>> {
 		
 		if (request.getModelId() != null) {
 			unfiltered =
-				SharedApplication.getInstance().loadPredefinedSessions(request.getModelId());
+				loadPredefinedSessions(request.getModelId());
 			
 			filtered = filter(unfiltered);
-		} else if (request.getUniqueCode() != null) {
-			unfiltered =
-				SharedApplication.getInstance().loadPredefinedSessions(request.getUniqueCode());
-			
-			if (unfiltered.size() == 1) {
-				filtered = new ArrayList<IPredefinedSession>(1);
-				filtered.add(unfiltered.get(0));
-			}
-
+		} else {
+			throw new Exception("No model ID is specified, but is required");
 		}
 
 		return filtered;
 	}
+	
+	//PredefinedSessions Cache By Model
+	@SuppressWarnings("unchecked")
+	public List<IPredefinedSession> loadPredefinedSessions(Long modelId) {
+		return (List<IPredefinedSession>) PredefinedSessions.get(modelId, false);
+	}
+	
+	
+
 	
 	public List<IPredefinedSession> filter(List<IPredefinedSession> unfiltered) throws Exception {
 

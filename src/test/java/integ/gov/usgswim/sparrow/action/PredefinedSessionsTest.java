@@ -10,6 +10,7 @@ import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
 import gov.usgswim.sparrow.domain.PredefinedSessionType;
 import gov.usgswim.sparrow.request.PredefinedSessionRequest;
+import gov.usgswim.sparrow.request.PredefinedSessionUniqueRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.sql.Connection;
@@ -137,7 +138,7 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		
 		//////////////////
 		//Try loading all three sessions
-		LoadPredefinedSessions loadAction = new LoadPredefinedSessions(50L);
+		LoadPredefinedSessions loadAction = new LoadPredefinedSessions(9999L);
 		List<IPredefinedSession> sessionList = loadAction.run();
 		
 		//They should be in the specified sort order
@@ -148,19 +149,19 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		
 		//////////////////
 		//Try loading a single session by the unique code
-		loadAction = new LoadPredefinedSessions(savedPs1.getUniqueCode());
-		sessionList = loadAction.run();
+		PredefinedSessionUniqueRequest psur = new PredefinedSessionUniqueRequest(savedPs1.getUniqueCode());
+		LoadPredefinedSession loadUnique = new LoadPredefinedSession(psur);
+		IPredefinedSession uniqueSession = loadUnique.run();
 		
 		//They should be in the specified sort order
-		assertEquals(savedPs1.getId(), sessionList.get(0).getId());
-		assertTrue(sessionList.size() == 1);
+		assertEquals(savedPs1.getId(), uniqueSession.getId());
 		
 		
 		//now delete each record
 		deleteSessions(savedPs1, savedPs2, savedPs3);
 		
 		//The db should now be empty
-		loadAction = new LoadPredefinedSessions(50L);
+		loadAction = new LoadPredefinedSessions(9999L);
 		sessionList = loadAction.run();
 		
 		for (IPredefinedSession session : sessionList) {
@@ -184,7 +185,7 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		saveAction1.run();
 		
 		//Load the session back and verify
-		LoadPredefinedSessions loadAction = new LoadPredefinedSessions(50L);
+		LoadPredefinedSessions loadAction = new LoadPredefinedSessions(9999L);
 		List<IPredefinedSession> sessionList = loadAction.run();
 		sessionList = loadAction.run();
 		
@@ -211,22 +212,18 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 	@Test
 	public void loadFromCache() throws Exception {
 		
-		long startTime = System.currentTimeMillis();
-		List<IPredefinedSession> sessionList = SharedApplication.getInstance().loadPredefinedSessions(50L, true);
-		long endTime = System.currentTimeMillis();
-		//Very fast - just checks that there is nothing there
-		assertTrue(endTime - startTime < 10L);
 		
 		//Load now for the first time
-		startTime = System.currentTimeMillis();
-		sessionList = SharedApplication.getInstance().loadPredefinedSessions(50L);
-		endTime = System.currentTimeMillis();
+		long startTime = System.currentTimeMillis();
+		PredefinedSessionRequest req = new PredefinedSessionRequest(9999L);
+		List<IPredefinedSession> sessionList = SharedApplication.getInstance().getPredefinedSessions(req);
+		long endTime = System.currentTimeMillis();
 		//System.out.println("Time to fill cache: " + (endTime - startTime));
 		assertEquals(3, sessionList.size());
 		
 		//Load again - should be instant
 		startTime = System.currentTimeMillis();
-		sessionList = SharedApplication.getInstance().loadPredefinedSessions(50L);
+		sessionList = SharedApplication.getInstance().getPredefinedSessions(req);
 		endTime = System.currentTimeMillis();
 		//Very fast - just checks that there is nothing there
 		//System.out.println("Time to load from cache (prepopulated): " + (endTime - startTime));
@@ -238,8 +235,9 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 	public void cacheIsFlushedAfterUpdateOrDelete() throws Exception {
 		
 		//Force sessions to be loaded to cache
+		PredefinedSessionRequest req = new PredefinedSessionRequest(9999L);
 		List<IPredefinedSession> orgSessionList =
-			SharedApplication.getInstance().loadPredefinedSessions(50L);
+			SharedApplication.getInstance().getPredefinedSessions(req);
 		assertFalse(orgSessionList.get(0).getApproved());
 		
 		//Update one of the sessions
@@ -249,7 +247,7 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		
 		//Reload session list and check for update
 		List<IPredefinedSession> updatedSessionList =
-			SharedApplication.getInstance().loadPredefinedSessions(50L);
+			SharedApplication.getInstance().getPredefinedSessions(req);
 		
 		assertTrue(updatedSessionList.get(0).getApproved());
 		
@@ -258,7 +256,7 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		
 		//Check that its gone
 		List<IPredefinedSession> deletedSessionList =
-			SharedApplication.getInstance().loadPredefinedSessions(50L);
+			SharedApplication.getInstance().getPredefinedSessions(req);
 		assertTrue(deletedSessionList.size() == orgSessionList.size() - 1);
 	}
 	
@@ -295,39 +293,39 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		
 		newSessions = toBuilder(saveSessions(newSessions));
 		
-		PredefinedSessionRequest request = new PredefinedSessionRequest(50L);
+		PredefinedSessionRequest request = new PredefinedSessionRequest(9999L, (String)null);
 		//Should be nine all together (no criteria)
 		List<IPredefinedSession> result = 
 			SharedApplication.getInstance().getPredefinedSessions(request);
 		assertEquals(9, result.size());
 		
 		//Should be 3 approved
-		request = new PredefinedSessionRequest(50L, true);
+		request = new PredefinedSessionRequest(9999L, true);
 		result = SharedApplication.getInstance().getPredefinedSessions(request);
 		assertEquals(3, result.size());
 		
 		//Should be 1 approved & FEATURED
-		request = new PredefinedSessionRequest(50L, true, PredefinedSessionType.FEATURED);
+		request = new PredefinedSessionRequest(9999L, true, PredefinedSessionType.FEATURED);
 		result = SharedApplication.getInstance().getPredefinedSessions(request);
 		assertEquals(1, result.size());
 		assertEquals(newSessions[0].getId(), result.get(0).getId());
 		
 		//Should be 2 approved & in group 'set3'
-		request = new PredefinedSessionRequest(50L, true, "set3");
+		request = new PredefinedSessionRequest(9999L, true, "set3");
 		result = SharedApplication.getInstance().getPredefinedSessions(request);
 		assertEquals(2, result.size());
 		assertEquals(newSessions[4].getId(), result.get(0).getId());
 		assertEquals(newSessions[5].getId(), result.get(1).getId());
 		
 		//Should be 2 NOT approved & in group 'set2'
-		request = new PredefinedSessionRequest(50L, false, "set2");
+		request = new PredefinedSessionRequest(9999L, false, "set2");
 		result = SharedApplication.getInstance().getPredefinedSessions(request);
 		assertEquals(2, result.size());
 		assertEquals(newSessions[1].getId(), result.get(0).getId());
 		assertEquals(newSessions[2].getId(), result.get(1).getId());
 		
 		//Should be 1 approved, in group 'set3', and UNLISTED
-		request = new PredefinedSessionRequest(50L, true, PredefinedSessionType.UNLISTED, "set3");
+		request = new PredefinedSessionRequest(9999L, true, PredefinedSessionType.UNLISTED, "set3");
 		result = SharedApplication.getInstance().getPredefinedSessions(request);
 		assertEquals(1, result.size());
 		assertEquals(newSessions[5].getId(), result.get(0).getId());
@@ -434,9 +432,9 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		ps1.setAddNote("Please approve me");
 		//ps1.setApproved(false);	//should default to false and not allow 'true' on new records
 		ps1.setContextString("context");
-		ps1.setDescription("desc");
+		ps1.setDescription("[[TEST USAGE ONLY, DO NOT USE. DELETE ME]]desc");
 		ps1.setGroupName("myGroup");
-		ps1.setModelId(50L);
+		ps1.setModelId(9999L);
 		ps1.setName("Session 1");
 		ps1.setPredefinedSessionType(PredefinedSessionType.FEATURED);
 		ps1.setSortOrder(1);
@@ -450,9 +448,9 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		ps2.setAddNote("Please approve me");
 		ps2.setApproved(true);	//ignored and set to false
 		ps2.setContextString("context");
-		ps2.setDescription("desc");
+		ps2.setDescription("[[TEST USAGE ONLY, DO NOT USE. DELETE ME]]desc");
 		ps2.setGroupName("myGroup");
-		ps2.setModelId(50L);
+		ps2.setModelId(9999L);
 		ps2.setName("Session 2");
 		ps2.setPredefinedSessionType(PredefinedSessionType.LISTED);
 		ps2.setSortOrder(4);
@@ -466,9 +464,9 @@ public class PredefinedSessionsTest extends SparrowDBTest {
 		ps3.setAddNote("Please approve me");
 		ps3.setApproved(false);
 		ps3.setContextString("context");
-		ps3.setDescription("desc");
+		ps3.setDescription("[[TEST USAGE ONLY, DO NOT USE. DELETE ME]]desc");
 		ps3.setGroupName("myGroup");
-		ps3.setModelId(50L);
+		ps3.setModelId(9999L);
 		ps3.setName("Session 3");
 		ps3.setPredefinedSessionType(PredefinedSessionType.UNLISTED);
 		ps3.setSortOrder(6);

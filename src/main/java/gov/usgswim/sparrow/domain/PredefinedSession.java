@@ -4,6 +4,8 @@ import gov.usgswim.Immutable;
 
 import java.sql.Date;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
 /**
  * A PredictionContext that has been predefined for users to choose.
  * 
@@ -12,6 +14,7 @@ import java.sql.Date;
  *
  */
 @Immutable
+@XStreamAlias("PredefinedSession")
 public class PredefinedSession implements IPredefinedSession  {
 
 	/**

@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
 import gov.usgswim.sparrow.domain.PredefinedSessionType;
+import gov.usgswim.sparrow.request.PredefinedSessionUniqueRequest;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,14 +21,17 @@ import com.google.common.collect.ImmutableList;
  * @author eeverman
  *
  */
-public class LoadPredefinedSessions extends Action<List<IPredefinedSession>> {
+public class LoadPredefinedSession extends Action<IPredefinedSession> {
 
+	/**
+	 * A request for a uniquely defined session
+	 */
+	PredefinedSessionUniqueRequest request;
 	
-	/** Id of the model the session is for.	 */
-	Long modelId;
 
-	public LoadPredefinedSessions(Long modelId) {
-		this.modelId = modelId;
+
+	public LoadPredefinedSession(PredefinedSessionUniqueRequest request) {
+		this.request = request;
 	}
 	
 
@@ -35,18 +39,22 @@ public class LoadPredefinedSessions extends Action<List<IPredefinedSession>> {
 	 * @return ImmutableList of immutable SparrowModels
 	 */
 	@Override
-	public List<IPredefinedSession> doAction() throws Exception {
+	public IPredefinedSession doAction() throws Exception {
 
 
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		String queryName = null;	//The name of the query to run
 		
-		if (modelId != null) {
+		if (request.getId() != null) {
 			//Select all records for a single model
-			paramMap.put("SPARROW_MODEL_ID", modelId);
-			queryName = "LoadByModelId";
+			paramMap.put("ID", request.getId());
+			queryName = "LoadById";
+		} else if (request.getUniqueCode() != null) {
+			//Select a single record based on the code
+			paramMap.put("UNIQUE_CODE", request.getUniqueCode());
+			queryName = "LoadByUniqueCode";
 		} else{
-			throw new Exception("Either the modelId or the uniqueCode must not be null");
+			throw new Exception("Either the id or the uniqueCode must not be null");
 		}
 
 		PreparedStatement selectSessions = null;
@@ -55,17 +63,18 @@ public class LoadPredefinedSessions extends Action<List<IPredefinedSession>> {
 
 		selectSessions = getRWPSFromPropertiesFile(queryName, null, paramMap);
 
-		try {
-			rset = selectSessions.executeQuery();
-			sessions = hydrate(rset);
-		} finally {
-			// rset can be null if there is an sql error. This has happened with the renaming of a field
-			if (rset != null) rset.close();
+
+		rset = selectSessions.executeQuery();
+		sessions = hydrate(rset);
+		
+		if (sessions.size() == 0) {
+			throw new Exception("Could not find the PredefinedSession.");
 		}
 
 
+
 		//Returns an ImmutableList of immutable SparrowModels.
-		return ImmutableList.copyOf(sessions);
+		return sessions.get(0);
 	}
 	
 	public List<IPredefinedSession> hydrate(ResultSet rset) throws Exception {

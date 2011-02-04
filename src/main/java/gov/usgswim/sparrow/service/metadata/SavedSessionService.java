@@ -1,6 +1,9 @@
 package gov.usgswim.sparrow.service.metadata;
 
 import static gov.usgswim.sparrow.util.SparrowResourceUtils.lookupModelID;
+import static gov.usgswim.sparrow.service.ServiceResponseMimeType.*;
+import static gov.usgswim.sparrow.service.ServiceResponseStatus.*;
+import static gov.usgswim.sparrow.service.ServiceResponseOperation.*;
 
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
@@ -8,11 +11,15 @@ import gov.usgswim.sparrow.domain.PredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
 import gov.usgswim.sparrow.domain.PredefinedSessionType;
 import gov.usgswim.sparrow.request.PredefinedSessionRequest;
+import gov.usgswim.sparrow.request.PredefinedSessionUniqueRequest;
+import gov.usgswim.sparrow.service.ServiceResponseMimeType;
+import gov.usgswim.sparrow.service.ServiceResponseWrapper;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Date;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,6 +32,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
+
 /**
  * @author ilinkuo
  *
@@ -33,59 +45,116 @@ public class SavedSessionService extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
 	
-	private static final String OPERATION_SAVE = "SAVE";
-	private static final String OPERATION_DELETE = "DELETE";
+	
+	/** Boolean http param flag.  If true, only return the contextString
+	 * from the GET operation.  To enable this option, pass 'true' (case 
+	 * insensative).
+	 */
+	public static final String RETURN_CONTENT_ONLY_PARAM_NAME = "content_only";
+	
+	public static final String REQUESTED_MIME_TYPE_PARAM_NAME = "mime_type";
+	
+	public static final String XML_SUBMIT_PARAM_NAME = "xml_req";
+	
+	public static final String JSON_SUBMIT_PARAM_NAME = "json_req";
 
-	// ================
-	// Instance Methods
-	// ================
+	/**
+	 * The GET method operates in two modes:
+	 * context/uniqueCode returns the json content of the predefined session.
+	 * context?params... returns a list of predefined sessions (names, descriptions,
+	 * etc) w/o the actual json content.  The params are basically filter criteria,
+	 * which could be a uniqueCode (thus filtering to a single record).
+	 * 
+	 * For cases where a uniqueCode is specified, the RETURN_CONTENT_ONLY_PARAM_NAME
+	 * parameter can be passed as 'true', which will return only the JSON
+	 * content of the predefinedSession.
+	 * 
+	 * 
+	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		//GET returns a single PredefinedSession based either on a
 		//unique key in the form context/servletpath/unique_key
 		
-		String code = req.getPathInfo();
+		ServiceResponseWrapper wrap = new ServiceResponseWrapper(
+					IPredefinedSession.class, GET);
+		wrap.setStatus(FAIL);	//pessimistic...
+		wrap.setMimeType(parseMime(req));
 		
+		//Special parameters
+		boolean contentOnly = parseBoolean(req.getParameter(RETURN_CONTENT_ONLY_PARAM_NAME));
+		String extraPath = cleanExtraPath(req);
 		
-		if (code != null && code.startsWith("/")) {
-			code = code.substring(1);
+		//A request for the PS that will be built up based on criteria
+		PredefinedSessionRequest psReq = null;
+		PredefinedSessionUniqueRequest psUniqueReq = null;
+		
+		//List of sessions to be returned
+		List<IPredefinedSession> sesss = null;
+		
+
+
+		if (extraPath != null) {
+			//we have extra path, so this is a request for a single record
+			//identified by an ID.
+			try {
+				Long id = Long.parseLong(extraPath);
+				psUniqueReq = new PredefinedSessionUniqueRequest(id);
+			} catch (Exception e) {
+				wrap.setMessage("Could not parse requested id '" + extraPath + "'");
+				sendResponse(resp, wrap);
+				return;
+			}
+		} else {
+			//Parse all params into full criteria request
+			psReq = parseFilterSessionRequest(req.getParameterMap());
+			psUniqueReq = parseUniqueSessionRequest(req.getParameterMap());
 		}
 		
-		code = StringUtils.trimToNull(code);
 		
-//		if (code == null) {
-//			sendErrorResponse(resp, "No session code was found - use the form url/code to request", null);
-//			return;
-//		}
 		
-		if (code != null) {
-		
-			PredefinedSessionRequest psReq = new PredefinedSessionRequest(code);
-			IPredefinedSession sess = null;
-			try {
-				sess = SharedApplication.getInstance().getPredefinedSessions(psReq).get(0);
-			} catch (Exception e) {
-				sendErrorResponse(resp, "Error fetching the session '" + code + "'", e);
-				return;
-			}
-			
-			if (sess != null) {
-				resp.setContentType("text/json");
-				resp.setCharacterEncoding("UTF-8");
-				resp.getWriter().write(sess.getContextString());
+		try {
+			if (psUniqueReq != null && psUniqueReq.isPopulated()) {
+				sesss = SharedApplication.getInstance().getPredefinedSessions(psUniqueReq);
 			} else {
-				sendErrorResponse(resp, "PredefinedSession '" + code + "' was not found", null);
+				sesss = SharedApplication.getInstance().getPredefinedSessions(psReq);
+			}
+		} catch (Exception e) {
+			wrap.setError(e);
+			wrap.setMessage("Unable to retrieve PredefinedSession(s) from the db.");
+
+			sendResponse(resp, wrap);
+			return;
+		}
+		
+		
+		if (sesss.size() == 1 && contentOnly) {
+
+			//This is a special request for only the JSON content of a BLOB
+			//field that contains the JSON-ified version of a serialized
+			//client state.  It must be encoded as UTF-8.  I think that is
+			//a requirement...
+			wrap.setMimeType(JSON);
+			wrap.setEncoding("UTF-8");
+			if (sesss != null && sesss.size() == 1) {
+				resp.setContentType(wrap.getMimeType().toString());
+				resp.setCharacterEncoding(wrap.getEncoding());
+				resp.getWriter().write(sesss.get(0).getContextString());
+				return;
+			} else {
+				wrap.setMessage("Could not find any records matching request.");
+				sendResponse(resp, wrap);
 				return;
 			}
-			
+
 		} else {
-			
-			Map params = req.getParameterMap();
-			PredefinedSessionRequest psReq = parseParameters(params);
-			
-			StringBuilder strResponse = retrieveAllSavedSessionsXML(psReq);
-			sendXML(resp, strResponse.toString());
+			wrap.addAllEntities(sesss);
+			wrap.setStatus(OK);
+			if (sesss.size() == 1) {
+				wrap.setEntityId(sesss.get(0).getId());
+			}
+			sendResponse(resp, wrap);
 		}
 	}
 
@@ -94,6 +163,7 @@ public class SavedSessionService extends HttpServlet {
 	/**
 	 * Puts a new PredefinedSession in the db, or updates an existing.
 	 */
+	/*
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -142,21 +212,65 @@ public class SavedSessionService extends HttpServlet {
 			String strResponse = Action.getTextWithParamSubstitution("ResponseFail", this.getClass(),
 					"Operation", OPERATION_SAVE, "Message", "Error while saving the session");
 			
-			sendXML(resp, strResponse.toString());
+			//sendXML(resp, strResponse.toString());
 		}
 	}
-
+	*/
 
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		ServiceResponseWrapper wrap = new ServiceResponseWrapper(
+				IPredefinedSession.class, UPDATE);
+		wrap.setStatus(FAIL);	//pessimistic...
+		wrap.setMimeType(parseMime(req));
+	
+		Object entity = null;
+		String xml = StringUtils.trimToNull(req.getParameter(XML_SUBMIT_PARAM_NAME));
+		String json = StringUtils.trimToNull(req.getParameter(JSON_SUBMIT_PARAM_NAME));
 		
-		doPut(req, resp);
+		if (xml != null) {
+			entity = getXMLXStream().fromXML(xml);
+			wrap.setMimeType(XML);
+		} else if (json != null) {
+			entity = getJSONXStream().fromXML(xml);
+			wrap.setMimeType(JSON);
+		} else {
+			wrap.setStatus(FAIL);
+			wrap.setMessage("No request content found");
+			sendResponse(resp, wrap);
+			return;
+		}
+		
+		
+		IPredefinedSession postedPredefinedSession = (IPredefinedSession)entity;
+		
+		if (postedPredefinedSession.getId() == null) {
+			wrap.setOperation(CREATE);
+		}
+		
+		IPredefinedSession updatedPredefinedSession = null;
+		
+		try {
+			updatedPredefinedSession =
+				SharedApplication.getInstance().savePredefinedSession(postedPredefinedSession);
+		} catch (Exception e) {
+			wrap.setMessage("Could not create or update the PredefinedSession");
+			wrap.setError(e);
+			sendResponse(resp, wrap);
+			return;
+		}
+		
+		//send back w/ a wrapper
+		wrap.addEntity(updatedPredefinedSession);
+		wrap.setEntityId(updatedPredefinedSession.getId());
+		wrap.setStatus(OK);
+		sendResponse(resp, wrap);
 	}
 	
-	public static PredefinedSessionRequest parseParameters(Map params) {
+	public static PredefinedSessionRequest parseFilterSessionRequest(Map params) {
 
 		PredefinedSessionRequest req = null;
 		
@@ -164,12 +278,25 @@ public class SavedSessionService extends HttpServlet {
 		Boolean approved = getBoolean(params, "approved");
 		PredefinedSessionType type = getPredefinedSessionType(params, "type");
 		String groupName = getClean(params, "groupName");
+		
+		req = new PredefinedSessionRequest(modelId, approved, type, groupName);
+
+		return req;
+	}
+	
+	public static PredefinedSessionUniqueRequest parseUniqueSessionRequest(Map params) {
+
+		PredefinedSessionUniqueRequest req = null;
+		
+		Long id = getLong(params, "id");
 		String uniqueCode = getClean(params, "uniqueCode");
 		
 		if (uniqueCode != null) {
-			req = new PredefinedSessionRequest(uniqueCode);
+			req = new PredefinedSessionUniqueRequest(uniqueCode);
+		} else if (id != null) {
+			req = new PredefinedSessionUniqueRequest(id);
 		} else {
-			req = new PredefinedSessionRequest(modelId, approved, type, groupName);
+			req = new PredefinedSessionUniqueRequest();
 		}
 		
 		return req;
@@ -284,10 +411,90 @@ public class SavedSessionService extends HttpServlet {
 		}
 	}
 	
-	private void sendXML(HttpServletResponse resp, String xml) throws IOException {
-		resp.setContentType("text/xml");
-		resp.setCharacterEncoding("UTF-8");
-		resp.getWriter().write(xml);
-	}
+	protected void sendResponse(HttpServletResponse resp,
+			ServiceResponseWrapper wrap) throws IOException {
+		
+		XStream xs = null;
+		resp.setCharacterEncoding(wrap.getEncoding());
+		resp.setContentType(wrap.getMimeType().toString());
 
+		switch (wrap.getMimeType()) {
+		case XML: 
+			xs = getXMLXStream();
+			break;
+		case JSON:
+			xs = getJSONXStream();
+			break;
+		default:
+			throw new RuntimeException("Unknown MIMEType.");
+		}
+		
+		xs.toXML(wrap, resp.getWriter());
+	}
+	
+
+	
+	protected ServiceResponseMimeType parseMime(HttpServletRequest req) {
+		String mimeStr = StringUtils.trimToNull(
+				req.getParameter(REQUESTED_MIME_TYPE_PARAM_NAME));
+		
+		ServiceResponseMimeType type = ServiceResponseMimeType.parse(mimeStr);
+		
+		if (type != null) {
+			return type;
+		} else {
+			Enumeration heads = req.getHeaders("Accept");
+			
+			while (heads.hasMoreElements()) {
+				String a = heads.nextElement().toString();
+				type = ServiceResponseMimeType.parse(a);
+				if (type != null) return type;
+			}
+			
+		}
+		
+		//Couldn't find a type - use the default
+		return XML;
+	}
+	
+	/**
+	 * Trims the extraPath to remove the leading slash and completely trims it
+	 * to null.
+	 * 
+	 * @param req
+	 * @return
+	 */
+	protected String cleanExtraPath(HttpServletRequest req) {
+		String extraPath = StringUtils.trimToNull(req.getPathInfo());
+		
+		
+		if (extraPath != null) {
+			if (extraPath.startsWith("/")) {
+				extraPath = StringUtils.trimToNull(extraPath.substring(1));
+			}
+		}
+		
+		return extraPath;
+	}
+	
+	
+	protected boolean parseBoolean(String value) {
+		value = StringUtils.trimToNull(value);
+		return ("true".equalsIgnoreCase(value) || "t".equalsIgnoreCase(value));
+	}
+	
+	protected static XStream getJSONXStream() {
+		XStream xs = new XStream(new JsonHierarchicalStreamDriver());
+        xs.setMode(XStream.NO_REFERENCES);
+        xs.processAnnotations(ServiceResponseWrapper.class);
+        return xs;
+	}
+	
+	protected static XStream getXMLXStream() {
+		XStream xs = new XStream(new StaxDriver());
+        xs.setMode(XStream.NO_REFERENCES);
+        xs.processAnnotations(ServiceResponseWrapper.class);
+        return xs;
+	}
+	
 }

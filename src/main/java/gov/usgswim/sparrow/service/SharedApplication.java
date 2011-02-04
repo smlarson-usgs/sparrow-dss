@@ -31,6 +31,7 @@ import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.action.DeletePredefinedSession;
 import gov.usgswim.sparrow.action.FilterPredefinedSessions;
+import gov.usgswim.sparrow.action.LoadPredefinedSession;
 import gov.usgswim.sparrow.action.LoadReachesInBBox;
 import gov.usgswim.sparrow.action.PredictionContextHandler;
 import gov.usgswim.sparrow.action.SavePredefinedSession;
@@ -47,12 +48,7 @@ import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.LogicalSet;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
-import gov.usgswim.sparrow.request.BinningRequest;
-import gov.usgswim.sparrow.request.CatchmentArea;
-import gov.usgswim.sparrow.request.ModelRequestCacheKey;
-import gov.usgswim.sparrow.request.PredefinedSessionRequest;
-import gov.usgswim.sparrow.request.PredictionContextRequest;
-import gov.usgswim.sparrow.request.ReachID;
+import gov.usgswim.sparrow.request.*;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 
@@ -63,6 +59,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.Context;
@@ -455,29 +452,69 @@ public class SharedApplication  {
 		}
 		return null;
 	}
-
-	//PredefinedSessions Cache
-	public List<IPredefinedSession> loadPredefinedSessions(Long modelId) {
-		return loadPredefinedSessions(modelId, false);
-	}
 	
-	public List<IPredefinedSession> loadPredefinedSessions(String uniqueCode) {
-		return loadPredefinedSessions(uniqueCode, false);
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<IPredefinedSession> loadPredefinedSessions(Long modelId, boolean quiet) {
-		return (List<IPredefinedSession>) PredefinedSessions.get(modelId, quiet);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<IPredefinedSession> loadPredefinedSessions(String uniqueCode, boolean quiet) {
-		return (List<IPredefinedSession>) PredefinedSessions.get(uniqueCode, quiet);
-	}
-	
+	/**
+	 * Returns a filtered list of PredefinedSessions, pulling from the model-id
+	 * based cache if possible.
+	 * 
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
 	public List<IPredefinedSession> getPredefinedSessions(PredefinedSessionRequest request) throws Exception {
 		FilterPredefinedSessions action = new FilterPredefinedSessions(request);
 		return action.run();
+	}
+	
+	/**
+	 * An overloaded version that returns a list instead of a single value
+	 * is useful in the session servlet.
+	 * @param request
+	 * @return
+	 * @throws Exception
+	 */
+	public List<IPredefinedSession> getPredefinedSessions(PredefinedSessionUniqueRequest request) throws Exception {
+		IPredefinedSession session = getPredefinedSession(request, false);
+		ArrayList<IPredefinedSession> list = new ArrayList<IPredefinedSession>(1);
+		list.add(session);
+		return list;
+	}
+	
+
+	/**
+	 * REturns a single PredefinedSession, uniquely ID by either an ID or
+	 * code.  It will attempt to fetch from the model ID based cache first, 
+	 * then fetch from the db if not quiet.
+	 * 
+	 * @param request
+	 * @param quiet
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public IPredefinedSession getPredefinedSession(PredefinedSessionUniqueRequest request, boolean quiet) throws Exception {
+		List keys = PredefinedSessions.getKeysWithExpiryCheck();
+		for (Object key : keys) {
+			List<IPredefinedSession> sessions =
+				(List<IPredefinedSession>) PredefinedSessions.get(key, true);
+			
+			for (IPredefinedSession session : sessions) {
+				if (session.getId().equals(request.getId()) ||
+						session.getUniqueCode().equalsIgnoreCase(request.getUniqueCode())) {
+					return session;
+				}
+			}
+			
+		}
+		
+		if (! quiet) {
+			//Didn't find it, so load it direct from the db
+			LoadPredefinedSession action = new LoadPredefinedSession(request);
+			IPredefinedSession session = action.run();
+			return session;
+		} else {
+			return null;
+		}
 	}
 	
 	

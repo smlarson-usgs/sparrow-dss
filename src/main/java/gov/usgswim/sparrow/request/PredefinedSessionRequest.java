@@ -21,54 +21,56 @@ public class PredefinedSessionRequest implements Serializable {
 	private final Boolean approved;
 	private final PredefinedSessionType predefinedSessionType;
 	private final String groupName;
-	private final String uniqueCode;
+	
+	public PredefinedSessionRequest(Long modelId, String groupName) {
+		
+		this.modelId = modelId;
+		this.approved = null;
+		this.predefinedSessionType = null;
+		this.groupName = groupName;
+	}
+	
 	
 	public PredefinedSessionRequest(Long modelId) {
+		
 		this.modelId = modelId;
 		this.approved = null;
 		this.predefinedSessionType = null;
 		this.groupName = null;
-		this.uniqueCode = null;
-	}
-	
-	public PredefinedSessionRequest(String uniqueCode) {
-		this.modelId = null;
-		this.approved = null;
-		this.predefinedSessionType = null;
-		this.groupName = null;
-		this.uniqueCode = uniqueCode;
 	}
 	
 	public PredefinedSessionRequest(Long modelId, Boolean approved) {
+		
 		this.modelId = modelId;
 		this.approved = approved;
 		this.predefinedSessionType = null;
 		this.groupName = null;
-		this.uniqueCode = null;
 	}
 	
 	public PredefinedSessionRequest(Long modelId, Boolean approved, PredefinedSessionType predefinedSessionType) {
+		
 		this.modelId = modelId;
 		this.approved = approved;
 		this.predefinedSessionType = predefinedSessionType;
 		this.groupName = null;
-		this.uniqueCode = null;
 	}
 	
 	public PredefinedSessionRequest(Long modelId, Boolean approved, String groupName) {
+		
 		this.modelId = modelId;
 		this.approved = approved;
 		this.predefinedSessionType = null;
 		this.groupName = groupName;
-		this.uniqueCode = null;
 	}
 	
-	public PredefinedSessionRequest(Long modelId, Boolean approved, PredefinedSessionType predefinedSessionType, String groupName) {
+	
+	public PredefinedSessionRequest(Long modelId, Boolean approved,
+			PredefinedSessionType predefinedSessionType, String groupName) {
+		
 		this.modelId = modelId;
 		this.approved = approved;
 		this.predefinedSessionType = predefinedSessionType;
 		this.groupName = groupName;
-		this.uniqueCode = null;
 	}
 	
 
@@ -97,12 +99,7 @@ public class PredefinedSessionRequest implements Serializable {
 	public String getGroupName() {
 		return groupName;
 	}
-	/**
-	 * @return the uniqueCode
-	 */
-	public String getUniqueCode() {
-		return uniqueCode;
-	}
+	
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
@@ -125,8 +122,9 @@ public class PredefinedSessionRequest implements Serializable {
 		hash.append(approved);
 		hash.append(predefinedSessionType);
 		hash.append(groupName);
-		hash.append(uniqueCode);
 		return hash.toHashCode();
 	}
+
+
 
 }

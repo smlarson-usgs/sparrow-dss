@@ -1,36 +1,33 @@
 package gov.usgswim.sparrow.service.metadata;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
-import java.util.List;
-
-import gov.usgswim.sparrow.SparrowServiceTest;
+import static org.junit.Assert.assertNotNull;
 import gov.usgswim.sparrow.SparrowServiceTestWithCannedModel50;
+import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.action.PredefinedSessionsTest;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
-import gov.usgswim.sparrow.domain.PredefinedSessionType;
-import gov.usgswim.sparrow.parser.PredictionContext;
-import gov.usgswim.sparrow.request.PredefinedSessionRequest;
-import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.ParserHelper;
+import gov.usgswim.sparrow.service.ServiceResponseWrapper;
 
-import javax.xml.stream.XMLStreamReader;
-
-import org.apache.log4j.Level;
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier;
 import org.junit.Test;
 
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.PostMethodWebRequest;
+import com.meterware.httpunit.PutMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
 
+/**
+ * Note:  This test uses the test db which is currently being used to store
+ * semi-real data until we get a production transactional db.  As a result,
+ * the 2nd test will fail b/c there are other records in the db. 1/31/2011.
+ * 
+ * @author eeverman
+ *
+ */
 public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50 {
 	
 	private static final String SESSION_SERVICE_URL = "http://localhost:8088/sp_session";
@@ -42,26 +39,65 @@ public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50
 	public void PUTandGETaSession() throws Exception {
 		WebRequest req = new PutRequest(SESSION_SERVICE_URL);
 		
-		PredefinedSessionBuilder[] sessions = PredefinedSessionsTest.createUnsavedPredefinedSessions();
-		assignRequestParams(req, sessions[0]);
-
+		//PredefinedSessionBuilder[] sessions = PredefinedSessionsTest.createUnsavedPredefinedSessions();
+		//assignRequestParams(req, sessions[0]);
+		
+		String ps1Str = Action.getText("Session1", this.getClass());
+		req.setParameter(SavedSessionService.XML_SUBMIT_PARAM_NAME, ps1Str);
+		Object entity = getXMLXStream().fromXML(ps1Str);
+		IPredefinedSession ps1 = (IPredefinedSession)entity;
 		
 		WebResponse response = client.sendRequest(req);
 		String actualResponse = response.getText();
-		//System.out.println("response: " + actualResponse);
+		//System.out.println("response: '" + actualResponse + "'");
 		
-		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", actualResponse);
+		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
+		assertXpathEvaluatesTo("CREATE", "/ServiceResponseWrapper/operation", actualResponse);
+		assertXpathEvaluatesTo("gov.usgswim.sparrow.domain.IPredefinedSession", "/ServiceResponseWrapper/entityClass", actualResponse);
+		assertXpathEvaluatesTo("9999", "/ServiceResponseWrapper/entityList/PredefinedSession[1]/modelId", actualResponse);
+		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/PredefinedSession[1]/uniqueCode", actualResponse);
 		
-		String modelId = getAttributeValue(actualResponse, "model-id");
-		String dbId = getAttributeValue(actualResponse, "db-id");
-		String code = getAttributeValue(actualResponse, "predefinedSessionId");
-		assertEquals("50", modelId);
-		assertNotNull(code);
+		String dbId = getXPathValue("/ServiceResponseWrapper/entityId", actualResponse);
+
 		
-		req = new GetMethodWebRequest(SESSION_SERVICE_URL + "/" + code);
+		
+		//Get via /id url (full response)
+		req = new GetMethodWebRequest(SESSION_SERVICE_URL + "/" + dbId);
 		response = client.sendRequest(req);
 		actualResponse = response.getText();
-		//System.out.println("response: " + actualResponse);
+		//System.out.println("Get via /id url (full response) response: " + actualResponse);
+		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
+		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
+		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/PredefinedSession[1]/uniqueCode", actualResponse);
+		assertXpathEvaluatesTo(dbId, "/ServiceResponseWrapper/entityId", actualResponse);
+		
+		//Get via uniqueCode parameter (full response)
+		req = new GetMethodWebRequest(SESSION_SERVICE_URL);
+		req.setParameter("uniqueCode", "test_created_delete_me_XX1");
+		response = client.sendRequest(req);
+		actualResponse = response.getText();
+		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
+		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
+		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/PredefinedSession[1]/uniqueCode", actualResponse);
+		assertXpathEvaluatesTo(dbId, "/ServiceResponseWrapper/entityId", actualResponse);
+		//System.out.println("GET via Param response: " + actualResponse);
+		
+		//Get via /id url (context only response)
+		req = new GetMethodWebRequest(SESSION_SERVICE_URL + "/" + dbId);
+		req.setParameter(SavedSessionService.RETURN_CONTENT_ONLY_PARAM_NAME, "TRUE");
+		response = client.sendRequest(req);
+		actualResponse = response.getText();
+		assertEquals("context", actualResponse);
+		//System.out.println("GET response: " + actualResponse);
+		
+		//Get via parameter (context only response)
+		req = new GetMethodWebRequest(SESSION_SERVICE_URL);
+		req.setParameter(SavedSessionService.RETURN_CONTENT_ONLY_PARAM_NAME, "true");
+		req.setParameter("uniqueCode", "test_created_delete_me_XX1");
+		response = client.sendRequest(req);
+		actualResponse = response.getText();
+		assertEquals("context", actualResponse);
+		//System.out.println("GET via Param response: " + actualResponse);
 		
 		
 		PredefinedSessionBuilder deleteMe = new PredefinedSessionBuilder();
@@ -116,58 +152,58 @@ public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50
 		////////////////
 		/// end of setup
 		////////////////
-		req.setParameter("modelId", "50");
+		req.setParameter("modelId", "9999");
 		WebResponse response = client.sendRequest(req);
 		String actualResponse = response.getText();
-		//System.out.println("actual response: " + actualResponse);
+		System.out.println("Filter 1 actual response: " + actualResponse);
 		//Should be nine all together (no criteria)
-		assertXpathEvaluatesTo("9", "count(//*[local-name()='session'])", actualResponse);
+		assertXpathEvaluatesTo("9", "count(/ServiceResponseWrapper/entityList/PredefinedSession)", actualResponse);
 
 		
 		//Should be 3 approved
 		req = new GetMethodWebRequest(SESSION_SERVICE_URL);
-		req.setParameter("modelId", "50");
+		req.setParameter("modelId", "9999");
 		req.setParameter("approved", "true");
 		response = client.sendRequest(req);
 		actualResponse = response.getText();
-		assertXpathEvaluatesTo("3", "count(//*[local-name()='session'])", actualResponse);
+		assertXpathEvaluatesTo("3", "count(/ServiceResponseWrapper/entityList/PredefinedSession)", actualResponse);
 
 		//Should be 1 approved & FEATURED
 		req = new GetMethodWebRequest(SESSION_SERVICE_URL);
-		req.setParameter("modelId", "50");
+		req.setParameter("modelId", "9999");
 		req.setParameter("approved", "true");
 		req.setParameter("type", "FEATURED");
 		response = client.sendRequest(req);
 		actualResponse = response.getText();
-		assertXpathEvaluatesTo("1", "count(//*[local-name()='session'])", actualResponse);
+		assertXpathEvaluatesTo("1", "count(/ServiceResponseWrapper/entityList/PredefinedSession)", actualResponse);
 		
 		//Should be 2 approved & in group 'set3'
 		req = new GetMethodWebRequest(SESSION_SERVICE_URL);
-		req.setParameter("modelId", "50");
+		req.setParameter("modelId", "9999");
 		req.setParameter("approved", "true");
 		req.setParameter("groupName", "set3");
 		response = client.sendRequest(req);
 		actualResponse = response.getText();
-		assertXpathEvaluatesTo("2", "count(//*[local-name()='session'])", actualResponse);
+		assertXpathEvaluatesTo("2", "count(/ServiceResponseWrapper/entityList/PredefinedSession)", actualResponse);
 		
 		//Should be 2 NOT approved & in group 'set2'
 		req = new GetMethodWebRequest(SESSION_SERVICE_URL);
-		req.setParameter("modelId", "50");
+		req.setParameter("modelId", "9999");
 		req.setParameter("approved", "false");
 		req.setParameter("groupName", "set2");
 		response = client.sendRequest(req);
 		actualResponse = response.getText();
-		assertXpathEvaluatesTo("2", "count(//*[local-name()='session'])", actualResponse);
+		assertXpathEvaluatesTo("2", "count(/ServiceResponseWrapper/entityList/PredefinedSession)", actualResponse);
 
 		//Should be 1 approved, in group 'set3', and UNLISTED
 		req = new GetMethodWebRequest(SESSION_SERVICE_URL);
-		req.setParameter("modelId", "50");
+		req.setParameter("modelId", "9999");
 		req.setParameter("approved", "true");
 		req.setParameter("type", "UNLISTED");
 		req.setParameter("groupName", "set3");
 		response = client.sendRequest(req);
 		actualResponse = response.getText();
-		assertXpathEvaluatesTo("1", "count(//*[local-name()='session'])", actualResponse);
+		assertXpathEvaluatesTo("1", "count(/ServiceResponseWrapper/entityList/PredefinedSession)", actualResponse);
 
 		PredefinedSessionsTest.deleteSessions(newSessions);
 		
@@ -204,6 +240,13 @@ public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50
 		public String getMethod() {
 			return "PUT";
 		}
+	}
+	
+	protected static XStream getXMLXStream() {
+		XStream xs = new XStream(new StaxDriver());
+        xs.setMode(XStream.NO_REFERENCES);
+        xs.processAnnotations(ServiceResponseWrapper.class);
+        return xs;
 	}
 }
 

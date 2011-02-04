@@ -22,10 +22,10 @@ public class IDServiceIntegrationTest extends SparrowServiceTestWithCannedModel5
 	@Test
 	public void testModelByPoint() throws Exception {
 		String response = runRequest(getXmlAsString(this.getClass(), "req1"));
-		//log.debug("Req 1 response: " + response);
+		System.out.println("Req 1 response: " + response);
 		
-		int reachID = Integer.parseInt( getElementValue(response, "id") );
-		String reachName = getElementValue(response, "name");
+		int reachID = Integer.parseInt( getXPathValue("//*[local-name()='id']", response) );
+		String reachName = getXPathValue("//*[local-name()='name']", response);
 
 		assertEquals(9190, reachID);
 		assertEquals("HARRY KETTLE CR", reachName);
