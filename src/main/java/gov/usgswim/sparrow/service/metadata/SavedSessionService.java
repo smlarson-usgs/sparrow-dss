@@ -1,47 +1,40 @@
 package gov.usgswim.sparrow.service.metadata;
 
-import static gov.usgswim.sparrow.util.SparrowResourceUtils.lookupModelID;
-import static gov.usgswim.sparrow.service.ServiceResponseMimeType.*;
-import static gov.usgswim.sparrow.service.ServiceResponseStatus.*;
-import static gov.usgswim.sparrow.service.ServiceResponseOperation.*;
-
-import gov.usgswim.sparrow.action.Action;
+import static gov.usgswim.sparrow.service.ServiceResponseMimeType.JSON;
+import static gov.usgswim.sparrow.service.ServiceResponseMimeType.XML;
+import static gov.usgswim.sparrow.service.ServiceResponseOperation.CREATE;
+import static gov.usgswim.sparrow.service.ServiceResponseOperation.GET;
+import static gov.usgswim.sparrow.service.ServiceResponseOperation.UPDATE;
+import static gov.usgswim.sparrow.service.ServiceResponseStatus.FAIL;
+import static gov.usgswim.sparrow.service.ServiceResponseStatus.OK;
+import static gov.usgswim.sparrow.service.ServiceResponseStatus.UNKNOWN;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
-import gov.usgswim.sparrow.domain.PredefinedSession;
-import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
 import gov.usgswim.sparrow.domain.PredefinedSessionType;
 import gov.usgswim.sparrow.request.PredefinedSessionRequest;
 import gov.usgswim.sparrow.request.PredefinedSessionUniqueRequest;
+import gov.usgswim.sparrow.service.AbstractSparrowServlet;
 import gov.usgswim.sparrow.service.ServiceResponseMimeType;
 import gov.usgswim.sparrow.service.ServiceResponseWrapper;
+import gov.usgswim.sparrow.service.ServletResponseParser;
 import gov.usgswim.sparrow.service.SharedApplication;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 /**
  * @author ilinkuo
  *
  */
-public class SavedSessionService extends HttpServlet {
+public class SavedSessionService extends AbstractSparrowServlet {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -52,12 +45,6 @@ public class SavedSessionService extends HttpServlet {
 	 */
 	public static final String RETURN_CONTENT_ONLY_PARAM_NAME = "content_only";
 	
-	public static final String REQUESTED_MIME_TYPE_PARAM_NAME = "mime_type";
-	
-	public static final String XML_SUBMIT_PARAM_NAME = "xml_req";
-	
-	public static final String JSON_SUBMIT_PARAM_NAME = "json_req";
-
 	/**
 	 * The GET method operates in two modes:
 	 * context/uniqueCode returns the json content of the predefined session.
@@ -159,65 +146,13 @@ public class SavedSessionService extends HttpServlet {
 	}
 
 
-
-	/**
-	 * Puts a new PredefinedSession in the db, or updates an existing.
-	 */
-	/*
 	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		
-		Map params = req.getParameterMap();
-		PredefinedSessionBuilder s = new PredefinedSessionBuilder();
-		
-		//s.setId(getLong(params, "id"));	//I don't think we want this set
-		s.setUniqueCode(getClean(params, "code"));
-		s.setModelId(getLong(params, "modelId"));
-		s.setPredefinedSessionType(getPredefinedSessionType(params, "type"));
-		s.setApproved(getBoolean(params, "approved"));
-		
-		s.setName(getClean(params, "name"));
-		s.setDescription(getClean(params, "description"));
-		s.setSortOrder(getInteger(params, "sort_order"));
-		s.setContextString(getClean(params, "context_string"));
-		//s.setAddDate();	//date is not populated from UI
-		s.setAddBy(getClean(params, "add_by"));
-		s.setAddNote(getClean(params, "add_note"));
-		s.setAddContactInfo(getClean(params, "add_contact_info"));
-		s.setGroupName(getClean(params, "group_name"));
-		
-		try {
-			IPredefinedSession savedS =
-				SharedApplication.getInstance().savePredefinedSession(s);
-			
-			if (savedS != null) {
-				String strResponse = Action.getTextWithParamSubstitution("ResponseOK", this.getClass(),
-						"SessionId", savedS.getUniqueCode(), "ModelId", savedS.getModelId(),
-						"Operation", OPERATION_SAVE, "db-id", savedS.getId().toString());
-				
-				resp.setContentType("text/xml");
-				resp.setCharacterEncoding("UTF-8");
-				resp.getWriter().write(strResponse);
-			} else {
-				String strResponse = Action.getTextWithParamSubstitution("ResponseFail", this.getClass(),
-						"Operation", OPERATION_SAVE, "Message", "Could not save the session");
-				
-				resp.setContentType("text/xml");
-				resp.setCharacterEncoding("UTF-8");
-				resp.getWriter().write(strResponse);
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			String strResponse = Action.getTextWithParamSubstitution("ResponseFail", this.getClass(),
-					"Operation", OPERATION_SAVE, "Message", "Error while saving the session");
-			
-			//sendXML(resp, strResponse.toString());
-		}
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+	throws ServletException, IOException {
+		doPut(req, resp);
 	}
-	*/
-
-
+	
+	
 	@Override
 	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -225,21 +160,14 @@ public class SavedSessionService extends HttpServlet {
 		ServiceResponseWrapper wrap = new ServiceResponseWrapper(
 				IPredefinedSession.class, UPDATE);
 		wrap.setStatus(FAIL);	//pessimistic...
-		wrap.setMimeType(parseMime(req));
 	
-		Object entity = null;
-		String xml = StringUtils.trimToNull(req.getParameter(XML_SUBMIT_PARAM_NAME));
-		String json = StringUtils.trimToNull(req.getParameter(JSON_SUBMIT_PARAM_NAME));
+		ServletResponseParser requestContent = new ServletResponseParser(req);
+		Object entity = requestContent.getAsObject();
 		
-		if (xml != null) {
-			entity = getXMLXStream().fromXML(xml);
-			wrap.setMimeType(XML);
-		} else if (json != null) {
-			entity = getJSONXStream().fromXML(xml);
-			wrap.setMimeType(JSON);
+		if (requestContent.getErrorMessage() == null) {
+			wrap.setMimeType(requestContent.getType());
 		} else {
-			wrap.setStatus(FAIL);
-			wrap.setMessage("No request content found");
+			wrap.setMessage(requestContent.getErrorMessage());
 			sendResponse(resp, wrap);
 			return;
 		}
@@ -276,7 +204,7 @@ public class SavedSessionService extends HttpServlet {
 		
 		Long modelId = getLong(params, "modelId");
 		Boolean approved = getBoolean(params, "approved");
-		PredefinedSessionType type = getPredefinedSessionType(params, "type");
+		PredefinedSessionType type = parsePredefinedSessionType(params, "type");
 		String groupName = getClean(params, "groupName");
 		
 		req = new PredefinedSessionRequest(modelId, approved, type, groupName);
@@ -302,67 +230,7 @@ public class SavedSessionService extends HttpServlet {
 		return req;
 	}
 	
-	/**
-	 * Returns a single, cleaned value from a parameter map.
-	 * 
-	 * The value is trimmed to null.
-	 * 
-	 * @param params
-	 * @param key
-	 */
-	private static String getClean(Map params, String key) {
-		Object v = params.get(key);
-		if (v != null) {
-			String[] vs = (String[]) v;
-			if (vs.length > 0) {
-				return StringUtils.trimToNull(vs[0]);
-			}
-		}
-		return null;
-	}
-	
-	private static Long getLong(Map params, String key) {
-		String s = getClean(params, key);
-		if (s != null) {
-			try {
-				return Long.parseLong(s);
-			} catch (NumberFormatException e) {
-				//allow null to be returned
-			}
-		}
-		return null;
-	}
-	
-	private static Integer getInteger(Map params, String key) {
-		String s = getClean(params, key);
-		if (s != null) {
-			try {
-				return Integer.parseInt(s);
-			} catch (NumberFormatException e) {
-				//allow null to be returned
-			}
-		}
-		return null;
-	}
-	
-	private static Boolean getBoolean(Map params, String key) {
-		String s = getClean(params, key);
-		if (s != null) {
-			return ("T".equalsIgnoreCase(s) || "true".equalsIgnoreCase(s));
-		}
-		return null;
-	}
-	
-//	private static Date getDate(Map params, String key) {
-//		String s = getClean(params, key);
-//		if (s != null) {
-//			
-//			return ("T".equalsIgnoreCase(s) || "true".equalsIgnoreCase(s));
-//		}
-//		return null;
-//	}
-	
-	private static PredefinedSessionType getPredefinedSessionType(Map params, String key) {
+	private static PredefinedSessionType parsePredefinedSessionType(Map params, String key) {
 		PredefinedSessionType type = null;
 		try {
 			String t = getClean(params, key);
@@ -371,130 +239,6 @@ public class SavedSessionService extends HttpServlet {
 			//OK if not specified
 		}
 		return type;
-	}
-	
-	public static StringBuilder retrieveAllSavedSessionsXML(PredefinedSessionRequest request) throws ServletException {
-		StringBuilder result = new StringBuilder();
-		List<IPredefinedSession> results;
-		try {
-			results = SharedApplication.getInstance().getPredefinedSessions(request);
-		} catch (Exception e) {
-			throw new ServletException(e);
-		}
-		
-
-		result.append("<sessions>\n");
-		for (IPredefinedSession entry : results) {
-			result.append("  <session key=\"" + entry.getUniqueCode() + "\">\n");
-			result.append("    <name>" + entry.getName() + "</name>\n");
-			result.append("    <description>" + entry.getDescription() + "</description>\n");
-			result.append("    <groupName>" + entry.getGroupName() + "</groupName>\n");
-			result.append("    <type>" + entry.getPredefinedSessionType().name() + "</type>\n");
-			result.append("  </session>\n");
-		}
-		result.append("</sessions>");
-
-		return result;
-	}
-	
-	private static void sendErrorResponse(HttpServletResponse resp, String msg, Exception cause) {
-		resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-		resp.setContentType("text/plain");
-		try {
-			resp.getWriter().println(msg);
-			if (cause != null) {
-				resp.getWriter().println("Cause: " + cause.getMessage());
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	protected void sendResponse(HttpServletResponse resp,
-			ServiceResponseWrapper wrap) throws IOException {
-		
-		XStream xs = null;
-		resp.setCharacterEncoding(wrap.getEncoding());
-		resp.setContentType(wrap.getMimeType().toString());
-
-		switch (wrap.getMimeType()) {
-		case XML: 
-			xs = getXMLXStream();
-			break;
-		case JSON:
-			xs = getJSONXStream();
-			break;
-		default:
-			throw new RuntimeException("Unknown MIMEType.");
-		}
-		
-		xs.toXML(wrap, resp.getWriter());
-	}
-	
-
-	
-	protected ServiceResponseMimeType parseMime(HttpServletRequest req) {
-		String mimeStr = StringUtils.trimToNull(
-				req.getParameter(REQUESTED_MIME_TYPE_PARAM_NAME));
-		
-		ServiceResponseMimeType type = ServiceResponseMimeType.parse(mimeStr);
-		
-		if (type != null) {
-			return type;
-		} else {
-			Enumeration heads = req.getHeaders("Accept");
-			
-			while (heads.hasMoreElements()) {
-				String a = heads.nextElement().toString();
-				type = ServiceResponseMimeType.parse(a);
-				if (type != null) return type;
-			}
-			
-		}
-		
-		//Couldn't find a type - use the default
-		return XML;
-	}
-	
-	/**
-	 * Trims the extraPath to remove the leading slash and completely trims it
-	 * to null.
-	 * 
-	 * @param req
-	 * @return
-	 */
-	protected String cleanExtraPath(HttpServletRequest req) {
-		String extraPath = StringUtils.trimToNull(req.getPathInfo());
-		
-		
-		if (extraPath != null) {
-			if (extraPath.startsWith("/")) {
-				extraPath = StringUtils.trimToNull(extraPath.substring(1));
-			}
-		}
-		
-		return extraPath;
-	}
-	
-	
-	protected boolean parseBoolean(String value) {
-		value = StringUtils.trimToNull(value);
-		return ("true".equalsIgnoreCase(value) || "t".equalsIgnoreCase(value));
-	}
-	
-	protected static XStream getJSONXStream() {
-		XStream xs = new XStream(new JsonHierarchicalStreamDriver());
-        xs.setMode(XStream.NO_REFERENCES);
-        xs.processAnnotations(ServiceResponseWrapper.class);
-        return xs;
-	}
-	
-	protected static XStream getXMLXStream() {
-		XStream xs = new XStream(new StaxDriver());
-        xs.setMode(XStream.NO_REFERENCES);
-        xs.processAnnotations(ServiceResponseWrapper.class);
-        return xs;
 	}
 	
 }

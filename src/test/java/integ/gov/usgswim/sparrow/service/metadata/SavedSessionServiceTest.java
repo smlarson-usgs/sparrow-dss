@@ -1,13 +1,20 @@
 package gov.usgswim.sparrow.service.metadata;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static gov.usgswim.sparrow.service.ServiceResponseMimeType.*;
+
+import java.io.ByteArrayInputStream;
+import java.nio.charset.Charset;
+
 import gov.usgswim.sparrow.SparrowServiceTestWithCannedModel50;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.action.PredefinedSessionsTest;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
+import gov.usgswim.sparrow.service.AbstractSparrowServlet;
 import gov.usgswim.sparrow.service.ServiceResponseWrapper;
 
 import org.junit.Test;
@@ -43,7 +50,7 @@ public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50
 		//assignRequestParams(req, sessions[0]);
 		
 		String ps1Str = Action.getText("Session1", this.getClass());
-		req.setParameter(SavedSessionService.XML_SUBMIT_PARAM_NAME, ps1Str);
+		req.setParameter(AbstractSparrowServlet.XML_SUBMIT_DEFAULT_PARAM_NAME, ps1Str);
 		Object entity = getXMLXStream().fromXML(ps1Str);
 		IPredefinedSession ps1 = (IPredefinedSession)entity;
 		
@@ -65,7 +72,7 @@ public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50
 		req = new GetMethodWebRequest(SESSION_SERVICE_URL + "/" + dbId);
 		response = client.sendRequest(req);
 		actualResponse = response.getText();
-		//System.out.println("Get via /id url (full response) response: " + actualResponse);
+		System.out.println("Get via /id url (full response) response: " + actualResponse);
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
 		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/PredefinedSession[1]/uniqueCode", actualResponse);
@@ -98,6 +105,83 @@ public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50
 		actualResponse = response.getText();
 		assertEquals("context", actualResponse);
 		//System.out.println("GET via Param response: " + actualResponse);
+		
+		
+		PredefinedSessionBuilder deleteMe = new PredefinedSessionBuilder();
+		deleteMe.setId(Long.parseLong(dbId));
+		PredefinedSessionsTest.deleteSessions(deleteMe);
+	}
+
+	
+	@Test
+	public void CreateUsingACustomParameterNameSpecedInTheHeader() throws Exception {
+		WebRequest req = new PutRequest(SESSION_SERVICE_URL);
+		
+		//PredefinedSessionBuilder[] sessions = PredefinedSessionsTest.createUnsavedPredefinedSessions();
+		//assignRequestParams(req, sessions[0]);
+		
+		String ps1Str = Action.getText("Session1", this.getClass());
+		
+		//set a custom param name
+		req.setHeaderField(AbstractSparrowServlet.XML_SUBMIT_HEADER_NAME, "i_made_this_up");
+		
+		req.setParameter("i_made_this_up", ps1Str);
+		Object entity = getXMLXStream().fromXML(ps1Str);
+		IPredefinedSession ps1 = (IPredefinedSession)entity;
+		
+		WebResponse response = client.sendRequest(req);
+		String actualResponse = response.getText();
+		//System.out.println("response: '" + actualResponse + "'");
+		
+		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
+
+		String dbId = getXPathValue("/ServiceResponseWrapper/entityId", actualResponse);
+
+		//Get via /id url (full response)
+		req = new GetMethodWebRequest(SESSION_SERVICE_URL + "/" + dbId);
+		response = client.sendRequest(req);
+		actualResponse = response.getText();
+		//System.out.println("Get via /id url (full response) response: " + actualResponse);
+		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
+		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
+		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/PredefinedSession[1]/uniqueCode", actualResponse);
+		assertXpathEvaluatesTo(dbId, "/ServiceResponseWrapper/entityId", actualResponse);
+		
+		
+		PredefinedSessionBuilder deleteMe = new PredefinedSessionBuilder();
+		deleteMe.setId(Long.parseLong(dbId));
+		PredefinedSessionsTest.deleteSessions(deleteMe);
+	}
+	
+	@Test
+	public void CreateByPostingXMLinTheBodyWithoutUsingParams() throws Exception {
+		
+		String ps1Str = Action.getText("Session1", this.getClass());
+		
+		assertTrue(Charset.isSupported("UTF-8"));
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(ps1Str.getBytes(Charset.forName("UTF-8")));
+		WebRequest req = new PutMethodWebRequest(SESSION_SERVICE_URL, inputStream, XML.toString() +"; UTF-8");
+		
+		Object entity = getXMLXStream().fromXML(ps1Str);
+		IPredefinedSession ps1 = (IPredefinedSession)entity;
+		
+		WebResponse response = client.sendRequest(req);
+		String actualResponse = response.getText();
+		//System.out.println("response: '" + actualResponse + "'");
+		
+		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
+
+		String dbId = getXPathValue("/ServiceResponseWrapper/entityId", actualResponse);
+
+		//Get via /id url (full response)
+		req = new GetMethodWebRequest(SESSION_SERVICE_URL + "/" + dbId);
+		response = client.sendRequest(req);
+		actualResponse = response.getText();
+		//System.out.println("Get via /id url (full response) response: " + actualResponse);
+		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
+		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
+		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/PredefinedSession[1]/uniqueCode", actualResponse);
+		assertXpathEvaluatesTo(dbId, "/ServiceResponseWrapper/entityId", actualResponse);
 		
 		
 		PredefinedSessionBuilder deleteMe = new PredefinedSessionBuilder();
