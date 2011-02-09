@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.service;
 
-import static gov.usgswim.sparrow.service.ServiceResponseMimeType.XML;
+import static gov.usgswim.sparrow.service.ServiceResponseMimeType.*;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -181,7 +181,7 @@ public abstract class AbstractSparrowServlet extends HttpServlet {
 		
 		ServiceResponseMimeType type = ServiceResponseMimeType.parse(mimeStr);
 		
-		if (type != null) {
+		if (type != UNKNOWN) {
 			return type;
 		} else {
 			Enumeration heads = req.getHeaders("Accept");
@@ -189,7 +189,7 @@ public abstract class AbstractSparrowServlet extends HttpServlet {
 			while (heads.hasMoreElements()) {
 				String a = heads.nextElement().toString();
 				type = ServiceResponseMimeType.parse(a);
-				if (type != null) return type;
+				if (type != UNKNOWN) return type;
 			}
 			
 		}

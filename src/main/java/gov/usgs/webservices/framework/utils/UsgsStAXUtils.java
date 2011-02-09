@@ -341,7 +341,7 @@ public abstract class UsgsStAXUtils {
 
 			public String getAttributeNamespace(int index) {
 				// IGNORING NAMESPACES
-				return XMLConstants.NULL_NS_URI;
+				return XMLConstants.DEFAULT_NS_PREFIX;
 			}
 
 			public String getAttributePrefix(int index) {
@@ -403,17 +403,17 @@ public abstract class UsgsStAXUtils {
 
 			public String getNamespaceURI() {
 				// IGNORING NAMESPACES
-				return XMLConstants.NULL_NS_URI;
+				return XMLConstants.DEFAULT_NS_PREFIX;
 			}
 
 			public String getNamespaceURI(String prefix) {
 				// IGNORING NAMESPACES
-				return XMLConstants.NULL_NS_URI;
+				return XMLConstants.DEFAULT_NS_PREFIX;
 			}
 
 			public String getNamespaceURI(int index) {
 				// IGNORING NAMESPACES
-				return XMLConstants.NULL_NS_URI;
+				return XMLConstants.DEFAULT_NS_PREFIX;
 			}
 
 			public String getPIData() {

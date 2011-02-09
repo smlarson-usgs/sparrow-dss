@@ -11,7 +11,7 @@ import org.apache.commons.lang.StringUtils;
 public enum ServiceResponseMimeType {
 	XML("text/xml"),
 	JSON("application/json"),
-	UNKNNOWN("unknown");
+	UNKNOWN("unknown");
 	
 	private String mimeStr;
 	
@@ -36,7 +36,7 @@ public enum ServiceResponseMimeType {
 		
 		mimeString = StringUtils.trimToNull(mimeString);
 		if (mimeString == null) {
-			return null;
+			return UNKNOWN;
 		} else {
 			ServiceResponseMimeType[] types = ServiceResponseMimeType.values();
 			
@@ -50,7 +50,7 @@ public enum ServiceResponseMimeType {
 				
 			}
 			
-			return UNKNNOWN;
+			return UNKNOWN;
 		}
 	}
 }

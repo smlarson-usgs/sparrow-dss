@@ -96,7 +96,7 @@ import javax.xml.XMLConstants;
 		 */
 		public BasicTagEvent addAttribute(String name, String value) {
 			assert(name != null && (isComboTagEvent || type == START_ELEMENT));
-			return addAttribute(XMLConstants.DEFAULT_NS_PREFIX, XMLConstants.NULL_NS_URI, name, value);
+			return addAttribute(XMLConstants.DEFAULT_NS_PREFIX, XMLConstants.DEFAULT_NS_PREFIX, name, value);
 		}
 
 		/**
@@ -106,7 +106,7 @@ import javax.xml.XMLConstants;
 		 */
 		public BasicTagEvent addAttributes(String name, String value) {
 			assert(name != null && (isComboTagEvent || type == START_ELEMENT));
-			return addAttribute(XMLConstants.DEFAULT_NS_PREFIX, XMLConstants.NULL_NS_URI, name, value);
+			return addAttribute(XMLConstants.DEFAULT_NS_PREFIX, XMLConstants.DEFAULT_NS_PREFIX, name, value);
 		}
 
 		private void initializeAttributes() {

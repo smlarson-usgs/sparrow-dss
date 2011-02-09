@@ -1,14 +1,46 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@ page contentType="text/html;charset=UTF-8"%>
+<%@ page import="gov.usgswim.sparrow.service.SharedApplication, gov.usgswim.sparrow.request.*, gov.usgswim.sparrow.domain.*"%>
+<%@ page import="java.util.List"%>
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html; UTF-8"/>
-    <title>Create Predefined Session</title>
+    <title>List Predefined Session</title>
     <link rel="icon" href="favicon.ico" />
   </head>
   <body>
-		<h1>Create a new Predefined Session</h1>
+		<h1>List Predefined Sessions</h1>
+		
+		<table>
+		<%
+		
+		ModelRequestCacheKey modReq = new ModelRequestCacheKey(null, true, true, false);
+		List<SparrowModel> modList = SharedApplication.getInstance().getModelMetadata(modReq);
+		
+		
+		//PredefinedSessionRequest req = new PredefinedSessionRequest();
+		//SharedApplication.getInstance().getPredefinedSessions();
+		
+		for (SparrowModel model : modList) {
+			for (IPredefinedSession preSession : model.getSessions()) {
+		%>
+		<tr>
+			<td><%= preSession.getUniqueCode()  %></td>
+			<td><%= preSession.getUniqueCode()  %></td>
+		
+		
+		
+		</tr>
+		
+		
+		<%
+		
+			}	//end loop over model.getSessions()
+		}	//end loop over SparrowModel list
+		%>
+		</table>
+		
 		<form action="../sp_session" method="post" enctype="application/x-www-form-urlencoded">
 			<fieldset title="New Predefined Context">
 				<div class="input-group">

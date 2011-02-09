@@ -58,7 +58,7 @@ public class ServletResponseParser {
 		Object entity = null;
 
 		
-		if (! UNKNNOWN.equals(type) && content != null) {
+		if (! UNKNOWN.equals(type) && content != null) {
 			switch (type) {
 			case XML:
 				entity = getXMLXStream().fromXML(content);
@@ -90,7 +90,7 @@ public class ServletResponseParser {
 			}
 			
 			ServiceResponseMimeType parsedType = ServiceResponseMimeType.parse(myType);
-			if (! UNKNNOWN.equals(parsedType)) {
+			if (! UNKNOWN.equals(parsedType)) {
 				type = parsedType;
 				content = contentAsString(req);
 			} else {

@@ -46,7 +46,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	// For simplicity, we assume a 1-1 mapping between namespaces and prefixes
 	protected Map<String, String> namespacePrefixes;
 	// defaultNamespace really exists at the scope of the tag, but we're simplifying here.
-	protected String defaultNamespace = XMLConstants.NULL_NS_URI;
+	protected String defaultNamespace = XMLConstants.DEFAULT_NS_PREFIX;
 
 	// current parse state variables
 	protected Queue<BasicTagEvent> events = new LinkedList<BasicTagEvent>();
@@ -437,7 +437,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 
 	public QName getAttributeName(int index) {
 		// namespaces ignored by Basic reader, so this is just local name
-		return new QName(XMLConstants.NULL_NS_URI, getAttributeLocalName(index), XMLConstants.DEFAULT_NS_PREFIX);
+		return new QName(XMLConstants.DEFAULT_NS_PREFIX, getAttributeLocalName(index), XMLConstants.DEFAULT_NS_PREFIX);
 	}
 
 	public boolean isStandalone() {
@@ -448,7 +448,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	}
 	public QName getName() {
 		// namespaces ignored by Basic reader, so this is just local name
-		return new QName(XMLConstants.NULL_NS_URI, currentEvent.eventName, XMLConstants.DEFAULT_NS_PREFIX);
+		return new QName(XMLConstants.DEFAULT_NS_PREFIX, currentEvent.eventName, XMLConstants.DEFAULT_NS_PREFIX);
 	}
 
 
@@ -604,7 +604,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	}
 
 	public boolean hasDefaultNamespace() {
-		return !(defaultNamespace == null || defaultNamespace == XMLConstants.NULL_NS_URI);
+		return !(defaultNamespace == null || defaultNamespace == XMLConstants.DEFAULT_NS_PREFIX);
 	}
 
 	/* (non-Javadoc)
@@ -640,7 +640,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	}
 
 	public String getNamespaceURI(String prefix) {
-		return XMLConstants.NULL_NS_URI; // namespaces ignored by Basic reader
+		return XMLConstants.DEFAULT_NS_PREFIX; // namespaces ignored by Basic reader
 	}
 
 	public String getNamespaceURI(int index) {
@@ -661,7 +661,7 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 				i++;
 			}
 		}
-		return XMLConstants.NULL_NS_URI; // namespace not found
+		return XMLConstants.DEFAULT_NS_PREFIX; // namespace not found
 	}
 
 	public String getPrefix() {
