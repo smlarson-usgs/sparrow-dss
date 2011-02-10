@@ -1,7 +1,6 @@
 package gov.usgs.webservices.framework.utils;
 
-
-import edu.emory.mathcs.backport.java.util.Arrays;
+import java.util.Arrays;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
