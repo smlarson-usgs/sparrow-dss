@@ -1,1 +1,0 @@
-This test plan forces all the public, approved models into memory by requesting a context ID, Bins, and map tiles (reaches and catchments) for each model.  The model list is taken from the model list page, so there is nothing to update - all the publicly listed models will be hit.

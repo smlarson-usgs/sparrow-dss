@@ -1,4 +1,0 @@
-,# samples,average,median,90% line,min,max,% error,throughput,KB/sec
-Reach from Materialized Hint,39,406,197,1084,53,2544,0,0.826726587,0.02960284
-Reach from Model View Hint,39,827,525,1926,131,3466,0,0.810355933,0.029016651
-TOTAL,78,616,272,1491,53,3466,0,1.616580311,0.057885363
