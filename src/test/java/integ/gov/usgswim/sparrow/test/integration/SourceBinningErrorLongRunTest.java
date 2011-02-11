@@ -25,7 +25,7 @@ import org.junit.Test;
  * @author eeverman
  * TODO: This should really use a canned project, rather than MRB2
  */
-public class SourceBinningErrorTest extends SparrowUnitTest {
+public class SourceBinningErrorLongRunTest extends SparrowUnitTest {
 	
 	@Test
 	public void testComparison() throws Exception {

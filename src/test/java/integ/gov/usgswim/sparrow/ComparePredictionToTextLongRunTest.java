@@ -49,7 +49,7 @@ import org.apache.log4j.Logger;
  * 
  * @author eeverman
  */
-public class ComparePredictionToText {
+public class ComparePredictionToTextLongRunTest {
 	
 	/**
 	 * The required comparison accuracy (expected - actual)/(max(expected, actual))
@@ -58,7 +58,7 @@ public class ComparePredictionToText {
 	final double REQUIRED_COMPARISON_FRACTION = .001d;	//comp fraction
 	
 	protected static Logger log =
-		Logger.getLogger(ComparePredictionToText.class); //logging for this class
+		Logger.getLogger(ComparePredictionToTextLongRunTest.class); //logging for this class
 	
 	public final static String ID_COL_KEY = "id_col";	//Table property of the key column
 	
@@ -83,9 +83,9 @@ public class ComparePredictionToText {
 
 
 	public static void main(String[] args) throws Exception {
-		//org.junit.runner.JUnitCore.runClasses(ComparePredictionToText.class);
+		//org.junit.runner.JUnitCore.runClasses(ComparePredictionToTextLongRunTest.class);
 		
-		ComparePredictionToText runner = new ComparePredictionToText();
+		ComparePredictionToTextLongRunTest runner = new ComparePredictionToTextLongRunTest();
 		runner.oneTimeUserInput();
 		
 		if (runner.singleModelPath != null && runner.dbPwd != null) {

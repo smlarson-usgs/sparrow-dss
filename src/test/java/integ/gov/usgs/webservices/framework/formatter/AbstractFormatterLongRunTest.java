@@ -13,7 +13,7 @@ import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-public class AbstractFormatterTest extends SparrowServiceTestWithCannedModel50 {
+public class AbstractFormatterLongRunTest extends SparrowServiceTestWithCannedModel50 {
 
 	//Should be prepended on downloaded files to ensure they are marked as
 	//being unicode.

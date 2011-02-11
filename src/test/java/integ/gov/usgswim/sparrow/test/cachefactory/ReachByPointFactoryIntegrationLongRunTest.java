@@ -13,7 +13,7 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.junit.Test;
 
-public class ReachByPointFactoryIntegrationTest extends SparrowDBTest {
+public class ReachByPointFactoryIntegrationLongRunTest extends SparrowDBTest {
 
     protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	

@@ -26,7 +26,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class PerformanceTest extends SparrowDBTest {
+public class PerformanceLongRunTest extends SparrowDBTest {
 	
 	static LifecycleListener lifecycle = new LifecycleListener();
 	

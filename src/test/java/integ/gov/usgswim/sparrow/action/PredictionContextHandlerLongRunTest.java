@@ -23,7 +23,7 @@ import org.junit.Test;
  * @author eeverman
  */
 
-public class PredictionContextHandlerTest extends SparrowDBTest {
+public class PredictionContextHandlerLongRunTest extends SparrowDBTest {
 
 	
 	

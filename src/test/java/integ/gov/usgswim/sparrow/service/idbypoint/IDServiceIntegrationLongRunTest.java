@@ -14,7 +14,7 @@ import org.apache.log4j.Level;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.Test;
 
-public class IDServiceIntegrationTest extends SparrowServiceTestWithCannedModel50 {
+public class IDServiceIntegrationLongRunTest extends SparrowServiceTestWithCannedModel50 {
 	
 	// ============
 	// TEST METHODS

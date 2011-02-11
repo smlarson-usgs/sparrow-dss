@@ -58,7 +58,7 @@ import static gov.usgswim.sparrow.service.ConfiguredCache.*;
  * 
  * @author eeverman
  */
-public class ValidateTextPredictDataToDB  extends SparrowDBTest {
+public class ValidateTextPredictDataToDBLongRunTest  extends SparrowDBTest {
 	
 	private static PredictData dbPredictData;
 	private static PredictData txtPredictData;

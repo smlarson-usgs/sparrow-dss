@@ -25,7 +25,7 @@ import org.junit.Test;
  * @author eeverman
  * TODO: This should really use a canned project, rather than MRB2
  */
-public class DeliveryFractionMapAndBinErrorTest extends SparrowDBTest{
+public class DeliveryFractionMapAndBinErrorLongRunTest extends SparrowDBTest{
 	
 	@Test
 	public void testFracToNSDataSet() throws Exception {

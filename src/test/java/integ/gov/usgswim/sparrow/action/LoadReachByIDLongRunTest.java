@@ -55,7 +55,7 @@ import static gov.usgswim.sparrow.service.ConfiguredCache.*;
  * 
  * @author eeverman
  */
-public class LoadReachByIDTest  extends SparrowDBTest {
+public class LoadReachByIDLongRunTest  extends SparrowDBTest {
 	
 	static ReachID reachId;
 	

@@ -16,7 +16,7 @@ import org.junit.Test;
  * @author klangsto
  */
 
-public class LoadUnitAreasTest extends SparrowDBTest {
+public class LoadUnitAreasLongRunTest extends SparrowDBTest {
 
 	/**
 	 * Tests the basic getter and setter functionality.

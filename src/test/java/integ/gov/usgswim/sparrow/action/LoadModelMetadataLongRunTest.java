@@ -20,7 +20,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class LoadModelMetadataTest extends SparrowDBTest {
+public class LoadModelMetadataLongRunTest extends SparrowDBTest {
 
 	/**
 	 * Loads all public models (1) from the test db.

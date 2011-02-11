@@ -18,7 +18,7 @@ import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-public class FindReachServiceTest extends SparrowServiceTest {
+public class FindReachServiceLongRunTest extends SparrowServiceTest {
 
 	private static final String FINDREACH_SERVICE_URL = "http://localhost:8088/sp_findReach";
 

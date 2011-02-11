@@ -19,7 +19,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class LoadReachAttributesTest  extends SparrowDBTest {
+public class LoadReachAttributesLongRunTest  extends SparrowDBTest {
 	
 	/**
 	 * Tests the results of loading the attributes against a serialized table.

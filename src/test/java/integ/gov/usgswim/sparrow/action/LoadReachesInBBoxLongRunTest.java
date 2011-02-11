@@ -15,7 +15,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class LoadReachesInBBoxTest extends SparrowDBTest {
+public class LoadReachesInBBoxLongRunTest extends SparrowDBTest {
 
 	/**
 	 * @throws Exception

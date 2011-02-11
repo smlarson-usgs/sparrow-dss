@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author eeverman
  *
  */
-public class SparrowUnitTestIntegTest extends SparrowDBTest {
+public class SparrowUnitTestIntegLongRunTest extends SparrowDBTest {
 	@Test
 	public void testLoadPredictResultsFromFile() throws Exception {
 		PredictData filePredictData = SparrowUnitTest.getTestModelPredictData();

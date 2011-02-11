@@ -11,7 +11,7 @@ import java.nio.charset.Charset;
 
 import gov.usgswim.sparrow.SparrowServiceTestWithCannedModel50;
 import gov.usgswim.sparrow.action.Action;
-import gov.usgswim.sparrow.action.PredefinedSessionsTest;
+import gov.usgswim.sparrow.action.PredefinedSessionsLongRunTest;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
@@ -35,7 +35,7 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
  * @author eeverman
  *
  */
-public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50 {
+public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCannedModel50 {
 	
 	private static final String SESSION_SERVICE_URL = "http://localhost:8088/sp_session";
 	
@@ -46,7 +46,7 @@ public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50
 	public void PUTandGETaSession() throws Exception {
 		WebRequest req = new PutRequest(SESSION_SERVICE_URL);
 		
-		//PredefinedSessionBuilder[] sessions = PredefinedSessionsTest.createUnsavedPredefinedSessions();
+		//PredefinedSessionBuilder[] sessions = PredefinedSessionsLongRunTest.createUnsavedPredefinedSessions();
 		//assignRequestParams(req, sessions[0]);
 		
 		String ps1Str = Action.getText("Session1", this.getClass());
@@ -109,7 +109,7 @@ public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50
 		
 		PredefinedSessionBuilder deleteMe = new PredefinedSessionBuilder();
 		deleteMe.setId(Long.parseLong(dbId));
-		PredefinedSessionsTest.deleteSessions(deleteMe);
+		PredefinedSessionsLongRunTest.deleteSessions(deleteMe);
 	}
 
 	
@@ -117,7 +117,7 @@ public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50
 	public void CreateUsingACustomParameterNameSpecedInTheHeader() throws Exception {
 		WebRequest req = new PutRequest(SESSION_SERVICE_URL);
 		
-		//PredefinedSessionBuilder[] sessions = PredefinedSessionsTest.createUnsavedPredefinedSessions();
+		//PredefinedSessionBuilder[] sessions = PredefinedSessionsLongRunTest.createUnsavedPredefinedSessions();
 		//assignRequestParams(req, sessions[0]);
 		
 		String ps1Str = Action.getText("Session1", this.getClass());
@@ -150,7 +150,7 @@ public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50
 		
 		PredefinedSessionBuilder deleteMe = new PredefinedSessionBuilder();
 		deleteMe.setId(Long.parseLong(dbId));
-		PredefinedSessionsTest.deleteSessions(deleteMe);
+		PredefinedSessionsLongRunTest.deleteSessions(deleteMe);
 	}
 	
 	@Test
@@ -186,7 +186,7 @@ public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50
 		
 		PredefinedSessionBuilder deleteMe = new PredefinedSessionBuilder();
 		deleteMe.setId(Long.parseLong(dbId));
-		PredefinedSessionsTest.deleteSessions(deleteMe);
+		PredefinedSessionsLongRunTest.deleteSessions(deleteMe);
 	}
 	
 	@Test
@@ -197,10 +197,10 @@ public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50
 		/// setup a whole bunch of sessions into groups, approved/not approved, etc.
 		////////////////
 		
-		PredefinedSessionBuilder[] sessions = PredefinedSessionsTest.createUnsavedPredefinedSessions();
-		IPredefinedSession[] savedSessions = PredefinedSessionsTest.saveSessions(sessions);
+		PredefinedSessionBuilder[] sessions = PredefinedSessionsLongRunTest.createUnsavedPredefinedSessions();
+		IPredefinedSession[] savedSessions = PredefinedSessionsLongRunTest.saveSessions(sessions);
 		
-		//This set of tests is a modified copy of the filter test in PredefinedSessionsTest.
+		//This set of tests is a modified copy of the filter test in PredefinedSessionsLongRunTest.
 		PredefinedSessionBuilder set2ps1 = new PredefinedSessionBuilder(savedSessions[0]);
 		PredefinedSessionBuilder set2ps2 = new PredefinedSessionBuilder(savedSessions[1]);
 		PredefinedSessionBuilder set2ps3 = new PredefinedSessionBuilder(savedSessions[2]);
@@ -208,7 +208,7 @@ public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50
 		PredefinedSessionBuilder set3ps2 = new PredefinedSessionBuilder(savedSessions[1]);
 		PredefinedSessionBuilder set3ps3 = new PredefinedSessionBuilder(savedSessions[2]);
 		
-		PredefinedSessionBuilder[] newSessions = PredefinedSessionsTest.stripUniqueness(
+		PredefinedSessionBuilder[] newSessions = PredefinedSessionsLongRunTest.stripUniqueness(
 			set2ps1, set2ps2, set2ps3, set3ps1, set3ps2, set3ps3);
 		
 		//Assign some group names
@@ -220,7 +220,7 @@ public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50
 		newSessions[5].setGroupName("set3");
 		
 		//Our set2ps1 style references are now old
-		newSessions = PredefinedSessionsTest.toBuilder(PredefinedSessionsTest.saveSessions(newSessions));
+		newSessions = PredefinedSessionsLongRunTest.toBuilder(PredefinedSessionsLongRunTest.saveSessions(newSessions));
 		
 		//Set a few approved
 		newSessions[0].setApproved(true);
@@ -230,7 +230,7 @@ public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50
 		newSessions[4].setApproved(true);
 		newSessions[5].setApproved(true);
 		
-		newSessions = PredefinedSessionsTest.toBuilder(PredefinedSessionsTest.saveSessions(newSessions));
+		newSessions = PredefinedSessionsLongRunTest.toBuilder(PredefinedSessionsLongRunTest.saveSessions(newSessions));
 		
 		
 		////////////////
@@ -289,10 +289,10 @@ public class SavedSessionServiceTest extends SparrowServiceTestWithCannedModel50
 		actualResponse = response.getText();
 		assertXpathEvaluatesTo("1", "count(/ServiceResponseWrapper/entityList/PredefinedSession)", actualResponse);
 
-		PredefinedSessionsTest.deleteSessions(newSessions);
+		PredefinedSessionsLongRunTest.deleteSessions(newSessions);
 		
 		
-		PredefinedSessionsTest.deleteSessions(savedSessions);
+		PredefinedSessionsLongRunTest.deleteSessions(savedSessions);
 	}
 	
 	

@@ -15,7 +15,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class LoadReachHucsTest extends SparrowDBTest {
+public class LoadReachHucsLongRunTest extends SparrowDBTest {
 
 	static final Long MODEL_ID = 50L;
 	

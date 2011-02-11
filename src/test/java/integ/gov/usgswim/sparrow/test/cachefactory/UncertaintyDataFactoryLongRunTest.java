@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author eeverman
  *
  */
-public class UncertaintyDataFactoryTest extends SparrowDBTest {
+public class UncertaintyDataFactoryLongRunTest extends SparrowDBTest {
 
 	@Test
 	public void testLoad() throws Exception {

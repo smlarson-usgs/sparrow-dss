@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.service;
 
 import static org.junit.Assert.assertEquals;
-import gov.usgswim.sparrow.action.PredefinedSessionsTest;
+import gov.usgswim.sparrow.action.PredefinedSessionsLongRunTest;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
@@ -33,7 +33,7 @@ public class ServiceResponseWrapperTest {
 	@Test
 	public void verifyPredefinedSessionSerialization() {
 		
-		PredefinedSessionBuilder[] ps1 = PredefinedSessionsTest.createUnsavedPredefinedSessions();
+		PredefinedSessionBuilder[] ps1 = PredefinedSessionsLongRunTest.createUnsavedPredefinedSessions();
 
 		
 		
@@ -49,7 +49,7 @@ public class ServiceResponseWrapperTest {
 	@Test
 	public void verifyPredefinedSessionListSerialization() {
 		
-		PredefinedSessionBuilder[] ps1 = PredefinedSessionsTest.createUnsavedPredefinedSessions();
+		PredefinedSessionBuilder[] ps1 = PredefinedSessionsLongRunTest.createUnsavedPredefinedSessions();
 		List<?> list = Arrays.asList(ps1);
 		
 		

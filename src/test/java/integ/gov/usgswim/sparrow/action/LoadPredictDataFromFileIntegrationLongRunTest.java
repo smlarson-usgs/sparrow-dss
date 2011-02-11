@@ -15,7 +15,7 @@ import gov.usgswim.sparrow.domain.SparrowModel;
 
 import org.junit.Test;
 
-public class LoadPredictDataFromFileIntegrationTest extends SparrowDBTest {
+public class LoadPredictDataFromFileIntegrationLongRunTest extends SparrowDBTest {
 
 	static PredictData dbPredictData;
 	static PredictData filePredictData;

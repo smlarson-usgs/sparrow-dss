@@ -23,7 +23,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.junit.Test;
 
-public class LogicalAdjustmentIntegrationTest extends SparrowDBTest {
+public class LogicalAdjustmentIntegrationLongRunTest extends SparrowDBTest {
 
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 

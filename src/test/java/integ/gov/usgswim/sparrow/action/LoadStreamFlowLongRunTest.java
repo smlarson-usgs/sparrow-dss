@@ -16,7 +16,7 @@ import org.junit.Test;
  * @author klangsto
  */
 
-public class LoadStreamFlowTest extends SparrowDBTest {
+public class LoadStreamFlowLongRunTest extends SparrowDBTest {
 
 	
 	static DataColumn model50Flow;

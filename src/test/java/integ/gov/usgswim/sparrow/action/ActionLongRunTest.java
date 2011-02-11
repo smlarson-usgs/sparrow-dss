@@ -23,7 +23,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class ActionTest  extends SparrowDBTest {
+public class ActionLongRunTest  extends SparrowDBTest {
 	
 	@Test
 	public void closeASingleConnectionAndStatement() throws Exception {

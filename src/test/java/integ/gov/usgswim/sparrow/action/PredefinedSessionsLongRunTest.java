@@ -29,7 +29,7 @@ import org.junit.Test;
  * @author eeverman
  *
  */
-public class PredefinedSessionsTest extends SparrowDBTest {
+public class PredefinedSessionsLongRunTest extends SparrowDBTest {
 	
 	private PredefinedSessionBuilder ps1;
 	private PredefinedSessionBuilder ps2;

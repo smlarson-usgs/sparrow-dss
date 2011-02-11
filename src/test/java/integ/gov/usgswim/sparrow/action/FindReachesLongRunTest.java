@@ -7,7 +7,7 @@ import gov.usgswim.sparrow.service.idbypoint.FindReachRequest;
 
 import org.junit.Test;
 
-public class FindReachesTest extends SparrowDBTest {
+public class FindReachesLongRunTest extends SparrowDBTest {
 	
 	@Test
 	public void catchArea() throws Exception {

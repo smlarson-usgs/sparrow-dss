@@ -17,7 +17,7 @@ import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 import oracle.mapviewer.share.ext.NSDataSet;
 import oracle.mapviewer.share.ext.NSRow;
 
-public class ContextToPredictionIntegrationTest extends SparrowUnitTest {
+public class ContextToPredictionIntegrationLongRunTest extends SparrowUnitTest {
 
 
 	// ============

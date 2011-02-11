@@ -26,7 +26,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class CalcBinningTest  extends SparrowServiceTestWithCannedModel50 {
+public class CalcBinningLongRunTest  extends SparrowServiceTestWithCannedModel50 {
 	
 	/**
 	 * Replicate a bug where the the uncertainty estimates can generate

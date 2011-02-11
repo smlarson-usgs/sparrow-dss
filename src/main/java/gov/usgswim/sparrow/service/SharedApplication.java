@@ -132,7 +132,7 @@ public class SharedApplication  {
 		String dbpass = System.getProperty("rw_dbpass");
 		String url = System.getProperty("rw_dburl");
 		Connection connection;
-		connection = MonProxyFactory.monitor(DriverManager.getConnection(url, dbuser, dbpass));
+		connection = DriverManager.getConnection(url, dbuser, dbpass);
 		return connection;
 	}
 	
@@ -212,7 +212,7 @@ public class SharedApplication  {
 			}
 			
 			if (roDatasource != null) {
-				return MonProxyFactory.monitor(roDatasource.getConnection());
+				return roDatasource.getConnection();
 			}
 		}
 
