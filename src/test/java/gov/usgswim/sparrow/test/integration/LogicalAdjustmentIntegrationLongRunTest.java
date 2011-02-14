@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.SparrowDBTest;
-import gov.usgswim.sparrow.SparrowUnitTest;
+import gov.usgswim.sparrow.SparrowDBTestBaseClass;
+import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.ReachGroup;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
@@ -23,7 +23,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.junit.Test;
 
-public class LogicalAdjustmentIntegrationLongRunTest extends SparrowDBTest {
+public class LogicalAdjustmentIntegrationLongRunTest extends SparrowDBTestBaseClass {
 
 	protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 
@@ -75,7 +75,7 @@ public class LogicalAdjustmentIntegrationLongRunTest extends SparrowDBTest {
 		
 
 		String response = pipeDispatch(contextReq, new PredictContextPipeline());
-		int CONTEXT_ID = Integer.parseInt(SparrowUnitTest.getAttributeValue(response, "context-id"));
+		int CONTEXT_ID = Integer.parseInt(SparrowUnitTestBaseClass.getAttributeValue(response, "context-id"));
 
 		//Get the prediction context and the nominal context;
 		PredictionContext userContext = SharedApplication.getInstance().getPredictionContext(CONTEXT_ID);

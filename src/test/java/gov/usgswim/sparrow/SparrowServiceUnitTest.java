@@ -34,7 +34,7 @@ import com.meterware.servletunit.ServletUnitClient;
  * @author eeverman
  *
  */
-public abstract class SparrowServiceUnitTest extends SparrowUnitTest {
+public abstract class SparrowServiceUnitTest extends SparrowUnitTestBaseClass {
 
 	
 	public static final Long SERVICE_TEST_MODEL = -1L;
@@ -64,12 +64,12 @@ public abstract class SparrowServiceUnitTest extends SparrowUnitTest {
 	
 	@Override
 	protected void doOneTimeFrameworkSetup() throws Exception {
-		servletRunner =  new ServletRunner(new File(SparrowServiceTest.WEB_XML_LOCATION));
+		servletRunner =  new ServletRunner(new File(SparrowServiceTestBaseClass.WEB_XML_LOCATION));
 		client = servletRunner.newClient();
 	}
 
 	/* (non-Javadoc)
-	 * @see gov.usgswim.sparrow.SparrowUnitTest#doTearDown()
+	 * @see gov.usgswim.sparrow.SparrowUnitTestBaseClass#doTearDown()
 	 */
 	@Override
 	protected void doOneTimeFrameworkTearDown() throws Exception {

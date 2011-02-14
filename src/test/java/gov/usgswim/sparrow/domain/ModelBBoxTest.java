@@ -4,9 +4,9 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import gov.usgswim.sparrow.SparrowUnitTest;
+import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
 
-public class ModelBBoxTest extends SparrowUnitTest {
+public class ModelBBoxTest extends SparrowUnitTestBaseClass {
 
 	final double err = .00000000001d;
 	final double LEFT_LONG = -83.54141235351562d;

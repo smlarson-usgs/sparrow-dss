@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.SparrowUnitTest;
+import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
 import gov.usgswim.sparrow.action.NSDataSetBuilder;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.DataColumn;
@@ -17,7 +17,7 @@ import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 import oracle.mapviewer.share.ext.NSDataSet;
 import oracle.mapviewer.share.ext.NSRow;
 
-public class ContextToPredictionIntegrationLongRunTest extends SparrowUnitTest {
+public class ContextToPredictionIntegrationLongRunTest extends SparrowUnitTestBaseClass {
 
 
 	// ============
@@ -178,7 +178,7 @@ public class ContextToPredictionIntegrationLongRunTest extends SparrowUnitTest {
 	public void testHashCode() throws Exception {
 		PredictionContext context1 = PredictionContextTest.buildPredictContext1().getPredictionContext();
 		PredictionContext context2 = PredictionContextTest.buildPredictContext1().getPredictionContext();
-		SparrowUnitTest.testHashCode(context1, context2, context1.clone());
+		SparrowUnitTestBaseClass.testHashCode(context1, context2, context1.clone());
 
 		// test IDs
 		assertEquals(context1.hashCode(), context1.getId().intValue());

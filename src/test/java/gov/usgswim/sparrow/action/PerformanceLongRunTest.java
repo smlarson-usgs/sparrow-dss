@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.SparrowDBTestBaseClass;
 import gov.usgswim.sparrow.cachefactory.PredictResultFactory;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
@@ -26,7 +26,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class PerformanceLongRunTest extends SparrowDBTest {
+public class PerformanceLongRunTest extends SparrowDBTestBaseClass {
 	
 	static LifecycleListener lifecycle = new LifecycleListener();
 	

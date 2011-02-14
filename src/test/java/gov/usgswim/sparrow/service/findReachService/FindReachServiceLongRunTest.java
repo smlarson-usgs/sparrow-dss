@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.service.findReachService;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.assertEquals;
-import gov.usgswim.sparrow.SparrowServiceTest;
+import gov.usgswim.sparrow.SparrowServiceTestBaseClass;
 import gov.usgswim.sparrow.service.ReturnStatus;
 
 import java.io.IOException;
@@ -18,7 +18,7 @@ import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-public class FindReachServiceLongRunTest extends SparrowServiceTest {
+public class FindReachServiceLongRunTest extends SparrowServiceTestBaseClass {
 
 	private static final String FINDREACH_SERVICE_URL = "http://localhost:8088/sp_findReach";
 

@@ -8,16 +8,16 @@ import gov.usgswim.sparrow.datatable.PredictResult;
 import org.junit.Test;
 
 /**
- * Tests the SparrowUnitTest base class by validating the data loaded from
+ * Tests the SparrowUnitTestBaseClass base class by validating the data loaded from
  * text files against the data loaded from the db.
  * @author eeverman
  *
  */
-public class SparrowUnitTestIntegLongRunTest extends SparrowDBTest {
+public class SparrowUnitTestIntegLongRunTest extends SparrowDBTestBaseClass {
 	@Test
 	public void testLoadPredictResultsFromFile() throws Exception {
-		PredictData filePredictData = SparrowUnitTest.getTestModelPredictData();
-		PredictResult filePredictResult = SparrowUnitTest.getTestModelPredictResult();
+		PredictData filePredictData = SparrowUnitTestBaseClass.getTestModelPredictData();
+		PredictResult filePredictResult = SparrowUnitTestBaseClass.getTestModelPredictResult();
 		CalcPrediction fileCalc = new CalcPrediction(filePredictData);
 		PredictResult fileBasedPredictResult = fileCalc.run();
 		

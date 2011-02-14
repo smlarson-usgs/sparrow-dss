@@ -10,11 +10,11 @@ import java.sql.SQLException;
 import org.junit.Test;
 
 /**
- * Tests the SparrowDBTest base test class.
+ * Tests the SparrowDBTestBaseClass base test class.
  * @author eeverman
  *
  */
-public class SparrowDBTestLongRunTest extends SparrowDBTest {
+public class SparrowDBTestLongRunTest extends SparrowDBTestBaseClass {
 	
 	@Test
 	public void testAvailableConnections() throws Exception {

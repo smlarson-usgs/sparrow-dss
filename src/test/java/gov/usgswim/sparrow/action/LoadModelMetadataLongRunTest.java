@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.*;
-import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.SparrowDBTestBaseClass;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.domain.SparrowModel;
@@ -20,7 +20,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class LoadModelMetadataLongRunTest extends SparrowDBTest {
+public class LoadModelMetadataLongRunTest extends SparrowDBTestBaseClass {
 
 	/**
 	 * Loads all public models (1) from the test db.

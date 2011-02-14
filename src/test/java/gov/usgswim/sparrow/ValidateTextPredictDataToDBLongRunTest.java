@@ -11,8 +11,8 @@ import gov.usgswim.datatable.filter.FilteredDataTable;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
-import gov.usgswim.sparrow.SparrowDBTest;
-import gov.usgswim.sparrow.SparrowUnitTest;
+import gov.usgswim.sparrow.SparrowDBTestBaseClass;
+import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
 import gov.usgswim.sparrow.action.LoadModelPredictDataFromFile;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
@@ -58,7 +58,7 @@ import static gov.usgswim.sparrow.service.ConfiguredCache.*;
  * 
  * @author eeverman
  */
-public class ValidateTextPredictDataToDBLongRunTest  extends SparrowDBTest {
+public class ValidateTextPredictDataToDBLongRunTest  extends SparrowDBTestBaseClass {
 	
 	private static PredictData dbPredictData;
 	private static PredictData txtPredictData;

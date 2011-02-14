@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.SparrowDBTestBaseClass;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
@@ -29,7 +29,7 @@ import org.junit.Test;
  * @author eeverman
  *
  */
-public class PredefinedSessionsLongRunTest extends SparrowDBTest {
+public class PredefinedSessionsLongRunTest extends SparrowDBTestBaseClass {
 	
 	private PredefinedSessionBuilder ps1;
 	private PredefinedSessionBuilder ps2;

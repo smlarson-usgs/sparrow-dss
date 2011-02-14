@@ -41,7 +41,7 @@ import oracle.jdbc.pool.OracleDataSource;
  * @author eeverman
  *
  */
-public class SparrowDBTest extends SparrowUnitTest {
+public abstract class SparrowDBTestBaseClass extends SparrowUnitTestBaseClass {
 
 	/**
 	 * Name of a system property that if "true" will switch to the production
@@ -54,7 +54,7 @@ public class SparrowDBTest extends SparrowUnitTest {
 
 	
 	/** A single instance which is destroyed in teardown */
-	private static SparrowDBTest singleInstanceToTearDown;
+	private static SparrowDBTestBaseClass singleInstanceToTearDown;
 	
 	
 	/**
@@ -82,7 +82,7 @@ public class SparrowDBTest extends SparrowUnitTest {
 	public void doOneTimeFrameworkSetup() throws Exception {
 		
 		if (!loadModelDataFromFile()) {
-			//Remove this prop (set by SparrowUnitTest), which will allow predict
+			//Remove this prop (set by SparrowUnitTestBaseClass), which will allow predict
 			//data to be loaded from the DB, not from text files.
 			System.clearProperty(PredictDataFactory.ACTION_IMPLEMENTATION_CLASS);
 		}

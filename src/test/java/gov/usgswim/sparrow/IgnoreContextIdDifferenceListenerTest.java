@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import org.custommonkey.xmlunit.Diff;
 import org.junit.Test;
 
-public class IgnoreContextIdDifferenceListenerTest extends SparrowUnitTest {
+public class IgnoreContextIdDifferenceListenerTest extends SparrowUnitTestBaseClass {
 
 	static String base = "<root attrib=\"attrib_val\"><row context-id=\"1\">row1_value</row></root>";
 	

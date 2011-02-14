@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.parser;
 
-import gov.usgswim.sparrow.SparrowUnitTest;
+import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 
@@ -72,7 +72,7 @@ public class TerminalReachesTest extends TestCase {
 		TerminalReaches term1 = buildTestInstance(1L);
 		TerminalReaches term2 = buildTestInstance(1L);
 
-		SparrowUnitTest.testHashCode(term1, term2);
+		SparrowUnitTestBaseClass.testHashCode(term1, term2);
 
 		// test IDs
 		assertEquals(term1.hashCode(), term1.getId().intValue());

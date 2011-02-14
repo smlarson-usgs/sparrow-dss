@@ -8,7 +8,7 @@ import gov.usgswim.datatable.impl.SparseDoubleColumnData;
 import gov.usgswim.datatable.impl.StandardDoubleColumnData;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
-import gov.usgswim.sparrow.SparrowUnitTest;
+import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.parser.DataSeriesType;
@@ -31,7 +31,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class CalcDeliveryFractionTest extends SparrowUnitTest {
+public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 	
 	static PredictData unmodifiedPredictData;
 	static PredictData predictData;
@@ -47,22 +47,22 @@ public class CalcDeliveryFractionTest extends SparrowUnitTest {
 		super.doOneTimeCustomSetup();
 		
 		BufferedReader baseDataStream = new BufferedReader(new InputStreamReader(
-				SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "data", "tab")
+				SparrowUnitTestBaseClass.getResource(CalcDeliveryFractionTest.class, "data", "tab")
 			));
 		stdData = TabDelimFileUtil.readAsDouble(baseDataStream, true, -1);
 		
 		BufferedReader stdDelFracTo9682Stream = new BufferedReader(new InputStreamReader(
-				SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9682", "tab")
+				SparrowUnitTestBaseClass.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9682", "tab")
 			));
 		stdDelFracTo9682 = TabDelimFileUtil.readAsDouble(stdDelFracTo9682Stream, true, -1);
 		
 		BufferedReader stdDelFracTo9674Stream = new BufferedReader(new InputStreamReader(
-				SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9674", "tab")
+				SparrowUnitTestBaseClass.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9674", "tab")
 			));
 		stdDelFracTo9674 = TabDelimFileUtil.readAsDouble(stdDelFracTo9674Stream, true, -1);
 		
 		BufferedReader stdDelFracToBothStream = new BufferedReader(new InputStreamReader(
-				SparrowUnitTest.getResource(CalcDeliveryFractionTest.class, "stdDelFracToBoth", "tab")
+				SparrowUnitTestBaseClass.getResource(CalcDeliveryFractionTest.class, "stdDelFracToBoth", "tab")
 			));
 		stdDelFracToBoth = TabDelimFileUtil.readAsDouble(stdDelFracToBothStream, true, -1);
 		

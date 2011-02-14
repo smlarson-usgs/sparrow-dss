@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.action;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.utils.DataTableSerializerUtils;
-import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.SparrowDBTestBaseClass;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -19,7 +19,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class LoadReachAttributesLongRunTest  extends SparrowDBTest {
+public class LoadReachAttributesLongRunTest  extends SparrowDBTestBaseClass {
 	
 	/**
 	 * Tests the results of loading the attributes against a serialized table.
@@ -29,7 +29,7 @@ public class LoadReachAttributesLongRunTest  extends SparrowDBTest {
 	public void compareToCannedResult() throws Exception {
 		//log.setLevel(Level.DEBUG);
 		LoadReachAttributes action = new LoadReachAttributes();
-		action.setModelId(SparrowDBTest.TEST_MODEL_ID);
+		action.setModelId(SparrowDBTestBaseClass.TEST_MODEL_ID);
 		action.setReachId(9190);
 		
 		InputStream ins = getResource(this.getClass(), null, "tab");
@@ -49,7 +49,7 @@ public class LoadReachAttributesLongRunTest  extends SparrowDBTest {
 	//@Test
 	public void writeToText() throws Exception {
 		LoadReachAttributes action = new LoadReachAttributes();
-		action.setModelId(SparrowDBTest.TEST_MODEL_ID);
+		action.setModelId(SparrowDBTestBaseClass.TEST_MODEL_ID);
 		action.setReachId(9190);
 		DataTable newVersion = action.run();
 		

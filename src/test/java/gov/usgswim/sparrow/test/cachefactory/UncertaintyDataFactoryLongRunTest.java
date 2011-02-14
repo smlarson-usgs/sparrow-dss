@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.test.cachefactory;
 
 import static org.junit.Assert.assertEquals;
-import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.SparrowDBTestBaseClass;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.UncertaintySeries;
@@ -13,7 +13,7 @@ import org.junit.Test;
  * @author eeverman
  *
  */
-public class UncertaintyDataFactoryLongRunTest extends SparrowDBTest {
+public class UncertaintyDataFactoryLongRunTest extends SparrowDBTestBaseClass {
 
 	@Test
 	public void testLoad() throws Exception {

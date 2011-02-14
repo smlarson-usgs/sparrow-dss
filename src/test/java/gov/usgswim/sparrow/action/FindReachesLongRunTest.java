@@ -2,12 +2,12 @@ package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.*;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.SparrowDBTestBaseClass;
 import gov.usgswim.sparrow.service.idbypoint.FindReachRequest;
 
 import org.junit.Test;
 
-public class FindReachesLongRunTest extends SparrowDBTest {
+public class FindReachesLongRunTest extends SparrowDBTestBaseClass {
 	
 	@Test
 	public void catchArea() throws Exception {

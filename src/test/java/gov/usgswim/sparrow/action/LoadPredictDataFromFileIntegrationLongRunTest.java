@@ -8,14 +8,14 @@ import java.util.List;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.SparrowDBTestBaseClass;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.domain.SparrowModel;
 
 import org.junit.Test;
 
-public class LoadPredictDataFromFileIntegrationLongRunTest extends SparrowDBTest {
+public class LoadPredictDataFromFileIntegrationLongRunTest extends SparrowDBTestBaseClass {
 
 	static PredictData dbPredictData;
 	static PredictData filePredictData;

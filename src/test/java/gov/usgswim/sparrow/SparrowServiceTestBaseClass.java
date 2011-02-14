@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow;
 
-import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.SparrowDBTestBaseClass;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import com.meterware.servletunit.ServletUnitClient;
  * @author eeverman
  *
  */
-public abstract class SparrowServiceTest extends SparrowDBTest {
+public abstract class SparrowServiceTestBaseClass extends SparrowDBTestBaseClass {
 
 	
 	public static final Long SERVICE_TEST_MODEL = -1L;
@@ -38,7 +38,7 @@ public abstract class SparrowServiceTest extends SparrowDBTest {
 	public void doOneTimeFrameworkSetup() throws Exception {
 		super.doOneTimeFrameworkSetup();
 		
-		servletRunner =  new ServletRunner(new File(SparrowServiceTest.WEB_XML_LOCATION));
+		servletRunner =  new ServletRunner(new File(SparrowServiceTestBaseClass.WEB_XML_LOCATION));
 		client = servletRunner.newClient();
 	}
 

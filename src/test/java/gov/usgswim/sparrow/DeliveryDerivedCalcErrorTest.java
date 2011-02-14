@@ -21,7 +21,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class DeliveryDerivedCalcErrorTest extends SparrowUnitTest {
+public class DeliveryDerivedCalcErrorTest extends SparrowUnitTestBaseClass {
 	
 	
 	@Test
@@ -29,27 +29,27 @@ public class DeliveryDerivedCalcErrorTest extends SparrowUnitTest {
 		
 		
 		//Test total context (total flux)
-		String xmlContextReq = SparrowUnitTest.getXmlAsString(this.getClass(), "TotalContext");
-		String xmlContextResp = SparrowUnitTest.getXmlAsString(this.getClass(), "TotalContextResp");
+		String xmlContextReq = SparrowUnitTestBaseClass.getXmlAsString(this.getClass(), "TotalContext");
+		String xmlContextResp = SparrowUnitTestBaseClass.getXmlAsString(this.getClass(), "TotalContextResp");
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		PredictContextRequest contextReq = pipe.parse(xmlContextReq);
-		String actualResponse = SparrowUnitTest.pipeDispatch(contextReq, pipe);
+		String actualResponse = SparrowUnitTestBaseClass.pipeDispatch(contextReq, pipe);
 		assertTrue(similarXMLIgnoreContextId(xmlContextResp, actualResponse));
 		DataColumn totalData = contextReq.getPredictionContext().getDataColumn();
 		
 		//Test delivery fraction
-		xmlContextReq = SparrowUnitTest.getXmlAsString(this.getClass(), "DelFracContext");
-		xmlContextResp = SparrowUnitTest.getXmlAsString(this.getClass(), "DelFracContextResp");
+		xmlContextReq = SparrowUnitTestBaseClass.getXmlAsString(this.getClass(), "DelFracContext");
+		xmlContextResp = SparrowUnitTestBaseClass.getXmlAsString(this.getClass(), "DelFracContextResp");
 		contextReq = pipe.parse(xmlContextReq);
-		actualResponse = SparrowUnitTest.pipeDispatch(contextReq, pipe);
+		actualResponse = SparrowUnitTestBaseClass.pipeDispatch(contextReq, pipe);
 		assertTrue(similarXMLIgnoreContextId(xmlContextResp, actualResponse));
 		DataColumn delFracData = contextReq.getPredictionContext().getDataColumn();
 
 		//Test Total Delivery Flux
-		xmlContextReq = SparrowUnitTest.getXmlAsString(this.getClass(), "DelTotalContext");
-		xmlContextResp = SparrowUnitTest.getXmlAsString(this.getClass(), "DelTotalContextResp");
+		xmlContextReq = SparrowUnitTestBaseClass.getXmlAsString(this.getClass(), "DelTotalContext");
+		xmlContextResp = SparrowUnitTestBaseClass.getXmlAsString(this.getClass(), "DelTotalContextResp");
 		contextReq = pipe.parse(xmlContextReq);
-		actualResponse = SparrowUnitTest.pipeDispatch(contextReq, pipe);
+		actualResponse = SparrowUnitTestBaseClass.pipeDispatch(contextReq, pipe);
 		//System.out.println("actual: " + actualResponse);
 		assertTrue(similarXMLIgnoreContextId(xmlContextResp, actualResponse));
 		DataColumn delTotalData = contextReq.getPredictionContext().getDataColumn();

@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.action;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.SparrowDBTestBaseClass;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.DataSeriesType;
@@ -16,7 +16,7 @@ import org.junit.Test;
  * @author klangsto
  */
 
-public class LoadStreamFlowLongRunTest extends SparrowDBTest {
+public class LoadStreamFlowLongRunTest extends SparrowDBTestBaseClass {
 
 	
 	static DataColumn model50Flow;
@@ -24,7 +24,7 @@ public class LoadStreamFlowLongRunTest extends SparrowDBTest {
 	@Override
 	public void doOneTimeCustomSetup() throws Exception {
 		LoadStreamFlow lf = new LoadStreamFlow();
-		lf.setModelId(SparrowDBTest.TEST_MODEL_ID);
+		lf.setModelId(SparrowDBTestBaseClass.TEST_MODEL_ID);
 		model50Flow = lf.run();
 	}
 	
@@ -37,8 +37,8 @@ public class LoadStreamFlowLongRunTest extends SparrowDBTest {
 	public void testLoadFluxSetters() throws Exception {
 
 		LoadStreamFlow lf = new LoadStreamFlow();
-		lf.setModelId(SparrowDBTest.TEST_MODEL_ID);
-		assertEquals(SparrowDBTest.TEST_MODEL_ID.longValue(), lf.getModelId());
+		lf.setModelId(SparrowDBTestBaseClass.TEST_MODEL_ID);
+		assertEquals(SparrowDBTestBaseClass.TEST_MODEL_ID.longValue(), lf.getModelId());
 	}
 	
 	/**

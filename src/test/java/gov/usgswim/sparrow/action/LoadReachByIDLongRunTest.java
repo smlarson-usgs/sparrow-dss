@@ -9,8 +9,8 @@ import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
-import gov.usgswim.sparrow.SparrowDBTest;
-import gov.usgswim.sparrow.SparrowUnitTest;
+import gov.usgswim.sparrow.SparrowDBTestBaseClass;
+import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
@@ -55,7 +55,7 @@ import static gov.usgswim.sparrow.service.ConfiguredCache.*;
  * 
  * @author eeverman
  */
-public class LoadReachByIDLongRunTest  extends SparrowDBTest {
+public class LoadReachByIDLongRunTest  extends SparrowDBTestBaseClass {
 	
 	static ReachID reachId;
 	
@@ -64,7 +64,7 @@ public class LoadReachByIDLongRunTest  extends SparrowDBTest {
 		
 		//Uncomment to debug
 		setLogLevel(Level.DEBUG);
-		reachId = new ReachID(SparrowDBTest.TEST_MODEL_ID, 6000L);
+		reachId = new ReachID(SparrowDBTestBaseClass.TEST_MODEL_ID, 6000L);
 	}
 	
 	@Test

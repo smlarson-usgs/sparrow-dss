@@ -8,7 +8,7 @@ import java.util.List;
 import javax.xml.stream.XMLStreamReader;
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.SparrowDBTest;
+import gov.usgswim.sparrow.SparrowDBTestBaseClass;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.DataSeriesType;
@@ -23,13 +23,13 @@ import org.junit.Test;
  * @author eeverman
  */
 
-public class PredictionContextHandlerLongRunTest extends SparrowDBTest {
+public class PredictionContextHandlerLongRunTest extends SparrowDBTestBaseClass {
 
 	
 	
 	/* We are actually testing the storage mechanism, so do not disable
 	 * storage to the db.  (non-Javadoc)
-	 * @see gov.usgswim.sparrow.SparrowDBTest#disablePredictionContextPersistentStorage()
+	 * @see gov.usgswim.sparrow.SparrowDBTestBaseClass#disablePredictionContextPersistentStorage()
 	 */
 	@Override
 	public boolean disablePredictionContextPersistentStorage() {
