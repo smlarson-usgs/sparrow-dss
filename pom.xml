@@ -191,12 +191,8 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-<!--		<dependency>
-			<groupId>simple-jndi</groupId>
-			<artifactId>simple-jndi</artifactId>
-			<version>0.11.4</version>
-		</dependency>-->
 		<dependency>
+			<!-- Used for jndi naming services -->
 				<groupId>org.apache.tomcat</groupId>
 				<artifactId>catalina</artifactId>
 				<version>6.0.29</version>
