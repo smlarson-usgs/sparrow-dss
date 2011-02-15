@@ -39,7 +39,7 @@ public class IndividualReachPredictService extends HttpServlet{
 		}
 		PredictResult result = SharedApplication.getInstance().getPredictResult(context.getAdjustmentGroups());
 
-		resp.setContentType("text/xml");
+		resp.setContentType("application/xml");
 		resp.setCharacterEncoding("UTF-8");
 		
 		String responseHeadFormat = "<Sparrow-Individual-Reach-Prediction-Response reachId=\"%s\" model=\"%s\" contextId=\"%s\">";

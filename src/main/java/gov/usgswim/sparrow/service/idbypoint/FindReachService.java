@@ -55,7 +55,7 @@ public class FindReachService extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		
-		resp.setContentType("text/xml");
+		resp.setContentType("application/xml");
 		FindReachRequest frReq = parseRequest(req);
 		StringBuilder outputXML = new StringBuilder();
 		ReturnStatus status = ReturnStatus.ERROR;

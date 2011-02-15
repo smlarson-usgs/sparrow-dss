@@ -37,7 +37,7 @@ public class FindReachServiceLongRunTest extends SparrowServiceTestBaseClass {
         diff.overrideElementQualifier(new RecursiveElementNameAndTextQualifier());
         XMLAssert.assertXMLEqual("Order doesn't matter...", diff, true);
 		
-		assertEquals("text/xml", response.getContentType());
+		assertEquals("application/xml", response.getContentType());
 	}
 	
 	@Test
@@ -54,7 +54,7 @@ public class FindReachServiceLongRunTest extends SparrowServiceTestBaseClass {
         diff.overrideElementQualifier(new RecursiveElementNameAndTextQualifier());
         XMLAssert.assertXMLEqual("Order doesn't matter...", diff, true);
 		
-		assertEquals("text/xml", response.getContentType());
+		assertEquals("application/xml", response.getContentType());
 	}
 	
 	/**

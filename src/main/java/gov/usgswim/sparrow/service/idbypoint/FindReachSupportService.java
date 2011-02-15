@@ -65,7 +65,7 @@ public class FindReachSupportService extends HttpServlet {
 		QUERIES.put("code", EDACODE_QUERY);
 	}
 	protected void getEdaAttribs(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-		resp.setContentType("text/xml");
+		resp.setContentType("application/xml");
 		String modelID = req.getParameter("model");
 		String attrib = req.getParameter("get");
 		StringBuilder outputXML = new StringBuilder();

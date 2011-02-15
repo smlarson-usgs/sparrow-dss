@@ -9,7 +9,7 @@ import org.apache.commons.lang.StringUtils;
  *
  */
 public enum ServiceResponseMimeType {
-	XML("text/xml"),
+	XML("application/xml"),
 	JSON("application/json"),
 	UNKNOWN("unknown");
 	

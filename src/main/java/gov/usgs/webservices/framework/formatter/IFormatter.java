@@ -13,14 +13,14 @@ public interface IFormatter {
 		EXCEL_FLAT("application/vnd.ms-excel", "xls"),
 		TEXT("text/plain", "txt"), 
 		DATA("text/plain", "txt"),
-		SOAP1_1("text/xml", "xml"), 
-		SOAP1_2("text/xml", "xml"),
+		SOAP1_1("application/xml", "xml"),
+		SOAP1_2("application/xml", "xml"),
 		ZIP("application/zip", ""),
 		
 		// carry-overs
 		HTML("text/html", "html"), 
 		EXCEL("application/vnd.ms-excel", "xls"), 
-		XML("text/xml", "xml"),
+		XML("application/xml", "xml"),
 		KML("application/vnd.google-earth.kml+xml", "kml"),
 		KMZ("application/vnd.google-earth.kmz", "kmz"), // unverified
 		JSON("text/javascript", "js"), 
