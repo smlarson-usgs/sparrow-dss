@@ -22,7 +22,7 @@ public abstract class SparrowServiceTestBaseClass extends SparrowDBTestBaseClass
 
 	
 	public static final Long SERVICE_TEST_MODEL = -1L;
-	public static final String WEB_XML_LOCATION = "webapp/WEB-INF/web.xml";
+	public static final String WEB_XML_LOCATION = "src/main/webapp/WEB-INF/web.xml";
 
 	// ============
 	// SERVICE URLS
