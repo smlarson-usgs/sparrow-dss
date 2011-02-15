@@ -9,6 +9,7 @@ import org.junit.Test;
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
+import org.apache.log4j.Level;
 
 public class PredictContextServiceLongRunTest extends SparrowServiceTestBaseClass {
 
@@ -16,6 +17,7 @@ public class PredictContextServiceLongRunTest extends SparrowServiceTestBaseClas
 
 	@Test
 	public void incrementalDeliveredYieldContext() throws Exception {
+		log.setLevel(Level.DEBUG);
 		String requestText = getXmlAsString(this.getClass(), "req1");
 		String expectedResponse = getXmlAsString(this.getClass(), "resp1");
 		WebRequest request = new PostMethodWebRequest(SERVICE_URL);
@@ -23,6 +25,7 @@ public class PredictContextServiceLongRunTest extends SparrowServiceTestBaseClas
 		WebResponse response = client.sendRequest(request);
 		String actualResponse = response.getText();
 		System.out.println(actualResponse);
+		System.out.println(expectedResponse);
 		
 		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", actualResponse);
 		assertTrue(similarXMLIgnoreContextId(expectedResponse, actualResponse));
