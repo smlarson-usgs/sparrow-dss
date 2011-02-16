@@ -113,12 +113,12 @@
 				<dd>Combined total nitrogen loads from USGS NASQAN sites, Mississippi River at Thebes, Ill, and Ohio River at Dam 53 near Grand Chain, Ill.  This combined load was a boundary condition in the MRB5 TN model representing loads from the Upper Mississippi River basin in order for the MRB5 model to account for all mass entering the study area.</dd>
 				<dt>Atmospheric deposition</dt>
 				<dd>Nitrogen from atmospheric deposition came from 28 active USGS NADP/NTN wet deposition sites located in the MRB5 study area.  The total inorganic nitrogen wet deposition data were detrended for 2002.</dd>
-				<dt>Point Souces</dt>
+				<dt>Point Sources</dt>
 				<dd>Total nitrogen loads for 2002 from point sources came from USEPA PCS database.  Relevant municipal and industrial point sources were included.</dd>
 				<dt>Urban Runoff</dt>
 				<dd>Nitrogen from nonpoint source urban runoff was estimated based on land use categories from the 2001 NLCD.  The four cateogries included were nlcd_dvlow, nlcd_dvmed, nlcd_dvhig, and nlcd_dvopn.</dd>				
 				<dt>Manure - feedlots</dt>
-				<dd>Nitrogen from manure from confined animal oeprations applied to fertilizer were based on 2002 USDA NASS ag census data.</dd>
+				<dd>Nitrogen from manure from confined animal operations applied to fertilizer were based on 2002 USDA NASS ag census data.</dd>
 				<dt>Manure - pasture</dt>
 				<dd>Nitrogen from manure from pastures (unconfined) were based on 2002 USDA NASS ag census data.</dd>
 				<dt>Fertilizer</dt>
