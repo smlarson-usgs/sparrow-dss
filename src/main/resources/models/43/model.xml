@@ -18,50 +18,55 @@
 			<Units/>
 			<Description>All sources combined.</Description>
 		</Source>
-		<Source id="boundary_n">
-			<Name>boundary_n</Name>
-			<Units/>
-			<Description/>
+		<Source id="1">
+			<Name>Boundary</Name>
+			<Units>kg</Units>
+			<Description>Loads measured at calibration sites near the Canadian border</Description>
 		</Source>
-		<Source id="canbasin">
-			<Name>canbasin</Name>
-			<Units/>
-			<Description/>
+		<Source id="2">
+			<Name>Canadian</Name>
+			<Units>sqkm</Units>
+			<Description>Area of drainages located mostly in Canada (no calibration sites)</Description>
 		</Source>
-		<Source id="atdep_load">
-			<Name>atdep_load</Name>
+		<Source id="3">
+			<Name>Atmos. Dep.</Name>
 			<Units>kg/year</Units>
 			<Description>Average annual inorganic nitrogen (kg) atmospheric (wet) deposition for 1985 through 2001</Description>
 		</Source>
-		<Source id="ps_n_02_all">
-			<Name>ps_n_02_all</Name>
+		<Source id="4">
+			<Name>Point Sources</Name>
 			<Units>kg/year</Units>
-			<Description>Sum of total nitrogen loading from all point sources for WY 2002 (kg)</Description>
+			<Description>Sum of total nitrogen loading from all point sources (2002).</Description>
 		</Source>
-		<Source id="farm_n">
-			<Name>farm_n</Name>
+		<Source id="5">
+			<Name>Fertilizer</Name>
 			<Units>kg/year</Units>
-			<Description>Sum total of Fertilizer Nitrogen from farms (kg)</Description>
+			<Description>Sum total of Fertilizer Nitrogen from farms (2001).</Description>
 		</Source>
-		<Source id="total_man">
-			<Name>total_man</Name>
+		<Source id="6">
+			<Name>Manure</Name>
 			<Units>kg/year</Units>
-			<Description>Total manure loading of nitrogen (kg)</Description>
+			<Description>Total manure loading of nitrogen (2001).</Description>
 		</Source>
-		<Source id="nlcd_devel_km2">
-			<Name>nlcd_devel_km2</Name>
-			<Units>km2</Units>
-			<Description>area of developed land (square kilometers)</Description>
+		<Source id="7">
+			<Name>Developed Land</Name>
+			<Units>sqkm</Units>
+			<Description>Area of developed land (square kilometers)</Description>
 		</Source>
-		<Source id="west_nlcd_forest_km2">
-			<Name>west_nlcd_forest_km2</Name>
-			<Units>km2</Units>
-			<Description>area of west-side forested land (square kilometers)</Description>
+		<Source id="8">
+			<Name>West Forest</Name>
+			<Units>sqkm</Units>
+			<Description>Area of forested land west of the Cascade divide.</Description>
 		</Source>
-		<Source id="east_nlcd_forest_km2">
-			<Name>east_nlcd_forest_km2</Name>
-			<Units>km2</Units>
-			<Description>area of east-side forested land (square kilometers)</Description>
+		<Source id="9">
+			<Name>East Forest</Name>
+			<Units>sqkm</Units>
+			<Description>Area of forested land east of the Cascade divide.</Description>
+		</Source>
+		<Source id="10">
+			<Name>Alder Forest</Name>
+			<Units>sqm</Units>
+			<Description>Basal area of alder forest.</Description>
 		</Source>
 	</Sources>
 	<Model_papers>
@@ -95,4 +100,36 @@
 			</Citation_mods>
 		</Paper>
 	</Model_papers>
+	<CommonTerms>
+			<Term id="For Source">
+				Each model has different sources that the modeler has determined to be statistically significant.
+				Choose a source from the list to present data only from that source.  This model contains these sources:
+				
+				<dl>
+					<!-- These names could be improved, do we have updated info from Greg? -->
+					<dt>All</dt>
+					<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
+					<dt>Loads measured at calibration sites near the Canadian border</dt>
+					<dd>These loads were established as boundary conditions for the model. They represented the upstream contribution from Canadian land for which no geospatial data were available. This variable was used for monitored drainages only.</dd>
+					<dt>Area of drainages located mostly in Canada (no calibration sites)</dt>
+					<dd>This variable represented the upstream contribution from Canadian land for which no geospatial data were available. This variable was used for non-monitored drainages where more than 50% of the upstream area was in Canada. For non-monitored drainages where less than 50% of the upstream area was in Canada the geospatial data for the U.S. portion was extrapolated to the entire drainage.</dd>
+					<dt>Average annual inorganic nitrogen atmospheric (wet) deposition (1985-2001)</dt>
+					<dd>These estimates were based on data obtained from the National Atmospheric Deposition Program.</dd>
+					<dt>Sum of total nitrogen loading from all point sources (2002)</dt>
+					<dd>These estimates were based on data obtained from the US EPA and state water-quality permitting data bases.</dd>				
+					<dt>Sum total of fertilizer nitrogen from farms (2001)</dt>
+					<dd>These estimates were based on data obtained from the USDA, NRCS, and USGS.</dd>
+					<dt>Total manure loading of nitrogen (2001)</dt>
+					<dd>These estimates were based on data obtained from the USDA, NRCS, and USGS.</dd>
+					<dt>Area of developed land</dt>
+					<dd>These values are from the National Land Cover Data Base.</dd>
+					<dt>Area of forested land west of the Cascade divide</dt>
+					<dd>These values are from the National Land Cover Data Base.</dd>
+					<dt>Area of forested land east of the Cascade divide</dt>
+					<dd>These values are from the National Land Cover Data Base.</dd>
+					<dt>Basal area of alder forest</dt>
+					<dd>These values were provided by the Landscape, Ecology, Modeling, Mapping and Analysis project Oregon State University.</dd>
+				</dl>
+			</Term>
+	</CommonTerms>
 </Model>
