@@ -169,6 +169,15 @@ public abstract class SparrowUnitTestBaseClass {
 		System.setProperty(
 				PredictionContextHandler.DISABLE_DB_ACCESS, "true");
 		
+		//Use the standard XML factories, not the screwy one from oracle that
+		//is required by MapViewer.
+		System.setProperty("javax.xml.parsers.DocumentBuilderFactory",
+	    	"org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
+		System.setProperty("javax.xml.parsers.SAXParserFactory",
+	    	"org.apache.xerces.jaxp.SAXParserFactoryImpl");
+		System.setProperty("javax.xml.transform.TransformerFactory",
+	    	"com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
+		
 		
 		XMLUnit.setIgnoreWhitespace(true);
 		XMLUnit.setIgnoreComments(true);

@@ -225,6 +225,13 @@
 			<!-- was 4.5 -->
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+		<!-- Required by XMLUnit to support out-of-order element comparison -->
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+			<version>2.6.2</version>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- This unique dep. is an XML parser that MapViewer requires, but is not
 		distributed w/ MapViewer (they assume you will be running on OC4J.	-->
