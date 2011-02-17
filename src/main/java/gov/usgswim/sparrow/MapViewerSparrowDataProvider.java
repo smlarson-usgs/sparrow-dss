@@ -118,15 +118,7 @@ public class MapViewerSparrowDataProvider implements NSDataProvider {
 
 				try {
 
-					// Bypassing the cache because the NSData structure doesn't seem to
-					// be cacheable, contrary to LJ.
-					// TODO ask LJ
-					// nsData = SharedApplication.getInstance().getNSDataSet(context);
-					NSDataSetBuilder builder = new NSDataSetBuilder();
-					DataColumn data = context.getDataColumn();
-					builder.setData(data);
-					nsData = builder.run();
-
+					nsData = SharedApplication.getInstance().getNSDataSet(context);
 
 				} catch (Exception e1) {
 					log.error("MapViewerSparrowDataProvider errored while copying " +

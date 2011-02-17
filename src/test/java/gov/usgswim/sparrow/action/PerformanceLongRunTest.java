@@ -15,6 +15,7 @@ import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Level;
@@ -48,7 +49,7 @@ public class PerformanceLongRunTest extends SparrowDBTestBaseClass {
 	}
 	
 	
-	//@Test
+	@Test
 	public void testComparison() throws Exception {
 
 		long startTime = 0;
@@ -79,7 +80,6 @@ public class PerformanceLongRunTest extends SparrowDBTestBaseClass {
 		PredictResultFactory prFactory = new PredictResultFactory();
 		AdjustmentGroups emptyAdjustments = new AdjustmentGroups(TEST_MODEL_ID);
 		PredictResult predictResults = null;
-		CalcDeliveryFractionDataColumn delAction = new CalcDeliveryFractionDataColumn();
 		DataColumn dataColumn = null;
 		
 		//Run the prediction
@@ -90,7 +90,8 @@ public class PerformanceLongRunTest extends SparrowDBTestBaseClass {
 		endTime = System.currentTimeMillis();
 		long predictTotalTime = endTime - startTime;
 		report(predictTotalTime, "Run Prediction", ITERATION_COUNT);
-		assertTrue("Run Prediction should be less than 5 seconds for 100 runs.", 
+		assertTrue("Run Prediction should be less than 5 seconds for 100 runs." +
+				"Was " + (predictTotalTime / 1000L) + " seconds.", 
 				predictTotalTime < 5000);
 		
 		
@@ -107,7 +108,8 @@ public class PerformanceLongRunTest extends SparrowDBTestBaseClass {
 		endTime = System.currentTimeMillis();
 		long predictCopyTotalTime = endTime - startTime;
 		report(predictCopyTotalTime, "Copy predict result to NSDataset", ITERATION_COUNT);
-		assertTrue("Copying the data to the NSDataset should be less than 500ms for 100 iterations.", 
+		assertTrue("Copying the data to the NSDataset should be less than 500ms for 100 iterations." +
+				"Was " + (predictCopyTotalTime / 1000L) + " seconds.",
 				predictCopyTotalTime < 500);
 		
 		
@@ -115,17 +117,29 @@ public class PerformanceLongRunTest extends SparrowDBTestBaseClass {
 		List<Long> targetList = new ArrayList<Long>();
 		targetList.add(9682L);
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
+		
+		
+		CalcDeliveryFractionHash hashAction = new CalcDeliveryFractionHash();
+		CalcDeliveryFractionDataColumn delAction = new CalcDeliveryFractionDataColumn();
+		
+		hashAction.setPredictData(predictData);
+		hashAction.setTargetReachIds(targets.asSet());
+		HashMap<Integer, DeliveryReach> delHash = hashAction.run();
+		
 		delAction.setPredictData(predictData);
-		delAction.setTargetReachIds(targets.asSet());
+		delAction.setDeliveryFractionHash(delHash);
 		ColumnData deliveryFrac = null;
+		
 		startTime = System.currentTimeMillis();
 		for (int i=0; i< ITERATION_COUNT;  i++) {
+			delHash = hashAction.run();
 			deliveryFrac = delAction.run();
 		}
 		endTime = System.currentTimeMillis();
 		long deliveryTotalTime = endTime - startTime;
 		report(deliveryTotalTime, "Run Delivery", ITERATION_COUNT);
-		assertTrue("Delivery calc time should be less than 500ms for 100 iterations.", 
+		assertTrue("Delivery calc time should be less than 500ms for 100 iterations." +
+				"Was " + (deliveryTotalTime / 1000L) + " seconds.",
 				deliveryTotalTime < 500);
 		
 		

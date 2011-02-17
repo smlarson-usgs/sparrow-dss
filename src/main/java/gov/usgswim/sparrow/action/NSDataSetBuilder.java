@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.action;
 
+import java.util.HashMap;
+
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.parser.DataColumn;
@@ -23,6 +25,15 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 	
 	/** Context used to build the results from */
 	DataColumn data;
+	
+	/** A hash of row numbers that are in the reaches to be mapped. **/
+	HashMap<Integer, ?> inclusionHash;
+	
+	/** The value to use for NA values. */
+	Long NAValue = DEFAULT_NA_VALUE;
+	
+	/** The default value for NAValue */
+	static public final long DEFAULT_NA_VALUE = -9000000000000000000L;
 	
 	/** Array of output data.  Hold reference just so we can print debug info */
 	private NSRow[] nsRows;
@@ -68,14 +79,28 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 			row[0] = new Field(id);
 			row[0].setKey(true);
 
-			// Value
-			Double val = data.getDouble(r);
 
-			if (val == null || val.isInfinite() || val.isNaN()) {
-				row[1] = new Field();
-				row[1].setNull();
+			if (inclusionHash != null && inclusionHash.get(r) == null) {
+				//This is an excluded row
+				
+				if (NAValue != null) {
+					row[1] = new Field(NAValue);
+				} else {
+					row[1] = new Field();
+					row[1].setNull();
+				}
+				
 			} else {
-				row[1] = new Field(val);
+				//This is a standard included row
+				
+				Double val = data.getDouble(r);
+	
+				if (val == null || val.isInfinite() || val.isNaN()) {
+					row[1] = new Field();
+					row[1].setNull();
+				} else {
+					row[1] = new Field(val);
+				}
 			}
 
 
@@ -114,8 +139,44 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 		}
 	}
 	
+	/**
+	 * The DataColumn to create a map data set for.
+	 * @param data
+	 */
 	public void setData(DataColumn data) {
 		this.data = data;
+	}
+
+	/**
+	 * Assign a hash of row numbers (not ids) that should be included in the map.
+	 * Rows not present in the hash will be set to the equivalant of 'NA'.
+	 * 
+	 * The structure/type of this hash is based on the hash used to calc
+	 * delivery fractions.  Rather than repackage it to something specifically
+	 * for this usage, its just used as is.
+	 * 
+	 * The key (Integer) is a row number.
+	 * The value (DeliveryReach for the delivery hash, but here we don't care)
+	 * will be non-null if the reach is to be included.  If null, its NA.
+	 * 
+	 * @param inclusionHash
+	 */
+	public void setInclusionHash(HashMap<Integer, ?> inclusionHash) {
+		this.inclusionHash = inclusionHash;
+	}
+
+	/**
+	 * Assign the value that will be used for excluded values.
+	 * 
+	 * By default, this value is -9000000000000000000, which is just a bit
+	 * larger than the lowest possible Long value.
+	 * 
+	 * Assigning null is permitted and results in the NA values not being
+	 * mapped, regardless of bin settings.
+	 * @param nAValue
+	 */
+	public void setNAValue(Long nAValue) {
+		NAValue = nAValue;
 	}
 
 }

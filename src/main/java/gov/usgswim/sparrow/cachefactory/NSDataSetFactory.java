@@ -1,19 +1,20 @@
 package gov.usgswim.sparrow.cachefactory;
 
+import gov.usgswim.sparrow.action.DeliveryReach;
 import gov.usgswim.sparrow.action.NSDataSetBuilder;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.service.SharedApplication;
+
+import java.util.HashMap;
+
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import oracle.mapviewer.share.ext.NSDataSet;
 
 /**
- * An EHCache CacheEntryFactory to build a NSDataSet for use by MapViewer.
+ * A thin wrapper around an Action for EHCache CacheEntryFactory.
  * 
- * This class is a thin wrapper over the action CalcAnalysis and is only needed
- * to provide compatibility w/ the EHCache framework.  See the action class
- * for implementation details.
- *
- * Caching, blocking, and de-caching are all handled by the caching system.
+ * Caching, blocking, and de-caching are all handled by EHCache system.
  *
  * @author eeverman
  */
@@ -25,8 +26,21 @@ public class NSDataSetFactory implements CacheEntryFactory {
 
 		NSDataSetBuilder action = new NSDataSetBuilder();
 		
-		//TODO:  Really should make the type of the factory (PredictionContext)
-		//and the action (PredictionContext.DataColumn) match.
+		
+		//Optionally add the deliveryHash if this is a delivery type
+		//series.  This will cause reaches not upstream of a target to be
+		//given a special value.
+		if (	
+				context.getAnalysis().getDataSeries().isDeliveryBased() ||
+				context.getAnalysis().getDataSeries().isDeliveryRequired()) {
+			
+			HashMap<Integer, DeliveryReach> upstreamReaches =
+				SharedApplication.getInstance().getDeliveryFractionHash(
+					context.getTerminalReaches());
+			
+			action.setInclusionHash(upstreamReaches);
+		}
+		
 		DataColumn data = context.getDataColumn();
 		action.setData(data);
 		NSDataSet result = action.run();

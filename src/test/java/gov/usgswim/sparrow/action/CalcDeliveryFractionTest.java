@@ -19,6 +19,7 @@ import gov.usgswim.sparrow.util.TabDelimFileUtil;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Test;
@@ -89,10 +90,16 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		targetList.add(9682L);
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
-		CalcDeliveryFractionDataColumn action = new CalcDeliveryFractionDataColumn();
-		action.setPredictData(predictData);
-		action.setTargetReachIds(targets.asSet());
-		ColumnData deliveryFrac = action.run();
+		CalcDeliveryFractionHash hashAction = new CalcDeliveryFractionHash();
+		CalcDeliveryFractionDataColumn delAction = new CalcDeliveryFractionDataColumn();
+		
+		hashAction.setPredictData(predictData);
+		hashAction.setTargetReachIds(targets.asSet());
+		HashMap<Integer, DeliveryReach> delHash = hashAction.run();
+		
+		delAction.setPredictData(predictData);
+		delAction.setDeliveryFractionHash(delHash);
+		ColumnData deliveryFrac = delAction.run();
 		
 		//check metadata of delivery fraction
 		assertEquals(Action.getDataSeriesProperty(DataSeriesType.delivered_fraction, false), deliveryFrac.getName());
@@ -150,10 +157,16 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		targetList.add(9674L);
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
-		CalcDeliveryFractionDataColumn action = new CalcDeliveryFractionDataColumn();
-		action.setPredictData(predictData);
-		action.setTargetReachIds(targets.asSet());
-		ColumnData deliveryFrac = action.run();
+		CalcDeliveryFractionHash hashAction = new CalcDeliveryFractionHash();
+		CalcDeliveryFractionDataColumn delAction = new CalcDeliveryFractionDataColumn();
+		
+		hashAction.setPredictData(predictData);
+		hashAction.setTargetReachIds(targets.asSet());
+		HashMap<Integer, DeliveryReach> delHash = hashAction.run();
+		
+		delAction.setPredictData(predictData);
+		delAction.setDeliveryFractionHash(delHash);
+		ColumnData deliveryFrac = delAction.run();
 		
 
 		//Some stats
@@ -206,10 +219,16 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		targetList.add(9674L);
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
-		CalcDeliveryFractionDataColumn action = new CalcDeliveryFractionDataColumn();
-		action.setPredictData(predictData);
-		action.setTargetReachIds(targets.asSet());
-		ColumnData deliveryFrac = action.run();
+		CalcDeliveryFractionHash hashAction = new CalcDeliveryFractionHash();
+		CalcDeliveryFractionDataColumn delAction = new CalcDeliveryFractionDataColumn();
+		
+		hashAction.setPredictData(predictData);
+		hashAction.setTargetReachIds(targets.asSet());
+		HashMap<Integer, DeliveryReach> delHash = hashAction.run();
+		
+		delAction.setPredictData(predictData);
+		delAction.setDeliveryFractionHash(delHash);
+		ColumnData deliveryFrac = delAction.run();
 		
 		//Some stats
 		int inSheet = 0;
@@ -260,10 +279,16 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		targetList.add(9687L);
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
-		CalcDeliveryFractionDataColumn action = new CalcDeliveryFractionDataColumn();
-		action.setPredictData(predictData);
-		action.setTargetReachIds(targets.asSet());
-		ColumnData deliveryFrac = action.run();
+		CalcDeliveryFractionHash hashAction = new CalcDeliveryFractionHash();
+		CalcDeliveryFractionDataColumn delAction = new CalcDeliveryFractionDataColumn();
+		
+		hashAction.setPredictData(predictData);
+		hashAction.setTargetReachIds(targets.asSet());
+		HashMap<Integer, DeliveryReach> delHash = hashAction.run();
+		
+		delAction.setPredictData(predictData);
+		delAction.setDeliveryFractionHash(delHash);
+		ColumnData deliveryFrac = delAction.run();
 		
 		//Some stats
 		int nonZeroCount = 0;
@@ -302,7 +327,6 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		//
 		//delivery to 9682 data
 		//check columns
-		System.out.println("--" + stdDelFracTo9682.getName(0) + "--");
 		assertEquals(0, stdDelFracTo9682.getColumnByName("IDENTIFIER").intValue());
 		assertEquals(8, stdDelFracTo9682.getColumnByName("DEL_FRAC").intValue());
 		//Row 0

@@ -339,7 +339,8 @@
 		
 	<cache name="AnalysisResult" maxElementsInMemory="10" />
 		
-	<cache name="NSDataSet" maxElementsInMemory="3"
+	<!-- Currently we cannot cache these, so 1 should turn off the cache. -->
+	<cache name="NSDataSet" maxElementsInMemory="1"
 		timeToIdleSeconds="60" timeToLiveSeconds="0"/>
 		
 	<!--
@@ -359,8 +360,17 @@
 		None of these caches use disk storage.
 	-->
 	<cache name="PredictData" maxElementsInMemory="20" />
-		
-	<cache name="DeliveryFraction" maxElementsInMemory="30" />
+	
+	<!--  This precursor to the DeliveryFraction is cached
+	b/c it is used to filter rows as they are put into the
+	NSDataSet for mapping.  Reaches not upstream of a target
+	are given a special value. -->	
+	<cache name="DeliveryFractionHash" maxElementsInMemory="4" />
+	
+	<!--  This is no reason to cache the delivery fraction
+	since it is cached at the analysis level.
+	NOTE: zero = unlimited size. -->
+	<cache name="DeliveryFraction" maxElementsInMemory="1" />
 		
 	<cache name="AdjustedSource" maxElementsInMemory="10" />
 	

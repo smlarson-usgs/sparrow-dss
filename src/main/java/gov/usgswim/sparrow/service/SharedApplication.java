@@ -1,27 +1,6 @@
 package gov.usgswim.sparrow.service;
 
-import static gov.usgswim.sparrow.service.ConfiguredCache.AdjustedSource;
-import static gov.usgswim.sparrow.service.ConfiguredCache.AdjustmentGroups;
-import static gov.usgswim.sparrow.service.ConfiguredCache.AggregateIdLookup;
-import static gov.usgswim.sparrow.service.ConfiguredCache.Analyses;
-import static gov.usgswim.sparrow.service.ConfiguredCache.AreaOfInterest;
-import static gov.usgswim.sparrow.service.ConfiguredCache.CatchmentAreas;
-import static gov.usgswim.sparrow.service.ConfiguredCache.ComparisonResult;
-import static gov.usgswim.sparrow.service.ConfiguredCache.DataBinning;
-import static gov.usgswim.sparrow.service.ConfiguredCache.DeliveryFraction;
-import static gov.usgswim.sparrow.service.ConfiguredCache.IdentifyReachByID;
-import static gov.usgswim.sparrow.service.ConfiguredCache.IdentifyReachByPoint;
-import static gov.usgswim.sparrow.service.ConfiguredCache.LoadModelMetadata;
-import static gov.usgswim.sparrow.service.ConfiguredCache.LoadReachAttributes;
-import static gov.usgswim.sparrow.service.ConfiguredCache.NSDataSet;
-import static gov.usgswim.sparrow.service.ConfiguredCache.PredefinedSessions;
-import static gov.usgswim.sparrow.service.ConfiguredCache.PredictContext;
-import static gov.usgswim.sparrow.service.ConfiguredCache.PredictData;
-import static gov.usgswim.sparrow.service.ConfiguredCache.PredictResult;
-import static gov.usgswim.sparrow.service.ConfiguredCache.ReachesByCriteria;
-import static gov.usgswim.sparrow.service.ConfiguredCache.StandardErrorEstimateData;
-import static gov.usgswim.sparrow.service.ConfiguredCache.StreamFlow;
-import static gov.usgswim.sparrow.service.ConfiguredCache.TerminalReaches;
+import static gov.usgswim.sparrow.service.ConfiguredCache.*;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
@@ -30,6 +9,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.action.DeletePredefinedSession;
+import gov.usgswim.sparrow.action.DeliveryReach;
 import gov.usgswim.sparrow.action.FilterPredefinedSessions;
 import gov.usgswim.sparrow.action.LoadPredefinedSession;
 import gov.usgswim.sparrow.action.LoadReachesInBBox;
@@ -60,6 +40,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.naming.Context;
@@ -583,6 +564,15 @@ public class SharedApplication  {
 		return (PredictData) PredictData.get(id, quiet);
 	}
 
+	//DeliveryFractionHash
+	public HashMap<Integer, DeliveryReach> getDeliveryFractionHash(TerminalReaches targets) {
+		return getDeliveryFractionHash(targets, false);
+	}
+
+	public HashMap<Integer, DeliveryReach> getDeliveryFractionHash(TerminalReaches targets, boolean quiet) {
+		return (HashMap<Integer, DeliveryReach>) DeliveryFractionHash.get(targets, quiet);
+	}
+	
 	//DeliveryFraction
 	public ColumnData getDeliveryFraction(TerminalReaches targets) {
 		return getDeliveryFraction(targets, false);

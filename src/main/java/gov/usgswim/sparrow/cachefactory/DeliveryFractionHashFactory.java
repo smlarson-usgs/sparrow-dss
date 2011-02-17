@@ -1,13 +1,13 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.action.CalcDeliveryFractionDataColumn;
+import gov.usgswim.sparrow.action.CalcDeliveryFractionHash;
 import gov.usgswim.sparrow.action.DeliveryReach;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.util.HashMap;
+import java.util.Set;
 
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
@@ -18,27 +18,24 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
  *
  * @author eeverman
  */
-public class DeliveryFractionFactory implements CacheEntryFactory {
+public class DeliveryFractionHashFactory implements CacheEntryFactory {
 
 	@Override
-	public ColumnData createEntry(Object terminalReaches) throws Exception {
+	public HashMap<Integer, DeliveryReach> createEntry(Object terminalReaches) throws Exception {
 		TerminalReaches targets = (TerminalReaches) terminalReaches;
 		
 		PredictData predictData = SharedApplication.getInstance().
 			getPredictData(new Long(targets.getModelID()));
+		Set<Long> targetReachIds = targets.asSet();
 		
-		HashMap<Integer, DeliveryReach> deliveryFractionHash =
-			SharedApplication.getInstance().getDeliveryFractionHash(targets);
-		
-		CalcDeliveryFractionDataColumn action = new CalcDeliveryFractionDataColumn();
+		CalcDeliveryFractionHash action = new CalcDeliveryFractionHash();
 		action.setPredictData(predictData);
-		action.setDeliveryFractionHash(deliveryFractionHash);
+		action.setTargetReachIds(targetReachIds);
 		
-		ColumnData accumulatedDeliveryFrac = action.run();
+		HashMap<Integer, DeliveryReach> fractionHash = action.run();
 		
-		return accumulatedDeliveryFrac;
+		return fractionHash;
 	}
-	
 
 
 }
