@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  $Header: mapViewerConfig.xsd 02-may-2007.12:30:13 lqian    Exp $ -->
+<!--
+ Copyright (c) 2007, Oracle.  All rights reserved.
+
+   NAME
+     oraclemapsapp.xsd - W3C Schema for OracleAS MapViewer Application Wizard
+
+   DESCRIPTION
+     <short description of component this file declares/defines>
+
+   NOTES
+     <other useful comments, qualifications, etc.>
+
+   MODIFIED   (MM/DD/YY)
+   lqian       05/02/07 - Creation
+
+-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="zoom-level" type="xs:integer"/>
+	<xs:element name="tool-bar">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="button" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="position" type="mapDecoPositionsType" use="required"/>
+			<xs:attribute name="display" type="xs:boolean" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="toggle" type="xs:boolean"/>
+	<xs:element name="theme-event" type="xs:string"/>
+	<xs:element name="theme-action" type="xs:string"/>
+	<xs:element name="target-mapviewer-server" type="xs:anyURI"/>
+	<xs:element name="target">
+		<xs:complexType>
+			<xs:attribute name="type" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="local"/>
+						<xs:enumeration value="zipfile"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="style" type="xs:string"/>
+	<xs:element name="selection">
+		<xs:complexType>
+			<xs:attribute name="show-report" type="xs:boolean" use="required"/>
+			<xs:attribute name="highlight-style" type="xs:string" use="required"/>
+			<xs:attribute name="enabled" type="xs:boolean" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="mapDecoPositionsType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NORTH"/>
+			<xs:enumeration value="EAST"/>
+			<xs:enumeration value="SOUTH"/>
+			<xs:enumeration value="WEST"/>
+			<xs:enumeration value="NORTH_EAST"/>
+			<xs:enumeration value="NORTH_WEST"/>
+			<xs:enumeration value="SOUTH_EAST"/>
+			<xs:enumeration value="SOUTH_WEST"/>
+			<xs:enumeration value="CENTER"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="scale_bar">
+		<xs:complexType>
+			<xs:attribute name="position" type="mapDecoPositionsType" use="required"/>
+			<xs:attribute name="display" type="xs:boolean" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="theme-properties">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="toggle" minOccurs="0"/>
+				<xs:element ref="min-zoom-level" minOccurs="0"/>
+				<xs:element ref="max-zoom-level" minOccurs="0"/>
+				<xs:element ref="max-wholeimage-level" minOccurs="0"/>
+				<xs:element ref="legend" minOccurs="0"/>
+				<xs:element ref="bounding-theme" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="pre-defined-theme">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="theme-properties" minOccurs="0"/>
+				<xs:element ref="selection" minOccurs="0"/>
+				<xs:element ref="custom-theme-actions" minOccurs="0"/>
+				<xs:element ref="legend" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="origin-server" type="xs:anyURI"/>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+			<xs:attribute name="data-source" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="overview_map">
+		<xs:complexType>
+			<xs:attribute name="position" type="mapDecoPositionsType" use="required"/>
+			<xs:attribute name="display" type="xs:boolean" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="oracle_maps_app">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="basic_info"/>
+				<xs:element ref="deployment"/>
+				<xs:element ref="init_map_display"/>
+				<xs:element ref="map_pieces"/>
+				<xs:element ref="layer_control"/>
+				<xs:element ref="tool-bar"/>
+				<xs:element ref="cached_base_maps"/>
+				<xs:element ref="foi_layers"/>
+				<xs:element ref="custom_script"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="navigation_panel">
+		<xs:complexType>
+			<xs:attribute name="position" type="mapDecoPositionsType" use="required"/>
+			<xs:attribute name="display" type="xs:boolean" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="bounding-theme" type="xs:boolean"/>
+	<xs:element name="min-zoom-level" type="xs:integer"/>
+	<xs:element name="max-zoom-level" type="xs:integer"/>
+	<xs:element name="max-wholeimage-level" type="xs:integer"/>
+	<xs:element name="map_pieces">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="map-title"/>
+				<xs:element ref="map-note"/>
+				<xs:element ref="scale_bar"/>
+				<xs:element ref="navigation_panel"/>
+				<xs:element ref="overview_map"/>
+				<xs:element ref="center_marker"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="map-title">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="position" type="mapDecoPositionsType" use="required"/>
+					<xs:attribute name="font-size" type="xs:byte" use="required"/>
+					<xs:attribute name="font-color" type="xs:string" use="required"/>
+					<xs:attribute name="font" type="xs:string" use="required"/>
+					<xs:attribute name="display" type="xs:boolean" use="required"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="map-note">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="position" type="mapDecoPositionsType" use="required"/>
+					<xs:attribute name="font-size" type="xs:byte" use="required"/>
+					<xs:attribute name="font-color" type="xs:string" use="required"/>
+					<xs:attribute name="font" type="xs:string" use="required"/>
+					<xs:attribute name="display" type="xs:boolean" use="required"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="map-event" type="xs:string"/>
+	<xs:element name="map-action" type="xs:string"/>
+	<xs:element name="legend">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="legend-entry" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="display" type="xs:boolean" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="layer_control">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="inline-legend" type="xs:boolean" use="required"/>
+					<xs:attribute name="external-position" use="required">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="RIGHT"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="display" type="xs:boolean" use="required"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="last-update" type="xs:date"/>
+	<xs:element name="jdbc_query">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="spatial_column" type="xs:string" use="required"/>
+					<xs:attribute name="render_style" type="xs:string" use="required"/>
+					<xs:attribute name="jdbc_srid" type="xs:integer" use="required"/>
+					<xs:attribute name="datasource" type="xs:string" use="required"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="init_map_display">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="center"/>
+				<xs:element ref="zoom-level"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="icon-url" type="xs:anyURI"/>
+	<xs:element name="foi_layers">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="pre-defined-theme" maxOccurs="unbounded"/>
+				<xs:element ref="dynamic-theme"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="legend-entry">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="style"/>
+				<xs:element ref="desc"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="encoding">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:enumeration value="utf-8"/>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:element>
+	<xs:element name="enable-cross-site-access" type="xs:boolean"/>
+	<xs:element name="dynamic-theme">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="theme-properties"/>
+				<xs:element ref="jdbc_query"/>
+			</xs:sequence>
+			<xs:attribute name="origin-server" type="xs:anyURI" use="optional"/>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+			<xs:attribute name="data-source" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="description" type="xs:string"/>
+	<xs:element name="desc" type="xs:string"/>
+	<xs:element name="deployment">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="target"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="custom_script">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="code-url"/>
+				<xs:element ref="code"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="custom-theme-actions">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="custom-theme-action" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="custom-theme-action">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="theme-event"/>
+				<xs:element ref="theme-action"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="custom-map-actions">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="custom-map-action"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="custom-map-action">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="map-event"/>
+				<xs:element ref="map-action"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="custom-function">
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="code-url" type="xs:anyURI"/>
+	<xs:element name="code" type="xs:string"/>
+	<xs:element name="center_marker">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="icon-url"/>
+			</xs:sequence>
+			<xs:attribute name="display" type="xs:boolean" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="center">
+		<xs:complexType>
+			<xs:attribute name="y" type="xs:decimal" use="required"/>
+			<xs:attribute name="x" type="xs:decimal" use="required"/>
+			<xs:attribute name="srid" type="xs:integer" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="toolbarButtonType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CUSTOM"/>
+			<xs:enumeration value="MEASURE"/>
+			<xs:enumeration value="PRINT"/>
+			<xs:enumeration value="RECT-ZOOM"/>
+			<xs:enumeration value="REDLINE"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="call-back-function" type="xs:string"/>
+	<xs:element name="cached_base_maps">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="base_map"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="button">
+		<xs:complexType>
+			<xs:choice minOccurs="0">
+				<xs:element ref="call-back-function"/>
+				<xs:element ref="custom-function"/>
+			</xs:choice>
+			<xs:attribute name="type" type="toolbarButtonType" use="required"/>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="icon" type="xs:anyURI" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="basic_info">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="encoding"/>
+				<xs:element ref="last-update"/>
+				<xs:element ref="description"/>
+				<xs:element ref="target-mapviewer-server"/>
+				<xs:element ref="enable-cross-site-access"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="base_map">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="custom-map-actions"/>
+			</xs:sequence>
+			<xs:attribute name="origin-server" type="xs:anyURI" use="required"/>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+			<xs:attribute name="data-source" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

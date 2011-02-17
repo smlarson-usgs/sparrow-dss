@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="textAttributesType">
+		<xs:sequence>
+			<xs:element ref="textStyle"/>
+			<xs:element ref="textlayout"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="textAttributes" type="textAttributesType"/>
+	<xs:element name="textStyle">
+		<xs:annotation>
+			<xs:documentation>Text font style attribute</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="fontFamily" type="xs:string" use="required"/>
+			<xs:attribute name="fontSize" type="xs:float" use="required"/>
+			<xs:attribute name="fontWeight" type="fontWeight" use="optional" default="Normal"/>
+			<xs:attribute name="fontStyle" type="fontStyle" use="optional" default="Normal"/>
+			<xs:attribute name="textDecoration" type="textDecoration" use="optional" default="None"/>
+			<xs:attribute name="letterSpacing" type="spacing" use="optional" default="Normal"/>
+			<xs:attribute name="wordSpacing" type="spacing" use="optional" default="Normal"/>
+			<xs:attribute name="fill" type="colorType" use="optional" default="black"/>
+			<xs:attribute name="fill-opacity" type="opacity" use="optional" default="1.0"/>
+			<xs:attribute name="stroke" type="colorType" use="optional" default="black"/>
+			<xs:attribute name="strokeWidth" type="xs:float" use="optional" default="1.0"/>
+			<xs:attribute name="stroke-opacity" type="opacity" use="optional" default="1.0"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="textlayout">
+		<xs:annotation>
+			<xs:documentation>Text alignment and justification </xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:attribute name="horizontalAlignment" use="optional" default="start">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="start"/>
+						<xs:enumeration value="center"/>
+						<xs:enumeration value="end"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="verticalAlignment" use="optional" default="top">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="top"/>
+						<xs:enumeration value="center"/>
+						<xs:enumeration value="baseline"/>
+						<xs:enumeration value="bottom"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="multilineJustification" use="optional" default="left">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="left"/>
+						<xs:enumeration value="center"/>
+						<xs:enumeration value="right"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="multilineSpacing" type="xs:float" use="optional" default="0.0"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="fontWeight">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Normal"/>
+			<xs:enumeration value="Bold"/>
+			<xs:enumeration value="100"/>
+			<xs:enumeration value="200"/>
+			<xs:enumeration value="300"/>
+			<xs:enumeration value="400"/>
+			<xs:enumeration value="500"/>
+			<xs:enumeration value="600"/>
+			<xs:enumeration value="700"/>
+			<xs:enumeration value="800"/>
+			<xs:enumeration value="900"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="fontStyle">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Normal"/>
+			<xs:enumeration value="Italics"/>
+			<xs:enumeration value="Oblique"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="textDecoration">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="None"/>
+			<xs:enumeration value="Underline"/>
+			<xs:enumeration value="LineThrough"/>
+			<xs:enumeration value="Overline"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="spacing">
+		<xs:union>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Normal"/>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType>
+				<xs:restriction base="xs:float"/>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+	<xs:simpleType name="colorType">
+		<xs:union>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:pattern value="(rgb\(N,N,N\))"/>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="none"/>
+					<xs:enumeration value="aliceblue"/>
+					<xs:enumeration value="antiquewhite"/>
+					<xs:enumeration value="aqua"/>
+					<xs:enumeration value="aquamarine"/>
+					<xs:enumeration value="azure"/>
+					<xs:enumeration value="beige"/>
+					<xs:enumeration value="bisque"/>
+					<xs:enumeration value="black"/>
+					<xs:enumeration value="blanchedalmond"/>
+					<xs:enumeration value="blue"/>
+					<xs:enumeration value="blueviolet"/>
+					<xs:enumeration value="brown"/>
+					<xs:enumeration value="burlywood"/>
+					<xs:enumeration value="cadetblue"/>
+					<xs:enumeration value="chartreuse"/>
+					<xs:enumeration value="chocolate"/>
+					<xs:enumeration value="coral"/>
+					<xs:enumeration value="cornflowerblue"/>
+					<xs:enumeration value="cornsilk"/>
+					<xs:enumeration value="crimson"/>
+					<xs:enumeration value="cyan"/>
+					<xs:enumeration value="darkblue"/>
+					<xs:enumeration value="darkcyan"/>
+					<xs:enumeration value="darkgoldenrod"/>
+					<xs:enumeration value="darkgray"/>
+					<xs:enumeration value="darkgreen"/>
+					<xs:enumeration value="darkgrey"/>
+					<xs:enumeration value="darkkhaki"/>
+					<xs:enumeration value="darkmagenta"/>
+					<xs:enumeration value="darkolivegreen"/>
+					<xs:enumeration value="darkorange"/>
+					<xs:enumeration value="darkorchid"/>
+					<xs:enumeration value="darkred"/>
+					<xs:enumeration value="darksalmon"/>
+					<xs:enumeration value="darkseagreen"/>
+					<xs:enumeration value="darkslateblue"/>
+					<xs:enumeration value="darkslategray"/>
+					<xs:enumeration value="darkslategrey"/>
+					<xs:enumeration value="darkturquoise"/>
+					<xs:enumeration value="darkviolet"/>
+					<xs:enumeration value="deeppink"/>
+					<xs:enumeration value="deepskyblue"/>
+					<xs:enumeration value="dimgray"/>
+					<xs:enumeration value="dimgrey"/>
+					<xs:enumeration value="dodgerblue"/>
+					<xs:enumeration value="firebrick"/>
+					<xs:enumeration value="floralwhite"/>
+					<xs:enumeration value="forestgreen"/>
+					<xs:enumeration value="fuchsia"/>
+					<xs:enumeration value="gainsboro"/>
+					<xs:enumeration value="ghostwhite"/>
+					<xs:enumeration value="gold"/>
+					<xs:enumeration value="goldenrod"/>
+					<xs:enumeration value="gray"/>
+					<xs:enumeration value="grey"/>
+					<xs:enumeration value="green"/>
+					<xs:enumeration value="greenyellow"/>
+					<xs:enumeration value="honeydew"/>
+					<xs:enumeration value="hotpink"/>
+					<xs:enumeration value="indianred"/>
+					<xs:enumeration value="indigo"/>
+					<xs:enumeration value="ivory"/>
+					<xs:enumeration value="khaki"/>
+					<xs:enumeration value="lavender"/>
+					<xs:enumeration value="lavenderblush"/>
+					<xs:enumeration value="lawngreen"/>
+					<xs:enumeration value="lemonchiffon"/>
+					<xs:enumeration value="lightblue"/>
+					<xs:enumeration value="lightcoral"/>
+					<xs:enumeration value="lightcyan"/>
+					<xs:enumeration value="lightgoldenrodyellow"/>
+					<xs:enumeration value="lightgray"/>
+					<xs:enumeration value="lightgreen"/>
+					<xs:enumeration value="lightgrey"/>
+					<xs:enumeration value="lightpink"/>
+					<xs:enumeration value="lightsalmon"/>
+					<xs:enumeration value="lightseagreen"/>
+					<xs:enumeration value="lightskyblue"/>
+					<xs:enumeration value="lightslategray"/>
+					<xs:enumeration value="lightslategrey"/>
+					<xs:enumeration value="lightsteelblue"/>
+					<xs:enumeration value="lightyellow"/>
+					<xs:enumeration value="lime"/>
+					<xs:enumeration value="limegreen"/>
+					<xs:enumeration value="linen"/>
+					<xs:enumeration value="magenta"/>
+					<xs:enumeration value="maroon"/>
+					<xs:enumeration value="mediumaquamarine"/>
+					<xs:enumeration value="mediumblue"/>
+					<xs:enumeration value="mediumorchid"/>
+					<xs:enumeration value="mediumpurple"/>
+					<xs:enumeration value="mediumseagreen"/>
+					<xs:enumeration value="mediumslateblue"/>
+					<xs:enumeration value="mediumspringgreen"/>
+					<xs:enumeration value="mediumturquoise"/>
+					<xs:enumeration value="mediumvioletred"/>
+					<xs:enumeration value="midnightblue"/>
+					<xs:enumeration value="mintcream"/>
+					<xs:enumeration value="mistyrose"/>
+					<xs:enumeration value="moccasin"/>
+					<xs:enumeration value="navajowhite"/>
+					<xs:enumeration value="navy"/>
+					<xs:enumeration value="oldlace"/>
+					<xs:enumeration value="olive"/>
+					<xs:enumeration value="olivedrab"/>
+					<xs:enumeration value="orange"/>
+					<xs:enumeration value="orangered"/>
+					<xs:enumeration value="orchid"/>
+					<xs:enumeration value="palegoldenrod"/>
+					<xs:enumeration value="palegreen"/>
+					<xs:enumeration value="paleturquoise"/>
+					<xs:enumeration value="palevioletred"/>
+					<xs:enumeration value="papayawhip"/>
+					<xs:enumeration value="peachpuff"/>
+					<xs:enumeration value="peru"/>
+					<xs:enumeration value="pink"/>
+					<xs:enumeration value="plum"/>
+					<xs:enumeration value="powderblue"/>
+					<xs:enumeration value="purple"/>
+					<xs:enumeration value="red"/>
+					<xs:enumeration value="rosybrown"/>
+					<xs:enumeration value="royalblue"/>
+					<xs:enumeration value="saddlebrown"/>
+					<xs:enumeration value="salmon"/>
+					<xs:enumeration value="sandybrown"/>
+					<xs:enumeration value="seagreen"/>
+					<xs:enumeration value="seashell"/>
+					<xs:enumeration value="sienna"/>
+					<xs:enumeration value="silver"/>
+					<xs:enumeration value="skyblue"/>
+					<xs:enumeration value="slateblue"/>
+					<xs:enumeration value="slategray"/>
+					<xs:enumeration value="slategrey"/>
+					<xs:enumeration value="snow"/>
+					<xs:enumeration value="springgreen"/>
+					<xs:enumeration value="steelblue"/>
+					<xs:enumeration value="tan"/>
+					<xs:enumeration value="teal"/>
+					<xs:enumeration value="thistle"/>
+					<xs:enumeration value="tomato"/>
+					<xs:enumeration value="turquoise"/>
+					<xs:enumeration value="violet"/>
+					<xs:enumeration value="wheat"/>
+					<xs:enumeration value="white"/>
+					<xs:enumeration value="whitesmoke"/>
+					<xs:enumeration value="yellow"/>
+					<xs:enumeration value="yellowgreen"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+	<xs:simpleType name="opacity">
+		<xs:restriction base="xs:float">
+			<xs:minInclusive value="0.0"/>
+			<xs:maxInclusive value="1.0"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
+
