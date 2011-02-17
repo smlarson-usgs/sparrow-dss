@@ -16,6 +16,7 @@ import gov.usgswim.sparrow.action.LoadReachesInBBox;
 import gov.usgswim.sparrow.action.PredictionContextHandler;
 import gov.usgswim.sparrow.action.SavePredefinedSession;
 import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
+import gov.usgswim.sparrow.cachefactory.NSDataSetFactory;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
@@ -546,12 +547,17 @@ public class SharedApplication  {
 	
 	
 	//NSDataSet Cache
-	public NSDataSet getNSDataSet(PredictionContext context) {
+	public NSDataSet getNSDataSet(PredictionContext context) throws Exception {
 		return getNSDataSet(context, false);
 	}
 
-	public NSDataSet getNSDataSet(PredictionContext context, boolean quiet) {
-		return (NSDataSet) NSDataSet.get(context, quiet);
+	public NSDataSet getNSDataSet(PredictionContext context, boolean quiet) throws Exception {
+		//rm all reference to the cache, since it seems completely broken.
+		//return (NSDataSet) NSDataSet.get(context, quiet);
+
+		NSDataSetFactory factory = new NSDataSetFactory();
+		NSDataSet dataset = (NSDataSet) factory.createEntry(context);
+		return dataset;
 	}
 
 
