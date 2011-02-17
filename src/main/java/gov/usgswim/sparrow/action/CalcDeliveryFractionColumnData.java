@@ -19,7 +19,7 @@ import java.util.Map;
  * @author eeverman
  *
  */
-public class CalcDeliveryFractionDataColumn extends Action<ColumnData> {
+public class CalcDeliveryFractionColumnData extends Action<ColumnData> {
 
 	protected PredictData predictData;
 	protected HashMap<Integer, DeliveryReach> deliveryFractionHash;

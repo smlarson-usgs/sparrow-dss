@@ -23,7 +23,7 @@ public enum ConfiguredCache{
 	// non-distributed caches
 	PredictData(false, new PredictDataFactory()),
 	DeliveryFractionHash(false, new DeliveryFractionHashFactory()),
-	DeliveryFraction(false, new DeliveryFractionFactory()),
+	DeliveryFraction(false, new DeliveryFractionColumnDataFactory()),
 	NSDataSet(false, new NSDataSetFactory()),
 	ComparisonResult(false, new ComparisonResultFactory()),
 	AnalysisResult(false, new AnalysisResultFactory()),

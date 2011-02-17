@@ -178,7 +178,7 @@ public class NSDataSetBuilderTest extends SparrowUnitTestBaseClass {
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
 		CalcDeliveryFractionHash hashAction = new CalcDeliveryFractionHash();
-		CalcDeliveryFractionDataColumn delAction = new CalcDeliveryFractionDataColumn();
+		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
 		hashAction.setPredictData(predictData);
 		hashAction.setTargetReachIds(targets.asSet());

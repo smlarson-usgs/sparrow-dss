@@ -120,7 +120,7 @@ public class PerformanceLongRunTest extends SparrowDBTestBaseClass {
 		
 		
 		CalcDeliveryFractionHash hashAction = new CalcDeliveryFractionHash();
-		CalcDeliveryFractionDataColumn delAction = new CalcDeliveryFractionDataColumn();
+		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
 		hashAction.setPredictData(predictData);
 		hashAction.setTargetReachIds(targets.asSet());

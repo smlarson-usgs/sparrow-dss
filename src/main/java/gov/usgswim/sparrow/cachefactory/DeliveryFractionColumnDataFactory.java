@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.action.CalcDeliveryFractionDataColumn;
+import gov.usgswim.sparrow.action.CalcDeliveryFractionColumnData;
 import gov.usgswim.sparrow.action.DeliveryReach;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -18,7 +18,7 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
  *
  * @author eeverman
  */
-public class DeliveryFractionFactory implements CacheEntryFactory {
+public class DeliveryFractionColumnDataFactory implements CacheEntryFactory {
 
 	@Override
 	public ColumnData createEntry(Object terminalReaches) throws Exception {
@@ -30,7 +30,7 @@ public class DeliveryFractionFactory implements CacheEntryFactory {
 		HashMap<Integer, DeliveryReach> deliveryFractionHash =
 			SharedApplication.getInstance().getDeliveryFractionHash(targets);
 		
-		CalcDeliveryFractionDataColumn action = new CalcDeliveryFractionDataColumn();
+		CalcDeliveryFractionColumnData action = new CalcDeliveryFractionColumnData();
 		action.setPredictData(predictData);
 		action.setDeliveryFractionHash(deliveryFractionHash);
 		
