@@ -61,7 +61,7 @@
 	<servlet>
 		<servlet-name>oms</servlet-name>
 		<servlet-class>oracle.lbs.mapserver.oms</servlet-class>
-		<load-on-startup>1</load-on-startup>
+		<load-on-startup>2</load-on-startup>
 
 		<!-- role name used in code -->
 		<security-role-ref>
@@ -73,22 +73,22 @@
 	<servlet>
 		<servlet-name>foi</servlet-name>
 		<servlet-class>oracle.lbs.foi.FOIServlet</servlet-class>
-		<load-on-startup>2</load-on-startup>
+		<load-on-startup>3</load-on-startup>
 	</servlet>
 	<servlet>
 		<servlet-name>mcs</servlet-name>
 		<servlet-class>oracle.lbs.mapcache.MCSServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
+		<load-on-startup>2</load-on-startup>
 	</servlet>
 	<servlet>
 		<servlet-name>MVProxy</servlet-name>
 		<servlet-class>oracle.mapviewer.proxy.MVProxyServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
+		<load-on-startup>2</load-on-startup>
 	</servlet>
 	<servlet>
 		<servlet-name>mcsad</servlet-name>
 		<servlet-class>oracle.lbs.mapcache.AdminServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
+		<load-on-startup>2</load-on-startup>
 
 		<!-- role name used in code -->
 		<security-role-ref>
@@ -99,7 +99,7 @@
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
+		<load-on-startup>2</load-on-startup>
 	</servlet>
 	<servlet>
 		<servlet-name>ReturnLocaleString</servlet-name>
