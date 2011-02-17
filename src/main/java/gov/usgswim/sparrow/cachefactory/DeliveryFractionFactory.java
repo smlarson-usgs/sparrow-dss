@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.action.CalcDeliveryFraction;
+import gov.usgswim.sparrow.action.CalcDeliveryFractionDataColumn;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -32,7 +32,7 @@ public class DeliveryFractionFactory implements CacheEntryFactory {
 			getPredictData(new Long(targets.getModelID()));
 		Set<Long> targetReachIds = targets.asSet();
 		
-		CalcDeliveryFraction action = new CalcDeliveryFraction();
+		CalcDeliveryFractionDataColumn action = new CalcDeliveryFractionDataColumn();
 		action.setPredictData(predictData);
 		action.setTargetReachIds(targetReachIds);
 		

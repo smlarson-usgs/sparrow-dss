@@ -79,7 +79,7 @@ public class PerformanceLongRunTest extends SparrowDBTestBaseClass {
 		PredictResultFactory prFactory = new PredictResultFactory();
 		AdjustmentGroups emptyAdjustments = new AdjustmentGroups(TEST_MODEL_ID);
 		PredictResult predictResults = null;
-		CalcDeliveryFraction delAction = new CalcDeliveryFraction();
+		CalcDeliveryFractionDataColumn delAction = new CalcDeliveryFractionDataColumn();
 		DataColumn dataColumn = null;
 		
 		//Run the prediction

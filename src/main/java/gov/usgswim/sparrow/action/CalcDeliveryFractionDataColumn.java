@@ -28,7 +28,7 @@ import java.util.Set;
  * @author eeverman
  *
  */
-public class CalcDeliveryFraction extends Action<ColumnData> {
+public class CalcDeliveryFractionDataColumn extends Action<ColumnData> {
 
 	protected PredictData predictData;
 	protected Set<Long> targetReachIds;

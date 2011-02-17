@@ -89,7 +89,7 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		targetList.add(9682L);
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
-		CalcDeliveryFraction action = new CalcDeliveryFraction();
+		CalcDeliveryFractionDataColumn action = new CalcDeliveryFractionDataColumn();
 		action.setPredictData(predictData);
 		action.setTargetReachIds(targets.asSet());
 		ColumnData deliveryFrac = action.run();
@@ -150,7 +150,7 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		targetList.add(9674L);
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
-		CalcDeliveryFraction action = new CalcDeliveryFraction();
+		CalcDeliveryFractionDataColumn action = new CalcDeliveryFractionDataColumn();
 		action.setPredictData(predictData);
 		action.setTargetReachIds(targets.asSet());
 		ColumnData deliveryFrac = action.run();
@@ -206,7 +206,7 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		targetList.add(9674L);
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
-		CalcDeliveryFraction action = new CalcDeliveryFraction();
+		CalcDeliveryFractionDataColumn action = new CalcDeliveryFractionDataColumn();
 		action.setPredictData(predictData);
 		action.setTargetReachIds(targets.asSet());
 		ColumnData deliveryFrac = action.run();
@@ -260,7 +260,7 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		targetList.add(9687L);
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
-		CalcDeliveryFraction action = new CalcDeliveryFraction();
+		CalcDeliveryFractionDataColumn action = new CalcDeliveryFractionDataColumn();
 		action.setPredictData(predictData);
 		action.setTargetReachIds(targets.asSet());
 		ColumnData deliveryFrac = action.run();
