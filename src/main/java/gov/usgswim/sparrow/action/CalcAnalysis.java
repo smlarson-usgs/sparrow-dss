@@ -21,7 +21,7 @@ import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
-import gov.usgswim.sparrow.request.CatchmentArea;
+import gov.usgswim.sparrow.request.CatchmentAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
 
@@ -213,7 +213,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 						SingleColumnCoefDataTable decayedFlux = 
 							new SingleColumnCoefDataTable(result, instDecay, dataColIndex, null);
 						
-						CatchmentArea catchArea = new CatchmentArea(context.getModelID(), HucLevel.HUC_NONE, false);
+						CatchmentAreaRequest catchArea = new CatchmentAreaRequest(context.getModelID(), HucLevel.HUC_NONE, false);
 						DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(catchArea);
 						ColumnData catchmentAreaColumn = new ColumnFromTable(catchmentAreaTable, 1);
 						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(
@@ -274,7 +274,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 							DelYieldCa.setDescription(getDataSeriesProperty(type, true));
 							DelYieldCa.setUnits(SparrowUnits.KG_PER_SQR_KM_PER_YEAR.getUserName());
 							
-							CatchmentArea ca = new CatchmentArea(context.getModelID(), HucLevel.HUC_NONE, false);
+							CatchmentAreaRequest ca = new CatchmentAreaRequest(context.getModelID(), HucLevel.HUC_NONE, false);
 							DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(ca);
 							ColumnData catchmentAreaColumn = new ColumnFromTable(catchmentAreaTable, 1);
 							SingleColumnCoefDataTable incDeliveredYield = new SingleColumnCoefDataTable(
@@ -330,7 +330,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 					}
 					break;
 				case catch_area:
-					CatchmentArea ca = new CatchmentArea(context.getModelID(), HucLevel.HUC_NONE, false);
+					CatchmentAreaRequest ca = new CatchmentAreaRequest(context.getModelID(), HucLevel.HUC_NONE, false);
 					dataTable = SharedApplication.getInstance().getCatchmentAreas(ca);
 					dataColIndex = 1;
 					break;

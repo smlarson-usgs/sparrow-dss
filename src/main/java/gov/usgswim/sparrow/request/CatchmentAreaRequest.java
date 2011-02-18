@@ -8,14 +8,15 @@ import gov.usgswim.sparrow.datatable.HucLevel;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
- * Simple bean class to hold information for a catchment area
- * request. This class serves as a key to cached CatchmentArea.
+ * A request for a catchment area table.
+ * 
+ * The request indicates which model and an aggregation type.
  * 
  * @author klangsto
  * 
  */
 @Immutable
-public class CatchmentArea implements Serializable{
+public class CatchmentAreaRequest implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -23,7 +24,7 @@ public class CatchmentArea implements Serializable{
 	private final HucLevel hucLevel;
 	private final boolean cumulative;
 
-	public CatchmentArea(long modelID, HucLevel hucLevel, boolean cumulative) {
+	public CatchmentAreaRequest(long modelID, HucLevel hucLevel, boolean cumulative) {
 		this.modelID = modelID;
 		this.hucLevel = hucLevel;
 		this.cumulative = cumulative;
@@ -43,7 +44,7 @@ public class CatchmentArea implements Serializable{
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof CatchmentArea) {
+		if (obj instanceof CatchmentAreaRequest) {
 			return obj.hashCode() == hashCode();
 		}
 		return false;

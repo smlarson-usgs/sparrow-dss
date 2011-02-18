@@ -690,11 +690,11 @@ public class SharedApplication  {
 	}
 
 	//Catchment Area Cache
-	public DataTable getCatchmentAreas(CatchmentArea req) {
+	public DataTable getCatchmentAreas(CatchmentAreaRequest req) {
 		return getCatchmentAreas(req, false);
 	}
 	
-	public DataTable getCatchmentAreas(CatchmentArea req, boolean quiet) {
+	public DataTable getCatchmentAreas(CatchmentAreaRequest req, boolean quiet) {
 		return (DataTable) CatchmentAreas.get(req, quiet);
 	}
 

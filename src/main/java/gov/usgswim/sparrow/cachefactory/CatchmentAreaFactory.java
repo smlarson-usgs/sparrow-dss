@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.action.LoadUnitAreas;
-import gov.usgswim.sparrow.request.CatchmentArea;
+import gov.usgswim.sparrow.request.CatchmentAreaRequest;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 /**
@@ -15,7 +15,7 @@ public class CatchmentAreaFactory implements CacheEntryFactory {
 
 	@Override
 	public DataTable createEntry(Object inCatchmentArea) throws Exception {
-		CatchmentArea catchmentArea = (CatchmentArea)inCatchmentArea;
+		CatchmentAreaRequest catchmentArea = (CatchmentAreaRequest)inCatchmentArea;
 		DataTable dt = null;
 		LoadUnitAreas lua = new LoadUnitAreas(
 				catchmentArea.getModelID(), catchmentArea.getHucLevel(), catchmentArea.getCumulative());
