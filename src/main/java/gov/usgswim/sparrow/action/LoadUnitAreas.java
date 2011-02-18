@@ -13,10 +13,9 @@ import java.sql.ResultSet;
 
 
 /**
- *  Loads a table containing reach attributes.
-
+ *  Loads a table containing catchment areas.
+ *  
  * @author eeverman
- *
  */
 public class LoadUnitAreas extends Action<DataTable> {
 	
