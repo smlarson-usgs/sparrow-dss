@@ -12,7 +12,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	 <netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
+		<netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
 	</properties>
 
 	<scm>
@@ -21,45 +21,20 @@
 
 	<distributionManagement>
 		<repository>
-			<id>cida-sparrow-dss-service-releases</id>
-			<name>CIDA Sparrow DSS Service Releases</name>
-			<url>http://internal.cida.usgs.gov/nexus/content/repositories/cida-sparrow-dss-service-releases</url>
-			<!-- may change to URL below in future -->
-			<!--			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-qw-releases</url>-->
+			<id>cida-sparrow-dss-releases</id>
+			<name>CIDA Sparrow DSS Releases</name>
+			<url>http://internal.cida.usgs.gov/nexus/content/repositories/cida-sparrow-dss-releases</url>
 		</repository>
 		<snapshotRepository>
-			<id>cida-sparrow-dss-service-snapshots</id>
-			<name>CIDA Sparrow DSS Service Snapshots</name>
-			<url>http://internal.cida.usgs.gov/nexus/content/repositories/cida-sparrow-dss-service-snapshots</url>
-			<!-- may change to URL below in future -->
-			<!--			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-qw-snapshots</url>-->
+			<id>cida-sparrow-dss-snapshots</id>
+			<name>CIDA Sparrow DSS Snapshots</name>
+			<url>http://internal.cida.usgs.gov/nexus/content/repositories/cida-sparrow-dss-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
 	<build>
 		<finalName>sparrow_mv</finalName>
-		<!-- <testSourceDirectory>/src/test/unit</testSourceDirectory> -->
 		<plugins>
-<!--			      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <version>1.5</version>
-        <executions>
-          <execution>
-            <id>add-test-source</id>
-            <phase>generate-test-sources</phase>
-            <goals>
-              <goal>add-test-source</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <source>src/test/java/unit</source>
-                <source>src/test/java/integ</source>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>-->
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.1</version>
@@ -105,7 +80,14 @@
 	</build>
 
 	<repositories>
-
+		<repository>
+		    <id>cida-sparrow-dss-thirdparty</id>
+    		<url>http://internal.cida.usgs.gov/nexus/content/repositories/cida-sparrow-dss-thirdparty</url>
+    	</repository>
+    	<repository>
+    	    <id>cida-thirdparty</id>
+    		<url>http://internal.cida.usgs.gov/nexus/content/repositories/cida-thirdparty</url>
+    	</repository><!--
 		<repository>
 			<id>repo1.maven.org/maven2</id>
 			<url>http://repo2.maven.org/maven2</url>
@@ -114,7 +96,7 @@
 			<id>cida-maven-central</id>
 			<url>http://internal.cida.usgs.gov/nexus/content/repositories/central/</url>
 		</repository>
-		<!--
+		--><!--
 		<repository>
 			<id>cida-qw-releases</id>
 			<url>http://http://internal.cida.usgs.gov/nexus/content/repositories/central</url>
@@ -123,14 +105,14 @@
 	</repositories>
 
 	<dependencies>
-		<!-- 
-		The following were skipped and assumed to be not used:
-		canoo/webtest 2.6
-		dbunit 2.4.5
-		google-collect 1.0-rc2
-		tigris/svnant 1.3.0
-		jamonapi 2.7 (I can find 2.7 versions, but not from trusted sources)
-		-->
+	
+		<!--  Project library, created separately -->
+		<dependency>
+			<groupId>gov.usgs.cida</groupId>
+			<artifactId>datatable</artifactId>
+			<version>1.1.5-SNAPSHOT</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
@@ -149,11 +131,7 @@
 			<!-- was 3.2.? -->
 			<version>3.2.7</version>
 		</dependency>
-		<dependency>
-			<groupId>gov.usgs.cida</groupId>
-			<artifactId>datatable</artifactId>
-			<version>1.1.5-SNAPSHOT</version>
-		</dependency>
+
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
@@ -187,7 +165,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc</artifactId>
+			<artifactId>ojdbc6_g</artifactId>
 			<version>11.2.0.2.0-1</version>
 			<type>jar</type>
 			<scope>provided</scope>
