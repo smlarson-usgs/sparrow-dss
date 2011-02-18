@@ -4,7 +4,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.SparrowUnits;
-import gov.usgswim.sparrow.datatable.HucLevel;
+import gov.usgswim.sparrow.datatable.UnitAreaType;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 
@@ -20,12 +20,12 @@ import java.sql.ResultSet;
 public class LoadUnitAreas extends Action<DataTable> {
 	
 	protected long modelId;
-	protected HucLevel hucLevel = HucLevel.HUC_NONE;	//Default to individual reaches
+	protected UnitAreaType hucLevel = UnitAreaType.HUC_NONE;	//Default to individual reaches
 	protected boolean cumulative = false;
 	
 	
 	
-	public LoadUnitAreas(long modelId, HucLevel hucLevel, boolean cumulative) {
+	public LoadUnitAreas(long modelId, UnitAreaType hucLevel, boolean cumulative) {
 		super();
 		this.modelId = modelId;
 		this.cumulative = cumulative;
@@ -102,16 +102,16 @@ public class LoadUnitAreas extends Action<DataTable> {
 
 
 
-	public HucLevel getHucLevel() {
+	public UnitAreaType getHucLevel() {
 		return hucLevel;
 	}
 
 
 
-	public void setHucLevel(HucLevel hucLevel) {
+	public void setHucLevel(UnitAreaType hucLevel) {
 		
 		
-		if (! hucLevel.equals(HucLevel.HUC_NONE)) {
+		if (! hucLevel.equals(UnitAreaType.HUC_NONE)) {
 			throw new IllegalArgumentException("Only HUC_NONE is currently supported");
 		}
 		

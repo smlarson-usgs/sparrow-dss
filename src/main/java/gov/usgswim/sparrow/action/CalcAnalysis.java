@@ -10,7 +10,7 @@ import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.UncertaintySeries;
 import gov.usgswim.sparrow.datatable.ColumnAttribsBuilder;
-import gov.usgswim.sparrow.datatable.HucLevel;
+import gov.usgswim.sparrow.datatable.UnitAreaType;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.datatable.SingleColumnOverrideDataTable;
@@ -213,7 +213,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 						SingleColumnCoefDataTable decayedFlux = 
 							new SingleColumnCoefDataTable(result, instDecay, dataColIndex, null);
 						
-						CatchmentAreaRequest catchArea = new CatchmentAreaRequest(context.getModelID(), HucLevel.HUC_NONE, false);
+						CatchmentAreaRequest catchArea = new CatchmentAreaRequest(context.getModelID(), UnitAreaType.HUC_NONE, false);
 						DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(catchArea);
 						ColumnData catchmentAreaColumn = new ColumnFromTable(catchmentAreaTable, 1);
 						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(
@@ -274,7 +274,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 							DelYieldCa.setDescription(getDataSeriesProperty(type, true));
 							DelYieldCa.setUnits(SparrowUnits.KG_PER_SQR_KM_PER_YEAR.getUserName());
 							
-							CatchmentAreaRequest ca = new CatchmentAreaRequest(context.getModelID(), HucLevel.HUC_NONE, false);
+							CatchmentAreaRequest ca = new CatchmentAreaRequest(context.getModelID(), UnitAreaType.HUC_NONE, false);
 							DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(ca);
 							ColumnData catchmentAreaColumn = new ColumnFromTable(catchmentAreaTable, 1);
 							SingleColumnCoefDataTable incDeliveredYield = new SingleColumnCoefDataTable(
@@ -330,7 +330,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 					}
 					break;
 				case catch_area:
-					CatchmentAreaRequest ca = new CatchmentAreaRequest(context.getModelID(), HucLevel.HUC_NONE, false);
+					CatchmentAreaRequest ca = new CatchmentAreaRequest(context.getModelID(), UnitAreaType.HUC_NONE, false);
 					dataTable = SharedApplication.getInstance().getCatchmentAreas(ca);
 					dataColIndex = 1;
 					break;

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.SparrowDBTestBaseClass;
 import gov.usgswim.sparrow.SparrowUnits;
-import gov.usgswim.sparrow.datatable.HucLevel;
+import gov.usgswim.sparrow.datatable.UnitAreaType;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 
@@ -26,7 +26,7 @@ public class LoadUnitAreasLongRunTest extends SparrowDBTestBaseClass {
 	public void testLoadUnitAreasSetters() throws Exception {
 		
 		LoadUnitAreas lua = new LoadUnitAreas();
-		assertEquals(HucLevel.HUC_NONE, lua.getHucLevel());
+		assertEquals(UnitAreaType.HUC_NONE, lua.getHucLevel());
 		assertEquals(false, lua.isCumulative());
 		lua.setCumulative(true);
 		assertEquals(true, lua.isCumulative());
@@ -76,13 +76,13 @@ public class LoadUnitAreasLongRunTest extends SparrowDBTestBaseClass {
 	@Test
 	public void testLoadUnitAreasData() throws Exception {
 		
-		LoadUnitAreas lua = new LoadUnitAreas(50, HucLevel.HUC_NONE, false);
+		LoadUnitAreas lua = new LoadUnitAreas(50, UnitAreaType.HUC_NONE, false);
 		DataTable dt = lua.run();
 		assertEquals(8321, dt.getRowCount());
 		int row = dt.findFirst(0, 9388);
 		assertEquals((Double) 100.91, dt.getDouble(row, 1));
 		
-		lua = new LoadUnitAreas(50, HucLevel.HUC_NONE, true);
+		lua = new LoadUnitAreas(50, UnitAreaType.HUC_NONE, true);
 		dt = lua.run();
 		assertEquals(8321, dt.getRowCount());
 		row = dt.findFirst(0, 9390);

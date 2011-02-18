@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.request;
 import java.io.Serializable;
 
 import gov.usgswim.Immutable;
-import gov.usgswim.sparrow.datatable.HucLevel;
+import gov.usgswim.sparrow.datatable.UnitAreaType;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
@@ -21,10 +21,10 @@ public class CatchmentAreaRequest implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	private final long modelID;
-	private final HucLevel hucLevel;
+	private final UnitAreaType hucLevel;
 	private final boolean cumulative;
 
-	public CatchmentAreaRequest(long modelID, HucLevel hucLevel, boolean cumulative) {
+	public CatchmentAreaRequest(long modelID, UnitAreaType hucLevel, boolean cumulative) {
 		this.modelID = modelID;
 		this.hucLevel = hucLevel;
 		this.cumulative = cumulative;
@@ -34,7 +34,7 @@ public class CatchmentAreaRequest implements Serializable{
 		return modelID;
 	}
 
-	public HucLevel getHucLevel() {
+	public UnitAreaType getHucLevel() {
 		return hucLevel;
 	}
 	

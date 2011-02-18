@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.datatable;
 
 
-public enum HucLevel implements NamedEnum<HucLevel> {
+public enum UnitAreaType implements NamedEnum<UnitAreaType> {
 	HUC_NONE(null, "none", "Not Defined"),
 	HUC_REACH(null, "reach", "No huc leve - individual reaches"),
 	HUC_2(2, "huc_2", "HUC Level 2"),
@@ -13,7 +13,7 @@ public enum HucLevel implements NamedEnum<HucLevel> {
 	private String name;
 	private String description;
 	
-	HucLevel(Integer level, String name, String description) {
+	UnitAreaType(Integer level, String name, String description) {
 		this.level = level;
 		this.name = name;
 		this.description = description;
@@ -28,8 +28,8 @@ public enum HucLevel implements NamedEnum<HucLevel> {
 	}
 
 	@Override
-	public HucLevel fromString(String name) {
-		for (HucLevel val : values()) {
+	public UnitAreaType fromString(String name) {
+		for (UnitAreaType val : values()) {
 			if (val.name.equals(name)) {
 				return val;
 			}
@@ -38,8 +38,8 @@ public enum HucLevel implements NamedEnum<HucLevel> {
 	}
 	
 	@Override
-	public HucLevel fromStringIgnoreCase(String name) {
-		for (HucLevel val : values()) {
+	public UnitAreaType fromStringIgnoreCase(String name) {
+		for (UnitAreaType val : values()) {
 			if (val.name.equalsIgnoreCase(name)) {
 				return val;
 			}
@@ -48,7 +48,7 @@ public enum HucLevel implements NamedEnum<HucLevel> {
 	}
 
 	@Override
-	public HucLevel getDefault() {
+	public UnitAreaType getDefault() {
 		return HUC_NONE;
 	}
 	

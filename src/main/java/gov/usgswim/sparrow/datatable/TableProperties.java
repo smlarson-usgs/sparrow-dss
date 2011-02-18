@@ -5,7 +5,7 @@ import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
 
 public enum TableProperties implements NamedEnum<TableProperties>{
-	ROW_LEVEL("row_level", HucLevel.class, "Each row in the table represents a reach, a huc2/4/6/8, other?"),
+	ROW_LEVEL("row_level", UnitAreaType.class, "Each row in the table represents a reach, a huc2/4/6/8, other?"),
 	CONSTITUENT("constituent", null, "Name of the thing being measured."),
 	PRECISION("precision", null, "Number of significant figures prefered for display."),
 	DATA_TYPE("data_type", BaseDataSeriesType.class, "A broad classification of the data is incremental, total, or other."),
