@@ -10,18 +10,18 @@ import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.UncertaintySeries;
 import gov.usgswim.sparrow.datatable.ColumnAttribsBuilder;
-import gov.usgswim.sparrow.datatable.UnitAreaType;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.datatable.SingleColumnOverrideDataTable;
 import gov.usgswim.sparrow.datatable.SingleValueDoubleColumnData;
 import gov.usgswim.sparrow.datatable.StdErrorEstTable;
+import gov.usgswim.sparrow.domain.UnitAreaType;
 import gov.usgswim.sparrow.parser.Analysis;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
-import gov.usgswim.sparrow.request.CatchmentAreaRequest;
+import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
 
@@ -213,7 +213,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 						SingleColumnCoefDataTable decayedFlux = 
 							new SingleColumnCoefDataTable(result, instDecay, dataColIndex, null);
 						
-						CatchmentAreaRequest catchArea = new CatchmentAreaRequest(context.getModelID(), UnitAreaType.HUC_NONE, false);
+						UnitAreaRequest catchArea = new UnitAreaRequest(context.getModelID(), UnitAreaType.HUC_NONE, false);
 						DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(catchArea);
 						ColumnData catchmentAreaColumn = new ColumnFromTable(catchmentAreaTable, 1);
 						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(
@@ -274,7 +274,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 							DelYieldCa.setDescription(getDataSeriesProperty(type, true));
 							DelYieldCa.setUnits(SparrowUnits.KG_PER_SQR_KM_PER_YEAR.getUserName());
 							
-							CatchmentAreaRequest ca = new CatchmentAreaRequest(context.getModelID(), UnitAreaType.HUC_NONE, false);
+							UnitAreaRequest ca = new UnitAreaRequest(context.getModelID(), UnitAreaType.HUC_NONE, false);
 							DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(ca);
 							ColumnData catchmentAreaColumn = new ColumnFromTable(catchmentAreaTable, 1);
 							SingleColumnCoefDataTable incDeliveredYield = new SingleColumnCoefDataTable(
@@ -330,7 +330,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 					}
 					break;
 				case catch_area:
-					CatchmentAreaRequest ca = new CatchmentAreaRequest(context.getModelID(), UnitAreaType.HUC_NONE, false);
+					UnitAreaRequest ca = new UnitAreaRequest(context.getModelID(), UnitAreaType.HUC_NONE, false);
 					dataTable = SharedApplication.getInstance().getCatchmentAreas(ca);
 					dataColIndex = 1;
 					break;

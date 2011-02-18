@@ -1,4 +1,6 @@
-package gov.usgswim.sparrow.datatable;
+package gov.usgswim.sparrow.domain;
+
+import gov.usgswim.sparrow.datatable.NamedEnum;
 
 
 public enum UnitAreaType implements NamedEnum<UnitAreaType> {
