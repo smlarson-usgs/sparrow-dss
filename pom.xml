@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
@@ -35,16 +34,16 @@
 	<build>
 		<finalName>sparrow_mv</finalName>
 		<plugins>
-		      <plugin>
-		        <groupId>org.apache.maven.plugins</groupId>
-		        <artifactId>maven-surefire-plugin</artifactId>
-		        <version>2.7.2</version>
-		        <configuration>
-		          <excludes>
-		            <exclude>**/*LongRunTest.java</exclude>
-		          </excludes>
-		        </configuration>
-		      </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.7.2</version>
+				<configuration>
+					<excludes>
+						<exclude>**/*LongRunTest.java</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.1</version>
@@ -91,38 +90,27 @@
 
 	<repositories>
 		<repository>
-		    <id>cida-sparrow-dss-thirdparty</id>
-    		<url>http://internal.cida.usgs.gov/nexus/content/repositories/cida-sparrow-dss-thirdparty</url>
-    	</repository>
-    	<repository>
-    	    <id>cida-thirdparty</id>
-    		<url>http://internal.cida.usgs.gov/nexus/content/repositories/cida-thirdparty</url>
-    	</repository><!--
-		<repository>
-			<id>repo1.maven.org/maven2</id>
-			<url>http://repo2.maven.org/maven2</url>
+			<id>cida-sparrow-dss-thirdparty</id>
+			<url>http://internal.cida.usgs.gov/nexus/content/repositories/cida-sparrow-dss-thirdparty</url>
 		</repository>
 		<repository>
-			<id>cida-maven-central</id>
-			<url>http://internal.cida.usgs.gov/nexus/content/repositories/central/</url>
-		</repository>
-		--><!--
-		<repository>
-			<id>cida-qw-releases</id>
-			<url>http://http://internal.cida.usgs.gov/nexus/content/repositories/central</url>
-		</repository>
-		-->
+			<id>cida-thirdparty</id>
+			<url>http://internal.cida.usgs.gov/nexus/content/repositories/cida-thirdparty</url>
+		</repository><!-- <repository> <id>repo1.maven.org/maven2</id> <url>http://repo2.maven.org/maven2</url> 
+			</repository> <repository> <id>cida-maven-central</id> <url>http://internal.cida.usgs.gov/nexus/content/repositories/central/</url> 
+			</repository> --><!-- <repository> <id>cida-qw-releases</id> <url>http://http://internal.cida.usgs.gov/nexus/content/repositories/central</url> 
+			</repository> -->
 	</repositories>
 
 	<dependencies>
-	
-		<!--  Project library, created separately -->
+
+		<!-- Project library, created separately -->
 		<dependency>
 			<groupId>gov.usgs.cida</groupId>
 			<artifactId>datatable</artifactId>
 			<version>1.1.5-SNAPSHOT</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
@@ -159,8 +147,8 @@
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.6.1</version>
 		</dependency>
-		
-		<!--  These are std jars provided by J2EE containers -->
+
+		<!-- These are std jars provided by J2EE containers -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -182,10 +170,10 @@
 		</dependency>
 		<dependency>
 			<!-- Used for jndi naming services -->
-				<groupId>org.apache.tomcat</groupId>
-				<artifactId>catalina</artifactId>
-				<version>6.0.29</version>
-				<scope>test</scope>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>catalina</artifactId>
+			<version>6.0.29</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>httpunit</groupId>
@@ -194,12 +182,12 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-		<!-- this is an optional dep of httpunit, but we need it for the tests -->
-      <groupId>rhino</groupId>
-      <artifactId>js</artifactId>
-      <version>1.6R5</version>
-      <scope>test</scope>
-    </dependency>
+			<!-- this is an optional dep of httpunit, but we need it for the tests -->
+			<groupId>rhino</groupId>
+			<artifactId>js</artifactId>
+			<version>1.6R5</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>xmlunit</groupId>
 			<artifactId>xmlunit</artifactId>
@@ -214,15 +202,15 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-		<!-- Required by XMLUnit to support out-of-order element comparison -->
+			<!-- Required by XMLUnit to support out-of-order element comparison -->
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
 			<version>2.6.2</version>
 			<scope>test</scope>
 		</dependency>
 
-		<!-- This unique dep. is an XML parser that MapViewer requires, but is not
-		distributed w/ MapViewer (they assume you will be running on OC4J.	-->
+		<!-- This unique dep. is an XML parser that MapViewer requires, but is 
+			not distributed w/ MapViewer (they assume you will be running on OC4J. -->
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>xmlparserv2</artifactId>
@@ -232,10 +220,8 @@
 		</dependency>
 
 
-		<!--
-		These two deps are provided when mapviewer is overlayed, so they are just
-		required when compiling and testing.
-		-->
+		<!-- These two deps are provided when mapviewer is overlayed, so they are 
+			just required when compiling and testing. -->
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>sdoapi</artifactId>
@@ -250,8 +236,8 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-		<!-- this special dep. is only used for overlaying the wars.
-		It is not placed on the classpath -->
+		<!-- this special dep. is only used for overlaying the wars. It is not 
+			placed on the classpath -->
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>mapviewer</artifactId>
