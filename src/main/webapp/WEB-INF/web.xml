@@ -185,6 +185,10 @@
 		<servlet-class>gov.usgswim.sparrow.service.metadata.SavedSessionService</servlet-class>
 	</servlet>
 	<servlet>
+		<servlet-name>HUCService</servlet-name>
+		<servlet-class>gov.usgswim.sparrow.service.HUCService</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>HelpService</servlet-name>
 		<servlet-class>gov.usgswim.sparrow.service.help.HelpService</servlet-class>
 	</servlet>
@@ -283,6 +287,10 @@
 	<servlet-mapping>
 		<servlet-name>SessionService</servlet-name>
 		<url-pattern>/sp_session/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>HUCService</servlet-name>
+		<url-pattern>/huc/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>IndividualReachPredictService</servlet-name>

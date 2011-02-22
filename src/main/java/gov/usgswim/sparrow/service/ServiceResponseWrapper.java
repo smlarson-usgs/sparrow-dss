@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.service;
 
+import gov.usgswim.sparrow.domain.HUC;
 import gov.usgswim.sparrow.domain.PredefinedSession;
 
 import java.io.PrintStream;
@@ -21,7 +22,7 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
  * @param <T>
  */
 @XStreamAlias("ServiceResponseWrapper")
-@XStreamInclude({ServiceResponseEntityList.class, PredefinedSession.class})
+@XStreamInclude({ServiceResponseEntityList.class, PredefinedSession.class, HUC.class})
 public class ServiceResponseWrapper {
 	
 	//Transient response flags used for serialization

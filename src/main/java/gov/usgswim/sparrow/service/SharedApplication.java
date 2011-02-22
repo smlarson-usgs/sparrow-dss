@@ -19,6 +19,7 @@ import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
 import gov.usgswim.sparrow.cachefactory.NSDataSetFactory;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.domain.HUC;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.ModelBBox;
 import gov.usgswim.sparrow.domain.SparrowModel;
@@ -690,12 +691,21 @@ public class SharedApplication  {
 	}
 
 	//Catchment Area Cache
-	public DataTable getCatchmentAreas(CatchmentAreaRequest req) {
+	public DataTable getCatchmentAreas(UnitAreaRequest req) {
 		return getCatchmentAreas(req, false);
 	}
 	
-	public DataTable getCatchmentAreas(CatchmentAreaRequest req, boolean quiet) {
+	public DataTable getCatchmentAreas(UnitAreaRequest req, boolean quiet) {
 		return (DataTable) CatchmentAreas.get(req, quiet);
+	}
+	
+	//HUC
+	public HUC getHUC(HUCRequest req) {
+		return getHUC(req, false);
+	}
+	
+	public HUC getHUC(HUCRequest req, boolean quiet) {
+		return (HUC) HUC.get(req, quiet);
 	}
 
 	//Flux (Stream Flow) Cache

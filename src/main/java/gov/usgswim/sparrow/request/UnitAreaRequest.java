@@ -16,7 +16,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * 
  */
 @Immutable
-public class UnitAreaRequest implements Serializable{
+public class UnitAreaRequest implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	

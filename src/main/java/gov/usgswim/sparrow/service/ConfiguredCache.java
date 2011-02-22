@@ -1,6 +1,3 @@
-/**
- * 
- */
 package gov.usgswim.sparrow.service;
 
 import java.util.List;
@@ -11,6 +8,11 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
+/**
+ * Enum for all caches that also adds the factories during init.
+ * 
+ * @author eeverman
+ */
 public enum ConfiguredCache{
 	// distributed caches
 	PredictContext(false),
@@ -40,7 +42,8 @@ public enum ConfiguredCache{
 	AggregateIdLookup(false, new AggregateIdLookupKludgeFactory()),
 	LoadModelMetadata(false, new ModelMetadataFactory()),
 	
-	CatchmentAreas(false, new CatchmentAreaFactory()),
+	CatchmentAreas(false, new UnitAreaFactory()),
+	HUC(false, new HUCFactory()),
 	StreamFlow(false, new StreamFlowFactory())
 	;
 	

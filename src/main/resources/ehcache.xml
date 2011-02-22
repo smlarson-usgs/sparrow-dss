@@ -396,6 +396,8 @@
 	<cache name="LoadModelMetadata" maxElementsInMemory="20" />
 		
 	<cache name="CatchmentAreas" maxElementsInMemory="10" />
+	
+	<cache name="HUC" maxElementsInMemory="10" />
 		
 	<cache name="StreamFlow" maxElementsInMemory="10" />
 	
