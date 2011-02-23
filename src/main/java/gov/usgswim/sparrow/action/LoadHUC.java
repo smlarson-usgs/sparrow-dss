@@ -45,30 +45,30 @@ public class LoadHUC extends Action<HUC> {
 		
 
 		
-		ResultSet rs = getROPSFromPropertiesFile("select", getClass(), params).executeQuery();
+		ResultSet rs = getROPSFromPropertiesFile("selectFull", getClass(), params).executeQuery();
 		
 		if (rs.next()) {
 
-			STRUCT geom_struct = (STRUCT) rs.getObject("GEOM");
+			STRUCT fullGeomStruct = (STRUCT) rs.getObject("GEOM");
+			STRUCT approxGeomStruct = (STRUCT) rs.getObject("ARRPOX_GEOM");
 			
 			Geometry geom = null;
 			String code = rs.getString("HUC_CODE");
 			String name = rs.getString("NAME");
-
-			if (geom_struct != null) {
-				JGeometry jGeom = JGeometry.load(geom_struct);
-				double[] dblOrds = jGeom.getOrdinatesArray();
-				float[] floatOrds = new float[dblOrds.length];
-				
-				for (int i = 0; i<dblOrds.length; i++) {
-					floatOrds[i] = (float) dblOrds[i];
-				}
-				
-				geom = new Geometry(floatOrds, false);
-				
-				dblOrds = null;		//eagerly destroy
+			float[] fullCoords = null;
+			float[] approxCoords = null;
+			
+			if (fullGeomStruct != null) {
+				JGeometry jGeom = JGeometry.load(fullGeomStruct);
+				fullCoords = loadCoordinates(jGeom);
 			}
 			
+			if (approxGeomStruct != null) {
+				JGeometry jGeom = JGeometry.load(approxGeomStruct);
+				approxCoords = loadCoordinates(jGeom);
+			}
+			
+			geom = new Geometry(fullCoords, approxCoords, false);
 			
 			huc = new HUC(code, name, req.getHucType(), geom);
 
@@ -79,6 +79,18 @@ public class LoadHUC extends Action<HUC> {
 		rs.close();	//Will autoclose anyway.
 		
 		return huc;
+	}
+	
+	protected float[] loadCoordinates(JGeometry jGeom) {
+
+		double[] dblOrds = jGeom.getOrdinatesArray();
+		float[] floatOrds = new float[dblOrds.length];
+		
+		for (int i = 0; i<dblOrds.length; i++) {
+			floatOrds[i] = (float) dblOrds[i];
+		}
+		
+		return floatOrds;
 	}
 
 

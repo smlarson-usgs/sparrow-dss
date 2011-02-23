@@ -36,6 +36,10 @@ public class Geometry implements Serializable {
 	
 	@XStreamConverter(FloatArrayXStreamConverter.class)
 	private final float[] ordinates;
+	
+	@XStreamConverter(FloatArrayXStreamConverter.class)
+	private final float[] simpleOrdinates;
+	
 	private final boolean linear;
 	
 	
@@ -51,8 +55,9 @@ public class Geometry implements Serializable {
 	private Float centerLong;
 	private Float centerLat;
 	
-	public Geometry(float[] ordinates, boolean linear) {
+	public Geometry(float[] ordinates, float[] simpleOrdinates, boolean linear) {
 		this.ordinates = ordinates;
+		this.simpleOrdinates = simpleOrdinates;
 		this.linear = linear;
 		
 		initTransientState();
@@ -95,6 +100,10 @@ public class Geometry implements Serializable {
 
 	public float[] getOrdinates() {
 		return ordinates;
+	}
+	
+	public float[] getSimpleOrdinates() {
+		return simpleOrdinates;
 	}
 
 	/**
