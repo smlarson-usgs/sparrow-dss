@@ -26,6 +26,10 @@ public class FloatArrayXStreamConverterTest {
 		//System.out.println(rehydratedXml);
 		
 		assertEquals(orgXml, rehydratedXml);
+		
+		//What does this look like as JSON?
+//		xs = ServletResponseParser.getJSONXStream();
+//		System.out.println(xs.toXML(geom));
 	}
 	
 
