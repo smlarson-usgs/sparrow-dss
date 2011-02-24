@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.action;
 
 import gov.usgswim.sparrow.domain.Geometry;
 import gov.usgswim.sparrow.domain.HUC;
+import gov.usgswim.sparrow.domain.Segment;
 import gov.usgswim.sparrow.request.HUCRequest;
 
 import java.sql.ResultSet;
@@ -53,24 +54,40 @@ public class LoadHUC extends Action<HUC> {
 			STRUCT approxGeomStruct = (STRUCT) rs.getObject("ARRPOX_GEOM");
 			
 			Geometry geom = null;
+			Geometry simpleGeom = null;
+			Geometry convexGeom = null;
 			String code = rs.getString("HUC_CODE");
 			String name = rs.getString("NAME");
-			float[] fullCoords = null;
-			float[] approxCoords = null;
+			Segment[] segments = null;
+			Segment[] simpleSegments = null;
+			Segment convexSegment = null;
 			
 			if (fullGeomStruct != null) {
-				JGeometry jGeom = JGeometry.load(fullGeomStruct);
-				fullCoords = loadCoordinates(jGeom);
+				JGeometry jGeomParent = JGeometry.load(fullGeomStruct);
+				
+				JGeometry[] jGeomSegments = jGeomParent.getElements();
+				
+				segments = new Segment[jGeomSegments.length];
+				simpleSegments = new Segment[jGeomSegments.length];
+				
+				for (int i = 0; i < jGeomSegments.length; i++) {
+					segments[i] = new Segment(loadCoordinates(jGeomSegments[i]), false);
+					JGeometry jSimple = jGeomSegments[i].simplify(.005d);
+					simpleSegments[i] = new Segment(loadCoordinates(jSimple), false);
+				}
+				
 			}
 			
 			if (approxGeomStruct != null) {
 				JGeometry jGeom = JGeometry.load(approxGeomStruct);
-				approxCoords = loadCoordinates(jGeom);
+				convexSegment = new Segment(loadCoordinates(jGeom), false);
 			}
 			
-			geom = new Geometry(fullCoords, approxCoords, false);
+			geom = new Geometry(segments);
+			simpleGeom = new Geometry(simpleSegments);
+			convexGeom = new Geometry(convexSegment);
 			
-			huc = new HUC(code, name, req.getHucType(), geom);
+			huc = new HUC(code, name, req.getHucType(), geom, simpleGeom, convexGeom);
 
 		} else {
 			this.setPostMessage("No HUC found for '" + req.getHuc() + "', level " + req.getHucType().getLevel());

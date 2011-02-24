@@ -14,7 +14,9 @@ public class GeometryTest {
 	@Test
 	public void marshalUnmarshalAGeometry() {
 		float[] ords = new float[] {0f, -1f, 1f, 3f};
-		Geometry geom = new Geometry(ords, true);
+		Segment s = new Segment(ords, false);
+		Segment[] ss = new Segment[] {s};
+		Geometry geom = new Geometry(s);
 		
 		assertEquals(0f, geom.getMinLong(), .0001f);
 		assertEquals(1f, geom.getMaxLong(), .0001f);

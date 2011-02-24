@@ -26,12 +26,17 @@ public class HUC implements Serializable {
 	private final String name;
 	private final HUCType hucType;
 	private final Geometry geometry;
+	private final Geometry simpleGeometry;
+	private final Geometry convexGeometry;
 	
-	public HUC(String hucCode, String name, HUCType hucType, Geometry geometry) {
+	public HUC(String hucCode, String name, HUCType hucType,
+			Geometry geometry, Geometry simpleGeometry, Geometry convexGeometry) {
 		this.hucCode = hucCode;
 		this.name = name;
 		this.hucType = hucType;
 		this.geometry = geometry;
+		this.simpleGeometry = simpleGeometry;
+		this.convexGeometry = convexGeometry;
 	}
 	
 	public String getHucCode() {
@@ -48,6 +53,14 @@ public class HUC implements Serializable {
 
 	public Geometry getGeometry() {
 		return geometry;
+	}
+
+	public Geometry getSimpleGeometry() {
+		return simpleGeometry;
+	}
+
+	public Geometry getConvexGeometry() {
+		return convexGeometry;
 	}
 
 	@Override

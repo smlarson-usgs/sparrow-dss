@@ -1,16 +1,11 @@
 package gov.usgswim.sparrow.domain;
 
-import java.util.List;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamConverter;
-
-import gov.usgswim.Immutable;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
 
 /**
  * A set of geometry data for any type of entity (reach, catchment, huc...).
@@ -30,35 +25,40 @@ import gov.usgswim.Immutable;
  * @author eeverman
  */
 @XStreamAlias("Geometry")
+@XStreamInclude({Segment.class})
 public class Geometry implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	@XStreamConverter(FloatArrayXStreamConverter.class)
-	private final float[] ordinates;
+	//Derivative data
+	private Float minLong;
+	private Float minLat;
+	private Float maxLong;
+	private Float maxLat;
+	private Float centerLong;
+	private Float centerLat;
 	
-	@XStreamConverter(FloatArrayXStreamConverter.class)
-	private final float[] simpleOrdinates;
-	
-	private final boolean linear;
-	
+	//Actual raw data
+	@XStreamAlias("Segments")
+	private final Segment[] segments;
 	
 	//Flag to mark if the transient state is initialized
 	private transient boolean transStateInit = false;
 	
 	
-	private Float minLong;
-	private Float minLat;
-	private Float maxLong;
-	private Float maxLat;
 	
-	private Float centerLong;
-	private Float centerLat;
+	public Geometry(Segment[] segments) {
+		this.segments = segments;
+		
+		initTransientState();
+	}
 	
-	public Geometry(float[] ordinates, float[] simpleOrdinates, boolean linear) {
-		this.ordinates = ordinates;
-		this.simpleOrdinates = simpleOrdinates;
-		this.linear = linear;
+	public Geometry(Segment segments) {
+		if (segments != null) {
+			this.segments = new Segment[] {segments};
+		} else {
+			this.segments = null;
+		}
 		
 		initTransientState();
 	}
@@ -69,7 +69,9 @@ public class Geometry implements Serializable {
 	public synchronized void initTransientState() {
 		if (!transStateInit) {
 			
-			if (ordinates != null && ordinates.length > 0) {
+			boolean found = false;	//only set true if we found a point
+			
+			if (segments != null && segments.length > 0) {
 				
 				minLong = Float.POSITIVE_INFINITY;
 				minLat = Float.POSITIVE_INFINITY;
@@ -78,48 +80,47 @@ public class Geometry implements Serializable {
 				
 				
 				//Construct the bounding box from min/max values
-				for (int i = 0; i < ordinates.length; i+=2) {
-					float x = ordinates[i];
-					float y = ordinates[i + 1];
+				for (int s = 0; s < segments.length; s++) {
 					
-					if (x > maxLong) maxLong = x;
-					if (x < minLong) minLong = x;
-
-					if (y > maxLat) maxLat = y;
-					if (y < minLat) minLat = y;					
+					float[] ordinates = segments[s].getCoordinates();
 					
+					if (ordinates != null && ordinates.length > 0) {
+						found = true;
+						
+						for (int i = 0; i < ordinates.length; i+=2) {
+							float x = ordinates[i];
+							float y = ordinates[i + 1];
+							
+							if (x > maxLong) maxLong = x;
+							if (x < minLong) minLong = x;
+		
+							if (y > maxLat) maxLat = y;
+							if (y < minLat) minLat = y;					
+							
+						}
+					}
+				
 				}
 				
 				centerLong = (minLong + maxLong) / 2f;
 				centerLat = (minLat + maxLat) / 2f;
 			}
 			
+			if (!found) {
+				minLong = null;
+				minLat = null;
+				maxLong = null;
+				maxLat = null;
+				centerLong = null;
+				centerLat = null;
+			}
+			
 			transStateInit = true;
 		}
 	}
 
-	public float[] getOrdinates() {
-		return ordinates;
-	}
-	
-	public float[] getSimpleOrdinates() {
-		return simpleOrdinates;
-	}
-
-	/**
-	 * True if the geometry is a series of points that make up a non-closed shape.
-	 * @return
-	 */
-	public boolean isLinear() {
-		return linear;
-	}
-	
-	/**
-	 * True if the geometry is a series of points that are a closed shape.
-	 * @return
-	 */
-	public boolean isClosed() {
-		return ! linear;
+	public Segment[] getSegments() {
+		return segments;
 	}
 
 	public float getMinLong() {
@@ -169,15 +170,13 @@ public class Geometry implements Serializable {
 	@Override
 	public synchronized int hashCode() {
 		int hash = new HashCodeBuilder(2457, 143).
-		append(ordinates).append(linear).toHashCode();
+		append(segments).toHashCode();
 		
 		return hash;
 	}
 	
 	private Object readResolve() {
 		initTransientState();
-		System.out.println("After instantiating Geom");
-		// at the end returns itself
 		return this;
   }
 }
