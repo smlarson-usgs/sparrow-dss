@@ -11,6 +11,7 @@ import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -19,9 +20,9 @@ import gov.usgswim.sparrow.util.TabDelimFileUtil;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
+import org.apache.log4j.Level;
 import org.junit.Test;
 
 /**
@@ -41,6 +42,8 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 	static DataTable stdDelFracTo9682;
 	static DataTable stdDelFracTo9674;
 	static DataTable stdDelFracToBoth;
+	
+	static final double COMP_ERROR = .0000001d;
 	
 	@Override
 	public void doOneTimeCustomSetup() throws Exception {
@@ -90,12 +93,12 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		targetList.add(9682L);
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
-		CalcDeliveryFractionHash hashAction = new CalcDeliveryFractionHash();
+		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
 		hashAction.setPredictData(predictData);
 		hashAction.setTargetReachIds(targets.asSet());
-		HashMap<Integer, DeliveryReach> delHash = hashAction.run();
+		DeliveryFractionMap delHash = hashAction.run();
 		
 		delAction.setPredictData(predictData);
 		delAction.setDeliveryFractionHash(delHash);
@@ -123,7 +126,7 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 			if (expectedFrac != null) {
 				inSheet++;
 				
-				if (Math.abs(expectedFrac - actualFrac) < .0000000001d) {
+				if (Math.abs(expectedFrac - actualFrac) < COMP_ERROR) {
 					match++;
 				} else {
 					noMatch++;
@@ -147,8 +150,8 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		assertEquals(StandardDoubleColumnData.class, deliveryFrac.getClass());
 		
 		//Check that the del frac for the 'turned off' reaches is zero
-		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9619L)), .0000000000000001d);
-		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9100L)), .0000000000000001d);
+		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9619L)), COMP_ERROR);
+		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9100L)), COMP_ERROR);
 	}
 	
 	@Test
@@ -157,12 +160,12 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		targetList.add(9674L);
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
-		CalcDeliveryFractionHash hashAction = new CalcDeliveryFractionHash();
+		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
 		hashAction.setPredictData(predictData);
 		hashAction.setTargetReachIds(targets.asSet());
-		HashMap<Integer, DeliveryReach> delHash = hashAction.run();
+		DeliveryFractionMap delHash = hashAction.run();
 		
 		delAction.setPredictData(predictData);
 		delAction.setDeliveryFractionHash(delHash);
@@ -184,7 +187,7 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 			if (expectedFrac != null) {
 				inSheet++;
 				
-				if (Math.abs(expectedFrac - actualFrac) < .0000000001d) {
+				if (Math.abs(expectedFrac - actualFrac) < COMP_ERROR) {
 					match++;
 				} else {
 					noMatch++;
@@ -208,8 +211,8 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		assertEquals(StandardDoubleColumnData.class, deliveryFrac.getClass());
 		
 		//Check that the del frac for the 'turned off' reaches is zero
-		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9619L)), .0000000000000001d);
-		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9100L)), .0000000000000001d);
+		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9619L)), COMP_ERROR);
+		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9100L)), COMP_ERROR);
 	}
 	
 	@Test
@@ -219,12 +222,12 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		targetList.add(9674L);
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
-		CalcDeliveryFractionHash hashAction = new CalcDeliveryFractionHash();
+		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
 		hashAction.setPredictData(predictData);
 		hashAction.setTargetReachIds(targets.asSet());
-		HashMap<Integer, DeliveryReach> delHash = hashAction.run();
+		DeliveryFractionMap delHash = hashAction.run();
 		
 		delAction.setPredictData(predictData);
 		delAction.setDeliveryFractionHash(delHash);
@@ -245,7 +248,7 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 			if (expectedFrac != null) {
 				inSheet++;
 				
-				if (Math.abs(expectedFrac - actualFrac) < .0000000001d) {
+				if (Math.abs(expectedFrac - actualFrac) < COMP_ERROR) {
 					match++;
 				} else {
 					noMatch++;
@@ -269,8 +272,8 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		assertEquals(StandardDoubleColumnData.class, deliveryFrac.getClass());
 		
 		//Check that the del frac for the 'turned off' reaches is zero
-		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9619L)), .0000000000000001d);
-		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9100L)), .0000000000000001d);
+		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9619L)), COMP_ERROR);
+		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9100L)), COMP_ERROR);
 	}
 	
 	@Test
@@ -279,12 +282,12 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		targetList.add(9687L);
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
-		CalcDeliveryFractionHash hashAction = new CalcDeliveryFractionHash();
+		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
 		hashAction.setPredictData(predictData);
 		hashAction.setTargetReachIds(targets.asSet());
-		HashMap<Integer, DeliveryReach> delHash = hashAction.run();
+		DeliveryFractionMap delHash = hashAction.run();
 		
 		delAction.setPredictData(predictData);
 		delAction.setDeliveryFractionHash(delHash);
@@ -319,10 +322,10 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		assertEquals(7, stdData.getColumnByName("IFTRAN").intValue());
 		//Row 0
 		assertEquals(9674, stdData.getInt(0, 0).intValue());
-		assertEquals(0d, stdData.getInt(0, 7).doubleValue(), .00000001d);
+		assertEquals(0d, stdData.getInt(0, 7).doubleValue(), COMP_ERROR);
 		//Row 24 (the last)
 		assertEquals(658420, stdData.getInt(24, 0).intValue());
-		assertEquals(1d, stdData.getInt(24, 7).doubleValue(), .00000001d);
+		assertEquals(1d, stdData.getInt(24, 7).doubleValue(), COMP_ERROR);
 		
 		//
 		//delivery to 9682 data
@@ -331,10 +334,10 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		assertEquals(8, stdDelFracTo9682.getColumnByName("DEL_FRAC").intValue());
 		//Row 0
 		assertEquals(9682, stdDelFracTo9682.getInt(0, 0).intValue());
-		assertEquals(1d, stdDelFracTo9682.getDouble(0, 8).doubleValue(), .00000001d);
+		assertEquals(1d, stdDelFracTo9682.getDouble(0, 8).doubleValue(), COMP_ERROR);
 		//Row 16 (the last)
 		assertEquals(9681, stdDelFracTo9682.getInt(16, 0).intValue());
-		assertEquals(0.983450541889348d, stdDelFracTo9682.getDouble(16, 8).doubleValue(), .00000001d);
+		assertEquals(0.983450541889348d, stdDelFracTo9682.getDouble(16, 8).doubleValue(), COMP_ERROR);
 		
 		//
 		//delivery to 9674 data
@@ -343,10 +346,10 @@ public class CalcDeliveryFractionTest extends SparrowUnitTestBaseClass {
 		assertEquals(8, stdDelFracTo9674.getColumnByName("DEL_FRAC").intValue());
 		//Row 0
 		assertEquals(9674, stdDelFracTo9674.getInt(0, 0).intValue());
-		assertEquals(1d, stdDelFracTo9674.getDouble(0, 8).doubleValue(), .00000001d);
+		assertEquals(1d, stdDelFracTo9674.getDouble(0, 8).doubleValue(), COMP_ERROR);
 		//Row 7 (the last)
 		assertEquals(9679, stdDelFracTo9674.getInt(7, 0).intValue());
-		assertEquals(0.844398102645677d, stdDelFracTo9674.getDouble(7, 8).doubleValue(), .00000001d);
+		assertEquals(0.844398102645677d, stdDelFracTo9674.getDouble(7, 8).doubleValue(), COMP_ERROR);
 	}
 	
 	

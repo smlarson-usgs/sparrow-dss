@@ -1,6 +1,28 @@
 package gov.usgswim.sparrow.service;
 
-import static gov.usgswim.sparrow.service.ConfiguredCache.*;
+import static gov.usgswim.sparrow.service.ConfiguredCache.AdjustedSource;
+import static gov.usgswim.sparrow.service.ConfiguredCache.AdjustmentGroups;
+import static gov.usgswim.sparrow.service.ConfiguredCache.AggregateIdLookup;
+import static gov.usgswim.sparrow.service.ConfiguredCache.Analyses;
+import static gov.usgswim.sparrow.service.ConfiguredCache.AreaOfInterest;
+import static gov.usgswim.sparrow.service.ConfiguredCache.CatchmentAreas;
+import static gov.usgswim.sparrow.service.ConfiguredCache.ComparisonResult;
+import static gov.usgswim.sparrow.service.ConfiguredCache.DataBinning;
+import static gov.usgswim.sparrow.service.ConfiguredCache.DeliveryFraction;
+import static gov.usgswim.sparrow.service.ConfiguredCache.DeliveryFractionHash;
+import static gov.usgswim.sparrow.service.ConfiguredCache.HUC;
+import static gov.usgswim.sparrow.service.ConfiguredCache.IdentifyReachByID;
+import static gov.usgswim.sparrow.service.ConfiguredCache.IdentifyReachByPoint;
+import static gov.usgswim.sparrow.service.ConfiguredCache.LoadModelMetadata;
+import static gov.usgswim.sparrow.service.ConfiguredCache.LoadReachAttributes;
+import static gov.usgswim.sparrow.service.ConfiguredCache.PredefinedSessions;
+import static gov.usgswim.sparrow.service.ConfiguredCache.PredictContext;
+import static gov.usgswim.sparrow.service.ConfiguredCache.PredictData;
+import static gov.usgswim.sparrow.service.ConfiguredCache.PredictResult;
+import static gov.usgswim.sparrow.service.ConfiguredCache.ReachesByCriteria;
+import static gov.usgswim.sparrow.service.ConfiguredCache.StandardErrorEstimateData;
+import static gov.usgswim.sparrow.service.ConfiguredCache.StreamFlow;
+import static gov.usgswim.sparrow.service.ConfiguredCache.TerminalReaches;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
@@ -9,7 +31,6 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.action.DeletePredefinedSession;
-import gov.usgswim.sparrow.action.DeliveryReach;
 import gov.usgswim.sparrow.action.FilterPredefinedSessions;
 import gov.usgswim.sparrow.action.LoadPredefinedSession;
 import gov.usgswim.sparrow.action.LoadReachesInBBox;
@@ -19,6 +40,7 @@ import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
 import gov.usgswim.sparrow.cachefactory.NSDataSetFactory;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.domain.HUC;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.ModelBBox;
@@ -30,7 +52,14 @@ import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.LogicalSet;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
-import gov.usgswim.sparrow.request.*;
+import gov.usgswim.sparrow.request.BinningRequest;
+import gov.usgswim.sparrow.request.HUCRequest;
+import gov.usgswim.sparrow.request.ModelRequestCacheKey;
+import gov.usgswim.sparrow.request.PredefinedSessionRequest;
+import gov.usgswim.sparrow.request.PredefinedSessionUniqueRequest;
+import gov.usgswim.sparrow.request.PredictionContextRequest;
+import gov.usgswim.sparrow.request.ReachID;
+import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 
@@ -42,7 +71,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.naming.Context;
@@ -572,12 +600,12 @@ public class SharedApplication  {
 	}
 
 	//DeliveryFractionHash
-	public HashMap<Integer, DeliveryReach> getDeliveryFractionHash(TerminalReaches targets) {
-		return getDeliveryFractionHash(targets, false);
+	public DeliveryFractionMap getDeliveryFractionMap(TerminalReaches targets) {
+		return getDeliveryFractionMap(targets, false);
 	}
 
-	public HashMap<Integer, DeliveryReach> getDeliveryFractionHash(TerminalReaches targets, boolean quiet) {
-		return (HashMap<Integer, DeliveryReach>) DeliveryFractionHash.get(targets, quiet);
+	public DeliveryFractionMap getDeliveryFractionMap(TerminalReaches targets, boolean quiet) {
+		return (DeliveryFractionMap) DeliveryFractionHash.get(targets, quiet);
 	}
 	
 	//DeliveryFraction

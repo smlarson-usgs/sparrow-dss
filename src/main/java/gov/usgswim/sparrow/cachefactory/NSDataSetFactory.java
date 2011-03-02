@@ -1,13 +1,10 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgswim.sparrow.action.DeliveryReach;
 import gov.usgswim.sparrow.action.NSDataSetBuilder;
+import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
-
-import java.util.HashMap;
-
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import oracle.mapviewer.share.ext.NSDataSet;
 
@@ -34,11 +31,11 @@ public class NSDataSetFactory implements CacheEntryFactory {
 				context.getAnalysis().getDataSeries().isDeliveryBased() ||
 				context.getAnalysis().getDataSeries().isDeliveryRequired()) {
 			
-			HashMap<Integer, DeliveryReach> upstreamReaches =
-				SharedApplication.getInstance().getDeliveryFractionHash(
+			DeliveryFractionMap upstreamReaches =
+				SharedApplication.getInstance().getDeliveryFractionMap(
 					context.getTerminalReaches());
 			
-			action.setInclusionHash(upstreamReaches);
+			action.setInclusionMap(upstreamReaches);
 		}
 		
 		DataColumn data = context.getDataColumn();

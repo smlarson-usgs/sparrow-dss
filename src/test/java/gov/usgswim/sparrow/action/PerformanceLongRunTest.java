@@ -1,24 +1,22 @@
 package gov.usgswim.sparrow.action;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowDBTestBaseClass;
 import gov.usgswim.sparrow.cachefactory.PredictResultFactory;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.parser.AdjustmentGroups;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
 
-import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import org.apache.log4j.Level;
 import org.junit.Test;
 
 /**
@@ -119,12 +117,12 @@ public class PerformanceLongRunTest extends SparrowDBTestBaseClass {
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
 		
-		CalcDeliveryFractionHash hashAction = new CalcDeliveryFractionHash();
+		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
 		hashAction.setPredictData(predictData);
 		hashAction.setTargetReachIds(targets.asSet());
-		HashMap<Integer, DeliveryReach> delHash = hashAction.run();
+		DeliveryFractionMap delHash = hashAction.run();
 		
 		delAction.setPredictData(predictData);
 		delAction.setDeliveryFractionHash(delHash);

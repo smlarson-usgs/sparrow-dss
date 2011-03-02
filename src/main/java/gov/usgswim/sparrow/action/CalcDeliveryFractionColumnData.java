@@ -6,11 +6,14 @@ import gov.usgswim.datatable.impl.StandardDoubleColumnData;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.parser.BaseDataSeriesType;
 import gov.usgswim.sparrow.parser.DataSeriesType;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * This action creates a ColumnData containing the delivery
@@ -22,7 +25,7 @@ import java.util.Map;
 public class CalcDeliveryFractionColumnData extends Action<ColumnData> {
 
 	protected PredictData predictData;
-	protected HashMap<Integer, DeliveryReach> deliveryFractionHash;
+	protected DeliveryFractionMap deliveryFractionMap;
 	protected String msg = null;
 	
 	/**
@@ -37,8 +40,8 @@ public class CalcDeliveryFractionColumnData extends Action<ColumnData> {
 	 * Delivery hash, as described in the Action CalcDeliveryFractionHash.
 	 * @param targetReachIds
 	 */
-	public void setDeliveryFractionHash(HashMap<Integer, DeliveryReach> deliveryFractionHash) {
-		this.deliveryFractionHash = deliveryFractionHash;
+	public void setDeliveryFractionHash(DeliveryFractionMap deliveryFraction) {
+		this.deliveryFractionMap = deliveryFraction;
 	}
 	
 	@Override
@@ -49,7 +52,7 @@ public class CalcDeliveryFractionColumnData extends Action<ColumnData> {
 	@Override
 	public ColumnData doAction() throws Exception {
 		//Hash containing rows as keys and DeliveryReaches as values.
-		HashMap<Integer, DeliveryReach> deliveries = deliveryFractionHash;
+		DeliveryFractionMap deliveries = deliveryFractionMap;
 		int baseRows = predictData.getTopo().getRowCount();
 		
 		//Props for the returned column
@@ -61,14 +64,17 @@ public class CalcDeliveryFractionColumnData extends Action<ColumnData> {
 		if (deliveries.size() > (baseRows / 9)) {
 			double[] vals2d = new double[baseRows];
 			
-			for (DeliveryReach dr : deliveries.values()) {
-				vals2d[dr.getRow()] = dr.getDelivery();
+			Iterator<Entry<Integer, Float>> it = deliveries.entrySet().iterator();
+			while (it.hasNext()) {
+				Entry<Integer, Float> e = it.next();
+				vals2d[e.getKey()] = e.getValue();
 			}
-			
 
 			
 			//Todo:  It would be nice to have a standard property name for the
 			//model that this relates to and what the rows are related to.
+			
+			//TODO:  We have float data but are using double storage
 			StandardDoubleColumnData column = new StandardDoubleColumnData(
 					vals2d,
 					getDataSeriesProperty(DataSeriesType.delivered_fraction, false),
@@ -83,10 +89,13 @@ public class CalcDeliveryFractionColumnData extends Action<ColumnData> {
 			
 			HashMap<Integer, Double> delFracs = new HashMap<Integer, Double>(hashSize, 1);
 			
-			for (DeliveryReach dr : deliveries.values()) {
-				delFracs.put(dr.getRow(), dr.getDelivery());
+			Iterator<Entry<Integer, Float>> it = deliveries.entrySet().iterator();
+			while (it.hasNext()) {
+				Entry<Integer, Float> e = it.next();
+				delFracs.put(e.getKey(), e.getValue().doubleValue());
 			}
 			
+			//TODO:  We have float data but are using double storage
 			SparseDoubleColumnData column = new SparseDoubleColumnData(
 					delFracs,
 					getDataSeriesProperty(DataSeriesType.delivered_fraction, false),

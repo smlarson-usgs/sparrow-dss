@@ -1,9 +1,8 @@
 package gov.usgswim.sparrow.action;
 
-import java.util.HashMap;
-
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.parser.DataColumn;
 import gov.usgswim.sparrow.parser.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -24,16 +23,16 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 	private final static String NL = System.getProperty("line.separator");
 	
 	/** Context used to build the results from */
-	DataColumn data;
+	private DataColumn data;
 	
 	/** A hash of row numbers that are in the reaches to be mapped. **/
-	HashMap<Integer, ?> inclusionHash;
+	private DeliveryFractionMap inclusionMap;
 	
 	/** The value to use for NA values. */
-	Long NAValue = DEFAULT_NA_VALUE;
+	private Long NAValue = DEFAULT_NA_VALUE;
 	
 	/** The default value for NAValue */
-	static public final long DEFAULT_NA_VALUE = -9000000000000000000L;
+	public static final long DEFAULT_NA_VALUE = -9000000000000000000L;
 	
 	/** Array of output data.  Hold reference just so we can print debug info */
 	private NSRow[] nsRows;
@@ -80,7 +79,7 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 			row[0].setKey(true);
 
 
-			if (inclusionHash != null && inclusionHash.get(r) == null) {
+			if (inclusionMap != null && ! inclusionMap.hasRowNumber(r)) {
 				//This is an excluded row
 				
 				if (NAValue != null) {
@@ -161,8 +160,8 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 	 * 
 	 * @param inclusionHash
 	 */
-	public void setInclusionHash(HashMap<Integer, ?> inclusionHash) {
-		this.inclusionHash = inclusionHash;
+	public void setInclusionMap(DeliveryFractionMap inclusionHash) {
+		this.inclusionMap = inclusionHash;
 	}
 
 	/**
