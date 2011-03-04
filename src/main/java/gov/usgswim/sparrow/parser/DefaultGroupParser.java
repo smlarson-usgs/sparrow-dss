@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.parser;
 
+import gov.usgswim.sparrow.domain.ReachGroup;
+
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 

@@ -2,7 +2,7 @@
  * Option for the PredictionContext schema for:
  * PredictionContext/analysis/select/nominalComparison@type
  */
-package gov.usgswim.sparrow.parser;
+package gov.usgswim.sparrow.domain;
 
 public enum ComparisonType {
 	none,

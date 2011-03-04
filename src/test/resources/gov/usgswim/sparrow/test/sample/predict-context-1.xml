@@ -32,13 +32,13 @@
 				</notes>
 				<adjustment src="1" coef="1.05"/>
 				<logicalSet>
-					<criteria attrib="reach" relation="upstream">8346289</criteria>
+					<criteria attrib="upstream">8346289</criteria>
 				</logicalSet>
 				<logicalSet>
-					<criteria attrib="reach" relation="upstream">9374562</criteria>
+					<criteria attrib="upstream">9374562</criteria>
 				</logicalSet>
 			</reachGroup>
-
+<!--  
 			<reachGroup enabled="true" name="Illinois">
 				<desc>The entire state of Illinois</desc>
 				<notes>The Urban source for Illinois is predicted is to increase 20%.</notes>
@@ -47,7 +47,7 @@
 					<criteria attrib="state-code">il</criteria>
 				</logicalSet>
 			</reachGroup>
-
+-->
 			<reachGroup enabled="true" name="Wisconsin">
 				<desc>Wisconsin River Plants</desc>
 				<notes>

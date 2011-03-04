@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.service.idbypoint;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.service.pipeline.PipelineRequest;
-import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.parser.XMLStreamParserComponent;

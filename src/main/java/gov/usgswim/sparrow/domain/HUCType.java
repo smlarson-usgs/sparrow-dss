@@ -15,10 +15,10 @@ import gov.usgswim.sparrow.datatable.NamedEnum;
 public enum HUCType implements NamedEnum<HUCType> {
 	
 	/* See class note above */
-	HUC2(2, "huc_2", "HUC Level 2"),
-	HUC4(4, "huc_4", "HUC Level 4"),
-	HUC6(6, "huc_6", "HUC Level 6"),
-	HUC8(8, "huc_8", "HUC Level 8");
+	HUC2(2, "huc2", "HUC Level 2"),
+	HUC4(4, "huc4", "HUC Level 4"),
+	HUC6(6, "huc6", "HUC Level 6"),
+	HUC8(8, "huc8", "HUC Level 8");
 	
 	private Integer level;
 	private String name;
@@ -41,7 +41,7 @@ public enum HUCType implements NamedEnum<HUCType> {
 	@Override
 	public HUCType fromString(String name) {
 		for (HUCType val : values()) {
-			if (val.name.equals(name)) {
+			if (val.name.equals(name) || val.name().equals(name)) {
 				return val;
 			}
 		}
@@ -51,19 +51,16 @@ public enum HUCType implements NamedEnum<HUCType> {
 	@Override
 	public HUCType fromStringIgnoreCase(String name) {
 		for (HUCType val : values()) {
-			if (val.name.equalsIgnoreCase(name)) {
+			if (val.name.equalsIgnoreCase(name) || val.name().equalsIgnoreCase(name)) {
 				return val;
 			}
 		}
 		return null;
 	}
 	
-	/**
-	 * Not the inverse of fromString - this returns the description.
-	 */
 	@Override
 	public String toString() {
-		return description;
+		return name;
 	}
 
 	@Override

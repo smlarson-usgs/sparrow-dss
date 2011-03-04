@@ -5,8 +5,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.usgswim.sparrow.SparrowServiceTestWithCannedModel50;
-import gov.usgswim.sparrow.parser.DataColumn;
-import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 

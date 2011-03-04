@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.SparrowServiceUnitTest;
 import gov.usgswim.sparrow.action.Action;
-import gov.usgswim.sparrow.parser.DataSeriesType;
+import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.BufferedReader;

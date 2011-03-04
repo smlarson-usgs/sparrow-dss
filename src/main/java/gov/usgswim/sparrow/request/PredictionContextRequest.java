@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.request;
 
 import gov.usgswim.Immutable;
-import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.domain.PredictionContext;
 
 import java.io.Serializable;
 import java.util.Date;

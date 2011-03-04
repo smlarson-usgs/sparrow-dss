@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.service.predictcontext;
 
 import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.service.RequestParser;
-import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 import gov.usgswim.sparrow.util.ParserHelper;
 

@@ -2,20 +2,15 @@ package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import gov.usgswim.sparrow.SparrowDBTestBaseClass;
+import gov.usgswim.sparrow.domain.PredictionContext;
+import gov.usgswim.sparrow.request.PredictionContextRequest;
+import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.util.ParserHelper;
 
 import java.util.List;
 
 import javax.xml.stream.XMLStreamReader;
-
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.SparrowDBTestBaseClass;
-import gov.usgswim.sparrow.datatable.TableProperties;
-import gov.usgswim.sparrow.parser.DataColumn;
-import gov.usgswim.sparrow.parser.DataSeriesType;
-import gov.usgswim.sparrow.parser.PredictionContext;
-import gov.usgswim.sparrow.request.PredictionContextRequest;
-import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.ParserHelper;
 
 import org.junit.Test;
 

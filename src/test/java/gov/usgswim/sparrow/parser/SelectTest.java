@@ -1,5 +1,8 @@
 package gov.usgswim.sparrow.parser;
 
+import gov.usgswim.sparrow.domain.DataSeriesType;
+import gov.usgswim.sparrow.domain.Select;
+
 import java.io.StringReader;
 
 import javax.xml.stream.XMLInputFactory;

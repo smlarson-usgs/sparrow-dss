@@ -5,7 +5,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
-import gov.usgswim.sparrow.parser.DataColumn;
+import gov.usgswim.sparrow.datatable.DataColumn;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
 
 import java.util.ArrayList;

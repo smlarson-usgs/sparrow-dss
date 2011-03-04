@@ -1,9 +1,10 @@
 package gov.usgswim.sparrow.parser;
 
-import gov.usgswim.sparrow.parser.Adjustment;
-import gov.usgswim.sparrow.parser.LogicalSet;
-import gov.usgswim.sparrow.parser.ReachElement;
-import gov.usgswim.sparrow.parser.ReachGroup;
+import gov.usgswim.sparrow.domain.Adjustment;
+import gov.usgswim.sparrow.domain.CriteriaType;
+import gov.usgswim.sparrow.domain.LogicalSet;
+import gov.usgswim.sparrow.domain.ReachElement;
+import gov.usgswim.sparrow.domain.ReachGroup;
 
 import java.io.StringReader;
 import java.util.List;
@@ -59,6 +60,9 @@ public class ReachGroupTest extends TestCase {
 		+ "	<logicalSet>"
 		+ "		<criteria attrib=\"huc2\">10</criteria>"
 		+ "	</logicalSet>"
+		+ "	<logicalSet>"
+		+ "		<criteria attrib=\"upstream\">999</criteria>"
+		+ "	</logicalSet>"
 		+ "</reachGroup>";
 
 	public void testParse1() throws Exception {
@@ -84,61 +88,20 @@ public class ReachGroupTest extends TestCase {
 
 		// test logical sets
 		List<LogicalSet> lSets = rg.getLogicalSets();
-		assertEquals(4, lSets.size());
-		assertTrue(lSets.get(0).getCriteria().keySet().contains("huc8"));
-		assertEquals("10040202", lSets.get(0).getCriteria().get("huc8"));
-		assertEquals("101701", lSets.get(1).getCriteria().get("huc6"));
-
+		assertEquals(5, lSets.size());
+		assertTrue(lSets.get(0).getCriteria().get(0).getCriteriaType().equals(CriteriaType.HUC8));
+		assertEquals("10040202", lSets.get(0).getCriteria().get(0).getValue());
+		
+		assertEquals("101701", lSets.get(1).getCriteria().get(0).getValue());
+		
+		//upstream set
+		assertTrue(lSets.get(4).getCriteria().get(0).getCriteriaType().equals(CriteriaType.UPSTREAM));
+		assertEquals("999", lSets.get(4).getCriteria().get(0).getValue());
 	}
+
+
 
 	public void testParse2() throws Exception {
-		String testRequest = "<reachGroup enabled=\"false\" name=\"Southern Indiana Fields\">"
-			+ "	<desc>Fields in Southern Indiana</desc>"
-			+ "	<notes>"
-			+ "		The Farmer's Alminac says corn planting will be up 20% this year,"
-			+ "		which will roughly result in a 5% increase in the aggrecultural source."
-			+ "		This is an estimate so I'm leaving it out of the runs created	for the EPA."
-			+ "	</notes>"
-			+ "	<adjustment src=\"1\" coef=\"1.05\"/>"
-			+ "	<logicalSet>"
-			+ "		<criteria attrib=\"reach\" relation=\"upstream\">8346289</criteria>"
-			+ "	</logicalSet>"
-			+ "	<logicalSet>"
-			+ "		<criteria attrib=\"reach\" relation=\"upstream\">9374562</criteria>"
-			+ "	</logicalSet>"
-			+ "</reachGroup>";
-		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
-		ReachGroup rg = new ReachGroup(1);
-		reader.next();
-		rg.parse(reader);
-
-		assertFalse(rg.isEnabled());
-		assertEquals("Southern Indiana Fields", rg.getName());
-		assertEquals("Fields in Southern Indiana", rg.getDescription());
-		assertTrue(rg.getNotes().contains("for the EPA"));
-	}
-
-	public void testParse3() throws Exception {
-		String testRequest = "<reachGroup enabled=\"true\" name=\"Illinois\">"
-			+ "	<desc>The entire state of Illinois</desc>"
-			+ "	<notes>The Urban source for Illinois is predicted is to increase 20%.</notes>"
-			+ "	<adjustment src=\"2\" coef=\"1.2\"/>"
-			+ "	<logicalSet>"
-			+ "		<criteria attrib=\"state-code\">il</criteria>"
-			+ "	</logicalSet>"
-			+ "</reachGroup>";
-		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(testRequest));
-		ReachGroup rg = new ReachGroup(1);
-		reader.next();
-		rg.parse(reader);
-
-		assertTrue(rg.isEnabled());
-		assertEquals("Illinois", rg.getName());
-		assertEquals("The entire state of Illinois", rg.getDescription());
-		assertTrue(rg.getNotes().contains("to increase 20%."));
-	}
-
-	public void testParse4() throws Exception {
 		String testRequest = "<reachGroup enabled=\"true\" name=\"Illinois\">"
 			+ "	<desc>Wisconsin River Plants</desc>"
 			+ "	<notes>"

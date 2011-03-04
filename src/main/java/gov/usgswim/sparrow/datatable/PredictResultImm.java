@@ -1,6 +1,5 @@
 package gov.usgswim.sparrow.datatable;
 
-import static gov.usgswim.sparrow.service.predict.aggregator.AggregateType.sum;
 import gov.usgswim.Immutable;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
@@ -8,9 +7,8 @@ import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.action.Action;
-import gov.usgswim.sparrow.datatable.TableProperties;
-import gov.usgswim.sparrow.parser.BaseDataSeriesType;
-import gov.usgswim.sparrow.parser.DataSeriesType;
+import gov.usgswim.sparrow.domain.BaseDataSeriesType;
+import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
 
 import java.util.Collections;

@@ -1,6 +1,5 @@
-package gov.usgswim.sparrow.parser;
+package gov.usgswim.sparrow.datatable;
 
-import gov.usgswim.datatable.DataTable;
 
 public class EmptyDataColumn extends DataColumn {
 

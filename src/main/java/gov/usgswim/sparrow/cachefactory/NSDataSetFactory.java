@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.action.NSDataSetBuilder;
+import gov.usgswim.sparrow.datatable.DataColumn;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
-import gov.usgswim.sparrow.parser.DataColumn;
-import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import oracle.mapviewer.share.ext.NSDataSet;

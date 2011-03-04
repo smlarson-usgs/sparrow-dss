@@ -1,12 +1,12 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.sparrow.datatable.DataColumn;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
-import gov.usgswim.sparrow.parser.AdvancedComparison;
-import gov.usgswim.sparrow.parser.Comparison;
-import gov.usgswim.sparrow.parser.DataColumn;
-import gov.usgswim.sparrow.parser.NominalComparison;
-import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.domain.AdvancedComparison;
+import gov.usgswim.sparrow.domain.Comparison;
+import gov.usgswim.sparrow.domain.NominalComparison;
+import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 

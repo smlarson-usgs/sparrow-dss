@@ -1,17 +1,16 @@
 package gov.usgswim.sparrow.action;
 
+import static org.junit.Assert.assertEquals;
 import gov.usgswim.datatable.ColumnDataWritable;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
-import gov.usgswim.sparrow.parser.DataColumn;
+import gov.usgswim.sparrow.datatable.DataColumn;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  * Unit test (offline) of the CalcAggregate Action.

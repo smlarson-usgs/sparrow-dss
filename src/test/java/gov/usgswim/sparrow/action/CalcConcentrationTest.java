@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.sparrow.SparrowUnits;
-import gov.usgswim.sparrow.parser.DataColumn;
+import gov.usgswim.sparrow.datatable.DataColumn;
 import gov.usgswim.sparrow.util.DLUtils;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 

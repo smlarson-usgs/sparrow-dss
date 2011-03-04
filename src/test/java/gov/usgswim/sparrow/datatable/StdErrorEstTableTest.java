@@ -6,7 +6,7 @@ import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataImm;
 import gov.usgswim.sparrow.action.Action;
-import gov.usgswim.sparrow.parser.DataSeriesType;
+import gov.usgswim.sparrow.domain.DataSeriesType;
 
 import org.junit.*;
 import static org.junit.Assert.assertEquals;

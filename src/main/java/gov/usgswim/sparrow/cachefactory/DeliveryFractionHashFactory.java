@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.cachefactory;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.action.CalcDeliveryFractionMap;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
-import gov.usgswim.sparrow.parser.TerminalReaches;
+import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.util.Set;

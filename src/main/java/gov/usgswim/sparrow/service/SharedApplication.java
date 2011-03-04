@@ -39,19 +39,19 @@ import gov.usgswim.sparrow.action.SavePredefinedSession;
 import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
 import gov.usgswim.sparrow.cachefactory.NSDataSetFactory;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
+import gov.usgswim.sparrow.datatable.DataColumn;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.domain.AdjustmentGroups;
+import gov.usgswim.sparrow.domain.Analysis;
+import gov.usgswim.sparrow.domain.AreaOfInterest;
+import gov.usgswim.sparrow.domain.Criteria;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.domain.HUC;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.ModelBBox;
+import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.SparrowModel;
-import gov.usgswim.sparrow.parser.AdjustmentGroups;
-import gov.usgswim.sparrow.parser.Analysis;
-import gov.usgswim.sparrow.parser.AreaOfInterest;
-import gov.usgswim.sparrow.parser.DataColumn;
-import gov.usgswim.sparrow.parser.LogicalSet;
-import gov.usgswim.sparrow.parser.PredictionContext;
-import gov.usgswim.sparrow.parser.TerminalReaches;
+import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.request.HUCRequest;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
@@ -700,13 +700,13 @@ public class SharedApplication  {
 	}
 
 	//Adjusted Source Cache
-	public List<Long> getReachesByCriteria(LogicalSet req) {
+	public long[] getReachesByCriteria(Criteria req) {
 		return getReachesByCriteria(req, false);
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Long> getReachesByCriteria(LogicalSet req, boolean quiet) {
-		return (List<Long>) ReachesByCriteria.get(req, quiet);
+	public long[] getReachesByCriteria(Criteria req, boolean quiet) {
+		return (long[]) ReachesByCriteria.get(req, quiet);
 	}
 
 	//Data Binning Cache

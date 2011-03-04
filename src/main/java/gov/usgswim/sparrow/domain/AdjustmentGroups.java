@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.parser;
+package gov.usgswim.sparrow.domain;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
@@ -7,6 +7,9 @@ import gov.usgswim.datatable.adjustment.ColumnCoefAdjustment;
 import gov.usgswim.datatable.adjustment.SparseCoefficientAdjustment;
 import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.parser.DefaultGroupParser;
+import gov.usgswim.sparrow.parser.XMLParseValidationException;
+import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +20,22 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
+/**
+ * A direct child of PredictionContext that contains all of the adjustments
+ * to be applied to the model.
+ * 
+ * Three sets of ReachGroups are held by this class, which each contain
+ * different type of adjustment applicaitons:
+ * <ul>
+ * <li>reachGroups contains a list of ReachGroups, one for each group the user creates.
+ * <li>defaultGroup contains model-wide adjustments.  For instance, a default
+ * adjustment could be applied to adjust source 1 for every reach in the model.
+ * <li>individualGroup contains individual reaches which each have a separate
+ * adjustment applied.
+ * </ul>
+ * @author eeverman
+ *
+ */
 public class AdjustmentGroups implements XMLStreamParserComponent {
 
 	private static final long serialVersionUID = 1L;
@@ -39,12 +58,18 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	// ===============
 	// INSTANCE FIELDS
 	// ===============
-	private Long modelID;
-	private List<ReachGroup> reachGroups = new ArrayList<ReachGroup>();
-	private ReachGroup defaultGroup;
-	private ReachGroup individualGroup;
 	private Integer id;
+	
+	private Long modelID;
 	private String conflicts;	//This should be an enum
+	private List<ReachGroup> reachGroups = new ArrayList<ReachGroup>();
+	
+	/** Model-wide adjustment */
+	private ReachGroup defaultGroup;
+	
+	/** Group containing individual reaches to be adjusted. */
+	private ReachGroup individualGroup;
+
 
 	//TODO: Parse should attempt to find the AG in the cache if it gets a ID.
 

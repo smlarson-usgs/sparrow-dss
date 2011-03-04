@@ -1,6 +1,9 @@
 package gov.usgswim.sparrow.parser;
 
 import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
+import gov.usgswim.sparrow.domain.AdvancedAnalysis;
+import gov.usgswim.sparrow.domain.Analysis;
+import gov.usgswim.sparrow.domain.DataSeriesType;
 
 import java.io.StringReader;
 

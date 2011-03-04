@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.action;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.utils.DataTableConverter;
-import gov.usgswim.sparrow.parser.DataSeriesType;
+import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.service.idbypoint.FindReachRequest;
 
 import java.io.IOException;

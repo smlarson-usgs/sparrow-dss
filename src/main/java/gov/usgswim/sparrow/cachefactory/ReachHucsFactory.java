@@ -5,13 +5,9 @@ import gov.usgswim.sparrow.action.LoadReachHucs;
 import gov.usgswim.sparrow.action.LoadReachHucsRequest;
 
 /**
- * An EHCache CacheEntryFactory to load reach-HUC associations.
+ * A thin wrapper around an Action for EHCache CacheEntryFactory.
  * 
- * This class is a thin wrapper over the action LoadReachHucs and is only
- * needed to provide compatibility w/ the EHCache framework.  See the action
- * class for implementation details.
- *
- * Caching, blocking, and de-caching are all handled by the caching system.
+ * Caching, blocking, and de-caching are all handled by EHCache system.
  *
  * @author eeverman
  */

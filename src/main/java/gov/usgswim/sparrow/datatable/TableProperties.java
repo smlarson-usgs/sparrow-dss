@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.datatable;
 
+import gov.usgswim.sparrow.domain.BaseDataSeriesType;
+import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.UnitAreaType;
-import gov.usgswim.sparrow.parser.BaseDataSeriesType;
-import gov.usgswim.sparrow.parser.DataSeriesType;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
 
 public enum TableProperties implements NamedEnum<TableProperties>{

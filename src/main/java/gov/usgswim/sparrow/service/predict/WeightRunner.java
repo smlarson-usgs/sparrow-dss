@@ -4,9 +4,9 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
-import gov.usgswim.sparrow.parser.BaseDataSeriesType;
-import gov.usgswim.sparrow.parser.DataSeriesType;
-import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.domain.BaseDataSeriesType;
+import gov.usgswim.sparrow.domain.DataSeriesType;
+import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.sql.Connection;

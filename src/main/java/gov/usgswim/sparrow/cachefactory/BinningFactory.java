@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.action.CalcBinning;
-import gov.usgswim.sparrow.parser.DataColumn;
-import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 

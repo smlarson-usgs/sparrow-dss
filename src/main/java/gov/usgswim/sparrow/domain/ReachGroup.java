@@ -1,7 +1,9 @@
-package gov.usgswim.sparrow.parser;
+package gov.usgswim.sparrow.domain;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import gov.usgswim.sparrow.parser.XMLParseValidationException;
+import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.ParserHelper;
 
@@ -15,6 +17,7 @@ import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
@@ -55,7 +58,7 @@ public class ReachGroup implements XMLStreamParserComponent {
 	protected List<Adjustment> adjs = new ArrayList<Adjustment>();
 	protected List<ReachElement> reaches = new ArrayList<ReachElement>();
 	protected List<LogicalSet> logicalSets;
-	protected transient List<List<Long>> reachIDsByLogicalSets; // transient as this is fetched from cache
+	protected transient List<long[]> reachIDsByLogicalSets; // transient as this is fetched from cache
 
 	// search
 	protected transient Set<Long> containedReachIDs; // temporary storage as convenience for searching
@@ -250,13 +253,13 @@ public class ReachGroup implements XMLStreamParserComponent {
 	 * @param i
 	 * @return reachIds for the ith logicalSet
 	 */
-	public List<Long> getLogicalReachIDs(int i) {
+	public long[] getLogicalReachIDs(int i) {
 		if (reachIDsByLogicalSets == null) {
 			if (logicalSets != null && i>=0 && logicalSets.size()>i) {
 
 				// valid request but reachIDsByLogicalSets not yet populated.
 				// Create an empty List for reachIDs of the correct size, filled with nulls;
-				reachIDsByLogicalSets = new ArrayList<List<Long>>(logicalSets.size());
+				reachIDsByLogicalSets = new ArrayList<long[]>(logicalSets.size());
 				for (int j=0; j<logicalSets.size(); j++) {
 					reachIDsByLogicalSets.add(null);
 				}
@@ -264,9 +267,20 @@ public class ReachGroup implements XMLStreamParserComponent {
 		}
 
 		// reachIDs are only fetched at the time that they are requested
-		List<Long> result = reachIDsByLogicalSets.get(i);
+		long[] result = reachIDsByLogicalSets.get(i);
 		if (result == null) {
-			result = SharedApplication.getInstance().getReachesByCriteria(logicalSets.get(i));
+			LogicalSet ls = logicalSets.get(i);
+			
+			assert(ls.getCriteria().size() < 2);
+			
+			if (ls.getCriteria().size() == 1) {
+				result = SharedApplication.getInstance().getReachesByCriteria(ls.getCriteria().get(0));
+			} else if (ls.getCriteria().size() == 0) {
+				result = ArrayUtils.EMPTY_LONG_ARRAY;
+			} else {
+				throw new RuntimeException("Only a single criteria is expected in a logical set.");
+			}
+			
 			reachIDsByLogicalSets.set(i, result);
 		}
 		return reachIDsByLogicalSets.get(i);
@@ -274,31 +288,26 @@ public class ReachGroup implements XMLStreamParserComponent {
 
 	public Set<Long> getCombinedReachIDs(){
 	    // Use a Set to avoid adding a reach more than once (because of logical sets)
-	    Set<Long> result = new HashSet<Long>();
+	    Set<Long> combinedIDs = new HashSet<Long>();
 		// Start with explicit reaches
 		if (reaches != null) {
 			for (ReachElement reach: reaches) {
-				result.add(reach.getId());
+				combinedIDs.add(reach.getId());
 			}
 		}
 
 		// add each of the logical reaches
-		for (int i=0; i<logicalSets.size(); i++) {
-			int m = result.size();
-			List<Long> lr = getLogicalReachIDs(i);
+		for (int logicalSetIndex=0; logicalSetIndex<logicalSets.size(); logicalSetIndex++) {
+			long[] logicalSetIDs = getLogicalReachIDs(logicalSetIndex);
 
-			//  potential fix for nullpointer issue.
-			if (lr != null) {
-				int n = lr.size();
-				result.addAll(lr);
-				if (result.size() < m+n) {
-					// TODO log this
-					System.out.println("WARNING: " + (m+n-result.size()) + " overlapping reaches ");
+			if (logicalSetIDs != null) {
+				for (int j = 0; j < logicalSetIDs.length; j++) {
+					combinedIDs.add(logicalSetIDs[j]);
 				}
 			}
 		}
 
-		return result;
+		return combinedIDs;
 	}
 
 

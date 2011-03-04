@@ -6,12 +6,12 @@ import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowDBTestBaseClass;
 import gov.usgswim.sparrow.cachefactory.PredictResultFactory;
+import gov.usgswim.sparrow.datatable.DataColumn;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
-import gov.usgswim.sparrow.parser.AdjustmentGroups;
-import gov.usgswim.sparrow.parser.DataColumn;
-import gov.usgswim.sparrow.parser.PredictionContext;
-import gov.usgswim.sparrow.parser.TerminalReaches;
+import gov.usgswim.sparrow.domain.PredictionContext;
+import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.util.ArrayList;

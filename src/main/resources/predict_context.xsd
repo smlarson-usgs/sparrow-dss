@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.usgs.gov/sparrow/prediction-schema/v0_2" xmlns:v0_2="http://www.usgs.gov/sparrow/prediction-schema/v0_2">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified"
+	targetNamespace="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:v0_2="http://www.usgs.gov/sparrow/prediction-schema/v0_2">
 	<xs:element name="PredictionContext">
 		<xs:complexType>
 			<xs:sequence>
@@ -13,7 +15,8 @@
 				<xs:choice minOccurs="0">
 					<xs:element name="nominalComparison">
 						<xs:complexType>
-							<xs:attribute name="type" use="required" type="v0_2:comparisonTypeEnum"/>
+							<xs:attribute name="type" use="required" type="v0_2:comparisonTypeEnum"
+							/>
 						</xs:complexType>
 					</xs:element>
 					<xs:element name="comparison" type="v0_2:comparison"/>
@@ -31,8 +34,8 @@
 	<xs:element name="adjustmentGroups">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element minOccurs="0" maxOccurs="unbounded" ref="v0_2:reachGroup" />
-				<xs:element minOccurs="0" maxOccurs="unbounded" ref="v0_2:individualGroup" />
+				<xs:element minOccurs="0" maxOccurs="unbounded" ref="v0_2:reachGroup"/>
+				<xs:element minOccurs="0" maxOccurs="unbounded" ref="v0_2:individualGroup"/>
 			</xs:sequence>
 			<xs:attribute name="conflicts" use="required">
 				<xs:simpleType>
@@ -41,7 +44,7 @@
 						<xs:enumeration value="supersede"/>
 					</xs:restriction>
 				</xs:simpleType>
-				
+
 			</xs:attribute>
 		</xs:complexType>
 	</xs:element>
@@ -90,7 +93,7 @@
 	<xs:element name="select">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element  name="advancedDataSeries" type="v0_2:normalizedDataSeries"/>
+				<xs:element name="advancedDataSeries" type="v0_2:normalizedDataSeries"/>
 				<xs:sequence minOccurs="0">
 					<xs:element ref="v0_2:analyticFunction"/>
 				</xs:sequence>
@@ -120,14 +123,14 @@
 			<xs:element ref="v0_2:PredictionContext"/>
 		</xs:sequence>
 		<xs:attribute name="contextId" type="xs:integer"/>
-		<xs:attribute name="type" type="v0_2:comparisonTypeEnum"  use="required"/>
+		<xs:attribute name="type" type="v0_2:comparisonTypeEnum" use="required"/>
 	</xs:complexType>
 	<xs:element name="limitTo" type="xs:string"/>
 	<xs:complexType name="groupBy">
 		<xs:simpleContent>
 			<xs:extension base="v0_2:groupByEnum">
 				<xs:attribute name="aggFunction" type="xs:string"/>
-			</xs:extension>			
+			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
 	<xs:element name="terminalReaches">
@@ -163,8 +166,8 @@
 		<xs:complexType>
 			<xs:simpleContent>
 				<xs:extension base="xs:NMTOKEN">
-					<xs:attribute name="attrib" use="required" type="xs:NCName"/>
-					<xs:attribute name="relation" type="xs:NCName"/>
+					<xs:attribute name="attrib" use="required"
+						type="v0_2:logicalSetCriteriaAttribEnum"/>
 				</xs:extension>
 			</xs:simpleContent>
 		</xs:complexType>
@@ -177,21 +180,21 @@
 			<xs:attribute name="id" use="required" type="xs:integer"/>
 		</xs:complexType>
 	</xs:element>
-	
-	
+
+
 	<!-- Global Definitions -->
 	<xs:complexType name="normalizedDataSeries">
 		<xs:simpleContent>
 			<xs:extension base="v0_2:dataSeriesEnum">
 				<xs:attribute name="source" type="xs:integer" use="optional"/>
-				<xs:attribute name="per"  type="v0_2:perEnum" use="optional"/>
-				<xs:attribute name="delivery"  type="v0_2:deliveryEnum" use="optional"/>
-				<xs:attribute name="weight"  type="v0_2:perEnum" use="optional"/>
-				<xs:attribute name="stdErrorEst"  type="v0_2:stdErrorEstEnum" use="optional"/>
+				<xs:attribute name="per" type="v0_2:perEnum" use="optional"/>
+				<xs:attribute name="delivery" type="v0_2:deliveryEnum" use="optional"/>
+				<xs:attribute name="weight" type="v0_2:perEnum" use="optional"/>
+				<xs:attribute name="stdErrorEst" type="v0_2:stdErrorEstEnum" use="optional"/>
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
-	
+
 	<xs:complexType name="denormalizedDataSeries">
 		<xs:simpleContent>
 			<xs:extension base="v0_2:dataSeriesEnum">
@@ -199,9 +202,11 @@
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
-	
+
 	<xs:simpleType name="dataSeriesEnum">
-		<xs:annotation><xs:documentation>This is the intended way to generate yield or concentration numbers.</xs:documentation></xs:annotation>
+		<xs:annotation>
+			<xs:documentation>This is the intended way to generate yield or concentration numbers.</xs:documentation>
+		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="total"/>
 			<xs:enumeration value="total_std_error_estimate"/>
@@ -225,9 +230,11 @@
 			<xs:enumeration value="flux"/>
 		</xs:restriction>
 	</xs:simpleType>
-	
+
 	<xs:simpleType name="perEnum">
-		<xs:annotation><xs:documentation>This is the intended way to generate yield or concentration numbers.</xs:documentation></xs:annotation>
+		<xs:annotation>
+			<xs:documentation>This is the intended way to generate yield or concentration numbers.</xs:documentation>
+		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="none"/>
 			<xs:enumeration value="cumulativeArea"/>
@@ -235,9 +242,11 @@
 			<xs:enumeration value="flow"/>
 		</xs:restriction>
 	</xs:simpleType>
-	
+
 	<xs:simpleType name="weightEnum">
-		<xs:annotation><xs:documentation>This is the intended way to generate yeild or concentration numbers.</xs:documentation></xs:annotation>
+		<xs:annotation>
+			<xs:documentation>This is the intended way to generate yeild or concentration numbers.</xs:documentation>
+		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="none"/>
 			<xs:enumeration value="cumulativeArea"/>
@@ -246,17 +255,21 @@
 			<xs:enumeration value="deliveryFraction"/>
 		</xs:restriction>
 	</xs:simpleType>
-	
+
 	<xs:simpleType name="deliveryEnum">
-		<xs:annotation><xs:documentation>This is the intended way to generate yeild or concentration numbers.</xs:documentation></xs:annotation>
+		<xs:annotation>
+			<xs:documentation>This is the intended way to generate yeild or concentration numbers.</xs:documentation>
+		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="none"/>
 			<xs:enumeration value="toTarget"/>
 		</xs:restriction>
 	</xs:simpleType>
-	
+
 	<xs:simpleType name="stdErrorEstEnum">
-		<xs:annotation><xs:documentation>This is the intended way to generate yeild or concentration numbers.</xs:documentation></xs:annotation>
+		<xs:annotation>
+			<xs:documentation>This is the intended way to generate yeild or concentration numbers.</xs:documentation>
+		</xs:annotation>
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="none"/>
 			<xs:enumeration value="stdError"/>
@@ -264,7 +277,7 @@
 			<xs:enumeration value="lowerBound"/>
 		</xs:restriction>
 	</xs:simpleType>
-	
+
 	<xs:simpleType name="groupByEnum">
 		<xs:annotation>
 			<xs:documentation>
@@ -272,17 +285,33 @@
 				calculations into higher level areas.
 			</xs:documentation>
 		</xs:annotation>
-			<xs:restriction base="xs:string">
-				<xs:enumeration value="huc8"/>
-				<xs:enumeration value="huc6"/>
-				<xs:enumeration value="huc4"/>
-				<xs:enumeration value="huc2"/>
-			</xs:restriction>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="huc8"/>
+			<xs:enumeration value="huc6"/>
+			<xs:enumeration value="huc4"/>
+			<xs:enumeration value="huc2"/>
+		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="comparisonTypeEnum">
 		<xs:restriction base="xs:string">
 			<xs:enumeration value="absolute"/>
 			<xs:enumeration value="percentage"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="logicalSetCriteriaAttribEnum">
+		<xs:annotation>
+			<xs:documentation>This enum  can be used as the logicalSet/criteria@attrib to specify what the
+criteria value is.  For hucX attrib's, a HUC is expected.  For upstream,
+the reach ID of a reach is expected, which means that the ID'ed reach and all
+of its upstream reaches will be included in the set.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="huc2"/>
+			<xs:enumeration value="huc4"/>
+			<xs:enumeration value="huc6"/>
+			<xs:enumeration value="huc8"/>
+			<xs:enumeration value="upstream"/>
 		</xs:restriction>
 	</xs:simpleType>
 </xs:schema>

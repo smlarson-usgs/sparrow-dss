@@ -1,11 +1,9 @@
 package gov.usgswim.sparrow.parser;
 
-import static gov.usgswim.sparrow.SparrowUnitTestBaseClass.getAttributeValue;
-import static gov.usgswim.sparrow.SparrowUnitTestBaseClass.pipeDispatch;
 import static gov.usgswim.sparrow.SparrowUnitTestBaseClass.readToString;
 import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
-import gov.usgswim.sparrow.parser.PredictionContext;
-import gov.usgswim.sparrow.parser.XMLParseValidationException;
+import gov.usgswim.sparrow.domain.DataSeriesType;
+import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 

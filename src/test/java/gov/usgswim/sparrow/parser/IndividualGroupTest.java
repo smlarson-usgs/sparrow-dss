@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.parser;
 
-import gov.usgswim.sparrow.parser.Adjustment;
-import gov.usgswim.sparrow.parser.IndividualGroup;
-import gov.usgswim.sparrow.parser.ReachElement;
+import gov.usgswim.sparrow.domain.Adjustment;
+import gov.usgswim.sparrow.domain.IndividualGroup;
+import gov.usgswim.sparrow.domain.ReachElement;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 
 import java.io.StringReader;
@@ -17,7 +17,7 @@ import junit.framework.TestCase;
 /**
  * Unit tests for the {@code IndividualGroup} class.
  *
- * @see gov.usgswim.sparrow.parser.IndividualGroup
+ * @see gov.usgswim.sparrow.domain.IndividualGroup
  * @author mtruiz
  */
 public class IndividualGroupTest extends TestCase {

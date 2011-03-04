@@ -1,25 +1,10 @@
 package gov.usgswim.sparrow;
 
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import gov.usgswim.sparrow.parser.DataColumn;
-import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
-import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
-
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import java.util.Set;
-import org.custommonkey.xmlunit.Diff;
-import org.custommonkey.xmlunit.XMLAssert;
-import org.custommonkey.xmlunit.examples.RecursiveElementNameAndTextQualifier;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.xml.sax.SAXException;
 
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.PostMethodWebRequest;

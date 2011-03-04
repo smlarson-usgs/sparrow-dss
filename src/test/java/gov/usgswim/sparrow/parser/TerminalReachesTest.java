@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.parser;
 
 import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
-import gov.usgswim.sparrow.parser.TerminalReaches;
+import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 
 import java.io.StringReader;

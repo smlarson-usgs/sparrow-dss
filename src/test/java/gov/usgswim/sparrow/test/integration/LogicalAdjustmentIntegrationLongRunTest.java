@@ -6,8 +6,8 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowDBTestBaseClass;
 import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
-import gov.usgswim.sparrow.parser.PredictionContext;
-import gov.usgswim.sparrow.parser.ReachGroup;
+import gov.usgswim.sparrow.domain.PredictionContext;
+import gov.usgswim.sparrow.domain.ReachGroup;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
@@ -15,7 +15,7 @@ import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.List;
+import java.util.Arrays;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -46,25 +46,34 @@ public class LogicalAdjustmentIntegrationLongRunTest extends SparrowDBTestBaseCl
 		rg.parse(reader);
 
 		// test huc 8 retrieval
-		List<Long> reaches8 = rg.getLogicalReachIDs(0);
+		long[] reaches8 = rg.getLogicalReachIDs(0);
 		assertTrue(reaches8 != null);
-		assertTrue(reaches8.size() > 0);
+		assertTrue(reaches8.length == 25);
+		assertTrue(Arrays.binarySearch(reaches8, 7764L) > -1);	//first
+		assertTrue(Arrays.binarySearch(reaches8, 661840L) > -1);	//last
+		assertTrue(Arrays.binarySearch(reaches8, 7763L) < 0);	//doesn't contain
+		assertTrue(Arrays.binarySearch(reaches8, 661841L) < 0);	//doesn't contain
 
 		// test huc 6 retrieval
-		List<Long> reaches6 = rg.getLogicalReachIDs(1);
+		long[] reaches6 = rg.getLogicalReachIDs(1);
 		assertTrue(reaches6 != null);
-		assertTrue(reaches6.size() > 0);
+		assertTrue(reaches6.length == 167);
+		assertTrue(Arrays.binarySearch(reaches6, 8164L) > -1);	//first
+		assertTrue(Arrays.binarySearch(reaches6, 661700L) > -1);	//last
 
 		// test huc 4 retrieval
-		List<Long> reaches4 = rg.getLogicalReachIDs(2);
+		long[] reaches4 = rg.getLogicalReachIDs(2);
 		assertTrue(reaches4 != null);
-		assertTrue(reaches4.size() > 0);
+		assertTrue(reaches4.length == 454);
+		assertTrue(Arrays.binarySearch(reaches4, 8164L) > -1);	//first
+		assertTrue(Arrays.binarySearch(reaches4, 661700L) > -1);	//last
 
 		// test huc 2 retrieval
-		List<Long> reaches2 = rg.getLogicalReachIDs(3);
+		long[] reaches2 = rg.getLogicalReachIDs(3);
 		assertTrue(reaches2 != null);
-		assertTrue(reaches2.size() > 0);
-
+		assertTrue(reaches2.length == 6850);
+		assertTrue(Arrays.binarySearch(reaches2, 4557L) > -1);	//first
+		assertTrue(Arrays.binarySearch(reaches2, 664620L) > -1);	//last
 	}
 
 	@Test

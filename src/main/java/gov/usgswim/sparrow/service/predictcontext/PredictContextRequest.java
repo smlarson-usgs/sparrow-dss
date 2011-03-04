@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.service.predictcontext;
 
 import gov.usgswim.service.pipeline.PipelineRequest;
-import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 
 public class PredictContextRequest implements PipelineRequest {

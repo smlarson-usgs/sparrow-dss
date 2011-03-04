@@ -1,14 +1,13 @@
 package gov.usgswim.sparrow.datatable;
 
-import java.io.IOException;
-
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTable.Immutable;
 import gov.usgswim.datatable.impl.FindHelper;
-import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.action.Action;
-import gov.usgswim.sparrow.parser.DataSeriesType;
+import gov.usgswim.sparrow.domain.DataSeriesType;
+
+import java.io.IOException;
 
 
 /**

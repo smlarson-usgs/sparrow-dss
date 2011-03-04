@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.SparrowDBTestBaseClass;
+import gov.usgswim.sparrow.datatable.DataColumn;
 import gov.usgswim.sparrow.datatable.TableProperties;
-import gov.usgswim.sparrow.parser.DataColumn;
-import gov.usgswim.sparrow.parser.DataSeriesType;
+import gov.usgswim.sparrow.domain.DataSeriesType;
 
 import org.junit.Test;
 

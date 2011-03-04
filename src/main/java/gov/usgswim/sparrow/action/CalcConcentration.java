@@ -4,10 +4,10 @@ import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.impl.ColumnFromTable;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.ColumnAttribsBuilder;
+import gov.usgswim.sparrow.datatable.DataColumn;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.datatable.SingleValueDoubleColumnData;
-import gov.usgswim.sparrow.parser.DataColumn;
-import gov.usgswim.sparrow.parser.DataSeriesType;
+import gov.usgswim.sparrow.domain.DataSeriesType;
 
 /**
  * This action creates a ColumnData containing the concentration of the

@@ -1,8 +1,10 @@
-package gov.usgswim.sparrow.parser;
+package gov.usgswim.sparrow.domain;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
+import gov.usgswim.sparrow.parser.XMLParseValidationException;
+import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
 import gov.usgswim.sparrow.util.ParserHelper;
 
 import java.util.ArrayList;

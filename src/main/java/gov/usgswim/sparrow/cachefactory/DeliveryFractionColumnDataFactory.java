@@ -3,13 +3,9 @@ package gov.usgswim.sparrow.cachefactory;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.action.CalcDeliveryFractionColumnData;
-import gov.usgswim.sparrow.action.DeliveryReach;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
-import gov.usgswim.sparrow.parser.TerminalReaches;
+import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
-
-import java.util.HashMap;
-
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 /**

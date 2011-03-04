@@ -5,8 +5,8 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.SparrowDBTestBaseClass;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.UnitAreaType;
-import gov.usgswim.sparrow.parser.DataSeriesType;
 
 import org.junit.Test;
 

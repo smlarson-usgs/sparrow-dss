@@ -1,43 +1,12 @@
 package gov.usgswim.sparrow.action;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
-import gov.usgswim.datatable.impl.SimpleDataTable;
-import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowDBTestBaseClass;
-import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
-import gov.usgswim.sparrow.clustering.SparrowCacheManager;
-import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
-import gov.usgswim.sparrow.parser.AdjustmentGroups;
-import gov.usgswim.sparrow.parser.AreaOfInterest;
-import gov.usgswim.sparrow.parser.BasicAnalysis;
-import gov.usgswim.sparrow.parser.DataColumn;
-import gov.usgswim.sparrow.parser.DataSeriesType;
-import gov.usgswim.sparrow.parser.NominalComparison;
-import gov.usgswim.sparrow.parser.PredictionContext;
-import gov.usgswim.sparrow.parser.TerminalReaches;
 import gov.usgswim.sparrow.request.ReachID;
-import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
-import gov.usgswim.sparrow.util.TabDelimFileUtil;
-
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
-import net.sf.ehcache.Element;
 
 import org.apache.log4j.Level;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import static gov.usgswim.sparrow.service.ConfiguredCache.*;
 
 
 /**

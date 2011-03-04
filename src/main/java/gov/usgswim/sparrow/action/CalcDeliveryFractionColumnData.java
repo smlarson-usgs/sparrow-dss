@@ -6,9 +6,9 @@ import gov.usgswim.datatable.impl.StandardDoubleColumnData;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.domain.BaseDataSeriesType;
+import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
-import gov.usgswim.sparrow.parser.BaseDataSeriesType;
-import gov.usgswim.sparrow.parser.DataSeriesType;
 
 import java.util.HashMap;
 import java.util.Iterator;

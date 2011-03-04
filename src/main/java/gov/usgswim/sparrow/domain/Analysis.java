@@ -1,5 +1,7 @@
-package gov.usgswim.sparrow.parser;
+package gov.usgswim.sparrow.domain;
 
+import gov.usgswim.sparrow.parser.XMLParseValidationException;
+import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
 import gov.usgswim.sparrow.util.ParserHelper;
 
 import javax.xml.XMLConstants;

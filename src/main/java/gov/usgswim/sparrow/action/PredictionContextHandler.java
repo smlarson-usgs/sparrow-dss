@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.request.PredictionContextRequest;
 
 import java.io.ObjectInputStream;

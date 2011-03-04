@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.parser;
+package gov.usgswim.sparrow.domain;
 
 import java.io.Serializable;
 

@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.service.predict;
 
-import gov.usgswim.sparrow.parser.AdjustmentGroups;
-import gov.usgswim.sparrow.parser.PredictionContext;
+import gov.usgswim.sparrow.domain.AdjustmentGroups;
+import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 public class IndividualReachPredictionRequest {

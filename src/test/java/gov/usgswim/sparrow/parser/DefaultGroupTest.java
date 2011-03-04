@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.parser;
 
+import gov.usgswim.sparrow.domain.ReachGroup;
 import gov.usgswim.sparrow.parser.DefaultGroupParser;
-import gov.usgswim.sparrow.parser.ReachGroup;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 
 import java.io.StringReader;

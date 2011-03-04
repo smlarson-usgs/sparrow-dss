@@ -1,7 +1,6 @@
-package gov.usgswim.sparrow.parser;
+package gov.usgswim.sparrow.datatable;
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.datatable.TableProperties;
 
 /**
  * An inner class to bundle a DataTable and a column index together so that

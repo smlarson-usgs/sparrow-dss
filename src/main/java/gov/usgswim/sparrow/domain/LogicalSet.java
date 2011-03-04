@@ -1,12 +1,13 @@
-package gov.usgswim.sparrow.parser;
+package gov.usgswim.sparrow.domain;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.Immutable;
-import gov.usgswim.sparrow.util.ParserHelper;
+import gov.usgswim.sparrow.parser.XMLParseValidationException;
+import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -22,7 +23,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @Immutable
 public class LogicalSet implements XMLStreamParserComponent {
 
-	private static final long serialVersionUID = 4020487873395320955L;
+	private static final long serialVersionUID = 1L;
 	public static final String MAIN_ELEMENT_NAME = "logicalSet";
 
 	// =============================
@@ -35,22 +36,22 @@ public class LogicalSet implements XMLStreamParserComponent {
 	// ===============
 	// INSTANCE FIELDS
 	// ===============
-	private Map<String, String> criteria;
-	private final long modelID;
+	private List<Criteria> criteria = new ArrayList<Criteria>();
+	private Long modelID;
 	
 	// ===========
 	// CONSTRUCTOR
 	// ===========
 	public LogicalSet(long modelID) {
 		this.modelID = modelID;
-		this.criteria = new HashMap<String, String>();
+		this.criteria = new ArrayList<Criteria>();
 	}
 	
-	public LogicalSet(long modelID, Map<String, String> crit) {
+	public LogicalSet(long modelID, List<Criteria> criteria) {
 		this.modelID = modelID;
-		// Have to make this unmodifiable, and a different reference from the
-		// original otherwise there's gonna be trouble.
-		this.criteria = Collections.unmodifiableMap(crit);
+		// Have to copy the list to prevent external mods.
+		this.criteria = new ArrayList<Criteria>(criteria.size());
+		this.criteria.addAll(criteria);
 	}
 	// ================
 	// INSTANCE METHODS
@@ -81,13 +82,14 @@ public class LogicalSet implements XMLStreamParserComponent {
 					localName = in.getLocalName();
 					if (isParseTarget(localName)) {
 						continue;
-					} else if ("criteria".equals(localName)) {
+					} else if (Criteria.isTargetMatch(localName)) {
 						if (criteria.size() > 0) {
 							throw new XMLParseValidationException("only one criteria allowed per logicalSet, at the moment");
 						}
-						String attrib = in.getAttributeValue("","attrib");
-						String value = ParserHelper.parseSimpleElementValue(in);
-						criteria.put(attrib, value);
+						
+						Criteria c = new Criteria(modelID);
+						c.parse(in);
+						criteria.add(c);
 					} else {
 						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
 					}
@@ -95,9 +97,6 @@ public class LogicalSet implements XMLStreamParserComponent {
 				case END_ELEMENT:
 					localName = in.getLocalName();
 					if (isParseTarget(localName)) {
-						// fix the criteria
-						criteria = Collections.unmodifiableMap(criteria);
-
 						checkValidity();
 						return this; // we're done
 					}
@@ -146,17 +145,6 @@ public class LogicalSet implements XMLStreamParserComponent {
 			return obj.hashCode() == hashCode();
 		}
 		return false;
-
-//		if (obj != null && obj instanceof LogicalSet) {
-//			if (obj == null) return false;
-//			LogicalSet other = (LogicalSet) obj;
-//			if (this.modelID != other.modelID) return false;
-//			if (this.criteria == null && other.criteria == null) return true;
-//			if (this.criteria == null || other.criteria == null) return false;
-//			return this.criteria.equals(other.criteria); // Note that map.equals compares only on the value of map entries
-//		} else {
-//			return false;
-//		}
 	}
 
 	@Override
@@ -165,24 +153,17 @@ public class LogicalSet implements XMLStreamParserComponent {
 		hash.append(modelID).append(criteria);
 		
 		return hash.toHashCode();
-		
-//		if (criteria != null) {
-//			// Note that map.hashCode() is generated only based on values of its entries.
-//			return criteria.hashCode() + Long.valueOf(modelID%161).intValue();
-//		} else {
-//			return Long.valueOf(modelID%161).intValue(); // need to return int but modleID is long.
-//		}
 	}
 	
 	// =================
 	// GETTERS & SETTERS
 	// =================
 
-	public Map<String, String> getCriteria() {
-		return Collections.unmodifiableMap(criteria); // unmodifyable copy
+	public List<Criteria> getCriteria() {
+		return Collections.unmodifiableList(criteria); // unmodifyable
 	}
 
-	public long getModelID() {
+	public Long getModelID() {
 		return modelID;
 	}
 

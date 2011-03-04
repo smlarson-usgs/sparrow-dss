@@ -1,7 +1,9 @@
-package gov.usgswim.sparrow.parser;
+package gov.usgswim.sparrow.domain;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import gov.usgswim.sparrow.parser.XMLParseValidationException;
+import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
 import gov.usgswim.sparrow.util.ParserHelper;
 
 import javax.xml.stream.XMLStreamException;
@@ -20,15 +22,27 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * @author eeverman
  *
  */
-public class AdvancedAnalysis extends Analysis {
+public class BasicAnalysis extends Analysis {
 
 	private static final long serialVersionUID = 1L;
 	private static final String GROUP_BY_CHILD = "groupBy";
-	private static final String LIMIT_TO_CHILD = "limitTo";
-	public static final String MAIN_ELEMENT_NAME = "advancedAnalysis";
+	private static final String DATA_SERIES = "dataSeries";
 
+	/**
+	 * The element name doesn't match the class name b/c we want the XML to be
+	 * as simple as possible for users.
+	 */
+	public static final String MAIN_ELEMENT_NAME = "analysis";
+
+	//TODO:  Do we need a default?  If so, this wouldn't be it.
 	public static final AdvancedAnalysis DEFAULT_TOTAL_INSTANCE = new AdvancedAnalysis(new Select(DataSeriesType.total));
 
+	
+	private Integer id;
+	private DataSeriesType dataSeries;
+	private Integer source;
+	
+	
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
 	// =============================
@@ -37,29 +51,31 @@ public class AdvancedAnalysis extends Analysis {
 	}
 
 
-	public AdvancedAnalysis() {};
-
-	public AdvancedAnalysis(Select select) {
-		this.select = select;
-	};
+	public BasicAnalysis() {};
+	
+	public BasicAnalysis(DataSeriesType dataSeries, Integer source,
+			String groupBy, String aggFunction) {
+		
+		super(groupBy, aggFunction);
+		this.dataSeries = dataSeries;
+		this.source = source;
+	}
 
 	public static AdvancedAnalysis getDefaultTotalAnalysis() {
 		return DEFAULT_TOTAL_INSTANCE;
 	}
 
-	public static AdvancedAnalysis parseStream(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
-		AdvancedAnalysis anal = new AdvancedAnalysis();
+	public static BasicAnalysis parseStream(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
+		BasicAnalysis anal = new BasicAnalysis();
 		return anal.parse(in);
 	}
 
-	private String limitTo;
-	private Integer id;
-	private Select select;
+
 
 	// ================
 	// INSTANCE METHODS
 	// ================
-	public AdvancedAnalysis parse(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
+	public BasicAnalysis parse(XMLStreamReader in) throws XMLStreamException, XMLParseValidationException {
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
 		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) :
@@ -81,12 +97,12 @@ public class AdvancedAnalysis extends Analysis {
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
 						id = ParserHelper.parseAttribAsInt(in, XMLStreamParserComponent.ID_ATTR, false);
-					} else if ("select".equals(localName)) {
-						Select selectElement = new Select();
-						selectElement.parse(in);
-						this.select = selectElement;
-					} else if (LIMIT_TO_CHILD.equals(localName)) {
-						limitTo = ParserHelper.parseSimpleElementValue(in);
+					} else if (DATA_SERIES.equals(localName)) {
+						source = ParserHelper.parseAttribAsInt(in, "source", false);
+						String dataSeriesString = ParserHelper.parseSimpleElementValue(in);
+						dataSeries = (dataSeriesString != null)?
+								Enum.valueOf(DataSeriesType.class, dataSeriesString): null;
+
 					} else if (GROUP_BY_CHILD.equals(localName)) {
 						parseGroupBy(in);
 					} else {
@@ -108,8 +124,13 @@ public class AdvancedAnalysis extends Analysis {
 	}
 
 	@Override
+	public DataSeriesType getDataSeries() {
+		return dataSeries;
+	}
+
+	@Override
 	public boolean isWeighted() {
-		return getSelect().isWeighted();
+		return dataSeries.isWeighted();
 	}
 
 	public String getParseTarget() {
@@ -125,7 +146,7 @@ public class AdvancedAnalysis extends Analysis {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof AdvancedAnalysis) {
+		if (obj instanceof BasicAnalysis) {
 			return obj.hashCode() == hashCode();
 		}
 		return false;
@@ -134,62 +155,39 @@ public class AdvancedAnalysis extends Analysis {
 	@Override
 	public synchronized int hashCode() {
 		if (id == null) {
-			int hash = new HashCodeBuilder(137, 1729).
-			append(limitTo).
-			append(select).
-			append(super.hashCode()).
-			toHashCode();
+			HashCodeBuilder hash = new HashCodeBuilder(137, 1729);
 
-			id = hash;
+			//Note: The hashcode of an enum is not repeatable
+			if (dataSeries != null) {
+				hash.append(dataSeries.ordinal());	//must be repeatable (thus ordinal)
+			}
+
+			hash.append(source);
+			hash.append(super.hashCode());
+
+			id = hash.toHashCode();
 		}
 		return id;
 	}
 
 	@Override
-	public AdvancedAnalysis clone() throws CloneNotSupportedException {
-		AdvancedAnalysis myClone = new AdvancedAnalysis();
+	public BasicAnalysis clone() throws CloneNotSupportedException {
+		BasicAnalysis myClone = new BasicAnalysis();
 		myClone.groupBy = groupBy;
 		myClone.aggFunction = aggFunction;
-		myClone.limitTo = limitTo;
-		myClone.select = select;
+		myClone.dataSeries = dataSeries;
+		myClone.source = source;
 		return myClone;
 	}
 
 	@Override
 	public void checkValidity() throws XMLParseValidationException {
 		super.checkValidity();
-		select.checkValidity();
-
-		//Some series do not allow any type of aggregate or post analysis.
-		//Error estimates are one example.
-		if (getDataSeries().isAnalysisDisallowed() && aggFunction != null) {
-			throw new XMLParseValidationException(
-				"The dataSeries '" + getDataSeries() +
-				"' does not allow analysis like aggregation.");
-		}
 	}
-
-	// =================
-	// GETTERS & SETTERS
-	// =================
-	public String getLimitTo(){
-		return limitTo;
-	}
-
-	public Select getSelect(){
-		return select;
-	}
-
-
-	@Override
-	public DataSeriesType getDataSeries() {
-		return select.getDataSeries();
-	}
-
 
 	@Override
 	public Integer getSource() {
-		return select.getSource();
+		return source;
 	}
 
 }

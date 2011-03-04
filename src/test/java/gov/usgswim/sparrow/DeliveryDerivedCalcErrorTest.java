@@ -2,7 +2,7 @@ package gov.usgswim.sparrow;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.sparrow.parser.DataColumn;
+import gov.usgswim.sparrow.datatable.DataColumn;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 
