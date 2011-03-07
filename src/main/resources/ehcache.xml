@@ -382,9 +382,7 @@
 		
 	<cache name="LoadReachAttributes" maxElementsInMemory="20" />
 		
-        <!-- Not currently used. -->
-	<cache name="ReachesByCriteria" maxElementsInMemory="10"/>
-        <!-- End not currently used. --> 
+	<cache name="ReachesByCriteria" maxElementsInMemory="3"/>
     
     <cache name="DataBinning" maxElementsInMemory="100"/>
         

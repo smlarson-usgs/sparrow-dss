@@ -22,11 +22,11 @@ import java.util.List;
  * @author eeverman
  *
  */
-public class CalcReachesByNavigation extends Action<long[]> {
+public class CalcReachesByNetwork extends Action<long[]> {
 	
 	protected Criteria criteria;
 	
-	public CalcReachesByNavigation() {
+	public CalcReachesByNetwork() {
 		super();
 	}
 	

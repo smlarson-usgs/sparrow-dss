@@ -12,22 +12,24 @@ import gov.usgswim.sparrow.datatable.NamedEnum;
  */
 public enum CriteriaType implements NamedEnum<CriteriaType> {
 	
-	HUC2("huc2", "HUC Level 2", true, CriteriaRelationType.IN),
-	HUC4("huc4", "HUC Level 4", true, CriteriaRelationType.IN),
-	HUC6("huc6", "HUC Level 6", true, CriteriaRelationType.IN),
-	HUC8("huc8", "HUC Level 8", true, CriteriaRelationType.IN),
-	REACH("reach", "A reach ID", false, CriteriaRelationType.UPSTREAM),
-	UNKNOWN("unknown", "The CriteriaType is unspecified", false, CriteriaRelationType.UNKNOWN);
+	HUC2("huc2", "HUC Level 2", true, false, CriteriaRelationType.IN),
+	HUC4("huc4", "HUC Level 4", true, false, CriteriaRelationType.IN),
+	HUC6("huc6", "HUC Level 6", true, false, CriteriaRelationType.IN),
+	HUC8("huc8", "HUC Level 8", true, false, CriteriaRelationType.IN),
+	REACH("reach", "A reach ID", false, true, CriteriaRelationType.UPSTREAM),
+	UNKNOWN("unknown", "The CriteriaType is unspecified", false, false, CriteriaRelationType.UNKNOWN);
 	
 	private String name;
 	private String description;
 	private boolean hucCriteria;
+	private boolean networkCriteria;
 	private CriteriaRelationType defaultCriteriaRelation;
 	
-	CriteriaType(String name, String description, boolean isHucCriteria, CriteriaRelationType defaultCriteriaRelation) {
+	CriteriaType(String name, String description, boolean isHucCriteria, boolean networkCriteria, CriteriaRelationType defaultCriteriaRelation) {
 		this.name = name;
 		this.description = description;
 		this.hucCriteria = isHucCriteria;
+		this.networkCriteria = networkCriteria;
 		this.defaultCriteriaRelation = defaultCriteriaRelation;
 	}
 	
@@ -79,10 +81,13 @@ public enum CriteriaType implements NamedEnum<CriteriaType> {
 	public boolean isHucCriteria() {
 		return hucCriteria;
 	}
+	
+	public boolean isNetworkCriteria() {
+		return networkCriteria;
+	}
 
 	public CriteriaRelationType getDefaultCriteriaRelation() {
 		return defaultCriteriaRelation;
 	}
-
 
 }

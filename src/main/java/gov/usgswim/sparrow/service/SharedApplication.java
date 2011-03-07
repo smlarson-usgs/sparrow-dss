@@ -699,7 +699,7 @@ public class SharedApplication  {
 		return (DataTable) AdjustedSource.get(req, quiet);
 	}
 
-	//Adjusted Source Cache
+	//Reaches by criteria (used to adjust sources)
 	public long[] getReachesByCriteria(Criteria req) {
 		return getReachesByCriteria(req, false);
 	}
