@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.cachefactory;
 
+import gov.usgswim.sparrow.action.CalcReachesByNavigation;
 import gov.usgswim.sparrow.action.LoadReachesInHuc;
 import gov.usgswim.sparrow.domain.Criteria;
 
@@ -30,8 +31,10 @@ public class ReachesByCriteriaFactory extends AbstractCacheFactory {
 			long[] results = action.run();
 			return results;
 		} else {
-			log.error("Not currently supporting Criteria: " + criteria.getCriteriaType().getName());
-			return null;
+			CalcReachesByNavigation action = new CalcReachesByNavigation();
+			action.setCriteria(criteria);
+			long[] results = action.run();
+			return results;
 		}
 	}
 }

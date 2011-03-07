@@ -167,7 +167,8 @@
 			<xs:simpleContent>
 				<xs:extension base="xs:NMTOKEN">
 					<xs:attribute name="attrib" use="required"
-						type="v0_2:logicalSetCriteriaAttribEnum"/>
+						type="v0_2:CriteriaTypeEnum"/>
+					<xs:attribute name="relation" type="v0_2:criteriaRelationEnum"/>
 				</xs:extension>
 			</xs:simpleContent>
 		</xs:complexType>
@@ -298,7 +299,7 @@
 			<xs:enumeration value="percentage"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="logicalSetCriteriaAttribEnum">
+	<xs:simpleType name="CriteriaTypeEnum">
 		<xs:annotation>
 			<xs:documentation>This enum  can be used as the logicalSet/criteria@attrib to specify what the
 criteria value is.  For hucX attrib's, a HUC is expected.  For upstream,
@@ -311,6 +312,21 @@ of its upstream reaches will be included in the set.
 			<xs:enumeration value="huc4"/>
 			<xs:enumeration value="huc6"/>
 			<xs:enumeration value="huc8"/>
+			<xs:enumeration value="reach"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="criteriaRelationEnum">
+		<xs:annotation>
+			<xs:documentation>This enum  can be used as the logicalSet/criteria@relation to specify what the
+relation of the selected reaches are to the passed value.  'in' refers to the reaches being in the
+criteria, i.e., the reaches must be in the specified HUC.  'upstream' specifies that the reaches are
+upstream of the specified reach (the specified reach is included by this criteria).
+For huc type criterias, the default relation is 'in'.
+For reach type criteria, the default relation is 'upstream'.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="in"/>
 			<xs:enumeration value="upstream"/>
 		</xs:restriction>
 	</xs:simpleType>

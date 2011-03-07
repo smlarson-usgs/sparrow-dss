@@ -92,6 +92,17 @@ Does not contain these reaches (4 listed) :
 8239
 		-->
 			</logicalSet>
+			<logicalSet>
+				<criteria attrib="reach" relation="upstream">17142</criteria>
+				<!--
+				Contains these reaches (all listed) :
+		17142 (the reach itself)
+		17143
+		17144
+		17145
+		17146
+				-->	
+			</logicalSet>
 		</reachGroup>
 		<individualGroup enabled="true">
 			<reach id="7775">

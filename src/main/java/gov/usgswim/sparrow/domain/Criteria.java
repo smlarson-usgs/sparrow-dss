@@ -36,6 +36,7 @@ public class Criteria implements XMLStreamParserComponent {
 	// ===============
 	private Long modelID;
 	private CriteriaType criteriaType;
+	private CriteriaRelationType relation;
 	private String value;
 	
 	
@@ -46,9 +47,12 @@ public class Criteria implements XMLStreamParserComponent {
 		this.modelID = modelID;
 	}
 	
-	public Criteria(Long modelID, CriteriaType criteriaType, String value) {
+	public Criteria(Long modelID, CriteriaType criteriaType,
+			CriteriaRelationType relation, String value) {
+		
 		this.modelID = modelID;
 		this.criteriaType = criteriaType;
+		this.relation = relation;
 		this.value = value;
 	}
 	// ================
@@ -78,13 +82,21 @@ public class Criteria implements XMLStreamParserComponent {
 					localName = in.getLocalName();
 					if (isParseTarget(localName)) {
 
-						String attrib = in.getAttributeValue("","attrib");
+						String typeStr = in.getAttributeValue("","attrib");
+						String relationStr = in.getAttributeValue("","relation");
 						String elemValue = ParserHelper.parseSimpleElementValue(in);
 						
-						CriteriaType type = CriteriaType.UNKNOWN.fromStringIgnoreCase(attrib);
+						CriteriaType type = CriteriaType.UNKNOWN.fromStringIgnoreCase(typeStr);
+						CriteriaRelationType relType = CriteriaRelationType.UNKNOWN.fromStringIgnoreCase(relationStr);
+						
+						//May not have been spec'ed - use the default for the type
+						if (relType.equals(CriteriaRelationType.UNKNOWN)) {
+							relType = type.getDefaultCriteriaRelation();
+						}
 						
 						criteriaType = type;
 						value = elemValue;
+						relation = relType;
 						
 						checkValidity();
 						return this; // we're done
@@ -122,7 +134,13 @@ public class Criteria implements XMLStreamParserComponent {
 	}
 	
 	private boolean hasCriteria() {
-		return (criteriaType != null && ! criteriaType.equals(CriteriaType.UNKNOWN) && value != null);
+		return (
+				criteriaType != null &&
+				! criteriaType.equals(CriteriaType.UNKNOWN) && value != null &&
+				relation != null &&
+				! relation.equals(CriteriaRelationType.UNKNOWN)
+				
+		);
 	}
 	
 	/**
@@ -139,7 +157,7 @@ public class Criteria implements XMLStreamParserComponent {
 	@Override
 	public synchronized int hashCode() {
 		HashCodeBuilder hash = new HashCodeBuilder(12497, 134343);
-		hash.append(modelID).append(criteriaType).append(value);
+		hash.append(modelID).append(criteriaType).append(value).append(relation);
 		
 		return hash.toHashCode();
 	}
@@ -158,6 +176,10 @@ public class Criteria implements XMLStreamParserComponent {
 	
 	public String getValue() {
 		return value;
+	}
+
+	public CriteriaRelationType getRelation() {
+		return relation;
 	}
 
 

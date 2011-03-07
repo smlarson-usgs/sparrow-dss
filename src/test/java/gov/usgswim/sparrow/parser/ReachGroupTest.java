@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.parser;
 
 import gov.usgswim.sparrow.domain.Adjustment;
+import gov.usgswim.sparrow.domain.CriteriaRelationType;
 import gov.usgswim.sparrow.domain.CriteriaType;
 import gov.usgswim.sparrow.domain.LogicalSet;
 import gov.usgswim.sparrow.domain.ReachElement;
@@ -61,7 +62,7 @@ public class ReachGroupTest extends TestCase {
 		+ "		<criteria attrib=\"huc2\">10</criteria>"
 		+ "	</logicalSet>"
 		+ "	<logicalSet>"
-		+ "		<criteria attrib=\"upstream\">999</criteria>"
+		+ "		<criteria attrib=\"reach\" relation=\"upstream\">999</criteria>"
 		+ "	</logicalSet>"
 		+ "</reachGroup>";
 
@@ -90,12 +91,14 @@ public class ReachGroupTest extends TestCase {
 		List<LogicalSet> lSets = rg.getLogicalSets();
 		assertEquals(5, lSets.size());
 		assertTrue(lSets.get(0).getCriteria().get(0).getCriteriaType().equals(CriteriaType.HUC8));
+		assertTrue(lSets.get(0).getCriteria().get(0).getRelation().equals(CriteriaRelationType.IN));
 		assertEquals("10040202", lSets.get(0).getCriteria().get(0).getValue());
 		
 		assertEquals("101701", lSets.get(1).getCriteria().get(0).getValue());
 		
 		//upstream set
-		assertTrue(lSets.get(4).getCriteria().get(0).getCriteriaType().equals(CriteriaType.UPSTREAM));
+		assertTrue(lSets.get(4).getCriteria().get(0).getCriteriaType().equals(CriteriaType.REACH));
+		assertTrue(lSets.get(4).getCriteria().get(0).getRelation().equals(CriteriaRelationType.UPSTREAM));
 		assertEquals("999", lSets.get(4).getCriteria().get(0).getValue());
 	}
 

@@ -32,10 +32,10 @@
 				</notes>
 				<adjustment src="1" coef="1.05"/>
 				<logicalSet>
-					<criteria attrib="upstream">8346289</criteria>
+					<criteria attrib="reach" relation="upstream">8346289</criteria>
 				</logicalSet>
 				<logicalSet>
-					<criteria attrib="upstream">9374562</criteria>
+					<criteria attrib="reach" relation="upstream">9374562</criteria>
 				</logicalSet>
 			</reachGroup>
 <!--  

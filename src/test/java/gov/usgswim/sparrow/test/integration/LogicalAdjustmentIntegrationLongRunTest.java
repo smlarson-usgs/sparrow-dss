@@ -74,10 +74,19 @@ public class LogicalAdjustmentIntegrationLongRunTest extends SparrowDBTestBaseCl
 		assertTrue(reaches2.length == 6850);
 		assertTrue(Arrays.binarySearch(reaches2, 4557L) > -1);	//first
 		assertTrue(Arrays.binarySearch(reaches2, 664620L) > -1);	//last
+		
+		// test reaches upstream
+		long[] reachesUp = rg.getLogicalReachIDs(4);
+		assertEquals(17142, reachesUp[0]);
+		assertEquals(17143, reachesUp[1]);
+		assertEquals(17144, reachesUp[2]);
+		assertEquals(17145, reachesUp[3]);
+		assertEquals(17146, reachesUp[4]);
+		assertEquals(5, reachesUp.length);
 	}
 
 	@Test
-	public void testHuc4_6_8Adjustment() throws Exception {
+	public void testHucAndUpstreamAdjustments() throws Exception {
 		String xmlReq = getXmlAsString(this.getClass(), "req2");
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		PredictContextRequest contextReq = pipe.parse(xmlReq);
@@ -114,13 +123,20 @@ public class LogicalAdjustmentIntegrationLongRunTest extends SparrowDBTestBaseCl
 		//Reaches in Group2: huc6
 		//Same as group1 huc4 (they overlap)
 		
-		//Reaches in Group3 (huc8)
+		//Reaches in Group3 (huc8 & upstream of 17142)
 		//This group overlaps Group2 huc6 above and should accumulate a
 		//coef for source 1.
+		//huc8 reaches
 		int RCH_ROW_8236 = nomData.getRowForReachID(8236);
 		int RCH_ROW_8237 = nomData.getRowForReachID(8237);
 		int RCH_ROW_8238 = nomData.getRowForReachID(8238);
 		int RCH_ROW_8239 = nomData.getRowForReachID(8239);
+		//upstream reaches
+		int RCH_ROW_17142 = nomData.getRowForReachID(17142);
+		int RCH_ROW_17143 = nomData.getRowForReachID(17143);
+		int RCH_ROW_17144 = nomData.getRowForReachID(17144);
+		int RCH_ROW_17145 = nomData.getRowForReachID(17145);
+		int RCH_ROW_17146 = nomData.getRowForReachID(17146);
 		
 		//This reach is in group2, but has its source 1 overridden to 99.
 		int RCH_ROW_7775 = nomData.getRowForReachID(7775);
@@ -157,7 +173,7 @@ public class LogicalAdjustmentIntegrationLongRunTest extends SparrowDBTestBaseCl
 		}
 		
 		{
-			//Test Group1
+			//Test Group1: huc4 0314
 			double SRC_COEF_4 = .8D;
 			double SRC_COEF_5 = .6D;
 			// test first row item
@@ -178,7 +194,7 @@ public class LogicalAdjustmentIntegrationLongRunTest extends SparrowDBTestBaseCl
 		}
 
 		{
-			//Test Group2: huc4
+			//Test Group2: huc8 03110206 and huc6 031401
 			double SRC_COEF_1 = 2D;
 			//non-adjusted vales for first reach
 			assertEquals(nomSrc.getDouble(RCH_ROW_7764, SRC_COL_2), adjSrc.getDouble(RCH_ROW_7764, SRC_COL_2), VARIANCE);	//not adjusted
@@ -199,23 +215,42 @@ public class LogicalAdjustmentIntegrationLongRunTest extends SparrowDBTestBaseCl
 		}
 		
 		{
-			//Test Group3: huc6
-			//This group has a cumulative adjustment on source 1
-			double SRC_COEF_1 = 4D; //2 X 2
+			//Test Group3: huc8 03140104 & upstream of 17142
+			//The HUC8 src 1 has a cumulative adjustment (2X2) from group 2
+			double HUC8_SRC_COEF_1 = 4D; //2 X 2
 			double SRC_COEF_3 = 9D;
+			double SRC_COEF_1 = 2D;	//src 1 has no overlay for the upstream reaches
+			
 
-			//Source 1 for all reaches
-			assertEquals(nomSrc.getDouble(RCH_ROW_8236, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_8236, SRC_COL_1), VARIANCE);
-			assertEquals(nomSrc.getDouble(RCH_ROW_8237, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_8237, SRC_COL_1), VARIANCE);
-			assertEquals(nomSrc.getDouble(RCH_ROW_8238, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_8238, SRC_COL_1), VARIANCE);
-			assertEquals(nomSrc.getDouble(RCH_ROW_8239, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_8239, SRC_COL_1), VARIANCE);
+			//Source 1 for only 4 of the huc reaches
+			assertEquals(nomSrc.getDouble(RCH_ROW_8236, SRC_COL_1) * HUC8_SRC_COEF_1, adjSrc.getDouble(RCH_ROW_8236, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8237, SRC_COL_1) * HUC8_SRC_COEF_1, adjSrc.getDouble(RCH_ROW_8237, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8238, SRC_COL_1) * HUC8_SRC_COEF_1, adjSrc.getDouble(RCH_ROW_8238, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_8239, SRC_COL_1) * HUC8_SRC_COEF_1, adjSrc.getDouble(RCH_ROW_8239, SRC_COL_1), VARIANCE);
 			
 			
-			//Source 3 for all reaches
+			//Source 3 for only 4 of the huc reaches
 			assertEquals(nomSrc.getDouble(RCH_ROW_8236, SRC_COL_3) * SRC_COEF_3, adjSrc.getDouble(RCH_ROW_8236, SRC_COL_3), VARIANCE);
 			assertEquals(nomSrc.getDouble(RCH_ROW_8237, SRC_COL_3) * SRC_COEF_3, adjSrc.getDouble(RCH_ROW_8237, SRC_COL_3), VARIANCE);
 			assertEquals(nomSrc.getDouble(RCH_ROW_8238, SRC_COL_3) * SRC_COEF_3, adjSrc.getDouble(RCH_ROW_8238, SRC_COL_3), VARIANCE);
 			assertEquals(nomSrc.getDouble(RCH_ROW_8239, SRC_COL_3) * SRC_COEF_3, adjSrc.getDouble(RCH_ROW_8239, SRC_COL_3), VARIANCE);
+		
+		
+			//All 5 reaches in the upstream set, src 1
+			assertEquals(nomSrc.getDouble(RCH_ROW_17142, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_17142, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_17143, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_17143, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_17144, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_17144, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_17145, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_17145, SRC_COL_1), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_17146, SRC_COL_1) * SRC_COEF_1, adjSrc.getDouble(RCH_ROW_17146, SRC_COL_1), VARIANCE);
+			//All 5 reaches in the upstream set, src 3
+			assertEquals(nomSrc.getDouble(RCH_ROW_17142, SRC_COL_3) * SRC_COEF_3, adjSrc.getDouble(RCH_ROW_17142, SRC_COL_3), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_17143, SRC_COL_3) * SRC_COEF_3, adjSrc.getDouble(RCH_ROW_17143, SRC_COL_3), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_17144, SRC_COL_3) * SRC_COEF_3, adjSrc.getDouble(RCH_ROW_17144, SRC_COL_3), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_17145, SRC_COL_3) * SRC_COEF_3, adjSrc.getDouble(RCH_ROW_17145, SRC_COL_3), VARIANCE);
+			assertEquals(nomSrc.getDouble(RCH_ROW_17146, SRC_COL_3) * SRC_COEF_3, adjSrc.getDouble(RCH_ROW_17146, SRC_COL_3), VARIANCE);
+
+		
+		
 		}
 		
 		{
