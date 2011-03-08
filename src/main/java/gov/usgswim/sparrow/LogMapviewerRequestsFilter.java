@@ -8,29 +8,27 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
 
 /**
- * Zapps any sessions of requests.
+ * Logs MapViewer XML requests when set to trace level debuging.
+ * 
+ * The filter assumes it is mapped correctly to: /omserver/*
+ * 
  * @author eeverman
- *
  */
-public class NoMapViewerSessions implements Filter {
-
+public class LogMapviewerRequestsFilter implements Filter {
+	protected static Logger log =
+		Logger.getLogger(LogMapviewerRequestsFilter.class); //logging for this class
+	
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		chain.doFilter(request, response);
 		
-		if (request instanceof HttpServletRequest) {
-			HttpServletRequest httpReq = (HttpServletRequest)request;
-			
-			if (httpReq.getSession(false) != null) {
-				HttpSession session = httpReq.getSession();
-				session.invalidate();
-			}
-			
+		if (log.isTraceEnabled() && request.getParameter("xml_request") != null) {
+			log.trace("SPARROW MapViewer received this XML request: " + request.getParameter("xml_request"));
 		}
 	}
 

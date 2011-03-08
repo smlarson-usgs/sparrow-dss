@@ -22,6 +22,15 @@
 		<filter-name>noMapViewerSessions</filter-name>
 		<filter-class>gov.usgswim.sparrow.NoMapViewerSessions</filter-class>
 	</filter>
+	<filter>
+		<description>
+			Debug filter to spit the MapViewer XML map requests to the log.
+			To enable, set the log4j log level to trace for this class.
+		</description>
+		<filter-name>LogMapviewerRequestsFilter</filter-name>
+		<filter-class>gov.usgswim.sparrow.LogMapviewerRequestsFilter</filter-class>
+	</filter>
+	
 
 
 	<!-- Mapviewer Related -->
@@ -46,6 +55,10 @@
 	<!-- CUSTOM -->
 	<filter-mapping>
 		<filter-name>noMapViewerSessions</filter-name>
+		<url-pattern>/omserver/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>LogMapviewerRequestsFilter</filter-name>
 		<url-pattern>/omserver/*</url-pattern>
 	</filter-mapping>
 	<listener>
