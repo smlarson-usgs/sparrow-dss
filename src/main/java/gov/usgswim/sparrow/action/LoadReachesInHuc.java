@@ -32,7 +32,8 @@ public class LoadReachesInHuc extends Action<long[]> {
 		HashMap<String, Object> params = new HashMap<String, Object>();
 		params.put("HUC_COLUMN_NAME", criteria.getCriteriaType().getName());
 		params.put("HUC_CODE", criteria.getValue());
-
+		params.put("MODEL_ID", criteria.getModelID());
+		
 		PreparedStatement st = getROPSFromPropertiesFile(QUERY_NAME, this.getClass(), params);
 		
 		ResultSet rset = null;
