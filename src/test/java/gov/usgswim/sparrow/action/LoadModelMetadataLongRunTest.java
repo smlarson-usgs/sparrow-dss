@@ -13,17 +13,16 @@ import org.junit.Test;
 /**
  * Tests the gov.usgswim.sparrow.util.DataLoader loadModelsMetaData methods.
  * 
- * This test validates some of the data returned by the action, but does not
- * fully verify that the correct models are returned based on the specified
- * criteria.
- * TODO:  Clearly, to check that we get the right models back.
+ * This test validates some of the criteria combination available to the action,
+ * but is not exhaustive.  It checks that public vs non-public are returned
+ * correctly, which is probably most important.
  * 
  * @author eeverman
  */
 public class LoadModelMetadataLongRunTest extends SparrowDBTestBaseClass {
 
 	/**
-	 * Loads all public models (1) from the test db.
+	 * Model 50 is public, model 49 is non-public, so only 50 should be returned.
 	 * @throws Exception
 	 */
 	@Test
@@ -31,16 +30,14 @@ public class LoadModelMetadataLongRunTest extends SparrowDBTestBaseClass {
 		
 		List<SparrowModel> models = new LoadModelMetadata().run();
 		
+		assertTrue(models.size() == 1);
 		SparrowModel m = models.get(0);
 		checkTestModel(m);
 
 	}
 	
 	/**
-	 * This test currently returns the same single model as the All test.
-	 * To really finish this, we should add a non-public test model to the db,
-	 * as well as an archived and non-approved example.  Could probably skip
-	 * the sources for those in the db.
+	 * Model 50 is public, model 49 is non-public, so BOTH should be returned.
 	 * 
 	 * @throws Exception
 	 */
@@ -49,8 +46,11 @@ public class LoadModelMetadataLongRunTest extends SparrowDBTestBaseClass {
 		
 		List<SparrowModel> models = new LoadModelMetadata(true, false, false, true).run();
 		
-		SparrowModel m = models.get(0);
-		checkTestModel(m);
+		assertTrue(models.size() == 2);
+		assertTrue(models.get(0).getId() == 49L);
+		assertTrue(models.get(1).getId() == 50L);
+
+		checkTestModel(models.get(1));
 
 	}
 	
