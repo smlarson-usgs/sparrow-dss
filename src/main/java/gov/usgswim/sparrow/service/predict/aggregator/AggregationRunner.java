@@ -5,8 +5,8 @@ import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.action.CalcPrediction;
 import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.domain.BaseDataSeriesType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.PredictionContext;
@@ -102,7 +102,7 @@ public class AggregationRunner {
 			}
 
 			PredictData predictData = SharedApplication.getInstance().getPredictData(context.getModelID());
-			PredictResult aggResult = PredictResultImm.buildPredictResult(data, predictData, ids, properties);
+			PredictResult aggResult = CalcPrediction.buildPredictResult(data, predictData, ids, properties);
 			return aggResult;
 		} finally {
 			SharedApplication.closeConnection(conn, rs);

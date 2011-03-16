@@ -1,12 +1,10 @@
 package gov.usgswim.sparrow;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import gov.usgswim.sparrow.action.CalcPrediction;
-import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.datatable.PredictResultImm;
-
-import java.util.ArrayList;
 
 import org.junit.Test;
 
@@ -29,7 +27,9 @@ public class SparrowUnitTestTest extends SparrowUnitTestBaseClass {
 		
 		PredictResult calcResult = action.run();
 		
-		double delta = .0000000001d;
+		int equalDecayNoDecayCount = 0;
+		
+		double delta = .00000001d;
 		for (int row = 0; row < calcResult.getRowCount(); row++) {
 		
 			double incTotal = calcResult.getIncremental(row);
@@ -39,7 +39,35 @@ public class SparrowUnitTestTest extends SparrowUnitTestBaseClass {
 			double inc4 = calcResult.getIncrementalForSrc(row, 4L);
 			double inc5 = calcResult.getIncrementalForSrc(row, 5L);
 			
+			//Double check that the column mapping are correct
+			assertEquals(calcResult.getIncrementalColForSrc(1L), calcResult.getFirstIncrementalColForSrc());
+			assertEquals(incTotal, calcResult.getDouble(row, calcResult.getIncrementalCol()), delta);
+			assertEquals(inc1, calcResult.getDouble(row, calcResult.getIncrementalColForSrc(1L)), delta);
+			assertEquals(inc5, calcResult.getDouble(row, calcResult.getIncrementalColForSrc(5L)), delta);
+			
 			assertEquals(incTotal, inc1 + inc2 + inc3 + inc4 + inc5, delta);
+			
+			double decIncTotal = calcResult.getDecayedIncremental(row);
+			double decInc1 = calcResult.getDecayedIncrementalForSrc(row, 1L);
+			double decInc2 = calcResult.getDecayedIncrementalForSrc(row, 2L);
+			double decInc3 = calcResult.getDecayedIncrementalForSrc(row, 3L);
+			double decInc4 = calcResult.getDecayedIncrementalForSrc(row, 4L);
+			double decInc5 = calcResult.getDecayedIncrementalForSrc(row, 5L);
+			
+			//Double check that the column mapping are correct
+			assertEquals(calcResult.getDecayedIncrementalColForSrc(1L), calcResult.getFirstDecayedIncrementalColForSrc());
+			assertEquals(decIncTotal, calcResult.getDouble(row, calcResult.getDecayedIncrementalCol()), delta);
+			assertEquals(decInc1, calcResult.getDouble(row, calcResult.getDecayedIncrementalColForSrc(1L)), delta);
+			assertEquals(decInc5, calcResult.getDouble(row, calcResult.getDecayedIncrementalColForSrc(5L)), delta);
+			
+			assertEquals(decIncTotal, decInc1 + decInc2 + decInc3 + decInc4 + decInc5, delta);
+			
+			assertEquals(
+					decIncTotal,
+					incTotal * filePredictData.getDelivery().getDouble(row, PredictData.INSTREAM_DECAY_COL),
+					delta);
+			
+			
 			
 			double totTotal = calcResult.getTotal(row);
 			double tot1 = calcResult.getTotalForSrc(row, 1L);
@@ -47,6 +75,12 @@ public class SparrowUnitTestTest extends SparrowUnitTestBaseClass {
 			double tot3 = calcResult.getTotalForSrc(row, 3L);
 			double tot4 = calcResult.getTotalForSrc(row, 4L);
 			double tot5 = calcResult.getTotalForSrc(row, 5L);
+			
+			//Double check that the column mapping are correct
+			assertEquals(calcResult.getTotalColForSrc(1L), calcResult.getFirstTotalColForSrc());
+			assertEquals(totTotal, calcResult.getDouble(row, calcResult.getTotalCol()), delta);
+			assertEquals(tot1, calcResult.getDouble(row, calcResult.getTotalColForSrc(1L)), delta);
+			assertEquals(tot5, calcResult.getDouble(row, calcResult.getTotalColForSrc(5L)), delta);
 			
 			assertEquals(totTotal, tot1 + tot2 + tot3 + tot4 + tot5, delta);
 		}

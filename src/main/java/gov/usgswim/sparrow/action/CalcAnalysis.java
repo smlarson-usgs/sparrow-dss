@@ -176,9 +176,19 @@ public class CalcAnalysis extends Action<DataColumn>{
 					}
 					
 					break;
-
-				case incremental: // intentional fall-through
 				case decayed_incremental:
+					if (source != null) {
+						dataColIndex = result.getDecayedIncrementalColForSrc(source.longValue());
+						impliedUncertaintySeries = UncertaintySeries.INCREMENTAL_PER_SOURCE;
+					} else {
+						dataColIndex = result.getDecayedIncrementalCol();
+						impliedUncertaintySeries = UncertaintySeries.INCREMENTAL;
+					}
+					
+					predictionBasedResult = result;
+					
+					break;
+				case incremental: 	// intentional fall-through
 				case incremental_std_error_estimate:
 				case incremental_yield:
 				case incremental_delivered_flux: // here, I think
@@ -218,22 +228,6 @@ public class CalcAnalysis extends Action<DataColumn>{
 								decayedFlux, catchmentAreaColumn, dataColIndex, ca, true);
 						
 						predictionBasedResult = view;
-						
-					} else if (type.equals(DataSeriesType.decayed_incremental)) {
-						
-						// decayed inc. flux is inc. flux multiplied by instream decay
-						
-						ColumnAttribsBuilder ca = new ColumnAttribsBuilder();
-						ca.setName(getDataSeriesProperty(type, false));
-						ca.setDescription(getDataSeriesProperty(type, true));
-						ca.setUnits(null);	//default is correct
-						
-						ColumnData instDecay = new ColumnFromTable(
-								nominalPredictData.getDelivery(), PredictData.INSTREAM_DECAY_COL);
-						SingleColumnCoefDataTable decayedFlux = 
-							new SingleColumnCoefDataTable(result, instDecay, dataColIndex, ca);
-						
-						predictionBasedResult = decayedFlux;
 						
 					} else if (type.equals(DataSeriesType.incremental_delivered_flux)
 							|| type.equals(DataSeriesType.incremental_delivered_yield)) {

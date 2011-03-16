@@ -1,9 +1,11 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.filter.ColumnRangeFilter;
 import gov.usgswim.datatable.filter.FilteredDataTable;
+import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.datatable.utils.DataTableUtils;
@@ -334,9 +336,14 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 	 */
 	public DataTable filterForDelivery(DataTable allCoefsTable) {
 		
-		ColumnRangeFilter columnFilter = new ColumnRangeFilter(0, 2);
-		DataTable delivery = new FilteredDataTable(allCoefsTable, null, columnFilter);
-		return delivery;
+		ColumnData[] cols = new ColumnData[2];
+		cols[0] = allCoefsTable.getColumn(0);
+		cols[1] = allCoefsTable.getColumn(1);
+		long[] rowIds = DataTableUtils.getRowIds(allCoefsTable);
+		
+		SimpleDataTable tab = new SimpleDataTable(cols, "Delivery", "Delivery Table", null, rowIds);
+		
+		return tab;
 	}
 	
 	/**
@@ -363,13 +370,19 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 	 */
 	public DataTable filterForSourceCoef(DataTable allCoefsTable) {
 		
-		//1st four cols are iteration, inc_del, tot_del, and boot_err
-		//(MRB_ID has been stripped out as the ID)
+		//1st four cols are iteration, inc_del, tot_del, and boot_err,
+		//but iteration is removed, so we only have 3 precedding columns.
 		int srcCoefsCount = allCoefsTable.getColumnCount() - 3;
+		ColumnData[] cols = new ColumnData[srcCoefsCount];
 		
-		ColumnRangeFilter columnFilter = new ColumnRangeFilter(3, srcCoefsCount);
-		DataTable coefs = new FilteredDataTable(allCoefsTable, null, columnFilter);
-		return coefs;
+		for (int i=0; i<srcCoefsCount; i++) {
+			cols[i] = allCoefsTable.getColumn(i + 3);
+		}
+		long[] rowIds = DataTableUtils.getRowIds(allCoefsTable);
+		
+		SimpleDataTable tab = new SimpleDataTable(cols, "Source Coef", "Source Coef", null, rowIds);
+		
+		return tab;
 	}
 	
 	/**

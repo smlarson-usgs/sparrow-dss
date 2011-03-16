@@ -2,8 +2,8 @@ package gov.usgswim.sparrow.service.predict;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.action.CalcPrediction;
 import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.domain.BaseDataSeriesType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.PredictionContext;
@@ -89,7 +89,7 @@ public class WeightRunner {
 
             // Build a new PredictResult based on the weighted data
             PredictData predictData = SharedApplication.getInstance().getPredictData(context.getModelID());
-            PredictResult weightedResult = PredictResultImm.buildPredictResult(data, predictData, ids, properties);
+            PredictResult weightedResult = CalcPrediction.buildPredictResult(data, predictData, ids, properties);
             return weightedResult;
 
         } finally {

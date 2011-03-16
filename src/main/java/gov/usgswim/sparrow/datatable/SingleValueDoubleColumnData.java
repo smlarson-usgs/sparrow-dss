@@ -26,7 +26,7 @@ public class SingleValueDoubleColumnData extends AbstractColumnData {
 			int numberOfRows, ColumnAttribs attribs) {
 		
 		super(attribs.getName(), Double.class, attribs.getUnits(),
-				attribs.getDescription(), attribs.getProperties(), null);
+				attribs.getDescription(), attribs.getProperties(null), null);
 		
 		this.valueForEveryRow = valueForEveryRow;
 		this.numberOfRows = numberOfRows;

@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.datatable;
 
+import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTable.Immutable;
 import gov.usgswim.datatable.impl.FindHelper;
@@ -214,6 +215,14 @@ public class StdErrorEstTable extends AbstractDataTableBase implements Immutable
 
 	public Immutable toImmutable() {
 		return this;
+	}
+	
+	/* Unsupported for this class */
+	@Override
+	public ColumnData getColumn(int colIndex) {
+		throw new UnsupportedOperationException(
+				"This method is not supported for this type of DataTable view, " +
+				"since there is no real ColumnData instance containing the data. ");
 	}
 
 

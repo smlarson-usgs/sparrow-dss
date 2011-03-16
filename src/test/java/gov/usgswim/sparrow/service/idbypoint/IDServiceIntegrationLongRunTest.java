@@ -77,8 +77,8 @@ public class IDServiceIntegrationLongRunTest extends SparrowServiceTestWithCanne
 		
 		String expectedResponse = getXmlAsString(this.getClass(), "resp4");
 		String actualResponse = runRequest(contextBasedIDReq);
-//		log.setLevel(Level.DEBUG);
-//		log.debug("Req 4 response: " + actualResponse);
+		log.setLevel(Level.DEBUG);
+		log.debug("Req 4 response: " + actualResponse);
 
 		assertTrue(similarXMLIgnoreContextId(expectedResponse, actualResponse));
 		

@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.datatable;
 
 import org.apache.commons.lang.StringUtils;
 
+import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTable.Immutable;
 import gov.usgswim.datatable.impl.FindHelper;
@@ -23,6 +24,8 @@ import gov.usgswim.datatable.impl.FindHelper;
  *
  */
 public class DataTableCompare extends AbstractDataTableBase implements Immutable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	protected final DataTable compare;
 	protected final boolean absolute;
@@ -232,6 +235,14 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 	
 	private boolean isStringCol(int index) {
 		return (compare.getDataType(index) == String.class && super.getDataType(index) == String.class);
+	}
+	
+	/* Unsupported for this class */
+	@Override
+	public ColumnData getColumn(int colIndex) {
+		throw new UnsupportedOperationException(
+				"This method is not supported for this type of DataTable view, " +
+				"since there is no real ColumnData instance containing the data. ");
 	}
 	
 	protected Double bruteForceFindMaxDouble(DataTable dt, int col) {

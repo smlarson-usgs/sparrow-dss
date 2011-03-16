@@ -26,35 +26,26 @@ public interface ColumnAttribs extends ImmutableBuilder<ColumnAttribs> {
 	 */
 	public String getProperty(String key, String defaultValue);
 
-	public abstract Set<String> getPropertyNames();
+	/**
+	 * Returns the combined property names of the local properties and those
+	 * passed in.
+	 * 
+	 * @param baseValues A set of property names from a base class - may be null.
+	 * @return
+	 */
+	public abstract Set<String> getPropertyNames(Set<String> baseValues);
 	
 	/**
-	 * Returns the property set, which will never be null.
+	 * Returns the property map, which will never be null.
 	 * 
-	 * Mutable implementations may return the actual underlying properties.
-	 * @return
-	 */
-	public Map<String, String> getProperties();
-
-	/**
-	 * Returns true only if the properties collection is null.
-	 * @return
-	 */
-	public boolean isPropertiesNull();
-
-	/**
-	 * returns true if the properties are empty or null.
-	 * @return
-	 */
-	public boolean isPropertiesEmpty();
-
-	/**
-	 * Returns true ONLY if the properties collection is initialized and empty.
+	 * The local values of properties take precedence over base values.
+	 * The returned reference is a copied, disconnected version of the properties.
 	 * 
-	 * In the case of an uninitialized props collection, FALSE is returned.
+	 * @param baseValues A set of property values from a base class - may be null.
 	 * @return
 	 */
-	public boolean isPropertiesEmptyAndNotNull();
+	public Map<String, String> getProperties(Map<String, String> baseValues);
+
 
 	public String getDescription();
 	

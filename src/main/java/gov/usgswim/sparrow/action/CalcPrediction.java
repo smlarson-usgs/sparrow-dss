@@ -5,9 +5,24 @@ import static gov.usgswim.sparrow.PredictData.IFTRAN_COL;
 import static gov.usgswim.sparrow.PredictData.INSTREAM_DECAY_COL;
 import static gov.usgswim.sparrow.PredictData.TNODE_COL;
 import static gov.usgswim.sparrow.PredictData.UPSTREAM_DECAY_COL;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+
+import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.datatable.ColumnAttribsBuilder;
+import gov.usgswim.sparrow.datatable.ImmutableDoubleColumn;
+import gov.usgswim.sparrow.datatable.MultiplicativeColumnData;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
+import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.domain.BaseDataSeriesType;
+import gov.usgswim.sparrow.domain.DataSeriesType;
+import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
 
 /**
  * A simple SPARROW prediction implementation.
@@ -15,6 +30,20 @@ import gov.usgswim.sparrow.datatable.PredictResultImm;
  * Note: It is assumed that the reach order in the topo, coef, and src arrays
  * all match, and that the reach order is such that reach(n) never flows to
  * reach(<n).
+ * 
+ * The returned 2D array is of this form:
+ * 
+ * inc:  Incremental, NOT DECAYED.
+ * k:  the number of sources
+ * i:  a give reach, which is a row in the array
+ * Total row count = 2k + 2
+ * 
+ * The Array is made up of data in these blocks
+ * [i, 0 ... (k-1)] inc added at reach, per source k. NOT decayed.
+ * [i, k ... (2k-1)] total (w/ up stream contrib), per source k (decayed)
+ * [i, (2k)] total incremental contribution at reach (NOT decayed)
+ * [i, (2k + 1)] grand total at reach (decayed inc + upstream load)
+ * 
  */
 public class CalcPrediction extends Action<PredictResultImm> {
 	/**
@@ -167,8 +196,217 @@ public class CalcPrediction extends Action<PredictResultImm> {
 
 		}
 
-		return PredictResultImm.buildPredictResult(outputArray,	predictData);
+		return buildPredictResult(outputArray,	predictData);
 	}
+	
+    /**
+     * Adds appropriate metadata to the raw 2x2 array and returns the result as a DataTable.
+     * 
+     * This method is public only for testing, which needs to be able to directly
+     * construct a known good PredictResult instance for testing w/o going
+     * through the prediction code.
+     *
+     * @param data
+     * @param predictData
+     * @return
+     * @throws Exception
+     */
+	public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData) throws Exception {
+        return buildPredictResult(data, predictData, null, Collections.<String, String>emptyMap());
+    }
+
+    public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData, long[] ids)
+    throws Exception {
+        return buildPredictResult(data, predictData, ids, Collections.<String, String>emptyMap());
+    }
+    
+    /**
+     * Constructs a new PredictResultImm instance based on the passed data.
+     * This relies heavily on the structure of the data array.  Copying the
+     * docs from the CalcPrediction Action, it is defined as:
+     * 
+     * <quote>
+     * inc:  Incremental, NOT DECAYED.
+	 * k:  the number of sources
+	 * i:  a give reach, which is a row in the array
+	 * Total row count = 2k + 2
+	 * 
+	 * The Array is made up of data in these blocks
+	 * [i, 0 ... (k-1)] inc added at reach, per source k. NOT decayed.
+	 * [i, k ... (2k-1)] total (w/ up stream contrib), per source k (decayed)
+	 * [i, (2k)] total incremental contribution at reach (NOT decayed)
+	 * [i, (2k + 1)] grand total at reach (decayed inc + upstream load)
+	 * </quote>
+	 * 
+     * @param data
+     * @param predictData
+     * @param ids
+     * @param properties
+     * @return
+     * @throws Exception
+     */
+    public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData, long[] ids, Map<String, String> properties)
+    		throws Exception {
+    	
+    	int srcCount = (data[0].length - 2) / 2;	//as per definition
+    	
+    	//Need to record the location of these base data columns
+    	//Note that this is the position in the double[][] data array, which
+    	//will be a different column position from where the end up in the final
+    	//Table.
+    	int totalIncColInDataArray = srcCount * 2;
+    	int totalTotalColInDataArray = totalIncColInDataArray + 1;
+    	//No entry for totalDecayedInc b/c it is calculated (not in the src data)
+    	
+    	//One set of data for each main data series: Total, Incremental,
+    	//and decayed Incremental, for each source.  Plus a total for each each
+    	//of the main data series.
+    	int outputColCount = (srcCount * 3) + 3;
+    	
+        ColumnData[] columns = new ColumnData[outputColCount];
+
+        // Same definition as the instance vars
+        // Lookup table for key=source_id, value=array index of source contribution data
+        Map<Long, Integer> srcIdIncMap = new Hashtable<Long, Integer>(13);
+        Map<Long, Integer> srcIdTotalMap = new Hashtable<Long, Integer>(13);
+        Map<Long, Integer> srcIdDecayIncMap = new Hashtable<Long, Integer>(13);
+        
+        DataTable srcMetadata = predictData.getSrcMetadata();
+        String modelUnits = predictData.getModel().getUnits().getUserName();
+        String modelConstituent = predictData.getModel().getConstituent();
+
+        // ----------------------------------------------------------------
+        // Define the source columns of the DataTable using the PredictData
+        // ----------------------------------------------------------------
+        for (int srcIndex = 0; srcIndex < srcCount; srcIndex++) {
+
+            // Get the metadata to be attached to the column definitions
+            String srcName = null;
+            String srcConstituent = null;
+            String precision = null;
+            
+            
+            if (srcMetadata != null) {
+                Integer displayNameCol = srcMetadata.getColumnByName("DISPLAY_NAME");
+                Integer precisionCol = srcMetadata.getColumnByName("PRECISION");
+
+                // Pull out the metadata for the source
+                srcName = srcMetadata.getString(srcIndex, displayNameCol);
+                srcConstituent = srcName;
+                precision = srcMetadata.getLong(srcIndex, precisionCol).toString();
+            }
+
+            //Columns in the source data array for these data sources
+            int srcIncAddDataIndex = srcIndex; //incremental source contributions
+            int srcTotalDataIndex = srcIndex + srcCount; //total source contributions (leave gap for total inc)
+            
+            //Output column index for the following series of columns:
+            int srcIncAddIndex = srcIndex; //incremental source contributions
+            int srcTotalIndex = srcIncAddIndex + srcCount + 1; //total source contributions (leave gap for total inc)
+            int srcDecayIncAddIndex = srcTotalIndex + srcCount + 1; //decayed incremental (leave for total tatal)
+
+            //populate the index maps
+            srcIdIncMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcIncAddIndex);
+            srcIdTotalMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcTotalIndex);
+            srcIdDecayIncMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcDecayIncAddIndex);
+            
+            //Map of metadata values for inc-add column
+            Map<String, String> incProps = new HashMap<String, String>();
+            incProps.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.incremental.name());
+            incProps.put(TableProperties.DATA_SERIES.getPublicName(),
+            		Action.getDataSeriesProperty(DataSeriesType.incremental, false));
+            incProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
+            incProps.put(TableProperties.PRECISION.getPublicName(), precision);
+            String incDesc = "Load added at this reach, undecayed. " +
+            	"Reported in " + modelUnits + " of " +
+            	modelConstituent + " for the " + srcConstituent + " source.";
+            
+            
+            // Map of metadata values for total column
+            Map<String, String> totProps = new HashMap<String, String>();
+            totProps.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.total.name());
+            totProps.put(TableProperties.DATA_SERIES.getPublicName(),
+            		Action.getDataSeriesProperty(DataSeriesType.total, false));
+            totProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
+            totProps.put(TableProperties.PRECISION.getPublicName(), precision);
+            String totDesc = "Total load decayed from all upstream reaches decayed to the end of this reach. " +
+            	"Reported in " + modelUnits + " of " +
+        		modelConstituent + " for the " + srcConstituent + " source.";
+            
+            //Map of metadata values for decayed inc-add column
+            ColumnAttribsBuilder decayedIncAttribs = new ColumnAttribsBuilder();
+            decayedIncAttribs.setProperty(TableProperties.DATA_TYPE.getPublicName(),
+            		BaseDataSeriesType.decayed_incremental.name());
+            decayedIncAttribs.setProperty(TableProperties.DATA_SERIES.getPublicName(),
+            		Action.getDataSeriesProperty(DataSeriesType.decayed_incremental, false));
+            decayedIncAttribs.setName(srcName + "Decayed Incremental Load");
+            decayedIncAttribs.setDescription(
+            	"Load added at this reach and decayed to the end of the reach. " +
+            	"Reported in " + modelUnits + " of " +
+            	modelConstituent + " for the " + srcConstituent + " source.");
+            
+
+            columns[srcIncAddIndex] = new ImmutableDoubleColumn(data, srcIncAddDataIndex, srcName + " Incremental Load", modelUnits, incDesc, incProps);
+            columns[srcTotalIndex] = new ImmutableDoubleColumn(data, srcTotalDataIndex, srcName + " Total Load", modelUnits, totDesc, totProps);
+            columns[srcDecayIncAddIndex] = new MultiplicativeColumnData(
+            		columns[srcIncAddIndex], 
+            		predictData.getDelivery().getColumn(PredictData.INSTREAM_DECAY_COL),
+            		decayedIncAttribs);
+        }
+
+        // ------------------------------------------
+        // Define the total columns of the DataTable
+        // ------------------------------------------
+        int totalIncCol = srcCount;	//The total inc col comes right after the inc per source cols
+        Map<String, String> totalIncProps = new HashMap<String, String>();
+        totalIncProps.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.incremental.name());
+        totalIncProps.put(TableProperties.DATA_SERIES.getPublicName(),
+        		Action.getDataSeriesProperty(DataSeriesType.incremental, false));
+        totalIncProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent );
+        totalIncProps.put(TableProperties.ROW_AGG_TYPE.getPublicName(), AggregateType.sum.name());
+
+        //Total of total load column
+        int totalTotalCol = totalIncCol + srcCount + 1; //The grand total col comes right after the total cols per source
+        Map<String, String> grandTotalProps = new HashMap<String, String>();
+        grandTotalProps.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.total.name());
+        grandTotalProps.put(TableProperties.DATA_SERIES.getPublicName(),
+        		Action.getDataSeriesProperty(DataSeriesType.total, false));
+        grandTotalProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
+        grandTotalProps.put(TableProperties.ROW_AGG_TYPE.getPublicName(), AggregateType.sum.name());
+        
+        //total of decayed inc-add column
+        int totalDecayedIncCol = totalTotalCol + srcCount + 1; //The total decayed inc comes after the total per source cols
+        ColumnAttribsBuilder totDecayedIncAttribs = new ColumnAttribsBuilder();
+        totDecayedIncAttribs.setProperty(TableProperties.DATA_TYPE.getPublicName(),
+        		BaseDataSeriesType.decayed_incremental.name());
+        totDecayedIncAttribs.setProperty(TableProperties.DATA_SERIES.getPublicName(),
+        		Action.getDataSeriesProperty(DataSeriesType.decayed_incremental, false));
+        totDecayedIncAttribs.setProperty(TableProperties.ROW_AGG_TYPE.getPublicName(), AggregateType.sum.name());
+        totDecayedIncAttribs.setName(Action.getDataSeriesProperty(DataSeriesType.decayed_incremental, false));
+        totDecayedIncAttribs.setDescription(Action.getDataSeriesProperty(DataSeriesType.decayed_incremental, true));
+
+
+        columns[totalIncCol] = new ImmutableDoubleColumn(data, totalIncColInDataArray, 
+        		Action.getDataSeriesProperty(DataSeriesType.incremental, false),
+        		modelUnits, Action.getDataSeriesProperty(DataSeriesType.incremental, true), totalIncProps);
+        columns[totalTotalCol] = new ImmutableDoubleColumn(data, totalTotalColInDataArray,
+        		Action.getDataSeriesProperty(DataSeriesType.total, false),
+        		modelUnits, Action.getDataSeriesProperty(DataSeriesType.total, true),
+        		grandTotalProps);
+        columns[totalDecayedIncCol] = new MultiplicativeColumnData(
+        		columns[totalIncCol], 
+        		predictData.getDelivery().getColumn(PredictData.INSTREAM_DECAY_COL),
+        		totDecayedIncAttribs);
+
+        // only get the ids if available
+        if (ids == null) {
+            ids = (predictData.getTopo() != null) ? DataTableUtils.getRowIds(predictData.getTopo()) : null;
+        }
+
+        return new PredictResultImm(columns, ids, properties,
+        		srcIdIncMap, srcIdDecayIncMap, srcIdTotalMap,
+        		totalIncCol, totalDecayedIncCol, totalTotalCol);
+    }
 
 	/**
 	 * Method to check the efficiency/density of the node ids. Ideally, they would all be consecutive

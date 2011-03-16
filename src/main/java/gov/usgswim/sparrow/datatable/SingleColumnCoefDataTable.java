@@ -306,4 +306,12 @@ public class SingleColumnCoefDataTable extends AbstractDataTableBase implements 
 		}
 	}
 	
+	/* Unsupported for this class */
+	@Override
+	public ColumnData getColumn(int colIndex) {
+		throw new UnsupportedOperationException(
+				"This method is not supported for this type of DataTable view, " +
+				"since there is no real ColumnData instance containing the data. ");
+	}
+	
 }

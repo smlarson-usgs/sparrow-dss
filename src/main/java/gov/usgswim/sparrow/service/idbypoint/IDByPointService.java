@@ -523,9 +523,11 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		String totalContribution = buildPredSection(nominalPrediction,
 				adjustedPrediction, reachId, DataSeriesType.total, predictData);
 
-		// Retrieve the response template and insert the data we just built
+		//Retrieve the response template and insert the data we just built
+		//row count is:  one row for each source X each series (total and inc) +
+		//total inc and total total.
 		String[] params = {
-				"rowCount", "" + nominalPrediction.getColumnCount(),
+				"rowCount", "" + ((nominalPrediction.getSourceCount() * 2) + 2),
 				"incContribution", incrementalContribution,
 				"totalContribution", totalContribution
 		};
@@ -596,10 +598,10 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				units = nominalPrediction.getUnits(colForIncSource);
 				precision = nominalPrediction.getProperty(colForIncSource, TableProperties.PRECISION.getPublicName());
 				
-				nominalValue = nominalPrediction.getDecayedIncrementalForSrc(rowID, srcId, predictData);
+				nominalValue = nominalPrediction.getDecayedIncrementalForSrc(rowID, srcId);
 				
 				if (adjustedPrediction != null) {
-					predictValue = adjustedPrediction.getDecayedIncrementalForSrc(rowID, srcId, predictData);
+					predictValue = adjustedPrediction.getDecayedIncrementalForSrc(rowID, srcId);
 				}
 				break;
 			case incremental:
@@ -656,6 +658,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 		
 		int colForInc = nominalPrediction.getIncrementalCol();
+		int colForDecayedInc = nominalPrediction.getDecayedIncrementalCol();
 		int colForTotal = nominalPrediction.getTotalCol();
 		
 		// Calculate and format all of the data
@@ -682,14 +685,14 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		switch (type) {
 		case decayed_incremental:
 			//All these attribs are the same, decayed or not
-			columnName = nominalPrediction.getName(colForInc);
-			units = nominalPrediction.getUnits(colForInc);
-			precision = nominalPrediction.getProperty(colForInc, TableProperties.PRECISION.getPublicName());
+			columnName = nominalPrediction.getName(colForDecayedInc);
+			units = nominalPrediction.getUnits(colForDecayedInc);
+			precision = nominalPrediction.getProperty(colForDecayedInc, TableProperties.PRECISION.getPublicName());
 			
-			nominalValue = nominalPrediction.getDecayedIncremental(rowID, predictData);
+			nominalValue = nominalPrediction.getDecayedIncremental(rowID);
 			
 			if (adjustedPrediction != null) {
-				predictValue = adjustedPrediction.getDecayedIncremental(rowID, predictData);
+				predictValue = adjustedPrediction.getDecayedIncremental(rowID);
 			}
 			break;
 		case incremental:

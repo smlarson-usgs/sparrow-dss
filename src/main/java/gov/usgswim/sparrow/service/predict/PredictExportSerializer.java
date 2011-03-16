@@ -144,20 +144,10 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 			{
 				addOpenTag("columns");
 				{
-
-					//The ID is added automatically as an attribute
-//					if (request.isIncludeReachAttribs()) {
-//
-//						//Add a group for the source columns
-//						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Reach Attributes"));
-//						events.add(makeNonNullBasicTag("col", "").addAttribute("name", "IDENTIFIER").addAttribute("type", "number"));
-//
-//						addCloseTag("group");
-//					}
 					
+					//Add a group for the mapped value
 					if (adjDataColumn != null || nomDataColumn != null) {
 
-						//Add a group for the mapped value
 						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Mapped Value"));
 
 						if (adjDataColumn != null) {
@@ -177,8 +167,9 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 						addCloseTag("group");
 					}
 
+					//Add a group for the adjusted source columns
 					if (request.isIncludeSource() && adjPredictData != null) {
-						//Add a group for the source columns
+						
 						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Adjusted Source Values"));
 						for (int i = 0; i < adjPredictData.getSrc().getColumnCount(); i++) {
 							String name = "Adj Source: " + adjPredictData.getSrc().getName(i);
@@ -189,19 +180,22 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 						addCloseTag("group");
 					}
 					
+					//Add a group for the adjusted predict columns
 					if (request.isIncludePredict() && adjPredictResult != null) {
 						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Adjusted Predicted Values"));
-						for (int i = 0; i < adjPredictResult.getColumnCount(); i++) {
-							String name = "Adj. Predicted: " + adjPredictResult.getName(i);
-							//name += " (" + adjPredictResult.getProperty(i, PredictResult.CONSTITUENT_PROP) + ")";
-							name += " (" + adjPredictResult.getUnits(i) + ")";
-							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
-						}
+						
+						int srcCount = adjPredictResult.getSourceCount();
+						String nameSuffix = " (Adjusted)";
+						
+						writePredictDataStartHeaders(adjPredictResult, adjPredictResult.getFirstDecayedIncrementalColForSrc(), srcCount + 1, nameSuffix);
+						writePredictDataStartHeaders(adjPredictResult, adjPredictResult.getFirstTotalColForSrc(), srcCount + 1, nameSuffix);
+						
 						addCloseTag("group");
 					}
 					
+					//Add a group for the NONadjusted source columns
 					if (request.isIncludeSource() && nomPredictData != null) {
-						//Add a group for the source columns
+
 						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Nominal Source Values"));
 						for (int i = 0; i < nomPredictData.getSrc().getColumnCount(); i++) {
 							String name = "Nom. Source: " + nomPredictData.getSrc().getName(i);
@@ -212,14 +206,16 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 						addCloseTag("group");
 					}
 
+					//Add a group for the NONadjusted predict result columns
 					if (request.isIncludePredict() && nomPredictResult != null) {
 						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Nominal Predicted Values"));
-						for (int i = 0; i < nomPredictResult.getColumnCount(); i++) {
-							String name = "Nom. Predicted: " + nomPredictResult.getName(i);
-							//name += " (" + nomPredictResult.getProperty(i, PredictResult.CONSTITUENT_PROP) + ")";
-							name += " (" + nomPredictResult.getUnits(i) + ")";
-							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
-						}
+						
+						int srcCount = nomPredictResult.getSourceCount();
+						String nameSuffix = " (Unadjusted)";
+						
+						writePredictDataStartHeaders(nomPredictResult, nomPredictResult.getFirstDecayedIncrementalColForSrc(), srcCount + 1, nameSuffix);
+						writePredictDataStartHeaders(nomPredictResult, nomPredictResult.getFirstTotalColForSrc(), srcCount + 1, nameSuffix);
+
 						addCloseTag("group");
 					}
 					
@@ -247,17 +243,6 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	    }
 		if (!state.isDataFinished()) {
 			BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
-//			if (predictData.getSrc().getProperty("aggLevelKludge") != null) {
-//				// Kludge the id into the row - temporary
-//				// TODO: not efficient to do this on every row, but as this is a kludge, it's not worth it to optimize
-//				String aggLevel = predictData.getSrc().getProperty("aggLevelKludge");
-//				AggregateIdLookupKludge kludge = SharedApplication.getInstance().getAggregateIdLookup(aggLevel);
-//				String id = kludge.lookupId(result.getIdForRow(state.r));
-//				rowEvent.addAttribute("id", id);
-//			} else {
-//				// Get the id the old (better) way
-//				rowEvent.addAttribute("id", refPredictData.getIdForRow(state.r).toString());
-//			}
 			
 			//Aggregated rows are not working right now...
 			Long rowId = refPredictData.getIdForRow(state.r);
@@ -265,11 +250,6 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 
 			events.add(rowEvent);
 			{
-				
-				//The ID is added automatically as an attribute
-//				if (request.isIncludeReachAttribs()) {
-//					addNonNullBasicTag("c", refPredictData.getTopo().getIdForRow(state.r).toString());
-//				}
 				
 				if (adjDataColumn != null) {
 					addNonNullBasicTag("c", adjDataColumn.getTable().getValue(state.r, adjDataColumn.getColumn()).toString());
@@ -286,9 +266,10 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 				}
 
 				if (request.isIncludePredict() && adjPredictResult != null) {
-					for (int c = 0; c < adjPredictResult.getColumnCount(); c++) {
-						addNonNullBasicTag("c", adjPredictResult.getString(state.r, c));
-					}
+					int srcCount = adjPredictResult.getSourceCount();
+					
+					writePredictData(adjPredictResult, adjPredictResult.getFirstDecayedIncrementalColForSrc(), srcCount + 1);
+					writePredictData(adjPredictResult, adjPredictResult.getFirstTotalColForSrc(), srcCount + 1);
 				}
 				
 				if (request.isIncludeSource() && nomPredictData != null) {
@@ -298,9 +279,10 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 				}
 
 				if (request.isIncludePredict() && nomPredictResult != null) {
-					for (int c = 0; c < nomPredictResult.getColumnCount(); c++) {
-						addNonNullBasicTag("c", nomPredictResult.getString(state.r, c));
-					}
+					int srcCount = nomPredictResult.getSourceCount();
+					
+					writePredictData(nomPredictResult, nomPredictResult.getFirstDecayedIncrementalColForSrc(), srcCount + 1);
+					writePredictData(nomPredictResult, nomPredictResult.getFirstTotalColForSrc(), srcCount + 1);
 				}
 
 			}
@@ -310,6 +292,36 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 		}
 		state.r++;
 	}
+	
+	/**
+	 * Writes the column definitions for the PredictResult columns
+	 * @param result
+	 * @param startCol
+	 * @param colCount
+	 * @param nameSuffix
+	 */
+	protected void writePredictDataStartHeaders(PredictResult result, int startCol, int colCount, String nameSuffix) {
+		for (int i = startCol; i < (startCol + colCount); i++) {
+			String name = result.getName(i) + nameSuffix;
+			name += " (" + result.getUnits(i) + ")";
+			events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
+		}
+	}
+	
+	/**
+	 * Writes the column data for the PredictResult columns
+	 * @param result
+	 * @param startCol
+	 * @param colCount
+	 * @param nameSuffix
+	 */
+	protected void writePredictData(PredictResult result, int startCol, int colCount) {
+		for (int c = startCol; c < (startCol + colCount); c++) {
+			addNonNullBasicTag("c", result.getString(state.r, c));
+		}
+	}
+	
+	
 
 	@Override
 	public void close() throws XMLStreamException {

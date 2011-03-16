@@ -24,8 +24,8 @@ public class PredictContextServiceLongRunTest extends SparrowServiceTestBaseClas
 		request.setParameter("xmlreq", requestText);
 		WebResponse response = client.sendRequest(request);
 		String actualResponse = response.getText();
-		System.out.println(actualResponse);
-		System.out.println(expectedResponse);
+//		System.out.println(actualResponse);
+//		System.out.println(expectedResponse);
 		
 		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", actualResponse);
 		assertTrue(similarXMLIgnoreContextId(expectedResponse, actualResponse));
@@ -39,7 +39,7 @@ public class PredictContextServiceLongRunTest extends SparrowServiceTestBaseClas
 		request.setParameter("xmlreq", requestText);
 		WebResponse response = client.sendRequest(request);
 		String actualResponse = response.getText();
-		System.out.println(actualResponse);
+//		System.out.println(actualResponse);
 		
 		assertXpathEvaluatesTo("ERROR", "//*[local-name()='status']", actualResponse);
 	}

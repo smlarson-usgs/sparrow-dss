@@ -8,6 +8,7 @@ import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.action.Action;
+import gov.usgswim.sparrow.action.CalcPrediction;
 import gov.usgswim.sparrow.action.LoadModelPredictDataFromFile;
 import gov.usgswim.sparrow.action.PredictionContextHandler;
 import gov.usgswim.sparrow.cachefactory.PredictDataFactory;
@@ -30,9 +31,6 @@ import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.xpath.XPath;
@@ -47,11 +45,9 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
-import org.custommonkey.xmlunit.XpathEngine;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
 public abstract class SparrowUnitTestBaseClass {
 	
@@ -929,7 +925,7 @@ public abstract class SparrowUnitTestBaseClass {
 			
 			
 			
-			PredictResultImm pr = PredictResultImm.buildPredictResult(colDatas, pd);
+			PredictResultImm pr = CalcPrediction.buildPredictResult(colDatas, pd);
 			testModelPredictResults = pr;
 			return testModelPredictResults;
 			

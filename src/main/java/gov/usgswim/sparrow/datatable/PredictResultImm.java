@@ -2,19 +2,12 @@ package gov.usgswim.sparrow.datatable;
 
 import gov.usgswim.Immutable;
 import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTable;
-import gov.usgswim.datatable.utils.DataTableUtils;
-import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.action.Action;
-import gov.usgswim.sparrow.domain.BaseDataSeriesType;
-import gov.usgswim.sparrow.domain.DataSeriesType;
-import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * An immutable implementation of PredictResult. This is simply an Immutable
@@ -22,17 +15,30 @@ import java.util.Map;
  *
  * This will likely be the only implementation unless the PredictRunner code is
  * modified to use a builder instead of arrays.
+ * 
+ * One guarantee that this class makes is that the Total column for a given series
+ * always follows the individual source columns.  For instance, all the per source
+ * incremental columns are immediately followed by the total incremental column.
+ * 
  *
  * @author eeverman
  */
 @Immutable
 public class PredictResultImm extends SimpleDataTable implements PredictResult {
 
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * A mapping from a source Identifier to the column number of the column
 	 * containing the Incremental value for that source.
 	 */
 	private final Map<Long, Integer> srcIdIncMap;
+	
+	/**
+	 * A mapping from a source Identifier to the column number of the column
+	 * containing the Decayed Incremental value for that source.
+	 */
+	private final Map<Long, Integer> srcIdDecayedIncMap;
 
 	/**
 	 * A mapping from a source Identifier to the column number of the column
@@ -44,6 +50,11 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 	 * Index of the total Incremental column.
 	 */
 	private final int totalIncCol;
+	
+	/**
+	 * Index of the total Decayed Incremental column.
+	 */
+	private final int totalDecayedIncCol;
 
 	/**
 	 * Index of the total Total column.
@@ -57,8 +68,10 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 
 
 	public PredictResultImm(ColumnData[] columns, long[] rowIds, Map<String, String> properties,
-				Map<Long, Integer> srcIdIncMap, Map<Long, Integer> srcIdTotalMap,
-				int totalIncCol, int totalTotalCol) {
+				Map<Long, Integer> srcIdIncMap,
+				Map<Long,Integer> srcIdDecayedIncMap,
+				Map<Long, Integer> srcIdTotalMap,
+				int totalIncCol, int totalDecayedIncCol, int totalTotalCol) {
 
 		super(columns, "Prediction Data", "Prediction Result Data", properties, rowIds);
 
@@ -66,6 +79,12 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 			Hashtable<Long, Integer> map = new Hashtable<Long, Integer>(srcIdIncMap.size() * 2 + 1);
 			map.putAll(srcIdIncMap);
 			this.srcIdIncMap = map;
+		}
+		
+		{
+			Hashtable<Long, Integer> map = new Hashtable<Long, Integer>(srcIdDecayedIncMap.size() * 2 + 1);
+			map.putAll(srcIdDecayedIncMap);
+			this.srcIdDecayedIncMap = map;
 		}
 
 		{
@@ -75,182 +94,112 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 		}
 
 		this.totalIncCol = totalIncCol;
+		this.totalDecayedIncCol = totalDecayedIncCol;
 		this.totalTotalCol = totalTotalCol;
 		this.sourceCount = srcIdIncMap.size();
+		
+		//Check that total columns follow the individual source columns
+		if (totalIncCol != (findMinValue(srcIdIncMap) + sourceCount)) {
+			throw new IllegalArgumentException("The incremental total column must immediately follow the per-source columns");
+		}
+		
+		if (totalDecayedIncCol != (findMinValue(srcIdDecayedIncMap) + sourceCount)) {
+			throw new IllegalArgumentException("The decayed incremental total column must immediately follow the per-source columns");
+		}
+		
+		if (totalTotalCol != (findMinValue(srcIdTotalMap) + sourceCount)) {
+			throw new IllegalArgumentException("The total load column must immediately follow the per-source columns");
+		}
 	}
 
-    /**
-     * Adds appropriate metadata to the raw 2x2 array and returns the result as a DataTable
-     *
-     * @param data
-     * @param predictData
-     * @return
-     * @throws Exception
-     */
-    public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData) throws Exception {
-        return buildPredictResult(data, predictData, null, Collections.<String, String>emptyMap());
-    }
-
-    public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData, long[] ids)
-    throws Exception {
-        return buildPredictResult(data, predictData, ids, Collections.<String, String>emptyMap());
-    }
-
-    public static PredictResultImm buildPredictResult(double[][] data, PredictData predictData, long[] ids, Map<String, String> properties)
-    throws Exception {
-        ColumnData[] columns = new ColumnData[data[0].length];
-        int sourceCount = predictData.getSrc().getColumnCount();
-
-        // Same definition as the instance vars
-        // Lookup table for key=source_id, value=array index of source contribution data
-        Map<Long, Integer> srcIdIncMap = new Hashtable<Long, Integer>(13, 2);
-        Map<Long, Integer> srcIdTotalMap = new Hashtable<Long, Integer>(13, 2);
-        
-        DataTable srcMetadata = predictData.getSrcMetadata();
-        String modelUnits = predictData.getModel().getUnits().getUserName();
-        String modelConstituent = predictData.getModel().getConstituent();
-
-        // ----------------------------------------------------------------
-        // Define the source columns of the DataTable using the PredictData
-        // ----------------------------------------------------------------
-        for (int srcIndex = 0; srcIndex < sourceCount; srcIndex++) {
-
-            // Get the metadata to be attached to the column definitions
-            String srcName = null;
-            String srcConstituent = null;
-            String precision = null;
-            
-            
-            if (srcMetadata != null) {
-                Integer displayNameCol = srcMetadata.getColumnByName("DISPLAY_NAME");
-                Integer precisionCol = srcMetadata.getColumnByName("PRECISION");
-
-                // Pull out the metadata for the source
-                srcName = srcMetadata.getString(srcIndex, displayNameCol);
-                srcConstituent = srcName;
-                precision = srcMetadata.getLong(srcIndex, precisionCol).toString();
-            }
-
-            //
-            int srcIncAddIndex = srcIndex; // index for iterating through the incremental source contributions
-            int srcTotalIndex = srcIndex + sourceCount; // index for iterating through the total source contributions
-
-            srcIdIncMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcIncAddIndex);
-            srcIdTotalMap.put(predictData.getSourceIdForSourceIndex(srcIndex), srcTotalIndex);
-
-            // Map of metadata values for inc-add column
-            Map<String, String> incProps = new HashMap<String, String>();
-            incProps.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.incremental.name());
-            incProps.put(TableProperties.DATA_SERIES.getPublicName(),
-            		Action.getDataSeriesProperty(DataSeriesType.incremental, false));
-            incProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
-            incProps.put(TableProperties.PRECISION.getPublicName(), precision);
-            String incDesc = "Load added at this reach and decayed to the end of the reach. " +
-            	"Reported in " + modelUnits + " of " +
-            	modelConstituent + " for the " + srcConstituent + " source.";
-            
-            
-            // Map of metadata values for total column
-            Map<String, String> totProps = new HashMap<String, String>();
-            totProps.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.total.name());
-            totProps.put(TableProperties.DATA_SERIES.getPublicName(),
-            		Action.getDataSeriesProperty(DataSeriesType.total, false));
-            totProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
-            totProps.put(TableProperties.PRECISION.getPublicName(), precision);
-            String totDesc = "Total load decayed from all upstream reaches decayed to the end of this reach. " +
-            	"Reported in " + modelUnits + " of " +
-        		modelConstituent + " for the " + srcConstituent + " source.";
-            
-            
-
-            columns[srcIncAddIndex] = new ImmutableDoubleColumn(data, srcIncAddIndex, srcName + " Incremental Load", modelUnits, incDesc, incProps);
-            columns[srcTotalIndex] = new ImmutableDoubleColumn(data, srcTotalIndex, srcName + " Total Load", modelUnits, totDesc, totProps);
-        }
-
-        // ------------------------------------------
-        // Define the total columns of the DataTable
-        // ------------------------------------------
-        int totalIncCol = 2 * sourceCount;	//The total inc col comes right after the two sets of source columns
-        Map<String, String> totalIncProps = new HashMap<String, String>();
-        totalIncProps.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.incremental.name());
-        totalIncProps.put(TableProperties.DATA_SERIES.getPublicName(),
-        		Action.getDataSeriesProperty(DataSeriesType.incremental, false));
-        totalIncProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent );
-        totalIncProps.put(TableProperties.ROW_AGG_TYPE.getPublicName(), AggregateType.sum.name());
-
-        
-        int totalTotalCol = totalIncCol + 1; //The grand total col comes right after the total incremental col
-        Map<String, String> grandTotalProps = new HashMap<String, String>();
-        grandTotalProps.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.total.name());
-        grandTotalProps.put(TableProperties.DATA_SERIES.getPublicName(),
-        		Action.getDataSeriesProperty(DataSeriesType.total, false));
-        grandTotalProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
-        grandTotalProps.put(TableProperties.ROW_AGG_TYPE.getPublicName(), AggregateType.sum.name());
-
-
-        columns[totalIncCol] = new ImmutableDoubleColumn(data, totalIncCol, 
-        		Action.getDataSeriesProperty(DataSeriesType.decayed_incremental, false),
-        		modelUnits, Action.getDataSeriesProperty(DataSeriesType.decayed_incremental, true), totalIncProps);
-        columns[totalTotalCol] = new ImmutableDoubleColumn(data, totalTotalCol,
-        		Action.getDataSeriesProperty(DataSeriesType.total, false),
-        		modelUnits, Action.getDataSeriesProperty(DataSeriesType.total, true),
-        		grandTotalProps);
-
-        // only get the ids if available
-        if (ids == null) {
-            ids = (predictData.getTopo() != null) ? DataTableUtils.getRowIds(predictData.getTopo()) : null;
-        }
-
-        return new PredictResultImm(columns, ids, properties, srcIdIncMap, srcIdTotalMap, totalIncCol, totalTotalCol);
-    }
-
+	@Override
     public int getSourceCount() {
         return sourceCount;
     }
+	
+	@Override
+	public int getFirstIncrementalColForSrc() {
+		return findMinValue(srcIdIncMap);
+	}
+	
+	@Override
+	public int getFirstDecayedIncrementalColForSrc() {
+		return findMinValue(srcIdDecayedIncMap);
+	}
+	
+	@Override
+	public int getFirstTotalColForSrc() {
+		return findMinValue(srcIdTotalMap);
+	}
+	
+	private static int findMinValue(Map<Long, Integer> map) {
+		Iterator<Entry<Long, Integer>> vals = map.entrySet().iterator();
+		int min = Integer.MAX_VALUE;
+		while (vals.hasNext()) {
+			Entry<Long, Integer> entry = vals.next();
+			if (entry.getValue() < min) {
+				min = entry.getValue();
+			}
+		}
+		return min;
+	}
 
+    @Override
     public Double getIncremental(int row) {
         return getDouble(row, totalIncCol);
     }
     
 	@Override
-	public Double getDecayedIncremental(int row, PredictData predictData) {
-		Double inc = getIncremental(row);
-		Double coef = predictData.getDelivery().getDouble(row, PredictData.INSTREAM_DECAY_COL);
-		return inc * coef;
+	public Double getDecayedIncremental(int row) {
+		return getDouble(row, totalDecayedIncCol);
 	}
 
+	@Override
     public int getIncrementalCol() {
         return totalIncCol;
     }
+    
+	@Override
+	public int getDecayedIncrementalCol() {
+		return totalDecayedIncCol;
+	}
 
+	@Override
     public Double getTotal(int row) {
         return getDouble(row, totalTotalCol);
     }
 
+	@Override
     public int getTotalCol() {
         return totalTotalCol;
     }
 
+	@Override
     public int getIncrementalColForSrc(Long srcId) {
         return srcIdIncMap.get(srcId);
     }
+	
+	@Override
+	public int getDecayedIncrementalColForSrc(Long srcId) {
+		return srcIdDecayedIncMap.get(srcId);
+	}
 
+	@Override
     public Double getIncrementalForSrc(int row, Long srcId) {
         return getDouble(row, srcIdIncMap.get(srcId));
     }
-    
+	
 	@Override
-	public Double getDecayedIncrementalForSrc(int row, Long srcId,
-			PredictData predictData) {
-		Double inc = getIncrementalForSrc(row, srcId);
-		Double coef = predictData.getDelivery().getDouble(row, PredictData.INSTREAM_DECAY_COL);
-		return inc * coef;
+	public Double getDecayedIncrementalForSrc(int row, Long srcId) {
+		return getDouble(row, srcIdDecayedIncMap.get(srcId));
 	}
 
+	@Override
     public int getTotalColForSrc(Long srcId) {
         return srcIdTotalMap.get(srcId);
     }
 
+	@Override
     public Double getTotalForSrc(int row, Long srcId) {
         return getDouble(row, srcIdTotalMap.get(srcId));
     }

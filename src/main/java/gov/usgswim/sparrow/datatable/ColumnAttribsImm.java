@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.datatable;
 
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -63,54 +63,35 @@ public class ColumnAttribsImm implements ColumnAttribs {
 	 * @see gov.usgswim.sparrow.datatable.ColumnAttribs#getPropertyNames()
 	 */
 	@Override
-	public Set<String> getPropertyNames() {
+	public Set<String> getPropertyNames(Set<String> baseValues) {
+		Set<String> combi = new HashSet<String>();
+		
+		if (baseValues != null) {
+			combi.addAll(baseValues);
+		} 
 		if (properties != null) {
-			return properties.keySet();
-		} else {
-			Set<String> s = Collections.emptySet();
-			return s;
+			combi.addAll(properties.keySet());
+		} 
+		
+		return combi;
+	}
+	
+	/* (non-Javadoc)
+	 * @see gov.usgswim.sparrow.datatable.ColumnAttribs#getProperties(java.util.Map)
+	 */
+	@Override
+	public Map<String, String> getProperties(Map<String, String> baseValues) {
+		Map<String, String> combi = new HashMap<String, String>(7);
+		
+		if (baseValues != null) {
+			combi.putAll(baseValues);
 		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see gov.usgswim.sparrow.datatable.ColumnAttribs#isPropertiesNull()
-	 */
-	@Override
-	public boolean isPropertiesNull() {
-		return properties == null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see gov.usgswim.sparrow.datatable.ColumnAttribs#isPropertiesEmpty()
-	 */
-	@Override
-	public boolean isPropertiesEmpty() {
-		return (properties == null || properties.isEmpty());
-	}
-	
-	/* (non-Javadoc)
-	 * @see gov.usgswim.sparrow.datatable.ColumnAttribs#isPropertiesEmptyAndNotNull()
-	 */
-	@Override
-	public boolean isPropertiesEmptyAndNotNull() {
-		return (properties != null && properties.isEmpty());
-	}
-	
-	/**
-	 * Returns the actual underlying property set, which may be null.
-	 * @return
-	 */
-	@Override
-	public Map<String, String> getProperties() {
-		Map<String, String> tmp = null;
 		
 		if (properties != null) {
-			tmp = new HashMap<String, String>(properties.size(), 1);
-			tmp.putAll(properties);
-		} else {
-			tmp = Collections.emptyMap();
+			combi.putAll(properties);
 		}
-		return tmp;
+		
+		return combi;
 	}
 
 	/* (non-Javadoc)
