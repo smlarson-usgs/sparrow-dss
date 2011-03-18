@@ -1,0 +1,102 @@
+<project name="sparrow_mv" default="setup-unwar" basedir=".">
+	<description>
+		Convenience tasks to enhance local development
+	</description>
+
+	<!-- 
+		Note that Eclipse Helios is running 1.7.1 because of various issues with 1.8. 
+		See https://bugs.eclipse.org/bugs/show_bug.cgi?id=302296 for details 
+	-->
+	
+	<!-- Set these properties for your custom unwar -->
+	<property name="unwar.destination.dir" location="unwar"/>
+	<property name="unwar.war.name" value="sparrow_mv"/>
+	
+	<!-- global properties -->
+	<property name="unwar.war.path" value="target/${unwar.war.name}.war"/>
+	
+	<target name="setup-unwar">
+		<description>
+			Sets up the application to run as an exploded war via Tomcat. The advantage of this configuration is
+		that changes can immediately show up without a redeployment. The disadvantage is that without full 
+		integration with IDE's compilation, the syncing must be done manually.		
+		</description>
+		
+		<mkdir dir="${unwar.destination.dir}"/>
+		<!-- Verify that the maven-built war exists -->	
+		<available file="${unwar.war.path}" property="unwar.maven.war.built" />
+		<fail if="${unwar.maven.war.built}">Maven needs to build the war before we can unwar it.</fail>
+		
+		<!-- Delete the destination directory before starting -->
+		<delete includeEmptyDirs="true">
+			<fileset dir="${unwar.destination.dir}">
+				<!-- 
+					Keep the WEB-INF folder because deleting it will probably force Eclipse to recompile everything, or worse.
+					This way, Eclipse is responsible for syncing additions, updates, and deletions.
+				 -->
+				<exclude name="WEB-INF/classes/**"/>
+			</fileset>
+		</delete>
+		<!--
+		<available file="${unwar.destination.dir}/WEB-INF" property="unwar.already.exists"/>
+		<echo>war already exists? ${unwar.destination.dir}/WEB-INF ${unwar.already.exists}</echo>
+		<fail unless="${unwar.already.exists}">
+			Failed to delete previous unwar due to unknown reason. Please delete manually and try again.
+		</fail>
+		-->
+		
+		<!--
+		From http://ant.apache.org/manual/Tasks/unzip.html,
+		Please note that different ZIP tools handle timestamps differently 
+		when it comes to applying timezone offset calculations of files. 
+		Some ZIP libraries will store the timestamps as they've been read 
+		from the filesystem while others will modify the timestamps both 
+		when reading and writing the files to make all timestamps use 
+		the same timezone. A ZIP archive created by one library may extract 
+		files with "wrong timestamps" when extracted by another library.
+
+		Ant's ZIP classes use the same algorithm as the InfoZIP tools and 
+		zlib (timestamps get adjusted), Windows' "compressed folders" 
+		function and WinZIP don't change the timestamps. This means that 
+		using the unzip task on files created by Windows' compressed 
+		folders function may create files with timestamps that are "wrong", 
+		the same is true if you use Windows' functions to extract an Ant 
+		generated ZIP archive.
+		
+		-->
+		<unwar dest="${unwar.destination.dir}" src="${unwar.war.path}"> 
+			<!-- failOnEmptyArchive="true"> not until ant 1.8-->
+			
+			<!-- Note that this preserves file modification dates on windows. 
+			It may not on other systems, depending on the war/unwarring mechanism -->
+		</unwar>
+		<echo>This completes the first step of the setup, creating a "working exploded WAR" for Tomcat.</echo>
+		<echo>You will need to update the eclipse classpath to output to ${unwar.war.path}/WEB-INF/classes.</echo>
+		<echo>	(But only if you're updating java classes and resources)</echo>
+		<echo>You will also need to make Tomcat aware of this via one of the following ways:</echo>
+		<echo>	1) WTP -- Double click the server in the Servers view, select the modules tab, and add external module</echo>
+		<echo>	2) manually create an appropriate context.xml in TOMCAT_HOME/conf/Catalina/localhost which points to ${unwar.war.path}</echo>
+		<echo> Also, this method of creating a working directory does not update as you edit/add files in your eclipse project</echo>
+		<echo>Thus, you will have to run the task update-unwar-from-webapp to update. This won't handle deletions,</echo>
+		<echo>however. To do that. you'll have to delete the unwar directory and then run setup-unwar.</echo>
+
+	</target>
+	
+	<target name="update-webapp">
+		<echo>updating webapp</echo>
+		<copy todir="${unwar.destination.dir}" preservelastmodified="true" includeEmptyDirs="true" verbose="true">
+			<fileset dir="src/main/webapp">
+				<!-- excluded because eclipse is responsible for syncing this folder. -->
+				<exclude name="WEB-INF/classes/**"/>
+			</fileset>
+		</copy>
+	</target>
+	
+	<target name="update-Eclipse-classpath">
+		<fail>Not yet implemented</fail>
+		<!-- Don't do this by code. Do it manually, unless it is necessary to sync and desync -->
+	
+	</target>
+
+
+</project>
