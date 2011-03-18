@@ -40,6 +40,14 @@ public abstract class Comparison implements XMLStreamParserComponent {
 				//Continue, ignoring a validation exception
 			}
 			return a;
+		} else if (SourceShareComparison.isTargetMatch(localName)) {
+			SourceShareComparison a = new SourceShareComparison();
+			try {
+				a.parse(in);
+			} catch (XMLParseValidationException e) {
+				//Continue, ignoring a validation exception
+			}
+			return a;
 		} else if (AdvancedComparison.isTargetMatch(localName)) {
 			AdvancedComparison a = new AdvancedComparison();
 			try {

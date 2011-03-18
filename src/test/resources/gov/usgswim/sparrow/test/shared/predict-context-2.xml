@@ -11,10 +11,10 @@
 		</reachGroup>
 	</adjustmentGroups>
 	<analysis>
-		<dataSeries source="3">source_value</dataSeries>
+		<dataSeries source="3">total</dataSeries>
 	</analysis>
 	<terminalReaches />
 	<areaOfInterest />
 	
-	<nominalComparison type="percent_change"/>
+	<sourceShareComparison type="percent"/>
 </PredictionContext>

@@ -1,5 +1,7 @@
 <PredictionContext xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="50">
+	
+	<!--  Same as 2, except there is no comparison and no source is spec'ed -->
 	<adjustmentGroups conflicts="accumulate">
 		<reachGroup enabled="true" name="Simple Adjustments">
 			<desc />
@@ -11,10 +13,9 @@
 		</reachGroup>
 	</adjustmentGroups>
 	<analysis>
-		<dataSeries source="3">source_value</dataSeries>
+		<dataSeries>total</dataSeries>
 	</analysis>
 	<terminalReaches />
 	<areaOfInterest />
 	
-	<nominalComparison type="percent_change"/>
 </PredictionContext>

@@ -179,6 +179,16 @@ public class BasicAnalysis extends Analysis {
 		myClone.source = source;
 		return myClone;
 	}
+	
+	@Override
+	public BasicAnalysis getNoSourceClone() throws CloneNotSupportedException {
+		BasicAnalysis myClone = new BasicAnalysis();
+		myClone.groupBy = groupBy;
+		myClone.aggFunction = aggFunction;
+		myClone.dataSeries = dataSeries;
+		myClone.source = null;
+		return myClone;
+	}
 
 	@Override
 	public void checkValidity() throws XMLParseValidationException {

@@ -15,8 +15,12 @@
 				<xs:choice minOccurs="0">
 					<xs:element name="nominalComparison">
 						<xs:complexType>
-							<xs:attribute name="type" use="required" type="v0_2:comparisonTypeEnum"
-							/>
+							<xs:attribute name="type" use="required" type="v0_2:comparisonTypeEnum"/>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="sourceShareComparison">
+						<xs:complexType>
+							<xs:attribute name="type" use="required" type="v0_2:comparisonTypeEnum"/>
 						</xs:complexType>
 					</xs:element>
 					<xs:element name="comparison" type="v0_2:comparison"/>
@@ -295,8 +299,10 @@
 	</xs:simpleType>
 	<xs:simpleType name="comparisonTypeEnum">
 		<xs:restriction base="xs:string">
+			<xs:enumeration value="none"/>
+			<xs:enumeration value="percent"/>
+			<xs:enumeration value="percent_change"/>
 			<xs:enumeration value="absolute"/>
-			<xs:enumeration value="percentage"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="CriteriaTypeEnum">

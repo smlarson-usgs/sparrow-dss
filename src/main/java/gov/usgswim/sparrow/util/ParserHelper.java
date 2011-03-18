@@ -358,7 +358,7 @@ public abstract class ParserHelper {
 
   }
 
-	/**
+  /**
    * Returns the String value found in the specified attribute of the current
    * element.  If the attribute does not exist, the default value is returned.
    *
@@ -376,5 +376,28 @@ public abstract class ParserHelper {
 		  return v;
 	  }
 	  return defaultVal;
+  }
+  
+  /**
+   * Returns the String value found in the specified attribute of the current
+   * element.  If the attribute does not exist, the default value is returned.
+   *
+   * @param reader
+   * @param attrib
+   * @param defaultVal Returned if the specified attribute does not exist or is empty.
+   * @return
+   */
+  public static Boolean parseAttribAsBoolean(
+		  XMLStreamReader reader, String attrib, Boolean defaultVal) {
+
+	  String v = StringUtils.trimToNull( reader.getAttributeValue(null, attrib) );
+
+	  if (v != null) {
+		  //'true' or '1' comes from the xsd spec for boolean, which is what
+		  //is used to define the communication.
+		  return ("true".equals(v) || "1".endsWith(v));
+	  } else {
+		  return defaultVal;
+	  }
   }
 }

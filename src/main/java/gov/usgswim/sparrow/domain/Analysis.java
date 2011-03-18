@@ -189,6 +189,17 @@ public abstract class Analysis implements XMLStreamParserComponent {
 	
 	@Override
 	abstract public Analysis clone() throws CloneNotSupportedException;
+	
+	/**
+	 * Returns a clone of this instance with no source specified.
+	 * 
+	 * This is used for creating the no-source context when calculating the
+	 * source shares comparison.
+	 * 
+	 * @return
+	 * @throws CloneNotSupportedException If the dataseries requires a source.
+	 */
+	abstract public Analysis getNoSourceClone() throws CloneNotSupportedException;
 
 
 

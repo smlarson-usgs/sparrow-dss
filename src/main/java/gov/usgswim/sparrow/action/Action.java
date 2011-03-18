@@ -747,7 +747,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 * @param isDescription	True to get the description
 	 * @return
 	 */
-	public static String getDataSeriesProperty (DataSeriesType dataSeriesType, boolean isDescription) throws IOException {
+	public static String getDataSeriesProperty (DataSeriesType dataSeriesType, boolean isDescription) {
 		String name = dataSeriesType.name();
 		if (isDescription) name += "_description";
 		return getDataSeriesProperty().getProperty(name, "");
@@ -799,14 +799,19 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		return getDataSeriesProperty().getProperty(name, defaultValue);
 	}
 	
-	private static synchronized Properties getDataSeriesProperty() throws IOException{
+	private static synchronized Properties getDataSeriesProperty() {
 		if (dataSeriesProperties == null) {
 			Properties props = new Properties();
 			
 			String path = "/gov/usgswim/sparrow/DataSeriesType.properties";
 			InputStream ins = getResourceAsStream(path);
 
-			props.load(ins);
+			try {
+				props.load(ins);
+			} catch (IOException e) {
+				log.error("Unable to load the Action data series properties file.", e);
+				
+			}
 			
 			dataSeriesProperties = props;
 		}

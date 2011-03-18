@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.domain;
 
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
 import gov.usgswim.sparrow.util.ParserHelper;
@@ -193,6 +194,32 @@ public class Select implements XMLStreamParserComponent {
 
 	public Integer getSource() {
 		return source;
+	}
+	
+	/**
+	 * Returns a clone of this instance with no source specified.
+	 * 
+	 * This is used for creating the no-source context when calculating the
+	 * source shares comparison.
+	 * 
+	 * @return
+	 * @throws CloneNotSupportedException If the dataseries requires a source.
+	 */
+	public Select getNoSourceClone() throws CloneNotSupportedException {
+		
+		if (dataSeries.isSourceRequired()) {
+			throw new CloneNotSupportedException("The data series '" +
+					Action.getDataSeriesProperty(dataSeries, false) +
+					"' requires a source, so cannot be cloned to a no-source version.");
+		}
+		
+		Select s = new Select();
+		s.dataSeries = dataSeries;
+		s.source = null;
+		s.dataSeriesPer = dataSeriesPer;
+		s.partition = partition;
+		s.analyticFunction = analyticFunction;
+		return s;
 	}
 
 }

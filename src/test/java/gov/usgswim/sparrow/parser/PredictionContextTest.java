@@ -100,41 +100,6 @@ public class PredictionContextTest extends TestCase {
 		assertEquals(Long.valueOf(22), pCon.getModelID());
 	}
 
-	/*
-	 * These tests are now all broken and not really unit tests as written
-	 * b/c the register a prediction context, which now requires the associated
-	 * result to be calculated, which requires the prediction data.
-	 *   //TODO:  Fix these tests to run w/ canned prediction data
-	public void testPredictContext1() throws Exception {
-		PredictContextRequest contextReq = buildPredictContext1();	//Build a context from a canned file
-
-		assertTrue(contextReq.getPredictionContext().isValid());
-		String response = pipeDispatch(contextReq, new PredictContextPipeline());
-		assertEquals("PredictionContext parsing has likely changed.", PRED_CONTEXT_1_ID, Integer.parseInt(getAttributeValue(response, "context-id")));
-	}
-
-	public void testPredictContext2() throws Exception {
-		PredictContextRequest contextReq = buildPredictContext2();	//Build a context from a canned file
-
-		assertTrue(contextReq.getPredictionContext().isValid());
-		String response = pipeDispatch(contextReq, new PredictContextPipeline());
-		assertEquals("PredictionContext parsing has likely changed.", PRED_CONTEXT_2_ID, Integer.parseInt(getAttributeValue(response, "context-id")));
-	}
-
-	public void testPredictContext3() throws Exception {
-		PredictContextRequest contextReq = buildPredictContext3();	//Build a context from a canned file
-
-		String response = pipeDispatch(contextReq, new PredictContextPipeline());
-		assertEquals("PredictionContext parsing has likely changed.", PRED_CONTEXT_3_ID, Integer.parseInt(getAttributeValue(response, "context-id")));
-	}
-
-	public void testPredictContext4() throws Exception {
-		PredictContextRequest contextReq = buildPredictContext4();	//Build a context from a canned file
-
-		String response = pipeDispatch(contextReq, new PredictContextPipeline());
-		assertEquals("PredictionContext parsing has likely changed.", PRED_CONTEXT_4_ID, Integer.parseInt(getAttributeValue(response, "context-id")));
-	}
-	*/
 	
 	public void testBug1() throws Exception {
 		PredictionContext context = buildContext(VALID_FRAGMENT_BUG_1);

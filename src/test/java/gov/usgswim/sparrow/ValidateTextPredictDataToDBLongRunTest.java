@@ -6,6 +6,7 @@ import gov.usgswim.datatable.filter.ColumnRangeFilter;
 import gov.usgswim.datatable.filter.FilteredDataTable;
 import gov.usgswim.sparrow.action.LoadModelPredictDataFromFile;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
+import gov.usgswim.sparrow.domain.ComparisonType;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import org.apache.commons.lang.ObjectUtils;
@@ -61,7 +62,7 @@ public class ValidateTextPredictDataToDBLongRunTest  extends SparrowDBTestBaseCl
 		ColumnRangeFilter txtColFilter = new ColumnRangeFilter(1, txtSrcMeta.getColumnCount() - 1);
 		txtSrcMeta = new FilteredDataTable(txtSrcMeta, null, txtColFilter);
 		
-		DataTableCompare srcMetaComp = new DataTableCompare(dbSrcMeta, txtSrcMeta, true);
+		DataTableCompare srcMetaComp = new DataTableCompare(dbSrcMeta, txtSrcMeta, ComparisonType.absolute);
 		
 		assertTrue(compareTables(dbSrcMeta, txtSrcMeta, .00000001d, true));
 		assertTrue(Math.abs(srcMetaComp.getMaxDouble()) < .00000001d);
@@ -78,7 +79,7 @@ public class ValidateTextPredictDataToDBLongRunTest  extends SparrowDBTestBaseCl
 		txtColFilter = new ColumnRangeFilter(1, txtTopo.getColumnCount() - 1);
 		txtTopo = new FilteredDataTable(txtTopo, null, txtColFilter);
 		
-		DataTableCompare topoComp = new DataTableCompare(dbTopo, txtTopo, true);
+		DataTableCompare topoComp = new DataTableCompare(dbTopo, txtTopo, ComparisonType.absolute);
 		assertTrue(compareTables(dbTopo, txtTopo, .00000001d, true));
 		assertTrue(Math.abs(topoComp.getMaxDouble()) < .00000001d);
 		
@@ -88,7 +89,7 @@ public class ValidateTextPredictDataToDBLongRunTest  extends SparrowDBTestBaseCl
 		DataTable dbDel = dbPredictData.getDelivery();
 		DataTable txtDel = txtPredictData.getDelivery();
 		
-		DataTableCompare delComp = new DataTableCompare(dbDel, txtDel, true);
+		DataTableCompare delComp = new DataTableCompare(dbDel, txtDel, ComparisonType.absolute);
 		//The text delivery table has IDs, db does not.  not an issue.
 		assertTrue(compareTables(dbDel, txtDel, .00000001d, false));
 		assertTrue(Math.abs(delComp.getMaxDouble()) < .00000001d);
@@ -99,7 +100,7 @@ public class ValidateTextPredictDataToDBLongRunTest  extends SparrowDBTestBaseCl
 		DataTable dbCoef = dbPredictData.getCoef();
 		DataTable txtCoef = txtPredictData.getCoef();
 		
-		DataTableCompare delCoef = new DataTableCompare(dbCoef, txtCoef, true);
+		DataTableCompare delCoef = new DataTableCompare(dbCoef, txtCoef, ComparisonType.absolute);
 		//TODO:  The db loader is failing to get the IDs in, why?
 		assertTrue(compareTables(dbCoef, txtCoef, .00000001d, false));
 		assertTrue(Math.abs(delCoef.getMaxDouble()) < .00000001d);

@@ -29,9 +29,6 @@ public class SingleColumnOverrideDataTable extends AbstractDataTableBase impleme
 	/** The index of the column (zero based) that the coefCol should be applied to */
 	private int colIndexNum;
 	
-	/** Whether to divide by the coefficient column instead of multiply */
-	private boolean invertCoef = false;
-	
 	/** Specifies the attributes for the specified column, allowing overwrites */
 	private ColumnAttribs colAttribs;
 
@@ -43,7 +40,7 @@ public class SingleColumnOverrideDataTable extends AbstractDataTableBase impleme
 	 * from the overrideColumn instead.
 	 * 
 	 * The attributes for the specified column (colAttribs) can be left null,
-	 * in which each the attribs of the underlying sourceData column will be used.
+	 * in which case the attribs are pulled from the overrideColumn.
 	 * If a colAttribs instance is passed, any null (by not empty) values will
 	 * be pulled from the sourceData column.
 	 * 
@@ -52,7 +49,9 @@ public class SingleColumnOverrideDataTable extends AbstractDataTableBase impleme
 	 * @param overrideColumnIndex The column index in the base table to be overridden.
 	 * @param colAttribs Attributes for the specified column
 	 */
-	public SingleColumnOverrideDataTable(DataTable sourceData, ColumnData overrideColumn, int overrideColumnIndex, ColumnAttribs colAttribs) {
+	public SingleColumnOverrideDataTable(DataTable sourceData, 
+			ColumnData overrideColumn, int overrideColumnIndex, ColumnAttribs colAttribs) {
+		
 		super(sourceData);
 		overrideCol = overrideColumn;
 		colIndexNum = overrideColumnIndex;
@@ -164,7 +163,7 @@ public class SingleColumnOverrideDataTable extends AbstractDataTableBase impleme
 	@Override
 	public boolean isIndexed(int col) {
 		if (col == colIndexNum) {
-			return false;
+			return overrideCol.isIndexed();
 		} else {
 			return super.isIndexed(col);
 		}
@@ -206,12 +205,13 @@ public class SingleColumnOverrideDataTable extends AbstractDataTableBase impleme
 		}
 	}
 	
-	/* Unsupported for this class */
 	@Override
 	public ColumnData getColumn(int colIndex) {
-		throw new UnsupportedOperationException(
-				"This method is not supported for this type of DataTable view, " +
-				"since there is no real ColumnData instance containing the data. ");
+		if (colIndex == colIndexNum) {
+			return overrideCol;
+		} else {
+			return super.base.getColumn(colIndex);
+		}
 	}
 	
 }

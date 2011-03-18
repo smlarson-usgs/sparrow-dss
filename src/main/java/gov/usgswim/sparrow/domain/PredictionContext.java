@@ -3,6 +3,10 @@ package gov.usgswim.sparrow.domain;
 import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+
+import java.io.IOException;
+
+import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.datatable.DataColumn;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
@@ -121,7 +125,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	// INSTANCE METHODS
 	// ================
 	public PredictionContext parse(XMLStreamReader in)
-	throws XMLStreamException, XMLParseValidationException {
+			throws XMLStreamException, XMLParseValidationException {
 
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
@@ -170,6 +174,10 @@ public class PredictionContext implements XMLStreamParserComponent {
 						areaOfInterestID = (areaOfInterest == null)? null: areaOfInterest.getId();
 					} else if (NominalComparison.isTargetMatch(localName)) {
 						NominalComparison comp = new NominalComparison();
+						this.comparison = comp.parse(in);
+						comparisonID = (comparison == null)? null: comparison.getId();
+					} else if (SourceShareComparison.isTargetMatch(localName)) {
+						SourceShareComparison comp = new SourceShareComparison();
 						this.comparison = comp.parse(in);
 						comparisonID = (comparison == null)? null: comparison.getId();
 					} else if (AdvancedComparison.isTargetMatch(localName)) {
@@ -324,14 +332,43 @@ public class PredictionContext implements XMLStreamParserComponent {
 	}
 
 	public void checkValidity() throws XMLParseValidationException {
-		if (!isValid()) {
-			// throw a custom error message depending on the error
-			throw new XMLParseValidationException(MAIN_ELEMENT_NAME + " is not valid");
-		}
-	}
+		
+		DataSeriesType dataseries = analysis.getDataSeries();
+		boolean isSourceShare = comparison != null &&
+			comparison instanceof SourceShareComparison &&
+			! ComparisonType.none.equals(comparison.getComparisonType());
+		
 
+		if (isSourceShare) {
+			
+			if (analysis.getSource() == null) {
+				throw new XMLParseValidationException(
+						"Source share comparisons cannot be generated " +
+						"without specifying  a source.");
+			}
+			
+			if (! dataseries.isPredictionBased() || dataseries.isStandardErrorEstimateBased()) {
+				throw new XMLParseValidationException(
+						"Source share comparisons are " +
+						"available for the dataseries '" +
+						Action.getDataSeriesProperty(dataseries, false) + "'");
+			}
+		}
+
+		if (adjustmentGroups != null) adjustmentGroups.checkValidity();
+		if (analysis != null) analysis.checkValidity();
+		if (terminalReaches != null) terminalReaches.checkValidity();
+		if (areaOfInterest != null) areaOfInterest.checkValidity();
+	}
+	
+	@Override
 	public boolean isValid() {
-		return true;
+		try {
+			checkValidity();
+			return true;
+		} catch (XMLParseValidationException e) {
+			return false;
+		}
 	}
 	
 
@@ -353,6 +390,11 @@ public class PredictionContext implements XMLStreamParserComponent {
 
 	public PredictionContext getNoAdjustmentVersion() {
 		return new PredictionContext(modelID, new AdjustmentGroups(modelID), analysis,
+				terminalReaches, areaOfInterest, comparison);
+	}
+	
+	public PredictionContext getNoSourceClone() throws CloneNotSupportedException {
+		return new PredictionContext(modelID, adjustmentGroups, analysis.getNoSourceClone(),
 				terminalReaches, areaOfInterest, comparison);
 	}
 
@@ -407,6 +449,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	public Comparison getComparison() {
 		return comparison;
 	}
+
 
 
 }

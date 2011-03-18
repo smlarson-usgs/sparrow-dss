@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.datatable;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
+import gov.usgswim.sparrow.domain.ComparisonType;
 
 import org.junit.*;
 import static org.junit.Assert.assertEquals;
@@ -56,7 +57,7 @@ public class DataTableCompareTest {
 	@Test
 	public void compareAbsoluteTest() throws Exception {
 		DataTableCompare comp = new DataTableCompare(baseDataTable,
-				compareDataTable, true);
+				compareDataTable, ComparisonType.absolute);
 		
 		//Comparing some of the 'interesting' values
 		//Row 0
@@ -93,9 +94,9 @@ public class DataTableCompareTest {
 	}
 	
 	@Test
-	public void comparePercentageTest() throws Exception {
+	public void comparePercentageChangeTest() throws Exception {
 		DataTableCompare comp = new DataTableCompare(baseDataTable,
-				compareDataTable, false);
+				compareDataTable, ComparisonType.percent_change);
 		
 		//Comparing some of the 'interesting' values
 		//Row 0
@@ -113,6 +114,40 @@ public class DataTableCompareTest {
 		//Row 4
 		assertEquals(0d, comp.getDouble(4, 0), 0d);
 		assertEquals(-50d, comp.getDouble(4, 3), 0d);
+		
+		//Headings and other stuff...
+		assertEquals("one", comp.getName(0));
+		assertEquals("BaseTable", comp.getName());
+		assertEquals("The BaseTable", comp.getDescription());
+		assertEquals("prop1Value", comp.getProperty("prop1"));
+		assertEquals(0, comp.getRowForId(1L));
+		assertEquals(0, comp.getColumnByName("one").intValue());
+		assertEquals(Double.class, comp.getDataType(0));
+		assertEquals("Percentage", comp.getUnits(0));
+		
+	}
+	
+	@Test
+	public void comparePercentageTest() throws Exception {
+		DataTableCompare comp = new DataTableCompare(baseDataTable,
+				compareDataTable, ComparisonType.percent);
+		
+		//Comparing some of the 'interesting' values
+		//Row 0
+		assertEquals(200d, comp.getDouble(0, 0), 0d);
+		assertEquals(100d, comp.getDouble(0, 3), 0d);
+		
+		//Row 2
+		assertEquals(0d, comp.getDouble(2, 0), 0d);
+		assertEquals(100d, comp.getDouble(2, 3), 0d); //Increase from 0 --> 100%
+		
+		//Row 3
+		assertEquals(0d, comp.getDouble(3, 0), 0d);
+		assertEquals(0d, comp.getDouble(3, 3), 0d); //Decrease from 0 --> -100%
+		
+		//Row 4
+		assertEquals(100d, comp.getDouble(4, 0), 0d);
+		assertEquals(50d, comp.getDouble(4, 3), 0d);
 		
 		//Headings and other stuff...
 		assertEquals("one", comp.getName(0));
@@ -161,7 +196,7 @@ public class DataTableCompareTest {
 		
 		
 		DataTableCompare comp = new DataTableCompare(base,
-				compareTo, true);
+				compareTo, ComparisonType.absolute);
 		
 		assertEquals(0d, comp.getDouble(0, 1), 0.000000000000001d);
 		assertEquals(4d, comp.getDouble(1, 1), 0.000000000000001d);

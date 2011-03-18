@@ -76,7 +76,6 @@ public class CalcAggregate extends Action<DataColumn> {
 		
 		
 		DataTable dataTbl = data.getTable();
-		int dataTblCol = data.getColumn();
 		TreeMap<Long, AggregateData> aggDataMap = new TreeMap<Long, AggregateData>();
 		ArrayList<Long> unmatchedRowIds = new ArrayList<Long>();
 		

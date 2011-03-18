@@ -6,6 +6,7 @@ import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTable.Immutable;
 import gov.usgswim.datatable.impl.FindHelper;
+import gov.usgswim.sparrow.domain.ComparisonType;
 
 
 /**
@@ -28,19 +29,18 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 	private static final long serialVersionUID = 1L;
 	
 	protected final DataTable compare;
-	protected final boolean absolute;
+	protected final ComparisonType type;
 	
 	/**
 	 * Constructs a new comparison instance
 	 * @param base	The data to compare to
 	 * @param compare	The data to be compared
-	 * @param isAbsolute	If true, values are (compare - base).  If false (percentage increase),
-	 * the values are (compare - base) / base.
+	 * @param type	Specifies the type of comparison
 	 */
-	public DataTableCompare(DataTable base, DataTable compare, boolean isAbsolute) {
+	public DataTableCompare(DataTable base, DataTable compare, ComparisonType type) {
 		super(base);
 		this.compare = compare;
-		this.absolute = isAbsolute;
+		this.type = type;
 	}
 
 	/**
@@ -51,30 +51,67 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 		return Double.class;
 	}
 
+	/**
+	 * 
+	 * For percent, the cal is: (compareCol / baseCol) * 100.
+	 * For absolute, the calc is: (compareCol - baseCol).
+	 * For percent change, the calc is: ((compareCol - baseCol) / baseCol) * 100.
+	 * 
+	 * However, the following zero and null assumptions are made:
+	 * 
+	 * <ul>
+	 * <li>A null value is never returned from this method.
+	 * <li>If both values are null, zero is returned.
+	 * <li>Any single null value will be considered a zero.
+	 * <li>Any positive comp value over a zero base is considered a 100% increase.
+	 * <li>Any negative comp value over a zero base is considered a 100% decrease.
+	 * </ul>
+	 */
 	@Override
 	public Double getDouble(int row, int col) {
 		
 		if (isStringCol(col)) {
 			return new Double(getString(row, col));
 		} else {
-			double b = base.getDouble(row, col);
-			double c = compare.getDouble(row, col);
+			Double b = base.getDouble(row, col);
+			Double c = compare.getDouble(row, col);
 			
-			if (absolute) {
-				return c - b;
-			}
-			if (b != 0d) {
-				return 100d * (c - b) / b;
-			}
-			
-			//TODO:  Increase or decreases from zero are considered +/-100%.
-			//Is that correct?  JIRA isse filed: http://privusgs4.er.usgs.gov//browse/SPDSS-313
-			if (c > b) {
-				return 100d;
-			} else if (b > c) {
-				return -100d;
-			} else {
+			//True for all types of comparison
+			if (b == null && c == null) {
 				return 0d;
+			}
+			
+			if (b == null) b = 0d;
+			if (c == null) c = 0d;
+			
+			switch (type) {
+			case percent:
+				if (b != 0d) {
+					return 100d * c / b;
+				} else if (c > 0) {
+					return 100d;
+				} else if (c < 0) {
+					return -100d;
+				} else {
+					return 0d;	// 0 over 0
+				}
+				//break; //unreachable
+			case absolute:
+				return c - b;
+				//break; //unreachable
+			case percent_change:
+				if (b != 0d) {
+					return 100d * (c - b) / b;
+				} else if (c > 0) {
+					return 100d;
+				} else if (c < 0) {
+					return -100d;
+				} else {
+					return 0d;	// 0 over 0
+				}
+				//break; //unreachable
+			default:
+				throw new RuntimeException("Unexpected ComparisonType " + type);
 			}
 		}
 
@@ -82,79 +119,17 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 
 	@Override
 	public Float getFloat(int row, int col) {
-		
-		if (isStringCol(col)) {
-			return new Float(getString(row, col));
-		} else {
-			double b = base.getDouble(row, col);
-			double c = compare.getDouble(row, col);
-			
-			if (absolute) {
-				return (float)(c - b);
-			}
-			if (b != 0d) {
-				return (float)(100d * (c - b) / b);
-			}
-			if (c > b) {
-				return 100f;
-			} else if (b > c) {
-				return -100f;
-			} else {
-				return 0f;
-			}
-		}
-
+		return getDouble(row, col).floatValue();
 	}
 
 	@Override
 	public Integer getInt(int row, int col) {
-		
-		if (isStringCol(col)) {
-			return new Integer(getString(row, col));
-		} else {
-			double b = base.getDouble(row, col);
-			double c = compare.getDouble(row, col);
-			
-			if (absolute) {
-				return (int)(c - b);
-			}
-			if (b != 0d) {
-				return (int) (100d * (c - b) / b);
-			}
-			if (c > b) {
-				return 100;
-			} else if (b > c) {
-				return -100;
-			} else {
-				return 0;
-			}
-		}
-
+		return getDouble(row, col).intValue();
 	}
 
 	@Override
 	public Long getLong(int row, int col) {
-		
-		if (isStringCol(col)) {
-			return new Long(getString(row, col));
-		} else {
-			double b = base.getDouble(row, col);
-			double c = compare.getDouble(row, col);
-			
-			if (absolute) {
-				return (long)(c - b);
-			}
-			if (b != 0d) {
-				return (long)(100d * (c - b) / b);
-			}
-			if (c > b) {
-				return 100L;
-			} else if (b > c) {
-				return -100L;
-			} else {
-				return 0L;
-			}
-		}
+		return getDouble(row, col).longValue();
 	}
 	
 	@Override
@@ -213,7 +188,7 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 	 */
 	@Override
 	public String getUnits(int col) {
-		if (absolute) {
+		if (ComparisonType.absolute.equals(type)) {
 			return base.getUnits(col);
 		}
 		return "Percentage";

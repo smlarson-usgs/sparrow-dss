@@ -156,6 +156,16 @@ public class AdvancedAnalysis extends Analysis {
 		myClone.select = select;
 		return myClone;
 	}
+	
+	@Override
+	public Analysis getNoSourceClone() throws CloneNotSupportedException {
+		AdvancedAnalysis myClone = new AdvancedAnalysis();
+		myClone.groupBy = groupBy;
+		myClone.aggFunction = aggFunction;
+		myClone.limitTo = limitTo;
+		myClone.select = select.getNoSourceClone();
+		return myClone;
+	}
 
 	@Override
 	public void checkValidity() throws XMLParseValidationException {

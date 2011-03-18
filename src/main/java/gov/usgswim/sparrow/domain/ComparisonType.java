@@ -7,6 +7,7 @@ package gov.usgswim.sparrow.domain;
 public enum ComparisonType {
 	none,
 	percent,
+	percent_change,
 	absolute;
 
 	public boolean isNone() {

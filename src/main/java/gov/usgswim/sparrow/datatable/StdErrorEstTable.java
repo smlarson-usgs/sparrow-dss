@@ -185,22 +185,12 @@ public class StdErrorEstTable extends AbstractDataTableBase implements Immutable
 	
 	@Override
 	public String getDescription(int col) {
-		try {
-			return Action.getDataSeriesProperty(dataSeriesType, true);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "";
-		}
+		return Action.getDataSeriesProperty(dataSeriesType, true);
 	}
 
 	@Override
 	public String getName(int col) {
-		try {
-			return Action.getDataSeriesProperty(dataSeriesType, false);
-		} catch (IOException e) {
-			e.printStackTrace();
-			return "";
-		}
+		return Action.getDataSeriesProperty(dataSeriesType, false);
 	}
 
 	@Override
