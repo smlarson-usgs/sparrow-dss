@@ -24,7 +24,7 @@ public class SerializableBlobWrapper {
 		objOstream.writeObject(object);
 		byte[] bArray = baos.toByteArray();
 
-		System.out.println("*** bArray = " + bArray);
+		//System.out.println("*** bArray = " + bArray);
 
 		return bArray;
 	}
