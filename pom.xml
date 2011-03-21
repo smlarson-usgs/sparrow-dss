@@ -104,13 +104,6 @@
 
 	<dependencies>
 
-		<!-- Project library, created separately -->
-		<dependency>
-			<groupId>gov.usgs.cida</groupId>
-			<artifactId>datatable</artifactId>
-			<version>1.1.5-SNAPSHOT</version>
-		</dependency>
-
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
