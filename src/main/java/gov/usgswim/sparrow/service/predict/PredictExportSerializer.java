@@ -158,7 +158,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 						}
 						
 						if (adjDataColumn != null) {
-							String name = "Nominal Mapped Value: " + nomDataColumn.getTable().getName(nomDataColumn.getColumn());
+							String name = "Original Mapped Value: " + nomDataColumn.getTable().getName(nomDataColumn.getColumn());
 							//name += " (" + nomDataColumn.getTable().getProperty(nomDataColumn.getColumn(), "constituent") + ")";
 							name += " (" + nomDataColumn.getTable().getUnits(nomDataColumn.getColumn()) + ")";
 							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
@@ -196,7 +196,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 					//Add a group for the NONadjusted source columns
 					if (request.isIncludeSource() && nomPredictData != null) {
 
-						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Nominal Source Values"));
+						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Original Source Values"));
 						for (int i = 0; i < nomPredictData.getSrc().getColumnCount(); i++) {
 							String name = "Nom. Source: " + nomPredictData.getSrc().getName(i);
 							name += " (" + nomPredictData.getSrc().getProperty(i, "constituent") + ")";
@@ -208,10 +208,10 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 
 					//Add a group for the NONadjusted predict result columns
 					if (request.isIncludePredict() && nomPredictResult != null) {
-						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Nominal Predicted Values"));
+						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Original Predicted Values"));
 						
 						int srcCount = nomPredictResult.getSourceCount();
-						String nameSuffix = " (Unadjusted)";
+						String nameSuffix = " (Original)";
 						
 						writePredictDataStartHeaders(nomPredictResult, nomPredictResult.getFirstDecayedIncrementalColForSrc(), srcCount + 1, nameSuffix);
 						writePredictDataStartHeaders(nomPredictResult, nomPredictResult.getFirstTotalColForSrc(), srcCount + 1, nameSuffix);
