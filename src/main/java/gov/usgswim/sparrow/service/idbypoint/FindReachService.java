@@ -85,6 +85,7 @@ public class FindReachService extends HttpServlet {
 							outputXML.append("<meanq>" + result.getString(row, result.getColumnByName("MEANQ")) + "</meanq>");
 							//outputXML.append("<state>" + rset.getString("REACH_NAME") + "</state>");
 							outputXML.append("<catch-area>" + result.getString(row, result.getColumnByName("CATCH_AREA")) + "</catch-area>");
+							outputXML.append("<cumulative-catch-area>" + result.getString(row, result.getColumnByName("CUM_CATCH_AREA")) + "</cumulative-catch-area>");
 							outputXML.append("<hucs>");
 							{
 								outputXML.append("<huc8 id=\"" + result.getString(row, result.getColumnByName("HUC8")) + "\" name=\"\" />");

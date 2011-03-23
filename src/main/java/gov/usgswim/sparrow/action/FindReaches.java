@@ -39,7 +39,7 @@ public class FindReaches extends Action<DataTable> {
 				errors.add("No criteria was specified");
 				return null;
 			} else {
-				String sql = "Select FULL_IDENTIFIER, REACH_NAME, MEANQ, CATCH_AREA, HUC2, HUC4, HUC6, HUC8 from model_attrib_vw " +
+				String sql = "Select FULL_IDENTIFIER, REACH_NAME, MEANQ, CATCH_AREA, CUM_CATCH_AREA, HUC2, HUC4, HUC6, HUC8 from model_attrib_vw " +
 				"WHERE " + query.buildWhere() + " " +
 				"ORDER BY reach_name, identifier";
 			
