@@ -246,21 +246,21 @@
 			-->
 		</Term>
 		<Term id="Comparison">
-			<h2>Comparison To Nominal Model</h2><br/>
+			<h2>Comparison To Original Model</h2><br/>
 			For the selected <i>Data Series</i>, the model prediction based on your adjusted values
 			can be compared to the model prediction based on the original unadjusted values (i.e. the 
-			<i>nominal</i> model prediction).<br/>
+			<i>original</i> model prediction).<br/>
 			Two options are available:
 			<dl>
-			<dt>Absolute change from nominal</dt>
+			<dt>Absolute change from original</dt>
 			<dd>Subtracts the
-			nominal (unadjusted) model result from the adjusted model result.</dd>
-			<dt>% change from nominal</dt>
+			original (unadjusted) model result from the adjusted model result.</dd>
+			<dt>% change from original</dt>
 			<dd>Presents the percent increase of
-			the adjusted model result over the nominal model result.  That is:<br/>
-			<code>100 X (adjusted - nominal) / nominal</code><br/>
-			Any increase from a nominal value of zero is considered a 100% change.
-			Any decrease from a nominal value of zero is considered a -100% change.</dd>
+			the adjusted model result over the original model result.  That is:<br/>
+			<code>100 X (adjusted - original) / orginal</code><br/>
+			Any increase from a original value of zero is considered a 100% change.
+			Any decrease from a original value of zero is considered a -100% change.</dd>
 			</dl>
 		</Term>
 		<Term id="Nominal">
