@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
@@ -12,6 +13,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
+		<cargo.containerId>tomcat6x</cargo.containerId>
 	</properties>
 
 	<scm>
@@ -96,9 +98,11 @@
 		<repository>
 			<id>cida-thirdparty</id>
 			<url>http://internal.cida.usgs.gov/nexus/content/repositories/cida-thirdparty</url>
-		</repository><!-- <repository> <id>repo1.maven.org/maven2</id> <url>http://repo2.maven.org/maven2</url> 
+		</repository>
+		<!-- <repository> <id>repo1.maven.org/maven2</id> <url>http://repo2.maven.org/maven2</url> 
 			</repository> <repository> <id>cida-maven-central</id> <url>http://internal.cida.usgs.gov/nexus/content/repositories/central/</url> 
-			</repository> --><!-- <repository> <id>cida-qw-releases</id> <url>http://http://internal.cida.usgs.gov/nexus/content/repositories/central</url> 
+			</repository> -->
+		<!-- <repository> <id>cida-qw-releases</id> <url>http://http://internal.cida.usgs.gov/nexus/content/repositories/central</url> 
 			</repository> -->
 	</repositories>
 
@@ -246,5 +250,64 @@
 		</dependency>
 
 	</dependencies>
-
+	<profiles>
+		<profile>
+			<id>test</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>env</name><value>test</value>
+				</property>
+			</activation>
+			<properties>
+				<service-url>http://localhost:8080/sparrow_mv</service-url>
+				<cargo.server.settings>cargo-sparrow-test</cargo.server.settings>
+			</properties>
+		</profile>
+		<profile>
+			<id>qa-svs-1</id>
+			<activation>
+				<property><name>env</name><value>qa-svs-1</value></property>
+			</activation>
+			<properties>
+				<cargo.server.settings>cargo-sparrow-qa-svs-1</cargo.server.settings>
+			</properties>
+		</profile>
+		<profile>
+			<id>qa-svs-2</id>
+			<activation>
+				<property><name>env</name><value>qa-svs-2</value></property>
+			</activation>
+			<properties>
+				<cargo.server.settings>cargo-sparrow-qa-svs-2</cargo.server.settings>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod-svs-0</id>
+			<activation>
+				<property><name>env</name><value>prod-svs-0</value></property>
+			</activation>
+			<properties>
+				<cargo.server.settings>cargo-sparrow-prod-svs-0</cargo.server.settings>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod-svs-1</id>
+			<activation>
+				<property><name>env</name><value>prod-svs-1</value></property>
+			</activation>
+			<properties>
+				<cargo.server.settings>cargo-sparrow-prod-svs-1</cargo.server.settings>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod-svs-2</id>
+			<activation>
+				<property><name>env</name><value>prod-svs-2</value></property>
+			</activation>
+			<properties>
+				<cargo.server.settings>cargo-sparrow-prod-svs-2</cargo.server.settings>
+			</properties>
+		</profile>
+	</profiles>
 </project>
