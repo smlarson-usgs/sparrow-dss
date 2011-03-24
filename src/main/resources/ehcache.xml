@@ -395,7 +395,9 @@
 		
 	<cache name="CatchmentAreas" maxElementsInMemory="10" />
 	
-	<cache name="HUC" maxElementsInMemory="10" />
+	<cache name="HUC" maxElementsInMemory="3" />
+	
+	<cache name="ReachWatershed" maxElementsInMemory="3" />
 		
 	<cache name="StreamFlow" maxElementsInMemory="10" />
 	

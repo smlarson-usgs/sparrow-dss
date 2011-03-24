@@ -44,6 +44,7 @@ public enum ConfiguredCache{
 	
 	CatchmentAreas(false, new UnitAreaFactory()),
 	HUC(false, new HUCFactory()),
+	ReachWatershed(false, new ReachWatershedFactory()),
 	StreamFlow(false, new StreamFlowFactory())
 	;
 	

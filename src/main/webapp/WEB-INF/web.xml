@@ -202,6 +202,10 @@
 		<servlet-class>gov.usgswim.sparrow.service.HUCService</servlet-class>
 	</servlet>
 	<servlet>
+		<servlet-name>ReachWatershedService</servlet-name>
+		<servlet-class>gov.usgswim.sparrow.service.ReachWatershedService</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>HelpService</servlet-name>
 		<servlet-class>gov.usgswim.sparrow.service.help.HelpService</servlet-class>
 	</servlet>
@@ -305,6 +309,12 @@
 		<servlet-name>HUCService</servlet-name>
 		<url-pattern>/huc/*</url-pattern>
 	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ReachWatershedService</servlet-name>
+		<url-pattern>/reachwatershed/*</url-pattern>
+	</servlet-mapping>
+	
+	
 	<servlet-mapping>
 		<servlet-name>IndividualReachPredictService</servlet-name>
 		<url-pattern>/sp_indivReachPredict/*</url-pattern>
