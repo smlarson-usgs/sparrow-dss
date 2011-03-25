@@ -34,7 +34,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 public class ServiceResponseEntityList {
 	
 	//A list whos children are placed directly in the parent tag of this class.
-	@XStreamImplicit
+	@XStreamImplicit(itemFieldName="entity")
 	private List<Object> list;
 	
 	public ServiceResponseEntityList() {

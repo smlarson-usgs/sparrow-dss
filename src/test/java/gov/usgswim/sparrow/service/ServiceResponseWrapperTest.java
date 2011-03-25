@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.service;
 
 import static org.junit.Assert.assertEquals;
+import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
 import gov.usgswim.sparrow.action.PredefinedSessionsLongRunTest;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSession;
@@ -14,24 +15,10 @@ import org.junit.Test;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
-public class ServiceResponseWrapperTest {
-
-	@Test
-	public void verifyPrimativeSerialization() {
-		
-		Integer entity = new Integer(42);
-		
-		ServiceResponseWrapper wrapper = new ServiceResponseWrapper(
-				entity, Number.class, new Long(entity.hashCode()), ServiceResponseStatus.OK,
-				ServiceResponseOperation.GET);
-		
-		XStream stream = new XStream();
-		stream.processAnnotations(ServiceResponseWrapper.class);
-		System.out.println(stream.toXML(wrapper));
-	}
+public class ServiceResponseWrapperTest extends SparrowUnitTestBaseClass {
 	
 	@Test
-	public void verifyPredefinedSessionSerialization() {
+	public void verifyPredefinedSessionSerialization() throws Exception {
 		
 		PredefinedSessionBuilder[] ps1 = PredefinedSessionsLongRunTest.createUnsavedPredefinedSessions();
 
@@ -43,7 +30,16 @@ public class ServiceResponseWrapperTest {
 		
 		XStream stream = new XStream();
 		stream.processAnnotations(ServiceResponseWrapper.class);
-		System.out.println(stream.toXML(wrapper));
+		
+		String xml = stream.toXML(wrapper);
+		//System.out.println(xml);
+		
+		assertEquals("OK", getXPathValue("//ServiceResponseWrapper/status", xml));
+		assertEquals("GET", getXPathValue("//ServiceResponseWrapper/operation", xml));
+		assertEquals("gov.usgswim.sparrow.domain.IPredefinedSession", getXPathValue("//ServiceResponseWrapper/entityClass", xml));
+		assertEquals("99", getXPathValue("//ServiceResponseWrapper/entityId", xml));
+		assertEquals("1", getXPathValue("count(//ServiceResponseWrapper/entityList/entity)", xml));
+		assertEquals("PredefinedSession", getXPathValue("//ServiceResponseWrapper/entityList/entity/@class", xml));
 	}
 	
 	@Test
@@ -63,7 +59,7 @@ public class ServiceResponseWrapperTest {
 		stream.processAnnotations(ServiceResponseWrapper.class);
 		String resultStr = stream.toXML(wrapper);
 		
-		System.out.println(resultStr);
+		//System.out.println(resultStr);
 		ServiceResponseWrapper recreatedWrap = (ServiceResponseWrapper) stream.fromXML(resultStr);
 		
 		assertEquals(wrapper.getEntityClass(), recreatedWrap.getEntityClass());
