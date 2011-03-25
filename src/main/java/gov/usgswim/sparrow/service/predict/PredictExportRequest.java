@@ -3,9 +3,12 @@ package gov.usgswim.sparrow.service.predict;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.domain.AdjustmentGroups;
+import gov.usgswim.sparrow.domain.ReachGroup;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
+import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.ParserHelper;
 
 import javax.xml.stream.XMLStreamException;
@@ -68,6 +71,7 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 	private boolean includeReachAttribs = false;
 	private boolean includeSource = false;
 	private boolean includePredict = false;
+	private boolean hasAdjustments = false;
 
 	// ================
 	// INSTANCE METHODS
@@ -93,12 +97,30 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 			// Main event loop -- parse until corresponding target end tag encountered.
 			switch (eventCode) {
 				case START_ELEMENT:
+					
 					localName = in.getLocalName();
+					
 					if (isTargetMatch(localName)) {
 						//nothing to do
 					} else if ("PredictionContext".equals(localName)) {
 						contextID = ParserHelper.parseAttribAsInt(in, "context-id", true);
 						ParserHelper.ignoreElement(in);
+						AdjustmentGroups g;
+						try {
+							g = SharedApplication.getInstance().getPredictionContext(contextID).getAdjustmentGroups();
+							if(g != null) {
+								if(g.getIndividualGroup().getAdjustments().size()>0) hasAdjustments = true;
+								if(g.getReachGroups().size()>0) {
+									for(ReachGroup r : g.getReachGroups()){
+										if(r.getAdjustments().size()>0) hasAdjustments = true;
+									}
+								}
+							}
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
 					} else if (ResponseFormat.isTargetMatch(localName)) {
 
 						responseFormat = ResponseFormat.parseStream(in);
@@ -107,16 +129,16 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 					} else if ("bbox".equals(localName)) {
 						bbox = ParserHelper.parseSimpleElementValue(in);
 					} else if ("response-content".equals(localName)) {
-                                            // do nothing - just a container
-                                        } else if ("attributes".equals(localName)) {
-                                            includeReachAttribs = true;
-                                            ParserHelper.ignoreElement(in);
-                                        } else if ("source-values".equals(localName)) {
-                                            includeSource = true;
-                                            ParserHelper.ignoreElement(in);
-                                        } else if ("predicted".equals(localName)) {
-                                            includePredict = true;
-                                            ParserHelper.ignoreElement(in);
+                        // do nothing - just a container
+                    } else if ("attributes".equals(localName)) {
+                        includeReachAttribs = true;
+                        ParserHelper.ignoreElement(in);
+                    } else if ("source-values".equals(localName)) {
+                        includeSource = true;
+                        ParserHelper.ignoreElement(in);
+                    } else if ("predicted".equals(localName)) {
+                        includePredict = true;
+                        ParserHelper.ignoreElement(in);
 					} else if ("columns".equals(localName)) {
 						ParserHelper.ignoreElement(in);
 					} else if ("binning".equals(localName)) {
@@ -187,6 +209,10 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 
 	public boolean isIncludeReachAttribs() {
 		return includeReachAttribs;
+	}
+	
+	public boolean hasAdjustments() {
+		return hasAdjustments;
 	}
 
 	public String getXMLRequest() {

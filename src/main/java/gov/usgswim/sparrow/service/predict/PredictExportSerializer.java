@@ -133,7 +133,8 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 		// opening element
 		events.add(new BasicTagEvent(START_DOCUMENT));
 		events.add(new BasicTagEvent(START_ELEMENT, "sparrow-prediction-response").addAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE + " " + TARGET_NAMESPACE_LOCATION));
-
+		boolean hasAdjustments = request.hasAdjustments();
+		
 		addOpenTag("response");
 		{
 			
@@ -150,14 +151,14 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 
 						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Mapped Value"));
 
-						if (adjDataColumn != null) {
+						if (hasAdjustments && adjDataColumn != null) {
 							String name = "Adjusted Mapped Value: " + adjDataColumn.getTable().getName(adjDataColumn.getColumn());
 							//name += " (" + adjDataColumn.getTable().getProperty(adjDataColumn.getColumn(), "constituent") + ")";
 							name += " (" + adjDataColumn.getTable().getUnits(adjDataColumn.getColumn()) + ")";
 							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
 						}
 						
-						if (adjDataColumn != null) {
+						if (nomDataColumn != null) {
 							String name = "Original Mapped Value: " + nomDataColumn.getTable().getName(nomDataColumn.getColumn());
 							//name += " (" + nomDataColumn.getTable().getProperty(nomDataColumn.getColumn(), "constituent") + ")";
 							name += " (" + nomDataColumn.getTable().getUnits(nomDataColumn.getColumn()) + ")";
@@ -167,38 +168,39 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 						addCloseTag("group");
 					}
 
-					//Add a group for the adjusted source columns
-					if (request.isIncludeSource() && adjPredictData != null) {
-						
-						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Adjusted Source Values"));
-						for (int i = 0; i < adjPredictData.getSrc().getColumnCount(); i++) {
-							String name = "Adj Source: " + adjPredictData.getSrc().getName(i);
-							name += " (" + adjPredictData.getSrc().getProperty(i, "constituent") + ")";
-							name += " (" + adjPredictData.getSrc().getUnits(i) + ")";
-							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
+					if(hasAdjustments){
+						//Add a group for the adjusted source columns
+						if (request.isIncludeSource() && adjPredictData != null) {
+							
+							events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Adjusted Source Values"));
+							for (int i = 0; i < adjPredictData.getSrc().getColumnCount(); i++) {
+								String name = "Adj Source: " + adjPredictData.getSrc().getName(i);
+								name += " (" + adjPredictData.getSrc().getProperty(i, "constituent") + ")";
+								name += " (" + adjPredictData.getSrc().getUnits(i) + ")";
+								events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
+							}
+							addCloseTag("group");
 						}
-						addCloseTag("group");
+						
+						//Add a group for the adjusted predict columns
+						if (request.isIncludePredict() && adjPredictResult != null) {
+							events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Adjusted Predicted Values"));
+							
+							int srcCount = adjPredictResult.getSourceCount();
+							String nameSuffix = " (Adjusted)";
+							
+							writePredictDataStartHeaders(adjPredictResult, adjPredictResult.getFirstDecayedIncrementalColForSrc(), srcCount + 1, nameSuffix);
+							writePredictDataStartHeaders(adjPredictResult, adjPredictResult.getFirstTotalColForSrc(), srcCount + 1, nameSuffix);
+							
+							addCloseTag("group");
+						}
 					}
-					
-					//Add a group for the adjusted predict columns
-					if (request.isIncludePredict() && adjPredictResult != null) {
-						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Adjusted Predicted Values"));
-						
-						int srcCount = adjPredictResult.getSourceCount();
-						String nameSuffix = " (Adjusted)";
-						
-						writePredictDataStartHeaders(adjPredictResult, adjPredictResult.getFirstDecayedIncrementalColForSrc(), srcCount + 1, nameSuffix);
-						writePredictDataStartHeaders(adjPredictResult, adjPredictResult.getFirstTotalColForSrc(), srcCount + 1, nameSuffix);
-						
-						addCloseTag("group");
-					}
-					
 					//Add a group for the NONadjusted source columns
 					if (request.isIncludeSource() && nomPredictData != null) {
 
 						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Original Source Values"));
 						for (int i = 0; i < nomPredictData.getSrc().getColumnCount(); i++) {
-							String name = "Nom. Source: " + nomPredictData.getSrc().getName(i);
+							String name = "Original Source: " + nomPredictData.getSrc().getName(i);
 							name += " (" + nomPredictData.getSrc().getProperty(i, "constituent") + ")";
 							name += " (" + nomPredictData.getSrc().getUnits(i) + ")";
 							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
@@ -247,11 +249,13 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 			//Aggregated rows are not working right now...
 			Long rowId = refPredictData.getIdForRow(state.r);
 			rowEvent.addAttribute("id", rowId.toString());
-
+			
+			boolean hasAdjustments = request.hasAdjustments(); 
+			
 			events.add(rowEvent);
 			{
 				
-				if (adjDataColumn != null) {
+				if (hasAdjustments && adjDataColumn != null) {
 					addNonNullBasicTag("c", adjDataColumn.getTable().getValue(state.r, adjDataColumn.getColumn()).toString());
 				}
 				
@@ -259,17 +263,19 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 					addNonNullBasicTag("c", nomDataColumn.getTable().getValue(state.r, nomDataColumn.getColumn()).toString());
 				}
 
-				if (request.isIncludeSource() && adjPredictData != null) {
-					for (int c = 0; c < adjPredictData.getSrc().getColumnCount(); c++) {
-						addNonNullBasicTag("c", adjPredictData.getSrc().getString(state.r, c));
+				if(hasAdjustments){
+					if (request.isIncludeSource() && adjPredictData != null) {
+						for (int c = 0; c < adjPredictData.getSrc().getColumnCount(); c++) {
+							addNonNullBasicTag("c", adjPredictData.getSrc().getString(state.r, c));
+						}
 					}
-				}
-
-				if (request.isIncludePredict() && adjPredictResult != null) {
-					int srcCount = adjPredictResult.getSourceCount();
-					
-					writePredictData(adjPredictResult, adjPredictResult.getFirstDecayedIncrementalColForSrc(), srcCount + 1);
-					writePredictData(adjPredictResult, adjPredictResult.getFirstTotalColForSrc(), srcCount + 1);
+	
+					if (request.isIncludePredict() && adjPredictResult != null) {
+						int srcCount = adjPredictResult.getSourceCount();
+						
+						writePredictData(adjPredictResult, adjPredictResult.getFirstDecayedIncrementalColForSrc(), srcCount + 1);
+						writePredictData(adjPredictResult, adjPredictResult.getFirstTotalColForSrc(), srcCount + 1);
+					}
 				}
 				
 				if (request.isIncludeSource() && nomPredictData != null) {
