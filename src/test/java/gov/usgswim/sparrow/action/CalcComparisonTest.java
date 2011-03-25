@@ -96,11 +96,13 @@ public class CalcComparisonTest  extends SparrowUnitTestBaseClass {
 			double noSrcValue = noSourceResult.getDouble(r);
 			double expected = (srcValue / noSrcValue) * 100;
 			
-			System.out.println("Expect / Found: " + expected + " / " + compValue);
-			//assertEquals(expected, compValue, .0000000001d);
+			//System.out.println("Expect / Found: " + expected + " / " + compValue);
+			assertEquals(expected, compValue, .0000000001d);
 			
 		}
 	}
+	
+
 	
 }
 

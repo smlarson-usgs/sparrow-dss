@@ -2,9 +2,11 @@ package gov.usgswim.sparrow.action;
 
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.sparrow.datatable.ColumnAttribs;
 import gov.usgswim.sparrow.datatable.DataColumn;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.datatable.PercentageColumnData;
+import gov.usgswim.sparrow.datatable.SingleColumnOverrideDataTable;
 import gov.usgswim.sparrow.domain.AdvancedComparison;
 import gov.usgswim.sparrow.domain.Comparison;
 import gov.usgswim.sparrow.domain.ComparisonType;
@@ -79,7 +81,15 @@ public class CalcComparison extends Action<DataColumn> {
 
 		DataTable resultTable = null;
 		
-		resultTable = new DataTableCompare(baseResult, compResult, comparison.getComparisonType());
+		if (! (comparison instanceof SourceShareComparison)) {
+			resultTable = new DataTableCompare(baseResult, compResult, comparison.getComparisonType());
+		} else {
+			ColumnData baseColData = baseResult.getColumn(baseCol.getColumn());
+			ColumnData compColData = compResult.getColumn(compCol.getColumn());
+			PercentageColumnData percColData = new PercentageColumnData(baseColData, compColData, compColData, null);
+			resultTable = new SingleColumnOverrideDataTable(compResult, percColData, compCol.getColumn(), null);
+		}
+		
 
 		return new DataColumn(resultTable, compCol.getColumn(), context.getId());
 	}
