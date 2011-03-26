@@ -178,7 +178,7 @@
                 	for the set of adjusted reaches.
                 </dd>
                 <dt>Incremental Area</dt><dd>
-                	The portion of the area that drains directly to the reach
+                	The area that drains directly to the reach
                 	without passing through another reach.
                 	This area is independent of the drainage area associated with upstream reaches.
                 </dd>
