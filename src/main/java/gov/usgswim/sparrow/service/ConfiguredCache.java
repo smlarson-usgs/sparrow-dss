@@ -43,6 +43,7 @@ public enum ConfiguredCache{
 	LoadModelMetadata(false, new ModelMetadataFactory()),
 	
 	CatchmentAreas(false, new UnitAreaFactory()),
+	HUCData(false, new HUCDataFactory()),
 	HUC(false, new HUCFactory()),
 	ReachWatershed(false, new ReachWatershedFactory()),
 	StreamFlow(false, new StreamFlowFactory())

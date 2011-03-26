@@ -10,6 +10,7 @@ import static gov.usgswim.sparrow.service.ConfiguredCache.ComparisonResult;
 import static gov.usgswim.sparrow.service.ConfiguredCache.DataBinning;
 import static gov.usgswim.sparrow.service.ConfiguredCache.DeliveryFraction;
 import static gov.usgswim.sparrow.service.ConfiguredCache.DeliveryFractionHash;
+import static gov.usgswim.sparrow.service.ConfiguredCache.HUCData;
 import static gov.usgswim.sparrow.service.ConfiguredCache.HUC;
 import static gov.usgswim.sparrow.service.ConfiguredCache.IdentifyReachByID;
 import static gov.usgswim.sparrow.service.ConfiguredCache.IdentifyReachByPoint;
@@ -53,6 +54,7 @@ import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.request.BinningRequest;
+import gov.usgswim.sparrow.request.HUCDataRequest;
 import gov.usgswim.sparrow.request.HUCRequest;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.request.PredefinedSessionRequest;
@@ -725,6 +727,10 @@ public class SharedApplication  {
 	
 	public DataTable getCatchmentAreas(UnitAreaRequest req, boolean quiet) {
 		return (DataTable) CatchmentAreas.get(req, quiet);
+	}
+	
+	public DataTable getHUCData(HUCDataRequest req, boolean quiet) {
+		return (DataTable) HUCData.get(req, quiet);
 	}
 	
 	//HUC
