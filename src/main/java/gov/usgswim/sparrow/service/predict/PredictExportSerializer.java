@@ -4,6 +4,7 @@ import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_NAMESPACE
 import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
+import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.filter.RowFilter;
 import gov.usgswim.sparrow.PredictData;
@@ -31,6 +32,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 //	private PredictResult adjPredictionResult;
 //	private DataColumn dataColumn;
 	
+	private DataTable watershedAreas;
 	
 	private DataColumn adjDataColumn;
 	private DataColumn nomDataColumn;
@@ -64,7 +66,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	public PredictExportSerializer(PredictExportRequest request,
 			DataColumn adjDataColumn, DataColumn nomDataColumn,
 			PredictData adjPredictData, PredictData nomPredictData,
-			PredictResult adjPredictResult, PredictResult nomPredictResult) throws Exception {
+			PredictResult adjPredictResult, PredictResult nomPredictResult, DataTable waterShedAreasColumn) throws Exception {
 		
 		super();
 		this.request = request;
@@ -75,7 +77,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 		this.nomPredictData = nomPredictData;
 		this.adjPredictResult = adjPredictResult;
 		this.nomPredictResult = nomPredictResult;
-		
+		this.watershedAreas = waterShedAreasColumn;
 		
 		if (adjPredictData == null && nomPredictData == null) {
 			throw new IllegalArgumentException("adjPredictData and nomPredictData cannot both be null.");
@@ -145,6 +147,10 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 			{
 				addOpenTag("columns");
 				{
+					//reach info, HUC8 and watershed area
+					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", ""));
+					events.add(makeNonNullBasicTag("col", "").addAttribute("name", "Watershed Area").addAttribute("type", "Number"));
+					addCloseTag("group");
 					
 					//Add a group for the mapped value
 					if (adjDataColumn != null || nomDataColumn != null) {
@@ -254,6 +260,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 			
 			events.add(rowEvent);
 			{
+				addNonNullBasicTag("c", watershedAreas.getValue(state.r, watershedAreas.getColumnByName("Cumulative Area")).toString());
 				
 				if (hasAdjustments && adjDataColumn != null) {
 					addNonNullBasicTag("c", adjDataColumn.getTable().getValue(state.r, adjDataColumn.getColumn()).toString());
