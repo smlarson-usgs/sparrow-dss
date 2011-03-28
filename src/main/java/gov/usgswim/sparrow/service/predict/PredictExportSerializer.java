@@ -151,7 +151,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 					//reach info, HUC8 and watershed area
 					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", ""));
 					events.add(makeNonNullBasicTag("col", "").addAttribute("name", "Watershed Area").addAttribute("type", "Number"));
-					events.add(makeNonNullBasicTag("col", "").addAttribute("name", "HUC8").addAttribute("type", "Number"));
+					events.add(makeNonNullBasicTag("col", "").addAttribute("name", "HUC8").addAttribute("type", "String"));
 					addCloseTag("group");
 					
 					//Add a group for the mapped value
