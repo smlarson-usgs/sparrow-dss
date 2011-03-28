@@ -35,7 +35,7 @@ public class HUCServiceLongRunTest extends SparrowServiceTestBaseClass {
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
 		assertXpathEvaluatesTo("gov.usgswim.sparrow.domain.HUC", "/ServiceResponseWrapper/entityClass", actualResponse);
-		assertXpathEvaluatesTo("01", "/ServiceResponseWrapper/entityList/HUC[1]/hucCode", actualResponse);
+		assertXpathEvaluatesTo("01", "/ServiceResponseWrapper/entityList/entity[1]/hucCode", actualResponse);
 		
 		
 		//Quick check that the cache is working
@@ -59,7 +59,7 @@ public class HUCServiceLongRunTest extends SparrowServiceTestBaseClass {
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
 		assertXpathEvaluatesTo("gov.usgswim.sparrow.domain.HUC", "/ServiceResponseWrapper/entityClass", actualResponse);
-		assertXpathEvaluatesTo("06020002", "/ServiceResponseWrapper/entityList/HUC[1]/hucCode", actualResponse);
+		assertXpathEvaluatesTo("06020002", "/ServiceResponseWrapper/entityList/entity[1]/hucCode", actualResponse);
 		
 	}
 

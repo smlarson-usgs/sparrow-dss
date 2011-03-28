@@ -19,19 +19,13 @@ import com.meterware.servletunit.ServletUnitClient;
  * @author eeverman
  *
  */
-public abstract class SparrowServiceUnitTest extends SparrowUnitTestBaseClass {
+public abstract class SparrowServiceUnitTestNoDB extends SparrowUnitTestBaseClass {
 
+	public static final String WEB_XML_LOCATION = "src/test/resources/service_test_web.xml";
 	
-	public static final Long SERVICE_TEST_MODEL = -1L;
-	public static final String WEB_XML_LOCATION = "public_html/WEB-INF/web.xml";
-
 	// ============
 	// SERVICE URLS
 	// ============
-	public static final String PREDICT_CONTEXT_SERVICE_URL = "http://localhost:8088/sp_predictcontext";
-	public static final String BINNING_SERVICE_URL = "http://localhost:8088/sp_binning";
-	public static final String PREDICT_EXPORT_SERVICE_URL = "http://localhost:8088/sp_predict";
-
 
 	protected static ServletRunner servletRunner;
 	protected static ServletUnitClient client;
@@ -49,7 +43,7 @@ public abstract class SparrowServiceUnitTest extends SparrowUnitTestBaseClass {
 	
 	@Override
 	protected void doOneTimeFrameworkSetup() throws Exception {
-		servletRunner =  new ServletRunner(new File(SparrowServiceTestBaseClass.WEB_XML_LOCATION));
+		servletRunner =  new ServletRunner(new File(WEB_XML_LOCATION));
 		client = servletRunner.newClient();
 	}
 
