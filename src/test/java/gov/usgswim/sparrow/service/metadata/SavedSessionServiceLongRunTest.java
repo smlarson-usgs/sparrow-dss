@@ -6,8 +6,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static gov.usgswim.sparrow.service.ServiceResponseMimeType.*;
 
+import java.sql.Statement;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
+import java.sql.Connection;
 
 import gov.usgswim.sparrow.SparrowServiceTestWithCannedModel50;
 import gov.usgswim.sparrow.action.Action;
@@ -16,7 +18,9 @@ import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
 import gov.usgswim.sparrow.service.ServiceResponseWrapper;
+import gov.usgswim.sparrow.service.SharedApplication;
 
+import org.junit.After;
 import org.junit.Test;
 
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -39,6 +43,32 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 	
 	private static final String SESSION_SERVICE_URL = "http://localhost:8088/sp_session";
 	
+	@After
+	public void deleteTestSessions() throws Exception {
+		String delSQL = "DELETE FROM predefined_session WHERE description like '%[[TEST USAGE ONLY, DO NOT USE. DELETE ME]]desc%'";
+		Connection conn = SharedApplication.getInstance().getRWConnection();
+		Statement stmt = null;
+		int rowsDeleted = 0;
+		
+		try {
+			stmt = conn.createStatement();
+			rowsDeleted = stmt.executeUpdate(delSQL);
+		} finally {
+			try {
+				stmt.close();
+			} catch (Exception e) {
+				//ignore
+			}
+			
+			try {
+				conn.close();
+			} catch (Exception e) {
+				//ignore
+			}
+		}
+		
+	}
+	
 	// ============
 	// TEST METHODS
 	// ============
@@ -56,7 +86,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		
 		WebResponse response = client.sendRequest(req);
 		String actualResponse = response.getText();
-		System.out.println("response: '" + actualResponse + "'");
+		//System.out.println("response: '" + actualResponse + "'");
 		
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("CREATE", "/ServiceResponseWrapper/operation", actualResponse);
@@ -72,7 +102,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		req = new GetMethodWebRequest(SESSION_SERVICE_URL + "/" + dbId);
 		response = client.sendRequest(req);
 		actualResponse = response.getText();
-		System.out.println("Get via /id url (full response) response: " + actualResponse);
+		//System.out.println("Get via /id url (full response) response: " + actualResponse);
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
 		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/entity[1]/uniqueCode", actualResponse);
@@ -106,10 +136,6 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		assertEquals("context", actualResponse);
 		//System.out.println("GET via Param response: " + actualResponse);
 		
-		
-		PredefinedSessionBuilder deleteMe = new PredefinedSessionBuilder();
-		deleteMe.setId(Long.parseLong(dbId));
-		PredefinedSessionsLongRunTest.deleteSessions(deleteMe);
 	}
 
 	
@@ -147,10 +173,6 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/entity[1]/uniqueCode", actualResponse);
 		assertXpathEvaluatesTo(dbId, "/ServiceResponseWrapper/entityId", actualResponse);
 		
-		
-		PredefinedSessionBuilder deleteMe = new PredefinedSessionBuilder();
-		deleteMe.setId(Long.parseLong(dbId));
-		PredefinedSessionsLongRunTest.deleteSessions(deleteMe);
 	}
 	
 	@Test
@@ -183,10 +205,6 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/entity[1]/uniqueCode", actualResponse);
 		assertXpathEvaluatesTo(dbId, "/ServiceResponseWrapper/entityId", actualResponse);
 		
-		
-		PredefinedSessionBuilder deleteMe = new PredefinedSessionBuilder();
-		deleteMe.setId(Long.parseLong(dbId));
-		PredefinedSessionsLongRunTest.deleteSessions(deleteMe);
 	}
 	
 	@Test
@@ -239,7 +257,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		req.setParameter("modelId", "9999");
 		WebResponse response = client.sendRequest(req);
 		String actualResponse = response.getText();
-		System.out.println("Filter 1 actual response: " + actualResponse);
+		//System.out.println("Filter 1 actual response: " + actualResponse);
 		//Should be nine all together (no criteria)
 		assertXpathEvaluatesTo("9", "count(/ServiceResponseWrapper/entityList/entity)", actualResponse);
 
@@ -289,10 +307,6 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		actualResponse = response.getText();
 		assertXpathEvaluatesTo("1", "count(/ServiceResponseWrapper/entityList/entity)", actualResponse);
 
-		PredefinedSessionsLongRunTest.deleteSessions(newSessions);
-		
-		
-		PredefinedSessionsLongRunTest.deleteSessions(savedSessions);
 	}
 	
 	
@@ -332,5 +346,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
         xs.processAnnotations(ServiceResponseWrapper.class);
         return xs;
 	}
+	
+
 }
 
