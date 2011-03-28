@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.impl.ColumnFromTable;
+import gov.usgswim.datatable.impl.ColumnDataFromTable;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.ColumnAttribsBuilder;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
@@ -69,7 +69,7 @@ public class CalcConcentration extends Action<SparrowColumnSpecifier> {
 			new SingleValueDoubleColumnData(CONVERSION_FACTOR, baseData.getRowCount(), coefAttribs);
 		
 		//A single column of data
-		ColumnData flowColumn = new ColumnFromTable(streamFlowData.getTable(), streamFlowData.getColumn());
+		ColumnData flowColumn = new ColumnDataFromTable(streamFlowData.getTable(), streamFlowData.getColumn());
 		
 		SingleColumnCoefDataTable baseXflow =
 			new SingleColumnCoefDataTable(baseData.getTable(), flowColumn, baseData.getColumn(), null, true);

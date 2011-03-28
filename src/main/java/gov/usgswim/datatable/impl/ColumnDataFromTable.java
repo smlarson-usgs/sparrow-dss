@@ -14,7 +14,7 @@ import java.util.Set;
  * @author eeverman
  *
  */
-public class ColumnFromTable implements ColumnData {
+public class ColumnDataFromTable implements ColumnData {
 
 	/** The datatable to pull data from */
 	private DataTable baseTable;
@@ -22,7 +22,7 @@ public class ColumnFromTable implements ColumnData {
 	/** The index (zero based) of the column in baseTable to use. */
 	private int colIndex;
 	
-	public ColumnFromTable(DataTable baseTable, int columnIndex) {
+	public ColumnDataFromTable(DataTable baseTable, int columnIndex) {
 
 		this.baseTable = baseTable;
 		this.colIndex = columnIndex;

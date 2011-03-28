@@ -7,6 +7,7 @@ import java.util.Set;
 
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.impl.ColumnDataFromTable;
 
 public class ManipulableView implements DataTable {
 
@@ -158,12 +159,15 @@ public class ManipulableView implements DataTable {
 	// DELEGATED METHODS
 	// =================
 	
-	/* Unsupported for this class */
 	@Override
 	public ColumnData getColumn(int colIndex) {
-		throw new UnsupportedOperationException(
-				"This method is not supported for this type of DataTable view, " +
-				"since there is no real ColumnData instance containing the data. ");
+		
+		if (colIndex < 0 || colIndex >= getColumnCount()) {
+			throw new IllegalArgumentException("Requested column index does not exist.");
+		}
+		
+		ColumnDataFromTable col = new ColumnDataFromTable(this, colIndex);
+		return col;
 	}
 	
 	@Override

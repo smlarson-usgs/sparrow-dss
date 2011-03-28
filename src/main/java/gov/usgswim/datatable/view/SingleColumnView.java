@@ -3,6 +3,7 @@ package gov.usgswim.datatable.view;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.impl.ColumnDataFromTable;
 
 import java.util.Map;
 import java.util.Set;
@@ -85,12 +86,15 @@ public class SingleColumnView implements DataView {
 		return base.findLast(column, value);
 	}
 	
-	/* Unsupported for this class */
 	@Override
 	public ColumnData getColumn(int colIndex) {
-		throw new UnsupportedOperationException(
-				"This method is not supported for this type of DataTable view, " +
-				"since there is no real ColumnData instance containing the data. ");
+		
+		if (colIndex < 0 || colIndex >= getColumnCount()) {
+			throw new IllegalArgumentException("Requested column index does not exist.");
+		}
+		
+		ColumnDataFromTable col = new ColumnDataFromTable(this, colIndex);
+		return col;
 	}
 
 	@Override

@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.action;
 
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.impl.ColumnFromTable;
+import gov.usgswim.datatable.impl.ColumnDataFromTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.UncertaintyData;
@@ -216,14 +216,14 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 						ca.setDescription(getDataSeriesProperty(type, true));
 						ca.setUnits(SparrowUnits.KG_PER_SQR_KM_PER_YEAR.getUserName());
 						
-						ColumnData instDecay = new ColumnFromTable(
+						ColumnData instDecay = new ColumnDataFromTable(
 								nominalPredictData.getDelivery(), PredictData.INSTREAM_DECAY_COL);
 						SingleColumnCoefDataTable decayedFlux = 
 							new SingleColumnCoefDataTable(result, instDecay, dataColIndex, null);
 						
 						UnitAreaRequest catchArea = new UnitAreaRequest(context.getModelID(), UnitAreaType.HUC_NONE, false);
 						DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(catchArea);
-						ColumnData catchmentAreaColumn = new ColumnFromTable(catchmentAreaTable, 1);
+						ColumnData catchmentAreaColumn = new ColumnDataFromTable(catchmentAreaTable, 1);
 						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(
 								decayedFlux, catchmentAreaColumn, dataColIndex, ca, true);
 						
@@ -245,7 +245,7 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 						
 						
 						//Grab the instream delivery (called decay) as a column
-						ColumnData incDeliveryCol = new ColumnFromTable(nominalPredictData.getDelivery(), PredictData.INSTREAM_DECAY_COL);
+						ColumnData incDeliveryCol = new ColumnDataFromTable(nominalPredictData.getDelivery(), PredictData.INSTREAM_DECAY_COL);
 						
 
 						// Delivery Fraction X Incremental Flux
@@ -268,7 +268,7 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 							
 							UnitAreaRequest ca = new UnitAreaRequest(context.getModelID(), UnitAreaType.HUC_NONE, false);
 							DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(ca);
-							ColumnData catchmentAreaColumn = new ColumnFromTable(catchmentAreaTable, 1);
+							ColumnData catchmentAreaColumn = new ColumnDataFromTable(catchmentAreaTable, 1);
 							SingleColumnCoefDataTable incDeliveredYield = new SingleColumnCoefDataTable(
 									incDeliveredFlux, catchmentAreaColumn, dataColIndex, DelYieldCa, true);
 							predictionBasedResult = incDeliveredYield;

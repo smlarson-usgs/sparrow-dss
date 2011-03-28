@@ -3,6 +3,7 @@ package gov.usgswim.datatable.adjustment;
 import gov.usgswim.Immutable;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.impl.ColumnDataFromTable;
 import gov.usgswim.datatable.impl.FindHelper;
 
 import java.util.HashMap;
@@ -170,12 +171,15 @@ public class SparseOverrideAdjustmentImmutable implements DataTable.Immutable {
 		return getMinDouble().intValue();
 	}
 	
-	/* Unsupported for this class */
 	@Override
 	public ColumnData getColumn(int colIndex) {
-		throw new UnsupportedOperationException(
-				"This method is not supported for this type of DataTable view, " +
-				"since there is no real ColumnData instance containing the data. ");
+		
+		if (colIndex < 0 || colIndex >= getColumnCount()) {
+			throw new IllegalArgumentException("Requested column index does not exist.");
+		}
+		
+		ColumnDataFromTable col = new ColumnDataFromTable(this, colIndex);
+		return col;
 	}
 	
 	// =================
