@@ -177,11 +177,6 @@
                 	source value may require decreasing a <i>Developed Land Area</i> source
                 	for the set of adjusted reaches.
                 </dd>
-                <dt>Incremental Area</dt><dd>
-                	The area that drains directly to the reach
-                	without passing through another reach.
-                	This area is independent of the drainage area associated with upstream reaches.
-                </dd>
                 <dt>Streamflow</dt><dd>
                 	The mean annual stream flow of the reach, in units of volume per time.
                 </dd>
@@ -295,6 +290,13 @@
 		<Term id="Reach">
 			Stream segments that extend between confluence with other streams.
 		</Term>
+		<Term id="Reach Name Search Tips">
+			Reach names are often reported with abbreviations. You may search for reaches with or without the abbreviations.<br/><br/>
+
+			Examples:<br/>
+			Search for the South Platte River by entering 'S PLATTE R' or 'PLATTE'<br/>
+			Search for the Little Missouri River, North Fork by entering 'LITTLE MISSOURI R, N FK' or 'MISSOURI'<br/>
+		</Term>
 		<Term id="Catchment">
 			A watershed that drains to a single stream.
 		</Term>
@@ -310,6 +312,10 @@
 			Selecting <b>Catchments</b> will draw each catchment region (land area surrounding each reach).
 			In both cases, the color used to render the reach or catchment is based
 			on the binning scheme selected on the <b>Map Controls</b> tab.
+		</Term>
+		<Term id="Watershed Area">
+			<h2>Watershed Area</h2><br/>
+			Text TBD...
 		</Term>
 	</CommonTerms>
 </Documentation>

@@ -82,8 +82,8 @@ public class FindReaches extends Action<DataTable> {
 		buildEquals(query, "SPARROW_MODEL_ID", frReq.modelID);
 		buildIn(query, "IDENTIFIER", frReq.getReachIDArray());
 		buildLike(query, "REACH_NAME", frReq.reachName);
-		buildLessThan(query, "CATCH_AREA", frReq.basinAreaHi);
-		buildGreaterThan(query, "CATCH_AREA", frReq.basinAreaLo);
+		buildLessThan(query, "CUM_CATCH_AREA", frReq.basinAreaHi);
+		buildGreaterThan(query, "CUM_CATCH_AREA", frReq.basinAreaLo);
 		buildLessThan(query, "MEANQ", frReq.meanQHi);
 		buildGreaterThan(query, "MEANQ", frReq.meanQLo);
 		buildLikeRight(query, "HUC8", frReq.huc);
@@ -110,8 +110,8 @@ public class FindReaches extends Action<DataTable> {
 			//Check numbers
 			checkPositiveInteger(errors, "Model ID", frReq.modelID);
 			checkPositiveInteger(errors, "Reach ID", frReq.getReachIDArray());
-			checkPositiveNumber(errors, "upper " + Action.getDataSeriesProperty(DataSeriesType.catch_area, false), frReq.basinAreaHi);
-			checkPositiveNumber(errors, "lower " + Action.getDataSeriesProperty(DataSeriesType.catch_area, false), frReq.basinAreaLo);
+			checkPositiveNumber(errors, "upper " + Action.getDataSeriesProperty(DataSeriesType.cumulative_catch_area, false), frReq.basinAreaHi);
+			checkPositiveNumber(errors, "lower " + Action.getDataSeriesProperty(DataSeriesType.cumulative_catch_area, false), frReq.basinAreaLo);
 			checkPositiveNumber(errors, "upper " + Action.getDataSeriesProperty(DataSeriesType.flux, false), frReq.basinAreaHi);
 			checkPositiveNumber(errors, "lower " + Action.getDataSeriesProperty(DataSeriesType.flux, false), frReq.basinAreaLo);
 		}
