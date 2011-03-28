@@ -27,6 +27,8 @@ public class EndToEndPredictionUnitTest extends SparrowServiceTestWithCannedMode
 	public static final String PREDICT_EXPORT_SERVICE_URL = "http://localhost:8088/sp_predict";
 	public static final String PREDICT_CONTEXT_SERVICE_URL = "http://localhost:8088/sp_predictcontext";
 	
+	/* Quick way to dump the export as xml */
+	@Ignore
 	@Test
 	public void temp() throws Exception {
 		String contextReq = getSharedTestResource("predict-context-no-adj.xml");
@@ -43,7 +45,6 @@ public class EndToEndPredictionUnitTest extends SparrowServiceTestWithCannedMode
 		System.out.println(exportResponse);
 	}
 	
-	@Ignore
 	@Test
 	public void checkPredictionWithNoAdjustments() throws Exception {
 		String contextReq = getSharedTestResource("predict-context-no-adj.xml");
@@ -60,17 +61,17 @@ public class EndToEndPredictionUnitTest extends SparrowServiceTestWithCannedMode
 		StringReader reader = new StringReader(exportResponse);
 		BufferedReader br = new BufferedReader(reader);
 		
-		DataTable resultTable = TabDelimFileUtil.readAsDouble(br , true, -1);
+		DataTable actualResult = TabDelimFileUtil.readAsDouble(br , true, -1);
 		DataTable expectResults = this.getTestModelPredictResult();
 		//System.out.println(exportResponse.substring(0, 1000));
 		
 		String totColName = Action.getDataSeriesProperty(DataSeriesType.total, false);
 		int expectCol = expectResults.getColumnByName(totColName);
-		int actualCol = 1;	//Its the mapped value column, which is the 2nd.
+		int actualCol = actualResult.getColumnByName("Original Mapped Value: Total Load (kg⋅year⁻¹)");
 		
 		for (int r = 0; r < expectResults.getRowCount(); r++) {
 			Double expect = expectResults.getDouble(r, expectCol);
-			Double actual = resultTable.getDouble(r, actualCol);
+			Double actual = actualResult.getDouble(r, actualCol);
 			assertEquals(expect, actual, .0001d);
 		}
 	}
