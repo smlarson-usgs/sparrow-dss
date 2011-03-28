@@ -40,7 +40,7 @@ public class FindReachSupportService extends HttpServlet {
 		+ "        <name>WESTERN RUN</name>"
 		+ "		<meanq>1234</meanq>"
 		+ "		<state>WI</state>"
-		+ "		<cumulative-catch-area>2345</cumulative-catch-area>"
+		+ "		<watershed-area>2345</watershed-area>"
 		+ "        <bbox min-long=\"-76.840216\" min-lat=\"39.492299\" max-long=\"-76.626801\" max-lat=\"39.597698\" marker-long=\"-76.7584575\" marker-lat=\"39.505502\" />"
 		+ "        <hucs>"
 		+ "            <huc8 id=\"02060003\" name=\"GUNPOWDER-PATAPSCO\" />"
