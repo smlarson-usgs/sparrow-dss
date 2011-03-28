@@ -14,30 +14,20 @@ import java.sql.ResultSet;
  *  
  * @author eeverman
  */
-public class LoadHUCData extends Action<DataTable> {
+public class LoadHUCTable extends Action<DataTable> {
 	
 	protected long modelId;
-	protected UnitAreaType hucLevel;
 	
-	
-	
-	public LoadHUCData(long modelId, UnitAreaType hucLevel) {
+	public LoadHUCTable(long modelId) {
 		super();
 		this.modelId = modelId;
-		//has validation
-		setHucLevel(hucLevel);
 	}
 
 
 
 	@Override
 	public DataTable doAction() throws Exception {
-		
-		String queryName = hucLevel.name();
-		String colName = hucLevel.toString();
-		String colDesc = hucLevel.toString();
-		
-		String sql = getText(queryName);
+		String sql = getText("HUC_8");
 		PreparedStatement st = getNewROPreparedStatement(sql);
 		
 		st.setLong(1, modelId);
@@ -46,38 +36,16 @@ public class LoadHUCData extends Action<DataTable> {
 		DataTableWritable values = null;
 		values = DataTableConverter.toDataTable(rset);
 		values.buildIndex(0);
-		values.getColumns()[1].setName(colName);
-		values.getColumns()[1].setDescription(colDesc);
+		values.getColumns()[0].setName("HUC8");
+		values.getColumns()[0].setDescription("HUC8");
 		return values.toImmutable();
 	}
-
-
 
 	public long getModelId() {
 		return modelId;
 	}
 
-
-
 	public void setModelId(long modelId) {
 		this.modelId = modelId;
-	}
-
-
-
-	public UnitAreaType getHucLevel() {
-		return hucLevel;
-	}
-
-
-
-	public void setHucLevel(UnitAreaType hucLevel) {
-		if (! hucLevel.equals(UnitAreaType.HUC_2) &&
-				! hucLevel.equals(UnitAreaType.HUC_4) &&
-				! hucLevel.equals(UnitAreaType.HUC_6) &&
-				! hucLevel.equals(UnitAreaType.HUC_8)) {
-			throw new IllegalArgumentException("Only HUC_2-8 is currently supported");
-		}
-		this.hucLevel = hucLevel;
 	}
 }

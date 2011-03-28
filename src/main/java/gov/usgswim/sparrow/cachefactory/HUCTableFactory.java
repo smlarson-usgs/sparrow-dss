@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.action.LoadHUCData;
-import gov.usgswim.sparrow.request.HUCDataRequest;
+import gov.usgswim.sparrow.action.LoadHUCTable;
+import gov.usgswim.sparrow.request.HUCTableRequest;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 /**
@@ -12,13 +12,13 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
  *
  * @author eeverman
  */
-public class HUCDataFactory implements CacheEntryFactory {
+public class HUCTableFactory implements CacheEntryFactory {
 
 	@Override
 	public DataTable createEntry(Object inHUCDataRequest) throws Exception {
-		HUCDataRequest hucRequest = (HUCDataRequest)inHUCDataRequest;
+		HUCTableRequest hucRequest = (HUCTableRequest)inHUCDataRequest;
 		DataTable hucs = null;
-		LoadHUCData action = new LoadHUCData(hucRequest.getModelID(), hucRequest.getHucLevel());
+		LoadHUCTable action = new LoadHUCTable(hucRequest.getModelID());
 		hucs = action.run();
 		return hucs;
 	}

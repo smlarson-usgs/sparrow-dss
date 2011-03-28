@@ -8,37 +8,31 @@ import gov.usgswim.sparrow.domain.UnitAreaType;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
- * A request for a catchment area table.
+ * A request for a HUC8 table of data.
  * 
- * The request indicates which model and an aggregation type.
+ * The request indicates which model.
  * 
- * @author klangsto
+ * @author thongsav
  * 
  */
 @Immutable
-public class HUCDataRequest implements Serializable {
+public class HUCTableRequest implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private final long modelID;
-	private final UnitAreaType hucLevel;
 
-	public HUCDataRequest(long modelID, UnitAreaType hucLevel) {
+	public HUCTableRequest(long modelID) {
 		this.modelID = modelID;
-		this.hucLevel = hucLevel;
 	}
 
 	public long getModelID() {
 		return modelID;
 	}
 
-	public UnitAreaType getHucLevel() {
-		return hucLevel;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof HUCDataRequest) {
+		if (obj instanceof HUCTableRequest) {
 			return obj.hashCode() == hashCode();
 		}
 		return false;
@@ -48,8 +42,7 @@ public class HUCDataRequest implements Serializable {
 	public synchronized int hashCode() {
 		int hash = new HashCodeBuilder(2459, 141).
 		append(modelID).
-		append(hucLevel).
-		append("HUCDataClass").
+		append(this.getClass()).
 		toHashCode();
 		return hash;
 	}
