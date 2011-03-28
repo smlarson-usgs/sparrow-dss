@@ -6,7 +6,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
 
 import org.junit.Before;
@@ -25,7 +25,7 @@ public class CalcAggregateTest {
 
 	DataTable hucs;
 	DataTable reachValues;
-	DataColumn reachValueCol;
+	SparrowColumnSpecifier reachValueCol;
 	
 	@Before
 	public void setup() {
@@ -89,7 +89,7 @@ public class CalcAggregateTest {
 		}
 		
 		reachValues = reachValuesW.toImmutable();
-		reachValueCol = new DataColumn(reachValues, 0, null);
+		reachValueCol = new SparrowColumnSpecifier(reachValues, 0, null);
 	}
 	
 	
@@ -99,7 +99,7 @@ public class CalcAggregateTest {
 		action.setAggType(AggregateType.avg);
 		action.setData(reachValueCol);
 		action.setReachHucs(hucs);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 		
 		//Row 0, HUC 1
 		assertEquals(11d, result.getDouble(0).doubleValue(), .000000000000001d);
@@ -120,7 +120,7 @@ public class CalcAggregateTest {
 		action.setAggType(AggregateType.min);
 		action.setData(reachValueCol);
 		action.setReachHucs(hucs);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 		
 		//asserts
 		assertEquals(10d, result.getDouble(0).doubleValue(), .000000000000001d);
@@ -134,7 +134,7 @@ public class CalcAggregateTest {
 		action.setAggType(AggregateType.max);
 		action.setData(reachValueCol);
 		action.setReachHucs(hucs);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 		
 		//asserts
 		assertEquals(12d, result.getDouble(0).doubleValue(), .000000000000001d);
@@ -148,7 +148,7 @@ public class CalcAggregateTest {
 		action.setAggType(AggregateType.sum);
 		action.setData(reachValueCol);
 		action.setReachHucs(hucs);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 		
 		//asserts
 		assertEquals(33d, result.getDouble(0).doubleValue(), .000000000000001d);
@@ -162,7 +162,7 @@ public class CalcAggregateTest {
 		action.setAggType(AggregateType.none);
 		action.setData(reachValueCol);
 		action.setReachHucs(hucs);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 		
 		//asserts - This should be the reachValues now, not agg data
 		assertEquals(10d, result.getDouble(0).doubleValue(), .000000000000001d);

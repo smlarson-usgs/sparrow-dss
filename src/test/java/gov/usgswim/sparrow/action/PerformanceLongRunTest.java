@@ -6,7 +6,7 @@ import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowDBTestBaseClass;
 import gov.usgswim.sparrow.cachefactory.PredictResultFactory;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
@@ -78,7 +78,7 @@ public class PerformanceLongRunTest extends SparrowDBTestBaseClass {
 		PredictResultFactory prFactory = new PredictResultFactory();
 		AdjustmentGroups emptyAdjustments = new AdjustmentGroups(TEST_MODEL_ID);
 		PredictResult predictResults = null;
-		DataColumn dataColumn = null;
+		SparrowColumnSpecifier dataColumn = null;
 		
 		//Run the prediction
 		startTime = System.currentTimeMillis();
@@ -95,7 +95,7 @@ public class PerformanceLongRunTest extends SparrowDBTestBaseClass {
 		
 		//Copy the prediction results to an NSDataSet
 		dataColumn =
-			new DataColumn(predictResults, predictResults.getTotalCol(), context.getId());
+			new SparrowColumnSpecifier(predictResults, predictResults.getTotalCol(), context.getId());
 		
 		startTime = System.currentTimeMillis();
 		for (int i=0; i< ITERATION_COUNT;  i++) {

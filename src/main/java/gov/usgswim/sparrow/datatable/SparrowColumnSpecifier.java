@@ -10,19 +10,19 @@ import gov.usgswim.datatable.DataTable;
  * @author eeverman
  *
  */
-public class DataColumn {
+public class SparrowColumnSpecifier {
 	private final DataTable table;
 	private final int column;
 	private Integer contextId;	//Defined when we have a context
 	private Long modelId;	//Defined only when we have a modelID but no context
 
-	public DataColumn(DataTable table, int column, Integer contextId) {
+	public SparrowColumnSpecifier(DataTable table, int column, Integer contextId) {
 		this.table = table;
 		this.column = column;
 		this.contextId = contextId;
 	}
 	
-	public DataColumn(DataTable table, int column, Integer contextId, Long modelId) {
+	public SparrowColumnSpecifier(DataTable table, int column, Integer contextId, Long modelId) {
 		this.table = table;
 		this.column = column;
 		this.contextId = contextId;

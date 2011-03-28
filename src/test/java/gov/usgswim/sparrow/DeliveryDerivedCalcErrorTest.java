@@ -2,7 +2,7 @@ package gov.usgswim.sparrow;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 
@@ -35,7 +35,7 @@ public class DeliveryDerivedCalcErrorTest extends SparrowUnitTestBaseClass {
 		PredictContextRequest contextReq = pipe.parse(xmlContextReq);
 		String actualResponse = SparrowUnitTestBaseClass.pipeDispatch(contextReq, pipe);
 		assertTrue(similarXMLIgnoreContextId(xmlContextResp, actualResponse));
-		DataColumn totalData = contextReq.getPredictionContext().getDataColumn();
+		SparrowColumnSpecifier totalData = contextReq.getPredictionContext().getDataColumn();
 		
 		//Test delivery fraction
 		xmlContextReq = SparrowUnitTestBaseClass.getXmlAsString(this.getClass(), "DelFracContext");
@@ -43,7 +43,7 @@ public class DeliveryDerivedCalcErrorTest extends SparrowUnitTestBaseClass {
 		contextReq = pipe.parse(xmlContextReq);
 		actualResponse = SparrowUnitTestBaseClass.pipeDispatch(contextReq, pipe);
 		assertTrue(similarXMLIgnoreContextId(xmlContextResp, actualResponse));
-		DataColumn delFracData = contextReq.getPredictionContext().getDataColumn();
+		SparrowColumnSpecifier delFracData = contextReq.getPredictionContext().getDataColumn();
 
 		//Test Total Delivery Flux
 		xmlContextReq = SparrowUnitTestBaseClass.getXmlAsString(this.getClass(), "DelTotalContext");
@@ -52,7 +52,7 @@ public class DeliveryDerivedCalcErrorTest extends SparrowUnitTestBaseClass {
 		actualResponse = SparrowUnitTestBaseClass.pipeDispatch(contextReq, pipe);
 		//System.out.println("actual: " + actualResponse);
 		assertTrue(similarXMLIgnoreContextId(xmlContextResp, actualResponse));
-		DataColumn delTotalData = contextReq.getPredictionContext().getDataColumn();
+		SparrowColumnSpecifier delTotalData = contextReq.getPredictionContext().getDataColumn();
 		
 		//The rows affected by the target
 		int row1 = delFracData.getTable().getRowForId(5552L);

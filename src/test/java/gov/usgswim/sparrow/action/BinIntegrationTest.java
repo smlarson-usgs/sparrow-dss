@@ -5,7 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import gov.usgswim.sparrow.SparrowServiceTestWithCannedModel50;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -287,7 +287,7 @@ public class BinIntegrationTest extends SparrowServiceTestWithCannedModel50 {
 	public float[] getSortedResultValues(Integer contextId) throws Exception {
 	    // Retrieve the data table from the prediction context id
         PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
-        DataColumn dc = context.getDataColumn();
+        SparrowColumnSpecifier dc = context.getDataColumn();
         
         // Export all values in the specified column to values[] and sort them
         int totalRows = dc.getRowCount();

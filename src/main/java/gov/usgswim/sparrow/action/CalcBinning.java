@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.util.BigDecimalUtils;
 
@@ -37,7 +37,7 @@ public class CalcBinning extends Action<BigDecimal[]> {
 	
 	
 	private BinningRequest request;
-	private DataColumn dataColumn;
+	private SparrowColumnSpecifier dataColumn;
 	
     public CalcBinning() {
 
@@ -651,14 +651,14 @@ public class CalcBinning extends Action<BigDecimal[]> {
 	/**
 	 * @return the dataColumn
 	 */
-	public DataColumn getDataColumn() {
+	public SparrowColumnSpecifier getDataColumn() {
 		return dataColumn;
 	}
 
 	/**
 	 * @param dataColumn the dataColumn to set
 	 */
-	public void setDataColumn(DataColumn dataColumn) {
+	public void setDataColumn(SparrowColumnSpecifier dataColumn) {
 		this.dataColumn = dataColumn;
 	}
 	

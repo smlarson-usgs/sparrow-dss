@@ -8,7 +8,7 @@ import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.filter.RowFilter;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -34,8 +34,8 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	
 	private DataTable watershedAreas;
 	private DataTable huc8data;
-	private DataColumn adjDataColumn;
-	private DataColumn nomDataColumn;
+	private SparrowColumnSpecifier adjDataColumn;
+	private SparrowColumnSpecifier nomDataColumn;
 	private PredictResult adjPredictResult;
 	private PredictResult nomPredictResult;
 	private PredictData adjPredictData;
@@ -45,7 +45,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	private PredictData refPredictData;
 	
 	/** Non-null DataColumn instance used for cardinality IDs */
-	private DataColumn refDataColumn;
+	private SparrowColumnSpecifier refDataColumn;
 	
 	//
 	protected ParseState state = new ParseState();
@@ -64,7 +64,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	// CONSTRUCTORS
 	// ============	
 	public PredictExportSerializer(PredictExportRequest request,
-			DataColumn adjDataColumn, DataColumn nomDataColumn,
+			SparrowColumnSpecifier adjDataColumn, SparrowColumnSpecifier nomDataColumn,
 			PredictData adjPredictData, PredictData nomPredictData,
 			PredictResult adjPredictResult, PredictResult nomPredictResult, DataTable waterShedAreasColumn, DataTable huc8data) throws Exception {
 		

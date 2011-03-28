@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.action.LoadStreamFlow;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 /**
@@ -14,9 +14,9 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 public class StreamFlowFactory implements CacheEntryFactory {
 
 	@Override
-	public DataColumn createEntry(Object inModelId) throws Exception {
+	public SparrowColumnSpecifier createEntry(Object inModelId) throws Exception {
 		Long modelId = (Long)inModelId;
-		DataColumn dc = null;
+		SparrowColumnSpecifier dc = null;
 		LoadStreamFlow lf = new LoadStreamFlow(modelId);
 		dc = lf.run();
 		return dc;

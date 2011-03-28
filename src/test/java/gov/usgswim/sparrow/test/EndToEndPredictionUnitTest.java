@@ -12,6 +12,7 @@ import gov.usgswim.sparrow.util.TabDelimFileUtil;
 import java.io.BufferedReader;
 import java.io.StringReader;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -26,6 +27,23 @@ public class EndToEndPredictionUnitTest extends SparrowServiceTestWithCannedMode
 	public static final String PREDICT_EXPORT_SERVICE_URL = "http://localhost:8088/sp_predict";
 	public static final String PREDICT_CONTEXT_SERVICE_URL = "http://localhost:8088/sp_predictcontext";
 	
+	@Test
+	public void temp() throws Exception {
+		String contextReq = getSharedTestResource("predict-context-no-adj.xml");
+		String contextResp = sendPostRequest(PREDICT_CONTEXT_SERVICE_URL, contextReq);
+		
+		Integer contextId = getContextIdFromContext(contextResp);
+		
+		String exportUrl = PREDICT_EXPORT_SERVICE_URL + "?" +
+				"context-id=" + contextId.toString() + "&" +
+				"mime-type=xml";
+		
+		String exportResponse = this.sendGetRequest(exportUrl);
+		
+		System.out.println(exportResponse);
+	}
+	
+	@Ignore
 	@Test
 	public void checkPredictionWithNoAdjustments() throws Exception {
 		String contextReq = getSharedTestResource("predict-context-no-adj.xml");

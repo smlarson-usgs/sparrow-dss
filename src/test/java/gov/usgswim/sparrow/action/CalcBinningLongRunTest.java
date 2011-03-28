@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.action;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.sparrow.SparrowServiceTestWithCannedModel50;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.AreaOfInterest;
 import gov.usgswim.sparrow.domain.BasicAnalysis;
@@ -72,7 +72,7 @@ public class CalcBinningLongRunTest  extends SparrowServiceTestWithCannedModel50
 	public float[] getSortedResultValues(Integer contextId) throws Exception {
 	    // Retrieve the data table from the prediction context id
         PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
-        DataColumn dc = context.getDataColumn();
+        SparrowColumnSpecifier dc = context.getDataColumn();
         
         // Export all values in the specified column to values[] and sort them
         int totalRows = dc.getRowCount();

@@ -5,7 +5,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
 
 import java.util.ArrayList;
@@ -19,9 +19,9 @@ import java.util.TreeMap;
  * @author eeverman
  *
  */
-public class CalcAggregate extends Action<DataColumn> {
+public class CalcAggregate extends Action<SparrowColumnSpecifier> {
 
-	protected DataColumn data;
+	protected SparrowColumnSpecifier data;
 	protected DataTable reachHucs;	//as loaded by LoadReachHucs action
 	protected AggregateType aggType;
 	
@@ -33,7 +33,7 @@ public class CalcAggregate extends Action<DataColumn> {
 	 * The passed column data must have row ids that are reach ids.
 	 * @param data
 	 */
-	public void setData(DataColumn data) {
+	public void setData(SparrowColumnSpecifier data) {
 		this.data = data;
 		
 		if (! data.getTable().hasRowIds()) {
@@ -66,7 +66,7 @@ public class CalcAggregate extends Action<DataColumn> {
 	}
 	
 	@Override
-	public DataColumn doAction() throws Exception {
+	public SparrowColumnSpecifier doAction() throws Exception {
 		
 		//If none type, return the base data.
 		//This could be an error, but its logically consistent.
@@ -123,7 +123,7 @@ public class CalcAggregate extends Action<DataColumn> {
 		}
 		
 				
-		return new DataColumn(result, 0, null);
+		return new SparrowColumnSpecifier(result, 0, null);
 
 	}
 	

@@ -9,7 +9,7 @@ import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.UncertaintySeries;
 import gov.usgswim.sparrow.datatable.ColumnAttribsBuilder;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.datatable.SingleColumnOverrideDataTable;
@@ -34,7 +34,7 @@ import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
  * @author eeverman
  *
  */
-public class CalcAnalysis extends Action<DataColumn>{
+public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 
 	protected PredictionContext context;
 	
@@ -48,15 +48,15 @@ public class CalcAnalysis extends Action<DataColumn>{
 	}
 	
 	@Override
-	public DataColumn doAction() throws Exception {
+	public SparrowColumnSpecifier doAction() throws Exception {
 		Analysis analysis = context.getAnalysis();
 
-		DataColumn unAggResult = getDataColumn(context);
+		SparrowColumnSpecifier unAggResult = getDataColumn(context);
 
 		if (analysis.isAggregated()) {
 			AggregationRunner aggRunner = new AggregationRunner(context);
 			DataTable aggResult = aggRunner.doAggregation(unAggResult.getTable());
-			return new DataColumn(aggResult, unAggResult.getColumn(), context.getId());
+			return new SparrowColumnSpecifier(aggResult, unAggResult.getColumn(), context.getId());
 
 		} else {
 			return unAggResult;
@@ -71,7 +71,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 	 * @return
 	 * @throws Exception
 	 */
-	public DataColumn getDataColumn(PredictionContext context) throws Exception {
+	public SparrowColumnSpecifier getDataColumn(PredictionContext context) throws Exception {
 		int dataColIndex = -1;	//The index of the data column
 		DataTable dataTable = null;		//The table containing the data column
 
@@ -163,12 +163,12 @@ public class CalcAnalysis extends Action<DataColumn>{
 						
 						predictionBasedResult = view;
 					} else if (type.equals(DataSeriesType.total_concentration)){
-						DataColumn predictResultColumn = new DataColumn(result, dataColIndex, context.getId());
-						DataColumn streamFlowData = SharedApplication.getInstance().getStreamFlow(context.getModelID());
+						SparrowColumnSpecifier predictResultColumn = new SparrowColumnSpecifier(result, dataColIndex, context.getId());
+						SparrowColumnSpecifier streamFlowData = SharedApplication.getInstance().getStreamFlow(context.getModelID());
 						CalcConcentration calc = new CalcConcentration();
 						calc.setBaseData(predictResultColumn);
 						calc.setStreamFlowData(streamFlowData);
-						DataColumn calcResult = calc.run();
+						SparrowColumnSpecifier calcResult = calc.run();
 						
 						predictionBasedResult = calcResult.getTable();
 					} else {
@@ -327,7 +327,7 @@ public class CalcAnalysis extends Action<DataColumn>{
 					dataColIndex = 1;
 					break;
 				case flux:
-					DataColumn flow = SharedApplication.getInstance().getStreamFlow(context.getModelID());
+					SparrowColumnSpecifier flow = SharedApplication.getInstance().getStreamFlow(context.getModelID());
 					dataTable = flow.getTable();
 					dataColIndex = flow.getColumn();
 					break;
@@ -336,6 +336,6 @@ public class CalcAnalysis extends Action<DataColumn>{
 			}
 		}
 
-		return new DataColumn(dataTable, dataColIndex, context.getId());
+		return new SparrowColumnSpecifier(dataTable, dataColIndex, context.getId());
 	}
 }

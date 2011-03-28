@@ -13,7 +13,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.AreaOfInterest;
@@ -193,7 +193,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTestBaseClass {
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 
 		int ssCol = stdDelFracTo9682.getColumnByName("INC_DEL_FLUX");
 		
@@ -212,7 +212,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTestBaseClass {
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 
 		int ssCol = stdDelFracTo9682.getColumnByName("INC_DEL_FLUX_1");
 		
@@ -237,7 +237,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTestBaseClass {
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 
 		int ssCol = stdDelFracTo9682.getColumnByName("TOTAL_DEL_FLUX");
 		
@@ -275,7 +275,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTestBaseClass {
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 
 		int ssCol = stdDelFracTo9682.getColumnByName("TOTAL_DEL_FLUX_1");
 		
@@ -303,7 +303,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTestBaseClass {
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 
 		int ssCol = stdDelFracTo9674.getColumnByName("INC_DEL_FLUX");
 		
@@ -322,7 +322,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTestBaseClass {
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 
 		int ssCol = stdDelFracTo9674.getColumnByName("INC_DEL_FLUX_1");
 		
@@ -349,7 +349,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTestBaseClass {
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 
 		int ssCol = stdDelFracTo9674.getColumnByName("TOTAL_DEL_FLUX");
 		
@@ -379,7 +379,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTestBaseClass {
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 
 		int ssCol = stdDelFracTo9674.getColumnByName("TOTAL_DEL_FLUX_1");
 		
@@ -409,7 +409,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTestBaseClass {
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 
 		int ssCol = stdDelFracToBoth.getColumnByName("INC_DEL_FLUX");
 		
@@ -428,7 +428,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTestBaseClass {
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 
 		int ssCol = stdDelFracToBoth.getColumnByName("INC_DEL_FLUX_1");
 		
@@ -455,7 +455,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTestBaseClass {
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 
 		int ssCol = stdDelFracToBoth.getColumnByName("TOTAL_DEL_FLUX");
 		
@@ -485,7 +485,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTestBaseClass {
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 
 		int ssCol = stdDelFracToBoth.getColumnByName("TOTAL_DEL_FLUX_1");
 		
@@ -508,7 +508,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTestBaseClass {
 	 * 	should the actual value be zero?
 	 */
 	protected void doComparison(DataTable stdData, int stdCol,
-				DataColumn result, PredictData predictData, boolean missingDataShouldBeZero) {
+				SparrowColumnSpecifier result, PredictData predictData, boolean missingDataShouldBeZero) {
 		
 		log.debug("Comparing results w/ " + result.getRowCount() + " rows.");
 		result.getRowCount();

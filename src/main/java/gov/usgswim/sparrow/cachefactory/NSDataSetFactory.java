@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.action.NSDataSetBuilder;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -38,7 +38,7 @@ public class NSDataSetFactory implements CacheEntryFactory {
 			action.setInclusionMap(upstreamReaches);
 		}
 		
-		DataColumn data = context.getDataColumn();
+		SparrowColumnSpecifier data = context.getDataColumn();
 		action.setData(data);
 		NSDataSet result = action.run();
 		return result;

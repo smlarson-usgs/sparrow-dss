@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.service.predictcontext;
 
 import gov.usgswim.service.HttpService;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.ReturnStatus;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -38,7 +38,7 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 		}
 
 		if (isSuccess) {
-			DataColumn dataColumn = null;
+			SparrowColumnSpecifier dataColumn = null;
 			
 			dataColumn = context.getDataColumn();	//The actual response data
 

@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.datatable;
 
 
-public class EmptyDataColumn extends DataColumn {
+public class EmptyDataColumn extends SparrowColumnSpecifier {
 
 	protected String units;
 	protected String constituent;

@@ -40,7 +40,7 @@ import gov.usgswim.sparrow.action.SavePredefinedSession;
 import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
 import gov.usgswim.sparrow.cachefactory.NSDataSetFactory;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.Analysis;
@@ -638,21 +638,21 @@ public class SharedApplication  {
 	}
 
 	//ComparisonResult Cache
-	public DataColumn getComparisonResult(PredictionContext context) {
+	public SparrowColumnSpecifier getComparisonResult(PredictionContext context) {
 		return getComparisonResult(context, false);
 	}
 
-	public DataColumn getComparisonResult(PredictionContext context, boolean quiet) {
-		return (DataColumn) ComparisonResult.get(context, quiet);
+	public SparrowColumnSpecifier getComparisonResult(PredictionContext context, boolean quiet) {
+		return (SparrowColumnSpecifier) ComparisonResult.get(context, quiet);
 	}
 
 	//AnalysisResult Cache
-	public DataColumn getAnalysisResult(PredictionContext context) {
+	public SparrowColumnSpecifier getAnalysisResult(PredictionContext context) {
 		return getAnalysisResult(context, false);
 	}
 
-	public DataColumn getAnalysisResult(PredictionContext context, boolean quiet) {
-		return (DataColumn) ConfiguredCache.AnalysisResult.get(context, quiet);
+	public SparrowColumnSpecifier getAnalysisResult(PredictionContext context, boolean quiet) {
+		return (SparrowColumnSpecifier) ConfiguredCache.AnalysisResult.get(context, quiet);
 	}
 
 	//ReachByPoint Cache
@@ -743,12 +743,12 @@ public class SharedApplication  {
 	}
 
 	//Flux (Stream Flow) Cache
-	public DataColumn getStreamFlow(Long req) {
+	public SparrowColumnSpecifier getStreamFlow(Long req) {
 		return getStreamFlow(req, false);
 	}
 	
-	public DataColumn getStreamFlow(Long req, boolean quiet) {
-		return (DataColumn) StreamFlow.get(req, quiet);
+	public SparrowColumnSpecifier getStreamFlow(Long req, boolean quiet) {
+		return (SparrowColumnSpecifier) StreamFlow.get(req, quiet);
 	}
 
 	//Aggregate Id Lookup Kludge Cache - temporary

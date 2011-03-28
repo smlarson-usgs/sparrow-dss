@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.action;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -23,7 +23,7 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 	private final static String NL = System.getProperty("line.separator");
 	
 	/** Context used to build the results from */
-	private DataColumn data;
+	private SparrowColumnSpecifier data;
 	
 	/** A hash of row numbers that are in the reaches to be mapped. **/
 	private DeliveryFractionMap inclusionMap;
@@ -142,7 +142,7 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 	 * The DataColumn to create a map data set for.
 	 * @param data
 	 */
-	public void setData(DataColumn data) {
+	public void setData(SparrowColumnSpecifier data) {
 		this.data = data;
 	}
 

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.SparrowDBTestBaseClass;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 
@@ -19,7 +19,7 @@ import org.junit.Test;
 public class LoadStreamFlowLongRunTest extends SparrowDBTestBaseClass {
 
 	
-	static DataColumn model50Flow;
+	static SparrowColumnSpecifier model50Flow;
 	
 	@Override
 	public void doOneTimeCustomSetup() throws Exception {

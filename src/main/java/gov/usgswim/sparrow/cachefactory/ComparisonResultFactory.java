@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.action.CalcComparison;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
@@ -15,7 +15,7 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 public class ComparisonResultFactory implements CacheEntryFactory {
 
 	@Override
-	public DataColumn createEntry(Object predictContext) throws Exception {
+	public SparrowColumnSpecifier createEntry(Object predictContext) throws Exception {
 		PredictionContext fullContext = (PredictionContext) predictContext;
 		CalcComparison action = new CalcComparison();
 		action.setContext(fullContext);

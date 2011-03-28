@@ -4,7 +4,7 @@ import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.impl.ColumnFromTable;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.ColumnAttribsBuilder;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.datatable.SingleValueDoubleColumnData;
 import gov.usgswim.sparrow.domain.DataSeriesType;
@@ -16,20 +16,20 @@ import gov.usgswim.sparrow.domain.DataSeriesType;
  * @author eeverman
  *
  */
-public class CalcConcentration extends Action<DataColumn> {
+public class CalcConcentration extends Action<SparrowColumnSpecifier> {
 
 
 	private final static double CONVERSION_FACTOR = .0011198d;
 
-	protected DataColumn baseData;
-	protected DataColumn streamFlowData;
+	protected SparrowColumnSpecifier baseData;
+	protected SparrowColumnSpecifier streamFlowData;
 	protected String msg = null;
 	
-	public void setBaseData(DataColumn baseData) {
+	public void setBaseData(SparrowColumnSpecifier baseData) {
 		this.baseData = baseData;
 	}
 
-	public void setStreamFlowData(DataColumn streamFlowData) {
+	public void setStreamFlowData(SparrowColumnSpecifier streamFlowData) {
 		this.streamFlowData = streamFlowData;
 	}
 	
@@ -39,7 +39,7 @@ public class CalcConcentration extends Action<DataColumn> {
 	}
 	
 	@Override
-	public DataColumn doAction() throws Exception {
+	public SparrowColumnSpecifier doAction() throws Exception {
 		// total conc. is (total load / (stream flow)) * 0.0011198
 		
 		//For our conversion to work properly, we are depending on some specific
@@ -76,7 +76,7 @@ public class CalcConcentration extends Action<DataColumn> {
 		
 		SingleColumnCoefDataTable result = new SingleColumnCoefDataTable(baseXflow, conversionCoefCol, baseData.getColumn(), concAttribs);
 		
-		DataColumn resultCol = new DataColumn(result, baseData.getColumn(), baseData.getContextId());
+		SparrowColumnSpecifier resultCol = new SparrowColumnSpecifier(result, baseData.getColumn(), baseData.getContextId());
 		
 		return resultCol;
 	}

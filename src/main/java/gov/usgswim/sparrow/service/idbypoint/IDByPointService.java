@@ -8,7 +8,7 @@ import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.action.Action;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.Adjustment;
@@ -230,7 +230,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			if (pc != null) {
 				PredictData pd = SharedApplication.getInstance().getPredictData(pc.getModelID());
 				
-				DataColumn data = SharedApplication.getInstance().getAnalysisResult(pc);
+				SparrowColumnSpecifier data = SharedApplication.getInstance().getAnalysisResult(pc);
 				
 				int row = pd.getRowForReachID(reachInfo.getId());
 				

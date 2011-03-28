@@ -7,7 +7,7 @@ import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import java.io.IOException;
 
 import gov.usgswim.sparrow.action.Action;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -227,7 +227,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 	 * @return
 	 * @throws Exception
 	 */
-	public DataColumn getDataColumn() throws Exception {
+	public SparrowColumnSpecifier getDataColumn() throws Exception {
 
 		if (ComparisonType.none.equals(comparison.getComparisonType())) {
 			return SharedApplication.getInstance().getAnalysisResult(this);

@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.datatable.ColumnAttribs;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.datatable.PercentageColumnData;
 import gov.usgswim.sparrow.datatable.SingleColumnOverrideDataTable;
@@ -21,7 +21,7 @@ import gov.usgswim.sparrow.service.SharedApplication;
  * @author eeverman
  *
  */
-public class CalcComparison extends Action<DataColumn> {
+public class CalcComparison extends Action<SparrowColumnSpecifier> {
 
 
 	protected PredictionContext context;
@@ -34,7 +34,7 @@ public class CalcComparison extends Action<DataColumn> {
 	}
 
 	@Override
-	public DataColumn doAction() throws Exception {
+	public SparrowColumnSpecifier doAction() throws Exception {
 
 		Comparison comparison = context.getComparison();
 		
@@ -74,8 +74,8 @@ public class CalcComparison extends Action<DataColumn> {
 		}
 		
 		//Get analysis results from analysis cache
-		DataColumn baseCol = SharedApplication.getInstance().getAnalysisResult(baseContext);
-		DataColumn compCol = SharedApplication.getInstance().getAnalysisResult(noCompContext);
+		SparrowColumnSpecifier baseCol = SharedApplication.getInstance().getAnalysisResult(baseContext);
+		SparrowColumnSpecifier compCol = SharedApplication.getInstance().getAnalysisResult(noCompContext);
 		DataTable baseResult = baseCol.getTable();
 		DataTable compResult = compCol.getTable();
 
@@ -91,7 +91,7 @@ public class CalcComparison extends Action<DataColumn> {
 		}
 		
 
-		return new DataColumn(resultTable, compCol.getColumn(), context.getId());
+		return new SparrowColumnSpecifier(resultTable, compCol.getColumn(), context.getId());
 	}
 
 	public PredictionContext getContext() {

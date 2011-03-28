@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.SparrowUnits;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 
@@ -17,7 +17,7 @@ import java.sql.ResultSet;
  * @author klangsto
  *
  */
-public class LoadStreamFlow extends Action<DataColumn> {
+public class LoadStreamFlow extends Action<SparrowColumnSpecifier> {
 	
 	protected long modelId;
 	
@@ -31,7 +31,7 @@ public class LoadStreamFlow extends Action<DataColumn> {
 	}
 
 	@Override
-	public DataColumn doAction() throws Exception {
+	public SparrowColumnSpecifier doAction() throws Exception {
 		
 		String queryName = "LoadMeanQ";
 		
@@ -52,7 +52,7 @@ public class LoadStreamFlow extends Action<DataColumn> {
 		values.getColumns()[0].setProperty(TableProperties.CONSTITUENT.getPublicName(), "Water");
 		
 
-		DataColumn retColumn = new DataColumn(values.toImmutable(), 0, null, modelId);
+		SparrowColumnSpecifier retColumn = new SparrowColumnSpecifier(values.toImmutable(), 0, null, modelId);
 		return retColumn;
 		
 	}

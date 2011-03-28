@@ -7,7 +7,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
 import gov.usgswim.sparrow.action.NSDataSetBuilder;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.parser.PredictionContextTest;
@@ -153,7 +153,7 @@ public class ContextToPredictionIntegrationLongRunTest extends SparrowUnitTestBa
 		PredictionContext contextFromCache = SharedApplication.getInstance().getPredictionContext(CONTEXT_ID);
 
 		NSDataSetBuilder builder = new NSDataSetBuilder();
-		DataColumn data = contextFromCache.getDataColumn();
+		SparrowColumnSpecifier data = contextFromCache.getDataColumn();
 		builder.setData(data);
 		NSDataSet result = builder.run();
 

@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.action.CalcAnalysis;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
@@ -26,13 +26,13 @@ public class AnalysisResultFactory implements CacheEntryFactory {
 	 * @return A PredictionContext.DataColumn containing the single column results.
 	 */
 	@Override
-	public DataColumn createEntry(Object predictContext) throws Exception {
+	public SparrowColumnSpecifier createEntry(Object predictContext) throws Exception {
 		PredictionContext context = (PredictionContext) predictContext;
 
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
 
-		DataColumn result = action.run();
+		SparrowColumnSpecifier result = action.run();
 		return result;
 	}
 

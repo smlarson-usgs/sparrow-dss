@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.action.CalcBinning;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -27,7 +27,7 @@ public class BinningFactory implements CacheEntryFactory {
 			throw new Exception("No context found for context-id '" + request.getContextID() + "'");
 		}
 
-		DataColumn dc = context.getDataColumn();
+		SparrowColumnSpecifier dc = context.getDataColumn();
 
 		CalcBinning action = new CalcBinning();
 		action.setDataColumn(dc);

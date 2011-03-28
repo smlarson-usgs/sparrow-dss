@@ -4,7 +4,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.UnitAreaType;
@@ -30,8 +30,8 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         
         DataTable watershedAreas = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(predictContext.getModelID(), UnitAreaType.HUC_NONE, true), false);
         DataTable huc8 = SharedApplication.getInstance().getHUCData(new HUCTableRequest(predictContext.getModelID()), false);
-        DataColumn adjDataColumn = predictContext.getDataColumn();
-    	DataColumn nomDataColumn = null;
+        SparrowColumnSpecifier adjDataColumn = predictContext.getDataColumn();
+    	SparrowColumnSpecifier nomDataColumn = null;
     	PredictResult adjPredictResult = null;
     	PredictResult nomPredictResult = null;
     	PredictData adjPredictData = null;

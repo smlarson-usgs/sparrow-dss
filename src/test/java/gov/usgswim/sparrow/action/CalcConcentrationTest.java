@@ -5,7 +5,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.sparrow.SparrowUnits;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.util.DLUtils;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
@@ -73,14 +73,14 @@ public class CalcConcentrationTest {
 		baseTable.getColumns()[baseColIndex].setUnits(SparrowUnits.KG_PER_YEAR.getUserName());
 		baseTable.getColumns()[flowColIndex].setUnits(SparrowUnits.CFS.getUserName());
 		
-		DataColumn baseCol = new DataColumn(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
-		DataColumn flowCol = new DataColumn(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
+		SparrowColumnSpecifier baseCol = new SparrowColumnSpecifier(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
+		SparrowColumnSpecifier flowCol = new SparrowColumnSpecifier(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
 		
 		CalcConcentration calc = new CalcConcentration();
 		calc.setBaseData(baseCol);
 		calc.setStreamFlowData(flowCol);
 		
-		DataColumn result = calc.run();
+		SparrowColumnSpecifier result = calc.run();
 		
 		
 		assertEquals((0d / 1d) * CONV_FACTOR, result.getDouble(0), OK_ERR);
@@ -99,14 +99,14 @@ public class CalcConcentrationTest {
 		baseTable.getColumns()[flowColIndex].setUnits(SparrowUnits.CFS.getUserName());
 		
 		
-		DataColumn baseCol = new DataColumn(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
-		DataColumn flowCol = new DataColumn(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
+		SparrowColumnSpecifier baseCol = new SparrowColumnSpecifier(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
+		SparrowColumnSpecifier flowCol = new SparrowColumnSpecifier(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
 		
 		CalcConcentration calc = new CalcConcentration();
 		calc.setBaseData(baseCol);
 		calc.setStreamFlowData(flowCol);
 		
-		DataColumn result = calc.run();
+		SparrowColumnSpecifier result = calc.run();
 		
 		
 		assertEquals(Double.POSITIVE_INFINITY, result.getDouble(0), OK_ERR);
@@ -125,14 +125,14 @@ public class CalcConcentrationTest {
 		baseTable.getColumns()[flowColIndex].setUnits(SparrowUnits.CFS.getUserName());
 		
 		baseTable.setValue(Double.NaN, 0, baseColIndex);
-		DataColumn baseCol = new DataColumn(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
-		DataColumn flowCol = new DataColumn(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
+		SparrowColumnSpecifier baseCol = new SparrowColumnSpecifier(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
+		SparrowColumnSpecifier flowCol = new SparrowColumnSpecifier(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
 		
 		CalcConcentration calc = new CalcConcentration();
 		calc.setBaseData(baseCol);
 		calc.setStreamFlowData(flowCol);
 		
-		DataColumn result = calc.run();
+		SparrowColumnSpecifier result = calc.run();
 		
 		
 		assertEquals(Double.NaN, result.getDouble(0), OK_ERR);
@@ -150,8 +150,8 @@ public class CalcConcentrationTest {
 		baseTable.getColumns()[baseColIndex].setUnits(SparrowUnits.SQR_KM.getUserName());	//wrong
 		baseTable.getColumns()[flowColIndex].setUnits(SparrowUnits.CFS.getUserName());
 		
-		DataColumn baseCol = new DataColumn(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
-		DataColumn flowCol = new DataColumn(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
+		SparrowColumnSpecifier baseCol = new SparrowColumnSpecifier(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
+		SparrowColumnSpecifier flowCol = new SparrowColumnSpecifier(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
 		
 		CalcConcentration calc = new CalcConcentration();
 		calc.setBaseData(baseCol);
@@ -160,7 +160,7 @@ public class CalcConcentrationTest {
 		//Run the action w/ logging turned off
 		Level actionLogLevel = Logger.getLogger(Action.class).getLevel();
 		Logger.getLogger(Action.class).setLevel(Level.FATAL);
-		DataColumn result = calc.run();
+		SparrowColumnSpecifier result = calc.run();
 		Logger.getLogger(Action.class).setLevel(actionLogLevel);
 		
 		assertNull(result);
@@ -175,8 +175,8 @@ public class CalcConcentrationTest {
 		baseTable.getColumns()[baseColIndex].setUnits(SparrowUnits.KG_PER_YEAR.getUserName());	//wrong
 		baseTable.getColumns()[flowColIndex].setUnits(SparrowUnits.MG_PER_L.getUserName());
 		
-		DataColumn baseCol = new DataColumn(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
-		DataColumn flowCol = new DataColumn(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
+		SparrowColumnSpecifier baseCol = new SparrowColumnSpecifier(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
+		SparrowColumnSpecifier flowCol = new SparrowColumnSpecifier(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
 		
 		CalcConcentration calc = new CalcConcentration();
 		calc.setBaseData(baseCol);
@@ -185,7 +185,7 @@ public class CalcConcentrationTest {
 		//Run the action w/ logging turned off
 		Level actionLogLevel = Logger.getLogger(Action.class).getLevel();
 		Logger.getLogger(Action.class).setLevel(Level.FATAL);
-		DataColumn result = calc.run();
+		SparrowColumnSpecifier result = calc.run();
 		Logger.getLogger(Action.class).setLevel(actionLogLevel);
 		
 		assertNull(result);

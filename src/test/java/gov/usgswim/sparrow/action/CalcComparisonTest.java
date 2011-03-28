@@ -13,7 +13,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
-import gov.usgswim.sparrow.datatable.DataColumn;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
@@ -47,9 +47,9 @@ public class CalcComparisonTest  extends SparrowUnitTestBaseClass {
 	PredictionContext noCompCtx;	//Same as above, but no comparison
 	PredictionContext noSourceCtx;	//Same as noComp, but no sorce is spec'ed
 	
-	DataColumn compResult;		//Result of compCtx CalcComparison action
-	DataColumn noCompResult;		//Result of noCompCtx CalcAnalysis
-	DataColumn noSourceResult;	//Result of noSourceResult CalcAnalysis
+	SparrowColumnSpecifier compResult;		//Result of compCtx CalcComparison action
+	SparrowColumnSpecifier noCompResult;		//Result of noCompCtx CalcAnalysis
+	SparrowColumnSpecifier noSourceResult;	//Result of noSourceResult CalcAnalysis
 	
 	@Before
 	public void setup() throws Exception {
