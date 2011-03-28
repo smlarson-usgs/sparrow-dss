@@ -56,13 +56,13 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		
 		WebResponse response = client.sendRequest(req);
 		String actualResponse = response.getText();
-		//System.out.println("response: '" + actualResponse + "'");
+		System.out.println("response: '" + actualResponse + "'");
 		
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("CREATE", "/ServiceResponseWrapper/operation", actualResponse);
 		assertXpathEvaluatesTo("gov.usgswim.sparrow.domain.IPredefinedSession", "/ServiceResponseWrapper/entityClass", actualResponse);
-		assertXpathEvaluatesTo("9999", "/ServiceResponseWrapper/entityList/PredefinedSession[1]/modelId", actualResponse);
-		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/PredefinedSession[1]/uniqueCode", actualResponse);
+		assertXpathEvaluatesTo("9999", "/ServiceResponseWrapper/entityList/entity[1]/modelId", actualResponse);
+		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/entity[1]/uniqueCode", actualResponse);
 		
 		String dbId = getXPathValue("/ServiceResponseWrapper/entityId", actualResponse);
 
@@ -75,7 +75,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		System.out.println("Get via /id url (full response) response: " + actualResponse);
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
-		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/PredefinedSession[1]/uniqueCode", actualResponse);
+		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/entity[1]/uniqueCode", actualResponse);
 		assertXpathEvaluatesTo(dbId, "/ServiceResponseWrapper/entityId", actualResponse);
 		
 		//Get via uniqueCode parameter (full response)
@@ -85,7 +85,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		actualResponse = response.getText();
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
-		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/PredefinedSession[1]/uniqueCode", actualResponse);
+		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/entity[1]/uniqueCode", actualResponse);
 		assertXpathEvaluatesTo(dbId, "/ServiceResponseWrapper/entityId", actualResponse);
 		//System.out.println("GET via Param response: " + actualResponse);
 		
@@ -144,7 +144,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		//System.out.println("Get via /id url (full response) response: " + actualResponse);
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
-		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/PredefinedSession[1]/uniqueCode", actualResponse);
+		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/entity[1]/uniqueCode", actualResponse);
 		assertXpathEvaluatesTo(dbId, "/ServiceResponseWrapper/entityId", actualResponse);
 		
 		
@@ -180,7 +180,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		//System.out.println("Get via /id url (full response) response: " + actualResponse);
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
-		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/PredefinedSession[1]/uniqueCode", actualResponse);
+		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/entity[1]/uniqueCode", actualResponse);
 		assertXpathEvaluatesTo(dbId, "/ServiceResponseWrapper/entityId", actualResponse);
 		
 		
@@ -241,7 +241,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		String actualResponse = response.getText();
 		System.out.println("Filter 1 actual response: " + actualResponse);
 		//Should be nine all together (no criteria)
-		assertXpathEvaluatesTo("9", "count(/ServiceResponseWrapper/entityList/PredefinedSession)", actualResponse);
+		assertXpathEvaluatesTo("9", "count(/ServiceResponseWrapper/entityList/entity)", actualResponse);
 
 		
 		//Should be 3 approved
@@ -250,7 +250,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		req.setParameter("approved", "true");
 		response = client.sendRequest(req);
 		actualResponse = response.getText();
-		assertXpathEvaluatesTo("3", "count(/ServiceResponseWrapper/entityList/PredefinedSession)", actualResponse);
+		assertXpathEvaluatesTo("3", "count(/ServiceResponseWrapper/entityList/entity)", actualResponse);
 
 		//Should be 1 approved & FEATURED
 		req = new GetMethodWebRequest(SESSION_SERVICE_URL);
@@ -259,7 +259,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		req.setParameter("type", "FEATURED");
 		response = client.sendRequest(req);
 		actualResponse = response.getText();
-		assertXpathEvaluatesTo("1", "count(/ServiceResponseWrapper/entityList/PredefinedSession)", actualResponse);
+		assertXpathEvaluatesTo("1", "count(/ServiceResponseWrapper/entityList/entity)", actualResponse);
 		
 		//Should be 2 approved & in group 'set3'
 		req = new GetMethodWebRequest(SESSION_SERVICE_URL);
@@ -268,7 +268,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		req.setParameter("groupName", "set3");
 		response = client.sendRequest(req);
 		actualResponse = response.getText();
-		assertXpathEvaluatesTo("2", "count(/ServiceResponseWrapper/entityList/PredefinedSession)", actualResponse);
+		assertXpathEvaluatesTo("2", "count(/ServiceResponseWrapper/entityList/entity)", actualResponse);
 		
 		//Should be 2 NOT approved & in group 'set2'
 		req = new GetMethodWebRequest(SESSION_SERVICE_URL);
@@ -277,7 +277,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		req.setParameter("groupName", "set2");
 		response = client.sendRequest(req);
 		actualResponse = response.getText();
-		assertXpathEvaluatesTo("2", "count(/ServiceResponseWrapper/entityList/PredefinedSession)", actualResponse);
+		assertXpathEvaluatesTo("2", "count(/ServiceResponseWrapper/entityList/entity)", actualResponse);
 
 		//Should be 1 approved, in group 'set3', and UNLISTED
 		req = new GetMethodWebRequest(SESSION_SERVICE_URL);
@@ -287,7 +287,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCanned
 		req.setParameter("groupName", "set3");
 		response = client.sendRequest(req);
 		actualResponse = response.getText();
-		assertXpathEvaluatesTo("1", "count(/ServiceResponseWrapper/entityList/PredefinedSession)", actualResponse);
+		assertXpathEvaluatesTo("1", "count(/ServiceResponseWrapper/entityList/entity)", actualResponse);
 
 		PredefinedSessionsLongRunTest.deleteSessions(newSessions);
 		
