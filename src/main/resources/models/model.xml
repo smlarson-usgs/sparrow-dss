@@ -291,9 +291,11 @@
 			Stream segments that extend between confluence with other streams.
 		</Term>
 		<Term id="Reach Name Search Tips">
+			<h2>Search for Reach Name</h2><br/>
+			
 			Reach names are often reported with abbreviations. You may search for reaches with or without the abbreviations.<br/><br/>
 
-			Examples:<br/>
+			<b>Examples:</b><br/>
 			Search for the South Platte River by entering 'S PLATTE R' or 'PLATTE'<br/>
 			Search for the Little Missouri River, North Fork by entering 'LITTLE MISSOURI R, N FK' or 'MISSOURI'<br/>
 		</Term>
