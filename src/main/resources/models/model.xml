@@ -303,7 +303,25 @@
 			A watershed that drains to a single stream.
 		</Term>
 		<Term id="HUC">
-			Hydrologic Unit Code
+			<h2>HUC</h2><br/>
+			
+			Hydrologic unit code. The United States is divided and sub-divided into successively smaller 
+			hydrologic units which are classified into four levels: regions, sub-regions, accounting units, 
+			and cataloging units. The hydrologic units are arranged within each other, from the smallest 
+			(cataloging units) to the largest (regions). Each hydrologic unit is identified by a unique 
+			hydrologic unit code (HUC) consisting of two to eight digits based on the four levels of 
+			classification in the hydrologic unit system. The first level of classification (HUC2) divides 
+			the Nation into 21 major geographic areas that contain either the drainage area of a major river, 
+			such as the Missouri region, or the combined drainage areas of a series of rivers, such as the 
+			Texas-Gulf region, which includes a number of rivers draining into the Gulf of Mexico. 
+			The second level of classification (HUC4) divides the 21 regions into 221 subregions that 
+			include the area drained by a river system, a reach of a river and its tributaries in that reach, 
+			a closed basin(s), or a group of streams forming a coastal drainage area. The third level of 
+			classification (HUC6) subdivides many of the subregions into 378 accounting units that are 
+			nested within, or can be equivalent to the subregions. The fourth level of classification 
+			(HUC8) includes 2,264 cataloging units, which are geographic areas representing part of all 
+			of a surface drainage basin, a combination of drainage basins, or a distinct hydrologic feature. 
+			These units subdivide the subregions and accounting units into smaller areas.
 		</Term>
 		<Term id="Aggregate Function">
 			Calculates the average, maximum, minimum, or sum of the model output when the map displays over HUC.
@@ -317,7 +335,8 @@
 		</Term>
 		<Term id="Watershed Area">
 			<h2>Watershed Area</h2><br/>
-			Text TBD...
+			The area of land that drains all the upstream streams and rainfall to the stream reach. The 
+			word watershed is sometimes used interchangeably with drainage basin or catchment.
 		</Term>
 	</CommonTerms>
 </Documentation>
