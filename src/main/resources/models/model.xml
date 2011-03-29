@@ -338,5 +338,13 @@
 			The area of land that drains all the upstream streams and rainfall to the stream reach. The 
 			word watershed is sometimes used interchangeably with drainage basin or catchment.
 		</Term>
+		<Term id="EDA Name">
+			<h2>EDA Name</h2><br/>
+			NOAA name identifying estuarine/coastal drainage areas for major estuaries in the United States.
+		</Term>
+		<Term id="EDA Code">
+			<h2>EDA Code</h2><br/>
+			NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.
+		</Term>
 	</CommonTerms>
 </Documentation>
