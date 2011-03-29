@@ -223,9 +223,10 @@ public class FindReachesLongRunTest extends SparrowDBTestBaseClass {
 		FindReachRequest req = new FindReachRequest();
 		
 		req.modelID = TEST_MODEL_ID.toString();
-		req.edaName = " , ,, Albemarle Sound, Altamaha  River, ";
-		req.meanQLo = "200";
+		req.edaName = " , ,, Albemarle Sound, Altamaha River, ";
+		req.meanQLo = "50";
 		req.basinAreaLo = "100";
+		req.basinAreaHi = "150";
 		req.reachName = "cr";
 		req.huc = "030102";
 		
@@ -235,12 +236,13 @@ public class FindReachesLongRunTest extends SparrowDBTestBaseClass {
 		
 		DataTable result = action.run();
 		
-		assertTrue(result.getRowCount() == 3);
+		assertTrue(result.getRowCount() == 4);
 		assertEquals(0, action.getErrors().size());
 		
-		assertEquals("4909", result.getString(0, result.getColumnByName("FULL_IDENTIFIER")));
-		assertEquals("4911", result.getString(1, result.getColumnByName("FULL_IDENTIFIER")));
-		assertEquals("4854", result.getString(2, result.getColumnByName("FULL_IDENTIFIER")));
+		assertEquals("4915", result.getString(0, result.getColumnByName("FULL_IDENTIFIER")));
+		assertEquals("4851", result.getString(1, result.getColumnByName("FULL_IDENTIFIER")));
+		assertEquals("4840", result.getString(2, result.getColumnByName("FULL_IDENTIFIER")));
+		assertEquals("4850", result.getString(3, result.getColumnByName("FULL_IDENTIFIER")));
 	}
 	
 	@Test
