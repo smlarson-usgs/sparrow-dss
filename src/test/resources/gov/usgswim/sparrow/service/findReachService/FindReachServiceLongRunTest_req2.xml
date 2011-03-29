@@ -2,7 +2,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<model-id>50</model-id>
 	<match-query>
-		<reach-ids>10444, 6576,  5233 , 5235</reach-ids>
+		<reach-ids>10444, 10460,  5476 , 6576</reach-ids>
 	</match-query>
 	<content>
 		<adjustments />

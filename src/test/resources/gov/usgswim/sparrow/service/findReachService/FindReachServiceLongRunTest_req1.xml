@@ -5,8 +5,8 @@
 		<reach-name>little R</reach-name>
 		<meanQHi>600</meanQHi>
 		<meanQLo>200</meanQLo>
-		<catch-area-hi>80</catch-area-hi>
-		<catch-area-lo>60</catch-area-lo>
+		<watershed-area-hi>825</watershed-area-hi>
+		<watershed-area-lo>750</watershed-area-lo>
 	</match-query>
 	<content>
 		<adjustments />

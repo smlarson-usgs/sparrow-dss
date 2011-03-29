@@ -4,7 +4,6 @@
 	<match-query>
 		<edaname>Albemarle Sound,Altamaha  River</edaname>
 		<meanQLo>200</meanQLo>
-		<catch-area-lo>100</catch-area-lo>
 		<reach-name>cr</reach-name>
 		<huc>030102</huc>
 	</match-query>

@@ -98,7 +98,7 @@ public class FindReachServiceLongRunTest extends SparrowServiceTestBaseClass {
 		request.setParameter("xmlreq", requestText);
 		WebResponse response = client.sendRequest(request);
 		String actualResponse = response.getText();
-		System.out.println(actualResponse);
+		//System.out.println(actualResponse);
 		
 		//These XPath expressions are nasty b/c the xml has a namespace and the
 		//XPath processor is apparently XPath 1.0.
@@ -106,7 +106,8 @@ public class FindReachServiceLongRunTest extends SparrowServiceTestBaseClass {
 		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", actualResponse);
 		assertXpathEvaluatesTo("4909", "(//*[local-name() = 'id' ])[position() = 1]", actualResponse);
 		assertXpathEvaluatesTo("4911", "(//*[local-name() = 'id' ])[position() = 2]", actualResponse);
-		assertXpathEvaluatesTo("4854", "(//*[local-name() = 'id' ])[position() = 3]", actualResponse);
+		assertXpathEvaluatesTo("4832", "(//*[local-name() = 'id' ])[position() = 3]", actualResponse);
+		assertXpathEvaluatesTo("4854", "(//*[local-name() = 'id' ])[position() = 4]", actualResponse);
 	}
 	
 }
