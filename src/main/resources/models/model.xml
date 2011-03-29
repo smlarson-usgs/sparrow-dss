@@ -82,13 +82,13 @@
 			</ul>
 		</Term>
 		<Term id="Targets">
-			<h2>Targets</h2><br/>
-			Targets are used to determine the fraction of flux from upstream reaches delivered 
-			to a specified downstream reach or water body. To specify a target, identify the 
-			desired reach on the map (using the <b>Identify Reach</b> tool) and then navigate 
-			to the <b>Group / Target Membership</b> tab. Then check the box labeled <i>Reach is
-			a target</i> and click <b>Apply</b>. Alternatively, you may specify targets 
-			either individually or all at once using the <b>Find a reach...</b> button.
+			<h2>Downstream Tracking</h2><br/>
+			
+			Downstream tracking is used to determine the fraction of flux from upstream reaches delivered 
+			to a specified downstream outlet reach or water body. To specify a downstream outlet reach, identify the 
+			desired reach on the map (using the <b>Identify Reach tool</b>) and then click on the 
+			<b>Add Reach as Downstream Outlet</b> button. Alternatively, you may search for downstream outlet reaches either 
+			individually or all at once using the <b>Find a reach...</b> button
 		</Term>
 		<Term id="MRB">
 			<p>The US is divided into 8 major river basins: New England and Mid-Atlantic; South Atlantic-Gulf and Tennessee; Great Lakes, Ohio, Upper Mississippi and Souris-Red-Rainy; Missouri; Lower Mississippi, Arkansas-White-Red and Texas-Gulf; Rio Grande, Colorado and Great Basin; Pacific Northwest; and California.</p>
@@ -345,6 +345,9 @@
 		<Term id="EDA Code">
 			<h2>EDA Code</h2><br/>
 			NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.
+		</Term>
+		<Term id="Export Readme">
+			TEXT TBD
 		</Term>
 	</CommonTerms>
 </Documentation>
