@@ -62,9 +62,9 @@ public class LoadUnitAreasLongRunTest extends SparrowTestBaseWithDB {
 		assertEquals("IDENTIFIER", dt.getName(0));
 		
 		assertEquals(SparrowUnits.SQR_KM.toString(), dt.getUnits(1));
-		assertEquals(Action.getDataSeriesProperty(DataSeriesType.cumulative_catch_area, false), dt.getName(1));
-		assertEquals(Action.getDataSeriesProperty(DataSeriesType.cumulative_catch_area, true), dt.getDescription(1));
-		assertEquals(DataSeriesType.cumulative_catch_area.name(), dt.getProperty(1, TableProperties.DATA_SERIES.getPublicName()));
+		assertEquals(Action.getDataSeriesProperty(DataSeriesType.watershed_area, false), dt.getName(1));
+		assertEquals(Action.getDataSeriesProperty(DataSeriesType.watershed_area, true), dt.getDescription(1));
+		assertEquals(DataSeriesType.watershed_area.name(), dt.getProperty(1, TableProperties.DATA_SERIES.getPublicName()));
 		assertEquals("land area", dt.getProperty(1, TableProperties.CONSTITUENT.getPublicName()));
 
 	}

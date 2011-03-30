@@ -55,9 +55,11 @@ public enum BaseDataSeriesType {
     catch_area					(false, false, false, false, 0, false),	//area of a catchment
     flux						(false, false, false, false, 0, false),	//avg flow per day
     
-    /* cumulative_catch_area and huc_area not supported as of 07/23/2010 */
-    cumulative_catch_area		(false, false, false, false, 0, false),	//cumulative area of a catchment (include upstream)
-    huc_area					(false, false, false, false, 0, false)	//area of a huc (NEED FLAG FOR NOT REACH RELATED?)
+    //Area of the reach's catchment, plus the catchments of all upstream reaches
+    watershed_area		(false, false, false, false, 0, false),	//cumulative area of a catchment (include upstream)
+    
+    //area of a huc (NEED FLAG FOR NOT REACH RELATED?)
+    huc_area					(false, false, false, false, 0, false)
     ;
 
 

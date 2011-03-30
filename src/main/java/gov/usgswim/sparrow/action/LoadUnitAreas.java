@@ -59,9 +59,9 @@ public class LoadUnitAreas extends Action<DataTable> {
 				areaColDataSeries = DataSeriesType.catch_area.name();
 			} else {
 				queryName = "LoadCumCatchArea";
-				areaColName = getDataSeriesProperty(DataSeriesType.cumulative_catch_area, false);
-				areaColDesc = getDataSeriesProperty(DataSeriesType.cumulative_catch_area, true);
-				areaColDataSeries = DataSeriesType.cumulative_catch_area.name();
+				areaColName = getDataSeriesProperty(DataSeriesType.watershed_area, false);
+				areaColDesc = getDataSeriesProperty(DataSeriesType.watershed_area, true);
+				areaColDataSeries = DataSeriesType.watershed_area.name();
 			}
 			break;
 		

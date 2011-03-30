@@ -7,31 +7,54 @@ import java.io.Serializable;
  */
 public enum DataSeriesType implements Serializable {
 
-	//Total (i.e. includes upstream) predicted load.  
-    total						(BaseDataSeriesType.total, false, false, false, false, true), // active
-    total_std_error_estimate	(BaseDataSeriesType.total, true, false, false, true, false),
-    
-    //Incremental (i.e. does not include upstream) predicted load.  
-    incremental					(BaseDataSeriesType.incremental, false, false, false, false, true), 
-    decayed_incremental			(BaseDataSeriesType.decayed_incremental, false, false, false, false, true),	//active
-    incremental_std_error_estimate	(BaseDataSeriesType.incremental, true, false, false, true, false), //active
-    
-    incremental_yield			(BaseDataSeriesType.incremental, false, false, true, false, true), // active
+	//Organized as presented in the application
+	
+	//Model Estimates//
+    total						(BaseDataSeriesType.total, false, false, false, false, true),
+    decayed_incremental			(BaseDataSeriesType.decayed_incremental, false, false, false, false, true),
     total_concentration			(BaseDataSeriesType.total, false, false, true, true, true),
-    incremental_delivered_yield	(BaseDataSeriesType.incremental, false, true, true, false, true), // inaccurate?
-    total_delivered_flux		(BaseDataSeriesType.total, false, true, false, false, true), // inaccurate?
-    incremental_delivered_flux	(BaseDataSeriesType.incremental, false, true, false, false, true), // inaccurate?
-    delivered_fraction			(BaseDataSeriesType.delivered_fraction, false, true, false, false, true), // inaccurate?
+    incremental_yield			(BaseDataSeriesType.incremental, false, false, true, false, true),
+    
+    //Model Inputs//
+    source_value				(BaseDataSeriesType.source_value, false, false, false, false, true),
+    
+    //Stream Network//
+    flux						(BaseDataSeriesType.flux, false, false, false, true, true),
+    
+    //Model Uncertainty//
+    total_std_error_estimate	(BaseDataSeriesType.total, true, false, false, true, false),
+    incremental_std_error_estimate	(BaseDataSeriesType.incremental, true, false, false, true, false),
+    
+    ///////////////////////
+    //Downstream Tracking//
+    incremental_delivered_flux	(BaseDataSeriesType.incremental, false, true, false, false, true),
+    total_delivered_flux		(BaseDataSeriesType.total, false, true, false, false, true),
+    delivered_fraction			(BaseDataSeriesType.delivered_fraction, false, true, false, false, true),
+    incremental_delivered_yield	(BaseDataSeriesType.incremental, false, true, true, false, true),
+    
+    
+    
+    ///////////////////////
+    //Used internally//
+    ///////////////////////
+    
+    //Undecayed incremental load is always calculated - we derive the decayed version which is
+    //what the user gets if they select 'incremental' in the UI.
+    incremental					(BaseDataSeriesType.incremental, false, false, false, false, true),
+    catch_area					(BaseDataSeriesType.catch_area, false, false, false, true, true),
+    
+    //Area of the reach's catchment, plus the catchments of all upstream reaches
+    watershed_area		(BaseDataSeriesType.watershed_area, false, false, false, true, true),
+    
+    ///////////////////////
+    //Completely unused
+    ///////////////////////
     total_decay					(BaseDataSeriesType.total_decay, false, false, false, true, true),
     total_no_decay				(BaseDataSeriesType.total_no_decay, false, false, false, true, true),
-    source_value				(BaseDataSeriesType.source_value, false, false, false, false, true), // active
     land_to_water_coef			(BaseDataSeriesType.land_to_water_coef, false, false, false, false, true),
     instream_decay_coef			(BaseDataSeriesType.instream_decay_coef, false, false, false, false, true),
+    huc_area					(BaseDataSeriesType.huc_area, false, false, false, true, true)
     
-    catch_area					(BaseDataSeriesType.catch_area, false, false, false, true, true),
-    cumulative_catch_area		(BaseDataSeriesType.cumulative_catch_area, false, false, false, true, true),
-    huc_area					(BaseDataSeriesType.huc_area, false, false, false, true, true),
-    flux						(BaseDataSeriesType.flux, false, false, false, true, true)
     ;
 
     // TODO cut down the list of attributes
