@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgswim.sparrow.action.LoadHUC;
+import gov.usgswim.sparrow.action.LoadHUCDetail;
 import gov.usgswim.sparrow.domain.HUC;
 import gov.usgswim.sparrow.request.HUCRequest;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
@@ -18,7 +18,7 @@ public class HUCFactory implements CacheEntryFactory {
 	public HUC createEntry(Object inHUCRequest) throws Exception {
 		HUCRequest hucRequest = (HUCRequest)inHUCRequest;
 		HUC huc = null;
-		LoadHUC action = new LoadHUC(hucRequest);
+		LoadHUCDetail action = new LoadHUCDetail(hucRequest);
 		huc = action.run();
 		return huc;
 	}

@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.SparrowDBTestBaseClass;
+import gov.usgswim.sparrow.request.LoadReachHucsRequest;
 
 import java.util.HashSet;
 

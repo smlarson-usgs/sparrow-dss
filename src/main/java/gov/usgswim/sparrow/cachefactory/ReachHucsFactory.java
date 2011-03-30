@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.action.LoadReachHucs;
-import gov.usgswim.sparrow.action.LoadReachHucsRequest;
+import gov.usgswim.sparrow.request.LoadReachHucsRequest;
 
 /**
  * A thin wrapper around an Action for EHCache CacheEntryFactory.

@@ -3,7 +3,9 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.sparrow.domain.Geometry;
 import gov.usgswim.sparrow.domain.HUC;
 import gov.usgswim.sparrow.domain.Segment;
+import gov.usgswim.sparrow.domain.ReachWatershed;
 import gov.usgswim.sparrow.request.HUCRequest;
+import gov.usgswim.sparrow.request.ReachID;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -17,34 +19,29 @@ import oracle.sql.STRUCT;
  * @author eeverman
  *
  */
-public class LoadHUC extends Action<HUC> {
+public class LoadReachWatershedDetail extends Action<ReachWatershed> {
 
-	protected HUCRequest req;
+	protected ReachID reach;
 	
-	public LoadHUC(HUCRequest request) {
-		req = request;
+	public LoadReachWatershedDetail() {
 	}
 	
-
-	
-	public void setReq(HUCRequest req) {
-		this.req = req;
+	public LoadReachWatershedDetail(ReachID reach) {
+		this.reach = reach;
 	}
 
 
 
 	@Override
-	public HUC doAction() throws Exception {
+	public ReachWatershed doAction() throws Exception {
 		
 		//The return value
-		HUC huc = null;
+		ReachWatershed upstream = null;
 		
 		
 		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("HUC_LEVEL", req.getHucType().getLevel());
-		params.put("HUC_CODE", req.getHuc());
-		
-
+		params.put("MODEL_ID", reach.getModelID());
+		params.put("REACH_ID", reach.getReachID());
 		
 		ResultSet rs = getROPSFromPropertiesFile("selectFull", getClass(), params).executeQuery();
 		
@@ -56,8 +53,6 @@ public class LoadHUC extends Action<HUC> {
 			Geometry geom = null;
 			Geometry simpleGeom = null;
 			Geometry convexGeom = null;
-			String code = rs.getString("HUC_CODE");
-			String name = rs.getString("NAME");
 			Segment[] segments = null;
 			Segment[] simpleSegments = null;
 			Segment convexSegment = null;
@@ -87,15 +82,15 @@ public class LoadHUC extends Action<HUC> {
 			simpleGeom = new Geometry(simpleSegments);
 			convexGeom = new Geometry(convexSegment);
 			
-			huc = new HUC(code, name, req.getHucType(), geom, simpleGeom, convexGeom);
+			upstream = new ReachWatershed(reach.getReachID(), reach.getModelID(), geom, simpleGeom, convexGeom);
 
 		} else {
-			this.setPostMessage("No HUC found for '" + req.getHuc() + "', level " + req.getHucType().getLevel());
+			this.setPostMessage("No Reach found for '" + reach.getReachID() + "' ID in model " + reach.getModelID());
 		}
 		
 		rs.close();	//Will autoclose anyway.
 		
-		return huc;
+		return upstream;
 	}
 	
 	protected float[] loadCoordinates(JGeometry jGeom) {
@@ -108,6 +103,14 @@ public class LoadHUC extends Action<HUC> {
 		}
 		
 		return floatOrds;
+	}
+
+	public ReachID getReach() {
+		return reach;
+	}
+
+	public void setReach(ReachID reach) {
+		this.reach = reach;
 	}
 
 

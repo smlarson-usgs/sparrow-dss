@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.action;
+package gov.usgswim.sparrow.request;
 
 import java.io.Serializable;
 

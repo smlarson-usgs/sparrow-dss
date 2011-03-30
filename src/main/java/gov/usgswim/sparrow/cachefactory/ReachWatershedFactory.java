@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgswim.sparrow.action.LoadReachWatershed;
+import gov.usgswim.sparrow.action.LoadReachWatershedDetail;
 import gov.usgswim.sparrow.domain.ReachWatershed;
 import gov.usgswim.sparrow.request.ReachID;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
@@ -18,7 +18,7 @@ public class ReachWatershedFactory implements CacheEntryFactory {
 	public ReachWatershed createEntry(Object inReachID) throws Exception {
 		ReachID req = (ReachID)inReachID;
 		ReachWatershed rw = null;
-		LoadReachWatershed action = new LoadReachWatershed(req);
+		LoadReachWatershedDetail action = new LoadReachWatershedDetail(req);
 		rw = action.run();
 		return rw;
 	}

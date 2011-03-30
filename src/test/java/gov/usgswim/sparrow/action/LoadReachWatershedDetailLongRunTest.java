@@ -16,7 +16,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class LoadUpstreamCatchmentLongRunTest extends SparrowDBTestBaseClass {
+public class LoadReachWatershedDetailLongRunTest extends SparrowDBTestBaseClass {
 
 	/**
 	 * Loads all public models (1) from the test db.
@@ -27,7 +27,7 @@ public class LoadUpstreamCatchmentLongRunTest extends SparrowDBTestBaseClass {
 		
 		ReachID reach = new ReachID(50L, 8153L);
 		
-		LoadReachWatershed action = new LoadReachWatershed();
+		LoadReachWatershedDetail action = new LoadReachWatershedDetail();
 		action.setReach(reach);
 		
 		ReachWatershed upstream = action.run();

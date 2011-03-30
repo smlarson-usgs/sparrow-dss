@@ -21,7 +21,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class LoadHUCLongRunTest extends SparrowDBTestBaseClass {
+public class LoadHUCDetailLongRunTest extends SparrowDBTestBaseClass {
 
 	/**
 	 * Loads all public models (1) from the test db.
@@ -32,7 +32,7 @@ public class LoadHUCLongRunTest extends SparrowDBTestBaseClass {
 		
 		HUCRequest req = new HUCRequest("01");
 		
-		LoadHUC action = new LoadHUC(req);
+		LoadHUCDetail action = new LoadHUCDetail(req);
 		HUC huc = action.run();
 
 		float[] ords = huc.getGeometry().getSegments()[0].getCoordinates();
@@ -63,7 +63,7 @@ public class LoadHUCLongRunTest extends SparrowDBTestBaseClass {
 		
 		HUCRequest req = new HUCRequest("0101");
 		
-		LoadHUC action = new LoadHUC(req);
+		LoadHUCDetail action = new LoadHUCDetail(req);
 		HUC huc = action.run();
 
 		float[] ords = huc.getGeometry().getSegments()[0].getCoordinates();
@@ -87,7 +87,7 @@ public class LoadHUCLongRunTest extends SparrowDBTestBaseClass {
 		
 		HUCRequest req = new HUCRequest("010100");
 		
-		LoadHUC action = new LoadHUC(req);
+		LoadHUCDetail action = new LoadHUCDetail(req);
 		HUC huc = action.run();
 
 		float[] ords = huc.getGeometry().getSegments()[0].getCoordinates();
@@ -111,7 +111,7 @@ public class LoadHUCLongRunTest extends SparrowDBTestBaseClass {
 		
 		HUCRequest req = new HUCRequest("06020002");
 		
-		LoadHUC action = new LoadHUC(req);
+		LoadHUCDetail action = new LoadHUCDetail(req);
 		HUC huc = action.run();
 
 		float[] ords = huc.getGeometry().getSegments()[0].getCoordinates();
