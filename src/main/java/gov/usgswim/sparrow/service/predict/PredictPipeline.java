@@ -51,7 +51,7 @@ public class PredictPipeline extends AbstractPipeline<PredictExportRequest>{
 			switch (type) {
 				case EXCEL:
 					Delimiters xlsD = Delimiters.makeExcelDelimiter("USGS", new Date().toString());
-					xlsD.sheetStart += "<Row><Cell><Data ss:Type=\"String\">" + readmeText.replaceAll("[[\n\r][\r\n]\n\r][\t ]*", " ") + "</Data></Cell></Row>";
+					xlsD.sheetStart += "<Row><Cell><Data ss:Type=\"String\"><![CDATA[" + readmeText.replaceAll("[[\n\r][\r\n]\n\r][\t ]*", " ") + "]]></Data></Cell></Row>";
 					this.setDelimiters(xlsD);
 					break;
 				case CSV:
