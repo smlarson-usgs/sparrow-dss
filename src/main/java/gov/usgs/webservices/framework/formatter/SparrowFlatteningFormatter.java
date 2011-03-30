@@ -224,4 +224,8 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 		}
 		return value;
 	}
+	
+	protected void setDelimiters(Delimiters delims) {
+		this.delims = delims;
+	}
 }

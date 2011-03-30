@@ -347,7 +347,8 @@
 			NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.
 		</Term>
 		<Term id="Export Readme">
-			TEXT TBD
+			Readme TEXT TBD
+			....
 		</Term>
 	</CommonTerms>
 </Documentation>
