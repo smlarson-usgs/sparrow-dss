@@ -14,6 +14,7 @@ public enum DataSeriesType implements Serializable {
     decayed_incremental			(BaseDataSeriesType.decayed_incremental, false, false, false, false, true),
     total_concentration			(BaseDataSeriesType.total, false, false, true, true, true),
     incremental_yield			(BaseDataSeriesType.incremental, false, false, true, false, true),
+    total_yield					(BaseDataSeriesType.incremental, false, false, true, false, true),
     
     //Model Inputs//
     source_value				(BaseDataSeriesType.source_value, false, false, false, false, true),
