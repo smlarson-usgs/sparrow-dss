@@ -4,7 +4,7 @@ import static gov.usgswim.sparrow.service.ServiceResponseOperation.GET;
 import static gov.usgswim.sparrow.service.ServiceResponseStatus.FAIL;
 import static gov.usgswim.sparrow.service.ServiceResponseStatus.OK;
 import gov.usgswim.sparrow.domain.HUC;
-import gov.usgswim.sparrow.domain.ReachWatershed;
+import gov.usgswim.sparrow.domain.ReachGeometry;
 import gov.usgswim.sparrow.request.HUCRequest;
 import gov.usgswim.sparrow.request.ReachID;
 
@@ -35,13 +35,13 @@ public class ReachWatershedService extends AbstractSparrowServlet {
 		//unique key in the form context/servletpath/unique_key
 		
 		ServiceResponseWrapper wrap = new ServiceResponseWrapper(
-					ReachWatershed.class, GET);
+					ReachGeometry.class, GET);
 		wrap.setStatus(FAIL);	//pessimistic...
 		wrap.setMimeType(parseMime(req));
 		
 
 		ReachID reachReq = null;
-		ReachWatershed result = null;
+		ReachGeometry result = null;
 		
 		String extraPath = cleanExtraPath(req);
 		
@@ -58,7 +58,7 @@ public class ReachWatershedService extends AbstractSparrowServlet {
 			//Try to load
 			try {
 				reachReq = new ReachID(modelId, id);
-				result = (ReachWatershed) ConfiguredCache.ReachWatershed.get(reachReq, false);
+				result = (ReachGeometry) ConfiguredCache.ReachWatershed.get(reachReq, false);
 			} catch (Exception e) {
 				wrap.setError(e);
 			}

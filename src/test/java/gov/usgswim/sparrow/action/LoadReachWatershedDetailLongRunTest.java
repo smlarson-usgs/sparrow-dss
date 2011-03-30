@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.domain.Geometry;
 import gov.usgswim.sparrow.domain.Segment;
-import gov.usgswim.sparrow.domain.ReachWatershed;
+import gov.usgswim.sparrow.domain.ReachGeometry;
 import gov.usgswim.sparrow.request.ReachID;
 
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class LoadReachWatershedDetailLongRunTest extends SparrowTestBaseWithDB {
 		LoadReachWatershedDetail action = new LoadReachWatershedDetail();
 		action.setReach(reach);
 		
-		ReachWatershed upstream = action.run();
+		ReachGeometry upstream = action.run();
 
 		float[] ords = upstream.getGeometry().getSegments()[0].getCoordinates();
 		

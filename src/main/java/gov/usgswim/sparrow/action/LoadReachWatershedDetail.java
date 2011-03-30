@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.sparrow.domain.Geometry;
 import gov.usgswim.sparrow.domain.HUC;
 import gov.usgswim.sparrow.domain.Segment;
-import gov.usgswim.sparrow.domain.ReachWatershed;
+import gov.usgswim.sparrow.domain.ReachGeometry;
 import gov.usgswim.sparrow.request.HUCRequest;
 import gov.usgswim.sparrow.request.ReachID;
 
@@ -19,7 +19,7 @@ import oracle.sql.STRUCT;
  * @author eeverman
  *
  */
-public class LoadReachWatershedDetail extends Action<ReachWatershed> {
+public class LoadReachWatershedDetail extends Action<ReachGeometry> {
 
 	protected ReachID reach;
 	
@@ -33,10 +33,10 @@ public class LoadReachWatershedDetail extends Action<ReachWatershed> {
 
 
 	@Override
-	public ReachWatershed doAction() throws Exception {
+	public ReachGeometry doAction() throws Exception {
 		
 		//The return value
-		ReachWatershed upstream = null;
+		ReachGeometry upstream = null;
 		
 		
 		Map<String, Object> params = new HashMap<String, Object>();
@@ -82,7 +82,7 @@ public class LoadReachWatershedDetail extends Action<ReachWatershed> {
 			simpleGeom = new Geometry(simpleSegments);
 			convexGeom = new Geometry(convexSegment);
 			
-			upstream = new ReachWatershed(reach.getReachID(), reach.getModelID(), geom, simpleGeom, convexGeom);
+			upstream = new ReachGeometry(reach.getReachID(), reach.getModelID(), geom, simpleGeom, convexGeom);
 
 		} else {
 			this.setPostMessage("No Reach found for '" + reach.getReachID() + "' ID in model " + reach.getModelID());

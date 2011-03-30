@@ -34,7 +34,7 @@ public class ReachWatershedServiceLongRunTest extends SparrowServiceTestBaseWith
 		
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
-		assertXpathEvaluatesTo("gov.usgswim.sparrow.domain.ReachWatershed", "/ServiceResponseWrapper/entityClass", actualResponse);
+		assertXpathEvaluatesTo("gov.usgswim.sparrow.domain.ReachGeometry", "/ServiceResponseWrapper/entityClass", actualResponse);
 		assertXpathEvaluatesTo("8153", "/ServiceResponseWrapper/entityList/entity[1]/id", actualResponse);
 		
 	}

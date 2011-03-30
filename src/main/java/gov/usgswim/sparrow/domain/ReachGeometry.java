@@ -16,8 +16,8 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
  */
 @Immutable
 @XStreamInclude({Geometry.class})
-@XStreamAlias("ReachWatershed")
-public class ReachWatershed implements Serializable {
+@XStreamAlias("ReachGeometry")
+public class ReachGeometry implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -27,7 +27,7 @@ public class ReachWatershed implements Serializable {
 	private final Geometry simpleGeometry;
 	private final Geometry convexGeometry;
 	
-	public ReachWatershed(Long reachId, Long modelId,
+	public ReachGeometry(Long reachId, Long modelId,
 			Geometry geometry, Geometry simpleGeometry, Geometry convexGeometry) {
 		this.id = reachId;
 		this.modelId = modelId;
@@ -38,7 +38,7 @@ public class ReachWatershed implements Serializable {
 	
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof ReachWatershed) {
+		if (obj instanceof ReachGeometry) {
 			return obj.hashCode() == hashCode();
 		}
 		return false;
