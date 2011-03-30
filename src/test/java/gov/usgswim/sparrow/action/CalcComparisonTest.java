@@ -11,7 +11,7 @@ import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
-import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
@@ -41,7 +41,7 @@ import org.junit.Test;
 
 
 
-public class CalcComparisonTest  extends SparrowUnitTestBaseClass {
+public class CalcComparisonTest  extends SparrowTestBase {
 	
 	PredictionContext compCtx;		//Full context w/ comparison
 	PredictionContext noCompCtx;	//Same as above, but no comparison

@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -25,16 +25,16 @@ import org.junit.Test;
  * @author eeverman
  * TODO: This should really use a canned project, rather than MRB2
  */
-public class SourceBinningErrorLongRunTest extends SparrowUnitTestBaseClass {
+public class SourceBinningErrorLongRunTest extends SparrowTestBase {
 	
 	@Test
 	public void testComparison() throws Exception {
-		String xmlContextReq = SparrowUnitTestBaseClass.getXmlAsString(this.getClass(), "context");
-		String xmlContextResp = SparrowUnitTestBaseClass.getXmlAsString(this.getClass(), "contextResp");
+		String xmlContextReq = SparrowTestBase.getXmlAsString(this.getClass(), "context");
+		String xmlContextResp = SparrowTestBase.getXmlAsString(this.getClass(), "contextResp");
 		
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		PredictContextRequest contextReq = pipe.parse(xmlContextReq);
-		String actualContextResponse = SparrowUnitTestBaseClass.pipeDispatch(contextReq, pipe);
+		String actualContextResponse = SparrowTestBase.pipeDispatch(contextReq, pipe);
 		
 		assertTrue(similarXMLIgnoreContextId(xmlContextResp, actualContextResponse));
 		Integer contextId = getContextIdFromContext(actualContextResponse);
@@ -63,7 +63,7 @@ public class SourceBinningErrorLongRunTest extends SparrowUnitTestBaseClass {
 		long startTime = System.currentTimeMillis();
 		BinningServiceRequest binSvsReq = new BinningServiceRequest(new Integer(contextId), 2, BIN_TYPE.EQUAL_RANGE);
 		BinningPipeline binPipe = new BinningPipeline();
-		String actualBinResponse = SparrowUnitTestBaseClass.pipeDispatch(binSvsReq, binPipe);
+		String actualBinResponse = SparrowTestBase.pipeDispatch(binSvsReq, binPipe);
 		long endTime = System.currentTimeMillis();
 		assertTrue("These results should be in cache, thus almost instant response", endTime - startTime < 500L);
 		assertTrue(actualBinResponse.contains("<bin>" + bins[0].toString() + "</bin>"));

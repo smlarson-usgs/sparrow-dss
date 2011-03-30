@@ -1,14 +1,14 @@
 package gov.usgswim.sparrow.domain;
 
 import static org.junit.Assert.*;
-import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBase;
 
 import javax.xml.stream.XMLStreamReader;
 
 import org.junit.Test;
 
 
-public class PredictionContextTest extends SparrowUnitTestBaseClass {
+public class PredictionContextTest extends SparrowTestBase {
 
 	// ============
 	// TEST METHODS

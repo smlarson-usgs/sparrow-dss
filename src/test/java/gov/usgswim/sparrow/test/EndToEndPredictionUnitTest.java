@@ -2,9 +2,9 @@ package gov.usgswim.sparrow.test;
 
 import static org.junit.Assert.assertEquals;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.SparrowServiceTestBaseClass;
-import gov.usgswim.sparrow.SparrowServiceTestWithCannedModel50;
-import gov.usgswim.sparrow.SparrowServiceUnitTestNoDB;
+import gov.usgswim.sparrow.SparrowServiceTestBaseWithDB;
+import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
+import gov.usgswim.sparrow.SparrowServiceTestBaseNoDB;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
@@ -22,7 +22,7 @@ import org.junit.Test;
  * @author eeverman
  *
  */
-public class EndToEndPredictionUnitTest extends SparrowServiceTestWithCannedModel50 {
+public class EndToEndPredictionUnitTest extends SparrowServiceTestBaseWithDBandCannedModel50 {
 
 	public static final String PREDICT_EXPORT_SERVICE_URL = "http://localhost:8088/sp_predict";
 	public static final String PREDICT_CONTEXT_SERVICE_URL = "http://localhost:8088/sp_predictcontext";

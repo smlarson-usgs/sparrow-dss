@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.sparrow.SparrowDBTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.request.PredictionContextRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -18,7 +18,7 @@ import org.junit.Test;
  * @author eeverman
  */
 
-public class PredictionContextHandlerLongRunTest extends SparrowDBTestBaseClass {
+public class PredictionContextHandlerLongRunTest extends SparrowTestBaseWithDB {
 
 	
 	

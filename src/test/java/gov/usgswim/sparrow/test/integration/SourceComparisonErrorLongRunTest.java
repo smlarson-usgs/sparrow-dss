@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.test.integration;
 
-import gov.usgswim.sparrow.SparrowDBTestCannedModel50BaseClass;
-import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBaseWithDBandCannedModel50;
+import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.binning.BinningPipeline;
 import gov.usgswim.sparrow.service.binning.BinningServiceRequest;
@@ -17,16 +17,16 @@ import org.junit.Test;
  * @author eeverman
  * TODO: This should really use a canned project, rather than MRB2
  */
-public class SourceComparisonErrorLongRunTest extends SparrowDBTestCannedModel50BaseClass {
+public class SourceComparisonErrorLongRunTest extends SparrowTestBaseWithDBandCannedModel50 {
 	
 	@Test
 	public void testComparison() throws Exception {
-		String xmlContextReq = SparrowUnitTestBaseClass.getXmlAsString(this.getClass(), "context");
-		String xmlContextResp = SparrowUnitTestBaseClass.getXmlAsString(this.getClass(), "contextResp");
+		String xmlContextReq = SparrowTestBase.getXmlAsString(this.getClass(), "context");
+		String xmlContextResp = SparrowTestBase.getXmlAsString(this.getClass(), "contextResp");
 		
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		PredictContextRequest contextReq = pipe.parse(xmlContextReq);
-		String actualContextResponse = SparrowUnitTestBaseClass.pipeDispatch(contextReq, pipe);
+		String actualContextResponse = SparrowTestBase.pipeDispatch(contextReq, pipe);
 
 		System.out.println("actual: " + actualContextResponse);
 		similarXMLIgnoreContextId(xmlContextResp, actualContextResponse);
@@ -39,8 +39,8 @@ public class SourceComparisonErrorLongRunTest extends SparrowDBTestCannedModel50
 		//getBins?_dc=1259617459336&context-id=-1930836194&bin-count=5&bin-operation=EQUAL_RANGE
 		BinningServiceRequest binReq = new BinningServiceRequest(new Integer(contextId), 2, BIN_TYPE.EQUAL_RANGE);
 		BinningPipeline binPipe = new BinningPipeline();
-		String actualBinResponse = SparrowUnitTestBaseClass.pipeDispatch(binReq, binPipe);
-		String xmlBinResp = SparrowUnitTestBaseClass.getXmlAsString(this.getClass(), "binResp");
+		String actualBinResponse = SparrowTestBase.pipeDispatch(binReq, binPipe);
+		String xmlBinResp = SparrowTestBase.getXmlAsString(this.getClass(), "binResp");
 		similarXMLIgnoreContextId(xmlBinResp, actualBinResponse);
 
 	}

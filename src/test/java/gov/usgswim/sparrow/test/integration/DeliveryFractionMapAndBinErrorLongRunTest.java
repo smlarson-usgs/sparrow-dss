@@ -3,8 +3,8 @@ package gov.usgswim.sparrow.test.integration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.sparrow.MapViewerSparrowDataProvider;
-import gov.usgswim.sparrow.SparrowDBTestBaseClass;
-import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBaseWithDB;
+import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.binning.BinningPipeline;
 import gov.usgswim.sparrow.service.binning.BinningServiceRequest;
@@ -25,16 +25,16 @@ import org.junit.Test;
  * @author eeverman
  * TODO: This should really use a canned project, rather than MRB2
  */
-public class DeliveryFractionMapAndBinErrorLongRunTest extends SparrowDBTestBaseClass{
+public class DeliveryFractionMapAndBinErrorLongRunTest extends SparrowTestBaseWithDB{
 	
 	@Test
 	public void testFracToNSDataSet() throws Exception {
 		
 		//Register context from canned file
-		String xmlContextReq = SparrowUnitTestBaseClass.getXmlAsString(this.getClass(), "context");
+		String xmlContextReq = SparrowTestBase.getXmlAsString(this.getClass(), "context");
 		PredictContextPipeline pipe = new PredictContextPipeline();
 		PredictContextRequest contextReq = pipe.parse(xmlContextReq);
-		String actualResponse = SparrowUnitTestBaseClass.pipeDispatch(contextReq, pipe);
+		String actualResponse = SparrowTestBase.pipeDispatch(contextReq, pipe);
 		
 		Integer contextID = getContextIdFromContext(actualResponse);
 		//System.out.println(actualResponse);
@@ -43,7 +43,7 @@ public class DeliveryFractionMapAndBinErrorLongRunTest extends SparrowDBTestBase
 		//Run a binning request on that same context ID
 		BinningPipeline binPipe = new BinningPipeline();
 		BinningServiceRequest binSvsReq = new BinningServiceRequest(contextID, 5, BIN_TYPE.EQUAL_COUNT);
-		actualResponse = SparrowUnitTestBaseClass.pipeDispatch(binSvsReq, binPipe);
+		actualResponse = SparrowTestBase.pipeDispatch(binSvsReq, binPipe);
 		System.out.println("bin response: " + actualResponse);
 		assertTrue(actualResponse.indexOf("<bin>0</bin>") > -1);
 

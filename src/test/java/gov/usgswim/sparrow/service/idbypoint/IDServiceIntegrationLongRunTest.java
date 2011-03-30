@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.service.idbypoint;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.sparrow.SparrowServiceTestWithCannedModel50;
+import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.ParserHelper;
@@ -13,7 +13,7 @@ import org.apache.log4j.Level;
 import org.custommonkey.xmlunit.XMLAssert;
 import org.junit.Test;
 
-public class IDServiceIntegrationLongRunTest extends SparrowServiceTestWithCannedModel50 {
+public class IDServiceIntegrationLongRunTest extends SparrowServiceTestBaseWithDBandCannedModel50 {
 	
 	// ============
 	// TEST METHODS

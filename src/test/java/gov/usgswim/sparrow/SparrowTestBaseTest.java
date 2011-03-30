@@ -15,12 +15,12 @@ import org.junit.Test;
  * @author eeverman
  *
  */
-public class SparrowUnitTestTest extends SparrowUnitTestBaseClass {
+public class SparrowTestBaseTest extends SparrowTestBase {
 
 	@Test
 	public void testLoadPredictResultsFromFile() throws Exception {
-		PredictData filePredictData = SparrowUnitTestBaseClass.getTestModelPredictData();
-		PredictResult filePredictResult = SparrowUnitTestBaseClass.getTestModelPredictResult();
+		PredictData filePredictData = SparrowTestBase.getTestModelPredictData();
+		PredictResult filePredictResult = SparrowTestBase.getTestModelPredictResult();
 		
 		
 		CalcPrediction action = new CalcPrediction(filePredictData);
@@ -95,30 +95,30 @@ public class SparrowUnitTestTest extends SparrowUnitTestBaseClass {
 		double allow = .1d;
 		
 		//Strings
-		assertTrue(SparrowUnitTestBaseClass.isEqual(null, null, allow));
-		assertTrue(SparrowUnitTestBaseClass.isEqual("hi", "hi", allow));
-		assertFalse(SparrowUnitTestBaseClass.isEqual("hi", "bye", allow));
-		assertFalse(SparrowUnitTestBaseClass.isEqual("hi", null, allow));
-		assertFalse(SparrowUnitTestBaseClass.isEqual(null, "hi", allow));
+		assertTrue(SparrowTestBase.isEqual(null, null, allow));
+		assertTrue(SparrowTestBase.isEqual("hi", "hi", allow));
+		assertFalse(SparrowTestBase.isEqual("hi", "bye", allow));
+		assertFalse(SparrowTestBase.isEqual("hi", null, allow));
+		assertFalse(SparrowTestBase.isEqual(null, "hi", allow));
 		
 		//Doubles
-		assertTrue(SparrowUnitTestBaseClass.isEqual(new Double(5), new Double(5), allow));
-		assertTrue(SparrowUnitTestBaseClass.isEqual(new Double(5), new Double(5.49d), allow));
-		assertFalse(SparrowUnitTestBaseClass.isEqual(new Double(5), new Double(5.5d), allow));
-		assertTrue(SparrowUnitTestBaseClass.isEqual(new Double(-5), new Double(-5.49d), allow));
-		assertFalse(SparrowUnitTestBaseClass.isEqual(new Double(-5), new Double(-5.5d), allow));
-		assertTrue(SparrowUnitTestBaseClass.isEqual(new Double(0), new Double(0), allow));
+		assertTrue(SparrowTestBase.isEqual(new Double(5), new Double(5), allow));
+		assertTrue(SparrowTestBase.isEqual(new Double(5), new Double(5.49d), allow));
+		assertFalse(SparrowTestBase.isEqual(new Double(5), new Double(5.5d), allow));
+		assertTrue(SparrowTestBase.isEqual(new Double(-5), new Double(-5.49d), allow));
+		assertFalse(SparrowTestBase.isEqual(new Double(-5), new Double(-5.5d), allow));
+		assertTrue(SparrowTestBase.isEqual(new Double(0), new Double(0), allow));
 		
 		//Odd value Doubles
-		assertTrue(SparrowUnitTestBaseClass.isEqual(Double.NaN, Double.NaN, allow));
-		assertFalse(SparrowUnitTestBaseClass.isEqual(Double.NaN, new Double(5), allow));
-		assertFalse(SparrowUnitTestBaseClass.isEqual(new Double(5), Double.NaN, allow));
-		assertFalse(SparrowUnitTestBaseClass.isEqual(null, Double.NaN, allow));
-		assertFalse(SparrowUnitTestBaseClass.isEqual(Double.NaN, null, allow));
-		assertTrue(SparrowUnitTestBaseClass.isEqual(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, allow));
-		assertTrue(SparrowUnitTestBaseClass.isEqual(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, allow));
-		assertFalse(SparrowUnitTestBaseClass.isEqual(Double.POSITIVE_INFINITY, new Double(5), allow));
-		assertFalse(SparrowUnitTestBaseClass.isEqual(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, allow));
-		assertFalse(SparrowUnitTestBaseClass.isEqual(Double.POSITIVE_INFINITY, null, allow));
+		assertTrue(SparrowTestBase.isEqual(Double.NaN, Double.NaN, allow));
+		assertFalse(SparrowTestBase.isEqual(Double.NaN, new Double(5), allow));
+		assertFalse(SparrowTestBase.isEqual(new Double(5), Double.NaN, allow));
+		assertFalse(SparrowTestBase.isEqual(null, Double.NaN, allow));
+		assertFalse(SparrowTestBase.isEqual(Double.NaN, null, allow));
+		assertTrue(SparrowTestBase.isEqual(Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, allow));
+		assertTrue(SparrowTestBase.isEqual(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, allow));
+		assertFalse(SparrowTestBase.isEqual(Double.POSITIVE_INFINITY, new Double(5), allow));
+		assertFalse(SparrowTestBase.isEqual(Double.POSITIVE_INFINITY, Double.NEGATIVE_INFINITY, allow));
+		assertFalse(SparrowTestBase.isEqual(Double.POSITIVE_INFINITY, null, allow));
 	}
 }

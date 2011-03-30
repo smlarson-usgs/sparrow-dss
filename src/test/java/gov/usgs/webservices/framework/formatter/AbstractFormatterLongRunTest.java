@@ -2,7 +2,7 @@ package gov.usgs.webservices.framework.formatter;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.assertEquals;
-import gov.usgswim.sparrow.SparrowServiceTestWithCannedModel50;
+import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,7 +13,7 @@ import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
-public class AbstractFormatterLongRunTest extends SparrowServiceTestWithCannedModel50 {
+public class AbstractFormatterLongRunTest extends SparrowServiceTestBaseWithDBandCannedModel50 {
 
 	//Should be prepended on downloaded files to ensure they are marked as
 	//being unicode.

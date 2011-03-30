@@ -41,7 +41,7 @@ import oracle.jdbc.pool.OracleDataSource;
  * @author eeverman
  *
  */
-public abstract class SparrowDBTestBaseClass extends SparrowUnitTestBaseClass {
+public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 
 	/**
 	 * Name of a system property that if "true" will switch to the production
@@ -54,7 +54,7 @@ public abstract class SparrowDBTestBaseClass extends SparrowUnitTestBaseClass {
 
 	
 	/** A single instance which is destroyed in teardown */
-	private static SparrowDBTestBaseClass singleInstanceToTearDown;
+	private static SparrowTestBaseWithDB singleInstanceToTearDown;
 	
 	
 	/**

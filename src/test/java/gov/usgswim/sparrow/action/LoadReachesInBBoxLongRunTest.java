@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.*;
-import gov.usgswim.sparrow.SparrowDBTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.domain.ModelBBox;
 import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.domain.SparrowModel;
@@ -15,7 +15,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class LoadReachesInBBoxLongRunTest extends SparrowDBTestBaseClass {
+public class LoadReachesInBBoxLongRunTest extends SparrowTestBaseWithDB {
 
 	/**
 	 * @throws Exception

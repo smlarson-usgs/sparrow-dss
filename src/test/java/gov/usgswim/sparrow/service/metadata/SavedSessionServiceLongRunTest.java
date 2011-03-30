@@ -11,7 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 import java.sql.Connection;
 
-import gov.usgswim.sparrow.SparrowServiceTestWithCannedModel50;
+import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.action.PredefinedSessionsLongRunTest;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
@@ -39,7 +39,7 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
  * @author eeverman
  *
  */
-public class SavedSessionServiceLongRunTest extends SparrowServiceTestWithCannedModel50 {
+public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDBandCannedModel50 {
 	
 	private static final String SESSION_SERVICE_URL = "http://localhost:8088/sp_session";
 	

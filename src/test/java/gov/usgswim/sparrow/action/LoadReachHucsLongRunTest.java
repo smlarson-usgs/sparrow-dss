@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.action;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.SparrowDBTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.request.LoadReachHucsRequest;
 
 import java.util.HashSet;
@@ -16,7 +16,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class LoadReachHucsLongRunTest extends SparrowDBTestBaseClass {
+public class LoadReachHucsLongRunTest extends SparrowTestBaseWithDB {
 
 	static final Long MODEL_ID = 50L;
 	

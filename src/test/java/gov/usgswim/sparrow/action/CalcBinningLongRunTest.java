@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.sparrow.SparrowServiceTestWithCannedModel50;
+import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.AreaOfInterest;
@@ -26,7 +26,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class CalcBinningLongRunTest  extends SparrowServiceTestWithCannedModel50 {
+public class CalcBinningLongRunTest  extends SparrowServiceTestBaseWithDBandCannedModel50 {
 	
 	/**
 	 * Replicate a bug where the the uncertainty estimates can generate

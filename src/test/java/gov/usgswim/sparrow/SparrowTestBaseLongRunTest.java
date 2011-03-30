@@ -13,11 +13,11 @@ import org.junit.Test;
  * @author eeverman
  *
  */
-public class SparrowUnitTestIntegLongRunTest extends SparrowDBTestBaseClass {
+public class SparrowTestBaseLongRunTest extends SparrowTestBaseWithDB {
 	@Test
 	public void testLoadPredictResultsFromFile() throws Exception {
-		PredictData filePredictData = SparrowUnitTestBaseClass.getTestModelPredictData();
-		PredictResult filePredictResult = SparrowUnitTestBaseClass.getTestModelPredictResult();
+		PredictData filePredictData = SparrowTestBase.getTestModelPredictData();
+		PredictResult filePredictResult = SparrowTestBase.getTestModelPredictResult();
 		CalcPrediction fileCalc = new CalcPrediction(filePredictData);
 		PredictResult fileBasedPredictResult = fileCalc.run();
 		

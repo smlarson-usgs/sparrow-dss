@@ -1,10 +1,17 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.sparrow.SparrowTestBaseWithDB;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
+
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.xml.sax.SAXException;
 
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.PostMethodWebRequest;
@@ -14,47 +21,48 @@ import com.meterware.servletunit.ServletRunner;
 import com.meterware.servletunit.ServletUnitClient;
 
 /**
- * A base class for JUnit tests that access services, but do not require a
- * db connection.
+ * A base class for JUnit tests that access services.
  * @author eeverman
  *
  */
-public abstract class SparrowServiceUnitTestNoDB extends SparrowUnitTestBaseClass {
+public abstract class SparrowServiceTestBaseWithDB extends SparrowTestBaseWithDB {
 
+	
 	public static final String WEB_XML_LOCATION = "src/test/resources/service_test_web.xml";
 	
 	// ============
 	// SERVICE URLS
 	// ============
 
+
 	protected static ServletRunner servletRunner;
 	protected static ServletUnitClient client;
 	
-	
 	@Override
-	protected void doOneTimeLifecycleSetup() throws Exception {
-		//Do nothing - the lifecycle is setup via the servlet
+	public void doOneTimeFrameworkSetup() throws Exception {
+		super.doOneTimeFrameworkSetup();
+		
+		servletRunner =  new ServletRunner(new File(SparrowServiceTestBaseWithDB.WEB_XML_LOCATION));
+		client = servletRunner.newClient();
+	}
+
+	@Override
+	public void doOneTimeFrameworkTearDown() throws Exception {
+		super.doOneTimeFrameworkTearDown();
+		
+		servletRunner.shutDown();
+	}
+	
+
+	@Override
+	protected void doOneTimeLifecycleSetup() {
+		//do nothing - the servlet container is handling the lifecycle
 	}
 
 	@Override
 	protected void doOneTimeLifecycleTearDown() {
-		//Do nothing - the lifecycle is handled via the servlet
+		//do nothing - the servlet container is handling the lifecycle
 	}
-	
-	@Override
-	protected void doOneTimeFrameworkSetup() throws Exception {
-		servletRunner =  new ServletRunner(new File(WEB_XML_LOCATION));
-		client = servletRunner.newClient();
-	}
-
-	/* (non-Javadoc)
-	 * @see gov.usgswim.sparrow.SparrowUnitTestBaseClass#doTearDown()
-	 */
-	@Override
-	protected void doOneTimeFrameworkTearDown() throws Exception {
-		servletRunner.shutDown();
-	}
-	
 	
 	/**
 	 * Sends a GET request to the unit testing web client and returns the
@@ -110,6 +118,7 @@ public abstract class SparrowServiceUnitTestNoDB extends SparrowUnitTestBaseClas
 
 		return actualResponse;
 	}
+
 
 
 

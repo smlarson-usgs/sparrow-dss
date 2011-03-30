@@ -28,7 +28,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class ValidateTextPredictDataToDBLongRunTest  extends SparrowDBTestBaseClass {
+public class ValidateTextPredictDataToDBLongRunTest  extends SparrowTestBaseWithDB {
 	
 	private static PredictData dbPredictData;
 	private static PredictData txtPredictData;

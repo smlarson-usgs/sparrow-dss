@@ -14,7 +14,7 @@ import org.junit.Test;
  * @author eeverman
  *
  */
-public class SparrowDBTestLongRunTest extends SparrowDBTestBaseClass {
+public class SparrowTestBaseWithDBLongRunTest extends SparrowTestBaseWithDB {
 	
 	@Test
 	public void testAvailableConnections() throws Exception {

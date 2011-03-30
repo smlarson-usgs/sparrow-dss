@@ -6,7 +6,7 @@ package gov.usgswim.sparrow;
  * @author eeverman
  *
  */
-public class SparrowServiceTestWithCannedModel50 extends SparrowServiceTestBaseClass {
+public class SparrowServiceTestBaseWithDBandCannedModel50 extends SparrowServiceTestBaseWithDB {
 
 	/**
 	 * Returns true to force model 50 to be loaded from file instead of from 

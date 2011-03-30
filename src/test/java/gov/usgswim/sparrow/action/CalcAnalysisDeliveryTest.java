@@ -11,7 +11,7 @@ import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
-import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
@@ -57,7 +57,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class CalcAnalysisDeliveryTest  extends SparrowUnitTestBaseClass {
+public class CalcAnalysisDeliveryTest  extends SparrowTestBase {
 	
 	static PredictData unmodifiedPredictData;
 	static PredictData modifiedPredictData;
@@ -79,17 +79,17 @@ public class CalcAnalysisDeliveryTest  extends SparrowUnitTestBaseClass {
 		super.doOneTimeCustomSetup();
 		
 		BufferedReader stdDelFracTo9682Stream = new BufferedReader(new InputStreamReader(
-				SparrowUnitTestBaseClass.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9682", "tab")
+				SparrowTestBase.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9682", "tab")
 			));
 		stdDelFracTo9682 = TabDelimFileUtil.readAsDouble(stdDelFracTo9682Stream, true, -1);
 		
 		BufferedReader stdDelFracTo9674Stream = new BufferedReader(new InputStreamReader(
-				SparrowUnitTestBaseClass.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9674", "tab")
+				SparrowTestBase.getResource(CalcDeliveryFractionTest.class, "stdDelFracTo9674", "tab")
 			));
 		stdDelFracTo9674 = TabDelimFileUtil.readAsDouble(stdDelFracTo9674Stream, true, -1);
 		
 		BufferedReader stdDelFracToBothStream = new BufferedReader(new InputStreamReader(
-				SparrowUnitTestBaseClass.getResource(CalcDeliveryFractionTest.class, "stdDelFracToBoth", "tab")
+				SparrowTestBase.getResource(CalcDeliveryFractionTest.class, "stdDelFracToBoth", "tab")
 			));
 		stdDelFracToBoth = TabDelimFileUtil.readAsDouble(stdDelFracToBothStream, true, -1);
 		

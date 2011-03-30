@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.service;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.sparrow.SparrowServiceTestBaseClass;
+import gov.usgswim.sparrow.SparrowServiceTestBaseWithDB;
 
 import org.junit.Test;
 
@@ -16,7 +16,7 @@ import com.meterware.httpunit.WebResponse;
  * @author eeverman
  *
  */
-public class HUCServiceLongRunTest extends SparrowServiceTestBaseClass {
+public class HUCServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 	
 	private static final String SERVICE_URL = "http://localhost:8088/huc";
 

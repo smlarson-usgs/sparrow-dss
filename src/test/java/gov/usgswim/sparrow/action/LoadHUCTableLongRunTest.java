@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.SparrowDBTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 
 import org.junit.Test;
 
@@ -12,7 +12,7 @@ import org.junit.Test;
  * @author thongsav
  */
 
-public class LoadHUCTableLongRunTest extends SparrowDBTestBaseClass {
+public class LoadHUCTableLongRunTest extends SparrowTestBaseWithDB {
 	
 	/**
 	 * Tests the columns.

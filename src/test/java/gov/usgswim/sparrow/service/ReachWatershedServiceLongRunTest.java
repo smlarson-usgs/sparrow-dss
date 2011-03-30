@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.service;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
-import gov.usgswim.sparrow.SparrowServiceTestBaseClass;
+import gov.usgswim.sparrow.SparrowServiceTestBaseWithDB;
 
 import org.junit.Test;
 
@@ -14,7 +14,7 @@ import com.meterware.httpunit.WebResponse;
  * @author eeverman
  *
  */
-public class ReachWatershedServiceLongRunTest extends SparrowServiceTestBaseClass {
+public class ReachWatershedServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 	
 	private static final String SERVICE_URL = "http://localhost:8088/reachwatershed/";
 

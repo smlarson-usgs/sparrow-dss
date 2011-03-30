@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.parser;
 
-import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.domain.AdvancedAnalysis;
 import gov.usgswim.sparrow.domain.Analysis;
 import gov.usgswim.sparrow.domain.DataSeriesType;
@@ -151,7 +151,7 @@ public class AnalysisTest extends TestCase {
 
 		Analysis analysis1 = buildTestInstance(VALID_ADV_FRAGMENT_1);
 		Analysis analysis2 = buildTestInstance(VALID_ADV_FRAGMENT_1);
-		SparrowUnitTestBaseClass.testHashCode(analysis1, analysis2, analysis2.clone());
+		SparrowTestBase.testHashCode(analysis1, analysis2, analysis2.clone());
 
 		// test IDs
 		assertEquals(analysis1.hashCode(), analysis1.getId().intValue());

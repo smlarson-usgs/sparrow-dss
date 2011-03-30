@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.test.cachefactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import gov.usgswim.sparrow.SparrowDBTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.cachefactory.ReachByPointFactory;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
@@ -13,7 +13,7 @@ import javax.xml.stream.XMLInputFactory;
 
 import org.junit.Test;
 
-public class ReachByPointFactoryIntegrationLongRunTest extends SparrowDBTestBaseClass {
+public class ReachByPointFactoryIntegrationLongRunTest extends SparrowTestBaseWithDB {
 
     protected XMLInputFactory inFact = XMLInputFactory.newInstance();
 	

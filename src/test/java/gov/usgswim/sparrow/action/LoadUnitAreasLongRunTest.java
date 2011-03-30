@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.SparrowDBTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.DataSeriesType;
@@ -16,7 +16,7 @@ import org.junit.Test;
  * @author klangsto
  */
 
-public class LoadUnitAreasLongRunTest extends SparrowDBTestBaseClass {
+public class LoadUnitAreasLongRunTest extends SparrowTestBaseWithDB {
 
 	/**
 	 * Tests the basic getter and setter functionality.

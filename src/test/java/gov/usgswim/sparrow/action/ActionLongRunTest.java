@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
-import gov.usgswim.sparrow.SparrowDBTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,7 +23,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class ActionLongRunTest  extends SparrowDBTestBaseClass {
+public class ActionLongRunTest  extends SparrowTestBaseWithDB {
 	
 	@Test
 	public void closeASingleConnectionAndStatement() throws Exception {
@@ -79,7 +79,7 @@ public class ActionLongRunTest  extends SparrowDBTestBaseClass {
 			}
 			
 			state1.setLong(1, 9190);
-			state1.setLong(2, SparrowDBTestBaseClass.TEST_MODEL_ID);
+			state1.setLong(2, SparrowTestBaseWithDB.TEST_MODEL_ID);
 			ResultSet rset = state1.executeQuery();	//auto-closed
 			DataTableWritable attributes = null;
 			attributes = DataTableConverter.toDataTable(rset);
@@ -138,7 +138,7 @@ public class ActionLongRunTest  extends SparrowDBTestBaseClass {
 			
 			//Build data from 1st statement
 			state1.setLong(1, 9190);
-			state1.setLong(2, SparrowDBTestBaseClass.TEST_MODEL_ID);
+			state1.setLong(2, SparrowTestBaseWithDB.TEST_MODEL_ID);
 			ResultSet rset = state1.executeQuery();	//auto-closed
 			DataTableWritable attributes = null;
 			attributes = DataTableConverter.toDataTable(rset);
@@ -153,7 +153,7 @@ public class ActionLongRunTest  extends SparrowDBTestBaseClass {
 			
 			//Build data from 2nd statement
 			state2.setLong(1, 9190);
-			state2.setLong(2, SparrowDBTestBaseClass.TEST_MODEL_ID);
+			state2.setLong(2, SparrowTestBaseWithDB.TEST_MODEL_ID);
 			rset = state2.executeQuery();	//auto-closed
 			attributes = DataTableConverter.toDataTable(rset);
 			
@@ -194,7 +194,7 @@ public class ActionLongRunTest  extends SparrowDBTestBaseClass {
 			state1 = getNewROPreparedStatement(sql);
 			
 			state1.setLong(1, 9190);
-			state1.setLong(2, SparrowDBTestBaseClass.TEST_MODEL_ID);
+			state1.setLong(2, SparrowTestBaseWithDB.TEST_MODEL_ID);
 			ResultSet rset = state1.executeQuery();	//auto-closed
 			
 			//Here we throw an exception...

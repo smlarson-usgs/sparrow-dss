@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
-import gov.usgswim.sparrow.SparrowDBTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 
@@ -24,7 +24,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class LoadReachByIDLongRunTest  extends SparrowDBTestBaseClass {
+public class LoadReachByIDLongRunTest  extends SparrowTestBaseWithDB {
 	
 	static ReachID reachId;
 	
@@ -33,7 +33,7 @@ public class LoadReachByIDLongRunTest  extends SparrowDBTestBaseClass {
 		
 		//Uncomment to debug
 		setLogLevel(Level.DEBUG);
-		reachId = new ReachID(SparrowDBTestBaseClass.TEST_MODEL_ID, 6000L);
+		reachId = new ReachID(SparrowTestBaseWithDB.TEST_MODEL_ID, 6000L);
 	}
 	
 	@Test

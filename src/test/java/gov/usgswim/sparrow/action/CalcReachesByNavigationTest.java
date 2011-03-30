@@ -8,7 +8,7 @@ import gov.usgswim.datatable.impl.SparseDoubleColumnData;
 import gov.usgswim.datatable.impl.StandardDoubleColumnData;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
-import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.Criteria;
@@ -32,7 +32,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class CalcReachesByNavigationTest extends SparrowUnitTestBaseClass {
+public class CalcReachesByNavigationTest extends SparrowTestBase {
 
 	/**
 	 * Test to check that reach id  #17142 has this list of reach upstream

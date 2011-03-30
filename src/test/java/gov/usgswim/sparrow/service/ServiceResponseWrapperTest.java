@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.service;
 
 import static org.junit.Assert.assertEquals;
-import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.action.PredefinedSessionsLongRunTest;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSession;
@@ -15,7 +15,7 @@ import org.junit.Test;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
-public class ServiceResponseWrapperTest extends SparrowUnitTestBaseClass {
+public class ServiceResponseWrapperTest extends SparrowTestBase {
 	
 	@Test
 	public void verifyPredefinedSessionSerialization() throws Exception {

@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.service.predictservice;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.sparrow.SparrowServiceTestBaseClass;
+import gov.usgswim.sparrow.SparrowServiceTestBaseWithDB;
 
 import org.junit.Test;
 
@@ -11,7 +11,7 @@ import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 import org.apache.log4j.Level;
 
-public class PredictContextServiceLongRunTest extends SparrowServiceTestBaseClass {
+public class PredictContextServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
 	private static final String SERVICE_URL = "http://localhost:8088/sp_predictcontext";
 

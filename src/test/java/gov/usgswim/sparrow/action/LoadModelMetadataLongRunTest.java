@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.*;
-import gov.usgswim.sparrow.SparrowDBTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.domain.SparrowModel;
@@ -19,7 +19,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class LoadModelMetadataLongRunTest extends SparrowDBTestBaseClass {
+public class LoadModelMetadataLongRunTest extends SparrowTestBaseWithDB {
 
 	/**
 	 * Model 50 is public, model 49 is non-public, so only 50 should be returned.

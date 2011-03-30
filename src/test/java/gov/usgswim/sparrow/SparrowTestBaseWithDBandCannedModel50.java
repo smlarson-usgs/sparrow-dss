@@ -8,10 +8,10 @@ package gov.usgswim.sparrow;
  * @author eeverman
  *
  */
-public abstract class SparrowDBTestCannedModel50BaseClass extends SparrowDBTestBaseClass {
+public abstract class SparrowTestBaseWithDBandCannedModel50 extends SparrowTestBaseWithDB {
 
 	
-	public SparrowDBTestCannedModel50BaseClass() {
+	public SparrowTestBaseWithDBandCannedModel50() {
 		// TODO Auto-generated constructor stub
 	}
 

@@ -49,11 +49,11 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.w3c.dom.Document;
 
-public abstract class SparrowUnitTestBaseClass {
+public abstract class SparrowTestBase {
 	
 	/** Logging.  Log messages will use the name of the subclass */
 	protected static Logger log =
-		Logger.getLogger(SparrowUnitTestBaseClass.class); //logging for this class
+		Logger.getLogger(SparrowTestBase.class); //logging for this class
 	
 	/** lifecycle listener handles startup / shutdown */
 	static LifecycleListener lifecycle = new LifecycleListener();
@@ -81,7 +81,7 @@ public abstract class SparrowUnitTestBaseClass {
 	private static boolean firstRun = true;
 	
 	/** A single instance which is destroyed in teardown */
-	private static SparrowUnitTestBaseClass singleInstanceToTearDown;
+	private static SparrowTestBase singleInstanceToTearDown;
 
 	
 	//Cannot use the @BeforeClass since we need the ability to override methods.

@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.service;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import gov.usgswim.sparrow.SparrowServiceUnitTestNoDB;
+import gov.usgswim.sparrow.SparrowServiceTestBaseNoDB;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import org.xml.sax.SAXException;
 
 import com.meterware.httpunit.WebResponse;
 
-public class HelpServiceTest extends SparrowServiceUnitTestNoDB{
+public class HelpServiceTest extends SparrowServiceTestBaseNoDB{
 
 	private static final String HELP_SERVICE_URL = "http://localhost:8088/sp_help";
 

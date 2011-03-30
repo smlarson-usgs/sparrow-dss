@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.action;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.sparrow.SparrowDBTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.domain.Geometry;
 import gov.usgswim.sparrow.domain.Segment;
 import gov.usgswim.sparrow.domain.ReachWatershed;
@@ -16,7 +16,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class LoadReachWatershedDetailLongRunTest extends SparrowDBTestBaseClass {
+public class LoadReachWatershedDetailLongRunTest extends SparrowTestBaseWithDB {
 
 	/**
 	 * Loads all public models (1) from the test db.

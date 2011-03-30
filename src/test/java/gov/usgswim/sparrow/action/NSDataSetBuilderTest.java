@@ -6,7 +6,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
-import gov.usgswim.sparrow.SparrowUnitTestBaseClass;
+import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.SingleColumnOverrideDataTable;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
@@ -29,7 +29,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class NSDataSetBuilderTest extends SparrowUnitTestBaseClass {
+public class NSDataSetBuilderTest extends SparrowTestBase {
 	
 	static PredictData unmodifiedPredictData;
 	static PredictData predictData;
