@@ -10,7 +10,14 @@ import java.sql.ResultSet;
 
 
 /**
- *  Loads a table containing catchment areas.
+ *  Loads a table containing HUC8 areas.
+ *  
+ *   The returned table has one column:
+ *  <ul>
+ *  <li>Column 0 : The HUC8 ID, ie, '01234567' as a String
+ *  </ul>
+ *  
+ *  This table is sorted in predictData order for the specified model.
  *  
  * @author eeverman
  */
@@ -35,7 +42,6 @@ public class LoadHUCTable extends Action<DataTable> {
 		ResultSet rset = st.executeQuery();	//auto-closed
 		DataTableWritable values = null;
 		values = DataTableConverter.toDataTable(rset);
-		values.buildIndex(0);
 		values.getColumns()[0].setName("HUC8");
 		values.getColumns()[0].setDescription("HUC8");
 		return values.toImmutable();

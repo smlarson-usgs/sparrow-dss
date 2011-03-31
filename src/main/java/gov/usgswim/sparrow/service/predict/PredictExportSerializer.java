@@ -262,8 +262,11 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 			
 			events.add(rowEvent);
 			{
-				addNonNullBasicTag("c", watershedAreas.getValue(state.r, watershedAreas.getColumnByName("Cumulative Area")).toString());
-				addNonNullBasicTag("c", huc8data.getValue(state.r, huc8data.getColumnByName("HUC8")).toString());
+				//Column 1 by def.  See LoadUnitArea class
+				addNonNullBasicTag("c", watershedAreas.getValue(state.r, 1).toString());
+				
+				//Column 0 by def.  See LoadHUCTable
+				addNonNullBasicTag("c", huc8data.getValue(state.r, 0).toString());
 				
 				if (hasAdjustments && adjDataColumn != null) {
 					addNonNullBasicTag("c", adjDataColumn.getTable().getValue(state.r, adjDataColumn.getColumn()).toString());

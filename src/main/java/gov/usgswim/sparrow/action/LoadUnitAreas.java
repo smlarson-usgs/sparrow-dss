@@ -13,7 +13,17 @@ import java.sql.ResultSet;
 
 
 /**
- *  Loads a table containing catchment areas.
+ *  Loads a table containing unit areas.
+ *  
+ *  The returned table has two columns:
+ *  <ul>
+ *  <li>Column 0 : The ID of associated entity for that row.  For reach
+ *  level data this will be the reach Identifier.  For HUC level data it will
+ *  be the HUC ID.
+ *  <li>Column 1 : The area, based on the type of area requested.
+ *  </ul>
+ *  
+ *  For reach related rows, they are returned in PredictData order.
  *  
  * @author eeverman
  */
