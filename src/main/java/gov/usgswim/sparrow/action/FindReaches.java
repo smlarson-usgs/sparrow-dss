@@ -19,12 +19,50 @@ import org.apache.commons.lang.math.NumberUtils;
 public class FindReaches extends Action<DataTable> {
 
 	private FindReachRequest reachRequest;
-	private int maxReturnSize = 200;
-	
+	private int pageSize = 50;
+	private int recordStart = 0;
+	private String dir = "DESC";
+	String sort = "";
 	
 	private List<String> errors = new ArrayList<String>();
 	
+	public void setPageSize(int size) { 
+		this.pageSize = size;
+	}
 	
+	public void setRecordStart(int start) {
+		this.recordStart = start;
+	}
+	
+	public void setSort(String sort) { //TODO, these are magic strings from the extjs front end may want reconsider placement here
+		if(sort==null) sort = "";
+		if(sort.equals("id")) {
+			sort = "FULL_IDENTIFIER";
+		} else if(sort.equals("name")) {
+			sort = "REACH_NAME";
+		} else if(sort.equals("huc8")) {
+			sort = "HUC8";
+		} else if(sort.equals("watershed-area")) {
+			sort = "CUM_CATCH_AREA";
+		} else if(sort.equals("meanq")) {
+			sort = "MEANQ";
+		} else {
+			sort = "";
+		}
+		this.sort = sort;
+	}
+	
+	public void setSortDir(String dir) {
+		if(dir==null) dir = "DESC";
+		if(!dir.equals("DESC") && !dir.equals("ASC")) dir = "DESC"; //default and sql injection protection
+		this.dir = dir;
+	}
+	
+	public String getSortColumn() {
+		if(!sort.equals(""))
+			return sort + " "+dir+", ";
+		return "";
+	}
 	
 	@Override
 	public DataTable doAction() throws Exception {
@@ -39,17 +77,25 @@ public class FindReaches extends Action<DataTable> {
 				errors.add("No criteria was specified");
 				return null;
 			} else {
-				String sql = "Select FULL_IDENTIFIER, REACH_NAME, MEANQ, CATCH_AREA, CUM_CATCH_AREA, HUC2, HUC4, HUC6, HUC8 from model_attrib_vw " +
-				"WHERE " + query.buildWhere() + " " +
-				"ORDER BY reach_name, identifier";
+				 
+				String sql = "SELECT FULL_IDENTIFIER, REACH_NAME, MEANQ, CATCH_AREA, CUM_CATCH_AREA, HUC2, HUC4, HUC6, HUC8 from model_attrib_vw " +
+				" WHERE " + query.buildWhere() + " " +
+				" ORDER BY " + getSortColumn() + " reach_name,  identifier";
+				
+				String countQuery = "SELECT COUNT(*) FROM model_attrib_vw WHERE " + query.buildWhere();
+				
+				sql = "SELECT  /*+ first_rows(" + pageSize + ") */  * FROM "+
+					"( SELECT a.*, ROWNUM rn, (" + countQuery + ") TOTAL_COUNT FROM ("+ 
+					sql +
+					") a "+
+					" WHERE ROWNUM <=  " + (recordStart+pageSize) + " )" + 
+					" WHERE rn > "+recordStart;
 			
-				sql = "SELECT * FROM (" + sql + ") WHERE ROWNUM < " + (maxReturnSize + 1);
 				PreparedStatement ps = getROPSFromString(sql, query.props);
 				
 				ResultSet rs = ps.executeQuery();
 				
 				DataTable dt = DataTableConverter.toDataTable(rs);
-				
 				rs.close();
 				
 				return dt;
@@ -264,23 +310,6 @@ public class FindReaches extends Action<DataTable> {
 			return where.toString();
 		}
 	}
-
-
-	/**
-	 * @return the maxReturnSize
-	 */
-	public int getMaxReturnSize() {
-		return maxReturnSize;
-	}
-
-
-	/**
-	 * @param maxReturnSize the maxReturnSize to set
-	 */
-	public void setMaxReturnSize(int maxReturnSize) {
-		this.maxReturnSize = maxReturnSize;
-	}
-
 
 	/**
 	 * @return the errors

@@ -22,8 +22,6 @@ import javax.xml.stream.XMLStreamReader;
  * TODO This service was not implemented via the Pipeline idiom like the others. Decide whether or not to maintain the idiom.
  */
 public class FindReachService extends HttpServlet {
-	
-	private static final int maxReturnSize = 200;
 
 	private static final long serialVersionUID = 1L;
 	public static String sampleResponse="<sparrow-reach-response xmlns=\"http://www.usgs.gov/sparrow/id-response-schema/v0_2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" model-id=\"22\">"
@@ -63,8 +61,13 @@ public class FindReachService extends HttpServlet {
 		DataTable result = null;
 
 		FindReaches findReachesAction = new FindReaches();
-		findReachesAction.setMaxReturnSize(maxReturnSize + 1);
 		findReachesAction.setReachRequest(frReq);
+		findReachesAction.setPageSize((req.getParameter("limit")==null) ? 50: Integer.valueOf(req.getParameter("limit")));
+		findReachesAction.setRecordStart((req.getParameter("start")==null) ? 0: Integer.valueOf(req.getParameter("start")));
+		findReachesAction.setSort(req.getParameter("sort"));
+		findReachesAction.setSortDir(req.getParameter("dir"));
+		
+		int resultSize = 0;
 		
 		try {
 			result = findReachesAction.run();
@@ -73,38 +76,29 @@ public class FindReachService extends HttpServlet {
 		}
 		
 		if (result != null) {
-
 			if (result.getRowCount() > 0) {
 				status = ReturnStatus.OK;
+				resultSize = result.getInt(0, result.getColumnByName("TOTAL_COUNT"));
 				for (int row = 0; row < result.getRowCount(); row++) {
-					if (row < maxReturnSize) {
-						outputXML.append("<reach>");
+					outputXML.append("<reach>");
+					{
+						outputXML.append("<id>" + result.getString(row, result.getColumnByName("FULL_IDENTIFIER")) + "</id>");
+						outputXML.append("<name>" + result.getString(row, result.getColumnByName("REACH_NAME")) + "</name>");
+						outputXML.append("<meanq>" + result.getString(row, result.getColumnByName("MEANQ")) + "</meanq>");
+						//outputXML.append("<state>" + rset.getString("REACH_NAME") + "</state>");
+						outputXML.append("<catch-area>" + result.getString(row, result.getColumnByName("CATCH_AREA")) + "</catch-area>");
+						outputXML.append("<watershed-area>" + result.getString(row, result.getColumnByName("CUM_CATCH_AREA")) + "</watershed-area>");
+						outputXML.append("<hucs>");
 						{
-							outputXML.append("<id>" + result.getString(row, result.getColumnByName("FULL_IDENTIFIER")) + "</id>");
-							outputXML.append("<name>" + result.getString(row, result.getColumnByName("REACH_NAME")) + "</name>");
-							outputXML.append("<meanq>" + result.getString(row, result.getColumnByName("MEANQ")) + "</meanq>");
-							//outputXML.append("<state>" + rset.getString("REACH_NAME") + "</state>");
-							outputXML.append("<catch-area>" + result.getString(row, result.getColumnByName("CATCH_AREA")) + "</catch-area>");
-							outputXML.append("<watershed-area>" + result.getString(row, result.getColumnByName("CUM_CATCH_AREA")) + "</watershed-area>");
-							outputXML.append("<hucs>");
-							{
-								outputXML.append("<huc8 id=\"" + result.getString(row, result.getColumnByName("HUC8")) + "\" name=\"\" />");
-								outputXML.append("<huc6 id=\"" + result.getString(row, result.getColumnByName("HUC6")) + "\" name=\"\" />");
-								outputXML.append("<huc4 id=\"" + result.getString(row, result.getColumnByName("HUC4")) + "\" name=\"\" />");
-								outputXML.append("<huc2 id=\"" + result.getString(row, result.getColumnByName("HUC2")) + "\" name=\"\" />");
-							}
-							outputXML.append("</hucs>");
+							outputXML.append("<huc8 id=\"" + result.getString(row, result.getColumnByName("HUC8")) + "\" name=\"\" />");
+							outputXML.append("<huc6 id=\"" + result.getString(row, result.getColumnByName("HUC6")) + "\" name=\"\" />");
+							outputXML.append("<huc4 id=\"" + result.getString(row, result.getColumnByName("HUC4")) + "\" name=\"\" />");
+							outputXML.append("<huc2 id=\"" + result.getString(row, result.getColumnByName("HUC2")) + "\" name=\"\" />");
 						}
-						outputXML.append("</reach>");
-					} else {
-						status = ReturnStatus.OK_PARTIAL;
-						message = "The number of reaches matching your criteria " +
-						"exceeds the limit of " + maxReturnSize + ".  Only the first " +
-						maxReturnSize + " matches have been returned.";
+						outputXML.append("</hucs>");
 					}
+					outputXML.append("</reach>");
 				}
-
-
 			} else {
 				status = ReturnStatus.OK_EMPTY;
 				message = "Sorry, no reaches were found matching your criteria";
@@ -118,17 +112,19 @@ public class FindReachService extends HttpServlet {
 			}
 		}
 
-		outputXML = getResponseXMLHeader(frReq.modelID, status, message)
+		outputXML = getResponseXMLHeader(frReq.modelID, status, message, resultSize)
 			.append(outputXML).append("</sparrow-reach-response>");
 		ServletOutputStream out = resp.getOutputStream();
 		out.print(outputXML.toString());
 	}
 
-	public static StringBuilder getResponseXMLHeader(String modelID, ReturnStatus status, String message) {
+	public static StringBuilder getResponseXMLHeader(String modelID, ReturnStatus status, String message, int resultSize) {
 		StringBuilder result = new StringBuilder();
 		result.append("<sparrow-reach-response xmlns=\"http://www.usgs.gov/sparrow/id-response-schema/v0_2\"");
 		result.append(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
 		result.append("model-id=\"" + modelID + "\">");
+		result.append("<success>"+((status == ReturnStatus.OK || status == ReturnStatus.OK_EMPTY || status == ReturnStatus.OK_PARTIAL) ? "true":"false") +"</success>");
+		result.append("<results>"+resultSize+"</results>");
 		result.append("<status>" + status + "</status>");
 		result.append("<message>" + message + "</message>");
 		return result;

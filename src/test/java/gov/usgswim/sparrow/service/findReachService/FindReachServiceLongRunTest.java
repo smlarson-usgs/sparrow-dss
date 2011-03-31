@@ -48,7 +48,7 @@ public class FindReachServiceLongRunTest extends SparrowServiceTestBaseWithDBand
 		request.setParameter("xmlreq", requestText);
 		WebResponse response = client.sendRequest(request);
 		String actualResponse = response.getText();
-		System.out.println(actualResponse);
+		//System.out.println(actualResponse);
 		
         Diff diff = new Diff(expectedResponse, actualResponse);
         diff.overrideElementQualifier(new RecursiveElementNameAndTextQualifier());
@@ -78,8 +78,8 @@ public class FindReachServiceLongRunTest extends SparrowServiceTestBaseWithDBand
 		//These XPath expressions are nasty b/c the xml has a namespace and the
 		//XPath processor is apparently XPath 1.0.
 		assertXpathEvaluatesTo("50", "/*[local-name()='sparrow-reach-response']/@model-id", actualResponse);
-		assertXpathEvaluatesTo("200", "count(//*[local-name()='reach'])", actualResponse);
-		assertXpathEvaluatesTo(ReturnStatus.OK_PARTIAL.toString(),
+		assertXpathEvaluatesTo("50", "count(//*[local-name()='reach'])", actualResponse);
+		assertXpathEvaluatesTo(ReturnStatus.OK.toString(),
 				"/*[local-name()='sparrow-reach-response']/*[local-name()='status']", actualResponse);
 	}
 	
@@ -98,7 +98,7 @@ public class FindReachServiceLongRunTest extends SparrowServiceTestBaseWithDBand
 		request.setParameter("xmlreq", requestText);
 		WebResponse response = client.sendRequest(request);
 		String actualResponse = response.getText();
-		//System.out.println(actualResponse);
+		System.out.println(actualResponse);
 		
 		//These XPath expressions are nasty b/c the xml has a namespace and the
 		//XPath processor is apparently XPath 1.0.

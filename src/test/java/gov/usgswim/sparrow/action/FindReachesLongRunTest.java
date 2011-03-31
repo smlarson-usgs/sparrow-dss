@@ -15,26 +15,26 @@ public class FindReachesLongRunTest extends SparrowTestBaseWithDB {
 		
 		req.modelID = TEST_MODEL_ID.toString();
 		req.basinAreaHi = "100";
-		req.basinAreaLo = "50";
+		req.basinAreaLo = "99.5";
 		
 		FindReaches action = new FindReaches();
 		action.setReachRequest(req);
-		action.setMaxReturnSize(10);
+		action.setPageSize(50);
 		
 		DataTable result = action.run();
 		
-		assertTrue(result.getRowCount() == 10);
+		assertTrue(result.getRowCount() == 15);
 		assertEquals(0, action.getErrors().size());
 		
-		assertEquals("4669", result.getString(0, result.getColumnByName("FULL_IDENTIFIER")));
-		assertEquals("*A", result.getString(0, result.getColumnByName("REACH_NAME")));
-		assertEquals("35.41", result.getString(0, result.getColumnByName("MEANQ")));
-		assertEquals("99.17", result.getString(0, result.getColumnByName("CATCH_AREA")));
+		assertEquals("7126", result.getString(0, result.getColumnByName("FULL_IDENTIFIER")));
+		assertEquals("BIG SANDY CR", result.getString(0, result.getColumnByName("REACH_NAME")));
+		assertEquals("81.02", result.getString(0, result.getColumnByName("MEANQ")));
+		assertEquals("99.82", result.getString(0, result.getColumnByName("CUM_CATCH_AREA")));
 		
 		assertEquals("03", result.getString(0, result.getColumnByName("HUC2")));
-		assertEquals("0301", result.getString(0, result.getColumnByName("HUC4")));
-		assertEquals("030101", result.getString(0, result.getColumnByName("HUC6")));
-		assertEquals("03010103", result.getString(0, result.getColumnByName("HUC8")));
+		assertEquals("0307", result.getString(0, result.getColumnByName("HUC4")));
+		assertEquals("030701", result.getString(0, result.getColumnByName("HUC6")));
+		assertEquals("03070103", result.getString(0, result.getColumnByName("HUC8")));
 	}
 	
 	@Test
@@ -47,7 +47,7 @@ public class FindReachesLongRunTest extends SparrowTestBaseWithDB {
 		
 		FindReaches action = new FindReaches();
 		action.setReachRequest(req);
-		action.setMaxReturnSize(10);
+		action.setPageSize(10);
 		
 		DataTable result = action.run();
 		
@@ -73,7 +73,7 @@ public class FindReachesLongRunTest extends SparrowTestBaseWithDB {
 		req.reachIDs = "81163";		
 		FindReaches action = new FindReaches();
 		action.setReachRequest(req);
-		action.setMaxReturnSize(7);
+		action.setPageSize(7);
 		
 		DataTable result = action.run();
 		
@@ -91,7 +91,7 @@ public class FindReachesLongRunTest extends SparrowTestBaseWithDB {
 		req.reachIDs = " 4669, 81163 ";		
 		FindReaches action = new FindReaches();
 		action.setReachRequest(req);
-		action.setMaxReturnSize(7);
+		action.setPageSize(7);
 		
 		DataTable result = action.run();
 		
@@ -110,7 +110,7 @@ public class FindReachesLongRunTest extends SparrowTestBaseWithDB {
 		req.reachIDs = ", 4669,, , 81163, ";		
 		FindReaches action = new FindReaches();
 		action.setReachRequest(req);
-		action.setMaxReturnSize(7);
+		action.setPageSize(7);
 		
 		DataTable result = action.run();
 		
@@ -129,7 +129,7 @@ public class FindReachesLongRunTest extends SparrowTestBaseWithDB {
 		req.reachName = "app";		
 		FindReaches action = new FindReaches();
 		action.setReachRequest(req);
-		action.setMaxReturnSize(7);
+		action.setPageSize(7);
 		
 		DataTable result = action.run();
 		
@@ -149,7 +149,7 @@ public class FindReachesLongRunTest extends SparrowTestBaseWithDB {
 		
 		FindReaches action = new FindReaches();
 		action.setReachRequest(req);
-		action.setMaxReturnSize(10);
+		action.setPageSize(10);
 		
 		DataTable result = action.run();
 		
@@ -169,7 +169,7 @@ public class FindReachesLongRunTest extends SparrowTestBaseWithDB {
 		
 		FindReaches action = new FindReaches();
 		action.setReachRequest(req);
-		action.setMaxReturnSize(10);
+		action.setPageSize(10);
 		
 		DataTable result = action.run();
 		
@@ -188,7 +188,7 @@ public class FindReachesLongRunTest extends SparrowTestBaseWithDB {
 		req.edaName = "Albemarle Sound,  Winyah Bay";		
 		FindReaches action = new FindReaches();
 		action.setReachRequest(req);
-		action.setMaxReturnSize(10);
+		action.setPageSize(10);
 		
 		DataTable result = action.run();
 		
@@ -207,7 +207,7 @@ public class FindReachesLongRunTest extends SparrowTestBaseWithDB {
 		req.huc = "030101";		
 		FindReaches action = new FindReaches();
 		action.setReachRequest(req);
-		action.setMaxReturnSize(10);
+		action.setPageSize(10);
 		
 		DataTable result = action.run();
 		
@@ -232,7 +232,7 @@ public class FindReachesLongRunTest extends SparrowTestBaseWithDB {
 		
 		FindReaches action = new FindReaches();
 		action.setReachRequest(req);
-		action.setMaxReturnSize(10);
+		action.setPageSize(10);
 		
 		DataTable result = action.run();
 		
@@ -253,7 +253,7 @@ public class FindReachesLongRunTest extends SparrowTestBaseWithDB {
 		req.reachName = "app";		
 		FindReaches action = new FindReaches();
 		action.setReachRequest(req);
-		action.setMaxReturnSize(7);
+		action.setPageSize(7);
 		
 		DataTable result = action.run();
 		
@@ -270,7 +270,7 @@ public class FindReachesLongRunTest extends SparrowTestBaseWithDB {
 		//req.reachName = "app";		
 		FindReaches action = new FindReaches();
 		action.setReachRequest(req);
-		action.setMaxReturnSize(7);
+		action.setPageSize(7);
 		
 		DataTable result = action.run();
 		
@@ -287,7 +287,7 @@ public class FindReachesLongRunTest extends SparrowTestBaseWithDB {
 		req.reachIDs = "81163 9876";	//commas required for separation	
 		FindReaches action = new FindReaches();
 		action.setReachRequest(req);
-		action.setMaxReturnSize(7);
+		action.setPageSize(7);
 		
 		DataTable result = action.run();
 		
