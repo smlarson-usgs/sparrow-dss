@@ -12,6 +12,8 @@ import java.util.Map;
 
 import javax.xml.XMLConstants;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
 	 * This is a basic event for those documents where we don't care about
 	 * non-tag items such as comments, PIs, etc. This is capable of representing
@@ -96,16 +98,7 @@ import javax.xml.XMLConstants;
 		 */
 		public BasicTagEvent addAttribute(String name, String value) {
 			assert(name != null && (isComboTagEvent || type == START_ELEMENT));
-			return addAttribute(XMLConstants.DEFAULT_NS_PREFIX, XMLConstants.DEFAULT_NS_PREFIX, name, value);
-		}
-
-		/**
-		 * addAttributes() adds an array of non-null attribute-value pairs.
-		 * @param name cannot be null
-		 * @param value
-		 */
-		public BasicTagEvent addAttributes(String name, String value) {
-			assert(name != null && (isComboTagEvent || type == START_ELEMENT));
+			value = StringUtils.trimToNull(value);
 			return addAttribute(XMLConstants.DEFAULT_NS_PREFIX, XMLConstants.DEFAULT_NS_PREFIX, name, value);
 		}
 
