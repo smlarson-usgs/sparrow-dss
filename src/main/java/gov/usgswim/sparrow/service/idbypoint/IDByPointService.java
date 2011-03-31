@@ -576,7 +576,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		// Iterate over the relevant column indices, building a row of data for each
 		for (Integer srcIndex=0; srcIndex < nominalPrediction.getSourceCount(); srcIndex++) {
 			
-			Long srcId = predictData.getSourceIdForSourceIndex(srcIndex);
+			Integer srcId = predictData.getSourceIdForSourceIndex(srcIndex);
 			int colForIncSource = nominalPrediction.getIncrementalColForSrc(srcId);
 			int colForTotalSource = nominalPrediction.getTotalColForSrc(srcId);
 			

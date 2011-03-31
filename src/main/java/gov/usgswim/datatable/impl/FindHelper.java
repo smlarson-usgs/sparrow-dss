@@ -465,8 +465,11 @@ public abstract class FindHelper {
 			if  (arraySize > 0) {
 				double max = column.getDouble(0);
 				for (int i=1; i<arraySize; i++) {
-					double current = column.getDouble(i);
-					max = Math.max(max, current);
+					Double current = column.getDouble(i);
+					
+					if (current != null && ! Double.isNaN(current)) {
+						max = Math.max(max, current);
+					}
 				}
 				result = max;
 			}
@@ -485,8 +488,11 @@ public abstract class FindHelper {
 			if  (arraySize > 0) {
 				double min = column.getDouble(0);
 				for (int i=1; i<arraySize; i++) {
-					double current = column.getDouble(i);
-					min = Math.min(min, current);
+					Double current = column.getDouble(i);
+					
+					if (current != null && ! Double.isNaN(current)) {
+						min = Math.min(min, current);
+					}
 				}
 				result = min;
 			}

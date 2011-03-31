@@ -101,35 +101,35 @@ public class ContextToPredictionIntegrationLongRunTest extends SparrowTestBase {
 		//Only 2 sources has been adjusted on 2 reaches.  As a quick test, compare the
 		//incremental predicted values (nominal vs adjusted) of some of those sources.
 		//Only the adjusted source (source 2) should be affected.
-		assertEquals(predictResult.getIncrementalForSrc(rowForReach3074, 1L), nomResult.getIncrementalForSrc(rowForReach3074, 1L));
-		assertTrue(predictResult.getIncrementalForSrc(rowForReach3074, 2L) != nomResult.getIncrementalForSrc(rowForReach3074, 2L));
-		assertEquals(predictResult.getIncrementalForSrc(rowForReach3074, 3L), nomResult.getIncrementalForSrc(rowForReach3074, 3L));
-		assertEquals(predictResult.getIncrementalForSrc(rowForReach3074, 4L), nomResult.getIncrementalForSrc(rowForReach3074, 4L));
-		assertEquals(predictResult.getIncrementalForSrc(rowForReach3074, 5L), nomResult.getIncrementalForSrc(rowForReach3074, 5L));
+		assertEquals(predictResult.getIncrementalForSrc(rowForReach3074, 1), nomResult.getIncrementalForSrc(rowForReach3074, 1));
+		assertTrue(predictResult.getIncrementalForSrc(rowForReach3074, 2) != nomResult.getIncrementalForSrc(rowForReach3074, 2));
+		assertEquals(predictResult.getIncrementalForSrc(rowForReach3074, 3), nomResult.getIncrementalForSrc(rowForReach3074, 3));
+		assertEquals(predictResult.getIncrementalForSrc(rowForReach3074, 4), nomResult.getIncrementalForSrc(rowForReach3074, 4));
+		assertEquals(predictResult.getIncrementalForSrc(rowForReach3074, 5), nomResult.getIncrementalForSrc(rowForReach3074, 5));
 
-		assertEquals(predictResult.getIncrementalForSrc(rowForReach3077, 1L), nomResult.getIncrementalForSrc(rowForReach3077, 1L));
-		assertTrue(predictResult.getIncrementalForSrc(rowForReach3077, 2L) != nomResult.getIncrementalForSrc(rowForReach3077, 2L));
-		assertEquals(predictResult.getIncrementalForSrc(rowForReach3077, 3L), nomResult.getIncrementalForSrc(rowForReach3077, 3L));
-		assertEquals(predictResult.getIncrementalForSrc(rowForReach3077, 4L), nomResult.getIncrementalForSrc(rowForReach3077, 4L));
-		assertEquals(predictResult.getIncrementalForSrc(rowForReach3077, 5L), nomResult.getIncrementalForSrc(rowForReach3077, 5L));
+		assertEquals(predictResult.getIncrementalForSrc(rowForReach3077, 1), nomResult.getIncrementalForSrc(rowForReach3077, 1));
+		assertTrue(predictResult.getIncrementalForSrc(rowForReach3077, 2) != nomResult.getIncrementalForSrc(rowForReach3077, 2));
+		assertEquals(predictResult.getIncrementalForSrc(rowForReach3077, 3), nomResult.getIncrementalForSrc(rowForReach3077, 3));
+		assertEquals(predictResult.getIncrementalForSrc(rowForReach3077, 4), nomResult.getIncrementalForSrc(rowForReach3077, 4));
+		assertEquals(predictResult.getIncrementalForSrc(rowForReach3077, 5), nomResult.getIncrementalForSrc(rowForReach3077, 5));
 
 		////////
 		// These tests are added to check that the column indexes and values returned
 		// from the new SPARROW specific access methods in PredictResultImm return
 		// expected values.
 		assertEquals(11, predictResult.getSourceCount());
-		assertEquals(0, predictResult.getIncrementalColForSrc(1L));
-		assertEquals(10, predictResult.getIncrementalColForSrc(11L));
-		assertEquals(11, predictResult.getTotalColForSrc(1L));
-		assertEquals(21, predictResult.getTotalColForSrc(11L));
+		assertEquals(0, predictResult.getIncrementalColForSrc(1));
+		assertEquals(10, predictResult.getIncrementalColForSrc(11));
+		assertEquals(11, predictResult.getTotalColForSrc(1));
+		assertEquals(21, predictResult.getTotalColForSrc(11));
 		assertEquals(22, predictResult.getIncrementalCol());
 		assertEquals(23, predictResult.getTotalCol());
 
 		//Check some actual values for the reach w/ id 3074
-		assertEquals(predictResult.getDouble(rowForReach3074, 0), predictResult.getIncrementalForSrc(rowForReach3074, 1L));
-		assertEquals(predictResult.getDouble(rowForReach3074, 10), predictResult.getIncrementalForSrc(rowForReach3074, 11L));
-		assertEquals(predictResult.getDouble(rowForReach3074, 11), predictResult.getTotalForSrc(rowForReach3074, 1L));
-		assertEquals(predictResult.getDouble(rowForReach3074, 21), predictResult.getTotalForSrc(rowForReach3074, 11L));
+		assertEquals(predictResult.getDouble(rowForReach3074, 0), predictResult.getIncrementalForSrc(rowForReach3074, 1));
+		assertEquals(predictResult.getDouble(rowForReach3074, 10), predictResult.getIncrementalForSrc(rowForReach3074, 11));
+		assertEquals(predictResult.getDouble(rowForReach3074, 11), predictResult.getTotalForSrc(rowForReach3074, 1));
+		assertEquals(predictResult.getDouble(rowForReach3074, 21), predictResult.getTotalForSrc(rowForReach3074, 11));
 		assertEquals(predictResult.getDouble(rowForReach3074, 22), predictResult.getIncremental(rowForReach3074));
 		assertEquals(predictResult.getDouble(rowForReach3074, 23), predictResult.getTotal(rowForReach3074));
 	}

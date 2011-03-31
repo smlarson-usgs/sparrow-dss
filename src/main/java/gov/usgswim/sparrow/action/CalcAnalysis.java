@@ -105,11 +105,9 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 
 			switch(type) {
 				case delivered_fraction: {
-					//We get the data from a ColumnData object containing just
-					//the del frac, however, we also need row IDs so that
+					//Data is a ColumnData, however, we also need row IDs so that
 					//identify will work for this data series.  To do that,
-					//we overlay the del frac column on topo, which provides
-					//the row IDs for free.
+					//we overlay the column on topo, which provides row IDs for free.
 					
 					dataColIndex = 4; //An overriden column of topo (was hydseq)
 					
@@ -143,7 +141,7 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 					//All total series share the ability to be about a specific
 					//source.
 					if (source != null) {
-						dataColIndex = result.getTotalColForSrc(source.longValue());
+						dataColIndex = result.getTotalColForSrc(source);
 						impliedUncertaintySeries = UncertaintySeries.TOTAL_PER_SOURCE;
 					} else {
 						dataColIndex = result.getTotalCol();
@@ -178,7 +176,7 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 					break;
 				case decayed_incremental:
 					if (source != null) {
-						dataColIndex = result.getDecayedIncrementalColForSrc(source.longValue());
+						dataColIndex = result.getDecayedIncrementalColForSrc(source);
 						impliedUncertaintySeries = UncertaintySeries.INCREMENTAL_PER_SOURCE;
 					} else {
 						dataColIndex = result.getDecayedIncrementalCol();
@@ -197,7 +195,7 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 					//Note:  All INC type series fall through to this point
 					//
 					if (source != null) {
-						dataColIndex = result.getIncrementalColForSrc(source.longValue());
+						dataColIndex = result.getIncrementalColForSrc(source);
 						impliedUncertaintySeries = UncertaintySeries.INCREMENTAL_PER_SOURCE;
 					} else {
 						dataColIndex = result.getIncrementalCol();
@@ -206,28 +204,26 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 					
 					if (type.equals(DataSeriesType.incremental_yield)) {
 						
-						// incremental yield = incremental flux / catchment area
-						// assume decayed inc. flux
-						//
-						//TODO:  Need a conversion constant here
+						UnitAreaRequest catchAreaReq = new UnitAreaRequest(context.getModelID(), UnitAreaType.HUC_NONE, false);
+						DataTable catchmentAreaTab = SharedApplication.getInstance().getCatchmentAreas(catchAreaReq);
+						ColumnData catchmentAreaCol = new ColumnDataFromTable(catchmentAreaTab, 1);
 						
-						ColumnAttribsBuilder ca = new ColumnAttribsBuilder();
-						ca.setName(getDataSeriesProperty(type, false));
-						ca.setDescription(getDataSeriesProperty(type, true));
-						ca.setUnits(SparrowUnits.KG_PER_SQR_KM_PER_YEAR.getUserName());
+						CalcIncrementalYield act = new CalcIncrementalYield(
+								nominalPredictData, result, catchmentAreaCol, source
+						);
+						ColumnData incYield = act.run();
 						
-						ColumnData instDecay = new ColumnDataFromTable(
-								nominalPredictData.getDelivery(), PredictData.INSTREAM_DECAY_COL);
-						SingleColumnCoefDataTable decayedFlux = 
-							new SingleColumnCoefDataTable(result, instDecay, dataColIndex, null);
+						//Data is a ColumnData, however, we also need row IDs so that
+						//identify will work for this data series.  To do that,
+						//we overlay the column on topo, which provides row IDs for free.
+						dataColIndex = 4; //An overriden column of topo (was hydseq)
 						
-						UnitAreaRequest catchArea = new UnitAreaRequest(context.getModelID(), UnitAreaType.HUC_NONE, false);
-						DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(catchArea);
-						ColumnData catchmentAreaColumn = new ColumnDataFromTable(catchmentAreaTable, 1);
-						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(
-								decayedFlux, catchmentAreaColumn, dataColIndex, ca, true);
+						SingleColumnOverrideDataTable override = new SingleColumnOverrideDataTable(
+								nominalPredictData.getTopo(),
+								incYield, 4, null);
 						
-						predictionBasedResult = view;
+						predictionBasedResult = override;
+						break;
 						
 					} else if (type.equals(DataSeriesType.incremental_delivered_flux)
 							|| type.equals(DataSeriesType.incremental_delivered_yield)) {

@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow;
 
+import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.ColumnDataWritable;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
@@ -27,7 +28,10 @@ import java.io.Serializable;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -766,6 +770,79 @@ public abstract class SparrowTestBase {
 		return match;
 	}
 	
+
+	
+	
+	
+	/**
+	 * Compares two columns
+	 * 
+	 * @param expected
+	 * @param actual
+	 * @param checkNamedColumnProps	Such as name, units and datatype
+	 * @param checkUnnamedColumnProps Such as arbitrary properties set via setProperty()
+	 * @param fractionalDeltaAllowed
+	 * @return
+	 */
+	public boolean compareColumns(ColumnData expected, ColumnData actual,
+			boolean checkNamedColumnProps, boolean checkUnnamedColumnProps, double fractionalDeltaAllowed) {
+		
+		boolean match = true;
+		
+		//check basic column metadata
+		if (checkNamedColumnProps) {
+			if (! isEqual(expected.getName(), actual.getName(), fractionalDeltaAllowed)) {
+				match = false;
+				log.error("Mismatch : column name [" + expected.getName() + "] [" + actual.getName() + "]");
+			}
+			
+			if (! isEqual(expected.getUnits(), actual.getUnits(), fractionalDeltaAllowed)) {
+				match = false;
+				log.error("Mismatch : units [" + expected.getUnits() + "] [" + actual.getUnits() + "]");
+			}
+			
+			if (! isEqual(expected.getDataType(), actual.getDataType(), fractionalDeltaAllowed)) {
+				match = false;
+				log.error("Mismatch : data type [" + expected.getDataType() + "] [" + actual.getDataType() + "]");
+			}
+		}
+		
+		//Only checks the props present in the expected table:
+		//Doesn't verify the other direction
+		if (checkUnnamedColumnProps) {
+			Map<String, String> expProps = expected.getProperties();
+			Map<String, String> actProps = actual.getProperties();
+			Set<Entry<String, String>> expSet = expProps.entrySet();
+			Set<Entry<String, String>> actSet = actProps.entrySet();
+			
+			for (Entry<String, String> expProp : expSet) {
+				String key = expProp.getKey();
+				if (actProps.containsKey(key)) {
+					if (! isEqual(expProp.getValue(), actProps.get(key), 0d)) {
+						log.error("Mismatch : Property '" + key + "' [ " + expProp.getValue() + "] [" + actProps.get(key) + "]");
+					}
+				} else {
+					match = false;
+					log.error("Actual is missing the property '" + expProp.getKey() + "'");
+				}
+			}
+		}
+		
+		for (int r = 0; r < expected.getRowCount(); r++) {
+
+			Object orgValue = expected.getValue(r);
+			Object newValue = actual.getValue(r);
+			
+			if (! isEqual(orgValue, newValue, fractionalDeltaAllowed)) {
+				match = false;
+				log.error("Mismatch : " + r + " [" + orgValue + "] [" + newValue + "]");
+			}
+
+		}
+		
+		return match;
+	}
+	
 	public static boolean isEqual(Object expected, Object actual, double fractionalDeltaAllowed) {
 		if (expected instanceof Number && actual instanceof Number) {
 			Double e = ((Number) expected).doubleValue();
@@ -823,6 +900,12 @@ public abstract class SparrowTestBase {
 		return BASE_MODEL_FILE_PATH + fileName;
 	}
 	
+	/**
+	 * Loads the test model (model 50) prediction results from a text file.
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	public static synchronized PredictResult getTestModelPredictResult() throws Exception {
 		if (testModelPredictResults != null) {
 			return testModelPredictResults;

@@ -8,7 +8,7 @@ import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MultiplicativeColumnDataTest {
+public class MultiplyColumnDataTest extends DatatableTestBase {
 
 	DataTableWritable primaryTable;
 	DataTableWritable coefTable;
@@ -16,40 +16,27 @@ public class MultiplicativeColumnDataTest {
 	@Before
 	public void doTestSetup() {
 
-		primaryTable = buildTable("primary");
-		coefTable = buildTable("coef");
+		primaryTable = buildDoubleTable("primary");
+		coefTable = buildDoubleTable("coef");
 
 	}
+
+
+	/*
+	 * Quick build a double table with basic data.
+	 * 
+	 * Table Data (cols 0 & 3 are used)
+	 * 		*0*						*3*
+	 * 		___________________________
+	 *		.1	|	.2	|	.3	|	.4
+	 *		1.1	|	1.2	|	1.3	|	1.4
+	 *		2.1	|	2.2	|	2.3	|	2.4
+	 *		0	|	3.2	|	3.3	|	3.4
+	 *		0	|	4.2	|	4.3	|	4.4
+	 *		___________________________
+	 * 
+	 */
 	
-	protected DataTableWritable buildTable(String tableName) {
-		
-		String[]  baseHeadings = new String[] { "one", "two", "three", "four" };
-		double[][] baseData = new double[][] {
-				{ .1, .2, .3, .4 },
-				{ 1.1, 1.2, 1.3, 1.4 },
-				{ 2.1, 2.2, 2.3, 2.4 },
-				{ 0, 3.2, 3.3, 3.4 },
-				{ 0, 4.2, 4.3, 4.4 }
-		};
-		int[] baseRowIds = new int[] {1, 2, 3, 4, 5};
-		SimpleDataTableWritable rwTable = 
-			new SimpleDataTableWritable(baseData, baseHeadings, baseRowIds);
-		rwTable.setName(tableName);
-		rwTable.setDescription("The Table '" + tableName + "'");
-		rwTable.setProperty("prop1", tableName + "Prop1Value");
-		
-		for (int i=0; i<4; i++) {
-			rwTable.getColumns()[i].setName(tableName + i + "ColName");
-			rwTable.getColumns()[i].setDescription(tableName + i + "ColDesc");
-			rwTable.getColumns()[i].setUnits(tableName + i + "ColUnits");
-			rwTable.getColumns()[i].setProperty(tableName + i + "ColPropName", tableName + i + "ColPropVal");
-			rwTable.getColumns()[i].setProperty(tableName + i + "ColPropName2", tableName + i + "ColPropVal2");
-		}
-		
-		return rwTable;
-	}
-
-
 	@Test
 	public void CheckValuesAndAttributes() throws Exception {
 		
@@ -58,7 +45,7 @@ public class MultiplicativeColumnDataTest {
 		attribs.setProperty("CustomKey", "CustomVal");	//New attrib
 		attribs.setProperty("primary0ColPropName2", "CustomVal2");	//Override attrib
 		
-		MultiplicativeColumnData combi = new MultiplicativeColumnData(
+		MultiplyColumnData combi = new MultiplyColumnData(
 				primaryTable.getColumn(0), coefTable.getColumn(3), attribs);
 		
 		assertEquals(5, combi.getRowCount().intValue());

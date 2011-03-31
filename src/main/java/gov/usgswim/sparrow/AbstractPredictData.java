@@ -36,19 +36,19 @@ public abstract class AbstractPredictData implements PredictData {
 		throw new Exception("Invalid source id " + id + ", which must be greater then zero.");
 	}
 
-	public Long getSourceIdForSourceIndex(int index) throws Exception {
+	public Integer getSourceIdForSourceIndex(int index) throws Exception {
 		DataTable srcMetadata = this.getSrcMetadata();
 
 		if (srcMetadata != null) {
 
-			return srcMetadata.getIdForRow(index);
+			return srcMetadata.getIdForRow(index).intValue();
 
 		}
 		// Running from text file so assume columns in order
 		//In this case, the id is '1' based while the index is zero based
 		//TODO: We are not checking for indexes which are too large
 		if (index > -1) {
-			return new Long(index + 1);
+			return new Integer(index + 1);
 		}
 		throw new Exception("Invalid source index " + index + ", which must be greater then zero.");
 	}

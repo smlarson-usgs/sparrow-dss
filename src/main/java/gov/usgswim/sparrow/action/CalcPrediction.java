@@ -17,7 +17,7 @@ import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.ColumnAttribsBuilder;
 import gov.usgswim.sparrow.datatable.ImmutableDoubleColumn;
-import gov.usgswim.sparrow.datatable.MultiplicativeColumnData;
+import gov.usgswim.sparrow.datatable.MultiplyColumnData;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.BaseDataSeriesType;
@@ -267,9 +267,9 @@ public class CalcPrediction extends Action<PredictResultImm> {
 
         // Same definition as the instance vars
         // Lookup table for key=source_id, value=array index of source contribution data
-        Map<Long, Integer> srcIdIncMap = new Hashtable<Long, Integer>(13);
-        Map<Long, Integer> srcIdTotalMap = new Hashtable<Long, Integer>(13);
-        Map<Long, Integer> srcIdDecayIncMap = new Hashtable<Long, Integer>(13);
+        Map<Integer, Integer> srcIdIncMap = new Hashtable<Integer, Integer>(13);
+        Map<Integer, Integer> srcIdTotalMap = new Hashtable<Integer, Integer>(13);
+        Map<Integer, Integer> srcIdDecayIncMap = new Hashtable<Integer, Integer>(13);
         
         DataTable srcMetadata = predictData.getSrcMetadata();
         String modelUnits = predictData.getModel().getUnits().getUserName();
@@ -348,7 +348,7 @@ public class CalcPrediction extends Action<PredictResultImm> {
 
             columns[srcIncAddIndex] = new ImmutableDoubleColumn(data, srcIncAddDataIndex, srcName + " Incremental Load", modelUnits, incDesc, incProps);
             columns[srcTotalIndex] = new ImmutableDoubleColumn(data, srcTotalDataIndex, srcName + " Total Load", modelUnits, totDesc, totProps);
-            columns[srcDecayIncAddIndex] = new MultiplicativeColumnData(
+            columns[srcDecayIncAddIndex] = new MultiplyColumnData(
             		columns[srcIncAddIndex], 
             		predictData.getDelivery().getColumn(PredictData.INSTREAM_DECAY_COL),
             		decayedIncAttribs);
@@ -393,7 +393,7 @@ public class CalcPrediction extends Action<PredictResultImm> {
         		Action.getDataSeriesProperty(DataSeriesType.total, false),
         		modelUnits, Action.getDataSeriesProperty(DataSeriesType.total, true),
         		grandTotalProps);
-        columns[totalDecayedIncCol] = new MultiplicativeColumnData(
+        columns[totalDecayedIncCol] = new MultiplyColumnData(
         		columns[totalIncCol], 
         		predictData.getDelivery().getColumn(PredictData.INSTREAM_DECAY_COL),
         		totDecayedIncAttribs);

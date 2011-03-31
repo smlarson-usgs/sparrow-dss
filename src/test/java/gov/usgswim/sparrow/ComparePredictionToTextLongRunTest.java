@@ -688,9 +688,9 @@ public class ComparePredictionToTextLongRunTest {
 
 				
 				double predIncValue =
-					pred.getDouble(r, pred.getIncrementalColForSrc((long) s)) * instreamDecay;
+					pred.getDouble(r, pred.getIncrementalColForSrc(s)) * instreamDecay;
 				double predTotalValue =
-					pred.getDouble(r, pred.getTotalColForSrc((long) s));
+					pred.getDouble(r, pred.getTotalColForSrc(s));
 				
 				//assertEquals(txtIncValue, predIncValue, 0.0001d);
 				//assertEquals(txtTotalValue, predTotalValue, 0.0001d);
@@ -909,7 +909,7 @@ public class ComparePredictionToTextLongRunTest {
 		for (int s=1; s <= pred.getSourceCount(); s++) {
 			
 			double txtIncValue = txt.getDouble(txtRow, getIncCol(s, txt, predictData));
-			double predIncValue = pred.getDouble(predRow, pred.getIncrementalColForSrc((long) s));
+			double predIncValue = pred.getDouble(predRow, pred.getIncrementalColForSrc(s));
 			predIncValue = predIncValue * instreamDecay;	//correct for instrem decay
 
 			String line;
@@ -935,7 +935,7 @@ public class ComparePredictionToTextLongRunTest {
 		for (int s=1; s <= pred.getSourceCount(); s++) {
 
 			double txtTotalValue = txt.getDouble(txtRow, getTotalCol(s, txt, predictData));
-			double predTotalValue = pred.getDouble(predRow, pred.getTotalColForSrc((long) s));
+			double predTotalValue = pred.getDouble(predRow, pred.getTotalColForSrc(s));
 
 			String line;
 			if (comp(txtTotalValue, predTotalValue)) {

@@ -33,32 +33,32 @@ public class SparrowTestBaseTest extends SparrowTestBase {
 		for (int row = 0; row < calcResult.getRowCount(); row++) {
 		
 			double incTotal = calcResult.getIncremental(row);
-			double inc1 = calcResult.getIncrementalForSrc(row, 1L);
-			double inc2 = calcResult.getIncrementalForSrc(row, 2L);
-			double inc3 = calcResult.getIncrementalForSrc(row, 3L);
-			double inc4 = calcResult.getIncrementalForSrc(row, 4L);
-			double inc5 = calcResult.getIncrementalForSrc(row, 5L);
+			double inc1 = calcResult.getIncrementalForSrc(row, 1);
+			double inc2 = calcResult.getIncrementalForSrc(row, 2);
+			double inc3 = calcResult.getIncrementalForSrc(row, 3);
+			double inc4 = calcResult.getIncrementalForSrc(row, 4);
+			double inc5 = calcResult.getIncrementalForSrc(row, 5);
 			
 			//Double check that the column mapping are correct
-			assertEquals(calcResult.getIncrementalColForSrc(1L), calcResult.getFirstIncrementalColForSrc());
+			assertEquals(calcResult.getIncrementalColForSrc(1), calcResult.getFirstIncrementalColForSrc());
 			assertEquals(incTotal, calcResult.getDouble(row, calcResult.getIncrementalCol()), delta);
-			assertEquals(inc1, calcResult.getDouble(row, calcResult.getIncrementalColForSrc(1L)), delta);
-			assertEquals(inc5, calcResult.getDouble(row, calcResult.getIncrementalColForSrc(5L)), delta);
+			assertEquals(inc1, calcResult.getDouble(row, calcResult.getIncrementalColForSrc(1)), delta);
+			assertEquals(inc5, calcResult.getDouble(row, calcResult.getIncrementalColForSrc(5)), delta);
 			
 			assertEquals(incTotal, inc1 + inc2 + inc3 + inc4 + inc5, delta);
 			
 			double decIncTotal = calcResult.getDecayedIncremental(row);
-			double decInc1 = calcResult.getDecayedIncrementalForSrc(row, 1L);
-			double decInc2 = calcResult.getDecayedIncrementalForSrc(row, 2L);
-			double decInc3 = calcResult.getDecayedIncrementalForSrc(row, 3L);
-			double decInc4 = calcResult.getDecayedIncrementalForSrc(row, 4L);
-			double decInc5 = calcResult.getDecayedIncrementalForSrc(row, 5L);
+			double decInc1 = calcResult.getDecayedIncrementalForSrc(row, 1);
+			double decInc2 = calcResult.getDecayedIncrementalForSrc(row, 2);
+			double decInc3 = calcResult.getDecayedIncrementalForSrc(row, 3);
+			double decInc4 = calcResult.getDecayedIncrementalForSrc(row, 4);
+			double decInc5 = calcResult.getDecayedIncrementalForSrc(row, 5);
 			
 			//Double check that the column mapping are correct
-			assertEquals(calcResult.getDecayedIncrementalColForSrc(1L), calcResult.getFirstDecayedIncrementalColForSrc());
+			assertEquals(calcResult.getDecayedIncrementalColForSrc(1), calcResult.getFirstDecayedIncrementalColForSrc());
 			assertEquals(decIncTotal, calcResult.getDouble(row, calcResult.getDecayedIncrementalCol()), delta);
-			assertEquals(decInc1, calcResult.getDouble(row, calcResult.getDecayedIncrementalColForSrc(1L)), delta);
-			assertEquals(decInc5, calcResult.getDouble(row, calcResult.getDecayedIncrementalColForSrc(5L)), delta);
+			assertEquals(decInc1, calcResult.getDouble(row, calcResult.getDecayedIncrementalColForSrc(1)), delta);
+			assertEquals(decInc5, calcResult.getDouble(row, calcResult.getDecayedIncrementalColForSrc(5)), delta);
 			
 			assertEquals(decIncTotal, decInc1 + decInc2 + decInc3 + decInc4 + decInc5, delta);
 			
@@ -70,17 +70,17 @@ public class SparrowTestBaseTest extends SparrowTestBase {
 			
 			
 			double totTotal = calcResult.getTotal(row);
-			double tot1 = calcResult.getTotalForSrc(row, 1L);
-			double tot2 = calcResult.getTotalForSrc(row, 2L);
-			double tot3 = calcResult.getTotalForSrc(row, 3L);
-			double tot4 = calcResult.getTotalForSrc(row, 4L);
-			double tot5 = calcResult.getTotalForSrc(row, 5L);
+			double tot1 = calcResult.getTotalForSrc(row, 1);
+			double tot2 = calcResult.getTotalForSrc(row, 2);
+			double tot3 = calcResult.getTotalForSrc(row, 3);
+			double tot4 = calcResult.getTotalForSrc(row, 4);
+			double tot5 = calcResult.getTotalForSrc(row, 5);
 			
 			//Double check that the column mapping are correct
-			assertEquals(calcResult.getTotalColForSrc(1L), calcResult.getFirstTotalColForSrc());
+			assertEquals(calcResult.getTotalColForSrc(1), calcResult.getFirstTotalColForSrc());
 			assertEquals(totTotal, calcResult.getDouble(row, calcResult.getTotalCol()), delta);
-			assertEquals(tot1, calcResult.getDouble(row, calcResult.getTotalColForSrc(1L)), delta);
-			assertEquals(tot5, calcResult.getDouble(row, calcResult.getTotalColForSrc(5L)), delta);
+			assertEquals(tot1, calcResult.getDouble(row, calcResult.getTotalColForSrc(1)), delta);
+			assertEquals(tot5, calcResult.getDouble(row, calcResult.getTotalColForSrc(5)), delta);
 			
 			assertEquals(totTotal, tot1 + tot2 + tot3 + tot4 + tot5, delta);
 		}

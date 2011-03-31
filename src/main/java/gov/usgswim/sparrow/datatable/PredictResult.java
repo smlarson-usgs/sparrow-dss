@@ -78,7 +78,7 @@ public interface PredictResult extends Immutable {
 	 * the 1 based ordinal of the source.
 	 * @return
 	 */
-	public int getIncrementalColForSrc(Long srcId);
+	public int getIncrementalColForSrc(Integer srcId);
 	
 	/**
 	 * Returns the zero based column index of the decayed incremental values for
@@ -91,7 +91,7 @@ public interface PredictResult extends Immutable {
 	 * the 1 based ordinal of the source.
 	 * @return
 	 */
-	public int getDecayedIncrementalColForSrc(Long srcId);
+	public int getDecayedIncrementalColForSrc(Integer srcId);
 	
 	/**
 	 * Returns the zero based index of the Total column for the specified source.
@@ -103,7 +103,7 @@ public interface PredictResult extends Immutable {
 	 * the 1 based ordinal of the source.
 	 * @return The index of the total column for the spec'ed source.
 	 */
-	public int getTotalColForSrc(Long srcId);
+	public int getTotalColForSrc(Integer srcId);
 	
 	/**
 	 * Returns the incremental addition (not decayed by instream decay) of the
@@ -135,7 +135,7 @@ public interface PredictResult extends Immutable {
 	 * the 1 based ordinal of the source.
 	 * @return The incremental addition from the specified source at this reach
 	 */
-	public Double getIncrementalForSrc(int row, Long srcId);
+	public Double getIncrementalForSrc(int row, Integer srcId);
 	
 	/**
 	 * Returns the decayed incremental addition (decayed by instream decay) of the
@@ -149,7 +149,7 @@ public interface PredictResult extends Immutable {
 	 * the 1 based ordinal of the source.
 	 * @return The decayed incremental addition of the specified source at this reach
 	 */
-	public Double getDecayedIncrementalForSrc(int row, Long srcId);
+	public Double getDecayedIncrementalForSrc(int row, Integer srcId);
 	
 	/**
 	 * Returns the Total load (including upstream load) for all sources arriving
@@ -177,6 +177,6 @@ public interface PredictResult extends Immutable {
 	 * the 1 based ordinal of the source.
 	 * @return The total load with upstream load, for a specified source.
 	 */
-	public Double getTotalForSrc(int row, Long srcId);
+	public Double getTotalForSrc(int row, Integer srcId);
 	
 }

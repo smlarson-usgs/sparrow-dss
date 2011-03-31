@@ -32,19 +32,19 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 	 * A mapping from a source Identifier to the column number of the column
 	 * containing the Incremental value for that source.
 	 */
-	private final Map<Long, Integer> srcIdIncMap;
+	private final Map<Integer, Integer> srcIdIncMap;
 	
 	/**
 	 * A mapping from a source Identifier to the column number of the column
 	 * containing the Decayed Incremental value for that source.
 	 */
-	private final Map<Long, Integer> srcIdDecayedIncMap;
+	private final Map<Integer, Integer> srcIdDecayedIncMap;
 
 	/**
 	 * A mapping from a source Identifier to the column number of the column
 	 * containing the Total value for that source.
 	 */
-	private final Map<Long, Integer> srcIdTotalMap;
+	private final Map<Integer, Integer> srcIdTotalMap;
 
 	/**
 	 * Index of the total Incremental column.
@@ -68,27 +68,27 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 
 
 	public PredictResultImm(ColumnData[] columns, long[] rowIds, Map<String, String> properties,
-				Map<Long, Integer> srcIdIncMap,
-				Map<Long,Integer> srcIdDecayedIncMap,
-				Map<Long, Integer> srcIdTotalMap,
+				Map<Integer, Integer> srcIdIncMap,
+				Map<Integer,Integer> srcIdDecayedIncMap,
+				Map<Integer, Integer> srcIdTotalMap,
 				int totalIncCol, int totalDecayedIncCol, int totalTotalCol) {
 
 		super(columns, "Prediction Data", "Prediction Result Data", properties, rowIds);
 
 		{
-			Hashtable<Long, Integer> map = new Hashtable<Long, Integer>(srcIdIncMap.size() * 2 + 1);
+			Hashtable<Integer, Integer> map = new Hashtable<Integer, Integer>(srcIdIncMap.size() * 2 + 1);
 			map.putAll(srcIdIncMap);
 			this.srcIdIncMap = map;
 		}
 		
 		{
-			Hashtable<Long, Integer> map = new Hashtable<Long, Integer>(srcIdDecayedIncMap.size() * 2 + 1);
+			Hashtable<Integer, Integer> map = new Hashtable<Integer, Integer>(srcIdDecayedIncMap.size() * 2 + 1);
 			map.putAll(srcIdDecayedIncMap);
 			this.srcIdDecayedIncMap = map;
 		}
 
 		{
-			Hashtable<Long, Integer> map = new Hashtable<Long, Integer>(srcIdTotalMap.size() * 2 + 1);
+			Hashtable<Integer, Integer> map = new Hashtable<Integer, Integer>(srcIdTotalMap.size() * 2 + 1);
 			map.putAll(srcIdTotalMap);
 			this.srcIdTotalMap = map;
 		}
@@ -132,11 +132,11 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
 		return findMinValue(srcIdTotalMap);
 	}
 	
-	private static int findMinValue(Map<Long, Integer> map) {
-		Iterator<Entry<Long, Integer>> vals = map.entrySet().iterator();
+	private static int findMinValue(Map<Integer, Integer> map) {
+		Iterator<Entry<Integer, Integer>> vals = map.entrySet().iterator();
 		int min = Integer.MAX_VALUE;
 		while (vals.hasNext()) {
-			Entry<Long, Integer> entry = vals.next();
+			Entry<Integer, Integer> entry = vals.next();
 			if (entry.getValue() < min) {
 				min = entry.getValue();
 			}
@@ -175,32 +175,32 @@ public class PredictResultImm extends SimpleDataTable implements PredictResult {
     }
 
 	@Override
-    public int getIncrementalColForSrc(Long srcId) {
+    public int getIncrementalColForSrc(Integer srcId) {
         return srcIdIncMap.get(srcId);
     }
 	
 	@Override
-	public int getDecayedIncrementalColForSrc(Long srcId) {
+	public int getDecayedIncrementalColForSrc(Integer srcId) {
 		return srcIdDecayedIncMap.get(srcId);
 	}
 
 	@Override
-    public Double getIncrementalForSrc(int row, Long srcId) {
+    public Double getIncrementalForSrc(int row, Integer srcId) {
         return getDouble(row, srcIdIncMap.get(srcId));
     }
 	
 	@Override
-	public Double getDecayedIncrementalForSrc(int row, Long srcId) {
+	public Double getDecayedIncrementalForSrc(int row, Integer srcId) {
 		return getDouble(row, srcIdDecayedIncMap.get(srcId));
 	}
 
 	@Override
-    public int getTotalColForSrc(Long srcId) {
+    public int getTotalColForSrc(Integer srcId) {
         return srcIdTotalMap.get(srcId);
     }
 
 	@Override
-    public Double getTotalForSrc(int row, Long srcId) {
+    public Double getTotalForSrc(int row, Integer srcId) {
         return getDouble(row, srcIdTotalMap.get(srcId));
     }
 

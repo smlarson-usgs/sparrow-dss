@@ -216,7 +216,7 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 * @return
 	 * @throws Exception
 	 */
-	public Long getSourceIdForSourceIndex(int index) throws Exception;
+	public Integer getSourceIdForSourceIndex(int index) throws Exception;
 	
 	/**
 	 * Returns the row index corresponding to the passed reach id.
