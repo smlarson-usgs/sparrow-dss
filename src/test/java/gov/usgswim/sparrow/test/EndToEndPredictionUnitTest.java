@@ -28,8 +28,7 @@ public class EndToEndPredictionUnitTest extends SparrowServiceTestBaseWithDBandC
 	public static final String PREDICT_CONTEXT_SERVICE_URL = "http://localhost:8088/sp_predictcontext";
 	
 	/* Quick way to dump the export as xml */
-	@Ignore
-	@Test
+	//@Test
 	public void temp() throws Exception {
 		String contextReq = getSharedTestResource("predict-context-no-adj.xml");
 		String contextResp = sendPostRequest(PREDICT_CONTEXT_SERVICE_URL, contextReq);
@@ -45,6 +44,7 @@ public class EndToEndPredictionUnitTest extends SparrowServiceTestBaseWithDBandC
 		System.out.println(exportResponse);
 	}
 	
+	
 	@Test
 	public void checkPredictionWithNoAdjustments() throws Exception {
 		String contextReq = getSharedTestResource("predict-context-no-adj.xml");
@@ -57,6 +57,7 @@ public class EndToEndPredictionUnitTest extends SparrowServiceTestBaseWithDBandC
 				"mime-type=tab";
 		
 		String exportResponse = this.sendGetRequest(exportUrl);
+		//System.out.println(exportResponse);
 		
 		StringReader reader = new StringReader(exportResponse);
 		BufferedReader br = new BufferedReader(reader);

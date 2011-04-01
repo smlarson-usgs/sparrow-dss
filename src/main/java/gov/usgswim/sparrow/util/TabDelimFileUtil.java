@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.util;
 
+import gov.usgs.webservices.framework.formatter.AbstractFormatter;
 import gov.usgswim.datatable.ColumnDataWritable;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
@@ -17,6 +18,8 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 
 public abstract class TabDelimFileUtil {
 
@@ -50,6 +53,9 @@ public abstract class TabDelimFileUtil {
 			int[] remappedColumns = null;	//indexes to map the columns to
 			int mappedColumnCount = 0;	//Number of columns in the output
 
+			//Consume any comments on the top of the file
+			String comments = readHeaderComments(reader);
+			
 			String[] headings = (hasHeadings)? TabDelimFileUtil.readHeadings(reader): null;
 
 
@@ -66,6 +72,11 @@ public abstract class TabDelimFileUtil {
 			//copy the array list to a double[][] array
 
 			DataTableWritable builder = new SimpleDataTableWritable();
+			
+			if (comments != null) {
+				builder.setDescription(comments);
+			}
+			
 			// Configure the columns
 			int numColumns = (headings != null)? headings.length: rows.get(0).length;
 			numColumns = (mappedColumnCount > 0)? mappedColumnCount: numColumns;
@@ -352,6 +363,63 @@ public abstract class TabDelimFileUtil {
 		return src.length > 0 && !(src.length == 1 && ("".equals(src[0])));
 	}
 
+	/**
+	 * Reads comments from the top of the file, advancing the reader past the
+	 * comments.  If there are no comments, the reader is reset to the state it
+	 * was passed in.  This requires the reader to support mark.
+	 * 
+	 * Comments are marked by a '#' as the first non-whitespace character on
+	 * a line.  Comment lines of ~1000 characters are supported.
+	 * 
+	 * @param br
+	 * @return The comments, joined as one string.
+	 * 
+	 * @throws IOException
+	 */
+	public static String readHeaderComments(BufferedReader br) throws IOException {
+		
+		br.mark(1000);	//Mark the top of the file so we can return to it if no comments
+		
+		ArrayList<String> comments = new ArrayList<String>();
+		
+		String s;         //Single line from file
+		while ((s=br.readLine())!=null) {
+			s = s.trim();
+			
+			if (s.length() > 0) {
+				char first = s.charAt(0);
+				if (first == AbstractFormatter.UNICODE_BOM) {
+					s = s.substring(1);
+				}
+			}
+			
+			if (s.startsWith("#")) {
+				s = s.substring(1);	//remove leading '#'
+				if (! StringUtils.isWhitespace(s)) {
+					comments.add(s);
+				}
+			} else {
+				br.reset();
+				break;
+			}
+			
+			br.mark(1000);
+		}
+		
+		if (comments.size() > 0) {
+			StringBuffer sb = new StringBuffer();
+			for (int i = 0; i < comments.size(); i++) {
+				sb.append(comments.get(i));
+				if (i < comments.size() + 1) {
+					sb.append("\r\n");
+				}
+			}
+			return sb.toString();
+		} else {
+			return null;
+		}
+	}
+	
 
 	public static String[] readHeadings(BufferedReader br) throws IOException {
 		String s;         //Single line from file
@@ -478,6 +546,9 @@ public abstract class TabDelimFileUtil {
 			int[] remappedColumns = null;	//indexes to map the columns to
 			int mappedColumnCount = 0;	//Number of columns in the output
 
+			//Consume any comments on the top of the file
+			String comments = readHeaderComments(source);
+			
 			String[] headings = (hasHeadings)? readHeadings(source): null;
 
 
@@ -494,6 +565,11 @@ public abstract class TabDelimFileUtil {
 			//copy the array list to a double[][] array
 
 			DataTableWritable builder = new SimpleDataTableWritable();
+			
+			if (comments != null) {
+				builder.setDescription(comments);
+			}
+			
 			// Configure the columns
 			int numColumns = (headings != null)? headings.length: rows.get(0).length;
 			for (int i=0; i< numColumns; i++) {

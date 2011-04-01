@@ -13,7 +13,7 @@ import javax.xml.stream.XMLStreamReader;
 public abstract class AbstractFormatter implements IFormatter {
 	
 	public static final String UTF8 = "UTF-8";
-	private static final char UNICODE_BOM = '\uFEFF';	//Unicode Byte Order Marker
+	public static final char UNICODE_BOM = '\uFEFF';	//Unicode Byte Order Marker
 	
 	OutputType outputType;
 	Set<OutputType> acceptableOutputTypes;
