@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.datatable;
+package gov.usgswim.datatable;
 
 import gov.usgswim.ImmutableBuilder;
 

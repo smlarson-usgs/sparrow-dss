@@ -51,8 +51,8 @@ public class LoadUnitAreasLongRunTest extends SparrowTestBaseWithDB {
 		assertEquals(SparrowUnits.SQR_KM.toString(), dt.getUnits(1));
 		assertEquals(Action.getDataSeriesProperty(DataSeriesType.catch_area, false), dt.getName(1));
 		assertEquals(Action.getDataSeriesProperty(DataSeriesType.catch_area, true), dt.getDescription(1));
-		assertEquals(DataSeriesType.catch_area.name(), dt.getProperty(1, TableProperties.DATA_SERIES.getPublicName()));
-		assertEquals("land area", dt.getProperty(1, TableProperties.CONSTITUENT.getPublicName()));
+		assertEquals(DataSeriesType.catch_area.name(), dt.getProperty(1, TableProperties.DATA_SERIES.toString()));
+		assertEquals("land area", dt.getProperty(1, TableProperties.CONSTITUENT.toString()));
 		
 		lua = new LoadUnitAreas();
 		lua.setCumulative(true);
@@ -64,8 +64,8 @@ public class LoadUnitAreasLongRunTest extends SparrowTestBaseWithDB {
 		assertEquals(SparrowUnits.SQR_KM.toString(), dt.getUnits(1));
 		assertEquals(Action.getDataSeriesProperty(DataSeriesType.watershed_area, false), dt.getName(1));
 		assertEquals(Action.getDataSeriesProperty(DataSeriesType.watershed_area, true), dt.getDescription(1));
-		assertEquals(DataSeriesType.watershed_area.name(), dt.getProperty(1, TableProperties.DATA_SERIES.getPublicName()));
-		assertEquals("land area", dt.getProperty(1, TableProperties.CONSTITUENT.getPublicName()));
+		assertEquals(DataSeriesType.watershed_area.name(), dt.getProperty(1, TableProperties.DATA_SERIES.toString()));
+		assertEquals("land area", dt.getProperty(1, TableProperties.CONSTITUENT.toString()));
 
 	}
 	

@@ -56,9 +56,9 @@ public class LoadStreamFlowLongRunTest extends SparrowTestBaseWithDB {
 		assertEquals(Action.getDataSeriesProperty(DataSeriesType.flux, false), dt.getName(0));
 		assertEquals(Action.getDataSeriesProperty(DataSeriesType.flux, true), dt.getDescription(0));
 		assertEquals(DataSeriesType.flux.name(),
-				dt.getProperty(0, TableProperties.DATA_SERIES.getPublicName()));
+				dt.getProperty(0, TableProperties.DATA_SERIES.toString()));
 		assertEquals("Water",
-				dt.getProperty(0, TableProperties.CONSTITUENT.getPublicName()));
+				dt.getProperty(0, TableProperties.CONSTITUENT.toString()));
 
 	}
 	

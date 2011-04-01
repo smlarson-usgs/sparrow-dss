@@ -582,7 +582,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			
 			// Calculate and format all of the data
 			String columnName = "";	//fetch based on series
-			String constituent = nominalPrediction.getProperty(colForIncSource, TableProperties.CONSTITUENT.getPublicName());
+			String constituent = nominalPrediction.getProperty(colForIncSource, TableProperties.CONSTITUENT.toString());
 			String units = "";	//fetch based on series
 			String precision = "";	//fetch based on series
 			Double nominalValue = null;
@@ -596,7 +596,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				//All these attribs are the same, decayed or not
 				columnName = nominalPrediction.getName(colForIncSource);
 				units = nominalPrediction.getUnits(colForIncSource);
-				precision = nominalPrediction.getProperty(colForIncSource, TableProperties.PRECISION.getPublicName());
+				precision = nominalPrediction.getProperty(colForIncSource, TableProperties.PRECISION.toString());
 				
 				nominalValue = nominalPrediction.getDecayedIncrementalForSrc(rowID, srcId);
 				
@@ -607,7 +607,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			case incremental:
 				columnName = nominalPrediction.getName(colForIncSource);
 				units = nominalPrediction.getUnits(colForIncSource);
-				precision = nominalPrediction.getProperty(colForIncSource, TableProperties.PRECISION.getPublicName());
+				precision = nominalPrediction.getProperty(colForIncSource, TableProperties.PRECISION.toString());
 				
 				nominalValue = nominalPrediction.getIncrementalForSrc(rowID, srcId);
 				
@@ -618,7 +618,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			case total:
 				columnName = nominalPrediction.getName(colForTotalSource);
 				units = nominalPrediction.getUnits(colForTotalSource);
-				precision = nominalPrediction.getProperty(colForTotalSource, TableProperties.PRECISION.getPublicName());
+				precision = nominalPrediction.getProperty(colForTotalSource, TableProperties.PRECISION.toString());
 				
 				nominalValue = nominalPrediction.getTotalForSrc(rowID, srcId);
 				
@@ -663,7 +663,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		
 		// Calculate and format all of the data
 		String columnName = "";	//fetch based on series
-		String constituent = nominalPrediction.getProperty(colForInc, TableProperties.CONSTITUENT.getPublicName());
+		String constituent = nominalPrediction.getProperty(colForInc, TableProperties.CONSTITUENT.toString());
 		String units = "";	//fetch based on series
 		String precision = "";	//fetch based on series
 		Double nominalValue = null;
@@ -687,7 +687,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			//All these attribs are the same, decayed or not
 			columnName = nominalPrediction.getName(colForDecayedInc);
 			units = nominalPrediction.getUnits(colForDecayedInc);
-			precision = nominalPrediction.getProperty(colForDecayedInc, TableProperties.PRECISION.getPublicName());
+			precision = nominalPrediction.getProperty(colForDecayedInc, TableProperties.PRECISION.toString());
 			
 			nominalValue = nominalPrediction.getDecayedIncremental(rowID);
 			
@@ -698,7 +698,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		case incremental:
 			columnName = nominalPrediction.getName(colForInc);
 			units = nominalPrediction.getUnits(colForInc);
-			precision = nominalPrediction.getProperty(colForInc, TableProperties.PRECISION.getPublicName());
+			precision = nominalPrediction.getProperty(colForInc, TableProperties.PRECISION.toString());
 			
 			nominalValue = nominalPrediction.getIncremental(rowID);
 			
@@ -709,7 +709,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		case total:
 			columnName = nominalPrediction.getName(colForTotal);
 			units = nominalPrediction.getUnits(colForTotal);
-			precision = nominalPrediction.getProperty(colForTotal, TableProperties.PRECISION.getPublicName());
+			precision = nominalPrediction.getProperty(colForTotal, TableProperties.PRECISION.toString());
 			
 			nominalValue = nominalPrediction.getTotal(rowID);
 			
@@ -802,7 +802,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 				// apply applicable display rules
 				DisplayRule rule = displayRules.get(columnName);
-				String precision = basicAttributes.getProperty(j, TableProperties.PRECISION.getPublicName());
+				String precision = basicAttributes.getProperty(j, TableProperties.PRECISION.toString());
 				if (rule != null) {
 					value = rule.apply(value);
 				} else if (precision != null) {

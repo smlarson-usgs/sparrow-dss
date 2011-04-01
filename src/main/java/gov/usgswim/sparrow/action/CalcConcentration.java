@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgswim.datatable.ColumnAttribsBuilder;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.impl.ColumnDataFromTable;
 import gov.usgswim.sparrow.SparrowUnits;
-import gov.usgswim.sparrow.datatable.ColumnAttribsBuilder;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.datatable.SingleValueDoubleColumnData;

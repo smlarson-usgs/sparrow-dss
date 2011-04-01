@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgswim.datatable.ColumnAttribs;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.datatable.ColumnAttribs;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.datatable.PercentageColumnData;

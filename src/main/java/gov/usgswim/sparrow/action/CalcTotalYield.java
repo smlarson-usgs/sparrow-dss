@@ -1,11 +1,13 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgswim.datatable.ColumnAttribsBuilder;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.DivideColumnData;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SparrowColumnAttribsBuilder;
+import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 
 /**
@@ -14,32 +16,32 @@ import gov.usgswim.sparrow.domain.DataSeriesType;
  * @author eeverman
  *
  */
-public class CalcIncrementalYield extends Action<ColumnData> {
+public class CalcTotalYield extends Action<ColumnData> {
 
 	//The dataseries this Action calculates
-	private static final DataSeriesType seriesType = DataSeriesType.incremental_yield;
+	private static final DataSeriesType seriesType = DataSeriesType.total_yield;
 	
 	
 	protected PredictData predictData;
 	
 	protected PredictResult predictResult;
 	
-	protected ColumnData catchmentAreaColumn;
+	protected ColumnData watershedAreaColumn;
 	
 	protected Integer sourceId;
 	
 	protected String msg;
 	
-	public CalcIncrementalYield() {
+	public CalcTotalYield() {
 		//default
 	}
 	
-	public CalcIncrementalYield(
+	public CalcTotalYield(
 			PredictData predictData, PredictResult predictResult,
-			ColumnData catchmentAreaColumn, Integer sourceId) {
+			ColumnData watershedAreaColumn, Integer sourceId) {
 		this.predictData = predictData;
 		this.predictResult = predictResult;
-		this.catchmentAreaColumn = catchmentAreaColumn;
+		this.watershedAreaColumn = watershedAreaColumn;
 		this.sourceId = sourceId;
 	}
 
@@ -47,7 +49,7 @@ public class CalcIncrementalYield extends Action<ColumnData> {
 	public ColumnData doAction() throws Exception {
 
 		SparrowUnits modelUnit = predictData.getModel().getUnits();
-		String areaUnitStr = catchmentAreaColumn.getUnits();
+		String areaUnitStr = watershedAreaColumn.getUnits();
 		SparrowUnits areaUnit = SparrowUnits.parseUserName(areaUnitStr);
 		
 		//Check the units - correct?
@@ -59,7 +61,7 @@ public class CalcIncrementalYield extends Action<ColumnData> {
 			throw new Exception(msg);
 		}
 		
-		if (! catchmentAreaColumn.getUnits().equals(SparrowUnits.SQR_KM.getUserName())) {
+		if (! watershedAreaColumn.getUnits().equals(SparrowUnits.SQR_KM.getUserName())) {
 			msg = "The area units must be in " +
 			SparrowUnits.SQR_KM.getUserName() +
 			" in order to calculate " + seriesType.toString() + ".  Found instead: " +
@@ -78,18 +80,18 @@ public class CalcIncrementalYield extends Action<ColumnData> {
 		ca.setBaseDataSeriesType(seriesType.getBaseType());
 		ca.setDataSeriesType(seriesType);
 
-		//Find appropriate decayed incremental column
-		ColumnData decayedInc = null;
+		//Find appropriate total column
+		ColumnData decayedTotal = null;
 		if (sourceId != null) {
-			decayedInc = predictResult.getColumn(
-					predictResult.getDecayedIncrementalColForSrc(sourceId));
+			decayedTotal = predictResult.getColumn(
+					predictResult.getTotalColForSrc(sourceId));
 		} else {
-			decayedInc = predictResult.getColumn(
-					predictResult.getDecayedIncrementalCol());
+			decayedTotal = predictResult.getColumn(
+					predictResult.getTotalCol());
 		}
 		
 		DivideColumnData result =
-			new DivideColumnData(decayedInc, catchmentAreaColumn, ca.toImmutable());
+			new DivideColumnData(decayedTotal, watershedAreaColumn, ca.toImmutable());
 		
 		return result;
 	}
@@ -116,11 +118,11 @@ public class CalcIncrementalYield extends Action<ColumnData> {
 	}
 
 	public ColumnData getCatchmentAreaColumn() {
-		return catchmentAreaColumn;
+		return watershedAreaColumn;
 	}
 
 	public void setCatchmentAreaColumn(ColumnData catchmentAreaColumn) {
-		this.catchmentAreaColumn = catchmentAreaColumn;
+		this.watershedAreaColumn = catchmentAreaColumn;
 	}
 
 	public Integer getSourceId() {

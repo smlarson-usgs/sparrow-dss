@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.datatable;
 
+import gov.usgswim.datatable.ColumnAttribs;
+import gov.usgswim.datatable.ColumnAttribsImm;
 import gov.usgswim.datatable.ColumnData;
 
 

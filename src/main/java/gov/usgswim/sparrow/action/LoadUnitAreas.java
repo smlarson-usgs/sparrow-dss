@@ -91,8 +91,8 @@ public class LoadUnitAreas extends Action<DataTable> {
 		values.getColumns()[1].setUnits(SparrowUnits.SQR_KM.toString());
 		values.getColumns()[1].setName(areaColName);
 		values.getColumns()[1].setDescription(areaColDesc);
-		values.getColumns()[1].setProperty(TableProperties.DATA_SERIES.getPublicName(), areaColDataSeries);
-		values.getColumns()[1].setProperty(TableProperties.CONSTITUENT.getPublicName(), "land area");
+		values.getColumns()[1].setProperty(TableProperties.DATA_SERIES.toString(), areaColDataSeries);
+		values.getColumns()[1].setProperty(TableProperties.CONSTITUENT.toString(), "land area");
 
 		return values.toImmutable();
 		

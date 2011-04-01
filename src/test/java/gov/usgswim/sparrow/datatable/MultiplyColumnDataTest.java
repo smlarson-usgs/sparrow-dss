@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.datatable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import gov.usgswim.datatable.ColumnAttribsBuilder;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 

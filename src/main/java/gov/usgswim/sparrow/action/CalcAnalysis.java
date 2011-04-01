@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgswim.datatable.ColumnAttribsBuilder;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.ColumnDataFromTable;
@@ -8,7 +9,6 @@ import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
 import gov.usgswim.sparrow.UncertaintySeries;
-import gov.usgswim.sparrow.datatable.ColumnAttribsBuilder;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
@@ -135,6 +135,7 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 				case total_std_error_estimate:
 				case total_concentration:
 				case total_delivered_flux:
+				case total_yield:
 					//All TOTAL type series fall through to this point
 					
 					
@@ -148,7 +149,30 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 						impliedUncertaintySeries = UncertaintySeries.TOTAL;
 					}
 					
-					if (type.equals(DataSeriesType.total_delivered_flux)) {
+					if (type.equals(DataSeriesType.total_yield)) {
+						
+						UnitAreaRequest unitAreaReq = new UnitAreaRequest(context.getModelID(), UnitAreaType.HUC_NONE, true);
+						DataTable unitAreaTab = SharedApplication.getInstance().getCatchmentAreas(unitAreaReq);
+						ColumnData unitAreaCol = new ColumnDataFromTable(unitAreaTab, 1);
+						
+						CalcTotalYield act = new CalcTotalYield(
+								nominalPredictData, result, unitAreaCol, source
+						);
+						ColumnData incYield = act.run();
+						
+						//Data is a ColumnData, however, we also need row IDs so that
+						//identify will work for this data series.  To do that,
+						//we overlay the column on topo, which provides row IDs for free.
+						dataColIndex = 4; //An overriden column of topo (was hydseq)
+						
+						SingleColumnOverrideDataTable override = new SingleColumnOverrideDataTable(
+								nominalPredictData.getTopo(),
+								incYield, 4, null);
+						
+						predictionBasedResult = override;
+						break;
+						
+					} else if (type.equals(DataSeriesType.total_delivered_flux)) {
 						//Create a new datatable that overlays the delFracColumn
 						//on top of the column selected above
 						

@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.datatable;
+package gov.usgswim.datatable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,30 +10,55 @@ import java.util.Set;
  * 
  * @author eeverman
  */
-public class ColumnAttribsImm implements ColumnAttribs {
+public class ColumnAttribsBuilder implements ColumnAttribs {
 
 	protected String description;
 	protected String units;
 	protected String name;
 	protected Map<String, String> properties;
 
-	public ColumnAttribsImm() {
-		//empty default constructor allow easy null instance creation.
-	}
-	
-	public ColumnAttribsImm(String description, String units, String name,
-			Map<String, String> properties) {
-		this.description = description;
-		this.units = units;
-		this.name = name;
-		
-		//Copy props for safety
-		if (properties != null) {
-			this.properties = new HashMap<String, String>(properties.size(), 1);
-			this.properties.putAll(properties);
+
+	public void setProperty(String key, String value) {
+		if (properties == null && value != null) {
+			properties = new HashMap<String, String>();
+			properties.put(key, value);
+		} else if (properties != null && value == null) {
+			properties.remove(key);
+			if (properties.size() == 0) {
+				properties = null;
+			}
+		} else {
+			properties.put(key, value);
 		}
 	}
 	
+	/**
+	 * Forces the properties collection to be non-null and empty, erasing any
+	 * existing property values.
+	 * 
+	 * In cases where a columns properties are being overlayed, null vs empty
+	 * is the difference between inheriting the underlying properties (null)
+	 * or having no properties inherited or other (empty).
+	 */
+	public void setPropertiesEmpty() {
+		if (properties == null) {
+			properties = new HashMap<String, String>();
+		} else {
+			properties.clear();
+		}
+	}
+	
+	/**
+	 * Forces the properties collection to be null, which will erase all
+	 * property values.
+	 * 
+	 * In cases where a columns properties are being overlayed, null vs empty
+	 * is the difference between inheriting the underlying properties (null)
+	 * or having no properties inherited or other (empty).
+	 */
+	public void setPropertiesNull() {
+		properties = null;
+	}
 	
 	/* (non-Javadoc)
 	 * @see gov.usgswim.sparrow.datatable.ColumnAttribs#getProperty(java.lang.String)
@@ -94,6 +119,10 @@ public class ColumnAttribsImm implements ColumnAttribs {
 		return combi;
 	}
 
+	public void setDescription(String desc) {
+		this.description = desc;
+	}
+
 	/* (non-Javadoc)
 	 * @see gov.usgswim.sparrow.datatable.ColumnAttribs#getDescription()
 	 */
@@ -114,6 +143,9 @@ public class ColumnAttribsImm implements ColumnAttribs {
 		}
 	}
 
+	public void setUnits(String units) {
+		this.units = units;
+	}
 	
 	/* (non-Javadoc)
 	 * @see gov.usgswim.sparrow.datatable.ColumnAttribs#getUnits()
@@ -135,6 +167,10 @@ public class ColumnAttribsImm implements ColumnAttribs {
 		}
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	/* (non-Javadoc)
 	 * @see gov.usgswim.sparrow.datatable.ColumnAttribs#getName()
 	 */
@@ -154,10 +190,9 @@ public class ColumnAttribsImm implements ColumnAttribs {
 			return defaultValue;
 		}
 	}
-	
+
 	@Override
 	public ColumnAttribs toImmutable() throws IllegalStateException {
-		return this;
+		return new ColumnAttribsImm(description, units, name, properties);
 	}
-
 }

@@ -48,8 +48,8 @@ public class LoadStreamFlow extends Action<SparrowColumnSpecifier> {
 		values.getColumns()[0].setName(getDataSeriesProperty(DataSeriesType.flux, false));
 		values.getColumns()[0].setDescription(getDataSeriesProperty(DataSeriesType.flux, true));
 		values.getColumns()[0].setUnits(SparrowUnits.CFS.getUserName());
-		values.getColumns()[0].setProperty(TableProperties.DATA_SERIES.getPublicName(), DataSeriesType.flux.name());
-		values.getColumns()[0].setProperty(TableProperties.CONSTITUENT.getPublicName(), "Water");
+		values.getColumns()[0].setProperty(TableProperties.DATA_SERIES.toString(), DataSeriesType.flux.name());
+		values.getColumns()[0].setProperty(TableProperties.CONSTITUENT.toString(), "Water");
 		
 
 		SparrowColumnSpecifier retColumn = new SparrowColumnSpecifier(values.toImmutable(), 0, null, modelId);

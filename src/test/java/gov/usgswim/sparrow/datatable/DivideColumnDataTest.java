@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Map;
 import java.util.Set;
 
+import gov.usgswim.datatable.ColumnAttribsBuilder;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 

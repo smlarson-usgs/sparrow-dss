@@ -413,8 +413,8 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 			String precision = sourceMetaData.getString(srcIndex, sourceMetaData.getColumnByName("PRECISION"));
 
 			StandardNumberColumnDataWritable<Double> column = new StandardNumberColumnDataWritable<Double>(name, units);
-			column.setProperty(TableProperties.CONSTITUENT.getPublicName(), constituent);
-			column.setProperty(TableProperties.PRECISION.getPublicName(), precision);
+			column.setProperty(TableProperties.CONSTITUENT.toString(), constituent);
+			column.setProperty(TableProperties.PRECISION.toString(), precision);
 			column.setType(Double.class);
 			sourceValues.addColumn(column);
 		}

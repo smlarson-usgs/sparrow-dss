@@ -21,6 +21,7 @@ import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -33,11 +34,11 @@ import org.junit.Test;
  * @author eeverman
  *
  */
-public class CalcIncrementalYieldTest  extends SparrowTestBaseWithDBandCannedModel50 {
+public class CalcTotalYieldTest  extends SparrowTestBaseWithDBandCannedModel50 {
 	
 	PredictData predictData;
 	PredictResult predictResult;
-	ColumnData catchmentAreaColumn;
+	ColumnData watershedAreaColumn;
 	
 	@Before
 	public void setup() {
@@ -48,26 +49,26 @@ public class CalcIncrementalYieldTest  extends SparrowTestBaseWithDBandCannedMod
 		
 		predictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		predictResult = SharedApplication.getInstance().getPredictResult(adjustments);
-		UnitAreaRequest catchAreaReq = new UnitAreaRequest(TEST_MODEL_ID, UnitAreaType.HUC_NONE, false);
-		DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(catchAreaReq);
-		catchmentAreaColumn = new ColumnDataFromTable(catchmentAreaTable, 1);
+		UnitAreaRequest watershedAreaReq = new UnitAreaRequest(TEST_MODEL_ID, UnitAreaType.HUC_NONE, true);
+		DataTable watershedAreaTable = SharedApplication.getInstance().getCatchmentAreas(watershedAreaReq);
+		watershedAreaColumn = new ColumnDataFromTable(watershedAreaTable, 1);
 	}
 	
 	@Test
-	public void checkValuesForTotalIncYield() throws Exception {
+	public void checkValuesForTotalYield() throws Exception {
 
 		
 		//Calc from Action
-		CalcIncrementalYield calcIncYield = new CalcIncrementalYield(
-				predictData, predictResult, catchmentAreaColumn, null);
-		ColumnData calcYieldResultCol = calcIncYield.run();
+		CalcTotalYield calcTotalYield = new CalcTotalYield(
+				predictData, predictResult, watershedAreaColumn, null);
+		ColumnData calcYieldResultCol = calcTotalYield.run();
 		
 		
 		//Get canned predict results
 		PredictData cannedPredictData = getTestModelPredictData();
 		PredictResult cannedResult = getTestModelPredictResult();
-		ColumnData cannedInc = cannedResult.getColumn(cannedResult.getDecayedIncrementalCol());
-		DivideColumnData cannedYield = new DivideColumnData(cannedInc, catchmentAreaColumn, null);
+		ColumnData cannedTotal = cannedResult.getColumn(cannedResult.getTotalCol());
+		DivideColumnData cannedYield = new DivideColumnData(cannedTotal, watershedAreaColumn, null);
 		
 		//Check against canned result (HOLE:  The catchment area data could be loading
 		//incorrectly causing both to be wrong.
@@ -76,16 +77,16 @@ public class CalcIncrementalYieldTest  extends SparrowTestBaseWithDBandCannedMod
 		//Some really simple checks - we don't have canned result data for this
 		//to really verify against
 		assertTrue(calcYieldResultCol.getMaxDouble() > 1000D);
-		assertTrue(calcYieldResultCol.getMinDouble() == 0D);
+		assertTrue(calcYieldResultCol.getMinDouble() < 6D);
 		assertEquals(cannedResult.getRowCount(), calcYieldResultCol.getRowCount().intValue());
 		
 		
 		//Check named metadata
 		assertEquals(
-				Action.getDataSeriesProperty(DataSeriesType.incremental_yield, false),
+				Action.getDataSeriesProperty(DataSeriesType.total_yield, false),
 				calcYieldResultCol.getName());
 		assertEquals(
-				Action.getDataSeriesProperty(DataSeriesType.incremental_yield, true),
+				Action.getDataSeriesProperty(DataSeriesType.total_yield, true),
 				calcYieldResultCol.getDescription());
 		assertEquals(
 				SparrowUnits.KG_PER_SQR_KM_PER_YEAR.toString(), calcYieldResultCol.getUnits());
@@ -95,7 +96,7 @@ public class CalcIncrementalYieldTest  extends SparrowTestBaseWithDBandCannedMod
 				calcYieldResultCol.getProperty(TableProperties.MODEL_ID.toString()));
 		assertEquals(cannedPredictData.getModel().getConstituent(),
 				calcYieldResultCol.getProperty(TableProperties.CONSTITUENT.toString()));
-		assertEquals(DataSeriesType.incremental_yield.getBaseType().name(),
+		assertEquals(DataSeriesType.total_yield.getBaseType().name(),
 				calcYieldResultCol.getProperty(TableProperties.DATA_TYPE.toString()));
 	}
 	
@@ -103,15 +104,15 @@ public class CalcIncrementalYieldTest  extends SparrowTestBaseWithDBandCannedMod
 	public void checkValuesForSingleSourceIncYield() throws Exception {
 		
 		//Calc from Action
-		CalcIncrementalYield calcIncYield = new CalcIncrementalYield(
-				predictData, predictResult, catchmentAreaColumn, 1);
-		ColumnData calcYieldResultCol = calcIncYield.run();
+		CalcTotalYield calcTotalYield = new CalcTotalYield(
+				predictData, predictResult, watershedAreaColumn, 1);
+		ColumnData calcYieldResultCol = calcTotalYield.run();
 		
 		
 		//Get canned predict results
 		PredictResult cannedResult = getTestModelPredictResult();
-		ColumnData cannedInc = cannedResult.getColumn(cannedResult.getDecayedIncrementalColForSrc(1));
-		DivideColumnData cannedYield = new DivideColumnData(cannedInc, catchmentAreaColumn, null);
+		ColumnData cannedTotal = cannedResult.getColumn(cannedResult.getTotalColForSrc(1));
+		DivideColumnData cannedYield = new DivideColumnData(cannedTotal, watershedAreaColumn, null);
 		
 		//Check against canned result (HOLE:  The catchment area data could be loading
 		//incorrectly causing both to be wrong.
@@ -125,12 +126,12 @@ public class CalcIncrementalYieldTest  extends SparrowTestBaseWithDBandCannedMod
 	}
 	
 	@Test
-	public void compareActionResultToCalcAnalysisResultForTotalInc() throws Exception {
+	public void compareActionResultToCalcAnalysisResultForTotalYield() throws Exception {
 		
 		//
 		//Set up context
 		AdjustmentGroups adjustments = new AdjustmentGroups(TEST_MODEL_ID);
-		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.incremental_yield,
+		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.total_yield,
 				null, null, null);
 		PredictionContext yieldContext = new PredictionContext(TEST_MODEL_ID,
 				adjustments, analysis, null, null, null);
@@ -142,9 +143,9 @@ public class CalcIncrementalYieldTest  extends SparrowTestBaseWithDBandCannedMod
 		ColumnData calcAnalysisResultCol = calcAnalysisResult.getTable().getColumn(calcAnalysisResult.getColumn());
 		
 		//Calc from Action
-		CalcIncrementalYield calcIncYield = new CalcIncrementalYield(
-				predictData, predictResult, catchmentAreaColumn, null);
-		ColumnData calcYieldResultCol = calcIncYield.run();
+		CalcTotalYield calcTotalYield = new CalcTotalYield(
+				predictData, predictResult, watershedAreaColumn, null);
+		ColumnData calcYieldResultCol = calcTotalYield.run();
 
 		
 		assertTrue(

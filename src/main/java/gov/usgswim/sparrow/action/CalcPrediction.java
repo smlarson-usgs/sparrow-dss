@@ -11,11 +11,11 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import gov.usgswim.datatable.ColumnAttribsBuilder;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.datatable.ColumnAttribsBuilder;
 import gov.usgswim.sparrow.datatable.ImmutableDoubleColumn;
 import gov.usgswim.sparrow.datatable.MultiplyColumnData;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
@@ -312,11 +312,11 @@ public class CalcPrediction extends Action<PredictResultImm> {
             
             //Map of metadata values for inc-add column
             Map<String, String> incProps = new HashMap<String, String>();
-            incProps.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.incremental.name());
-            incProps.put(TableProperties.DATA_SERIES.getPublicName(),
+            incProps.put(TableProperties.DATA_TYPE.toString(), BaseDataSeriesType.incremental.name());
+            incProps.put(TableProperties.DATA_SERIES.toString(),
             		Action.getDataSeriesProperty(DataSeriesType.incremental, false));
-            incProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
-            incProps.put(TableProperties.PRECISION.getPublicName(), precision);
+            incProps.put(TableProperties.CONSTITUENT.toString(), modelConstituent);
+            incProps.put(TableProperties.PRECISION.toString(), precision);
             String incDesc = "Load added at this reach, undecayed. " +
             	"Reported in " + modelUnits + " of " +
             	modelConstituent + " for the " + srcConstituent + " source.";
@@ -324,20 +324,20 @@ public class CalcPrediction extends Action<PredictResultImm> {
             
             // Map of metadata values for total column
             Map<String, String> totProps = new HashMap<String, String>();
-            totProps.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.total.name());
-            totProps.put(TableProperties.DATA_SERIES.getPublicName(),
+            totProps.put(TableProperties.DATA_TYPE.toString(), BaseDataSeriesType.total.name());
+            totProps.put(TableProperties.DATA_SERIES.toString(),
             		Action.getDataSeriesProperty(DataSeriesType.total, false));
-            totProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
-            totProps.put(TableProperties.PRECISION.getPublicName(), precision);
+            totProps.put(TableProperties.CONSTITUENT.toString(), modelConstituent);
+            totProps.put(TableProperties.PRECISION.toString(), precision);
             String totDesc = "Total load decayed from all upstream reaches decayed to the end of this reach. " +
             	"Reported in " + modelUnits + " of " +
         		modelConstituent + " for the " + srcConstituent + " source.";
             
             //Map of metadata values for decayed inc-add column
             ColumnAttribsBuilder decayedIncAttribs = new ColumnAttribsBuilder();
-            decayedIncAttribs.setProperty(TableProperties.DATA_TYPE.getPublicName(),
+            decayedIncAttribs.setProperty(TableProperties.DATA_TYPE.toString(),
             		BaseDataSeriesType.decayed_incremental.name());
-            decayedIncAttribs.setProperty(TableProperties.DATA_SERIES.getPublicName(),
+            decayedIncAttribs.setProperty(TableProperties.DATA_SERIES.toString(),
             		Action.getDataSeriesProperty(DataSeriesType.decayed_incremental, false));
             decayedIncAttribs.setName(srcName + "Decayed Incremental Load");
             decayedIncAttribs.setDescription(
@@ -359,29 +359,29 @@ public class CalcPrediction extends Action<PredictResultImm> {
         // ------------------------------------------
         int totalIncCol = srcCount;	//The total inc col comes right after the inc per source cols
         Map<String, String> totalIncProps = new HashMap<String, String>();
-        totalIncProps.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.incremental.name());
-        totalIncProps.put(TableProperties.DATA_SERIES.getPublicName(),
+        totalIncProps.put(TableProperties.DATA_TYPE.toString(), BaseDataSeriesType.incremental.name());
+        totalIncProps.put(TableProperties.DATA_SERIES.toString(),
         		Action.getDataSeriesProperty(DataSeriesType.incremental, false));
-        totalIncProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent );
-        totalIncProps.put(TableProperties.ROW_AGG_TYPE.getPublicName(), AggregateType.sum.name());
+        totalIncProps.put(TableProperties.CONSTITUENT.toString(), modelConstituent );
+        totalIncProps.put(TableProperties.ROW_AGG_TYPE.toString(), AggregateType.sum.name());
 
         //Total of total load column
         int totalTotalCol = totalIncCol + srcCount + 1; //The grand total col comes right after the total cols per source
         Map<String, String> grandTotalProps = new HashMap<String, String>();
-        grandTotalProps.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.total.name());
-        grandTotalProps.put(TableProperties.DATA_SERIES.getPublicName(),
+        grandTotalProps.put(TableProperties.DATA_TYPE.toString(), BaseDataSeriesType.total.name());
+        grandTotalProps.put(TableProperties.DATA_SERIES.toString(),
         		Action.getDataSeriesProperty(DataSeriesType.total, false));
-        grandTotalProps.put(TableProperties.CONSTITUENT.getPublicName(), modelConstituent);
-        grandTotalProps.put(TableProperties.ROW_AGG_TYPE.getPublicName(), AggregateType.sum.name());
+        grandTotalProps.put(TableProperties.CONSTITUENT.toString(), modelConstituent);
+        grandTotalProps.put(TableProperties.ROW_AGG_TYPE.toString(), AggregateType.sum.name());
         
         //total of decayed inc-add column
         int totalDecayedIncCol = totalTotalCol + srcCount + 1; //The total decayed inc comes after the total per source cols
         ColumnAttribsBuilder totDecayedIncAttribs = new ColumnAttribsBuilder();
-        totDecayedIncAttribs.setProperty(TableProperties.DATA_TYPE.getPublicName(),
+        totDecayedIncAttribs.setProperty(TableProperties.DATA_TYPE.toString(),
         		BaseDataSeriesType.decayed_incremental.name());
-        totDecayedIncAttribs.setProperty(TableProperties.DATA_SERIES.getPublicName(),
+        totDecayedIncAttribs.setProperty(TableProperties.DATA_SERIES.toString(),
         		Action.getDataSeriesProperty(DataSeriesType.decayed_incremental, false));
-        totDecayedIncAttribs.setProperty(TableProperties.ROW_AGG_TYPE.getPublicName(), AggregateType.sum.name());
+        totDecayedIncAttribs.setProperty(TableProperties.ROW_AGG_TYPE.toString(), AggregateType.sum.name());
         totDecayedIncAttribs.setName(Action.getDataSeriesProperty(DataSeriesType.decayed_incremental, false));
         totDecayedIncAttribs.setDescription(Action.getDataSeriesProperty(DataSeriesType.decayed_incremental, true));
 

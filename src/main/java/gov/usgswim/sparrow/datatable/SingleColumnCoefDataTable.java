@@ -3,6 +3,8 @@ package gov.usgswim.sparrow.datatable;
 import java.util.Map;
 import java.util.Set;
 
+import gov.usgswim.datatable.ColumnAttribs;
+import gov.usgswim.datatable.ColumnAttribsImm;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.ColumnDataFromTable;

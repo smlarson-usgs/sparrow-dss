@@ -57,9 +57,9 @@ public class CalcDeliveryFractionColumnData extends Action<ColumnData> {
 		
 		//Props for the returned column
 		Map<String, String> props = new HashMap<String, String>();
-		props.put(TableProperties.CONSTITUENT.getPublicName(), predictData.getModel().getConstituent());
-		props.put(TableProperties.DATA_TYPE.getPublicName(), BaseDataSeriesType.delivered_fraction.name());
-		props.put(TableProperties.DATA_SERIES.getPublicName(), DataSeriesType.delivered_fraction.name());
+		props.put(TableProperties.CONSTITUENT.toString(), predictData.getModel().getConstituent());
+		props.put(TableProperties.DATA_TYPE.toString(), BaseDataSeriesType.delivered_fraction.name());
+		props.put(TableProperties.DATA_SERIES.toString(), DataSeriesType.delivered_fraction.name());
 		
 		if (deliveries.size() > (baseRows / 9)) {
 			double[] vals2d = new double[baseRows];

@@ -62,24 +62,24 @@ public class LoadReachAttributes extends Action<DataTable> {
 		ColumnDataWritable[] cols = attribs.getColumns();
 		
 		cols[8].setUnits(SparrowUnits.METERS.getUserName());	//Reach Length
-		cols[8].setProperty(TableProperties.PRECISION.getPublicName(), "1");
+		cols[8].setProperty(TableProperties.PRECISION.toString(), "1");
 		
 		cols[9].setUnits(SparrowUnits.CFS.getUserName());	//Mean Flow
-		cols[9].setProperty(TableProperties.PRECISION.getPublicName(), "2");
+		cols[9].setProperty(TableProperties.PRECISION.toString(), "2");
 		cols[10].setUnits(SparrowUnits.FPS.getUserName());	//Mean Velocity
-		cols[10].setProperty(TableProperties.PRECISION.getPublicName(), "2");
+		cols[10].setProperty(TableProperties.PRECISION.toString(), "2");
 		
 		cols[11].setUnits(SparrowUnits.SQR_KM.getUserName());	//Incremental Area
-		cols[11].setProperty(TableProperties.PRECISION.getPublicName(), "2");
+		cols[11].setProperty(TableProperties.PRECISION.toString(), "2");
 		cols[12].setUnits(SparrowUnits.SQR_KM.getUserName());	//Cumulative Drainage Area
-		cols[12].setProperty(TableProperties.PRECISION.getPublicName(), "2");
+		cols[12].setProperty(TableProperties.PRECISION.toString(), "2");
 		
 		cols[13].setUnits(SparrowUnits.FRACTION.getUserName());	//Incremental Delivery
-		cols[13].setProperty(TableProperties.PRECISION.getPublicName(), "6");
+		cols[13].setProperty(TableProperties.PRECISION.toString(), "6");
 		cols[14].setUnits(SparrowUnits.FRACTION.getUserName());	//TOTAL Delivery
-		cols[14].setProperty(TableProperties.PRECISION.getPublicName(), "6");
+		cols[14].setProperty(TableProperties.PRECISION.toString(), "6");
 		cols[15].setUnits(SparrowUnits.FRACTION.getUserName());	//Split Fraction
-		cols[15].setProperty(TableProperties.PRECISION.getPublicName(), "2");
+		cols[15].setProperty(TableProperties.PRECISION.toString(), "2");
 		
 		return attribs;
 	}

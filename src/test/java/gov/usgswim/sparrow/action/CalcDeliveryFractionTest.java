@@ -107,7 +107,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		assertEquals(Action.getDataSeriesProperty(DataSeriesType.delivered_fraction, false), deliveryFrac.getName());
 		assertEquals(Action.getDataSeriesProperty(DataSeriesType.delivered_fraction, true), deliveryFrac.getDescription());
 		assertEquals(SparrowUnits.FRACTION.getUserName(), deliveryFrac.getUnits());
-		assertEquals(unmodifiedPredictData.getModel().getConstituent(), deliveryFrac.getProperty(TableProperties.CONSTITUENT.getPublicName()));
+		assertEquals(unmodifiedPredictData.getModel().getConstituent(), deliveryFrac.getProperty(TableProperties.CONSTITUENT.toString()));
 
 		
 		//Some stats

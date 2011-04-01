@@ -18,12 +18,12 @@ public enum TableProperties implements NamedEnum<TableProperties>{
 	ROW_AGG_TYPE("row_agg_type", AggregateType.class, "Indicates a value is an aggregation of other values in the row.");
 
 	
-	private String name;
+	private String publicName;
 	private String description;
 	private Class<?> valueType;
 	
 	TableProperties(String name, Class<?> valueType, String description) {
-		this.name = name;
+		this.publicName = name;
 		this.description = description;
 		this.valueType = valueType;
 	}
@@ -31,7 +31,7 @@ public enum TableProperties implements NamedEnum<TableProperties>{
 	@Override
 	public TableProperties fromString(String name) {
 		for (TableProperties val : values()) {
-			if (val.name.equals(name)) {
+			if (val.publicName.equals(name)) {
 				return val;
 			}
 		}
@@ -41,7 +41,7 @@ public enum TableProperties implements NamedEnum<TableProperties>{
 	@Override
 	public TableProperties fromStringIgnoreCase(String name) {
 		for (TableProperties val : values()) {
-			if (val.name.equalsIgnoreCase(name)) {
+			if (val.publicName.equalsIgnoreCase(name)) {
 				return val;
 			}
 		}
@@ -58,13 +58,13 @@ public enum TableProperties implements NamedEnum<TableProperties>{
 		return description;
 	}
 	
-	public String getPublicName() {
-		return name;
-	}
+//	public String getPublicName() {
+//		return publicName;
+//	}
 	
 	@Override
 	public String toString() {
-		return name;
+		return publicName;
 	}
 
 	public Class<?> getValueType() {

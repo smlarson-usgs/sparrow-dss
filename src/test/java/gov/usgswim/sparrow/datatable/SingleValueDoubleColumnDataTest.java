@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.datatable;
 
 import static org.junit.Assert.assertEquals;
+import gov.usgswim.datatable.ColumnAttribsBuilder;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardDoubleColumnData;

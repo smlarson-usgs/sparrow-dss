@@ -98,7 +98,7 @@ public class SparrowColumnSpecifier {
 	 * @return
 	 */
 	public String getConstituent() {
-		return table.getProperty(column, TableProperties.CONSTITUENT.getPublicName());
+		return table.getProperty(column, TableProperties.CONSTITUENT.toString());
 	}
 	
 	/**
