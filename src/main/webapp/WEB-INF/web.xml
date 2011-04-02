@@ -186,6 +186,10 @@
 		</init-param>
 	</servlet>
 	<servlet>
+		<servlet-name>ConfirmBinningService</servlet-name>
+		<servlet-class>gov.usgswim.sparrow.service.binning.ConfirmBinningService</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>FindReachService</servlet-name>
 		<servlet-class>gov.usgswim.sparrow.service.idbypoint.FindReachService</servlet-class>
 	</servlet>
@@ -288,6 +292,10 @@
 	<servlet-mapping>
 		<servlet-name>BinningService</servlet-name>
 		<url-pattern>/sp_binning/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ConfirmBinningService</servlet-name>
+		<url-pattern>/sp_confirmBinning/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>FindReachService</servlet-name>
