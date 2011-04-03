@@ -6,8 +6,10 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import gov.usgswim.sparrow.action.ConfirmBinning;
+import gov.usgswim.sparrow.action.VerifyInclusiveBinning;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
+import gov.usgswim.sparrow.service.SharedApplication;
 
 public class ConfirmBinningService extends AbstractSparrowServlet {
 	
@@ -26,7 +28,9 @@ public class ConfirmBinningService extends AbstractSparrowServlet {
 		String[] binLowList = req.getParameter("binLowList")==null ? new String[]{} : ((String)req.getParameter("binLowList")).split(",");
 		
 		try {
-			ConfirmBinning action = new ConfirmBinning(contextId, binHighList, binLowList);
+			SparrowColumnSpecifier data = SharedApplication.getInstance().getPredictionContext(contextId).getDataColumn();
+			
+			VerifyInclusiveBinning action = new VerifyInclusiveBinning(data, binHighList, binLowList);
 			String result = action.run();
 			PrintWriter out = resp.getWriter();
 			out.write("<confirm-bin-response><status>"+result+"</status><message></message></confirm-bin-response>");

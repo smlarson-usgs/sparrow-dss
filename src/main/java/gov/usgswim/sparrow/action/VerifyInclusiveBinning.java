@@ -3,7 +3,6 @@ package gov.usgswim.sparrow.action;
 import java.util.ArrayList;
 
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
-import gov.usgswim.sparrow.service.SharedApplication;
 
 /**
  * Action will load a context, check all of its results to see if they are in the 
@@ -11,16 +10,14 @@ import gov.usgswim.sparrow.service.SharedApplication;
  * 
  * Will return a true or false string value
  */
-public class ConfirmBinning extends Action<String> {
-
-
-	Integer contextId;
+public class VerifyInclusiveBinning extends Action<String> {
 	String[] binHighList;
 	String[] binLowList;
 	ArrayList<Double[]> bins;
+	SparrowColumnSpecifier data;
 	
-    public ConfirmBinning(Integer contextId, String[] high, String[] low) throws Exception {
-    	this.contextId = contextId;
+    public VerifyInclusiveBinning(SparrowColumnSpecifier data, String[] high, String[] low) throws Exception {
+    	this.data = data;
     	this.binHighList = high;
     	this.binLowList = low;
     	
@@ -34,7 +31,6 @@ public class ConfirmBinning extends Action<String> {
     }
     
 	public String doAction() throws Exception {
-		SparrowColumnSpecifier data = SharedApplication.getInstance().getPredictionContext(contextId).getDataColumn();
 		
 		//iterate through all values in the data to see if they are within range
 		for (int r=0; r<data.getTable().getRowCount(); r++) {
