@@ -68,17 +68,25 @@ public class CalcTotalYieldTest  extends SparrowTestBaseWithDBandCannedModel50 {
 		PredictData cannedPredictData = getTestModelPredictData();
 		PredictResult cannedResult = getTestModelPredictResult();
 		ColumnData cannedTotal = cannedResult.getColumn(cannedResult.getTotalCol());
-		DivideColumnData cannedYield = new DivideColumnData(cannedTotal, watershedAreaColumn, null);
+		DivideColumnData cannedCalcedYield = new DivideColumnData(cannedTotal, watershedAreaColumn, null);
 		
 		//Check against canned result (HOLE:  The catchment area data could be loading
 		//incorrectly causing both to be wrong.
-		assertTrue(compareColumns(cannedYield, calcYieldResultCol, false, false, .0000001d));
+		assertTrue(compareColumns(cannedCalcedYield, calcYieldResultCol, false, false, .0000001d));
 		
 		//Some really simple checks - we don't have canned result data for this
 		//to really verify against
 		assertTrue(calcYieldResultCol.getMaxDouble() > 1000D);
 		assertTrue(calcYieldResultCol.getMinDouble() < 6D);
 		assertEquals(cannedResult.getRowCount(), calcYieldResultCol.getRowCount().intValue());
+		
+		//Compare to canned
+		//Not working b/c Ann has the wrong units.  Bummer.
+//		DataTable allPredict = getTestModelCompleteResult();
+		//...compare total yield to canned result
+//		ColumnData cannedTotalYield = allPredict.getColumn(allPredict.getColumnByName("total_yield"));
+//		assertTrue(compareColumns(cannedTotalYield, calcYieldResultCol, false, false, .0000001d));
+		
 		
 		
 		//Check named metadata
