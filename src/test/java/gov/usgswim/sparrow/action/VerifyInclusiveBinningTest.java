@@ -42,7 +42,7 @@ public class VerifyInclusiveBinningTest {
 		
 		assertEquals(
 				"Test inclusive, no boundry cases", 
-				"true", 
+				Boolean.TRUE, 
 				(new VerifyInclusiveBinning(
 					tens, 
 					new String[]{"31", "61", "91"},
@@ -52,7 +52,7 @@ public class VerifyInclusiveBinningTest {
 		
 		assertEquals(
 				"Test inclusive, values on boundries", 
-				"true", 
+				Boolean.TRUE, 
 				(new VerifyInclusiveBinning(
 					tens, 
 					new String[]{"30", "60", "90"},
@@ -63,7 +63,7 @@ public class VerifyInclusiveBinningTest {
 		
 		assertEquals(
 				"Test inclusive, one large bin", 
-				"true", 
+				Boolean.TRUE, 
 				(new VerifyInclusiveBinning(
 					tens, 
 					new String[]{"1000"},
@@ -73,7 +73,7 @@ public class VerifyInclusiveBinningTest {
 		
 		assertEquals(
 				"Test exclusive, low value", 
-				"false", 
+				Boolean.FALSE, 
 				(new VerifyInclusiveBinning(
 					tens, 
 					new String[]{"31", "61", "91"},
@@ -83,7 +83,7 @@ public class VerifyInclusiveBinningTest {
 		
 		assertEquals(
 				"Test exclusive, high value", 
-				"false", 
+				Boolean.FALSE, 
 				(new VerifyInclusiveBinning(
 					tens, 
 					new String[]{"29", "59", "89"},
@@ -93,7 +93,7 @@ public class VerifyInclusiveBinningTest {
 		
 		assertEquals(
 				"Test exclusive, value left out in middle", 
-				"false", 
+				Boolean.FALSE, 
 				(new VerifyInclusiveBinning(
 					tens, 
 					new String[]{"49", "100"},

@@ -10,7 +10,7 @@ import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
  * 
  * Will return a true or false string value
  */
-public class VerifyInclusiveBinning extends Action<String> {
+public class VerifyInclusiveBinning extends Action<Boolean> {
 	String[] binHighList;
 	String[] binLowList;
 	ArrayList<Double[]> bins;
@@ -30,7 +30,7 @@ public class VerifyInclusiveBinning extends Action<String> {
     	}
     }
     
-	public String doAction() throws Exception {
+	public Boolean doAction() throws Exception {
 		
 		//iterate through all values in the data to see if they are within range
 		for (int r=0; r<data.getTable().getRowCount(); r++) {
@@ -42,9 +42,9 @@ public class VerifyInclusiveBinning extends Action<String> {
 					thisResultInBounds = thisResultInBounds || (value.compareTo(bin[0])>=0 && value.compareTo(bin[1])<=0);
 				}
 			}
-			if(!thisResultInBounds) return "false"; //return false as soon as we find a single value that does not exist in a bin
+			if(!thisResultInBounds) return Boolean.FALSE; //return false as soon as we find a single value that does not exist in a bin
 		}
 		
-		return "true";
+		return Boolean.TRUE;
 	}
 }

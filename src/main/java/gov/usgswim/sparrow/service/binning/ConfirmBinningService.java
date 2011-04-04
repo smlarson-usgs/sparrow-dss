@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import gov.usgswim.sparrow.action.VerifyInclusiveBinning;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
+import gov.usgswim.sparrow.service.ServiceResponseOperation;
+import gov.usgswim.sparrow.service.ServiceResponseStatus;
+import gov.usgswim.sparrow.service.ServiceResponseWrapper;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 public class ConfirmBinningService extends AbstractSparrowServlet {
@@ -31,9 +34,11 @@ public class ConfirmBinningService extends AbstractSparrowServlet {
 			SparrowColumnSpecifier data = SharedApplication.getInstance().getPredictionContext(contextId).getDataColumn();
 			
 			VerifyInclusiveBinning action = new VerifyInclusiveBinning(data, binHighList, binLowList);
-			String result = action.run();
-			PrintWriter out = resp.getWriter();
-			out.write("<confirm-bin-response><status>"+result+"</status><message></message></confirm-bin-response>");
+			Boolean result = action.run();
+			
+			ServiceResponseWrapper out = new ServiceResponseWrapper(result, Boolean.class, null, ServiceResponseStatus.OK,
+					ServiceResponseOperation.GET);
+			sendResponse(resp, out);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
