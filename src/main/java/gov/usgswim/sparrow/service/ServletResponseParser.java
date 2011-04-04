@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
@@ -150,7 +152,8 @@ public class ServletResponseParser {
 	}
 	
 	public static XStream getJSONXStream() {
-		XStream xs = new XStream(new JsonHierarchicalStreamDriver());
+		HierarchicalStreamDriver driver = new JettisonMappedXmlDriver();
+		XStream xs = new XStream(driver);
 	    xs.setMode(XStream.NO_REFERENCES);
 	    xs.processAnnotations(ServiceResponseWrapper.class);
 	    return xs;
