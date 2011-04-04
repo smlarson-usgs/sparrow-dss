@@ -11,6 +11,7 @@ import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
 import gov.usgswim.sparrow.domain.PredefinedSessionType;
 import gov.usgswim.sparrow.request.PredefinedSessionRequest;
 import gov.usgswim.sparrow.request.PredefinedSessionUniqueRequest;
+import gov.usgswim.sparrow.service.ServletResponseParser;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.sql.Connection;
@@ -473,6 +474,17 @@ public class PredefinedSessionsLongRunTest extends SparrowTestBaseWithDB {
 		ps3.setUniqueCode("veryUnique3");	//auto-create unique code
 		
 		return new PredefinedSessionBuilder[] {ps1, ps2, ps3};
+	}
+	
+	//@Test
+	public void quickXMLandJSON() {
+		PredefinedSessionBuilder[] sessions = createUnsavedPredefinedSessions();
+		String xml1 = ServletResponseParser.getXMLXStream().toXML(sessions[0]);
+		String json1 = ServletResponseParser.getJSONXStream().toXML(sessions[0]);
+		System.out.println(xml1);
+		System.out.println(json1);
+		
+		
 	}
 	
 }
