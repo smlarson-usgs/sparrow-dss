@@ -103,7 +103,7 @@ public class PredictionContextHandler extends Action<List<PredictionContext>> {
 		List<PredictionContext> list = hydrate(rs, 1);
 		
 		//Shouldn't be required, but there seems to be an issue...
-		//close(rs);
+		close(rs);
 		
 		log.trace("selectOne from DB found " + list.size() + " records.");
 		
