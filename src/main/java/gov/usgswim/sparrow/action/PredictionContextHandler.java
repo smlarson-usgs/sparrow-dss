@@ -100,6 +100,9 @@ public class PredictionContextHandler extends Action<List<PredictionContext>> {
 		stmt.execute();
 		ResultSet rs = (ResultSet)stmt.getObject(3);
 		
+		//Shouldn't be required, but there seems to be an issue...
+		close(rs);
+		
 		List<PredictionContext> list = hydrate(rs, 1);
 		
 		log.trace("selectOne from DB found " + list.size() + " records.");
