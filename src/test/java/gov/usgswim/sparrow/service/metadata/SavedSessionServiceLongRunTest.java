@@ -10,17 +10,21 @@ import java.sql.Statement;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 import java.sql.Connection;
+import java.util.Map;
 
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.action.PredefinedSessionsLongRunTest;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
+import gov.usgswim.sparrow.domain.PredefinedSessionType;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
 import gov.usgswim.sparrow.service.ServiceResponseWrapper;
+import gov.usgswim.sparrow.service.ServletResponseParser;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -43,9 +47,14 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDB
 	
 	private static final String SESSION_SERVICE_URL = "http://localhost:8088/sp_session";
 	
+
 	@After
-	public void deleteTestSessions() throws Exception {
-		String delSQL = "DELETE FROM predefined_session WHERE description like '%[[TEST USAGE ONLY, DO NOT USE. DELETE ME]]desc%'";
+	public void cleanupAfter() throws Exception {
+		removeTestSessions();
+	}
+	
+	public void removeTestSessions() throws Exception {
+		String delSQL = "DELETE FROM predefined_session WHERE description like '%[[TEST USAGE ONLY, DO NOT USE. DELETE ME]]%'";
 		Connection conn = SharedApplication.getInstance().getRWConnection();
 		Statement stmt = null;
 		int rowsDeleted = 0;
@@ -81,7 +90,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDB
 		
 		String ps1Str = Action.getText("Session1", this.getClass());
 		req.setParameter(AbstractSparrowServlet.XML_SUBMIT_DEFAULT_PARAM_NAME, ps1Str);
-		Object entity = getXMLXStream().fromXML(ps1Str);
+		Object entity = ServletResponseParser.getXMLXStream().fromXML(ps1Str);
 		IPredefinedSession ps1 = (IPredefinedSession)entity;
 		
 		WebResponse response = client.sendRequest(req);
@@ -152,7 +161,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDB
 		req.setHeaderField(AbstractSparrowServlet.XML_SUBMIT_HEADER_NAME, "i_made_this_up");
 		
 		req.setParameter("i_made_this_up", ps1Str);
-		Object entity = getXMLXStream().fromXML(ps1Str);
+		Object entity = ServletResponseParser.getXMLXStream().fromXML(ps1Str);
 		IPredefinedSession ps1 = (IPredefinedSession)entity;
 		
 		WebResponse response = client.sendRequest(req);
@@ -184,7 +193,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDB
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(ps1Str.getBytes(Charset.forName("UTF-8")));
 		WebRequest req = new PutMethodWebRequest(SESSION_SERVICE_URL, inputStream, XML.toString() +"; UTF-8");
 		
-		Object entity = getXMLXStream().fromXML(ps1Str);
+		Object entity = ServletResponseParser.getXMLXStream().fromXML(ps1Str);
 		IPredefinedSession ps1 = (IPredefinedSession)entity;
 		
 		WebResponse response = client.sendRequest(req);
@@ -204,6 +213,40 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDB
 		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
 		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/entity[1]/uniqueCode", actualResponse);
 		assertXpathEvaluatesTo(dbId, "/ServiceResponseWrapper/entityId", actualResponse);
+		
+	}
+	
+	@Test
+	public void CreateByPostingJSONinTheBodyWithoutUsingParams() throws Exception {
+		
+		String ps1Str = Action.getText("Session2", this.getClass());
+		
+		assertTrue(Charset.isSupported("UTF-8"));
+		ByteArrayInputStream inputStream = new ByteArrayInputStream(ps1Str.getBytes(Charset.forName("UTF-8")));
+		WebRequest req = new PutMethodWebRequest(SESSION_SERVICE_URL, inputStream, JSON.toString() +"; UTF-8");
+		
+		Object entity = ServletResponseParser.getJSONXStream().fromXML(ps1Str);
+		IPredefinedSession ps1 = (IPredefinedSession)entity;
+		
+		WebResponse response = client.sendRequest(req);
+		String actualResponse = response.getText();
+		System.out.println("response: '" + actualResponse + "'");
+		
+		assertTrue(actualResponse.startsWith("{\"ServiceResponseWrapper\":{\"status\":\"OK\",\"operation\":\"CREATE\",\"entityClass\":\"gov.usgswim.sparrow.domain.IPredefinedSession\",\"entityId\":"));
+		
+//		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
+//
+//		String dbId = getXPathValue("/ServiceResponseWrapper/entityId", actualResponse);
+//
+//		//Get via /id url (full response)
+//		req = new GetMethodWebRequest(SESSION_SERVICE_URL + "/" + dbId);
+//		response = client.sendRequest(req);
+//		actualResponse = response.getText();
+//		//System.out.println("Get via /id url (full response) response: " + actualResponse);
+//		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
+//		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
+//		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/entity[1]/uniqueCode", actualResponse);
+//		assertXpathEvaluatesTo(dbId, "/ServiceResponseWrapper/entityId", actualResponse);
 		
 	}
 	
@@ -338,13 +381,6 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDB
 		public String getMethod() {
 			return "PUT";
 		}
-	}
-	
-	protected static XStream getXMLXStream() {
-		XStream xs = new XStream(new StaxDriver());
-        xs.setMode(XStream.NO_REFERENCES);
-        xs.processAnnotations(ServiceResponseWrapper.class);
-        return xs;
 	}
 	
 
