@@ -204,9 +204,15 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		if (autoCloseStatements != null) {
 			for (Statement ps : autoCloseStatements) {
 				try {
-					if (ps != null)	ps.close();
+					if (ps != null)	{
+						ps.close();
+						log.trace("Successfully autoclosed statement ID: " + ps.hashCode());
+					}
 				} catch (Exception e) {
-					log.warn("Good grief, I just tried to close a SQL Statement, should this really throw an exception?", e);
+					log.warn(
+							"Good grief, I just tried to close a SQL Statement," +
+							" should this really throw an exception?  " +
+							"Statement ID: " + ps.hashCode(), e);
 				}
 			}
 			
