@@ -190,6 +190,10 @@
 		<servlet-class>gov.usgswim.sparrow.service.binning.ConfirmBinningService</servlet-class>
 	</servlet>
 	<servlet>
+		<servlet-name>FindCalibrationSiteService</servlet-name>
+		<servlet-class>gov.usgswim.sparrow.service.idbypoint.FindCalibrationSiteService</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>FindReachService</servlet-name>
 		<servlet-class>gov.usgswim.sparrow.service.idbypoint.FindReachService</servlet-class>
 	</servlet>
@@ -272,6 +276,10 @@
 	<servlet-mapping>
 		<servlet-name>IDByPointService</servlet-name>
 		<url-pattern>/sp_idpoint/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>FindCalibrationSiteService</servlet-name>
+		<url-pattern>/sp_idcalibsite/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>PredictContextService</servlet-name>

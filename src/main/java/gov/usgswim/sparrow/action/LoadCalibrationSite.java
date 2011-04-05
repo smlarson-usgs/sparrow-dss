@@ -1,27 +1,38 @@
 package gov.usgswim.sparrow.action;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 import gov.usgswim.sparrow.domain.CalibrationSite;
 import gov.usgswim.sparrow.domain.CalibrationSiteBuilder;
 
 public class LoadCalibrationSite extends Action<CalibrationSite> {
-
+	
+	String query =  "SelectStationByReachId";
+	Double lat;
+	Double lon;
+	
+	public LoadCalibrationSite(Double lat, Double lon) {
+		query = "SelectStationByLatLon";
+		this.lat = lat;
+		this.lon = lon;
+	}
+	
+	public LoadCalibrationSite(Long reachId) {
+		//TODO reach id
+	}
+	
 	@Override
 	public CalibrationSite doAction() throws Exception {
 		CalibrationSiteBuilder result = null;
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("lat", lat);
+		params.put("lng", lon);
 		
-		String[] params = new String[] {"ReachId", ""}; //TODO
-		
-		String query = getTextWithParamSubstitution("SelectStationByReachId", params);
-		
-		Statement stmt = null;
-		ResultSet rset = null;
-		
-		stmt = getROConnection().createStatement();
-		
-		rset = stmt.executeQuery(query);
+		PreparedStatement st = getROPSFromPropertiesFile(query, getClass(), params);
+		ResultSet rset = st.executeQuery();
 		
 		if (rset.next()) {
 			result = new CalibrationSiteBuilder();
