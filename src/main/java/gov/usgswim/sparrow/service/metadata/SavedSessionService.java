@@ -193,7 +193,7 @@ public class SavedSessionService extends AbstractSparrowServlet {
 		
 		//send back w/ a wrapper
 		wrap.addEntity(updatedPredefinedSession);
-		wrap.setEntityId(updatedPredefinedSession.getId());
+		wrap.setEntityId((updatedPredefinedSession==null) ? null : updatedPredefinedSession.getId());
 		wrap.setStatus(OK);
 		sendResponse(resp, wrap);
 	}
