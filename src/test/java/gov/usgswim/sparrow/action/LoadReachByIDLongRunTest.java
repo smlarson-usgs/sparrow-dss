@@ -32,7 +32,7 @@ public class LoadReachByIDLongRunTest  extends SparrowTestBaseWithDB {
 	public void doOneTimeCustomSetup() throws Exception {
 		
 		//Uncomment to debug
-		setLogLevel(Level.DEBUG);
+		//setLogLevel(Level.DEBUG);
 		reachId = new ReachID(SparrowTestBaseWithDB.TEST_MODEL_ID, 6000L);
 	}
 	

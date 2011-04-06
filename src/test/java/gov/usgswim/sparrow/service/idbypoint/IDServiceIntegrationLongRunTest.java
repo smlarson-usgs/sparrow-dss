@@ -21,7 +21,7 @@ public class IDServiceIntegrationLongRunTest extends SparrowServiceTestBaseWithD
 	@Test
 	public void testModelByPoint() throws Exception {
 		String response = runRequest(getXmlAsString(this.getClass(), "req1"));
-		System.out.println("Req 1 response: " + response);
+		//System.out.println("Req 1 response: " + response);
 		
 		int reachID = Integer.parseInt( getXPathValue("//*[local-name()='id']", response) );
 		String reachName = getXPathValue("//*[local-name()='name']", response);
@@ -77,7 +77,6 @@ public class IDServiceIntegrationLongRunTest extends SparrowServiceTestBaseWithD
 		
 		String expectedResponse = getXmlAsString(this.getClass(), "resp4");
 		String actualResponse = runRequest(contextBasedIDReq);
-		log.setLevel(Level.DEBUG);
 		log.debug("Req 4 response: " + actualResponse);
 
 		assertTrue(similarXMLIgnoreContextId(expectedResponse, actualResponse));

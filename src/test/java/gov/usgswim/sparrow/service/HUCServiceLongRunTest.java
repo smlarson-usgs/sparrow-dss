@@ -30,7 +30,7 @@ public class HUCServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
 		WebResponse response = client.sendRequest(req);
 		String actualResponse = response.getText();
-		System.out.println("response: " + actualResponse);
+		//System.out.println("response: " + actualResponse);
 		
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);

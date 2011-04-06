@@ -1,18 +1,14 @@
 package gov.usgswim.sparrow.action;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import gov.usgswim.sparrow.SparrowTestBaseWithDB;
-import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.domain.Geometry;
 import gov.usgswim.sparrow.domain.HUC;
 import gov.usgswim.sparrow.domain.HUCType;
 import gov.usgswim.sparrow.domain.Segment;
-import gov.usgswim.sparrow.domain.Source;
-import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.request.HUCRequest;
-
-import java.util.List;
-
 
 import org.junit.Test;
 
