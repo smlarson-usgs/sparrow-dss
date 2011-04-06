@@ -8,6 +8,8 @@ public class CalibrationSiteBuilder implements CalibrationSite, ImmutableBuilder
 	private Double latitude;
 	private Double longitude;
 	private Long modelReachId;
+	private String reachId;
+	private String reachName;
 	private Double predictedValue;
 	private String stationId;
 	private String stationName;
@@ -16,10 +18,12 @@ public class CalibrationSiteBuilder implements CalibrationSite, ImmutableBuilder
 		//
 	}
 	
-	public CalibrationSiteBuilder(Long modelReachId, Double latitude, 
+	public CalibrationSiteBuilder(Long modelReachId, String reachId, String reachName, Double latitude, 
 			Double longitude, Double actualValue, Double predictedValue, 
 			String stationId, String stationName) {
 		this.modelReachId = modelReachId;
+		this.reachId = reachId;
+		this.reachName = reachName;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.actualValue = actualValue;
@@ -67,7 +71,24 @@ public class CalibrationSiteBuilder implements CalibrationSite, ImmutableBuilder
 	public void setModelReachId(Long modelReachId) {
 		this.modelReachId = modelReachId;
 	}
+	
+	@Override
+	public String getReachName() {
+		return this.reachName;
+	}
 
+	public void setReachName(String reachName) {
+		this.reachName = reachName;
+	}
+
+	@Override
+	public String getReachId() {
+		return this.reachId;
+	}
+
+	public void setReachId(String reachId) {
+		this.reachId = reachId;
+	}
 	
 	@Override
 	public Double getPredictedValue() {
@@ -100,7 +121,7 @@ public class CalibrationSiteBuilder implements CalibrationSite, ImmutableBuilder
 
 	@Override
 	public CalibrationSite toImmutable() throws IllegalStateException {
-		CalibrationSite result = new CalibrationSiteImm(this.modelReachId, this.latitude, 
+		CalibrationSite result = new CalibrationSiteImm(this.modelReachId, this.reachId, this.reachName, this.latitude, 
 										this.longitude, this.actualValue, this.predictedValue, 
 										this.stationId, this.stationName);
 		return result;

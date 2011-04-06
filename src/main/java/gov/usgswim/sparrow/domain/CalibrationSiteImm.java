@@ -13,14 +13,18 @@ public class CalibrationSiteImm implements CalibrationSite, Serializable {
 	private final Double latitude;
 	private final Double longitude;
 	private final Long modelReachId;
+	private final String reachId;
+	private final String reachName;
 	private final Double predictedValue;
 	private final String stationId;
 	private final String stationName;
 	
-	public CalibrationSiteImm(Long modelReachId, Double latitude, 
+	public CalibrationSiteImm(Long modelReachId, String reachId, String reachName, Double latitude, 
 			Double longitude, Double actualValue, Double predictedValue, 
 			String stationId, String stationName) {
 		this.modelReachId = modelReachId;
+		this.reachId = reachId;
+		this.reachName = reachName;
 		this.latitude = latitude;
 		this.longitude = longitude;
 		this.actualValue = actualValue;
@@ -47,6 +51,16 @@ public class CalibrationSiteImm implements CalibrationSite, Serializable {
 	@Override
 	public Long getModelReachId() {
 		return this.modelReachId;
+	}
+	
+	@Override
+	public String getReachName() {
+		return this.reachName;
+	}
+	
+	@Override
+	public String getReachId() {
+		return this.reachId;
 	}
 
 	@Override

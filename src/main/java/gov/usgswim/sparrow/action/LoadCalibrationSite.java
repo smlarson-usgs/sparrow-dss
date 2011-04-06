@@ -43,6 +43,8 @@ public class LoadCalibrationSite extends Action<CalibrationSite> {
 			result.setStationId(rset.getString("STATION_ID"));
 			result.setStationName(rset.getString("STATION_NAME"));
 			result.setModelReachId(rset.getLong("MODEL_REACH_ID"));
+			result.setReachId(rset.getString("REACH_ID"));
+			result.setReachName(rset.getString("REACH_NAME"));
 		}
 		
 		return result.toImmutable();

@@ -19,4 +19,8 @@ public interface CalibrationSite {
 	public Double getPredictedValue();
 	
 	public String getStationId();
+
+	public String getReachName();
+	
+	public String getReachId();
 }
