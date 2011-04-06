@@ -66,7 +66,7 @@ public class ServletResponseParser {
 				entity = getXMLXStream().fromXML(content);
 				break;
 			case JSON:
-				entity = getJSONXStream().fromXML(content);
+				entity = getJSONXStreamReader().fromXML(content);
 				break;
 			default:
 				errorMessage = "Unrecognized content type.";
@@ -151,7 +151,11 @@ public class ServletResponseParser {
 	    return xs;
 	}
 	
-	public static XStream getJSONXStream() {
+	/**
+	 * To read JSON, we need to use the Jettison driver.
+	 * @return
+	 */
+	public static XStream getJSONXStreamReader() {
 		HierarchicalStreamDriver driver = new JettisonMappedXmlDriver();
 		XStream xs = new XStream(driver);
 	    xs.setMode(XStream.NO_REFERENCES);
@@ -159,6 +163,12 @@ public class ServletResponseParser {
 	    return xs;
 	}
 	
+	/**
+	 * The Jettison driver works to write JSON, but it does it all
+	 * as a single line.  This driver makes it more readable when
+	 * serializing, but does not support reading.
+	 * @return
+	 */
 	public static XStream getJSONXStreamWriter() {
 		XStream xs = new XStream(new JsonHierarchicalStreamDriver());
 	    xs.setMode(XStream.NO_REFERENCES);
