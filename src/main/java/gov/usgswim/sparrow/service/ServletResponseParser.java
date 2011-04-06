@@ -158,4 +158,11 @@ public class ServletResponseParser {
 	    xs.processAnnotations(ServiceResponseWrapper.class);
 	    return xs;
 	}
+	
+	public static XStream getJSONXStreamWriter() {
+		XStream xs = new XStream(new JsonHierarchicalStreamDriver());
+	    xs.setMode(XStream.NO_REFERENCES);
+	    xs.processAnnotations(ServiceResponseWrapper.class);
+	    return xs;
+	}
 }

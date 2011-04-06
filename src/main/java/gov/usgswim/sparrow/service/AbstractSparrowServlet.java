@@ -158,7 +158,7 @@ public abstract class AbstractSparrowServlet extends HttpServlet {
 			xs = ServletResponseParser.getXMLXStream();
 			break;
 		case JSON:
-			xs = ServletResponseParser.getJSONXStream();
+			xs = ServletResponseParser.getJSONXStreamWriter();
 			break;
 		default:
 			throw new RuntimeException("Unknown MIMEType.");
