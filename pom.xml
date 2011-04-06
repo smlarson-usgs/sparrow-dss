@@ -21,15 +21,20 @@
 	</scm>
 
 	<distributionManagement>
+		<!-- 
+		Note:  The 'true' url for the Nexus repo is:
+		http://internal.cida.usgs.gov
+		however, due to network issues in the office, the machine url is being used temporarly.
+		 -->
 		<repository>
 			<id>cida-sparrow-dss-releases</id>
 			<name>CIDA Sparrow DSS Releases</name>
-			<url>http://internal.cida.usgs.gov/nexus/content/repositories/cida-sparrow-dss-releases</url>
+			<url>http://igsarmewfsbbl.er.usgs.gov:8081/nexus/content/repositories/cida-sparrow-dss-releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>cida-sparrow-dss-snapshots</id>
 			<name>CIDA Sparrow DSS Snapshots</name>
-			<url>http://internal.cida.usgs.gov/nexus/content/repositories/cida-sparrow-dss-snapshots</url>
+			<url>http://igsarmewfsbbl.er.usgs.gov:8081/nexus/content/repositories/cida-sparrow-dss-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
 
