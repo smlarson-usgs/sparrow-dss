@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 import java.sql.Connection;
 import java.util.Map;
 
+import gov.usgs.webservices.framework.utils.StringUtils;
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.action.PredefinedSessionsLongRunTest;
@@ -230,24 +231,10 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDB
 		
 		WebResponse response = client.sendRequest(req);
 		String actualResponse = response.getText();
-		System.out.println("response: '" + actualResponse + "'");
+		//System.out.println("response: '" + actualResponse + "'");
 		
+		actualResponse = StringUtils.removeWhiteSpace(actualResponse);
 		assertTrue(actualResponse.startsWith("{\"ServiceResponseWrapper\":{\"status\":\"OK\",\"operation\":\"CREATE\",\"entityClass\":\"gov.usgswim.sparrow.domain.IPredefinedSession\",\"entityId\":"));
-		
-//		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
-//
-//		String dbId = getXPathValue("/ServiceResponseWrapper/entityId", actualResponse);
-//
-//		//Get via /id url (full response)
-//		req = new GetMethodWebRequest(SESSION_SERVICE_URL + "/" + dbId);
-//		response = client.sendRequest(req);
-//		actualResponse = response.getText();
-//		//System.out.println("Get via /id url (full response) response: " + actualResponse);
-//		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
-//		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
-//		assertXpathEvaluatesTo("test_created_delete_me_XX1", "/ServiceResponseWrapper/entityList/entity[1]/uniqueCode", actualResponse);
-//		assertXpathEvaluatesTo(dbId, "/ServiceResponseWrapper/entityId", actualResponse);
-		
 	}
 	
 	@Test
