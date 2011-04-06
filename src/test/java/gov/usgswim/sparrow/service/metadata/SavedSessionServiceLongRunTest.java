@@ -225,7 +225,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDB
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(ps1Str.getBytes(Charset.forName("UTF-8")));
 		WebRequest req = new PutMethodWebRequest(SESSION_SERVICE_URL, inputStream, JSON.toString() +"; UTF-8");
 		
-		Object entity = ServletResponseParser.getJSONXStream().fromXML(ps1Str);
+		Object entity = ServletResponseParser.getJSONXStreamReader().fromXML(ps1Str);
 		IPredefinedSession ps1 = (IPredefinedSession)entity;
 		
 		WebResponse response = client.sendRequest(req);
