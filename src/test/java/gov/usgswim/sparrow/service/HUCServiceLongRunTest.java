@@ -30,7 +30,7 @@ public class HUCServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
 		WebResponse response = client.sendRequest(req);
 		String actualResponse = response.getText();
-		//System.out.println("response: " + actualResponse);
+		System.out.println("response: " + actualResponse);
 		
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
@@ -54,12 +54,25 @@ public class HUCServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
 		WebResponse response = client.sendRequest(req);
 		String actualResponse = response.getText();
-		//System.out.println("response: " + actualResponse);
+		System.out.println("response: " + actualResponse);
 		
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
 		assertXpathEvaluatesTo("gov.usgswim.sparrow.domain.HUC", "/ServiceResponseWrapper/entityClass", actualResponse);
 		assertXpathEvaluatesTo("06020002", "/ServiceResponseWrapper/entityList/entity[1]/hucCode", actualResponse);
+		
+	}
+	
+	//Not a test, just a quick way to look at the json if needed.
+	public void quickSpitOutSomeJson() throws Exception {
+		WebRequest req = new PostMethodWebRequest(SERVICE_URL);
+		req.setParameter("huc", "03080102");	//single segment
+		//req.setParameter("huc", "01");	//multi segment
+		req.setParameter(AbstractSparrowServlet.REQUESTED_MIME_TYPE_PARAM_NAME, ServiceResponseMimeType.JSON.toString());
+
+		WebResponse response = client.sendRequest(req);
+		String actualResponse = response.getText();
+		System.out.println("response: " + actualResponse);
 		
 	}
 
