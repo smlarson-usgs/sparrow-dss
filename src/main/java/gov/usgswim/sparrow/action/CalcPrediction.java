@@ -339,7 +339,7 @@ public class CalcPrediction extends Action<PredictResultImm> {
             		BaseDataSeriesType.decayed_incremental.name());
             decayedIncAttribs.setProperty(TableProperties.DATA_SERIES.toString(),
             		Action.getDataSeriesProperty(DataSeriesType.decayed_incremental, false));
-            decayedIncAttribs.setName(srcName + "Decayed Incremental Load");
+            decayedIncAttribs.setName(srcName + " Decayed Incremental Load");
             decayedIncAttribs.setDescription(
             	"Load added at this reach and decayed to the end of the reach. " +
             	"Reported in " + modelUnits + " of " +
