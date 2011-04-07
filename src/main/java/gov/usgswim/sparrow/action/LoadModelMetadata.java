@@ -24,6 +24,22 @@ import gov.usgswim.sparrow.util.SparrowResourceUtils;
 
 public class LoadModelMetadata extends Action<List<SparrowModel>> {
 
+	/**
+	 * Assign a system property with this value to 'true' to skip loading the
+	 * predefined themes during metadata loading.  This is currently for one
+	 * use case:  During model testing when a model is first loaded, the
+	 * ComparePredictionToTextLongRunTest is run which loads the model data
+	 * from the db and the predicted values from the text file and compares
+	 * the result.
+	 * 
+	 * The predefined sessions are stored in the transactional db, which has
+	 * a different pwd / login info than the db where the model data is kept.
+	 * The test user is prompted for the pwd for the main db and we don't want
+	 * to also prompt for the transactional db, especially since the predefined
+	 * session data is not required for the test.
+	 */
+	public static final String SKIP_LOADING_PREDEFINED_THEMES = "skip_loading_predefined_themes";
+	
 	private boolean isApproved, isPublic, isArchived, getSources;
 	private Long sparrowModelId;
 
@@ -64,8 +80,6 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 	 */
 	@Override
 	public List<SparrowModel> doAction() throws Exception {
-
-		//***************** COPIED CODE *******************
 
 		List<SparrowModelBuilder> models = new ArrayList<SparrowModelBuilder>(23);//magic number
 
@@ -115,16 +129,17 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 				//assume the string form of the unit is the enum name
 				SparrowUnits unit = SparrowUnits.parse(sUnits);
 				m.setUnits(unit);
-				
 
-				//************* END COPIED CODE ****************
-				//StringBuilder sessions = SavedSessionService.retrieveAllSavedSessionsXML(Long.toString(modelID));
-				// ^^ What is this doing? Cause right now it's nothing.
-				//m.setSessions(SparrowResourceUtils.retrieveAllSavedSessions(Long.toString(modelID)));
 
-				PredefinedSessionRequest psRequest = new PredefinedSessionRequest(modelID, true, PredefinedSessionType.FEATURED);
-				List<IPredefinedSession> sessions = SharedApplication.getInstance().getPredefinedSessions(psRequest);
-				m.setSessions(sessions);
+				if ("true".equals(System.getProperty(SKIP_LOADING_PREDEFINED_THEMES))) {
+					//Don't load the predefined sessions - we just want the basic
+					//data for model testing.
+					m.setSessions(new ArrayList<IPredefinedSession>());
+				} else {
+					PredefinedSessionRequest psRequest = new PredefinedSessionRequest(modelID, true, PredefinedSessionType.FEATURED);
+					List<IPredefinedSession> sessions = SharedApplication.getInstance().getPredefinedSessions(psRequest);
+					m.setSessions(sessions);
+				}
 				
 				models.add(m);
 			}

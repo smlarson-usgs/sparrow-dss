@@ -12,6 +12,7 @@ import gov.usgswim.datatable.impl.StandardLongColumnData;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.action.CalcAnalysis;
+import gov.usgswim.sparrow.action.LoadModelMetadata;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -125,17 +126,15 @@ public class ComparePredictionToTextLongRunTest {
 				"gov.usgs.cida.config.DynamicReadOnlyProperties.EXPECT_NON_JNDI_ENVIRONMENT",
 				"true");
 		
+		System.setProperty(LoadModelMetadata.SKIP_LOADING_PREDEFINED_THEMES, "true");
+		
 		//Production Properties
 		System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.152:1521:widw");
 		System.setProperty("dbuser", "sparrow_dss");
 		System.setProperty("dbpass", dbPwd);
 		
-		//Test DB Properties - igsarmewdbdev.er.usgs.gov
-//		System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.154:1521:widev");
-//		System.setProperty("dbuser", "sparrow_dss");
-		
 		//Turns on detailed logging
-		log.setLevel(Level.DEBUG);
+		//log.setLevel(Level.DEBUG);
 		
 		//Generically turn on logging for Actions
 		//log.getLogger(Action.class).setLevel(Level.DEBUG);
@@ -218,7 +217,14 @@ public class ComparePredictionToTextLongRunTest {
 				
 				String idString = singleModelPath.substring(0, singleModelPath.lastIndexOf('.'));
 				idString = idString.substring(idString.lastIndexOf(File.separatorChar) + 1);
-				long id = Long.parseLong(idString);
+				Long id = null;
+				
+				try {
+					id = Long.parseLong(idString);
+				} catch (Exception e) {
+					idString = prompt("Couldn't figure out the model number (expecting it as the file name).  What is the model number?");
+					id = Long.parseLong(idString);
+				}
 				
 				boolean pass = true;
 				pass = pass & testSingleModelDataQuality(id);
