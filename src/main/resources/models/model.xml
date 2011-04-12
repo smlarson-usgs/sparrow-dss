@@ -95,20 +95,19 @@
 		</Term>
 		<Term id="Data Series">
 			<h2>Data Series</h2><br/>
-			<p>The <i>Data Series</i> specifies what data is drawn on the map.
-			The most common model output is the <i>Total Load</i>,
-			which is the average amount of the constituent you would expect to
-			find in a stream, as predicted by the model.</p>
+			<p>The <i>Data Series</i> specifies which data (model output or input) are drawn on the map.
+			The most commonly selected data are <i>Total Load</i> estimates,
+			which represent the average mass of constituent transported by a stream, as predicted by the model.</p>
 			
 			<p>
 				
 				
 			</p>
 			<p>The complete list of data series:</p>
-			<!-- This list updated oct 29, 2010 by ee -->
+			<!-- This list updated April 12, 2011 by LM -->
 			<dl>
 				<dt>Total Load</dt><dd>
-					The mean annual load of the constituent (mass per year)
+					The mean annual load of the constituent (mass in kg per year)
 					leaving each stream reach, as predicted by the model. 
 					The load reflects the accumulated mass of the constituent 
 					contributed by all sources in the total drainage area upstream 
@@ -117,18 +116,14 @@
 					The mean annual load is a standardized measure of the constituent
 					mass in the stream that reflects the mean quantities of mass
 					that are likely to occur during a specified base year under
-					long-term mean streamflow conditions. 
-					Spatial variations in the standardized loads are generally
-					indicative of conditions during higher-flow periods of
-					the year that often occur during the winter and spring.  
+					long-term mean streamflow conditions.
 					The mean annual conditions described by the model 
-					predictions also primarily reflect the effects of natural
+					primarily reflect the effects of natural
 					and human-related processes that supply and remove 
 					constituent mass in watersheds over long time periods. 
-					The predicted load is also "unadjusted" for measured 
-					stream load values at monitoring sites; measured loads 
-					are commonly substituted for model predictions ("adjusted" loads) 
-					in the calibration procedure to ensure accurate estimation of the model.
+					You can select 'All Sources' to map the total load for all of the
+					sources together, or select an individual model source to map the
+					theoretical load due to a single source.
 				</dd>
                 <dt>Standard Error of Total Load</dt><dd>
                 	An estimate of the prediction error associated with the <i>Total load</i>, 
@@ -136,15 +131,15 @@
                 	Units are the same as the units for <i>Total load</i>.
                 </dd>
                 <dt>Incremental Load</dt><dd>
-					The mean annual load of the constituent (mass per year)
-					entering the stream reach from sources in the incremental
-					drainage area of the reach.
+					The mean annual load of the constituent (mass in kg per year)
+					leaving the incremental drainage area of an individual stream reach.
 					The load value reflects the effects of in-stream attenuation
 					processes associated with one half of the reach time of travel
-					(this assumes that the load at approximately the center of reach on average).
-					You can select 'All Sources' or an individual model source to
-					map the incremental load for all of the sources together,
-					or the theoretical load due to a single source.
+					(this assumes that the entire load of the incremental drainage area
+					enters the reach at approximately the midpoint, between the upstream and
+					downstream end).  You can select 'All Sources' for all of the sources
+					together, or select an individual model source to map the
+					theoretical incremental load due to a single source.
                 </dd>
                 <dt>Standard Error of Incremental Load</dt><dd>
 					An estimate of the prediction error associated with the <i>Incremental Load</i>,
@@ -154,13 +149,17 @@
                 <dt>Incremental Yield</dt><dd>
                 	The <i>Incremental Load</i> divided by the incremental
                 	drainage area of the reach.
-                	Units are mass per square kilometer per year.
+                	Units are mass in kg per square kilometer per year. Incremental yield
+                	removes the variability due to differences in drainage area and allows
+                	comparison of the export rates from different drainages.
                 </dd>
-                <dt>Concentration</dt><dd>
-                	The average concentration of the constituent in the reach
+                <dt>Flow-weighted Concentration</dt><dd>
+                	The mean annual flow-weighted concentration of the constituent in the reach
                 	in units of mass per volume.  This is calculated by dividing
                 	the <i>Total Load</i> by the <i>Streamflow</i> and converting
-                	to a standard unit.
+                	to standard units.  Annual flow-weighted concentrations generally reflect
+                	conditions during higher-flow periods of the year that often occur during
+                	the winter and spring.
                 </dd>
                 <dt>Source Value</dt><dd>
                 	The source value is the amount of a particular source
@@ -168,41 +167,47 @@
                 	source to map this data series.  If you have created
                 	adjustments as part of a 'what if' scenario, the adjusted
                 	source values are presented.<br/>
-                	In many cases the 'source' is not a constituent
-                	source.  For instance, land area or population could be a source
-                	term if it was determined to be a statistically significant
-                	surrogate for the constituent.<br/>
-                	Also, consider that some source terms may be interdependent.
-                	Increasing a hypothetical <i>Agricultural Land Area</i>
-                	source value may require decreasing a <i>Developed Land Area</i> source
-                	for the set of adjusted reaches.
+                	In some cases the 'source' is not represented in terms of mass,
+                	but rather as a surrogate variable that relfects the spatial variation
+                	of a source of the water-quality constituent.  For instance, 
+                	a measurement such as urban land area or population may be included as
+                	a source term, serving as a surrogate measurement for nutrients in
+                	urban runoff, for which direct measurements for each catchment are not
+                	available.<br/>
+                	Also, consider that some source terms may be interdependent and that
+                	changes to one will logically require changes
+                	to another.  For example, decreasing the value of the source term <i>Agricultural Land Area</i>
+                	(a surrogate for runoff from fertilized agricultural land) could require
+                	increasing the value of the source term <i>Developed Land Area</i> 
+                	(surrogate for runoff from urban land) for the set of adjusted reaches, if the shift
+                	away from agricultural land use in those reaches is expected to be accompanied
+                	by a shift towards urban land use.
                 </dd>
                 <dt>Streamflow</dt><dd>
-                	The mean annual stream flow of the reach, in units of volume per time.
+                	The mean annual stream flow of the reach, in units of volume (cubic feet) per time (second).
                 </dd>
                 <dt>Delivery Fraction</dt><dd>
-                	The fraction of the load leaving a reach that arrives at the
+                	The fraction (from 0 to 1) of the load leaving a reach that arrives at the
                 	downstream end of a selected target reach without any removal
                 	by natural attenuation processes
                 	(e.g., long-term storage; denitrification).
-                	You must choose a target reach if you select this series.
-                	<i>This definition may not be correct - isn't the attenuation what the DF actually shows?</i>
+                	You must first define a downstream target reach in order to map this series.
                 </dd>
                 <dt>Incremental Delivered Load</dt><dd>
                 	The incremental load associated with a stream reach that arrives
                 	at the downstream end of a selected target reach, in units
-                	of mass per year.
-                	You must choose a target reach if you select this series.
+                	of mass (kg) per year.
+                	You must first define a downstream target reach in order to map this series.
                 </dd>
                 <dt>Total Delivered Load</dt><dd>
                 	The total load associated with a stream reach that arrives at
-                	the downstream end of a selected target reach, in units of mass per year.
-                	You must choose a target reach if you select this series.
+                	the downstream end of a selected target reach, in units of mass (kg) per year.
+                	You must first define a downstream target reach in order to map this series.
 				</dd>
                 <dt>Incremental Delivered Yield</dt><dd>
                 	The <i>Incremental Delivered Load</i> divided by the drainage
-                	area of the reach, in units of mass per square kilometer per year.
-                	You must choose a target reach if you select this series.
+                	area of the reach, in units of mass (kg) per square kilometer per year.
+                	You must first define a downstream target reach in order to map this series.
                 </dd>
 			</dl>
 		</Term>
@@ -242,20 +247,22 @@
 		</Term>
 		<Term id="Comparison">
 			<h2>Comparison To Original Model</h2><br/>
-			For the selected <i>Data Series</i>, the model prediction based on your adjusted values
-			can be compared to the model prediction based on the original unadjusted values (i.e. the 
-			<i>original</i> model prediction).<br/>
-			Two options are available:
+			The model prediction based on changed input
+			can be compared to the model prediction based on the original input values (i.e. the 
+			<i>original</i> model prediction), for any selected <i> Data Series </i>.<br/>
+			Two options for comparison are available:
 			<dl>
 			<dt>Absolute change from original</dt>
-			<dd>Subtracts the
-			original (unadjusted) model result from the adjusted model result.</dd>
+			<dd>The difference (in units of the data series) between the
+			predicted value using changed inputs and the predicted value using original input
+			(negative number indicates decrease compared to original).</dd>
 			<dt>% change from original</dt>
-			<dd>Presents the percent increase of
-			the adjusted model result over the original model result.  That is:<br/>
-			<code>100 X (adjusted - original) / orginal</code><br/>
-			Any increase from a original value of zero is considered a 100% change.
-			Any decrease from a original value of zero is considered a -100% change.</dd>
+			<dd>The percent difference (in units of percent) between the predicted value
+			using changed input and the predicted value using original input
+			(negative number indicates decrease compared to original).  Calculated as:<br/>
+			<code>100 X (changed - original) / original</code><br/>
+			Any increase from an original predicted value of zero is reported as a 100% change.
+			Any decrease from an original predicted value of zero is reported as a -100% change.</dd>
 			</dl>
 		</Term>
 		<Term id="Nominal">
@@ -348,63 +355,63 @@
 		</Term>
 		<Term id="Export Readme">
 			Data Series Help:
-			The Data Series specifies what data is drawn on the map. The most common model output is the Total Load, which is the average amount of the constituent you would expect to find in a stream, as predicted by the model.
+			The Data Series specifies which data (model output or input) are drawn on the map. The most commonly selected data are the total load estimates, which represent the average mass of the constituent transported by a stream, as predicted by the model.
 			The complete list of data series:
 			Total Load
-			The mean annual load of the constituent (mass per year) leaving
-			each stream reach, as predicted by the model. The load reflects the accumulated mass of the constituent contributed by all sources in the total drainage area upstream of the reach outlet. The load includes the effects of in-stream attenuation processes in all upstream reaches. The mean annual load is a standardized measure of the constituent mass in the stream that reflects the mean quantities of mass that are likely to occur during a specified base year under long-term mean streamflow conditions. Spatial variations in the standardized loads are generally indicative of conditions during higher-flow periods of the year that often occur during the winter and spring. The mean annual conditions described by the model predictions also primarily reflect the effects of natural and human-related processes that supply and remove constituent mass in watersheds over long time periods. The predicted load is also "unadjusted" for measured stream load values at monitoring sites; measured loads are commonly substituted for model predictions ("adjusted" loads) in the calibration procedure to ensure accurate estimation of the model.
+			The mean annual load of the constituent (mass in kg per year) leaving
+			each stream reach, as predicted by the model. The load reflects the accumulated mass of the constituent contributed by all sources in the total drainage area upstream of the reach outlet. The load includes the effects of in-stream attenuation processes in all upstream reaches. The mean annual load is a standardized measure of the constituent mass in the stream that reflects the mean quantities of mass that are likely to occur during a specified base year under long-term mean streamflow conditions. The mean annual conditions described by the model primarily reflect the effects of natural and human-related processes that supply and remove constituent mass in watersheds over long time periods. You can select 'All Sources' to map the total load for all of the sources together, or select an individual model source to map the theoretical load due to a single source.
 			
 			Standard Error of Total Load
-			An estimate of the prediction error associated with the Total load, based on the model calibration. Units are the same as the units for Total load.
+			An estimate of the prediction error associated with the total load, based on the model calibration. Units are the same as the units for total load.
 			
 			Incremental Load
-			The mean annual load of the constituent (mass per year) entering the stream reach from sources in the incremental drainage area of the reach. The load value reflects the effects of in-stream attenuation processes associated with one half of the reach time of travel (this assumes that the load at approximately the center of reach on average). You can select 'All Sources' or an individual model source to map the incremental load for all of the sources together, or the theoretical load due to a single source.
+			The mean annual load of the constituent (mass in kg per year) leaving the incremental drainage area of an individual stream reach.  The load value reflects the effects of in-stream attenuation processes associated with one half of the reach time of travel (this assumes that the entire load of the incremental drainage area enters the reach at approximately the midpoint, between the upstream and downstream end). You can select 'All Sources' for all sources together, or select an individual model source to map the theoretical incremental load due to a single source.
 			
 			Standard Error of Incremental Load
-			An estimate of the prediction error associated with the Incremental Load, based on the model calibration. Units are the same as the units for Incremental Load.
+			An estimate of the prediction error associated with the incremental load, based on the model calibration. Units are the same as the units for incremental load.
 			
 			Incremental Yield
-			The Incremental Load divided by the incremental drainage area of the reach. Units are mass per square kilometer per year.
+			The incremental load divided by the incremental drainage area of the reach. Units are mass in kg per square kilometer per year.  Incremental yield removes the variability due to differences in drainage area and allows comparison of the export rates from different drainages.
 			
-			Concentration
-			The average concentration of the constituent in the reach in units of mass per volume. This is calculated by dividing the Total Load by the Streamflow and converting to a standard unit.
+			Flow-weighted Concentration
+			The mean annual flow-weighted concentration of the constituent in the reach in units of mass per volume. This is calculated by dividing the total load by the streamflow and converting to standard units.  Annual flow-weighted concentrations generally reflect conditions during higher-flow periods of the year that often occur during the winter and spring.
 			
 			Source Value
 			The source value is the amount of a particular source added in the reach's drainage area - you must choose a source to map this data series. If you have created adjustments as part of a 'what if' scenario, the adjusted source values are presented.
 			
-			In many cases the 'source' is not a constituent source. For instance, land area or population could be a source term if it was determined to be a statistically significant surrogate for the constituent.
+			In some cases the 'source' is not represented in terms of mass, but rather as a surrogate variable that reflects the spatial variation of a source of the water-quality constituent. For instance, a measurement such as urban land area or population may be included as a source term, serving as a surrogate measurement for nutrients in urban runoff, for which direct measurements for each catchment are not available.
 			
-			Also, consider that some source terms may be interdependent. Increasing a hypothetical Agricultural Land Area source value may require decreasing a Developed Land Area source for the set of adjusted reaches.
+			Also, consider that some source terms may be interdependent and that changes to one (in a what-if scenario) will logically require changes to another. For example, decreasing the value of the source term Agricultural Land Area (a surrogate for runoff from fertilized agricultural land) could require increasing the value of the source term Developed Land Area (surrogate for runoff from urban land) for the set of adjusted reaches, if the shift away from agricultural land use in those reaches is expected to be accompanied by a shift towards urban land use.
 			
 			Streamflow
-			The mean annual stream flow of the reach, in units of volume per time.
+			The mean annual stream flow of the reach, in units of volume (cubic feet) per time (seconds).
 			
 			Delivery Fraction
-			The fraction of the load leaving a reach that arrives at the downstream end of a selected target reach without any removal by natural attenuation processes (e.g., long-term storage; denitrification). You must choose a target reach if you select this series. 
+			The fraction (from 0 to 1) of the load leaving a reach that arrives at the downstream end of a selected target reach without any removal by natural attenuation processes (e.g., long-term storage; denitrification). You must first define a downstream target reach in order to map this series. 
 			
 			Incremental Delivered Load
-			The incremental load associated with a stream reach that arrives at the downstream end of a selected target reach, in units of mass per year. You must choose a target reach if you select this series.
+			The incremental load associated with an individual stream reach that arrives at the downstream end of a selected target reach, in units of mass (kg) per year. You must first define a downstream target reach in order to map this series.
 			
 			Total Delivered Load
-			The total load associated with a stream reach that arrives at the downstream end of a selected target reach, in units of mass per year. You must choose a target reach if you select this series.
+			The total load associated with a stream reach that arrives at the downstream end of a selected target reach, in units of mass (kg) per year. You must first define a downstream target reach in order to map this series.
 			
 			Incremental Delivered Yield
-			The Incremental Delivered Load divided by the drainage area of the reach, in units of mass per square kilometer per year. You must choose a target reach if you select this series.
+			The incremental delivered load divided by the drainage area of the reach, in units of mass (kg) per square kilometer per year. You must first define a downstream target reach in order to map this series.
 			
 			
 			Comparison to Original Model Help:
 			
-			For the selected Data Series, the model prediction based on your adjusted values can be compared to the model prediction based on the original unadjusted values (i.e. the original model prediction).
+			The model prediction based on changed input ("what-if" scenarios) can be compared to the model prediction based on the original input values (i.e. the original model prediction), for any selected data series (Total Load, Incremental Yield, etc).
 			
-			Two options are available: 
+			Two options for comparison are available: 
 			Absolute change from original
-			Subtracts the original (unadjusted) model result from the adjusted model result.
+			The difference (in units of the data series) between the predicted value using changed inputs and the predicted value using original input (negative number indicates decrease compared to original).
 			% change from original
-			Presents the percent increase of the adjusted model result over the original model result. That is:
+			The percent difference (in units of percent) between the predicted value using changed input and the predicted value using original input (negative number indicates decrease compared to original).  Calculated as:
 			
-			100 X (adjusted - original) / original
+			100 X (change - original) / original
 			
-			Any increase from a original value of zero is considered a 100% change. Any decrease from an original value of zero is considered a -100% change.
+			Any increase from an original predicted value of zero is reported as a 100% change. Any decrease from an original predicted value of zero is reported as a -100% change.
 			
 			
 			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
