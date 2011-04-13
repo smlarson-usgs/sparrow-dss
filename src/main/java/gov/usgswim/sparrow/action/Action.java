@@ -441,7 +441,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 * @param params
 	 * @throws SQLException
 	 */
-	protected void assignParameters(PreparedStatement statement,
+	public static void assignParameters(PreparedStatement statement,
 			SQLString sqlString, Map<String, Object> params) throws Exception {
 		
 		ArrayList<String> variables = new ArrayList<String>();
