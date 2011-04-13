@@ -85,8 +85,6 @@ public class PredictionContextHandler extends Action<List<PredictionContext>> {
 		String query = getText(SELECT_ONE_STATEMENT_NAME, getClass());
 		CallableStatement stmt = this.getRWConnection().prepareCall(query);
 		
-		log.trace("Adding selectOne statement to autoclose list.  Statement ID: " + stmt.hashCode());
-		
 		addStatementForAutoClose(stmt);	//register it for autoclose
 		
 		// set the in params 'key' and 'value_class'
@@ -101,9 +99,6 @@ public class PredictionContextHandler extends Action<List<PredictionContext>> {
 		ResultSet rs = (ResultSet)stmt.getObject(3);
 		
 		List<PredictionContext> list = hydrate(rs, 1);
-		
-		//Shouldn't be required, but there seems to be an issue...
-		close(rs);
 		
 		log.trace("selectOne from DB found " + list.size() + " records.");
 		
