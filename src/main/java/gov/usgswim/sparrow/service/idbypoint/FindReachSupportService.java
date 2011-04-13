@@ -1,20 +1,14 @@
 package gov.usgswim.sparrow.service.idbypoint;
 
+import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.service.ServiceServlet;
-import gov.usgswim.sparrow.cachefactory.AbstractCacheFactory;
+import gov.usgswim.sparrow.service.ConfiguredCache;
 import gov.usgswim.sparrow.service.ReturnStatus;
-import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
@@ -28,28 +22,10 @@ import javax.xml.stream.XMLStreamReader;
 
 /**
  * @author ilinkuo
- * TODO This service was not implemented via the Pipeline idiom like the others. Decide whether or not to maintain the idiom.
  */
 public class FindReachSupportService extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	public static String sampleResponse="<sparrow-reach-response xmlns=\"http://www.usgs.gov/sparrow/id-response-schema/v0_2\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" model-id=\"22\">"
-		+ "    <status>OK</status>"
-		+ "   	<reach>"
-		+ "      	<id>3541</id>"
-		+ "        <name>WESTERN RUN</name>"
-		+ "		<meanq>1234</meanq>"
-		+ "		<state>WI</state>"
-		+ "		<watershed-area>2345</watershed-area>"
-		+ "        <bbox min-long=\"-76.840216\" min-lat=\"39.492299\" max-long=\"-76.626801\" max-lat=\"39.597698\" marker-long=\"-76.7584575\" marker-lat=\"39.505502\" />"
-		+ "        <hucs>"
-		+ "            <huc8 id=\"02060003\" name=\"GUNPOWDER-PATAPSCO\" />"
-		+ "            <huc6 id=\"020600\" name=\"UPPER CHESAPEAKE\" />"
-		+ "            <huc4 id=\"0206\" name=\"UPPER CHESAPEAKE\" />"
-		+ "            <huc2 id=\"02\" name=\"MID ATLANTIC\" />"
-		+ "        </hucs>"
-		+ "   	</reach>"
-		+ "</sparrow-reach-response>";
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -57,13 +33,6 @@ public class FindReachSupportService extends HttpServlet {
 		doPost(req, resp);
 	}
 
-	public static final String EDANAME_QUERY = "SELECT  distinct EDANAME FROM MODEL_ATTRIB_VW  WHERE SPARROW_MODEL_ID=%s and EDANAME is not null";
-	public static final String EDACODE_QUERY = "SELECT  distinct EDACODE FROM MODEL_ATTRIB_VW  WHERE SPARROW_MODEL_ID=%s and EDACODE is not null";
-	public static final Map<String, String> QUERIES = new HashMap<String, String>();
-	{	// populate the queries map
-		QUERIES.put("name", EDANAME_QUERY);
-		QUERIES.put("code", EDACODE_QUERY);
-	}
 	protected void getEdaAttribs(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		resp.setContentType("application/xml");
 		String modelID = req.getParameter("model");
@@ -73,18 +42,24 @@ public class FindReachSupportService extends HttpServlet {
 		String message = "";
 		String rootElement = "eda" + attrib + "s-response";
 		try {
-			// TODO need to put this in properties file using getText per conventions
-			String edanameQuery = String.format(QUERIES.get(attrib), modelID);
-			Connection conn = SharedApplication.getInstance().getROConnection();
-			Statement stmt = conn.createStatement();
-			ResultSet rset = stmt.executeQuery(edanameQuery);
+			ColumnData edaAttrib = null;
+			Long mId = Long.parseLong(modelID);
+			
+			if ("code".equals(attrib)) {
+				edaAttrib = (ColumnData) ConfiguredCache.EDACodeColumn.get(mId);
+			} else if ("name".equals(attrib)) {
+				edaAttrib = (ColumnData) ConfiguredCache.EDANameColumn.get(mId);
+			} else {
+				throw new Exception("Unrecognized attribute code: " + attrib);
+			}
+
 
 			boolean hasFoundResults = false;
 			String openTag = "<" + attrib + ">";
 			String closeTag = "</" + attrib + ">";
-			while (rset.next()) {
+			for (int r = 0; r < edaAttrib.getRowCount(); r++) {
 				hasFoundResults = true;
-				outputXML.append(openTag).append(rset.getString(1)).append(closeTag);
+				outputXML.append(openTag).append(edaAttrib.getString(r)).append(closeTag);
 			}
 			if (hasFoundResults) {
 				status = ReturnStatus.OK;
@@ -92,7 +67,7 @@ public class FindReachSupportService extends HttpServlet {
 				status = ReturnStatus.ERROR;
 				message = "No eda " + attrib + "s found for model " + modelID;
 			}
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			status = ReturnStatus.ERROR;
 			message = e.getMessage();
 			outputXML = new StringBuilder(); // clear the output
@@ -104,145 +79,10 @@ public class FindReachSupportService extends HttpServlet {
 		out.print(outputXML.toString());
 	}
 
-//	protected void getEdaNames(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-//		resp.setContentType("text/xml");
-//		String modelID = req.getParameter("model");
-//		StringBuilder outputXML = new StringBuilder();
-//		String status = "error";
-//
-//		outputXML.append("<edanames-response>");
-//		try {
-//			// TODO need to put this in properties file using getText per conventions
-//			String edanameQuery = String.format(EDANAME_QUERY, modelID);
-//			Connection conn = SharedApplication.getInstance().getConnection();
-//			Statement stmt = conn.createStatement();
-//			ResultSet rset = stmt.executeQuery(edanameQuery);
-//			boolean hasFoundResults = false;
-//			while (rset.next()) {
-//				hasFoundResults = true;
-//				outputXML.append("<name>").append(rset.getString(1)).append("</name>");
-//			}
-//			if (hasFoundResults) {
-//				status = "OK";
-//			} else {
-//				status = "ERROR: SORRY. No edanames found for model " + modelID;
-//			}
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		outputXML = getResponseXMLHeader(modelID, status).append(outputXML).append("</edanames-response>");
-//		ServletOutputStream out = resp.getOutputStream();
-//		out.print(outputXML.toString());
-//	}
-//
-//	protected void getEdaCodes(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-//		resp.setContentType("text/xml");
-//		String modelID = req.getParameter("model");
-//		StringBuilder outputXML = new StringBuilder();
-//		String status = "error";
-//
-//		outputXML.append("<edacodes-response>");
-//		try {
-//			// TODO need to put this in properties file using getText per conventions
-//			String edacodeQuery = String.format(EDACODE_QUERY, modelID);
-//			Connection conn = SharedApplication.getInstance().getConnection();
-//			Statement stmt = conn.createStatement();
-//			ResultSet rset = stmt.executeQuery(edacodeQuery);
-//			boolean hasFoundResults = false;
-//			while (rset.next()) {
-//				hasFoundResults = true;
-//				outputXML.append("<code>").append(rset.getString(1)).append("</code>");
-//			}
-//			if (hasFoundResults) {
-//				status = "OK";
-//			} else {
-//				status = "ERROR: SORRY. No edacodes found for model " + modelID;
-//			}
-//		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		outputXML = getResponseXMLHeader(modelID, status).append(outputXML).append("</edacodes-response>");
-//		ServletOutputStream out = resp.getOutputStream();
-//		out.print(outputXML.toString());
-//	}
-
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 	throws ServletException, IOException {
 		getEdaAttribs(req, resp);
-//		resp.setContentType("text/xml");
-//		FindReachRequest frReq = parseRequest(req);
-//		StringBuilder outputXML = new StringBuilder();
-//		String status = "error";
-//
-//		List<String> errors = cleanAndCheckValidityFindReachRequest(frReq);
-//		if (errors.size() == 0) {
-//			String whereClause = createFindReachWhereClause(frReq);
-//
-//			try {
-//				Connection conn = SharedApplication.getInstance().getConnection();
-//
-//				String sql = "Select full_identifier, reach_name, meanq, catch_area, huc2, huc4, huc6, huc8 from model_attrib_vw a "
-//					+ ((frReq.boundingBox == null)? "": "join model_geom_vw g on a.sparrow_model_id = g.sparrow_model_id and a.identifier = g.identifier ")
-//					+ "where a.sparrow_model_id = " + frReq.modelID
-//					+ whereClause
-//					+ " order by reach_name";
-//				//System.out.println(sql);
-//				Statement stmt = conn.createStatement();
-//				ResultSet rset = stmt.executeQuery(sql);
-//
-//				boolean hasFoundResults = false;
-//				while (rset.next()) {
-//					hasFoundResults = true;
-//					outputXML.append("<reach>");
-//
-//					{
-//						outputXML.append("<id>" + rset.getString("FULL_IDENTIFIER") + "</id>");
-//						outputXML.append("<name>" + rset.getString("REACH_NAME") + "</name>");
-//						outputXML.append("<meanq>" + rset.getString("MEANQ") + "</meanq>");
-//						//outputXML.append("<state>" + rset.getString("REACH_NAME") + "</state>");
-//						outputXML.append("<catch-area>" + rset.getString("CATCH_AREA") + "</catch-area>");
-//						outputXML.append("<hucs>");
-//						{
-//							outputXML.append("<huc8 id=\"" + rset.getString("HUC8") + "\" name=\"\" />");
-//							outputXML.append("<huc6 id=\"" + rset.getString("HUC6") + "\" name=\"\" />");
-//							outputXML.append("<huc4 id=\"" + rset.getString("HUC4") + "\" name=\"\" />");
-//							outputXML.append("<huc2 id=\"" + rset.getString("HUC2") + "\" name=\"\" />");
-//						}
-//						outputXML.append("</hucs>");
-//					}
-//					outputXML.append("</reach>");
-//				}
-//				if (hasFoundResults) {
-//					status = "OK";
-//				} else {
-//					status = "ERROR: SORRY. No reaches were found matching your criteria";
-//				}
-//			} catch (SQLException e) {
-//				status = "ERROR: " + e.getMessage();
-//				outputXML = new StringBuilder(); // clear the output
-//				e.printStackTrace();
-//			}
-//		} else { // return error response
-//			status = "ERROR";
-//			for (String error: errors) {
-//				status += ";" + error;
-//			}
-//		}
-//
-//		outputXML = getResponseXMLHeader(frReq.modelID, status).append(outputXML).append("</sparrow-reach-response>");
-//		ServletOutputStream out = resp.getOutputStream();
-//		out.print(outputXML.toString());
-	}
-
-
-	public static void getEDACodes(String modelID) {
-
-	}
-
-	public static void getEDANames(String modelID) {
 
 	}
 

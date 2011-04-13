@@ -13,7 +13,7 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
  * 
  * @author eeverman
  */
-public enum ConfiguredCache{
+public enum ConfiguredCache {
 	// distributed caches
 	PredictContext(false),
 	AdjustmentGroups(false),
@@ -46,7 +46,11 @@ public enum ConfiguredCache{
 	HUCTable(false, new HUCTableFactory()),
 	HUC(false, new HUCFactory()),
 	ReachWatershed(false, new ReachWatershedFactory()),
-	StreamFlow(false, new StreamFlowFactory())
+	StreamFlow(false, new StreamFlowFactory()),
+	
+	//FindReachSupportService
+	EDACodeColumn(false, new EDACodeColumnFactory()),
+	EDANameColumn(false, new EDANameColumnFactory())
 	;
 	
 	public final boolean isDistributed;
@@ -59,6 +63,18 @@ public enum ConfiguredCache{
 		} else {
 			this.factory = null;
 		}
+	}
+	
+	/**
+	 * Fetch an object by its key.
+	 * 
+	 * No type checking is done, so callers must ensure they are using the correct
+	 * class types.
+	 * @param key
+	 * @return
+	 */
+	public Object get(Object key) {
+		return get(key, false);
 	}
 	
 	/**
@@ -82,6 +98,18 @@ public enum ConfiguredCache{
 	 * No type checking is done, so callers must ensure they are using the correct
 	 * class types.
 	 * @param key
+	 * @return
+	 */
+	public Object get(Long key) {
+		return get(key, false);
+	}
+	
+	/**
+	 * Fetch an object by its key.
+	 * 
+	 * No type checking is done, so callers must ensure they are using the correct
+	 * class types.
+	 * @param key
 	 * @param quiet
 	 * @return
 	 */
@@ -89,6 +117,18 @@ public enum ConfiguredCache{
 		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
 		Element e  = (quiet)? c.getQuiet(key): c.get(key);
 		return (e != null)? e.getObjectValue(): null;
+	}
+	
+	/**
+	 * Fetch an object by its key.
+	 * 
+	 * No type checking is done, so callers must ensure they are using the correct
+	 * class types.
+	 * @param key An Integer key is converted to a long.
+	 * @return
+	 */
+	public Object get(Integer key) {
+		return get(new Long(key), false);
 	}
 	
 	/**

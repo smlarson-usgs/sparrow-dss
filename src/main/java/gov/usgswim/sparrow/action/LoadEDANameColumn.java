@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
 
@@ -11,35 +11,33 @@ import java.util.Map;
 
 
 /**
- * TODO:  This is likely fast and better than what we had before, but we will
- * need sorting to be specific for each column (names by names, codes by codes).
- * Thus, I think this needs to be two tables.
- * Loads a table containing EDA names and codes attributes.
+ * Loads the distinct EDA Names for a model.
  * 
- * TODO:  Not yet wired into the application.
+ * Currently used to populate the 'Find Reach' window w/ options for the user
+ * to pick from.
+ * 
  * @author eeverman
- *
  */
-public class LoadEDAAttributes extends Action<DataTable> {
+public class LoadEDANameColumn extends Action<ColumnData> {
 	
 	/** Name of the query in the classname matched properties file */
-	public static final String QUERY_NAME = "attributesSQL";
+	public static final String QUERY_NAME = "select";
 	
 	protected long modelId;
 	
-	public LoadEDAAttributes(long modelId) {
+	public LoadEDANameColumn(long modelId) {
 		super();
 		this.modelId = modelId;
 	}
 
 
-	public LoadEDAAttributes() {
+	public LoadEDANameColumn() {
 		super();
 	}
 
 
 	@Override
-	public DataTable doAction() throws Exception {
+	public ColumnData doAction() throws Exception {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("ModelId", this.modelId);
 
@@ -51,7 +49,7 @@ public class LoadEDAAttributes extends Action<DataTable> {
 		rset = st.executeQuery();	//auto-closed
 		attribs = DataTableConverter.toDataTable(rset);
 		
-		return attribs;
+		return attribs.getColumn(0);
 	}
 
 
