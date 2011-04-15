@@ -153,6 +153,13 @@
                 	removes the variability due to differences in drainage area and allows
                 	comparison of the export rates from different drainages.
                 </dd>
+                <dt>Total Yield</dt><dd>
+                	The <i>Total Load</i> divided by the total
+                	drainage area upstream of the reach outlet.
+                	Units are mass in kg per square kilometer per year. Total yield
+                	removes the variability due to differences in drainage area and allows
+                	comparison of the export rates from different drainages.
+                </dd>
                 <dt>Flow-weighted Concentration</dt><dd>
                 	The mean annual flow-weighted concentration of the constituent in the reach
                 	in units of mass per volume.  This is calculated by dividing
@@ -191,23 +198,23 @@
                 	downstream end of a selected target reach without any removal
                 	by natural attenuation processes
                 	(e.g., long-term storage; denitrification).
-                	You must first define a downstream target reach in order to map this series.
+                	You must first define a downstream outlet reach in order to map this series.
                 </dd>
                 <dt>Incremental Delivered Load</dt><dd>
                 	The incremental load associated with a stream reach that arrives
                 	at the downstream end of a selected target reach, in units
                 	of mass (kg) per year.
-                	You must first define a downstream target reach in order to map this series.
+                	You must first define a downstream outlet reach in order to map this series.
                 </dd>
                 <dt>Total Delivered Load</dt><dd>
                 	The total load associated with a stream reach that arrives at
                 	the downstream end of a selected target reach, in units of mass (kg) per year.
-                	You must first define a downstream target reach in order to map this series.
+                	You must first define a downstream outlet reach in order to map this series.
 				</dd>
                 <dt>Incremental Delivered Yield</dt><dd>
                 	The <i>Incremental Delivered Load</i> divided by the drainage
                 	area of the reach, in units of mass (kg) per square kilometer per year.
-                	You must first define a downstream target reach in order to map this series.
+                	You must first define a downstream outlet reach in order to map this series.
                 </dd>
 			</dl>
 		</Term>
@@ -373,6 +380,9 @@
 			Incremental Yield
 			The incremental load divided by the incremental drainage area of the reach. Units are mass in kg per square kilometer per year.  Incremental yield removes the variability due to differences in drainage area and allows comparison of the export rates from different drainages.
 			
+			Total Yield
+			The total load divided by the total drainage area upstream of the reach outlet.  Units are mass in kg per square kilometer per year.  Total yield removes the variability due to differences in drainage area and allows comparison of the export rates from different drainages.
+			
 			Flow-weighted Concentration
 			The mean annual flow-weighted concentration of the constituent in the reach in units of mass per volume. This is calculated by dividing the total load by the streamflow and converting to standard units.  Annual flow-weighted concentrations generally reflect conditions during higher-flow periods of the year that often occur during the winter and spring.
 			
@@ -387,16 +397,16 @@
 			The mean annual stream flow of the reach, in units of volume (cubic feet) per time (seconds).
 			
 			Delivery Fraction
-			The fraction (from 0 to 1) of the load leaving a reach that arrives at the downstream end of a selected target reach without any removal by natural attenuation processes (e.g., long-term storage; denitrification). You must first define a downstream target reach in order to map this series. 
+			The fraction (from 0 to 1) of the load leaving a reach that arrives at the downstream end of a selected target reach without any removal by natural attenuation processes (e.g., long-term storage; denitrification). You must first define a downstream outlet reach in order to map this series. 
 			
 			Incremental Delivered Load
-			The incremental load associated with an individual stream reach that arrives at the downstream end of a selected target reach, in units of mass (kg) per year. You must first define a downstream target reach in order to map this series.
+			The incremental load associated with an individual stream reach that arrives at the downstream end of a selected target reach, in units of mass (kg) per year. You must first define a downstream outlet reach in order to map this series.
 			
 			Total Delivered Load
-			The total load associated with a stream reach that arrives at the downstream end of a selected target reach, in units of mass (kg) per year. You must first define a downstream target reach in order to map this series.
+			The total load associated with a stream reach that arrives at the downstream end of a selected target reach, in units of mass (kg) per year. You must first define a downstream outlet reach in order to map this series.
 			
 			Incremental Delivered Yield
-			The incremental delivered load divided by the drainage area of the reach, in units of mass (kg) per square kilometer per year. You must first define a downstream target reach in order to map this series.
+			The incremental delivered load divided by the drainage area of the reach, in units of mass (kg) per square kilometer per year. You must first define a downstream outlet reach in order to map this series.
 			
 			
 			Comparison to Original Model Help:
