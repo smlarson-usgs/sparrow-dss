@@ -3,12 +3,15 @@ package gov.usgswim.sparrow.service;
 import static gov.usgswim.sparrow.service.ServiceResponseMimeType.*;
 
 
+import gov.usgswim.sparrow.action.Action;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
@@ -17,6 +20,10 @@ import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 public class ServletResponseParser {
+	protected static Logger log =
+		Logger.getLogger(ServletResponseParser.class); //logging for this class
+	
+	
 	HttpServletRequest req;
 	String content;
 	ServiceResponseMimeType type;
@@ -60,17 +67,22 @@ public class ServletResponseParser {
 		Object entity = null;
 
 		
-		if (! UNKNOWN.equals(type) && content != null) {
-			switch (type) {
-			case XML:
-				entity = getXMLXStream().fromXML(content);
-				break;
-			case JSON:
-				entity = getJSONXStreamReader().fromXML(content);
-				break;
-			default:
-				errorMessage = "Unrecognized content type.";
+		try {
+			if (! UNKNOWN.equals(type) && content != null) {
+				switch (type) {
+				case XML:
+					entity = getXMLXStream().fromXML(content);
+					break;
+				case JSON:
+					entity = getJSONXStreamReader().fromXML(content);
+					break;
+				default:
+					errorMessage = "Unrecognized content type.";
+				}
 			}
+		} catch (Throwable e) {
+			log.warn("Error while attempting to parse content to an object", e);
+			log.debug(type.toString() + " content that caused the error was: " + content);
 		}
 		
 		parsedObject = entity;
