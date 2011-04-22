@@ -31,25 +31,25 @@ public class LoadHUCDetailLongRunTest extends SparrowTestBaseWithDB {
 		LoadHUCDetail action = new LoadHUCDetail(req);
 		HUC huc = action.run();
 
-		float[] ords = huc.getGeometry().getSegments()[0].getCoordinates();
+		float[] ords = huc.getSimpleGeometry().getSegments()[0].getCoordinates();
 		
 		assertNull(action.getPostMessage());
 		assertEquals("01", huc.getHucCode());
 		assertEquals("NEW ENGLAND", huc.getName());
 		assertEquals(HUCType.HUC2, huc.getHucType());
-		assertEquals(false, huc.getGeometry().getSegments()[0].isLinear());
-		assertEquals(true, huc.getGeometry().getSegments()[0].isPolygon());
-		assertEquals(-73.73509d, huc.getGeometry().getMinLong(), .0001d);
-		assertEquals(40.94826d, huc.getGeometry().getMinLat(), .0001d);
-		assertEquals(-66.954d, huc.getGeometry().getMaxLong(), .0001d);
-		assertEquals(47.46188d, huc.getGeometry().getMaxLat(), .0001d);
+		assertEquals(false, huc.getSimpleGeometry().getSegments()[0].isLinear());
+		assertEquals(true, huc.getSimpleGeometry().getSegments()[0].isPolygon());
+		assertEquals(-73.73509d, huc.getSimpleGeometry().getMinLong(), .0001d);
+		assertEquals(40.94826d, huc.getSimpleGeometry().getMinLat(), .0001d);
+		assertEquals(-66.954d, huc.getSimpleGeometry().getMaxLong(), .0001d);
+		assertEquals(47.46188d, huc.getSimpleGeometry().getMaxLat(), .0001d);
 		
 		//the number of ords should always be even
 		assertTrue(
 				Math.abs(ords.length / 2 - ((float) (ords.length) / 2f)) < .1f);
 		
 		
-//		printStats(huc.getGeometry());
+//		printStats(huc.getSimpleGeometry());
 //		printStats(huc.getSimpleGeometry());
 //		printStats(huc.getConvexGeometry());
 	}
@@ -62,14 +62,14 @@ public class LoadHUCDetailLongRunTest extends SparrowTestBaseWithDB {
 		LoadHUCDetail action = new LoadHUCDetail(req);
 		HUC huc = action.run();
 
-		float[] ords = huc.getGeometry().getSegments()[0].getCoordinates();
+		float[] ords = huc.getSimpleGeometry().getSegments()[0].getCoordinates();
 		
 		assertNull(action.getPostMessage());
 		assertEquals("0101", huc.getHucCode());
 		assertEquals("ST. JOHN", huc.getName());
 		assertEquals(HUCType.HUC4, huc.getHucType());
-		assertEquals(false, huc.getGeometry().getSegments()[0].isLinear());
-		assertEquals(true, huc.getGeometry().getSegments()[0].isPolygon());
+		assertEquals(false, huc.getSimpleGeometry().getSegments()[0].isLinear());
+		assertEquals(true, huc.getSimpleGeometry().getSegments()[0].isPolygon());
 		
 		//the number of ords should always be even
 		assertTrue(
@@ -86,14 +86,14 @@ public class LoadHUCDetailLongRunTest extends SparrowTestBaseWithDB {
 		LoadHUCDetail action = new LoadHUCDetail(req);
 		HUC huc = action.run();
 
-		float[] ords = huc.getGeometry().getSegments()[0].getCoordinates();
+		float[] ords = huc.getSimpleGeometry().getSegments()[0].getCoordinates();
 		
 		assertNull(action.getPostMessage());
 		assertEquals("010100", huc.getHucCode());
 		assertEquals("ST. JOHN", huc.getName());
 		assertEquals(HUCType.HUC6, huc.getHucType());
-		assertEquals(false, huc.getGeometry().getSegments()[0].isLinear());
-		assertEquals(true, huc.getGeometry().getSegments()[0].isPolygon());
+		assertEquals(false, huc.getSimpleGeometry().getSegments()[0].isLinear());
+		assertEquals(true, huc.getSimpleGeometry().getSegments()[0].isPolygon());
 		
 		//the number of ords should always be even
 		assertTrue(
@@ -110,14 +110,14 @@ public class LoadHUCDetailLongRunTest extends SparrowTestBaseWithDB {
 		LoadHUCDetail action = new LoadHUCDetail(req);
 		HUC huc = action.run();
 
-		float[] ords = huc.getGeometry().getSegments()[0].getCoordinates();
+		float[] ords = huc.getSimpleGeometry().getSegments()[0].getCoordinates();
 		
 		assertNull(action.getPostMessage());
 		assertEquals("06020002", huc.getHucCode());
 		assertEquals("HIWASSEE", huc.getName());
 		assertEquals(HUCType.HUC8, huc.getHucType());
-		assertEquals(false, huc.getGeometry().getSegments()[0].isLinear());
-		assertEquals(true, huc.getGeometry().getSegments()[0].isPolygon());
+		assertEquals(false, huc.getSimpleGeometry().getSegments()[0].isLinear());
+		assertEquals(true, huc.getSimpleGeometry().getSegments()[0].isPolygon());
 		
 		//the number of ords should always be even
 		assertTrue(

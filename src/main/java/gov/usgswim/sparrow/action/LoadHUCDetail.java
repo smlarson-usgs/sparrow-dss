@@ -4,6 +4,7 @@ import gov.usgswim.sparrow.domain.Geometry;
 import gov.usgswim.sparrow.domain.HUC;
 import gov.usgswim.sparrow.domain.Segment;
 import gov.usgswim.sparrow.request.HUCRequest;
+import gov.usgswim.sparrow.util.GeometryUtil;
 
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -49,45 +50,12 @@ public class LoadHUCDetail extends Action<HUC> {
 		ResultSet rs = getROPSFromPropertiesFile("selectFull", getClass(), params).executeQuery();
 		
 		if (rs.next()) {
-
-			STRUCT fullGeomStruct = (STRUCT) rs.getObject("GEOM");
-			STRUCT approxGeomStruct = (STRUCT) rs.getObject("ARRPOX_GEOM");
 			
-			Geometry geom = null;
-			Geometry simpleGeom = null;
-			Geometry convexGeom = null;
 			String code = rs.getString("HUC_CODE");
 			String name = rs.getString("NAME");
-			Segment[] segments = null;
-			Segment[] simpleSegments = null;
-			Segment convexSegment = null;
-			
-			if (fullGeomStruct != null) {
-				JGeometry jGeomParent = JGeometry.load(fullGeomStruct);
-				
-				JGeometry[] jGeomSegments = jGeomParent.getElements();
-				
-				segments = new Segment[jGeomSegments.length];
-				simpleSegments = new Segment[jGeomSegments.length];
-				
-				for (int i = 0; i < jGeomSegments.length; i++) {
-					segments[i] = new Segment(loadCoordinates(jGeomSegments[i]), false);
-					JGeometry jSimple = jGeomSegments[i].simplify(.005d);
-					simpleSegments[i] = new Segment(loadCoordinates(jSimple), false);
-				}
-				
-			}
-			
-			if (approxGeomStruct != null) {
-				JGeometry jGeom = JGeometry.load(approxGeomStruct);
-				convexSegment = new Segment(loadCoordinates(jGeom), false);
-			}
-			
-			geom = new Geometry(segments);
-			simpleGeom = new Geometry(simpleSegments);
-			convexGeom = new Geometry(convexSegment);
-			
-			huc = new HUC(code, name, req.getHucType(), geom, simpleGeom, convexGeom);
+			Geometry simplified = GeometryUtil.loadPolygon(rs, "GEOM", true);
+
+			huc = new HUC(code, name, req.getHucType(), null, simplified, null);
 
 		} else {
 			this.setPostMessage("No HUC found for '" + req.getHuc() + "', level " + req.getHucType().getLevel());
@@ -98,17 +66,7 @@ public class LoadHUCDetail extends Action<HUC> {
 		return huc;
 	}
 	
-	protected float[] loadCoordinates(JGeometry jGeom) {
 
-		double[] dblOrds = jGeom.getOrdinatesArray();
-		float[] floatOrds = new float[dblOrds.length];
-		
-		for (int i = 0; i<dblOrds.length; i++) {
-			floatOrds[i] = (float) dblOrds[i];
-		}
-		
-		return floatOrds;
-	}
 
 
 }

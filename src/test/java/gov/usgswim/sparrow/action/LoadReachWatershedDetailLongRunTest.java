@@ -32,13 +32,13 @@ public class LoadReachWatershedDetailLongRunTest extends SparrowTestBaseWithDB {
 		
 		ReachGeometry upstream = action.run();
 
-		float[] ords = upstream.getGeometry().getSegments()[0].getCoordinates();
+		float[] ords = upstream.getSimpleGeometry().getSegments()[0].getCoordinates();
 		
 		assertNull(action.getPostMessage());
 		assertEquals(new Long(8153L), upstream.getId());
 		assertEquals(new Long(50L), upstream.getModelId());
-		assertEquals(false, upstream.getGeometry().getSegments()[0].isLinear());
-		assertEquals(true, upstream.getGeometry().getSegments()[0].isPolygon());
+		assertEquals(false, upstream.getSimpleGeometry().getSegments()[0].isLinear());
+		assertEquals(true, upstream.getSimpleGeometry().getSegments()[0].isPolygon());
 		
 		assertTrue(ords.length > 0);
 		//the number of ords should always be even
