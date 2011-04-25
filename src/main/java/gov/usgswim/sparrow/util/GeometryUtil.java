@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.util;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import oracle.spatial.geometry.JGeometry;
 import oracle.sql.STRUCT;
@@ -79,7 +80,8 @@ public class GeometryUtil {
 	/**
 	 * Loads a polygon from Oracle JGeometry to a Geometry object.
 	 * 
-	 * Any internal holes in the geometry are filtered out.
+	 * Any internal holes in the geometry are filtered out as well as any geometry
+	 * that results in a line (i.e., three points of start, out, and back).
 	 * 
 	 * @param jGeom	Oracle geometry to load from.
 	 * @param simplificationTol Simplification tolerance.  0 to turn off.
@@ -88,69 +90,74 @@ public class GeometryUtil {
 	 */
 	public static Geometry loadPolygon(JGeometry jGeom, double simplificationTol) {
 
-		Geometry geom = null;
-		Segment[] segments = null;
-
-		JGeometry[] jGeomSegments = jGeom.getElements();
-		
-		segments = new Segment[jGeomSegments.length];
-		
-		for (int i = 0; i < jGeomSegments.length; i++) {
-			if (simplificationTol == 0d) {
-				segments[i] = new Segment(loadPolygonCoordinates(jGeomSegments[i]), false);
-			} else {
-				JGeometry jSimple = jGeomSegments[i].simplify(simplificationTol);
-				segments[i] = new Segment(loadPolygonCoordinates(jSimple), false);
-			}
-
+		if (simplificationTol > 0d) {
+			jGeom = jGeom.simplify(simplificationTol);
 		}
-		
-		geom = new Geometry(segments);
-		
-		return geom;
-	}
-	
-	/**
-	 * Loads coordinates from a polygon type geometry.
-	 * If the geometry contains holes, the holes are not loaded.
-	 * 
-	 * Note:  This method will probably work for loading other types of geometry,
-	 * but its not clear if other types of geometry (especially lines) might put
-	 * multiple disjoint lines into one JGeometry Element.  If it does, then
-	 * only the first section of that line string would be returned as a side-
-	 * effect of attempting to filter out holes in polygons.
-	 * 
-	 * @param jGeom
-	 * @return
-	 */
-	public static float[] loadPolygonCoordinates(JGeometry jGeom) {
-
-		double[] dblOrds = jGeom.getOrdinatesArray();
-		
-		int startIndex = 0;
-		int endIndex = 0;
-		
-		int[] info = jGeom.getElemInfo();
 		
 		//Corresponds to the Oracle spatial SDO_ELEM_INFO_ARRAY.
 		//Elements in the info array are in triplets as follows:
 		// [0] The first vertex of the geom (one based)
 		// [1] The type of geom:  1=Point, 2=LineSTring, 1003=Polygon w/ interior area, 2003=Polygon hole
 		// [2] Conection type.  1=Straight line, 2=Arc
-		if (info.length > 3) {
-			//There is at least one hole, so only take the first closed section,
-			//skipping the holes.
-			startIndex = info[0] - 1;	//One based
-			endIndex = info[4] - 2; 	//element 4 contains the start index of the next section
-		} else {
-			startIndex = 0;
-			endIndex = dblOrds.length - 1;
+		int[] elementInfo = jGeom.getElemInfo();
+		
+		double[] dblOrds = jGeom.getOrdinatesArray();
+		
+		ArrayList<Segment> segmentList = new ArrayList<Segment>();
+		
+		for (int ei = 0; ei < elementInfo.length; ei += 3) {
+			
+			int elementType = elementInfo[ei + 1];
+			
+			if (elementType == 1003) {
+				int startIndex = elementInfo[ei] - 1; //one based references (zero based array)
+				int endIndex = dblOrds.length;	//first coord *not* taken
+				
+				//find the end index
+				if (ei + 3 < elementInfo.length) {
+					//not the last element, so the next element contains the
+					//start of the next segment.
+					endIndex = elementInfo[ei + 3] - 1;		//one based
+				}
+				
+				
+				if (endIndex - startIndex > 6) {
+					//less than six coords is just a line (start, next point, and back again)
+					float[] coords = loadPolygonCoordinates(dblOrds, startIndex, endIndex);
+					Segment s = new Segment(coords, false);
+					segmentList.add(s);
+				}
+				
+				
+			}
 		}
 		
-		float[] floatOrds = new float[endIndex - startIndex + 1];
+		Segment[] segments = segmentList.toArray(new Segment[segmentList.size()]);
+		Geometry geom = new Geometry(segments);
 		
-		for (int i = 0; i<floatOrds.length; i++) {
-			floatOrds[i] = (float) dblOrds[i + startIndex];
+		return geom;
+		
+	}
+	
+
+	
+	/**
+	 * Load the subset verticies to a float array.
+	 * 
+	 * @param verticies Array of coords in pairs.
+	 * @param startIndex the first coord included.
+	 * @param endIndex The first coord *not* included.
+	 * @return
+	 */
+	public static float[] loadPolygonCoordinates(double[] verticies, int startIndex, int endIndex) {
+
+
+		float[] floatOrds = new float[endIndex - startIndex];
+		int floatIndex = 0;
+		
+		for (int i = startIndex; i < endIndex; i++) {
+			floatOrds[floatIndex] = (float) verticies[i];
+			floatIndex++;
 		}
 		
 		return floatOrds;

@@ -29,13 +29,13 @@ public class LoadReachCatchmentDetailLongRunTest extends SparrowTestBaseWithDB {
 		
 		ReachGeometry upstream = action.run();
 
-		float[] ords = upstream.getGeometry().getSegments()[0].getCoordinates();
+		float[] ords = upstream.getSimpleGeometry().getSegments()[0].getCoordinates();
 		
 		assertNull(action.getPostMessage());
 		assertEquals(new Long(8278L), upstream.getId());
 		assertEquals(new Long(50L), upstream.getModelId());
-		assertEquals(false, upstream.getGeometry().getSegments()[0].isLinear());
-		assertEquals(true, upstream.getGeometry().getSegments()[0].isPolygon());
+		assertEquals(false, upstream.getSimpleGeometry().getSegments()[0].isLinear());
+		assertEquals(true, upstream.getSimpleGeometry().getSegments()[0].isPolygon());
 		
 		assertTrue(ords.length > 0);
 		//the number of ords should always be even
@@ -43,10 +43,40 @@ public class LoadReachCatchmentDetailLongRunTest extends SparrowTestBaseWithDB {
 				Math.abs(ords.length / 2 - ((float) (ords.length) / 2f)) < .1f);
 		
 		//Uncomment to spit out the complete geometry, including individual points.
-//		printStats(upstream.getGeometry());
+//		printStats(upstream.getSimpleGeometry());
 //		printStats(upstream.getSimpleGeometry());
 //		printStats(upstream.getConvexGeometry());
-//		printSegment(upstream.getGeometry(), 0);
+//		printSegment(upstream.getSimpleGeometry(), 0);
+	}
+	
+	@Test
+	public void testLoad7677() throws Exception {
+		
+		ReachID reach = new ReachID(50L, 7677L);
+		
+		LoadReachCatchmentDetail action = new LoadReachCatchmentDetail();
+		action.setReach(reach);
+		
+		ReachGeometry upstream = action.run();
+
+		float[] ords = upstream.getSimpleGeometry().getSegments()[0].getCoordinates();
+		
+		assertNull(action.getPostMessage());
+		assertEquals(new Long(7677L), upstream.getId());
+		assertEquals(new Long(50L), upstream.getModelId());
+		assertEquals(false, upstream.getSimpleGeometry().getSegments()[0].isLinear());
+		assertEquals(true, upstream.getSimpleGeometry().getSegments()[0].isPolygon());
+		
+		assertTrue(ords.length > 0);
+		//the number of ords should always be even
+		assertTrue(
+				Math.abs(ords.length / 2 - ((float) (ords.length) / 2f)) < .1f);
+		
+		//Uncomment to spit out the complete geometry, including individual points.
+//		printStats(upstream.getSimpleGeometry());
+//		printStats(upstream.getSimpleGeometry());
+//		printStats(upstream.getConvexGeometry());
+//		printSegment(upstream.getSimpleGeometry(), 0);
 	}
 	
 	

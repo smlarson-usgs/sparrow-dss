@@ -51,4 +51,9 @@ public class ReachID implements Serializable {
 		return hash;
 	}
 
+	@Override
+	public String toString() {
+		return "Reach id: " + reachID + ", model " + modelID;
+	}
+
 }
