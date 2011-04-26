@@ -48,9 +48,10 @@ public class LoadReachCatchmentDetail extends Action<ReachGeometry> {
 		
 		if (rs.next()) {
 
-			Geometry simplified = GeometryUtil.loadPolygon(rs, "GEOM", true);
+			//OK to load full detail for a single catchment
+			Geometry geom = GeometryUtil.loadPolygon(rs, "GEOM", false);
 			
-			catchment = new ReachGeometry(reach.getReachID(), reach.getModelID(), null, simplified, null);
+			catchment = new ReachGeometry(reach.getReachID(), reach.getModelID(), geom);
 
 
 		} else {

@@ -92,6 +92,8 @@ public abstract class SparrowTestBase {
 	
 	/** A single instance which is destroyed in teardown */
 	private static SparrowTestBase singleInstanceToTearDown;
+	
+	private Level initialLogLevel = null;
 
 	
 	//Cannot use the @BeforeClass since we need the ability to override methods.
@@ -143,6 +145,8 @@ public abstract class SparrowTestBase {
 		} catch (Exception e) {
 			log.fatal("Custom test teardown doOneTimeCustomTearDown() is throwing an exception!", e);
 		}
+		
+		log.setLevel(initialLogLevel);
 
 		singleInstanceToTearDown.doOneTimeLifecycleTearDown();
 		singleInstanceToTearDown.doOneTimeGeneralTearDown();
@@ -152,8 +156,16 @@ public abstract class SparrowTestBase {
 		firstRun = true;	//reset this flag since it shared by all instances
 	}
 	
-	protected void doOneTimeLogSetup() throws Exception {
-		setLogLevel(Level.ERROR);
+	/**
+	 * Private to protect the ability to reset the logging to its original state.
+	 * 
+	 * Subclasses should use the doOneTimeCustomSetup to change the log level,
+	 * which will be reverted when the test is complete.
+	 * 
+	 * @throws Exception
+	 */
+	private void doOneTimeLogSetup() throws Exception {
+		initialLogLevel = log.getLevel();
 	}
 	
 	protected void doOneTimeGeneralSetup() throws Exception {

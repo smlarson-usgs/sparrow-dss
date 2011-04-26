@@ -15,13 +15,19 @@ import org.junit.Test;
 
 public class IDServiceIntegrationLongRunTest extends SparrowServiceTestBaseWithDBandCannedModel50 {
 	
+	@Override
+	protected void doOneTimeCustomSetup() throws Exception {
+		super.doOneTimeCustomSetup();
+		//setLogLevel(Level.DEBUG);
+	}
+	
 	// ============
 	// TEST METHODS
 	// ============
 	@Test
 	public void testModelByPoint() throws Exception {
 		String response = runRequest(getXmlAsString(this.getClass(), "req1"));
-		//System.out.println("Req 1 response: " + response);
+		log.debug("Req 1 response: " + response);
 		
 		int reachID = Integer.parseInt( getXPathValue("//*[local-name()='id']", response) );
 		String reachName = getXPathValue("//*[local-name()='name']", response);
@@ -52,7 +58,8 @@ public class IDServiceIntegrationLongRunTest extends SparrowServiceTestBaseWithD
 	public void testModelByTwoReachIds() throws Exception {
 		String expectedResponse = getXmlAsString(this.getClass(), "resp3");
 		String actualResponse = runRequest(getXmlAsString(this.getClass(), "req3"));
-
+		log.debug("Req 3 response: " + actualResponse);
+		
 		XMLAssert.assertXMLEqual(expectedResponse, actualResponse);
 		
 		//Rerun - should be instant b/c we don't ask for attributes.

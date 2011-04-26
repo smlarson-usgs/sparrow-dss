@@ -1,14 +1,12 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgswim.sparrow.domain.ReachGeometry;
+import gov.usgswim.sparrow.request.ReachID;
+import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
+
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
-
-import oracle.spatial.geometry.JGeometry;
-import oracle.sql.STRUCT;
-
-import gov.usgswim.sparrow.request.ReachID;
-import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 
 public class LoadReachByID extends Action<ReachInfo> {
 
@@ -71,39 +69,16 @@ public class LoadReachByID extends Action<ReachInfo> {
 		
 		rs.close();
 		
-		rs = getROPSFromPropertiesFile("LoadSpatialAttribs", getClass(), params).executeQuery();
+		LoadReachCatchmentDetail catchAction = new LoadReachCatchmentDetail();
+		catchAction.setReach(reachId);
+		ReachGeometry reachGeom = catchAction.run();
 		
-		if (rs.next()) {
-
-			// reaches retrieved by ID should never have distanceInMeters information
-			result = new ReachInfo(
-					reachId.getModelID(), reachId.getReachID(), reachName, null,
-					rs.getDouble("MIN_LONG"), rs.getDouble("MIN_LAT"),
-					rs.getDouble("MAX_LONG"), rs.getDouble("MAX_LAT"),
-					rs.getDouble("MARKER_LONG"), rs.getDouble("MARKER_LAT"),
-					huc2, huc2name, huc4, huc4name,
-					huc6, huc6name, huc8, huc8name
-			);
-
-			{	// set the catchment geometry
-				STRUCT catch_geom_struct = (STRUCT) rs.getObject("catch_geom");
-				if (catch_geom_struct != null) {
-					JGeometry jGeom = JGeometry.load(catch_geom_struct);
-					double[] ordinates = jGeom.getOrdinatesArray();
-					result.setCatchGeometryOrdinates(ordinates);
-				} else { // use the reach geometry instead
-					STRUCT reach_geom_struct = (STRUCT) rs.getObject("reach_geom");
-					if (reach_geom_struct != null) {
-						JGeometry jGeom = JGeometry.load(reach_geom_struct);
-						double[] ordinates = jGeom.getOrdinatesArray();
-						result.setReachGeometryOrdinates(ordinates);
-					}
-				}
-			}
-
-		}
+		result = new ReachInfo(
+				reachId.getModelID(), reachId.getReachID(), reachName, null,
+				reachGeom,
+				huc2, huc2name, huc4, huc4name,
+				huc6, huc6name, huc8, huc8name);
 		
-		rs.close();
 		
 		return result;
 	}

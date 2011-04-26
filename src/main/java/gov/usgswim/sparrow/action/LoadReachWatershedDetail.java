@@ -48,9 +48,9 @@ public class LoadReachWatershedDetail extends Action<ReachGeometry> {
 		
 		if (rs.next()) {
 
-			Geometry simplified = GeometryUtil.loadPolygon(rs, "GEOM", true);
+			Geometry geom = GeometryUtil.loadPolygon(rs, "GEOM", true);
 			
-			upstream = new ReachGeometry(reach.getReachID(), reach.getModelID(), null, simplified, null);
+			upstream = new ReachGeometry(reach.getReachID(), reach.getModelID(), geom);
 
 		} else {
 			this.setPostMessage("No Reach found for '" + reach.getReachID() + "' ID in model " + reach.getModelID());

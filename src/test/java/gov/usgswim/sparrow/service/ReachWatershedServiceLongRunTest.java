@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.service;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDB;
 
+import org.apache.log4j.Level;
 import org.junit.Test;
 
 import com.meterware.httpunit.PostMethodWebRequest;
@@ -18,6 +19,12 @@ public class ReachWatershedServiceLongRunTest extends SparrowServiceTestBaseWith
 	
 	private static final String SERVICE_URL = "http://localhost:8088/reachwatershed/";
 
+	@Override
+	protected void doOneTimeCustomSetup() throws Exception {
+		super.doOneTimeCustomSetup();
+		//log.setLevel(Level.DEBUG);
+	}
+	
 	// ============
 	// TEST METHODS
 	// ============
@@ -30,15 +37,14 @@ public class ReachWatershedServiceLongRunTest extends SparrowServiceTestBaseWith
 
 		WebResponse response = client.sendRequest(req);
 		String actualResponse = response.getText();
-		//System.out.println("response: " + actualResponse);
+		log.debug("response: " + actualResponse);
 		
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
 		assertXpathEvaluatesTo("gov.usgswim.sparrow.domain.ReachGeometry", "/ServiceResponseWrapper/entityClass", actualResponse);
-		assertXpathEvaluatesTo("8153", "/ServiceResponseWrapper/entityList/entity[1]/id", actualResponse);
+		assertXpathEvaluatesTo("8153", "/ServiceResponseWrapper/entityList/entity[1]/@id", actualResponse);
 		
 	}
-
 	
 }
 

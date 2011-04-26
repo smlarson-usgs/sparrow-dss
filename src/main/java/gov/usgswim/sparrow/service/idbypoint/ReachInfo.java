@@ -6,6 +6,10 @@ import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeClosingTag;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeNonNullTag;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeOpeningTag;
 import gov.usgswim.Immutable;
+import gov.usgswim.sparrow.domain.ReachGeometry;
+import gov.usgswim.sparrow.service.ServletResponseParser;
+
+import com.thoughtworks.xstream.XStream;
 /**
  * Simple bean class to hold a reach that was identified by a user lat/long location.
  * @author eeverman
@@ -18,12 +22,7 @@ public class ReachInfo {
 	private final String name;
 	private final transient Integer distInMeters;
 
-	private final double minLong;
-	private final double minLat;
-	private final double maxLong;
-	private final double maxLat;
-	private final double markerLong;
-	private final double markerLat;
+	private final ReachGeometry reachGeom;
 
 	private transient Double clickedLong;
 	private transient Double clickedLat;
@@ -37,14 +36,8 @@ public class ReachInfo {
 	private final String huc8;
 	private final String huc8Name;
 
-	private double[] _catchOrdinates;
-	private double[] _reachOrdinates;
-	// IMPORTANT: If new fields are added, remember to clone them
-
-
 	public ReachInfo(long modelID, long id, String name, Integer distInMeters,
-			double minLong, double minLat, double maxLong, double maxLat,
-			double markLong, double markLat,
+			ReachGeometry reachGeom,
 			String huc2, String huc2Name, String huc4, String huc4Name,
 			String huc6, String huc6Name, String huc8, String huc8Name
 	) {
@@ -52,12 +45,8 @@ public class ReachInfo {
 		this.id = id;
 		this.name = name;
 		this.distInMeters = distInMeters;
-		this.minLong = minLong;
-		this.minLat = minLat;
-		this.maxLong = maxLong;
-		this.maxLat = maxLat;
-		this.markerLong = markLong;
-		this.markerLat = markLat;
+		this.reachGeom = reachGeom;
+
 		this.huc2 = huc2;
 		this.huc2Name = huc2Name;
 		this.huc4 = huc4;
@@ -82,22 +71,16 @@ public class ReachInfo {
 						"long", asString(clickedLong));
 			}
 
-			writeClosedFullTag(in, "bbox",
-					"min-long", asString(minLong),
-					"min-lat", asString(minLat),
-					"max-long", asString(maxLong),
-					"max-lat", asString(maxLat),
-					"marker-long", asString(markerLong),
-					"marker-lat", asString(markerLat)
-			);
-			if (_catchOrdinates != null && _catchOrdinates.length > 0) {
-				StringBuilder coordinates = toPointsString(_catchOrdinates);
-				writeClosedFullTag(in, "polygon",
-						"points", coordinates.toString());
-			} else if (_reachOrdinates != null && _reachOrdinates.length > 0) {
-				StringBuilder coordinates = toPointsString(_reachOrdinates);
-				writeClosedFullTag(in, "polyLine",
-						"points", coordinates.toString());
+			if (reachGeom != null) {
+				
+				XStream xs = ServletResponseParser.getXMLXStream();
+				String catchment = ServletResponseParser.getXMLXStream().toXML(reachGeom);
+				
+				//Trim this off the front:
+				//<?xml version='1.0' encoding='UTF-8'?>
+				catchment = catchment.substring(38);
+
+				in.append(catchment);
 			}
 
 			writeOpeningTag(in, "hucs");
@@ -126,28 +109,10 @@ public class ReachInfo {
 		return in.toString();
 	}
 
-	private StringBuilder toPointsString(double[] geomOrdinates) {
-		assert(geomOrdinates != null && geomOrdinates.length > 0) : "It is the caller's responsibility to check geomOrdinates not null";
-		int dimensions = 2; // This is an assumption
-		//int numberOfPoints = geomOrdinates.length/dimensions;
-
-		StringBuilder coordinates = new StringBuilder();
-		for (int i=0; i<geomOrdinates.length; i=i+2) {
-			coordinates.append(geomOrdinates[i])
-			.append(",")
-			.append(geomOrdinates[i+1])
-			.append(" ");
-		}
-		return coordinates;
-	}
-
 	public ReachInfo cloneWithDistance(Integer distance) {
-		ReachInfo clone = new ReachInfo(modelID, id, name, distance, minLong, minLat, maxLong, maxLat,
-				markerLong, markerLat,
+		ReachInfo clone = new ReachInfo(modelID, id, name, distance, reachGeom,
 				huc2, huc2Name, huc4, huc4Name, huc6, huc6Name, huc8, huc8Name );
-		// IMPORTANT: If new fields are added here, remember to clone them
-		clone._catchOrdinates = _catchOrdinates;
-		clone._reachOrdinates = _reachOrdinates;
+
 		return clone;
 	}
 
@@ -170,23 +135,9 @@ public class ReachInfo {
 		return name;
 	}
 
-	public double getMinLong() {
-		return minLong;
+	public ReachGeometry getGeometry() {
+		return reachGeom;
 	}
-
-	public double getMinLat() {
-		return minLat;
-	}
-
-	public double getMaxLong() {
-		return maxLong;
-	}
-
-	public double getMaxLat() {
-		return maxLat;
-	}
-	
-	
 
 	public long getModelID() {
 		return modelID;
@@ -194,14 +145,6 @@ public class ReachInfo {
 
 	public Integer getDistInMeters() {
 		return distInMeters;
-	}
-
-	public double getMarkerLong() {
-		return markerLong;
-	}
-
-	public double getMarkerLat() {
-		return markerLat;
 	}
 
 	public String getHuc2() {
@@ -239,14 +182,6 @@ public class ReachInfo {
 	public void setClickedPoint(double longitude, double latitude) {
 		this.clickedLong = longitude;
 		this.clickedLat = latitude;
-	}
-
-	public void setCatchGeometryOrdinates(double[] ordinates) {
-		this._catchOrdinates = ordinates;
-	}
-
-	public void setReachGeometryOrdinates(double[] ordinates) {
-		this._reachOrdinates = ordinates;
 	}
 
 }
