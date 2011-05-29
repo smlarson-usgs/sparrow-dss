@@ -363,4 +363,39 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	public ReachGroup getIndividualGroup() {
 	    return individualGroup;
 	}
+	
+	/**
+	 * 
+	 * @return true if any groups or individual reaches contained in those groups has adjustments made to it.
+	 */
+	public boolean hasAdjustments() {
+		if(defaultGroup != null) {
+			if(defaultGroup.getAdjustments().size()>0) return true;
+			for(ReachElement r : defaultGroup.getExplicitReaches()){
+				if(r.getAdjustments().size() > 0) {
+					return true;
+				}
+			}
+		}
+		
+		if(individualGroup != null) {
+			if(individualGroup.getAdjustments().size()>0) return true;
+			for(ReachElement r : individualGroup.getExplicitReaches()){
+				if(r.getAdjustments().size() > 0) {
+					return true;
+				}
+			}
+		}
+		
+		for(ReachGroup g : reachGroups){
+			if(g.getAdjustments().size()>0) return true;
+			for(ReachElement r : g.getExplicitReaches()){
+				if(r.getAdjustments().size() > 0) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
 }

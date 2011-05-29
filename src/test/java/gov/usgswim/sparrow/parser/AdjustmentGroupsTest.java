@@ -40,6 +40,7 @@ public class AdjustmentGroupsTest extends TestCase {
 		assertEquals(1, reachGroups.size());
 		assertNotNull(adjGroups.getDefaultGroup());
 		assertNotNull(adjGroups.getIndividualGroup());
+		assertTrue(adjGroups.hasAdjustments());
 	}
 
 
