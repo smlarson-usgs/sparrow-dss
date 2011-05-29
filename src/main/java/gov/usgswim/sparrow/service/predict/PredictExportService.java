@@ -36,9 +36,10 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
     	PredictResult nomPredictResult = null;
     	PredictData adjPredictData = null;
     	PredictData nomPredictData = SharedApplication.getInstance().getPredictData(predictContext.getModelID());
-        
+        boolean hasAdjustments = false;
         if (predictContext.getAdjustmentGroups() != null) {
-
+        	hasAdjustments = predictContext.getAdjustmentGroups().hasAdjustments();
+        	
     		DataTable adjustedSources =
     			SharedApplication.getInstance().getAdjustedSource(predictContext.getAdjustmentGroups());
 
@@ -70,7 +71,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         return new  PredictExportSerializer(req,
     			adjDataColumn, nomDataColumn,
     			adjPredictData, nomPredictData,
-    			adjPredictResult, nomPredictResult, watershedAreas, huc8);
+    			adjPredictResult, nomPredictResult, watershedAreas, huc8, hasAdjustments);
     }
 
     public void shutDown() {

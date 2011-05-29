@@ -4,7 +4,6 @@ import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_NAMESPACE
 import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
-import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.filter.RowFilter;
 import gov.usgswim.sparrow.PredictData;
@@ -40,6 +39,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	private PredictResult nomPredictResult;
 	private PredictData adjPredictData;
 	private PredictData nomPredictData;
+	private boolean hasAdjustments;
 	
 	/** Non-null PredictData instance used to find row IDs */
 	private PredictData refPredictData;
@@ -66,7 +66,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	public PredictExportSerializer(PredictExportRequest request,
 			SparrowColumnSpecifier adjDataColumn, SparrowColumnSpecifier nomDataColumn,
 			PredictData adjPredictData, PredictData nomPredictData,
-			PredictResult adjPredictResult, PredictResult nomPredictResult, DataTable waterShedAreasColumn, DataTable huc8data) throws Exception {
+			PredictResult adjPredictResult, PredictResult nomPredictResult, DataTable waterShedAreasColumn, DataTable huc8data, boolean hasAdjustments) throws Exception {
 		
 		super();
 		this.request = request;
@@ -79,6 +79,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 		this.nomPredictResult = nomPredictResult;
 		this.watershedAreas = waterShedAreasColumn;
 		this.huc8data = huc8data;
+		this.hasAdjustments = hasAdjustments;
 		
 		if (adjPredictData == null && nomPredictData == null) {
 			throw new IllegalArgumentException("adjPredictData and nomPredictData cannot both be null.");
@@ -136,7 +137,6 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 		// opening element
 		events.add(new BasicTagEvent(START_DOCUMENT));
 		events.add(new BasicTagEvent(START_ELEMENT, "sparrow-prediction-response").addAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE + " " + TARGET_NAMESPACE_LOCATION));
-		boolean hasAdjustments = request.hasAdjustments();
 		
 		addOpenTag("response");
 		{
@@ -257,8 +257,6 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 			//Aggregated rows are not working right now...
 			Long rowId = refPredictData.getIdForRow(state.r);
 			rowEvent.addAttribute("id", rowId.toString());
-			
-			boolean hasAdjustments = request.hasAdjustments(); 
 			
 			events.add(rowEvent);
 			{

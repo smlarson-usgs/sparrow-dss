@@ -3,13 +3,9 @@ package gov.usgswim.sparrow.service.predict;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.service.pipeline.PipelineRequest;
-import gov.usgswim.sparrow.domain.AdjustmentGroups;
-import gov.usgswim.sparrow.domain.ReachElement;
-import gov.usgswim.sparrow.domain.ReachGroup;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
-import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.ParserHelper;
 
 import javax.xml.stream.XMLStreamException;
@@ -72,7 +68,6 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 	private boolean includeReachAttribs = false;
 	private boolean includeSource = false;
 	private boolean includePredict = false;
-	private boolean hasAdjustments = false;
 
 	// ================
 	// INSTANCE METHODS
@@ -106,27 +101,6 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 					} else if ("PredictionContext".equals(localName)) {
 						contextID = ParserHelper.parseAttribAsInt(in, "context-id", true);
 						ParserHelper.ignoreElement(in);
-						AdjustmentGroups g;
-						try {
-							g = SharedApplication.getInstance().getPredictionContext(contextID).getAdjustmentGroups();
-							if(g != null) {
-								if(g.getIndividualGroup().getAdjustments().size()>0) hasAdjustments = true;
-								for(ReachElement r : g.getIndividualGroup().getExplicitReaches()){
-									if(r.getAdjustments().size() > 0) {
-										hasAdjustments = true;
-									}
-								}
-								if(g.getReachGroups().size()>0) {
-									for(ReachGroup r : g.getReachGroups()){
-										if(r.getAdjustments().size()>0) hasAdjustments = true;
-									}
-								}
-							}
-						} catch (Exception e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						
 					} else if (ResponseFormat.isTargetMatch(localName)) {
 
 						responseFormat = ResponseFormat.parseStream(in);
@@ -215,10 +189,6 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 
 	public boolean isIncludeReachAttribs() {
 		return includeReachAttribs;
-	}
-	
-	public boolean hasAdjustments() {
-		return hasAdjustments;
 	}
 
 	public String getXMLRequest() {
