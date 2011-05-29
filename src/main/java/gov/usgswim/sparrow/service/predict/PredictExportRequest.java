@@ -4,6 +4,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
+import gov.usgswim.sparrow.domain.ReachElement;
 import gov.usgswim.sparrow.domain.ReachGroup;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
@@ -110,6 +111,11 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 							g = SharedApplication.getInstance().getPredictionContext(contextID).getAdjustmentGroups();
 							if(g != null) {
 								if(g.getIndividualGroup().getAdjustments().size()>0) hasAdjustments = true;
+								for(ReachElement r : g.getIndividualGroup().getExplicitReaches()){
+									if(r.getAdjustments().size() > 0) {
+										hasAdjustments = true;
+									}
+								}
 								if(g.getReachGroups().size()>0) {
 									for(ReachGroup r : g.getReachGroups()){
 										if(r.getAdjustments().size()>0) hasAdjustments = true;
