@@ -1,11 +1,11 @@
 package gov.usgswim.sparrow.service.binning;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import gov.usgswim.sparrow.action.VerifyBinningResolution;
 import gov.usgswim.sparrow.action.VerifyInclusiveBinning;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
@@ -14,6 +14,10 @@ import gov.usgswim.sparrow.service.ServiceResponseStatus;
 import gov.usgswim.sparrow.service.ServiceResponseWrapper;
 import gov.usgswim.sparrow.service.SharedApplication;
 
+//TODO this service returns two booleans, might want to make it return something more description
+/**
+ * service returns two booleans, first one indicates if all values are in at least one bin, second indicates if all fall into one bin when more than 2 bins are used
+ */
 public class ConfirmBinningService extends AbstractSparrowServlet {
 	
 	/**
@@ -38,6 +42,11 @@ public class ConfirmBinningService extends AbstractSparrowServlet {
 			
 			ServiceResponseWrapper out = new ServiceResponseWrapper(result, Boolean.class, null, ServiceResponseStatus.OK,
 					ServiceResponseOperation.GET);
+			
+			VerifyBinningResolution action2 = new VerifyBinningResolution(data, binHighList, binLowList);
+			Boolean result2 = action2.run();
+			out.addEntity(result2);
+			
 			sendResponse(resp, out);
 		} catch (IOException e) {
 			e.printStackTrace();
