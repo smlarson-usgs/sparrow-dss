@@ -64,22 +64,21 @@
 	</SPARROW_model>
 	<CommonTerms>
 		<Term id="Adjustments">
-			<h2>Adjustments</h2><br/>
-			Adjustments allow different management scenarios (changes in model source inputs) 
-			to be evaluated with respect to predicted total and incremental flux. Adjustments
-			can be made in one of two ways: by adjusting individual reaches or by adjusting groups
-			of reaches.<br/>
-			<ul>
-				<li>To adjust an individual reach's source inputs, first identify the reach on the map.
-				You can identify a reach either by clicking on it with the <b>Identify Reach</b> tool
-				or by searching for it via the <b>Find a reach...</b> button. Once the reach has been
-				identified, navigate to the <b>Model Source Inputs</b> tab, enter the desired input
-				values into the <b>Override</b> column, and click <b>Apply</b>.<br/></li>
-				<li>To adjust a group of reaches, you must first create an <i>adjustment group</i> 
-				of reaches. After identifying a candidate reach on the map, navigate to the 
-				<b>Group / Target Membership</b> tab to add it to a group. Once groups are created, 
-				right-click the group name on the <b>Adjustments</b> tab and then apply the desired treatments.</li>
-			</ul>
+			<h2>Change Inputs</h2><br/>
+			Changing inputs' allow different management scenarios (changes in model source inputs) 
+			to be evaluated with respect to predicted total and incremental flux. Changes
+			can be made in one of two ways: by applying changes to individual reaches or by applying changes
+			to  groups of reaches.<br/>
+			<br/>
+			To change an individual reach's source inputs, first identify the reach on the map.
+			You can identify a reach either by clicking on it with the <b>Identify Reach</b> tool
+			or by searching for it via the <b>Find a reach...</b> button. Once the reach has been
+			identified, navigate to the <b>Model Source Inputs</b> tab, enter the desired input
+			values into the <b>Override</b> column, and click <b>Apply</b>.<br/>
+			<br/>To change a group of reaches, you must first create a <i>reach group</i> 
+			of reaches. After identifying a candidate reach on the map, navigate to the 
+			<b>Change Inputs</b> tab to add it to a group. Once groups are created, 
+			right-click the group name on the <b>Change Inputs</b> tab and then apply the desired treatments.
 		</Term>
 		<Term id="Targets">
 			<h2>Downstream Tracking</h2><br/>
