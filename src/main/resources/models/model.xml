@@ -84,8 +84,8 @@
 			<h2>Downstream Tracking</h2><br/>
 			
 			Downstream tracking is used to determine the fraction of load from upstream reaches delivered 
-			to a specified downstream outlet reach or water body. To specify a downstream outlet reach, identify the 
-			desired reach on the map (using the <b>Identify Reach tool</b>) and then click on the 
+			to a specified downstream outlet reach or water body. To specify a downstream outlet reach, find the desired reach on the map
+			 (using the <b>Identify Reach tool</b>) and then click on the 
 			<b>Add Reach as Downstream Outlet</b> button. Alternatively, you may search for downstream outlet reaches either 
 			individually or all at once using the <b>Find a reach...</b> button.
 		</Term>
