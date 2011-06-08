@@ -186,6 +186,10 @@
 		<servlet-class>gov.usgswim.sparrow.service.binning.ConfirmBinningService</servlet-class>
 	</servlet>
 	<servlet>
+		<servlet-name>ReachGroupService</servlet-name>
+		<servlet-class>gov.usgswim.sparrow.service.ReachGroupService</servlet-class>
+	</servlet>
+	<servlet>
 		<servlet-name>FindCalibrationSiteService</servlet-name>
 		<servlet-class>gov.usgswim.sparrow.service.idbypoint.FindCalibrationSiteService</servlet-class>
 	</servlet>
@@ -300,6 +304,10 @@
 	<servlet-mapping>
 		<servlet-name>ConfirmBinningService</servlet-name>
 		<url-pattern>/sp_confirmBinning/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ReachGroupService</servlet-name>
+		<url-pattern>/sp_getConflictingReachGroups/*</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>FindReachService</servlet-name>
