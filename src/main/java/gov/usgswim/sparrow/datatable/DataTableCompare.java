@@ -225,26 +225,27 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 	}
 	
 	protected Double bruteForceFindMaxDouble(DataTable dt, int col) {
-		Double max = 0d;
+		Double max = Double.MIN_VALUE * -1d;
 		int rows = dt.getRowCount();
 		for (int row=0; row < rows; row++) {
 			Double value = dt.getDouble(row, col);
 			if (value != null) {
-				if (Math.abs(value) > Math.abs(max)) {
+				if (value > max) {
 					max = value;
 				}
 			}
 		}
+		
 		return max;
 	}
 	
 	protected Double bruteForceFindMaxDouble(DataTable dt) {
-		Double max = 0d;
+		Double max = Double.MIN_VALUE * -1d;
 		int cols = dt.getColumnCount();
 		for (int col=0; col < cols; col++) {
 			Double value = dt.getMaxDouble(col);
 			if (value != null) {
-				if (Math.abs(value) > Math.abs(max)) {
+				if (value > max) {
 					max = value;
 				}
 			}

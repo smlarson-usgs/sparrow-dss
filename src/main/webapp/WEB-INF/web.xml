@@ -179,11 +179,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>BinningService</servlet-name>
-		<servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
-		<init-param>
-			<param-name>pipeline-class</param-name>
-			<param-value>gov.usgswim.sparrow.service.binning.BinningPipeline</param-value>
-		</init-param>
+		<servlet-class>gov.usgswim.sparrow.service.binning.BinningService</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>ConfirmBinningService</servlet-name>

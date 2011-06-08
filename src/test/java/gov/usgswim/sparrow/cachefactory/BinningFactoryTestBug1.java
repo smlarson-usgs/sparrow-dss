@@ -1,7 +1,5 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgswim.sparrow.action.CalcBinning;
-
 import java.math.BigDecimal;
 
 import junit.framework.TestCase;
@@ -49,20 +47,20 @@ public class BinningFactoryTestBug1 extends TestCase {
 	};	//106 values
 
 
-
-
-	public void testGetEqualCountBinsOfOne() {
-		BigDecimal[] result = CalcBinning.buildEqualCountBins(sortedDataBug1, 5, Boolean.TRUE);
-
-		for (BigDecimal val : result) {
-			BigDecimal cleaned = val.stripTrailingZeros();
-
-			if (cleaned.precision() > 5) {
-				printBinningResult("These bins contain too many digits - recorded as a JUnit failure.", result);
-				fail("The value " + val + " has way too many digits of precision.  Please fix.");
-			}
-		}
-	}
+	//All tests hitting the old binning implementation
+//
+//	public void testGetEqualCountBinsOfOne() {
+//		BigDecimal[] result = OldCalcBinning.buildEqualCountBins(sortedDataBug1, 5, Boolean.TRUE);
+//
+//		for (BigDecimal val : result) {
+//			BigDecimal cleaned = val.stripTrailingZeros();
+//
+//			if (cleaned.precision() > 5) {
+//				printBinningResult("These bins contain too many digits - recorded as a JUnit failure.", result);
+//				fail("The value " + val + " has way too many digits of precision.  Please fix.");
+//			}
+//		}
+//	}
 
 	private void printBinningResult(String message, BigDecimal[] result) {
 		System.out.println(message);

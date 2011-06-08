@@ -4,12 +4,11 @@ import gov.usgswim.ImmutableBuilder;
 import gov.usgswim.NotThreadSafe;
 import gov.usgswim.sparrow.SparrowUnits;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.Map.Entry;
 
 /**
  * Builder implementation of SparrowModel, which is a Domain Object representing a SPARROW SparrowModel.
@@ -142,6 +141,16 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 
 	@Override
 	public String getConstituent() {return _constituent;}
+	
+	@Override
+	public BigDecimal getDetectionLimit(DataSeriesType dataSeries, ComparisonType comparisonType) {
+		return SparrowModelImm.getDetectionLimit(dataSeries, _constituent, comparisonType);
+	}
+	
+	@Override
+	public Integer getMaxDecimalPlaces(DataSeriesType dataSeries, ComparisonType comparisonType) {
+		return SparrowModelImm.getMaxDecimalPlaces(dataSeries, getDetectionLimit(dataSeries, comparisonType), comparisonType);
+	}
 
 	public void setUnits(SparrowUnits units) {this._units = units;}
 

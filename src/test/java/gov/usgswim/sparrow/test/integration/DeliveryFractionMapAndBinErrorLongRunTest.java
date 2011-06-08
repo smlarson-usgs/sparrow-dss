@@ -3,11 +3,14 @@ package gov.usgswim.sparrow.test.integration;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.sparrow.MapViewerSparrowDataProvider;
-import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.SparrowTestBaseWithDBandCannedModel50;
+import gov.usgswim.sparrow.cachefactory.BinningFactory;
+import gov.usgswim.sparrow.domain.BinSet;
+import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
-import gov.usgswim.sparrow.service.binning.BinningPipeline;
-import gov.usgswim.sparrow.service.binning.BinningServiceRequest;
+import gov.usgswim.sparrow.service.ServletResponseParser;
+import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
 
@@ -15,6 +18,7 @@ import java.util.Hashtable;
 
 import oracle.mapviewer.share.ext.NSDataSet;
 
+import org.apache.log4j.Level;
 import org.junit.Test;
 
 /**
@@ -23,9 +27,14 @@ import org.junit.Test;
  * to the base data (i.e. total flux).
  * 
  * @author eeverman
- * TODO: This should really use a canned project, rather than MRB2
  */
-public class DeliveryFractionMapAndBinErrorLongRunTest extends SparrowTestBaseWithDB{
+public class DeliveryFractionMapAndBinErrorLongRunTest extends SparrowTestBaseWithDBandCannedModel50 {
+	
+	@Override
+	public void doOneTimeCustomSetup() throws Exception {
+		//Uncomment to debug
+		setLogLevel(Level.DEBUG);
+	}
 	
 	@Test
 	public void testFracToNSDataSet() throws Exception {
@@ -41,11 +50,11 @@ public class DeliveryFractionMapAndBinErrorLongRunTest extends SparrowTestBaseWi
 		//assertTrue(actualResponse.indexOf(context_id.toString()) > -1);
 		
 		//Run a binning request on that same context ID
-		BinningPipeline binPipe = new BinningPipeline();
-		BinningServiceRequest binSvsReq = new BinningServiceRequest(contextID, 5, BIN_TYPE.EQUAL_COUNT);
-		actualResponse = SparrowTestBase.pipeDispatch(binSvsReq, binPipe);
-		System.out.println("bin response: " + actualResponse);
-		assertTrue(actualResponse.indexOf("<bin>0</bin>") > -1);
+		BinningRequest binReq = new BinningRequest(contextID, 5, BIN_TYPE.EQUAL_COUNT);
+		BinSet binSet = SharedApplication.getInstance().getDataBinning(binReq);
+		String xml = ServletResponseParser.getXMLXStream().toXML(binSet);
+
+		log.debug("bin response: " + xml);
 
 		
 		//Build the NSDataset from the data

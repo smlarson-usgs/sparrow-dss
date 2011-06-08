@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.service;
 
-import static gov.usgswim.sparrow.service.ServiceResponseMimeType.*;
+import static gov.usgswim.sparrow.service.ServiceResponseMimeType.UNKNOWN;
+import static gov.usgswim.sparrow.service.ServiceResponseMimeType.XML;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -13,8 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 
 import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 /**
  * A based class for servlets which includes utility methods to serialize objects
@@ -100,7 +99,7 @@ public abstract class AbstractSparrowServlet extends HttpServlet {
 	 * @param params
 	 * @param name
 	 */
-	private static Integer getInteger(Map params, String name) {
+	protected static Integer getInteger(Map params, String name) {
 		String s = getClean(params, name);
 		if (s != null) {
 			try {

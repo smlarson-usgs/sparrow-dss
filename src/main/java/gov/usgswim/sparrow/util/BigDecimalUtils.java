@@ -1,8 +1,5 @@
 package gov.usgswim.sparrow.util;
 
-import gov.usgswim.sparrow.action.CalcBinning;
-import gov.usgswim.sparrow.cachefactory.BinningFactory;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;

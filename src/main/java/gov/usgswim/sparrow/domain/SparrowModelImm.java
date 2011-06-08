@@ -4,11 +4,10 @@ import gov.usgswim.Immutable;
 import gov.usgswim.sparrow.SparrowUnits;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.Map.Entry;
 
 /**
  * Immutable implementation of SparrowModel, which is a Domain Object representing a SPARROW SparrowModel.
@@ -17,6 +16,25 @@ import java.util.Map.Entry;
 public class SparrowModelImm implements SparrowModel, Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 *  The concentration detection limit for TN.
+	 *  This is used to create a lower bound in the legend and restrict
+	 *  reported values.
+	 */
+	static final BigDecimal TN_CONCENTRATION_THRESHOLD = new BigDecimal(".05");
+	
+	/**
+	 *  The concentration detection limit for TP.
+	 *  This is used to create a lower bound in the legend and restrict
+	 *  reported values.
+	 */
+	static final BigDecimal TP_CONCENTRATION_THRESHOLD = new BigDecimal(".01");
+	
+	/* The concentration detection limit for suspended sediment */
+	//static final BigDecimal SEDIMENT_CONCENTRATION_THRESHOLD = new BigDecimal(".01");	//NEED INFO FROM GREG
+	
+	
 	private final Long _id;
 	private final boolean _approved;
 	private final boolean _public;
@@ -154,6 +172,17 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	@Override
 	public List<Source> getSources() { return _sources;}
 
+	@Override
+	public BigDecimal getDetectionLimit(DataSeriesType dataSeries, ComparisonType comparisonType) {
+		return getDetectionLimit(dataSeries, _constituent, comparisonType);
+	}
+	
+	@Override
+	public Integer getMaxDecimalPlaces(DataSeriesType dataSeries, ComparisonType comparisonType) {
+		return getMaxDecimalPlaces(dataSeries, getDetectionLimit(dataSeries, comparisonType), comparisonType);
+	}
+	
+	@Override
 	public Source getSource(int identifier) {
 		if (_sources != null) {
 
@@ -166,4 +195,96 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 		}
 		return null;	//no sources
 	}
+	
+	public static BigDecimal getDetectionLimit(DataSeriesType dataSeries, String constituent, ComparisonType comparisonType) {
+		
+		if (comparisonType.equals(ComparisonType.none)) {
+		switch (dataSeries) {
+			case total_concentration:
+				if (TN_CONSTITUENT_NAME.equalsIgnoreCase(constituent)) {
+					return TN_CONCENTRATION_THRESHOLD;
+				} else if (TP_CONSTITUENT_NAME.equalsIgnoreCase(constituent)) {
+					return TP_CONCENTRATION_THRESHOLD;
+				} else if (SEDIMENT_CONSTITUENT_NAME.equalsIgnoreCase(constituent)) {
+					//return SEDIMENT_CONCENTRATION_THRESHOLD;
+					throw new RuntimeException("Unrecognized constituent '" + constituent + "'");
+				} else {
+					throw new RuntimeException("Unrecognized constituent '" + constituent + "'");
+				}
+				//break;	//unreachable
+			default:
+				return null;
+			}
+		} else {
+			return null;
+		}
+	}
+	
+	public static Integer getMaxDecimalPlaces(DataSeriesType dataSeries, BigDecimal detectionLimit, ComparisonType comparisonType) {
+		
+		if (comparisonType.equals(ComparisonType.percent) || comparisonType.equals(ComparisonType.percent_change)) {
+			return 0;
+		}
+		
+		Integer decimalPlaces = null;
+		
+		switch (dataSeries) {
+		case total:
+		case decayed_incremental:
+			decimalPlaces = 0;
+			break;
+		case total_concentration:
+			decimalPlaces = getNonZeroDecimalPlaces(detectionLimit);
+			if (decimalPlaces < 0) decimalPlaces = 0;
+			break;
+		case incremental_yield:
+		case total_yield:
+			//No specific decimal places
+			break;
+		case source_value:
+			decimalPlaces = 1;
+			break;
+		case flux:
+			//Use actual
+			break;
+		case total_std_error_estimate:
+		case incremental_std_error_estimate:
+			decimalPlaces = 0;
+			break;
+		case incremental_delivered_flux:
+		case total_delivered_flux:
+			decimalPlaces = 0;
+			break;
+		case delivered_fraction:
+			decimalPlaces = 2;
+			break;
+		case incremental_delivered_yield:
+			//No specific decimal places
+			break;
+		default:
+			//OK if other internal dataseries are used w/o a specific
+			//decimal place setting.
+		}
+		
+		return decimalPlaces;
+	}
+	
+	/**
+	 * Returns the number of decimal places in the number, ignoring any trailing
+	 * zeros.
+	 * 
+	 * If the return value is negative, the number has no decimal places and
+	 * has zeros to the right of the decimal.  For instance:
+	 * 954300 would return a negative number in accordance w/ the BigDecimal
+	 * definition of scale.
+	 * 
+	 * @param value
+	 * @return
+	 */
+	protected static int getNonZeroDecimalPlaces(BigDecimal value) {
+		return value.stripTrailingZeros().scale();
+	}
+	
+	
+
 }

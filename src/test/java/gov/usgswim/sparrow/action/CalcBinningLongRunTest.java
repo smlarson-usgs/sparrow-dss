@@ -7,6 +7,8 @@ import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.AreaOfInterest;
 import gov.usgswim.sparrow.domain.BasicAnalysis;
+import gov.usgswim.sparrow.domain.BinSet;
+import gov.usgswim.sparrow.domain.ComparisonType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.NominalComparison;
 import gov.usgswim.sparrow.domain.PredictionContext;
@@ -46,8 +48,11 @@ public class CalcBinningLongRunTest  extends SparrowServiceTestBaseWithDBandCann
 				NominalComparison.getNoComparisonInstance());
 		
 		SharedApplication.getInstance().putPredictionContext(context);
-		BigDecimal[] bins = SharedApplication.getInstance().getDataBinning(new BinningRequest(
-				context.getId(), 4, BinningRequest.BIN_TYPE.EQUAL_COUNT));
+		BinSet binSet = SharedApplication.getInstance().getDataBinning(new BinningRequest(
+				context.getId(), 4, BinningRequest.BIN_TYPE.EQUAL_COUNT,
+				DataSeriesType.total, ComparisonType.none, "Nitrogen", null, null));
+		
+		BigDecimal[] bins = binSet.getActualPostValues();
 		
 		float[] values = getSortedResultValues(context.getId());
 

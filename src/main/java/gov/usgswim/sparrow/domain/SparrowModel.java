@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -11,6 +12,12 @@ import gov.usgswim.sparrow.SparrowUnits;
  */
 public interface SparrowModel {
 
+
+	//Standardized names for constituents so we can detect which const. we have.
+	static final String TN_CONSTITUENT_NAME = "Nitrogen";
+	static final String TP_CONSTITUENT_NAME = "Phosphorus";
+	static final String SEDIMENT_CONSTITUENT_NAME = "Suspended Sediment";
+	
 	/**
 	 * The UUID for this source.  This is the database srcId.
 	 * @return
@@ -108,6 +115,27 @@ public interface SparrowModel {
 	 * @return
 	 */
 	public String getConstituent();
+	
+	/**
+	 * Returns the detection limit for the specified dataseries.
+	 * 
+	 * Currently this only affects the concentration dataseries, which has
+	 * different detection limits for each constituent.
+	 * 
+	 * @return
+	 */
+	public BigDecimal getDetectionLimit(DataSeriesType dataSeries, ComparisonType comparisonType);
+	
+	/**
+	 * Returns the max number of decimal places that should be used for this
+	 * data series for this model.
+	 * 
+	 * Note that percentage comparisons should use a separate standard.
+	 * 
+	 * @param dataSeries
+	 * @return If null, there is no recommendation.
+	 */
+	public Integer getMaxDecimalPlaces(DataSeriesType dataSeries, ComparisonType comparisonType);
 
 	/**
 	 * Units of the model.

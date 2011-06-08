@@ -79,7 +79,7 @@ public class DataTableCompareTest {
 		
 		//Max values
 		assertEquals(.1d, comp.getMaxDouble(0), .000000000001d);
-		assertEquals(-3.4d, comp.getMaxDouble(3), .000000000001d);
+		assertEquals(2.4d, comp.getMaxDouble(3), .000000000001d);
 		
 		//Headings and other stuff...
 		assertEquals("one", comp.getName(0));

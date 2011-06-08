@@ -45,7 +45,10 @@ import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.Analysis;
 import gov.usgswim.sparrow.domain.AreaOfInterest;
+import gov.usgswim.sparrow.domain.BinSet;
+import gov.usgswim.sparrow.domain.ComparisonType;
 import gov.usgswim.sparrow.domain.Criteria;
+import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.domain.HUC;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
@@ -712,12 +715,38 @@ public class SharedApplication  {
 	}
 
 	//Data Binning Cache
-	public BigDecimal[] getDataBinning(BinningRequest req) {
+	public BinSet getDataBinning(BinningRequest req) throws Exception {
 		return getDataBinning(req, false);
 	}
 
-	public BigDecimal[] getDataBinning(BinningRequest req, boolean quiet) {
-		return (BigDecimal[]) DataBinning.get(req, quiet);
+	public BinSet getDataBinning(BinningRequest req, boolean quiet) throws Exception {
+		
+
+		//We assume that the request we have been given does not contain any
+		//of the derived data (dataseries, comparison, constituent and detection limit)
+		
+		PredictionContext context = SharedApplication.getInstance().getPredictionContext(req.getContextID());
+
+		if (context == null) {
+			throw new Exception("No context found for context-id '" + req.getContextID() + "'");
+		}
+		
+		DataSeriesType dataSeries = context.getAnalysis().getDataSeries();
+		
+		//Find the model
+		ModelRequestCacheKey modelKey = new ModelRequestCacheKey(context.getModelID(), false, false, false);
+		SparrowModel model = getModelMetadata(modelKey).get(0);
+		
+		//Clone
+		ComparisonType compType = context.getComparison().getComparisonType();
+		req = req.clone(dataSeries,
+				compType,
+				model.getConstituent(),
+				model.getDetectionLimit(dataSeries, compType),
+				model.getMaxDecimalPlaces(dataSeries, compType));
+
+		
+		return (BinSet) DataBinning.get(req, quiet);
 	}
 
 	//Catchment Area Cache
