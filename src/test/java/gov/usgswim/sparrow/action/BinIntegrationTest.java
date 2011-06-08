@@ -175,7 +175,7 @@ public class BinIntegrationTest extends SparrowServiceTestBaseWithDBandCannedMod
 		float[] values = getSortedResultValues(contextId);
         
         // Setup a random number of bins picked from [2, 100)
-        int binCount = ((int)(Math.random() * 98.0d)) + 2;
+        int binCount = 53;
         
         // Request the bin values from the caching mechanism
         SharedApplication sharedApp = SharedApplication.getInstance();
@@ -187,7 +187,7 @@ public class BinIntegrationTest extends SparrowServiceTestBaseWithDBandCannedMod
 
         int binIndex = 1; // current bin index
         int targetCount = values.length / binCount; // target number of data points in a bin
-        int tolerance = (int) Math.ceil(targetCount * .2d);
+        int tolerance = (int) Math.ceil(targetCount * .1d);
         int count = 0; // number of data points in the current bin
         int adjustment = 0; // adjustment factor for sequences of equal values
         int leftoverAdj = 0; // used when length of sequence exceeds bin size
