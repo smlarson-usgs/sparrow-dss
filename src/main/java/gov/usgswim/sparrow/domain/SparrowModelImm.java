@@ -179,7 +179,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	
 	@Override
 	public Integer getMaxDecimalPlaces(DataSeriesType dataSeries, ComparisonType comparisonType) {
-		return getMaxDecimalPlaces(dataSeries, getDetectionLimit(dataSeries, comparisonType), comparisonType);
+		return getMaxDecimalPlaces(dataSeries, getDetectionLimit(dataSeries, _constituent), comparisonType);
 	}
 	
 	@Override
@@ -196,34 +196,68 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 		return null;	//no sources
 	}
 	
-	public static BigDecimal getDetectionLimit(DataSeriesType dataSeries, String constituent, ComparisonType comparisonType) {
-		
-		if (comparisonType.equals(ComparisonType.none)) {
+	/**
+	 * Returns the min value to display (detection limit) for this model.
+	 * 
+	 * This method inores the comparison type so that we get what the nominal
+	 * detection limit would be.
+	 * 
+	 * @param dataSeries
+	 * @param constituent
+	 * @return
+	 */
+	public static BigDecimal getDetectionLimit(DataSeriesType dataSeries, String constituent) {
 		switch (dataSeries) {
-			case total_concentration:
-				if (TN_CONSTITUENT_NAME.equalsIgnoreCase(constituent)) {
-					return TN_CONCENTRATION_THRESHOLD;
-				} else if (TP_CONSTITUENT_NAME.equalsIgnoreCase(constituent)) {
-					return TP_CONCENTRATION_THRESHOLD;
-				} else if (SEDIMENT_CONSTITUENT_NAME.equalsIgnoreCase(constituent)) {
-					//return SEDIMENT_CONCENTRATION_THRESHOLD;
-					throw new RuntimeException("Unrecognized constituent '" + constituent + "'");
-				} else {
-					throw new RuntimeException("Unrecognized constituent '" + constituent + "'");
-				}
-				//break;	//unreachable
-			default:
-				return null;
+		case total_concentration:
+			if (TN_CONSTITUENT_NAME.equalsIgnoreCase(constituent)) {
+				return TN_CONCENTRATION_THRESHOLD;
+			} else if (TP_CONSTITUENT_NAME.equalsIgnoreCase(constituent)) {
+				return TP_CONCENTRATION_THRESHOLD;
+			} else if (SEDIMENT_CONSTITUENT_NAME.equalsIgnoreCase(constituent)) {
+				//return SEDIMENT_CONCENTRATION_THRESHOLD;
+				throw new RuntimeException("Unrecognized constituent '" + constituent + "'");
+			} else {
+				throw new RuntimeException("Unrecognized constituent '" + constituent + "'");
 			}
+			//break;	//unreachable
+		default:
+			return null;
+		}
+	}
+	
+	/**
+	 * Returns the min value to display (detection limit) for this model.
+	 * 
+	 * This method inores the comparison type so that we get what the nominal
+	 * detection limit would be.
+	 * 
+	 * @param dataSeries
+	 * @param constituent
+	 * @return
+	 */
+	public static BigDecimal getDetectionLimit(DataSeriesType dataSeries, String constituent, ComparisonType comparisonType) {
+		if (comparisonType.equals(ComparisonType.none)) {
+			return getDetectionLimit(dataSeries, constituent);
 		} else {
 			return null;
 		}
 	}
 	
+	/**
+	 * Returns the max decimal places allowed to be displayed for this data
+	 * series, detection limit, and comparison type.
+	 * 
+	 * @param dataSeries
+	 * @param detectionLimit
+	 * @param comparisonType
+	 * @return
+	 */
 	public static Integer getMaxDecimalPlaces(DataSeriesType dataSeries, BigDecimal detectionLimit, ComparisonType comparisonType) {
 		
-		if (comparisonType.equals(ComparisonType.percent) || comparisonType.equals(ComparisonType.percent_change)) {
-			return 0;
+		if (! comparisonType.equals(ComparisonType.none) || comparisonType.equals(ComparisonType.percent_change)) {
+			return 0;	//Percentage comparisons should have zero decimal places
+		} else if (! comparisonType.equals(ComparisonType.none)) {
+			return null;	//No max decimal places for absolute comparisons
 		}
 		
 		Integer decimalPlaces = null;

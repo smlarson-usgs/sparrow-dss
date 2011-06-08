@@ -162,6 +162,37 @@ public class BinningServiceLongRunTest extends SparrowServiceTestBaseWithDBandCa
 		log.debug("bin actual for inc del yeild: " + binResponseString);
 		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", binResponseString);
 	}
+	
+	/**
+	 * Concentration binning that results in a 500 server error due to the 
+	 * SparrowModelImm returning null for the detection limit (correct) but
+	 * then trying to use the null detect limit value to determine the max
+	 * number of decimal places (wrong).
+	 * @throws Exception
+	 */
+	@Test
+	public void concentration2BugTest() throws Exception {
+
+		String contextRequestText = getXmlAsString(this.getClass(), "concentration2");
+		WebRequest contextRequest = new PostMethodWebRequest(CONTEXT_SERVICE_URL);
+		contextRequest.setParameter("xmlreq", contextRequestText);
+		WebResponse contextResponse = client.sendRequest(contextRequest);
+		String contextResponseString = contextResponse.getText();
+		log.debug("context actual conc: " + contextResponseString);
+		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", contextResponseString);
+		
+		Integer contextId = getContextIdFromContext(contextResponseString);
+		
+		WebRequest binRequest = new GetMethodWebRequest(BINNING_SERVICE_URL);
+		binRequest.setParameter("context-id", contextId.toString());
+		binRequest.setParameter("bin-count", "5");
+		binRequest.setParameter("bin-type", "EQUAL_COUNT");
+		WebResponse binResponse = client.sendRequest(binRequest);
+		String binResponseString = binResponse.getText();
+		
+		log.debug("bin actual for concentration: " + binResponseString);
+		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", binResponseString);
+	}
 
 	
 }

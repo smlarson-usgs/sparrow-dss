@@ -149,7 +149,7 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 	
 	@Override
 	public Integer getMaxDecimalPlaces(DataSeriesType dataSeries, ComparisonType comparisonType) {
-		return SparrowModelImm.getMaxDecimalPlaces(dataSeries, getDetectionLimit(dataSeries, comparisonType), comparisonType);
+		return SparrowModelImm.getMaxDecimalPlaces(dataSeries, SparrowModelImm.getDetectionLimit(dataSeries, _constituent), comparisonType);
 	}
 
 	public void setUnits(SparrowUnits units) {this._units = units;}

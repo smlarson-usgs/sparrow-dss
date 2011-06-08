@@ -87,8 +87,17 @@ public class CalcEqualRangeBins extends Action<BinSet> {
 				ipbs.actualMin, ipbs.actualMax,
 				ipbs.characteristicUnitValue); 
 		
-		DecimalFormat formatter = getFormat(minValue, maxValue, getScaleOfMostSignificantDigit(cuv), false);
-		DecimalFormat functionalFormatter = getFormat(minValue, maxValue, getScaleOfMostSignificantDigit(cuv), true);
+		//Min and max values used to determine formatting.
+		//Adjusted if the extreme top & bottom values are not visible b/c of
+		//unlimited top/bottom bounds.
+		BigDecimal formatMin = minValue;
+		BigDecimal formatMax = maxValue;
+		
+		if (bottomUnbounded) formatMin = ipbs.posts[1];
+		if (topUnbounded) formatMax = ipbs.posts[ipbs.posts.length - 2];
+		
+		DecimalFormat formatter = getFormat(formatMin, formatMax, getScaleOfMostSignificantDigit(cuv), false);
+		DecimalFormat functionalFormatter = getFormat(formatMin, formatMax, getScaleOfMostSignificantDigit(cuv), true);
 		
 		BinSet binSet = BinSet.createBins(ipbs, formatter, functionalFormatter,
 				bottomUnbounded, topUnbounded, BIN_TYPE.EQUAL_RANGE);
