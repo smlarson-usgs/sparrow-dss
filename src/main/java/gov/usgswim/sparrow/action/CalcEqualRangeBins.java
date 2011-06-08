@@ -32,6 +32,16 @@ public class CalcEqualRangeBins extends Action<BinSet> {
 		if (minValue == null || maxValue == null) {
 			Double min = dataColumn.getTable().getMinDouble(dataColumn.getColumn());
 			Double max = dataColumn.getTable().getMaxDouble(dataColumn.getColumn());
+			
+			//Filter out possible exceptional values
+			if (min == null || max == null || min.isNaN() || max.isNaN()) {
+				min = 0d;
+				max = 0d;
+			} else {
+				if (min.isInfinite()) min = Double.MIN_VALUE * -1d;
+				if (max.isInfinite()) max = Double.MAX_VALUE;
+			}
+			
 			minValue = new BigDecimal(min).stripTrailingZeros();
 			maxValue = new BigDecimal(max).stripTrailingZeros();
 		}

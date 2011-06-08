@@ -78,6 +78,10 @@ public class BinningServiceLongRunTest extends SparrowServiceTestBaseWithDBandCa
 		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", binResponseString);
 	}
 	
+	/**
+	 * Concentration uses detection limits, which were bombing.
+	 * @throws Exception
+	 */
 	@Test
 	public void concentrationBugTest() throws Exception {
 
@@ -102,6 +106,10 @@ public class BinningServiceLongRunTest extends SparrowServiceTestBaseWithDBandCa
 		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", binResponseString);
 	}
 	
+	/**
+	 * Discovered a bug in which negative comparison values would throw an error.
+	 * @throws Exception
+	 */
 	@Test
 	public void comparisonReductionBugTest() throws Exception {
 
@@ -123,6 +131,35 @@ public class BinningServiceLongRunTest extends SparrowServiceTestBaseWithDBandCa
 		String binResponseString = binResponse.getText();
 		
 		log.debug("bin actual for comp reduction: " + binResponseString);
+		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", binResponseString);
+	}
+	
+	/**
+	 * Discovered an exception condition where yeild would result in an infinate
+	 * value which could not be binned.
+	 * @throws Exception
+	 */
+	@Test
+	public void incrementalDeliveredYieldBugTest() throws Exception {
+
+		String contextRequestText = getXmlAsString(this.getClass(), "inc_del_yield");
+		WebRequest contextRequest = new PostMethodWebRequest(CONTEXT_SERVICE_URL);
+		contextRequest.setParameter("xmlreq", contextRequestText);
+		WebResponse contextResponse = client.sendRequest(contextRequest);
+		String contextResponseString = contextResponse.getText();
+		log.debug("context actual comp_reduction: " + contextResponseString);
+		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", contextResponseString);
+		
+		Integer contextId = getContextIdFromContext(contextResponseString);
+		
+		WebRequest binRequest = new GetMethodWebRequest(BINNING_SERVICE_URL);
+		binRequest.setParameter("context-id", contextId.toString());
+		binRequest.setParameter("bin-count", "5");
+		binRequest.setParameter("bin-type", "EQUAL_COUNT");
+		WebResponse binResponse = client.sendRequest(binRequest);
+		String binResponseString = binResponse.getText();
+		
+		log.debug("bin actual for inc del yeild: " + binResponseString);
 		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", binResponseString);
 	}
 

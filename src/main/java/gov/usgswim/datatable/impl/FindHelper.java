@@ -512,7 +512,7 @@ public abstract class FindHelper {
 		int rows = dt.getRowCount();
 		for (int row=0; row < rows; row++) {
 			Double value = dt.getDouble(row, col);
-			if (value != null) {
+			if (value != null && ! value.isNaN()) {
 				max = (max == null)? value: Math.max(max, value);
 			}
 		}
@@ -524,7 +524,7 @@ public abstract class FindHelper {
 		int cols = dt.getColumnCount();
 		for (int col=0; col < cols; col++) {
 			Double value = dt.getMaxDouble(col);
-			if (value != null) {
+			if (value != null && ! value.isNaN()) {
 				max = (max == null)? value: Math.max(max, value);
 			}
 		}
@@ -536,7 +536,7 @@ public abstract class FindHelper {
 		int rows = dt.getRowCount();
 		for (int row=0; row < rows; row++) {
 			Double value = dt.getDouble(row, col);
-			if (value != null) {
+			if (value != null && ! value.isNaN()) {
 				min = (min == null)? value: Math.min(min, value);
 			}
 		}
@@ -548,7 +548,7 @@ public abstract class FindHelper {
 		int cols = dt.getColumnCount();
 		for (int col=0; col < cols; col++) {
 			Double value = dt.getMinDouble(col);
-			if (value != null) {
+			if (value != null && ! value.isNaN()) {
 				min = (min == null)? value: Math.min(min, value);
 			}
 		}

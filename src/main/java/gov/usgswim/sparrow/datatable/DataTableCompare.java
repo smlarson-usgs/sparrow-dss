@@ -229,7 +229,7 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 		int rows = dt.getRowCount();
 		for (int row=0; row < rows; row++) {
 			Double value = dt.getDouble(row, col);
-			if (value != null) {
+			if (value != null && ! value.isNaN()) {
 				if (value > max) {
 					max = value;
 				}
@@ -245,7 +245,7 @@ public class DataTableCompare extends AbstractDataTableBase implements Immutable
 		for (int col=0; col < cols; col++) {
 			Double value = dt.getMaxDouble(col);
 			if (value != null) {
-				if (value > max) {
+				if (value > max && ! value.isNaN()) {
 					max = value;
 				}
 			}
