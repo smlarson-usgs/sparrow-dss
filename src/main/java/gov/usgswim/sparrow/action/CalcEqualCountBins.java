@@ -91,6 +91,10 @@ public class CalcEqualCountBins extends Action<BinSet> {
 		BinSet resultBinSet = getEqualCountBins(values, eqRangeBinSet);
 		Double variance = resultBinSet.getBinCountMaxVariancePercentage();
 		
+		//
+		//We want the equal count bins to vary by at most 10% (arbitrary)
+		//so try increasing the fineness of the bins by making the CUV smaller,
+		//unless restricte by the max decimal places.
 		if (variance > 10d) {
 			ArrayList<BinSet> results = new ArrayList<BinSet>();
 			results.add(resultBinSet);
@@ -102,7 +106,10 @@ public class CalcEqualCountBins extends Action<BinSet> {
 				BigDecimal cuv = resultBinSet.getCharacteristicUnitValue();
 				int cuvScale = CalcEqualRangeBins.getScaleOfMostSignificantDigit(cuv);
 				
-				if (maxDecimalPlaces != null &&  cuvScale <= maxDecimalPlaces) {
+				//cuvScale and maxDecimalPlaces both use BigDecimal style of
+				//decimal places:  more positive == right of the decimal.
+				//zero equals the ones place.
+				if (maxDecimalPlaces != null &&  cuvScale >= maxDecimalPlaces) {
 					//We cannot make the CUV any smaller due to maxDecimalPlaces
 					keepTrying = false;
 					break;

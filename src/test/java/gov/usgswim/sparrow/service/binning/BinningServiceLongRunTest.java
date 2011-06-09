@@ -193,6 +193,36 @@ public class BinningServiceLongRunTest extends SparrowServiceTestBaseWithDBandCa
 		log.debug("bin actual for concentration: " + binResponseString);
 		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", binResponseString);
 	}
+	
+	/**
+	 * Total Load doesn't seem to make the bins finer to get a better EQ bin fit.
+	 * Tracked down to an issue of how it determines if the maxDecimalPlaces
+	 * is limiting it or not.
+	 * @throws Exception
+	 */
+	@Test
+	public void totalLoadBugTest() throws Exception {
+
+		String contextRequestText = getXmlAsString(this.getClass(), "total_load");
+		WebRequest contextRequest = new PostMethodWebRequest(CONTEXT_SERVICE_URL);
+		contextRequest.setParameter("xmlreq", contextRequestText);
+		WebResponse contextResponse = client.sendRequest(contextRequest);
+		String contextResponseString = contextResponse.getText();
+		log.debug("context total load: " + contextResponseString);
+		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", contextResponseString);
+		
+		Integer contextId = getContextIdFromContext(contextResponseString);
+		
+		WebRequest binRequest = new GetMethodWebRequest(BINNING_SERVICE_URL);
+		binRequest.setParameter("context-id", contextId.toString());
+		binRequest.setParameter("bin-count", "5");
+		binRequest.setParameter("bin-type", "EQUAL_COUNT");
+		WebResponse binResponse = client.sendRequest(binRequest);
+		String binResponseString = binResponse.getText();
+		
+		log.debug("bin actual for total load: " + binResponseString);
+		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", binResponseString);
+	}
 
 	
 }
