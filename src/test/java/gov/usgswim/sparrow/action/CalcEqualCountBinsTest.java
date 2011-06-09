@@ -346,6 +346,71 @@ public class CalcEqualCountBinsTest extends SparrowTestBase {
 		assertEquals("0.09", result.getBins()[5].getBottom().getFormatted());
 		assertEquals("0.10", result.getBins()[5].getTop().getFormatted());
 	}
+	
+	/**
+	 * This test is to address an issue with values that cover a wide range
+	 * and have the values clustered at the bottom.  The result a very large
+	 * CUV, resulting in the minimum possible bin containing all the values.
+	 * 
+	 * In these cases we need to check the quality of the EQ bins and allow the
+	 * CUV to be smaller (if allowed by the max decimal places).
+	 * 
+	 * As part of this test, we are defining a standard of 10% variation b/t the bins.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testWideRangeOfValuesWhereMostValuesAreClusteredAtBottom() throws Exception {
+		//Build values w/ a wide range, but almost all vals in bottom bin
+		double[] values = buildValues(0d, 100d, 150, 0, true, 4124);
+		values[149] = 100000d;
+		
+		CalcEqualCountBins action = new CalcEqualCountBins();
+		action.setBinCount(5);
+		action.setUnsortedValues(values);
+		
+		BinSet result = action.run();
+		
+		debug(result.getActualPostValues());
+		log.debug("Variance: " + result.getBinCountMaxVariancePercentage());
+		log.debug("CUV: " + result.getCharacteristicUnitValue());
+		
+		assertTrue(result.getBinCountMaxVariancePercentage() < 18);
+		assertTrue(result.getCharacteristicUnitValue().compareTo(new BigDecimal("1")) == 0);
+	}
+	
+	/**
+	 * This test is to address an issue with values that cover a wide range
+	 * and have the values clustered at the bottom.  The result a very large
+	 * CUV, resulting in the minimum possible bin containing all the values.
+	 * 
+	 * In these cases we need to check the quality of the EQ bins and allow the
+	 * CUV to be smaller (if allowed by the max decimal places).
+	 * 
+	 * As part of this test, we are defining a standard of 10% variation b/t the bins.
+	 * 
+	 * @throws Exception
+	 */
+	@Test
+	public void testWideRangeOfValuesWhereMostValuesAreClusteredAtBottomWithMaxDecimalPlaces() throws Exception {
+		//Build values w/ a wide range, but almost all vals in bottom bin
+		double[] values = buildValues(0d, 100d, 150, 0, true, 4124);
+		values[149] = 100000d;
+		
+		CalcEqualCountBins action = new CalcEqualCountBins();
+		action.setBinCount(5);
+		action.setUnsortedValues(values);
+		action.setMaxDecimalPlaces(-2);
+		
+		BinSet result = action.run();
+		
+		debug(result.getActualPostValues());
+		log.debug("Variance: " + result.getBinCountMaxVariancePercentage());
+		log.debug("CUV: " + result.getCharacteristicUnitValue());
+		
+		assertTrue(result.getBinCountMaxVariancePercentage() == 100);	//Can't get to a good value here
+		assertTrue(result.getCharacteristicUnitValue().compareTo(new BigDecimal("100")) == 0); //restriction from max dec places
+	}
 
 	//
 	//Util method tests

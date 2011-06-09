@@ -210,75 +210,89 @@ public class BinSet {
 	}
 	
 	/**
-	 * Returns true if the passed value is greater than the formatted bottom
-	 * bound of the first bin and less than the formatted top bound of the last bin.
+	 * Returns the percentage difference between the number of values in the
+	 * bin with the most values wrt the bin with the smallest number of values.
 	 * 
-	 * The bottom bin is inclusive and the top bin is exclusive.
+	 * If no bin counts have been assigned, null is returned.
+	 * If all bins are empty, zero is returned.
+	 * If the smallest bin contains zero bins, 100% (100) is returned.
 	 * 
-	 * This method does not ensure that a value does not fall in possible gaps
-	 * between bins.
-	 * 
-	 * @param value
 	 * @return
 	 */
-	public boolean formattedExtremesContain(double value) {
-		Bin first = bins[0];
-		Bin last = bins[bins.length - 1];
+	public Double getBinCountMaxVariancePercentage() {
+		int maxCount = 0;
+		int minCount = 0;
+		boolean hasCount = false;
+		int startBin = (this.usesDetectionLimit)?1:0;
 		
-		return first.formattedBottomLessThan(value, true) &&
-				last.formattedTopGreaterThan(value, false);
+		for (int i=startBin; i<bins.length; i++) {
+			Bin b = bins[i];
+			Integer cnt = b.getValueCount();
+			
+			if (cnt != null) {
+				
+				if (hasCount == false) {
+					maxCount = cnt;
+					minCount = cnt;
+				} else {
+					if (cnt > maxCount) maxCount = cnt;
+					if (cnt < minCount) minCount = cnt;
+				}
+				hasCount = true;
+			} else {
+				hasCount = false;
+				break;
+			}
+		}
+		
+		//Special cases
+		if (!hasCount) return null;
+		if (maxCount == 0) return 0d;
+		if (minCount == 0) return 100d;
+		
+		int diff = maxCount - minCount;
+		double percent = ((double)diff / (double)minCount) * 100d;
+		return percent;
 	}
-	
-	/**
-	 * Returns true if the formatted bottom-most bound is unbounded or is less than
-	 * the actual bottom-most post value.
-	 * 
-	 * @param inclusive If true, the comparison is less than or equal to.
-	 * @return
-	 */
-	public boolean formattedBottomContainsActual(boolean inclusive) {
-		Bin bin = bins[0];
-		return bin.formattedBottomLessThan(bin.getBottom().getActual(), inclusive);
-	}
-	
-	/**
-	 * Returns true if the formatted top-most bound is unbounded or is greater
-	 * than the actual top-most post value.
-	 * 
-	 * @param inclusive If true, the comparison is greater than or equal to.
-	 * @return
-	 */
-	public boolean formattedTopContainsActual(boolean inclusive) {
-		Bin bin = bins[bins.length - 1];
-		return bin.formattedTopGreaterThan(bin.getTop().getActual(), inclusive);
-	}
-	
 	
 	/**
 	 * Creates a new BinSet inferring some aspects based on the context.
 	 * 
-	 * @param posts	The actual values that make up the 'fence posts' of the bins.
-	 * @param suggestedPosts  A set of fence post values that slightly cleaned
-	 * 	up.  For instance, if an actual top is 50.00000000000001, the suggested
-	 * 	post for that might be 50.001.
-	 * @param formatter	The formatter to use to convert the actual values to
-	 * 	formatted string values for use in a legend.
-	 * @param functionalFormatter The formatter used for the functional values.
-	 * @param unboundedBottomString A string to use as the formatted value for
-	 * 	the bottom-most bound if the bottom is unbounded. (not used otherwise).
-	 * @param unboundedTopString	A string to use as the formatted value for
-	 * 	the top-most bound if the top is unbounded. (not used otherwise).
-	 * @param bottomUnbounded	True if the bottom-most bound is unbounded.
-	 * @param topUnbounded	True if the top-most bound is unbounded.
-	 * @param binType	Equal count or Equal Range.
-	 * @param contextId	The SPARROW context ID, used to determine other relevant
-	 * 	information about how the bins are constructed, such as the data series.
+	 * @param ipbs An InProcessBinSet that contains actual bins, functional bins and detection limit info 
+	 * @param formatter Formatter for the actual bins
+	 * @param functionalFormatter Formatter for the functional bins
+	 * @param bottomUnbounded True if the bottom bound should be unlimited
+	 * @param topUnbounded True if the top bound should be unlimitted
+	 * @param formattedDetectionLimit Formatted detection limit.
+	 * @param binType Type of bins being created.
 	 * @return
 	 */
 	public static BinSet createBins(InProcessBinSet ipbs, 
 			DecimalFormat formatter, DecimalFormat functionalFormatter,
 			boolean bottomUnbounded, boolean topUnbounded, String formattedDetectionLimit,
 			BIN_TYPE binType) {
+		return createBins(ipbs, formatter, functionalFormatter,
+				bottomUnbounded, topUnbounded,
+				formattedDetectionLimit, null, binType);
+	}
+	
+	/**
+	 * Creates a new BinSet inferring some aspects based on the context.
+	 * 
+	 * @param ipbs An InProcessBinSet that contains actual bins, functional bins and detection limit info 
+	 * @param formatter Formatter for the actual bins
+	 * @param functionalFormatter Formatter for the functional bins
+	 * @param bottomUnbounded True if the bottom bound should be unlimited
+	 * @param topUnbounded True if the top bound should be unlimitted
+	 * @param formattedDetectionLimit Formatted detection limit.
+	 * @param binCounts The number of values in each bin.  Optionally null.
+	 * @param binType Type of bins being created.
+	 * @return
+	 */
+	public static BinSet createBins(InProcessBinSet ipbs, 
+			DecimalFormat formatter, DecimalFormat functionalFormatter,
+			boolean bottomUnbounded, boolean topUnbounded, String formattedDetectionLimit,
+			Integer[] binCounts, BIN_TYPE binType) {
 		
 		
 		BigDecimal[] posts = ipbs.posts;
@@ -328,11 +342,14 @@ public class BinSet {
 						formatter.format(posts[i + 1]), functionalFormatter.format(functional[i + 1]), false);
 			}
 			
+			Integer valueCount = null;
+			if (binCounts != null) valueCount = binCounts[i];
+			
 			Bin b = null;
 			if (i == 0 && ipbs.usesDetectionLimit) {
-				b = new Bin(bottom, top, true);
+				b = new Bin(bottom, top, true, valueCount);
 			} else {
-				b = new Bin(bottom, top);
+				b = new Bin(bottom, top, valueCount);
 			}
 			
 			bin[i] = b;

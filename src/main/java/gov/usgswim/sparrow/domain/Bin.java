@@ -28,17 +28,37 @@ public class Bin implements Serializable {
 	@XStreamAsAttribute
 	private final boolean nonDetect;
 	
+	/** The number of values included in this bin.  May be null */
+	@XStreamAsAttribute
+	private final Integer valueCount;
+	
 
 	public Bin(Bound bottom, Bound top) {
 		this.top = top;
 		this.bottom = bottom;
 		nonDetect = false;
+		valueCount = null;
+	}
+	
+	public Bin(Bound bottom, Bound top, Integer valueCount) {
+		this.top = top;
+		this.bottom = bottom;
+		nonDetect = false;
+		this.valueCount = valueCount;
 	}
 	
 	public Bin(Bound bottom, Bound top, boolean isNonDetect) {
 		this.top = top;
 		this.bottom = bottom;
 		nonDetect = isNonDetect;
+		valueCount = null;
+	}
+	
+	public Bin(Bound bottom, Bound top, boolean isNonDetect, Integer valueCount) {
+		this.top = top;
+		this.bottom = bottom;
+		nonDetect = isNonDetect;
+		this.valueCount = valueCount;
 	}
 
 
@@ -133,6 +153,10 @@ public class Bin implements Serializable {
 
 	public boolean isNonDetect() {
 		return nonDetect;
+	}
+
+	public Integer getValueCount() {
+		return valueCount;
 	}
 	
 

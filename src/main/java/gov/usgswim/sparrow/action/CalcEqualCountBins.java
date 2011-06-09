@@ -88,9 +88,40 @@ public class CalcEqualCountBins extends Action<BinSet> {
 		
 		BinSet eqRangeBinSet = eqRangeAction.run();
 		
-		BinSet binSet = getEqualCountBins(values, eqRangeBinSet);
+		BinSet resultBinSet = getEqualCountBins(values, eqRangeBinSet);
+		Double variance = resultBinSet.getBinCountMaxVariancePercentage();
 		
-		return binSet;
+		if (variance > 10d) {
+			ArrayList<BinSet> results = new ArrayList<BinSet>();
+			results.add(resultBinSet);
+			
+			int tryAttempts = 0;	//Make two attempts
+			boolean keepTrying = true;
+			
+			while (variance > 10d && tryAttempts < 2 && keepTrying) {
+				BigDecimal cuv = resultBinSet.getCharacteristicUnitValue();
+				int cuvScale = CalcEqualRangeBins.getScaleOfMostSignificantDigit(cuv);
+				
+				if (maxDecimalPlaces != null &&  cuvScale <= maxDecimalPlaces) {
+					//We cannot make the CUV any smaller due to maxDecimalPlaces
+					keepTrying = false;
+					break;
+				}
+				
+				//Ratchet the CUV one scale smaller
+				BigDecimal newCUV = CalcEqualRangeBins.oneTimesTenToThePower((-1) * (cuvScale + 1));
+				InProcessBinSet ipbs = resultBinSet.createInProcessBinSet();
+				ipbs.characteristicUnitValue = newCUV;
+				BinSet newStartBinSet = new BinSet(resultBinSet.getBins(), resultBinSet.getBinType(), ipbs, resultBinSet.getFormatPattern());
+				resultBinSet = getEqualCountBins(values, newStartBinSet);
+				results.add(resultBinSet);
+				variance = resultBinSet.getBinCountMaxVariancePercentage();
+				
+				tryAttempts++;
+			}
+		}
+		
+		return resultBinSet;
 	}
 	
 	/**
@@ -106,59 +137,85 @@ public class CalcEqualCountBins extends Action<BinSet> {
 	protected BinSet getEqualCountBins(
 			double[] values, BinSet eqRangeBinSet) throws Exception {
 		
-		InProcessBinSet result = eqRangeBinSet.createInProcessBinSet();
+		InProcessBinSet inProcessBinSet = eqRangeBinSet.createInProcessBinSet();
 		
 		
 		//index of bottom post we should keep b/c there is no reason to move the btm post.
 		//Will be changed if a detection limit is ued.
-		int bottomPostToKeep = result.usesDetectionLimit? 1 : 0;	
+		int bottomPostToKeep = inProcessBinSet.usesDetectionLimit? 1 : 0;	
 		
 		//Used for the actual calc process.
 		//workingPosts starts & ends w/ the fixed top & btm posts we don't want
 		//to change, but excludes the (possible) very bottom zero bin below the
 		//detect limit.
 		BigDecimal[] startingPosts = Arrays.copyOfRange(
-				result.posts, bottomPostToKeep, result.posts.length);
+				inProcessBinSet.posts, bottomPostToKeep, inProcessBinSet.posts.length);
 		
 
 		//Now the final value
-		BigDecimal[] optimizedPosts = seakBestPostConfiguration(
-				values, startingPosts, eqRangeBinSet.getCharacteristicUnitValue());
+		PostsWrapper optimizedPostsWrapper = seakBestPostConfiguration(
+				values, startingPosts, eqRangeBinSet.getCharacteristicUnitValue());;
+		BigDecimal[] optimizedPosts = optimizedPostsWrapper.posts;
+		Integer[] binCounts = null;
 		
 		//slip in a extreme bottom post if we are using the detection limit
-		if (result.usesDetectionLimit) {
+		if (inProcessBinSet.usesDetectionLimit) {
 			BigDecimal[] postsWithBtm = new BigDecimal[optimizedPosts.length + 1];
 			postsWithBtm[0] = eqRangeBinSet.getActualPostValues()[0];
 			System.arraycopy(optimizedPosts, 0, postsWithBtm, 1, optimizedPosts.length);
 			optimizedPosts = postsWithBtm;
+			
+			//Move the binCounts up one
+			int[] orgBinCounts = optimizedPostsWrapper.binCounts;
+			Integer[] binCountsWNonDetect = new Integer[orgBinCounts.length + 1];
+			binCountsWNonDetect[0] = null;	//no easy way to get a count for non-detect bin
+			for (int i = 0; i < orgBinCounts.length; i++) {
+				binCountsWNonDetect[i+1] = orgBinCounts[i];
+			}
+			binCounts = binCountsWNonDetect;
+		} else {
+			//Reassign binCounts as Integer[]
+			binCounts = ArrayUtils.toObject(optimizedPostsWrapper.binCounts);
 		}
 		
-		result.posts = optimizedPosts;
+		inProcessBinSet.posts = optimizedPosts;
 		
-		result.functional = CalcEqualRangeBins.createFunctionalPosts(result.posts, 
-				result.actualMin, result.actualMax,
-				result.characteristicUnitValue); 
+		inProcessBinSet.functional = CalcEqualRangeBins.createFunctionalPosts(inProcessBinSet.posts, 
+				inProcessBinSet.actualMin, inProcessBinSet.actualMax,
+				inProcessBinSet.characteristicUnitValue); 
 		
-		DecimalFormat formatter = new DecimalFormat(eqRangeBinSet.getFormatPattern());
+		//Min and max values used to determine formatting.
+		//Adjusted if the extreme top & bottom values are not visible b/c of
+		//unlimited top/bottom bounds.
+		BigDecimal formatMin = minValue;
+		BigDecimal formatMax = maxValue;
+		
+		if (bottomUnbounded) formatMin = inProcessBinSet.posts[1];
+		if (topUnbounded) formatMax = inProcessBinSet.posts[inProcessBinSet.posts.length - 2];
+		
+		
+		DecimalFormat formatter = CalcEqualRangeBins.getFormat(
+				formatMin, formatMax,
+				CalcEqualRangeBins.getScaleOfMostSignificantDigit(inProcessBinSet.characteristicUnitValue), false);
 		DecimalFormat functionalFormatter = CalcEqualRangeBins.getFormat(
 				minValue, maxValue,
-				CalcEqualRangeBins.getScaleOfMostSignificantDigit(result.characteristicUnitValue), true);
+				CalcEqualRangeBins.getScaleOfMostSignificantDigit(inProcessBinSet.characteristicUnitValue), true);
 		
 		String formattedNonDetectLimit = "";
 		
-		if (result.usesDetectionLimit) {
+		if (inProcessBinSet.usesDetectionLimit) {
 			DecimalFormat ndFormat = CalcEqualRangeBins.getFormat(detectionLimit, detectionLimit,
 					CalcEqualRangeBins.getScaleOfMostSignificantDigit(detectionLimit), false);
 			formattedNonDetectLimit = ndFormat.format(detectionLimit);
 		}
 		
-		BinSet binSet = BinSet.createBins(result, formatter, functionalFormatter,
-				bottomUnbounded, topUnbounded, formattedNonDetectLimit, BIN_TYPE.EQUAL_COUNT);
+		BinSet binSet = BinSet.createBins(inProcessBinSet, formatter, functionalFormatter,
+				bottomUnbounded, topUnbounded, formattedNonDetectLimit, binCounts, BIN_TYPE.EQUAL_COUNT);
 		
 		return binSet;
 	}
 	
-	protected BigDecimal[] seakBestPostConfiguration(
+	protected PostsWrapper seakBestPostConfiguration(
 			double[] values, BigDecimal[] startingPosts, 
 			BigDecimal characteristicUnitValue) throws Exception {
 		
@@ -274,7 +331,7 @@ public class CalcEqualCountBins extends Action<BinSet> {
 		}
 		bestScore = bestWrapper.getScore();
 		
-		return bestWrapper.posts;
+		return bestWrapper;
 	}
 	
 	protected void runInnerLoop(PostsWrapper startingWrapper,
