@@ -10,7 +10,7 @@ import javax.xml.stream.XMLStreamReader;
 
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
-import gov.usgswim.sparrow.domain.Criteria;
+import gov.usgswim.sparrow.domain.ConflictingReachGroup;
 import gov.usgswim.sparrow.domain.LogicalSet;
 import org.junit.Test;
 
@@ -44,16 +44,16 @@ public class GetReachGroupsOverlappingLogicalSetLongRunTest extends SparrowServi
 
 		//Test adding a huc set that overlaps 3/4 sets
 		GetReachGroupsOverlappingLogicalSet action = new GetReachGroupsOverlappingLogicalSet(buildNewLogicalSet(MODEL_ID, NEW_OVERLAPPING_HUC4_FRAGMENT), adjGroups1);
-		List<Criteria> results = action.run();
+		List<ConflictingReachGroup> results = action.run();
 		boolean ecofinaHucFound = false;
 		boolean ogeecheeHucFound = false;
 		boolean individualGroupFound = false;
 		boolean streamGroupFound = false;
-		for(Criteria r : results) {
-			if(r.getValue().equals("ECONFINA-STEINHATCHEE huc8 Group")) ecofinaHucFound = true;
-			if(r.getValue().equals("OGEECHEE-SAVANNAH huc4 Group")) ogeecheeHucFound = true;
-			if(r.getValue().equals("Upstream of rch 661780 Group")) streamGroupFound = true;
-			if(r.getValue().equals("individual")) individualGroupFound = true;
+		for(ConflictingReachGroup r : results) {
+			if(r.getGroupName().equals("ECONFINA-STEINHATCHEE huc8 Group")) ecofinaHucFound = true;
+			if(r.getGroupName().equals("OGEECHEE-SAVANNAH huc4 Group")) ogeecheeHucFound = true;
+			if(r.getGroupName().equals("Upstream of rch 661780 Group")) streamGroupFound = true;
+			if(r.getGroupName().equals("individual")) individualGroupFound = true;
 		}
 		assertEquals("3/4 overlap", results.size(), 3);
 		assertTrue("HUCs overlap", ecofinaHucFound);
@@ -63,23 +63,22 @@ public class GetReachGroupsOverlappingLogicalSetLongRunTest extends SparrowServi
 		
 		//test adding a huc set which should not overlap with anything
 		GetReachGroupsOverlappingLogicalSet action2 = new GetReachGroupsOverlappingLogicalSet(buildNewLogicalSet(MODEL_ID, NEW_NONOVERLAPPING_HUC4_FRAGMENT), adjGroups1);
-		List<Criteria> results2 = action2.run();
+		List<ConflictingReachGroup> results2 = action2.run();
 		assertEquals("No overlap", results2.size(), 0);
 		
 		//Test adding upstream group that should overlap
 		//Test adding a huc set that overlaps 3/4 sets
 		GetReachGroupsOverlappingLogicalSet action3 = new GetReachGroupsOverlappingLogicalSet(buildNewLogicalSet(MODEL_ID, NEW_OVERLAPPING_UPSTREAM_FRAGMENT), adjGroups1);
-		List<Criteria> results3 = action3.run();
+		List<ConflictingReachGroup> results3 = action3.run();
 		boolean ecofinaHucFound3 = false;
 		boolean ogeecheeHucFound3 = false;
 		boolean individualGroupFound3 = false;
 		boolean streamGroupFound3 = false;
-		for(Criteria r : results3) {
-			System.out.println(r.getValue());
-			if(r.getValue().equals("ECONFINA-STEINHATCHEE huc8 Group")) ecofinaHucFound3 = true;
-			if(r.getValue().equals("OGEECHEE-SAVANNAH huc4 Group")) ogeecheeHucFound3 = true;
-			if(r.getValue().equals("Upstream of rch 661780 Group")) streamGroupFound3 = true;
-			if(r.getValue().equals("individual")) individualGroupFound3 = true;
+		for(ConflictingReachGroup r : results3) {
+			if(r.getGroupName().equals("ECONFINA-STEINHATCHEE huc8 Group")) ecofinaHucFound3 = true;
+			if(r.getGroupName().equals("OGEECHEE-SAVANNAH huc4 Group")) ogeecheeHucFound3 = true;
+			if(r.getGroupName().equals("Upstream of rch 661780 Group")) streamGroupFound3 = true;
+			if(r.getGroupName().equals("individual")) individualGroupFound3 = true;
 		}
 		assertEquals("3/4 overlap", results3.size(), 3);
 		assertTrue("HUCs overlap", ecofinaHucFound3);

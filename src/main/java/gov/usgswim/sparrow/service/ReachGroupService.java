@@ -12,7 +12,7 @@ import javax.xml.stream.XMLStreamReader;
 import gov.usgswim.sparrow.action.GetReachGroupsContainingReach;
 import gov.usgswim.sparrow.action.GetReachGroupsOverlappingLogicalSet;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
-import gov.usgswim.sparrow.domain.Criteria;
+import gov.usgswim.sparrow.domain.ConflictingReachGroup;
 import gov.usgswim.sparrow.domain.LogicalSet;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
 import gov.usgswim.sparrow.service.ServiceResponseOperation;
@@ -42,7 +42,7 @@ public class ReachGroupService extends AbstractSparrowServlet {
 		String existingGroupsXml = req.getParameter("existingGroups_xml")==null ? "" : (String)req.getParameter("existingGroups_xml"); //xml fragment for existing groups on front end
 		
 		try {
-			ServiceResponseWrapper out = new ServiceResponseWrapper(Criteria.class, ServiceResponseOperation.GET);
+			ServiceResponseWrapper out = new ServiceResponseWrapper(ConflictingReachGroup.class, ServiceResponseOperation.GET);
 			out.setStatus(ServiceResponseStatus.OK);
 			
 			AdjustmentGroups existingGroups = buildAdjGroups(modelId, existingGroupsXml);
@@ -50,11 +50,11 @@ public class ReachGroupService extends AbstractSparrowServlet {
 			//three different strategies: huc groups, upstream reach groups, individual reaches 
 			if(!group.equals("")) {
 				GetReachGroupsOverlappingLogicalSet action = new GetReachGroupsOverlappingLogicalSet(buildNewLogicalSet(modelId, group), existingGroups);
-				List<Criteria> results = action.run();
+				List<ConflictingReachGroup> results = action.run();
 				out.addAllEntities(results);
 			} else {
 				GetReachGroupsContainingReach action = new GetReachGroupsContainingReach(reachId, existingGroups);
-				List<Criteria> results = action.run();
+				List<ConflictingReachGroup> results = action.run();
 				out.addAllEntities(results);
 			}
 			
