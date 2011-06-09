@@ -304,7 +304,7 @@ public class BinSet {
 				//Use special formatted value for this case.
 				bottom = new Bound(
 						posts[i], functional[i], formattedDetectionLimit,
-						functionalFormatter.format(functional[i]), true);
+						functionalFormatter.format(functional[i]), false);
 			} else {
 				bottom = new Bound(posts[i], functional[i],
 						formatter.format(posts[i]), functionalFormatter.format(functional[i]), false);
