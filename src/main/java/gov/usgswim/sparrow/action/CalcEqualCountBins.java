@@ -144,8 +144,16 @@ public class CalcEqualCountBins extends Action<BinSet> {
 				minValue, maxValue,
 				CalcEqualRangeBins.getScaleOfMostSignificantDigit(result.characteristicUnitValue), true);
 		
+		String formattedNonDetectLimit = "";
+		
+		if (result.usesDetectionLimit) {
+			DecimalFormat ndFormat = CalcEqualRangeBins.getFormat(detectionLimit, detectionLimit,
+					CalcEqualRangeBins.getScaleOfMostSignificantDigit(detectionLimit), false);
+			formattedNonDetectLimit = ndFormat.format(detectionLimit);
+		}
+		
 		BinSet binSet = BinSet.createBins(result, formatter, functionalFormatter,
-				bottomUnbounded, topUnbounded, BIN_TYPE.EQUAL_COUNT);
+				bottomUnbounded, topUnbounded, formattedNonDetectLimit, BIN_TYPE.EQUAL_COUNT);
 		
 		return binSet;
 	}

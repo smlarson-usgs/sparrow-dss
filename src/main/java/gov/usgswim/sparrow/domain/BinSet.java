@@ -277,7 +277,7 @@ public class BinSet {
 	 */
 	public static BinSet createBins(InProcessBinSet ipbs, 
 			DecimalFormat formatter, DecimalFormat functionalFormatter,
-			boolean bottomUnbounded, boolean topUnbounded,
+			boolean bottomUnbounded, boolean topUnbounded, String formattedDetectionLimit,
 			BIN_TYPE binType) {
 		
 		
@@ -290,19 +290,36 @@ public class BinSet {
 			Bound bottom = null;
 			Bound top = null;
 			
-			
+			//
+			//Bottom values
 			if (i == 0 && (bottomUnbounded || ipbs.usesDetectionLimit)) {
 				//If the bottom is unbounded due to model requirements or this
 				//is a detection limit bottom, display with '<' and mark it
 				//as unbounded.
 				bottom = new Bound(posts[i], functional[i],
 						"<", functionalFormatter.format(functional[i]), true);
+			} else if (i == 1 && ipbs.usesDetectionLimit) {
+				//The second bin bottom bound will have a bottom bound
+				//that is the non-detect value (if using detect limits).
+				//Use special formatted value for this case.
+				bottom = new Bound(
+						posts[i], functional[i], formattedDetectionLimit,
+						functionalFormatter.format(functional[i]), true);
 			} else {
 				bottom = new Bound(posts[i], functional[i],
 						formatter.format(posts[i]), functionalFormatter.format(functional[i]), false);
 			}
 			
-			if (i == (bin.length - 1) && topUnbounded) {
+			
+			//
+			//Top values
+			if (i == 0 && ipbs.usesDetectionLimit) {
+				//The first bin top bound will is the non-detect value (if using detect limits).
+				//Use special formatted value for this case.
+				top = new Bound(
+						posts[i + 1], functional[i + 1], formattedDetectionLimit,
+						functionalFormatter.format(functional[i + 1]), false);
+			} else if (i == (bin.length - 1) && topUnbounded) {
 				//Unbounded top due to model requirement
 				top = new Bound(posts[i + 1], functional[i + 1],
 						">", functionalFormatter.format(functional[i + 1]), true);

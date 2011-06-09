@@ -96,11 +96,18 @@ public class CalcEqualRangeBins extends Action<BinSet> {
 		if (bottomUnbounded) formatMin = ipbs.posts[1];
 		if (topUnbounded) formatMax = ipbs.posts[ipbs.posts.length - 2];
 		
+		
 		DecimalFormat formatter = getFormat(formatMin, formatMax, getScaleOfMostSignificantDigit(cuv), false);
 		DecimalFormat functionalFormatter = getFormat(formatMin, formatMax, getScaleOfMostSignificantDigit(cuv), true);
+		String formattedNonDetectLimit = "";
+		
+		if (ipbs.usesDetectionLimit) {
+			DecimalFormat ndFormat = getFormat(detectionLimit, detectionLimit, getScaleOfMostSignificantDigit(detectionLimit), false);
+			formattedNonDetectLimit = ndFormat.format(detectionLimit);
+		}
 		
 		BinSet binSet = BinSet.createBins(ipbs, formatter, functionalFormatter,
-				bottomUnbounded, topUnbounded, BIN_TYPE.EQUAL_RANGE);
+				bottomUnbounded, topUnbounded, formattedNonDetectLimit, BIN_TYPE.EQUAL_RANGE);
 		
 		return binSet;
 	}
