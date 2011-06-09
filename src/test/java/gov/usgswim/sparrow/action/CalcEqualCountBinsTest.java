@@ -244,6 +244,46 @@ public class CalcEqualCountBinsTest extends SparrowTestBase {
 		assertEquals("0.09", result.getBins()[5].getBottom().getFormatted());
 		assertEquals("0.10", result.getBins()[5].getTop().getFormatted());
 	}
+	
+
+	/**
+	 * Large values lead to large large values to round to, which can cause
+	 * the detection limit to be rounded to zero.  Here we just check that this
+	 * doesn't happen.
+	 * @throws Exception
+	 */
+	@Test
+	public void testVeryLargeValuesWithDetectionLimit() throws Exception {
+		double[] values = buildLumpyValues(-1000000000000d, 1000000000000d, 150, .1, true, 4124);
+		CalcEqualCountBins action = new CalcEqualCountBins();
+		action.setBinCount(5);
+		action.setUnsortedValues(values);
+		action.setDetectionLimit(new BigDecimal(".05"));
+		
+		BinSet result = action.run();
+		
+		debug(result.getActualPostValues());
+		
+		//Bottom Bin (the non-detect bin)
+		assertTrue(result.getBins()[0].isNonDetect());
+		assertTrue(result.getBins()[0].getBottom().isUnbounded());
+		//assertTrue(result.getBins()[0].getBottom().getFunctional().compareTo(new BigDecimal("-??")) == 0);
+		assertTrue(result.getBins()[0].getTop().getFunctional().compareTo(new BigDecimal("0.05")) == 0);
+		assertEquals("<", result.getBins()[0].getBottom().getFormatted());
+		assertEquals("0.05", result.getBins()[0].getTop().getFormatted());
+		
+		//Bin 1
+		assertFalse(result.getBins()[1].isNonDetect());
+		assertFalse(result.getBins()[1].getBottom().isUnbounded());
+		assertTrue(result.getBins()[1].getBottom().getFunctional().compareTo(new BigDecimal("0.05")) == 0);
+		//assertTrue(result.getBins()[1].getTop().getFunctional().compareTo(new BigDecimal("some large value")) == 0);
+		assertEquals("0.05", result.getBins()[1].getBottom().getFormatted());
+		//assertEquals("some huge number", result.getBins()[1].getTop().getFormatted());
+		
+		//Don't care about the rest of the bins for this test
+
+	}
+
 
 	
 	@Test
