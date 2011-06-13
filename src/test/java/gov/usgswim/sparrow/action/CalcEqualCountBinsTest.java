@@ -4,7 +4,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.domain.Bin;
 import gov.usgswim.sparrow.domain.BinSet;
+import gov.usgswim.sparrow.domain.ComparisonType;
+import gov.usgswim.sparrow.domain.DataSeriesType;
+import gov.usgswim.sparrow.domain.SparrowModel;
+import gov.usgswim.sparrow.request.BinningRequest;
+import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
+import gov.usgswim.sparrow.service.ServiceResponseOperation;
+import gov.usgswim.sparrow.service.ServiceResponseStatus;
+import gov.usgswim.sparrow.service.ServiceResponseWrapper;
+import gov.usgswim.sparrow.service.ServletResponseParser;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -13,12 +23,12 @@ import java.util.Random;
 import org.apache.log4j.Level;
 import org.junit.Test;
 
-public class CalcEqualCountBinsTest extends SparrowTestBase {
+public class CalcEqualCountBinsTest extends CalcEqualRangeBinsTest {
 
 	@Override
 	public void doOneTimeCustomSetup() throws Exception {
 		//Uncomment to debug
-		setLogLevel(Level.DEBUG);
+		//setLogLevel(Level.DEBUG);
 	}
 	
 	@Test
@@ -410,6 +420,47 @@ public class CalcEqualCountBinsTest extends SparrowTestBase {
 		
 		assertTrue(result.getBinCountMaxVariancePercentage() == 100);	//Can't get to a good value here
 		assertTrue(result.getCharacteristicUnitValue().compareTo(new BigDecimal("100")) == 0); //restriction from max dec places
+	}
+	
+	@Test
+	public void testPositiveBinsWithInfiniteTop() throws Exception {
+
+		BinningRequest req = new BinningRequest(99999, 2, BIN_TYPE.EQUAL_COUNT,
+				DataSeriesType.total, ComparisonType.none,
+				SparrowModel.TN_CONSTITUENT_NAME, null, null);
+		
+		CalcEqualCountBins action = new CalcEqualCountBins();
+		
+		
+		action.setDataColumn(zeroTo50in50ValuesWithInfiniteTop);
+		action.setBinCount(req.getBinCount());
+		
+		
+		BinSet bs = action.run();
+		
+		assertEquals("0.0", bs.getBins()[0].getBottom().getFormatted());
+		assertEquals("25.0", bs.getBins()[0].getTop().getFormatted());
+		assertEquals("25.0", bs.getBins()[1].getBottom().getFormatted());
+		assertEquals("50.0", bs.getBins()[1].getTop().getFormatted());
+		
+		assertEquals("-0.1", bs.getBins()[0].getBottom().getFormattedFunctional());
+		assertEquals("25.0", bs.getBins()[0].getTop().getFormattedFunctional());
+		assertEquals("25.0", bs.getBins()[1].getBottom().getFormattedFunctional());
+		assertEquals("50.0", bs.getBins()[1].getTop().getFormattedFunctional());
+		
+		
+		for (int i = 0; i < bs.getBins().length; i++) {
+			Bin b = bs.getBins()[i];
+			log.debug(b.getBottom().getFormatted() + " - " + b.getTop().getFormatted());
+		}
+		
+		ServiceResponseWrapper wrap = new ServiceResponseWrapper(bs, 99999L, ServiceResponseStatus.OK,
+				ServiceResponseOperation.CALCULATE);
+		
+		String xml = ServletResponseParser.getXMLXStream().toXML(wrap);
+		
+		log.debug(xml);
+		
 	}
 
 	//

@@ -10,6 +10,7 @@ import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
 
+import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.BinSet;
 import gov.usgswim.sparrow.domain.InProcessBinSet;
@@ -30,8 +31,8 @@ public class CalcEqualRangeBins extends Action<BinSet> {
 	public BinSet doAction() throws Exception {
 		
 		if (minValue == null || maxValue == null) {
-			Double min = dataColumn.getTable().getMinDouble(dataColumn.getColumn());
-			Double max = dataColumn.getTable().getMaxDouble(dataColumn.getColumn());
+			Double min = findMinDouble( dataColumn.getTable().getColumn(dataColumn.getColumn()) );
+			Double max = findMaxDouble( dataColumn.getTable().getColumn(dataColumn.getColumn()) );
 			
 			//Filter out possible exceptional values
 			if (min == null || max == null || min.isNaN() || max.isNaN()) {
@@ -775,6 +776,53 @@ public class CalcEqualRangeBins extends Action<BinSet> {
 		functional[posts.length - 1] = max;
 		
 		return functional;
+	}
+	
+
+	public static Double findMaxDouble(ColumnData column) {
+		
+		if (Number.class.isAssignableFrom(column.getDataType())) {
+			//Working with numeric data
+			Double result = null;
+			int arraySize = column.getRowCount();
+			if  (arraySize > 0) {
+				double max = column.getDouble(0);
+				for (int i=1; i<arraySize; i++) {
+					Double current = column.getDouble(i);
+					
+					if (current != null && ! Double.isNaN(current) && !current.isInfinite()) {
+						max = Math.max(max, current);
+					}
+				}
+				result = max;
+			}
+			return result;
+		} else {
+			return null;
+		}
+	}
+	
+	public static Double findMinDouble(ColumnData column) {
+		
+		if (Number.class.isAssignableFrom(column.getDataType())) {
+			//Working with numeric data
+			Double result = null;
+			int arraySize = column.getRowCount();
+			if  (arraySize > 0) {
+				double min = column.getDouble(0);
+				for (int i=1; i<arraySize; i++) {
+					Double current = column.getDouble(i);
+					
+					if (current != null && ! Double.isNaN(current) && ! current.isInfinite()) {
+						min = Math.min(min, current);
+					}
+				}
+				result = min;
+			}
+			return result;
+		} else {
+			return null;
+		}
 	}
 
 	public SparrowColumnSpecifier getDataColumn() {

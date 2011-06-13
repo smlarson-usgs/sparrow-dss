@@ -40,6 +40,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 	
 	//Datasets used in tests
 	SparrowColumnSpecifier zeroTo50in50ValuesWithTopOverage;	//the top value is 50.00000000001
+	SparrowColumnSpecifier zeroTo50in50ValuesWithInfiniteTop;	//Top is infinite
 	SparrowColumnSpecifier zeroToNeg50in50ValuesWithTopOverage;	//the top value is 0.00000000001
 	
 	SparrowColumnSpecifier zeroTo50in50ValuesWithBtmOverage;	//the btm value is -0.00000000001
@@ -67,6 +68,19 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 					"desc",	null, false);
 			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd}, null, null, null, null);
 			zeroTo50in50ValuesWithTopOverage = new SparrowColumnSpecifier(table, 0, null);
+		}
+		
+		{
+			double[] data = new double[51];
+			for (int d = 0; d < 51; d++) {
+				data[d] = d;
+			}
+			data[50] = Double.POSITIVE_INFINITY;
+			
+			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
+					"desc",	null, false);
+			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd}, null, null, null, null);
+			zeroTo50in50ValuesWithInfiniteTop = new SparrowColumnSpecifier(table, 0, null);
 		}
 		
 		{
@@ -817,6 +831,47 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 		assertEquals("30.0", bs.getBins()[0].getTop().getFormattedFunctional());
 		assertEquals("30.0", bs.getBins()[1].getBottom().getFormattedFunctional());
 		assertEquals("60.0", bs.getBins()[1].getTop().getFormattedFunctional());
+		
+		
+		for (int i = 0; i < bs.getBins().length; i++) {
+			Bin b = bs.getBins()[i];
+			log.debug(b.getBottom().getFormatted() + " - " + b.getTop().getFormatted());
+		}
+		
+		ServiceResponseWrapper wrap = new ServiceResponseWrapper(bs, 99999L, ServiceResponseStatus.OK,
+				ServiceResponseOperation.CALCULATE);
+		
+		String xml = ServletResponseParser.getXMLXStream().toXML(wrap);
+		
+		log.debug(xml);
+		
+	}
+	
+	@Test
+	public void testPositiveBinsWithInfiniteTop() throws Exception {
+
+		BinningRequest req = new BinningRequest(99999, 2, BIN_TYPE.EQUAL_RANGE,
+				DataSeriesType.total, ComparisonType.none,
+				SparrowModel.TN_CONSTITUENT_NAME, null, null);
+		
+		CalcEqualRangeBins action = new CalcEqualRangeBins();
+		
+		
+		action.setDataColumn(zeroTo50in50ValuesWithInfiniteTop);
+		action.setBinCount(req.getBinCount());
+		
+		
+		BinSet bs = action.run();
+		
+		assertEquals("0.0", bs.getBins()[0].getBottom().getFormatted());
+		assertEquals("25.0", bs.getBins()[0].getTop().getFormatted());
+		assertEquals("25.0", bs.getBins()[1].getBottom().getFormatted());
+		assertEquals("50.0", bs.getBins()[1].getTop().getFormatted());
+		
+		assertEquals("-0.1", bs.getBins()[0].getBottom().getFormattedFunctional());
+		assertEquals("25.0", bs.getBins()[0].getTop().getFormattedFunctional());
+		assertEquals("25.0", bs.getBins()[1].getBottom().getFormattedFunctional());
+		assertEquals("50.0", bs.getBins()[1].getTop().getFormattedFunctional());
 		
 		
 		for (int i = 0; i < bs.getBins().length; i++) {

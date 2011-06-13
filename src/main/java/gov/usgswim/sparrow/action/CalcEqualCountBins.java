@@ -84,7 +84,13 @@ public class CalcEqualCountBins extends Action<BinSet> {
 		eqRangeAction.setBinCount(numberOfRequestedBins);
 		eqRangeAction.setDetectionLimit(detectionLimit);
 		eqRangeAction.setMaxDecimalPlaces(maxDecimalPlaces);
-		eqRangeAction.setDataColumn(dataColumn);
+		
+		if (dataColumn != null) {
+			eqRangeAction.setDataColumn(dataColumn);
+		} else {
+			eqRangeAction.setMinValue(minValue);
+			eqRangeAction.setMaxValue(maxValue);
+		}
 		
 		BinSet eqRangeBinSet = eqRangeAction.run();
 		
