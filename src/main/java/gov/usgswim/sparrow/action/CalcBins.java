@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.BinSet;
 import gov.usgswim.sparrow.domain.ComparisonType;
+import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.request.BinningRequest;
 
 import java.math.BigDecimal;
@@ -40,6 +41,10 @@ public class CalcBins extends Action<BinSet> {
 	private BinningRequest request;
 	private SparrowColumnSpecifier dataColumn;
 	
+	
+	/** A hash of row numbers that are in the reaches to be mapped. **/
+	private DeliveryFractionMap inclusionMap;
+	
     public CalcBins() {
 
     }
@@ -60,6 +65,7 @@ public class CalcBins extends Action<BinSet> {
 			action.setMaxDecimalPlaces(request.getMaxDecimalPlaces());
 			action.setBottomUnbounded(!isComparison);
 			action.setTopUnbounded(!isComparison);
+			action.setInclusionMap(inclusionMap);
 			
 			BinSet binSet = action.run();
 			
@@ -75,6 +81,7 @@ public class CalcBins extends Action<BinSet> {
 			action.setMaxDecimalPlaces(request.getMaxDecimalPlaces());
 			action.setBottomUnbounded(!isComparison);
 			action.setTopUnbounded(!isComparison);
+			action.setInclusionMap(inclusionMap);
 			
 			BinSet binSet = action.run();
 			
@@ -147,6 +154,10 @@ public class CalcBins extends Action<BinSet> {
 	 */
 	public void setDataColumn(SparrowColumnSpecifier dataColumn) {
 		this.dataColumn = dataColumn;
+	}
+
+	public void setInclusionMap(DeliveryFractionMap inclusionMap) {
+		this.inclusionMap = inclusionMap;
 	}
 	
 

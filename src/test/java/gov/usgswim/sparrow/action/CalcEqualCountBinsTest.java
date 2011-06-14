@@ -8,6 +8,7 @@ import gov.usgswim.sparrow.domain.Bin;
 import gov.usgswim.sparrow.domain.BinSet;
 import gov.usgswim.sparrow.domain.ComparisonType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
+import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
@@ -18,6 +19,7 @@ import gov.usgswim.sparrow.service.ServletResponseParser;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Random;
 
 import org.apache.log4j.Level;
@@ -460,6 +462,38 @@ public class CalcEqualCountBinsTest extends CalcEqualRangeBinsTest {
 		String xml = ServletResponseParser.getXMLXStream().toXML(wrap);
 		
 		log.debug(xml);
+		
+	}
+	
+	@Test
+	public void testInclusionFilterForDeliverySeries() throws Exception {
+		
+		//Create a delivery fraction map that indicates that all rows except
+		//row 9 (which contains the value 10) are included.
+		HashMap<Integer, DeliveryReach> map = new HashMap<Integer, DeliveryReach>();
+		for (int i=0; i<10; i++) {
+			map.put(i, new DeliveryReach(i, .5d, i));
+		}
+		DeliveryFractionMap dfm = new DeliveryFractionMap(map);
+		
+		CalcEqualCountBins action = new CalcEqualCountBins();
+
+		
+		action.setDataColumn(zeroTo10In10Values);
+		action.setInclusionMap(dfm);
+		action.setBinCount(5);
+		
+		
+		BinSet bs = action.run();
+		
+		for (int i = 0; i < bs.getBins().length; i++) {
+			Bin b = bs.getBins()[i];
+			log.debug(b.getBottom().getFormatted() + " - " + b.getTop().getFormatted());
+		}
+		
+		assertTrue(bs.getActualPostValues()[0].compareTo(BigDecimal.ZERO) == 0);
+		assertTrue(bs.getActualPostValues()[5].compareTo(new BigDecimal("5")) == 0);
+
 		
 	}
 

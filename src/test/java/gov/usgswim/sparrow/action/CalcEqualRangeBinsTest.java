@@ -12,6 +12,7 @@ import gov.usgswim.sparrow.domain.Bin;
 import gov.usgswim.sparrow.domain.BinSet;
 import gov.usgswim.sparrow.domain.ComparisonType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
+import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.domain.InProcessBinSet;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.request.BinningRequest;
@@ -23,8 +24,10 @@ import gov.usgswim.sparrow.service.ServletResponseParser;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.HashMap;
 import java.util.Random;
 
+import org.apache.log4j.Level;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -48,6 +51,8 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 	
 	SparrowColumnSpecifier smallValuesWithTopOverage;	//the top value is .00030000001
 	SparrowColumnSpecifier sameSame;	//all 99
+	
+	SparrowColumnSpecifier zeroTo10In10Values;	//1-10, but all the values are at the bottom
 	
 	@Override
 	public void doOneTimeCustomSetup() throws Exception {
@@ -145,6 +150,22 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 					"desc",	null, false);
 			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd}, null, null, null, null);
 			sameSame = new SparrowColumnSpecifier(table, 0, null);
+		}
+		
+		
+		{
+			double[] data = new double[11];
+			for (int d = 0; d <= 10; d++) {
+				data[d] = d / 2D;
+			}
+			
+			data[9] = 5;
+			data[10] = 10;
+			
+			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
+					"desc",	null, false);
+			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd}, null, null, null, null);
+			zeroTo10In10Values = new SparrowColumnSpecifier(table, 0, null);
 		}
 		
 	}
@@ -558,7 +579,37 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 		assertEquals("1001000000000", fformatted[5]);
 	}
 	
-	
+	///////////////////
+	// Delivery Series using filtered rows
+	// For delivery, rows not upstream of the outlet are removed from the values.
+	///////////////////
+	@Test
+	public void testEqualRange_1To10in10withInlcusionMap() throws Exception {
+		CalcEqualRangeBins act = new CalcEqualRangeBins();
+		
+		//Create a delivery fraction map that indicates that all rows except
+		//row 9 (which contains the value 10) are included.
+		HashMap<Integer, DeliveryReach> map = new HashMap<Integer, DeliveryReach>();
+		for (int i=0; i<10; i++) {
+			map.put(i, new DeliveryReach(i, .5d, i));
+		}
+		DeliveryFractionMap dfm = new DeliveryFractionMap(map);
+		
+		act.setBinCount(5);
+		act.setDataColumn(zeroTo10In10Values);
+		act.setInclusionMap(dfm);
+		
+		BinSet binSet = act.run();
+		BigDecimal[] posts = binSet.getActualPostValues();
+		debug(posts);
+		
+		assertEquals(0, posts[0].compareTo(new BigDecimal("0")));
+		assertEquals(0, posts[1].compareTo(new BigDecimal("1")));
+		assertEquals(0, posts[2].compareTo(new BigDecimal("2")));
+		assertEquals(0, posts[3].compareTo(new BigDecimal("3")));
+		assertEquals(0, posts[4].compareTo(new BigDecimal("4")));
+		assertEquals(0, posts[5].compareTo(new BigDecimal("5")));
+	}
 	
 	///////////////////
 	// Basic Util Methods

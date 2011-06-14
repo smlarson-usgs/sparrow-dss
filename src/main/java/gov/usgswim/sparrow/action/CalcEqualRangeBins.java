@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.BinSet;
+import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.domain.InProcessBinSet;
 import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 
@@ -27,12 +28,15 @@ public class CalcEqualRangeBins extends Action<BinSet> {
 	private boolean bottomUnbounded;
 	private boolean topUnbounded;
 	
+	/** A hash of row numbers that are in the reaches to be mapped. **/
+	private DeliveryFractionMap inclusionMap;
+	
 	@Override
 	public BinSet doAction() throws Exception {
 		
 		if (minValue == null || maxValue == null) {
-			Double min = findMinDouble( dataColumn.getTable().getColumn(dataColumn.getColumn()) );
-			Double max = findMaxDouble( dataColumn.getTable().getColumn(dataColumn.getColumn()) );
+			Double min = findMinDouble(dataColumn, inclusionMap);
+			Double max = findMaxDouble(dataColumn, inclusionMap);
 			
 			//Filter out possible exceptional values
 			if (min == null || max == null || min.isNaN() || max.isNaN()) {
@@ -779,49 +783,81 @@ public class CalcEqualRangeBins extends Action<BinSet> {
 	}
 	
 
-	public static Double findMaxDouble(ColumnData column) {
+	public static Double findMaxDouble(SparrowColumnSpecifier sparrowColumn, DeliveryFractionMap inclusionMap) {
 		
-		if (Number.class.isAssignableFrom(column.getDataType())) {
-			//Working with numeric data
-			Double result = null;
-			int arraySize = column.getRowCount();
-			if  (arraySize > 0) {
-				double max = column.getDouble(0);
-				for (int i=1; i<arraySize; i++) {
-					Double current = column.getDouble(i);
-					
-					if (current != null && ! Double.isNaN(current) && !current.isInfinite()) {
-						max = Math.max(max, current);
-					}
+		ColumnData column = sparrowColumn.getTable().getColumn(sparrowColumn.getColumn());
+		Double result = Double.NEGATIVE_INFINITY;
+		boolean found = false;
+		int rowCount = column.getRowCount();
+		
+		if (inclusionMap != null) {
+			
+			//Find max, excluding values not in the inclussionMap
+			for (int r=0; r<rowCount; r++) {
+				Double current = column.getDouble(r);
+				
+				if (current != null && ! Double.isNaN(current) && !current.isInfinite() && inclusionMap.hasRowNumber(r)) {
+					result = Math.max(result, current);
+					found = true;
 				}
-				result = max;
 			}
-			return result;
+
 		} else {
+
+			//No inclusionMap, so don't do that part of check
+			for (int r=0; r<rowCount; r++) {
+				Double current = column.getDouble(r);
+				
+				if (current != null && ! Double.isNaN(current) && !current.isInfinite()) {
+					result = Math.max(result, current);
+					found = true;
+				}
+			}
+		}
+		
+		if (!found) {
 			return null;
+		} else {
+			return result;
 		}
 	}
 	
-	public static Double findMinDouble(ColumnData column) {
+	public static Double findMinDouble(SparrowColumnSpecifier sparrowColumn, DeliveryFractionMap inclusionMap) {
 		
-		if (Number.class.isAssignableFrom(column.getDataType())) {
-			//Working with numeric data
-			Double result = null;
-			int arraySize = column.getRowCount();
-			if  (arraySize > 0) {
-				double min = column.getDouble(0);
-				for (int i=1; i<arraySize; i++) {
-					Double current = column.getDouble(i);
-					
-					if (current != null && ! Double.isNaN(current) && ! current.isInfinite()) {
-						min = Math.min(min, current);
-					}
+		ColumnData column = sparrowColumn.getTable().getColumn(sparrowColumn.getColumn());
+		Double result = Double.POSITIVE_INFINITY;
+		boolean found = false;
+		int rowCount = column.getRowCount();
+		
+		if (inclusionMap != null) {
+			
+			//Find max, excluding values not in the inclussionMap
+			for (int r=0; r<rowCount; r++) {
+				Double current = column.getDouble(r);
+				
+				if (current != null && ! Double.isNaN(current) && !current.isInfinite() && inclusionMap.hasRowNumber(r)) {
+					result = Math.min(result, current);
+					found = true;
 				}
-				result = min;
 			}
-			return result;
+
 		} else {
+
+			//No inclusionMap, so don't do that part of check
+			for (int r=0; r<rowCount; r++) {
+				Double current = column.getDouble(r);
+				
+				if (current != null && ! Double.isNaN(current) && !current.isInfinite()) {
+					result = Math.min(result, current);
+					found = true;
+				}
+			}
+		}
+		
+		if (!found) {
 			return null;
+		} else {
+			return result;
 		}
 	}
 
@@ -887,6 +923,14 @@ public class CalcEqualRangeBins extends Action<BinSet> {
 
 	public void setTopUnbounded(boolean topUnbounded) {
 		this.topUnbounded = topUnbounded;
+	}
+
+	public void setInclusionMap(DeliveryFractionMap inclusionMap) {
+		this.inclusionMap = inclusionMap;
+	}
+
+	public DeliveryFractionMap getInclusionMap() {
+		return inclusionMap;
 	}
 	
 }

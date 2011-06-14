@@ -384,7 +384,8 @@
 		
 	<cache name="ReachesByCriteria" maxElementsInMemory="3"/>
     
-    <cache name="DataBinning" maxElementsInMemory="100"/>
+    <!--  Expesive to create and cheap to hold on to -->
+    <cache name="DataBinning" maxElementsInMemory="200"/>
         
     <!-- Awesome kludge - temporary -->
     <cache name="AggregateIdLookup" maxElementsInMemory="4" />

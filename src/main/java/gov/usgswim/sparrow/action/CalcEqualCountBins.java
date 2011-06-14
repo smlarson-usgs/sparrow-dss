@@ -5,6 +5,7 @@ import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.impl.StandardDoubleColumnData;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.BinSet;
+import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.domain.InProcessBinSet;
 import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 
@@ -39,6 +40,9 @@ public class CalcEqualCountBins extends Action<BinSet> {
 	private boolean bottomUnbounded;
 	private boolean topUnbounded;
 	
+	/** A hash of row numbers that are in the reaches to be mapped. **/
+	private DeliveryFractionMap inclusionMap;
+	
 	
 	//Settings and reports
 	private double bestScore;	//The best score recorded (after the run is complete)
@@ -64,7 +68,7 @@ public class CalcEqualCountBins extends Action<BinSet> {
 	public BinSet doAction() throws Exception {
 		
 		if (values == null) {
-			values = buildSortedFilteredValues(dataColumn, detectionLimit);
+			values = buildSortedFilteredValues(dataColumn, detectionLimit, inclusionMap);
 		}
 		
 		if (minValue == null || maxValue == null) {
@@ -84,6 +88,7 @@ public class CalcEqualCountBins extends Action<BinSet> {
 		eqRangeAction.setBinCount(numberOfRequestedBins);
 		eqRangeAction.setDetectionLimit(detectionLimit);
 		eqRangeAction.setMaxDecimalPlaces(maxDecimalPlaces);
+		eqRangeAction.setInclusionMap(inclusionMap);
 		
 		if (dataColumn != null) {
 			eqRangeAction.setDataColumn(dataColumn);
@@ -814,44 +819,62 @@ public class CalcEqualCountBins extends Action<BinSet> {
 	 * If a detection limit is included (non-null), values below the detection
 	 * limit will not be included in the result.
 	 * 
+	 * If the inclusionMap is non-null, it is checked to determine if the row
+	 * should be included in the values.  Used for downstream dataseries.
+	 * 
 	 * @param data
 	 * @param detectionLimit Value below which values should not be included.
+	 * @param inclusionMap The list of values to include by row number.  May be null.
 	 * @return The cleaned and sorted data as a double[].
 	 */
 	protected double[] buildSortedFilteredValues(SparrowColumnSpecifier data,
-			BigDecimal detectionLimit) {
+			BigDecimal detectionLimit, DeliveryFractionMap inclusionMap) {
 		
 		int totalRows = data.getRowCount();
 		double[] tempResult = new double[totalRows];
 		int count = 0;
 		
-		if (detectionLimit != null) {
-			//1st implementation check the detection limit
-			double dLimit = detectionLimit.doubleValue();
+		if (inclusionMap != null) {
+			if (detectionLimit != null) {
+				//1st implementation check the detection limit
+				double dLimit = detectionLimit.doubleValue();
+				
+				//Extract all normal values to an array
+				for (int r=0; r<totalRows; r++) {
+					Double value = data.getDouble(r);
+					
+					if (value != null && !value.isNaN() && !value.isInfinite() && value >= dLimit) {
+						tempResult[count] = value;
+						count++;
+					}
+				}
+			} else {
+				//2nd implementation doesn't check the detection limit
+				//Extract all normal values to an array
+				for (int r=0; r<totalRows; r++) {
+					Double value = data.getDouble(r);
+					
+					if (value != null && !value.isNaN() && !value.isInfinite()) {
+						tempResult[count] = value;
+						count++;
+					}
+				}
+			}
+		} else {
+			//Only a single implementation - handle detectionLimit null or non-null
+			double dLimit = Double.NEGATIVE_INFINITY;
+			if (detectionLimit != null) detectionLimit.doubleValue();
 			
 			//Extract all normal values to an array
 			for (int r=0; r<totalRows; r++) {
 				Double value = data.getDouble(r);
 				
-				if (value != null && !value.isNaN() && !value.isInfinite() && value >= dLimit) {
-					tempResult[count] = value;
-					count++;
-				}
-			}
-		} else {
-			//2nd implementation doesn't check the detection limit
-			//Extract all normal values to an array
-			for (int r=0; r<totalRows; r++) {
-				Double value = data.getDouble(r);
-				
-				if (value != null && !value.isNaN() && !value.isInfinite()) {
+				if (value != null && !value.isNaN() && !value.isInfinite() && value >= dLimit && inclusionMap.hasRowNumber(r)) {
 					tempResult[count] = value;
 					count++;
 				}
 			}
 		}
-
-
 
 		double[] values = Arrays.copyOf(tempResult, count);
 		Arrays.sort(values);
@@ -1420,6 +1443,14 @@ public class CalcEqualCountBins extends Action<BinSet> {
 
 	public void setTopUnbounded(boolean topUnbounded) {
 		this.topUnbounded = topUnbounded;
+	}
+	
+	public void setInclusionMap(DeliveryFractionMap inclusionMap) {
+		this.inclusionMap = inclusionMap;
+	}
+
+	public DeliveryFractionMap getInclusionMap() {
+		return inclusionMap;
 	}
 	
 }
