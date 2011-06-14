@@ -834,7 +834,7 @@ public class CalcEqualCountBins extends Action<BinSet> {
 		double[] tempResult = new double[totalRows];
 		int count = 0;
 		
-		if (inclusionMap != null) {
+		if (inclusionMap == null) {
 			if (detectionLimit != null) {
 				//1st implementation check the detection limit
 				double dLimit = detectionLimit.doubleValue();
