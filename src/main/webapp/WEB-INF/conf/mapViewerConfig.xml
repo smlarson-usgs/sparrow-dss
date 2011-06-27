@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <MapperConfig>
-<logging log_level="INFO" log_thread_name="true" log_time="true">
-<log_output name="System.err"/>
-<log_output name="../logs/sparrow_mv/mapviewer2.log"/>
+<logging log_level="finest" log_thread_name="true" log_time="true">
+<!--  <log_output name="System.err"/> -->
+<log_output name="../logs/sparrow/mapviewer.log"/>
 </logging>
 <security_config>
     <disable_direct_info_request>false</disable_direct_info_request>
