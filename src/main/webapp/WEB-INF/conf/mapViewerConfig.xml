@@ -2,7 +2,7 @@
 <MapperConfig>
 <logging log_level="finest" log_thread_name="true" log_time="true">
 <!--  <log_output name="System.err"/> -->
-<log_output name="../logs/sparrow/mapviewer.log"/>
+<log_output name="/opt/tomcat/instance/default/logs/sparrow/mapviewer.log"/>
 </logging>
 <security_config>
     <disable_direct_info_request>false</disable_direct_info_request>
