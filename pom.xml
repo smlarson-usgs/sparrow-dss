@@ -340,5 +340,32 @@
 				<cargo.server.settings>cargo-sparrow-prod-svs-2</cargo.server.settings>
 			</properties>
 		</profile>
+		<profile>
+			<id>prod-svs-3</id>
+			<activation>
+				<property><name>env</name><value>prod-svs-0-cluster2</value></property>
+			</activation>
+			<properties>
+				<cargo.server.settings>cargo-sparrow-prod-svs-0-cluster2</cargo.server.settings>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod-svs-4</id>
+			<activation>
+				<property><name>env</name><value>prod-svs-1-cluster2</value></property>
+			</activation>
+			<properties>
+				<cargo.server.settings>cargo-sparrow-prod-svs-1-cluster2</cargo.server.settings>
+			</properties>
+		</profile>
+		<profile>
+			<id>prod-svs-5</id>
+			<activation>
+				<property><name>env</name><value>prod-svs-2-cluster2</value></property>
+			</activation>
+			<properties>
+				<cargo.server.settings>cargo-sparrow-prod-svs-2-cluster2</cargo.server.settings>
+			</properties>
+		</profile>
 	</profiles>
 </project>
