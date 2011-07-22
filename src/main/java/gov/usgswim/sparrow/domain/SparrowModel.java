@@ -84,6 +84,14 @@ public interface SparrowModel {
 	 * @return
 	 */
 	public Long getEnhNetworkId();
+	
+	/**
+	 * Returns the MapViewer theme to use for the geometry.  This will likely
+	 * be a cached predefined theme either for just this model or for a set of
+	 * models that share the same geometry.
+	 * @return
+	 */
+	public String getThemeName();
 
 	/**
 	 * Latitude of the Northern bound of the model area.
@@ -174,4 +182,5 @@ public interface SparrowModel {
 	 * @return
 	 */
 	public Source getSource(int identifier);
+	
 }

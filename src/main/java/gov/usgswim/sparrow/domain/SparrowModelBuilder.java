@@ -28,6 +28,7 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 	protected Date _dateAdded;
 	protected Long _contactId;
 	protected Long _enhNetworkId;
+	protected String _themeName;
 	protected Double _northBound;
 	protected Double _eastBound;
 	protected Double _southBound;
@@ -65,7 +66,7 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 
 		return new SparrowModelImm(
 			_id, _approved, _public, _archived, _name, _description, _url,
-			_dateAdded, _contactId, _enhNetworkId,
+			_dateAdded, _contactId, _enhNetworkId, _themeName,
 			_northBound, _eastBound, _southBound, _westBound, _constituent, _units, 
 			_sessions, tmpList);
 	}
@@ -116,6 +117,11 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 
 	@Override
 	public Long getEnhNetworkId() {return _enhNetworkId;}
+	
+	public void setThemeName(String themeName) { this._themeName = themeName; }
+	
+	@Override
+	public String getThemeName() { return _themeName; }
 
 	public void setNorthBound(Double northBound) {this._northBound = northBound;}
 

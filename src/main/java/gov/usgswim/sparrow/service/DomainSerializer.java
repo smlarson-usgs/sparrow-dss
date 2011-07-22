@@ -91,6 +91,7 @@ public class DomainSerializer extends BasicXMLStreamReader {
 				addNonNullBasicTag("dateAdded", DateFormatUtils.ISO_DATE_FORMAT.format(model.getDateAdded()));
 				addNonNullBasicTag("contactId", model.getContactId().toString());
 				addNonNullBasicTag("enhNetworkId", model.getEnhNetworkId().toString());
+				addNonNullBasicTag("themeName", model.getThemeName());
 				addNonNullBasicTag("constituent", model.getConstituent());
 				addNonNullBasicTag("units", model.getUnits().getUserName());
 				events.add(new BasicTagEvent("bounds", null)

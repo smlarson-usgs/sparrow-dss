@@ -45,6 +45,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	private final Date _dateAdded;
 	private final Long _contactId;
 	private final Long _enhNetworkId;
+	private final String _themeName;
 	private final Double _northBound;
 	private final Double _eastBound;
 	private final Double _southBound;
@@ -88,7 +89,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	 */
 	public SparrowModelImm(Long id, boolean approved, boolean isPublic, boolean archived,
 				String name, String description, String url, Date dateAdded,
-				Long contactId, Long enhNetworkId,
+				Long contactId, Long enhNetworkId, String themeName,
 				Double northBound, Double eastBound, Double southBound, Double westBound,
 				String constituent, SparrowUnits units,
 				List<IPredefinedSession> sessions, List<Source> sources) {
@@ -103,6 +104,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 		_dateAdded = dateAdded;
 		_contactId = contactId;
 		_enhNetworkId = enhNetworkId;
+		_themeName = themeName;
 		_northBound = northBound;
 		_eastBound = eastBound;
 		_southBound = southBound;
@@ -147,6 +149,9 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 
 	@Override
 	public Long getEnhNetworkId() { return _enhNetworkId;}
+	
+	@Override
+	public String getThemeName() { return _themeName; }
 
 	@Override
 	public Double getNorthBound() { return _northBound;}
