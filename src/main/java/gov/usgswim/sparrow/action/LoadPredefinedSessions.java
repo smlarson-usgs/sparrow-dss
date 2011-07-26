@@ -57,6 +57,7 @@ public class LoadPredefinedSessions extends Action<List<IPredefinedSession>> {
 
 		try {
 			rset = selectSessions.executeQuery();
+			addResultSetForAutoClose(rset);
 			sessions = hydrate(rset);
 		} finally {
 			// rset can be null if there is an sql error. This has happened with the renaming of a field

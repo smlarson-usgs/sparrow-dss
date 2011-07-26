@@ -84,7 +84,8 @@ public class LoadUnitAreas extends Action<DataTable> {
 		
 		st.setLong(1, modelId);
 		
-		ResultSet rset = st.executeQuery();	//auto-closed
+		ResultSet rset = st.executeQuery();
+		addResultSetForAutoClose(rset);
 		DataTableWritable values = null;
 		values = DataTableConverter.toDataTable(rset);
 		values.buildIndex(0);

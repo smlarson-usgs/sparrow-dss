@@ -39,6 +39,7 @@ public class LoadReachByID extends Action<ReachInfo> {
 		ReachInfo result = null;
 		
 		ResultSet rs = getROPSFromPropertiesFile("LoadScalerAttribs", getClass(), params).executeQuery();
+		addResultSetForAutoClose(rs);
 		
 		//Scaler attribs we need to temp store
 		String reachName = null;

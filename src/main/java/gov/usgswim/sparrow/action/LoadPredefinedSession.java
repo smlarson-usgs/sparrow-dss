@@ -65,6 +65,7 @@ public class LoadPredefinedSession extends Action<IPredefinedSession> {
 
 
 		rset = selectSessions.executeQuery();
+		addResultSetForAutoClose(rset);
 		sessions = hydrate(rset);
 		
 		if (sessions.size() == 0) {

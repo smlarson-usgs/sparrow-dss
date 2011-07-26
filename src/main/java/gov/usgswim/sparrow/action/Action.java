@@ -76,6 +76,9 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	/** A list of statements to be closed when the action completes */
 	private List<Statement> autoCloseStatements;
 	
+	/** A list of resultsets to be closed when the action completes */
+	private List<ResultSet> autoCloseResults;
+	
 	public Action() {
 		staticRunCount++;
 		runNumber = staticRunCount;
@@ -157,48 +160,71 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 */
 	protected void postAction(boolean success, Exception error) {
 		
-		if (success) {
-			if (log.isDebugEnabled()) {
-				long totalTime = System.currentTimeMillis() - startTime;
+		try {
+			if (success) {
+				if (log.isDebugEnabled()) {
+					long totalTime = System.currentTimeMillis() - startTime;
+					
+					String msg = getPostMessage();
+					if (msg != null) {
+						log.debug(msg + "  (Run Number: " + runNumber + ")");
+					}
+					
+					if (error == null) {
+						log.debug("Action completed for " + this.getClass().getName() +
+								".  Total Time: " + totalTime + "ms, Run Number: " +
+								runNumber);
+					} else {
+						log.warn("Action completed, but generated an exception for " +
+								this.getClass().getName() + ".  Total Time: " +
+								totalTime + "ms, Run Number: " +
+								runNumber, error);
+					}
+					
+				}
+			} else {
 				
 				String msg = getPostMessage();
 				if (msg != null) {
-					log.debug(msg + "  (Run Number: " + runNumber + ")");
-				}
-				
-				if (error == null) {
-					log.debug("Action completed for " + this.getClass().getName() +
-							".  Total Time: " + totalTime + "ms, Run Number: " +
-							runNumber);
+					msg = "  Message from the action: " + msg;
 				} else {
-					log.warn("Action completed, but generated an exception for " +
-							this.getClass().getName() + ".  Total Time: " +
-							totalTime + "ms, Run Number: " +
-							runNumber, error);
+					msg = "  (no message from the action)";
 				}
 				
+				if (error != null) {
+					log.error("Action FAILED w/ an exception for " +
+							this.getClass().getName() + ".  Run Number: " +
+							runNumber + msg, error);
+				} else {
+					log.debug("Action FAILED but did not generate an error for " +
+							this.getClass().getName() + ".  Run Number: " +
+							runNumber + msg);
+				}
+	
 			}
-		} else {
-			
-			String msg = getPostMessage();
-			if (msg != null) {
-				msg = "  Message from the action: " + msg;
-			} else {
-				msg = "  (no message from the action)";
-			}
-			
-			if (error != null) {
-				log.error("Action FAILED w/ an exception for " +
-						this.getClass().getName() + ".  Run Number: " +
-						runNumber + msg, error);
-			} else {
-				log.debug("Action FAILED but did not generate an error for " +
-						this.getClass().getName() + ".  Run Number: " +
-						runNumber + msg);
-			}
-
+		} catch (Exception e) {
+			//Ignore - some type of loggin err not worth handling
 		}
 
+		
+		//Close any open resultSets
+		if (autoCloseResults != null) {
+			for (ResultSet rs : autoCloseResults) {
+				try {
+					if (rs != null)	{
+						rs.close();
+						log.trace("Successfully autoclosed ResultSet ID: " + rs.hashCode());
+					}
+				} catch (Exception e) {
+					log.warn(
+							"Good grief, I just tried to close a SQL ResultSet," +
+							" should this really throw an exception?  " +
+							"ResultSet ID: " + rs.hashCode(), e);
+				}
+			}
+			
+			autoCloseResults.clear();
+		}
 		
 		//Close any open prepared statements
 		if (autoCloseStatements != null) {
@@ -498,6 +524,24 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		}
 		
 		autoCloseStatements.add(statement);
+	}
+	
+	/**
+	 * Adds a SQL ResultSet to a list of resultSets that will be closed automatically
+	 * when the action completes, regardless of how the action completes.
+	 * 
+	 * This is opened up as a protected method so that actions can add their own
+	 * results for which there may not be direct creation support for (i.e.
+	 * CallableStatements).
+	 * 
+	 * @param statement
+	 */
+	protected void addResultSetForAutoClose(ResultSet resultSet) {
+		if (autoCloseResults == null) {
+			autoCloseResults = new ArrayList<ResultSet>();
+		}
+		
+		autoCloseResults.add(resultSet);
 	}
 	
 	/**

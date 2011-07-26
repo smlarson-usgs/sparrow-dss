@@ -97,6 +97,7 @@ public class PredictionContextHandler extends Action<List<PredictionContext>> {
 		// execute and retrieve the result set
 		stmt.execute();
 		ResultSet rs = (ResultSet)stmt.getObject(3);
+		addResultSetForAutoClose(rs);
 		
 		List<PredictionContext> list = hydrate(rs, 1);
 		
@@ -145,6 +146,7 @@ public class PredictionContextHandler extends Action<List<PredictionContext>> {
 		
 		statement = getRWPSFromPropertiesFile(SELECT_SINCE_TIME_STATEMENT_NAME, null, paramMap);
 		ResultSet rset = statement.executeQuery();
+		addResultSetForAutoClose(rset);
 		return hydrate(rset, 13);
 	}
 	

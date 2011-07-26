@@ -33,6 +33,7 @@ public class LoadCalibrationSite extends Action<CalibrationSite> {
 		
 		PreparedStatement st = getROPSFromPropertiesFile(query, getClass(), params);
 		ResultSet rset = st.executeQuery();
+		addResultSetForAutoClose(rset);
 		
 		if (rset.next()) {
 			result = new CalibrationSiteBuilder();

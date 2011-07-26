@@ -49,7 +49,8 @@ public class LoadReachHucs extends Action<DataTable>{
 		PreparedStatement ps = getNewROPreparedStatement(query);
 		ps.setFetchSize(200);
 
-		ResultSet rs = ps.executeQuery();	//auto-closed
+		ResultSet rs = ps.executeQuery();
+		addResultSetForAutoClose(rs);
 
 
 		DataTableWritable writeable = DataTableConverter.toDataTable(rs, true);

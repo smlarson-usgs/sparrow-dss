@@ -94,9 +94,9 @@ public class FindReaches extends Action<DataTable> {
 				PreparedStatement ps = getROPSFromString(sql, query.props);
 				
 				ResultSet rs = ps.executeQuery();
+				addResultSetForAutoClose(rs);
 				
 				DataTable dt = DataTableConverter.toDataTable(rs);
-				rs.close();
 				
 				return dt;
 			

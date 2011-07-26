@@ -1,18 +1,14 @@
 package gov.usgswim.sparrow.action;
 
 import gov.usgswim.sparrow.domain.IPredefinedSession;
-import gov.usgswim.sparrow.domain.PredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
 import gov.usgswim.sparrow.request.PredefinedSessionUniqueRequest;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -39,9 +35,7 @@ public class SavePredefinedSession extends Action<IPredefinedSession> {
 
 		int updateCount = 0;	//The number of rows updated/inserted
 		PreparedStatement statement = null;
-		ResultSet rset = null;
-		List<PredefinedSession> sessions = new ArrayList<PredefinedSession>();
-		
+
 		//
 		//assign values to parameters
 		if (session.getId() != null) {

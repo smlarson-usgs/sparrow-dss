@@ -55,7 +55,8 @@ public class LoadReachAttributes extends Action<DataTable> {
 		ResultSet rset = null;
 		DataTableWritable attribs = null;
 
-		rset = st.executeQuery();	//auto-closed
+		rset = st.executeQuery();
+		addResultSetForAutoClose(rset);
 		attribs = DataTableConverter.toDataTable(rset);
 		
 		//Set column props

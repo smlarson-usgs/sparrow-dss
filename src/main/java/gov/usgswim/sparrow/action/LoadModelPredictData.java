@@ -88,18 +88,20 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public static DataTableWritable loadSourceMetadata(Connection conn, long modelId)
+	public DataTableWritable loadSourceMetadata(Connection conn, long modelId)
 	throws SQLException, IOException {
 
 		String query = getTextWithParamSubstitution("SelectSourceData", LoadModelPredictData.class, "ModelId", "" + modelId);
 
 		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+		addStatementForAutoClose(st);
 		st.setFetchSize(30);
 
 		ResultSet rs = null;
 		DataTableWritable result = null;
 		try {
 			rs = st.executeQuery(query);
+			addResultSetForAutoClose(rs);
 			result = DataTableConverter.toDataTable(rs, true);
 		} finally {
 			if (rs != null) {
@@ -170,7 +172,9 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 		Class<?>[] colTypes = {Integer.class, Integer.class, Integer.class, Integer.class, Integer.class};
 		
 		PreparedStatement statement = getROPSFromPropertiesFile("SelectTopoData", this.getClass(), params);
+		addStatementForAutoClose(statement);
 		ResultSet rset = statement.executeQuery();
+		addResultSetForAutoClose(rset);
 		DataTableWritable result = DataTableConverter.toDataTable(rset, colTypes, true);
 		
 		/** TNODE is used heavily during delivery calcs to find reaches, so index */
@@ -213,7 +217,7 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static DataTableWritable loadSourceReachCoef(Connection conn, long modelId, int iteration, DataTable sources) throws SQLException,
+	public DataTableWritable loadSourceReachCoef(Connection conn, long modelId, int iteration, DataTable sources) throws SQLException,
 	IOException {
 
 		if (iteration < 0) {
@@ -243,12 +247,14 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 			query = "Select Value from ( " + query + " )";
 
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			addStatementForAutoClose(st);
 			st.setFetchSize(2000);
 			ResultSet rs = null;
 
 			try {
 
 				rs = st.executeQuery(query);
+				addResultSetForAutoClose(rs);
 				sourceReachCoef.addColumn(new StandardNumberColumnDataWritable<Double>());
 				DLUtils.loadColumn(rs, sourceReachCoef, 0, srcIndex);
 
@@ -329,7 +335,7 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public static DataTableWritable loadSourceValues(Connection conn, long modelId, DataTable sources) throws SQLException,
+	public DataTableWritable loadSourceValues(Connection conn, long modelId, DataTable sources) throws SQLException,
 	IOException {
 
 		int sourceCount = sources.getRowCount();
@@ -365,6 +371,7 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 			query = "Select Value from ( " + query + " )";
 
 			Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			addStatementForAutoClose(st);
 			st.setFetchSize(2000);
 			ResultSet rs = null;
 
@@ -375,6 +382,7 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 				sourceValues.addColumn(column);
 
 				rs = st.executeQuery(query);
+				addResultSetForAutoClose(rs);
 				DLUtils.loadColumn(rs, sourceValues, 0, srcIndex);
 			} finally {
 				if (rs != null) {
@@ -392,17 +400,19 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 
 	}
 	
-	protected static void loadIndexValues(Connection conn, DataTableWritable table,
+	protected void loadIndexValues(Connection conn, DataTableWritable table,
 			String baseQuery, String indexColumnName) throws SQLException {
 		//Grab the query for the first source, but only taking the ID vals
 
 		String query = "Select " + indexColumnName + " from ( " + baseQuery + " )";
 
 		Statement st = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+		addStatementForAutoClose(st);
 		st.setFetchSize(2000);
 		ResultSet rs = null;
 		try {
 			rs = st.executeQuery(query);
+			addResultSetForAutoClose(rs);
 			DLUtils.loadIndex(rs, table, 0);
 		} finally {
 			if (rs != null) {

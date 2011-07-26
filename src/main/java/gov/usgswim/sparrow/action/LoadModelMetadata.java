@@ -103,9 +103,8 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 
 		try {
 			rset = selectModels.executeQuery();
+			addResultSetForAutoClose(rset);
 
-			
-			
 			while (rset.next()) {
 				SparrowModelBuilder m = new SparrowModelBuilder();
 				long modelID = rset.getLong("SPARROW_MODEL_ID");

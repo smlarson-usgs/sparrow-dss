@@ -41,7 +41,8 @@ public class LoadReachesInBBox extends Action<Long[]> {
 		ResultSet rset = null;
 
 
-		rset = st.executeQuery();	//auto-closed
+		rset = st.executeQuery();
+		addResultSetForAutoClose(rset);
 		
 		ArrayList<Long> aList = new ArrayList<Long>();
 		

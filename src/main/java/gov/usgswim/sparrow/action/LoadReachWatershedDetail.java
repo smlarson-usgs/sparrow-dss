@@ -45,6 +45,7 @@ public class LoadReachWatershedDetail extends Action<ReachGeometry> {
 		params.put("REACH_ID", reach.getReachID());
 		
 		ResultSet rs = getROPSFromPropertiesFile("selectFull", getClass(), params).executeQuery();
+		addResultSetForAutoClose(rs);
 		
 		if (rs.next()) {
 

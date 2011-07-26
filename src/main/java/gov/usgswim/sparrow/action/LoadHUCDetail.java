@@ -48,6 +48,7 @@ public class LoadHUCDetail extends Action<HUC> {
 
 		
 		ResultSet rs = getROPSFromPropertiesFile("selectFull", getClass(), params).executeQuery();
+		addResultSetForAutoClose(rs);
 		
 		if (rs.next()) {
 			

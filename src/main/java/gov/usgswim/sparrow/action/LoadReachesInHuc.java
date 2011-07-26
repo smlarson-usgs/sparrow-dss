@@ -37,7 +37,8 @@ public class LoadReachesInHuc extends Action<long[]> {
 		PreparedStatement st = getROPSFromPropertiesFile(QUERY_NAME, this.getClass(), params);
 		
 		ResultSet rset = null;
-		rset = st.executeQuery();	//auto-closed
+		rset = st.executeQuery();
+		addResultSetForAutoClose(rset);
 		
 		ArrayList<Long> aList = new ArrayList<Long>();
 		

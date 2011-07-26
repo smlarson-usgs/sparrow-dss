@@ -40,7 +40,8 @@ public class LoadStreamFlow extends Action<SparrowColumnSpecifier> {
 		
 		st.setLong(1, modelId);
 		
-		ResultSet rset = st.executeQuery();	//auto-closed
+		ResultSet rset = st.executeQuery();
+		addResultSetForAutoClose(rset);
 		DataTableWritable values = null;
 		values = DataTableConverter.toDataTable(rset, null, true);
 		

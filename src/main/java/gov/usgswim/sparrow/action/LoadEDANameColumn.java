@@ -46,7 +46,8 @@ public class LoadEDANameColumn extends Action<ColumnData> {
 		ResultSet rset = null;
 		DataTableWritable attribs = null;
 
-		rset = st.executeQuery();	//auto-closed
+		rset = st.executeQuery();
+		addResultSetForAutoClose(rset);
 		attribs = DataTableConverter.toDataTable(rset);
 		
 		return attribs.getColumn(0);

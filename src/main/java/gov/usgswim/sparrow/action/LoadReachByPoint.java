@@ -31,6 +31,7 @@ public class LoadReachByPoint extends Action<ReachInfo>{
 		params.put("lng", this.lng);
 		
 		ResultSet rs = getROPSFromPropertiesFile("FindReachUsingBarryFastQuery", getClass(), params).executeQuery();
+		addResultSetForAutoClose(rs);
 		
 		Integer reachID = null; Integer distance = null;
 		if (rs.next()) {
