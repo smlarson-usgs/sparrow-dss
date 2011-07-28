@@ -71,9 +71,10 @@ public class NSDataSetBuilderTest extends SparrowTestBase {
 		
 		int upstreamReachCount = 0;
 		int nonUpstreamReachCount = 0;
+		NSRow[] rows = nsData.getRows();
 		
-		while (nsData.next()) {
-			NSRow row = nsData.getRow();
+		for (NSRow row : rows) {
+
 			long rowID = row.getKeyAttribute().getLong();
 			
 			
@@ -105,8 +106,10 @@ public class NSDataSetBuilderTest extends SparrowTestBase {
 		int upstreamReachCount = 0;
 		int nonUpstreamReachCount = 0;
 		
-		while (nsData.next()) {
-			NSRow row = nsData.getRow();
+		NSRow[] rows = nsData.getRows();
+		
+		for (NSRow row : rows) {
+			
 			long rowID = row.getKeyAttribute().getLong();
 			
 			
@@ -138,9 +141,9 @@ public class NSDataSetBuilderTest extends SparrowTestBase {
 		
 		int upstreamReachCount = 0;
 		int nonUpstreamReachCount = 0;
+		NSRow[] rows = nsData.getRows();
 		
-		while (nsData.next()) {
-			NSRow row = nsData.getRow();
+		for (NSRow row : rows) {
 			long rowID = row.getKeyAttribute().getLong();
 			
 			

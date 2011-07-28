@@ -160,8 +160,9 @@ public class ContextToPredictionIntegrationLongRunTest extends SparrowTestBase {
 		int zeros = 0;
 		int nonZeros = 0;
 
-		while (result.next()) {
-			NSRow row = result.getRow();
+		NSRow[] rows = result.getRows();
+		
+		for (NSRow row : rows) {
 			double v = row.get(1).getDouble();
 			if (v == 0d) {
 				zeros++;
