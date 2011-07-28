@@ -655,7 +655,7 @@
     </managed-property>
     <managed-property>
       <property-name>icon</property-name>
-      <value>/myicons/logon_logo.gif</value>
+      <value>/myicons/logout_logo.gif</value>
     </managed-property>
     <managed-property>
       <property-name>adminMenu</property-name>
@@ -687,7 +687,7 @@
     </navigation-case>
     <navigation-case>
       <from-outcome>cancel</from-outcome>
-      <to-view-id>/admin/admin_mcs_create.jspx</to-view-id>
+      <to-view-id>/admin/admin_mcs_createE.jspx</to-view-id>
     </navigation-case>
   </navigation-rule>
   <navigation-rule>
@@ -698,7 +698,7 @@
     </navigation-case>
     <navigation-case>
       <from-outcome>cancel</from-outcome>
-      <to-view-id>/admin/admin_mcs_create.jspx</to-view-id>
+      <to-view-id>/admin/admin_mcs_createI.jspx</to-view-id>
     </navigation-case>
   </navigation-rule>
   <navigation-rule>

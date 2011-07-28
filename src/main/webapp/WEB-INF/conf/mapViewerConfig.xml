@@ -1,20 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <MapperConfig>
+
 <logging log_level="finest" log_thread_name="true" log_time="true">
 <!--  <log_output name="System.err"/> -->
 <log_output name="/opt/tomcat/instance/default/logs/sparrow/mapviewer.log"/>
 </logging>
+
 <security_config>
     <disable_direct_info_request>false</disable_direct_info_request>
     <disable_csf>true</disable_csf>
-  </security_config>
+
+</security_config>
+
 <spatial_data_cache max_cache_size="2000" report_stats="true"/>
-<ns_data_provider id="defaultNSDP" class="oracle.sdovis.NSDataProviderDefault"/>
+
+
+
 <ns_data_provider id="sparrowPredict" class="gov.usgswim.sparrow.MapViewerSparrowDataProvider"/>
+
+<!--  7/28/2011 ee:  I think these are both example configs that can be removed -->
+<!--  
+<ns_data_provider id="defaultNSDP" class="oracle.sdovis.NSDataProviderDefault"/>
 <s_data_provider id="shapefileSDP" class="oracle.sdovis.ShapefileDataProvider">
     <parameters>
       <parameter name="datadir" value="/temp/data"/>
     </parameters>
-  </s_data_provider>
+</s_data_provider>
+-->
+  
 <map_data_source name="sparrow" jdbc_host="130.11.165.152" jdbc_sid="widw" jdbc_port="1521" jdbc_user="SPARROW_DSS" jdbc_password="!***REMOVED***" jdbc_mode="thin" max_connections="1" number_of_mappers="1"/>
 </MapperConfig>

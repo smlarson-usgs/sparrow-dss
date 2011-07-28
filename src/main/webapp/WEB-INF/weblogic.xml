@@ -1,0 +1,25 @@
+<?xml version = '1.0' encoding = 'US-ASCII'?>
+
+<weblogic-web-app  xmlns="http://www.bea.com/ns/weblogic/90">
+
+<security-role-assignment>
+    <role-name>map_admin_role</role-name>
+    <principal-name>Administrators</principal-name>
+</security-role-assignment>
+
+<security-role-assignment>
+    <role-name>secure_maps_role</role-name>
+    <principal-name>Administrators</principal-name>
+</security-role-assignment>
+
+<session-descriptor>
+    <cookie-path>/mapviewer</cookie-path>
+</session-descriptor>
+
+<container-descriptor>
+    <prefer-web-inf-classes>true</prefer-web-inf-classes>
+</container-descriptor>
+
+</weblogic-web-app>
+
+

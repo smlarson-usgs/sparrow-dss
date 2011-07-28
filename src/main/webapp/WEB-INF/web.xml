@@ -1,43 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
-	version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee">
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
 	<display-name>SPARROW DSS Services {Owner: NB, Coder: EE}</display-name>
 	<description>The SPARROW DSS application, which includes Oracle's Mapviewer.</description>
 
-	<!-- Mapviewer Related -->
+	<!--
+*****************************************
+***	MapViewer Configuration
+***************************************** -->
 	<context-param>
 		<param-name>oracle.portal.log.LogLevel</param-name>
 		<param-value>4</param-value>
 	</context-param>
 
-	<!-- CUSTOM -->
+	<!--
+*****************************************
+***	SPARROW Configuration
+*****************************************  -->
 	<filter>
+		<filter-name>noMapViewerSessions</filter-name>
 		<description>
 			MapViewer has a really bad habit of creating a session for all of
 			its mapping requests.  This filter kills those sessions immediately
 			as they are created.  Since all these requests are served through
 			a proxy, the sessions are never used anyway.
 		</description>
-		<filter-name>noMapViewerSessions</filter-name>
 		<filter-class>gov.usgswim.sparrow.NoMapViewerSessions</filter-class>
 	</filter>
 	<filter>
+		<filter-name>LogMapviewerRequestsFilter</filter-name>
 		<description>
 			Debug filter to spit the MapViewer XML map requests to the log.
 			To enable, set the log4j log level to trace for this class.
 		</description>
-		<filter-name>LogMapviewerRequestsFilter</filter-name>
 		<filter-class>gov.usgswim.sparrow.LogMapviewerRequestsFilter</filter-class>
 	</filter>
-	
 
 
-	<!-- Mapviewer Related -->
+	<!--
+*****************************************
+***	Mapviewer Related
+*****************************************  -->
 	<filter>
 		<filter-name>adfFaces</filter-name>
 		<filter-class>oracle.adf.view.faces.webapp.AdfFacesFilter</filter-class>
 	</filter>
+
+	<!-- WMS1.1 filter -->
 	<filter>
 		<filter-name>WMS11</filter-name>
 		<filter-class>oracle.lbs.webmapserver.WMSServletFilter</filter-class>
@@ -52,7 +61,10 @@
 	</filter-mapping>
 
 
-	<!-- CUSTOM -->
+	<!--
+*****************************************
+***	SPARROW Configuration
+*****************************************  -->
 	<filter-mapping>
 		<filter-name>noMapViewerSessions</filter-name>
 		<url-pattern>/omserver/*</url-pattern>
@@ -66,42 +78,55 @@
 	</listener>
 
 
-	<!-- Mapviewer Related -->
+	<!--
+*****************************************
+***	Mapviewer Related
+*****************************************  -->
+	<!-- ADF faces resources servlet -->
 	<servlet>
 		<servlet-name>resources</servlet-name>
 		<servlet-class>oracle.adf.view.faces.webapp.ResourceServlet</servlet-class>
 	</servlet>
+
+
+	<!-- MapViewer Servlet -->
 	<servlet>
 		<servlet-name>oms</servlet-name>
 		<servlet-class>oracle.lbs.mapserver.oms</servlet-class>
-		<load-on-startup>2</load-on-startup>
+		<load-on-startup>1</load-on-startup>
 
 		<!-- role name used in code -->
 		<security-role-ref>
 			<role-name>map_admin</role-name>
 			<role-link>map_admin_role</role-link>
 		</security-role-ref>
-
 	</servlet>
+
+	<!-- MapViewer FOI -->
 	<servlet>
 		<servlet-name>foi</servlet-name>
 		<servlet-class>oracle.lbs.foi.FOIServlet</servlet-class>
-		<load-on-startup>3</load-on-startup>
+		<load-on-startup>2</load-on-startup>
 	</servlet>
+
+	<!-- MapViewer Map Cache Server -->
 	<servlet>
 		<servlet-name>mcs</servlet-name>
 		<servlet-class>oracle.lbs.mapcache.MCSServlet</servlet-class>
-		<load-on-startup>2</load-on-startup>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
+
+	<!-- MapViewer Proxy servlet -->
 	<servlet>
 		<servlet-name>MVProxy</servlet-name>
 		<servlet-class>oracle.mapviewer.proxy.MVProxyServlet</servlet-class>
-		<load-on-startup>2</load-on-startup>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
+
 	<servlet>
 		<servlet-name>mcsad</servlet-name>
 		<servlet-class>oracle.lbs.mapcache.AdminServlet</servlet-class>
-		<load-on-startup>2</load-on-startup>
+		<load-on-startup>1</load-on-startup>
 
 		<!-- role name used in code -->
 		<security-role-ref>
@@ -109,18 +134,19 @@
 			<role-link>map_admin_role</role-link>
 		</security-role-ref>
 	</servlet>
+
+	<!-- MapViewer Servlet Mapping for normal requests -->
 	<servlet>
 		<servlet-name>Faces Servlet</servlet-name>
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-		<load-on-startup>2</load-on-startup>
-	</servlet>
-	<servlet>
-		<servlet-name>ReturnLocaleString</servlet-name>
-		<servlet-class>oracle.lbs.mapcache.messages.ReturnLocaleString</servlet-class>
+		<load-on-startup>1</load-on-startup>
 	</servlet>
 
 
-	<!-- CUSTOM -->
+	<!--
+*****************************************
+***	SPARROW Configuration
+*****************************************  -->
 	<servlet>
 		<servlet-name>ModelService</servlet-name>
 		<servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
@@ -222,19 +248,28 @@
 		<servlet-class>gov.usgswim.sparrow.service.predict.IndividualReachPredictService</servlet-class>
 	</servlet>
 
-	<!-- Mapviewer Related -->
+	<!--
+*****************************************
+***	Mapviewer Related
+*****************************************  -->
 	<servlet-mapping>
 		<servlet-name>oms</servlet-name>
 		<url-pattern>/omserver</url-pattern>
 	</servlet-mapping>
+
+	<!-- MapViewer mapping for secure admin requests -->
 	<servlet-mapping>
 		<servlet-name>oms</servlet-name>
 		<url-pattern>/mapadmin</url-pattern>
 	</servlet-mapping>
+
+	<!-- MapViewer mapping for OpenGIS WMS 1.1.1 spec -->
 	<servlet-mapping>
 		<servlet-name>oms</servlet-name>
 		<url-pattern>/wms</url-pattern>
 	</servlet-mapping>
+
+	<!-- ADF Faces Servlet Mapping -->
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
 		<url-pattern>/faces/*</url-pattern>
@@ -243,28 +278,34 @@
 		<servlet-name>resources</servlet-name>
 		<url-pattern>/adf/*</url-pattern>
 	</servlet-mapping>
+
+	<!-- MapViewer FOI Servlet Mapping -->
 	<servlet-mapping>
 		<servlet-name>foi</servlet-name>
 		<url-pattern>/foi</url-pattern>
 	</servlet-mapping>
+
+	<!-- MapViewer Map Cache Server Mapping -->
 	<servlet-mapping>
 		<servlet-name>mcs</servlet-name>
 		<url-pattern>/mcserver</url-pattern>
 	</servlet-mapping>
+
+	<!-- MapViewer proxy servlet mapping -->
 	<servlet-mapping>
 		<servlet-name>MVProxy</servlet-name>
 		<url-pattern>/proxy</url-pattern>
 	</servlet-mapping>
+
 	<servlet-mapping>
 		<servlet-name>mcsad</servlet-name>
 		<url-pattern>/mcsadmin</url-pattern>
 	</servlet-mapping>
-	<servlet-mapping>
-		<servlet-name>ReturnLocaleString</servlet-name>
-		<url-pattern>/ReturnLocaleString</url-pattern>
-	</servlet-mapping>
 
-	<!-- CUSTOM -->
+	<!--
+*****************************************
+***	SPARROW Configuration
+*****************************************  -->
 	<servlet-mapping>
 		<servlet-name>ModelService</servlet-name>
 		<url-pattern>/sp_model/*</url-pattern>
@@ -333,14 +374,15 @@
 		<servlet-name>ReachWatershedService</servlet-name>
 		<url-pattern>/reachwatershed/*</url-pattern>
 	</servlet-mapping>
-	
-	
 	<servlet-mapping>
 		<servlet-name>IndividualReachPredictService</servlet-name>
 		<url-pattern>/sp_indivReachPredict/*</url-pattern>
 	</servlet-mapping>
 
-
+	<!--
+*****************************************
+***	SPARROW Configuration
+*****************************************  -->
 	<session-config>
 		<session-timeout>90</session-timeout>
 	</session-config>
@@ -356,6 +398,19 @@
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
+	<!--
+*****************************************
+***	Mapviewer Related
+*****************************************  -->
+	<taglib>
+		<taglib-uri>
+      http://xmlns.oracle.com/spatial/mvtaglib
+    </taglib-uri>
+		<taglib-location>
+      /WEB-INF/mvtaglib.tld
+    </taglib-location>
+	</taglib>
+
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>SecureAdmin</web-resource-name>
@@ -369,6 +424,8 @@
 			<role-name>map_admin_role</role-name>
 		</auth-constraint>
 	</security-constraint>
+
+	<!--  For Secure Map Rendering demos only -->
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>Secure mapping demo page</web-resource-name>
@@ -379,6 +436,8 @@
 			<role-name>secure_maps_role</role-name>
 		</auth-constraint>
 	</security-constraint>
+
+
 	<login-config>
 		<auth-method>FORM</auth-method>
 		<!--    <realm-name>mvconsole</realm-name> -->
@@ -387,10 +446,14 @@
 			<form-error-page>/logon_failed.html</form-error-page>
 		</form-login-config>
 	</login-config>
+
+
 	<security-role>
 		<description>To perform MapViewer administration.</description>
 		<role-name>map_admin_role</role-name>
 	</security-role>
+
+	<!--  For Secure Map Rendering demos only -->
 	<security-role>
 		<role-name>secure_maps_role</role-name>
 	</security-role>

@@ -1,9 +1,10 @@
 Rem
-Rem $Header: mcsdefinition.sql 24-feb-2006.12:28:12 lqian Exp $
+Rem $Header: lbs/ship/ear/web/WEB-INF/admin/mcsdefinition.sql /main/4 2009/03/24 23:08:49 jxyang Exp $
 Rem
 Rem sdomapdef.sql
 Rem
-Rem Copyright (c) 2001, 2006, Oracle. All rights reserved.  
+Rem Copyright (c) 2001, 2009, Oracle and/or its affiliates. 
+Rem All rights reserved. 
 Rem
 Rem    NAME
 Rem      mcsdefinition.sql - SDO MAP DEFinitions
@@ -16,6 +17,8 @@ Rem    NOTES
 Rem      <other useful comments, qualifications, etc.>
 Rem
 Rem    MODIFIED   (MM/DD/YY)
+Rem     jxyang     03/03/09 - add sdo_tile type
+Rem     jxyang     10/31/08 - add sdo_tile_admin_tasks_table
 Rem     jxyang     02/24/06 - add trigger to drop cache instance when user is 
 Rem                           dropped 
 Rem     jxyang     12/15/05 - create
@@ -78,3 +81,94 @@ BEGIN
 end;
 /
 
+begin
+  begin
+   execute immediate 
+'create table mdsys.sdo_tile_admin_tasks_table(
+  SDO_OWNER VARCHAR2(32) default sys_context(''userenv'', ''CURRENT_SCHEMA''),
+  id number primary key,
+  description varchar2(200), 
+  submitted_by varchar2(100) not null, 
+  cached_map_name varchar2(32) not null,
+  type varchar2(10) not null,
+  bound sdo_geometry,
+  zoom_levels sdo_number_array,
+  schedule clob,
+  status varchar2(20),
+  progress clob)';
+   exception when others then NULL;
+  end;
+end;
+/
+
+Create or replace  View mdsys.USER_SDO_TILE_ADMIN_TASKS AS
+SELECT ID, DESCRIPTION, submitted_by, cached_map_name, type, bound, zoom_levels, schedule, status, progress 
+FROM mdsys.SDO_TILE_ADMIN_TASKS_TABLE
+WHERE sdo_owner = sys_context('userenv', 'CURRENT_SCHEMA');
+
+Create or replace  View mdsys.ALL_SDO_TILE_ADMIN_TASKS AS
+SELECT SDO_OWNER, ID, DESCRIPTION, submitted_by, cached_map_name, type, bound, zoom_levels, schedule, status, progress 
+FROM mdsys.SDO_TILE_ADMIN_TASKS_TABLE ;
+
+Create or replace  View mdsys.DBA_SDO_TILE_ADMIN_TASKS AS
+SELECT SDO_OWNER, ID, DESCRIPTION, submitted_by, cached_map_name, type, bound, zoom_levels, schedule, status, progress 
+FROM mdsys.SDO_TILE_ADMIN_TASKS_TABLE ;
+
+grant select,insert,delete,update on mdsys.USER_SDO_TILE_ADMIN_TASKS to public;
+grant select on mdsys.all_sdo_TILE_ADMIN_TASKS to public;
+grant select on mdsys.dba_sdo_TILE_ADMIN_TASKS to public;
+
+create  or replace public synonym user_sdo_TILE_ADMIN_TASKS for mdsys.user_sdo_TILE_ADMIN_TASKS;
+create  or replace public synonym all_sdo_TILE_ADMIN_TASKS for mdsys.all_sdo_TILE_ADMIN_TASKS;
+create  or replace public synonym dba_sdo_TILE_ADMIN_TASKS for mdsys.dba_sdo_TILE_ADMIN_TASKS;
+
+create or replace trigger mdsys.sdo_tile_admin_tasks_drop_user
+after drop on DATABASE
+declare 
+   stmt varchar2(200);
+BEGIN
+     if dictionary_obj_type = 'USER' THEN
+       stmt := 'DELETE FROM SDO_TILE_ADMIN_TASKS_TABLE ' ||
+    ' WHERE ''"''||SDO_OWNER||''"'' = ''"' || dictionary_obj_name || '"'' ';
+       EXECUTE IMMEDIATE stmt;
+    end if;
+end;
+/
+
+declare
+begin
+  begin
+   execute immediate 
+     'create sequence mdsys.sdo_tile_admin_task_seq start with 1 increment by 1' ;
+   exception when others then NULL;
+  end;
+end;
+/
+
+create or replace trigger mdsys.sdo_tile_admin_tasks_insert before insert on 
+  mdsys.sdo_tile_admin_tasks_table for each row 
+begin
+  select mdsys.sdo_tile_admin_task_seq.nextval into :new.id from dual;
+end;
+/
+
+create or replace trigger mdsys.sdo_cached_map_delete after DELETE on mdsys.sdo_cached_maps_table for each row
+declare 
+   stmt varchar2(200);
+BEGIN
+   DELETE FROM SDO_TILE_ADMIN_TASKS_TABLE where sdo_owner=:old.sdo_owner and cached_map_name=:old.name ;
+end;
+/
+
+create or replace type mdsys.sdo_tile as object
+(
+  tile_layer varchar2(32),
+  zoom_level number(2),
+  x number(8),
+  y number(8),
+  modified timestamp(0),
+  data blob
+);
+/ 
+
+grant execute on mdsys.sdo_tile to public ;

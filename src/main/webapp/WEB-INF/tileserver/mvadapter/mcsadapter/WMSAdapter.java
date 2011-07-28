@@ -1,4 +1,5 @@
-/* Copyright (c) 2005, 2006, Oracle. All rights reserved.  */
+/* Copyright (c) 2005, 2010, Oracle and/or its affiliates. 
+All rights reserved. */
 
 package mcsadapter;
 
@@ -69,7 +70,12 @@ public class WMSAdapter  extends MapSourceAdapter
       else if("transparent".equalsIgnoreCase(key))
         req.append("&transparent="+val);
       else
-        req.append("&"+key+"="+val);
+      {
+        if(key.equalsIgnoreCase("version"))
+          req = req.replace(15,28,key.toUpperCase()+"="+val);
+        else
+          req.append("&"+key+"="+val);
+      }
     }
     return req.toString();
   }
@@ -80,7 +86,7 @@ public class WMSAdapter  extends MapSourceAdapter
  
 <cache_instance name="wms8307" image_format="PNG">
    <external_map_source url="http://www.foo.net/servlet/com.foo.getmap" 
-      proxy_host="www-proxy.us.oracle.com" 
+      proxy_host="www-proxy.my_corp.com" 
       proxy_port="80" request_method="GET" 
       adapter_class="oracle.mcsadapter.WMSAdapter"
       adapter_class_path="/ul/mywork/mvwar/adapters.jar">

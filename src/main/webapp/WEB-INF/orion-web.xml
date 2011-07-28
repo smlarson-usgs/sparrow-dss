@@ -3,6 +3,7 @@
 <orion-web-app servlet-webdir="/servlet/">
   <web-app-class-loader search-local-classes-first="true"/>
   <security-role-mapping impliesAll="false" name="map_admin_role">
+    <group name="oc4j-app-administrators"/>
     <group name="oc4j-administrators"/>
     <group name="administrators"/>
   </security-role-mapping>

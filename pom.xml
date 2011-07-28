@@ -237,12 +237,14 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- This unique dep. is an XML parser that MapViewer requires, but is 
-			not distributed w/ MapViewer (they assume you will be running on OC4J. -->
+		<!-- An XML parser that MapViewer requires.
+			It used to be provided by oc4j, but in the most recent MapViewer war
+			it came bundled in the war, making me think that they no longer
+			expect MV to be deployed in OC4J only.  -->
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>xmlparserv2</artifactId>
-			<version>10.1.3.1.0_prod-1</version>
+			<version>11.1.1.5.1-1</version>
 			<type>jar</type>
 			<scope>runtime</scope>
 		</dependency>
@@ -253,14 +255,14 @@
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>sdoapi</artifactId>
-			<version>10G-1</version>
+			<version>11.1.1.5.1-1</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>sdovis</artifactId>
-			<version>10G-1</version>
+			<version>11.1.1.5.1-1</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
@@ -269,7 +271,7 @@
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>mapviewer</artifactId>
-			<version>10G-1</version>
+			<version>11.1.1.5.1-1</version>
 			<type>war</type>
 			<scope>runtime</scope>
 		</dependency>
