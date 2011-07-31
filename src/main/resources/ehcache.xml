@@ -340,7 +340,7 @@
 	<cache name="AnalysisResult" maxElementsInMemory="10" />
 		
 	<!-- Currently we cannot cache these, so 1 should turn off the cache. -->
-	<cache name="NSDataSet" maxElementsInMemory="1"
+	<cache name="NSDataSet" maxElementsInMemory="3"
 		timeToIdleSeconds="60" timeToLiveSeconds="0"/>
 		
 	<!--

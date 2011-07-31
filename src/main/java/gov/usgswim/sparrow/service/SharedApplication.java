@@ -586,12 +586,14 @@ public class SharedApplication  {
 	}
 
 	public NSDataSet getNSDataSet(PredictionContext context, boolean quiet) throws Exception {
-		//rm all reference to the cache, since it seems completely broken.
-		//return (NSDataSet) NSDataSet.get(context, quiet);
+		//Access via cache was broken in a prev. version of MapViewer b/c MV
+		//would destroy the NSDataSet as it used it.  In the most recent version,
+		//this is fixed.
+		return (NSDataSet) ConfiguredCache.NSDataSet.get(context, quiet);
 
-		NSDataSetFactory factory = new NSDataSetFactory();
-		NSDataSet dataset = (NSDataSet) factory.createEntry(context);
-		return dataset;
+//		NSDataSetFactory factory = new NSDataSetFactory();
+//		NSDataSet dataset = (NSDataSet) factory.createEntry(context);
+//		return dataset;
 	}
 
 
