@@ -589,11 +589,11 @@ public class SharedApplication  {
 		//Access via cache was broken in a prev. version of MapViewer b/c MV
 		//would destroy the NSDataSet as it used it.  In the most recent version,
 		//this is fixed.
-		return (NSDataSet) ConfiguredCache.NSDataSet.get(context, quiet);
+		//return (NSDataSet) ConfiguredCache.NSDataSet.get(context, quiet);
 
-//		NSDataSetFactory factory = new NSDataSetFactory();
-//		NSDataSet dataset = (NSDataSet) factory.createEntry(context);
-//		return dataset;
+		NSDataSetFactory factory = new NSDataSetFactory();
+		NSDataSet dataset = (NSDataSet) factory.createEntry(context);
+		return dataset;
 	}
 
 
