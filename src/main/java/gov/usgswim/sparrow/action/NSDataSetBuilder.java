@@ -5,6 +5,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.domain.PredictionContext;
+import gov.usgswim.sparrow.domain.SparrowNSDataSet;
 import gov.usgswim.sparrow.service.SharedApplication;
 import oracle.mapviewer.share.Field;
 import oracle.mapviewer.share.ext.NSDataSet;
@@ -107,7 +108,8 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 			nsRows[r] = nsRow;
 		}
 
-		return new NSDataSet(nsRows);
+		return new SparrowNSDataSet(nsRows);
+		//return new NSDataSet(nsRows);
 	}
 
 	/**
