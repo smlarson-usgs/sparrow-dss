@@ -110,19 +110,19 @@
 				<dt>All</dt>
 				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
 				<dt>Upper Miss TP load</dt>
-				<dd>Combined total phosphorus loads from USGS NASQAN sites, Mississippi River at Thebes, Ill, and Ohio River at Dam 53 near Grand Chain, Ill.  This combined load was a boundary condition in the MRB5 TN model representing loads from the Upper Mississippi River basin in order for the MRB5 model to account for all mass entering the study area.</dd>
+				<dd>Combined total phosphorus loads from USGS NASQAN (National Stream Quality Accounting Network) sites, Mississippi River at Thebes, Ill, and Ohio River at Dam 53 near Grand Chain, Ill.  This combined load was a boundary condition in the MRB5 TN model representing loads from the Upper Mississippi River basin in order for the MRB5 model to account for all mass entering the study area.</dd>
 				<dt>Point Sources</dt>
-				<dd>Total phosphorus loads for 2002 from point sources came from USEPA PCS database.  Relevant municipal and industrial point sources were included.</dd>
+				<dd>Total phosphorus loads for 2002 from point sources came from USEPA PCS (Permit Compliance System) database.  Relevant municipal and industrial point sources were included.</dd>
 				<dt>Urban Runoff</dt>
-				<dd>Phosphorus from nonpoint source urban runoff was estimated based on land use categories from the 2001 NLCD.  The four cateogries included were nlcd_dvlow, nlcd_dvmed, nlcd_dvhig, and nlcd_dvopn.</dd>
+				<dd>Phosphorus from nonpoint source urban runoff was estimated based on land use categories from the 2001 National Land Cover Dataset.  The four cateogries included were nlcd_dvlow, nlcd_dvmed, nlcd_dvhig, and nlcd_dvopn.</dd>
 				<dt>Fertilizer</dt>
-				<dd>Phosphorus from fertilizer were based on county fertilizer sales from the 2002 USDA NASS ag census data.</dd>				
+				<dd>Phosphorus from fertilizer were based on county fertilizer sales from the 2002 USDA National Agricultural Statistics Service ag census data.</dd>				
 				<dt>Manure - feedlots and pastures</dt>
-				<dd>Phosphorus from manure combined from confined animal operations applied to fertilizer and from pasturelands were based on 2002 USDA NASS ag census data.</dd>
+				<dd>Phosphorus from manure combined from confined animal operations applied to fertilizer and from pasturelands were based on 2002 USDA National Agricultural Statistics Service ag census data.</dd>
 				<dt>Stream length - sediment P</dt>
 				<dd>Stream lengths for reaches with average annual flows greater than 50 cfs were statistically significant in the MRB5 TP model indicating that phosphorus attached to sediment from medium to large streams was a source of phosphorus in MRB5 streams.</dd>
 				<dt>Forests</dt>
-				<dd>Phosphorus from forests, wetlands, scrub, and barren was estimated based on land use categories from the 2001 NLCD.  There were three categories of forests, two categories of wetlands, and one each category for scrub and baren that were combined in this term.</dd>
+				<dd>Phosphorus from forests, wetlands, scrub, and barren was estimated based on land use categories from the 2001 National Land Cover Dataset.  There were three categories of forests, two categories of wetlands, and one each category for scrub and barren that were combined in this term.</dd>
 
 			</dl>
 		</Term>

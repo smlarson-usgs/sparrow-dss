@@ -103,18 +103,18 @@
 				<dd>1990 total population, capita</dd>
 				<dt>P fertilizer corn soy</dt>
 				<dd>1992 N fertilizer applied to corn/soybean (kg)</dd>
-				<dt>P fertilizer_alfalfa</dt>
+				<dt>P alfalfa fertilizer</dt>
 				<dd>1992 P alfalfa fertilizer (kg)</dd>
 				<dt>P fertilizer other</dt>
 				<dd>1992 P farm other fertilizer (kg)</dd>				
 				<dt>P animal waste</dt>
 				<dd>1992 P animal waste (kg)</dd>
 				<dt>Forested land</dt>
-				<dd>1992 NLCD forested land (km2)</dd>
+				<dd>1992 forested land from National Land Cover Dataset(km2)</dd>
 				<dt>Barren land</dt>
-				<dd>1992 NLCD barren land (km2)</dd>
+				<dd>1992 barren land from National Land Cover Dataset(km2)</dd>
 				<dt>Shrub land</dt>
-				<dd>1992 NLCD shrub land (km2)</dd>
+				<dd>1992 shrub land from National Land Cover Dataset(km2)</dd>
 			</dl>
 		</Term>
 	</CommonTerms>

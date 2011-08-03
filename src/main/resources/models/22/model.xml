@@ -124,11 +124,11 @@
 				<dt>N animal waste</dt>
 				<dd>1992 N animal waste (kg)</dd>
 				<dt>NLCD Forested land</dt>
-				<dd>1992 NLCD forested land (km2)</dd>
+				<dd>1992 forested land from National Land Cover Dataset(km2)</dd>
 				<dt>NLCD Barren land</dt>
-				<dd>1992 NLCD barren land (km2)</dd>
+				<dd>1992 barren land from National Land Cover Dataset (km2)</dd>
 				<dt>NLCD Shrub land</dt>
-				<dd>1992 NLCD shrub land (km2)</dd>
+				<dd>1992 shrub land from National Land Cover Dataset(km2)</dd>
 
 			</dl>
 		</Term>

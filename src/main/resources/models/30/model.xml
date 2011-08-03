@@ -130,9 +130,9 @@
 					<dt>All</dt>
 					<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
 					<dt>Point</dt>
-					<dd>1992 Point source TSS discharge on RF1 (kg)</dd>
+					<dd>1992 Point source TSS (total suspended solids) discharge on RF1 (kg)</dd>
 					<dt>Point (off)</dt>
-					<dd>1992 Point source TSS discharge off RF1 (kg)</dd>
+					<dd>1992 Point source TSS (total suspended solids)  discharge off RF1 (kg)</dd>
 					<dt>Urban Land</dt>
 					<dd>Urban land area 1992 (km2)</dd>
 					<dt>Forested Land</dt>
@@ -150,13 +150,13 @@
 					<dt>Other Land</dt>
 					<dd>Non-federal range and barren land (km2)</dd>
 					<dt>USLE Erosion Water</dt>
-					<dd>1992 NRI water soil erosion (kg)</dd>
+					<dd>1992 NRI (National Resources Inventory) water soil erosion (kg)</dd>
 					<dt>USLE Erosion Wind</dt>
-					<dd>1992 NRI wind soil erosion (kg)</dd>
+					<dd>1992 NRI (National Resources Inventory) wind soil erosion (kg)</dd>
 					<dt>Reach Length</dt>
 					<dd>Reach length (meters)</dd>
 					<dt>New Developed Land</dt>
-					<dd>Change in NRI developed land area 1982 to 1992 (km2).</dd>
+					<dd>Change in NRI (National Resources Inventory) developed land area 1982 to 1992 (km2).</dd>
 				</dl>
 			</Term>
 	</CommonTerms>

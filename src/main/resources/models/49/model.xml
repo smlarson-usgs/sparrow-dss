@@ -87,15 +87,15 @@
 				<dt>Wastewater Discharge</dt>
 				<dd>Phosphorus load from point source dischargers in 2002, kg, Terziotti, 10-200.  Reported in kg.</dd>
 				<dt>Urban Land Area</dt>
-				<dd>Urban land area , 2001 NLCD, Terziotti 12-2008</dd>
+				<dd>Urban land area , 2001 National Land Cover Dataset, Terziotti 12-2008</dd>
 				<dt>Backgrd-Parent Rock</dt>
 				<dd>Phosphorus content of bed sediment in headwater streams v15, regionalized, multiplied by catchment area, Terziotti and others 2010</dd>
 				<dt>Mined Lands</dt>
 				<dd>P content of bed sediment in streams affected by mines v15, multiplied by mined-land area, Terziotti and others 2010</dd>				
 				<dt>Livestock Manure</dt>
-				<dd>2002 Ag Census, NLCD01-based spatial distribution, sum of confined-unconfined, Wieczorek 5-2009</dd>
+				<dd>2002 Ag Census, National Land Cover Dataset 01-based spatial distribution, sum of confined-unconfined, Wieczorek 5-2009</dd>
 				<dt>Fert. Land</dt>
-				<dd>2001 NLCD, Terziotti 12-2008</dd>
+				<dd>2001 National Land Cover Dataset, Terziotti 12-2008</dd>
 			</dl>
 		</Term>
 	</CommonTerms>
