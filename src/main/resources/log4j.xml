@@ -33,7 +33,7 @@
 
 
 	<root>
-		<priority value="debug" />
+		<priority value="warn" />
 		<appender-ref ref="CA" />
 		<appender-ref ref="FA" />
 		<appender-ref ref="Email" />
