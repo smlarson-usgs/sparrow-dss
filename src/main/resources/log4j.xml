@@ -25,7 +25,7 @@
 			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %C{1}:%L - %m%n" />
 		</layout>
 		<filter class="org.apache.log4j.varia.LevelRangeFilter">
-			<param name="LevelMin" value="debug" />
+			<param name="LevelMin" value="error" />
 			<param name="LevelMax" value="fatal" />
 		</filter>
 	</appender>
