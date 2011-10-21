@@ -15,6 +15,7 @@ import net.sf.ehcache.Status;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 /**
  * This class should be registered as listener in the servlet container the
@@ -39,8 +40,6 @@ import org.apache.log4j.Logger;
  *
  */
 public class LifecycleListener implements ServletContextListener { 
-	protected static Logger log =
-		Logger.getLogger(LifecycleListener.class); //logging for this class
 
 	/**
 	 * Called when the context (the entire application) is being shut down.
@@ -52,14 +51,8 @@ public class LifecycleListener implements ServletContextListener {
 	}
 
 	public void contextDestroyed(ServletContextEvent context, boolean clearCache) {
-		if (context != null) {
-			log.info("Stopping the SPARROW application within a servlet context - shutting down the cache");
-		} else {
-			log.info("Stopping the SPARROW application (non-servlet deployment) - shutting down the cache");
-		}
 
 		if (clearCache) {
-			log.info("Clearing the cache as requested");
 			CacheManager cacheManager = SparrowCacheManager.getInstance();
 			if ( cacheManager.getStatus() == Status.STATUS_ALIVE) {
 				cacheManager.clearAll();
@@ -72,10 +65,14 @@ public class LifecycleListener implements ServletContextListener {
 
 	//TODO: [ee] This is set to clear always....
 	public void contextInitialized(ServletContextEvent context) {
+		
+		//Init logging
+		PropertyConfigurator.configure("log4j.xml");
+		
 		try {
 			contextInitialized(context, true);
 		} catch (Exception ex) {
-			log.fatal("Unable to initialize context", ex);
+			throw new RuntimeException(ex);
 		} 
 	}
 	/**
@@ -85,14 +82,6 @@ public class LifecycleListener implements ServletContextListener {
 	 */
 	public void contextInitialized(ServletContextEvent context, boolean clearCache){
 		try {
-
-			if (context != null) {
-				log.info("Starting the SPARROW application within a servlet context - (no init tasks)");
-				//Nothing to do
-			} else {
-				log.info("Starting the SPARROW application (non-servlet deployment) - (no init tasks)");
-				//Nothing to do
-			}
 
 			//Calling create here is not required, but gives a single place to customize
 			//the creation of the singleton instance.
@@ -105,7 +94,6 @@ public class LifecycleListener implements ServletContextListener {
 			CacheManager cm = SparrowCacheManager.getInstance();
 
 			if (clearCache) {
-				log.info("Clearing the SPARROW cache as requested.");
 				cm.clearAll();
 			}
 
@@ -120,7 +108,6 @@ public class LifecycleListener implements ServletContextListener {
 			}
 			
 		} catch (Exception e) {
-			log.error("Error occured during " + this.getClass().getSimpleName() + ".contextInitialized() ehcache initialization ", e);
 			throw new RuntimeException(e);
 		}
 	}

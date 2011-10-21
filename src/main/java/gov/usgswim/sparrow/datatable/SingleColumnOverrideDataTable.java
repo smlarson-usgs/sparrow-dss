@@ -1,14 +1,12 @@
 package gov.usgswim.sparrow.datatable;
 
-import java.util.Map;
-import java.util.Set;
-
 import gov.usgswim.datatable.ColumnAttribs;
 import gov.usgswim.datatable.ColumnAttribsImm;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.impl.FindHelper;
-import gov.usgswim.datatable.impl.StandardDoubleColumnData;
+
+import org.apache.log4j.Logger;
 
 /**
  * Presents a view of an underlying table, but overlays a single column on top.
@@ -22,6 +20,8 @@ import gov.usgswim.datatable.impl.StandardDoubleColumnData;
  *
  */
 public class SingleColumnOverrideDataTable extends AbstractDataTableBase implements DataTable.Immutable {
+	protected static Logger log =
+		Logger.getLogger(SingleColumnOverrideDataTable.class); //logging for this class
 	
 	private static final long serialVersionUID = 1L;
 
@@ -54,18 +54,28 @@ public class SingleColumnOverrideDataTable extends AbstractDataTableBase impleme
 	public SingleColumnOverrideDataTable(DataTable sourceData, 
 			ColumnData overrideColumn, int overrideColumnIndex, ColumnAttribs colAttribs) {
 		
+		
 		super(sourceData);
 		overrideCol = overrideColumn;
 		colIndexNum = overrideColumnIndex;
 		
 		if (overrideCol.getRowCount() != sourceData.getRowCount()) {
-			throw new IllegalArgumentException(
-					"The number of rows in the sourceData table " +
-					"and the overrideColumn must be the same.");
+			
+			String m = "The number of rows in the sourceData table (" + sourceData.getRowCount() + ") " +
+			"and the overrideColumn (" + overrideCol.getRowCount() + ") must be the same.\n" +
+			"TableName: " + sourceData.getName() + " column name: " + overrideColumn.getName();
+			
+			IllegalArgumentException e = new IllegalArgumentException(m);
+			log.fatal(m, e);
+			throw e;
 		} else if (overrideColumnIndex < 0 || overrideColumnIndex >= sourceData.getColumnCount()) {
-			throw new IllegalArgumentException(
-					"The overrideColumnIndex cannot be less than zero or beyond " +
-					"the last column of the sourceData.");
+			
+			String m = "The overrideColumnIndex cannot be less than zero or beyond " +
+				"the last column of the sourceData.";
+			
+			IllegalArgumentException e = new IllegalArgumentException(m);
+			log.fatal(m, e);
+			throw e;
 		}
 		
 		if (colAttribs != null) {
