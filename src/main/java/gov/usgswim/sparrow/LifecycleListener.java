@@ -14,7 +14,6 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Status;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 
-import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
 /**
