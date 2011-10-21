@@ -66,7 +66,7 @@ public class LifecycleListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent context) {
 		
 		//Init logging
-		PropertyConfigurator.configure("log4j.xml");
+		//PropertyConfigurator.configure("log4j.xml");
 		
 		try {
 			contextInitialized(context, true);
