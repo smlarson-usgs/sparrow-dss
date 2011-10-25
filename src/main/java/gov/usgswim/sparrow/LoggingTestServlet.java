@@ -36,11 +36,11 @@ public class LoggingTestServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Exception e = new Exception("Test exception.  Not a real error, just simulated to show log output.");
 		
-		log.trace("Debug level log example, with fake exception", e);
+		log.trace("Trace level log example, with fake exception", e);
 		log.debug("Debug level log example, with fake exception", e);
 		log.warn("Warn level log example, with fake exception", e);
 		log.error("Error level log example, with fake exception", e);
-		log.fatal("Debug level log example, with fake exception", e);
+		log.fatal("Fatal level log example, with fake exception", e);
 		
 		response.setStatus(200);
 		response.setContentType("text");

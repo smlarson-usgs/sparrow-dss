@@ -20,8 +20,6 @@ import oracle.mapviewer.share.ext.NSRow;
  *
  */
 public class NSDataSetBuilder extends Action<NSDataSet> {
-
-	private final static String NL = System.getProperty("line.separator");
 	
 	/** Context used to build the results from */
 	private SparrowColumnSpecifier data;
@@ -118,23 +116,31 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 	@Override
 	protected String getPostMessage() {
 		
+		Long modelID = data.getModelId();
+		
 		if (nsRows != null) {
-			int maxRow = 10;
-			if (maxRow > nsRows.length) maxRow = nsRows.length;
-	
-			StringBuffer sb = new StringBuffer();
 			
-			sb.append("These are the first ten rows of the NSDataSet: ");
-			for (int r = 0; r < maxRow; r++)  {
-				for (int c = 0; c < nsRows[0].size(); c++)  {
-					sb.append(nsRows[r].get(c).toString());
-					if (nsRows[r].get(c).isKey()) sb.append("[Key] ");
-					if (nsRows[r].get(c).isLabelText()) sb.append("[Lab] ");
-					if ((c + 1) < nsRows[0].size()) sb.append("| ");
+			if (log.isTraceEnabled()) {
+				int maxRow = 10;
+				if (maxRow > nsRows.length) maxRow = nsRows.length;
+		
+				StringBuffer sb = new StringBuffer();
+				
+				sb.append("NSData contained " + nsRows.length + " rows for model id " + data.getModelId() + NL);
+				sb.append("These are the first ten rows of the NSDataSet: " + NL);
+				for (int r = 0; r < maxRow; r++)  {
+					for (int c = 0; c < nsRows[0].size(); c++)  {
+						sb.append(nsRows[r].get(c).toString());
+						if (nsRows[r].get(c).isKey()) sb.append("[Key] ");
+						if (nsRows[r].get(c).isLabelText()) sb.append("[Lab] ");
+						if ((c + 1) < nsRows[0].size()) sb.append("| ");
+					}
+					sb.append(NL);
 				}
-				sb.append(NL);
+				return sb.toString();
+			} else {
+				return "NSData contained " + nsRows.length + " rows for model id " + data.getModelId();
 			}
-			return sb.toString();
 		} else {
 			return "No NSData to output (nsRows was null)";
 		}

@@ -27,6 +27,9 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 
 	private Long modelId;
 	
+	/** Summary message for completed action */
+	private StringBuffer message = new StringBuffer();
+	
 	public LoadModelPredictData() {
 	}
 	
@@ -54,6 +57,13 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 		//release it back to the pool so  we don't hold a connection while
 		//calling getModelMetadata.
 		close(con);
+		
+		message.append("Loaded Predict data for model " + modelId + NL);
+		message.append("  Src Meta Rows: " + dataSet.getSrcMetadata().getRowCount() + NL);
+		message.append("  Topo Rows: " + dataSet.getTopo().getRowCount() + NL);
+		message.append("  Coef Rows: " + dataSet.getCoef().getRowCount() + NL);
+		message.append("  Delivery Rows: " + dataSet.getDelivery().getRowCount() + NL);
+		message.append("  Source Rows: " + dataSet.getSrc().getRowCount() + NL);
 		
 		//Add the model metadata
 		ModelRequestCacheKey modelKey = new ModelRequestCacheKey(modelId, false, false, false);
@@ -434,6 +444,11 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 	 */
 	public void setModelId(Long modelId) {
 		this.modelId = modelId;
+	}
+
+	@Override
+	protected String getPostMessage() {
+		return message.toString();
 	}
 
 }

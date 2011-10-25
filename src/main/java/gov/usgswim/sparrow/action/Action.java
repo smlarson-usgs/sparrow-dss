@@ -43,6 +43,8 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	protected static Logger log =
 		Logger.getLogger(Action.class); //logging for this class
 	
+	public final static String NL = System.getProperty("line.separator");
+	
 	//synch access on this class
 	private static Properties dataSeriesProperties;
 	
@@ -120,9 +122,10 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	
 	protected void preAction() {
 		
-		if (log.isDebugEnabled()) {
-			startTime = System.currentTimeMillis();
-			log.debug("Beginning action for " + this.getClass().getName() +
+		startTime = System.currentTimeMillis();
+		
+		if (log.isTraceEnabled()) {
+			log.trace("Beginning action for " + this.getClass().getName() +
 					".  Run Number: " + runNumber);
 		}
 	}
@@ -161,44 +164,39 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	protected void postAction(boolean success, Exception error) {
 		
 		try {
+			
+			String msg = getPostMessage();
+			if (msg == null) {
+				msg = "(no message from the action)";
+			}
+			
 			if (success) {
-				if (log.isDebugEnabled()) {
-					long totalTime = System.currentTimeMillis() - startTime;
-					
-					String msg = getPostMessage();
-					if (msg != null) {
-						log.debug(msg + "  (Run Number: " + runNumber + ")");
-					}
+				if (log.isInfoEnabled()) {
+					long totalTime = (System.currentTimeMillis() - startTime) / 1000;
+					String tTimeStr = Long.toString(totalTime);
 					
 					if (error == null) {
-						log.debug("Action completed for " + this.getClass().getName() +
-								".  Total Time: " + totalTime + "ms, Run Number: " +
-								runNumber);
+						log.info("Action completed for " + this.getClass().getName() +
+								".  Total Time: " + tTimeStr + "secs, Run Number: " +
+								runNumber + NL + "Message from Action: " + msg);
 					} else {
-						log.warn("Action completed, but generated an exception for " +
+						log.error("Action completed, but generated an exception for " +
 								this.getClass().getName() + ".  Total Time: " +
-								totalTime + "ms, Run Number: " +
-								runNumber, error);
+								tTimeStr + "secs, Run Number: " +
+								runNumber + NL + "Message from Action: " + msg, error);
 					}
 					
 				}
 			} else {
 				
-				String msg = getPostMessage();
-				if (msg != null) {
-					msg = "  Message from the action: " + msg;
-				} else {
-					msg = "  (no message from the action)";
-				}
-				
 				if (error != null) {
 					log.error("Action FAILED w/ an exception for " +
 							this.getClass().getName() + ".  Run Number: " +
-							runNumber + msg, error);
+							runNumber + NL + "Message from Action: " + msg, error);
 				} else {
-					log.debug("Action FAILED but did not generate an error for " +
+					log.warn("Action FAILED but did not generate an error for " +
 							this.getClass().getName() + ".  Run Number: " +
-							runNumber + msg);
+							runNumber + NL + "Message from Action: " + msg);
 				}
 	
 			}

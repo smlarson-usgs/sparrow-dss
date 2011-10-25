@@ -282,6 +282,7 @@
 			<version>1.0</version>
 		</dependency>
 		
+		<!-- Used for email logging of serious errors -->
 		<dependency>
 		    <groupId>javax.mail</groupId>
 		    <artifactId>mail</artifactId>

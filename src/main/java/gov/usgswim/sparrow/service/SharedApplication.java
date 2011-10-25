@@ -591,10 +591,10 @@ public class SharedApplication  {
 		//this is fixed.
 		NSDataSet dataset = null;
 		
-		dataset = (NSDataSet) ConfiguredCache.NSDataSet.get(context, quiet);
+//		dataset = (NSDataSet) ConfiguredCache.NSDataSet.get(context, quiet);
 
-//		NSDataSetFactory factory = new NSDataSetFactory();
-//		dataset = (NSDataSet) factory.createEntry(context);
+		NSDataSetFactory factory = new NSDataSetFactory();
+		dataset = (NSDataSet) factory.createEntry(context);
 		
 		return dataset;
 	}

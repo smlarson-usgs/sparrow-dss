@@ -303,7 +303,7 @@ public class CalcEqualCountBins extends Action<BinSet> {
 				currentWrapper.setBinSplits(binSplits);
 				attemptedPosts.add(currentWrapper);
 				
-				if (log.isDebugEnabled()) {
+				if (log.isTraceEnabled()) {
 					logPostState(values, currentWrapper, totalIterations, debugIncludesPostValues, debugIncludesUniqueValueCount);
 				}
 				
@@ -325,14 +325,14 @@ public class CalcEqualCountBins extends Action<BinSet> {
 			PostsWrapper currentWrapper = findBestAttemptedConfig(attemptedPosts);
 			
 			if (currentWrapper.equals(lastWrapper)) {
-				log.debug("The best post configuration was already tried.");
+				log.trace("The best post configuration was already tried.");
 				break;
 			} else {
 				lastWrapper = currentWrapper;
 			}
 			
-			if (j > 0 && log.isDebugEnabled()) {
-				log.debug("Outer loop #" + j + " attempt. Best score so far: " + currentWrapper.getScore());
+			if (j > 0 && log.isTraceEnabled()) {
+				log.trace("Outer loop #" + j + " attempt. Best score so far: " + currentWrapper.getScore());
 			}
 
 			runInnerLoop(currentWrapper, attemptedPosts,
@@ -343,8 +343,8 @@ public class CalcEqualCountBins extends Action<BinSet> {
 		
 		//Now the final value
 		PostsWrapper bestWrapper = findBestAttemptedConfig(attemptedPosts);
-		if (log.isDebugEnabled()) {
-			log.debug("Best Configuration Found:");
+		if (log.isTraceEnabled()) {
+			log.trace("Best Configuration Found:");
 			logPostState(values, bestWrapper, totalIterations, debugIncludesPostValues, debugIncludesUniqueValueCount);
 		}
 		bestScore = bestWrapper.getScore();
@@ -400,7 +400,7 @@ public class CalcEqualCountBins extends Action<BinSet> {
 				currentWrapper.setBinSplits(binSplits);
 				
 				totalIterations++;
-				if (log.isDebugEnabled()) {
+				if (log.isTraceEnabled()) {
 					logPostState(values, currentWrapper, totalIterations, debugIncludesPostValues, debugIncludesUniqueValueCount);
 				}
 				
@@ -1241,7 +1241,7 @@ public class CalcEqualCountBins extends Action<BinSet> {
 			sb.append("|");
 		}
 		
-		log.debug(sb.toString());
+		log.trace(sb.toString());
 	}
 	
 	/**
@@ -1310,7 +1310,9 @@ public class CalcEqualCountBins extends Action<BinSet> {
 			sb.append(" [no values in the array to draw]");
 		}
 		
-		log.debug(sb.toString());
+		if (log.isTraceEnabled()) {
+			log.trace(sb.toString());
+		}
 	}
 	
 	/**

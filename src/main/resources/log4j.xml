@@ -10,9 +10,8 @@
 	</appender>
 	<appender name="FA" class="org.apache.log4j.FileAppender">
 		<param name="File" value="${catalina.base}/logs/sparrow/sparrow_service.log" />
-		<param name="Threshold" value="WARN" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %C{1}:%L - %m%n" />
+			<param name="ConversionPattern" value="%d{ABSOLUTE} FileAppender %5p %C{1}:%L - %m%n" />
 		</layout>
 	</appender>
 	<appender name="Email" class="org.apache.log4j.net.SMTPAppender">
@@ -29,6 +28,10 @@
 			<param name="LevelMax" value="fatal" />
 		</filter>
 	</appender>
+	
+	<logger name="gov.usgswim.sparrow">
+		<level value="info"/>
+	</logger>
 
 
 

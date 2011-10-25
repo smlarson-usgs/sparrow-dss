@@ -33,6 +33,9 @@ public class LoadUnitAreas extends Action<DataTable> {
 	protected UnitAreaType hucLevel = UnitAreaType.HUC_NONE;	//Default to individual reaches
 	protected boolean cumulative = false;
 	
+	/** Summary message for completed action */
+	private StringBuffer message = new StringBuffer();
+	
 	
 	
 	public LoadUnitAreas(long modelId, UnitAreaType hucLevel, boolean cumulative) {
@@ -95,6 +98,10 @@ public class LoadUnitAreas extends Action<DataTable> {
 		values.getColumns()[1].setProperty(TableProperties.DATA_SERIES.toString(), areaColDataSeries);
 		values.getColumns()[1].setProperty(TableProperties.CONSTITUENT.toString(), "land area");
 
+		
+		message.append("Loaded UnitAreas for " + modelId + " HucLevel " + hucLevel + " cumulative " + cumulative + NL);
+		message.append("  Total Rows: " + values.getRowCount() + NL);
+		
 		return values.toImmutable();
 		
 	}
@@ -141,6 +148,10 @@ public class LoadUnitAreas extends Action<DataTable> {
 		this.cumulative = cumulative;
 	}
 
+	@Override
+	protected String getPostMessage() {
+		return message.toString();
+	}
 
 
 }
