@@ -247,6 +247,12 @@
 		<servlet-name>IndividualReachPredictService</servlet-name>
 		<servlet-class>gov.usgswim.sparrow.service.predict.IndividualReachPredictService</servlet-class>
 	</servlet>
+	<servlet>
+		<servlet-name>LoggingTestServlet</servlet-name>
+		<display-name>LoggingTestServlet</display-name>
+		<description>Ping this servlet to see what the logging output looks like</description>
+		<servlet-class>gov.usgswim.sparrow.LoggingTestServlet</servlet-class>
+	</servlet>
 
 	<!--
 *****************************************
@@ -377,6 +383,10 @@
 	<servlet-mapping>
 		<servlet-name>IndividualReachPredictService</servlet-name>
 		<url-pattern>/sp_indivReachPredict/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>LoggingTestServlet</servlet-name>
+		<url-pattern>/LoggingTestServlet</url-pattern>
 	</servlet-mapping>
 
 	<!--
