@@ -15,10 +15,10 @@ public class SparrowNSDataSet extends NSDataSet {
 		super(arg0);
 	}
 
-	@Override
-	public synchronized void close() {
-		//Ignore the call to 'close'.  We cache this data, so we don't want it
-		//destroyed.
-	}
+//	@Override
+//	public synchronized void close() {
+//		//Ignore the call to 'close'.  We cache this data, so we don't want it
+//		//destroyed.
+//	}
 
 }
