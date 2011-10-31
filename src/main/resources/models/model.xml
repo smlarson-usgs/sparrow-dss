@@ -360,7 +360,7 @@
 			NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.
 		</Term>
 		<Term id="Export Readme">
-			Data Series Help:
+			__Data Series Help__
 			The Data Series specifies which data (model output or input) are drawn on the map. The most commonly selected data are the total load estimates, which represent the average mass of the constituent transported by a stream, as predicted by the model.
 			The complete list of data series:
 			Total Load
@@ -422,6 +422,11 @@
 			
 			Any increase from an original predicted value of zero is reported as a 100% change. Any decrease from an original predicted value of zero is reported as a -100% change.
 			
+			__Linking Exported Data to River Network Shapefiles__
+			The ID has 3 possible item names affiliated with their respective river network shape files: 
+			1. ID = 'E2RF1' for the RF1 national models; for shape files, see: http://water.usgs.gov/GIS/metadata/usgswrd/XML/erf1_2.xml
+			2. ID = 'MRB_E2RF1' for the RF1 regional models; for shape files, see: http://water.usgs.gov/nawqa/modeling/rf1attributes.html
+			3. ID = 'GRID_CODE' for the NHD regional models; for shape files, see: http://water.usgs.gov/nawqa/modeling/nhdplusattributes.html
 			
 			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
 
