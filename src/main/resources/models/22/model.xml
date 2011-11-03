@@ -31,27 +31,27 @@
 		<Source id="3">
 			<Name>N_fertilizer_corn_soy</Name>
 			<Units>kg/year</Units>
-			<Description>1992 N fertilizer applied to corn/soybean (kg)</Description>
+			<Description>1992 Agricultural N inputs (fertilizer, manure, fixation) for corn/soybean (kg)</Description>
 		</Source>
 		<Source id="4">
 			<Name>N_fertilizer_alfalfa</Name>
 			<Units>kg/year</Units>
-			<Description>1992 N alfalfa fertilizer (kg)</Description>
+			<Description>1992 Agricultural N inputs (fertilizer, manure, fixation) for alfalfa (kg)</Description>
 		</Source>
 		<Source id="5">
 			<Name>N_fertilizer_wheat</Name>
 			<Units>kg/year</Units>
-			<Description>1992 N fertilizer applied to wheat (kg)</Description>
+			<Description>1992 Agricultural N inputs (fertilizer, manure) for wheat (kg)</Description>
 		</Source>
 		<Source id="6">
 			<Name>N_fertilizer_other</Name>
 			<Units>kg/year</Units>
-			<Description>1992 N farm other fertilizer (kg)</Description>
+			<Description>1992 Agricultural N inputs (fertilizer, manure) for other crops (kg)</Description>
 		</Source>
 		<Source id="7">
 			<Name>N_animal_waste</Name>
 			<Units>kg/year</Units>
-			<Description>1992 N animal waste (kg)</Description>
+			<Description>1992 N from non-recoverable manure, confined and unconfined animals (kg)</Description>
 		</Source>
 		<Source id="8">
 			<Name>Forested_land</Name>
@@ -114,15 +114,15 @@
 				<dt>Nitrate wet atm. deposition</dt>
 				<dd>1992 Nitrate wet atmospheric deposition (kg)</dd>
 				<dt>N fertilizer corn/soy</dt>
-				<dd>1992 N fertilizer applied to corn/soybean (kg)</dd>
+				<dd>1992 Agricultural N inputs (fertilizer, manure, fixation) for corn/soybean (kg)</dd>
 				<dt>N alfalfa fertilizer</dt>
-				<dd>1992 N alfalfa fertilizer (kg)</dd>				
+				<dd>1992 Agricultural N inputs (fertilizer, manure, fixation) for alfalfa (kg)</dd>				
 				<dt>N fertilizer wheat</dt>
-				<dd>1992 N fertilizer applied to wheat (kg)</dd>
+				<dd>1992 Agricultural N inputs (fertilizer, manure) for wheat (kg)</dd>
 				<dt>N farm other fertilizer</dt>
-				<dd>1992 N farm other fertilizer (kg)</dd>
+				<dd>1992 Agricultural N inputs (fertilizer, manure) for other crops (kg)</dd>
 				<dt>N animal waste</dt>
-				<dd>1992 N animal waste (kg)</dd>
+				<dd>1992 N from non-recoverable manure, confined and unconfined animals (kg)</dd>
 				<dt>NLCD Forested land</dt>
 				<dd>1992 forested land from National Land Cover Dataset(km2)</dd>
 				<dt>NLCD Barren land</dt>
