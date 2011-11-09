@@ -359,7 +359,7 @@
 		
 		None of these caches use disk storage.
 	-->
-	<cache name="PredictData" maxElementsInMemory="20" />
+	<cache name="PredictData" maxElementsInMemory="30" />
 	
 	<!--  This precursor to the DeliveryFraction is cached
 	b/c it is used to filter rows as they are put into the
