@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.test.integration;
 
+import gov.usgs.cida.binning.BinSet;
 import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.SparrowTestBaseWithDBandCannedModel50;
-import gov.usgswim.sparrow.domain.BinSet;
 import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.ServiceResponseOperation;

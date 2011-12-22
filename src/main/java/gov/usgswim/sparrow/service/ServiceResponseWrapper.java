@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.service;
 
-import gov.usgswim.sparrow.domain.BinSet;
+import gov.usgs.cida.binning.BinSet;
 import gov.usgswim.sparrow.domain.HUC;
 import gov.usgswim.sparrow.domain.PredefinedSession;
 import gov.usgswim.sparrow.domain.ReachGeometry;

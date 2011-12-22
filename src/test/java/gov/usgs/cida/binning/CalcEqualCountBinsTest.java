@@ -1,11 +1,13 @@
-package gov.usgswim.sparrow.action;
+package gov.usgs.cida.binning;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import gov.usgs.cida.binning.BinSet;
+import gov.usgs.cida.binning.CalcEqualCountBins;
 import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.action.DeliveryReach;
 import gov.usgswim.sparrow.domain.Bin;
-import gov.usgswim.sparrow.domain.BinSet;
 import gov.usgswim.sparrow.domain.ComparisonType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;

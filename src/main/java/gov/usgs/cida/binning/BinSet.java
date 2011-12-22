@@ -1,5 +1,8 @@
-package gov.usgswim.sparrow.domain;
+package gov.usgs.cida.binning;
 
+import gov.usgswim.sparrow.domain.Bin;
+import gov.usgswim.sparrow.domain.Bound;
+import gov.usgswim.sparrow.domain.InProcessBinSet;
 import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 
 import java.math.BigDecimal;

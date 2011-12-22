@@ -1,10 +1,10 @@
-package gov.usgswim.sparrow.action;
+package gov.usgs.cida.binning;
 
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.impl.StandardDoubleColumnData;
+import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
-import gov.usgswim.sparrow.domain.BinSet;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 import gov.usgswim.sparrow.domain.InProcessBinSet;
 import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;

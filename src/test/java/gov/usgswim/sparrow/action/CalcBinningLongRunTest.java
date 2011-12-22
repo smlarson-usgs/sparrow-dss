@@ -2,12 +2,12 @@ package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import gov.usgs.cida.binning.BinSet;
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.AreaOfInterest;
 import gov.usgswim.sparrow.domain.BasicAnalysis;
-import gov.usgswim.sparrow.domain.BinSet;
 import gov.usgswim.sparrow.domain.ComparisonType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.NominalComparison;

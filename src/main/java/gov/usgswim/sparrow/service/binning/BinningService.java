@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.service.binning;
 import static gov.usgswim.sparrow.service.ServiceResponseOperation.CALCULATE;
 import static gov.usgswim.sparrow.service.ServiceResponseStatus.FAIL;
 import static gov.usgswim.sparrow.service.ServiceResponseStatus.OK;
-import gov.usgswim.sparrow.domain.BinSet;
+import gov.usgs.cida.binning.BinSet;
 import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
