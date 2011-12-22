@@ -1,8 +1,10 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgs.cida.binning.BinSet;
 import gov.usgs.cida.binning.CalcEqualCountBins;
 import gov.usgs.cida.binning.CalcEqualRangeBins;
+import gov.usgs.cida.binning.domain.BinSet;
+import static gov.usgs.cida.binning.domain.BinType.EQUAL_COUNT;
+import static gov.usgs.cida.binning.domain.BinType.EQUAL_RANGE;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.ComparisonType;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;

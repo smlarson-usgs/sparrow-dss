@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.request;
 
+import gov.usgs.cida.binning.domain.BinType;
 import gov.usgswim.Immutable;
 import gov.usgswim.sparrow.domain.ComparisonType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
@@ -22,10 +23,10 @@ public class BinningRequest implements Serializable {
 	/**
      * The types of bins that may be requested.
      */
-	public enum BIN_TYPE {
-		EQUAL_COUNT,
-		EQUAL_RANGE
-	}
+//	public enum BIN_TYPE {
+//		EQUAL_COUNT,
+//		EQUAL_RANGE
+//	}
 
 	/** The predict context ID the binning is based on */
 	private final Integer contextID;
@@ -40,7 +41,7 @@ public class BinningRequest implements Serializable {
 	private final int binCount;
 
 	/** Type of bin. */
-	private final BIN_TYPE binType;
+	private final BinType binType;
 	
 	/** What we are measuring */
 	private final String constituent;
@@ -59,11 +60,11 @@ public class BinningRequest implements Serializable {
 	 * @param binCount
 	 * @param binType
 	 */
-	public BinningRequest(Integer contextID, int binCount, BIN_TYPE binType) {
+	public BinningRequest(Integer contextID, int binCount, BinType binType) {
 	    this(contextID, binCount, binType, null, null, null, null, null);
 	}
 	
-	public BinningRequest(Integer contextID, int binCount, BIN_TYPE binType,
+	public BinningRequest(Integer contextID, int binCount, BinType binType,
 			DataSeriesType dataSeries, ComparisonType comparison,
 			String constituent, BigDecimal detectionLimit, Integer maxDecimalPlaces) {
 		
@@ -89,7 +90,7 @@ public class BinningRequest implements Serializable {
 	    return binCount;
 	}
 
-	public BIN_TYPE getBinType() {
+	public BinType getBinType() {
         return binType;
     }
 	

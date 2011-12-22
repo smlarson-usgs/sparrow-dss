@@ -3,9 +3,9 @@ package gov.usgswim.sparrow.service.binning;
 import static gov.usgswim.sparrow.service.ServiceResponseOperation.CALCULATE;
 import static gov.usgswim.sparrow.service.ServiceResponseStatus.FAIL;
 import static gov.usgswim.sparrow.service.ServiceResponseStatus.OK;
-import gov.usgs.cida.binning.BinSet;
+import gov.usgs.cida.binning.domain.BinSet;
+import gov.usgs.cida.binning.domain.BinType;
 import gov.usgswim.sparrow.request.BinningRequest;
-import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
 import gov.usgswim.sparrow.service.ServiceResponseWrapper;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -37,10 +37,10 @@ public class BinningService extends AbstractSparrowServlet {
         Integer binCount = getInteger(params, "bin-count");
         String binTypeStr = getClean(params, "bin-type");
         
-        BIN_TYPE binType = BIN_TYPE.EQUAL_COUNT;
+        BinType binType = BinType.EQUAL_COUNT;
     
         if ("EQUAL_RANGE".equalsIgnoreCase(binTypeStr)) {
-        	binType = BIN_TYPE.EQUAL_RANGE;
+        	binType = BinType.EQUAL_RANGE;
         }
         
         if (contextId == null || binCount == null || binType == null) {

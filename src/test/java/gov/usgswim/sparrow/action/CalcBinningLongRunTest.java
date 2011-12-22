@@ -2,7 +2,8 @@ package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import gov.usgs.cida.binning.BinSet;
+import gov.usgs.cida.binning.domain.BinSet;
+import gov.usgs.cida.binning.domain.BinType;
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
@@ -49,7 +50,7 @@ public class CalcBinningLongRunTest  extends SparrowServiceTestBaseWithDBandCann
 		
 		SharedApplication.getInstance().putPredictionContext(context);
 		BinSet binSet = SharedApplication.getInstance().getDataBinning(new BinningRequest(
-				context.getId(), 4, BinningRequest.BIN_TYPE.EQUAL_COUNT,
+				context.getId(), 4, BinType.EQUAL_COUNT,
 				DataSeriesType.total, ComparisonType.none, "Nitrogen", null, null));
 		
 		BigDecimal[] bins = binSet.getActualPostValues();

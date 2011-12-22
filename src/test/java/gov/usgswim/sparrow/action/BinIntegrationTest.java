@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import gov.usgs.cida.binning.domain.BinType;
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.PredictionContext;
@@ -31,7 +32,7 @@ public class BinIntegrationTest extends SparrowServiceTestBaseWithDBandCannedMod
 	 */
 	@Test(expected=IllegalArgumentException.class)
 	public void testZeroBins() throws Exception {
-        BinningRequest req = new BinningRequest(0, 0, BinningRequest.BIN_TYPE.EQUAL_COUNT);
+        BinningRequest req = new BinningRequest(0, 0, BinType.EQUAL_COUNT);
         fail("Requesting 0 bins did not throw an exception.");
 	}
     
@@ -49,7 +50,7 @@ public class BinIntegrationTest extends SparrowServiceTestBaseWithDBandCannedMod
         // Request the bin values from the caching mechanism
         SharedApplication sharedApp = SharedApplication.getInstance();
         BigDecimal[] bins = sharedApp.getDataBinning(new BinningRequest(
-                contextId, 1, BinningRequest.BIN_TYPE.EQUAL_COUNT)).getActualPostValues();
+                contextId, 1, BinType.EQUAL_COUNT)).getActualPostValues();
         
         assertTrue(bins.length == 2);
         
@@ -77,7 +78,7 @@ public class BinIntegrationTest extends SparrowServiceTestBaseWithDBandCannedMod
         // Request the bin values from the caching mechanism
         SharedApplication sharedApp = SharedApplication.getInstance();
         BigDecimal[] bins = sharedApp.getDataBinning(new BinningRequest(
-                contextId, 1, BinningRequest.BIN_TYPE.EQUAL_RANGE)).getActualPostValues();
+                contextId, 1, BinType.EQUAL_RANGE)).getActualPostValues();
         
         assertTrue(bins.length == 2);
         
@@ -104,9 +105,9 @@ public class BinIntegrationTest extends SparrowServiceTestBaseWithDBandCannedMod
             // Request the bin values from the caching mechanism
             SharedApplication sharedApp = SharedApplication.getInstance();
             BigDecimal[] eqcBins = sharedApp.getDataBinning(new BinningRequest(
-                    contextId, binCount, BinningRequest.BIN_TYPE.EQUAL_COUNT)).getActualPostValues();
+                    contextId, binCount, BinType.EQUAL_COUNT)).getActualPostValues();
             BigDecimal[] eqrBins = sharedApp.getDataBinning(new BinningRequest(
-                    contextId, binCount, BinningRequest.BIN_TYPE.EQUAL_RANGE)).getActualPostValues();
+                    contextId, binCount, BinType.EQUAL_RANGE)).getActualPostValues();
             
             //Test eq count values
             assertTrue(eqcBins.length == binCount + 1);
@@ -139,8 +140,8 @@ public class BinIntegrationTest extends SparrowServiceTestBaseWithDBandCannedMod
 	 */
 	@Test
 	public void testEquals() throws Exception {
-        BinningRequest req = new BinningRequest(0, 1, BinningRequest.BIN_TYPE.EQUAL_COUNT);
-        BinningRequest req2 = new BinningRequest(0, 1, BinningRequest.BIN_TYPE.EQUAL_COUNT);
+        BinningRequest req = new BinningRequest(0, 1, BinType.EQUAL_COUNT);
+        BinningRequest req2 = new BinningRequest(0, 1, BinType.EQUAL_COUNT);
         
         assertEquals(req, req2);
 	}
@@ -151,16 +152,16 @@ public class BinIntegrationTest extends SparrowServiceTestBaseWithDBandCannedMod
 	 */
 	@Test
 	public void testNotEquals() throws Exception {
-        BinningRequest req = new BinningRequest(0, 1, BinningRequest.BIN_TYPE.EQUAL_COUNT);
-        BinningRequest req2 = new BinningRequest(1, 1, BinningRequest.BIN_TYPE.EQUAL_COUNT);
+        BinningRequest req = new BinningRequest(0, 1, BinType.EQUAL_COUNT);
+        BinningRequest req2 = new BinningRequest(1, 1, BinType.EQUAL_COUNT);
         assertFalse(req.equals(req2));
         
-        req = new BinningRequest(0, 1, BinningRequest.BIN_TYPE.EQUAL_COUNT);
-        req2 = new BinningRequest(0, 2, BinningRequest.BIN_TYPE.EQUAL_COUNT);
+        req = new BinningRequest(0, 1, BinType.EQUAL_COUNT);
+        req2 = new BinningRequest(0, 2, BinType.EQUAL_COUNT);
         assertFalse(req.equals(req2));
         
-        req = new BinningRequest(0, 1, BinningRequest.BIN_TYPE.EQUAL_COUNT);
-        req2 = new BinningRequest(0, 1, BinningRequest.BIN_TYPE.EQUAL_RANGE);
+        req = new BinningRequest(0, 1, BinType.EQUAL_COUNT);
+        req2 = new BinningRequest(0, 1, BinType.EQUAL_RANGE);
         assertFalse(req.equals(req2));
 	}
 	
@@ -180,7 +181,7 @@ public class BinIntegrationTest extends SparrowServiceTestBaseWithDBandCannedMod
         // Request the bin values from the caching mechanism
         SharedApplication sharedApp = SharedApplication.getInstance();
         BigDecimal[] bins = sharedApp.getDataBinning(new BinningRequest(
-                contextId, binCount, BinningRequest.BIN_TYPE.EQUAL_COUNT)).getActualPostValues();
+                contextId, binCount, BinType.EQUAL_COUNT)).getActualPostValues();
         
         // Make sure the correct number of bins were returned
         assertEquals(binCount + 1, bins.length);
@@ -243,7 +244,7 @@ public class BinIntegrationTest extends SparrowServiceTestBaseWithDBandCannedMod
         for (int binCount = 2; binCount < 150; binCount++) {
             SharedApplication sharedApp = SharedApplication.getInstance();
             BigDecimal[] bins = sharedApp.getDataBinning(new BinningRequest(
-                    contextId, binCount, BinningRequest.BIN_TYPE.EQUAL_RANGE)).getActualPostValues();
+                    contextId, binCount, BinType.EQUAL_RANGE)).getActualPostValues();
             
             // Make sure the correct number of bins were returned
             assertEquals(binCount + 1, bins.length);

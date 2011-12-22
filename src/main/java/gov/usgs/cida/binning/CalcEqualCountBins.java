@@ -1,13 +1,14 @@
 package gov.usgs.cida.binning;
 
+import gov.usgs.cida.binning.domain.BinSet;
+import gov.usgs.cida.binning.domain.BinType;
+import gov.usgs.cida.binning.domain.InProcessBinSet;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.impl.StandardDoubleColumnData;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
-import gov.usgswim.sparrow.domain.InProcessBinSet;
-import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -228,7 +229,7 @@ public class CalcEqualCountBins extends Action<BinSet> {
 		}
 		
 		BinSet binSet = BinSet.createBins(inProcessBinSet, formatter, functionalFormatter,
-				bottomUnbounded, topUnbounded, formattedNonDetectLimit, binCounts, BIN_TYPE.EQUAL_COUNT);
+				bottomUnbounded, topUnbounded, formattedNonDetectLimit, binCounts, BinType.EQUAL_COUNT);
 		
 		return binSet;
 	}

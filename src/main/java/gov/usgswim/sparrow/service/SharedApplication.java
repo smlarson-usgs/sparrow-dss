@@ -24,7 +24,7 @@ import static gov.usgswim.sparrow.service.ConfiguredCache.ReachesByCriteria;
 import static gov.usgswim.sparrow.service.ConfiguredCache.StandardErrorEstimateData;
 import static gov.usgswim.sparrow.service.ConfiguredCache.StreamFlow;
 import static gov.usgswim.sparrow.service.ConfiguredCache.TerminalReaches;
-import gov.usgs.cida.binning.BinSet;
+import gov.usgs.cida.binning.domain.BinSet;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;

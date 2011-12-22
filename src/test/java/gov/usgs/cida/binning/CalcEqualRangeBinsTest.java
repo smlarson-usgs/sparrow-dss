@@ -3,22 +3,22 @@ package gov.usgs.cida.binning;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import gov.usgs.cida.binning.BinSet;
 import gov.usgs.cida.binning.CalcEqualRangeBins;
+import gov.usgs.cida.binning.domain.Bin;
+import gov.usgs.cida.binning.domain.BinSet;
+import gov.usgs.cida.binning.domain.BinType;
+import gov.usgs.cida.binning.domain.InProcessBinSet;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.impl.StandardDoubleColumnData;
 import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.action.DeliveryReach;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
-import gov.usgswim.sparrow.domain.Bin;
 import gov.usgswim.sparrow.domain.ComparisonType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
-import gov.usgswim.sparrow.domain.InProcessBinSet;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.request.BinningRequest;
-import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.ServiceResponseOperation;
 import gov.usgswim.sparrow.service.ServiceResponseStatus;
 import gov.usgswim.sparrow.service.ServiceResponseWrapper;
@@ -440,7 +440,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 	public void testEqualRange_0To0dot15in5binsWithDot2DetectLimit() {
 		CalcEqualRangeBins act = new CalcEqualRangeBins();
 		
-		gov.usgswim.sparrow.domain.InProcessBinSet ipbs = act.getEqualRangeBins(new BigDecimal("0"), new BigDecimal("0.15"), 5,
+		gov.usgs.cida.binning.domain.InProcessBinSet ipbs = act.getEqualRangeBins(new BigDecimal("0"), new BigDecimal("0.15"), 5,
 				new BigDecimal(".2"), DOT_01);
 		BigDecimal[] result = ipbs.posts;
 		debug(result);
@@ -862,7 +862,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 	@Test
 	public void testPositiveBinsWithTopOverage() throws Exception {
 
-		BinningRequest req = new BinningRequest(99999, 2, BIN_TYPE.EQUAL_RANGE,
+		BinningRequest req = new BinningRequest(99999, 2, BinType.EQUAL_RANGE,
 				DataSeriesType.total, ComparisonType.none,
 				SparrowModel.TN_CONSTITUENT_NAME, null, null);
 		
@@ -903,7 +903,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 	@Test
 	public void testPositiveBinsWithInfiniteTop() throws Exception {
 
-		BinningRequest req = new BinningRequest(99999, 2, BIN_TYPE.EQUAL_RANGE,
+		BinningRequest req = new BinningRequest(99999, 2, BinType.EQUAL_RANGE,
 				DataSeriesType.total, ComparisonType.none,
 				SparrowModel.TN_CONSTITUENT_NAME, null, null);
 		
@@ -944,7 +944,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 	@Test
 	public void testNegativeBinsWithTopOverage() throws Exception {
 		
-		BinningRequest req = new BinningRequest(99999, 2, BIN_TYPE.EQUAL_RANGE,
+		BinningRequest req = new BinningRequest(99999, 2, BinType.EQUAL_RANGE,
 				DataSeriesType.total, ComparisonType.none,
 				SparrowModel.TN_CONSTITUENT_NAME, null, null);
 		CalcEqualRangeBins action = new CalcEqualRangeBins();
@@ -984,7 +984,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 	@Test
 	public void testPositiveBinsWithBtmOverage() throws Exception {
 		
-		BinningRequest req = new BinningRequest(99999, 2, BIN_TYPE.EQUAL_RANGE,
+		BinningRequest req = new BinningRequest(99999, 2, BinType.EQUAL_RANGE,
 				DataSeriesType.total, ComparisonType.none,
 				SparrowModel.TN_CONSTITUENT_NAME, null, null);
 		CalcEqualRangeBins action = new CalcEqualRangeBins();
@@ -1009,7 +1009,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 	@Test
 	public void testNegativeBinsWithBtmOverage() throws Exception {
 		
-		BinningRequest req = new BinningRequest(99999, 2, BIN_TYPE.EQUAL_RANGE,
+		BinningRequest req = new BinningRequest(99999, 2, BinType.EQUAL_RANGE,
 				DataSeriesType.total, ComparisonType.none,
 				SparrowModel.TN_CONSTITUENT_NAME, null, null);
 		
@@ -1037,7 +1037,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 	@Test
 	public void testSmallBinsWithTopOverage() throws Exception {
 		
-		BinningRequest req = new BinningRequest(99999, 7, BIN_TYPE.EQUAL_RANGE,
+		BinningRequest req = new BinningRequest(99999, 7, BinType.EQUAL_RANGE,
 				DataSeriesType.total, ComparisonType.none,
 				SparrowModel.TN_CONSTITUENT_NAME, null, null);
 		CalcEqualRangeBins action = new CalcEqualRangeBins();
@@ -1068,7 +1068,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 	@Test
 	public void testAllTheSameValue() throws Exception {
 		
-		BinningRequest req = new BinningRequest(99999, 7, BIN_TYPE.EQUAL_RANGE,
+		BinningRequest req = new BinningRequest(99999, 7, BinType.EQUAL_RANGE,
 				DataSeriesType.total, ComparisonType.none,
 				SparrowModel.TN_CONSTITUENT_NAME, null, null);
 		CalcEqualRangeBins action = new CalcEqualRangeBins();

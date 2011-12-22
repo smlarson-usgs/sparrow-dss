@@ -1,9 +1,4 @@
-package gov.usgs.cida.binning;
-
-import gov.usgswim.sparrow.domain.Bin;
-import gov.usgswim.sparrow.domain.Bound;
-import gov.usgswim.sparrow.domain.InProcessBinSet;
-import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
+package gov.usgs.cida.binning.domain;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -37,7 +32,7 @@ public class BinSet {
 	private final Bin[] bins;
 	
 	@XStreamAsAttribute
-	private final BIN_TYPE binType;
+	private final BinType binType;
 	
 	/** True if a detection limit is used for the lowest bin */
 	@XStreamAsAttribute
@@ -71,7 +66,7 @@ public class BinSet {
 	@XStreamAsAttribute
 	public final String formatPattern;
 	
-	public BinSet(Bin[] bins, BIN_TYPE binType, InProcessBinSet inProcessBinSet, String formatPattern) {
+	public BinSet(Bin[] bins, BinType binType, InProcessBinSet inProcessBinSet, String formatPattern) {
 		this.bins = bins;
 		this.binType = binType;
 		usesDetectionLimit = inProcessBinSet.usesDetectionLimit;
@@ -87,7 +82,7 @@ public class BinSet {
 		return bins;
 	}
 
-	public BIN_TYPE getBinType() {
+	public BinType getBinType() {
 		return binType;
 	}
 	
@@ -273,7 +268,7 @@ public class BinSet {
 	public static BinSet createBins(InProcessBinSet ipbs, 
 			DecimalFormat formatter, DecimalFormat functionalFormatter,
 			boolean bottomUnbounded, boolean topUnbounded, String formattedDetectionLimit,
-			BIN_TYPE binType) {
+			BinType binType) {
 		return createBins(ipbs, formatter, functionalFormatter,
 				bottomUnbounded, topUnbounded,
 				formattedDetectionLimit, null, binType);
@@ -295,7 +290,7 @@ public class BinSet {
 	public static BinSet createBins(InProcessBinSet ipbs, 
 			DecimalFormat formatter, DecimalFormat functionalFormatter,
 			boolean bottomUnbounded, boolean topUnbounded, String formattedDetectionLimit,
-			Integer[] binCounts, BIN_TYPE binType) {
+			Integer[] binCounts, BinType binType) {
 		
 		
 		BigDecimal[] posts = ipbs.posts;

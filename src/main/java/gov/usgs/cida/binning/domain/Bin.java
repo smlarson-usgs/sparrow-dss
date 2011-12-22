@@ -1,4 +1,5 @@
-package gov.usgswim.sparrow.domain;
+package gov.usgs.cida.binning.domain;
+
 
 import java.io.Serializable;
 import java.math.BigDecimal;

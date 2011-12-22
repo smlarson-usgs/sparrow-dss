@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgs.cida.binning.BinSet;
+import gov.usgs.cida.binning.domain.BinSet;
 import gov.usgswim.sparrow.action.CalcBins;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;

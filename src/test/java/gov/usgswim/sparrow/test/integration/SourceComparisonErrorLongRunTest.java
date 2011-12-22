@@ -1,10 +1,10 @@
 package gov.usgswim.sparrow.test.integration;
 
-import gov.usgs.cida.binning.BinSet;
+import gov.usgs.cida.binning.domain.BinSet;
+import gov.usgs.cida.binning.domain.BinType;
 import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.SparrowTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.request.BinningRequest;
-import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.ServiceResponseOperation;
 import gov.usgswim.sparrow.service.ServiceResponseStatus;
 import gov.usgswim.sparrow.service.ServiceResponseWrapper;
@@ -49,7 +49,7 @@ public class SourceComparisonErrorLongRunTest extends SparrowTestBaseWithDBandCa
 		///Try to build bins from a GET request that looks like this:
 		//context/
 		//getBins?_dc=1259617459336&context-id=-1930836194&bin-count=5&bin-operation=EQUAL_RANGE
-		BinningRequest binReq = new BinningRequest(new Integer(contextId), 2, BIN_TYPE.EQUAL_RANGE);
+		BinningRequest binReq = new BinningRequest(new Integer(contextId), 2, BinType.EQUAL_RANGE);
 		BinSet binSet = SharedApplication.getInstance().getDataBinning(binReq);
 		ServiceResponseWrapper wrap = new ServiceResponseWrapper(binSet, null, ServiceResponseStatus.OK,
 				ServiceResponseOperation.CALCULATE);

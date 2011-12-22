@@ -2,13 +2,13 @@ package gov.usgswim.sparrow.test.integration;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import gov.usgs.cida.binning.BinSet;
+import gov.usgs.cida.binning.domain.BinSet;
+import gov.usgs.cida.binning.domain.BinType;
 import gov.usgswim.sparrow.MapViewerSparrowDataProvider;
 import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.SparrowTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.cachefactory.BinningFactory;
 import gov.usgswim.sparrow.request.BinningRequest;
-import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 import gov.usgswim.sparrow.service.ServletResponseParser;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
@@ -50,7 +50,7 @@ public class DeliveryFractionMapAndBinErrorLongRunTest extends SparrowTestBaseWi
 		//assertTrue(actualResponse.indexOf(context_id.toString()) > -1);
 		
 		//Run a binning request on that same context ID
-		BinningRequest binReq = new BinningRequest(contextID, 5, BIN_TYPE.EQUAL_COUNT);
+		BinningRequest binReq = new BinningRequest(contextID, 5, BinType.EQUAL_COUNT);
 		BinSet binSet = SharedApplication.getInstance().getDataBinning(binReq);
 		String xml = ServletResponseParser.getXMLXStream().toXML(binSet);
 

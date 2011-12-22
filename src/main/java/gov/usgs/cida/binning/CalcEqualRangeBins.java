@@ -10,12 +10,13 @@ import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
 
+import gov.usgs.cida.binning.domain.BinSet;
+import gov.usgs.cida.binning.domain.BinType;
+import gov.usgs.cida.binning.domain.InProcessBinSet;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
-import gov.usgswim.sparrow.domain.InProcessBinSet;
-import gov.usgswim.sparrow.request.BinningRequest.BIN_TYPE;
 
 public class CalcEqualRangeBins extends Action<BinSet> {
 
@@ -112,7 +113,7 @@ public class CalcEqualRangeBins extends Action<BinSet> {
 		}
 		
 		BinSet binSet = BinSet.createBins(ipbs, formatter, functionalFormatter,
-				bottomUnbounded, topUnbounded, formattedNonDetectLimit, BIN_TYPE.EQUAL_RANGE);
+				bottomUnbounded, topUnbounded, formattedNonDetectLimit, BinType.EQUAL_RANGE);
 		
 		return binSet;
 	}
