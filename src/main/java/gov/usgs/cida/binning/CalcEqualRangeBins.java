@@ -1,5 +1,12 @@
 package gov.usgs.cida.binning;
 
+import gov.usgs.cida.binning.domain.BinSet;
+import gov.usgs.cida.binning.domain.BinType;
+import gov.usgs.cida.binning.domain.InProcessBinSet;
+import gov.usgswim.datatable.ColumnData;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
+import gov.usgswim.sparrow.domain.DeliveryFractionMap;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
@@ -9,14 +16,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import org.apache.commons.lang.StringUtils;
-
-import gov.usgs.cida.binning.domain.BinSet;
-import gov.usgs.cida.binning.domain.BinType;
-import gov.usgs.cida.binning.domain.InProcessBinSet;
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.sparrow.action.Action;
-import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 
 public class CalcEqualRangeBins {
 
