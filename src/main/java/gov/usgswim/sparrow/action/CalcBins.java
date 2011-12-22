@@ -1,10 +1,6 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgs.cida.binning.CalcEqualCountBins;
-import gov.usgs.cida.binning.CalcEqualRangeBins;
 import gov.usgs.cida.binning.domain.BinSet;
-import static gov.usgs.cida.binning.domain.BinType.EQUAL_COUNT;
-import static gov.usgs.cida.binning.domain.BinType.EQUAL_RANGE;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.ComparisonType;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
@@ -62,7 +58,7 @@ public class CalcBins extends Action<BinSet> {
 		switch (request.getBinType()) {
 		case EQUAL_RANGE: {
 			
-			CalcEqualRangeBins action = new CalcEqualRangeBins();
+			CalcEqualRangeBinsAction action = new CalcEqualRangeBinsAction();
 			action.setBinCount(request.getBinCount());
 			action.setDataColumn(dataColumn);
 			action.setDetectionLimit(request.getDetectionLimit());
@@ -78,7 +74,7 @@ public class CalcBins extends Action<BinSet> {
 			//break;
 		case EQUAL_COUNT: {
 			
-			CalcEqualCountBins action = new CalcEqualCountBins();
+			CalcEqualCountBinsAction action = new CalcEqualCountBinsAction();
 			action.setBinCount(request.getBinCount());
 			action.setDataColumn(dataColumn);
 			action.setDetectionLimit(request.getDetectionLimit());

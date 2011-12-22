@@ -6,7 +6,6 @@ import gov.usgs.cida.binning.domain.InProcessBinSet;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.impl.StandardDoubleColumnData;
-import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 
@@ -23,8 +22,11 @@ import java.util.TreeMap;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.log4j.Logger;
 
-public class CalcEqualCountBins extends Action<BinSet> {
+public class CalcEqualCountBins {
+	protected static Logger log =
+		Logger.getLogger(CalcEqualCountBins.class); //logging for this class
 	
 	private static final int DEFAULT_MAX_ALLOWED_ITERATIONS = 10000;
 	private static final int DEFAULT_RESTART_MULTIPLIER = 7;
@@ -65,7 +67,17 @@ public class CalcEqualCountBins extends Action<BinSet> {
 	 */
 	int restartMultiplier = DEFAULT_RESTART_MULTIPLIER;
 	
-	@Override
+	
+	/**
+	 * Compatibility for classes wanting to use the Action class.
+	 * @return
+	 * @throws Exception
+	 */
+	public BinSet run() throws Exception {
+		return doAction();
+	}
+	
+	
 	public BinSet doAction() throws Exception {
 		
 		if (values == null) {

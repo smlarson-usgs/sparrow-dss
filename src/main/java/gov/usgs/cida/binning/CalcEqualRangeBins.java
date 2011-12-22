@@ -18,7 +18,7 @@ import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.DeliveryFractionMap;
 
-public class CalcEqualRangeBins extends Action<BinSet> {
+public class CalcEqualRangeBins {
 
 	private SparrowColumnSpecifier dataColumn;
 	private BigDecimal minValue;
@@ -32,7 +32,15 @@ public class CalcEqualRangeBins extends Action<BinSet> {
 	/** A hash of row numbers that are in the reaches to be mapped. **/
 	private DeliveryFractionMap inclusionMap;
 	
-	@Override
+	/**
+	 * Compatibility for classes wanting to use the Action class.
+	 * @return
+	 * @throws Exception
+	 */
+	public BinSet run() throws Exception {
+		return doAction();
+	}
+	
 	public BinSet doAction() throws Exception {
 		
 		if (minValue == null || maxValue == null) {
