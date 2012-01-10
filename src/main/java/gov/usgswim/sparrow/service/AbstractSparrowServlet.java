@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -24,7 +25,10 @@ import com.thoughtworks.xstream.XStream;
  *
  */
 public abstract class AbstractSparrowServlet extends HttpServlet {
-
+	protected static Logger log =
+		Logger.getLogger(AbstractSparrowServlet.class); //logging for this class
+	
+	
 	public static final String REQUESTED_MIME_TYPE_PARAM_NAME = "mime_type";
 	/** Posters may set a header of this name to the name of a http parameter
 	 *  used to post XML data.  If not specified, the content of the post will
@@ -85,6 +89,25 @@ public abstract class AbstractSparrowServlet extends HttpServlet {
 		if (s != null) {
 			try {
 				return Long.parseLong(s);
+			} catch (NumberFormatException e) {
+				//allow null to be returned
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Returns a Double value from the parameter map for the passed name.
+	 * If unparsable, missing, or null, null is returned.
+	 * 
+	 * @param params
+	 * @param name
+	 */
+	protected static Double getDouble(Map params, String name) {
+		String s = getClean(params, name);
+		if (s != null) {
+			try {
+				return Double.parseDouble(s);
 			} catch (NumberFormatException e) {
 				//allow null to be returned
 			}

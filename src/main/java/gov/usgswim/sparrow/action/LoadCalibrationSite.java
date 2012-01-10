@@ -13,11 +13,13 @@ public class LoadCalibrationSite extends Action<CalibrationSite> {
 	String query =  "SelectStationByReachId";
 	Double lat;
 	Double lon;
+	Long modelId;
 	
-	public LoadCalibrationSite(Double lat, Double lon) {
+	public LoadCalibrationSite(Double lat, Double lon, Long modelId) {
 		query = "SelectStationByLatLon";
 		this.lat = lat;
 		this.lon = lon;
+		this.modelId = modelId;
 	}
 	
 	public LoadCalibrationSite(Long reachId) {
@@ -30,6 +32,7 @@ public class LoadCalibrationSite extends Action<CalibrationSite> {
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("lat", lat);
 		params.put("lng", lon);
+		params.put("modelId", this.modelId);
 		
 		PreparedStatement st = getROPSFromPropertiesFile(query, getClass(), params);
 		ResultSet rset = st.executeQuery();

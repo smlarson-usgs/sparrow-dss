@@ -24,19 +24,38 @@ public class FindCalibrationSiteService extends AbstractSparrowServlet {
 	}
 
 	public void doPost(HttpServletRequest req, HttpServletResponse resp) {
-		Double lat = req.getParameter("lat")==null ? null : Double.valueOf((String)req.getParameter("lat"));
-		Double lon = req.getParameter("lon")==null ? null : Double.valueOf((String)req.getParameter("lon"));
+		Double lat = getDouble(req.getParameterMap(), "lat");
+		Double lon = getDouble(req.getParameterMap(), "lon");
+		Long modelId = getLong(req.getParameterMap(), "model_id");
+		
+		
+		ServiceResponseWrapper out = new ServiceResponseWrapper(CalibrationSite.class, ServiceResponseOperation.GET);
+
+		try {
+			if (lat != null && lon != null && modelId != null) {
+				LoadCalibrationSite action = new LoadCalibrationSite(lat, lon, modelId);
+				CalibrationSite result = action.run();
+				
+	
+				out.addEntity(result);
+				out.setEntityId(result.getModelReachId());
+				out.setStatus(ServiceResponseStatus.OK);
+			} else {
+				out.setStatus(ServiceResponseStatus.FAIL);
+				out.setMessage("Numerical values for 'lat', 'lon' and 'model_id' are all required to call this service.");
+			}
+			
+		} catch (Exception e) {
+			out.setStatus(ServiceResponseStatus.FAIL);
+			out.setError(e);
+			log.error("Error trying to load calibration site by lat/long", e);
+		}
+		
 		
 		try {
-			LoadCalibrationSite action = new LoadCalibrationSite(lat, lon);
-			CalibrationSite result = action.run();
-			
-			ServiceResponseWrapper out = new ServiceResponseWrapper(result, CalibrationSite.class, ((result!=null) ? result.getModelReachId() : null), ServiceResponseStatus.OK,
-					ServiceResponseOperation.GET);
 			sendResponse(resp, out);
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
+			log.error("Unable to send find calibration site service response.", e);
 			e.printStackTrace();
 		}
 	}
