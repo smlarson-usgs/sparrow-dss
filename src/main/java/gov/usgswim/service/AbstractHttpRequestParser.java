@@ -87,55 +87,57 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 	 * @throws IOException
 	 */
 	public static String defaultReadXMLRequest(HttpServletRequest request, String xmlParam) throws IOException {
-		String extraPath = request.getPathInfo();
-//		request.get
 
+		String xml = null;
+		
 		if ("GET".equals(request.getMethod())) {
 
-			String xml = request.getParameter(xmlParam);
+			xml = request.getParameter(xmlParam);
 			return (xml == null)? "": xml;
 
 		} else if ("POST".equals(request.getMethod())) {
-			String xml = request.getParameter(xmlParam);
-			xml = (xml == null)?  xml: xml.trim();
-			if (extraPath != null && extraPath.length() > 1) {
-				//The client may have passed the XML request as a parameter...
+			xml = request.getParameter(xmlParam);
 
-				extraPath = extraPath.substring(1);
-				if (extraPath.contains("formpost")) {
+			/*
+			 * ee 1/11/2012  I'm pretty sure this next bit is wrong/does nothing.
+			 * I remember the 'formpost' url convention being an indication that the xml
+			 * was passed as the body of the request.
+			 * 
+			 * As written, it just rechecks the same param as above.
+			 */
+//			if (xml == null && extraPath != null && extraPath.length() > 1) {
+//				extraPath = extraPath.substring(1);
+//				if (extraPath.contains("formpost")) {
+//					xml = request.getParameter(xmlParam);
+//				}
+//			}
 
-					xml = request.getParameter(xmlParam);
-					return (xml == null)? "": xml;
-
+			if (xml == null) {
+				// TODO [IK] Read the body input stream into a String to be used as submission. Not right with form posts
+				StringBuilder result = new StringBuilder();
+				BufferedReader requestReader = request.getReader();
+				String line = null;
+				while ((line = requestReader.readLine()) != null) {
+					result.append(line).append("\n");
 				}
-				//ignore the extra url info (it may be asking for echo service)
-				//fall thru to code below
-
-
+				
+				xml = result.toString();
+				
+				
+				/*
+				 * ee 1/12/2012  I think the next portion should never happen.
+				 * If the xml is passed as a parameter, it should be found as a param.
+				 * If its passed as the body of the post, it should not have a paramName= prefix.
+				 */
+				// TODO [IK] HACK Must do this properly!!!
+//				String singleParamResult = result.toString();
+//				if (singleParamResult.startsWith(xmlParam)) singleParamResult = singleParamResult.substring(xmlParam.length() + 1); // +1 for = sign
+//				xml = singleParamResult;
 			}
-			if (xml != null && xml.length() > 0) {
-				// TODO Eliminate later. This handles the old way
-				boolean isFormEncoded = xml.indexOf("%3C") > -1;
-				if (isFormEncoded) xml = URLDecoder.decode(xml);
-				// TODO Verify if should be ? URLDecoder.decode(xml,"UTF-8");????
-				return xml;
-			}
-
-			// TODO [IK] Read the body input stream into a String to be used as submission. Not right with form posts
-			StringBuilder result = new StringBuilder();
-			BufferedReader requestReader = request.getReader();
-			String line = null;
-			while ((line = requestReader.readLine()) != null) {
-				result.append(line).append("\n");
-			}
-			// TODO [IK] HACK Must do this properly!!!
-
-			String singleParamResult = result.toString();
-			if (singleParamResult.startsWith(xmlParam)) singleParamResult = singleParamResult.substring(xmlParam.length() + 1); // +1 for = sign
-			boolean isFormEncoded = singleParamResult.indexOf("%3C") > -1;
-			if (isFormEncoded) singleParamResult = URLDecoder.decode(singleParamResult);
-			// TODO verify if should be ? URLDecoder.decode(xml,"UTF-8");????
-			return result.toString();
+			
+			
+			StringUtils.trimToEmpty(xml);
+			return xml;
 
 		} else {
 			throw new IOException("Unsupported request method '" + request.getMethod() + "'");
