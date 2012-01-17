@@ -194,8 +194,8 @@
                 </dd>
                 <dt>Delivery Fraction</dt><dd>
                 	The fraction (from 0 to 1) of the load leaving a reach that arrives at the
-                	downstream end of a selected target reach without any removal
-                	by natural attenuation processes
+                	end of a selected downstream target reach after accounting for the mass quantity
+                	that is removed by natural attenuation processes
                 	(e.g., long-term storage; denitrification).
                 	You must first define a downstream outlet reach in order to map this series.
                 </dd>
