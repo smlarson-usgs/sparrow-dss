@@ -762,7 +762,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 		// TODO [IK] This 4 is hardcoded for now. Have to go back and use SparrowModelProperties to do properly
 		response.basicAttributes = new FilteredDataTable(attributes, new ColumnRangeFilter(0, 13)); // first four columns
-		response.sparrowAttributes = new FilteredDataTable(attributes, new ColumnRangeFilter(13, attributes.getColumnCount() - 4)); // remaining columns
+		response.sparrowAttributes = new FilteredDataTable(attributes, new ColumnRangeFilter(15, attributes.getColumnCount() - 4)); // remaining columns
 
 		StringBuilder basicAttributesSection = toSection(response.basicAttributes, "Basic Attributes", "basic_attrib", DISPLAY_RULES);
 		StringBuilder sparrowAttributesSection = toSection(response.sparrowAttributes, "SPARROW Attributes", "sparrow_attrib", DISPLAY_RULES);

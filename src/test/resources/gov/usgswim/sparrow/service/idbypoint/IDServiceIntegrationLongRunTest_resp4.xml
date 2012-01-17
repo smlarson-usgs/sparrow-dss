@@ -302,17 +302,7 @@
 					</section>
 					<section display="SPARROW Attributes" name="sparrow_attrib">
 						<r>
-							<c>Incremental Delivery Fraction</c>
-							<c>0.928324</c>
-							<c>(fraction)</c>
-						</r>
-						<r>
-							<c>Total Delivery Fraction</c>
-							<c>0.861786</c>
-							<c>(fraction)</c>
-						</r>
-						<r>
-							<c>Split Fraction</c>
+							<c>frac</c>
 							<c>1.0</c>
 							<c>(fraction)</c>
 						</r>
@@ -660,17 +650,7 @@
 					</section>
 					<section display="SPARROW Attributes" name="sparrow_attrib">
 						<r>
-							<c>Incremental Delivery Fraction</c>
-							<c>0.934551</c>
-							<c>(fraction)</c>
-						</r>
-						<r>
-							<c>Total Delivery Fraction</c>
-							<c>0.873387</c>
-							<c>(fraction)</c>
-						</r>
-						<r>
-							<c>Split Fraction</c>
+							<c>frac</c>
 							<c>1.0</c>
 							<c>(fraction)</c>
 						</r>
