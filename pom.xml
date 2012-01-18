@@ -19,11 +19,6 @@
 	</scm>
 
 	<distributionManagement>
-		<!-- 
-		Note:  The 'true' url for the Nexus repo is:
-		http://internal.cida.usgs.gov
-		however, due to network issues in the office, the machine url is being used temporarly.
-		 -->
 		<repository>
 			<id>cida-sparrow-dss-releases</id>
 			<name>CIDA Sparrow DSS Releases</name>
