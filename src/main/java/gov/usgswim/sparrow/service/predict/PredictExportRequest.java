@@ -11,13 +11,12 @@ import gov.usgswim.sparrow.util.ParserHelper;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-public class PredictExportRequest implements XMLStreamParserComponent, PipelineRequest {
+public class PredictExportRequest implements XMLStreamParserComponent,
+		PipelineRequest {
 
 	private static final long serialVersionUID = -53439131354L;
 	public static final String MAIN_ELEMENT_NAME = "sparrow-report-request";
 	public static final String PC_EXPORT_FILENAME = "predict_export";
-
-
 
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
@@ -27,7 +26,7 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 	}
 
 	public static PredictExportRequest parseStream(XMLStreamReader in)
-	throws XMLStreamException, XMLParseValidationException {
+			throws XMLStreamException, XMLParseValidationException {
 
 		PredictExportRequest per = new PredictExportRequest();
 		return per.parse(in);
@@ -43,19 +42,19 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 	/**
 	 * Construct an instance w/ basic options (used for GET requests)
 	 */
-	public PredictExportRequest(Integer contextID, ResponseFormat respFormat, String bbox) {
+	public PredictExportRequest(Integer contextID, ResponseFormat respFormat,
+			String bbox) {
 		this.contextID = contextID;
 		this.responseFormat = respFormat;
 		this.bbox = bbox;
 	}
 
-
-	public PredictExportRequest(Long modelID, ResponseFormat respFormat, String bbox) {
+	public PredictExportRequest(Long modelID, ResponseFormat respFormat,
+			String bbox) {
 		this.modelID = modelID;
 		this.responseFormat = respFormat;
 		this.bbox = bbox;
 	}
-
 
 	// ===============
 	// INSTANCE FIELDS
@@ -65,7 +64,8 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 	private Integer contextID;
 	private Long modelID;
 	private String bbox;
-	private boolean includeReachAttribs = false;
+	private boolean includeReachIdAttribs = false;
+	private boolean includeReachStatAttribs = false;
 	private boolean includeSource = false;
 	private boolean includePredict = false;
 
@@ -73,13 +73,14 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 	// INSTANCE METHODS
 	// ================
 	public PredictExportRequest parse(XMLStreamReader in)
-	throws XMLStreamException, XMLParseValidationException {
+			throws XMLStreamException, XMLParseValidationException {
 
 		String localName = in.getLocalName();
 		int eventCode = in.getEventType();
 		assert (isTargetMatch(localName) && eventCode == START_ELEMENT) : this
-		.getClass().getSimpleName()
-		+ " can only parse " + MAIN_ELEMENT_NAME + " elements.";
+				.getClass().getSimpleName()
+				+ " can only parse "
+				+ MAIN_ELEMENT_NAME + " elements.";
 		boolean isStarted = false;
 
 		while (in.hasNext()) {
@@ -90,59 +91,70 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 				isStarted = true;
 			}
 
-			// Main event loop -- parse until corresponding target end tag encountered.
+			// Main event loop -- parse until corresponding target end tag
+			// encountered.
 			switch (eventCode) {
-				case START_ELEMENT:
-					
-					localName = in.getLocalName();
-					
-					if (isTargetMatch(localName)) {
-						//nothing to do
-					} else if ("PredictionContext".equals(localName)) {
-						contextID = ParserHelper.parseAttribAsInt(in, "context-id", true);
-						ParserHelper.ignoreElement(in);
-					} else if (ResponseFormat.isTargetMatch(localName)) {
+			case START_ELEMENT:
 
-						responseFormat = ResponseFormat.parseStream(in);
-						if (responseFormat.fileName == null) responseFormat.fileName = PC_EXPORT_FILENAME;
+				localName = in.getLocalName();
 
-					} else if ("bbox".equals(localName)) {
-						bbox = ParserHelper.parseSimpleElementValue(in);
-					} else if ("response-content".equals(localName)) {
-                        // do nothing - just a container
-                    } else if ("attributes".equals(localName)) {
-                        includeReachAttribs = true;
-                        ParserHelper.ignoreElement(in);
-                    } else if ("source-values".equals(localName)) {
-                        includeSource = true;
-                        ParserHelper.ignoreElement(in);
-                    } else if ("predicted".equals(localName)) {
-                        includePredict = true;
-                        ParserHelper.ignoreElement(in);
-					} else if ("columns".equals(localName)) {
-						ParserHelper.ignoreElement(in);
-					} else if ("binning".equals(localName)) {
-						ParserHelper.ignoreElement(in);
-					} else {
-						throw new RuntimeException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
-					}
-					break;
-				case END_ELEMENT:
-					localName = in.getLocalName();
-					if (MAIN_ELEMENT_NAME.equals(localName)) {
-						checkValidity();
-						responseFormat = (responseFormat == null)? makeDefaultResponseFormat(): responseFormat;
-						return this; // we're done
-                                        } else if ("response-content".equals(localName)) {
-                                            // ignore - just a container element
-					} else {
-						// otherwise, error
-						throw new RuntimeException("unexpected closing tag of </" + localName + ">; expected  " + MAIN_ELEMENT_NAME);
-					}
-					//break;
+				if (isTargetMatch(localName)) {
+					// nothing to do
+				} else if ("PredictionContext".equals(localName)) {
+					contextID = ParserHelper.parseAttribAsInt(in, "context-id",
+							true);
+					ParserHelper.ignoreElement(in);
+				} else if (ResponseFormat.isTargetMatch(localName)) {
+
+					responseFormat = ResponseFormat.parseStream(in);
+					if (responseFormat.fileName == null)
+						responseFormat.fileName = PC_EXPORT_FILENAME;
+
+				} else if ("bbox".equals(localName)) {
+					bbox = ParserHelper.parseSimpleElementValue(in);
+				} else if ("response-content".equals(localName)) {
+					// do nothing - just a container
+				} else if ("id-attributes".equals(localName)) {
+					includeReachIdAttribs = true;
+					ParserHelper.ignoreElement(in);
+				} else if ("stat-attributes".equals(localName)) {
+					includeReachStatAttribs = true;
+					ParserHelper.ignoreElement(in);
+				} else if ("source-values".equals(localName)) {
+					includeSource = true;
+					ParserHelper.ignoreElement(in);
+				} else if ("predicted".equals(localName)) {
+					includePredict = true;
+					ParserHelper.ignoreElement(in);
+				} else if ("columns".equals(localName)) {
+					ParserHelper.ignoreElement(in);
+				} else if ("binning".equals(localName)) {
+					ParserHelper.ignoreElement(in);
+				} else {
+					throw new RuntimeException(
+							"unrecognized child element of <" + localName
+									+ "> for " + MAIN_ELEMENT_NAME);
+				}
+				break;
+			case END_ELEMENT:
+				localName = in.getLocalName();
+				if (MAIN_ELEMENT_NAME.equals(localName)) {
+					checkValidity();
+					responseFormat = (responseFormat == null) ? makeDefaultResponseFormat()
+							: responseFormat;
+					return this; // we're done
+				} else if ("response-content".equals(localName)) {
+					// ignore - just a container element
+				} else {
+					// otherwise, error
+					throw new RuntimeException("unexpected closing tag of </"
+							+ localName + ">; expected  " + MAIN_ELEMENT_NAME);
+				}
+				// break;
 			}
 		}
-		throw new RuntimeException("tag <" + MAIN_ELEMENT_NAME + "> not closed. Unexpected end of stream?");
+		throw new RuntimeException("tag <" + MAIN_ELEMENT_NAME
+				+ "> not closed. Unexpected end of stream?");
 	}
 
 	public String getParseTarget() {
@@ -156,7 +168,8 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 	public void checkValidity() throws XMLParseValidationException {
 		if (!isValid()) {
 			// throw a custom error message depending on the error
-			throw new XMLParseValidationException(MAIN_ELEMENT_NAME + " must contain a context id.");
+			throw new XMLParseValidationException(MAIN_ELEMENT_NAME
+					+ " must contain a context id.");
 		}
 	}
 
@@ -187,8 +200,8 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 		return includePredict;
 	}
 
-	public boolean isIncludeReachAttribs() {
-		return includeReachAttribs;
+	public boolean isIncludeReachIdAttribs() {
+		return includeReachIdAttribs;
 	}
 
 	public String getXMLRequest() {
@@ -196,7 +209,7 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 	}
 
 	public void setXMLRequest(String request) {
-		xmlRequest = request;		
+		xmlRequest = request;
 	}
 
 	public void setResponseFormat(ResponseFormat respFormat) {
@@ -223,6 +236,8 @@ public class PredictExportRequest implements XMLStreamParserComponent, PipelineR
 		this.modelID = modelID;
 	}
 
-	
+	public boolean isIncludeReachStatAttribs() {
+		return includeReachStatAttribs;
+	}
 
 }

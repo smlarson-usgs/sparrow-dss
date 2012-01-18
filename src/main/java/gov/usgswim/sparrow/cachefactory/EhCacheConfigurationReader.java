@@ -327,7 +327,9 @@ public class EhCacheConfigurationReader {
 		ConfiguredCache[] allCaches = ConfiguredCache.values();
 		Set<String> result = new HashSet<String>();
 		for (ConfiguredCache cache: allCaches) {
-			result.add(cache.name());
+			if (cache.isCached) {
+				result.add(cache.name());
+			}
 		}
 		return result;
 	}

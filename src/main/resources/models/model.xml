@@ -428,6 +428,26 @@
 			2. ID = 'MRB_E2RF1' for the RF1 regional models; for shape files, see: http://water.usgs.gov/nawqa/modeling/rf1attributes.html
 			3. ID = 'GRID_CODE' for the NHD regional models; for shape files, see: http://water.usgs.gov/nawqa/modeling/nhdplusattributes.html
 			
+			__Additional Optional Columns__
+			Reach Name (pname)
+			The name of the reach.  This name may sometimes be empty, partial, or different than local names for the reach.
+			
+			Open Water Name (owname)
+			If the reach is actually a body of water like a lake or pond, this is the name of that body of water. This name may sometimes be empty, partial, or different than local names for the body of water.
+			
+			edacode
+			NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.
+
+			edaname
+			NOAA name identifying estuarine/coastal drainage areas for major estuaries in the United States.
+			
+			Streamflow
+            The mean annual stream flow of the reach, in units of volume (cubic feet) per time (second).
+            
+            Incremental Area
+            The area of land that drains directly to the stream reach, not including land area that drains to upstream reaches.
+			
+			
 			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
 
 		</Term>

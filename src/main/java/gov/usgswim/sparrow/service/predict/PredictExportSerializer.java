@@ -39,6 +39,8 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	private PredictResult nomPredictResult;
 	private PredictData adjPredictData;
 	private PredictData nomPredictData;
+	private DataTable reachIdAttribs = null;
+	private DataTable reachStatsTable = null;
 	private boolean hasAdjustments;
 	
 	/** Non-null PredictData instance used to find row IDs */
@@ -66,7 +68,9 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	public PredictExportSerializer(PredictExportRequest request,
 			SparrowColumnSpecifier adjDataColumn, SparrowColumnSpecifier nomDataColumn,
 			PredictData adjPredictData, PredictData nomPredictData,
-			PredictResult adjPredictResult, PredictResult nomPredictResult, DataTable waterShedAreasColumn, DataTable huc8data, boolean hasAdjustments) throws Exception {
+			PredictResult adjPredictResult, PredictResult nomPredictResult, 
+			DataTable waterShedAreasColumn, DataTable huc8data, DataTable reachIdAttribs,
+			DataTable reachStatsTable, boolean hasAdjustments) throws Exception {
 		
 		super();
 		this.request = request;
@@ -79,6 +83,8 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 		this.nomPredictResult = nomPredictResult;
 		this.watershedAreas = waterShedAreasColumn;
 		this.huc8data = huc8data;
+		this.reachIdAttribs = reachIdAttribs;
+		this.reachStatsTable = reachStatsTable;
 		this.hasAdjustments = hasAdjustments;
 		
 		if (adjPredictData == null && nomPredictData == null) {
@@ -229,6 +235,28 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 						addCloseTag("group");
 					}
 					
+					//Add a group for identification columns
+					if (reachIdAttribs != null) {
+						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Reach Identification Attributes"));
+						
+						for (int i = 0; i < reachIdAttribs.getColumnCount(); i++) {
+							String name = reachIdAttribs.getName(i);
+							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "String"));
+						}
+						addCloseTag("group");
+					}
+					
+					if (reachStatsTable != null) {
+						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Reach Statistics"));
+						
+						for (int i = 0; i < reachStatsTable.getColumnCount(); i++) {
+							String name = reachStatsTable.getName(i);
+							name = name + " (" + reachStatsTable.getUnits(i) + ")";
+							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
+						}
+						addCloseTag("group");
+					}
+					
 					addCloseTag("columns");
 				}
 				addCloseTag("metadata");
@@ -300,6 +328,18 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 					
 					writePredictData(nomPredictResult, nomPredictResult.getFirstDecayedIncrementalColForSrc(), srcCount + 1);
 					writePredictData(nomPredictResult, nomPredictResult.getFirstTotalColForSrc(), srcCount + 1);
+				}
+				
+				if (reachIdAttribs != null) {
+					for (int c = 0; c < reachIdAttribs.getColumnCount(); c++) {
+						addNonNullBasicTag("c", reachIdAttribs.getString(state.r, c));
+					}
+				}
+				
+				if (reachStatsTable != null) {
+					for (int c = 0; c < reachStatsTable.getColumnCount(); c++) {
+						addNonNullBasicTag("c", reachStatsTable.getString(state.r, c));
+					}
 				}
 
 			}

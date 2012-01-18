@@ -1,7 +1,9 @@
 package gov.usgswim.sparrow.service;
 
+import java.util.Collections;
 import java.util.List;
 
+import gov.usgswim.sparrow.action.LoadModelReachIdentificationAttributes;
 import gov.usgswim.sparrow.cachefactory.*;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import net.sf.ehcache.Ehcache;
@@ -37,6 +39,7 @@ public enum ConfiguredCache {
 	IdentifyReachByID(false, new ReachByIDFactory()),
 	
 	LoadReachAttributes(false, new LoadReachAttributesFactory()),
+	LoadModelReachIdentificationAttributes(false, false, new LoadModelReachIdentificationAttributesFactory()),
 	ReachesByCriteria(false, new ReachesByCriteriaFactory()),
 	DataBinning(false, new BinningFactory()),
 	AggregateIdLookup(false, new AggregateIdLookupKludgeFactory()),
@@ -55,8 +58,30 @@ public enum ConfiguredCache {
 	
 	public final boolean isDistributed;
 	public final CacheEntryFactory factory;
+	
+	/**
+	 * True by default to indicate the cache is in use.  Can be set to false
+	 * to allow no cache to be used and/or disable the cache if configured.
+	 */
+	public final boolean isCached;	
 
 	private ConfiguredCache(boolean isDistributed, CacheEntryFactory... factory) {
+		
+		isCached = true;		//standard case
+		
+		this.isDistributed = isDistributed;
+		if (factory != null && factory.length > 0) {
+			this.factory = factory[0];
+		} else {
+			this.factory = null;
+		}
+	}
+	
+	private ConfiguredCache(boolean isDistributed, boolean isCached, CacheEntryFactory... factory) {
+		
+		//The cache is not used
+		this.isCached = isCached;
+		
 		this.isDistributed = isDistributed;
 		if (factory != null && factory.length > 0) {
 			this.factory = factory[0];
@@ -88,8 +113,23 @@ public enum ConfiguredCache {
 	 */
 	public Object get(Object key, boolean quiet) {
 		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
-		Element e  = (quiet)? c.getQuiet(key): c.get(key);
-		return (e != null)? e.getObjectValue(): null;
+		
+		if (c != null && isCached) {
+			Element e  = (quiet)? c.getQuiet(key): c.get(key);
+			return (e != null)? e.getObjectValue(): null;
+		} else if (factory != null && ! isCached) {
+			//No cache defined, but we do have a factory, so invoke directly
+			try {
+				Object o = factory.createEntry(key);
+				return o;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;	//We don't have a way to report this at this level
+			}
+		} else {
+			//There is no factory and no cache... return null I guess
+			return null;
+		}
 	}
 	
 	/**
@@ -115,8 +155,23 @@ public enum ConfiguredCache {
 	 */
 	public Object get(Long key, boolean quiet) {
 		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
-		Element e  = (quiet)? c.getQuiet(key): c.get(key);
-		return (e != null)? e.getObjectValue(): null;
+		
+		if (c != null && isCached) {
+			Element e  = (quiet)? c.getQuiet(key): c.get(key);
+			return (e != null)? e.getObjectValue(): null;
+		} else if (factory != null && ! isCached) {
+			//No cache defined, but we do have a factory, so invoke directly
+			try {
+				Object o = factory.createEntry(key);
+				return o;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;	//We don't have a way to report this at this level
+			}
+		} else {
+			//There is no factory and no cache... return null I guess
+			return null;
+		}
 	}
 	
 	/**
@@ -151,7 +206,12 @@ public enum ConfiguredCache {
 	@SuppressWarnings("unchecked")
 	public List getKeysWithExpiryCheck() {
 		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
-		return c.getKeysWithExpiryCheck();
+		
+		if (c != null) {
+			return c.getKeysWithExpiryCheck();
+		} else {
+			return Collections.EMPTY_LIST;
+		}
 	}
 	
 	/**

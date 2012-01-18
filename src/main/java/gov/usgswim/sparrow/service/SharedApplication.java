@@ -1,29 +1,6 @@
 package gov.usgswim.sparrow.service;
 
-import static gov.usgswim.sparrow.service.ConfiguredCache.AdjustedSource;
-import static gov.usgswim.sparrow.service.ConfiguredCache.AdjustmentGroups;
-import static gov.usgswim.sparrow.service.ConfiguredCache.AggregateIdLookup;
-import static gov.usgswim.sparrow.service.ConfiguredCache.Analyses;
-import static gov.usgswim.sparrow.service.ConfiguredCache.AreaOfInterest;
-import static gov.usgswim.sparrow.service.ConfiguredCache.CatchmentAreas;
-import static gov.usgswim.sparrow.service.ConfiguredCache.ComparisonResult;
-import static gov.usgswim.sparrow.service.ConfiguredCache.DataBinning;
-import static gov.usgswim.sparrow.service.ConfiguredCache.DeliveryFraction;
-import static gov.usgswim.sparrow.service.ConfiguredCache.DeliveryFractionHash;
-import static gov.usgswim.sparrow.service.ConfiguredCache.HUCTable;
-import static gov.usgswim.sparrow.service.ConfiguredCache.HUC;
-import static gov.usgswim.sparrow.service.ConfiguredCache.IdentifyReachByID;
-import static gov.usgswim.sparrow.service.ConfiguredCache.IdentifyReachByPoint;
-import static gov.usgswim.sparrow.service.ConfiguredCache.LoadModelMetadata;
-import static gov.usgswim.sparrow.service.ConfiguredCache.LoadReachAttributes;
-import static gov.usgswim.sparrow.service.ConfiguredCache.PredefinedSessions;
-import static gov.usgswim.sparrow.service.ConfiguredCache.PredictContext;
-import static gov.usgswim.sparrow.service.ConfiguredCache.PredictData;
-import static gov.usgswim.sparrow.service.ConfiguredCache.PredictResult;
-import static gov.usgswim.sparrow.service.ConfiguredCache.ReachesByCriteria;
-import static gov.usgswim.sparrow.service.ConfiguredCache.StandardErrorEstimateData;
-import static gov.usgswim.sparrow.service.ConfiguredCache.StreamFlow;
-import static gov.usgswim.sparrow.service.ConfiguredCache.TerminalReaches;
+import static gov.usgswim.sparrow.service.ConfiguredCache.*;
 import gov.usgs.cida.binning.domain.BinSet;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
@@ -32,49 +9,19 @@ import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
-import gov.usgswim.sparrow.action.DeletePredefinedSession;
-import gov.usgswim.sparrow.action.FilterPredefinedSessions;
-import gov.usgswim.sparrow.action.LoadPredefinedSession;
-import gov.usgswim.sparrow.action.LoadReachesInBBox;
-import gov.usgswim.sparrow.action.PredictionContextHandler;
-import gov.usgswim.sparrow.action.SavePredefinedSession;
+import gov.usgswim.sparrow.action.*;
 import gov.usgswim.sparrow.cachefactory.AggregateIdLookupKludge;
 import gov.usgswim.sparrow.cachefactory.NSDataSetFactory;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
-import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.domain.AdjustmentGroups;
-import gov.usgswim.sparrow.domain.Analysis;
-import gov.usgswim.sparrow.domain.AreaOfInterest;
-import gov.usgswim.sparrow.domain.ComparisonType;
-import gov.usgswim.sparrow.domain.Criteria;
-import gov.usgswim.sparrow.domain.DataSeriesType;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
-import gov.usgswim.sparrow.domain.HUC;
-import gov.usgswim.sparrow.domain.IPredefinedSession;
-import gov.usgswim.sparrow.domain.ModelBBox;
-import gov.usgswim.sparrow.domain.PredictionContext;
-import gov.usgswim.sparrow.domain.SparrowModel;
-import gov.usgswim.sparrow.domain.TerminalReaches;
-import gov.usgswim.sparrow.request.BinningRequest;
-import gov.usgswim.sparrow.request.HUCTableRequest;
-import gov.usgswim.sparrow.request.HUCRequest;
-import gov.usgswim.sparrow.request.ModelRequestCacheKey;
-import gov.usgswim.sparrow.request.PredefinedSessionRequest;
-import gov.usgswim.sparrow.request.PredefinedSessionUniqueRequest;
-import gov.usgswim.sparrow.request.PredictionContextRequest;
-import gov.usgswim.sparrow.request.ReachID;
-import gov.usgswim.sparrow.request.UnitAreaRequest;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
+import gov.usgswim.sparrow.domain.*;
+import gov.usgswim.sparrow.request.*;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -688,6 +635,16 @@ public class SharedApplication  {
 
 	public DataTable getReachAttributes(ReachID req, boolean quiet) {
 		return (DataTable) LoadReachAttributes.get(req, quiet);
+	}
+	
+	//LoadModelReachIdentificationAttributes
+	//Used by the export to include extended id info (name, open water name, eda codes)
+	public DataTable getModelReachIdentificationAttributes(Long modelId) {
+		return getModelReachIdentificationAttributes(modelId, false);
+	}
+
+	public DataTable getModelReachIdentificationAttributes(Long modelId, boolean quiet) {
+		return (DataTable) LoadModelReachIdentificationAttributes.get(modelId, quiet);
 	}
 
 	//LoadModelMetadata

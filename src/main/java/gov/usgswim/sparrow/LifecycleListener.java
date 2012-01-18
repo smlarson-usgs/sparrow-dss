@@ -100,7 +100,7 @@ public class LifecycleListener implements ServletContextListener {
 			
 			// Decorate as necessary with SelfPopulatingCache
 			for (ConfiguredCache cache: ConfiguredCache.values()) {
-				if (cache.factory != null) {
+				if (cache.factory != null && cache.isCached) {
 					SelfPopulatingCache spCache = new SelfPopulatingCache(cm.getEhcache(cache.name()), cache.factory);
 					cm.replaceCacheWithDecoratedCache(cm.getEhcache(cache.name()), spCache);
 				}
