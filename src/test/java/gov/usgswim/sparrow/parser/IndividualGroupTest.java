@@ -138,7 +138,7 @@ public class IndividualGroupTest extends TestCase {
                 + "    <adjustment src=\"1\" abs=\"123\" />"
                 + "  </reach>"
                 + "  <reach id=\"54321\">"
-                + "    <adjustment src=\"2\" abs=\"321\" />"
+                + "    <adjustment src=\"2\" coef=\"321\" />"
                 + "  </reach>"
                 + "</individualGroup>"
                 ;
@@ -175,7 +175,7 @@ public class IndividualGroupTest extends TestCase {
                 + "    <adjustment src=\"2\" abs=\"222\" />"
                 + "  </reach>"
                 + "  <reach id=\"54321\">"
-                + "    <adjustment src=\"3\" abs=\"333\" />"
+                + "    <adjustment src=\"3\" coef=\"333\" />"
                 + "  </reach>"
                 + "</individualGroup>"
                 ;
@@ -199,7 +199,7 @@ public class IndividualGroupTest extends TestCase {
 
             // Second reach (ID: 54321)
             assertEquals(adjustments2.get(0).getSource(), Integer.valueOf(3));
-            assertEquals(adjustments2.get(0).getAbsolute(), Double.valueOf(333D));
+            assertEquals(adjustments2.get(0).getCoefficient(), Double.valueOf(333D), .000001d);
 
         } catch (XMLStreamException se) {
             fail(se.toString());
@@ -263,36 +263,6 @@ public class IndividualGroupTest extends TestCase {
 
             assertEquals(group1.getStateHash(), group2.getStateHash());
             assertFalse(group2.getStateHash() == group3.getStateHash());
-
-        } catch (XMLStreamException se) {
-            fail(se.toString());
-        } catch (XMLParseValidationException pve) {
-            // Success
-        }
-    }
-
-    /**
-     * Ensures that an exception is thrown if an improper reach adjustment is
-     * specified.
-     */
-    public void testInvalidReachAdjustments() {
-        try {
-            // Group with multiple adjusted reaches
-            String fragment = ""
-                + "<individualGroup enabled=\"true\">"
-                + "  <reach id=\"12345\">"
-                + "    <adjustment src=\"1\" abs=\"111\" />"
-                + "    <adjustment src=\"2\" coef=\"0.9\" />"
-                + "  </reach>"
-                + "</individualGroup>"
-                ;
-            XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(fragment));
-            reader.next();
-
-            // Parse expecting an exception
-            IndividualGroup group = new IndividualGroup(1);
-            group.parse(reader);
-            fail("Coefficient on a reach adjustment should throw an exception.");
 
         } catch (XMLStreamException se) {
             fail(se.toString());

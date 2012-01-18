@@ -3,7 +3,7 @@
 	<PredictionContext context-id="$contextId$"/>   
 	<!-- <bbox>-83.660888671875,27.80914306640625,-81.749267578125,28.399658203125</bbox> -->   
 	<response-content>    
-		<attributes />    
+		<id-attributes />    
 		<source-values />
 		<predicted />  
 	</response-content>  
