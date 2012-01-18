@@ -56,13 +56,13 @@ public class PredictPipeline extends AbstractPipeline<PredictExportRequest>{
 					break;
 				case CSV:
 					Delimiters csvD = Delimiters.CSV_DELIMITERS;
-					csvD.sheetStart = "#" + readmeText.replaceAll("[[\n\r][\r\n]\n\r][\t ]*", "\n#") + "\n";
+					csvD.sheetStart = "#,\"" + readmeText.replaceAll("[[\n\r][\r\n]\n\r][\t ]*", "\"\n#,\"") + "\"\n";
 					this.setDelimiters(csvD);
 					break;
 				case DATA:
 				case TAB:
 					Delimiters tabD = Delimiters.TAB_DELIMITERS;
-					tabD.sheetStart = "#" + readmeText.replaceAll("\n", "\n#") + "\n";
+					tabD.sheetStart = "#,\"" + readmeText.replaceAll("[[\n\r][\r\n]\n\r][\t ]*", "\"\n#,\"") + "\"\n";
 					this.setDelimiters(tabD);
 					break;
 				default:
