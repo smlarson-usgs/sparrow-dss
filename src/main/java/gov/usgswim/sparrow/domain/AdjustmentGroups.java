@@ -273,7 +273,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 						for (Long reachID: rg.getCombinedReachIDs()) {
 							int row = data.getRowForReachID(reachID);
 							for (int i=0; i<adjustments.size(); i++) {
-								applyAdjustmentToReach(adjustments.get(i), row, adjSourceColumn[i], coefAdj, overAdj);
+								applyAdjustmentToReach(adjustments.get(i), row, adjSourceColumn[i], coefAdj, overAdj, false);
 							}
 						}
 					}
@@ -293,7 +293,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
                 // Note:  getAdjustments() never returns null
                 for (Adjustment adj: r.getAdjustments()) {
                     Integer srcId = adj.getSource();
-                    applyAdjustmentToReach(adj, row, data.getSourceIndexForSourceID(srcId), coefAdj, overAdj);
+                    applyAdjustmentToReach(adj, row, data.getSourceIndexForSourceID(srcId), coefAdj, overAdj, true);
                 }
             }
         }
@@ -302,16 +302,38 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
         return adjusted;
     }
 
-	private void applyAdjustmentToReach(Adjustment adj, int row, int col, SparseCoefficientAdjustment coefAdj, SparseOverrideAdjustment overAdj) throws Exception {
+	/**
+	 * Applies an adjustment to an individual reach.
+	 * 
+	 * Note that an override adjustments always replaces an existing value and
+	 * will cause any existing coef adjustment for that reach/source to be ignored.
+	 * 
+	 * Coef adjustments can either replace existing coefs or be multiplied by
+	 * existing coefs (see params).
+	 * 
+	 * @param adj The adjustment to apply
+	 * @param row The row the adjustment should be applied to
+	 * @param col The column index the adjustment should be applied to
+	 * @param coefAdj The Table containing the current coefficient adjustments
+	 * @param overAdj The table containing the current override (absolute) adjustments
+	 * @param coefOverridesPrevious If true, the new coef value should replace any existing coefs.  If false, multiply w/ exising coefs.
+	 * @throws Exception
+	 */
+	private void applyAdjustmentToReach(Adjustment adj, int row, int col,
+			SparseCoefficientAdjustment coefAdj, SparseOverrideAdjustment overAdj,
+			boolean coefOverridesPrevious) throws Exception {
+		
 		Double coef = adj.getCoefficient();
 
 		if (coef != null) {
 
-			//if a coef already exists, the new coef is the product of the existing and the new
-
-			Number existingCoef = coefAdj.getCoef(row , col);
-			if (existingCoef != null) {
-				coef = coef.doubleValue() * existingCoef.doubleValue();
+			//Coef's can override previously set coefs or can be multiplied in
+			//to the existing coef value.
+			if (! coefOverridesPrevious) {
+				Number existingCoef = coefAdj.getCoef(row , col);
+				if (existingCoef != null) {
+					coef = coef.doubleValue() * existingCoef.doubleValue();
+				}
 			}
 
 			coefAdj.setValue(coef, row, col);
@@ -320,6 +342,8 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 			overAdj.setValue(abs, row, col);
 		}
 	}
+	
+
 
 	public void checkValidity() throws XMLParseValidationException {
 		if (!isValid()) {
