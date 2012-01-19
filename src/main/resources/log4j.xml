@@ -48,16 +48,19 @@
 	</appender>
 	
 	<logger name="gov.usgswim.sparrow">
-		<level value="info"/>
+		<level value="error"/>
 		<appender-ref ref="FA" />
 		<appender-ref ref="Email" />
+	</logger>
+
+	<logger name="gov.usgswim.sparrow.action.Action" additivity="false">
+		<level value="error" />
 		<appender-ref ref="CA" />
 	</logger>
 
-
-
 	<root>
 		<priority value="fatal" />
+		<appender-ref ref="FA" />
 	</root>
 
 </log4j:configuration>
