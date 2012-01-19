@@ -11,4 +11,5 @@
 	<description>The total load associated with a stream reach that arrives at the downstream end of a selected target reach (in units of kilograms per year).</description>
 	<units>kg⋅year⁻¹</units>
 	<constituent>Nitrogen</constituent>
+	<rowCount>8321</rowCount>
 </PredictionContext-response>

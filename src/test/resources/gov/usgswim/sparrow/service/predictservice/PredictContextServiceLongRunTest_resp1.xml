@@ -11,4 +11,5 @@
 	<description>The incremental yield (units of kilograms per square kilometer per year) associated with a stream reach that arrives at the downstream end of a selected target reach.</description>
 	<units>kg⋅km⁻²⋅yr⁻¹</units>
 	<constituent>Nitrogen</constituent>
+	<rowCount>8321</rowCount>
 </PredictionContext-response>

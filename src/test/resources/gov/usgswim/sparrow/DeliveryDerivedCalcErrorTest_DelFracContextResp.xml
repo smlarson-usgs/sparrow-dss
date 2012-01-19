@@ -11,4 +11,5 @@
 	<description>The fraction of the load leaving a reach that arrives at the downstream end of a selected target reach without any removal by natural attenuation processes (e.g., long-term storage; denitrification). You must choose a target reach if you select this series.</description>
 	<units>(fraction)</units>
 	<constituent>Nitrogen</constituent>
+	<rowCount>8321</rowCount>
 </PredictionContext-response>

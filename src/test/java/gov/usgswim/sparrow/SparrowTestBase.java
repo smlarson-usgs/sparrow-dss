@@ -16,16 +16,8 @@ import gov.usgswim.sparrow.cachefactory.PredictDataFactory;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.io.StringReader;
+import java.io.*;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -56,8 +48,8 @@ import org.w3c.dom.Document;
 public abstract class SparrowTestBase {
 	
 	/** Logging.  Log messages will use the name of the subclass */
-	protected static Logger log =
-		Logger.getLogger(SparrowTestBase.class); //logging for this class
+	protected static Logger log = null;
+		
 	
 	/** lifecycle listener handles startup / shutdown */
 	static LifecycleListener lifecycle = new LifecycleListener();
@@ -92,6 +84,12 @@ public abstract class SparrowTestBase {
 	
 	/** A single instance which is destroyed in teardown */
 	private static SparrowTestBase singleInstanceToTearDown;
+	
+	
+	static {
+		System.setProperty("log4j.configuration", "log4j_test.xml");
+		log = Logger.getLogger(SparrowTestBase.class); //logging for this class
+	}
 	
 	private Level initialLogLevel = null;
 
