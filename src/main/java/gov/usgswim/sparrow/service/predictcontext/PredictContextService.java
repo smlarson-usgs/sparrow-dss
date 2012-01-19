@@ -90,6 +90,8 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 			}
 			
 			
+			
+			
 
 			String response = props.getParametrizedQuery("ResponseOK",
 				new String[] {
@@ -103,7 +105,8 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 					"name", name,
 					"description", description,
 					"units", units,
-					"constituent", constituent
+					"constituent", constituent,
+					"rowCount", Integer.toString(dataColumn.getRowCount())
 			});
 
 			return inFact.createXMLStreamReader(new StringReader(response));
