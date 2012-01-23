@@ -12,6 +12,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 
 public class SparrowFlatteningFormatter extends AbstractFormatter {
 	//Human readable data types
@@ -42,7 +43,9 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 
 
 	public SparrowFlatteningFormatter(OutputType type) {
+		
 		super(type);
+		
 		switch (type) {
 			case EXCEL_FLAT: // TODO eliminate
 			case EXCEL:
@@ -137,8 +140,7 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 						break;
 					case XMLStreamConstants.CHARACTERS:
 						if (isInItem) {
-							String s = in.getText();
-							s = StringEscapeUtils.escapeCsv(s);
+							String s = formatSimple(in.getText());
 							rowCellValues.add(s);
 							isInItem = false;	//done w/ item
 						}
@@ -184,7 +186,6 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 	}
 
 	public boolean isNeedsCompleteFirstRow() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -199,20 +200,16 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 		}
 		switch (this.outputType) {
 			case CSV:
-				// Currently handles commas and quotes. May need to handle carriage
-				// returns and tabs later?
-				boolean hasQuotes = value.indexOf('"') >= 0;
-				boolean isDoEncloseInQuotes = (value.indexOf(',')>=0) || hasQuotes; 
-				if (hasQuotes) {
-					value = value.replaceAll("\"", "\"\""); // escape quotes by doubling them
-				}
-				if (isDoEncloseInQuotes) {
-					return '"' + value + '"';
-				}
+				value = StringEscapeUtils.escapeCsv(value);
 				break;
 			case XML: // same as excel
 			case EXCEL:
 				value = XMLUtils.quickTagContentEscape(value);
+				break;
+			case DATA:
+			case TAB:
+				//replace tabs, new line, form feed and carriage return w/ spaces
+				value = StringUtils.replaceChars(value, "\t\n\f\r", "    ");
 				break;
 		}
 		return value;
