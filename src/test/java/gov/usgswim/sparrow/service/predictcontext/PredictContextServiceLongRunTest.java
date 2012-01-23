@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.service.predictservice;
+package gov.usgswim.sparrow.service.predictcontext;
 
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.assertTrue;
