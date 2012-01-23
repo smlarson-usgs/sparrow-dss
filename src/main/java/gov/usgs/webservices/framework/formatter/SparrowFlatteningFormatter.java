@@ -159,7 +159,14 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 							for (String cellValue: rowCellValues) {
 								cells.append(delims.bodyCellStart).append(cellValue).append(delims.bodyCellEnd);
 							}
-							out.write(cells.toString());
+							
+							String cellsString = "";
+							if (cells.length() > 0 && (CSV.equals(outputType) || TAB.equals(outputType))) {
+								//Drop the last cell body delimiter
+								cellsString = cells.substring(0, cells.length() - delims.bodyCellEnd.length());
+							}
+							
+							out.write(cellsString);
 							
 							// clear the row and output its end
 							rowCellValues.clear();
