@@ -255,6 +255,18 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	}
 
 	/**
+	 * Adds an open tag, content, closed tag event to the event stream, even
+	 * if the tagConent is null. Note that all addXXX() methods add to the events
+	 * queue immediately hence return void
+	 *
+	 * @param tagName
+	 * @param tagContent
+	 */
+	public void addBasicTag(String tagName, String tagContent) {
+		events.add(new BasicTagEvent(tagName, tagContent));
+	}
+	
+	/**
 	 * Adds an open tag, content, closed tag event to the event stream if
 	 * tagContent or attributes are not null. Note that all addXXX() methods add
 	 * to the events queue immediately hence return void

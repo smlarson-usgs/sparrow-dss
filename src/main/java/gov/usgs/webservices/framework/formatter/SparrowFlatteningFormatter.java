@@ -1,29 +1,23 @@
 package gov.usgs.webservices.framework.formatter;
 
-import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.CSV;
-import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.DATA;
-import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.EXCEL;
-import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.HTML;
-import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.TAB;
-import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.XHTML;
-import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.XML;
+import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.*;
 import gov.usgs.webservices.framework.utils.XMLUtils;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.Date;
-import java.util.EmptyStackException;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 public class SparrowFlatteningFormatter extends AbstractFormatter {
-	//
+	//Human readable data types
+	public static final String STRING = "String";
+	public static final String NUMBER = "Number";
+	
 	public static final Set<OutputType> acceptableTypes = new HashSet<OutputType>();
 	static {
 		// The DataFlatteningFormatter can flatten for the following output types
@@ -39,7 +33,6 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 	
 	private Delimiters delims;
 	private boolean isInItem;
-//	private String itemValue;
 	private Queue<String> headers = new LinkedList<String>();
 	private Queue<String> groups = new LinkedList<String>();
 	private boolean isStarted;
@@ -91,12 +84,6 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 						if ("c".equals(localName)) {
 							isInItem = true;
 						} else if ("r".equals(localName)) {
-//							rowCounter++;
-//							if (rowCounter > 100) {
-//								out.write(delims.sheetEnd);
-//								out.flush();
-//								return;
-//							}
 							if (!isStarted) {
 								// output the header and column names
 								StringBuilder groupHeaderOutput =  new StringBuilder();
@@ -133,6 +120,7 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 							String header = in.getAttributeValue(null, "name");
 							headers.add(header);
 							groupCount++;
+							//String type = in.getAttributeValue(null, "type");
 						} else if ("group".equals(localName)) {
 							String groupName = in.getAttributeValue(null, "name");
 							groups.add(groupName);
@@ -149,15 +137,20 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 						break;
 					case XMLStreamConstants.CHARACTERS:
 						if (isInItem) {
-							rowCellValues.add(in.getText());
+							String s = in.getText();
+							s = StringEscapeUtils.escapeCsv(s);
+							rowCellValues.add(s);
+							isInItem = false;	//done w/ item
 						}
 						break;
 					case XMLStreamConstants.END_ELEMENT:
 						localName = in.getLocalName();
 						
 						if ("c".equals(localName)) {
-							isInItem = false;
-
+							if (isInItem) {
+								//There was no content for this 'c', so add an empty cell value
+								rowCellValues.add("");
+							}
 						} else 	if ("r".equals(localName)) {
 							// output the row's cells
 							StringBuilder cells = new StringBuilder();

@@ -2,6 +2,9 @@ package gov.usgswim.sparrow.service.predict;
 
 import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_NAMESPACE;
 import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
+import static gov.usgs.webservices.framework.formatter.SparrowFlatteningFormatter.NUMBER;
+import static gov.usgs.webservices.framework.formatter.SparrowFlatteningFormatter.STRING;
+
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.datatable.DataTable;
@@ -21,16 +24,12 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	public static String TARGET_NAMESPACE = "http://www.usgs.gov/sparrow/prediction-response/v0_1";
 	public static String TARGET_NAMESPACE_LOCATION = "http://www.usgs.gov/sparrow/prediction-response/v0_1.xsd";
 	public static String T_PREFIX = "mod";
+	
 	private PredictExportRequest request;
-	//private DataTable result;
-	//private PredictData predictData;
+
 	private RowFilter filter;
 	private DataTable filterTable;
-	
-//	private PredictionContext predictContext;
-//	private PredictResult adjPredictionResult;
-//	private DataColumn dataColumn;
-	
+
 	private DataTable watershedAreas;
 	private DataTable huc8data;
 	private SparrowColumnSpecifier adjDataColumn;
@@ -156,8 +155,8 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 				{
 					//reach info, HUC8 and watershed area
 					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Basic Reach Info"));
-					events.add(makeNonNullBasicTag("col", "").addAttribute("name", "Watershed Area").addAttribute("type", "Number"));
-					events.add(makeNonNullBasicTag("col", "").addAttribute("name", "HUC8").addAttribute("type", "String"));
+					events.add(makeNonNullBasicTag("col", "").addAttribute("name", "Watershed Area").addAttribute("type", NUMBER));
+					events.add(makeNonNullBasicTag("col", "").addAttribute("name", "HUC8").addAttribute("type", STRING));
 					addCloseTag("group");
 					
 					//Add a group for the mapped value
@@ -169,14 +168,14 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 							String name = "Adjusted Mapped Value: " + adjDataColumn.getTable().getName(adjDataColumn.getColumn());
 							//name += " (" + adjDataColumn.getTable().getProperty(adjDataColumn.getColumn(), "constituent") + ")";
 							name += " (" + adjDataColumn.getTable().getUnits(adjDataColumn.getColumn()) + ")";
-							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
+							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", NUMBER));
 						}
 						
 						if (nomDataColumn != null) {
 							String name = "Original Mapped Value: " + nomDataColumn.getTable().getName(nomDataColumn.getColumn());
 							//name += " (" + nomDataColumn.getTable().getProperty(nomDataColumn.getColumn(), "constituent") + ")";
 							name += " (" + nomDataColumn.getTable().getUnits(nomDataColumn.getColumn()) + ")";
-							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
+							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", NUMBER));
 						}
 
 						addCloseTag("group");
@@ -191,7 +190,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 								String name = "Adj Source: " + adjPredictData.getSrc().getName(i);
 								name += " (" + adjPredictData.getSrc().getProperty(i, "constituent") + ")";
 								name += " (" + adjPredictData.getSrc().getUnits(i) + ")";
-								events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
+								events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", NUMBER));
 							}
 							addCloseTag("group");
 						}
@@ -217,7 +216,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 							String name = "Original Source: " + nomPredictData.getSrc().getName(i);
 							name += " (" + nomPredictData.getSrc().getProperty(i, "constituent") + ")";
 							name += " (" + nomPredictData.getSrc().getUnits(i) + ")";
-							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
+							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", NUMBER));
 						}
 						addCloseTag("group");
 					}
@@ -241,7 +240,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 						
 						for (int i = 0; i < reachIdAttribs.getColumnCount(); i++) {
 							String name = reachIdAttribs.getName(i);
-							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "String"));
+							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", STRING));
 						}
 						addCloseTag("group");
 					}
@@ -252,7 +251,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 						for (int i = 0; i < reachStatsTable.getColumnCount(); i++) {
 							String name = reachStatsTable.getName(i);
 							name = name + " (" + reachStatsTable.getUnits(i) + ")";
-							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
+							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", NUMBER));
 						}
 						addCloseTag("group");
 					}
@@ -289,23 +288,23 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 			events.add(rowEvent);
 			{
 				//Column 1 by def.  See LoadUnitArea class
-				addNonNullBasicTag("c", watershedAreas.getValue(state.r, 1).toString());
+				addBasicTag("c", watershedAreas.getValue(state.r, 1).toString());
 				
 				//Column 0 by def.  See LoadHUCTable
-				addNonNullBasicTag("c", huc8data.getValue(state.r, 0).toString());
+				addBasicTag("c", huc8data.getValue(state.r, 0).toString());
 				
 				if (hasAdjustments && adjDataColumn != null) {
-					addNonNullBasicTag("c", adjDataColumn.getTable().getValue(state.r, adjDataColumn.getColumn()).toString());
+					addBasicTag("c", adjDataColumn.getTable().getValue(state.r, adjDataColumn.getColumn()).toString());
 				}
 				
 				if (nomDataColumn != null) {
-					addNonNullBasicTag("c", nomDataColumn.getTable().getValue(state.r, nomDataColumn.getColumn()).toString());
+					addBasicTag("c", nomDataColumn.getTable().getValue(state.r, nomDataColumn.getColumn()).toString());
 				}
 
 				if(hasAdjustments){
 					if (request.isIncludeSource() && adjPredictData != null) {
 						for (int c = 0; c < adjPredictData.getSrc().getColumnCount(); c++) {
-							addNonNullBasicTag("c", adjPredictData.getSrc().getString(state.r, c));
+							addBasicTag("c", adjPredictData.getSrc().getString(state.r, c));
 						}
 					}
 	
@@ -319,7 +318,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 				
 				if (request.isIncludeSource() && nomPredictData != null) {
 					for (int c = 0; c < nomPredictData.getSrc().getColumnCount(); c++) {
-						addNonNullBasicTag("c", nomPredictData.getSrc().getString(state.r, c));
+						addBasicTag("c", nomPredictData.getSrc().getString(state.r, c));
 					}
 				}
 
@@ -332,13 +331,13 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 				
 				if (reachIdAttribs != null) {
 					for (int c = 0; c < reachIdAttribs.getColumnCount(); c++) {
-						addNonNullBasicTag("c", reachIdAttribs.getString(state.r, c));
+						addBasicTag("c", reachIdAttribs.getString(state.r, c));
 					}
 				}
 				
 				if (reachStatsTable != null) {
 					for (int c = 0; c < reachStatsTable.getColumnCount(); c++) {
-						addNonNullBasicTag("c", reachStatsTable.getString(state.r, c));
+						addBasicTag("c", reachStatsTable.getString(state.r, c));
 					}
 				}
 
@@ -361,7 +360,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 		for (int i = startCol; i < (startCol + colCount); i++) {
 			String name = result.getName(i) + nameSuffix;
 			name += " (" + result.getUnits(i) + ")";
-			events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", "Number"));
+			events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", NUMBER));
 		}
 	}
 	
@@ -374,7 +373,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	 */
 	protected void writePredictData(PredictResult result, int startCol, int colCount) {
 		for (int c = startCol; c < (startCol + colCount); c++) {
-			addNonNullBasicTag("c", result.getString(state.r, c));
+			addBasicTag("c", result.getString(state.r, c));
 		}
 	}
 	
