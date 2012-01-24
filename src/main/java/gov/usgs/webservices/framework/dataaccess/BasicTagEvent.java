@@ -4,6 +4,7 @@ import static javax.xml.stream.XMLStreamConstants.CHARACTERS;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.SPACE;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
+import static javax.xml.stream.XMLStreamConstants.CDATA;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ import org.apache.commons.lang.StringUtils;
 		 */
 		public BasicTagEvent(int type) {
 		this.type = type;
-		if (type != SPACE) {
+		if (type != SPACE && type != CDATA) {
 			initializeAttributes();
 		} else {
 			tagContent = "\n";
@@ -58,17 +59,23 @@ import org.apache.commons.lang.StringUtils;
 	}
 
 		/**
-		 * Creates a named BasicTagEvent for START_ELEMENT or END_ELEMENT
+		 * Creates a named BasicTagEvent for START_ELEMENT, END_ELEMENT or CDATA
 		 * SPACE elements are created using single argument version.
 		 * CHARACTERS are created as part of combo tag;
 		 * @param type
-		 * @param name
+		 * @param nameOrCData If the type is CDATA, this is the content.  If a start element, it is the name.
 		 */
-		public BasicTagEvent(int type, String name){
-			assert(type == START_ELEMENT || type == END_ELEMENT );
-			this.eventName = name;
+		public BasicTagEvent(int type, String nameOrCData){
+			assert(type == START_ELEMENT || type == END_ELEMENT || type == CDATA);
+			
 			this.type = type;
-			initializeAttributes();
+			
+			if (type == CDATA) {
+				this.tagContent = nameOrCData; 
+			} else {
+				this.eventName = nameOrCData;
+				initializeAttributes();
+			}
 		}
 
 		/**

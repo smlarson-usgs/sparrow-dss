@@ -70,6 +70,9 @@ public class Delimiters {
 			+ "  <Style ss:ID=\"s21\">"
 			+ "   <NumberFormat ss:Format=\"Fixed\"/>"
 			+ "  </Style>"
+			+ "  <Style ss:ID=\"s22\">" /* Allows wraped text for notes */
+			+ "   <Alignment ss:Vertical=\"Bottom\" ss:WrapText=\"1\"/>"
+			+ "  </Style>"
 			+ "  <Style ss:ID=\"s23\">"
 			+ "   <Font x:Family=\"Swiss\" ss:Bold=\"1\"/>"
 			+ "  </Style>"

@@ -422,12 +422,6 @@
 			
 			Any increase from an original predicted value of zero is reported as a 100% change. Any decrease from an original predicted value of zero is reported as a -100% change.
 			
-			__Linking Exported Data to River Network Shapefiles__
-			The ID has 3 possible item names affiliated with their respective river network shape files: 
-			1. ID = 'E2RF1' for the RF1 national models; for shape files, see: http://water.usgs.gov/GIS/metadata/usgswrd/XML/erf1_2.xml
-			2. ID = 'MRB_E2RF1' for the RF1 regional models; for shape files, see: http://water.usgs.gov/nawqa/modeling/rf1attributes.html
-			3. ID = 'GRID_CODE' for the NHD regional models; for shape files, see: http://water.usgs.gov/nawqa/modeling/nhdplusattributes.html
-			
 			__Additional Optional Columns__
 			Reach Name (pname)
 			The name of the reach.  This name may sometimes be empty, partial, or different than local names for the reach.
@@ -446,7 +440,11 @@
 			
 			
 			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
-
+			
+			__Linking Exported Data to River Network Shapefiles__
+			This model is based on the '$networkName$' Network, which is documented at $networkUrl$
+			The id column of the rows in this export should be matched to the $networkIdColumn$ in the '$networkName$' Network data.
+			
 		</Term>
 	</CommonTerms>
 </Documentation>

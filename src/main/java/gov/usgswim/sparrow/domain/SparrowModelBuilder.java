@@ -28,6 +28,9 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 	protected Date _dateAdded;
 	protected Long _contactId;
 	protected Long _enhNetworkId;
+	protected String _enhNetworkName;
+	protected String _enhNetworkUrl;
+	protected String _enhNetworkIdColumn;
 	protected String _themeName;
 	protected Double _northBound;
 	protected Double _eastBound;
@@ -66,7 +69,8 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 
 		return new SparrowModelImm(
 			_id, _approved, _public, _archived, _name, _description, _url,
-			_dateAdded, _contactId, _enhNetworkId, _themeName,
+			_dateAdded, _contactId, _enhNetworkId, _enhNetworkName, _enhNetworkUrl, _enhNetworkIdColumn,
+			_themeName,
 			_northBound, _eastBound, _southBound, _westBound, _constituent, _units, 
 			_sessions, tmpList);
 	}
@@ -117,6 +121,21 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 
 	@Override
 	public Long getEnhNetworkId() {return _enhNetworkId;}
+	
+	@Override
+	public String getEnhNetworkName() { return _enhNetworkName; }
+
+	public void setEnhNetworkName(String _enhNetworkName) { this._enhNetworkName = _enhNetworkName; }
+
+	@Override
+	public String getEnhNetworkUrl() { return _enhNetworkUrl; }
+
+	public void setEnhNetworkUrl(String _enhNetworkUrl) { this._enhNetworkUrl = _enhNetworkUrl; }
+
+	@Override
+	public String getEnhNetworkIdColumn() { return _enhNetworkIdColumn; }
+
+	public void setEnhNetworkIdColumn(String _enhNetworkIdColumn) { this._enhNetworkIdColumn = _enhNetworkIdColumn; }
 	
 	public void setThemeName(String themeName) { this._themeName = themeName; }
 	

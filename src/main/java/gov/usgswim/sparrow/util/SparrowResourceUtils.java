@@ -3,13 +3,10 @@ package gov.usgswim.sparrow.util;
 import gov.usgs.webservices.framework.utils.ResourceLoaderUtils;
 import gov.usgs.webservices.framework.utils.SmartXMLProperties;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.StringUtils;
 
 public abstract class SparrowResourceUtils {
 	public static final String HELP_FILE = "model.xml";
@@ -27,26 +24,40 @@ public abstract class SparrowResourceUtils {
 		return modelFolder + fileName;
 	}
 
-//	public static String retrieveSavedSession(String model, String sessionName) {
-//		Long modelID = lookupModelID(model);
-//		Properties props = ResourceLoaderUtils.loadResourceAsProperties(getModelResourceFilePath(modelID, SESSIONS_FILE));
-//		String defaultValue = null; // TODO decide on default value for session not found
-//		return props.getProperty(sessionName.replace(' ', '_'), defaultValue);
-//	}
-//
-//	public static Set<Entry<Object, Object>> retrieveAllSavedSessions(String model) {
-//		Long modelID = lookupModelID(model);
-//		Properties props = ResourceLoaderUtils.loadResourceAsProperties(getModelResourceFilePath(modelID, SESSIONS_FILE));
-//		Set<Entry<Object, Object>> sessionList = props.entrySet();
-//		Map<Object, Object> newMap = new HashMap<Object, Object>(sessionList.size());
-//		if (sessionList != null && !sessionList.isEmpty()) {
-//			for (Entry<Object, Object> entry: sessionList) {
-//				newMap.put(entry.getKey().toString().replace('_', ' '), entry.getValue());
-//			}
-//		}
-//		return newMap.entrySet();
-//	}
 
+	/**
+	 * Looks up an item in the help documentation and replaced named parameters.
+	 * 
+	 * Parameters are passed in name-value pairs, so there should always be an
+	 * even number of params.
+	 * 
+	 * @param model
+	 * @param helpItem
+	 * @param wrapXMLElement
+	 * @param params
+	 * @return
+	 */
+	public static String lookupMergedHelp(String model, String helpItem, String wrapXMLElement, Object... params) {
+		
+		String text = lookupMergedHelp(model, helpItem, wrapXMLElement);
+		
+		if (params != null) {
+			for (int i=0; i<params.length; i+=2) {
+				String n = "$" + params[i].toString() + "$";
+				String v = null;
+				if (params[i+1] != null) {
+					v = params[i+1].toString();
+				} else {
+					v = "[Unknown]";
+				}
+	
+				text = StringUtils.replace(text, n, v);
+			}
+		}
+
+		return text;
+		
+	}
 	public static String lookupMergedHelp(String model, String helpItem, String wrapXMLElement) {
 		String genHelp = lookupGeneralHelp(helpItem);
 		String modelHelp = lookupModelHelp(model, helpItem);

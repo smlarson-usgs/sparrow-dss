@@ -1,11 +1,10 @@
 package gov.usgswim.sparrow.domain;
 
+import gov.usgswim.sparrow.SparrowUnits;
+
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
-import java.util.Map.Entry;
-import gov.usgswim.sparrow.SparrowUnits;
 
 /**
  * Domain Object representing a SPARROW SparrowModel.
@@ -84,6 +83,25 @@ public interface SparrowModel {
 	 * @return
 	 */
 	public Long getEnhNetworkId();
+	
+	/**
+	 * The name of the enhanced network this model is based on.
+	 * @return
+	 */
+	public String getEnhNetworkName();
+	
+	/**
+	 * The url of the enhanced network this model is based on.
+	 * @return
+	 */
+	public String getEnhNetworkUrl();
+	
+	/**
+	 * The name of the column in the external enh dataset that should be used
+	 * to match up rows in that dataset with the rows in the sparrow model.
+	 * @return
+	 */
+	public String getEnhNetworkIdColumn();
 	
 	/**
 	 * Returns the MapViewer theme to use for the geometry.  This will likely

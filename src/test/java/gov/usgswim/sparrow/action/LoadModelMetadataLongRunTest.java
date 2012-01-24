@@ -84,6 +84,9 @@ public class LoadModelMetadataLongRunTest extends SparrowTestBaseWithDB {
 		assertEquals("Nitrogen", model.getConstituent());
 		assertEquals(SparrowUnits.KG_PER_YEAR, model.getUnits());
 		assertEquals(5, model.getSources().size());
+		assertEquals(new Long(23), model.getEnhNetworkId());
+		assertEquals("MRB ERF1_2 (RF1 version 2)", model.getEnhNetworkName());
+		assertEquals("http://water.usgs.gov/nawqa/modeling/rf1attributes.html", model.getEnhNetworkUrl());
 
 		//1st source
 		assertEquals(1, s1.getId().intValue());

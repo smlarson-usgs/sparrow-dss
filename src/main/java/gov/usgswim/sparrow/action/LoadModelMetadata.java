@@ -117,6 +117,9 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 				m.setDateAdded(rset.getDate("DATE_ADDED"));
 				m.setContactId(rset.getLong("CONTACT_ID"));
 				m.setEnhNetworkId(rset.getLong("ENH_NETWORK_ID"));
+				m.setEnhNetworkName(rset.getString("ENH_NAME"));
+				m.setEnhNetworkUrl(rset.getString("ENH_URL"));
+				m.setEnhNetworkIdColumn(rset.getString("ENH_ID_COLUMN"));
 				m.setThemeName(rset.getString("THEME_NAME"));
 				m.setUrl(rset.getString("URL"));
 				m.setNorthBound(rset.getDouble("BOUND_NORTH"));

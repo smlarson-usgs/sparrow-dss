@@ -34,6 +34,7 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 	
 	private Delimiters delims;
 	private boolean isInItem;
+	private boolean isInDescription;
 	private Queue<String> headers = new LinkedList<String>();
 	private Queue<String> groups = new LinkedList<String>();
 	private boolean isStarted;
@@ -84,7 +85,9 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 
 						String localName = in.getLocalName();						
 
-						if ("c".equals(localName)) {
+						if ("description".equals(localName)) {
+							isInDescription = true;
+						} else if ("c".equals(localName)) {
 							isInItem = true;
 						} else if ("r".equals(localName)) {
 							if (!isStarted) {
@@ -145,10 +148,52 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 							isInItem = false;	//done w/ item
 						}
 						break;
+					case XMLStreamConstants.CDATA:
+						if (isInDescription) {
+							
+							String s = in.getText();
+							
+							switch (outputType) {
+							case EXCEL:
+								//All stuffed into one cell w/ multiple lines
+								String EXCEL_LINE_BREAK = "&#10;";	//Empirically, this seems to be it.
+								s = StringEscapeUtils.escapeXml(s);	//Excel seems to have issues w/ CDATA, so escape all xml.
+								s = "<Row><Cell ss:StyleID=\"s22\"><Data ss:Type=\"String\">" + s.replaceAll("[\n\r]+", EXCEL_LINE_BREAK) + "</Data></Cell></Row>";
+								break;
+							case CSV:
+								s = StringUtils.replace(s, "\"", "\"\"");
+								s = "#,\"" + s.replaceAll("[[\n\r][\r\n]\n\r][\t ]*", "\"\n#,\"") + "\"\n";
+								break;
+							case DATA:
+							case TAB:
+								s = "#,\"" + s.replaceAll("[[\n\r][\r\n]\n\r][\t ]*", "\"\n#,\"") + "\"\n";
+								break;
+							default:
+								break;
+							}
+							rowCellValues.add(s);
+							isInDescription = false;
+						}
+						break;
 					case XMLStreamConstants.END_ELEMENT:
 						localName = in.getLocalName();
 						
-						if ("c".equals(localName)) {
+						if ("description".equals(localName)) {
+							// output the row's cells
+							StringBuilder cells = new StringBuilder();
+							
+							//Should only be one
+							for (String cellValue: rowCellValues) {
+								cells.append(cellValue);
+							}
+							
+							if (cells.length() > 0) {
+								out.write(cells.toString());
+							}
+							
+							// clear the row
+							rowCellValues.clear();
+						} else if ("c".equals(localName)) {
 							if (isInItem) {
 								//There was no content for this 'c', so add an empty cell value
 								rowCellValues.add("");
@@ -164,6 +209,8 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 							if (cells.length() > 0 && (CSV.equals(outputType) || TAB.equals(outputType))) {
 								//Drop the last cell body delimiter
 								cellsString = cells.substring(0, cells.length() - delims.bodyCellEnd.length());
+							} else {
+								cellsString = cells.toString();
 							}
 							
 							out.write(cellsString);

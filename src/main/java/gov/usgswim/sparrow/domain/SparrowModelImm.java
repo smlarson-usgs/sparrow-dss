@@ -45,6 +45,9 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	private final Date _dateAdded;
 	private final Long _contactId;
 	private final Long _enhNetworkId;
+	private final String _enhNetworkName;
+	private final String _enhNetworkUrl;
+	private final String _enhNetworkIdColumn;
 	private final String _themeName;
 	private final Double _northBound;
 	private final Double _eastBound;
@@ -89,7 +92,8 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	 */
 	public SparrowModelImm(Long id, boolean approved, boolean isPublic, boolean archived,
 				String name, String description, String url, Date dateAdded,
-				Long contactId, Long enhNetworkId, String themeName,
+				Long contactId, Long enhNetworkId, String enhNetworkName, String enhNetworkUrl, String enhNetworkIdColumn,
+				String themeName,
 				Double northBound, Double eastBound, Double southBound, Double westBound,
 				String constituent, SparrowUnits units,
 				List<IPredefinedSession> sessions, List<Source> sources) {
@@ -104,6 +108,9 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 		_dateAdded = dateAdded;
 		_contactId = contactId;
 		_enhNetworkId = enhNetworkId;
+		_enhNetworkName = enhNetworkName;
+		_enhNetworkUrl = enhNetworkUrl;
+		_enhNetworkIdColumn = enhNetworkIdColumn;
 		_themeName = themeName;
 		_northBound = northBound;
 		_eastBound = eastBound;
@@ -150,6 +157,15 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	@Override
 	public Long getEnhNetworkId() { return _enhNetworkId;}
 	
+	@Override
+	public String getEnhNetworkName() { return _enhNetworkName; }
+
+	@Override
+	public String getEnhNetworkUrl() { return _enhNetworkUrl; }
+	
+	@Override
+	public String getEnhNetworkIdColumn() { return _enhNetworkIdColumn; }
+
 	@Override
 	public String getThemeName() { return _themeName; }
 

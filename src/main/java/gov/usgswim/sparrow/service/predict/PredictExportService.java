@@ -10,10 +10,13 @@ import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.PredictionContext;
+import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.UnitAreaType;
 import gov.usgswim.sparrow.request.HUCTableRequest;
+import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.util.SparrowResourceUtils;
 
 import javax.xml.stream.XMLStreamReader;
 
@@ -46,6 +49,19 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
     	PredictData nomPredictData = SharedApplication.getInstance().getPredictData(modelId);
     	DataTable reachIdAttribs = null;
     	DataTable reachStatsTable = null;
+    	
+		//Get the readme text
+    	SparrowModel model = SharedApplication.getInstance().getModelMetadata(new ModelRequestCacheKey(modelId, false, false, false)).get(0);
+		String networkName = model.getEnhNetworkName();
+		String networkUrl = model.getEnhNetworkUrl();
+		String networkIdColumn = model.getEnhNetworkIdColumn();
+		
+		String readmeText = SparrowResourceUtils.lookupMergedHelp(
+				model.getId().toString(),
+				"CommonTerms.Export Readme",
+				null,
+				new Object[] {"networkName", networkName, "networkUrl", networkUrl, "networkIdColumn", networkIdColumn});
+		
     	
         boolean hasAdjustments = false;
         if (predictContext.getAdjustmentGroups() != null) {
@@ -106,7 +122,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         		adjDataColumn, nomDataColumn,
     			adjPredictData, nomPredictData,
     			adjPredictResult, nomPredictResult,
-    			watershedAreas, huc8, reachIdAttribs, reachStatsTable, hasAdjustments);
+    			watershedAreas, huc8, reachIdAttribs, reachStatsTable, hasAdjustments, readmeText);
     }
 
     public void shutDown() {

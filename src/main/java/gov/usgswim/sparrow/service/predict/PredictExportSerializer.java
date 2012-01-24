@@ -1,17 +1,16 @@
 package gov.usgswim.sparrow.service.predict;
 
-import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_NAMESPACE;
-import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
 import static gov.usgs.webservices.framework.formatter.SparrowFlatteningFormatter.NUMBER;
 import static gov.usgs.webservices.framework.formatter.SparrowFlatteningFormatter.STRING;
-
+import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_NAMESPACE;
+import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.filter.RowFilter;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.filter.PredictExportAggFilter;
@@ -41,6 +40,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	private DataTable reachIdAttribs = null;
 	private DataTable reachStatsTable = null;
 	private boolean hasAdjustments;
+	private String exportDescription;
 	
 	/** Non-null PredictData instance used to find row IDs */
 	private PredictData refPredictData;
@@ -69,7 +69,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 			PredictData adjPredictData, PredictData nomPredictData,
 			PredictResult adjPredictResult, PredictResult nomPredictResult, 
 			DataTable waterShedAreasColumn, DataTable huc8data, DataTable reachIdAttribs,
-			DataTable reachStatsTable, boolean hasAdjustments) throws Exception {
+			DataTable reachStatsTable, boolean hasAdjustments, String exportDescription) throws Exception {
 		
 		super();
 		this.request = request;
@@ -85,6 +85,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 		this.reachIdAttribs = reachIdAttribs;
 		this.reachStatsTable = reachStatsTable;
 		this.hasAdjustments = hasAdjustments;
+		this.exportDescription = exportDescription;
 		
 		if (adjPredictData == null && nomPredictData == null) {
 			throw new IllegalArgumentException("adjPredictData and nomPredictData cannot both be null.");
@@ -151,6 +152,13 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 					.addAttribute("rowCount", Integer.toString(refDataColumn.getTable().getRowCount())));
 					//.addAttribute("columnCount", Integer.toString(result.getColumnCount())));	We don't really know the column count
 			{
+				
+				if (exportDescription != null && exportDescription.length() > 0) {
+					addOpenTag("description");
+					events.add(new BasicTagEvent(CDATA, exportDescription));
+					addCloseTag("description");
+				}
+				
 				addOpenTag("columns");
 				{
 					//reach info, HUC8 and watershed area
