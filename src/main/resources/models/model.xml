@@ -443,7 +443,7 @@
 			
 			__Linking Exported Data to River Network Shapefiles__
 			This model is based on the '$networkName$' Network, which is documented at $networkUrl$
-			The id column of the rows in this export should be matched to the $networkIdColumn$ in the '$networkName$' Network data.
+			The id column for the data in this export should be matched to the $networkIdColumn$ in the '$networkName$' Network data.
 			
 		</Term>
 	</CommonTerms>

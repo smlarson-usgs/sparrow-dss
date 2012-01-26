@@ -66,8 +66,10 @@ public class PredictExportRequest implements XMLStreamParserComponent,
 	private String bbox;
 	private boolean includeReachIdAttribs = false;
 	private boolean includeReachStatAttribs = false;
-	private boolean includeSource = false;
-	private boolean includePredict = false;
+	private boolean includeOrgSource = false;
+	private boolean includeAdjSource = false;
+	private boolean includeOrgPredict = false;
+	private boolean includeAdjPredict = false;
 
 	// ================
 	// INSTANCE METHODS
@@ -120,11 +122,17 @@ public class PredictExportRequest implements XMLStreamParserComponent,
 				} else if ("stat-attributes".equals(localName)) {
 					includeReachStatAttribs = true;
 					ParserHelper.ignoreElement(in);
-				} else if ("source-values".equals(localName)) {
-					includeSource = true;
+				} else if ("original-source-values".equals(localName)) {
+					includeOrgSource = true;
 					ParserHelper.ignoreElement(in);
-				} else if ("predicted".equals(localName)) {
-					includePredict = true;
+				} else if ("adjusted-source-values".equals(localName)) {
+					includeAdjSource = true;
+					ParserHelper.ignoreElement(in);
+				} else if ("original-predicted-values".equals(localName)) {
+					includeOrgPredict = true;
+					ParserHelper.ignoreElement(in);
+				} else if ("adjusted-predicted-values".equals(localName)) {
+					includeAdjPredict = true;
 					ParserHelper.ignoreElement(in);
 				} else if ("columns".equals(localName)) {
 					ParserHelper.ignoreElement(in);
@@ -192,12 +200,40 @@ public class PredictExportRequest implements XMLStreamParserComponent,
 		return responseFormat;
 	}
 
-	public boolean isIncludeSource() {
-		return includeSource;
+	/**
+	 * True to include the original (unadjusted) source values.
+	 * @return
+	 */
+	public boolean isIncludeOrgSource() {
+		return includeOrgSource;
+	}
+	
+	/**
+	 * True to include the user adjusted source values.
+	 * @return
+	 */
+	public boolean isIncludeAdjSource() {
+		return includeAdjSource;
 	}
 
-	public boolean isIncludePredict() {
-		return includePredict;
+	/**
+	 * True to include the original predicted values, unmodified by any user
+	 * adjustments to the sources.
+	 * @return
+	 */
+	public boolean isIncludeOrgPredict() {
+		return includeOrgPredict;
+	}
+	
+	/**
+	 * True to include the predicted values that result from the user adjusted
+	 * sources.  This would normally be the key set of data, in addition to the
+	 * specific data series that the user is mapping, that would be expected
+	 * in the export.
+	 * @return
+	 */
+	public boolean isIncludeAdjPredict() {
+		return includeAdjPredict;
 	}
 
 	public boolean isIncludeReachIdAttribs() {

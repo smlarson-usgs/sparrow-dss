@@ -9,6 +9,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.UnitAreaType;
@@ -24,34 +25,37 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
 
     public XMLStreamReader getXMLStreamReader(PredictExportRequest req,
             boolean isNeedsCompleteFirstRow) throws Exception {
+    	
+    	SharedApplication sharedApp = SharedApplication.getInstance();
+    	
         Integer predictionContextID = req.getContextID();
-        PredictionContext predictContext;
+        PredictionContext adjPredictContext;
         Long modelId = null;
 
         if (predictionContextID != null) {
-            predictContext = SharedApplication.getInstance().getPredictionContext(predictionContextID);
-            modelId = predictContext.getModelID();
+            adjPredictContext = sharedApp.getPredictionContext(predictionContextID);
+            modelId = adjPredictContext.getModelID();
         } else {
             // TODO [IK] Ask whether set predictionContext to null later?
-            predictContext = new PredictionContext(req.getModelID(), null, null, null, null, null);
+            adjPredictContext = new PredictionContext(req.getModelID(), null, null, null, null, null);
             modelId = req.getModelID();
         }
         
         
         
-        DataTable watershedAreas = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, UnitAreaType.HUC_NONE, true));
-        DataTable huc8 = SharedApplication.getInstance().getHUCData(new HUCTableRequest(modelId), false);
-        SparrowColumnSpecifier adjDataColumn = predictContext.getDataColumn();
-    	SparrowColumnSpecifier nomDataColumn = null;
+        DataTable watershedAreas = sharedApp.getCatchmentAreas(new UnitAreaRequest(modelId, UnitAreaType.HUC_NONE, true));
+        DataTable huc8 = sharedApp.getHUCData(new HUCTableRequest(modelId), false);
+        SparrowColumnSpecifier adjDataColumn = adjPredictContext.getDataColumn();
+    	SparrowColumnSpecifier orgDataColumn = adjPredictContext.getNoAdjustmentVersion().getDataColumn();
     	PredictResult adjPredictResult = null;
-    	PredictResult nomPredictResult = null;
+    	PredictResult orgPredictResult = null;
     	PredictData adjPredictData = null;
-    	PredictData nomPredictData = SharedApplication.getInstance().getPredictData(modelId);
+    	PredictData orgPredictData = null;
     	DataTable reachIdAttribs = null;
     	DataTable reachStatsTable = null;
     	
 		//Get the readme text
-    	SparrowModel model = SharedApplication.getInstance().getModelMetadata(new ModelRequestCacheKey(modelId, false, false, false)).get(0);
+    	SparrowModel model = sharedApp.getModelMetadata(new ModelRequestCacheKey(modelId, false, false, false)).get(0);
 		String networkName = model.getEnhNetworkName();
 		String networkUrl = model.getEnhNetworkUrl();
 		String networkIdColumn = model.getEnhNetworkIdColumn();
@@ -63,40 +67,47 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
 				new Object[] {"networkName", networkName, "networkUrl", networkUrl, "networkIdColumn", networkIdColumn});
 		
     	
-        boolean hasAdjustments = false;
-        if (predictContext.getAdjustmentGroups() != null) {
-        	hasAdjustments = predictContext.getAdjustmentGroups().hasAdjustments();
-        	
-    		DataTable adjustedSources =
-    			SharedApplication.getInstance().getAdjustedSource(predictContext.getAdjustmentGroups());
-
-    		PredictDataBuilder mutable = nomPredictData.getBuilder();
-    		mutable.setSrc(adjustedSources);
-        	
-        	adjPredictData = mutable.toImmutable();
-        	
-        	//Data columns
-        	nomDataColumn = predictContext.getNoAdjustmentVersion().getDataColumn();
-        } else {
-        	adjPredictData = nomPredictData;
-        	nomPredictData = null;
-        	
-        	//Data columns
-        	nomDataColumn = null;
+		//shortcut ref
+		AdjustmentGroups adjGroups = adjPredictContext.getAdjustmentGroups();
+		
+		if (req.isIncludeAdjSource()) {
+	        if (adjGroups != null && adjGroups.hasAdjustments()) {
+	
+	    		DataTable adjustedSources =
+	    			sharedApp.getAdjustedSource(adjGroups);
+	
+	    		
+	    		//Assembling the predict data in this way does not actually create
+	    		//a new copy of the data.
+	    		PredictDataBuilder mutable = sharedApp.getPredictData(modelId).getBuilder();
+	    		mutable.setSrc(adjustedSources);
+	        	
+	        	adjPredictData = mutable.toImmutable();
+	        	
+	        } else {
+	        	adjPredictData = sharedApp.getPredictData(modelId);
+	        }
+		}
+		
+		if (req.isIncludeOrgSource()) {
+			orgPredictData = sharedApp.getPredictData(modelId);
+		}
+        
+        if (req.isIncludeOrgPredict()) {
+        	orgPredictResult = sharedApp.getPredictResult(adjPredictContext.getNoAdjustmentVersion().getAdjustmentGroups());
         }
         
-        if (req.isIncludePredict()) {
-        	if (predictContext.getAdjustmentGroups() != null) {
-        		adjPredictResult = SharedApplication.getInstance().getPredictResult(predictContext.getAdjustmentGroups());
-        		nomPredictResult = SharedApplication.getInstance().getPredictResult(predictContext.getNoAdjustmentVersion().getAdjustmentGroups());
+        if (req.isIncludeAdjPredict()) {
+        	if (adjGroups != null && adjGroups.hasAdjustments()) {
+        		adjPredictResult = sharedApp.getPredictResult(adjPredictContext.getAdjustmentGroups());
         	} else {
-        		adjPredictResult = SharedApplication.getInstance().getPredictResult(predictContext.getNoAdjustmentVersion().getAdjustmentGroups());
+        		adjPredictResult = sharedApp.getPredictResult(adjPredictContext.getNoAdjustmentVersion().getAdjustmentGroups());
         	}
         }
         
         //Include optional identification information
         if (req.isIncludeReachIdAttribs()) {
-        	reachIdAttribs = SharedApplication.getInstance().getModelReachIdentificationAttributes(modelId);
+        	reachIdAttribs = sharedApp.getModelReachIdentificationAttributes(modelId);
         }
         
         //Include optional stats information
@@ -105,11 +116,11 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         	ColumnData[] statColumns = new ColumnData[2];
         	
         	
-        	SparrowColumnSpecifier scs = SharedApplication.getInstance().getStreamFlow(modelId);
+        	SparrowColumnSpecifier scs = sharedApp.getStreamFlow(modelId);
         	statColumns[0] = new ColumnDataFromTable(scs.getTable(), scs.getColumn());
         	
 			UnitAreaRequest catchAreaReq = new UnitAreaRequest(modelId, UnitAreaType.HUC_NONE, false);
-			DataTable catchmentAreaTab = SharedApplication.getInstance().getCatchmentAreas(catchAreaReq);
+			DataTable catchmentAreaTab = sharedApp.getCatchmentAreas(catchAreaReq);
 			statColumns[1] = new ColumnDataFromTable(catchmentAreaTab, 1);
 			
 			//Merge the columns into a single table
@@ -119,10 +130,10 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         
         return new  PredictExportSerializer(
         		req,
-        		adjDataColumn, nomDataColumn,
-    			adjPredictData, nomPredictData,
-    			adjPredictResult, nomPredictResult,
-    			watershedAreas, huc8, reachIdAttribs, reachStatsTable, hasAdjustments, readmeText);
+        		adjDataColumn, orgDataColumn,
+    			adjPredictData, orgPredictData,
+    			adjPredictResult, orgPredictResult,
+    			watershedAreas, huc8, reachIdAttribs, reachStatsTable, readmeText);
     }
 
     public void shutDown() {
