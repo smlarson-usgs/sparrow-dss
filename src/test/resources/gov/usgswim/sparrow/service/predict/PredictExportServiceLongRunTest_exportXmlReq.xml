@@ -5,8 +5,11 @@
 	<bbox>-80.8,32,-80,32.8</bbox>
 	<response-content>
 		<id-attributes />
-		<source-values />
-		<predicted />
+		<stat-attributes />
+		<original-source-values />
+		<adjusted-source-values />
+		<original-predicted-values />
+		<adjusted-predicted-values />
 	</response-content>
 	<response-format>
 		<mime-type>xml</mime-type>
