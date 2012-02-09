@@ -46,7 +46,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         DataTable watershedAreas = sharedApp.getCatchmentAreas(new UnitAreaRequest(modelId, UnitAreaType.HUC_NONE, true));
         DataTable huc8 = sharedApp.getHUCData(new HUCTableRequest(modelId), false);
         SparrowColumnSpecifier adjDataColumn = adjPredictContext.getDataColumn();
-    	SparrowColumnSpecifier orgDataColumn = adjPredictContext.getNoAdjustmentVersion().getDataColumn();
+    	SparrowColumnSpecifier orgDataColumn = null;
     	PredictResult adjPredictResult = null;
     	PredictResult orgPredictResult = null;
     	PredictData adjPredictData = null;
@@ -95,6 +95,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         
         if (req.isIncludeOrgPredict()) {
         	orgPredictResult = sharedApp.getPredictResult(adjPredictContext.getNoAdjustmentVersion().getAdjustmentGroups());
+        	orgDataColumn = adjPredictContext.getNoAdjustmentVersion().getDataColumn();
         }
         
         if (req.isIncludeAdjPredict()) {
