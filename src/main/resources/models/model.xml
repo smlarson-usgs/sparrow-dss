@@ -408,7 +408,7 @@
 			
 			If 'Include additional stream characteristics' is selected, these columns are included:
 			* Streamflow - The mean annual stream flow of the reach, in units of volume (cubic feet) per time (second).
-            * Incremental Area - The area of land that drains directly to the stream reach, not including land area that drains to upstream reaches.
+			* Incremental Area - The area of land that drains directly to the stream reach, not including land area that drains to upstream reaches.
 			
 			__The complete list of data series__
 			Any of these data series may be in the Mapped Value column, depending on the data series being mapped at the time of the export.
