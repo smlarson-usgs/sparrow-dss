@@ -360,9 +360,59 @@
 			NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.
 		</Term>
 		<Term id="Export Readme">
-			__Data Series Help__
-			The Data Series specifies which data (model output or input) are drawn on the map. The most commonly selected data are the total load estimates, which represent the average mass of the constituent transported by a stream, as predicted by the model.
-			The complete list of data series:
+			__Export Data Column Definitions__
+			
+			__Base export columns included in all exports__
+			* id:  Unique identifier for a stream reach in the model based on the reference stream network.  See the section 'Linking Exported Data to River Network Shapefiles' for more information on how to use this id.
+			* Watershed Area:  The area of land that drains all the upstream streams and rainfall to the stream reach.  The word watershed is sometimes used interchangeably with drainage basin or catchment.
+			* HUC8: Hydrologic unit code. The United States is divided and sub-divided into successively smaller hydrologic units which are classified into four levels: regions, sub-regions, accounting units, and cataloging units. The hydrologic units are arranged within each other, from the smallest (cataloging units) to the largest (regions). Each hydrologic unit is identified by a unique hydrologic unit code (HUC) consisting of two to eight digits based on the four levels of classification in the hydrologic unit system.  The fourth level of classification (HUC8) includes 2,264 cataloging units, which are geographic areas representing part of all of a surface drainage basin, a combination of drainage basins, or a distinct hydrologic feature. These units subdivide the subregions and accounting units into smaller areas.
+			* Mapped Value (data series) (unit):  The value of the data series that was displayed on the map in the DSS when the export was made.  The complete list of possible data series is further down in this document.
+			
+			__Columns included if 'Data series that reflect source input changes on the Change Inputs tab' options are chosen__
+			If 'Include predicted values for Total and Incremental loads' is checked, several sets of columns of predicted data are added using this naming:
+			(Adjusted) - Means that the source or predicted value reflects source input changes that would have been made on the Change Inputs tab in the application.
+			Decayed - Emphasizes that these values include in-stream attenuation.
+			
+			* [source name] Decayed Incremental Load (Adjusted) (unit) - One column per source.  This is the 'Incremental Load' data series for an individual source.
+			* Incremental Load (Adjusted) (unit) - The 'Incremental Load' data series (the sum of all per-source incrementals loads).
+			* [source name] Total Load (Adjusted) (unit) - One column per source.  This is the 'Total Load' data series for an individual source.
+			* Total Load (Adjusted) (unit) - The 'Total Load' data series (the sum of all per-source total loads).
+			
+			If 'Include the source input values used to calculate the predicted values' is checked, the source values are added to the export.
+			All source value columns in this set are prefixed with 'Adj. Source:' to indicate that they are adjusted to reflect source input changes made on the Change Inputs tab in the application.
+			
+			*Adj. Source: [source name] (Type of source) (unit) - One column per source.  This is the 'Source Value' data series.
+			
+			__Columns included if 'Data series that do NOT reflect source input changes on the Change Inputs tab' options are chosen__
+			If 'Include original predicted values for Total and Incremental loads' is checked, several sets of columns of predicted data are added using this naming:
+			(Original) - Means that the source or predicted value does NOT reflect source input changes that might have been made on the Change Inputs tab in the application.
+			Decayed - Emphasizes that these values include in-stream attenuation.
+			
+			* Original Mapped Value (data series) (unit):  The value of the data series that was displayed on the map in the DSS when the export was made, unaffected by changes made on the change inputs tab.  The complete list of possible data series is further down in this document.
+			* [source name] Decayed Incremental Load (Original) (unit) - One column per source.  This is the 'Incremental Load' data series for an individual source.
+			* Incremental Load (Original) (unit) - The 'Incremental Load' data series (the sum of all per-source incrementals loads).
+			* [source name] Total Load (Original) (unit) - One column per source.  This is the 'Total Load' data series for an individual source.
+			* Total Load (Original) (unit) - The 'Total Load' data series (the sum of all per-source total loads).
+			
+			If 'Include the original source input values used to calculate the original predicted values' is checked, the source values are added to the export.
+			All source value columns in this set are prefixed with 'Original Source:' to indicate that they do NOT reflect source input changes made on the Change Inputs tab in the application.
+			
+			* Original Source: [source name] (Type of source) (unit) - One column per source.  This is the 'Source Value' data series.
+			
+			
+			__Columns included if 'Other non-prdiction related data series'' are selected__
+			If 'Include additional identification information' is selected, these columns are included:
+			* Reach Name (pname) - The name of the reach.  This name may sometimes be empty, partial, or different than local names for the reach.
+			* edacode - NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.
+			* edaname - NOAA name identifying estuarine/coastal drainage areas for major estuaries in the United States.
+			
+			If 'Include additional stream characteristics' is selected, these columns are included:
+			* Streamflow - The mean annual stream flow of the reach, in units of volume (cubic feet) per time (second).
+            * Incremental Area - The area of land that drains directly to the stream reach, not including land area that drains to upstream reaches.
+			
+			__The complete list of data series__
+			Any of these data series may be in the Mapped Value column, depending on the data series being mapped at the time of the export.
+			
 			Total Load
 			The mean annual load of the constituent (mass in kg per year) leaving
 			each stream reach, as predicted by the model. The load reflects the accumulated mass of the constituent contributed by all sources in the total drainage area upstream of the reach outlet. The load includes the effects of in-stream attenuation processes in all upstream reaches. The mean annual load is a standardized measure of the constituent mass in the stream that reflects the mean quantities of mass that are likely to occur during a specified base year under long-term mean streamflow conditions. The mean annual conditions described by the model primarily reflect the effects of natural and human-related processes that supply and remove constituent mass in watersheds over long time periods. You can select 'All Sources' to map the total load for all of the sources together, or select an individual model source to map the theoretical load due to a single source.
@@ -408,42 +458,11 @@
 			The incremental delivered load divided by the drainage area of the reach, in units of mass (kg) per square kilometer per year. You must first define a downstream outlet reach in order to map this series.
 			
 			
-			Comparison to Original Model Help:
-			
-			The model prediction based on changed input ("what-if" scenarios) can be compared to the model prediction based on the original input values (i.e. the original model prediction), for any selected data series (Total Load, Incremental Yield, etc).
-			
-			Two options for comparison are available: 
-			Absolute change from original
-			The difference (in units of the data series) between the predicted value using changed inputs and the predicted value using original input (negative number indicates decrease compared to original).
-			% change from original
-			The percent difference (in units of percent) between the predicted value using changed input and the predicted value using original input (negative number indicates decrease compared to original).  Calculated as:
-			
-			100 X (change - original) / original
-			
-			Any increase from an original predicted value of zero is reported as a 100% change. Any decrease from an original predicted value of zero is reported as a -100% change.
-			
-			__Additional Optional Columns__
-			Reach Name (pname)
-			The name of the reach.  This name may sometimes be empty, partial, or different than local names for the reach.
-			
-			edacode
-			NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.
-
-			edaname
-			NOAA name identifying estuarine/coastal drainage areas for major estuaries in the United States.
-			
-			Streamflow
-            The mean annual stream flow of the reach, in units of volume (cubic feet) per time (second).
-            
-            Incremental Area
-            The area of land that drains directly to the stream reach, not including land area that drains to upstream reaches.
-			
-			
-			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
-			
 			__Linking Exported Data to River Network Shapefiles__
 			This model is based on the '$networkName$' Network, which is documented at $networkUrl$
 			The id column for the data in this export should be matched to the $networkIdColumn$ in the '$networkName$' Network data.
+			
+			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
 			
 		</Term>
 	</CommonTerms>
