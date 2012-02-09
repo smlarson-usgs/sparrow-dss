@@ -63,12 +63,12 @@ public class EndToEndPredictionUnitTest extends SparrowServiceTestBaseWithDBandC
 		BufferedReader br = new BufferedReader(reader);
 		
 		DataTable actualResult = TabDelimFileUtil.readAsDouble(br , true, -1);
-		DataTable expectResults = this.getTestModelPredictResult();
+		DataTable expectResults = getTestModelPredictResult();
 		//System.out.println(exportResponse.substring(0, 1000));
 		
 		String totColName = Action.getDataSeriesProperty(DataSeriesType.total, false);
 		int expectCol = expectResults.getColumnByName(totColName);
-		int actualCol = actualResult.getColumnByName("Original Mapped Value: Total Load (kg⋅year⁻¹)");
+		int actualCol = actualResult.getColumnByName("Mapped Value: Total Load (kg⋅year⁻¹)");
 		
 		for (int r = 0; r < expectResults.getRowCount(); r++) {
 			Double expect = expectResults.getDouble(r, expectCol);
