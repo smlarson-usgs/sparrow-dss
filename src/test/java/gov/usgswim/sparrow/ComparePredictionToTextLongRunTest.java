@@ -37,6 +37,7 @@ import java.util.Properties;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.text.StrTokenizer;
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -57,6 +58,7 @@ public class ComparePredictionToTextLongRunTest {
 	
 	protected static Logger log =
 		Logger.getLogger(ComparePredictionToTextLongRunTest.class); //logging for this class
+	
 	
 	public final static String ID_COL_KEY = "id_col";	//Table property of the key column
 	
@@ -81,7 +83,8 @@ public class ComparePredictionToTextLongRunTest {
 
 
 	public static void main(String[] args) throws Exception {
-		//org.junit.runner.JUnitCore.runClasses(ComparePredictionToTextLongRunTest.class);
+		// Set up a simple configuration that logs on the console.
+	     BasicConfigurator.configure();
 		
 		ComparePredictionToTextLongRunTest runner = new ComparePredictionToTextLongRunTest();
 		runner.oneTimeUserInput();
@@ -108,6 +111,7 @@ public class ComparePredictionToTextLongRunTest {
 		
 		System.out.println();
 		System.out.println("*****************************************");
+		System.out.println("************ Run Complete ***************");
 		System.out.println("*****************************************");
 	}
 	
@@ -133,7 +137,7 @@ public class ComparePredictionToTextLongRunTest {
 		System.setProperty("dbuser", "sparrow_dss");
 		System.setProperty("dbpass", dbPwd);
 		
-		//Turns on detailed logging
+		//Turns on detailed logging - very verbose on the tests
 		//log.setLevel(Level.DEBUG);
 		
 		//Generically turn on logging for Actions
