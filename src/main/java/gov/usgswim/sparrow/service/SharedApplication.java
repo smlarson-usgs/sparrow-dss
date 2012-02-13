@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -141,6 +142,7 @@ public class SharedApplication  {
 		synchronized (this) {
 			if (rwDatasource == null && ! rwLookupFailed) {
 				try {
+					Locale.setDefault(Locale.US);
 					Context ctx = new InitialContext();
 					rwDatasource = (DataSource) ctx.lookup(READ_WRITE_JNDI_DS_NAME);
 					//					Connection connection = ds.getConnection();
@@ -165,6 +167,7 @@ public class SharedApplication  {
 		synchronized (this) {
 			if (roDatasource == null && ! roLookupFailed) {
 				try {
+					Locale.setDefault(Locale.US);
 					Context ctx = new InitialContext();
 					roDatasource = (DataSource) ctx.lookup(READ_ONLY_JNDI_DS_NAME);
 					//					Connection connection = ds.getConnection();
