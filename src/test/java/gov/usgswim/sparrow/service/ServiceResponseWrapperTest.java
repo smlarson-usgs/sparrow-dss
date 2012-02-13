@@ -16,7 +16,6 @@ import org.junit.Test;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
-@Ignore
 public class ServiceResponseWrapperTest extends SparrowTestBase {
 	
 	@Test

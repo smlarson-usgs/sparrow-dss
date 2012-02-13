@@ -45,7 +45,6 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
  * @author eeverman
  *
  */
-@Ignore
 public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDBandCannedModel50 {
 	
 	private static final String SESSION_SERVICE_URL = "http://localhost:8088/sp_session";
