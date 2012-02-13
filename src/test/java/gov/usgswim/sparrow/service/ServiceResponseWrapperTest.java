@@ -10,11 +10,13 @@ import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
+@Ignore
 public class ServiceResponseWrapperTest extends SparrowTestBase {
 	
 	@Test

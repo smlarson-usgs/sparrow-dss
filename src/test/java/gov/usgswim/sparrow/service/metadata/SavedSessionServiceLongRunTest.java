@@ -26,6 +26,7 @@ import gov.usgswim.sparrow.service.SharedApplication;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -44,6 +45,7 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
  * @author eeverman
  *
  */
+@Ignore
 public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDBandCannedModel50 {
 	
 	private static final String SESSION_SERVICE_URL = "http://localhost:8088/sp_session";
