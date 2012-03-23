@@ -3,8 +3,6 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.filter.ColumnRangeFilter;
-import gov.usgswim.datatable.filter.FilteredDataTable;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
