@@ -145,7 +145,6 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 					//reach info, HUC8 and watershed area
 					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Basic Reach Info"));
 					events.add(makeNonNullBasicTag("col", "").addAttribute("name", "Watershed Area (" + watershedAreas.getUnits(1) + ")").addAttribute("type", NUMBER));
-					events.add(makeNonNullBasicTag("col", "").addAttribute("name", "HUC8").addAttribute("type", STRING));
 					addCloseTag("group");
 					
 					//Add a group for the mapped value
@@ -225,7 +224,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 					//Add a group for identification columns
 					if (reachIdAttribs != null) {
 						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Reach Identification Attributes"));
-						
+						events.add(makeNonNullBasicTag("col", "").addAttribute("name", "HUC8").addAttribute("type", STRING));
 						for (int i = 0; i < reachIdAttribs.getColumnCount(); i++) {
 							String name = reachIdAttribs.getName(i);
 							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", STRING));
@@ -278,9 +277,6 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 				//Column 1 by def.  See LoadUnitArea class
 				addBasicTag("c", watershedAreas.getValue(state.r, 1).toString());
 				
-				//Column 0 by def.  See LoadHUCTable
-				addBasicTag("c", huc8data.getValue(state.r, 0).toString());
-				
 				if (adjDataColumn != null) {
 					addBasicTag("c", adjDataColumn.getTable().getValue(state.r, adjDataColumn.getColumn()).toString());
 				}
@@ -315,6 +311,14 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 					writePredictData(nomPredictResult, nomPredictResult.getFirstDecayedIncrementalColForSrc(), srcCount + 1);
 					writePredictData(nomPredictResult, nomPredictResult.getFirstTotalColForSrc(), srcCount + 1);
 				}
+				
+				//This data is actually grouped w/ reachIdAttribs, but it is in a
+				//separate data table.
+				if (huc8data != null) {
+					//Column 0 by def.  See LoadHUCTable
+					addBasicTag("c", huc8data.getValue(state.r, 0).toString());
+				}
+				
 				
 				if (reachIdAttribs != null) {
 					for (int c = 0; c < reachIdAttribs.getColumnCount(); c++) {

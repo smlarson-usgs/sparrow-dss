@@ -365,7 +365,6 @@
 			__Base export columns included in all exports__
 			* id:  Unique identifier for a stream reach in the model based on the reference stream network.  See the section 'Linking Exported Data to River Network Shapefiles' for more information on how to use this id.
 			* Watershed Area:  The area of land that drains all the upstream streams and rainfall to the stream reach.  The word watershed is sometimes used interchangeably with drainage basin or catchment.
-			* HUC8: Hydrologic unit code. The United States is divided and sub-divided into successively smaller hydrologic units which are classified into four levels: regions, sub-regions, accounting units, and cataloging units. The hydrologic units are arranged within each other, from the smallest (cataloging units) to the largest (regions). Each hydrologic unit is identified by a unique hydrologic unit code (HUC) consisting of two to eight digits based on the four levels of classification in the hydrologic unit system.  The fourth level of classification (HUC8) includes 2,264 cataloging units, which are geographic areas representing part of all of a surface drainage basin, a combination of drainage basins, or a distinct hydrologic feature. These units subdivide the subregions and accounting units into smaller areas.
 			* Mapped Value (data series) (unit):  The value of the data series that was displayed on the map in the DSS when the export was made.  The complete list of possible data series is further down in this document.
 			
 			__Columns included if 'Data series that reflect source input changes on the Change Inputs tab' options are chosen__
@@ -402,6 +401,7 @@
 			
 			__Columns included if 'Other non-prdiction related data series'' are selected__
 			If 'Include additional identification information' is selected, these columns are included:
+			* HUC8 - Hydrologic unit code. The United States is divided and sub-divided into successively smaller hydrologic units which are classified into four levels: regions, sub-regions, accounting units, and cataloging units. The hydrologic units are arranged within each other, from the smallest (cataloging units) to the largest (regions). Each hydrologic unit is identified by a unique hydrologic unit code (HUC) consisting of two to eight digits based on the four levels of classification in the hydrologic unit system.  The fourth level of classification (HUC8) includes 2,264 cataloging units, which are geographic areas representing part of all of a surface drainage basin, a combination of drainage basins, or a distinct hydrologic feature. These units subdivide the subregions and accounting units into smaller areas.
 			* Reach Name (pname) - The name of the reach.  This name may sometimes be empty, partial, or different than local names for the reach.
 			* edacode - NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.
 			* edaname - NOAA name identifying estuarine/coastal drainage areas for major estuaries in the United States.
