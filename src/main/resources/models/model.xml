@@ -360,6 +360,10 @@
 			NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.
 		</Term>
 		<Term id="Export Readme">
+		
+			__IMPORTANT__
+			No endorsement, expressed or implied, is made by the USGS or the U.S. Government of any interpretations or decisions that result from the use of these models, nor shall the fact of distribution constitute any such endorsement, and no responsibility is assumed by the USGS in connection therewith.
+			
 			__Export Data Column Definitions__
 			
 			__Base export columns included in all exports__
