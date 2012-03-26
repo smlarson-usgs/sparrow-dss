@@ -50,6 +50,20 @@ public class ReachElement implements XMLStreamParserComponent {
 
 	//TODO: This should be a sorted set
 	protected List<Adjustment> adjs;	//List of one or more adjustments
+	
+	/** Default constructor */
+	public ReachElement() {};
+	
+	/**
+	 * Complete Constructor.
+	 * 
+	 * @param reachId The id of the reach
+	 * @param adjs A list of adjustments to apply to the reach
+	 */
+	public ReachElement(Long reachId, List<Adjustment> adjs) {
+		this.id = reachId;
+		this.adjs = adjs;
+	}
 
 	// ================
 	// INSTANCE METHODS

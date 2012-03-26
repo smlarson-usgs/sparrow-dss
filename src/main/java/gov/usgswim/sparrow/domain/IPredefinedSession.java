@@ -1,8 +1,9 @@
 package gov.usgswim.sparrow.domain;
 
+import java.io.Serializable;
 import java.sql.Date;
 
-public interface IPredefinedSession {
+public interface IPredefinedSession extends Serializable {
 
 	/**
 	 * @return the id

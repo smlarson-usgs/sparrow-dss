@@ -24,6 +24,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * classes who need to include the state of their adjustments in their hashcodes.
  */
 public class Adjustment implements XMLStreamParserComponent {
+
 	/**
 	 * 
 	 */
@@ -40,6 +41,27 @@ public class Adjustment implements XMLStreamParserComponent {
 	private Integer src;	//The SparrowModel Specific source ID (not any sort of db ID for the source)
 	private Double abs;		//A new value for the source, overriding any coef's applied
 	private Double coef;	//A coefficient to multiply the source by. 
+	
+	
+	
+	/**
+	 * Default Constructor
+	 */
+	public Adjustment() {}
+
+
+	/**
+	 * Complete Constructor
+	 * @param src
+	 * @param abs
+	 * @param coef
+	 */
+	public Adjustment(Integer src, Double abs, Double coef) {
+		this.src = src;
+		this.abs = abs;
+		this.coef = coef;
+	}
+	
 	
 	// ================
 	// INSTANCE METHODS

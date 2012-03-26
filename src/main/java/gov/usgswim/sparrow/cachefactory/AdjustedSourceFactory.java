@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.action.CalcAdjustedSources;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.service.SharedApplication;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
@@ -30,7 +31,12 @@ public class AdjustedSourceFactory implements CacheEntryFactory {
 		AdjustmentGroups groups = (AdjustmentGroups)adjustmentGroups;
 		
 		PredictData data = SharedApplication.getInstance().getPredictData(groups.getModelID());
-		DataTable src = groups.adjust(data);
+		
+		CalcAdjustedSources action = new CalcAdjustedSources();
+		action.setAdjustments(groups);
+		action.setPredictData(data);
+		
+		DataTable src = action.run();
 
 		return src.toImmutable();
 	}

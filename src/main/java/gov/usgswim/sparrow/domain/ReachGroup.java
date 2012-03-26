@@ -7,11 +7,7 @@ import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.ParserHelper;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.xml.XMLConstants;
 import javax.xml.stream.XMLStreamException;
@@ -30,6 +26,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * classes who need to include the state of their adjustments in their hashcodes.
  */
 public class ReachGroup implements XMLStreamParserComponent {
+	
 	/**
 	 *
 	 */
@@ -49,7 +46,34 @@ public class ReachGroup implements XMLStreamParserComponent {
 	public ReachGroup(long modelID) {
 		this.modelID = modelID;
 	}
+	
+	/**
+	 * Completely specified constructor.
+	 * 
+	 * @param modelID
+	 * @param isEnabled
+	 * @param name
+	 * @param description
+	 * @param notes
+	 * @param adjs
+	 * @param reaches
+	 * @param logicalSets
+	 */
+	public ReachGroup(long modelID, boolean isEnabled,
+			String name, String description, String notes,
+			List<Adjustment> adjs, List<ReachElement> reaches, 
+			List<LogicalSet> logicalSets) {
+		this.modelID = modelID;
+		this.isEnabled = isEnabled;
+		this.name = name; 
+		this.description = description;
+		this.notes = notes;
+		this.adjs = adjs;
+		this.reaches = reaches;
+		this.logicalSets = logicalSets;	
+	}
 
+	protected long modelID;
 	protected boolean isEnabled;
 	protected String name;
 	protected String description;
@@ -62,7 +86,6 @@ public class ReachGroup implements XMLStreamParserComponent {
 
 	// search
 	protected transient Set<Long> containedReachIDs; // temporary storage as convenience for searching
-	protected long modelID;
 
 	// ================
 	// INSTANCE METHODS
@@ -114,9 +137,12 @@ public class ReachGroup implements XMLStreamParserComponent {
 						ls.parse(in);
 						logicalSets.add(ls);
 					} else if (ReachElement.isTargetMatch(localName)) {
+						
 						UnadjustableReachElement ur = new UnadjustableReachElement();
 						ur.parse(in);
 						reaches.add(ur);
+						
+						
 					} else {
 						throw new XMLParseValidationException("unrecognized child element of <" + localName + "> for " + MAIN_ELEMENT_NAME);
 					}
