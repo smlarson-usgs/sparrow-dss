@@ -29,14 +29,17 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
     	SharedApplication sharedApp = SharedApplication.getInstance();
     	
         Integer predictionContextID = req.getContextID();
-        PredictionContext adjPredictContext;
+        PredictionContext adjPredictContext = req.getContext();
         Long modelId = null;
 
-        if (predictionContextID != null) {
+        if (adjPredictContext != null) {
+        	//The context was supplied w/ the request
+        	modelId = adjPredictContext.getModelID();
+        } else if (predictionContextID != null) {
+        	//The context was passed by ID
             adjPredictContext = sharedApp.getPredictionContext(predictionContextID);
             modelId = adjPredictContext.getModelID();
         } else {
-            // TODO [IK] Ask whether set predictionContext to null later?
             adjPredictContext = new PredictionContext(req.getModelID(), null, null, null, null, null);
             modelId = req.getModelID();
         }
@@ -132,7 +135,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         
         
         return new  PredictExportSerializer(
-        		req,
+        		req, adjPredictContext, 
         		adjDataColumn, orgDataColumn,
     			adjPredictData, orgPredictData,
     			adjPredictResult, orgPredictResult,

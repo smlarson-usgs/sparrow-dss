@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.service.predict;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
@@ -62,6 +63,8 @@ public class PredictExportRequest implements XMLStreamParserComponent,
 	private String xmlRequest;
 	private ResponseFormat responseFormat;
 	private Integer contextID;
+	private PredictionContext context;
+
 	private Long modelID;
 	private String bbox;
 	private boolean includeReachIdAttribs = false;
@@ -103,8 +106,16 @@ public class PredictExportRequest implements XMLStreamParserComponent,
 				if (isTargetMatch(localName)) {
 					// nothing to do
 				} else if ("PredictionContext".equals(localName)) {
-					contextID = ParserHelper.parseAttribAsInt(in, "context-id",
-							true);
+					contextID = ParserHelper.parseAttribAsInt(in, "context-id", false);
+					
+					if (contextID != null) {
+						//Ignore the rest of the tag
+						ParserHelper.ignoreElement(in);
+					} else {
+						//No context ID, so assume we have the context inline
+						context = PredictionContext.parseStream(in);
+					}
+					
 					ParserHelper.ignoreElement(in);
 				} else if (ResponseFormat.isTargetMatch(localName)) {
 
@@ -182,7 +193,7 @@ public class PredictExportRequest implements XMLStreamParserComponent,
 	}
 
 	public boolean isValid() {
-		return contextID != null;
+		return (contextID != null || context != null);
 	}
 
 	private ResponseFormat makeDefaultResponseFormat() {
@@ -194,6 +205,10 @@ public class PredictExportRequest implements XMLStreamParserComponent,
 
 	public Integer getContextID() {
 		return contextID;
+	}
+	
+	public PredictionContext getContext() {
+		return context;
 	}
 
 	public ResponseFormat getRespFormat() {

@@ -12,7 +12,6 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.PredictionContext;
-import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predict.filter.PredictExportAggFilter;
 import gov.usgswim.sparrow.service.predict.filter.PredictExportFilter;
 
@@ -29,6 +28,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	private RowFilter filter;
 	private DataTable filterTable;
 
+	private PredictionContext adjContext;
 	private DataTable watershedAreas;
 	private DataTable huc8data;
 	private SparrowColumnSpecifier adjDataColumn;
@@ -57,7 +57,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	// ============
 	// CONSTRUCTORS
 	// ============	
-	public PredictExportSerializer(PredictExportRequest request,
+	public PredictExportSerializer(PredictExportRequest request, PredictionContext adjContext,
 			SparrowColumnSpecifier adjDataColumn, SparrowColumnSpecifier nomDataColumn,
 			PredictData adjPredictData, PredictData nomPredictData,
 			PredictResult adjPredictResult, PredictResult nomPredictResult, 
@@ -66,6 +66,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 		
 		super();
 		this.request = request;
+		this.adjContext = adjContext;
 		
 		this.adjDataColumn = adjDataColumn;
 		this.nomDataColumn = nomDataColumn;
@@ -376,8 +377,6 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	}
     
     protected RowFilter createRowFilter() throws Exception {
-        Integer contextId = request.getContextID();
-        PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
         if (request.getBbox() == null) {
             this.filterTable = null;
             return new RowFilter() {
@@ -385,12 +384,12 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
                     return true;
                 }
             };
-        } else if (context.getAnalysis().isAggregated()) {
+        } else if (adjContext.getAnalysis().isAggregated()) {
             this.filterTable = adjDataColumn.getTable();
-            return new PredictExportAggFilter(context, request.getBbox());
+            return new PredictExportAggFilter(adjContext, request.getBbox());
         } else {
             this.filterTable = adjDataColumn.getTable();
-            return new PredictExportFilter(context.getModelID(), request.getBbox());
+            return new PredictExportFilter(adjContext.getModelID(), request.getBbox());
         }
     }
 

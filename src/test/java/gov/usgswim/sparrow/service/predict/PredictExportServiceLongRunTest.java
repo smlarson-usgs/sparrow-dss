@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDB;
 
+import org.apache.log4j.Level;
 import org.junit.Test;
 
 import com.meterware.httpunit.PostMethodWebRequest;
@@ -26,7 +27,7 @@ public class PredictExportServiceLongRunTest extends SparrowServiceTestBaseWithD
 	 * Values containing commas should be escaped
 	 * @throws Exception
 	 */
-	@Test
+	//@Test
 	public void model50NoAdjustCVSExportCheckContext() throws Exception {
 		String contextRequestText = getSharedTestResource("predict-context-no-adj.xml");
 		WebRequest contextWebRequest = new PostMethodWebRequest(CONTEXT_SERVICE_URL);
@@ -87,16 +88,39 @@ public class PredictExportServiceLongRunTest extends SparrowServiceTestBaseWithD
 		
 		log.debug("export: " + exportContextResponse);
 		
-		String strRowCount = getXPathValue("count(//r)", exportContextResponse);
+		String strRowCount = getXPathValue("count(//*[local-name()='r'])", exportContextResponse);
 		int rowCount = Integer.parseInt(strRowCount);
+		
+		assertEquals(41, rowCount);
 		
 		//Each row should contain 23 columns, even though some data is null
 		for (int i=1; i <= rowCount; i++) {
-			String strColCount = getXPathValue("count(//r[" + i + "]/c)", exportContextResponse);
-			assertEquals("23", strColCount);
+			String strColCount = getXPathValue("count(//*[local-name()='r' and position() =" + i + "]/*[local-name() = 'c'])", exportContextResponse);
+			assertEquals("43", strColCount);
 		}
 	}
 	
+	
+	@Test
+	public void model50ExportFromInlineContext1() throws Exception {
+		
+		String exportRequestText = getXmlAsString(this.getClass(), "exportCvsReqWContext1");
+
+		WebRequest exportWebRequest = new PostMethodWebRequest(EXPORT_SERVICE_URL);
+		exportWebRequest.setParameter("xmlreq", exportRequestText);
+		WebResponse exportWebResponse = client.sendRequest(exportWebRequest);
+		String exportContextResponse = exportWebResponse.getText();
+		
+		
+		log.debug("export: " + exportContextResponse);
+		
+		String strRowCount = getXPathValue("count(//*[local-name()='r']/*[local-name() = 'c' and .=100]/../@id)", exportContextResponse);
+		int rowCount = Integer.parseInt(strRowCount);
+		
+		//Should be exactly two rows w/ a 100 value.
+		assertEquals(2, rowCount);
+		
+	}
 
 	
 }
