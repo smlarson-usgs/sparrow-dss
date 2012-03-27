@@ -27,7 +27,7 @@ public class PredictExportServiceLongRunTest extends SparrowServiceTestBaseWithD
 	 * Values containing commas should be escaped
 	 * @throws Exception
 	 */
-	//@Test
+	@Test
 	public void model50NoAdjustCVSExportCheckContext() throws Exception {
 		String contextRequestText = getSharedTestResource("predict-context-no-adj.xml");
 		WebRequest contextWebRequest = new PostMethodWebRequest(CONTEXT_SERVICE_URL);

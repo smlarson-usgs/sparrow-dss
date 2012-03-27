@@ -116,7 +116,6 @@ public class PredictExportRequest implements XMLStreamParserComponent,
 						context = PredictionContext.parseStream(in);
 					}
 					
-					ParserHelper.ignoreElement(in);
 				} else if (ResponseFormat.isTargetMatch(localName)) {
 
 					responseFormat = ResponseFormat.parseStream(in);
