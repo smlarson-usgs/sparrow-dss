@@ -14,7 +14,8 @@ import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.action.CalcAnalysis;
 import gov.usgswim.sparrow.action.LoadModelMetadata;
 import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.domain.AdjustmentGroups;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
+import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
@@ -233,6 +234,7 @@ public class ComparePredictionToTextLongRunTest {
 				boolean pass = true;
 				pass = pass & testSingleModelDataQuality(id);
 				pass = pass & testSingleMmodel(file.toURL(), id);
+				pass = pass & testSingleModelErrorEstimates(id);
 				if (!pass) failCount++;
 			} else {
 				throw new Exception("The specified model path does not exist!");
@@ -393,10 +395,7 @@ public class ComparePredictionToTextLongRunTest {
 
 	public boolean testSingleMmodel(URL predictFile, Long modelId) throws Exception {
 		beforeEachTest();
-		boolean pass = true;
-		
-			
-		pass = false;	//assume we fail until we pass
+		boolean pass = false;		
 		
 		DataTable t = loadTextPredict(predictFile);
 		
@@ -438,6 +437,88 @@ public class ComparePredictionToTextLongRunTest {
 		
 		return pass;
 
+	}
+	
+	/**
+	 * Tests all the source / total / incremental combinations for reasonable
+	 * std error estimate values.
+	 * 
+	 * @param modelId
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean testSingleModelErrorEstimates(Long modelId) throws Exception {
+		PredictData pd = SharedApplication.getInstance().getPredictData(modelId);
+		int failCount = 0;
+		
+		for (int srcIndex = 0; srcIndex < pd.getSrcMetadata().getRowCount(); srcIndex++) {
+			int srcId = pd.getSourceIdForSourceIndex(srcIndex);
+			failCount += testSingleModelErrorEstimates(modelId, srcId, false);
+			failCount += testSingleModelErrorEstimates(modelId, srcId, true);
+		}
+		
+		//Add the total values (ie, all sources togeteher
+		failCount += testSingleModelErrorEstimates(modelId, null, false);
+		failCount += testSingleModelErrorEstimates(modelId, null, true);
+		
+		System.out.println("Grand Total Error est failures for model " + modelId + ": " + failCount);
+		return failCount == 0;
+	}
+	
+	/**
+	 * Tests a single model / source / total/incremental combination for a
+	 * reasonalbe std error estimate.
+	 * 
+	 * @param modelId
+	 * @param sourceId
+	 * @param total
+	 * @return
+	 * @throws Exception
+	 */
+	public int testSingleModelErrorEstimates(Long modelId, Integer sourceId, boolean total) throws Exception {
+		
+		AdjustmentGroups noAdjustments = new AdjustmentGroups(modelId);
+		int failCount = 0;
+		String incTot = (total)?"Total":"Incremental";
+		
+		
+		//Build the error data series
+		DataSeriesType errSeries = (total)?DataSeriesType.total_std_error_estimate:DataSeriesType.incremental_std_error_estimate;
+		BasicAnalysis errAnalysis = new BasicAnalysis(errSeries, sourceId, null, null);
+		PredictionContext errContext = new PredictionContext(modelId, noAdjustments, errAnalysis, null, null, null);
+		SparrowColumnSpecifier errColumn = SharedApplication.getInstance().getAnalysisResult(errContext);
+		
+		///
+		//Build the related standard series
+		DataSeriesType stdSeries = (total)?DataSeriesType.total:DataSeriesType.incremental;
+		BasicAnalysis stdAnalysis = new BasicAnalysis(stdSeries, sourceId, null, null);
+		PredictionContext stdContext = new PredictionContext(modelId, noAdjustments, stdAnalysis, null, null, null);
+		SparrowColumnSpecifier stdColumn = SharedApplication.getInstance().getAnalysisResult(stdContext);
+		
+		
+		///
+		//Do the comparison
+		for (int row = 0; row < stdColumn.getRowCount(); row++) {
+			Double std = stdColumn.getDouble(row);
+			Double err = errColumn.getDouble(row);
+			
+			if (err == null && std < 1d) {
+				//I think its OK to have no err estimate if the predicted value is very small
+				//System.out.println("Predict: " + std + " Err: null");
+			} else if (err != null && std <= 1d && err <= 20) {
+				//An error of 10 is pretty small, though it may be many times larger than the predicted value
+				//System.out.println("Predict: " + std + " Err: " + err);
+			} else if (err != null && err <= (std * 20)) {
+				//System.out.println("Predict: " + std + " Err: " + err);
+			} else {
+				System.out.println("Model " + modelId + ", Src:" + sourceId + " " + incTot + ": Suspicious Std Error.  Value: " + std + " Err: " + err);
+				failCount++;
+			}
+		}
+		
+		System.out.println("Model " + modelId + ", Src:" + sourceId + " " + incTot + ": Total Error est failures: " + failCount);
+
+		return failCount;
 	}
 
 	
