@@ -223,6 +223,9 @@
 		<Term id="Incremental">
 			Takes into account only sources of the constituent within the surrounding catchment to show local generation of the constituent independent of the upstream load. Units are typically kilograms/year.
 		</Term>
+		<Term id="Incremental Area">
+			The area of land that drains directly to the stream reach, not including land area that drains to upstream reaches.
+		</Term>
 		<Term id="Incremental Yield">
 			Takes into account only sources of the constituent within the surrounding catchment to show the local generation of the constituent normalized for catchment area. Units are typically kilograms/square kilometer-year.
 		</Term>
@@ -251,6 +254,9 @@
 			Choose a constituent source from the list to present data only from that source.
 			-->
 		</Term>
+		<Term id="Streamflow">
+			The mean annual stream flow of the reach, in units of volume (cubic feet) per time (second).
+        </Term>
 		<Term id="Comparison">
 			<h2>Comparison To Original Model</h2><br/>
 			The model prediction based on changed input
@@ -302,6 +308,12 @@
 		</Term>
 		<Term id="Reach">
 			Stream segments that extend between confluence with other streams.
+		</Term>
+		<Term id="Export Reach ID">
+			A reach is a stream segment that (typically) extends between confluences with other streams.
+			The reach ID uniquely identifies that reach in the Sparrow model and river network systems.
+			For specifics on how to use the Reach ID to match reaches to other river networks,
+			consult the reach id section at the top of the export file.
 		</Term>
 		<Term id="Reach Name Search Tips">
 			<h2>Search for Reach Name</h2><br/>
