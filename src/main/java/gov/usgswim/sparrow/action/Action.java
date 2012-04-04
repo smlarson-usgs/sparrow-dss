@@ -51,6 +51,9 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	//A string that Action implementations can set to record outcomes for logging
 	private String postMessage;
 	
+	//A list of validation messages.  Never null.
+	private ArrayList<String> validationErrors = new ArrayList<String>();
+	
 	/**
 	 * A shared run count that increments when a new instance is created.
 	 */
@@ -96,11 +99,17 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		R r = null;
 		Exception e = null;
 		
-		try {
-			r = doAction();
-		} catch (Exception ee) {
-			e = ee;
+		if (! hasValidationErrors()) {
+			try {
+				r = doAction();
+			} catch (Exception ee) {
+				e = ee;
+			}
+		} else {
+			//There are validation errors - do not run
+			r = null;
 		}
+	
 		postAction(r != null, e);
 		return r;
 	}
@@ -128,6 +137,9 @@ public abstract class Action<R extends Object> implements IAction<R> {
 			log.trace("Beginning action for " + this.getClass().getName() +
 					".  Run Number: " + runNumber);
 		}
+		
+		//Do validation
+		validate();
 	}
 	
 	
@@ -149,6 +161,47 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 */
 	protected void setPostMessage(String msg) {
 		postMessage = msg;
+	}
+	
+	/**
+	 * Override to add validation errors.
+	 * 
+	 * If implementations call addValidationError(), an error will be recorded
+	 * and the doAction() method will not be called.  The run() method will
+	 * return null.
+	 */
+	protected void validate() {
+		//Default implementation does nothing.
+		//By not calling addValidationError, no errors are created.
+	}
+	
+	/**
+	 * Adds a validation error message.
+	 * 
+	 * Any validation errors will result in the actual doAction() method
+	 * not being called and null will be returned from the run() method.
+	 * 
+	 * @param message
+	 */
+	protected void addValidationError(String message) {
+		validationErrors.add(message);
+	}
+	
+	/**
+	 * Returns a copy of the validation errors.
+	 * 
+	 * @return Never returns null - if no errors, an empty array is returned.
+	 */
+	public String[] getValidationErrors() {
+		return validationErrors.toArray(new String[]{});
+	}
+	
+	/**
+	 * Returns true if there are validation errors.
+	 * @return
+	 */
+	public boolean hasValidationErrors() {
+		return validationErrors.size() > 0;
 	}
 	
 	/**
