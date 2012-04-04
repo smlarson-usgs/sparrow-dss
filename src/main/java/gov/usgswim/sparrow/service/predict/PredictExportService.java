@@ -130,7 +130,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
 			statColumns[1] = new ColumnDataFromTable(catchmentAreaTab, 1);
 			
 			//Merge the columns into a single table
-			reachStatsTable = new SimpleDataTable(statColumns, "Reach Statistics", null, null, null);
+			reachStatsTable = new SimpleDataTable(statColumns, "Reach Statistics", null, null);
         }
         
         

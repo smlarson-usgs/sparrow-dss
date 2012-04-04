@@ -1,10 +1,7 @@
 package gov.usgswim.datatable.impl;
 
 import gov.usgswim.Immutable;
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.ColumnDataWritable;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,19 +10,15 @@ import java.util.Set;
 
 @Immutable
 public class SimpleDataTable implements DataTable.Immutable {
+
+	private static final long serialVersionUID = 1L;
+	
 	protected ColumnData[] columns;
 	protected String description;
 	protected String name;
 	protected Map<String, String> properties = new HashMap<String, String>();
 	protected boolean isValid;
-	
-	/*
-	 * These two come as a set: The idColumn is a list of IDs where the index in
-	 * the array is the row number.  The idIndex indexes the idColumn so that that
-	 * it the row number can quickly be found for a row ID.
-	 */
-	protected long[] idColumn;
-	protected Map<Long, Integer> idIndex;
+	protected ColumnIndex index;
 	
 	// ===========
 	// Constructor
@@ -33,17 +26,17 @@ public class SimpleDataTable implements DataTable.Immutable {
 	public SimpleDataTable(DataTableWritable writable, List<ColumnDataWritable> columns, Map<String, String> properties, Map<Long, Integer> idIndex, List<Long> idColumn) {
 		// convert the columns to immutable and add
 		this.columns = new ColumnData[columns.size()];
-		boolean isAllColumnsSameSize = true;
+
 		for (int i=0; i<this.columns.length; i++) {
 			this.columns[i] = columns.get(i).toImmutable();
-			isAllColumnsSameSize &= (this.columns[0].getRowCount().equals(this.columns[i].getRowCount()) );
 		}
-		// Add the rowIDs and associated index if available
-		if (idIndex != null) {
-			this.idIndex = new HashMap<Long, Integer>();
-			this.idIndex.putAll(idIndex);
-			this.idColumn = BuilderHelper.toLongArray(idColumn);
+		
+		if (idColumn != null) {
+			index = new HashMapColumnIndex(idColumn);
+		} else {
+			index = new NoIdsColumnIndex();
 		}
+		
 		// convert the metadata
 		this.description = writable.getDescription();
 		this.name = writable.getName();
@@ -52,8 +45,8 @@ public class SimpleDataTable implements DataTable.Immutable {
 			this.properties.putAll(properties);
 		}
 		
-		// Check validity TODO add other checks
-		isValid = isAllColumnsSameSize;
+		// Check validity
+		isValid = validateStructure();
 	}
 	
 	/**
@@ -69,16 +62,19 @@ public class SimpleDataTable implements DataTable.Immutable {
 	public SimpleDataTable(ColumnData[] columns, String name, String description, Map<String, String> properties, long[] rowIds) {
 		// convert the columns to immutable and add
 		this.columns = columns;
-		boolean isAllColumnsSameSize = true;
+
 		for (int i=0; i<this.columns.length; i++) {
 			this.columns[i] = columns[i].toImmutable();
-			isAllColumnsSameSize &= (this.columns[0].getRowCount().equals(this.columns[i].getRowCount()) );
 		}
-		// Add the rowIDs and associated index if available
+		
 		if (rowIds != null) {
-			this.idIndex = BuilderHelper.buildIndex(rowIds);
-			this.idColumn = rowIds;
+			index = new HashMapColumnIndex(rowIds);
+		} else {
+			index = new NoIdsColumnIndex();
 		}
+		
+		
+		
 		// convert the metadata
 		this.description = description;
 		this.name = name;
@@ -87,8 +83,92 @@ public class SimpleDataTable implements DataTable.Immutable {
 			this.properties.putAll(properties);
 		}
 		
-		// Check validity TODO add other checks
-		isValid = isAllColumnsSameSize;
+		// Check validity
+		isValid = validateStructure();
+	}
+	
+	/**
+	 * Creates a new DataTable that is collaboratively immutable, so the caller
+	 * should not hold a copy of the rowIds or the ColumnData.
+	 * 
+	 * @param columns
+	 * @param name
+	 * @param description
+	 * @param properties
+	 */
+	public SimpleDataTable(ColumnData[] columns, String name, String description, Map<String, String> properties) {
+		// convert the columns to immutable and add
+		this.columns = columns;
+
+		for (int i=0; i<this.columns.length; i++) {
+			this.columns[i] = columns[i].toImmutable();
+		}
+		
+
+		index = new NoIdsColumnIndex();
+		
+		
+		// convert the metadata
+		this.description = description;
+		this.name = name;
+		
+		if (properties != null) {
+			this.properties.putAll(properties);
+		}
+		
+		// Check validity
+		isValid = validateStructure();
+	}
+	
+	/**
+	 * Creates a new DataTable that is collaboratively immutable, so the caller
+	 * should not hold a copy of the rowIds or the ColumnData.
+	 * 
+	 * @param columns
+	 * @param name
+	 * @param description
+	 * @param properties
+	 * @param columnIndex An index for this table to use.  An immutable version of the index will be kept.
+	 */
+	public SimpleDataTable(ColumnData[] columns, String name, String description, Map<String, String> properties, ColumnIndex columnIndex) {
+		// convert the columns to immutable and add
+		this.columns = columns;
+
+		for (int i=0; i<this.columns.length; i++) {
+			this.columns[i] = columns[i].toImmutable();
+		}
+		
+		if (columnIndex != null) {
+			index = columnIndex.toImmutable();
+		} else {
+			index = new NoIdsColumnIndex();
+		}
+		
+		
+		// convert the metadata
+		this.description = description;
+		this.name = name;
+		
+		if (properties != null) {
+			this.properties.putAll(properties);
+		}
+		
+		// Check validity
+		isValid = validateStructure();
+	}
+	
+	protected boolean validateStructure() {
+		int rowCount = columns[0].getRowCount();
+		boolean isAllColumnsSameSize = true;
+		for (int i=1; i < columns.length; i++) {
+			isAllColumnsSameSize &= (rowCount == columns[i].getRowCount());
+		}
+		
+		if (rowCount > 0) {
+			isAllColumnsSameSize &= index.isValidForRowNumber(rowCount - 1);
+		}
+		
+		return isAllColumnsSameSize;
 	}
 	
 	// =================================
@@ -179,7 +259,7 @@ public class SimpleDataTable implements DataTable.Immutable {
 	}
 
 	public Long getIdForRow(int row) {
-		return idColumn[row];
+		return index.getIdForRow(row);
 	}
 
 	public boolean isIndexed(int col) {
@@ -187,16 +267,12 @@ public class SimpleDataTable implements DataTable.Immutable {
 	}
 	
 	public int getRowForId(Long id) {
-		if (idIndex == null) {
-			return -1;
-		}
-		Integer result = idIndex.get(id);
-		return (result == null)? -1: result;
+		return index.getRowForId(id);
 	}
 
 
 	public boolean hasRowIds() {
-		return idColumn != null;
+		return index.hasIds();
 	}
 	
 	// =======================

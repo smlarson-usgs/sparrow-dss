@@ -623,9 +623,7 @@ public class ComparePredictionToTextLongRunTest {
 			StandardLongColumnData newCol = new StandardLongColumnData(oldCol, true, 0L);
 			cols[indexCol] = newCol;
 
-
-			//SimpleDataTable(ColumnData[] columns, String name, String description, Map<String, String> properties, long[] rowIds)
-			SimpleDataTable table = new SimpleDataTable(cols, builder.getName(), builder.getDescription(), builder.getProperties(), null);
+			SimpleDataTable table = new SimpleDataTable(cols, builder.getName(), builder.getDescription(), builder.getProperties());
 			
 			return table;
 
