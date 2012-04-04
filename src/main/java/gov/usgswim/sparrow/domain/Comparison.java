@@ -90,8 +90,8 @@ public abstract class Comparison implements XMLStreamParserComponent {
 	public abstract boolean equals(Object obj);
 
 	/**
-	 * Creates a unique and repeatable hash for just the fields within the
-	 * Analysis class.  Subclasses should either include these fields or
+	 * Creates a unique and repeatable hash for just the fields within this class.
+	 * Subclasses should either include these fields or
 	 * include the hash value from this function.
 	 */
 	@Override
