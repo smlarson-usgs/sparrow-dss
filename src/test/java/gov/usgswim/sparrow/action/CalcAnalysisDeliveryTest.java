@@ -15,13 +15,7 @@ import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
-import gov.usgswim.sparrow.domain.AdjustmentGroups;
-import gov.usgswim.sparrow.domain.AreaOfInterest;
-import gov.usgswim.sparrow.domain.BasicAnalysis;
-import gov.usgswim.sparrow.domain.DataSeriesType;
-import gov.usgswim.sparrow.domain.NominalComparison;
-import gov.usgswim.sparrow.domain.PredictionContext;
-import gov.usgswim.sparrow.domain.TerminalReaches;
+import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
@@ -189,7 +183,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowTestBase {
 		
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.incremental_delivered_flux, null, null, null);
 		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
-				target9682, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
+				target9682, new AreaOfInterest(TEST_MODEL_ID), NoComparison.NO_COMPARISON);
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -208,7 +202,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowTestBase {
 		
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.incremental_delivered_flux, 1, null, null);
 		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
-				target9682, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
+				target9682, new AreaOfInterest(TEST_MODEL_ID), NoComparison.NO_COMPARISON);
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -233,7 +227,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowTestBase {
 
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.total_delivered_flux, null, null, null);
 		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
-				target9682, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
+				target9682, new AreaOfInterest(TEST_MODEL_ID), NoComparison.NO_COMPARISON);
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -271,7 +265,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowTestBase {
 
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.total_delivered_flux, 1, null, null);
 		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
-				target9682, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
+				target9682, new AreaOfInterest(TEST_MODEL_ID), NoComparison.NO_COMPARISON);
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -299,7 +293,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowTestBase {
 		
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.incremental_delivered_flux, null, null, null);
 		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
-				target9674, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
+				target9674, new AreaOfInterest(TEST_MODEL_ID), NoComparison.NO_COMPARISON);
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -318,7 +312,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowTestBase {
 		
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.incremental_delivered_flux, 1, null, null);
 		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
-				target9674, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
+				target9674, new AreaOfInterest(TEST_MODEL_ID), NoComparison.NO_COMPARISON);
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -345,7 +339,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowTestBase {
 
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.total_delivered_flux, null, null, null);
 		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
-				target9674, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
+				target9674, new AreaOfInterest(TEST_MODEL_ID), NoComparison.NO_COMPARISON);
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -375,7 +369,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowTestBase {
 
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.total_delivered_flux, 1, null, null);
 		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
-				target9674, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
+				target9674, new AreaOfInterest(TEST_MODEL_ID), NoComparison.NO_COMPARISON);
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -405,7 +399,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowTestBase {
 		
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.incremental_delivered_flux, null, null, null);
 		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
-				targetBoth, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
+				targetBoth, new AreaOfInterest(TEST_MODEL_ID), NoComparison.NO_COMPARISON);
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -424,7 +418,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowTestBase {
 		
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.incremental_delivered_flux, 1, null, null);
 		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
-				targetBoth, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
+				targetBoth, new AreaOfInterest(TEST_MODEL_ID), NoComparison.NO_COMPARISON);
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -451,7 +445,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowTestBase {
 
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.total_delivered_flux, null, null, null);
 		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
-				targetBoth, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
+				targetBoth, new AreaOfInterest(TEST_MODEL_ID), NoComparison.NO_COMPARISON);
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -481,7 +475,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowTestBase {
 
 		BasicAnalysis analysis = new BasicAnalysis(DataSeriesType.total_delivered_flux, 1, null, null);
 		PredictionContext context = new PredictionContext(TEST_MODEL_ID, new AdjustmentGroups(TEST_MODEL_ID), analysis,
-				targetBoth, new AreaOfInterest(TEST_MODEL_ID), NominalComparison.getNoComparisonInstance());
+				targetBoth, new AreaOfInterest(TEST_MODEL_ID), NoComparison.NO_COMPARISON);
 		
 		CalcAnalysis action = new CalcAnalysis();
 		action.setContext(context);
@@ -633,8 +627,7 @@ public class CalcAnalysisDeliveryTest  extends SparrowTestBase {
 			SimpleDataTable delivery = new SimpleDataTable(
 					new ColumnData[] {delFracColumn}, "Delivery Fraction",
 					"A single column table containing the delivery fraction" +
-					" to a target reach or reaches.", null, null
-				);
+					" to a target reach or reaches.", null);
 			
 			debugTable(delivery, row, "Delivery Fraction Data");
 		}

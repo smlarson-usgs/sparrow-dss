@@ -8,6 +8,8 @@ import gov.usgswim.sparrow.util.ParserHelper;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 public class SourceShareComparison extends Comparison {
 
 	private static final long serialVersionUID = 1L;
@@ -85,6 +87,19 @@ public class SourceShareComparison extends Comparison {
 			return obj.hashCode() == hashCode();
 		}
 		return false;
+	}
+	
+	/**
+	 * Creates a unique and repeatable hash for just the fields within this class.
+	 * Subclasses should either include these fields or
+	 * include the hash value from this function.
+	 */
+	@Override
+	public synchronized int hashCode() {
+		int hash = new HashCodeBuilder(2342, 63232).
+		append(comparisonType.ordinal()).
+		toHashCode();
+		return hash;
 	}
 
 

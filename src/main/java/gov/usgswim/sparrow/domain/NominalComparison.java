@@ -8,14 +8,14 @@ import gov.usgswim.sparrow.util.ParserHelper;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
+import org.apache.commons.lang.builder.HashCodeBuilder;
+
 public class NominalComparison extends Comparison {
 
 	private static final long serialVersionUID = 1L;
 	
 	public static final String MAIN_ELEMENT_NAME = "nominalComparison";
 	
-	public static final NominalComparison NO_COMPARISON = new NominalComparison();
-
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
 	// =============================
@@ -23,9 +23,6 @@ public class NominalComparison extends Comparison {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 	
-	public static NominalComparison getNoComparisonInstance() {
-		return NO_COMPARISON;
-	}
 
 	// ===============
 	// INSTANCE FIELDS
@@ -90,6 +87,19 @@ public class NominalComparison extends Comparison {
 			return obj.hashCode() == hashCode();
 		}
 		return false;
+	}
+	
+	/**
+	 * Creates a unique and repeatable hash for just the fields within this class.
+	 * Subclasses should either include these fields or
+	 * include the hash value from this function.
+	 */
+	@Override
+	public synchronized int hashCode() {
+		int hash = new HashCodeBuilder(2377, 463).
+		append(comparisonType.ordinal()).
+		toHashCode();
+		return hash;
 	}
 
 

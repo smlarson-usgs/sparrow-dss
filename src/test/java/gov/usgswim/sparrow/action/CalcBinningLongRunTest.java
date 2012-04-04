@@ -6,14 +6,7 @@ import gov.usgs.cida.binning.domain.BinSet;
 import gov.usgs.cida.binning.domain.BinType;
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
-import gov.usgswim.sparrow.domain.AdjustmentGroups;
-import gov.usgswim.sparrow.domain.AreaOfInterest;
-import gov.usgswim.sparrow.domain.BasicAnalysis;
-import gov.usgswim.sparrow.domain.ComparisonType;
-import gov.usgswim.sparrow.domain.DataSeriesType;
-import gov.usgswim.sparrow.domain.NominalComparison;
-import gov.usgswim.sparrow.domain.PredictionContext;
-import gov.usgswim.sparrow.domain.TerminalReaches;
+import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -46,7 +39,7 @@ public class CalcBinningLongRunTest  extends SparrowServiceTestBaseWithDBandCann
 				new AdjustmentGroups(TEST_MODEL_ID), analysis,
 				new TerminalReaches(TEST_MODEL_ID), 
 				new AreaOfInterest(TEST_MODEL_ID),
-				NominalComparison.getNoComparisonInstance());
+				NoComparison.NO_COMPARISON);
 		
 		SharedApplication.getInstance().putPredictionContext(context);
 		BinSet binSet = SharedApplication.getInstance().getDataBinning(new BinningRequest(

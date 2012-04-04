@@ -82,12 +82,12 @@ public class PredictionContext implements XMLStreamParserComponent {
 	 *
 	 * @param modelID
 	 * @param ag adjustment groups
-	 * @param anal analysis
+	 * @param analysis analysis
 	 * @param tr terminal reaches
 	 * @param aoi area of interest
 	 * @return
 	 */
-	public PredictionContext(Long modelID, AdjustmentGroups ag, Analysis anal,
+	public PredictionContext(Long modelID, AdjustmentGroups ag, Analysis analysis,
 			TerminalReaches tr, AreaOfInterest aoi, Comparison comp) {
 
 		this.modelID = modelID;
@@ -97,9 +97,9 @@ public class PredictionContext implements XMLStreamParserComponent {
 			this.adjustmentGroupsID = ag.getId();
 		}
 
-		if (anal != null) {
-			this.analysis = anal;
-			this.analysisID = anal.getId();
+		if (analysis != null) {
+			this.analysis = analysis;
+			this.analysisID = analysis.getId();
 		}
 
 		if (tr != null) {
@@ -116,7 +116,8 @@ public class PredictionContext implements XMLStreamParserComponent {
 			this.comparison = comp;
 			this.comparisonID = comp.getId();
 		} else {
-			this.comparison = NominalComparison.getNoComparisonInstance();
+			this.comparison = NoComparison.NO_COMPARISON;
+			this.comparisonID = this.comparison.getId();
 		}
 
 	}
@@ -197,7 +198,7 @@ public class PredictionContext implements XMLStreamParserComponent {
 						// id be calculated and populated? Here? on cache.put()?
 
 						if (comparison == null) {
-							comparison = NominalComparison.getNoComparisonInstance();
+							comparison = NoComparison.NO_COMPARISON;
 							comparisonID = comparison.getId();
 						}
 
@@ -303,12 +304,12 @@ public class PredictionContext implements XMLStreamParserComponent {
 	 * TODO:  Do we still need this if the children are not transient?
 	 *
 	 * @param ag
-	 * @param anal
+	 * @param newAnalysis
 	 * @param tr
 	 * @return
 	 * @throws CloneNotSupportedException
 	 */
-	public PredictionContext cloneWithSuppliedChildren(AdjustmentGroups ag, Analysis anal, TerminalReaches tr, AreaOfInterest aoi) throws CloneNotSupportedException {
+	public PredictionContext cloneWithSuppliedChildren(AdjustmentGroups ag, Analysis newAnalysis, TerminalReaches tr, AreaOfInterest aoi) throws CloneNotSupportedException {
 		PredictionContext myClone = this.clone();
 
 		// populate the transient children only if necessary & correct
@@ -316,8 +317,8 @@ public class PredictionContext implements XMLStreamParserComponent {
 			myClone.adjustmentGroups = ag;
 		}
 
-		if (analysisID != null && anal != null && anal.getId().equals(analysisID)) {
-			myClone.analysis = anal;
+		if (analysisID != null && newAnalysis != null && newAnalysis.getId().equals(analysisID)) {
+			myClone.analysis = newAnalysis;
 		}
 
 		if (terminalReachesID != null && tr != null && tr.getId().equals(terminalReachesID)) {
@@ -373,19 +374,23 @@ public class PredictionContext implements XMLStreamParserComponent {
 	
 
 	// ===========
-	// KEY METHODS
+	// Subset creation methods
+	// There are several places in the app where we need a slightly modified
+	// version of a context - perhaps w/o the comparison so that the base
+	// calculation can be run, or without adjustments so the nominal values
+	// can be run.
 	// ===========
 	public PredictionContext getTargetContextOnly() {
 		return new PredictionContext(modelID, null, null, terminalReaches, null, comparison);
 	}
 
 	public PredictionContext getAdjustedContextOnly() {
-		return new PredictionContext(modelID, adjustmentGroups, null, null, null, NominalComparison.NO_COMPARISON);
+		return new PredictionContext(modelID, adjustmentGroups, null, null, null, NoComparison.NO_COMPARISON);
 	}
 
 	public PredictionContext getNoComparisonVersion() {
 		return new PredictionContext(modelID, adjustmentGroups, analysis,
-				terminalReaches, areaOfInterest, NominalComparison.NO_COMPARISON);
+				terminalReaches, areaOfInterest, NoComparison.NO_COMPARISON);
 	}
 
 	public PredictionContext getNoAdjustmentVersion() {
