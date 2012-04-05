@@ -49,7 +49,9 @@ public class SimpleDataTable implements DataTable.Immutable {
 			this.columns[i] = columns[i].toImmutable();
 		}
 
-		index = new NoIdsColumnIndex();
+		index = new NoIdsColumnIndex(
+				(this.columns.length > 0)?this.columns[0].getRowCount() : 0
+		);
 		
 		// Check validity
 		isValid = validateStructure();
@@ -66,7 +68,9 @@ public class SimpleDataTable implements DataTable.Immutable {
 		if (idColumn != null) {
 			index = new HashMapColumnIndex(idColumn);
 		} else {
-			index = new NoIdsColumnIndex();
+			index = new NoIdsColumnIndex(
+					(this.columns.length > 0)?this.columns[0].getRowCount() : 0
+			);
 		}
 		
 		// convert the metadata
@@ -102,7 +106,9 @@ public class SimpleDataTable implements DataTable.Immutable {
 		if (rowIds != null) {
 			index = new HashMapColumnIndex(rowIds);
 		} else {
-			index = new NoIdsColumnIndex();
+			index = new NoIdsColumnIndex(
+					(this.columns.length > 0)?this.columns[0].getRowCount() : 0
+			);
 		}
 		
 		
@@ -137,7 +143,9 @@ public class SimpleDataTable implements DataTable.Immutable {
 		}
 		
 
-		index = new NoIdsColumnIndex();
+		index = new NoIdsColumnIndex(
+				(this.columns.length > 0)?this.columns[0].getRowCount() : 0
+		);
 		
 		
 		// convert the metadata
@@ -173,7 +181,9 @@ public class SimpleDataTable implements DataTable.Immutable {
 		if (columnIndex != null) {
 			index = columnIndex.toImmutable();
 		} else {
-			index = new NoIdsColumnIndex();
+			index = new NoIdsColumnIndex(
+					(this.columns.length > 0)?this.columns[0].getRowCount() : 0
+			);
 		}
 		
 		
@@ -197,7 +207,7 @@ public class SimpleDataTable implements DataTable.Immutable {
 		}
 		
 		if (rowCount > 0) {
-			isAllColumnsSameSize &= index.isValidForRowNumber(rowCount - 1);
+			isAllColumnsSameSize &= (index.getMaxRowNumber() + 1) >= rowCount;
 		}
 		
 		return isAllColumnsSameSize;

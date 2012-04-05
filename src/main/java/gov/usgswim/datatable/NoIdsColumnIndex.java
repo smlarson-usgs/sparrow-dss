@@ -7,12 +7,20 @@ package gov.usgswim.datatable;
  */
 public class NoIdsColumnIndex implements ColumnIndex {
 	
-	public NoIdsColumnIndex() {
+	private int maxRowNumber;
+	
+	public NoIdsColumnIndex(int maxRowNumber) {
+		this.maxRowNumber = maxRowNumber;
 	}
 	
 	@Override
 	public int getRowForId(Long id) {
 		return id.intValue();
+	}
+	
+	@Override
+	public int getRowForId(long id) {
+		return (int) id;
 	}
 
 	@Override
@@ -20,11 +28,6 @@ public class NoIdsColumnIndex implements ColumnIndex {
 		return new Long(row);
 	}
 
-	@Override
-	public ColumnIndex getDetachedClone() {
-		// This instance is immutable, so return it.
-		return this;
-	}
 
 	@Override
 	public ColumnIndex toImmutable() {
@@ -37,8 +40,21 @@ public class NoIdsColumnIndex implements ColumnIndex {
 	}
 
 	@Override
-	public boolean isValidForRowNumber(int rowNumber) {
-		return (rowNumber > -1);
+	public int getMaxRowNumber() {
+		return maxRowNumber;
 	}
+
+	@Override
+	public MutableColumnIndex toMutable() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isFullyPopulated() {
+		return true;
+	}
+
+
 
 }

@@ -9,4 +9,12 @@ public interface MutableColumnIndex extends ColumnIndex {
 	 * @param id
 	 */
 	void setRowId(int row, Long id);
+	
+	/**
+	 * Assigns a row id to a specific row
+	 * 
+	 * @param row
+	 * @param id
+	 */
+	void setRowId(int row, long id);
 }

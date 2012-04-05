@@ -20,25 +20,27 @@ public interface ColumnIndex {
 	int getRowForId(Long id);
 	
 	/**
+	 * Returns the unique row for the given ID.
+	 * 
+	 * If the ID is not found, -1 is returned.
+	 * 
+	 * @param id
+	 * @return
+	 */
+	int getRowForId(long id);
+	
+	/**
 	 * Returns the ID for a row number.  Rows numbers are zero based.
 	 * 
 	 * A 'no ID implementation' should return the row number back.  i.e., the
 	 * row ID is the row number.
 	 * 
+	 * 
 	 * @param row
-	 * @return
+	 * @return The row number or null if the ID was not found or is beyond the
+	 * 		rows in the table.
 	 */
 	Long getIdForRow(int row);
-	
-	/**
-	 * Return a new instance that is either immutable or contains a copy of the
-	 * data.  
-	 * 
-	 * The intent is that in no way can the returned instance write back to
-	 * the original instance.
-	 * @return
-	 */
-	ColumnIndex getDetachedClone();
 	
 	/**
 	 * Return an Immutable version of this instance, or return this if already
@@ -47,6 +49,20 @@ public interface ColumnIndex {
 	 * @return
 	 */
 	ColumnIndex toImmutable();
+	
+	/**
+	 * Returns a mutable copy of this ColumnIndex.
+	 * 
+	 * If this instance is immutable, a mutable detached copy will be returned.
+	 * If this instance is already mutable, this method will return a new
+	 * detached copy.
+	 * This method must ensure that the copy is detached such that edits made to
+	 * the copy will affect each the original (and visa versa if the original
+	 * is mutable).
+	 * 
+	 * @return
+	 */
+	MutableColumnIndex toMutable();
 	
 	
 	/**
@@ -60,15 +76,32 @@ public interface ColumnIndex {
 	 */
 	boolean hasIds();
 	
+	
 	/**
-	 * Returns true if the index is valid for the specified row number.
-	 * Rather than require that the index have a specific configured size (ie,
-	 * get row count), this allows the index to not know its max size (useful
-	 * for the NoIdsColumnIndex implementation).
+	 * Returns the max row number for which this index is valid.
 	 * 
+	 * Note that for mutable implementations, this number may not have much
+	 * meaning while the index is being built.  For instance, if the first
+	 * ID value is assigned to row 1000, this method would return 1000, but
+	 * no ID numbers are assigned for values smaller than 1000.
+	 * 
+	 * Immutable implementations are generally assumed to be fully populated.
 	 * @return
 	 */
-	boolean isValidForRowNumber(int rowNumber);
+	int getMaxRowNumber();
+	
+	/**
+	 * Returns true if the index has an entry for every row.
+	 * 
+	 * This is generally a requirement for immutable instances, since all
+	 * current immutable implementations use primatives and cannot indicate a
+	 * null, however, other implementations would be possible.
+	 * 
+	 * Operations that create an immutable may throw an exception if the source
+	 * data does not meet this requirement.
+	 * @return
+	 */
+	boolean isFullyPopulated();
 	
 	
 	
