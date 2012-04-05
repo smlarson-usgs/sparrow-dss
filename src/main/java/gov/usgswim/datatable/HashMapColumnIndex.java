@@ -1,11 +1,23 @@
 package gov.usgswim.datatable;
 
+import gov.usgswim.Immutable;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * An immutable ColumnIndex that uses a HashMap for indexing.
+ * 
+ * This instance will not allow construction with missing or duplicate index values.
+ * 
+ * @author eeverman
+ */
+@Immutable
 public class HashMapColumnIndex implements ColumnIndex {
 
+	private static final long serialVersionUID = 1L;
+	
 	private long[] idColumn;
 	private Map<Long, Integer> idIndex;
 	
@@ -17,6 +29,12 @@ public class HashMapColumnIndex implements ColumnIndex {
 		
 		for (int r = 0; r < rowCount; r++) {
 			Long id = refTable.getIdForRow(r);
+			
+			if (id == null) {
+				throw new IllegalArgumentException(
+						"The IDs in the source table must not contain any nulls.");
+			}
+			
 			idColumn[r] = id;
 			idIndex.put(id, r);
 		}
@@ -37,6 +55,11 @@ public class HashMapColumnIndex implements ColumnIndex {
 		
 		for (int r = 0; r < rowCount; r++) {
 			Long id = idList[r];
+			
+			if (idIndex.containsKey(id)) {
+				throw new IllegalArgumentException(
+						"The IDs must not contain any duplicates.");
+			}
 			idColumn[r] = id;
 			idIndex.put(id, r);
 		}
@@ -89,6 +112,11 @@ public class HashMapColumnIndex implements ColumnIndex {
 				throw new IllegalArgumentException(
 						"The idList must not contain nulls " +
 						"to construct this type of immutable ColumnIndex from it.");
+			}
+			
+			if (idIndex.containsKey(id)) {
+				throw new IllegalArgumentException(
+						"The IDs must not contain any duplicates.");
 			}
 			
 			idColumn[r] = id;

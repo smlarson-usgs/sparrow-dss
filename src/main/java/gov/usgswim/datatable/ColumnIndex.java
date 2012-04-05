@@ -1,5 +1,7 @@
 package gov.usgswim.datatable;
 
+import java.io.Serializable;
+
 /**
  * Defines a set of IDs that are uniquely associated with rows.
  * 
@@ -7,7 +9,7 @@ package gov.usgswim.datatable;
  * 
  * @author eeverman
  */
-public interface ColumnIndex {
+public interface ColumnIndex extends Serializable {
 
 	/**
 	 * Returns the unique row for the given ID.

@@ -14,6 +14,8 @@ import java.util.*;
  */
 public class MutableHashMapColumnIndex implements MutableColumnIndex {
 
+	private static final long serialVersionUID = 1L;
+	
 	private ArrayList<Long> idColumn; 
 	private Map<Long, Integer> idIndex;
 	

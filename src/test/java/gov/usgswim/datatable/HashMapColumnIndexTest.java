@@ -32,6 +32,20 @@ public class HashMapColumnIndexTest {
 		doAssertionsForStdData(index);
 	}
 	
+	@Test (expected=IllegalArgumentException.class)
+	public void testListConstructionWithNullValueInList() {
+		List<Long> idList = new ArrayList<Long>();
+		
+		for (int i = 0; i < idArray.length; i++) {
+			idList.add(idArray[i]);
+		}
+		
+		//Set one to null
+		idList.set(1, null);
+		
+		HashMapColumnIndex index = new HashMapColumnIndex(idList);
+	}
+	
 	
 	@Test
 	public void testConversionToMutable() {

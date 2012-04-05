@@ -132,20 +132,13 @@ public class MutableHashMapColumnIndexTest {
 		
 	}
 	
-	@Test
+	@Test (expected=IllegalArgumentException.class)
 	public void nonFullyPopulatedShouldThrowAnExceptionOnToImmutable() {
 		MutableHashMapColumnIndex mutIndex = new MutableHashMapColumnIndex(idArray);
 		mutIndex.setRowId(14, 99);
 		assertFalse(mutIndex.isFullyPopulated());
 		
-		try {
-			mutIndex.toImmutable();
-		} catch (IllegalArgumentException e) {
-			//Expecting the error - ignore, test passes
-			return;
-		}
-		
-		assertTrue("This operation should have thrown an error, but it did not.", false);
+		mutIndex.toImmutable();
 	}
 	
 	/////
