@@ -73,7 +73,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 			
 			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
 					"desc",	null, false);
-			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd}, null, null, null, null);
+			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd});
 			zeroTo50in50ValuesWithTopOverage = new SparrowColumnSpecifier(table, 0, null);
 		}
 		
@@ -86,7 +86,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 			
 			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
 					"desc",	null, false);
-			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd}, null, null, null, null);
+			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd});
 			zeroTo50in50ValuesWithInfiniteTop = new SparrowColumnSpecifier(table, 0, null);
 		}
 		
@@ -99,7 +99,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 			
 			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
 					"desc",	null, false);
-			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd}, null, null, null, null);
+			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd});
 			zeroToNeg50in50ValuesWithTopOverage = new SparrowColumnSpecifier(table, 0, null);
 		}
 		
@@ -112,7 +112,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 			
 			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
 					"desc",	null, false);
-			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd}, null, null, null, null);
+			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd});
 			zeroTo50in50ValuesWithBtmOverage = new SparrowColumnSpecifier(table, 0, null);
 		}
 		
@@ -125,7 +125,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 			
 			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
 					"desc",	null, false);
-			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd}, null, null, null, null);
+			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd});
 			zeroToNeg50in50ValuesWithBtmOverage = new SparrowColumnSpecifier(table, 0, null);
 		}
 		
@@ -138,7 +138,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 			
 			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
 					"desc",	null, false);
-			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd}, null, null, null, null);
+			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd});
 			smallValuesWithTopOverage = new SparrowColumnSpecifier(table, 0, null);
 		}
 		
@@ -150,7 +150,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 			
 			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
 					"desc",	null, false);
-			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd}, null, null, null, null);
+			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd});
 			sameSame = new SparrowColumnSpecifier(table, 0, null);
 		}
 		
@@ -166,7 +166,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 			
 			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
 					"desc",	null, false);
-			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd}, null, null, null, null);
+			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd});
 			zeroTo10In10Values = new SparrowColumnSpecifier(table, 0, null);
 		}
 		

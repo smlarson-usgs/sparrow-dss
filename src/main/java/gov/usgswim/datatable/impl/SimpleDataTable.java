@@ -21,8 +21,40 @@ public class SimpleDataTable implements DataTable.Immutable {
 	protected ColumnIndex index;
 	
 	// ===========
-	// Constructor
+	// Constructors
 	// ===========
+	/**
+	 * Simplest possible constructor w/ list of columns.
+	 * 
+	 * toImmutable() is called on each column before adding to the table.
+	 * 
+	 * @param columns
+	 */
+	public SimpleDataTable(List<ColumnData> columns) {
+		this(columns.toArray(new ColumnData[]{}));
+	}
+	
+	/**
+	 * Simplest possible constructor w/ array of columns.
+	 * 
+	 * toImmutable() is called on each column before adding to the table.
+	 * 
+	 * @param columns
+	 */
+	public SimpleDataTable(ColumnData[] columns) {
+		// convert the columns to immutable and add
+		this.columns = new ColumnData[columns.length];
+
+		for (int i=0; i<this.columns.length; i++) {
+			this.columns[i] = columns[i].toImmutable();
+		}
+
+		index = new NoIdsColumnIndex();
+		
+		// Check validity
+		isValid = validateStructure();
+	}
+	
 	public SimpleDataTable(DataTableWritable writable, List<ColumnDataWritable> columns, Map<String, String> properties, Map<Long, Integer> idIndex, List<Long> idColumn) {
 		// convert the columns to immutable and add
 		this.columns = new ColumnData[columns.size()];
