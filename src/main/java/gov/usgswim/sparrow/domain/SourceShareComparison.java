@@ -96,7 +96,7 @@ public class SourceShareComparison extends Comparison {
 	 */
 	@Override
 	public synchronized int hashCode() {
-		int hash = new HashCodeBuilder(2342, 63232).
+		int hash = new HashCodeBuilder(2341, 63239).
 		append(comparisonType.ordinal()).
 		toHashCode();
 		return hash;
