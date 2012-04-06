@@ -40,7 +40,7 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	// INSTANCE FIELDS
 	// ===============
 	private Long modelID;
-	protected List<Long> reachIDs = new ArrayList<Long>();
+	protected ArrayList<Long> reachIDs = new ArrayList<Long>();
 	private Integer id;
 
 	/**
@@ -179,9 +179,7 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	public TerminalReaches clone() throws CloneNotSupportedException {
 		TerminalReaches myClone = new TerminalReaches(modelID);
 		myClone.reachIDs = new ArrayList<Long>(reachIDs.size());
-		for (Long reachID: reachIDs) {
-			myClone.reachIDs.add(reachID);
-		}
+		myClone.reachIDs.addAll(reachIDs);
 
 		return myClone;
 	}
@@ -196,13 +194,32 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	public boolean isValid() {
 		return true;
 	}
+	
+	/**
+	 * Returns true if the passed ID is a terminal reach.
+	 * 
+	 * @param reachId
+	 * @return
+	 */
+	public boolean contains(long reachId) {
+		return reachIDs.contains(reachId);
+	}
 
 	// =================
 	// GETTERS & SETTERS
 	// =================
 	public List<Long> getReachIDs(){
-		//TODO: [ee] This should be wrapped as an immutable (same for all maps)
-		return reachIDs;
+		ArrayList<Long> copy = new ArrayList<Long>(reachIDs.size());
+		copy.addAll(reachIDs);
+		return copy;
+	}
+	
+	/**
+	 * Returns the number of reach ids
+	 * @return
+	 */
+	public int size() {
+		return reachIDs.size();
 	}
 
 	public Long getModelID() {
