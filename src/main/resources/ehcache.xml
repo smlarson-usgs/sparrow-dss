@@ -408,6 +408,6 @@
 	<cache name="EDANameColumn" maxElementsInMemory="10" />
 	
 	<!-- Reports -->
-	<cache name="TotalDeliveredLoadSummaryReport" maxElementsInMemory="0" />
+	<cache name="TotalDeliveredLoadSummaryReport" maxElementsInMemory="1" />
 
 </ehcache>
