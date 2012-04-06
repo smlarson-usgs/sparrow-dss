@@ -407,5 +407,7 @@
 	<cache name="EDACodeColumn" maxElementsInMemory="10" />
 	<cache name="EDANameColumn" maxElementsInMemory="10" />
 	
+	<!-- Reports -->
+	<cache name="TotalDeliveredLoadSummaryReport" maxElementsInMemory="0" />
 
 </ehcache>

@@ -6,6 +6,7 @@ import gov.usgswim.datatable.HashMapColumnIndex;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
+import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
