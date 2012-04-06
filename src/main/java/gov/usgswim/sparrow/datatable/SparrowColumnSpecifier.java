@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.datatable;
 
+import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 
 /**
@@ -35,6 +36,10 @@ public class SparrowColumnSpecifier {
 
 	public int getColumn() {
 		return column;
+	}
+	
+	public ColumnData getColumnData() {
+		return table.getColumn(column);
 	}
 
 	/**

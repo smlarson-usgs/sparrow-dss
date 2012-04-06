@@ -1,11 +1,11 @@
 package gov.usgswim.sparrow.service;
 
+import gov.usgswim.sparrow.cachefactory.*;
+import gov.usgswim.sparrow.clustering.SparrowCacheManager;
+
 import java.util.Collections;
 import java.util.List;
 
-import gov.usgswim.sparrow.action.LoadModelReachIdentificationAttributes;
-import gov.usgswim.sparrow.cachefactory.*;
-import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
@@ -16,7 +16,7 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
  * @author eeverman
  */
 public enum ConfiguredCache {
-	// distributed caches
+	// Caches that would be distributed, if we were doing distributed caching
 	PredictContext(false),
 	AdjustmentGroups(false),
 	Analyses(false),
@@ -53,7 +53,11 @@ public enum ConfiguredCache {
 	
 	//FindReachSupportService
 	EDACodeColumn(false, new EDACodeColumnFactory()),
-	EDANameColumn(false, new EDANameColumnFactory())
+	EDANameColumn(false, new EDANameColumnFactory()),
+	
+	//Delivery Based Reports
+	//Not currently cached
+	TotalDeliveredLoadSummaryReport(false, new BuildTotalDeliveredLoadSummaryReportFactory())
 	;
 	
 	public final boolean isDistributed;

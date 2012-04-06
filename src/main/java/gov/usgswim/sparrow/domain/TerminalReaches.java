@@ -138,6 +138,15 @@ public class TerminalReaches implements XMLStreamParserComponent {
 		}
 		return targetReaches;
 	}
+	
+	/**
+	 * Returns true if there are no terminal reaches.
+	 * 
+	 * @return
+	 */
+	public boolean isEmpty() {
+		return reachIDs.size() == 0;
+	}
 	/**
 	 * Consider two instances the same if they have the same calculated hashcodes
 	 */

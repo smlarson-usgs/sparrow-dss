@@ -25,7 +25,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * to be applied to the model.
  * 
  * Three sets of ReachGroups are held by this class, which each contain
- * different type of adjustment applicaitons:
+ * different type of adjustment applications:
  * <ul>
  * <li>reachGroups contains a list of ReachGroups, one for each group the user creates.
  * <li>defaultGroup contains model-wide adjustments.  For instance, a default
@@ -40,6 +40,12 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 
 	private static final long serialVersionUID = 1L;
 	public static final String MAIN_ELEMENT_NAME = "adjustmentGroups";
+	
+	public static enum ADJUSTMENT_CONFLICTS {
+		accumulate, override
+	}
+	
+	
 
 	// =============================
 	// PUBLIC STATIC UTILITY METHODS
@@ -49,7 +55,7 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	}
 
 	public static AdjustmentGroups parseStream(XMLStreamReader in, Long modelID)
-	throws XMLStreamException, XMLParseValidationException {
+			throws XMLStreamException, XMLParseValidationException {
 
 		AdjustmentGroups ag = new AdjustmentGroups(modelID);
 		return ag.parse(in);
@@ -93,11 +99,13 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	}
 
 	/**
+	 * Its OK to build and use a model ID-only instance.  It will just have
+	 * zero adjustments.
 	 * Constructor requires a modelID
 	 */
 	public AdjustmentGroups(Long modelID) {
 		this.modelID = modelID;
-		this.conflicts = "accumulate";		//arbitrary, but didn't want to leave null
+		this.conflicts = ADJUSTMENT_CONFLICTS.accumulate.toString();		//arbitrary, but didn't want to leave null
 	}
 
 

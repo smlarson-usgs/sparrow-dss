@@ -768,6 +768,15 @@ public class SharedApplication  {
 		return result;
 	}
 	
+	public DataTable getTotalDeliveredLoadSummaryReport(DeliveryReportRequest request) throws Exception {
+		return getTotalDeliveredLoadSummaryReport(request, false);
+	}
+
+	public DataTable getTotalDeliveredLoadSummaryReport(DeliveryReportRequest request, boolean quiet) throws Exception {
+		Object result = TotalDeliveredLoadSummaryReport.get(request, quiet);
+		return (DataTable) result;
+	}
+	
 
 	public static DataTableWritable queryToDataTable(String query) throws NamingException, SQLException {
 		Connection conn = getInstance().getROConnection();
