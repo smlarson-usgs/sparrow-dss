@@ -2,18 +2,18 @@ package gov.usgs.webservices.framework.formatter;
 
 public class Delimiters {
 	public String sheetStart, sheetEnd;
-	public String headerRowStart, headerRowEnd;
+	public String headerStart, headerRowStart, headerRowEnd, headerEnd;
 	public String headerCellStart, headerCellEnd;
-	public String bodyRowStart, bodyRowEnd;
+	public String bodyStart, bodyRowStart, bodyRowEnd, bodyEnd;
 	public String bodyCellStart, bodyCellEnd;
-//	public String footerRowStart, footerRowEnd;
-//	public String footerCellStart, footerCellEnd;
+	public String footerStart, footerRowStart, footerRowEnd, footerEnd;
+	public String footerCellStart, footerCellEnd;
 	
 	// CONSTANT DELIMITERS
-	public static final Delimiters HTML_DELIMITERS = makeHTMLDelimiter(false);
+	public static final Delimiters HTML_DELIMITERS = makeHTMLDelimiter();
 	public static final Delimiters CSV_DELIMITERS = makeCSVDelimiter();
 	public static final Delimiters TAB_DELIMITERS = makeTabDelimiter();
-	public static final Delimiters HTML_DELIMITERS_WITH_HEADER = makeHTMLDelimiter(true);
+//	public static final Delimiters HTML_DELIMITERS_WITH_HEADER = makeHTMLDelimiter(true);
 	
 	@SuppressWarnings("unused")
 	private final int type;
@@ -25,22 +25,42 @@ public class Delimiters {
 	// ==========================
 	// STATIC INITIALIZER METHODS
 	// ==========================
-	public static Delimiters makeHTMLDelimiter(boolean useTableHeadMarkup) {
+	public static Delimiters makeHTMLDelimiter(/* boolean useTableHeadMarkup */) {
 		Delimiters delims= new Delimiters(HTML_TYPE);
+		
+		
 		delims.sheetStart = "<table>";
-		delims.sheetEnd = (useTableHeadMarkup)? "</tbody></table>" : "</table>";
-		delims.headerRowStart = (useTableHeadMarkup)? "<thead><tr>": "<tr>";
-		delims.headerRowEnd = (useTableHeadMarkup)? "</tr></thead><tbody>\n": "</tr>\n";
-		delims.headerCellStart = "<td><b>";
-		delims.headerCellEnd = "</b></td>";
+		delims.sheetEnd = "</table>";
+		
+		//header
+		delims.headerStart = "<thead>";
+		delims.headerRowStart = "<tr>";
+		delims.headerCellStart = "<th>";
+		delims.headerCellEnd = "</th>";
+		delims.headerRowEnd = "</tr>\n";
+		delims.headerEnd = "</thead>\n";
+		
+		
+		//
+		//Note that it is an HTML requirement that the tfoot come BEFORE
+		//the tbody of a table.  This allows the footer to be displayed as
+		//content is loaded.
+		delims.footerStart = "<tfoot>";
+		delims.footerRowStart = "<tr>";
+		delims.footerCellStart = "<td>";
+		delims.footerCellEnd = "</td>";
+		delims.footerRowEnd = "</tr>";
+		delims.footerEnd = "</tfoot>\n";
+
+		//body - there can be multiple tbody sections
+		delims.bodyStart = "<tbody>";
 		delims.bodyRowStart = "<tr>";
-		delims.bodyRowEnd = "</tr>\n";
 		delims.bodyCellStart = "<td>";
 		delims.bodyCellEnd = "</td>";
-//		delims.footerRowStart = "<tr>";
-//		delims.footerRowEnd = "</tr>";
-//		delims.footerCellStart = "<td>";
-//		delims.footerCellEnd = "</td>";
+		delims.bodyRowEnd = "</tr>\n";
+		delims.bodyEnd = "</tbody>\n";
+		
+
 		return delims;
 	}
 	

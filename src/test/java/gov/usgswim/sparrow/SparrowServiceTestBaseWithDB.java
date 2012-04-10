@@ -25,7 +25,7 @@ import com.meterware.servletunit.ServletUnitClient;
  * @author eeverman
  *
  */
-public abstract class SparrowServiceTestBaseWithDB extends SparrowTestBaseWithDB {
+public abstract class SparrowServiceTestBaseWithDB extends SparrowTestBaseWithDBandCannedModel50 {
 
 	
 	public static final String WEB_XML_LOCATION = "src/test/resources/service_test_web.xml";

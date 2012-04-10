@@ -117,6 +117,19 @@
 		<servlet-name>IndividualReachPredictService</servlet-name>
 		<servlet-class>gov.usgswim.sparrow.service.predict.IndividualReachPredictService</servlet-class>
 	</servlet>
+	
+	<servlet>
+		<servlet-name>DeliveryReportService</servlet-name>
+		<servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
+		<init-param>
+			<param-name>pipeline-class</param-name>
+			<param-value>gov.usgswim.sparrow.service.deliveryreport.ReportPipeline</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DeliveryReportService</servlet-name>
+		<url-pattern>/sp_deliveryreport/*</url-pattern>
+	</servlet-mapping>
 
 
 	<servlet-mapping>

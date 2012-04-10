@@ -481,5 +481,8 @@
 			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
 			
 		</Term>
+		<Term id="Total_Delivered_Load_Report">
+		Placeholder Text
+		</Term>
 	</CommonTerms>
 </Documentation>
