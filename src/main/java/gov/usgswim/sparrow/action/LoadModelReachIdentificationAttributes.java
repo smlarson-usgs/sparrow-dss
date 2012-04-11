@@ -12,6 +12,13 @@ import java.util.Map;
 
 /**
  * Loads a table containing reach identification attributes for an entire model.
+ * 
+ * Returns a table with these columns:
+ * Reach Name
+ * EDACODE
+ * EDANAME
+ * 
+ * 
  * @author eeverman
  *
  */

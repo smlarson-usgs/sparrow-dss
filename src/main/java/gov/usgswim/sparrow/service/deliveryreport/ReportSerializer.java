@@ -7,13 +7,10 @@ import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.filter.RowFilter;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
-import gov.usgswim.sparrow.domain.PredictionContext;
-import gov.usgswim.sparrow.service.predict.filter.PredictExportAggFilter;
-import gov.usgswim.sparrow.service.predict.filter.PredictExportFilter;
+import gov.usgswim.sparrow.datatable.TableProperties;
+
+import java.text.DecimalFormat;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -24,12 +21,21 @@ public class ReportSerializer extends BasicXMLStreamReader {
 	public static String TARGET_MAIN_ELEMENT_NAME = "sparrow-report";
 	public static String T_PREFIX = "mod";
 	
+	//Hardcoded columns in the source data
+	public static final int REACH_NAME_COL = 0;	//index of the reach name in the reportTable
+	public static final int EDA_CODE_COL = 1;	//index of the EDA code in the reportTable
+	public static final int FIRST_SOURCE_COL = 2;	//index of the first column containing a source value in the reportTable
+	
 	private ReportRequest request;
 
 	private DataTable data;
 	private PredictData predictData;
+	private int sourceCount;	//The number of sources in the reportTable
+	private int totalCol;	//index of the total column in the reportTable
 	private String exportDescription;
-	private double[] columnTotal;	//Total value for each column
+	private Double[] columnTotal;	//Total value for each column
+	private DecimalFormat[] numberFormat;
+	
 	
 	//
 	protected ParseState state = new ParseState();
@@ -61,7 +67,44 @@ public class ReportSerializer extends BasicXMLStreamReader {
 		this.data = reportTable;
 		this.exportDescription = exportDescription;
 		this.predictData = predictData;
-		columnTotal = new double[reportTable.getColumnCount()];
+		sourceCount = predictData.getSrcMetadata().getRowCount();
+		totalCol = reportTable.getColumnCount() - 1;
+		columnTotal = new Double[reportTable.getColumnCount()];
+		numberFormat = new DecimalFormat[reportTable.getColumnCount()];
+		
+		//Init columnTotal to have zero for actual source or total columns
+		//Other columns will have null
+		for (int i=FIRST_SOURCE_COL; i<=totalCol; i++) {
+			columnTotal[i] = 0d;
+		}
+		
+		//Create number formats for each number column
+		for (int c = 0; c < data.getColumnCount(); c++) {
+			
+			if (data.getDataType(c) != null && Number.class.isAssignableFrom(data.getDataType(c))) {
+				
+				String formatStr = "##0";
+				int precision = 2;
+				String precisionStr = data.getProperty(c, TableProperties.PRECISION.toString());
+				if (precisionStr != null) {
+					try {
+						precision = Integer.parseInt(precisionStr);
+					} catch (Exception e) {
+						//ignore
+					}
+				}
+				
+				if (precision > 0) formatStr += ".";
+				for (int i=0; i<precision; i++) {
+					formatStr += "0";
+				}
+				
+				
+				numberFormat[c] = new DecimalFormat(formatStr);
+			}
+		}
+		
+		
 
 	}
 
@@ -127,11 +170,19 @@ public class ReportSerializer extends BasicXMLStreamReader {
 				
 				addOpenTag("columns");
 				{
+					
+					//Reach name and EDA code
+					events.add(new BasicTagEvent(START_ELEMENT, "group"));
+					String name = data.getName(REACH_NAME_COL);
+					events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", STRING));
+					name = data.getName(EDA_CODE_COL);
+					events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", STRING));
+					addCloseTag("group");
+					
+					
 					//column for each individual source
 					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Total Delivered Load by Source"));
-					
-					writeDataTableStartHeaders(data, predictData, data.getColumnCount() - 1);
-					
+					writeSourceColumnHeadersHeaders(predictData);
 					addCloseTag("group");
 
 					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Total"));
@@ -173,11 +224,31 @@ public class ReportSerializer extends BasicXMLStreamReader {
 
 				for (int c = 0; c < data.getColumnCount(); c++) {
 					
-					Double val = data.getDouble(state.r, c);
-					if (val == null) val = 0D;
+					if (data.getDataType(c) != null && Number.class.isAssignableFrom(data.getDataType(c))) {
+						
+						Double val = data.getDouble(state.r, c);
+						if (val == null) {
+							addBasicTag("c", null);
+						} else if (numberFormat[c] != null) {
+							addBasicTag("c", numberFormat[c].format(val));
+						} else {
+							addBasicTag("c", val.toString());
+						}
+						
+						if (columnTotal[c] != null) {
+							columnTotal[c] = columnTotal[c] + val;
+						}
+						
+					} else {
+						
+						String val = data.getString(state.r, c);
+						if (val == null) val = "";
+						
+						addBasicTag("c", val);
+						
+					}
 					
-					addBasicTag("c", val.toString());
-					columnTotal[c] = columnTotal[c] + val;
+
 				}
 
 				addCloseTag("r");
@@ -190,7 +261,14 @@ public class ReportSerializer extends BasicXMLStreamReader {
 				events.add(rowEvent);
 
 				for (int c = 0; c < data.getColumnCount(); c++) {
-					addBasicTag("c", Double.toString(columnTotal[c]));
+					
+					if (columnTotal[c] == null) {
+						addBasicTag("c", null);
+					} else if (numberFormat[c] != null) {
+						addBasicTag("c", numberFormat[c].format(columnTotal[c]));
+					} else {
+						addBasicTag("c", columnTotal[c].toString());
+					}
 				}
 
 				addCloseTag("r");
@@ -207,12 +285,18 @@ public class ReportSerializer extends BasicXMLStreamReader {
 	 * @param colCount
 	 * @param nameSuffix
 	 */
-	protected void writeDataTableStartHeaders(DataTable result, PredictData basePredictData, int colCount) {
-		for (int i = 0; i < colCount; i++) {
+	protected void writeSourceColumnHeadersHeaders(PredictData basePredictData) {
+		
+		for (int i = 0; i < sourceCount; i++) {
+			//source columns just use the name of the source
 			String name = basePredictData.getSrcMetadata().getString(i, 2);
 			events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", NUMBER));
 		}
 	}
+//	
+//	protected boolean isSourceCol(int columnIndex) {
+//		return (columnIndex >= FIRST_SOURCE_COL && columnIndex < totalCol);
+//	}
 	
 	
 

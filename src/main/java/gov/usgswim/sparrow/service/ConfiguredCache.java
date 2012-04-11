@@ -39,7 +39,7 @@ public enum ConfiguredCache {
 	IdentifyReachByID(false, new ReachByIDFactory()),
 	
 	LoadReachAttributes(false, new LoadReachAttributesFactory()),
-	LoadModelReachIdentificationAttributes(false, false, new LoadModelReachIdentificationAttributesFactory()),
+	LoadModelReachIdentificationAttributes(false, new LoadModelReachIdentificationAttributesFactory()),
 	ReachesByCriteria(false, new ReachesByCriteriaFactory()),
 	DataBinning(false, new BinningFactory()),
 	AggregateIdLookup(false, new AggregateIdLookupKludgeFactory()),

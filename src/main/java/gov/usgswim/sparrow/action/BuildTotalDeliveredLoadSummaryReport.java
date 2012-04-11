@@ -36,6 +36,7 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTable> {
 	//Loaded by the action itself
 	Long modelId = null;
 	protected transient PredictData predictData = null;
+	protected transient DataTable idInfo = null;
 	
 	protected String msg = null;	//statefull message for logging
 	
@@ -46,6 +47,7 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTable> {
 	protected void initRequiredFields() {
 		modelId = adjustmentGroups.getModelID();
 		predictData = SharedApplication.getInstance().getPredictData(modelId);
+		idInfo = SharedApplication.getInstance().getModelReachIdentificationAttributes(modelId);
 	}
 	
 	@Override
@@ -56,6 +58,10 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTable> {
 		DataTable srcMetadata = predictData.getSrcMetadata();
 		int srcCount = srcMetadata.getRowCount();
 		ArrayList<ColumnData> columns = new ArrayList<ColumnData>();
+		
+		//Add the reach identification columns
+		columns.add(idInfo.getColumn(0));	//reach name
+		columns.add(idInfo.getColumn(1));	//eda code
 		
 		//Add one column for each source
 		for (int srcIndex = 0; srcIndex < srcCount; srcIndex++) {

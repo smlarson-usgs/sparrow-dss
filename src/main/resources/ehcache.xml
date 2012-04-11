@@ -407,6 +407,9 @@
 	<cache name="EDACodeColumn" maxElementsInMemory="10" />
 	<cache name="EDANameColumn" maxElementsInMemory="10" />
 	
+	<!-- Keep a limited number of these - big and used infrequently -->
+	<cache name="LoadModelReachIdentificationAttributes" maxElementsInMemory="2" />
+	
 	<!-- Reports -->
 	<cache name="TotalDeliveredLoadSummaryReport" maxElementsInMemory="1" />
 
