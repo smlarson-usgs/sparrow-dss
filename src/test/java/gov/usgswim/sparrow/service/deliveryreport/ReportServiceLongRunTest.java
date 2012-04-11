@@ -9,10 +9,7 @@ import gov.usgswim.sparrow.SparrowTestBase;
 import org.apache.log4j.Level;
 import org.junit.Test;
 
-import com.meterware.httpunit.GetMethodWebRequest;
-import com.meterware.httpunit.PostMethodWebRequest;
-import com.meterware.httpunit.WebRequest;
-import com.meterware.httpunit.WebResponse;
+import com.meterware.httpunit.*;
 
 public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
@@ -43,11 +40,14 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		
 		WebRequest reportWebRequest = new GetMethodWebRequest(REPORT_SERVICE_URL);
 		reportWebRequest.setParameter("context-id", Integer.toString(id));
-		reportWebRequest.setParameter("mime-type", "html");
-		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
+		reportWebRequest.setParameter("mime-type", "xhtml");
+		reportWebRequest.setParameter("include-id-script", "false");
+
+		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
 		
 		System.out.println(actualReportResponse);
+		
 	}
 	
 

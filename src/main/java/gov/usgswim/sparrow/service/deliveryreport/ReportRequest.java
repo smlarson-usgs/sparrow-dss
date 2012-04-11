@@ -26,6 +26,7 @@ public class ReportRequest implements XMLStreamParserComponent,
 	private ResponseFormat responseFormat;
 	private Integer contextID;
 	private PredictionContext context;
+	private boolean includeIdScript;
 	
 
 	// =============================
@@ -52,9 +53,10 @@ public class ReportRequest implements XMLStreamParserComponent,
 	/**
 	 * Construct an instance w/ basic options (used for GET requests)
 	 */
-	public ReportRequest(Integer contextID, ResponseFormat respFormat) {
+	public ReportRequest(Integer contextID, ResponseFormat respFormat, boolean includeIdScript) {
 		this.contextID = contextID;
 		this.responseFormat = respFormat;
+		this.includeIdScript = includeIdScript;
 	}
 
 
@@ -194,6 +196,10 @@ public class ReportRequest implements XMLStreamParserComponent,
 	public void setResponseFormat(ResponseFormat respFormat) {
 		this.responseFormat = respFormat;
 		
+	}
+
+	public boolean isIncludeIdScript() {
+		return includeIdScript;
 	}
 
 }

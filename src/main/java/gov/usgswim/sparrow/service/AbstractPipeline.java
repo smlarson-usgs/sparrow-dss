@@ -50,18 +50,26 @@ public abstract class AbstractPipeline<T extends PipelineRequest> implements Pip
 			case CSV:
 			case TAB:
 			case EXCEL:
-			case HTML:
+				o.getResponseFormat().setAttachment(true);
 				IFormatter df = getCustomFlatteningFormatter(outputType);
 				formatter = ("zip".equals(respFormat.getCompression()))? new ZipFormatter(df): (IFormatter) df;
 				break;
+			case HTML:
+			case XHTML:
+			case XHTML_TABLE:
+				o.getResponseFormat().setAttachment(false);
+				IFormatter htmlFormat = getCustomFlatteningFormatter(outputType);
+				formatter = ("zip".equals(respFormat.getCompression()))? new ZipFormatter(htmlFormat): (IFormatter) htmlFormat;
+				break;
 			case JSON:
-
+				o.getResponseFormat().setAttachment(true);
 				formatter = getConfiguredJSONFormatter();
 				formatter = (formatter == null)? new JSONFormatter(): formatter;
 				break;
 			case XML:
 				// XML is the default case
 			default:
+				o.getResponseFormat().setAttachment(true);
 				formatter = new XMLPassThroughFormatter();
 			break;
 		}
@@ -83,24 +91,32 @@ public abstract class AbstractPipeline<T extends PipelineRequest> implements Pip
 		IFormatter formatter = null;
 
 		switch (outputType) {
-			case CSV:
-			case TAB:
-			case EXCEL:
-			case HTML:
-				IFormatter df = getCustomFlatteningFormatter(outputType);
-				formatter = ("zip".equals(respFormat.getCompression()))? new ZipFormatter(df): (IFormatter) df;
-				break;
-			case JSON:
-
-				formatter = getConfiguredJSONFormatter();
-				formatter = (formatter == null)? new JSONFormatter(): formatter;
-				break;
-			case XML:
-				// XML is the default case for the pipeline
-			default:
-				formatter = new XMLPassThroughFormatter();
+		case CSV:
+		case TAB:
+		case EXCEL:
+			o.getResponseFormat().setAttachment(true);
+			IFormatter df = getCustomFlatteningFormatter(outputType);
+			formatter = ("zip".equals(respFormat.getCompression()))? new ZipFormatter(df): (IFormatter) df;
 			break;
-		}
+		case HTML:
+		case XHTML:
+		case XHTML_TABLE:
+			o.getResponseFormat().setAttachment(false);
+			IFormatter htmlFormat = getCustomFlatteningFormatter(outputType);
+			formatter = ("zip".equals(respFormat.getCompression()))? new ZipFormatter(htmlFormat): (IFormatter) htmlFormat;
+			break;
+		case JSON:
+			o.getResponseFormat().setAttachment(true);
+			formatter = getConfiguredJSONFormatter();
+			formatter = (formatter == null)? new JSONFormatter(): formatter;
+			break;
+		case XML:
+			// XML is the default case
+		default:
+			o.getResponseFormat().setAttachment(true);
+			formatter = new XMLPassThroughFormatter();
+		break;
+	}
 
 		formatter.setFileName(respFormat.fileName);
 		formatter.dispatch(reader, response, respFormat.isAttachement());

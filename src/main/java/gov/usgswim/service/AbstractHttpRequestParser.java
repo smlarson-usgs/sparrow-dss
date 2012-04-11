@@ -224,6 +224,7 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 		return defaultVal;
 	}
 
+	//Parse as Long
 	public static long parseParamAsLong(HttpServletRequest req, String name) throws Exception {
 		return parseParamAsLong(req, name, true);
 	}
@@ -255,6 +256,54 @@ public abstract class AbstractHttpRequestParser<T extends PipelineRequest> imple
 				return Long.parseLong(v);
 			} catch (Exception e) {
 				throw new Exception("The '" + name + "' parameter could not be converted to an integer");
+			}
+		}
+		return defaultVal;
+	}
+	
+	//Parse as Boolean
+	public static boolean parseParamAsBoolean(HttpServletRequest req, String name) throws Exception {
+		return parseParamAsBoolean(req, name, true);
+	}
+
+	public static Boolean parseParamAsBoolean(HttpServletRequest req, String name, boolean require) throws Exception {
+
+		String v = req.getParameter(name);
+
+		if (v != null) {
+			v = v.toLowerCase().trim();
+			
+			if ("true".equals(v)) {
+				return true;
+			} else if ("false".equals(v)) {
+				return false;
+			} else if ("".equals(v) && require) {
+				throw new Exception("The '" + name + "' parameter could not be converted to a boolean");
+			} else {
+				return null;
+			}
+
+		} else if (require) {
+			throw new Exception("A boolean '" + name + "' parameter is required as part of the request");
+		} else {
+			return null;
+		}
+
+	}
+
+	public static Boolean parseParamAsBoolean(HttpServletRequest req, String name, Boolean defaultVal) throws Exception {
+		String v = req.getParameter(name);
+
+		if (v != null) {
+			v = v.toLowerCase().trim();
+			if ("true".equals(v)) {
+				return true;
+			} else if ("false".equals(v)) {
+				return false;
+			} else if ("".equals(v)) {
+				return defaultVal;
+			} else {
+				throw new Exception("The '" + name + "' parameter could not be converted to a boolean");
 			}
 		}
 		return defaultVal;

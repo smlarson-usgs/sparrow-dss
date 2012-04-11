@@ -6,6 +6,8 @@ import gov.usgswim.sparrow.service.AbstractPipeline;
 
 import java.util.Date;
 
+import javax.servlet.http.HttpServletResponse;
+
 public class ReportPipeline extends AbstractPipeline<ReportRequest>{
 
 	// TODO eliminate duplicate code from IDByPointPipeline.configure(new JSONFormatter());
@@ -35,8 +37,15 @@ public class ReportPipeline extends AbstractPipeline<ReportRequest>{
 		switch (outputType) {
 		case HTML:
 		case XHTML:
-			formatter = new SparrowExportHtmlFormatter(outputType);
+		case XHTML_TABLE:
+			formatter = new SparrowExportHtmlFormatter(
+					outputType,
+					"idDeliveryReach",
+					"Downstream Reaches: Click reach ID to identify on map.",
+					"Total for all Reaches",
+					"js/report.js", "css/report.css", "Downstream Reach Summary for Total Load");
 			break;
+
 		default:
 			formatter = new CommentedSparrowFlatteningFormatter(outputType);
 		}

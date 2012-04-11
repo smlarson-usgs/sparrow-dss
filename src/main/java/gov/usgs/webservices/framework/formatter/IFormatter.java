@@ -26,6 +26,7 @@ public interface IFormatter {
 		JSON("text/javascript", "js"), 
 		// new types
 		XHTML("application/xhtml+xml", "xhtml"), // see http://www.w3.org/TR/xhtml-media-types/
+		XHTML_TABLE("application/xhtml+xml", "xhtml"),	//table only
 		CSV("text/csv", "csv"),
 		TAB("text/tab-separated-values", "tsv");
 		

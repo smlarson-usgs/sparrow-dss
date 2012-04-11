@@ -20,9 +20,9 @@ public class ReportRequestParser
 		
 		if (request.getMethod().equals("GET")) {
 			
-			String contextIDParam = request.getParameter("context-id");
 			String mimeType = request.getParameter("mime-type");
-			Integer contextID = Integer.parseInt(contextIDParam);
+			Long contextID = parseParamAsLong(request, "context-id", true);
+			boolean includeIdScriptStr = parseParamAsBoolean(request, "include-id-script", true);
 			
 			
 			ResponseFormat respFormat = new ResponseFormat();
@@ -30,7 +30,7 @@ public class ReportRequestParser
 			respFormat.setAttachment(true);
 			if (respFormat.fileName == null) respFormat.fileName = ReportRequest.PC_EXPORT_FILENAME;
 			
-			req = new ReportRequest(contextID, respFormat);
+			req = new ReportRequest(contextID.intValue(), respFormat, includeIdScriptStr);
 			
 			
 			

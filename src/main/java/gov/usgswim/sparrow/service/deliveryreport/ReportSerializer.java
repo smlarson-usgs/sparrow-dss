@@ -102,6 +102,12 @@ public class ReportSerializer extends BasicXMLStreamReader {
 		events.add(new BasicTagEvent(START_DOCUMENT));
 		events.add(new BasicTagEvent(START_ELEMENT, TARGET_MAIN_ELEMENT_NAME).addAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE + " " + TARGET_NAMESPACE_LOCATION));
 		
+		if (this.request.isIncludeIdScript()) {
+			events.add(
+				new BasicTagEvent(PROCESSING_INSTRUCTION, "format")
+				.addAttribute("includeIdScript", "true"));
+		}
+		
 		addOpenTag("response");
 		{
 			
@@ -129,9 +135,7 @@ public class ReportSerializer extends BasicXMLStreamReader {
 					addCloseTag("group");
 
 					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Total"));
-					String totalColName = data.getName(data.getColumnCount() - 1);
-					totalColName += " (" + data.getUnits(data.getColumnCount() - 1) + ") ";
-					totalColName += "for all sources";
+					String totalColName = "Total for all Sources";
 					events.add(makeNonNullBasicTag("col", "").addAttribute("name", totalColName).addAttribute("type", NUMBER));
 					addCloseTag("group");
 					
@@ -158,6 +162,8 @@ public class ReportSerializer extends BasicXMLStreamReader {
 
 		if (!state.isDataFinished()) {
 			if (state.r < data.getRowCount()) {
+				//standard row
+				
 				BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
 				
 				Long rowId = data.getIdForRow(state.r);
@@ -180,6 +186,7 @@ public class ReportSerializer extends BasicXMLStreamReader {
 				//This is the last row - add the totals
 				
 				BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
+				rowEvent.addAttribute("type", "total");
 				events.add(rowEvent);
 
 				for (int c = 0; c < data.getColumnCount(); c++) {
@@ -202,9 +209,7 @@ public class ReportSerializer extends BasicXMLStreamReader {
 	 */
 	protected void writeDataTableStartHeaders(DataTable result, PredictData basePredictData, int colCount) {
 		for (int i = 0; i < colCount; i++) {
-			String name = result.getName(i);
-			name += " (" + result.getUnits(i) + ") ";
-			name += "for " + basePredictData.getSrcMetadata().getString(i, 2);
+			String name = basePredictData.getSrcMetadata().getString(i, 2);
 			events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", NUMBER));
 		}
 	}

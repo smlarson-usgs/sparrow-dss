@@ -25,33 +25,57 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 		//
 		acceptableTypes.add(HTML);
 		acceptableTypes.add(XHTML);
+		acceptableTypes.add(XHTML_TABLE);
 	}
 	
+
+	
+	//Configuration
+	private String idHeader;	//header used for the row ID column
+	private String jsFunctionForRowId;	//A javascript function to wrap around the row ID
+	private String totalRowRowHeader;	//Text used in the ID column of row of type=total
+	private String jsFileName;	//Name of a js file to include
+	private String cssFileName;	//Name of a css file to include
+	private String htmlTitle;	//content of the html title tag
+	
+	//State tracking
 	private Delimiters delims;
 	private boolean isInItem;
 	private boolean isInDescription;
+	private boolean includeIdScript;
 
 
-	public SparrowExportHtmlFormatter(OutputType type) {
+	public SparrowExportHtmlFormatter(OutputType type, String jsFunctionForRowId,
+			String idHeader, String totalRowRowHeader, String jsFileName, String cssFileName, String htmlTitle) {
 		
 		super(type);
 		
 		switch (type) {
 			case HTML:
 			case XHTML:
+			case XHTML_TABLE:
 				delims = Delimiters.HTML_DELIMITERS;
 				break;
 			default:
 				throw new IllegalArgumentException("Only HTML or XHTML formats are accepted");
 		}
 		acceptableOutputTypes = acceptableTypes;
+		
+		this.outputType = type;
+		this.jsFunctionForRowId = jsFunctionForRowId;
+		this.idHeader = idHeader;
+		this.totalRowRowHeader = totalRowRowHeader;
+		this.jsFileName = jsFileName;
+		this.cssFileName = cssFileName;
+		this.htmlTitle = htmlTitle;
+		
 	}
 
 	@Override
 	public void dispatch(XMLStreamReader in, Writer out) throws IOException {
 		try {
 			
-			out.write(delims.sheetStart);
+			
 			done: while (true) {
 				int event = in.next();
 				switch (event) {
@@ -65,6 +89,14 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 
 						} else if ("metadata".equals(localName)) {
 
+							//Don't do this right at the start b/c we want to make
+							//sure processing instructions are read first.
+							if (XHTML.equals(outputType) || HTML.equals(outputType)) {
+								writeHtmlHead(out);
+							}
+							
+							out.write(delims.sheetStart);
+							
 						} else if ("description".equals(localName)) {
 							
 							isInDescription = true;
@@ -73,19 +105,55 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 						} else if ("columns".equals(localName)) {
 							
 							out.write(delims.headerStart);
+							out.write(delims.headerRowStart);
 							
 							//Add an extra column for the ID
-							out.write(delims.headerCellStart + "Reach ID" + delims.headerCellEnd);
+							if (idHeader != null) {
+								out.write(delims.headerCellStart + idHeader + delims.headerCellEnd);
+							} else {
+								out.write(delims.headerCellStart + "Row ID" + delims.headerCellEnd);
+							}
+							
 							
 						} else if ("col".equals(localName)) {
 							
 							String header = in.getAttributeValue(null, "name");
 							out.write(delims.headerCellStart + formatSimple(header) + delims.headerCellEnd);
 						
+						} else if ("data".equals(localName)) {
+							
+							out.write(delims.bodyStart);
+							
 						} else if ("r".equals(localName)) {
 								
 							out.write(delims.bodyRowStart);
-							out.write(delims.headerCellStart + formatSimple(in.getAttributeValue(null, "id")) + delims.headerCellEnd);
+							
+							//Add an extra column for the ID
+							String type = in.getAttributeValue(null, "type");
+							
+							if (! "total".equals(type)) {
+								//standard data row
+								if (jsFunctionForRowId != null) {
+									String id = formatSimple(in.getAttributeValue(null, "id"));
+									
+									out.write(delims.headerCellStart);
+									out.write(
+											"<a href=\"javascript:" + jsFunctionForRowId + "(" + id + ");\">" +
+											id + "</a>");
+									out.write(delims.headerCellEnd);
+								} else {
+									out.write(delims.headerCellStart + formatSimple(in.getAttributeValue(null, "id")) + delims.headerCellEnd);
+								}
+							} else {
+								//Total row
+								
+								if (totalRowRowHeader != null) {
+									out.write(delims.headerCellStart + formatSimple(totalRowRowHeader) + delims.headerCellEnd);
+								} else {
+									out.write(delims.headerCellStart + "Total for all rows:" + delims.headerCellEnd);
+								}
+							}
+
 							
 						} else if ("c".equals(localName)) {
 							
@@ -103,6 +171,15 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 
 						}
 						break;
+					case XMLStreamConstants.PROCESSING_INSTRUCTION:
+						//localName = in.getLocalName(); throws an exception for PIs in some parsers	
+
+						
+						String include = in.getAttributeValue(null, "includeIdScript");
+						includeIdScript = "true".equals(include);
+
+						
+						break;
 					case XMLStreamConstants.END_ELEMENT:
 						localName = in.getLocalName();
 						
@@ -118,11 +195,16 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 							
 						} else if ("columns".equals(localName)) {
 							
+							out.write(delims.headerRowEnd);
 							out.write(delims.headerEnd);
 							
 						} else if ("col".equals(localName)) {
 							
 							//col elements have no content
+							
+						} else if ("data".equals(localName)) {
+							
+							out.write(delims.bodyEnd);
 							
 						} else if ("r".equals(localName)) {
 								
@@ -146,6 +228,12 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 				}
 			}
 			out.write(delims.sheetEnd);
+			
+			if (XHTML.equals(outputType) || HTML.equals(outputType)) {
+				writeHtmlFoot(out);
+			}
+			
+			
 		} catch (XMLStreamException e) {
 			e.printStackTrace();
 		} catch (EmptyStackException e) {
@@ -157,6 +245,42 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 
 	public boolean isNeedsCompleteFirstRow() {
 		return false;
+	}
+	
+	protected void writeHtmlHead(Writer out) throws IOException {
+		
+		if (XHTML.equals(outputType)) {
+			out.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" " +
+					"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
+			
+			out.write("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
+		} else {
+			out.write("<!DOCTYPE html>\n");
+			out.write("<html>\n");
+		}
+		out.write("<head>\n");
+		
+		if (htmlTitle != null) {
+			out.write("<title>" + htmlTitle + "</title>\n");
+		} else {
+			out.write("<title>SPARROW DSS Report</title>\n");
+		}
+		
+		if (jsFileName != null && includeIdScript) {
+			out.write("<script src=\"" + jsFileName + "\">​</script>\n");
+		}
+		
+		if (cssFileName != null) {
+			out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + cssFileName + "\" />\n");
+		}
+
+		out.write("</head>\n");
+		out.write("<body>\n");
+	}
+	
+	protected void writeHtmlFoot(Writer out) throws IOException {
+		out.write("</body>\n");
+		out.write("</html>");
 	}
 
 	/**
