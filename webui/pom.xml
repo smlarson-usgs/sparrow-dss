@@ -3,8 +3,14 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
 	<groupId>gov.usgs.cida</groupId>
-	<artifactId>sparrow</artifactId>
+	<artifactId>sparrow-parent</artifactId>
+			<version>1.4.21-SNAPSHOT</version>
+	</parent>
+
+	<groupId>gov.usgs.cida</groupId>
+	<artifactId>sparrow-web-ui</artifactId>
 	<packaging>war</packaging>
 	<name>SPARROW Webmap</name>
 	<version>1.4.21-SNAPSHOT</version>
