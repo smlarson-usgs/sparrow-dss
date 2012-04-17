@@ -11,7 +11,7 @@
 	<name>Sparrow DSS Parent Project</name>
 
 	<modules>
-		<module>sparrow-dss-service</module>
+		<module>sparrow-service</module>
 		<module>sparrow-web-ui</module>
 	</modules>
 

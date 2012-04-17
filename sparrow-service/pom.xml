@@ -9,7 +9,7 @@
 	</parent>
 
 	<groupId>gov.usgs.cida</groupId>
-	<artifactId>sparrow-dss-service</artifactId>
+	<artifactId>sparrow-service</artifactId>
 	<packaging>war</packaging>
 	<name>Sparrow DSS Service</name>
 	<version>1.4.21-SNAPSHOT</version>
