@@ -1,0 +1,111 @@
+<html>
+<head>
+	<title>Single Tile Request test page</title>
+	<script type="text/javascript" src="../scrollable_map/js/AjaxRequest.js"></script>
+	<script>
+		function loadImage(){
+			var myForm = document.forms.tileSubmit;
+			var URL="../getMap?model_id=" + myForm.model_id.value
+				+ "&context_id=" + myForm.context_id.value
+				+ "&what_to_map=reach&renderStyle=" + myForm.renderStyle.value
+				+ "&request=GetMap&srs=EPSG:undefined&version=undefined&layers=null"
+				+ "&BBOX=" + myForm.BBOX.value
+				+ "&width=256&height=256&transparent=true&format=undefined"
+				+ "&binList=" + myForm.binList.value
+				+ "&binColorList=" + myForm.binColorList.value;
+			document.images[0].src=URL;
+		}
+
+		function getContextId() {
+
+			var xmlreq = document.forms.pContextForm.xmlreq.value;
+
+			// Submit a new request
+			var c_ar = new AjaxRequest();
+			c_ar.syncRequest('POST', '../getContextId', 'xmlreq=' + xmlreq);
+
+			return c_ar.getResponseText();
+		}
+
+		function processContextId(){
+			var contextID = getContextId();
+			document.forms.pContextForm.response.value=contextID;
+		}
+	</script>
+</head>
+<body>
+
+	<form name="pContextForm">
+		<table>
+			<tr>
+				<td>
+
+						<b>PredictionContext request:</b><br>
+						<textarea name="xmlreq" cols="80" rows="20">
+		<prediction-context xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="32">
+			<adjustment-groups conflicts="accumulate">
+				<individual-group enabled="true"/>
+			</adjustment-groups>
+			<analysis>
+				<select>
+					<data-series per="area">delivered_fraction</data-series>
+					<agg-function per="area">avg</agg-function>
+					<analytic-function partition="HUC6">rank-desc</analytic-function>
+					<nominal-comparison type="none"/>
+				</select>
+				<limit-to>contributors | terminals | area-of-interest</limit-to>
+				<group-by/>
+			</analysis>
+			<terminal-reaches>
+				<reach>27464</reach>
+			</terminal-reaches>
+			<area-of-interest/>
+		</prediction-context>
+						</textarea><br/>
+						<input type="button" value="Submit Prediction Context" onclick="javascript:processContextId()"/>
+
+				</td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;<b>PredictionContext response:</b><br>
+					&nbsp;&nbsp;&nbsp;&nbsp;<textarea name="response"  cols="50" rows="20"></textarea>
+				</td>
+			</tr>
+		</table>
+	</form>
+<hr>
+<table>
+	<tr>
+		<td>
+			<form name="tileSubmit">
+				<table>
+					<tr>
+						<td>
+							<h3>Tile request:</h3>
+							<label for="model_id">Model ID:</label> <input id="model_id" type="text" name="model_id" value="32"><br>
+							<label for="context_id">Context ID:</label> <input id="context_id" type="text" name="context_id" value="380675918"><br>
+							<label for="BBOX">Bounding Box:</label> <input name="BBOX" type="text" value="-105,45,-100,49" size="25"/><br>
+							<br>
+							<label for="renderStyle">bin list:</label>
+								<!-- <input type="radio" name="renderStyle" value="" -->
+							<input name="renderStyle" type="text" value="custom" size="25"/><br>
+							<label for="binList">bin list:</label> <input name="binList" type="text" value="0,0.1,0.2,0.4,0.8,1.6" size="25"/><br>
+							<label for="binColorList">bin color list:</label> <input name="binColorList" type="text" value="008000,FFFF00,FF9900,FF6600,FF0000" size="25"/><br>
+
+							<input type="button" value="Load Image Tile" onclick="javascript:loadImage()"/>
+						</td>
+						<td>
+						<!--  ../getMap?model_id=32&context_id=-1204951330&what_to_map=reach&renderStyle=V.NONE_%5B%5D_0_800K&request=GetMap&srs=EPSG:undefined&version=undefined&layers=null&BBOX=-104.06,45,-101.25,47.81&width=256&height=256&transparent=true&format=undefined -->
+						<img id="tile" width="256" height="256"
+							border="2"
+							src="../getMap?model_id=32&context_id=-1204951330&what_to_map=reach&renderStyle=V.NONE_%5B%5D_0_800K&request=GetMap&srs=EPSG:undefined&version=undefined&layers=null&BBOX=-104.06,45,-101.25,47.81&width=256&height=256&transparent=true&format=undefined">
+						</td>
+					</tr>
+				</table>
+			</form>
+		</td>
+		<td>
+		</td>
+	</tr>
+</table>
+<i>Note: filled values on this form come from a valid sparrow request for model 32.</i>
+
+</body>

@@ -1,0 +1,693 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>gov.usgs.cida</groupId>
+	<artifactId>sparrow</artifactId>
+	<packaging>war</packaging>
+	<name>SPARROW Webmap</name>
+	<version>1.4.21-SNAPSHOT</version>
+	<description>SPARROW web mapping application</description>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
+		<cargo.containerId>tomcat6x</cargo.containerId>
+		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+		<timestamp>${maven.build.timestamp}</timestamp> 
+	</properties>
+	
+	<scm>
+		<developerConnection>scm:svn:https://cida-svn.er.usgs.gov/repos/dev/usgs/sparrow/dss/webmap/trunk</developerConnection>
+	</scm>
+
+	<distributionManagement>
+		<!-- 
+		Note:  The 'true' url for the Nexus repo is:
+		http://internal.cida.usgs.gov
+		however, due to network issues in the office, the machine url is being used temporarly.
+		 -->
+		<repository>
+			<id>cida-sparrow-dss-releases</id>
+			<name>CIDA Sparrow DSS Releases</name>
+			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-sparrow-dss-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>cida-sparrow-dss-snapshots</id>
+			<name>CIDA Sparrow DSS Snapshots</name>
+			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-sparrow-dss-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<url>http://internal.cida.usgs.gov/nexus/content/groups/public/</url>
+			<id>cida-mirror-internal</id>
+			<layout>default</layout>
+			<name>Cida mirror - an internal url</name>
+		</repository>
+		<repository>
+			<url>http://oss.sonatype.org/content/repositories/sourceforge-releases</url>
+			<id>sonatype-mirror</id>
+			<layout>default</layout>
+			<name>Repository for library including ehcache recent ones</name>
+		</repository>
+		<repository>
+			<url>https://repository.jboss.org/nexus/content/repositories/releases</url>
+			<id>JBoss-Releases</id>
+			<layout>default</layout>
+			<name>Repository for library including JGroups recent ones</name>
+		</repository>
+		<repository>
+			<id>java.net2</id>
+			<name>Repository hosting the jee6 artifacts</name>
+			<url>http://download.java.net/maven/2</url>
+		</repository>
+	</repositories>
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<url>http://internal.cida.usgs.gov/nexus/content/groups/public/</url>
+			<id>cida-mirror-internal</id>
+			<layout>default</layout>
+			<name>Cida mirror - an internal url</name>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.16</version>
+		</dependency>
+		<dependency>
+		    <groupId>log4j</groupId>
+		    <artifactId>apache-log4j-extras</artifactId>
+		    <version>1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.servlets</groupId>
+			<artifactId>cos</artifactId>
+			<version>09May2002</version>
+		</dependency>
+		<dependency>
+			<groupId>gov.usgs.cida</groupId>
+			<artifactId>generic_proxy</artifactId>
+			<version>1.1.8</version>
+			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<!-- previous version was 2.4, 2.5 is untested -->
+			<version>2.5</version>
+		</dependency>
+		
+		<!-- Used for email logging of serious errors -->
+		<dependency>
+		    <groupId>javax.mail</groupId>
+		    <artifactId>mail</artifactId>
+		    <version>1.4</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<finalName>sparrow</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven2-plugin</artifactId>
+				<version>1.0.5</version>
+				<configuration>
+					<container>
+						<containerId>${cargo.containerId}</containerId>
+						<type>remote</type>
+					</container>
+					<configuration>
+						<type>runtime</type>
+						<properties>
+							<cargo.server.settings>${cargo.server.settings}
+							</cargo.server.settings>
+						</properties>
+					</configuration>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<systemProperties>
+					</systemProperties>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<tasks>
+								<mkdir dir="${project.build.directory}" />
+								<tstamp>
+									<format property="last.updated" pattern="yyyy-MM-dd hh:mm:ss" />
+								</tstamp>
+							</tasks>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
+		</plugins>
+	</build>
+	<profiles>
+		<profile> <!-- Development build, no javascript minification, points to .193 (the test server - may want to change) -->
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>env</name>
+					<value>dev</value>
+				</property>
+			</activation>
+			<properties>
+				<service-url>http://localhost:8080/sparrow_mv</service-url>
+				<!--  <service-url>http://130.11.165.193:8080/sparrow_mv</service-url> -->
+				<security-constraint-url-pattern>/no_login_required</security-constraint-url-pattern>
+				<cargo.server.settings>cargo-sparrow-test</cargo.server.settings>
+				<maven.build.timestamp.format>dd/MM/yyyy HH:mm:ss</maven.build.timestamp.format>
+				<buildTime>${maven.build.timestamp}</buildTime>
+				<deployment_profile>Development</deployment_profile>
+			</properties>
+			<build>
+				<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.0.2</version>
+					<configuration>
+			           <webResources> 
+			             <webResource> 
+			               <directory>${basedir}/src/main/webapp/WEB-INF</directory> 
+			               <includes> 
+			                 <include>web.xml</include> 
+			               </includes> 
+			               <targetPath>WEB-INF</targetPath> 
+			               <filtering>true</filtering> 
+			             </webResource> 
+			             <webResource> 
+				               <directory>${basedir}/src/main/webapp</directory> 
+				               <includes> 
+				                 <include>footer.jsp</include>
+				                 <include>index.jsp</include>
+				                 <include>dss.jsp</include>
+				               </includes> 
+				               <targetPath></targetPath> 
+				               <filtering>true</filtering> 
+				             </webResource> 
+			           </webResources> 
+					</configuration>
+				</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile> <!-- test build, includes javascript minification -->
+			<id>test</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>test</value>
+				</property>
+			</activation>
+			<properties>
+				<service-url>http://130.11.165.193:8080/sparrow_mv</service-url>
+				<!-- set back to '/' to re-enable security -->
+				<security-constraint-url-pattern>/no_login_required</security-constraint-url-pattern>
+				<cargo.server.settings>cargo-sparrow-test</cargo.server.settings>
+				<maven.build.timestamp.format>dd/MM/yyyy HH:mm:ss</maven.build.timestamp.format>
+				<buildTime>${maven.build.timestamp}</buildTime>
+				<deployment_profile>Test</deployment_profile>
+			</properties>
+			<build>
+				<plugins>
+					<!-- Copy the webapp directory to a target folder meant for minifying 
+						so that original svn controlled resources are not affect by the JS minification 
+						process -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>2.4.3</version>
+						<executions>
+							<execution>
+								<id>copyWebappToMinify</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<overwrite>true</overwrite>
+									<outputDirectory>${basedir}/target/minifiedWebapp
+									</outputDirectory>
+									<encoding>UTF-8</encoding>
+									<resources>
+										<resource>
+											<directory>src/main/webapp</directory>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- minify listed JSPs from the source folder (so we don't affect source 
+						controlled resources) -->
+					<plugin>
+						<groupId>gov.usgs.cida</groupId>
+						<artifactId>auto-minify-plugin</artifactId>
+						<version>1.1</version>
+						<executions>
+							<execution>
+								<id>minifyInternal</id>
+								<configuration>
+									<sourceDirectory>${basedir}/target/minifiedWebapp</sourceDirectory>
+									<jsTarget>js/build</jsTarget>
+									<htmlFiles>
+										<param>map.jsp</param>
+									</htmlFiles>
+								</configuration>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>minify-imports</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>2.1-beta-1</version>
+						<configuration>
+		                    <warSourceDirectory>
+		                       ${basedir}/target/minifiedWebapp <!-- we want to minify web resources and maintain an orignal copy so we copied them here first, see plugin below-->
+		                    </warSourceDirectory>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							</manifest>
+							<webResources> 
+				             <webResource> 
+				               <directory>${basedir}/target/minifiedWebapp/WEB-INF</directory> 
+				               <includes> 
+				                 <include>web.xml</include> 
+				               </includes> 
+				               <targetPath>WEB-INF</targetPath> 
+				               <filtering>true</filtering> 
+				             </webResource> 
+				             <webResource> 
+				               <directory>${basedir}/target/minifiedWebapp</directory> 
+				               <includes> 
+				                 <include>footer.jsp</include>
+				                 <include>index.jsp</include>
+				                 <include>dss.jsp</include> 
+				               </includes> 
+				               <targetPath></targetPath> 
+				               <filtering>true</filtering> 
+				             </webResource> 
+				           </webResources> 
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile> <!-- qa build, includes javascript minification -->
+			<id>qa</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>qa</value>
+				</property>
+			</activation>
+			<properties>
+			
+				<!-- The 2nd server seems to be having memory issues, so trying just one -->
+				<service-url>http://130.11.165.191:8080/sparrow_mv</service-url>
+				<!-- <service-url>http://130.11.165.191:8080/sparrow_mv
+					http://130.11.165.192:8080/sparrow_mv</service-url>-->
+				<!-- set back to '/' to re-enable security -->
+				<security-constraint-url-pattern>/no_login_required</security-constraint-url-pattern>
+				<cargo.server.settings>cargo-sparrow-qa-ui</cargo.server.settings>
+				<maven.build.timestamp.format>dd/MM/yyyy HH:mm:ss</maven.build.timestamp.format>
+				<buildTime>${maven.build.timestamp}</buildTime>
+				<deployment_profile>Quality Assurance</deployment_profile>
+			</properties>
+			<build>
+				<plugins>
+					<!-- Copy the webapp directory to a target folder meant for minifying 
+						so that original svn controlled resources are not affect by the JS minification 
+						process -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>2.4.3</version>
+						<executions>
+							<execution>
+								<id>copyWebappToMinify</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<overwrite>true</overwrite>
+									<outputDirectory>${basedir}/target/minifiedWebapp
+									</outputDirectory>
+									<encoding>UTF-8</encoding>
+									<resources>
+										<resource>
+											<directory>src/main/webapp</directory>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- minify listed JSPs from the source folder (so we don't affect source 
+						controlled resources) -->
+					<plugin>
+						<groupId>gov.usgs.cida</groupId>
+						<artifactId>auto-minify-plugin</artifactId>
+						<version>1.1</version>
+						<executions>
+							<execution>
+								<id>minifyInternal</id>
+								<configuration>
+									<sourceDirectory>${basedir}/target/minifiedWebapp</sourceDirectory>
+									<jsTarget>js/build</jsTarget>
+									<htmlFiles>
+										<param>map.jsp</param>
+									</htmlFiles>
+								</configuration>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>minify-imports</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>2.1-beta-1</version>
+						<configuration>
+		                    <warSourceDirectory>
+		                       ${basedir}/target/minifiedWebapp <!-- we want to minify web resources and maintain an orignal copy so we copied them here first, see plugin below-->
+		                    </warSourceDirectory>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							</manifest>
+							<webResources> 
+				             <webResource> 
+				               <directory>${basedir}/target/minifiedWebapp/WEB-INF</directory> 
+				               <includes> 
+				                 <include>web.xml</include> 
+				               </includes> 
+				               <targetPath>WEB-INF</targetPath> 
+				               <filtering>true</filtering> 
+				             </webResource> 
+				             <webResource> 
+				               <directory>${basedir}/target/minifiedWebapp</directory> 
+				               <includes> 
+				                 <include>footer.jsp</include>
+				                 <include>index.jsp</include>
+				                 <include>dss.jsp</include> 
+				               </includes> 
+				               <targetPath></targetPath> 
+				               <filtering>true</filtering> 
+				             </webResource> 
+				           </webResources> 
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile> <!-- production w/ the /sparrow name for public use -->
+			<id>prod-cluster-1</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>prod-cluster-1</value>
+				</property>
+			</activation>
+			<properties>
+				<service-url>http://cida.usgs.gov/sparrow_mv</service-url>
+				<security-constraint-url-pattern>/no_login_required</security-constraint-url-pattern>
+				<!--  Dave/Lorraine: swap w/ the above to enable security -->
+				<!-- <security-constraint-url-pattern>/</security-constraint-url-pattern> -->
+				<cargo.server.settings>cargo-sparrow-prod-ui</cargo.server.settings>
+				<maven.build.timestamp.format>dd/MM/yyyy HH:mm:ss</maven.build.timestamp.format>
+				<buildTime>${maven.build.timestamp}</buildTime>
+				<deployment_profile>Public Production</deployment_profile>
+			</properties>
+			<build>
+				<plugins>
+					<!-- Copy the webapp directory to a target folder meant for minifying 
+						so that original svn controlled resources are not affect by the JS minification 
+						process -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>2.4.3</version>
+						<executions>
+							<execution>
+								<id>copyWebappToMinify</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<overwrite>true</overwrite>
+									<outputDirectory>${basedir}/target/minifiedWebapp
+									</outputDirectory>
+									<encoding>UTF-8</encoding>
+									<resources>
+										<resource>
+											<directory>src/main/webapp</directory>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- minify listed JSPs from the source folder (so we don't affect source 
+						controlled resources) -->
+					<plugin>
+						<groupId>gov.usgs.cida</groupId>
+						<artifactId>auto-minify-plugin</artifactId>
+						<version>1.1</version>
+						<executions>
+							<execution>
+								<id>minifyInternal</id>
+								<configuration>
+									<sourceDirectory>${basedir}/target/minifiedWebapp</sourceDirectory>
+									<jsTarget>js/build</jsTarget>
+									<htmlFiles>
+										<param>map.jsp</param>
+									</htmlFiles>
+								</configuration>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>minify-imports</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>2.1-beta-1</version>
+						<configuration>
+		                    <warSourceDirectory>
+		                       ${basedir}/target/minifiedWebapp <!-- we want to minify web resources and maintain an orignal copy so we copied them here first, see plugin below-->
+		                    </warSourceDirectory>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							</manifest>
+							<webResources> 
+				             <webResource> 
+				               <directory>${basedir}/target/minifiedWebapp/WEB-INF</directory> 
+				               <includes> 
+				                 <include>web.xml</include> 
+				               </includes> 
+				               <targetPath>WEB-INF</targetPath> 
+				               <filtering>true</filtering> 
+				             </webResource> 
+				             <webResource> 
+				               <directory>${basedir}/target/minifiedWebapp</directory> 
+				               <includes> 
+				                 <include>footer.jsp</include>
+				                 <include>index.jsp</include>
+				                 <include>dss.jsp</include>
+				               </includes> 
+				               <targetPath></targetPath> 
+				               <filtering>true</filtering> 
+				             </webResource> 
+				           </webResources> 
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile> <!-- production at http://cida-wiwsc-sparrowgui-01.er.usgs.gov:8081/sparrow/ -->
+			<id>prod-cluster-2</id>
+			<activation>
+				<property>
+					<name>env</name>
+					<value>prod-cluster-2</value>
+				</property>
+			</activation>
+			<properties>
+				<service-url>http://cida.usgs.gov/sparrow_mv2</service-url>
+				<security-constraint-url-pattern>/no_login_required</security-constraint-url-pattern>
+				<!--  Dave/Lorraine: swap w/ the above to enable security -->
+				<!-- <security-constraint-url-pattern>/</security-constraint-url-pattern> -->
+				<cargo.server.settings>cargo-sparrow-prod-ui-cluster2</cargo.server.settings>
+				<maven.build.timestamp.format>dd/MM/yyyy HH:mm:ss</maven.build.timestamp.format>
+				<buildTime>${maven.build.timestamp}</buildTime>
+				<deployment_profile>Public Production - Cluster 2</deployment_profile>
+			</properties>
+			<build>
+				<finalName>sparrow</finalName>
+				<plugins>
+					<!-- Copy the webapp directory to a target folder meant for minifying 
+						so that original svn controlled resources are not affect by the JS minification 
+						process -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>2.4.3</version>
+						<executions>
+							<execution>
+								<id>copyWebappToMinify</id>
+								<phase>process-resources</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<overwrite>true</overwrite>
+									<outputDirectory>${basedir}/target/minifiedWebapp
+									</outputDirectory>
+									<encoding>UTF-8</encoding>
+									<resources>
+										<resource>
+											<directory>src/main/webapp</directory>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- minify listed JSPs from the source folder (so we don't affect source 
+						controlled resources) -->
+					<plugin>
+						<groupId>gov.usgs.cida</groupId>
+						<artifactId>auto-minify-plugin</artifactId>
+						<version>1.1</version>
+						<executions>
+							<execution>
+								<id>minifyInternal</id>
+								<configuration>
+									<sourceDirectory>${basedir}/target/minifiedWebapp</sourceDirectory>
+									<jsTarget>js/build</jsTarget>
+									<htmlFiles>
+										<param>map.jsp</param>
+									</htmlFiles>
+								</configuration>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>minify-imports</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<version>2.1-beta-1</version>
+						<configuration>
+		                    <warSourceDirectory>
+		                       ${basedir}/target/minifiedWebapp <!-- we want to minify web resources and maintain an orignal copy so we copied them here first, see plugin below-->
+		                    </warSourceDirectory>
+							<manifest>
+								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+							</manifest>
+							<webResources> 
+				             <webResource> 
+				               <directory>${basedir}/target/minifiedWebapp/WEB-INF</directory> 
+				               <includes> 
+				                 <include>web.xml</include> 
+				               </includes> 
+				               <targetPath>WEB-INF</targetPath> 
+				               <filtering>true</filtering> 
+				             </webResource> 
+				             <webResource> 
+				               <directory>${basedir}/target/minifiedWebapp</directory> 
+				               <includes> 
+				                 <include>footer.jsp</include>
+				                 <include>index.jsp</include>
+				                 <include>dss.jsp</include> 
+				               </includes> 
+				               <targetPath></targetPath> 
+				               <filtering>true</filtering> 
+				             </webResource> 
+				           </webResources> 
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+	</profiles>
+</project>

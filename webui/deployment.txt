@@ -1,0 +1,37 @@
+Run move-libs, clean, and the dist tasks in build.xml.
+
+Note:  You must ensure that the web.xml file has the proxy services pointed
+to the correct sparrow_core deployment.  Most of the time that means it can
+just point back to the same machine.
+
+Currently there are two test servers:
+
+>> BBG - Development (Test Releases for in-office testing) <<
+Tomcat Manager: http://igsarmewfsbbg.er.usgs.gov:8080/manager/html
+Manager login: tc_admin (see an administrator for the pwd)
+To restart, ssh to machine and as the tomcat user (see an administrator for the pwd).
+In your home directory, look for ~/bin/startup.sh or shutdown.sh
+
+>> NOT CURRENTLY USED: MV1A - Test (Unstable testing deployments) <<
+Tomcat Manager: http://igsarmewwbmv1a.er.usgs.gov:8080/manager/html
+Manager login: tc_admin (see an administrator for the pwd)
+This server was setup by John Anderson and has some goofy configuration.
+Don't attempt to restart it - if problems, ask John or an admin to restart.
+
+
+>>>>> Production Deployment <<<<<
+
+Deploy the GUI to three production servers:
+http://cida-wiwsc-int-javaprod1a.er.usgs.gov (a, b, & c)
+
+The manager app is at:
+http://cida-wiwsc-int-javaprod1a.er.usgs.gov/manager/html (a, b, and c)
+user: tomcat, pwd same as tc_admin
+
+Note that for each deployment, the servlet proxy will need to be pointed to one
+of the two mapviewer servers:
+
+http://igsarmewwbmv1a:8080/sparrow_mv (a & b)
+
+This url is not considered the final url for the mv servers, but is what can
+be used currently for inter-machine communication.

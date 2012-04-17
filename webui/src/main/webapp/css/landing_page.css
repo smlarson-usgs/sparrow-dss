@@ -1,0 +1,129 @@
+/*******
+	Layout changes, overriding left_only.css */
+#page-area-container .area-1 .area-content { margin-right: 0; margin-left: 480px; }
+
+#page-area-container .area-2 {
+	width: 480px;
+	margin-right: -480px;	/* make effective width of .area-2 zero, allowing it to sit beside area-1 */
+	margin-left: 0;	/* Turn off default negative margin-left so its position is not shifted */
+}
+
+/* rm rounded corner to the top right of area-2 */
+#page-area-container .area-2 .area-header { background-image: none; }
+
+/*******
+	Layout change from layout.css */
+body {
+	padding: 0 400px 0 400px; margin: 0;
+	text-align: center; /* Allow older browsers to center the sizer and expander */
+	background: #fff;
+}
+		
+#sizer {
+	margin: 0 auto 0 auto;
+	padding: 0;
+	width: 78%;
+	max-width: 500px;  /* version for IE is at the bottom of this style block */
+}
+
+#expander {
+	background: white;
+	margin: 0 -400px 0 -400px;
+	text-align: left;	/* set back to normal */
+	min-width: 800px; /* Critical Safari fix! */
+	position: relative;
+}
+
+/*******
+	Layout Details */
+/* Force full height for main content area */
+#page-area-container .area .area-content { padding-bottom: 3000px; margin-bottom: -3000px; overflow: hidden; }
+
+/*******
+	Specific components */
+
+.search-header {
+	margin: .3em 0 .2em .2em;
+}
+
+#desc-p1 { margin: 1em; }
+
+/* model display section */
+#metadata {
+	margin: .2em;	
+}
+
+/* General classes */
+img { border: none; }
+
+h3.divider {
+	width: auto; clear: both;
+	background: url(../ext_js/resources/images/default/panel/white-top-bottom.gif) repeat-x; background-position: 0 -1px;
+	font-size: 98%; padding: .3em .2em;
+	border-width: 0 0 1px 0; border-style: solid; border-color: #99BBE8; color: #000;
+}
+.note { font-size: 80%; }
+
+h2#site-title { margin-bottom: 0 !important; }
+#x-history-frame {display: none;}
+.sparrow_model_id { color: red; display: none; }
+
+/* Search area on the left side of the page */
+#model-search-container { /* Formatted in EXT */ }
+
+/* video button area */
+#reference-videos button { margin-left: 1em; }
+
+/* remote html model formating */
+.model-select-default-instructions { font-size: 1.5em; margin: 2em; }
+#model-metadata-container .model-select-default-instructions { padding-bottom: 10em; }
+.model-select-default-instructions p, .model-select-default-instructions h4 { color: #666; text-align: center; font-style: italic; }
+#model-main-link-header { /* position: relative; */ }
+#model-thumbnail { float: left; width: 170; margin-right: 1em; }
+#model-thumbnail a img { border: solid 3px #999; }
+#model-thumbnail a:hover img { border: solid 3px #99f; }
+#new-empty-session { float: left; width: 170; margin: 1em; }
+#new-empty-session button { /* padding: .3em;*/ }
+#new-empty-session button:hover { color: #339; }
+
+
+/* keywords and scenarios listed for a single model */
+#sparrow-keywords-section { border-bottom: 2px solid black; clear: left; }
+#new-empty-session { margin: 1.2em 0 1em 1.2em; }
+#new-empty-session button { font-size: 1.2em; font-weight: bold; padding: .3em; }
+#new-scenario-session dl, dl.sparrow-keywords { padding: 2px 0px; margin: .1em 0em .8em 0em; }
+
+#new-scenario-session dl dt, dl.sparrow-keywords dt {
+	clear: left;
+	float: left;
+	width: 12em;
+	margin: 0;
+	padding: 5px;
+	border-top: 1px solid #999;
+	font-weight: bold;
+}
+
+#new-scenario-session dl dd, dl.sparrow-keywords dd {
+	margin-left: 12em;
+	padding: 5px;
+}
+
+#new-scenario-session dl dd.first, dl.sparrow-keywords dd.first { border-top: 1px solid #999; }
+
+#new-watershed-session button { margin-left: 1em; }
+.captioneddiv { clear: both; }
+
+/* dss.jsp page main section */
+#dss-description { margin: 1em; }
+
+#dss-description h4 { clear: both; }
+#dss-description li { margin-top: .5em; }
+
+#overall-snapshot { float: left; width: 420px; height: 340px; border: 1px solid #333; margin: 0 1em 1em 0; }
+#overall-snapshot img { margin: 10px; }
+#overall-snapshot p { font-size: .9em; font-style: italic; font-weight: bold; margin: 10px; }
+
+/* Used for animation */
+.highlite-w { background-color: #FFFFFF; }
+.highlite-b { background-color: #C4D8F1; }
+.highlite-normal { background-color: transparent; }

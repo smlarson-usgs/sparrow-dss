@@ -1,0 +1,41 @@
+<sparrow-reach-response xmlns="http://www.usgs.gov/sparrow/id-response-schema/v0_2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="22">
+    <status>OK</status>
+   	<reach>
+      	<id>3541</id>
+        <name>WESTERN RUN</name>
+		<meanq>1234</meanq>
+		<state>WI</state>
+		
+		<catch-area>2345</catch-area>
+        <bbox min-long="-76.840216" min-lat="39.492299" max-long="-76.626801" max-lat="39.597698" marker-long="-76.7584575" marker-lat="39.505502" />
+        <hucs>
+            <huc8 id="02060003" name="GUNPOWDER-PATAPSCO" />
+            <huc6 id="020600" name="UPPER CHESAPEAKE" />
+            <huc4 id="0206" name="UPPER CHESAPEAKE" />
+            <huc2 id="02" name="MID ATLANTIC" />
+        </hucs>
+        
+        <!-- would contain attributes and predicted if specified-->
+		<!-- <attributes/> -->
+		<!-- <predicted/> -->
+   	</reach>
+   	<reach>
+      	<id>5233</id>
+        <name>Eastern RUN</name>
+		<meanq>3484</meanq>
+		<state>WI</state>
+		
+		<catch-area>9842</catch-area>
+        <bbox min-long="-76.840216" min-lat="39.492299" max-long="-76.626801" max-lat="39.597698" marker-long="-76.7584575" marker-lat="39.505502" />
+        <hucs>
+            <huc8 id="02060003" name="GUNPOWDER-PATAPSCO" />
+            <huc6 id="020600" name="UPPER CHESAPEAKE" />
+            <huc4 id="0206" name="UPPER CHESAPEAKE" />
+            <huc2 id="02" name="MID ATLANTIC" />
+        </hucs>
+        
+        <!-- would contain attributes and predicted if specified-->
+		<!-- <attributes/> -->
+		<!-- <predicted/> -->
+   	</reach>
+</sparrow-reach-response>
