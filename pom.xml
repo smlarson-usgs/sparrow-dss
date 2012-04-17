@@ -12,6 +12,7 @@
 
 	<modules>
 		<module>sparrow-dss-service</module>
+		<module>sparrow-web-ui</module>
 	</modules>
 
 	<build>
