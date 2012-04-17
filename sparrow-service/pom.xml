@@ -11,7 +11,7 @@
 	<groupId>gov.usgs.cida</groupId>
 	<artifactId>sparrow-service</artifactId>
 	<packaging>war</packaging>
-	<name>Sparrow DSS Service</name>
+	<name>sparrow-service</name>
 	<version>1.4.21-SNAPSHOT</version>
 
 	<properties>

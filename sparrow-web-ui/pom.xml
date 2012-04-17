@@ -12,7 +12,7 @@
 	<groupId>gov.usgs.cida</groupId>
 	<artifactId>sparrow-web-ui</artifactId>
 	<packaging>war</packaging>
-	<name>SPARROW Webmap</name>
+	<name>sparrow-web-ui</name>
 	<version>1.4.21-SNAPSHOT</version>
 	<description>SPARROW web mapping application</description>
 
