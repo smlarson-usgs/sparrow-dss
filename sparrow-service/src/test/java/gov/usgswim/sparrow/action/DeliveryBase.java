@@ -10,6 +10,7 @@ import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.SparrowTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.TerminalReaches;
@@ -44,7 +45,7 @@ import org.junit.Test;
  * 
  * @author eeverman
  */
-public class DeliveryBase  extends SparrowTestBase {
+public class DeliveryBase  extends SparrowTestBaseWithDBandCannedModel50 {
 	
 	protected static PredictData unmodifiedPredictData;
 	protected static PredictData modifiedPredictData;
