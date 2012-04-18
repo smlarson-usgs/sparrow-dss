@@ -48,6 +48,12 @@
 
 	<repositories>
 		<repository>
+			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-releases/</url>
+			<id>cida-releases</id>
+			<layout>default</layout>
+			<name>Cida Releases - Release Shared Libraries</name>
+		</repository>
+		<repository>
 			<url>http://internal.cida.usgs.gov/nexus/content/groups/public/</url>
 			<id>cida-mirror-internal</id>
 			<layout>default</layout>
@@ -133,6 +139,11 @@
 		    <groupId>javax.mail</groupId>
 		    <artifactId>mail</artifactId>
 		    <version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>gov.usgs.cida</groupId>
+			<artifactId>dynamicProperties</artifactId>
+			<version>0.0.1</version>
 		</dependency>
 	</dependencies>
 

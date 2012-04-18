@@ -8,6 +8,7 @@ import java.lang.management.ManagementFactory;
 
 import javax.management.MBeanServer;
 
+import javax.naming.NamingException;
 import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
@@ -111,7 +112,7 @@ public class SparrowCacheManager {
 	 * @throws IOException
 	 */
 	public static InputStream getConfigurationStream(String... resourceName)
-			throws IOException {
+			throws IOException, NamingException {
 		String resName = DEFAULT_EHCACHE_CONFIG_LOCATION;
 		if (resourceName != null && resourceName.length > 0 && resourceName[0] != null ) {
 			resName = resourceName[0];
@@ -129,7 +130,7 @@ public class SparrowCacheManager {
 	
 
 	
-	public static DynamicReadOnlyProperties getProperties() {
+	public static DynamicReadOnlyProperties getProperties() throws NamingException {
 		DynamicReadOnlyProperties dynProps = new DynamicReadOnlyProperties();
 		dynProps.addJNDIContexts(DynamicReadOnlyProperties.DEFAULT_JNDI_CONTEXTS);
 		return dynProps;

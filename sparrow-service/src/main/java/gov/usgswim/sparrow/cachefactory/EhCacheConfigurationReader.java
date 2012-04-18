@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.naming.NamingException;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory;
@@ -67,7 +68,7 @@ public class EhCacheConfigurationReader {
 			inStream = SparrowCacheManager.getConfigurationStream();
 
 			xml = DynamicReadOnlyProperties.readStream2StringBuilder(inStream);
-		} catch (IOException excp) {
+		} catch (Exception excp) {
 			excp.printStackTrace();
 			System.err.println("Failed to read configuration");
 			return null;
@@ -142,7 +143,7 @@ public class EhCacheConfigurationReader {
 	 * TODO HTML stuff doesn't really belong in this class, but there isn't an ideal place to put it, so I'm leaving it here for now.
 	 * @throws IOException 
 	 */
-	public static StringBuilder listDistributedCacheStatus(boolean showDetails) throws IOException {
+	public static StringBuilder listDistributedCacheStatus(boolean showDetails) throws Exception {
 
 //		outputConfig();
 

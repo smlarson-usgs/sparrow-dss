@@ -142,6 +142,12 @@
 
 	<repositories>
 		<repository>
+			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-releases/</url>
+			<id>cida-releases</id>
+			<layout>default</layout>
+			<name>Cida Releases - Release Shared Libraries</name>
+		</repository>
+		<repository>
 			<id>cida-sparrow-dss-thirdparty</id>
 			<url>http://internal.cida.usgs.gov/nexus/content/repositories/cida-sparrow-dss-thirdparty</url>
 		</repository>
@@ -316,6 +322,11 @@
 		    <groupId>javax.mail</groupId>
 		    <artifactId>mail</artifactId>
 		    <version>1.4</version>
+		</dependency>
+		<dependency>
+			<groupId>gov.usgs.cida</groupId>
+			<artifactId>dynamicProperties</artifactId>
+			<version>0.0.1</version>
 		</dependency>
 
 	</dependencies>
