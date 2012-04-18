@@ -376,11 +376,8 @@
 				</property>
 			</activation>
 			<properties>
-			
-				<!-- The 2nd server seems to be having memory issues, so trying just one -->
-				<service-url>http://130.11.165.191:8080/sparrow_mv</service-url>
-				<!-- <service-url>http://130.11.165.191:8080/sparrow_mv
-					http://130.11.165.192:8080/sparrow_mv</service-url>-->
+				<service-url>http://130.11.165.191:8080/sparrow_mv
+					http://130.11.165.192:8080/sparrow_mv</service-url>
 				<!-- set back to '/' to re-enable security -->
 				<security-constraint-url-pattern>/no_login_required</security-constraint-url-pattern>
 				<cargo.server.settings>cargo-sparrow-qa-ui</cargo.server.settings>

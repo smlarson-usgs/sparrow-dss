@@ -58,7 +58,7 @@ public class LoadModelReachIdentificationAttributes extends Action<DataTable> {
 		addResultSetForAutoClose(rset);
 		attribs = DataTableConverter.toDataTable(rset);
 		
-		return attribs;
+		return attribs.toImmutable();
 	}
 
 
