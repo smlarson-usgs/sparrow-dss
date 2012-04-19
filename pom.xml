@@ -14,6 +14,19 @@
 		<module>sparrow-service</module>
 		<module>sparrow-web-ui</module>
 	</modules>
+	
+	<distributionManagement>
+		<repository>
+			<id>cida-sparrow-dss-releases</id>
+			<name>CIDA Sparrow DSS Releases</name>
+			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-sparrow-dss-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>cida-sparrow-dss-snapshots</id>
+			<name>CIDA Sparrow DSS Snapshots</name>
+			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-sparrow-dss-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<build>
 		<pluginManagement>
