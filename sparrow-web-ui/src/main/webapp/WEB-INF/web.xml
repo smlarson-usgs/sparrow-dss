@@ -2,26 +2,17 @@
 <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <description>SPARROW Mapping Application</description>
     <display-name>Sparrow Client {Owner: NB, Coder: EE}</display-name>
+		
+		<!--
     <context-param>
         <description>Despite the name, this is not restricted to just the server - it can be the 1st half of the url.</description>
         <param-name>forward-server</param-name>
-        <!-- Local configuration - comment out when running on test or production servers -->
         <param-value>
         ${service-url}
         </param-value>
-        <!-- Known URL for Service deployments
-        	
-        Local Testing and on the Dev server:
-			http://localhost:8080/sparrow_mv/
-		
-		QA (two node cluster, round robin handled by app) :
-			http://130.11.165.191:8080/sparrow_mv/
-			http://130.11.165.192:8080/sparrow_mv/
-			
-		Production configuration: (Single Apache load balancer)
-			http://cida.usgs.gov/sparrow_mv/
-		-->
     </context-param>
+		-->
+		
     <!--
     <filter>
 		<description>
@@ -35,21 +26,19 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	-->
-	
-	<filter>
-		<description>
+    <filter>
+        <description>
 			Minimal traffic logging so we know when usage is low for redeploys
 		</description>
-		<filter-name>activityLogFilter</filter-name>
-		<filter-class>gov.usgswim.sparrow.ActivityLogFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>activityLogFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
-    
+        <filter-name>activityLogFilter</filter-name>
+        <filter-class>gov.usgswim.sparrow.ActivityLogFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>activityLogFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
     <!-- Require a login to access everything (holes punched in this wall farther below -->
-	<security-constraint>
+    <security-constraint>
         <display-name>Entire app security</display-name>
         <web-resource-collection>
             <web-resource-name>Everything</web-resource-name>
@@ -92,8 +81,8 @@
         <web-resource-collection>
             <web-resource-name>Public Assets</web-resource-name>
             <url-pattern>/css/*</url-pattern>
-        	<url-pattern>/images/*</url-pattern>
-        	<url-pattern>/favicon.ico</url-pattern>
+            <url-pattern>/images/*</url-pattern>
+            <url-pattern>/favicon.ico</url-pattern>
             <http-method>GET</http-method>
         </web-resource-collection>
         <user-data-constraint>
@@ -289,17 +278,17 @@
         </init-param>
     </servlet>
     <servlet>
-		<servlet-name>GeonetworkProxyServlet</servlet-name>
-		<servlet-class>gov.usgswim.sparrow.GeoNetworkXSLTProxy</servlet-class>
-		<init-param>
+        <servlet-name>GeonetworkProxyServlet</servlet-name>
+        <servlet-class>gov.usgswim.sparrow.GeoNetworkXSLTProxy</servlet-class>
+        <init-param>
             <param-name>forward-context</param-name>
             <param-value>ignore/me/bc/the/servlet/supplies/its/own/url/as/a/hack</param-value>
-		</init-param>
-		<init-param>
-			<param-name>skip-jsession-cookie</param-name>
-			<param-value>true</param-value>
-		</init-param>
-	</servlet>
+        </init-param>
+        <init-param>
+            <param-name>skip-jsession-cookie</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </servlet>
     <!-- Special Temporary Proxies for Nate's demo -->
     <servlet>
         <servlet-name>IndividualReachPredictionServlet</servlet-name>
@@ -309,7 +298,6 @@
             <param-value>sp_indivReachPredict/formpost</param-value>
         </init-param>
     </servlet>
-    
     <servlet>
         <servlet-name>DeliveryReportService</servlet-name>
         <servlet-class>gov.usgswim.sparrow.SparrowProxyServlet</servlet-class>
@@ -318,13 +306,14 @@
             <param-value>sp_deliveryreport</param-value>
         </init-param>
     </servlet>
-   <servlet-mapping>
+    <servlet>
+        <servlet-name>HealthTest</servlet-name>
+        <servlet-class>gov.usgswim.sparrow.HealthTest</servlet-class>
+    </servlet>
+    <servlet-mapping>
         <servlet-name>DeliveryReportService</servlet-name>
         <url-pattern>/getDeliveryReport</url-pattern>
     </servlet-mapping>
-    
-    
-	
     <servlet-mapping>
         <servlet-name>ModelServlet</servlet-name>
         <url-pattern>/getSources</url-pattern>
@@ -422,13 +411,17 @@
         <url-pattern>/sp_indivReachPredict/*</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-		<servlet-name>GeonetworkProxyServlet</servlet-name>
-		<url-pattern>/sparrow_geonetwork/*</url-pattern>
-	</servlet-mapping>
+        <servlet-name>GeonetworkProxyServlet</servlet-name>
+        <url-pattern>/sparrow_geonetwork/*</url-pattern>
+    </servlet-mapping>
     <servlet-mapping>
-		<servlet-name>GeonetworkProxyServlet</servlet-name>
-		<url-pattern>/sparrow_geonetwork</url-pattern>
-	</servlet-mapping>
+        <servlet-name>GeonetworkProxyServlet</servlet-name>
+        <url-pattern>/sparrow_geonetwork</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>HealthTest</servlet-name>
+        <url-pattern>/HealthTest</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>360</session-timeout>
     </session-config>
