@@ -157,8 +157,8 @@ Sparrow.events.EventManager = function(){ return{
 Sparrow.handlers.DownstreamTrackingInstructions = function(){ 
 	var _downstreamTabLinkMsg = "Select one of the <i><b>Downstream Tracking</b></i> " +
 		"data series at the top of the " +
-		"<a href='javascript:GOTO_MAP_OPTIONS_TAB()'>Display Results tab</a>.<br/><br/>" +
-		"A summary delivery report is avaialbe <a href='javascript:displayDeliveryData()'>here</a>";
+		"<a href='javascript:GOTO_MAP_OPTIONS_TAB()'>Display Results tab</a>.<br/><br/>";
+		//+ "A summary delivery report is avaialbe <a href='javascript:displayDeliveryData()'>here</a>";
 	
 	return{
 	syncDeliveryTabInstructions : function(mapOutOfSync) {
