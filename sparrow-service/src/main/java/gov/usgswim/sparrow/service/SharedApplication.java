@@ -754,6 +754,15 @@ public class SharedApplication  {
 		return (AggregateIdLookupKludge) AggregateIdLookup.get(aggLevel, quiet);
 	}
 	
+	//StatesForModel
+	public DataTable getStatesForModel(Long modelId) {
+		return getStatesForModel(modelId, false);
+	}
+
+	public DataTable getStatesForModel(Long modelId, boolean quiet) {
+		return (DataTable) StatesForModel.get(modelId, quiet);
+	}
+	
 	/////////////////////////////////////////////
 	// Non-Cached items
 	/////////////////////////////////////////////

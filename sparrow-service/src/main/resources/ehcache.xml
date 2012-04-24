@@ -410,7 +410,8 @@
 	<!-- Keep a limited number of these - big and used infrequently -->
 	<cache name="LoadModelReachIdentificationAttributes" maxElementsInMemory="2" />
 	
-	<!-- Reports -->
+	<!-- Report Related -->
 	<cache name="TotalDeliveredLoadSummaryReport" maxElementsInMemory="1" />
+	<cache name="StatesForModel" maxElementsInMemory="40" /> <!-- Small lists -->
 
 </ehcache>
