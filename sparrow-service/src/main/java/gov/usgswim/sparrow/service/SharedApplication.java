@@ -16,6 +16,7 @@ import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.*;
+import gov.usgswim.sparrow.domain.reacharearelation.ModelReachAreaRelations;
 import gov.usgswim.sparrow.request.*;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
@@ -761,6 +762,15 @@ public class SharedApplication  {
 
 	public DataTable getStatesForModel(Long modelId, boolean quiet) {
 		return (DataTable) StatesForModel.get(modelId, quiet);
+	}
+	
+	//ModelReachAreaRelations
+	public ModelReachAreaRelations getModelReachAreaRelations(Long modelId) {
+		return getModelReachAreaRelations(modelId, false);
+	}
+
+	public ModelReachAreaRelations getModelReachAreaRelations(Long modelId, boolean quiet) {
+		return (ModelReachAreaRelations) ModelReachAreaRelations.get(modelId, quiet);
 	}
 	
 	/////////////////////////////////////////////
