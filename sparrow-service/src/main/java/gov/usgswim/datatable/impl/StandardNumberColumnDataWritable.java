@@ -145,22 +145,46 @@ public class StandardNumberColumnDataWritable<T extends Number>
 	// getXXX(int row) cell value methods
 	// ----------------------------------
 	public Double getDouble(int row) {
-		return values.get(row).doubleValue();
+		if (row < values.size()) {
+			return values.get(row).doubleValue();
+		} else {
+			return null;
+		}
 	}
 	public Integer getInt(int row) {
-		return values.get(row).intValue();
+		if (row < values.size()) {
+			return values.get(row).intValue();
+		} else {
+			return null;
+		}
 	}
 	public Float getFloat(int row) {
-		return values.get(row).floatValue();
+		if (row < values.size()) {
+			return values.get(row).floatValue();
+		} else {
+			return null;
+		}
 	}
 	public Object getValue(int row) {
-		return values.get(row);
+		if (row < values.size()) {
+			return values.get(row);
+		} else {
+			return null;
+		}
 	}
 	public String getString(int row) {
-		return values.get(row).toString();
+		if (row < values.size()) {
+			return values.get(row).toString();
+		} else {
+			return null;
+		}
 	}
 	public Long getLong(int row) {
-		return values.get(row).longValue();
+		if (row < values.size()) {
+			return values.get(row).longValue();
+		} else {
+			return null;
+		}
 	}
 
 

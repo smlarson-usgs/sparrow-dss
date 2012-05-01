@@ -40,11 +40,94 @@ public interface ColumnData extends Serializable {
 	// ----------------------
 	// Cell Retrieval Methods
 	// ----------------------
+	/**
+	 * Returns the value at the row location, converted to a string if the
+	 * underlying data is not String based.
+	 * 
+	 * For immutable implementations, this method will throw an OutOfBounds
+	 * (or similar) runtime error if the index is beyond the number of rows.
+	 * 
+	 * For mutable instances, the number of rows is not really defined, so null
+	 * may be returned.
+	 * 
+	 * @param row
+	 * @return 
+	 */
 	public String getString(int row);
+	
+		/**
+	 * Returns the value at the row location, converted to a Double if the
+	 * underlying data is not Double based.
+	 * 
+	 * For immutable implementations, this method will throw an OutOfBounds
+	 * (or similar) runtime error if the index is beyond the number of rows.
+	 * 
+	 * For mutable instances, the number of rows is not really defined, so null
+	 * may be returned.
+	 * 
+	 * @param row
+	 * @return 
+	 */
 	public Double getDouble(int row);
+	
+		/**
+	 * Returns the value at the row location, converted to a Float if the
+	 * underlying data is not Float based.
+	 * 
+	 * For immutable implementations, this method will throw an OutOfBounds
+	 * (or similar) runtime error if the index is beyond the number of rows.
+	 * 
+	 * For mutable instances, the number of rows is not really defined, so null
+	 * may be returned.
+	 * 
+	 * @param row
+	 * @return 
+	 */
 	public Float getFloat(int row);
+	
+		/**
+	 * Returns the value at the row location, converted to a int if the
+	 * underlying data is not Int based.
+	 * 
+	 * For immutable implementations, this method will throw an OutOfBounds
+	 * (or similar) runtime error if the index is beyond the number of rows.
+	 * 
+	 * For mutable instances, the number of rows is not really defined, so null
+	 * may be returned.
+	 * 
+	 * @param row
+	 * @return 
+	 */
 	public Integer getInt(int row);
+	
+		/**
+	 * Returns the value at the row location as the Object type of the underlying
+	 * storage.
+	 * 
+	 * For immutable implementations, this method will throw an OutOfBounds
+	 * (or similar) runtime error if the index is beyond the number of rows.
+	 * 
+	 * For mutable instances, the number of rows is not really defined, so null
+	 * may be returned.
+	 * 
+	 * @param row
+	 * @return 
+	 */
 	public Object getValue(int row);	//TODO:  This should use generics
+	
+		/**
+	 * Returns the value at the row location, converted to a Long if the
+	 * underlying data is not Long based.
+	 * 
+	 * For immutable implementations, this method will throw an OutOfBounds
+	 * (or similar) runtime error if the index is beyond the number of rows.
+	 * 
+	 * For mutable instances, the number of rows is not really defined, so null
+	 * may be returned.
+	 * 
+	 * @param row
+	 * @return 
+	 */
 	public Long getLong(int row);
 
 	

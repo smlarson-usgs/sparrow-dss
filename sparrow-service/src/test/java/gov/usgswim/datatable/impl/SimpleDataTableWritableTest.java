@@ -759,6 +759,32 @@ public class SimpleDataTableWritableTest {
 		assertEquals(builder.getName(1), org_cols[2].getName());
 		
 	}
+	
+		@Test public void testAccessingValuesFromUnsetRows() {
+		
+		// -------------------
+		// populate the Data2D
+		// -------------------
+		populateBuilder();
+
+		assertNull(builder.getInt(99, INT_COL_INDEX));
+		assertNull(builder.getFloat(99, INT_COL_INDEX));
+		assertNull(builder.getDouble(99, INT_COL_INDEX));
+		assertNull(builder.getLong(99, INT_COL_INDEX));
+		assertNull(builder.getString(99, INT_COL_INDEX));
+		assertNull(builder.getValue(99, INT_COL_INDEX));
+		
+		//Now try setting it
+		builder.setValue(new Integer(42), 99, INT_COL_INDEX);
+		
+		
+		assertEquals(new Integer(42), builder.getInt(99, INT_COL_INDEX));
+		assertEquals(new Float(42), builder.getFloat(99, INT_COL_INDEX));
+		assertEquals(new Double(42), builder.getDouble(99, INT_COL_INDEX));
+		assertEquals(new Long(42), builder.getLong(99, INT_COL_INDEX));
+		assertEquals("42", builder.getString(99, INT_COL_INDEX));
+		assertEquals(new Integer(42), builder.getValue(99, INT_COL_INDEX));
+	}
 
 	// =======================
 	// private utility methods

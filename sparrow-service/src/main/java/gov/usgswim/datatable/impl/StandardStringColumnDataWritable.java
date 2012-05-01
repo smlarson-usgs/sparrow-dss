@@ -58,12 +58,21 @@ public class StandardStringColumnDataWritable extends AbstractColumnDataWritable
 	}
 	public String getString(int row) {
 		if (values == null) return null;
-		Object value = values.get(row);
-		return (value == null)? null: value.toString();
+		
+		if (row < values.size()) {
+			Object value = values.get(row);
+			return (value == null)? null: value.toString();
+		} else {
+			return null;
+		}
 	}
 	public Object getValue(int row) {
 		if (values == null) return null;
-		return values.get(row);
+		if (row < values.size()) {
+			return values.get(row);
+		} else {
+			return null;
+		}
 	}
 	public Long getLong(int row) {
 		return null;
