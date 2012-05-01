@@ -13,15 +13,18 @@ import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * This action assembles a DataTable of Total Delivered Load by source and for
  * all sources.  The returned DataTable has this structure:
  * 
- * Row ID    :  Reach ID
- * Column 0  :  Source 0 Total Delivered Load
- * Column 1  :  Source 1 Total Delivered Load
+ * Row ID    :  Reach ID (actual id for the row, not a column)
+ * column 0  :  Reach Name
+ * Column 1  :  EDA Code
+ * Column 2  :  Source 0 Total Delivered Load
+ * Column 3  :  Source 1 Total Delivered Load
  * ...etc. for all sources
  * Col. Last :  Total Delivered Load for all sources
  * 
@@ -33,10 +36,11 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTable> {
 	protected AdjustmentGroups adjustmentGroups;
 	protected TerminalReaches terminalReaches;
 	
-	//Loaded by the action itself
+	//Loaded or created by the action itself
 	Long modelId = null;
 	protected transient PredictData predictData = null;
 	protected transient DataTable idInfo = null;
+	List<ColumnData> expandedTotalDelLoadForAllSources;
 	
 	protected String msg = null;	//statefull message for logging
 	
@@ -44,10 +48,24 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTable> {
 	/**
 	 * Clear designation of init values
 	 */
-	protected void initRequiredFields() {
+	protected void initRequiredFields() throws Exception {
 		modelId = adjustmentGroups.getModelID();
 		predictData = SharedApplication.getInstance().getPredictData(modelId);
 		idInfo = SharedApplication.getInstance().getModelReachIdentificationAttributes(modelId);
+		
+		
+		//Basic predict context, which we need data for all sources
+		BasicAnalysis analysis = new BasicAnalysis(
+				DataSeriesType.total_delivered_flux, null, null, null);
+			
+		PredictionContext basicPredictContext = new PredictionContext(
+				modelId, adjustmentGroups, analysis, terminalReaches,
+				null, NoComparison.NO_COMPARISON);
+		
+		BuildAnalysisForAllSources action = new BuildAnalysisForAllSources(basicPredictContext);
+		
+		
+		expandedTotalDelLoadForAllSources = action.run();
 	}
 	
 	@Override
@@ -57,34 +75,21 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTable> {
 
 		DataTable srcMetadata = predictData.getSrcMetadata();
 		int srcCount = srcMetadata.getRowCount();
-		ArrayList<ColumnData> columns = new ArrayList<ColumnData>();
 		
-		//Add the reach identification columns
-		columns.add(idInfo.getColumn(0));	//reach name
-		columns.add(idInfo.getColumn(1));	//eda code
-		
-		//Add one column for each source
-		for (int srcIndex = 0; srcIndex < srcCount; srcIndex++) {
-			Long srcId = srcMetadata.getIdForRow(srcIndex);
-			BasicAnalysis analysis = new BasicAnalysis(
-					DataSeriesType.total_delivered_flux, srcId.intValue(),
-					null, null);
-			
-			PredictionContext pc = new PredictionContext(modelId, adjustmentGroups, analysis,
-					terminalReaches, null, NoComparison.NO_COMPARISON);
-			
-			SparrowColumnSpecifier scs = SharedApplication.getInstance().getAnalysisResult(pc);
-			columns.add(scs.getColumnData());
-		}
-		
-		//Add one column for the combined (total) sources
 		BasicAnalysis analysis = new BasicAnalysis(
 				DataSeriesType.total_delivered_flux, null, null, null);
+			
+		PredictionContext basicPredictContext = new PredictionContext(
+				modelId, adjustmentGroups, analysis, terminalReaches,
+				null, NoComparison.NO_COMPARISON);
 		
-		PredictionContext pc = new PredictionContext(modelId, adjustmentGroups, analysis,
-				terminalReaches, null, NoComparison.NO_COMPARISON);
-		SparrowColumnSpecifier scs = SharedApplication.getInstance().getAnalysisResult(pc);
-		columns.add(scs.getColumnData());
+		
+		List<ColumnData> columns = expandedTotalDelLoadForAllSources;
+		
+		//Add the reach identification columns
+		columns.add(0, idInfo.getColumn(0));	//reach name
+		columns.add(1, idInfo.getColumn(1));	//eda code
+		
 		HashMapColumnIndex index = new  HashMapColumnIndex(predictData.getTopo());
 		
 		SimpleDataTable result = new SimpleDataTable(
@@ -109,8 +114,7 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTable> {
 		props.put(TableProperties.CONSTITUENT.toString(), predictData.getModel().getConstituent());
 		return props;
 	}
-
-
+	
 	//
 	//Setter methods
 	public void setAdjustmentGroups(AdjustmentGroups adjustmentGroups) {

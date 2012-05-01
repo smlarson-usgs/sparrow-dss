@@ -1,25 +1,10 @@
 package gov.usgswim.sparrow.action;
 
-import static org.junit.Assert.*;
-import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
-import gov.usgswim.datatable.impl.SparseDoubleColumnData;
-import gov.usgswim.datatable.impl.StandardDoubleColumnData;
-import gov.usgswim.sparrow.*;
-import gov.usgswim.sparrow.datatable.TableProperties;
-import gov.usgswim.sparrow.domain.*;
-import gov.usgswim.sparrow.domain.Adjustment;
+import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
-import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.TabDelimFileUtil;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
+import static org.junit.Assert.*;
 import org.junit.Test;
 
 /**
