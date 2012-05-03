@@ -56,6 +56,8 @@ public class DataTablePrinter {
 				writer.write("\n");
 			}
 		}
+		
+		writer.flush();
 	}
 
 	/**
