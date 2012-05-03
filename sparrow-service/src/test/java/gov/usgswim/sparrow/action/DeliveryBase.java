@@ -313,7 +313,7 @@ public class DeliveryBase  extends SparrowTestBaseWithDBandCannedModel50 {
 					"A single column table containing the delivery fraction" +
 					" to a target reach or reaches.", null);
 			
-			debugTable(delivery, row, "Delivery Fraction Data");
+			debugTableRow(delivery, row, "Delivery Fraction Data");
 		}
 	}
 	
@@ -326,13 +326,13 @@ public class DeliveryBase  extends SparrowTestBaseWithDBandCannedModel50 {
 			log.error("Debugging Reach " + reachId + " for model [unknown model]");
 		}
 		
-		debugTable(pd.getTopo(), row, "Topo Data");
-		debugTable(pd.getSrc(), row, "Source Data");
-		debugTable(pd.getCoef(), row, "Coef Data");
-		debugTable(pd.getDelivery(), row, "Delivery Data");
+		debugTableRow(pd.getTopo(), row, "Topo Data");
+		debugTableRow(pd.getSrc(), row, "Source Data");
+		debugTableRow(pd.getCoef(), row, "Coef Data");
+		debugTableRow(pd.getDelivery(), row, "Delivery Data");
 	}
 	
-	public void debugTable(DataTable table, int row, String description) throws Exception {
+	public void debugTableRow(DataTable table, int row, String description) throws Exception {
 		log.debug(" - - " + description + " - - ");
 		
 		if (table != null) {

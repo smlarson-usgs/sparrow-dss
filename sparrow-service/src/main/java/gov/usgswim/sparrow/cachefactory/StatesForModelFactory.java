@@ -8,7 +8,7 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
  * A thin wrapper around an Action for EHCache CacheEntryFactory.
  * 
  * Caching, blocking, and de-caching are all handled by EHCache system.
- *
+ * 
  * @author eeverman
  */
 public class StatesForModelFactory implements CacheEntryFactory {

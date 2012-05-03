@@ -1,16 +1,10 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.SparrowUnits;
-import gov.usgswim.sparrow.datatable.TableProperties;
-import gov.usgswim.sparrow.domain.DataSeriesType;
-import gov.usgswim.sparrow.domain.UnitAreaType;
 
 import gov.usgswim.sparrow.domain.reacharearelation.*;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,19 +12,9 @@ import java.util.List;
 
 
 /**
- * Loads all the states for a given model.
+ * Loads the state area relations for all reaches in a model.
  * 
- * Only states that have reaches at least partially contained in the state
- * will be loaded.
- * 
- * Columns are in this order:
- * <ul>
- * <li>ID - state.PK_ISN (db id)
- * <li>State Name - state.STATE_NAME (full name)
- * <li>State FIPS Code - state.FIPS_STATE_CODE (numeric FIPS code for state)
- * <li>Country Code - state.COUNTRY_CODE (Two letter country code, eg US)
- * <li>Postal Code - state.STATE_POSTAL_CODE (Familiar two letter state code)
- * </ul>
+ * @See ModelReachAreaRelations for details on data structure.
  *  
  * @author eeverman
  */

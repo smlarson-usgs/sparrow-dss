@@ -19,9 +19,9 @@ import java.util.HashMap;
  * Only states that have reaches at least partially contained in the state
  * will be loaded.
  * 
+ * Row ID:  state.PK_ISN (db id from table)
  * Columns are in this order:
  * <ul>
- * <li>ID - state.PK_ISN (db id)
  * <li>State Name - state.STATE_NAME (full name)
  * <li>State FIPS Code - state.FIPS_STATE_CODE (numeric FIPS code for state)
  * <li>Country Code - state.COUNTRY_CODE (Two letter country code, eg US)

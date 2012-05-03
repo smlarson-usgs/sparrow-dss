@@ -480,5 +480,32 @@ public class DataTableUtils {
 		}
 		return dt;
 	}
+	
+	/**
+	 * Returns the total for a column.
+	 * If the values are all null or there are no rows, zero is returned.
+	 * NaN values are ignored.  An infinite value will result in an infinite result.
+	 * 
+	 * @param tab
+	 * @param col
+	 * @return 
+	 */
+	public static double getColumnTotal(DataTable tab, int col) {
+		if (col >= tab.getColumnCount() || col < 0) {
+			throw new IllegalArgumentException("The specified column is beyond the defined columns.");
+		}
+		
+		int rows = tab.getRowCount();
+		double total = 0D;
+		
+		for (int r=0; r<rows; r++) {
+			Double v = tab.getDouble(r, col);
+			if (v != null && ! v.isNaN()) {
+				total+= v;
+			}
+		}
+		
+		return total;
+	}
 
 }
