@@ -146,21 +146,24 @@ public class StandardNumberColumnDataWritable<T extends Number>
 	// ----------------------------------
 	public Double getDouble(int row) {
 		if (row < values.size()) {
-			return values.get(row).doubleValue();
+			Number v = values.get(row);
+			return (v != null)? v.doubleValue() : null;
 		} else {
 			return null;
 		}
 	}
 	public Integer getInt(int row) {
 		if (row < values.size()) {
-			return values.get(row).intValue();
+			Number v = values.get(row);
+			return (v != null)? v.intValue() : null;
 		} else {
 			return null;
 		}
 	}
 	public Float getFloat(int row) {
 		if (row < values.size()) {
-			return values.get(row).floatValue();
+			Number v = values.get(row);
+			return (v != null)? v.floatValue() : null;
 		} else {
 			return null;
 		}
@@ -174,14 +177,16 @@ public class StandardNumberColumnDataWritable<T extends Number>
 	}
 	public String getString(int row) {
 		if (row < values.size()) {
-			return values.get(row).toString();
+			Number v = values.get(row);
+			return (v != null)? v.toString() : null;
 		} else {
 			return null;
 		}
 	}
 	public Long getLong(int row) {
 		if (row < values.size()) {
-			return values.get(row).longValue();
+			Number v = values.get(row);
+			return (v != null)? v.longValue() : null;
 		} else {
 			return null;
 		}
