@@ -17,7 +17,10 @@
 	<%
 	
 	String tableUrl = "getDeliveryReport";
-	String fullTableUrl = "http://localhost:8080/sparrow/getDeliveryReport?context-id=" + request.getParameter("context-id") + "&mime-type=xhtml_table&include-id-script=false";
+	String fullTableUrl = "http://localhost:8080/sparrow/getDeliveryReport?" +
+			"context-id=" + request.getParameter("context-id") +
+			"&report-type=" + request.getParameter("report-type") + 			
+			"&mime-type=xhtml_table&include-id-script=false";
 	
 	%>
 
