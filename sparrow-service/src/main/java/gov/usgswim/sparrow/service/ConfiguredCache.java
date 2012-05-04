@@ -58,6 +58,7 @@ public enum ConfiguredCache {
 	//Delivery Based Reports
 	//Not currently cached
 	TotalDeliveredLoadSummaryReport(false, new BuildTotalDeliveredLoadSummaryReportFactory()),
+	TotalDeliveredLoadByStateSummaryReport(false, new BuildTotalDeliveredLoadByStateSummaryReportFactory()),
 	StatesForModel(false, new StatesForModelFactory()),
 	ModelReachAreaRelations(false, new ModelReachAreaRelationsFactory())
 	;

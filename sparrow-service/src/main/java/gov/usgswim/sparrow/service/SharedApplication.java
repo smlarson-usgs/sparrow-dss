@@ -773,9 +773,6 @@ public class SharedApplication  {
 		return (ModelReachAreaRelations) ModelReachAreaRelations.get(modelId, quiet);
 	}
 	
-	/////////////////////////////////////////////
-	// Non-Cached items
-	/////////////////////////////////////////////
 	public Long[] getReachesInBBox(ModelBBox modelBBox) throws Exception {
 		return getReachesInBBox(modelBBox, false);
 	}
@@ -796,7 +793,18 @@ public class SharedApplication  {
 		return (DataTable) result;
 	}
 	
+		public DataTable getTotalDeliveredLoadByStateSummaryReport(DeliveryReportRequest request) throws Exception {
+		return getTotalDeliveredLoadByStateSummaryReport(request, false);
+	}
 
+	public DataTable getTotalDeliveredLoadByStateSummaryReport(DeliveryReportRequest request, boolean quiet) throws Exception {
+		Object result = TotalDeliveredLoadByStateSummaryReport.get(request, quiet);
+		return (DataTable) result;
+	}
+	
+	/////////////////////////////////////////////
+	// Non-Cached items
+	/////////////////////////////////////////////
 	public static DataTableWritable queryToDataTable(String query) throws NamingException, SQLException {
 		Connection conn = getInstance().getROConnection();
 		ResultSet rset = null;

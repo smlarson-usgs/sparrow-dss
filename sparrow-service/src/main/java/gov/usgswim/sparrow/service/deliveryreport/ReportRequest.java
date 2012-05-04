@@ -19,6 +19,16 @@ public class ReportRequest implements XMLStreamParserComponent,
 	public static final String MAIN_ELEMENT_NAME = "sparrow-report-request";
 	public static final String PC_EXPORT_FILENAME = "sparrow-report";
 	
+	public static final String ELEMENT_MIME_TYPE = "mime-type";
+	public static final String ELEMENT_CONTEXT_ID = "context-id";
+	public static final String ELEMENT_INCLUDE_ID_SCRIPT = "include-id-script";
+	public static final String ELEMENT_REPORT_TYPE = "report-type";
+	
+	public enum ReportType {
+		terminal,
+		state
+	}
+	
 	// ===============
 	// INSTANCE FIELDS
 	// ===============
@@ -27,6 +37,7 @@ public class ReportRequest implements XMLStreamParserComponent,
 	private Integer contextID;
 	private PredictionContext context;
 	private boolean includeIdScript;
+	private ReportType reportType;
 	
 
 	// =============================
@@ -53,8 +64,9 @@ public class ReportRequest implements XMLStreamParserComponent,
 	/**
 	 * Construct an instance w/ basic options (used for GET requests)
 	 */
-	public ReportRequest(Integer contextID, ResponseFormat respFormat, boolean includeIdScript) {
+	public ReportRequest(Integer contextID, ReportType reportType, ResponseFormat respFormat, boolean includeIdScript) {
 		this.contextID = contextID;
+		this.reportType = reportType;
 		this.responseFormat = respFormat;
 		this.includeIdScript = includeIdScript;
 	}
@@ -108,6 +120,15 @@ public class ReportRequest implements XMLStreamParserComponent,
 					responseFormat = ResponseFormat.parseStream(in);
 					if (responseFormat.fileName == null)
 						responseFormat.fileName = PC_EXPORT_FILENAME;
+					
+				} else if (ELEMENT_REPORT_TYPE.equals(localName)) {
+
+					String s = ParserHelper.parseAttribAsString(in, ELEMENT_REPORT_TYPE, true);
+					try {
+						reportType = ReportType.valueOf(s);
+					} catch (Exception e) {
+						throw new XMLParseValidationException("Unrecognized report-type");
+					}
 
 				} else {
 					throw new RuntimeException(
@@ -184,6 +205,10 @@ public class ReportRequest implements XMLStreamParserComponent,
 			setResponseFormat(new ResponseFormat());
 		}
 		return responseFormat;
+	}
+	
+	public ReportType getReportType() {
+		return reportType;
 	}
 
 	@Override

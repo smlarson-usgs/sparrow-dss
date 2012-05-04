@@ -20,43 +20,55 @@ public class ReportService implements HttpService<ReportRequest> {
     	
     	SharedApplication sharedApp = SharedApplication.getInstance();
     	
-        Integer predictionContextID = req.getContextID();
-        PredictionContext context = req.getContext();
-        Long modelId = null;
+			Integer predictionContextID = req.getContextID();
+			PredictionContext context = req.getContext();
+			Long modelId = null;
 
-        if (context != null) {
-        	//The context was supplied w/ the request
-        	modelId = context.getModelID();
-        } else if (predictionContextID != null) {
-        	//The context was passed by ID
-            context = sharedApp.getPredictionContext(predictionContextID);
-            modelId = context.getModelID();
-        }
-        
-        PredictData predictData = sharedApp.getPredictData(modelId);
-        TerminalReaches termReaches = context.getTerminalReaches();
-        
-        if (termReaches == null || termReaches.isEmpty()) {
-        	throw new Exception("There must be downstream reaches selected to generate the deliver report.");
-        }
-        
-        DeliveryReportRequest actionRequest = new DeliveryReportRequest(context.getAdjustmentGroups(), termReaches);
-        
-        DataTable reportData = sharedApp.getTotalDeliveredLoadSummaryReport(actionRequest);
-        TerminalReachesRowFilter filter = new TerminalReachesRowFilter(termReaches);
-        FilteredDataTable filteredReportData = new FilteredDataTable(reportData, filter);
- 
-		
-		String readmeText = SparrowResourceUtils.lookupModelHelp(
-				context.getModelID().toString(),
-				"CommonTerms.Total_Delivered_Load_Report");
-		
-        
-        
-        return new  ReportSerializer(
-        		req, filteredReportData, predictData, readmeText);
-    }
+			if (context != null) {
+				//The context was supplied w/ the request
+				modelId = context.getModelID();
+			} else if (predictionContextID != null) {
+				//The context was passed by ID
+					context = sharedApp.getPredictionContext(predictionContextID);
+					modelId = context.getModelID();
+			}
 
-    public void shutDown() {
-    }
+			PredictData predictData = sharedApp.getPredictData(modelId);
+			TerminalReaches termReaches = context.getTerminalReaches();
+
+			if (termReaches == null || termReaches.isEmpty()) {
+				throw new Exception("There must be downstream reaches selected to generate the deliver report.");
+			}
+
+			DeliveryReportRequest actionRequest = new DeliveryReportRequest(context.getAdjustmentGroups(), termReaches);
+
+			if (ReportRequest.ReportType.terminal.equals(req.getReportType())) {
+				DataTable reportData = sharedApp.getTotalDeliveredLoadSummaryReport(actionRequest);
+				TerminalReachesRowFilter filter = new TerminalReachesRowFilter(termReaches);
+				FilteredDataTable filteredReportData = new FilteredDataTable(reportData, filter);
+
+
+				String readmeText = SparrowResourceUtils.lookupModelHelp(
+						context.getModelID().toString(),
+						"CommonTerms.Total_Delivered_Load_Report");
+
+				return new  ReportSerializer(
+						req, filteredReportData, predictData, readmeText);
+			} else {
+				DataTable reportData = sharedApp.getTotalDeliveredLoadByStateSummaryReport(actionRequest);
+
+
+				String readmeText = SparrowResourceUtils.lookupModelHelp(
+						context.getModelID().toString(),
+						"CommonTerms.Total_Delivered_Load_Report");
+				
+				return new  StateReportSerializer(
+						req, reportData, readmeText);
+			}
+	
+
+	}
+
+	public void shutDown() {
+	}
 }
