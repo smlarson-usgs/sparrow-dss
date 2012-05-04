@@ -18,8 +18,8 @@
 		<format>jpeg</format>
 		<Layer id="-253" requested="true" recommended="false" transparency="false" queryable="false"
 			downloadable="false">
-			<Name>Esri Shaded Relief</Name>
-			<Title>ESRI Shaded Relief World 2D</Title>
+			<Name>ESRI NGS Topo US 2D</Name>
+			<Title>ESRI NGS Topo US 2D</Title>
 			<PartnerName>USGS</PartnerName>
 			<PartnerWebURL>http://www.usgs.gov/</PartnerWebURL>
 			<Resolution>0</Resolution>
