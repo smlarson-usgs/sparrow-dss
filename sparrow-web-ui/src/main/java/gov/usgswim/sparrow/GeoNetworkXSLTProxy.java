@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow;
 
 import gov.usgs.cida.proxy.ProxyServlet;
+import gov.usgswim.sparrow.SparrowUtil.UrlFeatures;
 
 import java.io.ByteArrayOutputStream;
 import java.io.CharArrayWriter;
@@ -171,44 +172,11 @@ public class GeoNetworkXSLTProxy extends ProxyServlet {
 				String extraPath =  request.getPathInfo();
 				targetIs = targetConn.getInputStream();
 				
-				String proxiedUrl = request.getHeader("x-request-url");
+				UrlFeatures urlFeatures = SparrowUtil.getRequestUrlFeatures(request);
 				
-				String requestServerName = null;
-				String requestServerPort = null;
-				String contextPath = null;
-				
-				if (proxiedUrl != null && proxiedUrl.length() > 0) {
-					URL url = new URL(proxiedUrl);
-					String path = url.getPath();
-					if (path.startsWith("/")) path = path.substring(1);
-					int firstSlash = path.indexOf("/");
-					if (firstSlash > -1) {
-						path = path.substring(0, firstSlash);
-					}
-					
-					contextPath = "/" + path;
-					requestServerName = url.getHost();
-					
-					int port = url.getPort();
-					
-					if (port > 80) {
-						requestServerPort = Integer.toString(port);
-					} else {
-						requestServerPort = "";
-					}
-					
-				} else {
-					contextPath = request.getContextPath();
-					requestServerName = request.getServerName();
-					
-					int port = request.getServerPort();
-					if (port > 80) {
-						requestServerPort = Integer.toString(port);
-					} else {
-						requestServerPort = "";
-					}
-					
-				}
+				String requestServerName = urlFeatures.serverName;
+				String requestServerPort = urlFeatures.serverPort;
+				String contextPath = urlFeatures.contextPath;
 				
 				if ("/query".equals(extraPath)) {
 					
