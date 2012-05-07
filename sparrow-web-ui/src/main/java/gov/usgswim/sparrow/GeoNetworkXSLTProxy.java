@@ -188,12 +188,25 @@ public class GeoNetworkXSLTProxy extends ProxyServlet {
 					
 					contextPath = "/" + path;
 					requestServerName = url.getHost();
-					requestServerPort = Integer.toString(url.getPort());
+					
+					int port = url.getPort();
+					
+					if (port > 80) {
+						requestServerPort = Integer.toString(port);
+					} else {
+						requestServerPort = "";
+					}
 					
 				} else {
 					contextPath = request.getContextPath();
 					requestServerName = request.getServerName();
-					requestServerPort = Integer.toString(request.getServerPort());
+					
+					int port = request.getServerPort();
+					if (port > 80) {
+						requestServerPort = Integer.toString(port);
+					} else {
+						requestServerPort = "";
+					}
 					
 				}
 				
