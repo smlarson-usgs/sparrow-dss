@@ -1,4 +1,7 @@
-<!doctype html><%@page contentType="text/html" pageEncoding="UTF-8" import="gov.usgswim.sparrow.SparrowUtil, gov.usgswim.sparrow.SparrowUtil.UrlFeatures"%>
+<!doctype html>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
+<%@page import="gov.usgswim.sparrow.SparrowUtil" %>
+<%@page import="gov.usgswim.sparrow.SparrowUtil.UrlFeatures" %>
 <html>
     <head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" > 
