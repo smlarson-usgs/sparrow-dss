@@ -171,11 +171,11 @@ public class GeoNetworkXSLTProxy extends ProxyServlet {
 				String extraPath =  request.getPathInfo();
 				targetIs = targetConn.getInputStream();
 				
-				String requestServerName = request.getServerName();
-				String requestServerPort = Integer.toString(request.getServerPort());
-				
 				String proxiedUrl = request.getHeader("x-request-url");
-				String contextPath = request.getContextPath();
+				
+				String requestServerName = null;
+				String requestServerPort = null;
+				String contextPath = null;
 				
 				if (proxiedUrl != null && proxiedUrl.length() > 0) {
 					URL url = new URL(proxiedUrl);
@@ -185,7 +185,16 @@ public class GeoNetworkXSLTProxy extends ProxyServlet {
 					if (firstSlash > -1) {
 						path = path.substring(0, firstSlash);
 					}
+					
 					contextPath = "/" + path;
+					requestServerName = url.getHost();
+					requestServerPort = Integer.toString(url.getPort());
+					
+				} else {
+					contextPath = request.getContextPath();
+					requestServerName = request.getServerName();
+					requestServerPort = Integer.toString(request.getServerPort());
+					
 				}
 				
 				if ("/query".equals(extraPath)) {
