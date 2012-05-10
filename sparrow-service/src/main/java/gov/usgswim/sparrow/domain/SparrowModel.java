@@ -199,6 +199,18 @@ public interface SparrowModel {
 	 * @param identifier
 	 * @return
 	 */
-	public Source getSource(int identifier);
+	public Source getSourceById(int identifier);
+	
+	/**
+	 * Return a source by its index within the model, starting with zero.
+	 * 
+	 * Source have a specific sort order, so the index position is always defined.
+	 * By convention the index is generally one less than the ID.  Thus, the source
+	 * with the ID 1 has an index of 0, though this should not be assumed.
+	 * 
+	 * @param index
+	 * @return 
+	 */
+	public Source getSourceByIndex(int index);
 	
 }

@@ -234,7 +234,7 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 	}
 
 	@Override
-	public Source getSource(int identifier) {
+	public Source getSourceById(int identifier) {
 		if (_sources != null) {
 
 			for (int i = 0; i < _sources.size(); i++)  {
@@ -245,6 +245,11 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 			return null;	//not found
 		}
 		return null;	//no sources
+	}
+	
+	@Override
+	public Source getSourceByIndex(int index) {
+		return getSources().get(index);
 	}
 
 

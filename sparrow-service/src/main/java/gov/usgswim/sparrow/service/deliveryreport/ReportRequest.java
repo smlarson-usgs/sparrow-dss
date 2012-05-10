@@ -129,6 +129,11 @@ public class ReportRequest implements XMLStreamParserComponent,
 					} catch (Exception e) {
 						throw new XMLParseValidationException("Unrecognized report-type");
 					}
+					
+					
+				} else if (ELEMENT_INCLUDE_ID_SCRIPT.equals(localName)) {
+
+					includeIdScript = ParserHelper.parseAttribAsBoolean(in, ELEMENT_INCLUDE_ID_SCRIPT, true);
 
 				} else {
 					throw new RuntimeException(

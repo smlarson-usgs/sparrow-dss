@@ -204,7 +204,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	}
 	
 	@Override
-	public Source getSource(int identifier) {
+	public Source getSourceById(int identifier) {
 		if (_sources != null) {
 
 			for (int i = 0; i < _sources.size(); i++)  {
@@ -215,6 +215,11 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 			return null;	//not found
 		}
 		return null;	//no sources
+	}
+	
+	@Override
+	public Source getSourceByIndex(int index) {
+		return _sources.get(index);
 	}
 	
 	/**

@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.datatable;
 
+import gov.usgswim.datatable.view.AbstractColumnDataView;
 import gov.usgswim.datatable.ColumnAttribs;
 import gov.usgswim.datatable.ColumnAttribsImm;
 import gov.usgswim.datatable.ColumnData;
@@ -101,6 +102,11 @@ public class DivideColumnData extends AbstractColumnDataView {
 			return Double.NaN;	//non-zero over zero
 		}
 		
+	}
+	
+	@Override
+	public Object getValue(int row) {
+		return getDouble(row);
 	}
 
 	@Override
