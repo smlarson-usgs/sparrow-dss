@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.action.BuildAnalysisForAllSources.COLUMN_NAME_FORMAT;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -32,9 +33,7 @@ public class BuildAnalysisForAllSourcesTest extends SparrowTestBase {
 				null,
 				NoComparison.NO_COMPARISON);
 		
-		BuildAnalysisForAllSources action = new BuildAnalysisForAllSources();
-		
-		action.setContext(basicPredictContext);
+		BuildAnalysisForAllSources action = new BuildAnalysisForAllSources(basicPredictContext, COLUMN_NAME_FORMAT.SOURCE_NAME_ONLY);
 		
 		List<ColumnData> result = action.run();
 		
@@ -87,9 +86,7 @@ public class BuildAnalysisForAllSourcesTest extends SparrowTestBase {
 				null,
 				NoComparison.NO_COMPARISON);
 		
-		BuildAnalysisForAllSources action = new BuildAnalysisForAllSources();
-		
-		action.setContext(basicPredictContext);
+		BuildAnalysisForAllSources action = new BuildAnalysisForAllSources(basicPredictContext, COLUMN_NAME_FORMAT.SOURCE_NAME_ONLY);
 		
 		List<ColumnData> result = action.run();
 		
@@ -111,9 +108,7 @@ public class BuildAnalysisForAllSourcesTest extends SparrowTestBase {
 				null,
 				NoComparison.NO_COMPARISON);
 		
-		BuildAnalysisForAllSources action = new BuildAnalysisForAllSources();
-		
-		action.setContext(basicPredictContext);
+		BuildAnalysisForAllSources action = new BuildAnalysisForAllSources(basicPredictContext, COLUMN_NAME_FORMAT.SOURCE_NAME_ONLY);
 		
 		List<ColumnData> result = action.run();
 		
@@ -135,9 +130,7 @@ public class BuildAnalysisForAllSourcesTest extends SparrowTestBase {
 				null,
 				NoComparison.NO_COMPARISON);
 		
-		BuildAnalysisForAllSources action = new BuildAnalysisForAllSources();
-		
-		action.setContext(basicPredictContext);
+		BuildAnalysisForAllSources action = new BuildAnalysisForAllSources(basicPredictContext, COLUMN_NAME_FORMAT.SOURCE_NAME_ONLY);
 		
 		List<ColumnData> result = action.run();
 		

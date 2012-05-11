@@ -47,10 +47,6 @@ public class BuildAnalysisForAllSources extends Action<List<ColumnData>> {
 	
 	//Self loaded data
 	PredictData predictData;
-
-	
-	public BuildAnalysisForAllSources() {
-	}
 		
 	
 	public BuildAnalysisForAllSources(PredictionContext context, COLUMN_NAME_FORMAT columnNameFormat) {
@@ -143,15 +139,6 @@ public class BuildAnalysisForAllSources extends Action<List<ColumnData>> {
 		}
 		
 		return columns;
-	}
-
-
-
-
-	//
-	//Setter methods
-	public void setContext(PredictionContext context) {
-		this.context = context;
 	}
 	
 	
