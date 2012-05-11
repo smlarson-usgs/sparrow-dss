@@ -66,7 +66,9 @@ public class BuildTotalDeliveredLoadByStateSummaryReport extends Action<DataTabl
 				modelId, adjustmentGroups, analysis, terminalReaches,
 				null, NoComparison.NO_COMPARISON);
 		
-		BuildAnalysisForAllSources action = new BuildAnalysisForAllSources(basicPredictContext);
+		BuildAnalysisForAllSources action = 
+				new BuildAnalysisForAllSources(basicPredictContext,
+				BuildAnalysisForAllSources.COLUMN_NAME_FORMAT.SOURCE_NAME_ONLY);
 		
 		
 		expandedTotalDelLoadForAllSources = action.run();
@@ -85,14 +87,7 @@ public class BuildTotalDeliveredLoadByStateSummaryReport extends Action<DataTabl
 		//(these are the column in the expanded TotalDelLoadForAllSources columns)
 		for (int colIndex = 0; colIndex < expandedTotalDelLoadForAllSources.size(); colIndex++) {
 			
-			String colName = expandedTotalDelLoadForAllSources.get(colIndex).getName();	//The name of the data series
-			
-			if (colIndex < expandedTotalDelLoadForAllSources.size() - 1) {
-				colName += " for " + sparrowModel.getSources().get(colIndex).getDisplayName();
-			} else {
-				colName += " for all sources";
-			}
-			
+			String colName = expandedTotalDelLoadForAllSources.get(colIndex).getName();
 					
 			StandardNumberColumnDataWritable col =
 							new StandardNumberColumnDataWritable(colName,

@@ -1,7 +1,6 @@
 package gov.usgswim.datatable.view;
 
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.*;
 import gov.usgswim.datatable.impl.FindHelper;
 import java.util.Collections;
 import java.util.Map;
@@ -89,15 +88,18 @@ public class RelativePercentageView extends AbstractDataTableView implements Dat
 	double relPercentColTotal;
 	
 	/** Name of the relPercentCol. */
-	String relPercentColName;
+//	String relPercentColName;
 	
 	/** Description of the relPercentCol. */
-	String relPercentColDesc;
+//	String relPercentColDesc;
 	
 	/**
 	 * If true, 100% is represented as 1.  If false, 100% is represented as 100.
 	 */
 	boolean useFraction;
+	
+	/** Attributes for the relative percentage column */
+	ColumnAttribs relPercentColAttribs;
 	
 	
 	/**
@@ -155,9 +157,9 @@ public class RelativePercentageView extends AbstractDataTableView implements Dat
 			//Create name and description
 			if (relPercentRowName == null) {
 				if (useFraction) {
-					this.relPercentRowName = "Relative fraction";
+					this.relPercentRowName = RelationType.rel_fraction.getFullName();
 				} else {
-					this.relPercentRowName = "Relative percentage";
+					this.relPercentRowName = RelationType.rel_percent.getFullName();
 				}
 			} else {
 				this.relPercentRowName = relPercentRowName;
@@ -169,27 +171,40 @@ public class RelativePercentageView extends AbstractDataTableView implements Dat
 		
 		if (relPercentBaseCol != null) {
 			relPercentCol = base.getColumnCount();
+			ColumnAttribsBuilder colAttribsBuilder = new ColumnAttribsBuilder();
+			
+			if (useFraction) {
+				colAttribsBuilder.setProperty(RelationType.XML_ATTRIB_NAME, RelationType.rel_fraction.name());
+			} else {
+				colAttribsBuilder.setProperty(RelationType.XML_ATTRIB_NAME, RelationType.rel_percent.name());
+			}
 			
 			//Create name and description
 			if (relPercentColName == null) {
 				if (useFraction) {
-					this.relPercentColName = "Relative fraction";
+					colAttribsBuilder.setName(RelationType.rel_fraction.getFullName());
 				} else {
-					this.relPercentColName = "Relative percentage";
+					colAttribsBuilder.setName(RelationType.rel_percent.getFullName());
 				}
 			} else {
-				this.relPercentColName = relPercentColName;
+				colAttribsBuilder.setName(relPercentColName);
 			}
 			
 			if (relPercentColDesc == null) {
 				if (useFraction) {
-					this.relPercentColDesc = "Relative fraction of each row to the total of all rows for '" + base.getName(relPercentBaseCol) + "'";
+					colAttribsBuilder.setDescription(
+							"Relative fraction of each row to the total of all rows for '" +
+							base.getName(relPercentBaseCol) + "'");
 				} else {
-					this.relPercentColDesc = "Relative percentage of each row to the total of all rows for '" + base.getName(relPercentBaseCol) + "'";
+					colAttribsBuilder.setDescription(
+							"Relative percentage of each row to the total of all rows for '" + 
+							base.getName(relPercentBaseCol) + "'");
 				}
 			} else {
-				this.relPercentColDesc = relPercentColDesc;
+				colAttribsBuilder.setDescription(relPercentColDesc);
 			}
+			
+			relPercentColAttribs = colAttribsBuilder.toImmutable();
 			
 			initColTotal();
 		}
@@ -314,7 +329,7 @@ public class RelativePercentageView extends AbstractDataTableView implements Dat
 
 	@Override
 	public Integer getColumnByName(String name) {
-		if (relPercentCol != null && relPercentColName.equals(name)) {
+		if (relPercentColAttribs != null && relPercentColAttribs.getName("").equals(name)) {
 			return this.relPercentCol;
 		} else {
 			return super.getColumnByName(name);
@@ -342,7 +357,7 @@ public class RelativePercentageView extends AbstractDataTableView implements Dat
 	@Override
 	public String getDescription(int col) {
 		if (relPercentCol != null && relPercentCol.equals(col)) {
-			return relPercentColDesc;
+			return relPercentColAttribs.getDescription();
 		} else {
 			return super.getDescription(col);
 		}
@@ -351,7 +366,7 @@ public class RelativePercentageView extends AbstractDataTableView implements Dat
 	@Override
 	public String getName(int col) {
 		if (relPercentCol != null && relPercentCol.equals(col)) {
-			return relPercentColName;
+			return relPercentColAttribs.getName();
 		} else {
 			return super.getName(col);
 		}
@@ -360,7 +375,7 @@ public class RelativePercentageView extends AbstractDataTableView implements Dat
 	@Override
 	public Map<String, String> getProperties(int col) {
 		if (relPercentCol != null && relPercentCol.equals(col)) {
-			return Collections.emptyMap();
+			return relPercentColAttribs.getProperties(null);
 		} else {
 			return super.getProperties(col);
 		}
@@ -369,7 +384,7 @@ public class RelativePercentageView extends AbstractDataTableView implements Dat
 	@Override
 	public String getProperty(int col, String name) {
 		if (relPercentCol != null && relPercentCol.equals(col)) {
-			return null;
+			return relPercentColAttribs.getProperty(name);
 		} else {
 			return super.getProperty(col, name);
 		}
@@ -378,7 +393,7 @@ public class RelativePercentageView extends AbstractDataTableView implements Dat
 	@Override
 	public Set<String> getPropertyNames(int col) {
 		if (relPercentCol != null && relPercentCol.equals(col)) {
-			return Collections.emptySet();
+			return relPercentColAttribs.getPropertyNames(null);
 		} else {
 			return super.getPropertyNames(col);
 		}
@@ -422,7 +437,7 @@ public class RelativePercentageView extends AbstractDataTableView implements Dat
 		} else {
 			return new RelativePercentageView(base.toImmutable(),
 					relPercentBaseRow, relPercentRowName, relPercentHeaderColumn,
-					relPercentBaseCol, 	relPercentColName, relPercentColDesc,
+					relPercentBaseCol, 	relPercentColAttribs.getName(), relPercentColAttribs.getDescription(),
 					useFraction);
 		}
 	}

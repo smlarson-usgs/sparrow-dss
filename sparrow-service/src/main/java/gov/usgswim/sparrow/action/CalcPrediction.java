@@ -22,7 +22,7 @@ import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.BaseDataSeriesType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
-import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
+import gov.usgswim.datatable.AggregateType;
 
 /**
  * A simple SPARROW prediction implementation.

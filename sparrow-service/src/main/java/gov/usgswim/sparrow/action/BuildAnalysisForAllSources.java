@@ -1,7 +1,10 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgswim.datatable.ColumnAttribs;
+import gov.usgswim.datatable.ColumnAttribsBuilder;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.view.RenameColumnDataView;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.BasicAnalysis;
@@ -32,8 +35,14 @@ import java.util.List;
  */
 public class BuildAnalysisForAllSources extends Action<List<ColumnData>> {
 
+	public static enum COLUMN_NAME_FORMAT {
+		DATA_SERIES_ONLY,
+		SOURCE_NAME_ONLY,
+		DATA_SERIES_AND_SOURCE
+	};
+	
 	PredictionContext context;
-
+	COLUMN_NAME_FORMAT columnNameFormat;
 
 	
 	//Self loaded data
@@ -44,8 +53,9 @@ public class BuildAnalysisForAllSources extends Action<List<ColumnData>> {
 	}
 		
 	
-	public BuildAnalysisForAllSources(PredictionContext context) {
+	public BuildAnalysisForAllSources(PredictionContext context, COLUMN_NAME_FORMAT columnNameFormat) {
 		this.context = context;
+		this.columnNameFormat = columnNameFormat;
 	}
 	
 	
@@ -91,6 +101,46 @@ public class BuildAnalysisForAllSources extends Action<List<ColumnData>> {
 					context.getTerminalReaches(), context.getAreaOfInterest(), context.getComparison());
 		SparrowColumnSpecifier scs = SharedApplication.getInstance().getAnalysisResult(pc);
 		columns.add(scs.getColumnData());
+		
+		if (columnNameFormat.equals(COLUMN_NAME_FORMAT.DATA_SERIES_ONLY)) {
+			//Do nothing - the columns are normally named w/ the data series name only
+		} else {
+			
+			String dataSeriesName = context.getAnalysis().getDataSeries().name();
+			
+			for (int c=0; c<columns.size(); c++) {
+				
+				String srcName = null;
+				
+				if (c < columns.size() - 1) {
+					//normal column
+					srcName = predictData.getModel().getSourceByIndex(c).getDisplayName();
+				} else {
+					srcName = "All Sources";
+				}
+
+				switch (columnNameFormat) {
+					case SOURCE_NAME_ONLY: 
+					{
+						ColumnAttribsBuilder attribs = new ColumnAttribsBuilder();
+						attribs.setName(srcName);
+						RenameColumnDataView renamed = new RenameColumnDataView(columns.get(c), attribs);
+						columns.set(c, renamed);
+						break;
+					}	
+					case DATA_SERIES_AND_SOURCE:
+					{
+						ColumnAttribsBuilder attribs = new ColumnAttribsBuilder();
+						attribs.setName(dataSeriesName + " for " + srcName);
+						RenameColumnDataView renamed = new RenameColumnDataView(columns.get(c), attribs);
+						columns.set(c, renamed);
+						break;
+					}
+					default:
+						
+				}
+			}
+		}
 		
 		return columns;
 	}

@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.datatable;
+package gov.usgswim.datatable.view;
 
 import java.util.Map;
 import java.util.Set;
@@ -63,11 +63,14 @@ public abstract class AbstractColumnDataView implements ColumnData {
 	
 	/**
 	 * Part of the ColumnData interface.
-	 * For numerical columns in most cases you can implement this method and
-	 * all the other value access methods default implementation will be fine.
+	 * For most uses it is enough to override getDouble and getValue.  All other
+	 * getXXX methods delegate to these two methods.
 	 */
 	@Override
 	public abstract Double getDouble(int row);
+	
+	@Override
+	public abstract Object getValue(int row);
 	
 	/**
 	 * Part of the ColumnData interface.
@@ -170,7 +173,7 @@ public abstract class AbstractColumnDataView implements ColumnData {
 
 	@Override
 	public String getString(int row) {
-		Double val = getDouble(row);
+		Object val = getValue(row);
 		if (val != null) {
 			return val.toString();
 		} else {
@@ -178,10 +181,6 @@ public abstract class AbstractColumnDataView implements ColumnData {
 		}
 	}
 	
-	@Override
-	public Object getValue(int row) {
-		return getDouble(row);
-	}
 
 	// ======================
 	// Find and Index Methods

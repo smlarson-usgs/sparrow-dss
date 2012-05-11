@@ -8,6 +8,7 @@ import org.junit.Test;
 import gov.usgswim.datatable.ColumnDataWritable;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.RelationType;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.datatable.impl.StandardStringColumnDataWritable;
@@ -85,6 +86,9 @@ public class RelativePercentageViewTest {
 		assertEquals(5, view.getRowCount());
 		assertEquals(BASE_COL_TOTAL, view.getBaseColTotal(), COMP_ERR);
 		assertEquals(BASE_ROW_TOTAL, view.getBaseRowTotal(), COMP_ERR);
+		assertEquals(RelationType.rel_fraction.name(), view.getProperty(5, RelationType.XML_ATTRIB_NAME));
+		assertEquals(RelationType.rel_fraction.getFullName(), view.getName(5));
+		assertEquals(1, view.getPropertyNames(5).size());
 		
 		//
 		//Check first, last and rel percent columns

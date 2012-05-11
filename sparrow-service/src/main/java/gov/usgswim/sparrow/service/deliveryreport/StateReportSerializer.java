@@ -7,6 +7,7 @@ import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.RelationType;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.TableProperties;
 
@@ -134,15 +135,15 @@ public class StateReportSerializer extends BasicXMLStreamReader {
 		this.setDefaultNamespace(TARGET_NAMESPACE);
 		addNamespace(XMLSCHEMA_NAMESPACE, XMLSCHEMA_PREFIX);
 
+		if (this.request.isIncludeIdScript()) {
+			events.add(
+				new BasicTagEvent(PROCESSING_INSTRUCTION, "report-format")
+				.addAttribute("includeIdScript", "true"));
+		}
+				
 		// opening element
 		events.add(new BasicTagEvent(START_DOCUMENT));
 		events.add(new BasicTagEvent(START_ELEMENT, TARGET_MAIN_ELEMENT_NAME).addAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE + " " + TARGET_NAMESPACE_LOCATION));
-		
-		if (this.request.isIncludeIdScript()) {
-			events.add(
-				new BasicTagEvent(PROCESSING_INSTRUCTION, "format")
-				.addAttribute("includeIdScript", "true"));
-		}
 		
 		addOpenTag("response");
 		{
@@ -178,8 +179,13 @@ public class StateReportSerializer extends BasicXMLStreamReader {
 					addCloseTag("group");
 
 					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Totals"));
-					events.add(makeNonNullBasicTag("col", "").addAttribute("name", data.getName(totalCol)).addAttribute("type", NUMBER));
-					events.add(makeNonNullBasicTag("col", "").addAttribute("name", data.getName(relPercentCol)).addAttribute("type", NUMBER));
+					events.add(makeNonNullBasicTag("col", "")
+							.addAttribute("name", data.getName(totalCol))
+							.addAttribute("type", NUMBER));
+					events.add(makeNonNullBasicTag("col", "")
+							.addAttribute("name", data.getName(relPercentCol))
+							.addAttribute("type", NUMBER)
+							.addAttribute(RelationType.XML_ATTRIB_NAME, data.getProperty(relPercentCol, RelationType.XML_ATTRIB_NAME)));
 					addCloseTag("group");
 					
 					
@@ -253,7 +259,7 @@ public class StateReportSerializer extends BasicXMLStreamReader {
 	 */
 	protected void writeSourceColumnHeadersHeaders(DataTable dataTable) {
 		
-		for (int i = 0; i < sourceCount; i++) {
+		for (int i = FIRST_SOURCE_COL; i < FIRST_SOURCE_COL + sourceCount; i++) {
 			//source columns just use the name of the source
 			String name = dataTable.getName(i);
 			events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", NUMBER));

@@ -70,8 +70,8 @@ public class LoadModelMetadataLongRunTest extends SparrowTestBaseWithDB {
 	 * @param model
 	 */
 	public void checkTestModel(SparrowModel model) {
-		Source s1 = model.getSource(1);	//get by identifier
-		Source s2 = model.getSource(5);	//get by identifier
+		Source s1 = model.getSourceById(1);	//get by identifier
+		Source s2 = model.getSourceById(5);	//get by identifier
 
 		//test that we get the first and last sources
 		assertEquals(s1, model.getSources().get(0));	//get via list index

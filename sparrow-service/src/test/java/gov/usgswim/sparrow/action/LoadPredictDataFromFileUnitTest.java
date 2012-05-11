@@ -75,11 +75,11 @@ public class LoadPredictDataFromFileUnitTest {
 		assertEquals(SparrowUnits.KG_PER_YEAR, model50.getModel().getUnits());
 		
 		//Check model.source metadata some source values
-		assertEquals(SparrowUnits.KG_PER_YEAR, model50.getModel().getSource(1).getUnits());
-		assertEquals(SparrowUnits.KG_PER_YEAR, model50.getModel().getSource(2).getUnits());
-		assertEquals(SparrowUnits.SQR_KM, model50.getModel().getSource(3).getUnits());
-		assertEquals(SparrowUnits.KG_PER_YEAR, model50.getModel().getSource(4).getUnits());
-		assertEquals(SparrowUnits.KG_PER_YEAR, model50.getModel().getSource(5).getUnits());
+		assertEquals(SparrowUnits.KG_PER_YEAR, model50.getModel().getSourceById(1).getUnits());
+		assertEquals(SparrowUnits.KG_PER_YEAR, model50.getModel().getSourceById(2).getUnits());
+		assertEquals(SparrowUnits.SQR_KM, model50.getModel().getSourceById(3).getUnits());
+		assertEquals(SparrowUnits.KG_PER_YEAR, model50.getModel().getSourceById(4).getUnits());
+		assertEquals(SparrowUnits.KG_PER_YEAR, model50.getModel().getSourceById(5).getUnits());
 		
 		//Check source metadata
 		assertEquals(SparrowUnits.KG_PER_YEAR.getUserName(), model50.getSrcMetadata().getString(0, 5));

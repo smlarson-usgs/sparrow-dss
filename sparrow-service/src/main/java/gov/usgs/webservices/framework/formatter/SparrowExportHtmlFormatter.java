@@ -2,6 +2,7 @@ package gov.usgs.webservices.framework.formatter;
 
 import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.*;
 import gov.usgs.webservices.framework.utils.XMLUtils;
+import gov.usgswim.datatable.RelationType;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -43,6 +44,9 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 	private boolean isInItem;
 	private boolean isInDescription;
 	private boolean includeIdScript;
+	private int currentColumnIndex = -1;
+	private ValueFormatter baseFormat;
+	private ArrayList<ValueFormatter> formatters = new ArrayList<ValueFormatter>();	//one per column
 
 
 	public SparrowExportHtmlFormatter(OutputType type, String jsFunctionForRowId,
@@ -68,6 +72,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 		this.jsFileName = jsFileName;
 		this.cssFileName = cssFileName;
 		this.htmlTitle = htmlTitle;
+		this.baseFormat = new SimpleValueFormatter(outputType);
 		
 	}
 
@@ -118,14 +123,32 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 						} else if ("col".equals(localName)) {
 							
 							String header = in.getAttributeValue(null, "name");
-							out.write(delims.headerCellStart + formatSimple(header) + delims.headerCellEnd);
+							String relation = in.getAttributeValue(null, RelationType.XML_ATTRIB_NAME);
+							
+							out.write(delims.headerCellStart + baseFormat.format(header) + delims.headerCellEnd);
+							
+							if (relation != null) {
+								RelationType rt = RelationType.parse(relation);
+								if (RelationType.rel_fraction.equals(rt)) {
+									formatters.add(new HTMLRelativePercentValueFormatter(true));
+								} else if (RelationType.rel_percent.equals(rt)) {
+									formatters.add(new HTMLRelativePercentValueFormatter(false));
+								} else {
+									formatters.add(new SimpleValueFormatter(outputType));
+								}
+							} else {
+								formatters.add(new SimpleValueFormatter(outputType));
+							}
 						
 						} else if ("data".equals(localName)) {
 							
 							out.write(delims.bodyStart);
 							
 						} else if ("r".equals(localName)) {
-								
+							
+							//reset the column index
+							currentColumnIndex = -1;
+							
 							out.write(delims.bodyRowStart);
 							
 							//Add an extra column for the ID
@@ -133,8 +156,8 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 							
 							if (! "total".equals(type)) {
 								//standard data row
-								if (jsFunctionForRowId != null) {
-									String id = formatSimple(in.getAttributeValue(null, "id"));
+								if (includeIdScript && jsFunctionForRowId != null) {
+									String id = baseFormat.format(in.getAttributeValue(null, "id"));
 									
 									out.write(delims.headerCellStart);
 									out.write(
@@ -142,13 +165,13 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 											id + "</a>");
 									out.write(delims.headerCellEnd);
 								} else {
-									out.write(delims.headerCellStart + formatSimple(in.getAttributeValue(null, "id")) + delims.headerCellEnd);
+									out.write(delims.headerCellStart + baseFormat.format(in.getAttributeValue(null, "id")) + delims.headerCellEnd);
 								}
 							} else {
 								//Total row
 								
 								if (totalRowRowHeader != null) {
-									out.write(delims.headerCellStart + formatSimple(totalRowRowHeader) + delims.headerCellEnd);
+									out.write(delims.headerCellStart + baseFormat.format(totalRowRowHeader) + delims.headerCellEnd);
 								} else {
 									out.write(delims.headerCellStart + "Total for all rows:" + delims.headerCellEnd);
 								}
@@ -157,6 +180,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 							
 						} else if ("c".equals(localName)) {
 							
+							currentColumnIndex++;
 							isInItem = true;
 							out.write(delims.bodyCellStart);
 							
@@ -165,18 +189,24 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 						break;
 					case XMLStreamConstants.CHARACTERS:
 					case XMLStreamConstants.CDATA:	//fall through
-						if (isInItem || isInDescription) {
-							
-							out.write(formatSimple(in.getText()));
+						if (isInItem) {
+							out.write(formatters.get(currentColumnIndex).format(in.getText()));
+						} else if (isInDescription) {
+							out.write(baseFormat.format(in.getText()));
 
 						}
 						break;
 					case XMLStreamConstants.PROCESSING_INSTRUCTION:
-						//localName = in.getLocalName(); throws an exception for PIs in some parsers	
+						String piTarget = in.getPITarget();
 
-						
-						String include = in.getAttributeValue(null, "includeIdScript");
-						includeIdScript = "true".equals(include);
+						if ("report-format".equals(piTarget)) {
+							String data = in.getPIData();
+							if (data != null && data.contains("includeIdScript=\"true\"")) {
+								includeIdScript = true;
+							} else {
+								includeIdScript = false;
+							}
+						}
 
 						
 						break;
@@ -283,31 +313,6 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 		out.write("</html>");
 	}
 
-	/**
-	 * TODO copied from DataFlatteningFormatter. Should decide where this ought to go.
-	 * @param value
-	 * @return
-	 */
-	private String formatSimple(String value) {
-		if (value == null) {
-			return "";
-		}
-		switch (this.outputType) {
-			case CSV:
-				value = StringEscapeUtils.escapeCsv(value);
-				break;
-			case XML: // same as excel
-			case EXCEL:
-				value = XMLUtils.quickTagContentEscape(value);
-				break;
-			case DATA:
-			case TAB:
-				//replace tabs, new line, form feed and carriage return w/ spaces
-				value = StringUtils.replaceChars(value, "\t\n\f\r", "    ");
-				break;
-		}
-		return value;
-	}
 	
 	protected void setDelimiters(Delimiters delims) {
 		this.delims = delims;

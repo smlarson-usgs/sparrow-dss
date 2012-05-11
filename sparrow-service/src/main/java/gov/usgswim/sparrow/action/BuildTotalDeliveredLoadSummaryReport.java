@@ -62,7 +62,9 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTable> {
 				modelId, adjustmentGroups, analysis, terminalReaches,
 				null, NoComparison.NO_COMPARISON);
 		
-		BuildAnalysisForAllSources action = new BuildAnalysisForAllSources(basicPredictContext);
+		BuildAnalysisForAllSources action =
+				new BuildAnalysisForAllSources(basicPredictContext, 
+				BuildAnalysisForAllSources.COLUMN_NAME_FORMAT.SOURCE_NAME_ONLY);
 		
 		
 		expandedTotalDelLoadForAllSources = action.run();

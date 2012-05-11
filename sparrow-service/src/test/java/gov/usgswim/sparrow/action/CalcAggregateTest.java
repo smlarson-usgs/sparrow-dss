@@ -7,7 +7,7 @@ import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
-import gov.usgswim.sparrow.service.predict.aggregator.AggregateType;
+import gov.usgswim.datatable.AggregateType;
 
 import org.junit.Before;
 import org.junit.Test;

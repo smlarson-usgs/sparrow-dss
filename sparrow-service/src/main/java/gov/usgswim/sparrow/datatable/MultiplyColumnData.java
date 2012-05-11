@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.datatable;
 
+import gov.usgswim.datatable.view.AbstractColumnDataView;
 import gov.usgswim.datatable.ColumnAttribs;
 import gov.usgswim.datatable.ColumnAttribsImm;
 import gov.usgswim.datatable.ColumnData;
@@ -49,6 +50,11 @@ public class MultiplyColumnData extends AbstractColumnDataView {
 		} else {
 			return null;
 		}
+	}
+	
+	@Override
+	public Object getValue(int row) {
+		return getDouble(row);
 	}
 
 	@Override

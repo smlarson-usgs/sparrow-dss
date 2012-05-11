@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.service.predict.aggregator;
 
+import gov.usgswim.datatable.AggregateType;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;

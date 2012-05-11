@@ -1,5 +1,6 @@
 package gov.usgswim.datatable.utils;
 
+import gov.usgswim.datatable.ColumnData;
 import static java.sql.Types.BIGINT;
 import static java.sql.Types.CHAR;
 import static java.sql.Types.DATE;
@@ -508,4 +509,27 @@ public class DataTableUtils {
 		return total;
 	}
 
+		/**
+	 * Returns the total for a column.
+	 * If the values are all null or there are no rows, zero is returned.
+	 * NaN values are ignored.  An infinite value will result in an infinite result.
+	 * 
+	 * @param tab
+	 * @param col
+	 * @return 
+	 */
+	public static double getColumnTotal(ColumnData column) {
+		
+		int rows = column.getRowCount();
+		double total = 0D;
+		
+		for (int r=0; r<rows; r++) {
+			Double v = column.getDouble(r);
+			if (v != null && ! v.isNaN()) {
+				total+= v;
+			}
+		}
+		
+		return total;
+	}
 }

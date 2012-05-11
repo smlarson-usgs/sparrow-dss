@@ -54,6 +54,32 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 	}
 	
 	@Test
+	public void model50NoAdjustXMLStateReport() throws Exception {
+		String contextRequestText = SparrowTestBase.getXmlAsString(this.getClass(), "context1");
+		
+		WebRequest contextWebRequest = new PostMethodWebRequest(CONTEXT_SERVICE_URL);
+		contextWebRequest.setParameter("xmlreq", contextRequestText);
+		WebResponse contextWebResponse = client.sendRequest(contextWebRequest);
+		String actualContextResponse = contextWebResponse.getText();
+		
+		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", actualContextResponse);
+		int id = getContextIdFromContext(actualContextResponse);
+		
+		WebRequest reportWebRequest = new GetMethodWebRequest(REPORT_SERVICE_URL);
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml");
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ID_SCRIPT, "false");
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.state.toString());
+
+		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
+		String actualReportResponse = reportWebResponse.getText();
+		
+		System.out.println(actualReportResponse);
+		
+	}
+	
+	@Ignore
+	@Test
 	public void model50NoAdjustCVSExportCheckContextStateReport() throws Exception {
 		String contextRequestText = SparrowTestBase.getXmlAsString(this.getClass(), "context1");
 		
