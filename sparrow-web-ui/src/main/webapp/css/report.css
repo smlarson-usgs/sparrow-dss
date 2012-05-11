@@ -1,12 +1,25 @@
-
 table {
 	border-collapse:collapse;
 	background-color: #fff;	
 }
 
-table, th, td { border: 1px solid black; }
+table, th, td { border: 1px solid black; padding: 0; }
 
 table th {
 	font-weight: bold;
 	background-color: #ddd;
 }
+
+div.rel-percent-in-col {
+ float: right; height: 100%; margin: 0; padding: 1.2em 0;
+ background-color: #ffc;  border-left: solid 1px #000;
+}
+
+div.rel-percent-in-col span { overflow: visible; float: right; padding: 0 .2em; }
+
+div.rel-percent-in-row {
+ bottom: 0; width: 100%; margin: 0; padding: 0;
+ background-color: #ffc;  border-top: solid 1px #000;
+}
+
+div.rel-percent-in-row span { overflow: visible; float: right; padding: 0 .2em; }
