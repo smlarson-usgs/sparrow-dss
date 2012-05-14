@@ -1,22 +1,18 @@
-package gov.usgswim.sparrow.service.deliveryreport;
+package gov.usgswim.sparrow.service.deliveryaggreport;
 
 import gov.usgswim.sparrow.service.deliveryterminalreport.ReportRequest;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDB;
 import gov.usgswim.sparrow.SparrowTestBase;
 
-import org.apache.log4j.Level;
 import org.junit.Test;
 
 import com.meterware.httpunit.*;
-import org.junit.Ignore;
 
 public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
 	private static final String CONTEXT_SERVICE_URL = "http://localhost:8088/sp_predictcontext";
-	private static final String REPORT_SERVICE_URL = "http://localhost:8088/sp_deliveryreport";
+	private static final String REPORT_SERVICE_URL = "http://localhost:8088/sp_delivery_aggreport";
 
 	@Override
 	public void doOneTimeCustomSetup() throws Exception {
@@ -24,35 +20,6 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		//setLogLevel(Level.DEBUG);
 	}
 	
-	/**
-	 * Values containing commas should be escaped
-	 * @throws Exception
-	 */
-	@Ignore
-	@Test
-	public void model50NoAdjustCVSExportCheckContextTerminalReport() throws Exception {
-		String contextRequestText = SparrowTestBase.getXmlAsString(this.getClass(), "context1");
-		
-		WebRequest contextWebRequest = new PostMethodWebRequest(CONTEXT_SERVICE_URL);
-		contextWebRequest.setParameter("xmlreq", contextRequestText);
-		WebResponse contextWebResponse = client.sendRequest(contextWebRequest);
-		String actualContextResponse = contextWebResponse.getText();
-		
-		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", actualContextResponse);
-		int id = getContextIdFromContext(actualContextResponse);
-		
-		WebRequest reportWebRequest = new GetMethodWebRequest(REPORT_SERVICE_URL);
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml");
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ID_SCRIPT, "false");
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.terminal.toString());
-
-		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
-		String actualReportResponse = reportWebResponse.getText();
-		
-		System.out.println(actualReportResponse);
-		
-	}
 	
 	@Test
 	public void model50NoAdjustXMLStateReport() throws Exception {
@@ -68,9 +35,8 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		
 		WebRequest reportWebRequest = new GetMethodWebRequest(REPORT_SERVICE_URL);
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml");
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ID_SCRIPT, "false");
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.region_agg.toString());
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml_table");
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REGION_TYPE, ReportRequest.RegionType.state.name());
 
 		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
@@ -79,7 +45,6 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		
 	}
 	
-	@Ignore
 	@Test
 	public void model50NoAdjustCVSExportCheckContextStateReport() throws Exception {
 		String contextRequestText = SparrowTestBase.getXmlAsString(this.getClass(), "context1");
@@ -94,9 +59,8 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		
 		WebRequest reportWebRequest = new GetMethodWebRequest(REPORT_SERVICE_URL);
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml");
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ID_SCRIPT, "false");
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.region_agg.toString());
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml_table");
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REGION_TYPE, ReportRequest.RegionType.state.name());
 
 		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();

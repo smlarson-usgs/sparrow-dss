@@ -145,12 +145,6 @@ public class ReportSerializer extends BasicXMLStreamReader {
 		events.add(new BasicTagEvent(START_DOCUMENT));
 		events.add(new BasicTagEvent(START_ELEMENT, TARGET_MAIN_ELEMENT_NAME).addAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE + " " + TARGET_NAMESPACE_LOCATION));
 		
-		if (this.request.isIncludeIdScript()) {
-			events.add(
-				new BasicTagEvent(PROCESSING_INSTRUCTION, "format")
-				.addAttribute("includeIdScript", "true"));
-		}
-		
 		addOpenTag("response");
 		{
 			

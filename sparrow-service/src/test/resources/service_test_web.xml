@@ -119,16 +119,28 @@
 	</servlet>
 	
 	<servlet>
-		<servlet-name>DeliveryReportService</servlet-name>
+		<servlet-name>Delivery_TerminalReport_Service</servlet-name>
 		<servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
 		<init-param>
 			<param-name>pipeline-class</param-name>
-			<param-value>gov.usgswim.sparrow.service.deliveryreport.ReportPipeline</param-value>
+			<param-value>gov.usgswim.sparrow.service.deliveryterminalreport.ReportPipeline</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>DeliveryReportService</servlet-name>
-		<url-pattern>/sp_deliveryreport/*</url-pattern>
+		<servlet-name>Delivery_TerminalReport_Service</servlet-name>
+		<url-pattern>/sp_delivery_terminalreport/*</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>Delivery_AggReport_Service</servlet-name>
+		<servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
+		<init-param>
+			<param-name>pipeline-class</param-name>
+			<param-value>gov.usgswim.sparrow.service.deliveryaggreport.ReportPipeline</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Delivery_AggReport_Service</servlet-name>
+		<url-pattern>/sp_delivery_aggreport/*</url-pattern>
 	</servlet-mapping>
 
 
