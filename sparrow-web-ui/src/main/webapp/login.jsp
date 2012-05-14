@@ -12,7 +12,7 @@
 
 </head>
 <body>
-    <%@ include file="header.jsp" %>
+    <jsp:include page="header.jsp" flush="true" />
     <div style="padding: 1em">
     
 	<h2>Please Login to the SPARROW DSS Application</h2>
@@ -44,6 +44,6 @@
 	</form>
 
     </div>
-    <%@ include file="footer.jsp" %>
+    <jsp:include page="footer.jsp" flush="true" />
 </body>
 </html>

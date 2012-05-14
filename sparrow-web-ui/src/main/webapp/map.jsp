@@ -95,7 +95,7 @@
   </head>
   <body>
     <div id="usgs-header-panel">
-        <%@ include file="header.jsp" %>
+        <jsp:include page="header.jsp" flush="true" />
     </div>
     
     <%
@@ -316,7 +316,7 @@
     </div>
 
     <div id="usgs-footer-panel">
-        <%@ include file="footer.jsp" %>
+        <jsp:include page="footer.jsp" flush="true" />
     </div>
 
   </body>

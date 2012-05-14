@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.service.deliveryreport;
 
+import gov.usgswim.sparrow.service.deliveryterminalreport.ReportRequest;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -69,7 +70,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ID_SCRIPT, "false");
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.state.toString());
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.region_agg.toString());
 
 		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
@@ -95,7 +96,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ID_SCRIPT, "false");
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.state.toString());
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.region_agg.toString());
 
 		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();

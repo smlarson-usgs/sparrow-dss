@@ -15,7 +15,7 @@
     %>
 </head>
 <body>
-    <%@ include file="header.jsp" %>
+    <jsp:include page="header.jsp" flush="true" />
     <div>
         <p class="paragraph">
 	        It is possible to link to SPARROW from other pages while specifying a
@@ -32,6 +32,6 @@
         &lt;a href="<%= url %>?model=21"&gt;Chesapeake Bay V2&lt;/a&gt;
         &lt;a href="<%= url %>?model=22"&gt;National Model&lt;/a&gt;</pre>
     </div>
-    <%@ include file="footer.jsp" %>
+    <jsp:include page="footer.jsp" flush="true" />
 </body>
 </html>

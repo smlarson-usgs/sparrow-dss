@@ -13,7 +13,7 @@
 
 </head>
 <body>
-    <%@ include file="header.jsp" %>
+    <jsp:include page="header.jsp" flush="true" />
     <div style="padding: 1em">
     
 	<h2>Welcome - You are now logged into the SPARROW DSS Application.</h2>
@@ -23,6 +23,6 @@
     		subject to change--Do not quote or release. Anticipated Release is August/September 2011.</b></p>
 	
     </div>
-    <%@ include file="footer.jsp" %>
+    <jsp:include page="footer.jsp" flush="true" />
 </body>
 </html>

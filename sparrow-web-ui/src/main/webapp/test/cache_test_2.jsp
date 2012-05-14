@@ -8,16 +8,16 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<title>Cache Test 1 - SPARROW Model Decision Support</title>
+	<title>Cache Test 2 - SPARROW Model Decision Support</title>
 </head>
 <body>
-    <%@ include file="header.jsp" %>
+    <jsp:include page="../header.jsp" flush="true" />
     <div style="padding: 1em">
     
-    <a href="cache_test_2.jsp">Go to 2</a>
-	<img src="ext_js/resources/images/access/form/checkbox.gif" />
-	<img src="ext_js/resources/images/access/form/exclamation.gif" />
+    <a href="cache_test_1.jsp">Go to 1</a>
+	<img src="../ext_js/resources/images/access/form/checkbox.gif" />
+	<img src="../ext_js/resources/images/access/form/exclamation.gif" />
     </div>
-    <%@ include file="footer.jsp" %>
+    <jsp:include page="../footer.jsp" flush="true" />
 </body>
 </html>

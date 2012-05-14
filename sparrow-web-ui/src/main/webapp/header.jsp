@@ -1,10 +1,14 @@
 <div id="header">
+<%@page import="gov.usgswim.sparrow.SparrowUtil, gov.usgswim.sparrow.SparrowUtil.UrlFeatures" %>
+<%
+	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
+%>
     <div id="banner-area">
         <h1>U.S. Geological Survey</h1>
         <!-- Not actually visible unless printed -->
         <div id="usgs-header-logo">
             <a href="http://www.usgs.gov" title="Link to the US Geological Survey main web page">
-                <img alt="USGS Logo" src="images/usgs_logo_small.jpg" />
+                <img alt="USGS Logo" src="<%= pageRequestUrl.getBaseUrlWithSlash() %>images/usgs_logo_small.jpg" />
             </a>
         </div>
         <div id="usgsPrintCommHeader" class="print-only">

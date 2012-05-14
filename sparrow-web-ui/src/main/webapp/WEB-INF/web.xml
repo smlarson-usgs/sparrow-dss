@@ -289,7 +289,6 @@
             <param-value>true</param-value>
         </init-param>
     </servlet>
-    <!-- Special Temporary Proxies for Nate's demo -->
     <servlet>
         <servlet-name>IndividualReachPredictionServlet</servlet-name>
         <servlet-class>gov.usgswim.sparrow.SparrowProxyServlet</servlet-class>
@@ -299,21 +298,33 @@
         </init-param>
     </servlet>
     <servlet>
-        <servlet-name>DeliveryReportService</servlet-name>
+        <servlet-name>DeliveryTerminalReport_Service</servlet-name>
         <servlet-class>gov.usgswim.sparrow.SparrowProxyServlet</servlet-class>
         <init-param>
             <param-name>forward-context</param-name>
-            <param-value>sp_deliveryreport</param-value>
+            <param-value>sp_delivery_terminalreport</param-value>
         </init-param>
     </servlet>
+		<servlet-mapping>
+        <servlet-name>DeliveryTerminalReport_Service</servlet-name>
+        <url-pattern>/getDeliveryTerminalReport</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>DeliveryAggReport_Service</servlet-name>
+        <servlet-class>gov.usgswim.sparrow.SparrowProxyServlet</servlet-class>
+        <init-param>
+            <param-name>forward-context</param-name>
+            <param-value>sp_delivery_aggreport</param-value>
+        </init-param>
+    </servlet>
+		<servlet-mapping>
+        <servlet-name>DeliveryAggReport_Service</servlet-name>
+        <url-pattern>/getDeliveryAggReport</url-pattern>
+    </servlet-mapping>
     <servlet>
         <servlet-name>HealthTest</servlet-name>
         <servlet-class>gov.usgswim.sparrow.HealthTest</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>DeliveryReportService</servlet-name>
-        <url-pattern>/getDeliveryReport</url-pattern>
-    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>ModelServlet</servlet-name>
         <url-pattern>/getSources</url-pattern>

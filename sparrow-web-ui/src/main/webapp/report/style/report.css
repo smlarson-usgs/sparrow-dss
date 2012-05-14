@@ -1,3 +1,4 @@
+body { background-color: #ffe; }
 table {
 	border-collapse:collapse;
 	background-color: #fff;	
@@ -23,3 +24,8 @@ div.rel-percent-in-row {
 }
 
 div.rel-percent-in-row span { overflow: visible; float: right; padding: 0 .2em; }
+
+.explination {
+	margin: .4em 0; padding: .3em; background-color: #eefff0; border: solid 1px #000;
+}
+.explination p { margin: .2em 0; }

@@ -43,7 +43,6 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 	private Delimiters delims;
 	private boolean isInItem;
 	private boolean isInDescription;
-	private boolean includeIdScript;
 	private int currentColumnIndex = -1;
 	private ValueFormatter baseFormat;
 	private ArrayList<ValueFormatter> formatters = new ArrayList<ValueFormatter>();	//one per column
@@ -113,12 +112,13 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 							out.write(delims.headerRowStart);
 							
 							//Add an extra column for the ID
-							if (idHeader != null) {
-								out.write(delims.headerCellStart + idHeader + delims.headerCellEnd);
-							} else {
-								out.write(delims.headerCellStart + "Row ID" + delims.headerCellEnd);
+							if (jsFunctionForRowId != null) {
+								if (idHeader != null) {
+									out.write(delims.headerCellStart + idHeader + delims.headerCellEnd);
+								} else {
+									out.write(delims.headerCellStart + "Row ID" + delims.headerCellEnd);
+								}
 							}
-							
 							
 						} else if ("col".equals(localName)) {
 							
@@ -156,7 +156,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 							
 							if (! "total".equals(type)) {
 								//standard data row
-								if (includeIdScript && jsFunctionForRowId != null) {
+								if (jsFunctionForRowId != null) {
 									String id = baseFormat.format(in.getAttributeValue(null, "id"));
 									
 									out.write(delims.headerCellStart);
@@ -165,7 +165,8 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 											id + "</a>");
 									out.write(delims.headerCellEnd);
 								} else {
-									out.write(delims.headerCellStart + baseFormat.format(in.getAttributeValue(null, "id")) + delims.headerCellEnd);
+									//don't write the id if not including the script
+									//out.write(delims.headerCellStart + baseFormat.format(in.getAttributeValue(null, "id")) + delims.headerCellEnd);
 								}
 							} else {
 								//Total row
@@ -197,16 +198,16 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 						}
 						break;
 					case XMLStreamConstants.PROCESSING_INSTRUCTION:
-						String piTarget = in.getPITarget();
-
-						if ("report-format".equals(piTarget)) {
-							String data = in.getPIData();
-							if (data != null && data.contains("includeIdScript=\"true\"")) {
-								includeIdScript = true;
-							} else {
-								includeIdScript = false;
-							}
-						}
+						//The current BasicTagEven and reader does not support PIs. :(
+//						String piTarget = in.getPITarget();
+//						if ("format".equals(piTarget)) {
+//							String data = in.getPIData();
+//							if (data != null && data.contains("includeIdScript=\"true\"")) {
+//								includeIdScript = true;
+//							} else {
+//								includeIdScript = false;
+//							}
+//						}
 
 						
 						break;
@@ -296,7 +297,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 			out.write("<title>SPARROW DSS Report</title>\n");
 		}
 		
-		if (jsFileName != null && includeIdScript) {
+		if (jsFileName != null) {
 			out.write("<script src=\"" + jsFileName + "\">​</script>\n");
 		}
 		

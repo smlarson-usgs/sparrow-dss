@@ -12,7 +12,7 @@
 
 </head>
 <body>
-    <%@ include file="header.jsp" %>
+    <jsp:include page="header.jsp" flush="true" />
     <div style="padding: 1em">
     
     <% 
@@ -20,6 +20,6 @@
     %>
 	<h2>You have been logged out.</h2>
 	<h3><a title="back to home page" href="index.jsp">Take me all the way back to the home page >></a></h3>
-    <%@ include file="footer.jsp" %>
+    <jsp:include page="footer.jsp" flush="true" />
 </body>
 </html>

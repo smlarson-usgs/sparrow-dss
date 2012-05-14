@@ -33,7 +33,7 @@
 	 </script>
 </head>
 <body>
-    <%@ include file="header.jsp" %>
+    <jsp:include page="header.jsp" flush="true" />
     <div style="padding: 1em">
     	<div class="clearfix section" id="introduction">
     		<p><b>Additional regional SPARROW models will be available in the Decision Support System in August/September 2011.</b></p><br/>
@@ -116,6 +116,6 @@
 	<% } %>
     <a href="logout.jsp" title="logout">~~ logout/change user ~~</a>
     </div>
-    <%@ include file="footer.jsp" %>
+    <jsp:include page="footer.jsp" flush="true" />
 </body>
 </html>

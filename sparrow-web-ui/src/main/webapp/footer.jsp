@@ -1,4 +1,8 @@
 <div id="footer" style="width: 100%; margin-right: -1em;">
+<%@page import="gov.usgswim.sparrow.SparrowUtil, gov.usgswim.sparrow.SparrowUtil.UrlFeatures" %>
+<%
+	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
+%>
     <div id="usgs-policy-links">
         <h4 class="access-help">USGS Policy Information Links</h4>
         <ul class="hnav">
@@ -36,13 +40,13 @@
         </div><!-- /page-info -->
         <div id="gov-buttons">
 			<a href="http://cida.usgs.gov" title="link to the official CIDA web portal">
-				<img alt="CIDA button" src="images/cida_logo.jpg" height="80"/>
+				<img alt="CIDA button" src="<%= pageRequestUrl.getBaseUrlWithSlash() %>images/cida_logo.jpg" height="80"/>
 			</a>
             <a title="link to the official US Government web portal" href="http://firstgov.gov/">
-                <img src="images/footer_graphic_firstGov.jpg" alt="FirstGov button">
+                <img src="<%= pageRequestUrl.getBaseUrlWithSlash() %>images/footer_graphic_firstGov.jpg" alt="FirstGov button">
             </a>
             <a title="Link to Take Pride in America, a volunteer organization that helps to keep America's public lands beautiful." href="http://www.takepride.gov/">
-                <img src="images/footer_graphic_takePride.jpg" alt="Take Pride in America button">
+                <img src="<%= pageRequestUrl.getBaseUrlWithSlash() %>images/footer_graphic_takePride.jpg" alt="Take Pride in America button">
             </a>
         </div><!-- /gov-buttons -->
     </div><!-- /content -->
