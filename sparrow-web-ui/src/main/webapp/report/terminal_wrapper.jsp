@@ -18,7 +18,8 @@
  <%
 	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
 	String tableName = "getDeliveryTerminalReport";
-	String tableParams = "context-id=" + request.getParameter("context-id") +				
+	String tableParams = "context-id=" + request.getParameter("context-id") +	
+			"&include-zero-rows=true" + 					
 			"&mime-type=xhtml_table";
 	
 	String tableUrl = pageRequestUrl.getBaseUrlWithSlash() + tableName + "?" + tableParams;

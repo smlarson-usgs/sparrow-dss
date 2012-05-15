@@ -29,13 +29,14 @@ public class ReportRequestParser
 			Long contextID = parseParamAsLong(request, ReportRequest.ELEMENT_CONTEXT_ID, true);
 			boolean includeIdScript = true;
 			ReportRequest.ReportType reportType = ReportRequest.ReportType.terminal;
+			boolean includeZeroRows = parseParamAsBoolean(request, ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, true);
 			
 			ResponseFormat respFormat = new ResponseFormat();
 			respFormat.setMimeType(mimeType);
 			respFormat.setAttachment(true);
 			if (respFormat.fileName == null) respFormat.fileName = ReportRequest.PC_EXPORT_FILENAME;
 			
-			req = new ReportRequest(contextID.intValue(), reportType, null, respFormat, includeIdScript);
+			req = new ReportRequest(contextID.intValue(), reportType, null, respFormat, includeIdScript, includeZeroRows);
 			
 			
 		} else if (request.getMethod().equals("POST")) {

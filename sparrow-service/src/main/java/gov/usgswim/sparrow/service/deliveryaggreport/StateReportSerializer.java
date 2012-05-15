@@ -31,7 +31,7 @@ public class StateReportSerializer extends BasicXMLStreamReader {
 
 	private DataTable data;
 	private Integer totalCol;	//index of the total column in the reportTable
-	private Integer relPercentCol;
+	private int relPercentCol;	//index of the relative percent column in the reportTable
 	private int sourceCount;	//The number of sources in the reportTable
 	private String exportDescription;
 	private DecimalFormat[] numberFormat;
@@ -208,47 +208,71 @@ public class StateReportSerializer extends BasicXMLStreamReader {
 	}
 
 	protected void readRow() {
+		boolean aRowOfEventsHaveBeenAdded = false;
+		while (!aRowOfEventsHaveBeenAdded && ! this.state.isDataFinished()) {
+			aRowOfEventsHaveBeenAdded = readPossiblyEmptyRow();
+		}
+	}
+	
+	/**
+	 * version of readRow that returns true if it actually added events to the
+	 * event queue.  Since some rows are filtered out, this is needed so that we
+	 * don't allow a call to read the next row to put no events in queue.
+	 * @return 
+	 */
+	protected boolean readPossiblyEmptyRow() {
 
+		boolean isAddingEvents = false;	//returned as true if we added an event
+		
 		if (!state.isDataFinished()) {
-			BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
+			
+			if ((request.isIncludeZeroTotalRows()) || data.getDouble(state.r, totalCol) != 0 ) {
 
-			Long rowId = data.getIdForRow(state.r);
-			rowEvent.addAttribute("id", rowId.toString());
+								
+				BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
 
-			events.add(rowEvent);
+				Long rowId = data.getIdForRow(state.r);
+				rowEvent.addAttribute("id", rowId.toString());
 
-			for (int c = 0; c < data.getColumnCount(); c++) {
+				events.add(rowEvent);
 
-				if (data.getDataType(c) != null && Number.class.isAssignableFrom(data.getDataType(c))) {
+				for (int c = 0; c < data.getColumnCount(); c++) {
 
-					Double val = data.getDouble(state.r, c);
-					if (val == null) {
-						addBasicTag("c", null);
-					} else if (numberFormat[c] != null) {
-						addBasicTag("c", numberFormat[c].format(val));
+					if (data.getDataType(c) != null && Number.class.isAssignableFrom(data.getDataType(c))) {
+
+						Double val = data.getDouble(state.r, c);
+						if (val == null) {
+							addBasicTag("c", null);
+						} else if (numberFormat[c] != null) {
+							addBasicTag("c", numberFormat[c].format(val));
+						} else {
+							addBasicTag("c", val.toString());
+						}
+
+
 					} else {
-						addBasicTag("c", val.toString());
+
+						String val = data.getString(state.r, c);
+						if (val == null) val = "";
+
+						addBasicTag("c", val);
+
 					}
 
 
-				} else {
-
-					String val = data.getString(state.r, c);
-					if (val == null) val = "";
-
-					addBasicTag("c", val);
-
 				}
 
+				addCloseTag("r");
+				events.add(new BasicTagEvent(SPACE));
+
+				isAddingEvents = true;
 
 			}
-
-			addCloseTag("r");
-			events.add(new BasicTagEvent(SPACE));
-
-
+						
 		}
+		
 		state.r++;
+		return isAddingEvents;
 	}
 	
 	/**

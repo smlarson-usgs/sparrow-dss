@@ -6,8 +6,10 @@ import gov.usgswim.sparrow.SparrowServiceTestBaseWithDB;
 import gov.usgswim.sparrow.SparrowTestBase;
 
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 import com.meterware.httpunit.*;
+import org.junit.Ignore;
 
 public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
@@ -19,7 +21,6 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);
 	}
-	
 	
 	@Test
 	public void model50NoAdjustXMLStateReport() throws Exception {
@@ -36,13 +37,19 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		WebRequest reportWebRequest = new GetMethodWebRequest(REPORT_SERVICE_URL);
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml_table");
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, "false");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_REGION_TYPE, ReportRequest.RegionType.state.name());
 
 		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
 		
-		System.out.println(actualReportResponse);
+		String rowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
+		String nonZeroRowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tr[td[position() = 8 and .!=0]])", actualReportResponse);
 		
+		assertEquals("9", rowCountStr);
+		assertEquals("9", nonZeroRowCountStr);
+		
+		//System.out.println(actualReportResponse);
 	}
 	
 	@Test
@@ -60,12 +67,26 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		WebRequest reportWebRequest = new GetMethodWebRequest(REPORT_SERVICE_URL);
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml_table");
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, "true");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_REGION_TYPE, ReportRequest.RegionType.state.name());
 
 		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
 		
-		System.out.println(actualReportResponse);
+		String rowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
+		String nonZeroRowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tr[td[position() = 8 and .!=0]])", actualReportResponse);
+		
+		assertEquals("11", rowCountStr);
+		assertEquals("9", nonZeroRowCountStr);
+		
+		
+		String firstStateWithZeroLoad = ReportServiceLongRunTest.getXPathValue("//tr[td[position() = 8 and .=0]][1]/td[1]", actualReportResponse);
+		String secondStateWithZeroLoad = ReportServiceLongRunTest.getXPathValue("//tr[td[position() = 8 and .=0]][2]/td[1]", actualReportResponse);
+		
+		assertEquals("FLORIDA", firstStateWithZeroLoad);
+		assertEquals("LOUISIANA", secondStateWithZeroLoad);
+		
+		//System.out.println(actualReportResponse);
 		
 	}
 	

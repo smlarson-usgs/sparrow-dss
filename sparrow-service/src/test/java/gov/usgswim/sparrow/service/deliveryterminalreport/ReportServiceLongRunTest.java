@@ -5,6 +5,7 @@ import gov.usgswim.sparrow.SparrowServiceTestBaseWithDB;
 import gov.usgswim.sparrow.SparrowTestBase;
 
 import org.junit.Test;
+import static org.junit.Assert.*;
 
 import com.meterware.httpunit.*;
 
@@ -39,12 +40,25 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml_table");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ID_SCRIPT, "false");
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, "true");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.terminal.toString());
 
-		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
+		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
 		
-		System.out.println(actualReportResponse);
+		//tbody/tr[th[a=9682]]/td[1]
+		
+		String rowCountStr = gov.usgswim.sparrow.service.deliveryaggreport.ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
+
+		assertEquals("2", rowCountStr);
+		
+		String firstTerminalReachName = getXPathValue("//tbody/tr[th[a=9682]]/td[1]", actualReportResponse);
+		String totalValue = getXPathValue("//tbody/tr[2]/td[.=40735549.83]", actualReportResponse);
+		
+		assertEquals("MOBILE R", firstTerminalReachName);
+		assertEquals("40735549.83", totalValue);
+		
+		//System.out.println(actualReportResponse);
 		
 	}
 	

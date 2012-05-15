@@ -32,6 +32,7 @@ public class ReportRequestParser
 			ReportRequest.ReportType reportType = ReportRequest.ReportType.region_agg;
 			String regionTypeStr = request.getParameter(ReportRequest.ELEMENT_REGION_TYPE);
 			ReportRequest.RegionType regionType = null;
+			boolean includeZeroRows = parseParamAsBoolean(request, ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, true);
 			
 			try {
 				regionType = ReportRequest.RegionType.valueOf(regionTypeStr);
@@ -44,7 +45,7 @@ public class ReportRequestParser
 			respFormat.setAttachment(true);
 			if (respFormat.fileName == null) respFormat.fileName = ReportRequest.PC_EXPORT_FILENAME;
 			
-			req = new ReportRequest(contextID.intValue(), reportType, regionType, respFormat, includeIdScript);
+			req = new ReportRequest(contextID.intValue(), reportType, regionType, respFormat, includeIdScript, includeZeroRows);
 			
 		} else if (request.getMethod().equals("POST")) {
 			

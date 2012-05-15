@@ -24,6 +24,7 @@ public class ReportRequest implements XMLStreamParserComponent,
 	public static final String ELEMENT_INCLUDE_ID_SCRIPT = "include-id-script";
 	public static final String ELEMENT_REPORT_TYPE = "report-type";
 	public static final String ELEMENT_REGION_TYPE = "region-type";
+	public static final String ELEMENT_INCLUDE_ZERO_TOTAL_ROWS = "include-zero-rows";
 	
 	public enum ReportType {
 		terminal,
@@ -44,6 +45,7 @@ public class ReportRequest implements XMLStreamParserComponent,
 	private boolean includeIdScript;
 	private ReportType reportType;
 	private RegionType regionType;
+	private boolean includeZeroTotalRows;
 	
 
 	// =============================
@@ -83,12 +85,15 @@ public class ReportRequest implements XMLStreamParserComponent,
 	/**
 	 * Construct an instance w/ basic options (used for GET requests)
 	 */
-	public ReportRequest(Integer contextID, ReportType reportType, RegionType regionType, ResponseFormat respFormat, boolean includeIdScript) {
+	public ReportRequest(Integer contextID, 
+			ReportType reportType, RegionType regionType, 
+			ResponseFormat respFormat, boolean includeIdScript, boolean includeZeroTotalRows) {
 		this.contextID = contextID;
 		this.reportType = reportType;
 		this.regionType = regionType;
 		this.responseFormat = respFormat;
 		this.includeIdScript = includeIdScript;
+		this.includeZeroTotalRows = includeZeroTotalRows;
 	}
 
 
@@ -165,7 +170,11 @@ public class ReportRequest implements XMLStreamParserComponent,
 
 					includeIdScript = ParserHelper.parseAttribAsBoolean(in, ELEMENT_INCLUDE_ID_SCRIPT, true);
 
-				} else {
+				} else if (ELEMENT_INCLUDE_ZERO_TOTAL_ROWS.equals(localName)) {
+
+					includeZeroTotalRows = ParserHelper.parseAttribAsBoolean(in, ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, true);
+
+				}	else {
 					throw new RuntimeException(
 							"unrecognized child element of <" + localName
 									+ "> for " + MAIN_ELEMENT_NAME);
@@ -245,6 +254,16 @@ public class ReportRequest implements XMLStreamParserComponent,
 	public ReportType getReportType() {
 		return reportType;
 	}
+	
+	public RegionType getRegionType() {
+		return regionType;
+	}
+
+	public boolean isIncludeZeroTotalRows() {
+		return includeZeroTotalRows;
+	}
+	
+	
 
 	@Override
 	public void setXMLRequest(String request) {

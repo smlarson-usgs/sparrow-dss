@@ -204,49 +204,62 @@ public class ReportSerializer extends BasicXMLStreamReader {
 	}
 
 	protected void readRow() {
+		boolean aRowOfEventsHaveBeenAdded = false;
+		while (!aRowOfEventsHaveBeenAdded && ! this.state.isDataFinished()) {
+			aRowOfEventsHaveBeenAdded = readPossiblyEmptyRow();
+		}
+	}
+	
+	protected boolean readPossiblyEmptyRow() {
+
+		boolean isAddingEvents = false;	//returned as true if we added an event
 
 		if (!state.isDataFinished()) {
 			if (state.r < data.getRowCount()) {
 				//standard row
 				
-				BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
-				
-				Long rowId = data.getIdForRow(state.r);
-				rowEvent.addAttribute("id", rowId.toString());
-				
-				events.add(rowEvent);
+				if ((request.isIncludeZeroTotalRows()) || data.getDouble(state.r, totalCol) != 0 ) {
 
-				for (int c = 0; c < data.getColumnCount(); c++) {
-					
-					if (data.getDataType(c) != null && Number.class.isAssignableFrom(data.getDataType(c))) {
-						
-						Double val = data.getDouble(state.r, c);
-						if (val == null) {
-							addBasicTag("c", null);
-						} else if (numberFormat[c] != null) {
-							addBasicTag("c", numberFormat[c].format(val));
+					BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
+
+					Long rowId = data.getIdForRow(state.r);
+					rowEvent.addAttribute("id", rowId.toString());
+
+					events.add(rowEvent);
+
+					for (int c = 0; c < data.getColumnCount(); c++) {
+
+						if (data.getDataType(c) != null && Number.class.isAssignableFrom(data.getDataType(c))) {
+
+							Double val = data.getDouble(state.r, c);
+							if (val == null) {
+								addBasicTag("c", null);
+							} else if (numberFormat[c] != null) {
+								addBasicTag("c", numberFormat[c].format(val));
+							} else {
+								addBasicTag("c", val.toString());
+							}
+
+							if (columnTotal[c] != null) {
+								columnTotal[c] = columnTotal[c] + val;
+							}
+
 						} else {
-							addBasicTag("c", val.toString());
+
+							String val = data.getString(state.r, c);
+							if (val == null) val = "";
+
+							addBasicTag("c", val);
+
 						}
-						
-						if (columnTotal[c] != null) {
-							columnTotal[c] = columnTotal[c] + val;
-						}
-						
-					} else {
-						
-						String val = data.getString(state.r, c);
-						if (val == null) val = "";
-						
-						addBasicTag("c", val);
-						
+
+
 					}
-					
 
+					addCloseTag("r");
+					events.add(new BasicTagEvent(SPACE));
+					isAddingEvents = true;
 				}
-
-				addCloseTag("r");
-				events.add(new BasicTagEvent(SPACE));
 			} else {
 				//This is the last row - add the totals
 				
@@ -267,10 +280,12 @@ public class ReportSerializer extends BasicXMLStreamReader {
 
 				addCloseTag("r");
 				events.add(new BasicTagEvent(SPACE));
+				isAddingEvents = true;
 			}
 
 		}
 		state.r++;
+		return isAddingEvents;
 	}
 	
 	/**
