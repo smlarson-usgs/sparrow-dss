@@ -43,13 +43,14 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
 		
+		//System.out.println(actualReportResponse);
+		
 		String rowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
 		String nonZeroRowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tr[td[position() = 8 and .!=0]])", actualReportResponse);
 		
 		assertEquals("9", rowCountStr);
 		assertEquals("9", nonZeroRowCountStr);
 		
-		//System.out.println(actualReportResponse);
 	}
 	
 	@Test
@@ -73,6 +74,8 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
 		
+		//System.out.println(actualReportResponse);
+		
 		String rowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
 		String nonZeroRowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tr[td[position() = 8 and .!=0]])", actualReportResponse);
 		
@@ -86,7 +89,6 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		assertEquals("FLORIDA", firstStateWithZeroLoad);
 		assertEquals("LOUISIANA", secondStateWithZeroLoad);
 		
-		//System.out.println(actualReportResponse);
 		
 	}
 	

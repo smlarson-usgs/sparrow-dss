@@ -46,7 +46,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
 		
-		//tbody/tr[th[a=9682]]/td[1]
+		//System.out.println(actualReportResponse);
 		
 		String rowCountStr = gov.usgswim.sparrow.service.deliveryaggreport.ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
 
@@ -58,7 +58,6 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		assertEquals("MOBILE R", firstTerminalReachName);
 		assertEquals("40735549.83", totalValue);
 		
-		//System.out.println(actualReportResponse);
 		
 	}
 	

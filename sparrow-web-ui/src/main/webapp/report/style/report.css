@@ -4,27 +4,33 @@ table {
 	background-color: #fff;	
 }
 
-table, th, td { border: 1px solid black; padding: 0; }
+table, th, td { border: 1px solid black; padding: .3em; }
 
 table th {
 	font-weight: bold;
 	background-color: #ddd;
 }
 
-div.rel-percent-in-col {
+/**
+Relative percentage cells */
+td.rel-percent-in-col { padding: 0; }
+
+.rel-percent-in-col div {
  float: right; height: 100%; margin: 0; padding: 1.2em 0;
  background-color: #ffc;  border-left: solid 1px #000;
 }
 
-div.rel-percent-in-col span { overflow: visible; float: right; padding: 0 .2em; }
+.rel-percent-in-col span { overflow: visible; float: right; padding: 0 .2em; }
 
-div.rel-percent-in-row {
+rel-percent-in-row div {
  bottom: 0; width: 100%; margin: 0; padding: 0;
  background-color: #ffc;  border-top: solid 1px #000;
 }
 
-div.rel-percent-in-row span { overflow: visible; float: right; padding: 0 .2em; }
+.rel-percent-in-row span { overflow: visible; float: right; padding: 0 .2em; }
 
+/**
+Other area formats */
 .explination {
 	margin: .4em 0; padding: .3em; background-color: #eefff0; border: solid 1px #000;
 }

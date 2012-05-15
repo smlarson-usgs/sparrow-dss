@@ -134,10 +134,10 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 								} else if (RelationType.rel_percent.equals(rt)) {
 									formatters.add(new HTMLRelativePercentValueFormatter(false));
 								} else {
-									formatters.add(new SimpleValueFormatter(outputType));
+									formatters.add(new HTMLTableCellFormatter(outputType));
 								}
 							} else {
-								formatters.add(new SimpleValueFormatter(outputType));
+								formatters.add(new HTMLTableCellFormatter(outputType));
 							}
 						
 						} else if ("data".equals(localName)) {
@@ -183,7 +183,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 							
 							currentColumnIndex++;
 							isInItem = true;
-							out.write(delims.bodyCellStart);
+							//out.write(delims.bodyCellStart); (handled by cell formatters)
 							
 						} 
 
@@ -199,17 +199,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 						break;
 					case XMLStreamConstants.PROCESSING_INSTRUCTION:
 						//The current BasicTagEven and reader does not support PIs. :(
-//						String piTarget = in.getPITarget();
-//						if ("format".equals(piTarget)) {
-//							String data = in.getPIData();
-//							if (data != null && data.contains("includeIdScript=\"true\"")) {
-//								includeIdScript = true;
-//							} else {
-//								includeIdScript = false;
-//							}
-//						}
 
-						
 						break;
 					case XMLStreamConstants.END_ELEMENT:
 						localName = in.getLocalName();
@@ -245,7 +235,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 							
 							if (isInItem) {
 								isInItem = false;	//done w/ item
-								out.write(delims.bodyCellEnd);
+								//out.write(delims.bodyCellEnd); //handled by cell formatters
 							} else {
 								//Empty cell
 								out.write("<td/>");
