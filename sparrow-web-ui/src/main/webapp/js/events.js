@@ -155,11 +155,13 @@ Sparrow.events.EventManager = function(){ return{
 
 //TODO move this into its own file if needed
 Sparrow.handlers.DownstreamTrackingInstructions = function(){ 
-	var _downstreamTabLinkMsg = "Select one of the <i><b>Downstream Tracking</b></i> " +
+	var _downstreamTabLinkMsg = "<b>On the Map:</b><br />" +
+		"Select one of the <i><b>Downstream Tracking</b></i> " +
 		"data series at the top of the " +
 		"<a href='javascript:GOTO_MAP_OPTIONS_TAB()'>Display Results tab</a>.<br/><br/>" +
-		"Summary reports for <a href='javascript:displayDeliveryTerminalReport()'>all downstream reaches</a> " +
-		"or for <a href='javascript:displayDeliveryStateReport()'>each state</a> are available.";
+		"<b>In a Report:</b><br />" +
+		"<a href='javascript:displayDeliverySummaryReport()'>Open the Summary Reports</a><br />" +
+		"The summary reports show load delivered to the downstream reaches and the originating region (state or HUC).";
 	
 	return{
 	syncDeliveryTabInstructions : function(mapOutOfSync) {

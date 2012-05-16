@@ -1,4 +1,7 @@
 body { background-color: #ffe; }
+
+.content h1, .content h2, .content h3 { text-align: center; }
+
 table {
 	border-collapse:collapse;
 	background-color: #fff;	

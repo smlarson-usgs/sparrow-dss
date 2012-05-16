@@ -26,7 +26,7 @@
  	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
 	String tableName = "getDeliveryAggReport";
 	String tableParams = "context-id=" + request.getParameter("context-id") +
-			"&region-type=" + request.getParameter("region-type") + 	
+			"&region-type=state" + 	
 			"&include-zero-rows=false" + 					
 			"&mime-type=xhtml_table";
 	
