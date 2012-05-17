@@ -1,6 +1,6 @@
 body { background-color: #ffe; }
 
-.content h1, .content h2, .content h3 { text-align: center; }
+.content h1, .content h2, .content h3, content h4 { text-align: center; }
 .content h1 { margin-bottom: .2em; padding-bottom: .2em; }
 .content h2 { margin-bottom: .2em; padding-bottom: .1em; }
 .content h3 { margin-bottom: .1em; padding-bottom: .1em; }
@@ -27,6 +27,7 @@ Head Section */
 	display: none; /* Initially not displayed */
 	padding: .3em; font-weight: bold; color: #300; border: solid 3px #900;
 }
+.downstream-reaches-list { font-size: 75%; }
 
 
 table {

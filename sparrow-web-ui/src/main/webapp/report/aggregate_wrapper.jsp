@@ -15,7 +15,7 @@
 		<div class="to-and-from-area columns-2">
 			<div class="from-aggregate-area column">
 				<div class="content">
-				<h3>Aggregate upstream regions by:</h3>
+				<h4>Aggregate upstream regions by</h4>
 				<form>
 					<p class="input"><input type="radio" name="region-type" value="state" />State (currently the only option)</p>
 				</form>
@@ -23,7 +23,7 @@
 			</div>
 			<div class="to-downstream-reaches-area column">
 				<div class="content">
-					<h3>Downstream Reaches Load is Delivered To</h3>
+					<h4>Downstream Reaches Load is Delivered To</h4>
 					<p>Load is delivered to the <em>Active Downstream Reaches</em> selected 
 						on the Downstream Tracking tab of the application.
 						Currently these reaches are (click on a reach to identify it on the map):
