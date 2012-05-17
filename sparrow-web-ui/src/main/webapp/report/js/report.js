@@ -84,9 +84,13 @@ function getTermReachesAsString(terms) {
 	 var termString = "";
 	 for (var i=0; i < terms.length; i++) {
 		 
+		 var rId = $.trim(terms[i]["@id"]);
+		 //var href = rId;
+		 var href = "javascript:idDeliveryReach(" + rId + ");";
+		 
 		 termString = termString + 
-		 "<a href=" + $.trim(terms[i]["@id"]) + ">" +
-		 terms[i]["@name"] + " (" + $.trim(terms[i]["@id"]) + ")" +
+		 "<a href='" + href + "'>" +
+		 terms[i]["@name"] + " (" + rId + ")" +
 		 "</a>";
 	 
 		 if (i < (terms.length - 1)) {
