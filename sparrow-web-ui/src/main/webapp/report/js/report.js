@@ -72,7 +72,7 @@ function idDeliveryReach(reachId) {
 	
 	//Calls this function on the opener window (the page that opened this page - ie the main map application)
 	if (typeof reachId == "string") {
-		id = parseInt(reachId.trim(), 10);
+		id = parseInt($.trim(reachId), 10);
 	} else {
 		id = reachId
 	}
@@ -85,8 +85,8 @@ function getTermReachesAsString(terms) {
 	 for (var i=0; i < terms.length; i++) {
 		 
 		 termString = termString + 
-		 "<a href=" + terms[i]["@id"] + ">" +
-		 terms[i]["@name"] + " (" + terms[i]["@id"] + ")" +
+		 "<a href=" + $.trim(terms[i]["@id"]) + ">" +
+		 terms[i]["@name"] + " (" + $.trim(terms[i]["@id"]) + ")" +
 		 "</a>";
 	 
 		 if (i < (terms.length - 1)) {
