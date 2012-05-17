@@ -1,6 +1,33 @@
 body { background-color: #ffe; }
 
 .content h1, .content h2, .content h3 { text-align: center; }
+.content h1 { margin-bottom: .2em; padding-bottom: .2em; }
+.content h2 { margin-bottom: .2em; padding-bottom: .1em; }
+.content h3 { margin-bottom: .1em; padding-bottom: .1em; }
+.content h4 { margin-bottom: .1em; padding-bottom: .1em; }
+.content h5 { margin-bottom: .1em; padding-bottom: .1em; }
+.content p { margin-top: .3em; margin-bottom: .3em; }
+
+/**
+Head Section */
+.explanation {
+	margin: .4em 0; padding: .3em; background-color: #eefff0; border: solid 1px #000;
+}
+.explanation p { margin: .2em 0; }
+
+.columns-2 { border: solid 1px #000; border-left: none; width: auto; }
+.column { border-left: solid 1px #000; }
+
+.to-and-from-area { }
+.from-aggregate-area { background-color: #fff; }
+.to-downstream-reaches-area { background-color: #fff; }
+.column .content { padding: 0 .4em; }
+.export-area { clear: both; }
+.downstream-reaches-out-of-sync {
+	display: none; /* Initially not displayed */
+	padding: .3em; font-weight: bold; color: #300; border: solid 3px #900;
+}
+
 
 table {
 	border-collapse:collapse;
@@ -32,9 +59,3 @@ rel-percent-in-row div {
 
 .rel-percent-in-row span { overflow: visible; float: right; padding: 0 .2em; }
 
-/**
-Other area formats */
-.explination {
-	margin: .4em 0; padding: .3em; background-color: #eefff0; border: solid 1px #000;
-}
-.explination p { margin: .2em 0; }

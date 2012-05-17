@@ -1,8 +1,8 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="gov.usgswim.sparrow.SparrowUtil, gov.usgswim.sparrow.SparrowUtil.UrlFeatures" %>
 <%@ page import="java.net.*, java.io.*" %>
-    <h1>SPARROW DSS Total Delivered Load, Aggregated by Upstream Region</h1>
-		<div class="explination">
+    <h2>SPARROW DSS Total Delivered Load, Aggregated by Upstream Region</h2>
+		<div class="explanation">
 			<p>
 				This report aggregates the load delivered to the downstream reaches by the upstream contributing region.
 				For instance, if aggregating by state, the report would list the load that originates in each state 
@@ -12,14 +12,31 @@
 				<a href="javascript:openAggHelp();" title="Furthure details in a new window.">more details...</a>
 			</p>
 		</div>
-		<div class="controls">
-			<div class="export"></div>
-			<div class="agg-region">
+		<div class="to-and-from-area columns-2">
+			<div class="from-aggregate-area column">
+				<div class="content">
+				<h3>Aggregate upstream regions by:</h3>
 				<form>
-					<p class="input"><input type="radio" name="region-type" value="state" />State</p>
+					<p class="input"><input type="radio" name="region-type" value="state" />State (currently the only option)</p>
 				</form>
+				</div>
 			</div>
-			<div class="downstream-reaches"></div>
+			<div class="to-downstream-reaches-area column">
+				<div class="content">
+					<h3>Downstream Reaches Load is Delivered To</h3>
+					<p>Load is delivered to the <em>Active Downstream Reaches</em> selected 
+						on the Downstream Tracking tab of the application.
+						Currently these reaches are (click on a reach to identify it on the map):
+					</p>
+					<p class="downstream-reaches-out-of-sync">
+						<img src="../images/small_alert_icon.png" alt="Warning Icon" />
+						Careful!  These downstream reaches are no longer the
+						<em>Active Downstream Reaches</em> in the Sparrow DSS.  <a href="">More info...</a>
+					</p>
+					<p class="downstream-reaches-list"></p>
+				</div>
+			</div>
+			<div class="export-area"></div>
 		</div>
  <%
  

@@ -8,13 +8,9 @@
 	
 	<script src="../jquery/jquery-1.7.2.js"></script>
 	<script src="../jquery/jquery-ui-1.8.20.custom/js/jquery-ui-1.8.20.custom.min.js"></script>
+	<script src="../jquery/jquery.timer/jquery.timer.js"></script>
 	<script src="js/report.js"></script>
-	
-	<script>
-  $(document).ready(function() {
-    $("#tabs").tabs();
-  });
-  </script>
+
 	
 	<link rel="icon" href="favicon.ico" >
 
