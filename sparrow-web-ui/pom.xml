@@ -1,19 +1,18 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 	<groupId>gov.usgs.cida</groupId>
 	<artifactId>sparrow-parent</artifactId>
-			<version>1.4.21-SNAPSHOT</version>
+			<version>1.4.28</version>
 	</parent>
 
 	<groupId>gov.usgs.cida</groupId>
 	<artifactId>sparrow-web-ui</artifactId>
 	<packaging>war</packaging>
 	<name>sparrow-web-ui</name>
-	<version>1.4.21-SNAPSHOT</version>
+	<version>1.4.28</version>
 	<description>SPARROW web mapping application</description>
 
 	<properties>
@@ -25,7 +24,7 @@
 	</properties>
 	
 	<scm>
-		<developerConnection>https://cida-svn.er.usgs.gov/repos/dev/usgs/sparrow/dss/app/trunk/sparrow-web-ui</developerConnection>
+		<developerConnection>https://cida-svn.er.usgs.gov/repos/dev/usgs/sparrow/dss/app/tags/sparrow-parent-1.4.28</developerConnection>
 	</scm>
 
 	<repositories>
@@ -235,7 +234,7 @@
 				                 <include>index.jsp</include>
 				                 <include>dss.jsp</include>
 				               </includes> 
-				               <targetPath></targetPath> 
+				               <targetPath /> 
 				               <filtering>true</filtering> 
 				             </webResource> 
 			           </webResources> 
@@ -339,7 +338,7 @@
 				                 <include>index.jsp</include>
 				                 <include>dss.jsp</include> 
 				               </includes> 
-				               <targetPath></targetPath> 
+				               <targetPath /> 
 				               <filtering>true</filtering> 
 				             </webResource> 
 				           </webResources> 

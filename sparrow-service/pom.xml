@@ -5,14 +5,14 @@
 	<parent>
 	<groupId>gov.usgs.cida</groupId>
 	<artifactId>sparrow-parent</artifactId>
-			<version>1.4.21-SNAPSHOT</version>
+			<version>1.4.28</version>
 	</parent>
 
 	<groupId>gov.usgs.cida</groupId>
 	<artifactId>sparrow-service</artifactId>
 	<packaging>war</packaging>
 	<name>sparrow-service</name>
-	<version>1.4.21-SNAPSHOT</version>
+	<version>1.4.28</version>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -21,7 +21,7 @@
 	</properties>
 
 	<scm>
-		<developerConnection>https://cida-svn.er.usgs.gov/repos/dev/usgs/sparrow/dss/app/trunk/sparrow-service</developerConnection>
+		<developerConnection>https://cida-svn.er.usgs.gov/repos/dev/usgs/sparrow/dss/app/tags/sparrow-parent-1.4.28</developerConnection>
 	</scm>
 
 	<build>
@@ -118,7 +118,7 @@
 				               <includes> 
 				                 <include>app-info.txt</include> 
 				               </includes> 
-				               <targetPath></targetPath> 
+				               <targetPath /> 
 				               <filtering>true</filtering> 
 				             </webResource> 
 			           </webResources> 
