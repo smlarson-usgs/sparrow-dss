@@ -28,24 +28,6 @@
 		<developerConnection>scm:svn:https://cida-svn.er.usgs.gov/repos/dev/usgs/sparrow/dss/webmap/trunk</developerConnection>
 	</scm>
 
-	<distributionManagement>
-		<!-- 
-		Note:  The 'true' url for the Nexus repo is:
-		http://internal.cida.usgs.gov
-		however, due to network issues in the office, the machine url is being used temporarly.
-		 -->
-		<repository>
-			<id>cida-sparrow-dss-releases</id>
-			<name>CIDA Sparrow DSS Releases</name>
-			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-sparrow-dss-releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>cida-sparrow-dss-snapshots</id>
-			<name>CIDA Sparrow DSS Snapshots</name>
-			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-sparrow-dss-snapshots</url>
-		</snapshotRepository>
-	</distributionManagement>
-
 	<repositories>
 		<repository>
 			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-releases/</url>
