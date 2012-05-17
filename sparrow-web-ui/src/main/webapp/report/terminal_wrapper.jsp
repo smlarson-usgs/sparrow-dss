@@ -2,7 +2,7 @@
 <%@page import="gov.usgswim.sparrow.SparrowUtil, gov.usgswim.sparrow.SparrowUtil.UrlFeatures" %>
 <%@ page import="java.net.*, java.io.*" %>
     <h2>SPARROW DSS Total Delivered Load Summary</h2>
-		<h3>Total Delivered Load for each watershed of the selected downstream reaches, detailed by source and reach.</h3>
+		<h3>Total load delivered to each active downstream reach, from their respective upstream watershed area.</h3>
 		<div class="explanation">
 			<p>
 				This report lists each downstream reach, as selected in the Downstream Tracking tab of the application.
