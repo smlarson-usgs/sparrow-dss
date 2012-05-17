@@ -85,7 +85,7 @@ function getTermReachesAsString(terms) {
 	 for (var i=0; i < terms.length; i++) {
 		 
 		 termString = termString + 
-		 "<a href=​" + terms[i]["@id"] + ">​" +
+		 "<a href=" + terms[i]["@id"] + ">" +
 		 terms[i]["@name"] + " (" + terms[i]["@id"] + ")" +
 		 "</a>";
 	 
