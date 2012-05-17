@@ -9,11 +9,6 @@ $(document).ready(function(){
 	 termReachesAtTimeOfCreation = terms;
 	 //alert(getTermReachesAsString(termReachesAtTimeOfCreation));
 	 $("p.downstream-reaches-list").append(getTermReachesAsString(termReachesAtTimeOfCreation));
-	 $("p.downstream-reaches-list").find('a')
-			.click( function() {
-				idDeliveryReach($(this).attr('href'));
-				return false;
-      });
 	 
 	 
 	var timer = $.timer(function() {
