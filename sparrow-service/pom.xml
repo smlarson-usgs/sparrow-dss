@@ -21,7 +21,7 @@
 	</properties>
 
 	<scm>
-		<developerConnection>scm:svn:https://cida-svn.er.usgs.gov/repos/dev/usgs/sparrow/dss/sparrow_service/trunk</developerConnection>
+		<developerConnection>https://cida-svn.er.usgs.gov/repos/dev/usgs/sparrow/dss/app/trunk/sparrow-service</developerConnection>
 	</scm>
 
 	<build>
