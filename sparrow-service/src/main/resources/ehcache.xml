@@ -415,5 +415,6 @@
 	<cache name="TotalDeliveredLoadByStateSummaryReport" maxElementsInMemory="20" />
 	<cache name="StatesForModel" maxElementsInMemory="40" /> <!-- Small lists -->
 	<cache name="ModelReachAreaRelations" maxElementsInMemory="3" /> <!-- one row per reach w/ embeded list -->
+	<cache name="HucsForModel" maxElementsInMemory="20" /> <!-- Small lists, but bigger than states -->
 
 </ehcache>

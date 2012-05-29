@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.sparrow.action.LoadHucsForModel;
 import gov.usgswim.sparrow.action.LoadReachHucs;
 import gov.usgswim.sparrow.request.ModelHucsRequest;
 
@@ -11,14 +12,13 @@ import gov.usgswim.sparrow.request.ModelHucsRequest;
  *
  * @author eeverman
  */
-public class ReachHucsFactory extends AbstractCacheFactory {
+public class LoadHucsForModelFactory extends AbstractCacheFactory {
 
 	@Override
 	public DataTable createEntry(Object reachHucsRequest) throws Exception {
 		ModelHucsRequest req = (ModelHucsRequest) reachHucsRequest;
 
-		LoadReachHucs action = new LoadReachHucs();
-		action.setRequest(req);
+		LoadHucsForModel action = new LoadHucsForModel(req.getModelID(), req.getHucLevel());
 		
 		DataTable result = action.run();
 		return result;

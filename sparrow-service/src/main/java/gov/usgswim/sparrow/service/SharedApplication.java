@@ -764,6 +764,15 @@ public class SharedApplication  {
 		return (DataTable) StatesForModel.get(modelId, quiet);
 	}
 	
+	//HucsForModel
+	public DataTable getHucsForModel(ModelHucsRequest request) {
+		return getHucsForModel(request, false);
+	}
+
+	public DataTable getHucsForModel(ModelHucsRequest request, boolean quiet) {
+		return (DataTable) HucsForModel.get(request, quiet);
+	}
+	
 	//ModelReachAreaRelations
 	public ModelReachAreaRelations getModelReachAreaRelations(Long modelId) {
 		return getModelReachAreaRelations(modelId, false);

@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
-import gov.usgswim.sparrow.request.LoadReachHucsRequest;
+import gov.usgswim.sparrow.request.ModelHucsRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.sql.Connection;
@@ -18,13 +18,18 @@ import java.sql.Statement;
  *  [0] : The HUC ID as a string (i.e, 01002235) for this reach.
  *  One row per reach in the specified model.
  *  
+ * @todo:  This query uses an odd replacement scheme:  It replaces all the $$ delimited
+ * portions at the time it builds the query, rather than as SQL parameters.
+ * 
+ * @todo:  It looks like this action is not used
+ * 
  * @author eeverman
  *
  */
 public class LoadReachHucs extends Action<DataTable>{
 
 	/** Wrapper for modelId and Huc Level */
-	protected LoadReachHucsRequest request;
+	protected ModelHucsRequest request;
 
 	/** The query used to build the results - used for logging */
 	private String query;
@@ -33,7 +38,7 @@ public class LoadReachHucs extends Action<DataTable>{
 	private DataTable result;
 
 
-	public void setRequest(LoadReachHucsRequest request) {
+	public void setRequest(ModelHucsRequest request) {
 		this.request = request;
 	}
 
@@ -42,7 +47,7 @@ public class LoadReachHucs extends Action<DataTable>{
 		query = getTextWithParamSubstitution(
 				"LoadHucs",
 				"ModelId", request.getModelID().toString(),
-				"HucLevel", request.getHucLevel().toString());
+				"HucLevel", request.getHucLevel().getLevel());
 
 		log.debug("Reach-Huc query to be run: " + query);
 		

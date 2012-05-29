@@ -56,11 +56,11 @@ public enum ConfiguredCache {
 	EDANameColumn(false, new EDANameColumnFactory()),
 	
 	//Delivery Based Reports
-	//Not currently cached
 	TotalDeliveredLoadSummaryReport(false, new BuildTotalDeliveredLoadSummaryReportFactory()),
 	TotalDeliveredLoadByStateSummaryReport(false, new BuildTotalDeliveredLoadByStateSummaryReportFactory()),
 	StatesForModel(false, new StatesForModelFactory()),
-	ModelReachAreaRelations(false, new ModelReachAreaRelationsFactory())
+	ModelReachAreaRelations(false, new ModelReachAreaRelationsFactory()),
+	HucsForModel(false, new LoadHucsForModelFactory())
 	;
 	
 	public final boolean isDistributed;

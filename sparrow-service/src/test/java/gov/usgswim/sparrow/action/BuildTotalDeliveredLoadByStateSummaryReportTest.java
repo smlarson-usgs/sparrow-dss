@@ -41,9 +41,9 @@ public class BuildTotalDeliveredLoadByStateSummaryReportTest extends DeliveryBas
 		
 		DataTable result = action.run();
 		
-		System.out.println("Dumping Table");
-		DataTablePrinter.printDataTable(result, "The State Delivery Summary");
-		System.out.println("Table Dumped");
+//		System.out.println("Dumping Table");
+//		DataTablePrinter.printDataTable(result, "The State Delivery Summary");
+//		System.out.println("Table Dumped");
 		
 		assertNotNull(result);
 		assertEquals(9, result.getColumnCount());

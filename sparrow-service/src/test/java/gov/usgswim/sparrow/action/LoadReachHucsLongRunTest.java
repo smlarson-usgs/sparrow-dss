@@ -4,7 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.SparrowTestBaseWithDB;
-import gov.usgswim.sparrow.request.LoadReachHucsRequest;
+import gov.usgswim.sparrow.domain.HucLevel;
+import gov.usgswim.sparrow.request.ModelHucsRequest;
 
 import java.util.HashSet;
 
@@ -44,7 +45,7 @@ public class LoadReachHucsLongRunTest extends SparrowTestBaseWithDB {
 	@Test
 	public void testComparison() throws Exception {
 		
-		LoadReachHucsRequest req = new LoadReachHucsRequest(MODEL_ID, 8);
+		ModelHucsRequest req = new ModelHucsRequest(MODEL_ID, HucLevel.HUC8);
 		LoadReachHucs action = new LoadReachHucs();
 		action.setRequest(req);
 		

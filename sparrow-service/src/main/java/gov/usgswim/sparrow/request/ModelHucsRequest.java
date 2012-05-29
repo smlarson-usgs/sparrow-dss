@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.request;
 
+import gov.usgswim.sparrow.domain.HucLevel;
 import java.io.Serializable;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -9,15 +10,15 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  *
  * @author eeverman
  */
-public class LoadReachHucsRequest implements Serializable {
+public class ModelHucsRequest implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 
 
 	/** Model id of the request. */
 	private final Long modelId;
 
-	private final Integer hucLevel;
+	private final HucLevel hucLevel;
 
 	/**
 	 * Constructs a new instance of {@code BinningRequest}.
@@ -26,15 +27,10 @@ public class LoadReachHucsRequest implements Serializable {
 	 * @param binCount Number of bins to divide the data into.
 	 * @param binType Type of bins to divide the data into.
 	 */
-	public LoadReachHucsRequest(Long modelId, Integer hucLevel) {
-	    if (hucLevel.equals(2) || hucLevel.equals(4) || hucLevel.equals(6) || hucLevel.equals(8)) {
+	public ModelHucsRequest(Long modelId, HucLevel hucLevel) {
+
 			this.modelId = modelId;
 			this.hucLevel = hucLevel;
-	        
-	    } else {
-	    	throw new IllegalArgumentException("Huc level must be 2, 4, 6, or 8");
-	    }
-
 
 	}
 
@@ -42,7 +38,7 @@ public class LoadReachHucsRequest implements Serializable {
 	    return modelId;
 	}
 
-	public Integer getHucLevel() {
+	public HucLevel getHucLevel() {
 	    return hucLevel;
 	}
 
@@ -52,7 +48,7 @@ public class LoadReachHucsRequest implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof LoadReachHucsRequest) {
+		if (obj instanceof ModelHucsRequest) {
 			return obj.hashCode() == hashCode();
 		}
 		return false;
