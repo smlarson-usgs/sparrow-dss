@@ -3,8 +3,11 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.domain.AggregationLevel;
 
 import gov.usgswim.sparrow.domain.reacharearelation.*;
+import gov.usgswim.sparrow.request.ModelAggregationRequest;
+import gov.usgswim.sparrow.service.SharedApplication;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,24 +26,39 @@ public class LoadModelReachAreaRelations extends Action<ModelReachAreaRelations>
 	
 	private static final String QUERY_NAME = "query";
 	private static final int REACH_ID_COL = 0;
-	private static final int STATE_FIPS_ID_COL = 1;
+	private static final int AREA_ID_COL = 1;
 	private static final int FRACTION_COL = 2;
 	
 	protected Long modelId;
+	protected AggregationLevel aggLevel;
+	
+	
+	//Action loaded data
 	protected PredictData predictData;
 	
 	
-	public LoadModelReachAreaRelations(PredictData predictData) {
+	
+	public LoadModelReachAreaRelations(ModelAggregationRequest request) throws Exception {
 		super();
-		this.predictData = predictData;
 		
-		this.modelId = predictData.getModel().getId();
+		modelId = request.getModelID();
+		aggLevel = request.getAggLevel();
+		initRequiredFields();
 	}
-
-
-
-	public LoadModelReachAreaRelations() {
+	
+	public LoadModelReachAreaRelations(Long modelId, AggregationLevel aggLevel) throws Exception {
 		super();
+		
+		this.modelId = modelId;
+		this.aggLevel = aggLevel;
+		initRequiredFields();
+	}
+	
+	/**
+	 * Clear designation of init values
+	 */
+	protected void initRequiredFields() throws Exception {
+		SharedApplication.getInstance().getPredictData(modelId);
 	}
 
 
@@ -76,7 +94,7 @@ public class LoadModelReachAreaRelations extends Action<ModelReachAreaRelations>
 				while (currentReachId.equals(currentRelationReachId) && currentRelationRow < relationRowCount) {
 					
 					//Create and add the relation for the current relation row
-					long areaId = values.getLong(currentRelationRow, STATE_FIPS_ID_COL);
+					long areaId = values.getLong(currentRelationRow, AREA_ID_COL);
 					double fraction = values.getDouble(currentRelationRow, FRACTION_COL);
 					AreaRelationImpl relation = new AreaRelationImpl(areaId, fraction);
 					relations.add(relation);

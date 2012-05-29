@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.request;
 import java.io.Serializable;
 
 import gov.usgswim.Immutable;
-import gov.usgswim.sparrow.domain.HucAggregationLevel;
+import gov.usgswim.sparrow.domain.AggregationLevel;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
 

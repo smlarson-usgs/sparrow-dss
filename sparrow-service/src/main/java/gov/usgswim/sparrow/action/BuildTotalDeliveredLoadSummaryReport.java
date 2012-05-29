@@ -112,7 +112,7 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTable> {
 	protected Map<String, String> buildTableProperties() {
 		HashMap<String, String> props = new HashMap<String, String>();
 		props.put(TableProperties.MODEL_ID.toString(), modelId.toString());
-		props.put(TableProperties.ROW_LEVEL.toString(), HucAggregationLevel.HUC_REACH.toString());
+		props.put(TableProperties.ROW_LEVEL.toString(), AggregationLevel.REACH.toString());
 		props.put(TableProperties.CONSTITUENT.toString(), predictData.getModel().getConstituent());
 		return props;
 	}

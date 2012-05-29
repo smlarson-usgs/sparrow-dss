@@ -774,12 +774,12 @@ public class SharedApplication  {
 	}
 	
 	//ModelReachAreaRelations
-	public ModelReachAreaRelations getModelReachAreaRelations(Long modelId) {
-		return getModelReachAreaRelations(modelId, false);
+	public ModelReachAreaRelations getModelReachAreaRelations(ModelAggregationRequest request) {
+		return getModelReachAreaRelations(request, false);
 	}
 
-	public ModelReachAreaRelations getModelReachAreaRelations(Long modelId, boolean quiet) {
-		return (ModelReachAreaRelations) ModelReachAreaRelations.get(modelId, quiet);
+	public ModelReachAreaRelations getModelReachAreaRelations(ModelAggregationRequest request, boolean quiet) {
+		return (ModelReachAreaRelations) ModelReachAreaRelations.get(request, quiet);
 	}
 	
 	public Long[] getReachesInBBox(ModelBBox modelBBox) throws Exception {

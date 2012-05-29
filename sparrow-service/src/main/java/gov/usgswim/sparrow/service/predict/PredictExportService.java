@@ -12,7 +12,7 @@ import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.SparrowModel;
-import gov.usgswim.sparrow.domain.HucAggregationLevel;
+import gov.usgswim.sparrow.domain.AggregationLevel;
 import gov.usgswim.sparrow.request.HUCTableRequest;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
@@ -46,7 +46,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         
         
         
-        DataTable watershedAreas = sharedApp.getCatchmentAreas(new UnitAreaRequest(modelId, HucAggregationLevel.HUC_NONE, true));
+        DataTable watershedAreas = sharedApp.getCatchmentAreas(new UnitAreaRequest(modelId, AggregationLevel.NONE, true));
         //DataTable huc8 = sharedApp.getHUCData(new HUCTableRequest(modelId), false);
         SparrowColumnSpecifier adjDataColumn = adjPredictContext.getDataColumn();
     	SparrowColumnSpecifier orgDataColumn = null;
@@ -125,7 +125,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         	SparrowColumnSpecifier scs = sharedApp.getStreamFlow(modelId);
         	statColumns[0] = new ColumnDataFromTable(scs.getTable(), scs.getColumn());
         	
-			UnitAreaRequest catchAreaReq = new UnitAreaRequest(modelId, HucAggregationLevel.HUC_NONE, false);
+			UnitAreaRequest catchAreaReq = new UnitAreaRequest(modelId, AggregationLevel.NONE, false);
 			DataTable catchmentAreaTab = sharedApp.getCatchmentAreas(catchAreaReq);
 			statColumns[1] = new ColumnDataFromTable(catchmentAreaTab, 1);
 			

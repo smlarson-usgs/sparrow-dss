@@ -14,6 +14,7 @@ import gov.usgswim.sparrow.domain.reacharearelation.AreaRelation;
 import gov.usgswim.sparrow.domain.reacharearelation.ModelReachAreaRelations;
 import gov.usgswim.sparrow.domain.reacharearelation.ReachAreaRelations;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
+import gov.usgswim.sparrow.request.ModelAggregationRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.util.*;
 
@@ -55,7 +56,10 @@ public class BuildTotalDeliveredLoadByStateSummaryReport extends Action<DataTabl
 		Long modelId = adjustmentGroups.getModelID();
 		sparrowModel = SharedApplication.getInstance().getPredictData(modelId).getModel();
 		
-		areaRelations = SharedApplication.getInstance().getModelReachAreaRelations(modelId);
+		
+		ModelAggregationRequest modelReachAreaRelelationsRequest = 
+					new ModelAggregationRequest(modelId, AggregationLevel.STATE);
+		areaRelations = SharedApplication.getInstance().getModelReachAreaRelations(modelReachAreaRelelationsRequest);
 		states = SharedApplication.getInstance().getStatesForModel(modelId);
 		
 		//Basic predict context, which we need data for all sources

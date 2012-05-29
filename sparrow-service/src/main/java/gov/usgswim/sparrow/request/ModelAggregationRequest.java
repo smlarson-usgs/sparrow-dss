@@ -8,43 +8,37 @@ import gov.usgswim.sparrow.domain.AggregationLevel;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
- * A request for a catchment area table.
+ * A request for any Action that rolls up values to an AggregationLevel
  * 
- * The request indicates which model and an aggregation type.
  * 
- * @author klangsto
+ * @author eeverman
  * 
  */
 @Immutable
-public class UnitAreaRequest implements Serializable {
+public class ModelAggregationRequest implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private final long modelID;
-	private final AggregationLevel hucLevel;
-	private final boolean cumulative;
+	private final AggregationLevel aggLevel;
 
-	public UnitAreaRequest(long modelID, AggregationLevel hucLevel, boolean cumulative) {
+	public ModelAggregationRequest(long modelID, AggregationLevel hucLevel) {
 		this.modelID = modelID;
-		this.hucLevel = hucLevel;
-		this.cumulative = cumulative;
+		this.aggLevel = hucLevel;
 	}
 
 	public long getModelID() {
 		return modelID;
 	}
 
-	public AggregationLevel getHucLevel() {
-		return hucLevel;
+	public AggregationLevel getAggLevel() {
+		return aggLevel;
 	}
 	
-	public boolean getCumulative() {
-		return cumulative;
-	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof UnitAreaRequest) {
+		if (obj != null && obj instanceof ModelAggregationRequest) {
 			return obj.hashCode() == hashCode();
 		}
 		return false;
@@ -54,8 +48,7 @@ public class UnitAreaRequest implements Serializable {
 	public synchronized int hashCode() {
 		int hash = new HashCodeBuilder(2457, 143).
 		append(modelID).
-		append(hucLevel).
-		append(cumulative).
+		append(aggLevel).
 		toHashCode();
 		return hash;
 	}

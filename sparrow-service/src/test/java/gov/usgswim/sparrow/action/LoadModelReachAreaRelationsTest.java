@@ -2,9 +2,11 @@ package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.*;
 import gov.usgswim.sparrow.*;
+import gov.usgswim.sparrow.domain.AggregationLevel;
 import gov.usgswim.sparrow.domain.reacharearelation.ModelReachAreaRelations;
 import gov.usgswim.sparrow.domain.reacharearelation.ModelReachAreaRelationsBuilder;
 import gov.usgswim.sparrow.domain.reacharearelation.ReachAreaRelations;
+import gov.usgswim.sparrow.request.ModelAggregationRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 
@@ -23,7 +25,9 @@ public class LoadModelReachAreaRelationsTest extends SparrowTestBaseWithDBandCan
 	public void dataSanityCheck() throws Exception {
 		
 		PredictData pd = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
-		LoadModelReachAreaRelations action = new LoadModelReachAreaRelations(pd);
+		
+		ModelAggregationRequest request = new ModelAggregationRequest(TEST_MODEL_ID, AggregationLevel.STATE);
+		LoadModelReachAreaRelations action = new LoadModelReachAreaRelations(request);
 
 		ModelReachAreaRelations result = action.run();
 		
@@ -72,10 +76,12 @@ public class LoadModelReachAreaRelationsTest extends SparrowTestBaseWithDBandCan
 	public void cacheTest() throws Exception {
 		
 		PredictData pd = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
-		ModelReachAreaRelations result = SharedApplication.getInstance().getModelReachAreaRelations(TEST_MODEL_ID);
+		ModelAggregationRequest request = new ModelAggregationRequest(TEST_MODEL_ID, AggregationLevel.STATE);
+		LoadModelReachAreaRelations action = new LoadModelReachAreaRelations(request);
+		ModelReachAreaRelations result = null;
 		
 		long startTime = System.currentTimeMillis();
-		result = SharedApplication.getInstance().getModelReachAreaRelations(TEST_MODEL_ID);
+		result = SharedApplication.getInstance().getModelReachAreaRelations(request);
 		long endTime = System.currentTimeMillis();
 		double totalSeconds = (endTime - startTime) / 1000d;
 		

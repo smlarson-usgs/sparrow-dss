@@ -2,14 +2,14 @@ package gov.usgswim.sparrow.datatable;
 
 import gov.usgswim.sparrow.domain.BaseDataSeriesType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
-import gov.usgswim.sparrow.domain.HucAggregationLevel;
+import gov.usgswim.sparrow.domain.AggregationLevel;
 import gov.usgswim.datatable.AggregateType;
 
 public enum TableProperties implements NamedEnum<TableProperties>{
 	
 	MODEL_ID("model_id", Long.class, "ID of the associated model"),
 	CONTEXT_ID("context_id", Long.class, "ID of the associated context"),
-	ROW_LEVEL("row_level", HucAggregationLevel.class, "Each row in the table represents a reach, a huc2/4/6/8, other?"),
+	ROW_LEVEL("row_level", AggregationLevel.class, "Each row in the table represents a reach, a huc2/4/6/8, other?"),
 	CONSTITUENT("constituent", null, "Name of the thing being measured."),
 	PRECISION("precision", null, "Number of significant figures prefered for display."),
 	DATA_TYPE("data_type", BaseDataSeriesType.class, "A broad classification of the data is incremental, total, or other."),

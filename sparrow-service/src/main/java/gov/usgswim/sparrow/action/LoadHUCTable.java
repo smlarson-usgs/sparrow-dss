@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
-import gov.usgswim.sparrow.domain.HucAggregationLevel;
+import gov.usgswim.sparrow.domain.AggregationLevel;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

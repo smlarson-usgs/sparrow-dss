@@ -6,6 +6,7 @@ import gov.usgswim.sparrow.action.LoadModelReachAreaRelations;
 import gov.usgswim.sparrow.action.LoadStatesForModel;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.domain.reacharearelation.ModelReachAreaRelations;
+import gov.usgswim.sparrow.request.ModelAggregationRequest;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 /**
@@ -19,12 +20,12 @@ public class ModelReachAreaRelationsFactory implements CacheEntryFactory {
 
 
 	@Override
-	public ModelReachAreaRelations createEntry(Object modelId) throws Exception {
-		Long id = (Long)modelId;
-		ModelReachAreaRelations result = null;
-		PredictData pd = SharedApplication.getInstance().getPredictData(id);
+	public ModelReachAreaRelations createEntry(Object modelAggregationRequest) throws Exception {
+
 		
-		LoadModelReachAreaRelations action = new LoadModelReachAreaRelations(pd);
+		ModelReachAreaRelations result = null;
+		ModelAggregationRequest req = (ModelAggregationRequest)modelAggregationRequest;
+		LoadModelReachAreaRelations action = new LoadModelReachAreaRelations(req);
 		
 		result = action.run();
 		
