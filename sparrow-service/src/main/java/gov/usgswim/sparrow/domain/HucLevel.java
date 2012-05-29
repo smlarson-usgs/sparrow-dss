@@ -12,7 +12,7 @@ import gov.usgswim.sparrow.datatable.NamedEnum;
  * @author eeverman
  *
  */
-public enum HUCType implements NamedEnum<HUCType> {
+public enum HucLevel implements NamedEnum<HucLevel> {
 	
 	/* See class note above */
 	HUC2(2, "huc2", "HUC Level 2"),
@@ -24,7 +24,7 @@ public enum HUCType implements NamedEnum<HUCType> {
 	private String name;
 	private String description;
 	
-	HUCType(Integer level, String name, String description) {
+	HucLevel(Integer level, String name, String description) {
 		this.level = level;
 		this.name = name;
 		this.description = description;
@@ -39,8 +39,8 @@ public enum HUCType implements NamedEnum<HUCType> {
 	}
 
 	@Override
-	public HUCType fromString(String name) {
-		for (HUCType val : values()) {
+	public HucLevel fromString(String name) {
+		for (HucLevel val : values()) {
 			if (val.name.equals(name) || val.name().equals(name)) {
 				return val;
 			}
@@ -49,8 +49,8 @@ public enum HUCType implements NamedEnum<HUCType> {
 	}
 	
 	@Override
-	public HUCType fromStringIgnoreCase(String name) {
-		for (HUCType val : values()) {
+	public HucLevel fromStringIgnoreCase(String name) {
+		for (HucLevel val : values()) {
 			if (val.name.equalsIgnoreCase(name) || val.name().equalsIgnoreCase(name)) {
 				return val;
 			}
@@ -64,7 +64,7 @@ public enum HUCType implements NamedEnum<HUCType> {
 	}
 
 	@Override
-	public HUCType getDefault() {
+	public HucLevel getDefault() {
 		return null;
 	}
 	

@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.domain.Geometry;
 import gov.usgswim.sparrow.domain.HUC;
-import gov.usgswim.sparrow.domain.HUCType;
+import gov.usgswim.sparrow.domain.HucLevel;
 import gov.usgswim.sparrow.domain.Segment;
 import gov.usgswim.sparrow.request.HUCRequest;
 
@@ -36,7 +36,7 @@ public class LoadHUCDetailLongRunTest extends SparrowTestBaseWithDB {
 		assertNull(action.getPostMessage());
 		assertEquals("01", huc.getHucCode());
 		assertEquals("NEW ENGLAND", huc.getName());
-		assertEquals(HUCType.HUC2, huc.getHucType());
+		assertEquals(HucLevel.HUC2, huc.getHucType());
 		assertEquals(false, huc.getSimpleGeometry().getSegments()[0].isLinear());
 		assertEquals(true, huc.getSimpleGeometry().getSegments()[0].isPolygon());
 		assertEquals(-73.73509d, huc.getSimpleGeometry().getMinLong(), .0001d);
@@ -67,7 +67,7 @@ public class LoadHUCDetailLongRunTest extends SparrowTestBaseWithDB {
 		assertNull(action.getPostMessage());
 		assertEquals("0101", huc.getHucCode());
 		assertEquals("ST. JOHN", huc.getName());
-		assertEquals(HUCType.HUC4, huc.getHucType());
+		assertEquals(HucLevel.HUC4, huc.getHucType());
 		assertEquals(false, huc.getSimpleGeometry().getSegments()[0].isLinear());
 		assertEquals(true, huc.getSimpleGeometry().getSegments()[0].isPolygon());
 		
@@ -91,7 +91,7 @@ public class LoadHUCDetailLongRunTest extends SparrowTestBaseWithDB {
 		assertNull(action.getPostMessage());
 		assertEquals("010100", huc.getHucCode());
 		assertEquals("ST. JOHN", huc.getName());
-		assertEquals(HUCType.HUC6, huc.getHucType());
+		assertEquals(HucLevel.HUC6, huc.getHucType());
 		assertEquals(false, huc.getSimpleGeometry().getSegments()[0].isLinear());
 		assertEquals(true, huc.getSimpleGeometry().getSegments()[0].isPolygon());
 		
@@ -115,7 +115,7 @@ public class LoadHUCDetailLongRunTest extends SparrowTestBaseWithDB {
 		assertNull(action.getPostMessage());
 		assertEquals("06020002", huc.getHucCode());
 		assertEquals("HIWASSEE", huc.getName());
-		assertEquals(HUCType.HUC8, huc.getHucType());
+		assertEquals(HucLevel.HUC8, huc.getHucType());
 		assertEquals(false, huc.getSimpleGeometry().getSegments()[0].isLinear());
 		assertEquals(true, huc.getSimpleGeometry().getSegments()[0].isPolygon());
 		

@@ -6,7 +6,7 @@ import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.DataSeriesType;
-import gov.usgswim.sparrow.domain.UnitAreaType;
+import gov.usgswim.sparrow.domain.HucAggregationLevel;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

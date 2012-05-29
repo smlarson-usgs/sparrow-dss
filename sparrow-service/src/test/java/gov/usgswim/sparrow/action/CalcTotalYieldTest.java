@@ -16,7 +16,7 @@ import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.BasicAnalysis;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.PredictionContext;
-import gov.usgswim.sparrow.domain.UnitAreaType;
+import gov.usgswim.sparrow.domain.HucAggregationLevel;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -49,7 +49,7 @@ public class CalcTotalYieldTest  extends SparrowTestBaseWithDBandCannedModel50 {
 		
 		predictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		predictResult = SharedApplication.getInstance().getPredictResult(adjustments);
-		UnitAreaRequest watershedAreaReq = new UnitAreaRequest(TEST_MODEL_ID, UnitAreaType.HUC_NONE, true);
+		UnitAreaRequest watershedAreaReq = new UnitAreaRequest(TEST_MODEL_ID, HucAggregationLevel.HUC_NONE, true);
 		DataTable watershedAreaTable = SharedApplication.getInstance().getCatchmentAreas(watershedAreaReq);
 		watershedAreaColumn = new ColumnDataFromTable(watershedAreaTable, 1);
 	}

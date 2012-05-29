@@ -16,7 +16,7 @@ import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.BasicAnalysis;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.PredictionContext;
-import gov.usgswim.sparrow.domain.UnitAreaType;
+import gov.usgswim.sparrow.domain.HucAggregationLevel;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -48,7 +48,7 @@ public class CalcIncrementalYieldTest  extends SparrowTestBaseWithDBandCannedMod
 		
 		predictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		predictResult = SharedApplication.getInstance().getPredictResult(adjustments);
-		UnitAreaRequest catchAreaReq = new UnitAreaRequest(TEST_MODEL_ID, UnitAreaType.HUC_NONE, false);
+		UnitAreaRequest catchAreaReq = new UnitAreaRequest(TEST_MODEL_ID, HucAggregationLevel.HUC_NONE, false);
 		DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(catchAreaReq);
 		catchmentAreaColumn = new ColumnDataFromTable(catchmentAreaTable, 1);
 	}

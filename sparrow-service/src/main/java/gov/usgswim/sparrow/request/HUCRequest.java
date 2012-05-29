@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.request;
 
 import gov.usgswim.Immutable;
-import gov.usgswim.sparrow.domain.HUCType;
+import gov.usgswim.sparrow.domain.HucLevel;
 
 import java.io.Serializable;
 
@@ -18,7 +18,7 @@ public class HUCRequest implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private final HUCType hucType;
+	private final HucLevel hucType;
 	private final String huc;
 	
 	public HUCRequest(String huc) {
@@ -26,16 +26,16 @@ public class HUCRequest implements Serializable {
 		int len = huc.length();
 		switch (len) {
 		case 2:
-			hucType = HUCType.HUC2;
+			hucType = HucLevel.HUC2;
 			break;
 		case 4:
-			hucType = HUCType.HUC4;
+			hucType = HucLevel.HUC4;
 			break;
 		case 6:
-			hucType = HUCType.HUC6;
+			hucType = HucLevel.HUC6;
 			break;
 		case 8:
-			hucType = HUCType.HUC8;
+			hucType = HucLevel.HUC8;
 			break;
 		default:
 			hucType = null;
@@ -43,7 +43,7 @@ public class HUCRequest implements Serializable {
 		}
 	}
 
-	public HUCType getHucType() {
+	public HucLevel getHucType() {
 		return hucType;
 	}
 
