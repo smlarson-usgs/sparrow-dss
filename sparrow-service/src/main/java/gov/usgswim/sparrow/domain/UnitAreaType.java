@@ -5,7 +5,7 @@ import gov.usgswim.sparrow.datatable.NamedEnum;
 
 public enum UnitAreaType implements NamedEnum<UnitAreaType> {
 	HUC_NONE(null, "none", "Not Defined"),
-	HUC_REACH(null, "reach", "No huc leve - individual reaches"),
+	HUC_REACH(null, "reach", "No huc level - individual reaches"),
 	HUC_2(2, "huc_2", "HUC Level 2"),
 	HUC_4(4, "huc_4", "HUC Level 4"),
 	HUC_6(6, "huc_6", "HUC Level 6"),
