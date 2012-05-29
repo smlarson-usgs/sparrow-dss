@@ -59,10 +59,10 @@ public class LoadReachHucs extends Action<DataTable>{
 
 
 		DataTableWritable writeable = DataTableConverter.toDataTable(rs, true);
-		writeable.setName("HUC Level " + request.getHucLevel() +
+		writeable.setName("HUC Level " + request.getHucLevel().getLevel() +
 				" aggregation data for model " + request.getModelID());
 		writeable.setProperty("model_id", request.getModelID().toString());
-		writeable.setProperty("huc_level", request.getHucLevel().toString());
+		writeable.setProperty("huc_level", request.getHucLevel().getLevel().toString());
 		
 		result = writeable.toImmutable();
 
