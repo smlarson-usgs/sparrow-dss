@@ -19,6 +19,8 @@ import java.util.List;
  * 
  * @See ModelReachAreaRelations for details on data structure.
  *  
+ * @todo:  This now needs to accept HUC levels for the queries.
+ * 
  * @author eeverman
  */
 public class LoadModelReachAreaRelations extends Action<ModelReachAreaRelations> {
@@ -58,7 +60,7 @@ public class LoadModelReachAreaRelations extends Action<ModelReachAreaRelations>
 	 * Clear designation of init values
 	 */
 	protected void initRequiredFields() throws Exception {
-		SharedApplication.getInstance().getPredictData(modelId);
+		predictData = SharedApplication.getInstance().getPredictData(modelId);
 	}
 
 
