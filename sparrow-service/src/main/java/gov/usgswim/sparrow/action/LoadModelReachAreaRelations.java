@@ -138,6 +138,10 @@ public class LoadModelReachAreaRelations extends Action<ModelReachAreaRelations>
 		if (modelId == null) {
 			this.addValidationError("The model predictData set does not seem to have a model id associated with it.");
 		}
+		
+		if (! (aggLevel.isHuc() || aggLevel.isPolitical())) {
+			this.addValidationError("The aggregation level (the level at which to load the area relations for) must be either a HUC or a political region.");
+		}
 	}
 
 	

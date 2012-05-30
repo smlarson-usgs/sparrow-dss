@@ -78,7 +78,7 @@ public class LoadModelReachAreaRelationsTest extends SparrowTestBaseWithDBandCan
 		PredictData pd = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		ModelAggregationRequest request = new ModelAggregationRequest(TEST_MODEL_ID, AggregationLevel.STATE);
 		LoadModelReachAreaRelations action = new LoadModelReachAreaRelations(request);
-		ModelReachAreaRelations result = null;
+		ModelReachAreaRelations result = SharedApplication.getInstance().getModelReachAreaRelations(request);
 		
 		long startTime = System.currentTimeMillis();
 		result = SharedApplication.getInstance().getModelReachAreaRelations(request);
@@ -86,13 +86,37 @@ public class LoadModelReachAreaRelationsTest extends SparrowTestBaseWithDBandCan
 		double totalSeconds = (endTime - startTime) / 1000d;
 		
 		//Should be instant
-		assertTrue(totalSeconds < 1);
+		assertTrue("Total time should be less than .5 seconds, but was " + (endTime - startTime) + " ms.", totalSeconds < .5d);
 		
 		//data should be the same
 		assertNotNull(result);
 		assertEquals(pd.getTopo().getRowCount(), result.getRowCount());
 		assertFalse(result instanceof ModelReachAreaRelationsBuilder);
 		
+	}
+	
+	@Test
+	public void AggregationLevelCannotBeNone() throws Exception {
+		
+		ModelAggregationRequest request = new ModelAggregationRequest(TEST_MODEL_ID, AggregationLevel.NONE);
+		LoadModelReachAreaRelations action = new LoadModelReachAreaRelations(request);
+		ModelReachAreaRelations result = action.run();
+		
+		assertTrue(action.hasValidationErrors());
+		assertNull(result);
+		assertEquals(1, action.getValidationErrors().length);
+	}
+	
+	@Test
+	public void AggregationLevelCannotBeReach() throws Exception {
+		
+		ModelAggregationRequest request = new ModelAggregationRequest(TEST_MODEL_ID, AggregationLevel.REACH);
+		LoadModelReachAreaRelations action = new LoadModelReachAreaRelations(request);
+		ModelReachAreaRelations result = action.run();
+		
+		assertTrue(action.hasValidationErrors());
+		assertNull(result);
+		assertEquals(1, action.getValidationErrors().length);
 	}
 	
 	public void dumpModelReachAreaRelations(ModelReachAreaRelations result,
