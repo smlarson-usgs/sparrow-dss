@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.service.deliveryterminalreport;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.domain.AggregationLevel;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
@@ -31,9 +32,9 @@ public class ReportRequest implements XMLStreamParserComponent,
 		region_agg
 	}
 	
-	public enum RegionType {
-		state, huc2, huc4, huc6, huc8
-	}
+//	public enum RegionType {
+//		state, huc2, huc4, huc6, huc8
+//	}
 	
 	// ===============
 	// INSTANCE FIELDS
@@ -44,7 +45,7 @@ public class ReportRequest implements XMLStreamParserComponent,
 	private PredictionContext context;
 	private boolean includeIdScript;
 	private ReportType reportType;
-	private RegionType regionType;
+	private AggregationLevel aggLevel;
 	private boolean includeZeroTotalRows;
 	
 
@@ -86,11 +87,11 @@ public class ReportRequest implements XMLStreamParserComponent,
 	 * Construct an instance w/ basic options (used for GET requests)
 	 */
 	public ReportRequest(Integer contextID, 
-			ReportType reportType, RegionType regionType, 
+			ReportType reportType, AggregationLevel aggLevel, 
 			ResponseFormat respFormat, boolean includeIdScript, boolean includeZeroTotalRows) {
 		this.contextID = contextID;
 		this.reportType = reportType;
-		this.regionType = regionType;
+		this.aggLevel = aggLevel;
 		this.responseFormat = respFormat;
 		this.includeIdScript = includeIdScript;
 		this.includeZeroTotalRows = includeZeroTotalRows;
@@ -160,9 +161,9 @@ public class ReportRequest implements XMLStreamParserComponent,
 
 					String s = ParserHelper.parseAttribAsString(in, ELEMENT_REGION_TYPE, true);
 					try {
-						regionType = RegionType.valueOf(s);
+						aggLevel = aggLevel.fromStringIgnoreCase(s);
 					} catch (Exception e) {
-						throw new XMLParseValidationException("Unrecognized " + ELEMENT_REGION_TYPE);
+						throw new XMLParseValidationException("Unrecognized " + ELEMENT_REGION_TYPE + " '" + s + "'");
 					}
 					
 					
@@ -255,8 +256,8 @@ public class ReportRequest implements XMLStreamParserComponent,
 		return reportType;
 	}
 	
-	public RegionType getRegionType() {
-		return regionType;
+	public AggregationLevel getAggregationLevel() {
+		return aggLevel;
 	}
 
 	public boolean isIncludeZeroTotalRows() {

@@ -4,6 +4,7 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.service.deliveryterminalreport.ReportRequest;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.domain.AggregationLevel;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
@@ -21,6 +22,7 @@ public class ReportService implements HttpService<ReportRequest> {
     	
 			Integer predictionContextID = req.getContextID();
 			PredictionContext context = req.getContext();
+			AggregationLevel aggLevel = req.getAggregationLevel();
 			Long modelId = null;
 
 			if (context != null) {
@@ -39,7 +41,7 @@ public class ReportService implements HttpService<ReportRequest> {
 				throw new Exception("There must be downstream reaches selected to generate the deliver report.");
 			}
 
-			DeliveryReportRequest actionRequest = new DeliveryReportRequest(context.getAdjustmentGroups(), termReaches);
+			DeliveryReportRequest actionRequest = new DeliveryReportRequest(context.getAdjustmentGroups(), termReaches, aggLevel);
 
 
 			DataTable reportData = sharedApp.getTotalDeliveredLoadByStateSummaryReport(actionRequest);

@@ -7,21 +7,21 @@ import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import org.junit.Test;
 
 /**
- * Tests the gov.usgswim.sparrow.action.LoadHUCTable methods.
+ * Tests the gov.usgswim.sparrow.action.LoadHUC8Table methods.
  * 
  * @author thongsav
  */
 
-public class LoadHUCTableLongRunTest extends SparrowTestBaseWithDB {
+public class LoadHUC8TableLongRunTest extends SparrowTestBaseWithDB {
 	
 	/**
 	 * Tests the columns.
 	 * @throws Exception
 	 */
 	@Test
-	public void testLoadHUCTable() throws Exception {
+	public void testLoadHUC8Table() throws Exception {
 		
-		LoadHUCTable hucs= new LoadHUCTable(50);
+		LoadHUC8Table hucs= new LoadHUC8Table(50);
 		DataTable dt = hucs.run();
 		assertEquals(1, dt.getColumnCount());
 		

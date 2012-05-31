@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.service.deliveryaggreport;
 
 import gov.usgswim.service.AbstractHttpRequestParser;
 import gov.usgswim.service.RequestParser;
+import gov.usgswim.sparrow.domain.AggregationLevel;
 import gov.usgswim.sparrow.parser.ResponseFormat;
 import gov.usgswim.sparrow.util.ParserHelper;
 import java.util.Enumeration;
@@ -31,11 +32,11 @@ public class ReportRequestParser
 			boolean includeIdScript = false;
 			ReportRequest.ReportType reportType = ReportRequest.ReportType.region_agg;
 			String regionTypeStr = request.getParameter(ReportRequest.ELEMENT_REGION_TYPE);
-			ReportRequest.RegionType regionType = null;
+			AggregationLevel aggLevel = null;
 			boolean includeZeroRows = parseParamAsBoolean(request, ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, true);
 			
 			try {
-				regionType = ReportRequest.RegionType.valueOf(regionTypeStr);
+				aggLevel = AggregationLevel.NONE.fromStringIgnoreCase(regionTypeStr);
 			} catch (Exception e) {
 				throw new Exception("Unrecognized " + ReportRequest.ELEMENT_REGION_TYPE);
 			}
@@ -45,7 +46,7 @@ public class ReportRequestParser
 			respFormat.setAttachment(true);
 			if (respFormat.fileName == null) respFormat.fileName = ReportRequest.PC_EXPORT_FILENAME;
 			
-			req = new ReportRequest(contextID.intValue(), reportType, regionType, respFormat, includeIdScript, includeZeroRows);
+			req = new ReportRequest(contextID.intValue(), reportType, aggLevel, respFormat, includeIdScript, includeZeroRows);
 			
 		} else if (request.getMethod().equals("POST")) {
 			

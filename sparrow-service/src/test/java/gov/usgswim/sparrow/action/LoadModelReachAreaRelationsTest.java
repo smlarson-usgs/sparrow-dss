@@ -22,7 +22,7 @@ public class LoadModelReachAreaRelationsTest extends SparrowTestBaseWithDBandCan
 	
 	
 	@Test
-	public void dataSanityCheck() throws Exception {
+	public void stateDataSanityCheck() throws Exception {
 		
 		PredictData pd = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		
@@ -69,6 +69,47 @@ public class LoadModelReachAreaRelationsTest extends SparrowTestBaseWithDBandCan
 		assertTrue(tripleRelationCnt > 0);
 		assertTrue(otherRelationCnt == 0);
 		
+		
+	}
+	
+	@Test
+	public void hucDataSanityCheck() throws Exception {
+		
+		PredictData pd = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
+		
+		ModelAggregationRequest request = new ModelAggregationRequest(TEST_MODEL_ID, AggregationLevel.HUC2);
+		LoadModelReachAreaRelations action = new LoadModelReachAreaRelations(request);
+
+		ModelReachAreaRelations result = action.run();
+		
+		assertNotNull(result);
+		assertEquals(pd.getTopo().getRowCount(), result.getRowCount());
+		assertFalse(result instanceof ModelReachAreaRelationsBuilder);
+		
+		dumpModelReachAreaRelations(result, result.getRowCount(), true, false, false);
+		
+		
+		//Build some basic stats
+		int zeroRelationCnt = 0;
+		int singleRelationCnt = 0;
+		int otherRelationCnt = 0;
+		
+		for (int row=0; row<result.getRowCount(); row++) {
+			ReachAreaRelations rar = result.getRelationsForReachRow(row);
+			int cnt = rar.getRelations().size();
+			if (cnt == 0) {
+				zeroRelationCnt++;
+			} else if (cnt == 1) {
+				singleRelationCnt++;
+			} else if (cnt > 1) {
+				otherRelationCnt++;
+			}
+			
+			assertEquals(pd.getIdForRow(row), new Long(rar.getReachId()));
+		}
+		
+		assertTrue(singleRelationCnt == pd.getTopo().getRowCount());
+		assertTrue(otherRelationCnt == 0);
 		
 	}
 	

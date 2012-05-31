@@ -21,11 +21,11 @@ import java.sql.ResultSet;
  *  
  * @author eeverman
  */
-public class LoadHUCTable extends Action<DataTable> {
+public class LoadHUC8Table extends Action<DataTable> {
 	
 	protected long modelId;
 	
-	public LoadHUCTable(long modelId) {
+	public LoadHUC8Table(long modelId) {
 		super();
 		this.modelId = modelId;
 	}

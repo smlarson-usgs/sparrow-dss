@@ -18,7 +18,7 @@ public class HUCRequest implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private final HucLevel hucType;
+	private final HucLevel hucType;	//derived
 	private final String huc;
 	
 	public HUCRequest(String huc) {

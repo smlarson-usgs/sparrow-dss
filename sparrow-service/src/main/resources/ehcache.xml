@@ -396,7 +396,7 @@
 		
 	<cache name="CatchmentAreas" maxElementsInMemory="10" />
 	
-	<cache name="HUCTable" maxElementsInMemory="4" />
+	<cache name="HUC8Table" maxElementsInMemory="4" />
 	
 	<cache name="HUC" maxElementsInMemory="3" />
 	

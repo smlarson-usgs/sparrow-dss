@@ -15,19 +15,22 @@ import java.util.HashMap;
  * 
  * Only HUCs that have reaches in the model will be returned.
  * 
- * Row ID:  NONE
+ * Row ID:  Hashcode of the HUC Code
  * Columns are in this order:
  * <ul>
- * <li>Code - Indexed.  The HUC Code, containing the same number of digits as the huc level (huc8 will have 8 digits)
  * <li>Name - The name of the HUC
+ * <li>Code - The HUC Code, containing the same number of digits as the huc level (huc8 will have 8 digits)
+ * 
  * </ul>
  * 
- * Sorted by HUC ID (the first column)
+ * Sorted by HUC ID (the 2nd column)
  *  
  * @author eeverman
  */
 public class LoadHucsForModel extends Action<DataTable> {
 	
+	private static final int HUC_NAME_COL = 0;
+	private static final int HUC_CODE_COL = 1;
 	
 	private static final String QUERY_NAME = "query";
 	protected Long modelId;
@@ -63,7 +66,11 @@ public class LoadHucsForModel extends Action<DataTable> {
 		values.setDescription(
 						"Complete list of all HUC" + hucLevel.getLevel() + "s in the model " + modelId);
 		
-		values.buildIndex(0);
+		//Build the index based on the hashcode of the HUC Code
+		for (int r = 0; r < values.getRowCount(); r++) {
+			values.setRowId(values.getString(r, HUC_CODE_COL).hashCode(), r);
+		}
+		
 		return values.toImmutable();
 	}
 

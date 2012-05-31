@@ -9,6 +9,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.meterware.httpunit.*;
+import gov.usgswim.sparrow.domain.AggregationLevel;
 import org.junit.Ignore;
 
 public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
@@ -38,7 +39,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml_table");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, "false");
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_REGION_TYPE, ReportRequest.RegionType.state.name());
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REGION_TYPE, AggregationLevel.STATE.getName());
 
 		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
@@ -69,7 +70,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml_table");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, "true");
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_REGION_TYPE, ReportRequest.RegionType.state.name());
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REGION_TYPE, AggregationLevel.STATE.getName());
 
 		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();

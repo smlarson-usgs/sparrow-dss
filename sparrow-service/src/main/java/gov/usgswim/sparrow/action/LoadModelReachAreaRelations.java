@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.domain.AggregationLevel;
@@ -26,7 +27,9 @@ import java.util.List;
 public class LoadModelReachAreaRelations extends Action<ModelReachAreaRelations> {
 	
 	
-	private static final String QUERY_NAME = "query";
+	private static final String STATE_QUERY_NAME = "stateQuery";
+	private static final String HUC_QUERY_NAME = "hucQuery";
+	
 	private static final int REACH_ID_COL = 0;
 	private static final int AREA_ID_COL = 1;
 	private static final int FRACTION_COL = 2;
@@ -69,56 +72,92 @@ public class LoadModelReachAreaRelations extends Action<ModelReachAreaRelations>
 	public ModelReachAreaRelations doAction() throws Exception {
 		HashMap<String, Object> params = new HashMap<String, Object>();
 		params.put("ModelId", modelId);
+		DataTableWritable reachAreaRelationData = null;
 		
-		ResultSet rset = getROPSFromPropertiesFile(QUERY_NAME, getClass(), params).executeQuery();
-		addResultSetForAutoClose(rset);
+		if (aggLevel.isHuc()) {
+			params.put("Huclevel", aggLevel.getHucLevel().getLevel());
+			
+			ResultSet rset = getROPSFromPropertiesFile(HUC_QUERY_NAME, getClass(), params).executeQuery();
+			addResultSetForAutoClose(rset);
+			reachAreaRelationData = DataTableConverter.toDataTable(rset);
+			int valuesRowCount = reachAreaRelationData.getRowCount();
+			
+			//Replace the huc codes ("0034") with the has code of the same 
+			StandardNumberColumnDataWritable hucIds = new StandardNumberColumnDataWritable();
+			for (int r = 0; r < valuesRowCount; r++) {
+				String huc = reachAreaRelationData.getString(r, 1);
+				Integer id = huc.hashCode();
+				hucIds.setValue(id, r);
+			}
+			
+			reachAreaRelationData.setColumn(hucIds, AREA_ID_COL);
+			
+		} else if (aggLevel.equals(AggregationLevel.STATE)) {
+			
+			ResultSet rset = getROPSFromPropertiesFile(STATE_QUERY_NAME, getClass(), params).executeQuery();
+			addResultSetForAutoClose(rset);
+			reachAreaRelationData = DataTableConverter.toDataTable(rset);
+			
+		} else {
+			//validation ensures we don't end up here
+			throw new Exception("Unexpected AggregationLevel '" + aggLevel.getName() + "'");
+		}
 		
-		DataTableWritable values = null;
-		values = DataTableConverter.toDataTable(rset);
+
 		int modelRowCount = predictData.getTopo().getRowCount();
 
 		
 		ModelReachAreaRelationsBuilder builder = new ModelReachAreaRelationsBuilder(modelRowCount);
 		
-		//DataTable Structure:
-		//reach id (non-unique)
-		//state FIP id (non-unique)
-		//fraction in the state
-		int relationRowCount = values.getRowCount();
-		int currentRelationRow = 0;
-		for (int row=0; row<modelRowCount; row++) {
-			Long currentReachId = predictData.getIdForRow(row);
-			Long currentRelationReachId = values.getLong(currentRelationRow, REACH_ID_COL);
+		//DataTable Structure / Sample
+		//____________________________________
+		//	REACH_ID	|	AREA_ID	|	FRACTION
+		//____________________________________
+		//		1				|		1			|		1.0
+		//		2				|		2			|		.5
+		//		2 (!)		|		8			|		.5
+		//		3				|		1			|		1.0
+		//____________________________________
+		int relationDataRowCount = reachAreaRelationData.getRowCount();
+		int rowInRelationData = 0;
+		
+		//Iterate over rows in the model, which can have fewer rows than the relationData
+		for (int rowInModelAndResult = 0; rowInModelAndResult < modelRowCount; rowInModelAndResult++) {
+			Long reachIdInModelAndResult = predictData.getIdForRow(rowInModelAndResult);
+			Long reachIdInRelationData = reachAreaRelationData.getLong(rowInRelationData, REACH_ID_COL);
 			
-			if (currentReachId.equals(currentRelationReachId)) {
+			if (reachIdInModelAndResult.equals(reachIdInRelationData)) {
+				
+				//List of all areas that this reach is related to (states it is in or huc it is in)
 				List<AreaRelation> relations = new ArrayList<AreaRelation>(1);
 				
-				while (currentReachId.equals(currentRelationReachId) && currentRelationRow < relationRowCount) {
+				//Loop rows in the relationData as long as they are the same reach ID as the reachIdInModelAndResult
+				while (reachIdInModelAndResult.equals(reachIdInRelationData) && rowInRelationData < relationDataRowCount) {
 					
 					//Create and add the relation for the current relation row
-					long areaId = values.getLong(currentRelationRow, AREA_ID_COL);
-					double fraction = values.getDouble(currentRelationRow, FRACTION_COL);
+					long areaId = reachAreaRelationData.getLong(rowInRelationData, AREA_ID_COL);
+					double fraction = reachAreaRelationData.getDouble(rowInRelationData, FRACTION_COL);
 					AreaRelationImpl relation = new AreaRelationImpl(areaId, fraction);
 					relations.add(relation);
 					
 					//increment and update current relation values
-					currentRelationRow++;
+					rowInRelationData++;
 					
-					if (currentRelationRow < relationRowCount) {
-						currentRelationReachId = values.getLong(currentRelationRow, REACH_ID_COL);
+					if (rowInRelationData < relationDataRowCount) {
+						reachIdInRelationData = reachAreaRelationData.getLong(rowInRelationData, REACH_ID_COL);
 					} else {
 						//will fall out of the loop at top
 					}
 				}
 				
-				ReachAreaRelationsSimple reachRelations = new ReachAreaRelationsSimple(currentReachId, relations);
-				builder.set(row, reachRelations);
+				ReachAreaRelationsSimple reachRelations = new ReachAreaRelationsSimple(reachIdInModelAndResult, relations);
+				builder.set(rowInModelAndResult, reachRelations);
 				
 				
 			} else {
 				//No relations found
-				ReachAreaRelationsEmpty empty = new ReachAreaRelationsEmpty(currentReachId);
-				builder.set(row, empty);
+				ReachAreaRelationsEmpty empty = new ReachAreaRelationsEmpty(reachIdInModelAndResult);
+				builder.set(rowInModelAndResult, empty);
 			}
 			
 		}

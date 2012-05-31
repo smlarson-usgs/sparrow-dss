@@ -724,8 +724,8 @@ public class SharedApplication  {
 		return (DataTable) CatchmentAreas.get(req, quiet);
 	}
 	
-	public DataTable getHUCData(HUCTableRequest req, boolean quiet) {
-		return (DataTable) HUCTable.get(req, quiet);
+	public DataTable getHUC8Data(HUC8TableRequest req, boolean quiet) {
+		return (DataTable) HUC8Table.get(req, quiet);
 	}
 	
 	//HUC

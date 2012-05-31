@@ -21,10 +21,9 @@ public class BuildTotalDeliveredLoadByStateSummaryReportFactory implements Cache
 		DeliveryReportRequest req = (DeliveryReportRequest)deliveryReportRequest;
 		DataTable result = null;
 		
-		BuildTotalDeliveredLoadByStateSummaryReport action = new BuildTotalDeliveredLoadByStateSummaryReport();
+		BuildTotalDeliveredLoadByStateSummaryReport action =
+				new BuildTotalDeliveredLoadByStateSummaryReport(req);
 		
-
-		action.setDeliveryReportRequest(req);
 		result = action.run();
 		
 		return result;

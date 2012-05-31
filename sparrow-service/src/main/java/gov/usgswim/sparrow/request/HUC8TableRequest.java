@@ -12,17 +12,18 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
  * 
  * The request indicates which model.
  * 
+ * @todo:  Is this used?  Shouldn't it be generic to load any huc level?
  * @author thongsav
  * 
  */
 @Immutable
-public class HUCTableRequest implements Serializable {
+public class HUC8TableRequest implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
 	private final long modelID;
 
-	public HUCTableRequest(long modelID) {
+	public HUC8TableRequest(long modelID) {
 		this.modelID = modelID;
 	}
 
@@ -32,7 +33,7 @@ public class HUCTableRequest implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof HUCTableRequest) {
+		if (obj instanceof HUC8TableRequest) {
 			return obj.hashCode() == hashCode();
 		}
 		return false;

@@ -60,6 +60,14 @@ public class PredefinedSessionUniqueRequest implements Serializable {
 	}
 	
 	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof PredefinedSessionUniqueRequest) {
+			return obj.hashCode() == hashCode();
+		}
+		return false;
+	}
+	
+	@Override
 	public int hashCode() {
 		HashCodeBuilder hash = new HashCodeBuilder(197, 1343);
 		hash.append(uniqueCode);

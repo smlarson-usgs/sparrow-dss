@@ -6,6 +6,7 @@ import gov.usgswim.datatable.filter.FilteredDataTable;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.TerminalReachesRowFilter;
+import gov.usgswim.sparrow.domain.AggregationLevel;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
@@ -41,7 +42,9 @@ public class ReportService implements HttpService<ReportRequest> {
 				throw new Exception("There must be downstream reaches selected to generate the deliver report.");
 			}
 
-			DeliveryReportRequest actionRequest = new DeliveryReportRequest(context.getAdjustmentGroups(), termReaches);
+			DeliveryReportRequest actionRequest = 
+					new DeliveryReportRequest(context.getAdjustmentGroups(),
+							termReaches, AggregationLevel.NONE);
 
 			DataTable reportData = sharedApp.getTotalDeliveredLoadSummaryReport(actionRequest);
 			TerminalReachesRowFilter filter = new TerminalReachesRowFilter(termReaches);

@@ -4,24 +4,24 @@ import gov.usgswim.sparrow.datatable.NamedEnum;
 
 
 public enum AggregationLevel implements NamedEnum<AggregationLevel> {
-	NONE(null, "NA", "Not Defined", false, false, false),
-	REACH(null, "reach", "No aggregation - individual reaches", false, false, true),
-	STATE(null, "state", "Aggregate all reaches in a State", false, true, false),
-	HUC2(HucLevel.HUC2.getLevel(), HucLevel.HUC2.getName(), HucLevel.HUC2.getDescription(), true, false, false),
-	HUC4(HucLevel.HUC4.getLevel(), HucLevel.HUC4.getName(), HucLevel.HUC4.getDescription(), true, false, false),
-	HUC6(HucLevel.HUC6.getLevel(), HucLevel.HUC6.getName(), HucLevel.HUC6.getDescription(), true, false, false),
-	HUC8(HucLevel.HUC8.getLevel(), HucLevel.HUC8.getName(), HucLevel.HUC8.getDescription(), true, false, false);
+	NONE("NA", "Not Defined", false, false, false),
+	REACH("reach", "No aggregation - individual reaches", false, false, true),
+	STATE("state", "Aggregate all reaches in a State", false, true, false),
+	HUC2(HucLevel.HUC2),
+	HUC4(HucLevel.HUC4),
+	HUC6(HucLevel.HUC6),
+	HUC8(HucLevel.HUC8);
 	
-	private final Integer hucLevel;
 	private final String name;
 	private final String description;
 
+	private final HucLevel hucLevel;
 	private final boolean _isHuc;
 	private final boolean _isPolitical;
 	private final boolean _isReach;
 	
-	AggregationLevel(Integer hucLevel, String name, String description, boolean isAHuc, boolean isAPoliticalRegion, boolean isAReach) {
-		this.hucLevel = hucLevel;
+	AggregationLevel(String name, String description, boolean isAHuc, boolean isAPoliticalRegion, boolean isAReach) {
+		this.hucLevel = null;
 		this.name = name;
 		this.description = description;
 		
@@ -30,8 +30,19 @@ public enum AggregationLevel implements NamedEnum<AggregationLevel> {
 		this._isPolitical = isAPoliticalRegion;
 		this._isReach = isAReach;
 	}
+	
+	AggregationLevel(HucLevel hucLevel) {
+		this.hucLevel = hucLevel;
+		this.name = hucLevel.getName();
+		this.description = hucLevel.getDescription();
+		
+		//Classifiers
+		this._isHuc = true;
+		this._isPolitical = false;
+		this._isReach = false;
+	}
 
-	public Integer getHucLevel() {
+	public HucLevel getHucLevel() {
 		return hucLevel;
 	}
 	

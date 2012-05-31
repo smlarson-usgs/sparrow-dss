@@ -15,6 +15,7 @@ import gov.usgswim.sparrow.domain.reacharearelation.ModelReachAreaRelations;
 import gov.usgswim.sparrow.domain.reacharearelation.ReachAreaRelations;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
 import gov.usgswim.sparrow.request.ModelAggregationRequest;
+import gov.usgswim.sparrow.request.ModelHucsRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.util.*;
 
@@ -36,6 +37,7 @@ public class BuildTotalDeliveredLoadByStateSummaryReport extends Action<DataTabl
 	//Assigned Values
 	protected AdjustmentGroups adjustmentGroups;
 	protected TerminalReaches terminalReaches;
+	protected AggregationLevel aggLevel;
 	
 	
 
@@ -43,10 +45,27 @@ public class BuildTotalDeliveredLoadByStateSummaryReport extends Action<DataTabl
 	//Generated / self-loaded values
 	protected SparrowModel sparrowModel;
 	protected ModelReachAreaRelations areaRelations;
-	protected DataTable states;
+	protected DataTable areaDetail;
 	List<ColumnData> expandedTotalDelLoadForAllSources;
 	
-
+	public BuildTotalDeliveredLoadByStateSummaryReport(
+			AdjustmentGroups adjustmentGroups,
+			TerminalReaches terminalReaches,
+			AggregationLevel aggLevel) {
+		
+		this.adjustmentGroups = adjustmentGroups;
+		this.terminalReaches = terminalReaches;
+		this.aggLevel = aggLevel;
+		
+	}
+	
+		public BuildTotalDeliveredLoadByStateSummaryReport(DeliveryReportRequest request) {
+		
+		terminalReaches = request.getTerminalReaches();
+		adjustmentGroups = request.getAdjustmentGroups();
+		aggLevel = request.getAggLevel();
+		
+	}
 	
 	/**
 	 * Clear designation of init values
@@ -58,9 +77,14 @@ public class BuildTotalDeliveredLoadByStateSummaryReport extends Action<DataTabl
 		
 		
 		ModelAggregationRequest modelReachAreaRelelationsRequest = 
-					new ModelAggregationRequest(modelId, AggregationLevel.STATE);
+					new ModelAggregationRequest(modelId, aggLevel);
 		areaRelations = SharedApplication.getInstance().getModelReachAreaRelations(modelReachAreaRelelationsRequest);
-		states = SharedApplication.getInstance().getStatesForModel(modelId);
+		
+		if (aggLevel.equals(AggregationLevel.STATE)) {
+			areaDetail = SharedApplication.getInstance().getStatesForModel(modelId);
+		} else if (aggLevel.isHuc()) {
+			areaDetail = SharedApplication.getInstance().getHucsForModel(new ModelHucsRequest(modelId, aggLevel.getHucLevel()));
+		}
 		
 		//Basic predict context, which we need data for all sources
 		BasicAnalysis analysis = new BasicAnalysis(
@@ -101,12 +125,12 @@ public class BuildTotalDeliveredLoadByStateSummaryReport extends Action<DataTabl
 			srcAndTotalTable.addColumn(col);
 		}
 
-		populateColumns(srcAndTotalTable, expandedTotalDelLoadForAllSources, areaRelations, states);
+		populateColumns(srcAndTotalTable, expandedTotalDelLoadForAllSources, areaRelations, areaDetail);
 		
 		//Add the reach identification columns
 		ArrayList<ColumnData> columns = new ArrayList<ColumnData>();
-		columns.add(0, states.getColumn(0));	//region name
-		columns.add(1, states.getColumn(1));	//region FIPs code
+		columns.add(0, areaDetail.getColumn(0));	//region name
+		columns.add(1, areaDetail.getColumn(1));	//region code
 		columns.addAll(Arrays.asList(srcAndTotalTable.getColumns()));
 		
 		
@@ -139,12 +163,12 @@ public class BuildTotalDeliveredLoadByStateSummaryReport extends Action<DataTabl
 	 * @param regionResultTable Table to fill
 	 * @param totDelForAllSrcs Total Delivered Load for all source and the total del load
 	 * @param areaRelations reach to state (or other region) relation w/ fraction in each region
-	 * @param regions List of all regions (ie states) that this model touches (all regions for areaRelations)
+	 * @param areaDetail List of all regions (ie areaDetail) that this model touches (all regions for areaRelations)
 	 * @throws Exception 
 	 */
 	protected void populateColumns(SimpleDataTableWritable regionResultTable,
 					List<ColumnData> totDelForAllSrcs,
-					ModelReachAreaRelations areaRelations, DataTable regions) throws Exception {
+					ModelReachAreaRelations areaRelations, DataTable areaDetail) throws Exception {
 		
 		
 		int reachRowCount = totDelForAllSrcs.get(0).getRowCount();
@@ -158,7 +182,7 @@ public class BuildTotalDeliveredLoadByStateSummaryReport extends Action<DataTabl
 			for (AreaRelation reachRelation : reachRelations.getRelations()) {
 				long regionId = reachRelation.getAreaId();
 				double reachFractionInRegion = reachRelation.getFraction();
-				int regionRow = regions.getRowForId(regionId);
+				int regionRow = areaDetail.getRowForId(regionId);
 				
 				//Loop thru each source and the total
 				for (int colIdx = 0; colIdx < colCount; colIdx++) {
@@ -190,28 +214,25 @@ public class BuildTotalDeliveredLoadByStateSummaryReport extends Action<DataTabl
 //		}
 		
 	}
-
-
-	//
-	//Setter methods
-	public void setAdjustmentGroups(AdjustmentGroups adjustmentGroups) {
-		this.adjustmentGroups = adjustmentGroups;
-	}
-
-	public void setTerminalReaches(TerminalReaches terminalReaches) {
-		this.terminalReaches = terminalReaches;
-	}
-	
-	public void setDeliveryReportRequest(DeliveryReportRequest request) {
-		terminalReaches = request.getTerminalReaches();
-		adjustmentGroups = request.getAdjustmentGroups();
-	}
 	
 	@Override
 	protected void validate() {
+		if (adjustmentGroups == null) {
+			this.addValidationError("The adjustment groups parameter cannot be null");
+			return;
+		}
+				
+		if (terminalReaches == null) {
+			this.addValidationError("The terminal reaches parameter cannot be null");
+		}
 		
-//Its all ok... for now
-
+		if (aggLevel == null) {
+			this.addValidationError("The aggregate level reaches parameter cannot be null");
+		}
+		
+		if (! (aggLevel.isHuc() || aggLevel.isPolitical())) {
+			this.addValidationError("The aggregation level (the level at which to load the area relations for) must be either a HUC or a political region.");
+		}
 	}
 	
 }

@@ -13,7 +13,7 @@ import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.AggregationLevel;
-import gov.usgswim.sparrow.request.HUCTableRequest;
+import gov.usgswim.sparrow.request.HUC8TableRequest;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -47,7 +47,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         
         
         DataTable watershedAreas = sharedApp.getCatchmentAreas(new UnitAreaRequest(modelId, AggregationLevel.NONE, true));
-        //DataTable huc8 = sharedApp.getHUCData(new HUCTableRequest(modelId), false);
+        //DataTable huc8 = sharedApp.getHUC8Data(new HUC8TableRequest(modelId), false);
         SparrowColumnSpecifier adjDataColumn = adjPredictContext.getDataColumn();
     	SparrowColumnSpecifier orgDataColumn = null;
     	PredictResult adjPredictResult = null;
@@ -113,7 +113,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         //Include optional identification information
         if (req.isIncludeReachIdAttribs()) {
         	reachIdAttribs = sharedApp.getModelReachIdentificationAttributes(modelId);
-        	huc8 = sharedApp.getHUCData(new HUCTableRequest(modelId), false);
+        	huc8 = sharedApp.getHUC8Data(new HUC8TableRequest(modelId), false);
         }
         
         //Include optional stats information

@@ -49,19 +49,21 @@ public class LoadHucsForModelTest extends SparrowTestBaseWithDB {
 		assertEquals(2, result.getColumnCount());
 		assertEquals(2, result.getRowCount());
 		assertFalse(result instanceof DataTableWritable);
-		assertFalse(result.hasRowIds());
 		
-		//Make sure the index works
-		assertTrue(result.isIndexed(0));
-		assertEquals(0, result.findFirst(0, "03"));
-		assertEquals(1, result.findFirst(0, "06"));
+		//Make sure indexing is set correctly
+		assertTrue(result.hasRowIds());
+		assertFalse(result.isIndexed(0));
+		assertFalse(result.isIndexed(1));
+		
+		assertEquals(0, result.findFirst(1, "03"));
+		assertEquals(1, result.findFirst(1, "06"));
 		
 		
 		//Only four values to check - check 'em all
-		assertEquals("03", result.getString(0, 0));
-		assertEquals("SOUTH ATLANTIC-GULF", result.getString(0, 1));
-		assertEquals("06", result.getString(1, 0));
-		assertEquals("TENNESSEE", result.getString(1, 1));
+		assertEquals("03", result.getString(0, 1));
+		assertEquals("SOUTH ATLANTIC-GULF", result.getString(0, 0));
+		assertEquals("06", result.getString(1, 1));
+		assertEquals("TENNESSEE", result.getString(1, 0));
 	}
 	
 	@Test
@@ -79,19 +81,14 @@ public class LoadHucsForModelTest extends SparrowTestBaseWithDB {
 		assertEquals(2, result.getColumnCount());
 		assertEquals(21, result.getRowCount());
 		assertFalse(result instanceof DataTableWritable);
-		assertFalse(result.hasRowIds());
-		
-		//Make sure the index works
-		assertTrue(result.isIndexed(0));
-		assertEquals(0, result.findFirst(0, "0301"));
-		assertEquals(20, result.findFirst(0, "0604"));
+		assertTrue(result.hasRowIds());
 		
 		
 		//Check first and last row
-		assertEquals("0301", result.getString(0, 0));
-		assertEquals("CHOWAN-ROANOKE", result.getString(0, 1));
-		assertEquals("0604", result.getString(20, 0));
-		assertEquals("LOWER TENNESSEE", result.getString(20, 1));
+		assertEquals("0301", result.getString(0, 1));
+		assertEquals("CHOWAN-ROANOKE", result.getString(0, 0));
+		assertEquals("0604", result.getString(20, 1));
+		assertEquals("LOWER TENNESSEE", result.getString(20, 0));
 	}
 	
 	@Test
@@ -107,26 +104,21 @@ public class LoadHucsForModelTest extends SparrowTestBaseWithDB {
 		double totalSeconds = (endTime - startTime) / 1000d;
 		
 		//Should be instant
-		assertTrue(totalSeconds < 1);
+		assertTrue(totalSeconds < .5d);
 		
 		//data should be the same
 		assertNotNull(result);
 		assertEquals(2, result.getColumnCount());
 		assertEquals(21, result.getRowCount());
 		assertFalse(result instanceof DataTableWritable);
-		assertFalse(result.hasRowIds());
-		
-		//Make sure the index works
-		assertTrue(result.isIndexed(0));
-		assertEquals(0, result.findFirst(0, "0301"));
-		assertEquals(20, result.findFirst(0, "0604"));
+		assertTrue(result.hasRowIds());
 		
 		
 		//Check first and last row
-		assertEquals("0301", result.getString(0, 0));
-		assertEquals("CHOWAN-ROANOKE", result.getString(0, 1));
-		assertEquals("0604", result.getString(20, 0));
-		assertEquals("LOWER TENNESSEE", result.getString(20, 1));
+		assertEquals("0301", result.getString(0, 1));
+		assertEquals("CHOWAN-ROANOKE", result.getString(0, 0));
+		assertEquals("0604", result.getString(20, 1));
+		assertEquals("LOWER TENNESSEE", result.getString(20, 0));
 		
 	}
 	
