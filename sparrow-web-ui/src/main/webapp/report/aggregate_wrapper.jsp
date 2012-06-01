@@ -1,6 +1,16 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="gov.usgswim.sparrow.SparrowUtil, gov.usgswim.sparrow.SparrowUtil.UrlFeatures" %>
-<%@ page import="java.net.*, java.io.*" %>
+<%@page import="gov.usgswim.sparrow.SparrowUtil" %>
+<%@page import="gov.usgswim.sparrow.SparrowUtil.UrlFeatures" %>
+<%@page import="java.net.*, java.io.*" %>
+<%
+	String regionType = "state";	//default
+	if (request.getParameter("region-type") != null) {
+		regionType = request.getParameter("region-type");
+	}
+	
+	String contextId = request.getParameter("context-id");
+	
+%>
     <h2>SPARROW DSS Total Delivered Load, Aggregated by Upstream Region</h2>
 		<div class="explanation">
 			<p>
@@ -17,7 +27,13 @@
 				<div class="content">
 				<h4>Aggregate upstream regions by</h4>
 				<form>
-					<p class="input"><input type="radio" name="region-type" value="state" />State (currently the only option)</p>
+					<p class="input"><input type="radio" name="region-type"<%= ("state".equals(regionType))?"checked=\"checked\"":"" %> value="state" />State</p>
+					<p class="input"><input type="radio" name="region-type"<%= ("huc2".equals(regionType))?"checked=\"checked\"":"" %> value="huc2" />HUC 2</p>
+					<p class="input"><input type="radio" name="region-type"<%= ("huc4".equals(regionType))?"checked=\"checked\"":"" %> value="huc4" />HUC 4</p>
+					<p class="input"><input type="radio" name="region-type"<%= ("huc6".equals(regionType))?"checked=\"checked\"":"" %> value="huc6" />HUC 6</p>
+					<p class="input"><input type="radio" name="region-type"<%= ("huc8".equals(regionType))?"checked=\"checked\"":"" %> value="huc8" />HUC 8</p>
+					<p class="input"><input type="submit" value="Update Report" /></p>
+					<input type="hidden" name="context-id" value="<%= contextId %>" />
 				</form>
 				</div>
 			</div>
@@ -43,7 +59,7 @@
  	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
 	String tableName = "getDeliveryAggReport";
 	String tableParams = "context-id=" + request.getParameter("context-id") +
-			"&region-type=state" + 	
+			"&region-type=" + regionType + 	
 			"&include-zero-rows=false" + 					
 			"&mime-type=xhtml_table";
 	

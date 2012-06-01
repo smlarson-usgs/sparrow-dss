@@ -46,6 +46,18 @@ public enum AggregationLevel implements NamedEnum<AggregationLevel> {
 		return hucLevel;
 	}
 	
+	/**
+	 * Returns true if the passed name matches the name of this instance.
+	 * 
+	 * This method is case insensitive.
+	 * @param name
+	 * @return 
+	 */
+	public boolean nameEquals(String name) {
+		AggregationLevel al = fromStringIgnoreCase(name);
+		return al != null && this.equals(al);
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -62,6 +74,8 @@ public enum AggregationLevel implements NamedEnum<AggregationLevel> {
 	
 	@Override
 	public AggregationLevel fromStringIgnoreCase(String name) {
+		if (name == null) return null;
+		
 		for (AggregationLevel val : values()) {
 			if (val.name.equalsIgnoreCase(name)) {
 				return val;
