@@ -55,29 +55,16 @@ public class LoadModelPredictDataFromSerializationFile extends Action<PredictDat
 	@Override
 	public PredictData doAction() throws Exception {
 		
-		//use buffering
-		File file = new File(getFilePathForModel(modelId));
+		PredictData pd = tryToLoad();
 		
-		if (file.exists()) {
-		
-			InputStream fileInputStream = new FileInputStream(file);
-			InputStream buffer = new BufferedInputStream( fileInputStream );
-			ObjectInput input = new ObjectInputStream ( buffer );
-			try {
-			  //deserialize the List
-				PredictData pd = (PredictData)input.readObject();
-				return pd;
-			} catch (Exception e) {
-				setPostMessage("The model could not be loaded");
-				throw e;
-			} finally {
-			  input.close();
-			}
+		if (pd != null) {
+			return pd;
 		} else {
+
 			if (isAllowFetchFromDb()) {
 				LoadModelPredictData action = new LoadModelPredictData();
 				action.setModelId(modelId);
-				PredictData pd = action.run();
+				pd = action.run();
 				serializeModelToFile(pd, getFilePathForModel(modelId));
 				return pd;
 			} else {
@@ -88,6 +75,34 @@ public class LoadModelPredictDataFromSerializationFile extends Action<PredictDat
 		}
 		
 		
+	}
+	
+	protected PredictData tryToLoad() {
+		
+		File file = new File(getFilePathForModel(modelId));
+		
+		if (file.exists()) {
+			try {
+				InputStream fileInputStream = new FileInputStream(file);
+				InputStream buffer = new BufferedInputStream( fileInputStream );
+				ObjectInput input = new ObjectInputStream ( buffer );
+				try {
+					//deserialize the List
+					PredictData pd = (PredictData)input.readObject();
+					return pd;
+				} catch (Exception e) {
+					log.error("The serialized model could not be loaded - will grab from db.", e);
+					file.delete();
+					//do nothing else
+				} finally {
+					input.close();
+				}
+			} catch (Exception ee) {
+				//do nothing else
+			}
+		}
+		
+		return null;
 	}
 	
 	public static void serializeModelToFile(PredictData pd, String fileName) {
