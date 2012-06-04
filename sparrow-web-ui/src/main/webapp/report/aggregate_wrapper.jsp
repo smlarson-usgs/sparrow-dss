@@ -26,13 +26,13 @@
 			<div class="from-aggregate-area column">
 				<div class="content">
 				<h4>Aggregate upstream regions by</h4>
-				<form>
+				<form id="agg-upstream-form">
 					<p class="input"><input type="radio" name="region-type"<%= ("state".equals(regionType))?"checked=\"checked\"":"" %> value="state" />State</p>
 					<p class="input"><input type="radio" name="region-type"<%= ("huc2".equals(regionType))?"checked=\"checked\"":"" %> value="huc2" />HUC 2</p>
 					<p class="input"><input type="radio" name="region-type"<%= ("huc4".equals(regionType))?"checked=\"checked\"":"" %> value="huc4" />HUC 4</p>
 					<p class="input"><input type="radio" name="region-type"<%= ("huc6".equals(regionType))?"checked=\"checked\"":"" %> value="huc6" />HUC 6</p>
 					<p class="input"><input type="radio" name="region-type"<%= ("huc8".equals(regionType))?"checked=\"checked\"":"" %> value="huc8" />HUC 8</p>
-					<p class="input"><input type="submit" value="Update Report" /></p>
+					<p class="input"><input id="agg-upstream-form-submit" type="submit" value="Update Report" /></p>
 					<input type="hidden" name="context-id" value="<%= contextId %>" />
 				</form>
 				</div>
@@ -54,20 +54,21 @@
 			</div>
 			<div class="export-area"></div>
 		</div>
+		<div id="agg-report-table-area">
  <%
  
  	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
 	String tableName = "getDeliveryAggReport";
-	String tableParams = "context-id=" + request.getParameter("context-id") +
+	String reqParams = "context-id=" + request.getParameter("context-id") +
 			"&region-type=" + regionType + 	
 			"&include-zero-rows=false" + 					
 			"&mime-type=xhtml_table";
 	
-	String tableUrl = pageRequestUrl.getBaseUrlWithSlash() + tableName + "?" + tableParams;
+	String reqUrl = pageRequestUrl.getBaseUrlWithSlash() + tableName + "?" + reqParams;
  
  	response.getWriter().flush();
  
-    URL url = new URL(tableUrl);
+    URL url = new URL(reqUrl);
     BufferedReader in = new BufferedReader(
     new InputStreamReader(url.openStream()));
 		//StringBuffer table = new StringBuffer();
@@ -77,3 +78,4 @@
     in.close();
  
  %>
+		</div>

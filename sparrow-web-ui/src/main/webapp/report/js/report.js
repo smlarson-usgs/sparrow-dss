@@ -4,10 +4,50 @@ var termReachesAtTimeOfCreation;
 $(document).ready(function(){
    $("#tabs").tabs();
 	 
-	 var terms = getParentCurrentTermReaches();
+	 initTerminalReaches();
+	 initAggReportForm();
 	 
-	 termReachesAtTimeOfCreation = terms;
-	 //alert(getTermReachesAsString(termReachesAtTimeOfCreation));
+	 
+});
+
+function initAggReportForm() {
+	$("#agg-upstream-form").submit(function(event) {
+		
+		event.preventDefault();
+		
+		var contextId = $('#agg-upstream-form input[name="context-id"]').val();
+		var regionType = $('#agg-upstream-form input[name="region-type"]:checked').val();
+		var tableName = "getDeliveryAggReport";
+		var reqParams = "context-id=" + contextId +
+			"&region-type=" + regionType + 	
+			"&include-zero-rows=false" + 					
+			"&mime-type=xhtml_table";
+		var reqUrl = "../" + tableName + "?" + reqParams;
+
+
+		$.ajax({
+				url: reqUrl,
+				success: function(response, textStatus, jqXHR) {
+						// update status element
+						//alert('OK - got new table content: ' + jqXHR.responseText);
+						
+						$("#agg-report-table-area").empty();
+						$("#agg-report-table-area").append(jqXHR.responseText);;
+						
+				},
+				error: function(xhr) {
+						alert('Error!  Status = ' + xhr.status);
+				}
+		});
+		
+		return false;
+	});
+	
+}
+
+function initTerminalReaches() {
+	 termReachesAtTimeOfCreation = getParentCurrentTermReaches();
+	 
 	 $("p.downstream-reaches-list").append(getTermReachesAsString(termReachesAtTimeOfCreation));
 	 
 	 
@@ -22,8 +62,7 @@ $(document).ready(function(){
 	});
 
   timer.set({time : 5000, autostart : true});
-	 
-});
+}
 
 
 function termReachesOutOfSync() {
@@ -96,14 +135,21 @@ function getTermReachesAsString(terms) {
 }
 
 function getParentCurrentTermReaches() {
-	var parentTerms = window.opener.Sparrow.SESSION.getAllTargetedReaches();
-	var copyTerms = new Array();
 	
-	for (var i=0; i < parentTerms.length; i++) {
-		 copyTerms.push(parentTerms[i]);
+	if (window.opener != null) {
+		var parentTerms = window.opener.Sparrow.SESSION.getAllTargetedReaches();
+		var copyTerms = new Array();
+
+		for (var i=0; i < parentTerms.length; i++) {
+			copyTerms.push(parentTerms[i]);
+		}
+
+
+		return copyTerms;
+	
+	} else {
+		//Possibly just testing - or the user closed the opening window
+		return new Array();
 	}
-	 
-	 
-	return copyTerms;
 }
 

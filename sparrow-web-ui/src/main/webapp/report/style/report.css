@@ -29,6 +29,9 @@ Head Section */
 }
 .downstream-reaches-list { font-size: 75%; }
 
+#agg-report-table-area, #terminal-report-table-area {
+	clear: both;	/* Don't let it float into or off the side of the column area above */
+}
 
 table {
 	border-collapse:collapse;
