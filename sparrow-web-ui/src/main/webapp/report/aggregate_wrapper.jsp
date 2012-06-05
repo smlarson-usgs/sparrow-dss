@@ -54,7 +54,14 @@
 			</div>
 			<div class="export-area"></div>
 		</div>
-		<div id="agg-report-table-area">
+		<div id="agg-report-area" class="report-area">
+			<div class="report-load-status">
+				<h3 class="message">
+					<img src="../images/wait.gif" />
+					<span class="message-text">Report is loading...</span>
+				</h3>
+			</div>
+			<div class="report-table-area">
  <%
  
  	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
@@ -78,4 +85,5 @@
     in.close();
  
  %>
+			</div>
 		</div>

@@ -27,12 +27,17 @@ function initAggReportForm() {
 
 		$.ajax({
 				url: reqUrl,
+				
+				beforeSend: function(jqXHR, settings) {
+					$("#agg-report-area .report-load-status").show('normal');
+				},
 				success: function(response, textStatus, jqXHR) {
 						// update status element
 						//alert('OK - got new table content: ' + jqXHR.responseText);
 						
-						$("#agg-report-table-area").empty();
-						$("#agg-report-table-area").append(jqXHR.responseText);;
+						$("#agg-report-area .report-table-area").empty();
+						$("#agg-report-area .report-table-area").append(jqXHR.responseText);
+						$("#agg-report-area .report-load-status").hide('normal');
 						
 				},
 				error: function(xhr) {

@@ -18,7 +18,13 @@
 				<em>Active Downstream Reaches</em> in the Sparrow DSS.  <a href="">More info...</a>
 			</p>
 		</div>
-		<div id="terminal-report-table-area">
+		
+		<div id="terminal-report-area" class="report-area">
+			<div class="report-load-status">
+				<img src="../images/wait.gif" />
+				<h3 class="message">Report is loading...</h3>
+			</div>
+			<div class="report-table-area">
  <%
 	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
 	String tableName = "getDeliveryTerminalReport";
@@ -40,4 +46,5 @@
     in.close();
  
  %>
+			</div>
 		</div>
