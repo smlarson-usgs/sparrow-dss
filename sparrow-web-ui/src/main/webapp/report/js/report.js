@@ -11,9 +11,9 @@ $(document).ready(function(){
 });
 
 function initAggReportForm() {
-	$("#agg-upstream-form").submit(function(event) {
+	$('#agg-upstream-form input[name="region-type"]').change(function(event) {
 		
-		event.preventDefault();
+		//event.preventDefault();
 		
 		var contextId = $('#agg-upstream-form input[name="context-id"]').val();
 		var regionType = $('#agg-upstream-form input[name="region-type"]:checked').val();

@@ -32,7 +32,7 @@
 					<p class="input"><input type="radio" name="region-type"<%= ("huc4".equals(regionType))?"checked=\"checked\"":"" %> value="huc4" />HUC 4</p>
 					<p class="input"><input type="radio" name="region-type"<%= ("huc6".equals(regionType))?"checked=\"checked\"":"" %> value="huc6" />HUC 6</p>
 					<p class="input"><input type="radio" name="region-type"<%= ("huc8".equals(regionType))?"checked=\"checked\"":"" %> value="huc8" />HUC 8</p>
-					<p class="input"><input id="agg-upstream-form-submit" type="submit" value="Update Report" /></p>
+					<!-- <p class="input"><input id="agg-upstream-form-submit" type="submit" value="Update Report" /></p> -->
 					<input type="hidden" name="context-id" value="<%= contextId %>" />
 				</form>
 				</div>
