@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.service;
 
 import gov.usgswim.sparrow.cachefactory.*;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
+import gov.usgswim.sparrow.monitor.CacheInvocation;
 
 import java.util.Collections;
 import java.util.List;
@@ -119,23 +120,60 @@ public enum ConfiguredCache {
 	 * @return
 	 */
 	public Object get(Object key, boolean quiet) {
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
+		Ehcache cache = SparrowCacheManager.getInstance().getEhcache(this.name());
 		
-		if (c != null && isCached) {
-			Element e  = (quiet)? c.getQuiet(key): c.get(key);
-			return (e != null)? e.getObjectValue(): null;
-		} else if (factory != null && ! isCached) {
-			//No cache defined, but we do have a factory, so invoke directly
-			try {
-				Object o = factory.createEntry(key);
-				return o;
-			} catch (Exception e) {
-				e.printStackTrace();
+		//monitoring
+		CacheInvocation invocation = new CacheInvocation(this.getClass(), key, key.toString());
+		invocation.start();
+		
+		try {
+			if (cache != null && isCached) {
+				
+				//Element may be expired, so this is not 100% for sure a hit
+				//Note:  We cannot use cache.get() to determine if cached b/c the factory will create it.
+				invocation.setCacheHit(cache.isKeyInCache(key));
+				
+				Element e  = (quiet)? cache.getQuiet(key): cache.get(key);
+				
+				if (e != null) {
+					Object value = e.getObjectValue();
+					invocation.setNonNullResponse(value != null);
+					return value;
+				} else {
+					invocation.setNonNullResponse(false);
+					return null;
+				}
+				
+			} else if (factory != null && ! isCached) {
+				//No cache defined, but we do have a factory, so invoke directly
+				
+				invocation.setCacheHit(false);
+				try {
+					Object o = factory.createEntry(key);
+					invocation.setNonNullResponse(o != null);
+					return o;
+				} catch (Exception e) {
+					e.printStackTrace();
+					invocation.setError(e);
+					invocation.setNonNullResponse(false);
+					return null;	//We don't have a way to report this at this level
+				}
+			} else {
+				//There is no factory and no cache... return null I guess
+				return null;
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+			invocation.setError(t);
+			invocation.setNonNullResponse(false);
+			
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException) t;
+			} else {
 				return null;	//We don't have a way to report this at this level
 			}
-		} else {
-			//There is no factory and no cache... return null I guess
-			return null;
+		} finally {
+			invocation.finish();
 		}
 	}
 	
@@ -161,23 +199,60 @@ public enum ConfiguredCache {
 	 * @return
 	 */
 	public Object get(Long key, boolean quiet) {
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
+		Ehcache cache = SparrowCacheManager.getInstance().getEhcache(this.name());
 		
-		if (c != null && isCached) {
-			Element e  = (quiet)? c.getQuiet(key): c.get(key);
-			return (e != null)? e.getObjectValue(): null;
-		} else if (factory != null && ! isCached) {
-			//No cache defined, but we do have a factory, so invoke directly
-			try {
-				Object o = factory.createEntry(key);
-				return o;
-			} catch (Exception e) {
-				e.printStackTrace();
+		//monitoring
+		CacheInvocation invocation = new CacheInvocation(this.getClass(), key, key.toString());
+		invocation.start();
+		
+		try {
+			if (cache != null && isCached) {
+
+				//Element may be expired, so this is not 100% for sure a hit
+				//Note:  We cannot use cache.get() to determine if cached b/c the factory will create it.
+				invocation.setCacheHit(cache.isKeyInCache(key));
+
+				Element e  = (quiet)? cache.getQuiet(key): cache.get(key);
+
+				if (e != null) {
+					Object value = e.getObjectValue();
+					invocation.setNonNullResponse(value != null);
+					return value;
+				} else {
+					invocation.setNonNullResponse(false);
+					return null;
+				}
+
+			} else if (factory != null && ! isCached) {
+				//No cache defined, but we do have a factory, so invoke directly
+				
+				invocation.setCacheHit(false);
+				try {
+					Object o = factory.createEntry(key);
+					invocation.setNonNullResponse(o != null);
+					return o;
+				} catch (Exception e) {
+					e.printStackTrace();
+					invocation.setError(e);
+					invocation.setNonNullResponse(false);
+					return null;	//We don't have a way to report this at this level
+				}
+			} else {
+				//There is no factory and no cache... return null I guess
+				return null;
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+			invocation.setError(t);
+			invocation.setNonNullResponse(false);
+			
+			if (t instanceof RuntimeException) {
+				throw (RuntimeException) t;
+			} else {
 				return null;	//We don't have a way to report this at this level
 			}
-		} else {
-			//There is no factory and no cache... return null I guess
-			return null;
+		} finally {
+			invocation.finish();
 		}
 	}
 	

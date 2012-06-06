@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import gov.usgswim.sparrow.domain.DataSeriesType;
+import gov.usgswim.sparrow.monitor.ActionInvocation;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.IOException;
@@ -84,6 +85,13 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	/** A list of resultsets to be closed when the action completes */
 	private List<ResultSet> autoCloseResults;
 	
+	/**
+	 * A monitor object that will be non-null when doAction() is called.
+	 * To help monitor, subclasses should add the request object and
+	 * string to the invocation.
+	 */
+	protected ActionInvocation invocation;
+	
 	public Action() {
 		staticRunCount++;
 		runNumber = staticRunCount;
@@ -132,6 +140,8 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	protected void preAction() {
 		
 		startTime = System.currentTimeMillis();
+		
+		invocation = new ActionInvocation(this.getClass());
 		
 		if (log.isTraceEnabled()) {
 			log.trace("Beginning action for " + this.getClass().getName() +
@@ -216,89 +226,97 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 */
 	protected void postAction(boolean success, Exception error) {
 		
+		invocation.setNonNullResponse(success);
+		invocation.setError(error);
+		if (hasValidationErrors()) invocation.setValidationErrors(getValidationErrors());
+		
 		try {
-			
-			String msg = getPostMessage();
-			if (msg == null) {
-				msg = "(no message from the action)";
-			}
-			
-			if (success) {
-				if (log.isInfoEnabled()) {
-					long totalTime = (System.currentTimeMillis() - startTime) / 1000;
-					String tTimeStr = Long.toString(totalTime);
-					
-					if (error == null) {
-						log.info("Action completed for " + this.getClass().getName() +
-								".  Total Time: " + tTimeStr + "secs, Run Number: " +
-								runNumber + NL + "Message from Action: " + msg);
-					} else {
-						log.error("Action completed, but generated an exception for " +
-								this.getClass().getName() + ".  Total Time: " +
-								tTimeStr + "secs, Run Number: " +
-								runNumber + NL + "Message from Action: " + msg, error);
-					}
-					
-				}
-			} else {
-				
-				if (error != null) {
-					log.error("Action FAILED w/ an exception for " +
-							this.getClass().getName() + ".  Run Number: " +
-							runNumber + NL + "Message from Action: " + msg, error);
-				} else {
-					log.warn("Action FAILED but did not generate an error for " +
-							this.getClass().getName() + ".  Run Number: " +
-							runNumber + NL + "Message from Action: " + msg);
-				}
-	
-			}
-		} catch (Exception e) {
-			//Ignore - some type of loggin err not worth handling
-		}
+			try {
 
-		
-		//Close any open resultSets
-		if (autoCloseResults != null) {
-			for (ResultSet rs : autoCloseResults) {
-				try {
-					if (rs != null)	{
-						rs.close();
-						log.trace("Successfully autoclosed ResultSet ID: " + rs.hashCode());
-					}
-				} catch (Exception e) {
-					log.warn(
-							"Good grief, I just tried to close a SQL ResultSet," +
-							" should this really throw an exception?  " +
-							"ResultSet ID: " + rs.hashCode(), e);
+				String msg = getPostMessage();
+				if (msg == null) {
+					msg = "(no message from the action)";
 				}
-			}
-			
-			autoCloseResults.clear();
-		}
-		
-		//Close any open prepared statements
-		if (autoCloseStatements != null) {
-			for (Statement ps : autoCloseStatements) {
-				try {
-					if (ps != null)	{
-						ps.close();
-						log.trace("Successfully autoclosed statement ID: " + ps.hashCode());
+
+				if (success) {
+					if (log.isInfoEnabled()) {
+						long totalTime = (System.currentTimeMillis() - startTime) / 1000;
+						String tTimeStr = Long.toString(totalTime);
+
+						if (error == null) {
+							log.info("Action completed for " + this.getClass().getName() +
+									".  Total Time: " + tTimeStr + "secs, Run Number: " +
+									runNumber + NL + "Message from Action: " + msg);
+						} else {
+							log.error("Action completed, but generated an exception for " +
+									this.getClass().getName() + ".  Total Time: " +
+									tTimeStr + "secs, Run Number: " +
+									runNumber + NL + "Message from Action: " + msg, error);
+						}
+
 					}
-				} catch (Exception e) {
-					log.warn(
-							"Good grief, I just tried to close a SQL Statement," +
-							" should this really throw an exception?  " +
-							"Statement ID: " + ps.hashCode(), e);
+				} else {
+
+					if (error != null) {
+						log.error("Action FAILED w/ an exception for " +
+								this.getClass().getName() + ".  Run Number: " +
+								runNumber + NL + "Message from Action: " + msg, error);
+					} else {
+						log.warn("Action FAILED but did not generate an error for " +
+								this.getClass().getName() + ".  Run Number: " +
+								runNumber + NL + "Message from Action: " + msg);
+					}
+
 				}
+			} catch (Exception e) {
+				//Ignore - some type of loggin err not worth handling
 			}
-			
-			autoCloseStatements.clear();
+
+
+			//Close any open resultSets
+			if (autoCloseResults != null) {
+				for (ResultSet rs : autoCloseResults) {
+					try {
+						if (rs != null)	{
+							rs.close();
+							log.trace("Successfully autoclosed ResultSet ID: " + rs.hashCode());
+						}
+					} catch (Exception e) {
+						log.warn(
+								"Good grief, I just tried to close a SQL ResultSet," +
+								" should this really throw an exception?  " +
+								"ResultSet ID: " + rs.hashCode(), e);
+					}
+				}
+
+				autoCloseResults.clear();
+			}
+
+			//Close any open prepared statements
+			if (autoCloseStatements != null) {
+				for (Statement ps : autoCloseStatements) {
+					try {
+						if (ps != null)	{
+							ps.close();
+							log.trace("Successfully autoclosed statement ID: " + ps.hashCode());
+						}
+					} catch (Exception e) {
+						log.warn(
+								"Good grief, I just tried to close a SQL Statement," +
+								" should this really throw an exception?  " +
+								"Statement ID: " + ps.hashCode(), e);
+					}
+				}
+
+				autoCloseStatements.clear();
+			}
+
+			//Close the connections, if not null
+			if (! externallyOwnedROConn) close(roConn);
+			if (! externallyOwnedRWConn) close(rwConn);
+		} finally {
+			invocation.finish();
 		}
-		
-		//Close the connections, if not null
-		if (! externallyOwnedROConn) close(roConn);
-		if (! externallyOwnedRWConn) close(rwConn);
 	}
 	
 	/**

@@ -17,6 +17,7 @@ import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.domain.reacharearelation.ModelReachAreaRelations;
+import gov.usgswim.sparrow.monitor.RequestMonitor;
 import gov.usgswim.sparrow.request.*;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
@@ -24,8 +25,10 @@ import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -61,12 +64,64 @@ public class SharedApplication  {
 
 	//an ehcache test cache
 	public static final String SERIALIZABLE_CACHE = PredictContext.name();
-
-
+	
+	
+	//Request Monitoring
+	private ConcurrentLinkedQueue<RequestMonitor> activeRequests = new ConcurrentLinkedQueue<RequestMonitor>();
+	private ConcurrentLinkedQueue<RequestMonitor> completeSimpleRequests = new ConcurrentLinkedQueue<RequestMonitor>();
+	private ConcurrentLinkedQueue<RequestMonitor> completeComplexRequests = new ConcurrentLinkedQueue<RequestMonitor>();
+	
 	private SharedApplication() {
 
 	}
 
+	
+	public void addActiveRequest(RequestMonitor activeRequest) {
+		activeRequests.add(activeRequest);
+	}
+	
+	public Iterator<RequestMonitor> getActiveRequests() {
+		return activeRequests.iterator();
+	}
+	
+	public void setRequestFinished(RequestMonitor finishedRequest) {
+		activeRequests.remove(finishedRequest);
+		
+		if (finishedRequest.hasChildren()) {
+			//finishedRequest.releaseRequest(true);
+			completeComplexRequests.add(finishedRequest);
+			checkCompletedComplexRequestsSize();
+		} else {
+			//finishedRequest.releaseRequest(true);
+			completeSimpleRequests.add(finishedRequest);
+			checkCompletedSimpleRequestsSize();
+		}
+	}
+	
+	private void checkCompletedSimpleRequestsSize() {
+		try {
+			while (completeSimpleRequests.size() > 200) {
+				completeSimpleRequests.remove();
+			}
+		} catch (Exception e) {
+			//Ignore - not expected
+			e.printStackTrace();
+		}
+	}
+	
+	private void checkCompletedComplexRequestsSize() {
+		try {
+			while (completeComplexRequests.size() > 200) {
+				completeComplexRequests.remove();
+			}
+		} catch (Exception e) {
+			//Ignore - not expected
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
 	public static synchronized SharedApplication getInstance() {
 		if (instance == null) {
 			instance = new SharedApplication();
