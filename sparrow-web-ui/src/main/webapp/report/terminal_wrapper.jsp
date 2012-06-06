@@ -25,7 +25,7 @@
 				<h3 class="message">Report is loading...</h3>
 			</div>
 			<div class="report-table-area">
- <%
+ <!--
 	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
 	String tableName = "getDeliveryTerminalReport";
 	String tableParams = "context-id=" + request.getParameter("context-id") +	
@@ -45,6 +45,6 @@
     	out.write(inputLine);
     in.close();
  
- %>
+ -->
 			</div>
 		</div>

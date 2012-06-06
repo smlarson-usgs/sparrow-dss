@@ -4,23 +4,66 @@ var termReachesAtTimeOfCreation;
 $(document).ready(function(){
    $("#tabs").tabs();
 	 
-	 initTerminalReaches();
-	 initAggReportForm();
+	 initTermReaches();
+	 initTermReport();
+	 initAggReport();
 	 
 	 
 });
 
-function initAggReportForm() {
-	$('#agg-upstream-form input[name="region-type"]').change(function(event) {
+var aggReportRegionChangeHandler = function(event) {
 		
-		//event.preventDefault();
+	var urlParams = getUrlVars();
+
+	var contextId = urlParams["context-id"];
+	var regionType = $('#agg-upstream-form input[name="region-type"]:checked').val();
+	var tableName = "getDeliveryAggReport";
+	var reqParams = "context-id=" + contextId +
+		"&region-type=" + regionType + 	
+		"&include-zero-rows=false" + 					
+		"&mime-type=xhtml_table";
+	var reqUrl = "../" + tableName + "?" + reqParams;
+
+
+	$.ajax({
+			url: reqUrl,
+
+			beforeSend: function(jqXHR, settings) {
+				$("#agg-report-area .report-load-status").show('normal');
+			},
+			success: function(response, textStatus, jqXHR) {
+					// update status element
+					//alert('OK - got new table content: ' + jqXHR.responseText);
+
+					$("#agg-report-area .report-table-area").empty();
+					$("#agg-report-area .report-table-area").append(jqXHR.responseText);
+					$("#agg-report-area .report-load-status").hide('normal');
+
+			},
+			error: function(xhr) {
+					alert('Error!  Status = ' + xhr.status);
+			}
+	});
+
+	return false;
+};
+	
+function initAggReport() {
+	
+	$('#agg-upstream-form input[name="region-type"]').change(aggReportRegionChangeHandler);
+	
+	this.aggReportRegionChangeHandler();
+}
+
+function initTermReport() {
+
+		var urlParams = getUrlVars();
 		
-		var contextId = $('#agg-upstream-form input[name="context-id"]').val();
-		var regionType = $('#agg-upstream-form input[name="region-type"]:checked').val();
-		var tableName = "getDeliveryAggReport";
-		var reqParams = "context-id=" + contextId +
-			"&region-type=" + regionType + 	
-			"&include-zero-rows=false" + 					
+		var tableName = "getDeliveryTerminalReport";
+		var contextId = urlParams["context-id"];
+		var reqParams =
+			"context-id=" + contextId +
+			"&include-zero-rows=true" + 					
 			"&mime-type=xhtml_table";
 		var reqUrl = "../" + tableName + "?" + reqParams;
 
@@ -29,15 +72,15 @@ function initAggReportForm() {
 				url: reqUrl,
 				
 				beforeSend: function(jqXHR, settings) {
-					$("#agg-report-area .report-load-status").show('normal');
+					$("#terminal-report-area .report-load-status").show('normal');
 				},
 				success: function(response, textStatus, jqXHR) {
 						// update status element
 						//alert('OK - got new table content: ' + jqXHR.responseText);
 						
-						$("#agg-report-area .report-table-area").empty();
-						$("#agg-report-area .report-table-area").append(jqXHR.responseText);
-						$("#agg-report-area .report-load-status").hide('normal');
+						$("#terminal-report-area .report-table-area").empty();
+						$("#terminal-report-area .report-table-area").append(jqXHR.responseText);
+						$("#terminal-report-area .report-load-status").hide('normal');
 						
 				},
 				error: function(xhr) {
@@ -45,12 +88,11 @@ function initAggReportForm() {
 				}
 		});
 		
-		return false;
-	});
+
 	
 }
 
-function initTerminalReaches() {
+function initTermReaches() {
 	 termReachesAtTimeOfCreation = getParentCurrentTermReaches();
 	 
 	 $("p.downstream-reaches-list").append(getTermReachesAsString(termReachesAtTimeOfCreation));
@@ -158,3 +200,13 @@ function getParentCurrentTermReaches() {
 	}
 }
 
+function getUrlVars() {
+	var vars = [], hash;
+	var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+	for(var i = 0; i < hashes.length; i++) {
+		hash = hashes[i].split('=');
+		vars.push(hash[0]);
+		vars[hash[0]] = hash[1];
+	}
+	return vars;
+}

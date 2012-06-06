@@ -73,3 +73,13 @@ rel-percent-in-row div {
 
 .rel-percent-in-row span { overflow: visible; float: right; padding: 0 .2em; }
 
+/* Uses the 'off left' technique to hide
+ * unused tabs instead of the 'display none' technique.
+ * This allows animations (in particular show / hide)
+ * to work correctly on hidden tabs.
+ */
+.ui-tabs .ui-tabs-hide {
+    position: absolute;
+    left: -10000px;
+		display: block !important;
+}
