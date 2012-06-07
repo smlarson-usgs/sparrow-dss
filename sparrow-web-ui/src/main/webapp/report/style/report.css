@@ -16,9 +16,10 @@ Head Section */
 .explanation p { margin: .2em 0; }
 
 .columns-2 { border: solid 1px #000; border-left: none; width: auto; }
-.column { border-left: solid 1px #000; }
+.column { border-left: solid 1px #000; background-color:transparent !important; }
 
 .to-and-from-area { }
+#agg-upstream-form { width: 100%;}
 .from-aggregate-area { background-color: #fff; }
 .to-downstream-reaches-area { background-color: #fff; }
 .column .content { padding: 0 .4em; }

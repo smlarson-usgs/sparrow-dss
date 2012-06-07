@@ -10,7 +10,39 @@
 	
 	String contextId = request.getParameter("context-id");
 	
+	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
+	String tableName = "getDeliveryAggReport";
+	String downloadReqParams = "context-id=" + request.getParameter("context-id") +
+			"&region-type=" + regionType + 	
+			"&include-zero-rows=false" + 					
+			"&mime-type=csv";
+	
+	String downloadReqUrl = pageRequestUrl.getBaseUrlWithSlash() + tableName + "?" + downloadReqParams;
+	
 %>
+ <!--
+ 
+ 	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
+	String tableName = "getDeliveryAggReport";
+	String reqParams = "context-id=" + request.getParameter("context-id") +
+			"&region-type=" + regionType + 	
+			"&include-zero-rows=false" + 					
+			"&mime-type=xhtml_table";
+	
+	String reqUrl = pageRequestUrl.getBaseUrlWithSlash() + tableName + "?" + reqParams;
+ 
+ 	response.getWriter().flush();
+ 
+    URL url = new URL(reqUrl);
+    BufferedReader in = new BufferedReader(
+    new InputStreamReader(url.openStream()));
+		//StringBuffer table = new StringBuffer();
+    String inputLine;
+    while ((inputLine = in.readLine()) != null)
+    	out.write(inputLine);
+    in.close();
+ 
+ -->
     <h2>SPARROW DSS Total Delivered Load, Aggregated by Upstream Region</h2>
 		<div class="explanation">
 			<p>
@@ -26,13 +58,18 @@
 			<div class="from-aggregate-area column">
 				<div class="content">
 				<h4>Aggregate upstream regions by</h4>
-				<form id="agg-upstream-form">
+				<form id="agg-upstream-form" class="columns-2">
+					<div class="column">
 					<p class="input"><input type="radio" name="region-type"<%= ("state".equals(regionType))?"checked=\"checked\"":"" %> value="state" />State</p>
 					<p class="input"><input type="radio" name="region-type"<%= ("huc2".equals(regionType))?"checked=\"checked\"":"" %> value="huc2" />HUC 2</p>
 					<p class="input"><input type="radio" name="region-type"<%= ("huc4".equals(regionType))?"checked=\"checked\"":"" %> value="huc4" />HUC 4</p>
 					<p class="input"><input type="radio" name="region-type"<%= ("huc6".equals(regionType))?"checked=\"checked\"":"" %> value="huc6" />HUC 6</p>
 					<p class="input"><input type="radio" name="region-type"<%= ("huc8".equals(regionType))?"checked=\"checked\"":"" %> value="huc8" />HUC 8</p>
 					<input type="hidden" name="context-id" value="<%= contextId %>" />
+					</div>
+					<div class="column">
+						<a class="button" href="<%= downloadReqUrl %>" title="Download the currently displayed report">Download as CSV</a>
+					</div>
 				</form>
 				</div>
 			</div>
@@ -61,28 +98,5 @@
 				</h3>
 			</div>
 			<div class="report-table-area">
- <!--
- 
- 	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
-	String tableName = "getDeliveryAggReport";
-	String reqParams = "context-id=" + request.getParameter("context-id") +
-			"&region-type=" + regionType + 	
-			"&include-zero-rows=false" + 					
-			"&mime-type=xhtml_table";
-	
-	String reqUrl = pageRequestUrl.getBaseUrlWithSlash() + tableName + "?" + reqParams;
- 
- 	response.getWriter().flush();
- 
-    URL url = new URL(reqUrl);
-    BufferedReader in = new BufferedReader(
-    new InputStreamReader(url.openStream()));
-		//StringBuffer table = new StringBuffer();
-    String inputLine;
-    while ((inputLine = in.readLine()) != null)
-    	out.write(inputLine);
-    in.close();
- 
- -->
 			</div>
 		</div>
