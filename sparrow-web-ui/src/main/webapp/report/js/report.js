@@ -17,6 +17,9 @@ var aggReportRegionChangeHandler = function(event) {
 
 	var contextId = urlParams["context-id"];
 	var regionType = $('#agg-upstream-form input[name="region-type"]:checked').val();
+	if (regionType == null) {
+		regionType = "state";
+	}
 	var tableName = "getDeliveryAggReport";
 	var reqParams = "context-id=" + contextId +
 		"&region-type=" + regionType + 	
