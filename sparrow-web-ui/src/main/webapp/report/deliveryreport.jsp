@@ -33,16 +33,30 @@
 </head>
 <body>
     <jsp:include page="../header.jsp" flush="true" />
-		
+				<!--
 <div id="tabs" class="content">
     <ul>
         <li><a href="#fragment-1"><span>Total Delivered Load Summary</span></a></li>
         <li><a href="#fragment-2"><span>Upstream Source Aggregations (by State and HUC)</span></a></li>
     </ul>
     <div id="fragment-1">
-       <jsp:include page="terminal_wrapper.jsp" flush="true" />
+       <jsp :include page="terminal_wrapper.jsp" flush="true" />
     </div>
     <div id="fragment-2">
+			<jsp :include page="aggregate_wrapper.jsp" flush="true" />
+    </div>
+</div>
+-->
+	
+<div id="tabs" class="content">
+    <ul>
+        <li><a href="#terminal-report-container"><span>Total Delivered Load Summary</span></a></li>
+        <li><a href="#aggregate-report-container"><span>Upstream Source Aggregations (by State and HUC)</span></a></li>
+    </ul>
+    <div id="terminal-report-container" class="report-container">
+       <jsp:include page="terminal_wrapper.jsp" flush="true" />
+    </div>
+    <div id="aggregate-report-container" class="report-container">
 			<jsp:include page="aggregate_wrapper.jsp" flush="true" />
     </div>
 </div>

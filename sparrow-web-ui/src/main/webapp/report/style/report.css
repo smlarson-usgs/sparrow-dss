@@ -13,13 +13,18 @@ Head Section */
 .explanation {
 	margin: .4em 0; padding: .3em; background-color: #eefff0; border: solid 1px #000;
 }
+
+#terminal-report-container .download-area {
+	border: solid 1px #000; padding: .3em; margin: .5em 0;
+}
+
 .explanation p { margin: .2em 0; }
 
 .columns-2 { border: solid 1px #000; border-left: none; width: auto; }
 .column { border-left: solid 1px #000; background-color:transparent !important; }
 
 .to-and-from-area { }
-#agg-upstream-form { width: 100%;}
+.report-container .controls { width: 100%;}
 .from-aggregate-area { background-color: #fff; }
 .to-downstream-reaches-area { background-color: #fff; }
 .column .content { padding: 0 .4em; }
@@ -83,4 +88,36 @@ rel-percent-in-row div {
     position: absolute;
     left: -10000px;
 		display: block !important;
+}
+
+
+.button-link {
+	display: inline-block; padding: .3em .6em;
+    background: #4479BA;
+    color: #FFF !important;
+		border: solid 1px #20538D;
+		border-radius: 4px;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
+    -webkit-transition-duration: 0.2s;
+    -moz-transition-duration: 0.2s;
+    transition-duration: 0.2s;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+}
+.button-link:hover {
+    background: #356094;
+    border: solid 1px #2A4E77;
+    text-decoration: none;
+}
+.button-link:active {
+    -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+    background: #2E5481;
+    border: solid 1px #203E5F;
 }

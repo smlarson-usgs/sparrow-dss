@@ -1,5 +1,7 @@
 
 var termReachesAtTimeOfCreation;
+var _TERM_REPORT_CONTAINER_ID = "terminal-report-container";
+var _AGG_REPORT_CONTAINER_ID = "aggregate-report-container";
 
 $(document).ready(function(){
    $("#tabs").tabs();
@@ -12,48 +14,51 @@ $(document).ready(function(){
 });
 
 var aggReportRegionChangeHandler = function(event) {
-		
-	var urlParams = getUrlVars();
-
-	var contextId = urlParams["context-id"];
-	var regionType = $('#agg-upstream-form input[name="region-type"]:checked').val();
-	if (regionType == null) {
-		regionType = "state";
-	}
-	var tableName = "getDeliveryAggReport";
-	var reqParams = "context-id=" + contextId +
-		"&region-type=" + regionType + 	
-		"&include-zero-rows=false" + 					
-		"&mime-type=xhtml_table";
-	var reqUrl = "../" + tableName + "?" + reqParams;
-
-
+	var reqUrl = getAggReportUrl("xhtml_table");
+	
 	$.ajax({
 			url: reqUrl,
 
 			beforeSend: function(jqXHR, settings) {
-				$("#agg-report-area .report-load-status").show('normal');
+				$("#" + _AGG_REPORT_CONTAINER_ID + " .report-load-status").show('normal');
 			},
 			success: function(response, textStatus, jqXHR) {
 					// update status element
-					//alert('OK - got new table content: ' + jqXHR.responseText);
-
-					$("#agg-report-area .report-table-area").empty();
-					$("#agg-report-area .report-table-area").append(jqXHR.responseText);
-					$("#agg-report-area .report-load-status").hide('normal');
+//					alert('OK - got new table content: ' + jqXHR.responseText);
+					
+					var reportTable = $("#" + _AGG_REPORT_CONTAINER_ID + " .report-table-area");
+					reportTable.empty();
+					reportTable.append(jqXHR.responseText);
+					$("#" + _AGG_REPORT_CONTAINER_ID + " .report-load-status").hide('normal');
 
 			},
 			error: function(xhr) {
-					alert('Error!  Status = ' + xhr.status);
+					alert('Error Loading the Aggregate Report - Status = ' + xhr.status);
 			}
 	});
 
 	return false;
 };
+
+var getAggReportUrl = function(mimeType) {
+	var urlParams = getUrlVars();
+
+	var contextId = urlParams["context-id"];
+	var regionType = $("#" + _AGG_REPORT_CONTAINER_ID + " .controls input[name='region-type']:checked").val();
+	if (regionType == null) {
+		regionType = "state";
+	}
+	var serviceName = "getDeliveryAggReport";
+	var reqParams = "context-id=" + contextId +
+		"&region-type=" + regionType + 	
+		"&include-zero-rows=false" + 					
+		"&mime-type=" + mimeType;
+	return "../" + serviceName + "?" + reqParams;
+}
 	
 function initAggReport() {
 	
-	$('#agg-upstream-form input[name="region-type"]').change(aggReportRegionChangeHandler);
+	$("#" + _AGG_REPORT_CONTAINER_ID + " .controls input[name='region-type']").change(aggReportRegionChangeHandler);
 	
 	this.aggReportRegionChangeHandler();
 }
@@ -65,7 +70,7 @@ function initTermReport() {
 		var tableName = "getDeliveryTerminalReport";
 		var contextId = urlParams["context-id"];
 		var reqParams =
-			"context-id=" + contextId +
+			"context-id=" + contextId + 
 			"&include-zero-rows=true" + 					
 			"&mime-type=xhtml_table";
 		var reqUrl = "../" + tableName + "?" + reqParams;
@@ -75,19 +80,20 @@ function initTermReport() {
 				url: reqUrl,
 				
 				beforeSend: function(jqXHR, settings) {
-					$("#terminal-report-area .report-load-status").show('normal');
+					$("#" + _TERM_REPORT_CONTAINER_ID + " .report-load-status").show('normal');
 				},
 				success: function(response, textStatus, jqXHR) {
 						// update status element
 						//alert('OK - got new table content: ' + jqXHR.responseText);
 						
-						$("#terminal-report-area .report-table-area").empty();
-						$("#terminal-report-area .report-table-area").append(jqXHR.responseText);
-						$("#terminal-report-area .report-load-status").hide('normal');
+						var reportTable = $("#" + _TERM_REPORT_CONTAINER_ID + " .report-table-area");
+						reportTable.empty();
+						reportTable.append(jqXHR.responseText);
+						$("#" + _TERM_REPORT_CONTAINER_ID + " .report-load-status").hide('normal');
 						
 				},
 				error: function(xhr) {
-						alert('Error!  Status = ' + xhr.status);
+						alert('Error loading Terminal Report - Status = ' + xhr.status);
 				}
 		});
 		

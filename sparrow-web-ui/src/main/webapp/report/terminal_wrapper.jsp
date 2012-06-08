@@ -1,6 +1,20 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@page import="gov.usgswim.sparrow.SparrowUtil, gov.usgswim.sparrow.SparrowUtil.UrlFeatures" %>
 <%@ page import="java.net.*, java.io.*" %>
+<%
+
+	String contextId = request.getParameter("context-id");
+	
+	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
+	String tableName = "getDeliveryTerminalReport";
+	String downloadReqParams = "context-id=" + request.getParameter("context-id") +
+			"&include-zero-rows=true" + 					
+			"&mime-type=csv";
+	
+	String downloadReqUrl = pageRequestUrl.getBaseUrlWithSlash() + tableName + "?" + downloadReqParams;
+	
+%>
+ <div>
     <h2>SPARROW DSS Total Delivered Load Summary</h2>
 		<h3>Total load delivered to each active downstream reach, from their respective upstream watershed area.</h3>
 		<div class="explanation">
@@ -17,6 +31,9 @@
 				Careful!  These downstream reaches are no longer the
 				<em>Active Downstream Reaches</em> in the Sparrow DSS.  <a href="">More info...</a>
 			</p>
+		</div>
+		<div class="download-area">
+			<a class="button-link download-report" href="<%= downloadReqUrl %>" title="Download the currently displayed report">Download as CSV</a>
 		</div>
 		
 		<div id="terminal-report-area" class="report-area">
@@ -48,3 +65,4 @@
  -->
 			</div>
 		</div>
+ </div>
