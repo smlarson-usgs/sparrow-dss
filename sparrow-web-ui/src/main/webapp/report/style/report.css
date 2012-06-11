@@ -38,10 +38,11 @@ Head Section */
 .report-area {
 	clear: both;	/* Don't let it float into or off the side of the column area above */
 	position: relative;	/* Allows it to be layout parent */
+	min-height: 10em;
 }
 .report-load-status {
 	display: none; /* Only shown when code turns it on */
-	position: absolute;	top: 0; left: 0; width: 100%; height: 100%; padding: 1em 0;
+	position: absolute;	top: 0; left: 0; width: 100%; height: 100%; padding: 0;
 	background-color: #fff;
 }
 .report-load-status .message { text-align: center; }
