@@ -123,7 +123,7 @@ public enum ConfiguredCache {
 		Ehcache cache = SparrowCacheManager.getInstance().getEhcache(this.name());
 		
 		//monitoring
-		CacheInvocation invocation = new CacheInvocation(this.getClass(), key, key.toString());
+		CacheInvocation invocation = new CacheInvocation(this, key, key.toString());
 		invocation.start();
 		
 		try {
@@ -202,7 +202,7 @@ public enum ConfiguredCache {
 		Ehcache cache = SparrowCacheManager.getInstance().getEhcache(this.name());
 		
 		//monitoring
-		CacheInvocation invocation = new CacheInvocation(this.getClass(), key, key.toString());
+		CacheInvocation invocation = new CacheInvocation(this, key, key.toString());
 		invocation.start();
 		
 		try {

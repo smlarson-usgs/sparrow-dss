@@ -10,7 +10,7 @@ public class CacheInvocation extends Invocation {
 	private volatile Boolean hit;
 	
 	
-	public CacheInvocation(Class target, Object request, String requestAsString) {
+	public CacheInvocation(Enum target, Object request, String requestAsString) {
 		super(target, request, requestAsString);
 	}
 	

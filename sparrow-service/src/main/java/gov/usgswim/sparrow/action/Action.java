@@ -148,6 +148,8 @@ public abstract class Action<R extends Object> implements IAction<R> {
 					".  Run Number: " + runNumber);
 		}
 		
+		invocation.start();
+		
 		//Do validation
 		validate();
 	}

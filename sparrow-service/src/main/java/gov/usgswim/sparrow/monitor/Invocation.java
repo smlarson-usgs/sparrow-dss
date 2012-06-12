@@ -17,7 +17,7 @@ public class Invocation implements Serializable {
 	private volatile Long startTime;
 	private volatile Long endTime;
 	private volatile Invocation parent;
-	private volatile Class target;
+	private volatile Object target;
 	private volatile Boolean nonNullResponse;
 	private volatile Throwable throwable;
 	
@@ -27,9 +27,29 @@ public class Invocation implements Serializable {
 	
 	private static final ThreadLocal<Invocation> currentInvocationRef = new ThreadLocal<Invocation>();
 	
+	private Object CHILD_LOCK = new Object();
 	private volatile List<Invocation> children;
 	
 	public Invocation(Class target, Object request, String requestAsString) {
+		this((Object)target, request, requestAsString);
+	}
+		
+	public Invocation(Enum target, Object request, String requestAsString) {
+		this((Object)target, request, requestAsString);
+	}
+	
+	public Invocation(Class target) {
+		this((Object)target, null, null);
+	}
+	
+	public Invocation(Enum target) {
+		this((Object)target, null, null);
+	}
+	
+	public Invocation() {
+	}
+	
+	private Invocation(Object target, Object request, String requestAsString) {
 		
 		this.target = target;
 		
@@ -43,11 +63,7 @@ public class Invocation implements Serializable {
 		}
 	}
 	
-	public Invocation(Class target) {
-		
-		this.target = target;
-		
-	}
+
 	
 	
 	////////////////////////////
@@ -63,6 +79,7 @@ public class Invocation implements Serializable {
 		
 		//Assign parent as the first unfinished invocation
 		parent = getFirstUnfinishedAncestorFromCurrent();
+		if (parent != null)	parent.addChild(this);
 		
 		//This become current
 		currentInvocationRef.set(this);
@@ -124,6 +141,10 @@ public class Invocation implements Serializable {
 		}
 	}
 	
+	public Object getTarget() {
+		return target;
+	}
+	
 	/**
 	 * @param requestString A string version of the request
 	 */
@@ -133,6 +154,54 @@ public class Invocation implements Serializable {
 	
 	public boolean isFinished() {
 		return endTime != null;
+	}
+	
+	/**
+	 * The start time in milliseconds that this invocation was started, as defined
+	 * by System.currentTimeMillis at start time.
+	 * May be null if not yet started.
+	 * @return 
+	 */
+	public Long getStartTime() {
+		return startTime;
+	}
+		
+	/**
+	 * The end time in milliseconds that this invocation was finished, as defined
+	 * by System.currentTimeMillis at finish time.
+	 * May be null if not yet finished.
+	 * @return 
+	 */
+	public Long getEndTime() {
+		return endTime;
+	}
+	
+	/**
+	 * Returns the time in seconds that the Invocation took, if finished.
+	 * If not finished, the current run time up to now is returned.
+	 * If this method is called before start() is called, null is returned.
+	 * @return Time in Seconds, or null if the Invocation is not yet started.
+	 */
+	public Integer getRunTimeSeconds() {
+		Integer ms = getRunTimeMs();
+		if (ms != null) return ms / 1000;
+		return null;
+	}
+	
+	/**
+	 * Returns the time in milliseconds that the Invocation took, if finished.
+	 * If not finished, the current run time up to now is returned.
+	 * If this method is called before start() is called, null is returned.
+	 * @return Time in milliseconds, or null if the Invocation is not yet started.
+	 */
+	public Integer getRunTimeMs() {
+		if (startTime != null && endTime != null) {
+			return new Long(endTime - startTime).intValue();
+		} else if (startTime != null) {
+			return new Long(System.currentTimeMillis() - startTime).intValue();
+		} else {
+			return null;
+		}
 	}
 	
 	public Boolean isNonNullResponse() {
@@ -172,7 +241,7 @@ public class Invocation implements Serializable {
 	 */
 	public void addChild(Invocation child) {
 		if (child != null) {
-			synchronized (children) {
+			synchronized (CHILD_LOCK) {
 				ensureChildList();
 				children.add(child);
 			}
@@ -190,7 +259,7 @@ public class Invocation implements Serializable {
 	 * @return Never null.
 	 */
 	public Invocation[] getChildren() {
-		synchronized (children) {
+		synchronized (CHILD_LOCK) {
 			if (children != null) {
 				return children.toArray(new Invocation[children.size()]);
 			} else {
@@ -206,6 +275,10 @@ public class Invocation implements Serializable {
 	
 	public Throwable getError() {
 		return throwable;
+	}
+	
+	public boolean hasError() {
+		return throwable != null;
 	}
 
 	public void setError(Throwable error) {
@@ -250,7 +323,7 @@ public class Invocation implements Serializable {
 	 * If addChild is overriden and not invoked, you must call this method.
 	 */
 	protected void ensureChildList() {
-		synchronized (children) {
+		synchronized (CHILD_LOCK) {
 			if (children == null) {
 				children = new ArrayList<Invocation>(1);
 			}

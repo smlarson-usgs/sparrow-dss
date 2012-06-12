@@ -21,10 +21,12 @@ public class RequestMonitor extends Invocation {
 	public String requestUrl;
 	
 	public RequestMonitor(String requestUrl) {
-		super(null, null, null);
+		super();
 		this.requestUrl = requestUrl;
 	}
 	
-	
+	public String getRequestUrl() {
+		return requestUrl;
+	}
 	
 }

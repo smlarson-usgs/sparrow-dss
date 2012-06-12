@@ -165,7 +165,7 @@ public class StateReportSerializer extends BasicXMLStreamReader {
 				{
 					
 					//Reach name and EDA code
-					events.add(new BasicTagEvent(START_ELEMENT, "group"));
+					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Identification").addAttribute("count", "2"));
 					String name = data.getName(ENTITY_NAME_COL);
 					events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", STRING));
 					name = data.getName(ENTITY_USER_CODE_COL);
@@ -174,11 +174,11 @@ public class StateReportSerializer extends BasicXMLStreamReader {
 					
 					
 					//column for each individual source
-					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Total Delivered Load by Source"));
+					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Total Delivered Load by Source").addAttribute("count", new Integer(sourceCount).toString()));
 					writeSourceColumnHeadersHeaders(data);
 					addCloseTag("group");
 
-					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Totals"));
+					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Totals").addAttribute("count", "2"));
 					events.add(makeNonNullBasicTag("col", "")
 							.addAttribute("name", data.getName(totalCol))
 							.addAttribute("type", NUMBER));

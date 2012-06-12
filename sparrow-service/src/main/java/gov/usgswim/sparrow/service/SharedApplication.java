@@ -83,6 +83,14 @@ public class SharedApplication  {
 	public Iterator<RequestMonitor> getActiveRequests() {
 		return activeRequests.iterator();
 	}
+		
+	public Iterator<RequestMonitor> getCompletedSimpleRequests() {
+		return completeSimpleRequests.iterator();
+	}
+	
+	public Iterator<RequestMonitor> getCompletedComplexRequests() {
+		return completeComplexRequests.iterator();
+	}
 	
 	public void setRequestFinished(RequestMonitor finishedRequest) {
 		activeRequests.remove(finishedRequest);
