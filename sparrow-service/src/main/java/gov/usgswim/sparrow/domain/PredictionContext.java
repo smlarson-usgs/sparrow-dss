@@ -4,7 +4,6 @@ import static javax.xml.XMLConstants.DEFAULT_NS_PREFIX;
 import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
-import java.io.IOException;
 
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
@@ -16,6 +15,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * The entire info needed to run a prediction and analyze the results.
@@ -453,6 +453,20 @@ public class PredictionContext implements XMLStreamParserComponent {
 
 	public Comparison getComparison() {
 		return comparison;
+	}
+	
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this).
+			append("id", id).
+			append("modelID", modelID).
+			append("adjustmentGroups", adjustmentGroups).
+			append("analysis", analysis).
+			append("adjustmentGroups", adjustmentGroups).
+			append("terminalReaches", terminalReaches).
+			append("areaOfInterest", areaOfInterest).
+			append("comparison", comparison). 
+			toString();
 	}
 
 

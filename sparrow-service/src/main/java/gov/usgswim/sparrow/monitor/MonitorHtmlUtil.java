@@ -16,13 +16,12 @@ public class MonitorHtmlUtil {
 		decimalFormat = new DecimalFormat("#,##0.0#");
 	}
 	
-	public CharSequence buildHtml(Iterator<RequestMonitor> monitors) {
+	public CharSequence buildHtml(RequestMonitor[] monitors) {
 		StringBuffer buff = new StringBuffer();
 		
 		startDoc(buff);
 		
-		while (monitors.hasNext()) {
-			RequestMonitor mon = monitors.next();
+		for (RequestMonitor mon : monitors) {
 			renderRequestMonitor(buff, mon);
 		}
 		

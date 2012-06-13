@@ -255,13 +255,16 @@ public class Invocation implements Serializable {
 	
 	/**
 	 * Returns a detached list of children or an empty array if there are none.
+	 * The returned array is ordered such that the most recently started Invocation
+	 * is first in the array.
 	 * 
 	 * @return Never null.
 	 */
 	public Invocation[] getChildren() {
 		synchronized (CHILD_LOCK) {
 			if (children != null) {
-				return children.toArray(new Invocation[children.size()]);
+				Invocation[] invos = children.toArray(new Invocation[children.size()]);
+				return invos;
 			} else {
 				return EMPTY_INVOCATION_ARRAY;
 			}

@@ -14,8 +14,9 @@
 .details .extended { display: none; }
 
 .details:hover .extended {
-	display: block; position: absolute; top: 100%; left: 6em; padding: .3em; /* width: 14em;  height: 4em; */ z-index: 99;
-	background-color: #ffffcc
+	display: block; position: absolute; top: 100%; left: 6em; padding: .3em; z-index: 99;
+	max-height: 6em; max-width: 90%; overflow: auto; 
+	background-color: #ffffcc;
 }
 
 .start-time { display: none; }

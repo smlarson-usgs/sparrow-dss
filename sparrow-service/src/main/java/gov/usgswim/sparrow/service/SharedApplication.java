@@ -17,6 +17,7 @@ import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.domain.reacharearelation.ModelReachAreaRelations;
+import gov.usgswim.sparrow.monitor.Invocation;
 import gov.usgswim.sparrow.monitor.RequestMonitor;
 import gov.usgswim.sparrow.request.*;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
@@ -39,6 +40,7 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import oracle.jdbc.driver.OracleDriver;
 import oracle.mapviewer.share.ext.NSDataSet;
+import org.apache.commons.lang.ArrayUtils;
 
 import org.apache.log4j.Logger;
 
@@ -80,16 +82,31 @@ public class SharedApplication  {
 		activeRequests.add(activeRequest);
 	}
 	
-	public Iterator<RequestMonitor> getActiveRequests() {
-		return activeRequests.iterator();
+	public RequestMonitor[] getActiveRequests() {
+		RequestMonitor[] mons = activeRequests.toArray(new RequestMonitor[0]);
+		ArrayUtils.reverse(mons);
+		while (ArrayUtils.contains(mons, null)) {
+			mons = (RequestMonitor[]) ArrayUtils.removeElement(mons, (Object)null);
+		}
+		return mons;
 	}
 		
-	public Iterator<RequestMonitor> getCompletedSimpleRequests() {
-		return completeSimpleRequests.iterator();
+	public RequestMonitor[] getCompletedSimpleRequests() {
+		RequestMonitor[] mons = completeSimpleRequests.toArray(new RequestMonitor[0]);
+		ArrayUtils.reverse(mons);
+		while (ArrayUtils.contains(mons, null)) {
+			mons = (RequestMonitor[]) ArrayUtils.removeElement(mons, (Object)null);
+		}
+		return mons;
 	}
 	
-	public Iterator<RequestMonitor> getCompletedComplexRequests() {
-		return completeComplexRequests.iterator();
+	public RequestMonitor[] getCompletedComplexRequests() {
+		RequestMonitor[] mons = completeComplexRequests.toArray(new RequestMonitor[0]);
+		ArrayUtils.reverse(mons);
+		while (ArrayUtils.contains(mons, null)) {
+			mons = (RequestMonitor[]) ArrayUtils.removeElement(mons, (Object)null);
+		}
+		return mons;
 	}
 	
 	public void setRequestFinished(RequestMonitor finishedRequest) {
