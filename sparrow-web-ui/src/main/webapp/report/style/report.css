@@ -122,3 +122,32 @@ rel-percent-in-row div {
     background: #2E5481;
     border: solid 1px #203E5F;
 }
+
+.figure {
+	position: relative; padding: 6px; margin: .5em; width: 337px; clear: both;
+	border: solid 1px #000; 
+	box-shadow: 4px 4px 2px rgba(0, 0, 0, 0.2);
+}
+
+.figure .wrap { clear: both; position: relative; }
+.figure .wrap img { 
+	display: block; margin: auto;
+	box-shadow: 4px 4px 2px rgba(0, 0, 0, 0.2); }
+.figure .caption { clear: both; }
+
+.cluster { float: left; clear: none;}
+
+.explination p { clear: both; }
+
+.explination .section { margin-top: 1em; margin-bottom: 1em; }
+
+.explination .section:after {
+	content: '[Ignore]'; 
+	display: block; 
+	height: 0; 
+	clear: both; 
+	visibility: hidden;
+}
+
+.explination .section + .section { border-top: 1px solid #000; }
+
