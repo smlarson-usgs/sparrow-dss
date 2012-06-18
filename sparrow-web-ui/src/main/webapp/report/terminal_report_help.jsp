@@ -48,7 +48,7 @@
 
 			<div class="figure cluster">
 				<h3>Fig. 1:  Example usage of load delivered to a lake</h3>
-				<div class="wrap"><img src="style/fig1.png" /></div>
+				<div class="wrap"><img src="style/fig_t1.png" /></div>
 				<div class="caption">
 					<p>
 						Reaches A, B and C are selected as downstream reaches.
@@ -66,7 +66,7 @@
 
 			<div class="figure cluster">
 				<h3>Fig. 2:  Example usage of load crossing a political boundary</h3>
-				<div class="wrap"><img src="style/fig2.png" /></div>
+				<div class="wrap"><img src="style/fig_t2.png" /></div>
 				<div class="caption">
 					<p>
 						Reaches A, B and C are selected as downstream reaches to analyze the
@@ -84,7 +84,7 @@
 
 			<div class="figure cluster" style="width: 472px">
 				<h3>Fig. 3:  Example Report for figures 1 & 2</h3>
-				<div class="wrap"><img src="style/fig3.png" /></div>
+				<div class="wrap"><img src="style/fig_t3.png" /></div>
 				<div class="caption">
 					<p>
 						Figures 1 & 2 might result in a delivered load summary like this one.
@@ -110,7 +110,7 @@
 
 			<div class="figure" style="width: 472px">
 				<h3>Fig. 4:  Example of nested upstream reaches</h3>
-				<div class="wrap"><img src="style/fig4.png" /></div>
+				<div class="wrap"><img src="style/fig_t4.png" /></div>
 				<div class="caption">
 					<p>
 						Reach A & B have been selected as downstream reaches.

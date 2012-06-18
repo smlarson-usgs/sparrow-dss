@@ -1,6 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ServiceGroup>
 
+	<!-- Added from Calvin -->
+	
+  <Service>
+    <Name>Orthoimagery_USGS_EDC_Ortho_NAIP</Name>
+    <Title>Orthoimagery_USGS_EDC_Ortho_NAIP</Title>
+    <Abstract>WMS</Abstract>
+    <GetMapURL>http://raster.nationalmap.gov/arcgis/services/Orthoimagery/USGS_EDC_Ortho_NAIP/ImageServer/WMSServer</GetMapURL>
+    <Layer id="99901" requested="true" recommended="true" transparency="false" queryable="false" downloadable="false">
+			<Classification id="-1" zdepth="250050.08475846"><Name>BACKGROUND</Name><Theme id="-1">CUSTOM LAYERS</Theme></Classification>
+      <Name>0</Name>
+    	<SRS>4326</SRS>
+      <Title>IGSKMNCNGS616/Orthoimagery/USGS_EDC_Ortho_NAIP</Title>
+      <Abstract></Abstract>
+    </Layer>
+  </Service>
+  <Service>
+    <Name>Orthoimagery_USGS_EDC_Ortho_HRO</Name>
+    <Title>Orthoimagery_USGS_EDC_Ortho_HRO</Title>
+    <Abstract>WMS</Abstract>
+    <GetMapURL>http://isse.cr.usgs.gov/arcgis/services/Orthoimagery/USGS_EDC_Ortho_HRO/ImageServer/WMSServer</GetMapURL>
+    <Layer id="99902" requested="true" recommended="true" transparency="false" queryable="false" downloadable="false">
+			<Classification id="-1" zdepth="250050.08475846">
+				<Name>BACKGROUND</Name>
+				<Theme id="-1">CUSTOM LAYERS</Theme>
+			</Classification>
+      <Name>0</Name>
+    	<SRS>4326</SRS>
+      <Title>IGSKMNCNGS617/Orthoimagery/USGS_EDC_Ortho_HRO</Title>
+      <Abstract></Abstract>
+    </Layer>
+  </Service>
+  <Service>
+    <Name>TNM_Large_Scale_Imagery</Name>
+    <Title>TNM_Large_Scale_Imagery</Title>
+    <Abstract>WMS</Abstract>
+    <GetMapURL>http://raster.nationalmap.gov/arcgis/services/TNM_Large_Scale_Imagery/MapServer/WMSServer</GetMapURL>
+    <Layer id="99903" requested="true" recommended="true" transparency="false" queryable="false" downloadable="false">
+			<Classification id="-1" zdepth="250050.08475846">
+				<Name>BACKGROUND</Name>
+				<Theme id="-1">CUSTOM LAYERS</Theme>
+			</Classification>
+      <Name>1_meter_imagery</Name>
+    	<SRS>4326</SRS>
+      <Title>1_meter_imagery</Title>
+      <Abstract></Abstract>
+    </Layer>
+  </Service>
+	
+	<!-- / Added from Calvin -->
+	
 	<Service>
 		<Version>1.1.1</Version>
 		<Title>ESRI NGS Topo US 2D</Title>
