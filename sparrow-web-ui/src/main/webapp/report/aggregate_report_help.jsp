@@ -18,21 +18,16 @@
 <body>
 	<jsp:include page="../header.jsp" flush="true" />
     
-	<h1>SPARROW DSS Total Delivered Load, Aggregated by Upstream Region</h1>
+	<h1>SPARROW DSS Delivered Load, Aggregated by Upstream Region</h1>
 	<div class="explination">
 		<div class="section">
 			<p>
-			The Aggregated Total Delivered Load Report can be used to analyze where load,
-			reaching a set of downstream reaches of interest, originates from.
-			</p>
-
-			<p>
-			The Aggregated Total Delivered Load Report displays the amount of load
-			originating from each upstream region and is delivered to any of the selected
-			downstream reaches.
+			The Aggregated Delivered Load Report can be used to analyze where load,
+			delivered by the stream network to set of selected downstream reaches,
+			originates from.
 			For instance, if aggregating by state,
 			the report would list the load that originates in each state and arrives at
-			any of the selected downstream reaches.
+			the downstream end of any of the selected downstream reaches.
 			</p>
 
 			<p>
@@ -56,42 +51,59 @@
 			</ol>
 			
 			<div class="figure cluster" style="width:450px;">
-				<h3>Fig. 1:  Representation of a state aggregated report</h3>
+				<h3>Fig. 1:  Representation of an Aggregated Delivered Load report, aggregated by HUC</h3>
 				<div class="wrap"><img src="style/fig_a1.png" /></div>
 				<div class="caption">
+					<p>
+						This example shows how load would be aggregated by Hydrological
+						Unit Codes, or HUCs.  Since HUCs are build up from individual reach
+						drainage areas (catchments), reaches are always completely within the HUC that
+						contains them.  This differs from state and other political boundaries,
+						which usually cut across reach catchment areas.
+					</p>
 					<p>
 						Reach A is selected as the downstream reach.
 						Only load that is delivered to the <i>downstream end</i> of reach A
 						(as shown by the orange circle)
 						will be included in the report.
+						For each individual reach, the load that originates at that reaches
+						and is delivered to the downstream end of Reach A is called the
+						incremental delivered load for that reache.
 					</p>
+					<p>
+						In this example, all the load that originates in reaches G, J, K and
+						L and is delivered to the downstream end of Reach A
+						would be added together as the Delivered Load reported for HUC 010103.
+					</p>
+				</div>
+			</div>
+			<div class="figure cluster" style="width:450px;">
+				<h3>Fig. 2:  Representation of an Aggregated Delivered Load report, aggregated by State</h3>
+				<div class="wrap"><img src="style/fig_a2.png" /></div>
+				<div class="caption">
 					<p>
 						In this example, the load is grouped by the state it originated in.
 						Since some reaches are partially in multiple states, the fraction of
-						the drainage area (catchment area) within a given state is used to
+						the catchment area within a given state is used to
 						attribute the load to the state.
 					</p>
 					<p>
 						For the highlighted state shown,
-						the entire catchment area of reach G is within the
+						the entire catchment of reach G is within the
 						state, so all of reach G's incremental delivered load to reach A would be
-						included in that state's total delivered load.
+						included in that state's delivered load.
 					</p>
 					<p>
 						Many other reaches are on state borders, so portions of the
 						catchment areas are within multiple states.
-						For reach B it looks like approximately 75% of the catchment area
+						For reach B, it looks like approximately 60% of the catchment area
 						is within the highlighted state.
 						Thus, the incremental delivered load of reach B to reach A would be
-						multiplied by .75 to add to the state's delivered load total.
+						multiplied by .6 to add to the state's delivered load total.
 					</p>
 				</div>
 			</div>
 
-			<p>
-				Fig 2:  Simple drawing of a HUC:  all catchements are completely within
-				the HUC.
-			</p>
 		</div>
 	</div>
     

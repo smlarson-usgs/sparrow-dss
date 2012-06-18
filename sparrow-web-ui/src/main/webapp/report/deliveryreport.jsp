@@ -51,7 +51,7 @@
 <div id="tabs" class="content">
     <ul>
         <li><a href="#terminal-report-container"><span>Total Delivered Load Summary</span></a></li>
-        <li><a href="#aggregate-report-container"><span>Upstream Source Aggregations (by State and HUC)</span></a></li>
+        <li><a href="#aggregate-report-container"><span>Delivered Load, Aggregated by Upstream Region</span></a></li>
     </ul>
     <div id="terminal-report-container" class="report-container">
        <jsp:include page="terminal_wrapper.jsp" flush="true" />
