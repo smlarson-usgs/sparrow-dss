@@ -84,6 +84,8 @@ public class BuildTotalDeliveredLoadByStateSummaryReport extends Action<DataTabl
 			areaDetail = SharedApplication.getInstance().getStatesForModel(modelId);
 		} else if (aggLevel.isHuc()) {
 			areaDetail = SharedApplication.getInstance().getHucsForModel(new ModelHucsRequest(modelId, aggLevel.getHucLevel()));
+		} else if (aggLevel.isEda()) {
+			//areaDetail = SharedApplication.getInstance().getHucsForModel(new ModelHucsRequest(modelId, aggLevel.getHucLevel()));
 		}
 		
 		//Basic predict context, which we need data for all sources

@@ -853,6 +853,15 @@ public class SharedApplication  {
 		return (DataTable) HucsForModel.get(request, quiet);
 	}
 	
+	//EdasForModel
+	public DataTable getEdasForModel(Long modelId) {
+		return getEdasForModel(modelId, false);
+	}
+
+	public DataTable getEdasForModel(Long modelId, boolean quiet) {
+		return (DataTable) EdasForModel.get(modelId, quiet);
+	}
+	
 	//ModelReachAreaRelations
 	public ModelReachAreaRelations getModelReachAreaRelations(ModelAggregationRequest request) {
 		return getModelReachAreaRelations(request, false);

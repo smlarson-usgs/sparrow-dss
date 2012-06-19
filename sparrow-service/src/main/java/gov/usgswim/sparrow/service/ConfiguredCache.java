@@ -61,7 +61,8 @@ public enum ConfiguredCache {
 	TotalDeliveredLoadByStateSummaryReport(false, new BuildTotalDeliveredLoadByStateSummaryReportFactory()),
 	StatesForModel(false, new StatesForModelFactory()),
 	ModelReachAreaRelations(false, new ModelReachAreaRelationsFactory()),
-	HucsForModel(false, new LoadHucsForModelFactory())
+	HucsForModel(false, new LoadHucsForModelFactory()),
+	EdasForModel(false, new LoadEdasForModelFactory())
 	;
 	
 	public final boolean isDistributed;

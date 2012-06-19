@@ -29,6 +29,7 @@ public class LoadModelReachAreaRelations extends Action<ModelReachAreaRelations>
 	
 	private static final String STATE_QUERY_NAME = "stateQuery";
 	private static final String HUC_QUERY_NAME = "hucQuery";
+	private static final String EDA_QUERY_NAME = "edaQuery";
 	
 	private static final int REACH_ID_COL = 0;
 	private static final int AREA_ID_COL = 1;
@@ -178,8 +179,8 @@ public class LoadModelReachAreaRelations extends Action<ModelReachAreaRelations>
 			this.addValidationError("The model predictData set does not seem to have a model id associated with it.");
 		}
 		
-		if (! (aggLevel.isHuc() || aggLevel.isPolitical())) {
-			this.addValidationError("The aggregation level (the level at which to load the area relations for) must be either a HUC or a political region.");
+		if (! (aggLevel.isHuc() || aggLevel.isPolitical() || aggLevel.isEda())) {
+			this.addValidationError("The aggregation level (the level at which to load the area relations for) must be either HUC, EDA or a political region.");
 		}
 	}
 

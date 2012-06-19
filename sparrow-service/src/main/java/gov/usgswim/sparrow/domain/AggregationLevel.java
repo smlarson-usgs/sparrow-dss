@@ -4,9 +4,10 @@ import gov.usgswim.sparrow.datatable.NamedEnum;
 
 
 public enum AggregationLevel implements NamedEnum<AggregationLevel> {
-	NONE("NA", "Not Defined", false, false, false),
-	REACH("reach", "No aggregation - individual reaches", false, false, true),
-	STATE("state", "Aggregate all reaches in a State", false, true, false),
+	NONE("NA", "Not Defined", false, false, false, false),
+	REACH("reach", "No aggregation - individual reaches", false, false, false, true),
+	STATE("state", "Aggregate all reaches in a State", false, false, true, false),
+	EDA("EDA", "Estuarine Drainage Area", false, true, false, false),
 	HUC2(HucLevel.HUC2),
 	HUC4(HucLevel.HUC4),
 	HUC6(HucLevel.HUC6),
@@ -17,18 +18,20 @@ public enum AggregationLevel implements NamedEnum<AggregationLevel> {
 
 	private final HucLevel hucLevel;
 	private final boolean _isHuc;
+	private final boolean _isEda;
 	private final boolean _isPolitical;
 	private final boolean _isReach;
 	
-	AggregationLevel(String name, String description, boolean isAHuc, boolean isAPoliticalRegion, boolean isAReach) {
+	AggregationLevel(String name, String description, boolean isAHuc, boolean isAEda, boolean isAPoliticalRegion, boolean isAReach) {
 		this.hucLevel = null;
 		this.name = name;
 		this.description = description;
 		
 		//Classifiers
-		this._isHuc = isAHuc;
-		this._isPolitical = isAPoliticalRegion;
-		this._isReach = isAReach;
+		_isHuc = isAHuc;
+		_isEda = isAEda;
+		_isPolitical = isAPoliticalRegion;
+		_isReach = isAReach;
 	}
 	
 	AggregationLevel(HucLevel hucLevel) {
@@ -37,9 +40,10 @@ public enum AggregationLevel implements NamedEnum<AggregationLevel> {
 		this.description = hucLevel.getDescription();
 		
 		//Classifiers
-		this._isHuc = true;
-		this._isPolitical = false;
-		this._isReach = false;
+		_isHuc = true;
+		_isEda = false;
+		_isPolitical = false;
+		_isReach = false;
 	}
 
 	public HucLevel getHucLevel() {
@@ -96,6 +100,10 @@ public enum AggregationLevel implements NamedEnum<AggregationLevel> {
 	
 	public boolean isHuc() {
 		return _isHuc;
+	}
+	
+	public boolean isEda() {
+		return _isEda;
 	}
 
 	public boolean isPolitical() {
