@@ -2,7 +2,7 @@
 <ServiceGroup>
 
 	<!-- Added from Calvin -->
-	
+	<!--
   <Service>
     <Name>Orthoimagery_USGS_EDC_Ortho_NAIP</Name>
     <Title>Orthoimagery_USGS_EDC_Ortho_NAIP</Title>
@@ -48,7 +48,7 @@
       <Abstract></Abstract>
     </Layer>
   </Service>
-	
+	-->
 	<!-- / Added from Calvin -->
 	
 	<Service>
@@ -80,6 +80,7 @@
 				<Name>BACKGROUND</Name>
 				<Theme id="-1">CUSTOM LAYERS</Theme>
 			</Classification>
+			<opacity>40</opacity>
 			<SRS>4326</SRS>
 			<LatLon />
 			<BoundingBox />
