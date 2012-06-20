@@ -15,7 +15,7 @@
 	
 %>
  <div>
-    <h2>SPARROW DSS Total Delivered Load Summary</h2>
+    <h2>Total Delivered Load Summary</h2>
 		<h3>Total load delivered to each active downstream reach, from their respective upstream watershed area.</h3>
 		<div class="explanation">
 			<p>

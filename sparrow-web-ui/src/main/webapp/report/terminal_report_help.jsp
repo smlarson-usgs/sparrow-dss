@@ -4,7 +4,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-	<title>Delivery Report - SPARROW Model Decision Support</title>
+	<title>Total Delivered Load Summary Report Help</title>
 	<script src="js/report.js"></script>
 	
 	<link rel="icon" href="favicon.ico" >
@@ -18,32 +18,22 @@
 <body>
 	<jsp:include page="../header.jsp" flush="true" />
     
-	<h1>SPARROW DSS Total Delivered Load Summary</h1>
+	<h1>Total Delivered Load Summary Report Help</h1>
 	<div class="explination">
 		<div class="section">
 			<p>
-				The Total Delivered Load Summary Report can be used to view the individual
-				and combined contribution of all the selected downstream reaches.
-				The <strong>Total for all Reaches</strong> summary row at the bottom of the
-				report is particularly useful for seeing the cumulative effect of all
-				reaches emptying into a lake or crossing a political boundary.
-				The report lists each downstream reach,
-				as selected in the Downstream Tracking tab of the application.
-				For each reach, the Total Load from that reach's watershed
-				(i.e., the total load from all upstream reaches) is broken down by source.
+				The Total Delivered Load Summary Report can be used to summarize the load 
+				delivered to all of the downstream reaches selected in the Downstream tracking tab of the application. 
+				These downstream reaches may be entering an estuary or a lake or crossing some boundary such as a state line. 
+				The report lists the Total Delivered Load for each individual downstream reach and the cumulative 
+				Total Delivered Load for all of the downstream reaches. 
+				In all cases, the Total Delivered Load is broken down by source.
 			</p>
 
 			<p>
-				Total Delivered Load is the total load (including load from upstream reaches)
-				that leaves the downstream end of a reach that arrives at the downstream end
-				of the active downstream reaches, in units of mass (kg) per year.
-				Since the report lists only the downstream reaches the load arrives at,
-				the total delivered load is equal to the total load for these reaches.
-			</p>
-
-			<p>
+				Total Delivered Load is the total load (including load from upstream reaches) 
+				that arrives at the downstream end of the active downstream reaches, in units of mass (kg) per year.
 				Two examples of typical usage of this report are shown below.
-				For both examples, the report might look like the Sample Total Delivered Load Summary.
 			</p>
 
 			<div class="figure cluster">
@@ -51,15 +41,9 @@
 				<div class="wrap"><img src="style/fig_t1.png" /></div>
 				<div class="caption">
 					<p>
-						Reaches A, B and C are selected as downstream reaches.
-						Load that arrives at the <i>end</i> of these reaches
-						(as shown by the orange circles)
-						would be reported individually in a row in the report, like the
-						report in Figure 3.
-					</p>
-					<p>
-						Upstream diversions, like reach D, are handled correctly: Load from
-						reach D would not be included in the load reported at reach C.
+						Reaches A, B and C are selected as downstream reaches to represent loading to the lake. 
+						Load that arrives at the end of these reaches (as shown by the orange circles)
+						would be reported individually in a row in the report and would be aggregated in another row in the report, like the report in Figure 3.
 					</p>
 				</div>
 			</div>
@@ -69,15 +53,16 @@
 				<div class="wrap"><img src="style/fig_t2.png" /></div>
 				<div class="caption">
 					<p>
-						Reaches A, B and C are selected as downstream reaches to analyze the
-						load leaving a political region.
-						Rivers are broken into reaches based on hydrology,
-						not political boundaries, so it is likely reach end points will not be
-						on borders.  Thus, some load from outside the region will be included
-						in the reported values.
-						It may not be appropriate to include a reach such as C, since much of
-						its load originates outside the region.  Instead, consider using the
-						Delivered Load by Upstream region for this type of analysis.
+					Reaches A, B and C are selected as downstream reaches to represent the load leaving a political region, such as a state. 
+					Load that arrives at the end of these reaches (as shown by the orange circles)
+					would be reported individually in a row in the report and would be summed in another row in the report, like the report in Figure 3.
+					</p>
+					<p>
+						Because rivers are broken into reaches based on hydrology, not political boundaries, 
+						it is likely that the downstream end of the active downstream reaches will not fall on the polictical boundary.
+						Thus, some load from outside the region may be included in the reported values. 
+						If an upstream area outside of the political boundary is contributing to the load at the downstream reaches, 
+						consider using the Delivered Load by Upstream region instead.
 					</p>
 				</div>
 			</div>
@@ -87,25 +72,19 @@
 				<div class="wrap"><img src="style/fig_t3.png" /></div>
 				<div class="caption">
 					<p>
-						Figures 1 & 2 might result in a delivered load summary like this one.
-						The total load arriving at the downstream end of each selected reach,
-						A, B & C, is shown on a separate row in the table and totaled in the
-						last row.  The load is also broken down by the amount attributable to
-						each source in the model.
+						Figures 1 & 2 might result in a delivered load summary like this one. 
+						The total load arriving the downstream end of each of the active downstream reaches (A, B & C) 
+						is shown in a separate row in the table and summed in the last row. 
+						These loads are also broken down by source.
 					</p>
 				</div>
 			</div>
 		</div><!-- /section -->
 		<div class="section">
 			<p>
-				It is important to understand that if any of the selected reaches are
-				upstream of another selected reach, the total row will be inaccurate.
-				For instance, if reach A and reach B are selected as downstream reaches 
-				and A is upstream of B, the total load arriving at the downstream end of
-				both reaches will be included in the total,
-				which will result in some of that load being counted twice.
-				<strong>It is almost always incorrect to select downstream reaches such
-				that one reach is upstream of the other.</strong>
+				It is important to understand that if any of the selected reaches are upstream of another selected reach
+				(i.e. if two or more reaches are nested), some of the load will be counted more than once and the total row will be inaccurate.
+				<strong>It is almost always incorrect to select downstream reaches such that one reach is upstream of another.</strong>
 			</p>
 
 			<div class="figure" style="width: 472px">
@@ -113,23 +92,19 @@
 				<div class="wrap"><img src="style/fig_t4.png" /></div>
 				<div class="caption">
 					<p>
-						Reach A & B have been selected as downstream reaches.
-						The result is that load arriving at the downstream end of reach B
-						will be included twice in the total row of the report:
-						Once at reach B and again as it arrives at the downstream end of reach A.
-						By selecting <i>only</i> reach A as a downstream reach, all the upstream
-						load that arrives at the downstream end of A, including load that
-						originates from reaches B, C and all those reaches upstream of them,
+						Reaches A & B have been selected as downstream reaches. 
+						The total load arriving at the downstream end of reach B will be included as a row in the report, 
+						as will the total load arriving at the downstream end of reach A, 
+						which will include some load from reach B. 
+						In this example, the total row in the report will not be the total load delivered to the lake, 
+						since some of the load from reach B will have been included twice. By selecting only reach A as a downstream reach, 
+						all of the upstream load that arrives at the downstream end of reach A, 
+						including load that originates from reaches B, C, and all reaches upstream, 
 						will be included in the load reported for reach A.
 					</p>
 				</div>
 			</div>
 		</div><!-- /section -->
-
-		<p>
-		Notes:
-		Can we change 'Active Downstream Reaches' to 'Selected...'
-		</p>
 		
 	</div>
     

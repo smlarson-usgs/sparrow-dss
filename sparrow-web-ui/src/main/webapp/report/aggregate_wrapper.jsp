@@ -21,7 +21,7 @@
 	
 %>
  <div>
-    <h2>SPARROW DSS Delivered Load, Aggregated by Upstream Region</h2>
+    <h2>Delivered Load from Selected Upstream Region</h2>
 		<div class="explanation">
 			<p>
 				This report aggregates the load delivered to the downstream reaches by the upstream contributing region.
