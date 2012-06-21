@@ -39,6 +39,7 @@
 				<form class="controls columns-2">
 					<div class="column">
 					<p class="input"><input type="radio" name="region-type"<%= ("state".equals(regionType))?"checked=\"checked\"":"" %> value="state" />State</p>
+					<p class="input"><input type="radio" name="region-type"<%= ("state".equals(regionType))?"checked=\"checked\"":"" %> value="eda" />EDA</p>
 					<p class="input"><input type="radio" name="region-type"<%= ("huc2".equals(regionType))?"checked=\"checked\"":"" %> value="huc2" />HUC 2</p>
 					<p class="input"><input type="radio" name="region-type"<%= ("huc4".equals(regionType))?"checked=\"checked\"":"" %> value="huc4" />HUC 4</p>
 					<p class="input"><input type="radio" name="region-type"<%= ("huc6".equals(regionType))?"checked=\"checked\"":"" %> value="huc6" />HUC 6</p>
