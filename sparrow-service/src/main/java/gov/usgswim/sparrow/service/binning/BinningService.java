@@ -22,7 +22,7 @@ public class BinningService extends AbstractSparrowServlet {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected void doGet(HttpServletRequest httpReq, HttpServletResponse resp)
+	protected void doActualGet(HttpServletRequest httpReq, HttpServletResponse resp)
 			throws ServletException, IOException {
 
 		ServiceResponseWrapper wrap = new ServiceResponseWrapper(
@@ -71,9 +71,9 @@ public class BinningService extends AbstractSparrowServlet {
 	}
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+	protected void doActualPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		doPut(req, resp);
+		doActualGet(req, resp);
 	}
 	
 }

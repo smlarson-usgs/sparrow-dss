@@ -9,7 +9,7 @@ import java.util.List;
  * The invocation of some type of event / request.
  * @author eeverman
  */
-public class Invocation implements Serializable {
+public abstract class Invocation implements Serializable {
 	
 	private final static Invocation[] EMPTY_INVOCATION_ARRAY = new Invocation[0];
 	
@@ -24,6 +24,12 @@ public class Invocation implements Serializable {
 	private volatile Object request;
 	private volatile WeakReference<Object> weakRequest;
 	private volatile String requestStr;
+	
+	//Percent completion
+	private volatile Integer chunksDone = null;
+	private volatile Integer chunksTotal = null;
+	private volatile String chunksUnit = null;
+	private volatile Float reportedPercentDone = null;
 	
 	private static final ThreadLocal<Invocation> currentInvocationRef = new ThreadLocal<Invocation>();
 	
@@ -63,7 +69,12 @@ public class Invocation implements Serializable {
 		}
 	}
 	
-
+ /**
+	* Subclasses must return a css class name friendly type of name.
+	* Typically hyphonated if needed.
+	* @return 
+	*/
+	public abstract String getName();
 	
 	
 	////////////////////////////
@@ -288,6 +299,80 @@ public class Invocation implements Serializable {
 		this.throwable = error;
 	}
 	
+	
+	public Integer getChunksDone() {
+		return chunksDone;
+	}
+
+	public void setChunksDone(Integer bytesSent) {
+		this.chunksDone = bytesSent;
+	}
+	
+	public void incrementChunksSent(int addChunks) {
+		if (chunksDone == null) {
+			chunksDone = addChunks;
+		} else {
+			chunksDone += addChunks;
+		}
+	}
+	
+	public Integer getChunksTotal() {
+		return chunksTotal;
+	}
+
+	public void setChunksTotal(Integer totalBytes) {
+		this.chunksTotal = totalBytes;
+	}
+	
+	public String getChunksUnit() {
+		return chunksUnit;
+	}
+
+	public void setChunksUnit(String chunksUnit) {
+		this.chunksUnit = chunksUnit;
+	}
+
+	public Float getReportedPercentDone() {
+		return reportedPercentDone;
+	}
+
+	public void setReportedPercentDone(Float reportedPercentComplete) {
+		this.reportedPercentDone = reportedPercentComplete;
+	}
+	
+	
+	/**
+	 * If totalBytes is non-null, this will return the percent complete of
+	 * serialization.
+	 * 
+	 * @return 
+	 */
+	public Float getCalculatedPercentComplete() {
+		if (chunksTotal != null) {
+			if (chunksDone == null) return 0f;
+			if (chunksTotal == 0) return 100f;
+			
+			return (float)(chunksDone.doubleValue() / chunksTotal.doubleValue()) * 100f;
+		} else {
+			return null;
+		}
+	}
+	
+	/**
+	 * Servlets can use either the reported percent complete or can update the
+	 * bytes sent.  This method checks both and return which ever is non-null.
+	 * If neither is non-null, null is returned.
+	 * @return 
+	 */
+	public Float getBestGuessPercentComplete() {
+		if (reportedPercentDone != null) {
+			return reportedPercentDone;
+		} else {
+			return getCalculatedPercentComplete();
+		}
+	}
+	
+	
 	////////////////////////////
 	// INTERNAL / PROTECTED METHODS
 	////////////////////////////
@@ -298,7 +383,7 @@ public class Invocation implements Serializable {
 	 * 
 	 * @return May return null if the entire request is complete.
 	 */
-	protected Invocation getFirstUnfinishedAncestorFromCurrent() {
+	public static Invocation getFirstUnfinishedAncestorFromCurrent() {
 		Invocation current = (Invocation) currentInvocationRef.get();
 		if (current == null) return null;
 		return current.getFirstUnfinished();

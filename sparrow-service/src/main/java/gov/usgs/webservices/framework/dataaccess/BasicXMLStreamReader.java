@@ -2,6 +2,8 @@ package gov.usgs.webservices.framework.dataaccess;
 
 import gov.usgs.webservices.framework.utils.UsgsStAXUtils;
 import gov.usgs.webservices.framework.utils.XMLUtils;
+import gov.usgswim.sparrow.monitor.Invocation;
+import gov.usgswim.sparrow.monitor.ServletInvocation;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -56,6 +58,10 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 	protected boolean isEnded;
 	protected boolean isDataDone;
 	protected int startElementCount;
+	
+	//Related to process monitoring
+	protected Boolean monitorExists = null;		//unknown
+	protected ServletInvocation monitor;
 
 	// OPTIMIZATION
 	protected Map<String, String> attributeNameCache = new HashMap<String, String>();
@@ -73,6 +79,10 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		public boolean isEmpty() {
 			return (name == null && value == null);
 		}
+	}
+	
+	public BasicXMLStreamReader() {
+		this.setChunksUnit("Recordset Rows");
 	}
 
 
@@ -107,6 +117,8 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 					readRow(_rset);
 
 					rowEndAction();
+					incrementChunksDone(1);
+					
 				} else {
 					// document has started and there is no more next row, so it must be the end of the document
 					if (isStarted) {
@@ -768,6 +780,59 @@ public abstract class BasicXMLStreamReader implements XMLStreamReader {
 		public String getAttributeLocalName(int i) {
 			return attributeAliases.get(i);
 		}
+	}
+	
+	
+	
+	protected void setChunksUnit(String unit) {
+		ServletInvocation mon = getMonitor();
+		if (mon != null) {
+			mon.setChunksUnit(unit);
+		}
+	}	
+	
+	protected void setChunksDone(int sent) {
+		ServletInvocation mon = getMonitor();
+		if (mon != null) {
+			mon.setChunksDone(sent);
+		}
+	}
+	
+	protected void incrementChunksDone(int addChunks) {
+		ServletInvocation mon = getMonitor();
+		if (mon != null) {
+			mon.incrementChunksSent(addChunks);
+		}
+	}
+	
+	protected void setChunksTotal(int total) {
+		ServletInvocation mon = getMonitor();
+		if (mon != null) {
+			mon.setChunksTotal(total);
+		}
+	}
+	
+	protected void setReportedPercentDone(float percentComplete) {
+		ServletInvocation mon = getMonitor();
+		if (mon != null) {
+			mon.setReportedPercentDone(percentComplete);
+		}
+	}
+	
+	protected ServletInvocation getMonitor() {
+		if (monitor != null) return monitor;
+
+		if (monitorExists == null) {
+			Invocation invoke = Invocation.getFirstUnfinishedAncestorFromCurrent();
+			if (invoke != null && invoke instanceof ServletInvocation) {
+				monitor = (ServletInvocation)invoke;
+				monitorExists = true;
+			} else {
+				monitorExists = false;
+			}
+		}
+		
+		return monitor;
 	}
 
 }

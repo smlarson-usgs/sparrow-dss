@@ -25,11 +25,11 @@ public class ConfirmBinningService extends AbstractSparrowServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) {
-		doPost(req, resp);
+	public void doActualGet(HttpServletRequest req, HttpServletResponse resp) {
+		doActualPost(req, resp);
 	}
 
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) {
+	public void doActualPost(HttpServletRequest req, HttpServletResponse resp) {
 		Integer contextId = req.getParameter("context-id")==null ? Integer.valueOf(0) : Integer.parseInt((String)req.getParameter("context-id"));
 		String[] binHighList = req.getParameter("binHighList")==null ? new String[]{} : ((String)req.getParameter("binHighList")).split(",");
 		String[] binLowList = req.getParameter("binLowList")==null ? new String[]{} : ((String)req.getParameter("binLowList")).split(",");

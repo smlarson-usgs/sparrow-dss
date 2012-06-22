@@ -42,6 +42,14 @@ public class PredictExportAggFilter implements RowFilter {
         Long id = source.getIdForRow(rowNum);
         return (results.get(id) != null);
     }
+		
+		public Integer getEstimatedAcceptCount() {
+			if (results != null) {
+				return results.size();
+			} else {
+				return null;
+			}
+		}
     
     /**
      * Returns a list of generated identifiers for HUCs that fall within the

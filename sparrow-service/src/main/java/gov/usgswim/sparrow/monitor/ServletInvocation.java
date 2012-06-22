@@ -6,20 +6,22 @@ import java.util.ArrayList;
  *
  * @author eeverman
  */
-public class ActionInvocation extends Invocation {
+public class ServletInvocation extends Invocation {
 
 	//A list of validation messages.  Never null.
 	private volatile String[] validationErrors = null;
+	private volatile Integer responseCode = null;
 	
-	public ActionInvocation(Class target) {
+	public ServletInvocation(Class target) {
 		super(target);
 	}
 		
-	public ActionInvocation(Class target, Object request, String requestAsString) {
+	public ServletInvocation(Class target, Object request, String requestAsString) {
 		super(target, request, requestAsString);
 	}
 	
-	public String getName() { return "action"; }
+	public String getName() { return "servlet"; }
+	
 	
 	public void setValidationErrors(String[] errors) {
 		if (errors != null && errors.length > 0) {
@@ -37,5 +39,13 @@ public class ActionInvocation extends Invocation {
 	public boolean hasValidationErrors() {
 		return validationErrors != null;
 	}
-	
+
+	public Integer getResponseCode() {
+		return responseCode;
+	}
+
+	public void setResponseCode(Integer responseCode) {
+		this.responseCode = responseCode;
+	}
+
 }

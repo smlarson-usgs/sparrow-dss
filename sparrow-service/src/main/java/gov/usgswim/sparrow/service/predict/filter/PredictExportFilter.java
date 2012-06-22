@@ -50,6 +50,14 @@ public class PredictExportFilter implements RowFilter {
 		Long identifier = tableWithRowIDs.getIdForRow(rowNum);
 		return (Arrays.binarySearch(results, identifier) > -1);
 	}
+	
+	public Integer getEstimatedAcceptCount() {
+		if (results != null) {
+			return results.length;
+		} else {
+			return null;
+		}
+	}
 
 
 	/**

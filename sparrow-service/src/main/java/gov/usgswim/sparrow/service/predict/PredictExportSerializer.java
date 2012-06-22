@@ -86,6 +86,9 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 		}
 		
 		this.filter = createRowFilter();
+		
+		setChunksTotal(filter.getEstimatedAcceptCount());
+		setChunksUnit("XML Data Rows");
 
 	}
 
@@ -263,9 +266,12 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	}
 
 	protected void readRow() {
-	    while (!state.isDataFinished() && !filter.accept(filterTable, state.r)) {
-	        state.r++;
-	    }
+		
+		//Spin off to oblivian data rows that are filtered out
+		while (!state.isDataFinished() && !filter.accept(filterTable, state.r)) {
+			state.r++;
+		}
+		
 		if (!state.isDataFinished()) {
 			BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
 			
@@ -336,7 +342,8 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 			}
 			addCloseTag("r");
 			events.add(new BasicTagEvent(SPACE));
-
+			incrementChunksDone(1);	//notify monitor that we added a row
+			
 		}
 		state.r++;
 	}
@@ -383,6 +390,10 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
                 public boolean accept(DataTable table, int rowNum) {
                     return true;
                 }
+								
+								public Integer getEstimatedAcceptCount() {
+									return adjDataColumn.getTable().getRowCount();
+								}
             };
         } else if (adjContext.getAnalysis().isAggregated()) {
             this.filterTable = adjDataColumn.getTable();

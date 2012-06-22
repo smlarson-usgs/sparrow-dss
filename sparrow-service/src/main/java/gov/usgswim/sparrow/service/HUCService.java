@@ -26,7 +26,7 @@ public class HUCService extends AbstractSparrowServlet {
 	public static final String HUC_PARAM_NAME = "huc";
 	
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+	protected void doActualGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		//GET returns a single PredefinedSession based either on a
 		//unique key in the form context/servletpath/unique_key
@@ -82,9 +82,9 @@ public class HUCService extends AbstractSparrowServlet {
 
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-	throws ServletException, IOException {
-		doGet(req, resp);
+	protected void doActualPost(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		doActualGet(req, resp);
 	}
 	
 	

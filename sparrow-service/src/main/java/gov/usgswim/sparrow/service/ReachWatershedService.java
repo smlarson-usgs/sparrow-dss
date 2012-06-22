@@ -29,7 +29,7 @@ public class ReachWatershedService extends AbstractSparrowServlet {
 	public static final String MODEL_ID_PARAM_NAME = "model_id";
 	
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+	protected void doActualGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		//GET returns a single PredefinedSession based either on a
 		//unique key in the form context/servletpath/unique_key
@@ -82,9 +82,9 @@ public class ReachWatershedService extends AbstractSparrowServlet {
 
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+	protected void doActualPost(HttpServletRequest req, HttpServletResponse resp)
 	throws ServletException, IOException {
-		doGet(req, resp);
+		doActualGet(req, resp);
 	}
 	
 	

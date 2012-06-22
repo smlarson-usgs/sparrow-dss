@@ -25,6 +25,8 @@ public class RequestMonitor extends Invocation {
 		this.requestUrl = requestUrl;
 	}
 	
+	public String getName() { return "request"; }
+	
 	public String getRequestUrl() {
 		return requestUrl;
 	}

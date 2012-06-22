@@ -15,6 +15,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import com.thoughtworks.xstream.XStream;
+import gov.usgswim.sparrow.monitor.ServletInvocation;
+import javax.servlet.ServletException;
 
 /**
  * A based class for servlets which includes utility methods to serialize objects
@@ -57,6 +59,196 @@ public abstract class AbstractSparrowServlet extends HttpServlet {
 	 */
 	public AbstractSparrowServlet() {
 		super();
+	}
+
+
+	//
+	// A set of remappings for all requests.  The requests on the standard
+	// doGet / doPost, etc, and then are remapped to doActualGet / Post, etc.
+	// The base methods are final to ensure that we can setup and cleanup before
+	// and after requests.
+
+	@Override
+	protected final void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		ServletInvocation monitor = new ServletInvocation(this.getClass());
+		monitor.start();
+		
+		try {
+			doActualGet(req, resp);
+		} catch (ServletException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (IOException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (RuntimeException e) {
+			monitor.setError(e);
+			throw e;
+		} finally {
+			monitor.finish();
+		}
+		
+	}
+	
+	protected void doActualGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		super.doGet(req, resp);
+	}
+	
+	@Override
+	protected final void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		ServletInvocation monitor = new ServletInvocation(this.getClass());
+		monitor.start();
+		
+		try {
+			doActualPost(req, resp);
+		} catch (ServletException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (IOException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (RuntimeException e) {
+			monitor.setError(e);
+			throw e;
+		} finally {
+			monitor.finish();
+		}
+	}
+	
+	protected void doActualPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		super.doPost(req, resp);
+	}
+
+	@Override
+	protected final void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		ServletInvocation monitor = new ServletInvocation(this.getClass());
+		monitor.start();
+		
+		try {
+			doActualHead(req, resp);
+		} catch (ServletException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (IOException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (RuntimeException e) {
+			monitor.setError(e);
+			throw e;
+		} finally {
+			monitor.finish();
+		}
+	}
+	
+	protected  void doActualHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		super.doHead(req, resp);
+	}
+
+	@Override
+	protected final void doOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		ServletInvocation monitor = new ServletInvocation(this.getClass());
+		monitor.start();
+		
+		try {
+			doActualOptions(req, resp);
+		} catch (ServletException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (IOException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (RuntimeException e) {
+			monitor.setError(e);
+			throw e;
+		} finally {
+			monitor.finish();
+		}
+	}
+	
+	protected final void doActualOptions(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		super.doOptions(req, resp);
+	}
+
+	@Override
+	protected final void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		ServletInvocation monitor = new ServletInvocation(this.getClass());
+		monitor.start();
+		
+		try {
+			doActualPut(req, resp);
+		} catch (ServletException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (IOException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (RuntimeException e) {
+			monitor.setError(e);
+			throw e;
+		} finally {
+			monitor.finish();
+		}
+	}
+	
+	protected void doActualPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		super.doPut(req, resp);
+	}
+
+	@Override
+	protected final void doTrace(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		ServletInvocation monitor = new ServletInvocation(this.getClass());
+		monitor.start();
+		
+		try {
+			doActualTrace(req, resp);
+		} catch (ServletException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (IOException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (RuntimeException e) {
+			monitor.setError(e);
+			throw e;
+		} finally {
+			monitor.finish();
+		}
+	}
+	
+	protected void doActualTrace(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		super.doTrace(req, resp);
+	}
+	
+	@Override
+	protected final void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		ServletInvocation monitor = new ServletInvocation(this.getClass());
+		monitor.start();
+		
+		try {
+			doActualDelete(req, resp);
+		} catch (ServletException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (IOException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (RuntimeException e) {
+			monitor.setError(e);
+			throw e;
+		} finally {
+			monitor.finish();
+		}
+	}
+	
+	protected void doActualDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		super.doDelete(req, resp);
 	}
 	
 	

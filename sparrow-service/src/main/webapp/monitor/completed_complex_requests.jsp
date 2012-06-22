@@ -21,8 +21,8 @@
 </head>
 <body>
 
-<h1>Active Requests</h1>
-<%= renderer.buildHtml(SharedApplication.getInstance().getActiveRequests()) %>
+<h1>Completed Complex Requests</h1>
+<%= renderer.buildHtml(SharedApplication.getInstance().getCompletedComplexRequests()) %>
 
 </body>
 </html>

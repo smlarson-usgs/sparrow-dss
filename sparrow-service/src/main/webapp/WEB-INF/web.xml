@@ -457,4 +457,18 @@
     <security-role>
         <role-name>secure_maps_role</role-name>
     </security-role>
+		
+		<resource-ref>
+			<description>Read only database for data and geometry</description>
+			<res-ref-name>jdbc/sparrow_dss</res-ref-name>
+			<jndi-name>jdbc/sparrow_dss</jndi-name>
+			<res-type>javax.sql.DataSource</res-type>
+		</resource-ref>
+		
+		<resource-ref>
+			<description>Read/write database for some administrative transactional actions</description>
+			<res-ref-name>jdbc/sparrow_dss_trans</res-ref-name>
+			<jndi-name>jdbc/sparrow_dss_trans</jndi-name>
+			<res-type>javax.sql.DataSource</res-type>
+		</resource-ref>
 </web-app>

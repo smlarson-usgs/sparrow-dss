@@ -30,11 +30,13 @@ public class ReachGroupService extends AbstractSparrowServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public void doGet(HttpServletRequest req, HttpServletResponse resp) {
-		doPost(req, resp);
+	@Override
+	public void doActualGet(HttpServletRequest req, HttpServletResponse resp) {
+		doActualPost(req, resp);
 	}
 
-	public void doPost(HttpServletRequest req, HttpServletResponse resp) {
+	@Override
+	public void doActualPost(HttpServletRequest req, HttpServletResponse resp) {
 		Long modelId = req.getParameter("modelId")==null ? Long.valueOf(0) : Long.parseLong((String)req.getParameter("modelId"));
 		
 		Long reachId = req.getParameter("reachId")==null ? Long.valueOf(0) : Long.parseLong((String)req.getParameter("reachId")); //individual reach to add to this group

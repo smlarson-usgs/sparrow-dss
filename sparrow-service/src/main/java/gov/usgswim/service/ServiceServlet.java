@@ -2,6 +2,7 @@ package gov.usgswim.service;
 
 import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRequest;
+import gov.usgswim.sparrow.monitor.ServletInvocation;
 import gov.usgswim.sparrow.service.echo.EchoPipeline;
 import gov.usgswim.sparrow.service.json.JSONifyPipeline;
 
@@ -121,23 +122,55 @@ public class ServiceServlet extends HttpServlet {
 	}
 
 
-	/**
-	 * @see doPost()
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
-	 */
-	@Override
-	public void doGet(HttpServletRequest request,
-										HttpServletResponse response) throws ServletException, IOException {
-
-		doPost(request, response);
-		// TODO suggest use this to handle REST by calling parseREST()
+		@Override
+	protected final void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		ServletInvocation monitor = new ServletInvocation(this.getClass());
+		monitor.start();
+		
+		try {
+			doActualGet(req, resp);
+		} catch (ServletException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (IOException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (RuntimeException e) {
+			monitor.setError(e);
+			throw e;
+		} finally {
+			monitor.finish();
+		}
+		
 	}
-
-
-
+	
+	protected void doActualGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		doActualPost(req, resp);
+	}
+	
+	@Override
+	protected final void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		ServletInvocation monitor = new ServletInvocation(this.getClass());
+		monitor.start();
+		
+		try {
+			doActualPost(req, resp);
+		} catch (ServletException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (IOException e) {
+			monitor.setError(e);
+			throw e;
+		} catch (RuntimeException e) {
+			monitor.setError(e);
+			throw e;
+		} finally {
+			monitor.finish();
+		}
+	}
+	
 	/**
 	 * Delegates to the HttpRequestParser to get a request, then passes the request
 	 * to the HttpRequestHandler.
@@ -147,9 +180,9 @@ public class ServiceServlet extends HttpServlet {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	@Override
-	public void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	protected void doActualPost(HttpServletRequest request, HttpServletResponse response)
+				throws ServletException, IOException {
+		
 		PipelineRequest o = null;
 		// TODO suggest use this to handle POST & SOAP by calling parsePOST(),
 		try {

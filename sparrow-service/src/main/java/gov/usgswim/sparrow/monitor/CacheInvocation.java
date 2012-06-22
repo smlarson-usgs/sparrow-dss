@@ -17,6 +17,8 @@ public class CacheInvocation extends Invocation {
 	public CacheInvocation(Class target, Object request) {
 		super(target, request, null);
 	}
+	
+	public String getName() { return "cache"; }
 
 	public Boolean isCacheHit() {
 		return hit;

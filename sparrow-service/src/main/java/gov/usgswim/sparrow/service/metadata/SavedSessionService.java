@@ -59,7 +59,7 @@ public class SavedSessionService extends AbstractSparrowServlet {
 	 * 
 	 */
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+	protected void doActualGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		//GET returns a single PredefinedSession based either on a
 		//unique key in the form context/servletpath/unique_key
@@ -147,14 +147,14 @@ public class SavedSessionService extends AbstractSparrowServlet {
 
 
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+	protected void doActualPost(HttpServletRequest req, HttpServletResponse resp)
 	throws ServletException, IOException {
-		doPut(req, resp);
+		doActualPut(req, resp);
 	}
 	
 	
 	@Override
-	protected void doPut(HttpServletRequest req, HttpServletResponse resp)
+	protected void doActualPut(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
 		ServiceResponseWrapper wrap = new ServiceResponseWrapper(

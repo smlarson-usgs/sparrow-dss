@@ -34,4 +34,13 @@ public class TerminalReachesRowFilter implements RowFilter, Serializable {
 		return tr.contains(table.getIdForRow(rowNum));
 	}
 
+	@Override
+	public Integer getEstimatedAcceptCount() {
+		if (tr != null) {
+			return tr.size();
+		} else {
+			return null;
+		}
+	}
+
 }
