@@ -83,9 +83,9 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
         	//related to the model.  Negative means not shown but spec's the
         	//remembered opacity (-75 == 75 opacity, not shown).
         	calibSites: -75,
-			reachOverlay: -75,
-			huc8Overlay: -75,
-			dataLayerOpacity: 75,
+					reachOverlay: -100,
+					huc8Overlay: -75,
+					dataLayerOpacity: 100,
 			
         	lat: null,
         	lon: null,

@@ -1,7 +1,7 @@
 <ServiceGroup>
 	
 	<!-- Added from Calvin -->
-	
+	<!--
   <Service>
     <Name>Orthoimagery_USGS_EDC_Ortho_NAIP</Name>
     <Title>Orthoimagery_USGS_EDC_Ortho_NAIP</Title>
@@ -42,7 +42,7 @@
       <Abstract></Abstract>
     </Layer>
   </Service>
-	
+	-->
 	<!-- / Added from Calvin -->
   <Service>
     <Version>1.1.1</Version>
