@@ -1,6 +1,8 @@
 package gov.usgswim.sparrow.map;
 
+import gov.usgswim.sparrow.ServletUtil;
 import gov.usgswim.sparrow.SparrowProxyServlet;
+import gov.usgswim.sparrow.SparrowUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -36,7 +38,7 @@ public class MapRequestServlet extends SparrowProxyServlet {
 		if ("/getMap".equals(servlet_path)) {
 			try {
 				params.put("xml_request", buildMapViewerRequest(request));
-			} catch (IOException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				this.log("Unable to create the request string", e);
 			}
@@ -56,7 +58,7 @@ public class MapRequestServlet extends SparrowProxyServlet {
 	 * @return A MapViewer request XML.
 	 * @throws IOException
 	 */
-	public String buildMapViewerRequest(HttpServletRequest request) throws IOException {
+	public String buildMapViewerRequest(HttpServletRequest request) throws Exception {
 		// Mapping data parameters
 		String modelId = StringUtils.trimToNull(request.getParameter("model_id"));
 		String contextId = StringUtils.trimToNull(request.getParameter("context_id"));
@@ -74,6 +76,8 @@ public class MapRequestServlet extends SparrowProxyServlet {
 		String bBox = StringUtils.trimToNull(request.getParameter("BBOX"));
 		String width = StringUtils.trimToNull(request.getParameter("width"));
 		String height = StringUtils.trimToNull(request.getParameter("height"));
+		
+		float mapScale = SparrowUtil.getMapScale(bBox, width);
 		
 		//check values
 		if (modelId == null && contextId == null) {
@@ -146,7 +150,7 @@ public class MapRequestServlet extends SparrowProxyServlet {
 		xmlreq.append("<themes>\n");
 		xmlreq.append("<theme name=\"" + fullThemeName + "\"></theme>");
 		xmlreq.append("	</themes>\n<styles>\n");
-		xmlreq.append(buildCustomRenderStyle(request));
+		xmlreq.append(buildCustomRenderStyle(request, mapScale));
 		xmlreq.append("</styles>\n</map_request>");
  
 		return xmlreq.toString();
@@ -176,7 +180,7 @@ public class MapRequestServlet extends SparrowProxyServlet {
 						+ "       <entry style=\"" + renderStyle + "\"/>" + "     </column>"
 						+ "   </legend>";
 		mapreq += "<styles>";
-		mapreq += buildCustomRenderStyle(request);
+		mapreq += buildCustomRenderStyle(request, null);
 		mapreq += "</styles>";
 		mapreq += "</map_request>";
 
@@ -191,8 +195,20 @@ public class MapRequestServlet extends SparrowProxyServlet {
 	 * @return A style definition XML suitable for inclusion in a MapViewer
 	 *         map request.
 	 */
-	protected String buildCustomRenderStyle(HttpServletRequest request) {
+	protected String buildCustomRenderStyle(HttpServletRequest request, Float mapScale) {
 		StringBuilder styleXml = new StringBuilder();
+		
+		String lineThickness = "3.0";
+		if (mapScale != null) {
+			if (mapScale > 1.06) {
+				lineThickness = "2.5";
+			} else if (mapScale > .5) {
+				lineThickness = "3.0";
+			} else {
+				lineThickness = "5.0";
+			}
+		}
+
 
 		// Get the user's session id for unique style naming
 		String sessionId = request.getSession().getId();
@@ -226,8 +242,8 @@ public class MapRequestServlet extends SparrowProxyServlet {
 			styleXml.append("<style name=\"" + styleName + "\">\n");
 
 			if ("reach".equals(whatToMap)) {
-				styleXml.append("<g class=\"line\" style=\"stroke-width:3.0;fill:" + color + ";\">\n");
-				styleXml.append("<line class=\"base\" style=\"stroke-width:3.0;fill:" + color + ";\" />\n");
+				styleXml.append("<g class=\"line\" style=\"stroke-width:" + lineThickness + ";fill:" + color + ";\">\n");
+				styleXml.append("<line class=\"base\" style=\"stroke-width:" + lineThickness + ";fill:" + color + ";\" />\n");
 				styleXml.append("</g>\n");
 			} else {
 				styleXml.append("<g class=\"color\" style=\"stroke:" + color + ";fill:" + color + "\" />\n");

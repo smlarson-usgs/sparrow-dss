@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package gov.usgswim.sparrow.map;
+package gov.usgswim.sparrow;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.map;
 
+import gov.usgswim.sparrow.ServletUtil;
 import gov.usgs.cida.proxy.ProxyServlet;
 import gov.usgswim.sparrow.SparrowProxyServlet;
 
