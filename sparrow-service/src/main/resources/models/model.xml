@@ -358,7 +358,7 @@
 			In both cases, the color used to render the reach or catchment is based
 			on the binning scheme selected on the <b>Map Controls</b> tab.<br/><br/>
 			<p>
-			Note that if the <i>Reaches</i> option is choosen, the <i>Reach Overlay</</i>
+			Note that if the <i>Reaches</i> option is choosen, the <i>Reach Overlay</i>
 			option will be disabled, since it would draw the same reach lines.
 			</p>
 		</Term>
