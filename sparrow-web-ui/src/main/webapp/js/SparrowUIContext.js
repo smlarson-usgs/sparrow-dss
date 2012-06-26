@@ -183,16 +183,16 @@ Sparrow.ux.Session.prototype = {
 
 	/** Returns PredictionContext as XML String */
 	getPredictionContextAsXML : function(){
-		return Sparrow.USGS.JSONtoXML({ PredictionContext : this.PredictionContext});
+		return Sparrow.USGS.JSONtoXML({PredictionContext : this.PredictionContext});
 	},
 	
 	/** Returns adjustments as XML String */
 	getAdjustmentGroupsAsXML : function(){
-		return Sparrow.USGS.JSONtoXML({ adjustmentGroups : this.PredictionContext.adjustmentGroups});
+		return Sparrow.USGS.JSONtoXML({adjustmentGroups : this.PredictionContext.adjustmentGroups});
 	},
 
 	/** Returns SESSION/SESSION.data as a JSON String for serialization. */
-	asJSON : function(){ return Ext.util.JSON.encode(this.getData()); }, // might need to be this.getData()
+	asJSON : function(){return Ext.util.JSON.encode(this.getData());}, // might need to be this.getData()
 
 	/** Returns SESSION/SESSION.data as a XML String*/
 	asSessionXML : function(){ 
@@ -256,7 +256,8 @@ Sparrow.ux.Session.prototype = {
 	// Doesn't seem to be used?? [IK]
 	setWhatToMap: function(val) {
 		this.PermanentMapState["what_to_map"] = val;
-	    this.changed();
+		this.fireContextEvent("what-to-map");
+		this.changed();
 	},
 	
 	getBinType: function() {
@@ -399,9 +400,9 @@ Sparrow.ux.Session.prototype = {
             	var highVal = this.PermanentMapState.binning.bins[i]['high'];
             	var color = this.PermanentMapState.binning.bins[i]['color'];
             	
-            	displayBins.push({ low: lowVal, high: highVal });
-            	functionalBins.push({ low: lowVal, high: highVal });
-            	boundUnlimited.push({ low: false, high: false });
+            	displayBins.push({low: lowVal, high: highVal});
+            	functionalBins.push({low: lowVal, high: highVal});
+            	boundUnlimited.push({low: false, high: false});
             	colors.push(color);
             	nonDetect[i] = false;
             }
@@ -599,11 +600,11 @@ Sparrow.ux.Session.prototype = {
 	 * @param newOpacity optional if enabling the layer.  Otherwise it uses
 	 * the previous opacity.
 	 */
-	setCalibSitesOverlayEnabled: function(enable, newOpacity) {
+	setCalibSitesOverlayRequested: function(enable, newOpacity) {
 		this._setAnyDataLayerEnabled(enable, newOpacity, "calibSites", "calibsites-changed");
 	},
 	
-	isCalibSitesOverlayEnabled: function() {
+	isCalibSitesOverlayRequested: function() {
 		return (this.PermanentMapState["calibSites"] > 0);
 	},
 	
@@ -617,12 +618,27 @@ Sparrow.ux.Session.prototype = {
 	 * @param newOpacity optional if enabling the layer.  Otherwise it uses
 	 * the previous opacity.
 	 */
-	setReachOverlayEnabled: function(enable, newOpacity) {
+	setReachOverlayRequested: function(enable, newOpacity) {
 		this._setAnyDataLayerEnabled(enable, newOpacity, "reachOverlay", "reachoverlay-changed");
 	},
 
-	isReachOverlayEnabled: function() {
+	/**
+	 * Returns true if the reach overlay is requested by the user.
+	 * Note that the layer may be disabled due to reaches being the data layer.
+	 * Check isReachOverlayEnabled to confirm that the layer should be drawn if it
+	 * is requested.
+	 */
+	isReachOverlayRequested: function() {
 		return (this.PermanentMapState["reachOverlay"] > 0);
+	},
+	
+	/**
+	 * Returns true if it OK to draw the reach overlay.  Check to see if the user
+	 * requested it:  isReachOverlayRequested().
+	 * The reach overlay should not be drawn if the data layer is 'reach' instead of cathcment.
+	 */
+	isReachOverlayEnabled: function() {
+		return (this.PermanentMapState["what_to_map"] != "reach");
 	},
 	
 	getReachOverlayOpacity: function() {
@@ -635,11 +651,11 @@ Sparrow.ux.Session.prototype = {
 	 * @param newOpacity optional if enabling the layer.  Otherwise it uses
 	 * the previous opacity.
 	 */
-	setHuc8OverlayEnabled: function(enable, newOpacity) {
+	setHuc8OverlayRequested: function(enable, newOpacity) {
 		this._setAnyDataLayerEnabled(enable, newOpacity, "huc8Overlay", "huc8overlay-changed");
 	},
 
-	isHuc8OverlayEnabled: function() {
+	isHuc8OverlayRequested: function() {
 		return (this.PermanentMapState["huc8Overlay"] > 0);
 	},
 	

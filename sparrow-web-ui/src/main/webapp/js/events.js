@@ -136,6 +136,18 @@ Sparrow.events.EventManager = function(){ return{
 		Sparrow.CONTEXT.on('adjustment-changed', Sparrow.handlers.UiComponents.adjustmentChange);
 		Sparrow.CONTEXT.on('adjustment-group-changed', Sparrow.handlers.UiComponents.updateAdjustmentsTree);
 
+		/**
+		 * Invoked when the user changes the map selection b/t Reaches or Catchments.
+		 */
+		Sparrow.CONTEXT.on("what-to-map", function(){
+			//Update the overlay controls to the current state
+			var mapOptionsTab = Ext.getCmp('map-options-tab');
+			mapOptionsTab.syncDataOverlayControlsToSession();
+			
+			//Update the reach overlay, which may now be newly enable or disabled.
+			Sparrow.handlers.MapComponents.updateReachOverlayOnMap();
+		});
+		
 		Sparrow.CONTEXT.on("calibsites-changed", function(){
 			Sparrow.handlers.MapComponents.updateCalibrationLayerOnMap();
 			Sparrow.handlers.MapComponents.updateCalibrationSiteIdControls();
@@ -367,7 +379,7 @@ Sparrow.handlers.MapComponents = function(){
 	updateCalibrationLayerOnMap : function() {
 		var layerId = Sparrow.config.LayerIds.calibrationSiteLayerId;
 		var opacity = Sparrow.SESSION.getCalibSitesOverlayOpacity();
-		var showRequested = Sparrow.SESSION.isCalibSitesOverlayEnabled();
+		var showRequested = Sparrow.SESSION.isCalibSitesOverlayRequested();
 		var isShowing = (map1.getMapLayer(layerId) != null);
 		
 	    if (showRequested && ! isShowing) {
@@ -393,7 +405,7 @@ Sparrow.handlers.MapComponents = function(){
 	},
 	
 	updateCalibrationSiteIdControls: function() {
-		if(Sparrow.SESSION.isCalibSitesOverlayEnabled()){
+		if(Sparrow.SESSION.isCalibSitesOverlayRequested()){
 			Ext.getCmp('mapToolButtonsCalibrationSiteIdentify').show();
 		} else {
 			Ext.getCmp('mapToolButtonsCalibrationSiteIdentify').hide();
@@ -408,10 +420,14 @@ Sparrow.handlers.MapComponents = function(){
 		Ext.getCmp('mapToolButtonsCalibrationSiteIdentify').ownerCt.doLayout();
 	},
 	
+	/**
+	 * Updates the reach overlay layer on the map to match the current session
+	 * state.
+	 */
 	updateReachOverlayOnMap : function() {
 		var layerId = Sparrow.config.LayerIds.reachLayerId;
 		var opacity = Sparrow.SESSION.getReachOverlayOpacity();
-		var showRequested = Sparrow.SESSION.isReachOverlayEnabled();
+		var showRequested = Sparrow.SESSION.isReachOverlayRequested() && Sparrow.SESSION.isReachOverlayEnabled();
 		var isShowing = (map1.getMapLayer(layerId) != null);
 
 		if (showRequested && ! isShowing) {
@@ -439,7 +455,7 @@ Sparrow.handlers.MapComponents = function(){
 	updateHuc8OverlayOnMap : function() {
 		var layerId = Sparrow.config.LayerIds.huc8LayerId;
 		var opacity = Sparrow.SESSION.getHuc8OverlayOpacity();
-		var showRequested = Sparrow.SESSION.isHuc8OverlayEnabled();
+		var showRequested = Sparrow.SESSION.isHuc8OverlayRequested();
 		var isShowing = (map1.getMapLayer(layerId) != null);
 
 		if (showRequested && ! isShowing) {

@@ -256,9 +256,9 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 		
 		this.calibSitesChk = new Ext.form.Checkbox({
         	boxLabel: 'Calibration Sites',
-        	checked: Sparrow.SESSION.isCalibSitesOverlayEnabled(),
+        	checked: Sparrow.SESSION.isCalibSitesOverlayRequested(),
         	handler: function(checkbox, checked) {
-        		Sparrow.SESSION.setCalibSitesOverlayEnabled(checked);
+        		Sparrow.SESSION.setCalibSitesOverlayRequested(checked);
         		this.calibSitesSlider.setDisabled(!checked);
         	}, 
         	scope: this
@@ -273,19 +273,19 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 			    increment: 1,
 			    minValue: 1,
 			    maxValue: 100,
-			    disabled: ! Sparrow.SESSION.isCalibSitesOverlayEnabled(),
+			    disabled: ! Sparrow.SESSION.isCalibSitesOverlayRequested(),
 			    listeners: {
 					change: function(s, v) {
-						Sparrow.SESSION.setCalibSitesOverlayEnabled(true, v);
+						Sparrow.SESSION.setCalibSitesOverlayRequested(true, v);
 					}
 				}
 			});
 		
 		this.reachOverlayChk = new Ext.form.Checkbox({
         	boxLabel: 'Reach Overlay',
-        	checked: Sparrow.SESSION.isReachOverlayEnabled(),
+        	checked: Sparrow.SESSION.isReachOverlayRequested(),
         	handler: function(checkbox, checked) {
-        		Sparrow.SESSION.setReachOverlayEnabled(checked);
+        		Sparrow.SESSION.setReachOverlayRequested(checked);
         		this.reachOverlaySlider.setDisabled(!checked);
         	},
         	scope: this
@@ -299,19 +299,19 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 		    increment: 1,
 		    minValue: 1,
 		    maxValue: 100,
-		    disabled: ! Sparrow.SESSION.isReachOverlayEnabled(),
+		    disabled: ! Sparrow.SESSION.isReachOverlayRequested(),
 		    listeners: {
 				change: function(s, v) {
-					Sparrow.SESSION.setReachOverlayEnabled(true, v);
+					Sparrow.SESSION.setReachOverlayRequested(true, v);
 				}
 			}
 		});
 		
 		this.huc8OverlayChk = new Ext.form.Checkbox({
         	boxLabel: 'HUC8 Overlay',
-        	checked: Sparrow.SESSION.isHuc8OverlayEnabled(),
+        	checked: Sparrow.SESSION.isHuc8OverlayRequested(),
         	handler: function(checkbox, checked) {
-        		Sparrow.SESSION.setHuc8OverlayEnabled(checked);
+        		Sparrow.SESSION.setHuc8OverlayRequested(checked);
         		this.huc8OverlaySlider.setDisabled(!checked);
         	},
         	scope: this
@@ -325,10 +325,10 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 		    increment: 1,
 		    minValue: 1,
 		    maxValue: 100,
-		    disabled: ! Sparrow.SESSION.isHuc8OverlayEnabled(),
+		    disabled: ! Sparrow.SESSION.isHuc8OverlayRequested(),
 		    listeners: {
 				change: function(s, v) {
-					Sparrow.SESSION.setHuc8OverlayEnabled(true, v);
+					Sparrow.SESSION.setHuc8OverlayRequested(true, v);
 				}
 			}
 		});
@@ -659,11 +659,23 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 
 	
 	syncDataOverlayControlsToSession: function() {
-		this.calibSitesChk.setValue(Sparrow.SESSION.isCalibSitesOverlayEnabled());
+		//Calibration site overlay
+		this.calibSitesChk.setValue(Sparrow.SESSION.isCalibSitesOverlayRequested());
 		this.calibSitesSlider.setValue(Sparrow.SESSION.getCalibSitesOverlayOpacity());
-		this.reachOverlayChk.setValue(Sparrow.SESSION.isReachOverlayEnabled());
+		
+		//Reach Overlay
+		this.reachOverlayChk.setValue(Sparrow.SESSION.isReachOverlayRequested());
 		this.reachOverlaySlider.setValue(Sparrow.SESSION.getReachOverlayOpacity());
-		this.huc8OverlayChk.setValue(Sparrow.SESSION.isHuc8OverlayEnabled());
+		if (Sparrow.SESSION.isReachOverlayEnabled()) {
+			this.reachOverlayChk.enable();
+			this.reachOverlaySlider.enable();
+		} else {
+			this.reachOverlayChk.disable();
+			this.reachOverlaySlider.disable();
+		}
+		
+		//Huc Overlay
+		this.huc8OverlayChk.setValue(Sparrow.SESSION.isHuc8OverlayRequested());
 		this.huc8OverlaySlider.setValue(Sparrow.SESSION.getHuc8OverlayOpacity());
 	},
 
