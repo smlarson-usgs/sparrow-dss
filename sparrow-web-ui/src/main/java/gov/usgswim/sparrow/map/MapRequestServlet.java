@@ -198,14 +198,14 @@ public class MapRequestServlet extends SparrowProxyServlet {
 	protected String buildCustomRenderStyle(HttpServletRequest request, Float mapScale) {
 		StringBuilder styleXml = new StringBuilder();
 		
-		String lineThickness = "3.0";
+		String lineThickness = "5.0";
 		if (mapScale != null) {
 			if (mapScale > 1.06) {
-				lineThickness = "2.5";
+				lineThickness = "3";
 			} else if (mapScale > .5) {
-				lineThickness = "4.0";
+				lineThickness = "5.0";
 			} else {
-				lineThickness = "6.0";
+				lineThickness = "7.0";
 			}
 		}
 
