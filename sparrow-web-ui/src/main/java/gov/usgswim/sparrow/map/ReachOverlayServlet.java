@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * This proxy servlet parses the incoming parameters to construct an XML request
@@ -57,7 +58,18 @@ public class ReachOverlayServlet extends SparrowProxyServlet {
 	public String buildMapViewerRequest(HttpServletRequest request) throws Exception {
 
 		Object[] params = parseParams(request);
+		float mapScale = getMapScale(request);
 
+		if (mapScale > 1) {
+		String xmlRequest =
+						ServletUtil.getAnyFileWithSubstitutions(this.getClass(), "_large_scale", "xml", params);
+		} else if (mapScale > .5) {
+		String xmlRequest =
+						ServletUtil.getAnyFileWithSubstitutions(this.getClass(), "_medium_scale", "xml", params);
+		} else {
+		String xmlRequest =
+						ServletUtil.getAnyFileWithSubstitutions(this.getClass(), "_small_scale", "xml", params);
+		}
 		String xmlRequest =
 						ServletUtil.getAnyFileWithSubstitutions(this.getClass(), "_context", "xml", params);
 
@@ -90,5 +102,38 @@ public class ReachOverlayServlet extends SparrowProxyServlet {
 
 		return paramList.toArray();
 	}
+	
+	protected float getMapScale(HttpServletRequest request) throws Exception {
+		String bboxStr = ServletUtil.getString(request.getParameterMap(), "BBOX", true);
+		String widthStr = ServletUtil.getString(request.getParameterMap(), "width", true);
+		
+		double[] bbox = splitBoundsString(bboxStr);
+		double pixelWidth = Double.parseDouble(widthStr);
+		
+		double xMapUnitsSize = Math.abs(bbox[0] - bbox[2]);
+		double xScreenInchSize = pixelWidth / 96d; //MV assumes a screen resolution of 96
+		double scale = xMapUnitsSize / xScreenInchSize;
+		
+		return (float) scale;
+	}
 
+
+	
+	public static double[] splitBoundsString(String bounds) throws Exception {
+		String[] boundArray = bounds.split(",");
+		
+		if (boundArray.length != 4) {
+			throw new Exception("The bounds string should be of the form 'left,lower,right,upper'.");
+		}
+		
+		double[] boundDArray = new double[4];
+		
+		boundDArray[0] = Double.parseDouble(StringUtils.trimToNull(boundArray[0]));
+		boundDArray[1] = Double.parseDouble(StringUtils.trimToNull(boundArray[1]));
+		boundDArray[2] = Double.parseDouble(StringUtils.trimToNull(boundArray[2]));
+		boundDArray[3] = Double.parseDouble(StringUtils.trimToNull(boundArray[3]));
+		
+		return boundDArray;
+	}
+	
 }

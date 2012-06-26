@@ -352,11 +352,15 @@
 			Calculates the average, maximum, minimum, or sum of the model output when the map displays over HUC.
 		</Term>
 		<Term id="Reaches Or Catchments">
-			<h2>Display Reaches or Catchments</h2><br/>
+			<h2>Display Prediction Data Using Reaches or Catchments</h2><br/>
 			Selecting <b>Reaches</b> will draw individual reach lines (water bodies) on the map.
 			Selecting <b>Catchments</b> will draw each catchment region (land area surrounding each reach).
 			In both cases, the color used to render the reach or catchment is based
-			on the binning scheme selected on the <b>Map Controls</b> tab.
+			on the binning scheme selected on the <b>Map Controls</b> tab.<br/><br/>
+			<p>
+			Note that if the <i>Reaches</i> option is choosen, the <i>Reach Overlay</</i>
+			option will be disabled, since it would draw the same reach lines.
+			</p>
 		</Term>
 		<Term id="Watershed Area">
 			<h2>Watershed Area</h2><br/>
