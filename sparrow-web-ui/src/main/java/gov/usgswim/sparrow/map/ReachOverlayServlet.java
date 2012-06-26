@@ -60,7 +60,7 @@ public class ReachOverlayServlet extends SparrowProxyServlet {
 		Object[] params = parseParams(request);
 		float mapScale = getMapScale(request);
 
-		if (mapScale > 1) {
+		if (mapScale > 1.06) {
 		String xmlRequest =
 						ServletUtil.getAnyFileWithSubstitutions(this.getClass(), "_large_scale", "xml", params);
 		} else if (mapScale > .5) {
