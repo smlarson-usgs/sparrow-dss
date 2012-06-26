@@ -58,7 +58,11 @@ public class ReachOverlayServlet extends SparrowProxyServlet {
 	public String buildMapViewerRequest(HttpServletRequest request) throws Exception {
 
 		Object[] params = parseParams(request);
+		
+		//A large number indicates a large lat-long window for an area on the screen.
+		//i.e. large number means you are zoomed out.  Small number means zoomed in.
 		float mapScale = getMapScale(request);
+		
 
 		String xmlRequest = "";
 		
