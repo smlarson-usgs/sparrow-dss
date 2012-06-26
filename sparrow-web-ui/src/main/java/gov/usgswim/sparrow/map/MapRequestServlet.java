@@ -203,9 +203,9 @@ public class MapRequestServlet extends SparrowProxyServlet {
 			if (mapScale > 1.06) {
 				lineThickness = "2.5";
 			} else if (mapScale > .5) {
-				lineThickness = "3.0";
+				lineThickness = "4.0";
 			} else {
-				lineThickness = "5.0";
+				lineThickness = "6.0";
 			}
 		}
 
