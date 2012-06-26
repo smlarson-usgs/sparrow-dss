@@ -60,18 +60,18 @@ public class ReachOverlayServlet extends SparrowProxyServlet {
 		Object[] params = parseParams(request);
 		float mapScale = getMapScale(request);
 
+		String xmlRequest = "";
+		
 		if (mapScale > 1.06) {
-		String xmlRequest =
+			xmlRequest =
 						ServletUtil.getAnyFileWithSubstitutions(this.getClass(), "_large_scale", "xml", params);
 		} else if (mapScale > .5) {
-		String xmlRequest =
+			xmlRequest =
 						ServletUtil.getAnyFileWithSubstitutions(this.getClass(), "_medium_scale", "xml", params);
 		} else {
-		String xmlRequest =
+			xmlRequest =
 						ServletUtil.getAnyFileWithSubstitutions(this.getClass(), "_small_scale", "xml", params);
 		}
-		String xmlRequest =
-						ServletUtil.getAnyFileWithSubstitutions(this.getClass(), "_context", "xml", params);
 
 		return xmlRequest;
 
