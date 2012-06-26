@@ -226,8 +226,8 @@ public class MapRequestServlet extends SparrowProxyServlet {
 			styleXml.append("<style name=\"" + styleName + "\">\n");
 
 			if ("reach".equals(whatToMap)) {
-				styleXml.append("<g class=\"line\" style=\"stroke-width:1.0;fill:" + color + ";\">\n");
-				styleXml.append("<line class=\"base\" style=\"stroke-width:1.0;fill:" + color + ";\" />\n");
+				styleXml.append("<g class=\"line\" style=\"stroke-width:3.0;fill:" + color + ";\">\n");
+				styleXml.append("<line class=\"base\" style=\"stroke-width:3.0;fill:" + color + ";\" />\n");
 				styleXml.append("</g>\n");
 			} else {
 				styleXml.append("<g class=\"color\" style=\"stroke:" + color + ";fill:" + color + "\" />\n");
