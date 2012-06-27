@@ -200,13 +200,24 @@ public class MapRequestServlet extends SparrowProxyServlet {
 		
 		String lineThickness = "5.0";
 		if (mapScale != null) {
-			if (mapScale > 1.06) {
-				lineThickness = "3";
+			if (mapScale > 4) {
+				lineThickness = ".4";
+			} else if (mapScale > 2) {
+				lineThickness = ".5";
+			} else if (mapScale > 1) {
+				lineThickness = "1.0";
 			} else if (mapScale > .5) {
-				lineThickness = "5.0";
+				lineThickness = "1.5";
+			} else if (mapScale > .25) {
+				lineThickness = "2.0";
+			} else if (mapScale > .12) {
+				lineThickness = "2.5";
+			} else if (mapScale > .06) {
+				lineThickness = "3.0";
 			} else {
-				lineThickness = "7.0";
+				lineThickness = "4.0";
 			}
+			//System.out.println("Render thickness=" + lineThickness + " scale=" + mapScale);
 		}
 
 

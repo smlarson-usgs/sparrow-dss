@@ -23,8 +23,8 @@
 	</themes>
 	<styles>
 		<style name="Style$random$">
-			<g class="line" style="stroke-width:1.0;fill:#000000;">
-				<line class="base" style="stroke-width:1.0;fill:#000000;" />
+			<g class="line" style="stroke-width:.3;fill:#000000;">
+				<line class="base" style="stroke-width:.3;fill:#000000;" />
 			</g>
 		</style>
 	</styles>
