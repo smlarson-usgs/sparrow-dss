@@ -80,7 +80,7 @@
 				<Name>BACKGROUND</Name>
 				<Theme id="-1">CUSTOM LAYERS</Theme>
 			</Classification>
-			<opacity>40</opacity>
+			<opacity>70</opacity>
 			<SRS>4326</SRS>
 			<LatLon />
 			<BoundingBox />

@@ -43,7 +43,7 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
             }
         },
         PermanentMapState : {
-            what_to_map: "reach",
+            what_to_map: "catch",
             
             /**
              * displayBins and functional bins each contain {low: #, high: #}
@@ -83,7 +83,7 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
         	//related to the model.  Negative means not shown but spec's the
         	//remembered opacity (-75 == 75 opacity, not shown).
         	calibSites: -75,
-					reachOverlay: -100,
+					reachOverlay: 80,
 					huc8Overlay: -75,
 					dataLayerOpacity: 100,
 			

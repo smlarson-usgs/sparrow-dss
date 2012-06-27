@@ -177,13 +177,13 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 			anchor: fieldsAnchor,
 			items: [
 			        new Ext.form.Radio({
-			        	checked: true,
+			        	checked: false,
 			        	boxLabel: 'Reaches',
 			        	name: 'mapDisplayType',
 			        	value: 'reach'
 			        }),
 			        new Ext.form.Radio({
-			        	checked: false,
+			        	checked: true,
 			        	boxLabel: 'Catchments',
 			        	name: 'mapDisplayType',
 			        	value: 'catch'
@@ -201,7 +201,7 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 			        		}
 			        	},
 			        	'afterrender': function(grp) {
-			        		this.setWhatToMapCtl("reach");
+			        		this.setWhatToMapCtl("catch");
 			        		Ext.QuickTips.register({
 			        			target: grp.label,
 			        			title: 'Display Reaches or Catchments',
@@ -268,7 +268,7 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 				fieldLabel: ' ',
 				labelSeparator: '',
 				layerId: Sparrow.config.LayerIds.calibrationSiteLayerId,
-			    width: 80,
+			    width: 70,
 			    value: Sparrow.SESSION.getCalibSitesOverlayOpacity(),
 			    increment: 1,
 			    minValue: 1,
@@ -294,7 +294,7 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 		this.reachOverlaySlider = new Ext.Slider( {
 			fieldLabel: ' ',
 			labelSeparator: '',
-		    width: 80,
+		    width: 70,
 		    value: Sparrow.SESSION.getReachOverlayOpacity(),
 		    increment: 1,
 		    minValue: 1,
@@ -320,7 +320,7 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 		this.huc8OverlaySlider = new Ext.Slider( {
 			fieldLabel: ' ',
 			labelSeparator: '',
-		    width: 80,
+		    width: 70,
 		    value: Sparrow.SESSION.getHuc8OverlayOpacity(),
 		    increment: 1,
 		    minValue: 1,
