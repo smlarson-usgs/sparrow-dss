@@ -19,6 +19,8 @@ public class WatershedServiceTest extends SparrowServiceTestBaseWithDB {
 	public void basicTestOfWatershedListingForAModel() throws Exception {
 		
 		//This is the URL we are requesting
+		//Once actually running, the url would be:
+		//[host and port]/sparrow/sp_watershed
 		WebRequest webRequest = new GetMethodWebRequest("http://localhost:8088/sp_watershed?model-id=50&mime-type=xml");
 
 		WebResponse reportWebResponse = client. sendRequest(webRequest);
