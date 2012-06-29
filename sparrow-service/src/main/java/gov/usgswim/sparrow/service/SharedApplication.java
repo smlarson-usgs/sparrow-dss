@@ -871,6 +871,24 @@ public class SharedApplication  {
 		return (ModelReachAreaRelations) ModelReachAreaRelations.get(request, quiet);
 	}
 	
+	//Predefined Watersheds and watershed reaches ForModel
+	public DataTable getPredefinedWatershedsForModel(Long modelId) {
+		return getPredefinedWatershedsForModel(modelId, false);
+	}
+
+	public DataTable getPredefinedWatershedsForModel(Long modelId, boolean quiet) {
+		return (DataTable) PredefinedWatershedsForModel.get(modelId, quiet);
+	}
+	
+	public DataTable getPredefinedWatershedReachesForModel(Long watershedId) {
+		return getPredefinedWatershedReachesForModel(watershedId, false);
+	}
+
+	public DataTable getPredefinedWatershedReachesForModel(Long watershedId, boolean quiet) {
+		return (DataTable) PredefinedWatershedReachesForModel.get(watershedId, quiet);
+	}
+	
+	//Reaches in a BBox
 	public Long[] getReachesInBBox(ModelBBox modelBBox) throws Exception {
 		return getReachesInBBox(modelBBox, false);
 	}

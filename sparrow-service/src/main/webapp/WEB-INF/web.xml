@@ -263,6 +263,21 @@
         <servlet-name>Delivery_AggReport_Service</servlet-name>
         <url-pattern>/sp_delivery_aggreport/*</url-pattern>
     </servlet-mapping>
+		
+		
+		
+    <servlet>
+        <servlet-name>Watershed_Service</servlet-name>
+        <servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
+        <init-param>
+            <param-name>pipeline-class</param-name>
+            <param-value>gov.usgswim.sparrow.service.watershed.WatershedPipeline</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Watershed_Service</servlet-name>
+        <url-pattern>/sp_watershed/*</url-pattern>
+    </servlet-mapping>
     <!--
 *****************************************
 ***	Mapviewer Related

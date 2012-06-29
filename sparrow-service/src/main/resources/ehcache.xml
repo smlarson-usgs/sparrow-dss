@@ -384,11 +384,11 @@
 		
 	<cache name="ReachesByCriteria" maxElementsInMemory="3"/>
     
-    <!--  Expesive to create and cheap to hold on to -->
-    <cache name="DataBinning" maxElementsInMemory="200"/>
-        
-    <!-- Awesome kludge - temporary -->
-    <cache name="AggregateIdLookup" maxElementsInMemory="4" />
+	<!--  Expesive to create and cheap to hold on to -->
+	<cache name="DataBinning" maxElementsInMemory="200"/>
+
+	<!-- Awesome kludge - temporary -->
+	<cache name="AggregateIdLookup" maxElementsInMemory="4" />
 	
 	<cache name="StandardErrorEstimateData" maxElementsInMemory="10" />
 		
@@ -417,4 +417,11 @@
 	<cache name="ModelReachAreaRelations" maxElementsInMemory="3" /> <!-- one row per reach w/ embeded list -->
 	<cache name="HucsForModel" maxElementsInMemory="30" /> <!-- Small lists, but bigger than states -->
 	<cache name="EdasForModel" maxElementsInMemory="30" /> <!-- Small lists -->
+	
+	<!-- Watersheds 
+				These are small lists that are potentially updated occasionally,
+				so allow them to be reloaded somewhat frequently (14400 == 4 hours, 7200 == 2 hours).
+	-->
+	<cache name="PredefinedWatershedsForModel" maxElementsInMemory="30" timeToLiveSeconds="14400" />
+	<cache name="PredefinedWatershedReachesForModel" maxElementsInMemory="30" timeToLiveSeconds="7200" />
 </ehcache>

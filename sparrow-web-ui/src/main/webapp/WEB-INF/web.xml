@@ -322,6 +322,18 @@
         <url-pattern>/getDeliveryAggReport</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>Watershed_Service</servlet-name>
+        <servlet-class>gov.usgswim.sparrow.SparrowProxyServlet</servlet-class>
+        <init-param>
+            <param-name>forward-context</param-name>
+            <param-value>sp_watershed</param-value>
+        </init-param>
+    </servlet>
+		<servlet-mapping>
+        <servlet-name>Watershed_Service</servlet-name>
+        <url-pattern>/sp_watershed</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>HealthTest</servlet-name>
         <servlet-class>gov.usgswim.sparrow.HealthTest</servlet-class>
     </servlet>

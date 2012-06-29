@@ -62,7 +62,12 @@ public enum ConfiguredCache {
 	StatesForModel(false, new StatesForModelFactory()),
 	ModelReachAreaRelations(false, new ModelReachAreaRelationsFactory()),
 	HucsForModel(false, new LoadHucsForModelFactory()),
-	EdasForModel(false, new LoadEdasForModelFactory())
+	EdasForModel(false, new LoadEdasForModelFactory()),
+	
+	
+	//Watersheds
+	PredefinedWatershedsForModel(false, new LoadPredefinedWatershedsForModelFactory()),
+	PredefinedWatershedReachesForModel(false, new LoadPredefinedWatershedReachesForModelFactory()),
 	;
 	
 	public final boolean isDistributed;

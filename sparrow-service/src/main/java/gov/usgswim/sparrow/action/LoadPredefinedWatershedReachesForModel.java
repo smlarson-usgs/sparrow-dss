@@ -13,12 +13,11 @@ import java.util.HashMap;
 /**
  * Loads all the predefined watersheds (names, ids, description) for a given model.
  * 
- * Row ID:  NONE
+ * Row ID:  ReachId - The reach identifier (identifier column, not the db id)
  * 
  * Columns are in this order:
  * <ul>
- * <li>Reach ID - The reach identifier (identifier column, not the db id)
- * <li>Reach Name
+ * <li>Name
  * </ul>
  * 
  * Sorted by the reach identifier.
@@ -45,7 +44,7 @@ public class LoadPredefinedWatershedReachesForModel extends Action<DataTable> {
 		addResultSetForAutoClose(rset);
 		
 		DataTableWritable values = null;
-		values = DataTableConverter.toDataTable(rset, false);
+		values = DataTableConverter.toDataTable(rset, true);
 		values.setName("Reaches for Predefined Watershed");
 		values.setDescription(
 						"Complete list of all the reaches in the modeler defined watershed " + watershedId);
