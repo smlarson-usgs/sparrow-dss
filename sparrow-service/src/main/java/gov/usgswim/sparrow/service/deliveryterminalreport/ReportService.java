@@ -8,8 +8,10 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.TerminalReachesRowFilter;
 import gov.usgswim.sparrow.domain.AggregationLevel;
 import gov.usgswim.sparrow.domain.PredictionContext;
+import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
+import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.SparrowResourceUtils;
 
@@ -50,10 +52,17 @@ public class ReportService implements HttpService<ReportRequest> {
 			TerminalReachesRowFilter filter = new TerminalReachesRowFilter(termReaches);
 			FilteredDataTable filteredReportData = new FilteredDataTable(reportData, filter);
 
+			//Get info used to provide some links and info in the report header
+			SparrowModel model = sharedApp.getModelMetadata(new ModelRequestCacheKey(modelId, false, false, false)).get(0);
+			String networkName = model.getEnhNetworkName();
+			String networkUrl = model.getEnhNetworkUrl();
+			String networkIdColumn = model.getEnhNetworkIdColumn();
 
-			String readmeText = SparrowResourceUtils.lookupModelHelp(
+			String readmeText = SparrowResourceUtils.lookupMergedHelp(
 					context.getModelID().toString(),
-					"CommonTerms.Total_Delivered_Load_Report");
+					"CommonTerms.Total_Delivered_Load_Report",
+					null,
+					new String[] {"networkName", networkName, "networkUrl", networkUrl, "networkIdColumn", networkIdColumn});
 
 			return new  ReportSerializer(
 					req, filteredReportData, predictData, readmeText);

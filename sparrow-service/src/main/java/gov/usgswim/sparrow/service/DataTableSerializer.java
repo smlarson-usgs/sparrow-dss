@@ -133,9 +133,15 @@ public class DataTableSerializer extends BasicXMLStreamReader {
 					.addAttribute("columnCount", Integer.toString(data.getColumnCount())));
 			{
 				
-				if (exportDescription != null && exportDescription.length() > 0) {
+				//Use either the specified description or the one that comes with the data table
+				String exportReadme = exportDescription;
+				if (exportReadme == null) {
+					exportReadme = data.getDescription();
+				}
+				
+				if (exportReadme != null && exportReadme.length() > 0) {
 					addOpenTag("description");
-					events.add(new BasicTagEvent(CDATA, exportDescription));
+					events.add(new BasicTagEvent(CDATA, exportReadme));
 					addCloseTag("description");
 				}
 				
