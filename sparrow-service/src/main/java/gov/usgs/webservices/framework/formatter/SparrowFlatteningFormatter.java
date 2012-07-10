@@ -37,7 +37,6 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 	private boolean isInDescription;
 	private Queue<String> headers = new LinkedList<String>();
 	private Queue<String> groups = new LinkedList<String>();
-	private boolean isStarted;
 	private int groupCount;
 	private Queue<Integer> groupCounts = new LinkedList<Integer>();
 	private Queue<String> rowCellValues = new LinkedList<String>();
@@ -90,45 +89,16 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 						} else if ("c".equals(localName)) {
 							isInItem = true;
 						} else if ("r".equals(localName)) {
-							if (!isStarted) {
-								// output the header and column names
-								StringBuilder groupHeaderOutput =  new StringBuilder();
-								StringBuilder colHeaderOutput = new StringBuilder(delims.headerRowStart);
-								while (groups.peek() != null) {
-									String groupName = groups.poll();
-									int gCount = groupCounts.poll();
-									
-									{// output the cell for the group name row
-										groupHeaderOutput.append(delims.makeWideHeaderCell(formatSimple(groupName), gCount));
-									}
-									// output the cells for the column header row
-									for (int i = 0; i < gCount; i++) {
-										colHeaderOutput.append(delims.headerCellStart).append(formatSimple(headers.poll())).append(delims.headerCellEnd);
-									}
-								}
-								
-								// only output the group header row if there is stuff
-								if (groupHeaderOutput.length() > 0) {
-									groupHeaderOutput.insert(0, delims.headerRowStart);
-									groupHeaderOutput.append(delims.headerRowEnd);
-									out.write(groupHeaderOutput.toString());
-								}
-
-								// write the colum header row
-								colHeaderOutput.append(delims.headerRowEnd);
-								out.write(colHeaderOutput.toString());
-								isStarted = true;
-							}
 							// write body row head
 							out.write(delims.bodyRowStart);
 							rowCellValues.add(in.getAttributeValue(null, "id"));
 						} else if ("col".equals(localName)) {
-							String header = in.getAttributeValue(null, "name");
+							String header = StringUtils.trimToEmpty(in.getAttributeValue(null, "name"));
 							headers.add(header);
 							groupCount++;
 							//String type = in.getAttributeValue(null, "type");
 						} else if ("group".equals(localName)) {
-							String groupName = in.getAttributeValue(null, "name");
+							String groupName = StringUtils.trimToEmpty(in.getAttributeValue(null, "name"));
 							groups.add(groupName);
 							groupCount = 0;
 						} else if ("metadata".equals(localName)) {
@@ -138,6 +108,33 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 							// group of size = 1;
 							groups.add("");
 							groupCounts.add(1);
+						} else if ("data".equals(localName)) {
+							// output the header and column names
+							StringBuilder groupHeaderOutput =  new StringBuilder();
+							StringBuilder colHeaderOutput = new StringBuilder(delims.headerRowStart);
+							while (groups.peek() != null) {
+								String groupName = groups.poll();
+								int gCount = groupCounts.poll();
+
+								{// output the cell for the group name row
+									groupHeaderOutput.append(delims.makeWideHeaderCell(formatSimple(groupName), gCount));
+								}
+								// output the cells for the column header row
+								for (int i = 0; i < gCount; i++) {
+									colHeaderOutput.append(delims.headerCellStart).append(formatSimple(headers.poll())).append(delims.headerCellEnd);
+								}
+							}
+
+							// only output the group header row if there is stuff
+							if (groupHeaderOutput.length() > 0) {
+								groupHeaderOutput.insert(0, delims.headerRowStart);
+								groupHeaderOutput.append(delims.headerRowEnd);
+								out.write(groupHeaderOutput.toString());
+							}
+
+							// write the colum header row
+							colHeaderOutput.append(delims.headerRowEnd);
+							out.write(colHeaderOutput.toString());
 						}
 
 						break;

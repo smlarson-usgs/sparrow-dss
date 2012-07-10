@@ -18,7 +18,7 @@ public class IDServiceIntegrationLongRunTest extends SparrowServiceTestBaseWithD
 	@Override
 	protected void doOneTimeCustomSetup() throws Exception {
 		super.doOneTimeCustomSetup();
-		//setLogLevel(Level.DEBUG);
+		setLogLevel(Level.DEBUG);
 	}
 	
 	// ============

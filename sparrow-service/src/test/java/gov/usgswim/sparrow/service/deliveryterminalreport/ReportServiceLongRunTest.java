@@ -8,6 +8,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.meterware.httpunit.*;
+import org.junit.Ignore;
 
 public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
@@ -24,8 +25,9 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 	 * Values containing commas should be escaped
 	 * @throws Exception
 	 */
+	@Ignore
 	@Test
-	public void model50NoAdjustCVSExportCheckContextTerminalReport() throws Exception {
+	public void model50NoAdjustHTMLExportCheckContextTerminalReport() throws Exception {
 		String contextRequestText = SparrowTestBase.getXmlAsString(this.getClass(), "context1");
 		
 		WebRequest contextWebRequest = new PostMethodWebRequest(CONTEXT_SERVICE_URL);
@@ -58,6 +60,58 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		assertEquals("MOBILE R", firstTerminalReachName);
 		assertEquals("40735549.83", totalValue);
 		
+		
+	}
+	
+//	@Test
+//	public void model50NoAdjustXMLExportCheckContextTerminalReport() throws Exception {
+//		String contextRequestText = SparrowTestBase.getXmlAsString(this.getClass(), "context1");
+//		
+//		WebRequest contextWebRequest = new PostMethodWebRequest(CONTEXT_SERVICE_URL);
+//		contextWebRequest.setParameter("xmlreq", contextRequestText);
+//		WebResponse contextWebResponse = client.sendRequest(contextWebRequest);
+//		String actualContextResponse = contextWebResponse.getText();
+//		
+//		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", actualContextResponse);
+//		int id = getContextIdFromContext(actualContextResponse);
+//		
+//		WebRequest reportWebRequest = new GetMethodWebRequest(REPORT_SERVICE_URL);
+//		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
+//		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xml");
+//		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ID_SCRIPT, "false");
+//		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, "true");
+//		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.terminal.toString());
+//
+//		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
+//		String actualReportResponse = reportWebResponse.getText();
+//		
+//		System.out.println(actualReportResponse);
+//		
+//	}
+	
+	@Test
+	public void model50NoAdjustXMLExportCheckContextTerminalReport() throws Exception {
+		String contextRequestText = SparrowTestBase.getXmlAsString(this.getClass(), "context1");
+		
+		WebRequest contextWebRequest = new PostMethodWebRequest(CONTEXT_SERVICE_URL);
+		contextWebRequest.setParameter("xmlreq", contextRequestText);
+		WebResponse contextWebResponse = client.sendRequest(contextWebRequest);
+		String actualContextResponse = contextWebResponse.getText();
+		
+		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", actualContextResponse);
+		int id = getContextIdFromContext(actualContextResponse);
+		
+		WebRequest reportWebRequest = new GetMethodWebRequest(REPORT_SERVICE_URL);
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "csv");
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ID_SCRIPT, "false");
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, "true");
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.terminal.toString());
+
+		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
+		String actualReportResponse = reportWebResponse.getText();
+		
+		System.out.println(actualReportResponse);
 		
 	}
 	
