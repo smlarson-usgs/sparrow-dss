@@ -15,16 +15,22 @@
 	
 %>
  <div>
-    <h2>Total Delivered Load Summary</h2>
-		<h3>Total load delivered to each selected downstream reach, from their respective upstream watershed area.</h3>
 		<div class="explanation">
+			<div class="figure cluster">
+				<div class="wrap">
+					<a href="javascript:openTerminalHelp();" title="Click to open more detailed documentation in a new window.">
+						<img alt="Depiction of how values are calculated.  Click for more details." src="style/fig_t1.png" />
+					</a>
+				</div>
+				<div class="caption"></div>
+			</div>
+			<h2>Total Delivered Load Summary</h2>
 			<p>
-				This report lists each downstream reach, as selected in the Downstream Tracking tab of the application.
-				For each reach, the Total Delivered Load from that reach's watershed 
-				(i.e., the total load from all upstream reaches) is broken down by source.
-				Total Delivered Load is the load that arrives at the downstream end of a selected downstream reach,
-				in units of mass (kg) per year.
-				<a href="javascript:openTerminalHelp();" title="Furthure details in a new window.">More details...</a>
+				This report lists the total load delivered to each selected downstream reach, from their respective upstream watershed area.
+				Total Delivered Loads are broken down by source.
+				Downstream reaches are selected on the Downstream Tracking tab of the application.
+				<a href="javascript:openTerminalHelp();" title="Click to open more detailed documentation in a new window.">detailed documentation</a>
+				is available.
 			</p>
 			<p class="downstream-reaches-out-of-sync">
 				<img src="../images/small_alert_icon.png" alt="Warning Icon" />

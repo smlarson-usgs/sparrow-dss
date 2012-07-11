@@ -14,6 +14,26 @@ Head Section */
 	margin: .4em 0; padding: .3em; background-color: #eefff0; border: solid 1px #000;
 }
 
+.explanation .figure { width: 160px; border: none; padding: 0; box-shadow: none; margin: .2em .5em .2em .2em; }
+.explanation .figure img { width: 160px; }
+.explanation .figure img:hover { box-shadow: 4px 4px 2px rgba(50, 50, 250, 0.5); }
+/* .explanation img { float: left; margin: .1em .6em .1em .2em; } */
+
+.explanation p, .explanation h1, .explanation h2, .explanation h3, .explanation h4 { clear: none; }
+
+.explanation .section { margin-top: 1em; margin-bottom: 1em; }
+
+.explanation:after {
+	content: '.'; 
+	display: block; 
+	height: 0; 
+	clear: both; 
+	visibility: hidden;
+}
+
+.explanation .section + .section { border-top: 1px solid #000; }
+
+
 #terminal-report-container .download-area {
 	border: solid 1px #000; padding: .3em; margin: .5em 0;
 }
@@ -136,18 +156,3 @@ rel-percent-in-row div {
 .figure .caption { clear: both; }
 
 .cluster { float: left; clear: none;}
-
-.explination p { clear: both; }
-
-.explination .section { margin-top: 1em; margin-bottom: 1em; }
-
-.explination .section:after {
-	content: '[Ignore]'; 
-	display: block; 
-	height: 0; 
-	clear: both; 
-	visibility: hidden;
-}
-
-.explination .section + .section { border-top: 1px solid #000; }
-

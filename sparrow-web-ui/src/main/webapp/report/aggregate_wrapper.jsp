@@ -21,15 +21,21 @@
 	
 %>
  <div>
-    <h2>Delivered Load from Selected Upstream Region</h2>
 		<div class="explanation">
+			<div class="figure cluster">
+				<div class="wrap">
+					<a href="javascript:openAggHelp();" title="Click to open more detailed documentation in a new window.">
+						<img alt="Depiction of how values are calculated.  Click for more details." src="style/fig_a2.png" />
+					</a>
+				</div>
+				<div class="caption"></div>
+			</div>
+			<h2>Delivered Load from Selected Upstream Region</h2>
 			<p>
 				This report aggregates the load delivered to the downstream reaches by the upstream contributing region.
-				For instance, if aggregating by state, the report would list the load that originates in each state 
-				and arrives at selected downstream reaches.
-				This is calculated by summing the incremental delivered load of each catchment within upstream region, 
-				allocating partial contributions for reaches that have catchment area in multiple regions.
-				<a href="javascript:openAggHelp();" title="Furthure details in a new window.">more details...</a>
+				More
+				<a href="javascript:openAggHelp();" title="Click to open more detailed documentation in a new window.">detailed documentation</a>
+				is available.
 			</p>
 		</div>
 		<div class="to-and-from-area columns-2">
