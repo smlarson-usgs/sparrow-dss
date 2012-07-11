@@ -60,7 +60,7 @@ public class ReportService implements HttpService<ReportRequest> {
 
 			String readmeText = SparrowResourceUtils.lookupMergedHelp(
 					context.getModelID().toString(),
-					"CommonTerms.Total_Delivered_Load_Report",
+					"CommonTerms.Terminal_Reach_Summary_Report",
 					null,
 					new String[] {"networkName", networkName, "networkUrl", networkUrl, "networkIdColumn", networkIdColumn});
 

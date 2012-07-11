@@ -42,7 +42,6 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 	//State tracking
 	private Delimiters delims;
 	private boolean isInItem;
-	private boolean isInDescription;
 	private int currentColumnIndex = -1;
 	private ValueFormatter baseFormat;
 	private ArrayList<ValueFormatter> formatters = new ArrayList<ValueFormatter>();	//one per column
@@ -103,8 +102,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 							
 						} else if ("description".equals(localName)) {
 							
-							isInDescription = true;
-							out.write("<caption>");
+							//Do nothing - most usage will provide their own captions/surrounding text
 							
 						} else if ("columns".equals(localName)) {
 							
@@ -123,7 +121,12 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 						} else if ("col".equals(localName)) {
 							
 							String header = in.getAttributeValue(null, "name");
+							String unit = StringUtils.trimToNull(in.getAttributeValue(null, "unit"));
 							String relation = in.getAttributeValue(null, RelationType.XML_ATTRIB_NAME);
+							
+							if (unit != null) {
+								header = header + " (" + unit + ")";
+							}
 							
 							out.write(delims.headerCellStart + baseFormat.format(header) + delims.headerCellEnd);
 							
@@ -192,9 +195,6 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 					case XMLStreamConstants.CDATA:	//fall through
 						if (isInItem) {
 							out.write(formatters.get(currentColumnIndex).format(in.getText()));
-						} else if (isInDescription) {
-							out.write(baseFormat.format(in.getText()));
-
 						}
 						break;
 					case XMLStreamConstants.PROCESSING_INSTRUCTION:
@@ -211,8 +211,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 
 						} else if ("description".equals(localName)) {
 							
-							out.write("</caption>");
-							isInDescription = false;
+							//do nothing
 							
 						} else if ("columns".equals(localName)) {
 							

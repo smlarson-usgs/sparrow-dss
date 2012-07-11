@@ -47,9 +47,12 @@ public class ReportService implements HttpService<ReportRequest> {
 			DataTable reportData = sharedApp.getTotalDeliveredLoadByStateSummaryReport(actionRequest);
 
 
-			String readmeText = SparrowResourceUtils.lookupModelHelp(
+			String readmeText = SparrowResourceUtils.lookupMergedHelp(
 					context.getModelID().toString(),
-					"CommonTerms.Total_Delivered_Load_Report");
+					"CommonTerms.Terminal_Reach_Aggregate_Report",
+					null,
+					new String[] {});
+
 
 			return new  StateReportSerializer(
 					req, reportData, readmeText);

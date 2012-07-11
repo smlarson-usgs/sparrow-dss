@@ -9,7 +9,11 @@ import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.RelationType;
+import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.domain.SparrowModel;
+import gov.usgswim.sparrow.request.ModelRequestCacheKey;
+import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.text.DecimalFormat;
 
@@ -30,6 +34,7 @@ public class StateReportSerializer extends BasicXMLStreamReader {
 	private ReportRequest request;
 
 	private DataTable data;
+	private SparrowModel model;
 	private Integer totalCol;	//index of the total column in the reportTable
 	private int relPercentCol;	//index of the relative percent column in the reportTable
 	private int sourceCount;	//The number of sources in the reportTable
@@ -70,6 +75,8 @@ public class StateReportSerializer extends BasicXMLStreamReader {
 		totalCol = reportTable.getColumnCount() - 2;
 		relPercentCol = reportTable.getColumnCount() - 1;
 		numberFormat = new DecimalFormat[reportTable.getColumnCount()];
+		
+		model = SharedApplication.getInstance().getPredictData(request.getContext().getModelID()).getModel();
 		
 		
 		//Create number formats for each number column
@@ -181,7 +188,8 @@ public class StateReportSerializer extends BasicXMLStreamReader {
 					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Totals").addAttribute("count", "2"));
 					events.add(makeNonNullBasicTag("col", "")
 							.addAttribute("name", data.getName(totalCol))
-							.addAttribute("type", NUMBER));
+							.addAttribute("type", NUMBER)
+							.addAttribute("unit", model.getUnits().getUserName()));
 					events.add(makeNonNullBasicTag("col", "")
 							.addAttribute("name", data.getName(relPercentCol))
 							.addAttribute("type", NUMBER)
@@ -286,7 +294,10 @@ public class StateReportSerializer extends BasicXMLStreamReader {
 		for (int i = FIRST_SOURCE_COL; i < FIRST_SOURCE_COL + sourceCount; i++) {
 			//source columns just use the name of the source
 			String name = dataTable.getName(i);
-			events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", NUMBER));
+			events.add(makeNonNullBasicTag("col", "")
+					.addAttribute("name", name)
+					.addAttribute("type", NUMBER)
+					.addAttribute("unit", model.getUnits().getUserName()));
 		}
 	}
 //	

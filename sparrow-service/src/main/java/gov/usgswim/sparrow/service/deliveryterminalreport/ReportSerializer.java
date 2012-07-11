@@ -187,7 +187,10 @@ public class ReportSerializer extends BasicXMLStreamReader {
 
 					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Total"));
 					String totalColName = "Total for all Sources";
-					events.add(makeNonNullBasicTag("col", "").addAttribute("name", totalColName).addAttribute("type", NUMBER));
+					events.add(makeNonNullBasicTag("col", "")
+							.addAttribute("name", totalColName)
+							.addAttribute("type", NUMBER)
+							.addAttribute("unit", predictData.getModel().getUnits().getUserName()));
 					addCloseTag("group");
 					
 					
@@ -305,7 +308,10 @@ public class ReportSerializer extends BasicXMLStreamReader {
 		for (int i = 0; i < sourceCount; i++) {
 			//source columns just use the name of the source
 			String name = basePredictData.getSrcMetadata().getString(i, 2);
-			events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", NUMBER));
+			events.add(makeNonNullBasicTag("col", "")
+					.addAttribute("name", name)
+					.addAttribute("type", NUMBER)
+					.addAttribute("unit", basePredictData.getModel().getUnits().getUserName()));
 		}
 	}
 //	

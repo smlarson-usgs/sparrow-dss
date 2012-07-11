@@ -485,19 +485,18 @@
 			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
 			
 		</Term>
-		<Term id="Total_Delivered_Load_Report">
+		<Term id="Terminal_Reach_Summary_Report">
 
 			__IMPORTANT__
 			No endorsement, expressed or implied, is made by the USGS or the U.S. Government of any interpretations or decisions that result from the use of these models, nor shall the fact of distribution constitute any such endorsement, and no responsibility is assumed by the USGS in connection therewith.
 			
 			__Export Data Column Definitions__
 			
-			__Base export columns included in all exports__
 			* id:  Unique identifier for a stream reach in the model based on the reference stream network.  See the section 'Linking Exported Data to River Network Shapefiles' for more information on how to use this id.
-			* Reach Name (pname) - The name of the reach.  This name may sometimes be empty, partial, or different than local names for the reach.
+			* Reach Name (pname): The name of the reach.  This name may sometimes be empty, partial, or different than local names for the reach.
 			* EDACODE: NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.  This value may be empty for reaches in or draining to Canada.
-			* [source name] Total Delivered Load (unit) - One column per source.  This is the 'Total Load' data series for an individual source.
-			* Total Delivered Load for all Sources (unit) - The 'Total Load' data series (the sum of all per-source total loads).
+			* [source name]  (unit): One column per model source.  This is the 'Total Load' data series for an individual source.
+			* Total Delivered Load for all Sources (unit): The 'Total Load' data series (the sum of all per-source total loads).
 			
 			Notes:
 			* The loads reported in this export reflect source input changes made on the Change Inputs tab in the application.
@@ -509,6 +508,40 @@
 			__Linking Exported Data to River Network Shapefiles__
 			This model is based on the '$networkName$' Network, which is documented at $networkUrl$
 			The id column for the data in this export should be matched to the $networkIdColumn$ in the '$networkName$' Network data.
+			
+			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
+			
+		</Term>
+		<Term id="Terminal_Reach_Aggregate_Report">
+
+			__IMPORTANT__
+			No endorsement, expressed or implied, is made by the USGS or the U.S. Government of any interpretations or decisions that result from the use of these models, nor shall the fact of distribution constitute any such endorsement, and no responsibility is assumed by the USGS in connection therewith.
+			
+			This report aggregates the load delivered to the downstream reaches by the upstream contributing region.
+			For instance, if aggregating by state, the report would list the load that originates in each state and arrives at selected downstream reaches.
+			Values are calculated by summing the incremental delivered load of each catchment within upstream region, allocating partial contributions for reaches that have catchment area in multiple regions.
+			More details are available at: http://cida.usgs.gov/sparrow/report/aggregate_report_help.jsp
+			
+			__Export Data Column Definitions__
+			
+			For State Aggregate Reports:
+			* State Name:  The name of the state (or province if that data is available for models with Canadian reaches).
+			* State FIPS Code:  A standard numeric code for the state or province.  More details are at: http://www.itl.nist.gov/fipspubs/fip5-2.htm
+
+			For State Aggregate Reports:
+			* HUC Name: The name of the HUC
+			* HUC Code: Hydrologic unit code.  More details about HUCs are at: http://water.usgs.gov/GIS/huc.html
+			
+			All Reports include these columns:
+			* [source name] (unit): One column per model source.  The Incremental Delivered Load for each model source.
+			* Total Incremental Delivered Load for all Sources (unit): The Incremental Delivered Load for all model sources.
+			
+			
+			
+			Notes:
+			* The loads reported in this export reflect source input changes made on the Change Inputs tab in the application.
+			* A more detailed explination of what these reported values are and how they are calculated is available at:
+			http://cida.usgs.gov/sparrow/report/aggregate_report_help.jsp
 			
 			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
 			

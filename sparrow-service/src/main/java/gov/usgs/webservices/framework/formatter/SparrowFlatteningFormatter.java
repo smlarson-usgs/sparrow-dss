@@ -94,6 +94,12 @@ public class SparrowFlatteningFormatter extends AbstractFormatter {
 							rowCellValues.add(in.getAttributeValue(null, "id"));
 						} else if ("col".equals(localName)) {
 							String header = StringUtils.trimToEmpty(in.getAttributeValue(null, "name"));
+							String unit = StringUtils.trimToNull(in.getAttributeValue(null, "unit"));
+							
+							if (unit != null) {
+								header = header + " (" + unit + ")";
+							}
+							
 							headers.add(header);
 							groupCount++;
 							//String type = in.getAttributeValue(null, "type");
