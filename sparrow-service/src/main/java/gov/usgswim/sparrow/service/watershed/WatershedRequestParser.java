@@ -19,7 +19,7 @@ public class WatershedRequestParser
 
 		WatershedRequest req = null;
 		
-		if (request.getMethod().equals("GET")) {
+		if (request.getMethod().equals("GET") || request.getMethod().equals("POST")) {
 			
 			//debugParams(request);
 			
@@ -32,10 +32,6 @@ public class WatershedRequestParser
 			respFormat.setMimeType(mimeType);
 			
 			req = new WatershedRequest(modelID, watershedID, respFormat);
-			
-			
-		} else if (request.getMethod().equals("POST")) {
-			throw new Exception("Unsupport HTTP method, only GET is supported");
 		}
 
 		return req;
