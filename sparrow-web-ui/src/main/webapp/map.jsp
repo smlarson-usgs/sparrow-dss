@@ -83,6 +83,7 @@
 	<script src="js/identify/ReachIdentifyWindow.js"></script>
 	<script src="js/sparrow_rpc.js"></script>
 	<script src="js/reachmanager/GoToReachWindow.js"></script>
+	<script src="js/reachmanager/WatershedWindow.js"></script>
 	<script src="js/ext_ui.js"></script>
 	<script src="js/IdentifyMarker.js"></script>
 	<script src="js/help.js"></script>

@@ -626,6 +626,16 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 						items: [
 					        {xtype: 'panel', border: false, html: '<b>1. Select Downstream Reach(es)</b>'},
 					        {
+					        	xtype: 'button',
+				        		itemCls: 'zero-padding',
+				        		ctCls: 'zero-padding',
+			    	        	text: 'Select Reaches from a list...',
+			    	        	anchor: fieldsAnchor,
+			    	        	handler: function() {
+			    	        		WATERSHED_WINDOW.open();
+			    	          	}
+			    	        },
+					        {
 					        	xtype: 'panel', 
 					        	border: false,
 					        	labelSeparator: '',
