@@ -568,7 +568,7 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 			region: 'north',
 			border: false, 
 			autoHeight: true,
-			html: '<b>Active Downstream Reach(es)</b>'
+			html: '<b>Selected Downstream Reach(es)</b>'
 		});
 		
 		this.displayResultsInstructions = new Ext.Panel({
@@ -724,14 +724,14 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 	},
 
 	showInstructions : function() {
-		this.instructionsPanel.update('<b>Active Downstream Reach(es)</b><br/>(Right click on reach name for more information)');
+		this.instructionsPanel.update('<b>Selected Downstream Reach(es)</b><br/>(Right click on reach name for more information)');
 		this.syncSize();
 		this.instructionsPanel.ownerCt.setHeight(150);
 		this.instructionsPanel.ownerCt.doLayout();
 	},
 	
 	hideInstructions : function() {
-		this.instructionsPanel.update('<b>Active Downstream Reach(es)</b>');
+		this.instructionsPanel.update('<b>Selected Downstream Reach(es)</b>');
 		this.syncSize();
 		this.instructionsPanel.ownerCt.setHeight(70);
 		this.instructionsPanel.ownerCt.doLayout();

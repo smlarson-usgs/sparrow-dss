@@ -55,14 +55,14 @@
 			<div class="to-downstream-reaches-area column">
 				<div class="content">
 					<h4>Downstream Reaches Load is Delivered To</h4>
-					<p>Load is delivered to the <em>Active Downstream Reaches</em> selected 
-						on the Downstream Tracking tab of the application.
+					<p>Load is delivered to the <em>Selected Downstream Reaches</em>,
+						selected on the Downstream Tracking tab of the application.
 						Currently these reaches are (click on a reach to identify it on the map):
 					</p>
 					<p class="downstream-reaches-out-of-sync">
 						<img src="../images/small_alert_icon.png" alt="Warning Icon" />
 						Careful!  These downstream reaches are no longer the
-						<em>Active Downstream Reaches</em> in the Sparrow DSS.  <a href="">More info...</a>
+						<em>Selected Downstream Reaches</em> in the Sparrow DSS.  <a href="">More info...</a>
 					</p>
 					<p class="downstream-reaches-list"></p>
 				</div>

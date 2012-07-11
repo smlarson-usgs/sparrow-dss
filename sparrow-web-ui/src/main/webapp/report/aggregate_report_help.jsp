@@ -22,7 +22,7 @@
 	<div class="explination">
 		<div class="section">
 			<p>
-The Aggregated Delivered Load Report can be used to analyze the upstream regions that contribute to the Total Delivered Load in each active downstream reach.
+The Aggregated Delivered Load Report can be used to analyze the upstream regions that contribute to the Total Delivered Load in each selected downstream reach.
 For instance, if aggregating by state, the report would list the load that originates in each state and is delivered to the downstream end of each of the selected downstream reaches.
 			</p>
 

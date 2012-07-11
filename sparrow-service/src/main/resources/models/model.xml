@@ -84,9 +84,9 @@
 			<h2>Downstream Tracking</h2><br/>
 			
 			Downstream tracking is used to determine the fraction of load from upstream reaches delivered 
-			to a specified downstream outlet reach or water body. To specify a downstream outlet reach, find the desired reach on the map
+			to a selected downstream reaches. To select downstream reaches, find the desired reach on the map
 			 (using the <b>Identify Reach tool</b>) and then click on the 
-			<b>Add Reach as Downstream Outlet</b> button. Alternatively, you may search for downstream outlet reaches either 
+			<b>Add Reach to Selected Downstream Reaches</b> button. Alternatively, you may search for reaches either 
 			individually or all at once using the <b>Find a reach...</b> button.
 		</Term>
 		<Term id="MRB">
@@ -197,23 +197,23 @@
                 	end of a selected downstream target reach after accounting for the mass quantity
                 	that is removed by natural attenuation processes
                 	(e.g., long-term storage; denitrification).
-                	You must first define a downstream outlet reach in order to map this series.
+                	You must define at least one <em>Selected Downstream Reach</em> on the <em>Downstream Tracking</em> tab in order to map this series.
                 </dd>
                 <dt>Incremental Delivered Load</dt><dd>
                 	The incremental load associated with a stream reach that arrives
                 	at the downstream end of a selected target reach, in units
                 	of mass (kg) per year.
-                	You must first define a downstream outlet reach in order to map this series.
+                	You must define at least one <em>Selected Downstream Reach</em> on the <em>Downstream Tracking</em> tab in order to map this series.
                 </dd>
                 <dt>Total Delivered Load</dt><dd>
                 	The total load associated with a stream reach that arrives at
                 	the downstream end of a selected target reach, in units of mass (kg) per year.
-                	You must first define a downstream outlet reach in order to map this series.
-				</dd>
+                	You must define at least one <em>Selected Downstream Reach</em> on the <em>Downstream Tracking</em> tab in order to map this series.
+								</dd>
                 <dt>Incremental Delivered Yield</dt><dd>
                 	The <i>Incremental Delivered Load</i> divided by the drainage
                 	area of the reach, in units of mass (kg) per square kilometer per year.
-                	You must first define a downstream outlet reach in order to map this series.
+                	You must define at least one <em>Selected Downstream Reach</em> on the <em>Downstream Tracking</em> tab in order to map this series.
                 </dd>
 			</dl>
 		</Term>
@@ -466,16 +466,16 @@
 			The mean annual stream flow of the reach, in units of volume (cubic feet) per time (seconds).
 			
 			Delivery Fraction
-			The fraction (from 0 to 1) of the load leaving a reach that arrives at the downstream end of a selected target reach without any removal by natural attenuation processes (e.g., long-term storage; denitrification). You must first define a downstream outlet reach in order to map this series. 
+			The fraction (from 0 to 1) of the load leaving a reach that arrives at the downstream end of a selected downstream reach(es) without any removal by natural attenuation processes (e.g., long-term storage; denitrification).
 			
 			Incremental Delivered Load
-			The incremental load associated with an individual stream reach that arrives at the downstream end of a selected target reach, in units of mass (kg) per year. You must first define a downstream outlet reach in order to map this series.
+			The incremental load associated with an individual stream reach that arrives at the downstream end of a selected downstream reach(es), in units of mass (kg) per year.
 			
 			Total Delivered Load
-			The total load associated with a stream reach that arrives at the downstream end of a selected target reach, in units of mass (kg) per year. You must first define a downstream outlet reach in order to map this series.
+			The total load associated with a stream reach that arrives at the downstream end of a selected downstream reach(es), in units of mass (kg) per year.
 			
 			Incremental Delivered Yield
-			The incremental delivered load divided by the drainage area of the reach, in units of mass (kg) per square kilometer per year. You must first define a downstream outlet reach in order to map this series.
+			The incremental delivered load divided by the drainage area of the reach, in units of mass (kg) per square kilometer per year.
 			
 			
 			__Linking Exported Data to River Network Shapefiles__

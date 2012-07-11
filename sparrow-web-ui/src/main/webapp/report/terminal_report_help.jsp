@@ -32,7 +32,7 @@
 
 			<p>
 				Total Delivered Load is the total load (including load from upstream reaches) 
-				that arrives at the downstream end of the active downstream reaches, in units of mass (kg) per year.
+				that arrives at the downstream end of the selected downstream reaches, in units of the model per year.
 				Two examples of typical usage of this report are shown below.
 			</p>
 
@@ -59,7 +59,7 @@
 					</p>
 					<p>
 						Because rivers are broken into reaches based on hydrology, not political boundaries, 
-						it is likely that the downstream end of the active downstream reaches will not fall on the polictical boundary.
+						it is likely that the downstream end of the selected downstream reaches will not fall on the political boundary.
 						Thus, some load from outside the region may be included in the reported values. 
 						If an upstream area outside of the political boundary is contributing to the load at the downstream reaches, 
 						consider using the Delivered Load by Upstream region instead.
@@ -73,7 +73,7 @@
 				<div class="caption">
 					<p>
 						Figures 1 & 2 might result in a delivered load summary like this one. 
-						The total load arriving the downstream end of each of the active downstream reaches (A, B & C) 
+						The total load arriving the downstream end of each of the selected downstream reaches (A, B & C) 
 						is shown in a separate row in the table and summed in the last row. 
 						These loads are also broken down by source.
 					</p>

@@ -16,7 +16,7 @@
 %>
  <div>
     <h2>Total Delivered Load Summary</h2>
-		<h3>Total load delivered to each active downstream reach, from their respective upstream watershed area.</h3>
+		<h3>Total load delivered to each selected downstream reach, from their respective upstream watershed area.</h3>
 		<div class="explanation">
 			<p>
 				This report lists each downstream reach, as selected in the Downstream Tracking tab of the application.
@@ -29,7 +29,7 @@
 			<p class="downstream-reaches-out-of-sync">
 				<img src="../images/small_alert_icon.png" alt="Warning Icon" />
 				Careful!  These downstream reaches are no longer the
-				<em>Active Downstream Reaches</em> in the Sparrow DSS.  <a href="">More info...</a>
+				<em>Selected Downstream Reaches</em> in the Sparrow DSS.  <a href="">More info...</a>
 			</p>
 		</div>
 		<div class="download-area">
