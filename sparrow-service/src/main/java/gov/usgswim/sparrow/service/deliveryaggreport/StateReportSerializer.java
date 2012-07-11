@@ -11,8 +11,8 @@ import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.RelationType;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.SparrowModel;
-import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.text.DecimalFormat;
@@ -76,7 +76,14 @@ public class StateReportSerializer extends BasicXMLStreamReader {
 		relPercentCol = reportTable.getColumnCount() - 1;
 		numberFormat = new DecimalFormat[reportTable.getColumnCount()];
 		
-		model = SharedApplication.getInstance().getPredictData(request.getContext().getModelID()).getModel();
+		PredictionContext pc = request.getContext();
+		
+		if (pc == null) {
+			pc = SharedApplication.getInstance().getPredictionContext(request.getContextID());
+		}
+		
+		PredictData pd = SharedApplication.getInstance().getPredictData(pc.getModelID());
+		model = pd.getModel();
 		
 		
 		//Create number formats for each number column
