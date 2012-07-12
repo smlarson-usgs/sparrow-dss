@@ -92,11 +92,12 @@ public class StateReportSerializer extends BasicXMLStreamReader {
 			if (data.getDataType(c) != null && Number.class.isAssignableFrom(data.getDataType(c))) {
 				
 				String formatStr = "##0";
-				int precision = 2;
+				int precision = 0;
 				String precisionStr = data.getProperty(c, TableProperties.PRECISION.toString());
 				if (precisionStr != null) {
 					try {
 						precision = Integer.parseInt(precisionStr);
+						precision-=2;	//Decrease the precision a bit for the report
 					} catch (Exception e) {
 						//ignore
 					}
