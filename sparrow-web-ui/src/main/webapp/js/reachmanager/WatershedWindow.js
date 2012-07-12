@@ -59,7 +59,7 @@ var WATERSHED_WINDOW = new (function() {
 			header : "Watershed Name",
 			menuDisabled : true,
 			width : 50,
-			dataIndex : "name",
+			dataIndex : "name"
 		}, {
 			header : "Watershed Description",
 			width : 55,
@@ -73,7 +73,7 @@ var WATERSHED_WINDOW = new (function() {
 		} ],
 		autoScroll : true,
 		stripeRows : true,
-		autoExpandColumn : 2,
+		autoExpandColumn : 2
 	});
 
 	this.open = function() {
