@@ -29,7 +29,7 @@ var WATERSHED_WINDOW = new (function() {
 				name : 'count',
 				type : 'integer',
 				mapping : 'c:nth(3)' 
-			} ]),
+			} ])
 		});
 	};
 
