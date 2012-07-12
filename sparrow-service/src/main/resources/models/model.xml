@@ -496,12 +496,12 @@
 			* Reach Name (pname): The name of the reach.  This name may sometimes be empty, partial, or different than local names for the reach.
 			* EDACODE: NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.  This value may be empty for reaches in or draining to Canada.
 			* [source name]  (unit): One column per model source.  This is the 'Total Load' data series for an individual source.
-			* Total Delivered Load for all Sources (unit): The 'Total Load' data series (the sum of all per-source total loads).
+			* Total for All Sources (unit): The 'Total Load' data series (the sum of all per-source total loads).
 			
 			Notes:
 			* The loads reported in this export reflect source input changes made on the Change Inputs tab in the application.
 			* The predicted load columns are labeled 'Total Delivered Load' for consistancy with the report, however, for these reaches the Total Delivered Load is the same as the Total Load.
-			* A more detailed explination of what these reported values are and how they are calculated is available at:
+			* A more detailed explanation of what these reported values are and how they are calculated is available at:
 			http://cida.usgs.gov/sparrow/report/terminal_report_help.jsp
 			
 			
@@ -534,13 +534,13 @@
 			
 			All Reports include these columns:
 			* [source name] (unit): One column per model source.  The Incremental Delivered Load for each model source.
-			* Total Incremental Delivered Load for all Sources (unit): The Incremental Delivered Load for all model sources.
+			* All Sources (unit): The Incremental Delivered Load for all model sources.
 			
 			
 			
 			Notes:
 			* The loads reported in this export reflect source input changes made on the Change Inputs tab in the application.
-			* A more detailed explination of what these reported values are and how they are calculated is available at:
+			* A more detailed explanation of what these reported values are and how they are calculated is available at:
 			http://cida.usgs.gov/sparrow/report/aggregate_report_help.jsp
 			
 			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
