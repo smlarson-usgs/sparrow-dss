@@ -50,7 +50,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		String nonZeroRowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tr[td[position() = 8 and .!=0]])", actualReportResponse);
 		
 		assertEquals("9", rowCountStr);
-		assertEquals("9", nonZeroRowCountStr);
+		assertEquals("7", nonZeroRowCountStr);
 		
 	}
 	
@@ -81,7 +81,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		String nonZeroRowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tr[td[position() = 8 and .!=0]])", actualReportResponse);
 		
 		assertEquals("11", rowCountStr);
-		assertEquals("9", nonZeroRowCountStr);
+		assertEquals("7", nonZeroRowCountStr);
 		
 		
 		String firstStateWithZeroLoad = ReportServiceLongRunTest.getXPathValue("//tr[td[position() = 8 and .=0]][1]/td[1]", actualReportResponse);

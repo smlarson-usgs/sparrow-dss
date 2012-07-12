@@ -54,10 +54,10 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		assertEquals("2", rowCountStr);
 		
 		String firstTerminalReachName = getXPathValue("//tbody/tr[th[a=9682]]/td[1]", actualReportResponse);
-		String totalValue = getXPathValue("//tbody/tr[2]/td[.=40735549.83]", actualReportResponse);
+		String totalValue = getXPathValue("//tbody/tr[2]/td[.=40735550]", actualReportResponse);
 		
 		assertEquals("MOBILE R", firstTerminalReachName);
-		assertEquals("40735549.83", totalValue);
+		assertEquals("40735550", totalValue);
 		
 		
 	}
@@ -84,7 +84,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
 		
-		System.out.println(actualReportResponse);
+		//System.out.println(actualReportResponse);
 		
 	}
 	
@@ -110,7 +110,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
 		
-		System.out.println(actualReportResponse);
+		//System.out.println(actualReportResponse);
 		
 	}
 	
