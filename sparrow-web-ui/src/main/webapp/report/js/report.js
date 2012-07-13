@@ -37,7 +37,7 @@ var aggReportRegionChangeHandler = function(event) {
 			}
 	});
 
-	return false;
+	return true;
 };
 
 var getAggReportUrl = function(mimeType) {
