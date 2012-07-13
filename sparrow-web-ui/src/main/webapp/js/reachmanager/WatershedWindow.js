@@ -116,7 +116,6 @@ var WATERSHED_WINDOW = new (function() {
 									Ext.Msg.alert("","Please pick a watershed.");
 								} else {
 									Ext.getBody().mask('Adding watershed... ','x-mask-loading');
-									Sparrow.SESSION.consolidateEvents();
 									sm.each(function(watershedRecord){
 										var reachStore = getWatershedStore();
 										reachStore.on('load', function(){
@@ -130,9 +129,6 @@ var WATERSHED_WINDOW = new (function() {
 											}
 										});
 									});
-									Sparrow.SESSION.releaseEvents();
-									// TODO,really should not be firing someone elses events
-									Sparrow.SESSION.fireContextEvent("targets-changed");  
 									setTimeout('Ext.getBody().unmask()', 500);
 								};
 							}

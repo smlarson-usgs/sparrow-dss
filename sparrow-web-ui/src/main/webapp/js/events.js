@@ -18,9 +18,6 @@ Sparrow.events.EventManager = function(){ return{
 		
 		Sparrow.CONTEXT.on('dataseries-changed', function() {
 			Sparrow.handlers.UiComponents.updateComparisons();
-			
-			//Called, but no distinction currently from just 'changed'
-			//Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(true);
 		});
 		
 		Sparrow.CONTEXT.on('model-source-changed', function() {
@@ -176,57 +173,81 @@ Sparrow.handlers.DownstreamTrackingInstructions = function(){
 		"The summary reports show load delivered to the downstream reaches and the originating region (state or HUC).";
 	
 	return{
+	
 	syncDeliveryTabInstructions : function(mapOutOfSync) {
 	    //Downstream tracking
 		var targetPanel = Ext.getCmp('main-targets-tab');
+		var comp = Ext.getCmp('main-targets-tab').displayResultsInstructions;
 		var targetReaches = Sparrow.SESSION.getAllTargetedReaches();
+		var hasTargetReaches = Sparrow.SESSION.getAllTargetedReaches().length > 0;
+		var series = Sparrow.SESSION.getSeriesName();
+		var mapIsDisplaying = "The map is displaying the non-downstream tracking data series <i><b>" + series + "</b></i>.<br/><br/>";
+				
+		var howToChooseReaches = "To choose downstream reaches, see step 1. <b><i>Select Downstream Reaches(es)</i></b> above to select downstream reaches.";
+		var howToChooseDatasource = "To choose a <i><b>Downstream Tracking</b></i> data series, " +
+			"select one a data series under that heading at the top of the " +
+			"<a href='javascript:GOTO_MAP_OPTIONS_TAB()'>Display Results</a> tab."
+		var toMapDownstream = "To map a downstream tracking data, you must ";
 		
-		if (targetReaches.length == 0) {
-			Sparrow.handlers.DownstreamTrackingInstructions.setNoDeliveryReachesSelected(Sparrow.SESSION.isDeliveryDataSeries());
-		} else if (! Sparrow.SESSION.isDeliveryDataSeries()) {
-			Sparrow.handlers.DownstreamTrackingInstructions.setNoDeliverySeriesSelected();
+		if (!mapOutOfSync) {
+			//In Sync options
+			if (Sparrow.SESSION.isDeliveryDataSeries()) {
+				//Has delivery dataseries
+				
+				if (comp.body) {
+						comp.body.update(
+							"The map is displaying the downstream tracking data series <i><b>" + series + "</b></i>.<br/><br/>"+
+							"<b style=\"font-size: 1.3em;\"><a title\"Click to open the reports in a new window\" href=\"javascript:displayDeliverySummaryReport()\">Open the Delivery Summary Report</a></b>.<br />" +
+							"The summary reports total the load delivered to the downstream reaches and show breakdowns of the originating regions (state or HUC).");
+				}
+			} else {
+				//Does not have delivery dataseries
+
+				if (hasTargetReaches) {
+					comp.body.update(
+						mapIsDisplaying + toMapDownstream + " choose downstream reaches. " + howToChooseDatasource
+					);
+				} else {
+					comp.body.update(
+						mapIsDisplaying + toMapDownstream + " choose downstream reaches and a downstream tracking data series. " + howToChooseReaches
+					);
+				}
+				
+			}
+			
+			
 		} else {
-			if (mapOutOfSync) {
-				Sparrow.handlers.DownstreamTrackingInstructions.setDeliveryOKButOutOfSync();
+			//Out of Sync options
+			var outOfSyncMsg = "map is not showing your current selections - Please click <b><i>Update Map</i></b> when you are done making your selections and adjustments.";
+			
+			if (Sparrow.SESSION.isDeliveryDataSeries()) {
+				//Has delivery dataseries
+				
+				if (hasTargetReaches) {
+					comp.body.update(
+						"You have selected a Downstream Tracking data series and downstream reaches, however, the " + outOfSyncMsg
+					);
+				} else {
+					comp.body.update(
+						toMapDownstream + " choose downstream reaches. " + howToChooseReaches + "<br /><br />The " + outOfSyncMsg
+					);
+				}
+
 			} else {
-				Sparrow.handlers.DownstreamTrackingInstructions.setDeliveryOK();
+				//Does not have delivery dataseries
+
+				if (hasTargetReaches) {
+					comp.body.update(
+						toMapDownstream + " choose a downstream tracking data series. " + howToChooseDatasource + "<br /><br />The " + outOfSyncMsg
+					);
+				} else {
+					comp.body.update(
+						toMapDownstream + " choose downstream reaches and a downstream tracking data series. " + howToChooseReaches + "<br /><br />The " + outOfSyncMsg
+					);
+				}
+				
 			}
-		}
-	},
-	
-	setNoDeliverySeriesSelected : function() {
-		var comp = Ext.getCmp('main-targets-tab').displayResultsInstructions;
-		if (comp.body) {
-			comp.body.update(_downstreamTabLinkMsg);
-		}
-	},
-	
-	setNoDeliveryReachesSelected : function(deliverySeriesIsChosen) {
-		var comp = Ext.getCmp('main-targets-tab').displayResultsInstructions;
-		if (comp.body) {
-			var text;
-			if (deliverySeriesIsChosen) {
-				text = "A delivery data series is chosen, but no downstream reaches are selected.";
-			} else {
-				text = "[No downstream reaches have been chosen]";
-			}
-			Ext.getCmp('main-targets-tab').displayResultsInstructions.body.update(text);
-		}
-	},
-	
-	setDeliveryOK : function() {
-		var comp = Ext.getCmp('main-targets-tab').displayResultsInstructions;
-		if (comp.body) {
-    		var series = Sparrow.SESSION.getSeriesName();
-    		Ext.getCmp('main-targets-tab').displayResultsInstructions.body.update("Currently displaying the delivery data series <i><b>" + series + "</b></i>.<br/><br/>"+_downstreamTabLinkMsg);
-		}
-	},
-	
-	setDeliveryOKButOutOfSync : function() {
-		var comp = Ext.getCmp('main-targets-tab').displayResultsInstructions;
-		if (comp.body) {
-    		var series = Sparrow.SESSION.getSeriesName();
-    		Ext.getCmp('main-targets-tab').displayResultsInstructions.body.update("The delivery data series <i><b>" + series + "</b></i>&nbsp;&nbsp;is chosen, but the map needs to be redrawn.  Click Update Map, below.");
+			
 		}
 	}
 }}();
