@@ -44,7 +44,7 @@ public class ReportService implements HttpService<ReportRequest> {
 			DeliveryReportRequest actionRequest = new DeliveryReportRequest(context.getAdjustmentGroups(), termReaches, aggLevel);
 
 
-			DataTable reportData = sharedApp.getTotalDeliveredLoadByStateSummaryReport(actionRequest);
+			DataTable reportData = sharedApp.getTotalDeliveredLoadByUpstreamRegionReport(actionRequest);
 
 
 			String readmeText = SparrowResourceUtils.lookupMergedHelp(
@@ -54,7 +54,7 @@ public class ReportService implements HttpService<ReportRequest> {
 					new String[] {});
 
 
-			return new  StateReportSerializer(
+			return new  ReportSerializer(
 					req, reportData, readmeText);
 
 

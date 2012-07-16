@@ -32,7 +32,7 @@ import java.util.*;
  * @author eeverman
  *
  */
-public class BuildTotalDeliveredLoadByStateSummaryReport extends Action<DataTable> {
+public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTable> {
 	
 	//Assigned Values
 	protected AdjustmentGroups adjustmentGroups;
@@ -48,7 +48,7 @@ public class BuildTotalDeliveredLoadByStateSummaryReport extends Action<DataTabl
 	protected DataTable areaDetail;
 	List<ColumnData> expandedTotalDelLoadForAllSources;
 	
-	public BuildTotalDeliveredLoadByStateSummaryReport(
+	public BuildTotalDeliveredLoadByUpstreamRegionReport(
 			AdjustmentGroups adjustmentGroups,
 			TerminalReaches terminalReaches,
 			AggregationLevel aggLevel) {
@@ -59,7 +59,7 @@ public class BuildTotalDeliveredLoadByStateSummaryReport extends Action<DataTabl
 		
 	}
 	
-		public BuildTotalDeliveredLoadByStateSummaryReport(DeliveryReportRequest request) {
+		public BuildTotalDeliveredLoadByUpstreamRegionReport(DeliveryReportRequest request) {
 		
 		terminalReaches = request.getTerminalReaches();
 		adjustmentGroups = request.getAdjustmentGroups();

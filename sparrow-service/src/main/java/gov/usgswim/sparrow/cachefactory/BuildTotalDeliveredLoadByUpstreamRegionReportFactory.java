@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.sparrow.action.BuildTotalDeliveredLoadByStateSummaryReport;
+import gov.usgswim.sparrow.action.BuildTotalDeliveredLoadByUpstreamRegionReport;
 import gov.usgswim.sparrow.action.BuildTotalDeliveredLoadSummaryReport;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
@@ -13,7 +13,7 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
  *
  * @author eeverman
  */
-public class BuildTotalDeliveredLoadByStateSummaryReportFactory implements CacheEntryFactory {
+public class BuildTotalDeliveredLoadByUpstreamRegionReportFactory implements CacheEntryFactory {
 
 
 	@Override
@@ -21,8 +21,8 @@ public class BuildTotalDeliveredLoadByStateSummaryReportFactory implements Cache
 		DeliveryReportRequest req = (DeliveryReportRequest)deliveryReportRequest;
 		DataTable result = null;
 		
-		BuildTotalDeliveredLoadByStateSummaryReport action =
-				new BuildTotalDeliveredLoadByStateSummaryReport(req);
+		BuildTotalDeliveredLoadByUpstreamRegionReport action =
+				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
 		
 		result = action.run();
 		

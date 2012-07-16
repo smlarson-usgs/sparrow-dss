@@ -909,12 +909,12 @@ public class SharedApplication  {
 		return (DataTable) result;
 	}
 	
-		public DataTable getTotalDeliveredLoadByStateSummaryReport(DeliveryReportRequest request) throws Exception {
-		return getTotalDeliveredLoadByStateSummaryReport(request, false);
+		public DataTable getTotalDeliveredLoadByUpstreamRegionReport(DeliveryReportRequest request) throws Exception {
+		return getTotalDeliveredLoadByUpstreamRegionReport(request, false);
 	}
 
-	public DataTable getTotalDeliveredLoadByStateSummaryReport(DeliveryReportRequest request, boolean quiet) throws Exception {
-		Object result = TotalDeliveredLoadByStateSummaryReport.get(request, quiet);
+	public DataTable getTotalDeliveredLoadByUpstreamRegionReport(DeliveryReportRequest request, boolean quiet) throws Exception {
+		Object result = TotalDeliveredLoadByUpstreamRegionReport.get(request, quiet);
 		return (DataTable) result;
 	}
 	

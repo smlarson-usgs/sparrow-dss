@@ -1,6 +1,5 @@
 package gov.usgswim.sparrow.service.deliveryterminalreport;
 
-import gov.usgswim.sparrow.service.deliveryaggreport.StateReportSerializer;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.filter.FilteredDataTable;
 import gov.usgswim.service.HttpService;

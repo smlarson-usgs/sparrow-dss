@@ -36,8 +36,8 @@ public class BuildTotalDeliveredLoadByStateSummaryReportTest extends DeliveryBas
 		
 		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, target9682, AggregationLevel.STATE);
 		
-		BuildTotalDeliveredLoadByStateSummaryReport action =
-				new BuildTotalDeliveredLoadByStateSummaryReport(req);
+		BuildTotalDeliveredLoadByUpstreamRegionReport action =
+				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
 		
 		DataTable result = action.run();
 		
@@ -79,8 +79,8 @@ public class BuildTotalDeliveredLoadByStateSummaryReportTest extends DeliveryBas
 		
 		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, target9682, AggregationLevel.HUC2);
 		
-		BuildTotalDeliveredLoadByStateSummaryReport action =
-				new BuildTotalDeliveredLoadByStateSummaryReport(req);
+		BuildTotalDeliveredLoadByUpstreamRegionReport action =
+				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
 		
 		DataTable result = action.run();
 		

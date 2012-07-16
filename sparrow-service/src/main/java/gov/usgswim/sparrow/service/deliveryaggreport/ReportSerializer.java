@@ -19,7 +19,7 @@ import java.text.DecimalFormat;
 
 import javax.xml.stream.XMLStreamException;
 
-public class StateReportSerializer extends BasicXMLStreamReader {
+public class ReportSerializer extends BasicXMLStreamReader {
 
 	public static String TARGET_NAMESPACE = "http://www.usgs.gov/sparrow/sparrow-report/v0_1";
 	public static String TARGET_NAMESPACE_LOCATION = "http://www.usgs.gov/sparrow/sparrow-report/v0_1.xsd";
@@ -58,7 +58,7 @@ public class StateReportSerializer extends BasicXMLStreamReader {
 	// ============
 	// CONSTRUCTORS
 	// ============	
-	public StateReportSerializer(ReportRequest request, DataTable reportTable,
+	public ReportSerializer(ReportRequest request, DataTable reportTable,
 			String exportDescription) throws Exception {
 		
 		super();
