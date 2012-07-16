@@ -4,7 +4,7 @@
 	<groupId>gov.usgs.cida</groupId>
 	<artifactId>sparrow-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.4.29</version>
+	<version>1.4.30-SNAPSHOT</version>
 	<name>Sparrow DSS Parent Project</name>
 
 	<modules>
@@ -13,7 +13,7 @@
 	</modules>
 	
 	<scm>
-		<developerConnection>scm:svn:https://cida-svn.er.usgs.gov/repos/dev/usgs/sparrow/dss/app/tags/sparrow-parent-1.4.29</developerConnection>
+		<developerConnection>scm:svn:https://cida-svn.er.usgs.gov/repos/dev/usgs/sparrow/dss/app/trunk</developerConnection>
 	</scm>
 	
 	<distributionManagement>
