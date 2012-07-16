@@ -4,8 +4,8 @@
 	
 	<parent>
 	<groupId>gov.usgs.cida</groupId>
-	<artifactId>sparrow-parent</artifactId>
-			<version>1.4.29-SNAPSHOT</version>
+		<artifactId>sparrow-parent</artifactId>
+		<version>1.4.29-SNAPSHOT</version>
 	</parent>
 
 	<groupId>gov.usgs.cida</groupId>
