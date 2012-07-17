@@ -9,6 +9,7 @@ import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
+import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.util.ArrayList;
@@ -38,9 +39,10 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTable> {
 	
 	//Loaded or created by the action itself
 	Long modelId = null;
-	protected transient PredictData predictData = null;
-	protected transient DataTable idInfo = null;
-	List<ColumnData> expandedTotalDelLoadForAllSources;
+	private transient PredictData predictData = null;
+	private transient DataTable idInfo = null;
+	private transient DataTable terminalReachDrainageArea = null;
+	private transient List<ColumnData> expandedTotalDelLoadForAllSources;
 	
 	protected String msg = null;	//statefull message for logging
 	
@@ -52,6 +54,7 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTable> {
 		modelId = adjustmentGroups.getModelID();
 		predictData = SharedApplication.getInstance().getPredictData(modelId);
 		idInfo = SharedApplication.getInstance().getModelReachIdentificationAttributes(modelId);
+		terminalReachDrainageArea = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AggregationLevel.NONE, true));
 		
 		
 		//Basic predict context, which we need data for all sources
@@ -91,6 +94,7 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTable> {
 		//Add the reach identification columns
 		columns.add(0, idInfo.getColumn(0));	//reach name
 		columns.add(1, idInfo.getColumn(1));	//eda code
+		columns.add(2, terminalReachDrainageArea.getColumn(1));
 		
 		HashMapColumnIndex index = new  HashMapColumnIndex(predictData.getTopo());
 		

@@ -24,7 +24,8 @@ public class ReportSerializer extends BasicXMLStreamReader {
 	//Hardcoded columns in the source data
 	public static final int REACH_NAME_COL = 0;	//index of the reach name in the reportTable
 	public static final int EDA_CODE_COL = 1;	//index of the EDA code in the reportTable
-	public static final int FIRST_SOURCE_COL = 2;	//index of the first column containing a source value in the reportTable
+	public static final int DRAINAGE_AREA_COL = 2;	//index of the drainage area column in the reportTable
+	public static final int FIRST_SOURCE_COL = 3;	//index of the first column containing a source value in the reportTable
 	
 	private ReportRequest request;
 
@@ -178,6 +179,9 @@ public class ReportSerializer extends BasicXMLStreamReader {
 					events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", STRING));
 					name = data.getName(EDA_CODE_COL);
 					events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", STRING));
+					name = data.getName(DRAINAGE_AREA_COL);
+					events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", NUMBER).addAttribute("unit", data.getUnits(DRAINAGE_AREA_COL)));
+										
 					addCloseTag("group");
 					
 					

@@ -495,6 +495,7 @@
 			* id:  Unique identifier for a stream reach in the model based on the reference stream network.  See the section 'Linking Exported Data to River Network Shapefiles' for more information on how to use this id.
 			* Reach Name (pname): The name of the reach.  This name may sometimes be empty, partial, or different than local names for the reach.
 			* EDACODE: NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.  This value may be empty for reaches in or draining to Canada.
+			* Watershed Area (unit) : The area of land that drains all the upstream streams and rainfall to the stream reach.
 			* [source name]  (unit): One column per model source.  This is the 'Total Load' data series for an individual source.
 			* Total for All Sources (unit): The 'Total Load' data series (the sum of all per-source total loads).
 			
