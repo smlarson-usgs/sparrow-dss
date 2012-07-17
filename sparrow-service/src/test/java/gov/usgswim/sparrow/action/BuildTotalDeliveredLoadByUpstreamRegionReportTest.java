@@ -13,7 +13,7 @@ import org.junit.Test;
 /**
  * @author eeverman
  */
-public class BuildTotalDeliveredLoadByStateSummaryReportTest extends DeliveryBase {
+public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryBase {
 
 	
 	static final double COMP_ERROR = .0000001d;
