@@ -86,8 +86,8 @@ public class DeliveryBase  extends SparrowTestBaseWithDBandCannedModel50 {
 		unmodifiedPredictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		DataTable topo = unmodifiedPredictData.getTopo();
 		SparseOverrideAdjustment adjTopo = new SparseOverrideAdjustment(topo);
-		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9619), gov.usgswim.sparrow.PredictData.IFTRAN_COL);
-		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9100), gov.usgswim.sparrow.PredictData.IFTRAN_COL);
+		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9619), gov.usgswim.sparrow.PredictData.TOPO_IFTRAN_COL);
+		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9100), gov.usgswim.sparrow.PredictData.TOPO_IFTRAN_COL);
 		
 		
 		modifiedPredictData = new PredictDataImm(

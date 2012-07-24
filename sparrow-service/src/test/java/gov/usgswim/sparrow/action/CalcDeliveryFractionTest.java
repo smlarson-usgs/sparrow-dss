@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
@@ -20,7 +21,9 @@ import gov.usgswim.sparrow.util.TabDelimFileUtil;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.junit.Test;
 
@@ -74,8 +77,8 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		unmodifiedPredictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		DataTable topo = unmodifiedPredictData.getTopo();
 		SparseOverrideAdjustment adjTopo = new SparseOverrideAdjustment(topo);
-		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9619), PredictData.IFTRAN_COL);
-		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9100), PredictData.IFTRAN_COL);
+		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9619), PredictData.TOPO_IFTRAN_COL);
+		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9100), PredictData.TOPO_IFTRAN_COL);
 		
 		predictData = new PredictDataImm(
 				adjTopo, unmodifiedPredictData.getCoef(),
@@ -349,6 +352,46 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		//Row 7 (the last)
 		assertEquals(9679, stdDelFracTo9674.getInt(7, 0).intValue());
 		assertEquals(0.844398102645677d, stdDelFracTo9674.getDouble(7, 8).doubleValue(), COMP_ERROR);
+	}
+	
+	//Using a shore reach seems to throw the application into a loop
+	@Test
+	public void testShorelineReachInfiniteLoopCalculationError() throws Exception {
+		//Create a terminalReach list containing the reach they all drain to:  7571
+		List<Long> targetList = new ArrayList<Long>();
+		targetList.add(81140L);
+		TerminalReaches termReaches = new TerminalReaches(TEST_MODEL_ID, targetList);
+		
+		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
+		hashAction.setPredictData(unmodifiedPredictData);
+		hashAction.setTargetReachIds(termReaches.asSet());
+		DeliveryFractionMap delHash = hashAction.run();
+		
+		assertEquals(1, delHash.size());
+		
+		
+		//CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
+	}
+	
+	@Test
+	public void testShorelinePlusUpstreamReachDelFracCalculationErrorBasedOnAnnsData() throws Exception {
+		//Create a terminalReach list containing the reach they all drain to:  7571
+		List<Long> targetList = new ArrayList<Long>();
+		targetList.add(6194L);
+		targetList.add(81045L);
+		TerminalReaches termReaches = new TerminalReaches(TEST_MODEL_ID, targetList);
+		
+		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
+		hashAction.setPredictData(unmodifiedPredictData);
+		hashAction.setTargetReachIds(termReaches.asSet());
+		DeliveryFractionMap delHash = hashAction.run();
+		
+		for (Entry<Integer, Float> entry : delHash.entrySet()) {
+			assertTrue(entry.getValue() <= 1F);
+		}
+		
+		
+		//CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 	}
 	
 	

@@ -90,7 +90,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 		
 		//Basic predict context, which we need data for all sources
 		BasicAnalysis analysis = new BasicAnalysis(
-				DataSeriesType.total_delivered_flux, null, null, null);
+				DataSeriesType.incremental_delivered_flux, null, null, null);
 			
 		PredictionContext basicPredictContext = new PredictionContext(
 				modelId, adjustmentGroups, analysis, terminalReaches,

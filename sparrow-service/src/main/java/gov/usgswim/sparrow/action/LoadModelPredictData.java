@@ -152,6 +152,7 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 	 * <li>[i][2]TNODE - The to node
 	 * <li>[i][3]IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
 	 * <li>[i][4]HYDSEQ - Hydrologic sequence order (starting at 1, no gaps)
+	 * <li>[i][5]SHORE_REACH - 1 if a shore reach, 0 otherwise.
 	 * </ol>
 	 * 
 	 * Note: Frac is also available, but is not used for calculations b/c it
@@ -188,7 +189,7 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 		DataTableWritable result = DataTableConverter.toDataTable(rset, colTypes, true);
 		
 		/** TNODE is used heavily during delivery calcs to find reaches, so index */
-		result.buildIndex(PredictData.TNODE_COL);
+		result.buildIndex(PredictData.TOPO_TNODE_COL);
 
 		if (log.isDebugEnabled()) {
 			log.debug("Printing sample of topo ...");

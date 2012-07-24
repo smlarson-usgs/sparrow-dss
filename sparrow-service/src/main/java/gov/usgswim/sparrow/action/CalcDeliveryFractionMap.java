@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.action;
 
-import static gov.usgswim.sparrow.PredictData.IFTRAN_COL;
+import static gov.usgswim.sparrow.PredictData.TOPO_IFTRAN_COL;
 import static gov.usgswim.sparrow.PredictData.UPSTREAM_DECAY_COL;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
@@ -91,7 +91,7 @@ public class CalcDeliveryFractionMap extends Action<DeliveryFractionMap> {
 			Long id = targetIdIterator.next();
 			int row = predictData.getRowForReachID(id);
 			DeliveryReach current = new DeliveryReach(
-					row, 1d, topo.getInt(row, PredictData.HYDSEQ_COL)
+					row, 1d, topo.getInt(row, PredictData.TOPO_HYDSEQ_COL)
 			);
 			targetProcessingQue.add(current);
 		}
@@ -171,7 +171,7 @@ public class CalcDeliveryFractionMap extends Action<DeliveryFractionMap> {
 					getDouble(downstreamRow, UPSTREAM_DECAY_COL);
 				
 				//Zero if the reach has no transport to the downstream reach.
-				double ifTran = topo.getDouble(current.getRow(), IFTRAN_COL);
+				double ifTran = topo.getDouble(current.getRow(), TOPO_IFTRAN_COL);
 				
 				double addedDelivery =
 					downstrmCalcedDeliveryFrac * downstrmTotalDelivery * ifTran;
@@ -201,33 +201,43 @@ public class CalcDeliveryFractionMap extends Action<DeliveryFractionMap> {
 			PredictData predictData, DeliveryReach current) {
 		
 		DataTable topo = predictData.getTopo();
-		long fnode = topo.getLong(current.getRow(), PredictData.FNODE_COL);
+		boolean isShoreReach = (1 == topo.getInt(current.getRow(), PredictData.TOPO_SHORE_REACH_COL));
+
+		if (isShoreReach) {
+			//Don't do any further processing for reaches 'upstream' of a shore reach.
+			//A shore reach just goes along the edge of a lake or ocean, so its not really
+			//part of the network.
+			return;
+		} else {
 		
-		//The index requires that an Integer be used.
-		int[] upstream = topo.findAll(PredictData.TNODE_COL, new Integer((int)fnode));
-		
-		for (int rowNum : upstream) {
-			
-			DeliveryReach toBeAdded = new DeliveryReach(
-				rowNum, 0d, topo.getInt(rowNum, PredictData.HYDSEQ_COL), current
-			);
-			
-			if (! upstreamReaches.contains(toBeAdded)) {
-				upstreamReaches.add(toBeAdded);
-			} else {
-				//This reach already exists in our upstream list.
-				//Find it & add the current reach as an added downstream reach.
-				Iterator<DeliveryReach> upstreamIt = upstreamReaches.iterator();
-				
-				while (upstreamIt.hasNext()) {
-					DeliveryReach u = upstreamIt.next();
-					
-					if (u.equals(toBeAdded)) {	//.equals based only on row
-						u.addDownstreamReach(current);
-						break;
+			long fnode = topo.getLong(current.getRow(), PredictData.TOPO_FNODE_COL);
+
+			//The index requires that an Integer be used.
+			int[] upstream = topo.findAll(PredictData.TOPO_TNODE_COL, new Integer((int)fnode));
+
+			for (int rowNum : upstream) {
+
+				DeliveryReach toBeAdded = new DeliveryReach(
+					rowNum, 0d, topo.getInt(rowNum, PredictData.TOPO_HYDSEQ_COL), current
+				);
+
+				if (! upstreamReaches.contains(toBeAdded)) {
+					upstreamReaches.add(toBeAdded);
+				} else {
+					//This reach already exists in our upstream list.
+					//Find it & add the current reach as an added downstream reach.
+					Iterator<DeliveryReach> upstreamIt = upstreamReaches.iterator();
+
+					while (upstreamIt.hasNext()) {
+						DeliveryReach u = upstreamIt.next();
+
+						if (u.equals(toBeAdded)) {	//.equals based only on row
+							u.addDownstreamReach(current);
+							break;
+						}
 					}
+
 				}
-				
 			}
 		}
 	}

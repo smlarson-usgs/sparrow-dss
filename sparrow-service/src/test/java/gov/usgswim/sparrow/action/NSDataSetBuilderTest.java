@@ -50,8 +50,8 @@ public class NSDataSetBuilderTest extends SparrowTestBase {
 		unmodifiedPredictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		DataTable topo = unmodifiedPredictData.getTopo();
 		SparseOverrideAdjustment adjTopo = new SparseOverrideAdjustment(topo);
-		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9619), PredictData.IFTRAN_COL);
-		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9100), PredictData.IFTRAN_COL);
+		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9619), PredictData.TOPO_IFTRAN_COL);
+		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9100), PredictData.TOPO_IFTRAN_COL);
 		
 		predictData = new PredictDataImm(
 				adjTopo, unmodifiedPredictData.getCoef(),

@@ -13,6 +13,8 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import gov.usgswim.datatable.utils.DataFileDescriptor.DataType;
 import static gov.usgswim.datatable.utils.DataFileDescriptor.DataType.*;
+import java.io.*;
+import java.net.URL;
 
 /**
  * Analyzes the structure of files to infer metadata to construct a DataTable.
@@ -44,6 +46,19 @@ public class Analyzer {
 	 */
 	public static DataFileDescriptor analyzeFile(File dataFile) throws IOException {
 		List<DataFileDescriptor> temp = defaultAnalyzer.analyze(dataFile);
+		return (temp != null && !temp.isEmpty())? temp.get(0): null;
+
+	}
+	
+	/**
+	 * Analyze the metadata for a single file
+	 *
+	 * @param dataFile
+	 * @return
+	 * @throws IOException
+	 */
+	public static DataFileDescriptor analyzeFile(URL resourceUrl) throws IOException {
+		List<DataFileDescriptor> temp = defaultAnalyzer.analyze(resourceUrl);
 		return (temp != null && !temp.isEmpty())? temp.get(0): null;
 
 	}
@@ -167,6 +182,33 @@ public class Analyzer {
 		}
 		return result;
 	}
+	
+	/**
+	 * Analyze a single resource file
+	 * @param resourceFile
+	 * @return
+	 * @throws IOException 
+	 */
+	public List<DataFileDescriptor> analyze(URL resourceFile) throws IOException {
+		//assert(dataFileOrDir.exists()) : "the directory or file " + dataFileOrDir.getPath() + " does not exist";
+
+		List<DataFileDescriptor> result = new ArrayList<DataFileDescriptor>();
+
+
+		// analyze a file
+		DataFileDescriptor fileResult = new DataFileDescriptor(resourceFile.getFile());
+		List<Map<DataType, Integer>> typeCountsAnalysis = gatherStats(resourceFile, fileResult);
+		fileResult.columnCount = typeCountsAnalysis.size();
+
+		if (fileResult.hasColumnHeaders() && typeCountsAnalysis.size() != fileResult.getHeaders().length) {
+			System.err.println(resourceFile.getFile() + ": # of headers: " + fileResult.getHeaders().length + " != # of data columns: " + typeCountsAnalysis.size());
+			System.err.println();
+		}
+		fileResult.dataTypes = inferTypes(typeCountsAnalysis);
+		result.add(fileResult);
+
+		return result;
+	}
 
 
 	/**
@@ -180,12 +222,49 @@ public class Analyzer {
 	 */
 	public List<Map<DataType, Integer>> gatherStats(File dataFile, DataFileDescriptor fileDescription)
 			throws FileNotFoundException, IOException {
+		
+		
+		BufferedReader in = new BufferedReader(new FileReader(dataFile));
+		
+		return gatherStats(in, fileDescription);
+	}
+	
+	/**
+	 * Analyzes a number of lines from a dataFile, given a preliminary fileDescription
+	 *
+	 * @param dataFile
+	 * @param fileDescription
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public List<Map<DataType, Integer>> gatherStats(URL dataFile, DataFileDescriptor fileDescription)
+			throws FileNotFoundException, IOException {
+		
+		
+		BufferedReader in = new BufferedReader(new InputStreamReader(dataFile.openStream()));
+		
+		return gatherStats(in, fileDescription);
+	}
+	
+	/**
+	 * Analyzes a number of lines from a dataFile, given a preliminary fileDescription
+	 *
+	 * @param dataFile
+	 * @param fileDescription
+	 * @return
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	public List<Map<DataType, Integer>> gatherStats(BufferedReader in, DataFileDescriptor fileDescription)
+			throws FileNotFoundException, IOException {
+		
 		List<Map<DataType, Integer>> typeCounts = new ArrayList<Map<DataType, Integer>>();
 		fileDescription.delimiter = null;
 		int lineCount = 0;
 		String line;
 		int width = 0;
-		BufferedReader in = new BufferedReader(new FileReader(dataFile));
+
 		try {
 			// Gather Statistics: read the first ~20 lines of the file, if possible.
 			while (( line = in.readLine()) != null && lineCount < numberOfLinesToAnalyze) {

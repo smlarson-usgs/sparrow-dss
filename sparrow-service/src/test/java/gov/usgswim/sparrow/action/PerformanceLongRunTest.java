@@ -142,7 +142,7 @@ public class PerformanceLongRunTest extends SparrowTestBaseWithDB {
 		
 		
 		
-		assertTrue("Topo table should be indexed", predictData.getTopo().isIndexed(PredictData.TNODE_COL));
+		assertTrue("Topo table should be indexed", predictData.getTopo().isIndexed(PredictData.TOPO_TNODE_COL));
 
 	}
 	

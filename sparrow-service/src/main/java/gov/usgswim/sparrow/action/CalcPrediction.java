@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow.action;
 
-import static gov.usgswim.sparrow.PredictData.FNODE_COL;
-import static gov.usgswim.sparrow.PredictData.IFTRAN_COL;
+import static gov.usgswim.sparrow.PredictData.TOPO_FNODE_COL;
+import static gov.usgswim.sparrow.PredictData.TOPO_IFTRAN_COL;
 import static gov.usgswim.sparrow.PredictData.INSTREAM_DECAY_COL;
-import static gov.usgswim.sparrow.PredictData.TNODE_COL;
+import static gov.usgswim.sparrow.PredictData.TOPO_TNODE_COL;
 import static gov.usgswim.sparrow.PredictData.UPSTREAM_DECAY_COL;
 
 import java.util.Collections;
@@ -100,8 +100,8 @@ public class CalcPrediction extends Action<PredictResultImm> {
 		}
 
 
-		int maxNode = Math.max(topo.getMaxInt(FNODE_COL), topo
-				.getMaxInt(TNODE_COL));
+		int maxNode = Math.max(topo.getMaxInt(TOPO_FNODE_COL), topo
+				.getMaxInt(TOPO_TNODE_COL));
 
 		{ // IK: Efficiency checks disabled for now as they cause failing tests,
 			// and I'm not sure if I want to do this optimization as it doesn't
@@ -178,12 +178,12 @@ public class CalcPrediction extends Action<PredictResultImm> {
 					/* (incremental addition of this source, decayed by 1/2 stream travel) */
 					+
 					/* (upstream load decayed by full stream travel (includes delivery fraction)) */
-					(upstreamNodeLoad[topo.getInt(reachRow, FNODE_COL)][currentSourceIndex]
+					(upstreamNodeLoad[topo.getInt(reachRow, TOPO_FNODE_COL)][currentSourceIndex]
 					* deliveryCoefficient.getDouble(reachRow, UPSTREAM_DECAY_COL));
 
 				// Accumulate at downstream node if this reach transmits
-				if (topo.getInt(reachRow, IFTRAN_COL) != 0) {
-					upstreamNodeLoad[topo.getInt(reachRow, TNODE_COL)][currentSourceIndex]
+				if (topo.getInt(reachRow, TOPO_IFTRAN_COL) != 0) {
+					upstreamNodeLoad[topo.getInt(reachRow, TOPO_TNODE_COL)][currentSourceIndex]
 					+= outputArray[reachRow][currentTotalSourceIndex];
 				}
 
@@ -414,8 +414,8 @@ public class CalcPrediction extends Action<PredictResultImm> {
 	 * @param maxNode
 	 */
 	private void checkEfficiency(int maxNode) {
-		int minNode = Math.min(topo.getMinInt(FNODE_COL), topo
-				.getMinInt(TNODE_COL));
+		int minNode = Math.min(topo.getMinInt(TOPO_FNODE_COL), topo
+				.getMinInt(TOPO_TNODE_COL));
 		assert (minNode < 2) : "too high a starting point for the node indices leads to large memory consumption";
 
 		double ratio = (double) maxNode / (double) topo.getRowCount();

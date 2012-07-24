@@ -20,22 +20,22 @@ public class NavigationUtils {
 		Set<Long> results = new HashSet<Long>(DEFAULT_INITIAL_UPSTREAM_REACH_CAPACITY);
 		results.add(topo.getIdForRow(maxReach));
 		Set<Long> relevantNodes = new HashSet<Long>(DEFAULT_INITIAL_UPSTREAM_REACH_CAPACITY);
-		Long fnode = topo.getLong(maxReach, PredictData.FNODE_COL);
+		Long fnode = topo.getLong(maxReach, PredictData.TOPO_FNODE_COL);
 		relevantNodes.add(fnode);
 		Set<Long> transmittingNodes = new HashSet<Long>(DEFAULT_INITIAL_UPSTREAM_REACH_CAPACITY);
-		int iftran = topo.getInt(maxReach, PredictData.IFTRAN_COL);
+		int iftran = topo.getInt(maxReach, PredictData.TOPO_IFTRAN_COL);
 		if (iftran == 1) {
 			transmittingNodes.add(fnode);
 		}
 
 		// traverse reaches in reverse hydseq order because we're looking upstream
 		for (int row = maxReach; row >= 0; row--) {
-			Long tnode = topo.getLong(row, PredictData.TNODE_COL);
-			iftran = topo.getInt(row, PredictData.IFTRAN_COL);
+			Long tnode = topo.getLong(row, PredictData.TOPO_TNODE_COL);
+			iftran = topo.getInt(row, PredictData.TOPO_IFTRAN_COL);
 			if (relevantNodes.contains(tnode) && transmittingNodes.contains(tnode)) {
 				// found one!
 				results.add(topo.getIdForRow(row));
-				fnode = topo.getLong(row, PredictData.FNODE_COL);
+				fnode = topo.getLong(row, PredictData.TOPO_FNODE_COL);
 				relevantNodes.add(fnode);
 				if (iftran == 1) {
 					transmittingNodes.add(fnode);

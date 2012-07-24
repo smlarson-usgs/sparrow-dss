@@ -476,7 +476,7 @@ public class DataTableUtils {
 
 				row++;
 			}
-		} catch (IOException e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 		return dt;

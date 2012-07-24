@@ -22,11 +22,12 @@ import java.io.Serializable;
  */
 public interface PredictData extends ImmutableBuilder<PredictData>, Serializable {
 	// topo columns
-	public static final int MODEL_REACH_COL = 0;
-	public static final int FNODE_COL = 1;
-	public static final int TNODE_COL = 2;
-	public static final int IFTRAN_COL = 3;
-	public static final int HYDSEQ_COL = 4;
+	public static final int TOPO_MODEL_REACH_COL = 0;
+	public static final int TOPO_FNODE_COL = 1;
+	public static final int TOPO_TNODE_COL = 2;
+	public static final int TOPO_IFTRAN_COL = 3;
+	public static final int TOPO_HYDSEQ_COL = 4;
+	public static final int TOPO_SHORE_REACH_COL = 5;
 	
 	// decay columns
 	public static final int INSTREAM_DECAY_COL = 0;
@@ -80,6 +81,7 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 * <li>[i][2] TNODE - The to node
 	 * <li>[i][3] IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
 	 * <li>[i][4] HYDSEQ - Hydrologic sequence order (starting at 1, no gaps)
+	 * <li>[i][5] SHORE_REACH - 1 if a shore reach, 0 otherwise.
 	 * </ol>
 	 *
 	 * <h4>Sorting</h4>

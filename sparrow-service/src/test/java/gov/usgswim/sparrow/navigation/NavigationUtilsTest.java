@@ -128,7 +128,7 @@ public class NavigationUtilsTest extends TestCase {
 
 		SimpleDataTableWritable topo = new SimpleDataTableWritable(PredictDataTestScenarios.linearFlowTopo, null, 0);
 		int brokenRow = 2;
-		topo.setValue(0, brokenRow, PredictData.IFTRAN_COL);
+		topo.setValue(0, brokenRow, PredictData.TOPO_IFTRAN_COL);
 		PredictData pd = new PredictDataImm(topo, null, null, null, null, null);
 
 		Long modelID = 22L;

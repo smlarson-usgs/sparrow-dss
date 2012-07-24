@@ -5,9 +5,8 @@ import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.AcceptedStandardColumnTypes;
 import gov.usgswim.datatable.impl.BuilderHelper;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
-
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -85,7 +84,24 @@ public abstract class DataTableConverter {
 
 	public static DataTableWritable toDataTable(File dataFile, Class<?>[] specifiedColumnTypes,
 			boolean isFirstColumnID) throws IOException {
+		
 		DataFileDescriptor fileDescription = Analyzer.analyzeFile(dataFile);
+		BufferedReader reader = new BufferedReader( new FileReader(dataFile));
+		
+		return toDataTable(reader, fileDescription, specifiedColumnTypes, isFirstColumnID);
+	}
+	
+	public static DataTableWritable toDataTable(URL resourceUrl, Class<?>[] specifiedColumnTypes,
+			boolean isFirstColumnID) throws IOException {
+		DataFileDescriptor fileDescription = Analyzer.analyzeFile(resourceUrl);
+		BufferedReader resourceReader = new BufferedReader(new InputStreamReader(resourceUrl.openStream()));
+		
+		return toDataTable(resourceReader, fileDescription, specifiedColumnTypes, isFirstColumnID);
+	}
+	
+	public static DataTableWritable toDataTable(BufferedReader resourceReader, DataFileDescriptor fileDescription, Class<?>[] specifiedColumnTypes,
+			boolean isFirstColumnID) throws IOException {
+		
 		int lengthAdjustment = (isFirstColumnID)? 1: 0;
 		if (specifiedColumnTypes == null) specifiedColumnTypes = new Class[fileDescription.getColumnCount() - lengthAdjustment];
 
@@ -117,8 +133,10 @@ public abstract class DataTableConverter {
 			column.setName(columnName);
 			result.addColumn(column);
 		}
+		
+
 		// assert(columns is now completely filled with no nulls);
-		return DataTableUtils.fill(result, dataFile, isFirstColumnID, fileDescription.delimiter, fileDescription.hasColumnHeaders());
+		return DataTableUtils.fill(result, resourceReader, isFirstColumnID, fileDescription.delimiter, fileDescription.hasColumnHeaders());
 	}
 
 	// ================================

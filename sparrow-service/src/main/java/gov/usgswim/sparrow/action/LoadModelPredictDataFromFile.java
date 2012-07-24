@@ -1,11 +1,13 @@
 package gov.usgswim.sparrow.action;
 
 import gov.usgswim.datatable.ColumnData;
+import gov.usgswim.datatable.ColumnDataWritable;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
+import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
@@ -16,6 +18,11 @@ import gov.usgswim.sparrow.domain.SourceBuilder;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 import gov.usgswim.sparrow.util.DLUtils;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -31,6 +38,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 	//Constants
 	public static final String SOURCE_METADATA_FILE = "src_metadata.txt";
 	public static final String TOPO_FILE = "topo.txt";
+	public static final String ANCIL_FILE = "ancil.txt";
 	public static final String SOURCE_COEF_FILE = "coef.txt";
 	public static final String SOURCE_VALUES_FILE = "src.txt";
 	//public static final int SOURCE_ID_COL = 0;
@@ -201,6 +209,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 	 * <li>[i][2]TNODE - The to node
 	 * <li>[i][3]IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
 	 * <li>[i][4]HYDSEQ - Hydrologic sequence order (starting at 1, no gaps)
+	 * <li>[i][5]SHORE_REACH - 1 if a shore reach, 0 otherwise.
 	 * </ol>
 	 *
 	 * **Differs from db version of loading.
@@ -215,7 +224,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 	 * @param modelId	The ID of the Sparrow model
 	 * @return Fetched data - see Data Columns above.
 	 */
-	public DataTableWritable loadTopo(long modelId) {
+	public DataTableWritable loadTopo(long modelId) throws IOException {
 		String topoFile = getModelResourceFilePath(modelId, TOPO_FILE);
 		
 		String[] headings = {
@@ -252,7 +261,32 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 		
 		topo.removeColumn(5);
 		
+		//Add the shorereach flag
+		ColumnDataWritable shoreReachFlagCol = loadTopoShoreReachColumnFromAncilTable(modelId);
+		topo.addColumn(shoreReachFlagCol);
+		
 		return topo;
+	}
+	
+	public ColumnDataWritable loadTopoShoreReachColumnFromAncilTable(long modelId) throws IOException {
+		String ancilFile = getModelResourceFilePath(modelId, ANCIL_FILE);
+		
+		URL resourceUrl = DataTableWritable.class.getResource(ancilFile);
+		DataTableWritable table = DataTableConverter.toDataTable(resourceUrl, null, true);
+		
+		ColumnDataWritable cd = (ColumnDataWritable) table.getColumn(table.getColumnByName("termflag"));
+		
+		StandardNumberColumnDataWritable shoreReachCol = new StandardNumberColumnDataWritable("SHORE_REACH", "Boolean", Integer.class);
+		
+		for (int r=0; r<cd.getRowCount(); r++) {
+			if ("3".equals(cd.getString(r))) {
+				shoreReachCol.setValue(1, r);
+			} else {
+				shoreReachCol.setValue(0, r);
+			}
+		}
+		return shoreReachCol;
+
 	}
 	
 	/**
