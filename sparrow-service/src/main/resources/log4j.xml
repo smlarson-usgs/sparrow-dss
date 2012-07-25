@@ -15,7 +15,7 @@
 	
 	<appender name="GeneralFa" class="org.apache.log4j.rolling.RollingFileAppender">
 	        <!-- The active file to log to -->
-		<param name="file" value="${catalina.base}/logs/sparrow/sparrow_service.log" />
+		<param name="file" value="${catalina.base}/logs/sparrow/sparrow_service_general.log" />
 		<param name="append" value="true" />
 		<param name="encoding" value="UTF-8" />
 		
