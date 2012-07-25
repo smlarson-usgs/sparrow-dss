@@ -18,7 +18,7 @@ import org.junit.Test;
  * @author eeverman
  *
  */
-public class LoadPredictDataFromFileUnitTest {
+public class LoadModelPredictDataFromFileUnitTest {
 
 	PredictData model50;
 
