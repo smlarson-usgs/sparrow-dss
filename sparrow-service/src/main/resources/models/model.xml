@@ -529,11 +529,12 @@
 			* State Name:  The name of the state (or province if that data is available for models with Canadian reaches).
 			* State FIPS Code:  A standard numeric code for the state or province.  More details are at: http://www.itl.nist.gov/fipspubs/fip5-2.htm
 
-			For State Aggregate Reports:
+			For HUC Aggregate Reports:
 			* HUC Name: The name of the HUC
 			* HUC Code: Hydrologic unit code.  More details about HUCs are at: http://water.usgs.gov/GIS/huc.html
 			
 			All Reports include these columns:
+			* Watershed Area (unit):  The sum of the catchment areas of all the reaches in the region that drain to the target reach(es), area corrected for reaches in multiple regions. This will almost always be less than the area of the region itself.
 			* [source name] (unit): One column per model source.  The Incremental Delivered Load for each model source.
 			* All Sources (unit): The Incremental Delivered Load for all model sources.
 			

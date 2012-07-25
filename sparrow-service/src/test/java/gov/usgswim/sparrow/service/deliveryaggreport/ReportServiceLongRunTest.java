@@ -47,7 +47,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		//System.out.println(actualReportResponse);
 		
 		String rowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
-		String nonZeroRowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tr[td[position() = 8 and .!=0]])", actualReportResponse);
+		String nonZeroRowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tr[td[position() = 9 and .!=0]])", actualReportResponse);
 		
 		assertEquals("9", rowCountStr);
 		assertEquals("7", nonZeroRowCountStr);
@@ -78,14 +78,14 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		//System.out.println(actualReportResponse);
 		
 		String rowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
-		String nonZeroRowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tr[td[position() = 8 and .!=0]])", actualReportResponse);
+		String nonZeroRowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tr[td[position() = 9 and .!=0]])", actualReportResponse);
 		
 		assertEquals("11", rowCountStr);
 		assertEquals("7", nonZeroRowCountStr);
 		
 		
-		String firstStateWithZeroLoad = ReportServiceLongRunTest.getXPathValue("//tr[td[position() = 8 and .=0]][1]/td[1]", actualReportResponse);
-		String secondStateWithZeroLoad = ReportServiceLongRunTest.getXPathValue("//tr[td[position() = 8 and .=0]][2]/td[1]", actualReportResponse);
+		String firstStateWithZeroLoad = ReportServiceLongRunTest.getXPathValue("//tr[td[position() = 9 and .=0]][1]/td[1]", actualReportResponse);
+		String secondStateWithZeroLoad = ReportServiceLongRunTest.getXPathValue("//tr[td[position() = 9 and .=0]][2]/td[1]", actualReportResponse);
 		
 		assertEquals("FLORIDA", firstStateWithZeroLoad);
 		assertEquals("LOUISIANA", secondStateWithZeroLoad);

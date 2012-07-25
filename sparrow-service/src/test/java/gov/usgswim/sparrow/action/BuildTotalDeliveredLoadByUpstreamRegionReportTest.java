@@ -49,21 +49,21 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 //		System.out.println("Table Dumped");
 		
 		assertNotNull(result);
-		assertEquals(9, result.getColumnCount());
+		assertEquals(10, result.getColumnCount());
 		
 		boolean containsSomeNonZeroData = false;
 		
 		//All the first columns should total to the last column
 		for (int r=0; r < result.getRowCount(); r++) {
 			double srcTotal = 0;
-			for (int c=2; c<7; c++) {
+			for (int c=3; c<8; c++) {
 				srcTotal += result.getDouble(r, c);
 			}
 			
 			if (srcTotal > .0000000001d) containsSomeNonZeroData = true;
 			
 			//SUM of first 5 columns should equal the last column
-			assertEquals(result.getDouble(r, 7), srcTotal, COMP_ERROR);
+			assertEquals(result.getDouble(r, 8), srcTotal, COMP_ERROR);
 			
 		}
 		
@@ -92,21 +92,21 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 //		System.out.println("Table Dumped");
 		
 		assertNotNull(result);
-		assertEquals(9, result.getColumnCount());
+		assertEquals(10, result.getColumnCount());
 		
 		boolean containsSomeNonZeroData = false;
 		
 		//All the first columns should total to the last column
 		for (int r=0; r < result.getRowCount(); r++) {
 			double srcTotal = 0;
-			for (int c=2; c<7; c++) {
+			for (int c=3; c<8; c++) {
 				srcTotal += result.getDouble(r, c);
 			}
 			
 			if (srcTotal > .0000000001d) containsSomeNonZeroData = true;
 			
 			//SUM of first 5 columns should equal the last column
-			assertEquals(result.getDouble(r, 7), srcTotal, COMP_ERROR);
+			assertEquals(result.getDouble(r, 8), srcTotal, COMP_ERROR);
 			
 		}
 		
@@ -120,6 +120,14 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 
 		//These are all the reaches contained in the HUC8 03100203
 		long[] reachesInHuc = new long[] {7571L, 7572L, 7573L, 657950L,  657960L};
+		
+		double area_7571 = 166.86d;
+		double area_7572 = 102.90d;
+		double area_7573 = 155.53d;
+		double area_657950 = 136.69d;
+		double area_657960 = 41.26d;
+		double total_area = area_7571 + area_7572 + area_7573 + area_657950 + area_657960;
+		
 		
 		//Create a terminalReach list containing the reach they all drain to:  7571
 		List<Long> targetList = new ArrayList<Long>();
@@ -139,7 +147,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		//Find the total value for HUC8 03100203
 		int huc8RowNumber = aggByHUC8Result.findFirst(1, "03100203");
 		double huc8Total = aggByHUC8Result.getDouble(huc8RowNumber, aggByHUC8Result.getColumnCount() - 2);
-		
+		double huc8AreaTotal = aggByHUC8Result.getDouble(huc8RowNumber, 2);
 		
 		//Calc the Delivery Fraction Hash
 		CalcDeliveryFractionMap delFracAction = new CalcDeliveryFractionMap();
@@ -169,6 +177,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		}
 		
 		assertEquals(altCalcTotal, huc8Total, 1d);
+		assertEquals(total_area, huc8AreaTotal, .01d);
 			
 	}
 	

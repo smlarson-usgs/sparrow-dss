@@ -16,6 +16,7 @@ import gov.usgswim.sparrow.domain.reacharearelation.ReachAreaRelations;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
 import gov.usgswim.sparrow.request.ModelAggregationRequest;
 import gov.usgswim.sparrow.request.ModelHucsRequest;
+import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.util.*;
 
@@ -46,6 +47,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 	protected SparrowModel sparrowModel;
 	protected ModelReachAreaRelations areaRelations;
 	protected DataTable areaDetail;
+	protected DataTable reachCatchmentAreas;
 	List<ColumnData> expandedTotalDelLoadForAllSources;
 	
 	public BuildTotalDeliveredLoadByUpstreamRegionReport(
@@ -74,6 +76,9 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 		
 		Long modelId = adjustmentGroups.getModelID();
 		sparrowModel = SharedApplication.getInstance().getPredictData(modelId).getModel();
+		
+		UnitAreaRequest unitAreaRequest = new UnitAreaRequest(modelId, AggregationLevel.REACH, false);
+		reachCatchmentAreas = SharedApplication.getInstance().getCatchmentAreas(unitAreaRequest);
 		
 		
 		ModelAggregationRequest modelReachAreaRelelationsRequest = 
@@ -113,6 +118,14 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 		
 		SimpleDataTableWritable srcAndTotalTable = new SimpleDataTableWritable();
 		
+		
+		//Add a column for the totaled catchment areas
+		StandardNumberColumnDataWritable areaCol =
+							new StandardNumberColumnDataWritable("Watershed Area",
+							reachCatchmentAreas.getUnits(1),
+							Double.class);
+		srcAndTotalTable.addColumn(areaCol);
+		
 		//Add one column for each source and one for the total
 		//(these are the column in the expanded TotalDelLoadForAllSources columns)
 		for (int colIndex = 0; colIndex < expandedTotalDelLoadForAllSources.size(); colIndex++) {
@@ -127,7 +140,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 			srcAndTotalTable.addColumn(col);
 		}
 
-		populateColumns(srcAndTotalTable, expandedTotalDelLoadForAllSources, areaRelations, areaDetail);
+		populateColumns(srcAndTotalTable, expandedTotalDelLoadForAllSources, areaRelations, areaDetail, reachCatchmentAreas.getColumn(1));
 		
 		//Add the reach identification columns
 		ArrayList<ColumnData> columns = new ArrayList<ColumnData>();
@@ -163,42 +176,50 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 	/**
 	 * 
 	 * @param regionResultTable Table to fill
-	 * @param totDelForAllSrcs Total Delivered Load for all source and the total del load
+	 * @param sourceColumns Total Delivered Load for all source and the total del load
 	 * @param areaRelations reach to state (or other region) relation w/ fraction in each region
 	 * @param areaDetail List of all regions (ie areaDetail) that this model touches (all regions for areaRelations)
 	 * @throws Exception 
 	 */
 	protected void populateColumns(SimpleDataTableWritable regionResultTable,
-					List<ColumnData> totDelForAllSrcs,
-					ModelReachAreaRelations areaRelations, DataTable areaDetail) throws Exception {
+					List<ColumnData> sourceColumns,
+					ModelReachAreaRelations areaRelations, DataTable areaDetail, ColumnData catchmentAreas) throws Exception {
 		
 		
-		int reachRowCount = totDelForAllSrcs.get(0).getRowCount();
-		int colCount = totDelForAllSrcs.size();	//number of report columns, equal to the number of sources plus 1.
+		int reachRowCount = sourceColumns.get(0).getRowCount();
+		int colCount = sourceColumns.size();	//number of report columns, equal to the number of sources plus 1.
 		
 		//Loop thru all the reaches in the Total Delivered Load
 		for (int reachRow = 0; reachRow < reachRowCount; reachRow++) {
 			ReachAreaRelations reachRelations = areaRelations.getRelationsForReachRow(reachRow);
+			Double catchmentArea = catchmentAreas.getDouble(reachRow);
 			
-			//Loop thru each state that this reach has catchment area in
+			//Loop thru each region that this reach has catchment area in
 			for (AreaRelation reachRelation : reachRelations.getRelations()) {
 				long regionId = reachRelation.getAreaId();
 				double reachFractionInRegion = reachRelation.getFraction();
 				int regionRow = areaDetail.getRowForId(regionId);
 				
-				//Loop thru each source and the total
-				for (int colIdx = 0; colIdx < colCount; colIdx++) {
+				//Populate the total area column
+				double reachAreaInRegion = reachFractionInRegion * catchmentArea;
+				Double existingRegionArea = regionResultTable.getDouble(regionRow, 0);
+				if (existingRegionArea == null) existingRegionArea = 0d;
+				regionResultTable.setValue(reachAreaInRegion + existingRegionArea, regionRow, 0);
+				
+				//Loop thru each source and the total.  Col 0 is the area.  First source is col 1.
+				for (int sourceColumns_ColIndex = 0; sourceColumns_ColIndex < colCount; sourceColumns_ColIndex++) {
+					int result_ColIndex = sourceColumns_ColIndex + 1;	//need to offset for the area column in the result table
 					
-					Double existingRegionAggVal = regionResultTable.getDouble(regionRow, colIdx);
+					Double existingRegionAggVal = regionResultTable.getDouble(regionRow, result_ColIndex);
 					
 					//Do we already have a value for this cell?
 					if (existingRegionAggVal == null) existingRegionAggVal = 0d;
 					
 					double reachValue =
-									totDelForAllSrcs.get(colIdx).getDouble(reachRow);
+									sourceColumns.get(sourceColumns_ColIndex).getDouble(reachRow);
 					double reachValuePortionFromRegion = reachValue * reachFractionInRegion;
 					
-					regionResultTable.setValue(reachValuePortionFromRegion + existingRegionAggVal, regionRow, colIdx);
+					regionResultTable.setValue(reachValuePortionFromRegion + existingRegionAggVal, regionRow, result_ColIndex);
 
 				}
 				

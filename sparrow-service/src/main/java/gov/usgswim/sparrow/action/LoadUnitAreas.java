@@ -65,6 +65,7 @@ public class LoadUnitAreas extends Action<DataTable> {
 
 		switch (hucLevel) {
 		case NONE:
+		case REACH:
 			if (cumulative == false) {
 				queryName = "LoadCatchArea";
 				areaColName = getDataSeriesProperty(DataSeriesType.catch_area, false);
@@ -129,8 +130,8 @@ public class LoadUnitAreas extends Action<DataTable> {
 	public void setHucLevel(AggregationLevel hucLevel) {
 		
 		
-		if (! hucLevel.equals(AggregationLevel.NONE)) {
-			throw new IllegalArgumentException("Only HUC_NONE is currently supported");
+		if (! (hucLevel.equals(AggregationLevel.NONE) || hucLevel.equals(AggregationLevel.REACH))) {
+			throw new IllegalArgumentException("Only NONE or REACH is currently supported for unit areas");
 		}
 		
 		this.hucLevel = hucLevel;

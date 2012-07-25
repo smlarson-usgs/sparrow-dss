@@ -32,11 +32,21 @@ it is helpful to understand how they are calculated.
 The calculation roughly follows these steps:</p>
 			<ol>
 				<li>All reaches upstream of a selected downstream reach are identified.</li>
-				<li>For each upstream reach, incremental delivered load is calculated by multiplying incremental load by the delivery fraction representing the fraction of incremental load delivered to the downstream reach.
+				<li>For each upstream reach, incremental delivered load is calculated by multiplying
+					incremental load by the delivery fraction, which is the fraction of incremental load delivered to the selected downstream reach(es).
 				</li>
-				<li>The incremental delivered load for all of the reaches in a user-selected upstream region (i.e. States or HUCs) are summed.</li>
-				<li>If a reach is partially in two or more regions (this happens when states are chosen as the upstream region),
-					the reach's incremental delivered load is multiplied by the fraction of the reach's catchment area that falls within the user-selected upstream region.
+				<li>Reaches are grouped by the upstream region they are in.  For instance, if the selected region type is state, all the reaches in the same state will be grouped together.</li>
+				<li>The incremental delivered loads for all the reaches in the same group (i.e. HUC or State) are summed.</li>
+				
+				<li>If a reach is partially in two or more regions (this happens when states are chosen as the upstream region type),
+					the reach's incremental delivered load is area corrected for each region:
+					The incremental delivered load is multiplied by the fraction of the reach's catchment area that falls within the region being calculated.
+				</li>
+				<li>Similarly, the watershed area of each region is the sum of
+					the catchment areas of all the reaches in each region that drain
+					to the target reach(es) and is area corrected for reaches in multiple regions.
+					Thus, the watershed area displayed in the table will usually be less than
+					the area of the region itself.
 				</li>
 			</ol>
 			
