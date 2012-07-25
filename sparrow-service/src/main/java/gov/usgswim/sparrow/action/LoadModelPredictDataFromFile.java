@@ -276,7 +276,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 		
 		ColumnDataWritable cd = (ColumnDataWritable) table.getColumn(table.getColumnByName("termflag"));
 		
-		StandardNumberColumnDataWritable shoreReachCol = new StandardNumberColumnDataWritable("SHORE_REACH", "Boolean", Integer.class);
+		StandardNumberColumnDataWritable shoreReachCol = new StandardNumberColumnDataWritable("SHORE_REACH", null, Integer.class);
 		
 		for (int r=0; r<cd.getRowCount(); r++) {
 			if ("3".equals(cd.getString(r))) {

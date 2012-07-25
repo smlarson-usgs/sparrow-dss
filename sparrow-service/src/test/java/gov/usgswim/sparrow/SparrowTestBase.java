@@ -721,6 +721,16 @@ public abstract class SparrowTestBase {
 			Arrays.sort(ignoreColumn);
 		}
 		
+		if (expected.getColumnCount() != actual.getColumnCount()) {
+				log.error("The expected column count was " + expected.getColumnCount() + ", but the actual column count was " + actual.getColumnCount());
+				return false;
+		}
+				
+		if (expected.getRowCount() != actual.getRowCount()) {
+				log.error("The expected row count was " + expected.getRowCount() + ", but the actual row count was " + actual.getRowCount());
+				return false;
+		}
+		
 		if (compareIds) {
 			if (expected.hasRowIds() && actual.hasRowIds()) {
 				checkIds = true;

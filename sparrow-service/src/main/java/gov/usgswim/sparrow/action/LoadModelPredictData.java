@@ -180,7 +180,7 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 		params.put("ModelId", "" + modelId);
 		
 		//Expected column types
-		Class<?>[] colTypes = {Integer.class, Integer.class, Integer.class, Integer.class, Integer.class};
+		Class<?>[] colTypes = {Integer.class, Integer.class, Integer.class, Integer.class, Integer.class, Integer.class};
 		
 		PreparedStatement statement = getROPSFromPropertiesFile("SelectTopoData", this.getClass(), params);
 		addStatementForAutoClose(statement);
