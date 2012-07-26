@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.utils.DataTablePrinter;
 import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
@@ -50,6 +51,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		
 		assertNotNull(result);
 		assertEquals(10, result.getColumnCount());
+		assertEquals(SparrowUnits.SQR_KM.toString(), result.getUnits(2));
 		
 		boolean containsSomeNonZeroData = false;
 		

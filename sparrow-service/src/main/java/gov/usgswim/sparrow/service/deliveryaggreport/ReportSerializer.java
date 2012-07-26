@@ -29,7 +29,8 @@ public class ReportSerializer extends BasicXMLStreamReader {
 	//Hardcoded columns in the source data
 	public static final int ENTITY_NAME_COL = 0;	//index of the reach name in the reportTable
 	public static final int ENTITY_USER_CODE_COL = 1;	//index of the EDA code in the reportTable
-	public static final int FIRST_SOURCE_COL = 2;	//index of the first column containing a source value in the reportTable
+	
+	public static final int FIRST_SOURCE_COL = 3;	//index of the first column containing a source value in the reportTable
 	
 	private ReportRequest request;
 
@@ -179,18 +180,15 @@ public class ReportSerializer extends BasicXMLStreamReader {
 				addOpenTag("columns");
 				{
 					
-					//Reach name and EDA code
-					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Identification").addAttribute("count", "2"));
-					String name = data.getName(ENTITY_NAME_COL);
-					events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", STRING));
-					name = data.getName(ENTITY_USER_CODE_COL);
-					events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", STRING));
+					//Reach name, EDA code, and area
+					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Identification and basic info").addAttribute("count", new Integer(FIRST_SOURCE_COL).toString()));
+					writeIdentificationColumnHeaders(data);
 					addCloseTag("group");
 					
 					
 					//column for each individual source
 					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Total Delivered Load by Source").addAttribute("count", new Integer(sourceCount).toString()));
-					writeSourceColumnHeadersHeaders(data);
+					writeSourceColumnHeaders(data);
 					addCloseTag("group");
 
 					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Totals").addAttribute("count", "2"));
@@ -297,7 +295,7 @@ public class ReportSerializer extends BasicXMLStreamReader {
 	 * @param colCount
 	 * @param nameSuffix
 	 */
-	protected void writeSourceColumnHeadersHeaders(DataTable dataTable) {
+	protected void writeSourceColumnHeaders(DataTable dataTable) {
 		
 		for (int i = FIRST_SOURCE_COL; i < FIRST_SOURCE_COL + sourceCount; i++) {
 			//source columns just use the name of the source
@@ -306,6 +304,28 @@ public class ReportSerializer extends BasicXMLStreamReader {
 					.addAttribute("name", name)
 					.addAttribute("type", NUMBER)
 					.addAttribute("unit", model.getUnits().getUserName()));
+		}
+	}
+	
+		/**
+	 * Writes the column definitions for the PredictData columns
+	 * @param result
+	 * @param colCount
+	 * @param nameSuffix
+	 */
+	protected void writeIdentificationColumnHeaders(DataTable dataTable) {
+		
+		for (int i = 0; i < FIRST_SOURCE_COL; i++) {
+			//source columns just use the name of the source
+			String name = dataTable.getName(i);
+			String type = dataTable.getDataType(i).getSimpleName();
+			String units = dataTable.getUnits(i);
+			
+			events.add(makeNonNullBasicTag("col", "")
+					.addAttribute("name", name)
+					.addAttribute("type", type)
+					.addAttribute("unit", units)
+			);
 		}
 	}
 //	

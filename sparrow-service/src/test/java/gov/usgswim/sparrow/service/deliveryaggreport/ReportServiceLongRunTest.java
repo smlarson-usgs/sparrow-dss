@@ -9,6 +9,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.meterware.httpunit.*;
+import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.domain.AggregationLevel;
 import org.junit.Ignore;
 
@@ -48,9 +49,11 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		
 		String rowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
 		String nonZeroRowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tr[td[position() = 9 and .!=0]])", actualReportResponse);
+		String watershedAreaColumnLabel = ReportServiceLongRunTest.getXPathValue("//*[local-name() = 'th'][position() = 3]", actualReportResponse);
 		
 		assertEquals("9", rowCountStr);
 		assertEquals("7", nonZeroRowCountStr);
+		assertEquals("Watershed Area (" + SparrowUnits.SQR_KM.toString() + ")", watershedAreaColumnLabel);
 		
 	}
 	
