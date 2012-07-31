@@ -211,18 +211,18 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 	
 	
 	/**
-	 * Anne Hoose sent us the following scenario for model 50:
+	 * Anne Hoos sent us the following scenario for model 50:
 	 * Specifying these reaches as target reaches:
 	 * 6194, 6187, 81045, 81046
-	 * The load delivered from HUC 03050105 should be 912,050 kg/yr
+	 * The load delivered from HUC 03050105 should be 912,040 kg/yr
 	 * 
-	 * EE 7/24/2012:  I think Anne typoed that - it should be 912,040.  I have
-	 * an email in to her about that.
+	 * Anne Hoos: abhoos@usgs.gov, 615) 837-4760
+	 * Sparrow Modeler for the Florida model.
 	 * 
 	 * @throws Exception 
 	 */
 	@Test
-	public void investigateScenarioToSeeIfAnnesDataMatchesOurs() throws Exception {
+	public void investigateScenarioToSeeIfAnneHoosDataMatchesOurs() throws Exception {
 
 		//These are the term reaches from Anne's example calc
 		List<Long> targetList = new ArrayList<Long>();
