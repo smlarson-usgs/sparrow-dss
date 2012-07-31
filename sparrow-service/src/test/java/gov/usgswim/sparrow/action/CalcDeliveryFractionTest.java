@@ -38,7 +38,8 @@ import org.junit.Test;
 public class CalcDeliveryFractionTest extends SparrowTestBase {
 	
 	static PredictData unmodifiedPredictData;
-	static PredictData predictData;
+	static PredictData pdTranportOffAbove9681;
+	static PredictData pdShoreReachAbove9681;
 	
 	static DataTable stdData;
 	static DataTable stdDelFracTo9682;
@@ -72,16 +73,29 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 			));
 		stdDelFracToBoth = TabDelimFileUtil.readAsDouble(stdDelFracToBothStream, true, -1);
 		
-		//Lets hack the predictData to Turn off transport for the two
-		//reaches above reach 9681
 		unmodifiedPredictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
-		DataTable topo = unmodifiedPredictData.getTopo();
-		SparseOverrideAdjustment adjTopo = new SparseOverrideAdjustment(topo);
-		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9619), PredictData.TOPO_IFTRAN_COL);
-		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9100), PredictData.TOPO_IFTRAN_COL);
 		
-		predictData = new PredictDataImm(
-				adjTopo, unmodifiedPredictData.getCoef(),
+		//Hack the predictData to Turn off transport for the two reaches above reach 9681
+		DataTable topo = unmodifiedPredictData.getTopo();
+		SparseOverrideAdjustment topoTransportOffAbove9681 = new SparseOverrideAdjustment(topo);
+		topoTransportOffAbove9681.setValue(0d, unmodifiedPredictData.getRowForReachID(9619), PredictData.TOPO_IFTRAN_COL);
+		topoTransportOffAbove9681.setValue(0d, unmodifiedPredictData.getRowForReachID(9100), PredictData.TOPO_IFTRAN_COL);
+		
+		//Hack the predictData to make the two reaches above reach 9681 to be shoreline reaches
+		SparseOverrideAdjustment topoShoreReachbove9681 = new SparseOverrideAdjustment(topo);
+		topoShoreReachbove9681.setValue(1d, unmodifiedPredictData.getRowForReachID(9619), PredictData.TOPO_SHORE_REACH_COL);
+		topoShoreReachbove9681.setValue(1d, unmodifiedPredictData.getRowForReachID(9100), PredictData.TOPO_SHORE_REACH_COL);
+		
+		
+		pdTranportOffAbove9681 = new PredictDataImm(
+				topoTransportOffAbove9681, unmodifiedPredictData.getCoef(),
+				unmodifiedPredictData.getSrc(),
+				unmodifiedPredictData.getSrcMetadata(),
+				unmodifiedPredictData.getDelivery(),
+				unmodifiedPredictData.getModel());
+		
+		pdShoreReachAbove9681 = new PredictDataImm(
+				topoShoreReachbove9681, unmodifiedPredictData.getCoef(),
 				unmodifiedPredictData.getSrc(),
 				unmodifiedPredictData.getSrcMetadata(),
 				unmodifiedPredictData.getDelivery(),
@@ -90,7 +104,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 	}
 	
 	@Test
-	public void testFracFactoryTo9682() throws Exception {
+	public void testFracFactoryTo9682_NoTransportDataSet() throws Exception {
 		List<Long> targetList = new ArrayList<Long>();
 		targetList.add(9682L);
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
@@ -98,11 +112,11 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
-		hashAction.setPredictData(predictData);
+		hashAction.setPredictData(pdTranportOffAbove9681);
 		hashAction.setTargetReachIds(targets.asSet());
 		DeliveryFractionMap delHash = hashAction.run();
 		
-		delAction.setPredictData(predictData);
+		delAction.setPredictData(pdTranportOffAbove9681);
 		delAction.setDeliveryFractionHash(delHash);
 		ColumnData deliveryFrac = delAction.run();
 		
@@ -122,7 +136,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		
 		for (int r=0; r<deliveryFrac.getRowCount(); r++) {
 			Double expectedFrac = getSpreadsheetDelFracForPredictDataRow(
-					stdDelFracTo9682, predictData, r);
+					stdDelFracTo9682, pdTranportOffAbove9681, r);
 			double actualFrac = deliveryFrac.getDouble(r);
 			
 			if (expectedFrac != null) {
@@ -132,13 +146,13 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 					match++;
 				} else {
 					noMatch++;
-					writeBadMatch(stdDelFracTo9682, predictData, r, expectedFrac, actualFrac);
+					writeBadMatch(stdDelFracTo9682, pdTranportOffAbove9681, r, expectedFrac, actualFrac);
 				}
 			} else {
 				notInSheet++;
 				if (actualFrac != 0d) {
 					expectedZeroNoMatch++;
-					writeBadMatch(stdDelFracTo9682, predictData, r, expectedFrac, actualFrac);
+					writeBadMatch(stdDelFracTo9682, pdTranportOffAbove9681, r, expectedFrac, actualFrac);
 				}
 			}
 		}
@@ -152,12 +166,88 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		assertEquals(StandardDoubleColumnData.class, deliveryFrac.getClass());
 		
 		//Check that the del frac for the 'turned off' reaches is zero
-		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9619L)), COMP_ERROR);
-		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9100L)), COMP_ERROR);
+		assertEquals(0d, deliveryFrac.getDouble(pdTranportOffAbove9681.getTopo().getRowForId(9619L)), COMP_ERROR);
+		assertEquals(0d, deliveryFrac.getDouble(pdTranportOffAbove9681.getTopo().getRowForId(9100L)), COMP_ERROR);
+	}
+	
+	/**
+	 * The effect of making the 9619 and 9100 shoreline reaches (instead of turning
+	 * off their transport) should be the same:  Delivery calcs should stop tracing
+	 * upstream and not include these two reaches.
+	 * 
+	 * @throws Exception 
+	 */
+	@Test
+	public void testFracFactoryTo9682_ShoreReachDataSet() throws Exception {
+		List<Long> targetList = new ArrayList<Long>();
+		targetList.add(9682L);
+		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
+		
+		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
+		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
+		
+		hashAction.setPredictData(pdShoreReachAbove9681);
+		hashAction.setTargetReachIds(targets.asSet());
+		DeliveryFractionMap delHash = hashAction.run();
+		
+		delAction.setPredictData(pdShoreReachAbove9681);
+		delAction.setDeliveryFractionHash(delHash);
+		ColumnData deliveryFrac = delAction.run();
+		
+		//check metadata of delivery fraction
+		assertEquals(Action.getDataSeriesProperty(DataSeriesType.delivered_fraction, false), deliveryFrac.getName());
+		assertEquals(Action.getDataSeriesProperty(DataSeriesType.delivered_fraction, true), deliveryFrac.getDescription());
+		assertEquals(SparrowUnits.FRACTION.getUserName(), deliveryFrac.getUnits());
+		assertEquals(unmodifiedPredictData.getModel().getConstituent(), deliveryFrac.getProperty(TableProperties.CONSTITUENT.toString()));
+
+		
+		//Some stats
+		int inSheet = 0;
+		int notInSheet = 0;
+		int match = 0;
+		int noMatch = 0;
+		int expectedZeroNoMatch = 0;
+		
+		for (int r=0; r<deliveryFrac.getRowCount(); r++) {
+			Double expectedFrac = getSpreadsheetDelFracForPredictDataRow(
+					stdDelFracTo9682, pdShoreReachAbove9681, r);
+			double actualFrac = deliveryFrac.getDouble(r);
+			
+			if (expectedFrac != null) {
+				inSheet++;
+				
+				if (Math.abs(expectedFrac - actualFrac) < COMP_ERROR) {
+					match++;
+				} else {
+					noMatch++;
+					writeBadMatch(stdDelFracTo9682, pdShoreReachAbove9681, r, expectedFrac, actualFrac);
+				}
+			} else {
+				notInSheet++;
+				if (actualFrac != 0d) {
+					expectedZeroNoMatch++;
+					writeBadMatch(stdDelFracTo9682, pdShoreReachAbove9681, r, expectedFrac, actualFrac);
+				}
+			}
+		}
+		
+		debugComparisons(match, noMatch, inSheet, notInSheet, expectedZeroNoMatch);
+		
+		assertEquals(
+				"There should not be any delivery fractions " +
+				"(expected vs actual) which do not match", 0, noMatch + expectedZeroNoMatch);
+		
+		//Since upstream tracing stops at a shore reach, there are much fewer reaches
+		//in the upstream list, allowing the sparse column to be used.
+		assertEquals(SparseDoubleColumnData.class, deliveryFrac.getClass());
+		
+		//Check that the del frac for the 'turned off' reaches is zero
+		assertEquals(0d, deliveryFrac.getDouble(pdShoreReachAbove9681.getTopo().getRowForId(9619L)), COMP_ERROR);
+		assertEquals(0d, deliveryFrac.getDouble(pdShoreReachAbove9681.getTopo().getRowForId(9100L)), COMP_ERROR);
 	}
 	
 	@Test
-	public void testFracFactoryTo9674() throws Exception {
+	public void testFracFactoryTo9674_NoTransportDataSet() throws Exception {
 		List<Long> targetList = new ArrayList<Long>();
 		targetList.add(9674L);
 		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
@@ -165,11 +255,11 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
-		hashAction.setPredictData(predictData);
+		hashAction.setPredictData(pdTranportOffAbove9681);
 		hashAction.setTargetReachIds(targets.asSet());
 		DeliveryFractionMap delHash = hashAction.run();
 		
-		delAction.setPredictData(predictData);
+		delAction.setPredictData(pdTranportOffAbove9681);
 		delAction.setDeliveryFractionHash(delHash);
 		ColumnData deliveryFrac = delAction.run();
 		
@@ -183,7 +273,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		
 		for (int r=0; r<deliveryFrac.getRowCount(); r++) {
 			Double expectedFrac = getSpreadsheetDelFracForPredictDataRow(
-					stdDelFracTo9674, predictData, r);
+					stdDelFracTo9674, pdTranportOffAbove9681, r);
 			double actualFrac = deliveryFrac.getDouble(r);
 			
 			if (expectedFrac != null) {
@@ -193,13 +283,13 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 					match++;
 				} else {
 					noMatch++;
-					writeBadMatch(stdDelFracTo9674, predictData, r, expectedFrac, actualFrac);
+					writeBadMatch(stdDelFracTo9674, pdTranportOffAbove9681, r, expectedFrac, actualFrac);
 				}
 			} else {
 				notInSheet++;
 				if (actualFrac != 0d) {
 					expectedZeroNoMatch++;
-					writeBadMatch(stdDelFracTo9674, predictData, r, expectedFrac, actualFrac);
+					writeBadMatch(stdDelFracTo9674, pdTranportOffAbove9681, r, expectedFrac, actualFrac);
 				}
 			}
 		}
@@ -213,12 +303,74 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		assertEquals(StandardDoubleColumnData.class, deliveryFrac.getClass());
 		
 		//Check that the del frac for the 'turned off' reaches is zero
-		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9619L)), COMP_ERROR);
-		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9100L)), COMP_ERROR);
+		assertEquals(0d, deliveryFrac.getDouble(pdTranportOffAbove9681.getTopo().getRowForId(9619L)), COMP_ERROR);
+		assertEquals(0d, deliveryFrac.getDouble(pdTranportOffAbove9681.getTopo().getRowForId(9100L)), COMP_ERROR);
+	}
+	
+	
+	@Test
+	public void testFracFactoryTo9674_ShoreReachDataSet() throws Exception {
+		List<Long> targetList = new ArrayList<Long>();
+		targetList.add(9674L);
+		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
+		
+		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
+		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
+		
+		hashAction.setPredictData(pdShoreReachAbove9681);
+		hashAction.setTargetReachIds(targets.asSet());
+		DeliveryFractionMap delHash = hashAction.run();
+		
+		delAction.setPredictData(pdShoreReachAbove9681);
+		delAction.setDeliveryFractionHash(delHash);
+		ColumnData deliveryFrac = delAction.run();
+		
+
+		//Some stats
+		int inSheet = 0;
+		int notInSheet = 0;
+		int match = 0;
+		int noMatch = 0;
+		int expectedZeroNoMatch = 0;
+		
+		for (int r=0; r<deliveryFrac.getRowCount(); r++) {
+			Double expectedFrac = getSpreadsheetDelFracForPredictDataRow(
+					stdDelFracTo9674, pdShoreReachAbove9681, r);
+			double actualFrac = deliveryFrac.getDouble(r);
+			
+			if (expectedFrac != null) {
+				inSheet++;
+				
+				if (Math.abs(expectedFrac - actualFrac) < COMP_ERROR) {
+					match++;
+				} else {
+					noMatch++;
+					writeBadMatch(stdDelFracTo9674, pdShoreReachAbove9681, r, expectedFrac, actualFrac);
+				}
+			} else {
+				notInSheet++;
+				if (actualFrac != 0d) {
+					expectedZeroNoMatch++;
+					writeBadMatch(stdDelFracTo9674, pdShoreReachAbove9681, r, expectedFrac, actualFrac);
+				}
+			}
+		}
+		
+		debugComparisons(match, noMatch, inSheet, notInSheet, expectedZeroNoMatch);
+		
+		assertEquals(
+				"There should not be any delivery fractions " +
+				"(expected vs actual) which do not match", 0, noMatch + expectedZeroNoMatch);
+		
+		assertEquals(SparseDoubleColumnData.class, deliveryFrac.getClass());
+		
+		//Check that the del frac for the 'turned off' reaches is zero
+		assertEquals(0d, deliveryFrac.getDouble(pdShoreReachAbove9681.getTopo().getRowForId(9619L)), COMP_ERROR);
+		assertEquals(0d, deliveryFrac.getDouble(pdShoreReachAbove9681.getTopo().getRowForId(9100L)), COMP_ERROR);
 	}
 	
 	@Test
-	public void testFracFactoryToBoth() throws Exception {
+	public void testFracFactoryToBoth_NoTransportDataSet() throws Exception {
 		List<Long> targetList = new ArrayList<Long>();
 		targetList.add(9682L);
 		targetList.add(9674L);
@@ -227,11 +379,11 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
-		hashAction.setPredictData(predictData);
+		hashAction.setPredictData(pdTranportOffAbove9681);
 		hashAction.setTargetReachIds(targets.asSet());
 		DeliveryFractionMap delHash = hashAction.run();
 		
-		delAction.setPredictData(predictData);
+		delAction.setPredictData(pdTranportOffAbove9681);
 		delAction.setDeliveryFractionHash(delHash);
 		ColumnData deliveryFrac = delAction.run();
 		
@@ -244,7 +396,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		
 		for (int r=0; r<deliveryFrac.getRowCount(); r++) {
 			Double expectedFrac = getSpreadsheetDelFracForPredictDataRow(
-					stdDelFracToBoth, predictData, r);
+					stdDelFracToBoth, pdTranportOffAbove9681, r);
 			double actualFrac = deliveryFrac.getDouble(r);
 			
 			if (expectedFrac != null) {
@@ -254,13 +406,13 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 					match++;
 				} else {
 					noMatch++;
-					writeBadMatch(stdDelFracToBoth, predictData, r, expectedFrac, actualFrac);
+					writeBadMatch(stdDelFracToBoth, pdTranportOffAbove9681, r, expectedFrac, actualFrac);
 				}
 			} else {
 				notInSheet++;
 				if (actualFrac != 0d) {
 					expectedZeroNoMatch++;
-					writeBadMatch(stdDelFracToBoth, predictData, r, expectedFrac, actualFrac);
+					writeBadMatch(stdDelFracToBoth, pdTranportOffAbove9681, r, expectedFrac, actualFrac);
 				}
 			}
 		}
@@ -274,8 +426,70 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		assertEquals(StandardDoubleColumnData.class, deliveryFrac.getClass());
 		
 		//Check that the del frac for the 'turned off' reaches is zero
-		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9619L)), COMP_ERROR);
-		assertEquals(0d, deliveryFrac.getDouble(predictData.getTopo().getRowForId(9100L)), COMP_ERROR);
+		assertEquals(0d, deliveryFrac.getDouble(pdTranportOffAbove9681.getTopo().getRowForId(9619L)), COMP_ERROR);
+		assertEquals(0d, deliveryFrac.getDouble(pdTranportOffAbove9681.getTopo().getRowForId(9100L)), COMP_ERROR);
+	}
+	
+	
+	@Test
+	public void testFracFactoryToBoth_ShoreReachDataSet() throws Exception {
+		List<Long> targetList = new ArrayList<Long>();
+		targetList.add(9682L);
+		targetList.add(9674L);
+		TerminalReaches targets = new TerminalReaches(TEST_MODEL_ID, targetList);
+		
+		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
+		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
+		
+		hashAction.setPredictData(pdShoreReachAbove9681);
+		hashAction.setTargetReachIds(targets.asSet());
+		DeliveryFractionMap delHash = hashAction.run();
+		
+		delAction.setPredictData(pdShoreReachAbove9681);
+		delAction.setDeliveryFractionHash(delHash);
+		ColumnData deliveryFrac = delAction.run();
+		
+		//Some stats
+		int inSheet = 0;
+		int notInSheet = 0;
+		int match = 0;
+		int noMatch = 0;
+		int expectedZeroNoMatch = 0;
+		
+		for (int r=0; r<deliveryFrac.getRowCount(); r++) {
+			Double expectedFrac = getSpreadsheetDelFracForPredictDataRow(
+					stdDelFracToBoth, pdShoreReachAbove9681, r);
+			double actualFrac = deliveryFrac.getDouble(r);
+			
+			if (expectedFrac != null) {
+				inSheet++;
+				
+				if (Math.abs(expectedFrac - actualFrac) < COMP_ERROR) {
+					match++;
+				} else {
+					noMatch++;
+					writeBadMatch(stdDelFracToBoth, pdShoreReachAbove9681, r, expectedFrac, actualFrac);
+				}
+			} else {
+				notInSheet++;
+				if (actualFrac != 0d) {
+					expectedZeroNoMatch++;
+					writeBadMatch(stdDelFracToBoth, pdShoreReachAbove9681, r, expectedFrac, actualFrac);
+				}
+			}
+		}
+		
+		debugComparisons(match, noMatch, inSheet, notInSheet, expectedZeroNoMatch);
+		
+		assertEquals(
+				"There should not be any delivery fractions " +
+				"(expected vs actual) which do not match", 0, noMatch + expectedZeroNoMatch);
+		
+		assertEquals(SparseDoubleColumnData.class, deliveryFrac.getClass());
+		
+		//Check that the del frac for the 'turned off' reaches is zero
+		assertEquals(0d, deliveryFrac.getDouble(pdShoreReachAbove9681.getTopo().getRowForId(9619L)), COMP_ERROR);
+		assertEquals(0d, deliveryFrac.getDouble(pdShoreReachAbove9681.getTopo().getRowForId(9100L)), COMP_ERROR);
 	}
 	
 	@Test
@@ -287,11 +501,11 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
-		hashAction.setPredictData(predictData);
+		hashAction.setPredictData(pdTranportOffAbove9681);
 		hashAction.setTargetReachIds(targets.asSet());
 		DeliveryFractionMap delHash = hashAction.run();
 		
-		delAction.setPredictData(predictData);
+		delAction.setPredictData(pdTranportOffAbove9681);
 		delAction.setDeliveryFractionHash(delHash);
 		ColumnData deliveryFrac = delAction.run();
 		

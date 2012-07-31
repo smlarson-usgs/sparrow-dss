@@ -201,9 +201,9 @@ public class CalcDeliveryFractionMap extends Action<DeliveryFractionMap> {
 			PredictData predictData, DeliveryReach current) {
 		
 		DataTable topo = predictData.getTopo();
-		boolean isShoreReach = (1 == topo.getInt(current.getRow(), PredictData.TOPO_SHORE_REACH_COL));
+		boolean isBaseReachAShoreReach = (1 == topo.getInt(current.getRow(), PredictData.TOPO_SHORE_REACH_COL));
 
-		if (isShoreReach) {
+		if (isBaseReachAShoreReach) {
 			//Don't do any further processing for reaches 'upstream' of a shore reach.
 			//A shore reach just goes along the edge of a lake or ocean, so its not really
 			//part of the network.
@@ -216,27 +216,33 @@ public class CalcDeliveryFractionMap extends Action<DeliveryFractionMap> {
 			int[] upstream = topo.findAll(PredictData.TOPO_TNODE_COL, new Integer((int)fnode));
 
 			for (int rowNum : upstream) {
+				
+				//Don't add this reach if it is a shore reach
+				boolean isReachAShoreReach = (1 == topo.getInt(rowNum, PredictData.TOPO_SHORE_REACH_COL));
+				
+				if (! isReachAShoreReach) {
 
-				DeliveryReach toBeAdded = new DeliveryReach(
-					rowNum, 0d, topo.getInt(rowNum, PredictData.TOPO_HYDSEQ_COL), current
-				);
+					DeliveryReach toBeAdded = new DeliveryReach(
+						rowNum, 0d, topo.getInt(rowNum, PredictData.TOPO_HYDSEQ_COL), current
+					);
 
-				if (! upstreamReaches.contains(toBeAdded)) {
-					upstreamReaches.add(toBeAdded);
-				} else {
-					//This reach already exists in our upstream list.
-					//Find it & add the current reach as an added downstream reach.
-					Iterator<DeliveryReach> upstreamIt = upstreamReaches.iterator();
+					if (! upstreamReaches.contains(toBeAdded)) {
+						upstreamReaches.add(toBeAdded);
+					} else {
+						//This reach already exists in our upstream list.
+						//Find it & add the current reach as an added downstream reach.
+						Iterator<DeliveryReach> upstreamIt = upstreamReaches.iterator();
 
-					while (upstreamIt.hasNext()) {
-						DeliveryReach u = upstreamIt.next();
+						while (upstreamIt.hasNext()) {
+							DeliveryReach u = upstreamIt.next();
 
-						if (u.equals(toBeAdded)) {	//.equals based only on row
-							u.addDownstreamReach(current);
-							break;
+							if (u.equals(toBeAdded)) {	//.equals based only on row
+								u.addDownstreamReach(current);
+								break;
+							}
 						}
-					}
 
+					}
 				}
 			}
 		}
