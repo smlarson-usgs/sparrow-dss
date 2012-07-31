@@ -8,7 +8,9 @@ import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableSet;
 import gov.usgswim.datatable.RelationType;
+import gov.usgswim.datatable.impl.DataTableSetCoord;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.PredictionContext;
@@ -16,6 +18,7 @@ import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.text.DecimalFormat;
+import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -34,11 +37,9 @@ public class ReportSerializer extends BasicXMLStreamReader {
 	
 	private ReportRequest request;
 
-	private DataTable data;
+	private DataTableSet data;
 	private SparrowModel model;
-	private Integer totalCol;	//index of the total column in the reportTable
-	private int relPercentCol;	//index of the relative percent column in the reportTable
-	private int sourceCount;	//The number of sources in the reportTable
+	private int columnToDetermineIfARowIsEmpty;	//index of the total column in the reportTable
 	private String exportDescription;
 	private DecimalFormat[] numberFormat;
 	
@@ -59,23 +60,36 @@ public class ReportSerializer extends BasicXMLStreamReader {
 	// ============
 	// CONSTRUCTORS
 	// ============	
-	public ReportSerializer(ReportRequest request, DataTable reportTable,
-			String exportDescription) throws Exception {
+	
+	/**
+	 * If the request species that zero value rows should not be included, the
+	 * column specified by the columnToDetermineIfARowIsEmpty is checked to see if
+	 * the value is non-zero (the row field of the Coord is ignored).
+	 * 
+	 * @param request
+	 * @param reportTableSet
+	 * @param exportDescription
+	 * @param columnToDetermineIfARowIsEmpty The numberic column which, if zero, should make the row be considered empty.
+	 * @throws Exception 
+	 */
+	public ReportSerializer(ReportRequest request, DataTableSet reportTableSet,
+			String exportDescription, DataTableSetCoord columnCoordToDetermineIfARowIsEmpty) throws Exception {
 		
 		super();
 		
-		if (reportTable == null) {
+		if (reportTableSet == null) {
 			throw new IllegalArgumentException("The reportTable cannot be null - this is the main exported data.");
 		}
 		
 		
 		this.request = request;
-		this.data = reportTable;
+		this.data = reportTableSet;
 		this.exportDescription = exportDescription;
-		this.sourceCount = reportTable.getColumnCount() - 4;  //4 non-source columns
-		totalCol = reportTable.getColumnCount() - 2;
-		relPercentCol = reportTable.getColumnCount() - 1;
-		numberFormat = new DecimalFormat[reportTable.getColumnCount()];
+		this.columnToDetermineIfARowIsEmpty = columnCoordToDetermineIfARowIsEmpty.col;
+//		this.sourceCount = reportTableSet.getColumnCount() - 4;  //4 non-source columns
+//		totalCol = reportTableSet.getColumnCount() - 2;
+//		relPercentCol = reportTableSet.getColumnCount() - 1;
+		numberFormat = new DecimalFormat[reportTableSet.getColumnCount()];
 		
 		PredictionContext pc = request.getContext();
 		
@@ -180,28 +194,13 @@ public class ReportSerializer extends BasicXMLStreamReader {
 				addOpenTag("columns");
 				{
 					
-					//Reach name, EDA code, and area
-					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Identification and basic info").addAttribute("count", new Integer(FIRST_SOURCE_COL).toString()));
-					writeIdentificationColumnHeaders(data);
-					addCloseTag("group");
 					
-					
-					//column for each individual source
-					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Total Delivered Load by Source").addAttribute("count", new Integer(sourceCount).toString()));
-					writeSourceColumnHeaders(data);
-					addCloseTag("group");
-
-					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Totals").addAttribute("count", "2"));
-					events.add(makeNonNullBasicTag("col", "")
-							.addAttribute("name", data.getName(totalCol))
-							.addAttribute("type", NUMBER)
-							.addAttribute("unit", model.getUnits().getUserName()));
-					events.add(makeNonNullBasicTag("col", "")
-							.addAttribute("name", data.getName(relPercentCol))
-							.addAttribute("type", NUMBER)
-							.addAttribute(RelationType.XML_ATTRIB_NAME, data.getProperty(relPercentCol, RelationType.XML_ATTRIB_NAME)));
-					addCloseTag("group");
-					
+					for (int t = 0; t < (data.getTableCount()); t++) {
+						//Loop through all tables except the last one
+						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", data.getTableName(t)).addAttribute("count", new Integer(data.getTableColumnCount(t)).toString()));
+						writeColumnHeaders(data.getTable(t), 0, data.getTableColumnCount(t));
+						addCloseTag("group");
+					}
 					
 				}
 				addCloseTag("columns");
@@ -240,7 +239,7 @@ public class ReportSerializer extends BasicXMLStreamReader {
 		
 		if (!state.isDataFinished()) {
 			
-			if ((request.isIncludeZeroTotalRows()) || data.getDouble(state.r, totalCol) != 0 ) {
+			if ((request.isIncludeZeroTotalRows()) || data.getDouble(state.r, columnToDetermineIfARowIsEmpty) != 0 ) {
 
 								
 				BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
@@ -289,43 +288,29 @@ public class ReportSerializer extends BasicXMLStreamReader {
 		return isAddingEvents;
 	}
 	
-	/**
-	 * Writes the column definitions for the PredictData columns
-	 * @param result
-	 * @param colCount
-	 * @param nameSuffix
-	 */
-	protected void writeSourceColumnHeaders(DataTable dataTable) {
+	protected void writeColumnHeaders(DataTable dataTable, int firstCol, int upToButNotIncludedColumn) {
 		
-		for (int i = FIRST_SOURCE_COL; i < FIRST_SOURCE_COL + sourceCount; i++) {
-			//source columns just use the name of the source
-			String name = dataTable.getName(i);
-			events.add(makeNonNullBasicTag("col", "")
-					.addAttribute("name", name)
-					.addAttribute("type", NUMBER)
-					.addAttribute("unit", model.getUnits().getUserName()));
-		}
-	}
-	
-		/**
-	 * Writes the column definitions for the PredictData columns
-	 * @param result
-	 * @param colCount
-	 * @param nameSuffix
-	 */
-	protected void writeIdentificationColumnHeaders(DataTable dataTable) {
-		
-		for (int i = 0; i < FIRST_SOURCE_COL; i++) {
+		for (int i = firstCol; i < upToButNotIncludedColumn; i++) {
 			//source columns just use the name of the source
 			String name = dataTable.getName(i);
 			String type = dataTable.getDataType(i).getSimpleName();
 			String units = dataTable.getUnits(i);
 			
-			events.add(makeNonNullBasicTag("col", "")
-					.addAttribute("name", name)
-					.addAttribute("type", type)
-					.addAttribute("unit", units)
-			);
+			Set<String> props = dataTable.getPropertyNames(i);
+			
+			BasicTagEvent event = makeNonNullBasicTag("col", "");
+			event.addAttribute("name", name);
+			event.addAttribute("type", type);
+			event.addAttribute("unit", units);
+			
+			if (props.size() > 0) {
+				for (String s : props) {
+					event.addAttribute(s, dataTable.getProperty(i, s));
+				}
+				
+			}
+			
+			events.add(event);
 		}
 	}
 //	

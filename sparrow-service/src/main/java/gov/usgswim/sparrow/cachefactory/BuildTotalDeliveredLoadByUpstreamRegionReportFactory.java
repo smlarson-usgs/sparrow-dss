@@ -1,8 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableSet;
 import gov.usgswim.sparrow.action.BuildTotalDeliveredLoadByUpstreamRegionReport;
-import gov.usgswim.sparrow.action.BuildTotalDeliveredLoadSummaryReport;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
@@ -17,9 +16,9 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportFactory implements Cac
 
 
 	@Override
-	public DataTable createEntry(Object deliveryReportRequest) throws Exception {
+	public DataTableSet createEntry(Object deliveryReportRequest) throws Exception {
 		DeliveryReportRequest req = (DeliveryReportRequest)deliveryReportRequest;
-		DataTable result = null;
+		DataTableSet result = null;
 		
 		BuildTotalDeliveredLoadByUpstreamRegionReport action =
 				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);

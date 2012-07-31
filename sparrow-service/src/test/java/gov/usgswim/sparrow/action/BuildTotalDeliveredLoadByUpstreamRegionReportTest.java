@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.utils.DataTablePrinter;
+import gov.usgswim.datatable.DataTableSet;
 import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.PredictResult;
@@ -10,7 +10,6 @@ import gov.usgswim.sparrow.request.DeliveryReportRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.Level;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -43,29 +42,39 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		BuildTotalDeliveredLoadByUpstreamRegionReport action =
 				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
 		
-		DataTable result = action.run();
+		DataTableSet result = action.run();
 		
 //		System.out.println("Dumping Table");
 //		DataTablePrinter.printDataTable(result, "The State Delivery Summary");
 //		System.out.println("Table Dumped");
 		
 		assertNotNull(result);
-		assertEquals(10, result.getColumnCount());
-		assertEquals(SparrowUnits.SQR_KM.toString(), result.getUnits(2));
+		assertEquals(2, result.getTableCount());
+		
+		
+		//The 1st table contains ID info (state name, area, etc)
+		//The 2nd table contains the source and total data
+		DataTable infoDataTable = result.getTable(0);
+		DataTable resultDataTable = result.getTable(1);
+		
+		assertEquals(3, infoDataTable.getColumnCount());
+		assertEquals(SparrowUnits.SQR_KM.toString(), infoDataTable.getUnits(2));
+		assertEquals(6, resultDataTable.getColumnCount());
+		
 		
 		boolean containsSomeNonZeroData = false;
 		
 		//All the first columns should total to the last column
-		for (int r=0; r < result.getRowCount(); r++) {
+		for (int r=0; r < resultDataTable.getRowCount(); r++) {
 			double srcTotal = 0;
-			for (int c=3; c<8; c++) {
-				srcTotal += result.getDouble(r, c);
+			for (int c=0; c<resultDataTable.getColumnCount() - 1; c++) {
+				srcTotal += resultDataTable.getDouble(r, c);
 			}
 			
 			if (srcTotal > .0000000001d) containsSomeNonZeroData = true;
 			
 			//SUM of first 5 columns should equal the last column
-			assertEquals(result.getDouble(r, 8), srcTotal, COMP_ERROR);
+			assertEquals(resultDataTable.getDouble(r, resultDataTable.getColumnCount() - 1), srcTotal, COMP_ERROR);
 			
 		}
 		
@@ -87,28 +96,39 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		BuildTotalDeliveredLoadByUpstreamRegionReport action =
 				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
 		
-		DataTable result = action.run();
+		DataTableSet result = action.run();
 		
 //		System.out.println("Dumping Table");
 //		DataTablePrinter.printDataTable(result, "The HUC2 Delivery Summary");
 //		System.out.println("Table Dumped");
 		
 		assertNotNull(result);
-		assertEquals(10, result.getColumnCount());
+		assertEquals(2, result.getTableCount());
+		
+		
+		//The 1st table contains ID info (state name, area, etc)
+		//The 2nd table contains the source and total data
+		DataTable infoDataTable = result.getTable(0);
+		DataTable resultDataTable = result.getTable(1);
+		
+		assertEquals(3, infoDataTable.getColumnCount());
+		assertEquals(SparrowUnits.SQR_KM.toString(), infoDataTable.getUnits(2));
+		assertEquals(6, resultDataTable.getColumnCount());
+		
 		
 		boolean containsSomeNonZeroData = false;
 		
 		//All the first columns should total to the last column
-		for (int r=0; r < result.getRowCount(); r++) {
+		for (int r=0; r < resultDataTable.getRowCount(); r++) {
 			double srcTotal = 0;
-			for (int c=3; c<8; c++) {
-				srcTotal += result.getDouble(r, c);
+			for (int c=0; c<resultDataTable.getColumnCount() - 1; c++) {
+				srcTotal += resultDataTable.getDouble(r, c);
 			}
 			
 			if (srcTotal > .0000000001d) containsSomeNonZeroData = true;
 			
 			//SUM of first 5 columns should equal the last column
-			assertEquals(result.getDouble(r, 8), srcTotal, COMP_ERROR);
+			assertEquals(resultDataTable.getDouble(r, resultDataTable.getColumnCount() - 1), srcTotal, COMP_ERROR);
 			
 		}
 		
@@ -144,12 +164,18 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.HUC8);
 		BuildTotalDeliveredLoadByUpstreamRegionReport action =
 				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
-		DataTable aggByHUC8Result = action.run();
+		
+		DataTableSet aggByHUC8Result = action.run();
+		
+		//The 1st table contains ID info (state name, area, etc)
+		//The 2nd table contains the source and total data
+		DataTable infoDataTable = aggByHUC8Result.getTable(0);
+		DataTable resultDataTable = aggByHUC8Result.getTable(1);
 		
 		//Find the total value for HUC8 03100203
-		int huc8RowNumber = aggByHUC8Result.findFirst(1, "03100203");
-		double huc8Total = aggByHUC8Result.getDouble(huc8RowNumber, aggByHUC8Result.getColumnCount() - 2);
-		double huc8AreaTotal = aggByHUC8Result.getDouble(huc8RowNumber, 2);
+		int huc8RowNumber = infoDataTable.findFirst(1, "03100203");
+		double huc8Total = resultDataTable.getDouble(huc8RowNumber, resultDataTable.getColumnCount() - 1);
+		double huc8AreaTotal = infoDataTable.getDouble(huc8RowNumber, 2);
 		
 		//Calc the Delivery Fraction Hash
 		CalcDeliveryFractionMap delFracAction = new CalcDeliveryFractionMap();
@@ -215,11 +241,17 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.HUC8);
 		BuildTotalDeliveredLoadByUpstreamRegionReport action =
 				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
-		DataTable aggByHUC8Result = action.run();
+		DataTableSet aggByHUC8Result = action.run();
 		
 		//Find the total value for HUC8 03050105
-		int huc8RowNumber = aggByHUC8Result.findFirst(1, "03050105");
-		double huc8Total = aggByHUC8Result.getDouble(huc8RowNumber, aggByHUC8Result.getColumnCount() - 2);
+		//The 1st table contains ID info (state name, area, etc)
+		//The 2nd table contains the source and total data
+		DataTable infoDataTable = aggByHUC8Result.getTable(0);
+		DataTable resultDataTable = aggByHUC8Result.getTable(1);
+		
+		//Find the total value for HUC8 03050105
+		int huc8RowNumber = infoDataTable.findFirst(1, "03050105");
+		double huc8Total = resultDataTable.getDouble(huc8RowNumber, resultDataTable.getColumnCount() - 1);
 		
 		
 		//Calc the Delivery Fraction Hash

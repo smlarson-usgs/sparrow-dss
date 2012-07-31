@@ -2,12 +2,12 @@ package gov.usgswim.sparrow.action;
 
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableSet;
+import gov.usgswim.datatable.DataTableWritable;
+import gov.usgswim.datatable.impl.DataTableSetSimple;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
-import gov.usgswim.datatable.utils.DataTableUtils;
-import gov.usgswim.datatable.view.RelativePercentageView;
-import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.domain.reacharearelation.AreaRelation;
@@ -21,10 +21,16 @@ import gov.usgswim.sparrow.service.SharedApplication;
 import java.util.*;
 
 /**
- * This action assembles a DataTable of Total Delivered Load by source and for
- * all sources.  The returned DataTable has this structure:
+ * This action assembles a DataTableSet of Total Delivered Load by source and for
+ * all sources.  The returned DataTableSet has this structure:
  * 
- * Row ID    :  Reach ID
+ * (No row ID)
+ * <h4>Table 0 : Identity Table</h4>
+ * Column 0  :  Region Name
+ * Column 1  :  Region ID / Code
+ * Column 2  :  Region Area
+ * 
+ * <h4>Table 1 : Total Delivered Load Summary Report per originating upstream region</h4>
  * Column 0  :  Source 0 Total Delivered Load
  * Column 1  :  Source 1 Total Delivered Load
  * ...etc. for all sources
@@ -33,7 +39,7 @@ import java.util.*;
  * @author eeverman
  *
  */
-public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTable> {
+public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTableSet> {
 	
 	//Assigned Values
 	protected AdjustmentGroups adjustmentGroups;
@@ -61,7 +67,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 		
 	}
 	
-		public BuildTotalDeliveredLoadByUpstreamRegionReport(DeliveryReportRequest request) {
+	public BuildTotalDeliveredLoadByUpstreamRegionReport(DeliveryReportRequest request) {
 		
 		terminalReaches = request.getTerminalReaches();
 		adjustmentGroups = request.getAdjustmentGroups();
@@ -110,21 +116,17 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 	}
 	
 	@Override
-	public DataTable doAction() throws Exception {
+	public DataTableSet doAction() throws Exception {
 		
 		initRequiredFields();
 
 		
-		
+		//
+		//Create a writable table to hold individual source and total load values
 		SimpleDataTableWritable srcAndTotalTable = new SimpleDataTableWritable();
-		
-		
-		//Add a column for the totaled catchment areas
-		StandardNumberColumnDataWritable areaCol =
-							new StandardNumberColumnDataWritable("Watershed Area",
-							reachCatchmentAreas.getUnits(1),
-							Double.class);
-		srcAndTotalTable.addColumn(areaCol);
+		srcAndTotalTable.setName("Total Delivered Load Summary Report per originating upstream region");
+		srcAndTotalTable.setDescription("Total Delivered Load Summary Report per originating upstream region.");
+		buildTableProperties(srcAndTotalTable);
 		
 		//Add one column for each source and one for the total
 		//(these are the column in the expanded TotalDelLoadForAllSources columns)
@@ -139,37 +141,58 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 			
 			srcAndTotalTable.addColumn(col);
 		}
+		
+		//
+		//Create a writable table to hold the region area info
+		SimpleDataTableWritable regionAreaTable = new SimpleDataTableWritable();
+		StandardNumberColumnDataWritable areaCol = new StandardNumberColumnDataWritable(
+				"Watershed Area", reachCatchmentAreas.getUnits(1), Double.class);
+		regionAreaTable.addColumn(areaCol);
 
-		populateColumns(srcAndTotalTable, expandedTotalDelLoadForAllSources, areaRelations, areaDetail, reachCatchmentAreas.getColumn(1));
-		
-		//Add the reach identification columns
-		ArrayList<ColumnData> columns = new ArrayList<ColumnData>();
-		columns.add(0, areaDetail.getColumn(0));	//region name
-		columns.add(1, areaDetail.getColumn(1));	//region code
-		columns.addAll(Arrays.asList(srcAndTotalTable.getColumns()));
+		populateColumns(srcAndTotalTable, regionAreaTable, expandedTotalDelLoadForAllSources, areaRelations, areaDetail, reachCatchmentAreas.getColumn(1));
 		
 		
-		SimpleDataTable result = new SimpleDataTable(
-				columns.toArray(new ColumnData[]{}),
-				"Total Delivered Load Summary Report per State", 
-				"Total Delivered Load for each source individualy and for all States",
-				buildTableProperties());
+		//We can't add immutable columns to a writable table, so we need to construct a new table
+		SimpleDataTable idTable = new SimpleDataTable(
+				new ColumnData[] {areaDetail.getColumn(0), areaDetail.getColumn(1), regionAreaTable.getColumn(0).toImmutable()},
+				"Identification and basic info", 
+				"Identification and basic info",
+				buildTableProperties(null));
 		
-		RelativePercentageView view = new RelativePercentageView(
-				result,
-				null, null,
-				result.getColumnCount() - 1,
-				false
-				);
+		//Since the data table is now separate, there is no reason to do the
+		//rel-percent thing here - it can be at the display layer.
+//		RelativePercentageView relPercentResultView = new RelativePercentageView(
+//				srcAndTotalTable,
+//				null, null,
+//				srcAndTotalTable.getColumnCount() - 1,
+//				false
+//				);
 		
-		return view.toImmutable();
+		DataTableSet tableSet = new DataTableSetSimple(new DataTable.Immutable[]{idTable, srcAndTotalTable.toImmutable()},
+				"Total Delivered Load Summary Report per State",
+				"Total Delivered Load Summary Report per State");
+		
+		return tableSet;
 		
 	}
 	
-	protected Map<String, String> buildTableProperties() {
+	/**
+	 * Sets model properties on the passed and/or returns a set of basic properties.
+	 * @param table may be just to just get the basic props.
+	 * @return 
+	 */
+	protected Map<String, String> buildTableProperties(DataTableWritable table) {
 		HashMap<String, String> props = new HashMap<String, String>();
 		props.put(TableProperties.MODEL_ID.toString(), sparrowModel.getId().toString());
 		props.put(TableProperties.CONSTITUENT.toString(), sparrowModel.getConstituent());
+		
+		if (table != null) {
+			for (Map.Entry<String, String> entry : props.entrySet()) {
+				table.setProperty(entry.getKey(), entry.getValue());
+			}
+		}
+		
+		
 		return props;
 	}
 	
@@ -182,6 +205,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 	 * @throws Exception 
 	 */
 	protected void populateColumns(SimpleDataTableWritable regionResultTable,
+					SimpleDataTableWritable regionAreaTable,
 					List<ColumnData> sourceColumns,
 					ModelReachAreaRelations areaRelations, DataTable areaDetail, ColumnData catchmentAreas) throws Exception {
 		
@@ -202,40 +226,29 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 				
 				//Populate the total area column
 				double reachAreaInRegion = reachFractionInRegion * catchmentArea;
-				Double existingRegionArea = regionResultTable.getDouble(regionRow, 0);
+				Double existingRegionArea = regionAreaTable.getDouble(regionRow, 0);
 				if (existingRegionArea == null) existingRegionArea = 0d;
-				regionResultTable.setValue(reachAreaInRegion + existingRegionArea, regionRow, 0);
+				regionAreaTable.setValue(reachAreaInRegion + existingRegionArea, regionRow, 0);
 				
 				//Loop thru each source and the total.  Col 0 is the area.  First source is col 1.
-				for (int sourceColumns_ColIndex = 0; sourceColumns_ColIndex < colCount; sourceColumns_ColIndex++) {
-					int result_ColIndex = sourceColumns_ColIndex + 1;	//need to offset for the area column in the result table
+				for (int sourceColIndex = 0; sourceColIndex < colCount; sourceColIndex++) {
 					
-					Double existingRegionAggVal = regionResultTable.getDouble(regionRow, result_ColIndex);
+					Double existingRegionAggVal = regionResultTable.getDouble(regionRow, sourceColIndex);
 					
 					//Do we already have a value for this cell?
 					if (existingRegionAggVal == null) existingRegionAggVal = 0d;
 					
 					double reachValue =
-									sourceColumns.get(sourceColumns_ColIndex).getDouble(reachRow);
+									sourceColumns.get(sourceColIndex).getDouble(reachRow);
 					double reachValuePortionFromRegion = reachValue * reachFractionInRegion;
 					
-					regionResultTable.setValue(reachValuePortionFromRegion + existingRegionAggVal, regionRow, result_ColIndex);
+					regionResultTable.setValue(reachValuePortionFromRegion + existingRegionAggVal, regionRow, sourceColIndex);
 
 				}
 				
 			}
 	
 		}
-	
-		//We cant do this right now because there is no easy way to convert
-		//The immutable state name columns into mutable ones so we can add
-		//a row name and make the columns the same length.
-//		//Add total row for all sources
-//		for (int colIdx = 0; colIdx < colCount; colIdx++) {
-//			Double colTotal = DataTableUtils.getColumnTotal(regionResultTable, colIdx);
-//			regionResultTable.setValue(colTotal, reachRowCount, colIdx);
-//		}
-		
 	}
 	
 	@Override

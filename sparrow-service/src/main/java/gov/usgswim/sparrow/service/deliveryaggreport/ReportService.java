@@ -1,6 +1,10 @@
 package gov.usgswim.sparrow.service.deliveryaggreport;
 
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableSet;
+import gov.usgswim.datatable.impl.DataTableSetCoord;
+import gov.usgswim.datatable.impl.DataTableSetSimple;
+import gov.usgswim.datatable.view.RelativePercentageView;
 import gov.usgswim.sparrow.service.deliveryterminalreport.ReportRequest;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.PredictData;
@@ -24,6 +28,7 @@ public class ReportService implements HttpService<ReportRequest> {
 			PredictionContext context = req.getContext();
 			AggregationLevel aggLevel = req.getAggregationLevel();
 			Long modelId = null;
+			boolean includeRelativePercentage = true;
 
 			if (context != null) {
 				//The context was supplied w/ the request
@@ -44,7 +49,7 @@ public class ReportService implements HttpService<ReportRequest> {
 			DeliveryReportRequest actionRequest = new DeliveryReportRequest(context.getAdjustmentGroups(), termReaches, aggLevel);
 
 
-			DataTable reportData = sharedApp.getTotalDeliveredLoadByUpstreamRegionReport(actionRequest);
+			DataTableSet reportDataTableSet = sharedApp.getTotalDeliveredLoadByUpstreamRegionReport(actionRequest);
 
 
 			String readmeText = SparrowResourceUtils.lookupMergedHelp(
@@ -52,10 +57,41 @@ public class ReportService implements HttpService<ReportRequest> {
 					"CommonTerms.Terminal_Reach_Aggregate_Report",
 					null,
 					new String[] {});
+			
+			//Coord's of the total column
+			DataTableSetCoord columnCoordToDetermineIfARowIsEmpty = null;
+			
+			if (includeRelativePercentage) {
+				DataTable.Immutable[] tables = (DataTable.Immutable[]) reportDataTableSet.getTables();
+				int lastTableIndex = tables.length - 1;
+				DataTable actualResultTable = tables[lastTableIndex];
+				
+				
+				RelativePercentageView relPercentView = new RelativePercentageView(
+						actualResultTable, null, null,
+						actualResultTable.getColumnCount() - 1, false
+				);
+				
+				tables[lastTableIndex] = relPercentView;
+				
+				DataTableSet reportDataWRelPercent = new DataTableSetSimple(
+						tables, reportDataTableSet.getName(), reportDataTableSet.getDescription());
+				
+				reportDataTableSet = reportDataWRelPercent;
+				
+				//Total column is now second to last column
+				columnCoordToDetermineIfARowIsEmpty = new DataTableSetCoord(
+						lastTableIndex, -1, reportDataWRelPercent.getTableColumnCount(lastTableIndex) - 2);
+			} else {
+				//Total column is the last column
+				columnCoordToDetermineIfARowIsEmpty = new DataTableSetCoord(
+						reportDataTableSet.getTableCount() -1, -1,
+						reportDataTableSet.getTableColumnCount(reportDataTableSet.getTableCount() -1) - 1);
+			}
 
 
 			return new  ReportSerializer(
-					req, reportData, readmeText);
+					req, reportDataTableSet, readmeText, columnCoordToDetermineIfARowIsEmpty);
 
 
 

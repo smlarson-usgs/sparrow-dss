@@ -4,6 +4,7 @@ import static gov.usgswim.sparrow.service.ConfiguredCache.*;
 import gov.usgs.cida.binning.domain.BinSet;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableSet;
 import gov.usgswim.datatable.DataTableWritable;
 import gov.usgswim.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.PredictData;
@@ -17,7 +18,6 @@ import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.domain.reacharearelation.ModelReachAreaRelations;
-import gov.usgswim.sparrow.monitor.Invocation;
 import gov.usgswim.sparrow.monitor.RequestMonitor;
 import gov.usgswim.sparrow.request.*;
 import gov.usgswim.sparrow.service.idbypoint.ModelPoint;
@@ -26,7 +26,6 @@ import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -909,13 +908,13 @@ public class SharedApplication  {
 		return (DataTable) result;
 	}
 	
-		public DataTable getTotalDeliveredLoadByUpstreamRegionReport(DeliveryReportRequest request) throws Exception {
+	public DataTableSet getTotalDeliveredLoadByUpstreamRegionReport(DeliveryReportRequest request) throws Exception {
 		return getTotalDeliveredLoadByUpstreamRegionReport(request, false);
 	}
 
-	public DataTable getTotalDeliveredLoadByUpstreamRegionReport(DeliveryReportRequest request, boolean quiet) throws Exception {
+	public DataTableSet getTotalDeliveredLoadByUpstreamRegionReport(DeliveryReportRequest request, boolean quiet) throws Exception {
 		Object result = TotalDeliveredLoadByUpstreamRegionReport.get(request, quiet);
-		return (DataTable) result;
+		return (DataTableSet) result;
 	}
 	
 	/////////////////////////////////////////////
