@@ -16,24 +16,11 @@
 	<description>SPARROW web mapping application</description>
 
 	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
-		<cargo.containerId>tomcat6x</cargo.containerId>
-		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
-		<timestamp>${maven.build.timestamp}</timestamp> 
 	</properties>
 	
-	<scm>
-		<developerConnection>https://cida-svn.er.usgs.gov/repos/dev/usgs/sparrow/dss/app/trunk/sparrow-web-ui</developerConnection>
-	</scm>
 
 	<repositories>
-		<repository>
-			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-releases/</url>
-			<id>cida-releases</id>
-			<layout>default</layout>
-			<name>Cida Releases - Release Shared Libraries</name>
-		</repository>
+<!--
 		<repository>
 			<url>http://internal.cida.usgs.gov/nexus/content/groups/public/</url>
 			<id>cida-mirror-internal</id>
@@ -57,8 +44,10 @@
 			<name>Repository hosting the jee6 artifacts</name>
 			<url>http://download.java.net/maven/2</url>
 		</repository>
+	-->
 	</repositories>
 	
+	<!--
 	<pluginRepositories>
 		<pluginRepository>
 			<url>http://internal.cida.usgs.gov/nexus/content/groups/public/</url>
@@ -67,6 +56,7 @@
 			<name>Cida mirror - an internal url</name>
 		</pluginRepository>
 	</pluginRepositories>
+-->
 
 	<dependencies>
 		<dependency>

@@ -16,13 +16,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
-		<cargo.containerId>tomcat6x</cargo.containerId>
 	</properties>
-
-	<scm>
-		<developerConnection>https://cida-svn.er.usgs.gov/repos/dev/usgs/sparrow/dss/app/trunk/sparrow-service</developerConnection>
-	</scm>
 
 	<build>
 		<finalName>sparrow_mv</finalName>
@@ -68,24 +62,7 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.1</version>
 				<configuration>
-					<tagBase>https://cida-svn.er.usgs.gov/repos/dev/usgs/sparrow/dss/sparrow_service/tags</tagBase>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.cargo</groupId>
-				<artifactId>cargo-maven2-plugin</artifactId>
-				<version>1.0.5</version>
-				<configuration>
-					<container>
-						<containerId>${cargo.containerId}</containerId>
-						<type>remote</type>
-					</container>
-					<configuration>
-						<type>runtime</type>
-						<properties>
-							<cargo.server.settings>${cargo.server.settings}</cargo.server.settings>
-						</properties>
-					</configuration>
+					<tagBase>${cida.svn.url}/usgs/sparrow/dss/sparrow_service/tags</tagBase>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -126,28 +103,6 @@
 				</plugin>
 		</plugins>
 	</build>
-
-	<repositories>
-		<repository>
-			<url>http://internal.cida.usgs.gov/maven/content/repositories/cida-releases/</url>
-			<id>cida-releases</id>
-			<layout>default</layout>
-			<name>Cida Releases - Release Shared Libraries</name>
-		</repository>
-		<repository>
-			<id>cida-sparrow-dss-thirdparty</id>
-			<url>http://internal.cida.usgs.gov/nexus/content/repositories/cida-sparrow-dss-thirdparty</url>
-		</repository>
-		<repository>
-			<id>cida-thirdparty</id>
-			<url>http://internal.cida.usgs.gov/nexus/content/repositories/cida-thirdparty</url>
-		</repository>
-		<!-- <repository> <id>repo1.maven.org/maven2</id> <url>http://repo2.maven.org/maven2</url> 
-			</repository> <repository> <id>cida-maven-central</id> <url>http://internal.cida.usgs.gov/nexus/content/repositories/central/</url> 
-			</repository> -->
-		<!-- <repository> <id>cida-qw-releases</id> <url>http://http://internal.cida.usgs.gov/nexus/content/repositories/central</url> 
-			</repository> -->
-	</repositories>
 
 	<dependencies>
 
