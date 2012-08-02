@@ -677,14 +677,9 @@ var ShuttleBoxWindow = Ext.extend(Ext.Window, {
 	},
 	
 	afterRender: function() {
-		this.selections = document.createElement('select');
-		this.selections.multiple = true;
-		this.selections.size = 5;
-		this.selections.style.width = '100%';
-		
 		this.options = document.createElement('select');
 		this.options.multiple = true;
-		this.options.size = 5;
+		this.options.size = 25;
 		this.options.style.width = '100%';
 		
 		//populate options pick list
@@ -704,22 +699,40 @@ var ShuttleBoxWindow = Ext.extend(Ext.Window, {
 			}
 		}//i
 		
+		
+//		This does not work for IE b/c the onmousedown
+//		event (or any mouse event) does not indicate which
+//		option was clicked.
+//		this.options.onmousedown = function(e) {
+//			if (!e) var e = window.event;
+//			if (e) {
+//				
+//				if (e.toElement) {
+//					var selectedIndex = e.toElement.index;
+//					var toggleMe = this[selectedIndex];
+//					toggleMe.selected = ! toggleMe.selected;
+//
+//					//Cancel the event
+//					if (e.preventDefault) e.preventDefault();
+//					if (e.stopPropagation) e.stopPropagation();
+//					return false;
+//				}
+//			}
+//		};
+		
 		var optcap = document.createElement('div');
-		optcap.innerHTML = 'Available:';
+		if (Ext.isMac) {
+			optcap.innerHTML = '<b>Selection List:</b><br /> Command-click to select multiple items.';
+		} else {
+			optcap.innerHTML = '<b>Selection List:</b><br /> Control-click to select multiple items.';
+		}
+		
 		this.body.dom.appendChild(optcap);
 		this.body.dom.appendChild(this.options);
 		var bdiv = document.createElement('div');
 		bdiv.id = 'shuttle-box-button-div';
 		bdiv.align = 'center';
 		this.body.dom.appendChild(bdiv);
-		
-		var selcap = document.createElement('div');
-		selcap.innerHTML = 'Selected:';
-		this.body.dom.appendChild(selcap);
-		this.body.dom.appendChild(this.selections);
-		
-		//select default selected items
-		this.selectItem();
 		
 		new Ext.ButtonGroup({
 			renderTo: 'shuttle-box-button-div',
@@ -729,27 +742,14 @@ var ShuttleBoxWindow = Ext.extend(Ext.Window, {
 			defaults: {
 				iconAlign: 'top',
 				tooltipType: 'title',
-				style: 'margin-left: 5px; margin-right: 5px',
-				scale: 'small'
+				style: 'margin-left: 5px; margin-right: 5px'
 			},
 			items: [{
-				icon: 'images/down.png',
-              cls: 'x-btn-icon',
-              tooltip: 'Select Item',
-              handler: this.selectItem,
-              scope: this
-			},{
-				icon: 'images/up.png',
-              cls: 'x-btn-icon',
-              tooltip: 'Unselect Item',
-              handler: this.unselectItem,
-              scope: this				
-			},{
-				icon: 'images/remove.png',
-              cls: 'x-btn-icon',
-              tooltip: 'Clear All Selected Items',
-              handler: this.clearSelections,
-              scope: this				
+				text: 'Clear sll elections',
+				//cls: 'x-btn-text-icon',
+				tooltip: 'Clear All Selected Items',
+				handler: this.clearSelections,
+				scope: this				
 			}]
 		});
 		
@@ -757,40 +757,19 @@ var ShuttleBoxWindow = Ext.extend(Ext.Window, {
 		ShuttleBoxWindow.superclass.afterRender.apply(this, arguments);
 	},
 	
-	
-	selectItem: function() {
-		for (var i = 0; i < this.options.length; i++) {
-			if (this.options[i].selected) {
-				this.selections.options[this.selections.options.length] = new Option(this.options[i].text, this.options[i].value);
-				this.options.options[i] = null;
-				i--;
-			}	
-		}
-	},
-	
-	unselectItem: function() {
-		for (var i = 0; i < this.selections.length; i++) {
-			if (this.selections[i].selected) {
-				this.options.options[this.options.options.length] = new Option(this.selections[i].text, this.selections[i].value);
-				this.selections.options[i] = null;
-				i--;
-			}	
-		}
-	},
-	
 	clearSelections: function() {
-		for (var i = 0; i < this.selections.length; i++) {
-			this.options.options[this.options.options.length] = new Option(this.selections[i].text, this.selections[i].value);
-			this.selections.options[i] = null;
-			i--;
+		for (var i = 0; i < this.options.length; i++) {
+			this.options[i].selected = false;
 		}
 	},
 	
 	getValues: function(delimiter) {
 		var valString = '';
 		delimiter = delimiter || ',';
-		for (var i = 0; i < this.selections.length; i++) {
-			valString += this.selections[i].value + delimiter;
+		for (var i = 0; i < this.options.length; i++) {
+			if (this.options[i].selected) {
+				valString += this.options[i].value + delimiter;
+			}	
 		}
 		return valString.substr(0,valString.length-delimiter.length);
 	}
