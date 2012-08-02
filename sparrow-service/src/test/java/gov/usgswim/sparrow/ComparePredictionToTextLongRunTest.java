@@ -737,13 +737,13 @@ public class ComparePredictionToTextLongRunTest {
 		int incRowFail = 0;
 		int totalValueFail = 0;
 		int totalRowFail = 0;
+		int shoreReachTotalRowFail = 0;
 		
 		int anyValueFail = 0;
 		int anyRowFail = 0;
 		
 		int goodIncRows = 0;
 		int goodTotalRows = 0;
-		
 		
 		for (int r = 0; r < txt.getRowCount(); r++) {
 			
@@ -766,6 +766,7 @@ public class ComparePredictionToTextLongRunTest {
 			boolean rowMatches = true;	//assume this row matches
 			boolean incMatches = true;
 			boolean totalMatches = true;
+			boolean shoreReachTotalMatches = true;	//Does the total load match incremental for a shore reach?
 			
 			//Compare Incremental Values (c is column in std data)
 			for (int s = 1; s <= maxSrc; s++) {
@@ -781,8 +782,13 @@ public class ComparePredictionToTextLongRunTest {
 				double predTotalValue =
 					pred.getDouble(r, pred.getTotalColForSrc(s));
 				
-				//assertEquals(txtIncValue, predIncValue, 0.0001d);
-				//assertEquals(txtTotalValue, predTotalValue, 0.0001d);
+				//For a shore reaches inc and total load should be the same
+				if (predData.getTopo().getInt(r, PredictData.TOPO_SHORE_REACH_COL) == 1) {
+					if (! comp(predIncValue, predTotalValue)) {
+						anyValueFail++;
+						shoreReachTotalMatches = false;
+					}
+				}
 				
 				
 				if (comp(txtIncValue, predIncValue)) {
@@ -801,6 +807,22 @@ public class ComparePredictionToTextLongRunTest {
 					totalMatches = false;
 					totalValueFail++;
 					anyValueFail++;
+				}
+			}
+				
+			
+			double predIncValue =
+					pred.getDouble(r, pred.getIncrementalCol()) * instreamDecay;
+			double predTotalValue =
+					pred.getDouble(r, pred.getTotalCol());
+				
+			//For a shore reaches inc and total load should be the same
+			if (predData.getTopo().getInt(r, PredictData.TOPO_SHORE_REACH_COL) == 1) {
+
+				
+				if (! comp(predIncValue, predTotalValue)) {
+					anyValueFail++;
+					shoreReachTotalMatches = false;
 				}
 			}
 //			
@@ -865,11 +887,21 @@ public class ComparePredictionToTextLongRunTest {
 				}
 			}
 			
+			if (shoreReachTotalMatches) {
+				//nothing to do
+			} else {
+				shoreReachTotalRowFail++;
+				if (shoreReachTotalRowFail <= NUMBER_OF_BAD_TOTALS_TO_PRINT) {
+					printBadShoreReachRow(txt, txtRow, pred, r, instreamDecay, predData);
+				}
+			}
+			
 		}
 		
 		log.debug("Comparison Results for model " + modelId +  " (" + txt.getRowCount() + " rows)");
 		log.debug("Non Matching Incremental Values: " + incValueFail +  " (" + incRowFail + " unique rows)");
 		log.debug("Non Matching Total Values: " + totalValueFail +  " (" + totalRowFail + " unique rows)");
+		log.debug("Non Matching shore Reach Rows (total should match incremental): " + shoreReachTotalRowFail + " unique rows");
 		log.debug("Non Matching Values (all): " + anyValueFail + " (" + anyRowFail + " rows)");
 		
 		return anyValueFail;
@@ -1020,7 +1052,50 @@ public class ComparePredictionToTextLongRunTest {
 		long id = pred.getIdForRow(predRow);
 		log.debug("** Failed TOTAL values for reach ID " + id + " (row " + predRow + ")");
 		
+		//Compare Total Values (c is column in std data)
+		for (int s=1; s <= pred.getSourceCount(); s++) {
+
+			double txtTotalValue = txt.getDouble(txtRow, getTotalCol(s, txt, predictData));
+			double predTotalValue = pred.getDouble(predRow, pred.getTotalColForSrc(s));
+
+			String line;
+			if (comp(txtTotalValue, predTotalValue)) {
+				line = "|\tTot " + s;
+			} else {
+				line = "|>\tTot " + s;
+			}
+			
+			line = line + " " + txtTotalValue + " | " + predTotalValue + " |";
+			log.debug(line);
+		}
+	}
+	
+		public void printBadShoreReachRow(DataTable txt, int txtRow, PredictResult pred,
+			int predRow, double instreamDecay, PredictData predictData) throws Exception {
+		
+		long id = pred.getIdForRow(predRow);
+		log.debug("** Failed ShoreReach row (total load != incremental load) for reach ID " + id + " (row " + predRow + ")");
+		
+		
 		//Compare Incremental Values (c is column in std data)
+		for (int s=1; s <= pred.getSourceCount(); s++) {
+			
+			double txtIncValue = txt.getDouble(txtRow, getIncCol(s, txt, predictData));
+			double predIncValue = pred.getDouble(predRow, pred.getIncrementalColForSrc(s));
+			predIncValue = predIncValue * instreamDecay;	//correct for instrem decay
+
+			String line;
+			if (comp(txtIncValue, predIncValue)) {
+				line = "|\tInc " + s;
+			} else {
+				line = "|>\tInc " + s;
+			}
+			
+			line = line + " " + txtIncValue + " | " + predIncValue + " |";
+			log.debug(line);
+		}
+		
+		//Compare total Values (c is column in std data)
 		for (int s=1; s <= pred.getSourceCount(); s++) {
 
 			double txtTotalValue = txt.getDouble(txtRow, getTotalCol(s, txt, predictData));
