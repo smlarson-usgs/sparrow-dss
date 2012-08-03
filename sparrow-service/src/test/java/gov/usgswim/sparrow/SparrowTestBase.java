@@ -18,6 +18,7 @@ import gov.usgswim.sparrow.datatable.PredictResultImm;
 
 import java.io.*;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -39,6 +40,7 @@ import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.extras.DOMConfigurator;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.junit.AfterClass;
@@ -87,8 +89,8 @@ public abstract class SparrowTestBase {
 	
 	
 	static {
-		System.setProperty("log4j.configuration", "log4j_test.xml");
-		log = Logger.getLogger(SparrowTestBase.class); //logging for this class
+		URL log4jUrl = ComparePredictionToTextLongRunTest.class.getResource("/log4j_test.xml");
+		DOMConfigurator.configure(log4jUrl);
 	}
 	
 	private Level initialLogLevel = null;

@@ -114,7 +114,6 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<!-- was 1.2.13 -->
 			<version>1.2.16</version>
 		</dependency>
 		<dependency>
@@ -125,14 +124,12 @@
 		<dependency>
 			<groupId>woodstox</groupId>
 			<artifactId>wstx-lgpl</artifactId>
-			<!-- was 3.2.? -->
 			<version>3.2.7</version>
 		</dependency>
 
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>
-			<!-- was 2.0.beta -->
 			<version>2.3.2</version>
 			<type>pom</type>
 		</dependency>
@@ -203,7 +200,6 @@
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.8.2</version>
-			<!-- was 4.5 -->
 			<scope>test</scope>
 		</dependency>
 		<dependency>

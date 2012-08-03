@@ -41,6 +41,8 @@ import org.apache.commons.lang.text.StrTokenizer;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.extras.DOMConfigurator;
 
 /**
  * This test was created to recreate a calc error where delivery based calcs
@@ -73,6 +75,7 @@ public class ComparePredictionToTextLongRunTest {
 	
 	String singleModelPath;
 	String activeModelDirectory;
+	boolean logShouldIncludeDetails;
 	String dbPwd;
 	
 	int firstModelId = -1;
@@ -85,7 +88,10 @@ public class ComparePredictionToTextLongRunTest {
 
 	public static void main(String[] args) throws Exception {
 		// Set up a simple configuration that logs on the console.
-	     BasicConfigurator.configure();
+		URL log4jUrl = ComparePredictionToTextLongRunTest.class.getResource("/log4j_test.xml");
+		DOMConfigurator.configure(log4jUrl);
+		
+		log.error("test");
 		
 		ComparePredictionToTextLongRunTest runner = new ComparePredictionToTextLongRunTest();
 		runner.oneTimeUserInput();
@@ -122,6 +128,7 @@ public class ComparePredictionToTextLongRunTest {
 		promptIntro();
 		promptPathOrDir();
 		promptPwd();
+		promptLogDetail();
 	}
 	
 	public void oneTimeConfig() {
@@ -174,8 +181,24 @@ public class ComparePredictionToTextLongRunTest {
 			activeModelDirectory = pathOrDir;
 			promptFirstLastModel();
 		} else {
-			System.out.println("Unrecognized response - please try again.");
+			System.out.println("What?? - please try again.");
 			promptPathOrDir();
+		}
+	}
+	
+		public void promptLogDetail() {
+		String withDetail  = prompt("Should the log include multi-line detail for failures? (y/n):");
+		
+		withDetail = withDetail.trim();
+		if (QUIT.equalsIgnoreCase(withDetail)) return;
+
+		if ("y".equalsIgnoreCase(withDetail)) {
+			logShouldIncludeDetails = true;
+		} else if ("n".equalsIgnoreCase(withDetail)) {
+			logShouldIncludeDetails = false;
+		} else {
+			System.out.println("Hmm, that was exactly y or n, but I'll take it as a no...");
+			logShouldIncludeDetails = false;
 		}
 	}
 	
@@ -233,7 +256,7 @@ public class ComparePredictionToTextLongRunTest {
 				
 				boolean pass = true;
 				pass = pass & testSingleModelDataQuality(id);
-				pass = pass & testSingleMmodel(file.toURL(), id);
+				pass = pass & testSingleMmodel(file.toURL(), id, logShouldIncludeDetails);
 				pass = pass & testSingleModelErrorEstimates(id);
 				if (!pass) failCount++;
 			} else {
@@ -253,7 +276,7 @@ public class ComparePredictionToTextLongRunTest {
 					
 					boolean pass = true;
 					pass = pass & testSingleModelDataQuality(id);
-					pass = pass & testSingleMmodel(file.toURL(), id);
+					pass = pass & testSingleMmodel(file.toURL(), id, logShouldIncludeDetails);
 					
 					if (!pass) failCount++;
 				}
@@ -393,7 +416,7 @@ public class ComparePredictionToTextLongRunTest {
 
 	
 
-	public boolean testSingleMmodel(URL predictFile, Long modelId) throws Exception {
+	public boolean testSingleMmodel(URL predictFile, Long modelId, boolean logWithDetails) throws Exception {
 		beforeEachTest();
 		boolean pass = false;		
 		
@@ -405,8 +428,8 @@ public class ComparePredictionToTextLongRunTest {
 			PredictData pd = SharedApplication.getInstance().getPredictData(modelId);
 			
 			log.setLevel(Level.FATAL);	//Turn off logging
-			int noDecayFailures = testComparison(t, prs, pd, false, modelId);
-			int decayFailures = testComparison(t, prs, pd, true, modelId);
+			int noDecayFailures = testComparison(t, prs, pd, false, modelId, logWithDetails);
+			int decayFailures = testComparison(t, prs, pd, true, modelId, logWithDetails);
 			log.setLevel(Level.DEBUG);	//Turn back on
 			
 			if (decayFailures < noDecayFailures) {
@@ -415,7 +438,7 @@ public class ComparePredictionToTextLongRunTest {
 					pass = true;
 				} else {
 					log.debug("-------- Model #" + modelId + " FAILED using DECAYED incremental values.  Details: --------");
-					testComparison(t, prs, pd, true, modelId);
+					testComparison(t, prs, pd, true, modelId, logWithDetails);
 				}
 			} else if (noDecayFailures < decayFailures) {
 				if (noDecayFailures == 0) {
@@ -423,13 +446,13 @@ public class ComparePredictionToTextLongRunTest {
 					pass = true;
 				} else {
 					log.debug("-------- Model #" + modelId + " FAILED using NON-DECAYED incremental values.  Details: --------");
-					testComparison(t, prs, pd, false, modelId);
+					testComparison(t, prs, pd, false, modelId, logWithDetails);
 				}
 			} else if (noDecayFailures == decayFailures) {
 				//Equal failures mean there is a row count or other type of error
 				log.debug("Hey, found these no decay fails: " + noDecayFailures + " and these decay fails: " + decayFailures);
 				log.debug("-------- Model #" + modelId + " FAILED.  MAJOR ISSUE (no decay matches decay) - SEE DETAILS: --------");
-				testComparison(t, prs, pd, false, modelId);
+				testComparison(t, prs, pd, false, modelId, logWithDetails);
 			}
 		} else {
 			log.debug("-------- Model #" + modelId + " FAILED.  MAJOR ISSUE (couldn't load file) - SEE DETAILS (above) --------");
@@ -721,7 +744,7 @@ public class ComparePredictionToTextLongRunTest {
 	 * @return The number of comparison errors (zero if no errors)
 	 * @throws Exception
 	 */
-	public int testComparison(DataTable txt, PredictResult pred, PredictData predData, boolean useDecay, long modelId) throws Exception {
+	public int testComparison(DataTable txt, PredictResult pred, PredictData predData, boolean useDecay, long modelId, boolean logWithDetails) throws Exception {
 		
 		if (txt.getRowCount() != pred.getRowCount()) {
 			log.error("Model " + modelId + ": Expected " + txt.getRowCount() + " rows, found " + pred.getRowCount());
@@ -869,7 +892,7 @@ public class ComparePredictionToTextLongRunTest {
 				incRowFail++;
 				
 				if (incRowFail <= NUMBER_OF_BAD_INCREMENTALS_TO_PRINT) {
-					printBadIncRow(txt, txtRow, pred, r, instreamDecay, predData);
+					printBadIncRow(txt, txtRow, pred, r, instreamDecay, predData, logWithDetails);
 				}
 			}
 			
@@ -883,7 +906,7 @@ public class ComparePredictionToTextLongRunTest {
 			} else {
 				totalRowFail++;
 				if (totalRowFail <= NUMBER_OF_BAD_TOTALS_TO_PRINT) {
-					printBadTotalRow(txt, txtRow, pred, r, predData);
+					printBadTotalRow(txt, txtRow, pred, r, predData, logWithDetails);
 				}
 			}
 			
@@ -892,7 +915,7 @@ public class ComparePredictionToTextLongRunTest {
 			} else {
 				shoreReachTotalRowFail++;
 				if (shoreReachTotalRowFail <= NUMBER_OF_BAD_TOTALS_TO_PRINT) {
-					printBadShoreReachRow(txt, txtRow, pred, r, instreamDecay, predData);
+					printBadShoreReachRow(txt, txtRow, pred, r, instreamDecay, predData, logWithDetails);
 				}
 			}
 			
@@ -1021,95 +1044,98 @@ public class ComparePredictionToTextLongRunTest {
 	}
 	
 	public void printBadIncRow(DataTable txt, int txtRow, PredictResult pred,
-			int predRow, double instreamDecay, PredictData predictData) throws Exception {
+			int predRow, double instreamDecay, PredictData predictData, boolean includeDetail) throws Exception {
 		
 		long id = pred.getIdForRow(predRow);
 		log.debug("** Failed INC values for reach ID " + id + " (row " + predRow + ")");
 		
-		//Compare Incremental Values (c is column in std data)
-		for (int s=1; s <= pred.getSourceCount(); s++) {
-			
-			double txtIncValue = txt.getDouble(txtRow, getIncCol(s, txt, predictData));
-			double predIncValue = pred.getDouble(predRow, pred.getIncrementalColForSrc(s));
-			predIncValue = predIncValue * instreamDecay;	//correct for instrem decay
+		if (includeDetail) {
+			//Compare Incremental Values (c is column in std data)
+			for (int s=1; s <= pred.getSourceCount(); s++) {
 
-			String line;
-			if (comp(txtIncValue, predIncValue)) {
-				line = "|\tInc " + s;
-			} else {
-				line = "|>\tInc " + s;
+				double txtIncValue = txt.getDouble(txtRow, getIncCol(s, txt, predictData));
+				double predIncValue = pred.getDouble(predRow, pred.getIncrementalColForSrc(s));
+				predIncValue = predIncValue * instreamDecay;	//correct for instrem decay
+
+				String line;
+				if (comp(txtIncValue, predIncValue)) {
+					line = "|\tInc " + s;
+				} else {
+					line = "|>\tInc " + s;
+				}
+
+				line = line + " " + txtIncValue + " | " + predIncValue + " |";
+				log.debug(line);
 			}
-			
-			line = line + " " + txtIncValue + " | " + predIncValue + " |";
-			log.debug(line);
 		}
 	}
 	
 	
 	public void printBadTotalRow(DataTable txt, int txtRow, PredictResult pred,
-			int predRow, PredictData predictData) throws Exception {
+			int predRow, PredictData predictData, boolean includeDetail) throws Exception {
 		
 		long id = pred.getIdForRow(predRow);
 		log.debug("** Failed TOTAL values for reach ID " + id + " (row " + predRow + ")");
 		
-		//Compare Total Values (c is column in std data)
-		for (int s=1; s <= pred.getSourceCount(); s++) {
+		if (includeDetail) {
+			//Compare Total Values (c is column in std data)
+			for (int s=1; s <= pred.getSourceCount(); s++) {
 
-			double txtTotalValue = txt.getDouble(txtRow, getTotalCol(s, txt, predictData));
-			double predTotalValue = pred.getDouble(predRow, pred.getTotalColForSrc(s));
+				double txtTotalValue = txt.getDouble(txtRow, getTotalCol(s, txt, predictData));
+				double predTotalValue = pred.getDouble(predRow, pred.getTotalColForSrc(s));
 
-			String line;
-			if (comp(txtTotalValue, predTotalValue)) {
-				line = "|\tTot " + s;
-			} else {
-				line = "|>\tTot " + s;
+				String line;
+				if (comp(txtTotalValue, predTotalValue)) {
+					line = "|\tTot " + s;
+				} else {
+					line = "|>\tTot " + s;
+				}
+
+				line = line + " " + txtTotalValue + " | " + predTotalValue + " |";
+				log.debug(line);
 			}
-			
-			line = line + " " + txtTotalValue + " | " + predTotalValue + " |";
-			log.debug(line);
 		}
 	}
 	
 		public void printBadShoreReachRow(DataTable txt, int txtRow, PredictResult pred,
-			int predRow, double instreamDecay, PredictData predictData) throws Exception {
+			int predRow, double instreamDecay, PredictData predictData, boolean includeDetail) throws Exception {
 		
 		long id = pred.getIdForRow(predRow);
 		log.debug("** Failed ShoreReach row (total load != incremental load) for reach ID " + id + " (row " + predRow + ")");
 		
-		
-		//Compare Incremental Values (c is column in std data)
-		for (int s=1; s <= pred.getSourceCount(); s++) {
-			
-			double txtIncValue = txt.getDouble(txtRow, getIncCol(s, txt, predictData));
-			double predIncValue = pred.getDouble(predRow, pred.getIncrementalColForSrc(s));
+		if (includeDetail) {
+			//Compare Incremental Values (c is column in std data)
+			for (int s=1; s <= pred.getSourceCount(); s++) {
+
+				double predIncValue = pred.getDouble(predRow, pred.getIncrementalColForSrc(s));
+				double predTotalValue = pred.getDouble(predRow, pred.getTotalColForSrc(s));
+				predIncValue = predIncValue * instreamDecay;	//correct for instrem decay
+
+				String line;
+				if (comp(predIncValue, predTotalValue)) {
+					line = "|\tInc " + s;
+				} else {
+					line = "|>\tTot " + s;
+				}
+
+				line = line + " " + predIncValue + " | " + predTotalValue + " |";
+				log.debug(line);
+			}
+
+			//The Totals
+			double predIncValue = pred.getDouble(predRow, pred.getIncrementalCol());
+			double predTotalValue = pred.getDouble(predRow, pred.getTotalCol());
 			predIncValue = predIncValue * instreamDecay;	//correct for instrem decay
 
 			String line;
-			if (comp(txtIncValue, predIncValue)) {
-				line = "|\tInc " + s;
+			if (comp(predIncValue, predTotalValue)) {
+				line = "|\tInc (all)";
 			} else {
-				line = "|>\tInc " + s;
+				line = "|>\tTot (all)";
 			}
-			
-			line = line + " " + txtIncValue + " | " + predIncValue + " |";
+			line = line + " " + predIncValue + " | " + predTotalValue + " |";
 			log.debug(line);
-		}
-		
-		//Compare total Values (c is column in std data)
-		for (int s=1; s <= pred.getSourceCount(); s++) {
 
-			double txtTotalValue = txt.getDouble(txtRow, getTotalCol(s, txt, predictData));
-			double predTotalValue = pred.getDouble(predRow, pred.getTotalColForSrc(s));
-
-			String line;
-			if (comp(txtTotalValue, predTotalValue)) {
-				line = "|\tTot " + s;
-			} else {
-				line = "|>\tTot " + s;
-			}
-			
-			line = line + " " + txtTotalValue + " | " + predTotalValue + " |";
-			log.debug(line);
 		}
 	}
 	
