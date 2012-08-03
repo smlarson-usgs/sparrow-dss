@@ -91,6 +91,7 @@ public abstract class SparrowTestBase {
 	static {
 		URL log4jUrl = ComparePredictionToTextLongRunTest.class.getResource("/log4j_test.xml");
 		DOMConfigurator.configure(log4jUrl);
+		log = Logger.getLogger(SparrowTestBase.class);
 	}
 	
 	private Level initialLogLevel = null;
