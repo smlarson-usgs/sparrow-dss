@@ -745,7 +745,7 @@ var ShuttleBoxWindow = Ext.extend(Ext.Window, {
 				style: 'margin-left: 5px; margin-right: 5px'
 			},
 			items: [{
-				text: 'Clear sll elections',
+				text: 'Clear all selections',
 				//cls: 'x-btn-text-icon',
 				tooltip: 'Clear All Selected Items',
 				handler: this.clearSelections,
