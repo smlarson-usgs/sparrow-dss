@@ -5,6 +5,7 @@ import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.service.ConfiguredCache;
 
 import java.io.IOException;
+import java.net.URL;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -13,8 +14,10 @@ import net.sf.ehcache.CacheException;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Status;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
+import org.apache.log4j.LogManager;
 
 import org.apache.log4j.PropertyConfigurator;
+import org.apache.log4j.extras.DOMConfigurator;
 
 /**
  * This class should be registered as listener in the servlet container the
@@ -82,6 +85,13 @@ public class LifecycleListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent context, boolean clearCache){
 		try {
 
+			//If we are in a servlet environment, switch to the production log4j config
+			if (context != null) {
+				URL log4jUrl = LifecycleListener.class.getResource("/log4j_production.xml");
+				LogManager.resetConfiguration();
+				DOMConfigurator.configure(log4jUrl);
+			}
+			
 			//Calling create here is not required, but gives a single place to customize
 			//the creation of the singleton instance.
 			SparrowCacheManager.createFromResource(SparrowCacheManager.DEFAULT_EHCACHE_CONFIG_LOCATION);

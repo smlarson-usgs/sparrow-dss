@@ -116,6 +116,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		} else {
 			//There are validation errors - do not run
 			r = null;
+			
 		}
 	
 		postAction(r != null, e);
@@ -263,12 +264,21 @@ public abstract class Action<R extends Object> implements IAction<R> {
 						log.error("Action FAILED w/ an exception for " +
 								this.getClass().getName() + ".  Run Number: " +
 								runNumber + NL + "Message from Action: " + msg, error);
+					} else if (hasValidationErrors()) {
+						log.error("Action FAILED due to validation errors for " +
+								this.getClass().getName() + ".  Run Number: " +
+								runNumber + ".  Validation errors follow:");
+						
+						for (String valErr : getValidationErrors()) {
+							log.error("  Validation Error: " + valErr);
+						}
+						
 					} else {
-						log.warn("Action FAILED but did not generate an error for " +
+						log.error("Action FAILED but did not generate an error for " +
 								this.getClass().getName() + ".  Run Number: " +
 								runNumber + NL + "Message from Action: " + msg);
-					}
 
+					}
 				}
 			} catch (Exception e) {
 				//Ignore - some type of loggin err not worth handling

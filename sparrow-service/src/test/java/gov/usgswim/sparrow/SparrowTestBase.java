@@ -17,7 +17,6 @@ import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +38,7 @@ import junit.framework.TestCase;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.extras.DOMConfigurator;
 import org.custommonkey.xmlunit.Diff;
@@ -51,6 +51,13 @@ public abstract class SparrowTestBase {
 	
 	/** Logging.  Log messages will use the name of the subclass */
 	protected static Logger log = null;
+	
+	static {
+		URL log4jUrl = SparrowTestBase.class.getResource("/log4j_test.xml");
+		LogManager.resetConfiguration();
+		DOMConfigurator.configure(log4jUrl);
+		log = Logger.getLogger(SparrowTestBase.class);
+	}
 		
 	
 	/** lifecycle listener handles startup / shutdown */
@@ -86,13 +93,6 @@ public abstract class SparrowTestBase {
 	
 	/** A single instance which is destroyed in teardown */
 	private static SparrowTestBase singleInstanceToTearDown;
-	
-	
-	static {
-		URL log4jUrl = ComparePredictionToTextLongRunTest.class.getResource("/log4j_test.xml");
-		DOMConfigurator.configure(log4jUrl);
-		log = Logger.getLogger(SparrowTestBase.class);
-	}
 	
 	private Level initialLogLevel = null;
 

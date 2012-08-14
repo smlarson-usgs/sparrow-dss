@@ -28,7 +28,7 @@ import java.util.*;
  * <h4>Table 0 : Identity Table</h4>
  * Column 0  :  Region Name
  * Column 1  :  Region ID / Code
- * Column 2  :  Region Area
+ * Column 2  :  Region Area, made up of the individual upstream catchment areas (not the total region area).
  * 
  * <h4>Table 1 : Total Delivered Load Summary Report per originating upstream region</h4>
  * Column 0  :  Source 0 Total Delivered Load
@@ -52,6 +52,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 	//Generated / self-loaded values
 	protected SparrowModel sparrowModel;
 	protected ModelReachAreaRelations areaRelations;
+	DeliveryFractionMap deliveryFractionMap;	//What reaches deliver to the target reaches?
 	protected DataTable areaDetail;
 	protected DataTable reachCatchmentAreas;
 	List<ColumnData> expandedTotalDelLoadForAllSources;
@@ -86,6 +87,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 		UnitAreaRequest unitAreaRequest = new UnitAreaRequest(modelId, AggregationLevel.REACH, false);
 		reachCatchmentAreas = SharedApplication.getInstance().getCatchmentAreas(unitAreaRequest);
 		
+		deliveryFractionMap = SharedApplication.getInstance().getDeliveryFractionMap(terminalReaches);
 		
 		ModelAggregationRequest modelReachAreaRelelationsRequest = 
 					new ModelAggregationRequest(modelId, aggLevel);
@@ -215,39 +217,42 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 		
 		//Loop thru all the reaches in the Total Delivered Load
 		for (int reachRow = 0; reachRow < reachRowCount; reachRow++) {
-			ReachAreaRelations reachRelations = areaRelations.getRelationsForReachRow(reachRow);
-			Double catchmentArea = catchmentAreas.getDouble(reachRow);
 			
-			//Loop thru each region that this reach has catchment area in
-			for (AreaRelation reachRelation : reachRelations.getRelations()) {
-				long regionId = reachRelation.getAreaId();
-				double reachFractionInRegion = reachRelation.getFraction();
-				int regionRow = areaDetail.getRowForId(regionId);
-				
-				//Populate the total area column
-				double reachAreaInRegion = reachFractionInRegion * catchmentArea;
-				Double existingRegionArea = regionAreaTable.getDouble(regionRow, 0);
-				if (existingRegionArea == null) existingRegionArea = 0d;
-				regionAreaTable.setValue(reachAreaInRegion + existingRegionArea, regionRow, 0);
-				
-				//Loop thru each source and the total.  Col 0 is the area.  First source is col 1.
-				for (int sourceColIndex = 0; sourceColIndex < colCount; sourceColIndex++) {
-					
-					Double existingRegionAggVal = regionResultTable.getDouble(regionRow, sourceColIndex);
-					
-					//Do we already have a value for this cell?
-					if (existingRegionAggVal == null) existingRegionAggVal = 0d;
-					
-					double reachValue =
-									sourceColumns.get(sourceColIndex).getDouble(reachRow);
-					double reachValuePortionFromRegion = reachValue * reachFractionInRegion;
-					
-					regionResultTable.setValue(reachValuePortionFromRegion + existingRegionAggVal, regionRow, sourceColIndex);
+			if (deliveryFractionMap.containsKey(reachRow)) {
+				ReachAreaRelations reachRelations = areaRelations.getRelationsForReachRow(reachRow);
+				Double catchmentArea = catchmentAreas.getDouble(reachRow);
+
+				//Loop thru each region that this reach has catchment area in
+				for (AreaRelation reachRelation : reachRelations.getRelations()) {
+					long regionId = reachRelation.getAreaId();
+					double reachFractionInRegion = reachRelation.getFraction();
+					int regionRow = areaDetail.getRowForId(regionId);
+
+					//Populate the total area column
+					double reachAreaInRegion = reachFractionInRegion * catchmentArea;
+					Double existingRegionArea = regionAreaTable.getDouble(regionRow, 0);
+					if (existingRegionArea == null) existingRegionArea = 0d;
+					regionAreaTable.setValue(reachAreaInRegion + existingRegionArea, regionRow, 0);
+
+					//Loop thru each source and the total.  Col 0 is the area.  First source is col 1.
+					for (int sourceColIndex = 0; sourceColIndex < colCount; sourceColIndex++) {
+
+						Double existingRegionAggVal = regionResultTable.getDouble(regionRow, sourceColIndex);
+
+						//Do we already have a value for this cell?
+						if (existingRegionAggVal == null) existingRegionAggVal = 0d;
+
+						double reachValue =
+										sourceColumns.get(sourceColIndex).getDouble(reachRow);
+						double reachValuePortionFromRegion = reachValue * reachFractionInRegion;
+
+						regionResultTable.setValue(reachValuePortionFromRegion + existingRegionAggVal, regionRow, sourceColIndex);
+
+					}
 
 				}
-				
+
 			}
-	
 		}
 	}
 	

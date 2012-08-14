@@ -6,7 +6,11 @@ import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.*;
+import gov.usgswim.sparrow.domain.reacharearelation.ModelReachAreaRelations;
+import gov.usgswim.sparrow.domain.reacharearelation.ReachAreaRelations;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
+import gov.usgswim.sparrow.request.ModelAggregationRequest;
+import gov.usgswim.sparrow.request.ModelHucsRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +62,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		DataTable resultDataTable = result.getTable(1);
 		
 		assertEquals(3, infoDataTable.getColumnCount());
+		assertEquals("Watershed Area", infoDataTable.getName(2));
 		assertEquals(SparrowUnits.SQR_KM.toString(), infoDataTable.getUnits(2));
 		assertEquals(6, resultDataTable.getColumnCount());
 		
@@ -285,6 +290,135 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		
 		//TODO: Anne says the number is 912050...
 		assertEquals(912040D, huc8Total, .5d);
+			
+	}
+	
+	@Test
+	public void cumulativeAreaShouldBeTheSameAsCatchAreaForShoreReach() throws Exception {
+
+		Long TEST_REACH_ID = 81045L;
+		
+		
+		//These are the term reaches from Anne's example calc
+		List<Long> targetList = new ArrayList<Long>();
+		targetList.add(TEST_REACH_ID);
+		int testReachRow = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID).getRowForReachID(TEST_REACH_ID);
+		TerminalReaches termReaches = new TerminalReaches(TEST_MODEL_ID, targetList);
+		
+		AdjustmentGroups adjustmentGroups = new AdjustmentGroups(SparrowTestBase.TEST_MODEL_ID);
+		
+		//Calc the HUC2 Aggregated result
+		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.HUC2);
+		BuildTotalDeliveredLoadByUpstreamRegionReport action =
+				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
+		DataTableSet aggByHUC2Result = action.run();
+		
+		//Get the catchment and watershed area of the test reach
+		LoadReachAttributes reachAttribAction = new LoadReachAttributes(TEST_MODEL_ID, TEST_REACH_ID);
+		DataTable reachAttrib = reachAttribAction.run();
+		Double reachDbCatchArea = reachAttrib.getDouble(0, 11);
+		Double reachDbWatershedArea = reachAttrib.getDouble(0, 12);
+		
+		//Find the total value for HUC2
+		//The 1st table contains ID info (state name, area, etc)
+		//The 2nd table contains the source and total data
+		DataTable infoDataTable = aggByHUC2Result.getTable(0);
+		//DataTable resultDataTable = aggByHUC2Result.getTable(1);
+		
+		//Find the total value for HUC2 03
+		int huc2RowNumber = infoDataTable.findFirst(1, "03");
+		double huc2AggArea = infoDataTable.getDouble(huc2RowNumber, 2);
+		
+		
+		assertEquals(reachDbCatchArea, reachDbWatershedArea, .00000001D);
+		assertEquals(reachDbCatchArea, huc2AggArea, .00000001D);
+			
+	}
+
+	@Test
+	public void cumulativeAreaCheckForReachWith4ReachesUpstream() throws Exception {
+
+		Long TEST_REACH_ID = 7571L;
+		
+		
+		//These are the term reaches from Anne's example calc
+		List<Long> targetList = new ArrayList<Long>();
+		targetList.add(TEST_REACH_ID);
+		int testReachRow = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID).getRowForReachID(TEST_REACH_ID);
+		TerminalReaches termReaches = new TerminalReaches(TEST_MODEL_ID, targetList);
+		
+		AdjustmentGroups adjustmentGroups = new AdjustmentGroups(SparrowTestBase.TEST_MODEL_ID);
+		
+		//Calc the HUC2 Aggregated result
+		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.HUC2);
+		BuildTotalDeliveredLoadByUpstreamRegionReport action =
+				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
+		DataTableSet aggByHUC2Result = action.run();
+		
+		//Get the catchment and watershed area of the test reach
+		LoadReachAttributes reachAttribAction = new LoadReachAttributes(TEST_MODEL_ID, TEST_REACH_ID);
+		DataTable reachAttrib = reachAttribAction.run();
+		Double reachDbWatershedArea = reachAttrib.getDouble(0, 12);
+		
+		//Find the total value for HUC2
+		//The 1st table contains ID info (state name, area, etc)
+		//The 2nd table contains the source and total data
+		DataTable infoDataTable = aggByHUC2Result.getTable(0);
+		//DataTable resultDataTable = aggByHUC2Result.getTable(1);
+		
+		//Find the total value for HUC2 03
+		int huc2RowNumber = infoDataTable.findFirst(1, "03");
+		double huc2AggArea = infoDataTable.getDouble(huc2RowNumber, 2);
+		
+		
+		assertEquals(reachDbWatershedArea, huc2AggArea, .0001D);
+			
+	}
+	
+	@Test
+	public void cumulativeAreaCheckForReach16960() throws Exception {
+
+		Long TEST_REACH_ID = 16960L;
+		
+		
+		//These are the term reaches from Anne's example calc
+		List<Long> targetList = new ArrayList<Long>();
+		targetList.add(TEST_REACH_ID);
+		int testReachRow = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID).getRowForReachID(TEST_REACH_ID);
+		TerminalReaches termReaches = new TerminalReaches(TEST_MODEL_ID, targetList);
+		ModelReachAreaRelations reachToHuc2Relation = SharedApplication.getInstance().getModelReachAreaRelations(new ModelAggregationRequest(TEST_MODEL_ID, AggregationLevel.HUC2));
+		ReachAreaRelations huc2sForReach = reachToHuc2Relation.getRelationsForReachRow(testReachRow);
+		DataTable regionDetail = SharedApplication.getInstance().getHucsForModel(new ModelHucsRequest(TEST_MODEL_ID, HucLevel.HUC2));
+		
+		AdjustmentGroups adjustmentGroups = new AdjustmentGroups(SparrowTestBase.TEST_MODEL_ID);
+		
+		//Calc the HUC2 Aggregated result
+		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.HUC2);
+		BuildTotalDeliveredLoadByUpstreamRegionReport action =
+				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
+		DataTableSet aggByHUC2Result = action.run();
+		
+		//Get the catchment and watershed area of the test reach
+		LoadReachAttributes reachAttribAction = new LoadReachAttributes(TEST_MODEL_ID, TEST_REACH_ID);
+		DataTable reachAttrib = reachAttribAction.run();
+		Double reachDbWatershedArea = reachAttrib.getDouble(0, 12);
+		
+		//Find the total value for HUC2
+		//The 1st table contains ID info (state name, area, etc)
+		//The 2nd table contains the source and total data
+		DataTable infoDataTable = aggByHUC2Result.getTable(0);
+		//DataTable resultDataTable = aggByHUC2Result.getTable(1);
+		
+		
+
+		//Find the total value 
+		Long regionId = huc2sForReach.getRelations().get(0).getAreaId();
+		int regionRow = regionDetail.getRowForId(regionId);	
+		double huc2AggArea = infoDataTable.getDouble(regionRow, 2);
+		
+		
+		assertEquals(1, huc2sForReach.getRelations().size());	//reach should be in on ly 1 huc2
+		assertEquals(reachDbWatershedArea, huc2AggArea, .0001D);
 			
 	}
 	
