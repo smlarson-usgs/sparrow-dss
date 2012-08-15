@@ -17,6 +17,15 @@
 		</layout>
 	</appender>
 	
+	<!-- You will need to replace the 'File' param with a valid path on your system. -->
+	<appender name="FILE" class="org.apache.log4j.FileAppender">
+		<param name="File" value="~/sparrow_validation_test_results.txt" />
+		<param name="Append" value="false" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %C{1}:%L - %m%n" />
+		</layout>
+	</appender>
+	
 <!-- 	<logger name="gov.usgswim.sparrow">
 		<level value="info"/>
 		<appender-ref ref="CA" />
@@ -30,6 +39,7 @@
 	<logger name="gov.usgswim.sparrow.validation" additivity="false">
 		<level value="info" />
 		<appender-ref ref="CA_Minimal" />
+		<appender-ref ref="FILE" />
 	</logger>
 
 	<root>

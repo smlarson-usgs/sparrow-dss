@@ -1,5 +1,6 @@
-package gov.usgswim.sparrow.validation;
+package gov.usgswim.sparrow.validation.tests;
 
+import gov.usgswim.sparrow.validation.tests.ModelValidationResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.ColumnData;
@@ -63,6 +64,8 @@ public class BaseQueryValidator extends SparrowModelValidationBase {
 	@Override
 	public boolean requiresTextFile() { return false; }
 	
+	protected int queryCount = 0;
+	
 	/**
 	 * Runs QA checks against the data.
 	 * @param modelId
@@ -90,23 +93,26 @@ public class BaseQueryValidator extends SparrowModelValidationBase {
 		try {
 			while (elements.hasMoreElements()) {
 				String queryName = elements.nextElement().toString();
-				this.recordTrace(modelId, "Starting data validation test " + queryName);
-				passed = passed & testSingleModelDataQuality(modelId, queryName, conn, isAFailedTestOnlyAWarning());
+				queryCount++;
+				testSingleModelDataQuality(modelId, queryName, conn);
 			}
+			
+			result.modelsRun = 1;
+		} catch (Exception e) {
+			recordTestException(modelId, e, "Unknown exception during run");
 		} finally {
 			SharedApplication.closeConnection(conn, null);
 		}
 		
-		if (! passed) {
-			result.modelsRun = 1;
+		if (this.getIndividualFailures() == 0) {
+			result.modelsFailed = 0;
+		} else {
 			result.modelsFailed = 1;
 		}
+		
 		return result;
 	}
 	
-	protected boolean isAFailedTestOnlyAWarning() {
-		return false;
-	}
 	
 	/**
 	 * Runs a single QA check.
@@ -117,7 +123,7 @@ public class BaseQueryValidator extends SparrowModelValidationBase {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean testSingleModelDataQuality(Long modelId, String queryName, Connection conn, boolean failedTestIsWarning) throws Exception {
+	public void testSingleModelDataQuality(Long modelId, String queryName, Connection conn) throws Exception {
 		
 		
 		//There are two types of queries:
@@ -160,16 +166,10 @@ public class BaseQueryValidator extends SparrowModelValidationBase {
 					String msg = "Failed test query '" + queryName + "' (zero return rows exptected). See the "
 							+ this.getClass().getName() + ".properties file for query SQL.";
 					
-					if (!failedTestIsWarning) {
-						recordError(modelId, msg);
-						return false;
-					} else {
-						recordWarn(modelId, msg);
-						return true;
-					}
-					
+					recordError(modelId, msg);
+
 				} else {
-					return true;
+					recordTrace(modelId, "Query '" + queryName + "' passed.");
 				}
 			} else {
 				if (! rs.next()) {
@@ -177,39 +177,26 @@ public class BaseQueryValidator extends SparrowModelValidationBase {
 					String msg = "Failed test query '" + queryName + "' (one return rows exptected). See the "
 							+ this.getClass().getName() + ".properties file for query SQL.";
 					
-					if (!failedTestIsWarning) {
-						recordError(modelId, msg);
-						return false;
-					} else {
-						recordWarn(modelId, msg);
-						return true;
-					}
-					
+					recordError(modelId, msg);
+
 				} else {
 					int value = rs.getInt(1);
 					if (expectedValue != value) {
 						
 						String msg = "Failed test query '" + queryName + "' (one return value of " + expectedValue +" expected). See the "
 							+ this.getClass().getName() + ".properties file for query SQL.";
-						
-						if (!failedTestIsWarning) {
-							recordError(modelId, msg);
-							return false;
-						} else {
-							recordWarn(modelId, msg);
-							return true;
-						}
+
+						recordError(modelId, msg);
 					
 					} else {
-						return true;
+						recordTrace(modelId, "Query '" + queryName + "' passed.");
 					}
 				}
 			}
 		} catch (Exception e) {
-			recordError(modelId, e, "The query '" + queryName + "' failed with a SQL error. See the "
+			recordTestException(modelId, e, "The query '" + queryName + "' failed with a SQL error. See the "
 					+ BaseQueryValidator.class.getName() + ".properties file for query SQL.");
 								
-			return false;
 		} finally {
 			rs.close();
 			st.close();

@@ -1,5 +1,7 @@
 package gov.usgswim.sparrow.validation;
 
+import gov.usgswim.sparrow.validation.tests.ModelValidationResult;
+import gov.usgswim.sparrow.validation.tests.ModelValidator;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.action.LoadModelMetadata;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -176,7 +178,7 @@ public class SparrowModelValidationRunner {
 			try {
 				
 				v.beforeEachTest(id);
-				result.addResultToTotal(v.testModel(id));
+				result.addTestToSingleModelTotal(v.testModel(id));
 				v.afterEachTest(id);
 				
 			} catch (Exception ex) {
@@ -186,38 +188,6 @@ public class SparrowModelValidationRunner {
 
 		return result;	
 	}
-	
-//	protected ModelValidationResult runOneModelFile(File file) {
-//			
-//		ModelValidationResult result = new ModelValidationResult();
-//		
-//		if (file.exists()) {
-//
-//			String idString = singleModelPath.substring(0, singleModelPath.lastIndexOf('.'));
-//			idString = idString.substring(idString.lastIndexOf(File.separatorChar) + 1);
-//			Long id = null;
-//
-//			try {
-//				id = Long.parseLong(idString);
-//			} catch (Exception e) {
-//				idString = prompt("Couldn't figure out the model number (expecting it as the file name).  What is the model number?");
-//				id = Long.parseLong(idString);
-//			}
-//
-//			for (ModelValidator v : validators) {
-//				try {
-//					result.addResultToTotal(v.testModel(id, this));
-//				} catch (Exception ex) {
-//					log.error("Failed while running the test " + v.getClass().getCanonicalName(), ex);
-//				}
-//			}
-//
-//
-//		}
-//
-//		return result;
-//			
-//	}
 	
 	protected Long getModelIdFromPath(String path) {
 		String idString = path.substring(0, path.lastIndexOf('.'));
@@ -236,7 +206,9 @@ public class SparrowModelValidationRunner {
 		ModelValidationResult result = new ModelValidationResult();
 
 		for (long id = firstModelIdNumber; id <= lastModelIdNumber; id++) {
-			result.addResultToTotal(runOneModel(id));
+			ModelValidationResult oneResult = runOneModel(id);
+			result.addModelToTotal(oneResult);
+			result.addTestToTotal(oneResult);
 		}
 
 		return result;
@@ -246,7 +218,9 @@ public class SparrowModelValidationRunner {
 		ModelValidationResult result = new ModelValidationResult();
 
 		for (long id : ids) {
-			result.addResultToTotal(runOneModel(id));
+			ModelValidationResult oneResult = runOneModel(id);
+			result.addModelToTotal(oneResult);
+			result.addTestToTotal(oneResult);
 		}
 
 		return result;
@@ -327,7 +301,7 @@ public class SparrowModelValidationRunner {
 			
 			try {
 				
-				ok = mv.initTest(this);
+				ok = mv.initTest(this, false);
 				if (! ok) return false;
 				
 			} catch (Exception e) {
@@ -431,7 +405,7 @@ public class SparrowModelValidationRunner {
 			logLevel = Level.WARN;
 		} else if ("d".equalsIgnoreCase(level)) {
 			logLevel = Level.DEBUG;
-		} else if ("d".equalsIgnoreCase(level)) {
+		} else if ("t".equalsIgnoreCase(level)) {
 			logLevel = Level.TRACE;
 		} else {
 			System.out.println("Hmm, that was exactly understand that, but I'll take it to be the ERROR log level.");

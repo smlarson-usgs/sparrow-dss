@@ -2,8 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package gov.usgswim.sparrow.validation;
+package gov.usgswim.sparrow.validation.tests;
 
+import gov.usgswim.sparrow.validation.SparrowModelValidationRunner;
 import org.apache.log4j.Logger;
 
 /**
@@ -13,7 +14,20 @@ import org.apache.log4j.Logger;
  */
 public interface ModelValidator {
 	
-	public boolean initTest(SparrowModelValidationRunner runner) throws Exception;
+	/**
+	 * Init the test, passing in needed info.
+	 * The failedTestIsOnlyAWarning flag indicates that a test failure should not
+	 * mark the test as failing, only a warning.  This is useful for tests that
+	 * have lots of questionable values (i.e., values are off by 10% for thousands
+	 * of values).
+	 * 
+	 * @param runner The runner, which can be used to fetch more data about the test.
+	 * @param failedTestIsOnlyAWarning If true, a failed test will only be counted as a warning.
+	 * @return
+	 * @throws Exception 
+	 */
+	public boolean initTest(SparrowModelValidationRunner runner, boolean failedTestIsOnlyAWarning) throws Exception;
+	
 	public void beforeEachTest(Long modelId);
 	public void afterEachTest(Long modelId);
 	public ModelValidationResult testModel(Long modelId) throws Exception;
@@ -60,10 +74,18 @@ public interface ModelValidator {
 	public void recordRowTrace(Long modelId, Long reachId, Integer rowNumber, String msg);
 	
 	
-	public void recordError(Long modelId, Exception exception, String msg);
 	public void recordError(Long modelId, String msg);
 	public void recordWarn(Long modelId, String msg);
 	public void recordTrace(Long modelId, String msg);
+	
+	/**
+	 * Used to record an actual unexpected error in running the test.
+	 * Counts as a test failure.
+	 * @param modelId
+	 * @param exception
+	 * @param msg 
+	 */
+	public void recordTestException(Long modelId, Exception exception, String msg);
 
 	
 	public int getIndividualFailures();

@@ -1,5 +1,6 @@
-package gov.usgswim.sparrow.validation;
+package gov.usgswim.sparrow.validation.tests;
 
+import gov.usgswim.sparrow.validation.tests.ModelValidationResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.ColumnData;
