@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow;
+package gov.usgswim.sparrow.validation;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -10,6 +10,8 @@ import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.datatable.impl.StandardLongColumnData;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
+import gov.usgswim.sparrow.LifecycleListener;
+import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.action.CalcAnalysis;
 import gov.usgswim.sparrow.action.LoadModelMetadata;
