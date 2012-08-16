@@ -625,16 +625,31 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 						labelWidth: 15, //this is actually used as indentation for this section
 						items: [
 					        {xtype: 'panel', border: false, html: '<b>1. Select Downstream Reach(es)</b>'},
+//					        {
+//					        	xtype: 'button',
+//				        		itemCls: 'zero-padding',
+//				        		ctCls: 'zero-padding',
+//			    	        	text: 'Select Reaches from a list...',
+//			    	        	anchor: fieldsAnchor,
+//			    	        	handler: function() {
+//			    	        		WATERSHED_WINDOW.open();
+//			    	          	}
+//			    	        },
 					        {
-					        	xtype: 'button',
+					        	xtype: 'panel', 
+					        	border: false,
+					        	labelSeparator: '',
 				        		itemCls: 'zero-padding',
 				        		ctCls: 'zero-padding',
-			    	        	text: 'Select Reaches from a list...',
-			    	        	anchor: fieldsAnchor,
-			    	        	handler: function() {
-			    	        		WATERSHED_WINDOW.open();
-			    	          	}
-			    	        },
+					        	html: '<a style="cursor: pointer; padding: .2em 0; display: block;" title="Select a reach by selecting from a list of watersheds">--Select from a watershed list...</a>',
+					        	listeners: {
+					        		render: function(c) {
+				        		      Ext.fly(c.el).on('click', function(e, t) {
+				        		    	  WATERSHED_WINDOW.open();
+				        		      });
+				        		    }
+					        	} 
+					        },
 					        {
 					        	xtype: 'panel', 
 					        	border: false,
