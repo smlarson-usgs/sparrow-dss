@@ -1,7 +1,9 @@
 package gov.usgswim.sparrow.service.deliveryterminalreport;
 
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableSet;
 import gov.usgswim.datatable.filter.FilteredDataTable;
+import gov.usgswim.datatable.impl.DataTableSetSimple;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.TerminalReachesRowFilter;
@@ -13,6 +15,7 @@ import gov.usgswim.sparrow.request.DeliveryReportRequest;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.SparrowResourceUtils;
+import java.util.ArrayList;
 
 import javax.xml.stream.XMLStreamReader;
 
@@ -47,9 +50,17 @@ public class ReportService implements HttpService<ReportRequest> {
 					new DeliveryReportRequest(context.getAdjustmentGroups(),
 							termReaches, AggregationLevel.NONE);
 
-			DataTable reportData = sharedApp.getTotalDeliveredLoadSummaryReport(actionRequest);
+			DataTableSet reportData = sharedApp.getTotalDeliveredLoadSummaryReport(actionRequest);
 			TerminalReachesRowFilter filter = new TerminalReachesRowFilter(termReaches);
-			FilteredDataTable filteredReportData = new FilteredDataTable(reportData, filter);
+			//ArrayList<DataTable> tbls = new ArrayList<DataTable>();
+			DataTable[] tbls = reportData.getTables();
+			DataTable.Immutable[] tblsImm = new DataTable.Immutable[reportData.getTables().length];
+			for (int i = 0; i < tbls.length; i++) {
+				tblsImm[i] = new FilteredDataTable(tbls[i], filter).toImmutable();
+			}
+			
+			DataTableSet filteredTableSet = new DataTableSetSimple(tblsImm,
+				reportData.getName(), reportData.getDescription());
 
 			//Get info used to provide some links and info in the report header
 			SparrowModel model = sharedApp.getModelMetadata(new ModelRequestCacheKey(modelId, false, false, false)).get(0);
@@ -64,7 +75,7 @@ public class ReportService implements HttpService<ReportRequest> {
 					new String[] {"networkName", networkName, "networkUrl", networkUrl, "networkIdColumn", networkIdColumn});
 
 			return new  ReportSerializer(
-					req, filteredReportData, predictData, readmeText);
+					req, filteredTableSet, predictData, readmeText, filteredTableSet.getColumnCount() - 1);
 
 	
 

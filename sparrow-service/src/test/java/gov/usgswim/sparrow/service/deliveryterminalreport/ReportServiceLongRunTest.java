@@ -84,7 +84,17 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
 		
-		//System.out.println(actualReportResponse);
+		System.out.println(actualReportResponse);
+		
+		String firstReachId = getXPathValue("//*[local-name()='data']/*[local-name()='r'][position()=1]/@id", actualReportResponse);
+		String numberOfValues = getXPathValue("count(//*[local-name()='data']/*[local-name()='r'][position()=1]/*[local-name()='c'])", actualReportResponse);
+		String declairedColCount = getXPathValue("//*[local-name()='metadata']/@columnCount", actualReportResponse);
+		String declairedRowCount = getXPathValue("//*[local-name()='metadata']/@rowCount", actualReportResponse);
+		
+		assertEquals("9682", firstReachId);
+		assertEquals("10", numberOfValues);
+		assertEquals("10" ,declairedColCount);
+		assertEquals("2" ,declairedRowCount);
 		
 	}
 	

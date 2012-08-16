@@ -73,7 +73,7 @@ public class ReportSerializer extends BasicXMLStreamReader {
 	 * @throws Exception 
 	 */
 	public ReportSerializer(ReportRequest request, DataTableSet reportTableSet,
-			String exportDescription, DataTableSetCoord columnCoordToDetermineIfARowIsEmpty) throws Exception {
+			String exportDescription, int colToDetermineIfARowIsEmpty) throws Exception {
 		
 		super();
 		
@@ -85,7 +85,7 @@ public class ReportSerializer extends BasicXMLStreamReader {
 		this.request = request;
 		this.data = reportTableSet;
 		this.exportDescription = exportDescription;
-		this.columnToDetermineIfARowIsEmpty = columnCoordToDetermineIfARowIsEmpty.col;
+		this.columnToDetermineIfARowIsEmpty = colToDetermineIfARowIsEmpty;
 //		this.sourceCount = reportTableSet.getColumnCount() - 4;  //4 non-source columns
 //		totalCol = reportTableSet.getColumnCount() - 2;
 //		relPercentCol = reportTableSet.getColumnCount() - 1;

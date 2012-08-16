@@ -899,13 +899,13 @@ public class SharedApplication  {
 		return result;
 	}
 	
-	public DataTable getTotalDeliveredLoadSummaryReport(DeliveryReportRequest request) throws Exception {
+	public DataTableSet getTotalDeliveredLoadSummaryReport(DeliveryReportRequest request) throws Exception {
 		return getTotalDeliveredLoadSummaryReport(request, false);
 	}
 
-	public DataTable getTotalDeliveredLoadSummaryReport(DeliveryReportRequest request, boolean quiet) throws Exception {
+	public DataTableSet getTotalDeliveredLoadSummaryReport(DeliveryReportRequest request, boolean quiet) throws Exception {
 		Object result = TotalDeliveredLoadSummaryReport.get(request, quiet);
-		return (DataTable) result;
+		return (DataTableSet) result;
 	}
 	
 	public DataTableSet getTotalDeliveredLoadByUpstreamRegionReport(DeliveryReportRequest request) throws Exception {

@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableSet;
 import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
@@ -31,24 +32,24 @@ public class BuildTotalDeliveredLoadSummaryReportTest extends DeliveryBase {
 		
 		action.setDeliveryReportRequest(req);
 		
-		DataTable result = action.run();
+		DataTableSet result = action.run();
 		
 		assertNotNull(result);
-		assertEquals(9, result.getColumnCount());
+		assertEquals(10, result.getColumnCount());
 		
 		boolean containsSomeNonZeroData = false;
 		
 		//All the first columns should total to the last column
 		for (int r=0; r < result.getRowCount(); r++) {
 			double srcTotal = 0;
-			for (int c=3; c<8; c++) {
+			for (int c=4; c<9; c++) {
 				srcTotal += result.getDouble(r, c);
 			}
 			
 			if (srcTotal > .0000000001d) containsSomeNonZeroData = true;
 			
 			//SUM of first 5 columns should equal the last column
-			assertEquals(result.getDouble(r, 8), srcTotal, COMP_ERROR);
+			assertEquals(result.getDouble(r, 9), srcTotal, COMP_ERROR);
 			
 		}
 		

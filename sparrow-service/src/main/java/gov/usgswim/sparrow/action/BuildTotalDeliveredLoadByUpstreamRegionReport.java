@@ -171,8 +171,8 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 //				);
 		
 		DataTableSet tableSet = new DataTableSetSimple(new DataTable.Immutable[]{idTable, srcAndTotalTable.toImmutable()},
-				"Total Delivered Load Summary Report per State",
-				"Total Delivered Load Summary Report per State");
+				"Total Delivered Load Summary Report per upstream region",
+				"Total Delivered Load Summary Report per originating upstream region.");
 		
 		return tableSet;
 		

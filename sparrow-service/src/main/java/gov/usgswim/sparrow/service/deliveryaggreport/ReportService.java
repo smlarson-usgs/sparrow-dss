@@ -91,7 +91,7 @@ public class ReportService implements HttpService<ReportRequest> {
 
 
 			return new  ReportSerializer(
-					req, reportDataTableSet, readmeText, columnCoordToDetermineIfARowIsEmpty);
+					req, reportDataTableSet, readmeText, columnCoordToDetermineIfARowIsEmpty.col);
 
 
 

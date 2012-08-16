@@ -2,7 +2,9 @@ package gov.usgswim.sparrow.action;
 
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.DataTableSet;
 import gov.usgswim.datatable.HashMapColumnIndex;
+import gov.usgswim.datatable.impl.DataTableSetSimple;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
@@ -12,7 +14,6 @@ import gov.usgswim.sparrow.request.DeliveryReportRequest;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ import java.util.Map;
  * @author eeverman
  *
  */
-public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTable> {
+public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 
 	protected AdjustmentGroups adjustmentGroups;
 	protected TerminalReaches terminalReaches;
@@ -43,6 +44,7 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTable> {
 	private transient DataTable idInfo = null;
 	private transient DataTable terminalReachDrainageArea = null;
 	private transient List<ColumnData> expandedTotalDelLoadForAllSources;
+	private transient SparrowColumnSpecifier streamFlow = null;
 	
 	protected String msg = null;	//statefull message for logging
 	
@@ -55,7 +57,7 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTable> {
 		predictData = SharedApplication.getInstance().getPredictData(modelId);
 		idInfo = SharedApplication.getInstance().getModelReachIdentificationAttributes(modelId);
 		terminalReachDrainageArea = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AggregationLevel.NONE, true));
-		
+		streamFlow = SharedApplication.getInstance().getStreamFlow(modelId);
 		
 		//Basic predict context, which we need data for all sources
 		BasicAnalysis analysis = new BasicAnalysis(
@@ -74,38 +76,38 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTable> {
 	}
 	
 	@Override
-	public DataTable doAction() throws Exception {
+	public DataTableSet doAction() throws Exception {
 		
 		initRequiredFields();
 
 		DataTable srcMetadata = predictData.getSrcMetadata();
-		int srcCount = srcMetadata.getRowCount();
+		//int srcCount = srcMetadata.getRowCount();
 		
 		BasicAnalysis analysis = new BasicAnalysis(
 				DataSeriesType.total_delivered_flux, null, null, null);
 			
-		PredictionContext basicPredictContext = new PredictionContext(
-				modelId, adjustmentGroups, analysis, terminalReaches,
-				null, NoComparison.NO_COMPARISON);
-		
-		
-		List<ColumnData> columns = expandedTotalDelLoadForAllSources;
-		
-		//Add the reach identification columns
-		columns.add(0, idInfo.getColumn(0));	//reach name
-		columns.add(1, idInfo.getColumn(1));	//eda code
-		columns.add(2, terminalReachDrainageArea.getColumn(1));
-		
 		HashMapColumnIndex index = new  HashMapColumnIndex(predictData.getTopo());
 		
-		SimpleDataTable result = new SimpleDataTable(
-				columns.toArray(new ColumnData[]{}),
-				"Total Delivered Load Summary Report", 
+				//We can't add immutable columns to a writable table, so we need to construct a new table
+		SimpleDataTable infoTable = new SimpleDataTable(
+				new ColumnData[] {idInfo.getColumn(0), idInfo.getColumn(1), terminalReachDrainageArea.getColumn(1), streamFlow.getColumnData()},
+				"Identification and basic info", 
+				"Identification and basic info",
+				buildTableProperties(), index);
+	
+		
+		SimpleDataTable dataTable = new SimpleDataTable(
+				expandedTotalDelLoadForAllSources.toArray(new ColumnData[]{}),
+				"Total Delivered Load by Source", 
 				"Total Delivered Load for each source individualy and for all sources",
 				buildTableProperties(), index);
 		
-		if (result.isValid()) {
-			return result;
+		DataTableSet tableSet = new DataTableSetSimple(new DataTable.Immutable[]{infoTable.toImmutable(), dataTable.toImmutable()},
+				"Total Delivered Load Summary Report",
+				"Total Delivered Load for each source individualy and for all sources");
+		
+		if (tableSet.isValid()) {
+			return tableSet;
 		} else {
 			msg = "The resulting table was invalid";
 			return null;
