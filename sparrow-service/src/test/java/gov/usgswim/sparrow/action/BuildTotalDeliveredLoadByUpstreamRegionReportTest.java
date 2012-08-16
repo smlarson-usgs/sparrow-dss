@@ -422,6 +422,50 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 			
 	}
 	
+	/**
+	 * The info table always has one reach for each region in the model (states in this case).
+	 * The data table (values for each area) should have the same number of rows.
+	 * Later these rows are filtered to remove the zero value rows.
+	 * 
+	 * The issue here was that, since the data table is build dynamically, its
+	 * columns do not add values beyond where values were written to.  For instance,
+	 * if the last state is West Virginia and no value is written for that state
+	 * (ie, there are no reaches upstream of the terminal reaches in W. Virginia),
+	 * then the table rows will not extend to the last row of the table.
+	 * 
+	 * @throws Exception 
+	 */
+	@Test
+	public void infoTableAndDataTableShouldHaveSameNumberOfRows() throws Exception {
+
+		Long TEST_REACH_ID = 5573L;
+		
+		//These are the term reaches from Anne's example calc
+		List<Long> targetList = new ArrayList<Long>();
+		targetList.add(TEST_REACH_ID);
+		TerminalReaches termReaches = new TerminalReaches(TEST_MODEL_ID, targetList);
+
+		AdjustmentGroups adjustmentGroups = new AdjustmentGroups(SparrowTestBase.TEST_MODEL_ID);
+		
+		//Calc the HUC2 Aggregated result
+		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.STATE);
+		BuildTotalDeliveredLoadByUpstreamRegionReport action =
+				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
+		DataTableSet aggResult = action.run();
+		
+		
+		DataTable infoDataTable = aggResult.getTable(0);
+		DataTable resultDataTable = aggResult.getTable(1);
+		
+		assertEquals(infoDataTable.getRowCount(), resultDataTable.getRowCount());
+		assertEquals(11, infoDataTable.getRowCount());
+		assertEquals(11, resultDataTable.getRowCount());
+		
+
+
+			
+	}
+	
 	
 }
 

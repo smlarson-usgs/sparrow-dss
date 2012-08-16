@@ -124,6 +124,13 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 
 		
 		//
+		//Create a writable table to hold the region area info
+		SimpleDataTableWritable regionAreaTable = new SimpleDataTableWritable();
+		StandardNumberColumnDataWritable areaCol = new StandardNumberColumnDataWritable(
+				"Watershed Area", reachCatchmentAreas.getUnits(1), Double.class);
+		regionAreaTable.addColumn(areaCol);
+		
+		//
 		//Create a writable table to hold individual source and total load values
 		SimpleDataTableWritable srcAndTotalTable = new SimpleDataTableWritable();
 		srcAndTotalTable.setName("Total Delivered Load Summary Report per originating upstream region");
@@ -141,15 +148,14 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 							expandedTotalDelLoadForAllSources.get(colIndex).getUnits(),
 							Double.class);
 			
+			//Ensure that the column is populated w/ as many rows as the info table
+			//by setting a value for the last row.
+			col.setValue(0D, areaDetail.getRowCount() - 1);
+			
 			srcAndTotalTable.addColumn(col);
 		}
 		
-		//
-		//Create a writable table to hold the region area info
-		SimpleDataTableWritable regionAreaTable = new SimpleDataTableWritable();
-		StandardNumberColumnDataWritable areaCol = new StandardNumberColumnDataWritable(
-				"Watershed Area", reachCatchmentAreas.getUnits(1), Double.class);
-		regionAreaTable.addColumn(areaCol);
+
 
 		populateColumns(srcAndTotalTable, regionAreaTable, expandedTotalDelLoadForAllSources, areaRelations, areaDetail, reachCatchmentAreas.getColumn(1));
 		
@@ -160,15 +166,6 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 				"Identification and basic info", 
 				"Identification and basic info",
 				buildTableProperties(null));
-		
-		//Since the data table is now separate, there is no reason to do the
-		//rel-percent thing here - it can be at the display layer.
-//		RelativePercentageView relPercentResultView = new RelativePercentageView(
-//				srcAndTotalTable,
-//				null, null,
-//				srcAndTotalTable.getColumnCount() - 1,
-//				false
-//				);
 		
 		DataTableSet tableSet = new DataTableSetSimple(new DataTable.Immutable[]{idTable, srcAndTotalTable.toImmutable()},
 				"Total Delivered Load Summary Report per upstream region",

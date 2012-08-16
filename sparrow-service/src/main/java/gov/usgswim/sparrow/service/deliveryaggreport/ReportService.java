@@ -59,7 +59,7 @@ public class ReportService implements HttpService<ReportRequest> {
 					new String[] {});
 			
 			//Coord's of the total column
-			DataTableSetCoord columnCoordToDetermineIfARowIsEmpty = null;
+			int columnToDetermineIfARowIsEmpty = 0;
 			
 			if (includeRelativePercentage) {
 				DataTable.Immutable[] tables = (DataTable.Immutable[]) reportDataTableSet.getTables();
@@ -80,18 +80,15 @@ public class ReportService implements HttpService<ReportRequest> {
 				reportDataTableSet = reportDataWRelPercent;
 				
 				//Total column is now second to last column
-				columnCoordToDetermineIfARowIsEmpty = new DataTableSetCoord(
-						lastTableIndex, -1, reportDataWRelPercent.getTableColumnCount(lastTableIndex) - 2);
+				columnToDetermineIfARowIsEmpty = reportDataTableSet.getColumnCount() - 2;
 			} else {
 				//Total column is the last column
-				columnCoordToDetermineIfARowIsEmpty = new DataTableSetCoord(
-						reportDataTableSet.getTableCount() -1, -1,
-						reportDataTableSet.getTableColumnCount(reportDataTableSet.getTableCount() -1) - 1);
+				columnToDetermineIfARowIsEmpty = reportDataTableSet.getColumnCount() - 1;
 			}
 
 
 			return new  ReportSerializer(
-					req, reportDataTableSet, readmeText, columnCoordToDetermineIfARowIsEmpty.col);
+					req, reportDataTableSet, readmeText, columnToDetermineIfARowIsEmpty);
 
 
 
