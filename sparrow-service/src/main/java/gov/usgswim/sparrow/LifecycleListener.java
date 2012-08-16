@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow;
 
+import gov.usgs.cida.config.DynamicReadOnlyProperties;
 import gov.usgswim.sparrow.cachefactory.EhCacheConfigurationReader;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.service.ConfiguredCache;
@@ -16,7 +17,6 @@ import net.sf.ehcache.Status;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.apache.log4j.LogManager;
 
-import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.extras.DOMConfigurator;
 
 /**
@@ -43,6 +43,9 @@ import org.apache.log4j.extras.DOMConfigurator;
  */
 public class LifecycleListener implements ServletContextListener { 
 
+	public static final String APP_MODE_KEY = "application-mode";
+	public static final String APP_ENV_KEY = "application-environment";
+	
 	/**
 	 * Called when the context (the entire application) is being shut down.
 	 * This method should properly shutdown the cache and any other shared resources.
@@ -84,13 +87,30 @@ public class LifecycleListener implements ServletContextListener {
 	 */
 	public void contextInitialized(ServletContextEvent context, boolean clearCache){
 		try {
-
+			
+			DynamicReadOnlyProperties props = new DynamicReadOnlyProperties();
+			props.addJNDIContexts(DynamicReadOnlyProperties.DEFAULT_JNDI_CONTEXTS);
+			
+			String mode = null;
+			String env = null;
+			
 			//If we are in a servlet environment, switch to the production log4j config
 			if (context != null) {
-				URL log4jUrl = LifecycleListener.class.getResource("/log4j_production.xml");
-				LogManager.resetConfiguration();
-				DOMConfigurator.configure(log4jUrl);
+				env = props.getProperty(APP_ENV_KEY, "prod");
+				mode = props.getProperty(APP_MODE_KEY, "prod");
+				
+			} else {
+				env = props.getProperty(APP_ENV_KEY, "local");
+				mode = props.getProperty(APP_MODE_KEY, "dev");
 			}
+			
+			String logFileName = "/log4j_" + env + "_" + mode + ".xml";
+			
+			System.out.println("**** SPARROW Service app is switching to the log4j config file '" + logFileName + "'");
+			
+			URL log4jUrl = LifecycleListener.class.getResource(logFileName);
+			LogManager.resetConfiguration();
+			DOMConfigurator.configure(log4jUrl);
 			
 			//Calling create here is not required, but gives a single place to customize
 			//the creation of the singleton instance.
