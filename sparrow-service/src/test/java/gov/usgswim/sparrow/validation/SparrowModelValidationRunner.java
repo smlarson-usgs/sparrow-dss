@@ -29,13 +29,13 @@ import org.apache.log4j.extras.DOMConfigurator;
  */
 public class SparrowModelValidationRunner {
 	
-	static {
-		// Set up a simple configuration that logs on the console.
-		
-		URL log4jUrl = SparrowModelValidationRunner.class.getResource("/log4j_test.xml");
-		LogManager.resetConfiguration();
-		DOMConfigurator.configure(log4jUrl);
-	}
+//	static {
+//		// Set up a simple configuration that logs on the console.
+//		
+//		URL log4jUrl = SparrowModelValidationRunner.class.getResource("/log4j_test.xml");
+//		LogManager.resetConfiguration();
+//		DOMConfigurator.configure(log4jUrl);
+//	}
 	
 	/**
 	 * The required comparison accuracy (expected - actual)/(max(expected, actual))
@@ -88,28 +88,28 @@ public class SparrowModelValidationRunner {
 	*/
 	public static void main(String[] args) throws Exception {
 
-		log = Logger.getLogger(SparrowModelValidationRunner.class); //logging for this class
-	
+		
+		//No logger up to this point
 		String runnerToRun = args[0];
 		SparrowModelValidationRunner runner = (SparrowModelValidationRunner) SparrowModelValidationRunner.class.forName(runnerToRun).newInstance();
 		runner.loadModelValidators();
 		
 		if (runner.getValidators().isEmpty()) {
-			log.fatal("No validators were found.  Subclass SparrowModelValidationRunner to override the loadModelValidators method to add some.");
+			System.err.println("No validators were found.  Subclass SparrowModelValidationRunner to override the loadModelValidators method to add some.");
 			return;
 		} else {
-			log.info("Found " + runner.getValidators().size() + " validation tests to run against the models.");
+			System.err.println("Found " + runner.getValidators().size() + " validation tests to run against the models.");
 		}
 		
 		
-		
-		
 		runner.oneTimeUserInput();
-		runner.initSystemConfig();
+		runner.initSystemConfig();		//Logging system is now configured (which log4j file to load)
+		runner.initLoggingConfig();		//Now do test configuraiton of logging
+		
 		if (runner.initModelValidators()) {
 			runner.run();
 		} else {
-			log.fatal("Unable to run any models or tests.");
+			System.err.println("Unable to run any models or tests.");
 		}
 	}
 	
@@ -148,12 +148,12 @@ public class SparrowModelValidationRunner {
 		
 
 		if (result.modelsRun > 0 && result.modelsFailed == 0) {
-			log.debug("+ + + + + EVERYTHING LOOKS GREAT! + + + + +");
-			log.debug("+ + + + + " + result.modelsRun + " models run. + + + + +");
+			log.info("+ + + + + EVERYTHING LOOKS GREAT! + + + + +");
+			log.info("+ + + + + " + result.modelsRun + " models run. + + + + +");
 		} else if (result.modelsFailed > 0) {
 			log.error("- - - - - AT LEAST ONE MODEL FAILED VALIDATION.  PLEASE REVIEW THE LOG MESSAGES TO FIND THE VALIDATION ERRORS. + + + + +");
-			log.debug("- - - - - " + result.modelsRun + " models run. - - - - - ");
-			log.debug("- - - - - " + result.modelsFailed + " models FAILED. - - - - - ");
+			log.error("- - - - - " + result.modelsRun + " models run. - - - - - ");
+			log.error("- - - - - " + result.modelsFailed + " models FAILED. - - - - - ");
 		} else {
 			log.error("- - - - - NO MODELS WERE FOUND.  PLEASE CHECK PATH INFO. - - - - - ");
 		}
@@ -332,16 +332,24 @@ public class SparrowModelValidationRunner {
 	}
 	
 	public void initLoggingConfig() {
+		
+		
+		log = Logger.getLogger(SparrowModelValidationRunner.class); //logging for this class
+		
 		//Turn off logging for the lifecycle
 		Logger.getLogger(LifecycleListener.class).setLevel(Level.ERROR);
+		
+		//This class relies on getting messages out at at least the info level
+		if (! log.isEnabledFor(Level.INFO)) {
+			log.setLevel(Level.INFO);
+		}
+		
 	}
 	
 	protected void initSystemConfig() {
 		
-		if (logLevel != null) {
-			Logger baseLogger = Logger.getLogger("gov.usgswim.sparrow.validation");
-			baseLogger.setLevel(logLevel);
-		}
+		System.setProperty(LifecycleListener.APP_ENV_KEY, "local");
+		System.setProperty(LifecycleListener.APP_MODE_KEY, "test");
 				
 				
 		//Tell JNDI config to not expect JNDI props
@@ -353,6 +361,11 @@ public class SparrowModelValidationRunner {
 		
 		
 		lifecycle.contextInitialized(null, true);
+		
+		if (logLevel != null) {
+			Logger baseLogger = Logger.getLogger("gov.usgswim.sparrow.validation");
+			baseLogger.setLevel(logLevel);
+		}
 	}
 	
 	
