@@ -210,6 +210,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 	 * <li>[i][3]IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
 	 * <li>[i][4]HYDSEQ - Hydrologic sequence order (starting at 1, no gaps)
 	 * <li>[i][5]SHORE_REACH - 1 if a shore reach, 0 otherwise.
+	 * <li>[i][6]FRAC - Fraction of the upstream load/flow entering this reach.  Non-one at a diversion.
 	 * </ol>
 	 *
 	 * **Differs from db version of loading.
@@ -233,7 +234,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 				"TNODE",
 				"IFTRAN",
 				"HYDSEQ",
-				"frac"		//In file, but not used - remove
+				"FRAC"		//temp location - will insert shore reach, bumping this down one spot
 				};
 		Class<?>[] types= {
 				Integer.class,	//[i][0]MODEL_REACH
@@ -241,7 +242,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 				Integer.class,	//[i][2]TNODE
 				Integer.class,	//[i][3]IFTRAN
 				Integer.class,	//[i][4]HYDSEQ - seems to be empty for some
-				String.class	//frac
+				Double.class		//*** Temp location [i][5]FRAC - Fraction of the upstream load/flow entering this reach.  Non-one at a diversion.
 				};
 		DataTableWritable topo = new SimpleDataTableWritable(headings, null, types);
 		
@@ -259,11 +260,14 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 		//the identifier (mrb_id) into both.
 		copyColumnAsRowId(topo, 0);
 		
-		topo.removeColumn(5);
+		ColumnDataWritable fracColumn = topo.removeColumn(5);
 		
 		//Add the shorereach flag
 		ColumnDataWritable shoreReachFlagCol = loadTopoShoreReachColumnFromAncilTable(modelId);
-		topo.addColumn(shoreReachFlagCol);
+		topo.setColumn(shoreReachFlagCol, 5);
+		
+		//Add the fraction back on
+		topo.setColumn(fracColumn, 6);
 		
 		return topo;
 	}

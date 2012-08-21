@@ -56,6 +56,18 @@ public class LoadModelPredictDataFromFileUnitTest {
 		assertTrue(model50.getTopo().getRowCount() > 0);
 		assertTrue(model50.getSrcMetadata().getRowCount() > 0);
 		
+		//topo
+		assertEquals(7, model50.getTopo().getColumnCount());
+		assertEquals("MODEL_REACH", model50.getTopo().getName(0));
+		assertEquals("FNODE", model50.getTopo().getName(1));
+		assertEquals("TNODE", model50.getTopo().getName(2));
+		assertEquals("IFTRAN", model50.getTopo().getName(3));
+		assertEquals("HYDSEQ", model50.getTopo().getName(4));
+		assertEquals("SHORE_REACH", model50.getTopo().getName(5));
+		assertEquals("FRAC", model50.getTopo().getName(6));
+		assertTrue(model50.getTopo().isValid());
+
+		
 		int rowCount = model50.getTopo().getRowCount();
 		int srcCount = model50.getSrcMetadata().getRowCount();
 		

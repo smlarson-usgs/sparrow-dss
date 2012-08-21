@@ -146,18 +146,15 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 	 * <h4>Data Columns</h4>
 	 * One row per reach (i = reach index)
 	 * <h5>Row ID: IDENTIFIER from DB</h5>
-	 * <ol>
+	 * <ul>
 	 * <li>[i][0]MODEL_REACH - The db id for this reach (the actual identifier is used as the index)
 	 * <li>[i][1]FNODE - The from node
 	 * <li>[i][2]TNODE - The to node
 	 * <li>[i][3]IFTRAN - 1 if this reach transmits to its end node, 0 otherwise
 	 * <li>[i][4]HYDSEQ - Hydrologic sequence order (starting at 1, no gaps)
 	 * <li>[i][5]SHORE_REACH - 1 if a shore reach, 0 otherwise.
-	 * </ol>
-	 * 
-	 * Note: Frac is also available, but is not used for calculations b/c it
-	 * is included in the Total Delivery value.  Frac is non-one when a reach is
- 	 * at a split and some of the load travels down another leg of the split.
+	 * <li>[i][6]FRAC - Fraction of the upstream load/flow entering this reach.  Non-one at a diversion.
+	 * </ul>
 	 * 
 	 * <h4>Sorting</h4>
 	 * Sorted by HYDSEQ then IDENTIFIER, since in some cases HYDSEQ is not unique.
@@ -180,7 +177,8 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 		params.put("ModelId", "" + modelId);
 		
 		//Expected column types
-		Class<?>[] colTypes = {Integer.class, Integer.class, Integer.class, Integer.class, Integer.class, Integer.class};
+		Class<?>[] colTypes = {Integer.class, Integer.class, Integer.class,
+			Integer.class, Integer.class, Integer.class, Double.class};
 		
 		PreparedStatement statement = getROPSFromPropertiesFile("SelectTopoData", this.getClass(), params);
 		addStatementForAutoClose(statement);
