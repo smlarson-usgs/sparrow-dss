@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.validation.tests;
 import gov.usgswim.sparrow.validation.tests.ModelValidator;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.validation.SparrowModelValidationRunner;
+import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
@@ -36,12 +37,8 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 
 	final static int NUMBER_OF_BAD_INCREMENTALS_TO_PRINT = Integer.MAX_VALUE;
 	final static int NUMBER_OF_BAD_TOTALS_TO_PRINT = Integer.MAX_VALUE;
-	
-	protected boolean logDetailHeaderWritten = false;
 
-	protected int failCnt = 0;
-	protected int warnCnt = 0;
-	protected int warnWhichWereFailsCnt = 0;
+	protected TestResult result;
 	
 	private Logger testLog;
 
@@ -55,26 +52,24 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 	@Override
 	public void beforeEachTest(Long modelId) {
 		recordTrace(modelId, "Beginning Test '" + this.getClass().getName() + "'");
-		SharedApplication.getInstance().clearAllCaches();
+		result = new TestResult(modelId, this.getClass().getSimpleName());
 	}
 	
 	@Override
 	public void afterEachTest(Long modelId) {
-		this.writeDetailLogFooter(modelId);
 		
-		if (failCnt > 0) {
-			this.getLogger().error("----- Test Completed with " + failCnt + " FAILURES and " + warnCnt + " WARNINGS.");
-		} else if (warnCnt > 0) {
-			if (failedTestIsOnlyAWarning && warnWhichWereFailsCnt > 0) {
-				this.getLogger().error("----- Test Completed with " + warnCnt + " WARNINGS, " +
-						"however, " + warnWhichWereFailsCnt + " of those are considered failures, but this test is currently configured to not count a warning as a failure.");
-			} else {
-				this.getLogger().warn("----- Test Completed with " + warnCnt + " WARNINGS (no failures).");
-			}
-			
-		} else {
+		if (result.isPerfect()) {
 			recordTrace(modelId, "Completed Test '" + this.getClass().getName() + "' with no failures or warnings.");
+		} else if (result.isOk()) {
+			recordTrace(modelId, "Completed Test '" + this.getClass().getName() + "' with SOME WARNINGS.");
+		} else {
+			recordTrace(modelId, "Completed Test '" + this.getClass().getName() + "' with SOME ERRORS.");
 		}
+		
+		
+		//If a test modifies the cache such that it should not be used for other
+		//tests, clear it here.
+		//SharedApplication.getInstance().clearAllCaches();
 	}
 	
 	
@@ -138,61 +133,59 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 		}
 	}
 	
+	
+	//
+	// Event recording
 	@Override
 	public void recordRowError(Long modelId, Long reachId, Integer rowNumber, String msg) {
 		if (failedTestIsOnlyAWarning) {
-			recordRowWarn(modelId, reachId, rowNumber, msg, true);
-			warnWhichWereFailsCnt++;
+			result.addErrorAsWarn();
+			writeRowLevelMessage(Level.WARN, modelId, reachId, rowNumber,
+				null, null, null, null, null, null, true, msg);
+			
 		} else {
-			failCnt++;
-			writeDetailLogHeader(modelId);
-			getLogger().error(" | " + modelId + " | " + reachId + " | " + rowNumber + " | FAIL | " + msg);
-		}
-	}
-	
-	@Override
-	public void recordRowErrorDebug(Long modelId, Long reachId, Integer rowNumber, String msg) {
-		if (getLogger().isDebugEnabled()) {
-			writeDetailLogHeader(modelId);
-			getLogger().debug(" | " + modelId + " | " + reachId + " | " + rowNumber + " | ERROR DEBUG | " + msg);
+			
+			result.addError();
+			writeRowLevelMessage(Level.ERROR, modelId, reachId, rowNumber,
+				null, null, null, null, null, null, false, msg);
 		}
 	}
 	
 	@Override
 	public void recordRowWarn(Long modelId, Long reachId, Integer rowNumber, String msg) {
-		warnCnt++;
-		
-		if (getLogger().isEnabledFor(Level.WARN)) {
-			writeDetailLogHeader(modelId);
-			getLogger().warn(" | " + modelId + " | " + reachId + " | " + rowNumber + " | WARN | " + msg);
-		}
+		result.addWarn();
+		writeRowLevelMessage(Level.TRACE, modelId, reachId, rowNumber,
+				null, null, null, null, null, null, false, msg);
+	}
+	
+	@Override
+	public void recordRowDebug(Long modelId, Long reachId, Integer rowNumber, String msg) {
+		writeRowLevelMessage(Level.DEBUG, modelId, reachId, rowNumber,
+				null, null, null, null, null, null, false, msg);
 	}
 	
 	@Override
 	public void recordRowTrace(Long modelId, Long reachId, Integer rowNumber, String msg) {
-		if (getLogger().isEnabledFor(Level.TRACE)) {
-			writeDetailLogHeader(modelId);
-			getLogger().trace(" | " + modelId + " | " + reachId + " | " + rowNumber + " | TRACE | " + msg);
-		}
+		writeRowLevelMessage(Level.TRACE, modelId, reachId, rowNumber,
+				null, null, null, null, null, null, false, msg);
 	}
 	
 	@Override
 	public void recordError(Long modelId, String msg) {
 		if (failedTestIsOnlyAWarning) {
-			warnWhichWereFailsCnt++;
-			recordWarn(modelId, msg, true);
+			result.addErrorAsWarn();
+			writeModelLevelMessage(Level.WARN, modelId, true, msg);
 		} else {
-			failCnt++;
-			writeDetailLogHeader(modelId);
-			getLogger().error(" | " + modelId + " | NA | NA | FAIL | " + msg);
+			
+			result.addError();
+			writeModelLevelMessage(Level.ERROR, modelId, false, msg);
 		}
 	}
 	
 	@Override
 	public void recordWarn(Long modelId, String msg) {
-		warnCnt++;
-		writeDetailLogHeader(modelId);
-		getLogger().warn(" | " + modelId + " | NA | NA | WARN | " + msg);
+		result.addWarn();
+		writeModelLevelMessage(Level.WARN, modelId, false, msg);
 	}
 	
 	/**
@@ -211,34 +204,61 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 	
 	@Override
 	public void recordTestException(Long modelId, Exception exception, String msg) {
-		failCnt++;
-		writeDetailLogHeader(modelId);
-		getLogger().error(" | " + modelId + " | NA | NA | FAIL | " + msg, exception);
+		result.addFatalError();
+		writeModelLevelMessage(Level.FATAL, modelId, true, exception, msg);
 	}
 	
 	
-	/**
-	 * Optionally forces the log level to WARN so that the output will for sure be written.
-	 * 
-	 * @param modelId
-	 * @param reachId
-	 * @param rowNumber
-	 * @param msg
-	 * @param forceOutput 
-	 */
-	protected void recordRowWarn(Long modelId, Long reachId, Integer rowNumber, String msg, boolean forceOutput) {
-		warnCnt++;
-		
-		Logger log = getLogger();
-		Level orgLevel = log.getLevel();
-		if (forceOutput) log.setLevel(Level.WARN);
-		
-		if (getLogger().isEnabledFor(Level.WARN)) {
-			writeDetailLogHeader(modelId);
-			getLogger().warn(" | " + modelId + " | " + reachId + " | " + rowNumber + " | WARN | " + msg);
+	//Full detail row implementations
+	@Override
+	public void recordRowError(Long modelId, Long reachId, Integer rowNumber, 
+			Object expected, Object actual, String expectName, String actualName, 
+			Boolean shoreReach, Boolean ifTran, String msg) {
+
+		if (failedTestIsOnlyAWarning) {
+			result.addErrorAsWarn();
+			writeRowLevelMessage(Level.WARN, modelId, reachId, rowNumber,
+				expected, actual, expectName, actualName,
+				shoreReach, ifTran, true, msg);
+			
+		} else {
+			
+			result.addError();
+			writeRowLevelMessage(Level.ERROR, modelId, reachId, rowNumber,
+				expected, actual, expectName, actualName,
+				shoreReach, ifTran, false, msg);
 		}
+	}
 		
-		log.setLevel(orgLevel);
+	@Override
+	public void recordRowWarn(Long modelId, Long reachId, Integer rowNumber, 
+			Object expected, Object actual, String expectName, String actualName, 
+			Boolean shoreReach, Boolean ifTran, String msg) {
+		
+		result.addWarn();
+		writeRowLevelMessage(Level.WARN, modelId, reachId, rowNumber,
+			expected, actual, expectName, actualName,
+			shoreReach, ifTran, false, msg);
+	}
+	
+	@Override
+	public void recordRowDebug(Long modelId, Long reachId, Integer rowNumber, 
+			Object expected, Object actual, String expectName, String actualName, 
+			Boolean shoreReach, Boolean ifTran, String msg) {
+		
+		writeRowLevelMessage(Level.DEBUG, modelId, reachId, rowNumber,
+			expected, actual, expectName, actualName,
+			shoreReach, ifTran, false, msg);
+	}
+	
+	@Override
+	public void recordRowTrace(Long modelId, Long reachId, Integer rowNumber, 
+			Object expected, Object actual, String expectName, String actualName, 
+			Boolean shoreReach, Boolean ifTran, String msg) {
+		
+		writeRowLevelMessage(Level.TRACE, modelId, reachId, rowNumber,
+			expected, actual, expectName, actualName,
+			shoreReach, ifTran, false, msg);
 	}
 	
 	/**
@@ -249,27 +269,99 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 	 * @param forceOutput 
 	 */
 	protected void recordWarn(Long modelId, String msg, boolean forceOutput) {
-		warnCnt++;
+		result.addWarn();
+		writeModelLevelMessage(Level.WARN, modelId, forceOutput, msg);
+	}
+	
+	
+	private void writeModelLevelMessage(Level level, Long modelId, boolean forceOutput, String msg) {
+		writeModelLevelMessage(level, modelId, forceOutput, null, msg);
+	}
 		
+	private void writeModelLevelMessage(Level level, Long modelId, boolean forceOutput, Exception exception, String msg) {
+
+		writeRowLevelMessage(
+			level, modelId, null, null,
+			null, null, null, null,
+			null, null,
+			forceOutput, msg);
+		
+		if (exception != null) {
+			getLogger().fatal(msg, exception);
+		}
+	}
+		
+	private void writeRowLevelMessage(Level level,
+			Long modelId, Long reachId, Integer rowNumber,
+			Object expected, Object actual, String expectName, String actualName,
+			Boolean shoreReach, Boolean ifTran,
+			boolean forceOutput, String msg) {
+
 		Logger log = getLogger();
 		Level orgLevel = log.getLevel();
-		if (forceOutput) log.setLevel(Level.WARN);
+		if (forceOutput) log.setLevel(level);
 		
-		writeDetailLogHeader(modelId);
-		getLogger().warn(" | " + modelId + " | NA | NA | WARN | " + msg);
+		if (getLogger().isEnabledFor(level)) {
+			writeDetailLogHeader(modelId);
+			String formattedMsg = " | " + nvl(modelId) + " | " + nvl(reachId) + " | " + nvl(rowNumber) + " | ";
+			formattedMsg += nvl(shoreReach) + " | " + nvl(ifTran) + " | " + level.toString() + " | ";
+			formattedMsg += nvl(expected) + " | " + nvl(actual) + " | " + variance(expected, actual) + " | ";
+			formattedMsg += nvl(expectName) + "/" + nvl(actualName) + " | " + msg + " | ";
+					
+					
+			log.log(level, formattedMsg);
+		}
 		
 		log.setLevel(orgLevel);
 	}
 	
-	/**
-	 * Write the header if it has not been written already
-	 * @param modelId
-	 * @param log 
-	 */
-	private void writeDetailLogHeader(Long modelId) {
-		if (! logDetailHeaderWritten) { 
-			logDetailHeaderWritten = true;
-			doWriteDetailLogHeader(modelId);
+	private String nvl(Object cleanNullValue) {
+		if (cleanNullValue == null) return "";
+		return cleanNullValue.toString();
+	}
+	
+	private String variance(Object expected, Object actual) {
+		if (expected == null && actual == null) {
+			return "";
+		} else if (expected == null || actual == null) {
+			return "100";
+		} else if (expected instanceof Number && actual instanceof Number) {
+			Number e = (Number) expected;
+			Number a = (Number) actual;
+			
+			return variance(e.doubleValue(), a.doubleValue()).toString();
+
+		} else if (NumberUtils.isNumber(expected.toString()) && NumberUtils.isNumber(actual.toString())) {
+			//Both numbers as strings
+			Number e = Double.parseDouble(expected.toString());
+			Number a = Double.parseDouble(actual.toString());
+			
+			return variance(e.doubleValue(), a.doubleValue()).toString();
+			
+		} else if (NumberUtils.isNumber(expected.toString()) || NumberUtils.isNumber(actual.toString())) {
+			//Only one is a number
+			return "100";
+		} else {
+			//Object equals comparison
+			if (expected.equals(actual)) {
+				return "0";
+			} else {
+				return "100";
+			}
+		}
+		
+	}
+	
+	private Double variance(Double expected, Double actual) {
+		if (expected == null && actual == null) {
+			return 0D;
+		} else if (expected == null || actual == null) {
+			return 100D;
+		} else if (expected == 0D && actual != 0D) {
+			return 100D;
+		} else {
+			Double v = Math.abs((expected - actual) / expected) * 100D;
+			return v;
 		}
 	}
 	
@@ -278,9 +370,9 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 	 * @param modelId
 	 * @param log 
 	 */
-	private void writeDetailLogFooter(Long modelId) {
-		if (logDetailHeaderWritten) { 
-			doWriteDetailLogFooter(modelId);
+	private void writeDetailLogHeader(Long modelId) {
+		if (! runner.isResultHeaderWritten()) { 
+			doWriteDetailLogHeader(modelId);
 		}
 	}
 	
@@ -290,29 +382,16 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 		Level orgLevel = log.getLevel();
 		log.setLevel(Level.INFO);
 		
-		log.info("***** Detail messages from '" + this.getClass().getName() + "' for model " + modelId);
-		log.info("***** Format on next line: ");
-		log.info(" | model ID | reach ID | reach row number in model | Message Type | validation error message");
-		
-		log.setLevel(orgLevel);
-	}
-	
-	protected void doWriteDetailLogFooter(Long modelId) {
-		Logger log = getLogger();
-		Level orgLevel = log.getLevel();
-		log.setLevel(Level.INFO);
-		
-		log.info("***** End detail messages from " + this.getClass().getName() + " for model " + modelId);
-		
-		log.setLevel(orgLevel);
-	}
-	
-	public int getIndividualFailures() {
-		return failCnt;
-	}
+		String headFormat = " | model ID | reach ID | row | ";
+		headFormat += " Shore? | IfTran? | Msg Type | ";
+		headFormat += " Expected Val | Actual Val | Variance | ";
+		headFormat += " Expect Name / Actual Name | Validation Message |";
 
-	public int getIndividualWarnings() {
-		return warnCnt;
+		log.info(headFormat);
+		
+		log.setLevel(orgLevel);
+		
+		runner.setResultHeaderWritten(true);
 	}
 	
 	public Logger getLogger() {

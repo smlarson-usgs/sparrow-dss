@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgs.cida.binning.domain.BinSet;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.ComparisonType;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.request.BinningRequest;
 
 import java.math.BigDecimal;
@@ -43,7 +43,7 @@ public class CalcBins extends Action<BinSet> {
 	
 	
 	/** A hash of row numbers that are in the reaches to be mapped. **/
-	private DeliveryFractionMap inclusionMap;
+	private ReachRowValueMap inclusionMap;
 	
     public CalcBins() {
 
@@ -156,7 +156,7 @@ public class CalcBins extends Action<BinSet> {
 		this.dataColumn = dataColumn;
 	}
 
-	public void setInclusionMap(DeliveryFractionMap inclusionMap) {
+	public void setInclusionMap(ReachRowValueMap inclusionMap) {
 		this.inclusionMap = inclusionMap;
 	}
 	

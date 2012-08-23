@@ -4,7 +4,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.domain.Criteria;
 import gov.usgswim.sparrow.domain.CriteriaRelationType;
 import gov.usgswim.sparrow.domain.CriteriaType;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -80,7 +80,7 @@ public class CalcReachesByNetwork extends Action<long[]> {
 		}
 		
 		//The only part of this data we care about is the keys, which are row numbers
-		DeliveryFractionMap delFracMap =
+		ReachRowValueMap delFracMap =
 				SharedApplication.getInstance().getDeliveryFractionMap(tr);
 		Iterator<Integer> reachRows = delFracMap.keySet().iterator();
 		

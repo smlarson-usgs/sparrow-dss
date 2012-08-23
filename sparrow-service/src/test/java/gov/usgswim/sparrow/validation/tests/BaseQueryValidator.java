@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.validation.tests;
 
-import gov.usgswim.sparrow.validation.tests.ModelValidationResult;
+import gov.usgswim.sparrow.validation.tests.TestResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.ColumnData;
@@ -73,9 +73,8 @@ public class BaseQueryValidator extends SparrowModelValidationBase {
 	 * @throws Exception
 	 */
 	@Override
-	public ModelValidationResult testModel(Long modelId) throws Exception {
+	public TestResult testModel(Long modelId) throws Exception {
 		Connection conn = SharedApplication.getInstance().getROConnection();
-		ModelValidationResult result = new ModelValidationResult();
 		
 		//Get list of queries in properties file
 		Properties props = new Properties();
@@ -97,17 +96,10 @@ public class BaseQueryValidator extends SparrowModelValidationBase {
 				testSingleModelDataQuality(modelId, queryName, conn);
 			}
 			
-			result.modelsRun = 1;
 		} catch (Exception e) {
 			recordTestException(modelId, e, "Unknown exception during run");
 		} finally {
 			SharedApplication.closeConnection(conn, null);
-		}
-		
-		if (this.getIndividualFailures() == 0) {
-			result.modelsFailed = 0;
-		} else {
-			result.modelsFailed = 1;
 		}
 		
 		return result;

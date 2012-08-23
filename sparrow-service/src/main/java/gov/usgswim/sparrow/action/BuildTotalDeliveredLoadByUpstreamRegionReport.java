@@ -52,7 +52,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 	//Generated / self-loaded values
 	protected SparrowModel sparrowModel;
 	protected ModelReachAreaRelations areaRelations;
-	DeliveryFractionMap deliveryFractionMap;	//What reaches deliver to the target reaches?
+	ReachRowValueMap deliveryFractionMap;	//What reaches deliver to the target reaches?
 	protected DataTable areaDetail;
 	protected DataTable reachCatchmentAreas;
 	List<ColumnData> expandedTotalDelLoadForAllSources;

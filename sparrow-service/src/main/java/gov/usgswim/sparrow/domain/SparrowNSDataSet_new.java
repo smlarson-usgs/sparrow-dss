@@ -24,7 +24,7 @@ public class SparrowNSDataSet_new extends NSDataSet {
 	private SparrowColumnSpecifier data;
 	
 	/** A hash of row numbers that are in the reaches to be mapped. **/
-	private DeliveryFractionMap inclusionMap;
+	private ReachRowValueMap inclusionMap;
 	
 	/** The value to use for NA values. */
 	private Long NAValue = DEFAULT_NA_VALUE;
@@ -35,7 +35,7 @@ public class SparrowNSDataSet_new extends NSDataSet {
 	/** The default value for NAValue */
 	public static final long DEFAULT_NA_VALUE = -9000000000000000000L;
 	
-	public SparrowNSDataSet_new(SparrowColumnSpecifier data, DeliveryFractionMap inclusionMap) {
+	public SparrowNSDataSet_new(SparrowColumnSpecifier data, ReachRowValueMap inclusionMap) {
 		super(new NSRow[0]);
 		this.data = data;
 		this.inclusionMap = inclusionMap;

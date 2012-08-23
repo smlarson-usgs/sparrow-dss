@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.SparrowNSDataSet;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -25,7 +25,7 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 	private SparrowColumnSpecifier data;
 	
 	/** A hash of row numbers that are in the reaches to be mapped. **/
-	private DeliveryFractionMap inclusionMap;
+	private ReachRowValueMap inclusionMap;
 	
 	/** The value to use for NA values. */
 	private Long NAValue = DEFAULT_NA_VALUE;
@@ -168,7 +168,7 @@ public class NSDataSetBuilder extends Action<NSDataSet> {
 	 * 
 	 * @param inclusionHash
 	 */
-	public void setInclusionMap(DeliveryFractionMap inclusionHash) {
+	public void setInclusionMap(ReachRowValueMap inclusionHash) {
 		this.inclusionMap = inclusionHash;
 	}
 

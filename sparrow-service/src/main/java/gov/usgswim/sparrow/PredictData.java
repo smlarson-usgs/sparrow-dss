@@ -28,6 +28,7 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	public static final int TOPO_IFTRAN_COL = 3;
 	public static final int TOPO_HYDSEQ_COL = 4;
 	public static final int TOPO_SHORE_REACH_COL = 5;
+	public static final int TOPO_FRAC_COL = 6;
 	
 	// decay columns
 	public static final int INSTREAM_DECAY_COL = 0;

@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.action.NSDataSetBuilder;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
@@ -31,7 +31,7 @@ public class NSDataSetFactory implements CacheEntryFactory {
 				context.getAnalysis().getDataSeries().isDeliveryBased() ||
 				context.getAnalysis().getDataSeries().isDeliveryRequired()) {
 			
-			DeliveryFractionMap upstreamReaches =
+			ReachRowValueMap upstreamReaches =
 				SharedApplication.getInstance().getDeliveryFractionMap(
 					context.getTerminalReaches());
 			

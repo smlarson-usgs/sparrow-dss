@@ -640,12 +640,12 @@ public class SharedApplication  {
 	}
 
 	//DeliveryFractionHash
-	public DeliveryFractionMap getDeliveryFractionMap(TerminalReaches targets) {
+	public ReachRowValueMap getDeliveryFractionMap(TerminalReaches targets) {
 		return getDeliveryFractionMap(targets, false);
 	}
 
-	public DeliveryFractionMap getDeliveryFractionMap(TerminalReaches targets, boolean quiet) {
-		return (DeliveryFractionMap) DeliveryFractionHash.get(targets, quiet);
+	public ReachRowValueMap getDeliveryFractionMap(TerminalReaches targets, boolean quiet) {
+		return (ReachRowValueMap) DeliveryFractionHash.get(targets, quiet);
 	}
 	
 	//DeliveryFraction
@@ -805,6 +805,23 @@ public class SharedApplication  {
 	
 	public DataTable getHUC8Data(HUC8TableRequest req, boolean quiet) {
 		return (DataTable) HUC8Table.get(req, quiet);
+	}
+	
+	//Fractioned watershed areas
+	public ReachRowValueMap getReachAreaFractionMap(ReachID req) {
+		return getReachAreaFractionMap(req, false);
+	}
+	
+	public ReachRowValueMap getReachAreaFractionMap(ReachID req, boolean quiet) {
+		return (ReachRowValueMap) ReachAreaFractionMap.get(req, quiet);
+	}
+	
+	public Double getFractionedWatershedArea(ReachID req) {
+		return getFractionedWatershedArea(req, false);
+	}
+	
+	public Double getFractionedWatershedArea(ReachID req, boolean quiet) {
+		return (Double) FractionedWatershedArea.get(req, quiet);
 	}
 	
 	//HUC

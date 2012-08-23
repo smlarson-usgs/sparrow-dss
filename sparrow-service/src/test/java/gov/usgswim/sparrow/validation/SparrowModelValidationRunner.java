@@ -1,10 +1,14 @@
 package gov.usgswim.sparrow.validation;
 
-import gov.usgswim.sparrow.validation.tests.ModelValidationResult;
+import gov.usgswim.sparrow.validation.tests.TestResult;
 import gov.usgswim.sparrow.validation.tests.ModelValidator;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.action.LoadModelMetadata;
+import gov.usgswim.sparrow.domain.SparrowModel;
+import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgswim.sparrow.validation.tests.ValidationResults;
+import gov.usgswim.sparrow.validation.tests.ModelTestResultList;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -44,6 +48,7 @@ public class SparrowModelValidationRunner {
 	final double REQUIRED_COMPARISON_FRACTION = .001d;	//comp fraction
 	
 	protected static Logger log = null;
+	private boolean resultHeaderWritten = false;
 	
 	
 	public final static String ID_COL_KEY = "id_col";	//Table property of the key column
@@ -54,13 +59,15 @@ public class SparrowModelValidationRunner {
 	final static int NUMBER_OF_BAD_INCREMENTALS_TO_PRINT = Integer.MAX_VALUE;
 	final static int NUMBER_OF_BAD_TOTALS_TO_PRINT = Integer.MAX_VALUE;
 	
+	protected boolean attemptToLoadPublicModelsFromDb = false;
+	
 	final static String QUIT = "quit";
 	
 	String singleModelPath;
 	String activeModelDirectory;
 	List<Long> modelIds;
 	String dbPwd;
-	
+
 	int firstModelId = -1;
 	int lastModelId = -1;
 	
@@ -106,6 +113,15 @@ public class SparrowModelValidationRunner {
 		runner.initSystemConfig();		//Logging system is now configured (which log4j file to load)
 		runner.initLoggingConfig();		//Now do test configuraiton of logging
 		
+		if (runner.attemptToLoadPublicModelsFromDb) {
+			List<SparrowModel> models = SharedApplication.getInstance().getModelMetadata(new ModelRequestCacheKey(null, true, false, false));
+			runner.modelIds = new ArrayList<Long>();
+			for (SparrowModel m : models) {
+				runner.modelIds.add(m.getId());
+				log.info("Found public model: " + m.getId());
+			}
+		}
+		
 		if (runner.initModelValidators()) {
 			runner.run();
 		} else {
@@ -114,9 +130,9 @@ public class SparrowModelValidationRunner {
 	}
 	
 	
-	public ModelValidationResult run() {
+	public ValidationResults run() {
 		
-		ModelValidationResult result;
+		ValidationResults result = new ValidationResults();
 
 		log.info("*****************************************");
 		if (singleModelPath != null) {
@@ -126,10 +142,9 @@ public class SparrowModelValidationRunner {
 			Long id = getModelIdFromPath(singleModelPath);
 			
 			if (id != null) {
-				result = runOneModel(id);
+				result.add(runOneModel(id));
 			} else {
-				result = new ModelValidationResult();
-				result.configError = true;
+				result.setConfigError();
 			}
 		} else if (modelIds != null && modelIds.size() > 0) {
 			log.info(" ****** Running models from a list of ids (no text file) ********");
@@ -142,21 +157,49 @@ public class SparrowModelValidationRunner {
 			log.info("************ Running a directory of models ************");
 			log.info("*****************************************");
 			
-			result = runOneModelDirectory(this.activeModelDirectory, this.firstModelId, this.lastModelId);
+			result =
+					runOneModelDirectory(this.activeModelDirectory, this.firstModelId, this.lastModelId);
 			
 		}
 		
 
-		if (result.modelsRun > 0 && result.modelsFailed == 0) {
-			log.info("+ + + + + EVERYTHING LOOKS GREAT! + + + + +");
-			log.info("+ + + + + " + result.modelsRun + " models run. + + + + +");
-		} else if (result.modelsFailed > 0) {
-			log.error("- - - - - AT LEAST ONE MODEL FAILED VALIDATION.  PLEASE REVIEW THE LOG MESSAGES TO FIND THE VALIDATION ERRORS. + + + + +");
-			log.error("- - - - - " + result.modelsRun + " models run. - - - - - ");
-			log.error("- - - - - " + result.modelsFailed + " models FAILED. - - - - - ");
+		if (result.getModelCount() == 0) {
+			log.error("- - - - - NO MODELS WERE FOUND.  PLEASE CHECK PATH AND CONFIG INFO. - - - - - ");
+		} else if (result.isPerfect()) {
+			log.info("+ + + + + EVERYTHING LOOKS PERFECT! + + + + +");
+		} else if (result.isOk()) {
+			log.info("+ + + + + EVERYTHING LOOKS OK, but there are some warnings. + + + + +");
 		} else {
-			log.error("- - - - - NO MODELS WERE FOUND.  PLEASE CHECK PATH INFO. - - - - - ");
+			log.error("- - - - - SOME MODELS AND TESTS WERE FAILED.  PLEASE CHECK THE FILE OUTPUT. - - - - - ");
 		}
+		
+		String modelsRun = "";
+		for (ModelTestResultList modelResults : result) {
+			modelsRun += modelResults.getModelId() + ", ";
+		}
+		modelsRun = modelsRun.substring(0, modelsRun.length() - 2);
+		
+		log.info("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+		log.info("Models Run: " + modelsRun);
+		log.info("Total Models Run: " + result.getModelCount());
+		log.info("Models with any type of Error: " + result.getModelsWithAnyAnyErrorCount());
+		log.info("Models with any type of Warning: " + result.getModelsWithWarnCount() +
+				" of which, " + result.getModelsWithErrorsAsWarnCount() +
+				" would be considered errors, but they are temporarly disabled**");
+		log.info("Total number of individual errors: " + result.getErrorCount());
+		log.info("Total number of individual warnings: " + result.getWarnCount() + 
+				" of which, " + result.getErrorsAsWarnCount() +
+				" would be considered errors, but they are temporarly disabled**");
+		
+
+		
+		
+		log.info("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+		log.info("**Some tests generate lots of errors, many of which may not be"
+				+ " truely considered errors.  To prevent a fail message, they are counted"
+				+ " as warnings, but tracked separately.");
+		log.info("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
+
 		
 		log.info("*****************************************");
 		log.info("************ Run Complete ***************");
@@ -170,23 +213,35 @@ public class SparrowModelValidationRunner {
 	 * @param file
 	 * @return 
 	 */
-	protected ModelValidationResult runOneModel(Long id) {
-			
-		ModelValidationResult result = new ModelValidationResult();
+	protected ModelTestResultList runOneModel(Long id) {
+		
+		beforeEachModel();
+		
+		ModelTestResultList results = new ModelTestResultList(id);
 		
 		for (ModelValidator v : validators) {
 			try {
 				
 				v.beforeEachTest(id);
-				result.addTestToSingleModelTotal(v.testModel(id));
+				results.add(v.testModel(id)); 
 				v.afterEachTest(id);
 				
 			} catch (Exception ex) {
 				log.error("Failed while running the test " + v.getClass().getCanonicalName(), ex);
 			}
 		}
+		
+		afterEachModel();
 
-		return result;	
+		return results;	
+	}
+	
+	protected void beforeEachModel() {
+		SharedApplication.getInstance().clearAllCaches();
+	}
+	
+	protected void afterEachModel() {
+		//Nothing to do
 	}
 	
 	protected Long getModelIdFromPath(String path) {
@@ -202,25 +257,21 @@ public class SparrowModelValidationRunner {
 		}
 	}
 	
-	protected ModelValidationResult runOneModelDirectory(String modelDirectory, long firstModelIdNumber, long lastModelIdNumber) {
-		ModelValidationResult result = new ModelValidationResult();
+	protected ValidationResults runOneModelDirectory(String modelDirectory, long firstModelIdNumber, long lastModelIdNumber) {
+		ValidationResults result = new ValidationResults();
 
 		for (long id = firstModelIdNumber; id <= lastModelIdNumber; id++) {
-			ModelValidationResult oneResult = runOneModel(id);
-			result.addModelToTotal(oneResult);
-			result.addTestToTotal(oneResult);
+			result.add(runOneModel(id));
 		}
 
 		return result;
 	}
 	
-	protected ModelValidationResult runListOfModels(List<Long> ids) {
-		ModelValidationResult result = new ModelValidationResult();
+	protected ValidationResults runListOfModels(List<Long> ids) {
+		ValidationResults result = new ValidationResults();
 
 		for (long id : ids) {
-			ModelValidationResult oneResult = runOneModel(id);
-			result.addModelToTotal(oneResult);
-			result.addTestToTotal(oneResult);
+			result.add(runOneModel(id));
 		}
 
 		return result;
@@ -293,6 +344,20 @@ public class SparrowModelValidationRunner {
 		//override to add validators
 	}
 	
+	/**
+	 * If true, each test writes the headings for the test results.
+	 * If false, the runner will do that so there is no duplication
+	 * of headers.
+	 * @return 
+	 */
+	public boolean isResultHeaderWritten() {
+		return resultHeaderWritten;
+	}
+	
+	public void setResultHeaderWritten(boolean isWritten) {
+		resultHeaderWritten = isWritten;
+	}
+	
 	public boolean initModelValidators() {
 		
 		boolean ok = true;
@@ -349,7 +414,7 @@ public class SparrowModelValidationRunner {
 	protected void initSystemConfig() {
 		
 		System.setProperty(LifecycleListener.APP_ENV_KEY, "local");
-		System.setProperty(LifecycleListener.APP_MODE_KEY, "test");
+		System.setProperty(LifecycleListener.APP_MODE_KEY, "validation");
 				
 				
 		//Tell JNDI config to not expect JNDI props
@@ -444,18 +509,22 @@ public class SparrowModelValidationRunner {
 	
 	public void prompModelIds() {
 		try {
-			String idStrs  = prompt("Enter a list of model IDs, separated by a comma and/or space:");
+			String idStrs  = prompt("Enter a list of model IDs, separated by a comma and/or space.  Enter 'p' to run all the public models:");
 			if (QUIT.equalsIgnoreCase(idStrs)) return;
 			
-			String[] idStrArray = StringUtils.split(idStrs, ", \t");
-			modelIds = new ArrayList<Long>();
-			for (String s : idStrArray) {
-				modelIds.add(Long.parseLong(s));
+			if (idStrs.equalsIgnoreCase("p")) {
+				attemptToLoadPublicModelsFromDb = true;
+			} else {
+			
+				String[] idStrArray = StringUtils.split(idStrs, ", \t");
+				modelIds = new ArrayList<Long>();
+				for (String s : idStrArray) {
+					modelIds.add(Long.parseLong(s));
+				}
 			}
 			
-			
 		} catch (Exception e) {
-			System.out.println("I really need a list of IDs.  Lets try that again.");
+			log.error("I really need a list of IDs.  Lets try that again.", e);
 			prompModelIds();
 		}
 	}

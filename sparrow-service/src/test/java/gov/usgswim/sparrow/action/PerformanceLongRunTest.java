@@ -9,7 +9,7 @@ import gov.usgswim.sparrow.cachefactory.PredictResultFactory;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -122,7 +122,7 @@ public class PerformanceLongRunTest extends SparrowTestBaseWithDB {
 		
 		hashAction.setPredictData(predictData);
 		hashAction.setTargetReachIds(targets.asSet());
-		DeliveryFractionMap delHash = hashAction.run();
+		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(predictData);
 		delAction.setDeliveryFractionHash(delHash);

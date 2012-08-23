@@ -9,7 +9,7 @@ import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.SingleColumnOverrideDataTable;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -176,7 +176,7 @@ public class NSDataSetBuilderTest extends SparrowTestBase {
 		
 		hashAction.setPredictData(predictData);
 		hashAction.setTargetReachIds(targets.asSet());
-		DeliveryFractionMap delHash = hashAction.run();
+		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(predictData);
 		delAction.setDeliveryFractionHash(delHash);

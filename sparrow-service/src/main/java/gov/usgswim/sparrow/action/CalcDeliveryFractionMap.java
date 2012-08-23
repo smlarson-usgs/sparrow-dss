@@ -4,7 +4,7 @@ import static gov.usgswim.sparrow.PredictData.TOPO_IFTRAN_COL;
 import static gov.usgswim.sparrow.PredictData.UPSTREAM_DECAY_COL;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +27,7 @@ import java.util.Set;
  * @author eeverman
  *
  */
-public class CalcDeliveryFractionMap extends Action<DeliveryFractionMap> {
+public class CalcDeliveryFractionMap extends Action<ReachRowValueMap> {
 
 	protected PredictData predictData;
 	protected Set<Long> targetReachIds;
@@ -55,10 +55,10 @@ public class CalcDeliveryFractionMap extends Action<DeliveryFractionMap> {
 	}
 	
 	@Override
-	public DeliveryFractionMap doAction() throws Exception {
+	public ReachRowValueMap doAction() throws Exception {
 		//Hash containing rows as keys and DeliveryReaches as values.
 		HashMap<Integer, DeliveryReach> deliveries = calcDeliveryHash(predictData, targetReachIds);
-		DeliveryFractionMap map = new DeliveryFractionMap(deliveries);
+		ReachRowValueMap map = new ReachRowValueMap(deliveries);
 		return map;
 	}
 	

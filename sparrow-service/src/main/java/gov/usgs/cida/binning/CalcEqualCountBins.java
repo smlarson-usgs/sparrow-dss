@@ -7,7 +7,7 @@ import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.datatable.impl.SimpleDataTable;
 import gov.usgswim.datatable.impl.StandardDoubleColumnData;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -44,7 +44,7 @@ public class CalcEqualCountBins {
 	private boolean topUnbounded;
 	
 	/** A hash of row numbers that are in the reaches to be mapped. **/
-	private DeliveryFractionMap inclusionMap;
+	private ReachRowValueMap inclusionMap;
 	
 	
 	//Settings and reports
@@ -841,7 +841,7 @@ public class CalcEqualCountBins {
 	 * @return The cleaned and sorted data as a double[].
 	 */
 	protected double[] buildSortedFilteredValues(SparrowColumnSpecifier data,
-			BigDecimal detectionLimit, DeliveryFractionMap inclusionMap) {
+			BigDecimal detectionLimit, ReachRowValueMap inclusionMap) {
 		
 		int totalRows = data.getRowCount();
 		double[] tempResult = new double[totalRows];
@@ -1460,11 +1460,11 @@ public class CalcEqualCountBins {
 		this.topUnbounded = topUnbounded;
 	}
 	
-	public void setInclusionMap(DeliveryFractionMap inclusionMap) {
+	public void setInclusionMap(ReachRowValueMap inclusionMap) {
 		this.inclusionMap = inclusionMap;
 	}
 
-	public DeliveryFractionMap getInclusionMap() {
+	public ReachRowValueMap getInclusionMap() {
 		return inclusionMap;
 	}
 	

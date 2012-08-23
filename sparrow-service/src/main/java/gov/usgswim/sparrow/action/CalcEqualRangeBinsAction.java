@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgs.cida.binning.CalcEqualRangeBins;
 import gov.usgs.cida.binning.domain.BinSet;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
 
 import java.math.BigDecimal;
 
@@ -60,11 +60,11 @@ public class CalcEqualRangeBinsAction extends Action<BinSet> {
 		delegate.setTopUnbounded(topUnbounded);
 	}
 	
-	public void setInclusionMap(DeliveryFractionMap inclusionMap) {
+	public void setInclusionMap(ReachRowValueMap inclusionMap) {
 		delegate.setInclusionMap(inclusionMap);
 	}
 
-	public DeliveryFractionMap getInclusionMap() {
+	public ReachRowValueMap getInclusionMap() {
 		return delegate.getInclusionMap();
 	}
 }

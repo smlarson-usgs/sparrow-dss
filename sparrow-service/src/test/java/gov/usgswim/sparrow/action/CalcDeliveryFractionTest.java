@@ -13,7 +13,7 @@ import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.DataSeriesType;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
@@ -114,7 +114,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		
 		hashAction.setPredictData(pdTranportOffAbove9681);
 		hashAction.setTargetReachIds(targets.asSet());
-		DeliveryFractionMap delHash = hashAction.run();
+		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(pdTranportOffAbove9681);
 		delAction.setDeliveryFractionHash(delHash);
@@ -188,7 +188,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		
 		hashAction.setPredictData(pdShoreReachAbove9681);
 		hashAction.setTargetReachIds(targets.asSet());
-		DeliveryFractionMap delHash = hashAction.run();
+		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(pdShoreReachAbove9681);
 		delAction.setDeliveryFractionHash(delHash);
@@ -257,7 +257,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		
 		hashAction.setPredictData(pdTranportOffAbove9681);
 		hashAction.setTargetReachIds(targets.asSet());
-		DeliveryFractionMap delHash = hashAction.run();
+		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(pdTranportOffAbove9681);
 		delAction.setDeliveryFractionHash(delHash);
@@ -319,7 +319,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		
 		hashAction.setPredictData(pdShoreReachAbove9681);
 		hashAction.setTargetReachIds(targets.asSet());
-		DeliveryFractionMap delHash = hashAction.run();
+		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(pdShoreReachAbove9681);
 		delAction.setDeliveryFractionHash(delHash);
@@ -381,7 +381,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		
 		hashAction.setPredictData(pdTranportOffAbove9681);
 		hashAction.setTargetReachIds(targets.asSet());
-		DeliveryFractionMap delHash = hashAction.run();
+		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(pdTranportOffAbove9681);
 		delAction.setDeliveryFractionHash(delHash);
@@ -443,7 +443,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		
 		hashAction.setPredictData(pdShoreReachAbove9681);
 		hashAction.setTargetReachIds(targets.asSet());
-		DeliveryFractionMap delHash = hashAction.run();
+		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(pdShoreReachAbove9681);
 		delAction.setDeliveryFractionHash(delHash);
@@ -503,7 +503,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		
 		hashAction.setPredictData(pdTranportOffAbove9681);
 		hashAction.setTargetReachIds(targets.asSet());
-		DeliveryFractionMap delHash = hashAction.run();
+		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(pdTranportOffAbove9681);
 		delAction.setDeliveryFractionHash(delHash);
@@ -579,7 +579,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
 		hashAction.setPredictData(unmodifiedPredictData);
 		hashAction.setTargetReachIds(termReaches.asSet());
-		DeliveryFractionMap delHash = hashAction.run();
+		ReachRowValueMap delHash = hashAction.run();
 		
 		assertEquals(1, delHash.size());
 		
@@ -598,7 +598,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
 		hashAction.setPredictData(unmodifiedPredictData);
 		hashAction.setTargetReachIds(termReaches.asSet());
-		DeliveryFractionMap delHash = hashAction.run();
+		ReachRowValueMap delHash = hashAction.run();
 		
 		for (Entry<Integer, Float> entry : delHash.entrySet()) {
 			assertTrue(entry.getValue() <= 1F);

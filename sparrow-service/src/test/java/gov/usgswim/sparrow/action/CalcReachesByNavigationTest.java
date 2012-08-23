@@ -15,7 +15,7 @@ import gov.usgswim.sparrow.domain.Criteria;
 import gov.usgswim.sparrow.domain.CriteriaRelationType;
 import gov.usgswim.sparrow.domain.CriteriaType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;

@@ -110,7 +110,10 @@
 		Sets the name of the cache. This is used to identify the cache. It must be unique.
 		
 		maxElementsInMemory:
-		Sets the maximum number of objects that will be created in memory
+		Sets the maximum number of objects that will be created in memory.
+		0 == unlimited
+		1 == no values in memory
+		2 == less that two values (ie 1), etc.
 		
 		maxElementsOnDisk:
 		Sets the maximum number of objects that will be maintained in the DiskStore
@@ -424,4 +427,11 @@
 	-->
 	<cache name="PredefinedWatershedsForModel" maxElementsInMemory="30" timeToLiveSeconds="14400" />
 	<cache name="PredefinedWatershedReachesForModel" maxElementsInMemory="30" timeToLiveSeconds="7200" />
+	
+	<!-- Fractional watershed area, fractioned by the FRAC value.
+		ReachAreaFractionMap: Potentially large Map of fractions.  Not to hard to calc.
+		FractionedWatershedArea: Single value cumulative area for a reach
+	-->
+	<cache name="ReachAreaFractionMap" maxElementsInMemory="2" timeToLiveSeconds="7200" />
+	<cache name="FractionedWatershedArea" maxElementsInMemory="20" timeToLiveSeconds="7200" />
 </ehcache>

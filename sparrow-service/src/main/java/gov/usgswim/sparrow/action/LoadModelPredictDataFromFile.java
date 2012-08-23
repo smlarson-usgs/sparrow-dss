@@ -203,7 +203,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 	 * <h4>Data Columns</h4>
 	 * One row per reach (i = reach index)
 	 * <h5>Row ID: MRB_ID from txt, which is the same as IDENTIFIER from DB</h5>
-	 * <ol>
+	 * <ul>
 	 * <li>[i][0]MODEL_REACH** - Copy of text MRB_ID, since no db id.
 	 * <li>[i][1]FNODE - The from node
 	 * <li>[i][2]TNODE - The to node
@@ -211,7 +211,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 	 * <li>[i][4]HYDSEQ - Hydrologic sequence order (starting at 1, no gaps)
 	 * <li>[i][5]SHORE_REACH - 1 if a shore reach, 0 otherwise.
 	 * <li>[i][6]FRAC - Fraction of the upstream load/flow entering this reach.  Non-one at a diversion.
-	 * </ol>
+	 * </ul>
 	 *
 	 * **Differs from db version of loading.
 	 * 

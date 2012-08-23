@@ -10,10 +10,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * A lightweight structure for storing delivery fractions mapped by row ID.
- *
- * This is similar to DeliveryReach, but DeliveryReach is 'fatter' because it
- * stores transient data used during the calculation.
+ * A lightweight structure for storing values mapped by row ID.
+ * 
+ * This is currently used for
+ * <ul>
+ * <li>CalcDeliveryFractionMap - The Delivery Fraction data series calculation
+ * <li>CAlcAreaFractionMap - Fraction of incremental area 'counted' towards cumulative area
+ * </ul>
  *
  * A Java Map could be used, however, this class allows other strategies to be
  * used for large sets of data if needed.
@@ -22,7 +25,7 @@ import java.util.Set;
  *
  * @author eeverman
  */
-public class DeliveryFractionMap implements Map<Integer, Float>{
+public class ReachRowValueMap implements Map<Integer, Float>{
 
 	private final Map<Integer, Float> map;
 
@@ -35,7 +38,7 @@ public class DeliveryFractionMap implements Map<Integer, Float>{
 	 * calculated delivery fraction.
 	 * @param map
 	 */
-	public DeliveryFractionMap(HashMap<Integer, DeliveryReach> map) {
+	public ReachRowValueMap(HashMap<Integer, DeliveryReach> map) {
 		if (map != null) {
 			HashMap<Integer, Float> m = new HashMap<Integer, Float>(map.size(), 1.1f);
 

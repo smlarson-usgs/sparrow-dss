@@ -8,7 +8,7 @@ import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.BaseDataSeriesType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,7 +25,7 @@ import java.util.Map.Entry;
 public class CalcDeliveryFractionColumnData extends Action<ColumnData> {
 
 	protected PredictData predictData;
-	protected DeliveryFractionMap deliveryFractionMap;
+	protected ReachRowValueMap deliveryFractionMap;
 	protected String msg = null;
 	
 	/**
@@ -40,7 +40,7 @@ public class CalcDeliveryFractionColumnData extends Action<ColumnData> {
 	 * Delivery hash, as described in the Action CalcDeliveryFractionHash.
 	 * @param targetReachIds
 	 */
-	public void setDeliveryFractionHash(DeliveryFractionMap deliveryFraction) {
+	public void setDeliveryFractionHash(ReachRowValueMap deliveryFraction) {
 		this.deliveryFractionMap = deliveryFraction;
 	}
 	
@@ -52,7 +52,7 @@ public class CalcDeliveryFractionColumnData extends Action<ColumnData> {
 	@Override
 	public ColumnData doAction() throws Exception {
 		//Hash containing rows as keys and DeliveryReaches as values.
-		DeliveryFractionMap deliveries = deliveryFractionMap;
+		ReachRowValueMap deliveries = deliveryFractionMap;
 		int baseRows = predictData.getTopo().getRowCount();
 		
 		//Props for the returned column

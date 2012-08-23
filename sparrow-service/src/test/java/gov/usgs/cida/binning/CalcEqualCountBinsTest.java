@@ -11,7 +11,7 @@ import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.action.DeliveryReach;
 import gov.usgswim.sparrow.domain.ComparisonType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.service.ServiceResponseOperation;
@@ -476,7 +476,7 @@ public class CalcEqualCountBinsTest extends CalcEqualRangeBinsTest {
 		for (int i=0; i<10; i++) {
 			map.put(i, new DeliveryReach(i, .5d, i));
 		}
-		DeliveryFractionMap dfm = new DeliveryFractionMap(map);
+		ReachRowValueMap dfm = new ReachRowValueMap(map);
 		
 		CalcEqualCountBins action = new CalcEqualCountBins();
 

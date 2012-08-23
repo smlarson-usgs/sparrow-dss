@@ -5,7 +5,7 @@ import gov.usgs.cida.binning.domain.BinType;
 import gov.usgs.cida.binning.domain.InProcessBinSet;
 import gov.usgswim.datatable.ColumnData;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -29,7 +29,7 @@ public class CalcEqualRangeBins {
 	private boolean topUnbounded;
 	
 	/** A hash of row numbers that are in the reaches to be mapped. **/
-	private DeliveryFractionMap inclusionMap;
+	private ReachRowValueMap inclusionMap;
 	
 	/**
 	 * Compatibility for classes wanting to use the Action class.
@@ -791,7 +791,7 @@ public class CalcEqualRangeBins {
 	}
 	
 
-	public static Double findMaxDouble(SparrowColumnSpecifier sparrowColumn, DeliveryFractionMap inclusionMap) {
+	public static Double findMaxDouble(SparrowColumnSpecifier sparrowColumn, ReachRowValueMap inclusionMap) {
 		
 		ColumnData column = sparrowColumn.getTable().getColumn(sparrowColumn.getColumn());
 		Double result = Double.NEGATIVE_INFINITY;
@@ -830,7 +830,7 @@ public class CalcEqualRangeBins {
 		}
 	}
 	
-	public static Double findMinDouble(SparrowColumnSpecifier sparrowColumn, DeliveryFractionMap inclusionMap) {
+	public static Double findMinDouble(SparrowColumnSpecifier sparrowColumn, ReachRowValueMap inclusionMap) {
 		
 		ColumnData column = sparrowColumn.getTable().getColumn(sparrowColumn.getColumn());
 		Double result = Double.POSITIVE_INFINITY;
@@ -933,11 +933,11 @@ public class CalcEqualRangeBins {
 		this.topUnbounded = topUnbounded;
 	}
 
-	public void setInclusionMap(DeliveryFractionMap inclusionMap) {
+	public void setInclusionMap(ReachRowValueMap inclusionMap) {
 		this.inclusionMap = inclusionMap;
 	}
 
-	public DeliveryFractionMap getInclusionMap() {
+	public ReachRowValueMap getInclusionMap() {
 		return inclusionMap;
 	}
 	

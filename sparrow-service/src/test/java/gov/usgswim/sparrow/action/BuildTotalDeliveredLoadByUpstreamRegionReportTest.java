@@ -186,7 +186,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		CalcDeliveryFractionMap delFracAction = new CalcDeliveryFractionMap();
 		delFracAction.setPredictData(SharedApplication.getInstance().getPredictData(TEST_MODEL_ID));
 		delFracAction.setTargetReachIds(termReaches.asSet());
-		DeliveryFractionMap delFracHashMap = delFracAction.run();
+		ReachRowValueMap delFracHashMap = delFracAction.run();
 		
 		//Calc Incremental Load
 		PredictResult predictResult = SharedApplication.getInstance().getPredictResult(adjustmentGroups);
@@ -263,7 +263,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		CalcDeliveryFractionMap delFracAction = new CalcDeliveryFractionMap();
 		delFracAction.setPredictData(SharedApplication.getInstance().getPredictData(TEST_MODEL_ID));
 		delFracAction.setTargetReachIds(termReaches.asSet());
-		DeliveryFractionMap delFracHashMap = delFracAction.run();
+		ReachRowValueMap delFracHashMap = delFracAction.run();
 		
 		//Calc Incremental Load
 		PredictResult predictResult = SharedApplication.getInstance().getPredictResult(adjustmentGroups);

@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.action.CalcDeliveryFractionMap;
-import gov.usgswim.sparrow.domain.DeliveryFractionMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -20,7 +20,7 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 public class DeliveryFractionHashFactory implements CacheEntryFactory {
 
 	@Override
-	public DeliveryFractionMap createEntry(Object terminalReaches) throws Exception {
+	public ReachRowValueMap createEntry(Object terminalReaches) throws Exception {
 		TerminalReaches targets = (TerminalReaches) terminalReaches;
 		
 		PredictData predictData = SharedApplication.getInstance().
@@ -31,7 +31,7 @@ public class DeliveryFractionHashFactory implements CacheEntryFactory {
 		action.setPredictData(predictData);
 		action.setTargetReachIds(targetReachIds);
 		
-		DeliveryFractionMap delFrac = action.run();
+		ReachRowValueMap delFrac = action.run();
 		
 		return delFrac;
 	}

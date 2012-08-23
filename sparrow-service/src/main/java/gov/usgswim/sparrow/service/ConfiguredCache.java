@@ -68,6 +68,10 @@ public enum ConfiguredCache {
 	//Watersheds
 	PredefinedWatershedsForModel(false, new LoadPredefinedWatershedsForModelFactory()),
 	PredefinedWatershedReachesForModel(false, new LoadPredefinedWatershedReachesForModelFactory()),
+	
+	//Fractional Area Calculations
+	ReachAreaFractionMap(false, new ReachAreaFractionMapFactory()),
+	FractionedWatershedArea(false, new FractionedWatershedAreaFactory())
 	;
 	
 	public final boolean isDistributed;

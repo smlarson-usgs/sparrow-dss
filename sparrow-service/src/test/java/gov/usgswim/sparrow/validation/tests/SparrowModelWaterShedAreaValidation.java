@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.validation.tests;
 
-import gov.usgswim.sparrow.validation.tests.ModelValidationResult;
+import gov.usgswim.sparrow.validation.tests.TestResult;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.datatable.ColumnData;
@@ -13,9 +13,7 @@ import gov.usgswim.datatable.impl.StandardLongColumnData;
 import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.action.Action;
-import gov.usgswim.sparrow.action.CalcAnalysis;
-import gov.usgswim.sparrow.action.LoadModelMetadata;
+import gov.usgswim.sparrow.action.*;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.*;
@@ -71,16 +69,21 @@ public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationB
 	public boolean requiresTextFile() { return false; }
 	
 	
+	
+	public TestResult testModel(Long modelId) throws Exception {
+		return testModelBasedOnFractionedAreas(modelId);
+		
+		//return testModelBasedOnHuc2Aggregation(modelId);
+	}
 	/**
 	 * Runs QA checks against the data.
 	 * @param modelId
 	 * @return
 	 * @throws Exception
 	 */
-	public ModelValidationResult testModel(Long modelId) throws Exception {
-		ModelValidationResult result = new ModelValidationResult();
+	public TestResult testModelBasedOnHuc2Aggregation(Long modelId) throws Exception {
 		
-		DataTable cumulativeAreas = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AggregationLevel.REACH, true));
+		DataTable cumulativeAreasFromDb = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AggregationLevel.REACH, true));
 		PredictData predictData = SharedApplication.getInstance().getPredictData(modelId);
 		ModelReachAreaRelations reachToHuc2Relation = SharedApplication.getInstance().getModelReachAreaRelations(new ModelAggregationRequest(modelId, AggregationLevel.HUC2));
 		
@@ -109,7 +112,7 @@ public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationB
 				Long regionId = reachHuc2Relations.get(0).getAreaId();
 				int regionRow = regionDetail.getRowForId(regionId);
 				Double aggArea = totalDelAggReport.getDouble(regionRow, 2);
-				Double dbArea = cumulativeAreas.getDouble(row, 1);
+				Double dbArea = cumulativeAreasFromDb.getDouble(row, 1);
 				
 				if (! comp(dbArea, aggArea, allowedFractialVariance)) {
 					recordRowError(modelId, reachId, row, "Agg catchment area != db watershed area (agg / db) : " + aggArea + "  /  " + dbArea);
@@ -119,9 +122,47 @@ public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationB
 
 		}
 		
+		return result;
+	}
+	
+	
+		/**
+	 * Runs QA checks against the data.
+	 * @param modelId
+	 * @return
+	 * @throws Exception
+	 */
+	public TestResult testModelBasedOnFractionedAreas(Long modelId) throws Exception {
 		
-		if (this.getIndividualFailures() > 0) result.modelsFailed = 1;
-		result.modelsRun = 1;
+		DataTable cumulativeAreasFromDb = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AggregationLevel.REACH, true));
+		DataTable incrementalAreasFromDb = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AggregationLevel.REACH, false));
+		PredictData predictData = SharedApplication.getInstance().getPredictData(modelId);
+		DataTable topo = predictData.getTopo();
+		//ModelReachAreaRelations reachToHuc2Relation = SharedApplication.getInstance().getModelReachAreaRelations(new ModelAggregationRequest(modelId, AggregationLevel.HUC2));
+		
+		//All the HUC2s in this model, with the HUC id as the row ID.
+		//DataTable regionDetail = SharedApplication.getInstance().getHucsForModel(new ModelHucsRequest(modelId, HucLevel.HUC2));
+		
+		for (int row = 0; row < topo.getRowCount(); row++) {
+			Long reachId = predictData.getIdForRow(row);
+			Double dbArea = cumulativeAreasFromDb.getDouble(row, 1);
+			
+			
+			//Calculate the fractioned watershed area, skipping the cache
+			CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(topo, reachId);
+			ReachRowValueMap areaMap = areaMapAction.run();
+		
+			CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb);
+			Double calculatedFractionalWatershedArea = areaAction.run();
+
+			if (! comp(dbArea, calculatedFractionalWatershedArea, allowedFractialVariance)) {
+				Boolean shoreReach = topo.getInt(row, PredictData.TOPO_SHORE_REACH_COL) == 1;
+				Boolean ifTran = topo.getInt(row, PredictData.TOPO_IFTRAN_COL) == 1;
+				recordRowError(modelId, reachId, row, calculatedFractionalWatershedArea, dbArea, "calc", "db", shoreReach, ifTran, "DB Watershed area != calculated area.");
+			}
+			
+
+		}
 		
 		
 		return result;

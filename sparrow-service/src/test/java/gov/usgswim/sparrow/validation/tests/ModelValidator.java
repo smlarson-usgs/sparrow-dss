@@ -30,7 +30,7 @@ public interface ModelValidator {
 	
 	public void beforeEachTest(Long modelId);
 	public void afterEachTest(Long modelId);
-	public ModelValidationResult testModel(Long modelId) throws Exception;
+	public TestResult testModel(Long modelId) throws Exception;
 	public boolean requiresDb();
 	public boolean requiresTextFile();
 	
@@ -69,9 +69,25 @@ public interface ModelValidator {
 	
 	//Test row level logging
 	public void recordRowError(Long modelId, Long reachId, Integer rowNumber, String msg);
-	public void recordRowErrorDebug(Long modelId, Long reachId, Integer rowNumber, String msg);
 	public void recordRowWarn(Long modelId, Long reachId, Integer rowNumber, String msg);
+	public void recordRowDebug(Long modelId, Long reachId, Integer rowNumber, String msg);
 	public void recordRowTrace(Long modelId, Long reachId, Integer rowNumber, String msg);
+	
+	//Full detail row level events
+	//exceptName and actualName params are the names of what is being
+	//compared i.e., db vs calculated values.
+	public void recordRowError(Long modelId, Long reachId, Integer rowNumber, 
+			Object expected, Object actual, String expectName, String actualName, 
+			Boolean shoreReach, Boolean ifTran, String msg);
+	public void recordRowWarn(Long modelId, Long reachId, Integer rowNumber, 
+			Object expected, Object actual, String expectName, String actualName, 
+			Boolean shoreReach, Boolean ifTran, String msg);
+	public void recordRowDebug(Long modelId, Long reachId, Integer rowNumber, 
+			Object expected, Object actual, String expectName, String actualName, 
+			Boolean shoreReach, Boolean ifTran, String msg);
+	public void recordRowTrace(Long modelId, Long reachId, Integer rowNumber, 
+			Object expected, Object actual, String expectName, String actualName, 
+			Boolean shoreReach, Boolean ifTran, String msg);
 	
 	
 	public void recordError(Long modelId, String msg);
@@ -86,11 +102,6 @@ public interface ModelValidator {
 	 * @param msg 
 	 */
 	public void recordTestException(Long modelId, Exception exception, String msg);
-
-	
-	public int getIndividualFailures();
-
-	public int getIndividualWarnings();
 	
 	public Logger getLogger();
 }

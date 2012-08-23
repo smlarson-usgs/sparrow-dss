@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<!-- Add 'debug="true"' in the root element to turn on debugging as this file loads -->
+	
+	<appender name="CA" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %C{1}:%L - %m%n" />
+		</layout>
+	</appender>
+	<appender name="CA_Minimal" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%C{1}:%L - %m%n" />
+		</layout>
+	</appender>
+	<appender name="FILE" class="org.apache.log4j.FileAppender">
+		<param name="File" value="~/sparrow_validation_test_results.txt" />
+		<param name="Append" value="false" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %C{1}:%L - %m%n" />
+		</layout>
+	</appender>
+	
+	<!-- You will need to replace the 'File' param with a valid path on your system. -->
+<!--	<appender name="FILE" class="org.apache.log4j.FileAppender">
+		<param name="File" value="~/sparrow_validation_test_results.txt" />
+		<param name="Append" value="false" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %C{1}:%L - %m%n" />
+		</layout>
+	</appender>-->
+	
+<!-- 	<logger name="gov.usgswim.sparrow">
+		<level value="info"/>
+		<appender-ref ref="CA" />
+	</logger>
+
+	<logger name="gov.usgswim.sparrow.action.Action" additivity="false">
+		<level value="info" />
+		<appender-ref ref="CA" />
+	</logger> -->
+	
+	<logger name="gov.usgswim.sparrow.validation" additivity="false">
+		<level value="info" />
+		<appender-ref ref="CA_Minimal" />
+		<appender-ref ref="FILE" />
+	</logger>
+
+	<root>
+		<priority value="error" />
+		<appender-ref ref="CA" />
+	</root>
+
+</log4j:configuration>
