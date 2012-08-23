@@ -384,7 +384,7 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 		
 		String headFormat = " | model ID | reach ID | row | ";
 		headFormat += " Shore? | IfTran? | Msg Type | ";
-		headFormat += " Expected Val | Actual Val | Variance | ";
+		headFormat += " Expected Val | Actual Val | Variance % | ";
 		headFormat += " Expect Name / Actual Name | Validation Message |";
 
 		log.info(headFormat);
