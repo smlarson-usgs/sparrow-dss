@@ -27,7 +27,7 @@ public class CalcFractionedWatershedAreaTest extends CalcFractionalAreaBaseTest 
 	 * @throws Exception 
 	 */
 	@Test
-	public void AreaFractionsShouldMatchPdfFileExampleInResources() throws Exception {
+	public void FractionedAreaShouldMatchPdfFileExampleInResources() throws Exception {
 		
 		// 11: The reach in the pdf sample table
 		CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(testTopo, 11L);
@@ -39,6 +39,35 @@ public class CalcFractionedWatershedAreaTest extends CalcFractionalAreaBaseTest 
 		
 
 		assertEquals(9.92D, area, COMP_ERROR);
+
+	}
+	
+	/**
+	 * This test assumes that he incremental area for ALL REACHES IS 2.
+	 * It also forces the action into a debug mode that assumes that the fraction
+	 * for each reach included in the fraction map is 1.  Thus, it just adds up the
+	 * areas.
+	 * 
+	 * (2 IS LOADED AS AN AREA FOR EACH REACH FROM A TEXT FILE)
+	 * 
+	 * Refer to CalcReachAreaFractionMapTest resource files for the sample
+	 * network this is run on.
+	 * 
+	 * @throws Exception 
+	 */
+	@Test
+	public void UnfractionedAreaShouldMatchPdfFileExampleInResources() throws Exception {
+		
+		// 11: The reach in the pdf sample table
+		CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(testTopo, 11L);
+		ReachRowValueMap areaMap = areaMapAction.run();
+		
+		CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreaTable, true);
+		Double area = areaAction.run();
+		
+		
+
+		assertEquals(12D, area, COMP_ERROR);
 
 	}
 	

@@ -74,7 +74,7 @@ public class ModelTestResultList extends ArrayList<TestResult> {
 	public int getErrorCount() {
 		int cnt = 0;
 		for (TestResult result : this) {
-			if (result.isError()) cnt++;
+			cnt += result.getErrorCount();
 		}
 		
 		return cnt;
@@ -83,7 +83,7 @@ public class ModelTestResultList extends ArrayList<TestResult> {
 	public int getWarnCount() {
 		int cnt = 0;
 		for (TestResult result : this) {
-			if (result.isWarn()) cnt++;
+			cnt += result.getWarnCount();
 		}
 		
 		return cnt;
@@ -92,7 +92,7 @@ public class ModelTestResultList extends ArrayList<TestResult> {
 	public int getErrorsAsWarnCount() {
 		int cnt = 0;
 		for (TestResult result : this) {
-			if (result.isErrorsAsWarn()) cnt++;
+			cnt += result.getErrorsAsWarnCount();
 		}
 		
 		return cnt;

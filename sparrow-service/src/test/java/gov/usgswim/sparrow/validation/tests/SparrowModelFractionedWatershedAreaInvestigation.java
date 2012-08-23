@@ -58,7 +58,7 @@ import org.apache.log4j.extras.DOMConfigurator;
  * 
  * @author eeverman
  */
-public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationBase {
+public class SparrowModelFractionedWatershedAreaInvestigation extends SparrowModelValidationBase {
 	
 	//Default fraction that the value may vary from the expected value.
 	public static final double ALLOWED_FRACTIONAL_VARIANCE = .1D;
@@ -71,9 +71,7 @@ public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationB
 	
 	
 	public TestResult testModel(Long modelId) throws Exception {
-		return testModelBasedOnFractionedAreas(modelId);
-		
-		//return testModelBasedOnHuc2Aggregation(modelId);
+		return compareFractionedWatershedAreasToUnfractioned(modelId);
 	}
 	
 	
@@ -83,33 +81,30 @@ public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationB
 	 * @return
 	 * @throws Exception
 	 */
-	public TestResult testModelBasedOnFractionedAreas(Long modelId) throws Exception {
+	public TestResult compareFractionedWatershedAreasToUnfractioned(Long modelId) throws Exception {
 		
-		DataTable cumulativeAreasFromDb = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AggregationLevel.REACH, true));
 		DataTable incrementalAreasFromDb = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AggregationLevel.REACH, false));
 		PredictData predictData = SharedApplication.getInstance().getPredictData(modelId);
 		DataTable topo = predictData.getTopo();
-		//ModelReachAreaRelations reachToHuc2Relation = SharedApplication.getInstance().getModelReachAreaRelations(new ModelAggregationRequest(modelId, AggregationLevel.HUC2));
-		
-		//All the HUC2s in this model, with the HUC id as the row ID.
-		//DataTable regionDetail = SharedApplication.getInstance().getHucsForModel(new ModelHucsRequest(modelId, HucLevel.HUC2));
 		
 		for (int row = 0; row < topo.getRowCount(); row++) {
 			Long reachId = predictData.getIdForRow(row);
-			Double dbArea = cumulativeAreasFromDb.getDouble(row, 1);
 			
 			
 			//Calculate the fractioned watershed area, skipping the cache
 			CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(topo, reachId);
 			ReachRowValueMap areaMap = areaMapAction.run();
 		
-			CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb);
-			Double calculatedFractionalWatershedArea = areaAction.run();
+			CalcFractionedWatershedArea fractionedAreaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb);
+			Double fractionalWatershedArea = fractionedAreaAction.run();
+			
+			CalcFractionedWatershedArea unfractionedAreaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, true);
+			Double unfractionalWatershedArea = unfractionedAreaAction.run();
 
-			if (! comp(dbArea, calculatedFractionalWatershedArea, allowedFractialVariance)) {
+			if (! comp(fractionalWatershedArea, unfractionalWatershedArea, allowedFractialVariance)) {
 				Boolean shoreReach = topo.getInt(row, PredictData.TOPO_SHORE_REACH_COL) == 1;
 				Boolean ifTran = topo.getInt(row, PredictData.TOPO_IFTRAN_COL) == 1;
-				recordRowError(modelId, reachId, row, calculatedFractionalWatershedArea, dbArea, "calc", "db", shoreReach, ifTran, "DB Watershed area != calculated area.");
+				recordRowError(modelId, reachId, row, fractionalWatershedArea, unfractionalWatershedArea, "frac", "unfrac", shoreReach, ifTran, "Fractioned Watershed area != unfractioned area.");
 			}
 			
 

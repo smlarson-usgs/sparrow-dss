@@ -45,6 +45,9 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 	protected ReachRowValueMap areaFractionMap;
 	protected DataTable incrementalReachAreas;
 	
+	/** If true, ignore the fraction and just add up the area.  Mostly for debugging. */
+	protected boolean forceNonFractionedResult = false;;
+	
 	protected String msg = null;
 	
 	//Alt config params
@@ -58,6 +61,12 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 	public CalcFractionedWatershedArea(ReachRowValueMap areaFractionMap, DataTable incrementalReachAreas) {
 		this.areaFractionMap = areaFractionMap;
 		this.incrementalReachAreas = incrementalReachAreas;
+	}
+	
+	public CalcFractionedWatershedArea(ReachRowValueMap areaFractionMap, DataTable incrementalReachAreas, boolean forceNonFractionedResult) {
+		this.areaFractionMap = areaFractionMap;
+		this.incrementalReachAreas = incrementalReachAreas;
+		this.forceNonFractionedResult = forceNonFractionedResult;
 	}
 	
 	/**
@@ -96,6 +105,14 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 	
 	@Override
 	public Double doAction() throws Exception {
+		if (! forceNonFractionedResult) {
+			return calcFractionedArea();
+		} else {
+			return calcUnfractionedArea();
+		}
+	}
+	
+	public Double calcFractionedArea() throws Exception {
 		double totalArea = 0D;
 		
 		for (Integer row : areaFractionMap.keySet()) {
@@ -107,6 +124,22 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 				totalArea += addArea;
 			}
 			
+		}
+		
+		
+		return totalArea;
+	}
+	
+	public Double calcUnfractionedArea() throws Exception {
+		double totalArea = 0D;
+		
+		for (Integer row : areaFractionMap.keySet()) {
+			Double incArea = incrementalReachAreas.getDouble(row, 1);
+			Float frac = areaFractionMap.getFraction(row);
+			
+			if (frac != null && incArea != null) {
+				totalArea += incArea;
+			}
 		}
 		
 		
