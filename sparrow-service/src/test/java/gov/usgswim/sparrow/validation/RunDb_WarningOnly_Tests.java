@@ -21,7 +21,7 @@ public class RunDb_WarningOnly_Tests extends SparrowModelValidationRunner {
 	@Override
 	public void loadModelValidators() {
 		
-		addValidator(new SparrowModelWaterShedAreaValidation()); //This one does calculation comparisons
+		addValidator(new SparrowModelWaterShedAreaValidation(true)); //This one does calculation comparisons
 		//addValidator(new SparrowModelFractionedWatershedAreaInvestigation());
 		//addValidator(new WarningOnlyDbTests());	//Does cumulative vs total comparison for shore reaches
 		

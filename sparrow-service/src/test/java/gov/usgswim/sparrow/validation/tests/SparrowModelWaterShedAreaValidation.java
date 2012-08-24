@@ -65,6 +65,10 @@ public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationB
 	
 	private double allowedFractialVariance = ALLOWED_FRACTIONAL_VARIANCE;
 	
+	//This flag can be set to true to force the fractional watershed area
+	//Action to do pure cumulative area calculations, not fractionalal ones.
+	private boolean forceAllAreaFractionsToOne = false;
+	
 	public boolean requiresDb() { return true; }
 	public boolean requiresTextFile() { return false; }
 	
@@ -74,6 +78,18 @@ public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationB
 		return testModelBasedOnFractionedAreas(modelId);
 		
 		//return testModelBasedOnHuc2Aggregation(modelId);
+	}
+	
+	public SparrowModelWaterShedAreaValidation() {
+
+	}
+	
+	/**
+	 * 
+	 * @param forceAllAreaFractionsToOne Set true to do non-fractional area calcs
+	 */
+	public SparrowModelWaterShedAreaValidation(boolean forceAllAreaFractionsToOne) {
+		this.forceAllAreaFractionsToOne = forceAllAreaFractionsToOne;
 	}
 	
 	
@@ -103,7 +119,7 @@ public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationB
 			CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(topo, reachId);
 			ReachRowValueMap areaMap = areaMapAction.run();
 		
-			CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb);
+			CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, forceAllAreaFractionsToOne);
 			Double calculatedFractionalWatershedArea = areaAction.run();
 
 			if (! comp(dbArea, calculatedFractionalWatershedArea, allowedFractialVariance)) {
