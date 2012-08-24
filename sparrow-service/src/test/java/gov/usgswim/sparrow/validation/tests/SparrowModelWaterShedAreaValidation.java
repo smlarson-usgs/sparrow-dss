@@ -88,8 +88,13 @@ public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationB
 	 * 
 	 * @param forceAllAreaFractionsToOne Set true to do non-fractional area calcs
 	 */
-	public SparrowModelWaterShedAreaValidation(boolean forceAllAreaFractionsToOne) {
-		this.forceAllAreaFractionsToOne = forceAllAreaFractionsToOne;
+	public SparrowModelWaterShedAreaValidation(boolean useFractionalWatershedAreas) {
+		this.forceAllAreaFractionsToOne = ! useFractionalWatershedAreas;
+	}
+	
+	public SparrowModelWaterShedAreaValidation(Double allowedVariance, boolean useFractionalWatershedAreas) {
+		this.allowedFractialVariance = allowedVariance;
+		this.forceAllAreaFractionsToOne = ! useFractionalWatershedAreas;
 	}
 	
 	
