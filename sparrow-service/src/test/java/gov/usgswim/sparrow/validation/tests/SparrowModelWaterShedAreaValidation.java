@@ -106,19 +106,26 @@ public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationB
 	 */
 	public TestResult testModelBasedOnFractionedAreas(Long modelId) throws Exception {
 		
+		recordTrace(modelId, "Starting:  Load cumulative areas from the db");
 		DataTable cumulativeAreasFromDb = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AggregationLevel.REACH, true));
+		recordTrace(modelId, "Completed:  Load cumulative areas from the db");
+		recordTrace(modelId, "Starting:  Load incremental areas from the db");
 		DataTable incrementalAreasFromDb = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AggregationLevel.REACH, false));
+		recordTrace(modelId, "Completed:  Load incremental areas from the db");
+		recordTrace(modelId, "Starting:  Load model predict data from the db");
 		PredictData predictData = SharedApplication.getInstance().getPredictData(modelId);
+		recordTrace(modelId, "Completed:  Load model predict data from the db");
 		DataTable topo = predictData.getTopo();
 		//ModelReachAreaRelations reachToHuc2Relation = SharedApplication.getInstance().getModelReachAreaRelations(new ModelAggregationRequest(modelId, AggregationLevel.HUC2));
 		
 		//All the HUC2s in this model, with the HUC id as the row ID.
 		//DataTable regionDetail = SharedApplication.getInstance().getHucsForModel(new ModelHucsRequest(modelId, HucLevel.HUC2));
 		
+		int rowCompleteCnt = 0;
+		
 		for (int row = 0; row < topo.getRowCount(); row++) {
 			Long reachId = predictData.getIdForRow(row);
 			Double dbArea = cumulativeAreasFromDb.getDouble(row, 1);
-			
 			
 			//Calculate the fractioned watershed area, skipping the cache
 			CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(topo, reachId);
@@ -133,7 +140,10 @@ public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationB
 				recordRowError(modelId, reachId, row, calculatedFractionalWatershedArea, dbArea, "calc", "db", shoreReach, ifTran, "DB Watershed area != calculated area.");
 			}
 			
-
+			if (Math.abs((double)(row / 100) - ((double)row / 100d)) < .000001d) {
+				recordTrace(modelId, "Completed " + row + " rows...");
+			}
+			
 		}
 		
 		
