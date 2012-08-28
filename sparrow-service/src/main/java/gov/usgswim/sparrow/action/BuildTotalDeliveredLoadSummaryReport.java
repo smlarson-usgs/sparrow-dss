@@ -1,11 +1,9 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableSet;
-import gov.usgswim.datatable.HashMapColumnIndex;
+import gov.usgswim.datatable.*;
 import gov.usgswim.datatable.impl.DataTableSetSimple;
 import gov.usgswim.datatable.impl.SimpleDataTable;
+import gov.usgswim.datatable.view.RenameColumnDataView;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.TableProperties;
@@ -91,9 +89,15 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 			
 		HashMapColumnIndex index = new  HashMapColumnIndex(predictData.getTopo());
 		
+		//Rename the area db area column
+		ColumnAttribsBuilder termReachWatershedAreaColumnAttribs = new ColumnAttribsBuilder();
+		termReachWatershedAreaColumnAttribs.setName(terminalReachDrainageArea.getColumn(1).getName() + " (from Model export)");
+		termReachWatershedAreaColumnAttribs.setDescription(terminalReachDrainageArea.getColumn(1).getDescription());
+		RenameColumnDataView termReachWatershedAreaColumn = new RenameColumnDataView(terminalReachDrainageArea.getColumn(1), termReachWatershedAreaColumnAttribs);
+		
 				//We can't add immutable columns to a writable table, so we need to construct a new table
 		SimpleDataTable infoTable = new SimpleDataTable(
-				new ColumnData[] {idInfo.getColumn(0), idInfo.getColumn(1), terminalReachDrainageArea.getColumn(1), fractionedWatershedArea, streamFlow.getColumnData()},
+				new ColumnData[] {idInfo.getColumn(0), idInfo.getColumn(1), termReachWatershedAreaColumn, fractionedWatershedArea, streamFlow.getColumnData()},
 				"Identification and basic info", 
 				"Identification and basic info",
 				buildTableProperties(), index);
