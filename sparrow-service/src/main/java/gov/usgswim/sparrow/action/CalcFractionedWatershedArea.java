@@ -77,6 +77,16 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 		this.reachId = reachId;
 	}
 	
+	/**
+	 * 
+	 * @param reachId
+	 * @param forceNonFractionedResult If true, use non-fractioned areas
+	 */
+	public CalcFractionedWatershedArea(ReachID reachId, boolean forceNonFractionedResult) {
+		this.reachId = reachId;
+		this.forceNonFractionedResult = forceNonFractionedResult;
+	}
+	
 	
 	@Override
 	public void initFields() {
