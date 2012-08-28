@@ -127,22 +127,28 @@ public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationB
 			Long reachId = predictData.getIdForRow(row);
 			Double dbArea = cumulativeAreasFromDb.getDouble(row, 1);
 			
+			recordRowTrace(modelId, reachId, row, "Starting: CalcReachAreaFractionMap");
 			//Calculate the fractioned watershed area, skipping the cache
 			CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(topo, reachId);
 			ReachRowValueMap areaMap = areaMapAction.run();
-		
+			recordRowTrace(modelId, reachId, row, "Completed: CalcReachAreaFractionMap");
+			
+			recordRowTrace(modelId, reachId, row, "Starting: CalcFractionedWatershedArea");
 			CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, forceAllAreaFractionsToOne);
 			Double calculatedFractionalWatershedArea = areaAction.run();
-
+			recordRowTrace(modelId, reachId, row, "Completed: CalcFractionedWatershedArea");
+			
 			if (! comp(dbArea, calculatedFractionalWatershedArea, allowedFractialVariance)) {
 				Boolean shoreReach = topo.getInt(row, PredictData.TOPO_SHORE_REACH_COL) == 1;
 				Boolean ifTran = topo.getInt(row, PredictData.TOPO_IFTRAN_COL) == 1;
 				recordRowError(modelId, reachId, row, calculatedFractionalWatershedArea, dbArea, "calc", "db", shoreReach, ifTran, "DB Watershed area != calculated area.");
+			} else {
+				recordRowTrace(modelId, reachId, row, "OK - no problems");
 			}
 			
-			if (Math.abs((double)(row / 100) - ((double)row / 100d)) < .000001d) {
-				recordTrace(modelId, "Completed " + row + " rows...");
-			}
+//			if (Math.abs((double)(row / 100) - ((double)row / 100d)) < .000001d) {
+//				recordTrace(modelId, "Completed " + row + " rows...");
+//			}
 			
 		}
 		
