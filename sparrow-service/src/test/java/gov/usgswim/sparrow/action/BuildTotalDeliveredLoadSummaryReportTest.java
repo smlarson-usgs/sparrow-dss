@@ -33,23 +33,24 @@ public class BuildTotalDeliveredLoadSummaryReportTest extends DeliveryBase {
 		action.setDeliveryReportRequest(req);
 		
 		DataTableSet result = action.run();
+		DataTable dataTable = result.getTable(1);
 		
 		assertNotNull(result);
-		assertEquals(10, result.getColumnCount());
+		assertEquals(11, result.getColumnCount());
 		
 		boolean containsSomeNonZeroData = false;
 		
 		//All the first columns should total to the last column
-		for (int r=0; r < result.getRowCount(); r++) {
+		for (int r=0; r < dataTable.getRowCount(); r++) {
 			double srcTotal = 0;
-			for (int c=4; c<9; c++) {
-				srcTotal += result.getDouble(r, c);
+			for (int c=0; c<(dataTable.getColumnCount() - 1); c++) {
+				srcTotal += dataTable.getDouble(r, c);
 			}
 			
 			if (srcTotal > .0000000001d) containsSomeNonZeroData = true;
 			
 			//SUM of first 5 columns should equal the last column
-			assertEquals(result.getDouble(r, 9), srcTotal, COMP_ERROR);
+			assertEquals(dataTable.getDouble(r, dataTable.getColumnCount() - 1), srcTotal, COMP_ERROR);
 			
 		}
 		

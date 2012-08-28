@@ -78,7 +78,8 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 	}
 	
 	
-	public void initRequiredFields() {
+	@Override
+	public void initFields() {
 		if (reachId != null) {
 			//topoData = SharedApplication.getInstance().getPredictData(reachId.getModelID()).getTopo();
 			areaFractionMap = SharedApplication.getInstance().getReachAreaFractionMap(reachId);

@@ -274,23 +274,6 @@ public class SharedApplication  {
 		SparrowCacheManager.getInstance().clearAll();
 	}
 
-	public Integer putSerializable(Serializable context) {
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(SERIALIZABLE_CACHE);
-		Integer hash = context.hashCode();
-		c.put( new Element(hash, context) );
-		return hash;
-	}
-
-	public Serializable getSerializable(Integer id) {
-		return getSerializable(id, false);
-	}
-
-	public Serializable getSerializable(Integer id, boolean quiet) {
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(SERIALIZABLE_CACHE);
-		Element e  = (quiet)?c.getQuiet(id):c.get(id);
-		return (e != null)?((Serializable) e.getObjectValue()):null;
-	}
-
 	//PredictContext Cache
 	public Integer putPredictionContext(PredictionContext context) throws Exception {
 
@@ -423,18 +406,16 @@ public class SharedApplication  {
 	}
 
 	public AdjustmentGroups getAdjustmentGroups(Integer id, boolean quiet) {
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(AdjustmentGroups.name());
-		Element e  = (quiet)?c.getQuiet(id):c.get(id);
-
-		if (e != null) {
+		AdjustmentGroups found = (AdjustmentGroups) AdjustmentGroups.get(id, quiet);
+		if (found != null) {
 			try {
-				return ((AdjustmentGroups) e.getObjectValue()).clone();
+				found = found.clone();
 			} catch (CloneNotSupportedException e1) {
 				log.error("Unexpected Clone not supported - returning null");
 				return null;
 			}
 		}
-		return null;
+		return found;
 	}
 
 	//Analysis Cache
@@ -443,18 +424,16 @@ public class SharedApplication  {
 	}
 
 	public Analysis getAnalysis(Integer id, boolean quiet) {
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(Analyses.name());
-		Element e  = (quiet)?c.getQuiet(id):c.get(id);
-
-		if (e != null) {
+		Analysis found = (Analysis) Analyses.get(id, quiet);
+		if (found != null) {
 			try {
-				return ((Analysis) e.getObjectValue()).clone();
+				found = found.clone();
 			} catch (CloneNotSupportedException e1) {
 				log.error("Unexpected Clone not supported - returning null");
 				return null;
 			}
 		}
-		return null;
+		return found;
 	}
 
 	//TerminalReach Cache
@@ -463,18 +442,16 @@ public class SharedApplication  {
 	}
 
 	public TerminalReaches getTerminalReaches(Integer id, boolean quiet) {
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(TerminalReaches.name());
-		Element e  = (quiet)?c.getQuiet(id):c.get(id);
-
-		if (e != null) {
+		TerminalReaches found = (TerminalReaches) TerminalReaches.get(id, quiet);
+		if (found != null) {
 			try {
-				return ((TerminalReaches) e.getObjectValue()).clone();
+				found = found.clone();
 			} catch (CloneNotSupportedException e1) {
 				log.error("Unexpected Clone not supported - returning null");
 				return null;
 			}
 		}
-		return null;
+		return found;
 	}
 
 	//AreaOfInterest Cache
@@ -483,18 +460,16 @@ public class SharedApplication  {
 	}
 
 	public AreaOfInterest getAreaOfInterest(Integer id, boolean quiet) {
-		Ehcache c = SparrowCacheManager.getInstance().getEhcache(AreaOfInterest.name());
-		Element e  = (quiet)?c.getQuiet(id):c.get(id);
-
-		if (e != null) {
+		AreaOfInterest found = (AreaOfInterest) AreaOfInterest.get(id, quiet);
+		if (found != null) {
 			try {
-				return ((AreaOfInterest) e.getObjectValue()).clone();
+				found = found.clone();
 			} catch (CloneNotSupportedException e1) {
 				log.error("Unexpected Clone not supported - returning null");
 				return null;
 			}
 		}
-		return null;
+		return found;
 	}
 	
 	/**
@@ -822,6 +797,14 @@ public class SharedApplication  {
 	
 	public Double getFractionedWatershedArea(ReachID req, boolean quiet) {
 		return (Double) FractionedWatershedArea.get(req, quiet);
+	}
+	
+	public ColumnData getFractionedWatershedAreaTable(Integer terminalReachId) {
+		return getFractionedWatershedAreaTable(terminalReachId, false);
+	}
+	
+	public ColumnData getFractionedWatershedAreaTable(Integer terminalReachId, boolean quiet) {
+		return (ColumnData) FractionedWatershedAreaTable.get(terminalReachId, quiet);
 	}
 	
 	//HUC

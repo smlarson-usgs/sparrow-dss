@@ -304,6 +304,9 @@
 		14400 sec = 4 hours
 		7200 sec = 2 hours
 		3600 sec = 1 hour
+		1800 sec = 30 min
+		900 sec = 15 min
+		600 sec = 10 min
 		LRU = Least Recently Used
 	-->
 	<defaultCache maxElementsInMemory="200"
@@ -431,7 +434,10 @@
 	<!-- Fractional watershed area, fractioned by the FRAC value.
 		ReachAreaFractionMap: Potentially large Map of fractions.  Not to hard to calc.
 		FractionedWatershedArea: Single value cumulative area for a reach
+		FractionedWatershedAreaTable: Potentially large table (sparse map based) of areas.  Used for reporting.
 	-->
-	<cache name="ReachAreaFractionMap" maxElementsInMemory="2" timeToLiveSeconds="7200" />
-	<cache name="FractionedWatershedArea" maxElementsInMemory="20" timeToLiveSeconds="7200" />
+	<cache name="ReachAreaFractionMap" maxElementsInMemory="3" timeToLiveSeconds="600" />
+	<cache name="FractionedWatershedArea" maxElementsInMemory="20" timeToLiveSeconds="900" />
+	<cache name="FractionedWatershedAreaTable" maxElementsInMemory="3" timeToLiveSeconds="600" />
+	
 </ehcache>

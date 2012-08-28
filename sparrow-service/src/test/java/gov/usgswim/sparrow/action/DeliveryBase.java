@@ -14,6 +14,7 @@ import gov.usgswim.sparrow.SparrowTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.TerminalReaches;
+import gov.usgswim.sparrow.service.ConfiguredCache;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
@@ -113,6 +114,9 @@ public class DeliveryBase  extends SparrowTestBaseWithDBandCannedModel50 {
 		targetList.add(9674L);
 		targetBoth = new TerminalReaches(TEST_MODEL_ID, targetList);
 		
+		ConfiguredCache.TerminalReaches.put(target9682.getId(), target9682);
+		ConfiguredCache.TerminalReaches.put(target9682.getId(), target9674);
+		ConfiguredCache.TerminalReaches.put(target9682.getId(), targetBoth);
 	}
 	
 	@Test

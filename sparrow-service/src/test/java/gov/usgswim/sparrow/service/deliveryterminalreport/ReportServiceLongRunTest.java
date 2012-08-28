@@ -92,8 +92,8 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		String declairedRowCount = getXPathValue("//*[local-name()='metadata']/@rowCount", actualReportResponse);
 		
 		assertEquals("9682", firstReachId);
-		assertEquals("10", numberOfValues);
-		assertEquals("10" ,declairedColCount);
+		assertEquals("11", numberOfValues);
+		assertEquals("11" ,declairedColCount);
 		assertEquals("2" ,declairedRowCount);
 		
 	}

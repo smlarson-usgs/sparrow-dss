@@ -64,14 +64,6 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 		this.reachId = reachId;
 	}
 	
-	
-	public void initRequiredFields() {
-		if (reachId != null) {
-			targetReachId = reachId.getReachID();
-			topoData = SharedApplication.getInstance().getPredictData(reachId.getModelID()).getTopo();
-		}
-	}
-
 	@Override
 	protected void validate() {
 		if (reachId != null) {
@@ -80,6 +72,16 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 			this.addValidationError("The topo data or the reach ID is null.");
 		}
 	}
+		
+	@Override
+	public void initFields() {
+		if (reachId != null) {
+			targetReachId = reachId.getReachID();
+			topoData = SharedApplication.getInstance().getPredictData(reachId.getModelID()).getTopo();
+		}
+	}
+
+
 	
 	
 	

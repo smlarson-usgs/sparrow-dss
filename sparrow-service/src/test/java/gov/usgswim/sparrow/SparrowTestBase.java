@@ -53,7 +53,7 @@ public abstract class SparrowTestBase {
 	protected static Logger log = null;
 	
 	static {
-		URL log4jUrl = SparrowTestBase.class.getResource("/log4j_test.xml");
+		URL log4jUrl = SparrowTestBase.class.getResource("/log4j_local_test.xml");
 		LogManager.resetConfiguration();
 		DOMConfigurator.configure(log4jUrl);
 		log = Logger.getLogger(SparrowTestBase.class);
@@ -166,6 +166,8 @@ public abstract class SparrowTestBase {
 	 * @throws Exception
 	 */
 	private void doOneTimeLogSetup() throws Exception {
+		System.setProperty(LifecycleListener.APP_ENV_KEY, "local");
+		System.setProperty(LifecycleListener.APP_MODE_KEY, "test");
 		initialLogLevel = log.getLevel();
 	}
 	

@@ -45,6 +45,7 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 	private transient DataTable terminalReachDrainageArea = null;
 	private transient List<ColumnData> expandedTotalDelLoadForAllSources;
 	private transient SparrowColumnSpecifier streamFlow = null;
+	private transient ColumnData fractionedWatershedArea = null;
 	
 	protected String msg = null;	//statefull message for logging
 	
@@ -52,12 +53,16 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 	/**
 	 * Clear designation of init values
 	 */
-	protected void initRequiredFields() throws Exception {
+	@Override
+	protected void initFields() throws Exception {
+		SharedApplication sharedApp = SharedApplication.getInstance();
+		
 		modelId = adjustmentGroups.getModelID();
-		predictData = SharedApplication.getInstance().getPredictData(modelId);
-		idInfo = SharedApplication.getInstance().getModelReachIdentificationAttributes(modelId);
-		terminalReachDrainageArea = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AggregationLevel.NONE, true));
-		streamFlow = SharedApplication.getInstance().getStreamFlow(modelId);
+		predictData = sharedApp.getPredictData(modelId);
+		idInfo = sharedApp.getModelReachIdentificationAttributes(modelId);
+		terminalReachDrainageArea = sharedApp.getCatchmentAreas(new UnitAreaRequest(modelId, AggregationLevel.NONE, true));
+		fractionedWatershedArea = sharedApp.getFractionedWatershedAreaTable(terminalReaches.getId());
+		streamFlow = sharedApp.getStreamFlow(modelId);
 		
 		//Basic predict context, which we need data for all sources
 		BasicAnalysis analysis = new BasicAnalysis(
@@ -77,8 +82,6 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 	
 	@Override
 	public DataTableSet doAction() throws Exception {
-		
-		initRequiredFields();
 
 		DataTable srcMetadata = predictData.getSrcMetadata();
 		//int srcCount = srcMetadata.getRowCount();
@@ -90,7 +93,7 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 		
 				//We can't add immutable columns to a writable table, so we need to construct a new table
 		SimpleDataTable infoTable = new SimpleDataTable(
-				new ColumnData[] {idInfo.getColumn(0), idInfo.getColumn(1), terminalReachDrainageArea.getColumn(1), streamFlow.getColumnData()},
+				new ColumnData[] {idInfo.getColumn(0), idInfo.getColumn(1), terminalReachDrainageArea.getColumn(1), fractionedWatershedArea, streamFlow.getColumnData()},
 				"Identification and basic info", 
 				"Identification and basic info",
 				buildTableProperties(), index);

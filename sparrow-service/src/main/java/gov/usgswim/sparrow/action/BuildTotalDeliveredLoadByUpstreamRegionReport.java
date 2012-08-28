@@ -79,7 +79,8 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 	/**
 	 * Clear designation of init values
 	 */
-	protected void initRequiredFields() throws Exception {
+	@Override
+	protected void initFields() throws Exception {
 		
 		Long modelId = adjustmentGroups.getModelID();
 		sparrowModel = SharedApplication.getInstance().getPredictData(modelId).getModel();
@@ -119,10 +120,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 	
 	@Override
 	public DataTableSet doAction() throws Exception {
-		
-		initRequiredFields();
 
-		
 		//
 		//Create a writable table to hold the region area info
 		SimpleDataTableWritable regionAreaTable = new SimpleDataTableWritable();

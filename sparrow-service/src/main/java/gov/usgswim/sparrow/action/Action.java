@@ -109,6 +109,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		
 		if (! hasValidationErrors()) {
 			try {
+				initFields();
 				r = doAction();
 			} catch (Exception ee) {
 				e = ee;
@@ -182,11 +183,26 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 * If implementations call addValidationError(), an error will be recorded
 	 * and the doAction() method will not be called.  The run() method will
 	 * return null.
+	 * 
+	 * This method should validate the values the action was given from the caller
+	 * and not attempt to load its own data to perform additional validations.
 	 */
 	protected void validate() {
 		//Default implementation does nothing.
 		//By not calling addValidationError, no errors are created.
 	}
+	
+	/**
+	 * Implementations can override to initiate fields they need to do the calculation.
+	 * For instance, if they are passed only a model ID, they can load the model
+	 * data in this method.
+	 * @throws Exception 
+	 */
+	protected void initFields() throws Exception {
+		//Default implementation does nothing.
+		//By not calling addValidationError, no errors are created.
+	}
+	
 	
 	/**
 	 * Adds a validation error message.

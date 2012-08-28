@@ -71,7 +71,8 @@ public enum ConfiguredCache {
 	
 	//Fractional Area Calculations
 	ReachAreaFractionMap(false, new ReachAreaFractionMapFactory()),
-	FractionedWatershedArea(false, new FractionedWatershedAreaFactory())
+	FractionedWatershedArea(false, new FractionedWatershedAreaFactory()),
+	FractionedWatershedAreaTable(false, new FractionedWatershedAreaTableFactory())
 	;
 	
 	public final boolean isDistributed;
