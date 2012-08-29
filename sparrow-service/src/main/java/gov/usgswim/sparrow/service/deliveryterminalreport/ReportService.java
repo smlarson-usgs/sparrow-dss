@@ -48,7 +48,7 @@ public class ReportService implements HttpService<ReportRequest> {
 
 			DeliveryReportRequest actionRequest = 
 					new DeliveryReportRequest(context.getAdjustmentGroups(),
-							termReaches, AggregationLevel.NONE);
+							termReaches, AggregationLevel.NONE, req.isReportYield());
 
 			DataTableSet reportData = sharedApp.getTotalDeliveredLoadSummaryReport(actionRequest);
 			TerminalReachesRowFilter filter = new TerminalReachesRowFilter(termReaches);

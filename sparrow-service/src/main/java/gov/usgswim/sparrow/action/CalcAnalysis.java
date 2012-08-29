@@ -233,7 +233,7 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 						ColumnData catchmentAreaCol = new ColumnDataFromTable(catchmentAreaTab, 1);
 						
 						CalcIncrementalYield act = new CalcIncrementalYield(
-								nominalPredictData, result, catchmentAreaCol, source
+								nominalPredictData.getModel(), result, catchmentAreaCol, source
 						);
 						ColumnData incYield = act.run();
 						

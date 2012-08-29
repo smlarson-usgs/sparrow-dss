@@ -34,6 +34,7 @@ public class ReportRequestParser
 			String regionTypeStr = request.getParameter(ReportRequest.ELEMENT_REGION_TYPE);
 			AggregationLevel aggLevel = null;
 			boolean includeZeroRows = parseParamAsBoolean(request, ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, true);
+			boolean reportYield = parseParamAsBoolean(request, ReportRequest.ELEMENT_REPORT_YIELD, true);
 			
 			try {
 				aggLevel = AggregationLevel.NONE.fromStringIgnoreCase(regionTypeStr);
@@ -46,7 +47,7 @@ public class ReportRequestParser
 			respFormat.setAttachment(true);
 			if (respFormat.fileName == null) respFormat.fileName = ReportRequest.PC_EXPORT_FILENAME;
 			
-			req = new ReportRequest(contextID.intValue(), reportType, aggLevel, respFormat, includeIdScript, includeZeroRows);
+			req = new ReportRequest(contextID.intValue(), reportType, aggLevel, respFormat, includeIdScript, includeZeroRows, reportYield);
 			
 		} else if (request.getMethod().equals("POST")) {
 			

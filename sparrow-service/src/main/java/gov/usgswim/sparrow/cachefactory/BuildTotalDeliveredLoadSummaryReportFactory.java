@@ -20,10 +20,8 @@ public class BuildTotalDeliveredLoadSummaryReportFactory implements CacheEntryFa
 		DeliveryReportRequest req = (DeliveryReportRequest)deliveryReportRequest;
 		DataTable result = null;
 		
-		BuildTotalDeliveredLoadSummaryReport action = new BuildTotalDeliveredLoadSummaryReport();
+		BuildTotalDeliveredLoadSummaryReport action = new BuildTotalDeliveredLoadSummaryReport(req);
 		
-
-		action.setDeliveryReportRequest(req);
 		result = action.run();
 		
 		return result;

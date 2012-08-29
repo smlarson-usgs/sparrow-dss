@@ -51,7 +51,8 @@ var getAggReportUrl = function(mimeType) {
 	var serviceName = "getDeliveryAggReport";
 	var reqParams = "context-id=" + contextId +
 		"&region-type=" + regionType + 	
-		"&include-zero-rows=false" + 					
+		"&include-zero-rows=false" + 
+		"&report-yield=true" +
 		"&mime-type=" + mimeType;
 	return "../" + serviceName + "?" + reqParams;
 }
@@ -71,7 +72,8 @@ function initTermReport() {
 		var contextId = urlParams["context-id"];
 		var reqParams =
 			"context-id=" + contextId + 
-			"&include-zero-rows=true" + 					
+			"&include-zero-rows=true" + 
+			"&report-yield=true" +
 			"&mime-type=xhtml_table";
 		var reqUrl = "../" + tableName + "?" + reqParams;
 

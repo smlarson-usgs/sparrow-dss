@@ -26,11 +26,9 @@ public class BuildTotalDeliveredLoadSummaryReportTest extends DeliveryBase {
 		
 		AdjustmentGroups adjustmentGroups = new AdjustmentGroups(SparrowTestBase.TEST_MODEL_ID);
 		
-		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, target9682);
+		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, target9682, false);
 		
-		BuildTotalDeliveredLoadSummaryReport action = new BuildTotalDeliveredLoadSummaryReport();
-		
-		action.setDeliveryReportRequest(req);
+		BuildTotalDeliveredLoadSummaryReport action = new BuildTotalDeliveredLoadSummaryReport(req);
 		
 		DataTableSet result = action.run();
 		DataTable dataTable = result.getTable(1);

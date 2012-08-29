@@ -35,6 +35,7 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 
 	protected AdjustmentGroups adjustmentGroups;
 	protected TerminalReaches terminalReaches;
+	protected boolean reportYield;
 	
 	//Loaded or created by the action itself
 	Long modelId = null;
@@ -45,12 +46,21 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 	private transient SparrowColumnSpecifier streamFlow = null;
 	private transient ColumnData fractionedWatershedArea = null;
 	
+	
 	protected String msg = null;	//statefull message for logging
 	
+	public BuildTotalDeliveredLoadSummaryReport(AdjustmentGroups adjustmentGroups, TerminalReaches terminalReaches, boolean reportYield) {
+		this.adjustmentGroups = adjustmentGroups;
+		this.terminalReaches = terminalReaches;
+		this.reportYield = reportYield;
+	}
 	
-	/**
-	 * Clear designation of init values
-	 */
+	public BuildTotalDeliveredLoadSummaryReport(DeliveryReportRequest request) {
+		terminalReaches = request.getTerminalReaches();
+		adjustmentGroups = request.getAdjustmentGroups();
+		this.reportYield = request.isReportYield();
+	}
+	
 	@Override
 	protected void initFields() throws Exception {
 		SharedApplication sharedApp = SharedApplication.getInstance();
@@ -129,23 +139,6 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 		props.put(TableProperties.CONSTITUENT.toString(), predictData.getModel().getConstituent());
 		return props;
 	}
-	
-	//
-	//Setter methods
-	public void setAdjustmentGroups(AdjustmentGroups adjustmentGroups) {
-		this.adjustmentGroups = adjustmentGroups;
-	}
-
-	public void setTerminalReaches(TerminalReaches terminalReaches) {
-		this.terminalReaches = terminalReaches;
-	}
-	
-	public void setDeliveryReportRequest(DeliveryReportRequest request) {
-		terminalReaches = request.getTerminalReaches();
-		adjustmentGroups = request.getAdjustmentGroups();
-	}
-	
-	
 	
 	//Action override methods
 	@Override

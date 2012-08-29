@@ -30,13 +30,14 @@ public class ReportRequestParser
 			boolean includeIdScript = true;
 			ReportRequest.ReportType reportType = ReportRequest.ReportType.terminal;
 			boolean includeZeroRows = parseParamAsBoolean(request, ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, true);
-			
+			boolean reportYield = parseParamAsBoolean(request, ReportRequest.ELEMENT_REPORT_YIELD, true);
+
 			ResponseFormat respFormat = new ResponseFormat();
 			respFormat.setMimeType(mimeType);
 			respFormat.setAttachment(true);
 			if (respFormat.fileName == null) respFormat.fileName = ReportRequest.PC_EXPORT_FILENAME;
 			
-			req = new ReportRequest(contextID.intValue(), reportType, null, respFormat, includeIdScript, includeZeroRows);
+			req = new ReportRequest(contextID.intValue(), reportType, null, respFormat, includeIdScript, includeZeroRows, reportYield);
 			
 			
 		} else if (request.getMethod().equals("POST")) {

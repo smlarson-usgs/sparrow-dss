@@ -26,6 +26,7 @@ public class ReportRequest implements XMLStreamParserComponent,
 	public static final String ELEMENT_REPORT_TYPE = "report-type";
 	public static final String ELEMENT_REGION_TYPE = "region-type";
 	public static final String ELEMENT_INCLUDE_ZERO_TOTAL_ROWS = "include-zero-rows";
+	public static final String ELEMENT_REPORT_YIELD = "report-yield";
 	
 	public enum ReportType {
 		terminal,
@@ -47,6 +48,7 @@ public class ReportRequest implements XMLStreamParserComponent,
 	private ReportType reportType;
 	private AggregationLevel aggLevel;
 	private boolean includeZeroTotalRows;
+	private boolean reportYield;
 	
 
 	// =============================
@@ -88,13 +90,14 @@ public class ReportRequest implements XMLStreamParserComponent,
 	 */
 	public ReportRequest(Integer contextID, 
 			ReportType reportType, AggregationLevel aggLevel, 
-			ResponseFormat respFormat, boolean includeIdScript, boolean includeZeroTotalRows) {
+			ResponseFormat respFormat, boolean includeIdScript, boolean includeZeroTotalRows, boolean reportYield) {
 		this.contextID = contextID;
 		this.reportType = reportType;
 		this.aggLevel = aggLevel;
 		this.responseFormat = respFormat;
 		this.includeIdScript = includeIdScript;
 		this.includeZeroTotalRows = includeZeroTotalRows;
+		this.reportYield = reportYield;
 	}
 
 
@@ -174,6 +177,10 @@ public class ReportRequest implements XMLStreamParserComponent,
 				} else if (ELEMENT_INCLUDE_ZERO_TOTAL_ROWS.equals(localName)) {
 
 					includeZeroTotalRows = ParserHelper.parseAttribAsBoolean(in, ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, true);
+
+				} else if (ELEMENT_REPORT_YIELD.equals(localName)) {
+
+					reportYield = ParserHelper.parseAttribAsBoolean(in, ELEMENT_REPORT_YIELD, false);
 
 				}	else {
 					throw new RuntimeException(
@@ -262,6 +269,10 @@ public class ReportRequest implements XMLStreamParserComponent,
 
 	public boolean isIncludeZeroTotalRows() {
 		return includeZeroTotalRows;
+	}
+	
+	public boolean isReportYield() {
+		return reportYield;
 	}
 	
 	

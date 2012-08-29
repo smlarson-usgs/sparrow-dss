@@ -41,7 +41,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		
 		AdjustmentGroups adjustmentGroups = new AdjustmentGroups(SparrowTestBase.TEST_MODEL_ID);
 		
-		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, target9682, AggregationLevel.STATE);
+		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, target9682, AggregationLevel.STATE, false);
 		
 		BuildTotalDeliveredLoadByUpstreamRegionReport action =
 				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
@@ -96,7 +96,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		
 		AdjustmentGroups adjustmentGroups = new AdjustmentGroups(SparrowTestBase.TEST_MODEL_ID);
 		
-		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, target9682, AggregationLevel.HUC2);
+		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, target9682, AggregationLevel.HUC2, false);
 		
 		BuildTotalDeliveredLoadByUpstreamRegionReport action =
 				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
@@ -166,7 +166,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		
 		
 		//Calc the HUC8 Aggregated result
-		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.HUC8);
+		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.HUC8, false);
 		BuildTotalDeliveredLoadByUpstreamRegionReport action =
 				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
 		
@@ -243,7 +243,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		long[] reachesInHuc = SharedApplication.getInstance().getReachesByCriteria(new Criteria(TEST_MODEL_ID, CriteriaType.HUC8, CriteriaRelationType.IN, "03050105"));
 		
 		//Calc the HUC8 Aggregated result
-		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.HUC8);
+		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.HUC8, false);
 		BuildTotalDeliveredLoadByUpstreamRegionReport action =
 				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
 		DataTableSet aggByHUC8Result = action.run();
@@ -308,7 +308,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		AdjustmentGroups adjustmentGroups = new AdjustmentGroups(SparrowTestBase.TEST_MODEL_ID);
 		
 		//Calc the HUC2 Aggregated result
-		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.HUC2);
+		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.HUC2, false);
 		BuildTotalDeliveredLoadByUpstreamRegionReport action =
 				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
 		DataTableSet aggByHUC2Result = action.run();
@@ -350,7 +350,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		AdjustmentGroups adjustmentGroups = new AdjustmentGroups(SparrowTestBase.TEST_MODEL_ID);
 		
 		//Calc the HUC2 Aggregated result
-		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.HUC2);
+		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.HUC2, false);
 		BuildTotalDeliveredLoadByUpstreamRegionReport action =
 				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
 		DataTableSet aggByHUC2Result = action.run();
@@ -393,7 +393,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		AdjustmentGroups adjustmentGroups = new AdjustmentGroups(SparrowTestBase.TEST_MODEL_ID);
 		
 		//Calc the HUC2 Aggregated result
-		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.HUC2);
+		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.HUC2, false);
 		BuildTotalDeliveredLoadByUpstreamRegionReport action =
 				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
 		DataTableSet aggByHUC2Result = action.run();
@@ -448,7 +448,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		AdjustmentGroups adjustmentGroups = new AdjustmentGroups(SparrowTestBase.TEST_MODEL_ID);
 		
 		//Calc the HUC2 Aggregated result
-		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.STATE);
+		DeliveryReportRequest req = new DeliveryReportRequest(adjustmentGroups, termReaches, AggregationLevel.STATE, false);
 		BuildTotalDeliveredLoadByUpstreamRegionReport action =
 				new BuildTotalDeliveredLoadByUpstreamRegionReport(req);
 		DataTableSet aggResult = action.run();

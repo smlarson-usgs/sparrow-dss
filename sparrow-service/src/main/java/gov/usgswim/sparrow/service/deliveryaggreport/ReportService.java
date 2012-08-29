@@ -46,7 +46,7 @@ public class ReportService implements HttpService<ReportRequest> {
 				throw new Exception("There must be downstream reaches selected to generate the deliver report.");
 			}
 
-			DeliveryReportRequest actionRequest = new DeliveryReportRequest(context.getAdjustmentGroups(), termReaches, aggLevel);
+			DeliveryReportRequest actionRequest = new DeliveryReportRequest(context.getAdjustmentGroups(), termReaches, aggLevel, req.isReportYield());
 
 
 			DataTableSet reportDataTableSet = sharedApp.getTotalDeliveredLoadByUpstreamRegionReport(actionRequest);

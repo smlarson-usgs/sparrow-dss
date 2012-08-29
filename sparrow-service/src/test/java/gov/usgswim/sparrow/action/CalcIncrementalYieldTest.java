@@ -59,9 +59,8 @@ public class CalcIncrementalYieldTest  extends SparrowTestBaseWithDBandCannedMod
 		
 		//Calc from Action
 		CalcIncrementalYield calcIncYield = new CalcIncrementalYield(
-				predictData, predictResult, catchmentAreaColumn, null);
+				predictData.getModel(), predictResult, catchmentAreaColumn, null);
 		ColumnData calcYieldResultCol = calcIncYield.run();
-		
 		
 		//Get canned predict results
 		PredictData cannedPredictData = getTestModelPredictData();
@@ -104,7 +103,7 @@ public class CalcIncrementalYieldTest  extends SparrowTestBaseWithDBandCannedMod
 		
 		//Calc from Action
 		CalcIncrementalYield calcIncYield = new CalcIncrementalYield(
-				predictData, predictResult, catchmentAreaColumn, 1);
+				predictData.getModel(), predictResult, catchmentAreaColumn, 1);
 		ColumnData calcYieldResultCol = calcIncYield.run();
 		
 		
@@ -143,7 +142,7 @@ public class CalcIncrementalYieldTest  extends SparrowTestBaseWithDBandCannedMod
 		
 		//Calc from Action
 		CalcIncrementalYield calcIncYield = new CalcIncrementalYield(
-				predictData, predictResult, catchmentAreaColumn, null);
+				predictData.getModel(), predictResult, catchmentAreaColumn, null);
 		ColumnData calcYieldResultCol = calcIncYield.run();
 
 		
