@@ -21,6 +21,7 @@
 	<h1>Total Delivered Load Summary Report Help</h1>
 	<div class="explanation">
 		<div class="section">
+			<h3>Typical Usage and Examples</h3>
 			<p>
 				The Total Delivered Load Summary Report can be used to summarize the load 
 				delivered to all of the downstream reaches selected in the Downstream tracking tab of the application. 
@@ -81,6 +82,7 @@
 			</div>
 		</div><!-- /section -->
 		<div class="section">
+			<h3>Avoid Nested Downstream Reaches</h3>
 			<p>
 				It is important to understand that if any of the selected reaches are upstream of another selected reach
 				(i.e. if two or more reaches are nested), some of the load will be counted more than once and the total row will be inaccurate.
@@ -106,6 +108,7 @@
 			</div>
 		</div><!-- /section -->
 		<div class="section">
+			<h3>Watershed Area - Fractioned Based on Stream Flow</h3>
 			<p>
 				This report (and other parts of this application) uses <i>Fractioned Watershed Area</i>.
 				For a selected reach, the Watershed Area is the area of land that drains all the upstream streams and rainfall to the stream reach,
@@ -135,7 +138,7 @@
 				Fractioned Watershed Areas allow for more consistent yield numbers and are
 				a truer representation of the total land area 'responsible' for the load
 				arriving at a reach.  <strong>They will, however, not match other published watershed
-					areas which do not fraction upstream areas by flow.</strong>
+					areas which do not fraction upstream areas by stream flow.</strong>
 			</p>
 
 			<div class="figure" style="width: 472px">
