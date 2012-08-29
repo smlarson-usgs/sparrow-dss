@@ -11,17 +11,18 @@ body { background-color: #ffe; }
 /**
 Head Section */
 .explanation {
-	margin: .4em 0; padding: .3em; background-color: #eefff0; border: solid 1px #000;
+	margin: .4em 0; padding: .3em; background-color: transparent;
 }
 
-.explanation .figure { width: 160px; border: none; padding: 0; box-shadow: none; margin: .2em .5em .2em .2em; }
-.explanation .figure img { width: 160px; }
+/* was 160px */
+.explanation .figure { width: 450px; border: none; padding: 0; box-shadow: none; margin: .2em 1.5em .2em 1.5em; }
+.explanation .figure img { width: 450px; }
 .explanation .figure img:hover { box-shadow: 4px 4px 2px rgba(50, 50, 250, 0.5); }
 /* .explanation img { float: left; margin: .1em .6em .1em .2em; } */
 
 .explanation p, .explanation h1, .explanation h2, .explanation h3, .explanation h4 { clear: none; }
 
-.explanation .section { margin-top: 1em; margin-bottom: 1em; }
+.explanation .section { margin-top: 1em; margin-bottom: 1em; clear: both;}
 
 .explanation:after {
 	content: '.'; 
@@ -31,7 +32,7 @@ Head Section */
 	visibility: hidden;
 }
 
-.explanation .section + .section { border-top: 1px solid #000; }
+.explanation .section + .section { padding-top: 1.5em; border-top: 2px solid #000; }
 
 
 #terminal-report-container .download-area {

@@ -495,7 +495,9 @@
 			* id:  Unique identifier for a stream reach in the model based on the reference stream network.  See the section 'Linking Exported Data to River Network Shapefiles' for more information on how to use this id.
 			* Reach Name (pname): The name of the reach.  This name may sometimes be empty, partial, or different than local names for the reach.
 			* EDACODE: NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.  This value may be empty for reaches in or draining to Canada.
-			* Watershed Area (unit) : The area of land that drains all the upstream streams and rainfall to the stream reach.
+			* Watershed Area (from Model export) (unit) : The area of land that drains all the upstream streams and rainfall to the stream reach.  This is the watershed area exported from the original model (here only for reference).
+			* Watershed Area, Fractioned (unit) : Watershed area is the area of land that drains all the upstream streams and rainfall to the stream reach.  _Fractioned_ Watershed Area accounts for splits (also called diversions) in the river network, where an upstream reach splits into two downstream reaches.
+			* Streamflow (unit) : The mean annual stream flow of the reach, in units of volume (cubic feet) per time (second).
 			* [source name]  (unit): One column per model source.  This is the 'Total Load' data series for an individual source.
 			* Total for All Sources (unit): The 'Total Load' data series (the sum of all per-source total loads).
 			

@@ -19,7 +19,7 @@
 	<jsp:include page="../header.jsp" flush="true" />
     
 	<h1>Total Delivered Load Summary Report Help</h1>
-	<div class="explination">
+	<div class="explanation">
 		<div class="section">
 			<p>
 				The Total Delivered Load Summary Report can be used to summarize the load 
@@ -101,6 +101,52 @@
 						all of the upstream load that arrives at the downstream end of reach A, 
 						including load that originates from reaches B, C, and all reaches upstream, 
 						will be included in the load reported for reach A.
+					</p>
+				</div>
+			</div>
+		</div><!-- /section -->
+		<div class="section">
+			<p>
+				This report (and other parts of this application) uses <i>Fractioned Watershed Area</i>.
+				For a selected reach, the Watershed Area is the area of land that drains all the upstream streams and rainfall to the stream reach,
+				i.e., it is the area of the 'upstream' land area.
+				<i>Fractioned</i> Watershed Area accounts for splits (also called diversions) in the river network, where an upstream reach
+				splits into two downstream reaches, as shown in Fig. 5.
+			</p>
+			<p>
+				Fractioned Watershed Area is calculated as follows:
+			</p>
+			<ol>
+				<li>Select a reach to calculate the Fractioned Watershed Area for and start with the incremental area of that reach.</li>
+				<li>
+					For each reach immediately upstream, multiply the upstream reach's incremental area by the fraction of the load that enters the downstream reach (called just <i>fraction</i>)
+					and add these areas to the incremental area of the selected reach.
+					The fraction of load entering the downstream reach is 1 unless there is a diversion.
+				</li>
+				<li>
+					Repeat this process, finding all upstream reaches and adding their fraction-multiplied area.
+					The <i>fraction</i> propagates upstream, such that if there is a 50/50 split at the very first reach,
+					all upstream reach areas are multiplied by .5.
+					Additional upstream splits are multiplicative, thus, if there was a second 50/50 split further upstream,
+					areas above that point would be multiplied by .25.
+				</li>
+			</ol>
+			<p>
+				Fractioned Watershed Areas allow for more consistent yield numbers and are
+				a truer representation of the total land area 'responsible' for the load
+				arriving at a reach.  <strong>They will, however, not match other published watershed
+					areas which do not fraction upstream areas by flow.</strong>
+			</p>
+
+			<div class="figure" style="width: 472px">
+				<h3>Fig. 5:  Example of nested upstream reaches</h3>
+				<div class="wrap"><img src="style/fig_t5.png" /></div>
+				<div class="caption">
+					<p>
+						This sample calculation how Fractioned Watershed Area would be calculated
+						for the simple case of reaches that have only one upstream reach.
+						Note that adding the Fractioned Watershed Areas together does not
+						result in double counting the area.
 					</p>
 				</div>
 			</div>

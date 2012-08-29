@@ -19,7 +19,7 @@
 	<jsp:include page="../header.jsp" flush="true" />
     
 	<h1>Delivered Load from Selected Upstream Regions Report Help</h1>
-	<div class="explination">
+	<div class="explanation">
 		<div class="section">
 			<p>
 The Aggregated Delivered Load Report can be used to analyze the upstream regions that contribute to the Total Delivered Load in each selected downstream reach.
