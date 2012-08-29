@@ -13,6 +13,8 @@
 	
 	String downloadReqUrl = pageRequestUrl.getBaseUrlWithSlash() + tableName + "?" + downloadReqParams;
 	
+	String reportAsYield = "false";
+	
 %>
  <div>
 		<div class="explanation">
@@ -38,8 +40,19 @@
 				<em>Selected Downstream Reaches</em> in the Sparrow DSS.  <a href="">More info...</a>
 			</p>
 		</div>
-		<div class="download-area">
-			<a class="button-link download-report" href="<%= downloadReqUrl %>" title="Download the currently displayed report">Download as CSV</a>
+		<div class="columns-2">
+			<div class="column">
+				<div class="content">
+				<h4>Report Load as</h4>
+				<form class="controls">
+					<p class="input"><input type="radio" name="report-yield"<%= ("false".equals(reportAsYield))?"checked=\"checked\"":"" %> value="false" />Total Load</p>
+					<p class="input"><input type="radio" name="report-yield"<%= ("true".equals(reportAsYield))?"checked=\"checked\"":"" %> value="true" />Yield</p>
+				</form>
+				</div>
+			</div>
+			<div class="download-area column">
+				<a class="button-link download-report" href="<%= downloadReqUrl %>" title="Download the currently displayed report">Download as CSV</a>
+			</div>
 		</div>
 		
 		<div id="terminal-report-area" class="report-area">
@@ -48,27 +61,6 @@
 				<h3 class="message">Report is loading...</h3>
 			</div>
 			<div class="report-table-area">
- <!--
-	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
-	String tableName = "getDeliveryTerminalReport";
-	String tableParams = "context-id=" + request.getParameter("context-id") +	
-			"&include-zero-rows=true" + 					
-			"&mime-type=xhtml_table";
-	
-	String tableUrl = pageRequestUrl.getBaseUrlWithSlash() + tableName + "?" + tableParams;
- 
- 	response.getWriter().flush();
- 
-    URL url = new URL(tableUrl);
-    BufferedReader in = new BufferedReader(
-    new InputStreamReader(url.openStream()));
-		//StringBuffer table = new StringBuffer();
-    String inputLine;
-    while ((inputLine = in.readLine()) != null)
-    	out.write(inputLine);
-    in.close();
- 
- -->
 			</div>
 		</div>
  </div>

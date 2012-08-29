@@ -6,9 +6,10 @@ var _AGG_REPORT_CONTAINER_ID = "aggregate-report-container";
 $(document).ready(function(){
    $("#tabs").tabs();
 	 
-	 initTermReaches();
+	 initTermReachList();
 	 initTermReport();
 	 initAggReport();
+	 termReportYieldChangeHandler();
 	 
 	 
 });
@@ -40,44 +41,9 @@ var aggReportRegionChangeHandler = function(event) {
 	return true;
 };
 
-var getAggReportUrl = function(mimeType) {
-	var urlParams = getUrlVars();
-
-	var contextId = urlParams["context-id"];
-	var regionType = $("#" + _AGG_REPORT_CONTAINER_ID + " .controls input[name='region-type']:checked").val();
-	if (regionType == null) {
-		regionType = "state";
-	}
-	var serviceName = "getDeliveryAggReport";
-	var reqParams = "context-id=" + contextId +
-		"&region-type=" + regionType + 	
-		"&include-zero-rows=false" + 
-		"&report-yield=true" +
-		"&mime-type=" + mimeType;
-	return "../" + serviceName + "?" + reqParams;
-}
+var termReportYieldChangeHandler = function(event) {
+	var reqUrl = getTermReportUrl("xhtml_table");
 	
-function initAggReport() {
-	
-	$("#" + _AGG_REPORT_CONTAINER_ID + " .controls input[name='region-type']").change(aggReportRegionChangeHandler);
-	
-	this.aggReportRegionChangeHandler();
-}
-
-function initTermReport() {
-
-		var urlParams = getUrlVars();
-		
-		var tableName = "getDeliveryTerminalReport";
-		var contextId = urlParams["context-id"];
-		var reqParams =
-			"context-id=" + contextId + 
-			"&include-zero-rows=true" + 
-			"&report-yield=true" +
-			"&mime-type=xhtml_table";
-		var reqUrl = "../" + tableName + "?" + reqParams;
-
-
 		$.ajax({
 				url: reqUrl,
 				
@@ -98,12 +64,55 @@ function initTermReport() {
 						alert('Error loading Terminal Report - Status = ' + xhr.status);
 				}
 		});
-		
 
-	
+	return true;
+};
+
+var getAggReportUrl = function(mimeType) {
+	var urlParams = getUrlVars();
+
+	var contextId = urlParams["context-id"];
+	var regionType = $("#" + _AGG_REPORT_CONTAINER_ID + " .controls input[name='region-type']:checked").val();
+	if (regionType == null) {
+		regionType = "state";
+	}
+	var serviceName = "getDeliveryAggReport";
+	var reqParams = "context-id=" + contextId +
+		"&region-type=" + regionType + 	
+		"&include-zero-rows=false" + 
+		"&report-yield=false" +
+		"&mime-type=" + mimeType;
+	return "../" + serviceName + "?" + reqParams;
 }
 
-function initTermReaches() {
+var getTermReportUrl = function(mimeType) {
+		var urlParams = getUrlVars();
+		
+		var serviceName = "getDeliveryTerminalReport";
+		var contextId = urlParams["context-id"];
+		var reportYield = $("#" + _TERM_REPORT_CONTAINER_ID + " .controls input[name='report-yield']:checked").val();
+		
+		var reqParams =
+			"context-id=" + contextId + 
+			"&include-zero-rows=true" + 
+			"&report-yield=" + reportYield +
+			"&mime-type=xhtml_table";
+		var reqUrl = "../" + serviceName + "?" + reqParams;
+		
+		return reqUrl;
+}
+	
+function initAggReport() {
+	$("#" + _AGG_REPORT_CONTAINER_ID + " .controls input[name='region-type']").change(aggReportRegionChangeHandler);
+	this.aggReportRegionChangeHandler();
+}
+
+function initTermReport() {
+	$("#" + _TERM_REPORT_CONTAINER_ID + " .controls input[name='report-yield']").change(termReportYieldChangeHandler);
+	this.aggReportRegionChangeHandler();
+}
+
+function initTermReachList() {
 	 termReachesAtTimeOfCreation = getParentCurrentTermReaches();
 	 
 	 $("p.downstream-reaches-list").append(getTermReachesAsString(termReachesAtTimeOfCreation));
