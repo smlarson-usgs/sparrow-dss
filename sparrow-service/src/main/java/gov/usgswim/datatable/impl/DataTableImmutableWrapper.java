@@ -1,7 +1,9 @@
 package gov.usgswim.datatable.impl;
 
 import gov.usgswim.datatable.ColumnData;
+import gov.usgswim.datatable.ColumnIndex;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.HashMapColumnIndex;
 
 import java.util.Map;
 import java.util.Set;
@@ -27,15 +29,30 @@ public class DataTableImmutableWrapper implements DataTable.Immutable {
 	// =================
 	// Delegated Methods
 	// =================
+	@Override
 	public int[] findAll(int col, Object value) {
 		return source.findAll(col, value);
 	}
+	
+	@Override
 	public int findFirst(int col, Object value) {
 		return source.findFirst(col, value);
 	}
+	
+	@Override
 	public int findLast(int col, Object value) {
 		return source.findLast(col, value);
 	}
+	
+	@Override
+	public ColumnIndex getIndex() {
+		if (source instanceof DataTable.Immutable) {
+			return ((DataTable.Immutable) source).getIndex();
+		} else {
+			return new HashMapColumnIndex(source);
+		}
+	}
+		
 	@Override
 	public ColumnData getColumn(int colIndex) {
 		return source.getColumn(colIndex);

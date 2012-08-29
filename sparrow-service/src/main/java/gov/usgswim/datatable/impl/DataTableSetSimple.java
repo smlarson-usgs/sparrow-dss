@@ -1,6 +1,7 @@
 package gov.usgswim.datatable.impl;
 
 import gov.usgswim.datatable.ColumnData;
+import gov.usgswim.datatable.ColumnIndex;
 import gov.usgswim.datatable.DataTable;
 import gov.usgswim.datatable.DataTableSet;
 import java.util.*;
@@ -38,6 +39,15 @@ public class DataTableSetSimple
 	@Override
 	public DataTableSet.Immutable toImmutable() {
 		return this;
+	}
+	
+	@Override
+	public ColumnIndex getIndex() {
+		if (getTableCount() > 0) {
+			return getTable(0).getIndex();
+		} else {
+			return null;
+		}
 	}
 
 

@@ -43,11 +43,12 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ID_SCRIPT, "false");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, "true");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.terminal.toString());
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_YIELD, "false");
 
 		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
 		
-		//System.out.println(actualReportResponse);
+//		System.out.println(actualReportResponse);
 		
 		String rowCountStr = gov.usgswim.sparrow.service.deliveryaggreport.ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
 
@@ -80,11 +81,12 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ID_SCRIPT, "false");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, "true");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.terminal.toString());
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_YIELD, "false");
 
 		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
 		
-		System.out.println(actualReportResponse);
+//		System.out.println(actualReportResponse);
 		
 		String firstReachId = getXPathValue("//*[local-name()='data']/*[local-name()='r'][position()=1]/@id", actualReportResponse);
 		String numberOfValues = getXPathValue("count(//*[local-name()='data']/*[local-name()='r'][position()=1]/*[local-name()='c'])", actualReportResponse);
@@ -116,6 +118,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ID_SCRIPT, "false");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, "true");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.terminal.toString());
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_YIELD, "false");
 
 		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();

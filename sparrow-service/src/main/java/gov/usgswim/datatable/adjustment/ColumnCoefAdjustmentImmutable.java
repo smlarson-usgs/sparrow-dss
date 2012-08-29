@@ -1,7 +1,9 @@
 package gov.usgswim.datatable.adjustment;
 
 import gov.usgswim.datatable.ColumnData;
+import gov.usgswim.datatable.ColumnIndex;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.HashMapColumnIndex;
 import gov.usgswim.datatable.impl.ColumnDataFromTable;
 import gov.usgswim.datatable.impl.FindHelper;
 
@@ -53,6 +55,15 @@ public class ColumnCoefAdjustmentImmutable implements DataTable.Immutable {
 
 	public DataTable.Immutable toImmutable() {
 		return this;
+	}
+	
+	@Override
+	public ColumnIndex getIndex() {
+		if (source instanceof DataTable.Immutable) {
+			return ((DataTable.Immutable) source).getIndex();
+		} else {
+			return new HashMapColumnIndex(source);
+		}
 	}
 	
 	// ==========================

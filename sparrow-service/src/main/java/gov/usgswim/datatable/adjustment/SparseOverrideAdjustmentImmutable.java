@@ -2,7 +2,9 @@ package gov.usgswim.datatable.adjustment;
 
 import gov.usgswim.Immutable;
 import gov.usgswim.datatable.ColumnData;
+import gov.usgswim.datatable.ColumnIndex;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.HashMapColumnIndex;
 import gov.usgswim.datatable.impl.ColumnDataFromTable;
 import gov.usgswim.datatable.impl.FindHelper;
 
@@ -49,6 +51,11 @@ public class SparseOverrideAdjustmentImmutable implements DataTable.Immutable {
 	// =================
 	public DataTable.Immutable toImmutable() {
 		return this;
+	}
+	
+	@Override
+	public ColumnIndex getIndex() {
+		return source.getIndex();
 	}
 	
 	// =================

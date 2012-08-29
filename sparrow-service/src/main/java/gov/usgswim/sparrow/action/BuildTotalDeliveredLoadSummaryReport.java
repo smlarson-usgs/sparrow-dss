@@ -11,7 +11,7 @@ import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
-
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +97,7 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 		BasicAnalysis analysis = new BasicAnalysis(
 				DataSeriesType.total_delivered_flux, null, null, null);
 			
-		HashMapColumnIndex index = new  HashMapColumnIndex(predictData.getTopo());
+		ColumnIndex index = predictData.getTopo().toImmutable().getIndex();
 		
 		//Rename the area db area column
 		ColumnAttribsBuilder termReachWatershedAreaColumnAttribs = new ColumnAttribsBuilder();
@@ -113,15 +113,21 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 				buildTableProperties(), index);
 	
 		
-		SimpleDataTable dataTable = new SimpleDataTable(
+		SimpleDataTable loadTable = new SimpleDataTable(
 				expandedTotalDelLoadForAllSources.toArray(new ColumnData[]{}),
 				"Total Delivered Load by Source", 
 				"Total Delivered Load for each source individualy and for all sources",
 				buildTableProperties(), index);
 		
-		DataTableSet tableSet = new DataTableSetSimple(new DataTable.Immutable[]{infoTable.toImmutable(), dataTable.toImmutable()},
-				"Total Delivered Load Summary Report",
-				"Total Delivered Load for each source individualy and for all sources");
+		String reportName = "Load";
+		if (this.reportYield) {
+			loadTable = convertToYield(predictData.getModel(), loadTable, fractionedWatershedArea, index);
+			reportName = "Yield";
+		}
+		
+		DataTableSet tableSet = new DataTableSetSimple(new DataTable.Immutable[]{infoTable.toImmutable(), loadTable.toImmutable()},
+				"Total Delivered " + reportName + " Summary Report",
+				"Total Delivered " + reportName + " for each source individualy and for all sources");
 		
 		if (tableSet.isValid()) {
 			return tableSet;
@@ -166,6 +172,28 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 		}
 
 
+	}
+	
+	protected SimpleDataTable convertToYield(SparrowModel model, DataTable loadTable,
+			ColumnData areaCol, ColumnIndex index) throws Exception {
+		
+		ArrayList<ColumnData> yieldCols = new ArrayList<ColumnData>();
+		
+		for (int col = 0; col < loadTable.getColumnCount(); col++) {
+			ColumnData loadColumn = loadTable.getColumn(col);
+			
+			CalcAnyYield action = new CalcAnyYield(DataSeriesType.total_yield, model, loadColumn, areaCol);
+			ColumnData yieldCol = action.run();
+			yieldCols.add(yieldCol);
+		}
+		
+		SimpleDataTable yieldTable = new SimpleDataTable(
+				yieldCols.toArray(new ColumnData[]{}),
+				"Total Delivered Yield by Source", 
+				"Total Delivered Yield for each source individualy and for all sources",
+				buildTableProperties(), index);
+		
+		return yieldTable;
 	}
 	
 }

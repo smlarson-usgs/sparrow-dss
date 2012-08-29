@@ -442,6 +442,15 @@ public class RelativePercentageView extends AbstractDataTableView implements Dat
 		}
 	}
 	
+	@Override
+	public ColumnIndex getIndex() {
+		if (super.base instanceof DataTable.Immutable) {
+			return ((DataTable.Immutable) super.base).getIndex();
+		} else {
+			return new HashMapColumnIndex(super.base);
+		}
+	}
+	
 	// ==========================
 	// FindXXX() Methods
 	// ==========================

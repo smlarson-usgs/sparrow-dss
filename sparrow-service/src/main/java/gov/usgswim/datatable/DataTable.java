@@ -17,7 +17,9 @@ import java.util.Set;
  */
 public interface DataTable extends ImmutableBuilder<DataTable.Immutable>, Serializable {
 
-	public static interface Immutable extends DataTable{/* Just a marker interface */};
+	public static interface Immutable extends DataTable{/* Just a marker interface */
+		ColumnIndex getIndex();
+	};
 
 	// =================
 	// "TABLE"-WIDE INFO (used to be MetaInfo)

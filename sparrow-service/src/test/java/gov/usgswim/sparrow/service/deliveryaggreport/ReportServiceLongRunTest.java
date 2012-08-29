@@ -41,6 +41,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml_table");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, "false");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_REGION_TYPE, AggregationLevel.STATE.getName());
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_YIELD, "false");
 
 		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
@@ -74,6 +75,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml_table");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, "true");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_REGION_TYPE, AggregationLevel.STATE.getName());
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_YIELD, "false");
 
 		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();

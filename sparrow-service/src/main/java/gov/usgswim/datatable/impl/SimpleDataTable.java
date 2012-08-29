@@ -217,14 +217,17 @@ public class SimpleDataTable implements DataTable.Immutable {
 	// Data Population Lifecycle Methods
 	// =================================
 
+	@Override
 	public boolean isValid() {
 		return isValid;
 	}
 	
+	@Override
 	public boolean isValid(int columnIndex) {
 		return columns[columnIndex].isValid();
 	}
 
+	@Override
 	public DataTable.Immutable toImmutable() {
 		return this;
 	}
@@ -288,58 +291,75 @@ public class SimpleDataTable implements DataTable.Immutable {
 	// ====================
 	// Find & Index Methods
 	// ====================
+	@Override
 	public int[] findAll(int col, Object value) {
 		return columns[col].findAll(value);
 	}
 
+	@Override
 	public int findFirst(int col, Object value) {
 		return columns[col].findFirst(value);
 	}
 
+	@Override
 	public int findLast(int col, Object value) {
 		return columns[col].findLast(value);
 	}
 
+	@Override
 	public Long getIdForRow(int row) {
 		return index.getIdForRow(row);
 	}
 
+	@Override
 	public boolean isIndexed(int col) {
 		return columns[col].isIndexed();
 	}
 	
+	@Override
 	public int getRowForId(Long id) {
 		return index.getRowForId(id);
 	}
 
-
+	@Override
 	public boolean hasRowIds() {
 		return index.hasIds();
+	}
+	
+	@Override
+	public ColumnIndex getIndex() {
+		return index.toImmutable();
 	}
 	
 	// =======================
 	// Column Metadata Methods
 	// =======================
+	@Override
 	public Set<String> getPropertyNames(int col) {
 		return columns[col].getPropertyNames();
 	}
 
+	@Override
 	public String getName(int col) {
 		return columns[col].getName();
 	}
 
+	@Override
 	public String getProperty(int col, String key) {
 		return columns[col].getProperty(key);
 	}
 	
+	@Override
 	public String getUnits(int col) {
 		return columns[col].getUnits();
 	}
 
+	@Override
 	public Class<?> getDataType(int col) {
 		return columns[col].getDataType();
 	}
 	
+	@Override
 	public String getDescription(int col) {
 		return columns[col].getDescription();
 	}
@@ -347,30 +367,37 @@ public class SimpleDataTable implements DataTable.Immutable {
 	// ===========================================
 	// getXXX(int row, int col) cell value methods
 	// ===========================================
+	@Override
 	public Integer getInt(int row, int col) {
 		ColumnData column = columns[col];
 		return (column != null)? column.getInt(row): null;
 	}
+	
+	@Override
 	public Float getFloat(int row, int col) {
 		ColumnData column = columns[col];
 		return (column != null)? column.getFloat(row): null;
 	}
-
+	
+	@Override
 	public String getString(int row, int col) {
 		ColumnData column = columns[col];
 		return (column != null)? column.getString(row): null;
 	}
 	
+	@Override
 	public Double getDouble(int row, int col) {
 		ColumnData column = columns[col];
 		return (column != null)? column.getDouble(row): null;
 	}
 
+	@Override
 	public Object getValue(int row, int col) {
 		ColumnData column = columns[col];
 		return (column != null)? column.getValue(row): null;
 	}
 	
+	@Override
 	public Long getLong(int row, int col) {
 		ColumnData column = columns[col];
 		return (column != null)? column.getLong(row): null;
@@ -380,18 +407,22 @@ public class SimpleDataTable implements DataTable.Immutable {
 	// ===============
 	// MAX-MIN Methods
 	// ===============
+	@Override
 	public Double getMaxDouble(int col) {
 		return columns[col].getMaxDouble();
 	}
 
+	@Override
 	public Double getMaxDouble() {
 		return FindHelper.bruteForceFindMaxDouble(this);
 	}
 
+	@Override
 	public Integer getMaxInt(int col) {
 		return columns[col].getMaxInt();
 	}
 
+	@Override
 	public Integer getMaxInt() {
 		// this is important to keep as it's likely to require less conversion from native type
 		Integer result = null;
@@ -404,18 +435,22 @@ public class SimpleDataTable implements DataTable.Immutable {
 		return result;
 	}
 
+	@Override
 	public Double getMinDouble(int col) {
 		return columns[col].getMinDouble();
 	}
 
+	@Override
 	public Double getMinDouble() {
 		return FindHelper.bruteForceFindMinDouble(this);
 	}
 
+	@Override
 	public Integer getMinInt(int col) {
 		return columns[col].getMinInt();
 	}
 
+	@Override
 	public Integer getMinInt() {
 		// this is important to keep as it's likely to require less conversion from native type
 		Integer result = null;

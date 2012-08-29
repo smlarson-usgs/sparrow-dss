@@ -130,13 +130,16 @@ public class ServiceServlet extends HttpServlet {
 		
 		try {
 			doActualGet(req, resp);
+		} catch (RuntimeException e) {
+			log.fatal("Error thrown in GET request", e);
+			monitor.setError(e);
+			throw e;
 		} catch (ServletException e) {
+			log.error("Error thrown in GET request", e);
 			monitor.setError(e);
 			throw e;
 		} catch (IOException e) {
-			monitor.setError(e);
-			throw e;
-		} catch (RuntimeException e) {
+			log.error("Error thrown in GET request", e);
 			monitor.setError(e);
 			throw e;
 		} finally {

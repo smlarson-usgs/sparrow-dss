@@ -1,6 +1,8 @@
 package gov.usgswim.sparrow.datatable;
 
+import gov.usgswim.datatable.ColumnIndex;
 import gov.usgswim.datatable.DataTable;
+import gov.usgswim.datatable.HashMapColumnIndex;
 
 import java.util.Map;
 import java.util.Set;
@@ -91,6 +93,14 @@ public abstract class AbstractDataTableBase implements DataTable {
 	@Override
 	public Integer getMinInt() {
 		return getMinDouble().intValue();
+	}
+	
+	public ColumnIndex getIndex() {
+		if (base instanceof DataTable.Immutable) {
+			return ((DataTable.Immutable) base).getIndex();
+		} else {
+			return new HashMapColumnIndex(base);
+		}
 	}
 	
 	//
