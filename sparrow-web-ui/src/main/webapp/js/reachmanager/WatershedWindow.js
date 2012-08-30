@@ -119,9 +119,28 @@ var WATERSHED_WINDOW = new (function() {
 									sm.each(function(watershedRecord){
 										var reachStore = getWatershedStore();
 										reachStore.on('load', function(){
+											
+											var reachesToAdd = [];
+											
 											reachStore.each(function(reachRecord){
-												Sparrow.SESSION.addToTargetReaches(reachRecord.id, reachRecord.get('name'));
+												//Sparrow.SESSION.addToTargetReaches(reachRecord.id, reachRecord.get('name'));
+												reachesToAdd.push({ 'reachId': reachRecord.id, 'reachName': reachRecord.get('name') });
 											});
+											
+											var reachedAddedCnt = Sparrow.SESSION.addAllToTargetReaches(reachesToAdd);
+											
+											if (reachedAddedCnt == 0) {
+												//Couldn't add them - duplicates
+												Ext.Msg.alert("","All the reaches in the selected watershed are already in the 'Selected Downstream Reaches' list.  No reaches were added.");
+											} else if (reachedAddedCnt < reachesToAdd.length) {
+												Ext.Msg.alert("","The selected watershed contains " + 
+													reachesToAdd.length + " reaches, however, only " + 
+													reachedAddedCnt + " were added because some were already in the 'Selected Downstream Reaches' list.");
+											} else {
+												Ext.Msg.alert("","Added " + 
+													reachesToAdd.length + " reache(s) to the 'Selected Downstream Reaches' list.");
+											}
+											
 										});
 										reachStore.load({
 											params:{

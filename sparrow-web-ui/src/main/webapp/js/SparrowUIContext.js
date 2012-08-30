@@ -1364,10 +1364,11 @@ Sparrow.ux.Session.prototype = {
 	
 	/**
 	 * Adds the specified reach to the list of targeted reaches.
+	 * Returns true to indicate the reach was added.
 	 */
 	addToTargetReaches : function(reachId, reachName){
 	    if (this.isReachTarget(reachId)) {
-	        return;
+	        return false;
 	    }
 
 	    var reaches = this.PredictionContext.terminalReaches.reach;
@@ -1378,8 +1379,52 @@ Sparrow.ux.Session.prototype = {
 	    });
 	    this.PredictionContext.terminalReaches.reach = reaches;
 
-        this.fireContextEvent("targets-changed");
+      this.fireContextEvent("targets-changed");
 	    this.changed();
+			
+			return true;
+	},
+	
+	/**
+	 * Adds an array of reaches as targets.  For adding multiple reaches,
+	 * use this method instead of addToTargetReaches, since that method fires
+	 * changes events for each addition.
+	 * 
+	 * Each item in the array is expected to be an Ojbect with these properties:
+	 * reachId Integer id for the reach
+	 * reachName Name of the reach
+	 * 
+	 * Returns the number of reaches added, which may be less then the number
+	 * (it may be zero) if the reaches already were target reaches.
+	 */
+	addAllToTargetReaches : function(reachArray){
+		
+		var chgCount = 0;
+		
+		var reaches = this.PredictionContext.terminalReaches.reach;
+		if (!reaches) reaches = [];
+		
+		for (var i = 0, len = reachArray.length; i < len; i += 1) {
+			
+			if (! this.isReachTarget(reachArray[i].reachId)) {
+				
+				reaches.push({
+						'@id': reachArray[i].reachId,
+						'@name': reachArray[i].reachName
+				});
+				
+				chgCount++;
+				
+			}
+		}
+		
+		if (chgCount > 0) {
+			this.PredictionContext.terminalReaches.reach = reaches;
+			this.fireContextEvent("targets-changed");
+			this.changed();
+		}
+		
+		return chgCount;
 	},
 
 	/**
