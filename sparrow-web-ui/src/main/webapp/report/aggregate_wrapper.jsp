@@ -22,7 +22,7 @@
 %>
  <div>
 		<div class="explanation">
-			<div class="figure cluster">
+			<div class="inset-figure cluster">
 				<div class="wrap">
 					<a href="javascript:openAggHelp();" title="Click to open more detailed documentation in a new window.">
 						<img alt="Depiction of how values are calculated.  Click for more details." src="style/fig_a2.png" />
@@ -41,21 +41,19 @@
 		<div class="to-and-from-area columns-2">
 			<div class="from-aggregate-area column">
 				<div class="content">
-				<h4>Aggregate upstream regions by</h4>
-				<form class="controls columns-2">
-					<div class="column">
-					<p class="input"><input type="radio" name="region-type"<%= ("state".equals(regionType))?"checked=\"checked\"":"" %> value="state" />State</p>
-					<!-- <p class="input"><input type="radio" name="region-type"<%= ("eda".equals(regionType))?"checked=\"checked\"":"" %> value="eda" />EDA</p> -->
-					<p class="input"><input type="radio" name="region-type"<%= ("huc2".equals(regionType))?"checked=\"checked\"":"" %> value="huc2" />HUC 2</p>
-					<p class="input"><input type="radio" name="region-type"<%= ("huc4".equals(regionType))?"checked=\"checked\"":"" %> value="huc4" />HUC 4</p>
-					<p class="input"><input type="radio" name="region-type"<%= ("huc6".equals(regionType))?"checked=\"checked\"":"" %> value="huc6" />HUC 6</p>
-					<p class="input"><input type="radio" name="region-type"<%= ("huc8".equals(regionType))?"checked=\"checked\"":"" %> value="huc8" />HUC 8</p>
-					<input type="hidden" name="context-id" value="<%= contextId %>" />
+					<h4>Aggregate upstream regions by:</h4>
+					<form class="controls">
+						<p class="input"><input type="radio" name="region-type"<%= ("state".equals(regionType))?"checked=\"checked\"":"" %> value="state" />State</p>
+						<!-- <p class="input"><input type="radio" name="region-type"<%= ("eda".equals(regionType))?"checked=\"checked\"":"" %> value="eda" />EDA</p> -->
+						<p class="input"><input type="radio" name="region-type"<%= ("huc2".equals(regionType))?"checked=\"checked\"":"" %> value="huc2" />HUC 2</p>
+						<p class="input"><input type="radio" name="region-type"<%= ("huc4".equals(regionType))?"checked=\"checked\"":"" %> value="huc4" />HUC 4</p>
+						<p class="input"><input type="radio" name="region-type"<%= ("huc6".equals(regionType))?"checked=\"checked\"":"" %> value="huc6" />HUC 6</p>
+						<p class="input"><input type="radio" name="region-type"<%= ("huc8".equals(regionType))?"checked=\"checked\"":"" %> value="huc8" />HUC 8</p>
+						<input type="hidden" name="context-id" value="<%= contextId %>" />
+					</form>
+					<div class="download-area">
+						<a class="button-link download-report" href="" title="Download the currently displayed report">Download as CSV</a>
 					</div>
-					<div class="column download-area">
-						<a class="button-link download-report" href="<%= downloadReqUrl %>" title="Download the currently displayed report">Download as CSV</a>
-					</div>
-				</form>
 				</div>
 			</div>
 			<div class="to-downstream-reaches-area column">

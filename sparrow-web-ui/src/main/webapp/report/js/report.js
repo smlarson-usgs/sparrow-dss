@@ -14,6 +14,12 @@ $(document).ready(function(){
 	 
 });
 
+var aggReportDownloadHandler = function(event) {
+	var reqUrl = getAggReportUrl("csv");
+	window.open(reqUrl, "_self");
+	return false;
+};
+
 var aggReportRegionChangeHandler = function(event) {
 	var reqUrl = getAggReportUrl("xhtml_table");
 	
@@ -39,6 +45,12 @@ var aggReportRegionChangeHandler = function(event) {
 	});
 
 	return true;
+};
+
+var termReportDownloadHandler = function(event) {
+	var reqUrl = getTermReportUrl("csv");
+	window.open(reqUrl, "_self");
+	return false;
 };
 
 var termReportYieldChangeHandler = function(event) {
@@ -96,7 +108,7 @@ var getTermReportUrl = function(mimeType) {
 			"context-id=" + contextId + 
 			"&include-zero-rows=true" + 
 			"&report-yield=" + reportYield +
-			"&mime-type=xhtml_table";
+			"&mime-type=" + mimeType;
 		var reqUrl = "../" + serviceName + "?" + reqParams;
 		
 		return reqUrl;
@@ -104,11 +116,14 @@ var getTermReportUrl = function(mimeType) {
 	
 function initAggReport() {
 	$("#" + _AGG_REPORT_CONTAINER_ID + " .controls input[name='region-type']").change(aggReportRegionChangeHandler);
+	$("#" + _AGG_REPORT_CONTAINER_ID + " .download-report").click(aggReportDownloadHandler);
+	
 	this.aggReportRegionChangeHandler();
 }
 
 function initTermReport() {
 	$("#" + _TERM_REPORT_CONTAINER_ID + " .controls input[name='report-yield']").change(termReportYieldChangeHandler);
+	$("#" + _TERM_REPORT_CONTAINER_ID + " .download-report").click(termReportDownloadHandler);
 	this.aggReportRegionChangeHandler();
 }
 
@@ -156,14 +171,14 @@ function checkTermReachesInSync(initTerms, curTerms) {
 function openTerminalHelp() {
 	
 		var newWindow = window.open('terminal_report_help.jsp', '_blank', 
-		'resizable=1,location=0,status=1,scrollbars=1,width=500,height=640');
+		'resizable=1,location=0,status=1,scrollbars=1,width=750,height=640');
 		newWindow.focus();
 }
 
 function openAggHelp() {
 	
 		var newWindow = window.open('aggregate_report_help.jsp', '_blank', 
-		'resizable=1,location=0,status=1,scrollbars=1,width=500,height=640');
+		'resizable=1,location=0,status=1,scrollbars=1,width=750,height=640');
 		newWindow.focus();
 }
 
