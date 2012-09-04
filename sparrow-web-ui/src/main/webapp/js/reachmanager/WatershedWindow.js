@@ -34,46 +34,59 @@ var WATERSHED_WINDOW = new (function() {
 	};
 
 	var findWatershedStore = getWatershedStore();
+	
+	var howToSelect = function(){
+		if (Ext.isMac){
+			return 'Use command-click to select multiple watersheds.';
+		} else {
+			return 'Use control-click to select multiple watersheds.';
+		}
+	};
 
 	var goToWatershedFormContent = new Ext.Panel({
 		region: 'north',
 		bodyStyle: 'padding: 5px',
 		autoScroll: true,
-		title: "Choose one or more sets of reaches to add to your Active Downstream Reaches and click the 'Add' button at the bottom."
+		title: "Choose one or more watersheds to add to your Active Downstream Reaches and click the 'Add' button at the bottom. " + howToSelect() +
+		' Not all watersheds are represented in this list.'
 	});
 	var gridSelectionModel =  new Ext.grid.CheckboxSelectionModel({
-		checkOnly: true,
-		singleSelect:false
+		header: '',
 	});
+	
 	var findWatershedGrid = new Ext.grid.GridPanel({
 		region : 'center',
 		id: 'findWatershedGrid',
 		store : findWatershedStore,
-		selectionModel: gridSelectionModel,
+		selModel: gridSelectionModel,
 		viewConfig : {
-			forceFit : true
+			forceFit : true,
 		},
 		columns : [
 		   gridSelectionModel,
 		{
 			header : "Watershed Name",
-			menuDisabled : true,
-			width : 50,
+			sortable : false,
+			width : 40,
+			hideable : false,
 			dataIndex : "name"
 		}, {
 			header : "Watershed Description",
 			width : 55,
 			dataIndex : 'description',
-			sortable : true
+			hidden : true,
+			hideable: true,
+			sortable : false,
 		}, {
-			header : "# of Reaches in Watershed",
-			width : 20,
+			header : "# of Reaches",
+			width : 80,
+			fixed : true,
 			dataIndex : 'count',
-			sortable : true
+			sortable : false,
+			hideable : true
 		} ],
-		autoScroll : true,
 		stripeRows : true,
-		autoExpandColumn : 2
+		autoExpandColumn : 1
 	});
 
 	this.open = function() {
@@ -86,7 +99,7 @@ var WATERSHED_WINDOW = new (function() {
 				layout : 'border',
 				plain : true,
 				// modal: true,
-				width : 700,
+				width : 400,
 				height : 545,
 				draggable : true,
 				resizable : true,
@@ -116,6 +129,10 @@ var WATERSHED_WINDOW = new (function() {
 									Ext.Msg.alert("","Please pick a watershed.");
 								} else {
 									Ext.getBody().mask('Adding watershed... ','x-mask-loading');
+									var reachInfo = {
+											totalReaches : 0,
+											reachAddedCnt : 0
+									};
 									sm.each(function(watershedRecord){
 										var reachStore = getWatershedStore();
 										reachStore.on('load', function(){
@@ -125,29 +142,31 @@ var WATERSHED_WINDOW = new (function() {
 											reachStore.each(function(reachRecord){
 												//Sparrow.SESSION.addToTargetReaches(reachRecord.id, reachRecord.get('name'));
 												reachesToAdd.push({ 'reachId': reachRecord.id, 'reachName': reachRecord.get('name') });
+												
 											});
-											
+									
 											var reachedAddedCnt = Sparrow.SESSION.addAllToTargetReaches(reachesToAdd);
-											
-											if (reachedAddedCnt == 0) {
+											reachInfo.totalReaches = reachInfo.totalReaches + reachesToAdd.length;
+											reachInfo.reachAddedCnt = reachInfo.reachAddedCnt + reachedAddedCnt;
+											if (reachInfo.reachAddedCnt == 0) {
 												//Couldn't add them - duplicates
 												Ext.Msg.alert("","All the reaches in the selected watershed are already in the 'Selected Downstream Reaches' list.  No reaches were added.");
-											} else if (reachedAddedCnt < reachesToAdd.length) {
-												Ext.Msg.alert("","The selected watershed contains " + 
-													reachesToAdd.length + " reaches, however, only " + 
-													reachedAddedCnt + " were added because some were already in the 'Selected Downstream Reaches' list.");
+											} else if (reachInfo.reachAddedCnt < reachInfo.totalReaches) {
+												Ext.Msg.alert("","The selected watersheds contain " + 
+													reachInfo.totalReaches + " reaches, however, only " + 
+													reachInfo.reachAddedCnt + " were added because some were already in the 'Selected Downstream Reaches' list.");
 											} else {
 												Ext.Msg.alert("","Added " + 
-													reachesToAdd.length + " reache(s) to the 'Selected Downstream Reaches' list.");
-											}
-											
-										});
+													reachInfo.reachAddedCnt + " reache(s) to the 'Selected Downstream Reaches' list.");
+											}																			
+										});	
 										reachStore.load({
 											params:{
 												'watershed-id': watershedRecord.id
 											}
 										});
-									});
+									}
+									);	
 									setTimeout('Ext.getBody().unmask()', 500);
 								};
 							}
