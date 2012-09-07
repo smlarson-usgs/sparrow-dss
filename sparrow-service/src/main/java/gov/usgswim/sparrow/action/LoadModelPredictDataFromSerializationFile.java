@@ -105,27 +105,30 @@ public class LoadModelPredictDataFromSerializationFile extends Action<PredictDat
 		return null;
 	}
 	
-	public static void serializeModelToFile(PredictData pd, String fileName) {
+	public void serializeModelToFile(PredictData pd, String fileName) {
 		
-		
-	    try{
-	        //use buffering
-	        OutputStream file = new FileOutputStream(fileName);
-	        OutputStream buffer = new BufferedOutputStream( file );
-	        ObjectOutput output = new ObjectOutputStream( buffer );
-	        try{
-	          output.writeObject(pd);
-	        }
-	        finally{
-	          output.close();
-	        }
-	      } catch(IOException ex){
-	        System.err.print(ex);
-	      }
+		try{
 
-	      //deserialize the quarks.ser file
-	      //note the use of abstract base class references
-	      
+			//Create the directory if it does not exist
+			File directory = new File(getSerializedModelDirectory());
+			if (! directory.exists()) {
+				directory.mkdirs();
+			}
+
+
+			//use buffering
+			OutputStream file = new FileOutputStream(fileName);
+			OutputStream buffer = new BufferedOutputStream( file );
+			ObjectOutput output = new ObjectOutputStream( buffer );
+			try{
+				output.writeObject(pd);
+			}
+			finally{
+				output.close();
+			}
+		} catch(IOException ex){
+			log.error("Unable to write the serialized model to " + fileName, ex);
+		}
 
 	}
 	

@@ -65,8 +65,10 @@ public class SparrowModelValidationRunner {
 	
 	String singleModelPath;
 	String activeModelDirectory;
+	String cacheDirectory;	//directory to cache db model data to, so re-run models are faster
 	List<Long> modelIds;
 	String dbPwd;
+	boolean useTestDb = false;	//modifies the connection string
 
 	int firstModelId = -1;
 	int lastModelId = -1;
@@ -94,6 +96,8 @@ public class SparrowModelValidationRunner {
 	* @throws Exception 
 	*/
 	public static void main(String[] args) throws Exception {
+		
+		boolean continueRun = true;
 
 		
 		//No logger up to this point
@@ -103,17 +107,23 @@ public class SparrowModelValidationRunner {
 		
 		if (runner.getValidators().isEmpty()) {
 			System.err.println("No validators were found.  Subclass SparrowModelValidationRunner to override the loadModelValidators method to add some.");
-			return;
+			continueRun = false;
 		} else {
-			System.err.println("Found " + runner.getValidators().size() + " validation tests to run against the models.");
+			System.out.println("Found " + runner.getValidators().size() + " validation tests to run against the models.");
 		}
 		
 		
-		runner.oneTimeUserInput();
-		runner.initSystemConfig();		//Logging system is now configured (which log4j file to load)
-		runner.initLoggingConfig();		//Now do test configuraiton of logging
+		if (continueRun) {
+			continueRun = runner.oneTimeUserInput();
+			if (continueRun == false) {
+				System.out.println("Run canceled.");
+			}
+		}
+		if (continueRun) continueRun = runner.initSystemConfig();		//Logging system is now configured (which log4j file to load)
+		if (continueRun) continueRun = runner.initLoggingConfig();		//Now do test configuraiton of logging
 		
-		if (runner.attemptToLoadPublicModelsFromDb) {
+		//Build list of models to run
+		if (continueRun && runner.attemptToLoadPublicModelsFromDb) {
 			List<SparrowModel> models = SharedApplication.getInstance().getModelMetadata(new ModelRequestCacheKey(null, true, false, false));
 			runner.modelIds = new ArrayList<Long>();
 			for (SparrowModel m : models) {
@@ -122,7 +132,7 @@ public class SparrowModelValidationRunner {
 			}
 		}
 		
-		if (runner.initModelValidators()) {
+		if (continueRun && runner.initModelValidators()) {
 			runner.run();
 		} else {
 			System.err.println("Unable to run any models or tests.");
@@ -287,7 +297,7 @@ public class SparrowModelValidationRunner {
 		
 		promptIntro();
 		
-		
+		PromptResponse pr = null;
 		
 		boolean requiresDb = false;
 		boolean requiresText = false;
@@ -298,19 +308,20 @@ public class SparrowModelValidationRunner {
 		}
 		
 		if (requiresText) {
-			promptPathOrDir();
+			pr = promptPathOrDir();
+			if (pr.isQuit) return false;
 			
 			if (singleModelPath != null) {
 				File f = new File(singleModelPath);
 				if (! f.exists()) {
-				log.fatal("Oops, the model path '" + singleModelPath + "' does not seem to exist.");
-				return false;
+					log.fatal("Oops, the model path '" + singleModelPath + "' does not seem to exist.");
+					return false;
 				}
 			} else if (activeModelDirectory != null) {
 				File f = new File(activeModelDirectory);
 				if (! f.exists()) {
-				log.fatal("Oops, the directory '" + activeModelDirectory + "' does not seem to exist.");
-				return false;
+					log.fatal("Oops, the directory '" + activeModelDirectory + "' does not seem to exist.");
+					return false;
 				}
 			} else {
 				log.fatal("A model path or a directory must be specified.");
@@ -318,23 +329,36 @@ public class SparrowModelValidationRunner {
 			}
 		} else {
 			//If text files are not involved, we need a list of model ids
-			prompModelIds();
+			pr = prompModelIds();
+			if (pr.isQuit) return false;
 		}
 		
 		if (requiresDb) {
-			promptPwd();
+			
+			pr = promptCacheDirectory();
+			if (pr.isQuit) return false;
+			
+			pr = promptWhichDb();
+			if (pr.isQuit) return false;
+			
+			pr = promptPwd();
+			if (pr.isQuit) return false;
+			
 			intiDbConfig();
 			
 			try {
 				Connection conn = SharedApplication.getInstance().getROConnection();
 				conn.close();
 			} catch (Exception e) {
-				log.fatal("Oops, a bad pwd, or lack of network access to the db?", e);
+				System.err.println("Oops, a bad pwd, or lack of network access to the db?");
+				e.printStackTrace();
 				return false;
 			}
 		}
 		
-		promptLogDetail();
+		pr = promptLogDetail();
+		if (pr.isQuit) return false;
+		
 		return true;
 
 	}
@@ -388,15 +412,20 @@ public class SparrowModelValidationRunner {
 
 	public void intiDbConfig() {
 
-		
+		if (useTestDb) {
+		//Edit these props to point to test
+		System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.137:1521:witest");
+		System.setProperty("dbuser", "sparrow_dss");
+		System.setProperty("dbpass", dbPwd);
+		} else {
 		//Production Properties
 		System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.152:1521:widw");
 		System.setProperty("dbuser", "sparrow_dss");
 		System.setProperty("dbpass", dbPwd);
-		
+		}
 	}
 	
-	public void initLoggingConfig() {
+	public boolean initLoggingConfig() {
 		
 		
 		log = Logger.getLogger(SparrowModelValidationRunner.class); //logging for this class
@@ -409,13 +438,29 @@ public class SparrowModelValidationRunner {
 			log.setLevel(Level.INFO);
 		}
 		
+		return true;
+		
 	}
 	
-	protected void initSystemConfig() {
+	protected boolean initSystemConfig() {
 		
 		System.setProperty(LifecycleListener.APP_ENV_KEY, "local");
 		System.setProperty(LifecycleListener.APP_MODE_KEY, "validation");
-				
+		
+		
+		System.setProperty(
+				"gov.usgswim.sparrow.cachefactory.PredictDataFactory.ACTION_IMPLEMENTATION_CLASS",
+				"gov.usgswim.sparrow.action.LoadModelPredictDataFromSerializationFile");
+		System.setProperty(
+				"gov.usgswim.sparrow.action.LoadModelPredictDataFromSerializationFile.FETCH_FROM_DB_IF_NO_LOCAL_FILE",
+				"true");
+		System.setProperty(
+				"gov.usgswim.sparrow.action.LoadModelPredictDataFromSerializationFile.DATA_DIRECTORY",
+				cacheDirectory);
+		System.setProperty(
+				"gov.usgswim.sparrow.action.PredictionContextHandler.DISABLE_DB_ACCESS",
+				"true");
+
 				
 		//Tell JNDI config to not expect JNDI props
 		System.setProperty(
@@ -431,6 +476,8 @@ public class SparrowModelValidationRunner {
 			Logger baseLogger = Logger.getLogger("gov.usgswim.sparrow.validation");
 			baseLogger.setLevel(logLevel);
 		}
+		
+		return true;
 	}
 	
 	
@@ -444,25 +491,35 @@ public class SparrowModelValidationRunner {
 		System.out.println("");
 	}
 	
-	public void promptPathOrDir() {
-		String pathOrDir  = prompt("Enter a direcotry containing models or the complete path to a single model:");
+	public PromptResponse promptPathOrDir() {
+		PromptResponse pathOrDir  = prompt("Enter a direcotry containing models or the complete path to a single model:");
 		
-		pathOrDir = pathOrDir.trim();
-		if (QUIT.equalsIgnoreCase(pathOrDir)) return;
 
-		if (pathOrDir.endsWith(".txt")) {
-			//we have a single path
-			singleModelPath = pathOrDir;
-		} else if (pathOrDir.endsWith(File.separator)) {
-			activeModelDirectory = pathOrDir;
-			promptFirstLastModel();
+		if (pathOrDir.isEmptyOrNull()) {
+			System.out.println("What?? - please try again.  Enter 'quit' to quit.");
+			return promptPathOrDir();
 		} else {
-			System.out.println("What?? - please try again.");
-			promptPathOrDir();
+			if (pathOrDir.isQuit) return pathOrDir;
+			
+			String pathOrDirStr = pathOrDir.getNullTrimmedStrResponse();
+		
+			if (pathOrDirStr.endsWith(".txt")) {
+				//we have a single path
+				singleModelPath = pathOrDirStr;
+			} else if (pathOrDirStr.endsWith(File.separator)) {
+				activeModelDirectory = pathOrDirStr;
+				promptFirstLastModel();
+			} else {
+				System.out.println("What?? - please try again.");
+				
+			}
+			
+			return pathOrDir;
+			
 		}
 	}
 		 
-	public void promptLogDetail() {
+	public PromptResponse promptLogDetail() {
 		
 		System.out.println("");
 		System.out.println("Select Logging Level using the first letter of these options:");
@@ -471,68 +528,137 @@ public class SparrowModelValidationRunner {
 		System.out.println("* Debug:	If available, print multi-line detail for each error.");
 		System.out.println("* Trace:	Used to debug the tests themselves, this option prints additional info about successful values as well.");
 		
-		String level  = prompt("Logging Level (E/W/D/T) or [Enter] to use the default 'Error' Level:");
+		PromptResponse level  = prompt("Logging Level (E/W/D/T) or [Enter] to use the default 'Error' Level:");
 		
-		level = level.trim();
-		if (QUIT.equalsIgnoreCase(level)) return;
+		if (level.isQuit) return level;
+		String lvlStr = level.getNullTrimmedStrResponse();
 
 		
-		if ("".equals(level) || "e".equalsIgnoreCase(level)) {
+		if ("".equals(lvlStr) || "e".equalsIgnoreCase(lvlStr)) {
 			logLevel = Level.ERROR;
-		} else if ("w".equalsIgnoreCase(level)) {
+		} else if ("w".equalsIgnoreCase(lvlStr)) {
 			logLevel = Level.WARN;
-		} else if ("d".equalsIgnoreCase(level)) {
+		} else if ("d".equalsIgnoreCase(lvlStr)) {
 			logLevel = Level.DEBUG;
-		} else if ("t".equalsIgnoreCase(level)) {
+		} else if ("t".equalsIgnoreCase(lvlStr)) {
 			logLevel = Level.TRACE;
 		} else {
 			System.out.println("Hmm, that was exactly understand that, but I'll take it to be the ERROR log level.");
 			logLevel = Level.ERROR;
 		}
 		
+		return level;
+		
 	}
 	
-	public void promptFirstLastModel() {
+	public PromptResponse promptFirstLastModel() {
 		try {
-			String firstIdStr  = prompt("Enter the ID of the first model to test:");
-			if (QUIT.equalsIgnoreCase(firstIdStr)) return;
-			firstModelId = Integer.parseInt(firstIdStr);
+			PromptResponse firstIdStr  = prompt("Enter the ID of the first model to test:");
+			if (firstIdStr.isQuit) return firstIdStr;
+			firstModelId = Integer.parseInt(firstIdStr.getNullTrimmedStrResponse());
 			
-			String lastIdStr  = prompt("Enter the ID of the last model to test:");
-			if (QUIT.equalsIgnoreCase(lastIdStr)) return;
-			lastModelId = Integer.parseInt(lastIdStr);
+			PromptResponse lastIdStr  = prompt("Enter the ID of the last model to test:");
+			if (lastIdStr.isQuit) return lastIdStr;
+			lastModelId = Integer.parseInt(lastIdStr.getNullTrimmedStrResponse());
+			
+			return lastIdStr;
 		} catch (Exception e) {
 			System.out.println("I really need numbers for this part.  Lets try that again.");
-			promptFirstLastModel();
+			return promptFirstLastModel();
 		}
 	}
 	
-	public void prompModelIds() {
+	public PromptResponse prompModelIds() {
 		try {
-			String idStrs  = prompt("Enter a list of model IDs, separated by a comma and/or space.  Enter 'p' to run all the public models:");
-			if (QUIT.equalsIgnoreCase(idStrs)) return;
+			PromptResponse idStrsResp  = prompt("Enter a list of model IDs, separated by a comma and/or space.  Enter 'p' to run all the public models:");
+			if (! idStrsResp.isQuit) {
+				
+				if (idStrsResp.isEmptyOrNull()) {
+					log.error("I really need a list of IDs.  Lets try that again.  You can enter 'quit' to quit.");
+					prompModelIds();
+				} else {
+					
+				}
 			
-			if (idStrs.equalsIgnoreCase("p")) {
-				attemptToLoadPublicModelsFromDb = true;
-			} else {
-			
-				String[] idStrArray = StringUtils.split(idStrs, ", \t");
-				modelIds = new ArrayList<Long>();
-				for (String s : idStrArray) {
-					modelIds.add(Long.parseLong(s));
+				if (idStrsResp.getNullTrimmedStrResponse().equalsIgnoreCase("p")) {
+					attemptToLoadPublicModelsFromDb = true;
+				} else {
+
+					String[] idStrArray = StringUtils.split(idStrsResp.getNullTrimmedStrResponse(), ", \t");
+					modelIds = new ArrayList<Long>();
+					for (String s : idStrArray) {
+						modelIds.add(Long.parseLong(s));
+					}
 				}
 			}
 			
+			return idStrsResp;
+			
 		} catch (Exception e) {
-			log.error("I really need a list of IDs.  Lets try that again.", e);
-			prompModelIds();
+			System.out.println("I really need a list of IDs.  Lets try that again.  You can enter 'quit' to quit.");
+			return prompModelIds();
 		}
 	}
 	
-	public void promptPwd() {
-		String pwd = prompt("Enter the db password:");
-		if (QUIT.equalsIgnoreCase(pwd)) return;
-		dbPwd = pwd;
+	
+	public PromptResponse promptWhichDb() {
+		PromptResponse response = prompt("Which database should the validation test be run against?  (T)est or (P)roduction?");
+		if (! response.isQuit) return response;
+		
+		if (response.isEmptyOrNull()) {
+			System.out.println("Sorry, I didn't get that.");
+			return promptWhichDb();
+		} else {
+			String strVal = response.getNullTrimmedStrResponse();
+			if ("t".equalsIgnoreCase(strVal)) {
+				useTestDb = true;
+			} else if ("p".equalsIgnoreCase(strVal)) {
+				useTestDb = false;
+			} else {
+				System.out.println("Sorry, I didn't get that.");
+				return promptWhichDb();
+			}
+		}
+		
+		return response;
+	}
+	
+	//useTestDb
+	public PromptResponse promptPwd() {
+		PromptResponse pwdResp = prompt("Enter the db password:");
+		if (! pwdResp.isQuit) {
+			dbPwd = pwdResp.getStrResponse();
+		}
+		
+		return pwdResp;
+	}
+	
+	public PromptResponse promptCacheDirectory() {
+		
+		System.out.println("");
+		System.out.println(":: Caching ::");
+		System.out.println("Model data from the database is cached on your local disk to speed up repeated test runs.");
+		System.out.println("If model data has changed in the db since the last run, the contents of the cache will need to be manually deleted.");
+		System.out.println("Below enter one of the following:");
+		System.out.println("* 'quit' to Quit.");
+		System.out.println("* A complete local path to the directory to use for caching.");
+		System.out.println("* [Enter] to accept the default cache location, which is '" + getDefaultCacheDirectory().getAbsolutePath() + "'");
+		
+		PromptResponse resp = prompt("Enter the path to your model cache directory, or accept the default location:");
+		
+		if (!resp.isQuit && ! resp.isEmptyOrNull()) {
+			File f = new File(resp.getNullTrimmedStrResponse());
+			resp.setObjectResponse(f);
+			
+			cacheDirectory = resp.getNullTrimmedStrResponse();
+			System.err.println("Using user specified cache directory '" + cacheDirectory + "'");
+		} if (!resp.isQuit && resp.isEmptyOrNull()) {
+			//accept default directory
+			cacheDirectory = getDefaultCacheDirectory().getAbsolutePath();
+			System.err.println("Using default cache directory '" + cacheDirectory + "'");
+		}
+		
+		return resp;
 	}
 	
 	public Level getTestLogLevel() {
@@ -540,29 +666,82 @@ public class SparrowModelValidationRunner {
 	}
 	
 	
-	public static String prompt(String prompt) {
+	public static PromptResponse prompt(String prompt) {
 	
-			      //  prompt the user to enter their name
-		  System.out.print(prompt);
+		//  prompt the user to enter their name
+		System.out.print(prompt);
+
+		//  open up standard input
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+		String val = null;
+
+		//  read the username from the command-line; need to use try/catch with the
+		//  readLine() method
+		try {
+				val = br.readLine();
+		} catch (IOException ioe) {
+				System.out.println("IO error trying to read input!");
+				System.exit(1);
+		} finally {
+			//br.close();
+		}
 		
-		  //  open up standard input
-		  BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		return new PromptResponse(val);
+	}
+	
+	public static File getDefaultCacheDirectory() {
 		
-		  String val = null;
+		System.out.println("User Home Path: "+ System.getProperty("user.home"));
 		
-		  //  read the username from the command-line; need to use try/catch with the
-		  //  readLine() method
-		  try {
-		     val = br.readLine();
-		  } catch (IOException ioe) {
-		     System.out.println("IO error trying to read input!");
-		     System.exit(1);
-		  } finally {
-			  //br.close();
-		  }
-		  
-		  return val;
-	  }
+		File home = new File(System.getProperty("user.home"));
+		File cacheDir = new File(home, "sparrow");
+		cacheDir = new File(cacheDir, "data_cache");
+		
+		return cacheDir;
+	}
+	
+	
+	public static class PromptResponse {
+		
+		private boolean isQuit = false;
+		
+		String strResponse;
+		Object response;
+		
+		PromptResponse(String strResponse) {
+			
+			if (strResponse != null && "quit".equalsIgnoreCase(strResponse)) {
+				this.isQuit = true;
+			}
+			
+			this.strResponse = strResponse;
+		}
+		
+		public void setObjectResponse(Object response) {
+			this.response = response;
+		}
+		
+		public boolean isIsQuit() {
+			return isQuit;
+		}
+
+		public Object getObjectResponse() {
+			return response;
+		}
+
+		public String getStrResponse() {
+			return strResponse;
+		}
+		
+		public boolean isEmptyOrNull() {
+			return (StringUtils.trimToNull(strResponse) == null);
+		}
+		
+		public String getNullTrimmedStrResponse() {
+			return StringUtils.trimToNull(strResponse);
+		}
+	}
 	
 
 	

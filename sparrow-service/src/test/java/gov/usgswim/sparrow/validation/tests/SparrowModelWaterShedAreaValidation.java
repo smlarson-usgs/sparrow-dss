@@ -24,6 +24,7 @@ import gov.usgswim.sparrow.request.DeliveryReportRequest;
 import gov.usgswim.sparrow.request.ModelAggregationRequest;
 import gov.usgswim.sparrow.request.ModelHucsRequest;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
+import gov.usgswim.sparrow.service.ConfiguredCache;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
@@ -42,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import net.sf.ehcache.Element;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
@@ -146,14 +148,34 @@ public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationB
 				recordRowTrace(modelId, reachId, row, "OK - no problems");
 			}
 			
-//			if (Math.abs((double)(row / 100) - ((double)row / 100d)) < .000001d) {
-//				recordTrace(modelId, "Completed " + row + " rows...");
-//			}
+			if (Math.abs((double)(row / 100) - ((double)row / 100d)) < .000001d) {
+				//recordTrace(modelId, "Completed " + row + " rows...");
+				dumpCacheState(modelId);
+			}
 			
 		}
 		
 		
 		return result;
+	}
+	
+	
+	protected void dumpCacheState(Long modelId) {
+		for (ConfiguredCache cache : ConfiguredCache.values()) {
+			List keys = cache.getKeys();
+			
+			int size = keys.size();
+			int expired = 0;
+			
+			for (Object o : keys) {
+				Element e = cache.getElementQuiet(o);
+				if (e.isExpired()) expired++;
+			}
+			
+			if (size != 0) {
+				recordTrace(modelId, cache.name() + ": " + size + " Items, " + expired + " are expired.");
+			}
+		}
 	}
 	
 	

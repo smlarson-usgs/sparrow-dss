@@ -6,6 +6,7 @@ import gov.usgswim.sparrow.monitor.CacheInvocation;
 
 import java.util.Collections;
 import java.util.List;
+import net.sf.ehcache.CacheException;
 
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
@@ -297,13 +298,33 @@ public enum ConfiguredCache {
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
-	public List getKeysWithExpiryCheck() {
+	public List getKeysWithExpiryCheck() throws IllegalStateException, CacheException {
 		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
 		
 		if (c != null) {
 			return c.getKeysWithExpiryCheck();
 		} else {
 			return Collections.EMPTY_LIST;
+		}
+	}
+	
+	public List getKeys() throws IllegalStateException, CacheException {
+		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
+		
+		if (c != null) {
+			return c.getKeys();
+		} else {
+			return Collections.EMPTY_LIST;
+		}
+	}
+	
+	public Element getElementQuiet(Object key) throws IllegalStateException, CacheException {
+		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
+		
+		if (c != null) {
+			return c.getQuiet(key);
+		} else {
+			return null;
 		}
 	}
 	
