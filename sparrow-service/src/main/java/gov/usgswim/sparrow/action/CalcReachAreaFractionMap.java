@@ -185,7 +185,7 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 	 * @param current The current reach for which to find immediate upstream reaches
 	 */
 	protected void addUpstreamReachesToQueue(Queue<DeliveryReach> upstreamReaches,
-			DataTable topo, DeliveryReach current) {
+			DataTable topo, DeliveryReach current) throws Exception {
 		
 		boolean isBaseReachAShoreReach = (1 == topo.getInt(current.getRow(), PredictData.TOPO_SHORE_REACH_COL));
 
@@ -196,7 +196,7 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 			return;
 		} else {
 		
-			double currentReachFrac = topo.getDouble(current.getRow(), PredictData.TOPO_FRAC_COL);
+			double currentReachFrac = getCorrectedFracForReachRow(current.getRow(), topo);
 			double currentReachAccumulatedFrac = current.getDelivery();
 			double upstreamFrac = currentReachFrac * currentReachAccumulatedFrac;
 			
@@ -223,5 +223,48 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 				}
 			}
 		}
+	}
+	
+	protected double getCorrectedFracForReachRow(int row, DataTable topo) throws Exception {
+		
+			
+		//Find all other reaches that come from this same node
+		Integer fnode = topo.getInt(row, PredictData.TOPO_FNODE_COL);
+		int[] allReachesAtFromFnode = topo.findAll(PredictData.TOPO_FNODE_COL, fnode);
+
+		if (allReachesAtFromFnode.length == 0) {
+
+			throw new Exception("Could not find any reaches with this fnode '"
+					+ fnode + "' for reach row " + row);
+
+		} else if (allReachesAtFromFnode.length == 1) {
+			//If only a single reach, the FRAC must be 1.
+
+			return 1d;
+
+		} else {
+			//Adjust frac per total
+
+			double fracForReqestedReach = topo.getDouble(row, PredictData.TOPO_FRAC_COL);
+			double fracTotal = 0d;
+
+			for (int i = 0; i < allReachesAtFromFnode.length; i++) {
+				double thisFrac = topo.getDouble(allReachesAtFromFnode[i], PredictData.TOPO_FRAC_COL);
+				fracTotal+= thisFrac;
+			}
+
+			if (Math.abs(fracTotal - 1D) > .01) {
+				//close enough
+				return fracForReqestedReach;
+			} else {
+				//Adjust the frac based on the total frac
+				//Two reaches with fracs of .2 and .2 would have a total of .4, thus
+				//an adjusted frac of .2 / .4 == .5
+				return fracForReqestedReach / fracTotal;
+			}
+
+		}
+
+
 	}
 }

@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 public abstract class CalcFractionalAreaBaseTest extends SparrowTestBase {
 
 	protected static DataTable testTopo;
+	protected static DataTable testTopoCorrected;
 	protected static DataTableWritable incrementalAreaTable;
 	
 	static final double COMP_ERROR = .0000001d;
@@ -36,7 +37,16 @@ public abstract class CalcFractionalAreaBaseTest extends SparrowTestBase {
 	public void doOneTimeCustomSetup() throws Exception {
 		//log.setLevel(Level.DEBUG);
 		super.doOneTimeCustomSetup();
-		testTopo = loadTopo();
+		
+		//A 'no error' topo file.
+		testTopo = loadTopo("topo");
+		
+		//A topo files with 'errors' that we can detect and correct.
+		//The result should be the same, even with the frac errors.
+		//Reach 10:		The frac is .7 instead of 1 as it should be.
+		//Reaches 11 & 12:  Insead of fracs of .9 and .1 respectively, the fracs are
+		//		instead .09 and .01.
+		testTopoCorrected = loadTopo("topo_corrected");
 		incrementalAreaTable = loadIncrementalAreas();
 	}
 
@@ -67,7 +77,7 @@ public abstract class CalcFractionalAreaBaseTest extends SparrowTestBase {
 	 * @param modelId	The ID of the Sparrow model
 	 * @return Fetched data - see Data Columns above.
 	 */
-	public DataTableWritable loadTopo() throws IOException {
+	public DataTableWritable loadTopo(String fileNameSuffix) throws IOException {
 		InputStream fileInputStream = getResource(CalcFractionalAreaBaseTest.class, "topo", "txt");
 		BufferedReader fileReader = new BufferedReader(new InputStreamReader(fileInputStream));
 		String[] headings = {"MODEL_REACH", "FNODE", "TNODE", "IFTRAN", "HYDSEQ", "SHORE_REACH", "FRAC"};
