@@ -106,6 +106,11 @@ public class SparrowModelValidationRunner {
 	public static void main(String[] args) throws Exception {
 		
 		boolean continueRun = true;
+		
+		if (args.length == 0) {
+			System.out.println("Sorry, you cannot run this class directly.  Use one of the runner subclass implementations.");
+			return;
+		}
 
 		
 		//No logger up to this point

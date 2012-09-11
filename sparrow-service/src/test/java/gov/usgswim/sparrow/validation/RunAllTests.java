@@ -1,9 +1,6 @@
 package gov.usgswim.sparrow.validation;
 
-import gov.usgswim.sparrow.validation.tests.SparrowModelPredictionValidation;
-import gov.usgswim.sparrow.validation.tests.SparrowModelWaterShedAreaValidation;
-import gov.usgswim.sparrow.validation.tests.FailableDbTests;
-import gov.usgswim.sparrow.validation.tests.TotalLoadEqualsIncLoadForShoreReaches;
+import gov.usgswim.sparrow.validation.tests.*;
 import org.apache.log4j.Logger;
 
 /**
@@ -25,16 +22,24 @@ public class RunAllTests extends SparrowModelValidationRunner {
 	public void loadModelValidators() {
 		
 		/*
-		 * Arg1:	Allowed percentage variance (.01 would allow a variation of 1 for a value of 100).
-		 *				'D' just indicates that it is a Double precision number (required).
+		 * FOR ALL TESTS THAT TAKE PARAMETERS:
+		 * 
+		 * The first parameter (Arg1) is always the allowed fractional variation.
+		 * .01 would allow a variation of 1 for a value of 100).
+		 * 'D' indicates that it is a Double precision number (required).
+		 * 
+		 */
+		
+		
+		/*
+		 * Arg1:	Allowed fractional variance.
 		 * Arg2:	True to use decayed values for incremental loads (normally we would expect true)
 		 */
 		addValidator(new SparrowModelPredictionValidation(.001D, true));
 		
 		
 		/*
-		 * Arg1:	Allowed percentage variance (.01 would allow a variation of 1 for a value of 100).
-		 *				'D' just indicates that it is a Double precision number (required).
+		 * Arg1:	Arg1:	Allowed fractional variance.
 		 *				**Generally want this value very small b/c it is an internal comparison.
 		 * Arg2:	Compare the text incremental to text total?*
 		 * Arg3:	Compare the db incremental to db total value?*
@@ -44,6 +49,11 @@ public class RunAllTests extends SparrowModelValidationRunner {
 		 */
 		addValidator(new TotalLoadEqualsIncLoadForShoreReaches(.000001D, true, false));
 		
+		/*
+		 * Arg1:	Arg1:	Allowed fractional variance.
+		 *				**Generally want this value very small b/c it is an internal comparison.
+		 */
+		addValidator(new FracValuesShouldTotalToOne(.00000001D));
 		
 		/*
 		 * No arguments, just runs a bunch of queries listed in a file by the name of:
