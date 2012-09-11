@@ -60,7 +60,7 @@ import org.apache.log4j.extras.DOMConfigurator;
  * 
  * @author eeverman
  */
-public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationBase {
+public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelValidationBase {
 	
 	//Default fraction that the value may vary from the expected value.
 	public static final double ALLOWED_FRACTIONAL_VARIANCE = .1D;
@@ -82,7 +82,7 @@ public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationB
 		//return testModelBasedOnHuc2Aggregation(modelId);
 	}
 	
-	public SparrowModelWaterShedAreaValidation() {
+	public CalculatedWaterShedAreaShouldEqualLoadedValue() {
 
 	}
 	
@@ -90,11 +90,11 @@ public class SparrowModelWaterShedAreaValidation extends SparrowModelValidationB
 	 * 
 	 * @param forceAllAreaFractionsToOne Set true to do non-fractional area calcs
 	 */
-	public SparrowModelWaterShedAreaValidation(boolean useFractionalWatershedAreas) {
-		this.forceAllAreaFractionsToOne = ! useFractionalWatershedAreas;
+	public CalculatedWaterShedAreaShouldEqualLoadedValue(Double allowedVariance) {
+		this.allowedFractialVariance = allowedFractialVariance;
 	}
 	
-	public SparrowModelWaterShedAreaValidation(Double allowedVariance, boolean useFractionalWatershedAreas) {
+	public CalculatedWaterShedAreaShouldEqualLoadedValue(Double allowedVariance, boolean useFractionalWatershedAreas) {
 		this.allowedFractialVariance = allowedVariance;
 		this.forceAllAreaFractionsToOne = ! useFractionalWatershedAreas;
 	}

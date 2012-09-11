@@ -39,7 +39,7 @@ public class RunAllTests extends SparrowModelValidationRunner {
 		
 		
 		/*
-		 * Arg1:	Arg1:	Allowed fractional variance.
+		 * Arg1:	Allowed fractional variance.
 		 *				**Generally want this value very small b/c it is an internal comparison.
 		 * Arg2:	Compare the text incremental to text total?*
 		 * Arg3:	Compare the db incremental to db total value?*
@@ -50,7 +50,7 @@ public class RunAllTests extends SparrowModelValidationRunner {
 		addValidator(new TotalLoadEqualsIncLoadForShoreReaches(.000001D, true, false));
 		
 		/*
-		 * Arg1:	Arg1:	Allowed fractional variance.
+		 * Arg1:	Allowed fractional variance.
 		 *				**Generally want this value very small b/c it is an internal comparison.
 		 */
 		addValidator(new FracValuesShouldTotalToOne(.00000001D));
@@ -60,7 +60,15 @@ public class RunAllTests extends SparrowModelValidationRunner {
 		 * FailableDbTests.properties
 		 */
 		addValidator(new FailableDbTests());
-//		addValidator(new SparrowModelWaterShedAreaValidation());
+		
+		/*
+		 * Arg1:	Allowed fractional variance.
+		 * Arg2:	True to use FRAC based areas, false to force FRAC to 1
+		 *				which basically switches to geographic watershed areas.
+		 */
+		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(.001D, true));
+		
+		
 //		addValidator(new WarningOnlyDbTests());
 		
 	}

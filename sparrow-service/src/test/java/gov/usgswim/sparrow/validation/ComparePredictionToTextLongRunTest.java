@@ -257,9 +257,9 @@ public class ComparePredictionToTextLongRunTest {
 				}
 				
 				boolean pass = true;
-				pass = pass & testSingleModelDataQuality(id);
-				pass = pass & testSingleMmodel(file.toURL(), id, logShouldIncludeDetails);
-				pass = pass & testSingleModelErrorEstimates(id);
+				pass = pass & testSingleModelDataQuality(id);	//Test 1 (already split off as failable tests)
+				pass = pass & testSingleMmodel(file.toURL(), id, logShouldIncludeDetails);	//Test 2
+				pass = pass & testSingleModelErrorEstimates(id);//Test 3
 				if (!pass) failCount++;
 			} else {
 				throw new Exception("The specified model path does not exist!");

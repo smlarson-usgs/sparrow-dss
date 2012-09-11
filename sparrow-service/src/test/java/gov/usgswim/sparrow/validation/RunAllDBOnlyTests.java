@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.validation;
 
 import gov.usgswim.sparrow.validation.tests.WarningOnlyDbTests;
-import gov.usgswim.sparrow.validation.tests.SparrowModelWaterShedAreaValidation;
+import gov.usgswim.sparrow.validation.tests.CalculatedWaterShedAreaShouldEqualLoadedValue;
 import gov.usgswim.sparrow.validation.tests.FailableDbTests;
 import org.apache.log4j.Logger;
 
@@ -24,7 +24,7 @@ public class RunAllDBOnlyTests extends SparrowModelValidationRunner {
 	public void loadModelValidators() {
 		
 		addValidator(new FailableDbTests());
-		addValidator(new SparrowModelWaterShedAreaValidation());
+		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue());
 		addValidator(new WarningOnlyDbTests());
 		
 	}
