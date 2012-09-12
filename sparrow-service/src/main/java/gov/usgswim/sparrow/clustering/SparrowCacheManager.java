@@ -79,7 +79,7 @@ public class SparrowCacheManager {
 	 * @throws CacheException
 	 * @throws IOException 
 	 */
-	public static CacheManager createFromResource(String resourceName) throws CacheException, IOException {
+	public static CacheManager createFromResource(String resourceName, boolean isJndiAware) throws CacheException, IOException {
 
 		synchronized (CacheManager.class) {
 			LOG.debug("Creating new SparrowCacheManager from resource " + resourceName);
@@ -87,7 +87,7 @@ public class SparrowCacheManager {
 			InputStream in = null;
 			
 			try {
-				in = getConfigurationStream(resourceName);
+				in = getConfigurationStream(isJndiAware, resourceName);
 			    singleton = new CacheManager(in);
 			    singleton.setName("SparrowCacheManager");
 
@@ -111,7 +111,7 @@ public class SparrowCacheManager {
 	 * @return
 	 * @throws IOException
 	 */
-	public static InputStream getConfigurationStream(String... resourceName)
+	public static InputStream getConfigurationStream(boolean isJndiAware, String... resourceName)
 			throws IOException, NamingException {
 		String resName = DEFAULT_EHCACHE_CONFIG_LOCATION;
 		if (resourceName != null && resourceName.length > 0 && resourceName[0] != null ) {
@@ -123,16 +123,19 @@ public class SparrowCacheManager {
 			LOG.error(" resource " + resName + " not found. Make sure your resource name contains a '/'");
 			throw new CacheException("unable to initialize cache due to resource " +  resName + " not found");
 		}
-		DynamicReadOnlyProperties dynProps = getProperties();
+		DynamicReadOnlyProperties dynProps = getProperties(isJndiAware);
 		in = dynProps.expand(in);
 		return in;
 	}
 	
 
 	
-	public static DynamicReadOnlyProperties getProperties() throws NamingException {
+	public static DynamicReadOnlyProperties getProperties(boolean isJndiAware) throws NamingException {
 		DynamicReadOnlyProperties dynProps = new DynamicReadOnlyProperties();
-		dynProps.addJNDIContexts(DynamicReadOnlyProperties.DEFAULT_JNDI_CONTEXTS);
+		
+		if (isJndiAware) {
+			dynProps.addJNDIContexts(DynamicReadOnlyProperties.DEFAULT_JNDI_CONTEXTS);
+		}
 		return dynProps;
 	}
 

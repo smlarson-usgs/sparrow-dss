@@ -34,7 +34,7 @@ import com.thoughtworks.xstream.io.xml.DomDriver;
  *
  */
 public class EhCacheConfigurationReader {
-	static private final EhCacheConfigElement configuration = loadConfiguration();
+	static private EhCacheConfigElement configuration = null;
 
 	public static class EhCacheConfigElement{
 		public List<EhCacheConfigurationReader.CacheConfigElement> caches;
@@ -61,11 +61,11 @@ public class EhCacheConfigurationReader {
 //		}
 //	}
 
-	private static EhCacheConfigElement loadConfiguration() {
+	private synchronized static EhCacheConfigElement loadConfiguration(boolean isJndiAware) {
 		InputStream inStream = null;
 		StringBuilder xml = new StringBuilder();
 		try {
-			inStream = SparrowCacheManager.getConfigurationStream();
+			inStream = SparrowCacheManager.getConfigurationStream(isJndiAware);
 
 			xml = DynamicReadOnlyProperties.readStream2StringBuilder(inStream);
 		} catch (Exception excp) {
@@ -143,13 +143,13 @@ public class EhCacheConfigurationReader {
 	 * TODO HTML stuff doesn't really belong in this class, but there isn't an ideal place to put it, so I'm leaving it here for now.
 	 * @throws IOException 
 	 */
-	public static StringBuilder listDistributedCacheStatus(boolean showDetails) throws Exception {
+	public static StringBuilder listDistributedCacheStatus(boolean isJndiAware, boolean showDetails) throws Exception {
 
 //		outputConfig();
 
 		StringBuilder result = new StringBuilder();
 		// checking 
-		DynamicReadOnlyProperties sparrowProps = SparrowCacheManager.getProperties();
+		DynamicReadOnlyProperties sparrowProps = SparrowCacheManager.getProperties(isJndiAware);
 		String configKey = "cacheManagerPeerProviderFactory.properties";
 		result.append("CONFIG: " + configKey + " = " + sparrowProps.get(configKey) + "\n\n");
 
@@ -257,13 +257,13 @@ public class EhCacheConfigurationReader {
 		return null;
 	}
 
-	public static void verifyCacheConfiguration() {
-		Set<String> configuredCaches = getConfiguredCaches();
-		Set<String> enumeratedCaches = getEnumeratedCaches();
+	public static void verifyCacheConfiguration(boolean isJndiAware) {
+		Set<String> configuredCaches = getConfiguredCaches(isJndiAware);
+		Set<String> enumeratedCaches = getEnumeratedCaches(isJndiAware);
 		compareCacheConfigurations(configuredCaches, enumeratedCaches);
 
-		Set<String> configuredDistributedCaches = getConfiguredDistributedCaches();
-		Set<String> enumeratedDistributedCaches = getEnumeratedDistributedCaches();
+		Set<String> configuredDistributedCaches = getConfiguredDistributedCaches(isJndiAware);
+		Set<String> enumeratedDistributedCaches = getEnumeratedDistributedCaches(isJndiAware);
 		String distributedCacheWarningMessage = compareDistributedCacheConfigurations(configuredDistributedCaches, enumeratedDistributedCaches);
 		System.out.println(distributedCacheWarningMessage);
 	}
@@ -324,7 +324,11 @@ public class EhCacheConfigurationReader {
 		}
 	}
 
-	public static Set<String> getEnumeratedCaches() {
+	public static Set<String> getEnumeratedCaches(boolean isJndiAware) {
+		if (configuration == null) {
+			configuration = loadConfiguration(isJndiAware);
+		}
+		
 		ConfiguredCache[] allCaches = ConfiguredCache.values();
 		Set<String> result = new HashSet<String>();
 		for (ConfiguredCache cache: allCaches) {
@@ -335,7 +339,11 @@ public class EhCacheConfigurationReader {
 		return result;
 	}
 
-	public static Set<String> getConfiguredCaches() {
+	public static Set<String> getConfiguredCaches(boolean isJndiAware) {
+		if (configuration == null) {
+			configuration = loadConfiguration(isJndiAware);
+		}
+		
 		Set<String> result = new HashSet<String>();
 		for (CacheConfigElement cache: configuration.caches) {
 			result.add(cache.name);
@@ -343,7 +351,11 @@ public class EhCacheConfigurationReader {
 		return result;
 	}
 
-	public static Set<String> getEnumeratedDistributedCaches() {
+	public static Set<String> getEnumeratedDistributedCaches(boolean isJndiAware) {
+		if (configuration == null) {
+			configuration = loadConfiguration(isJndiAware);
+		}
+		
 		ConfiguredCache[] allCaches = ConfiguredCache.values();
 		Set<String> result = new HashSet<String>();
 		for (ConfiguredCache cache: allCaches) {
@@ -352,7 +364,11 @@ public class EhCacheConfigurationReader {
 		return result;
 	}
 
-	public static Set<String> getConfiguredDistributedCaches() {
+	public static Set<String> getConfiguredDistributedCaches(boolean isJndiAware) {
+		if (configuration == null) {
+			configuration = loadConfiguration(isJndiAware);
+		}
+		
 		Set<String> result = new HashSet<String>();
 		for (CacheConfigElement cache: configuration.caches) {
 			if (cache.isDistributed()) result.add(cache.name);

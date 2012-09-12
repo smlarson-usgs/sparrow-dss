@@ -89,19 +89,25 @@ public class LifecycleListener implements ServletContextListener {
 		try {
 			
 			DynamicReadOnlyProperties props = new DynamicReadOnlyProperties();
-			props.addJNDIContexts(DynamicReadOnlyProperties.DEFAULT_JNDI_CONTEXTS);
+			
 			
 			String mode = null;
 			String env = null;
+			boolean isJndiAware = false;
+			
 			
 			//If we are in a servlet environment, switch to the production log4j config
 			if (context != null) {
+				isJndiAware = true;
+				props.addJNDIContexts(DynamicReadOnlyProperties.DEFAULT_JNDI_CONTEXTS);
+				
 				env = props.getProperty(APP_ENV_KEY, "prod");
 				mode = props.getProperty(APP_MODE_KEY, "prod");
 				
 			} else {
 				env = props.getProperty(APP_ENV_KEY, "local");
 				mode = props.getProperty(APP_MODE_KEY, "dev");
+				isJndiAware = false;
 			}
 			
 			String logFileName = "/log4j_" + env + "_" + mode + ".xml";
@@ -114,7 +120,7 @@ public class LifecycleListener implements ServletContextListener {
 			
 			//Calling create here is not required, but gives a single place to customize
 			//the creation of the singleton instance.
-			SparrowCacheManager.createFromResource(SparrowCacheManager.DEFAULT_EHCACHE_CONFIG_LOCATION);
+			SparrowCacheManager.createFromResource(SparrowCacheManager.DEFAULT_EHCACHE_CONFIG_LOCATION, isJndiAware);
 
 			//
 			//Set up ehcaches that have decorators
@@ -126,7 +132,7 @@ public class LifecycleListener implements ServletContextListener {
 				cm.clearAll();
 			}
 
-			EhCacheConfigurationReader.verifyCacheConfiguration();
+			EhCacheConfigurationReader.verifyCacheConfiguration(isJndiAware);
 			
 			// Decorate as necessary with SelfPopulatingCache
 			for (ConfiguredCache cache: ConfiguredCache.values()) {
