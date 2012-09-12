@@ -1,13 +1,13 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
-import gov.usgswim.datatable.ColumnDataWritable;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.SimpleDataTableWritable;
-import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
+import gov.usgs.cida.datatable.ColumnDataWritable;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
+import gov.usgs.cida.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
-import gov.usgswim.datatable.AggregateType;
+import gov.usgs.cida.datatable.AggregateType;
 
 import org.junit.Before;
 import org.junit.Test;

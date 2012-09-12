@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.action.LoadHucsForModel;
 import gov.usgswim.sparrow.action.LoadReachHucs;
 import gov.usgswim.sparrow.request.ModelHucsRequest;

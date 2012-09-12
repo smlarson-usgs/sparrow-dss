@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.*;

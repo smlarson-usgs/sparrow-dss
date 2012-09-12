@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.datatable;
 
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.SimpleDataTableWritable;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.sparrow.domain.ComparisonType;
 
 import org.junit.*;

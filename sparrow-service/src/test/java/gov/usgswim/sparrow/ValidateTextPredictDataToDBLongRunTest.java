@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow;
 
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.filter.ColumnRangeFilter;
-import gov.usgswim.datatable.filter.FilteredDataTable;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.filter.ColumnRangeFilter;
+import gov.usgs.cida.datatable.filter.FilteredDataTable;
 import gov.usgswim.sparrow.action.LoadModelPredictDataFromFile;
 import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.domain.ComparisonType;

@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
-import gov.usgswim.datatable.ColumnData;
+import gov.usgs.cida.datatable.ColumnData;
 import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 
 import org.junit.Test;

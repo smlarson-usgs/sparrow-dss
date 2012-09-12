@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgswim.datatable.ColumnAttribsBuilder;
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.impl.ColumnDataFromTable;
+import gov.usgs.cida.datatable.ColumnAttribsBuilder;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.impl.ColumnDataFromTable;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.SingleColumnCoefDataTable;

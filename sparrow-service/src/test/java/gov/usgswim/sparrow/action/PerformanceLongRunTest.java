@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.datatable.ColumnData;
+import gov.usgs.cida.datatable.ColumnData;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowTestBaseWithDB;

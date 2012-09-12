@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow.service.deliveryterminalreport;
 
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableSet;
-import gov.usgswim.datatable.filter.FilteredDataTable;
-import gov.usgswim.datatable.impl.DataTableSetSimple;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTableSet;
+import gov.usgs.cida.datatable.filter.FilteredDataTable;
+import gov.usgs.cida.datatable.impl.DataTableSetSimple;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.TerminalReachesRowFilter;

@@ -1,14 +1,14 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.ColumnDataWritable;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.SimpleDataTable;
-import gov.usgswim.datatable.impl.SimpleDataTableWritable;
-import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
-import gov.usgswim.datatable.utils.DataTableConverter;
-import gov.usgswim.datatable.utils.DataTableUtils;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.ColumnDataWritable;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.impl.SimpleDataTable;
+import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
+import gov.usgs.cida.datatable.impl.StandardNumberColumnDataWritable;
+import gov.usgs.cida.datatable.utils.DataTableConverter;
+import gov.usgs.cida.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
 import gov.usgswim.sparrow.SparrowUnits;

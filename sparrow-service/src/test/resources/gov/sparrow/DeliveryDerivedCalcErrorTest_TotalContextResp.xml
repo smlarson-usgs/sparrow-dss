@@ -1,0 +1,15 @@
+<PredictionContext-response xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="50" context-id="ignore">
+	<status>OK</status>
+	<message/>
+	<cache-lifetime-seconds>86400</cache-lifetime-seconds>
+	<row-ids>reach</row-ids>
+	<adjustmentGroups context-id="-1993783632"/>
+	<terminalReaches context-id="409645419"/>
+	<areaOfInterest context-id="236923"/>
+	<name>Total Load</name>
+	<description>The mean annual load of the constituent (kilograms per year) leaving each stream reach, as predicted by the model. The load reflects the accumulated mass of the constituent contributed by all sources in the total drainage area upstream of the reach outlet. The load includes the effects of in-stream attenuation processes in all upstream reaches. The mean annual load is a standardized measure of the constituent mass in the stream that reflects the mean quantities of mass that are likely to occur during a specified base year under long-term mean streamflow conditions. Spatial variations in the standardized loads are generally indicative of conditions during higher-flow periods of the year that often occur during the winter and spring.  The mean annual conditions described by the model predictions also primarily reflect the effects of natural and human-related processes that supply and remove constituent mass in watersheds over long time periods. The predicted load is also "unadjusted" for measured stream load values at monitoring sites; measured loads are commonly substituted for model predictions ("adjusted" loads) in the calibration procedure to ensure accurate estimation of the model.</description>
+	<units>kg⋅year⁻¹</units>
+	<constituent>Nitrogen</constituent>
+	<rowCount>8321</rowCount>
+</PredictionContext-response>

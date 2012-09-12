@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgswim.datatable.DataTableSet;
+import gov.usgs.cida.datatable.DataTableSet;
 import gov.usgswim.sparrow.action.BuildTotalDeliveredLoadByUpstreamRegionReport;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;

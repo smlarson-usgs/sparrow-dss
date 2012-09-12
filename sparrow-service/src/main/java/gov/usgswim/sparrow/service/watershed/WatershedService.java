@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.service.watershed;
 
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.service.DataTableSerializer;
 import gov.usgswim.sparrow.service.SharedApplication;

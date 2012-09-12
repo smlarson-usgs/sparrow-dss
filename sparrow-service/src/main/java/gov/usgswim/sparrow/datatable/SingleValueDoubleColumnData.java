@@ -4,9 +4,9 @@ import java.util.Map;
 
 import java.util.Arrays;
 
-import gov.usgswim.datatable.ColumnAttribs;
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.impl.AbstractColumnData;
+import gov.usgs.cida.datatable.ColumnAttribs;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.impl.AbstractColumnData;
 
 public class SingleValueDoubleColumnData extends AbstractColumnData {
 

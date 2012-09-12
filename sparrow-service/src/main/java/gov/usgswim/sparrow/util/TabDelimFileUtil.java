@@ -1,11 +1,11 @@
 package gov.usgswim.sparrow.util;
 
 import gov.usgs.webservices.framework.formatter.AbstractFormatter;
-import gov.usgswim.datatable.ColumnDataWritable;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.SimpleDataTableWritable;
-import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
+import gov.usgs.cida.datatable.ColumnDataWritable;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
+import gov.usgs.cida.datatable.impl.StandardNumberColumnDataWritable;
 
 import java.io.BufferedReader;
 import java.io.File;

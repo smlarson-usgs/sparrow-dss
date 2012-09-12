@@ -1,10 +1,10 @@
 package gov.usgswim.sparrow.datatable;
 
-import gov.usgswim.datatable.ColumnAttribs;
-import gov.usgswim.datatable.ColumnAttribsImm;
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.impl.FindHelper;
+import gov.usgs.cida.datatable.ColumnAttribs;
+import gov.usgs.cida.datatable.ColumnAttribsImm;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.impl.FindHelper;
 
 import org.apache.log4j.Logger;
 

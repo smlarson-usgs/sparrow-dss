@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.util;
 
 import static gov.usgswim.sparrow.PredictData.TOPO_FNODE_COL;
 import static gov.usgswim.sparrow.PredictData.TOPO_TNODE_COL;
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 
 /**
  * Utility Methods for PredictData

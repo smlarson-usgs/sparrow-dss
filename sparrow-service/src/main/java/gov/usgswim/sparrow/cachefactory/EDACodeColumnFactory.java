@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgswim.datatable.ColumnData;
+import gov.usgs.cida.datatable.ColumnData;
 import gov.usgswim.sparrow.action.LoadEDACodeColumn;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 

@@ -6,9 +6,9 @@ import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_NAMESPACE
 import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_PREFIX;
 import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableSet;
-import gov.usgswim.datatable.impl.DataTableSetCoord;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTableSet;
+import gov.usgs.cida.datatable.impl.DataTableSetCoord;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.TableProperties;
 

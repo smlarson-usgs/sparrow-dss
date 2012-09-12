@@ -3,10 +3,10 @@ package gov.usgswim.sparrow.action;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.datatable.ColumnDataWritable;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.impl.SimpleDataTableWritable;
-import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
+import gov.usgs.cida.datatable.ColumnDataWritable;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
+import gov.usgs.cida.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.util.BigDecimalUtils;
 

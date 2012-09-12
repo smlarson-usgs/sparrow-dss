@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow;
 
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.domain.SparrowModel;
 
 /**

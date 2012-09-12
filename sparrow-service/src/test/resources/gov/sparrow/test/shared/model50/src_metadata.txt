@@ -1,0 +1,6 @@
+id	sort_order	name	display_name	description	constituent	units	precision	is_point_source
+1	1	kgn_02	Wastewater discharge	2002, fromTerziotti 10-2008	Nitrogen	KG_PER_YEAR	2	T
+2	2	nadp_kg	Wet dep. of inorg.nitrogen	detrended to 2002, from K. Savvas, USGS, 2006	Nitrogen	KG_PER_YEAR	2	F
+3	3	is_km_01NLCD	Imp. surf. area	2001 NLCD, Terziotti 12-2008	Land area	SQR_KM	2	F
+4	4	fert02_01nlcd	Fert. applied to agric. land 	2002 Ag Census, NLCD01-based spatial distribution, Terziotti 10-2008	Nitrogen	KG_PER_YEAR	2	F
+5	5	man02_01nlcd	Livestock manure	2002 Ag Census, NLCD01-based spatial distribution, Terziotti 10-2008	Nitrogen	KG_PER_YEAR	2	F

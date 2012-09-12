@@ -3,7 +3,7 @@ package gov.usgs.cida.binning;
 import gov.usgs.cida.binning.domain.BinSet;
 import gov.usgs.cida.binning.domain.BinType;
 import gov.usgs.cida.binning.domain.InProcessBinSet;
-import gov.usgswim.datatable.ColumnData;
+import gov.usgs.cida.datatable.ColumnData;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
 

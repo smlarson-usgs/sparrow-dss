@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.utils.DataTableConverter;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.utils.DataTableConverter;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

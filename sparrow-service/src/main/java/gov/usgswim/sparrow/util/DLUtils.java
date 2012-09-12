@@ -3,8 +3,8 @@
  */
 package gov.usgswim.sparrow.util;
 
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.SimpleDataTableWritable;
+import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
 
 import java.io.BufferedReader;
 import java.io.IOException;

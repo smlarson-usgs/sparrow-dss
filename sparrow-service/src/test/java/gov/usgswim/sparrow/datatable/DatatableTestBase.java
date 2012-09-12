@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.datatable;
 
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.SimpleDataTableWritable;
+import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
 
 public class DatatableTestBase {
 

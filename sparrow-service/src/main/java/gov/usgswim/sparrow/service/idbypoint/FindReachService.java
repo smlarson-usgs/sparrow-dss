@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.service.idbypoint;
 
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.service.ServiceServlet;
 import gov.usgswim.sparrow.action.FindReaches;
 import gov.usgswim.sparrow.service.ReturnStatus;

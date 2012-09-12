@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.navigation;
 
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 
 import java.util.HashSet;

@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.datatable;
 import gov.usgswim.sparrow.domain.BaseDataSeriesType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.AggregationLevel;
-import gov.usgswim.datatable.AggregateType;
+import gov.usgs.cida.datatable.AggregateType;
 
 public enum TableProperties implements NamedEnum<TableProperties>{
 	

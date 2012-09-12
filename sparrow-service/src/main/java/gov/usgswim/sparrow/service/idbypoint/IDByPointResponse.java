@@ -4,7 +4,7 @@ import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.asString;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeClosingTag;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeNonNullTag;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeOpeningTag;
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.service.ReturnStatus;
 
 /**

@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.*;
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.service.idbypoint.FindReachRequest;
 

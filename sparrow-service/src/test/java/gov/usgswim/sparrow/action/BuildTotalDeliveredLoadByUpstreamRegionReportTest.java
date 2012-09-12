@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableSet;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTableSet;
 import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.PredictResult;

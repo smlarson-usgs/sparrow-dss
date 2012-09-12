@@ -1,13 +1,13 @@
 package gov.usgswim.sparrow.validation;
 
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.ColumnDataWritable;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.SimpleDataTable;
-import gov.usgswim.datatable.impl.SimpleDataTableWritable;
-import gov.usgswim.datatable.impl.StandardLongColumnData;
-import gov.usgswim.datatable.impl.StandardNumberColumnDataWritable;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.ColumnDataWritable;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.impl.SimpleDataTable;
+import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
+import gov.usgs.cida.datatable.impl.StandardLongColumnData;
+import gov.usgs.cida.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgswim.sparrow.validation.tests.TestResult;
 import gov.usgswim.sparrow.validation.tests.ModelValidator;
 import gov.usgswim.sparrow.LifecycleListener;

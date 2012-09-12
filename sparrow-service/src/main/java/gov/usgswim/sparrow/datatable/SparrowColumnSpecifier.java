@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.datatable;
 
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.DataTable;
 
 /**
  * An inner class to bundle a DataTable and a column index together so that

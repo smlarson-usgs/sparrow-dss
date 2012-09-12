@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.datatable;
 
-import gov.usgswim.datatable.ColumnIndex;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.HashMapColumnIndex;
+import gov.usgs.cida.datatable.ColumnIndex;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.HashMapColumnIndex;
 
 import java.util.Map;
 import java.util.Set;

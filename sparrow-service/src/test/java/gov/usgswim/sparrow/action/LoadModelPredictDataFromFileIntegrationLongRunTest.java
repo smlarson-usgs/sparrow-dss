@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.SparrowUnits;

@@ -2,8 +2,8 @@ package gov.usgswim.sparrow.datatable;
 
 import java.io.Serializable;
 
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.filter.RowFilter;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.filter.RowFilter;
 import gov.usgswim.sparrow.domain.TerminalReaches;
 
 /**

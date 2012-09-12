@@ -105,12 +105,16 @@
 	</build>
 
 	<dependencies>
-
+		
+		<!-- Interproject dep -->
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
+			<groupId>gov.usgs.cida</groupId>
+			<artifactId>sparrow-datatable</artifactId>
+			<version>1.4.31-SNAPSHOT</version>
+		 <type>jar</type>
 		</dependency>
+		
+		
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
@@ -197,12 +201,6 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<!-- Required by XMLUnit to support out-of-order element comparison -->
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
@@ -247,12 +245,6 @@
 			<version>11.1.1.5.1-1</version>
 			<type>war</type>
 			<scope>runtime</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>com.google.collections</groupId>
-			<artifactId>google-collections</artifactId>
-			<version>1.0</version>
 		</dependency>
 		
 		<!-- Used for email logging of serious errors -->

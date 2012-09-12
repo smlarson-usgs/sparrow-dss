@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.action;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.DataTableWritable;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.util.DLUtils;

@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow;
 
 import gov.usgswim.Immutable;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.adjustment.ColumnCoefAdjustment;
-import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.adjustment.ColumnCoefAdjustment;
+import gov.usgs.cida.datatable.adjustment.SparseOverrideAdjustment;
 
 import java.util.TreeSet;
 

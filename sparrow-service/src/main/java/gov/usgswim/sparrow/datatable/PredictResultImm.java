@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.datatable;
 
 import gov.usgswim.Immutable;
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.impl.SimpleDataTable;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.impl.SimpleDataTable;
 
 import java.util.Hashtable;
 import java.util.Iterator;

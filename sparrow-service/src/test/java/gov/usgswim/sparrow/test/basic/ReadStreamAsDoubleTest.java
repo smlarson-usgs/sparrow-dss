@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.test.basic;
 
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.utils.DataTableUtils;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.util.DLUtils;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 

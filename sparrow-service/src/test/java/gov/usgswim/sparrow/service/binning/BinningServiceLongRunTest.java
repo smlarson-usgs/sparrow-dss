@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import javax.xml.stream.XMLStreamReader;
 
-import gov.usgswim.datatable.ColumnData;
+import gov.usgs.cida.datatable.ColumnData;
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;

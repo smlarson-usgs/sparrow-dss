@@ -1,9 +1,9 @@
 package gov.usgs.webservices.framework.utils;
 
 import java.util.Arrays;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.impl.SimpleDataTableWritable;
-import gov.usgswim.datatable.utils.DataTableUtils;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
+import gov.usgs.cida.datatable.utils.DataTableUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

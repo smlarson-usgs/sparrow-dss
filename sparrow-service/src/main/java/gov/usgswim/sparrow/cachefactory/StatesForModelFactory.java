@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.cachefactory;
 
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.action.LoadStatesForModel;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 

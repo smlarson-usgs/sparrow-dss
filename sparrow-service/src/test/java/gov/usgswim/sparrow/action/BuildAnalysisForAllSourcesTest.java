@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgswim.datatable.ColumnData;
+import gov.usgs.cida.datatable.ColumnData;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.action.BuildAnalysisForAllSources.COLUMN_NAME_FORMAT;

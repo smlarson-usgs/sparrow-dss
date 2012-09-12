@@ -2,10 +2,10 @@ package gov.usgswim.sparrow.datatable;
 
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
-import gov.usgswim.datatable.ColumnAttribsBuilder;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.impl.SimpleDataTableWritable;
-import gov.usgswim.datatable.impl.StandardDoubleColumnData;
+import gov.usgs.cida.datatable.ColumnAttribsBuilder;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
+import gov.usgs.cida.datatable.impl.StandardDoubleColumnData;
 
 import org.junit.Before;
 import org.junit.Test;

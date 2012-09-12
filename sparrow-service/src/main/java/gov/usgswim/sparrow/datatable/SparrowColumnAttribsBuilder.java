@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.datatable;
 
-import gov.usgswim.datatable.ColumnAttribsBuilder;
+import gov.usgs.cida.datatable.ColumnAttribsBuilder;
 import gov.usgswim.sparrow.domain.BaseDataSeriesType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 

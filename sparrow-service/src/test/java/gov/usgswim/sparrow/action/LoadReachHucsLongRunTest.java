@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.domain.HucLevel;
 import gov.usgswim.sparrow.request.ModelHucsRequest;

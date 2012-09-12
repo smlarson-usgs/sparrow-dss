@@ -1,13 +1,13 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.*;
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
-import gov.usgswim.datatable.impl.SparseDoubleColumnData;
-import gov.usgswim.datatable.impl.StandardDoubleColumnData;
-import gov.usgswim.datatable.utils.DataTablePrinter;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.adjustment.SparseOverrideAdjustment;
+import gov.usgs.cida.datatable.impl.SparseDoubleColumnData;
+import gov.usgs.cida.datatable.impl.StandardDoubleColumnData;
+import gov.usgs.cida.datatable.utils.DataTablePrinter;
 import gov.usgswim.sparrow.*;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.*;

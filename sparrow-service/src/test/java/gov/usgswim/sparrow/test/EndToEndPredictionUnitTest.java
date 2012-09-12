@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.test;
 
 import static org.junit.Assert.assertEquals;
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDB;
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.SparrowServiceTestBaseNoDB;

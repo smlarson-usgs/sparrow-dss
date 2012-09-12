@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow.service.idbypoint;
 
 import gov.usgswim.ThreadSafe;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.filter.ColumnRangeFilter;
-import gov.usgswim.datatable.filter.FilteredDataTable;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.filter.ColumnRangeFilter;
+import gov.usgs.cida.datatable.filter.FilteredDataTable;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.PredictData;

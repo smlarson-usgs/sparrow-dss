@@ -1,5 +1,5 @@
 package gov.usgswim.sparrow.test.basic;
-import gov.usgswim.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.DataTableWritable;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;
 
 import java.io.BufferedReader;

@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgswim.datatable.AggregateType;
+import gov.usgs.cida.datatable.AggregateType;
 
 /**
  * A data structure used to contain information about a specific row of

@@ -1,10 +1,10 @@
 package gov.usgswim.sparrow.service.deliveryaggreport;
 
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableSet;
-import gov.usgswim.datatable.impl.DataTableSetCoord;
-import gov.usgswim.datatable.impl.DataTableSetSimple;
-import gov.usgswim.datatable.view.RelativePercentageView;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTableSet;
+import gov.usgs.cida.datatable.impl.DataTableSetCoord;
+import gov.usgs.cida.datatable.impl.DataTableSetSimple;
+import gov.usgs.cida.datatable.view.RelativePercentageView;
 import gov.usgswim.sparrow.service.deliveryterminalreport.ReportRequest;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.PredictData;

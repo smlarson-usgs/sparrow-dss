@@ -2,12 +2,12 @@ package gov.usgswim.sparrow.action;
 
 import java.util.List;
 
-import gov.usgswim.datatable.ColumnAttribs;
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.adjustment.ColumnCoefAdjustment;
-import gov.usgswim.datatable.adjustment.SparseCoefficientAdjustment;
-import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
+import gov.usgs.cida.datatable.ColumnAttribs;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.adjustment.ColumnCoefAdjustment;
+import gov.usgs.cida.datatable.adjustment.SparseCoefficientAdjustment;
+import gov.usgs.cida.datatable.adjustment.SparseOverrideAdjustment;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.DataTableCompare;

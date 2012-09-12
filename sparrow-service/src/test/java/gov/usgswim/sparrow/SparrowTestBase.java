@@ -1,11 +1,11 @@
 package gov.usgswim.sparrow;
 
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.ColumnDataWritable;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.SimpleDataTableWritable;
-import gov.usgswim.datatable.utils.DataTableUtils;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.ColumnDataWritable;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
+import gov.usgs.cida.datatable.utils.DataTableUtils;
 import gov.usgswim.service.pipeline.Pipeline;
 import gov.usgswim.service.pipeline.PipelineRequest;
 import gov.usgswim.sparrow.action.Action;

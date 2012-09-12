@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.service.idbypoint;
 
-import gov.usgswim.datatable.ColumnData;
+import gov.usgs.cida.datatable.ColumnData;
 import gov.usgswim.service.ServiceServlet;
 import gov.usgswim.sparrow.service.ConfiguredCache;
 import gov.usgswim.sparrow.service.ReturnStatus;

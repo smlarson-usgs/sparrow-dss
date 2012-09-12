@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.utils.DataTableSerializerUtils;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.utils.DataTableSerializerUtils;
 import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 
 import java.io.File;

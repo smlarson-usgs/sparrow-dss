@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.*;
-import gov.usgswim.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.DataTableWritable;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.util.DLUtils;
 import gov.usgswim.sparrow.util.TabDelimFileUtil;

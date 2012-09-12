@@ -2,11 +2,11 @@ package gov.usgswim.sparrow.service;
 
 import static gov.usgswim.sparrow.service.ConfiguredCache.*;
 import gov.usgs.cida.binning.domain.BinSet;
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableSet;
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.utils.DataTableConverter;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTableSet;
+import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;

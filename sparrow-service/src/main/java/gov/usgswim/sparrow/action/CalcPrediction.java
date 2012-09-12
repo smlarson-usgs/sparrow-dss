@@ -11,10 +11,10 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import gov.usgswim.datatable.ColumnAttribsBuilder;
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.utils.DataTableUtils;
+import gov.usgs.cida.datatable.ColumnAttribsBuilder;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.ImmutableDoubleColumn;
 import gov.usgswim.sparrow.datatable.MultiplyColumnData;
@@ -22,7 +22,7 @@ import gov.usgswim.sparrow.datatable.PredictResultImm;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.BaseDataSeriesType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
-import gov.usgswim.datatable.AggregateType;
+import gov.usgs.cida.datatable.AggregateType;
 
 /**
  * A simple SPARROW prediction implementation.

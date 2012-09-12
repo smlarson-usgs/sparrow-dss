@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow.service.predict;
 
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.impl.ColumnDataFromTable;
-import gov.usgswim.datatable.impl.SimpleDataTable;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.impl.ColumnDataFromTable;
+import gov.usgs.cida.datatable.impl.SimpleDataTable;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;

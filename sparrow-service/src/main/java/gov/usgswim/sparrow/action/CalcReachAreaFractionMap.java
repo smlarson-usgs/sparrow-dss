@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import static gov.usgswim.sparrow.PredictData.TOPO_IFTRAN_COL;
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.request.ReachID;

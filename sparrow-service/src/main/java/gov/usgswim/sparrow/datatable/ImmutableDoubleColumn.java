@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.datatable;
 
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.impl.AbstractColumnData;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.impl.AbstractColumnData;
 
 import java.util.Map;
 

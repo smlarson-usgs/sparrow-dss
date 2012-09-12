@@ -2,11 +2,11 @@ package gov.usgswim.sparrow.datatable;
 
 import org.apache.commons.lang.StringUtils;
 
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTable.Immutable;
-import gov.usgswim.datatable.impl.ColumnDataFromTable;
-import gov.usgswim.datatable.impl.FindHelper;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable.Immutable;
+import gov.usgs.cida.datatable.impl.ColumnDataFromTable;
+import gov.usgs.cida.datatable.impl.FindHelper;
 import gov.usgswim.sparrow.domain.ComparisonType;
 
 

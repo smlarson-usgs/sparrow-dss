@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.service.predict;
 
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.action.CalcPrediction;
 import gov.usgswim.sparrow.datatable.PredictResult;

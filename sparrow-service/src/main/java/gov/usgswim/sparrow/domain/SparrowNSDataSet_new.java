@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.domain;
 
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;

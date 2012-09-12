@@ -2,11 +2,11 @@ package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.adjustment.SparseOverrideAdjustment;
-import gov.usgswim.datatable.impl.SparseDoubleColumnData;
-import gov.usgswim.datatable.impl.StandardDoubleColumnData;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.adjustment.SparseOverrideAdjustment;
+import gov.usgs.cida.datatable.impl.SparseDoubleColumnData;
+import gov.usgs.cida.datatable.impl.StandardDoubleColumnData;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowTestBase;

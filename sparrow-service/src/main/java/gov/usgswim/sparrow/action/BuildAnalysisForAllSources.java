@@ -1,10 +1,10 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgswim.datatable.ColumnAttribs;
-import gov.usgswim.datatable.ColumnAttribsBuilder;
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.view.RenameColumnDataView;
+import gov.usgs.cida.datatable.ColumnAttribs;
+import gov.usgs.cida.datatable.ColumnAttribsBuilder;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.view.RenameColumnDataView;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.BasicAnalysis;

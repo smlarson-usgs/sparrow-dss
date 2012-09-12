@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow.datatable;
 
-import gov.usgswim.datatable.view.AbstractColumnDataView;
-import gov.usgswim.datatable.ColumnAttribs;
-import gov.usgswim.datatable.ColumnAttribsImm;
-import gov.usgswim.datatable.ColumnData;
+import gov.usgs.cida.datatable.view.AbstractColumnDataView;
+import gov.usgs.cida.datatable.ColumnAttribs;
+import gov.usgs.cida.datatable.ColumnAttribsImm;
+import gov.usgs.cida.datatable.ColumnData;
 
 
 /**

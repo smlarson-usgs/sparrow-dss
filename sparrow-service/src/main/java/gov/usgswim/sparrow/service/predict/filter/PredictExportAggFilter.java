@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.service.predict.filter;
 
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.filter.RowFilter;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.filter.RowFilter;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 

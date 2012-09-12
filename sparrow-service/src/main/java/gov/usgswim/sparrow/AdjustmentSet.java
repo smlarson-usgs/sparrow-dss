@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow;
 
-import gov.usgswim.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTable;
 
 /**
  * A collection of adjustments to make on the sources for a project

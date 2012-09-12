@@ -2,7 +2,7 @@ package gov.usgs.webservices.framework.formatter;
 
 import static gov.usgs.webservices.framework.formatter.IFormatter.OutputType.*;
 import gov.usgs.webservices.framework.utils.XMLUtils;
-import gov.usgswim.datatable.RelationType;
+import gov.usgs.cida.datatable.RelationType;
 
 import java.io.IOException;
 import java.io.Writer;

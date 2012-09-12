@@ -1,9 +1,9 @@
 package gov.usgswim.sparrow;
 
 import gov.usgswim.Immutable;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.adjustment.ColumnCoefAdjustment;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.adjustment.ColumnCoefAdjustment;
 
 import java.io.Serializable;
 

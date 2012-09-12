@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.datatable;
 
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.impl.SimpleDataTableWritable;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataImm;

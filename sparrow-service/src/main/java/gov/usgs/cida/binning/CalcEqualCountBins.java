@@ -3,9 +3,9 @@ package gov.usgs.cida.binning;
 import gov.usgs.cida.binning.domain.BinSet;
 import gov.usgs.cida.binning.domain.BinType;
 import gov.usgs.cida.binning.domain.InProcessBinSet;
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.impl.SimpleDataTable;
-import gov.usgswim.datatable.impl.StandardDoubleColumnData;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.impl.SimpleDataTable;
+import gov.usgs.cida.datatable.impl.StandardDoubleColumnData;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
 

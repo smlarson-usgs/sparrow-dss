@@ -2,9 +2,9 @@ package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import gov.usgswim.datatable.ColumnData;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.impl.ColumnDataFromTable;
+import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.impl.ColumnDataFromTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.SparrowUnits;

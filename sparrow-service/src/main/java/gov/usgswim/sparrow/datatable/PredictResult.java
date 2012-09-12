@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.datatable;
 
-import gov.usgswim.datatable.DataTable.Immutable;
+import gov.usgs.cida.datatable.DataTable.Immutable;
 
 /**
  * A Datatable of sparrow prediction results with convenience getXXX methods

@@ -1,8 +1,8 @@
 package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.*;
-import gov.usgswim.datatable.DataTable;
-import gov.usgswim.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.DataTableWritable;
 import gov.usgswim.sparrow.*;
 import gov.usgswim.sparrow.service.SharedApplication;
 

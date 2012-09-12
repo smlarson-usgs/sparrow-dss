@@ -6,9 +6,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.Map;
 import java.util.Set;
 
-import gov.usgswim.datatable.ColumnAttribsBuilder;
-import gov.usgswim.datatable.DataTableWritable;
-import gov.usgswim.datatable.impl.SimpleDataTableWritable;
+import gov.usgs.cida.datatable.ColumnAttribsBuilder;
+import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
 
 import org.junit.Before;
 import org.junit.Test;
