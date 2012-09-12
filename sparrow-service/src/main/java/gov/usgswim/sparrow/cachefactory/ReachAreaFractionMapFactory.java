@@ -18,7 +18,7 @@ public class ReachAreaFractionMapFactory implements CacheEntryFactory {
 	@Override
 	public ReachRowValueMap createEntry(Object reachId) throws Exception {
 		
-		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap((ReachID) reachId);
+		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap((ReachID) reachId, false);
 		ReachRowValueMap result = action.run();
 		
 		return result;

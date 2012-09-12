@@ -30,12 +30,12 @@ public class CalcReachAreaFractionMapTest extends CalcFractionalAreaBaseTest {
 		
 		// 11: The reach in the pdf sample table
 		// This test file has all the FRACs totalling to 1
-		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(testTopo, 11L);
+		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(testTopo, 11L, false);
 		ReachRowValueMap areaMap = action.run();
 		doAreaFractionsShouldMatchPdfFileExampleInResources(areaMap);
 		
 		// This test file has some of the FRACs not totalling to 1, but in ways that we can correct.
-		action = new CalcReachAreaFractionMap(testTopoCorrected, 11L);
+		action = new CalcReachAreaFractionMap(testTopoCorrected, 11L, false);
 		areaMap = action.run();
 		doAreaFractionsShouldMatchPdfFileExampleInResources(areaMap);
 
@@ -63,7 +63,7 @@ public class CalcReachAreaFractionMapTest extends CalcFractionalAreaBaseTest {
 	public void ShoreReachesHaveNoUpstreamAreaFractions() throws Exception {
 		
 		//13: A shore reach
-		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(testTopo, 13L);
+		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(testTopo, 13L, false);
 		ReachRowValueMap areaMap = action.run();
 		
 		assertEquals(1D, (double)areaMap.getFraction(13), COMP_ERROR);
@@ -75,7 +75,7 @@ public class CalcReachAreaFractionMapTest extends CalcFractionalAreaBaseTest {
 
 		//10: Has a non-transmitting reach (7) immediately upstream and a
 		//transmitting reach (8).
-		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(testTopo, 10L);
+		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(testTopo, 10L, false);
 		ReachRowValueMap areaMap = action.run();
 		
 		//The reach itself

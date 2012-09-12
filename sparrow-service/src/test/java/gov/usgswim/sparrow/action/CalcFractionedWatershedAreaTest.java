@@ -30,7 +30,7 @@ public class CalcFractionedWatershedAreaTest extends CalcFractionalAreaBaseTest 
 	public void FractionedAreaShouldMatchPdfFileExampleInResources() throws Exception {
 		
 		// 11: The reach in the pdf sample table
-		CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(testTopo, 11L);
+		CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(testTopo, 11L, false);
 		ReachRowValueMap areaMap = areaMapAction.run();
 		
 		CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreaTable);
@@ -59,7 +59,7 @@ public class CalcFractionedWatershedAreaTest extends CalcFractionalAreaBaseTest 
 	public void UnfractionedAreaShouldMatchPdfFileExampleInResources() throws Exception {
 		
 		// 11: The reach in the pdf sample table
-		CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(testTopo, 11L);
+		CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(testTopo, 11L, false);
 		ReachRowValueMap areaMap = areaMapAction.run();
 		
 		CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreaTable, true);

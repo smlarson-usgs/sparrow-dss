@@ -23,7 +23,7 @@ public class RunDb_WarningOnly_Tests extends SparrowModelValidationRunner {
 		
 		//1st Argument:  The allowed variantion b/f a comparison is considered an error.  .1 == 10&
 		//2nd Argument:  true == Use fractioned calculations for watershed areas.  false == Use cumulative areas (add them up, but don't fraction)
-		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(.1D, true)); //This one does calculation comparisons
+		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(.1D, false, false)); //This one does calculation comparisons
 		//addValidator(new SparrowModelFractionedWatershedAreaInvestigation());
 		//addValidator(new WarningOnlyDbTests());	//Does cumulative vs total comparison for shore reaches
 		

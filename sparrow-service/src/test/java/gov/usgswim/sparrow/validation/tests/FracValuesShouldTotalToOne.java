@@ -88,8 +88,8 @@ public class FracValuesShouldTotalToOne extends SparrowModelValidationBase {
 				
 			
 			if (!isShoreReach) {
-				
 				//This is a regular reach
+				
 				int[] allReachesAtFromFnode = topo.findAll(PredictData.TOPO_FNODE_COL, fnode);
 
 				if (allReachesAtFromFnode.length == 0) {

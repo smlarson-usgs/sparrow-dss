@@ -137,6 +137,81 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 		}
 	}
 	
+	/**
+	 * Compares two values and returns true if they are considered equal.
+	 * Note that only positive values are expected.  If a negative value
+	 * is received for any value, false is returned.
+	 * 
+	 * The comparison is done on a sliding scale:  values less than ten require
+	 * a bit less accuracy.
+	 * 
+	 * @param expect
+	 * @param compare
+	 * @param allowedFractionalVariance Nominal allowed variance
+	 * @return
+	 */
+	
+	/**
+	 * Compares two values and returns true if they are considered equal.
+	 * Note that only positive values are expected.  If a negative value
+	 * is received for any value, false is returned.
+	 * 
+	 * For expected values less than zero:
+	 * False is always returned.  No negative numbers are expected.
+	 * 
+	 * For expected values of 1 or less:
+	 * The actual value must have an absolute difference of less than 
+	 * maxAbsVarianceForLessThanOne OR a fractional difference of less than 
+	 * allowedFractionalVarianceLessThanOneK.
+	 * 
+	 * For expected values of 1000 or less:
+	 * The actual value must have an absolute difference of less than 
+	 * maxAbsVariance AND a fractional difference of less than 
+	 * allowedFractionalVarianceLessThanOneK.
+	 * 
+	 * For expected values of greater than 1000:
+	 * The actual value must have an absolute difference of less than 
+	 * maxAbsVariance AND a fractional difference of less than 
+	 * allowedFractionalVariance.
+	 * 
+	 * 
+	 * 
+	 * @param expect  Expected Value
+	 * @param compare Value to compare
+	 * @param allowedFractionalVariance Fractional variation allowed for all values.
+	 * @param allowedFractionalVarianceLessThanOneK For values under 1000, this fractional variance is used instead
+	 * @param maxAbsVarianceForLessThanOne For values less than one, the greater variance of this abs variance or the lessThanOneK
+	 * @param maxAbsVariance The max absolute variance for any value.
+	 * @return 
+	 */
+	public boolean comp(double expect, double compare,
+			double allowedFractionalVariance, double allowedFractionalVarianceLessThanOneK,
+			double maxAbsVarianceForLessThanOne, double maxAbsVariance) {
+		
+		if (expect < 0 || compare < 0) {
+			return false;
+		}
+		
+		double diff = Math.abs(compare - expect);
+		double frac = 0;
+		
+		if (diff == 0) {
+			return true;	//no further comparison required
+		} else {
+			frac = diff / expect;	//we are sure at this point that baseValue > 0
+		}
+		
+		if (expect <= 1d) {
+			return (diff <= maxAbsVarianceForLessThanOne || frac < allowedFractionalVarianceLessThanOneK);
+		} else if (expect <= 1000d) {
+			return (frac <= allowedFractionalVarianceLessThanOneK && diff <= maxAbsVariance);
+		} else {
+			return (frac <= allowedFractionalVariance && diff <= maxAbsVariance);
+		}
+
+	}
+	
+	
 	
 	//
 	// Event recording

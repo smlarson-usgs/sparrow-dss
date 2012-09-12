@@ -46,7 +46,10 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 	protected DataTable incrementalReachAreas;
 	
 	/** If true, ignore the fraction and just add up the area.  Mostly for debugging. */
-	protected boolean forceNonFractionedResult = false;;
+	protected boolean forceNonFractionedArea = false;
+	
+	/** If true, FRAC values that do not total to 1 will not be corrected. Mostly for debugging. */
+	protected boolean forceUncorrectedFracValues = false;
 	
 	protected String msg = null;
 	
@@ -66,7 +69,7 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 	public CalcFractionedWatershedArea(ReachRowValueMap areaFractionMap, DataTable incrementalReachAreas, boolean forceNonFractionedResult) {
 		this.areaFractionMap = areaFractionMap;
 		this.incrementalReachAreas = incrementalReachAreas;
-		this.forceNonFractionedResult = forceNonFractionedResult;
+		this.forceNonFractionedArea = forceNonFractionedResult;
 	}
 	
 	/**
@@ -80,11 +83,11 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 	/**
 	 * 
 	 * @param reachId
-	 * @param forceNonFractionedResult If true, use non-fractioned areas
+	 * @param forceNonFractionedArea If true, use non-fractioned areas
 	 */
 	public CalcFractionedWatershedArea(ReachID reachId, boolean forceNonFractionedResult) {
 		this.reachId = reachId;
-		this.forceNonFractionedResult = forceNonFractionedResult;
+		this.forceNonFractionedArea = forceNonFractionedResult;
 	}
 	
 	
@@ -92,7 +95,7 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 	public void initFields() {
 		if (reachId != null) {
 			//topoData = SharedApplication.getInstance().getPredictData(reachId.getModelID()).getTopo();
-			areaFractionMap = SharedApplication.getInstance().getReachAreaFractionMap(reachId);
+			areaFractionMap = SharedApplication.getInstance().getReachAreaFractionMap(reachId, forceNonFractionedArea);
 			incrementalReachAreas = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(reachId.getModelID(), AggregationLevel.REACH, false));
 		}
 		
@@ -116,7 +119,7 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 	
 	@Override
 	public Double doAction() throws Exception {
-		if (! forceNonFractionedResult) {
+		if (! forceNonFractionedArea) {
 			return calcFractionedArea();
 		} else {
 			return calcUnfractionedArea();

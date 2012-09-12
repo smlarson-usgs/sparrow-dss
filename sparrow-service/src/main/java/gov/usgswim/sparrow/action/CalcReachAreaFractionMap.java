@@ -43,6 +43,9 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 	protected Long targetReachId;
 	protected String msg = null;
 	
+	/** If true, FRAC values that do not total to 1 will not be corrected. Mostly for debugging. */
+	protected boolean forceUncorrectedFracValues = false;
+	
 	//Alt config params
 	protected transient ReachID reachId = null;
 	
@@ -50,18 +53,22 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 	 * Direct parameter initialization for testing
 	 * @param topoData
 	 * @param targetReachId 
+	 * @param forceUncorrectedFracValues If true, do not correct FRAC values that do not total to one.  Always false for prod.
 	 */
-	public CalcReachAreaFractionMap(DataTable topoData, Long targetReachId) {
+	public CalcReachAreaFractionMap(DataTable topoData, Long targetReachId, boolean forceUncorrectedFracValues) {
 		this.topoData = topoData;
 		this.targetReachId = targetReachId;
+		this.forceUncorrectedFracValues = forceUncorrectedFracValues;
 	}
 	
 	/**
 	 * Single param cache-key initialization
 	 * @param reachId 
+	 * @param forceUncorrectedFracValues If true, do not correct FRAC values that do not total to one.  Always false for prod.
 	 */
-	public CalcReachAreaFractionMap(ReachID reachId) {
+	public CalcReachAreaFractionMap(ReachID reachId, boolean forceUncorrectedFracValues) {
 		this.reachId = reachId;
+		this.forceUncorrectedFracValues = forceUncorrectedFracValues;
 	}
 	
 	@Override
@@ -227,7 +234,11 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 	
 	protected double getCorrectedFracForReachRow(int row, DataTable topo) throws Exception {
 		
-			
+		//Bypass switch to use uncorrect values - mostly for debug comparison of models.
+		if (forceUncorrectedFracValues) {
+			return topo.getDouble(row, PredictData.TOPO_FRAC_COL);
+		}
+		
 		//Find all other reaches that come from this same node
 		Integer fnode = topo.getInt(row, PredictData.TOPO_FNODE_COL);
 		int[] allReachesAtFromFnode = topo.findAll(PredictData.TOPO_FNODE_COL, fnode);

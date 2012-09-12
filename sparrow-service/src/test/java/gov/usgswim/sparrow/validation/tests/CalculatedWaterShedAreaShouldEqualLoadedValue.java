@@ -69,7 +69,11 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 	
 	//This flag can be set to true to force the fractional watershed area
 	//Action to do pure cumulative area calculations, not fractionalal ones.
-	private boolean forceAllAreaFractionsToOne = false;
+	private boolean forceNonFractionedArea = false;
+	
+	/** If true, FRAC values that do not total to 1 will not be corrected. Mostly for debugging. */
+	protected boolean forceUncorrectedFracValues = false;
+
 	
 	public boolean requiresDb() { return true; }
 	public boolean requiresTextFile() { return false; }
@@ -94,9 +98,18 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 		this.allowedFractialVariance = allowedFractialVariance;
 	}
 	
-	public CalculatedWaterShedAreaShouldEqualLoadedValue(Double allowedVariance, boolean useFractionalWatershedAreas) {
+	/**
+	 * 
+	 * @param allowedVariance
+	 * @param forceNonFractionedArea Takes precidence over forceUncorrectedFracValues.
+	 * @param forceUncorrectedFracValues 
+	 */
+	public CalculatedWaterShedAreaShouldEqualLoadedValue(Double allowedVariance,
+			boolean forceNonFractionedArea, boolean forceUncorrectedFracValues) {
+		
 		this.allowedFractialVariance = allowedVariance;
-		this.forceAllAreaFractionsToOne = ! useFractionalWatershedAreas;
+		this.forceNonFractionedArea = forceNonFractionedArea;
+		this.forceUncorrectedFracValues = forceUncorrectedFracValues;
 	}
 	
 	
@@ -131,12 +144,12 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 			
 			recordRowTrace(modelId, reachId, row, "Starting: CalcReachAreaFractionMap");
 			//Calculate the fractioned watershed area, skipping the cache
-			CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(topo, reachId);
+			CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(topo, reachId, forceUncorrectedFracValues);
 			ReachRowValueMap areaMap = areaMapAction.run();
 			recordRowTrace(modelId, reachId, row, "Completed: CalcReachAreaFractionMap");
 			
 			recordRowTrace(modelId, reachId, row, "Starting: CalcFractionedWatershedArea");
-			CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, forceAllAreaFractionsToOne);
+			CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, forceNonFractionedArea);
 			Double calculatedFractionalWatershedArea = areaAction.run();
 			recordRowTrace(modelId, reachId, row, "Completed: CalcFractionedWatershedArea");
 			

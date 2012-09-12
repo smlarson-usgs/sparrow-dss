@@ -59,14 +59,17 @@ public class RunAllTests extends SparrowModelValidationRunner {
 		 * No arguments, just runs a bunch of queries listed in a file by the name of:
 		 * FailableDbTests.properties
 		 */
-		addValidator(new FailableDbTests());
+		//addValidator(new FailableDbTests());
 		
 		/*
 		 * Arg1:	Allowed fractional variance.
-		 * Arg2:	True to use FRAC based areas, false to force FRAC to 1
-		 *				which basically switches to geographic watershed areas.
+		 * Arg2:	Set true to force non-fractioned watershed area calcs.
+		 *				Production will always have this as false, but can be toggled here
+		 *				for testing.  This takes precidence over Arg 3.
+		 * Arg3:	Set true to force FRAC values totalling to 1 be not corrected.
+		 *				Production uses false.
 		 */
-		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(.001D, true));
+		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(.001D, false, false));
 		
 		
 //		addValidator(new WarningOnlyDbTests());
