@@ -1,0 +1,10 @@
+<binning-response xmlns="http://www.usgs.gov/sparrow/binning-response/v0_1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<contextId>714573086</contextId>
+	<binType>EQUAL_RANGE</binType>
+	<bins>
+		<bin>-5E1</bin>
+		<bin>-25</bin>
+		<bin>0</bin>
+	</bins>
+</binning-response>
