@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.validation.tests;
 
-import gov.usgs.sparrow.validation.tests.SparrowModelValidationBase;
-import gov.usgs.sparrow.validation.tests.SparrowModelPredictionValidation;
+import gov.usgs.cida.sparrow.validation.tests.SparrowModelValidationBase;
+import gov.usgs.cida.sparrow.validation.tests.SparrowModelPredictionValidation;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

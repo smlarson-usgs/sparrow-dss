@@ -1,6 +1,8 @@
 package gov.usgs.cida.sparrow.validation;
 
-import gov.usgs.sparrow.validation.tests.*;
+import gov.usgs.cida.sparrow.validation.tests.WarningOnlyDbTests;
+import gov.usgs.cida.sparrow.validation.tests.CalculatedWaterShedAreaShouldEqualLoadedValue;
+import gov.usgs.cida.sparrow.validation.tests.FailableDbTests;
 import org.apache.log4j.Logger;
 
 /**

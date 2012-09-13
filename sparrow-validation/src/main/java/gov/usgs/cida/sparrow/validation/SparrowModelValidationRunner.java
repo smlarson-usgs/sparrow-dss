@@ -1,14 +1,14 @@
 package gov.usgs.cida.sparrow.validation;
 
 import gov.usgs.cida.datatable.DataTable;
-import gov.usgs.sparrow.validation.tests.ModelValidator;
+import gov.usgs.cida.sparrow.validation.tests.ModelValidator;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.action.LoadModelMetadata;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgs.sparrow.validation.tests.ValidationResults;
-import gov.usgs.sparrow.validation.tests.ModelTestResultList;
+import gov.usgs.cida.sparrow.validation.tests.ValidationResults;
+import gov.usgs.cida.sparrow.validation.tests.ModelTestResultList;
 
 import java.io.*;
 import java.sql.Connection;

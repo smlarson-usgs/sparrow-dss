@@ -1,6 +1,9 @@
 package gov.usgs.cida.sparrow.validation;
 
-import gov.usgs.sparrow.validation.tests.*;
+import gov.usgs.cida.sparrow.validation.tests.FracValuesShouldTotalToOne;
+import gov.usgs.cida.sparrow.validation.tests.TotalLoadEqualsIncLoadForShoreReaches;
+import gov.usgs.cida.sparrow.validation.tests.CalculatedWaterShedAreaShouldEqualLoadedValue;
+import gov.usgs.cida.sparrow.validation.tests.SparrowModelPredictionValidation;
 
 /**
  * This runs only the DB related tests.  Just run the main method and you will

@@ -1,6 +1,7 @@
 package gov.usgs.cida.sparrow.validation;
 
-import gov.usgs.sparrow.validation.tests.*;
+import gov.usgs.cida.sparrow.validation.tests.ModelValidator;
+import gov.usgs.cida.sparrow.validation.tests.CalculatedWaterShedAreaShouldEqualLoadedValue;
 
 /**
  * This runs only the DB related tests.  Just run the main method and you will
