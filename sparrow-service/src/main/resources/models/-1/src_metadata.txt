@@ -1,3 +1,0 @@
-id	name	display_name	description	constituent	units	precision	is_point_source
-30	atdep_mean_res	Atm. deposition	Total load of atmospheric deposition per subbasin (kg)*/	Phosphorus	kg/yr	2	F
-31	manfert_n	Fertilizer (manure)	Sum total of Nitrogen from Manure (Confined and Unconfined) and Farm Fertilizer	Phosphorus	kg/yr	2	F
