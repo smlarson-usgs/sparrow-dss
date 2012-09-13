@@ -1,6 +1,6 @@
-package gov.usgswim.sparrow.validation.tests;
+package gov.usgs.sparrow.validation.tests;
 
-import gov.usgswim.sparrow.validation.SparrowModelValidationRunner;
+import gov.usgs.sparrow.validation.SparrowModelValidationRunner;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;

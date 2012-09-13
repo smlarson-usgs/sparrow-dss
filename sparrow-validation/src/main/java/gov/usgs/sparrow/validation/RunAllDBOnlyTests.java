@@ -1,8 +1,6 @@
-package gov.usgswim.sparrow.validation;
+package gov.usgs.sparrow.validation;
 
-import gov.usgswim.sparrow.validation.tests.WarningOnlyDbTests;
-import gov.usgswim.sparrow.validation.tests.CalculatedWaterShedAreaShouldEqualLoadedValue;
-import gov.usgswim.sparrow.validation.tests.FailableDbTests;
+import gov.usgs.sparrow.validation.tests.*;
 import org.apache.log4j.Logger;
 
 /**

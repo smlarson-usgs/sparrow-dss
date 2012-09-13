@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.validation.tests;
+package gov.usgs.sparrow.validation.tests;
 
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.action.CalcAnalysis;

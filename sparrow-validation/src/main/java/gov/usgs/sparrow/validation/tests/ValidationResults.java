@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.validation.tests;
+package gov.usgs.sparrow.validation.tests;
 
 import java.util.ArrayList;
 

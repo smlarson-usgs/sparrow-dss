@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.validation.tests;
+package gov.usgs.sparrow.validation.tests;
 
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;

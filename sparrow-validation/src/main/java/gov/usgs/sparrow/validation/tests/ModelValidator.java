@@ -2,9 +2,9 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package gov.usgswim.sparrow.validation.tests;
+package gov.usgs.sparrow.validation.tests;
 
-import gov.usgswim.sparrow.validation.SparrowModelValidationRunner;
+import gov.usgs.sparrow.validation.SparrowModelValidationRunner;
 import org.apache.log4j.Logger;
 
 /**

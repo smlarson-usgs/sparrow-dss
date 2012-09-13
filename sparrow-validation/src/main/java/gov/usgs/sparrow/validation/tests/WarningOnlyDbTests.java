@@ -1,6 +1,6 @@
-package gov.usgswim.sparrow.validation.tests;
+package gov.usgs.sparrow.validation.tests;
 
-import gov.usgswim.sparrow.validation.tests.BaseQueryValidator;
+import gov.usgs.sparrow.validation.tests.BaseQueryValidator;
 
 /**
  *

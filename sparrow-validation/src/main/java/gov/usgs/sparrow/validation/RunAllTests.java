@@ -1,6 +1,6 @@
-package gov.usgswim.sparrow.validation;
+package gov.usgs.sparrow.validation;
 
-import gov.usgswim.sparrow.validation.tests.*;
+import gov.usgs.sparrow.validation.tests.*;
 
 /**
  * This runs only the DB related tests.  Just run the main method and you will
