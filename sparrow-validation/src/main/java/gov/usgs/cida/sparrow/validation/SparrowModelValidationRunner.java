@@ -1,4 +1,4 @@
-package gov.usgs.sparrow.validation;
+package gov.usgs.cida.sparrow.validation;
 
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.sparrow.validation.tests.ModelValidator;

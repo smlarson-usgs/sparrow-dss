@@ -4,7 +4,7 @@
  */
 package gov.usgs.sparrow.validation.tests;
 
-import gov.usgs.sparrow.validation.SparrowModelValidationRunner;
+import gov.usgs.cida.sparrow.validation.SparrowModelValidationRunner;
 import org.apache.log4j.Logger;
 
 /**

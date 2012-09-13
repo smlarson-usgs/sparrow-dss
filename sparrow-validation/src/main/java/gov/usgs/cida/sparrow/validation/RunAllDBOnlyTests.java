@@ -1,4 +1,4 @@
-package gov.usgs.sparrow.validation;
+package gov.usgs.cida.sparrow.validation;
 
 import gov.usgs.sparrow.validation.tests.*;
 import org.apache.log4j.Logger;
