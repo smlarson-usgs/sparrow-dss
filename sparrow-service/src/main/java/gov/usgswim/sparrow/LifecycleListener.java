@@ -7,6 +7,8 @@ import gov.usgswim.sparrow.service.ConfiguredCache;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Map;
+import javax.naming.*;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -89,25 +91,23 @@ public class LifecycleListener implements ServletContextListener {
 		try {
 			
 			DynamicReadOnlyProperties props = new DynamicReadOnlyProperties();
-			
-			
 			String mode = null;
 			String env = null;
-			boolean isJndiAware = false;
+			boolean isJndiAware = isUsingJndi();
+			
+			if (isJndiAware) {
+				props.addJNDIContexts(DynamicReadOnlyProperties.DEFAULT_JNDI_CONTEXTS);
+			}
 			
 			
 			//If we are in a servlet environment, switch to the production log4j config
 			if (context != null) {
-				isJndiAware = true;
-				props.addJNDIContexts(DynamicReadOnlyProperties.DEFAULT_JNDI_CONTEXTS);
-				
 				env = props.getProperty(APP_ENV_KEY, "prod");
 				mode = props.getProperty(APP_MODE_KEY, "prod");
 				
 			} else {
 				env = props.getProperty(APP_ENV_KEY, "local");
 				mode = props.getProperty(APP_MODE_KEY, "dev");
-				isJndiAware = false;
 			}
 			
 			String logFileName = "/log4j_" + env + "_" + mode + ".xml";
@@ -145,6 +145,28 @@ public class LifecycleListener implements ServletContextListener {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	
+	/**
+	 * See if we can access a JNDI context.  If not, don't attempt any jndi config.
+	 * @return 
+	 */
+	public boolean isUsingJndi() {
+
+		String[] contexts = {"java:", "java:/comp/env"};
+		
+		for (String context: contexts) {
+			Context ctx;
+			try {
+				ctx = new InitialContext();
+				NamingEnumeration<Binding> bindings = ctx.listBindings(context);
+			} catch (NamingException e) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 }
