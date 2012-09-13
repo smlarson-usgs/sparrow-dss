@@ -1,7 +1,5 @@
 package gov.usgswim.sparrow.validation;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.ColumnDataWritable;
 import gov.usgs.cida.datatable.DataTable;
@@ -40,10 +38,8 @@ import java.util.Properties;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.text.StrTokenizer;
-import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.apache.log4j.extras.DOMConfigurator;
 
 /**
@@ -235,7 +231,6 @@ public class ComparePredictionToTextLongRunTest {
 		
 		try {
 			Connection conn = SharedApplication.getInstance().getROConnection();
-			assertTrue(!conn.isClosed());
 			conn.close();
 		} catch (Exception e) {
 			throw new Exception("Oops, a bad pwd, or lack of network access to the db?", e);
@@ -296,7 +291,6 @@ public class ComparePredictionToTextLongRunTest {
 		} else {
 			log.error("- - - - - AT LEAST ONE MODEL FAILED VALIDATION.  PLEASE REVIEW THE LOG MESSAGES TO FIND THE VALIDATION ERRORS. + + + + +");
 		}
-		assertEquals(0, failCount);
 	}
 	
 	

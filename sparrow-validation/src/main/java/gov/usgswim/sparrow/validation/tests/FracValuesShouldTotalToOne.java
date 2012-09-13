@@ -1,56 +1,8 @@
 package gov.usgswim.sparrow.validation.tests;
 
-import gov.usgswim.sparrow.validation.tests.TestResult;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import gov.usgs.cida.datatable.ColumnData;
-import gov.usgs.cida.datatable.ColumnDataWritable;
 import gov.usgs.cida.datatable.DataTable;
-import gov.usgs.cida.datatable.DataTableWritable;
-import gov.usgs.cida.datatable.impl.SimpleDataTable;
-import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
-import gov.usgs.cida.datatable.impl.StandardLongColumnData;
-import gov.usgs.cida.datatable.impl.StandardNumberColumnDataWritable;
-import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.action.*;
-import gov.usgswim.sparrow.datatable.PredictResult;
-import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
-import gov.usgswim.sparrow.domain.*;
-import gov.usgswim.sparrow.domain.reacharearelation.AreaRelation;
-import gov.usgswim.sparrow.domain.reacharearelation.ModelReachAreaRelations;
-import gov.usgswim.sparrow.domain.reacharearelation.ReachAreaRelations;
-import gov.usgswim.sparrow.request.DeliveryReportRequest;
-import gov.usgswim.sparrow.request.ModelAggregationRequest;
-import gov.usgswim.sparrow.request.ModelHucsRequest;
-import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.TabDelimFileUtil;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.math.NumberUtils;
-import org.apache.commons.lang.text.StrTokenizer;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
-import org.apache.log4j.extras.DOMConfigurator;
 
 /**
  * Checks that the database model's FRAC values total to ONE at each fnode.
