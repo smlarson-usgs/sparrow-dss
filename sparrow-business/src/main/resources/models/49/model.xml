@@ -1,0 +1,103 @@
+<Model id="49">
+	<Authors>
+		<Author id="1">
+			<Name>First name, last name</Name>
+			<Link/>
+		</Author>
+	</Authors>
+	<Model_name>MRB02 Phosphorus</Model_name>
+	<MRB>MRB02</MRB>
+	<Constituent>
+		<Name>Nitrogen</Name>
+		<Units>kg/yr</Units>
+		<Description> 2002 Total Phosphorus Model for the Southeastern U.S. (MRB2) </Description>
+	</Constituent>
+	<Sources>
+		<Source id="All">
+			<Name>All</Name>
+			<Units/>
+			<Description>All sources combined.</Description>
+		</Source>
+		<Source id="1">
+			<Name>Wastewater discharge</Name>
+			<Units>kg/yr</Units>
+			<Description>Wastewater discharge (nitrogen) 2002, from Terziotti 20-2008</Description>
+		</Source>
+		<Source id="2">
+			<Name>Wet dep. of inorg. nitrogen</Name>
+			<Units>kg/yr</Units>
+			<Description>Wet deposition of inorganic nitrogen (ammonia and nitrate) 2002, from K. Savvas, USGS, 2006</Description>
+		</Source>
+		<Source id="3">
+			<Name>Imp. surf. area</Name>
+			<Units>sq km</Units>
+			<Description>Impervious surface area 2001 NLCD, Terziotti 12-2008</Description>
+		</Source>
+		<Source id="4">
+			<Name>Fert. applied to agric. land</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen fertilizer on farmland 2002, kg - NLCD01 - area-based method Terziotti 10-2008</Description>
+		</Source>
+		<Source id="5">
+			<Name>Livestock manure</Name>
+			<Units>kg/yr</Units>
+			<Description>Nitrogen in livestock waste 2002 Ag Census, NLCD01 - based spatial distribution, Terziotti 10-2008</Description>
+		</Source>
+	</Sources>
+	<Model_papers>
+		<Paper id="1">
+			<Link link=""/>
+			<Citation_mods>
+				<identifier type=""/>
+				<identifier type=""/>
+				<identifier type=""/>
+				<genre/>
+				<titleInfo>
+					<title/>
+				</titleInfo>
+				<originInfo>
+					<dateOther/>
+					<publisher/>
+					<placeTerm/>
+				</originInfo>
+				<name>
+					<namePart/>
+					<role>Author</role>
+				</name>
+				<physicalDescription>
+					<form/>
+					<form/>
+					<form/>
+				</physicalDescription>
+				<note type="citation/reference"/>
+				<edition/>
+				<languageTerm/>
+			</Citation_mods>
+		</Paper>
+	</Model_papers>
+	<CommonTerms>
+		<Term id="For Source">
+			Each model has different sources that the modeler has determined to be statistically significant.
+			Choose a source from the list to present data only from that source.  This model contains these sources:
+			
+			<dl>
+				<!-- These names could be improved, do we have updated info from Greg? -->
+				<dt>All</dt>
+				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
+				<dt>Wastewater Discharge</dt>
+				<dd>Phosphorus load from point source dischargers in 2002, kg, Terziotti, 10-200.  Reported in kg.</dd>
+				<dt>Urban Land Area</dt>
+				<dd>Urban land area , 2001 National Land Cover Dataset, Terziotti 12-2008</dd>
+				<dt>Backgrd-Parent Rock</dt>
+				<dd>Phosphorus content of bed sediment in headwater streams v15, regionalized, multiplied by catchment area, Terziotti and others 2010</dd>
+				<dt>Mined Lands</dt>
+				<dd>P content of bed sediment in streams affected by mines v15, multiplied by mined-land area, Terziotti and others 2010</dd>				
+				<dt>Livestock Manure</dt>
+				<dd>2002 Ag Census, National Land Cover Dataset 01-based spatial distribution, sum of confined-unconfined, Wieczorek 5-2009</dd>
+				<dt>Fert. Land</dt>
+				<dd>2001 National Land Cover Dataset, Terziotti 12-2008</dd>
+			</dl>
+		</Term>
+	</CommonTerms>
+		
+</Model>

@@ -1,0 +1,554 @@
+<Documentation>
+	<General/>
+	<SPARROW_model>
+		<SPARROW_papers>
+			<Paper id="paper">
+				<Link link="http://water.usgs.gov/nawqa/sparrow/wrr97/results.html"/>
+				<Citation_mods>
+					<identifier type=""/>
+					<identifier type=""/>
+					<identifier type=""/>
+					<genre/>
+					<titleInfo>
+						<title>SPARROW Surface Water-Quality Modeling Nutrients in Watersheds of the Coterminous United States</title>
+					</titleInfo>
+					<originInfo>
+						<dateOther>1997-01-01 00:00:00.0</dateOther>
+						<publisher>Apress</publisher>
+						<placeTerm/>
+					</originInfo>
+					<name>
+						<namePart>Smith, R.A., G.E. Schwarz, and R.B. Alexander</namePart>
+						<role>Author</role>
+					</name>
+					<physicalDescription>
+						<form/>
+						<form/>
+						<form/>
+					</physicalDescription>
+					<note type="citation/reference">Smith, R.A. et al. 1997. SPARROW Surface Water-Quality Modeling Nutrients in Watersheds of the Coterminous United States. Regional interpretation of water-quality monitoring data, Water Resources Research, v. 33, no. 12, pp.2781-2798</note>
+					<edition/>
+					<languageTerm>ENGLISH</languageTerm>
+				</Citation_mods>
+			</Paper>
+			<Paper id="factsheet">
+				<Link link="http://pubs.usgs.gov/fs/2009/3019/pdf/fs_2009_3019.pdf"/>
+				<Citation_mods>
+					<identifier type="">myid</identifier>
+					<identifier type=""/>
+					<identifier type=""/>
+					<genre/>
+					<titleInfo>
+						<title>SPARROW MODELING - Enhancing Understanding of the Nation's Water Quality</title>
+					</titleInfo>
+					<originInfo>
+						<dateOther>2009-03-01 00:00:00.0</dateOther>
+						<publisher>U.S. Geological Survey</publisher>
+						<placeTerm/>
+					</originInfo>
+					<name>
+						<namePart>Preston, S.D., Alexander, R.B., Woodside, M.D., and Hamilton, P.A.</namePart>
+						<role>Author</role>
+					</name>
+					<physicalDescription>
+						<form/>
+						<form/>
+						<form/>
+					</physicalDescription>
+					<note type="citation/reference">Preston, S.D., Alexander, R.B., Woodside, M.D., and Hamilton, P.A., 2009, SPARROW MODELING-Enhancing Understanding of the Nation's Water Quality: U.S. Geological Survey Fact Sheet 2009-3019, 6 p.</note>
+					<edition/>
+					<languageTerm>ENGLISH</languageTerm>
+				</Citation_mods>
+			</Paper>
+		</SPARROW_papers>
+	</SPARROW_model>
+	<CommonTerms>
+		<Term id="Adjustments">
+			<h2>Change Inputs</h2><br/>
+			Change inputs is used to create different management scenarios (changes in model source inputs) 
+			and to evaluate the changed results with respect to predicted total and incremental load and yield. Changes
+			can be made in one of two ways: by applying changes to individual reaches or by applying changes
+			to  groups of reaches.<br/>
+			<br/>
+			To change an individual reach's source inputs, first identify the reach on the map.
+			You can identify a reach either by clicking on it with the <b>Identify Reach</b> tool
+			or by searching for it via the <b>Find a reach...</b> button. Once the reach has been
+			identified, navigate to the <b>Model Source Inputs</b> tab, enter the desired input
+			values into the <b>Override</b> column, and click <b>Apply</b>.  Changes will be displayed on the map the next time the map is updated.<br/>
+			<br/>To change a group of reaches, you must first create a <i>reach group</i> 
+			of reaches. After identifying a candidate reach on the map, navigate to the 
+			<b>Change Inputs</b> tab to add it to a group. Once groups are created, 
+			right-click the group name on the <b>Change Inputs</b> tab and then apply the desired treatments.
+		</Term>
+		<Term id="Targets">
+			<h2>Downstream Tracking</h2><br/>
+			
+			Downstream tracking is used to determine the fraction of load from upstream reaches delivered 
+			to a selected downstream reaches. To select downstream reaches, find the desired reach on the map
+			 (using the <b>Identify Reach tool</b>) and then click on the 
+			<b>Add Reach to Selected Downstream Reaches</b> button. Alternatively, you may search for reaches either 
+			individually or all at once using the <b>Find a reach...</b> button.
+		</Term>
+		<Term id="MRB">
+			<p>The US is divided into 8 major river basins: New England and Mid-Atlantic; South Atlantic-Gulf and Tennessee; Great Lakes, Ohio, Upper Mississippi and Souris-Red-Rainy; Missouri; Lower Mississippi, Arkansas-White-Red and Texas-Gulf; Rio Grande, Colorado and Great Basin; Pacific Northwest; and California.</p>
+		</Term>
+		<Term id="Data Series">
+			<h2>Data Series</h2><br/>
+			<p>The <i>Data Series</i> specifies which data (model output or input) are drawn on the map.
+			The most commonly selected data are <i>Total Load</i> estimates,
+			which represent the average mass of constituent transported by a stream, as predicted by the model.</p>
+			
+			<p>
+				
+				
+			</p>
+			<p>The complete list of data series:</p>
+			<!-- This list updated April 12, 2011 by LM -->
+			<dl>
+				<dt>Total Load</dt><dd>
+					The mean annual load of the constituent (mass in kg per year)
+					leaving each stream reach, as predicted by the model. 
+					The load reflects the accumulated mass of the constituent 
+					contributed by all sources in the total drainage area upstream 
+					of the reach outlet. The load includes the effects of in-stream
+					attenuation processes in all upstream reaches. 
+					The mean annual load is a standardized measure of the constituent
+					mass in the stream that reflects the mean quantities of mass
+					that are likely to occur during a specified base year under
+					long-term mean streamflow conditions.
+					The mean annual conditions described by the model 
+					primarily reflect the effects of natural
+					and human-related processes that supply and remove 
+					constituent mass in watersheds over long time periods. 
+					You can select 'All Sources' to map the total load for all of the
+					sources together, or select an individual model source to map the
+					theoretical load due to a single source.
+				</dd>
+                <dt>Standard Error of Total Load</dt><dd>
+                	An estimate of the prediction error associated with the <i>Total load</i>, 
+                	based on the model calibration.
+                	Units are the same as the units for <i>Total load</i>.
+                </dd>
+                <dt>Incremental Load</dt><dd>
+					The mean annual load of the constituent (mass in kg per year)
+					leaving the incremental drainage area of an individual stream reach.
+					The load value reflects the effects of in-stream attenuation
+					processes associated with one half of the reach time of travel
+					(this assumes that the entire load of the incremental drainage area
+					enters the reach at approximately the midpoint, between the upstream and
+					downstream end).  You can select 'All Sources' for all of the sources
+					together, or select an individual model source to map the
+					theoretical incremental load due to a single source.
+                </dd>
+                <dt>Standard Error of Incremental Load</dt><dd>
+					An estimate of the prediction error associated with the <i>Incremental Load</i>,
+					based on the model calibration.
+					Units are the same as the units for <i>Incremental Load</i>.
+				</dd>
+                <dt>Incremental Yield</dt><dd>
+                	The <i>Incremental Load</i> divided by the incremental
+                	drainage area of the reach.
+                	Units are mass in kg per square kilometer per year. Incremental yield
+                	removes the variability due to differences in drainage area and allows
+                	comparison of the export rates from different drainages.
+                </dd>
+                <dt>Total Yield</dt><dd>
+                	The <i>Total Load</i> divided by the total
+                	drainage area upstream of the reach outlet.
+                	Units are mass in kg per square kilometer per year. Total yield
+                	removes the variability due to differences in drainage area and allows
+                	comparison of the export rates from different drainages.
+                </dd>
+                <dt>Flow-weighted Concentration</dt><dd>
+                	The mean annual flow-weighted concentration of the constituent in the reach
+                	in units of mass per volume.  This is calculated by dividing
+                	the <i>Total Load</i> by the <i>Streamflow</i> and converting
+                	to standard units.  Annual flow-weighted concentrations generally reflect
+                	conditions during higher-flow periods of the year that often occur during
+                	the winter and spring.
+                </dd>
+                <dt>Source Value</dt><dd>
+                	The source value is the amount of a particular source
+                	added in the reach's drainage area - you must choose a
+                	source to map this data series.  If you have created
+                	adjustments as part of a 'what if' scenario, the adjusted
+                	source values are presented.<br/>
+                	In some cases the 'source' is not represented in terms of mass,
+                	but rather as a surrogate variable that relfects the spatial variation
+                	of a source of the water-quality constituent.  For instance, 
+                	a measurement such as urban land area or population may be included as
+                	a source term, serving as a surrogate measurement for nutrients in
+                	urban runoff, for which direct measurements for each catchment are not
+                	available.<br/>
+                	Also, consider that some source terms may be interdependent and that
+                	changes to one will logically require changes
+                	to another.  For example, decreasing the value of the source term <i>Agricultural Land Area</i>
+                	(a surrogate for runoff from fertilized agricultural land) could require
+                	increasing the value of the source term <i>Developed Land Area</i> 
+                	(surrogate for runoff from urban land) for the set of adjusted reaches, if the shift
+                	away from agricultural land use in those reaches is expected to be accompanied
+                	by a shift towards urban land use.
+                </dd>
+                <dt>Streamflow</dt><dd>
+                	The mean annual stream flow of the reach, in units of volume (cubic feet) per time (second).
+                </dd>
+                <dt>Delivery Fraction</dt><dd>
+                	The fraction (from 0 to 1) of the load leaving a reach that arrives at the
+                	end of a selected downstream target reach after accounting for the mass quantity
+                	that is removed by natural attenuation processes
+                	(e.g., long-term storage; denitrification).
+                	You must define at least one <em>Selected Downstream Reach</em> on the <em>Downstream Tracking</em> tab in order to map this series.
+                </dd>
+                <dt>Incremental Delivered Load</dt><dd>
+                	The incremental load associated with a stream reach that arrives
+                	at the downstream end of a selected target reach, in units
+                	of mass (kg) per year.
+                	You must define at least one <em>Selected Downstream Reach</em> on the <em>Downstream Tracking</em> tab in order to map this series.
+                </dd>
+                <dt>Total Delivered Load</dt><dd>
+                	The total load associated with a stream reach that arrives at
+                	the downstream end of a selected target reach, in units of mass (kg) per year.
+                	You must define at least one <em>Selected Downstream Reach</em> on the <em>Downstream Tracking</em> tab in order to map this series.
+								</dd>
+                <dt>Incremental Delivered Yield</dt><dd>
+                	The <i>Incremental Delivered Load</i> divided by the drainage
+                	area of the reach, in units of mass (kg) per square kilometer per year.
+                	You must define at least one <em>Selected Downstream Reach</em> on the <em>Downstream Tracking</em> tab in order to map this series.
+                </dd>
+			</dl>
+		</Term>
+		<Term id="Total">
+			Takes into account constituent sources upstream and degradation to describe the annual load of the constituent being transported by national surface waters. Units are typically kilograms/year.
+		</Term>
+		<Term id="Incremental">
+			Takes into account only sources of the constituent within the surrounding catchment to show local generation of the constituent independent of the upstream load. Units are typically kilograms/year.
+		</Term>
+		<Term id="Incremental Area">
+			The area of land that drains directly to the stream reach, not including land area that drains to upstream reaches.
+		</Term>
+		<Term id="Incremental Yield">
+			Takes into account only sources of the constituent within the surrounding catchment to show the local generation of the constituent normalized for catchment area. Units are typically kilograms/square kilometer-year.
+		</Term>
+		<Term id="Concentration">
+			Total load divided by the long-term average flow of the stream reach. Units are typically kilograms/cubic feet.
+		</Term>
+		<Term id="Source Value">
+			Displays the location and frequency of constituent sources. Units are typically kilograms/year.
+		</Term>
+		<Term id="Delivery Fraction">
+			Displays the fraction of incremental load that is delivered to a target reach of interest.
+		</Term>
+		<Term id="Incremental Delivered Flux">
+			Displays the incremental flux generated by a catchment that is delivered to a target reach of interest. Units are typically kilograms/square kilometer-year.
+		</Term>
+		<Term id="Total Delivered Flux">
+			Displays the total flux including sources upstream and within the catchment that is delivered to a target reach of interest. Units are typically kilograms/square kilometer-year.
+		</Term>
+		<Term id="Incremental Delivered Yield">
+			Displays the incremental yield that is delivered to a target reach of interest. Units are typically kilograms/square kilometer-year.
+		</Term>
+		<Term id="For Source">
+			<h2>Model Source</h2><br/>
+			<!--
+			Each model has different sources that the modeler has determined to be statistically significant.
+			Choose a constituent source from the list to present data only from that source.
+			-->
+		</Term>
+		<Term id="Streamflow">
+			The mean annual stream flow of the reach, in units of volume (cubic feet) per time (second).
+        </Term>
+		<Term id="Comparison">
+			<h2>Comparison To Original Model</h2><br/>
+			The model prediction based on changed input
+			can be compared to the model prediction based on the original input values (i.e. the 
+			<i>original</i> model prediction), for any selected <i> Data Series </i>.<br/>
+			Two options for comparison are available:
+			<dl>
+			<dt>Absolute change from original</dt>
+			<dd>The difference (in units of the data series) between the
+			predicted value using changed inputs and the predicted value using original input
+			(negative number indicates decrease compared to original).</dd>
+			<dt>% change from original</dt>
+			<dd>The percent difference (in units of percent) between the predicted value
+			using changed input and the predicted value using original input
+			(negative number indicates decrease compared to original).  Calculated as:<br/>
+			<code>100 X (changed - original) / original</code><br/>
+			Any increase from an original predicted value of zero is reported as a 100% change.
+			Any decrease from an original predicted value of zero is reported as a -100% change.</dd>
+			</dl>
+		</Term>
+		<Term id="Nominal">
+			The nominal SPARROW DSS model condition is based on source values and streamflow of the model base year.
+		</Term>
+		<Term id="Bins">
+			<h2>Binning for Map Color and Legend</h2><br/>
+			<b>Bins</b> determine how values are grouped and displayed on the map.
+			Data are grouped into bins by their values, and data in each bin are
+			displayed with a specific color on the map. By modifying the binning
+			scheme, you can change the way information is presented on your map.<br/>
+			Two auto-generation options are available:
+			<dl>
+			<dt>Equal Count</dt>
+			<dd>Attempt to construct bins such that an equal
+			number of data values fall within each bin.  Because the values
+			are sometimes clustered, it is often not possible to generate bins
+			with an even distribution of values into each bin.</dd>
+			<dt>Equal Range</dt>
+			<dd>Construct bins such that each bin has an
+			equal numerical interval or range.</dd>
+			</dl>
+			If you check <b>Use automatic binning</b>, SPARROW DSS will choose a binning scheme for you
+			based on the map options you have selected. The recommended binning will consist of 5 bins of
+			either equal count or equal range. To specify a custom binning scheme, or to edit colors,
+			uncheck this option and click on the <b>Edit Custom Bins...</b> button.
+		</Term>
+		<Term id="Map Options">
+			Controls basic features of how the map is rendered.
+			Click the headings of the subsections for more information on each feature.
+		</Term>
+		<Term id="Reach">
+			Stream segments that extend between confluence with other streams.
+		</Term>
+		<Term id="Export Reach ID">
+			A reach is a stream segment that (typically) extends between confluences with other streams.
+			The reach ID uniquely identifies that reach in the Sparrow model and river network systems.
+			For specifics on how to use the Reach ID to match reaches to other river networks,
+			consult the reach id section at the top of the export file.
+		</Term>
+		<Term id="Reach Name Search Tips">
+			<h2>Search for Reach Name</h2><br/>
+			
+			Reach names are often reported with abbreviations. You may search for reaches with or without the abbreviations.<br/><br/>
+
+			<b>Examples:</b><br/>
+			Search for the South Platte River by entering 'S PLATTE R' or 'PLATTE'<br/>
+			Search for the Little Missouri River, North Fork by entering 'LITTLE MISSOURI R, N FK' or 'MISSOURI'<br/>
+		</Term>
+		<Term id="Catchment">
+			A watershed that drains to a single stream.
+		</Term>
+		<Term id="HUC">
+			<h2>HUC</h2><br/>
+			
+			Hydrologic unit code. The United States is divided and sub-divided into successively smaller 
+			hydrologic units which are classified into four levels: regions, sub-regions, accounting units, 
+			and cataloging units. The hydrologic units are arranged within each other, from the smallest 
+			(cataloging units) to the largest (regions). Each hydrologic unit is identified by a unique 
+			hydrologic unit code (HUC) consisting of two to eight digits based on the four levels of 
+			classification in the hydrologic unit system. The first level of classification (HUC2) divides 
+			the Nation into 21 major geographic areas that contain either the drainage area of a major river, 
+			such as the Missouri region, or the combined drainage areas of a series of rivers, such as the 
+			Texas-Gulf region, which includes a number of rivers draining into the Gulf of Mexico. 
+			The second level of classification (HUC4) divides the 21 regions into 221 subregions that 
+			include the area drained by a river system, a reach of a river and its tributaries in that reach, 
+			a closed basin(s), or a group of streams forming a coastal drainage area. The third level of 
+			classification (HUC6) subdivides many of the subregions into 378 accounting units that are 
+			nested within, or can be equivalent to the subregions. The fourth level of classification 
+			(HUC8) includes 2,264 cataloging units, which are geographic areas representing part of all 
+			of a surface drainage basin, a combination of drainage basins, or a distinct hydrologic feature. 
+			These units subdivide the subregions and accounting units into smaller areas.
+		</Term>
+		<Term id="Aggregate Function">
+			Calculates the average, maximum, minimum, or sum of the model output when the map displays over HUC.
+		</Term>
+		<Term id="Reaches Or Catchments">
+			<h2>Display Prediction Data Using Reaches or Catchments</h2><br/>
+			Selecting <b>Reaches</b> will draw individual reach lines (water bodies) on the map.
+			Selecting <b>Catchments</b> will draw each catchment region (land area surrounding each reach).
+			In both cases, the color used to render the reach or catchment is based
+			on the binning scheme selected on the <b>Map Controls</b> tab.<br/><br/>
+			<p>
+			Note that if the <i>Reaches</i> option is choosen, the <i>Reach Overlay</i>
+			option will be disabled, since it would draw the same reach lines.
+			</p>
+		</Term>
+		<Term id="Watershed Area">
+			<h2>Watershed Area</h2><br/>
+			The area of land that drains all the upstream streams and rainfall to the stream reach. The 
+			word watershed is sometimes used interchangeably with drainage basin or catchment.
+		</Term>
+		<Term id="EDA Name">
+			<h2>EDA Name</h2><br/>
+			NOAA name identifying estuarine/coastal drainage areas for major estuaries in the United States.  This value may be empty for reaches in or draining to Canada.
+		</Term>
+		<Term id="EDA Code">
+			<h2>EDA Code</h2><br/>
+			NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.  This value may be empty for reaches in or draining to Canada.
+		</Term>
+		<Term id="Export Readme">
+		
+			__IMPORTANT__
+			No endorsement, expressed or implied, is made by the USGS or the U.S. Government of any interpretations or decisions that result from the use of these models, nor shall the fact of distribution constitute any such endorsement, and no responsibility is assumed by the USGS in connection therewith.
+			
+			__Export Data Column Definitions__
+			
+			__Base export columns included in all exports__
+			* id:  Unique identifier for a stream reach in the model based on the reference stream network.  See the section 'Linking Exported Data to River Network Shapefiles' for more information on how to use this id.
+			* Watershed Area:  The area of land that drains all the upstream streams and rainfall to the stream reach.  The word watershed is sometimes used interchangeably with drainage basin or catchment.
+			* Mapped Value (data series) (unit):  The value of the data series that was displayed on the map in the DSS when the export was made.  The complete list of possible data series is further down in this document.
+			
+			__Columns included if 'Data series that reflect source input changes on the Change Inputs tab' options are chosen__
+			If 'Include predicted values for Total and Incremental loads' is checked, several sets of columns of predicted data are added using this naming:
+			(Adjusted) - Means that the source or predicted value reflects source input changes that would have been made on the Change Inputs tab in the application.
+			Decayed - Emphasizes that these values include in-stream attenuation.
+			
+			* [source name] Decayed Incremental Load (Adjusted) (unit) - One column per source.  This is the 'Incremental Load' data series for an individual source.
+			* Incremental Load (Adjusted) (unit) - The 'Incremental Load' data series (the sum of all per-source incrementals loads).
+			* [source name] Total Load (Adjusted) (unit) - One column per source.  This is the 'Total Load' data series for an individual source.
+			* Total Load (Adjusted) (unit) - The 'Total Load' data series (the sum of all per-source total loads).
+			
+			If 'Include the source input values used to calculate the predicted values' is checked, the source values are added to the export.
+			All source value columns in this set are prefixed with 'Adj. Source:' to indicate that they are adjusted to reflect source input changes made on the Change Inputs tab in the application.
+			
+			*Adj. Source: [source name] (Type of source) (unit) - One column per source.  This is the 'Source Value' data series.
+			
+			__Columns included if 'Data series that do NOT reflect source input changes on the Change Inputs tab' options are chosen__
+			If 'Include original predicted values for Total and Incremental loads' is checked, several sets of columns of predicted data are added using this naming:
+			(Original) - Means that the source or predicted value does NOT reflect source input changes that might have been made on the Change Inputs tab in the application.
+			Decayed - Emphasizes that these values include in-stream attenuation.
+			
+			* Original Mapped Value (data series) (unit):  The value of the data series that was displayed on the map in the DSS when the export was made, unaffected by changes made on the change inputs tab.  The complete list of possible data series is further down in this document.
+			* [source name] Decayed Incremental Load (Original) (unit) - One column per source.  This is the 'Incremental Load' data series for an individual source.
+			* Incremental Load (Original) (unit) - The 'Incremental Load' data series (the sum of all per-source incrementals loads).
+			* [source name] Total Load (Original) (unit) - One column per source.  This is the 'Total Load' data series for an individual source.
+			* Total Load (Original) (unit) - The 'Total Load' data series (the sum of all per-source total loads).
+			
+			If 'Include the original source input values used to calculate the original predicted values' is checked, the source values are added to the export.
+			All source value columns in this set are prefixed with 'Original Source:' to indicate that they do NOT reflect source input changes made on the Change Inputs tab in the application.
+			
+			* Original Source: [source name] (Type of source) (unit) - One column per source.  This is the 'Source Value' data series.
+			
+			
+			__Columns included if 'Other non-prdiction related data series'' are selected__
+			If 'Include additional identification information' is selected, these columns are included:
+			* HUC8 - Hydrologic unit code. The United States is divided and sub-divided into successively smaller hydrologic units which are classified into four levels: regions, sub-regions, accounting units, and cataloging units. The hydrologic units are arranged within each other, from the smallest (cataloging units) to the largest (regions). Each hydrologic unit is identified by a unique hydrologic unit code (HUC) consisting of two to eight digits based on the four levels of classification in the hydrologic unit system.  The fourth level of classification (HUC8) includes 2,264 cataloging units, which are geographic areas representing part of all of a surface drainage basin, a combination of drainage basins, or a distinct hydrologic feature. These units subdivide the subregions and accounting units into smaller areas.
+			* Reach Name (pname) - The name of the reach.  This name may sometimes be empty, partial, or different than local names for the reach.
+			* edacode - NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.  This value may be empty for reaches in or draining to Canada.
+			* edaname - NOAA name identifying estuarine/coastal drainage areas for major estuaries in the United States.  This value may be empty for reaches in or draining to Canada.
+			
+			If 'Include additional stream characteristics' is selected, these columns are included:
+			* Streamflow - The mean annual stream flow of the reach, in units of volume (cubic feet) per time (second).
+			* Incremental Area - The area of land that drains directly to the stream reach, not including land area that drains to upstream reaches.
+			
+			__The complete list of data series__
+			Any of these data series may be in the Mapped Value column, depending on the data series being mapped at the time of the export.
+			
+			Total Load
+			The mean annual load of the constituent (mass in kg per year) leaving
+			each stream reach, as predicted by the model. The load reflects the accumulated mass of the constituent contributed by all sources in the total drainage area upstream of the reach outlet. The load includes the effects of in-stream attenuation processes in all upstream reaches. The mean annual load is a standardized measure of the constituent mass in the stream that reflects the mean quantities of mass that are likely to occur during a specified base year under long-term mean streamflow conditions. The mean annual conditions described by the model primarily reflect the effects of natural and human-related processes that supply and remove constituent mass in watersheds over long time periods. You can select 'All Sources' to map the total load for all of the sources together, or select an individual model source to map the theoretical load due to a single source.
+			
+			Standard Error of Total Load
+			An estimate of the prediction error associated with the total load, based on the model calibration. Units are the same as the units for total load.
+			
+			Incremental Load
+			The mean annual load of the constituent (mass in kg per year) leaving the incremental drainage area of an individual stream reach.  The load value reflects the effects of in-stream attenuation processes associated with one half of the reach time of travel (this assumes that the entire load of the incremental drainage area enters the reach at approximately the midpoint, between the upstream and downstream end). You can select 'All Sources' for all sources together, or select an individual model source to map the theoretical incremental load due to a single source.
+			
+			Standard Error of Incremental Load
+			An estimate of the prediction error associated with the incremental load, based on the model calibration. Units are the same as the units for incremental load.
+			
+			Incremental Yield
+			The incremental load divided by the incremental drainage area of the reach. Units are mass in kg per square kilometer per year.  Incremental yield removes the variability due to differences in drainage area and allows comparison of the export rates from different drainages.
+			
+			Total Yield
+			The total load divided by the total drainage area upstream of the reach outlet.  Units are mass in kg per square kilometer per year.  Total yield removes the variability due to differences in drainage area and allows comparison of the export rates from different drainages.
+			
+			Flow-weighted Concentration
+			The mean annual flow-weighted concentration of the constituent in the reach in units of mass per volume. This is calculated by dividing the total load by the streamflow and converting to standard units.  Annual flow-weighted concentrations generally reflect conditions during higher-flow periods of the year that often occur during the winter and spring.
+			
+			Source Value
+			The source value is the amount of a particular source added in the reach's drainage area - you must choose a source to map this data series. If you have created adjustments as part of a 'what if' scenario, the adjusted source values are presented.
+			
+			In some cases the 'source' is not represented in terms of mass, but rather as a surrogate variable that reflects the spatial variation of a source of the water-quality constituent. For instance, a measurement such as urban land area or population may be included as a source term, serving as a surrogate measurement for nutrients in urban runoff, for which direct measurements for each catchment are not available.
+			
+			Also, consider that some source terms may be interdependent and that changes to one (in a what-if scenario) will logically require changes to another. For example, decreasing the value of the source term Agricultural Land Area (a surrogate for runoff from fertilized agricultural land) could require increasing the value of the source term Developed Land Area (surrogate for runoff from urban land) for the set of adjusted reaches, if the shift away from agricultural land use in those reaches is expected to be accompanied by a shift towards urban land use.
+			
+			Streamflow
+			The mean annual stream flow of the reach, in units of volume (cubic feet) per time (seconds).
+			
+			Delivery Fraction
+			The fraction (from 0 to 1) of the load leaving a reach that arrives at the downstream end of a selected downstream reach(es) without any removal by natural attenuation processes (e.g., long-term storage; denitrification).
+			
+			Incremental Delivered Load
+			The incremental load associated with an individual stream reach that arrives at the downstream end of a selected downstream reach(es), in units of mass (kg) per year.
+			
+			Total Delivered Load
+			The total load associated with a stream reach that arrives at the downstream end of a selected downstream reach(es), in units of mass (kg) per year.
+			
+			Incremental Delivered Yield
+			The incremental delivered load divided by the drainage area of the reach, in units of mass (kg) per square kilometer per year.
+			
+			
+			__Linking Exported Data to River Network Shapefiles__
+			This model is based on the '$networkName$' Network, which is documented at $networkUrl$
+			The id column for the data in this export should be matched to the $networkIdColumn$ in the '$networkName$' Network data.
+			
+			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
+			
+		</Term>
+		<Term id="Terminal_Reach_Summary_Report">
+
+			__IMPORTANT__
+			No endorsement, expressed or implied, is made by the USGS or the U.S. Government of any interpretations or decisions that result from the use of these models, nor shall the fact of distribution constitute any such endorsement, and no responsibility is assumed by the USGS in connection therewith.
+			
+			__Export Data Column Definitions__
+			
+			* id:  Unique identifier for a stream reach in the model based on the reference stream network.  See the section 'Linking Exported Data to River Network Shapefiles' for more information on how to use this id.
+			* Reach Name (pname): The name of the reach.  This name may sometimes be empty, partial, or different than local names for the reach.
+			* EDACODE: NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.  This value may be empty for reaches in or draining to Canada.
+			* Watershed Area (from Model export) (unit) : The area of land that drains all the upstream streams and rainfall to the stream reach.  This is the watershed area exported from the original model (here only for reference).
+			* Watershed Area, Fractioned (unit) : Watershed area is the area of land that drains all the upstream streams and rainfall to the stream reach.  _Fractioned_ Watershed Area accounts for splits (also called diversions) in the river network, where an upstream reach splits into two downstream reaches.
+			* Streamflow (unit) : The mean annual stream flow of the reach, in units of volume (cubic feet) per time (second).
+			* [source name]  (unit): One column per model source.  This is the 'Total Load' data series for an individual source.
+			* Total for All Sources (unit): The 'Total Load' data series (the sum of all per-source total loads).
+			
+			Notes:
+			* The loads reported in this export reflect source input changes made on the Change Inputs tab in the application.
+			* The predicted load columns are labeled 'Total Delivered Load' for consistancy with the report, however, for these reaches the Total Delivered Load is the same as the Total Load.
+			* A more detailed explanation of what these reported values are and how they are calculated is available at:
+			http://cida.usgs.gov/sparrow/report/terminal_report_help.jsp
+			
+			
+			__Linking Exported Data to River Network Shapefiles__
+			This model is based on the '$networkName$' Network, which is documented at $networkUrl$
+			The id column for the data in this export should be matched to the $networkIdColumn$ in the '$networkName$' Network data.
+			
+			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
+			
+		</Term>
+		<Term id="Terminal_Reach_Aggregate_Report">
+
+			__IMPORTANT__
+			No endorsement, expressed or implied, is made by the USGS or the U.S. Government of any interpretations or decisions that result from the use of these models, nor shall the fact of distribution constitute any such endorsement, and no responsibility is assumed by the USGS in connection therewith.
+			
+			This report aggregates the load delivered to the downstream reaches by the upstream contributing region.
+			For instance, if aggregating by state, the report would list the load that originates in each state and arrives at selected downstream reaches.
+			Values are calculated by summing the incremental delivered load of each catchment within upstream region, allocating partial contributions for reaches that have catchment area in multiple regions.
+			More details are available at: http://cida.usgs.gov/sparrow/report/aggregate_report_help.jsp
+			
+			__Export Data Column Definitions__
+			
+			For State Aggregate Reports:
+			* State Name:  The name of the state (or province if that data is available for models with Canadian reaches).
+			* State FIPS Code:  A standard numeric code for the state or province.  More details are at: http://www.itl.nist.gov/fipspubs/fip5-2.htm
+
+			For HUC Aggregate Reports:
+			* HUC Name: The name of the HUC
+			* HUC Code: Hydrologic unit code.  More details about HUCs are at: http://water.usgs.gov/GIS/huc.html
+			
+			All Reports include these columns:
+			* Watershed Area (unit):  The sum of the catchment areas of all the reaches in the region that drain to the target reach(es), area corrected for reaches in multiple regions. This will almost always be less than the area of the region itself.
+			* [source name] (unit): One column per model source.  The Incremental Delivered Load for each model source.
+			* All Sources (unit): The Incremental Delivered Load for all model sources.
+			
+			
+			
+			Notes:
+			* The loads reported in this export reflect source input changes made on the Change Inputs tab in the application.
+			* A more detailed explanation of what these reported values are and how they are calculated is available at:
+			http://cida.usgs.gov/sparrow/report/aggregate_report_help.jsp
+			
+			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
+			
+		</Term>
+	</CommonTerms>
+</Documentation>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<PredictionContext
+  xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	model-id="22">
+
+		<adjustmentGroups conflicts="accumulate">
+			<reachGroup enabled="true" name="Illinois">
+				<desc>Some point sources located somewhere...</desc>
+				<notes>
+					We know of 3 plants that have announced changes in outputs.
+				</notes>
+				<!--
+					Here we just list 2 reaches, each with its own adjustment.
+					Read the first one as:  Multiple source 2 of reach 10 by .9.
+				-->
+				<reach id="10">
+					<adjustment src="2" coef=".9"/>
+				</reach>
+				<reach id="15">
+					<adjustment src="3" abs="1348351"/>
+				</reach>
+			</reachGroup>
+		</adjustmentGroups>
+
+
+		<!--
+		This analysis section specifies that we want the total value to be the
+		data value when maps are generated.  This is the default mapping value.
+		-->
+		<analysis>
+			<select>
+				<dataSeries>total</dataSeries>
+			</select>
+		</analysis>
+
+</PredictionContext>

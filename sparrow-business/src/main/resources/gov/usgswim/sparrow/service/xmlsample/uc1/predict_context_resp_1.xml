@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<PredictionContext-response
+  xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	model-id="22" context-id="389392"><!-- This is the context-id for the whole Prediction Context (389392) -->
+
+	<status>OK</status>
+	<message></message>
+	<cache-lifetime-seconds>86400</cache-lifetime-seconds>
+
+	<row-ids>reach</row-ids>
+
+	<!-- These IDs could in some cases be used, but are not used in this example. -->
+	<adjustmentGroups context-id="982398"/>
+	<analysis context-id="1093474"/>
+
+</PredictionContext-response>

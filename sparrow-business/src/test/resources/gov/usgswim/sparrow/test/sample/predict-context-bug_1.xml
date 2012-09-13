@@ -1,0 +1,17 @@
+<PredictionContext xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="22">
+	<adjustmentGroups conflicts="accumulate | supersede">
+		<reachGroup enabled="true" name="kjbk">
+			<desc>jkj</desc>
+			<notes />
+			<adjustment src="2" coef="1.5" />
+			<reach id="3074" />
+		</reachGroup>
+	</adjustmentGroups>
+	<analysis>
+		<dataSeries>incremental_std_error_estimate</dataSeries>
+		<groupBy>huc8</groupBy>
+	</analysis>
+	<terminalReaches />
+	<areaOfInterest />
+</PredictionContext>
