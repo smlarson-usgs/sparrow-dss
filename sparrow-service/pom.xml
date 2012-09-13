@@ -110,8 +110,14 @@
 		<dependency>
 			<groupId>gov.usgs.cida</groupId>
 			<artifactId>sparrow-datatable</artifactId>
-			<version>1.4.31-SNAPSHOT</version>
+			<version>${project.version}</version>
 		 <type>jar</type>
+		</dependency>
+		<dependency>
+			<groupId>gov.usgs.cida</groupId>
+			<artifactId>sparrow-business</artifactId>
+			<version>${project.version}</version>
+		<type>jar</type>
 		</dependency>
 		
 		

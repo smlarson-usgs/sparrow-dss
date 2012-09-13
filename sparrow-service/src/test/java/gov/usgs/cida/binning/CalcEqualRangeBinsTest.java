@@ -3,7 +3,6 @@ package gov.usgs.cida.binning;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import gov.usgs.cida.binning.CalcEqualRangeBins;
 import gov.usgs.cida.binning.domain.Bin;
 import gov.usgs.cida.binning.domain.BinSet;
 import gov.usgs.cida.binning.domain.BinType;

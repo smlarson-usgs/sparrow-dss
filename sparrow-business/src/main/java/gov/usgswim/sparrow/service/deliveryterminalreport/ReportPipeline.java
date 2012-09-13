@@ -1,0 +1,84 @@
+package gov.usgswim.sparrow.service.deliveryterminalreport;
+
+import gov.usgs.webservices.framework.formatter.SparrowFlatteningFormatter;
+import gov.usgs.webservices.framework.formatter.SparrowExportHtmlFormatter;
+import gov.usgs.webservices.framework.formatter.Delimiters;
+import gov.usgs.webservices.framework.formatter.JSONFormatter;
+import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
+import gov.usgswim.sparrow.service.AbstractPipeline;
+
+import java.util.Date;
+
+import javax.servlet.http.HttpServletResponse;
+
+public class ReportPipeline extends AbstractPipeline<ReportRequest>{
+
+	// TODO eliminate duplicate code from IDByPointPipeline.configure(new JSONFormatter());
+	public static JSONFormatter configure(JSONFormatter jFormatter) {
+		jFormatter.identifyRepeatedTagElement("columns", "group");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "col");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "r");
+		jFormatter.identifyRepeatedTagElement("data", "section");
+		jFormatter.identifyRepeatedTagElement(JSONFormatter.ANY_PARENT, "c");
+
+		return jFormatter;
+	}
+
+	public ReportPipeline(){
+		super(new ReportService(), new ReportRequestParser());
+	}
+
+	@Override
+	protected IFormatter getCustomFlatteningFormatter(OutputType outputType) {
+		
+		IFormatter formatter = null;
+		
+		switch (outputType) {
+		case HTML:
+		case XHTML:
+		case XHTML_TABLE:
+			formatter = new SparrowExportHtmlFormatter(
+					outputType,
+					"idDeliveryReach",
+					"Downstream Reaches: Click reach ID to identify on map.",
+					"Total for all Reaches",
+					"js/report.js", "css/report.css", "Downstream Reach Summary for Total Load");
+			break;
+
+		default:
+			formatter = new CommentedSparrowFlatteningFormatter(outputType);
+		}
+		
+		return formatter;
+	}
+
+	@Override
+	public IFormatter getConfiguredJSONFormatter() {
+		return configure(new JSONFormatter());
+	}
+	
+	private class CommentedSparrowFlatteningFormatter extends SparrowFlatteningFormatter {
+		public CommentedSparrowFlatteningFormatter(OutputType type) {
+			super(type);
+			
+			switch (type) {
+			
+			case EXCEL:
+				Delimiters xlsD = Delimiters.makeExcelDelimiter("USGS", new Date().toString());
+				this.setDelimiters(xlsD);
+				break;
+			case CSV:
+				Delimiters csvD = Delimiters.CSV_DELIMITERS;
+				this.setDelimiters(csvD);
+				break;
+			case DATA:
+			case TAB:
+				Delimiters tabD = Delimiters.TAB_DELIMITERS;
+				this.setDelimiters(tabD);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+}
