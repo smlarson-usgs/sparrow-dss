@@ -1,9 +1,6 @@
 package gov.usgswim.sparrow.service.deliveryaggreport;
 
-import gov.usgs.webservices.framework.formatter.SparrowFlatteningFormatter;
-import gov.usgs.webservices.framework.formatter.SparrowExportHtmlFormatter;
-import gov.usgs.webservices.framework.formatter.Delimiters;
-import gov.usgs.webservices.framework.formatter.JSONFormatter;
+import gov.usgs.webservices.framework.formatter.*;
 import gov.usgs.webservices.framework.formatter.IFormatter.OutputType;
 import gov.usgswim.sparrow.service.AbstractPipeline;
 import gov.usgswim.sparrow.service.deliveryterminalreport.ReportRequest;
