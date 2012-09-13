@@ -1,12 +1,9 @@
 package gov.usgswim.sparrow.validation.tests;
 
-import gov.usgswim.sparrow.validation.tests.ModelValidator;
-import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.validation.SparrowModelValidationRunner;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 
 /**
  * Implements all the plumbing portion of a ModelValidator.

@@ -20,7 +20,24 @@
 			<groupId>gov.usgs.cida</groupId>
 			<artifactId>sparrow-business</artifactId>
 			<version>${project.version}</version>
-		<type>jar</type>
+		</dependency>
+		
+		<!-- Normally provided in the deployed app, but this needs there during runtime -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6_g</artifactId>
+			<version>11.2.0.2.0-1</version>
+			<type>jar</type>
 		</dependency>
   </dependencies>
 </project>

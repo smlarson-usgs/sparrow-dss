@@ -1,7 +1,6 @@
 package gov.usgswim.sparrow.validation;
 
 import gov.usgswim.sparrow.validation.tests.*;
-import org.apache.log4j.Logger;
 
 /**
  * This runs only the DB related tests.  Just run the main method and you will

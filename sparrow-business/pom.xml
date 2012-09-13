@@ -20,7 +20,6 @@
 			<groupId>gov.usgs.cida</groupId>
 			<artifactId>sparrow-datatable</artifactId>
 			<version>${project.version}</version>
-		 <type>jar</type>
 		</dependency>
 		
 
