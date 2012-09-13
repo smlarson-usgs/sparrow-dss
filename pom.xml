@@ -13,6 +13,7 @@
 		<module>sparrow-web-ui</module>
     <module>sparrow-datatable</module>
     <module>sparrow-business</module>
+    <module>sparrow-validation</module>
   </modules>
 	
 	<properties>
