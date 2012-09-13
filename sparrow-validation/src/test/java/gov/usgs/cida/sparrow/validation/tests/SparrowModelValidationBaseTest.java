@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.validation.tests;
+package gov.usgs.cida.sparrow.validation.tests;
 
 import gov.usgs.cida.sparrow.validation.tests.SparrowModelValidationBase;
 import gov.usgs.cida.sparrow.validation.tests.SparrowModelPredictionValidation;
