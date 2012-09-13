@@ -12,6 +12,7 @@
 		<module>sparrow-service</module>
 		<module>sparrow-web-ui</module>
     <module>sparrow-datatable</module>
+    <module>sparrow-business</module>
   </modules>
 	
 	<properties>
