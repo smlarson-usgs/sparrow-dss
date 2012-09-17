@@ -37,7 +37,7 @@ public class RunAllTests extends SparrowModelValidationRunner {
 		 * Arg1:	Allowed fractional variance.
 		 * Arg2:	True to use decayed values for incremental loads (normally we would expect true)
 		 */
-		addValidator(new SparrowModelPredictionValidation(.001D, true));
+		addValidator(new SparrowModelPredictionValidation(.000001D, true));
 		
 		
 		/*
@@ -71,7 +71,7 @@ public class RunAllTests extends SparrowModelValidationRunner {
 		 * Arg3:	Set true to force FRAC values totalling to 1 be not corrected.
 		 *				Production uses false.
 		 */
-		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(.001D, false, false));
+		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(.005D, false, false));
 		
 		
 //		addValidator(new WarningOnlyDbTests());

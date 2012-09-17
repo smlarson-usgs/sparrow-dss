@@ -128,9 +128,9 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 		} else if (expect < 1000) {
 			return (frac < allowedFractionalVariance) && (diff < .01d);
 		} else if (expect < 100000) {
-			return (frac < allowedFractionalVariance) && (diff < .1d);
+			return (frac < allowedFractionalVariance) && (diff < 1d);
 		} else {
-			return (frac < allowedFractionalVariance) && (diff < .2d);
+			return (frac < allowedFractionalVariance) && (diff < 2d);
 		}
 	}
 	
