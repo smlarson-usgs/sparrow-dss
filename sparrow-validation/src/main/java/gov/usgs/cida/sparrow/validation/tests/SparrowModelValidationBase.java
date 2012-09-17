@@ -350,6 +350,27 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 	}
 	
 	
+	protected boolean logIsEnabledForError() {
+		return logIsEnabledFor(Level.ERROR);
+	}
+	
+	protected boolean logIsEnabledForWarn() {
+		return logIsEnabledFor(Level.WARN);
+	}
+	
+	protected boolean logIsEnabledForDebug() {
+		return logIsEnabledFor(Level.DEBUG);
+	}
+	
+	protected boolean logIsEnabledForTrace() {
+		return logIsEnabledFor(Level.TRACE);
+	}
+	
+	protected boolean logIsEnabledFor(Level level) {
+		return getLogger().isEnabledFor(level);
+	}
+	
+	
 	private void writeModelLevelMessage(Level level, Long modelId, boolean forceOutput, String msg) {
 		writeModelLevelMessage(level, modelId, forceOutput, null, msg);
 	}

@@ -4,6 +4,7 @@ import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.action.*;
 import gov.usgswim.sparrow.domain.*;
+import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.ConfiguredCache;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -30,6 +31,9 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 	
 	/** If true, FRAC values that do not total to 1 will not be corrected. Mostly for debugging. */
 	protected boolean forceUncorrectedFracValues = false;
+	
+	private int numberOfReachAreaFractionMapsAllowedInMemory_original;
+	protected int numberOfReachAreaFractionMapsAllowedInMemory_forTest = 5000;
 
 	
 	public boolean requiresDb() { return true; }
@@ -47,6 +51,26 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 
 	}
 	
+	@Override
+	public void beforeEachTest(Long modelId) {
+		numberOfReachAreaFractionMapsAllowedInMemory_original = 
+				ConfiguredCache.ReachAreaFractionMap.getCacheImplementation().getCacheConfiguration().getMaxElementsInMemory();
+		
+		ConfiguredCache.ReachAreaFractionMap.getCacheImplementation().getCacheConfiguration().
+				setMaxElementsInMemory(numberOfReachAreaFractionMapsAllowedInMemory_forTest);
+		
+		super.beforeEachTest(modelId);
+	}
+	
+	@Override
+	public void afterEachTest(Long modelId) {
+		ConfiguredCache.ReachAreaFractionMap.getCacheImplementation().getCacheConfiguration().
+						setMaxElementsInMemory(numberOfReachAreaFractionMapsAllowedInMemory_original);
+		ConfiguredCache.ReachAreaFractionMap.getCacheImplementation().removeAll();
+		
+		super.afterEachTest(modelId);
+	}
+
 	/**
 	 * 
 	 * @param forceAllAreaFractionsToOne Set true to do non-fractional area calcs
@@ -101,8 +125,8 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 			
 			recordRowTrace(modelId, reachId, row, "Starting: CalcReachAreaFractionMap");
 			//Calculate the fractioned watershed area, skipping the cache
-			CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(topo, reachId, forceUncorrectedFracValues);
-			ReachRowValueMap areaMap = areaMapAction.run();
+			//CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(topo, reachId, forceUncorrectedFracValues);
+			ReachRowValueMap areaMap = SharedApplication.getInstance().getReachAreaFractionMap(new ReachID(modelId, reachId));
 			recordRowTrace(modelId, reachId, row, "Completed: CalcReachAreaFractionMap");
 			
 			recordRowTrace(modelId, reachId, row, "Starting: CalcFractionedWatershedArea");
@@ -115,10 +139,14 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 				Boolean ifTran = topo.getInt(row, PredictData.TOPO_IFTRAN_COL) == 1;
 				recordRowError(modelId, reachId, row, calculatedFractionalWatershedArea, dbArea, "calc", "db", shoreReach, ifTran, "DB Watershed area != calculated area.");
 			} else {
-				recordRowTrace(modelId, reachId, row, "OK - no problems");
+				if (logIsEnabledForDebug()) {
+					Boolean shoreReach = topo.getInt(row, PredictData.TOPO_SHORE_REACH_COL) == 1;
+					Boolean ifTran = topo.getInt(row, PredictData.TOPO_IFTRAN_COL) == 1;
+					recordRowDebug(modelId, reachId, row, calculatedFractionalWatershedArea, dbArea, "calc", "db", shoreReach, ifTran, "OK.  DB Watershed area == calculated area.");
+				}
 			}
 			
-			if (Math.abs((double)(row / 100) - ((double)row / 100d)) < .000001d) {
+			if (this.logIsEnabledForTrace() && Math.abs((double)(row / 100) - ((double)row / 100d)) < .000001d) {
 				//recordTrace(modelId, "Completed " + row + " rows...");
 				dumpCacheState(modelId);
 			}
