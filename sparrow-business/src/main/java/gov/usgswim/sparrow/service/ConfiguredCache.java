@@ -110,6 +110,11 @@ public enum ConfiguredCache {
 		}
 	}
 	
+	public Ehcache getCacheImplementation() {
+		Ehcache cache = SparrowCacheManager.getInstance().getEhcache(this.name());
+		return cache;
+	}
+	
 	/**
 	 * Fetch an object by its key.
 	 * 
@@ -355,6 +360,12 @@ public enum ConfiguredCache {
 	public void put(Integer key, Object value) {
 		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
 		Element e  = new Element(new Long(key), value);
+		c.put(e);
+	}
+	
+	public void put(Object key, Object value) {
+		Ehcache c = SparrowCacheManager.getInstance().getEhcache(this.name());
+		Element e  = new Element(key, value);
 		c.put(e);
 	}
 	
