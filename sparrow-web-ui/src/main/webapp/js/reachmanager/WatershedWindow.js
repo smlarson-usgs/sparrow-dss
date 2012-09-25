@@ -34,24 +34,17 @@ var WATERSHED_WINDOW = new (function() {
 	};
 
 	var findWatershedStore = getWatershedStore();
-	
-	var howToSelect = function(){
-		if (Ext.isMac){
-			return 'Use command-click to select multiple watersheds.';
-		} else {
-			return 'Use control-click to select multiple watersheds.';
-		}
-	};
 
 	var goToWatershedFormContent = new Ext.Panel({
 		region: 'north',
 		bodyStyle: 'padding: 5px',
 		autoScroll: true,
-		title: "Choose one or more watersheds to add to your Active Downstream Reaches and click the 'Add' button at the bottom. " + howToSelect() +
+		title: "Choose one or more watersheds to add to your Active Downstream Reaches and click the 'Add' button at the bottom. " +
 		' Not all watersheds are represented in this list.'
 	});
 	var gridSelectionModel =  new Ext.grid.CheckboxSelectionModel({
 		header: '',
+		checkOnly: true
 	});
 	
 	var findWatershedGrid = new Ext.grid.GridPanel({
