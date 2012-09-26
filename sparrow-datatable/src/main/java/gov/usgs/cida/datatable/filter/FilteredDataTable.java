@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.google.common.collect.HashBiMap;
+import gov.usgs.cida.datatable.*;
 
 /**
  * Represents a filtered view of a source data table, by filtering entire rows
@@ -434,6 +435,13 @@ public class FilteredDataTable implements DataTableWritable {
 	public ColumnDataWritable[] getColumns() {
 		throw new UnsupportedOperationException(
 				"Not really useful to work w/ columns in a mapped view." +
+				"  Or perhaps it is, but its not implemented.");
+	}
+	
+	@Override
+	public ColumnIndex getIndex() {
+		throw new UnsupportedOperationException(
+				"Not really useful to work w/ an index in a mapped view." +
 				"  Or perhaps it is, but its not implemented.");
 	}
     

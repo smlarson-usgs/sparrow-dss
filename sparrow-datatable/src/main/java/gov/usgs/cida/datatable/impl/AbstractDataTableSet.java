@@ -1,8 +1,6 @@
 package gov.usgs.cida.datatable.impl;
 
-import gov.usgs.cida.datatable.ColumnData;
-import gov.usgs.cida.datatable.DataTable;
-import gov.usgs.cida.datatable.DataTableSet;
+import gov.usgs.cida.datatable.*;
 import java.util.*;
 
 /**
@@ -146,6 +144,15 @@ public abstract class AbstractDataTableSet<D extends DataTable> implements DataT
 			return -1;
 		} else {
 			return getTable(0).getRowForId(id);
+		}
+	}
+	
+	@Override
+	public ColumnIndex getIndex() {
+		if (getTableCount() == 0) {
+			return new NoIdsColumnIndex(0);
+		} else {
+			return getTable(0).getIndex();
 		}
 	}
 

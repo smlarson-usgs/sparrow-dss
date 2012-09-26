@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.DataTableWritable;
 import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
@@ -7,9 +8,7 @@ import gov.usgs.cida.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgs.cida.datatable.utils.DataTableConverter;
 import gov.usgs.cida.datatable.utils.DataTablePrinter;
 import gov.usgs.cida.datatable.utils.DataTableUtils;
-import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.PredictDataBuilder;
-import gov.usgswim.sparrow.SparrowUnits;
+import gov.usgswim.sparrow.*;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -22,6 +21,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class LoadModelPredictData extends Action<PredictData> implements ILoadModelPredictData {
 
@@ -169,7 +170,7 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 	 * @return Fetched data - see Data Columns above.
 	 * @throws SQLException
 	 */
-	public DataTableWritable loadTopo(Connection conn, long modelId) throws Exception,
+	public TopoData loadTopo(Connection conn, long modelId) throws Exception,
 	IOException {
 		
 		//Create param map
@@ -177,8 +178,14 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 		params.put("ModelId", "" + modelId);
 		
 		//Expected column types
-		Class<?>[] colTypes = {Integer.class, Integer.class, Integer.class,
-			Integer.class, Integer.class, Integer.class, Double.class};
+		Class<?>[] colTypes = {
+			Integer.class /* Model_Reach (Database ID) */, 
+			Integer.class /* From Node */, 
+			Integer.class /* To Node */,
+			Integer.class /* If Tran */, 
+			Integer.class /* Hyd Seq */, 
+			Integer.class /* shore reach flag */, 
+			Double.class /* FRAC */};
 		
 		PreparedStatement statement = getROPSFromPropertiesFile("SelectTopoData", this.getClass(), params);
 		addStatementForAutoClose(statement);
@@ -193,10 +200,15 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 			log.debug("Printing sample of topo ...");
 			log.debug(DataTablePrinter.sampleDataTable(result, 10, 10));
 		}
+		
+		
+		TopoDataImm topoTable = new TopoDataImm(result.getColumns(), result.getName(), result.getDescription(), result.getProperties(), result.getIndex());
+		
 
-		assert(result.hasRowIds()): "topo should have IDENTIFIER as row ids";
-		//assert(result.isIndexed(PredictData.TNODE_COL)): "topo tnodes should be indexed";
-		return result;
+		assert(topoTable.hasRowIds()): "topo should have IDENTIFIER as row ids";
+		assert(topoTable.isIndexed(PredictData.TOPO_TNODE_COL));
+
+		return topoTable;
 	}
 	
 	/**

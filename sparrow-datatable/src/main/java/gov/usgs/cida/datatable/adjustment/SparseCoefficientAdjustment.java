@@ -1,9 +1,6 @@
 package gov.usgs.cida.datatable.adjustment;
 
-import gov.usgs.cida.datatable.ColumnData;
-import gov.usgs.cida.datatable.ColumnDataWritable;
-import gov.usgs.cida.datatable.DataTable;
-import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.*;
 import gov.usgs.cida.datatable.impl.ColumnDataFromTable;
 import gov.usgs.cida.datatable.impl.FindHelper;
 import gov.usgs.cida.datatable.impl.DataTableImmutableWrapper;
@@ -308,6 +305,11 @@ public class SparseCoefficientAdjustment implements DataTableWritable {
 			throw new UnsupportedOperationException(
 					"Not really useful to work w/ columns in a overlayed view." +
 					"  Or perhaps it is, but its not implemented.");
+		}
+		
+		@Override
+		public ColumnIndex getIndex() {
+			return source.getIndex();
 		}
 
 		@Override

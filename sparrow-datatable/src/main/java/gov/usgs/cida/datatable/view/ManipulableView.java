@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.ColumnIndex;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.impl.ColumnDataFromTable;
 
@@ -294,6 +295,11 @@ public class ManipulableView implements DataTable {
 	@Override
 	public Immutable toImmutable() {
 		throw new UnsupportedOperationException("toImmutable() not supported on a view");
+	}
+	
+	@Override
+	public ColumnIndex getIndex() {
+		return source.getIndex();
 	}
 
 }

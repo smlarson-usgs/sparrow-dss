@@ -18,7 +18,7 @@ import java.util.Set;
 public interface DataTable extends ImmutableBuilder<DataTable.Immutable>, Serializable {
 
 	public static interface Immutable extends DataTable{/* Just a marker interface */
-		ColumnIndex getIndex();
+		
 	};
 
 	// =================
@@ -193,6 +193,17 @@ public interface DataTable extends ImmutableBuilder<DataTable.Immutable>, Serial
 	 * @return
 	 */
 	public DataTable.Immutable toImmutable();
+	
+	/**
+	 * Builds an immutable, non-connected index to the table's current row IDs.
+	 * 
+	 * If this DataTable is writable, this is based on the data as it currently is,
+	 * so if using this to build an Immutable table, do not modify this table in
+	 * any way between calling this method and copying out ID or column data.
+	 * 
+	 * @return 
+	 */
+	public ColumnIndex getIndex();
 
 	/**
 	 * An instance may be created in an invalid manner (such as mismatched

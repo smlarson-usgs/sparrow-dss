@@ -1,6 +1,7 @@
 package gov.usgs.cida.datatable.view;
 
 import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.ColumnIndex;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.DataTableWritable;
 import gov.usgs.cida.datatable.impl.ColumnDataFromTable;
@@ -311,6 +312,11 @@ public class SingleColumnView implements DataView {
 	@Override
 	public Immutable toImmutable() {
 		throw new UnsupportedOperationException("toImmutable() cannot be called on a view");
+	}
+	
+	@Override
+	public ColumnIndex getIndex() {
+		return base.getIndex();
 	}
 
 }

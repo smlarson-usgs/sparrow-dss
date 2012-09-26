@@ -57,12 +57,12 @@ public class SimpleDataTable implements DataTable.Immutable {
 		isValid = validateStructure();
 	}
 	
-	public SimpleDataTable(DataTableWritable writable, List<ColumnDataWritable> columns, Map<String, String> properties, Map<Long, Integer> idIndex, List<Long> idColumn) {
+	public SimpleDataTable(DataTable refTable, ColumnData[] columns, Map<String, String> properties, List<Long> idColumn) {
 		// convert the columns to immutable and add
-		this.columns = new ColumnData[columns.size()];
+		this.columns = new ColumnData[columns.length];
 
 		for (int i=0; i<this.columns.length; i++) {
-			this.columns[i] = columns.get(i).toImmutable();
+			this.columns[i] = columns[i].toImmutable();
 		}
 		
 		if (idColumn != null) {
@@ -74,8 +74,8 @@ public class SimpleDataTable implements DataTable.Immutable {
 		}
 		
 		// convert the metadata
-		this.description = writable.getDescription();
-		this.name = writable.getName();
+		this.description = refTable.getDescription();
+		this.name = refTable.getName();
 		
 		if (properties != null) {
 			this.properties.putAll(properties);
@@ -83,6 +83,46 @@ public class SimpleDataTable implements DataTable.Immutable {
 		
 		// Check validity
 		isValid = validateStructure();
+	}
+	
+	public SimpleDataTable(DataTable refTable, List<ColumnData> columns, Map<String, String> properties, List<Long> idColumn) {
+		this(refTable, columns.toArray(new ColumnData[columns.size()]), properties, idColumn);
+	}
+	
+	public SimpleDataTable(DataTable refTable, ColumnData[] columns, Map<String, String> properties, ColumnData idColumn) {
+		
+		//IMPORTANT:  The ID column data must be copied over before calling immutable
+		//on the columns b/c, if the idColumn is one of the passed columns[] (very likely),
+		//calling toImmutable on it will cause it to dump its data.
+		if (idColumn != null) {
+			index = new HashMapColumnIndex(idColumn);
+		} else {
+			index = new NoIdsColumnIndex(
+					(columns.length > 0)?columns[0].getRowCount() : 0
+			);
+		}
+		
+		// convert the columns to immutable and add
+		this.columns = new ColumnData[columns.length];
+
+		for (int i=0; i<this.columns.length; i++) {
+			this.columns[i] = columns[i].toImmutable();
+		}
+		
+		// convert the metadata
+		this.description = refTable.getDescription();
+		this.name = refTable.getName();
+		
+		if (properties != null) {
+			this.properties.putAll(properties);
+		}
+		
+		// Check validity
+		isValid = validateStructure();
+	}
+	
+	public SimpleDataTable(DataTable refTable, List<ColumnData> columns, Map<String, String> properties, ColumnData idColumn) {
+		this(refTable, columns.toArray(new ColumnData[columns.size()]), properties, idColumn);
 	}
 	
 	/**
@@ -97,7 +137,7 @@ public class SimpleDataTable implements DataTable.Immutable {
 	 */
 	public SimpleDataTable(ColumnData[] columns, String name, String description, Map<String, String> properties, long[] rowIds) {
 		// convert the columns to immutable and add
-		this.columns = columns;
+		this.columns = new ColumnData[columns.length];
 
 		for (int i=0; i<this.columns.length; i++) {
 			this.columns[i] = columns[i].toImmutable();
@@ -136,7 +176,7 @@ public class SimpleDataTable implements DataTable.Immutable {
 	 */
 	public SimpleDataTable(ColumnData[] columns, String name, String description, Map<String, String> properties) {
 		// convert the columns to immutable and add
-		this.columns = columns;
+		this.columns = new ColumnData[columns.length];
 
 		for (int i=0; i<this.columns.length; i++) {
 			this.columns[i] = columns[i].toImmutable();
@@ -172,7 +212,7 @@ public class SimpleDataTable implements DataTable.Immutable {
 	 */
 	public SimpleDataTable(ColumnData[] columns, String name, String description, Map<String, String> properties, ColumnIndex columnIndex) {
 		// convert the columns to immutable and add
-		this.columns = columns;
+		this.columns = new ColumnData[columns.length];
 
 		for (int i=0; i<this.columns.length; i++) {
 			this.columns[i] = columns[i].toImmutable();

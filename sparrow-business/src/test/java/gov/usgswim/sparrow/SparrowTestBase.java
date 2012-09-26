@@ -18,6 +18,7 @@ import gov.usgswim.sparrow.datatable.PredictResultImm;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
@@ -51,6 +52,8 @@ public abstract class SparrowTestBase {
 	
 	/** Logging.  Log messages will use the name of the subclass */
 	protected static Logger log = null;
+	
+	public static final Charset DEFAULT_UTF_8_CHARSET = Charset.forName("UTF-8");
 	
 	static {
 		URL log4jUrl = SparrowTestBase.class.getResource("/log4j_local_test.xml");
@@ -267,7 +270,6 @@ public abstract class SparrowTestBase {
 		Logger.getLogger(Action.class).setLevel(level);
 	}
 	
-
 	/**
 	 * Convenience method for reading the contents of an input stream to a
 	 * String, ignoring errors.
@@ -276,7 +278,7 @@ public abstract class SparrowTestBase {
 	 * @return
 	 */
 	public static String readToString(InputStream is) {
-		InputStreamReader isr = new InputStreamReader(is);
+		InputStreamReader isr = new InputStreamReader(is, DEFAULT_UTF_8_CHARSET);
 		BufferedReader br = new BufferedReader(isr);
 	
 		StringBuffer sb = new StringBuffer();
@@ -393,7 +395,7 @@ public abstract class SparrowTestBase {
 	public static String pipeDispatch(PipelineRequest req, Pipeline pipe) throws Exception {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		pipe.dispatch(req, out);
-		String response = out.toString();
+		String response = out.toString(DEFAULT_UTF_8_CHARSET.name());
 		return response;
 	}
 	
@@ -789,11 +791,13 @@ public abstract class SparrowTestBase {
 				} else if (expectId == null || actualId == null) {
 					match = false;
 					log.error("Mismatched ID for row " + r + " [" + expectId + "] [" + actualId + "]");
+					match = false;
 				} else if (expectId.equals(actualId)) {
 					//ok - skip
 				} else {
 					//neither are null, but they have different values
 					log.error("Mismatched ID for row " + r + " [" + expectId + "] [" + actualId + "]");
+					match = false;
 				}
 			}
 		}

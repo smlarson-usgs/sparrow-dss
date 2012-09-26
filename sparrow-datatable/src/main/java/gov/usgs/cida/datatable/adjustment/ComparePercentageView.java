@@ -1,6 +1,7 @@
 package gov.usgs.cida.datatable.adjustment;
 
 import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.ColumnIndex;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.impl.ColumnDataFromTable;
 import gov.usgs.cida.datatable.impl.FindHelper;
@@ -212,6 +213,11 @@ public class ComparePercentageView implements DataTable{
 		
 		ColumnDataFromTable col = new ColumnDataFromTable(this, colIndex);
 		return col;
+	}
+	
+	@Override
+	public ColumnIndex getIndex() {
+		return baseData.getIndex();
 	}
 	
 	public Integer getColumnByName(String name) {

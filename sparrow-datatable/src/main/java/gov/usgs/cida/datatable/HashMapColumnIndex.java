@@ -21,6 +21,25 @@ public class HashMapColumnIndex implements ColumnIndex {
 	private long[] idColumn;
 	private Map<Long, Integer> idIndex;
 	
+	public HashMapColumnIndex(ColumnData refColumn) {
+		int rowCount = refColumn.getRowCount();
+		
+		idColumn = new long[rowCount];
+		idIndex = buildEmptyHashMap(rowCount);
+		
+		for (int r = 0; r < rowCount; r++) {
+			Long id = refColumn.getLong(r);
+			
+			if (id == null) {
+				throw new IllegalArgumentException(
+						"The values in the source column must not contain any nulls.");
+			}
+			
+			idColumn[r] = id;
+			idIndex.put(id, r);
+		}
+	}
+		
 	public HashMapColumnIndex(DataTable refTable) {
 		int rowCount = refTable.getRowCount();
 		idColumn = new long[rowCount];

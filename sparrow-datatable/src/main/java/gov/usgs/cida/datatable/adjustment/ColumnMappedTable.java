@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 
 import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.ColumnIndex;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.impl.DataTableImmutableWrapper;
 
@@ -44,6 +45,11 @@ public class ColumnMappedTable implements DataTable {
 		int[] newMap = (map == null)? null: map.clone();
 		ColumnMappedTable immutableCore = new ColumnMappedTable(base.toImmutable(), newMap);
 		return new DataTableImmutableWrapper(immutableCore);
+	}
+	
+	@Override
+	public ColumnIndex getIndex() {
+		return base.getIndex();
 	}
 
 	// ===============

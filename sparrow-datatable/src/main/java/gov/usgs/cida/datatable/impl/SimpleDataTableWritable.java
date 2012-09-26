@@ -1,9 +1,6 @@
 package gov.usgs.cida.datatable.impl;
 
-import gov.usgs.cida.datatable.ColumnData;
-import gov.usgs.cida.datatable.ColumnDataWritable;
-import gov.usgs.cida.datatable.DataTable;
-import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.*;
 import gov.usgs.cida.datatable.utils.DataTableUtils;
 
 import java.util.ArrayList;
@@ -109,6 +106,11 @@ public class SimpleDataTableWritable implements DataTableWritable {
 		
 		return newCols;
 	}
+	
+	@Override
+	public ColumnIndex getIndex() {
+		return new HashMapColumnIndex(idColumn);
+	}
 
 	@Override
 	public void setValue(String value, int row, int col) throws IndexOutOfBoundsException {
@@ -140,7 +142,8 @@ public class SimpleDataTableWritable implements DataTableWritable {
 
 	@Override
 	public DataTable.Immutable toImmutable() {
-		SimpleDataTable result = new SimpleDataTable(this, columns, properties, idIndex, idColumn);
+
+		SimpleDataTable result = new SimpleDataTable(this, columns.toArray(new ColumnData[]{}), properties, idColumn);
 		// invalidate current instance
 		columns = null;
 		description = null;
