@@ -16,6 +16,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.Writer;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,8 @@ public class DataTableSerializerUtils {
 	
 	/** String used to encode a null value */
 	public static final String NULL_STRING = "[null]";
+	
+	public static final Charset DEFAULT_UTF_8_CHARSET = Charset.forName("UTF-8");
 	
 	private static Map<String, Class<?>> acceptableColumnTypes = new HashMap<String, Class<?>>();
 	static {
@@ -76,7 +79,7 @@ public class DataTableSerializerUtils {
 	}
 
 	public static void serializeToText(DataTable dt, OutputStream stream) throws IOException {
-		OutputStreamWriter writer = new OutputStreamWriter(stream);
+		OutputStreamWriter writer = new OutputStreamWriter(stream, DEFAULT_UTF_8_CHARSET);
 		serializeToText(dt, writer);
 	}
 
@@ -101,7 +104,7 @@ public class DataTableSerializerUtils {
 	}
 
 	public static DataTableWritable deserializeFromText(InputStream source) throws IOException {
-		InputStreamReader reader = new InputStreamReader(source);
+		InputStreamReader reader = new InputStreamReader(source, DEFAULT_UTF_8_CHARSET);
 		return deserializeFromText(reader);
 	}
 
