@@ -31,9 +31,6 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 	/** If true, FRAC values that do not total to 1 will not be corrected. Mostly for debugging. */
 	protected boolean forceUncorrectedFracValues = false;
 	
-	private int numberOfReachAreaFractionMapsAllowedInMemory_original;
-	protected int numberOfReachAreaFractionMapsAllowedInMemory_forTest = 5000;
-	
 	
 	Comparator shoreReachComparator;
 
@@ -61,31 +58,13 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 	 * @param forceUncorrectedFracValues 
 	 */
 	public CalculatedWaterShedAreaShouldEqualLoadedValue(Comparator comparator,
+			Comparator shoreReachComparator,
 			boolean forceNonFractionedArea, boolean forceUncorrectedFracValues) {
 		
 		super(comparator);
+		this.shoreReachComparator = shoreReachComparator;
 		this.forceNonFractionedArea = forceNonFractionedArea;
 		this.forceUncorrectedFracValues = forceUncorrectedFracValues;
-	}
-	
-	@Override
-	public void beforeEachTest(Long modelId) {
-		numberOfReachAreaFractionMapsAllowedInMemory_original = 
-				ConfiguredCache.ReachAreaFractionMap.getCacheImplementation().getCacheConfiguration().getMaxElementsInMemory();
-		
-		ConfiguredCache.ReachAreaFractionMap.getCacheImplementation().getCacheConfiguration().
-				setMaxElementsInMemory(numberOfReachAreaFractionMapsAllowedInMemory_forTest);
-		
-		super.beforeEachTest(modelId);
-	}
-	
-	@Override
-	public void afterEachTest(Long modelId) {
-		ConfiguredCache.ReachAreaFractionMap.getCacheImplementation().getCacheConfiguration().
-						setMaxElementsInMemory(numberOfReachAreaFractionMapsAllowedInMemory_original);
-		ConfiguredCache.ReachAreaFractionMap.getCacheImplementation().removeAll();
-		
-		super.afterEachTest(modelId);
 	}
 	
 	/**
