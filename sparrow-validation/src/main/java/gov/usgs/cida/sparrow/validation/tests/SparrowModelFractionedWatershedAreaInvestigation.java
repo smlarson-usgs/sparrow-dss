@@ -2,6 +2,7 @@ package gov.usgs.cida.sparrow.validation.tests;
 
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.TopoData;
 import gov.usgswim.sparrow.action.*;
 import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
@@ -40,7 +41,7 @@ public class SparrowModelFractionedWatershedAreaInvestigation extends SparrowMod
 		
 		DataTable incrementalAreasFromDb = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AggregationLevel.REACH, false));
 		PredictData predictData = SharedApplication.getInstance().getPredictData(modelId);
-		DataTable topo = predictData.getTopo();
+		TopoData topo = predictData.getTopo();
 		
 		for (int row = 0; row < topo.getRowCount(); row++) {
 			Long reachId = predictData.getIdForRow(row);
@@ -53,7 +54,7 @@ public class SparrowModelFractionedWatershedAreaInvestigation extends SparrowMod
 			CalcFractionedWatershedArea fractionedAreaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb);
 			Double fractionalWatershedArea = fractionedAreaAction.run();
 			
-			CalcFractionedWatershedArea unfractionedAreaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, true);
+			CalcFractionedWatershedArea unfractionedAreaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, true, false);
 			Double unfractionalWatershedArea = unfractionedAreaAction.run();
 
 			if (! comp(fractionalWatershedArea, unfractionalWatershedArea, allowedFractialVariance)) {

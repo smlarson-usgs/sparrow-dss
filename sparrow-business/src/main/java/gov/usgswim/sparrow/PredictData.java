@@ -92,7 +92,7 @@ public interface PredictData extends ImmutableBuilder<PredictData>, Serializable
 	 * 
 	 * @return The DataTable data
 	 */
-	public DataTable getTopo();
+	public TopoData getTopo();
 
 	/**
 	 * Returns a DataTable of all source/reach coef's.

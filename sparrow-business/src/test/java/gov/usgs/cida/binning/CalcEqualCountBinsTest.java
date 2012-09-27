@@ -475,7 +475,7 @@ public class CalcEqualCountBinsTest extends CalcEqualRangeBinsTest {
 		for (int i=0; i<10; i++) {
 			map.put(i, new DeliveryReach(i, .5d, i));
 		}
-		ReachRowValueMap dfm = new ReachRowValueMap(map);
+		ReachRowValueMap dfm = ReachRowValueMap.build(map);
 		
 		CalcEqualCountBins action = new CalcEqualCountBins();
 

@@ -19,7 +19,7 @@ import java.util.Set;
 public abstract class AbstractDataTableView implements DataView {
 	public static Double ZERO = Double.valueOf(0);
 	public static Double ONE = Double.valueOf(1);
-	protected DataTable base;
+	protected final DataTable base;
 
 	// ===========
 	// CONSTRUCTOR

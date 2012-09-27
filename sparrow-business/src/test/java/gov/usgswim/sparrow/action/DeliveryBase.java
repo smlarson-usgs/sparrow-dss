@@ -7,10 +7,7 @@ import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.adjustment.SparseOverrideAdjustment;
 import gov.usgs.cida.datatable.impl.SimpleDataTable;
-import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.PredictDataImm;
-import gov.usgswim.sparrow.SparrowTestBase;
-import gov.usgswim.sparrow.SparrowTestBaseWithDBandCannedModel50;
+import gov.usgswim.sparrow.*;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.TerminalReaches;
@@ -92,7 +89,7 @@ public class DeliveryBase  extends SparrowTestBaseWithDBandCannedModel50 {
 		
 		
 		modifiedPredictData = new PredictDataImm(
-				adjTopo.toImmutable(), unmodifiedPredictData.getCoef(),
+				new TopoDataComposit(adjTopo), unmodifiedPredictData.getCoef(),
 				unmodifiedPredictData.getSrc(),
 				unmodifiedPredictData.getSrcMetadata(),
 				unmodifiedPredictData.getDelivery(),

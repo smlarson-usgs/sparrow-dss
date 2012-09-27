@@ -7,10 +7,7 @@ import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.adjustment.SparseOverrideAdjustment;
 import gov.usgs.cida.datatable.impl.SparseDoubleColumnData;
 import gov.usgs.cida.datatable.impl.StandardDoubleColumnData;
-import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.PredictDataImm;
-import gov.usgswim.sparrow.SparrowTestBase;
-import gov.usgswim.sparrow.SparrowUnits;
+import gov.usgswim.sparrow.*;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
@@ -88,14 +85,14 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		
 		
 		pdTranportOffAbove9681 = new PredictDataImm(
-				topoTransportOffAbove9681, unmodifiedPredictData.getCoef(),
+				new TopoDataComposit(topoTransportOffAbove9681), unmodifiedPredictData.getCoef(),
 				unmodifiedPredictData.getSrc(),
 				unmodifiedPredictData.getSrcMetadata(),
 				unmodifiedPredictData.getDelivery(),
 				unmodifiedPredictData.getModel());
 		
 		pdShoreReachAbove9681 = new PredictDataImm(
-				topoShoreReachbove9681, unmodifiedPredictData.getCoef(),
+				new TopoDataComposit(topoShoreReachbove9681), unmodifiedPredictData.getCoef(),
 				unmodifiedPredictData.getSrc(),
 				unmodifiedPredictData.getSrcMetadata(),
 				unmodifiedPredictData.getDelivery(),

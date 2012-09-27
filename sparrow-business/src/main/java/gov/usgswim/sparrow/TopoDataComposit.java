@@ -1,142 +1,57 @@
 package gov.usgswim.sparrow;
 
 import gov.usgs.cida.datatable.*;
-import gov.usgs.cida.datatable.impl.SimpleDataTable;
-import java.util.List;
-import java.util.Map;
+import gov.usgs.cida.datatable.view.AbstractDataTableView;
 import org.apache.commons.lang.ArrayUtils;
 
 /**
- *
+ * This class is mostly created for the purpose of testing so that a topo
+ * data object can be created from a view or existing table.
+ * 
+ * It could replace TopoDataImm - I'm not sure if there is a performance
+ * penalty for the composition or not.
+ * 
  * @author eeverman
  */
-public class TopoDataImm extends SimpleDataTable implements TopoData {
+public class TopoDataComposit extends AbstractDataTableView implements TopoData {
 
 	private static final long serialVersionUID = 1L;
 	
-	// ===========
-	// Constructors
-	// ===========
-
-	/**
-	 * Constructor.
-	 * 
-	 * @param columns 
-	 * @See gov.usgs.cida.datatable.impl.SimpleDataTable
-	 */
-	public TopoDataImm(List<ColumnData> columns) {
-		super(columns);
-	}
 	
-	/**
-	 * Constructor.
-	 * 
-	 * @param columns 
-	 * @See gov.usgs.cida.datatable.impl.SimpleDataTable
-	 */
-	public TopoDataImm(ColumnData[] columns) {
-		super(columns);
+	public TopoDataComposit(DataTable base) {
+		super(base.toImmutable());
 	}
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param refTable
-	 * @param columns
-	 * @param properties
-	 * @param idColumn 
-	 * @See gov.usgs.cida.datatable.impl.SimpleDataTable
-	 */
-	public TopoDataImm(DataTable refTable, ColumnData[] columns, Map<String, String> properties, List<Long> idColumn) {
-		super(refTable, columns, properties, idColumn);
-	}
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param refTable
-	 * @param columns
-	 * @param properties
-	 * @param idColumn 
-	 * @See gov.usgs.cida.datatable.impl.SimpleDataTable
-	 */
-	public TopoDataImm(DataTable refTable, ColumnData[] columns, Map<String, String> properties, ColumnData idColumn) {
-		super(refTable, columns, properties, idColumn);
-	}
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param columns
-	 * @param name
-	 * @param description
-	 * @param properties
-	 * @param rowIds 
-	 * @See gov.usgs.cida.datatable.impl.SimpleDataTable
-	 */
-	public TopoDataImm(ColumnData[] columns, String name, String description, Map<String, String> properties, long[] rowIds) {
-		super(columns, name, description, properties, rowIds);
-	}
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param columns
-	 * @param name
-	 * @param description
-	 * @param properties 
-	 * @See gov.usgs.cida.datatable.impl.SimpleDataTable
-	 */
-	public TopoDataImm(ColumnData[] columns, String name, String description, Map<String, String> properties) {
-		super(columns, name, description, properties);
-	}
-	
-	/**
-	 * Constructor.
-	 * 
-	 * @param columns
-	 * @param name
-	 * @param description
-	 * @param properties
-	 * @param columnIndex 
-	 * 
-	 * @See gov.usgs.cida.datatable.impl.SimpleDataTable
-	 */
-	public TopoDataImm(ColumnData[] columns, String name, String description, Map<String, String> properties, ColumnIndex columnIndex) {
-		super(columns, name, description, properties, columnIndex);
-	}
-	
 	
 	//
 	//Basic get operations
 	@Override
 	public int getFromNode(int row) {
-		return this.getInt(row, PredictData.TOPO_FNODE_COL);
+		return getInt(row, PredictData.TOPO_FNODE_COL);
 	}
 
 	@Override
 	public int getToNode(int row) {
-		return this.getInt(row, PredictData.TOPO_TNODE_COL);
+		return getInt(row, PredictData.TOPO_TNODE_COL);
 	}
 
 	@Override
 	public boolean isIfTran(int row) {
-		return this.getInt(row, PredictData.TOPO_IFTRAN_COL) == 1;
+		return getInt(row, PredictData.TOPO_IFTRAN_COL) == 1;
 	}
 
 	@Override
 	public int getHydSeq(int row) {
-		return this.getInt(row, PredictData.TOPO_HYDSEQ_COL);
+		return getInt(row, PredictData.TOPO_HYDSEQ_COL);
 	}
 
 	@Override
 	public boolean isShoreReach(int row) {
-		return this.getInt(row, PredictData.TOPO_SHORE_REACH_COL) == 1;
+		return getInt(row, PredictData.TOPO_SHORE_REACH_COL) == 1;
 	}
 
 	@Override
 	public double getFrac(int row) {
-		return this.getDouble(row, PredictData.TOPO_FRAC_COL);
+		return getDouble(row, PredictData.TOPO_FRAC_COL);
 	}
 	
 	//
@@ -328,6 +243,16 @@ public class TopoDataImm extends SimpleDataTable implements TopoData {
 		}
 		
 		return rows;
+	}
+
+	@Override
+	public Immutable toImmutable() {
+		return this;
+	}
+
+	@Override
+	public ColumnIndex getIndex() {
+		return base.getIndex();
 	}
 	
 

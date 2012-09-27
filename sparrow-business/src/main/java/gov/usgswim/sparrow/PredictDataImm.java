@@ -14,7 +14,7 @@ import gov.usgswim.sparrow.domain.SparrowModel;
 public class PredictDataImm extends AbstractPredictData {
 
 
-  private static final long serialVersionUID = 13546441L;
+  private static final long serialVersionUID = 1L;
 
 
 	/**
@@ -39,7 +39,7 @@ public class PredictDataImm extends AbstractPredictData {
 	 * NOTE:  We assume that the node indexes start at zero and have no skips.
 	 * Thus, nodeCount must equal the largest node index + 1
 	 */
-	private final DataTable topo;
+	private final TopoData topo;
 
 	/**
 	 * The coef's for each reach-source.
@@ -78,11 +78,11 @@ public class PredictDataImm extends AbstractPredictData {
 	 * @param ancil
 	 * @param model
 	 */
-	public PredictDataImm(DataTable topo, DataTable coef, DataTable src, DataTable srcIDs,
+	public PredictDataImm(TopoData topo, DataTable coef, DataTable src, DataTable srcIDs,
 			DataTable delivery, SparrowModel model) {
 
 		this.model = model;
-		this.topo = topo;
+		this.topo = (TopoData) topo.toImmutable();
 		this.coef = coef;
 		this.src = src;
 		this.delivery = delivery;
@@ -93,7 +93,7 @@ public class PredictDataImm extends AbstractPredictData {
 		return srcMetadata;
 	}
 
-	public DataTable getTopo() {
+	public TopoData getTopo() {
 		return topo;
 	}
 
@@ -117,37 +117,10 @@ public class PredictDataImm extends AbstractPredictData {
 		return this;
 	}
 
-//	public PredictData2 getImmutable(boolean forceImmutableMembers) {
-//	//TODO:  SparrowModel should have an immutable builder
-//	if (forceImmutableMembers) {
-//	return new PredictData2Imm(
-//	(getTopo() != null)?getTopo().toImmutable():null,
-//	(getCoef() != null)?getCoef().toImmutable():null,
-//	(getSrc() != null)?getSrc().toImmutable():null,
-//	(getSrcIds() != null)?getSrcIds().toImmutable():null,
-//	(getDecay() != null)?getDecay().toImmutable():null,
-//	(getSys() != null)?getSys().toImmutable():null,
-//	(getAncil() != null)?getAncil().toImmutable():null,
-//	(getModel() != null)?getModel():null
-//	);
-//	} else {
-//	return new PredictData2Imm(
-//	getTopo(),
-//	getCoef(),
-//	getSrc(),
-//	getSrcIds(),
-//	getDecay(),
-//	getSys(),
-//	getAncil(),
-//	getModel()
-//	);
-//	}
-//	}
-
 	public PredictDataBuilder getBuilder() {
 		// toimmutable calls should be unnecessary
 		return new PredictDataBuilder(
-			(getTopo() != null)?getTopo().toImmutable():null,
+			(TopoData) ((getTopo() != null)?getTopo().toImmutable():null),
 			(getCoef() != null)?getCoef().toImmutable():null,
 			(getSrc() != null)?getSrc().toImmutable():null,
 			(getSrcMetadata() != null)?getSrcMetadata().toImmutable():null,

@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.domain;
 
-import gov.usgswim.sparrow.action.DeliveryReach;
+import gov.usgswim.sparrow.action.FractionalReach;
+import gov.usgswim.sparrow.action.ReachValue;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,28 +31,56 @@ public class ReachRowValueMap implements Map<Integer, Float>{
 	private final Map<Integer, Float> map;
 
 	/**
-	 * Constructor.
-	 *
-	 * The passed HashMap<Integer, DeliveryReach> is structured as:
-	 * key (Integer) is the row number of the reach
-	 * value (DeliveryReach) contains minimal info on the reach, including the
-	 * calculated delivery fraction.
-	 * @param map
+	 * Collaborative immutability constructor.
+	 * Do not retain a reference to the passed map - use one of the static constructors.
+	 * @param map 
 	 */
-	public ReachRowValueMap(HashMap<Integer, DeliveryReach> map) {
+	public ReachRowValueMap(Map<Integer, Float> map) {
+		this.map = map;
+	}
+	
+
+	/**
+	 * static builder / constructor
+	 * @param <R>
+	 * @param map
+	 * @return 
+	 */
+	public static <R extends ReachValue> ReachRowValueMap build(Map<Integer, R> map) {
 		if (map != null) {
 			HashMap<Integer, Float> m = new HashMap<Integer, Float>(map.size(), 1.1f);
 
-			Iterator<Entry<Integer, DeliveryReach>> it = map.entrySet().iterator();
-			while (it.hasNext()) {
-				Entry<Integer, DeliveryReach> e = it.next();
-				m.put(e.getKey(), (float) e.getValue().getDelivery());
+			for (R r : map.values()) {
+				m.put(r.getRow(), (float) r.getValue());
 			}
 
-			this.map = m;
+			return new ReachRowValueMap(m);
 
 		} else {
-			this.map = Collections.emptyMap();
+			Map<Integer, Float> m = Collections.emptyMap();
+			return new ReachRowValueMap(m);
+		}
+	}
+	
+	/**
+	 * static builder / constructor
+	 * @param <R>
+	 * @param set
+	 * @return 
+	 */
+	public static <R extends ReachValue> ReachRowValueMap build(Collection<R> set) {
+		if (set != null) {
+			HashMap<Integer, Float> m = new HashMap<Integer, Float>(set.size(), 1.1f);
+
+			for (R r : set) {
+				m.put(r.getRow(), (float) r.getValue());
+			}
+
+			return new ReachRowValueMap(m);
+
+		} else {
+			Map<Integer, Float> m = Collections.emptyMap();
+			return new ReachRowValueMap(m);
 		}
 	}
 

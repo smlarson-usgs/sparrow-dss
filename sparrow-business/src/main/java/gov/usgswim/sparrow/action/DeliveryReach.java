@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 
-public class DeliveryReach implements Comparable<DeliveryReach> {
+public class DeliveryReach implements Comparable<DeliveryReach>, ReachValue {
 	/** The row index of this reach	 */
 	private int row;
 	
@@ -84,6 +84,15 @@ public class DeliveryReach implements Comparable<DeliveryReach> {
 	}
 
 	public double getDelivery() {
+		return delivery;
+	}
+	
+	/**
+	 * Duplicates getFraction to implement the ReachValue interface.
+	 * 
+	 * @return 
+	 */
+	public double getValue() {
 		return delivery;
 	}
 

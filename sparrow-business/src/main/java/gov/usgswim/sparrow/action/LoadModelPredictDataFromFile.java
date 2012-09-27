@@ -9,19 +9,14 @@ import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
 import gov.usgs.cida.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgs.cida.datatable.utils.DataTableConverter;
 import gov.usgs.cida.datatable.utils.DataTableUtils;
-import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.PredictDataBuilder;
-import gov.usgswim.sparrow.SparrowUnits;
+import gov.usgswim.sparrow.*;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.SourceBuilder;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 import gov.usgswim.sparrow.util.DLUtils;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 
 import java.sql.Connection;
@@ -225,7 +220,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 	 * @param modelId	The ID of the Sparrow model
 	 * @return Fetched data - see Data Columns above.
 	 */
-	public DataTableWritable loadTopo(long modelId) throws IOException {
+	public TopoData loadTopo(long modelId) throws IOException {
 		String topoFile = getModelResourceFilePath(modelId, TOPO_FILE);
 		
 		String[] headings = {
@@ -244,32 +239,40 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 				Integer.class,	//[i][4]HYDSEQ - seems to be empty for some
 				Double.class		//*** Temp location [i][5]FRAC - Fraction of the upstream load/flow entering this reach.  Non-one at a diversion.
 				};
-		DataTableWritable topo = new SimpleDataTableWritable(headings, null, types);
+		DataTableWritable dtw = new SimpleDataTableWritable(headings, null, types);
 		
-		topo.setName("topo");
+		dtw.setName("topo");
 
-		DataTableUtils.fill(topo, topoFile, false, "\t", true);
+		DataTableUtils.fill(dtw, topoFile, false, "\t", true);
 		
 		//repopulate hydseq to be 1 and up, w/o gaps
-		for (int r = 0; r < topo.getRowCount(); r++) {
-			topo.setValue(new Integer(r + 1), r, 4);
+		for (int r = 0; r < dtw.getRowCount(); r++) {
+			dtw.setValue(new Integer(r + 1), r, 4);
 		}
 		
 		//Normally the db version has the identifier as the row ID and the
 		//model_reach (the db key) as column 0.  Here we are duplicating
 		//the identifier (mrb_id) into both.
-		copyColumnAsRowId(topo, 0);
+		copyColumnAsRowId(dtw, 0);
 		
-		ColumnDataWritable fracColumn = topo.removeColumn(5);
+		ColumnDataWritable fracColumn = dtw.removeColumn(5);
 		
 		//Add the shorereach flag
 		ColumnDataWritable shoreReachFlagCol = loadTopoShoreReachColumnFromAncilTable(modelId);
-		topo.setColumn(shoreReachFlagCol, 5);
+		dtw.setColumn(shoreReachFlagCol, 5);
 		
 		//Add the fraction back on
-		topo.setColumn(fracColumn, 6);
+		dtw.setColumn(fracColumn, 6);
 		
-		return topo;
+		dtw.buildIndex(PredictData.TOPO_TNODE_COL);
+		
+		//TopoData topoTable = new TopoDataComposit(dtw);
+		TopoDataImm topoTable = new TopoDataImm(dtw.getColumns(), dtw.getName(), dtw.getDescription(), dtw.getProperties(), dtw.getIndex());
+
+		assert(topoTable.hasRowIds()): "topo should have IDENTIFIER as row ids";
+		assert(topoTable.isIndexed(PredictData.TOPO_TNODE_COL));
+
+		return topoTable;
 	}
 	
 	public ColumnDataWritable loadTopoShoreReachColumnFromAncilTable(long modelId) throws IOException {

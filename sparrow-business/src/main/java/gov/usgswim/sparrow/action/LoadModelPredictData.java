@@ -1,6 +1,5 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.DataTableWritable;
 import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
@@ -21,8 +20,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class LoadModelPredictData extends Action<PredictData> implements ILoadModelPredictData {
 
@@ -201,8 +198,8 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 			log.debug(DataTablePrinter.sampleDataTable(result, 10, 10));
 		}
 		
-		
 		TopoDataImm topoTable = new TopoDataImm(result.getColumns(), result.getName(), result.getDescription(), result.getProperties(), result.getIndex());
+		//TopoData topoTable = new TopoDataComposit(result);
 		
 
 		assert(topoTable.hasRowIds()): "topo should have IDENTIFIER as row ids";

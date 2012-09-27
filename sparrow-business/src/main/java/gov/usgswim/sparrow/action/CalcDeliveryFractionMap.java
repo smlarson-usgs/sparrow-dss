@@ -58,7 +58,7 @@ public class CalcDeliveryFractionMap extends Action<ReachRowValueMap> {
 	public ReachRowValueMap doAction() throws Exception {
 		//Hash containing rows as keys and DeliveryReaches as values.
 		HashMap<Integer, DeliveryReach> deliveries = calcDeliveryHash(predictData, targetReachIds);
-		ReachRowValueMap map = new ReachRowValueMap(deliveries);
+		ReachRowValueMap map = ReachRowValueMap.build(deliveries);
 		return map;
 	}
 	

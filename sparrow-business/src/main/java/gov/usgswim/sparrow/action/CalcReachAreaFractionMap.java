@@ -3,15 +3,12 @@ package gov.usgswim.sparrow.action;
 import static gov.usgswim.sparrow.PredictData.TOPO_IFTRAN_COL;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.TopoData;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.service.SharedApplication;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Calculates the area fractions for reaches upstream of a single selected reach.
@@ -39,7 +36,7 @@ import java.util.Queue;
  */
 public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 
-	protected DataTable topoData;
+	protected TopoData topoData;
 	protected Long targetReachId;
 	protected String msg = null;
 	
@@ -55,7 +52,7 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 	 * @param targetReachId 
 	 * @param forceUncorrectedFracValues If true, do not correct FRAC values that do not total to one.  Always false for prod.
 	 */
-	public CalcReachAreaFractionMap(DataTable topoData, Long targetReachId, boolean forceUncorrectedFracValues) {
+	public CalcReachAreaFractionMap(TopoData topoData, Long targetReachId, boolean forceUncorrectedFracValues) {
 		this.topoData = topoData;
 		this.targetReachId = targetReachId;
 		this.forceUncorrectedFracValues = forceUncorrectedFracValues;
@@ -87,9 +84,6 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 			topoData = SharedApplication.getInstance().getPredictData(reachId.getModelID()).getTopo();
 		}
 	}
-
-
-	
 	
 	
 	@Override
@@ -100,182 +94,99 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 	@Override
 	public ReachRowValueMap doAction() throws Exception {
 		//Hash containing rows as keys and DeliveryReaches as values.
-		HashMap<Integer, DeliveryReach> deliveries = calcDeliveryHash(topoData, targetReachId);
-		ReachRowValueMap map = new ReachRowValueMap(deliveries);
+		
+		int targetReachRowNumber = topoData.getRowForId(targetReachId);
+		
+		Collection<FractionalReach> areaFractions = calcAreaFractionForAllUpstreamReaches(targetReachRowNumber);
+		ReachRowValueMap map = ReachRowValueMap.build(areaFractions);
 		return map;
 	}
-	
-	
+
 	/**
-	 * Calculates the delivery fractions for reaches upstream of a specified targets.
-	 * A list of all upstream reaches are return, some of which may contain
-	 * a zero value for delivery.
+	 * Calculate the area fractions for the target reach and all its upstream
+	 * reaches.
 	 * 
-	 * @param predictData The predict data to search within for upstream reaches
-	 * @param targetReachIds A Set of reach IDs that define the targets.
-	 * @return
-	 * @throws Exception
+	 * @param targetReachRow
+	 * @return 
 	 */
-	protected HashMap<Integer, DeliveryReach> calcDeliveryHash(
-			DataTable topoData, Long targetReachId) throws Exception {
+	protected Collection<FractionalReach> calcAreaFractionForAllUpstreamReaches(int targetReachRow) {
 		
+		//Queue of upstream reaches found by not yet processed
+		PriorityQueue<FractionalReach> que = new PriorityQueue<FractionalReach>();
 		
-		//uses a row number as the key
-		HashMap<Integer, DeliveryReach> upstreamAreaFractionMap = new HashMap<Integer, DeliveryReach>();
+		//All reaches for which the area fraction calculation is completed
+		ArrayList<FractionalReach> completedReaches = new ArrayList<FractionalReach>();
 		
-		int targetRow = topoData.getRowForId(targetReachId);
-		DeliveryReach current = new DeliveryReach(
-				targetRow, 1D, topoData.getInt(targetRow, PredictData.TOPO_HYDSEQ_COL)
+		//The fractional area of the start reach is 1 by definition.
+		FractionalReach startReach = new FractionalReach(
+				targetReachRow, 1D, topoData.getHydSeq(targetReachRow)
 		);
 		
-
-		List<DeliveryReach> upstreamAreaFractions = calcDeliveryForSingleTarget(topoData, current);
-
-		//Hash the results into a HashMap for easy lookups
-		for (DeliveryReach dr : upstreamAreaFractions) {
-			upstreamAreaFractionMap.put(dr.getRow(), dr);
-
-		}
-
+		que.add(startReach);	//The target reach is the first one in the que to calculate
 		
-		msg = "Upstream Area Calc Details:  Model size:  " + topoData.getRowCount() +
-				" rows, Target ID = " + targetReachId + ".  " +
-				"Found " + upstreamAreaFractionMap.size() + " upstream reaches.";
+		while (! que.isEmpty()) {
+			
+			FractionalReach current = que.poll();
+			completedReaches.add(current);	//At this point, the fraction is set
+			
+			//Get a list of 'real' upstream reaches.
+			int[] realUpstreamReachRows = topoData.findAllowedUpstreamReaches(current.getRow());
+			
+			if (realUpstreamReachRows.length > 0) {
+				
+				boolean currentIsADiversion = topoData.isPartOfDiversion(current.getRow());
+				
+				//The area fraction, based on the current downstream reach,
+				//is applied to all upstream reaches.  Optionally do not correct the frac value.
+				double upstreamFrac = forceUncorrectedFracValues ?
+						(current.getFraction() * topoData.getFrac(current.getRow())) :
+						(current.getFraction() * topoData.getCorrectedFracForRow(current.getRow()));
+
+				for (int upstreamRow : realUpstreamReachRows) {
+
+					if (currentIsADiversion) {
+						
+						//Current reach is part of a diversion so these upstream reaches
+						//may have multiple routes from the target reach. If this upstreamReach
+						//is already in the process que, merge the fraction values (add them).
+						//Otherwise, add a new reach to the que.
+						mergeOrAddToQue(que, upstreamRow, upstreamFrac);
+
+					} else {
+
+						//Assign the area fraction to this reach and put in the que to process
+						que.add(new FractionalReach(upstreamRow, upstreamFrac, topoData.getHydSeq(upstreamRow)));
+
+					}
+
+				}	//each upstream row
+			}	//if there are upstream rows
+		}	//while the que of reaches to process is not empty
 		
-		return upstreamAreaFractionMap;
+		return completedReaches;
 	}
 	
 	/**
-	 * Calculates the delivery fractions for the reaches upstream of a specified target.
-	 * A list of all upstream reaches are return, some of which may contain
-	 * a zero value for delivery.
+	 * If a FractionalReach of the same row is already in the Que, merge the fractions
+	 * (add the values).  Otherwise, add a new FractionalReach.
 	 * 
-	 * @param predictData The predict data to search within for upstream reaches
-	 * @param targetReach The target reach to calculate delivery to
-	 * @return A list of DeliveryReaches which are upstream of the targetReach
-	 * @throws Exception
+	 * @param que
+	 * @param row Row of the reach we are looking to merge or add
+	 * @param fraction Area fraction of the reach
 	 */
-	protected List<DeliveryReach> calcDeliveryForSingleTarget(
-			DataTable topo, DeliveryReach targetReach) throws Exception {
-		
-		
-		//Queue of upstream reaches as they are found, in rev hydseq order
-		Queue<DeliveryReach> upstreamReaches = new PriorityQueue<DeliveryReach>(4);
-		
-		//All reaches for which we have thus far calculated a delivery fraction
-		List<DeliveryReach> calcCompletedReaches = new ArrayList<DeliveryReach>();
-		
-		//Add the current reaches' upstream reaches to the queue
-		addUpstreamReachesToQueue(upstreamReaches, topo, targetReach);
-		calcCompletedReaches.add(targetReach);	//add to output - should be delivery of 1
-		
-		//Continually loop through upstream reaches
-		while (! upstreamReaches.isEmpty()) {
-			DeliveryReach current = upstreamReaches.poll();
-			
-			//Add the current reaches' upstream reaches to the queue
-			addUpstreamReachesToQueue(upstreamReaches, topo, current);
-			
-			calcCompletedReaches.add(current);	//Add current to list of completed
+	protected void mergeOrAddToQue(PriorityQueue<FractionalReach> que, int row, double fraction) {
+
+		for (FractionalReach r : que) {
+			if (r.getRow() == row) {
+				
+				//Found the reach - add the fraction to it and we're done
+				r.addFraction(fraction);
+				return;
+			}
 		}
 		
-		return calcCompletedReaches;
+		//Couldn't find this reach in the que, so add as new reach
+		que.add(new FractionalReach(row, fraction, topoData.getHydSeq(row)));
 	}
 	
-	/**
-	 * Adds the reaches immediately upstream to the queue.
-	 * Reaches are added with a delivery fraction of zero.  If a duplicate reach
-	 * is added (multiple pathways to the same reach), the current reach is
-	 * added to its list of downstream reaches.
-	 * @param upstreamReaches The queue to add to
-	 * @param predictData The predict data to seach within
-	 * @param current The current reach for which to find immediate upstream reaches
-	 */
-	protected void addUpstreamReachesToQueue(Queue<DeliveryReach> upstreamReaches,
-			DataTable topo, DeliveryReach current) throws Exception {
-		
-		boolean isBaseReachAShoreReach = (1 == topo.getInt(current.getRow(), PredictData.TOPO_SHORE_REACH_COL));
-
-		if (isBaseReachAShoreReach) {
-			//Don't do any further processing for reaches 'upstream' of a shore reach.
-			//A shore reach just goes along the edge of a lake or ocean, so its not really
-			//part of the network.
-			return;
-		} else {
-		
-			double currentReachFrac = getCorrectedFracForReachRow(current.getRow(), topo);
-			double currentReachAccumulatedFrac = current.getDelivery();
-			double upstreamFrac = currentReachFrac * currentReachAccumulatedFrac;
-			
-			long fnode = topo.getLong(current.getRow(), PredictData.TOPO_FNODE_COL);
-
-			//The index requires that an Integer be used.
-			int[] upstream = topo.findAll(PredictData.TOPO_TNODE_COL, new Integer((int)fnode));
-
-			for (int rowNum : upstream) {
-				
-				//Don't add this reach if it is a shore reach
-				boolean isReachAShoreReach = (1 == topo.getInt(rowNum, PredictData.TOPO_SHORE_REACH_COL));
-				boolean isTran = topo.getDouble(rowNum, TOPO_IFTRAN_COL) > 0;
-				
-				if (! isReachAShoreReach && isTran) {
-
-					DeliveryReach toBeAdded = new DeliveryReach(
-						rowNum, upstreamFrac, topo.getInt(rowNum, PredictData.TOPO_HYDSEQ_COL), current
-					);
-
-
-					upstreamReaches.add(toBeAdded);
-
-				}
-			}
-		}
-	}
-	
-	protected double getCorrectedFracForReachRow(int row, DataTable topo) throws Exception {
-		
-		//Bypass switch to use uncorrect values - mostly for debug comparison of models.
-		if (forceUncorrectedFracValues) {
-			return topo.getDouble(row, PredictData.TOPO_FRAC_COL);
-		}
-		
-		//Find all other reaches that come from this same node
-		Integer fnode = topo.getInt(row, PredictData.TOPO_FNODE_COL);
-		int[] allReachesAtFromFnode = topo.findAll(PredictData.TOPO_FNODE_COL, fnode);
-
-		if (allReachesAtFromFnode.length == 0) {
-
-			throw new Exception("Could not find any reaches with this fnode '"
-					+ fnode + "' for reach row " + row);
-
-		} else if (allReachesAtFromFnode.length == 1) {
-			//If only a single reach, the FRAC must be 1.
-
-			return 1d;
-
-		} else {
-			//Adjust frac per total
-
-			double fracForReqestedReach = topo.getDouble(row, PredictData.TOPO_FRAC_COL);
-			double fracTotal = 0d;
-
-			for (int i = 0; i < allReachesAtFromFnode.length; i++) {
-				double thisFrac = topo.getDouble(allReachesAtFromFnode[i], PredictData.TOPO_FRAC_COL);
-				fracTotal+= thisFrac;
-			}
-
-			if (Math.abs(fracTotal - 1D) > .01) {
-				//close enough
-				return fracForReqestedReach;
-			} else {
-				//Adjust the frac based on the total frac
-				//Two reaches with fracs of .2 and .2 would have a total of .4, thus
-				//an adjusted frac of .2 / .4 == .5
-				return fracForReqestedReach / fracTotal;
-			}
-
-		}
-
-
-	}
 }

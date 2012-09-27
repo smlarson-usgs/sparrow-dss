@@ -4,7 +4,10 @@ import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.DataTableWritable;
 import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
 import gov.usgs.cida.datatable.utils.DataTableUtils;
+import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.TopoData;
+import gov.usgswim.sparrow.TopoDataImm;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,8 +19,9 @@ import java.io.InputStreamReader;
  */
 public abstract class CalcFractionalAreaBaseTest extends SparrowTestBase {
 
-	protected static DataTable testTopo;
-	protected static DataTable testTopoCorrected;
+	protected static TopoData testTopo;
+	protected static TopoData testTopo2;	//An example of a braided stream
+	protected static TopoData testTopoCorrected;	//An example of Fracs not adding to one.
 	protected static DataTableWritable incrementalAreaTable;
 	
 	static final double COMP_ERROR = .0000001d;
@@ -40,6 +44,9 @@ public abstract class CalcFractionalAreaBaseTest extends SparrowTestBase {
 		
 		//A 'no error' topo file.
 		testTopo = loadTopo("topo");
+		
+		//Topo file with a braided stream
+		testTopo2 = loadTopo("topo2");
 		
 		//A topo files with 'errors' that we can detect and correct.
 		//The result should be the same, even with the frac errors.
@@ -77,24 +84,32 @@ public abstract class CalcFractionalAreaBaseTest extends SparrowTestBase {
 	 * @param modelId	The ID of the Sparrow model
 	 * @return Fetched data - see Data Columns above.
 	 */
-	public DataTableWritable loadTopo(String fileNameSuffix) throws IOException {
-		InputStream fileInputStream = getResource(CalcFractionalAreaBaseTest.class, "topo", "txt");
+	public TopoData loadTopo(String fileNameSuffix) throws IOException {
+		InputStream fileInputStream = getResource(CalcFractionalAreaBaseTest.class, fileNameSuffix, "txt");
 		BufferedReader fileReader = new BufferedReader(new InputStreamReader(fileInputStream));
 		String[] headings = {"MODEL_REACH", "FNODE", "TNODE", "IFTRAN", "HYDSEQ", "SHORE_REACH", "FRAC"};
 		Class<?>[] types = {Integer.class, Integer.class, Integer.class, Integer.class, Integer.class, Integer.class, Double.class};
-		DataTableWritable topo = new SimpleDataTableWritable(headings, null, types);
-		topo.setName("topo");
-		DataTableUtils.fill(topo, fileReader, false, "\t", true);
+		DataTableWritable dtw = new SimpleDataTableWritable(headings, null, types);
+		dtw.setName("topo");
+		DataTableUtils.fill(dtw, fileReader, false, "\t", true);
 		fileReader.close();
 		//repopulate hydseq to be 1 and up, w/o gaps
-		for (int r = 0; r < topo.getRowCount(); r++) {
-			topo.setValue(new Integer(r + 1), r, 4);
+		for (int r = 0; r < dtw.getRowCount(); r++) {
+			dtw.setValue(new Integer(r + 1), r, 4);
 		}
 		//Normally the db version has the identifier as the row ID and the
 		//model_reach (the db key) as column 0.  Here we are duplicating
 		//the identifier (mrb_id) into both.
-		copyColumnAsRowId(topo, 0);
-		return topo;
+		copyColumnAsRowId(dtw, 0);
+		
+		dtw.buildIndex(PredictData.TOPO_TNODE_COL);
+		TopoDataImm topoTable = new TopoDataImm(dtw.getColumns(), dtw.getName(), dtw.getDescription(), dtw.getProperties(), dtw.getIndex());
+
+		assert(topoTable.hasRowIds()): "topo should have IDENTIFIER as row ids";
+		assert(topoTable.isIndexed(PredictData.TOPO_TNODE_COL));
+
+		
+		return topoTable;
 	}
 	
 	public DataTableWritable loadIncrementalAreas() throws IOException {

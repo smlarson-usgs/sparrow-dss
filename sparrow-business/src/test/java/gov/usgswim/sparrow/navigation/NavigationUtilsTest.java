@@ -4,6 +4,7 @@ import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
+import gov.usgswim.sparrow.TopoDataComposit;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -99,7 +100,7 @@ public class NavigationUtilsTest extends TestCase {
 	public void testFindUpstreamReachesSimpleLinearFlow() {
 
 		DataTable topo = new SimpleDataTableWritable(PredictDataTestScenarios.linearFlowTopo, null, 0);
-		PredictData pd = new PredictDataImm(topo, null, null, null, null, null);
+		PredictData pd = new PredictDataImm(new TopoDataComposit(topo), null, null, null, null, null);
 
 		Long modelID = 22L;
 		{	// find upstream reaches of the source reach
@@ -129,7 +130,7 @@ public class NavigationUtilsTest extends TestCase {
 		SimpleDataTableWritable topo = new SimpleDataTableWritable(PredictDataTestScenarios.linearFlowTopo, null, 0);
 		int brokenRow = 2;
 		topo.setValue(0, brokenRow, PredictData.TOPO_IFTRAN_COL);
-		PredictData pd = new PredictDataImm(topo, null, null, null, null, null);
+		PredictData pd = new PredictDataImm(new TopoDataComposit(topo), null, null, null, null, null);
 
 		Long modelID = 22L;
 		{	// find upstream reaches of the source reach
@@ -160,7 +161,7 @@ public class NavigationUtilsTest extends TestCase {
 	public void testFindUpstreamReachesBinaryTreeFlow() {
 
 		SimpleDataTableWritable topo = new SimpleDataTableWritable(BinaryTreeFlowTopo, null, 0);
-		PredictData pd = new PredictDataImm(topo, null, null, null, null, null);
+		PredictData pd = new PredictDataImm(new TopoDataComposit(topo), null, null, null, null, null);
 
 		Long modelID = 22L;
 		{	// find upstream reaches of the source reach

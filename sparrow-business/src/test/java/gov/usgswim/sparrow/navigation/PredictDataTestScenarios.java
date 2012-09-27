@@ -4,6 +4,7 @@ import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
+import gov.usgswim.sparrow.TopoDataComposit;
 import gov.usgswim.sparrow.util.DLUtils;
 
 public class PredictDataTestScenarios {
@@ -46,7 +47,7 @@ public class PredictDataTestScenarios {
 			DataTable decay = new SimpleDataTableWritable(PredictDataTestScenarios.singleDecay, null, DLUtils.DO_NOT_INDEX);
 
 			pd.setSrcMetadata( null);
-			pd.setTopo( topo);
+			pd.setTopo( new TopoDataComposit(topo) );
 			pd.setCoef( src );
 			pd.setDelivery( decay );
 			pd.setSrc( src);

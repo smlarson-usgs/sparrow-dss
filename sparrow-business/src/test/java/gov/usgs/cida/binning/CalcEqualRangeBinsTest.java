@@ -594,7 +594,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 		for (int i=0; i<10; i++) {
 			map.put(i, new DeliveryReach(i, .5d, i));
 		}
-		ReachRowValueMap dfm = new ReachRowValueMap(map);
+		ReachRowValueMap dfm = ReachRowValueMap.build(map);
 		
 		act.setBinCount(5);
 		act.setDataColumn(zeroTo10In10Values);

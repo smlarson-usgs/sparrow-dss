@@ -62,7 +62,7 @@ public class CalcFractionedWatershedAreaTest extends CalcFractionalAreaBaseTest 
 		CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(testTopo, 11L, false);
 		ReachRowValueMap areaMap = areaMapAction.run();
 		
-		CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreaTable, true);
+		CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreaTable, true, false);
 		Double area = areaAction.run();
 		
 		

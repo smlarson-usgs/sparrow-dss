@@ -130,7 +130,7 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 			recordRowTrace(modelId, reachId, row, "Completed: CalcReachAreaFractionMap");
 			
 			recordRowTrace(modelId, reachId, row, "Starting: CalcFractionedWatershedArea");
-			CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, forceNonFractionedArea);
+			CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, forceNonFractionedArea, forceUncorrectedFracValues);
 			Double calculatedFractionalWatershedArea = areaAction.run();
 			recordRowTrace(modelId, reachId, row, "Completed: CalcFractionedWatershedArea");
 			

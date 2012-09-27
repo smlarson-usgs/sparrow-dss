@@ -7,6 +7,7 @@ import gov.usgs.cida.datatable.adjustment.SparseOverrideAdjustment;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.TopoDataComposit;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.SingleColumnOverrideDataTable;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
@@ -54,7 +55,7 @@ public class NSDataSetBuilderTest extends SparrowTestBase {
 		adjTopo.setValue(0d, unmodifiedPredictData.getRowForReachID(9100), PredictData.TOPO_IFTRAN_COL);
 		
 		predictData = new PredictDataImm(
-				adjTopo, unmodifiedPredictData.getCoef(),
+				new TopoDataComposit(adjTopo), unmodifiedPredictData.getCoef(),
 				unmodifiedPredictData.getSrc(),
 				unmodifiedPredictData.getSrcMetadata(),
 				unmodifiedPredictData.getDelivery(),

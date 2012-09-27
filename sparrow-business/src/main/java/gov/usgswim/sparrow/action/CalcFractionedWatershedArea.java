@@ -45,16 +45,25 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 	protected ReachRowValueMap areaFractionMap;
 	protected DataTable incrementalReachAreas;
 	
+	
 	/** If true, ignore the fraction and just add up the area.  Mostly for debugging. */
 	protected boolean forceNonFractionedArea = false;
 	
 	/** If true, FRAC values that do not total to 1 will not be corrected. Mostly for debugging. */
 	protected boolean forceUncorrectedFracValues = false;
 	
-	protected String msg = null;
+	/** If true, try to find the immediate upstream reaches in the cache and calc
+	 * based on these already computered areas.  Can be much, much faster if
+	 * calculating the entire model in hydseq order.
+	 */
+	protected boolean attemptOptimizedCalc = true;
+	
+	//Action initialized
+	protected DataTable topoData;
+	
 	
 	//Alt config params
-	protected transient ReachID reachId = null;
+	protected ReachID reachId = null;
 	
 	/**
 	 * Direct parameter initialization for testing
@@ -66,10 +75,11 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 		this.incrementalReachAreas = incrementalReachAreas;
 	}
 	
-	public CalcFractionedWatershedArea(ReachRowValueMap areaFractionMap, DataTable incrementalReachAreas, boolean forceNonFractionedResult) {
+	public CalcFractionedWatershedArea(ReachRowValueMap areaFractionMap, DataTable incrementalReachAreas, boolean forceNonFractionedResult, boolean forceUncorrectedFracValues) {
 		this.areaFractionMap = areaFractionMap;
 		this.incrementalReachAreas = incrementalReachAreas;
 		this.forceNonFractionedArea = forceNonFractionedResult;
+		this.forceUncorrectedFracValues = forceUncorrectedFracValues;
 	}
 	
 	/**
@@ -85,18 +95,34 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 	 * @param reachId
 	 * @param forceNonFractionedArea If true, use non-fractioned areas
 	 */
-	public CalcFractionedWatershedArea(ReachID reachId, boolean forceNonFractionedResult) {
+	public CalcFractionedWatershedArea(ReachID reachId, boolean forceNonFractionedResult, boolean forceUncorrectedFracValues, boolean attemptOptimizedCalc) {
 		this.reachId = reachId;
 		this.forceNonFractionedArea = forceNonFractionedResult;
+		this.forceUncorrectedFracValues = forceUncorrectedFracValues;
+		this.attemptOptimizedCalc = attemptOptimizedCalc;
+	}
+	
+	public CalcFractionedWatershedArea(ReachID reachId, DataTable incrementalReachAreas, boolean forceNonFractionedResult, boolean forceUncorrectedFracValues, boolean attemptOptimizedCalc) {
+		this.reachId = reachId;
+		this.incrementalReachAreas = incrementalReachAreas;
+		this.forceNonFractionedArea = forceNonFractionedResult;
+		this.forceUncorrectedFracValues = forceUncorrectedFracValues;
+		this.attemptOptimizedCalc = attemptOptimizedCalc;
 	}
 	
 	
 	@Override
 	public void initFields() {
 		if (reachId != null) {
-			//topoData = SharedApplication.getInstance().getPredictData(reachId.getModelID()).getTopo();
-			areaFractionMap = SharedApplication.getInstance().getReachAreaFractionMap(reachId, forceNonFractionedArea);
-			incrementalReachAreas = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(reachId.getModelID(), AggregationLevel.REACH, false));
+			
+			if (incrementalReachAreas == null) {
+				incrementalReachAreas = SharedApplication.getInstance().getCatchmentAreas(
+						new UnitAreaRequest(reachId.getModelID(), AggregationLevel.REACH, false));
+			}
+			
+			if (topoData == null) {
+				topoData = SharedApplication.getInstance().getPredictData(reachId.getModelID()).getTopo();
+			}
 		}
 		
 	}
@@ -110,13 +136,6 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 		}
 	}
 	
-	
-	
-	@Override
-	protected String getPostMessage() {
-		return msg;
-	}
-	
 	@Override
 	public Double doAction() throws Exception {
 		if (! forceNonFractionedArea) {
@@ -127,32 +146,65 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 	}
 	
 	public Double calcFractionedArea() throws Exception {
-		double totalArea = 0D;
+		Double totalArea = null;
 		
-		for (Integer row : areaFractionMap.keySet()) {
-			Float frac = areaFractionMap.getFraction(row);
-			Double incArea = incrementalReachAreas.getDouble(row, 1);
-			
-			if (frac != null && incArea != null) {
-				Double addArea = frac * incArea;
-				totalArea += addArea;
-			}
-			
+		//Can we used an optimized calc?
+		if (attemptOptimizedCalc && topoData != null) {
+			totalArea = attemptOptimizedFractionedArea();
 		}
-		
-		
+			
+		if (totalArea == null) {
+
+			totalArea = 0d;
+			
+			//Late init since we may not need it if
+			if (areaFractionMap == null) {
+				areaFractionMap = SharedApplication.getInstance().getReachAreaFractionMap(reachId, forceNonFractionedArea);
+			}
+
+			for (Integer row : areaFractionMap.keySet()) {
+				Float frac = areaFractionMap.getFraction(row);
+				Double incArea = incrementalReachAreas.getDouble(row, 1);
+
+				if (frac != null && incArea != null) {
+					Double addArea = frac * incArea;
+					totalArea += addArea;
+				}
+
+			}
+		}
+
 		return totalArea;
 	}
 	
+	/**
+	 * this is really just a debug method
+	 * @return
+	 * @throws Exception 
+	 */
 	public Double calcUnfractionedArea() throws Exception {
-		double totalArea = 0D;
+		Double totalArea = null;
 		
-		for (Integer row : areaFractionMap.keySet()) {
-			Double incArea = incrementalReachAreas.getDouble(row, 1);
-			Float frac = areaFractionMap.getFraction(row);
+		//Can we used an optimized calc?
+		if (attemptOptimizedCalc && topoData != null) {
+			totalArea = attemptOptimizedFractionedArea();
+		}
 			
-			if (frac != null && incArea != null) {
-				totalArea += incArea;
+		if (totalArea == null) {
+					totalArea = 0d;
+			
+			//Late init since we may not need it if
+			if (areaFractionMap == null) {
+				areaFractionMap = SharedApplication.getInstance().getReachAreaFractionMap(reachId, forceNonFractionedArea);
+			}
+			
+			for (Integer row : areaFractionMap.keySet()) {
+				Double incArea = incrementalReachAreas.getDouble(row, 1);
+				Float frac = areaFractionMap.getFraction(row);
+
+				if (frac != null && incArea != null) {
+					totalArea += incArea;
+				}
 			}
 		}
 		
@@ -160,5 +212,86 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 		return totalArea;
 	}
 	
+	public Double attemptOptimizedFractionedArea() throws Exception {
+		CalcReachAreaFractionMapHelper helper = new CalcReachAreaFractionMapHelper(topoData, forceUncorrectedFracValues);
+		
+		int thisRow = topoData.getRowForId(reachId.getReachID());
+		boolean canHaveUpstream = helper.reachCanHaveUpstreamReaches(thisRow);
+		double thisIncArea = incrementalReachAreas.getDouble(thisRow, 1);
+		
+
+		if (canHaveUpstream) {
+
+			//Find the upstream reaches
+			//int[] upstreamRows = helper.findUpstreamRows(topoData.getRowForId(reachId.getReachID()));
+			long[] upstreamIds = helper.findUpstreamIds(reachId.getReachID());
+
+			if (upstreamIds.length == 0) {
+				
+				log.debug("Optimized Fractioned Area Result: Zero upstream reaches, so using incremental area.  " +
+					"Model: " + reachId.getModelID() + ", reach row: " + thisRow);
+							
+				//No upstream reaches, so  just return this reach area
+				return thisIncArea;
+				
+			} else {
+				//Found some upstream reaches
+				
+				//Total the watershed areas of the reaches immediately above the
+				//reach in question.
+				double totalUpstreamArea = 0;
+
+				for (int i = 0; i < upstreamIds.length; i++) {
+					
+					if (helper.reachCanHaveDownstreamReaches(topoData.getRowForId(upstreamIds[i]))) {
+						
+						ReachID upstreamReach = new ReachID(reachId.getModelID(), upstreamIds[i]);
+
+						//Quietly get the upstream reach area (returns null if not in cache)
+						Double oneUpstreamArea = SharedApplication.getInstance().getFractionedWatershedArea(upstreamReach, true);
+						if (oneUpstreamArea == null) {
+
+							log.debug("Optimized Fractioned Area Result: Atleast one upstream area missing in cache.  Cannot use optimized calc.  " +
+								"Model: " + reachId.getModelID() + ", reach row: " + thisRow);
+							//One of the immediately upstream reaches does not have a watershed
+							//area in the cache, so bail on this entire 'optimized' effort.
+							return null;
+
+						} else {
+							totalUpstreamArea += oneUpstreamArea;
+						}
+					}
+					
+				}
+
+				if (totalUpstreamArea > 0) {
+					log.debug("Optimized Fractioned Area Result: Upstream cached areas found, so fractioning areas.  " +
+						"Model: " + reachId.getModelID() + ", reach row: " + thisRow);
+					
+					double frac = (forceNonFractionedArea)? 1 : helper.getCorrectedFracForReachId(reachId.getReachID());
+					double fractionedUpstreamArea = frac * totalUpstreamArea;
+					double watershedArea = thisIncArea + fractionedUpstreamArea;
+
+					return watershedArea;
+				} else {
+					log.debug("Optimized Fractioned Area Result: Upstream reaches are non-contributing, so using incremental area.  " +
+						"Model: " + reachId.getModelID() + ", reach row: " + thisRow);
+					
+					return thisIncArea;
+				}
+				
+
+			}
+		
+		} else {
+			
+			log.debug("Optimized Fractioned Area Result: No upstream reaches allowed, so using incremental area.  " +
+					"Model: " + reachId.getModelID() + ", reach row: " + thisRow);
+			
+			//This is a shore reach, which can have no upstream reach area.
+			//Just return the inc area for this reach.
+			return thisIncArea;
+		}
 	
+	}
 }

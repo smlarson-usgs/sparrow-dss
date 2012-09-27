@@ -437,7 +437,7 @@
 		FractionedWatershedAreaTable: Potentially large table (sparse map based) of areas.  Used for reporting.
 	-->
 	<cache name="ReachAreaFractionMap" maxElementsInMemory="3" timeToLiveSeconds="600" />
-	<cache name="FractionedWatershedArea" maxElementsInMemory="20" timeToLiveSeconds="900" />
+	<cache name="FractionedWatershedArea" maxElementsInMemory="10000" timeToLiveSeconds="900" />
 	<cache name="FractionedWatershedAreaTable" maxElementsInMemory="3" timeToLiveSeconds="600" />
 	
 </ehcache>

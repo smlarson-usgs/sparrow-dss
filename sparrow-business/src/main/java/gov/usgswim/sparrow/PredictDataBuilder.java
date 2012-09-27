@@ -39,7 +39,7 @@ public class PredictDataBuilder extends AbstractPredictData {
 	 * NOTE:  We assume that the node indexes start at zero and have no skips.
 	 * Thus, nodeCount must equal the largest node index + 1
 	 */
-	protected DataTable topo;
+	protected TopoData topo;
 
 	/**
 	 * The coef's for each reach-source.
@@ -81,7 +81,7 @@ public class PredictDataBuilder extends AbstractPredictData {
 	 * @param model
 	 * @param srcIDs
 	 */
-	public PredictDataBuilder(DataTable topo, DataTable coef, DataTable src, DataTable srcIDs, DataTable decay,
+	public PredictDataBuilder(TopoData topo, DataTable coef, DataTable src, DataTable srcIDs, DataTable decay,
 			SparrowModel model) {
 
 		this.model = model;
@@ -148,7 +148,7 @@ public class PredictDataBuilder extends AbstractPredictData {
 	 * require more memory to process.
 	 * @param topo
 	 */
-	public void setTopo(DataTable topo) {
+	public void setTopo(TopoData topo) {
 		this.topo = topo;
 	}
 
@@ -168,7 +168,7 @@ public class PredictDataBuilder extends AbstractPredictData {
 	 * require more memory to process.
 	 * @return The Data2D data
 	 */
-	public DataTable getTopo() {
+	public TopoData getTopo() {
 		return topo;
 	}
 
@@ -245,7 +245,7 @@ public class PredictDataBuilder extends AbstractPredictData {
 
 	public PredictData toImmutable() {
 		// TODO:  SparrowModel should have an immutable builder
-		DataTable topo2 = (getTopo() != null)?getTopo().toImmutable():null;
+		TopoData topo2 = (TopoData) ((getTopo() != null)?getTopo().toImmutable():null);
 		DataTable coef2 = (getCoef() != null)?getCoef().toImmutable():null;
 		DataTable source2 = (getSrc() != null)?getSrc().toImmutable():null;
 		DataTable sourceIds2 = (getSrcMetadata() != null)?getSrcMetadata().toImmutable():null;
