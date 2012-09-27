@@ -23,6 +23,32 @@ public class RunAllTests extends SparrowModelValidationRunner {
 	@Override
 	public void loadModelValidators() {
 		
+		//Configure a comparator used to decide if the expected value matches the
+		//actual value.
+		//Note that comparison value must meet the fractional and absolute comparison requirements.
+		BasicComparator tightComparator = new BasicComparator();
+		
+		//Fractional comparisons based on: (expected - actual) / expected
+		tightComparator.setAllowedFractionalVarianceForValuesLessThan10(.000001d);
+		tightComparator.setAllowedFractionalVarianceForValuesLessThan1K(.000001d);
+		tightComparator.setAllowedFractionalVarianceForValuesLessThan100K(.000001d);
+		tightComparator.setAllowedFractionalVariance(.000001d);	//any larger value
+		
+		//Absolute comparsions based on: expected - actual
+		tightComparator.setMaxAbsVarianceForValuesLessThanOne(.000001d);
+		tightComparator.setMaxAbsVariance(10d);
+		
+		
+		//WIDE comparisons
+		BasicComparator wideComparator = new BasicComparator();
+		wideComparator.setAllowedFractionalVarianceForValuesLessThan10(.005d);
+		wideComparator.setAllowedFractionalVarianceForValuesLessThan1K(.005d);
+		wideComparator.setAllowedFractionalVarianceForValuesLessThan100K(.005d);
+		wideComparator.setAllowedFractionalVariance(.0001d);	//any larger value
+		wideComparator.setMaxAbsVarianceForValuesLessThanOne(.001d);
+		wideComparator.setMaxAbsVariance(1000d);
+		
+		
 		/*
 		 * FOR ALL TESTS THAT TAKE PARAMETERS:
 		 * 
@@ -37,7 +63,7 @@ public class RunAllTests extends SparrowModelValidationRunner {
 		 * Arg1:	Allowed fractional variance.
 		 * Arg2:	True to use decayed values for incremental loads (normally we would expect true)
 		 */
-		addValidator(new SparrowModelPredictionValidation(.000001D, true));
+		addValidator(new SparrowModelPredictionValidation(tightComparator, true));
 		
 		
 		/*
@@ -49,13 +75,13 @@ public class RunAllTests extends SparrowModelValidationRunner {
 		 * * Generally, only set Arg2 or 3 to true, otherwise, there will be two
 		 * errors reported for each row (assuming the text and db are the same).
 		 */
-		addValidator(new TotalLoadEqualsIncLoadForShoreReaches(.000001D, true, false));
+		addValidator(new TotalLoadEqualsIncLoadForShoreReaches(tightComparator, true, false));
 		
 		/*
 		 * Arg1:	Allowed fractional variance.
 		 *				**Generally want this value very small b/c it is an internal comparison.
 		 */
-		addValidator(new FracValuesShouldTotalToOne(.00000001D));
+		addValidator(new FracValuesShouldTotalToOne(tightComparator));
 		
 		/*
 		 * No arguments, just runs a bunch of queries listed in a file by the name of:
@@ -71,7 +97,7 @@ public class RunAllTests extends SparrowModelValidationRunner {
 		 * Arg3:	Set true to force FRAC values totalling to 1 be not corrected.
 		 *				Production uses false.
 		 */
-		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(.005D, false, false));
+		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(wideComparator, false, false));
 		
 		
 //		addValidator(new WarningOnlyDbTests());

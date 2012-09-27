@@ -339,12 +339,12 @@ public class SparrowModelValidationRunner {
 		
 		if (requiresDb) {
 			
-			System.out.println("--> The selected tests require text files.");
-			
-			pr = promptCacheDirectory();
-			if (pr.isQuit) return false;
+			System.out.println("--> The selected tests require a DB connection.");
 			
 			pr = promptWhichDb();
+			if (pr.isQuit) return false;
+			
+			pr = promptCacheDirectory();
 			if (pr.isQuit) return false;
 			
 			pr = promptPwd();
@@ -660,6 +660,9 @@ public class SparrowModelValidationRunner {
 	
 	public PromptResponse promptCacheDirectory() {
 		
+		File defaultBaseDir = getDefaultCacheDirectory();
+		File defaultDir = new File(defaultBaseDir, this.useTestDb ? "test_db" : "prod_db");
+		
 		System.out.println("");
 		System.out.println(": : Caching : :");
 		System.out.println("Model data from the database is cached on your local disk to speed up repeated test runs.");
@@ -667,7 +670,7 @@ public class SparrowModelValidationRunner {
 		System.out.println("Below enter one of the following:");
 		System.out.println("* 'quit' to Quit.");
 		System.out.println("* A complete local path to the directory to use for caching.");
-		System.out.println("* [Enter] to accept the default cache location, which is '" + getDefaultCacheDirectory().getAbsolutePath() + "'");
+		System.out.println("* [Enter] to accept the default cache location, which is '" + defaultDir.getAbsolutePath() );
 		
 		PromptResponse resp = prompt("Enter the path to your model cache directory, or accept the default location: ");
 		
@@ -679,7 +682,8 @@ public class SparrowModelValidationRunner {
 			System.err.println("Using user specified cache directory '" + cacheDirectory + "'");
 		} if (!resp.isQuit && resp.isEmptyOrNull()) {
 			//accept default directory
-			cacheDirectory = getDefaultCacheDirectory().getAbsolutePath();
+			
+			cacheDirectory = defaultDir.getAbsolutePath();
 			System.err.println("Using default cache directory '" + cacheDirectory + "'");
 		}
 		

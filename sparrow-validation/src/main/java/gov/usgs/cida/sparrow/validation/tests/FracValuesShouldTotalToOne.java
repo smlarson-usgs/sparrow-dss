@@ -1,6 +1,7 @@
 package gov.usgs.cida.sparrow.validation.tests;
 
 import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.sparrow.validation.Comparator;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -11,19 +12,12 @@ import gov.usgswim.sparrow.service.SharedApplication;
  */
 public class FracValuesShouldTotalToOne extends SparrowModelValidationBase {
 	
-	//Default fraction that the value may vary from the expected value.
-	public static final double ALLOWED_FRACTIONAL_VARIANCE = .00000001D;
-	
-	private double allowedFractialVariance = ALLOWED_FRACTIONAL_VARIANCE;
-	
 	public boolean requiresDb() { return true; }
 	public boolean requiresTextFile() { return false; }
 	
 	
-	public FracValuesShouldTotalToOne() {}
-	
-	public FracValuesShouldTotalToOne(double allowedFractialVariance) {
-		this.allowedFractialVariance = allowedFractialVariance;
+	public FracValuesShouldTotalToOne(Comparator comparator) {
+		super(comparator);
 	}
 	
 	public TestResult testModel(Long modelId) throws Exception {
@@ -57,7 +51,7 @@ public class FracValuesShouldTotalToOne extends SparrowModelValidationBase {
 					fracTotal+= thisFrac;
 				}
 
-				if (! comp(1d, fracTotal, allowedFractialVariance)) {
+				if (! comp(1d, fracTotal)) {
 
 					if (allReachesAtFromFnode.length == 1) {
 						this.recordRowError(modelId, reachId, row, "1", fracTotal, "1", "db frac total", isShoreReach, ifTran, 
@@ -74,7 +68,7 @@ public class FracValuesShouldTotalToOne extends SparrowModelValidationBase {
 				//but it probably should be one.
 				double thisFrac = topo.getDouble(row, PredictData.TOPO_FRAC_COL);
 				
-				if (! comp(1d, thisFrac, allowedFractialVariance)) {
+				if (! comp(1d, thisFrac)) {
 					this.recordRowError(modelId, reachId, row, "1", thisFrac, "1", "db frac total", isShoreReach, ifTran, 
 							"FRAC total != 1 for SINGLE SHORE REACH.  FNODE: " + fnode);
 				}

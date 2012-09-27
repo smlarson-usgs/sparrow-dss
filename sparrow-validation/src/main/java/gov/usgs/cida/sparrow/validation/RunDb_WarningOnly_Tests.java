@@ -21,9 +21,36 @@ public class RunDb_WarningOnly_Tests extends SparrowModelValidationRunner {
 	@Override
 	public void loadModelValidators() {
 		
+		
+		//Configure a comparator used to decide if the expected value matches the
+		//actual value.
+		//Note that comparison value must meet the fractional and absolute comparison requirements.
+		BasicComparator tightComparator = new BasicComparator();
+		
+		//Fractional comparisons based on: (expected - actual) / expected
+		tightComparator.setAllowedFractionalVarianceForValuesLessThan10(.0001d);
+		tightComparator.setAllowedFractionalVarianceForValuesLessThan1K(.0001d);
+		tightComparator.setAllowedFractionalVarianceForValuesLessThan100K(.0001d);
+		tightComparator.setAllowedFractionalVariance(.0001d);	//any larger value
+		
+		//Absolute comparsions based on: expected - actual
+		tightComparator.setMaxAbsVarianceForValuesLessThanOne(.00001d);
+		tightComparator.setMaxAbsVariance(10d);
+		
+		
+		
+		BasicComparator wideComparator = new BasicComparator();
+		wideComparator.setAllowedFractionalVarianceForValuesLessThan10(.005d);
+		wideComparator.setAllowedFractionalVarianceForValuesLessThan1K(.005d);
+		wideComparator.setAllowedFractionalVarianceForValuesLessThan100K(.005d);
+		wideComparator.setAllowedFractionalVariance(.0001d);	//any larger value
+		wideComparator.setMaxAbsVarianceForValuesLessThanOne(.001d);
+		wideComparator.setMaxAbsVariance(1000d);
+		
+		
 		//1st Argument:  The allowed variantion b/f a comparison is considered an error.  .1 == 10&
 		//2nd Argument:  true == Use fractioned calculations for watershed areas.  false == Use cumulative areas (add them up, but don't fraction)
-		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(.1D, false, false)); //This one does calculation comparisons
+		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(wideComparator, false, false)); //This one does calculation comparisons
 		//addValidator(new SparrowModelFractionedWatershedAreaInvestigation());
 		//addValidator(new WarningOnlyDbTests());	//Does cumulative vs total comparison for shore reaches
 		

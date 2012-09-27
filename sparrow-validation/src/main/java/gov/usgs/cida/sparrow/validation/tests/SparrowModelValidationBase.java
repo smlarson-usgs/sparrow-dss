@@ -1,5 +1,6 @@
 package gov.usgs.cida.sparrow.validation.tests;
 
+import gov.usgs.cida.sparrow.validation.Comparator;
 import gov.usgs.cida.sparrow.validation.SparrowModelValidationRunner;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Level;
@@ -19,13 +20,6 @@ import org.apache.log4j.Logger;
  */
 public abstract class SparrowModelValidationBase implements ModelValidator {
 	
-	/**
-	 * The required comparison accuracy (expected - actual)/(max(expected, actual))
-	 * This value is slightly relaxed for values less than 1.
-	 */
-	final double REQUIRED_COMPARISON_FRACTION = .001d;	//comp fraction
-	
-	
 	SparrowModelValidationRunner runner;
 	boolean failedTestIsOnlyAWarning = false;
 	
@@ -34,10 +28,17 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 
 	final static int NUMBER_OF_BAD_INCREMENTALS_TO_PRINT = Integer.MAX_VALUE;
 	final static int NUMBER_OF_BAD_TOTALS_TO_PRINT = Integer.MAX_VALUE;
+	
+	/** The comparator used to determine values are equal */
+	protected Comparator comparator;
 
 	protected TestResult result;
 	
 	private Logger testLog;
+	
+	public SparrowModelValidationBase(Comparator comparator) {
+		this.comparator = comparator;
+	}
 
 	@Override
 	public boolean initTest(SparrowModelValidationRunner runner, boolean failedTestIsOnlyAWarning) throws Exception {
@@ -82,11 +83,11 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 	 * This method uses the default nominal allowed fractional variance of .001D
 	 * 
 	 * @param expect
-	 * @param compare
+	 * @param actual
 	 * @return
 	 */
-	public boolean comp(double expect, double compare) {
-		return comp(expect, compare, REQUIRED_COMPARISON_FRACTION);
+	public boolean comp(double expect, double actual) {
+		return comparator.comp(expect, actual);
 	}
 	
 	/**
@@ -102,37 +103,37 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 	 * @param allowedFractionalVariance Nominal allowed variance
 	 * @return
 	 */
-	public boolean comp(double expect, double compare, double allowedFractionalVariance) {
-		
-		if (expect < 0 || compare < 0) {
-			return false;
-		}
-		
-		double diff = Math.abs(compare - expect);
-		double frac = 0;
-		
-		if (diff == 0) {
-			return true;	//no further comparison required
-		}
-		
-		if (expect < 1d) {
-			return (diff < (allowedFractionalVariance * 10d));
-		} else {
-			frac = diff / expect;	//we are sure at this point that baseValue > 0
-		}
-		
-		if (expect < 10) {
-			return frac < (allowedFractionalVariance * 5d);
-		} else if (expect < 20) {
-			return frac < (allowedFractionalVariance * 2d);
-		} else if (expect < 1000) {
-			return (frac < allowedFractionalVariance) && (diff < .01d);
-		} else if (expect < 100000) {
-			return (frac < allowedFractionalVariance) && (diff < 1d);
-		} else {
-			return (frac < allowedFractionalVariance) && (diff < 2d);
-		}
-	}
+//	public boolean comp(double expect, double compare, double allowedFractionalVariance) {
+//		
+//		if (expect < 0 || compare < 0) {
+//			return false;
+//		}
+//		
+//		double diff = Math.abs(compare - expect);
+//		double frac = 0;
+//		
+//		if (diff == 0) {
+//			return true;	//no further comparison required
+//		}
+//		
+//		if (expect < 1d) {
+//			return (diff < (allowedFractionalVariance * 10d));
+//		} else {
+//			frac = diff / expect;	//we are sure at this point that baseValue > 0
+//		}
+//		
+//		if (expect < 10) {
+//			return frac < (allowedFractionalVariance * 5d);
+//		} else if (expect < 20) {
+//			return frac < (allowedFractionalVariance * 2d);
+//		} else if (expect < 1000) {
+//			return (frac < allowedFractionalVariance) && (diff < .01d);
+//		} else if (expect < 100000) {
+//			return (frac < allowedFractionalVariance) && (diff < 1d);
+//		} else {
+//			return (frac < allowedFractionalVariance) && (diff < 2d);
+//		}
+//	}
 	
 	/**
 	 * Compares two values and returns true if they are considered equal.
@@ -181,32 +182,32 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 	 * @param maxAbsVariance The max absolute variance for any value.
 	 * @return 
 	 */
-	public boolean comp(double expect, double compare,
-			double allowedFractionalVariance, double allowedFractionalVarianceLessThanOneK,
-			double maxAbsVarianceForLessThanOne, double maxAbsVariance) {
-		
-		if (expect < 0 || compare < 0) {
-			return false;
-		}
-		
-		double diff = Math.abs(compare - expect);
-		double frac = 0;
-		
-		if (diff == 0) {
-			return true;	//no further comparison required
-		} else {
-			frac = diff / expect;	//we are sure at this point that baseValue > 0
-		}
-		
-		if (expect <= 1d) {
-			return (diff <= maxAbsVarianceForLessThanOne || frac < allowedFractionalVarianceLessThanOneK);
-		} else if (expect <= 1000d) {
-			return (frac <= allowedFractionalVarianceLessThanOneK && diff <= maxAbsVariance);
-		} else {
-			return (frac <= allowedFractionalVariance && diff <= maxAbsVariance);
-		}
-
-	}
+//	public boolean comp(double expect, double compare,
+//			double allowedFractionalVariance, double allowedFractionalVarianceLessThanOneK,
+//			double maxAbsVarianceForLessThanOne, double maxAbsVariance) {
+//		
+//		if (expect < 0 || compare < 0) {
+//			return false;
+//		}
+//		
+//		double diff = Math.abs(compare - expect);
+//		double frac = 0;
+//		
+//		if (diff == 0) {
+//			return true;	//no further comparison required
+//		} else {
+//			frac = diff / expect;	//we are sure at this point that baseValue > 0
+//		}
+//		
+//		if (expect <= 1d) {
+//			return (diff <= maxAbsVarianceForLessThanOne || frac < allowedFractionalVarianceLessThanOneK);
+//		} else if (expect <= 1000d) {
+//			return (frac <= allowedFractionalVarianceLessThanOneK && diff <= maxAbsVariance);
+//		} else {
+//			return (frac <= allowedFractionalVariance && diff <= maxAbsVariance);
+//		}
+//
+//	}
 	
 	
 	

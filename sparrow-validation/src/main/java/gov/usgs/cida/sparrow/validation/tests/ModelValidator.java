@@ -63,7 +63,7 @@ public interface ModelValidator {
 	 * @param allowedFractionalVariance Nominal allowed variance
 	 * @return
 	 */
-	public boolean comp(double expect, double compare, double allowedFractionalVariance);
+	//public boolean comp(double expect, double compare, double allowedFractionalVariance);
 	
 
 	

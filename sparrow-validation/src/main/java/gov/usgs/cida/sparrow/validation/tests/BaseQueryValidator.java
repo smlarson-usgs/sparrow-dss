@@ -1,5 +1,6 @@
 package gov.usgs.cida.sparrow.validation.tests;
 
+import gov.usgs.cida.sparrow.validation.Comparator;
 import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.action.CalcAnalysis;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -32,6 +33,11 @@ public class BaseQueryValidator extends SparrowModelValidationBase {
 	public boolean requiresTextFile() { return false; }
 	
 	protected int queryCount = 0;
+	
+	public BaseQueryValidator(Comparator comparator) {
+		super(comparator);
+	}
+	
 	
 	/**
 	 * Runs QA checks against the data.

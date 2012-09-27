@@ -1,6 +1,7 @@
 package gov.usgs.cida.sparrow.validation.tests;
 
 import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.sparrow.validation.Comparator;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.*;
@@ -16,11 +17,6 @@ import gov.usgs.cida.sparrow.validation.ValidationTestUtils;
  */
 public class TotalLoadEqualsIncLoadForShoreReaches extends BaseTextFileTester {
 	
-	//Default fraction that the value may vary from the expected value.
-	public static final double ALLOWED_FRACTIONAL_VARIANCE = .000001D;
-	
-	private double allowedFractialVariance = ALLOWED_FRACTIONAL_VARIANCE;
-	
 	private boolean compareTextValues = true;
 	private boolean compareDbValues = false;
 	
@@ -32,10 +28,10 @@ public class TotalLoadEqualsIncLoadForShoreReaches extends BaseTextFileTester {
 	
 
 	
-	public TotalLoadEqualsIncLoadForShoreReaches(Double allowedVariance, 
+	public TotalLoadEqualsIncLoadForShoreReaches(Comparator comparator, 
 			boolean compareTextValues, boolean compareDbValues) {
 		
-		this.allowedFractialVariance = allowedVariance;
+		super(comparator);
 		this.compareTextValues = compareTextValues;
 		this.compareDbValues = compareDbValues;
 		
@@ -107,13 +103,13 @@ public class TotalLoadEqualsIncLoadForShoreReaches extends BaseTextFileTester {
 						dbResult.getDouble(r, dbResult.getTotalCol());
 
 
-				if (compareTextValues && ! comp(txtIncValue, txtTotalValue, allowedFractialVariance)) {
+				if (compareTextValues && ! comp(txtIncValue, txtTotalValue)) {
 
 						this.recordRowError(modelId, id, r, txtIncValue, txtTotalValue, 
 								"text Inc", "text total", rowIsShoreReach, rowIsIfTranOn,
 								"The TEXT inc value does not match the total value for this shore reach");
 
-				} else if (compareTextValues && ! comp(dbCalcedIncValue, dbCalcedTotalValue, allowedFractialVariance)) {
+				} else if (compareTextValues && ! comp(dbCalcedIncValue, dbCalcedTotalValue)) {
 						this.recordRowError(modelId, id, r, dbCalcedIncValue, dbCalcedTotalValue, 
 								"db Inc", "db total", rowIsShoreReach, rowIsIfTranOn,
 								"The DB inc value does not match the total value for this shore reach");

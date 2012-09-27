@@ -1,7 +1,9 @@
 package gov.usgs.cida.sparrow.validation.tests;
 
 import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.sparrow.validation.Comparator;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.TopoData;
 import gov.usgswim.sparrow.action.*;
 import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.request.ReachID;
@@ -20,11 +22,6 @@ import net.sf.ehcache.Element;
  */
 public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelValidationBase {
 	
-	//Default fraction that the value may vary from the expected value.
-	public static final double ALLOWED_FRACTIONAL_VARIANCE = .1D;
-	
-	private double allowedFractialVariance = ALLOWED_FRACTIONAL_VARIANCE;
-	
 	//This flag can be set to true to force the fractional watershed area
 	//Action to do pure cumulative area calculations, not fractionalal ones.
 	private boolean forceNonFractionedArea = false;
@@ -34,6 +31,9 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 	
 	private int numberOfReachAreaFractionMapsAllowedInMemory_original;
 	protected int numberOfReachAreaFractionMapsAllowedInMemory_forTest = 5000;
+	
+	
+	Comparator shoreReachComparator;
 
 	
 	public boolean requiresDb() { return true; }
@@ -47,8 +47,23 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 		//return testModelBasedOnHuc2Aggregation(modelId);
 	}
 	
-	public CalculatedWaterShedAreaShouldEqualLoadedValue() {
-
+	public CalculatedWaterShedAreaShouldEqualLoadedValue(Comparator comparator, Comparator shoreReachComparator) {
+		super(comparator);
+		this.shoreReachComparator = shoreReachComparator;
+	}
+	
+	/**
+	 * 
+	 * @param allowedVariance
+	 * @param forceNonFractionedArea Takes precidence over forceUncorrectedFracValues.
+	 * @param forceUncorrectedFracValues 
+	 */
+	public CalculatedWaterShedAreaShouldEqualLoadedValue(Comparator comparator,
+			boolean forceNonFractionedArea, boolean forceUncorrectedFracValues) {
+		
+		super(comparator);
+		this.forceNonFractionedArea = forceNonFractionedArea;
+		this.forceUncorrectedFracValues = forceUncorrectedFracValues;
 	}
 	
 	@Override
@@ -70,31 +85,8 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 		
 		super.afterEachTest(modelId);
 	}
-
-	/**
-	 * 
-	 * @param forceAllAreaFractionsToOne Set true to do non-fractional area calcs
-	 */
-	public CalculatedWaterShedAreaShouldEqualLoadedValue(Double allowedVariance) {
-		this.allowedFractialVariance = allowedFractialVariance;
-	}
 	
 	/**
-	 * 
-	 * @param allowedVariance
-	 * @param forceNonFractionedArea Takes precidence over forceUncorrectedFracValues.
-	 * @param forceUncorrectedFracValues 
-	 */
-	public CalculatedWaterShedAreaShouldEqualLoadedValue(Double allowedVariance,
-			boolean forceNonFractionedArea, boolean forceUncorrectedFracValues) {
-		
-		this.allowedFractialVariance = allowedVariance;
-		this.forceNonFractionedArea = forceNonFractionedArea;
-		this.forceUncorrectedFracValues = forceUncorrectedFracValues;
-	}
-	
-	
-		/**
 	 * Runs QA checks against the data.
 	 * @param modelId
 	 * @return
@@ -111,7 +103,7 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 		recordTrace(modelId, "Starting:  Load model predict data from the db");
 		PredictData predictData = SharedApplication.getInstance().getPredictData(modelId);
 		recordTrace(modelId, "Completed:  Load model predict data from the db");
-		DataTable topo = predictData.getTopo();
+		TopoData topo = predictData.getTopo();
 		//ModelReachAreaRelations reachToHuc2Relation = SharedApplication.getInstance().getModelReachAreaRelations(new ModelAggregationRequest(modelId, AggregationLevel.HUC2));
 		
 		//All the HUC2s in this model, with the HUC id as the row ID.
@@ -123,32 +115,47 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 			Long reachId = predictData.getIdForRow(row);
 			Double dbArea = cumulativeAreasFromDb.getDouble(row, 1);
 			
-			recordRowTrace(modelId, reachId, row, "Starting: CalcReachAreaFractionMap");
-			//Calculate the fractioned watershed area, skipping the cache
-			//CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(topo, reachId, forceUncorrectedFracValues);
-			ReachRowValueMap areaMap = SharedApplication.getInstance().getReachAreaFractionMap(new ReachID(modelId, reachId));
-			recordRowTrace(modelId, reachId, row, "Completed: CalcReachAreaFractionMap");
-			
-			recordRowTrace(modelId, reachId, row, "Starting: CalcFractionedWatershedArea");
-			CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, forceNonFractionedArea, forceUncorrectedFracValues);
-			Double calculatedFractionalWatershedArea = areaAction.run();
-			recordRowTrace(modelId, reachId, row, "Completed: CalcFractionedWatershedArea");
-			
-			if (! comp(dbArea, calculatedFractionalWatershedArea, allowedFractialVariance)) {
-				Boolean shoreReach = topo.getInt(row, PredictData.TOPO_SHORE_REACH_COL) == 1;
-				Boolean ifTran = topo.getInt(row, PredictData.TOPO_IFTRAN_COL) == 1;
-				recordRowError(modelId, reachId, row, calculatedFractionalWatershedArea, dbArea, "calc", "db", shoreReach, ifTran, "DB Watershed area != calculated area.");
+			if (topo.isShoreReach(row)) {
+				//separate comparison for shore reaches
+				
+				recordRowTrace(modelId, reachId, row, "Shore reach - just comparing db incremental area to db total area.");
+				
+				Double dbIncArea = incrementalAreasFromDb.getDouble(row, 1);
+				if (! shoreReachComparator.comp(dbIncArea, dbArea)) {
+					Boolean ifTran = topo.isIfTran(row);
+					recordRowError(modelId, reachId, row, dbIncArea, dbArea, "inc db", "db", true, ifTran, "DB Watershed area != DB incremenatal area (shore reach)");
+				}
+
 			} else {
-				if (logIsEnabledForDebug()) {
+				//Not a shore reach
+				
+				recordRowTrace(modelId, reachId, row, "Starting: CalcReachAreaFractionMap");
+				//Calculate the fractioned watershed area, skipping the cache
+				//CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(topo, reachId, forceUncorrectedFracValues);
+				ReachRowValueMap areaMap = SharedApplication.getInstance().getReachAreaFractionMap(new ReachID(modelId, reachId));
+				recordRowTrace(modelId, reachId, row, "Completed: CalcReachAreaFractionMap");
+
+				recordRowTrace(modelId, reachId, row, "Starting: CalcFractionedWatershedArea");
+				CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, forceNonFractionedArea, forceUncorrectedFracValues);
+				Double calculatedFractionalWatershedArea = areaAction.run();
+				recordRowTrace(modelId, reachId, row, "Completed: CalcFractionedWatershedArea");
+
+				if (! comp(dbArea, calculatedFractionalWatershedArea)) {
 					Boolean shoreReach = topo.getInt(row, PredictData.TOPO_SHORE_REACH_COL) == 1;
 					Boolean ifTran = topo.getInt(row, PredictData.TOPO_IFTRAN_COL) == 1;
-					recordRowDebug(modelId, reachId, row, calculatedFractionalWatershedArea, dbArea, "calc", "db", shoreReach, ifTran, "OK.  DB Watershed area == calculated area.");
+					recordRowError(modelId, reachId, row, calculatedFractionalWatershedArea, dbArea, "calc", "db", shoreReach, ifTran, "DB Watershed area != calculated area.");
+				} else {
+					if (logIsEnabledForDebug()) {
+						Boolean shoreReach = topo.getInt(row, PredictData.TOPO_SHORE_REACH_COL) == 1;
+						Boolean ifTran = topo.getInt(row, PredictData.TOPO_IFTRAN_COL) == 1;
+						recordRowDebug(modelId, reachId, row, calculatedFractionalWatershedArea, dbArea, "calc", "db", shoreReach, ifTran, "OK.  DB Watershed area == calculated area.");
+					}
 				}
-			}
-			
-			if (this.logIsEnabledForTrace() && Math.abs((double)(row / 100) - ((double)row / 100d)) < .000001d) {
-				//recordTrace(modelId, "Completed " + row + " rows...");
-				dumpCacheState(modelId);
+
+				if (this.logIsEnabledForTrace() && Math.abs((double)(row / 100) - ((double)row / 100d)) < .000001d) {
+					//recordTrace(modelId, "Completed " + row + " rows...");
+					dumpCacheState(modelId);
+				}
 			}
 			
 		}

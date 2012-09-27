@@ -1,6 +1,7 @@
 package gov.usgs.cida.sparrow.validation.tests;
 
 import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.sparrow.validation.Comparator;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.TopoData;
 import gov.usgswim.sparrow.action.*;
@@ -16,20 +17,17 @@ import gov.usgswim.sparrow.service.SharedApplication;
  */
 public class SparrowModelFractionedWatershedAreaInvestigation extends SparrowModelValidationBase {
 	
-	//Default fraction that the value may vary from the expected value.
-	public static final double ALLOWED_FRACTIONAL_VARIANCE = .1D;
-	
-	private double allowedFractialVariance = ALLOWED_FRACTIONAL_VARIANCE;
-	
 	public boolean requiresDb() { return true; }
 	public boolean requiresTextFile() { return false; }
 	
 	
+	public SparrowModelFractionedWatershedAreaInvestigation(Comparator comparator) {
+		super(comparator);
+	}
 	
 	public TestResult testModel(Long modelId) throws Exception {
 		return compareFractionedWatershedAreasToUnfractioned(modelId);
 	}
-	
 	
 		/**
 	 * Runs QA checks against the data.
@@ -57,7 +55,7 @@ public class SparrowModelFractionedWatershedAreaInvestigation extends SparrowMod
 			CalcFractionedWatershedArea unfractionedAreaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, true, false);
 			Double unfractionalWatershedArea = unfractionedAreaAction.run();
 
-			if (! comp(fractionalWatershedArea, unfractionalWatershedArea, allowedFractialVariance)) {
+			if (! comp(fractionalWatershedArea, unfractionalWatershedArea)) {
 				Boolean shoreReach = topo.getInt(row, PredictData.TOPO_SHORE_REACH_COL) == 1;
 				Boolean ifTran = topo.getInt(row, PredictData.TOPO_IFTRAN_COL) == 1;
 				recordRowError(modelId, reachId, row, fractionalWatershedArea, unfractionalWatershedArea, "frac", "unfrac", shoreReach, ifTran, "Fractioned Watershed area != unfractioned area.");

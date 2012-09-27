@@ -1,6 +1,7 @@
 package gov.usgs.cida.sparrow.validation.tests;
 
 import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.sparrow.validation.Comparator;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.*;
@@ -16,11 +17,6 @@ import gov.usgs.cida.sparrow.validation.ValidationTestUtils;
  */
 public class SparrowModelPredictionValidation extends BaseTextFileTester {
 	
-	//Default fraction that the value may vary from the expected value.
-	public static final double ALLOWED_FRACTIONAL_VARIANCE = .00001D;
-	
-	private double allowedFractialVariance = ALLOWED_FRACTIONAL_VARIANCE;
-	
 	//This flags marks if we use the decayed incremental (the standard) or non-decayed.
 	private boolean useDecayedIncremental = true;
 	
@@ -28,20 +24,16 @@ public class SparrowModelPredictionValidation extends BaseTextFileTester {
 	public boolean requiresTextFile() { return true; }
 	
 	
-	public SparrowModelPredictionValidation() {
-
+	public SparrowModelPredictionValidation(Comparator comparator) {
+		super(comparator);
 	}
 	
 	/**
 	 * 
 	 * @param forceAllAreaFractionsToOne Set true to do non-fractional area calcs
 	 */
-	public SparrowModelPredictionValidation(boolean useDecayedIncremental) {
-		this.useDecayedIncremental = useDecayedIncremental;
-	}
-	
-	public SparrowModelPredictionValidation(Double allowedVariance, boolean useDecayedIncremental) {
-		this.allowedFractialVariance = allowedVariance;
+	public SparrowModelPredictionValidation(Comparator comparator, boolean useDecayedIncremental) {
+		super(comparator);
 		this.useDecayedIncremental = useDecayedIncremental;
 	}
 	
@@ -128,7 +120,7 @@ public class SparrowModelPredictionValidation extends BaseTextFileTester {
 				double dbCalcedTotalForSourceValue =
 					pred.getDouble(r, pred.getTotalColForSrc(s));
 				
-				if (! comp(txtIncForSourcValue, dbCalcedIncForSourceValue, allowedFractialVariance)) {
+				if (! comp(txtIncForSourcValue, dbCalcedIncForSourceValue)) {
 					
 					//A bad source value is considered a complete independent error, reported individually
 					this.recordRowError(modelId, id, r, txtIncForSourcValue, dbCalcedIncForSourceValue, 
@@ -139,7 +131,7 @@ public class SparrowModelPredictionValidation extends BaseTextFileTester {
 					rowMatches = false;
 				}
 				
-				if (! comp(txtTotalForSourceValue, dbCalcedTotalForSourceValue, allowedFractialVariance)) {
+				if (! comp(txtTotalForSourceValue, dbCalcedTotalForSourceValue)) {
 
 					if (thisSourceIncMatched) {
 						//The total is off, but the source was OK.  Its probably due to
@@ -171,7 +163,7 @@ public class SparrowModelPredictionValidation extends BaseTextFileTester {
 					pred.getDouble(r, pred.getTotalCol());
 			
 			
-			if (! comp(txtIncValue, dbCalcedIncValue, allowedFractialVariance)) {
+			if (! comp(txtIncValue, dbCalcedIncValue)) {
 
 				if (rowMatches) {
 					//The total is off, but individual src values were OK, so treat this as a full error
@@ -188,7 +180,7 @@ public class SparrowModelPredictionValidation extends BaseTextFileTester {
 				rowMatches = false;
 			}
 			
-			if (! comp(txtTotalValue, dbCalcedTotalValue, allowedFractialVariance)) {
+			if (! comp(txtTotalValue, dbCalcedTotalValue)) {
 
 				if (rowMatches) {
 					//The total is off, but individual src values were OK, so treat this as a full error
