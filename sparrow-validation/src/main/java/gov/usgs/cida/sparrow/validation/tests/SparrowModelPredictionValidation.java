@@ -1,12 +1,14 @@
 package gov.usgs.cida.sparrow.validation.tests;
 
+import gov.usgs.cida.sparrow.validation.framework.BaseTextFileTester;
+import gov.usgs.cida.sparrow.validation.framework.TestResult;
 import gov.usgs.cida.datatable.DataTable;
-import gov.usgs.cida.sparrow.validation.Comparator;
+import gov.usgs.cida.sparrow.validation.framework.Comparator;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgs.cida.sparrow.validation.ValidationTestUtils;
+import gov.usgs.cida.sparrow.validation.framework.ValidationTestUtils;
 
 
 /**

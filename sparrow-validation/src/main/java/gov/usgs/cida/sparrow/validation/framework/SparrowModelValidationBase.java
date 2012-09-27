@@ -1,7 +1,8 @@
-package gov.usgs.cida.sparrow.validation.tests;
+package gov.usgs.cida.sparrow.validation.framework;
 
-import gov.usgs.cida.sparrow.validation.Comparator;
-import gov.usgs.cida.sparrow.validation.SparrowModelValidationRunner;
+import gov.usgs.cida.sparrow.validation.framework.TestResult;
+import gov.usgs.cida.sparrow.validation.framework.Comparator;
+import gov.usgs.cida.sparrow.validation.framework.SparrowModelValidationRunner;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -20,8 +21,8 @@ import org.apache.log4j.Logger;
  */
 public abstract class SparrowModelValidationBase implements ModelValidator {
 	
-	SparrowModelValidationRunner runner;
-	boolean failedTestIsOnlyAWarning = false;
+	protected SparrowModelValidationRunner runner;
+	protected boolean failedTestIsOnlyAWarning = false;
 	
 	
 	public final static String ID_COL_KEY = "id_col";	//Table property of the key column

@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package gov.usgs.cida.sparrow.validation.tests;
+package gov.usgs.cida.sparrow.validation.framework;
 
-import gov.usgs.cida.sparrow.validation.SparrowModelValidationRunner;
+import gov.usgs.cida.sparrow.validation.framework.TestResult;
+import gov.usgs.cida.sparrow.validation.framework.SparrowModelValidationRunner;
 import org.apache.log4j.Logger;
 
 /**

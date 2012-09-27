@@ -1,6 +1,6 @@
 package gov.usgs.cida.sparrow.validation.tests;
 
-import gov.usgs.cida.sparrow.validation.BasicComparator;
+import gov.usgs.cida.sparrow.validation.framework.BasicComparator;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

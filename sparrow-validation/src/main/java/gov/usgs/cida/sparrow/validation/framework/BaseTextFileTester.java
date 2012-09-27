@@ -1,7 +1,7 @@
-package gov.usgs.cida.sparrow.validation.tests;
+package gov.usgs.cida.sparrow.validation.framework;
 
 import gov.usgs.cida.datatable.DataTable;
-import gov.usgs.cida.sparrow.validation.Comparator;
+import gov.usgs.cida.sparrow.validation.framework.Comparator;
 import gov.usgswim.sparrow.PredictData;
 
 /**

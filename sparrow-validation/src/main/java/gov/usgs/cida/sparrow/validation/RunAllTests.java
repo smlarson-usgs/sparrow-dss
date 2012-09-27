@@ -1,5 +1,7 @@
 package gov.usgs.cida.sparrow.validation;
 
+import gov.usgs.cida.sparrow.validation.framework.SparrowModelValidationRunner;
+import gov.usgs.cida.sparrow.validation.framework.BasicComparator;
 import gov.usgs.cida.sparrow.validation.tests.FracValuesShouldTotalToOne;
 import gov.usgs.cida.sparrow.validation.tests.TotalLoadEqualsIncLoadForShoreReaches;
 import gov.usgs.cida.sparrow.validation.tests.CalculatedWaterShedAreaShouldEqualLoadedValue;

@@ -1,6 +1,8 @@
 package gov.usgs.cida.sparrow.validation;
 
-import gov.usgs.cida.sparrow.validation.tests.ModelValidator;
+import gov.usgs.cida.sparrow.validation.framework.SparrowModelValidationRunner;
+import gov.usgs.cida.sparrow.validation.framework.BasicComparator;
+import gov.usgs.cida.sparrow.validation.framework.ModelValidator;
 import gov.usgs.cida.sparrow.validation.tests.CalculatedWaterShedAreaShouldEqualLoadedValue;
 
 /**

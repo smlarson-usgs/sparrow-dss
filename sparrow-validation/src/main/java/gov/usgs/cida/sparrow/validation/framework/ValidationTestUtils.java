@@ -1,4 +1,4 @@
-package gov.usgs.cida.sparrow.validation;
+package gov.usgs.cida.sparrow.validation.framework;
 
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.ColumnDataWritable;
