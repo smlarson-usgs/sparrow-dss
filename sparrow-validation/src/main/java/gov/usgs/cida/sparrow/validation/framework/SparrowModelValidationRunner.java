@@ -626,7 +626,7 @@ public class SparrowModelValidationRunner {
 		System.out.println("");
 		System.out.println(": : Database Connection : :");
 		PromptResponse response = prompt("Which database should the validation test be run against?  (T)est or (P)roduction?");
-		if (! response.isQuit) return response;
+		if (response.isQuit) return response;
 		
 		if (response.isEmptyOrNull()) {
 			System.out.println("Sorry, I didn't get that.");
