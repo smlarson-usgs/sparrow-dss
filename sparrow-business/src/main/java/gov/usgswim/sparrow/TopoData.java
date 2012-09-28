@@ -61,6 +61,8 @@ public interface TopoData extends DataTable.Immutable {
 	public double getFrac(int row);
 	
 	
+	//
+	//Topological Methods
 	
 	/**
 	 * Returns true if a reach can have upstream reaches.

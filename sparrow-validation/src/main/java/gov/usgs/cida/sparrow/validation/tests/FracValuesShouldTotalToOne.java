@@ -5,6 +5,7 @@ import gov.usgs.cida.sparrow.validation.framework.TestResult;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.sparrow.validation.framework.Comparator;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.TopoData;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 /**
@@ -25,35 +26,32 @@ public class FracValuesShouldTotalToOne extends SparrowModelValidationBase {
 	public TestResult testModel(Long modelId) throws Exception {
 		
 		PredictData predictData = SharedApplication.getInstance().getPredictData(modelId);
-		DataTable topo = predictData.getTopo();
+		TopoData topo = predictData.getTopo();
 		
 		for (int row = 0; row < topo.getRowCount(); row++) {
-			Long reachId = predictData.getIdForRow(row);
-			Integer fnode = topo.getInt(row, PredictData.TOPO_FNODE_COL);
 			
-			Boolean isShoreReach = topo.getInt(row, PredictData.TOPO_SHORE_REACH_COL) == 1;
-			Boolean ifTran = topo.getInt(row, PredictData.TOPO_IFTRAN_COL) == 1;
-				
+			Long reachId = predictData.getIdForRow(row);
+			Integer fnode = topo.getFromNode(row);
+			Boolean isShoreReach = topo.isShoreReach(row);
+			Boolean ifTran = topo.isIfTran(row);
 			
 			if (!isShoreReach) {
 				//This is a regular reach
 				
-				int[] allReachesAtFromFnode = topo.findAll(PredictData.TOPO_FNODE_COL, fnode);
-
-				if (allReachesAtFromFnode.length == 0) {
-					this.recordTestException(modelId, null, 
-							"Could not find any reaches with this fnode '" + fnode + "' for reach id " + reachId + " at row " + row);
-					continue;
-				}
+				//int[] allReachesAtFromFnode = topo.findAll(PredictData.TOPO_FNODE_COL, fnode);
+				int[] allReachesAtFromFnode = topo.findFlowReachesLeavingSameNode(row);
 
 				double fracTotal = 0d;
 
-				for (int i = 0; i < allReachesAtFromFnode.length; i++) {
-					double thisFrac = topo.getDouble(allReachesAtFromFnode[i], PredictData.TOPO_FRAC_COL);
+				for (int sameNodeRow : allReachesAtFromFnode) {
+					double thisFrac = topo.getFrac(sameNodeRow);
 					fracTotal+= thisFrac;
 				}
 
 				if (! comp(1d, fracTotal)) {
+					
+
+				
 
 					if (allReachesAtFromFnode.length == 1) {
 						this.recordRowError(modelId, reachId, row, "1", fracTotal, "1", "db frac total", isShoreReach, ifTran, 
@@ -68,10 +66,10 @@ public class FracValuesShouldTotalToOne extends SparrowModelValidationBase {
 			} else {
 				//This is a shore reach - it doesn't really matter what the FRAC is,
 				//but it probably should be one.
-				double thisFrac = topo.getDouble(row, PredictData.TOPO_FRAC_COL);
+				double thisFrac = topo.getFrac(row);
 				
 				if (! comp(1d, thisFrac)) {
-					this.recordRowError(modelId, reachId, row, "1", thisFrac, "1", "db frac total", isShoreReach, ifTran, 
+					this.recordRowWarn(modelId, reachId, row, "1", thisFrac, "1", "db frac total", isShoreReach, ifTran, 
 							"FRAC total != 1 for SINGLE SHORE REACH.  FNODE: " + fnode);
 				}
 			}

@@ -342,9 +342,6 @@ public class SparrowModelValidationRunner {
 			pr = promptWhichDb();
 			if (pr.isQuit) return false;
 			
-			pr = promptCacheDirectory();
-			if (pr.isQuit) return false;
-			
 			pr = promptPwd();
 			if (pr.isQuit) return false;
 			
@@ -358,6 +355,9 @@ public class SparrowModelValidationRunner {
 				e.printStackTrace();
 				return false;
 			}
+			
+			pr = promptCacheDirectory();
+			if (pr.isQuit) return false;
 		}
 		
 		pr = promptLogDetail();
@@ -590,7 +590,7 @@ public class SparrowModelValidationRunner {
 			
 			System.out.println("");
 			System.out.println(": : Models to Run (based on database models) : :");
-			PromptResponse idStrsResp  = prompt("Enter a list of model IDs, separated by a comma and/or space.  Enter 'p' to run all the public models:");
+			PromptResponse idStrsResp  = prompt("Enter a list of model IDs, separated by a comma and/or space.  Enter 'p' to run all the public models: ");
 			if (! idStrsResp.isQuit) {
 				
 				if (idStrsResp.isEmptyOrNull()) {
@@ -625,7 +625,7 @@ public class SparrowModelValidationRunner {
 		
 		System.out.println("");
 		System.out.println(": : Database Connection : :");
-		PromptResponse response = prompt("Which database should the validation test be run against?  (T)est or (P)roduction?");
+		PromptResponse response = prompt("Which database should the validation test be run against?  (T)est or (P)roduction: ");
 		if (response.isQuit) return response;
 		
 		if (response.isEmptyOrNull()) {
