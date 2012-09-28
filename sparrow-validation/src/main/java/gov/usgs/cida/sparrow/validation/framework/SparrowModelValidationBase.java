@@ -423,7 +423,7 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 		if (expected == null && actual == null) {
 			return "";
 		} else if (expected == null || actual == null) {
-			return "100";
+			return "1";
 		} else if (expected instanceof Number && actual instanceof Number) {
 			Number e = (Number) expected;
 			Number a = (Number) actual;
@@ -439,13 +439,13 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 			
 		} else if (NumberUtils.isNumber(expected.toString()) || NumberUtils.isNumber(actual.toString())) {
 			//Only one is a number
-			return "100";
+			return "1";
 		} else {
 			//Object equals comparison
 			if (expected.equals(actual)) {
 				return "0";
 			} else {
-				return "100";
+				return "1";
 			}
 		}
 		
@@ -455,11 +455,11 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 		if (expected == null && actual == null) {
 			return 0D;
 		} else if (expected == null || actual == null) {
-			return 100D;
+			return 1D;
 		} else if (expected == 0D && actual != 0D) {
-			return 100D;
+			return 1D;
 		} else {
-			Double v = Math.abs((expected - actual) / expected) * 100D;
+			Double v = Math.abs((expected - actual) / expected);
 			return v;
 		}
 	}
@@ -483,7 +483,7 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 		
 		String headFormat = " | model ID | reach ID | row | ";
 		headFormat += " Shore? | IfTran? | Msg Type | ";
-		headFormat += " Expected Val | Actual Val | Variance % | ";
+		headFormat += " Expected Val | Actual Val | Variance | ";
 		headFormat += " Expect Name / Actual Name | Validation Message |";
 
 		log.info(headFormat);

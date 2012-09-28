@@ -22,6 +22,10 @@ public class SparrowModelPredictionValidation extends BaseTextFileTester {
 	//This flags marks if we use the decayed incremental (the standard) or non-decayed.
 	private boolean useDecayedIncremental = true;
 	
+	//Separate comparator to use for incremental loads, which should more closely
+	//match the text files so can be more precise.
+	Comparator incLoadComparator;
+	
 	public boolean requiresDb() { return true; }
 	public boolean requiresTextFile() { return true; }
 	
@@ -34,8 +38,11 @@ public class SparrowModelPredictionValidation extends BaseTextFileTester {
 	 * 
 	 * @param forceAllAreaFractionsToOne Set true to do non-fractional area calcs
 	 */
-	public SparrowModelPredictionValidation(Comparator comparator, boolean useDecayedIncremental) {
-		super(comparator);
+	public SparrowModelPredictionValidation(Comparator totalLoadComparator,
+			Comparator incrementalLoadComparator, boolean useDecayedIncremental) {
+		
+		super(totalLoadComparator);
+		this.incLoadComparator = incrementalLoadComparator;
 		this.useDecayedIncremental = useDecayedIncremental;
 	}
 	
@@ -101,12 +108,12 @@ public class SparrowModelPredictionValidation extends BaseTextFileTester {
 			}
 			
 			
-			boolean rowIsShoreReach = predData.getTopo().getInt(r, PredictData.TOPO_SHORE_REACH_COL) == 1;
-			boolean rowIsIfTranOn = predData.getTopo().getInt(r, PredictData.TOPO_IFTRAN_COL) == 1;			
+			boolean rowIsShoreReach = predData.getTopo().isShoreReach(r);
+			boolean rowIsIfTranOn = predData.getTopo().isIfTran(r);	
 			boolean rowMatches = true;	//assume this row matches
 
 			
-			//Compare Incremental Values (c is column in std data)
+			//Compare per-source values
 			for (int s = 1; s <= maxSrc; s++) {
 			
 				boolean thisSourceIncMatched = true;
@@ -122,7 +129,7 @@ public class SparrowModelPredictionValidation extends BaseTextFileTester {
 				double dbCalcedTotalForSourceValue =
 					pred.getDouble(r, pred.getTotalColForSrc(s));
 				
-				if (! comp(txtIncForSourcValue, dbCalcedIncForSourceValue)) {
+				if (! incLoadComparator.comp(txtIncForSourcValue, dbCalcedIncForSourceValue)) {
 					
 					//A bad source value is considered a complete independent error, reported individually
 					this.recordRowError(modelId, id, r, txtIncForSourcValue, dbCalcedIncForSourceValue, 
@@ -165,7 +172,7 @@ public class SparrowModelPredictionValidation extends BaseTextFileTester {
 					pred.getDouble(r, pred.getTotalCol());
 			
 			
-			if (! comp(txtIncValue, dbCalcedIncValue)) {
+			if (! incLoadComparator.comp(txtIncValue, dbCalcedIncValue)) {
 
 				if (rowMatches) {
 					//The total is off, but individual src values were OK, so treat this as a full error

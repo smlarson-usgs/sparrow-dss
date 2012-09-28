@@ -81,10 +81,11 @@ public class RunAllTests extends SparrowModelValidationRunner {
 		addValidator(new FracValuesShouldTotalToOne(preciseComparator));
 		
 		/*
-		 * Arg1:	Comparator
+		 * Arg1:	Comparator for total load values
+		 * Arg2:	Comparator for incremental load values (should be able to be tighter)
 		 * Arg2:	True to use decayed values for incremental loads (normally we would expect true)
 		 */
-		addValidator(new SparrowModelPredictionValidation(tightComparator, true));
+		addValidator(new SparrowModelPredictionValidation(tightComparator, preciseComparator, true));
 		
 		
 		/*
