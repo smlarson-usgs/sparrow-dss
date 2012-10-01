@@ -2,8 +2,7 @@
 <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <description>SPARROW Mapping Application</description>
     <display-name>Sparrow Client {Owner: NB, Coder: EE}</display-name>
-		
-		<!--
+    <!--
     <context-param>
         <description>Despite the name, this is not restricted to just the server - it can be the 1st half of the url.</description>
         <param-name>forward-server</param-name>
@@ -12,7 +11,6 @@
         </param-value>
     </context-param>
 		-->
-		
     <!--
     <filter>
 		<description>
@@ -305,7 +303,15 @@
             <param-value>sp_delivery_terminalreport</param-value>
         </init-param>
     </servlet>
-		<servlet-mapping>
+    <servlet>
+        <servlet-name>FaqServlet</servlet-name>
+        <servlet-class>gov.usgswim.sparrow.FaqServlet</servlet-class>
+        <init-param>
+            <param-name>AtomFeedUrl</param-name>
+            <param-value>https://my.usgs.gov/confluence/createrssfeed.action?types=page&amp;spaces=conf_all&amp;title=SPARROW_DSS_DOCS_FAQ&amp;labelString=sparrow_dss_docs_faq&amp;excludedSpaceKeys=&amp;sort=modified&amp;maxResults=1&amp;timeSpan=3650&amp;showContent=true</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
         <servlet-name>DeliveryTerminalReport_Service</servlet-name>
         <url-pattern>/getDeliveryTerminalReport</url-pattern>
     </servlet-mapping>
@@ -317,7 +323,7 @@
             <param-value>sp_delivery_aggreport</param-value>
         </init-param>
     </servlet>
-		<servlet-mapping>
+    <servlet-mapping>
         <servlet-name>DeliveryAggReport_Service</servlet-name>
         <url-pattern>/getDeliveryAggReport</url-pattern>
     </servlet-mapping>
@@ -329,7 +335,7 @@
             <param-value>sp_watershed</param-value>
         </init-param>
     </servlet>
-		<servlet-mapping>
+    <servlet-mapping>
         <servlet-name>Watershed_Service</servlet-name>
         <url-pattern>/sp_watershed</url-pattern>
     </servlet-mapping>
@@ -444,6 +450,10 @@
     <servlet-mapping>
         <servlet-name>HealthTest</servlet-name>
         <url-pattern>/HealthTest</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>FaqServlet</servlet-name>
+        <url-pattern>/FaqContent</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>360</session-timeout>

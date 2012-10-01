@@ -133,7 +133,7 @@ function renderModel(response, options) {
    docMenu.add({
    	text: 'SPARROW FAQs',
    	handler: function() {
-   		var newWindow = window.open('http://water.usgs.gov/nawqa/sparrow/FAQs/faq.html', '_blank');
+   		var newWindow = window.open('faq.jsp', '_blank');
    		newWindow.focus();
    	}
    });

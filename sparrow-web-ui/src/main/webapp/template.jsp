@@ -140,7 +140,7 @@
 											<li><a title="What is SPARROW?" href="http://pubs.usgs.gov/fs/2009/3019/pdf/fs_2009_3019.pdf" target="_blank">What is SPARROW?</a></li>
 											<li><a title="What is the SPARROW Decision Support System?" href="dss.jsp" target="_blank">What is SPARROW Decision Support?</a></li>
 											<li><a title="SPARROW Applications & Documentation" href="http://water.usgs.gov/nawqa/sparrow/" target="_blank">SPARROW Applications &amp; Documentation</a></li>
-											<li><a title="SPARROW FAQs" href="faq.jsp" target="_blank">SPARROW DSS FAQs</a></li>
+											<li><a title="SPARROW FAQs" href="http://water.usgs.gov/nawqa/sparrow/FAQs/faq.html" target="_blank">SPARROW FAQs</a></li>
 										</ul>
 									</div>
 									

@@ -132,7 +132,7 @@ methods work just fine in IE because of its infamous broken float
 implementation)
 */
 .area-container:after {
-	content: '[Ignore]'; 
+	content: ''; 
 	display: block; 
 	height: 0; 
 	clear: both; 
@@ -176,15 +176,6 @@ the float: none with the comment is ignored by 5.01,
 It's probably fine to just remove it, but it's left here 
 just in case that many moons ago problem rears its head again */
 	float/**/: none;
-}
-
-/* easy clearing */
-.area-container:after {
-	content: '[Ignore]'; 
-	display: block; 
-	height: 0; 
-	clear: both; 
-	visibility: hidden;
 }
 
 /* Eric Everman 12/16/2005

@@ -51,6 +51,15 @@ The right inset area of the page should be placed as such:
  margin: 0; padding: 1px .2em 100px .2em;
 }
 
+/* Turn off full height columns for the single column formatting.  Allow interpage links to work */
+#page-area-container .area {
+	padding-bottom: 0 !important;
+	margin-bottom: 0 !important;
+}
+
+#page-area-container .area-1 .area-content {
+	padding-bottom: 2em;
+}
 /*
 	Would like  to provide this as default, but IE seems to be unable to override
 	the first-letter psudo class, so no one can turn it *off*.  Yuck.
