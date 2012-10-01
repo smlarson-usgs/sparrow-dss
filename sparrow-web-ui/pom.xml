@@ -20,43 +20,7 @@
 	
 
 	<repositories>
-<!--
-		<repository>
-			<url>http://internal.cida.usgs.gov/nexus/content/groups/public/</url>
-			<id>cida-mirror-internal</id>
-			<layout>default</layout>
-			<name>Cida mirror - an internal url</name>
-		</repository>
-		<repository>
-			<url>http://oss.sonatype.org/content/repositories/sourceforge-releases</url>
-			<id>sonatype-mirror</id>
-			<layout>default</layout>
-			<name>Repository for library including ehcache recent ones</name>
-		</repository>
-		<repository>
-			<url>https://repository.jboss.org/nexus/content/repositories/releases</url>
-			<id>JBoss-Releases</id>
-			<layout>default</layout>
-			<name>Repository for library including JGroups recent ones</name>
-		</repository>
-		<repository>
-			<id>java.net2</id>
-			<name>Repository hosting the jee6 artifacts</name>
-			<url>http://download.java.net/maven/2</url>
-		</repository>
-	-->
 	</repositories>
-	
-	<!--
-	<pluginRepositories>
-		<pluginRepository>
-			<url>http://internal.cida.usgs.gov/nexus/content/groups/public/</url>
-			<id>cida-mirror-internal</id>
-			<layout>default</layout>
-			<name>Cida mirror - an internal url</name>
-		</pluginRepository>
-	</pluginRepositories>
--->
 
 	<dependencies>
 		<dependency>
@@ -101,7 +65,6 @@
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-			<!-- previous version was 2.4, 2.5 is untested -->
 			<version>2.5</version>
 		</dependency>
 		
@@ -111,6 +74,8 @@
 		    <artifactId>mail</artifactId>
 		    <version>1.4</version>
 		</dependency>
+		
+		<!-- Used to slurp my.usgs.gov wiki page for embeded documentation -->
 		<dependency>
 			<groupId>org.apache.abdera</groupId>
 			<artifactId>abdera-client</artifactId>
