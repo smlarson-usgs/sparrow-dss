@@ -303,14 +303,6 @@
             <param-value>sp_delivery_terminalreport</param-value>
         </init-param>
     </servlet>
-    <servlet>
-        <servlet-name>FaqServlet</servlet-name>
-        <servlet-class>gov.usgswim.sparrow.FaqServlet</servlet-class>
-        <init-param>
-            <param-name>AtomFeedUrl</param-name>
-            <param-value>https://my.usgs.gov/confluence/createrssfeed.action?types=page&amp;spaces=conf_all&amp;title=SPARROW_DSS_DOCS_FAQ&amp;labelString=sparrow_dss_docs_faq&amp;excludedSpaceKeys=&amp;sort=modified&amp;maxResults=1&amp;timeSpan=3650&amp;showContent=true</param-value>
-        </init-param>
-    </servlet>
     <servlet-mapping>
         <servlet-name>DeliveryTerminalReport_Service</servlet-name>
         <url-pattern>/getDeliveryTerminalReport</url-pattern>
@@ -450,10 +442,6 @@
     <servlet-mapping>
         <servlet-name>HealthTest</servlet-name>
         <url-pattern>/HealthTest</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>FaqServlet</servlet-name>
-        <url-pattern>/FaqContent</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>360</session-timeout>

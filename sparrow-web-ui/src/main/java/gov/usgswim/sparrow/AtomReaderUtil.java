@@ -23,16 +23,19 @@ import org.w3c.tidy.Tidy;
 import org.xml.sax.InputSource;
 
 /**
- *
+ * A basic utility to pull in the content of the first entry in an Atom feed.
+ * 
+ * This was originally designed to pull the content of a single page from the
+ * wiki so that it could be embedded in the application to provide editable
+ * documentation, but it could easily be expanded for other uses.
+ * 
  * @author eeverman
  */
 public class AtomReaderUtil {
 
-	static String atomFeedUrl = "https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=conf_all&title=SPARROW_DSS_DOCS_FAQ&labelString=sparrow_dss_docs_faq&excludedSpaceKeys=&sort=modified&maxResults=1&timeSpan=3650&showContent=true";
-	
 	public static final void main(String[] args) throws Exception {
 		
-		String feed = getAtomFeedContentOnlyAsString(atomFeedUrl);
+		String feed = getAtomFeedContentOnlyAsString(args[0]);
 
 		System.out.println("////////////");
 		System.out.println(feed);
@@ -62,8 +65,6 @@ public class AtomReaderUtil {
 
 			// Default trust manager provider registered for port 443
 			AbderaClient.registerTrustManager();
-			
-			
 			
 			Abdera abdera = new Abdera();
 
@@ -113,7 +114,6 @@ public class AtomReaderUtil {
 		org.w3c.dom.Document d = builder.parse(is);
 
 		return d;
-
   }
 	
 	public static String nodeToString(Node node) {
@@ -128,6 +128,5 @@ public class AtomReaderUtil {
 		}
 		return sw.toString();
 	}
-
 
 }
