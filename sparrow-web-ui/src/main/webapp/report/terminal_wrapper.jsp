@@ -35,7 +35,6 @@
 				is available.
 			</p>
 		</div>
-		
 		<div class="columns-2">
 			<div class="column">
 				<div class="content">
@@ -65,7 +64,6 @@
 				</div>
 			</div>
 		</div>
-
 		<div id="terminal-report-area" class="report-area">
 			<div class="report-load-status">
 				<img src="../images/wait.gif" />

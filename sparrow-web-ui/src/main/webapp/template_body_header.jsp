@@ -1,10 +1,12 @@
+<%@ page import="gov.usgswim.sparrow.SparrowUtil" %>
+<% String appBaseUrl = SparrowUtil.getRequestUrlFeatures(request).getBaseUrlWithoutSlash(); %>
 		<div id="sizer"> 
 			<div id="expander"> 
 				<div id="wrapper" class="clearfix"> 
 					<div id="header"> 
             			<div id="banner-area"> 
 							<h1>US Geological Survey</h1><!-- Not actually visible unless printed --> 
-							<div id="usgs-header-logo"><a href="http://www.usgs.gov" title="Link to the US Geological Survey main web page"><img alt="USGS Logo" src="images/usgs_logo_small.jpg" ></a></div> 
+							<div id="usgs-header-logo"><a href="http://www.usgs.gov" title="Link to the US Geological Survey main web page"><img alt="USGS Logo" src="<%= appBaseUrl %>/images/usgs_logo_small.jpg" ></a></div> 
 							<div id="usgsPrintCommHeader" class="print-only"> 
 								<h3 id="printCommType">Web Page Hardcopy</h3> 
 								<p class="hide">The section 'Web Page Hardcopy' is only visible when printed.  Ignore if viewing with style sheets turrned off</p> 

@@ -26,7 +26,7 @@
 		<!--[if lte IE 7]>
 		<style type="text/css">
 		#sizer {
-			width:expression(document.body.clientWidth > 1440 ? "500px" : "78%" );
+			width:expression(document.body.clientWidth > 1800 ? "800px" : "80%" );
 		}
 		</style>
 		<![endif]-->
