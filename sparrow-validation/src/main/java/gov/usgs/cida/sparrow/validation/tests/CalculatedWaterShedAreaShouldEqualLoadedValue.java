@@ -31,6 +31,9 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 	/** If true, FRAC values that do not total to 1 will not be corrected. Mostly for debugging. */
 	protected boolean forceUncorrectedFracValues = false;
 	
+	int numberOfReachAreaFractionMapsAllowedInMemory_original;
+	int numberOfReachAreaFractionMapsAllowedInMemory_forTest = 100000;
+	
 	
 	Comparator shoreReachComparator;
 
@@ -52,6 +55,12 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 	}
 	
 	/**
+	 * Constructor with options to force non-standard values for calculating the
+	 * fractioned watershed areas.
+	 * 
+	 * Note that setting either flag to false can significantly slow down the validation
+	 * for large models.  For instance, the North East NHD model can run for 12 hours
+	 * or more.
 	 * 
 	 * @param allowedVariance
 	 * @param forceNonFractionedArea Takes precidence over forceUncorrectedFracValues.
@@ -65,6 +74,26 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 		this.shoreReachComparator = shoreReachComparator;
 		this.forceNonFractionedArea = forceNonFractionedArea;
 		this.forceUncorrectedFracValues = forceUncorrectedFracValues;
+	}
+	
+	@Override
+	public void beforeEachTest(Long modelId) {
+		numberOfReachAreaFractionMapsAllowedInMemory_original = 
+				ConfiguredCache.FractionedWatershedArea.getCacheImplementation().getCacheConfiguration().getMaxElementsInMemory();
+		
+		ConfiguredCache.FractionedWatershedArea.getCacheImplementation().getCacheConfiguration().
+				setMaxElementsInMemory(numberOfReachAreaFractionMapsAllowedInMemory_forTest);
+		
+		super.beforeEachTest(modelId);
+	}
+	
+	@Override
+	public void afterEachTest(Long modelId) {
+		ConfiguredCache.FractionedWatershedArea.getCacheImplementation().getCacheConfiguration().
+						setMaxElementsInMemory(numberOfReachAreaFractionMapsAllowedInMemory_original);
+		ConfiguredCache.FractionedWatershedArea.getCacheImplementation().removeAll();
+		
+		super.afterEachTest(modelId);
 	}
 	
 	/**
@@ -109,18 +138,25 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 
 			} else {
 				//Not a shore reach
+
+				Double calculatedFractionalWatershedArea = null;
+				ReachID reachUId = new ReachID(modelId, reachId);
 				
-				recordRowTrace(modelId, reachId, row, "Starting: CalcReachAreaFractionMap");
-				//Calculate the fractioned watershed area, skipping the cache
-				//CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(topo, reachId, forceUncorrectedFracValues);
-				ReachRowValueMap areaMap = SharedApplication.getInstance().getReachAreaFractionMap(new ReachID(modelId, reachId));
-				recordRowTrace(modelId, reachId, row, "Completed: CalcReachAreaFractionMap");
-
 				recordRowTrace(modelId, reachId, row, "Starting: CalcFractionedWatershedArea");
-				CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, forceNonFractionedArea, forceUncorrectedFracValues);
-				Double calculatedFractionalWatershedArea = areaAction.run();
+				if (forceNonFractionedArea || forceUncorrectedFracValues) {
+					recordRowTrace(modelId, reachId, row, "Starting: CalcReachAreaFractionMap");
+					ReachRowValueMap areaMap = SharedApplication.getInstance().getReachAreaFractionMap(reachUId);
+					recordRowTrace(modelId, reachId, row, "Completed: CalcReachAreaFractionMap");
+					
+					CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, forceNonFractionedArea, forceUncorrectedFracValues);
+					calculatedFractionalWatershedArea = areaAction.run();
+					
+				} else {
+					calculatedFractionalWatershedArea = SharedApplication.getInstance().getFractionedWatershedArea(reachUId);
+				}
+				
 				recordRowTrace(modelId, reachId, row, "Completed: CalcFractionedWatershedArea");
-
+				
 				if (! comp(dbArea, calculatedFractionalWatershedArea)) {
 					Boolean shoreReach = topo.getInt(row, PredictData.TOPO_SHORE_REACH_COL) == 1;
 					Boolean ifTran = topo.getInt(row, PredictData.TOPO_IFTRAN_COL) == 1;

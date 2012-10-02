@@ -130,7 +130,11 @@ public class SparrowModelValidationRunner {
 		}
 		
 		if (continueRun && runner.initModelValidators()) {
+			long startTime = System.currentTimeMillis();
 			runner.run();
+			long endTime = System.currentTimeMillis();
+			
+			System.out.println("Total test run time: " + ((endTime - startTime) / 1000) + " seconds.");
 		} else {
 			System.err.println("Unable to run any models or tests.");
 		}
