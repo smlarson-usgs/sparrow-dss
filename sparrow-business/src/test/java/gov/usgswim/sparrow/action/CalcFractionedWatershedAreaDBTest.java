@@ -24,7 +24,7 @@ public class CalcFractionedWatershedAreaDBTest extends SparrowTestBase {
 		
 		
 	@Test
-	public void PerfTestAndValueTest() throws Exception {
+	public void cacheOptimizedCalcVsNonCachedCalcComparison() throws Exception {
 		PredictData pd = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		DataTable topo = pd.getTopo();
 		int rowCount = topo.getRowCount();
@@ -33,45 +33,22 @@ public class CalcFractionedWatershedAreaDBTest extends SparrowTestBase {
 		ArrayList<Double> uncachedAreas = new ArrayList<Double>(rowCount);
 		ArrayList<Double> cachedAreas = new ArrayList<Double>(rowCount);
 		
-		//Force the areas to be loaded
-//		DataTable incrementalReachAreas = 
-//				SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(TEST_MODEL_ID, AggregationLevel.REACH, false));
-
-		long startTime = System.currentTimeMillis();
-		System.out.println("Starting no-cache area run: " + startTime);
 		for (int row = 0; row < rowCount; row++) {
 			Long rowId = topo.getIdForRow(row);
 			ReachID reachId = new ReachID(TEST_MODEL_ID, rowId);
 			
-			if (row >= 8281 && row <= 8283) {
-				System.out.println("This is a problem row....");
-			}
-			
 			CalcFractionedWatershedArea action = new CalcFractionedWatershedArea(reachId, incAreaTable, false, false, false);
 			Double area = action.run();
 			uncachedAreas.add(area);
-			
-			//ConfiguredCache.FractionedWatershedArea
 					
 			assertNotNull(area);
 			assertTrue(area > 0d);
 		}
 		
-		long endTime = System.currentTimeMillis();
-		System.out.println("Ending no-cache area run.  Total time: " + (endTime - startTime) + "ms");
-		
-		
-		
 		//Do test allowing the cache to be used
-		startTime = System.currentTimeMillis();
-		System.out.println("Starting cache area run: " + startTime);
 		for (int row = 0; row < rowCount; row++) {
 			Long rowId = topo.getIdForRow(row);
 			ReachID reachId = new ReachID(TEST_MODEL_ID, rowId);
-			
-			if (row >= 8281 && row <= 8283) {
-				System.out.println("This is a problem row: " + row + " id: " + topo.getIdForRow(row));
-			}
 			
 			CalcFractionedWatershedArea action = new CalcFractionedWatershedArea(reachId, incAreaTable, false, false, true);
 			Double area = action.run();
@@ -82,10 +59,6 @@ public class CalcFractionedWatershedAreaDBTest extends SparrowTestBase {
 			assertTrue(area > 0d);
 		}
 		
-		endTime = System.currentTimeMillis();
-		System.out.println("Ending cache area run.  Total time: " + (endTime - startTime) + "ms");
-		
-		
 		//Compare results
 		for (int row = 0; row < rowCount; row++) {
 			boolean equal = isEqual(uncachedAreas.get(row), cachedAreas.get(row), .00001D);
@@ -95,7 +68,7 @@ public class CalcFractionedWatershedAreaDBTest extends SparrowTestBase {
 				System.out.println("** Row: " + row);
 			}
 			
-			//assertTrue(isEqual(uncachedAreas.get(row), cachedAreas.get(row), .000001D));
+			assertTrue(isEqual(uncachedAreas.get(row), cachedAreas.get(row), .000001D));
 		}
 		
 	}
@@ -117,8 +90,7 @@ public class CalcFractionedWatershedAreaDBTest extends SparrowTestBase {
 		ReachRowValueMap map6719 = action6719.run();
 		ReachRowValueMap map6716 = action6716.run();
 		
-		System.out.println("6716 vs 6717: ");
-		reportDifferences(topo, map6716, map6717);
+		//reportDifferences(topo, map6716, map6717);
 		
 		assertTrue(map6717.containsKey(new Integer(8280)));
 		assertTrue(! map6717.containsKey(new Integer(8281)));
@@ -224,30 +196,4 @@ public class CalcFractionedWatershedAreaDBTest extends SparrowTestBase {
 		return table.toImmutable();
 	}
 	
-	//@Test
-	public void PerfTestWithTheCache() throws Exception {
-		PredictData pd = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
-		DataTable topo = pd.getTopo();
-		
-		//Force the areas to be loaded
-		DataTable incrementalReachAreas = 
-				SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(TEST_MODEL_ID, AggregationLevel.REACH, false));
-
-		long startTime = System.currentTimeMillis();
-		System.out.println("Starting area run: " + startTime);
-		for (int row = 0; row < topo.getRowCount(); row++) {
-			Long rowId = topo.getIdForRow(row);
-			ReachID reachId = new ReachID(TEST_MODEL_ID, rowId);
-			
-			Double area = SharedApplication.getInstance().getFractionedWatershedArea(reachId);
-
-					
-			assertNotNull(area);
-			assertTrue(area > 0d);
-		}
-		
-		long endTime = System.currentTimeMillis();
-		System.out.println("Ending area run.  Total time: " + (endTime - startTime) + "ms");
-		
-	}
 }
