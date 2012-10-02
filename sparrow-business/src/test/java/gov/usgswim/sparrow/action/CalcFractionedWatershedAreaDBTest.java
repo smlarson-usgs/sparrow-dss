@@ -154,35 +154,6 @@ public class CalcFractionedWatershedAreaDBTest extends SparrowTestBase {
 			}
 
 		}
-			
-//			
-//		for(Entry<Integer, Float> aEntry: a.entrySet()) {
-//			
-//			Integer aRow = aEntry.getKey();
-//			Float aVal = aEntry.getValue();
-//		
-//			Float bVal = b.get(aEntry.getKey());
-//			
-//			if (bVal == null) {
-//				System.out.println("b does not contain the Entry <" + aRow + ", " + aVal + ">");
-//			} else if (! isEqual(aVal, bVal, .00001D)) {
-//				System.out.println("b contains a different value for row: " +  aRow + ".  A val: " + aVal+ ", " + "b val: " + bVal);
-//			} else {
-//				System.out.println("both  contain the Entry <" + aRow + ", " + aVal + ">");
-//			}
-//		}
-//		
-//		for(Entry<Integer, Float> bEntry: b.entrySet()) {
-//			
-//			Integer bRow = bEntry.getKey();
-//			Float bVal = bEntry.getValue();
-//		
-//			Float aVal = a.get(bEntry.getKey());
-//			
-//			if (aVal == null) {
-//				System.out.println("a does not contain the Entry <" + bRow + ", " + bVal + ">");
-//			}
-//		}
 	}
 	
 	protected DataTable buildFakeAreaTable(int numberOfRows) {
