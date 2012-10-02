@@ -14,9 +14,9 @@
 
 	<link href="../jquery/jquery-ui-1.8.20.custom/css/smoothness/jquery-ui-1.8.20.custom.css" rel="stylesheet" type="text/css"/>
 
-	<link rel="stylesheet" href="../css/full_width.css?rev=1" type="text/css">
-	<link rel="stylesheet" href="../css/static_custom.css?rev=1" type="text/css">
-	<link type="text/css" rel="stylesheet" href="style/report.css" />
+	<link type="text/css" rel="stylesheet" href="../css/full_width.css?rev=2">
+	<link type="text/css" rel="stylesheet" href="../css/static_custom.css?rev=2">
+	<link type="text/css" rel="stylesheet" href="style/report.css?rev=2" />
 
 </head>
 <body>

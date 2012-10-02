@@ -253,6 +253,8 @@ ul, ol, dl, p, h1, h2, h3, h4, h5, h6 {
   padding: .1em;
 }
 
+ul, ol { padding-left: 1em; margin-left: 1em; }
+
 ul { list-style-position: inside; }
 li { margin: .3em 0; }
 li li { margin-left: .5em; }
