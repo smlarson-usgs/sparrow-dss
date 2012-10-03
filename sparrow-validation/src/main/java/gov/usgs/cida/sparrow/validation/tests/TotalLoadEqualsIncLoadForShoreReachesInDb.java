@@ -3,12 +3,13 @@ package gov.usgs.cida.sparrow.validation.tests;
 import gov.usgs.cida.sparrow.validation.framework.BaseTextFileTester;
 import gov.usgs.cida.sparrow.validation.framework.TestResult;
 import gov.usgs.cida.datatable.DataTable;
-import gov.usgs.cida.sparrow.validation.framework.Comparator;
+import gov.usgs.cida.sparrow.validation.framework.*;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.TopoData;
 import gov.usgswim.sparrow.datatable.PredictResult;
+import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgs.cida.sparrow.validation.framework.ValidationTestUtils;
 
 
 /**
@@ -17,7 +18,7 @@ import gov.usgs.cida.sparrow.validation.framework.ValidationTestUtils;
  * 
  * @author eeverman
  */
-public class TotalLoadEqualsIncLoadForShoreReachesInDb extends BaseTextFileTester {
+public class TotalLoadEqualsIncLoadForShoreReachesInDb extends SparrowModelValidationBase {
 	
 	
 	public boolean requiresDb() { return true; }
@@ -31,10 +32,21 @@ public class TotalLoadEqualsIncLoadForShoreReachesInDb extends BaseTextFileTeste
 
 		AdjustmentGroups emptyAdjustmentGroups = new AdjustmentGroups(modelId);
 		PredictData dbPredictData = SharedApplication.getInstance().getPredictData(modelId);
-		PredictResult dbPredictResult = SharedApplication.getInstance().getPredictResult(emptyAdjustmentGroups);
-
-		if (dbPredictData != null && dbPredictResult != null) {
-			testComparison(dbPredictResult, dbPredictData, modelId);
+		
+		
+		BasicAnalysis decayedIncAnalysis = new BasicAnalysis(DataSeriesType.decayed_incremental, null, null, null);
+		PredictionContext decayedIncContext = new PredictionContext(modelId, emptyAdjustmentGroups, decayedIncAnalysis,
+				null, null, NoComparison.NO_COMPARISON);
+		SparrowColumnSpecifier decayedIncResult = SharedApplication.getInstance().getAnalysisResult(decayedIncContext);
+		
+		BasicAnalysis totalAnalysis = new BasicAnalysis(DataSeriesType.total, null, null, null);
+		PredictionContext totalContext = new PredictionContext(modelId, emptyAdjustmentGroups, totalAnalysis,
+				null, null, NoComparison.NO_COMPARISON);
+		SparrowColumnSpecifier totalResult = SharedApplication.getInstance().getAnalysisResult(totalContext);
+		
+		
+		if (dbPredictData != null && decayedIncResult != null && totalResult != null) {
+			testComparison(decayedIncResult, totalResult, dbPredictData, modelId);
 		} else {
 			recordTestException(modelId, null, "Could not load the db model or its predictions.");
 		}
@@ -44,27 +56,34 @@ public class TotalLoadEqualsIncLoadForShoreReachesInDb extends BaseTextFileTeste
 	}
 	
 
-	public void testComparison(PredictResult dbResult, PredictData dbPredictData, long modelId) throws Exception {
+	public void testComparison(SparrowColumnSpecifier decayedIncResult, SparrowColumnSpecifier totalResult, PredictData dbPredictData, long modelId) throws Exception {
 		
-		for (int row = 0; row < dbPredictData.getTopo().getRowCount(); row++) {
+		TopoData topo = dbPredictData.getTopo();
+		
+		for (int row = 0; row < topo.getRowCount(); row++) {
 
-			Long id = dbResult.getIdForRow(row);
+			Long id = topo.getIdForRow(row);
 			
-			boolean rowIsShoreReach = dbPredictData.getTopo().isShoreReach(row);
-			boolean rowIsIfTranOn = dbPredictData.getTopo().isIfTran(row);			
+			boolean rowIsShoreReach = topo.isShoreReach(row);
+			boolean rowIsIfTranOn = topo.isIfTran(row);			
 
 			if (rowIsShoreReach) {
 				
 				double dbCalcedIncValue =
-						dbResult.getDouble(row, dbResult.getIncrementalCol());
+						decayedIncResult.getDouble(row);
 				double dbCalcedTotalValue =
-						dbResult.getDouble(row, dbResult.getTotalCol());
+						totalResult.getDouble(row);
 
 
 				if (! comp(dbCalcedIncValue, dbCalcedTotalValue)) {
 						this.recordRowError(modelId, id, row, dbCalcedIncValue, dbCalcedTotalValue, 
 								"db Inc", "db total", rowIsShoreReach, rowIsIfTranOn,
-								"The DB inc value does not match the total value for this shore reach");
+								"The DSS predicted decayed incremental value is != the DSS total value for this shore reach");
+				} else {
+						this.recordRowDebug(modelId, id, row, dbCalcedIncValue, dbCalcedTotalValue, 
+								"db Inc", "db total", rowIsShoreReach, rowIsIfTranOn,
+								"The DSS predicted decayed incremental value == the DSS total value for this shore reach");
+					
 				}
 			
 			}

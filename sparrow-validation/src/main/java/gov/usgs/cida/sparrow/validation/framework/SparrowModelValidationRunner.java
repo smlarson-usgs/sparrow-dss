@@ -315,7 +315,7 @@ public class SparrowModelValidationRunner {
 			System.out.println("--> The selected tests require text files.");
 			
 			pr = promptPathOrDir();
-			if (pr.isQuit) return false;
+			if (pr.quit) return false;
 			
 			if (singleModelPath != null) {
 				File f = new File(singleModelPath);
@@ -336,7 +336,7 @@ public class SparrowModelValidationRunner {
 		} else {
 			//If text files are not involved, we need a list of model ids
 			pr = prompModelIds();
-			if (pr.isQuit) return false;
+			if (pr.quit) return false;
 		}
 		
 		if (requiresDb) {
@@ -344,10 +344,10 @@ public class SparrowModelValidationRunner {
 			System.out.println("--> The selected tests require a DB connection.");
 			
 			pr = promptWhichDb();
-			if (pr.isQuit) return false;
+			if (pr.quit) return false;
 			
 			pr = promptPwd();
-			if (pr.isQuit) return false;
+			if (pr.quit) return false;
 			
 			intiDbConfig();
 			
@@ -361,11 +361,11 @@ public class SparrowModelValidationRunner {
 			}
 			
 			pr = promptCacheDirectory();
-			if (pr.isQuit) return false;
+			if (pr.quit) return false;
 		}
 		
 		pr = promptLogDetail();
-		if (pr.isQuit) return false;
+		if (pr.quit) return false;
 		
 		return true;
 
@@ -510,7 +510,7 @@ public class SparrowModelValidationRunner {
 			System.out.println("What?? - please try again.  Enter 'quit' to quit.");
 			return promptPathOrDir();
 		} else {
-			if (pathOrDir.isQuit) return pathOrDir;
+			if (pathOrDir.quit) return pathOrDir;
 			
 			
 			String pathOrDirStr = pathOrDir.getNullTrimmedStrResponse();
@@ -548,7 +548,7 @@ public class SparrowModelValidationRunner {
 		
 		PromptResponse level  = prompt("Logging Level (E/W/D/T) or [Enter] to use the default 'Error' Level: ");
 		
-		if (level.isQuit) return level;
+		if (level.quit) return level;
 		String lvlStr = level.getNullTrimmedStrResponse();
 
 		
@@ -575,11 +575,11 @@ public class SparrowModelValidationRunner {
 			System.out.println("");
 			System.out.println(": : Models to Run (based on text files) : :");
 			PromptResponse firstIdStr  = prompt("Enter the ID of the first model to test: ");
-			if (firstIdStr.isQuit) return firstIdStr;
+			if (firstIdStr.quit) return firstIdStr;
 			firstModelId = Integer.parseInt(firstIdStr.getNullTrimmedStrResponse());
 			
 			PromptResponse lastIdStr  = prompt("Enter the ID of the last model to test: ");
-			if (lastIdStr.isQuit) return lastIdStr;
+			if (lastIdStr.quit) return lastIdStr;
 			lastModelId = Integer.parseInt(lastIdStr.getNullTrimmedStrResponse());
 			
 			return lastIdStr;
@@ -595,7 +595,7 @@ public class SparrowModelValidationRunner {
 			System.out.println("");
 			System.out.println(": : Models to Run (based on database models) : :");
 			PromptResponse idStrsResp  = prompt("Enter a list of model IDs, separated by a comma and/or space.  Enter 'p' to run all the public models: ");
-			if (! idStrsResp.isQuit) {
+			if (! idStrsResp.quit) {
 				
 				if (idStrsResp.isEmptyOrNull()) {
 					log.error("I really need a list of IDs.  Lets try that again.  You can enter 'quit' to quit.");
@@ -630,7 +630,7 @@ public class SparrowModelValidationRunner {
 		System.out.println("");
 		System.out.println(": : Database Connection : :");
 		PromptResponse response = prompt("Which database should the validation test be run against?  (T)est or (P)roduction: ");
-		if (response.isQuit) return response;
+		if (response.quit) return response;
 		
 		if (response.isEmptyOrNull()) {
 			System.out.println("Sorry, I didn't get that.");
@@ -653,7 +653,7 @@ public class SparrowModelValidationRunner {
 	//useTestDb
 	public PromptResponse promptPwd() {
 		PromptResponse pwdResp = prompt("Enter the db password: ");
-		if (! pwdResp.isQuit) {
+		if (! pwdResp.quit) {
 			dbPwd = pwdResp.getStrResponse();
 		}
 		
@@ -676,13 +676,13 @@ public class SparrowModelValidationRunner {
 		
 		PromptResponse resp = prompt("Enter the path to your model cache directory, or accept the default location: ");
 		
-		if (!resp.isQuit && ! resp.isEmptyOrNull()) {
+		if (!resp.quit && ! resp.isEmptyOrNull()) {
 			File f = new File(resp.getNullTrimmedStrResponse());
 			resp.setObjectResponse(f);
 			
 			cacheDirectory = resp.getNullTrimmedStrResponse();
 			System.err.println("Using user specified cache directory '" + cacheDirectory + "'");
-		} if (!resp.isQuit && resp.isEmptyOrNull()) {
+		} if (!resp.quit && resp.isEmptyOrNull()) {
 			//accept default directory
 			
 			cacheDirectory = defaultDir.getAbsolutePath();
@@ -733,7 +733,7 @@ public class SparrowModelValidationRunner {
 	
 	public static class PromptResponse {
 		
-		private boolean isQuit = false;
+		private boolean quit = false;
 		
 		String strResponse;
 		Object response;
@@ -741,7 +741,7 @@ public class SparrowModelValidationRunner {
 		PromptResponse(String strResponse) {
 			
 			if (strResponse != null && "quit".equalsIgnoreCase(strResponse)) {
-				this.isQuit = true;
+				this.quit = true;
 			}
 			
 			this.strResponse = strResponse;
@@ -751,8 +751,8 @@ public class SparrowModelValidationRunner {
 			this.response = response;
 		}
 		
-		public boolean isIsQuit() {
-			return isQuit;
+		public boolean isQuit() {
+			return quit;
 		}
 
 		public Object getObjectResponse() {
@@ -769,6 +769,15 @@ public class SparrowModelValidationRunner {
 		
 		public String getNullTrimmedStrResponse() {
 			return StringUtils.trimToNull(strResponse);
+		}
+		
+		public Long parseAsLong() {
+			try {
+				Long l = Long.parseLong(strResponse);
+				return l;
+			} catch (Exception e) {
+				return null;
+			}
 		}
 	}
 	

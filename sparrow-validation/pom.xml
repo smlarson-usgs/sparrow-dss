@@ -64,6 +64,28 @@
               </artifactSet>
             </configuration>
           </execution>
+          <execution>
+						<id>Build_RunReachViewer</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+							<shadedArtifactAttached>true</shadedArtifactAttached>	<!-- Create additional jar -->
+              <shadedClassifierName>RunReachViewer</shadedClassifierName> <!-- add to name -->
+							
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>gov.usgs.cida.sparrow.validation.RunReachViewer</mainClass>
+                </transformer>
+              </transformers>
+              <artifactSet>
+                <excludes>
+                  <exclude>junit:junit</exclude>
+                </excludes>
+              </artifactSet>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>
