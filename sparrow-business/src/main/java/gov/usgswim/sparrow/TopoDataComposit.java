@@ -134,6 +134,16 @@ public class TopoDataComposit extends AbstractDataTableView implements TopoData 
 		int[] found = findAnyUpstreamReaches(getRowForId(reachId));
 		return convertRowsToIds(found);
 	}
+	
+	@Override
+	public int[] findAnyDownstreamReaches(int row) {
+		int tnode = getToNode(row);
+
+		//The index requires that an Integer be used.
+		int[] downtream = findAll(PredictData.TOPO_FNODE_COL, new Integer((int)tnode));
+		
+		return downtream;
+	}
 
 	@Override
 	public double getCorrectedFracForRow(int row) {

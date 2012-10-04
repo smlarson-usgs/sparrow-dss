@@ -161,6 +161,17 @@ public interface TopoData extends DataTable.Immutable {
 	public int[] findAnyUpstreamReaches(int row);
 	
 	/**
+	 * Returns a list of all reaches immediately downstream of the specified reach.
+	 * 
+	 * WARNING: This method should normally not be used since reaches that are
+	 * topologically downstream are not necessarily useful for model calculations.
+	 * 
+	 * @param row
+	 * @return An array of reach row numbers or an empty array if no reaches are found.
+	 */
+	public int[] findAnyDownstreamReaches(int row);
+	
+	/**
 	 * Returns a list of all reaches immediately upstream of the specified reach.
 	 * 
 	 * WARNING: This method should normally not be used since reaches that are
