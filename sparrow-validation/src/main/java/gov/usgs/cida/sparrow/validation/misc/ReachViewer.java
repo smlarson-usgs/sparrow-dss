@@ -1,4 +1,4 @@
-package gov.usgs.cida.sparrow.validation.tests;
+package gov.usgs.cida.sparrow.validation.misc;
 
 import gov.usgs.cida.sparrow.validation.framework.BaseTextFileTester;
 import gov.usgs.cida.sparrow.validation.framework.TestResult;

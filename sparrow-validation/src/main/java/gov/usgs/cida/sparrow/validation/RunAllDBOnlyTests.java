@@ -99,7 +99,7 @@ public class RunAllDBOnlyTests extends SparrowModelValidationRunner {
 		addValidator(new FracValuesShouldTotalToOne(tightComparator, false));
 		addValidator(new ReachCoefValuesShouldBeLessThanOneAndGreaterThanZero(preciseComparator, false));
 		addValidator(new TotalLoadEqualsIncLoadForShoreReachesInDb(preciseComparator, false));
-
+		
 		
 		
 		////////////////////////////////
@@ -110,6 +110,10 @@ public class RunAllDBOnlyTests extends SparrowModelValidationRunner {
 		addValidator(new WarningOnlyDbTests(tightComparator, true));
 		addValidator(new ReachCoefValuesShouldBeOneForShoreReaches(preciseComparator, true));
 		
+		// This test doesn't use a comparator.  Its marked as warning only
+		// because it looks like there are some cases where there may be a loop
+		// of river reaches... which may be ok.
+		addValidator(new HydSeqOfUpstreamReachesShouldBeLessThanDownstreamReach(true));
 		
 	}
 }

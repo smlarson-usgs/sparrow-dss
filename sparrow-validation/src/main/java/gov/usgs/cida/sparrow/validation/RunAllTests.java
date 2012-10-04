@@ -85,7 +85,7 @@ public class RunAllTests extends SparrowModelValidationRunner {
 		/*
 		 * Arg1:  Comparator for standard reaches
 		 * Arg2:  Comparator for Shore Reaches (they should be exactly equal)
-		 * Arg3		Set to true to force errors to be listed as warnings
+		 * Arg3:	Set to true to force errors to be listed as warnings
 		 * Arg4:	Set true to force non-fractioned watershed area calcs.
 		 *				Production will always have this as false, but can be toggled here
 		 *				for testing.  This takes precidence over Arg 3.
@@ -117,5 +117,10 @@ public class RunAllTests extends SparrowModelValidationRunner {
 		
 		addValidator(new WarningOnlyDbTests(tightComparator, true));
 		addValidator(new ReachCoefValuesShouldBeOneForShoreReaches(preciseComparator, true));
+		
+		// This test doesn't use a comparator.  Its marked as warning only
+		// because it looks like there are some cases where there may be a loop
+		// of river reaches... which may be ok.
+		addValidator(new HydSeqOfUpstreamReachesShouldBeLessThanDownstreamReach(true));
 	}
 }

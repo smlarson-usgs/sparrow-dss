@@ -66,17 +66,23 @@ public class RunDb_WarningOnly_Tests extends SparrowModelValidationRunner {
 		/*
 		 * Arg1:  Comparator for standard reaches
 		 * Arg2:  Comparator for Shore Reaches (they should be exactly equal)
-		 * Arg3:	Set true to force non-fractioned watershed area calcs.
+		 * Arg3:	Set to true to force errors to be listed as warnings
+		 * Arg4:	Set true to force non-fractioned watershed area calcs.
 		 *				Production will always have this as false, but can be toggled here
 		 *				for testing.  This takes precidence over Arg 3.
-		 * Arg4:	Set true to force FRAC values totalling to 1 be not corrected.
+		 * Arg5:	Set true to force FRAC values totalling to 1 be not corrected.
 		 *				Production uses false.
 		 */
-		//addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(tightComparator, preciseComparator, false, false));
+		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(tightComparator, preciseComparator, true, false, false));
 		
 		
 		addValidator(new ReachCoefValuesShouldBeOneForShoreReaches(preciseComparator, true));
 		addValidator(new WarningOnlyDbTests(tightComparator, true));
+		
+		// This test doesn't use a comparator.  Its marked as warning only
+		// because it looks like there are some cases where there may be a loop
+		// of river reaches... which may be ok.
+		addValidator(new HydSeqOfUpstreamReachesShouldBeLessThanDownstreamReach(true));
 		
 	}
 	
