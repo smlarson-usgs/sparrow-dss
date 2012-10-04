@@ -398,7 +398,7 @@ public class SparrowModelValidationRunner {
 			
 			try {
 				
-				ok = mv.initTest(this, false);
+				ok = mv.initTest(this);
 				if (! ok) return false;
 				
 			} catch (Exception e) {

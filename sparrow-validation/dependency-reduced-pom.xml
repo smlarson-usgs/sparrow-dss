@@ -57,6 +57,27 @@
               </artifactSet>
             </configuration>
           </execution>
+          <execution>
+            <id>Build_RunReachViewer</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <shadedArtifactAttached>true</shadedArtifactAttached>
+              <shadedClassifierName>RunReachViewer</shadedClassifierName>
+              <transformers>
+                <transformer>
+                  <mainClass>gov.usgs.cida.sparrow.validation.RunReachViewer</mainClass>
+                </transformer>
+              </transformers>
+              <artifactSet>
+                <excludes>
+                  <exclude>junit:junit</exclude>
+                </excludes>
+              </artifactSet>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>

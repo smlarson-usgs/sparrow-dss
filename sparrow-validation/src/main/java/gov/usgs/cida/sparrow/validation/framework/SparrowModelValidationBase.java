@@ -37,14 +37,23 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 	
 	private Logger testLog;
 	
-	public SparrowModelValidationBase(Comparator comparator) {
+	/**
+	 * The failedTestIsOnlyAWarning flag indicates that a test failure should not
+	 * mark the test as failing, only a warning.  This is useful for tests that
+	 * have lots of questionable values (i.e., values are off by 10% for thousands
+	 * of values).
+	 * 
+	 * @param comparator The comparison to use for the comp method.
+	 * @param failedTestIsOnlyAWarning If true, a failed test will only be counted as a warning.
+	 */
+	public SparrowModelValidationBase(Comparator comparator, boolean failedTestIsOnlyAWarning) {
 		this.comparator = comparator;
+		this.failedTestIsOnlyAWarning = failedTestIsOnlyAWarning;
 	}
 
 	@Override
-	public boolean initTest(SparrowModelValidationRunner runner, boolean failedTestIsOnlyAWarning) throws Exception {
+	public boolean initTest(SparrowModelValidationRunner runner) throws Exception {
 		this.runner = runner;
-		this.failedTestIsOnlyAWarning = failedTestIsOnlyAWarning;
 		return true;
 	}
 	

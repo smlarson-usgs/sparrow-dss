@@ -19,8 +19,8 @@ public class FracValuesShouldTotalToOne extends SparrowModelValidationBase {
 	public boolean requiresTextFile() { return false; }
 	
 	
-	public FracValuesShouldTotalToOne(Comparator comparator) {
-		super(comparator);
+	public FracValuesShouldTotalToOne(Comparator comparator, boolean failedTestIsOnlyAWarning) {
+		super(comparator, failedTestIsOnlyAWarning);
 	}
 	
 	public TestResult testModel(Long modelId) throws Exception {

@@ -30,8 +30,8 @@ public class SparrowModelPredictionValidation extends BaseTextFileTester {
 	public boolean requiresTextFile() { return true; }
 	
 	
-	public SparrowModelPredictionValidation(Comparator comparator) {
-		super(comparator);
+	public SparrowModelPredictionValidation(Comparator comparator, boolean failedTestIsOnlyAWarning) {
+		super(comparator, failedTestIsOnlyAWarning);
 	}
 	
 	/**
@@ -39,9 +39,9 @@ public class SparrowModelPredictionValidation extends BaseTextFileTester {
 	 * @param forceAllAreaFractionsToOne Set true to do non-fractional area calcs
 	 */
 	public SparrowModelPredictionValidation(Comparator totalLoadComparator,
-			Comparator incrementalLoadComparator, boolean useDecayedIncremental) {
+			Comparator incrementalLoadComparator, boolean failedTestIsOnlyAWarning, boolean useDecayedIncremental) {
 		
-		super(totalLoadComparator);
+		super(totalLoadComparator, failedTestIsOnlyAWarning);
 		this.incLoadComparator = incrementalLoadComparator;
 		this.useDecayedIncremental = useDecayedIncremental;
 	}

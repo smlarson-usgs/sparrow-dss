@@ -9,7 +9,11 @@ import gov.usgs.cida.sparrow.validation.framework.Comparator;
  */
 public class FailableDbTests extends BaseQueryValidator {
 	
+	public FailableDbTests(Comparator comparator, boolean failedTestIsOnlyAWarning) {
+		super(comparator, failedTestIsOnlyAWarning);
+	}
+		
 	public FailableDbTests(Comparator comparator) {
-		super(comparator);
+		super(comparator, false);
 	}
 }

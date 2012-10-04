@@ -55,12 +55,12 @@ public class RunDb_WarningOnly_Tests extends SparrowModelValidationRunner {
 		
 		//PRECISE comparison
 		BasicComparator preciseComparator = new BasicComparator();
-		preciseComparator.setAllowedFractionalVarianceForValuesLessThan10(.000001d);
-		preciseComparator.setAllowedFractionalVarianceForValuesLessThan1K(.000001d);
-		preciseComparator.setAllowedFractionalVarianceForValuesLessThan100K(.000001d);
-		preciseComparator.setAllowedFractionalVariance(.000001d);	//any larger value
-		preciseComparator.setMaxAbsVarianceForValuesLessThanOne(.00000001d);
-		preciseComparator.setMaxAbsVariance(.00000001d);
+		preciseComparator.setAllowedFractionalVarianceForValuesLessThan10(.0000001d);
+		preciseComparator.setAllowedFractionalVarianceForValuesLessThan1K(.0000001d);
+		preciseComparator.setAllowedFractionalVarianceForValuesLessThan100K(.0000001d);
+		preciseComparator.setAllowedFractionalVariance(.0000001d);	//any larger value
+		preciseComparator.setMaxAbsVarianceForValuesLessThanOne(.000000001d);
+		preciseComparator.setMaxAbsVariance(.000000001d);
 		
 		
 		/*
@@ -72,39 +72,12 @@ public class RunDb_WarningOnly_Tests extends SparrowModelValidationRunner {
 		 * Arg4:	Set true to force FRAC values totalling to 1 be not corrected.
 		 *				Production uses false.
 		 */
-		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(tightComparator, preciseComparator, false, false));
+		//addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(tightComparator, preciseComparator, false, false));
 		
-		/*
-		 * Arg1:  Comparator for standard reaches
-		 * Arg2:	reportErrorsAsOnlyWarnings:  If true, a warning is generated instead of errors.
-		 *				If false, errors are reported as errors.
-		 */
-		addValidator(new WarningOnlyDbTests(tightComparator, false));
+		
+		addValidator(new ReachCoefValuesShouldBeOneForShoreReaches(preciseComparator, true));
+		addValidator(new WarningOnlyDbTests(tightComparator, true));
 		
 	}
 	
-	@Override
-	public boolean initModelValidators() {
-		
-		boolean ok = true;
-		
-		for (ModelValidator mv : getValidators()) {
-			
-			try {
-				
-				//Here is the key bit:
-				//pass true as the 2nd arg to indicate that the test should not fail
-				//if an error is recorded.
-				ok = mv.initTest(this, true);
-				if (! ok) return false;
-				
-			} catch (Exception e) {
-				log.error("Unable to initiate the test: " + mv.getClass(), e);
-				return false;
-			}
-
-		}
-		
-		return true;
-	}
 }

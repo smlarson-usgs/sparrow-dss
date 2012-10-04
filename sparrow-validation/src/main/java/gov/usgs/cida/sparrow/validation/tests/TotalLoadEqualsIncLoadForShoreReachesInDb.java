@@ -24,8 +24,8 @@ public class TotalLoadEqualsIncLoadForShoreReachesInDb extends SparrowModelValid
 	public boolean requiresDb() { return true; }
 	public boolean requiresTextFile() { return false; }
 	
-	public TotalLoadEqualsIncLoadForShoreReachesInDb(Comparator comparator) {
-		super(comparator);
+	public TotalLoadEqualsIncLoadForShoreReachesInDb(Comparator comparator, boolean failedTestIsOnlyAWarning) {
+		super(comparator, failedTestIsOnlyAWarning);
 	}
 	
 	public TestResult testModel(Long modelId) throws Exception {

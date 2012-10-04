@@ -10,8 +10,8 @@ import gov.usgswim.sparrow.PredictData;
  */
 public abstract class BaseTextFileTester extends SparrowModelValidationBase {
 
-	public BaseTextFileTester(Comparator comparator) {
-		super(comparator);
+	public BaseTextFileTester(Comparator comparator, boolean failedTestIsOnlyAWarning) {
+		super(comparator, failedTestIsOnlyAWarning);
 	}
 
 	public int getIncAllCol(DataTable txt) throws Exception {

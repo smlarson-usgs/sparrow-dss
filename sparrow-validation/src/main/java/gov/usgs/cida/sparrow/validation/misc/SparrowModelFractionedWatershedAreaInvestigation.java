@@ -24,7 +24,7 @@ public class SparrowModelFractionedWatershedAreaInvestigation extends SparrowMod
 	
 	
 	public SparrowModelFractionedWatershedAreaInvestigation(Comparator comparator) {
-		super(comparator);
+		super(comparator, false);
 	}
 	
 	public TestResult testModel(Long modelId) throws Exception {

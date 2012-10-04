@@ -35,8 +35,8 @@ public class BaseQueryValidator extends SparrowModelValidationBase {
 	
 	protected int queryCount = 0;
 	
-	public BaseQueryValidator(Comparator comparator) {
-		super(comparator);
+	public BaseQueryValidator(Comparator comparator, boolean failedTestIsOnlyAWarning) {
+		super(comparator, failedTestIsOnlyAWarning);
 	}
 	
 	

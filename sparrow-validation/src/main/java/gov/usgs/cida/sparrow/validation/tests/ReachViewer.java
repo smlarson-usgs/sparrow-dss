@@ -29,7 +29,7 @@ public class ReachViewer extends SparrowModelValidationBase {
 	public boolean requiresTextFile() { return false; }
 	
 	public ReachViewer(Comparator comparator) {
-		super(comparator);
+		super(comparator, false);
 	}
 	
 	public TestResult testModel(Long modelId) throws Exception {

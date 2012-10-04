@@ -16,18 +16,14 @@ import org.apache.log4j.Logger;
 public interface ModelValidator {
 	
 	/**
-	 * Init the test, passing in needed info.
-	 * The failedTestIsOnlyAWarning flag indicates that a test failure should not
-	 * mark the test as failing, only a warning.  This is useful for tests that
-	 * have lots of questionable values (i.e., values are off by 10% for thousands
-	 * of values).
+	 * Init the test, passing in the runner which is used to retrieve user spec'ed
+	 * startup values.
 	 * 
 	 * @param runner The runner, which can be used to fetch more data about the test.
-	 * @param failedTestIsOnlyAWarning If true, a failed test will only be counted as a warning.
 	 * @return
 	 * @throws Exception 
 	 */
-	public boolean initTest(SparrowModelValidationRunner runner, boolean failedTestIsOnlyAWarning) throws Exception;
+	public boolean initTest(SparrowModelValidationRunner runner) throws Exception;
 	
 	public void beforeEachTest(Long modelId);
 	public void afterEachTest(Long modelId);

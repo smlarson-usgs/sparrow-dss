@@ -49,8 +49,8 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 		//return testModelBasedOnHuc2Aggregation(modelId);
 	}
 	
-	public CalculatedWaterShedAreaShouldEqualLoadedValue(Comparator comparator, Comparator shoreReachComparator) {
-		super(comparator);
+	public CalculatedWaterShedAreaShouldEqualLoadedValue(Comparator comparator, Comparator shoreReachComparator, boolean failedTestIsOnlyAWarning) {
+		super(comparator, failedTestIsOnlyAWarning);
 		this.shoreReachComparator = shoreReachComparator;
 	}
 	
@@ -67,10 +67,10 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 	 * @param forceUncorrectedFracValues 
 	 */
 	public CalculatedWaterShedAreaShouldEqualLoadedValue(Comparator comparator,
-			Comparator shoreReachComparator,
+			Comparator shoreReachComparator, boolean failedTestIsOnlyAWarning,
 			boolean forceNonFractionedArea, boolean forceUncorrectedFracValues) {
 		
-		super(comparator);
+		super(comparator, failedTestIsOnlyAWarning);
 		this.shoreReachComparator = shoreReachComparator;
 		this.forceNonFractionedArea = forceNonFractionedArea;
 		this.forceUncorrectedFracValues = forceUncorrectedFracValues;

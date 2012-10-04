@@ -8,16 +8,10 @@ import gov.usgs.cida.sparrow.validation.framework.BaseQueryValidator;
  * @author eeverman
  */
 public class WarningOnlyDbTests extends BaseQueryValidator {
-
-	boolean reportErrorsAsOnlyWarnings = true;
 	
-	protected boolean isAFailedTestOnlyAWarning() {
-		return reportErrorsAsOnlyWarnings;
-	}
 	
-	public WarningOnlyDbTests(Comparator comparator, boolean reportErrorsAsOnlyWarnings) {
-		super(comparator);
-		this.reportErrorsAsOnlyWarnings = reportErrorsAsOnlyWarnings;
+	public WarningOnlyDbTests(Comparator comparator, boolean failedTestIsOnlyAWarning) {
+		super(comparator, failedTestIsOnlyAWarning);
 	}
 		
 }
