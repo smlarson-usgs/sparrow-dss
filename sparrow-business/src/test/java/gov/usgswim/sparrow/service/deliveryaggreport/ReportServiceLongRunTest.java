@@ -25,7 +25,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 	}
 	
 	@Test
-	public void model50NoAdjustXMLStateReport() throws Exception {
+	public void model50NoAdjustXMLStateLoadReport() throws Exception {
 		String contextRequestText = SparrowTestBase.getXmlAsString(this.getClass(), "context1");
 		
 		WebRequest contextWebRequest = new PostMethodWebRequest(CONTEXT_SERVICE_URL);
@@ -54,6 +54,40 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		
 		assertEquals("9", rowCountStr);
 		assertEquals("7", nonZeroRowCountStr);
+		assertEquals("Contributing Area (" + SparrowUnits.SQR_KM.toString() + ")", watershedAreaColumnLabel);
+		
+	}
+	
+	@Test
+	public void model50NoAdjustXMLStateYieldReport() throws Exception {
+		String contextRequestText = SparrowTestBase.getXmlAsString(this.getClass(), "context1");
+		
+		WebRequest contextWebRequest = new PostMethodWebRequest(CONTEXT_SERVICE_URL);
+		contextWebRequest.setParameter("xmlreq", contextRequestText);
+		WebResponse contextWebResponse = client.sendRequest(contextWebRequest);
+		String actualContextResponse = contextWebResponse.getText();
+		
+		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", actualContextResponse);
+		int id = getContextIdFromContext(actualContextResponse);
+		
+		WebRequest reportWebRequest = new GetMethodWebRequest(REPORT_SERVICE_URL);
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml_table");
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, "false");
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REGION_TYPE, AggregationLevel.STATE.getName());
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_YIELD, "true");
+
+		WebResponse reportWebResponse = client. sendRequest(reportWebRequest);
+		String actualReportResponse = reportWebResponse.getText();
+		
+		//System.out.println(actualReportResponse);
+		
+		String rowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
+		String nonZeroRowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tr[td[position() = 9 and .!=0]])", actualReportResponse);
+		String watershedAreaColumnLabel = ReportServiceLongRunTest.getXPathValue("//*[local-name() = 'th'][position() = 3]", actualReportResponse);
+		
+		assertEquals("9", rowCountStr);
+		assertEquals("9", nonZeroRowCountStr);
 		assertEquals("Contributing Area (" + SparrowUnits.SQR_KM.toString() + ")", watershedAreaColumnLabel);
 		
 	}

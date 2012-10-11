@@ -169,11 +169,12 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 				"Identification and basic info",
 				buildTableProperties(null));
 		
-		DataTable.Immutable yieldTable = convertToYield(sparrowModel, srcAndTotalTable, contributingFractionAreaForRegions);
+		DataTable.Immutable loadTable = srcAndTotalTable.toImmutable();
+		DataTable.Immutable yieldTable = convertToYield(sparrowModel, loadTable, contributingFractionAreaForRegions);
 
 		
 		
-		DataTableSet tableSet = new DataTableSetSimple(new DataTable.Immutable[]{idTable, srcAndTotalTable.toImmutable(), yieldTable},
+		DataTableSet tableSet = new DataTableSetSimple(new DataTable.Immutable[]{idTable, loadTable, yieldTable},
 				"Total Delivered Load Summary Report per upstream region",
 				"Total Delivered Load Summary Report per originating upstream region.");
 		
