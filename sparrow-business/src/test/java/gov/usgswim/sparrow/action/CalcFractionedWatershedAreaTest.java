@@ -13,7 +13,7 @@ public class CalcFractionedWatershedAreaTest extends CalcFractionalAreaBaseTest 
 		
 	@Test
 	public void TestSetupShouldNotHaveNullIncrementalAreas() throws Exception {
-		assertNotNull(incrementalAreaTable);
+		assertNotNull(network1_inc_area);
 	}
 	
 	/**
@@ -30,14 +30,14 @@ public class CalcFractionedWatershedAreaTest extends CalcFractionalAreaBaseTest 
 	public void FractionedAreaShouldMatchPdfFileExampleInResources() throws Exception {
 		
 		// 11: The reach in the pdf sample table
-		CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(testTopo, 11L, false);
+		CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(network1_topo, 11L, false);
 		ReachRowValueMap areaMap = areaMapAction.run();
 		
-		CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreaTable);
+		CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, network1_inc_area);
 		Double area = areaAction.run();
 		
 		
-
+		//This area assumes that each reach has a catchment area of 2.
 		assertEquals(9.92D, area, COMP_ERROR);
 
 	}
@@ -59,10 +59,10 @@ public class CalcFractionedWatershedAreaTest extends CalcFractionalAreaBaseTest 
 	public void UnfractionedAreaShouldMatchPdfFileExampleInResources() throws Exception {
 		
 		// 11: The reach in the pdf sample table
-		CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(testTopo, 11L, false);
+		CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(network1_topo, 11L, false);
 		ReachRowValueMap areaMap = areaMapAction.run();
 		
-		CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreaTable, true, false);
+		CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, network1_inc_area, true, false);
 		Double area = areaAction.run();
 		
 		

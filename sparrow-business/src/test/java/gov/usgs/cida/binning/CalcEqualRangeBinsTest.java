@@ -13,10 +13,7 @@ import gov.usgs.cida.datatable.impl.StandardDoubleColumnData;
 import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.action.DeliveryReach;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
-import gov.usgswim.sparrow.domain.ComparisonType;
-import gov.usgswim.sparrow.domain.DataSeriesType;
-import gov.usgswim.sparrow.domain.ReachRowValueMap;
-import gov.usgswim.sparrow.domain.SparrowModel;
+import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.service.ServiceResponseOperation;
 import gov.usgswim.sparrow.service.ServiceResponseStatus;
@@ -594,7 +591,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 		for (int i=0; i<10; i++) {
 			map.put(i, new DeliveryReach(i, .5d, i));
 		}
-		ReachRowValueMap dfm = ReachRowValueMap.build(map);
+		ReachRowValueMap dfm = ReachRowValueMapImm.buildFromReachValues(map);
 		
 		act.setBinCount(5);
 		act.setDataColumn(zeroTo10In10Values);

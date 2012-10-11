@@ -62,7 +62,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		DataTable resultDataTable = result.getTable(1);
 		
 		assertEquals(3, infoDataTable.getColumnCount());
-		assertEquals("Watershed Area", infoDataTable.getName(2));
+		assertEquals("Contributing Area", infoDataTable.getName(2));
 		assertEquals(SparrowUnits.SQR_KM.toString(), infoDataTable.getUnits(2));
 		assertEquals(6, resultDataTable.getColumnCount());
 		
