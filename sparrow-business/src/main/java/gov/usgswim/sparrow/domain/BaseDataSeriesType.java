@@ -59,7 +59,9 @@ public enum BaseDataSeriesType {
     watershed_area		(false, false, false, false, 0, false),	//cumulative area of a catchment (include upstream)
     
     //area of a huc (NEED FLAG FOR NOT REACH RELATED?)
-    huc_area					(false, false, false, false, 0, false)
+    huc_area					(false, false, false, false, 0, false),
+		
+		yield							(true, false, false, false, 1, false)
     ;
 
 

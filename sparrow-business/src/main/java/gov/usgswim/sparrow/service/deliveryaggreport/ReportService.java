@@ -58,37 +58,44 @@ public class ReportService implements HttpService<ReportRequest> {
 					null,
 					new String[] {});
 			
-			//Coord's of the total column
+			//Assumed indexes of the data tables
+			int INFO_TBL_INDEX = 0;
+			int LOAD_TBL_INDEX = 1;
+			int YIELD_TBL_INDEX = 2;
+			
+			DataTableSet finalReportDataSet = null;
 			int columnToDetermineIfARowIsEmpty = 0;
+			DataTable.Immutable[] reportTables = (DataTable.Immutable[]) reportDataTableSet.getTables();
+			DataTable.Immutable infoTable = reportTables[INFO_TBL_INDEX];
+			DataTable.Immutable loadTable = reportTables[LOAD_TBL_INDEX];
+			DataTable.Immutable yieldTable = reportTables[YIELD_TBL_INDEX];
 			
 			if (includeRelativePercentage) {
-				DataTable.Immutable[] tables = (DataTable.Immutable[]) reportDataTableSet.getTables();
-				int lastTableIndex = tables.length - 1;
-				DataTable actualResultTable = tables[lastTableIndex];
-				
-				
-				RelativePercentageView relPercentView = new RelativePercentageView(
-						actualResultTable, null, null,
-						actualResultTable.getColumnCount() - 1, false
+				loadTable = new RelativePercentageView(
+						loadTable, null, null,
+						loadTable.getColumnCount() - 1, false
 				);
-				
-				tables[lastTableIndex] = relPercentView;
-				
-				DataTableSet reportDataWRelPercent = new DataTableSetSimple(
-						tables, reportDataTableSet.getName(), reportDataTableSet.getDescription());
-				
-				reportDataTableSet = reportDataWRelPercent;
-				
-				//Total column is now second to last column
-				columnToDetermineIfARowIsEmpty = reportDataTableSet.getColumnCount() - 2;
-			} else {
-				//Total column is the last column
-				columnToDetermineIfARowIsEmpty = reportDataTableSet.getColumnCount() - 1;
 			}
-
+			
+			if (req.isReportYield()) {
+				finalReportDataSet = new DataTableSetSimple(
+						new DataTable.Immutable[] {infoTable, yieldTable},
+						reportDataTableSet.getName(), reportDataTableSet.getDescription());
+				
+				columnToDetermineIfARowIsEmpty = 
+						includeRelativePercentage?
+							finalReportDataSet.getColumnCount() - 2:
+							finalReportDataSet.getColumnCount() - 1;
+			} else {
+				finalReportDataSet = new DataTableSetSimple(
+						new DataTable.Immutable[] {infoTable, loadTable},
+						reportDataTableSet.getName(), reportDataTableSet.getDescription());
+				columnToDetermineIfARowIsEmpty = finalReportDataSet.getColumnCount() - 1;
+			}
+			
 
 			return new  ReportSerializer(
-					req, reportDataTableSet, readmeText, columnToDetermineIfARowIsEmpty);
+					req, finalReportDataSet, readmeText, columnToDetermineIfARowIsEmpty);
 
 
 
