@@ -80,11 +80,39 @@ var termReportYieldChangeHandler = function(event) {
 	return true;
 };
 
+var aggReportYieldChangeHandler = function(event) {
+	var reqUrl = getAggReportUrl("xhtml_table");
+	
+		$.ajax({
+				url: reqUrl,
+				
+				beforeSend: function(jqXHR, settings) {
+					$("#" + _AGG_REPORT_CONTAINER_ID + " .report-load-status").show('normal');
+				},
+				success: function(response, textStatus, jqXHR) {
+						// update status element
+						//alert('OK - got new table content: ' + jqXHR.responseText);
+						
+						var reportTable = $("#" + _AGG_REPORT_CONTAINER_ID + " .report-table-area");
+						reportTable.empty();
+						reportTable.append(jqXHR.responseText);
+						$("#" + _AGG_REPORT_CONTAINER_ID + " .report-load-status").hide('normal');
+						
+				},
+				error: function(xhr) {
+						alert('Error loading Aggregate Report - Status = ' + xhr.status);
+				}
+		});
+
+	return true;
+};
+
 var getAggReportUrl = function(mimeType) {
 	var urlParams = getUrlVars();
 
 	var contextId = urlParams["context-id"];
 	var regionType = $("#" + _AGG_REPORT_CONTAINER_ID + " .controls input[name='region-type']:checked").val();
+	var reportYield = $("#" + _AGG_REPORT_CONTAINER_ID + " .controls input[name='report-yield']:checked").val();
 	if (regionType == null) {
 		regionType = "state";
 	}
@@ -92,7 +120,7 @@ var getAggReportUrl = function(mimeType) {
 	var reqParams = "context-id=" + contextId +
 		"&region-type=" + regionType + 	
 		"&include-zero-rows=false" + 
-		"&report-yield=false" +
+		"&report-yield=" + reportYield +
 		"&mime-type=" + mimeType;
 	return "../" + serviceName + "?" + reqParams;
 }
@@ -115,6 +143,7 @@ var getTermReportUrl = function(mimeType) {
 }
 	
 function initAggReport() {
+	$("#" + _AGG_REPORT_CONTAINER_ID + " .controls input[name='report-yield']").change(aggReportYieldChangeHandler);
 	$("#" + _AGG_REPORT_CONTAINER_ID + " .controls input[name='region-type']").change(aggReportRegionChangeHandler);
 	$("#" + _AGG_REPORT_CONTAINER_ID + " .download-report").click(aggReportDownloadHandler);
 	

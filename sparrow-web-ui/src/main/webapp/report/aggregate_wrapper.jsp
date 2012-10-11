@@ -19,6 +19,7 @@
 	
 	String downloadReqUrl = pageRequestUrl.getBaseUrlWithSlash() + tableName + "?" + downloadReqParams;
 	
+	String reportAsYield = "false";
 %>
  <div>
 		<div class="explanation">
@@ -49,7 +50,10 @@
 						<p class="input"><input type="radio" name="region-type"<%= ("huc4".equals(regionType))?"checked=\"checked\"":"" %> value="huc4" />HUC 4</p>
 						<p class="input"><input type="radio" name="region-type"<%= ("huc6".equals(regionType))?"checked=\"checked\"":"" %> value="huc6" />HUC 6</p>
 						<p class="input"><input type="radio" name="region-type"<%= ("huc8".equals(regionType))?"checked=\"checked\"":"" %> value="huc8" />HUC 8</p>
-						<input type="hidden" name="context-id" value="<%= contextId %>" />
+						<input type="hidden" name="context-id" value="<%= contextId %>" /><br />
+						<p class="input"><input type="radio" name="report-yield"<%= ("false".equals(reportAsYield))?"checked=\"checked\"":"" %> value="false" />Total Load</p>
+						<p class="input"><input type="radio" name="report-yield"<%= ("true".equals(reportAsYield))?"checked=\"checked\"":"" %> value="true" />Yield</p>
+					
 					</form>
 					<div class="download-area">
 						<a class="button-link download-report" href="" title="Download the currently displayed report">Download as CSV</a>

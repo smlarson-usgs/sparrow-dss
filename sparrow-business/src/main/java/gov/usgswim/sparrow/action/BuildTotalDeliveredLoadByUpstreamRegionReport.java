@@ -1,9 +1,6 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgs.cida.datatable.ColumnData;
-import gov.usgs.cida.datatable.DataTable;
-import gov.usgs.cida.datatable.DataTableSet;
-import gov.usgs.cida.datatable.DataTableWritable;
+import gov.usgs.cida.datatable.*;
 import gov.usgs.cida.datatable.impl.DataTableSetSimple;
 import gov.usgs.cida.datatable.impl.SimpleDataTable;
 import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
@@ -18,6 +15,7 @@ import gov.usgswim.sparrow.request.ModelAggregationRequest;
 import gov.usgswim.sparrow.request.ModelHucsRequest;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +45,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 	protected AdjustmentGroups adjustmentGroups;
 	protected TerminalReaches terminalReaches;
 	protected AggregationLevel aggLevel;
-	
-	
+	protected boolean reportYield;
 
 	
 	//Generated / self-loaded values
@@ -63,11 +60,13 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 	public BuildTotalDeliveredLoadByUpstreamRegionReport(
 			AdjustmentGroups adjustmentGroups,
 			TerminalReaches terminalReaches,
-			AggregationLevel aggLevel) {
+			AggregationLevel aggLevel,
+			boolean reportYield) {
 		
 		this.adjustmentGroups = adjustmentGroups;
 		this.terminalReaches = terminalReaches;
 		this.aggLevel = aggLevel;
+		this.reportYield = reportYield;
 		
 	}
 	
@@ -76,6 +75,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 		terminalReaches = request.getTerminalReaches();
 		adjustmentGroups = request.getAdjustmentGroups();
 		aggLevel = request.getAggLevel();
+		this.reportYield = request.isReportYield();
 		
 	}
 	
@@ -135,9 +135,9 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 		//
 		//Create a writable table to hold individual source and total load values
 		SimpleDataTableWritable srcAndTotalTable = new SimpleDataTableWritable();
-		srcAndTotalTable.setName("Total Delivered Load Summary Report per originating upstream region");
-		srcAndTotalTable.setDescription("Total Delivered Load Summary Report per originating upstream region.");
-		buildTableProperties(srcAndTotalTable);
+		srcAndTotalTable.setName("Total Delivered Load per originating upstream region");
+		srcAndTotalTable.setDescription("Total Delivered Load per originating upstream region.");
+		assignTableProperties(srcAndTotalTable);
 		
 		//Add one column for each source and one for the total
 		//(these are the column in the expanded TotalDelLoadForAllSources columns)
@@ -167,11 +167,23 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 				new ColumnData[] {areaDetail.getColumn(0), areaDetail.getColumn(1), contributingFractionAreaForRegions},
 				"Identification and basic info", 
 				"Identification and basic info",
-				buildTableProperties(null));
+				buildTableProperties());
 		
-		DataTableSet tableSet = new DataTableSetSimple(new DataTable.Immutable[]{idTable, srcAndTotalTable.toImmutable()},
-				"Total Delivered Load Summary Report per upstream region",
-				"Total Delivered Load Summary Report per originating upstream region.");
+		DataTable.Immutable loadOrYieldTable = null;
+		String reportName = null;
+		
+		if (this.reportYield) {
+			loadOrYieldTable = convertToYield(sparrowModel, srcAndTotalTable, contributingFractionAreaForRegions);
+			reportName = "Yield";
+		} else {
+			loadOrYieldTable = srcAndTotalTable.toImmutable();
+			reportName = "Load";
+		}
+		
+		
+		DataTableSet tableSet = new DataTableSetSimple(new DataTable.Immutable[]{idTable, loadOrYieldTable},
+				"Total Delivered " + reportName + " Summary Report per upstream region",
+				"Total Delivered " + reportName + " Summary Report per originating upstream region.");
 		
 		return tableSet;
 		
@@ -182,18 +194,21 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 	 * @param table may be just to just get the basic props.
 	 * @return 
 	 */
-	protected Map<String, String> buildTableProperties(DataTableWritable table) {
-		HashMap<String, String> props = new HashMap<String, String>();
-		props.put(TableProperties.MODEL_ID.toString(), sparrowModel.getId().toString());
-		props.put(TableProperties.CONSTITUENT.toString(), sparrowModel.getConstituent());
-		
+	protected void assignTableProperties(DataTableWritable table) {
+		Map<String, String> props = buildTableProperties();
+
 		if (table != null) {
 			for (Map.Entry<String, String> entry : props.entrySet()) {
 				table.setProperty(entry.getKey(), entry.getValue());
 			}
 		}
-		
-		
+	}
+	
+	protected Map<String, String> buildTableProperties() {
+		HashMap<String, String> props = new HashMap<String, String>();
+		props.put(TableProperties.MODEL_ID.toString(), sparrowModel.getId().toString());
+		props.put(TableProperties.ROW_LEVEL.toString(), aggLevel.toString());
+		props.put(TableProperties.CONSTITUENT.toString(), sparrowModel.getConstituent());
 		return props;
 	}
 	
@@ -247,6 +262,28 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 
 			}
 		}
+	}
+	
+	protected SimpleDataTable convertToYield(SparrowModel model, DataTable loadTable,
+			ColumnData areaCol) throws Exception {
+		
+		ArrayList<ColumnData> yieldCols = new ArrayList<ColumnData>();
+		
+		for (int col = 0; col < loadTable.getColumnCount(); col++) {
+			ColumnData loadColumn = loadTable.getColumn(col);
+			
+			CalcAnyYield action = new CalcAnyYield(DataSeriesType.total_yield, model, loadColumn, areaCol);
+			ColumnData yieldCol = action.run();
+			yieldCols.add(yieldCol);
+		}
+		
+		SimpleDataTable yieldTable = new SimpleDataTable(
+				yieldCols.toArray(new ColumnData[]{}),
+				"Total Delivered Yield per originating upstream region", 
+				"Total Delivered Yield per originating upstream region",
+				buildTableProperties());
+		
+		return yieldTable;
 	}
 	
 	@Override
