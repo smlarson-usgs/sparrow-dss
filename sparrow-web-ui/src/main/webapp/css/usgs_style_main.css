@@ -650,8 +650,8 @@ to force the columns to layout properly.  This looks commented out, but IE sees 
 
 /* Nested Columns */
 .column .column, .column .columns-2, .column .columns-3, .column .columns-4 { border: none; }
-.column .column { background-color: #ccf; margin-left: 1%; margin-right: 1%; }
-.column .column:first-child { margin-left: 1%; /* Nice to leave a left margin */ }
+.column .column { background-color: #ccf; margin-left: .5%; margin-right: .5%; border: none; }
+.column .column:first-child { margin-left: .5%; /* Nice to leave a left margin */ }
 .column .column:last-child { margin-right: 0; }
 
 .column .columns-2 .column { width: 48.5%; }
