@@ -5,6 +5,7 @@ import static gov.usgswim.sparrow.PredictData.UPSTREAM_DECAY_COL;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMapImm;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,7 +59,7 @@ public class CalcDeliveryFractionMap extends Action<ReachRowValueMap> {
 	public ReachRowValueMap doAction() throws Exception {
 		//Hash containing rows as keys and DeliveryReaches as values.
 		HashMap<Integer, DeliveryReach> deliveries = calcDeliveryHash(predictData, targetReachIds);
-		ReachRowValueMap map = ReachRowValueMap.build(deliveries);
+		ReachRowValueMap map = ReachRowValueMapImm.buildFromReachValues(deliveries);
 		return map;
 	}
 	

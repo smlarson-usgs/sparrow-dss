@@ -18,7 +18,9 @@ import gov.usgswim.sparrow.request.ModelAggregationRequest;
 import gov.usgswim.sparrow.request.ModelHucsRequest;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This action assembles a DataTableSet of Total Delivered Load by source and for
@@ -52,10 +54,11 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 	//Generated / self-loaded values
 	protected SparrowModel sparrowModel;
 	protected ModelReachAreaRelations areaRelations;
-	ReachRowValueMap deliveryFractionMap;	//What reaches deliver to the target reaches?
+	protected ReachRowValueMap deliveryFractionMap;	//What reaches deliver to the target reaches?
 	protected DataTable areaDetail;
 	protected DataTable reachCatchmentAreas;
 	List<ColumnData> expandedTotalDelLoadForAllSources;
+	ColumnData contributingFractionAreaForRegions;
 	
 	public BuildTotalDeliveredLoadByUpstreamRegionReport(
 			AdjustmentGroups adjustmentGroups,
@@ -102,32 +105,33 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 			//areaDetail = SharedApplication.getInstance().getHucsForModel(new ModelHucsRequest(modelId, aggLevel.getHucLevel()));
 		}
 		
-		//Basic predict context, which we need data for all sources
-		BasicAnalysis analysis = new BasicAnalysis(
-				DataSeriesType.incremental_delivered_flux, null, null, null);
-			
-		PredictionContext basicPredictContext = new PredictionContext(
-				modelId, adjustmentGroups, analysis, terminalReaches,
-				null, NoComparison.NO_COMPARISON);
+		if (expandedTotalDelLoadForAllSources == null) {
+			//Basic predict context, which we need data for all sources
+			BasicAnalysis analysis = new BasicAnalysis(
+					DataSeriesType.incremental_delivered_flux, null, null, null);
+
+			PredictionContext basicPredictContext = new PredictionContext(
+					modelId, adjustmentGroups, analysis, terminalReaches,
+					null, NoComparison.NO_COMPARISON);
+
+			BuildAnalysisForAllSources action = 
+					new BuildAnalysisForAllSources(basicPredictContext,
+					BuildAnalysisForAllSources.COLUMN_NAME_FORMAT.SOURCE_NAME_ONLY);
+
+
+			expandedTotalDelLoadForAllSources = action.run();
+		}
 		
-		BuildAnalysisForAllSources action = 
-				new BuildAnalysisForAllSources(basicPredictContext,
-				BuildAnalysisForAllSources.COLUMN_NAME_FORMAT.SOURCE_NAME_ONLY);
-		
-		
-		expandedTotalDelLoadForAllSources = action.run();
+		if (contributingFractionAreaForRegions == null) {
+			CalcContributingFractionedAreaForRegions action = new CalcContributingFractionedAreaForRegions(
+					terminalReaches, aggLevel);
+			contributingFractionAreaForRegions = action.run();
+		}
 	}
 	
 	@Override
 	public DataTableSet doAction() throws Exception {
 
-		//
-		//Create a writable table to hold the region area info
-		SimpleDataTableWritable regionAreaTable = new SimpleDataTableWritable();
-		StandardNumberColumnDataWritable areaCol = new StandardNumberColumnDataWritable(
-				"Watershed Area", reachCatchmentAreas.getUnits(1), Double.class);
-		regionAreaTable.addColumn(areaCol);
-		
 		//
 		//Create a writable table to hold individual source and total load values
 		SimpleDataTableWritable srcAndTotalTable = new SimpleDataTableWritable();
@@ -155,12 +159,12 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 		
 
 
-		populateColumns(srcAndTotalTable, regionAreaTable, expandedTotalDelLoadForAllSources, areaRelations, areaDetail, reachCatchmentAreas.getColumn(1));
+		populateColumns(srcAndTotalTable, expandedTotalDelLoadForAllSources, areaRelations, areaDetail, reachCatchmentAreas.getColumn(1));
 		
 		
 		//We can't add immutable columns to a writable table, so we need to construct a new table
 		SimpleDataTable idTable = new SimpleDataTable(
-				new ColumnData[] {areaDetail.getColumn(0), areaDetail.getColumn(1), regionAreaTable.getColumn(0).toImmutable()},
+				new ColumnData[] {areaDetail.getColumn(0), areaDetail.getColumn(1), contributingFractionAreaForRegions},
 				"Identification and basic info", 
 				"Identification and basic info",
 				buildTableProperties(null));
@@ -202,7 +206,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 	 * @throws Exception 
 	 */
 	protected void populateColumns(SimpleDataTableWritable regionResultTable,
-					SimpleDataTableWritable regionAreaTable,
+					/*SimpleDataTableWritable regionAreaTable,*/
 					List<ColumnData> sourceColumns,
 					ModelReachAreaRelations areaRelations, DataTable areaDetail, ColumnData catchmentAreas) throws Exception {
 		
@@ -215,19 +219,13 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 			
 			if (deliveryFractionMap.containsKey(reachRow)) {
 				ReachAreaRelations reachRelations = areaRelations.getRelationsForReachRow(reachRow);
-				Double catchmentArea = catchmentAreas.getDouble(reachRow);
+				//Double catchmentArea = catchmentAreas.getDouble(reachRow);
 
 				//Loop thru each region that this reach has catchment area in
 				for (AreaRelation reachRelation : reachRelations.getRelations()) {
 					long regionId = reachRelation.getAreaId();
 					double reachFractionInRegion = reachRelation.getFraction();
 					int regionRow = areaDetail.getRowForId(regionId);
-
-					//Populate the total area column
-					double reachAreaInRegion = reachFractionInRegion * catchmentArea;
-					Double existingRegionArea = regionAreaTable.getDouble(regionRow, 0);
-					if (existingRegionArea == null) existingRegionArea = 0d;
-					regionAreaTable.setValue(reachAreaInRegion + existingRegionArea, regionRow, 0);
 
 					//Loop thru each source and the total.  Col 0 is the area.  First source is col 1.
 					for (int sourceColIndex = 0; sourceColIndex < colCount; sourceColIndex++) {

@@ -1,9 +1,11 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.DataTableWritable;
 import gov.usgs.cida.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgs.cida.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.TopoData;
 import gov.usgswim.sparrow.domain.AggregationLevel;
 
 import gov.usgswim.sparrow.domain.reacharearelation.*;
@@ -40,7 +42,8 @@ public class LoadModelReachAreaRelations extends Action<ModelReachAreaRelations>
 	
 	
 	//Action loaded data
-	protected PredictData predictData;
+	protected TopoData topoData;
+	protected DataTable reachAreaRelationData;
 	
 	
 	
@@ -49,7 +52,6 @@ public class LoadModelReachAreaRelations extends Action<ModelReachAreaRelations>
 		
 		modelId = request.getModelID();
 		aggLevel = request.getAggLevel();
-		initRequiredFields();
 	}
 	
 	public LoadModelReachAreaRelations(Long modelId, AggregationLevel aggLevel) throws Exception {
@@ -57,55 +59,99 @@ public class LoadModelReachAreaRelations extends Action<ModelReachAreaRelations>
 		
 		this.modelId = modelId;
 		this.aggLevel = aggLevel;
-		initRequiredFields();
+	}
+	
+	/**
+	 * Debug calculation-only constructor.
+	 * 
+	 * Passes in all the data required for the calculation, so db access is not required.
+	 * @param topoData
+	 * @param reachAreaRelationData
+	 * @throws Exception 
+	 */
+	public LoadModelReachAreaRelations(TopoData topoData, DataTable reachAreaRelationData) throws Exception {
+		super();
+		
+		this.topoData = topoData;
+		this.reachAreaRelationData = reachAreaRelationData;
+	}
+	
+	@Override
+	protected void validate() {
+		if (topoData == null && modelId == null) {
+			this.addValidationError("The topoData and modelID parameters cannot both be null");
+		}
+		
+		if (reachAreaRelationData == null && aggLevel == null) {
+			this.addValidationError("The aggLevel and reachAreaRelationData parameters cannot both be null");
+		}
+		
+		if (aggLevel != null && ! (aggLevel.isHuc() || aggLevel.isPolitical() || aggLevel.isEda())) {
+			this.addValidationError("The aggregation level (the level at which to load the area relations for) must be either HUC, EDA or a political region.");
+		}
 	}
 	
 	/**
 	 * Clear designation of init values
 	 */
 	protected void initRequiredFields() throws Exception {
-		predictData = SharedApplication.getInstance().getPredictData(modelId);
+		if (topoData == null && modelId != null) {
+			topoData = SharedApplication.getInstance().getPredictData(modelId).getTopo();
+		}
+		
+		if (reachAreaRelationData == null) {
+			reachAreaRelationData = loadReachAreaRelationsTable(modelId, aggLevel);
+		}
 	}
-
 
 
 	@Override
 	public ModelReachAreaRelations doAction() throws Exception {
+		initRequiredFields();
+		
+		return convertTableToRelations(reachAreaRelationData, topoData);
+	}
+	
+	protected DataTable loadReachAreaRelationsTable(Long modelId, AggregationLevel aggLevel) throws Exception {
 		HashMap<String, Object> params = new HashMap<String, Object>();
 		params.put("ModelId", modelId);
-		DataTableWritable reachAreaRelationData = null;
+		DataTableWritable loadedTable = null;
 		
 		if (aggLevel.isHuc()) {
 			params.put("Huclevel", aggLevel.getHucLevel().getLevel());
 			
 			ResultSet rset = getROPSFromPropertiesFile(HUC_QUERY_NAME, getClass(), params).executeQuery();
 			addResultSetForAutoClose(rset);
-			reachAreaRelationData = DataTableConverter.toDataTable(rset);
-			int valuesRowCount = reachAreaRelationData.getRowCount();
+			loadedTable = DataTableConverter.toDataTable(rset);
+			int valuesRowCount = loadedTable.getRowCount();
 			
 			//Replace the huc codes ("0034") with the has code of the same 
 			StandardNumberColumnDataWritable hucIds = new StandardNumberColumnDataWritable();
 			for (int r = 0; r < valuesRowCount; r++) {
-				String huc = reachAreaRelationData.getString(r, 1);
+				String huc = loadedTable.getString(r, 1);
 				Integer id = huc.hashCode();
 				hucIds.setValue(id, r);
 			}
 			
-			reachAreaRelationData.setColumn(hucIds, AREA_ID_COL);
+			loadedTable.setColumn(hucIds, AREA_ID_COL);
 			
 		} else if (aggLevel.equals(AggregationLevel.STATE)) {
 			
 			ResultSet rset = getROPSFromPropertiesFile(STATE_QUERY_NAME, getClass(), params).executeQuery();
 			addResultSetForAutoClose(rset);
-			reachAreaRelationData = DataTableConverter.toDataTable(rset);
+			loadedTable = DataTableConverter.toDataTable(rset);
 			
 		} else {
 			//validation ensures we don't end up here
 			throw new Exception("Unexpected AggregationLevel '" + aggLevel.getName() + "'");
 		}
 		
-
-		int modelRowCount = predictData.getTopo().getRowCount();
+		return loadedTable;
+	}
+	
+	public ModelReachAreaRelations convertTableToRelations(DataTable reachAreaRelationData, DataTable topo) {
+		
+		int modelRowCount = topo.getRowCount();
 
 		
 		ModelReachAreaRelationsBuilder builder = new ModelReachAreaRelationsBuilder(modelRowCount);
@@ -119,12 +165,13 @@ public class LoadModelReachAreaRelations extends Action<ModelReachAreaRelations>
 		//		2 (!)		|		8			|		.5
 		//		3				|		1			|		1.0
 		//____________________________________
+		
 		int relationDataRowCount = reachAreaRelationData.getRowCount();
 		int rowInRelationData = 0;
 		
 		//Iterate over rows in the model, which can have fewer rows than the relationData
 		for (int rowInModelAndResult = 0; rowInModelAndResult < modelRowCount; rowInModelAndResult++) {
-			Long reachIdInModelAndResult = predictData.getIdForRow(rowInModelAndResult);
+			Long reachIdInModelAndResult = topo.getIdForRow(rowInModelAndResult);
 			Long reachIdInRelationData = reachAreaRelationData.getLong(rowInRelationData, REACH_ID_COL);
 			
 			if (reachIdInModelAndResult.equals(reachIdInRelationData)) {
@@ -164,29 +211,9 @@ public class LoadModelReachAreaRelations extends Action<ModelReachAreaRelations>
 		}
 		
 		return builder.toImmutable();
-		
-		
 	}
 
-	@Override
-	protected void validate() {
-		if (predictData == null) {
-			this.addValidationError("The predictData parameter cannot be null");
-			return;
-		}
-				
-		if (modelId == null) {
-			this.addValidationError("The model predictData set does not seem to have a model id associated with it.");
-		}
-		
-		if (! (aggLevel.isHuc() || aggLevel.isPolitical() || aggLevel.isEda())) {
-			this.addValidationError("The aggregation level (the level at which to load the area relations for) must be either HUC, EDA or a political region.");
-		}
-	}
 
-	
-	public void setPredictData(PredictData predictData) {
-		this.predictData = predictData;
-	}
+
 
 }

@@ -5,6 +5,7 @@ import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.TopoData;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMapImm;
 import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.service.SharedApplication;
 
@@ -98,7 +99,7 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 		int targetReachRowNumber = topoData.getRowForId(targetReachId);
 		
 		Collection<FractionalReach> areaFractions = calcAreaFractionForAllUpstreamReaches(targetReachRowNumber);
-		ReachRowValueMap map = ReachRowValueMap.build(areaFractions);
+		ReachRowValueMap map = ReachRowValueMapImm.buildFromReachValues(areaFractions);
 		return map;
 	}
 
