@@ -75,11 +75,11 @@ public class CalcFractionedWatershedAreaTableTest extends SparrowTestBaseWithDBa
 		int testReachRowNumber = pd.getRowForReachID(TEST_REACH_ID);
 		Double testReachFrac = pd.getTopo().getDouble(testReachRowNumber, PredictData.TOPO_FRAC_COL);
 		Double testReachFractionedWatershedArea = new CalcFractionedWatershedArea(new ReachID(TEST_MODEL_ID, TEST_REACH_ID)).run();
-		Double testReachUnfractionedWatershedArea = new CalcFractionedWatershedArea(new ReachID(TEST_MODEL_ID, TEST_REACH_ID), true, false, false).run();
+		Double testReachUnfractionedWatershedArea = new CalcFractionedWatershedArea(new ReachID(TEST_MODEL_ID, TEST_REACH_ID), true, false).run();
 		Double testReachIncrementalArea = incrementalReachAreas.getDouble(testReachRowNumber, 1);
 		
 		//load stats on the only reach immediately upstream of the test reach
-		Double upstreamReachFractionedWatershedArea = new CalcFractionedWatershedArea(new ReachID(TEST_MODEL_ID, ONLY_REACH_UPSTREAM_OF_TEST_REACH_ID), false, false, false).run();
+		Double upstreamReachFractionedWatershedArea = new CalcFractionedWatershedArea(new ReachID(TEST_MODEL_ID, ONLY_REACH_UPSTREAM_OF_TEST_REACH_ID), false, false).run();
 		
 		
 		//Test the assumptions about the basic (non-table form) of the area data

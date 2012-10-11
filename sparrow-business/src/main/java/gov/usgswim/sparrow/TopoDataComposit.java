@@ -158,7 +158,11 @@ public class TopoDataComposit extends AbstractDataTableView implements TopoData 
 
 				//If only a single reach (and this reach was not a shore reach),
 				//the FRAC of this reach must be one.
-				return 1d;
+				//return 1d;
+				
+				//We are no longer correcting this value, since it may represent a
+				//real outflow to a water utility.
+				return getFrac(row);
 
 			} else {
 				//Adjust frac per total

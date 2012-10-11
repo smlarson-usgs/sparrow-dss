@@ -57,19 +57,19 @@ public class CalcFractionedWatershedAreaTest extends CalcFractionalAreaBaseTest 
 	 */
 	@Test
 	public void UnfractionedAreaShouldMatchPdfFileExampleInResources() throws Exception {
-		
+
 		// 11: The reach in the pdf sample table
 		CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(network1_topo, 11L, false);
 		ReachRowValueMap areaMap = areaMapAction.run();
 		
-		CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, network1_inc_area, true, false);
+		CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, network1_inc_area, true);
 		Double area = areaAction.run();
 		
 		
 
 		assertEquals(12D, area, COMP_ERROR);
 
-	}
+}
 	
 
 

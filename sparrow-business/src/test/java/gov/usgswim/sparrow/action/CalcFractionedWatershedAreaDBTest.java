@@ -37,7 +37,7 @@ public class CalcFractionedWatershedAreaDBTest extends SparrowTestBase {
 			Long rowId = topo.getIdForRow(row);
 			ReachID reachId = new ReachID(TEST_MODEL_ID, rowId);
 			
-			CalcFractionedWatershedArea action = new CalcFractionedWatershedArea(reachId, incAreaTable, false, false, false);
+			CalcFractionedWatershedArea action = new CalcFractionedWatershedArea(reachId, incAreaTable, false, false);
 			Double area = action.run();
 			uncachedAreas.add(area);
 					
@@ -50,7 +50,7 @@ public class CalcFractionedWatershedAreaDBTest extends SparrowTestBase {
 			Long rowId = topo.getIdForRow(row);
 			ReachID reachId = new ReachID(TEST_MODEL_ID, rowId);
 			
-			CalcFractionedWatershedArea action = new CalcFractionedWatershedArea(reachId, incAreaTable, false, false, true);
+			CalcFractionedWatershedArea action = new CalcFractionedWatershedArea(reachId, incAreaTable, false, true);
 			Double area = action.run();
 			ConfiguredCache.FractionedWatershedArea.put(reachId, area);
 			cachedAreas.add(area);

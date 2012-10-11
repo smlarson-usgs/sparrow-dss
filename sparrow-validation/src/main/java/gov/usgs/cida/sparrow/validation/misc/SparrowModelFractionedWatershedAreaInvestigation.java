@@ -54,7 +54,7 @@ public class SparrowModelFractionedWatershedAreaInvestigation extends SparrowMod
 			CalcFractionedWatershedArea fractionedAreaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb);
 			Double fractionalWatershedArea = fractionedAreaAction.run();
 			
-			CalcFractionedWatershedArea unfractionedAreaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, true, false);
+			CalcFractionedWatershedArea unfractionedAreaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, true);
 			Double unfractionalWatershedArea = unfractionedAreaAction.run();
 
 			if (! comp(fractionalWatershedArea, unfractionalWatershedArea)) {

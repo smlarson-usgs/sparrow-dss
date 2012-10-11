@@ -196,6 +196,10 @@ public interface TopoData extends DataTable.Immutable {
 	 * However, in some cases modelers have modified the FRAC values to not total
 	 * to one to simulate non-network outflows, like municipal water utilities.
 	 * 
+	 * In the case of a single reach which has a FRAC of < 1, the value is not
+	 * modified since this likely reflects an outflow to some real type (a water
+	 * utility).
+	 * 
 	 * In other cases, the network modifications might just be errors.  The logic
 	 * here forces the sum back to one and adjusts the returned frac value to be
 	 * corrected for that adjusted total.

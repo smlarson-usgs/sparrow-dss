@@ -28,9 +28,6 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 	//Action to do pure cumulative area calculations, not fractionalal ones.
 	private boolean forceNonFractionedArea = false;
 	
-	/** If true, FRAC values that do not total to 1 will not be corrected. Mostly for debugging. */
-	protected boolean forceUncorrectedFracValues = false;
-	
 	int numberOfReachAreaFractionMapsAllowedInMemory_original;
 	int numberOfReachAreaFractionMapsAllowedInMemory_forTest = 100000;
 	
@@ -68,12 +65,11 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 	 */
 	public CalculatedWaterShedAreaShouldEqualLoadedValue(Comparator comparator,
 			Comparator shoreReachComparator, boolean failedTestIsOnlyAWarning,
-			boolean forceNonFractionedArea, boolean forceUncorrectedFracValues) {
+			boolean forceNonFractionedArea) {
 		
 		super(comparator, failedTestIsOnlyAWarning);
 		this.shoreReachComparator = shoreReachComparator;
 		this.forceNonFractionedArea = forceNonFractionedArea;
-		this.forceUncorrectedFracValues = forceUncorrectedFracValues;
 	}
 	
 	@Override
@@ -143,12 +139,12 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 				ReachID reachUId = new ReachID(modelId, reachId);
 				
 				recordRowTrace(modelId, reachId, row, "Starting: CalcFractionedWatershedArea");
-				if (forceNonFractionedArea || forceUncorrectedFracValues) {
+				if (forceNonFractionedArea) {
 					recordRowTrace(modelId, reachId, row, "Starting: CalcReachAreaFractionMap");
 					ReachRowValueMap areaMap = SharedApplication.getInstance().getReachAreaFractionMap(reachUId);
 					recordRowTrace(modelId, reachId, row, "Completed: CalcReachAreaFractionMap");
 					
-					CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, forceNonFractionedArea, forceUncorrectedFracValues);
+					CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, forceNonFractionedArea);
 					calculatedFractionalWatershedArea = areaAction.run();
 					
 				} else {

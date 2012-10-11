@@ -91,10 +91,8 @@ public class RunAllDBOnlyTests extends SparrowModelValidationRunner {
 		 * Arg4:	Set true to force non-fractioned watershed area calcs.
 		 *				Production will always have this as false, but can be toggled here
 		 *				for testing.  This takes precidence over Arg 3.
-		 * Arg5:	Set true to force FRAC values totalling to 1 be not corrected.
-		 *				Production uses false.
 		 */
-		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(wideComparator, preciseComparator, false, false, false));
+		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(wideComparator, preciseComparator, false, false));
 		addValidator(new FailableDbTests(tightComparator, false));
 		addValidator(new FracValuesShouldTotalToOne(tightComparator, false));
 		addValidator(new ReachCoefValuesShouldBeLessThanOneAndGreaterThanZero(preciseComparator, false));
