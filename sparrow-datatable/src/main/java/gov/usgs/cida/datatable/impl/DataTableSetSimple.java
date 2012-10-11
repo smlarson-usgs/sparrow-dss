@@ -27,7 +27,7 @@ public class DataTableSetSimple
 	
 	@Override
 	public DataTable.Immutable getTable(int tableIndex) {
-		return getTables()[tableIndex];
+		return tables[tableIndex];
 	}
 	
 	@Override
