@@ -204,10 +204,10 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 
 		int thisRow = topoData.getRowForId(reachId.getReachID());
 		double thisIncArea = incrementalReachAreas.getDouble(thisRow, 1);
-		long[] upstreamIds = topoData.findAllowedUpstreamReachIds(thisRow);
+		int[] upstreamRows = topoData.findAllowedUpstreamReaches(thisRow);
 		
 
-		if (upstreamIds.length == 0) {
+		if (upstreamRows.length == 0) {
 						
 				log.debug("Optimized Fractioned Area Result: Zero upstream reaches, so using incremental area.  " +
 					"Model: " + reachId.getModelID() + ", reach row: " + thisRow);
@@ -222,9 +222,9 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 			//reach in question.
 			double totalUpstreamArea = 0;
 
-			for (int i = 0; i < upstreamIds.length; i++) {
+			for (int i = 0; i < upstreamRows.length; i++) {
 
-				ReachID upstreamReach = new ReachID(reachId.getModelID(), upstreamIds[i]);
+				ReachID upstreamReach = new ReachID(reachId.getModelID(), topoData.getIdForRow(upstreamRows[i]));
 
 				//Quietly get the upstream reach area (returns null if not in cache)
 				Double oneUpstreamArea = SharedApplication.getInstance().getFractionedWatershedArea(upstreamReach, true);
