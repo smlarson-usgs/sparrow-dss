@@ -42,22 +42,31 @@
 		<div class="to-and-from-area columns-2">
 			<div class="from-aggregate-area column">
 				<div class="content">
-					<h4>Aggregate upstream regions by:</h4>
 					<form class="controls">
-						<p class="input"><input type="radio" name="region-type"<%= ("state".equals(regionType))?"checked=\"checked\"":"" %> value="state" />State</p>
-						<!-- <p class="input"><input type="radio" name="region-type"<%= ("eda".equals(regionType))?"checked=\"checked\"":"" %> value="eda" />EDA</p> -->
-						<p class="input"><input type="radio" name="region-type"<%= ("huc2".equals(regionType))?"checked=\"checked\"":"" %> value="huc2" />HUC 2</p>
-						<p class="input"><input type="radio" name="region-type"<%= ("huc4".equals(regionType))?"checked=\"checked\"":"" %> value="huc4" />HUC 4</p>
-						<p class="input"><input type="radio" name="region-type"<%= ("huc6".equals(regionType))?"checked=\"checked\"":"" %> value="huc6" />HUC 6</p>
-						<p class="input"><input type="radio" name="region-type"<%= ("huc8".equals(regionType))?"checked=\"checked\"":"" %> value="huc8" />HUC 8</p>
-						<input type="hidden" name="context-id" value="<%= contextId %>" /><br />
-						<p class="input"><input type="radio" name="report-yield"<%= ("false".equals(reportAsYield))?"checked=\"checked\"":"" %> value="false" />Total Load</p>
-						<p class="input"><input type="radio" name="report-yield"<%= ("true".equals(reportAsYield))?"checked=\"checked\"":"" %> value="true" />Yield</p>
-					
+						<div class="columns-2">
+							<div class="column">
+								<div class="content">
+									<h4>Aggregate upstream regions by:</h4>
+									<p class="input"><input type="radio" name="region-type"<%= ("state".equals(regionType))?"checked=\"checked\"":"" %> value="state" />State</p>
+									<p class="input"><input type="radio" name="region-type"<%= ("huc2".equals(regionType))?"checked=\"checked\"":"" %> value="huc2" />HUC 2</p>
+									<p class="input"><input type="radio" name="region-type"<%= ("huc4".equals(regionType))?"checked=\"checked\"":"" %> value="huc4" />HUC 4</p>
+									<p class="input"><input type="radio" name="region-type"<%= ("huc6".equals(regionType))?"checked=\"checked\"":"" %> value="huc6" />HUC 6</p>
+									<p class="input"><input type="radio" name="region-type"<%= ("huc8".equals(regionType))?"checked=\"checked\"":"" %> value="huc8" />HUC 8</p>
+									<input type="hidden" name="context-id" value="<%= contextId %>" /><br />
+								</div>
+							</div>
+							<div class="column">
+								<div class="content">
+									<h4>Report as:</h4>
+									<p class="input"><input type="radio" name="report-yield"<%= ("false".equals(reportAsYield))?"checked=\"checked\"":"" %> value="false" />Total Load</p>
+									<p class="input"><input type="radio" name="report-yield"<%= ("true".equals(reportAsYield))?"checked=\"checked\"":"" %> value="true" />Yield, based on contributing area</p>
+									<div class="download-area">
+										<a class="button-link download-report" href="" title="Download the currently displayed report">Download as CSV</a>
+									</div>
+								</div>
+							</div>
+						</div>
 					</form>
-					<div class="download-area">
-						<a class="button-link download-report" href="" title="Download the currently displayed report">Download as CSV</a>
-					</div>
 				</div>
 			</div>
 			<div class="to-downstream-reaches-area column">

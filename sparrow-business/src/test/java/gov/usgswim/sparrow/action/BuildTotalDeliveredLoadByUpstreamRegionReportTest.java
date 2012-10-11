@@ -53,7 +53,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 //		System.out.println("Table Dumped");
 		
 		assertNotNull(result);
-		assertEquals(2, result.getTableCount());
+		assertEquals(3, result.getTableCount());
 		
 		
 		//The 1st table contains ID info (state name, area, etc)
@@ -108,7 +108,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 //		System.out.println("Table Dumped");
 		
 		assertNotNull(result);
-		assertEquals(2, result.getTableCount());
+		assertEquals(3, result.getTableCount());
 		
 		
 		//The 1st table contains ID info (state name, area, etc)
