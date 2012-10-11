@@ -54,7 +54,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		
 		assertEquals("9", rowCountStr);
 		assertEquals("7", nonZeroRowCountStr);
-		assertEquals("Watershed Area (" + SparrowUnits.SQR_KM.toString() + ")", watershedAreaColumnLabel);
+		assertEquals("Contributing Area (" + SparrowUnits.SQR_KM.toString() + ")", watershedAreaColumnLabel);
 		
 	}
 	
