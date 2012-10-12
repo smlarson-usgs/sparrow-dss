@@ -57,13 +57,13 @@
 							</div>
 							<div class="column">
 								<div class="content">
-									<h4>Report as:</h4>
-									<p class="input"><input type="radio" name="report-yield"<%= ("false".equals(reportAsYield))?"checked=\"checked\"":"" %> value="false" />Total Load</p>
+									<h4>Report load as:</h4>
+									<p class="input"><input type="radio" name="report-yield"<%= ("false".equals(reportAsYield))?"checked=\"checked\"":"" %> value="false" />Total load originating in each region</p>
 									<p class="input"><input type="radio" name="report-yield"<%= ("true".equals(reportAsYield))?"checked=\"checked\"":"" %> value="true" />Yield, based on contributing area</p>
-									<div class="download-area">
-										<a class="button-link download-report" href="" title="Download the currently displayed report">Download as CSV</a>
-									</div>
 								</div>
+							</div>
+							<div class="download-area">
+								<a class="button-link download-report" href="" title="Download the currently displayed report">Download as CSV</a>
 							</div>
 						</div>
 					</form>
