@@ -78,10 +78,10 @@ public class CalcIncrementalYieldTest  extends SparrowTestBaseWithDBandCannedMod
 		assertTrue(calcYieldResultCol.getMinDouble() == 0D);
 		assertEquals(cannedResult.getRowCount(), calcYieldResultCol.getRowCount().intValue());
 		
-		
+		System.out.println(calcYieldResultCol.getName());
 		//Check named metadata
 		assertEquals(
-				Action.getDataSeriesProperty(DataSeriesType.incremental_yield, false),
+				Action.getDataSeriesProperty(DataSeriesType.incremental_yield, false) + " for " + Action.getDataSeriesProperty(DataSeriesType.decayed_incremental, false),
 				calcYieldResultCol.getName());
 		assertEquals(
 				Action.getDataSeriesProperty(DataSeriesType.incremental_yield, true),
