@@ -42,7 +42,7 @@ public class CalcAnyYield extends Action<ColumnData> {
 	public ColumnData doAction() throws Exception {
 		
 		SparrowColumnAttribsBuilder ca = new SparrowColumnAttribsBuilder();
-		ca.setName(getDataSeriesProperty(seriesType, false));
+		ca.setName(getDataSeriesProperty(seriesType, false) + " for " + loadValuesColumn.getName());
 		ca.setDescription(getDataSeriesProperty(seriesType, true));
 		ca.setUnits(SparrowUnits.KG_PER_SQR_KM_PER_YEAR.getUserName());
 		
