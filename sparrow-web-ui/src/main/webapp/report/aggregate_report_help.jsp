@@ -4,11 +4,12 @@
 <html>
 <head>
 	<jsp:include page="../template_meta_tags.jsp" flush="true" />
+	<jsp:include page="../template_ie7_sizer_fix.jsp" flush="true" />
 
 	<title>Delivered Load from Selected Upstream Regions Report Help</title>
 	
 	<script src="js/report.js"></script>
-	<link type="text/css" rel="stylesheet" href="../css/full_width.css?rev=2">
+	<link type="text/css" rel="stylesheet" href="../css/one_column.css?rev=2">
 	<link type="text/css" rel="stylesheet" href="../css/static_custom.css?rev=2">
 	<link type="text/css" rel="stylesheet" href="style/report.css?rev=2" />
 

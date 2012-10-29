@@ -22,11 +22,3 @@
 
 	
 		<link rel="icon" href="<%= SparrowUtil.getRequestUrlFeatures(request).getBaseUrlWithoutSlash() %>/favicon.ico" type="image/x-icon">
-	
-		<!--[if lte IE 7]>
-		<style type="text/css">
-		#sizer {
-			width:expression(document.body.clientWidth > 1800 ? "800px" : "80%" );
-		}
-		</style>
-		<![endif]-->

@@ -92,12 +92,10 @@ Head Section */
 }
 .report-load-status .message { text-align: center; }
 
-.report-table-area {
-}
+.report-table-area table { 	border-collapse:collapse; background-color: #fff;	font-size: 90%; }
 
 table {
-	border-collapse:collapse;
-	background-color: #fff;	
+
 }
 
 table, th, td { border: 1px solid black; padding: .3em; }

@@ -4,10 +4,11 @@
 <html>
 <head>
 	<jsp:include page="template_meta_tags.jsp" flush="true" />
+	<jsp:include page="../template_ie7_sizer_fix.jsp" flush="true" />
 	
 	<title>SPARROW DSS - Frequently Asked Questions</title>
 
-	<link rel="stylesheet" href="css/full_width.css?rev=1" type="text/css">
+	<link rel="stylesheet" href="css/one_column.css?rev=1" type="text/css">
 	<link rel="stylesheet" href="css/static_custom.css?rev=1" type="text/css">
 
 </head>

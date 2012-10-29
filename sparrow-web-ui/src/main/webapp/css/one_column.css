@@ -1,21 +1,6 @@
 @import "layout.css"; /* Required - do not modify */
 @import "usgs_style_main.css"; /* Required - do not modify */
 
-/*	This section overwrites the 'jello sizing' in layout.css so that the page
-		is truely 100% wide. */
-
-body { padding: 0; }
-		
-#sizer {
-	margin: 0; padding: 0; width: 100%; max-width: none;
-}
-
-#expander {
-	margin: 0;
-	min-width: 0;
-}
-
-
 /*
 This CSS sheet creates a layout with a inset area to the right (often used for
 navigation and links) and a content area filling the rest of the page.  This
