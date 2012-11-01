@@ -99,9 +99,15 @@ public class SharedApplication  {
 		return configurationProps;
 	}
 	
+	public synchronized void reloadConfiguration() {
+		configurationProps = null;
+	}
+	
 	public boolean isUsingJndi() {
 		
 		if (usingJNDI == null) {
+			
+			usingJNDI = true;
 
 			String[] contexts = {"java:", "java:/comp/env"};
 
@@ -112,10 +118,10 @@ public class SharedApplication  {
 					NamingEnumeration<Binding> bindings = ctx.listBindings(context);
 				} catch (NamingException e) {
 					usingJNDI = false;
+					break;
 				}
 			}
 
-			usingJNDI = true;
 		}
 		
 		return usingJNDI;

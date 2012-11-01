@@ -90,10 +90,10 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 		
 		if (disablePredictionContextPersistentStorage()) {
 			//turn of db access
-			System.setProperty(PredictionContextHandler.DISABLE_DB_ACCESS, "true");
+			SharedApplication.getInstance().getConfiguration().setProperty(PredictionContextHandler.DISABLE_DB_ACCESS, "true");
 		} else {
 			//Clear to allow the PredictionContext to be stored to persistent storage
-			System.clearProperty(PredictionContextHandler.DISABLE_DB_ACCESS);
+			SharedApplication.getInstance().getConfiguration().setProperty(PredictionContextHandler.DISABLE_DB_ACCESS, "false");
 		}
 		
 		
@@ -105,6 +105,7 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 	public void doOneTimeFrameworkTearDown() throws Exception {
 		singleInstanceToTearDown.doDbTearDown();
 		singleInstanceToTearDown = null;
+		SharedApplication.getInstance().reloadConfiguration();
 	}
 	
 	protected void doDbSetup() throws Exception {
