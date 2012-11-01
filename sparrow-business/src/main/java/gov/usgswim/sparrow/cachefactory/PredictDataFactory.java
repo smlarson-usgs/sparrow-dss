@@ -4,6 +4,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.action.ILoadModelPredictData;
 import gov.usgswim.sparrow.action.LoadModelPredictData;
 import gov.usgswim.sparrow.action.LoadModelPredictDataFromSerializationFile;
+import gov.usgswim.sparrow.service.SharedApplication;
 import javax.servlet.ServletException;
 
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
@@ -34,7 +35,8 @@ public class PredictDataFactory implements CacheEntryFactory {
 		
 		ILoadModelPredictData action = null;
 		
-		String impClass = System.getProperty(ACTION_IMPLEMENTATION_CLASS);
+		String impClass = SharedApplication.getInstance().getConfiguration().getProperty(ACTION_IMPLEMENTATION_CLASS);
+
 		if (impClass == null) {
 			action = new LoadModelPredictData();
 		} else {

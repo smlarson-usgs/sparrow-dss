@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.*;
 
@@ -62,12 +63,14 @@ public class LoadModelPredictDataFromSerializationFile extends Action<PredictDat
 		} else {
 
 			if (isAllowFetchFromDb()) {
+				log.debug("Could not load from serialization file - now loading from db.");
 				LoadModelPredictData action = new LoadModelPredictData();
 				action.setModelId(modelId);
 				pd = action.run();
 				serializeModelToFile(pd, getFilePathForModel(modelId));
 				return pd;
 			} else {
+				log.debug("Could not load from serialization file and the option to load from the db is turned off.");
 				setPostMessage("The model was not found as a local serialization file" +
 						" and the " + FETCH_FROM_DB_IF_NO_LOCAL_FILE + " flag was not set to true.");
 				return null;
@@ -82,6 +85,7 @@ public class LoadModelPredictDataFromSerializationFile extends Action<PredictDat
 		File file = new File(getFilePathForModel(modelId));
 		
 		if (file.exists()) {
+			log.debug("Serialization data file exists for: " + file.getAbsolutePath() + "  Will load.");
 			try {
 				InputStream fileInputStream = new FileInputStream(file);
 				InputStream buffer = new BufferedInputStream( fileInputStream );
@@ -91,7 +95,7 @@ public class LoadModelPredictDataFromSerializationFile extends Action<PredictDat
 					PredictData pd = (PredictData)input.readObject();
 					return pd;
 				} catch (Exception e) {
-					log.error("The serialized model could not be loaded - will grab from db.", e);
+					log.error("The serialized model could not be loaded (possibly due to a class version change?)", e);
 					file.delete();
 					//do nothing else
 				} finally {
@@ -100,6 +104,8 @@ public class LoadModelPredictDataFromSerializationFile extends Action<PredictDat
 			} catch (Exception ee) {
 				//do nothing else
 			}
+		} else {
+			log.debug("Serialization data file does NOT exists for: " + file.getAbsolutePath());
 		}
 		
 		return null;
@@ -159,9 +165,9 @@ public class LoadModelPredictDataFromSerializationFile extends Action<PredictDat
 	 * Returns the default directory that serialized models are stored in.
 	 */
 	public static synchronized String getDefaultSerializedModelDirectory() {
-		String dir = System.getProperty(
-				DATA_DIRECTORY,
-				System.getProperty("java.io.tmpdir"));
+		String dir = SharedApplication.getInstance().getConfiguration().
+				getProperty(DATA_DIRECTORY, System.getProperty("java.io.tmpdir"));
+
 		
 		if (! dir.endsWith(File.separator)) dir = dir + File.separator;
 		
@@ -185,7 +191,8 @@ public class LoadModelPredictDataFromSerializationFile extends Action<PredictDat
 		if (allowFetchFromDb != null) {
 			return allowFetchFromDb;
 		} else {
-			String allow = System.getProperty(FETCH_FROM_DB_IF_NO_LOCAL_FILE);
+			String allow = SharedApplication.getInstance().getConfiguration().
+					getProperty(FETCH_FROM_DB_IF_NO_LOCAL_FILE);
 			return ("true".equalsIgnoreCase(allow));
 		}
 	}

@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.service;
 
 import static gov.usgswim.sparrow.service.ConfiguredCache.*;
 import gov.usgs.cida.binning.domain.BinSet;
+import gov.usgs.cida.config.DynamicReadOnlyProperties;
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.DataTableSet;
@@ -30,9 +31,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.naming.*;
 import javax.sql.DataSource;
 
 import net.sf.ehcache.Ehcache;
@@ -49,6 +48,9 @@ public class SharedApplication  {
 		Logger.getLogger(SharedApplication.class);
 
 	private static SharedApplication instance;
+	
+	private DynamicReadOnlyProperties configurationProps;
+	private Boolean usingJNDI;
 
 	//Warehouse (read-only) db connection info
 	public static final String READ_ONLY_JNDI_DS_NAME = "java:comp/env/jdbc/sparrow_dss";
@@ -74,6 +76,49 @@ public class SharedApplication  {
 	
 	private SharedApplication() {
 
+	}
+	
+	public synchronized DynamicReadOnlyProperties getConfiguration() {
+		
+		if (configurationProps == null) {
+			try {
+				DynamicReadOnlyProperties props = new DynamicReadOnlyProperties();
+
+				if (isUsingJndi()) {
+					props.addJNDIContexts(DynamicReadOnlyProperties.DEFAULT_JNDI_CONTEXTS);
+				}
+				
+				configurationProps = props;
+
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+
+		}
+
+		return configurationProps;
+	}
+	
+	public boolean isUsingJndi() {
+		
+		if (usingJNDI == null) {
+
+			String[] contexts = {"java:", "java:/comp/env"};
+
+			for (String context: contexts) {
+				Context ctx;
+				try {
+					ctx = new InitialContext();
+					NamingEnumeration<Binding> bindings = ctx.listBindings(context);
+				} catch (NamingException e) {
+					usingJNDI = false;
+				}
+			}
+
+			usingJNDI = true;
+		}
+		
+		return usingJNDI;
 	}
 
 	

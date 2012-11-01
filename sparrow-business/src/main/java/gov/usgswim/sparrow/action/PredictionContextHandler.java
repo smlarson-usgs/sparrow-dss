@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.action;
 
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.request.PredictionContextRequest;
+import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.ObjectInputStream;
 import java.sql.Blob;
@@ -33,7 +34,7 @@ public class PredictionContextHandler extends Action<List<PredictionContext>> {
 	 * All caching will then only be done locally.
 	 */
 	public final static String DISABLE_DB_ACCESS =
-		"gov.usgswim.sparrow.action.PredictionContextHandler.DisableDbAccess";
+		"gov.usgswim.sparrow.action.PredictionContextHandler.DISABLE_DB_ACCESS";
 	
 	private final static String INSERT_STATEMENT_NAME = "Insert";
 	private final static String TOUCH_STATEMENT_NAME = "Touch";
@@ -190,7 +191,8 @@ public class PredictionContextHandler extends Action<List<PredictionContext>> {
 	}
 	
 	protected boolean isDisabled() {
-		String da = System.getProperty(DISABLE_DB_ACCESS);
+		String da = SharedApplication.getInstance().getConfiguration().
+				getProperty(DISABLE_DB_ACCESS);
 		
 		return ("true".equals(da));
 	}

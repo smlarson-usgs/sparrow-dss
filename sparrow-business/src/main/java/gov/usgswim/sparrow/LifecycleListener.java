@@ -4,6 +4,7 @@ import gov.usgs.cida.config.DynamicReadOnlyProperties;
 import gov.usgswim.sparrow.cachefactory.EhCacheConfigurationReader;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
 import gov.usgswim.sparrow.service.ConfiguredCache;
+import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.IOException;
 import java.net.URL;
@@ -90,14 +91,11 @@ public class LifecycleListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent context, boolean clearCache){
 		try {
 			
-			DynamicReadOnlyProperties props = new DynamicReadOnlyProperties();
+			DynamicReadOnlyProperties props = SharedApplication.getInstance().getConfiguration();
+			boolean isJndiAware = SharedApplication.getInstance().isUsingJndi();
+			
 			String mode = null;
 			String env = null;
-			boolean isJndiAware = isUsingJndi();
-			
-			if (isJndiAware) {
-				props.addJNDIContexts(DynamicReadOnlyProperties.DEFAULT_JNDI_CONTEXTS);
-			}
 			
 			
 			//If we are in a servlet environment, switch to the production log4j config
@@ -145,28 +143,6 @@ public class LifecycleListener implements ServletContextListener {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-	}
-	
-	
-	/**
-	 * See if we can access a JNDI context.  If not, don't attempt any jndi config.
-	 * @return 
-	 */
-	public boolean isUsingJndi() {
-
-		String[] contexts = {"java:", "java:/comp/env"};
-		
-		for (String context: contexts) {
-			Context ctx;
-			try {
-				ctx = new InitialContext();
-				NamingEnumeration<Binding> bindings = ctx.listBindings(context);
-			} catch (NamingException e) {
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 }

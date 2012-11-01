@@ -28,7 +28,12 @@ public class ReportService implements HttpService<ReportRequest> {
 			PredictionContext context = req.getContext();
 			AggregationLevel aggLevel = req.getAggregationLevel();
 			Long modelId = null;
-			boolean includeRelativePercentage = true;
+			
+			//Relative percentage can be reported for abs vals, but doesn't make sense
+			//for yield values.   This could be added back by basing the rel-percent
+			//on the abs values, but there would be no way for the user to check the
+			//values in what they are looking at.
+			boolean includeRelativePercentage = ! req.isReportYield();
 
 			if (context != null) {
 				//The context was supplied w/ the request
