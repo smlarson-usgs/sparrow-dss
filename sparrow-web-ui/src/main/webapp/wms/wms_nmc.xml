@@ -231,11 +231,8 @@
       <BoundingBox/>
       <Status>PUBLIC</Status>
       <Type>RASTER IMAGE</Type>
-      <MetadataURL>http://extract.cr.usgs.gov/distmeta/servlet/gov.usgs.edc.MetaBuilder?TYPE=HTML&amp;DATASET=NLCD01LANC</MetadataURL>
-      <LogoURL>http://mciweb.er.usgs.gov/images/idbksm.gif</LogoURL>
       <SLDURL/>
-      <LegendURL>http://raster.nationalmap.gov/arcgisoutput/wms/ISSE/LandCover/default15.png</LegendURL>
-			<!-- org legend.  same? http://gisdata.usgs.gov/Image_Library/legends/Legend_NLCD5.png -->
+      <LegendURL>http://www.mrlc.gov/downloadfile.php?file=NLCD_Colour_Classification_Update.jpg</LegendURL>
       <BackingName/>
       <Description>
  NLCD 1992, NLCD 2001, and NLCD 2006 are National Land Cover Database classification schemes based primarily on Landsat data along with ancillary data sources, such as topography, census and agricultural statistics, soil characteristics, wetlands, and other land cover maps.  NLCD 1992 is a 21-class land cover classification scheme that has been applied consistently across the conterminous U.S. at a spatial resolution of 30 meters.  NLCD 2001 is a 16-class land cover classification scheme that also has been applied to the conterminous U.S. at a spatial resolution of 30 meters, and includes Alaska, Hawaii, and Puerto Rico.  NLCD 2006 quantifies land cover change for the conterminous U.S. between the years 2001 to 2006.  Generation of NLCD 2006 helped identify and correct issues in the NLCD 2001 land cover and impervious surface products only, and no changes were made to the NLCD 2001 canopy product.  For additional information, go to http://www.mrlc.gov/.
