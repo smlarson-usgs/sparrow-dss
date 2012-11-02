@@ -207,15 +207,15 @@
     <Status>PUBLIC</Status>
     <PartnerName>USGS</PartnerName>
     <PartnerWebURL>http://www.usgs.gov/</PartnerWebURL>
-    <GetCapabilitiesURL>http://ims.cr.usgs.gov:80/servlet19/com.esri.wms.Esrimap/USGS_EDC_LandCover_NLCD2001?</GetCapabilitiesURL>
-    <GetMapURL>http://ims.cr.usgs.gov/servlet19/com.esri.wms.Esrimap/USGS_EDC_LandCover_NLCD2001?</GetMapURL>
-    <GetFeatureInfoURL>http://ims.cr.usgs.gov:80/servlet19/com.esri.wms.Esrimap/USGS_EDC_LandCover_NLCD2001?</GetFeatureInfoURL>
+    <GetCapabilitiesURL>http://raster.nationalmap.gov/ArcGIS/services/TNM_LandCover/MapServer/WMSServer?</GetCapabilitiesURL>
+    <GetMapURL>http://raster.nationalmap.gov/ArcGIS/services/TNM_LandCover/MapServer/WMSServer?</GetMapURL>
+    <GetFeatureInfoURL>http://raster.nationalmap.gov/ArcGIS/services/TNM_LandCover/MapServer/WMSServer?</GetFeatureInfoURL>
     <BackingURL/>
     <BackingService/>
     <BackingVersion/>
     <Layer id="18560" requested="true" recommended="true" transparency="false" queryable="false" downloadable="false">
-      <Name>NLCD_2001_Land_Cover</Name>
-      <Title>USGS NLCD 2001</Title>
+      <Name>15</Name>
+      <Title>Land_Cover_2001</Title>
       <opacity>100</opacity>
       <PartnerName>USGS</PartnerName>
       <PartnerWebURL>http://www.usgs.gov/</PartnerWebURL>
@@ -234,9 +234,12 @@
       <MetadataURL>http://extract.cr.usgs.gov/distmeta/servlet/gov.usgs.edc.MetaBuilder?TYPE=HTML&amp;DATASET=NLCD01LANC</MetadataURL>
       <LogoURL>http://mciweb.er.usgs.gov/images/idbksm.gif</LogoURL>
       <SLDURL/>
-      <LegendURL>http://gisdata.usgs.gov/Image_Library/legends/Legend_NLCD5.png</LegendURL>
+      <LegendURL>http://raster.nationalmap.gov/arcgisoutput/wms/ISSE/LandCover/default15.png</LegendURL>
+			<!-- org legend.  same? http://gisdata.usgs.gov/Image_Library/legends/Legend_NLCD5.png -->
       <BackingName/>
-      <Description>The National Land Cover Database 2001 is created by partitioning the U.S. into mapping zones. A total of 66 mapping zones were delineated within the conterminous U.S. based on ecoregion and geographical characteristics, edgematching features and the size requirement of Landsat mosaics.</Description>
+      <Description>
+ NLCD 1992, NLCD 2001, and NLCD 2006 are National Land Cover Database classification schemes based primarily on Landsat data along with ancillary data sources, such as topography, census and agricultural statistics, soil characteristics, wetlands, and other land cover maps.  NLCD 1992 is a 21-class land cover classification scheme that has been applied consistently across the conterminous U.S. at a spatial resolution of 30 meters.  NLCD 2001 is a 16-class land cover classification scheme that also has been applied to the conterminous U.S. at a spatial resolution of 30 meters, and includes Alaska, Hawaii, and Puerto Rico.  NLCD 2006 quantifies land cover change for the conterminous U.S. between the years 2001 to 2006.  Generation of NLCD 2006 helped identify and correct issues in the NLCD 2001 land cover and impervious surface products only, and no changes were made to the NLCD 2001 canopy product.  For additional information, go to http://www.mrlc.gov/.
+			</Description>
     </Layer>
   </Service>
 </ServiceGroup>
