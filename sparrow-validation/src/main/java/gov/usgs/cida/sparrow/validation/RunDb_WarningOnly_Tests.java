@@ -77,10 +77,12 @@ public class RunDb_WarningOnly_Tests extends SparrowModelValidationRunner {
 		addValidator(new ReachCoefValuesShouldBeOneForShoreReaches(preciseComparator, true));
 		addValidator(new WarningOnlyDbTests(tightComparator, true));
 		
-		// This test doesn't use a comparator.  Its marked as warning only
-		// because it looks like there are some cases where there may be a loop
-		// of river reaches... which may be ok.
+		////////////////////////////////
+		// These test doesn't use a comparator.  They are marked as warning only
+		// because it looks like there are some cases where failures are just unusual
+		// situations that are not errors.
 		addValidator(new HydSeqOfUpstreamReachesShouldBeLessThanDownstreamReach(true));
+		addValidator(new DiversionsShouldHaveUpsteamReaches(true));
 		
 	}
 	
