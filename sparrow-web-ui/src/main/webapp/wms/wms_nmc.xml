@@ -215,7 +215,7 @@
     <BackingVersion/>
     <Layer id="18560" requested="true" recommended="true" transparency="false" queryable="false" downloadable="false">
       <Name>15</Name>
-      <Title>Land_Cover_2001</Title>
+      <Title>NLCD Land Cover 2001</Title>
       <opacity>100</opacity>
       <PartnerName>USGS</PartnerName>
       <PartnerWebURL>http://www.usgs.gov/</PartnerWebURL>
