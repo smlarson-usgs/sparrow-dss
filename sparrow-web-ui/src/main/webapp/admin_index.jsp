@@ -14,23 +14,9 @@
 	<script type="text/javascript" src="ext_js/adapter/ext/ext-base.js"></script>
 	<script type="text/javascript" src="ext_js/ext-all.js"></script>
 	<script type="text/javascript" src="js/AdminModelSelector.js"></script>
-	<script type="text/javascript">
-		function updateCoreVersion(){
-			Ext.Ajax.request({
-				method: 'GET',
-				url: 'getCoreInfo',
-				success: function(r,o) {
-					var item = document.getElementById("versionInfo");
-					item.firstChild.nodeValue += "[core: " + r.responseText + "]";
-				},
-				failure: function(r,o) {
-					alert("request failed");
-				}
-			});
-		};
-		Ext.onReady(loadModels);
-		Ext.onReady(updateCoreVersion);
-	 </script>
+
+	<jsp:include page="template_page_tracking.jsp" flush="true" />
+	
 </head>
 <body>
     <jsp:include page="header.jsp" flush="true" />

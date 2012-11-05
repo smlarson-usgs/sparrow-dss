@@ -31,6 +31,8 @@
 		Ext.onReady(loadModels);
 		Ext.onReady(updateCoreVersion);
 	 </script>
+	
+	<jsp:include page="template_page_tracking.jsp" flush="true" />
 </head>
 <body>
     <jsp:include page="header.jsp" flush="true" />

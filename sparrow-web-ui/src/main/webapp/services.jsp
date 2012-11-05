@@ -72,6 +72,8 @@
 	</style>
 
 		<title>SPARROW Decision Support System</title>
+		
+		<jsp:include page="template_page_tracking.jsp" flush="true" />
     </head>
     <body>
 

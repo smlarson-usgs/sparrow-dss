@@ -86,6 +86,8 @@
 
   <!-- Include the VideoJS Stylesheet -->
   <link rel="stylesheet" href="video-js/video-js.css" type="text/css" media="screen" title="Video JS">
+	
+	<jsp:include page="template_page_tracking.jsp" flush="true" />
 </head>
 <body>
 

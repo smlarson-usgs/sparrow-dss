@@ -13,6 +13,8 @@
         String context = request.getContextPath();
         String url = "http://" + host + context + "/map.jsp";
     %>
+		
+		<jsp:include page="template_page_tracking.jsp" flush="true" />
 </head>
 <body>
     <jsp:include page="header.jsp" flush="true" />

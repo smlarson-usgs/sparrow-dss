@@ -10,7 +10,9 @@
 
 	<link rel="stylesheet" href="css/one_column.css?rev=1" type="text/css">
 	<link rel="stylesheet" href="css/static_custom.css?rev=1" type="text/css">
-
+	
+	<jsp:include page="template_page_tracking.jsp" flush="true" />
+	
 </head>
 <body>
 	<jsp:include page="template_body_header.jsp" flush="true" />

@@ -14,6 +14,10 @@ Sparrow.events.EventManager = function(){ return{
 		    EXPORT_DATA_WIN.enable();	//One way trip to enable
 		    
 		    Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(false);
+				
+				//Google Analytics event tracking
+				_gaq.push(['_trackEvent', 'Context', 'Update', series, model_id]);
+				
 		});
 		
 		Sparrow.CONTEXT.on('dataseries-changed', function() {
@@ -128,6 +132,9 @@ Sparrow.events.EventManager = function(){ return{
 					}
 				}
 			}
+			
+			//Google Analytics event tracking
+			_gaq.push(['_trackEvent', 'PreSession', 'Loaded', series, model_id]);
 		});
 		
 		Sparrow.CONTEXT.on('adjustment-changed', Sparrow.handlers.UiComponents.adjustmentChange);

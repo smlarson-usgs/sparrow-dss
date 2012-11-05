@@ -18,6 +18,7 @@
 	<link type="text/css" rel="stylesheet" href="../css/static_custom.css?rev=2">
 	<link type="text/css" rel="stylesheet" href="style/report.css?rev=2" />
 
+	<jsp:include page="../template_page_tracking.jsp" flush="true" />
 </head>
 <body>
 	<jsp:include page="../template_body_header.jsp" flush="true" />

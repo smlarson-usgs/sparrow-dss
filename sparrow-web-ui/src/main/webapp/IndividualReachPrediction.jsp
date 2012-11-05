@@ -6,6 +6,9 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Individual Reach Prediction Service Test</title>
     <link rel="icon" href="../favicon.ico" />
+		
+		<jsp:include page="template_page_tracking.jsp" flush="true" />
+		
   </head>
   <body>
 
