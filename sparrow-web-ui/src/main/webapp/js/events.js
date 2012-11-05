@@ -16,7 +16,7 @@ Sparrow.events.EventManager = function(){ return{
 		    Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(false);
 				
 				//Google Analytics event tracking
-				_gaq.push(['_trackEvent', 'Context', 'Update', series, model_id]);
+				_gaq.push(['_trackEvent', 'Context', 'Update', series, parseInt(model_id)]);
 				
 		});
 		
@@ -134,7 +134,8 @@ Sparrow.events.EventManager = function(){ return{
 			}
 			
 			//Google Analytics event tracking
-			_gaq.push(['_trackEvent', 'PreSession', 'Loaded', series, model_id]);
+			_gaq.push(['_trackEvent', 'Context', 'Update', series, parseInt(model_id)]);
+			_gaq.push(['_trackEvent', 'PreSession', 'Loaded', series, parseInt(model_id)]);
 		});
 		
 		Sparrow.CONTEXT.on('adjustment-changed', Sparrow.handlers.UiComponents.adjustmentChange);
