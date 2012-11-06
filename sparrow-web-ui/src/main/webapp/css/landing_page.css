@@ -127,3 +127,5 @@ h2#site-title { margin-bottom: 0 !important; }
 .highlite-w { background-color: #FFFFFF; }
 .highlite-b { background-color: #C4D8F1; }
 .highlite-normal { background-color: transparent; }
+
+#search-results-container ol { list-style-type: none; }

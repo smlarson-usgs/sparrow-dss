@@ -186,7 +186,7 @@ clears this properly, but is unfortunately affected by this patch, which simply
 specifies a minimum height.
 */
 /* Set a min-height for most standards compliant browsers */
-html > body #page-area-container { min-height: 30em; overflow: visible; }
+html > body #page-area-container { min-height: 30em; overflow-x: visible; overflow-y: hidden; }
 /*
 	Turn the min-height back off for *really* standards compliant browsers.
 	Tried using this rule:
