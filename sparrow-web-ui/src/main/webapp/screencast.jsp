@@ -2,7 +2,8 @@
 <%@ page contentType="text/html; charset=utf-8"%>
 <html>
 <head>
-  <meta charset="utf-8" />
+  <jsp:include page="template_meta_tags.jsp" flush="true" />
+	
   <title>SPARROW DSS Screencast</title>
 <%
 	//The file name, which should not include a path or extension.

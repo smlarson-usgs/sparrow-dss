@@ -4,7 +4,7 @@
 <html>
 <head>
 	<jsp:include page="template_meta_tags.jsp" flush="true" />
-	<jsp:include page="../template_ie7_sizer_fix.jsp" flush="true" />
+	<jsp:include page="template_ie7_sizer_fix.jsp" flush="true" />
 	
 	<title>SPARROW DSS - Frequently Asked Questions</title>
 

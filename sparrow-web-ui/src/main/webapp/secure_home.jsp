@@ -3,7 +3,8 @@
 <html>
 <% response.sendRedirect("index.jsp"); %>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<jsp:include page="template_meta_tags.jsp" flush="true" />
+	
 	<title>Login - SPARROW Model Decision Support</title>
 	<link rel="icon" href="favicon.ico" >
 

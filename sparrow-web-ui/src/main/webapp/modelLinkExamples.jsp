@@ -2,7 +2,8 @@
 <%@ page contentType="text/html; charset=utf-8"%>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <jsp:include page="template_meta_tags.jsp" flush="true" />
+		
     <title>Model Link Examples - SPARROW Model Decision Support</title>
     <link rel="icon" href="favicon.ico" >
     <link type="text/css" rel="stylesheet" href="css/usgs_style_main.css" />
