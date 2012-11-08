@@ -19,8 +19,9 @@
 	<link type="text/css" rel="stylesheet" href="css/custom.css" />
 	
 	<%-- the minify plugin doesn't recognize the 'type' attribute, so that will prevent this one from being minified twice --%>
-    <script type="text/javascript" src="ext_js/adapter/ext/ext-base.js"></script>
+  <script type="text/javascript" src="ext_js/adapter/ext/ext-base.js"></script>
 	<script type="text/javascript" src="ext_js/ext-all.js"></script>
+	<script type="text/javascript" src="js/ext_extensions/ext_ie_patch.js"></script>
 	
 	<%-- John scrollable map framework --%>
 	<script src="scrollable_map/JMap-header.js"></script>

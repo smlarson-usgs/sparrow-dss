@@ -8,7 +8,7 @@
 		This also seems to more reliably turn off IE compatability mode, preventing
 		JS errors that would occur otherwise.
 		--%>
-		<meta http-equiv="x-ua-compatible" content="IE=8,7" >
+		<meta http-equiv="x-ua-compatible" content="IE=9,8,7" >
 		
 		<meta name="description" content ="SPARROW Decision Support tool - an online version of the SPARROW Models with support for scenario testing."> 
 		<meta name="author" content="See http://water.usgs.gov/nawqa/sparrow for authorship of the SPARROW model.  Site and online capabilities created by CIDA, http://cida.usgs.gov"> 

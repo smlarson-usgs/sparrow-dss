@@ -7,7 +7,14 @@ document.write('<!--[if IE]> '+
 '<![endif]-->  ');
 
 JMap.svg.SVGManager = function(map) {
-	this.isIE = (navigator.appName == 'Microsoft Internet Explorer');
+	
+	this.ua_str = navigator.userAgent.toLowerCase();
+	this.isIE6 = /msie 6/.test(this.ua_str);
+	this.isIE7 = /msie 7/.test(this.ua_str);
+	this.isIE8 = /msie 8/.test(this.ua_str);
+	
+	//IE9 can be considered 'not IE' here b/c it supports SVG
+	this.isIE = this.isIE6 || this.isIE7 || this.isIE8;
 
 	this.propertyEnum = [];
 	if (this.isIE) {

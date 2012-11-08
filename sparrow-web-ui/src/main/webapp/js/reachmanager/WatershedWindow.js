@@ -53,7 +53,7 @@ var WATERSHED_WINDOW = new (function() {
 		store : findWatershedStore,
 		selModel: gridSelectionModel,
 		viewConfig : {
-			forceFit : true,
+			forceFit : true
 		},
 		columns : [
 		   gridSelectionModel,
