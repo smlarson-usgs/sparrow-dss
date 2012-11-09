@@ -69,7 +69,7 @@ var WATERSHED_WINDOW = new (function() {
 			dataIndex : 'description',
 			hidden : true,
 			hideable: true,
-			sortable : false,
+			sortable : false
 		}, {
 			header : "# of Reaches",
 			width : 80,
