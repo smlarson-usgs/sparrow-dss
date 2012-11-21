@@ -141,7 +141,7 @@ This map presents land cover imagery for the world and detailed topographic maps
 			<MetadataURL>http://nationalatlas.gov/metadata/countyp020.html</MetadataURL>
 			<LogoURL>http://mciweb.er.usgs.gov/images/idbksm.gif</LogoURL>
 			<SLDURL />
-			<LegendURL>http://mcmcweb.er.usgs.gov/catalog/legends/SOLDGR/national_atlas/national_atlas_countybdy.png</LegendURL>
+			<LegendURL>images/legends/counties.png</LegendURL> <!-- http://mcmcweb.er.usgs.gov/catalog/legends/SOLDGR/national_atlas/national_atlas_countybdy.png</LegendURL> -->
 			<BackingName />
 			<Description>This data set portrays the State and county boundaries of the United States, Puerto Rico, and the U.S. Virgin Islands. The data set was created by extracting county polygon features from the individual 1:2,000,000-scale State boundary Digital Line Graph (DLG) files produced by the U.S. Geological Survey. These files were then merged into a single file.</Description>
 			<Restricted>0</Restricted>
