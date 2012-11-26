@@ -174,8 +174,9 @@ IE 5.01 to completely collapse the wrapper - instead we float it */
 the float: none with the comment is ignored by 5.01,
 5.5 and above see it and carry on about their business
 It's probably fine to just remove it, but it's left here 
-just in case that many moons ago problem rears its head again */
-	float/**/: none;
+just in case that many moons ago problem rears its head again.*/
+/* M Bucknell: took out this float:none with the imbedded comments. Caused auto scrolling rather than having the browser's scroll bar appear. */
+/*	float/**//*: none;*/
 }
 
 /* Eric Everman 12/16/2005
