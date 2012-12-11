@@ -4,11 +4,11 @@
   <parent>
     <groupId>gov.usgs.cida</groupId>
     <artifactId>sparrow-parent</artifactId>
-    <version>1.4.31</version>
+    <version>1.4.32-SNAPSHOT</version>
   </parent>
   <groupId>gov.usgs.cida</groupId>
   <artifactId>sparrow-datatable</artifactId>
-  <version>1.4.31</version>
+  <version>1.4.32-SNAPSHOT</version>
   <name>sparrow-datatable</name>
   <url>http://maven.apache.org</url>
   <properties>
