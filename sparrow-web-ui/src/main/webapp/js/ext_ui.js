@@ -605,7 +605,7 @@ Ext.onReady(function() {
 			text: 'Remove overlay',
 			hidden: true,
 			handler: function() {
-				displayDeliverySummaryReport();
+				SvgOverlay.removeAllOverlays();
 			}
 		},{
 			id: 'mapToolButtonsOpenDeliveryReports',
@@ -613,7 +613,7 @@ Ext.onReady(function() {
 			tooltip: 'View detailed delivery data in a new window',
 			hidden: true,
 			handler: function() {
-				SvgOverlay.removeAllOverlays();
+				displayDeliverySummaryReport();
 			}
 		}]
 	});
