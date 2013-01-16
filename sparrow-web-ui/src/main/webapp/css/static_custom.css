@@ -6,6 +6,9 @@ Customization that applies to all static pages in the project
 #header #banner-area { background-image: url(../images/drought-flood_banner.jpg); margin: 0; }
 #header { padding: 0; }
 
+/* IE 7 seems to require this to accurately calculate child div percentage widths */
+#page-area-container { width: 100% }
+
 #page-area-container .area-2 {
 	background: url("../images/left_gradient.gif") repeat-y scroll -10px 0 transparent;
 }
