@@ -3,18 +3,18 @@ package gov.usgswim.sparrow;
 public enum SparrowUnits {
 	/* Note:  all names must be in UPPER CASE to insure the parse method works. */
 	METERS("m", "meters"),
-	CFS("ft³⋅sec⁻¹", "feet³ ⋅ second⁻¹"),
-	FPS("ft⋅sec⁻¹", "feet ⋅ second⁻¹"),
-	KG_PER_YEAR("kg⋅year⁻¹", "kg ⋅ year⁻¹"),
-	MG_PER_L("mg⋅L⁻¹", "mg ⋅ L⁻¹"),
+	CFS("ft³●secˉ¹", "feet³ ● secondˉ¹"),
+	FPS("ft●secˉ¹", "feet ● secondˉ¹"),
+	KG_PER_YEAR("kg●yearˉ¹", "kg ● yearˉ¹"),
+	MG_PER_L("mg●Lˉ¹", "mg ﻿● L﻿ˉ¹"),
 	SQR_KM("km²", "km²"),
 	SQR_M("m²", "m²"),
 	HECTARE("hectare", "hectare"),
-	KG_PER_SQR_KM_PER_YEAR("kg⋅km⁻²⋅yr⁻¹", "kg ⋅ km⁻² ⋅ year⁻¹"),
+	KG_PER_SQR_KM_PER_YEAR("kg●kmˉ²●yrˉ¹", "kg ● kmˉ² ● yearˉ¹"),
 	PERCENT("%", "percent"),
 	FRACTION("(fraction)", "fraction"),
 	CAPITA("capita", "capita (persons)"),
-	PPM_PER_SQR_KM("ppm⋅km²", "parts per million ⋅ km²"),
+	PPM_PER_SQR_KM("ppm●km²", "parts per million ● km²"),
 	UNKNOWN("unknown", "unknown"),
 	UNSPECIFIED("unspecified", "unspecified")
 	;
