@@ -605,6 +605,14 @@ Ext.onReady(function() {
 			text: 'Remove overlay',
 			hidden: true,
 			handler: function() {
+				displayDeliverySummaryReport();
+			}
+		},{
+			id: 'mapToolButtonsOpenDeliveryReports',
+			text: 'Open the Delivery Reports',
+			tooltip: 'View detailed delivery data in a new window',
+			hidden: true,
+			handler: function() {
 				SvgOverlay.removeAllOverlays();
 			}
 		}]

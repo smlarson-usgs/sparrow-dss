@@ -208,6 +208,14 @@ Sparrow.handlers.DownstreamTrackingInstructions = function(){
 							"<b style=\"font-size: 1.3em;\"><a title\"Click to open the reports in a new window\" href=\"javascript:displayDeliverySummaryReport()\">Open the Delivery Summary Report</a></b>.<br />" +
 							"The summary reports total the load delivered to the downstream reaches and show breakdowns of the originating regions (state or HUC).");
 				}
+				
+				//Show the button to open the reports on the map
+				var reportBtn = mapToolButtons.getComponent('mapToolButtonsOpenDeliveryReports');
+				if (reportBtn && reportBtn.hidden) {
+					reportBtn.show();
+					mapToolButtons.doLayout();
+				}
+				
 			} else {
 				//Does not have delivery dataseries
 
@@ -219,6 +227,13 @@ Sparrow.handlers.DownstreamTrackingInstructions = function(){
 					comp.body.update(
 						mapIsDisplaying + toMapDownstream + " choose downstream reaches and a downstream tracking data series. " + howToChooseReaches
 					);
+				}
+				
+				//Hide the button to open the reports on the map
+				var reportBtn = mapToolButtons.getComponent('mapToolButtonsOpenDeliveryReports');
+				if (reportBtn && ! reportBtn.hidden) {
+					reportBtn.hide();
+					mapToolButtons.doLayout();
 				}
 				
 			}
