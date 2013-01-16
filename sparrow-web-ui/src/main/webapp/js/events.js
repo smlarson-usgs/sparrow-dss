@@ -214,7 +214,7 @@ Sparrow.handlers.DownstreamTrackingInstructions = function(){
 				if (reportBtn && reportBtn.hidden) {
 					reportBtn.show();
 					mapToolButtons.doLayout();
-					reportBtn.getEl().fadeOut().fadeIn().fadeOut().fadeIn();
+					reportBtn.getEl().fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn();
 				}
 				
 			} else {
