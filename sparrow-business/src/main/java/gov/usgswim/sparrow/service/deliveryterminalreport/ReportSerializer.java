@@ -273,26 +273,30 @@ public class ReportSerializer extends BasicXMLStreamReader {
 					isAddingEvents = true;
 				}
 			} else {
-				//This is the last row - add the totals
+				//This is the last row - add the totals if not yield data
 				
-				BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
-				rowEvent.addAttribute("type", "total");
-				events.add(rowEvent);
+				if (! request.isReportYield()) {
+				
+					BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
+					rowEvent.addAttribute("type", "total");
+					events.add(rowEvent);
 
-				for (int c = 0; c < data.getColumnCount(); c++) {
-					
-					if (dataTableColumnTotals[c] == null) {
-						addBasicTag("c", null);
-					} else if (numberFormat[c] != null) {
-						addBasicTag("c", numberFormat[c].format(dataTableColumnTotals[c]));
-					} else {
-						addBasicTag("c", dataTableColumnTotals[c].toString());
+					for (int c = 0; c < data.getColumnCount(); c++) {
+
+						if (dataTableColumnTotals[c] == null) {
+							addBasicTag("c", null);
+						} else if (numberFormat[c] != null) {
+							addBasicTag("c", numberFormat[c].format(dataTableColumnTotals[c]));
+						} else {
+							addBasicTag("c", dataTableColumnTotals[c].toString());
+						}
 					}
-				}
 
-				addCloseTag("r");
-				events.add(new BasicTagEvent(SPACE));
-				isAddingEvents = true;
+					addCloseTag("r");
+					events.add(new BasicTagEvent(SPACE));
+					isAddingEvents = true;
+				
+				}
 			}
 
 		}
