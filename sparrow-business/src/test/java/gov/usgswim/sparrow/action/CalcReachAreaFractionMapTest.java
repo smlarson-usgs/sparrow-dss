@@ -31,12 +31,12 @@ public class CalcReachAreaFractionMapTest extends CalcFractionalAreaBaseTest {
 		
 		// 11: The reach in the pdf sample table
 		// This test file has all the FRACs totalling to 1
-		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(network1_topo, 11L, false);
+		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(network1_topo, 11L, false, false);
 		ReachRowValueMap areaMap = action.run();
 		doAreaFractionsShouldMatchPdfFileExampleInResources(areaMap);
 		
 		// This test file has some of the FRACs not totalling to 1, but in ways that we can correct.
-		action = new CalcReachAreaFractionMap(testTopoCorrected, 11L, false);
+		action = new CalcReachAreaFractionMap(testTopoCorrected, 11L, false, false);
 		areaMap = action.run();
 		doAreaFractionsShouldMatchPdfFileExampleInResources(areaMap);
 
@@ -64,7 +64,7 @@ public class CalcReachAreaFractionMapTest extends CalcFractionalAreaBaseTest {
 	public void ShoreReachesHaveNoUpstreamAreaFractions() throws Exception {
 		
 		//13: A shore reach
-		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(network1_topo, 13L, false);
+		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(network1_topo, 13L, false, false);
 		ReachRowValueMap areaMap = action.run();
 		
 		assertEquals(1D, (double)areaMap.getFraction(13), COMP_ERROR);
@@ -76,7 +76,7 @@ public class CalcReachAreaFractionMapTest extends CalcFractionalAreaBaseTest {
 
 		//10: Has a non-transmitting reach (7) immediately upstream and a
 		//transmitting reach (8).
-		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(network1_topo, 10L, false);
+		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(network1_topo, 10L, false, false);
 		ReachRowValueMap areaMap = action.run();
 		
 		//The reach itself
@@ -100,7 +100,7 @@ public class CalcReachAreaFractionMapTest extends CalcFractionalAreaBaseTest {
 	//See reference pdf file CalcReachAreaFractionMapTest2.pdf
 	@Test
 	public void braidedStreamShouldHaveAJoinedFracValueUpstream_TargetReach7() throws Exception {
-		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(testTopo2, 7L, false);
+		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(testTopo2, 7L, false, false);
 		ReachRowValueMap areaMap = action.run();
 
 		assertNull(areaMap.getFraction(0));
@@ -119,7 +119,7 @@ public class CalcReachAreaFractionMapTest extends CalcFractionalAreaBaseTest {
 	
 	@Test
 	public void braidedStreamShouldHaveAJoinedFracValueUpstream_TargetReach8() throws Exception {
-		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(testTopo2, 8L, false);
+		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(testTopo2, 8L, false, false);
 		ReachRowValueMap areaMap = action.run();
 
 		assertNull(areaMap.getFraction(0));

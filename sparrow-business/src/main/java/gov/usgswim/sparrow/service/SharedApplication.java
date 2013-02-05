@@ -834,11 +834,11 @@ public class SharedApplication  {
 	}
 	
 	//Fractioned watershed areas
-	public ReachRowValueMap getReachAreaFractionMap(ReachID req) {
+	public ReachRowValueMap getReachAreaFractionMap(ReachAreaFractionMapRequest req) {
 		return getReachAreaFractionMap(req, false);
 	}
 	
-	public ReachRowValueMap getReachAreaFractionMap(ReachID req, boolean quiet) {
+	public ReachRowValueMap getReachAreaFractionMap(ReachAreaFractionMapRequest req, boolean quiet) {
 		return (ReachRowValueMap) ReachAreaFractionMap.get(req, quiet);
 	}
 	

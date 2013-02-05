@@ -82,9 +82,9 @@ public class CalcFractionedWatershedAreaDBTest extends SparrowTestBase {
 		ReachID reach6719 = new ReachID(TEST_MODEL_ID, 6719L);
 		ReachID reach6716 = new ReachID(TEST_MODEL_ID, 6716L);
 		
-		CalcReachAreaFractionMap action6717 = new CalcReachAreaFractionMap(reach6717, false);
-		CalcReachAreaFractionMap action6719 = new CalcReachAreaFractionMap(reach6719, false);
-		CalcReachAreaFractionMap action6716 = new CalcReachAreaFractionMap(reach6716, false);
+		CalcReachAreaFractionMap action6717 = new CalcReachAreaFractionMap(reach6717, false, false);
+		CalcReachAreaFractionMap action6719 = new CalcReachAreaFractionMap(reach6719, false, false);
+		CalcReachAreaFractionMap action6716 = new CalcReachAreaFractionMap(reach6716, false, false);
 		
 		ReachRowValueMap map6717 = action6717.run();
 		ReachRowValueMap map6719 = action6719.run();

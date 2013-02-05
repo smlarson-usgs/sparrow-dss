@@ -12,10 +12,10 @@ import org.apache.log4j.Logger;
  * 
  * @author eeverman
  */
-public class RunAllDBOnlyTests extends SparrowModelValidationRunner {
+public class RunWatershedAreaTestWithIftran extends SparrowModelValidationRunner {
 
 	public static void main(String[] args) throws Exception {
-		String myClassName = RunAllDBOnlyTests.class.getCanonicalName();
+		String myClassName = RunWatershedAreaTestWithIftran.class.getCanonicalName();
 		
 		SparrowModelValidationRunner.main(new String[] {myClassName});
 	}
@@ -91,29 +91,10 @@ public class RunAllDBOnlyTests extends SparrowModelValidationRunner {
 		 * Arg4:	Set true to force non-fractioned watershed area calcs.
 		 *				Production will always have this as false, but can be toggled here
 		 *				for testing.  This takes precidence over Arg 3.
+		 * Arg5:	Set true to ignore ifTran in calcs
 		 */
 		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(wideComparator, preciseComparator, false, false, false));
-		addValidator(new FailableDbTests(tightComparator, false));
-		addValidator(new FracValuesShouldTotalToOne(tightComparator, false));
-		addValidator(new ReachCoefValuesShouldBeLessThanOneAndGreaterThanZero(preciseComparator, false));
-		addValidator(new TotalLoadEqualsIncLoadForShoreReachesInDb(preciseComparator, false));
-		
-		
-		
-		////////////////////////////////
-		//	The following tests are 'warning only', meaning that if the comparison
-		//	fails, only a warning is recorded.  This is done via the 2nd argument
-		//	set to true.
-		
-		addValidator(new WarningOnlyDbTests(tightComparator, true));
-		addValidator(new ReachCoefValuesShouldBeOneForShoreReaches(preciseComparator, true));
-		
-		////////////////////////////////
-		// These test doesn't use a comparator.  They are marked as warning only
-		// because it looks like there are some cases where failures are just unusual
-		// situations that are not errors.
-		addValidator(new HydSeqOfUpstreamReachesShouldBeLessThanDownstreamReach(true));
-		addValidator(new DiversionsShouldHaveUpsteamReaches(true));
-		
+
+
 	}
 }

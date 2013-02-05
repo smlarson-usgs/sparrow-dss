@@ -8,6 +8,7 @@ import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.TopoData;
 import gov.usgswim.sparrow.action.*;
 import gov.usgswim.sparrow.domain.*;
+import gov.usgswim.sparrow.request.ReachAreaFractionMapRequest;
 import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.ConfiguredCache;
@@ -27,6 +28,12 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 	//This flag can be set to true to force the fractional watershed area
 	//Action to do pure cumulative area calculations, not fractionalal ones.
 	private boolean forceNonFractionedArea = false;
+	
+	/** If true, IfTran is ignored for calculating upstream reaches */
+	private boolean forceIgnoreIfTran = false;
+	
+	/** watershed area optimization.  Auto-sets to false if special options are set */
+	private boolean allowWatershedAreaCalcToUseOptimizationCache = true;
 	
 	int numberOfReachAreaFractionMapsAllowedInMemory_original;
 	int numberOfReachAreaFractionMapsAllowedInMemory_forTest = 100000;
@@ -65,11 +72,16 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 	 */
 	public CalculatedWaterShedAreaShouldEqualLoadedValue(Comparator comparator,
 			Comparator shoreReachComparator, boolean failedTestIsOnlyAWarning,
-			boolean forceNonFractionedArea) {
+			boolean forceNonFractionedArea, boolean forceIgnoreIfTran) {
 		
 		super(comparator, failedTestIsOnlyAWarning);
 		this.shoreReachComparator = shoreReachComparator;
 		this.forceNonFractionedArea = forceNonFractionedArea;
+		this.forceIgnoreIfTran = forceIgnoreIfTran;
+		
+		if (forceNonFractionedArea || forceIgnoreIfTran) {
+			allowWatershedAreaCalcToUseOptimizationCache = false;
+		}
 	}
 	
 	@Override
@@ -139,17 +151,13 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 				ReachID reachUId = new ReachID(modelId, reachId);
 				
 				recordRowTrace(modelId, reachId, row, "Starting: CalcFractionedWatershedArea");
-				if (forceNonFractionedArea) {
-					recordRowTrace(modelId, reachId, row, "Starting: CalcReachAreaFractionMap");
-					ReachRowValueMap areaMap = SharedApplication.getInstance().getReachAreaFractionMap(reachUId);
-					recordRowTrace(modelId, reachId, row, "Completed: CalcReachAreaFractionMap");
-					
-					CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, forceNonFractionedArea);
-					calculatedFractionalWatershedArea = areaAction.run();
-					
-				} else {
-					calculatedFractionalWatershedArea = SharedApplication.getInstance().getFractionedWatershedArea(reachUId);
-				}
+
+				recordRowTrace(modelId, reachId, row, "Starting: CalcReachAreaFractionMap");
+				ReachRowValueMap areaMap = SharedApplication.getInstance().getReachAreaFractionMap(new ReachAreaFractionMapRequest(reachUId, false, forceIgnoreIfTran));
+				recordRowTrace(modelId, reachId, row, "Completed: CalcReachAreaFractionMap");
+
+				CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, forceNonFractionedArea, allowWatershedAreaCalcToUseOptimizationCache);
+				calculatedFractionalWatershedArea = areaAction.run();
 				
 				recordRowTrace(modelId, reachId, row, "Completed: CalcFractionedWatershedArea");
 				

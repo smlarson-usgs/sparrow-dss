@@ -48,13 +48,13 @@ public class SparrowModelFractionedWatershedAreaInvestigation extends SparrowMod
 			
 			
 			//Calculate the fractioned watershed area, skipping the cache
-			CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(topo, reachId, false);
+			CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(topo, reachId, false, false);
 			ReachRowValueMap areaMap = areaMapAction.run();
 		
 			CalcFractionedWatershedArea fractionedAreaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb);
 			Double fractionalWatershedArea = fractionedAreaAction.run();
 			
-			CalcFractionedWatershedArea unfractionedAreaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, true);
+			CalcFractionedWatershedArea unfractionedAreaAction = new CalcFractionedWatershedArea(areaMap, incrementalAreasFromDb, true, false);
 			Double unfractionalWatershedArea = unfractionedAreaAction.run();
 
 			if (! comp(fractionalWatershedArea, unfractionalWatershedArea)) {

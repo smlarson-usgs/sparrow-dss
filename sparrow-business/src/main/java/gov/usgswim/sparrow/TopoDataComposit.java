@@ -71,10 +71,24 @@ public class TopoDataComposit extends AbstractDataTableView implements TopoData 
 	public boolean isAllowedDownstreamReaches(int row) {
  		return ((! isShoreReach(row)) && isIfTran(row));
 	}
+	
+	@Override
+	public boolean isAllowedDownstreamReaches(int row, boolean ignoreIfTran) {
+		if (ignoreIfTran) {
+			return (! isShoreReach(row));
+		} else {
+			return ((! isShoreReach(row)) && isIfTran(row));
+		}
+	}
 
 	@Override
 	public boolean isIdAllowedDownstreamReaches(long reachId) {
 		return isAllowedDownstreamReaches(getRowForId(reachId));
+	}
+	
+	@Override
+	public boolean isIdAllowedDownstreamReaches(long reachId, boolean ignoreIfTran) {
+		return isAllowedDownstreamReaches(getRowForId(reachId), ignoreIfTran);
 	}
 
 	@Override
@@ -99,6 +113,12 @@ public class TopoDataComposit extends AbstractDataTableView implements TopoData 
 
 	@Override
 	public int[] findAllowedUpstreamReaches(int row) {
+		return findAllowedUpstreamReaches(row, false);
+	}
+	
+	
+	@Override
+	public int[] findAllowedUpstreamReaches(int row, boolean ignoreIfTran) {
 		if (! isAllowedUpstreamReaches(row)) return ArrayUtils.EMPTY_INT_ARRAY;
 		
 		int fnode = getFromNode(row);
@@ -106,7 +126,7 @@ public class TopoDataComposit extends AbstractDataTableView implements TopoData 
 		//The index requires that an Integer be used.
 		int[] upstream = findAll(PredictData.TOPO_TNODE_COL, new Integer((int)fnode));
 		
-		upstream = removeReachesNotAllowedToHaveDownstreamReaches(upstream);
+		upstream = removeReachesNotAllowedToHaveDownstreamReaches(upstream, ignoreIfTran);
 
 		return upstream;
 	}
@@ -114,7 +134,13 @@ public class TopoDataComposit extends AbstractDataTableView implements TopoData 
 
 	@Override
 	public long[] findAllowedUpstreamReachIds(long reachId) {
-		int[] found = findAllowedUpstreamReaches(getRowForId(reachId));
+		int[] found = findAllowedUpstreamReaches(getRowForId(reachId), false);
+		return convertRowsToIds(found);
+	}
+	
+	@Override
+	public long[] findAllowedUpstreamReachIds(long reachId, boolean ignoreIfTran) {
+		int[] found = findAllowedUpstreamReaches(getRowForId(reachId), ignoreIfTran);
 		return convertRowsToIds(found);
 	}
 
@@ -232,13 +258,14 @@ public class TopoDataComposit extends AbstractDataTableView implements TopoData 
 	 * are not allowed to have downstream reaches.
 	 * 
 	 * @param rows
+	 * @param ignoreIfTran If true, ifTran is not considered.
 	 * @return 
 	 */
-	protected int[] removeReachesNotAllowedToHaveDownstreamReaches(int[] rows) {
+	protected int[] removeReachesNotAllowedToHaveDownstreamReaches(int[] rows, boolean ignoreIfTran) {
 
 		for (int rr = 0; rr < rows.length; rr++) {
 			
-			if (! isAllowedDownstreamReaches(rows[rr])) {
+			if (! isAllowedDownstreamReaches(rows[rr], ignoreIfTran)) {
 				rows = ArrayUtils.remove(rows, rr);
 				rr--;
 			}

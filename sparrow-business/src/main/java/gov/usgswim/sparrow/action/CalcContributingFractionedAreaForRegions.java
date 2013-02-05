@@ -12,6 +12,7 @@ import gov.usgswim.sparrow.domain.reacharearelation.ModelReachAreaRelations;
 import gov.usgswim.sparrow.domain.reacharearelation.ReachAreaRelations;
 import gov.usgswim.sparrow.request.ModelAggregationRequest;
 import gov.usgswim.sparrow.request.ModelHucsRequest;
+import gov.usgswim.sparrow.request.ReachAreaFractionMapRequest;
 import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -150,7 +151,7 @@ public class CalcContributingFractionedAreaForRegions extends Action<ColumnData>
 		ReachRowValueMapBuilder builder = new ReachRowValueMapBuilder();
 		
 		for (Long id : terminalReaches.getReachIDs()) {
-			ReachRowValueMap map = SharedApplication.getInstance().getReachAreaFractionMap(new ReachID(terminalReaches.getModelID(), id));
+			ReachRowValueMap map = SharedApplication.getInstance().getReachAreaFractionMap(new ReachAreaFractionMapRequest(new ReachID(terminalReaches.getModelID(), id)));
 			builder.mergeByAddition(map);
 		}
 		

@@ -44,6 +44,9 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 	/** If true, FRAC values that do not total to 1 will not be corrected. Mostly for debugging. */
 	protected boolean forceUncorrectedFracValues = false;
 	
+	/** If true, IfTran is not considered when looking for upstream reaches.  Debug/teseting use. */
+	protected boolean forceIgnoreIfTran = false;
+	
 	//Alt config params
 	protected transient ReachID reachId = null;
 	
@@ -53,10 +56,11 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 	 * @param targetReachId 
 	 * @param forceUncorrectedFracValues If true, do not correct FRAC values that do not total to one.  Always false for prod.
 	 */
-	public CalcReachAreaFractionMap(TopoData topoData, Long targetReachId, boolean forceUncorrectedFracValues) {
+	public CalcReachAreaFractionMap(TopoData topoData, Long targetReachId, boolean forceUncorrectedFracValues, boolean forceIgnoreIfTran) {
 		this.topoData = topoData;
 		this.targetReachId = targetReachId;
 		this.forceUncorrectedFracValues = forceUncorrectedFracValues;
+		this.forceIgnoreIfTran = forceIgnoreIfTran;
 	}
 	
 	/**
@@ -64,9 +68,10 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 	 * @param reachId 
 	 * @param forceUncorrectedFracValues If true, do not correct FRAC values that do not total to one.  Always false for prod.
 	 */
-	public CalcReachAreaFractionMap(ReachID reachId, boolean forceUncorrectedFracValues) {
+	public CalcReachAreaFractionMap(ReachID reachId, boolean forceUncorrectedFracValues, boolean forceIgnoreIfTran) {
 		this.reachId = reachId;
 		this.forceUncorrectedFracValues = forceUncorrectedFracValues;
+		this.forceIgnoreIfTran = forceIgnoreIfTran;
 	}
 	
 	@Override
@@ -131,7 +136,7 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 			completedReaches.add(current);	//At this point, the fraction is set
 			
 			//Get a list of 'real' upstream reaches.
-			int[] realUpstreamReachRows = topoData.findAllowedUpstreamReaches(current.getRow());
+			int[] realUpstreamReachRows = topoData.findAllowedUpstreamReaches(current.getRow(), forceIgnoreIfTran);
 			
 			if (realUpstreamReachRows.length > 0) {
 				

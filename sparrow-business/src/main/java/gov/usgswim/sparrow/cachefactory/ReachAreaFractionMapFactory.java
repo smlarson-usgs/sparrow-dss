@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.action.CalcReachAreaFractionMap;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
+import gov.usgswim.sparrow.request.ReachAreaFractionMapRequest;
 import gov.usgswim.sparrow.request.ReachID;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
@@ -16,12 +17,20 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 public class ReachAreaFractionMapFactory implements CacheEntryFactory {
 
 	@Override
-	public ReachRowValueMap createEntry(Object reachId) throws Exception {
+	public ReachRowValueMap createEntry(Object request) throws Exception {
 		
-		CalcReachAreaFractionMap action = new CalcReachAreaFractionMap((ReachID) reachId, false);
-		ReachRowValueMap result = action.run();
-		
-		return result;
+		if (request instanceof ReachID) {
+			CalcReachAreaFractionMap action = new CalcReachAreaFractionMap((ReachID) request, false, false);
+			ReachRowValueMap result = action.run();
+			return result;
+		} else if (request instanceof ReachAreaFractionMapRequest) {
+			ReachAreaFractionMapRequest rafr = (ReachAreaFractionMapRequest) request;
+			CalcReachAreaFractionMap action = new CalcReachAreaFractionMap(rafr.getReachId(), rafr.isForceUncorrectedFracValues(), rafr.isForceIgnoreIfTran());
+			ReachRowValueMap result = action.run();
+			return result;
+		} else {
+			throw new IllegalArgumentException("The request object must be a reachID or a ReachAreaFractionMapRequest");
+		}
 	}
 	
 

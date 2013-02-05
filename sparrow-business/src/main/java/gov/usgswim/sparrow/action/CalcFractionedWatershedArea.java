@@ -4,6 +4,7 @@ import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.TopoData;
 import gov.usgswim.sparrow.domain.AggregationLevel;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
+import gov.usgswim.sparrow.request.ReachAreaFractionMapRequest;
 import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -66,10 +67,11 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 		this.incrementalReachAreas = incrementalReachAreas;
 	}
 	
-	public CalcFractionedWatershedArea(ReachRowValueMap areaFractionMap, DataTable incrementalReachAreas, boolean forceNonFractionedResult) {
+	public CalcFractionedWatershedArea(ReachRowValueMap areaFractionMap, DataTable incrementalReachAreas, boolean forceNonFractionedResult, boolean attemptOptimizedCalc) {
 		this.areaFractionMap = areaFractionMap;
 		this.incrementalReachAreas = incrementalReachAreas;
 		this.forceNonFractionedArea = forceNonFractionedResult;
+		this.attemptOptimizedCalc = attemptOptimizedCalc;
 	}
 	
 	/**
@@ -113,6 +115,12 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 			}
 		}
 		
+		//We assume the values in the cache are 'normal', so don't try to use cached
+		//values when we have special options set
+		if (forceNonFractionedArea) {
+			attemptOptimizedCalc = false;
+		}
+		
 	}
 
 	@Override
@@ -147,7 +155,7 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 			
 			//Late init since we may not need it if
 			if (areaFractionMap == null) {
-				areaFractionMap = SharedApplication.getInstance().getReachAreaFractionMap(reachId, forceNonFractionedArea);
+				areaFractionMap = SharedApplication.getInstance().getReachAreaFractionMap(new ReachAreaFractionMapRequest(reachId, forceNonFractionedArea, false));
 			}
 
 			for (Integer row : areaFractionMap.keySet()) {
@@ -183,7 +191,7 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 			
 			//Late init since we may not need it if
 			if (areaFractionMap == null) {
-				areaFractionMap = SharedApplication.getInstance().getReachAreaFractionMap(reachId, forceNonFractionedArea);
+				areaFractionMap = SharedApplication.getInstance().getReachAreaFractionMap(new ReachAreaFractionMapRequest(reachId, false, false));
 			}
 			
 			for (Integer row : areaFractionMap.keySet()) {

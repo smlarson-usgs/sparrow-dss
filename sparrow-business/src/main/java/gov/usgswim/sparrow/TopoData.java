@@ -99,12 +99,37 @@ public interface TopoData extends DataTable.Immutable {
 	 * Returns true if a reach can have downstream reaches.
 	 * 
 	 * A reach would not be considered to have downstream reaches if it is a
+	 * shore reach or (optionally) if its IFTRAN is turned off (zero).
+	 * 
+	 * @param row The reach row number in the model
+	 * @param ignoreIfTran If true, ifTran is not considered.
+	 * @return 
+	 */
+	public boolean isAllowedDownstreamReaches(int row, boolean ignoreIfTran);
+	
+	
+	/**
+	 * Returns true if a reach can have downstream reaches.
+	 * 
+	 * A reach would not be considered to have downstream reaches if it is a
 	 * shore reach or its IFTRAN is turned off (zero).
 	 * 
-	 * @param reachId
+	 * @param reachId The row ID (not row number) of the reach
 	 * @return 
 	 */
 	public boolean isIdAllowedDownstreamReaches(long reachId);
+	
+	/**
+	 * Returns true if a reach can have downstream reaches.
+	 * 
+	 * A reach would not be considered to have downstream reaches if it is a
+	 * shore reach or (optionally) if its IFTRAN is turned off (zero).
+	 * 
+	 * @param reachId The row ID (not row number) of the reach
+	 * @param ignoreIfTran If true, ifTran is not considered.
+	 * @return 
+	 */
+	public boolean isIdAllowedDownstreamReaches(long reachId, boolean ignoreIfTran);
 	
 	/**
 	 * Returns true if this reach is part of a diversion, meaning that not all of
@@ -129,7 +154,7 @@ public interface TopoData extends DataTable.Immutable {
 	 * 
 	 * The specified reach must return true for reachCanHaveUpstreamReaches or
 	 * no reaches are returned.  If the reach is allowed to have upstream reaches,
-	 * only reaches that return true for reachCanHaveDownstreamReaches are returned.
+	 * only reaches that return true for isAllowedDownstreamReaches are returned.
 	 * 
 	 * @param row
 	 * @return An array of row numbers or an empty array if no reaches are allowed or found.
@@ -141,12 +166,42 @@ public interface TopoData extends DataTable.Immutable {
 	 * 
 	 * The specified reach must return true for reachCanHaveUpstreamReaches or
 	 * no reaches are returned.  If the reach is allowed to have upstream reaches,
-	 * only reaches that return true for reachCanHaveDownstreamReaches are returned.
+	 * only reaches that return true for isAllowedDownstreamReaches(ignoreIfTran)
+	 * are returned.
+	 * 
+	 * @param row The reach row number in the model
+	 * @param ignoreIfTran If true, ifTran is not considered when determining if
+	 *		the candidate upstream reaches are allowed to have downstream reaches.
+	 * @return An array of row numbers or an empty array if no reaches are allowed or found.
+	 */
+	public int[] findAllowedUpstreamReaches(int row, boolean ignoreIfTran);
+	
+	/**
+	 * Returns a list of 'valid' upstream reaches.
+	 * 
+	 * The specified reach must return true for reachCanHaveUpstreamReaches or
+	 * no reaches are returned.  If the reach is allowed to have upstream reaches,
+	 * only reaches that return true for isAllowedDownstreamReaches are returned.
 	 * 
 	 * @param reachId
 	 * @return  An array of reach IDs or an empty array if no reaches are allowed or found.
 	 */
 	public long[] findAllowedUpstreamReachIds(long reachId);
+	
+	/**
+	 * Returns a list of 'valid' upstream reaches.
+	 * 
+	 * The specified reach must return true for reachCanHaveUpstreamReaches or
+	 * no reaches are returned.  If the reach is allowed to have upstream reaches,
+	 * only reaches that return true for isAllowedDownstreamReaches(ignoreIfTran)
+	 * are returned.
+	 * 
+	 * @param reachId The reachId of a reach in the model (not row number)
+	 * @param ignoreIfTran If true, ifTran is not considered when determining if
+	 *		the candidate upstream reaches are allowed to have downstream reaches.
+	 * @return  An array of reach IDs or an empty array if no reaches are allowed or found.
+	 */
+	public long[] findAllowedUpstreamReachIds(long reachId, boolean ignoreIfTran);
 	
 	/**
 	 * Returns a list of all reaches immediately upstream of the specified reach.
