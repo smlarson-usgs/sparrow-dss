@@ -349,6 +349,17 @@ public abstract class SparrowModelValidationBase implements ModelValidator {
 	}
 	
 	/**
+	 * Optionally forces the log level to INFO so that the output will for sure be written.
+	 * 
+	 * @param modelId
+	 * @param msg
+	 * @param forceOutput 
+	 */
+	protected void recordInfo(Long modelId, String msg, boolean forceOutput) {
+		writeModelLevelMessage(Level.INFO, modelId, forceOutput, msg);
+	}
+	
+	/**
 	 * Optionally forces the log level to WARN so that the output will for sure be written.
 	 * 
 	 * @param modelId

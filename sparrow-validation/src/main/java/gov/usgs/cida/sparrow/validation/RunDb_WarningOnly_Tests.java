@@ -71,7 +71,7 @@ public class RunDb_WarningOnly_Tests extends SparrowModelValidationRunner {
 		 *				Production will always have this as false, but can be toggled here
 		 *				for testing.  This takes precidence over Arg 3.
 		 */
-		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(tightComparator, preciseComparator, true, false, false));
+		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(tightComparator, preciseComparator, true, false, false, false));
 		
 		
 		addValidator(new ReachCoefValuesShouldBeOneForShoreReaches(preciseComparator, true));

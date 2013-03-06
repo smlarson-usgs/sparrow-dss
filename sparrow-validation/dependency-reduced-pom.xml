@@ -3,13 +3,13 @@
   <parent>
     <artifactId>sparrow-parent</artifactId>
     <groupId>gov.usgs.cida</groupId>
-    <version>1.4.31-SNAPSHOT</version>
+    <version>1.4.32-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>gov.usgs.cida</groupId>
   <artifactId>sparrow-validation</artifactId>
   <name>sparrow-validation</name>
-  <version>1.4.31-SNAPSHOT</version>
+  <version>1.4.32-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
   <build>
     <plugins>

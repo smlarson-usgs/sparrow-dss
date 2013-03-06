@@ -92,8 +92,9 @@ public class RunWatershedAreaTestWithoutIftran extends SparrowModelValidationRun
 		 *				Production will always have this as false, but can be toggled here
 		 *				for testing.  This takes precidence over Arg 3.
 		 * Arg5:	Set true to ignore ifTran in calcs
+		 * Arg6:	Set true to not correct fraction values in tests.
 		 */
-		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(wideComparator, preciseComparator, false, false, true));
+		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(wideComparator, preciseComparator, false, false, true, false));
 
 
 	}

@@ -92,7 +92,7 @@ public class RunAllDBOnlyTests extends SparrowModelValidationRunner {
 		 *				Production will always have this as false, but can be toggled here
 		 *				for testing.  This takes precidence over Arg 3.
 		 */
-		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(wideComparator, preciseComparator, false, false, false));
+		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(wideComparator, preciseComparator, false, false, false, false));
 		addValidator(new FailableDbTests(tightComparator, false));
 		addValidator(new FracValuesShouldTotalToOne(tightComparator, false));
 		addValidator(new ReachCoefValuesShouldBeLessThanOneAndGreaterThanZero(preciseComparator, false));

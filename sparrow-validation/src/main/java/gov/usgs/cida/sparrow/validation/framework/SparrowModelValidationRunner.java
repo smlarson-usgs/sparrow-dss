@@ -561,7 +561,7 @@ public class SparrowModelValidationRunner {
 		} else if ("t".equalsIgnoreCase(lvlStr)) {
 			logLevel = Level.TRACE;
 		} else {
-			System.out.println("Hmm, that was exactly understand that, but I'll take it to be the ERROR log level.");
+			System.out.println("Hmm, I didn't exactly understand that, but I'll take it to be the ERROR log level.");
 			logLevel = Level.ERROR;
 		}
 		

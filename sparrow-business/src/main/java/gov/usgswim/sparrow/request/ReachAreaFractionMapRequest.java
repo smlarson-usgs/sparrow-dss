@@ -44,8 +44,6 @@ public class ReachAreaFractionMapRequest implements Serializable {
 		return forceIgnoreIfTran;
 	}
 
-
-
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof ReachAreaFractionMapRequest) {

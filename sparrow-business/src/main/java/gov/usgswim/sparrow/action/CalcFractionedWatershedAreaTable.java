@@ -6,6 +6,7 @@ import gov.usgs.cida.datatable.impl.SparseDoubleColumnData;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.TerminalReaches;
+import gov.usgswim.sparrow.request.FractionedWatershedAreaRequest;
 import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.util.HashMap;
@@ -131,7 +132,9 @@ public class CalcFractionedWatershedAreaTable extends Action<ColumnData> {
 		for (Long reachId : terminalReaches.getReachIDs()) {
 			ReachID rid = new ReachID(modelId, reachId);
 			
-			CalcFractionedWatershedArea action = new CalcFractionedWatershedArea(rid);
+			//TODO:  These should be configurable
+			CalcFractionedWatershedArea action = new CalcFractionedWatershedArea(
+					new FractionedWatershedAreaRequest(rid, false, false, forceNonFractionedResult));
 			Double area = action.run();
 			areaMap.put(topoData.getRowForId(reachId), area);
 		}

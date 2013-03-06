@@ -8,6 +8,7 @@ import gov.usgswim.sparrow.SparrowTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.domain.AggregationLevel;
 import static org.junit.Assert.*;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
+import gov.usgswim.sparrow.request.FractionedWatershedAreaRequest;
 import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.ConfiguredCache;
@@ -33,24 +34,32 @@ public class CalcFractionedWatershedAreaDBTest extends SparrowTestBase {
 		ArrayList<Double> uncachedAreas = new ArrayList<Double>(rowCount);
 		ArrayList<Double> cachedAreas = new ArrayList<Double>(rowCount);
 		
+		
+		
+		//Do test w/o the optimized cache
+		long unoptimizedStartTime = System.currentTimeMillis();
 		for (int row = 0; row < rowCount; row++) {
 			Long rowId = topo.getIdForRow(row);
 			ReachID reachId = new ReachID(TEST_MODEL_ID, rowId);
+			FractionedWatershedAreaRequest req = new FractionedWatershedAreaRequest(reachId, false, false, false);
 			
-			CalcFractionedWatershedArea action = new CalcFractionedWatershedArea(reachId, incAreaTable, false, false);
+			CalcFractionedWatershedArea action = new CalcFractionedWatershedArea(req, incAreaTable, false);
 			Double area = action.run();
 			uncachedAreas.add(area);
 					
 			assertNotNull(area);
 			assertTrue(area > 0d);
 		}
+		long unoptimizedTime = System.currentTimeMillis() - unoptimizedStartTime;
 		
 		//Do test allowing the cache to be used
+		long optimizedStartTime = System.currentTimeMillis();
 		for (int row = 0; row < rowCount; row++) {
 			Long rowId = topo.getIdForRow(row);
 			ReachID reachId = new ReachID(TEST_MODEL_ID, rowId);
+			FractionedWatershedAreaRequest req = new FractionedWatershedAreaRequest(reachId, false, false, false);
 			
-			CalcFractionedWatershedArea action = new CalcFractionedWatershedArea(reachId, incAreaTable, false, true);
+			CalcFractionedWatershedArea action = new CalcFractionedWatershedArea(req, incAreaTable, true);
 			Double area = action.run();
 			ConfiguredCache.FractionedWatershedArea.put(reachId, area);
 			cachedAreas.add(area);
@@ -58,6 +67,7 @@ public class CalcFractionedWatershedAreaDBTest extends SparrowTestBase {
 			assertNotNull(area);
 			assertTrue(area > 0d);
 		}
+		long optimizedTime = System.currentTimeMillis() - optimizedStartTime;
 		
 		//Compare results
 		for (int row = 0; row < rowCount; row++) {
@@ -71,6 +81,8 @@ public class CalcFractionedWatershedAreaDBTest extends SparrowTestBase {
 			assertTrue(isEqual(uncachedAreas.get(row), cachedAreas.get(row), .000001D));
 		}
 		
+//		System.out.println("Optimized Time: " + optimizedTime);
+//		System.out.println("Unoptimized Time: " + unoptimizedTime);
 	}
 	
 	@Test

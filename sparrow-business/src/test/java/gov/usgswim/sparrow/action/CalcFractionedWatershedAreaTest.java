@@ -33,7 +33,7 @@ public class CalcFractionedWatershedAreaTest extends CalcFractionalAreaBaseTest 
 		CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(network1_topo, 11L, false, false);
 		ReachRowValueMap areaMap = areaMapAction.run();
 		
-		CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, network1_inc_area);
+		CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, network1_inc_area, false);
 		Double area = areaAction.run();
 		
 		
@@ -58,7 +58,7 @@ public class CalcFractionedWatershedAreaTest extends CalcFractionalAreaBaseTest 
 		CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(network1_topo, 11L, false, true);
 		ReachRowValueMap areaMap = areaMapAction.run();
 		
-		CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, network1_inc_area);
+		CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, network1_inc_area, false);
 		Double area = areaAction.run();
 		
 		
@@ -90,7 +90,8 @@ public class CalcFractionedWatershedAreaTest extends CalcFractionalAreaBaseTest 
 		CalcReachAreaFractionMap areaMapAction = new CalcReachAreaFractionMap(network1_topo, 11L, false, false);
 		ReachRowValueMap areaMap = areaMapAction.run();
 		
-		CalcFractionedWatershedArea areaAction = new CalcFractionedWatershedArea(areaMap, network1_inc_area, true, false);
+		CalcFractionedWatershedArea areaAction = 
+				new CalcFractionedWatershedArea(areaMap, network1_inc_area, true);
 		Double area = areaAction.run();
 		
 		

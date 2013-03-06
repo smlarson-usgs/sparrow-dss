@@ -7,6 +7,7 @@ import gov.usgswim.sparrow.SparrowTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.domain.AggregationLevel;
 import static org.junit.Assert.*;
 import gov.usgswim.sparrow.domain.TerminalReaches;
+import gov.usgswim.sparrow.request.FractionedWatershedAreaRequest;
 import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.ConfiguredCache;
@@ -35,7 +36,10 @@ public class CalcFractionedWatershedAreaTableTest extends SparrowTestBaseWithDBa
 		ConfiguredCache.TerminalReaches.put(targets.getId(), targets);
 		
 		PredictData pd = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
-		Double watershedArea = new CalcFractionedWatershedArea(new ReachID(TEST_MODEL_ID, TEST_ROW_ID)).run();
+		Double watershedArea = new CalcFractionedWatershedArea(
+				new FractionedWatershedAreaRequest(new ReachID(TEST_MODEL_ID, TEST_ROW_ID))
+		).run();
+		
 		int rowCount = pd.getTopo().getRowCount();
 		int rowNumber = pd.getRowForReachID(TEST_ROW_ID);
 		
@@ -74,12 +78,18 @@ public class CalcFractionedWatershedAreaTableTest extends SparrowTestBaseWithDBa
 		//Stats on the test reach
 		int testReachRowNumber = pd.getRowForReachID(TEST_REACH_ID);
 		Double testReachFrac = pd.getTopo().getDouble(testReachRowNumber, PredictData.TOPO_FRAC_COL);
-		Double testReachFractionedWatershedArea = new CalcFractionedWatershedArea(new ReachID(TEST_MODEL_ID, TEST_REACH_ID)).run();
-		Double testReachUnfractionedWatershedArea = new CalcFractionedWatershedArea(new ReachID(TEST_MODEL_ID, TEST_REACH_ID), true, false).run();
+		Double testReachFractionedWatershedArea = new CalcFractionedWatershedArea(
+				new FractionedWatershedAreaRequest(new ReachID(TEST_MODEL_ID, TEST_REACH_ID))
+		).run();
+		Double testReachUnfractionedWatershedArea = new CalcFractionedWatershedArea(
+				new FractionedWatershedAreaRequest(new ReachID(TEST_MODEL_ID, TEST_REACH_ID), false, false, true)
+		).run();
 		Double testReachIncrementalArea = incrementalReachAreas.getDouble(testReachRowNumber, 1);
 		
 		//load stats on the only reach immediately upstream of the test reach
-		Double upstreamReachFractionedWatershedArea = new CalcFractionedWatershedArea(new ReachID(TEST_MODEL_ID, ONLY_REACH_UPSTREAM_OF_TEST_REACH_ID), false, false).run();
+		Double upstreamReachFractionedWatershedArea = new CalcFractionedWatershedArea(
+				new FractionedWatershedAreaRequest(new ReachID(TEST_MODEL_ID, ONLY_REACH_UPSTREAM_OF_TEST_REACH_ID))
+		).run();
 		
 		
 		//Test the assumptions about the basic (non-table form) of the area data

@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.cachefactory;
 
 
 import gov.usgswim.sparrow.action.CalcFractionedWatershedArea;
+import gov.usgswim.sparrow.request.FractionedWatershedAreaRequest;
 import gov.usgswim.sparrow.request.ReachID;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
@@ -15,9 +16,9 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 public class FractionedWatershedAreaFactory implements CacheEntryFactory {
 
 	@Override
-	public Double createEntry(Object reachId) throws Exception {
+	public Double createEntry(Object request) throws Exception {
 		
-		CalcFractionedWatershedArea action = new CalcFractionedWatershedArea((ReachID) reachId);
+		CalcFractionedWatershedArea action = new CalcFractionedWatershedArea((FractionedWatershedAreaRequest) request);
 		Double result = action.run();
 		
 		return result;
