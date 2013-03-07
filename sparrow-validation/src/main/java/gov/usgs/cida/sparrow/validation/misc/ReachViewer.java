@@ -91,7 +91,9 @@ public class ReachViewer extends SparrowModelValidationBase {
 		
 		System.out.println(border + " Row      : " + row);
 		System.out.println(border + " ID       : " + topo.getIdForRow(row));
-		System.out.println(border + " IfT      : " + topo.isIfTran(row));
+		System.out.println(border + " IfTrans  : " + topo.isIfTran(row));
+		System.out.println(border + " Shore?   : " + topo.isShoreReach(row));
+		System.out.println(border + " Diversion: " + topo.isPartOfDiversion(row));
 		System.out.println(border + " FRAC     : " + topo.getFrac(row));
 		System.out.println(border + " f/t node : " + topo.getFromNode(row) + " / " + topo.getToNode(row));
 		System.out.println(border + " ---------------");
