@@ -779,6 +779,17 @@ public class SparrowModelValidationRunner {
 				return null;
 			}
 		}
+		
+		public Boolean parseAsBoolean() {
+			try {
+				String s = StringUtils.trimToNull(strResponse).toLowerCase();
+				
+				return ("y".equals(s) || "yes".equals(s) || "t".equals(s) || "true".equals(s));
+				
+			} catch (Exception e) {
+				return null;
+			}
+		}
 	}
 	
 	/**

@@ -265,7 +265,7 @@ public class CalcFractionedWatershedArea extends Action<Double> {
 
 				double frac = 1d;
 				if (! request.isForceNonFractionedResult()) {
-					frac = (request.isForceUncorrectedFracValues())? topoData.getCorrectedFracForRow(thisRow) : topoData.getFrac(thisRow);
+					frac = (request.isForceUncorrectedFracValues())? topoData.getFrac(thisRow) : topoData.getCorrectedFracForRow(thisRow);
 				}
 
 				double fractionedUpstreamArea = frac * totalUpstreamArea;
