@@ -129,11 +129,11 @@
 										<h4>Tutorial Videos</h4>
 										<select id="tutorial-video-select">
 											<option value="">Select a video...</option>
-											<option value="<%= screencastUrl %>?file-name=Sources">Working with Sources</option>
-											<option value="<%= screencastUrl %>?file-name=IncrementalYield">Incremental Yield</option>
-											<option value="<%= screencastUrl %>?file-name=SelectDownstreamOutlet">Selecting Downstream Outlets</option>
-											<option value="<%= screencastUrl %>?file-name=ChangeSourceInputs">Changing Source Inputs</option>
-											<option value="<%= screencastUrl %>?file-name=IncrementalYieldtoOutlet">Incremental Yield to an Outlet</option>
+											<option value="screencast.jsp?videoId=1tzeR4WkLv0">Working with Sources</option>
+											<option value="screencast.jsp?videoId=5K1Smu7Q4Fc">Incremental Yield</option>
+											<option value="screencast.jsp?videoId=zrycRF7MeG8">Selecting Downstream Outlets</option>
+											<option value="screencast.jsp?videoId=UkC_76uq748">Changing Source Inputs</option>
+											<option value="screencast.jsp?videoId=tHnxt2ORNQU">Incremental Yield to an Outlet</option>
 										</select>
 										<button id="tutorial-video-go-button">Watch now &gt;&gt;</button>
 										<h4>Found a bug or have a comment?</h4>

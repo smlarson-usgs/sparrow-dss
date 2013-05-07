@@ -13,7 +13,7 @@ Ext.onReady(function() {
 		
 		if (videoUrl != '') {
 	   		var newWindow = window.open(videoUrl, '_blank', 
-				'resizable=1,location=0,status=0,scrollbars=0,width=640,height=384');
+				'resizable=1,location=0,status=0,scrollbars=0,width=960,height=720');
 	   		newWindow.focus();
 		}
 	};

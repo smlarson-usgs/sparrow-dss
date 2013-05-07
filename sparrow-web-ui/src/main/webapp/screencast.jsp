@@ -1,112 +1,72 @@
 <!DOCTYPE html>
-<%@ page contentType="text/html; charset=utf-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <html>
 <head>
-  <jsp:include page="template_meta_tags.jsp" flush="true" />
+	<jsp:include page="template_meta_tags.jsp" flush="true" />
 	
-  <title>SPARROW DSS Screencast</title>
-<%
-	//The file name, which should not include a path or extension.
-	String fileName = request.getParameter("file-name");
-	if (fileName == null) fileName = "";
+	<title>SPARROW DSS Screencast</title>
+	
+	<jsp:include page="template_page_tracking.jsp" flush="true" />
+	<script type="text/javascript" language="javascript">
 
-	//Do some simple filtering of possible incoming hack requests
-	if (fileName.indexOf("/") > -1) fileName = "";
-	if (fileName.indexOf("\\") > -1) fileName = "";
-	
-	//Build path portion of video
-	String videoBasePath = "http://gallery.usgs.gov/video/screencasts/sparrow/";
-	
-	//Build the local path back to this server
-	//This contains some specific logic for the water.usgs.gov server, which 
-	//is forwarded and munged.
-	String appBasePath = null;	// eg: http://host:8080/sparrow/
+	var tag = document.createElement('script');
 
-	
-	String thisPageURLfromHeader = request.getHeader("x-request-url");
-	
-	
-	//Note:  Pieces are generally built as '/chunk' - leading separator, no following.
-	if (thisPageURLfromHeader == null) {
-		//No header added, so we are likely running on a local machine - build the url
-		
-		String reqURL = request.getRequestURL().toString();
-		//Drop the page name and trailing slash
-		appBasePath = reqURL.substring(0, reqURL.lastIndexOf('/'));
-		
-	} else {
-		//Running behind Apache
-		String WATER_SERVER_NAME = "water.usgs.gov";
-		String xForwardHost = request.getHeader("x-forwarded-host");
-		if (xForwardHost == null) xForwardHost = "";
-		boolean reqFromWaterServer = xForwardHost.contains(WATER_SERVER_NAME);
-		
-		String server = (reqFromWaterServer)?WATER_SERVER_NAME:request.getServerName();
-		String port = (80 == request.getServerPort())? "" : ":" + request.getServerPort();
-		String contextPath = null;
-		if (reqFromWaterServer) {
-			contextPath = "/nawqa/sparrow/dss";
-		} else {
-			contextPath = thisPageURLfromHeader;
-			contextPath = contextPath.substring(8);	//drop http:// or https://
-			
-			//Drop the page name and trailing slash
-			contextPath = contextPath.substring(0, contextPath.lastIndexOf('/'));
-			
-			//Drop everything before the first slash
-			contextPath = contextPath.substring(contextPath.indexOf('/'));
+	tag.src = "https://www.youtube.com/iframe_api";
+	var firstScriptTag = document.getElementsByTagName('script')[0];
+	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+	var ytp;
+	function onYouTubeIframeAPIReady() {
+		var videoIdStr = getQueryParam('videoId');
+
+		if (videoIdStr == null) {
+			window.alert("No video is selected.");
+			return;
 		}
-		
-		appBasePath = request.getScheme() + "://" + server + port + contextPath;
+
+		ytp = new YT.Player('player', {
+			videoId: videoIdStr,
+			height: 720,
+			width: 960,
+			enablejsapi: 1,
+			playerVars: {
+				autoplay: 0,
+				controls: 1,
+				modestbranding: 1,
+				playlist: '1tzeR4WkLv0,5K1Smu7Q4Fc,zrycRF7MeG8,UkC_76uq748,tHnxt2ORNQU'},
+			events: {'onReady': onPlayerReady}
+		});
 	}
-	
-%>
-  <!-- Include the VideoJS Library -->
-  <script src="video-js/video.js" type="text/javascript" charset="utf-8"></script>
 
-  <script type="text/javascript">
-
-    VideoJS.DOMReady(function(){
-      
-		// Using the video's ID or element
-		var myPlayer = VideoJS.setup("sparrow_video");
+	function onPlayerReady(event) {
+		event.target.setPlaybackQuality('hd720');
+		event.target.playVideo();
+	}
 		
+	function getQueryParam(key) {
+		var re=new RegExp('(?:\\?|&)'+key+'=(.*?)(?=&|$)','gi');
+		var r=[], m;
+		while ((m=re.exec(document.location.search)) != null) r.push(m[1]);
 		
-		myPlayer.enterFullWindow();
-		//myPlayer.play(); // Starts playing the video for this player.
-    });
-  </script>
-  
+		if (r.length > 0) {
+			return r[0]
+		} else {
+			return null;
+		}
+	}
+		
+	</script>
   <style type="text/css">
   	body {
   		background-color: black; padding: 0; margin: 0;
   	}
-  	#fall-back-no-video {width: 100%; height: 100%; }
-  
   </style>
-
-  <!-- Include the VideoJS Stylesheet -->
-  <link rel="stylesheet" href="video-js/video-js.css" type="text/css" media="screen" title="Video JS">
-	
-	<jsp:include page="template_page_tracking.jsp" flush="true" />
 </head>
 <body>
-
-  <div class="video-js-box">
-    <!-- Using the Video for Everybody Embed Code http://camendesign.com/code/video_for_everybody -->
-    <video id="sparrow_video" class="video-js" width="1280" height="768" preload="none" controls="controls" autoplay="true" poster="images/usgs_logo.jpg">
-      <source src="<%= videoBasePath + fileName %>.m4v" type="video/x-m4v"/>
-      <source src="<%= videoBasePath + fileName %>.mp4" type="video/mp4"/>
-		<!-- <track kind="subtitles" src="subtitles.srt" srclang="en" label="English"/> -->
-      <!-- Flash Fallback. Use any flash video player here. Make sure to keep the vjs-flash-fallback class. -->
-      <object id="flash_fallback_1" data="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" class="vjs-flash-fallback" width="1280" height="768" type="application/x-shockwave-flash">
-      	<param name="movie" value="http://releases.flowplayer.org/swf/flowplayer-3.2.1.swf" />
-      	<param name="allowfullscreen" value="true" />
-      	<param name="flashvars" value='config={"playlist":["<%= appBasePath %>/images/usgs_logo.jpg", {"url": "<%= videoBasePath + fileName %>.flv","autoPlay":true,"autoBuffering":true}]}' />
-      	<img id="fall-back-no-video" src="<%= appBasePath %>/images/usgs_logo.jpg" alt="Poster Image" title="No video playback capabilities." />
-      </object>
-    </video>
-  </div>
-
+		<div id="page-content" class="area-1 area"> 
+			<div class="area-content">
+				<div id="player"></div>
+			</div>
+		</div>
 </body>
 </html>
