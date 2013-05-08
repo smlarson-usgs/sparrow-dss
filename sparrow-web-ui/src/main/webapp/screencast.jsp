@@ -53,7 +53,7 @@
 	function onStateChange(event) {
 		if (waitMessageIsVisible && event.data == YT.PlayerState.PLAYING) {
 			waitMessageIsVisible = false;
-			$("#please-wait").hide(200);
+			$("#please-wait").hide();
 		}
 	}
 		
@@ -81,7 +81,7 @@
 		
 		#please-wait {
 			position: absolute; top: 20%; width: 100%; text-align: center; z-index: 1;
-			color:#FFFFFF; font-size: 300%;
+			color:#FFFFFF; font-size: 150%;
 		}
 		
 		#footer {display: block; height: 10px; background-color:#345280;}
