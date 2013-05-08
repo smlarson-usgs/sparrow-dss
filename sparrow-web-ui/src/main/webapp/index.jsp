@@ -2,11 +2,6 @@
 <html> 
 	<head> 
 	<jsp:include page="template_meta_tags.jsp" flush="true" />
-	
-		<%
-			String baseUrl = "http://water.usgs.gov/nawqa/sparrow/dss/";
-			String screencastUrl = baseUrl + "screencast.jsp";
-		%>
 		
 		<link rel="stylesheet" href="css/left_only.css?rev=1" type="text/css">
 		<link rel="stylesheet" href="css/static_custom.css?rev=1" type="text/css">

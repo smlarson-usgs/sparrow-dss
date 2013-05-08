@@ -150,40 +150,40 @@ function renderModel(response, options) {
    docMenu.add({
 	   	text: 'Video: Working with Sources',
 	   	handler: function() {
-	   		var newWindow = window.open('screencast.jsp?file-name=Sources', '_blank', 
-	   				'resizable=1,location=0,status=0,scrollbars=0,width=640,height=384');
+	   		var newWindow = window.open('screencast.jsp?videoId=1tzeR4WkLv0', '_blank', 
+	   				'resizable=0,location=0,status=0,scrollbars=0,width=960,height=757');
 	   		newWindow.focus();
 	   	}
    });
    docMenu.add({
 	   	text: 'Video: Incremental Yield',
 	   	handler: function() {
-	   		var newWindow = window.open('screencast.jsp?file-name=IncrementalYield', '_blank', 
-	   				'resizable=1,location=0,status=0,scrollbars=0,width=640,height=384');
+	   		var newWindow = window.open('screencast.jsp?videoId=5K1Smu7Q4Fc', '_blank', 
+	   				'resizable=0,location=0,status=0,scrollbars=0,width=960,height=757');
 	   		newWindow.focus();
 	   	}
    });
    docMenu.add({
 	   	text: 'Video: Selecting Downstream Outlets',
 	   	handler: function() {
-	   		var newWindow = window.open('screencast.jsp?file-name=SelectDownstreamOutlet', '_blank', 
-	   				'resizable=1,location=0,status=0,scrollbars=0,width=640,height=384');
+	   		var newWindow = window.open('screencast.jsp?videoId=zrycRF7MeG8', '_blank', 
+	   				'resizable=0,location=0,status=0,scrollbars=0,width=960,height=757');
 	   		newWindow.focus();
 	   	}
    });
    docMenu.add({
 	   	text: 'Video: Changing Source Inputs',
 	   	handler: function() {
-	   		var newWindow = window.open('screencast.jsp?file-name=ChangeSourceInputs', '_blank', 
-	   				'resizable=1,location=0,status=0,scrollbars=0,width=640,height=384');
+	   		var newWindow = window.open('screencast.jsp?videoId=UkC_76uq748', '_blank', 
+	   				'resizable=0,location=0,status=0,scrollbars=0,width=960,height=757');
 	   		newWindow.focus();
 	   	}
   });
   docMenu.add({
 	   	text: 'Video: Incremental Yield to an Outlet',
 	   	handler: function() {
-	   		var newWindow = window.open('screencast.jsp?file-name=IncrementalYieldtoOutlet', '_blank', 
-	   				'resizable=1,location=0,status=0,scrollbars=0,width=640,height=384');
+	   		var newWindow = window.open('screencast.jsp?videoId=tHnxt2ORNQU', '_blank', 
+	   				'resizable=0,location=0,status=0,scrollbars=0,width=960,height=757');
 	   		newWindow.focus();
 	   	}
   });

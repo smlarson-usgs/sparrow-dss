@@ -115,33 +115,28 @@
 	<%}%>
 	
     <div id="ie6-warn-win" class="x-hidden">
-      <b>It appears that you are using Internet Explorer Version 6.</b><br/>
+      <b>It appears that you are using Internet Explorer Version 6 or 7</b><br/>
 
-        Internet Explorer Version 6 (IE6) is only partially supported by this
-        application and some features may not work. If you discover an issue
-        that completely prevents usage of this application in IE6, please report
-        it to xxxxxx@usgs.gov. Please note, however, issues relating to
-        formatting, ease of use, and minor features not related to the main
-        purpose of the application will not be fixed for IE6.
-        <br/><br/><b>Why are you only partially supporting IE6?</b><br/>
+        Internet Explorer Versions 7 (IE7) and older are not supported by this
+        application and many features will be broken or work incorrectly.
+        <br/><br/><b>Why is IE7 not supported?</b><br/>
 
-        The World Wide Web Consortium (W3C) creates standards so the Web and web
-        pages can work consistently for everyone. New browsers generally support
-        these standards while older browsers generally don't. In particular,
-        IE6 does not support most W3C standards while most current versions of
-        other browsers do. Your choice of browser may be out of your hands,
+        The <a href="http://www.w3.org/Consortium/">World Wide Web Consortium (W3C)</a>
+				creates standards so that web pages work consistently for everyone.
+				Newer browsers generally support these standards while older browsers generally don't.
+				In particular, IE7 does not support or incorrectly implements many of the
+				W3C standards. Your choice of browser may be out of your hands,
         however, if you are able to, you should consider upgrading your browser
-        to IE7 or installing one of the browsers below. Doing so will improve
-        your web experience, enabling you to use and view sites as their
-        creators intended.
+        to the latest version of Internet Explorer or installing one of the
+				browsers below. Doing so will improve your web experience,
+				enabling you to use and view sites as their creators intended.
 
         <br/><br/>A partial list of browsers supporting current W3C standards
         includes:<br/>
-          * Firefox<br/>
-          * The many browsers based on Firefox<br/>
-          * Internet Explorer 7<br/>
-          * Opera<br/><br/>
-        Click to continue and use the application in IE6, with possible reduced functionality.
+					* <a href="https://www.google.com/intl/en/chrome/browser/">Chrome</a><br/>
+          * <a href="http://www.mozilla.org/en-US/firefox/new/">Firefox</a><br/>
+          * Safari (available by default on Apple computers)<br/>
+          * <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">The latest Internet Explorer version</a><br/>
     </div>
 
     <div id="navigation-bar">
