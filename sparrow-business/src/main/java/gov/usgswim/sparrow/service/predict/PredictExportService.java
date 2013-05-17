@@ -2,8 +2,11 @@ package gov.usgswim.sparrow.service.predict;
 
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.DataTable;
+import gov.usgs.cida.datatable.filter.ColumnRangeFilter;
+import gov.usgs.cida.datatable.filter.FilteredDataTable;
 import gov.usgs.cida.datatable.impl.ColumnDataFromTable;
 import gov.usgs.cida.datatable.impl.SimpleDataTable;
+import gov.usgs.cida.datatable.view.SingleColumnView;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
@@ -54,7 +57,8 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
     	PredictResult orgPredictResult = null;
     	PredictData adjPredictData = null;
     	PredictData orgPredictData = null;
-    	DataTable reachIdAttribs = null;
+    	ColumnData reachFullIds = null;
+			DataTable reachAttribs = null;
     	DataTable huc8 = null;
     	DataTable reachStatsTable = null;
     	
@@ -110,9 +114,15 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         	}
         }
         
+				
+				DataTable tempIds = sharedApp.getModelReachIdentificationAttributes(modelId);
+				
+				reachFullIds =  tempIds.getColumn(3);
+				
         //Include optional identification information
         if (req.isIncludeReachIdAttribs()) {
-        	reachIdAttribs = sharedApp.getModelReachIdentificationAttributes(modelId);
+					ColumnRangeFilter colFilter = new ColumnRangeFilter(0, 3);
+					reachAttribs = new FilteredDataTable(tempIds, colFilter);
         	huc8 = sharedApp.getHUC8Data(new HUC8TableRequest(modelId), false);
         }
         
@@ -139,7 +149,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         		adjDataColumn, orgDataColumn,
     			adjPredictData, orgPredictData,
     			adjPredictResult, orgPredictResult,
-    			watershedAreas, huc8, reachIdAttribs, reachStatsTable, readmeText);
+    			watershedAreas, huc8, reachFullIds, reachAttribs, reachStatsTable, readmeText);
     }
 
     public void shutDown() {

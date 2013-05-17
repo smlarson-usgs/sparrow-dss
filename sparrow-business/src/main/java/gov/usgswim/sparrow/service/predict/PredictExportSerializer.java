@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.service.predict;
 
+import gov.usgs.cida.datatable.ColumnData;
 import static gov.usgs.webservices.framework.formatter.SparrowFlatteningFormatter.NUMBER;
 import static gov.usgs.webservices.framework.formatter.SparrowFlatteningFormatter.STRING;
 import static gov.usgswim.sparrow.service.AbstractSerializer.XMLSCHEMA_NAMESPACE;
@@ -37,7 +38,8 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	private PredictResult nomPredictResult;
 	private PredictData adjPredictData;
 	private PredictData nomPredictData;
-	private DataTable reachIdAttribs = null;
+	private ColumnData reachFullIds = null;
+	private DataTable reachAttribs = null;
 	private DataTable reachStatsTable = null;
 	private String exportDescription;
 	
@@ -61,7 +63,8 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 			SparrowColumnSpecifier adjDataColumn, SparrowColumnSpecifier nomDataColumn,
 			PredictData adjPredictData, PredictData nomPredictData,
 			PredictResult adjPredictResult, PredictResult nomPredictResult, 
-			DataTable waterShedAreasColumn, DataTable huc8data, DataTable reachIdAttribs,
+			DataTable waterShedAreasColumn, DataTable huc8data,
+			ColumnData reachFullIds, DataTable reachIdAttribs,
 			DataTable reachStatsTable, String exportDescription) throws Exception {
 		
 		super();
@@ -76,7 +79,8 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 		this.nomPredictResult = nomPredictResult;
 		this.watershedAreas = waterShedAreasColumn;
 		this.huc8data = huc8data;
-		this.reachIdAttribs = reachIdAttribs;
+		this.reachFullIds = reachFullIds;
+		this.reachAttribs = reachIdAttribs;
 		this.reachStatsTable = reachStatsTable;
 		this.exportDescription = exportDescription;
 		
@@ -226,11 +230,11 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 					}
 					
 					//Add a group for identification columns
-					if (reachIdAttribs != null) {
+					if (reachAttribs != null) {
 						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Reach Identification Attributes"));
 						events.add(makeNonNullBasicTag("col", "").addAttribute("name", "HUC8").addAttribute("type", STRING));
-						for (int i = 0; i < reachIdAttribs.getColumnCount(); i++) {
-							String name = reachIdAttribs.getName(i);
+						for (int i = 0; i < reachAttribs.getColumnCount(); i++) {
+							String name = reachAttribs.getName(i);
 							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", STRING));
 						}
 						addCloseTag("group");
@@ -276,8 +280,8 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 			BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
 			
 			//Aggregated rows are not working right now...
-			Long rowId = adjDataColumn.getIdForRow(state.r);
-			rowEvent.addAttribute("id", rowId.toString());
+			String rowId = reachFullIds.getString(state.r);
+			rowEvent.addAttribute("id", rowId);
 			
 			events.add(rowEvent);
 			{
@@ -327,9 +331,9 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 				}
 				
 				
-				if (reachIdAttribs != null) {
-					for (int c = 0; c < reachIdAttribs.getColumnCount(); c++) {
-						addBasicTag("c", reachIdAttribs.getString(state.r, c));
+				if (reachAttribs != null) {
+					for (int c = 0; c < reachAttribs.getColumnCount(); c++) {
+						addBasicTag("c", reachAttribs.getString(state.r, c));
 					}
 				}
 				
