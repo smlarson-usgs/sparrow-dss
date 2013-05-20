@@ -118,8 +118,11 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 		_westBound = westBound;
 		_constituent = constituent;
 		_units = units;
-		_sessions = Collections.unmodifiableList(sessions);
-
+                if(sessions != null){
+                        _sessions = Collections.unmodifiableList(sessions);
+                } else {
+                        _sessions = Collections.emptyList();
+                }
 		//copy out the sources into an immutable list
 		if (sources != null) {
 			_sources = Collections.unmodifiableList(sources);

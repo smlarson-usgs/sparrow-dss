@@ -48,7 +48,8 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 	public SparrowModelBuilder(long id) {
 		_id = id;
 	}
-
+        
+        @Override
 	@SuppressWarnings("unchecked")
 	public SparrowModel toImmutable() throws IllegalStateException {
 
