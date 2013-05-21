@@ -18,14 +18,28 @@ public class ReachID implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private final long modelID;
-	private final long reachID;
-
+	private final Long modelID;
+	private final Long reachID;
+        private final String reachFullID;
+        private final int hash;
+        
 	public ReachID(long modelID, long reachID) {
 		this.modelID = modelID;
 		this.reachID = reachID;
+                this.reachFullID = null;
+                this.hash = this.buildhashCode();
+	}
+        
+        public ReachID(long modelID, String reachFullID) {
+		this.modelID = modelID;
+		this.reachID = null;
+                this.reachFullID = reachFullID;
+                this.hash = this.buildhashCode();
 	}
 
+        public String getReachFullID() {
+                return reachFullID;
+        }
 	public long getModelID() {
 		return modelID;
 	}
@@ -36,24 +50,44 @@ public class ReachID implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
+                boolean isEqual = false;
 		if (obj instanceof ReachID) {
-			return obj.hashCode() == hashCode();
+                        ReachID otherRid = (ReachID)obj;
+			if(obj.hashCode() == hashCode()){
+                                isEqual = (
+                                        otherRid.modelID == this.modelID &&
+                                        otherRid.reachFullID.equals(this.reachFullID) &&
+                                        otherRid.reachID == this.reachID
+                                        );
+                        }
 		}
-		return false;
+		return isEqual;
 	}
 	
 	@Override
-	public synchronized int hashCode() {
+        public int hashCode() {
+                return this.hash;
+        }
+
+	private synchronized int buildhashCode() {
 		int hash = new HashCodeBuilder(13, 161).
 		append(modelID).
 		append(reachID).
+                append(reachFullID).
 		toHashCode();
 		return hash;
 	}
 
 	@Override
 	public String toString() {
-		return "Reach id: " + reachID + ", model " + modelID;
+		String str = "ModelID: " + modelID ;
+                if(this.reachID == null){
+                        str += ", Reach Full ID: " + this.reachFullID;
+                }
+                else{
+                        str += ", Reach ID: " + this.reachID;
+                }
+                return str;
 	}
 
 }

@@ -126,7 +126,7 @@ public class FindReaches extends Action<DataTable> {
 		DynamicParamQuery query = new DynamicParamQuery();
 		
 		buildEquals(query, "SPARROW_MODEL_ID", frReq.modelID);
-		buildIn(query, "IDENTIFIER", frReq.getReachIDArray());
+		buildIn(query, "FULL_IDENTIFIER", frReq.getReachIDArray());
 		buildLike(query, "REACH_NAME", frReq.reachName);
 		buildLessThan(query, "CUM_CATCH_AREA", frReq.basinAreaHi);
 		buildGreaterThan(query, "CUM_CATCH_AREA", frReq.basinAreaLo);

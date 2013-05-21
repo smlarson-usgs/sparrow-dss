@@ -33,13 +33,13 @@ public class LoadReachByPoint extends Action<ReachInfo>{
 		ResultSet rs = getROPSFromPropertiesFile("FindReachUsingBarryFastQuery", getClass(), params).executeQuery();
 		addResultSetForAutoClose(rs);
 		
-		Integer reachID = null; Integer distance = null;
+		Integer reachIdentifier = null; Integer distance = null;
 		if (rs.next()) {
-			reachID = rs.getInt("identifier");
+			reachIdentifier = rs.getInt("identifier");
 			distance = rs.getInt("dist_in_meters");
 		}
-		if (reachID != null) {
-			ReachInfo reach = SharedApplication.getInstance().getReachByIDResult(new ReachID(this.modelId, reachID));
+		if (reachIdentifier != null) {
+			ReachInfo reach = SharedApplication.getInstance().getReachByIDResult(new ReachID(this.modelId, reachIdentifier));
 			// add the distance information to the retrieved Reach
 			ReachInfo result = reach.cloneWithDistance(distance);
 			result.setClickedPoint(lng, lat);
