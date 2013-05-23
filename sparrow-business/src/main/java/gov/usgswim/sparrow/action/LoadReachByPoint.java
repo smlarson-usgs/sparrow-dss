@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgswim.sparrow.request.ReachClientId;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,17 +34,30 @@ public class LoadReachByPoint extends Action<ReachInfo>{
 		ResultSet rs = getROPSFromPropertiesFile("FindReachUsingBarryFastQuery", getClass(), params).executeQuery();
 		addResultSetForAutoClose(rs);
 		
-		Integer reachIdentifier = null; Integer distance = null;
+		Long reachIdentifier = null; Integer distance = null;
 		if (rs.next()) {
-			reachIdentifier = rs.getInt("identifier");
+			reachIdentifier = rs.getLong("identifier");
 			distance = rs.getInt("dist_in_meters");
 		}
 		if (reachIdentifier != null) {
-			ReachInfo reach = SharedApplication.getInstance().getReachByIDResult(new ReachID(this.modelId, reachIdentifier));
-			// add the distance information to the retrieved Reach
-			ReachInfo result = reach.cloneWithDistance(distance);
-			result.setClickedPoint(lng, lat);
-			return result;
+			
+			//Get the Client ID for this reach
+			ReachID rid = new ReachID(this.modelId, reachIdentifier);
+			FindReachClientId findReachClientId = new FindReachClientId(rid);
+			ReachClientId clientRId = findReachClientId.run();
+			
+			if (clientRId != null) {
+				ReachInfo reachInfo = SharedApplication.getInstance().getReachByIDResult(clientRId);
+				// add the distance information to the retrieved Reach
+				ReachInfo result = reachInfo.cloneWithDistance(distance);
+				result.setClickedPoint(lng, lat);
+				return result;
+				
+			} else {
+				setPostMessage("Could not find the Client ID for the reach");
+			}
+		} else {
+			setPostMessage("No reaches found near the specified location");
 		}
 		
 		return null;

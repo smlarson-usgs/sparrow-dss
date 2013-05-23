@@ -29,7 +29,7 @@ public class ReachByPointFactoryIntegrationLongRunTest extends SparrowTestBaseWi
 		ReachInfo reach = factory.createEntry(req);
 		
 		assertNotNull(reach);
-		assertEquals(7887L, reach.getId());
+		assertEquals(new Long(7887L), reach.getReachId());
 		assertEquals("FLAT SHOAL CR", reach.getName());
 		assertEquals(5292, reach.getDistanceInMeters());
 	}

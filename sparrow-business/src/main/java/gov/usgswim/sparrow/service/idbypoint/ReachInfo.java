@@ -17,8 +17,9 @@ import com.thoughtworks.xstream.XStream;
  */
 @Immutable
 public class ReachInfo {
-	private final long modelID;
-	private final long id;
+	private final Long modelID;
+	private final Long reachId;
+	private final String clientReachId;
 	private final String name;
 	private final transient Integer distInMeters;
 
@@ -36,13 +37,14 @@ public class ReachInfo {
 	private final String huc8;
 	private final String huc8Name;
 
-	public ReachInfo(long modelID, long id, String name, Integer distInMeters,
+	public ReachInfo(Long modelID, Long reachId, String clientReachId, String name, Integer distInMeters,
 			ReachGeometry reachGeom,
 			String huc2, String huc2Name, String huc4, String huc4Name,
 			String huc6, String huc6Name, String huc8, String huc8Name
 	) {
 		this.modelID = modelID;
-		this.id = id;
+		this.reachId = reachId;
+		this.clientReachId = clientReachId;
 		this.name = name;
 		this.distInMeters = distInMeters;
 		this.reachGeom = reachGeom;
@@ -63,7 +65,7 @@ public class ReachInfo {
 		writeOpeningTag(in, "identification",
 				"distance-in-meters", asString(distInMeters));
 		{
-			writeNonNullTag(in, "id", asString(id));
+			writeNonNullTag(in, "id", clientReachId);
 			writeNonNullTag(in, "name", name);
 			if (clickedLong != null) {
 				writeClosedFullTag(in, "point",
@@ -110,7 +112,8 @@ public class ReachInfo {
 	}
 
 	public ReachInfo cloneWithDistance(Integer distance) {
-		ReachInfo clone = new ReachInfo(modelID, id, name, distance, reachGeom,
+		ReachInfo clone = new ReachInfo(modelID, reachId, clientReachId, name,
+				distance, reachGeom,
 				huc2, huc2Name, huc4, huc4Name, huc6, huc6Name, huc8, huc8Name );
 
 		return clone;
@@ -119,12 +122,16 @@ public class ReachInfo {
 	// =================
 	// GETTERS & SETTERS
 	// =================
-	public long getModelId() {
+	public Long getModelId() {
 		return modelID;
 	}
 
-	public long getId() {
-		return id;
+	public Long getReachId() {
+		return reachId;
+	}
+	
+	public String getClientReachId() {
+		return clientReachId;
 	}
 
 	public int getDistanceInMeters() {

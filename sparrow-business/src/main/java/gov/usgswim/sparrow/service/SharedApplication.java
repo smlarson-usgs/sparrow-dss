@@ -729,11 +729,11 @@ public class SharedApplication  {
 	}
 
 	//ReachByID Cache
-	public ReachInfo getReachByIDResult(ReachID req) {
+	public ReachInfo getReachByIDResult(ReachClientId req) {
 		return getReachByIDResult(req, false);
 	}
 
-	public ReachInfo getReachByIDResult(ReachID req, boolean quiet) {
+	public ReachInfo getReachByIDResult(ReachClientId req, boolean quiet) {
 		return (ReachInfo) IdentifyReachByID.get(req, quiet);
 	}
 

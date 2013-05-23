@@ -40,7 +40,7 @@ public class IDByPointResponse {
 	
 	public void setReach(ReachInfo reach) {
 		this.reach = reach;
-		this.reachID = Long.valueOf(reach.getId()); // keep in sync
+		this.reachID = Long.valueOf(reach.getReachId()); // keep in sync
 	}
 	
 	public static String writeXMLHead(ReturnStatus status, String message, Long modelId, Integer contextId) {

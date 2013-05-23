@@ -41,10 +41,9 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 				Integer contextID = (isContextRequest)? Integer.parseInt(contextParam): null;
 
 				String reachIDString = request.getParameter("reach");
-				Integer reachID = (reachIDString == null)? null: Integer.valueOf(reachIDString);
 				
 				Point.Double point = new Point.Double();
-				if (reachID == null) { // if no reach id then it's a point
+				if (reachIDString == null) { // if no reach id then it's a point
 					point.x = parseParamAsDouble(request, "long");
 					point.y = parseParamAsDouble(request, "lat");
 				}
@@ -62,9 +61,9 @@ public class IDByPointParser extends AbstractHttpRequestParser<IDByPointRequest>
 
 				IDByPointRequest result = null;
 				if (isModelRequest) {
-					result = (reachID == null)? new IDByPointRequest(modelID, point): new IDByPointRequest(modelID, reachID);
+					result = (reachIDString == null)? new IDByPointRequest(modelID, point): new IDByPointRequest(modelID, reachIDString);
 				} else if (isContextRequest) {
-					result = (reachID == null)? new IDByPointRequest(contextID, point): new IDByPointRequest(contextID, reachID);
+					result = (reachIDString == null)? new IDByPointRequest(contextID, point): new IDByPointRequest(contextID, reachIDString);
 				}
 				
 				result.setXMLRequest(""); // no xml request, RESTlike

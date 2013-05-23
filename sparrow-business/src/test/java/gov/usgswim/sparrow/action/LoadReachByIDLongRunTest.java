@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
 import gov.usgswim.sparrow.SparrowTestBaseWithDB;
+import gov.usgswim.sparrow.request.ReachClientId;
 import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 
@@ -26,23 +27,23 @@ import org.junit.Test;
  */
 public class LoadReachByIDLongRunTest  extends SparrowTestBaseWithDB {
 	
-	static ReachID reachId;
+	static ReachClientId clientReachId;
 	
 	@Override
 	public void doOneTimeCustomSetup() throws Exception {
 		
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);
-		reachId = new ReachID(SparrowTestBaseWithDB.TEST_MODEL_ID, 6000L);
+		clientReachId = new ReachClientId(SparrowTestBaseWithDB.TEST_MODEL_ID, "6000");
 	}
 	
 	@Test
 	public void basicTest() throws Exception {
 
 		LoadReachByID action = new LoadReachByID();
-		action.setReachId(reachId);
+		action.setReachId(clientReachId);
 		ReachInfo info = action.run();
-		assertEquals(6000L, info.getId());
+		assertEquals(new Long(6000L), info.getReachId());
 		assertEquals("LITTLE R, W FK", info.getName());
 		assertEquals("03", info.getHuc2());
 		assertEquals("0305", info.getHuc4());

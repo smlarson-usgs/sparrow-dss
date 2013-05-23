@@ -17,6 +17,7 @@ import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.ReachElement;
 import gov.usgswim.sparrow.domain.ReachGroup;
+import gov.usgswim.sparrow.request.ReachClientId;
 import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.service.ReturnStatus;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -158,7 +159,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 					
 					response[i].status = ReturnStatus.OK;
 				} else {
-					if (req.getReachID() != null) {
+					if (req.getClientReachIds() != null) {
 						response[i].status = ReturnStatus.ID_NOT_FOUND;
 						response[i].message = "Could not find a reach with the specified ID";
 					} else {
@@ -173,7 +174,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			response = new IDByPointResponse[1];
 			response[0] = new IDByPointResponse();
 			response[0].modelID = req.getModelID();
-			if (req.getReachID() != null) {
+			if (req.getClientReachIds() != null) {
 				response[0].status = ReturnStatus.ID_NOT_FOUND;
 				response[0].message = "Could not find a reach with the specified ID";
 			} else {
@@ -232,7 +233,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				
 				SparrowColumnSpecifier data = SharedApplication.getInstance().getAnalysisResult(pc);
 				
-				int row = pd.getRowForReachID(reachInfo.getId());
+				int row = pd.getRowForReachID(reachInfo.getReachId());
 				
 				Double value = data.getDouble(row);
 				String displayValue = "[No Value Calculated]";	//only if null
@@ -277,14 +278,13 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	 * returned, but some of those results may be zero if they are not found.
 	 */
 	private ReachInfo[] retrieveReaches(IDByPointRequest req) throws Exception {
-		if (req.getReachID() != null) {
-			int[] reachIds = req.getReachID();
+		if (req.getClientReachIds() != null) {
+			String[] reachIds = req.getClientReachIds();
 			ReachInfo[] reachResults = new ReachInfo[reachIds.length];
 			
 			for (int i = 0; i < reachIds.length; i++) {
-				ReachID reach = new ReachID(req.getModelID(), reachIds[i]);
-				
-				reachResults[i] = SharedApplication.getInstance().getReachByIDResult(reach);
+				ReachClientId clientReachId = new ReachClientId(req.getModelID(), reachIds[i]);
+				reachResults[i] = SharedApplication.getInstance().getReachByIDResult(clientReachId);
 			}
 			return reachResults;
 		} else if (req.getPoint() != null) {

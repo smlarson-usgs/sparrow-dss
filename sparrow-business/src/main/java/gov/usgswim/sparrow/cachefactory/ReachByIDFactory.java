@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.cachefactory;
 
 import gov.usgswim.sparrow.action.LoadReachByID;
-import gov.usgswim.sparrow.request.ReachID;
+import gov.usgswim.sparrow.request.ReachClientId;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 
 import org.apache.log4j.Logger;
@@ -29,8 +29,7 @@ public class ReachByIDFactory extends AbstractCacheFactory {
 	@Override
 	public ReachInfo createEntry(Object request) throws Exception {
 
-		ReachID req = (ReachID) request;
-
+		ReachClientId req = (ReachClientId) request;
 		return new LoadReachByID(req).run();
 
 	}

@@ -49,7 +49,7 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 
 	//These two are mutually exclusive
 	private Point.Double point;
-	private int[] reachIDs;
+	private String[] clientReachIds;
 
 	private boolean adjustments = false;
 	private boolean attributes = false;
@@ -72,9 +72,9 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 		this.point = point;
 	}
 
-	public IDByPointRequest(Long modelID, int reachID) {
+	public IDByPointRequest(Long modelID, String clientReachId) {
 		this.modelID = modelID;
-		this.reachIDs = new int[] {reachID};
+		this.clientReachIds = new String[] {clientReachId};
 	}
 
 	public IDByPointRequest(Integer contextID, Double point) {
@@ -83,14 +83,14 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 
 	}
 
-	public IDByPointRequest(Integer contextID, int reachID) {
+	public IDByPointRequest(Integer contextID, String clientReachId) {
 		this.contextID = contextID;
-		this.reachIDs = new int[] { reachID };
+		this.clientReachIds = new String[] { clientReachId };
 	}
 	
-	public IDByPointRequest(Integer contextID, int[] reachIDs) {
+	public IDByPointRequest(Integer contextID, String[] clientReachIds) {
 		this.contextID = contextID;
-		this.reachIDs = reachIDs;
+		this.clientReachIds = clientReachIds;
 	}
 
 
@@ -139,12 +139,12 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 						ParserHelper.ignoreElement(in);
 					} else if (REACH_CHILD.equals(localName)) {
 						
-						int newReachId = ParserHelper.parseAttribAsInt(in, "id");
+						String newReachId = ParserHelper.parseAttribAsString(in, "id");
 
-						if (reachIDs == null) {
-							reachIDs = new int[] { newReachId };
+						if (clientReachIds == null) {
+							clientReachIds = new String[] { newReachId };
 						} else {
-							reachIDs = ArrayUtils.add(reachIDs, newReachId);
+							clientReachIds = combine(clientReachIds, newReachId);
 						}
 
 						ParserHelper.ignoreElement(in);
@@ -248,8 +248,8 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 		return point.x;
 	}
 
-	public int[] getReachID() {
-		return reachIDs;
+	public String[] getClientReachIds() {
+		return clientReachIds;
 	}
 
 	public ResponseFormat getResponseFormat() {
@@ -311,6 +311,13 @@ public class IDByPointRequest implements XMLStreamParserComponent, PipelineReque
 	public void setPredicted(boolean predicted) {
 		this.predicted = predicted;
 	}
-
+	
+	private static String[] combine(String[] a, String b){
+        int length = a.length + 1;
+        String[] result = new String[length];
+        System.arraycopy(a, 0, result, 0, a.length);
+        result[a.length] = b;
+        return result;
+    }
 
 }
