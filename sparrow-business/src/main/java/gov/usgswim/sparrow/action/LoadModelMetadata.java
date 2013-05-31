@@ -146,8 +146,7 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 				
 				models.add(m);
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+
 		} finally {
 			// rset can be null if there is an sql error. This has happened with the renaming of a field
 			if (rset != null) rset.close();
@@ -173,7 +172,8 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 			try {
 				
 				rset = getROPSFromString(selectSources, modelIds).executeQuery();
-
+				int modelIndex = 0;
+				
 				while (rset.next()) {
 					SourceBuilder s = new SourceBuilder();
 					s.setId(rset.getLong("SOURCE_ID"));
@@ -188,21 +188,19 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 
 					//The models and sources are sorted by model_id, so scroll forward
 					//thru the models until we find the correct one.
-					int modelIndex = 0;
-					while ((modelIndex < models.size() &&
-							models.get(modelIndex).getId() != s.getModelId()) /* don't scroll past last model*/) {
+					while (
+								(modelIndex < models.size() &&
+								!(models.get(modelIndex).getId().equals(s.getModelId())))
+							) {
 						modelIndex++;
 					}
 
 					if (modelIndex < models.size()) {
 						models.get(modelIndex).addSource(s);
 					} else {
-						log.warn("Found sources not matched to a model.  Likely caused by record insertion during the queries.");
+						throw new Exception("Found sources not matched to a model.  Likely caused by record insertion during the queries.");
 					}
 				}
-			} catch(Exception e) {
-				e.printStackTrace(System.err);
-
 			} finally {
 				rset.close();
 			}
