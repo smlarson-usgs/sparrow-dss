@@ -15,6 +15,7 @@ import java.sql.Statement;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -469,6 +470,13 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	
 	/**
 	 * Creates a read-only PreparedStatement with named parameter substitutions.
+	 * 
+	 * The params Map may contain single name-value pairs or name-collection pairs.
+	 * Names will replace $name$ variables in the SQL string with '?'s, assigning
+	 * parameters as needed in the prepared statement.  Collections of values
+	 * will be expanded into a list  of '?'s  in the expanded statement (currently
+	 * this is intended to be used for an IN clause).
+	 * 
 	 * @param name
 	 * @param clazz
 	 * @param params String variableName, Object value
@@ -488,7 +496,17 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	}
 	
 	/**
-	 * Creates a read-write PreparedStatement with named parameter substitutions.
+	 * Creates a read-write PreparedStatement from a properties file.
+	 * 
+	 * A properties file with a name matching this class is expected, with an
+	 * entry matching the passed name.
+	 * 
+	 * The params Map may contain single name-value pairs or name-collection pairs.
+	 * Names will replace $name$ variables in the SQL string with '?'s, assigning
+	 * parameters as needed in the prepared statement.  Collections of values
+	 * will be expanded into a list  of '?'s  in the expanded statement (currently
+	 * this is intended to be used for an IN clause).
+	 * 
 	 * @param name
 	 * @param clazz
 	 * @param params String variableName, Object value
@@ -507,6 +525,20 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		return getRWPSFromString(sql, params);
 	}
 	
+	/**
+	 * Creates a prepared statement from a SQL string (possibly with named params).
+	 * 
+	 * The params Map may contain single name-value pairs or name-collection pairs.
+	 * Names will replace $name$ variables in the SQL string with '?'s, assigning
+	 * parameters as needed in the prepared statement.  Collections of values
+	 * will be expanded into a list  of '?'s  in the expanded statement (currently
+	 * this is intended to be used for an IN clause).
+	 * 
+	 * @param sql
+	 * @param params
+	 * @return
+	 * @throws Exception 
+	 */
 	protected PreparedStatement getROPSFromString(
 			String sql, Map<String, Object> params)
 			throws Exception {
@@ -520,13 +552,25 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		//getNewRWPreparedStatement with the processed string
 		statement = getNewROPreparedStatement(sql);
 		
-		assignParameters(statement, temp, params);
+		//Add now before assigning params (may bomb during assignment)
+		addStatementForAutoClose(statement);
 		
+		assignParameters(statement, temp, params);
+
 		return statement;
 	}
 	
 	/**
-	 * Creates a read/writeable prepared statement with named parameter substitutions.
+	 * Creates a read-write PreparedStatement from a properties file.
+	 * 
+	 * A properties file with a name matching this class is expected, with an
+	 * entry matching the passed name.
+	 * 
+	 * The params Map may contain single name-value pairs or name-collection pairs.
+	 * Names will replace $name$ variables in the SQL string with '?'s, assigning
+	 * parameters as needed in the prepared statement.  Collections of values
+	 * will be expanded into a list  of '?'s  in the expanded statement (currently
+	 * this is intended to be used for an IN clause).
 	 * 
 	 * @param sql
 	 * @param params
@@ -547,6 +591,9 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		//getNewRWPreparedStatement with the processed string
 		statement = getNewRWPreparedStatement(sql);
 		
+		//Add now before assigning params (may bomb during assignment)
+		addStatementForAutoClose(statement);
+		
 		assignParameters(statement, temp, params);
 		
 		return statement;
@@ -558,6 +605,10 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 * by name (only) in the order they need to be placed in the statement, that
 	 * is, the order matches the question marks in the statement; params contains
 	 * the name and value pairs.
+	 * 
+	 * The params Map may contain collections of values which will be expanded into
+	 * a list  of '?'s  in the expanded statement.  Currently this is intended to
+	 * be used for an IN clause.
 	 * 
 	 * @param statement
 	 * @param sqlString
@@ -571,35 +622,49 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		
 		//Go through in order and get the variables, replace with question marks.
 		variables = sqlString.variables;
+		int paramIndex = 1;		//current param index, increment after setting
 		
-		Iterator<String> it = variables.iterator();
-		for (int i = 1; it.hasNext(); i++) {
-			String variable = it.next();
+		for (String variable : variables) {
 			if (params.containsKey(variable)) {
-				Object val = params.get(variable);
+				Object valueEntry = params.get(variable);
 				
-				if (val instanceof String) {
-					statement.setString(i, val.toString());
-				} else if (val instanceof Long) {
-					statement.setLong(i, (Long) val);
-				} else if (val instanceof Integer) {
-					statement.setInt(i, (Integer) val);
-				} else if (val instanceof Float) {
-					statement.setFloat(i, (Float) val);
-				} else if (val instanceof Double) {
-					statement.setDouble(i, (Double) val);
-				} else if (val instanceof Timestamp) {
-					statement.setTimestamp(i, (Timestamp) val);
-				} else if (val instanceof Date) {
-					statement.setDate(i, (Date) val);
-				} else if (val instanceof Time) {
-					statement.setTime(i, (Time) val);
-				} else if (val instanceof SerializableBlobWrapper) {
-					statement.setBytes(i, ((SerializableBlobWrapper)val).getBytes());
+				//The param value may be a colletion, in which case add an entry for each
+				Collection valueColl = null;
+				if (valueEntry instanceof Collection) {
+					valueColl = (Collection) valueEntry;
 				} else {
-					statement.setObject(i, val);
+					valueColl = new ArrayList<Object>();
+					valueColl.add(valueEntry);
 				}
 				
+				for (Object oneValue : valueColl) {
+					if (oneValue instanceof String) {
+						statement.setString(paramIndex, oneValue.toString());
+					} else if (oneValue instanceof Long) {
+						statement.setLong(paramIndex, (Long) oneValue);
+					} else if (oneValue instanceof Integer) {
+						statement.setInt(paramIndex, (Integer) oneValue);
+					} else if (oneValue instanceof Float) {
+						statement.setFloat(paramIndex, (Float) oneValue);
+					} else if (oneValue instanceof Double) {
+						statement.setDouble(paramIndex, (Double) oneValue);
+					} else if (oneValue instanceof Timestamp) {
+						statement.setTimestamp(paramIndex, (Timestamp) oneValue);
+					} else if (oneValue instanceof Date) {
+						statement.setDate(paramIndex, (Date) oneValue);
+					} else if (oneValue instanceof Time) {
+						statement.setTime(paramIndex, (Time) oneValue);
+					} else if (oneValue instanceof SerializableBlobWrapper) {
+						statement.setBytes(paramIndex, ((SerializableBlobWrapper)oneValue).getBytes());
+					} else {
+						statement.setObject(paramIndex, oneValue);
+					}
+					
+					paramIndex++;
+				}
+				
+			} else {
+				throw new Exception("The variable '" + variable + "' was not found in the list of SQL parameters.");
 			}
 		}
 		
@@ -698,11 +763,29 @@ public abstract class Action<R extends Object> implements IAction<R> {
 				//Start or End variable
 				if (isVariableName) {
 					//End of variable, store the name
-					result.variables.add(variableBuffer.toString());
+					String paramName = variableBuffer.toString();
+					result.variables.add(paramName);
 					//Clear the buffer
 					variableBuffer = new StringBuilder();
-					//add ? placeholder
-					result.sql.append('?');
+					
+					
+					if (params.get(paramName) != null && params.get(paramName) instanceof Collection) {
+						//If there is an array for this param, add a list of ?s
+						//The only place this should be used is in an IN clause.
+						Collection c = (Collection)params.get(paramName);
+						
+						if (c.size() > 0) {
+							for (Object o : c) {
+								result.sql.append("?, ");
+							}
+							result.sql.delete(result.sql.length() - 2, result.sql.length());
+						}
+						
+					} else {
+						//add ? placeholder
+						result.sql.append('?');
+					}
+
 				}
 				isVariableName = !isVariableName;
 			}

@@ -27,6 +27,7 @@ import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -856,6 +857,20 @@ public class SharedApplication  {
 	
 	public ColumnData getFractionedWatershedAreaTable(Integer terminalReachId, boolean quiet) {
 		return (ColumnData) FractionedWatershedAreaTable.get(terminalReachId, quiet);
+	}
+	
+	//ReachFullId
+	public List<ReachFullId> getReachFullId(Collection<ReachClientId> req) throws Exception {
+		ReachFullIdCollectionAction act = new ReachFullIdCollectionAction(req);
+		return act.run();
+	}
+	
+	public ReachFullId getReachFullId(ReachClientId req) {
+		return getReachFullId(req, false);
+	}
+	
+	public ReachFullId getReachFullId(ReachClientId req, boolean quiet) {
+		return (ReachFullId) ReachFullId.get(req, quiet);
 	}
 	
 	//HUC
