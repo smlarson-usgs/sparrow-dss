@@ -22,7 +22,7 @@ import java.util.Properties;
  *
  * @author eeverman
  */
-public abstract class CalcFractionalAreaBaseTest extends SparrowTestBase {
+public abstract class CalcFractionalAreaBaseTest extends SparrowTestBaseWithDB {
 
 	protected static Long	network1_model_id = 1000L;
 	protected static TopoData network1_topo;
@@ -82,7 +82,7 @@ public abstract class CalcFractionalAreaBaseTest extends SparrowTestBase {
 
 		ArrayList<String> to_11_targets = new ArrayList<String>();
 		to_11_targets.add("11");
-		
+
 		network1_term_to_11 = new TerminalReaches(network1_model_id, to_11_targets);
 	}
 

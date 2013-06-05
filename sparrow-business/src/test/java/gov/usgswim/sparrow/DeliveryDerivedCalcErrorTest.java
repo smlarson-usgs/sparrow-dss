@@ -12,22 +12,22 @@ import org.junit.Test;
 
 /**
  * This test is a high-level unit test that uses the PredictContextPipeline and
- * XML submissions to do a fast check of delivery calculation based on the 
+ * XML submissions to do a fast check of delivery calculation based on the
  * canned predict data.
- * 
+ *
  * Reach 5552 (model 50) is used as the target for the test, which results in
  * only 5 reaches affected by the test so it is very easy to verify.
- * 
- * 
+ *
+ *
  * @author eeverman
  */
-public class DeliveryDerivedCalcErrorTest extends SparrowTestBase {
-	
-	
+public class DeliveryDerivedCalcErrorTest extends SparrowTestBaseWithDB {
+
+
 	@Test
 	public void testComparison() throws Exception {
-		
-		
+
+
 		//Test total context (total flux)
 		String xmlContextReq = SparrowTestBase.getXmlAsString(this.getClass(), "TotalContext");
 		String xmlContextResp = SparrowTestBase.getXmlAsString(this.getClass(), "TotalContextResp");
@@ -36,7 +36,7 @@ public class DeliveryDerivedCalcErrorTest extends SparrowTestBase {
 		String actualResponse = SparrowTestBase.pipeDispatch(contextReq, pipe);
 		assertTrue(similarXMLIgnoreContextId(xmlContextResp, actualResponse));
 		SparrowColumnSpecifier totalData = contextReq.getPredictionContext().getDataColumn();
-		
+
 		//Test delivery fraction
 		xmlContextReq = SparrowTestBase.getXmlAsString(this.getClass(), "DelFracContext");
 		xmlContextResp = SparrowTestBase.getXmlAsString(this.getClass(), "DelFracContextResp");
@@ -53,17 +53,17 @@ public class DeliveryDerivedCalcErrorTest extends SparrowTestBase {
 		//System.out.println("actual: " + actualResponse);
 		assertTrue(similarXMLIgnoreContextId(xmlContextResp, actualResponse));
 		SparrowColumnSpecifier delTotalData = contextReq.getPredictionContext().getDataColumn();
-		
+
 		//The rows affected by the target
 		int row1 = delFracData.getTable().getRowForId(5552L);
 		int row2 = delFracData.getTable().getRowForId(5553L);
 		int row3 = delFracData.getTable().getRowForId(5554L);
 		int row4 = delFracData.getTable().getRowForId(5555L);
 		int row5 = delFracData.getTable().getRowForId(5556L);
-		
+
 		int[] affectedRows = new int[] {row1, row2, row3, row4, row5};
 		Arrays.sort(affectedRows);
-		
+
 		System.out.println("- - - - - - - - - - - - - - - - - - - - - - - -");
 		System.out.println("total 1: " + totalData.getDouble(row1));
 		System.out.println("total 2: " + totalData.getDouble(row2));
@@ -83,7 +83,7 @@ public class DeliveryDerivedCalcErrorTest extends SparrowTestBase {
 		System.out.println("del total 4: " + delTotalData.getDouble(row4));
 		System.out.println("del total 5: " + delTotalData.getDouble(row5));
 		System.out.println("- - - - - - - - - - - - - - - - - - - - - - - -");
-		
+
 		//All rows other then the 5 listed should have a del frac of zero
 		for (int i=0; i<delFracData.getRowCount(); i++) {
 			if (Arrays.binarySearch(affectedRows, i) < 0) {
@@ -96,7 +96,7 @@ public class DeliveryDerivedCalcErrorTest extends SparrowTestBase {
 				assertTrue(delTotalData.getDouble(i) > 0);
 			}
 		}
-		
+
 
 		//Check the affected rows for the basic calc
 		for (int i = 0; i < affectedRows.length; i++) {
@@ -108,6 +108,6 @@ public class DeliveryDerivedCalcErrorTest extends SparrowTestBase {
 		}
 
 	}
-	
+
 }
 
