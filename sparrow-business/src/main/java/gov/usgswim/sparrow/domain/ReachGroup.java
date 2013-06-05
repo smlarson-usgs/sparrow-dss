@@ -4,6 +4,7 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
+import gov.usgswim.sparrow.request.ReachClientId;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.ParserHelper;
 
@@ -226,7 +227,7 @@ public class ReachGroup implements XMLStreamParserComponent {
 	 *
 	 * WARNING: do not call this method until all the reaches have been added to the group, as it will make subsequent search behavior incorrect
 	 */
-	public boolean contains(long reachID) {
+	public boolean contains(long reachID) throws Exception {
 		if (containedReachIDs == null) {
 			// Do late initialization as necessary
 			Set<Long> result = new HashSet<Long>();
@@ -234,10 +235,6 @@ public class ReachGroup implements XMLStreamParserComponent {
 			containedReachIDs = Collections.unmodifiableSet(result);
 		}
 		return containedReachIDs.contains(reachID);
-	}
-
-	public boolean contains(ReachElement reach) {
-		return contains(reach.getId());
 	}
 
 	// =================
@@ -278,6 +275,7 @@ public class ReachGroup implements XMLStreamParserComponent {
 	/**
 	 * @param i
 	 * @return reachIds for the ith logicalSet
+	 * TODO:  This should be based on passing in a single LogicalSet instance...
 	 */
 	public long[] getLogicalReachIDs(int i) {
 		if (reachIDsByLogicalSets == null) {
@@ -312,14 +310,20 @@ public class ReachGroup implements XMLStreamParserComponent {
 		return reachIDsByLogicalSets.get(i);
 	}
 
-	public Set<Long> getCombinedReachIDs(){
+	public Set<Long> getCombinedReachIDs() throws Exception {
 	    // Use a Set to avoid adding a reach more than once (because of logical sets)
 	    Set<Long> combinedIDs = new HashSet<Long>();
 		// Start with explicit reaches
 		if (reaches != null) {
+			ArrayList<ReachClientId> clientIds = new ArrayList<ReachClientId>(reaches.size());
+			
 			for (ReachElement reach: reaches) {
-				combinedIDs.add(reach.getId());
+				ReachClientId rci = new ReachClientId(modelID, reach.getId());
+				clientIds.add(rci);
 			}
+			
+			List<Long> ids = SharedApplication.getInstance().getReachFullIdAsLong(clientIds);
+			combinedIDs.addAll(ids);
 		}
 
 		// add each of the logical reaches

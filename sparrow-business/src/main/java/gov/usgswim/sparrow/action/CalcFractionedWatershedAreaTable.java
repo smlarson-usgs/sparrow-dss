@@ -10,6 +10,7 @@ import gov.usgswim.sparrow.request.FractionedWatershedAreaRequest;
 import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Calculates a column of fractioned reach watershed areas, one entry per
@@ -128,8 +129,10 @@ public class CalcFractionedWatershedAreaTable extends Action<ColumnData> {
 		HashMap<Integer, Double> areaMap = new HashMap<Integer, Double>(mapSizeInt, .8f);
 		
 		Long modelId = terminalReaches.getModelID();
+		List<Long> reachIds = SharedApplication.getInstance().getReachFullIdAsLong(
+				modelId, terminalReaches.getReachIdsAsList());
 		
-		for (Long reachId : terminalReaches.getReachIDs()) {
+		for (Long reachId : reachIds) {
 			ReachID rid = new ReachID(modelId, reachId);
 			
 			//TODO:  These should be configurable

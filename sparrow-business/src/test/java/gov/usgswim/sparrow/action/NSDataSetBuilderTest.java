@@ -176,7 +176,7 @@ public class NSDataSetBuilderTest extends SparrowTestBase {
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
 		hashAction.setPredictData(predictData);
-		hashAction.setTargetReachIds(targets.asSet());
+		hashAction.setTargetReachIds(targets.getReachIdsAsSet());
 		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(predictData);

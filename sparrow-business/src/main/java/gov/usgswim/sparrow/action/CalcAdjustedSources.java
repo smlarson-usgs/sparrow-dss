@@ -14,6 +14,7 @@ import gov.usgswim.sparrow.datatable.DataTableCompare;
 import gov.usgswim.sparrow.datatable.PercentageColumnData;
 import gov.usgswim.sparrow.datatable.SingleColumnOverrideDataTable;
 import gov.usgswim.sparrow.domain.*;
+import gov.usgswim.sparrow.request.ReachClientId;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 /**
@@ -110,19 +111,24 @@ public class CalcAdjustedSources extends Action<DataTable> {
 		        && individualGroup.isEnabled()) {
 
 		    // Iterate over the explicit set of reaches and apply adjustments
-            for (ReachElement r: individualGroup.getExplicitReaches()) {
-                int row = predictData.getRowForReachID(r.getId());
-                // Apply the adjustments specified for just this reach (if any)
-                // Note:  getAdjustments() never returns null
-                for (Adjustment adj: r.getAdjustments()) {
-                    Integer srcId = adj.getSource();
-                    applyAdjustmentToReach(adj, row, predictData.getSourceIndexForSourceID(srcId), coefAdj, overAdj, true);
-                }
-            }
-        }
+				for (ReachElement r: individualGroup.getExplicitReaches()) {
+					
+					String clientReachId = r.getId();
+					ReachFullId rfi = SharedApplication.getInstance().getReachFullId(
+							new ReachClientId(predictData.getModel().getId(), clientReachId));
+					
+					int row = predictData.getRowForReachID(rfi.getReachId());
+					// Apply the adjustments specified for just this reach (if any)
+					// Note:  getAdjustments() never returns null
+					for (Adjustment adj: r.getAdjustments()) {
+							Integer srcId = adj.getSource();
+							applyAdjustmentToReach(adj, row, predictData.getSourceIndexForSourceID(srcId), coefAdj, overAdj, true);
+					}
+				}
+		}
 
-        adjusted = overAdj; //resulting adjustment
-        return adjusted;
+		adjusted = overAdj; //resulting adjustment
+		return adjusted;
 	}
 	
 	/**

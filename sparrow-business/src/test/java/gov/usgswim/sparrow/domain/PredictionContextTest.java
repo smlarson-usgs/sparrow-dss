@@ -36,7 +36,7 @@ public class PredictionContextTest extends SparrowTestBase {
 		assertEquals(null, context.getAnalysis().getGroupBy());
 		
 		//Terminal Reaches
-		assertEquals(0, context.getTerminalReaches().getReachIDs().size());
+		assertEquals(0, context.getTerminalReaches().getReachIdsAsList().size());
 		
 		//Adjustment Groups
 		assertEquals("accumulate", context.getAdjustmentGroups().getConflicts());
@@ -59,7 +59,7 @@ public class PredictionContextTest extends SparrowTestBase {
 		//These should all be unchanged
 		assertTrue(context.getComparison() instanceof SourceShareComparison);
 		assertEquals(DataSeriesType.total, context.getAnalysis().getDataSeries());
-		assertEquals(0, context.getTerminalReaches().getReachIDs().size());
+		assertEquals(0, context.getTerminalReaches().getReachIdsAsList().size());
 		assertEquals(1, context.getAdjustmentGroups().getReachGroups().size());
 		
 		/////////////////////////
@@ -78,7 +78,7 @@ public class PredictionContextTest extends SparrowTestBase {
 		//These should all be unchanged
 		assertEquals(null, context.getAnalysis().getSource());
 		assertEquals(DataSeriesType.total, context.getAnalysis().getDataSeries());
-		assertEquals(0, context.getTerminalReaches().getReachIDs().size());
+		assertEquals(0, context.getTerminalReaches().getReachIdsAsList().size());
 		assertEquals(1, context.getAdjustmentGroups().getReachGroups().size());
 	}
 

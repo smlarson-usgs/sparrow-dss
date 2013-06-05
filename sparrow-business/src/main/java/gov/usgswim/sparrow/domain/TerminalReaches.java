@@ -19,7 +19,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 public class TerminalReaches implements XMLStreamParserComponent {
 
-	private static final long serialVersionUID = 8804027069848411715L;
+	private static final long serialVersionUID = 10L;
 	private static final String REACHES_CHILD = "reach";
 	public static final String MAIN_ELEMENT_NAME = "terminalReaches";
 
@@ -40,7 +40,7 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	// INSTANCE FIELDS
 	// ===============
 	private Long modelID;
-	protected ArrayList<Long> reachIDs = new ArrayList<Long>();
+	protected ArrayList<String> reachIDs = new ArrayList<String>();
 	private Integer id;
 
 	/**
@@ -58,7 +58,7 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	 * @param modelID
 	 * @param targetReachIDs
 	 */
-	public TerminalReaches(Long modelID, List<Long> targetReachIDs) {
+	public TerminalReaches(Long modelID, List<String> targetReachIDs) {
 		this.modelID = modelID;
 		
 		reachIDs.addAll(targetReachIDs);
@@ -127,13 +127,13 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	 * Returns the terminal reaches as a set.
 	 * @return Set or reach IDs
 	 */
-	public Set<Long> asSet() {
+	public Set<String> getReachIdsAsSet() {
 		// [IK] Why don't we just return the List reachIDs or just make reachIDs
 		// a set? The second option doesn't work because we want a deterministic
 		// hashcode function as we loop over the reachIDs. The first doesn't work
 		// because we want independence of reach id order.
-		Set<Long> targetReaches = new HashSet<Long>();
-		for (Long reach: reachIDs) {
+		Set<String> targetReaches = new HashSet<String>();
+		for (String reach: reachIDs) {
 			targetReaches.add(reach);
 		}
 		return targetReaches;
@@ -164,7 +164,7 @@ public class TerminalReaches implements XMLStreamParserComponent {
 			HashCodeBuilder hashBuilder = new HashCodeBuilder(137, 1729);
 
 			hashBuilder.append(modelID);
-			for (Long idValue: reachIDs) {
+			for (String idValue: reachIDs) {
 				hashBuilder.append(idValue);
 			}
 			int hash = hashBuilder.toHashCode();
@@ -178,7 +178,7 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	@Override
 	public TerminalReaches clone() throws CloneNotSupportedException {
 		TerminalReaches myClone = new TerminalReaches(modelID);
-		myClone.reachIDs = new ArrayList<Long>(reachIDs.size());
+		myClone.reachIDs = new ArrayList<String>(reachIDs.size());
 		myClone.reachIDs.addAll(reachIDs);
 
 		return myClone;
@@ -201,15 +201,15 @@ public class TerminalReaches implements XMLStreamParserComponent {
 	 * @param reachId
 	 * @return
 	 */
-	public boolean contains(long reachId) {
+	public boolean contains(String reachId) {
 		return reachIDs.contains(reachId);
 	}
 
 	// =================
 	// GETTERS & SETTERS
 	// =================
-	public List<Long> getReachIDs(){
-		ArrayList<Long> copy = new ArrayList<Long>(reachIDs.size());
+	public List<String> getReachIdsAsList(){
+		ArrayList<String> copy = new ArrayList<String>(reachIDs.size());
 		copy.addAll(reachIDs);
 		return copy;
 	}

@@ -24,11 +24,44 @@ import java.util.List;
  */
 public class CalcReachesByNetwork extends Action<long[]> {
 	
+	//User set state
 	protected Criteria criteria;
 	
-	public CalcReachesByNetwork() {
-		super();
+	
+	//Action loaded state
+	PredictData modelPredictData;
+	
+	
+	public CalcReachesByNetwork(Criteria criteria) {
+		this.criteria = criteria;
 	}
+
+	@Override
+	protected void validate() {
+		//Action validation checking
+		if (! CriteriaType.REACH.equals( criteria.getCriteriaType() )) {
+			String msg = "This action is only valid for the CriteriaType '"
+				+ CriteriaType.REACH + "', found '" + criteria.getCriteriaType() + "'";
+			
+			this.addValidationError(msg);
+		}
+		
+		if (! CriteriaRelationType.UPSTREAM.equals( criteria.getRelation() )) {
+			String msg = "Only  '" + CriteriaRelationType.UPSTREAM
+				+ "' is supported.  Found '" + criteria.getRelation() + "'";
+			
+			this.addValidationError(msg);
+		}
+	}
+	
+	
+	@Override
+	protected void initFields() throws Exception {
+		//PredictData is needed b/c it contains the mapping from row number
+		//to reach id.  The DelFracMap is keyed by row number, not reach ID.
+		modelPredictData = SharedApplication.getInstance().getPredictData(criteria.getModelID());
+	}
+	
 	
 
 	
@@ -38,46 +71,17 @@ public class CalcReachesByNetwork extends Action<long[]> {
 		//Need a TerminalReach to calculate the delivery map, which we can then
 		//convert to just an array list.
 		TerminalReaches tr = null;
-
-		//PredictData is needed b/c it contains the mapping from row number
-		//to reach id.  The DelFracMap is keyed by row number, not reach ID.
-		PredictData pd = SharedApplication.getInstance().getPredictData(criteria.getModelID());
 		
 		//The return value
 		long[] rowIds = null;
 		
 		
-		//Action validation checking
-		if (! CriteriaType.REACH.equals( criteria.getCriteriaType() )) {
-			String msg = "This action is only valid for the CriteriaType '"
-				+ CriteriaType.REACH + "', found '" + criteria.getCriteriaType() + "'";
-			
-			setPostMessage(msg);
-			log.error("UNEXPECTED STATE: " + msg);
-			return null;
-		}
-		
-		if (! CriteriaRelationType.UPSTREAM.equals( criteria.getRelation() )) {
-			String msg = "Only  '" + CriteriaRelationType.UPSTREAM
-				+ "' is supported.  Found '" + criteria.getRelation() + "'";
-			
-			setPostMessage(msg);
-			log.error("UNEXPECTED STATE: " + msg);
-			return null;
-		}
-		
-		
-		try {
-			String valStr = criteria.getValue();
-			Long reachId = Long.parseLong(valStr);
-			List<Long> targetList = new ArrayList<Long>(1);
-			targetList.add(reachId);
-			
-			tr = new TerminalReaches(criteria.getModelID(), targetList);
-		} catch (NumberFormatException e) {
-			this.setPostMessage("The reach ID: '" + criteria.getValue() + "' is not a valid reach id");
-			return null;
-		}
+		//Create a TerminalReach from the passed reach ID
+		String reachId = criteria.getValue();
+		List<String> targetList = new ArrayList<String>(1);
+		targetList.add(reachId);
+		tr = new TerminalReaches(criteria.getModelID(), targetList);
+
 		
 		//The only part of this data we care about is the keys, which are row numbers
 		ReachRowValueMap delFracMap =
@@ -89,7 +93,7 @@ public class CalcReachesByNetwork extends Action<long[]> {
 		
 		while (reachRows.hasNext()) {
 			Integer rowNum = reachRows.next();
-			rowIds[rowIdx] = pd.getIdForRow(rowNum);
+			rowIds[rowIdx] = modelPredictData.getIdForRow(rowNum);
 			rowIdx++;
 		}
 		
@@ -97,14 +101,5 @@ public class CalcReachesByNetwork extends Action<long[]> {
 		
 		return rowIds;
 	}
-	
-	
-	public Criteria getCriteria() {
-		return criteria;
-	}
 
-
-	public void setCriteria(Criteria criteria) {
-		this.criteria = criteria;
-	}
 }

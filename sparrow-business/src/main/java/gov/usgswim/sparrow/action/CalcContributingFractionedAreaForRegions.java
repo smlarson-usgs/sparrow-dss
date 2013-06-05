@@ -16,6 +16,7 @@ import gov.usgswim.sparrow.request.ReachAreaFractionMapRequest;
 import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
+import java.util.List;
 import java.util.Map.Entry;
 
 /**
@@ -147,11 +148,18 @@ public class CalcContributingFractionedAreaForRegions extends Action<ColumnData>
 	}
 	
 	
-	protected ReachRowValueMap buildWatershedAreaFractionMap(TerminalReaches terminalReaches) {
+	protected ReachRowValueMap buildWatershedAreaFractionMap(TerminalReaches terminalReaches) throws Exception {
 		ReachRowValueMapBuilder builder = new ReachRowValueMapBuilder();
 		
-		for (Long id : terminalReaches.getReachIDs()) {
-			ReachRowValueMap map = SharedApplication.getInstance().getReachAreaFractionMap(new ReachAreaFractionMapRequest(new ReachID(terminalReaches.getModelID(), id)));
+
+		Long modelId = terminalReaches.getModelID();
+		List<Long> reachIds = SharedApplication.getInstance().getReachFullIdAsLong(
+				modelId, terminalReaches.getReachIdsAsList());
+		
+		for (Long id : reachIds) {
+			ReachRowValueMap map = SharedApplication.getInstance().getReachAreaFractionMap(
+					new ReachAreaFractionMapRequest(new ReachID(modelId, id)));
+			
 			builder.mergeByAddition(map);
 		}
 		

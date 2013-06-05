@@ -50,8 +50,7 @@ public class CalcReachesByNavigationTest extends SparrowTestBase {
 		Criteria criteria = new Criteria(TEST_MODEL_ID, CriteriaType.REACH,
 				CriteriaRelationType.UPSTREAM, "17142");
 		
-		CalcReachesByNetwork action = new CalcReachesByNetwork();
-		action.setCriteria(criteria);
+		CalcReachesByNetwork action = new CalcReachesByNetwork(criteria);
 		
 		long[] reaches = action.run();
 		
@@ -68,8 +67,7 @@ public class CalcReachesByNavigationTest extends SparrowTestBase {
 		Criteria criteria = new Criteria(TEST_MODEL_ID, CriteriaType.HUC2,
 				CriteriaRelationType.UPSTREAM, "17142");
 		
-		CalcReachesByNetwork action = new CalcReachesByNetwork();
-		action.setCriteria(criteria);
+		CalcReachesByNetwork action = new CalcReachesByNetwork(criteria);
 		
 		long[] reaches = action.run();
 		
@@ -82,8 +80,7 @@ public class CalcReachesByNavigationTest extends SparrowTestBase {
 		Criteria criteria = new Criteria(TEST_MODEL_ID, CriteriaType.REACH,
 				CriteriaRelationType.IN, "17142");
 		
-		CalcReachesByNetwork action = new CalcReachesByNetwork();
-		action.setCriteria(criteria);
+		CalcReachesByNetwork action = new CalcReachesByNetwork(criteria);
 		
 		long[] reaches = action.run();
 		

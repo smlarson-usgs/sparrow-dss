@@ -110,7 +110,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
 		hashAction.setPredictData(pdTranportOffAbove9681);
-		hashAction.setTargetReachIds(targets.asSet());
+		hashAction.setTargetReachIds(targets.getReachIdsAsSet());
 		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(pdTranportOffAbove9681);
@@ -184,7 +184,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
 		hashAction.setPredictData(pdShoreReachAbove9681);
-		hashAction.setTargetReachIds(targets.asSet());
+		hashAction.setTargetReachIds(targets.getReachIdsAsSet());
 		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(pdShoreReachAbove9681);
@@ -253,7 +253,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
 		hashAction.setPredictData(pdTranportOffAbove9681);
-		hashAction.setTargetReachIds(targets.asSet());
+		hashAction.setTargetReachIds(targets.getReachIdsAsSet());
 		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(pdTranportOffAbove9681);
@@ -315,7 +315,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
 		hashAction.setPredictData(pdShoreReachAbove9681);
-		hashAction.setTargetReachIds(targets.asSet());
+		hashAction.setTargetReachIds(targets.getReachIdsAsSet());
 		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(pdShoreReachAbove9681);
@@ -377,7 +377,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
 		hashAction.setPredictData(pdTranportOffAbove9681);
-		hashAction.setTargetReachIds(targets.asSet());
+		hashAction.setTargetReachIds(targets.getReachIdsAsSet());
 		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(pdTranportOffAbove9681);
@@ -439,7 +439,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
 		hashAction.setPredictData(pdShoreReachAbove9681);
-		hashAction.setTargetReachIds(targets.asSet());
+		hashAction.setTargetReachIds(targets.getReachIdsAsSet());
 		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(pdShoreReachAbove9681);
@@ -499,7 +499,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		CalcDeliveryFractionColumnData delAction = new CalcDeliveryFractionColumnData();
 		
 		hashAction.setPredictData(pdTranportOffAbove9681);
-		hashAction.setTargetReachIds(targets.asSet());
+		hashAction.setTargetReachIds(targets.getReachIdsAsSet());
 		ReachRowValueMap delHash = hashAction.run();
 		
 		delAction.setPredictData(pdTranportOffAbove9681);
@@ -575,7 +575,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		
 		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
 		hashAction.setPredictData(unmodifiedPredictData);
-		hashAction.setTargetReachIds(termReaches.asSet());
+		hashAction.setTargetReachIds(termReaches.getReachIdsAsSet());
 		ReachRowValueMap delHash = hashAction.run();
 		
 		assertEquals(1, delHash.size());
@@ -594,7 +594,7 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 		
 		CalcDeliveryFractionMap hashAction = new CalcDeliveryFractionMap();
 		hashAction.setPredictData(unmodifiedPredictData);
-		hashAction.setTargetReachIds(termReaches.asSet());
+		hashAction.setTargetReachIds(termReaches.getReachIdsAsSet());
 		ReachRowValueMap delHash = hashAction.run();
 		
 		for (Entry<Integer, Float> entry : delHash.entrySet()) {

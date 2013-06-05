@@ -5,6 +5,8 @@ import gov.usgswim.sparrow.action.CalcDeliveryFractionMap;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
+import java.util.HashSet;
+import java.util.List;
 
 import java.util.Set;
 
@@ -25,11 +27,16 @@ public class DeliveryFractionHashFactory implements CacheEntryFactory {
 		
 		PredictData predictData = SharedApplication.getInstance().
 			getPredictData(new Long(targets.getModelID()));
-		Set<Long> targetReachIds = targets.asSet();
+		
+		Set<String> clientTargetReachIdSet = targets.getReachIdsAsSet();
+		
+		List<Long> targetReachIdList = SharedApplication.getInstance().getReachFullIdAsLong(targets.getModelID(), clientTargetReachIdSet);
+		HashSet<Long> targetReachIdSet = new HashSet<Long>();
+		targetReachIdSet.addAll(targetReachIdList);
 		
 		CalcDeliveryFractionMap action = new CalcDeliveryFractionMap();
 		action.setPredictData(predictData);
-		action.setTargetReachIds(targetReachIds);
+		action.setTargetReachIds(targetReachIdSet);
 		
 		ReachRowValueMap delFrac = action.run();
 		

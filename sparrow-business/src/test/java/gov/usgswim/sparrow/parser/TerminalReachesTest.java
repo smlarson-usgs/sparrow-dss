@@ -36,7 +36,7 @@ public class TerminalReachesTest {
 
 		TerminalReaches termReaches = buildTestInstance(1L);
 
-		List<Long> reachIDs = termReaches.getReachIDs();
+		List<Long> reachIDs = termReaches.getReachIdsAsList();
 		assertEquals(3, reachIDs.size());
 		assertEquals(Long.valueOf(2345642), reachIDs.get(0));
 		assertEquals(Long.valueOf(3425688), reachIDs.get(1));
@@ -139,7 +139,7 @@ public class TerminalReachesTest {
 		reachIds.add(2L);
 		TerminalReaches term1 = new TerminalReaches(1L, reachIds);
 
-		List<Long> copiedIds = term1.getReachIDs();
+		List<Long> copiedIds = term1.getReachIdsAsList();
 		copiedIds.remove(1);
 		copiedIds.remove(0);
 		assertEquals(0, copiedIds.size()); // copied list is empty
@@ -158,7 +158,7 @@ public class TerminalReachesTest {
 		reachIds.add(2L);
 		TerminalReaches term1 = new TerminalReaches(1L, reachIds);
 
-		Set<Long> copiedIds = term1.asSet();
+		Set<Long> copiedIds = term1.getReachIdsAsSet();
 		copiedIds.remove(1L);
 		copiedIds.remove(2L);
 		assertEquals(0, copiedIds.size()); // copied list is empty

@@ -80,13 +80,10 @@ public class ReachFullIdCollectionAction extends Action<List<ReachFullId>> {
 		}
 		
 		//Fetch all the others in one big batch from the DB
-		result.addAll(SharedApplication.getInstance().getReachFullId(modifiableIds));
-		
-		
+		ReachFullIdCollectionFromDbAction action = new ReachFullIdCollectionFromDbAction(modifiableIds);
+		result.addAll(action.run());
+
 		return result;
 	}
-	
-
-
 
 }

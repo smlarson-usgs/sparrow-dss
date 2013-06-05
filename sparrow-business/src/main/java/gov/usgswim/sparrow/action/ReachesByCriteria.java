@@ -26,8 +26,7 @@ public class ReachesByCriteria extends Action<long[]> {
 			long[] results = action.run();
 			return results;
 		} else if (criteria.getCriteriaType().isNetworkCriteria()) {
-			CalcReachesByNetwork action = new CalcReachesByNetwork();
-			action.setCriteria(criteria);
+			CalcReachesByNetwork action = new CalcReachesByNetwork(criteria);
 			long[] results = action.run();
 			return results;
 		} else {

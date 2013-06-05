@@ -859,7 +859,36 @@ public class SharedApplication  {
 		return (ColumnData) FractionedWatershedAreaTable.get(terminalReachId, quiet);
 	}
 	
-	//ReachFullId
+	//ReachFullId	
+	/**
+	 * A common (the most common??) use case.
+	 * @param req
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<Long> getReachFullIdAsLong(Collection<ReachClientId> req) throws Exception {
+		List<ReachFullId> fullIds = getReachFullId(req);
+		
+		ArrayList<Long> longIds = new ArrayList<Long>(fullIds.size());
+		for (ReachFullId id : fullIds) {
+			longIds.add(id.getReachId());
+		}
+		
+		return longIds;
+	}
+	
+	public List<Long> getReachFullIdAsLong(Long modelId, Collection<String> req) throws Exception {
+			
+		ArrayList<ReachClientId> reachClientIds = new ArrayList<ReachClientId>(req.size());
+		for (String id : req) {
+			ReachClientId oneId = new ReachClientId(modelId, id);
+			reachClientIds.add(oneId);
+		}
+			
+		return getReachFullIdAsLong(reachClientIds);
+	}
+	
+	
 	public List<ReachFullId> getReachFullId(Collection<ReachClientId> req) throws Exception {
 		ReachFullIdCollectionAction act = new ReachFullIdCollectionAction(req);
 		return act.run();

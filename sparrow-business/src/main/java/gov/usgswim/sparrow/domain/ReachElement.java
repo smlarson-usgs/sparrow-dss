@@ -21,9 +21,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * Represents a single reach as part of a PredictionContext.
- * A Reach has a model-specific Identifier that identifies a specific reach w/in a SparrowModel,
- * but the ID is not a DB PK.  Reaches may have one or more Adjustments that
- * are applied to the reach.
+ * A Reach has a model-specific client identifier (full_identifier in the db)
+ * that is unique only within the model.
+ * 
+ * Reaches may have one or more Adjustments applied.
  *
  * Note that a Reach is not an independent entity and thus does not override
  * equals or the hashcode.  It does, however, provide a getStateHash method
@@ -35,7 +36,7 @@ public class ReachElement implements XMLStreamParserComponent {
 	/**
 	 *
 	 */
-	private static final long serialVersionUID = -7230343316711453671L;
+	private static final long serialVersionUID = 10L;
 
 	public static final String MAIN_ELEMENT_NAME = "reach";
 
@@ -46,7 +47,7 @@ public class ReachElement implements XMLStreamParserComponent {
 		return MAIN_ELEMENT_NAME.equals(tagName);
 	}
 
-	protected Long id;	//The SparrowModel Specific ID of the reach. (not the db PK).
+	protected String clientReachId;	//The SparrowModel Specific ID of the reach. (not the db PK).
 
 	//TODO: This should be a sorted set
 	protected List<Adjustment> adjs;	//List of one or more adjustments
@@ -57,11 +58,11 @@ public class ReachElement implements XMLStreamParserComponent {
 	/**
 	 * Complete Constructor.
 	 * 
-	 * @param reachId The id of the reach
+	 * @param reachId The clientReachId of the reach
 	 * @param adjs A list of adjustments to apply to the reach
 	 */
-	public ReachElement(Long reachId, List<Adjustment> adjs) {
-		this.id = reachId;
+	public ReachElement(String clientReachId, List<Adjustment> adjs) {
+		this.clientReachId = clientReachId;
 		this.adjs = adjs;
 	}
 
@@ -92,7 +93,7 @@ public class ReachElement implements XMLStreamParserComponent {
 					localName = in.getLocalName();
 					if (MAIN_ELEMENT_NAME.equals(localName)) {
 
-						id = ParserHelper.parseAttribAsLong(in, "id");
+						clientReachId = ParserHelper.parseAttribAsString(in, "id");
 					} else if ("adjustment".equals(localName)) {
 
 						//Lazy build the arrayList
@@ -139,7 +140,7 @@ public class ReachElement implements XMLStreamParserComponent {
 	@Override
 	protected ReachElement clone() throws CloneNotSupportedException {
 		ReachElement myClone = new ReachElement();
-		myClone.id = id;
+		myClone.clientReachId = clientReachId;
 		myClone.adjs = adjs;
 		return myClone;
 	}
@@ -158,8 +159,8 @@ public class ReachElement implements XMLStreamParserComponent {
 	// =================
 	// GETTERS & SETTERS
 	// =================
-	public Long getId() {
-		return id;
+	public String getId() {
+		return clientReachId;
 	}
 
 	public List<Adjustment> getAdjustments() {
@@ -176,7 +177,7 @@ public class ReachElement implements XMLStreamParserComponent {
 	public int getStateHash() {
 
 		HashCodeBuilder hcb = new HashCodeBuilder(133457, 29);
-		hcb.append(id);
+		hcb.append(clientReachId);
 
 		if (adjs != null) {
 			for (Adjustment adj : adjs) {
