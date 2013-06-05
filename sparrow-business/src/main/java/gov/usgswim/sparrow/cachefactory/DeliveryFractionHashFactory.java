@@ -14,7 +14,7 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 /**
  * A thin wrapper around an Action for EHCache CacheEntryFactory.
- * 
+ *
  * Caching, blocking, and de-caching are all handled by EHCache system.
  *
  * @author eeverman
@@ -24,22 +24,23 @@ public class DeliveryFractionHashFactory implements CacheEntryFactory {
 	@Override
 	public ReachRowValueMap createEntry(Object terminalReaches) throws Exception {
 		TerminalReaches targets = (TerminalReaches) terminalReaches;
-		
+
 		PredictData predictData = SharedApplication.getInstance().
 			getPredictData(new Long(targets.getModelID()));
-		
+
 		Set<String> clientTargetReachIdSet = targets.getReachIdsAsSet();
-		
+
 		List<Long> targetReachIdList = SharedApplication.getInstance().getReachFullIdAsLong(targets.getModelID(), clientTargetReachIdSet);
 		HashSet<Long> targetReachIdSet = new HashSet<Long>();
 		targetReachIdSet.addAll(targetReachIdList);
-		
-		CalcDeliveryFractionMap action = new CalcDeliveryFractionMap();
-		action.setPredictData(predictData);
-		action.setTargetReachIds(targetReachIdSet);
-		
+
+		CalcDeliveryFractionMap action = new CalcDeliveryFractionMap(
+			predictData,
+			targetReachIdSet
+			);
+
 		ReachRowValueMap delFrac = action.run();
-		
+
 		return delFrac;
 	}
 

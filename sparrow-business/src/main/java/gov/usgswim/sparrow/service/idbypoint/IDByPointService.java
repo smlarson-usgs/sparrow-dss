@@ -122,31 +122,31 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	public XMLStreamReader getXMLStreamReader(IDByPointRequest req, boolean isNeedsFlattening) throws Exception {
 		// TODO isNeedsFlattening ignored for now because using custom flattener
 
-		// Retrieve the model ID		
+		// Retrieve the model ID
 		updateRequestModelIDIfNecessary(req);
-		
+
 		assert(req.getModelID() != null);
 
 		// Retrieve the reach
 		ReachInfo[] reach = retrieveReaches(req);
 		IDByPointResponse[] response = new IDByPointResponse[reach.length];
-		
+
 		//Aggregate status, since there may be many reaches.
 		ReturnStatus aggStatus = ReturnStatus.OK;
 		String aggMessage = null;
-		
+
 		if (reach.length > 0) {
-			
+
 			for (int i = 0; i < reach.length; i++) {
 				response[i] = new IDByPointResponse();
 				response[i].modelID = req.getModelID();
-				
+
 				if (reach[i] != null) {
 					response[i].setReach(reach[i]);
-	
+
 					// populate each of the sections
 					response[i].mapValueXML = buildValueSection(req, i, reach[i]);
-					
+
 					if (req.hasAdjustments()) {
 						retrieveAdjustments(req.getContextID(), req, response[i]);
 					}
@@ -156,7 +156,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 					if (req.hasPredicted()) {
 						response[i].predictionsXML = retrievePredictedsForReach(req.getContextID(), req.getModelID(), Long.valueOf(response[i].reachID));
 					}
-					
+
 					response[i].status = ReturnStatus.OK;
 				} else {
 					if (req.getClientReachIds() != null) {
@@ -182,7 +182,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				response[0].message = "Could not find a reach near the specified point";
 			}
 		}
-		
+
 		//Build agg status
 		for (IDByPointResponse resp : response) {
 			if (resp == null) {
@@ -193,10 +193,10 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				aggMessage = resp.message;
 			}
 		}
-		
+
 		//Build full output string
 		StringBuffer aggResponse = new StringBuffer();
-		
+
 		aggResponse.append(
 			IDByPointResponse.writeXMLHead(aggStatus, aggMessage, req.getModelID(), req.getContextID())
 		);
@@ -204,10 +204,10 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			aggResponse.append(resp.toXML());
 		}
 		aggResponse.append(IDByPointResponse.writeXMLFoot());
-		
+
 		XMLInputFactory inFact = XMLInputFactory.newInstance();
 		XMLStreamReader reader = inFact.createXMLStreamReader(new StringReader(aggResponse.toString()));
-		
+
 		return reader;
 	}
 
@@ -217,24 +217,24 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	// =======================
 	// PRIVATE HELPER METHODS
 	// =======================
-	
-	
+
+
 	/**
 	 * Builds the xml section for the predicted value or null if there is no context.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	private String buildValueSection(IDByPointRequest req, int idIndex, ReachInfo reachInfo) throws Exception {
 		if (req.getContextID() != null) {
 			PredictionContext pc =
 				SharedApplication.getInstance().getPredictionContext(req.getContextID());
-			
+
 			if (pc != null) {
 				PredictData pd = SharedApplication.getInstance().getPredictData(pc.getModelID());
-				
+
 				SparrowColumnSpecifier data = SharedApplication.getInstance().getAnalysisResult(pc);
-				
+
 				int row = pd.getRowForReachID(reachInfo.getReachId());
-				
+
 				Double value = data.getDouble(row);
 				String displayValue = "[No Value Calculated]";	//only if null
 				if (value != null) {
@@ -244,19 +244,19 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				String constituent = data.getConstituent();
 				String name = data.getColumnName();
 				String description = data.getDescription();
-				
+
 				if (units == null) {
 					units = "Units Unknown";
 				}
-				
+
 				if (constituent == null) {
 					constituent = "";	//keep it empty so it won't display on client
 				}
-				
+
 				if (description == null) {
 					description = "";	//keep it empty so it won't display on client
 				}
-				
+
 				String[] params = {
 						"value", displayValue,
 						"name", name,
@@ -267,11 +267,11 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				String xmlResult = props.getParametrizedQuery("mappedXMLResponse", params);
 				return xmlResult;
 			}
-			
+
 		}
 		return null;
 	}
-	
+
 	/**
 	 * If a point has no close streams, an empty array is returned.
 	 * If reach IDs are used, an array of the same size as the list of IDs is
@@ -281,25 +281,25 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		if (req.getClientReachIds() != null) {
 			String[] reachIds = req.getClientReachIds();
 			ReachInfo[] reachResults = new ReachInfo[reachIds.length];
-			
+
 			for (int i = 0; i < reachIds.length; i++) {
 				ReachClientId clientReachId = new ReachClientId(req.getModelID(), reachIds[i]);
 				reachResults[i] = SharedApplication.getInstance().getReachByIDResult(clientReachId);
 			}
 			return reachResults;
 		} else if (req.getPoint() != null) {
-			
+
 			ReachInfo[] reachResults = null;
-			
+
 			ReachInfo ri = SharedApplication.getInstance().getReachByPointResult(
 					new ModelPoint(req.getModelID(), req.getPoint()));
-			
+
 			if (ri != null) {
 				reachResults = new ReachInfo[] { ri };
 			} else {
 				reachResults = new ReachInfo[0]; //default empty response
 			}
-			
+
 			return reachResults;
 		} else {
 			throw new Exception("A context-id or a model-id is required for a id request");
@@ -322,13 +322,13 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 //			throw new RuntimeException("A context-id or a model-id is required for a id request");
 //		}
 //	}
-	
+
 	private void updateRequestModelIDIfNecessary(IDByPointRequest req) throws Exception {
 		if (req.getContextID() != null) {
 			PredictionContext context = SharedApplication.getInstance().getPredictionContext(req.getContextID());
 			if (context == null) throw new RuntimeException("Prediction Context with id "
 					+ req.getContextID() + " has not been registered. Perhaps the server has been restarted?");
-			
+
 			else if (req.getModelID() != null && !req.getModelID().equals(context.getModelID())) {
 				throw new RuntimeException("Mismatched model-ids, PredictionContext: " + context.getModelID()
 						+ ", request: " + req.getModelID());
@@ -344,7 +344,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			throw new RuntimeException("A context-id or a model-id is required for a id request");
 		}
 	}
-	
+
 
 	/**
 	 * Populates the adjustments section in the {@code response}.
@@ -459,14 +459,20 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	 * @param sourceId The source for which to search for an override.
 	 * @return The override value for the specified source and reach.
 	 */
-	private Double getOverrideValue(AdjustmentGroups adjGroups, long reachId, Long sourceId) {
+	private Double getOverrideValue(AdjustmentGroups adjGroups, long reachId, Long sourceId) throws Exception{
 		ReachGroup individualGroup = adjGroups.getIndividualGroup();
 
 		// Iterate over the reaches and sources in the individual group
 		if (individualGroup != null && individualGroup.isEnabled()) {
 			List<ReachElement> reachList = individualGroup.getExplicitReaches();
+			individualGroup.getCombinedReachIDs();//put these results in the cache
+
 			for (ReachElement reach : reachList) {
-				if (reach.getId() == reachId) {
+				Long reachElementId = SharedApplication.getInstance().getReachFullIdAsLong(
+					individualGroup.getModelID(),
+					reach.getId()
+					);
+				if (reachElementId.equals(reachId)) {
 					for (Adjustment adj: reach.getAdjustments()) {
 						if (adj.getSource() == sourceId.intValue()) {
 							// If we find it, return the override value
@@ -484,14 +490,14 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	/**
 	 * Returns an XML fragment representing the prediction results for the
 	 * specified reach.
-	 * 
+	 *
 	 * @param contextId Id for the prediction context on which to base the
 	 *                  prediction results.
 	 * @param modelId Id for the model supplying the base data values.
 	 * @param reachId Id for the reach we're identifying.
 	 * @return An XML fragment representing the prediction results for the
 	 *         specified reach.
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private String retrievePredictedsForReach(Integer contextId, Long modelId, Long reachId) throws Exception {
 		// TODO move to DataLoader when done debugging
@@ -499,8 +505,8 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		PredictResult adjustedPrediction = null;
 		AdjustmentGroups nonAdjusted;
 		PredictData predictData = SharedApplication.getInstance().getPredictData(modelId);
-		
-		
+
+
 
 		if (contextId != null) {
 			// Get a nominal (unadjusted) prediction context using the model id
@@ -511,9 +517,9 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			adjustedPrediction = SharedApplication.getInstance().getPredictResult(contextFromCache.getAdjustmentGroups());
 		} else {
 			nonAdjusted = new AdjustmentGroups(modelId);
-			
+
 		}
-		
+
 		// Get the nominal prediction results
 		PredictResult nominalPrediction = SharedApplication.getInstance().getPredictResult(nonAdjusted);
 
@@ -535,7 +541,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 
 		return xmlResult;
 	}
-	
+
 	/**
 	 * Builds a section of the prediction results XML using the {@code type}.
 	 *
@@ -546,7 +552,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	 * @param predictData Used to convert from decayed to non-decayed values.
 	 * @return A fragment of the prediction results XML based on the specified
 	 *         {@code type}.
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	private String buildPredSection(PredictResult nominalPrediction,
 			PredictResult adjustedPrediction, Long reachId, DataSeriesType type,
@@ -569,17 +575,17 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		predictRows.append("<section display=\"").append(Action.getDataSeriesProperty(type, false));
 		predictRows.append("\" name=\"").append(type.name()).append("\">\n");
 
-		
+
 		// Get the row index from the original data for the reach we're identifying
 		int rowID = nominalPrediction.getRowForId(reachId);
 
 		// Iterate over the relevant column indices, building a row of data for each
 		for (Integer srcIndex=0; srcIndex < nominalPrediction.getSourceCount(); srcIndex++) {
-			
+
 			Integer srcId = predictData.getSourceIdForSourceIndex(srcIndex);
 			int colForIncSource = nominalPrediction.getIncrementalColForSrc(srcId);
 			int colForTotalSource = nominalPrediction.getTotalColForSrc(srcId);
-			
+
 			// Calculate and format all of the data
 			String columnName = "";	//fetch based on series
 			String constituent = nominalPrediction.getProperty(colForIncSource, TableProperties.CONSTITUENT.toString());
@@ -590,16 +596,16 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			String nominalDisplay = "N/A";
 			String predictDisplay = "N/A";
 			String percentDisplay = "";
-			
+
 			switch (type) {
 			case decayed_incremental:
 				//All these attribs are the same, decayed or not
 				columnName = nominalPrediction.getName(colForIncSource);
 				units = nominalPrediction.getUnits(colForIncSource);
 				precision = nominalPrediction.getProperty(colForIncSource, TableProperties.PRECISION.toString());
-				
+
 				nominalValue = nominalPrediction.getDecayedIncrementalForSrc(rowID, srcId);
-				
+
 				if (adjustedPrediction != null) {
 					predictValue = adjustedPrediction.getDecayedIncrementalForSrc(rowID, srcId);
 				}
@@ -608,9 +614,9 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				columnName = nominalPrediction.getName(colForIncSource);
 				units = nominalPrediction.getUnits(colForIncSource);
 				precision = nominalPrediction.getProperty(colForIncSource, TableProperties.PRECISION.toString());
-				
+
 				nominalValue = nominalPrediction.getIncrementalForSrc(rowID, srcId);
-				
+
 				if (adjustedPrediction != null) {
 					predictValue = adjustedPrediction.getIncrementalForSrc(rowID, srcId);
 				}
@@ -619,9 +625,9 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				columnName = nominalPrediction.getName(colForTotalSource);
 				units = nominalPrediction.getUnits(colForTotalSource);
 				precision = nominalPrediction.getProperty(colForTotalSource, TableProperties.PRECISION.toString());
-				
+
 				nominalValue = nominalPrediction.getTotalForSrc(rowID, srcId);
-				
+
 				if (adjustedPrediction != null) {
 					predictValue = adjustedPrediction.getTotalForSrc(rowID, srcId);
 				}
@@ -629,12 +635,12 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			default:
 				throw new Exception("Unsupported type " + type + " for building source values.");
 			}
-			
-			
+
+
 			if (nominalValue != null) {
 				nominalDisplay = formatter.format(nominalValue);
 			}
-			
+
 			if (nominalValue != null && predictValue != null) {
 				Double percentChange = calculatePercentageChange(predictValue, nominalValue);
 
@@ -656,11 +662,11 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			predictRows.append("</r>");
 		}
 
-		
+
 		int colForInc = nominalPrediction.getIncrementalCol();
 		int colForDecayedInc = nominalPrediction.getDecayedIncrementalCol();
 		int colForTotal = nominalPrediction.getTotalCol();
-		
+
 		// Calculate and format all of the data
 		String columnName = "";	//fetch based on series
 		String constituent = nominalPrediction.getProperty(colForInc, TableProperties.CONSTITUENT.toString());
@@ -671,7 +677,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		String nominalDisplay = "N/A";
 		String predictDisplay = "N/A";
 		String percentDisplay = "";
-		
+
 		// Add a row for the total for this section
 		// TODO: (with predicted)
 //		String columnName = nominalPrediction.getName(totalColumn);
@@ -680,17 +686,17 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 //
 //		String predictDisplay = "N/A";
 //		String percentDisplay = "";
-		
-		
+
+
 		switch (type) {
 		case decayed_incremental:
 			//All these attribs are the same, decayed or not
 			columnName = nominalPrediction.getName(colForDecayedInc);
 			units = nominalPrediction.getUnits(colForDecayedInc);
 			precision = nominalPrediction.getProperty(colForDecayedInc, TableProperties.PRECISION.toString());
-			
+
 			nominalValue = nominalPrediction.getDecayedIncremental(rowID);
-			
+
 			if (adjustedPrediction != null) {
 				predictValue = adjustedPrediction.getDecayedIncremental(rowID);
 			}
@@ -699,9 +705,9 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			columnName = nominalPrediction.getName(colForInc);
 			units = nominalPrediction.getUnits(colForInc);
 			precision = nominalPrediction.getProperty(colForInc, TableProperties.PRECISION.toString());
-			
+
 			nominalValue = nominalPrediction.getIncremental(rowID);
-			
+
 			if (adjustedPrediction != null) {
 				predictValue = adjustedPrediction.getIncremental(rowID);
 			}
@@ -710,9 +716,9 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 			columnName = nominalPrediction.getName(colForTotal);
 			units = nominalPrediction.getUnits(colForTotal);
 			precision = nominalPrediction.getProperty(colForTotal, TableProperties.PRECISION.toString());
-			
+
 			nominalValue = nominalPrediction.getTotal(rowID);
-			
+
 			if (adjustedPrediction != null) {
 				predictValue = adjustedPrediction.getTotal(rowID);
 			}
@@ -720,11 +726,11 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 		default:
 			throw new Exception("Unsupported type " + type + " for building source values.");
 		}
-		
+
 		if (nominalValue != null) {
 			nominalDisplay = formatter.format(nominalValue);
 		}
-		
+
 		if (nominalValue != null && predictValue != null) {
 			Double percentChange = calculatePercentageChange(predictValue, nominalValue);
 
@@ -775,7 +781,7 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				"SparrowAttributes", sparrowAttributesSection.toString(),
 		});
 	}
-	
+
 	public DataTable getAttributeData(long modelId, long reachId) throws Exception {
 		DataTable tab = SharedApplication.getInstance().getReachAttributes(new ReachID(modelId, reachId));
 		return tab;

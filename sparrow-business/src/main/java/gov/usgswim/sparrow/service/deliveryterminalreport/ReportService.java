@@ -6,7 +6,7 @@ import gov.usgs.cida.datatable.filter.FilteredDataTable;
 import gov.usgs.cida.datatable.impl.DataTableSetSimple;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.datatable.TerminalReachesRowFilter;
+import gov.usgswim.sparrow.datatable.ReachIdFilter;
 import gov.usgswim.sparrow.domain.AggregationLevel;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.SparrowModel;
@@ -16,6 +16,7 @@ import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.SparrowResourceUtils;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javax.xml.stream.XMLStreamReader;
 
@@ -23,9 +24,9 @@ public class ReportService implements HttpService<ReportRequest> {
 
     public XMLStreamReader getXMLStreamReader(ReportRequest req,
             boolean isNeedsCompleteFirstRow) throws Exception {
-    	
+
     	SharedApplication sharedApp = SharedApplication.getInstance();
-    	
+
 			Integer predictionContextID = req.getContextID();
 			PredictionContext context = req.getContext();
 			Long modelId = null;
@@ -46,19 +47,24 @@ public class ReportService implements HttpService<ReportRequest> {
 				throw new Exception("There must be downstream reaches selected to generate the deliver report.");
 			}
 
-			DeliveryReportRequest actionRequest = 
+			DeliveryReportRequest actionRequest =
 					new DeliveryReportRequest(context.getAdjustmentGroups(),
 							termReaches, AggregationLevel.NONE, req.isReportYield());
 
 			DataTableSet reportData = sharedApp.getTotalDeliveredLoadSummaryReport(actionRequest);
-			TerminalReachesRowFilter filter = new TerminalReachesRowFilter(termReaches);
+
+			Collection<Long> reachIds = SharedApplication.getInstance().getReachFullIdAsLong(
+				termReaches.getModelID(),
+				termReaches.getReachIdsAsList()
+				);
+			ReachIdFilter filter = new ReachIdFilter(reachIds);
 			//ArrayList<DataTable> tbls = new ArrayList<DataTable>();
 			DataTable[] tbls = reportData.getTables();
 			DataTable.Immutable[] tblsImm = new DataTable.Immutable[reportData.getTables().length];
 			for (int i = 0; i < tbls.length; i++) {
 				tblsImm[i] = new FilteredDataTable(tbls[i], filter).toImmutable();
 			}
-			
+
 			DataTableSet filteredTableSet = new DataTableSetSimple(tblsImm,
 				reportData.getName(), reportData.getDescription());
 
@@ -77,7 +83,7 @@ public class ReportService implements HttpService<ReportRequest> {
 			return new  ReportSerializer(
 					req, filteredTableSet, predictData, readmeText, filteredTableSet.getColumnCount() - 1);
 
-	
+
 
 	}
 

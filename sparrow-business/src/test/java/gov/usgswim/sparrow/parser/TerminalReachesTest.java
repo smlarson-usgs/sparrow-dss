@@ -36,11 +36,11 @@ public class TerminalReachesTest {
 
 		TerminalReaches termReaches = buildTestInstance(1L);
 
-		List<Long> reachIDs = termReaches.getReachIdsAsList();
+		List<String> reachIDs = termReaches.getReachIdsAsList();
 		assertEquals(3, reachIDs.size());
-		assertEquals(Long.valueOf(2345642), reachIDs.get(0));
-		assertEquals(Long.valueOf(3425688), reachIDs.get(1));
-		assertEquals(Long.valueOf(5235424), reachIDs.get(2));
+		assertEquals("2345642", reachIDs.get(0));
+		assertEquals("3425688", reachIDs.get(1));
+		assertEquals("5235424", reachIDs.get(2));
 
 	}
 
@@ -91,81 +91,81 @@ public class TerminalReachesTest {
 	@Test
 	public void verifyContainsMethod() throws Exception {
 
-		ArrayList<Long> reachIds = new ArrayList<Long>();
-		reachIds.add(1L);
-		reachIds.add(2L);
+		ArrayList<String> reachIds = new ArrayList<String>();
+		reachIds.add("1");
+		reachIds.add("2");
 		TerminalReaches term1 = new TerminalReaches(1L, reachIds);
 
-		assertTrue(term1.contains(1L));
-		assertTrue(term1.contains(2L));
+		assertTrue(term1.contains("1"));
+		assertTrue(term1.contains("2"));
 
-		assertFalse(term1.contains(3L));
-		assertFalse(term1.contains(0L));
-		assertFalse(term1.contains(-1L));
+		assertFalse(term1.contains("3"));
+		assertFalse(term1.contains("0"));
+		assertFalse(term1.contains("-1"));
 	}
 
 	@Test
 	public void passedInReachIdsShouldBeDetached() throws Exception {
 
-		ArrayList<Long> reachIds = new ArrayList<Long>();
-		reachIds.add(1L);
-		reachIds.add(2L);
+		ArrayList<String> reachIds = new ArrayList<String>();
+		reachIds.add("1");
+		reachIds.add("2");
 		TerminalReaches term1 = new TerminalReaches(1L, reachIds);
 
-		assertTrue(term1.contains(1L));
-		assertTrue(term1.contains(2L));
+		assertTrue(term1.contains("1"));
+		assertTrue(term1.contains("2"));
 		assertEquals(2, term1.size());
 
 		// Remove reach 2 from list - should still be in Terms
 		reachIds.remove(1);
 
-		assertTrue(term1.contains(1L));
-		assertTrue(term1.contains(2L));
+		assertTrue(term1.contains("1"));
+		assertTrue(term1.contains("2"));
 
 		// Remove reach 1 from list - should still be in Terms
 		reachIds.remove(0);
 		assertEquals(0, reachIds.size());
 
-		assertTrue(term1.contains(1L));
-		assertTrue(term1.contains(2L));
+		assertTrue(term1.contains("1"));
+		assertTrue(term1.contains("2"));
 		assertEquals(2, term1.size());
 	}
 
 	@Test
 	public void getReachIDsShouldBeDetached() throws Exception {
 
-		ArrayList<Long> reachIds = new ArrayList<Long>();
-		reachIds.add(1L);
-		reachIds.add(2L);
+		ArrayList<String> reachIds = new ArrayList<String>();
+		reachIds.add("1");
+		reachIds.add("2");
 		TerminalReaches term1 = new TerminalReaches(1L, reachIds);
 
-		List<Long> copiedIds = term1.getReachIdsAsList();
+		List<String> copiedIds = term1.getReachIdsAsList();
 		copiedIds.remove(1);
 		copiedIds.remove(0);
 		assertEquals(0, copiedIds.size()); // copied list is empty
 
 		// Term Reaches still contains both reaches
-		assertTrue(term1.contains(1L));
-		assertTrue(term1.contains(2L));
+		assertTrue(term1.contains("1"));
+		assertTrue(term1.contains("2"));
 		assertEquals(2, term1.size());
 	}
 
 	@Test
 	public void asSetShouldBeDetached() throws Exception {
 
-		ArrayList<Long> reachIds = new ArrayList<Long>();
-		reachIds.add(1L);
-		reachIds.add(2L);
+		ArrayList<String> reachIds = new ArrayList<String>();
+		reachIds.add("1");
+		reachIds.add("2");
 		TerminalReaches term1 = new TerminalReaches(1L, reachIds);
 
-		Set<Long> copiedIds = term1.getReachIdsAsSet();
-		copiedIds.remove(1L);
-		copiedIds.remove(2L);
+		Set<String> copiedIds = term1.getReachIdsAsSet();
+		copiedIds.remove("1");
+		copiedIds.remove("2");
 		assertEquals(0, copiedIds.size()); // copied list is empty
 
 		// Term Reaches still contains both reaches
-		assertTrue(term1.contains(1L));
-		assertTrue(term1.contains(2L));
+		assertTrue(term1.contains("1"));
+		assertTrue(term1.contains("2"));
 		assertEquals(2, term1.size());
 	}
 

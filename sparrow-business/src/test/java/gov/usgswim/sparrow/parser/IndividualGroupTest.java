@@ -117,7 +117,7 @@ public class IndividualGroupTest extends TestCase {
 
             List<ReachElement> reaches = group.getExplicitReaches();
             assertEquals(reaches.size(), 1);
-            assertEquals(reaches.get(0).getId(), Long.valueOf(12345L));
+            assertEquals(reaches.get(0).getId(), "12345");
 
         } catch (XMLStreamException se) {
             fail(se.toString());
@@ -151,8 +151,8 @@ public class IndividualGroupTest extends TestCase {
 
             List<ReachElement> reaches = group.getExplicitReaches();
             assertEquals(reaches.size(), 2);
-            assertEquals(reaches.get(0).getId(), Long.valueOf(12345L));
-            assertEquals(reaches.get(1).getId(), Long.valueOf(54321L));
+            assertEquals(reaches.get(0).getId(), "12345");
+            assertEquals(reaches.get(1).getId(), "54321");
 
         } catch (XMLStreamException se) {
             fail(se.toString());

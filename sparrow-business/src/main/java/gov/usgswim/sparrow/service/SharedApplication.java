@@ -49,7 +49,7 @@ public class SharedApplication  {
 		Logger.getLogger(SharedApplication.class);
 
 	private static SharedApplication instance;
-	
+
 	private DynamicReadOnlyProperties configurationProps;
 	private Boolean usingJNDI;
 
@@ -57,30 +57,30 @@ public class SharedApplication  {
 	public static final String READ_ONLY_JNDI_DS_NAME = "java:comp/env/jdbc/sparrow_dss";
 	private DataSource roDatasource;
 	private boolean roLookupFailed = false;
-	
+
 	//Transactional db connection info
 	public static final String READ_WRITE_JNDI_DS_NAME = "java:comp/env/jdbc/sparrow_dss_trans";
 	private DataSource rwDatasource;
 	private boolean rwLookupFailed = false;
-	
+
 	//Number of times a connection has been requested
 	private int roConnectionRequestCount = 0;
 
 	//an ehcache test cache
 	public static final String SERIALIZABLE_CACHE = PredictContext.name();
-	
-	
+
+
 	//Request Monitoring
 	private ConcurrentLinkedQueue<RequestMonitor> activeRequests = new ConcurrentLinkedQueue<RequestMonitor>();
 	private ConcurrentLinkedQueue<RequestMonitor> completeSimpleRequests = new ConcurrentLinkedQueue<RequestMonitor>();
 	private ConcurrentLinkedQueue<RequestMonitor> completeComplexRequests = new ConcurrentLinkedQueue<RequestMonitor>();
-	
+
 	private SharedApplication() {
 
 	}
-	
+
 	public synchronized DynamicReadOnlyProperties getConfiguration() {
-		
+
 		if (configurationProps == null) {
 			try {
 				DynamicReadOnlyProperties props = new DynamicReadOnlyProperties();
@@ -88,7 +88,7 @@ public class SharedApplication  {
 				if (isUsingJndi()) {
 					props.addJNDIContexts(DynamicReadOnlyProperties.DEFAULT_JNDI_CONTEXTS);
 				}
-				
+
 				configurationProps = props;
 
 			} catch (Exception e) {
@@ -99,15 +99,15 @@ public class SharedApplication  {
 
 		return configurationProps;
 	}
-	
+
 	public synchronized void reloadConfiguration() {
 		configurationProps = null;
 	}
-	
+
 	public boolean isUsingJndi() {
-		
+
 		if (usingJNDI == null) {
-			
+
 			usingJNDI = true;
 
 			String[] contexts = {"java:", "java:/comp/env"};
@@ -124,15 +124,15 @@ public class SharedApplication  {
 			}
 
 		}
-		
+
 		return usingJNDI;
 	}
 
-	
+
 	public void addActiveRequest(RequestMonitor activeRequest) {
 		activeRequests.add(activeRequest);
 	}
-	
+
 	public RequestMonitor[] getActiveRequests() {
 		RequestMonitor[] mons = activeRequests.toArray(new RequestMonitor[0]);
 		ArrayUtils.reverse(mons);
@@ -141,7 +141,7 @@ public class SharedApplication  {
 		}
 		return mons;
 	}
-		
+
 	public RequestMonitor[] getCompletedSimpleRequests() {
 		RequestMonitor[] mons = completeSimpleRequests.toArray(new RequestMonitor[0]);
 		ArrayUtils.reverse(mons);
@@ -150,7 +150,7 @@ public class SharedApplication  {
 		}
 		return mons;
 	}
-	
+
 	public RequestMonitor[] getCompletedComplexRequests() {
 		RequestMonitor[] mons = completeComplexRequests.toArray(new RequestMonitor[0]);
 		ArrayUtils.reverse(mons);
@@ -159,10 +159,10 @@ public class SharedApplication  {
 		}
 		return mons;
 	}
-	
+
 	public void setRequestFinished(RequestMonitor finishedRequest) {
 		activeRequests.remove(finishedRequest);
-		
+
 		if (finishedRequest.hasChildren()) {
 			//finishedRequest.releaseRequest(true);
 			completeComplexRequests.add(finishedRequest);
@@ -173,7 +173,7 @@ public class SharedApplication  {
 			checkCompletedSimpleRequestsSize();
 		}
 	}
-	
+
 	private void checkCompletedSimpleRequestsSize() {
 		try {
 			while (completeSimpleRequests.size() > 200) {
@@ -184,7 +184,7 @@ public class SharedApplication  {
 			e.printStackTrace();
 		}
 	}
-	
+
 	private void checkCompletedComplexRequestsSize() {
 		try {
 			while (completeComplexRequests.size() > 200) {
@@ -195,9 +195,9 @@ public class SharedApplication  {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	
+
+
+
 	public static synchronized SharedApplication getInstance() {
 		if (instance == null) {
 			instance = new SharedApplication();
@@ -218,7 +218,7 @@ public class SharedApplication  {
 		connection = DriverManager.getConnection(url, dbuser, dbpass);
 		return connection;
 	}
-	
+
 	private static Connection getRWConnectionFromCommandLineParams() throws SQLException {
 		//synchronized (this) {
 		{
@@ -231,16 +231,16 @@ public class SharedApplication  {
 		connection = DriverManager.getConnection(url, dbuser, dbpass);
 		return connection;
 	}
-	
+
 	// ================
 	// INSTANCE METHODS
 	// ================
 
 	public Connection getROConnection() throws SQLException {
 		roConnectionRequestCount++;
-		
+
 		Connection c = findROConnection();
-		
+
 		if (c != null) {
 			if (! c.isClosed()) {
 				if (log.isTraceEnabled()) {
@@ -262,14 +262,14 @@ public class SharedApplication  {
 			log.error(e);
 			throw e;
 		}
-		
+
 		return c;
 	}
-	
+
 	public Connection getRWConnection() throws SQLException {
 		return findRWConnection();
 	}
-	
+
 	private Connection findRWConnection() throws SQLException {
 		synchronized (this) {
 			if (rwDatasource == null && ! rwLookupFailed) {
@@ -283,7 +283,7 @@ public class SharedApplication  {
 					rwLookupFailed = true;
 				}
 			}
-			
+
 			if (rwDatasource != null) {
 				return rwDatasource.getConnection();
 			}
@@ -308,7 +308,7 @@ public class SharedApplication  {
 					roLookupFailed = true;
 				}
 			}
-			
+
 			if (roDatasource != null) {
 				return roDatasource.getConnection();
 			}
@@ -335,11 +335,11 @@ public class SharedApplication  {
 			// Shouldn't happen
 			e.printStackTrace();
 		}
-		
+
 		PredictionContextRequest req = new PredictionContextRequest(context);
 		PredictionContextHandler action = new PredictionContextHandler(req);
 		List<PredictionContext> pcList = action.run();
-		
+
 		if (pcList.size() == 1) {
 			context = pcList.get(0);
 			putPredictionContextInLocalCache(context);
@@ -348,10 +348,10 @@ public class SharedApplication  {
 			throw new Exception("Unable to store PredictionContext to persistant storage.");
 		}
 	}
-	
+
 	private void putPredictionContextInLocalCache(PredictionContext context) {
 		ConfiguredCache.PredictContext.put(context.getId(), context);
-		
+
 		AdjustmentGroups ag = context.getAdjustmentGroups();
 		if (ag != null) {
 			ConfiguredCache.AdjustmentGroups.put(ag.getId(), ag);
@@ -372,17 +372,17 @@ public class SharedApplication  {
 			ConfiguredCache.AreaOfInterest.put(aoi.getId(), aoi);
 		}
 	}
-	
+
 	/**
 	 * Touches the PredictionContext and all of its children.
-	 * 
+	 *
 	 * This is the same as calling get and if not found, calling put on each
 	 * item.
 	 * @param context
 	 */
 	private void touchPredictionContextInLocalCache(PredictionContext context) {
 		ConfiguredCache.PredictContext.touch(context.getId(), context);
-		
+
 		AdjustmentGroups ag = context.getAdjustmentGroups();
 		if (ag != null) {
 			ConfiguredCache.AdjustmentGroups.touch(ag.getId(), ag);
@@ -413,7 +413,7 @@ public class SharedApplication  {
 	 * @param id
 	 * @param quiet
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public PredictionContext getPredictionContext(Integer id, boolean quiet) throws Exception {
 
@@ -425,9 +425,9 @@ public class SharedApplication  {
 
 			touchPredictionContextInLocalCache(context);
 			return context.clone();
-			
+
 		} else {
-			
+
 			if (quiet) {
 				//Bail if null & quite - caller just check if in local cache.
 				return null;
@@ -435,11 +435,11 @@ public class SharedApplication  {
 				PredictionContextRequest req = new PredictionContextRequest(id);
 				PredictionContextHandler action = new PredictionContextHandler(req);
 				List<PredictionContext> pcList = action.run();
-				
+
 				if (pcList.size() == 1) {
 					//found it in the persistent storage
 					context = pcList.get(0);
-					
+
 					//put into the local cache
 					touchPredictionContextInLocalCache(context);
 					return context.clone();
@@ -448,7 +448,7 @@ public class SharedApplication  {
 					return null;
 				}
 			}
-			
+
 		}
 
 	}
@@ -523,11 +523,11 @@ public class SharedApplication  {
 		}
 		return found;
 	}
-	
+
 	/**
 	 * Returns a filtered list of PredefinedSessions, pulling from the model-id
 	 * based cache if possible.
-	 * 
+	 *
 	 * @param request
 	 * @return
 	 * @throws Exception
@@ -536,7 +536,7 @@ public class SharedApplication  {
 		FilterPredefinedSessions action = new FilterPredefinedSessions(request);
 		return action.run();
 	}
-	
+
 	/**
 	 * An overloaded version that returns a list instead of a single value
 	 * is useful in the session servlet.
@@ -550,13 +550,13 @@ public class SharedApplication  {
 		list.add(session);
 		return list;
 	}
-	
+
 
 	/**
 	 * REturns a single PredefinedSession, uniquely ID by either an ID or
-	 * code.  It will attempt to fetch from the model ID based cache first, 
+	 * code.  It will attempt to fetch from the model ID based cache first,
 	 * then fetch from the db if not quiet.
-	 * 
+	 *
 	 * @param request
 	 * @param quiet
 	 * @return
@@ -568,16 +568,16 @@ public class SharedApplication  {
 		for (Object key : keys) {
 			List<IPredefinedSession> sessions =
 				(List<IPredefinedSession>) PredefinedSessions.get(key, true);
-			
+
 			for (IPredefinedSession session : sessions) {
 				if (session.getId().equals(request.getId()) ||
 						session.getUniqueCode().equalsIgnoreCase(request.getUniqueCode())) {
 					return session;
 				}
 			}
-			
+
 		}
-		
+
 		if (! quiet) {
 			//Didn't find it, so load it direct from the db
 			LoadPredefinedSession action = new LoadPredefinedSession(request);
@@ -587,56 +587,56 @@ public class SharedApplication  {
 			return null;
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Deletes the passed session from the database, invalidates the cache,
 	 * and returns the db version of the session.  The returned session
 	 * will have a null ID.
-	 * 
+	 *
 	 * An exception is thrown if it cannot be deleted.
-	 * 
+	 *
 	 * @param session
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public IPredefinedSession deletePredefinedSession(IPredefinedSession session) throws Exception {
 		DeletePredefinedSession action = new DeletePredefinedSession(session);
 		IPredefinedSession deleted = action.run();
-		
+
 		if (deleted != null) {
 			//Removed all cached PS's for the specified model
 			PredefinedSessions.remove(session.getModelId());
 		}
-		
+
 		return deleted;
 	}
-	
+
 	/**
 	 * Creates or Updates the passed session to the database, invalidates the cache,
 	 * and returns the db version of the session.  The returned session
 	 * will have a non-null ID.
-	 * 
+	 *
 	 * An exception is thrown if it cannot be saved.
-	 * 
+	 *
 	 * @param session
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public IPredefinedSession savePredefinedSession(IPredefinedSession session) throws Exception {
 		SavePredefinedSession action = new SavePredefinedSession(session);
 		IPredefinedSession saved = action.run();
-		
+
 		if (saved != null) {
 			//Removed all cached PS's for the specified model
 			PredefinedSessions.remove(session.getModelId());
 		}
-		
+
 		return saved;
 	}
-	
-	
+
+
 	//NSDataSet Cache
 	public NSDataSet getNSDataSet(PredictionContext context) throws Exception {
 		return getNSDataSet(context, false);
@@ -647,12 +647,12 @@ public class SharedApplication  {
 		//would destroy the NSDataSet as it used it.  In the most recent version,
 		//this is fixed.
 		NSDataSet dataset = null;
-		
+
 //		dataset = (NSDataSet) ConfiguredCache.NSDataSet.get(context, quiet);
 
 		NSDataSetFactory factory = new NSDataSetFactory();
 		dataset = (NSDataSet) factory.createEntry(context);
-		
+
 		return dataset;
 	}
 
@@ -674,7 +674,7 @@ public class SharedApplication  {
 	public ReachRowValueMap getDeliveryFractionMap(TerminalReaches targets, boolean quiet) {
 		return (ReachRowValueMap) DeliveryFractionHash.get(targets, quiet);
 	}
-	
+
 	//DeliveryFraction
 	public ColumnData getDeliveryFraction(TerminalReaches targets) {
 		return getDeliveryFraction(targets, false);
@@ -746,7 +746,7 @@ public class SharedApplication  {
 	public DataTable getReachAttributes(ReachID req, boolean quiet) {
 		return (DataTable) LoadReachAttributes.get(req, quiet);
 	}
-	
+
 	//LoadModelReachIdentificationAttributes
 	//Used by the export to include extended id info (name, open water name, eda codes)
 	public DataTable getModelReachIdentificationAttributes(Long modelId) {
@@ -792,23 +792,23 @@ public class SharedApplication  {
 	}
 
 	public BinSet getDataBinning(BinningRequest req, boolean quiet) throws Exception {
-		
+
 
 		//We assume that the request we have been given does not contain any
 		//of the derived data (dataseries, comparison, constituent and detection limit)
-		
+
 		PredictionContext context = SharedApplication.getInstance().getPredictionContext(req.getContextID());
 
 		if (context == null) {
 			throw new Exception("No context found for context-id '" + req.getContextID() + "'");
 		}
-		
+
 		DataSeriesType dataSeries = context.getAnalysis().getDataSeries();
-		
+
 		//Find the model
 		ModelRequestCacheKey modelKey = new ModelRequestCacheKey(context.getModelID(), false, false, false);
 		SparrowModel model = getModelMetadata(modelKey).get(0);
-		
+
 		//Clone
 		ComparisonType compType = context.getComparison().getComparisonType();
 		req = req.clone(dataSeries,
@@ -817,7 +817,7 @@ public class SharedApplication  {
 				model.getDetectionLimit(dataSeries, compType),
 				model.getMaxDecimalPlaces(dataSeries, compType));
 
-		
+
 		return (BinSet) DataBinning.get(req, quiet);
 	}
 
@@ -825,88 +825,97 @@ public class SharedApplication  {
 	public DataTable getCatchmentAreas(UnitAreaRequest req) {
 		return getCatchmentAreas(req, false);
 	}
-	
+
 	public DataTable getCatchmentAreas(UnitAreaRequest req, boolean quiet) {
 		return (DataTable) CatchmentAreas.get(req, quiet);
 	}
-	
+
 	public DataTable getHUC8Data(HUC8TableRequest req, boolean quiet) {
 		return (DataTable) HUC8Table.get(req, quiet);
 	}
-	
+
 	//Fractioned watershed areas
 	public ReachRowValueMap getReachAreaFractionMap(ReachAreaFractionMapRequest req) {
 		return getReachAreaFractionMap(req, false);
 	}
-	
+
 	public ReachRowValueMap getReachAreaFractionMap(ReachAreaFractionMapRequest req, boolean quiet) {
 		return (ReachRowValueMap) ReachAreaFractionMap.get(req, quiet);
 	}
-	
+
 	public Double getFractionedWatershedArea(FractionedWatershedAreaRequest req) {
 		return getFractionedWatershedArea(req, false);
 	}
-	
+
 	public Double getFractionedWatershedArea(FractionedWatershedAreaRequest req, boolean quiet) {
 		return (Double) FractionedWatershedArea.get(req, quiet);
 	}
-	
+
 	public ColumnData getFractionedWatershedAreaTable(Integer terminalReachId) {
 		return getFractionedWatershedAreaTable(terminalReachId, false);
 	}
-	
+
 	public ColumnData getFractionedWatershedAreaTable(Integer terminalReachId, boolean quiet) {
 		return (ColumnData) FractionedWatershedAreaTable.get(terminalReachId, quiet);
 	}
-	
-	//ReachFullId	
+
+	//ReachFullId
 	/**
 	 * A common (the most common??) use case.
 	 * @param req
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public List<Long> getReachFullIdAsLong(Collection<ReachClientId> req) throws Exception {
 		List<ReachFullId> fullIds = getReachFullId(req);
-		
+
 		ArrayList<Long> longIds = new ArrayList<Long>(fullIds.size());
 		for (ReachFullId id : fullIds) {
 			longIds.add(id.getReachId());
 		}
-		
+
 		return longIds;
 	}
-	
+
 	public List<Long> getReachFullIdAsLong(Long modelId, Collection<String> req) throws Exception {
-			
+
 		ArrayList<ReachClientId> reachClientIds = new ArrayList<ReachClientId>(req.size());
 		for (String id : req) {
 			ReachClientId oneId = new ReachClientId(modelId, id);
 			reachClientIds.add(oneId);
 		}
-			
+
 		return getReachFullIdAsLong(reachClientIds);
 	}
-	
-	
+
+	public Long getReachFullIdAsLong(Long modelId, String req) throws Exception {
+		ArrayList<String> dummy = new ArrayList<String>(1);
+		if(null == dummy || 1 > dummy.size()){
+			return null;
+		}
+		else{
+			return this.getReachFullIdAsLong(modelId, dummy).get(0);
+		}
+	}
+
 	public List<ReachFullId> getReachFullId(Collection<ReachClientId> req) throws Exception {
 		ReachFullIdCollectionAction act = new ReachFullIdCollectionAction(req);
 		return act.run();
 	}
-	
+
 	public ReachFullId getReachFullId(ReachClientId req) {
 		return getReachFullId(req, false);
 	}
-	
+
 	public ReachFullId getReachFullId(ReachClientId req, boolean quiet) {
 		return (ReachFullId) ReachFullId.get(req, quiet);
 	}
-	
+
 	//HUC
 	public HUC getHUC(HUCRequest req) {
 		return getHUC(req, false);
 	}
-	
+
 	public HUC getHUC(HUCRequest req, boolean quiet) {
 		return (HUC) HUC.get(req, quiet);
 	}
@@ -915,7 +924,7 @@ public class SharedApplication  {
 	public SparrowColumnSpecifier getStreamFlow(Long req) {
 		return getStreamFlow(req, false);
 	}
-	
+
 	public SparrowColumnSpecifier getStreamFlow(Long req, boolean quiet) {
 		return (SparrowColumnSpecifier) StreamFlow.get(req, quiet);
 	}
@@ -928,7 +937,7 @@ public class SharedApplication  {
 	public AggregateIdLookupKludge getAggregateIdLookup(String aggLevel, boolean quiet) {
 		return (AggregateIdLookupKludge) AggregateIdLookup.get(aggLevel, quiet);
 	}
-	
+
 	//StatesForModel
 	public DataTable getStatesForModel(Long modelId) {
 		return getStatesForModel(modelId, false);
@@ -937,7 +946,7 @@ public class SharedApplication  {
 	public DataTable getStatesForModel(Long modelId, boolean quiet) {
 		return (DataTable) StatesForModel.get(modelId, quiet);
 	}
-	
+
 	//HucsForModel
 	public DataTable getHucsForModel(ModelHucsRequest request) {
 		return getHucsForModel(request, false);
@@ -946,7 +955,7 @@ public class SharedApplication  {
 	public DataTable getHucsForModel(ModelHucsRequest request, boolean quiet) {
 		return (DataTable) HucsForModel.get(request, quiet);
 	}
-	
+
 	//EdasForModel
 	public DataTable getEdasForModel(Long modelId) {
 		return getEdasForModel(modelId, false);
@@ -955,7 +964,7 @@ public class SharedApplication  {
 	public DataTable getEdasForModel(Long modelId, boolean quiet) {
 		return (DataTable) EdasForModel.get(modelId, quiet);
 	}
-	
+
 	//ModelReachAreaRelations
 	public ModelReachAreaRelations getModelReachAreaRelations(ModelAggregationRequest request) {
 		return getModelReachAreaRelations(request, false);
@@ -964,7 +973,7 @@ public class SharedApplication  {
 	public ModelReachAreaRelations getModelReachAreaRelations(ModelAggregationRequest request, boolean quiet) {
 		return (ModelReachAreaRelations) ModelReachAreaRelations.get(request, quiet);
 	}
-	
+
 	//Predefined Watersheds and watershed reaches ForModel
 	public DataTable getPredefinedWatershedsForModel(Long modelId) {
 		return getPredefinedWatershedsForModel(modelId, false);
@@ -973,7 +982,7 @@ public class SharedApplication  {
 	public DataTable getPredefinedWatershedsForModel(Long modelId, boolean quiet) {
 		return (DataTable) PredefinedWatershedsForModel.get(modelId, quiet);
 	}
-	
+
 	public DataTable getPredefinedWatershedReachesForModel(Long watershedId) {
 		return getPredefinedWatershedReachesForModel(watershedId, false);
 	}
@@ -981,7 +990,7 @@ public class SharedApplication  {
 	public DataTable getPredefinedWatershedReachesForModel(Long watershedId, boolean quiet) {
 		return (DataTable) PredefinedWatershedReachesForModel.get(watershedId, quiet);
 	}
-	
+
 	//Reaches in a BBox
 	public Long[] getReachesInBBox(ModelBBox modelBBox) throws Exception {
 		return getReachesInBBox(modelBBox, false);
@@ -993,7 +1002,7 @@ public class SharedApplication  {
 		Long[] result = action.run();
 		return result;
 	}
-	
+
 	public DataTableSet getTotalDeliveredLoadSummaryReport(DeliveryReportRequest request) throws Exception {
 		return getTotalDeliveredLoadSummaryReport(request, false);
 	}
@@ -1002,7 +1011,7 @@ public class SharedApplication  {
 		Object result = TotalDeliveredLoadSummaryReport.get(request, quiet);
 		return (DataTableSet) result;
 	}
-	
+
 	public DataTableSet getTotalDeliveredLoadByUpstreamRegionReport(DeliveryReportRequest request) throws Exception {
 		return getTotalDeliveredLoadByUpstreamRegionReport(request, false);
 	}
@@ -1011,7 +1020,7 @@ public class SharedApplication  {
 		Object result = TotalDeliveredLoadByUpstreamRegionReport.get(request, quiet);
 		return (DataTableSet) result;
 	}
-	
+
 	/////////////////////////////////////////////
 	// Non-Cached items
 	/////////////////////////////////////////////
