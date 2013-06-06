@@ -282,12 +282,12 @@
 						<r>
 							<c>Mean Flow</c>
 							<c>36.73</c>
-							<c>ft³⋅sec⁻¹</c>
+							<c>ft³●secˉ¹</c>
 						</r>
 						<r>
 							<c>Mean Velocity</c>
 							<c>0.63</c>
-							<c>ft⋅sec⁻¹</c>
+							<c>ft●secˉ¹</c>
 						</r>
 						<r>
 							<c>Incremental Area</c>
@@ -630,12 +630,12 @@
 						<r>
 							<c>Mean Flow</c>
 							<c>221.8</c>
-							<c>ft³⋅sec⁻¹</c>
+							<c>ft³●secˉ¹</c>
 						</r>
 						<r>
 							<c>Mean Velocity</c>
 							<c>1.06</c>
-							<c>ft⋅sec⁻¹</c>
+							<c>ft●secˉ¹</c>
 						</r>
 						<r>
 							<c>Incremental Area</c>
