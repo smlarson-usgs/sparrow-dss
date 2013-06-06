@@ -93,9 +93,9 @@ public class ReachGroupTest extends TestCase {
 		assertTrue(lSets.get(0).getCriteria().get(0).getCriteriaType().equals(CriteriaType.HUC8));
 		assertTrue(lSets.get(0).getCriteria().get(0).getRelation().equals(CriteriaRelationType.IN));
 		assertEquals("10040202", lSets.get(0).getCriteria().get(0).getValue());
-		
+
 		assertEquals("101701", lSets.get(1).getCriteria().get(0).getValue());
-		
+
 		//upstream set
 		assertTrue(lSets.get(4).getCriteria().get(0).getCriteriaType().equals(CriteriaType.REACH));
 		assertTrue(lSets.get(4).getCriteria().get(0).getRelation().equals(CriteriaRelationType.UPSTREAM));
@@ -130,7 +130,7 @@ public class ReachGroupTest extends TestCase {
 		//Test the individual reaches
 		ReachElement reach0 = rg.getExplicitReaches().get(0);
 		ReachElement reach1 = rg.getExplicitReaches().get(1);
-		assertEquals(new Long(483947453), reach0.getId());
-		assertEquals(new Long(947839474), reach1.getId());
+		assertEquals("483947453", reach0.getId());
+		assertEquals("947839474", reach1.getId());
 	}
 }
