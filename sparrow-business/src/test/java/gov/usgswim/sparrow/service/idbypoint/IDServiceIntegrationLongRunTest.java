@@ -27,7 +27,7 @@ public class IDServiceIntegrationLongRunTest extends SparrowServiceTestBaseWithD
 	@Test
 	public void testModelByPoint() throws Exception {
 		String response = runRequest(getXmlAsString(this.getClass(), "req1"));
-		log.debug("Req 1 response: " + response);
+		//log.debug("Req 1 response: " + response);
 		
 		int reachID = Integer.parseInt( getXPathValue("//*[local-name()='id']", response) );
 		String reachName = getXPathValue("//*[local-name()='name']", response);
@@ -42,7 +42,7 @@ public class IDServiceIntegrationLongRunTest extends SparrowServiceTestBaseWithD
 	public void testModelByReachId() throws Exception {
 		String expectedResponse = getXmlAsString(this.getClass(), "resp2");
 		String actualResponse = runRequest(getXmlAsString(this.getClass(), "req2"));
-		log.debug("Req 2 response: " + actualResponse);
+		//log.debug("Req 2 response: " + actualResponse);
 		XMLAssert.assertXMLEqual(expectedResponse, actualResponse);
 		
 		//Rerun - should be instant b/c we don't ask for attributes.
@@ -58,7 +58,7 @@ public class IDServiceIntegrationLongRunTest extends SparrowServiceTestBaseWithD
 	public void testModelByTwoReachIds() throws Exception {
 		String expectedResponse = getXmlAsString(this.getClass(), "resp3");
 		String actualResponse = runRequest(getXmlAsString(this.getClass(), "req3"));
-		log.debug("Req 3 response: " + actualResponse);
+		//log.debug("Req 3 response: " + actualResponse);
 		
 		XMLAssert.assertXMLEqual(expectedResponse, actualResponse);
 		
@@ -84,7 +84,7 @@ public class IDServiceIntegrationLongRunTest extends SparrowServiceTestBaseWithD
 		
 		String expectedResponse = getXmlAsString(this.getClass(), "resp4");
 		String actualResponse = runRequest(contextBasedIDReq);
-		log.debug("Req 4 response: " + actualResponse);
+		//log.debug("Req 4 response: " + actualResponse);
 
 		assertTrue(similarXMLIgnoreContextId(expectedResponse, actualResponse));
 		
@@ -101,7 +101,7 @@ public class IDServiceIntegrationLongRunTest extends SparrowServiceTestBaseWithD
 		IDByPointRequest req = pipe.parse(request);
 		
 		String response = pipeDispatch(req, new IDByPointPipeline());
-
+		
 		return response;
 	}
 	

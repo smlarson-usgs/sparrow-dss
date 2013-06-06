@@ -5,7 +5,7 @@ public enum SparrowUnits {
 	METERS("m", "meters"),
 	CFS("ft³●secˉ¹", "feet³ ● secondˉ¹"),
 	FPS("ft●secˉ¹", "feet ● secondˉ¹"),
-	KG_PER_YEAR("kg●yearˉ¹", "kg ● yearˉ¹"),
+	KG_PER_YEAR("kg\u25cfyear\u02C9\u00B9", "kg ● yearˉ¹"),
 	MG_PER_L("mg●Lˉ¹", "mg ﻿● L﻿ˉ¹"),
 	SQR_KM("km²", "km²"),
 	SQR_M("m²", "m²"),

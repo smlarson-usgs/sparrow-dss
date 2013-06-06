@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <sparrow-id-response xmlns="http://www.usgs.gov/sparrow/id-response-schema/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="50" context-id="-1091064199">
 	<status>OK</status>
@@ -34,7 +35,7 @@
 				<value>0.35</value>
 				<name>Imp. surf. area</name>
 				<description />
-				<units>km²</units>
+				<units>IGNORE</units>
 				<constituent>Land area</constituent>
 			</mapped-value>
 			<adjustments display="Adjustments">
@@ -53,7 +54,7 @@
 					<r id="1">
 						<c>Wastewater discharge</c>
 						<c>Nitrogen</c>
-						<c>kg&#9679;year&#713;¹</c>
+						<c>IGNORE</c>
 						<c>2</c>
 						<c>4.48</c>
 						<c />
@@ -62,7 +63,7 @@
 					<r id="2">
 						<c>Wet dep. of inorg.nitrogen</c>
 						<c>Nitrogen</c>
-						<c>kg&#9679;year&#713;¹</c>
+						<c>IGNORE</c>
 						<c>2</c>
 						<c>27690.21</c>
 						<c />
@@ -71,7 +72,7 @@
 					<r id="3">
 						<c>Imp. surf. area</c>
 						<c>Land area</c>
-						<c>km²</c>
+						<c>IGNORE</c>
 						<c>2</c>
 						<c>0.18</c>
 						<c />
@@ -80,7 +81,7 @@
 					<r id="4">
 						<c>Fert. applied to agric. land</c>
 						<c>Nitrogen</c>
-						<c>kg&#9679;year&#713;¹</c>
+						<c>IGNORE</c>
 						<c>2</c>
 						<c>79554.59</c>
 						<c />
@@ -89,7 +90,7 @@
 					<r id="5">
 						<c>Livestock manure</c>
 						<c>Nitrogen</c>
-						<c>kg&#9679;year&#713;¹</c>
+						<c>IGNORE</c>
 						<c>2</c>
 						<c>38150.88</c>
 						<c />
@@ -114,7 +115,7 @@
 						<r>
 							<c>Wastewater discharge Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>3.46</c>
 							<c>3.46</c>
@@ -123,7 +124,7 @@
 						<r>
 							<c>Wet dep. of inorg.nitrogen Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>18456.23</c>
 							<c>18456.23</c>
@@ -132,7 +133,7 @@
 						<r>
 							<c>Imp. surf. area Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>592.73</c>
 							<c>1185.46</c>
@@ -141,7 +142,7 @@
 						<r>
 							<c>Fert. applied to agric. land Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>11410.37</c>
 							<c>11410.37</c>
@@ -150,7 +151,7 @@
 						<r>
 							<c>Livestock manure Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>2687.16</c>
 							<c>2687.16</c>
@@ -159,7 +160,7 @@
 						<r>
 							<c>Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>null</c>
 							<c>33149.95</c>
 							<c>33742.68</c>
@@ -170,7 +171,7 @@
 						<r>
 							<c>Wastewater discharge Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>3.46</c>
 							<c>3.46</c>
@@ -179,7 +180,7 @@
 						<r>
 							<c>Wet dep. of inorg.nitrogen Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>18456.23</c>
 							<c>18456.23</c>
@@ -188,7 +189,7 @@
 						<r>
 							<c>Imp. surf. area Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>592.73</c>
 							<c>1185.46</c>
@@ -197,7 +198,7 @@
 						<r>
 							<c>Fert. applied to agric. land Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>11410.37</c>
 							<c>11410.37</c>
@@ -206,7 +207,7 @@
 						<r>
 							<c>Livestock manure Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>2687.16</c>
 							<c>2687.16</c>
@@ -215,7 +216,7 @@
 						<r>
 							<c>Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>null</c>
 							<c>33149.95</c>
 							<c>33742.68</c>
@@ -282,22 +283,22 @@
 						<r>
 							<c>Mean Flow</c>
 							<c>36.73</c>
-							<c>ft³&#9679;sec&#713;¹</c>
+							<c>IGNORE</c>
 						</r>
 						<r>
 							<c>Mean Velocity</c>
 							<c>0.63</c>
-							<c>ft&#9679;sec&#713;¹</c>
+							<c>IGNORE</c>
 						</r>
 						<r>
 							<c>Incremental Area</c>
 							<c>62.14</c>
-							<c>km²</c>
+							<c>IGNORE</c>
 						</r>
 						<r>
 							<c>Cumulative Drainage Area</c>
 							<c>62.13</c>
-							<c>km²</c>
+							<c>IGNORE</c>
 						</r>
 					</section>
 					<section display="SPARROW Attributes" name="sparrow_attrib">
@@ -382,7 +383,7 @@
 				<value>7.96</value>
 				<name>Imp. surf. area</name>
 				<description />
-				<units>km²</units>
+				<units>IGNORE</units>
 				<constituent>Land area</constituent>
 			</mapped-value>
 			<adjustments display="Adjustments">
@@ -401,7 +402,7 @@
 					<r id="1">
 						<c>Wastewater discharge</c>
 						<c>Nitrogen</c>
-						<c>kg&#9679;year&#713;¹</c>
+						<c>IGNORE</c>
 						<c>2</c>
 						<c>0.00</c>
 						<c />
@@ -410,7 +411,7 @@
 					<r id="2">
 						<c>Wet dep. of inorg.nitrogen</c>
 						<c>Nitrogen</c>
-						<c>kg&#9679;year&#713;¹</c>
+						<c>IGNORE</c>
 						<c>2</c>
 						<c>86301.25</c>
 						<c />
@@ -419,7 +420,7 @@
 					<r id="3">
 						<c>Imp. surf. area</c>
 						<c>Land area</c>
-						<c>km²</c>
+						<c>IGNORE</c>
 						<c>2</c>
 						<c>3.98</c>
 						<c />
@@ -428,7 +429,7 @@
 					<r id="4">
 						<c>Fert. applied to agric. land</c>
 						<c>Nitrogen</c>
-						<c>kg&#9679;year&#713;¹</c>
+						<c>IGNORE</c>
 						<c>2</c>
 						<c>82886.20</c>
 						<c />
@@ -437,7 +438,7 @@
 					<r id="5">
 						<c>Livestock manure</c>
 						<c>Nitrogen</c>
-						<c>kg&#9679;year&#713;¹</c>
+						<c>IGNORE</c>
 						<c>2</c>
 						<c>1093506.12</c>
 						<c />
@@ -462,7 +463,7 @@
 						<r>
 							<c>Wastewater discharge Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>0.00</c>
 							<c>0.00</c>
@@ -471,7 +472,7 @@
 						<r>
 							<c>Wet dep. of inorg.nitrogen Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>30792.70</c>
 							<c>30792.70</c>
@@ -480,7 +481,7 @@
 						<r>
 							<c>Imp. surf. area Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>7122.50</c>
 							<c>14245.00</c>
@@ -489,7 +490,7 @@
 						<r>
 							<c>Fert. applied to agric. land Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>6364.01</c>
 							<c>6364.01</c>
@@ -498,7 +499,7 @@
 						<r>
 							<c>Livestock manure Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>41231.06</c>
 							<c>41231.06</c>
@@ -507,7 +508,7 @@
 						<r>
 							<c>Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>null</c>
 							<c>85510.26</c>
 							<c>92632.76</c>
@@ -518,7 +519,7 @@
 						<r>
 							<c>Wastewater discharge Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>0.00</c>
 							<c>0.00</c>
@@ -527,7 +528,7 @@
 						<r>
 							<c>Wet dep. of inorg.nitrogen Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>61189.16</c>
 							<c>61189.16</c>
@@ -536,7 +537,7 @@
 						<r>
 							<c>Imp. surf. area Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>13513.74</c>
 							<c>20636.24</c>
@@ -545,7 +546,7 @@
 						<r>
 							<c>Fert. applied to agric. land Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>13616.29</c>
 							<c>13616.29</c>
@@ -554,7 +555,7 @@
 						<r>
 							<c>Livestock manure Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>2</c>
 							<c>86664.67</c>
 							<c>86664.67</c>
@@ -563,7 +564,7 @@
 						<r>
 							<c>Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg&#9679;year&#713;¹</c>
+							<c>IGNORE</c>
 							<c>null</c>
 							<c>174983.85</c>
 							<c>182106.35</c>
@@ -630,22 +631,22 @@
 						<r>
 							<c>Mean Flow</c>
 							<c>221.8</c>
-							<c>ft³&#9679;sec&#713;¹</c>
+							<c>IGNORE</c>
 						</r>
 						<r>
 							<c>Mean Velocity</c>
 							<c>1.06</c>
-							<c>ft&#9679;sec&#713;¹</c>
+							<c>IGNORE</c>
 						</r>
 						<r>
 							<c>Incremental Area</c>
 							<c>187.03</c>
-							<c>km²</c>
+							<c>IGNORE</c>
 						</r>
 						<r>
 							<c>Cumulative Drainage Area</c>
 							<c>388.09</c>
-							<c>km²</c>
+							<c>IGNORE</c>
 						</r>
 					</section>
 					<section display="SPARROW Attributes" name="sparrow_attrib">

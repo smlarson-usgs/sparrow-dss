@@ -45,9 +45,13 @@
 	<logger name="gov.usgswim.sparrow.SparrowTestBase" additivity="false">
 		<level value="debug" />
 		<appender-ref ref="CA" />
-		<!-- <appender-ref ref="FILE" /> -->
 	</logger>
-
+	
+	<logger name="gov.usgswim.sparrow.IgnoreContextIdDifferenceListener" additivity="false">
+		<level value="debug" />
+		<appender-ref ref="CA" />
+	</logger>
+	
 	<root>
 		<priority value="error" />
 		<appender-ref ref="CA" />
