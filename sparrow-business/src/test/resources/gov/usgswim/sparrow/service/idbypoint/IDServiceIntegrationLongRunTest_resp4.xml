@@ -53,7 +53,7 @@
 					<r id="1">
 						<c>Wastewater discharge</c>
 						<c>Nitrogen</c>
-						<c>kg⋅year⁻¹</c>
+						<c>kg●yearˉ¹</c>
 						<c>2</c>
 						<c>4.48</c>
 						<c />
@@ -62,7 +62,7 @@
 					<r id="2">
 						<c>Wet dep. of inorg.nitrogen</c>
 						<c>Nitrogen</c>
-						<c>kg⋅year⁻¹</c>
+						<c>kg●yearˉ¹</c>
 						<c>2</c>
 						<c>27690.21</c>
 						<c />
@@ -80,7 +80,7 @@
 					<r id="4">
 						<c>Fert. applied to agric. land</c>
 						<c>Nitrogen</c>
-						<c>kg⋅year⁻¹</c>
+						<c>kg●yearˉ¹</c>
 						<c>2</c>
 						<c>79554.59</c>
 						<c />
@@ -89,7 +89,7 @@
 					<r id="5">
 						<c>Livestock manure</c>
 						<c>Nitrogen</c>
-						<c>kg⋅year⁻¹</c>
+						<c>kg●yearˉ¹</c>
 						<c>2</c>
 						<c>38150.88</c>
 						<c />
@@ -114,7 +114,7 @@
 						<r>
 							<c>Wastewater discharge Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>3.46</c>
 							<c>3.46</c>
@@ -123,7 +123,7 @@
 						<r>
 							<c>Wet dep. of inorg.nitrogen Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>18456.23</c>
 							<c>18456.23</c>
@@ -132,7 +132,7 @@
 						<r>
 							<c>Imp. surf. area Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>592.73</c>
 							<c>1185.46</c>
@@ -141,7 +141,7 @@
 						<r>
 							<c>Fert. applied to agric. land Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>11410.37</c>
 							<c>11410.37</c>
@@ -150,7 +150,7 @@
 						<r>
 							<c>Livestock manure Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>2687.16</c>
 							<c>2687.16</c>
@@ -159,7 +159,7 @@
 						<r>
 							<c>Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>null</c>
 							<c>33149.95</c>
 							<c>33742.68</c>
@@ -170,7 +170,7 @@
 						<r>
 							<c>Wastewater discharge Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>3.46</c>
 							<c>3.46</c>
@@ -179,7 +179,7 @@
 						<r>
 							<c>Wet dep. of inorg.nitrogen Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>18456.23</c>
 							<c>18456.23</c>
@@ -188,7 +188,7 @@
 						<r>
 							<c>Imp. surf. area Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>592.73</c>
 							<c>1185.46</c>
@@ -197,7 +197,7 @@
 						<r>
 							<c>Fert. applied to agric. land Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>11410.37</c>
 							<c>11410.37</c>
@@ -206,7 +206,7 @@
 						<r>
 							<c>Livestock manure Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>2687.16</c>
 							<c>2687.16</c>
@@ -215,7 +215,7 @@
 						<r>
 							<c>Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>null</c>
 							<c>33149.95</c>
 							<c>33742.68</c>
@@ -401,7 +401,7 @@
 					<r id="1">
 						<c>Wastewater discharge</c>
 						<c>Nitrogen</c>
-						<c>kg⋅year⁻¹</c>
+						<c>kg●yearˉ¹</c>
 						<c>2</c>
 						<c>0.00</c>
 						<c />
@@ -410,7 +410,7 @@
 					<r id="2">
 						<c>Wet dep. of inorg.nitrogen</c>
 						<c>Nitrogen</c>
-						<c>kg⋅year⁻¹</c>
+						<c>kg●yearˉ¹</c>
 						<c>2</c>
 						<c>86301.25</c>
 						<c />
@@ -428,7 +428,7 @@
 					<r id="4">
 						<c>Fert. applied to agric. land</c>
 						<c>Nitrogen</c>
-						<c>kg⋅year⁻¹</c>
+						<c>kg●yearˉ¹</c>
 						<c>2</c>
 						<c>82886.20</c>
 						<c />
@@ -437,7 +437,7 @@
 					<r id="5">
 						<c>Livestock manure</c>
 						<c>Nitrogen</c>
-						<c>kg⋅year⁻¹</c>
+						<c>kg●yearˉ¹</c>
 						<c>2</c>
 						<c>1093506.12</c>
 						<c />
@@ -462,7 +462,7 @@
 						<r>
 							<c>Wastewater discharge Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>0.00</c>
 							<c>0.00</c>
@@ -471,7 +471,7 @@
 						<r>
 							<c>Wet dep. of inorg.nitrogen Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>30792.70</c>
 							<c>30792.70</c>
@@ -480,7 +480,7 @@
 						<r>
 							<c>Imp. surf. area Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>7122.50</c>
 							<c>14245.00</c>
@@ -489,7 +489,7 @@
 						<r>
 							<c>Fert. applied to agric. land Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>6364.01</c>
 							<c>6364.01</c>
@@ -498,7 +498,7 @@
 						<r>
 							<c>Livestock manure Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>41231.06</c>
 							<c>41231.06</c>
@@ -507,7 +507,7 @@
 						<r>
 							<c>Incremental Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>null</c>
 							<c>85510.26</c>
 							<c>92632.76</c>
@@ -518,7 +518,7 @@
 						<r>
 							<c>Wastewater discharge Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>0.00</c>
 							<c>0.00</c>
@@ -527,7 +527,7 @@
 						<r>
 							<c>Wet dep. of inorg.nitrogen Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>61189.16</c>
 							<c>61189.16</c>
@@ -536,7 +536,7 @@
 						<r>
 							<c>Imp. surf. area Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>13513.74</c>
 							<c>20636.24</c>
@@ -545,7 +545,7 @@
 						<r>
 							<c>Fert. applied to agric. land Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>13616.29</c>
 							<c>13616.29</c>
@@ -554,7 +554,7 @@
 						<r>
 							<c>Livestock manure Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>2</c>
 							<c>86664.67</c>
 							<c>86664.67</c>
@@ -563,7 +563,7 @@
 						<r>
 							<c>Total Load</c>
 							<c>Nitrogen</c>
-							<c>kg⋅year⁻¹</c>
+							<c>kg●yearˉ¹</c>
 							<c>null</c>
 							<c>174983.85</c>
 							<c>182106.35</c>
