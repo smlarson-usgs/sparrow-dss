@@ -20,11 +20,9 @@ import static org.junit.Assert.*;
  */
 public class CalcContributingFractionedAreaForRegionsTest extends CalcFractionalAreaBaseTest {
 
-	
+
 	@Test
 	public void testTest() {
-		assertNotNull(network1_term_to_11);
-		assertEquals(1, network1_term_to_11.size());
 		assertNotNull(network1_reach_state_relation);
 		assertEquals(4, network1_reach_state_relation.getRelationsForReachRow(5).getRelations().size());
 		assertNotNull(network1_inc_area);
@@ -33,39 +31,41 @@ public class CalcContributingFractionedAreaForRegionsTest extends CalcFractional
 		assertEquals(6, network1_region_detail.getRowCount());
 		assertNotNull(SharedApplication.getInstance().getPredictData(network1_model_id));
 		assertEquals(14, SharedApplication.getInstance().getPredictData(network1_model_id).getTopo().getRowCount());
-		
+
 	}
-	
+
 	@Test
 	public void checkNetwork1DeliveryToReach11() throws Exception {
-		CalcContributingFractionedAreaForRegions action = new 
+
+
+		CalcContributingFractionedAreaForRegions action = new
 				CalcContributingFractionedAreaForRegions(
-				network1_term_to_11, 
+				to_11_targets,
 				AggregationLevel.STATE,
 				network1_reach_state_relation,
-				null,
+				watershedAreaFractionMap,
 				network1_inc_area,
 				network1_region_detail
 			);
 
-		
+
 		ColumnData result = action.run();
-		
-		
+
+
 		DataTable expected =  loadAreaTable(this.getClass(), "to_11", "tab");
-		
+
 		assertTrue( this.compareColumns(expected.getColumn(1), result, false, false, .0000001D) );
-		
-		
+
+
 	}
-	
-	
-	protected DataTable loadAreaTable(Class<?> forClass, String fileSuffix, String fileExtension) 
+
+
+	protected DataTable loadAreaTable(Class<?> forClass, String fileSuffix, String fileExtension)
 			throws Exception {
-		
+
 		InputStream fileInputStream = getResource(forClass, fileSuffix, fileExtension);
-		
-		
+
+
 		BufferedReader fileReader = new BufferedReader(new InputStreamReader(fileInputStream));
 		String[] headings = {"ID", "VALUE"};
 		Class<?>[] types = {Integer.class, Double.class};
@@ -73,7 +73,7 @@ public class CalcContributingFractionedAreaForRegionsTest extends CalcFractional
 		dtw.setName("values");
 		DataTableUtils.fill(dtw, fileReader, false, "\t", true);
 		fileReader.close();
-		
+
 		return dtw.toImmutable();
 	}
 }

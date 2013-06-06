@@ -5,9 +5,13 @@ import gov.usgs.cida.datatable.DataTableWritable;
 import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
 import gov.usgs.cida.datatable.utils.DataTableUtils;
 import gov.usgswim.sparrow.*;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
+import gov.usgswim.sparrow.domain.ReachRowValueMapBuilder;
 import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.domain.reacharearelation.ModelReachAreaRelations;
 import gov.usgswim.sparrow.navigation.PredictDataTestScenarios;
+import gov.usgswim.sparrow.request.ReachAreaFractionMapRequest;
+import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.service.ConfiguredCache;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.DLUtils;
@@ -16,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -29,9 +34,8 @@ public abstract class CalcFractionalAreaBaseTest extends SparrowTestBaseWithDB {
 	protected static DataTable network1_inc_area;
 	protected static ModelReachAreaRelations network1_reach_state_relation;
 	protected static DataTable network1_region_detail;
-	protected static TerminalReaches network1_term_to_11;
-
-
+	protected static ArrayList<Long> to_11_targets = new ArrayList<Long>();
+	protected static ReachRowValueMap watershedAreaFractionMap;
 
 	protected static TopoData testTopo2;	//An example of a braided stream
 	protected static TopoData testTopoCorrected;	//An example of Fracs not adding to one.
@@ -80,10 +84,20 @@ public abstract class CalcFractionalAreaBaseTest extends SparrowTestBaseWithDB {
 		network1_reach_state_relation = loadModelReachAreaRelations(subpackage, "reach_state_relation.tab", network1_topo);
 		network1_region_detail = loadRegionDetail(subpackage, "state_detail.tab");
 
-		ArrayList<String> to_11_targets = new ArrayList<String>();
-		to_11_targets.add("11");
+		to_11_targets.add(11L);
 
-		network1_term_to_11 = new TerminalReaches(network1_model_id, to_11_targets);
+		ReachRowValueMapBuilder builder = new ReachRowValueMapBuilder();
+
+
+		for (Long id : to_11_targets) {
+			ReachRowValueMap map = SharedApplication.getInstance().getReachAreaFractionMap(
+					new ReachAreaFractionMapRequest(new ReachID(network1_model_id, id)));
+
+			builder.mergeByAddition(map);
+		}
+
+		watershedAreaFractionMap = builder.toImmutable();
+
 	}
 
 	public void  cachePredictData(TopoData topo, Long modelId) {

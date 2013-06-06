@@ -9,6 +9,7 @@ import gov.usgs.cida.datatable.impl.StandardDoubleColumnData;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
 import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.Criteria;
@@ -29,10 +30,10 @@ import org.junit.Test;
 
 /**
  * Verifies functionality of CalcReachesByNavigation.
- * 
+ *
  * @author eeverman
  */
-public class CalcReachesByNavigationTest extends SparrowTestBase {
+public class CalcReachesByNavigationTest extends SparrowTestBaseWithDB {
 
 	/**
 	 * Test to check that reach id  #17142 has this list of reach upstream
@@ -42,18 +43,18 @@ public class CalcReachesByNavigationTest extends SparrowTestBase {
 	 * 17144
 	 * 17145
 	 * 17146
-	 * @throws Exception 
-	 * 
+	 * @throws Exception
+	 *
 	 */
 	@Test
 	public void verifyUpstreamList() throws Exception {
 		Criteria criteria = new Criteria(TEST_MODEL_ID, CriteriaType.REACH,
 				CriteriaRelationType.UPSTREAM, "17142");
-		
+
 		CalcReachesByNetwork action = new CalcReachesByNetwork(criteria);
-		
+
 		long[] reaches = action.run();
-		
+
 		assertEquals(17142, reaches[0]);
 		assertEquals(17143, reaches[1]);
 		assertEquals(17144, reaches[2]);
@@ -61,32 +62,32 @@ public class CalcReachesByNavigationTest extends SparrowTestBase {
 		assertEquals(17146, reaches[4]);
 		assertEquals(5, reaches.length);
 	}
-	
+
 	@Test
 	public void invalidCriteriaType() throws Exception {
 		Criteria criteria = new Criteria(TEST_MODEL_ID, CriteriaType.HUC2,
 				CriteriaRelationType.UPSTREAM, "17142");
-		
+
 		CalcReachesByNetwork action = new CalcReachesByNetwork(criteria);
-		
+
 		long[] reaches = action.run();
-		
+
 		assertNull(reaches);
-		assertNotNull(action.getPostMessage());
+		assertTrue(0 != action.getValidationErrors().length);
 	}
-	
+
 	@Test
 	public void invalidCriteriaRelationType() throws Exception {
 		Criteria criteria = new Criteria(TEST_MODEL_ID, CriteriaType.REACH,
 				CriteriaRelationType.IN, "17142");
-		
+
 		CalcReachesByNetwork action = new CalcReachesByNetwork(criteria);
-		
+
 		long[] reaches = action.run();
-		
+
 		assertNull(reaches);
-		assertNotNull(action.getPostMessage());
+		assertTrue(0 != action.getValidationErrors().length);
 	}
-	
+
 }
 
