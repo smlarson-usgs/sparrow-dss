@@ -4,6 +4,7 @@ import gov.usgswim.sparrow.domain.ReachFullId;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.request.ReachClientId;
+import gov.usgswim.sparrow.service.ConfiguredCache;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.util.ArrayList;
@@ -88,7 +89,8 @@ public class ReachFullIdCollectionAction extends Action<List<ReachFullId>> {
 		//Fetch all the full IDs that are already in the cache
 		while (modifiableIdsIt.hasNext()) {
 			ReachClientId currentClientId = modifiableIdsIt.next();
-			ReachFullId currentFullId = SharedApplication.getInstance().getReachFullId(currentClientId, true);	//don't create if not present
+			ReachFullId currentFullId =
+							(ReachFullId) ConfiguredCache.ReachFullId.get(currentClientId, true); //don't create if not present
 
 			if (currentFullId != null) {
 				result.add(currentFullId);

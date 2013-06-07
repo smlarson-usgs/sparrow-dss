@@ -871,6 +871,23 @@ public class SharedApplication  {
 	}
 
 	//ReachFullId
+	public List<ReachFullId> getReachFullId(Collection<ReachClientId> req) throws Exception {
+		ReachFullIdCollectionAction act = new ReachFullIdCollectionAction(req);
+		return act.run();
+	}
+	
+	public ReachFullId getReachFullId(ReachClientId req) throws Exception {
+		ArrayList<ReachClientId> list = new ArrayList<ReachClientId>();
+		list.add(req);
+		List<ReachFullId> result = getReachFullId(list);
+		
+		if (result == null || result.isEmpty()) {
+			return null;
+		} else {
+			return result.get(0);
+		}
+	}
+	
 	/**
 	 * A common (the most common??) use case.
 	 * @param req
@@ -901,25 +918,14 @@ public class SharedApplication  {
 
 	public Long getReachFullIdAsLong(Long modelId, String req) throws Exception {
 		ArrayList<String> dummy = new ArrayList<String>(1);
-		if(null == dummy || 1 > dummy.size()){
+		dummy.add(req);
+		List<Long> result = getReachFullIdAsLong(modelId, dummy);
+		if(null == result || result.isEmpty()){
 			return null;
 		}
 		else{
-			return this.getReachFullIdAsLong(modelId, dummy).get(0);
+			return result.get(0);
 		}
-	}
-
-	public List<ReachFullId> getReachFullId(Collection<ReachClientId> req) throws Exception {
-		ReachFullIdCollectionAction act = new ReachFullIdCollectionAction(req);
-		return act.run();
-	}
-
-	public ReachFullId getReachFullId(ReachClientId req) {
-		return getReachFullId(req, false);
-	}
-
-	public ReachFullId getReachFullId(ReachClientId req, boolean quiet) {
-		return (ReachFullId) ReachFullId.get(req, quiet);
 	}
 
 	//HUC
