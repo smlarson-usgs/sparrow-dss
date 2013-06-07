@@ -9,6 +9,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
+import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.ConflictingReachGroup;
 import gov.usgswim.sparrow.domain.CriteriaType;
@@ -19,16 +20,12 @@ public class GetReachGroupsContainingReachLongRunTest extends SparrowServiceTest
 	private static Long MODEL_ID = 50L;
 	private static Long REACH_ID_IN_GROUP = 661780L;
 	private static Long REACH_ID_OUTSIDE_GROUP = 10309L;
-	private static String ADJUSTMENTS_XML = 
-		"<adjustmentGroups conflicts=\"accumulate\">"+
-		"<reachGroup enabled=\"true\" name=\"ECONFINA-STEINHATCHEE huc8 Group\"><desc></desc><notes></notes><logicalSet><criteria name=\"ECONFINA-STEINHATCHEE\" attrib=\"huc8\" relation=\"in\">03110102</criteria></logicalSet></reachGroup>"+
-		"<reachGroup enabled=\"true\" name=\"Upstream of rch 661780 Group\"><desc></desc><notes></notes><logicalSet><criteria name=\"upstream of 661780\" attrib=\"reach\" relation=\"upstream\">661780</criteria></logicalSet></reachGroup>"+
-		"<individualGroup enabled=\"true\"><reach id=\"661780\" name=\"FENHOLLOWAY R\"><adjustment src=\"1\" abs=\"1.00\"></adjustment></reach></individualGroup>"+
-		"</adjustmentGroups>";
 	
 	@Test
 	public void testReachInGroups() throws Exception {
-		AdjustmentGroups huc8AndIndGroups = buildAdjGroups(MODEL_ID, ADJUSTMENTS_XML);
+		
+		String adjustmentXml = SparrowTestBase.getXmlAsString(this.getClass(), null);
+		AdjustmentGroups huc8AndIndGroups = buildAdjGroups(MODEL_ID, adjustmentXml);
 		
 		GetReachGroupsContainingReach action = new GetReachGroupsContainingReach(REACH_ID_IN_GROUP, huc8AndIndGroups);
 		List<ConflictingReachGroup> results = action.run();
@@ -37,7 +34,7 @@ public class GetReachGroupsContainingReachLongRunTest extends SparrowServiceTest
 		boolean hucGroupFound = false;
 		boolean upstreamGroupFound = false;
 		for(ConflictingReachGroup r : results) {
-			if(r.getGroupName().equals("individual")) indvidualGroupFound = true;
+			if(r.getGroupName().equals("Individual")) indvidualGroupFound = true;
 			if(r.getGroupName().equals("ECONFINA-STEINHATCHEE huc8 Group") && 
 					r.getType().equals(CriteriaType.HUC8.toString())) hucGroupFound = true;
 			if(r.getGroupName().equals("Upstream of rch 661780 Group") && 

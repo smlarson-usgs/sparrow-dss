@@ -82,8 +82,8 @@ public class CalcContributingFractionedAreaForRegions extends Action<ColumnData>
 
 	@Override
 	protected void validate() {
-		if (this.terminalReaches != null){
-			if (terminalReachIds.isEmpty()) {
+		if (terminalReaches != null){
+			if (terminalReaches.isEmpty()) {
 				this.addValidationError("The terminalReaches parameter is empty - there must be at least one terminal reach.");
 			}
 			if (aggLevel == null) {
@@ -94,6 +94,9 @@ public class CalcContributingFractionedAreaForRegions extends Action<ColumnData>
 			}
 		}
 		else if(this.terminalReachIds != null){
+			if (terminalReachIds.isEmpty()) {
+				this.addValidationError("The terminalReacheIds parameter is empty - there must be at least one terminal reach.");
+			}
 			if (aggLevel == null) {
 				this.addValidationError("The aggregate level reaches parameter cannot be null");
 			}

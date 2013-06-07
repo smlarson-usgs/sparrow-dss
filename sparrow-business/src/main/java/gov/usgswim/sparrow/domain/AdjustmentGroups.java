@@ -290,15 +290,9 @@ public class AdjustmentGroups implements XMLStreamParserComponent {
 	public boolean hasAdjustments() {
 		if(defaultGroup != null) {
 			if(defaultGroup.getAdjustments().size()>0) return true;
-			for(ReachElement r : defaultGroup.getExplicitReaches()){
-				if(r.getAdjustments().size() > 0) {
-					return true;
-				}
-			}
 		}
 		
 		if(individualGroup != null) {
-			if(individualGroup.getAdjustments().size()>0) return true;
 			for(ReachElement r : individualGroup.getExplicitReaches()){
 				if(r.getAdjustments().size() > 0) {
 					return true;

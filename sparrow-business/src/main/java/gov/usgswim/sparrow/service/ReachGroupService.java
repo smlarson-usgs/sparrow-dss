@@ -37,9 +37,9 @@ public class ReachGroupService extends AbstractSparrowServlet {
 
 	@Override
 	public void doActualPost(HttpServletRequest req, HttpServletResponse resp) {
-		Long modelId = req.getParameter("modelId")==null ? Long.valueOf(0) : Long.parseLong((String)req.getParameter("modelId"));
+		Long modelId = req.getParameter("modelId")==null ? null : Long.parseLong((String)req.getParameter("modelId"));
 		
-		Long reachId = req.getParameter("reachId")==null ? Long.valueOf(0) : Long.parseLong((String)req.getParameter("reachId")); //individual reach to add to this group
+		String clientReachId = (String)req.getParameter("reachId"); //individual reach to add to this group
 		String group = req.getParameter("logicalSet_xml")==null ? "" : (String)req.getParameter("logicalSet_xml"); //a logical group to add to the given adjustment groups
 		String existingGroupsXml = req.getParameter("existingGroups_xml")==null ? "" : (String)req.getParameter("existingGroups_xml"); //xml fragment for existing groups on front end
 		
@@ -55,6 +55,7 @@ public class ReachGroupService extends AbstractSparrowServlet {
 				List<ConflictingReachGroup> results = action.run();
 				out.addAllEntities(results);
 			} else {
+				Long reachId = SharedApplication.getInstance().getReachFullIdAsLong(modelId, clientReachId);
 				GetReachGroupsContainingReach action = new GetReachGroupsContainingReach(reachId, existingGroups);
 				List<ConflictingReachGroup> results = action.run();
 				out.addAllEntities(results);

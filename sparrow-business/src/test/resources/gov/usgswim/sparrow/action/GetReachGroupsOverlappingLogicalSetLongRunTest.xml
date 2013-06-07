@@ -1,0 +1,28 @@
+<adjustmentGroups conflicts="accumulate">
+	<reachGroup enabled="true" name="ECONFINA-STEINHATCHEE huc8 Group">
+		<desc />
+		<notes />
+		<logicalSet>
+			<criteria attrib="huc8" name="ECONFINA-STEINHATCHEE" relation="in">03110102</criteria>
+		</logicalSet>
+	</reachGroup>
+	<reachGroup enabled="true" name="OGEECHEE-SAVANNAH huc4 Group">
+		<desc />
+		<notes />
+		<logicalSet>
+			<criteria attrib="huc4" name="OGEECHEE-SAVANNAH" relation="in">0306</criteria>
+		</logicalSet>
+	</reachGroup>
+	<reachGroup enabled="true" name="Upstream of rch 661780 Group">
+		<desc />
+		<notes />
+		<logicalSet>
+			<criteria attrib="reach" name="upstream of 661780" relation="upstream">661780</criteria>
+		</logicalSet>
+	</reachGroup>
+	<individualGroup enabled="true">
+		<reach id="661780" name="FENHOLLOWAY R">
+			<adjustment abs="1.00" src="1" />
+		</reach>
+	</individualGroup>
+</adjustmentGroups>

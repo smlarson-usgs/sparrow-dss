@@ -1,17 +1,12 @@
 package gov.usgswim.sparrow;
 
-import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.xml.sax.SAXException;
 
 import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.PostMethodWebRequest;

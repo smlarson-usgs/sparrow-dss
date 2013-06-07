@@ -26,36 +26,22 @@ public class GetReachGroupsContainingReach extends Action<List<ConflictingReachG
 	public List<ConflictingReachGroup> doAction() throws Exception {
 		ArrayList<ConflictingReachGroup> groupsFound = new ArrayList<ConflictingReachGroup>();
 		
-		if(this.groups.getDefaultGroup() != null) {
-			for(ReachElement r : this.groups.getDefaultGroup().getExplicitReaches()){
-				boolean reachFound = false;
-				if(r.getId().equals(this.reachId)) {
-					reachFound = true;
-				}
-				if(reachFound)
-					groupsFound.add(new ConflictingReachGroup("default", "default", String.valueOf(r.getId())));
+		if(groups.getIndividualGroup() != null) {
+			if(groups.getIndividualGroup().contains(this.reachId)) {
+				//We are working w/ system IDs, not client IDs, so don't send the ID
+				//to the client.  We are only working w/ one reach, so there we don't
+				//need to tell the caller what the client IDs.
+				groupsFound.add(new ConflictingReachGroup("individual", "Individual", "Explicitly added"));
 			}
 		}
 		
-		if(this.groups.getIndividualGroup() != null) {
-			for(ReachElement r : this.groups.getIndividualGroup().getExplicitReaches()){
-				boolean reachFound = false;
-				if(r.getId().equals(this.reachId)) {
-					reachFound = true;
-				}
-				if(reachFound) 
-					groupsFound.add(new ConflictingReachGroup("individual", "individual", String.valueOf(r.getId())));
-			}
-		}
-		
-		for(ReachGroup g : this.groups.getReachGroups()){
-			for(ReachElement r : g.getExplicitReaches()){
-				boolean reachFound = false;
-				if(r.getId().equals(this.reachId)) {
-					reachFound = true;
-				}
-				if(reachFound) {
-					groupsFound.add(new ConflictingReachGroup("individual", g.getName(), String.valueOf(r.getId())));
+		//check explicit reaches separate from the logical sets so that the user
+		//can more easily recognize where the conflict is happening.
+		for(ReachGroup g : groups.getReachGroups()){
+			for(Long r : g.getExplicitReachIds()){
+				if(r.equals(this.reachId)) {
+					groupsFound.add(new ConflictingReachGroup("individual", g.getName(), "Explicitly added"));
+					break;
 				}
 			}
 			
@@ -63,10 +49,10 @@ public class GetReachGroupsContainingReach extends Action<List<ConflictingReachG
 			for(int i = 0; i < ls.size(); i++){
 				long[] reachIds = g.getLogicalReachIDs(i);
 				if(reachIds != null) {
-					for(int j = 0; j < reachIds.length; j++) {
-						if(this.reachId == reachIds[j]){ 
-							Criteria old = ls.get(i).getCriteria().get(0);
-							groupsFound.add(new ConflictingReachGroup(old.getCriteriaType().toString(), g.getName(), old.getValue()));
+					for(long oneReachId : reachIds) {
+						if(this.reachId.equals(oneReachId)){ 
+							Criteria criteria = ls.get(i).getCriteria().get(0);
+							groupsFound.add(new ConflictingReachGroup(criteria.getCriteriaType().toString(), g.getName(), criteria.getValue()));
 						}
 					}
 				}

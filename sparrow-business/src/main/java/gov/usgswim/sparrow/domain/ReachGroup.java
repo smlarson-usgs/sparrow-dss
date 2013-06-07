@@ -225,16 +225,11 @@ public class ReachGroup implements XMLStreamParserComponent {
 	 * @param reachID
 	 * @return
 	 *
-	 * WARNING: do not call this method until all the reaches have been added to the group, as it will make subsequent search behavior incorrect
+	 * WARNING: do not call this method until all the reaches have been added to
+	 * the group, as it will make subsequent search behavior incorrect.
 	 */
 	public boolean contains(long reachID) throws Exception {
-		if (containedReachIDs == null) {
-			// Do late initialization as necessary
-			Set<Long> result = new HashSet<Long>();
-			result.addAll(getCombinedReachIDs());
-			containedReachIDs = Collections.unmodifiableSet(result);
-		}
-		return containedReachIDs.contains(reachID);
+		return getOrBuildCombinedReachIds().contains(reachID);
 	}
 
 	// =================
@@ -269,7 +264,34 @@ public class ReachGroup implements XMLStreamParserComponent {
 	}
 
 	public List<ReachElement> getExplicitReaches() {
-		return reaches;
+		return Collections.unmodifiableList(reaches);
+	}
+	
+	/**
+	 * Get the IDENTIFIERS for all the explicit reaches in the group.
+	 * 
+	 * Explicit reaches are ones added individually (i.e. include reach #99),
+	 * as opposed to reaches added as a logical set (i.e. all reaches in HUC a 4).
+	 * 
+	 * @return
+	 * @throws Exception 
+	 */
+	public List<Long> getExplicitReachIds() throws Exception {
+		List<Long> list = new ArrayList<Long>();
+		
+		if (reaches != null && !reaches.isEmpty()) {
+			ArrayList<ReachClientId> clientIds = new ArrayList<ReachClientId>(reaches.size());
+
+			for (ReachElement reach : reaches) {
+				ReachClientId rci = new ReachClientId(modelID, reach.getId());
+				clientIds.add(rci);
+			}
+
+			list = SharedApplication.getInstance().getReachFullIdAsLong(clientIds);
+			
+		}
+		
+		return Collections.unmodifiableList(list);
 	}
 
 	/**
@@ -311,33 +333,35 @@ public class ReachGroup implements XMLStreamParserComponent {
 	}
 
 	public Set<Long> getCombinedReachIDs() throws Exception {
-	    // Use a Set to avoid adding a reach more than once (because of logical sets)
-	    Set<Long> combinedIDs = new HashSet<Long>();
-		// Start with explicit reaches
-		if (reaches != null && ! reaches.isEmpty()) {
-			ArrayList<ReachClientId> clientIds = new ArrayList<ReachClientId>(reaches.size());
+	  return getOrBuildCombinedReachIds();
+	}
+	
+	private synchronized Set<Long> getOrBuildCombinedReachIds() throws Exception {
+		
+		if (containedReachIDs == null) {
+			// Use a Set to avoid adding a reach more than once (because of logical sets)
+			Set<Long> combinedIDs = new HashSet<Long>();
 			
-			for (ReachElement reach: reaches) {
-				ReachClientId rci = new ReachClientId(modelID, reach.getId());
-				clientIds.add(rci);
-			}
-			
-			List<Long> ids = SharedApplication.getInstance().getReachFullIdAsLong(clientIds);
-			combinedIDs.addAll(ids);
-		}
+			// Start with explicit reaches
+			combinedIDs.addAll(getExplicitReachIds());
 
-		// add each of the logical reaches
-		for (int logicalSetIndex=0; logicalSetIndex<logicalSets.size(); logicalSetIndex++) {
-			long[] logicalSetIDs = getLogicalReachIDs(logicalSetIndex);
+			// add each of the logical reaches
+			if (logicalSets != null) {
+				for (int logicalSetIndex = 0; logicalSetIndex < logicalSets.size(); logicalSetIndex++) {
+					long[] logicalSetIDs = getLogicalReachIDs(logicalSetIndex);
 
-			if (logicalSetIDs != null) {
-				for (int j = 0; j < logicalSetIDs.length; j++) {
-					combinedIDs.add(logicalSetIDs[j]);
+					if (logicalSetIDs != null) {
+						for (int j = 0; j < logicalSetIDs.length; j++) {
+							combinedIDs.add(logicalSetIDs[j]);
+						}
+					}
 				}
 			}
+			
+			containedReachIDs = Collections.unmodifiableSet(combinedIDs);
 		}
-
-		return combinedIDs;
+		
+		return containedReachIDs;
 	}
 
 
