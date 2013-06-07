@@ -314,7 +314,7 @@ public class ReachGroup implements XMLStreamParserComponent {
 	    // Use a Set to avoid adding a reach more than once (because of logical sets)
 	    Set<Long> combinedIDs = new HashSet<Long>();
 		// Start with explicit reaches
-		if (reaches != null) {
+		if (reaches != null && ! reaches.isEmpty()) {
 			ArrayList<ReachClientId> clientIds = new ArrayList<ReachClientId>(reaches.size());
 			
 			for (ReachElement reach: reaches) {

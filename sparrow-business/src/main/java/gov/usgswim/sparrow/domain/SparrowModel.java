@@ -213,4 +213,14 @@ public interface SparrowModel {
 	 */
 	public Source getSourceByIndex(int index);
 	
+	/**
+	 * Returns true to indicate that the reachIds and clientReachIds are the same
+	 * (in the db this would be the IDENTIFIER AND FULL_IDENTIFIER columns).
+	 * 
+	 * This allows code to 'cheat' and not have to go back to the database to map
+	 * client IDs to reachIds, saving lots of DB round-trips.
+	 * @return 
+	 */
+	public boolean isUsingSimpleReachIds();
+	
 }

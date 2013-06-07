@@ -37,6 +37,7 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 	protected Double _southBound;
 	protected Double _westBound;
 	protected String _constituent;
+	protected boolean _usingSimpleReachIds;
 	protected SparrowUnits _units;
 	protected List<Source> _sources;
 	private List<IPredefinedSession> _sessions;
@@ -72,7 +73,7 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 			_id, _approved, _public, _archived, _name, _description, _url,
 			_dateAdded, _contactId, _enhNetworkId, _enhNetworkName, _enhNetworkUrl, _enhNetworkIdColumn,
 			_themeName,
-			_northBound, _eastBound, _southBound, _westBound, _constituent, _units, 
+			_northBound, _eastBound, _southBound, _westBound, _constituent, _usingSimpleReachIds, _units, 
 			_sessions, tmpList);
 	}
 
@@ -83,14 +84,17 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 
 	public void setApproved(boolean approved) {this._approved = approved;}
 
+	@Override
 	public boolean isApproved() {return _approved;}
 
 	public void setPublic(boolean p) {this._public = p;}
 
+	@Override
 	public boolean isPublic() {return _public;}
 
 	public void setArchived(boolean archived) {this._archived = archived;}
 
+	@Override
 	public boolean isArchived() {return _archived;}
 
 	public void setName(String name) {this._name = name;}
@@ -167,6 +171,13 @@ public class SparrowModelBuilder implements SparrowModel, ImmutableBuilder<Sparr
 
 	@Override
 	public String getConstituent() {return _constituent;}
+	
+	public void setUsingSimpleReachIds(boolean usingSimple) {
+		_usingSimpleReachIds = usingSimple;
+	}
+	
+	@Override
+	public boolean isUsingSimpleReachIds() { return _usingSimpleReachIds; }
 	
 	@Override
 	public BigDecimal getDetectionLimit(DataSeriesType dataSeries, ComparisonType comparisonType) {

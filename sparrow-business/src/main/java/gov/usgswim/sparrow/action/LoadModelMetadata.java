@@ -20,7 +20,6 @@ import gov.usgswim.sparrow.domain.SparrowModelBuilder;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.request.PredefinedSessionRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
-import gov.usgswim.sparrow.util.SparrowResourceUtils;
 
 public class LoadModelMetadata extends Action<List<SparrowModel>> {
 
@@ -127,6 +126,7 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 				m.setSouthBound(rset.getDouble("BOUND_SOUTH"));
 				m.setWestBound(rset.getDouble("BOUND_WEST"));
 				m.setConstituent(rset.getString("CONSTITUENT"));
+				m.setUsingSimpleReachIds(StringUtils.equalsIgnoreCase("T", rset.getString("IS_ID_FULLID_SAME")));
 				String sUnits = rset.getString("UNITS");
 				
 				//assume the string form of the unit is the enum name

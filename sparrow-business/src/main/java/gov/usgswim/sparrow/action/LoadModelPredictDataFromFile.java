@@ -26,6 +26,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
+/**
+ * Loads only model 50 with appropriate metadata from CSV files.
+ * 
+ * @author eeverman
+ */
 public class LoadModelPredictDataFromFile extends Action<PredictData> implements ILoadModelPredictData {
 
 	public static final long MODEL_ID = 50L;
@@ -105,6 +110,7 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 		model.setEnhNetworkId(23L);
 		model.setId(MODEL_ID);
 		model.setUnits(SparrowUnits.KG_PER_YEAR);
+		model.setUsingSimpleReachIds(true);
 		
 		for (int r=0; r< srcMetaData.getRowCount(); r++) {
 			SourceBuilder src = new SourceBuilder();

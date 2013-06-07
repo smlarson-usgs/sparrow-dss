@@ -663,6 +663,17 @@ public class SharedApplication  {
 	}
 
 	public PredictData getPredictData(Long id, boolean quiet) {
+		PredictData pd = (PredictData) PredictData.get(id, quiet);
+		
+		//Check to see if model metadata is already in the cache - insert if not.
+		ModelRequestCacheKey modelKey = new ModelRequestCacheKey(id, false, false, false);
+		List<SparrowModel> modelList = getModelMetadata(modelKey, true);
+		if (pd.getModel() != null && (modelList == null || modelList.size() == 0)) {
+			ArrayList<SparrowModel> list = new ArrayList <SparrowModel>();
+			list.add(pd.getModel());
+			LoadModelMetadata.put(modelKey, list);
+		}
+		
 		return (PredictData) PredictData.get(id, quiet);
 	}
 

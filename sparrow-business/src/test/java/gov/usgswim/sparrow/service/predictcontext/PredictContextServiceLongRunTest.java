@@ -3,15 +3,12 @@ package gov.usgswim.sparrow.service.predictcontext;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDB;
-import gov.usgswim.sparrow.SparrowTestBaseWithDB;
-import gov.usgswim.sparrow.request.ReachID;
 
 import org.junit.Test;
 
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
-import org.apache.log4j.Level;
 
 public class PredictContextServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 

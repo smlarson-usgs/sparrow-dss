@@ -15,7 +15,7 @@ import java.util.List;
 @Immutable
 public class SparrowModelImm implements SparrowModel, Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2L;
 	
 	/**
 	 *  The concentration detection limit for TN.
@@ -54,6 +54,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	private final Double _southBound;
 	private final Double _westBound;
 	private final String _constituent;
+	private final boolean _usingSimpleReachIds;
 	private final SparrowUnits _units;
 	private final List<Source> _sources;
 	private final List<IPredefinedSession> _sessions;
@@ -95,7 +96,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 				Long contactId, Long enhNetworkId, String enhNetworkName, String enhNetworkUrl, String enhNetworkIdColumn,
 				String themeName,
 				Double northBound, Double eastBound, Double southBound, Double westBound,
-				String constituent, SparrowUnits units,
+				String constituent, boolean usingSimpleReachIds, SparrowUnits units,
 				List<IPredefinedSession> sessions, List<Source> sources) {
 
 		_id = id;
@@ -117,6 +118,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 		_southBound = southBound;
 		_westBound = westBound;
 		_constituent = constituent;
+		_usingSimpleReachIds = usingSimpleReachIds;
 		_units = units;
                 if(sessions != null){
                         _sessions = Collections.unmodifiableList(sessions);
@@ -186,6 +188,9 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 
 	@Override
 	public String getConstituent() { return _constituent;}
+	
+	@Override
+	public boolean isUsingSimpleReachIds() { return _usingSimpleReachIds; }
 	
 	@Override
 	public SparrowUnits getUnits() { return _units;}

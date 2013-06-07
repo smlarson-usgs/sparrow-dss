@@ -1,8 +1,9 @@
 package gov.usgswim.sparrow.action;
 
 import gov.usgswim.sparrow.domain.ReachFullId;
+import gov.usgswim.sparrow.domain.SparrowModel;
+import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.request.ReachClientId;
-import gov.usgswim.sparrow.service.ConfiguredCache;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class ReachFullIdCollectionAction extends Action<List<ReachFullId>> {
 
 	//Action initialized var
 	protected Long _modelId = null;	//Model ID - all reaches must have the same one
-	protected Collection<ReachClientId> modifiableIds = null;	//modifiable list of IDs (remove items as needed)
+	protected boolean canUseSimpleConversion = false;	//if true, don't got to db, just convert strings to Longs.
 
 	public ReachFullIdCollectionAction(Collection<ReachClientId> clientIds) {
 		this.clientIds = clientIds;
@@ -55,14 +56,31 @@ public class ReachFullIdCollectionAction extends Action<List<ReachFullId>> {
 	@Override
 	protected void initFields() {
 		_modelId = clientIds.iterator().next().getModelID();
-
-		this.modifiableIds = new ArrayList<ReachClientId>();
-		modifiableIds.addAll(clientIds);
+		
+		ModelRequestCacheKey modelKey = new ModelRequestCacheKey(_modelId, false, false, false);
+		List<SparrowModel> modelList = SharedApplication.getInstance().getModelMetadata(modelKey);
+		
+		if (modelList != null && modelList.size() == 1) {
+			canUseSimpleConversion = modelList.get(0).isUsingSimpleReachIds();
+		}
+		
 	}
 
 	@Override
 	public List<ReachFullId> doAction() throws Exception {
 
+		if (canUseSimpleConversion) {
+			return doSimpleConversion();
+		} else {
+			return doComplexConversion();
+		}
+
+	}
+	
+	private ArrayList<ReachFullId> doComplexConversion() throws Exception {
+		Collection<ReachClientId> modifiableIds = new ArrayList<ReachClientId>();
+		modifiableIds.addAll(clientIds);
+		
 		ArrayList<ReachFullId> result = new ArrayList<ReachFullId>(modifiableIds.size());
 
 		Iterator<ReachClientId> modifiableIdsIt = modifiableIds.iterator();
@@ -86,4 +104,20 @@ public class ReachFullIdCollectionAction extends Action<List<ReachFullId>> {
 		return result;
 	}
 
+	private ArrayList<ReachFullId> doSimpleConversion() {
+		
+		ArrayList<ReachFullId> result = new ArrayList<ReachFullId>(clientIds.size());
+
+		Iterator<ReachClientId> iterator = clientIds.iterator();
+
+		//Fetch all the full IDs that are already in the cache
+		while (iterator.hasNext()) {
+			ReachClientId currentClientId = iterator.next();
+			String clientIdStr = currentClientId.getReachClientId();
+			ReachFullId currentFullId = new ReachFullId(_modelId, Long.parseLong(clientIdStr), clientIdStr);
+			result.add(currentFullId);
+		}
+
+		return result;
+	}
 }
