@@ -33,10 +33,11 @@ public class GetReachGroupsOverlappingLogicalSetLongRunTest extends SparrowServi
 	public void testGetGroups() throws Exception {
 		
 		String adjustmentXml = SparrowTestBase.getXmlAsString(this.getClass(), null);
-		AdjustmentGroups adjGroups1 = buildAdjGroups(MODEL_ID, adjustmentXml);
+		AdjustmentGroups existingAdjustmentGroups = buildAdjGroups(MODEL_ID, adjustmentXml);
+		LogicalSet newLogicalSetToCheck = buildNewLogicalSet(MODEL_ID, NEW_OVERLAPPING_HUC4_FRAGMENT);
 
 		//Test adding a huc set that overlaps 3/4 sets
-		GetReachGroupsOverlappingLogicalSet action = new GetReachGroupsOverlappingLogicalSet(buildNewLogicalSet(MODEL_ID, NEW_OVERLAPPING_HUC4_FRAGMENT), adjGroups1);
+		GetReachGroupsOverlappingLogicalSet action = new GetReachGroupsOverlappingLogicalSet(newLogicalSetToCheck, existingAdjustmentGroups);
 		List<ConflictingReachGroup> results = action.run();
 		boolean ecofinaHucFound = false;
 		boolean ogeecheeHucFound = false;
@@ -55,13 +56,13 @@ public class GetReachGroupsOverlappingLogicalSetLongRunTest extends SparrowServi
 		assertTrue("HUCs overlap with upstream group", streamGroupFound);
 		
 		//test adding a huc set which should not overlap with anything
-		GetReachGroupsOverlappingLogicalSet action2 = new GetReachGroupsOverlappingLogicalSet(buildNewLogicalSet(MODEL_ID, NEW_NONOVERLAPPING_HUC4_FRAGMENT), adjGroups1);
+		GetReachGroupsOverlappingLogicalSet action2 = new GetReachGroupsOverlappingLogicalSet(buildNewLogicalSet(MODEL_ID, NEW_NONOVERLAPPING_HUC4_FRAGMENT), existingAdjustmentGroups);
 		List<ConflictingReachGroup> results2 = action2.run();
 		assertEquals("No overlap", results2.size(), 0);
 		
 		//Test adding upstream group that should overlap
 		//Test adding a huc set that overlaps 3/4 sets
-		GetReachGroupsOverlappingLogicalSet action3 = new GetReachGroupsOverlappingLogicalSet(buildNewLogicalSet(MODEL_ID, NEW_OVERLAPPING_UPSTREAM_FRAGMENT), adjGroups1);
+		GetReachGroupsOverlappingLogicalSet action3 = new GetReachGroupsOverlappingLogicalSet(buildNewLogicalSet(MODEL_ID, NEW_OVERLAPPING_UPSTREAM_FRAGMENT), existingAdjustmentGroups);
 		List<ConflictingReachGroup> results3 = action3.run();
 		boolean ecofinaHucFound3 = false;
 		boolean ogeecheeHucFound3 = false;
@@ -71,7 +72,7 @@ public class GetReachGroupsOverlappingLogicalSetLongRunTest extends SparrowServi
 			if(r.getGroupName().equals("ECONFINA-STEINHATCHEE huc8 Group")) ecofinaHucFound3 = true;
 			if(r.getGroupName().equals("OGEECHEE-SAVANNAH huc4 Group")) ogeecheeHucFound3 = true;
 			if(r.getGroupName().equals("Upstream of rch 661780 Group")) streamGroupFound3 = true;
-			if(r.getGroupName().equals("individual")) individualGroupFound3 = true;
+			if(r.getGroupName().equals("Individual")) individualGroupFound3 = true;
 		}
 		assertEquals("3/4 overlap", results3.size(), 3);
 		assertTrue("HUCs overlap", ecofinaHucFound3);
