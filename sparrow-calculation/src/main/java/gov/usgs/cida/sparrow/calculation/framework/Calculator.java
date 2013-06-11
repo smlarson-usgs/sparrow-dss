@@ -4,8 +4,6 @@
  */
 package gov.usgs.cida.sparrow.calculation.framework;
 
-import gov.usgs.cida.sparrow.calculation.framework.CalculationResult;
-import gov.usgs.cida.sparrow.calculation.framework.SparrowCalculationRunner;
 import org.apache.log4j.Logger;
 
 /**
@@ -23,11 +21,11 @@ public interface Calculator {
 	 * @return
 	 * @throws Exception
 	 */
-	public boolean initTest(SparrowCalculationRunner runner) throws Exception;
+	public boolean initCalc(SparrowCalculationRunner runner) throws Exception;
 
-	public void beforeEachTest(Long modelId);
-	public void afterEachTest(Long modelId);
-	public CalculationResult testModel(Long modelId) throws Exception;
+	public void beforeEachCalc(Long modelId);
+	public void afterEachCalc(Long modelId);
+	public CalculationResult calcModel(Long modelId) throws Exception;
 	public boolean requiresDb();
 	public boolean requiresTextFile();
 
@@ -67,7 +65,7 @@ public interface Calculator {
 	 * @param exception
 	 * @param msg
 	 */
-	public void recordTestException(Long modelId, Exception exception, String msg);
+	public void recordCalcException(Long modelId, Exception exception, String msg);
 
 	public Logger getLogger();
 }

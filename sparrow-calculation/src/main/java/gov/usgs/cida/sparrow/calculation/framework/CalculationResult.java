@@ -12,7 +12,7 @@ public class CalculationResult {
 //	public int testsFailed;
 
 	private Long modelId;
-	private String testName;
+	private String calcName;
 
 	private int fatalError = 0;
 	private int configError = 0;
@@ -21,17 +21,17 @@ public class CalculationResult {
 	private int warningsWereFails;
 
 
-	public CalculationResult(Long modelId, String testName) {
+	public CalculationResult(Long modelId, String calcName) {
 		this.modelId = modelId;
-		this.testName = testName;
+		this.calcName = calcName;
 	}
 
 	public Long getModelId() {
 		return modelId;
 	}
 
-	public String getTestName() {
-		return testName;
+	public String getCalcName() {
+		return calcName;
 	}
 
 	public void addFatalError() { fatalError++; }

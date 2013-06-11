@@ -11,7 +11,12 @@ import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.ConfiguredCache;
 import gov.usgswim.sparrow.service.SharedApplication;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.sf.ehcache.Element;
 
 
@@ -25,7 +30,7 @@ public class TotalContributingAreaCalculation extends SparrowCalculationBase {
 
 
 	/** If true, don't correct frac values that do not total to one */
-	private boolean forceUncorrectedFracValues = false;
+	private boolean forceUncorrectedFracValues = true;
 
 	/** If true, IfTran is ignored for calculating upstream reaches */
 	private boolean forceIgnoreIfTran = false;
@@ -36,14 +41,14 @@ public class TotalContributingAreaCalculation extends SparrowCalculationBase {
 
 	int numberOfReachAreaFractionMapsAllowedInMemory_original;
 	int numberOfReachAreaFractionMapsAllowedInMemory_forTest = 100000;
-
+	private Connection connection;
 
 	public boolean requiresDb() { return true; }
 	public boolean requiresTextFile() { return false; }
 
 
 
-	public CalculationResult testModel(Long modelId) throws Exception {
+	public CalculationResult calcModel(Long modelId) throws Exception {
 		return testModelBasedOnFractionedAreas(modelId);
 
 		//return testModelBasedOnHuc2Aggregation(modelId);
@@ -52,17 +57,14 @@ public class TotalContributingAreaCalculation extends SparrowCalculationBase {
 	public TotalContributingAreaCalculation(
 			boolean failedTestIsOnlyAWarning) {
 		super(failedTestIsOnlyAWarning);
+		try {
+			this.connection = SharedApplication.getInstance().getRWConnection();
+		} catch (SQLException ex) {
+			Logger.getLogger(TotalContributingAreaCalculation.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}
 
 	/**
-	 * Constructor with options to force non-standard values for calculating the
-	 * fractioned watershed areas.
-	 *
-	 * Note that setting either flag to false can significantly slow down the validation
-	 * for large models.  For instance, the North East NHD model can run for 12 hours
-	 * or more.
-	 *
-	 * @param allowedVariance
 	 * @param forceNonFractionedArea Takes precidence over forceUncorrectedFracValues.
 	 * @param forceUncorrectedFracValues
 	 */
@@ -76,11 +78,15 @@ public class TotalContributingAreaCalculation extends SparrowCalculationBase {
 		this.forceNonFractionedArea = forceNonFractionedArea;
 		this.forceIgnoreIfTran = forceIgnoreIfTran;
 		this.forceUncorrectedFracValues = forceUncorrectedFracValues;
-
+		try {
+			this.connection = SharedApplication.getInstance().getRWConnection();
+		} catch (SQLException ex) {
+			Logger.getLogger(TotalContributingAreaCalculation.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}
 
 	@Override
-	public void beforeEachTest(Long modelId) {
+	public void beforeEachCalc(Long modelId) {
 		numberOfReachAreaFractionMapsAllowedInMemory_original =
 				ConfiguredCache.FractionedWatershedArea.getCacheImplementation().getCacheConfiguration().getMaxElementsInMemory();
 
@@ -94,16 +100,16 @@ public class TotalContributingAreaCalculation extends SparrowCalculationBase {
 				", forceUncorrectedFracValues:" + forceUncorrectedFracValues ,
 				true);
 
-		super.beforeEachTest(modelId);
+		super.beforeEachCalc(modelId);
 	}
 
 	@Override
-	public void afterEachTest(Long modelId) {
+	public void afterEachCalc(Long modelId) {
 		ConfiguredCache.FractionedWatershedArea.getCacheImplementation().getCacheConfiguration().
 						setMaxElementsInMemory(numberOfReachAreaFractionMapsAllowedInMemory_original);
 		ConfiguredCache.FractionedWatershedArea.getCacheImplementation().removeAll();
 
-		super.afterEachTest(modelId);
+		super.afterEachCalc(modelId);
 	}
 
 	/**
@@ -114,12 +120,6 @@ public class TotalContributingAreaCalculation extends SparrowCalculationBase {
 	 */
 	public CalculationResult testModelBasedOnFractionedAreas(Long modelId) throws Exception {
 
-		recordTrace(modelId, "Starting:  Load cumulative areas from the db");
-		DataTable cumulativeAreasFromDb = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AreaType.TOTAL_CONTRIBUTING));
-		recordTrace(modelId, "Completed:  Load cumulative areas from the db");
-		recordTrace(modelId, "Starting:  Load incremental areas from the db");
-		DataTable incrementalAreasFromDb = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AreaType.INCREMENTAL));
-		recordTrace(modelId, "Completed:  Load incremental areas from the db");
 		recordTrace(modelId, "Starting:  Load model predict data from the db");
 		PredictData predictData = SharedApplication.getInstance().getPredictData(modelId);
 		recordTrace(modelId, "Completed:  Load model predict data from the db");
@@ -130,42 +130,24 @@ public class TotalContributingAreaCalculation extends SparrowCalculationBase {
 		//DataTable regionDetail = SharedApplication.getInstance().getHucsForModel(new ModelHucsRequest(modelId, HucLevel.HUC2));
 
 		int rowCompleteCnt = 0;
+		int topoRowCount = topo.getRowCount();
+		//@todo really use a hashmap, or just an arraylist of {reachId, area} pairs?
+		HashMap<Long, Double> reachIdToArea = new HashMap<Long, Double>(topoRowCount);
 
-		for (int row = 0; row < topo.getRowCount(); row++) {
+		for (int row = 0; row < topoRowCount; row++) {
 			Long reachId = predictData.getIdForRow(row);
-			Double dbArea = cumulativeAreasFromDb.getDouble(row, 1);
 			Double calculatedFractionalWatershedArea = null;
 			ReachID reachUId = new ReachID(modelId, reachId);
-			Boolean ifTran = topo.isIfTran(row);
-
 			//Do Fractioned watershed area calc
 			recordRowTrace(modelId, reachId, row, "Starting: CalcFractionedWatershedArea");
 
 			FractionedWatershedAreaRequest areaReq = new FractionedWatershedAreaRequest(
 					reachUId, forceUncorrectedFracValues, forceIgnoreIfTran, forceNonFractionedArea);
 			calculatedFractionalWatershedArea =  SharedApplication.getInstance().getFractionedWatershedArea(areaReq);
-
+			//@todo add {result, id} pair to collection
 			recordRowTrace(modelId, reachId, row, "Completed: CalcFractionedWatershedArea");
-
-			//Two different comparisons based on if the reach is a shore reach or not
-			if (topo.isShoreReach(row)) {
-
-
-				Double dbIncArea = incrementalAreasFromDb.getDouble(row, 1);
-
-
-			} else {
-				//Not a shore reach
-
-
-				if (this.logIsEnabledForTrace() && Math.abs((double)(row / 100) - ((double)row / 100d)) < .000001d) {
-					//recordTrace(modelId, "Completed " + row + " rows...");
-					dumpCacheState(modelId);
-				}
-			}
-
 		}
-
+		//@todo use collection of pairs to insert into database
 
 		return result;
 	}

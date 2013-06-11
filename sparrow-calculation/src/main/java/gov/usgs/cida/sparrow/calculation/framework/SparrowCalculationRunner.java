@@ -16,11 +16,8 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
- * This test was created to recreate a calc error where delivery based calcs
- * (like total delivered flux) were resulting in mapped values identical
- * to the base data (i.e. total flux).
- *
- * @author eeverman
+ * This calculation runner and the associated framework code was based off of
+ * the Validation framework written by eeverman@usgs.gov
  */
 public class SparrowCalculationRunner {
 
@@ -69,7 +66,7 @@ public class SparrowCalculationRunner {
 	 * Error: Print single line messages for each row error.  No - additional (multi-line) details.
 	 * Warn:	In addition to errors, print single line warnings for rows that are suspicious.
 	 * Debug:	If available, print multi-line detail for each error.
-	 * Trace:	Used to debug the tests themselves, this option prints additional info about successful values as well.
+	 * Trace:	Used to debug the calculations themselves, this option prints additional info about successful values as well.
 	 */
 	protected Level logLevel;
 
@@ -101,11 +98,11 @@ public class SparrowCalculationRunner {
 		SparrowCalculationRunner runner = (SparrowCalculationRunner) SparrowCalculationRunner.class.forName(runnerToRun).newInstance();
 		runner.loadModelValidators();
 
-		if (runner.getValidators().isEmpty()) {
+		if (runner.getCalculators().isEmpty()) {
 			System.err.println("No validators were found.  Subclass SparrowModelValidationRunner to override the loadModelValidators method to add some.");
 			continueRun = false;
 		} else {
-			System.out.println("Found " + runner.getValidators().size() + " validation tests to run against the models.");
+			System.out.println("Found " + runner.getCalculators().size() + " Calculations to run against the models.");
 		}
 
 
@@ -133,9 +130,9 @@ public class SparrowCalculationRunner {
 			runner.run();
 			long endTime = System.currentTimeMillis();
 
-			System.out.println("Total test run time: " + ((endTime - startTime) / 1000) + " seconds.");
+			System.out.println("Total calculation run time: " + ((endTime - startTime) / 1000) + " seconds.");
 		} else {
-			System.err.println("Unable to run any models or tests.");
+			System.err.println("Unable to run any calculations.");
 		}
 	}
 
@@ -180,7 +177,7 @@ public class SparrowCalculationRunner {
 		} else if (result.isOk()) {
 			log.info("+ + + + + EVERYTHING LOOKS OK, but there are some warnings. + + + + +");
 		} else {
-			log.error("- - - - - SOME MODELS AND TESTS WERE FAILED.  PLEASE CHECK THE FILE OUTPUT. - - - - - ");
+			log.error("- - - - - SOME CALCULATIONS FAILED.  PLEASE CHECK THE FILE OUTPUT. - - - - - ");
 		}
 
 		String modelsRun = "";
@@ -205,7 +202,7 @@ public class SparrowCalculationRunner {
 
 
 		log.info("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
-		log.info("**Some tests generate lots of errors, many of which may not be"
+		log.info("**Some calculations generate lots of errors, many of which may not be"
 				+ " truely considered errors.  To prevent a fail message, they are counted"
 				+ " as warnings, but tracked separately.");
 		log.info("* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *");
@@ -232,12 +229,12 @@ public class SparrowCalculationRunner {
 		for (Calculator v : validators) {
 			try {
 
-				v.beforeEachTest(id);
-				results.add(v.testModel(id));
-				v.afterEachTest(id);
+				v.beforeEachCalc(id);
+				results.add(v.calcModel(id));
+				v.afterEachCalc(id);
 
 			} catch (Exception ex) {
-				log.error("Failed while running the test " + v.getClass().getCanonicalName(), ex);
+				log.error("Failed while running the calculation " + v.getClass().getCanonicalName(), ex);
 			}
 		}
 
@@ -311,7 +308,7 @@ public class SparrowCalculationRunner {
 
 		if (requiresText) {
 
-			System.out.println("--> The selected tests require text files.");
+			System.out.println("--> The selected calculations require text files.");
 
 			pr = promptPathOrDir();
 			if (pr.quit) return false;
@@ -340,7 +337,7 @@ public class SparrowCalculationRunner {
 
 		if (requiresDb) {
 
-			System.out.println("--> The selected tests require a DB connection.");
+			System.out.println("--> The selected calculations require a DB connection.");
 
 			pr = promptWhichDb();
 			if (pr.quit) return false;
@@ -351,7 +348,7 @@ public class SparrowCalculationRunner {
 			intiDbConfig();
 
 			try {
-				Connection conn = SharedApplication.getInstance().getROConnection();
+				Connection conn = SharedApplication.getInstance().getRWConnection();
 				conn.close();
 			} catch (Exception e) {
 				System.err.println("Oops, a bad pwd, or lack of network access to the db?");
@@ -376,7 +373,7 @@ public class SparrowCalculationRunner {
 	}
 
 	/**
-	 * If true, each test writes the headings for the test results.
+	 * If true, each calculation writes the headings for the calculation results.
 	 * If false, the runner will do that so there is no duplication
 	 * of headers.
 	 * @return
@@ -393,15 +390,15 @@ public class SparrowCalculationRunner {
 
 		boolean ok = true;
 
-		for (Calculator mv : getValidators()) {
+		for (Calculator mv : getCalculators()) {
 
 			try {
 
-				ok = mv.initTest(this);
+				ok = mv.initCalc(this);
 				if (! ok) return false;
 
 			} catch (Exception e) {
-				log.error("Unable to initiate the test: " + mv.getClass(), e);
+				log.error("Unable to initiate the calculation: " + mv.getClass(), e);
 				return false;
 			}
 
@@ -410,7 +407,7 @@ public class SparrowCalculationRunner {
 		return true;
 	}
 
-	protected List<Calculator> getValidators() {
+	protected List<Calculator> getCalculators() {
 		return validators;
 	}
 
@@ -492,9 +489,9 @@ public class SparrowCalculationRunner {
 		System.out.println("");
 		System.out.println(": : SPARROW DSS Model Validator : :");
 		System.out.println("The validator works in three modes:");
-		System.out.println("1) Test a single model by entering the complete path to a single model, or");
-		System.out.println("2) Test several models from a directory by entering a directoy, or");
-		System.out.println("3) If none of the specified tests use text files, only database connection information will be asked.");
+		System.out.println("1) Run calculations a single model by entering the complete path to a single model, or");
+		System.out.println("2) Run calculations for several models from a directory by entering a directoy, or");
+		System.out.println("3) If none of the specified calculations use text files, only database connection information will be asked.");
 		System.out.println("If you enter a directory, you will be prompted for a start and end model number.");
 		System.out.println("Enter 'quit' for any response to stop.");
 	}
@@ -543,7 +540,7 @@ public class SparrowCalculationRunner {
 		System.out.println("* Error: (Default) Print single line messages for each row error.  No - additional (multi-line) details.");
 		System.out.println("* Warn:	In addition to errors, print single line warnings for rows that are suspicious.");
 		System.out.println("* Debug:	If available, print multi-line detail for each error.");
-		System.out.println("* Trace:	Used to debug the tests themselves, this option prints additional info about successful values as well.");
+		System.out.println("* Trace:	Used to debug the calculations themselves, this option prints additional info about successful values as well.");
 
 		PromptResponse level  = prompt("Logging Level (E/W/D/T) or [Enter] to use the default 'Error' Level: ");
 
@@ -573,11 +570,11 @@ public class SparrowCalculationRunner {
 
 			System.out.println("");
 			System.out.println(": : Models to Run (based on text files) : :");
-			PromptResponse firstIdStr  = prompt("Enter the ID of the first model to test: ");
+			PromptResponse firstIdStr  = prompt("Enter the ID of the first model to calculate with: ");
 			if (firstIdStr.quit) return firstIdStr;
 			firstModelId = Integer.parseInt(firstIdStr.getNullTrimmedStrResponse());
 
-			PromptResponse lastIdStr  = prompt("Enter the ID of the last model to test: ");
+			PromptResponse lastIdStr  = prompt("Enter the ID of the last model to calculate with: ");
 			if (lastIdStr.quit) return lastIdStr;
 			lastModelId = Integer.parseInt(lastIdStr.getNullTrimmedStrResponse());
 
@@ -628,7 +625,7 @@ public class SparrowCalculationRunner {
 
 		System.out.println("");
 		System.out.println(": : Database Connection : :");
-		PromptResponse response = prompt("Which database should the validation test be run against?  (T)est or (P)roduction: ");
+		PromptResponse response = prompt("Which database should the calculation use?  (T)est or (P)roduction: ");
 		if (response.quit) return response;
 
 		if (response.isEmptyOrNull()) {
@@ -666,7 +663,7 @@ public class SparrowCalculationRunner {
 
 		System.out.println("");
 		System.out.println(": : Caching : :");
-		System.out.println("Model data from the database is cached on your local disk to speed up repeated test runs.");
+		System.out.println("Model data from the database is cached on your local disk to speed up repeated calculations.");
 		System.out.println("If model data has changed in the db since the last run, the contents of the cache will need to be manually deleted.");
 		System.out.println("Below enter one of the following:");
 		System.out.println("* 'quit' to Quit.");
@@ -691,7 +688,7 @@ public class SparrowCalculationRunner {
 		return resp;
 	}
 
-	public Level getTestLogLevel() {
+	public Level getCalcLogLevel() {
 		return logLevel;
 	}
 

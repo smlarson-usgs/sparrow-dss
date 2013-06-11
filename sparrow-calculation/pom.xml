@@ -214,11 +214,10 @@
       <version>1.4.32-SNAPSHOT</version>
       <type>jar</type>
     </dependency>
-    <dependency>
-      <groupId>gov.usgs.cida</groupId>
-      <artifactId>sparrow-business</artifactId>
-      <version>1.4.32-SNAPSHOT</version>
-      <type>jar</type>
-    </dependency>
+	<dependency>
+		<groupId>gov.usgs.cida</groupId>
+		<artifactId>sparrow-business</artifactId>
+		<version>${project.version}</version>
+	</dependency>
   </dependencies>
 </project>

@@ -11,7 +11,7 @@ import org.apache.log4j.Logger;
  *
  * Subclasses only need to implement:
  * <ul>
- * <li>testModel() - The main test method</li>
+ * <li>calcModel() - The main test method</li>
  * <li>requiresDb() - Return true if the test requires db access</li>
  * <li>requiresTextFile() - Return true if a text file is needed for comparison</li>
  * </ul>
@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
 public abstract class SparrowCalculationBase implements Calculator {
 
 	protected SparrowCalculationRunner runner;
-	protected boolean failedTestIsOnlyAWarning = false;
+	protected boolean failedCalcIsOnlyAWarning = false;
 
 
 	public final static String ID_COL_KEY = "id_col";	//Table property of the key column
@@ -33,179 +33,51 @@ public abstract class SparrowCalculationBase implements Calculator {
 
 	protected CalculationResult result;
 
-	private Logger testLog;
+	private Logger calcLog;
 
 	/**
-	 * The failedTestIsOnlyAWarning flag indicates that a test failure should not
-	 * mark the test as failing, only a warning.  This is useful for tests that
+	 * The failedCalcIsOnlyAWarning flag indicates that a calc failure should not
+	 * mark the calc as failing, only a warning.  This is useful for calculations that
 	 * have lots of questionable values (i.e., values are off by 10% for thousands
 	 * of values).
 	 *
-	 * @param comparator The comparison to use for the comp method.
-	 * @param failedTestIsOnlyAWarning If true, a failed test will only be counted as a warning.
+	 * @param failedCalcIsOnlyAWarning If true, a failed calculation will only be counted as a warning.
 	 */
-	public SparrowCalculationBase(boolean failedTestIsOnlyAWarning) {
-		this.failedTestIsOnlyAWarning = failedTestIsOnlyAWarning;
+	public SparrowCalculationBase(boolean failedCalcIsOnlyAWarning) {
+		this.failedCalcIsOnlyAWarning = failedCalcIsOnlyAWarning;
 	}
 
 	@Override
-	public boolean initTest(SparrowCalculationRunner runner) throws Exception {
+	public boolean initCalc(SparrowCalculationRunner runner) throws Exception {
 		this.runner = runner;
 		return true;
 	}
 
 	@Override
-	public void beforeEachTest(Long modelId) {
-		recordTrace(modelId, "Beginning Test '" + this.getClass().getName() + "'");
+	public void beforeEachCalc(Long modelId) {
+		recordTrace(modelId, "Beginning Calculation '" + this.getClass().getName() + "'");
 		result = new CalculationResult(modelId, this.getClass().getSimpleName());
 	}
 
 	@Override
-	public void afterEachTest(Long modelId) {
+	public void afterEachCalc(Long modelId) {
 
 		if (result.isPerfect()) {
-			recordTrace(modelId, "Completed Test '" + this.getClass().getName() + "' with no failures or warnings.");
+			recordTrace(modelId, "Completed Calculation '" + this.getClass().getName() + "' with no failures or warnings.");
 		} else if (result.isOk()) {
-			recordTrace(modelId, "Completed Test '" + this.getClass().getName() + "' with SOME WARNINGS.");
+			recordTrace(modelId, "Completed Calculation '" + this.getClass().getName() + "' with SOME WARNINGS.");
 		} else {
-			recordTrace(modelId, "Completed Test '" + this.getClass().getName() + "' with SOME ERRORS.");
+			recordTrace(modelId, "Completed Calculation '" + this.getClass().getName() + "' with SOME ERRORS.");
 		}
 
-
-		//If a test modifies the cache such that it should not be used for other
-		//tests, clear it here.
-		//SharedApplication.getInstance().clearAllCaches();
 	}
-
-
-
-
-	/**
-	 * Compares two values and returns true if they are considered equal.
-	 * Note that only positive values are expected.  If a negative value
-	 * is received for any value, false is returned.
-	 *
-	 * The comparison is done on a sliding scale:  values less than ten require
-	 * a bit less accuracy.
-	 *
-	 * @param expect
-	 * @param compare
-	 * @param allowedFractionalVariance Nominal allowed variance
-	 * @return
-	 */
-//	public boolean comp(double expect, double compare, double allowedFractionalVariance) {
-//
-//		if (expect < 0 || compare < 0) {
-//			return false;
-//		}
-//
-//		double diff = Math.abs(compare - expect);
-//		double frac = 0;
-//
-//		if (diff == 0) {
-//			return true;	//no further comparison required
-//		}
-//
-//		if (expect < 1d) {
-//			return (diff < (allowedFractionalVariance * 10d));
-//		} else {
-//			frac = diff / expect;	//we are sure at this point that baseValue > 0
-//		}
-//
-//		if (expect < 10) {
-//			return frac < (allowedFractionalVariance * 5d);
-//		} else if (expect < 20) {
-//			return frac < (allowedFractionalVariance * 2d);
-//		} else if (expect < 1000) {
-//			return (frac < allowedFractionalVariance) && (diff < .01d);
-//		} else if (expect < 100000) {
-//			return (frac < allowedFractionalVariance) && (diff < 1d);
-//		} else {
-//			return (frac < allowedFractionalVariance) && (diff < 2d);
-//		}
-//	}
-
-	/**
-	 * Compares two values and returns true if they are considered equal.
-	 * Note that only positive values are expected.  If a negative value
-	 * is received for any value, false is returned.
-	 *
-	 * The comparison is done on a sliding scale:  values less than ten require
-	 * a bit less accuracy.
-	 *
-	 * @param expect
-	 * @param compare
-	 * @param allowedFractionalVariance Nominal allowed variance
-	 * @return
-	 */
-
-	/**
-	 * Compares two values and returns true if they are considered equal.
-	 * Note that only positive values are expected.  If a negative value
-	 * is received for any value, false is returned.
-	 *
-	 * For expected values less than zero:
-	 * False is always returned.  No negative numbers are expected.
-	 *
-	 * For expected values of 1 or less:
-	 * The actual value must have an absolute difference of less than
-	 * maxAbsVarianceForLessThanOne OR a fractional difference of less than
-	 * allowedFractionalVarianceLessThanOneK.
-	 *
-	 * For expected values of 1000 or less:
-	 * The actual value must have an absolute difference of less than
-	 * maxAbsVariance AND a fractional difference of less than
-	 * allowedFractionalVarianceLessThanOneK.
-	 *
-	 * For expected values of greater than 1000:
-	 * The actual value must have an absolute difference of less than
-	 * maxAbsVariance AND a fractional difference of less than
-	 * allowedFractionalVariance.
-	 *
-	 *
-	 *
-	 * @param expect  Expected Value
-	 * @param compare Value to compare
-	 * @param allowedFractionalVariance Fractional variation allowed for all values.
-	 * @param allowedFractionalVarianceLessThanOneK For values under 1000, this fractional variance is used instead
-	 * @param maxAbsVarianceForLessThanOne For values less than one, the greater variance of this abs variance or the lessThanOneK
-	 * @param maxAbsVariance The max absolute variance for any value.
-	 * @return
-	 */
-//	public boolean comp(double expect, double compare,
-//			double allowedFractionalVariance, double allowedFractionalVarianceLessThanOneK,
-//			double maxAbsVarianceForLessThanOne, double maxAbsVariance) {
-//
-//		if (expect < 0 || compare < 0) {
-//			return false;
-//		}
-//
-//		double diff = Math.abs(compare - expect);
-//		double frac = 0;
-//
-//		if (diff == 0) {
-//			return true;	//no further comparison required
-//		} else {
-//			frac = diff / expect;	//we are sure at this point that baseValue > 0
-//		}
-//
-//		if (expect <= 1d) {
-//			return (diff <= maxAbsVarianceForLessThanOne || frac < allowedFractionalVarianceLessThanOneK);
-//		} else if (expect <= 1000d) {
-//			return (frac <= allowedFractionalVarianceLessThanOneK && diff <= maxAbsVariance);
-//		} else {
-//			return (frac <= allowedFractionalVariance && diff <= maxAbsVariance);
-//		}
-//
-//	}
-
 
 
 	//
 	// Event recording
 	@Override
 	public void recordRowError(Long modelId, Long reachId, Integer rowNumber, String msg) {
-		if (failedTestIsOnlyAWarning) {
+		if (failedCalcIsOnlyAWarning) {
 			result.addErrorAsWarn();
 			writeRowLevelMessage(Level.WARN, modelId, reachId, rowNumber,
 				null, null, null, null, null, null, true, msg);
@@ -239,7 +111,7 @@ public abstract class SparrowCalculationBase implements Calculator {
 
 	@Override
 	public void recordError(Long modelId, String msg) {
-		if (failedTestIsOnlyAWarning) {
+		if (failedCalcIsOnlyAWarning) {
 			result.addErrorAsWarn();
 			writeModelLevelMessage(Level.WARN, modelId, true, msg);
 		} else {
@@ -257,7 +129,7 @@ public abstract class SparrowCalculationBase implements Calculator {
 
 	/**
 	 * This generic trace method does not force the the format header to be written
-	 * and should not be used during the test, since its output does not follow
+	 * and should not be used during the calculation, since its output does not follow
 	 * the standard format and will 'break' the output for parsing.
 	 * @param modelId
 	 * @param msg
@@ -270,7 +142,7 @@ public abstract class SparrowCalculationBase implements Calculator {
 	}
 
 	@Override
-	public void recordTestException(Long modelId, Exception exception, String msg) {
+	public void recordCalcException(Long modelId, Exception exception, String msg) {
 		result.addFatalError();
 		writeModelLevelMessage(Level.FATAL, modelId, true, exception, msg);
 	}
@@ -282,7 +154,7 @@ public abstract class SparrowCalculationBase implements Calculator {
 			Object expected, Object actual, String expectName, String actualName,
 			Boolean shoreReach, Boolean ifTran, String msg) {
 
-		if (failedTestIsOnlyAWarning) {
+		if (failedCalcIsOnlyAWarning) {
 			result.addErrorAsWarn();
 			writeRowLevelMessage(Level.WARN, modelId, reachId, rowNumber,
 				expected, actual, expectName, actualName,
@@ -494,12 +366,12 @@ public abstract class SparrowCalculationBase implements Calculator {
 	}
 
 	public Logger getLogger() {
-		if (testLog == null) {
-			testLog = Logger.getLogger(this.getClass());
-			testLog.setLevel(runner.getTestLogLevel());
+		if (calcLog == null) {
+			calcLog = Logger.getLogger(this.getClass());
+			calcLog.setLevel(runner.getCalcLogLevel());
 		}
 
-		return testLog;
+		return calcLog;
 	}
 
 }
