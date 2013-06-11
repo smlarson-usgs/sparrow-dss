@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import org.junit.Before;
 
 /**
  *
@@ -53,11 +54,10 @@ public abstract class CalcFractionalAreaBaseTest extends SparrowTestBaseWithDB {
 			table.setRowId(id, i);
 		}
 	}
-
-	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	
+	@Before
+	public void doTestSetup() throws Exception {
 		//log.setLevel(Level.DEBUG);
-		super.doOneTimeCustomSetup();
 
 		loadNetwork1();
 

@@ -913,6 +913,12 @@ public abstract class SparrowTestBase {
 				}
 				
 			}
+		} else if (expected instanceof String && actual instanceof String) {
+			if ("!ignore!".equalsIgnoreCase(expected.toString())) {
+				return true;
+			} else {
+				return expected.equals(actual);
+			}
 		} else {
 			//there seems to be a bug in the ObjectUtils class where
 			//two null values are not considered equal
