@@ -4,6 +4,7 @@ import gov.usgs.cida.datatable.ColumnAttribsBuilder;
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.impl.ColumnDataFromTable;
+import gov.usgswim.sparrow.AreaType;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.UncertaintyData;
@@ -37,8 +38,8 @@ import gov.usgswim.sparrow.service.predict.aggregator.AggregationRunner;
 public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 
 	protected PredictionContext context;
-	
-	
+
+
 	public PredictionContext getContext() {
 		return context;
 	}
@@ -46,7 +47,7 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 	public void setContext(PredictionContext context) {
 		this.context = context;
 	}
-	
+
 	@Override
 	public SparrowColumnSpecifier doAction() throws Exception {
 		Analysis analysis = context.getAnalysis();
@@ -77,12 +78,12 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 
 		//This will be created anyway, so just grab reference here
 		PredictData nominalPredictData = SharedApplication.getInstance().getPredictData(context.getModelID());
-		
+
 		DataSeriesType type = context.getAnalysis().getDataSeries();
 		Integer source = context.getAnalysis().getSource();
 		ColumnData delFracColumn = null;	//will be populated if required
-		
-		
+
+
 		//populate delivery if needed
 		if (type.isDeliveryRequired()) {
 			//avoid cache for now
@@ -91,9 +92,9 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 
 			assert(tReaches != null) : "client should not submit a delivery request without reaches";
 //			Set<Long> targetReaches = tReaches.asSet();
-			
+
 			delFracColumn = SharedApplication.getInstance().getDeliveryFraction(tReaches);
-			
+
 			if (delFracColumn == null) {
 				throw new Exception("Unable to find the specified reach(es) in the model.");
 			}
@@ -108,13 +109,13 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 					//Data is a ColumnData, however, we also need row IDs so that
 					//identify will work for this data series.  To do that,
 					//we overlay the column on topo, which provides row IDs for free.
-					
+
 					dataColIndex = 4; //An overriden column of topo (was hydseq)
-					
+
 					SingleColumnOverrideDataTable override = new SingleColumnOverrideDataTable(
 							nominalPredictData.getTopo(),
 							delFracColumn, 4, null);
-					
+
 					dataTable = override;
 					break;
 				}
@@ -137,8 +138,8 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 				case total_delivered_flux:
 				case total_yield:
 					//All TOTAL type series fall through to this point
-					
-					
+
+
 					//All total series share the ability to be about a specific
 					//source.
 					if (source != null) {
@@ -148,41 +149,41 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 						dataColIndex = result.getTotalCol();
 						impliedUncertaintySeries = UncertaintySeries.TOTAL;
 					}
-					
+
 					if (type.equals(DataSeriesType.total_yield)) {
-						
-						UnitAreaRequest unitAreaReq = new UnitAreaRequest(context.getModelID(), AggregationLevel.NONE, true);
+
+						UnitAreaRequest unitAreaReq = new UnitAreaRequest(context.getModelID(), AreaType.TOTAL_CONTRIBUTING);
 						DataTable unitAreaTab = SharedApplication.getInstance().getCatchmentAreas(unitAreaReq);
 						ColumnData unitAreaCol = new ColumnDataFromTable(unitAreaTab, 1);
-						
+
 						CalcTotalYield act = new CalcTotalYield(
 								nominalPredictData, result, unitAreaCol, source
 						);
 						ColumnData incYield = act.run();
-						
+
 						//Data is a ColumnData, however, we also need row IDs so that
 						//identify will work for this data series.  To do that,
 						//we overlay the column on topo, which provides row IDs for free.
 						dataColIndex = 4; //An overriden column of topo (was hydseq)
-						
+
 						SingleColumnOverrideDataTable override = new SingleColumnOverrideDataTable(
 								nominalPredictData.getTopo(),
 								incYield, 4, null);
-						
+
 						predictionBasedResult = override;
 						break;
-						
+
 					} else if (type.equals(DataSeriesType.total_delivered_flux)) {
 						//Create a new datatable that overlays the delFracColumn
 						//on top of the column selected above
-						
+
 						ColumnAttribsBuilder ca = new ColumnAttribsBuilder();
 						ca.setName(getDataSeriesProperty(type, false));
 						ca.setDescription(getDataSeriesProperty(type, true));
-						
+
 						SingleColumnCoefDataTable view = new SingleColumnCoefDataTable(
 								result, delFracColumn, dataColIndex, ca);
-						
+
 						predictionBasedResult = view;
 					} else if (type.equals(DataSeriesType.total_concentration)){
 						SparrowColumnSpecifier predictResultColumn = new SparrowColumnSpecifier(result, dataColIndex, context.getId());
@@ -191,12 +192,12 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 						calc.setBaseData(predictResultColumn);
 						calc.setStreamFlowData(streamFlowData);
 						SparrowColumnSpecifier calcResult = calc.run();
-						
+
 						predictionBasedResult = calcResult.getTable();
 					} else {
 						predictionBasedResult = result;
 					}
-					
+
 					break;
 				case decayed_incremental:
 					if (source != null) {
@@ -206,9 +207,9 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 						dataColIndex = result.getDecayedIncrementalCol();
 						impliedUncertaintySeries = UncertaintySeries.INCREMENTAL;
 					}
-					
+
 					predictionBasedResult = result;
-					
+
 					break;
 				case incremental: 	// intentional fall-through
 				case incremental_std_error_estimate:
@@ -225,30 +226,30 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 						dataColIndex = result.getIncrementalCol();
 						impliedUncertaintySeries = UncertaintySeries.INCREMENTAL;
 					}
-					
+
 					if (type.equals(DataSeriesType.incremental_yield)) {
-						
-						UnitAreaRequest catchAreaReq = new UnitAreaRequest(context.getModelID(), AggregationLevel.NONE, false);
+
+						UnitAreaRequest catchAreaReq = new UnitAreaRequest(context.getModelID(), AreaType.INCREMENTAL);
 						DataTable catchmentAreaTab = SharedApplication.getInstance().getCatchmentAreas(catchAreaReq);
 						ColumnData catchmentAreaCol = new ColumnDataFromTable(catchmentAreaTab, 1);
-						
+
 						CalcIncrementalYield act = new CalcIncrementalYield(
 								nominalPredictData.getModel(), result, catchmentAreaCol, source
 						);
 						ColumnData incYield = act.run();
-						
+
 						//Data is a ColumnData, however, we also need row IDs so that
 						//identify will work for this data series.  To do that,
 						//we overlay the column on topo, which provides row IDs for free.
 						dataColIndex = 4; //An overriden column of topo (was hydseq)
-						
+
 						SingleColumnOverrideDataTable override = new SingleColumnOverrideDataTable(
 								nominalPredictData.getTopo(),
 								incYield, 4, null);
-						
+
 						predictionBasedResult = override;
 						break;
-						
+
 					} else if (type.equals(DataSeriesType.incremental_delivered_flux)
 							|| type.equals(DataSeriesType.incremental_delivered_yield)) {
 
@@ -256,37 +257,37 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 						// Delivery Fraction X Incremental Flux X Instream Delivery
 						// This is built w/ two coef table views:  delFrac X inc Flux,
 						// then that result times Instream Delivery.
-						
+
 						ColumnAttribsBuilder DelFluxCa = new ColumnAttribsBuilder();
 						DelFluxCa.setName(getDataSeriesProperty(type, false));
 						DelFluxCa.setDescription(getDataSeriesProperty(type, true));
 						DelFluxCa.setUnits(null);	//default is correct
-						
-						
-						
+
+
+
 						//Grab the instream delivery (called decay) as a column
 						ColumnData incDeliveryCol = new ColumnDataFromTable(nominalPredictData.getDelivery(), PredictData.INSTREAM_DECAY_COL);
-						
+
 
 						// Delivery Fraction X Incremental Flux
 						// Column is slightly misnamed, but is never used.
 						SingleColumnCoefDataTable incTimesDelFrac = new SingleColumnCoefDataTable(
 								result, delFracColumn, dataColIndex, null);
-						
+
 
 						// The above result X Instream Delivery
 						SingleColumnCoefDataTable incDeliveredFlux = new SingleColumnCoefDataTable(
 								incTimesDelFrac, incDeliveryCol, dataColIndex, DelFluxCa);
-												
+
 						if (type.equals(DataSeriesType.incremental_delivered_yield)) {
 							// inc. del. yield is inc. del. flux / catchment area
-							
+
 							ColumnAttribsBuilder DelYieldCa = new ColumnAttribsBuilder();
 							DelYieldCa.setName(getDataSeriesProperty(type, false));
 							DelYieldCa.setDescription(getDataSeriesProperty(type, true));
 							DelYieldCa.setUnits(SparrowUnits.KG_PER_SQR_KM_PER_YEAR.getUserName());
-							
-							UnitAreaRequest ca = new UnitAreaRequest(context.getModelID(), AggregationLevel.NONE, false);
+
+							UnitAreaRequest ca = new UnitAreaRequest(context.getModelID(), AreaType.INCREMENTAL);
 							DataTable catchmentAreaTable = SharedApplication.getInstance().getCatchmentAreas(ca);
 							ColumnData catchmentAreaColumn = new ColumnDataFromTable(catchmentAreaTable, 1);
 							SingleColumnCoefDataTable incDeliveredYield = new SingleColumnCoefDataTable(
@@ -296,13 +297,13 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 						else {
 							predictionBasedResult = incDeliveredFlux;
 						}
-						
+
 					} else {
 						predictionBasedResult = result;
 					}
-					
-					
-					
+
+
+
 					break;
 				default:
 					throw new Exception("No dataSeries was specified in the analysis section");
@@ -324,7 +325,7 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 			dataTable = predictionBasedResult;
 
 		} else {
-			
+
 			// not delivery based, prediction based, or standard error estimate based
 
 			switch (type) {
@@ -342,7 +343,7 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 					}
 					break;
 				case catch_area:
-					UnitAreaRequest ca = new UnitAreaRequest(context.getModelID(), AggregationLevel.NONE, false);
+					UnitAreaRequest ca = new UnitAreaRequest(context.getModelID(), AreaType.INCREMENTAL);
 					dataTable = SharedApplication.getInstance().getCatchmentAreas(ca);
 					dataColIndex = 1;
 					break;

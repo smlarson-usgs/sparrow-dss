@@ -44,7 +44,7 @@ public class FindReachSupportService extends HttpServlet {
 		try {
 			ColumnData edaAttrib = null;
 			Long mId = Long.parseLong(modelID);
-			
+
 			if ("code".equals(attrib)) {
 				edaAttrib = (ColumnData) ConfiguredCache.EDACodeColumn.get(mId);
 			} else if ("name".equals(attrib)) {
@@ -89,7 +89,7 @@ public class FindReachSupportService extends HttpServlet {
 	public static final String RESPONSE_HEADER = "<%s model-id=\"%s\"><status>%s</status><message>%s</message>";
 	public static StringBuilder getResponseXMLHeader(String rootElement,
 			String modelID, ReturnStatus status, String message) {
-		
+
 		StringBuilder result = new StringBuilder();
 		result.append(String.format(RESPONSE_HEADER, rootElement, modelID, status, message));
 		return result;
@@ -117,8 +117,8 @@ public class FindReachSupportService extends HttpServlet {
 		List<String> errors = new ArrayList<String>();
 		{ // trim each field
 			frReq.reachIDs = trimToNull(frReq.reachIDs);
-			frReq.basinAreaHi = trimToNull(frReq.basinAreaHi);
-			frReq.basinAreaLo = trimToNull(frReq.basinAreaLo);
+			frReq.totContributingAreaHi = trimToNull(frReq.totContributingAreaHi);
+			frReq.totContributingAreaLo = trimToNull(frReq.totContributingAreaLo);
 			frReq.meanQHi = trimToNull(frReq.meanQHi);
 			frReq.meanQLo = trimToNull(frReq.meanQLo);
 			frReq.reachName = trimToNull(frReq.reachName);
@@ -135,8 +135,8 @@ public class FindReachSupportService extends HttpServlet {
 				frReq.huc = cleanForSQLInjection(frReq.huc);
 				if (!hucRegEx.matcher(frReq.huc).matches()) errors.add("<hucErr>" + frReq.huc + " is not a valid beginning of a huc</hucErr>");
 			}
-			frReq.basinAreaHi = cleanFloat(frReq.basinAreaHi, "catch area high", "catchAreaHi", errors);
-			frReq.basinAreaLo = cleanFloat(frReq.basinAreaLo, "catch area low", "basinAreaLo", errors);
+			frReq.totContributingAreaHi = cleanFloat(frReq.totContributingAreaHi, "catch area high", "catchAreaHi", errors);
+			frReq.totContributingAreaLo = cleanFloat(frReq.totContributingAreaLo, "catch area low", "basinAreaLo", errors);
 			frReq.meanQHi = cleanFloat(frReq.meanQHi, "mean flow high", "meanQHi", errors);
 			frReq.meanQLo = cleanFloat(frReq.meanQLo, "mean flow low", "meanQLo", errors);
 			if (frReq.isEmptyRequest()) {
@@ -148,8 +148,8 @@ public class FindReachSupportService extends HttpServlet {
 
 		}
 
-		errors = checkHiLo(errors, frReq.basinAreaHi, frReq.basinAreaLo, "catch area");
-		errors = checkHiLo(errors, frReq.meanQHi, frReq.meanQLo, "catch area");
+		errors = checkHiLo(errors, frReq.totContributingAreaHi, frReq.totContributingAreaLo, "catch area");
+		errors = checkHiLo(errors, frReq.meanQHi, frReq.meanQLo, "flux");
 		// TODO check bbox
 		return errors;
 	}
@@ -201,11 +201,11 @@ public class FindReachSupportService extends HttpServlet {
 			whereClause += " and UPPER(reach_name) like '%" + frReq.reachName.toUpperCase() + "%' ";
 		}
 		{ // basin area
-			if (frReq.basinAreaHi != null) {
-				whereClause += " and CATCH_AREA < " + frReq.basinAreaHi;
+			if (frReq.totContributingAreaHi != null) {
+				whereClause += " and CATCH_AREA < " + frReq.totContributingAreaHi;
 			}
-			if (frReq.basinAreaLo != null) {
-				whereClause += " and CATCH_AREA > " + frReq.basinAreaLo;
+			if (frReq.totContributingAreaLo != null) {
+				whereClause += " and CATCH_AREA > " + frReq.totContributingAreaLo;
 			}
 		}
 		{ // basin area

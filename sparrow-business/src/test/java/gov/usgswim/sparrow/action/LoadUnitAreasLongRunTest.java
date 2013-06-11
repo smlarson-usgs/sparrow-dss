@@ -2,17 +2,16 @@ package gov.usgswim.sparrow.action;
 
 import static org.junit.Assert.assertEquals;
 import gov.usgs.cida.datatable.DataTable;
+import gov.usgswim.sparrow.AreaType;
 import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
-import gov.usgswim.sparrow.domain.DataSeriesType;
-import gov.usgswim.sparrow.domain.AggregationLevel;
 
 import org.junit.Test;
 
 /**
  * Tests the gov.usgswim.sparrow.action.LoadUnitAreas methods.
- * 
+ *
  * @author klangsto
  */
 
@@ -24,71 +23,60 @@ public class LoadUnitAreasLongRunTest extends SparrowTestBaseWithDB {
 	 */
 	@Test
 	public void testLoadUnitAreasSetters() throws Exception {
-		
+
 		LoadUnitAreas lua = new LoadUnitAreas();
-		assertEquals(AggregationLevel.NONE, lua.getHucLevel());
-		assertEquals(false, lua.isCumulative());
-		lua.setCumulative(true);
-		assertEquals(true, lua.isCumulative());
-		lua.setCumulative(false);
-		assertEquals(false, lua.isCumulative());
+		lua.setAreaType(AreaType.INCREMENTAL);
+		assertEquals(lua.getAreaType(), AreaType.INCREMENTAL);
+		lua.setAreaType(AreaType.TOTAL_CONTRIBUTING);
+		assertEquals(lua.getAreaType(), AreaType.TOTAL_CONTRIBUTING);
+		lua.setAreaType(AreaType.TOTAL_UPSTREAM);
+		assertEquals(lua.getAreaType(), AreaType.TOTAL_UPSTREAM);
 
 	}
-	
+
 	/**
 	 * Tests the columns.
 	 * @throws Exception
 	 */
 	@Test
 	public void testLoadUnitAreasColumns() throws Exception {
-		
-		LoadUnitAreas lua = new LoadUnitAreas();
-		DataTable dt = lua.run();
-		assertEquals(2, dt.getColumnCount());
-		assertEquals(null, dt.getUnits(0));
-		assertEquals("IDENTIFIER", dt.getName(0));
-		
-		assertEquals(SparrowUnits.SQR_KM.toString(), dt.getUnits(1));
-		assertEquals(Action.getDataSeriesProperty(DataSeriesType.catch_area, false), dt.getName(1));
-		assertEquals(Action.getDataSeriesProperty(DataSeriesType.catch_area, true), dt.getDescription(1));
-		assertEquals(DataSeriesType.catch_area.name(), dt.getProperty(1, TableProperties.DATA_SERIES.toString()));
-		assertEquals("land area", dt.getProperty(1, TableProperties.CONSTITUENT.toString()));
-		
-		lua = new LoadUnitAreas();
-		lua.setCumulative(true);
-		dt = lua.run();
-		assertEquals(2, dt.getColumnCount());
-		assertEquals(null, dt.getUnits(0));
-		assertEquals("IDENTIFIER", dt.getName(0));
-		
-		assertEquals(SparrowUnits.SQR_KM.toString(), dt.getUnits(1));
-		assertEquals(Action.getDataSeriesProperty(DataSeriesType.watershed_area, false), dt.getName(1));
-		assertEquals(Action.getDataSeriesProperty(DataSeriesType.watershed_area, true), dt.getDescription(1));
-		assertEquals(DataSeriesType.watershed_area.name(), dt.getProperty(1, TableProperties.DATA_SERIES.toString()));
-		assertEquals("land area", dt.getProperty(1, TableProperties.CONSTITUENT.toString()));
+		Long mockModelId = null;
+		LoadUnitAreas lua;
+		for(AreaType areaType : AreaType.values()){
+			lua = new LoadUnitAreas(mockModelId, areaType);
+			DataTable dt = lua.run();
+			assertEquals(2, dt.getColumnCount());
+			assertEquals(null, dt.getUnits(0));
+			assertEquals("IDENTIFIER", dt.getName(0));
 
+			assertEquals(SparrowUnits.SQR_KM.toString(), dt.getUnits(1));
+			assertEquals(areaType.getName(), dt.getName(1));
+			assertEquals(areaType.getDescription(), dt.getDescription(1));
+			assertEquals(areaType.name(), dt.getProperty(1, TableProperties.DATA_SERIES.toString()));
+			assertEquals("land area", dt.getProperty(1, TableProperties.CONSTITUENT.toString()));
+		}
 	}
-	
+
 	/**
 	 * Tests the data.
 	 * @throws Exception
 	 */
 	@Test
 	public void testLoadUnitAreasData() throws Exception {
-		
-		LoadUnitAreas lua = new LoadUnitAreas(50, AggregationLevel.NONE, false);
+
+		LoadUnitAreas lua = new LoadUnitAreas(50, AreaType.INCREMENTAL);
 		DataTable dt = lua.run();
 		assertEquals(8321, dt.getRowCount());
 		int row = dt.findFirst(0, 9388);
 		assertEquals((Double) 100.91, dt.getDouble(row, 1));
-		
-		lua = new LoadUnitAreas(50, AggregationLevel.NONE, true);
+
+		lua = new LoadUnitAreas(50, AreaType.TOTAL_CONTRIBUTING);
 		dt = lua.run();
 		assertEquals(8321, dt.getRowCount());
 		row = dt.findFirst(0, 9390);
 		assertEquals((Double) 1091.98, dt.getDouble(row, 1));
 
 	}
-	
+
 }
 
