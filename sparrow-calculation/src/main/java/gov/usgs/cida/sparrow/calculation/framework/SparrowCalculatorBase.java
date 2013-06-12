@@ -7,7 +7,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
- * Implements all the plumbing portion of a ModelValidator.
+ * Implements all the plumbing portion of a ModelCalculator.
  *
  * Subclasses only need to implement:
  * <ul>
@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  *
  * @author eeverman
  */
-public abstract class SparrowCalculationBase implements Calculator {
+public abstract class SparrowCalculatorBase implements Calculator {
 
 	protected SparrowCalculationRunner runner;
 	protected boolean failedCalcIsOnlyAWarning = false;
@@ -43,7 +43,7 @@ public abstract class SparrowCalculationBase implements Calculator {
 	 *
 	 * @param failedCalcIsOnlyAWarning If true, a failed calculation will only be counted as a warning.
 	 */
-	public SparrowCalculationBase(boolean failedCalcIsOnlyAWarning) {
+	public SparrowCalculatorBase(boolean failedCalcIsOnlyAWarning) {
 		this.failedCalcIsOnlyAWarning = failedCalcIsOnlyAWarning;
 	}
 

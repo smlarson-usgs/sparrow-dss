@@ -25,7 +25,7 @@ public interface Calculator {
 
 	public void beforeEachCalc(Long modelId);
 	public void afterEachCalc(Long modelId);
-	public CalculationResult calcModel(Long modelId) throws Exception;
+	public CalculationResult calculate(Long modelId) throws Exception;
 	public boolean requiresDb();
 	public boolean requiresTextFile();
 

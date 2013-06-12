@@ -8,23 +8,28 @@ import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.*;
+import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
+import org.apache.log4j.xml.DOMConfigurator;
 
 /**
  * This calculation runner and the associated framework code was based off of
  * the Validation framework written by eeverman@usgs.gov
+ *
+ * @author cschroedl@usgs.gov
  */
 public class SparrowCalculationRunner {
 
 //	static {
 //		// Set up a simple configuration that logs on the console.
 //
-//		URL log4jUrl = SparrowModelValidationRunner.class.getResource("/log4j_test.xml");
+//		URL log4jUrl = SparrowCalculationRunner.class.getResource("/log4j_test.xml");
 //		LogManager.resetConfiguration();
 //		DOMConfigurator.configure(log4jUrl);
 //	}
@@ -56,8 +61,7 @@ public class SparrowCalculationRunner {
 	String cacheDirectory;	//directory to cache db model data to, so re-run models are faster
 	List<Long> modelIds;
 	String dbPwd;
-	boolean useTestDb = false;	//modifies the connection string
-
+	Database database;
 	int firstModelId = -1;
 	int lastModelId = -1;
 
@@ -70,21 +74,23 @@ public class SparrowCalculationRunner {
 	 */
 	protected Level logLevel;
 
-	private List<Calculator> validators = new ArrayList<Calculator>();
+	private List<Calculator> calculators = new ArrayList<Calculator>();
 
 	//Application lifecycle listener handles startup / shutdown
-	static LifecycleListener lifecycle = new LifecycleListener();
+	static LifecycleListener lifecycle = null;
 
  /**
-	* The SparrowModelValidationRunner subclass name must be passed as the first
-	* arg.  That subclass must override the loadMOdelValidators method to add
-	* its suite of validators.
+	* The SparrowCalculationRunner subclass name must be passed as the first
+	* arg.  That subclass must override the loadModelCalculators method to add
+	* its suite of calculators.
 	*
 	* @param args
 	* @throws Exception
 	*/
 	public static void main(String[] args) throws Exception {
-
+		if(null == lifecycle){
+			 lifecycle = new LifecycleListener();
+		}
 		boolean continueRun = true;
 
 		if (args.length == 0) {
@@ -96,10 +102,10 @@ public class SparrowCalculationRunner {
 		//No logger up to this point
 		String runnerToRun = args[0];
 		SparrowCalculationRunner runner = (SparrowCalculationRunner) SparrowCalculationRunner.class.forName(runnerToRun).newInstance();
-		runner.loadModelValidators();
+		runner.loadModelCalculators();
 
 		if (runner.getCalculators().isEmpty()) {
-			System.err.println("No validators were found.  Subclass SparrowModelValidationRunner to override the loadModelValidators method to add some.");
+			System.err.println("No calculators were found.  Subclass " + SparrowCalculationRunner.class + " to override the loadModelCalculators method to add some.");
 			continueRun = false;
 		} else {
 			System.out.println("Found " + runner.getCalculators().size() + " Calculations to run against the models.");
@@ -125,7 +131,7 @@ public class SparrowCalculationRunner {
 			}
 		}
 
-		if (continueRun && runner.initModelValidators()) {
+		if (continueRun && runner.initModelCalculators()) {
 			long startTime = System.currentTimeMillis();
 			runner.run();
 			long endTime = System.currentTimeMillis();
@@ -226,11 +232,11 @@ public class SparrowCalculationRunner {
 
 		CalculationResultList results = new CalculationResultList(id);
 
-		for (Calculator v : validators) {
+		for (Calculator v : calculators) {
 			try {
 
 				v.beforeEachCalc(id);
-				results.add(v.calcModel(id));
+				results.add(v.calculate(id));
 				v.afterEachCalc(id);
 
 			} catch (Exception ex) {
@@ -285,8 +291,8 @@ public class SparrowCalculationRunner {
 	}
 
 
-	public void addCalculation(Calculator validator) {
-		validators.add(validator);
+	public void addCalculation(Calculator calculator) {
+		calculators.add(calculator);
 	}
 
 	public boolean oneTimeUserInput() throws Exception {
@@ -299,7 +305,7 @@ public class SparrowCalculationRunner {
 		boolean requiresDb = false;
 		boolean requiresText = false;
 
-		for (Calculator v : validators) {
+		for (Calculator v : calculators) {
 			requiresDb = requiresDb || v.requiresDb();
 			requiresText = requiresText || v.requiresTextFile();
 		}
@@ -341,8 +347,9 @@ public class SparrowCalculationRunner {
 
 			pr = promptWhichDb();
 			if (pr.quit) return false;
-
-			pr = promptPwd();
+			if(Database.DEVELOPMENT != this.database){
+				pr = promptPwd();
+			}
 			if (pr.quit) return false;
 
 			intiDbConfig();
@@ -368,8 +375,8 @@ public class SparrowCalculationRunner {
 	}
 
 
-	public void loadModelValidators() {
-		//override to add validators
+	public void loadModelCalculators() {
+		//override to add calculators
 	}
 
 	/**
@@ -386,7 +393,7 @@ public class SparrowCalculationRunner {
 		resultHeaderWritten = isWritten;
 	}
 
-	public boolean initModelValidators() {
+	public boolean initModelCalculators() {
 
 		boolean ok = true;
 
@@ -408,25 +415,44 @@ public class SparrowCalculationRunner {
 	}
 
 	protected List<Calculator> getCalculators() {
-		return validators;
+		return calculators;
 	}
 
 
 
 
 	public void intiDbConfig() {
+		String url = "";
+		String user = "";
+		String pwd = "";
+		switch(database) {
+			case DEVELOPMENT:
 
-		if (useTestDb) {
-		//Edit these props to point to test
-		System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.137:1521:witest");
-		System.setProperty("dbuser", "sparrow_dss");
-		System.setProperty("dbpass", dbPwd);
-		} else {
-		//Production Properties
-		System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.152:1521:widw");
-		System.setProperty("dbuser", "sparrow_dss");
-		System.setProperty("dbpass", dbPwd);
+				url = "jdbc:oracle:thin:@130.11.165.154:1521:widev";
+				user = "sparrow_dss";
+				pwd = "***REMOVED***";
+				break;
+			case TEST:
+				//Edit these props to point to test
+				url = "jdbc:oracle:thin:@130.11.165.137:1521:witest";
+				user = "sparrow_dss";
+				pwd = dbPwd;
+				break;
+			case PRODUCTION:
+				//Production Properties
+				url = "jdbc:oracle:thin:@130.11.165.152:1521:widw";
+				user = "sparrow_dss";
+				pwd = dbPwd;
+				break;
+			default:
+				throw new RuntimeException("No database was selected.");
 		}
+		System.setProperty("rw_dburl", url);
+		System.setProperty("rw_dbuser", user);
+		System.setProperty("rw_dbpass", pwd);
+		System.setProperty("dburl", url);
+		System.setProperty("dbuser", user);
+		System.setProperty("dbpass", pwd);
 	}
 
 	public boolean initLoggingConfig() {
@@ -449,7 +475,7 @@ public class SparrowCalculationRunner {
 	protected boolean initSystemConfig() {
 
 		System.setProperty(LifecycleListener.APP_ENV_KEY, "local");
-		System.setProperty(LifecycleListener.APP_MODE_KEY, "validation");
+		System.setProperty(LifecycleListener.APP_MODE_KEY, "test");
 
 
 		System.setProperty(
@@ -477,7 +503,7 @@ public class SparrowCalculationRunner {
 		lifecycle.contextInitialized(null, true);
 
 		if (logLevel != null) {
-			Logger baseLogger = Logger.getLogger("gov.usgswim.sparrow.validation");
+			Logger baseLogger = Logger.getLogger("gov.usgswim.sparrow.calculation");
 			baseLogger.setLevel(logLevel);
 		}
 
@@ -487,8 +513,8 @@ public class SparrowCalculationRunner {
 
 	public void promptIntro() {
 		System.out.println("");
-		System.out.println(": : SPARROW DSS Model Validator : :");
-		System.out.println("The validator works in three modes:");
+		System.out.println(": : SPARROW DSS Model Batch Calculator : :");
+		System.out.println("The batch calculator works in three modes:");
 		System.out.println("1) Run calculations a single model by entering the complete path to a single model, or");
 		System.out.println("2) Run calculations for several models from a directory by entering a directoy, or");
 		System.out.println("3) If none of the specified calculations use text files, only database connection information will be asked.");
@@ -625,7 +651,7 @@ public class SparrowCalculationRunner {
 
 		System.out.println("");
 		System.out.println(": : Database Connection : :");
-		PromptResponse response = prompt("Which database should the calculation use?  (T)est or (P)roduction: ");
+		PromptResponse response = prompt("Which database should the calculation use?  (D)evelopment, (T)est, or (P)roduction: ");
 		if (response.quit) return response;
 
 		if (response.isEmptyOrNull()) {
@@ -633,10 +659,12 @@ public class SparrowCalculationRunner {
 			return promptWhichDb();
 		} else {
 			String strVal = response.getNullTrimmedStrResponse();
-			if ("t".equalsIgnoreCase(strVal)) {
-				useTestDb = true;
+			if("d".equalsIgnoreCase(strVal)){
+				database = Database.DEVELOPMENT;
+			} else if ("t".equalsIgnoreCase(strVal)) {
+				database = Database.TEST;
 			} else if ("p".equalsIgnoreCase(strVal)) {
-				useTestDb = false;
+				database = Database.PRODUCTION;
 			} else {
 				System.out.println("Sorry, I didn't get that.");
 				return promptWhichDb();
@@ -659,7 +687,7 @@ public class SparrowCalculationRunner {
 	public PromptResponse promptCacheDirectory() {
 
 		File defaultBaseDir = getDefaultCacheDirectory();
-		File defaultDir = new File(defaultBaseDir, this.useTestDb ? "test_db" : "prod_db");
+		File defaultDir = new File(defaultBaseDir, this.database.name());
 
 		System.out.println("");
 		System.out.println(": : Caching : :");

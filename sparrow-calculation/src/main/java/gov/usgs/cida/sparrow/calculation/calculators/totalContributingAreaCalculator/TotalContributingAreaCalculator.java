@@ -1,6 +1,6 @@
-package gov.usgs.cida.sparrow.calculation;
+package gov.usgs.cida.sparrow.calculation.calculators.totalContributingAreaCalculator;
 
-import gov.usgs.cida.sparrow.calculation.framework.SparrowCalculationBase;
+import gov.usgs.cida.sparrow.calculation.framework.SparrowCalculatorBase;
 import gov.usgs.cida.sparrow.calculation.framework.CalculationResult;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.AreaType;
@@ -13,6 +13,7 @@ import gov.usgswim.sparrow.service.ConfiguredCache;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
@@ -26,7 +27,7 @@ import net.sf.ehcache.Element;
  *
  * @author eeverman
  */
-public class TotalContributingAreaCalculation extends SparrowCalculationBase {
+public class TotalContributingAreaCalculator extends SparrowCalculatorBase {
 
 
 	/** If true, don't correct frac values that do not total to one */
@@ -48,19 +49,18 @@ public class TotalContributingAreaCalculation extends SparrowCalculationBase {
 
 
 
-	public CalculationResult calcModel(Long modelId) throws Exception {
-		return testModelBasedOnFractionedAreas(modelId);
-
+	public CalculationResult calculate(Long modelId) throws Exception {
+		return this.calculateTotalContributingAreaAndPutInDb(modelId);
 		//return testModelBasedOnHuc2Aggregation(modelId);
 	}
 
-	public TotalContributingAreaCalculation(
+	public TotalContributingAreaCalculator(
 			boolean failedTestIsOnlyAWarning) {
 		super(failedTestIsOnlyAWarning);
 		try {
 			this.connection = SharedApplication.getInstance().getRWConnection();
 		} catch (SQLException ex) {
-			Logger.getLogger(TotalContributingAreaCalculation.class.getName()).log(Level.SEVERE, null, ex);
+			Logger.getLogger(TotalContributingAreaCalculator.class.getName()).log(Level.SEVERE, null, ex);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class TotalContributingAreaCalculation extends SparrowCalculationBase {
 	 * @param forceNonFractionedArea Takes precidence over forceUncorrectedFracValues.
 	 * @param forceUncorrectedFracValues
 	 */
-	public TotalContributingAreaCalculation(
+	public TotalContributingAreaCalculator(
 			boolean failedTestIsOnlyAWarning,
 			boolean forceNonFractionedArea,
 			boolean forceIgnoreIfTran,
@@ -78,11 +78,7 @@ public class TotalContributingAreaCalculation extends SparrowCalculationBase {
 		this.forceNonFractionedArea = forceNonFractionedArea;
 		this.forceIgnoreIfTran = forceIgnoreIfTran;
 		this.forceUncorrectedFracValues = forceUncorrectedFracValues;
-		try {
-			this.connection = SharedApplication.getInstance().getRWConnection();
-		} catch (SQLException ex) {
-			Logger.getLogger(TotalContributingAreaCalculation.class.getName()).log(Level.SEVERE, null, ex);
-		}
+
 	}
 
 	@Override
@@ -101,6 +97,12 @@ public class TotalContributingAreaCalculation extends SparrowCalculationBase {
 				true);
 
 		super.beforeEachCalc(modelId);
+
+		try {
+			this.connection = SharedApplication.getInstance().getRWConnection();
+		} catch (SQLException ex) {
+			Logger.getLogger(TotalContributingAreaCalculator.class.getName()).log(Level.SEVERE, null, ex);
+		}
 	}
 
 	@Override
@@ -118,7 +120,7 @@ public class TotalContributingAreaCalculation extends SparrowCalculationBase {
 	 * @return
 	 * @throws Exception
 	 */
-	public CalculationResult testModelBasedOnFractionedAreas(Long modelId) throws Exception {
+	public CalculationResult calculateTotalContributingAreaAndPutInDb(Long modelId) throws Exception {
 
 		recordTrace(modelId, "Starting:  Load model predict data from the db");
 		PredictData predictData = SharedApplication.getInstance().getPredictData(modelId);
@@ -129,10 +131,9 @@ public class TotalContributingAreaCalculation extends SparrowCalculationBase {
 		//All the HUC2s in this model, with the HUC id as the row ID.
 		//DataTable regionDetail = SharedApplication.getInstance().getHucsForModel(new ModelHucsRequest(modelId, HucLevel.HUC2));
 
-		int rowCompleteCnt = 0;
 		int topoRowCount = topo.getRowCount();
 		//@todo really use a hashmap, or just an arraylist of {reachId, area} pairs?
-		HashMap<Long, Double> reachIdToArea = new HashMap<Long, Double>(topoRowCount);
+		IdAreaPair[] idAreaPairs = new IdAreaPair[topoRowCount];
 
 		for (int row = 0; row < topoRowCount; row++) {
 			Long reachId = predictData.getIdForRow(row);
@@ -144,10 +145,13 @@ public class TotalContributingAreaCalculation extends SparrowCalculationBase {
 			FractionedWatershedAreaRequest areaReq = new FractionedWatershedAreaRequest(
 					reachUId, forceUncorrectedFracValues, forceIgnoreIfTran, forceNonFractionedArea);
 			calculatedFractionalWatershedArea =  SharedApplication.getInstance().getFractionedWatershedArea(areaReq);
-			//@todo add {result, id} pair to collection
+			idAreaPairs[row] = new IdAreaPair(reachId, calculatedFractionalWatershedArea);
 			recordRowTrace(modelId, reachId, row, "Completed: CalcFractionedWatershedArea");
 		}
-		//@todo use collection of pairs to insert into database
+
+		for(IdAreaPair pair : idAreaPairs){
+			this.recordInfo(modelId, pair.toString(), false);
+		}
 
 		return result;
 	}

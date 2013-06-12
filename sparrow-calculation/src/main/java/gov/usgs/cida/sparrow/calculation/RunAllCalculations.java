@@ -1,5 +1,6 @@
 package gov.usgs.cida.sparrow.calculation;
 
+import gov.usgs.cida.sparrow.calculation.calculators.totalContributingAreaCalculator.TotalContributingAreaCalculator;
 import gov.usgs.cida.sparrow.calculation.framework.SparrowCalculationRunner;
 import org.apache.log4j.Logger;
 
@@ -19,8 +20,8 @@ public class RunAllCalculations extends SparrowCalculationRunner {
 	}
 
 	@Override
-	public void loadModelValidators() {
-		addCalculation(new TotalContributingAreaCalculation(false, false, false, false));
+	public void loadModelCalculators() {
+		addCalculation(new TotalContributingAreaCalculator(false, false, false, false));
 
 	}
 }
