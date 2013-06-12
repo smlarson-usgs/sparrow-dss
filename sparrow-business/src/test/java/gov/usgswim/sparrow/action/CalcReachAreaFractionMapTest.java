@@ -36,6 +36,8 @@ public class CalcReachAreaFractionMapTest extends CalcFractionalAreaBaseTest {
 		doAreaFractionsShouldMatchPdfFileExampleInResources(areaMap);
 		
 		// This test file has some of the FRACs not totalling to 1, but in ways that we can correct.
+		// Note that we never correct single reaches (non-diversions) that don't total to one
+		// because that is likely a water utility.
 		action = new CalcReachAreaFractionMap(testTopoCorrected, 11L, false, false);
 		areaMap = action.run();
 		doAreaFractionsShouldMatchPdfFileExampleInResources(areaMap);
@@ -44,15 +46,15 @@ public class CalcReachAreaFractionMapTest extends CalcFractionalAreaBaseTest {
 	
 	public void doAreaFractionsShouldMatchPdfFileExampleInResources(ReachRowValueMap areaMap) throws Exception {
 		
-//		assertNull(areaMap.getFraction(0));
-//		assertEquals(.72D, (double)areaMap.getFraction(1), COMP_ERROR);
-//		assertEquals(.72D, (double)areaMap.getFraction(2), COMP_ERROR);
-//		assertNull(areaMap.getFraction(3));
-//		assertNull(areaMap.getFraction(4));
-//		assertEquals(.72D, (double)areaMap.getFraction(5), COMP_ERROR);
-//		assertNull(areaMap.getFraction(6));
-//		assertNull(areaMap.getFraction(7));
-//		assertEquals(.9D, (double)areaMap.getFraction(8), COMP_ERROR);
+		assertNull(areaMap.getFraction(0));
+		assertEquals(.72D, (double)areaMap.getFraction(1), COMP_ERROR);
+		assertEquals(.72D, (double)areaMap.getFraction(2), COMP_ERROR);
+		assertNull(areaMap.getFraction(3));
+		assertNull(areaMap.getFraction(4));
+		assertEquals(.72D, (double)areaMap.getFraction(5), COMP_ERROR);
+		assertNull(areaMap.getFraction(6));
+		assertNull(areaMap.getFraction(7));
+		assertEquals(.9D, (double)areaMap.getFraction(8), COMP_ERROR);
 		assertNull(areaMap.getFraction(9));
 		assertEquals(.9D, (double)areaMap.getFraction(10), COMP_ERROR);
 		assertEquals(1D, (double)areaMap.getFraction(11), COMP_ERROR);
