@@ -156,16 +156,19 @@ public class TotalContributingAreaCalculator extends SparrowCalculatorBase {
 	}
 
 	private void updateAreas(Long modelId, IdAreaPair[] idAreaPairs) throws SQLException {
+		if(0 == idAreaPairs.length){
+			return;
+		}
 		PreparedStatement updateArea = null;
 
 		String updateString =
 			"UPDATE model_reach_attrib SET tot_contrib_area = ? WHERE model_reach_id = (" +
 				"SELECT model_reach_id FROM model_reach " +
-			"WHERE" +
-			"model_reach.identifier = ?" +
-			"AND" +
-			"model_reach.sparrow_model_id = ?" +
-			");";
+			"WHERE " +
+			"model_reach.identifier = ? " +
+			"AND " +
+			"model_reach.sparrow_model_id = ? " +
+			")";
 		final int pairCount = idAreaPairs.length;
 		final int lastPair = pairCount - 1;
 		final int batchSize = (int) Math.floor(pairCount * 0.10);
@@ -182,7 +185,7 @@ public class TotalContributingAreaCalculator extends SparrowCalculatorBase {
 			updateArea.setLong(3, modelId);
 			updateArea.addBatch();
 			if(batchBoundary == i || lastPair == i){
-				this.recordInfo(modelId, "" + 100.0 * (i/pairCount) + "%", false);
+				this.recordInfo(modelId, "" + 100.0 * ((double)i/pairCount) + "%", true);
 				batchBoundary += batchSize;
 				updateArea.executeBatch();
 			}
