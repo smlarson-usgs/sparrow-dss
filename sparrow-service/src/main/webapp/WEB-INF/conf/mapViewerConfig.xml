@@ -2,8 +2,8 @@
 <MapperConfig>
 
 <logging log_level="info" log_thread_name="true" log_time="true">
-	<!--  <log_output name="System.err"/> -->
-	<log_output name="../../../../logs/sparrow/mapviewer.log"/>
+	<log_output name="System.out"/>
+	<!-- <log_output name="../../../../logs/sparrow/mapviewer.log"/> -->
 </logging>
 
 <security_config>
@@ -15,5 +15,12 @@
 
 <ns_data_provider id="sparrowPredict" class="gov.usgswim.sparrow.MapViewerSparrowDataProvider"/>
   
+<!-- cida prod server -->
+<!--
 <map_data_source name="sparrow" jdbc_host="130.11.165.152" jdbc_sid="widw" jdbc_port="1521" jdbc_user="SPARROW_DSS" jdbc_password="GvGuGjlKVAnuhmX0Ym5juxa7ZUgaYN0cxqjYBLJqejg=" jdbc_mode="thin" max_connections="1" number_of_mappers="3"/>
+-->
+
+<!-- test connection -->
+<map_data_source name="sparrow" jdbc_host="130.11.165.137" jdbc_sid="witest" jdbc_port="1521" jdbc_user="SPARROW_DSS" jdbc_password="!FILL_IN_WITH_LEADING_BANG" jdbc_mode="thin" max_connections="1" number_of_mappers="3"/>
+
 </MapperConfig>
