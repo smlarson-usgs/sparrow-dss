@@ -319,8 +319,8 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		//Get the catchment and watershed area of the test reach
 		LoadReachAttributes reachAttribAction = new LoadReachAttributes(TEST_MODEL_ID, TEST_REACH_SYSTEM_ID);
 		DataTable reachAttrib = reachAttribAction.run();
-		Double reachDbCatchArea = reachAttrib.getDouble(0, 11);
-		Double reachDbWatershedArea = reachAttrib.getDouble(0, 12);
+		Double reachDbIncrementalArea = reachAttrib.getDouble(0, 11);
+		Double reachDbTotalUpstreamArea = reachAttrib.getDouble(0, 12);
 
 		//Find the total value for HUC2
 		//The 1st table contains ID info (state name, area, etc)
@@ -333,8 +333,8 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		double huc2AggArea = infoDataTable.getDouble(huc2RowNumber, 2);
 
 
-		assertEquals(reachDbCatchArea, reachDbWatershedArea, .00000001D);
-		assertEquals(reachDbCatchArea, huc2AggArea, .00000001D);
+		assertEquals(reachDbIncrementalArea, reachDbTotalUpstreamArea, .00000001D);
+		assertEquals(reachDbIncrementalArea, huc2AggArea, .00000001D);
 
 	}
 
@@ -361,7 +361,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		//Get the catchment and watershed area of the test reach
 		LoadReachAttributes reachAttribAction = new LoadReachAttributes(TEST_MODEL_ID, TEST_REACH_SYSTEM_ID);
 		DataTable reachAttrib = reachAttribAction.run();
-		Double reachDbWatershedArea = reachAttrib.getDouble(0, 12);
+		Double reachDbTotalUpstreamArea = reachAttrib.getDouble(0, 12);
 
 		//Find the total value for HUC2
 		//The 1st table contains ID info (state name, area, etc)
@@ -374,7 +374,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		double huc2AggArea = infoDataTable.getDouble(huc2RowNumber, 2);
 
 
-		assertEquals(reachDbWatershedArea, huc2AggArea, .0001D);
+		assertEquals(reachDbTotalUpstreamArea, huc2AggArea, .0001D);
 
 	}
 
@@ -405,7 +405,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 		//Get the catchment and watershed area of the test reach
 		LoadReachAttributes reachAttribAction = new LoadReachAttributes(TEST_MODEL_ID, TEST_REACH_SYSTEM_ID);
 		DataTable reachAttrib = reachAttribAction.run();
-		Double reachDbWatershedArea = reachAttrib.getDouble(0, 12);
+		Double reachDbTotalUpstreamArea = reachAttrib.getDouble(0, 12);
 
 		//Find the total value for HUC2
 		//The 1st table contains ID info (state name, area, etc)
@@ -422,7 +422,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 
 
 		assertEquals(1, huc2sForReach.getRelations().size());	//reach should be in on ly 1 huc2
-		assertEquals(reachDbWatershedArea, huc2AggArea, .0001D);
+		assertEquals(reachDbTotalUpstreamArea, huc2AggArea, .0001D);
 
 	}
 

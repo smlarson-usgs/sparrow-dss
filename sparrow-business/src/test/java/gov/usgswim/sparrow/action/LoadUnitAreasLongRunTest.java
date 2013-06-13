@@ -40,7 +40,7 @@ public class LoadUnitAreasLongRunTest extends SparrowTestBaseWithDB {
 	 */
 	@Test
 	public void testLoadUnitAreasColumns() throws Exception {
-		Long mockModelId = null;
+		Long mockModelId = 50L;
 		LoadUnitAreas lua;
 		for(AreaType areaType : AreaType.values()){
 			lua = new LoadUnitAreas(mockModelId, areaType);

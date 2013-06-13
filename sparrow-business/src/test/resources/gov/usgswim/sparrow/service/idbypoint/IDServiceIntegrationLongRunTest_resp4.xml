@@ -226,7 +226,7 @@
 				</data>
 			</predicted>
 			<attributes display="Attributes">
-				<metadata rowCount="24" columnCount="3">
+				<metadata rowCount="25" columnCount="3">
 					<columns>
 						<col name="Name" type="String" />
 						<col name="Value" type="String" />
@@ -302,6 +302,11 @@
 						</r>
 					</section>
 					<section display="SPARROW Attributes" name="sparrow_attrib">
+						<r>
+							<c>Total Transmission Frac</c>
+							<c>0.861786</c>
+							<c>(fraction)</c>
+						</r>
 						<r>
 							<c>frac</c>
 							<c>1.0</c>
@@ -574,7 +579,7 @@
 				</data>
 			</predicted>
 			<attributes display="Attributes">
-				<metadata rowCount="24" columnCount="3">
+				<metadata rowCount="25" columnCount="3">
 					<columns>
 						<col name="Name" type="String" />
 						<col name="Value" type="String" />
@@ -650,6 +655,11 @@
 						</r>
 					</section>
 					<section display="SPARROW Attributes" name="sparrow_attrib">
+						<r>
+							<c>Total Transmission Frac</c>
+							<c>0.873387</c>
+							<c>(fraction)</c>
+						</r>
 						<r>
 							<c>frac</c>
 							<c>1.0</c>
