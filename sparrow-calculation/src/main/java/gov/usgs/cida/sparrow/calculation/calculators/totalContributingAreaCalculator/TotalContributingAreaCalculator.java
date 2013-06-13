@@ -156,9 +156,16 @@ public class TotalContributingAreaCalculator extends SparrowCalculatorBase {
 	}
 
 	private void updateAreas(Long modelId, IdAreaPair[] idAreaPairs) throws SQLException {
-		if(0 == idAreaPairs.length){
+		final int pairCount = idAreaPairs.length;
+		if(0 == pairCount){
 			return;
 		}
+		final int lastPair = pairCount - 1;	//checked at the bottom of each iteration to see if the last query batch should get executed
+		final int minimumBatchSize = 10000;	//minimum batch size for queries
+		final double fractionOfTotal = 0.10;	//if the fraction of the total # of queries is larger than minimumBatchSize, use this fraction as the batch size
+		final int batchSize = Math.max((int)Math.floor(pairCount * fractionOfTotal), minimumBatchSize);
+		int batchBoundary = batchSize;
+
 		PreparedStatement updateArea = null;
 
 		String updateString =
@@ -169,13 +176,7 @@ public class TotalContributingAreaCalculator extends SparrowCalculatorBase {
 					"AND " +
 					"model_reach.sparrow_model_id = ? " +
 			")";
-		final int pairCount = idAreaPairs.length;
-		final int lastPair = pairCount - 1;
-		final double fractionOfTotal = 0.10;
-		final int minimumBatchSize = 10000;
-		final int batchSize = Math.max((int)Math.floor(pairCount * fractionOfTotal), minimumBatchSize);
 
-		int batchBoundary = batchSize;
 		try {
 		    connection.setAutoCommit(false);
 		    updateArea = connection.prepareStatement(updateString);
