@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.impl.StandardNumberColumnDataWritable;
+import gov.usgswim.sparrow.AreaType;
 import gov.usgswim.sparrow.domain.AggregationLevel;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.domain.ReachRowValueMapBuilder;
@@ -139,7 +140,7 @@ public class CalcContributingFractionedAreaForRegions extends Action<ColumnData>
 						new ModelAggregationRequest(modelId, aggLevel);
 
 			areaRelations = SharedApplication.getInstance().getModelReachAreaRelations(modelReachAreaRelelationsRequest);
-			UnitAreaRequest unitAreaRequest = new UnitAreaRequest(modelId, AggregationLevel.REACH, false);
+			UnitAreaRequest unitAreaRequest = new UnitAreaRequest(modelId, AreaType.INCREMENTAL);
 
 			reachCatchmentAreas = SharedApplication.getInstance().getCatchmentAreas(unitAreaRequest);
 

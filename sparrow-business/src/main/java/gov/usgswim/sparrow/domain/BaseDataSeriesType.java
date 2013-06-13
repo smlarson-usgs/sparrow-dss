@@ -44,23 +44,23 @@ public enum BaseDataSeriesType {
 
     std_error_estimate_coef		(false, false, false, true, 1, false),
 
-    
-    
+
+
     total_decay					(true, false, false, false, 1, true),	//The amount decayed in the stream
     total_no_decay				(true, false, false, false, 1, true),	//Total as it would be w/o decay
-    
+
     //Base reach, model, and catchment attributes
     land_to_water_coef			(false, false, false, false, 2, false),	//l_to_w is not a predictive value for us
     instream_decay_coef			(false, false, false, false, 0, false),	//instream decay is not predictive for us
     catch_area					(false, false, false, false, 0, false),	//area of a catchment
     flux						(false, false, false, false, 0, false),	//avg flow per day
-    
+
     //Area of the reach's catchment, plus the catchments of all upstream reaches
     watershed_area		(false, false, false, false, 0, false),	//cumulative area of a catchment (include upstream)
-    
+
     //area of a huc (NEED FLAG FOR NOT REACH RELATED?)
     huc_area					(false, false, false, false, 0, false),
-		
+
 		yield							(true, false, false, false, 1, false)
     ;
 

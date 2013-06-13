@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.action;
 
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.DataTable;
+import gov.usgswim.sparrow.AreaType;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowTestBaseWithDBandCannedModel50;
 import gov.usgswim.sparrow.domain.AggregationLevel;
@@ -75,7 +76,7 @@ public class CalcFractionedWatershedAreaTableTest extends SparrowTestBaseWithDBa
 
 		//Load predict data and model incremental areas - used for comparison
 		PredictData pd = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
-		DataTable incrementalReachAreas = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(TEST_MODEL_ID, AggregationLevel.REACH, false));
+		DataTable incrementalReachAreas = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(TEST_MODEL_ID, AreaType.INCREMENTAL));
 
 		//Stats on the test reach
 		int testReachRowNumber = pd.getRowForReachID(TEST_REACH_SYSTEM_ID);

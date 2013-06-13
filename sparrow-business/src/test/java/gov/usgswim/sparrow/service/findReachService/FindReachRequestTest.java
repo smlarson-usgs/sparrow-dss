@@ -47,8 +47,8 @@ public class FindReachRequestTest {
 		assertEquals("wolf", frReq.reachName);
 		assertEquals("123400", frReq.meanQHi);
 		assertEquals("1", frReq.meanQLo );
-		assertEquals("2345", frReq.basinAreaHi);
-		assertEquals("1", frReq.basinAreaLo);
+		assertEquals("2345", frReq.totContributingAreaHi);
+		assertEquals("1", frReq.totContributingAreaLo);
 		assertEquals("02", frReq.huc);
 
 	}
@@ -75,12 +75,12 @@ public class FindReachRequestTest {
 		}
 		{
 			request = new FindReachRequest();
-			request.basinAreaHi = "75";
+			request.totContributingAreaHi = "75";
 			assertFalse(request.isEmptyRequest());
 		}
 		{
 			request = new FindReachRequest();
-			request.basinAreaLo = "65";
+			request.totContributingAreaLo = "65";
 			assertFalse(request.isEmptyRequest());
 		}
 		{

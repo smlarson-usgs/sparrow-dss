@@ -7,7 +7,7 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 
 /**
  * Loads data for the unit area, which may be a catchment or huc.
- * 
+ *
  * @author klangsto
  *
  */
@@ -18,7 +18,7 @@ public class UnitAreaFactory implements CacheEntryFactory {
 		UnitAreaRequest catchmentArea = (UnitAreaRequest)inCatchmentArea;
 		DataTable dt = null;
 		LoadUnitAreas lua = new LoadUnitAreas(
-				catchmentArea.getModelID(), catchmentArea.getHucLevel(), catchmentArea.getCumulative());
+				catchmentArea.getModelID(), catchmentArea.getAreaCalculationType());
 		dt = lua.run();
 		return dt;
 	}

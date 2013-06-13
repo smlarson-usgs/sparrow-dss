@@ -26,7 +26,7 @@ public class FindReachRequest implements XMLStreamParserComponent{
 	public String reachIDs;
 	public String reachName;
 	public String meanQLo, meanQHi;
-	public String basinAreaLo, basinAreaHi;
+	public String totContributingAreaLo, totContributingAreaHi;
 	public String huc;
 	//public String boundingBox;
 	public String edaName;
@@ -59,15 +59,15 @@ public class FindReachRequest implements XMLStreamParserComponent{
 		// TODO fill in later
 		return true;
 	}
-	
+
 	public void trimToNull() {
 		modelID = StringUtils.trimToNull(modelID);
 		reachIDs = StringUtils.trimToNull(reachIDs);
 		reachName = StringUtils.trimToNull(reachName);
 		meanQLo = StringUtils.trimToNull(meanQLo);
 		meanQHi = StringUtils.trimToNull(meanQHi);
-		basinAreaLo = StringUtils.trimToNull(basinAreaLo);
-		basinAreaHi = StringUtils.trimToNull(basinAreaHi);
+		totContributingAreaLo = StringUtils.trimToNull(totContributingAreaLo);
+		totContributingAreaHi =  StringUtils.trimToNull(totContributingAreaHi);
 		huc = StringUtils.trimToNull(huc);
 		edaName = StringUtils.trimToNull(edaName);
 		edaCode = StringUtils.trimToNull(edaCode);
@@ -76,45 +76,45 @@ public class FindReachRequest implements XMLStreamParserComponent{
 	public boolean isEmptyRequest() {
 		return (reachIDs == null) && (reachName == null)
 				&& (meanQHi == null && meanQLo == null)
-				&& (basinAreaHi == null && basinAreaLo == null)
+				&& (totContributingAreaLo == null && totContributingAreaHi == null)
 				&& (huc == null)
 				&& (edaCode == null) && (edaName == null);
 	}
-	
+
 	public String[] getEdaNameArray() {
 		edaName = StringUtils.trimToNull(edaName);
 		return split(edaName);
 	}
-	
+
 	public String[] getEdaCodeArray() {
 		edaCode = StringUtils.trimToNull(edaCode);
 		return split(edaCode);
 	}
-	
+
 	public String[] getReachIDArray() {
 		reachIDs = StringUtils.trimToNull(reachIDs);
 		return split(reachIDs);
 	}
-	
+
 	private String[] split(String splitMe) {
 		if (splitMe == null) {
 			return ArrayUtils.EMPTY_STRING_ARRAY;
 		} else {
 			String[] result = splitMe.split("[,]");
 			ArrayList<String> list = new ArrayList<String>();
-			
+
 			for (int i = 0; i < result.length; i++) {
 				result[i] = StringUtils.trimToNull(result[i]);
 				if (result[i] != null) {
 					list.add(result[i]);
 				}
 			}
-			
+
 			return list.toArray(ArrayUtils.EMPTY_STRING_ARRAY);
 
 		}
 	}
-	
+
 
 
 	@Override
@@ -155,9 +155,9 @@ public class FindReachRequest implements XMLStreamParserComponent{
 					} else if ("meanQLo".equals(localName)) {
 						meanQLo = ParserHelper.parseSimpleElementValue(in);
 					} else if ("watershed-area-hi".equals(localName)) {
-						basinAreaHi = ParserHelper.parseSimpleElementValue(in);
+						totContributingAreaHi = ParserHelper.parseSimpleElementValue(in);
 					} else if ("watershed-area-lo".equals(localName)) {
-						basinAreaLo = ParserHelper.parseSimpleElementValue(in);
+						totContributingAreaLo = ParserHelper.parseSimpleElementValue(in);
 					} else if ("huc".equals(localName)) {
 						huc = ParserHelper.parseSimpleElementValue(in);
 					} else if ("reach-name".equals(localName)) {
