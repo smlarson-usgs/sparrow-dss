@@ -135,20 +135,20 @@ public class TotalContributingAreaCalculator extends SparrowCalculatorBase {
 		int topoRowCount = topo.getRowCount();
 		//@todo really use a hashmap, or just an arraylist of {reachId, area} pairs?
 		IdAreaPair[] idAreaPairs = new IdAreaPair[topoRowCount];
-
+		recordTrace(modelId, "Starting calculation of upstream reach areas for model.");
 		for (int row = 0; row < topoRowCount; row++) {
 			Long reachId = predictData.getIdForRow(row);
 			Double calculatedFractionalWatershedArea = null;
 			ReachID reachUId = new ReachID(modelId, reachId);
 			//Do Fractioned watershed area calc
-			recordRowTrace(modelId, reachId, row, "Starting: CalcFractionedWatershedArea");
-
+			recordRowTrace(modelId, reachId, row, "Starting: CalcFractionedWatershedArea for row # " + row + " of " + topoRowCount);
 			FractionedWatershedAreaRequest areaReq = new FractionedWatershedAreaRequest(
 					reachUId, forceUncorrectedFracValues, forceIgnoreIfTran, forceNonFractionedArea);
 			calculatedFractionalWatershedArea =  SharedApplication.getInstance().getFractionedWatershedArea(areaReq);
 			idAreaPairs[row] = new IdAreaPair(reachId, calculatedFractionalWatershedArea);
 			recordRowTrace(modelId, reachId, row, "Completed: CalcFractionedWatershedArea");
 		}
+		recordTrace(modelId, "Finished calculation of upstream reach areas for model.");
 
 		this.updateAreas(modelId, idAreaPairs);
 
@@ -164,20 +164,23 @@ public class TotalContributingAreaCalculator extends SparrowCalculatorBase {
 		String updateString =
 			"UPDATE model_reach_attrib SET tot_contrib_area = ? WHERE model_reach_id = (" +
 				"SELECT model_reach_id FROM model_reach " +
-			"WHERE " +
-			"model_reach.identifier = ? " +
-			"AND " +
-			"model_reach.sparrow_model_id = ? " +
+					"WHERE " +
+					"model_reach.identifier = ? " +
+					"AND " +
+					"model_reach.sparrow_model_id = ? " +
 			")";
 		final int pairCount = idAreaPairs.length;
 		final int lastPair = pairCount - 1;
-		final int batchSize = (int) Math.floor(pairCount * 0.10);
+		final double fractionOfTotal = 0.10;
+		final int minimumBatchSize = 10000;
+		final int batchSize = Math.max((int)Math.floor(pairCount * fractionOfTotal), minimumBatchSize);
 
 		int batchBoundary = batchSize;
 		try {
 		    connection.setAutoCommit(false);
 		    updateArea = connection.prepareStatement(updateString);
-		    this.recordInfo(modelId, "0%...", false);
+		    this.recordTrace(modelId, "Begin persisting model area calculations");
+		    this.recordTrace(modelId, "0%...");
 		    for (int i = 0; i < pairCount; ++i) {
 			IdAreaPair idAreaPair = idAreaPairs[i];
 			updateArea.setDouble(1, idAreaPair.getArea());
@@ -185,13 +188,15 @@ public class TotalContributingAreaCalculator extends SparrowCalculatorBase {
 			updateArea.setLong(3, modelId);
 			updateArea.addBatch();
 			if(batchBoundary == i || lastPair == i){
-				this.recordInfo(modelId, "" + 100.0 * ((double)i/pairCount) + "%", true);
+				this.recordTrace(modelId, "" + (int)Math.floor(100.0 * ((double)i/pairCount)) + "%...");
 				batchBoundary += batchSize;
 				updateArea.executeBatch();
 			}
 		    }
 		    connection.commit();
-		    this.recordInfo(modelId, "100% - Done", false);
+		    this.recordTrace(modelId, "100%");
+		    this.recordTrace(modelId, "Done persisting model area calculations");
+
 		} catch (SQLException e ) {
 		    if (connection != null) {
 			try {
