@@ -22,6 +22,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import org.junit.Before;
 
 /**
  *
@@ -34,7 +35,7 @@ public abstract class CalcFractionalAreaBaseTest extends SparrowTestBaseWithDB {
 	protected static DataTable network1_inc_area;
 	protected static ModelReachAreaRelations network1_reach_state_relation;
 	protected static DataTable network1_region_detail;
-	protected static ArrayList<Long> to_11_targets = new ArrayList<Long>();
+	protected static ArrayList<Long> to_11_targets;
 	protected static ReachRowValueMap watershedAreaFractionMap;
 
 	protected static TopoData testTopo2;	//An example of a braided stream
@@ -53,11 +54,10 @@ public abstract class CalcFractionalAreaBaseTest extends SparrowTestBaseWithDB {
 			table.setRowId(id, i);
 		}
 	}
-
-	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	
+	@Before
+	public void doTestSetup() throws Exception {
 		//log.setLevel(Level.DEBUG);
-		super.doOneTimeCustomSetup();
 
 		loadNetwork1();
 
@@ -84,6 +84,7 @@ public abstract class CalcFractionalAreaBaseTest extends SparrowTestBaseWithDB {
 		network1_reach_state_relation = loadModelReachAreaRelations(subpackage, "reach_state_relation.tab", network1_topo);
 		network1_region_detail = loadRegionDetail(subpackage, "state_detail.tab");
 
+		to_11_targets  = new ArrayList<Long>();
 		to_11_targets.add(11L);
 
 		ReachRowValueMapBuilder builder = new ReachRowValueMapBuilder();

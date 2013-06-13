@@ -878,6 +878,18 @@ public abstract class SparrowTestBase {
 		return match;
 	}
 	
+	/**
+	 * Compares to objects for equality, neatly handling nulls, deltas for numbers,
+	 * and Strings.
+	 * 
+	 * If both values are Strings and the expected value is !ignore!, the comparison
+	 * returns true.
+	 * 
+	 * @param expected
+	 * @param actual
+	 * @param fractionalDeltaAllowed
+	 * @return 
+	 */
 	public static boolean isEqual(Object expected, Object actual, double fractionalDeltaAllowed) {
 		if (expected instanceof Number && actual instanceof Number) {
 			Double e = ((Number) expected).doubleValue();
@@ -912,6 +924,12 @@ public abstract class SparrowTestBase {
 					}
 				}
 				
+			}
+		} else if (expected instanceof String && actual instanceof String) {
+			if ("!ignore!".equalsIgnoreCase(expected.toString())) {
+				return true;
+			} else {
+				return expected.equals(actual);
 			}
 		} else {
 			//there seems to be a bug in the ObjectUtils class where

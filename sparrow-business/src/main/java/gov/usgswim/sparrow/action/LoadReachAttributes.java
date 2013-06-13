@@ -72,7 +72,7 @@ public class LoadReachAttributes extends Action<DataTable> {
 		
 		cols[11].setUnits(SparrowUnits.SQR_KM.getUserName());	//Incremental Area
 		cols[11].setProperty(TableProperties.PRECISION.toString(), "2");
-		cols[12].setUnits(SparrowUnits.SQR_KM.getUserName());	//Cumulative Drainage Area
+		cols[12].setUnits(SparrowUnits.SQR_KM.getUserName());	//Total Upstream Area
 		cols[12].setProperty(TableProperties.PRECISION.toString(), "2");
 		
 		cols[13].setUnits(SparrowUnits.FRACTION.getUserName());	//Incremental Delivery
