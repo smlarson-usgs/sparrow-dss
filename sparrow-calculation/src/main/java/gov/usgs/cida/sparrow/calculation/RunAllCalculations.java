@@ -21,7 +21,7 @@ public class RunAllCalculations extends SparrowCalculationRunner {
 
 	@Override
 	public void loadModelCalculators() {
-		addCalculation(new TotalContributingAreaCalculator(false, false, false, false));
+		addCalculation(new TotalContributingAreaCalculator(false, false, false, true));
 
 	}
 }
