@@ -25,6 +25,12 @@ import org.apache.log4j.Logger;
  */
 public class SparrowModelValidationRunner {
 	
+	public enum Database {
+		PRODUCTION,
+		TEST,
+		DEVELOPMENT
+	}
+	
 //	static {
 //		// Set up a simple configuration that logs on the console.
 //		
@@ -60,7 +66,7 @@ public class SparrowModelValidationRunner {
 	String cacheDirectory;	//directory to cache db model data to, so re-run models are faster
 	List<Long> modelIds;
 	String dbPwd;
-	boolean useTestDb = false;	//modifies the connection string
+	Database database;
 
 	int firstModelId = -1;
 	int lastModelId = -1;
@@ -420,17 +426,27 @@ public class SparrowModelValidationRunner {
 
 	public void intiDbConfig() {
 
-		if (useTestDb) {
-		//Edit these props to point to test
-		System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.137:1521:witest");
-		System.setProperty("dbuser", "sparrow_dss");
-		System.setProperty("dbpass", dbPwd);
-		} else {
-		//Production Properties
-		System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.152:1521:widw");
-		System.setProperty("dbuser", "sparrow_dss");
-		System.setProperty("dbpass", dbPwd);
+		switch(database) {
+			case DEVELOPMENT:
+				System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.154:1521:widev");
+				System.setProperty("dbuser", "sparrow_dss");
+				System.setProperty("dbpass", dbPwd);
+				break;
+			case TEST:
+				System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.137:1521:witest");
+				System.setProperty("dbuser", "sparrow_dss");
+				System.setProperty("dbpass", dbPwd);
+				break;
+			case PRODUCTION:
+				//Production Properties
+				System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.152:1521:widw");
+				System.setProperty("dbuser", "sparrow_dss");
+				System.setProperty("dbpass", dbPwd);
+				break;
+			default:
+				throw new RuntimeException("No database was selected.");
 		}
+
 	}
 	
 	public boolean initLoggingConfig() {
@@ -626,27 +642,29 @@ public class SparrowModelValidationRunner {
 	
 	
 	public PromptResponse promptWhichDb() {
-		
+
 		System.out.println("");
 		System.out.println(": : Database Connection : :");
-		PromptResponse response = prompt("Which database should the validation test be run against?  (T)est or (P)roduction: ");
+		PromptResponse response = prompt("Which database should the calculation use?  (D)evelopment, (T)est, or (P)roduction: ");
 		if (response.quit) return response;
-		
+
 		if (response.isEmptyOrNull()) {
 			System.out.println("Sorry, I didn't get that.");
 			return promptWhichDb();
 		} else {
 			String strVal = response.getNullTrimmedStrResponse();
-			if ("t".equalsIgnoreCase(strVal)) {
-				useTestDb = true;
+			if("d".equalsIgnoreCase(strVal)){
+				database = Database.DEVELOPMENT;
+			} else if ("t".equalsIgnoreCase(strVal)) {
+				database = Database.TEST;
 			} else if ("p".equalsIgnoreCase(strVal)) {
-				useTestDb = false;
+				database = Database.PRODUCTION;
 			} else {
 				System.out.println("Sorry, I didn't get that.");
 				return promptWhichDb();
 			}
 		}
-		
+
 		return response;
 	}
 	
@@ -663,7 +681,7 @@ public class SparrowModelValidationRunner {
 	public PromptResponse promptCacheDirectory() {
 		
 		File defaultBaseDir = getDefaultCacheDirectory();
-		File defaultDir = new File(defaultBaseDir, this.useTestDb ? "test_db" : "prod_db");
+		File defaultDir = new File(defaultBaseDir, database.toString());
 		
 		System.out.println("");
 		System.out.println(": : Caching : :");

@@ -128,7 +128,7 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 	public TestResult testModelBasedOnFractionedAreas(Long modelId) throws Exception {
 
 		recordTrace(modelId, "Starting:  Load cumulative areas from the db");
-		DataTable cumulativeAreasFromDb = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AreaType.TOTAL_CONTRIBUTING));
+		DataTable contributingTotalAreasFromDb = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AreaType.TOTAL_CONTRIBUTING));
 		recordTrace(modelId, "Completed:  Load cumulative areas from the db");
 		recordTrace(modelId, "Starting:  Load incremental areas from the db");
 		DataTable incrementalAreasFromDb = SharedApplication.getInstance().getCatchmentAreas(new UnitAreaRequest(modelId, AreaType.INCREMENTAL));
@@ -146,7 +146,7 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 
 		for (int row = 0; row < topo.getRowCount(); row++) {
 			Long reachId = predictData.getIdForRow(row);
-			Double dbArea = cumulativeAreasFromDb.getDouble(row, 1);
+			Double dbArea = contributingTotalAreasFromDb.getDouble(row, 1);
 			Double calculatedFractionalWatershedArea = null;
 			ReachID reachUId = new ReachID(modelId, reachId);
 			Boolean ifTran = topo.isIfTran(row);
