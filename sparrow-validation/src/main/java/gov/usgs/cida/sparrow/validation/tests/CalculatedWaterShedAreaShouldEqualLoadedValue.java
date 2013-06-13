@@ -29,7 +29,7 @@ public class CalculatedWaterShedAreaShouldEqualLoadedValue extends SparrowModelV
 
 
 	/** If true, don't correct frac values that do not total to one */
-	private boolean forceUncorrectedFracValues = false;
+	private boolean forceUncorrectedFracValues = true;
 
 	/** If true, IfTran is ignored for calculating upstream reaches */
 	private boolean forceIgnoreIfTran = false;

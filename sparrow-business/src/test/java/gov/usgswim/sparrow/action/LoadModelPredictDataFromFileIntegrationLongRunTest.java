@@ -19,10 +19,10 @@ public class LoadModelPredictDataFromFileIntegrationLongRunTest extends SparrowT
 
 	static PredictData dbPredictData;
 	static PredictData filePredictData;
-	
+
 	@Override
 	public void doOneTimeCustomSetup() throws Exception {
-		
+
 		//Normally we would load via the SharedApplication, which uses the cache.
 		//However, since we want to ensure we are comparing db values to the text
 		//file value, we call the Actions directly.
@@ -31,19 +31,19 @@ public class LoadModelPredictDataFromFileIntegrationLongRunTest extends SparrowT
 		dbPredictData = loadFromDb.run();
 		filePredictData = loadFromFile.run();
 	}
-	
+
 	@Test
 	public void testModelMetadata() throws Exception {
-		
+
 		SimpleDateFormat dataFormat = new SimpleDateFormat("MM-d-yyyy");
-		
+
 		SparrowModel dbMod = dbPredictData.getModel();
 		SparrowModel fileMod = filePredictData.getModel();
-		
+
 
 		assertEquals(dbMod.getConstituent(), fileMod.getConstituent());
 		assertEquals(dbMod.getContactId(), fileMod.getContactId());
-		
+
 		assertEquals(dataFormat.format(dbMod.getDateAdded()), dataFormat.format(fileMod.getDateAdded()));
 		assertEquals(dbMod.getDescription(), fileMod.getDescription());
 		assertEquals(dbMod.getEastBound(), fileMod.getEastBound());
@@ -56,13 +56,13 @@ public class LoadModelPredictDataFromFileIntegrationLongRunTest extends SparrowT
 		assertEquals(dbMod.getUnits(), fileMod.getUnits());
 		assertEquals(dbMod.getUrl(), fileMod.getUrl());
 		assertEquals(dbMod.getWestBound(), fileMod.getWestBound());
-		
+
 		List<Source> dbSrcs = dbMod.getSources();
 		List<Source> fileSrcs = fileMod.getSources();
 		for (int i = 0; i < dbSrcs.size(); i++) {
 			Source dbSrc = dbSrcs.get(i);
 			Source fileSrc = fileSrcs.get(i);
-			
+
 			assertEquals(dbSrc.getConstituent(), fileSrc.getConstituent());
 			assertEquals(dbSrc.getDescription(), fileSrc.getDescription());
 			assertEquals(dbSrc.getDisplayName(), fileSrc.getDisplayName());
@@ -71,40 +71,40 @@ public class LoadModelPredictDataFromFileIntegrationLongRunTest extends SparrowT
 			assertEquals(dbSrc.getModelId(), fileSrc.getModelId());
 			assertEquals(dbSrc.getName(), fileSrc.getName());
 			assertEquals(dbSrc.getSortOrder(), fileSrc.getSortOrder());
-			
+
 			SparrowUnits dbSrcUnit = dbSrc.getUnits();
 			SparrowUnits fileSrcUnit = fileSrc.getUnits();
 			assertEquals(dbSrcUnit, fileSrcUnit);
-			
+
 		}
 
 	}
-	
+
 	@Test
 	public void testTopo() throws Exception {
 		DataTable db = dbPredictData.getTopo();
 		DataTable file = filePredictData.getTopo();
-		
+
 		//compare, skipping column zero, which has db row ids.
-		assertTrue(compareTables(db, file, new int[] {0}, true, 0d));
+		assertTrue(compareTables(db, file, new int[] {0}, true, 0d, false));
 	}
-	
+
 	@Test
 	public void testCoef() throws Exception {
 		DataTable db = dbPredictData.getCoef();
 		DataTable file = filePredictData.getCoef();
 		assertTrue(compareTables(db, file));
 	}
-	
+
 	@Test
 	public void testDelivery() throws Exception {
 		DataTable db = dbPredictData.getDelivery();
 		DataTable file = filePredictData.getDelivery();
-		
+
 		//The text file version has row IDs, but we don't care.
-		assertTrue(compareTables(db, file, null, false, 0d));
+		assertTrue(compareTables(db, file, null, false, 0d, false));
 	}
-	
+
 	@Test
 	public void testSrc() throws Exception {
 		DataTable db = dbPredictData.getSrc();
@@ -116,9 +116,9 @@ public class LoadModelPredictDataFromFileIntegrationLongRunTest extends SparrowT
 	public void testSrcMetadata() throws Exception {
 		DataTable db = dbPredictData.getSrcMetadata();
 		DataTable file = filePredictData.getSrcMetadata();
-		
+
 		//Ignore column 0, which is the db id column
-		assertTrue(compareTables(db, file, new int[]{0}, true, 0d));
+		assertTrue(compareTables(db, file, new int[]{0}, true, 0d, false));
 	}
 
 }
