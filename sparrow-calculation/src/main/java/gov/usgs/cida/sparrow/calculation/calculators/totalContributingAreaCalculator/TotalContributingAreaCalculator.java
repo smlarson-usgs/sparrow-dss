@@ -12,6 +12,7 @@ import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.ConfiguredCache;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -149,14 +150,68 @@ public class TotalContributingAreaCalculator extends SparrowCalculatorBase {
 			recordRowTrace(modelId, reachId, row, "Completed: CalcFractionedWatershedArea");
 		}
 
-		for(IdAreaPair pair : idAreaPairs){
-			this.recordInfo(modelId, pair.toString(), false);
-		}
+		this.updateAreas(modelId, idAreaPairs);
 
 		return result;
 	}
 
+	private void updateAreas(Long modelId, IdAreaPair[] idAreaPairs) throws SQLException {
+		PreparedStatement updateArea = null;
 
+		String updateString =
+			"UPDATE model_reach_attrib SET tot_contrib_area = ? WHERE model_reach_id = (" +
+				"SELECT model_reach_id FROM model_reach " +
+			"WHERE" +
+			"model_reach.identifier = ?" +
+			"AND" +
+			"model_reach.sparrow_model_id = ?" +
+			");";
+		final int pairCount = idAreaPairs.length;
+		final int lastPair = pairCount - 1;
+		final int batchSize = (int) Math.floor(pairCount * 0.10);
+
+		int batchBoundary = batchSize;
+		try {
+		    connection.setAutoCommit(false);
+		    updateArea = connection.prepareStatement(updateString);
+		    this.recordInfo(modelId, "0%...", false);
+		    for (int i = 0; i < pairCount; ++i) {
+			IdAreaPair idAreaPair = idAreaPairs[i];
+			updateArea.setDouble(1, idAreaPair.getArea());
+			updateArea.setLong(2, idAreaPair.getReachId());
+			updateArea.setLong(3, modelId);
+			updateArea.addBatch();
+			if(batchBoundary == i || lastPair == i){
+				this.recordInfo(modelId, "" + 100.0 * (i/pairCount) + "%", false);
+				batchBoundary += batchSize;
+				updateArea.executeBatch();
+			}
+		    }
+		    connection.commit();
+		    this.recordInfo(modelId, "100% - Done", false);
+		} catch (SQLException e ) {
+		    if (connection != null) {
+			try {
+				this.recordError(modelId, "Error committing transaction. Rolling back...");
+				connection.rollback();
+				this.recordInfo(modelId, "Successfully rolled back transaction", false);
+			} catch(SQLException excep) {
+				String msg = "Error rolling back transaction.";
+				this.recordError(modelId, msg);
+				throw new SQLException(msg);
+			}
+		    }
+		    else{
+			    this.recordError(modelId, "Database connection Error");
+			    throw new SQLException();
+		    }
+		} finally {
+		    if (updateArea != null) {
+			updateArea.close();
+		    }
+		    connection.setAutoCommit(true);
+		}
+	}
 	protected void dumpCacheState(Long modelId) {
 		for (ConfiguredCache cache : ConfiguredCache.values()) {
 			List keys = cache.getKeys();
