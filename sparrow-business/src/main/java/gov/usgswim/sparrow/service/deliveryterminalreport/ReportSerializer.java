@@ -92,17 +92,16 @@ public class ReportSerializer extends BasicXMLStreamReader {
 		//Create number formats for each number column
 		for (int c = 0; c < data.getColumnCount(); c++) {
 			
+			String dataSeries = data.getProperty(c, TableProperties.DATA_TYPE.toString());
+			
 			if (data.getDataType(c) != null && Number.class.isAssignableFrom(data.getDataType(c))) {
 				
 				String formatStr = "##0";
 				int precision = 0;
 				String precisionStr = data.getProperty(c, TableProperties.PRECISION.toString());
-				String dataSeries = data.getProperty(c, TableProperties.DATA_TYPE.toString());
 				
-				if (DataSeriesType.client_id.toString().equals(dataSeries)) {
-					//This is the public client ID - sent back as an ID attrib, not a std. col of data.
-					clientIdColumn = c;
-				} else if (precisionStr != null) {
+				
+				if (precisionStr != null) {
 					try {
 						precision = Integer.parseInt(precisionStr);
 						precision-=2;	//Decrease the precision a bit for the report
@@ -118,6 +117,11 @@ public class ReportSerializer extends BasicXMLStreamReader {
 				
 				
 				numberFormat[c] = new DecimalFormat(formatStr);
+			}
+			
+			if (DataSeriesType.client_id.toString().equals(dataSeries)) {
+				//This is the public client ID - sent back as an ID attrib, not a std. col of data.
+				clientIdColumn = c;
 			}
 		}
 		
@@ -195,11 +199,25 @@ public class ReportSerializer extends BasicXMLStreamReader {
 				addOpenTag("columns");
 				{
 					
-					
 					for (int t = 0; t < (data.getTableCount()); t++) {
+						
+						int columnCountForTable = data.getTableColumnCount(t);
+						
+						//See if this table contains the client_id - if so, don't include in count
+						for (int c = 0; c < data.getTable(t).getColumnCount(); c++) {
+							String dataSeries = data.getTable(t).getProperty(c, TableProperties.DATA_TYPE.toString());
+							if (DataSeriesType.client_id.toString().equals(dataSeries)) {
+								columnCountForTable = columnCountForTable - 1;
+								break;
+							}
+						}
+						
+						
 						//Loop through all tables except the last one
 						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute(
-										"name", data.getTableName(t)).addAttribute("count", new Integer(data.getTableColumnCount(t)).toString()));
+										"name", data.getTableName(t)).addAttribute("count", new Integer(columnCountForTable).toString()));
+						
+						//Will not include the client_id column if present
 						writeColumnHeaders(data.getTable(t), 0, data.getTableColumnCount(t));
 						addCloseTag("group");
 					}
@@ -294,6 +312,8 @@ public class ReportSerializer extends BasicXMLStreamReader {
 
 					for (int c = 0; c < data.getColumnCount(); c++) {
 
+						if (c == clientIdColumn) continue;
+						
 						if (dataTableColumnTotals[c] == null) {
 							addBasicTag("c", null);
 						} else if (numberFormat[c] != null) {

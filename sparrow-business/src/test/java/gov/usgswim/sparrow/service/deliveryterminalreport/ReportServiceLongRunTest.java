@@ -8,6 +8,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.meterware.httpunit.*;
+import static gov.usgswim.sparrow.SparrowTestBase.getXPathValue;
 import org.junit.Ignore;
 
 public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
@@ -91,11 +92,15 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		String firstReachId = getXPathValue("//*[local-name()='data']/*[local-name()='r'][position()=1]/@id", actualReportResponse);
 		String numberOfValues = getXPathValue("count(//*[local-name()='data']/*[local-name()='r'][position()=1]/*[local-name()='c'])", actualReportResponse);
 		String declairedColCount = getXPathValue("//*[local-name()='metadata']/@columnCount", actualReportResponse);
+		String firstGroupColCount = getXPathValue("//*[local-name()='group'][1]/@count", actualReportResponse);
+		String secondGroupColCount = getXPathValue("//*[local-name()='group'][2]/@count", actualReportResponse);
 		String declairedRowCount = getXPathValue("//*[local-name()='metadata']/@rowCount", actualReportResponse);
 		
 		assertEquals("9682", firstReachId);
 		assertEquals("11", numberOfValues);
 		assertEquals("11" ,declairedColCount);
+		assertEquals("5", firstGroupColCount);
+		assertEquals("6", secondGroupColCount);
 		assertEquals("2" ,declairedRowCount);
 		
 	}
