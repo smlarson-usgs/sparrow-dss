@@ -112,7 +112,7 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 
 				//We can't add immutable columns to a writable table, so we need to construct a new table
 		SimpleDataTable infoTable = new SimpleDataTable(
-				new ColumnData[] {idInfo.getColumn(0), idInfo.getColumn(1), termReachWatershedAreaColumn, fractionedWatershedArea, streamFlow.getColumnData()},
+				new ColumnData[] {idInfo.getColumn(0), idInfo.getColumn(1), idInfo.getColumn(3), termReachWatershedAreaColumn, fractionedWatershedArea, streamFlow.getColumnData()},
 				"Identification and basic info",
 				"Identification and basic info",
 				buildTableProperties(), index);
