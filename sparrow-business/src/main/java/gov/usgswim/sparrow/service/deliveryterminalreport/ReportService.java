@@ -81,7 +81,7 @@ public class ReportService implements HttpService<ReportRequest> {
 					new String[] {"networkName", networkName, "networkUrl", networkUrl, "networkIdColumn", networkIdColumn});
 
 			return new  ReportSerializer(
-					req, filteredTableSet, predictData, readmeText, filteredTableSet.getColumnCount() - 1);
+					req, filteredTableSet, predictData, readmeText, filteredTableSet.getColumnCount());
 
 
 
