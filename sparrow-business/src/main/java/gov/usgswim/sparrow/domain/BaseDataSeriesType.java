@@ -61,7 +61,9 @@ public enum BaseDataSeriesType {
     //area of a huc (NEED FLAG FOR NOT REACH RELATED?)
     huc_area					(false, false, false, false, 0, false),
 
-		yield							(true, false, false, false, 1, false)
+		yield							(true, false, false, false, 1, false),
+		
+		client_id				(false, false, false, false, 0, true)
     ;
 
 

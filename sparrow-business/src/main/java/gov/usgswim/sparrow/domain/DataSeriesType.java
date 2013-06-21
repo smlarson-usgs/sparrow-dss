@@ -48,6 +48,11 @@ public enum DataSeriesType implements Serializable {
 
     //Area of the reach's catchment, plus the catchments of all upstream reaches
     total_upstream_area		(BaseDataSeriesType.watershed_area, false, false, false, true, true),
+		
+		///////////////////////
+		// Non-Mappable
+		///////////////////////
+		client_id							(BaseDataSeriesType.client_id, false, false, false, true, false),
 
     ///////////////////////
     //Completely unused

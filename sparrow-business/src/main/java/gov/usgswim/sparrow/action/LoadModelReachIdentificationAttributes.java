@@ -3,6 +3,9 @@ package gov.usgswim.sparrow.action;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.DataTableWritable;
 import gov.usgs.cida.datatable.utils.DataTableConverter;
+import gov.usgswim.sparrow.datatable.TableProperties;
+import gov.usgswim.sparrow.domain.BaseDataSeriesType;
+import gov.usgswim.sparrow.domain.DataSeriesType;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -58,6 +61,8 @@ public class LoadModelReachIdentificationAttributes extends Action<DataTable> {
 		rset = st.executeQuery();
 		addResultSetForAutoClose(rset);
 		attribs = DataTableConverter.toDataTable(rset);
+		attribs.getColumns()[3].setProperty(TableProperties.DATA_SERIES.toString(), DataSeriesType.client_id.toString());
+		attribs.getColumns()[3].setProperty(TableProperties.DATA_TYPE.toString(), BaseDataSeriesType.client_id.toString());
 		
 		return attribs.toImmutable();
 	}
