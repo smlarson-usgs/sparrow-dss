@@ -1,10 +1,16 @@
 package gov.usgs.cida.datatable.impl;
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.ColumnDataWritable;
+import java.util.Collections;
 
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Holds a sparse hashmap of values for uses where the data is mostly empty.
+ * Note that the constructor keeps a ref to the passed in hashmap.
+ * @author eeverman
+ */
 public class SparseDoubleColumnData extends AbstractColumnData implements ColumnData {
 	protected Map<Integer, Double> values;
 	protected int rowCount;	//Since our data can be sparse, we need to know how many rows
@@ -43,10 +49,9 @@ public class SparseDoubleColumnData extends AbstractColumnData implements Column
 			return this;
 		}
 
-		//TODO:  This method should not be part of this class if it is immutable
 		@Override
 		protected Object getValues() {
-			return values;
+			return Collections.unmodifiableMap(values);
 		}
 
 		// ----------------------------------
