@@ -19,7 +19,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 	//Human readable data types
 	public static final String STRING = "String";
 	public static final String NUMBER = "Number";
-	
+
 	public static final Set<OutputType> acceptableTypes = new HashSet<OutputType>();
 	static {
 		// The DataFlatteningFormatter can flatten for the following output types
@@ -28,9 +28,9 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 		acceptableTypes.add(XHTML);
 		acceptableTypes.add(XHTML_TABLE);
 	}
-	
 
-	
+
+
 	//Configuration
 	private String idHeader;	//header used for the row ID column
 	private String jsFunctionForRowId;	//A javascript function to wrap around the row ID
@@ -38,7 +38,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 	private String jsFileName;	//Name of a js file to include
 	private String cssFileName;	//Name of a css file to include
 	private String htmlTitle;	//content of the html title tag
-	
+
 	//State tracking
 	private Delimiters delims;
 	private boolean isInItem;
@@ -49,9 +49,9 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 
 	public SparrowExportHtmlFormatter(OutputType type, String jsFunctionForRowId,
 			String idHeader, String totalRowRowHeader, String jsFileName, String cssFileName, String htmlTitle) {
-		
+
 		super(type);
-		
+
 		switch (type) {
 			case HTML:
 			case XHTML:
@@ -62,7 +62,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 				throw new IllegalArgumentException("Only HTML or XHTML formats are accepted");
 		}
 		acceptableOutputTypes = acceptableTypes;
-		
+
 		this.outputType = type;
 		this.jsFunctionForRowId = jsFunctionForRowId;
 		this.idHeader = idHeader;
@@ -71,14 +71,14 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 		this.cssFileName = cssFileName;
 		this.htmlTitle = htmlTitle;
 		this.baseFormat = new SimpleValueFormatter(outputType);
-		
+
 	}
 
 	@Override
 	public void dispatch(XMLStreamReader in, Writer out) throws IOException {
 		try {
-			
-			
+
+
 			done: while (true) {
 				int event = in.next();
 				switch (event) {
@@ -86,7 +86,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 						break; // no start document handling needed
 					case XMLStreamConstants.START_ELEMENT:
 
-						String localName = in.getLocalName();						
+						String localName = in.getLocalName();
 
 						if ("group".equals(localName)) {
 
@@ -97,18 +97,18 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 							if (XHTML.equals(outputType) || HTML.equals(outputType)) {
 								writeHtmlHead(out);
 							}
-							
+
 							out.write(delims.sheetStart);
-							
+
 						} else if ("description".equals(localName)) {
-							
+
 							//Do nothing - most usage will provide their own captions/surrounding text
-							
+
 						} else if ("columns".equals(localName)) {
-							
+
 							out.write(delims.headerStart);
 							out.write(delims.headerRowStart);
-							
+
 							//Add an extra column for the ID
 							if (jsFunctionForRowId != null) {
 								if (idHeader != null) {
@@ -117,51 +117,51 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 									out.write(delims.headerCellStart + "Row ID" + delims.headerCellEnd);
 								}
 							}
-							
+
 						} else if ("col".equals(localName)) {
-							
+
 							String header = in.getAttributeValue(null, "name");
 							String unit = StringUtils.trimToNull(in.getAttributeValue(null, "unit"));
 							String relation = in.getAttributeValue(null, RelationType.XML_ATTRIB_NAME);
-							
+
 							if (unit != null) {
 								header = header + " (" + unit + ")";
 							}
-							
+
 							out.write(delims.headerCellStart + baseFormat.format(header) + delims.headerCellEnd);
-							
+
 							if (relation != null) {
 								RelationType rt = RelationType.parse(relation);
 								if (RelationType.rel_fraction.equals(rt)) {
-									formatters.add(new HTMLRelativePercentValueFormatter(true));
+									formatters.add(new HTMLRelativePercentCellFormatter(true));
 								} else if (RelationType.rel_percent.equals(rt)) {
-									formatters.add(new HTMLRelativePercentValueFormatter(false));
+									formatters.add(new HTMLRelativePercentCellFormatter(false));
 								} else {
 									formatters.add(new HTMLTableCellFormatter(outputType));
 								}
 							} else {
 								formatters.add(new HTMLTableCellFormatter(outputType));
 							}
-						
+
 						} else if ("data".equals(localName)) {
-							
+
 							out.write(delims.bodyStart);
-							
+
 						} else if ("r".equals(localName)) {
-							
+
 							//reset the column index
 							currentColumnIndex = -1;
-							
+
 							out.write(delims.bodyRowStart);
-							
+
 							//Add an extra column for the ID
 							String type = in.getAttributeValue(null, "type");
-							
+
 							if (! "total".equals(type)) {
 								//standard data row
 								if (jsFunctionForRowId != null) {
 									String id = baseFormat.format(in.getAttributeValue(null, "id"));
-									
+
 									out.write(delims.headerCellStart);
 									out.write(
 											"<a href=\"javascript:" + jsFunctionForRowId + "(" + id + ");\">" +
@@ -173,7 +173,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 								}
 							} else {
 								//Total row
-								
+
 								if (totalRowRowHeader != null) {
 									out.write(delims.headerCellStart + baseFormat.format(totalRowRowHeader) + delims.headerCellEnd);
 								} else {
@@ -181,14 +181,14 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 								}
 							}
 
-							
+
 						} else if ("c".equals(localName)) {
-							
+
 							currentColumnIndex++;
 							isInItem = true;
 							//out.write(delims.bodyCellStart); (handled by cell formatters)
-							
-						} 
+
+						}
 
 						break;
 					case XMLStreamConstants.CHARACTERS:
@@ -203,35 +203,35 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 						break;
 					case XMLStreamConstants.END_ELEMENT:
 						localName = in.getLocalName();
-						
-						
+
+
 						if ("group".equals(localName)) {
 
 						} else if ("metadata".equals(localName)) {
 
 						} else if ("description".equals(localName)) {
-							
+
 							//do nothing
-							
+
 						} else if ("columns".equals(localName)) {
-							
+
 							out.write(delims.headerRowEnd);
 							out.write(delims.headerEnd);
-							
+
 						} else if ("col".equals(localName)) {
-							
+
 							//col elements have no content
-							
+
 						} else if ("data".equals(localName)) {
-							
+
 							out.write(delims.bodyEnd);
-							
+
 						} else if ("r".equals(localName)) {
-								
+
 							out.write(delims.bodyRowEnd);
-							
+
 						} else if ("c".equals(localName)) {
-							
+
 							if (isInItem) {
 								isInItem = false;	//done w/ item
 								//out.write(delims.bodyCellEnd); //handled by cell formatters
@@ -239,7 +239,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 								//Empty cell
 								out.write("<td/>");
 							}
-							
+
 						}
 
 						break;
@@ -248,12 +248,12 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 				}
 			}
 			out.write(delims.sheetEnd);
-			
+
 			if (XHTML.equals(outputType) || HTML.equals(outputType)) {
 				writeHtmlFoot(out);
 			}
-			
-			
+
+
 		} catch (XMLStreamException e) {
 			e.printStackTrace();
 		} catch (EmptyStackException e) {
@@ -266,30 +266,30 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 	public boolean isNeedsCompleteFirstRow() {
 		return false;
 	}
-	
+
 	protected void writeHtmlHead(Writer out) throws IOException {
-		
+
 		if (XHTML.equals(outputType)) {
 			out.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" " +
 					"\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n");
-			
+
 			out.write("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n");
 		} else {
 			out.write("<!DOCTYPE html>\n");
 			out.write("<html>\n");
 		}
 		out.write("<head>\n");
-		
+
 		if (htmlTitle != null) {
 			out.write("<title>" + htmlTitle + "</title>\n");
 		} else {
 			out.write("<title>SPARROW DSS Report</title>\n");
 		}
-		
+
 		if (jsFileName != null) {
 			out.write("<script src=\"" + jsFileName + "\">​</script>\n");
 		}
-		
+
 		if (cssFileName != null) {
 			out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + cssFileName + "\" />\n");
 		}
@@ -297,13 +297,13 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 		out.write("</head>\n");
 		out.write("<body>\n");
 	}
-	
+
 	protected void writeHtmlFoot(Writer out) throws IOException {
 		out.write("</body>\n");
 		out.write("</html>");
 	}
 
-	
+
 	protected void setDelimiters(Delimiters delims) {
 		this.delims = delims;
 	}
