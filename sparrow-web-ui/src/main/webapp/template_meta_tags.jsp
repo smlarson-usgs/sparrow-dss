@@ -2,7 +2,8 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" > 
 		
 		<%--
-		Tell newer versions of IE to pretend they are IE8 (or 7 if needed.)
+		Tell newer versions of IE to pretend they are IE9 (or 7 if needed.)
+		IE8 Does not work for rendering SVG.
 		The version of EXT used in the project is not aware of versions beyond
 		IE8, so EXT assumes its running in IE6 and pops up warning messages.
 		This also seems to more reliably turn off IE compatability mode, preventing

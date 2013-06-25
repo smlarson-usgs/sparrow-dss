@@ -38,7 +38,7 @@
 			<MetadataURL>http://server.arcgisonline.com/ArcGIS/rest/services/NGS_Topo_US_2D/MapServer</MetadataURL>
 			<LogoURL />
 			<SLDURL />
-			<LegendURL>http://infotrek.er.usgs.gov/warp/assets/images/legends/esri2dworld.png</LegendURL>
+			<LegendURL>images/legends/esri2dworld.png</LegendURL>
 			<BackingName />
 			<Description>
 This map presents land cover imagery for the world and detailed topographic maps for the United States. The map includes the National Park Service (NPS) Natural Earth physical map at 1.24km per pixel for the world at small scales, i-cubed eTOPO 1:250,000-scale maps for the contiguous United States at medium scales, and National Geographic TOPO! 1:100,000 and 1:24,000-scale maps (1:250,000 and 1:63,000 in Alaska) for the United States at large scales. The TOPO! maps are seamless, scanned images of United States Geological Survey (USGS) paper topographic maps. For more information on this map, visit us online at http://goto.arcgisonline.com/maps/NGS_Topo_US_2D

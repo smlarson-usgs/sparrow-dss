@@ -157,8 +157,8 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 				<property>
-					<name>env</name>
-					<value>development</value>
+					<name>sparrow.build.profile</name>
+					<value>dev</value>
 				</property>
 			</activation>
 			<properties>
@@ -204,15 +204,15 @@
 			<id>production</id>
 			<activation>
 				<property>
-					<name>env</name>
-					<value>production</value>
+					<name>sparrow.build.profile</name>
+					<value>prod</value>
 				</property>
 			</activation>
 			<properties>
 				<security-constraint-url-pattern>/no_login_required</security-constraint-url-pattern>
 				<maven.build.timestamp.format>MM/dd/yyyy HH:mm:ss</maven.build.timestamp.format>
 				<buildTime>${maven.build.timestamp}</buildTime>
-				<deployment_profile>Production</deployment_profile>
+				<deployment_profile>Release</deployment_profile>
 			</properties>
 			<build>
 				<plugins>
