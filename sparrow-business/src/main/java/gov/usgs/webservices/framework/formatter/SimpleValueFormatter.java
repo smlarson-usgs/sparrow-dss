@@ -29,6 +29,8 @@ public class SimpleValueFormatter implements ValueFormatter {
 			case CSV:
 				value = StringEscapeUtils.escapeCsv(value);
 				break;
+			case XHTML_TABLE:
+			case HTML:
 			case XHTML://same as XML
 			case XML: // same as excel
 			case EXCEL:
