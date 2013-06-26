@@ -51,10 +51,14 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		String rowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
 		String nonZeroRowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tr[td[position() = 9 and .!=0]])", actualReportResponse);
 		String watershedAreaColumnLabel = ReportServiceLongRunTest.getXPathValue("//*[local-name() = 'th'][position() = 3]", actualReportResponse);
+		String alabamaPercentage = ReportServiceLongRunTest.getXPathValue("/table/tbody[1]/tr[1]/td[10]/div[1]/span[1]", actualReportResponse);
+		String kentuckyPercentage = ReportServiceLongRunTest.getXPathValue("/table/tbody[1]/tr[3]/td[10]/div[1]/span[1]", actualReportResponse);
 		
 		assertEquals("9", rowCountStr);
 		assertEquals("7", nonZeroRowCountStr);
 		assertEquals("Contributing Area (" + SparrowUnits.SQR_KM.toString() + ")", watershedAreaColumnLabel);
+		assertEquals("73%", alabamaPercentage);
+		assertEquals("<%", kentuckyPercentage);
 		
 	}
 	
