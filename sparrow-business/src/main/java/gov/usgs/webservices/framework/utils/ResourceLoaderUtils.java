@@ -62,9 +62,14 @@ public class ResourceLoaderUtils {
 		return result.toString();
 	}
 
-	public static SmartXMLProperties loadResourceAsSmartXML(String resourceFilePath) {
+	public static SmartXMLProperties loadResourceAsSmartXML(String resourceFilePath) throws Exception {
 		InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(resourceFilePath);
-		return ResourceLoaderUtils.loadResourceAsSmartXML(new InputStreamReader(stream));
+		
+		if (stream != null) {
+			return ResourceLoaderUtils.loadResourceAsSmartXML(new InputStreamReader(stream));
+		} else {
+			throw new Exception("The resource '" + resourceFilePath + "' could not be found.");
+		}
 	}
 
 	public static SmartXMLProperties loadResourceAsSmartXML(Reader inStream) {
