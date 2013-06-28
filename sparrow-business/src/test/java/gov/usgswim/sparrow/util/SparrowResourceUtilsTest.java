@@ -2,10 +2,7 @@
 package gov.usgswim.sparrow.util;
 
 import java.io.IOException;
-import java.util.Set;
-import java.util.Map.Entry;
-
-import org.custommonkey.xmlunit.XMLUnit;
+import static junit.framework.Assert.assertNull;
 import org.junit.Test;
 import org.junit.BeforeClass;
 import org.xml.sax.SAXException;
@@ -18,19 +15,18 @@ import org.custommonkey.xmlunit.XMLUnit;
 
 public class SparrowResourceUtilsTest extends XMLTestCase {
 
-	public final String NONEXISTENT_MODEL = "-666";
+	public final Long NONEXISTENT_MODEL = -666L;
 	
 	public final String DEFAULT_MODEL_SOURCE_1 =
 			"	<Name>People</Name>" + 
 			"	<Units/>" + 
 			"	<Description/>";
-	
-	@BeforeClass
+
 	protected void setUp() throws Exception {
 		XMLUnit.setIgnoreWhitespace(true);
 	}
 
-	@Test
+
 	public void testModelResourceFilePathReturnsNullIfAnyArgumentIsNull() {
 		String result = SparrowResourceUtils.getModelResourceFilePath(null, "filename.txt");
 		assertNull(result);
@@ -38,17 +34,27 @@ public class SparrowResourceUtilsTest extends XMLTestCase {
 		result = SparrowResourceUtils.getModelResourceFilePath(1L, null);
 		assertNull(result);
 	}
+	
 
-	@Test
+	public void testNonExistentModelThrowsException() throws Exception {
+		try {
+			String result = SparrowResourceUtils.lookupModelHelp(NONEXISTENT_MODEL, "any");
+		} catch (Exception e) {
+			//everthing is good
+			return;
+		}
+		fail("This should have throws an exception");
+	}
+
+
 	public void testRetrieveValuesFromDefaultModel() throws Exception {
-		String source1 = SparrowResourceUtils.lookupModelHelp("-1", "Sources.1");
+		String source1 = SparrowResourceUtils.lookupModelHelp(-1L, "Sources.1");
 		System.out.println(source1);
 		assertXMLEqual(DEFAULT_MODEL_SOURCE_1, source1);
 	}
-	
-	@Test
+
 	public void testRetrieveCommonTerms() throws Exception {
-		String help1 = SparrowResourceUtils.lookupMergedHelp("-1", "CommonTerms.MRB", "div");
+		String help1 = SparrowResourceUtils.lookupMergedHelp(-1L, "CommonTerms.MRB", "div");
 		System.out.println(help1);
 		//assertXMLEqual(DEFAULT_MODEL_SOURCE_1, source1);
 	}

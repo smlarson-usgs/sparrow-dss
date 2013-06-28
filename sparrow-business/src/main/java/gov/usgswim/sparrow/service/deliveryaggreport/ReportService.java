@@ -2,7 +2,6 @@ package gov.usgswim.sparrow.service.deliveryaggreport;
 
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.DataTableSet;
-import gov.usgs.cida.datatable.impl.DataTableSetCoord;
 import gov.usgs.cida.datatable.impl.DataTableSetSimple;
 import gov.usgs.cida.datatable.view.RelativePercentageView;
 import gov.usgswim.sparrow.service.deliveryterminalreport.ReportRequest;
@@ -58,7 +57,7 @@ public class ReportService implements HttpService<ReportRequest> {
 
 
 			String readmeText = SparrowResourceUtils.lookupMergedHelp(
-					context.getModelID().toString(),
+					context.getModelID(),
 					"CommonTerms.Terminal_Reach_Aggregate_Report",
 					null,
 					new String[] {});

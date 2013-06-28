@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 
 // Specs:
 // Take a field/item id and a model name
@@ -23,7 +24,9 @@ import javax.servlet.http.HttpServletResponse;
  *
  */
 public class HelpService extends HttpServlet {
-
+	protected static Logger log =
+		Logger.getLogger(HelpService.class); //logging for this class
+	
 	private static final long serialVersionUID = 1L;
 	private static final String HELP_RESPONSE= "<help-response model=\"%s\">"
 	+ " <status>OK</status>"
@@ -52,39 +55,52 @@ public class HelpService extends HttpServlet {
 			throws ServletException, IOException {
 		String modelString = req.getParameter("model");
 		String itemString = req.getParameter("item");
-		Integer modelID = parseInt(modelString);
-
-		modelID = (modelID == null)? lookupModelID(modelString): modelID;
-		if (modelID == null) {
-			throw new ServletException("nonexistent model " + modelString);
-		}
-		//itemID =  (itemID == null)? lookupItem(modelID, itemString): itemID;
-
-
-		String pathInfo = req.getPathInfo();
-
 		String result = null;
 		String type = null;
-		if (pathInfo.contains("lookup")) {
-			type = "lookup";
-			result = lookupItem(modelID, itemString);
-		} else if (pathInfo.contains("getSimpleKeys")) {
-			type = "getSimpleKeys";
-			result = getSimpleKeys(modelID);
-		} else if (pathInfo.contains("getListKeys")) {
-			type = "getListKeys";
-			result = getListKeys(modelID);
-		} else if (pathInfo.contains("getList")) {
-			type = "getList";
-			itemString = req.getParameter("listKey");
-			result = getList(modelID, itemString);
+		String response = null;
+		
+		try {
+			Long modelID = Long.parseLong(modelString);
+
+			modelID = (modelID == null)? lookupModelID(modelString): modelID;
+			if (modelID == null) {
+				throw new ServletException("nonexistent model " + modelString);
+			}
+			//itemID =  (itemID == null)? lookupItem(modelID, itemString): itemID;
+
+
+			String pathInfo = req.getPathInfo();
+
+
+			if (pathInfo.contains("lookup")) {
+				type = "lookup";
+				result = lookupItem(modelID, itemString);
+			} else if (pathInfo.contains("getSimpleKeys")) {
+				type = "getSimpleKeys";
+				result = getSimpleKeys(modelID);
+			} else if (pathInfo.contains("getListKeys")) {
+				type = "getListKeys";
+				result = getListKeys(modelID);
+			} else if (pathInfo.contains("getList")) {
+				type = "getList";
+				itemString = req.getParameter("listKey");
+				result = getList(modelID, itemString);
+			}
+		} catch (Exception e) {
+			response = String.format(HELP_RESPONSE,
+					modelString,
+					type,
+					itemString,
+					"<error>Error during request: " + e.getMessage() + "</error>"
+				);
+			log.error("Exception in HelpService", e);
 		}
 
-		String response = String.format(HELP_RESPONSE,
+		response = String.format(HELP_RESPONSE,
 				modelString,
 				type,
 				itemString,
-				(result == null)? "<error>not found</error>": result
+				result
 			);
 
 		resp.setContentType("application/xml");
@@ -93,18 +109,18 @@ public class HelpService extends HttpServlet {
 		out.flush();
 	}
 
-	private String lookupItem(Integer modelID, String itemString) {
-		String result = SparrowResourceUtils.lookupMergedHelp(modelID.toString(), itemString, "div");
+	private String lookupItem(Long modelID, String itemString) throws Exception {
+		String result = SparrowResourceUtils.lookupMergedHelp(modelID, itemString, "div");
 		return (result == null)? null: String.format(ITEM, result);
 	}
 
-	public String getSimpleKeys(Integer model) {
-		SmartXMLProperties help = SparrowResourceUtils.retrieveModelHelp(model.toString());
+	public String getSimpleKeys(Long modelId) throws Exception {
+		SmartXMLProperties help = SparrowResourceUtils.retrieveModelHelp(modelId);
 		return asKeyXML(help.keySet());
 	}
 
-	public String getListKeys(Integer model) {
-		SmartXMLProperties help = SparrowResourceUtils.retrieveModelHelp(model.toString());
+	public String getListKeys(Long modelId) throws Exception {
+		SmartXMLProperties help = SparrowResourceUtils.retrieveModelHelp(modelId);
 		return asKeyXML(help.listKeySet());
 	}
 
@@ -116,8 +132,8 @@ public class HelpService extends HttpServlet {
 		return (result.length() == 0)? null: String.format(KEYS, result);
 	}
 
-	public String getList(Integer model, String key ) {
-		SmartXMLProperties help = SparrowResourceUtils.retrieveModelHelp(model.toString());
+	public String getList(Long modelId, String key ) throws Exception {
+		SmartXMLProperties help = SparrowResourceUtils.retrieveModelHelp(modelId);
 		if (help.isListKey(key)) {
 			String result = help.get(key);
 			return (result == null)? null: String.format(LIST, result);
@@ -127,17 +143,14 @@ public class HelpService extends HttpServlet {
 
 
 
+	/**
+	 * Is this ever used??
+	 * @param modelString
+	 * @return 
+	 */
 	public static Integer lookupModelID(String modelString) {
 //		return SparrowResourceUtils.modelIndex.findFirst(0, modelString);
 		return 0;
-	}
-
-	public static Integer parseInt(String value) {
-		try {
-			return Integer.parseInt(value);
-		} catch (NumberFormatException e) {
-			return null;
-		}
 	}
 
 

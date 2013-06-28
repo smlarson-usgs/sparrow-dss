@@ -6,7 +6,6 @@ import gov.usgs.cida.datatable.filter.ColumnRangeFilter;
 import gov.usgs.cida.datatable.filter.FilteredDataTable;
 import gov.usgs.cida.datatable.impl.ColumnDataFromTable;
 import gov.usgs.cida.datatable.impl.SimpleDataTable;
-import gov.usgs.cida.datatable.view.SingleColumnView;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.AreaType;
 import gov.usgswim.sparrow.PredictData;
@@ -16,7 +15,6 @@ import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.SparrowModel;
-import gov.usgswim.sparrow.domain.AggregationLevel;
 import gov.usgswim.sparrow.request.HUC8TableRequest;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
@@ -70,7 +68,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
 		String networkIdColumn = model.getEnhNetworkIdColumn();
 
 		String readmeText = SparrowResourceUtils.lookupMergedHelp(
-				model.getId().toString(),
+				model.getId(),
 				"CommonTerms.Export Readme",
 				null,
 				new Object[] {"networkName", networkName, "networkUrl", networkUrl, "networkIdColumn", networkIdColumn});
