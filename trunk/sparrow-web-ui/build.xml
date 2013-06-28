@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="sparrow" default="build-all" basedir=".">
+    <description>Builds, tests, and runs the ${ant.project.name} project.</description>
+    <import file="ant-support/build-impl.xml" />
+	
+	<target name="point-mapviewer-local" description="Points this sparrow to a local instance of mapviewer">
+		<echo message="This is a manual task." />
+		<echo message="1) Create and deploy local mapviewer with sparrow core from https://wisvn.er.usgs.gov/repos/dev/usgs/sparrow/dss/core/trunk. If already done, skip to step 2" />
+		<echo message="   a) Check out the sparrow_core project and run the 'build-all' ant task" />
+		<echo message="   b) Deploy the dist/sparrow_mv.war to your local tomcat" />
+		<echo message="2) Open sparrow webmap's web.xml and replace all occurrences of 'http://igsarmewfsbbh.er.usgs.gov:8080' "/>
+		<echo message="by 'http://localhost:8080' The 8080 port may vary depending on your local tomcat" />
+		<echo message="CHECK YOUR PORT!!!" />
+	</target>
+		
+	<target name="restore-mapviewer-prod" description="Points this sparrow to the production instance of mapviewer">
+		<echo message="1) Open sparrow webmap's web.xml and replace all occurrences of 'http://localhost:8080' by 'http://igsarmewfsbbh.er.usgs.gov:8080'. The 8080 port may vary depending on your local tomcat" />
+	</target>
+	
+	<target name="move-libs" depends="init" description="copy jar dependencies for local Tomcat">
+		<description>Copies jar dependencies to WEB-INF/lib to allow Eclipse and local Tomcat to work together</description>
+		<echo message="${basedir}/public_html/WEB-INF/lib"/>
+		<echo message="${lib.dir}"/>
+		<echo message="includes ${build.lib.includes}"/>
+		<echo message="excludes ${build.lib.excludes}"/>
+		<copy todir="${basedir}/public_html/WEB-INF/lib" flatten="true">
+			<fileset dir="${lib.dir}" includes="${build.lib.includes}" excludes="${build.lib.excludes}" />
+		</copy>
+	</target>
+
+</project>

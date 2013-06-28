@@ -1,0 +1,120 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+	<groupId>gov.usgs.cida</groupId>
+		<artifactId>sparrow-parent</artifactId>
+		<version>1.4.32-SNAPSHOT</version>
+	</parent>
+
+	<groupId>gov.usgs.cida</groupId>
+	<artifactId>sparrow-service</artifactId>
+	<packaging>war</packaging>
+	<name>sparrow-service</name>
+	<version>1.4.32-SNAPSHOT</version>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	 <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
+	</properties>
+
+	<build>
+		<finalName>sparrow_mv</finalName>
+		<plugins>
+		<plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		        <artifactId>maven-enforcer-plugin</artifactId>
+		        <version>1.0.1</version>
+		        <executions>
+		          <execution>
+		            <id>enforce-versions</id>
+		            <goals>
+		              <goal>enforce</goal>
+		              <goal>display-info</goal>
+		            </goals>
+		            <configuration>
+		              <rules>
+		                <requireMavenVersion>
+		                  <version>2.1</version>
+		                </requireMavenVersion>
+		                <requireJavaVersion>
+		                  <version>1.6</version>
+		                </requireJavaVersion>
+		              </rules>
+		            </configuration>
+		          </execution>
+		        </executions>
+		      </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.7.2</version>
+				<!-- Uncomment to exclude the long run tests, which hit the db. -->
+				<!--
+				<configuration>
+					<excludes>
+						<exclude>**/*LongRunTest.java</exclude>
+					</excludes>
+				</configuration>
+				-->
+			</plugin>
+			<plugin>
+				<artifactId>maven-release-plugin</artifactId>
+				<version>2.1</version>
+				<configuration>
+					<tagBase>${cida.svn.url}/usgs/sparrow/dss/sparrow_service/tags</tagBase>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.0.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.2</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.0.2</version>
+					<configuration>
+						<dependentWarExcludes>WEB-INF/lib/commons-lang-2.3.jar</dependentWarExcludes>
+			           <webResources> 
+			             <webResource> 
+				               <directory>${basedir}/src/main/webapp</directory> 
+				               <includes> 
+				                 <include>app-info.txt</include> 
+				               </includes> 
+				               <targetPath /> 
+				               <filtering>true</filtering> 
+				             </webResource> 
+			           </webResources> 
+					</configuration>
+				</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+		
+		<!-- Interproject dep -->
+		<dependency>
+			<groupId>gov.usgs.cida</groupId>
+			<artifactId>sparrow-business</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		
+	</dependencies>
+	
+</project>

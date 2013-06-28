@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<examples>
+	<!--
+	This doc contains multiple prediction contexts to show examples more compactly.
+	Normally only one is allowed per document (and it would be the document root).
+
+	The examples in this document just show how the four child elements of a
+	prediction context can be reused in other prediction contexts just by referencing
+	their id number.
+	-->
+
+	<!-- Example 1 -->
+	<PredictionContext
+	  xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		model-id="22">
+
+		<!--
+		A prediction context may be built up from pieces that have previously defined.
+
+		* Those refered to by a 'predefined' id are pulled from the database where they
+		are permanently stored.
+
+		* Those refered to by 'context-id' were defined by another request and are
+		being stored in a cache on the server.
+		-->
+
+		<adjustmentGroups predefined="957648"/>
+		<analysis context-id="1093474"/>
+
+		<!--
+		These two elements are optional:
+		<terminalReaches/>
+		<areaOfInterest/>
+		-->
+
+	</PredictionContext>
+
+	<!-- Example 2 -->
+	<PredictionContext
+	  xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		model-id="22">
+
+		<!--
+		A prediction context may be built up from pieces that have previously defined.
+
+		* Those refered to by a 'predefined' id are pulled from the database where they
+		are permanently stored.
+
+		* Those refered to by 'context-id' were defined by another request and are
+		being stored in a cache on the server.
+
+		* analysis may be refered to by named analysis types.
+		-->
+
+		<adjustmentGroups predefined="957648"/>
+
+		<!--
+		required element
+		name refers to a built-in analysis type.  An optional source is allowed to
+		specify that the analysis is applied to a specific source.  It may be required
+		for some types of anaylysis and not allowed for others.
+		-->
+		<analysis name="incremental-yield" source="1"/>
+
+		<!--
+		optional element
+		context-id refers to a set of terminal reaches previously stored (not permanently stored)
+		-->
+		<terminalReaches context-id="1093474" />
+
+		<!--
+		optional element
+		predefined refers to a set of terminal reaches permanently stored.
+		-->
+		<areaOfInterest predefined="15642"/>
+
+
+	</PredictionContext>
+</examples>

@@ -1,0 +1,233 @@
+.map-layer-container {
+	position: absolute;
+}
+
+
+.map-viewport {
+	position: absolute;
+	overflow: hidden;
+	border: solid #bbb 1px;
+}
+
+
+.map-pane {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	background-image: url('scrollable_map/images/blank.gif');
+}
+
+
+.map-layer {
+ 	position: absolute;
+}
+
+
+
+.map-tile {
+	position: absolute;
+}
+
+
+
+.hud-lat-lon-label {
+	position: absolute;
+	bottom: 0px;
+	padding: 0.5em;
+	text-align: right;
+}
+
+
+.hud-scale-bars { 
+	float: left; 
+	position: absolute; 
+	margin: 3px; 
+	color: black; 
+	z-index: 4; 
+	bottom: 35px;  
+}
+
+.hud-scale-bars div {
+ 	overflow: hidden;
+	position: absolute; 
+	left: 0px; 
+	height: 14px; 
+	width: 0px; 
+	white-space: nowrap; 
+	border: double 3px #000; 
+	bottom: 0px;
+}
+
+.hud-scale-bars .hud-scale-bar-mi {
+	border-top: none; 
+	top: 0px;
+}
+
+.hud-scale-bars .hud-scale-bar-km {
+	border-bottom: none; 
+	top: 14px; 
+}
+
+.hud-overview-map {
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	background-color: white;
+	border-left: solid #bbb 1px;
+	border-top: solid #bbb 1px;
+	padding-top: 0.3em;
+	padding-left: 0.3em;
+}
+
+.hud-overview-minmax-open {
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	width: 15px;
+	height: 15px;
+	overflow: hidden;
+	background-image: url('../images/overviewMin.PNG');
+	background-repeat: no-repeat;	
+	background-color: white;
+	cursor: pointer;
+}
+
+.hud-overview-minmax-close {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 15px;
+	height: 15px;
+	overflow: hidden;
+	background-image: url('../images/overviewMax.PNG');
+	background-repeat: no-repeat;	
+	background-color: white;
+	cursor: pointer;
+}
+
+.hud-pan-controller {
+	position:absolute;
+	border: solid black 1px;
+	cursor: move;
+}
+
+.hud-pan-background {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background-color: purple;
+	opacity: .3;
+	filter: alpha(opacity=30);
+}
+
+
+.hud-slider-rail {
+  position: absolute;
+  width: 16px;
+  top: 28px;
+  left: 10px;
+}
+
+.hud-slider-rail div {
+  width: 16px;
+  cursor: pointer;
+}
+
+.hud-slider-rail .hud-rail-top {
+  background-image: url(../images/rail_top.gif);
+  background-repeat: no-repeat;
+  height: 1px;
+  overflow: hidden;
+}
+
+.hud-slider-rail .hud-rail-mid {
+  background-image: url('../images/rail_mid.gif');
+  position: relative;
+}
+
+.hud-slider-rail .hud-rail-bottom {
+  background-image: url('../images/rail_bottom.gif');
+  background-repeat: no-repeat;
+  height: 4px;  
+  overflow: hidden;
+}
+
+.hud-slider-rail .hud-slider-handle {
+  top: 0px;
+  left: -1px;
+  position: absolute;
+  cursor: pointer;
+  background-image: url('../images/slider_handle.png');
+  background-repeat: no-repeat;
+  height: 9px;
+  width: 17px;
+  overflow: hidden;
+}
+
+.hud-zoom-out-button {
+  background-image:url('../images/zoomOut.PNG');
+  background-position:center top;
+  background-repeat:no-repeat;
+  cursor:pointer;
+  height:17px;
+  left:10px;
+  margin-top:0.3em;
+  position:absolute;
+  top:8px;
+  width:17px;
+}
+
+.hud-zoom-in-button {
+  background-image:url('../images/zoomIn.PNG');
+  background-position:center top;
+  background-repeat:no-repeat;
+  cursor:pointer;
+  height:17px;
+  left:10px;
+  margin-bottom:0.3em;
+  position:absolute;
+  top:8px;
+  width:17px;
+}
+
+
+.svg-hidecanvasborders-ie {
+	overflow: hidden;
+	background-image: url('../images/blank.gif');
+	position: relative;
+}
+
+.svg-canvas {
+	position: absolute;	
+}
+
+
+.tools-zoom-bbox {
+	position: absolute;
+	border: dashed red 3px;
+}
+
+.tiles-loading-image {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
+
+
+
+.cursor-hand-open {
+	cursor: url(../images/handopen.cur), move;
+}
+
+
+.cursor-hand-closed {
+	cursor: url(../images/handclose.cur), move;
+}
+
+.cursor-zoom-in {
+	cursor: url(../images/zoomInCur.cur), crosshair;
+}
+
+.cursor-zoom-out {
+	cursor: url(../images/zoomOutCur.cur), crosshair;
+}

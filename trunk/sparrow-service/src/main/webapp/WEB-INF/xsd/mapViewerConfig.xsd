@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  $Header: mapViewerConfig.xsd 02-may-2007.12:30:13 lqian    Exp $ -->
+<!--
+ Copyright (c) 2007, Oracle.  All rights reserved.
+
+   NAME
+     mapViewerConfig.xsd - W3C Schema for OracleAS MapViewer configuration file
+
+   DESCRIPTION
+     <short description of component this file declares/defines>
+
+   NOTES
+     <other useful comments, qualifications, etc.>
+
+   MODIFIED   (MM/DD/YY)
+   lqian       05/02/07 - Creation
+
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="MapperConfig">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="multiple_processes" minOccurs="0"/>
+				<xs:element ref="logging" minOccurs="0"/>
+				<xs:element ref="mv_security" minOccurs="0"/>
+				<xs:element ref="security_config"/>
+				<xs:element ref="save_images_at" minOccurs="0"/>
+				<xs:element ref="ip_monitor" minOccurs="0"/>
+				<xs:element ref="web_proxy" minOccurs="0"/>
+				<xs:element ref="global_map_config" minOccurs="0"/>
+				<xs:element ref="spatial_data_cache" minOccurs="0"/>
+				<xs:element ref="custom_image_renderer" minOccurs="0"/>
+				<xs:element ref="srs_mapping" minOccurs="0"/>
+				<xs:element ref="wms_config" minOccurs="0"/>
+				<xs:element ref="ns_data_provider" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="s_data_provider" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="map_cache_server" minOccurs="0"/>
+				<xs:element ref="map_data_source" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:simpleType name="mapDecoPositionsType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NORTH"/>
+			<xs:enumeration value="EAST"/>
+			<xs:enumeration value="SOUTH"/>
+			<xs:enumeration value="WEST"/>
+			<xs:enumeration value="NORTH_EAST"/>
+			<xs:enumeration value="NORTH_WEST"/>
+			<xs:enumeration value="SOUTH_EAST"/>
+			<xs:enumeration value="SOUTH_WEST"/>
+			<xs:enumeration value="CENTER"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="logLevelsType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="finest"/>
+			<xs:enumeration value="debug"/>
+			<xs:enumeration value="info"/>
+			<xs:enumeration value="warn"/>
+			<xs:enumeration value="error"/>
+			<xs:enumeration value="fatal"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:element name="wms_config">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="title"/>
+				<xs:element ref="abstract"/>
+				<xs:element ref="keyword_list"/>
+				<xs:element ref="sdo_epsg_mapfile"/>
+			</xs:sequence>
+			<xs:attribute name="port" type="xs:integer" use="required"/>
+			<xs:attribute name="host" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="web_proxy">
+		<xs:complexType>
+			<xs:attribute name="port" type="xs:integer" use="required"/>
+			<xs:attribute name="host" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="title">
+		<xs:complexType>
+			<xs:simpleContent>
+				<xs:extension base="xs:string">
+					<xs:attribute name="text" type="xs:string"/>
+					<xs:attribute name="position" type="mapDecoPositionsType"/>
+					<xs:attribute name="font" type="xs:string"/>
+				</xs:extension>
+			</xs:simpleContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="srs_mapping">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="sdo_epsg_mapfile"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="spatial_data_cache">
+		<xs:complexType>
+			<xs:attribute name="report_stats" type="xs:boolean" use="required"/>
+			<xs:attribute name="max_disk_cache_size" type="xs:integer" use="required"/>
+			<xs:attribute name="max_cache_size" type="xs:integer" use="optional" default="64"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="security_config">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="disable_direct_info_request"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="sdo_epsg_mapfile" type="xs:string"/>
+	<xs:element name="save_images_at">
+		<xs:complexType>
+			<xs:attribute name="url" type="xs:string" use="optional"/>
+			<xs:attribute name="path" type="xs:string" use="optional" default="../../images"/>
+			<xs:attribute name="recycle_interval" type="xs:integer" use="optional" default="0"/>
+			<xs:attribute name="life" type="xs:integer" use="optional" default="0"/>
+			<xs:attribute name="file_prefix" type="xs:string" use="optional" default="omsmap"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="s_data_provider">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="parameters"/>
+			</xs:sequence>
+			<xs:attribute name="id" use="required"/>
+			<xs:attribute name="class" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="rendering">
+		<xs:complexType>
+			<xs:attribute name="use_globular_projection" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="allow_local_adjustment" type="xs:boolean" use="optional" default="false"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="parameters">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="parameter" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="parameter">
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+			<xs:attribute name="value" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ns_data_provider">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="parameters" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="class" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="note">
+		<xs:complexType>
+			<xs:attribute name="text" type="xs:string" use="required"/>
+			<xs:attribute name="position" type="mapDecoPositionsType" use="required"/>
+			<xs:attribute name="font" use="optional" default="sans serif"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="mv_security">
+		<xs:complexType>
+			<xs:attribute name="enforce_sec_role" type="xs:boolean" use="optional" default="true"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="multiple_processes">
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:boolean" use="optional" default="false"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="monitor_data_sources">
+		<xs:complexType>
+			<xs:attribute name="value" type="xs:boolean" use="required"/>
+			<xs:attribute name="interval" use="optional" default="30"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="map_data_source">
+		<xs:complexType>
+			<xs:attribute name="name" use="required"/>
+			<xs:attribute name="jdbc_host"/>
+			<xs:attribute name="jdbc_sid"/>
+			<xs:attribute name="jdbc_port"/>
+			<xs:attribute name="jdbc_user"/>
+			<xs:attribute name="jdbc_password"/>
+			<xs:attribute name="jdbc_mode">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:enumeration value="thin"/>
+						<xs:enumeration value="oci8"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="jdbc_tns_name"/>
+			<xs:attribute name="container_ds"/>
+			<xs:attribute name="number_of_mappers" type="xs:int" use="required"/>
+			<xs:attribute name="max_connections" type="xs:int"/>
+			<xs:attribute name="allow_jdbc_theme_based_foi" type="xs:boolean" use="optional" default="false"/>
+			<xs:attribute name="default_data_source" type="xs:boolean" use="optional" default="false"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="map_cache_server">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="cache_storage"/>
+				<xs:element ref="logging"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="logo">
+		<xs:complexType>
+			<xs:attribute name="position" type="mapDecoPositionsType" use="required"/>
+			<xs:attribute name="image_path" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="logging">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="log_output" maxOccurs="unbounded"/>
+				<xs:element ref="monitor_data_sources" minOccurs="0"/>
+			</xs:sequence>
+			<xs:attribute name="log_time" type="xs:boolean" use="required"/>
+			<xs:attribute name="log_thread_name" type="xs:boolean"/>
+			<xs:attribute name="log_level" type="logLevelsType" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="log_output">
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="keyword_list">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="keyword" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="keyword" type="xs:string"/>
+	<xs:element name="ips_exclude" type="xs:string"/>
+	<xs:element name="ips" type="xs:string"/>
+	<xs:element name="ip_range_exclude" type="xs:string"/>
+	<xs:element name="ip_range" type="xs:string"/>
+	<xs:element name="ip_monitor">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="ips" maxOccurs="unbounded"/>
+				<xs:element ref="ip_range" maxOccurs="unbounded"/>
+				<xs:element ref="ips_exclude" maxOccurs="unbounded"/>
+				<xs:element ref="ip_range_exclude" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="global_map_config">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="note"/>
+				<xs:element ref="title"/>
+				<xs:element ref="logo"/>
+				<xs:element ref="rendering"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="disable_direct_info_request" type="xs:boolean" default="true"/>
+	<xs:element name="custom_image_renderer">
+		<xs:complexType>
+			<xs:attribute name="impl_class" type="xs:string" use="required"/>
+			<xs:attribute name="image_format" type="xs:string" use="required"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="cache_storage">
+		<xs:complexType>
+			<xs:attribute name="default_root_path" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="abstract" type="xs:string"/>
+</xs:schema>

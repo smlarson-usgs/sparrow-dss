@@ -1,0 +1,27 @@
+/*
+Customization that applies to all static pages in the project
+*/
+
+/* Custom banner and rm extra space in header */
+#header #banner-area { background-image: url(../images/drought-flood_banner.jpg); margin: 0; }
+#header { padding: 0; }
+
+/* IE 7 seems to require this to accurately calculate child div percentage widths */
+#page-area-container { width: 100% }
+
+#page-area-container .area-2 {
+	background: url("../images/left_gradient.gif") repeat-y scroll -10px 0 transparent;
+}
+#page-area-container .area-1 .area-content {
+	background: url("../images/left_gradient.gif") repeat-y scroll -10px 0 transparent;
+}
+
+#page-area-container .area .area-content { padding-left: .5em; padding-right: .5em; }
+
+.area-header { color: #000; }
+#page-area-container .area-2, #page-area-container .area-3  { color: #000; background-color: #fff; }
+
+.columns-2 .column, .columns-2 { border: none; }
+
+/* The footer has a margin above it, which doesn't look good w/ the shaded background */
+#footer { margin: 0; }

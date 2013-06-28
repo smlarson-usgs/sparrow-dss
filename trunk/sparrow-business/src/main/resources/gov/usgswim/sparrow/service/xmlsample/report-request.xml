@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<sparrow-report-request
+  xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	<!-- run request
+	We need to be able to store the predict requests in a chache w/ a transact ID
+	so they can be refered to later.  Its a seperate issue to cache an entire
+	service request, which contains much more info (when we we use this?).
+	However, a MV request needs the predict request, the comp type, and the primary
+	data series in order to have all the info needed for mapping.
+	
+	How do we bring all of that together?
+	
+	Maybe we need to store entire predict service requests, rather then just
+	predict requests.  Or we could do both and allow a predict service request
+	refer to the a predict request trans ID.
+	
+	-->
+	<PredictionContext context-id="1231241243424"/>
+
+	
+
+	
+	<!--
+	Really only for export or ID
+	response-content gives the ability to controls what rows and columns are returned.
+	result-filter removes columns based on a criteria.
+	dataSeries allows only a subset of data to be returned, or allows additional
+	series of data to be added (such as the source values used to calculate the
+	predicted data.
+	-->
+	<response-content>
+		<result-filter>
+			<near-point result-count="5">
+				<point lat="40" long="-100"/>
+			</near-point>
+		</result-filter>
+		
+		<!--
+
+		Its assumed that the result column from the 'analysis' section is included.
+		
+		as well as the basic columns.  Additional columns can be requested here
+		as 'series'.
+		
+		include-data:  True to return the result column from the 'analysis' section.
+				Setting false allows data to be turned off for a binning-only request.
+				If set false, all other attributes are ignored.
+		include-related:	Include the columns related to the result column.  For instance,
+				if incremental yield for a specific source is requested, incrementtal
+				yield for all sources as well as total yield is returned.  In cases of
+				categorical (ranking and max sources), the related data is the data the
+				categorical operation was done one.  (default true).
+							Allows data to be turned off for a binning-only request.
+		include-nom:	Includes the nominal values when comparisons are done (default false)
+		
+		-->
+		<columns include-data="true" include-related="true" include-nom="true">
+			<!--
+			Other standard series of data can be requested, even if not requested.
+			The values below are the standard ones.
+			-->
+			<series>incremental</series>
+			<series>total</series>
+			
+			<!-- Others that could be easily added.  Might not be available for
+			aggregated data. -->
+			<series>attributes</series>	<!-- Physical attributes -->
+			<series>model-attributes</series>	<!-- Model related data -->
+		</columns>
+		
+			<!--
+			A request to return binning data based on the analysis column.
+			Can be combined w/ dataSeries.  Data is returned in the metadata section
+			of the response document.
+			
+			count:	The number of bins created
+			type:		The type of bins created:
+							equal-count | equal-range | otheres?
+			min-value:	Exclude values lower than this value when creating the bins
+			max-value:	Exclude values higher than this value when creating the bins
+			
+			-->
+		<binning count="5" type="equal-count" min-value="0" max-value="100000" />
+
+
+	</response-content>
+	
+	<!--
+	Allows precise formatting of the returned content.
+	Default is a raw xml document.
+	-->
+	<response-format name="pre-configured format name" compress="zip">
+		<mime-type>application/msword</mime-type>
+		<template>beige</template>
+		<params>
+			<param name="gov.usgswim.WordGenerator.marin-top">1.5in</param>
+		</params>
+	</response-format>
+
+</sparrow-report-request>

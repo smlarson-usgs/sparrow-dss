@@ -1,0 +1,101 @@
+<Model id="55">
+	<Authors>
+		<Author id="1">
+			<Name>Brakebill, John</Name>
+			<Link/>
+		</Author>
+	</Authors>
+	<Model_name>Chesapeake Bay Total Nitrogen Model - 2002</Model_name>
+	<MRB>MRB01</MRB>
+	<Constituent>
+		<Name>Nitrogen</Name>
+		<Units>kg/yr</Units>
+		<Description>Total Nitrogen Model for the Chesapeake Bay Watershed reported in SIR 2011-5167</Description>
+	</Constituent>
+	<Sources>
+		<Source id="All">
+			<Name>All</Name>
+			<Units/>
+			<Description>All sources combined.</Description>
+		</Source>
+		<Source id="1">
+			<Name>CBP Point Source</Name>
+			<Units>kg/year</Units>
+			<Description>Total nitrogen from point sources in kilograms per year. Chesapeake Bay Program (CBP) Total Nitrogen, 2002 primarily municipal wastewater.</Description>
+		</Source>
+		<Source id="2">
+			<Name>Fertilizer and Fixation</Name>
+			<Units>kg/year</Units>
+			<Description>Commercial fertilizer applied to all crops, in addition to crop fixation.</Description>
+		</Source>
+		<Source id="3">
+			<Name>Total Manure</Name>
+			<Units>kg/year</Units>
+			<Description>Manure from confined and unconfined sources, distributed on rowcrops and pasture defined by 2001 National Land Cover Dataset (NLCD).</Description>
+		</Source>
+		<Source id="4">
+			<Name>Total Nitrogen Air Deposition</Name>
+			<Units>kg/year</Units>
+			<Description>Total inorganic wet deposition from the National Atmospheric Deposition Program (NADP), 2002.</Description>
+		</Source>
+		<Source id="5">
+			<Name>Total Urban Area</Name>
+			<Units>sq km</Units>
+			<Description>Total Urban Area defined by 2001 National Land Cover Dataset (NLCD).</Description>
+		</Source>
+	</Sources>
+	<Model_papers>
+		<Paper id="1">
+			<Link link=""/>
+			<Citation_mods>
+				<identifier type=""/>
+				<identifier type=""/>
+				<identifier type=""/>
+				<genre/>
+				<titleInfo>
+					<title/>
+				</titleInfo>
+				<originInfo>
+					<dateOther/>
+					<publisher/>
+					<placeTerm/>
+				</originInfo>
+				<name>
+					<namePart/>
+					<role>Author</role>
+				</name>
+				<physicalDescription>
+					<form/>
+					<form/>
+					<form/>
+				</physicalDescription>
+				<note type="citation/reference"/>
+				<edition/>
+				<languageTerm/>
+			</Citation_mods>
+		</Paper>
+	</Model_papers>
+	<CommonTerms>
+		<Term id="For Source">
+			Each model has different sources that the modeler has determined to be statistically significant.
+			Choose a source from the list to present data only from that source.  This model contains these sources:
+			
+			<dl>
+				<!-- These names could be improved, do we have updated info from Greg? -->
+				<dt>All</dt>
+				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
+				<dt>CBP Point Source</dt>
+				<dd>Total nitrogen from point sources in kilograms per year.  Chesapeake Bay Program (CBP) Total Nitrogen, 2002 primarily municipal wastewater.</dd>
+				<dt>Fertilizer and Fixation</dt>
+				<dd>Commercial fertilizer applied to all crops, in addition to crop fixation.</dd>
+				<dt>Total Manure</dt>
+				<dd>Manure from confined and unconfined sources, distributed on rowcrops and pasture defined by 2001 NLCD.</dd>				
+				<dt>Total Nitrogen Air Deposition</dt>
+				<dd>Total inorganic wet deposition from the National Atmospheric Deposition Program (NADP), 2002.</dd>
+				<dt>Total Urban Area</dt>
+				<dd>Total Urban Area defined by 2001 National Land Cover Dataset (NLCD).</dd>
+			</dl>
+		</Term>
+	</CommonTerms>
+		
+</Model>

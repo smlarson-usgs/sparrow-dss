@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<sparrow-id-response xmlns="http://www.usgs.gov/sparrow/id-response-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="22">
+
+	<status>OK</status>
+	<message />
+	<cache-lifetime-seconds>86400</cache-lifetime-seconds>
+
+	<identification distance-in-meters="1246">
+		<id>15</id>
+		<name>Elm River</name>
+		<bbox min-long="-77.23521" min-lat="38.966502" max-long="-77.147514" max-lat="38.982103" />
+		<hucs>
+			<huc8 id="02070008" name="MIDDLE POTOMAC-CATOCTIN" />
+			<huc6 id="020700" name="POTOMAC" />
+			<huc4 id="0207" name="POTOMAC" />
+			<huc2 id="02" name="MID ATLANTIC" />
+		</hucs>
+	</identification>
+	
+	<!-- Only this section of data is returned b/c only this section was asked for -->
+	<adjustments display="Adjustments">
+		<metadata rowCount="5" columnCount="5" row-id-name="source_id">
+			<columns>
+				<col name="Source Name" type="String" />
+				<col name="Units" type="String" />
+				<col name="Original Value" type="Number" />
+				<col name="Absolute Value" type="Number" />
+				<col name="Multiplier" type="Number" />
+				<col name="Adjusted Value" type="Number" />
+			</columns>
+		</metadata>
+		<data>
+			<r id="1"><c>Point Sources</c><c>N in Tons</c><c>143843</c><c></c><c></c><c>143843</c></r>
+			<r id="2"><c>Atmospheric Deposition</c><c>N in Tons / SQ. Mile</c><c>38434</c><c></c><c></c><c>38434</c></r>
+			<r id="3"><c>Fertilizer</c><c>N in Tons / Acre</c><c>94434</c><c></c><c></c><c>94434</c></r>
+			<r id="4"><c>Waste</c><c>Tons of Garbage</c><c>143</c><c></c><c></c><c>143</c></r>
+			<r id="5"><c>Non-Agricultural</c><c>Total Population</c><c>91343</c><c></c><c></c><c>91343</c></r>
+		</data>
+	</adjustments>
+
+</sparrow-id-response>

@@ -1,0 +1,389 @@
+<?xml version = '1.0' encoding = 'windows-1252'?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN" "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+   <tlib-version>1.0</tlib-version>
+   <jsp-version>1.2</jsp-version>
+   <short-name>mvtaglib</short-name>
+   <uri>http://xmlns.oracle.com/spatial/mvtaglib</uri>
+   <display-name>MapViewer Taglib</display-name>
+   <description>Tag library for Oracle AS MapViewer.</description>
+   <tag>
+      <name>init</name>
+      <tag-class>oracle.lbs.mapclient.taglib.MapViewerInitTag</tag-class>
+      <tei-class>oracle.lbs.mapclient.taglib.InitExtraInfo</tei-class>
+      <body-content>Empty</body-content>
+      <display-name>init</display-name>
+      <description>Initialization.</description>
+      <attribute>
+         <name>url</name>
+         <required>true</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>datasource</name>
+         <required>true</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>id</name>
+         <required>false</required>
+      </attribute>
+      <example>&lt;mv:init url="http://localhost:8888/mapviewer/omserver" datasource="mydata" id="mapviewer" /></example>
+   </tag>
+   <tag>
+      <name>setParam</name>
+      <tag-class>oracle.lbs.mapclient.taglib.MapViewerSetParamTag</tag-class>
+      <body-content>Empty</body-content>
+      <display-name>setParam</display-name>
+      <description>Sets parameters for MapViewer</description>
+      <attribute>
+         <name>basemap</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>bgcolor</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>bgimage</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>width</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>height</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>antialiasing</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>imagescaling</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>      
+      <attribute>
+         <name>title</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>centerX</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>centerY</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>size</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <example>&lt;mv:setParam bgcolor="#ff0000" bgimage="http://foo.com/a.gif" width="800" height="640" title="My Sample Map" antialiasing="true" /></example>
+   </tag>
+   <tag>
+      <name>getParam</name>
+      <tag-class>oracle.lbs.mapclient.taglib.MapViewerGetParamTag</tag-class>
+      <body-content>Empty</body-content>
+      <display-name>getParam</display-name>
+      <description>get a specific parameter value from current MapViewer handle.</description>
+      <attribute>
+         <name>name</name>
+         <required>true</required>
+      </attribute>
+      <example>&lt;mv:getParam name="bgcolor" /></example>
+   </tag>
+   <tag>
+      <name>addPredefinedTheme</name>
+      <tag-class>oracle.lbs.mapclient.taglib.MapViewerAddPThemeTag</tag-class>
+      <body-content>Empty</body-content>
+      <display-name>addPredefinedTheme</display-name>
+      <description>add a predefined theme</description>
+      <attribute>
+         <name>name</name>
+         <required>true</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>min_scale</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>max_scale</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>max_scale</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>datasource</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <example>&lt;mv:addPredefinedTheme name="aTheme" min_scale="10.0" max_scale="1.0" /></example>
+   </tag>
+   <tag>
+      <name>addJDBCTheme</name>
+      <tag-class>oracle.lbs.mapclient.taglib.MapViewerAddJDBCThemeTag</tag-class>
+      <body-content>JSP</body-content>
+      <display-name>addJDBCTheme</display-name>
+      <description>add a jdbc query theme</description>
+      <attribute>
+         <name>name</name>
+         <required>true</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>min_scale</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>max_scale</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>datasource</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>jdbc_host</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>jdbc_port</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>jdbc_sid</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>jdbc_user</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>jdbc_password</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>jdbc_mode</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>spatial_column</name>
+         <required>required</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>srid</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>render_style</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>label_style</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>label_column</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>asis</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <example>&lt;mv:addJDBCTheme name="dynTheme" min_scale="10.0" max_scale="1.0" datasource="mydata" render_style="L.PH" spatial_column="GEOM">
+  SELECT geom, pop FROM county where pop > 350000
+&lt;/mv:addJDBCTheme></example>
+   </tag>
+   <tag>
+      <name>run</name>
+      <tag-class>oracle.lbs.mapclient.taglib.MapViewerRunTag</tag-class>
+      <body-content>Empty</body-content>
+      <display-name>run</display-name>
+      <description>tag for running current request.</description>
+      <attribute>
+         <name>action</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>x</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>y</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>x2</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>y2</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>factor</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <example>&lt;mv:run action="zoomin" factor="2.0" /></example>
+   </tag>
+   <tag>
+      <name>getMapURL</name>
+      <tag-class>oracle.lbs.mapclient.taglib.MapViewerGetMapURLTag</tag-class>
+      <body-content>Empty</body-content>
+      <display-name>getMapURL</display-name>
+      <description>return a generated map image url</description>
+      <example>&lt;mv:getMapURL /></example>
+   </tag>
+   <tag>
+      <name>importBaseMap</name>
+      <tag-class>oracle.lbs.mapclient.taglib.MapViewerImportBaseMapTag</tag-class>
+      <body-content>Empty</body-content>
+      <display-name>importBaseMap</display-name>
+      <description>import themes from a basemap</description>
+      <attribute>
+         <name>name</name>
+         <required>true</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <example>&lt;mv:importBaseMap name="demo_map" /></example>
+   </tag>
+   <tag>
+      <name>makeLegend</name>
+      <tag-class>oracle.lbs.mapclient.taglib.MapViewerShowLegendTag</tag-class>
+      <tei-class>oracle.lbs.mapclient.taglib.ShowLegendExtraInfo</tei-class>
+      <body-content>JSP</body-content>
+      <display-name>makeLegend</display-name>
+      <description>Create a legend image.</description>
+      <attribute>
+         <name>datasource</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>id</name>
+         <required>true</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>format</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <example>&lt;mv:makeLegend id="myLegend" format="PNG_URL">
+        &lt;legend bgstyle="fill:#ffffff;stroke:#ff00ff" profile="MEDIUM">
+          &lt;column>
+            &lt;entry text="Legend:" is_title="true" />
+            &lt;entry style="M.STAR" text="center point" />
+            &lt;entry style="M.CITY HALL 3" text="cities" />
+            &lt;entry style="M.CITY HALL 4" text="big cities" />
+            &lt;entry is_separator="true" />
+            &lt;entry style="C.ROSY BROWN STROKE" text="state boundary" />
+            &lt;entry style="L.PH" text="interstate highway" />
+            &lt;entry text="County population density:" />
+            &lt;entry style="V.COUNTY_POP_DENSITY" tab="1" />
+          &lt;/column>
+        &lt;/legend>
+        &lt;/mv:makeLegend>
+      </example>
+   </tag>
+   <tag>
+      <name>identify</name>
+      <tag-class>oracle.lbs.mapclient.taglib.MapViewerIdentifyTag</tag-class>
+      <tei-class>oracle.lbs.mapclient.taglib.IdentifyExtraInfo</tei-class>
+      <body-content>JSP</body-content>
+      <display-name>identify</display-name>
+      <description>identify and obtain information about a spatial feature being clicked up by user.</description>
+      <attribute>
+         <name>id</name>
+         <required>true</required>
+      </attribute>
+      <attribute>
+         <name>datasource</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>table</name>
+         <required>true</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>spatial_column</name>
+         <required>true</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>style</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>x</name>
+         <required>true</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>y</name>
+         <required>true</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>x2</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>y2</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <attribute>
+         <name>srid</name>
+         <required>false</required>
+         <rtexprvalue>true</rtexprvalue>
+      </attribute>
+      <example>&lt;mv:identify id="info" style="M.CYAN PIN" table="cities" spatial_column="loc" x="100" y="200" >
+   name, pop90 population
+&lt;/mv:identify></example>
+   </tag>
+</taglib>

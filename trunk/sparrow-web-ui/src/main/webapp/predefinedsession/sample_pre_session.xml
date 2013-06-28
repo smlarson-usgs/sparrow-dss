@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<ServiceResponseWrapper success="true">
+	<status>OK</status>
+	<operation>GET</operation>
+	<entityClass>gov.usgswim.sparrow.domain.IPredefinedSession</entityClass>
+	<entityId>1161</entityId>
+	<entityList>
+		<PredefinedSession>
+			<id>1161</id>
+			<uniqueCode>test_created_delete_me_XX1</uniqueCode>
+			<modelId>9999</modelId>
+			<predefinedSessionType>FEATURED</predefinedSessionType>
+			<approved>false</approved>
+			<name>Session 1</name>
+			<description>[[TEST USAGE ONLY, DO NOT USE. DELETE ME]]desc</description>
+			<sortOrder>1</sortOrder>
+			<contextString>context</contextString>
+			<addDate>2011-02-04</addDate>
+			<addBy>Eric</addBy>
+			<addNote>Please approve me</addNote>
+			<addContactInfo>608.821.1111</addContactInfo>
+			<groupName>myGroup</groupName>
+		</PredefinedSession>
+	</entityList>
+</ServiceResponseWrapper>

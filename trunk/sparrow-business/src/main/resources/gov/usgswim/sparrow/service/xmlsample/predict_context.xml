@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<PredictionContext
+  xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	model-id="22">
+	<!--  The PredictContext Object (cached) should have transient refs to its children and persistable IDs to its children. -->
+
+
+		<!--
+		place adjustments directly under predict will result in no comparison.
+		Other types of comparisons might include (but are not implemented)
+		subtract-from-nominal, subtract-from-adjusted, etc..  All assume chg from
+		nominal, however, this structure allows for the comparison of multiple
+		adjusted predictions by adding another source-adjustments element.
+		-->
+		<adjustmentGroups conflicts="accumulate | supersede">	<!--  AdjustmentGroup Object?  Cached. -->
+			<reachGroup enabled="true" name="Northern Indiana Plants"> <!--  ReachGroup Object -->
+				<desc>Plants in Northern Indiana that are part of the 'Keep Gary Clean' Project</desc>
+				<notes>
+					I initially selected HUC 01746286 and 01746289,
+					but it looks like there are some others plants that need to be included.
+
+					As a start, we are proposing a 10% reduction across the board,
+					but we will tailor this later based on plant type.
+				</notes>
+				<!-- Multiple treatments are possible -->
+				<adjustment src="5" coef=".9"/>	<!--  Existing Adjustment Object -->
+				<adjustment src="4" coef=".75"/>
+				<logicalSet>	<!--  LogicalSet Object?  (Hold Off) Used as cache key for a reach collection. -->
+					<criteria attrib="huc8">01746286</criteria>
+				</logicalSet>
+				<logicalSet>
+					<criteria attrib="huc8">01746289</criteria>
+				</logicalSet>
+			</reachGroup>
+
+			<reachGroup enabled="false" name="Southern Indiana Fields">
+				<desc>Fields in Southern Indiana</desc>
+				<notes>
+					The Farmer's Alminac says corn planting will be up 20% this year,
+					which will roughly result in a 5% increase in the aggrecultural source.
+					This is an estimate so I'm leaving it out of the runs created	for the EPA.
+				</notes>
+				<adjustment src="1" coef="1.05"/>
+				<logicalSet>
+					<criteria attrib="reach" relation="upstream">8346289</criteria>
+				</logicalSet>
+				<logicalSet>
+					<criteria attrib="reach" relation="upstream">9374562</criteria>
+				</logicalSet>
+			</reachGroup>
+
+			<reachGroup enabled="true" name="Illinois">
+				<desc>The entire state of Illinois</desc>
+				<notes>The Urban source for Illinois is predicted is to increase 20%.</notes>
+				<adjustment src="2" coef="1.2"/>
+				<logicalSet>
+					<criteria attrib="state-code">il</criteria>
+				</logicalSet>
+			</reachGroup>
+
+			<reachGroup enabled="true" name="Illinois">
+				<desc>Wisconsin River Plants</desc>
+				<notes>
+					We know of 3 plants on the Wisconsin River which have announced improved
+					BPM implementations.
+				</notes>
+				<adjustment src="2" coef=".75"/>
+				<reach id="483947453" />
+				<reach id="947839474" />
+			</reachGroup>
+
+			<!--
+			The default-group allows model-wide adjustments.  This is basically the
+			replacement for the 'gross-adjust' from the previous schema.
+			The only children allowed are desc, notes, and adjustment.  No logicalSet's
+			or reach element are allowed.
+			It allows an 'enabled' attribute, but not a name.
+			-->
+			<default-group enabled="true">
+				<desc>Bulk adjust to simulate result of proposed regulation 214</desc>
+				<notes>
+					This is just an approximation - we need more detail for the Western region.
+				</notes>
+				<adjustment src="4" coef=".9"/>
+
+			</default-group>
+
+            <individualGroup>
+                <reach id="">
+                    <adjustment src="" abs="" />
+                </reach>
+    		</individualGroup>
+
+			<!-- Do we still allow gross adjustments?  -->
+			<!-- <gross-src src="4" coef="2"/> -->
+		</adjustmentGroups>
+
+		<!--
+
+		How would binning be handled?  handle here (would apply to exports) or in mapping?
+		(#) numbers refer to Gregs email in SPDSS-72
+
+		Numerical / Categorical
+		Quantitative / Qualitative
+		Continuous / Discrete
+
+		- - Quantitative - -
+		total* (1)
+		incremental*	(2)
+		total-no-decay*	(3)
+		delivered-fraction* (4)
+		total-decay	(5)
+		incremental-yield*	(6/7)
+		incremental-delivered*	(25)
+		total-delivered*	(not listed)
+		concentration*	(8)
+		land-to-water-coef
+		instream-decay-coef
+		incremental-share** (9)
+		source-value**
+
+
+		total-delivered-yield* (not listed)
+		incremental-delivered-yield* (not listed)
+
+		- - Qualitative - -
+		primary-source-incremental (handled by max-source)
+		primary-source-total (handled by max-source)
+
+
+		* Available by source
+		** Only available by source
+
+
+
+
+
+		Quartiles would need to be here, since there is no way to get that data,
+		unlesss we report the quartiles?  Or is that a response option??
+
+		Does annalysis happen for all related columns?  Yes.
+		-->
+		<analysis>	<!--  Analysis Object  Cached. -->
+
+			<!-- similar to a SQL Select clause -->
+			<select>
+
+				<!--
+				- - Possible Values - -
+				total*
+				total_std_error_estimate*
+				incremental*
+				incremental_std_error_estimate*
+				total_no_decay*+
+				total_delivered*! (not included in Greg's email)
+				total_decay+
+				incremental_delivered*!
+				delivered_fraction***!
+				source_value**
+				catch_area***
+				land_to_water_coef
+				instream_decay_coef***
+
+				* Available by source
+				** Only available by source
+				*** Not available by source
+				+ Optional column(s) only calculated when requested
+				! Requires 2nd pass network 'climbing' to calculate
+				-->
+				<dataSeries source="1" per="area">incremental</dataSeries>
+				<!--  source and per are optional. -->
+
+				<!--
+				Required if groupBy is specified.  Applies an aggregate function to the
+				dataSeries specified to return a single calculated value for each group.
+				An aggregate function (as defined here) is a function that can be calculated
+				solely based on the values within the group.  Thus, rankings are not
+				supported as an aggregate function b/c they cannot be calculated from the
+				values within the group (see analyticFunction).
+
+				The 'per' attribute does the same aggregate function on a physical
+				property and divides the aggregated value by the aggregated 'per' value.
+
+
+
+				- - Possible Values - -
+				sum
+				avg
+				max
+				min
+				stddev
+
+				- - Examples - -
+				1.	dataSeries:  incremental
+						groupBy:  HUC8
+						aggFunction:  sum
+						aggFunction[per]:  area
+
+				Within each HUC8, sum the incremental value for each reach and divide by
+				the sum the areas.  This would generate an incremental yeild value for the
+				entire HUC8.  One row is returned per	HUC8 and the row id is the HUC8 ID.
+
+				2.	dataSeries:  total
+						groupBy: HUC8
+						aggFunction: max
+				Within each HUC8, find the maximum total value.  One row is returned per
+				HUC8 and the row id is the HUC8 ID.  This would be a good approximation
+				of the HUC8 total value.
+
+				-->
+				<aggFunction per="area">avg</aggFunction> <!-- rank would be rank of the group within the whole -->
+
+				<!--
+				The analytic function is applied after grouping and the aggregate function
+				takes plus, thus, one 'row' for the analytic function is the already
+				aggregated results from the aggregate function.  If there is no	groupBy,
+				each reach is considered its own group.
+
+				The analytic function can compare the rows (ranking) within the entire
+				returned set, or it can make the comparison based on subsets of the
+				entire result, such as a HUC - this is done using the partitioning
+				attribute.
+
+				The max-source function is categorical and compares the individual values
+				calculated up to this point and creates a column containing the id of
+				the maximum source (remember, data series and aggregate functions
+				are applied to all sources, so all source values are available and have
+				had the same caluculation applied to them).  Partitioning cannot be
+				applied to max-source.
+
+				The source-share function calculates the fraction of each calculated
+				source value to the total value.  The data column is the source identified
+				in the dataSeries 'source' attribute, which must be present (err if not).
+
+
+				- - Values - -
+				rank-desc
+				rank-asc
+				dense-rank-desc
+				dense-rank-asc
+				max-source	(id of the max source value for the series)
+				source-share (share of the source compared to the total value)
+				...and other statistical functions which return a result for one value
+				within a group.
+
+
+
+				Examples:
+				1.
+				dataSeries: incremental (defined above)
+				groupBy: HUC8 (return one row per HUC8)
+				aggFunction: avg
+				analyticFunction: rank-desc
+				window: HUC6 (calculate w/in the context of each HUC6)
+
+				The incremental value is calculated for each reach and is averaged at
+				the HUC8 level.  That average value is then ranked within each HUC6, with
+				the highest value give the rank '1'.
+				Thus, within each HUC6, HUC8's will be given values 1-n.
+
+				2.
+				dataSeries: incremental (defined above)
+				groupBy: -not defined- (return one row per reach)
+				aggFunction: -not defined-
+				analyticFunction: rank-desc
+				window: HUC6 (calculate w/in the context of each HUC6)
+
+				The incremental value is calculated for each reach.  That value is then
+				ranked within each HUC6, with the highest value give the rank '1'.
+				Thus, within each HUC6, each reach will be given values 1-n.
+
+				3.
+				dataSeries: incremental (defined above)
+				groupBy: HUC8 (return one row per HUC8)
+				aggFunction: sum
+				analyticFunction: max
+				partition: HUC6 (calculate w/in the context of each HUC6)
+
+				The incremental value is calculated for each reach and is averaged at
+				the HUC8 level.  That average value is then ranked within each HUC6, with
+				the highest value give the rank '1'.
+				Thus, within each HUC6, HUC8's will be given values 1-n.
+
+				-->
+				<analyticFunction partition="HUC6">rank-desc</analyticFunction>
+
+				<!--  Needed in first iteration -->
+				<nominalComparison type="percent | absolute"/>
+			</select>
+
+
+			<!--	Restrict results considered.  Similar to WHERE clause.	-->
+			<limitTo>contributors | terminals | areaOfInterest</limitTo>
+
+			<!--
+			Similar to the SQL GROUP BY clause.  Whenever groupBy is specified, one
+			row per group is returned rathen then one row per reach.  If groupBy is
+			specified, an aggregate-function must be provided.
+
+			Possible Values:
+			HUC8, HUC6, HUC4, HUC2
+			state, county
+			terminals (what happens at splits such as near the end of the mississippi?)
+			-->
+			<groupBy>HUC8</groupBy>
+
+		</analysis>
+
+		<terminalReaches>	<!--  TerminalReaches Object.  (hold off)  Cached. -->
+			<reach>2345642</reach>
+			<reach>3425688</reach>
+			<reach>5235424</reach>
+			or
+			<logicalSet/>
+		</terminalReaches>
+
+		<areaOfInterest>	<!--  AreaOfInterest Object.  (hold off)  Cached. -->
+
+			<!--
+			Political boundry
+			Watershed (upstream)
+			HUC
+			or individual set of reaches
+			-->
+			<logicalSet/>
+		</areaOfInterest>
+
+</PredictionContext>

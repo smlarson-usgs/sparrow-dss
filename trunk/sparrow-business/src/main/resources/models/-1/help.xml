@@ -1,0 +1,38 @@
+<Model>
+
+    <Name>Test Model</Name>
+    <MRB>All</MRB>
+    <Constituent>
+      <name>Total Nitrogen</name>
+      <units>kg/yr</units>
+      <description>Model used only for testing purposes</description>
+    </Constituent>
+    <sources>
+      <Source id="POINT">
+        <name>POINT</name>
+        <units>kg/yr</units>
+        <description>Point sources</description>
+      </Source>
+      <Source id="ATMDEP">
+        <name>ATMDEP</name>
+        <units>kg/yr</units>
+        <description>atmospheric deposition sources</description>
+      </Source>
+      <Source id="FERTILIZER">
+        <name>FERTILIZER</name>
+        <units>kg/yr</units>
+        <description>Fertilizer sources</description>
+      </Source>
+      <Source id="WASTE">
+        <name>WASTE</name>
+        <units>kg/yr</units>
+        <description>Waste management sources</description>
+      </Source>
+      <Source id="NANAGR">
+        <name>NANAGR</name>
+        <units>kg/yr</units>
+        <description>Non agricultural sources</description>
+      </Source>
+    </sources>
+
+</Model>

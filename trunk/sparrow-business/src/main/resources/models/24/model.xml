@@ -1,0 +1,115 @@
+<Model id="24">
+	<Authors>
+		<Author id="1">
+			<Name>Alexander, Richard</Name>
+			<Link/>
+		</Author>
+	</Authors>
+	<Model_name>National Total Organic Carbon Model</Model_name>
+	<MRB>National</MRB>
+	<Constituent>
+		<Name>Total Organic Carbon</Name>
+		<Units>kg/yr</Units>
+		<Description>Total Organic Carbon Model for the Conterminous U.S. USGS OFR 2010-1276.</Description>
+	</Constituent>
+	<Sources>
+		<Source id="All">
+			<Name>All</Name>
+			<Units/>
+			<Description>All sources combined.</Description>
+		</Source>
+		<Source id="1">
+			<Name>Agricultural Land</Name>
+			<Units>sq km</Units>
+			<Description>Area of row crops; small grains; fallow; pasture; and orchards-vineyards-other.</Description>
+		</Source>
+		<Source id="2">
+			<Name>Deciduous Forest</Name>
+			<Units>sq km</Units>
+			<Description>Area of deciduous forest.</Description>
+		</Source>
+		<Source id="3">
+			<Name>Evergreen Forest</Name>
+			<Units>sq km</Units>
+			<Description>Area of evergreen forest.</Description>
+		</Source>
+		<Source id="4">
+			<Name>Mixed Forest</Name>
+			<Units>sq km</Units>
+			<Description>Area of mixed forest.</Description>
+		</Source>
+		<Source id="5">
+			<Name>Urban Land</Name>
+			<Units>sq km</Units>
+			<Description>Area of low-intensity residential, high-intensity residential, and commercial-industrial-transportation land; urban-residential grasses.</Description>
+		</Source>
+		<Source id="6">
+			<Name>Wetlands</Name>
+			<Units>sq km</Units>
+			<Description>Area of woody wetlands; emergent herbaceous wetlands.</Description>
+		</Source>
+		<Source id="7">
+			<Name>Photosynthesis</Name>
+			<Units>sq km</Units>
+			<Description>Photosynthesis in streams and reservoirs.</Description>
+		</Source>
+	</Sources>
+	<Model_papers>
+		<Paper id="1">
+			<Link link=""/>
+			<Citation_mods>
+				<identifier type=""/>
+				<identifier type=""/>
+				<identifier type=""/>
+				<genre/>
+				<titleInfo>
+					<title/>
+				</titleInfo>
+				<originInfo>
+					<dateOther/>
+					<publisher/>
+					<placeTerm/>
+				</originInfo>
+				<name>
+					<namePart/>
+					<role>Author</role>
+				</name>
+				<physicalDescription>
+					<form/>
+					<form/>
+					<form/>
+				</physicalDescription>
+				<note type="citation/reference"/>
+				<edition/>
+				<languageTerm/>
+			</Citation_mods>
+		</Paper>
+	</Model_papers>
+	<CommonTerms>
+		<Term id="For Source">
+			Each model has different sources that the modeler has determined to be statistically significant.
+			Choose a source from the list to present data only from that source.  This model contains these sources:
+			
+			<dl>
+				<!-- These names could be improved, do we have updated info from Greg? -->
+				<dt>All</dt>
+				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
+				<dt>Agricultural Land</dt>
+				<dd>Area of row crops; small grains; fallow; pasture; and orchards-vineyards-other.</dd>
+				<dt>Deciduous Forest</dt>
+				<dd>Area of deciduous forest.</dd>
+				<dt>Evergreen Forest</dt>
+				<dd>Area of evergreen forest.</dd>				
+				<dt>Mixed Forest</dt>
+				<dd>Area of mixed forest.</dd>
+				<dt>Urban Land</dt>
+				<dd>Area of low-intensity residential, high-intensity residential, and commercial-industrial-transportation land; urban-residential grasses.</dd>
+				<dt>Wetlands</dt>
+				<dd>Area of woody wetlands; emergent herbaceous wetlands.</dd>
+				<dt>Photosynthesis</dt>
+				<dd>Photosynthesis in streams and reservoirs.</dd>
+			</dl>
+		</Term>
+	</CommonTerms>
+		
+</Model>

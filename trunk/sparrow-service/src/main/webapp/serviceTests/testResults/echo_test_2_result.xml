@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<sparrow-prediction-request
+  xmlns="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	<predict model-id="22">
+		<change-from-nominal type="perc_change">
+			<source-adjustments>
+				<!-- Sort order: 2 --><gross-src src="4" coef="2"/>
+				<!-- Sort order: 1 --><gross-src src="1" coef=".5"/>
+				<!-- Sort order: 4 --><specific src="2" reach="1787602" value="7.77"/><!-- VALUE WAS 315.819 -->
+				<!-- Sort order: 3 --><specific src="1" reach="1787601" value="9.99"/><!-- VALUE WAS 5432.3354442 -->
+			</source-adjustments>
+
+		</change-from-nominal>
+	</predict>
+	<!-- zipped, full mimetype specification used -->
+	<response-format name="pre-configured format name" compress="zip">
+		<mime-type>text/csv</mime-type>
+		<template>beige</template>
+		<params>
+			<param name="gov.usgswim.WordGenerator.marin-top">ignore me</param>
+
+		</params>
+	</response-format>
+</sparrow-prediction-request>
+				

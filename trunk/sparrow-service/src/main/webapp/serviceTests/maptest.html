@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<title>MapViewer Test Page</title>
+	</head>
+
+	<body>
+		<div>
+			<h2>Image Returning MapViewer Request</h2>
+			<p>This request should return a small image with one reach</p>
+			<form id="mvForm1" method="POST" action="../omserver">
+				<textarea name="xml_request" cols="80" rows="15">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;map_request antialiasing=&quot;true&quot; bgcolor=&quot;#ffffcc&quot; datasource=&quot;sparrow&quot; format=&quot;PNG8_STREAM&quot;
+	height=&quot;258&quot; keepthemesorder=&quot;true&quot; srid=&quot;8307&quot; transparent=&quot;false&quot; width=&quot;258&quot;&gt;
+	&lt;box&gt;
+		&lt;coordinates&gt;-88.22153209999999,31.0703951 -88.139503895,31.131691895000003&lt;/coordinates&gt;
+	&lt;/box&gt;
+	&lt;themes&gt;
+		&lt;theme name=&quot;some_theme&quot;&gt;
+			&lt;jdbc_query asis=&quot;true&quot; datasource=&quot;sparrow&quot; jdbc_srid=&quot;8307&quot;
+				spatial_column=&quot;REACH_GEOM&quot;&gt;SELECT REACH_GEOM FROM MODEL_GEOM_50_VW where identifier = 9689&lt;/jdbc_query&gt;
+		&lt;/theme&gt;
+	&lt;/themes&gt;
+&lt;/map_request&gt;
+				</textarea><br/>
+				<input type="submit"/>
+			</form>
+		</div>
+		
+		<div>
+			<h2>XML Returning MapViewer Request</h2>
+			<p>This request should return a small XML file with a link to the image of one reach</p>
+			<form id="mvForm2" method="POST" action="../omserver">
+				<textarea name="xml_request" cols="80" rows="15">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;map_request antialiasing=&quot;true&quot; bgcolor=&quot;#ffffcc&quot; datasource=&quot;sparrow&quot; format=&quot;PNG8_URL&quot;
+	height=&quot;258&quot; keepthemesorder=&quot;true&quot; srid=&quot;8307&quot; transparent=&quot;false&quot; width=&quot;258&quot;&gt;
+	&lt;themes&gt;
+		&lt;theme name=&quot;some_theme&quot;&gt;
+			&lt;jdbc_query asis=&quot;true&quot; datasource=&quot;sparrow&quot; jdbc_srid=&quot;8307&quot;
+				spatial_column=&quot;REACH_GEOM&quot;&gt;SELECT REACH_GEOM FROM MODEL_GEOM_50_VW where identifier = 9689&lt;/jdbc_query&gt;
+		&lt;/theme&gt;
+	&lt;/themes&gt;
+&lt;/map_request&gt;
+				</textarea><br/>
+				<input type="submit"/>
+			</form>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,47 @@
+<?xml version="1.0" standalone="yes"?>
+<map_request datasource="sparrow" srid="8307" width="256" height="256" transparent="true"
+	bgcolor="#ffffff" antialiase="true" keepthemesorder="true" format="PNG8_STREAM">
+	<box>
+		<coordinates>-87.1875,44.296875,-86.484375,45</coordinates>
+	</box>
+	<ns_data_provider provider_id="sparrowPredict" time_out="200000">
+		<parameters>
+			<!-- 
+			When the user has a prediction context, use the context-id parameter.
+			In cases where the user has no prediction context, use the model-id
+			parameter, which just maps the calibrated state of the model.
+			Do not use both together.
+			
+			Note the name of "model-id" has changed.
+			-->
+			<parameter name="context-id">-1354486922</parameter>
+			<!-- <parameter name="model-id">1</parameter>	-->
+		</parameters>
+		<for_theme name="catch" />
+		<custom_rendering_style name="" />
+		<join spatial_key_column="IDENTIFIER" />
+	</ns_data_provider>
+	<themes>
+		<!-- 
+		Keeping things simple here:  Only one theme at a time.
+		Note that the view name has changed from previous version.
+		-->
+		<theme name="catch">
+			<jdbc_query datasource="sparrow" jdbc_srid="8307" spatial_column="geom" asis="false"
+				render_style="V.PERC_FILL_0_100">
+                   SELECT CATCH_GEOM AS GEOM,
+                   IDENTIFIER from MODEL_GEOM_1_VW
+              </jdbc_query>
+		</theme>
+		<!--  reach version
+		<theme name="reach">
+			<jdbc_query datasource="sparrow" jdbc_srid="8307" spatial_column="geom"
+				render_style="V.PERC_LINES_0_100" asis="false">
+                   SELECT REACH_GEOM AS GEOM,
+                   IDENTIFIER from MODEL_GEOM_1_VW
+               </jdbc_query>
+		</theme>
+		-->
+	</themes>
+	<styles> </styles>
+</map_request>

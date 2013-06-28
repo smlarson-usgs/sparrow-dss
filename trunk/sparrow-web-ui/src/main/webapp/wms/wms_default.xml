@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ServiceGroup>
+	<Service>
+		<Version>1.1.1</Version>
+		<Title>ESRI NGS Topo US 2D</Title>
+		<Abstract />
+		<Status>PUBLIC</Status>
+		<PartnerName>USGS</PartnerName>
+		<PartnerWebURL>http://www.usgs.gov/</PartnerWebURL>
+		<GetCapabilitiesURL />
+		<GetMapURL>http://server.arcgisonline.com/ArcGIS/rest/services/NGS_Topo_US_2D/MapServer/tile/</GetMapURL>
+		<GetFeatureInfoURL />
+		<BackingURL />
+		<BackingService />
+		<BackingVersion />
+		<serviceType>arctms</serviceType>
+		<format>jpeg</format>
+		<Layer id="-253" requested="true" recommended="false" transparency="false" queryable="false"
+			downloadable="false">
+			<Name>ESRI NGS Topo US 2D</Name>
+			<Title>ESRI NGS Topo US 2D</Title>
+			<PartnerName>USGS</PartnerName>
+			<PartnerWebURL>http://www.usgs.gov/</PartnerWebURL>
+			<Resolution>0</Resolution>
+			<MinScale>0</MinScale>
+			<MaxScale>100</MaxScale>
+			<TimePeriod>01-jan-1999</TimePeriod>
+			<Classification id="-1" zdepth="250050.08475846">
+				<Name>BACKGROUND</Name>
+				<Theme id="-1">CUSTOM LAYERS</Theme>
+			</Classification>
+			<opacity>70</opacity>
+			<SRS>4326</SRS>
+			<LatLon />
+			<BoundingBox />
+			<Status>PUBLIC</Status>
+			<Type>RASTER IMAGE</Type>
+			<MetadataURL>http://server.arcgisonline.com/ArcGIS/rest/services/NGS_Topo_US_2D/MapServer</MetadataURL>
+			<LogoURL />
+			<SLDURL />
+			<LegendURL>images/legends/esri2dworld.png</LegendURL>
+			<BackingName />
+			<Description>
+This map presents land cover imagery for the world and detailed topographic maps for the United States. The map includes the National Park Service (NPS) Natural Earth physical map at 1.24km per pixel for the world at small scales, i-cubed eTOPO 1:250,000-scale maps for the contiguous United States at medium scales, and National Geographic TOPO! 1:100,000 and 1:24,000-scale maps (1:250,000 and 1:63,000 in Alaska) for the United States at large scales. The TOPO! maps are seamless, scanned images of United States Geological Survey (USGS) paper topographic maps. For more information on this map, visit us online at http://goto.arcgisonline.com/maps/NGS_Topo_US_2D
+	  </Description>
+			<Restricted>0</Restricted>
+		</Layer>
+	</Service>
+	<Service>
+		<Version>1.1.1</Version>
+		<Title>WARP Sites Cached</Title>
+		<Abstract />
+		<Status>PUBLIC</Status>
+		<PartnerName>USGS</PartnerName>
+		<PartnerWebURL>http://www.usgs.gov/</PartnerWebURL>
+		<GetCapabilitiesURL>http://public5.er.usgs.gov/mapviewer?</GetCapabilitiesURL>
+		<GetMapURL>http://maptrek.er.usgs.gov/mapviewer_dev/mcserver?</GetMapURL>
+		<GetFeatureInfoURL>http://public5.er.usgs.gov/mapviewer?</GetFeatureInfoURL>
+		<BackingURL />
+		<BackingService />
+		<BackingVersion />
+		<serviceType>mapcache</serviceType>
+		<format>PNG</format>
+		<request>gettile</request>
+		<Layer id="-13" requested="true" recommended="false" transparency="false" queryable="false"
+			downloadable="false">
+			<Name>WORLD_REGIONS_CACHE_256</Name>
+			<datasource>gis_cov</datasource>
+			<Title>World Regions</Title>
+			<PartnerName>USGS</PartnerName>
+			<PartnerWebURL>http://www.usgs.gov/</PartnerWebURL>
+			<Resolution>0</Resolution>
+			<MinScale>0.02</MinScale>
+			<MaxScale>10</MaxScale>
+			<TimePeriod>01-jan-1999</TimePeriod>
+			<Classification id="-1" zdepth="50050.08475846">
+				<Name>World Regions</Name>
+				<Theme id="-1">Boundaries</Theme>
+			</Classification>
+			<SRS>4326</SRS>
+			<LatLon />
+			<BoundingBox />
+			<Status>PUBLIC</Status>
+			<Type>RASTER IMAGE</Type>
+			<MetadataURL />
+			<LogoURL />
+			<SLDURL />
+			<LegendURL>images/legends/world_regions.png</LegendURL>
+			<BackingName />
+			<Description>World Regions</Description>
+			<Restricted>0</Restricted>
+		</Layer>
+		<Layer id="-14" requested="true" recommended="false" transparency="false" queryable="false"
+			downloadable="false">
+			<Name>STATE_PROVINCE_CACHE_256</Name>
+			<datasource>gis_cov</datasource>
+			<Title>State and Province Boundaries</Title>
+			<PartnerName>USGS</PartnerName>
+			<PartnerWebURL>http://www.usgs.gov/</PartnerWebURL>
+			<Resolution>0</Resolution>
+			<MinScale>.0005</MinScale>
+			<MaxScale>10</MaxScale>
+			<TimePeriod>01-jan-1999</TimePeriod>
+			<Classification id="-1" zdepth="50050.08475846">
+				<Name>State and Province Boundaries</Name>
+				<Theme id="-1">Boundaries</Theme>
+			</Classification>
+			<SRS>4326</SRS>
+			<LatLon />
+			<BoundingBox />
+			<Status>PUBLIC</Status>
+			<Type>RASTER IMAGE</Type>
+			<MetadataURL />
+			<LogoURL />
+			<SLDURL />
+			<LegendURL>images/legends/states.png</LegendURL>
+			<BackingName />
+			<Description>State and Province Boundaries</Description>
+			<Restricted>0</Restricted>
+		</Layer>
+		<Layer id="4952" requested="true" recommended="true" transparency="true" queryable="true"
+			downloadable="false">
+			<Name>COUNTY_BOUNDS_CACHE_256</Name>
+			<datasource>gis_cov</datasource>
+			<Title>US County Boundaries (Alternate) (National Atlas)</Title>
+			<PartnerName>USGS</PartnerName>
+			<PartnerWebURL>http://www.usgs.gov/</PartnerWebURL>
+			<Resolution>0</Resolution>
+			<MinScale>0</MinScale>
+			<MaxScale>.0005</MaxScale>
+			<TimePeriod>01-jan-1900</TimePeriod>
+			<Classification id="40" zdepth="56060.08475846">
+				<Name>COUNTY</Name>
+				<Theme id="4">BOUNDARIES</Theme>
+			</Classification>
+			<SRS>4326</SRS>
+			<LatLon />
+			<BoundingBox />
+			<Status>PUBLIC</Status>
+			<Type>RASTER POLYGON</Type>
+			<MetadataURL>http://nationalatlas.gov/metadata/countyp020.html</MetadataURL>
+			<LogoURL>http://mciweb.er.usgs.gov/images/idbksm.gif</LogoURL>
+			<SLDURL />
+			<LegendURL>images/legends/counties.png</LegendURL> <!-- http://mcmcweb.er.usgs.gov/catalog/legends/SOLDGR/national_atlas/national_atlas_countybdy.png</LegendURL> -->
+			<BackingName />
+			<Description>This data set portrays the State and county boundaries of the United States, Puerto Rico, and the U.S. Virgin Islands. The data set was created by extracting county polygon features from the individual 1:2,000,000-scale State boundary Digital Line Graph (DLG) files produced by the U.S. Geological Survey. These files were then merged into a single file.</Description>
+			<Restricted>0</Restricted>
+		</Layer>
+	</Service>
+</ServiceGroup>

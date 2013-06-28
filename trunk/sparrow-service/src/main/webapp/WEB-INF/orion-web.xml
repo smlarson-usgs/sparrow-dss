@@ -1,0 +1,18 @@
+<?xml version = '1.0'?>
+<!DOCTYPE orion-web-app PUBLIC "-//Evermind//DTD Orion Web Application 2.3//EN" "http://xmlns.oracle.com/ias/dtds/orion-web.dtd">
+<orion-web-app servlet-webdir="/servlet/">
+  <web-app-class-loader search-local-classes-first="true"/>
+  <security-role-mapping impliesAll="false" name="map_admin_role">
+    <group name="oc4j-app-administrators"/>
+    <group name="oc4j-administrators"/>
+    <group name="administrators"/>
+  </security-role-mapping>
+
+<!-- for Secure Map Rendering demos only -->
+
+  <security-role-mapping name="secure_maps_role">
+     <group name="users" />
+  </security-role-mapping>
+
+
+</orion-web-app>

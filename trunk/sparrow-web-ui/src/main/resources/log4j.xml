@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+<!--	<appender name="CA" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %C{1}:%L - %m%n" />
+		</layout>
+	</appender>-->
+		
+	<appender name="GeneralFa" class="org.apache.log4j.rolling.RollingFileAppender">
+	        <!-- The active file to log to -->
+		<param name="file" value="${catalina.base}/logs/sparrow/sparrow_ui_general.log" />
+		<param name="append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		
+		<rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+		        <!-- The file to roll to, this is a fairly intelligent parameter, if the file
+				ends in .gz, it gzips it, based on the date stamp it rolls at that time, 
+				default is yyyy-MM-dd, (rolls at midnight)
+				See: http://logging.apache.org/log4j/companions/extras/apidocs/org/apache/log4j/rolling/TimeBasedRollingPolicy.html -->
+			<param name="FileNamePattern" value="${catalina.base}/logs/sparrow/sparrow_ui_general.%d.log" />
+		</rollingPolicy>
+		
+		<layout class="org.apache.log4j.PatternLayout">
+			<!-- The log message pattern -->
+			<param name="ConversionPattern" value="%d{ABSOLUTE} FileAppender %5p %C{1}:%L - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="SparrowFa" class="org.apache.log4j.rolling.RollingFileAppender">
+	        <!-- The active file to log to -->
+		<param name="file" value="${catalina.base}/logs/sparrow/sparrow_ui.log" />
+		<param name="append" value="true" />
+		<param name="encoding" value="UTF-8" />
+		
+		<rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+		        <!-- The file to roll to, this is a fairly intelligent parameter, if the file
+				ends in .gz, it gzips it, based on the date stamp it rolls at that time, 
+				default is yyyy-MM-dd, (rolls at midnight)
+				See: http://logging.apache.org/log4j/companions/extras/apidocs/org/apache/log4j/rolling/TimeBasedRollingPolicy.html -->
+			<param name="FileNamePattern" value="${catalina.base}/logs/sparrow/sparrow_ui.%d.log" />
+		</rollingPolicy>
+		
+		<layout class="org.apache.log4j.PatternLayout">
+			<!-- The log message pattern -->
+			<param name="ConversionPattern" value="%d{ABSOLUTE} FileAppender %5p %C{1}:%L - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="PFA" class="org.apache.log4j.FileAppender">
+		<param name="File" value="${catalina.base}/logs/sparrow/sparrow_ui_proxy.log" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ABSOLUTE} FileAppender %5p %C{1}:%L - %m%n" />
+		</layout>
+	</appender>
+	<appender name="Email" class="org.apache.log4j.net.SMTPAppender">
+		<param name="BufferSize" value="512" />
+		<param name="SMTPHost" value="localhost" />
+		<param name="From" value="sparrow_server@server.com" />
+		<param name="To" value="eeverman@usgs.gov" />
+		<param name="Subject" value="SPARROW LOG" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %C{1}:%L - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="error" />
+			<param name="LevelMax" value="fatal" />
+		</filter>
+	</appender>
+	
+	<logger name="gov">
+		<level value="debug"/>
+		<appender-ref ref="SparrowFa" />
+		<appender-ref ref="Email" />
+	</logger>
+	
+	<logger name="gov.usgs.cida.proxy.ProxyServlet">
+		<level value="warn"/>
+		<appender-ref ref="PFA" />
+	</logger>
+
+	<root>
+		<priority value="warn" />
+		<appender-ref ref="GeneralFa" />
+	</root>
+
+</log4j:configuration>

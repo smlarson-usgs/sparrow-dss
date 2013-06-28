@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://www.usgs.gov/sparrow/meta_request/v0_1"
+	targetNamespace="http://www.usgs.gov/sparrow/meta_request/v0_1" elementFormDefault="qualified">
+	<xsd:include schemaLocation="sparrow_common.xsd" />
+
+	<xsd:element name="sparrow-meta-request">
+		<xsd:annotation>
+			<xsd:documentation>
+        A sample element
+      </xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="model" type="ModelType" />
+				<xsd:element name="response-format" type="responseFormatType" minOccurs="0" />
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+
+	<xsd:complexType name="ModelType">
+		<xsd:sequence>
+			<xsd:element name="source" maxOccurs="1" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="public" type="xsd:boolean" />
+		<xsd:attribute name="archived" type="xsd:boolean" />
+		<xsd:attribute name="approved" type="xsd:boolean" />
+	</xsd:complexType>
+
+</xsd:schema>

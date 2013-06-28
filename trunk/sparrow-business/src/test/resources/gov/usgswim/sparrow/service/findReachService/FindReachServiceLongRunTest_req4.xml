@@ -1,0 +1,16 @@
+<sparrow-reach-request xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<model-id>50</model-id>
+	<match-query>
+		<edaname>Albemarle Sound,Altamaha  River</edaname>
+		<meanQLo>200</meanQLo>
+		<reach-name>cr</reach-name>
+		<huc>030102</huc>
+	</match-query>
+	<content>
+		<adjustments />
+	</content>
+	<response-format>
+		<mime-type>XML</mime-type>
+	</response-format>
+</sparrow-reach-request>
