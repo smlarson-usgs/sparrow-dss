@@ -1,10 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import gov.usgswim.sparrow.domain.Geometry;
-import gov.usgswim.sparrow.domain.HUC;
-import gov.usgswim.sparrow.domain.Segment;
 import gov.usgswim.sparrow.domain.ReachGeometry;
-import gov.usgswim.sparrow.request.HUCRequest;
 import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.util.GeometryUtil;
 
@@ -12,8 +9,6 @@ import java.sql.ResultSet;
 import java.util.HashMap;
 import java.util.Map;
 
-import oracle.spatial.geometry.JGeometry;
-import oracle.sql.STRUCT;
 
 /**
  * Loads the outline geometry for a HUC from the DB. 
