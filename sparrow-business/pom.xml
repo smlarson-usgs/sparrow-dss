@@ -20,7 +20,7 @@
 			<artifactId>sparrow-datatable</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 
 		<dependency>
 			<groupId>log4j</groupId>
@@ -177,7 +177,7 @@
 		</dependency>
 
 
-		<!-- These two deps are provided when mapviewer is overlayed, so they are 
+		<!-- These two deps are provided when mapviewer is overlayed, so they are
 			just required when compiling and testing. -->
 		<dependency>
 			<groupId>com.oracle</groupId>
@@ -193,7 +193,7 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-		<!-- this special dep. is only used for overlaying the wars. It is not 
+		<!-- this special dep. is only used for overlaying the wars. It is not
 			placed on the classpath -->
 		<dependency>
 			<groupId>com.oracle</groupId>
@@ -202,7 +202,7 @@
 			<type>war</type>
 			<scope>runtime</scope>
 		</dependency>
-		
+
 		<!-- Used for email logging of serious errors -->
 		<dependency>
 		    <groupId>javax.mail</groupId>
@@ -214,6 +214,10 @@
 			<artifactId>dynamicProperties</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>0.11.8</version>
+		</dependency>
   </dependencies>
 </project>

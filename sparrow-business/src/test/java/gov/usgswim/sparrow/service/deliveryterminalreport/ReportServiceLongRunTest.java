@@ -21,7 +21,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);
 	}
-	
+
 	/**
 	 * Values containing commas should be escaped
 	 * @throws Exception
@@ -29,53 +29,15 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 	@Test
 	public void model50NoAdjustHTMLExportCheckContextTerminalReport() throws Exception {
 		String contextRequestText = SparrowTestBase.getXmlAsString(this.getClass(), "context1");
-		
+
 		WebRequest contextWebRequest = new PostMethodWebRequest(CONTEXT_SERVICE_URL);
 		contextWebRequest.setParameter("xmlreq", contextRequestText);
 		WebResponse contextWebResponse = client.sendRequest(contextWebRequest);
 		String actualContextResponse = contextWebResponse.getText();
-		
+
 		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", actualContextResponse);
 		int id = getContextIdFromContext(actualContextResponse);
-		
-		WebRequest reportWebRequest = new GetMethodWebRequest(REPORT_SERVICE_URL);
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml_table");
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ID_SCRIPT, "false");
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, "true");
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.terminal.toString());
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_YIELD, "false");
 
-		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
-		String actualReportResponse = reportWebResponse.getText();
-		
-//		System.out.println(actualReportResponse);
-		
-		String rowCountStr = gov.usgswim.sparrow.service.deliveryaggreport.ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
-
-		assertEquals("2", rowCountStr);
-		
-		String firstTerminalReachName = getXPathValue("//tbody/tr[th[a=9682]]/td[1]", actualReportResponse);
-		String totalValue = getXPathValue("//tbody/tr[2]/td[.=40735550]", actualReportResponse);
-		
-		assertEquals("MOBILE R", firstTerminalReachName);
-		assertEquals("40735550", totalValue);
-		
-		
-	}
-	
-	@Test
-	public void model50NoAdjustXMLExportCheckContextTerminalReport() throws Exception {
-		String contextRequestText = SparrowTestBase.getXmlAsString(this.getClass(), "context1");
-		
-		WebRequest contextWebRequest = new PostMethodWebRequest(CONTEXT_SERVICE_URL);
-		contextWebRequest.setParameter("xmlreq", contextRequestText);
-		WebResponse contextWebResponse = client.sendRequest(contextWebRequest);
-		String actualContextResponse = contextWebResponse.getText();
-		
-		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", actualContextResponse);
-		int id = getContextIdFromContext(actualContextResponse);
-		
 		WebRequest reportWebRequest = new GetMethodWebRequest(REPORT_SERVICE_URL);
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xml");
@@ -86,37 +48,75 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
 		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
-		
+
 //		System.out.println(actualReportResponse);
-		
+
+		String rowCountStr = gov.usgswim.sparrow.service.deliveryaggreport.ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
+
+		assertEquals("2", rowCountStr);
+
+		String firstTerminalReachName = getXPathValue("//tbody/tr[th[a=9682]]/td[1]", actualReportResponse);
+		String totalValue = getXPathValue("//tbody/tr[2]/td[.=40735550]", actualReportResponse);
+
+		assertEquals("MOBILE R", firstTerminalReachName);
+		assertEquals("40735550", totalValue);
+
+
+	}
+
+	@Test
+	public void model50NoAdjustXMLExportCheckContextTerminalReport() throws Exception {
+		String contextRequestText = SparrowTestBase.getXmlAsString(this.getClass(), "context1");
+
+		WebRequest contextWebRequest = new PostMethodWebRequest(CONTEXT_SERVICE_URL);
+		contextWebRequest.setParameter("xmlreq", contextRequestText);
+		WebResponse contextWebResponse = client.sendRequest(contextWebRequest);
+		String actualContextResponse = contextWebResponse.getText();
+
+		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", actualContextResponse);
+		int id = getContextIdFromContext(actualContextResponse);
+
+		WebRequest reportWebRequest = new GetMethodWebRequest(REPORT_SERVICE_URL);
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xml");
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ID_SCRIPT, "false");
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, "true");
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.terminal.toString());
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_YIELD, "false");
+
+		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
+		String actualReportResponse = reportWebResponse.getText();
+
+//		System.out.println(actualReportResponse);
+
 		String firstReachId = getXPathValue("//*[local-name()='data']/*[local-name()='r'][position()=1]/@id", actualReportResponse);
 		String numberOfValues = getXPathValue("count(//*[local-name()='data']/*[local-name()='r'][position()=1]/*[local-name()='c'])", actualReportResponse);
 		String declairedColCount = getXPathValue("//*[local-name()='metadata']/@columnCount", actualReportResponse);
 		String firstGroupColCount = getXPathValue("//*[local-name()='group'][1]/@count", actualReportResponse);
 		String secondGroupColCount = getXPathValue("//*[local-name()='group'][2]/@count", actualReportResponse);
 		String declairedRowCount = getXPathValue("//*[local-name()='metadata']/@rowCount", actualReportResponse);
-		
+
 		assertEquals("9682", firstReachId);
 		assertEquals("11", numberOfValues);
 		assertEquals("11" ,declairedColCount);
 		assertEquals("5", firstGroupColCount);
 		assertEquals("6", secondGroupColCount);
 		assertEquals("2" ,declairedRowCount);
-		
+
 	}
-	
+
 	@Test
 	public void model50NoAdjustCSVExportCheckContextTerminalReport() throws Exception {
 		String contextRequestText = SparrowTestBase.getXmlAsString(this.getClass(), "context1");
-		
+
 		WebRequest contextWebRequest = new PostMethodWebRequest(CONTEXT_SERVICE_URL);
 		contextWebRequest.setParameter("xmlreq", contextRequestText);
 		WebResponse contextWebResponse = client.sendRequest(contextWebRequest);
 		String actualContextResponse = contextWebResponse.getText();
-		
+
 		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", actualContextResponse);
 		int id = getContextIdFromContext(actualContextResponse);
-		
+
 		WebRequest reportWebRequest = new GetMethodWebRequest(REPORT_SERVICE_URL);
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "csv");
@@ -127,11 +127,11 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
 		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
-		
-		//System.out.println(actualReportResponse);
-		
-	}
-	
 
-	
+		//System.out.println(actualReportResponse);
+
+	}
+
+
+
 }
