@@ -1,16 +1,16 @@
-<Model id="50">
+<Model id="37">
 	<Authors>
 		<Author id="1">
-			<Name>First name, last name</Name>
+			<Name>Last, first</Name>
 			<Link/>
 		</Author>
 	</Authors>
 	<Model_name>MARB TN</Model_name>
-	<MRB>MRBX</MRB>
+	<MRB>MARB</MRB>
 	<Constituent>
 		<Name>Nitrogen</Name>
 		<Units>kg/yr</Units>
-		<Description> 2002 Total Nitrogen Model for the southeastern U.S. (MRB2) </Description>
+		<Description> 2002 Total Nitrogen Model for the Mississippi Atchafalaya Basin</Description>
 	</Constituent>
 	<Sources>
 		<Source id="All">
@@ -19,34 +19,34 @@
 			<Description>All sources combined.</Description>
 		</Source>
 		<Source id="1">
-			<Name>Point Sources N</Name>
-			<Units>kg/yr</Units>
-			<Description>Point Sources N</Description>
+			<Name>Waste Water Treatment Plants</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen from Waste Water Treatment Plants 2002, kg (PCS)</Description>
 		</Source>
 		<Source id="2">
-			<Name>Wet and Dry Deposition N</Name>
-			<Units>kg/yr</Units>
-			<Description>Wet and Dry Deposition N</Description>
+			<Name>Atmosphere</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen from Atmospheric Deposition 2002, kg (CMAQ)</Description>
 		</Source>
 		<Source id="3">
-			<Name>Manure (Confined)</Name>
-			<Units>sq km</Units>
-			<Description>Manure (Confined)</Description>
+			<Name>Manure (confined)</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen from Manure in Confined Operations 2002, kg</Description>
 		</Source>
 		<Source id="4">
-			<Name>Nitrogen from Farms</Name>
+			<Name>Fertilizers (farm)</Name>
 			<Units>kg</Units>
-			<Description>Nitrogen from Farms</Description>
+			<Description>Nitrogen from Farm Fertilizers 2002, kg</Description>
 		</Source>
 		<Source id="5">
-			<Name>Fixation N</Name>
-			<Units>kg/yr</Units>
-			<Description>Fixation N</Description>
+			<Name>Fixation</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen from fixation by soybeans and alfalfa 2002, kg</Description>
 		</Source>
 		<Source id="6">
-			<Name>Urban Runoff</Name>
-			<Units>kg/yr</Units>
-			<Description>Urban Runoff</Description>
+			<Name>Urban and Open Areas</Name>
+			<Units>sq km</Units>
+			<Description>Urban and Developed Land, 2001 NLCD</Description>
 		</Source>
 	</Sources>
 	<Model_papers>
@@ -89,16 +89,18 @@
 				<!-- These names could be improved, do we have updated info from Greg? -->
 				<dt>All</dt>
 				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
-				<dt>Wastewater discharge</dt>
-				<dd>Nitrogen load from point source dischargers in 2002, kg, Terziotti, 10-200.  Reported in kg.</dd>
-				<dt>Wet dep. of inorg. nitrogen</dt>
-				<dd>Wet deposition of inorganic nitrogen (ammonia and nitrate), kg, detrended to 2002, K. Savvas, USGS, 2006.  Reported in kg.</dd>
-				<dt>Imp. surf. area</dt>
-				<dd>Impervious surface area, square kilometers, National Land Cover Dataset 01 based, Terziotti 12-2008.  Reported in sqkm.</dd>
-				<dt>Fert. applied to agric. land</dt>
-				<dd>Nitrogen fertilizer on farmland 2002, kg - National Land Cover Dataset 01 - area-based method Terziotti 10-2008.  Reported in kg.</dd>				
-				<dt>Livestock manure</dt>
-				<dd>Nitrogen in livestock waste 2002, kg - National Land Cover Dataset 01 - area-based method Terziotti 10-2008.  Reported in kg.</dd>
+				<dt>Waste Water Treatment Plants</dt>
+				<dd>Nitrogen from Waste Water Treatment Plants 2002, kg (PCS).</dd>
+				<dt>Atmosphere</dt>
+				<dd>Nitrogen from Atmospheric Deposition 2002, kg (CMAQ).</dd>
+				<dt>Manure (confined)</dt>
+				<dd>Nitrogen from Manure in Confined Operations 2002, kg.</dd>
+				<dt>Fertilizers (farm)</dt>
+				<dd>Nitrogen from Farm Fertilizers 2002, kg.</dd>				
+				<dt>Fixation</dt>
+				<dd>Nitrogen from fixation by soybeans and alfalfa 2002, kg.</dd>
+				<dt>Urban and Open Areas</dt>
+				<dd>NUrban and Developed Land, 2001 NLCD, sqkm.</dd>
 
 			</dl>
 		</Term>
