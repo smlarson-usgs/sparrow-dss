@@ -37,9 +37,9 @@ public abstract class SparrowResourceUtils {
 	 * @param params
 	 * @return
 	 */
-	public static String lookupMergedHelp(String model, String helpItem, String wrapXMLElement, Object... params) {
+	public static String lookupMergedHelp(Long modelId, String helpItem, String wrapXMLElement, Object... params) throws Exception {
 		
-		String text = lookupMergedHelp(model, helpItem, wrapXMLElement);
+		String text = lookupMergedHelp(modelId, helpItem, wrapXMLElement);
 		
 		if (params != null) {
 			for (int i=0; i<params.length; i+=2) {
@@ -58,9 +58,9 @@ public abstract class SparrowResourceUtils {
 		return text;
 		
 	}
-	public static String lookupMergedHelp(String model, String helpItem, String wrapXMLElement) {
+	public static String lookupMergedHelp(Long modelId, String helpItem, String wrapXMLElement) throws Exception {
 		String genHelp = lookupGeneralHelp(helpItem);
-		String modelHelp = lookupModelHelp(model, helpItem);
+		String modelHelp = lookupModelHelp(modelId, helpItem);
 		
 		StringBuffer merged = new StringBuffer();
 		if (genHelp != null) {
@@ -82,25 +82,35 @@ public abstract class SparrowResourceUtils {
 		}
 	}
 	
-	public static String lookupGeneralHelp(String helpItem) {
+	public static String lookupGeneralHelp(String helpItem) throws Exception {
 		SmartXMLProperties help = retrieveGeneralHelp();
 		return help.get(helpItem);
 	}
 	
-	public static String lookupModelHelp(String model, String helpItem) {
-		SmartXMLProperties help = retrieveModelHelp(model);
+	public static String lookupModelHelp(Long modelId, String helpItem) throws Exception {
+		SmartXMLProperties help = retrieveModelHelp(modelId);
 		return help.get(helpItem);
 	}
 
-	public static SmartXMLProperties retrieveModelHelp(String model) {
-		Long modelID = lookupModelID(model);
-		String resourceFilePath = getModelResourceFilePath(modelID, HELP_FILE);
-		return ResourceLoaderUtils.loadResourceAsSmartXML(resourceFilePath);
+	public static SmartXMLProperties retrieveModelHelp(Long modelId) throws Exception {
+		String resourceFilePath = getModelResourceFilePath(modelId, HELP_FILE);
+		
+		try {
+			return ResourceLoaderUtils.loadResourceAsSmartXML(resourceFilePath);
+		} catch (Exception e) {
+			throw new Exception("The help file for model '" + modelId + "' could not be found.", e);
+		}
 	}
 	
-	public static SmartXMLProperties retrieveGeneralHelp() {
+	public static SmartXMLProperties retrieveGeneralHelp() throws Exception {
 		String resourceFilePath = getResourceFilePath(HELP_FILE);
-		return ResourceLoaderUtils.loadResourceAsSmartXML(resourceFilePath);
+		
+		try {
+			return ResourceLoaderUtils.loadResourceAsSmartXML(resourceFilePath);
+		} catch (Exception e) {
+			throw new Exception("The general help file could not be found.", e);
+		}
+		
 	}
 
 	/**

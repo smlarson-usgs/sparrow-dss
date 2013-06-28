@@ -35,7 +35,6 @@ public class BuildTotalDeliveredLoadSummaryReportTest extends DeliveryBase {
 
 		assertNotNull(result);
 		assertEquals(13, result.getColumnCount());
-
 		boolean containsSomeNonZeroData = false;
 
 		//All the first columns should total to the last column
@@ -48,6 +47,7 @@ public class BuildTotalDeliveredLoadSummaryReportTest extends DeliveryBase {
 			if (srcTotal > .0000000001d) containsSomeNonZeroData = true;
 
 			//SUM of non-last columns should equal the last column
+
 			assertEquals(dataTable.getDouble(r, dataTable.getColumnCount() - 1), srcTotal, COMP_ERROR);
 
 		}

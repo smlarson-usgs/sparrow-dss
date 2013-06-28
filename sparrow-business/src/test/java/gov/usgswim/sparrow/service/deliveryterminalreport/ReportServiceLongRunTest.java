@@ -40,7 +40,7 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
 		WebRequest reportWebRequest = new GetMethodWebRequest(REPORT_SERVICE_URL);
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_CONTEXT_ID, Integer.toString(id));
-		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xml");
+		reportWebRequest.setParameter(ReportRequest.ELEMENT_MIME_TYPE, "xhtml_table");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ID_SCRIPT, "false");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_INCLUDE_ZERO_TOTAL_ROWS, "true");
 		reportWebRequest.setParameter(ReportRequest.ELEMENT_REPORT_TYPE, ReportRequest.ReportType.terminal.toString());
@@ -97,9 +97,9 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		String declairedRowCount = getXPathValue("//*[local-name()='metadata']/@rowCount", actualReportResponse);
 
 		assertEquals("9682", firstReachId);
-		assertEquals("11", numberOfValues);
-		assertEquals("11" ,declairedColCount);
-		assertEquals("5", firstGroupColCount);
+		assertEquals("12", numberOfValues);
+		assertEquals("12" ,declairedColCount);
+		assertEquals("6", firstGroupColCount);
 		assertEquals("6", secondGroupColCount);
 		assertEquals("2" ,declairedRowCount);
 

@@ -1,0 +1,116 @@
+<Model id="38">
+	<Authors>
+		<Author id="1">
+			<Name>Last, first</Name>
+			<Link/>
+		</Author>
+	</Authors>
+	<Model_name>MARB TP</Model_name>
+	<MRB>MARB</MRB>
+	<Constituent>
+		<Name>Phosphorus</Name>
+		<Units>kg/yr</Units>
+		<Description> 2002 Total Phosphorus Model for the Mississippi Atchafalaya Basin</Description>
+	</Constituent>
+	<Sources>
+		<Source id="All">
+			<Name>All</Name>
+			<Units/>
+			<Description>All sources combined.</Description>
+		</Source>
+		<Source id="1">
+			<Name>Waste Water Treatment Plants</Name>
+			<Units>kg</Units>
+			<Description>Phosphorus from Waste Water Treatment Plants 2002, kg (PCS)</Description>
+		</Source>
+		<Source id="2">
+			<Name>Manure (total)</Name>
+			<Units>kg</Units>
+			<Description>Phosphorus from Manure 2002, kg</Description>
+		</Source>
+		<Source id="3">
+			<Name>Fertilizers (farm)</Name>
+			<Units>kg</Units>
+			<Description>Phosphorus from Farm Fertilizers 2002, kg</Description>
+		</Source>
+		<Source id="4">
+			<Name>Urban Areas</Name>
+			<Units>sq km</Units>
+			<Description>Urban and Developed Land, 2001 NLCD</Description>
+		</Source>
+		<Source id="5">
+			<Name>Forest and Wetland Areas</Name>
+			<Units>sq km</Units>
+			<Description>Forest and Wetland Areas, 2001 NLCD</Description>
+		</Source>
+		<Source id="6">
+			<Name>Channel Erosion</Name>
+			<Units>kg</Units>
+			<Description>Phosphorus from Channel Erosion</Description>
+		</Source>
+		<Source id="7">
+			<Name>Loess Soils</Name>
+			<Units>kg</Units>
+			<Description>Phosphorus from Deeply Weathered Loess Soils</Description>
+		</Source>
+	</Sources>
+	<Model_papers>
+		<Paper id="1">
+			<Link link=""/>
+			<Citation_mods>
+				<identifier type=""/>
+				<identifier type=""/>
+				<identifier type=""/>
+				<genre/>
+				<titleInfo>
+					<title/>
+				</titleInfo>
+				<originInfo>
+					<dateOther/>
+					<publisher/>
+					<placeTerm/>
+				</originInfo>
+				<name>
+					<namePart/>
+					<role>Author</role>
+				</name>
+				<physicalDescription>
+					<form/>
+					<form/>
+					<form/>
+				</physicalDescription>
+				<note type="citation/reference"/>
+				<edition/>
+				<languageTerm/>
+			</Citation_mods>
+		</Paper>
+	</Model_papers>
+	<CommonTerms>
+		<Term id="For Source">
+			Each model has different sources that the modeler has determined to be statistically significant.
+			Choose a source from the list to present data only from that source.  This model contains these sources:
+			
+			<dl>
+				<!-- These names could be improved, do we have updated info from Greg? -->
+				<dt>All</dt>
+				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
+				<dt>Waste Water Treatment Plants</dt>
+				<dd>Phosphorus from Waste Water Treatment Plants 2002, kg (PCS).</dd>
+				<dt>Manure (total)</dt>
+				<dd>Phosphorus from Manure 2002, kg.</dd>
+				<dt>Fertilizers (farm)</dt>
+				<dd>Phosphorus from Farm Fertilizers 2002, kg.</dd>
+				<dt>Urban Areas</dt>
+				<dd>Urban and Developed Land, 2001 NLCD.</dd>				
+				<dt>Forest and Wetland Areas</dt>
+				<dd>Forest and Wetland Areas, 2001 NLCD.</dd>
+				<dt>Channel Erosion</dt>
+				<dd>Phosphorus from Channel Erosion.</dd>
+				<dt>Loess Soils</dt>
+				<dd>Phosphorus from Deeply Weathered Loess Soils.</dd>
+
+			</dl>
+		</Term>
+	</CommonTerms>
+		
+</Model>
