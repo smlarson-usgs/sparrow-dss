@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * Holds a sparse hashmap of values for uses where the data is mostly empty.
- * Note that the constructor keeps a ref to the passed in map.
+ * Note that the constructor keeps a ref to the passed in hashmap.
  * @author eeverman
  */
 public class SparseDoubleColumnData extends AbstractColumnData implements ColumnData {

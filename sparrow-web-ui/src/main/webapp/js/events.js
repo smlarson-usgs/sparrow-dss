@@ -51,19 +51,18 @@ Sparrow.events.EventManager = function(){ return{
 		});
 		
 		Sparrow.CONTEXT.on("targets-changed", function() {
-			if (Sparrow.SESSION.isTermReachesChanged()) {
 				var targetPanel = Ext.getCmp('main-targets-tab');
 				targetPanel.treePanel.loadTree();
 				
 				//update the delivery instructions to reflect
-				Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(true);
+				Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(Sparrow.SESSION.isTermReachesChanged());
 				
 				var targetsCount = Sparrow.SESSION.getAllTargetedReaches();
 				targetsCount = targetsCount ? targetsCount.length : 0;
 				
-				if(targetsCount > 0) 
+				if(targetsCount > 0) {
 					targetPanel.showInstructions();
-				else
+				} else {
 					targetPanel.hideInstructions();
 			}
 		});

@@ -206,7 +206,7 @@ Sparrow.ui = function() { return{
 	    // Add the new group to the model and render
 	    newGroup["@name"] = newGroupName;
 	    Sparrow.SESSION.PredictionContext.adjustmentGroups.reachGroup.push(newGroup);
-	    Sparrow.CONTEXT.fireEvent('changed');
+	    Sparrow.SESSION.fireContextEvent('adjustment-group-changed');
 	}
 	
 	
