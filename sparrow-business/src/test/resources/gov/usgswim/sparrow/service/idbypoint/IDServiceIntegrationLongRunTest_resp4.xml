@@ -300,6 +300,11 @@
 							<c>62.13</c>
 							<c>IGNORE</c>
 						</r>
+						<r>
+							<c>Total Contributing Area</c>
+							<c>62.14</c>
+							<c>IGNORE</c>
+						</r>
 					</section>
 					<section display="SPARROW Attributes" name="sparrow_attrib">
 						<r>
@@ -650,6 +655,11 @@
 						</r>
 						<r>
 							<c>Total Upstream Area</c>
+							<c>388.09</c>
+							<c>IGNORE</c>
+						</r>
+						<r>
+							<c>Total Contributing Area</c>
 							<c>388.09</c>
 							<c>IGNORE</c>
 						</r>
