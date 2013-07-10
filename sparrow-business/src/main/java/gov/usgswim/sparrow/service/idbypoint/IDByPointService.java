@@ -832,9 +832,9 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				} else {
 					sb.append("<c></c>");
 				}
-				String attribId = basicAttributes.getProperty(j, TableProperties.DATA_SERIES.toString());
-				if(null != attribId){
-					sb.append("<c>").append(attribId).append("</c>");
+				String docId = basicAttributes.getProperty(j, TableProperties.DOC_ID.toString());
+				if(null != docId){
+					sb.append("<c>").append(docId).append("</c>");
 				} else {
 					sb.append("<c></c>");
 				}

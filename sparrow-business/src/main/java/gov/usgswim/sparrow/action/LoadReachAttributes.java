@@ -7,7 +7,8 @@ import gov.usgs.cida.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.DataSeriesType;
-
+import java.util.List;
+import java.util.Arrays;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.HashMap;
@@ -63,7 +64,7 @@ public class LoadReachAttributes extends Action<DataTable> {
 		//Set column props
 		ColumnDataWritable[] cols = attribs.getColumns();
 		final String PRECISION = TableProperties.PRECISION.toString();
-		final String DATA_SERIES = TableProperties.DATA_SERIES.toString();
+		final String DOC_ID = TableProperties.DOC_ID.toString();
 		cols[8].setUnits(SparrowUnits.METERS.getUserName());	//Reach Length
 		cols[8].setProperty(PRECISION, "1");
 
@@ -71,20 +72,15 @@ public class LoadReachAttributes extends Action<DataTable> {
 		cols[9].setProperty(PRECISION, "2");
 		cols[10].setUnits(SparrowUnits.FPS.getUserName());	//Mean Velocity
 		cols[10].setProperty(PRECISION, "2");
-//@todo: Convert the Data Series property values to actual data series type strings.
-//and consequently modify the model.xmls to use data series type strings for ids instead of human-facing text
 		cols[11].setUnits(SparrowUnits.SQR_KM.getUserName());	//Incremental Area
 		cols[11].setProperty(PRECISION, "2");
-//		cols[11].setProperty(DATA_SERIES, DataSeriesType.incremental_area.toString());
-		cols[11].setProperty(DATA_SERIES, "Incremental Area");
+		cols[11].setProperty(DOC_ID, "CommonTerms.Incremental Area");
 		cols[12].setUnits(SparrowUnits.SQR_KM.getUserName());	//Total Contributing Area
 		cols[12].setProperty(PRECISION, "2");
-//		cols[12].setProperty(DATA_SERIES, DataSeriesType.total_contributing_area.toString());
-		cols[12].setProperty(DATA_SERIES, "Total Contributing Area");
+		cols[12].setProperty(DOC_ID, "CommonTerms.Total Contributing Area");
 		cols[13].setUnits(SparrowUnits.SQR_KM.getUserName());	//Total Upstream Area
 		cols[13].setProperty(PRECISION, "2");
-//		cols[13].setProperty(DATA_SERIES, DataSeriesType.total_upstream_area.toString());
-		cols[13].setProperty(DATA_SERIES, "Total Upstream Area");
+		cols[13].setProperty(DOC_ID, "CommonTerms.Total Upstream Area");
 
 		cols[14].setUnits(SparrowUnits.FRACTION.getUserName());	//Incremental Delivery
 		cols[14].setProperty(PRECISION, "6");

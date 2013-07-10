@@ -3,12 +3,12 @@
  * window.  This grid displays attribute values specific to the reach being
  * identified.
  */
-AttributesGrid = (function(){
+var AttributesGrid = (function(){
 	var attributeRecords = [
             {name: 'section'},
             {name: 'name'},
             {name: 'value'},
-			{name: 'attribId'}
+			{name: 'docId'}
     ];
 
 	return Ext.extend(Ext.grid.GridPanel, {
@@ -46,9 +46,10 @@ AttributesGrid = (function(){
         Ext.apply(this, {
             columns: [
                 {header: 'Section', dataIndex: 'section', hidden: true},
+				{header: 'Help', dataIndex: 'docId', renderer: this.renderHelpIfAvailable, width: 25, fixed: true},
                 {header: 'Name', dataIndex: 'name'},
-                {header: 'Value', dataIndex: 'value', renderer: this.renderNumbersWithColumns},
-				{header: 'Help', dataIndex: 'attribId', renderer: this.renderHelpIfAvailable, width: 18}
+                {header: 'Value', dataIndex: 'value', renderer: this.renderNumbersWithColumns}
+
 
             ],
             view: new Ext.grid.GroupingView({
@@ -68,7 +69,7 @@ AttributesGrid = (function(){
 
     renderHelpIfAvailable: function(value, metaData, record, rowIndex, colIndex, store) {
 		return value ?
-		'<a onclick="getGeneralHelp(\'CommonTerms.'+value+'\')"href="#"><img src="images/small_info_icon.png"/></a>'
+		'<a onclick="getGeneralHelp(\''+value+'\')"href="#"><img src="images/small_info_icon.png" alt="(?)"/></a>'
 		:
 		'';
 	},
@@ -114,20 +115,20 @@ AttributesGrid = (function(){
 
             var rowList = sectionList[i]["r"];
             for (var j = 0; j < rowList.length; j++) {
-				var attribId = rowList[j]["c"][3];
+				var docId = rowList[j]["c"][3];
                 var units = rowList[j]["c"][2] ? ' ' + rowList[j]["c"][2] : '';
                 var value = rowList[j]["c"][1] + units;
 				var name = rowList[j]["c"][0];
 
                 //exclude some values from the list
-                if(name.toLowerCase() == "incremental delivery fraction") continue;
+                if("incremental delivery fraction" === name.toLowerCase()) continue;
 
                 // Build a record (row) for the grid and add to the store
                 var record = new AttributeRecord({
                     section: sectionTitle,
                     name: name,
                     value: value,
-					attribId: attribId
+					docId: docId
                 });
                 this.store.add(record);
             }

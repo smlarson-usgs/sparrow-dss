@@ -231,7 +231,7 @@
 						<col name="Name" type="String" />
 						<col name="Value" type="String" />
 						<col name="Unit" type="String" />
-						<col name="attribId" type="String" />
+						<col name="docId" type="String" />
 					</columns>
 				</metadata>
 				<data>
@@ -306,19 +306,19 @@
 							<c>Incremental Area</c>
 							<c>62.14</c>
 							<c>IGNORE</c>
-							<c>Incremental Area</c>
+							<c>CommonTerms.Incremental Area</c>
 						</r>
 						<r>
 							<c>Total Contributing Area</c>
 							<c>62.14</c>
 							<c>IGNORE</c>
-							<c>Total Contributing Area</c>
+							<c>CommonTerms.Total Contributing Area</c>
 						</r>
 						<r>
 							<c>Total Upstream Area</c>
 							<c>62.13</c>
 							<c>IGNORE</c>
-							<c>Total Upstream Area</c>
+							<c>CommonTerms.Total Upstream Area</c>
 						</r>
 					</section>
 					<section display="SPARROW Attributes" name="sparrow_attrib">
@@ -614,7 +614,7 @@
 						<col name="Name" type="String" />
 						<col name="Value" type="String" />
 						<col name="Unit" type="String" />
-						<col name="attribId" type="String" />
+						<col name="docId" type="String" />
 					</columns>
 				</metadata>
 				<data>
@@ -689,19 +689,19 @@
 							<c>Incremental Area</c>
 							<c>187.03</c>
 							<c>IGNORE</c>
-							<c>Incremental Area</c>
+							<c>CommonTerms.Incremental Area</c>
 						</r>
 						<r>
 							<c>Total Contributing Area</c>
 							<c>388.09</c>
 							<c>IGNORE</c>
-							<c>Total Contributing Area</c>
+							<c>CommonTerms.Total Contributing Area</c>
 						</r>
 						<r>
 							<c>Total Upstream Area</c>
 							<c>388.09</c>
 							<c>IGNORE</c>
-							<c>Total Upstream Area</c>
+							<c>CommonTerms.Total Upstream Area</c>
 						</r>
 					</section>
 					<section display="SPARROW Attributes" name="sparrow_attrib">

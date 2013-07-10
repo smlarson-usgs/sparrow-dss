@@ -65,9 +65,9 @@ public class IDByPointServiceTest extends
 			instance.retrieveAttributes(req, response);
 			assertTrue(BASIC_ATTRIBUTE_COUNT == response.basicAttributes.getColumnCount());
 			assertTrue(SPARROW_ATTRIBUTE_COUNT == response.sparrowAttributes.getColumnCount());
-			List<Integer> colsWithDataType = Arrays.asList(new Integer[]{11,12,13});
-			for(Integer colWithDataType : colsWithDataType){
-				assertTrue(null != response.basicAttributes.getProperty(colWithDataType, TableProperties.DATA_SERIES.toString()));
+			List<Integer> colsWithDocId = Arrays.asList(new Integer[]{11,12,13});
+			for(Integer colWithDocId : colsWithDocId){
+				assertTrue(null != response.basicAttributes.getProperty(colWithDocId, TableProperties.DOC_ID.toString()));
 			}
 			System.out.println(response.attributesXML);
 
