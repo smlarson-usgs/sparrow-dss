@@ -43,10 +43,8 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 	Long modelId = null;
 	private transient PredictData predictData = null;
 	private transient DataTable idInfo = null;
-//	private transient DataTable terminalReachDrainageArea = null;
 	private transient List<ColumnData> expandedTotalDelLoadForAllSources;
 	private transient SparrowColumnSpecifier streamFlow = null;
-	//private transient ColumnData fractionedWatershedArea = null;
 	private transient ModelReachAreaDataTable modelReachAreaTable = null;
 
 	protected String msg = null;	//statefull message for logging
@@ -70,8 +68,6 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 		modelId = adjustmentGroups.getModelID();
 		predictData = sharedApp.getPredictData(modelId);
 		idInfo = sharedApp.getModelReachIdentificationAttributes(modelId);
-//		terminalReachDrainageArea = sharedApp.getCatchmentAreas(new UnitAreaRequest(modelId, AreaType.TOTAL_CONTRIBUTING));
-		//fractionedWatershedArea = sharedApp.getFractionedWatershedAreaTable(terminalReaches.getId());
 		streamFlow = sharedApp.getStreamFlow(modelId);
 
 		//Basic predict context, which we need data for all sources
@@ -101,11 +97,6 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 
 		ColumnIndex index = predictData.getTopo().toImmutable().getIndex();
 
-		//Rename the area db area column
-//		ColumnAttribsBuilder termReachWatershedAreaColumnAttribs = new ColumnAttribsBuilder();
-//		termReachWatershedAreaColumnAttribs.setName(terminalReachDrainageArea.getColumn(1).getName() + " (from Model export)");
-//		termReachWatershedAreaColumnAttribs.setDescription(terminalReachDrainageArea.getColumn(1).getDescription());
-//		RenameColumnDataView termReachWatershedAreaColumn = new RenameColumnDataView(terminalReachDrainageArea.getColumn(1), termReachWatershedAreaColumnAttribs);
 		int rowCount = idInfo.getRowCount();
 				LoadReachesAreas loadReachesAreas = new LoadReachesAreas(terminalReaches, predictData, rowCount);
 		modelReachAreaTable = loadReachesAreas.run();

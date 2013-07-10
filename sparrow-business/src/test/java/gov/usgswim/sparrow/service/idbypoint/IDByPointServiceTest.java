@@ -7,11 +7,14 @@ package gov.usgswim.sparrow.service.idbypoint;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDB;
 import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -66,6 +69,12 @@ public class IDByPointServiceTest extends
 			instance.retrieveAttributes(req, response);
 			assertTrue(BASIC_ATTRIBUTE_COUNT == response.basicAttributes.getColumnCount());
 			assertTrue(SPARROW_ATTRIBUTE_COUNT == response.sparrowAttributes.getColumnCount());
+			List<Integer> colsWithDataType = Arrays.asList(new Integer[]{11,12,13});
+			for(Integer colWithDataType : colsWithDataType){
+				assertTrue(null != response.basicAttributes.getProperty(colWithDataType, TableProperties.DATA_SERIES.toString()));
+			}
+			System.out.println(response.attributesXML);
+
 		}else{
 			fail();
 		}
