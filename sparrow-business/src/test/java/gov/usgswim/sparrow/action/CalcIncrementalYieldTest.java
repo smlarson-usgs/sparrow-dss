@@ -82,7 +82,7 @@ public class CalcIncrementalYieldTest  extends SparrowTestBaseWithDBandCannedMod
 		System.out.println(calcYieldResultCol.getName());
 		//Check named metadata
 		assertEquals(
-				Action.getDataSeriesProperty(DataSeriesType.incremental_yield, false) + " for " + Action.getDataSeriesProperty(DataSeriesType.decayed_incremental, false),
+				Action.getDataSeriesProperty(DataSeriesType.incremental_yield, false),
 				calcYieldResultCol.getName());
 		assertEquals(
 				Action.getDataSeriesProperty(DataSeriesType.incremental_yield, true),
