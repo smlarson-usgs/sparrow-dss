@@ -96,7 +96,7 @@ var GOTO_REACH_WIN = new (function(){
 	});
 	var self = this;
 	var checkBoxesArray;
-	
+
 	var reloadGroupsCombo = function(){
 		var data = {
 				groups: []
@@ -106,15 +106,15 @@ var GOTO_REACH_WIN = new (function(){
 			data.groups.push({name: groupNames[i], member: false});
 		}
 		self.memberStore.loadData(data);
-		
+
 		var currentGrpName = Ext.getCmp('findReachWinGroupCombo').getValue();
 		if (currentGrpName && !Sparrow.SESSION.groupExists(currentGrpName)) {
 			Ext.getCmp('findReachWinGroupCombo').clearValue();
 		}
 	};
-	
+
 	Sparrow.CONTEXT.on("adjustment-group-changed", reloadGroupsCombo);
-	
+
 	var checkBoxRenderer = function(rowid, name) {
 		var contentId = Ext.id();
 		(function(id){
@@ -132,7 +132,7 @@ var GOTO_REACH_WIN = new (function(){
 
 	var _pageSize = 50;
 	var _startRecord = 0;
-	
+
 	var findReachStore = new Ext.data.Store({
 		// load using HTTP
 		url: 'findReaches',
@@ -163,8 +163,8 @@ var GOTO_REACH_WIN = new (function(){
 		}
 	});
 	findReachStore.setDefaultSort("meanq", "DESC");
-	
-	
+
+
 	var goToReachFormContent = new Ext.FormPanel({
 		buttonAlign: 'right',
 		region: 'north',
@@ -207,11 +207,11 @@ var GOTO_REACH_WIN = new (function(){
 					}
 				},{
 					xtype: 'numberfield',
-					fieldLabel: '<a class="helpLink" href="javascript:getHelpFromService(' + model_id + ',\'CommonTerms.Watershed Area\')">Watershed Area (high limit) km<sup style="text-decoration: none">2</sup></a>',
+					fieldLabel: '<a class="helpLink" href="javascript:getHelpFromService(' + model_id + ',\'CommonTerms.Total Contributing Area\')">Total Contributing Area (high limit) km<sup style="text-decoration: none">2</sup></a>',
 					name: 'watershedAreaHi'
 				},{
 					xtype: 'numberfield',
-					fieldLabel: '<a class="helpLink" href="javascript:getHelpFromService(' + model_id + ',\'CommonTerms.Watershed Area\')">Watershed Area (lower limit) km<sup style="text-decoration: none">2</sup></a>',
+					fieldLabel: '<a class="helpLink" href="javascript:getHelpFromService(' + model_id + ',\'CommonTerms.Total Contributing Area\')">Total Contributing Area (lower limit) km<sup style="text-decoration: none">2</sup></a>',
 					name: 'watershedAreaLo'
 				},{
 					fieldLabel: '<a class="helpLink" href="javascript:getHelpFromService(' + model_id + ',\'CommonTerms.HUC\')">HUC</a>:<br/><span class="label-comment">complete or beginning digits of a huc8</span>',
@@ -235,11 +235,11 @@ var GOTO_REACH_WIN = new (function(){
 					xtype: 'trigger',
 					name: 'edaname',
 					id: 'ext-edaname',
-					style: { 
+					style: {
 						padding: '.1em',
 						marginBottom: '1em'
 					},
-					onTriggerClick: function() { 
+					onTriggerClick: function() {
 						(new ShuttleBoxWindow({
 							title: 'Select EDA Name(s)',
 							optionItemsStore: edaNameStore,
@@ -260,11 +260,11 @@ var GOTO_REACH_WIN = new (function(){
 					xtype: 'trigger',
 					name: 'edacode',
 					id: 'ext-edacode',
-					style: { 
+					style: {
 						padding: '.1em',
 						marginBottom: '1em'
 					},
-					onTriggerClick: function() { 
+					onTriggerClick: function() {
 						(new ShuttleBoxWindow({
 							title: 'Select EDA Code(s)',
 							width: 300,
@@ -290,7 +290,7 @@ var GOTO_REACH_WIN = new (function(){
 				findReachStore.load({
 					params: {
 						xmlreq: getReachRequestXML(),
-						start: _startRecord,          
+						start: _startRecord,
 						limit: _pageSize
 					}
 				});
@@ -333,12 +333,12 @@ var GOTO_REACH_WIN = new (function(){
 			}
 		}]
 	});
-	
+
 
 	/**
 	 * Renders an Ext-styled button to the grid column allowing the user to add a
 	 * reach to the group specified by the grid's dropdown box.
-	 
+
 	var addToGroupBtnRenderer = function(v, m, r, ri, ci, s) {
 	    return buttonRenderer('add', function() { GOTO_REACH_WIN.addToAdjustmentGroup(r.id, r.data.name); });
 	};
@@ -347,28 +347,28 @@ var GOTO_REACH_WIN = new (function(){
 	/**
 	 * Renders an Ext-styled button to the grid column allowing the user to add a
 	 * reach to the list of targted reaches.
-	 
+
 	var addToTargetBtnRenderer = function(v, m, r, ri, ci, s) {
 	    return buttonRenderer('add', function() { SESSION.addToTargetReaches(r.id, r.data.name); });
 	};
 	*/
 
-	
+
 	/**
 	 * Renders an Ext-styled button to the grid column allowing the user to ID a reach.
 	 */
 	var addIdentifyBtnRenderer = function(v, m, r, ri, ci, s) {
 	    return buttonRenderer(
-	    		'', 
-	    		function() { IDENTIFY.identifyReach(null, null, r.id, 4, true); }, {disabled:(context_id==null), cls: 'id_go'}, 
+	    		'',
+	    		function() { IDENTIFY.identifyReach(null, null, r.id, 4, true); }, {disabled:(context_id==null), cls: 'id_go'},
 	    		'id-reach-icon');
 	};
-	
+
 	var selectReachRenderer = function(v, m, r, ri, ci, s) {
 		return checkBoxRenderer(r.id, r.data.name);
 	};
-	
-	
+
+
 	var findReachGrid = new Ext.grid.GridPanel({
 		region: 'center',
 	    store: findReachStore,
@@ -378,7 +378,7 @@ var GOTO_REACH_WIN = new (function(){
 	        {header: "ID", width: 55, dataIndex: 'id', sortable: true},
 	        {header: "Name", width: 130, dataIndex: 'name', sortable: true},
 	        {header: "HUC8", width: 100, dataIndex: 'huc8', sortable: true},
-	        {header: "Watershed Area<br/>(km<sup>2</sup>)", width: 80, dataIndex: 'watershed-area', sortable: true},
+	        {header: "Total Contributing<br/>Area (km<sup>2</sup>)", width: 80, dataIndex: 'watershed-area', sortable: true},
 	        {header: "MeanQ<br/>(ft<sup>3</sup>/sec)", menuDisabled: true, width: 90, dataIndex: 'meanq', sortable: true},
 	        {header: "Select?", menuDisabled: true, width: 50, dataIndex: "groups", renderer: selectReachRenderer}
 	    ],
@@ -404,7 +404,7 @@ var GOTO_REACH_WIN = new (function(){
 			    mode: 'local',
 			    triggerAction: 'all'
 			}]
-		}) 
+		})
 	});
 
 	this.open = function() {
@@ -500,7 +500,7 @@ var GOTO_REACH_WIN = new (function(){
 			});
 		}
 		goToReachWin.show();
-		
+
 		var pos = goToReachWin.getPosition();
 		if (pos[1] < 0) goToReachWin.setPosition(pos[0], 0);
 	};
@@ -620,8 +620,8 @@ var edaCodeStore = new Ext.data.XmlStore({
 		get: 'code',
 		model: (model_id || Sparrow.USGS.getURLParam("model") || 22)
 	},
-  url: 'findReachSupport', 
-  record: 'code', 
+  url: 'findReachSupport',
+  record: 'code',
   fields: [{name: 'code', mapping: '/'}],
   sortInfo: {
       field: 'code'
@@ -643,8 +643,8 @@ var edaNameStore = new Ext.data.XmlStore({
 		get: 'name',
 		model: (model_id || Sparrow.USGS.getURLParam("model") || 22)
 	},
-  url: 'findReachSupport', 
-  record: 'name', 
+  url: 'findReachSupport',
+  record: 'name',
   fields: [{name: 'name', mapping: '/'}],
   sortInfo: {
       field: 'name'
@@ -672,21 +672,21 @@ var ShuttleBoxWindow = Ext.extend(Ext.Window, {
 				scope: this
 			}]
 		})
-		
+
 		ShuttleBoxWindow.superclass.initComponent.apply(this, arguments);
 	},
-	
+
 	afterRender: function() {
 		this.options = document.createElement('select');
 		this.options.multiple = true;
 		this.options.size = 25;
 		this.options.style.width = '100%';
-		
+
 		//populate options pick list
 		this.optionItems = this.optionItemsStore.getRange();
 		for (var i = 0; i < this.optionItems.length; i++) {
 			this.options.options[i] = new Option(this.optionItems[i].data[this.displayField],this.optionItems[i].data[this.valueField]);
-			
+
 			//see if this should be default selected when window opens
 			if (this.defaultSelected) {
 				for (var j = 0; j < this.defaultSelected.length; j++) {
@@ -698,15 +698,15 @@ var ShuttleBoxWindow = Ext.extend(Ext.Window, {
 				}//j
 			}
 		}//i
-		
-		
+
+
 //		This does not work for IE b/c the onmousedown
 //		event (or any mouse event) does not indicate which
 //		option was clicked.
 //		this.options.onmousedown = function(e) {
 //			if (!e) var e = window.event;
 //			if (e) {
-//				
+//
 //				if (e.toElement) {
 //					var selectedIndex = e.toElement.index;
 //					var toggleMe = this[selectedIndex];
@@ -719,21 +719,21 @@ var ShuttleBoxWindow = Ext.extend(Ext.Window, {
 //				}
 //			}
 //		};
-		
+
 		var optcap = document.createElement('div');
 		if (Ext.isMac) {
 			optcap.innerHTML = '<b>Selection List:</b><br /> Command-click to select multiple items.';
 		} else {
 			optcap.innerHTML = '<b>Selection List:</b><br /> Control-click to select multiple items.';
 		}
-		
+
 		this.body.dom.appendChild(optcap);
 		this.body.dom.appendChild(this.options);
 		var bdiv = document.createElement('div');
 		bdiv.id = 'shuttle-box-button-div';
 		bdiv.align = 'center';
 		this.body.dom.appendChild(bdiv);
-		
+
 		new Ext.ButtonGroup({
 			renderTo: 'shuttle-box-button-div',
 			columns: 3,
@@ -749,27 +749,27 @@ var ShuttleBoxWindow = Ext.extend(Ext.Window, {
 				//cls: 'x-btn-text-icon',
 				tooltip: 'Clear All Selected Items',
 				handler: this.clearSelections,
-				scope: this				
+				scope: this
 			}]
 		});
-		
-		
+
+
 		ShuttleBoxWindow.superclass.afterRender.apply(this, arguments);
 	},
-	
+
 	clearSelections: function() {
 		for (var i = 0; i < this.options.length; i++) {
 			this.options[i].selected = false;
 		}
 	},
-	
+
 	getValues: function(delimiter) {
 		var valString = '';
 		delimiter = delimiter || ',';
 		for (var i = 0; i < this.options.length; i++) {
 			if (this.options[i].selected) {
 				valString += this.options[i].value + delimiter;
-			}	
+			}
 		}
 		return valString.substr(0,valString.length-delimiter.length);
 	}
