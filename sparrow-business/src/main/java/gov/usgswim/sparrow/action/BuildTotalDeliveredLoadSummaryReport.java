@@ -1,20 +1,17 @@
 package gov.usgswim.sparrow.action;
 
 import gov.usgs.cida.datatable.DataTable;
-import gov.usgs.cida.datatable.ColumnAttribsBuilder;
 import gov.usgs.cida.datatable.DataTableSet;
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.ColumnIndex;
 import gov.usgs.cida.datatable.impl.DataTableSetSimple;
 import gov.usgs.cida.datatable.impl.SimpleDataTable;
-import gov.usgs.cida.datatable.view.RenameColumnDataView;
-import gov.usgswim.sparrow.AreaType;
 import gov.usgswim.sparrow.PredictData;
+import gov.usgswim.sparrow.datatable.ModelReachAreaDataTable;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.TableProperties;
 import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.request.DeliveryReportRequest;
-import gov.usgswim.sparrow.request.UnitAreaRequest;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,11 +43,9 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 	Long modelId = null;
 	private transient PredictData predictData = null;
 	private transient DataTable idInfo = null;
-	private transient DataTable terminalReachDrainageArea = null;
 	private transient List<ColumnData> expandedTotalDelLoadForAllSources;
 	private transient SparrowColumnSpecifier streamFlow = null;
-	private transient ColumnData fractionedWatershedArea = null;
-
+	private transient ModelReachAreaDataTable modelReachAreaTable = null;
 
 	protected String msg = null;	//statefull message for logging
 
@@ -73,8 +68,6 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 		modelId = adjustmentGroups.getModelID();
 		predictData = sharedApp.getPredictData(modelId);
 		idInfo = sharedApp.getModelReachIdentificationAttributes(modelId);
-		terminalReachDrainageArea = sharedApp.getCatchmentAreas(new UnitAreaRequest(modelId, AreaType.TOTAL_CONTRIBUTING));
-		fractionedWatershedArea = sharedApp.getFractionedWatershedAreaTable(terminalReaches.getId());
 		streamFlow = sharedApp.getStreamFlow(modelId);
 
 		//Basic predict context, which we need data for all sources
@@ -104,15 +97,23 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 
 		ColumnIndex index = predictData.getTopo().toImmutable().getIndex();
 
-		//Rename the area db area column
-		ColumnAttribsBuilder termReachWatershedAreaColumnAttribs = new ColumnAttribsBuilder();
-		termReachWatershedAreaColumnAttribs.setName(terminalReachDrainageArea.getColumn(1).getName() + " (from Model export)");
-		termReachWatershedAreaColumnAttribs.setDescription(terminalReachDrainageArea.getColumn(1).getDescription());
-		RenameColumnDataView termReachWatershedAreaColumn = new RenameColumnDataView(terminalReachDrainageArea.getColumn(1), termReachWatershedAreaColumnAttribs);
+		int rowCount = idInfo.getRowCount();
+				LoadReachesAreas loadReachesAreas = new LoadReachesAreas(terminalReaches, predictData, rowCount);
+		modelReachAreaTable = loadReachesAreas.run();
+		ColumnData fullIdCol = idInfo.getColumn(3);
 
-				//We can't add immutable columns to a writable table, so we need to construct a new table
+		//We can't add immutable columns to a writable table, so we need to construct a new table
 		SimpleDataTable infoTable = new SimpleDataTable(
-				new ColumnData[] {idInfo.getColumn(0), idInfo.getColumn(1), idInfo.getColumn(3), termReachWatershedAreaColumn, fractionedWatershedArea, streamFlow.getColumnData()},
+				new ColumnData[] {
+					idInfo.getColumn(0),
+					idInfo.getColumn(1),
+					fullIdCol, //client full identifier
+					modelReachAreaTable.getTotalContributingAreaColumn(),
+					modelReachAreaTable.getTotalUpstreamAreaColumn(),
+					modelReachAreaTable.getIncrementalAreaColumn(),
+					streamFlow.getColumnData()
+				},
+
 				"Identification and basic info",
 				"Identification and basic info",
 				buildTableProperties(), index);
@@ -126,7 +127,7 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 
 		String reportName = "Load";
 		if (this.reportYield) {
-			loadTable = convertToYield(predictData.getModel(), loadTable, fractionedWatershedArea, index);
+			loadTable = convertToYield(predictData.getModel(), loadTable, modelReachAreaTable.getTotalContributingAreaColumn(), index);
 			reportName = "Yield";
 		}
 

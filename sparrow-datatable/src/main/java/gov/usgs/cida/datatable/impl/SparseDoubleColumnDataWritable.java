@@ -8,21 +8,26 @@ import java.util.Map;
 
 /**
  * Holds a sparse hashmap of values for uses where the data is mostly empty.
- * Note that the constructor keeps a ref to the passed in hashmap.
+ * Note that the constructor keeps a ref to the passed in map.
  * @author eeverman
  */
-public class SparseDoubleColumnData extends AbstractColumnData implements ColumnData {
+
+public class SparseDoubleColumnDataWritable extends AbstractColumnDataWritable implements ColumnDataWritable {
+	//hiding fields
+	protected String units;
+	protected String name;
+
 	protected Map<Integer, Double> values;
 	protected int rowCount;	//Since our data can be sparse, we need to know how many rows
 	protected Double defaultMissingValue;	//value to return for missing vals (may be null)
 		// ===========
 		// CONSTRUCTOR
 		// ===========
-		public SparseDoubleColumnData(Map<Integer, Double> values, String name, String units,
+		public SparseDoubleColumnDataWritable(Map<Integer, Double> values, String name, String units,
 				String description,	Map<String, String> properties, Map<Object, int[]> index,
 				int rowCount, Double defaultMissingValue) {
 
-			super(name, Double.class, units, description, properties, index);
+			super(name, Double.class, units, properties);
 			isValid = false;
 			this.rowCount = rowCount;
 			this.defaultMissingValue = defaultMissingValue;
@@ -114,4 +119,49 @@ public class SparseDoubleColumnData extends AbstractColumnData implements Column
 				}
 			}
 		}
+	public void setRowCount(int rowCount){
+		this.rowCount = rowCount;
+	}
+	@Override
+	public void setUnits(String units) {
+		this.units = units;
+	}
+
+	@Override
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	@Override
+	public void setProperty(String key, String value) {
+		this.properties.put(key, value);
+	}
+
+	@Override
+	public void setDescription(String desc) {
+		this.description = desc;
+	}
+
+	@Override
+	public void setValue(String value, int row) throws IndexOutOfBoundsException {
+		throw new UnsupportedOperationException("Type not supported."); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void setValue(Number value, int row) throws IndexOutOfBoundsException {
+		this.setValue(value.doubleValue(), row);
+	}
+	public void setValue(Double value, int row) throws IndexOutOfBoundsException {
+		this.values.put(row, value.doubleValue());
+	}
+	@Override
+	public void setValue(Object value, int row) throws IndexOutOfBoundsException {
+		throw new UnsupportedOperationException("Type not supported"); //To change body of generated methods, choose Tools | Templates.
+	}
+
+	@Override
+	public void buildIndex() {
+		throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+	}
+
 	}

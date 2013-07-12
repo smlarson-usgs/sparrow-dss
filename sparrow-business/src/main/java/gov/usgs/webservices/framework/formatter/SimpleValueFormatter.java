@@ -13,17 +13,17 @@ public class SimpleValueFormatter implements ValueFormatter {
 
 	/** The OutputType determines the type of escaping to do */
 	OutputType outputType;
-	
+
 	public SimpleValueFormatter(OutputType outputType) {
 		this.outputType = outputType;
 	}
-	
+
 	@Override
 	public String format(String value) {
 		if (value == null) {
 			return "";
 		}
-		
+
 		switch (this.outputType) {
 			case CSV:
 				value = StringEscapeUtils.escapeCsv(value);

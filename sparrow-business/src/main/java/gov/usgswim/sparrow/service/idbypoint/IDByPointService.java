@@ -761,13 +761,14 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 	 * @param req The service request object.
 	 * @param response The service response object.
 	 */
-	private void retrieveAttributes(IDByPointRequest req, IDByPointResponse response)
+	public void retrieveAttributes(IDByPointRequest req, IDByPointResponse response)
 			throws Exception {
+
 
 		DataTable attributes = getAttributeData(response.modelID, response.reachID);
 
 		// TODO [IK] This 4 is hardcoded for now. Have to go back and use SparrowModelProperties to do properly
-		response.basicAttributes = new FilteredDataTable(attributes, new ColumnRangeFilter(0, 13)); // first four columns
+		response.basicAttributes = new FilteredDataTable(attributes, new ColumnRangeFilter(0, 14)); // first four columns
 		response.sparrowAttributes = new FilteredDataTable(attributes, new ColumnRangeFilter(15, attributes.getColumnCount() - 4)); // remaining columns
 
 		StringBuilder basicAttributesSection = toSection(response.basicAttributes, "Basic Attributes", "basic_attrib", DISPLAY_RULES);
@@ -829,7 +830,13 @@ public class IDByPointService implements HttpService<IDByPointRequest> {
 				if (units != null) {
 					sb.append("<c>").append(units).append("</c>");
 				} else {
-					sb.append("<c/>");
+					sb.append("<c></c>");
+				}
+				String docId = basicAttributes.getProperty(j, TableProperties.DOC_ID.toString());
+				if(null != docId){
+					sb.append("<c>").append(docId).append("</c>");
+				} else {
+					sb.append("<c></c>");
 				}
 				sb.append("</r>");
 			}

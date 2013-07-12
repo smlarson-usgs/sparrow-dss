@@ -25,7 +25,7 @@ public class LoadReachAttributesLongRunTest  extends SparrowTestBaseWithDB {
 	 * Tests the results of loading the attributes against a serialized table.
 	 * @throws Exception
 	 */
-	//@Test
+	@Test
 	public void compareToCannedResult() throws Exception {
 		//log.setLevel(Level.DEBUG);
 		LoadReachAttributes action = new LoadReachAttributes();
@@ -46,7 +46,7 @@ public class LoadReachAttributesLongRunTest  extends SparrowTestBaseWithDB {
 	 * before assuming the result of this export is the gold standard.
 	 * @throws Exception
 	 */
-	@Test
+//	@Test
 	public void writeToText() throws Exception {
 		LoadReachAttributes action = new LoadReachAttributes();
 		action.setModelId(SparrowTestBaseWithDB.TEST_MODEL_ID);

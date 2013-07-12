@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import javax.naming.NameNotFoundException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -28,15 +29,15 @@ import org.apache.log4j.Logger;
 /**
  * An Action is intended to be a single use, non-threadsafe instance that is
  * used to run a calculation, build, and or load data.
- * 
+ *
  * The minimum to implement is to override the abstract doAction() method.
  * State is handled by the implementing subclass, so you will likely need some
  * setState() methods.
- * 
+ *
  * If logging for this class is enables, auto timing will take place, along with
  * a unique run number used in the logs so its possible to match up the
  * start and end messages in the logging by the number.
- * 
+ *
  * @author eeverman
  *
  * @param <R>
@@ -44,70 +45,70 @@ import org.apache.log4j.Logger;
 public abstract class Action<R extends Object> implements IAction<R> {
 	protected static Logger log =
 		Logger.getLogger(Action.class); //logging for this class
-	
+
 	public final static String NL = System.getProperty("line.separator");
-	
+
 	//synch access on this class
 	private static Properties dataSeriesProperties;
-	
+
 	//A string that Action implementations can set to record outcomes for logging
 	private String postMessage;
-	
+
 	//A list of validation messages.  Never null.
 	private ArrayList<String> validationErrors = new ArrayList<String>();
-	
+
 	/**
 	 * A shared run count that increments when a new instance is created.
 	 */
 	private static int staticRunCount = 0;
-	
+
 	/**
 	 * The run number of the current instance, based on staticRunCount.
 	 */
 	private int runNumber = 0;
-	
+
 	/** A read-only connection that will be closed when the action completes */
 	private Connection roConn = null;
-	
+
 	/** A read-write connection that will be closed when the action completes */
 	private Connection rwConn = null;
-	
+
 	/** true if the read-only db connection was passed in, thus should not be closed */
 	private boolean externallyOwnedROConn = false;
-	
+
 	/** true if the read-write db connection was passed in, thus should not be closed */
 	private boolean externallyOwnedRWConn = false;
-	
+
 	private long startTime;		//Time the action starts
-	
+
 	/** A list of statements to be closed when the action completes */
 	private List<Statement> autoCloseStatements;
-	
+
 	/** A list of resultsets to be closed when the action completes */
 	private List<ResultSet> autoCloseResults;
-	
+
 	/**
 	 * A monitor object that will be non-null when doAction() is called.
 	 * To help monitor, subclasses should add the request object and
 	 * string to the invocation.
 	 */
 	protected ActionInvocation invocation;
-	
+
 	public Action() {
 		staticRunCount++;
 		runNumber = staticRunCount;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see gov.usgswim.sparrow.action.IAction#run()
 	 */
 	@Override
 	public R run() throws Exception {
 		preAction();
-		
+
 		R r = null;
 		Exception e = null;
-		
+
 		if (! hasValidationErrors()) {
 			try {
 				initFields();
@@ -118,58 +119,58 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		} else {
 			//There are validation errors - do not run
 			r = null;
-			
+
 		}
-	
+
 		postAction(r != null, e);
 		return r;
 	}
-	
+
 	public R run(Connection readOnlyConnection, Connection readWriteConnection)
 			throws Exception {
 		if (readOnlyConnection != null) {
 			externallyOwnedROConn = true;
 			roConn = readOnlyConnection;
 		}
-		
+
 		if (readWriteConnection != null) {
 			externallyOwnedRWConn = true;
 			rwConn = readWriteConnection;
 		}
-		
+
 		return run();
 	}
-	
+
 	protected void preAction() {
-		
+
 		startTime = System.currentTimeMillis();
-		
+
 		invocation = new ActionInvocation(this.getClass());
-		
+
 		if (log.isTraceEnabled()) {
 			log.trace("Beginning action for " + this.getClass().getName() +
 					".  Run Number: " + runNumber);
 		}
-		
+
 		invocation.start();
-		
+
 		//Do validation
 		validate();
 	}
-	
-	
+
+
 	/**
 	 * An optional message to add to the log on completion.  Only called
 	 * if the log level is debug or greater, or the doAction method returned null
 	 * (a fail) or threw an exception.  Note that the runNumber is
 	 * auto added to the end of the message.
-	 * 
+	 *
 	 * @return
 	 */
 	protected String getPostMessage() {
 		return postMessage;
 	}
-	
+
 	/**
 	 * Assigns the post message
 	 * @param msg
@@ -177,14 +178,14 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	protected void setPostMessage(String msg) {
 		postMessage = msg;
 	}
-	
+
 	/**
 	 * Override to add validation errors.
-	 * 
+	 *
 	 * If implementations call addValidationError(), an error will be recorded
 	 * and the doAction() method will not be called.  The run() method will
 	 * return null.
-	 * 
+	 *
 	 * This method should validate the values the action was given from the caller
 	 * and not attempt to load its own data to perform additional validations.
 	 */
@@ -192,40 +193,40 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		//Default implementation does nothing.
 		//By not calling addValidationError, no errors are created.
 	}
-	
+
 	/**
 	 * Implementations can override to initiate fields they need to do the calculation.
 	 * For instance, if they are passed only a model ID, they can load the model
 	 * data in this method.
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	protected void initFields() throws Exception {
 		//Default implementation does nothing.
 		//By not calling addValidationError, no errors are created.
 	}
-	
-	
+
+
 	/**
 	 * Adds a validation error message.
-	 * 
+	 *
 	 * Any validation errors will result in the actual doAction() method
 	 * not being called and null will be returned from the run() method.
-	 * 
+	 *
 	 * @param message
 	 */
 	protected void addValidationError(String message) {
 		validationErrors.add(message);
 	}
-	
+
 	/**
 	 * Returns a copy of the validation errors.
-	 * 
+	 *
 	 * @return Never returns null - if no errors, an empty array is returned.
 	 */
 	public String[] getValidationErrors() {
 		return validationErrors.toArray(new String[]{});
 	}
-	
+
 	/**
 	 * Returns true if there are validation errors.
 	 * @return
@@ -233,11 +234,11 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	public boolean hasValidationErrors() {
 		return validationErrors.size() > 0;
 	}
-	
+
 	/**
 	 * This method is called at the completion of the action, regardless of
 	 * how it completes.
-	 * 
+	 *
 	 * This method cleans up resources and does logging for the completion of
 	 * the action.  Subclasses may override, but must call the super
 	 * implementation to ensure that JDBC resources are cleaned up.
@@ -245,11 +246,11 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 * @param error Pass an error that might have occurred for logging.
 	 */
 	protected void postAction(boolean success, Exception error) {
-		
+
 		invocation.setNonNullResponse(success);
 		invocation.setError(error);
 		if (hasValidationErrors()) invocation.setValidationErrors(getValidationErrors());
-		
+
 		try {
 			try {
 
@@ -285,11 +286,11 @@ public abstract class Action<R extends Object> implements IAction<R> {
 						log.error("Action FAILED due to validation errors for " +
 								this.getClass().getName() + ".  Run Number: " +
 								runNumber + ".  Validation errors follow:");
-						
+
 						for (String valErr : getValidationErrors()) {
 							log.error("  Validation Error: " + valErr);
 						}
-						
+
 					} else {
 						log.error("Action FAILED but did not generate an error for " +
 								this.getClass().getName() + ".  Run Number: " +
@@ -347,22 +348,22 @@ public abstract class Action<R extends Object> implements IAction<R> {
 			invocation.finish();
 		}
 	}
-	
+
 	/**
 	 * Returns a connection intended for read-only access.
-	 * 
+	 *
 	 * RO access may not be enfored, however, likely there will be two dbs:  a
 	 * warehouse db and a transactional db, which may have different tables.
 	 * This connection is guaranteed to be closed regardless of how
 	 * the action completes.
-	 * 
+	 *
 	 * This method will reuse the same connection for the same
 	 * Action execution if called multiple times during a single run() invocation.
 	 * However, this method will check to ensure that the Connection is not
 	 * closed before handing it out.
-	 * 
+	 *
 	 * If a RO connection is passed into the run method, it will not be closed.
-	 * 
+	 *
 	 * @return A JDBC Connection which will be auto-closed at Action completion.
 	 * @throws SQLException
 	 */
@@ -374,27 +375,27 @@ public abstract class Action<R extends Object> implements IAction<R> {
 				roConn = SharedApplication.getInstance().getROConnection();
 			}
 		}
-		
+
 		return roConn;
 	}
-	
+
 	/**
 	 * Returns a connection intended for read-only access.
-	 * 
+	 *
 	 * RO access may not be enfored, however, likely there will be two dbs:  a
 	 * warehouse db and a transactional db, which may have different tables.
 	 * This connection is guaranteed to be closed regardless of how
 	 * the action completes.
-	 * 
+	 *
 	 * This method will return the same rw connection for the life of the Action,
 	 * unless the connection is closed.
 	 * If transaction support is needed, simply start a transaction at the beginning
 	 * of the action, then call commit or rollback when the action is complete.
 	 * If commit is never called, the auto-close of the connection will force
 	 * a rollback.
-	 * 
+	 *
 	 * If a RW connection is passed into the run method, it will not be closed.
-	 * 
+	 *
 	 * @return A JDBC Connection which will be auto-closed at Action completion.
 	 * @throws SQLException
 	 */
@@ -406,28 +407,28 @@ public abstract class Action<R extends Object> implements IAction<R> {
 				rwConn = SharedApplication.getInstance().getRWConnection();
 			}
 		}
-		
+
 		return rwConn;
 	}
-	
+
 	/**
 	 * Returns a new read-only prepared statement using the passed sql.
 	 * This statement and its connection is guaranteed to be closed regardless
 	 * of how the action completes.  Any ResultSet created from the Statement
 	 * is also close automatically when the Statement is closed (see jdbc docs
 	 * for Statement).
-	 * 
+	 *
 	 * @param sql The SQL statement, which may contain '?' parameters.
 	 * @return A JDBC PreparedStatement which will be auto-closed at Action completion.
 	 * @throws SQLException
 	 */
 	protected PreparedStatement getNewROPreparedStatement(String sql) throws SQLException {
 		Connection conn = getROConnection();
-		
+
 		PreparedStatement st =
 			conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY,
 			ResultSet.CONCUR_READ_ONLY, ResultSet.HOLD_CURSORS_OVER_COMMIT);
-		
+
 		//In general we have a small number of columns in our data.
 		//Test results over a DSL+VPN+ssh+Proxifier:
 		//Fetch Size | Seconds to return a 2 col data set of a few K rows
@@ -437,46 +438,46 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		// 400 | 7
 		//Note that 10 rows is the default for the oracle jdbc driver (!)
 		st.setFetchSize(200);
-		
+
 		addStatementForAutoClose(st);
-		
+
 		return st;
 	}
-	
+
 	/**
 	 * Returns a new read/write prepared statement using the passed sql.
 	 * This statement and its connection is guaranteed to be closed regardless
 	 * of how the action completes.  Any ResultSet created from the Statement
 	 * is also close automatically when the Statement is closed (see jdbc docs
 	 * for Statement).
-	 * 
+	 *
 	 * @param sql The SQL statement, which may contain '?' parameters.
 	 * @return A JDBC PreparedStatement which will be auto-closed at Action completion.
 	 * @throws SQLException
 	 */
 	protected PreparedStatement getNewRWPreparedStatement(String sql) throws SQLException {
 		Connection conn = getRWConnection();
-		
+
 		PreparedStatement st =
 			conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY,
 			ResultSet.CONCUR_UPDATABLE, ResultSet.HOLD_CURSORS_OVER_COMMIT);
-		
+
 		st.setFetchSize(200);
-		
+
 		addStatementForAutoClose(st);
-		
+
 		return st;
 	}
-	
+
 	/**
 	 * Creates a read-only PreparedStatement with named parameter substitutions.
-	 * 
+	 *
 	 * The params Map may contain single name-value pairs or name-collection pairs.
 	 * Names will replace $name$ variables in the SQL string with '?'s, assigning
 	 * parameters as needed in the prepared statement.  Collections of values
 	 * will be expanded into a list  of '?'s  in the expanded statement (currently
 	 * this is intended to be used for an IN clause).
-	 * 
+	 *
 	 * @param name
 	 * @param clazz
 	 * @param params String variableName, Object value
@@ -487,26 +488,28 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	public PreparedStatement getROPSFromPropertiesFile(
 			String name, Class<?> clazz, Map<String, Object> params)
 			throws Exception {
-		
+
 		//Get the text from the properties file
 		String sql = getText(name, (clazz != null)? clazz : this.getClass());
-		
+		if(null == sql){
+			throw new NameNotFoundException("No query named '" + name + "' was not found in the specified properties file.");
+		}
 		//Let the other method do the magic
 		return getROPSFromString(sql, params);
 	}
-	
+
 	/**
 	 * Creates a read-write PreparedStatement from a properties file.
-	 * 
+	 *
 	 * A properties file with a name matching this class is expected, with an
 	 * entry matching the passed name.
-	 * 
+	 *
 	 * The params Map may contain single name-value pairs or name-collection pairs.
 	 * Names will replace $name$ variables in the SQL string with '?'s, assigning
 	 * parameters as needed in the prepared statement.  Collections of values
 	 * will be expanded into a list  of '?'s  in the expanded statement (currently
 	 * this is intended to be used for an IN clause).
-	 * 
+	 *
 	 * @param name
 	 * @param clazz
 	 * @param params String variableName, Object value
@@ -517,27 +520,29 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	public PreparedStatement getRWPSFromPropertiesFile(
 			String name, Class<?> clazz, Map<String, Object> params)
 			throws Exception {
-		
+
 		//Get the text from the properties file
 		String sql = getText(name, (clazz != null)? clazz : this.getClass());
-		
+		if(null == sql){
+			throw new NameNotFoundException("No query named '" + name + "' was not found in the specified properties file.");
+		}
 		//Let the other method do the magic
 		return getRWPSFromString(sql, params);
 	}
-	
+
 	/**
 	 * Creates a prepared statement from a SQL string (possibly with named params).
-	 * 
+	 *
 	 * The params Map may contain single name-value pairs or name-collection pairs.
 	 * Names will replace $name$ variables in the SQL string with '?'s, assigning
 	 * parameters as needed in the prepared statement.  Collections of values
 	 * will be expanded into a list  of '?'s  in the expanded statement (currently
 	 * this is intended to be used for an IN clause).
-	 * 
+	 *
 	 * @param sql
 	 * @param params
 	 * @return
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	protected PreparedStatement getROPSFromString(
 			String sql, Map<String, Object> params)
@@ -548,30 +553,30 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		//Go through in order and get the variables, replace with question marks.
 		SQLString temp = processSql(sql, params);
 		sql = temp.sql.toString();
-		
+
 		//getNewRWPreparedStatement with the processed string
 		statement = getNewROPreparedStatement(sql);
-		
+
 		//Add now before assigning params (may bomb during assignment)
 		addStatementForAutoClose(statement);
-		
+
 		assignParameters(statement, temp, params);
 
 		return statement;
 	}
-	
+
 	/**
 	 * Creates a read-write PreparedStatement from a properties file.
-	 * 
+	 *
 	 * A properties file with a name matching this class is expected, with an
 	 * entry matching the passed name.
-	 * 
+	 *
 	 * The params Map may contain single name-value pairs or name-collection pairs.
 	 * Names will replace $name$ variables in the SQL string with '?'s, assigning
 	 * parameters as needed in the prepared statement.  Collections of values
 	 * will be expanded into a list  of '?'s  in the expanded statement (currently
 	 * this is intended to be used for an IN clause).
-	 * 
+	 *
 	 * @param sql
 	 * @param params
 	 * @return
@@ -581,35 +586,35 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	protected PreparedStatement getRWPSFromString(
 			String sql, Map<String, Object> params)
 			throws Exception {
-		
+
 		PreparedStatement statement = null;
 
 		//Go through in order and get the variables, replace with question marks.
 		SQLString temp = processSql(sql, params);
 		sql = temp.sql.toString();
-		
+
 		//getNewRWPreparedStatement with the processed string
 		statement = getNewRWPreparedStatement(sql);
-		
+
 		//Add now before assigning params (may bomb during assignment)
 		addStatementForAutoClose(statement);
-		
+
 		assignParameters(statement, temp, params);
-		
+
 		return statement;
 	}
-	
+
 	/**
 	 * Assigns the passed parameters to the PreparedStatement.
 	 * The parameters are passed in two forms:  sqlString contains the parameters
 	 * by name (only) in the order they need to be placed in the statement, that
 	 * is, the order matches the question marks in the statement; params contains
 	 * the name and value pairs.
-	 * 
+	 *
 	 * The params Map may contain collections of values which will be expanded into
 	 * a list  of '?'s  in the expanded statement.  Currently this is intended to
 	 * be used for an IN clause.
-	 * 
+	 *
 	 * @param statement
 	 * @param sqlString
 	 * @param params
@@ -617,17 +622,17 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 */
 	public static void assignParameters(PreparedStatement statement,
 			SQLString sqlString, Map<String, Object> params) throws Exception {
-		
+
 		ArrayList<String> variables = new ArrayList<String>();
-		
+
 		//Go through in order and get the variables, replace with question marks.
 		variables = sqlString.variables;
 		int paramIndex = 1;		//current param index, increment after setting
-		
+
 		for (String variable : variables) {
 			if (params.containsKey(variable)) {
 				Object valueEntry = params.get(variable);
-				
+
 				//The param value may be a colletion, in which case add an entry for each
 				Collection valueColl = null;
 				if (valueEntry instanceof Collection) {
@@ -636,7 +641,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 					valueColl = new ArrayList<Object>();
 					valueColl.add(valueEntry);
 				}
-				
+
 				for (Object oneValue : valueColl) {
 					if (oneValue instanceof String) {
 						statement.setString(paramIndex, oneValue.toString());
@@ -659,57 +664,57 @@ public abstract class Action<R extends Object> implements IAction<R> {
 					} else {
 						statement.setObject(paramIndex, oneValue);
 					}
-					
+
 					paramIndex++;
 				}
-				
+
 			} else {
 				throw new Exception("The variable '" + variable + "' was not found in the list of SQL parameters.");
 			}
 		}
-		
+
 	}
-	
+
 	/**
 	 * Adds a SQL Statement to a list of statements that will be closed automatically
 	 * when the action completes, regardless of how the action completes.
-	 * 
+	 *
 	 * This is opened up as a protected method so that actions can add their own
 	 * statements for which there may not be direct creation support for (i.e.
 	 * CallableStatements).
-	 * 
+	 *
 	 * @param statement
 	 */
 	protected void addStatementForAutoClose(Statement statement) {
 		if (autoCloseStatements == null) {
 			autoCloseStatements = new ArrayList<Statement>();
 		}
-		
+
 		autoCloseStatements.add(statement);
 	}
-	
+
 	/**
 	 * Adds a SQL ResultSet to a list of resultSets that will be closed automatically
 	 * when the action completes, regardless of how the action completes.
-	 * 
+	 *
 	 * This is opened up as a protected method so that actions can add their own
 	 * results for which there may not be direct creation support for (i.e.
 	 * CallableStatements).
-	 * 
+	 *
 	 * @param statement
 	 */
 	protected void addResultSetForAutoClose(ResultSet resultSet) {
 		if (autoCloseResults == null) {
 			autoCloseResults = new ArrayList<ResultSet>();
 		}
-		
+
 		autoCloseResults.add(resultSet);
 	}
-	
+
 	/**
-	 * Quick implementation of what's more or less a "tuple".  
+	 * Quick implementation of what's more or less a "tuple".
 	 * no functionality, just storage.
-	 * 
+	 *
 	 * Created so the process can be testable, without using
 	 * side-effects to implement functionality.
 	 * @author dmsibley
@@ -718,28 +723,28 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	public static class SQLString {
 		public StringBuilder sql;
 		public ArrayList<String> variables;
-		
+
 		public SQLString() {
 			this.sql = new StringBuilder();
 			this.variables = new ArrayList<String>();
 		}
 	}
-	
+
 	/**
 	 * Processes a SQL string template with two types of replacements.
-	 * 
+	 *
 	 * SQL parameters embedded in the SQL in the form '$sqlParamName$' are
 	 * replaced with a '?' and the actual name is pushed into an array list,
 	 * in the order it was found.
-	 * 
-	 * 
+	 *
+	 *
 	 * Non-SQL parameters embedded in the SQL in the form '@nonSqlParamName@'
 	 * are replaced with the value of the matching parameter from the params
 	 * Map.  This can be used to replace table names in the SQL string, or
 	 * other pieces of SQL that cannot be parameterized in a prepared statement.
 	 * Since the query parameters and the non-query params share the same Map,
 	 * the names must be unique.
-	 * 
+	 *
 	 * @param sqlWithVariables A SQL string template with variables to be replaced.
 	 * @param params A map of parameter values.
 	 * @return
@@ -748,7 +753,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		SQLString result = new SQLString();
 		char[] sqlChars = sqlWithVariables.toCharArray();
 		StringBuilder variableBuffer = new StringBuilder();
-		
+
 		boolean isVariableName = false;
 		for (int i = 0; i < sqlChars.length; i++) {
 			if (sqlChars[i] != '$') {
@@ -767,20 +772,20 @@ public abstract class Action<R extends Object> implements IAction<R> {
 					result.variables.add(paramName);
 					//Clear the buffer
 					variableBuffer = new StringBuilder();
-					
-					
+
+
 					if (params.get(paramName) != null && params.get(paramName) instanceof Collection) {
 						//If there is an array for this param, add a list of ?s
 						//The only place this should be used is in an IN clause.
 						Collection c = (Collection)params.get(paramName);
-						
+
 						if (c.size() > 0) {
 							for (Object o : c) {
 								result.sql.append("?, ");
 							}
 							result.sql.delete(result.sql.length() - 2, result.sql.length());
 						}
-						
+
 					} else {
 						//add ? placeholder
 						result.sql.append('?');
@@ -790,9 +795,9 @@ public abstract class Action<R extends Object> implements IAction<R> {
 				isVariableName = !isVariableName;
 			}
 		}
-		
+
 		String sql = result.sql.toString();
-		
+
 		for (Entry<String, Object> entry : params.entrySet()) {
 			String key = "@" + entry.getKey() + "@";
 			if (entry.getValue() != null) {
@@ -801,13 +806,13 @@ public abstract class Action<R extends Object> implements IAction<R> {
 				sql = sql.replaceAll(key, "");
 			}
 		}
-		
+
 		result.sql = new StringBuilder(sql);
-		
+
 		return result;
 	}
-	
-	
+
+
 	/**
 	 * Taken From:
 	 * Properly closing Connections and ResultSets without throwing exceptions, see the section
@@ -825,13 +830,13 @@ public abstract class Action<R extends Object> implements IAction<R> {
 			conn = null;
 		}
 	}
-	
+
 	/**
 	 * Taken From:
 	 * Properly closing Connections and ResultSets without throwing exceptions, see the section
 	 * "Here is an example of properly written code to use a db connection obtained from a connection pool"
 	 * http://tomcat.apache.org/tomcat-6.0-doc/jndi-datasource-examples-howto.html
-	 * 
+	 *
 	 * Note that this method makes no attempt to close the parent connection
 	 * or statement.
 	 * @param statement
@@ -846,13 +851,13 @@ public abstract class Action<R extends Object> implements IAction<R> {
 			statement = null;
 		}
 	}
-	
+
 	/**
 	 * Taken From:
 	 * Properly closing Connections and ResultSets without throwing exceptions, see the section
 	 * "Here is an example of properly written code to use a db connection obtained from a connection pool"
 	 * http://tomcat.apache.org/tomcat-6.0-doc/jndi-datasource-examples-howto.html
-	 * 
+	 *
 	 * Note that this method makes no attempt to close the parent connection
 	 * or statement.
 	 * @param rset
@@ -867,8 +872,8 @@ public abstract class Action<R extends Object> implements IAction<R> {
 			rset = null;
 		}
 	}
-	
-	
+
+
 	/**
 	 * Loads the named text chunk from the properties file and inserts the named values passed in params.
 	 *
@@ -890,7 +895,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 			throws IOException {
 		return getTextWithParamSubstitution(name, this.getClass(), params);
 	}
-	
+
 	public String getTextWithParamSubstitution(String name, String... params)
 	throws IOException {
 		return getTextWithParamSubstitution(name, this.getClass(), (Object[]) params);
@@ -918,7 +923,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 */
 	public static String getTextWithParamSubstitution(String name,
 			Class<?> clazz, Object... params) throws IOException {
-		
+
 		String query = getText(name, clazz);
 
 		for (int i=0; i<params.length; i+=2) {
@@ -972,7 +977,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 * file.  Each series has a user readable name, or if isDescription, a
 	 * description that can be fetched.  If the value is not found, an empty
 	 * String is returned.
-	 * 
+	 *
 	 * @param dataSeriesType
 	 * @param isDescription	True to get the description
 	 * @return
@@ -982,13 +987,13 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		if (isDescription) name += "_description";
 		return getDataSeriesProperty().getProperty(name, "");
 	}
-	
+
 	/**
 	 * Fetches a dataseries related property from the dataseries properties
 	 * file.  Each series has a user readable name, or if isDescription, a
 	 * description that can be fetched.  If the value is not found, an empty
 	 * String is returned.
-	 * 
+	 *
 	 * @param name
 	 * @param isDescription	True to get the description
 	 * @return
@@ -997,12 +1002,12 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		if (isDescription) name += "_description";
 		return getDataSeriesProperty().getProperty(name, "");
 	}
-	
+
 	/**
 	 * Fetches a dataseries related property from the dataseries properties
 	 * file.  Each series has a user readable name, or if isDescription, a
 	 * description that can be fetched.
-	 * 
+	 *
 	 * @param dataSeriesType
 	 * @param isDescription	True to get the description
 	 * @param defaultValue is returned if no property is found
@@ -1013,12 +1018,12 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		if (isDescription) name += "_description";
 		return getDataSeriesProperty().getProperty(name, defaultValue);
 	}
-	
+
 	/**
 	 * Fetches a dataseries related property from the dataseries properties
 	 * file.  Each series has a user readable name, or if isDescription, a
 	 * description that can be fetched.
-	 * 
+	 *
 	 * @param name
 	 * @param isDescription	True to get the description
 	 * @param defaultValue is returned if no property is found
@@ -1028,11 +1033,11 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		if (isDescription) name += "_description";
 		return getDataSeriesProperty().getProperty(name, defaultValue);
 	}
-	
+
 	private static synchronized Properties getDataSeriesProperty() {
 		if (dataSeriesProperties == null) {
 			Properties props = new Properties();
-			
+
 			String path = "/gov/usgswim/sparrow/DataSeriesType.properties";
 			InputStream ins = getResourceAsStream(path);
 
@@ -1040,15 +1045,15 @@ public abstract class Action<R extends Object> implements IAction<R> {
 				props.load(ins);
 			} catch (IOException e) {
 				log.error("Unable to load the Action data series properties file.", e);
-				
+
 			}
-			
+
 			dataSeriesProperties = props;
 		}
-		
+
 		return dataSeriesProperties;
 	}
-	
+
 	protected static InputStream getResourceAsStream(String path) {
 		InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
 		if (ins == null) {
@@ -1056,5 +1061,5 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		}
 		return ins;
 	}
-	
+
 }

@@ -2,6 +2,7 @@
 package gov.usgswim.sparrow;
 
 import static gov.usgswim.sparrow.action.Action.getDataSeriesProperty;
+import gov.usgswim.sparrow.domain.BaseDataSeriesType;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 
 /**
@@ -9,15 +10,18 @@ import gov.usgswim.sparrow.domain.DataSeriesType;
  * @author cschroed
  */
 public enum AreaType {
-	TOTAL_CONTRIBUTING(getDataSeriesProperty(DataSeriesType.total_contributing_area, false), getDataSeriesProperty(DataSeriesType.total_contributing_area, true)),
-	TOTAL_UPSTREAM(getDataSeriesProperty(DataSeriesType.total_upstream_area, false), getDataSeriesProperty(DataSeriesType.total_upstream_area, true)),
-	INCREMENTAL(getDataSeriesProperty(DataSeriesType.incremental_area, false), getDataSeriesProperty(DataSeriesType.incremental_area, true));
+	TOTAL_CONTRIBUTING(DataSeriesType.total_contributing_area),
+	TOTAL_UPSTREAM(DataSeriesType.total_upstream_area),
+	INCREMENTAL(DataSeriesType.incremental_area);
 
-	private final String name;
-	private final String description;
-	AreaType(String name, String description){
-		this.name = name;
-		this.description = description;
+	private final String name;	//here for convenience
+	private final String description;//here for convenience
+	private final DataSeriesType dataSeriesType;//permits accessing other advanced information about the type
+
+	AreaType(DataSeriesType dataSeriesType){
+		this.dataSeriesType = dataSeriesType;
+		this.name = getDataSeriesProperty(dataSeriesType, false);
+		this.description = getDataSeriesProperty(dataSeriesType, true);
 	}
 
 	/**
@@ -33,4 +37,12 @@ public enum AreaType {
 	public String getDescription() {
 		return description;
 	}
+
+	/**
+	 * @return the dataSeriesType
+	 */
+	public DataSeriesType getDataSeriesType() {
+		return dataSeriesType;
+	}
+
 }

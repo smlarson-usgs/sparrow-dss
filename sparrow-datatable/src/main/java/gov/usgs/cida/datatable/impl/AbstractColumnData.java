@@ -20,7 +20,7 @@ public abstract class AbstractColumnData implements ColumnData {
 	// Min-max values
 	protected transient Double maxDouble;
 	protected transient Double minDouble;
-	
+
 	// ===========
 	// Constructor
 	// ===========
@@ -37,10 +37,10 @@ public abstract class AbstractColumnData implements ColumnData {
 		isValid = true;
 	}
 
-	
+
 	// =========================
 	// Standard Instance Methods
-	// =========================	
+	// =========================
 	public String getName() {
 		return name;
 	}
@@ -56,13 +56,13 @@ public abstract class AbstractColumnData implements ColumnData {
 	public boolean isValid() {
 		return isValid;
 	}
-	
+
 	/**
 	 * Return the underlying primitive array
 	 * @return
 	 */
 	protected abstract Object getValues();
-	
+
 	// =================
 	// Property Handlers
 	// =================
@@ -72,15 +72,15 @@ public abstract class AbstractColumnData implements ColumnData {
 	public Set<String> getPropertyNames() {
 		return properties.keySet();
 	}
-	
+
 	@Override
 	public Map<String, String> getProperties() {
 		HashMap<String, String> tmp = new HashMap<String, String>();
 		tmp.putAll(properties);
 		return tmp;
 	}
-	
-	
+
+
 	// ======================
 	// Find and Index Methods
 	// ======================
@@ -122,7 +122,7 @@ public abstract class AbstractColumnData implements ColumnData {
 	protected int findLastWithoutIndex(Object value) {
 		return FindHelper.bruteForceFindLast(this, value);
 	}
-	
+
 	// ===============
 	// MIN-MAX METHODS
 	// ===============
@@ -141,12 +141,12 @@ public abstract class AbstractColumnData implements ColumnData {
 		} else {
 			minDouble = getMinD();
 			return minDouble;
-		}	
+		}
 	}
 
 	public Integer getMaxInt() {
 		Double dbl = getMaxDouble();
-		
+
 		if (dbl != null) {
 			return dbl.intValue();
 		} else {
@@ -156,7 +156,7 @@ public abstract class AbstractColumnData implements ColumnData {
 
 	public Integer getMinInt() {
 		Double dbl = getMinDouble();
-		
+
 		if (dbl != null) {
 			return dbl.intValue();
 		} else {
@@ -171,7 +171,7 @@ public abstract class AbstractColumnData implements ColumnData {
 	protected Double getMinD() {
 		return FindHelper.findMinDouble(this);
 	}
-	
+
 	// ----------------------------------
 	// utils
 	// ----------------------------------
@@ -188,5 +188,8 @@ public abstract class AbstractColumnData implements ColumnData {
 		}
 		return BuilderHelper.convertIndex(preIndex);
 	}
-
+	@Override
+	public String toString(){
+		return this.name + " [" + this.type + "] " + this.description;
+	}
 }

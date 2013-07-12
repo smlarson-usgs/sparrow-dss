@@ -6,7 +6,7 @@ import gov.usgswim.sparrow.domain.AggregationLevel;
 import gov.usgs.cida.datatable.AggregateType;
 
 public enum TableProperties implements NamedEnum<TableProperties>{
-	
+
 	MODEL_ID("model_id", Long.class, "ID of the associated model"),
 	CONTEXT_ID("context_id", Long.class, "ID of the associated context"),
 	ROW_LEVEL("row_level", AggregationLevel.class, "Each row in the table represents a reach, a huc2/4/6/8, other?"),
@@ -15,13 +15,14 @@ public enum TableProperties implements NamedEnum<TableProperties>{
 	DATA_TYPE("data_type", BaseDataSeriesType.class, "A broad classification of the data is incremental, total, or other."),
 	DATA_SERIES("data_series", DataSeriesType.class, "The specific dataseries of the data."),
 	COLUMN_AGG_TYPE("column_agg_type", AggregateType.class, "Indicates a value is an aggregation of other values in the column."),
+	DOC_ID("doc_id", String.class, "The key used to look up documentation relevant to a column."),
 	ROW_AGG_TYPE("row_agg_type", AggregateType.class, "Indicates a value is an aggregation of other values in the row.");
 
-	
+
 	private String publicName;
 	private String description;
 	private Class<?> valueType;
-	
+
 	TableProperties(String name, Class<?> valueType, String description) {
 		this.publicName = name;
 		this.description = description;
@@ -37,7 +38,7 @@ public enum TableProperties implements NamedEnum<TableProperties>{
 		}
 		return null;
 	}
-	
+
 	@Override
 	public TableProperties fromStringIgnoreCase(String name) {
 		for (TableProperties val : values()) {
@@ -57,11 +58,11 @@ public enum TableProperties implements NamedEnum<TableProperties>{
 	public String getDescription() {
 		return description;
 	}
-	
+
 //	public String getPublicName() {
 //		return publicName;
 //	}
-	
+
 	@Override
 	public String toString() {
 		return publicName;
