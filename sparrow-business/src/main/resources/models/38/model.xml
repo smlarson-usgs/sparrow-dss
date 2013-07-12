@@ -19,7 +19,7 @@
 			<Description>All sources combined.</Description>
 		</Source>
 		<Source id="1">
-			<Name>Waste Water Treatment Plants</Name>
+			<Name>Wastewater Treatment Plants</Name>
 			<Units>kg</Units>
 			<Description>Phosphorus from Waste Water Treatment Plants 2002, kg (PCS)</Description>
 		</Source>
@@ -34,14 +34,14 @@
 			<Description>Phosphorus from Farm Fertilizers 2002, kg</Description>
 		</Source>
 		<Source id="4">
-			<Name>Urban Areas</Name>
-			<Units>sq km</Units>
-			<Description>Urban and Developed Land, 2001 NLCD</Description>
-		</Source>
-		<Source id="5">
 			<Name>Forest and Wetland Areas</Name>
 			<Units>sq km</Units>
 			<Description>Forest and Wetland Areas, 2001 NLCD</Description>
+		</Source>
+		<Source id="5">
+			<Name>Urban Areas</Name>
+			<Units>sq km</Units>
+			<Description>Urban and Developed Land, 2001 NLCD</Description>
 		</Source>
 		<Source id="6">
 			<Name>Channel Erosion</Name>
@@ -94,16 +94,16 @@
 				<!-- These names could be improved, do we have updated info from Greg? -->
 				<dt>All</dt>
 				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
-				<dt>Waste Water Treatment Plants</dt>
+				<dt>Wastewater Treatment Plants</dt>
 				<dd>Phosphorus from Waste Water Treatment Plants 2002, kg (PCS).</dd>
 				<dt>Manure (total)</dt>
 				<dd>Phosphorus from Manure 2002, kg.</dd>
 				<dt>Fertilizers (farm)</dt>
-				<dd>Phosphorus from Farm Fertilizers 2002, kg.</dd>
-				<dt>Urban Areas</dt>
-				<dd>Urban and Developed Land, 2001 NLCD.</dd>				
+				<dd>Phosphorus from Farm Fertilizers 2002, kg.</dd>				
 				<dt>Forest and Wetland Areas</dt>
 				<dd>Forest and Wetland Areas, 2001 NLCD.</dd>
+				<dt>Urban Areas</dt>
+				<dd>Urban and Developed Land, 2001 NLCD.</dd>
 				<dt>Channel Erosion</dt>
 				<dd>Phosphorus from Channel Erosion.</dd>
 				<dt>Loess Soils</dt>
