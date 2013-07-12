@@ -153,11 +153,10 @@
                 	comparison of the export rates from different drainages.
                 </dd>
                 <dt>Total Yield</dt><dd>
-                	The <i>Total Load</i> divided by the total
-                	drainage area upstream of the reach outlet.
-                	Units are mass in kg per square kilometer per year. Total yield
-                	removes the variability due to differences in drainage area and allows
-                	comparison of the export rates from different drainages.
+					The <i>Total Load</i> divided by the Total Contributing Area
+					upstream of the reach outlet. Units are mass in kg per square kilometer per year.
+					Total yield removes the variability due to differences in drainage area and allows
+					comparison of the export rates from different drainages
                 </dd>
                 <dt>Flow-weighted Concentration</dt><dd>
                 	The mean annual flow-weighted concentration of the constituent in the reach
@@ -197,23 +196,23 @@
                 	end of a selected downstream target reach after accounting for the mass quantity
                 	that is removed by natural attenuation processes
                 	(e.g., long-term storage; denitrification).
-                	You must define at least one <em>Selected Downstream Reach</em> on the <em>Downstream Tracking</em> tab in order to map this series.
+                	You must define at least one <b>Selected Downstream Reach</b> on the <b>Downstream Tracking</b> tab in order to map this series.
                 </dd>
                 <dt>Incremental Delivered Load</dt><dd>
                 	The incremental load associated with a stream reach that arrives
                 	at the downstream end of a selected target reach, in units
                 	of mass (kg) per year.
-                	You must define at least one <em>Selected Downstream Reach</em> on the <em>Downstream Tracking</em> tab in order to map this series.
+                	You must define at least one <b>Selected Downstream Reach</b> on the <b>Downstream Tracking</b> tab in order to map this series.
                 </dd>
                 <dt>Total Delivered Load</dt><dd>
                 	The total load associated with a stream reach that arrives at
                 	the downstream end of a selected target reach, in units of mass (kg) per year.
-                	You must define at least one <em>Selected Downstream Reach</em> on the <em>Downstream Tracking</em> tab in order to map this series.
+                	You must define at least one <b>Selected Downstream Reach</b> on the <b>Downstream Tracking</b> tab in order to map this series.
 								</dd>
                 <dt>Incremental Delivered Yield</dt><dd>
                 	The <i>Incremental Delivered Load</i> divided by the drainage
                 	area of the reach, in units of mass (kg) per square kilometer per year.
-                	You must define at least one <em>Selected Downstream Reach</em> on the <em>Downstream Tracking</em> tab in order to map this series.
+                	You must define at least one <b>Selected Downstream Reach</b> on the <b>Downstream Tracking</b> tab in order to map this series.
                 </dd>
 			</dl>
 		</Term>
