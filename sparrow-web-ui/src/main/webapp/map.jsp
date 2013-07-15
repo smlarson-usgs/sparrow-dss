@@ -2,27 +2,27 @@
 <%@ page contentType="text/html; charset=utf-8"%>
 <html>
   <head>
-		
+
 		<jsp:include page="template_meta_tags.jsp" flush="true" />
-		
+
     <title>SPARROW Decision Support System</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
 
-	
+
     <!--Ext JS-->
     <link rel="stylesheet" type="text/css" href="ext_js/resources/css/ext-all.css" />
     <link rel="stylesheet" href="scrollable_map/css/scrollable_map.css"/>
-    
+
     <!-- Sparrow/USGS -->
     <link type="text/css" rel="stylesheet" href="http://www.usgs.gov/styles/common.css" />
 	<link type="text/css" rel="stylesheet" href="css/usgs_style_main.css" />
 	<link type="text/css" rel="stylesheet" href="css/custom.css" />
-	
+
 	<%-- the minify plugin doesn't recognize the 'type' attribute, so that will prevent this one from being minified twice --%>
   <script type="text/javascript" src="ext_js/adapter/ext/ext-base.js"></script>
 	<script type="text/javascript" src="ext_js/ext-all.js"></script>
 	<script type="text/javascript" src="js/ext_extensions/ext_ie_patch.js"></script>
-	
+
 	<%-- John scrollable map framework --%>
 	<script src="scrollable_map/JMap-header.js"></script>
 	<script src="scrollable_map/js/web/Map.js"></script>
@@ -61,7 +61,7 @@
 	<script src="scrollable_map/js/foi/FOIManager.js"></script>
 	<script src="scrollable_map/js/foi/FOI.js"></script>
 
-	
+
 	<%-- Project specific files --%>
 	<script src="js/sparrow_ns.js"></script>
 	<script src="js/sparrow_config.js"></script>
@@ -96,7 +96,7 @@
 	<script src="js/events.js"></script>
 	<script src="js/svg_overlay.js"></script>
 	<script src="js/DeliveryReport.js"></script>
-	
+
 	<jsp:include page="template_page_tracking.jsp" flush="true" />
 
   </head>
@@ -104,16 +104,16 @@
     <div id="usgs-header-panel">
         <jsp:include page="header.jsp" flush="true" />
     </div>
-    
+
     <%
     boolean modeler = false;
-    try{ 
+    try{
     	modeler = request.isUserInRole("sparrow_modeler");
     }catch(Exception e){}
     if(modeler){%>
 		<div id="modeler-user-role" class="x-hidden">modeler</div>
 	<%}%>
-	
+
     <div id="ie6-warn-win" class="x-hidden">
       <b>It appears that you are using Internet Explorer Version 6 or 7</b><br/>
 
@@ -196,19 +196,20 @@
         <div>
         <input class="visual-break" type="radio" name="export_bound" id="export_checkbox_bounded" value="bounded" checked="checked"/>
         <label for="export_checkbox_bounded">Only include reaches in the region currently shown on the map</label><br/>
-        <p class="form-note">Some reaches slighly outside the current region may be included in the export.</p>
+        <p class="form-note">Some reaches slightly outside the current region may be included in the export.</p>
         <input class="visual-break" type="radio" name="export_bound" id="export_checkbox_unbounded" value="unbounded" />
         <label for="export_checkbox_unbounded">Include all <b id="export-row-count-1"></b>&nbsp;&nbsp;reaches in the complete model</label><br/>
         <p class="form-note">This option will result in a very large download which may be sensitive to network interruptions.
         Please verify that all <b id="export-row-count-2"></b>&nbsp;&nbsp;data rows are received in the downloaded file.</p>
         </div>
         </fieldset>
-        
+
         <fieldset>
         <legend>Included Content</legend>
         <p class="form-note">The export always includes the following columns:<br/>
 		<a class="helpLink" href="javascript:getGeneralHelp('CommonTerms.Export Reach ID')">Reach id</a>,
-		<a class="helpLink" href="javascript:getGeneralHelp('CommonTerms.Watershed Area')">Watershed Area</a> and the
+		<a class="helpLink" href="javascript:getGeneralHelp('CommonTerms.Total Contributing Area')">Total Contributing Area</a>,
+		<a class="helpLink" href="javascript:getGeneralHelp('CommonTerms.Total Upstream Area')">Total Upstream Area</a> and the
 		Mapped Value (see notes in the export file for definitions)<br/>
 		Additional columns of data can be added below:
         </p>
@@ -222,7 +223,7 @@
         	<label for="export-adjusted-source-values">Include the source input values used to calculate the predicted values</label><br />
         <p class="form-note">These source values will reflect the changed input values from the Change Inputs tab.</p>
         </fieldset>
-        
+
         <fieldset class="distinct"><legend>Data series that do NOT reflect source input changes on the Change Inputs tab</legend>
         <p class="form-note">These options will include original, as-calibrated model data, unaffected by changes made on the Change Inputs tab.
         This data is useful for comparison, or if there are no source input changes.</p>
@@ -232,7 +233,7 @@
         <input class="visual-break" type="checkbox" name="original-source-values" id="export-original-source-values" value="checked"/>
         	<label for="export-original-source-values">Include the <i><b>original</b></i>&nbsp;&nbsp;source input values used to calculate the original predicted values</label><br />
         </fieldset>
-        
+
         <fieldset class="distinct"><legend>Other non-prediction related data series</legend>
         <input class="visual-break" type="checkbox" name="id-attributes" id="export-include-id-attributes" value="checked"/>
         	<label for="export-include-id-attributes">Include additional identification information (
@@ -241,13 +242,13 @@
         	<a class="helpLink" href="javascript:getGeneralHelp('CommonTerms.EDA Code')">EDA Code</a> &amp;
         	<a class="helpLink" href="javascript:getGeneralHelp('CommonTerms.EDA Name')">EDA Name</a>)</label><br />
         <input class="visual-break" type="checkbox" name="stat-attributes" id="export-include-stat-attributes" value="checked"/>
-        	<label for="export-include-stat-attributes">Include additional stream characteristics 
+        	<label for="export-include-stat-attributes">Include additional stream characteristics
         	(<a class="helpLink" href="javascript:getGeneralHelp('CommonTerms.Streamflow')">Streamflow</a> &amp;
         	<a class="helpLink" href="javascript:getGeneralHelp('CommonTerms.Incremental Area')">Incremental Area</a>)</label>
         </fieldset>
         </fieldset>
         </form>
-        
+
         <form id="export_form" method="POST" action="getPredict">
             <input type="hidden" id="report_xmlreq" name="xmlreq" value="" />
         </form>
@@ -259,7 +260,7 @@
     <div id="custom-cp-win" class="x-hidden">
       <div id="custom-cp"></div>
     </div>
-   
+
 
     <div id="name-group-area" class="x-hidden">
       <table width="100%" border="0">
@@ -291,28 +292,28 @@
     <div id="please-wait-area" class="x-hidden" style="text-align: center; vertical-align: middle;">
         Please wait while we process your request.
     </div>
-    
+
     <div id="sparrow-identify-mapped-value-a" class="sparrow-identify-mapped-value">
     </div>
-    
+
     <div id="sparrow-identify-mapped-value-b" class="sparrow-identify-mapped-value">
     </div>
 
     <div id="wiki-help-panel" class="x-panel-reset x-hidden">
         <div id="help-content" class="x-panel-reset"></div>
     </div>
-    
+
     <div id="delivery-report-panel" class="x-panel-reset x-hidden">
         <div id="delivery-report-content" class="x-panel-reset"></div>
     </div>
-    
+
     <div id="display-results-text" class="x-window-mc x-hidden" style="padding: 3px">
     	Map the model results by reach or catchment.
     </div>
-    
+
     <div id="adjustments-text" class="x-window-mc x-hidden" style="padding: 3px">
     	Map the effect of management scenarios on stream water quality, based on hypothetical changes in source inputs. For more information, <a href="javascript:getHelpFromService(<%= request.getParameter("model")  %>,'CommonTerms.Adjustments')">click here</a>.</div>
-    
+
     <div id="targets-text" class="x-window-mc x-hidden" style="padding: 3px">
     	Map the amount of load in upstream catchments that is delivered to a downstream reach. For more information, <a href="javascript:getHelpFromService(<%= request.getParameter("model")  %>,'CommonTerms.Targets')">click here</a>.
     </div>
