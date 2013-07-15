@@ -10,6 +10,7 @@ import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.AreaType;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
+import gov.usgswim.sparrow.action.LoadUnitAreas;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
@@ -48,7 +49,8 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
 
 
 
-        DataTable watershedAreas = sharedApp.getCatchmentAreas(new UnitAreaRequest(modelId, AreaType.TOTAL_CONTRIBUTING));
+        DataTable totalContributingAreas = sharedApp.getCatchmentAreas(new UnitAreaRequest(modelId, AreaType.TOTAL_CONTRIBUTING));
+        DataTable  totalUpstreamAreas = sharedApp.getCatchmentAreas(new UnitAreaRequest(modelId, AreaType.TOTAL_UPSTREAM));
         //DataTable huc8 = sharedApp.getHUC8Data(new HUC8TableRequest(modelId), false);
         SparrowColumnSpecifier adjDataColumn = adjPredictContext.getDataColumn();
     	SparrowColumnSpecifier orgDataColumn = null;
@@ -148,7 +150,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         		adjDataColumn, orgDataColumn,
     			adjPredictData, orgPredictData,
     			adjPredictResult, orgPredictResult,
-    			watershedAreas, huc8, reachFullIds, reachAttribs, reachStatsTable, readmeText);
+    			totalContributingAreas, totalUpstreamAreas, huc8, reachFullIds, reachAttribs, reachStatsTable, readmeText);
     }
 
     public void shutDown() {

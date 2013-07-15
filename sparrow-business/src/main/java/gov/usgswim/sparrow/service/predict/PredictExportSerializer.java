@@ -9,6 +9,7 @@ import gov.usgs.webservices.framework.dataaccess.BasicTagEvent;
 import gov.usgs.webservices.framework.dataaccess.BasicXMLStreamReader;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.filter.RowFilter;
+import gov.usgswim.sparrow.AreaType;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
@@ -23,14 +24,15 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	public static String TARGET_NAMESPACE = "http://www.usgs.gov/sparrow/prediction-response/v0_1";
 	public static String TARGET_NAMESPACE_LOCATION = "http://www.usgs.gov/sparrow/prediction-response/v0_1.xsd";
 	public static String T_PREFIX = "mod";
-	
+
 	private PredictExportRequest request;
 
 	private RowFilter filter;
 	private DataTable filterTable;
 
 	private PredictionContext adjContext;
-	private DataTable watershedAreas;
+	private DataTable totalContributingAreasColumn;
+	private DataTable totalUpstreamAreasColumn;
 	private DataTable huc8data;
 	private SparrowColumnSpecifier adjDataColumn;
 	private SparrowColumnSpecifier nomDataColumn;
@@ -42,7 +44,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	private DataTable reachAttribs = null;
 	private DataTable reachStatsTable = null;
 	private String exportDescription;
-	
+
 	//
 	protected ParseState state = new ParseState();
 
@@ -58,39 +60,42 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 
 	// ============
 	// CONSTRUCTORS
-	// ============	
+	// ============
 	public PredictExportSerializer(PredictExportRequest request, PredictionContext adjContext,
 			SparrowColumnSpecifier adjDataColumn, SparrowColumnSpecifier nomDataColumn,
 			PredictData adjPredictData, PredictData nomPredictData,
-			PredictResult adjPredictResult, PredictResult nomPredictResult, 
-			DataTable waterShedAreasColumn, DataTable huc8data,
+			PredictResult adjPredictResult, PredictResult nomPredictResult,
+			DataTable totalContributingAreasColumn,
+			DataTable totalUpstreamAreasColumn,
+			DataTable huc8data,
 			ColumnData reachFullIds, DataTable reachIdAttribs,
 			DataTable reachStatsTable, String exportDescription) throws Exception {
-		
+
 		super();
 		this.request = request;
 		this.adjContext = adjContext;
-		
+
 		this.adjDataColumn = adjDataColumn;
 		this.nomDataColumn = nomDataColumn;
 		this.adjPredictData = adjPredictData;
 		this.nomPredictData = nomPredictData;
 		this.adjPredictResult = adjPredictResult;
 		this.nomPredictResult = nomPredictResult;
-		this.watershedAreas = waterShedAreasColumn;
+		this.totalContributingAreasColumn = totalContributingAreasColumn;
+		this.totalUpstreamAreasColumn = totalUpstreamAreasColumn;
 		this.huc8data = huc8data;
 		this.reachFullIds = reachFullIds;
 		this.reachAttribs = reachIdAttribs;
 		this.reachStatsTable = reachStatsTable;
 		this.exportDescription = exportDescription;
-		
-		
+
+
 		if (adjDataColumn == null) {
 			throw new IllegalArgumentException("adjDataColumn cannot be null - this is the main mapped value data.");
 		}
-		
+
 		this.filter = createRowFilter();
-		
+
 		setChunksTotal(filter.getEstimatedAcceptCount());
 		setChunksUnit("XML Data Rows");
 
@@ -132,29 +137,30 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 		// opening element
 		events.add(new BasicTagEvent(START_DOCUMENT));
 		events.add(new BasicTagEvent(START_ELEMENT, "sparrow-prediction-response").addAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE + " " + TARGET_NAMESPACE_LOCATION));
-		
+
 		addOpenTag("response");
 		{
-			
+
 			events.add(
 					new BasicTagEvent(START_ELEMENT, "metadata")
 					.addAttribute("rowCount", Integer.toString(adjDataColumn.getRowCount())));
 					//.addAttribute("columnCount", Integer.toString(result.getColumnCount())));	We don't really know the column count
 			{
-				
+
 				if (exportDescription != null && exportDescription.length() > 0) {
 					addOpenTag("description");
 					events.add(new BasicTagEvent(CDATA, exportDescription));
 					addCloseTag("description");
 				}
-				
+
 				addOpenTag("columns");
 				{
 					//reach info, HUC8 and watershed area
 					events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Basic Reach Info"));
-					events.add(makeNonNullBasicTag("col", "").addAttribute("name", "Watershed Area (" + watershedAreas.getUnits(1) + ")").addAttribute("type", NUMBER));
+					events.add(makeNonNullBasicTag("col", "").addAttribute("name", AreaType.TOTAL_CONTRIBUTING.getName() + " (" + totalContributingAreasColumn.getUnits(1) + ")").addAttribute("type", NUMBER));
+					events.add(makeNonNullBasicTag("col", "").addAttribute("name", AreaType.TOTAL_UPSTREAM.getName() + " (" + totalUpstreamAreasColumn.getUnits(1) + ")").addAttribute("type", NUMBER));
 					addCloseTag("group");
-					
+
 					//Add a group for the mapped value
 					if (adjDataColumn != null || nomDataColumn != null) {
 
@@ -166,7 +172,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 							name += " (" + adjDataColumn.getTable().getUnits(adjDataColumn.getColumn()) + ")";
 							events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", NUMBER));
 						}
-						
+
 						if (nomDataColumn != null) {
 							String name = "Original Mapped Value: " + nomDataColumn.getTable().getName(nomDataColumn.getColumn());
 							//name += " (" + nomDataColumn.getTable().getProperty(nomDataColumn.getColumn(), "constituent") + ")";
@@ -179,7 +185,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 
 					//Add a group for the adjusted source columns
 					if (adjPredictData != null) {
-						
+
 						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Adjusted Source Values"));
 						for (int i = 0; i < adjPredictData.getSrc().getColumnCount(); i++) {
 							String name = "Adj Source: " + adjPredictData.getSrc().getName(i);
@@ -189,17 +195,17 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 						}
 						addCloseTag("group");
 					}
-					
+
 					//Add a group for the adjusted predict columns
 					if (adjPredictResult != null) {
 						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Adjusted Predicted Values"));
-						
+
 						int srcCount = adjPredictResult.getSourceCount();
 						String nameSuffix = " (Adjusted)";
-						
+
 						writePredictDataStartHeaders(adjPredictResult, adjPredictResult.getFirstDecayedIncrementalColForSrc(), srcCount + 1, nameSuffix);
 						writePredictDataStartHeaders(adjPredictResult, adjPredictResult.getFirstTotalColForSrc(), srcCount + 1, nameSuffix);
-						
+
 						addCloseTag("group");
 					}
 
@@ -219,16 +225,16 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 					//Add a group for the NONadjusted predict result columns
 					if (nomPredictResult != null) {
 						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Original Predicted Values"));
-						
+
 						int srcCount = nomPredictResult.getSourceCount();
 						String nameSuffix = " (Original)";
-						
+
 						writePredictDataStartHeaders(nomPredictResult, nomPredictResult.getFirstDecayedIncrementalColForSrc(), srcCount + 1, nameSuffix);
 						writePredictDataStartHeaders(nomPredictResult, nomPredictResult.getFirstTotalColForSrc(), srcCount + 1, nameSuffix);
 
 						addCloseTag("group");
 					}
-					
+
 					//Add a group for identification columns
 					if (reachAttribs != null) {
 						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Reach Identification Attributes"));
@@ -239,10 +245,10 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 						}
 						addCloseTag("group");
 					}
-					
+
 					if (reachStatsTable != null) {
 						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", "Reach Statistics"));
-						
+
 						for (int i = 0; i < reachStatsTable.getColumnCount(); i++) {
 							String name = reachStatsTable.getName(i);
 							name = name + " (" + reachStatsTable.getUnits(i) + ")";
@@ -250,7 +256,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 						}
 						addCloseTag("group");
 					}
-					
+
 					addCloseTag("columns");
 				}
 				addCloseTag("metadata");
@@ -270,28 +276,29 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 	}
 
 	protected void readRow() {
-		
+
 		//Spin off to oblivian data rows that are filtered out
 		while (!state.isDataFinished() && !filter.accept(filterTable, state.r)) {
 			state.r++;
 		}
-		
+
 		if (!state.isDataFinished()) {
 			BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
-			
+
 			//Aggregated rows are not working right now...
 			String rowId = reachFullIds.getString(state.r);
 			rowEvent.addAttribute("id", rowId);
-			
+
 			events.add(rowEvent);
 			{
 				//Column 1 by def.  See LoadUnitArea class
-				addBasicTag("c", watershedAreas.getValue(state.r, 1).toString());
-				
+				addBasicTag("c", totalContributingAreasColumn.getValue(state.r, 1).toString());
+				addBasicTag("c", totalUpstreamAreasColumn.getValue(state.r, 1).toString());
+
 				if (adjDataColumn != null) {
 					addBasicTag("c", adjDataColumn.getTable().getValue(state.r, adjDataColumn.getColumn()).toString());
 				}
-				
+
 				if (nomDataColumn != null) {
 					addBasicTag("c", nomDataColumn.getTable().getValue(state.r, nomDataColumn.getColumn()).toString());
 				}
@@ -304,12 +311,12 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 
 				if (adjPredictResult != null) {
 					int srcCount = adjPredictResult.getSourceCount();
-					
+
 					writePredictData(adjPredictResult, adjPredictResult.getFirstDecayedIncrementalColForSrc(), srcCount + 1);
 					writePredictData(adjPredictResult, adjPredictResult.getFirstTotalColForSrc(), srcCount + 1);
 				}
 
-				
+
 				if (nomPredictData != null) {
 					for (int c = 0; c < nomPredictData.getSrc().getColumnCount(); c++) {
 						addBasicTag("c", nomPredictData.getSrc().getString(state.r, c));
@@ -318,25 +325,25 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 
 				if (nomPredictResult != null) {
 					int srcCount = nomPredictResult.getSourceCount();
-					
+
 					writePredictData(nomPredictResult, nomPredictResult.getFirstDecayedIncrementalColForSrc(), srcCount + 1);
 					writePredictData(nomPredictResult, nomPredictResult.getFirstTotalColForSrc(), srcCount + 1);
 				}
-				
+
 				//This data is actually grouped w/ reachIdAttribs, but it is in a
 				//separate data table.
 				if (huc8data != null) {
 					//Column 0 by def.  See LoadHUCTable
 					addBasicTag("c", huc8data.getValue(state.r, 0).toString());
 				}
-				
-				
+
+
 				if (reachAttribs != null) {
 					for (int c = 0; c < reachAttribs.getColumnCount(); c++) {
 						addBasicTag("c", reachAttribs.getString(state.r, c));
 					}
 				}
-				
+
 				if (reachStatsTable != null) {
 					for (int c = 0; c < reachStatsTable.getColumnCount(); c++) {
 						addBasicTag("c", reachStatsTable.getString(state.r, c));
@@ -347,11 +354,11 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 			addCloseTag("r");
 			events.add(new BasicTagEvent(SPACE));
 			incrementChunksDone(1);	//notify monitor that we added a row
-			
+
 		}
 		state.r++;
 	}
-	
+
 	/**
 	 * Writes the column definitions for the PredictResult columns
 	 * @param result
@@ -366,7 +373,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 			events.add(makeNonNullBasicTag("col", "").addAttribute("name", name).addAttribute("type", NUMBER));
 		}
 	}
-	
+
 	/**
 	 * Writes the column data for the PredictResult columns
 	 * @param result
@@ -379,14 +386,14 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
 			addBasicTag("c", result.getString(state.r, c));
 		}
 	}
-	
-	
+
+
 
 	@Override
 	public void close() throws XMLStreamException {
 
 	}
-    
+
     protected RowFilter createRowFilter() throws Exception {
         if (request.getBbox() == null) {
             this.filterTable = null;
@@ -394,7 +401,7 @@ public class PredictExportSerializer extends BasicXMLStreamReader {
                 public boolean accept(DataTable table, int rowNum) {
                     return true;
                 }
-								
+
 								public Integer getEstimatedAcceptCount() {
 									return adjDataColumn.getTable().getRowCount();
 								}
