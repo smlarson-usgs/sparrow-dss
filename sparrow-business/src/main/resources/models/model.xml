@@ -226,7 +226,7 @@
 			The area of land that drains directly to the stream reach, not including land area that drains to upstream reaches.
 		</Term>
 		<Term id="Total Contributing Area">
-			The total area upstream of the reach that drains all the upstream streams and rainfall to the stream reach, which contributes load to the reach.
+			The area of land that drains all the upstream streams and rainfall to the stream reach, which contributes load to the reach.
 		</Term>
 		<Term id="Total Upstream Area">
 			The total area upstream of the reach that drains all the upstream streams and rainfall to the stream reach, regardless of whether it contributes load to the reach or not
