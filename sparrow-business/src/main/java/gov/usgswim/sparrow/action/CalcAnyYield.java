@@ -28,21 +28,37 @@ public class CalcAnyYield extends Action<ColumnData> {
 	private final SparrowModel model;
 	private final ColumnData loadValuesColumn;
 	private final ColumnData catchmentAreaColumn;
-
+	private final boolean includeLoadInName;
+	public final static String YIELD_LOAD_NAME_DELIMITER = " for ";
 	public CalcAnyYield(DataSeriesType seriesType, SparrowModel model,
 			ColumnData loadValuesColumn, ColumnData catchmentAreaColumn) {
+
+		this(seriesType, model,
+			loadValuesColumn, catchmentAreaColumn,
+			false);
+	}
+	public CalcAnyYield(DataSeriesType seriesType, SparrowModel model,
+			ColumnData loadValuesColumn, ColumnData catchmentAreaColumn, boolean includeLoadInName) {
 
 		this.seriesType = seriesType;
 		this.model = model;
 		this.loadValuesColumn = loadValuesColumn;
 		this.catchmentAreaColumn = catchmentAreaColumn;
+		this.includeLoadInName = includeLoadInName;
 	}
-
 	@Override
 	public ColumnData doAction() throws Exception {
 
 		SparrowColumnAttribsBuilder ca = new SparrowColumnAttribsBuilder();
-		ca.setName(getDataSeriesProperty(seriesType, false));
+		StringBuilder nameBuilder = new StringBuilder(
+			getDataSeriesProperty(seriesType, false, "Yield")
+			);
+		if(includeLoadInName){
+			nameBuilder.append(this.YIELD_LOAD_NAME_DELIMITER);
+			nameBuilder.append(loadValuesColumn.getName());
+		}
+
+		ca.setName(nameBuilder.toString());
 		ca.setDescription(getDataSeriesProperty(seriesType, true));
 		ca.setUnits(SparrowUnits.KG_PER_SQR_KM_PER_YEAR.getUserName());
 

@@ -270,7 +270,7 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReport extends Action<DataTa
 		for (int col = 0; col < loadTable.getColumnCount(); col++) {
 			ColumnData loadColumn = loadTable.getColumn(col);
 
-			CalcAnyYield action = new CalcAnyYield(DataSeriesType.total_yield, model, loadColumn, areaCol);
+			CalcAnyYield action = new CalcAnyYield(DataSeriesType.total_yield, model, loadColumn, areaCol, true);
 			ColumnData yieldCol = action.run();
 			yieldCols.add(yieldCol);
 		}
