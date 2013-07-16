@@ -1,18 +1,18 @@
 <!doctype html>
-<html> 
-	<head> 
+<html>
+	<head>
 	<jsp:include page="template_meta_tags.jsp" flush="true" />
-		
+
 		<link rel="stylesheet" href="css/left_only.css?rev=1" type="text/css">
 		<link rel="stylesheet" href="css/static_custom.css?rev=1" type="text/css">
-    	<link rel="stylesheet" href="css/landing_page.css?rev=1" type="text/css">	
+    	<link rel="stylesheet" href="css/landing_page.css?rev=1" type="text/css">
 		<!--[if lte IE 7]>
 		<style type="text/css">
 		#sizer {
 			width:expression(document.body.clientWidth > 1440 ? "500px" : "78%" );
 		}
-		
-		<%-- 
+
+		<%--
 		Fix for ugly extra padding and button format:
 		http://latrine.dgx.cz/the-stretched-buttons-problem-in-ie
 		--%>
@@ -20,7 +20,7 @@
 
 		</style>
 		<![endif]-->
-		
+
 		<%--  ExtJS Scripts --%>
 		<script src="landing/js/ext/adapter/ext/ext-base.js?rev=1" type="text/javascript"></script>
 		<script type="text/javascript" src="landing/js/ext/ext-all.js?rev=1"></script>
@@ -32,84 +32,84 @@
 
 		<%--  cookies script included b/c EXT cookies does not support session cookies --%>
 		<script src="landing/js/ui/cookies.js?rev=1" type="text/javascript"></script>
-		
+
 		<script src="landing/js/ui/comp/Controller2.js?rev=1" type="text/javascript"></script>
 		<script type="text/javascript">
 			var CONTROLLER = new Sparrow.index.Controller({region : 'Any', parameter : 'Any'});
 		</script>
-		
+
 		<script src="landing/js/excat/scripts/sarissa.js?rev=1" type="text/javascript"></script>
 		<script src="landing/js/excat/scripts/sarissa_ieemu_xpath.js?rev=1"></script>
 		<script src="landing/js/ui/comp/CSWClient.js?rev=1" type="text/javascript"></script>
 		<script type="text/javascript">
 			var CSWClient = new Sparrow.index.CSWClient();
 		</script>
-		
+
 		<!-- Animation for changing model list -->
-		<script type="text/javascript" src="landing/js/ui/animator.min.js"></script> 
-		
+		<script type="text/javascript" src="landing/js/ui/animator.min.js"></script>
+
 		<%--  onReady File  --%>
 		<script src='landing/js/ui/onReady2.js?rev=1' type="text/javascript"></script>
-    
-    	<title>SPARROW Decision Support System</title>
-			
-		<jsp:include page="template_page_tracking.jsp" flush="true" />
-		
-	</head> 
-	<body> 
 
-	
+    	<title>SPARROW Decision Support System</title>
+
+		<jsp:include page="template_page_tracking.jsp" flush="true" />
+
+	</head>
+	<body>
+
+
 		<!--
 			The SIZER, EXPANDER, and WRAPPER are used to make the content of the page
-			'springy', so that it expands with the browser window and maintains some padding. --> 
-		<div id="sizer"> 
-			<div id="expander"> 
-				<div id="wrapper" class="clearfix"> 
-					<div id="header"> 
-            			<div id="banner-area"> 
-							<h1>US Geological Survey</h1><!-- Not actually visible unless printed --> 
-							<div id="usgs-header-logo"><a href="http://www.usgs.gov" title="Link to the US Geological Survey main web page"><img alt="USGS Logo" src="images/usgs_logo_small.jpg" ></a></div> 
-							<div id="usgsPrintCommHeader" class="print-only"> 
-								<h3 id="printCommType">Web Page Hardcopy</h3> 
-								<p class="hide">The section 'Web Page Hardcopy' is only visible when printed.  Ignore if viewing with style sheets turrned off</p> 
-								<p id="printCommDate"> 
-									<script type="text/javascript">document.write(new Date().toLocaleString());</script> 
-								</p> 
-								<p id="printCommPrintFrom">Printed From: <script type="text/javascript">document.write(document.location.href);</script></p> 
-								<p> 
+			'springy', so that it expands with the browser window and maintains some padding. -->
+		<div id="sizer">
+			<div id="expander">
+				<div id="wrapper" class="clearfix">
+					<div id="header">
+            			<div id="banner-area">
+							<h1>US Geological Survey</h1><!-- Not actually visible unless printed -->
+							<div id="usgs-header-logo"><a href="http://www.usgs.gov" title="Link to the US Geological Survey main web page"><img alt="USGS Logo" src="images/usgs_logo_small.jpg" ></a></div>
+							<div id="usgsPrintCommHeader" class="print-only">
+								<h3 id="printCommType">Web Page Hardcopy</h3>
+								<p class="hide">The section 'Web Page Hardcopy' is only visible when printed.  Ignore if viewing with style sheets turrned off</p>
+								<p id="printCommDate">
+									<script type="text/javascript">document.write(new Date().toLocaleString());</script>
+								</p>
+								<p id="printCommPrintFrom">Printed From: <script type="text/javascript">document.write(document.location.href);</script></p>
+								<p>
 									This print version of the page is optimized to print only the
 									content portions of the web page you were viewing and is not
 									intended to have the same formatting as the original page.
-								</p> 
-							</div> 
+								</p>
+							</div>
 						</div>
-						<div id="ccsa-area"> 
-							<h4 class="access-help">Top Level USGS Links</h4> 
-							<ul> 
-								<li><a href="http://www.usgs.gov/" title="Link to main USGS page">USGS Home</a></li> 
-								<li><a href="http://www.usgs.gov/ask/index.html" title="Link to main USGS contact page">Contact USGS</a></li> 
-								<li><a href="http://search.usgs.gov/" title="Link to main USGS search (not publications search)">Search USGS</a></li> 
-							</ul> 
-						</div> 
-		            </div><!-- End content --> 
-		            <h2 id="site-title">SPARROW Decision Support System</h2> 
-					<div id="quick-links" class="access-help"> 
-						<h4>Quick Page Navigation</h4> 
-							<ul title="links to portions of this page.  Details:  Not normally visible and intended for screen readers.  Page layout has the content near top. Links opening new windows are noted in titles."> 
-							<li><a href="#page-content" title="Main content of this page.  Starts with the pages name.">Page Main Content</a></li> 
-							<li><a href="#site-top-links" title="Short list of top pages within the site.  Before page content.">Top Pages Within This Site</a></li> 
-							<li><a href="#site-full-links" title="Complete list of page within the site.  After page content.">All Pages Within This Site</a></li> 
-							<li><a href="#full-navigation" title="Pages within the site and external links.  After page content.">All Site Pages Plus External Links</a></li> 
-							<li><a href="#validation-info" title="HTML and CSS validation links for this page.  After page content.">HTML and CSS Validation Info</a></li> 
-							<li><a href="#footer" title="Mainenance info, general USGS links.  Bottom of page, after content.">Misc. Page Info</a></li> 
-						</ul> 
-					</div> 
-					<div id="page-area-container" class="area-container"> 
-						<div id="page-content" class="area-1 area"> 
-							<div id="doc-and-model-container" class="area-content"> 
-					
+						<div id="ccsa-area">
+							<h4 class="access-help">Top Level USGS Links</h4>
+							<ul>
+								<li><a href="http://www.usgs.gov/" title="Link to main USGS page">USGS Home</a></li>
+								<li><a href="http://www.usgs.gov/ask/index.html" title="Link to main USGS contact page">Contact USGS</a></li>
+								<li><a href="http://search.usgs.gov/" title="Link to main USGS search (not publications search)">Search USGS</a></li>
+							</ul>
+						</div>
+		            </div><!-- End content -->
+		            <h2 id="site-title">SPARROW Decision Support System</h2>
+					<div id="quick-links" class="access-help">
+						<h4>Quick Page Navigation</h4>
+							<ul title="links to portions of this page.  Details:  Not normally visible and intended for screen readers.  Page layout has the content near top. Links opening new windows are noted in titles.">
+							<li><a href="#page-content" title="Main content of this page.  Starts with the pages name.">Page Main Content</a></li>
+							<li><a href="#site-top-links" title="Short list of top pages within the site.  Before page content.">Top Pages Within This Site</a></li>
+							<li><a href="#site-full-links" title="Complete list of page within the site.  After page content.">All Pages Within This Site</a></li>
+							<li><a href="#full-navigation" title="Pages within the site and external links.  After page content.">All Site Pages Plus External Links</a></li>
+							<li><a href="#validation-info" title="HTML and CSS validation links for this page.  After page content.">HTML and CSS Validation Info</a></li>
+							<li><a href="#footer" title="Mainenance info, general USGS links.  Bottom of page, after content.">Misc. Page Info</a></li>
+						</ul>
+					</div>
+					<div id="page-area-container" class="area-container">
+						<div id="page-content" class="area-1 area">
+							<div id="doc-and-model-container" class="area-content">
+
 								<div id="doc" class="columns-2">
-									 
+
 									<div id="reference-links" class="column">
 										<h4>Documentation and Further Reading</h4>
 										<ul id="documentation-list">
@@ -119,7 +119,7 @@
 											<li><a title="SPARROW FAQs" href="faq.jsp" target="_blank">SPARROW DSS FAQs</a></li>
 										</ul>
 									</div>
-									
+
 									<div id="reference-videos" class="column">
 										<h4>Tutorial Videos</h4>
 										<select id="tutorial-video-select">
@@ -129,12 +129,13 @@
 											<option value="screencast.jsp?videoId=zrycRF7MeG8">Selecting Downstream Outlets</option>
 											<option value="screencast.jsp?videoId=UkC_76uq748">Changing Source Inputs</option>
 											<option value="screencast.jsp?videoId=tHnxt2ORNQU">Incremental Yield to an Outlet</option>
+											<option value="screencast.jsp?videoId=">Summarizing Delivered Load to Downstream Outlets</option>
 										</select>
 										<button id="tutorial-video-go-button">Watch now &gt;&gt;</button>
 										<h4>Found a bug or have a comment?</h4>
 										<p>
 											Please send bugs, suggestions and questions to the
-											<a title="Contact Email" href="mailto:sparrowdss@usgs.gov?subject=Sparrow Map Comments">SPARROW Decision Support System Administrator</a>.
+											<a title="Contact Email" href="mailto:sparrowdss@usgs.gov?subject=Sparrow%20Map%20Comments">SPARROW Decision Support System Administrator</a>.
 										</p>
 									 </div>
 								</div><!-- /columns-2 -->
@@ -147,16 +148,16 @@
 										</div>
 									</div>
 								</div>
-							
+
 							</div><!-- /area-content -->
-							<!-- For the benefit of Internet Explorer, place no comments between these next two tags --> 
-						</div> 
-						<div class="area-2 area"> 
-							<div id="model-navigation-container" class="area-content"> 
-								<div id="search-by-geo-header"> 
-									<h3>Find a Model by Geographic Location:</h3> 
+							<!-- For the benefit of Internet Explorer, place no comments between these next two tags -->
+						</div>
+						<div class="area-2 area">
+							<div id="model-navigation-container" class="area-content">
+								<div id="search-by-geo-header">
+									<h3>Find a Model by Geographic Location:</h3>
 									<p><i>Select a region or state.  When a state is selected, all models containing that state are listed.</i></p>
-								</div> 
+								</div>
 								<img src="landing/images/usa_map.gif" title="US States" alt="US States" width="460" height="270" usemap="#us_mapMap" />
 								<select id="region-combo-input" name="region-combo-input" size="1" onChange="CONTROLLER.selectRegion(this);">
 									<option value="Any">Any Region or State</option>
@@ -231,7 +232,7 @@
 									<option value="SS">Suspended Sediment</option>
 									<option value="DS">Total Dissolved Solids</option>
 								</select>
-								
+
 								<div id="search-results-container">
 									<h3 class="divider">Models matching your criteria <span class="note">(click a model to show details)</span></h3>
 									<div id="csw-output">
@@ -246,8 +247,8 @@
 
 						</div><!--  area-2 -->
 
-					</div><!-- end of #page-area-container --> 
-					
+					</div><!-- end of #page-area-container -->
+
 <div id="usgs-footer-panel" class="${param['footer-class']}">
     <div id="footer">
         <div id="usgs-policy-links">
@@ -270,7 +271,7 @@
                             <span class="postal-code">20240</span>
                         </span>
                         <span class="tel">202-208-3100</span>
-                    </span><!-- vcard --> | 
+                    </span><!-- vcard --> |
                     <span class="vcard">
                         <a class="url fn org" href="http://www.usgs.gov" title="Link to the main USGS web site">U.S. Geological Survey</a>
                         <span class="adr">
@@ -281,7 +282,7 @@
                     </span><!-- vcard -->
                 </p>
 	            <p id="footer-page-url">URL: <a href="http://water.usgs.gov/nawqa/sparrow/dss/">http://water.usgs.gov/nawqa/sparrow/dss/</a></p>
-	            <p id="footer-contact-info">Page Contact Information: <a title="Contact Email" href="mailto:sparrowdss@usgs.gov?subject=Sparrow Map Comments">SPARROW DSS Administrator</a></p>
+	            <p id="footer-contact-info">Page Contact Information: <a title="Contact Email" href="mailto:sparrowdss@usgs.gov?subject=Sparrow%20Map%20Comments">SPARROW DSS Administrator</a></p>
 	            <p id="footer-page-modified-info">Page Last modified: ${buildTime} <span id="versionInfo">(Version: ${pom.version} (${timestamp}) - ${deployment_profile})</span></p>
             </div><!-- /page-info -->
             <div id="gov-buttons">
@@ -295,16 +296,16 @@
         </div><!-- /content -->
     </div><!-- /footer -->
 </div><!-- /footer panel -->
-					
-				</div> <!-- /wrapper --> 
-			</div> <!-- /expander --> 
-		</div> <!-- /sizer --> 
-		
-		<!-- Fields required for history management --> 
-	    <form id="history-form" style="display: none !important;"> 
-	        <input type="hidden" id="x-history-field" /> 
-	        <iframe id="x-history-frame"></iframe> 
-	    </form> 
+
+				</div> <!-- /wrapper -->
+			</div> <!-- /expander -->
+		</div> <!-- /sizer -->
+
+		<!-- Fields required for history management -->
+	    <form id="history-form" style="display: none !important;">
+	        <input type="hidden" id="x-history-field" />
+	        <iframe id="x-history-frame"></iframe>
+	    </form>
 		<map name="us_mapMap">
 		  <area shape="poly" coords="132,70,127,106,178,113,180,76" onclick="CONTROLLER.selectRegion('WY')" alt="Wyoming">
 		  <area shape="poly" coords="274,61,269,70,282,101,306,99,304,79,300,72,283,61" onclick="CONTROLLER.selectRegion('WI')" alt="Wisconsin">
@@ -355,6 +356,6 @@
 		  <area shape="poly" coords="93,144,134,151,127,204,81,185" onclick="CONTROLLER.selectRegion('AZ')" alt="Arizona">
 		  <area shape="poly" coords="311,174,330,171,338,198,339,210,316,215,317,212,312,211,312,179" onclick="CONTROLLER.selectRegion('AL')" alt="Alabama">
 		</map>
-	    
-	</body> 
-</html> 
+
+	</body>
+</html>
