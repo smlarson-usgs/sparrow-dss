@@ -45,7 +45,7 @@ import lombok.Data;
 		PreparedStatement statement = getROPSFromPropertiesFile(QUERY_NAME, this.getClass(), params);
 		ResultSet queryResults = statement.executeQuery();
 		addResultSetForAutoClose(queryResults);
-		
+
 		TotalUpstreamAreaColumnDataWritable totalUpstreamArea = new TotalUpstreamAreaColumnDataWritable(rowCount);
 		TotalContributingAreaColumnDataWritable totalContributingArea = new TotalContributingAreaColumnDataWritable(rowCount);
 		IncrementalAreaColumnDataWritable incrementalArea = new IncrementalAreaColumnDataWritable(rowCount);
@@ -65,24 +65,6 @@ import lombok.Data;
 
 		areaTable = new ModelReachAreaDataTable(totalUpstreamArea, totalContributingArea, incrementalArea);
 		return areaTable;
-//		HashMap<String, ReachAreas> methodResults = new HashMap<String, ReachAreas>(reachFullIds.size()); //Maps Reach Ids to Areas
-//		Map<String, Object> params = new HashMap<String, Object>(1);
-//		params.put(FULL_IDENTIFIER_PARAM_NAME, reachFullIds);
-//		params.put(MODEL_ID_PARAM_NAME, modelId);
-//		PreparedStatement statement = getROPSFromPropertiesFile(QUERY_NAME, this.getClass(), params);
-//		ResultSet queryResults = statement.executeQuery();
-//		addResultSetForAutoClose(queryResults);
-//
-//		ReachAreas reachAreas;
-//		while(queryResults.next()){
-//			reachAreas = new ReachAreas(
-//				queryResults.getDouble(totalContributingAreaIndex),
-//				queryResults.getDouble(totalUpstreamAreaIndex),
-//				queryResults.getDouble(incrementalAreaIndex)
-//				);
-//			methodResults.put(queryResults.getString(fullIdIndex), reachAreas);
-//		}
-//		return methodResults;
 	}
 
 }
