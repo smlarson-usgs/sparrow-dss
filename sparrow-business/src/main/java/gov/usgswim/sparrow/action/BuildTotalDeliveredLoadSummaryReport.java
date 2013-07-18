@@ -108,8 +108,8 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 					idInfo.getColumn(0),
 					idInfo.getColumn(1),
 					fullIdCol, //client full identifier
-					modelReachAreaTable.getTotalUpstreamAreaColumn(),
 					modelReachAreaTable.getTotalContributingAreaColumn(),
+					modelReachAreaTable.getTotalUpstreamAreaColumn(),
 					modelReachAreaTable.getIncrementalAreaColumn(),
 					streamFlow.getColumnData()
 				},

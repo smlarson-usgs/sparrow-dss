@@ -153,10 +153,17 @@
                 	comparison of the export rates from different drainages.
                 </dd>
                 <dt>Total Yield</dt><dd>
-					The <i>Total Load</i> divided by the Total Contributing Area
-					upstream of the reach outlet. Units are mass in kg per square kilometer per year.
-					Total yield removes the variability due to differences in drainage area and allows
-					comparison of the export rates from different drainages
+                        The <i>Total Load</i> divided by the <i>Total Contributing Area</i>
+                        upstream of the reach outlet. Units are mass in kg per square kilometer per year.
+                        Total yield removes the variability due to differences in drainage area and allows
+                        comparison of the export rates from different drainages.
+                </dd>
+                <dt>Total Contributing Area (not available for mapping)</dt><dd>
+                        The land area that contributes load to the reach.
+                        Land area that is upstream of a reach but does not contribute,
+                        is not included (e.g. an upstream area connected by a dry stream bed).
+                        Total Contributing Area is fractioned at diversions and will likely NOT MATCH other published values.
+                        More information is available on diversion fractioning at the bottom of <a href="http://cida.usgs.gov/sparrow/report/terminal_report_help.jsp">this page</a>
                 </dd>
                 <dt>Flow-weighted Concentration</dt><dd>
                 	The mean annual flow-weighted concentration of the constituent in the reach
@@ -389,9 +396,13 @@
 
 			__Base export columns included in all exports__
 			* id:  Unique identifier for a stream reach in the model based on the reference stream network.  See the section 'Linking Exported Data to River Network Shapefiles' for more information on how to use this id.
-			* Watershed Area:  The area of land that drains all the upstream streams and rainfall to the stream reach.  The word watershed is sometimes used interchangeably with drainage basin or catchment.
+                        * Total Contributing Area: The land area that contributes load to the reach.  Land area that is upstream of a reach but does not contribute, is not included (e.g. an upstream area connected by a dry stream bed).**
+                        * Total Upstream Area: The area of land upstream of the reach, irrespective of if it contributes to the reach or not.  The is sometimes called the watershed area, drainage basin or catchment.**
 			* Mapped Value (data series) (unit):  The value of the data series that was displayed on the map in the DSS when the export was made.  The complete list of possible data series is further down in this document.
-
+                        
+                        ** Both the Total Contributing Area and Total Upstream Area are fractioned at diversions and will likely NOT MATCH other published values.
+                        More information is available on diversion fractioning at the bottom of this page:  http://cida.usgs.gov/sparrow/report/terminal_report_help.jsp
+                    
 			__Columns included if 'Data series that reflect source input changes on the Change Inputs tab' options are chosen__
 			If 'Include predicted values for Total and Incremental loads' is checked, several sets of columns of predicted data are added using this naming:
 			(Adjusted) - Means that the source or predicted value reflects source input changes that would have been made on the Change Inputs tab in the application.
@@ -455,8 +466,10 @@
 			The incremental load divided by the incremental drainage area of the reach. Units are mass in kg per square kilometer per year.  Incremental yield removes the variability due to differences in drainage area and allows comparison of the export rates from different drainages.
 
 			Total Yield
-			The total load divided by the total drainage area upstream of the reach outlet.  Units are mass in kg per square kilometer per year.  Total yield removes the variability due to differences in drainage area and allows comparison of the export rates from different drainages.
-
+			The Total Load divided by the Total Contributing Area upstream of the reach outlet. Units are mass in kg per square kilometer per year.
+                        Total Contributing Area is the land area that contributes load to the reach and is fractioned.
+                        More information is available on diversion fractioning at the bottom of this page: http://cida.usgs.gov/sparrow/report/terminal_report_help.jsp
+                        
 			Flow-weighted Concentration
 			The mean annual flow-weighted concentration of the constituent in the reach in units of mass per volume. This is calculated by dividing the total load by the streamflow and converting to standard units.  Annual flow-weighted concentrations generally reflect conditions during higher-flow periods of the year that often occur during the winter and spring.
 
@@ -500,8 +513,8 @@
 			* id:  Unique identifier for a stream reach in the model based on the reference stream network.  See the section 'Linking Exported Data to River Network Shapefiles' for more information on how to use this id.
 			* Reach Name (pname): The name of the reach.  This name may sometimes be empty, partial, or different than local names for the reach.
 			* EDACODE: NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.  This value may be empty for reaches in or draining to Canada.
-			* Watershed Area (from Model export) (unit) : The area of land that drains all the upstream streams and rainfall to the stream reach.  This is the watershed area exported from the original model (here only for reference).
-			* Watershed Area, Fractioned (unit) : Watershed area is the area of land that drains all the upstream streams and rainfall to the stream reach.  _Fractioned_ Watershed Area accounts for splits (also called diversions) in the river network, where an upstream reach splits into two downstream reaches.
+                        * Total Contributing Area: The land area that contributes load to the reach.  Land area that is upstream of a reach but does not contribute, is not included (e.g. an upstream area connected by a dry stream bed).**
+                        * Total Upstream Area: The area of land upstream of the reach, irrespective of if it contributes to the reach or not.  The is sometimes called the watershed area, drainage basin or catchment.**
 			* Streamflow (unit) : The mean annual stream flow of the reach, in units of volume (cubic feet) per time (second).
 			* [source name]  (unit): One column per model source.  This is the 'Total Load' data series for an individual source.
 			* Total for All Sources (unit): The 'Total Load' data series (the sum of all per-source total loads).
@@ -509,6 +522,7 @@
 			Notes:
 			* The loads reported in this export reflect source input changes made on the Change Inputs tab in the application.
 			* The predicted load columns are labeled 'Total Delivered Load' for consistancy with the report, however, for these reaches the Total Delivered Load is the same as the Total Load.
+                        * Both the Total Contributing Area and Total Upstream Area are fractioned at diversions and will likely NOT MATCH other published values.
 			* A more detailed explanation of what these reported values are and how they are calculated is available at:
 			http://cida.usgs.gov/sparrow/report/terminal_report_help.jsp
 
@@ -541,7 +555,7 @@
 			* HUC Code: Hydrologic unit code.  More details about HUCs are at: http://water.usgs.gov/GIS/huc.html
 
 			All Reports include these columns:
-			* Watershed Area (unit):  The sum of the catchment areas of all the reaches in the region that drain to the target reach(es), area corrected for reaches in multiple regions. This will almost always be less than the area of the region itself.
+			* Contributing Area (unit): The sum of the catchment areas of all the reaches in the region that drain and contribute load to the target reach(es), area corrected for reaches in multiple regions. This will almost always be less than the area of the region itself.
 			* [source name] (unit): One column per model source.  The Incremental Delivered Load for each model source.
 			* All Sources (unit): The Incremental Delivered Load for all model sources.
 
@@ -549,6 +563,7 @@
 
 			Notes:
 			* The loads reported in this export reflect source input changes made on the Change Inputs tab in the application.
+                        * The Contributing Area is fractioned at diversions and will likely NOT MATCH other published values.
 			* A more detailed explanation of what these reported values are and how they are calculated is available at:
 			http://cida.usgs.gov/sparrow/report/aggregate_report_help.jsp
 
