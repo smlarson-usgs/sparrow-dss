@@ -389,10 +389,13 @@
 
 			__Base export columns included in all exports__
 			* id:  Unique identifier for a stream reach in the model based on the reference stream network.  See the section 'Linking Exported Data to River Network Shapefiles' for more information on how to use this id.
-			* Total Contributing Area: The area of land that drains all the upstream streams and rainfall to the stream reach, which contributes load to the reach.  The area of land that drains all the upstream streams and rainfall to the stream reach.  The word watershed is sometimes used interchangeably with drainage basin or catchment.
-			* Total Upstream Area: The area of land that drains all the upstream streams and rainfall to the stream reach, regardless of whether it contributes load to the reach or not.
+                        * Total Contributing Area: The land area that contributes load to the reach.  Land area that is upstream of a reach but does not contribute, is not included (e.g. an upstream area connected by a dry stream bed).**
+                        * Total Upstream Area: The area of land upstream of the reach, irrespective of if it contributes to the reach or not.  The is sometimes called the watershed area, drainage basin or catchment.**
 			* Mapped Value (data series) (unit):  The value of the data series that was displayed on the map in the DSS when the export was made.  The complete list of possible data series is further down in this document.
-
+                        
+                        ** Both the Total Contributing Area and Total Upstream Area are fractioned at diversions and will likely NOT MATCH other published values.
+                        More information is available on diversion fractioning at the bottom of this page:  http://cida.usgs.gov/sparrow_qa/report/terminal_report_help.jsp
+                    
 			__Columns included if 'Data series that reflect source input changes on the Change Inputs tab' options are chosen__
 			If 'Include predicted values for Total and Incremental loads' is checked, several sets of columns of predicted data are added using this naming:
 			(Adjusted) - Means that the source or predicted value reflects source input changes that would have been made on the Change Inputs tab in the application.
