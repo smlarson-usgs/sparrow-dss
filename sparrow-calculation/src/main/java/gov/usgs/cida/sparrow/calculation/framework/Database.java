@@ -9,7 +9,8 @@ package gov.usgs.cida.sparrow.calculation.framework;
  * @author cschroed
  */
 public enum Database {
-	PRODUCTION,
+	EROS_PROD,
+	MIDDLETON_PROD,
 	TEST,
 	DEVELOPMENT
 }

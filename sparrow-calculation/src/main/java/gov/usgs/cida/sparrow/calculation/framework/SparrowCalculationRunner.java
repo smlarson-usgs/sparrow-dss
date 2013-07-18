@@ -438,9 +438,15 @@ public class SparrowCalculationRunner {
 				user = "sparrow_dss";
 				pwd = dbPwd;
 				break;
-			case PRODUCTION:
+			case MIDDLETON_PROD:
 				//Production Properties
 				url = "jdbc:oracle:thin:@130.11.165.152:1521:widw";
+				user = "sparrow_dss";
+				pwd = dbPwd;
+				break;
+			case EROS_PROD:
+				//Production Properties
+				url = "jdbc:oracle:thin:@152.61.236.40:1521:dbdw";
 				user = "sparrow_dss";
 				pwd = dbPwd;
 				break;
@@ -651,7 +657,7 @@ public class SparrowCalculationRunner {
 
 		System.out.println("");
 		System.out.println(": : Database Connection : :");
-		PromptResponse response = prompt("Which database should the calculation use?  (D)evelopment, (T)est, or (P)roduction: ");
+		PromptResponse response = prompt("Which database should the calculation use?  (D)evelopment, (T)est, , (M)iddleton Production or (E)ros Production: ");
 		if (response.quit) return response;
 
 		if (response.isEmptyOrNull()) {
@@ -663,8 +669,10 @@ public class SparrowCalculationRunner {
 				database = Database.DEVELOPMENT;
 			} else if ("t".equalsIgnoreCase(strVal)) {
 				database = Database.TEST;
-			} else if ("p".equalsIgnoreCase(strVal)) {
-				database = Database.PRODUCTION;
+			} else if ("m".equalsIgnoreCase(strVal)) {
+				database = Database.MIDDLETON_PROD;
+			} else if ("e".equalsIgnoreCase(strVal)) {
+				database = Database.EROS_PROD;
 			} else {
 				System.out.println("Sorry, I didn't get that.");
 				return promptWhichDb();
