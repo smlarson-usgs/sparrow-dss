@@ -236,7 +236,7 @@
 			The land area that contributes load to the reach.  Land area that is upstream of a reach but does not contribute, is not included (e.g. an upstream area connected by a dry stream bed).
 		</Term>
 		<Term id="Total Upstream Area">
-			The total area upstream of the reach that drains all the upstream streams and rainfall to the stream reach, regardless of whether it contributes load to the reach or not
+			The area of land upstream of the reach, irrespective of if it contributes to the reach or not.  The is sometimes called the watershed area, drainage basin or catchment.
 		</Term>
 		<Term id="Incremental Yield">
 			Takes into account only sources of the constituent within the surrounding catchment to show the local generation of the constituent normalized for catchment area. Units are typically kilograms/square kilometer-year.
