@@ -1,10 +1,8 @@
 package gov.usgswim.sparrow.action;
 
 import gov.usgs.cida.datatable.ColumnData;
-import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.datatable.DivideColumnData;
-import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.SparrowColumnAttribsBuilder;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.SparrowModel;
@@ -108,11 +106,11 @@ public class CalcAnyYield extends Action<ColumnData> {
 
 
 		SparrowUnits modelUnit = model.getUnits();
+                String loadUnitStr = loadValuesColumn.getUnits();
 		String areaUnitStr = catchmentAreaColumn.getUnits();
-		SparrowUnits areaUnit = SparrowUnits.parseUserName(areaUnitStr);
 
-		//Check the units - correct?
-		if (! model.getUnits().equals(SparrowUnits.KG_PER_YEAR)) {
+		//Check the model units - correct?
+		if (! SparrowUnits.KG_PER_YEAR.equals( modelUnit )) {
 			String msg = "The model units must be in " +
 			SparrowUnits.KG_PER_YEAR.getUserName() +
 			" in order to calculate " + seriesType.toString() + ".  Found instead: " +
@@ -120,12 +118,22 @@ public class CalcAnyYield extends Action<ColumnData> {
 
 			addValidationError(msg);
 		}
-
-		if (! catchmentAreaColumn.getUnits().equals(SparrowUnits.SQR_KM.getUserName())) {
-			String msg = "The area units must be in " +
-			SparrowUnits.SQR_KM.getUserName() +
+                
+		//Check the load units - correct?
+		if (! SparrowUnits.KG_PER_YEAR.getUserName().equals( loadUnitStr )) {
+			String msg = "The load units must be in " +
+			SparrowUnits.KG_PER_YEAR.getUserName() +
 			" in order to calculate " + seriesType.toString() + ".  Found instead: " +
-			((areaUnit == null)?"null":areaUnit.getUserName());
+			((loadUnitStr == null)?"null":loadUnitStr);
+
+			addValidationError(msg);
+		}
+
+		if (! SparrowUnits.SQR_KM.getUserName().equals( areaUnitStr )) {
+			String msg = "The area units must be in " +
+                            SparrowUnits.SQR_KM.getUserName() +
+                            " in order to calculate " + seriesType.toString() + ".  Found instead: " +
+                            ((areaUnitStr == null)?"null":areaUnitStr);
 
 			addValidationError(msg);
 		}
