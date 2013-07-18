@@ -233,7 +233,7 @@
 			The area of land that drains directly to the stream reach, not including land area that drains to upstream reaches.
 		</Term>
 		<Term id="Total Contributing Area">
-			The area of land that drains all the upstream streams and rainfall to the stream reach, which contributes load to the reach.
+			The land area that contributes load to the reach.  Land area that is upstream of a reach but does not contribute, is not included (e.g. an upstream area connected by a dry stream bed).
 		</Term>
 		<Term id="Total Upstream Area">
 			The total area upstream of the reach that drains all the upstream streams and rainfall to the stream reach, regardless of whether it contributes load to the reach or not
@@ -399,10 +399,10 @@
                         * Total Contributing Area: The land area that contributes load to the reach.  Land area that is upstream of a reach but does not contribute, is not included (e.g. an upstream area connected by a dry stream bed).**
                         * Total Upstream Area: The area of land upstream of the reach, irrespective of if it contributes to the reach or not.  The is sometimes called the watershed area, drainage basin or catchment.**
 			* Mapped Value (data series) (unit):  The value of the data series that was displayed on the map in the DSS when the export was made.  The complete list of possible data series is further down in this document.
-                        
+
                         ** Both the Total Contributing Area and Total Upstream Area are fractioned at diversions and will likely NOT MATCH other published values.
                         More information is available on diversion fractioning at the bottom of this page:  http://cida.usgs.gov/sparrow/report/terminal_report_help.jsp
-                    
+
 			__Columns included if 'Data series that reflect source input changes on the Change Inputs tab' options are chosen__
 			If 'Include predicted values for Total and Incremental loads' is checked, several sets of columns of predicted data are added using this naming:
 			(Adjusted) - Means that the source or predicted value reflects source input changes that would have been made on the Change Inputs tab in the application.
@@ -469,7 +469,7 @@
 			The Total Load divided by the Total Contributing Area upstream of the reach outlet. Units are mass in kg per square kilometer per year.
                         Total Contributing Area is the land area that contributes load to the reach and is fractioned.
                         More information is available on diversion fractioning at the bottom of this page: http://cida.usgs.gov/sparrow/report/terminal_report_help.jsp
-                        
+
 			Flow-weighted Concentration
 			The mean annual flow-weighted concentration of the constituent in the reach in units of mass per volume. This is calculated by dividing the total load by the streamflow and converting to standard units.  Annual flow-weighted concentrations generally reflect conditions during higher-flow periods of the year that often occur during the winter and spring.
 
