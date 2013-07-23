@@ -163,7 +163,7 @@
                         Land area that is upstream of a reach but does not contribute,
                         is not included (e.g. an upstream area connected by a dry stream bed).
                         Total Contributing Area is fractioned at diversions and will likely NOT MATCH other published values.
-                        More information is available on diversion fractioning at the bottom of <a href="http://cida.usgs.gov/sparrow/report/terminal_report_help.jsp">this page</a>
+                        More information on diversion fractioning is available in the <a href="report/terminal_report_help.jsp">Total Delivered Load Summary Report Help</a>.
                 </dd>
                 <dt>Flow-weighted Concentration</dt><dd>
                 	The mean annual flow-weighted concentration of the constituent in the reach
@@ -236,7 +236,7 @@
 			The land area that contributes load to the reach.  Land area that is upstream of a reach but does not contribute, is not included (e.g. an upstream area connected by a dry stream bed).
 		</Term>
 		<Term id="Total Upstream Area">
-			The area of land upstream of the reach, irrespective of if it contributes to the reach or not.  The is sometimes called the watershed area, drainage basin or catchment.
+			 The area of land upstream of the reach, irrespective of whether it contributes flow to the reach or not. This is sometimes called the watershed area, drainage basin or catchment.
 		</Term>
 		<Term id="Incremental Yield">
 			Takes into account only sources of the constituent within the surrounding catchment to show the local generation of the constituent normalized for catchment area. Units are typically kilograms/square kilometer-year.
@@ -397,8 +397,8 @@
 			__Base export columns included in all exports__
 			* id:  Unique identifier for a stream reach in the model based on the reference stream network.  See the section 'Linking Exported Data to River Network Shapefiles' for more information on how to use this id.
                         * Total Contributing Area: The land area that contributes load to the reach.  Land area that is upstream of a reach but does not contribute, is not included (e.g. an upstream area connected by a dry stream bed).**
-                        * Total Upstream Area: The area of land upstream of the reach, irrespective of if it contributes to the reach or not.  The is sometimes called the watershed area, drainage basin or catchment.**
-			* Mapped Value (data series) (unit):  The value of the data series that was displayed on the map in the DSS when the export was made.  The complete list of possible data series is further down in this document.
+                        * Total Upstream Area: The area of land upstream of the reach, irrespective of whether it contributes flow to the reach or not. This is sometimes called the watershed area, drainage basin or catchment.**
+			* Mapped Value (data series) (unit): The value of the data series that was displayed on the map in the DSS when the export was made.  The complete list of possible data series is further down in this document.
 
                         ** Both the Total Contributing Area and Total Upstream Area are fractioned at diversions and will likely NOT MATCH other published values.
                         More information is available on diversion fractioning at the bottom of this page:  http://cida.usgs.gov/sparrow/report/terminal_report_help.jsp
@@ -514,7 +514,7 @@
 			* Reach Name (pname): The name of the reach.  This name may sometimes be empty, partial, or different than local names for the reach.
 			* EDACODE: NOAA code identifying estuarine/coastal drainage areas for major estuaries in the United States.  This value may be empty for reaches in or draining to Canada.
                         * Total Contributing Area: The land area that contributes load to the reach.  Land area that is upstream of a reach but does not contribute, is not included (e.g. an upstream area connected by a dry stream bed).**
-                        * Total Upstream Area: The area of land upstream of the reach, irrespective of if it contributes to the reach or not.  The is sometimes called the watershed area, drainage basin or catchment.**
+                        * Total Upstream Area:  The area of land upstream of the reach, irrespective of whether it contributes flow to the reach or not. This is sometimes called the watershed area, drainage basin or catchment.**
 			* Streamflow (unit) : The mean annual stream flow of the reach, in units of volume (cubic feet) per time (second).
 			* [source name]  (unit): One column per model source.  This is the 'Total Load' data series for an individual source.
 			* Total for All Sources (unit): The 'Total Load' data series (the sum of all per-source total loads).

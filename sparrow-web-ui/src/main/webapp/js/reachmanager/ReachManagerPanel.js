@@ -248,7 +248,7 @@ Sparrow.ux.GroupTreePanel = Ext.extend(Ext.tree.TreePanel,{
 		config = Ext.applyIf(config, defaults);
 		Sparrow.ux.GroupTreePanel.superclass.constructor.call(this, config);
 	},
-	
+
 
     loadTree: function() {
         this.clearTree();
@@ -304,7 +304,7 @@ Sparrow.ux.GroupTreePanel = Ext.extend(Ext.tree.TreePanel,{
             }
         }
 
-        
+
         var adjReaches = Sparrow.SESSION.getAllAdjustedReaches();
         var adjNode = this.getRootNode().findChild('id', 'adjReaches');
         if(adjReaches.length > 0) {
@@ -353,7 +353,7 @@ Sparrow.ux.TargetTreePanel = Ext.extend(Ext.tree.TreePanel,{
 		    rootVisible: false,
 		    root: new Ext.tree.TreeNode()
 		};
-		
+
 		config = Ext.applyIf(config, defaults);
 		Sparrow.ux.TargetTreePanel.superclass.constructor.call(this, config);
 	},
@@ -396,17 +396,17 @@ Sparrow.AdjustmentsPanel = Ext.extend(Ext.Panel, {
 	constructor: function(config){
 		var fieldsAnchor = '97%';
 		var fieldsetAnchor = '92%';
-	        
+
 		this.instructionsPanel = new Ext.Panel({
 			region: 'north',
-			border: false, 
+			border: false,
 			autoHeight: true,
 			html: '<b>2. Change the values of the source inputs</b>'
 		});
 		this.treePanel = new Sparrow.ux.GroupTreePanel({
 			border: false
 		});
-		this.identifyControls = new Ext.Panel({ 
+		this.identifyControls = new Ext.Panel({
         	border: false,
         	fieldLabel: '',
         	labelSeparator: '',
@@ -423,7 +423,7 @@ Sparrow.AdjustmentsPanel = Ext.extend(Ext.Panel, {
 	        		} //holder, will have the radio group inserted here later
         	], listeners: {
         		'beforeshow' : function(p) {
-				p.getEl().fadeIn();	
+				p.getEl().fadeIn();
         		}
         	}
         });
@@ -458,7 +458,7 @@ Sparrow.AdjustmentsPanel = Ext.extend(Ext.Panel, {
 						items: [
 					        {xtype: 'panel', border: false, html: '<b>1. Select stream reach(es) where changes will be applied</b>'},
 					        {
-					        	xtype: 'panel', 
+					        	xtype: 'panel',
 					        	border: false,
 					        	labelSeparator: '',
 					        	html: '<a style="cursor: pointer; padding: .2em 0; display: block;" title="Identify Reach">--Locate on map<img src="images/identifygif.gif" alt="Identify icon" style="vertical-align: bottom;"/></a>',
@@ -472,14 +472,14 @@ Sparrow.AdjustmentsPanel = Ext.extend(Ext.Panel, {
 				        		    	  map1.setMouseAction(IDENTIFY.identifyPoint); //TODO using global map1 here
 				        		      });
 				        		    }
-					        	} 
+					        	}
 					        },{
-					        	xtype: 'panel', 
+					        	xtype: 'panel',
 					        	border: false,
 					        	labelSeparator: '',
 				        		itemCls: 'zero-padding',
 				        		ctCls: 'zero-padding',
-				        		html: '--<a style="cursor: pointer;">Find by name or hydrologic unit code</a>', 
+				        		html: '--<a style="cursor: pointer;">Find by name or hydrologic unit code</a>',
 					        	listeners: {
 					        		render: function(c) {
 				        		      Ext.fly(c.el).on('click', function(e, t) {
@@ -509,7 +509,7 @@ Sparrow.AdjustmentsPanel = Ext.extend(Ext.Panel, {
 					        		itemCls: 'zero-padding',
 					        		ctCls: 'zero-padding',
 						    	   items: [this.treePanel]
-						    	   
+
 						       }]
 					},
 					{
@@ -522,17 +522,17 @@ Sparrow.AdjustmentsPanel = Ext.extend(Ext.Panel, {
 						items: [
 					        {xtype: 'panel', border: false, html: '<b>3. Display Results</b><br/>'},
 					        {
-					        	xtype: 'panel', 
+					        	xtype: 'panel',
 					        	padding: 5,
 					        	border: false,
 					        	html: 'From the '+
 					        	'<a href="javascript:GOTO_MAP_OPTIONS_TAB()">Display Results tab</a>, select a data series.'+
 					        	'<br/><br/>(Map relative or absolute changes using the <i><b>Comparison to Original Model</b></i> feature)'
-					        }			        
+					        }
 				        ]
 					}
 					]
-				})    
+				})
 			]
 		};
 		config = Ext.applyIf(config, defaults);
@@ -545,7 +545,7 @@ Sparrow.AdjustmentsPanel = Ext.extend(Ext.Panel, {
 		this.instructionsPanel.ownerCt.setHeight(150);
 		this.instructionsPanel.ownerCt.doLayout();
 	},
-	
+
 	hideInstructions : function() {
 		this.instructionsPanel.update('<b>2. Change the values of the source inputs</b>');
 		this.syncSize();
@@ -559,25 +559,25 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 		var dataSeriesTip = 'Please note that data series selected here will require that you first specify a target reach for the analysis.';
 		var fieldsAnchor = "97%";
 		var fieldsetAnchor = "92%";
-		
+
 		this.treePanel = new Sparrow.ux.TargetTreePanel({
-			border: false, 
+			border: false,
 			region: 'center'
 		});
 		this.instructionsPanel = new Ext.Panel({
 			region: 'north',
-			border: false, 
+			border: false,
 			autoHeight: true,
 			html: '<b>Selected Downstream Reach(es)</b>'
 		});
-		
+
 		this.displayResultsInstructions = new Ext.Panel({
-        	border: false, 
+        	border: false,
         	padding: 5,
         	html: '[No downstream reaches have been chosen]'
 		});
-		
-		this.identifyControls = new Ext.Panel({ 
+
+		this.identifyControls = new Ext.Panel({
 	        	border: true,
 	        	padding: 5,
 	        	labelSeparator: '',
@@ -590,15 +590,15 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 	        	items:[
 	        	       {xtype:'label', fieldLabel: 'Identified Reach', text:'', labelStyle: 'padding: 0px; font-weight: bold;'},
 	        	       {xtype:'button', text: 'Add as Downstream Reach',
-	        	    	handler: function(){}   
+	        	    	handler: function(){}
 	        	       }
 	        	], listeners: {
 	        		'beforeshow' : function(p) {
-					p.getEl().fadeIn();	
+					p.getEl().fadeIn();
 	        		}
 	        	}
 	        });
-		
+
 		var defaults = {
 			title: 'Downstream Tracking',
 			border: false,
@@ -636,22 +636,22 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 //			    	          	}
 //			    	        },
 					        {
-					        	xtype: 'panel', 
+					        	xtype: 'panel',
 					        	border: false,
 					        	labelSeparator: '',
 				        		itemCls: 'zero-padding',
 				        		ctCls: 'zero-padding',
-					        	html: '<a style="cursor: pointer; padding: .2em 0; display: block;" title="Select a reach by selecting from a list of watersheds">--Select from a watershed list...</a>',
+					        	html: '<a style="cursor: pointer; padding: .2em 0; display: block;" title="Select a reach by selecting from a list of watersheds">--Select from a watershed list</a>',
 					        	listeners: {
 					        		render: function(c) {
 				        		      Ext.fly(c.el).on('click', function(e, t) {
 				        		    	  WATERSHED_WINDOW.open();
 				        		      });
 				        		    }
-					        	} 
+					        	}
 					        },
 					        {
-					        	xtype: 'panel', 
+					        	xtype: 'panel',
 					        	border: false,
 					        	labelSeparator: '',
 				        		itemCls: 'zero-padding',
@@ -665,22 +665,22 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 				        		    	  map1.setMouseAction(IDENTIFY.identifyPoint); //TODO using global map1 here
 				        		      });
 				        		    }
-					        	} 
+					        	}
 					        },
 					        {
-					        	xtype: 'panel', 
+					        	xtype: 'panel',
 					        	border: false,
 					        	labelSeparator: '',
 				        		itemCls: 'zero-padding',
 				        		ctCls: 'zero-padding',
-					        	html: '--<a style="cursor: pointer;">Find by name or hydrologic unit code</a>', 
+					        	html: '--<a style="cursor: pointer;">Find by name or hydrologic unit code</a>',
 					        	listeners: {
 					        		render: function(c) {
 				        		      Ext.fly(c.el).on('click', function(e, t) {
 				        		    	  GOTO_REACH_WIN.open();
 				        		      });
 				        		    }
-					        	} 
+					        	}
 					        },
 					        this.identifyControls
 				        ]
@@ -694,7 +694,7 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 		        		itemCls: 'zero-padding',
 		        		ctCls: 'zero-padding',
 						items: [
-						       this.instructionsPanel, 
+						       this.instructionsPanel,
 						       this.treePanel,
 						       {
 						    	   region: 'south',
@@ -711,7 +711,7 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 					    	        	anchor: fieldsAnchor,
 					    	        	handler: function() {
 					    	        	  	Ext.Msg.confirm('', 'Are you sure you want to remove all of your selected downstream reaches?', function(choice) {
-					    	        	  		if(choice == 'yes') 
+					    	        	  		if(choice == 'yes')
 					    	        	  			Sparrow.SESSION.removeAllReachesFromTargets();
 					    	        	  	}, this);
 					    	          	}
@@ -744,7 +744,7 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 		this.instructionsPanel.ownerCt.setHeight(150);
 		this.instructionsPanel.ownerCt.doLayout();
 	},
-	
+
 	hideInstructions : function() {
 		this.instructionsPanel.update('<b>Selected Downstream Reach(es)</b>');
 		this.syncSize();

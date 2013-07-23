@@ -111,7 +111,7 @@
 						</div>
 					</div><!-- /section -->
 					<div class="section">
-						<h3>Watershed Area - Fractioned Based on Stream Flow</h3>
+						<h3>Total Contributing Area - Fractioned Based on Stream Flow</h3>
 						<p>
 							This report (and other part of this application) uses <i>Total Contributing Area</i>. For a selected reach, the <i>Total Upstream Area</i> is the area of land upstream of the reach, irrespective of if it contributes to the reach or not. The is sometimes called the watershed area, drainage basin or catchment. <i>Total Contributing Area</i> is the land area that contributes load to the reach. Land area that is upstream of a reach but does not contribute, is not included (e.g. an upstream area connected by a dry stream bed).
 							Both the <i>Total Contributing Area</i> and the <i>Total Upstream Area</i> accounts for splits (also called diversions) in the river network, where an upstream reach splits into two downstream reaches, as shown in Fig. 5.
