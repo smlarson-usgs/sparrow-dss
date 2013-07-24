@@ -97,6 +97,11 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 							if (XHTML.equals(outputType) || HTML.equals(outputType)) {
 								writeHtmlHead(out);
 							}
+							String modelName = in.getAttributeValue(null, "modelName");
+							String constituentName = in.getAttributeValue(null, "modelConstituent");
+							out.write("<div>");
+							out.write("<h2 class=\"report-model-name\">Model: " + modelName + "</h2>");
+							out.write("<h3 class=\"report-constituent\">Constituent: " + constituentName + "</h3>");
 
 							out.write(delims.sheetStart);
 
@@ -248,6 +253,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 				}
 			}
 			out.write(delims.sheetEnd);
+			out.write("</div>");
 
 			if (XHTML.equals(outputType) || HTML.equals(outputType)) {
 				writeHtmlFoot(out);

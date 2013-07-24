@@ -28,13 +28,13 @@ public class ReportSerializer extends BasicXMLStreamReader {
 	public static String TARGET_NAMESPACE_LOCATION = "http://www.usgs.gov/sparrow/sparrow-report/v0_1.xsd";
 	public static String TARGET_MAIN_ELEMENT_NAME = "sparrow-report";
 	public static String T_PREFIX = "mod";
-	
+
 	//Hardcoded columns in the source data
 	public static final int ENTITY_NAME_COL = 0;	//index of the reach name in the reportTable
 	public static final int ENTITY_USER_CODE_COL = 1;	//index of the EDA code in the reportTable
-	
+
 	public static final int FIRST_SOURCE_COL = 3;	//index of the first column containing a source value in the reportTable
-	
+
 	private ReportRequest request;
 
 	private DataTableSet data;
@@ -42,8 +42,8 @@ public class ReportSerializer extends BasicXMLStreamReader {
 	private int columnToDetermineIfARowIsEmpty;	//index of the total column in the reportTable
 	private String exportDescription;
 	private DecimalFormat[] numberFormat;
-	
-	
+
+
 	//
 	protected ParseState state = new ParseState();
 
@@ -59,29 +59,29 @@ public class ReportSerializer extends BasicXMLStreamReader {
 
 	// ============
 	// CONSTRUCTORS
-	// ============	
-	
+	// ============
+
 	/**
 	 * If the request species that zero value rows should not be included, the
 	 * column specified by the columnToDetermineIfARowIsEmpty is checked to see if
 	 * the value is non-zero (the row field of the Coord is ignored).
-	 * 
+	 *
 	 * @param request
 	 * @param reportTableSet
 	 * @param exportDescription
 	 * @param columnToDetermineIfARowIsEmpty The numberic column which, if zero, should make the row be considered empty.
-	 * @throws Exception 
+	 * @throws Exception
 	 */
 	public ReportSerializer(ReportRequest request, DataTableSet reportTableSet,
 			String exportDescription, int colToDetermineIfARowIsEmpty) throws Exception {
-		
+
 		super();
-		
+
 		if (reportTableSet == null) {
 			throw new IllegalArgumentException("The reportTable cannot be null - this is the main exported data.");
 		}
-		
-		
+
+
 		this.request = request;
 		this.data = reportTableSet;
 		this.exportDescription = exportDescription;
@@ -90,22 +90,22 @@ public class ReportSerializer extends BasicXMLStreamReader {
 //		totalCol = reportTableSet.getColumnCount() - 2;
 //		relPercentCol = reportTableSet.getColumnCount() - 1;
 		numberFormat = new DecimalFormat[reportTableSet.getColumnCount()];
-		
+
 		PredictionContext pc = request.getContext();
-		
+
 		if (pc == null) {
 			pc = SharedApplication.getInstance().getPredictionContext(request.getContextID());
 		}
-		
+
 		PredictData pd = SharedApplication.getInstance().getPredictData(pc.getModelID());
 		model = pd.getModel();
-		
-		
+
+
 		//Create number formats for each number column
 		for (int c = 0; c < data.getColumnCount(); c++) {
-			
+
 			if (data.getDataType(c) != null && Number.class.isAssignableFrom(data.getDataType(c))) {
-				
+
 				String formatStr = "##0";
 				int precision = 0;
 				String precisionStr = data.getProperty(c, TableProperties.PRECISION.toString());
@@ -117,18 +117,18 @@ public class ReportSerializer extends BasicXMLStreamReader {
 						//ignore
 					}
 				}
-				
+
 				if (precision > 0) formatStr += ".";
 				for (int i=0; i<precision; i++) {
 					formatStr += "0";
 				}
-				
-				
+
+
 				numberFormat[c] = new DecimalFormat(formatStr);
 			}
 		}
-		
-		
+
+
 
 	}
 
@@ -170,38 +170,41 @@ public class ReportSerializer extends BasicXMLStreamReader {
 				new BasicTagEvent(PROCESSING_INSTRUCTION, "report-format")
 				.addAttribute("includeIdScript", "true"));
 		}
-				
+
 		// opening element
 		events.add(new BasicTagEvent(START_DOCUMENT));
 		events.add(new BasicTagEvent(START_ELEMENT, TARGET_MAIN_ELEMENT_NAME).addAttribute(XMLSCHEMA_PREFIX, XMLSCHEMA_NAMESPACE, "schemaLocation", TARGET_NAMESPACE + " " + TARGET_NAMESPACE_LOCATION));
-		
+
 		addOpenTag("response");
 		{
-			
+
 			events.add(
-					
+
 					new BasicTagEvent(START_ELEMENT, "metadata")
 					.addAttribute("rowCount", Integer.toString(data.getRowCount()))
-					.addAttribute("columnCount", Integer.toString(data.getColumnCount())));
+					.addAttribute("columnCount", Integer.toString(data.getColumnCount()))
+					.addAttribute("modelName", model.getName())
+					.addAttribute("modelConstituent", model.getConstituent())
+				);
 			{
-				
+
 				if (exportDescription != null && exportDescription.length() > 0) {
 					addOpenTag("description");
 					events.add(new BasicTagEvent(CDATA, exportDescription));
 					addCloseTag("description");
 				}
-				
+
 				addOpenTag("columns");
 				{
-					
-					
+
+
 					for (int t = 0; t < (data.getTableCount()); t++) {
 						//Loop through all tables except the last one
 						events.add(new BasicTagEvent(START_ELEMENT, "group").addAttribute("name", data.getTableName(t)).addAttribute("count", new Integer(data.getTableColumnCount(t)).toString()));
 						writeColumnHeaders(data.getTable(t), 0, data.getTableColumnCount(t));
 						addCloseTag("group");
 					}
-					
+
 				}
 				addCloseTag("columns");
 				addCloseTag("metadata");
@@ -226,22 +229,22 @@ public class ReportSerializer extends BasicXMLStreamReader {
 			aRowOfEventsHaveBeenAdded = readPossiblyEmptyRow();
 		}
 	}
-	
+
 	/**
 	 * version of readRow that returns true if it actually added events to the
 	 * event queue.  Since some rows are filtered out, this is needed so that we
 	 * don't allow a call to read the next row to put no events in queue.
-	 * @return 
+	 * @return
 	 */
 	protected boolean readPossiblyEmptyRow() {
 
 		boolean isAddingEvents = false;	//returned as true if we added an event
-		
+
 		if (!state.isDataFinished()) {
-			
+
 			if ((request.isIncludeZeroTotalRows()) || data.getDouble(state.r, columnToDetermineIfARowIsEmpty) != 0 ) {
 
-								
+
 				BasicTagEvent rowEvent = new BasicTagEvent(START_ELEMENT, "r");
 
 				Long rowId = data.getIdForRow(state.r);
@@ -281,44 +284,44 @@ public class ReportSerializer extends BasicXMLStreamReader {
 				isAddingEvents = true;
 
 			}
-						
+
 		}
-		
+
 		state.r++;
 		return isAddingEvents;
 	}
-	
+
 	protected void writeColumnHeaders(DataTable dataTable, int firstCol, int upToButNotIncludedColumn) {
-		
+
 		for (int i = firstCol; i < upToButNotIncludedColumn; i++) {
 			//source columns just use the name of the source
 			String name = dataTable.getName(i);
 			String type = dataTable.getDataType(i).getSimpleName();
 			String units = dataTable.getUnits(i);
-			
+
 			Set<String> props = dataTable.getPropertyNames(i);
-			
+
 			BasicTagEvent event = makeNonNullBasicTag("col", "");
 			event.addAttribute("name", name);
 			event.addAttribute("type", type);
 			event.addAttribute("unit", units);
-			
+
 			if (props.size() > 0) {
 				for (String s : props) {
 					event.addAttribute(s, dataTable.getProperty(i, s));
 				}
-				
+
 			}
-			
+
 			events.add(event);
 		}
 	}
-//	
+//
 //	protected boolean isSourceCol(int columnIndex) {
 //		return (columnIndex >= FIRST_SOURCE_COL && columnIndex < totalCol);
 //	}
-	
-	
+
+
 
 	@Override
 	public void close() throws XMLStreamException {

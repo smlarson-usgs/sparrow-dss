@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 
 import com.meterware.httpunit.*;
 import gov.usgs.webservices.framework.formatter.PercentValueFormatter;
+import static gov.usgswim.sparrow.SparrowTestBase.getXPathValue;
 import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.domain.AggregationLevel;
 import org.junit.Ignore;
@@ -49,11 +50,16 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
 		//System.out.println(actualReportResponse);
 
+		String modelNameIsPresent = getXPathValue("count(//h2[@class=\"report-model-name\"])", actualReportResponse);
+		String modelConstituentIsPresent = getXPathValue("count(//h3[@class=\"report-constituent\"])", actualReportResponse);
+		assertEquals("1", modelNameIsPresent);
+		assertEquals("1", modelConstituentIsPresent);
+
 		String rowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
 		String nonZeroRowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tr[td[position() = 9 and .!=0]])", actualReportResponse);
 		String watershedAreaColumnLabel = ReportServiceLongRunTest.getXPathValue("//*[local-name() = 'th'][position() = 3]", actualReportResponse);
-		String alabamaPercentage = ReportServiceLongRunTest.getXPathValue("/table/tbody[1]/tr[1]/td[10]/div[1]/span[1]", actualReportResponse);
-		String kentuckyPercentage = ReportServiceLongRunTest.getXPathValue("/table/tbody[1]/tr[3]/td[10]/div[1]/span[1]", actualReportResponse);
+		String alabamaPercentage = ReportServiceLongRunTest.getXPathValue("//table/tbody[1]/tr[1]/td[10]/div[1]/span[1]", actualReportResponse);
+		String kentuckyPercentage = ReportServiceLongRunTest.getXPathValue("//table/tbody[1]/tr[3]/td[10]/div[1]/span[1]", actualReportResponse);
 
 		assertEquals("9", rowCountStr);
 		assertEquals("7", nonZeroRowCountStr);
