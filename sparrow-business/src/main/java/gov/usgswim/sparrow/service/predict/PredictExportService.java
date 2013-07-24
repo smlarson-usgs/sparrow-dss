@@ -68,12 +68,14 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
 		String networkName = model.getEnhNetworkName();
 		String networkUrl = model.getEnhNetworkUrl();
 		String networkIdColumn = model.getEnhNetworkIdColumn();
+		String modelName = model.getName();
+		String modelConstituent = model.getConstituent();
 
 		String readmeText = SparrowResourceUtils.lookupMergedHelp(
 				model.getId(),
 				"CommonTerms.Export Readme",
 				null,
-				new Object[] {"networkName", networkName, "networkUrl", networkUrl, "networkIdColumn", networkIdColumn});
+				new Object[] {"networkName", networkName, "networkUrl", networkUrl, "networkIdColumn", networkIdColumn, "modelName", modelName, "modelConstituent", modelConstituent});
 
 
 		//shortcut ref

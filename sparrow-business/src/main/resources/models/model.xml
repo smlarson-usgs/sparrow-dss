@@ -502,6 +502,8 @@
 
 			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
 
+			Model Name: $modelName$
+			Model Constituent: $modelConstituent$
 		</Term>
 		<Term id="Terminal_Reach_Summary_Report">
 
@@ -533,6 +535,8 @@
 
 			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
 
+			Model Name: $modelName$
+			Model Constituent: $modelConstituent$
 		</Term>
 		<Term id="Terminal_Reach_Aggregate_Report">
 
@@ -567,7 +571,14 @@
 			* A more detailed explanation of what these reported values are and how they are calculated is available at:
 			http://cida.usgs.gov/sparrow/report/aggregate_report_help.jsp
 
+			__Linking Exported Data to River Network Shapefiles__
+			This model is based on the '$networkName$' Network, which is documented at $networkUrl$
+			The id column for the data in this export should be matched to the $networkIdColumn$ in the '$networkName$' Network data.
+
 			For more information on the SPARROW model, go to http://water.usgs.gov/nawqa/sparrow/.
+
+			Model Name: $modelName$
+			Model Constituent: $modelConstituent$
 
 		</Term>
 	</CommonTerms>
