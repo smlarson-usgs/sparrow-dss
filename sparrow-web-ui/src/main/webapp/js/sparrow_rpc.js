@@ -94,7 +94,7 @@ function renderModel(response, options) {
             break;
         }
     }
-    
+
     Sparrow.SESSION.setModelName(modelName);
     Sparrow.SESSION.setThemeName(themeName);
     Sparrow.SESSION.setModelConstituent(constituent);
@@ -104,6 +104,32 @@ function renderModel(response, options) {
     Sparrow.SESSION.setOriginalBoundWest(boundWest);
     Sparrow.SESSION.setOriginalBoundEast(boundEast);
     var docMenu = Ext.menu.MenuMgr.get('sparrow-documentation-menu');
+
+	/**
+	 * @param {string} name - the user-facing text for the menu item
+	 * @param {string} videoId - the youtube video id
+	 */
+	var addVideoItemToDocMenu = function(name, videoId){
+		//access docMenu through closure
+		docMenu.add({
+	   	text: 'Video: ' + name,
+	   	handler: function() {
+	   		var newWindow = window.open('screencast.jsp?videoId=' + videoId, '_blank',
+	   				'resizable=0,location=0,status=0,scrollbars=0,width=960,height=757');
+	   		newWindow.focus();
+	   	}
+		});
+	};
+
+	var videoNameToVideoIdMap = {
+		'Working with Sources' : '1tzeR4WkLv0',
+		'Incremental Yield' : '5K1Smu7Q4Fc',
+		'Selecting Downstream Outlets' : 'zrycRF7MeG8',
+		'Changing Source Inputs' : 'UkC_76uq748',
+		'Incremental Yield to an Outlet' : 'tHnxt2ORNQU',
+		'Summarizing Delivered Load to Downstream Outlets' : 'HG9S4D0Jjfc'
+	};
+
     docMenu.removeAll();
     if(docUrl != null) {
     	Sparrow.SESSION.setDocUrl(docUrl);
@@ -147,49 +173,13 @@ function renderModel(response, options) {
 	   style: {'font-style': 'italic'}
    });
    docMenu.add('-');
-   docMenu.add({
-	   	text: 'Video: Working with Sources',
-	   	handler: function() {
-	   		var newWindow = window.open('screencast.jsp?videoId=1tzeR4WkLv0', '_blank', 
-	   				'resizable=0,location=0,status=0,scrollbars=0,width=960,height=757');
-	   		newWindow.focus();
-	   	}
+   //add videos
+   Ext.iterate(videoNameToVideoIdMap, function(name, videoId){
+		addVideoItemToDocMenu(name, videoId);
    });
-   docMenu.add({
-	   	text: 'Video: Incremental Yield',
-	   	handler: function() {
-	   		var newWindow = window.open('screencast.jsp?videoId=5K1Smu7Q4Fc', '_blank', 
-	   				'resizable=0,location=0,status=0,scrollbars=0,width=960,height=757');
-	   		newWindow.focus();
-	   	}
-   });
-   docMenu.add({
-	   	text: 'Video: Selecting Downstream Outlets',
-	   	handler: function() {
-	   		var newWindow = window.open('screencast.jsp?videoId=zrycRF7MeG8', '_blank', 
-	   				'resizable=0,location=0,status=0,scrollbars=0,width=960,height=757');
-	   		newWindow.focus();
-	   	}
-   });
-   docMenu.add({
-	   	text: 'Video: Changing Source Inputs',
-	   	handler: function() {
-	   		var newWindow = window.open('screencast.jsp?videoId=UkC_76uq748', '_blank', 
-	   				'resizable=0,location=0,status=0,scrollbars=0,width=960,height=757');
-	   		newWindow.focus();
-	   	}
-  });
-  docMenu.add({
-	   	text: 'Video: Incremental Yield to an Outlet',
-	   	handler: function() {
-	   		var newWindow = window.open('screencast.jsp?videoId=tHnxt2ORNQU', '_blank', 
-	   				'resizable=0,location=0,status=0,scrollbars=0,width=960,height=757');
-	   		newWindow.focus();
-	   	}
-  });
-   
+
    Ext.getCmp('map-options-tab').autoBinsChk.setValue(Sparrow.SESSION.isBinAuto());
-    
+
     // Zoom and center the map over the model's bounds
     if (response && boundEast != undefined && boundEast != 0) {
         map1.fitToBBox(boundEast, boundSouth, boundWest, boundNorth);
@@ -275,8 +265,8 @@ var IDENTIFY = new (function(){
 	var self = this;
 	var idRequest;
 	var clicked_lat, clicked_lon;
-	
-	
+
+
 
 	/**
 	 * user had identify tool selected and clicked on map
@@ -295,13 +285,13 @@ var IDENTIFY = new (function(){
 	};
 
 	this.identifyPoint.cursor = "cursor-identify-point";
-	
+
 
 	/**
 	 * Initiates a request to the reach identify service.  This function can make a
 	 * request based on the user clicking a specific point on the map (lat/lon), or
-	 * by the reach id (reachId).  
-	 * 
+	 * by the reach id (reachId).
+	 *
 	 * animOpts is defined in svn_overlay
 	 */
 	this.identifyReach = function(lat, lon, reachId, animOpts, showInfo) {
@@ -331,7 +321,7 @@ var IDENTIFY = new (function(){
 		//var b = getContextIdAsync({
 		//	scope: this,
 		//	callback: function() {
-		
+
 			    var xmlreq = ''
 			        + '<sparrow-id-request xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_2" '
 			        + 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">';
@@ -432,14 +422,14 @@ var IDENTIFY = new (function(){
 		SvgOverlay.removeAllOverlays();
 		var geom = reachResponse["sparrow-id-response"]["results"]["result"][0]["identification"]["ReachGeometry"]["basin"];
 		SvgOverlay.renderGeometry(geom, animateOptions, 'black', 'white');
-		
+
 		if (showInfo) {
 			renderReachIdentifyWindow(reachResponse);
 		}
-		
+
 	    clicked_lat = null;
 	    clicked_lon = null;
-		
+
 //		{ // Get the bounding box of the identified reach
 //			var bbox = reachResponse["sparrow-id-response"].results.result[0].identification.bbox;
 //			var xmin = parseFloat(bbox["@min-long"]);
@@ -574,7 +564,7 @@ var IDENTIFY = new (function(){
 	    }));
 	    */
 	};
-	
+
 	/**
 	 * user had identify calibration tool selected and clicked on map
 	 */
@@ -625,7 +615,7 @@ var IDENTIFY = new (function(){
 		    var lon = responseObj.getElementsByTagName('longitude') ? parseFloat(responseObj.getElementsByTagName('longitude')[0].firstChild.nodeValue) : '';
 		    var actual = responseObj.getElementsByTagName('actualValue') ? parseFloat(responseObj.getElementsByTagName('actualValue')[0].firstChild.nodeValue) : '';
 		    var predict = responseObj.getElementsByTagName('predictedValue') ? parseFloat(responseObj.getElementsByTagName('predictedValue')[0].firstChild.nodeValue) : '';
-		    
+
 		    //getPixelFromLatLon
 		    //getLatLonFromPixel
 		    //Draw the marker square
@@ -635,13 +625,13 @@ var IDENTIFY = new (function(){
 		    var topPoint = map1.getLatLonFromPixel(originalPixel.x+pixelRadius, originalPixel.y);
 		    var rightPoint = map1.getLatLonFromPixel(originalPixel.x, originalPixel.y+pixelRadius);
 		    var bottomPoint = map1.getLatLonFromPixel(originalPixel.x-pixelRadius, originalPixel.y);
-		    
+
 		    var marker = new JMap.svg.PolyLine({
 	        	points: [
-	        	         leftPoint.lon, leftPoint.lat, 
-	        	         topPoint.lon, topPoint.lat, 
-	        	         rightPoint.lon, rightPoint.lat, 
-	        	         bottomPoint.lon, bottomPoint.lat, 
+	        	         leftPoint.lon, leftPoint.lat,
+	        	         topPoint.lon, topPoint.lat,
+	        	         rightPoint.lon, rightPoint.lat,
+	        	         bottomPoint.lon, bottomPoint.lat,
 	        	         leftPoint.lon, leftPoint.lat],
 	        	properties: {
 	    	    	stroke: 'red',
@@ -667,7 +657,7 @@ var IDENTIFY = new (function(){
 		    		"Measured Total Load (kg&middot;year<sup>-1</sup>): " + actual + "<br/>" +
 		    		"Predicted Total Load (kg&middot;year<sup>-1</sup>): " + predict + "<br/>" +
 		    		"Measured / Predicted: " + Math.round((actual/predict)*1000)/1000
-		    	, 
+		    	,
 		    	listeners: {
 		    		close: function() {
 		    			map1._SVGManager.removeShape(marker);
@@ -678,11 +668,11 @@ var IDENTIFY = new (function(){
 		    window.show();
 		}
 	};
-	
-	
 
-	
-	
+
+
+
+
 	this.abort = function(){
 		Ext.Ajax.abort(idRequest);
 	}
@@ -745,14 +735,14 @@ function renderPredictionsTabOnly(response, options) {
  * TODO: Move this rendering to the GraphPanel object.
  */
 function renderGraph(id_JSON) {
-	
+
 	if (document.getElementById('gcapi-warn')) {
 		//The test above is a generic test if the graph contents are rendered -
 		//Can't really modify them if not yet init'ed by EXT.
-		
+
 	    var predictions_sections = id_JSON["sparrow-id-response"].results.result[0].predicted.data.section;
 	    var adjustments = Sparrow.SESSION.hasEnabledAdjustments();
-	
+
 	    for (var i = predictions_sections.length - 1; i >= 1; i--) {
 	        var orig_url = '';
 	        var orig_vals = '';
@@ -766,7 +756,7 @@ function renderGraph(id_JSON) {
 	        var adj_label_url = '';
 	        var max_val = 0;
 	        var legend_html = '<table id="graph_legend_table"><tr><th colspan="'+((adjustments) ? '6': '4')+'">Sources</th></tr>';
-	
+
 	        if(adjustments)
 	        	legend_html += "<tr><td>Orig.</td><td>Adj.</td><td></td><td>Orig.</td><td>Adj.&nbsp;</td><td></td></tr>";
 	        //find sum of values for the pie chart (need to do percentage of total)
@@ -778,29 +768,29 @@ function renderGraph(id_JSON) {
 	            orig_total += parseFloat(predictions_cols[4]);
 	            adj_total += parseFloat(predictions_cols[5]);
 	        }
-	        
+
 	        var getColor = function(indx, adj) {
 	        	if(adj) return Sparrow.config.GraphColorArray[indx % Sparrow.config.GraphColorArray.length][1];
 	        	return Sparrow.config.GraphColorArray[indx % Sparrow.config.GraphColorArray.length][0];
 	        };
-	        
+
 	        var getColorHtml = function(indx, adj) {
 	        	var html = "<td style='width: 10px; height: 10px; background-color: #"+getColor(indx, false)+";'>&nbsp;</td>";
 	        	if(adj)
 	        		html += "<td style='width: 10px; height: 10px; background-color: #"+getColor(indx, true)+";'>&nbsp;</td>";
 	        	return html;
 	        };
-	        
+
 	        //get values for bar charts
 	        for (var j = 0; j < predictions_rows.length - 1; j++) {
 	            var predictions_cols = predictions_rows[j]["c"];
-	            
+
 	            //Get the source name, removing ' Total Load' from the end if present
 	            var TL = " total load";
 	            var valueLabel = predictions_cols[0];
 	            var lcValueLabel = valueLabel.toLowerCase();
 	            var tlIndex = lcValueLabel.lastIndexOf(TL);
-	            
+
 	            if (tlIndex > -1 && valueLabel.length == tlIndex + TL.length) {
 	            	//' total load' is the last portion of the src name
 	            	valueLabel = valueLabel.substr(0, valueLabel.length - TL.length);
@@ -810,26 +800,26 @@ function renderGraph(id_JSON) {
 	            	legend_html += '<tr>';
 	            }
 	            legend_html += getColorHtml(j, adjustments)+"<td>" + valueLabel + "</td>";
-	            
+
 	            if(j % 2 || j === predictions_rows.length-2) {
 	            	legend_html += '</tr>';
 	            }
-	            
+
 	            orig_label_url+= (Math.round(predictions_cols[4]/orig_total*1000)/10)+"%|";
 	            orig_url += (parseFloat(predictions_cols[4]) / orig_total) + ",";
 	            orig_vals += predictions_cols[4] + ",";
 	            orig_col += getColor(j, false)+"|";
-	            
+
 	            adj_label_url+= (Math.round(predictions_cols[5]/adj_total*1000)/10)+"%|";
 	            adj_url += (parseFloat(predictions_cols[5]) / adj_total) + ",";
 	            adj_vals += predictions_cols[5] + ",";
 	            adj_col += getColor(j, true)+"|";
-	
+
 	            //find max val in data for graph scaling
 	            if (parseFloat(predictions_cols[4]) > max_val) max_val = parseFloat(predictions_cols[4]);
 	            if (parseFloat(predictions_cols[5]) > max_val) max_val = parseFloat(predictions_cols[5]);
 	        }
-	
+
 	        legend_html += "</table>";
 	        orig_label_url = orig_label_url.substring(0,orig_label_url.length-1);
 	        adj_label_url = adj_label_url.substring(0,adj_label_url.length-1);
@@ -840,7 +830,7 @@ function renderGraph(id_JSON) {
 	        orig_col = orig_col.substring(0,orig_col.length-1);
 	        adj_col = adj_col.substring(0,adj_col.length-1);
 	        orig_adj_col = orig_col +","+adj_col;
-	
+
 	        //set src of graph images
 	    	var chart_width = 170 + (predictions_rows.length-1)*56;
 	    	var chart_height = 50 + (predictions_rows.length-1)*30;
@@ -881,7 +871,7 @@ var last_id_JSON = null;
  */
 
 function getContextIdAsync(options) {
-	
+
 	var formulateLegendText = function(displayUnits, displayConstituent) {
 		return displayUnits + ' ' + displayConstituent;
 	};
@@ -900,19 +890,19 @@ function getContextIdAsync(options) {
     		},
     		success: function(r,o) {
     	        context_id = r.responseXML.childNodes[0].getAttribute("context-id");
-    	        
+
     	        var displayName = getDisplayInfo(r.responseXML, 'name');
     	        var displayDesc = getDisplayInfo(r.responseXML, 'description');
     	        var displayUnits = getDisplayInfo(r.responseXML, 'units');
     	        var displayConstituent = getDisplayInfo(r.responseXML, 'constituent');
     	        var rowCount = getDisplayInfo(r.responseXML, 'rowCount');
-    	        
+
     	        Sparrow.SESSION.setSeriesName(displayName);
     	        Sparrow.SESSION.setSeriesDescription(displayDesc);
     	        Sparrow.SESSION.setSeriesUnits(displayUnits);
     	        Sparrow.SESSION.setSeriesConstituent(displayConstituent);
     	        Sparrow.SESSION.setRowCount(rowCount);
-    	        
+
     	        Sparrow.SESSION.mark();
     	        options.callback.call(options.scope);
     		},
@@ -937,7 +927,7 @@ function getContextIdAsync(options) {
  * Add the sparrow datalayer to the map
  */
 function make_map() {
-	
+
 	var _autoGenBins = function() {
 		var bucketCount = Sparrow.SESSION.getBinCount();
 		var bucketType = Sparrow.SESSION.getBinType();
@@ -950,7 +940,7 @@ function make_map() {
             scope: this,
             success: function(response, options) {
 	            var binValues = Sparrow.ui.parseBinDataResponse(response.responseXML);
-	         
+
 	            Sparrow.SESSION.setBinData(binValues);
 		        var comparisonBucketLbl = Ext.getCmp('map-options-tab').bucketLabel;
 		        comparisonBucketLbl.setText(bucketCount + ' ' + Sparrow.SESSION.getBinTypeName() + ' Bins');
@@ -980,7 +970,7 @@ function make_map() {
 	    		urlParams += '&binLowList=' + Ext.pluck(bins, 'low').join();
 	    		urlParams += '&binHighList=' + Ext.pluck(bins, 'high').join();
 	    		urlParams = encodeURI(urlParams);
-	    		
+
 	    		Ext.Ajax.request({
 		            url: 'confirmBins',
 		            method: 'GET',
@@ -990,16 +980,16 @@ function make_map() {
 			            var result = response.responseXML.getElementsByTagName('entity')[0].firstChild.nodeValue;
 			            var allValuesInABin = response.responseXML.lastChild.getElementsByTagName('entity')[0].firstChild.nodeValue;
 			            var allValuesInASingleBin = response.responseXML.lastChild.getElementsByTagName('entity')[1].firstChild.nodeValue;
-			            
+
 			            if(allValuesInABin!='true' || allValuesInASingleBin!='true'){
 			            	var msg = '<br/>Would you like to automatically adjust the bins to include the entire set of results on the map in \'Equal Count\' bins?';
-			            	
+
 			            	if(allValuesInABin=='false') msg = '- There are results not included in your custom bins that will not be displayed on the map.<br/>' + msg;
 			            	if(allValuesInASingleBin=='false') msg = '- All results fall into a single bin.<br/>' + msg;
-			            	
+
 			            	Ext.Msg.confirm(
-			            		'Potential Binning Issues', 
-			            		msg, 
+			            		'Potential Binning Issues',
+			            		msg,
 			            		function(yes){
 			            			if(yes!='yes'){
 			            				addDataLayer();
@@ -1029,7 +1019,7 @@ function addDataLayer() {
 
 	//Internal ID used for the map layer
 	var mappedValueLayerID = Sparrow.config.LayerIds.mainDataLayerId;
-	
+
     //get parameters to create base url for sparrow data layer
     var what_to_map = Sparrow.SESSION.PermanentMapState["what_to_map"];
     var theme_name = Sparrow.SESSION.getThemeName();
@@ -1051,7 +1041,7 @@ function addDataLayer() {
     var legendEl = Ext.get('legend');
     Ext.DomHelper.overwrite(legendEl, '');
     Sparrow.ui.renderLegend();
-    
+
     map1.layerManager.unloadMapLayer(mappedValueLayerID);
     map1.appendLayer(
     	new JMap.web.mapLayer.WMSLayer({
@@ -1068,7 +1058,7 @@ function addDataLayer() {
     		opacity: Sparrow.SESSION.getDataLayerOpacity()
     	})
     );
-    
+
     Sparrow.SESSION.fireContextEvent('map-updated-and-synced');
 
 }
