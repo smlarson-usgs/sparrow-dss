@@ -4,9 +4,9 @@
 <html>
 <head>
 	<jsp:include page="../template_meta_tags.jsp" flush="true" />
-	
+
 	<title>Delivery Report - SPARROW Model Decision Support</title>
-	
+
 	<script src="../jquery/jquery-1.7.2.js"></script>
 	<script src="../jquery/jquery-ui-1.8.20.custom/js/jquery-ui-1.8.20.custom.min.js"></script>
 	<script src="../jquery/jquery.timer/jquery.timer.js"></script>
@@ -22,9 +22,13 @@
 </head>
 <body>
 	<jsp:include page="../template_body_header.jsp" flush="true" />
-	
-		<div id="page-content" class="area-1 area"> 
+
+		<div id="page-content" class="area-1 area">
 			<div class="area-content">
+				<div id="report-model-info">
+					<h1>Model Name: <span id="report-model-name">Loading...</span></h1>
+					<h2>Constituent: <span id="report-model-constituent">Loading...</span></h2>
+				</div>
 				<div id="tabs" class="content">
 					<ul>
 							<li><a href="#terminal-report-container"><span>Total Delivered Load Summary</span></a></li>
@@ -37,8 +41,8 @@
 						<jsp:include page="aggregate_wrapper.jsp" flush="true" />
 					</div>
 				</div>
-				
-				
+
+
 			</div>
 		</div>
     <jsp:include page="../template_body_footer.jsp" flush="true" />

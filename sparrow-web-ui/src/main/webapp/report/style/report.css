@@ -34,10 +34,10 @@ Head Section */
 .explanation .distinct { border: solid 1px #000 !important; }
 
 .explanation:after {
-	content: '.'; 
-	display: block; 
-	height: 0; 
-	clear: both; 
+	content: '.';
+	display: block;
+	height: 0;
+	clear: both;
 	visibility: hidden;
 }
 
@@ -71,7 +71,7 @@ Head Section */
 	display: none; /* Initially not displayed */
 	padding: .3em; font-weight: bold; color: #300; border: solid 3px #900;
 }
-.downstream-reaches-list { 
+.downstream-reaches-list {
 	font-size: 75%;
 	max-height: 6em;
 	overflow-y: auto;
@@ -168,14 +168,18 @@ rel-percent-in-row div {
 
 .figure {
 	position: relative; padding: 6px; margin: .5em; width: 337px; clear: both;
-	border: solid 1px #000; 
+	border: solid 1px #000;
 	box-shadow: 4px 4px 2px rgba(0, 0, 0, 0.2);
 }
 
 .figure .wrap { clear: both; position: relative; }
-.figure .wrap img { 
+.figure .wrap img {
 	display: block; margin: auto;
 	box-shadow: 4px 4px 2px rgba(0, 0, 0, 0.2); }
 .figure .caption { clear: both; }
 
 .cluster { float: left; clear: none;}
+
+#report-model-info {
+	text-align: center;
+}
