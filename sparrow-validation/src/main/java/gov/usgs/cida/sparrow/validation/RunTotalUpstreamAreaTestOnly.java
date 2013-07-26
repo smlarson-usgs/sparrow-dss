@@ -12,10 +12,10 @@ import org.apache.log4j.Logger;
  *
  * @author eeverman
  */
-public class RunWatershedAreaTestOnly extends SparrowModelValidationRunner {
+public class RunTotalUpstreamAreaTestOnly extends SparrowModelValidationRunner {
 
 	public static void main(String[] args) throws Exception {
-		String myClassName = RunWatershedAreaTestOnly.class.getCanonicalName();
+		String myClassName = RunTotalUpstreamAreaTestOnly.class.getCanonicalName();
 
 		SparrowModelValidationRunner.main(new String[] {myClassName});
 	}
@@ -94,7 +94,6 @@ public class RunWatershedAreaTestOnly extends SparrowModelValidationRunner {
 		 * Arg5:	Set true to ignore ifTran in calcs
 		 * Arg6:	Set true to not correct fraction values in tests.
 		 */
-		addValidator(new CalculatedWaterShedAreaShouldEqualLoadedValue(tightComparator, preciseComparator, false, false, false, true));
-
+		addValidator(new CalculatedTotalUpstreamAreaShouldEqualLoadedValue(wideComparator, preciseComparator, false));
 	}
 }
