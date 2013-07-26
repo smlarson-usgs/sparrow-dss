@@ -65,8 +65,8 @@ public class HTMLRelativePercentCellFormatter implements ValueFormatter{
 
 
 		String html =
-				"<td class=\"" + inColumnRelPercentBoxClassName + "\"><div style=\"width:" + percVal + "%;\">"
-				+ "<span>" + cleanVal + "</span>"
+				"<td class=\"" + inColumnRelPercentBoxClassName + "\"><div class=\"report-percent-visualization\" style=\"width:" + percVal + "%;\">"
+				+ "<span class=\"report-percent-value\">" + cleanVal + "</span>"
 				+ "</div></td>";
 
 
