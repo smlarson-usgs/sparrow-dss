@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 public class RunTotalUpstreamAreaTestOnly extends SparrowModelValidationRunner {
 
 	public static void main(String[] args) throws Exception {
-		String myClassName = RunTotalContributingAreaTestOnly.class.getCanonicalName();
+		String myClassName = RunTotalUpstreamAreaTestOnly.class.getCanonicalName();
 
 		SparrowModelValidationRunner.main(new String[] {myClassName});
 	}
