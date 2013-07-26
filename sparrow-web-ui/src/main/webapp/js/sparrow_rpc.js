@@ -127,7 +127,7 @@ function renderModel(response, options) {
 		'Selecting Downstream Outlets' : 'zrycRF7MeG8',
 		'Changing Source Inputs' : 'UkC_76uq748',
 		'Incremental Yield to an Outlet' : 'tHnxt2ORNQU',
-		'Summarizing Delivered Load to Downstream Outlets' : ''
+		'Summarizing Delivered Load to Downstream Outlets' : 'HG9S4D0Jjfc'
 	};
 
     docMenu.removeAll();

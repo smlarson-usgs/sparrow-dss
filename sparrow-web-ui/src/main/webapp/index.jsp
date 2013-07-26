@@ -129,7 +129,7 @@
 											<option value="screencast.jsp?videoId=zrycRF7MeG8">Selecting Downstream Outlets</option>
 											<option value="screencast.jsp?videoId=UkC_76uq748">Changing Source Inputs</option>
 											<option value="screencast.jsp?videoId=tHnxt2ORNQU">Incremental Yield to an Outlet</option>
-											<option value="screencast.jsp?videoId=">Summarizing Delivered Load to Downstream Outlets</option>
+											<option value="screencast.jsp?videoId=HG9S4D0Jjfc">Summarizing Delivered Load to Downstream Outlets</option>
 										</select>
 										<button id="tutorial-video-go-button">Watch now &gt;&gt;</button>
 										<h4>Found a bug or have a comment?</h4>
