@@ -98,7 +98,7 @@ table {
 
 }
 
-table, th, td { border: 1px solid black; padding: .3em; }
+.report-table-area table, th, td { border: 1px solid black; padding: .6em; }
 
 table th {
 	font-weight: bold;
@@ -110,25 +110,27 @@ Relative percentage cells */
 td.rel-percent-in-col { padding: 0; }
 
 .rel-percent-in-col div {
- float: right; height: 100%; margin: 0 0 1px 0; padding: 1.2em 0;
+ float: right; height: 100%; margin: 0 0 1px 0; padding: .6em 0;
  background-color: #ffc;  border-left: solid 1px #000;
 }
 
 .report-percent-value {
 	overflow: visible;
-	float: right;
+	display: block;
+	text-align: center;
+	margin-left: auto; margin-right: auto;
 	padding: 0.5em;
 	color: black;
 	background-color: #ddd;
-	width: 1em;
+	background-color: rgba(213, 213, 213, .7);
+	border-radius: .4em;
+	width: 3em;
 }
 
 rel-percent-in-row div {
  bottom: 0; width: 100%; margin: 0; padding: 0;
  background-color: #ffc;  border-top: solid 1px #000;
 }
-
-.rel-percent-in-row span { overflow: visible; float: right; padding: 0 .2em; }
 
 /* Uses the 'off right' technique to hide
  * unused tabs instead of the 'display none' technique.
