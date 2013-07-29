@@ -29,7 +29,7 @@ public class FindReachesLongRunTest extends SparrowTestBaseWithDB {
 		assertEquals("7126", result.getString(0, result.getColumnByName("FULL_IDENTIFIER")));
 		assertEquals("BIG SANDY CR", result.getString(0, result.getColumnByName("REACH_NAME")));
 		assertEquals("81.02", result.getString(0, result.getColumnByName("MEANQ")));
-		assertEquals("99.82", result.getString(0, result.getColumnByName("CUM_CATCH_AREA")));
+		assertEquals("99.82", result.getString(0, result.getColumnByName("TOT_UPSTREAM_AREA")));
 
 		assertEquals("03", result.getString(0, result.getColumnByName("HUC2")));
 		assertEquals("0307", result.getString(0, result.getColumnByName("HUC4")));

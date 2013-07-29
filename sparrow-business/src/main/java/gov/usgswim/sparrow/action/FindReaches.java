@@ -43,7 +43,7 @@ public class FindReaches extends Action<DataTable> {
 		} else if(sort.equals("huc8")) {
 			sort = "HUC8";
 		} else if(sort.equals("watershed-area")) {
-			sort = "CUM_CATCH_AREA";
+			sort = "TOT_UPSTREAM_AREA";
 		} else if(sort.equals("meanq")) {
 			sort = "MEANQ";
 		} else {
@@ -78,9 +78,9 @@ public class FindReaches extends Action<DataTable> {
 				return null;
 			} else {
 
-				String sql = "SELECT FULL_IDENTIFIER, REACH_NAME, MEANQ, CATCH_AREA, CUM_CATCH_AREA, HUC2, HUC4, HUC6, HUC8 from model_attrib_vw " +
+				String sql = "SELECT FULL_IDENTIFIER, REACH_NAME, MEANQ, CATCH_AREA, tot_upstream_area, HUC2, HUC4, HUC6, HUC8 from model_attrib_vw " +
 				" WHERE " + query.buildWhere() + " " +
-				" ORDER BY " + getSortColumn() + " reach_name,  identifier";
+				" ORDER BY " + getSortColumn() + " reach_name,  full_identifier";
 
 				String countQuery = "SELECT COUNT(*) FROM model_attrib_vw WHERE " + query.buildWhere();
 

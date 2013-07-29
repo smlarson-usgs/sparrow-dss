@@ -52,7 +52,7 @@ public class FindReachService extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		
+
 		resp.setContentType("application/xml");
 		FindReachRequest frReq = parseRequest(req);
 		StringBuilder outputXML = new StringBuilder();
@@ -66,15 +66,15 @@ public class FindReachService extends HttpServlet {
 		findReachesAction.setRecordStart((req.getParameter("start")==null) ? 0: Integer.valueOf(req.getParameter("start")));
 		findReachesAction.setSort(req.getParameter("sort"));
 		findReachesAction.setSortDir(req.getParameter("dir"));
-		
+
 		int resultSize = 0;
-		
+
 		try {
 			result = findReachesAction.run();
 		} catch (Exception e) {
 			message = "An error occured running your request: " + e.getMessage();
 		}
-		
+
 		if (result != null) {
 			if (result.getRowCount() > 0) {
 				status = ReturnStatus.OK;
@@ -87,7 +87,7 @@ public class FindReachService extends HttpServlet {
 						outputXML.append("<meanq>" + result.getString(row, result.getColumnByName("MEANQ")) + "</meanq>");
 						//outputXML.append("<state>" + rset.getString("REACH_NAME") + "</state>");
 						outputXML.append("<catch-area>" + result.getString(row, result.getColumnByName("CATCH_AREA")) + "</catch-area>");
-						outputXML.append("<watershed-area>" + result.getString(row, result.getColumnByName("CUM_CATCH_AREA")) + "</watershed-area>");
+						outputXML.append("<watershed-area>" + result.getString(row, result.getColumnByName("TOT_UPSTREAM_AREA")) + "</watershed-area>");
 						outputXML.append("<hucs>");
 						{
 							outputXML.append("<huc8 id=\"" + result.getString(row, result.getColumnByName("HUC8")) + "\" name=\"\" />");
@@ -103,7 +103,7 @@ public class FindReachService extends HttpServlet {
 				status = ReturnStatus.OK_EMPTY;
 				message = "Sorry, no reaches were found matching your criteria";
 			}
-			
+
 
 		} else { // return error response
 			status = ReturnStatus.ERROR;
