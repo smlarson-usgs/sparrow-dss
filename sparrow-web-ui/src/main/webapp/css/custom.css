@@ -200,7 +200,9 @@ html[xmlns] .clearfix {
   cursor: pointer;
 }
 
-
+.outline-highlight{
+	border: 3px solid orange;
+}
 
 .controls-custom a img {
   background-color: #F1EAD8;

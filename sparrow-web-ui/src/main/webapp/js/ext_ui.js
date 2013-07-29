@@ -396,7 +396,13 @@ Ext.onReady(function() {
 					showDelay: 0
 				}
 			});
-
+			this.deliveryReportsButton = new Ext.Button({
+				id: 'leftHandOpenDeliveryReportsButton',
+				text: 'Open Delivery Reports',
+				tooltip: 'View detailed delivery data in a new window',
+				handler: displayDeliverySummaryReport,
+				hidden: true,
+			});
 			var defaults = {
 					border: false,
 					layout: 'fit',
@@ -407,7 +413,7 @@ Ext.onReady(function() {
 					padding: 4,
 					buttonAlign: 'center',
 					items: [this.updateMapInstructions],
-					buttons: [this.updateMapButton]
+					buttons: [this.updateMapButton, this.deliveryReportsButton]
 			};
 
 			config = Ext.applyIf(config, defaults);
