@@ -154,9 +154,9 @@ public class FindReachRequest implements XMLStreamParserComponent{
 						meanQHi = ParserHelper.parseSimpleElementValue(in);
 					} else if ("meanQLo".equals(localName)) {
 						meanQLo = ParserHelper.parseSimpleElementValue(in);
-					} else if ("watershed-area-hi".equals(localName)) {
+					} else if ("tot-contrib-area-hi".equals(localName)) {
 						totContributingAreaHi = ParserHelper.parseSimpleElementValue(in);
-					} else if ("watershed-area-lo".equals(localName)) {
+					} else if ("tot-contrib-area-lo".equals(localName)) {
 						totContributingAreaLo = ParserHelper.parseSimpleElementValue(in);
 					} else if ("huc".equals(localName)) {
 						huc = ParserHelper.parseSimpleElementValue(in);

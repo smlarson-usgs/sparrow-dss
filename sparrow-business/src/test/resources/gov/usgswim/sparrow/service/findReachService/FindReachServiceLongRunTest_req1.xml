@@ -5,8 +5,8 @@
 		<reach-name>little R</reach-name>
 		<meanQHi>600</meanQHi>
 		<meanQLo>200</meanQLo>
-		<watershed-area-hi>825</watershed-area-hi>
-		<watershed-area-lo>750</watershed-area-lo>
+		<tot-contrib-area-hi>825</tot-contrib-area-hi>
+		<tot-contrib-area-lo>750</tot-contrib-area-lo>
 	</match-query>
 	<content>
 		<adjustments />

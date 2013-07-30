@@ -32,7 +32,7 @@ public class FindReachService extends HttpServlet {
 		+ "        <name>WESTERN RUN</name>"
 		+ "		<meanq>1234</meanq>"
 		+ "		<state>WI</state>"
-		+ "		<watershed-area>2345</watershed-area>"
+		+ "		<tot-contrib-area>2345</tot-contrib-area>"
 		+ "        <bbox min-long=\"-76.840216\" min-lat=\"39.492299\" max-long=\"-76.626801\" max-lat=\"39.597698\" marker-long=\"-76.7584575\" marker-lat=\"39.505502\" />"
 		+ "        <hucs>"
 		+ "            <huc8 id=\"02060003\" name=\"GUNPOWDER-PATAPSCO\" />"
@@ -52,7 +52,7 @@ public class FindReachService extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		
+
 		resp.setContentType("application/xml");
 		FindReachRequest frReq = parseRequest(req);
 		StringBuilder outputXML = new StringBuilder();
@@ -66,15 +66,15 @@ public class FindReachService extends HttpServlet {
 		findReachesAction.setRecordStart((req.getParameter("start")==null) ? 0: Integer.valueOf(req.getParameter("start")));
 		findReachesAction.setSort(req.getParameter("sort"));
 		findReachesAction.setSortDir(req.getParameter("dir"));
-		
+
 		int resultSize = 0;
-		
+
 		try {
 			result = findReachesAction.run();
 		} catch (Exception e) {
 			message = "An error occured running your request: " + e.getMessage();
 		}
-		
+
 		if (result != null) {
 			if (result.getRowCount() > 0) {
 				status = ReturnStatus.OK;
@@ -87,7 +87,7 @@ public class FindReachService extends HttpServlet {
 						outputXML.append("<meanq>" + result.getString(row, result.getColumnByName("MEANQ")) + "</meanq>");
 						//outputXML.append("<state>" + rset.getString("REACH_NAME") + "</state>");
 						outputXML.append("<catch-area>" + result.getString(row, result.getColumnByName("CATCH_AREA")) + "</catch-area>");
-						outputXML.append("<watershed-area>" + result.getString(row, result.getColumnByName("CUM_CATCH_AREA")) + "</watershed-area>");
+						outputXML.append("<tot-contrib-area>" + result.getString(row, result.getColumnByName("TOT_CONTRIB_AREA")) + "</tot-contrib-area>");
 						outputXML.append("<hucs>");
 						{
 							outputXML.append("<huc8 id=\"" + result.getString(row, result.getColumnByName("HUC8")) + "\" name=\"\" />");
@@ -103,11 +103,11 @@ public class FindReachService extends HttpServlet {
 				status = ReturnStatus.OK_EMPTY;
 				message = "Sorry, no reaches were found matching your criteria";
 			}
-			
+
 
 		} else { // return error response
 			status = ReturnStatus.ERROR;
-			for (String error: findReachesAction.getErrors()) {
+			for (String error: findReachesAction.getValidationErrors()) {
 				message += "\n\r" + error;
 			}
 		}
@@ -123,7 +123,7 @@ public class FindReachService extends HttpServlet {
 		result.append("<sparrow-reach-response xmlns=\"http://www.usgs.gov/sparrow/id-response-schema/v0_2\"");
 		result.append(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
 		result.append("model-id=\"" + modelID + "\">");
-		result.append("<success>"+((status == ReturnStatus.OK || status == ReturnStatus.OK_EMPTY || status == ReturnStatus.OK_PARTIAL) ? "true":"false") +"</success>");
+		result.append("<success>"+((status == ReturnStatus.OK || status == ReturnStatus.OK_EMPTY) ? "true":"false") +"</success>");
 		result.append("<results>"+resultSize+"</results>");
 		result.append("<status>" + status + "</status>");
 		result.append("<message>" + message + "</message>");

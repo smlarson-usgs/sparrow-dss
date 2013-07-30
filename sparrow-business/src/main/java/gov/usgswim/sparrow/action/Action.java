@@ -212,10 +212,12 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 * Any validation errors will result in the actual doAction() method
 	 * not being called and null will be returned from the run() method.
 	 *
-	 * @param message
+	 * @param message (ignored if null)
 	 */
 	protected void addValidationError(String message) {
-		validationErrors.add(message);
+		if (message != null) {
+			validationErrors.add(message);
+		}
 	}
 
 	/**
