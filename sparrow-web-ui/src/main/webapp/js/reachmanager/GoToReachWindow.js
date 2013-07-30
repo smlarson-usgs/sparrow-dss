@@ -286,30 +286,14 @@ var GOTO_REACH_WIN = new (function(){
 				});
 				findReachStore.on('load', function(g){
 					var rawXml = findReachStore.reader.xmlData;
-					var isExceeded = (rawXml.getElementsByTagName('status')[0].firstChild.data == "OK_PARTIAL");
+					var isOK = (rawXml.getElementsByTagName('status')[0].firstChild.data == "OK");
+					var isOkEmpty = (rawXml.getElementsByTagName('status')[0].firstChild.data == "OK_EMPTY");
 					Ext.getBody().unmask();
-					if(isExceeded) {
-						var message = " (listing only 200 results)";
-						Ext.Msg.show({
-			                title: 'Too Many Results',
-			                msg: 'Your search returned too many reaches.<br/>Please narrow your search criteria.<br/>The first 200 reaches (sorted by name)<br/>are now listed.',
-			                buttons: Ext.Msg.OK,
-			                icon: Ext.Msg.INFO
-			            });
-						findReachStore.removeAll(true);
-						GOTO_REACH_WIN.appendToTitle(message);
-					}
-					else {
+					var message = "";	//set below
+					
+					if (isOK) {
 						var count = findReachStore.getTotalCount();
 						var message = " (" + count + " records found)";
-						if (count == 0) {
-				            Ext.Msg.show({
-				                title: 'No Reaches Found',
-				                msg: 'No reaches were found that met your search criteria.',
-				                buttons: Ext.Msg.OK,
-				                icon: Ext.Msg.INFO
-				            });
-						}
 						if(checkBoxesArray.length > 0) {
 			    			var bool = checkBoxesArray[0].myCheckBox.checked;
 			    			for(i = 0; i < checkBoxesArray.length; i++) {
@@ -317,8 +301,26 @@ var GOTO_REACH_WIN = new (function(){
 			    				cbObject.myCheckBox.setValue(false);
 			    			}
 			    		}
-						GOTO_REACH_WIN.appendToTitle(message);
+						
+					} else if (isOkEmpty) {
+						Ext.Msg.show({
+							title: 'No Reaches Found',
+							msg: 'No reaches were found that met your search criteria.',
+							buttons: Ext.Msg.OK,
+							icon: Ext.Msg.INFO
+						});
+						findReachStore.removeAll(true);
+					} else  {
+						//Must be an error
+						Ext.Msg.show({
+							title: 'An Error Occurred',
+							msg: 'Please refer to the error below:<br />' + rawXml.getElementsByTagName('message')[0].firstChild.data,
+							buttons: Ext.Msg.OK,
+							icon: Ext.Msg.ERROR
+						});
+						findReachStore.removeAll(true);
 					}
+					GOTO_REACH_WIN.appendToTitle(message);
 				});
 			}
 		}]

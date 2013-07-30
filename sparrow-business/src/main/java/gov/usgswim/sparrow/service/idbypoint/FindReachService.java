@@ -123,7 +123,7 @@ public class FindReachService extends HttpServlet {
 		result.append("<sparrow-reach-response xmlns=\"http://www.usgs.gov/sparrow/id-response-schema/v0_2\"");
 		result.append(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
 		result.append("model-id=\"" + modelID + "\">");
-		result.append("<success>"+((status == ReturnStatus.OK || status == ReturnStatus.OK_EMPTY || status == ReturnStatus.OK_PARTIAL) ? "true":"false") +"</success>");
+		result.append("<success>"+((status == ReturnStatus.OK || status == ReturnStatus.OK_EMPTY) ? "true":"false") +"</success>");
 		result.append("<results>"+resultSize+"</results>");
 		result.append("<status>" + status + "</status>");
 		result.append("<message>" + message + "</message>");
