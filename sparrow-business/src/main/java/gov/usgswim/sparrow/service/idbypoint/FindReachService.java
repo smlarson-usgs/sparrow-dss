@@ -32,7 +32,7 @@ public class FindReachService extends HttpServlet {
 		+ "        <name>WESTERN RUN</name>"
 		+ "		<meanq>1234</meanq>"
 		+ "		<state>WI</state>"
-		+ "		<watershed-area>2345</watershed-area>"
+		+ "		<tot-contrib-area>2345</tot-contrib-area>"
 		+ "        <bbox min-long=\"-76.840216\" min-lat=\"39.492299\" max-long=\"-76.626801\" max-lat=\"39.597698\" marker-long=\"-76.7584575\" marker-lat=\"39.505502\" />"
 		+ "        <hucs>"
 		+ "            <huc8 id=\"02060003\" name=\"GUNPOWDER-PATAPSCO\" />"
@@ -87,7 +87,7 @@ public class FindReachService extends HttpServlet {
 						outputXML.append("<meanq>" + result.getString(row, result.getColumnByName("MEANQ")) + "</meanq>");
 						//outputXML.append("<state>" + rset.getString("REACH_NAME") + "</state>");
 						outputXML.append("<catch-area>" + result.getString(row, result.getColumnByName("CATCH_AREA")) + "</catch-area>");
-						outputXML.append("<watershed-area>" + result.getString(row, result.getColumnByName("TOT_UPSTREAM_AREA")) + "</watershed-area>");
+						outputXML.append("<tot-contrib-area>" + result.getString(row, result.getColumnByName("TOT_CONTRIB_AREA")) + "</tot-contrib-area>");
 						outputXML.append("<hucs>");
 						{
 							outputXML.append("<huc8 id=\"" + result.getString(row, result.getColumnByName("HUC8")) + "\" name=\"\" />");
@@ -107,7 +107,7 @@ public class FindReachService extends HttpServlet {
 
 		} else { // return error response
 			status = ReturnStatus.ERROR;
-			for (String error: findReachesAction.getErrors()) {
+			for (String error: findReachesAction.getValidationErrors()) {
 				message += "\n\r" + error;
 			}
 		}

@@ -2,15 +2,18 @@
 <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <description>SPARROW Mapping Application</description>
     <display-name>Sparrow Client {Owner: NB, Coder: EE}</display-name>
-    <!--
+
     <context-param>
-        <description>Despite the name, this is not restricted to just the server - it can be the 1st half of the url.</description>
-        <param-name>forward-server</param-name>
-        <param-value>
-        ${service-url}
-        </param-value>
+        <description>Set the default read timeout to 2 minutes (1 min by default)</description>
+        <param-name>readTimeout</param-name>
+        <param-value>120000</param-value>
     </context-param>
-		-->
+    <context-param>
+        <description>Set the default connection timeout to 2 minutes (15 seconds by default)</description>
+        <param-name>connectTimeout</param-name>
+        <param-value>120000</param-value>
+    </context-param>
+
     <!--
     <filter>
 		<description>

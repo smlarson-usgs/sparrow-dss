@@ -1133,8 +1133,8 @@ function getReachRequestXML() {
 		if (params.reachname) xmlreq += '<reach-name>' + params.reachname + '</reach-name>';
 		if (params.meanQHi) xmlreq += '<meanQHi>' + params.meanQHi + '</meanQHi>';
 		if (params.meanQLo) xmlreq += '<meanQLo>' + params.meanQLo + '</meanQLo>';
-		if (params.watershedAreaHi) xmlreq += '<watershed-area-hi>' + params.watershedAreaHi + '</watershed-area-hi>';
-		if (params.watershedAreaLo) xmlreq += '<watershed-area-lo>' + params.watershedAreaLo + '</watershed-area-lo>';
+		if (params.watershedAreaHi) xmlreq += '<tot-contrib-area-hi>' + params.watershedAreaHi + '</tot-contrib-area-hi>';
+		if (params.watershedAreaLo) xmlreq += '<tot-contrib-area-lo>' + params.watershedAreaLo + '</tot-contrib-area-lo>';
 		if (params.huc8) xmlreq += '<huc>' + params.huc8 + '</huc>';
 		//	    	if (params.limit) xmlreq += '<bbox>' + map1.getViewportBoundingBoxString() + '</bbox>'; //xmin,ymin,xmax,ymax
 		if (params.edaname) xmlreq += '<edaname>' + params.edaname + '</edaname>';
