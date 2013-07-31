@@ -49,22 +49,15 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
 
-//		System.out.println(actualReportResponse);
-		String modelNameIsPresent = getXPathValue("count(//h2[@class=\"report-model-name\"])", actualReportResponse);
-		String modelConstituentIsPresent = getXPathValue("count(//h3[@class=\"report-constituent\"])", actualReportResponse);
-		assertEquals("1", modelNameIsPresent);
-		assertEquals("1", modelConstituentIsPresent);
-
 		String rowCountStr = gov.usgswim.sparrow.service.deliveryaggreport.ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
 
 		assertEquals("2", rowCountStr);
 
 		String firstTerminalReachName = getXPathValue("//tbody/tr[th[a=9682]]/td[1]", actualReportResponse);
-		String totalValue = getXPathValue("//tbody/tr[2]/td[.=40735550]", actualReportResponse);
+		String totalValue = getXPathValue("//tbody/tr[2]/td[.=\"40,735,550\"]", actualReportResponse);
 
 		assertEquals("MOBILE R", firstTerminalReachName);
-		assertEquals("40735550", totalValue);
-
+		assertEquals("40,735,550", totalValue);
 
 	}
 
