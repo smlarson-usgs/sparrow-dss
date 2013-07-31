@@ -97,7 +97,6 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 							if (XHTML.equals(outputType) || HTML.equals(outputType)) {
 								writeHtmlHead(out);
 							}
-
 							out.write(delims.sheetStart);
 
 						} else if ("description".equals(localName)) {

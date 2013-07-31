@@ -7,18 +7,18 @@
 	if (request.getParameter("region-type") != null) {
 		regionType = request.getParameter("region-type");
 	}
-	
+
 	String contextId = request.getParameter("context-id");
-	
+
 	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
 	String tableName = "getDeliveryAggReport";
 	String downloadReqParams = "context-id=" + request.getParameter("context-id") +
-			"&region-type=" + regionType + 	
-			"&include-zero-rows=false" + 					
+			"&region-type=" + regionType +
+			"&include-zero-rows=false" +
 			"&mime-type=csv";
-	
+
 	String downloadReqUrl = pageRequestUrl.getBaseUrlWithSlash() + tableName + "?" + downloadReqParams;
-	
+
 	String reportAsYield = "false";
 %>
  <div>
@@ -47,19 +47,19 @@
 							<div class="column">
 								<div class="content">
 									<h4>Aggregate upstream regions by:</h4>
-									<p class="input"><input type="radio" name="region-type"<%= ("state".equals(regionType))?"checked=\"checked\"":"" %> value="state" />State</p>
-									<p class="input"><input type="radio" name="region-type"<%= ("huc2".equals(regionType))?"checked=\"checked\"":"" %> value="huc2" />HUC 2</p>
-									<p class="input"><input type="radio" name="region-type"<%= ("huc4".equals(regionType))?"checked=\"checked\"":"" %> value="huc4" />HUC 4</p>
-									<p class="input"><input type="radio" name="region-type"<%= ("huc6".equals(regionType))?"checked=\"checked\"":"" %> value="huc6" />HUC 6</p>
-									<p class="input"><input type="radio" name="region-type"<%= ("huc8".equals(regionType))?"checked=\"checked\"":"" %> value="huc8" />HUC 8</p>
+									<p class="input"><input type="radio" name="region-type" <%= ("state".equals(regionType))?"checked=\"checked\"":"" %> value="state" />State</p>
+									<p class="input"><input type="radio" name="region-type" <%= ("huc2".equals(regionType))?"checked=\"checked\"":"" %> value="huc2" />HUC 2</p>
+									<p class="input"><input type="radio" name="region-type" <%= ("huc4".equals(regionType))?"checked=\"checked\"":"" %> value="huc4" />HUC 4</p>
+									<p class="input"><input type="radio" name="region-type" <%= ("huc6".equals(regionType))?"checked=\"checked\"":"" %> value="huc6" />HUC 6</p>
+									<p class="input"><input type="radio" name="region-type" <%= ("huc8".equals(regionType))?"checked=\"checked\"":"" %> value="huc8" />HUC 8</p>
 									<input type="hidden" name="context-id" value="<%= contextId %>" /><br />
 								</div>
 							</div>
 							<div class="column">
 								<div class="content">
 									<h4>Report load as:</h4>
-									<p class="input"><input type="radio" name="report-yield"<%= ("false".equals(reportAsYield))?"checked=\"checked\"":"" %> value="false" />Total load originating in each region</p>
-									<p class="input"><input type="radio" name="report-yield"<%= ("true".equals(reportAsYield))?"checked=\"checked\"":"" %> value="true" />Yield, based on contributing area</p>
+									<p class="input"><input type="radio" name="report-yield" <%= ("false".equals(reportAsYield))?"checked=\"checked\"":"" %> value="false" />Total load originating in each region</p>
+									<p class="input"><input type="radio" name="report-yield" <%= ("true".equals(reportAsYield))?"checked=\"checked\"":"" %> value="true" />Yield, based on contributing area</p>
 								</div>
 							</div>
 							<div class="download-area">
