@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.naming.NamingException;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory;
@@ -143,15 +142,15 @@ public class EhCacheConfigurationReader {
 	 * TODO HTML stuff doesn't really belong in this class, but there isn't an ideal place to put it, so I'm leaving it here for now.
 	 * @throws IOException 
 	 */
-	public static StringBuilder listDistributedCacheStatus(boolean isJndiAware, boolean showDetails) throws Exception {
+	public static StringBuilder listDistributedCacheStatus(boolean showDetails) throws Exception {
 
 //		outputConfig();
 
 		StringBuilder result = new StringBuilder();
 		// checking 
-		DynamicReadOnlyProperties sparrowProps = SparrowCacheManager.getProperties(isJndiAware);
-		String configKey = "cacheManagerPeerProviderFactory.properties";
-		result.append("CONFIG: " + configKey + " = " + sparrowProps.get(configKey) + "\n\n");
+//		DynamicReadOnlyProperties sparrowProps = SparrowCacheManager.getProperties(isJndiAware);
+//		String configKey = "cacheManagerPeerProviderFactory.properties";
+//		result.append("CONFIG: " + configKey + " = " + sparrowProps.get(configKey) + "\n\n");
 
 
 		String HEADER_FORMAT = "<font color='%s'>%s</font> ( %s objects of %s) %s %s ; transactions %s\n";

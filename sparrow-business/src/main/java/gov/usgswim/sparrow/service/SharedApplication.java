@@ -211,9 +211,9 @@ public class SharedApplication  {
 		{
 			DriverManager.registerDriver(new OracleDriver());
 		}
-		String dbuser = System.getProperty("dbuser");
-		String dbpass = System.getProperty("dbpass");
-		String url = System.getProperty("dburl");
+		String dbuser = SharedApplication.getInstance().getConfiguration().getProperty("dbuser");
+		String dbpass = SharedApplication.getInstance().getConfiguration().getProperty("dbpass");
+		String url = SharedApplication.getInstance().getConfiguration().getProperty("dburl");
 		Connection connection;
 		connection = DriverManager.getConnection(url, dbuser, dbpass);
 		return connection;
@@ -224,9 +224,9 @@ public class SharedApplication  {
 		{
 			DriverManager.registerDriver(new OracleDriver());
 		}
-		String dbuser = System.getProperty("rw_dbuser");
-		String dbpass = System.getProperty("rw_dbpass");
-		String url = System.getProperty("rw_dburl");
+		String dbuser = SharedApplication.getInstance().getConfiguration().getProperty("rw_dbuser");
+		String dbpass = SharedApplication.getInstance().getConfiguration().getProperty("rw_dbpass");
+		String url = SharedApplication.getInstance().getConfiguration().getProperty("rw_dburl");
 		Connection connection;
 		connection = DriverManager.getConnection(url, dbuser, dbpass);
 		return connection;

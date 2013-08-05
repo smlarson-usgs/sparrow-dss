@@ -38,7 +38,7 @@ public class SparrowCacheManager {
 	
 	public static final String DEFAULT_EHCACHE_CONFIG_LOCATION = "/ehcache.xml";
 	
-	private static final Logger LOG = LoggerFactory.getLogger(CacheManager.class);
+	private static final Logger LOG = LoggerFactory.getLogger(SparrowCacheManager.class);
 
 	/**
 	 * The Singleton Instance.
@@ -82,7 +82,7 @@ public class SparrowCacheManager {
 	public static CacheManager createFromResource(String resourceName, boolean isJndiAware) throws CacheException, IOException {
 
 		synchronized (CacheManager.class) {
-			LOG.debug("Creating new SparrowCacheManager from resource " + resourceName);
+			LOG.info("Creating new SparrowCacheManager from resource " + resourceName);
 			
 			InputStream in = null;
 			
