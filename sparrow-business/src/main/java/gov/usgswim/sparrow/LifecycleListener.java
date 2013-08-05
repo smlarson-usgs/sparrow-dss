@@ -49,6 +49,8 @@ public class LifecycleListener implements ServletContextListener {
 	public static final String APP_MODE_KEY = "application-mode";
 	public static final String APP_ENV_KEY = "application-environment";
 	
+	public static final String APP_CACHE_CONFIG_FILE_KEY = "application-cache-config-file";
+	
 	/**
 	 * Called when the context (the entire application) is being shut down.
 	 * This method should properly shutdown the cache and any other shared resources.
@@ -116,9 +118,14 @@ public class LifecycleListener implements ServletContextListener {
 			LogManager.resetConfiguration();
 			DOMConfigurator.configure(log4jUrl);
 			
+			
+			String cacheConfigLocation = props.getProperty(
+							APP_CACHE_CONFIG_FILE_KEY, 
+							SparrowCacheManager.DEFAULT_EHCACHE_CONFIG_LOCATION);
+			
 			//Calling create here is not required, but gives a single place to customize
 			//the creation of the singleton instance.
-			SparrowCacheManager.createFromResource(SparrowCacheManager.DEFAULT_EHCACHE_CONFIG_LOCATION, isJndiAware);
+			SparrowCacheManager.createFromResource(cacheConfigLocation, isJndiAware);
 
 			//
 			//Set up ehcaches that have decorators

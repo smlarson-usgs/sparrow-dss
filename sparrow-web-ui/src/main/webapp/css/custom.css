@@ -11,7 +11,7 @@
 }
 
 img, body, html {
-	border: 0 none;	
+	border: 0 none;
 }
 
 /* Turn css formatting back on, overriding ext */
@@ -35,7 +35,7 @@ img, body, html {
 	line-height: 0;
 	height: 0;
 }
- 
+
 .clearfix {
 	display: inline-block;
 }
@@ -50,11 +50,11 @@ img, body, html {
 	font-weight: bold;
 	padding: 0.5em;
 }
- 
+
 html[xmlns] .clearfix {
 	display: block;
 }
- 
+
 * html .clearfix {
 	height: 1%;
 }
@@ -79,7 +79,7 @@ html[xmlns] .clearfix {
 }
 
 .group_item {
-    background-color: #DFE8F6;              
+    background-color: #DFE8F6;
     border: solid #8DB2E3 1px;
     color: #15428B;
     cursor: pointer;
@@ -88,7 +88,7 @@ html[xmlns] .clearfix {
     height: 50px;
     margin: 5px 5px 0px 5px;
     position: relative;
-}    
+}
 
 .group_toggle {
   position: absolute;
@@ -179,7 +179,7 @@ html[xmlns] .clearfix {
 }
 
 .sparrow-transparent {
-	background-color: transparent;	
+	background-color: transparent;
 }
 
 .map-sync-warning {
@@ -200,7 +200,9 @@ html[xmlns] .clearfix {
   cursor: pointer;
 }
 
-
+.outline-highlight{
+	border: 3px solid orange;
+}
 
 .controls-custom a img {
   background-color: #F1EAD8;
@@ -217,7 +219,7 @@ html[xmlns] .clearfix {
 
 .controls-custom .selected img {
   border:1px inset gray;
-  background-color: #DED6A4;  
+  background-color: #DED6A4;
 }
 
 
@@ -288,8 +290,8 @@ html[xmlns] .clearfix {
 }
 
 #gcapi-graphs {
-	font-family: arial; 
-	font-size: 13px; 
+	font-family: arial;
+	font-size: 13px;
 	font-weight: lighter
 }
 
@@ -301,16 +303,16 @@ html[xmlns] .clearfix {
 	padding-left: .75em;
 	padding-right: .75em;
 }
-	
+
 #legend {
-   position:absolute; 
+   position:absolute;
    bottom: 35px;
    right: 10px;
    z-index: 205;
 }
 
 #legend-table .unit {
-	font-weight: 600;	
+	font-weight: 600;
 }
 
 #legend-table .legend-title {
@@ -352,7 +354,7 @@ a.actionLink:hover {
 /*map tools*/
 
 .selected-tool {
-	border: solid red 1px;	
+	border: solid red 1px;
 }
 
 .map-tools {
@@ -429,7 +431,7 @@ a.actionLink:hover {
 }
 
 .model-description-area {
-	margin-left: 180px;	
+	margin-left: 180px;
 }
 
 .model-predefined-session-area ul {
@@ -437,7 +439,7 @@ a.actionLink:hover {
 }
 
 .model-predefined-session-area {
-	clear: both;	
+	clear: both;
 }
 
 .model-screenshot {
@@ -447,7 +449,7 @@ a.actionLink:hover {
 	height: 85px;
 	width: 170px;
 }
-	
+
 
 .model-title {
 	font-size: large;
@@ -476,7 +478,8 @@ a.actionLink:hover {
 /* help-content section */
 #help-content dt {
 	display: list-item;
-	font-weight: bold;
+	font-weight: bolder;
+	text-decoration: underline;
 	list-style-type: none !important;
 	list-style: outside;
 	text-indent: .2em;
@@ -537,7 +540,7 @@ a.actionLink:hover {
 
 .logout-link {
 	/* margin-left: auto; margin-left: auto; */
-	text-align:center; font-style: italic;	
+	text-align:center; font-style: italic;
 }
 
 /* Form formatting */

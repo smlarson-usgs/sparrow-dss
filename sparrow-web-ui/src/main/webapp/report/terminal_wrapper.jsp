@@ -4,17 +4,17 @@
 <%
 
 	String contextId = request.getParameter("context-id");
-	
+
 	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
 	String tableName = "getDeliveryTerminalReport";
 	String downloadReqParams = "context-id=" + request.getParameter("context-id") +
-			"&include-zero-rows=true" + 					
+			"&include-zero-rows=true" +
 			"&mime-type=csv";
-	
+
 	String downloadReqUrl = pageRequestUrl.getBaseUrlWithSlash() + tableName + "?" + downloadReqParams;
-	
+
 	String reportAsYield = "false";
-	
+
 %>
  <div>
 		<div class="explanation">
@@ -40,8 +40,8 @@
 				<div class="content">
 					<h4>Report Load as:</h4>
 					<form class="controls">
-						<p class="input"><input type="radio" name="report-yield"<%= ("false".equals(reportAsYield))?"checked=\"checked\"":"" %> value="false" />Total Load</p>
-						<p class="input"><input type="radio" name="report-yield"<%= ("true".equals(reportAsYield))?"checked=\"checked\"":"" %> value="true" />Yield</p>
+						<p class="input"><input type="radio" name="report-yield" <%= ("false".equals(reportAsYield))?"checked=\"checked\"":"" %> value="false" />Total Load</p>
+						<p class="input"><input type="radio" name="report-yield" <%= ("true".equals(reportAsYield))?"checked=\"checked\"":"" %> value="true" />Yield</p>
 					</form>
 					<div class="download-area">
 						<a class="button-link download-report" href="" title="Download the currently displayed report">Download as CSV</a>

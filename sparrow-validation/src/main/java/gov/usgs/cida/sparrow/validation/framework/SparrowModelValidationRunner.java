@@ -24,20 +24,46 @@ import org.apache.log4j.Logger;
  * @author eeverman
  */
 public class SparrowModelValidationRunner {
-	
-	public enum Database {
-		PRODUCTION,
-		TEST,
-		DEVELOPMENT
+	/*
+	 * 				System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.154:1521:widev");
+
+	 */
+	public enum DATABASE {
+		WIWSC_PROD("WIWSC Production", "WP", "130.11.165.152:1521:widw"),
+		EROS_PROD("EROS Production", "EP", "152.61.236.40:1521:dbdw"),
+		TEST("Test", "T", "130.11.165.137:1521:witest"),
+		DEVELOPMENT("Development", "D", "130.11.165.154:1521:widev");
+		
+		private String fullName;
+		private String shortName;
+		private String urlFragment;
+		
+		DATABASE(String fullName, String shortName, String urlFragment) {
+			this.shortName = shortName;
+			this.fullName = fullName;
+			this.urlFragment = urlFragment;
+		}
+		
+		public DATABASE getForShortName(String name) {
+			for (DATABASE d : DATABASE.values()) {
+				if (d.shortName.equalsIgnoreCase(name)) return d;
+			}
+			return null;
+		}
+		
+				public String getFullName() {
+			return fullName;
+		}
+
+		public String getShortName() {
+			return shortName;
+		}
+
+		public String getUrlFragment() {
+			return urlFragment;
+		}
 	}
 	
-//	static {
-//		// Set up a simple configuration that logs on the console.
-//		
-//		URL log4jUrl = SparrowModelValidationRunner.class.getResource("/log4j_test.xml");
-//		LogManager.resetConfiguration();
-//		DOMConfigurator.configure(log4jUrl);
-//	}
 	
 	/**
 	 * The required comparison accuracy (expected - actual)/(max(expected, actual))
@@ -66,7 +92,8 @@ public class SparrowModelValidationRunner {
 	String cacheDirectory;	//directory to cache db model data to, so re-run models are faster
 	List<Long> modelIds;
 	String dbPwd;
-	Database database;
+	String dbUser;
+	DATABASE database;
 
 	int firstModelId = -1;
 	int lastModelId = -1;
@@ -352,6 +379,9 @@ public class SparrowModelValidationRunner {
 			pr = promptWhichDb();
 			if (pr.quit) return false;
 			
+			pr = promptUser();
+			if (pr.quit) return false;
+			
 			pr = promptPwd();
 			if (pr.quit) return false;
 			
@@ -426,26 +456,9 @@ public class SparrowModelValidationRunner {
 
 	public void intiDbConfig() {
 
-		switch(database) {
-			case DEVELOPMENT:
-				System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.154:1521:widev");
-				System.setProperty("dbuser", "sparrow_dss");
-				System.setProperty("dbpass", dbPwd);
-				break;
-			case TEST:
-				System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.137:1521:witest");
-				System.setProperty("dbuser", "sparrow_dss");
-				System.setProperty("dbpass", dbPwd);
-				break;
-			case PRODUCTION:
-				//Production Properties
-				System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.152:1521:widw");
-				System.setProperty("dbuser", "sparrow_dss");
-				System.setProperty("dbpass", dbPwd);
-				break;
-			default:
-				throw new RuntimeException("No database was selected.");
-		}
+		System.setProperty("dburl", "jdbc:oracle:thin:@" + database.getUrlFragment());
+		System.setProperty("dbuser", dbUser);
+		System.setProperty("dbpass", dbPwd);
 
 	}
 	
@@ -645,7 +658,14 @@ public class SparrowModelValidationRunner {
 
 		System.out.println("");
 		System.out.println(": : Database Connection : :");
-		PromptResponse response = prompt("Which database should the calculation use?  (D)evelopment, (T)est, or (P)roduction: ");
+		
+		String dbOpts = "";
+		for (DATABASE d : DATABASE.values()) {
+			dbOpts += "(" + d.getShortName() + ") " + d.getFullName() + ", ";
+		}
+		dbOpts = dbOpts.substring(0, dbOpts.length() - 1);
+		
+		PromptResponse response = prompt("Which database should the calculation use?  " + dbOpts + ": ");
 		if (response.quit) return response;
 
 		if (response.isEmptyOrNull()) {
@@ -653,13 +673,9 @@ public class SparrowModelValidationRunner {
 			return promptWhichDb();
 		} else {
 			String strVal = response.getNullTrimmedStrResponse();
-			if("d".equalsIgnoreCase(strVal)){
-				database = Database.DEVELOPMENT;
-			} else if ("t".equalsIgnoreCase(strVal)) {
-				database = Database.TEST;
-			} else if ("p".equalsIgnoreCase(strVal)) {
-				database = Database.PRODUCTION;
-			} else {
+			database = DATABASE.DEVELOPMENT.getForShortName(strVal);
+			
+			if(database == null) {
 				System.out.println("Sorry, I didn't get that.");
 				return promptWhichDb();
 			}
@@ -668,7 +684,15 @@ public class SparrowModelValidationRunner {
 		return response;
 	}
 	
-	//useTestDb
+	public PromptResponse promptUser() {
+		PromptResponse pwdResp = prompt("Enter the db user: ");
+		if (! pwdResp.quit) {
+			dbUser = pwdResp.getStrResponse();
+		}
+		
+		return pwdResp;
+	}
+	
 	public PromptResponse promptPwd() {
 		PromptResponse pwdResp = prompt("Enter the db password: ");
 		if (! pwdResp.quit) {

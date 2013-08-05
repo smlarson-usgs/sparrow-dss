@@ -21,7 +21,7 @@ public class SparseDoubleColumnData extends AbstractColumnData implements Column
 		public SparseDoubleColumnData(Map<Integer, Double> values, String name, String units,
 				String description,	Map<String, String> properties, Map<Object, int[]> index,
 				int rowCount, Double defaultMissingValue) {
-			
+
 			super(name, Double.class, units, description, properties, index);
 			isValid = false;
 			this.rowCount = rowCount;
@@ -58,7 +58,7 @@ public class SparseDoubleColumnData extends AbstractColumnData implements Column
 		// getXXX(int row) cell value methods
 		// ----------------------------------
 		public Double getDouble(int row) {
-			
+
 			if (values.containsKey(row)) {
 				return values.get(row);
 			} else {
@@ -102,7 +102,7 @@ public class SparseDoubleColumnData extends AbstractColumnData implements Column
 		public Object getValue(int row) {
 			return getDouble(row);
 		}
-		
+
 		public Long getLong(int row) {
 			if (values.containsKey(row)) {
 				return values.get(row).longValue();

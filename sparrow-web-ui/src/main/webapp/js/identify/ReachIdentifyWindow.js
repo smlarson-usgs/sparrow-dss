@@ -10,8 +10,8 @@ Sparrow.ui.ReachIdentifyWindow = Ext.extend(Ext.Window, {
     closeAction: 'close',
     layout: 'fit',
     plain: true,
-    width: 700,
-    minWidth: 650,
+    width: 725,
+    minWidth: 675,
     height: 400,
     minHeight: 300,
     draggable: true,
@@ -37,23 +37,23 @@ Sparrow.ui.ReachIdentifyWindow = Ext.extend(Ext.Window, {
         	document.body.appendChild(newdiv);
         }
     },
-    
+
     // Custom properties for this extension
     reachResponse: null,
 
     initComponent: function() {
-    	
+
         var reachId = this.reachResponse["sparrow-id-response"].results.result[0].identification.id;
         var reachName = this.reachResponse["sparrow-id-response"].results.result[0].identification.name;
-        
+
         this.modelSourceMsg = '<p>Source input values can be changed in two ways. ' +
         'To change source values for just this reach,  enter new source values in the Override Amount column, below, then click OK. ' +
         'Reaches with this type of change are listed under \'Reaches with Absolute Changes\' on the Change Inputs tab at the left of the screen.</p>' +
         '<br/><p>To change source values for an entire set of reaches (such as all reaches in the same HUC as this reach), use the options on the Change Inputs tab to the left of the screen.</p>' +
         '<br/><p>The map (and the Adjusted Amount column) will not reflect input changes until the Update Map button is clicked.</p>';
-    	
+
     	this.individualAdjDisabledMsg = "Note: 'Reaches with Absolute Changes' is currently disabled on the Change Inputs tab, so changes in the Override Amount column will have no effect.";
-        
+
         this.modelSourceInstructions = new Ext.Panel({
         	region: 'north',
         	autoHeight: true,
@@ -68,7 +68,6 @@ Sparrow.ui.ReachIdentifyWindow = Ext.extend(Ext.Window, {
             id: 'reach-identify-tab-panel',
             activeTab: 0,
             border: false,
-            autoScroll: true,
             items: [
                 new Ext.Panel({
                 	id: 'attributesTab',
@@ -81,7 +80,7 @@ Sparrow.ui.ReachIdentifyWindow = Ext.extend(Ext.Window, {
 								region: 'north',
 							   	contentEl: 'sparrow-identify-mapped-value-a'
 							}),
-                	        new AttributesGrid({id: 'attributesTabGrid', reachResponse: this.reachResponse})        
+                	        new AttributesGrid({id: 'attributesTabGrid', reachResponse: this.reachResponse})
                 	]
                 }),
                 {
@@ -92,7 +91,7 @@ Sparrow.ui.ReachIdentifyWindow = Ext.extend(Ext.Window, {
                 	items: [
                 	    this.modelSourceInstructions,
                 		new AdjustmentsGrid({
-                			id: 'treatmentsTab', 
+                			id: 'treatmentsTab',
                 			region: 'center',
                 			reachResponse: this.reachResponse
             		})]
@@ -108,7 +107,7 @@ Sparrow.ui.ReachIdentifyWindow = Ext.extend(Ext.Window, {
 								region: 'north',
 							   	contentEl: 'sparrow-identify-mapped-value-b'
 							}),
-                            new PredictedValuesGrid({id: 'predictedValuesTabGrid', reachId: reachId})      
+                            new PredictedValuesGrid({id: 'predictedValuesTabGrid', reachId: reachId})
                 	]
                 }),
                 new GraphPanel({id: 'graphTab', reachId: reachId})
@@ -183,7 +182,7 @@ Sparrow.ui.ReachIdentifyWindow = Ext.extend(Ext.Window, {
         this.on("show", function(){
         	var grid = Ext.getCmp('treatmentsTab');
         	var override = grid.getColumnModel().getColumnById('overrideValue');
-        	
+
         	override.header = "Override Amount";
         	var msg = this.modelSourceMsg;
         	if(!Sparrow.SESSION.PredictionContext.adjustmentGroups.individualGroup['@enabled']) {
@@ -192,7 +191,7 @@ Sparrow.ui.ReachIdentifyWindow = Ext.extend(Ext.Window, {
         	}
         	this.modelSourceInstructions.html = msg;
         });
-        
+
         // Call the superclass' init function
         Sparrow.ui.ReachIdentifyWindow.superclass.initComponent.apply(this, arguments);
     },
@@ -216,21 +215,21 @@ Sparrow.ui.ReachIdentifyWindow = Ext.extend(Ext.Window, {
 //        Ext.getCmp('reach-identify-apply-button').setDisabled(true);
 //        //this.applyChanges();//TODO remove this if we decide to remove the Group/Target tab for good
 //        this.setModified(false);
-//        
+//
 //        var _this = this;
 //        var reachId = this.reachResponse["sparrow-id-response"].results.result[0].identification.id;
 //        var reachName = this.reachResponse["sparrow-id-response"].results.result[0].identification.name;
 //        var overrides = Ext.getCmp('treatmentsTab').getOverrides();
-//        
+//
 //        var handler = function() {
 //	        handleAdjustments(
-//	        		reachId, 
-//	        		reachName, 
+//	        		reachId,
+//	        		reachName,
 //	        		overrides
 //	        );
 //	        _this.isApplying = false;
 //        };
-//        
+//
 //      //check to see if reachId is already in adjustments
 //    	var alreadyAdded = false;
 //    	var allReaches = Sparrow.SESSION.getAllAdjustedReaches();
@@ -240,7 +239,7 @@ Sparrow.ui.ReachIdentifyWindow = Ext.extend(Ext.Window, {
 //    			break;
 //    		}
 //    	}
-//        
+//
 //    	var hasOverrides = false;
 //    	for (var i = 0; i < overrides.length; i++) {
 //    		if (isNaN(parseFloat(overrides[i]))) {
@@ -249,7 +248,7 @@ Sparrow.ui.ReachIdentifyWindow = Ext.extend(Ext.Window, {
 //    			hasOverrides = true;
 //    		}
 //    	}
-//    	
+//
 //    	if(alreadyAdded || !hasOverrides)
 //    		handler();
 //    	else
@@ -270,18 +269,18 @@ Sparrow.ui.ReachIdentifyWindow = Ext.extend(Ext.Window, {
     	//this.applyChanges();//TODO remove this if we decide to remove the Group/Target tab for good
     	var reachId = this.reachResponse["sparrow-id-response"].results.result[0].identification.id;
     	var reachName = this.reachResponse["sparrow-id-response"].results.result[0].identification.name;
-    	
+
     	var overrides = Ext.getCmp('treatmentsTab').getOverrides();
     	var _this = this;
     	var handler = function() {
 	    	handleAdjustments(
-	    			reachId, 
-	    			reachName, 
+	    			reachId,
+	    			reachName,
 	    			overrides
 	        );
 	    	_this.close();
     	}
-    	
+
     	//check to see if reachId is already in adjustments
     	var alreadyAdded = false;
     	var allReaches = Sparrow.SESSION.getAllAdjustedReaches();
@@ -291,7 +290,7 @@ Sparrow.ui.ReachIdentifyWindow = Ext.extend(Ext.Window, {
     			break;
     		}
     	}
-        
+
     	var hasOverrides = false;
     	for (var i = 0; i < overrides.length; i++) {
     		if (isNaN(parseFloat(overrides[i]))) {
@@ -300,7 +299,7 @@ Sparrow.ui.ReachIdentifyWindow = Ext.extend(Ext.Window, {
     			hasOverrides = true;
     		}
     	}
-    	
+
     	if(alreadyAdded || !hasOverrides)
     		handler();
     	else
@@ -310,7 +309,7 @@ Sparrow.ui.ReachIdentifyWindow = Ext.extend(Ext.Window, {
 	        	existingGroups_xml: Sparrow.SESSION.getAdjustmentGroupsAsXML()
 	        }, handler);
     },
-    
+
   //TODO remove this if we decide to remove the Group/Target tab for good
 //    applyChanges: function() {
 //      handleGroupMembership(this.reachResponse, Sparrow.SESSION.getAllGroups());

@@ -82,9 +82,10 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 	public void doOneTimeFrameworkSetup() throws Exception {
 		
 		if (!loadModelDataFromFile()) {
-			//Remove this prop (set by SparrowUnitTestBaseClass), which will allow predict
-			//data to be loaded from the DB, not from text files.
-			System.clearProperty(PredictDataFactory.ACTION_IMPLEMENTATION_CLASS);
+			//Explicitly force a load from the db, not from CSV or serialization file.
+			SharedApplication.getInstance().getConfiguration().setProperty(
+							PredictDataFactory.ACTION_IMPLEMENTATION_CLASS,
+							"gov.usgswim.sparrow.action.LoadModelPredictData");
 		}
 		
 		
@@ -111,10 +112,10 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 	protected void doDbSetup() throws Exception {
 		
 		//OK to set these props each time
-        System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
-        	"org.apache.naming.java.javaURLContextFactory");
-        System.setProperty(Context.URL_PKG_PREFIXES, 
-        	"org.apache.naming");   
+		System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
+			"org.apache.naming.java.javaURLContextFactory");
+		System.setProperty(Context.URL_PKG_PREFIXES, 
+			"org.apache.naming");   
 
 
 		Context ctx = new InitialContext();
@@ -260,9 +261,9 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 		if (! useProd) {
 			//130.11.165.154
 			//igsarmewdbdev.er.usgs.gov
-			System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.154:1521:widev");
-			System.setProperty("dbuser", "sparrow_dss");
-			System.setProperty("dbpass", "***REMOVED***");
+			SharedApplication.getInstance().getConfiguration().setProperty("dburl", "jdbc:oracle:thin:@130.11.165.154:1521:widev");
+			SharedApplication.getInstance().getConfiguration().setProperty("dbuser", "sparrow_dss");
+			SharedApplication.getInstance().getConfiguration().setProperty("dbpass", "***REMOVED***");
 		} else {
 			
 			String pwd = prompt(SYS_PROP_USE_PRODUCTION_DB +
@@ -270,9 +271,9 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 					" Enter the production db password: ");
 			
 			//Production Properties
-			System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.152:1521:widw");
-			System.setProperty("dbuser", "sparrow_dss");
-			System.setProperty("dbpass", pwd);
+			SharedApplication.getInstance().getConfiguration().setProperty("dburl", "jdbc:oracle:thin:@130.11.165.152:1521:widw");
+			SharedApplication.getInstance().getConfiguration().setProperty("dbuser", "sparrow_dss");
+			SharedApplication.getInstance().getConfiguration().setProperty("dbpass", pwd);
 		}
 	}
 	

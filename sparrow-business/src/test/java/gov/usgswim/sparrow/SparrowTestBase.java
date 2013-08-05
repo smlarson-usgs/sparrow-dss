@@ -15,6 +15,7 @@ import gov.usgswim.sparrow.action.PredictionContextHandler;
 import gov.usgswim.sparrow.cachefactory.PredictDataFactory;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.datatable.PredictResultImm;
+import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.*;
 import java.net.URL;
@@ -64,7 +65,7 @@ public abstract class SparrowTestBase {
 
 
 	/** lifecycle listener handles startup / shutdown */
-	static LifecycleListener lifecycle = new LifecycleListener();
+	protected static LifecycleListener lifecycle = new LifecycleListener();
 
 
 	/** The model ID of MRB2 in the test db */
@@ -183,14 +184,14 @@ public abstract class SparrowTestBase {
 
 
 		//Specifies to use text files instead of loading PredictData from the DB.
-		System.setProperty(
+		SharedApplication.getInstance().getConfiguration().setProperty(
 				PredictDataFactory.ACTION_IMPLEMENTATION_CLASS,
 				"gov.usgswim.sparrow.action.LoadModelPredictDataFromFile");
 
 		//Tell the PredictionContextHandler action to not attempt to access the
 		//db.  This means that all PredictionContexts are only stored and
 		//accessed from the local cache.
-		System.setProperty(
+		SharedApplication.getInstance().getConfiguration().setProperty(
 				PredictionContextHandler.DISABLE_DB_ACCESS, "true");
 
 		//Use the standard XML factories, not the screwy one from oracle that

@@ -154,6 +154,7 @@
 		
 		<xsl:variable name="pubName" select="/csw:GetRecordByIdResponse/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource[gmd:applicationProfile/gco:CharacterString = 'model page']/gmd:name/gco:CharacterString"/>
 		<xsl:variable name="pubURL" select="/csw:GetRecordByIdResponse/gmd:MD_Metadata/gmd:distributionInfo/gmd:MD_Distribution/gmd:transferOptions/gmd:MD_DigitalTransferOptions/gmd:onLine/gmd:CI_OnlineResource[gmd:applicationProfile/gco:CharacterString = 'model page']/gmd:linkage/gmd:URL"/>
+        <xsl:variable name="model_id" select="gmd:descriptiveKeywords/gmd:MD_Keywords[gmd:type/gmd:MD_KeywordTypeCode/@codeListValue = 'sparrow_dss_model_id']/gmd:keyword[1]/gco:CharacterString"/>
 		
 		<dl class="sparrow-keywords">
 			<xsl:apply-templates mode="sparrow-keywords" select="/csw:GetRecordByIdResponse/gmd:MD_Metadata/gmd:identificationInfo/gmd:MD_DataIdentification"></xsl:apply-templates>
@@ -168,6 +169,14 @@
 					</a>
 				</dd>
 			</xsl:if>
+                <dt>Model Updates:</dt>
+                <dd>
+                    <a>
+                        <xsl:attribute name="href">modelUpdates.jsp#<xsl:value-of select="$model_id"/></xsl:attribute>
+                        <xsl:attribute name="title">Model Updates</xsl:attribute>
+                        View this model's updates
+                    </a>
+                </dd>
 			
 		</dl>
 	</xsl:template>

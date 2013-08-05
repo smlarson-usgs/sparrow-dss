@@ -142,6 +142,9 @@ return this.curValue || this.defaultValue || "FFFFFF";
      * @param {String} hex The color value
      */
     setValue : function(hex){
+		if (!hex) {
+			hex = 'FFFFFF';
+		}
         Ext.ux.ColorField.superclass.setValue.call(this, hex);
         this.setColor(hex);
     },
@@ -152,6 +155,9 @@ return this.curValue || this.defaultValue || "FFFFFF";
      * @param {String} hex The color value.
      */
     setColor : function(hex) {
+		if (!hex) {
+			hex = 'FFFFFF';
+		}
         this.curColor = hex;
 
         this.el.setStyle( {
@@ -162,7 +168,7 @@ return this.curValue || this.defaultValue || "FFFFFF";
             this.el.setStyle({
                 'text-indent': '-100px'
             });
-            if (Ext.isIE) {
+            if (Ext.isIE8 || Ext.isIE7) {
                 this.el.setStyle({
                     'margin-left': '100px'
                 });

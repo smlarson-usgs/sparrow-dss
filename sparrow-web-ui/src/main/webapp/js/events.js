@@ -4,26 +4,26 @@ Sparrow.events.EventManager = function(){ return{
 		Sparrow.CONTEXT.on('map-updated-and-synced', function() {
 			//Current series
 			var series = Sparrow.SESSION.getSeriesName();
-			
+
 		    //hide any out of sync messages
 		    if(document.getElementById('map-sync-warning').className.indexOf('x-hidden') < 0) {
 				document.getElementById('map-sync-warning').className += " x-hidden";
-		    }    
+		    }
 
 		    Ext.getCmp('update-map-button-panel').setStatusInSync(series);
 		    EXPORT_DATA_WIN.enable();	//One way trip to enable
-		    
+
 		    Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(false);
-				
+
 				//Google Analytics event tracking
 				_gaq.push(['_trackEvent', 'Context', 'Update', series, parseInt(model_id)]);
-				
+
 		});
-		
+
 		Sparrow.CONTEXT.on('dataseries-changed', function() {
 			Sparrow.handlers.UiComponents.updateComparisons();
 		});
-		
+
 		Sparrow.CONTEXT.on('model-source-changed', function() {
 			Sparrow.handlers.UiComponents.updateComparisons();
 		});
@@ -33,10 +33,10 @@ Sparrow.events.EventManager = function(){ return{
 			if (isChanged) {
 				//re-enable the gen map button
 				Ext.getCmp('update-map-button-panel').setStatusOutOfSync(Sparrow.SESSION.getSeriesName());
-				
+
 				//Notify user with a visual cue
 				document.getElementById('map-sync-warning').className = document.getElementById('map-sync-warning').className.replace(/x-hidden/g, '');
-				
+
 				Sparrow.SESSION.fireContextEvent("targets-changed");
 
 				//Update the ID window if open
@@ -44,34 +44,33 @@ Sparrow.events.EventManager = function(){ return{
 				if (reachIdentifyWindow && reachIdentifyWindow.isApplying) {
 					// refresh the window
 					var reachId = reachIdentifyWindow.getReachId();
-					IDENTIFY.identifyReach(null, null, reachId, 1, true);	
+					IDENTIFY.identifyReach(null, null, reachId, 1, true);
 				}
-				
+
 			}
 		});
-		
+
 		Sparrow.CONTEXT.on("targets-changed", function() {
-			if (Sparrow.SESSION.isTermReachesChanged()) {
 				var targetPanel = Ext.getCmp('main-targets-tab');
 				targetPanel.treePanel.loadTree();
-				
+
 				//update the delivery instructions to reflect
-				Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(true);
-				
+				Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(Sparrow.SESSION.isTermReachesChanged());
+
 				var targetsCount = Sparrow.SESSION.getAllTargetedReaches();
 				targetsCount = targetsCount ? targetsCount.length : 0;
-				
-				if(targetsCount > 0) 
+
+				if(targetsCount > 0) {
 					targetPanel.showInstructions();
-				else
+				} else {
 					targetPanel.hideInstructions();
 			}
 		});
-		
+
 		Sparrow.CONTEXT.on('comparisonchanged', function() {
 			Sparrow.handlers.UiComponents.updateComparisons();
 		});
-		
+
 		/**
 		 * Called when the state loading is complete.  Must happen after
 		 * 'finished-loading-pre-session' if it is a pre-session.
@@ -80,32 +79,32 @@ Sparrow.events.EventManager = function(){ return{
 			//Update the overlay controls to the current state
 			var mapOptionsTab = Ext.getCmp('map-options-tab');
 			mapOptionsTab.syncDataOverlayControlsToSession();
-			
+
 			//Update the map to the current state
 			Sparrow.handlers.MapComponents.updateCalibrationLayerOnMap();
 			Sparrow.handlers.MapComponents.updateReachOverlayOnMap();
 			Sparrow.handlers.MapComponents.updateHuc8OverlayOnMap();
-			
+
 		});
-		
+
 		/**
 		 * When a predefined session is loaded, this method can be called to force
 		 * the mapping framework to display all the layers specified by that session.
-		 * 
+		 *
 		 * Its possible that different layers will be added in the future and turned
 		 * on by default, so this method should ensure that unfound layers are turned
 		 * off.
 		 */
 		Sparrow.CONTEXT.on('finished-loading-pre-session', function() {
-			
+
 			//Remove all data-related layers (the finished-loading-state will put them back)
 			Sparrow.handlers.MapComponents.turnOffDataRelatedLayers();
-			
+
 			if (! Sparrow.SESSION.PermanentMapState["mapLayers"]) {
 				//This is mostly to handle old sessions that do not have map layers
 				//defined.
 				Sparrow.SESSION.PermanentMapState["mapLayers"] = new Object();
-				
+
 
 				//Pick up whatever map layers are currently turned on
 				var mapLayers = map1.layerManager.activeMapLayers;
@@ -118,26 +117,26 @@ Sparrow.events.EventManager = function(){ return{
 				for (var i=0; i<mapLayers.length; i++) {
 					Sparrow.SESSION.setMapLayerEnabled(mapLayers[i].id, mapLayers[i].opacity);
 				}
-				
+
 			} else {
 				var allLayers = Sparrow.SESSION.getAvailableMapLayers();
 				for (var i=0; i<allLayers.length; i++) {
 					map1.layerManager.removeLayerFromMap(allLayers[i].id);
 				}
-				
-				
+
+
 				for (var layerId in Sparrow.SESSION.PermanentMapState["mapLayers"]) {
 					if (Sparrow.SESSION.isMapLayerEnabled(layerId)) {
 						Sparrow.SESSION.fireContextEvent("mapLayers-changed", layerId);
 					}
 				}
 			}
-			
+
 			//Google Analytics event tracking
 			_gaq.push(['_trackEvent', 'Context', 'Update', series, parseInt(model_id)]);
 			_gaq.push(['_trackEvent', 'PreSession', 'Loaded', series, parseInt(model_id)]);
 		});
-		
+
 		Sparrow.CONTEXT.on('adjustment-changed', Sparrow.handlers.UiComponents.adjustmentChange);
 		Sparrow.CONTEXT.on('adjustment-group-changed', Sparrow.handlers.UiComponents.updateAdjustmentsTree);
 
@@ -148,30 +147,30 @@ Sparrow.events.EventManager = function(){ return{
 			//Update the overlay controls to the current state
 			var mapOptionsTab = Ext.getCmp('map-options-tab');
 			mapOptionsTab.syncDataOverlayControlsToSession();
-			
+
 			//Update the reach overlay, which may now be newly enable or disabled.
 			Sparrow.handlers.MapComponents.updateReachOverlayOnMap();
 		});
-		
+
 		Sparrow.CONTEXT.on("calibsites-changed", function(){
 			Sparrow.handlers.MapComponents.updateCalibrationLayerOnMap();
 			Sparrow.handlers.MapComponents.updateCalibrationSiteIdControls();
 		});
-		
+
 		Sparrow.CONTEXT.on("reachoverlay-changed", function() { Sparrow.handlers.MapComponents.updateReachOverlayOnMap(); });
 		Sparrow.CONTEXT.on("huc8overlay-changed", function() { Sparrow.handlers.MapComponents.updateHuc8OverlayOnMap(); });
-		
+
 		Sparrow.CONTEXT.on("dataLayerOpacity-changed", function() {
 			if(map1.layerManager.getMapLayer(Sparrow.config.LayerIds.mainDataLayerId))
 				map1.layerManager.getMapLayer(Sparrow.config.LayerIds.mainDataLayerId).setOpacity(Sparrow.SESSION.getDataLayerOpacity()); //TODO global map
 		});
-		
+
 		Sparrow.CONTEXT.on("mapLayers-changed", Sparrow.handlers.MapComponents.toggleMapLayer);
 	}
 }}();
 
 //TODO move this into its own file if needed
-Sparrow.handlers.DownstreamTrackingInstructions = function(){ 
+Sparrow.handlers.DownstreamTrackingInstructions = function(){
 	var _downstreamTabLinkMsg = "<b>On the Map:</b><br />" +
 		"Select one of the <i><b>Downstream Tracking</b></i> " +
 		"data series at the top of the " +
@@ -179,9 +178,9 @@ Sparrow.handlers.DownstreamTrackingInstructions = function(){
 		"<b>In a Report:</b><br />" +
 		"<a href='javascript:displayDeliverySummaryReport()'>Open the Summary Reports</a><br />" +
 		"The summary reports show load delivered to the downstream reaches and the originating region (state or HUC).";
-	
+
 	return{
-	
+
 	syncDeliveryTabInstructions : function(mapOutOfSync) {
 	    //Downstream tracking
 		var targetPanel = Ext.getCmp('main-targets-tab');
@@ -190,33 +189,41 @@ Sparrow.handlers.DownstreamTrackingInstructions = function(){
 		var hasTargetReaches = Sparrow.SESSION.getAllTargetedReaches().length > 0;
 		var series = Sparrow.SESSION.getSeriesName();
 		var mapIsDisplaying = "The map is displaying the non-downstream tracking data series <i><b>" + series + "</b></i>.<br/><br/>";
-				
+
 		var howToChooseReaches = "To choose downstream reaches, see step 1. <b><i>Select Downstream Reaches(es)</i></b> above to select downstream reaches.";
 		var howToChooseDatasource = "To choose a <i><b>Downstream Tracking</b></i> data series, " +
 			"select one a data series under that heading at the top of the " +
 			"<a href='javascript:GOTO_MAP_OPTIONS_TAB()'>Display Results</a> tab."
 		var toMapDownstream = "To map a downstream tracking data, you must ";
-		
+
+		var reportBtns = [
+			mapToolButtons.getComponent('mapToolButtonsOpenDeliveryReports'),
+			Ext.getCmp('leftHandOpenDeliveryReportsButton')
+		];
+
 		if (!mapOutOfSync) {
 			//In Sync options
 			if (Sparrow.SESSION.isDeliveryDataSeries()) {
 				//Has delivery dataseries
-				
+
 				if (comp.body) {
 						comp.body.update(
 							"The map is displaying the downstream tracking data series <i><b>" + series + "</b></i>.<br/><br/>"+
 							"<b style=\"font-size: 1.3em;\"><a title\"Click to open the reports in a new window\" href=\"javascript:displayDeliverySummaryReport()\">Open the Delivery Summary Report</a></b>.<br />" +
 							"The summary reports total the load delivered to the downstream reaches and show breakdowns of the originating regions (state or HUC).");
 				}
-				
+				var highlightClass = 'outline-highlight';
+				var millisecondsToHighlightFor = 5000;
 				//Show the button to open the reports on the map
-				var reportBtn = mapToolButtons.getComponent('mapToolButtonsOpenDeliveryReports');
-				if (reportBtn && reportBtn.hidden) {
-					reportBtn.show();
-					mapToolButtons.doLayout();
-					reportBtn.getEl().fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn();
-				}
-				
+				Ext.each(reportBtns, function(reportBtn){
+					if (reportBtn && reportBtn.hidden) {
+						reportBtn.show();
+						reportBtn.ownerCt.doLayout();
+						reportBtn.getEl().addClass(highlightClass).fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn();
+						var removeClass = function(){reportBtn.removeClass(highlightClass); window.clearInterval(intervalId);};
+						var intervalId = window.setInterval(removeClass, millisecondsToHighlightFor);
+					}
+				});
 			} else {
 				//Does not have delivery dataseries
 
@@ -229,24 +236,24 @@ Sparrow.handlers.DownstreamTrackingInstructions = function(){
 						mapIsDisplaying + toMapDownstream + " choose downstream reaches and a downstream tracking data series. " + howToChooseReaches
 					);
 				}
-				
+
 				//Hide the button to open the reports on the map
-				var reportBtn = mapToolButtons.getComponent('mapToolButtonsOpenDeliveryReports');
-				if (reportBtn && ! reportBtn.hidden) {
-					reportBtn.hide();
-					mapToolButtons.doLayout();
-				}
-				
+				Ext.each(reportBtns, function(reportBtn){
+					if (reportBtn && ! reportBtn.hidden) {
+						reportBtn.hide();
+						reportBtn.ownerCt.doLayout();
+					}
+				});
 			}
-			
-			
+
+
 		} else {
 			//Out of Sync options
 			var outOfSyncMsg = "map is not showing your current selections - Please click <b><i>Update Map</i></b> when you are done making your selections and adjustments.";
-			
+
 			if (Sparrow.SESSION.isDeliveryDataSeries()) {
 				//Has delivery dataseries
-				
+
 				if (hasTargetReaches) {
 					comp.body.update(
 						"You have selected a Downstream Tracking data series and downstream reaches, however, the " + outOfSyncMsg
@@ -269,9 +276,9 @@ Sparrow.handlers.DownstreamTrackingInstructions = function(){
 						toMapDownstream + " choose downstream reaches and a downstream tracking data series. " + howToChooseReaches + "<br /><br />The " + outOfSyncMsg
 					);
 				}
-				
+
 			}
-			
+
 		}
 	}
 }}();
@@ -285,10 +292,10 @@ Sparrow.handlers.UiComponents = function(){ return{
 		var modelSourceVal = Sparrow.SESSION.getDataSeriesSource();
 		var comparisonVal = Sparrow.SESSION.getComparisons();
 		var allowPercUnits = ds.findRecord(ds.valueField, Sparrow.SESSION.getDataSeries()).data.allowPercUnits;
-		
+
 		comp.suspendEvents();
 		rad.suspendEvents();
-		
+
 		//set values of two fields
 		if(!comparisonVal) {
 			comp.setValue('none');
@@ -300,58 +307,58 @@ Sparrow.handlers.UiComponents = function(){ return{
 			comp.setValue(comparisonVal);
 			rad.items.items[0].setValue(true);
 		}
-		
+
 		//set enable/disable states
 		if (Sparrow.SESSION.hasEnabledAdjustments())
 			comp.enable();
-		else 
+		else
 			comp.disable();
-		
-		
+
+
 		if(allowPercUnits && modelSourceVal!='0' && modelSourceVal && (comparisonVal=='none' || comparisonVal=='percent' || comparisonVal=='')) {
 			rad.enable();
 		} else {
 			rad.items.items[0].setValue(true);
 			rad.disable();
 		}
-		
+
 		comp.resumeEvents();
 		rad.resumeEvents();
 	},
-	
+
 	updateAdjustmentsTree : function() {
 		//Reload the adjustments tree
 		var adjustmentsTab = Ext.getCmp('main-adjustments-tab');
 		adjustmentsTab.treePanel.loadTree();
-		
+
 		var groups = Sparrow.SESSION.getAllGroups();
 		groups = groups ? groups.length : 0;
-		
+
 		var reaches = Sparrow.SESSION.getAllAdjustedReaches();
 		reaches = reaches ? reaches.length : 0;
-		
-		if(groups > 0 || reaches > 0) 
+
+		if(groups > 0 || reaches > 0)
 			adjustmentsTab.showInstructions();
 		else
 			adjustmentsTab.hideInstructions();
 	},
-	
+
 	adjustmentChange : function() {
 		var ds = Ext.getCmp('map-options-tab').dataSeriesCombo;
-		if (Sparrow.SESSION.hasEnabledAdjustments()) {	
+		if (Sparrow.SESSION.hasEnabledAdjustments()) {
 			//remove uncertainty data series
 			ds.store.each(function(r) {
 				if(r.data.group && r.data.group.toLowerCase().indexOf('uncertainty') >= 0) ds.store.remove(r);
 			});
 			ds.resetDropDownList();
-			
+
 			Sparrow.SESSION.resetComparisonToLastUserSelectionIfDisabled();
 		} else {
 			//first check if we don't have any uncertainty terms
 			ds.store.each(function(r) {
 				if(r.data.group && r.data.group.toLowerCase().indexOf('uncertainty') >= 0) return;
 			});
-			
+
 			//reinitialize the original store
 			ds.store = new Ext.data.GroupingStore({
 				reader: new Ext.data.ArrayReader({}, Sparrow.config.ComboValues.dataSeriesRecordDef),
@@ -359,12 +366,12 @@ Sparrow.handlers.UiComponents = function(){ return{
 		       sortInfo:{field: 'group', direction: "ASC"},
 		       groupField: 'group'
 			});
-			
+
 			Sparrow.SESSION.clearComparisonUserSelection();
-			
+
 			ds.resetDropDownList();
 		}
-		
+
 		//The UI context doesn't know the state of the combo (enabled or val)
 		//so we need to tell it to update
 		Sparrow.handlers.UiComponents.updateComparisons();
@@ -372,10 +379,10 @@ Sparrow.handlers.UiComponents = function(){ return{
 	}
 }}();
 
-Sparrow.handlers.MapComponents = function(){ 
+Sparrow.handlers.MapComponents = function(){
 	var _isLayerActiveInMap = function(layerId) {
 		var isActive = false;
-		
+
 		//Check the active and displayed layers
 		var mapLayers = map1.layerManager.activeMapLayers;
 		for (var i=0; i<mapLayers.length; i++) {
@@ -396,15 +403,15 @@ Sparrow.handlers.MapComponents = function(){
 			}
 		return isActive;
 	};
-	
+
 	return {
-	toggleMapLayer : function(layerId){	
+	toggleMapLayer : function(layerId){
 		//User has enabled/disabled a mapLayer, or changed opacity.
 		//This event should also fire after mapLayer selections are
 		//loaded from a predefined theme or at startup.
 		var isEnabled = Sparrow.SESSION.isMapLayerEnabled(layerId);
 		var opacity = Sparrow.SESSION.getMapLayerOpacity(layerId);
-		
+
 		if (isEnabled) {
 			if (! _isLayerActiveInMap(layerId)) {
 				map1.appendLayer(layerId);
@@ -414,7 +421,7 @@ Sparrow.handlers.MapComponents = function(){
 			map1.removeLayer(layerId);
 		}
 	},
-	
+
 	turnOffDataRelatedLayers: function() {
 		map1.layerManager.unloadMapLayer(Sparrow.config.LayerIds.calibrationSiteLayerId);
 		map1.layerManager.unloadMapLayer(Sparrow.config.LayerIds.reachLayerId);
@@ -426,10 +433,10 @@ Sparrow.handlers.MapComponents = function(){
 		var opacity = Sparrow.SESSION.getCalibSitesOverlayOpacity();
 		var showRequested = Sparrow.SESSION.isCalibSitesOverlayRequested();
 		var isShowing = (map1.getMapLayer(layerId) != null);
-		
+
 	    if (showRequested && ! isShowing) {
 	        var urlParams = 'model_id=' + model_id;
-	        
+
 	        map1.layerManager.unloadMapLayer(layerId);
 	        map1.appendLayer(
 	        	new JMap.web.mapLayer.WMSLayer({
@@ -448,7 +455,7 @@ Sparrow.handlers.MapComponents = function(){
 	    	map1.layerManager.unloadMapLayer(layerId);
 	    }
 	},
-	
+
 	updateCalibrationSiteIdControls: function() {
 		if(Sparrow.SESSION.isCalibSitesOverlayRequested()){
 			Ext.getCmp('mapToolButtonsCalibrationSiteIdentify').show();
@@ -460,11 +467,11 @@ Sparrow.handlers.MapComponents = function(){
 				if (!b.pressed) b.toggle();
 				map1.setMouseAction(null);
 			}
-			
+
 		}
 		Ext.getCmp('mapToolButtonsCalibrationSiteIdentify').ownerCt.doLayout();
 	},
-	
+
 	/**
 	 * Updates the reach overlay layer on the map to match the current session
 	 * state.

@@ -6,17 +6,16 @@ import gov.usgs.cida.datatable.filter.ColumnRangeFilter;
 import gov.usgs.cida.datatable.filter.FilteredDataTable;
 import gov.usgs.cida.datatable.impl.ColumnDataFromTable;
 import gov.usgs.cida.datatable.impl.SimpleDataTable;
-import gov.usgs.cida.datatable.view.SingleColumnView;
 import gov.usgswim.service.HttpService;
 import gov.usgswim.sparrow.AreaType;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataBuilder;
+import gov.usgswim.sparrow.action.LoadUnitAreas;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.SparrowModel;
-import gov.usgswim.sparrow.domain.AggregationLevel;
 import gov.usgswim.sparrow.request.HUC8TableRequest;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.request.UnitAreaRequest;
@@ -50,7 +49,8 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
 
 
 
-        DataTable watershedAreas = sharedApp.getCatchmentAreas(new UnitAreaRequest(modelId, AreaType.TOTAL_CONTRIBUTING));
+        DataTable totalContributingAreas = sharedApp.getCatchmentAreas(new UnitAreaRequest(modelId, AreaType.TOTAL_CONTRIBUTING));
+        DataTable  totalUpstreamAreas = sharedApp.getCatchmentAreas(new UnitAreaRequest(modelId, AreaType.TOTAL_UPSTREAM));
         //DataTable huc8 = sharedApp.getHUC8Data(new HUC8TableRequest(modelId), false);
         SparrowColumnSpecifier adjDataColumn = adjPredictContext.getDataColumn();
     	SparrowColumnSpecifier orgDataColumn = null;
@@ -68,12 +68,14 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
 		String networkName = model.getEnhNetworkName();
 		String networkUrl = model.getEnhNetworkUrl();
 		String networkIdColumn = model.getEnhNetworkIdColumn();
+		String modelName = model.getName();
+		String modelConstituent = model.getConstituent();
 
 		String readmeText = SparrowResourceUtils.lookupMergedHelp(
-				model.getId().toString(),
+				model.getId(),
 				"CommonTerms.Export Readme",
 				null,
-				new Object[] {"networkName", networkName, "networkUrl", networkUrl, "networkIdColumn", networkIdColumn});
+				new Object[] {"networkName", networkName, "networkUrl", networkUrl, "networkIdColumn", networkIdColumn, "modelName", modelName, "modelConstituent", modelConstituent});
 
 
 		//shortcut ref
@@ -150,7 +152,7 @@ public class PredictExportService implements HttpService<PredictExportRequest> {
         		adjDataColumn, orgDataColumn,
     			adjPredictData, orgPredictData,
     			adjPredictResult, orgPredictResult,
-    			watershedAreas, huc8, reachFullIds, reachAttribs, reachStatsTable, readmeText);
+    			totalContributingAreas, totalUpstreamAreas, huc8, reachFullIds, reachAttribs, reachStatsTable, readmeText);
     }
 
     public void shutDown() {

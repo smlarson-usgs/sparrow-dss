@@ -22,7 +22,7 @@ public class PredictExportServiceLongRunTest extends SparrowServiceTestBaseWithD
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);
 	}
-	
+
 	/**
 	 * Values containing commas should be escaped
 	 * @throws Exception
@@ -34,30 +34,30 @@ public class PredictExportServiceLongRunTest extends SparrowServiceTestBaseWithD
 		contextWebRequest.setParameter("xmlreq", contextRequestText);
 		WebResponse contextWebResponse = client.sendRequest(contextWebRequest);
 		String actualContextResponse = contextWebResponse.getText();
-		
+
 		//log.debug("context: " + actualContextResponse);
-		
+
 		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", actualContextResponse);
 		int id = getContextIdFromContext(actualContextResponse);
-		
+
 		String exportRequestText = getAnyResourceWithSubstitutions(
 				"exportCvsReq.xml",
-				this.getClass(), 
+				this.getClass(),
 				new Object[] {"context-id", Integer.toString(id)});
 
 		WebRequest exportWebRequest = new PostMethodWebRequest(EXPORT_SERVICE_URL);
 		exportWebRequest.setParameter("xmlreq", exportRequestText);
 		WebResponse exportWebResponse = client.sendRequest(exportWebRequest);
 		String exportContextResponse = exportWebResponse.getText();
-		
-		
+
+
 		log.debug("export: " + exportContextResponse);
-		
+
 		//Ensure this stream name has quotes
 		assertTrue(exportContextResponse.contains("\"SAVANNAH R, S CHANNEL\""));
-		
+
 	}
-	
+
 	/**
 	 * All rows should have the same number of values, even if some are empty due to null values.
 	 * @throws Exception
@@ -69,58 +69,58 @@ public class PredictExportServiceLongRunTest extends SparrowServiceTestBaseWithD
 		contextWebRequest.setParameter("xmlreq", contextRequestText);
 		WebResponse contextWebResponse = client.sendRequest(contextWebRequest);
 		String actualContextResponse = contextWebResponse.getText();
-		
+
 		//log.debug("context: " + actualContextResponse);
-		
+
 		assertXpathEvaluatesTo("OK", "//*[local-name()='status']", actualContextResponse);
 		int id = getContextIdFromContext(actualContextResponse);
-		
+
 		String exportRequestText = getAnyResourceWithSubstitutions(
 				"exportXmlReq.xml",
-				this.getClass(), 
+				this.getClass(),
 				new Object[] {"context-id", Integer.toString(id)});
 
 		WebRequest exportWebRequest = new PostMethodWebRequest(EXPORT_SERVICE_URL);
 		exportWebRequest.setParameter("xmlreq", exportRequestText);
 		WebResponse exportWebResponse = client.sendRequest(exportWebRequest);
 		String exportContextResponse = exportWebResponse.getText();
-		
-		
+
+
 		log.debug("export: " + exportContextResponse);
-		
+
 		String strRowCount = getXPathValue("count(//*[local-name()='r'])", exportContextResponse);
 		int rowCount = Integer.parseInt(strRowCount);
-		
+
 		assertEquals(41, rowCount);
-		
-		//Each row should contain 23 columns, even though some data is null
+
+		//Each row should contain the specified number of columns, even though some data is null
 		for (int i=1; i <= rowCount; i++) {
 			String strColCount = getXPathValue("count(//*[local-name()='r' and position() =" + i + "]/*[local-name() = 'c'])", exportContextResponse);
-			assertEquals("43", strColCount);
+			assertEquals("44", strColCount);
 		}
 	}
-	
-	
+
+
 	@Test
 	public void model50ExportFromInlineContext1() throws Exception {
-		
+
 		String exportRequestText = getXmlAsString(this.getClass(), "exportCvsReqWContext1");
 
 		WebRequest exportWebRequest = new PostMethodWebRequest(EXPORT_SERVICE_URL);
 		exportWebRequest.setParameter("xmlreq", exportRequestText);
 		WebResponse exportWebResponse = client.sendRequest(exportWebRequest);
 		String exportContextResponse = exportWebResponse.getText();
-		
-		
+
+
 		log.debug("export: " + exportContextResponse);
-		
+
 		String strRowCount = getXPathValue("count(//*[local-name()='r']/*[local-name() = 'c' and .=100]/../@id)", exportContextResponse);
 		int rowCount = Integer.parseInt(strRowCount);
-		
+
 		//Should be exactly two rows w/ a 100 value.
 		assertEquals(2, rowCount);
-		
+
 	}
 
-	
+
 }

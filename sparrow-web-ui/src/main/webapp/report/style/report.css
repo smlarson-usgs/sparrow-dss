@@ -34,10 +34,10 @@ Head Section */
 .explanation .distinct { border: solid 1px #000 !important; }
 
 .explanation:after {
-	content: '.'; 
-	display: block; 
-	height: 0; 
-	clear: both; 
+	content: '.';
+	display: block;
+	height: 0;
+	clear: both;
 	visibility: hidden;
 }
 
@@ -71,7 +71,7 @@ Head Section */
 	display: none; /* Initially not displayed */
 	padding: .3em; font-weight: bold; color: #300; border: solid 3px #900;
 }
-.downstream-reaches-list { 
+.downstream-reaches-list {
 	font-size: 75%;
 	max-height: 6em;
 	overflow-y: auto;
@@ -98,7 +98,7 @@ table {
 
 }
 
-table, th, td { border: 1px solid black; padding: .3em; }
+.report-table-area table, th, td { border: 1px solid black; padding: .6em; }
 
 table th {
 	font-weight: bold;
@@ -109,19 +109,34 @@ table th {
 Relative percentage cells */
 td.rel-percent-in-col { padding: 0; }
 
-.rel-percent-in-col div {
- float: right; height: 100%; margin: 0 0 1px 0; padding: 1.2em 0;
- background-color: #ffc;  border-left: solid 1px #000;
+.rel-percent-in-col .value-wrap {
+	position: relative; display: block; width: 100%; height: 3em;
 }
 
-.rel-percent-in-col span { overflow: visible; float: right; padding: 0 .2em; }
+.value-wrap .report-percent-visualization {
+ position: absolute; top: 0; right: 0; height: 100%; margin: 0; padding: 0;
+ background-color: #ffc;  border-left: solid 1px #000;
+}
+/*
+.rel-percent-in-col .report-percent-visualization {
+ display: block; height: 100%; margin: 0; padding: 0;
+ position: absolute; top: 0; right: 0;
+ background-color: #ffc;  border-left: solid 1px #000;
+}
+*/
+.value-wrap .report-percent-value {
+	display: block; overflow: visible; z-index: 1;
+	position: absolute; top: 50%; left: 50%; width: 3em; height: 1em;
+	margin-left: -1.75em; margin-top: -.75em; padding: 0.5em;
+	text-align: center;
+	color: black; background-color: #ddd; background-color: rgba(213, 213, 213, .7);
+	border: none; border-radius: .4em;
+}
 
 rel-percent-in-row div {
  bottom: 0; width: 100%; margin: 0; padding: 0;
  background-color: #ffc;  border-top: solid 1px #000;
 }
-
-.rel-percent-in-row span { overflow: visible; float: right; padding: 0 .2em; }
 
 /* Uses the 'off right' technique to hide
  * unused tabs instead of the 'display none' technique.
@@ -168,14 +183,18 @@ rel-percent-in-row div {
 
 .figure {
 	position: relative; padding: 6px; margin: .5em; width: 337px; clear: both;
-	border: solid 1px #000; 
+	border: solid 1px #000;
 	box-shadow: 4px 4px 2px rgba(0, 0, 0, 0.2);
 }
 
 .figure .wrap { clear: both; position: relative; }
-.figure .wrap img { 
+.figure .wrap img {
 	display: block; margin: auto;
 	box-shadow: 4px 4px 2px rgba(0, 0, 0, 0.2); }
 .figure .caption { clear: both; }
 
 .cluster { float: left; clear: none;}
+
+#report-model-info {
+	text-align: center;
+}

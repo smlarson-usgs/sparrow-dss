@@ -21,6 +21,6 @@
 -->
 
 <!-- test connection -->
-<map_data_source name="sparrow" jdbc_host="130.11.165.137" jdbc_sid="witest" jdbc_port="1521" jdbc_user="SPARROW_DSS" jdbc_password="!FILL_IN_WITH_LEADING_BANG" jdbc_mode="thin" max_connections="1" number_of_mappers="3"/>
+<map_data_source name="sparrow" jdbc_host="130.11.165.137" jdbc_sid="witest" jdbc_port="1521" jdbc_user="SPARROW_DSS" jdbc_password="!***REMOVED***" jdbc_mode="thin" max_connections="1" number_of_mappers="3"/>
 
 </MapperConfig>

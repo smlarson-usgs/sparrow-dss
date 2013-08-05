@@ -15,7 +15,6 @@ import gov.usgswim.sparrow.request.DeliveryReportRequest;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.SparrowResourceUtils;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.xml.stream.XMLStreamReader;
@@ -73,12 +72,13 @@ public class ReportService implements HttpService<ReportRequest> {
 			String networkName = model.getEnhNetworkName();
 			String networkUrl = model.getEnhNetworkUrl();
 			String networkIdColumn = model.getEnhNetworkIdColumn();
+			String modelName = model.getName();
+			String modelConstituent = model.getConstituent();
 
 			String readmeText = SparrowResourceUtils.lookupMergedHelp(
-					context.getModelID().toString(),
+					context.getModelID(),
 					"CommonTerms.Terminal_Reach_Summary_Report",
-					null,
-					new String[] {"networkName", networkName, "networkUrl", networkUrl, "networkIdColumn", networkIdColumn});
+					null, new Object[] {"networkName", networkName, "networkUrl", networkUrl, "networkIdColumn", networkIdColumn, "modelName", modelName, "modelConstituent", modelConstituent});
 
 			return new  ReportSerializer(
 					req, filteredTableSet, predictData, readmeText, filteredTableSet.getColumnCount() - 1);

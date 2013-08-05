@@ -11,23 +11,23 @@ var mapToolButtons; //TODO global var, get rid of
  */
 Ext.onReady(function() {
 	Ext.QuickTips.init();
-	
+
 	var syncTipText = 'You have made changes to the mapping or model options. ' +
 	'To update the map and model output to reflect the latest changes, click the \"Update Map\" button at the bottom left of the window.';
-	
+
 	Ext.QuickTips.register({
 		target: document.getElementById('map-sync-warning').firstChild,
 		title: 'Map state is out of sync',
 		text: syncTipText,
 		dismissDelay: 1000000
-	}); 
+	});
 	Ext.QuickTips.register({
 		target: document.getElementById('map-sync-warning').lastChild,
 		title: 'Map state is out of sync',
 		text: syncTipText,
 		dismissDelay: 1000000
-	}); 
-    
+	});
+
 	document.getElementById('index-link').innerHTML = '<a OnClick="confirmHome(); return false;" href="">&lt;&lt; Home&nbsp;</a>';
 	document.getElementById('file_upload_form').onsubmit = function() {
 		document.getElementById('file_upload_form').target = 'upload_target'; // iframe
@@ -56,14 +56,14 @@ Ext.onReady(function() {
 			url: 'wms/wms_default.xml',
 			isOnByDefault: true,
 			onPostLoad : function() {
-				
+
 				//Turn on all the default layers (again), using the Sparrow Session.
 				//This records  the layers as on and it doesn't hurt to turn the layers on twice.
 				for (i=0; i<map1.layerManager.mapLayers.length; i++) {
 					var layer = map1.layerManager.mapLayers[i];
 					Sparrow.SESSION.setMapLayerEnabled(layer.id);
 				}
-				
+
 				//Now add the non-default layers (must be in this order to prevent
 				//the above from turning on layers that are not default).
 				map1.layerManager.loadMapLayerServicesFile({
@@ -83,8 +83,8 @@ Ext.onReady(function() {
 	}
 
 
-	
-	
+
+
 	// Put the legend div within the map
 	var legend = document.createElement('div');
 	legend.id = 'legend';
@@ -95,7 +95,7 @@ Ext.onReady(function() {
 	var collapseButton = new Ext.Button({
 		text: "Hide Header/Footer"
 	});
-	
+
 	var header = new Ext.Panel({ //header
 		region: 'north',
 		border: false,
@@ -108,7 +108,7 @@ Ext.onReady(function() {
 		useSplitTips: true,
 		collapsibleSplitTip: 'Double click here to hide the top panel.'
 	});
-	
+
 	var footer = new Ext.Panel({ //footer
 		region: 'south',
 		layout: 'border',
@@ -126,12 +126,12 @@ Ext.onReady(function() {
 			contentEl: 'usgs-footer-panel'
 		}]
 	});
-	
+
 	var myHandler = function(btn) {
 		var _h = header;
 		var _f = footer;
 		var _b = collapseButton;
-		
+
 		if(_b == btn){
 			if(_b.text.indexOf("Show")>=0){
 				_b.setText("Hide Header/Footer");
@@ -141,7 +141,7 @@ Ext.onReady(function() {
 				_b.setText("Show Header/Footer");
 				_h.collapse();
 				_f.collapse();
-			}	
+			}
 		} else {
 			if(_h.collapsed && _f.collapsed){
 				_b.setText("Show Header/Footer");
@@ -150,13 +150,13 @@ Ext.onReady(function() {
 			}
 		}
 	};
-	
+
 	collapseButton.setHandler(myHandler);
 	header.on('collapse', myHandler);
 	header.on('expand', myHandler);
 	footer.on('collapse', myHandler);
 	footer.on('expand', myHandler);
-	
+
 	// Setup the map viewing area
 	map_area = new Ext.Panel({ //TODO, global!?!?
 		region:  'center',
@@ -239,7 +239,7 @@ Ext.onReady(function() {
 			}
 		}
 	});
-    
+
 	//Help popup window
 	var helpWindow = new Ext.Window({
 		id: 'help-frame',
@@ -288,7 +288,7 @@ Ext.onReady(function() {
 		})
 		]
 	});
-	
+
 	//Delivery report window
 	var deliveryReportWindow = new Ext.Window({
 		id: 'delivery-report-frame',
@@ -338,11 +338,11 @@ Ext.onReady(function() {
 		})
 		]
 	});
-	
+
 	//TODO, this code is NOT hooked up to anything right now and is here for prototype demonstration,
 	//use it or lose it.
 	//
-	//To demo this, use firebug or any other javascript console in a browser and 
+	//To demo this, use firebug or any other javascript console in a browser and
 	//enter the command: Ext.getCmp('sparrow-dock-demo').doExpand()
 	var idDock = new Sparrow.ux.DockPanel({
 		id: 'sparrow-dock-demo',
@@ -357,11 +357,11 @@ Ext.onReady(function() {
 			html: 'Any content can go here'
 		}
 	});
-	
+
 	UpdateMapButtonPanel = Ext.extend(Ext.Panel, {
 		constructor : function(config) {
-			
-			this.updateMapInstructions = new Ext.Panel({ 
+
+			this.updateMapInstructions = new Ext.Panel({
 	        	border: false,
 	        	bodyStyle: {
 	        		'background-color': 'transparent',
@@ -370,7 +370,7 @@ Ext.onReady(function() {
 	        	autoHeight: true,
 	        	layout: 'form'
 	        });
-			
+
 			this.updateMapButton = new Ext.Button({ //referenced by multiple handlers, so declare here and attach to this
 				text: '<b>Update Map</b>',
 				autoHeight: true,
@@ -396,7 +396,13 @@ Ext.onReady(function() {
 					showDelay: 0
 				}
 			});
-			
+			this.deliveryReportsButton = new Ext.Button({
+				id: 'leftHandOpenDeliveryReportsButton',
+				text: 'Open Delivery Reports',
+				tooltip: 'View detailed delivery data in a new window',
+				handler: displayDeliverySummaryReport,
+				hidden: true,
+			});
 			var defaults = {
 					border: false,
 					layout: 'fit',
@@ -407,15 +413,15 @@ Ext.onReady(function() {
 					padding: 4,
 					buttonAlign: 'center',
 					items: [this.updateMapInstructions],
-					buttons: [this.updateMapButton]
+					buttons: [this.updateMapButton, this.deliveryReportsButton]
 			};
 
 			config = Ext.applyIf(config, defaults);
 			UpdateMapButtonPanel.superclass.constructor.call(this, config);
 		},
-		
+
 		setStatusInSync : function(dataseries) {
-			
+
 			if (! this.updateMapButton.disabled) {
 				var text = (Sparrow.SESSION.getComparisons() == "none") ? "Currently mapping " : "Currently mapping <b><i>Change in </i></b>";
  				text += "<b><i>" + dataseries + "</i></b>.<br/>" +
@@ -426,7 +432,7 @@ Ext.onReady(function() {
 				this.findParentByType('panel').doLayout();
 			}
 		},
-		
+
 		setStatusOutOfSync : function(dataseries) {
 			if (this.updateMapButton.disabled) {
 				var text = "Map settings have changed. " +
@@ -437,7 +443,7 @@ Ext.onReady(function() {
 				this.findParentByType('panel').doLayout();
 			}
 		}
-		
+
 
 	});
 
@@ -445,7 +451,7 @@ Ext.onReady(function() {
 	viewport = new Ext.Viewport({
 		id: 'sparrow-viewport',
 		layout: 'border',
-		items: [header, 
+		items: [header,
 			new Ext.Panel({
 				region: 'west',
 				layout: 'border',
@@ -491,11 +497,11 @@ Ext.onReady(function() {
 					new Sparrow.TargetsPanel({id:'main-targets-tab'}),
 					new Sparrow.AdjustmentsPanel({id:'main-adjustments-tab'})
 					]
-				}), 
+				}),
 				new UpdateMapButtonPanel({id: 'update-map-button-panel'})
 				]
 			}),
-			map_area, 
+			map_area,
 			footer]
 	});
 
@@ -617,10 +623,10 @@ Ext.onReady(function() {
 			}
 		}]
 	});
-	
+
 	//This is the plumbing for the app
 	Sparrow.events.EventManager.registerSessionEvents();
-	
+
 	if (Sparrow.ui.loadSessionName) {
 		Ext.Ajax.request({
 			method: 'GET',
@@ -636,7 +642,7 @@ Ext.onReady(function() {
     } else {
     	getModel();
     }
-	
+
 	Sparrow.SESSION.fireContextEvent('finished-loading-state');
 });
 
@@ -645,18 +651,18 @@ Ext.onReady(function() {
  */
 
 var confirmHome = function() {
-	Ext.Msg.confirm('Warning', 
+	Ext.Msg.confirm('Warning',
 		'Any unsaved changes to this session<br/>will be lost. Continue to home page?',
 		function(v) {
 			if(v=='yes') {
-				
+
 				//Get the url up to the 'map.jsp' part.
 				var url = window.location.href;
 				var pageIndex = url.indexOf("map.jsp", 0);
 				url = url.substring(0, pageIndex);
-				
+
 				window.location.assign(url);
-				
+
 			} else {
 				return false;
 			}
@@ -829,25 +835,25 @@ Sparrow.ui.SavePredefinedScenarioWindow = Ext.extend(Ext.Window, {
 			maxLength: 40,
 			anchor: '97%'
 		});
-		
+
 		var lazyLoadedConfigOption = { //TODO add text and maybe change var names
 				border: false,
 				html: "TEXT HERE, put this object next to a field for this text to display (see below). this defaults to a container in most cases"
 		};
-		
+
 		this.form = new Ext.FormPanel({
 				region: 'center',
 				padding: 10,
 				labelWidth: 150,
 				items:[
 				       this.nameField,
-				       this.emailField, 
-				       this.phoneField, 
-				       this.scenarioNameField, 
+				       this.emailField,
+				       this.phoneField,
+				       this.scenarioNameField,
 				       {border: false, html: '<div class="enable-css" style="padding: 3px 0 1.5em 6em;">A good descriptive name for this scenario.</div>'},
-				       this.descField, 
+				       this.descField,
 				       {border: false, html: '<div class="enable-css" style="padding: 3px 0 1.5em 6em;">Description of the scenario.</div>'},
-				       this.typeField, 
+				       this.typeField,
 				       {border: false, html: '<div class="enable-css" style="padding: 3px 0 1.5em 6em;"><ul>' +
 				    	   '<li><b>FEATURED</b> scenarios are prominently displayed and should be good "look at these" first examples.</li>' +
 				    	   '<li><b>LISTED</b> scenarios will be listed on less prominently for the model.</li>' +
@@ -860,7 +866,7 @@ Sparrow.ui.SavePredefinedScenarioWindow = Ext.extend(Ext.Window, {
 				    		  'In this example, the "soil_1" is the unique code and makes the url a bit more meaningful.</div>'}
 				       ]
 			});
-		
+
 		var defaults = {
 			title: "Submit Session as a Predefined Scenario",
 			width: 750,
@@ -883,7 +889,7 @@ Sparrow.ui.SavePredefinedScenarioWindow = Ext.extend(Ext.Window, {
 				padding: 5
 			},
 			this.form],
-			
+
 			buttons: [{
 				text: "Submit",
 				handler: function(){
@@ -905,11 +911,11 @@ Sparrow.ui.SavePredefinedScenarioWindow = Ext.extend(Ext.Window, {
 								", Email: "+this.emailField.getValue(),
 						groupName: "Front End Submission"
 					};
-					
+
 					if(this.scenarioCodeField.getValue()) {
 						params["uniqueCode"] = this.scenarioCodeField.getValue();
 					}
-					
+
 					Ext.Ajax.request({
 						method: 'POST',
 						url: 'listPredefSessions',
@@ -929,14 +935,14 @@ Sparrow.ui.SavePredefinedScenarioWindow = Ext.extend(Ext.Window, {
 									Ext.Msg.alert("Scenario Submission Failed", "Your scenario was not saved. If you entered a unique code, it may already be in use. Choose another code or leave it blank to have one generated for you and try again.");
 								}
 							}
-						}, 
+						},
 						failure: function() {
 							Ext.Msg.alert("Scenario Submission Failed", "There was a server error in saving submitting your session. Please try again.");
 							this.close();
 						},
 						scope: this
 					});
-					
+
 				},
 				scope: this
 			}, {
@@ -947,9 +953,9 @@ Sparrow.ui.SavePredefinedScenarioWindow = Ext.extend(Ext.Window, {
 				scope: this
 			}]
 		};
-		
+
 		config = Ext.applyIf(config, defaults);
-		
+
 		Sparrow.ui.SavePredefinedScenarioWindow.superclass.constructor.call(this, config);
 	}
 });
@@ -998,12 +1004,12 @@ var EXPORT_DATA_WIN = new (function(){
 	/**
 	 * Enables the 'Export Data' button allowing the user to save their data.
 	 */
-	this.enable = function(){
+	self.enable = function(){
 		var button = Ext.getCmp('export-data-button');
 		button.setDisabled(false);
 	};
 
-	this.open = function(){
+	self.open = function(){
 		if(!export_data_win){
 			export_data_win = new Ext.Window({
 				title: 'Export Data',
@@ -1040,12 +1046,12 @@ var EXPORT_DATA_WIN = new (function(){
 		}
 		export_data_win.show();
 	};
-	
-	this.enableFormSection = function(formSection, enable) {
+
+	self.enableFormSection = function(formSection, enable) {
 		var cl = formSection.getAttribute("class");
 		var classes = null;
 		var disabledIndex = -1;
-		
+
 		if (cl && cl.length > 0) {
 			classes = cl.split(" ");
 			for (var i=0; i<classes.length; i++) {
@@ -1055,7 +1061,7 @@ var EXPORT_DATA_WIN = new (function(){
 				}
 			}
 		}
-		
+
 		if (enable && disabledIndex > -1) {
 			classes.splice(disabledIndex, 1);
 			cl = classes.join(' ');
@@ -1065,12 +1071,12 @@ var EXPORT_DATA_WIN = new (function(){
 			cl = classes.join(' ');
 			formSection.setAttribute("class", cl);
 		}
-		
-		
+
+
 		self.recurseEnableFormSection(formSection, enable);
 	};
-	
-	this.recurseEnableFormSection = function(formSection, enable) {
+
+	self.recurseEnableFormSection = function(formSection, enable) {
 
 		if (formSection.nodeType == formSection.ELEMENT_NODE) {
 			var en = formSection.nodeName.toUpperCase();
@@ -1086,18 +1092,18 @@ var EXPORT_DATA_WIN = new (function(){
 				} else {
 					formSection.setAttribute("disabled", "disabled");
 				}
-				
+
 			}
 		}
-		
+
 		if (formSection.hasChildNodes()) {
 			for(var i=0; i<formSection.childNodes.length; i++) {
 				self.recurseEnableFormSection(formSection.childNodes[i], enable);
 			}
 		}
 	};
-	
-	this.close = function(){
+
+	self.close = function(){
 		export_data_win.hide();
 	};
 })();
@@ -1127,8 +1133,8 @@ function getReachRequestXML() {
 		if (params.reachname) xmlreq += '<reach-name>' + params.reachname + '</reach-name>';
 		if (params.meanQHi) xmlreq += '<meanQHi>' + params.meanQHi + '</meanQHi>';
 		if (params.meanQLo) xmlreq += '<meanQLo>' + params.meanQLo + '</meanQLo>';
-		if (params.watershedAreaHi) xmlreq += '<watershed-area-hi>' + params.watershedAreaHi + '</watershed-area-hi>';
-		if (params.watershedAreaLo) xmlreq += '<watershed-area-lo>' + params.watershedAreaLo + '</watershed-area-lo>';
+		if (params.watershedAreaHi) xmlreq += '<tot-contrib-area-hi>' + params.watershedAreaHi + '</tot-contrib-area-hi>';
+		if (params.watershedAreaLo) xmlreq += '<tot-contrib-area-lo>' + params.watershedAreaLo + '</tot-contrib-area-lo>';
 		if (params.huc8) xmlreq += '<huc>' + params.huc8 + '</huc>';
 		//	    	if (params.limit) xmlreq += '<bbox>' + map1.getViewportBoundingBoxString() + '</bbox>'; //xmin,ymin,xmax,ymax
 		if (params.edaname) xmlreq += '<edaname>' + params.edaname + '</edaname>';
@@ -1317,7 +1323,7 @@ function renderReachIdentifyWindow(reachResponse) {
 	reachIdentifyWin = new Sparrow.ui.ReachIdentifyWindow({
 		reachResponse: reachResponse
 	});
-	
+
 	var targetsTab = Ext.getCmp('main-targets-tab');
 	var adjTab = Ext.getCmp('main-adjustments-tab');
 
@@ -1330,12 +1336,12 @@ function renderReachIdentifyWindow(reachResponse) {
 		var targetReachName = targetsTab.identifyControls.items.items[0];
 		var addTargetButton = targetsTab.identifyControls.items.items[1];
 		var adjReachGroup = adjTab.identifyControls.items.items[0];
-		
+
 		targetReachName.update("<b>"+reachName+"</b>");
 		addTargetButton.handler=function(btn){
 			if(Sparrow.SESSION.isReachTarget(reachId))
 				Ext.MessageBox.alert("Already added", '"'+reachName+'" is already a downstream reach');
-			else 
+			else
 				Sparrow.SESSION.addToTargetReaches(reachId, reachName);
 		};
 		targetsTab.identifyControls.show();
@@ -1379,7 +1385,7 @@ function handleGroupMembership(reachResponse, memberGroups) {
 		if (!Sparrow.SESSION.groupExists(groupName)) {
 			Sparrow.SESSION.addGroup(groupName, '', '', null);
 		}
-		
+
 		if (whatToAdd == 'reach') {
 			if (!Sparrow.SESSION.isReachMemberOf(reachId, groupName)) {
 				Sparrow.ui.confirmAndAddGroup({
@@ -1402,7 +1408,7 @@ function handleGroupMembership(reachResponse, memberGroups) {
 	        	logicalSet_xml: Sparrow.ui.getHucLogicalSetXml(whatToAdd, hucId),
 	        	modelId: model_id, //TODO global removal
 	        	existingGroups_xml: Sparrow.SESSION.getAdjustmentGroupsAsXML()
-	        }, function() { 
+	        }, function() {
 				Sparrow.SESSION.addLogicalSetToGroup(groupName, whatToAdd, hucId, hucName);
 	        });
 		}
@@ -1439,9 +1445,9 @@ Sparrow.ui.confirmAndAddGroup = function(params, handler) {
         	if(result.records.length > 0){
         		var groupString = "";
         		for(var i = 0; i < result.records.length; i++) {
-        			var groupName = result.records[i].data.groupName.toLowerCase() == "individual" ? "Reaches with Absolute Changes" : result.records[i].data.groupName; 
+        			var groupName = result.records[i].data.groupName.toLowerCase() == "individual" ? "Reaches with Absolute Changes" : result.records[i].data.groupName;
         			var setName = '';
-        			
+
         			if(groupName == "individual") {
         				setName = "Reach ID: " + result.records[i].data.value;
         			} else if(result.records[i].data.type.toLowerCase() == "reach"){
@@ -1451,14 +1457,14 @@ Sparrow.ui.confirmAndAddGroup = function(params, handler) {
         			} else {
         				setName = result.records[i].data.type.toUpperCase()+": "+result.records[i].data.value;
         			}
-        					 
+
         			groupString += "<span>- " + groupName + " ("+setName+")</span><br/>";
         		}
 	        	Ext.MessageBox.confirm(
-					"Reaches Exist in Multiple Groups", 
-					'Reach(es) being added could already be included in the following groups:<br/><div style="height: 100px; width: 400px; background-color: transparent; overflow: auto; border: 1px solid #6593cf; padding: 5px;">' + 
-					groupString + 
-					'</div>Continue adding to group?', 
+					"Reaches Exist in Multiple Groups",
+					'Reach(es) being added could already be included in the following groups:<br/><div style="height: 100px; width: 400px; background-color: transparent; overflow: auto; border: 1px solid #6593cf; padding: 5px;">' +
+					groupString +
+					'</div>Continue adding to group?',
 					function(answer){
 						if(answer=='yes') handler();
 					},
@@ -1501,9 +1507,9 @@ function handleAdjustments(reachId, reachName, overrideValues) {
  * generated by the popup.
  */
 function openCustomBucketsWindow() {
-	
+
 	var customBucketsWin = new Ext.ux.CustomBinsWindow({});
-    
+
 	// Determine if we already have custom buckets, and load if so
 	var binning = Sparrow.SESSION.getBinData();
 	if (binning.functionalBins.length > 0) {

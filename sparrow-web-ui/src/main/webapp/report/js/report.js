@@ -4,14 +4,16 @@ var _TERM_REPORT_CONTAINER_ID = "terminal-report-container";
 var _AGG_REPORT_CONTAINER_ID = "aggregate-report-container";
 
 $(document).ready(function(){
-   $("#tabs").tabs();
-	 
-	 initTermReachList();
-	 initTermReport();
-	 initAggReport();
-	 termReportYieldChangeHandler();
-	 
-	 
+	$('#report-model-name').html(window.opener.Sparrow.SESSION.getModelName());
+	$('#report-model-constituent').html(window.opener.Sparrow.SESSION.getModelConstituent());
+	$("#tabs").tabs();
+
+	initTermReachList();
+	initTermReport();
+	initAggReport();
+	termReportYieldChangeHandler();
+
+
 });
 
 var aggReportDownloadHandler = function(event) {
@@ -22,7 +24,7 @@ var aggReportDownloadHandler = function(event) {
 
 var aggReportRegionChangeHandler = function(event) {
 	var reqUrl = getAggReportUrl("xhtml_table");
-	
+
 	$.ajax({
 			url: reqUrl,
 
@@ -32,7 +34,7 @@ var aggReportRegionChangeHandler = function(event) {
 			success: function(response, textStatus, jqXHR) {
 					// update status element
 //					alert('OK - got new table content: ' + jqXHR.responseText);
-					
+
 					var reportTable = $("#" + _AGG_REPORT_CONTAINER_ID + " .report-table-area");
 					reportTable.empty();
 					reportTable.append(jqXHR.responseText);
@@ -55,22 +57,22 @@ var termReportDownloadHandler = function(event) {
 
 var termReportYieldChangeHandler = function(event) {
 	var reqUrl = getTermReportUrl("xhtml_table");
-	
+
 		$.ajax({
 				url: reqUrl,
-				
+
 				beforeSend: function(jqXHR, settings) {
 					$("#" + _TERM_REPORT_CONTAINER_ID + " .report-load-status").show('normal');
 				},
 				success: function(response, textStatus, jqXHR) {
 						// update status element
 						//alert('OK - got new table content: ' + jqXHR.responseText);
-						
+
 						var reportTable = $("#" + _TERM_REPORT_CONTAINER_ID + " .report-table-area");
 						reportTable.empty();
 						reportTable.append(jqXHR.responseText);
 						$("#" + _TERM_REPORT_CONTAINER_ID + " .report-load-status").hide('normal');
-						
+
 				},
 				error: function(xhr) {
 						alert('Error loading Terminal Report - Status = ' + xhr.status);
@@ -82,22 +84,22 @@ var termReportYieldChangeHandler = function(event) {
 
 var aggReportYieldChangeHandler = function(event) {
 	var reqUrl = getAggReportUrl("xhtml_table");
-	
+
 		$.ajax({
 				url: reqUrl,
-				
+
 				beforeSend: function(jqXHR, settings) {
 					$("#" + _AGG_REPORT_CONTAINER_ID + " .report-load-status").show('normal');
 				},
 				success: function(response, textStatus, jqXHR) {
 						// update status element
 						//alert('OK - got new table content: ' + jqXHR.responseText);
-						
+
 						var reportTable = $("#" + _AGG_REPORT_CONTAINER_ID + " .report-table-area");
 						reportTable.empty();
 						reportTable.append(jqXHR.responseText);
 						$("#" + _AGG_REPORT_CONTAINER_ID + " .report-load-status").hide('normal');
-						
+
 				},
 				error: function(xhr) {
 						alert('Error loading Aggregate Report - Status = ' + xhr.status);
@@ -118,8 +120,8 @@ var getAggReportUrl = function(mimeType) {
 	}
 	var serviceName = "getDeliveryAggReport";
 	var reqParams = "context-id=" + contextId +
-		"&region-type=" + regionType + 	
-		"&include-zero-rows=false" + 
+		"&region-type=" + regionType +
+		"&include-zero-rows=false" +
 		"&report-yield=" + reportYield +
 		"&mime-type=" + mimeType;
 	return "../" + serviceName + "?" + reqParams;
@@ -127,26 +129,26 @@ var getAggReportUrl = function(mimeType) {
 
 var getTermReportUrl = function(mimeType) {
 		var urlParams = getUrlVars();
-		
+
 		var serviceName = "getDeliveryTerminalReport";
 		var contextId = urlParams["context-id"];
 		var reportYield = $("#" + _TERM_REPORT_CONTAINER_ID + " .controls input[name='report-yield']:checked").val();
-		
+
 		var reqParams =
-			"context-id=" + contextId + 
-			"&include-zero-rows=true" + 
+			"context-id=" + contextId +
+			"&include-zero-rows=true" +
 			"&report-yield=" + reportYield +
 			"&mime-type=" + mimeType;
 		var reqUrl = "../" + serviceName + "?" + reqParams;
-		
+
 		return reqUrl;
 }
-	
+
 function initAggReport() {
 	$("#" + _AGG_REPORT_CONTAINER_ID + " .controls input[name='report-yield']").change(aggReportYieldChangeHandler);
 	$("#" + _AGG_REPORT_CONTAINER_ID + " .controls input[name='region-type']").change(aggReportRegionChangeHandler);
 	$("#" + _AGG_REPORT_CONTAINER_ID + " .download-report").click(aggReportDownloadHandler);
-	
+
 	this.aggReportRegionChangeHandler();
 }
 
@@ -158,10 +160,10 @@ function initTermReport() {
 
 function initTermReachList() {
 	 termReachesAtTimeOfCreation = getParentCurrentTermReaches();
-	 
+
 	 $("p.downstream-reaches-list").append(getTermReachesAsString(termReachesAtTimeOfCreation));
-	 
-	 
+
+
 	var timer = $.timer(function() {
 		 var ok = checkTermReachesInSync(termReachesAtTimeOfCreation, getParentCurrentTermReaches());
 		 if (!ok) {
@@ -196,25 +198,25 @@ function checkTermReachesInSync(initTerms, curTerms) {
 	 return true;
 	}
 }
- 
+
 function openTerminalHelp() {
-	
-		var newWindow = window.open('terminal_report_help.jsp', '_blank', 
+
+		var newWindow = window.open('terminal_report_help.jsp', '_blank',
 		'resizable=1,location=0,status=1,scrollbars=1,width=750,height=640');
 		newWindow.focus();
 }
 
 function openAggHelp() {
-	
-		var newWindow = window.open('aggregate_report_help.jsp', '_blank', 
+
+		var newWindow = window.open('aggregate_report_help.jsp', '_blank',
 		'resizable=1,location=0,status=1,scrollbars=1,width=750,height=640');
 		newWindow.focus();
 }
 
 function idDeliveryReach(reachId) {
-	
+
 	var id = 0;
-	
+
 	//Calls this function on the opener window (the page that opened this page - ie the main map application)
 	if (typeof reachId == "string") {
 		id = parseInt($.trim(reachId), 10);
@@ -228,16 +230,16 @@ function idDeliveryReach(reachId) {
 function getTermReachesAsString(terms) {
 	 var termString = "";
 	 for (var i=0; i < terms.length; i++) {
-		 
+
 		 var rId = $.trim(terms[i]["@id"]);
 		 //var href = rId;
 		 var href = "javascript:idDeliveryReach(" + rId + ");";
-		 
-		 termString = termString + 
+
+		 termString = termString +
 		 "<a href='" + href + "'>" +
 		 terms[i]["@name"] + " (" + rId + ")" +
 		 "</a>";
-	 
+
 		 if (i < (terms.length - 1)) {
 			 termString += ", ";
 		 }
@@ -246,7 +248,7 @@ function getTermReachesAsString(terms) {
 }
 
 function getParentCurrentTermReaches() {
-	
+
 	if (window.opener != null) {
 		var parentTerms = window.opener.Sparrow.SESSION.getAllTargetedReaches();
 		var copyTerms = new Array();
@@ -257,7 +259,7 @@ function getParentCurrentTermReaches() {
 
 
 		return copyTerms;
-	
+
 	} else {
 		//Possibly just testing - or the user closed the opening window
 		return new Array();

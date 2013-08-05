@@ -134,7 +134,7 @@ public class LoadModelMetadata extends Action<List<SparrowModel>> {
 				m.setUnits(unit);
 
 
-				if ("true".equals(System.getProperty(SKIP_LOADING_PREDEFINED_THEMES))) {
+				if ("true".equals(SharedApplication.getInstance().getConfiguration().getProperty(SKIP_LOADING_PREDEFINED_THEMES))) {
 					//Don't load the predefined sessions - we just want the basic
 					//data for model testing.
 					m.setSessions(new ArrayList<IPredefinedSession>());

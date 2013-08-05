@@ -5,12 +5,10 @@ import gov.usgs.cida.datatable.utils.DataTableConverter;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.service.idbypoint.FindReachRequest;
 
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
@@ -23,8 +21,6 @@ public class FindReaches extends Action<DataTable> {
 	private int recordStart = 0;
 	private String dir = "DESC";
 	String sort = "";
-
-	private List<String> errors = new ArrayList<String>();
 
 	public void setPageSize(int size) {
 		this.pageSize = size;
@@ -42,8 +38,8 @@ public class FindReaches extends Action<DataTable> {
 			sort = "REACH_NAME";
 		} else if(sort.equals("huc8")) {
 			sort = "HUC8";
-		} else if(sort.equals("watershed-area")) {
-			sort = "CUM_CATCH_AREA";
+		} else if(sort.equals("tot-contrib-area")) {
+			sort = "TOT_CONTRIB_AREA";
 		} else if(sort.equals("meanq")) {
 			sort = "MEANQ";
 		} else {
@@ -65,45 +61,57 @@ public class FindReaches extends Action<DataTable> {
 	}
 
 	@Override
+	protected void validate() {
+		reachRequest.trimToNull();
+
+		addValidationError(checkHiLo(reachRequest.totContributingAreaHi, reachRequest.totContributingAreaLo, "Total Contributing Area"));
+		addValidationError(checkHiLo(reachRequest.meanQHi, reachRequest.meanQLo, "Average Flow"));
+
+		if (reachRequest.modelID == null) {
+			addValidationError("A Model ID is required.");
+		}
+		
+		if (reachRequest.isEmptyRequest()) {
+			addValidationError("No criteria was specified.");
+		}
+		
+		//Check numbers
+		addValidationError(checkPositiveInteger("Model ID", reachRequest.modelID));
+		addValidationError(checkPositiveInteger("Reach ID", reachRequest.getReachIDArray()));
+		addValidationError(checkPositiveNumber("upper " + Action.getDataSeriesProperty(DataSeriesType.total_contributing_area, false), reachRequest.totContributingAreaHi));
+		addValidationError(checkPositiveNumber("lower " + Action.getDataSeriesProperty(DataSeriesType.total_contributing_area, false), reachRequest.totContributingAreaLo));
+		addValidationError(checkPositiveNumber("upper " + Action.getDataSeriesProperty(DataSeriesType.flux, false), reachRequest.meanQHi));
+		addValidationError(checkPositiveNumber("lower " + Action.getDataSeriesProperty(DataSeriesType.flux, false), reachRequest.meanQLo));
+
+	}
+
+	@Override
 	public DataTable doAction() throws Exception {
 
-		errors = cleanAndCheckValidity(reachRequest);
+		DynamicParamQuery query = createFindReachWhereClause(reachRequest);
 
+		String sql = "SELECT FULL_IDENTIFIER, REACH_NAME, MEANQ, CATCH_AREA, TOT_CONTRIB_AREA, HUC2, HUC4, HUC6, HUC8 from model_attrib_vw " +
+		" WHERE " + query.buildWhere() + " " +
+		" ORDER BY " + getSortColumn() + " reach_name,  full_identifier";
 
-		if (errors.size() == 0) {
-			DynamicParamQuery query = createFindReachWhereClause(reachRequest);
+		String countQuery = "SELECT COUNT(*) FROM model_attrib_vw WHERE " + query.buildWhere();
 
-			if (query.wheres.size() == 0) {
-				errors.add("No criteria was specified");
-				return null;
-			} else {
+		sql = "SELECT  /*+ first_rows(" + pageSize + ") */  * FROM "+
+			"( SELECT a.*, ROWNUM rn, (" + countQuery + ") TOTAL_COUNT FROM ("+
+			sql +
+			") a "+
+			" WHERE ROWNUM <=  " + (recordStart+pageSize) + " )" +
+			" WHERE rn > "+recordStart;
 
-				String sql = "SELECT FULL_IDENTIFIER, REACH_NAME, MEANQ, CATCH_AREA, CUM_CATCH_AREA, HUC2, HUC4, HUC6, HUC8 from model_attrib_vw " +
-				" WHERE " + query.buildWhere() + " " +
-				" ORDER BY " + getSortColumn() + " reach_name,  identifier";
+		PreparedStatement ps = getROPSFromString(sql, query.props);
 
-				String countQuery = "SELECT COUNT(*) FROM model_attrib_vw WHERE " + query.buildWhere();
+		ResultSet rs = ps.executeQuery();
+		addResultSetForAutoClose(rs);
 
-				sql = "SELECT  /*+ first_rows(" + pageSize + ") */  * FROM "+
-					"( SELECT a.*, ROWNUM rn, (" + countQuery + ") TOTAL_COUNT FROM ("+
-					sql +
-					") a "+
-					" WHERE ROWNUM <=  " + (recordStart+pageSize) + " )" +
-					" WHERE rn > "+recordStart;
+		DataTable dt = DataTableConverter.toDataTable(rs);
 
-				PreparedStatement ps = getROPSFromString(sql, query.props);
+		return dt;
 
-				ResultSet rs = ps.executeQuery();
-				addResultSetForAutoClose(rs);
-
-				DataTable dt = DataTableConverter.toDataTable(rs);
-
-				return dt;
-
-			}
-		} else {
-			return null;
-		}
 	}
 
 
@@ -140,66 +148,47 @@ public class FindReaches extends Action<DataTable> {
 		return query;
 	}
 
-	public List<String> cleanAndCheckValidity(FindReachRequest frReq) throws IOException {
-		List<String> errors = new ArrayList<String>();
-
-		frReq.trimToNull();
-
-		errors = checkHiLo(errors, frReq.totContributingAreaHi, frReq.totContributingAreaLo, "incremental area");
-		errors = checkHiLo(errors, frReq.meanQHi, frReq.meanQLo, "average flow");
-
-		if (frReq.modelID == null) {
-			errors.add("A Model ID is required.");
-		} else if (frReq.isEmptyRequest()) {
-			errors.add("No criteria was specified.");
-		} else {
-			//Check numbers
-			checkPositiveInteger(errors, "Model ID", frReq.modelID);
-			checkPositiveInteger(errors, "Reach ID", frReq.getReachIDArray());
-			checkPositiveNumber(errors, "upper " + Action.getDataSeriesProperty(DataSeriesType.total_contributing_area, false), frReq.totContributingAreaHi);
-			checkPositiveNumber(errors, "lower " + Action.getDataSeriesProperty(DataSeriesType.total_contributing_area, false), frReq.totContributingAreaLo);
-			checkPositiveNumber(errors, "upper " + Action.getDataSeriesProperty(DataSeriesType.flux, false), frReq.meanQHi);
-			checkPositiveNumber(errors, "lower " + Action.getDataSeriesProperty(DataSeriesType.flux, false), frReq.meanQLo);
-		}
-
-		// TODO check bbox
-		return errors;
-	}
-
-	public void checkPositiveInteger(List<String> errors, String fieldName, String[] val) {
-		if (val == null || val.length == 0) return;
+	public String checkPositiveInteger(String fieldName, String[] val) {
+		if (val == null || val.length == 0) return null;
 
 		for (String s: val) {
-			checkPositiveInteger(errors, fieldName, s);
+			String msg = checkPositiveInteger(fieldName, s);
+			if (msg != null) return msg;
 		}
+		
+		return null;
 	}
 
-	public void checkPositiveInteger(List<String> errors, String fieldName, String val) {
-		if (val == null) return;
+	public String checkPositiveInteger(String fieldName, String val) {
+		if (val == null) return null;
 
 		if (! NumberUtils.isDigits(val) || val.startsWith("0")) {
-			errors.add("The " + fieldName + " must be a positive integer.");
+			return "The " + fieldName + " must be a positive integer.";
+		} else {
+			return null;
 		}
 	}
 
-	public void checkPositiveNumber(List<String> errors, String fieldName, String val) {
-		if (val == null) return;
+	public String checkPositiveNumber(String fieldName, String val) {
+		if (val == null) return null;
 
 		if (! NumberUtils.isNumber(val) || val.startsWith("-")) {
-			errors.add("The " + fieldName + " must be a positive number.");
+			return "The " + fieldName + " must be a positive number.";
+		} else {
+			return null;
 		}
 	}
 
-	public static List<String> checkHiLo(List<String> errors, String hiValue,
-			String loValue, String valueName) {
-		if (hiValue == null || loValue == null) return errors;
+	public static String checkHiLo(String hiValue, String loValue, String valueName) {
+		if (hiValue == null || loValue == null) return null;
 
 		float hi = Float.parseFloat(hiValue);
 		float lo = Float.parseFloat(loValue);
 		if (hi <= lo){
-			errors.add("The " + valueName + " high value needs to be larger than the " + valueName + " low value.");
+			return "The " + valueName + " high value needs to be larger than the " + valueName + " low value.";
+		} else {
+			return null;
 		}
-		return errors;
 	}
 
 	public DynamicParamQuery buildEquals(DynamicParamQuery query, String columnName, String value) {
@@ -309,13 +298,6 @@ public class FindReaches extends Action<DataTable> {
 
 			return where.toString();
 		}
-	}
-
-	/**
-	 * @return the errors
-	 */
-	public List<String> getErrors() {
-		return errors;
 	}
 
 }
