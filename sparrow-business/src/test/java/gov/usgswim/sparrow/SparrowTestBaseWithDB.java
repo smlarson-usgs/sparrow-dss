@@ -42,12 +42,6 @@ import oracle.jdbc.pool.OracleDataSource;
  *
  */
 public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
-
-	/**
-	 * Name of a system property that if "true" will switch to the production
-	 * db and prompt for a password.
-	 */
-	public static final String SYS_PROP_USE_PRODUCTION_DB = "USE_PRODUCTION_DB";
 	
 	/** A connection, shared for this class and autoclosed */
 	private static Connection sparrowDBTestConn;
@@ -129,37 +123,14 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 			//Ignore
 		}
 		
-		String strUseProd = System.getProperty(SYS_PROP_USE_PRODUCTION_DB);
-		boolean useProd = false;
-		if (strUseProd != null) {
-			strUseProd = strUseProd.toLowerCase();
-			if ("yes".equals(strUseProd) || "true".equals(strUseProd)) {
-				useProd = true;
-			}
-		}
-		
 		if (testRoDs == null) {
 			OracleDataSource ds = new OracleDataSource(); 
 			
 			ds.setConnectionCachingEnabled(true);
+			ds.setURL("jdbc:oracle:thin:@130.11.165.154:1521:widev");
+			ds.setUser("sparrow_dss");
+			ds.setPassword("***REMOVED***");
 
-			if (! useProd) {
-				//130.11.165.154
-				//igsarmewdbdev.er.usgs.gov
-				ds.setURL("jdbc:oracle:thin:@130.11.165.154:1521:widev");
-				ds.setUser("sparrow_dss");
-				ds.setPassword("***REMOVED***");
-			} else {
-				
-				String pwd = prompt(SYS_PROP_USE_PRODUCTION_DB +
-						" is set to 'true', requesting the production db be used." +
-						" Enter the production db password: ");
-				
-				//Production Properties
-				ds.setURL("jdbc:oracle:thin:@130.11.165.152:1521:widw");
-				ds.setUser("sparrow_dss");
-				ds.setPassword(pwd);
-			}
 			initDataSource(ds, ctx, "sparrow_dss");
 		}
 		
@@ -246,35 +217,9 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 	}
 	
 	protected static void setDbProperties() throws IOException {
-		
-		
-		String strUseProd = System.getProperty(SYS_PROP_USE_PRODUCTION_DB);
-		boolean useProd = false;
-		
-		if (strUseProd != null) {
-			strUseProd = strUseProd.toLowerCase();
-			if ("yes".equals(strUseProd) || "true".equals(strUseProd)) {
-				useProd = true;
-			}
-		}
-		
-		if (! useProd) {
-			//130.11.165.154
-			//igsarmewdbdev.er.usgs.gov
-			SharedApplication.getInstance().getConfiguration().setProperty("dburl", "jdbc:oracle:thin:@130.11.165.154:1521:widev");
-			SharedApplication.getInstance().getConfiguration().setProperty("dbuser", "sparrow_dss");
-			SharedApplication.getInstance().getConfiguration().setProperty("dbpass", "***REMOVED***");
-		} else {
-			
-			String pwd = prompt(SYS_PROP_USE_PRODUCTION_DB +
-					" is set to 'true', requesting the production db be used." +
-					" Enter the production db password: ");
-			
-			//Production Properties
-			SharedApplication.getInstance().getConfiguration().setProperty("dburl", "jdbc:oracle:thin:@130.11.165.152:1521:widw");
-			SharedApplication.getInstance().getConfiguration().setProperty("dbuser", "sparrow_dss");
-			SharedApplication.getInstance().getConfiguration().setProperty("dbpass", pwd);
-		}
+		SharedApplication.getInstance().getConfiguration().setProperty("dburl", "jdbc:oracle:thin:@130.11.165.154:1521:widev");
+		SharedApplication.getInstance().getConfiguration().setProperty("dbuser", "sparrow_dss");
+		SharedApplication.getInstance().getConfiguration().setProperty("dbpass", "***REMOVED***");
 	}
 	
 	protected static String prompt(String prompt) throws IOException {
