@@ -114,7 +114,10 @@ public abstract class SparrowTestBase {
 
 	@AfterClass
 	public static void SparrowUnitTestTearDown() throws Exception {
-		singleInstanceToTearDown.doOneTimeTearDown();
+		if (singleInstanceToTearDown != null) {
+			//is null if all the tests in a class are ignored.
+			singleInstanceToTearDown.doOneTimeTearDown();
+		}
 	}
 
 	protected void doOneTimeSetup() throws Exception {
