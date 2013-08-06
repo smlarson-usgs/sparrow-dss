@@ -11,11 +11,11 @@ import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.domain.PredictionContext;
-import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.Ignore;
 
 import org.junit.Test;
 
@@ -47,6 +47,13 @@ public class PerformanceLongRunTest extends SparrowTestBaseWithDB {
 	}
 
 
+	/**
+	 * This isn't worth testing, since the dev db server is separate from
+	 * the production servers.  If perf testing should be done, it should be an
+	 * integration test on a deployment.
+	 * @throws Exception 
+	 */
+	@Ignore
 	@Test
 	public void testComparison() throws Exception {
 
@@ -61,8 +68,9 @@ public class PerformanceLongRunTest extends SparrowTestBaseWithDB {
 		PredictData predictData = SharedApplication.getInstance().getPredictData(TEST_MODEL_ID);
 		endTime = System.currentTimeMillis();
 		report(endTime - startTime, "Initial Load of model data", 1);
+		
 		assertTrue("It should take less then 50 seconds to load model 50, even on a slow connection.",
-				(endTime - startTime) < 50000);
+			(endTime - startTime) < 50000);
 
 
 		startTime = System.currentTimeMillis();
