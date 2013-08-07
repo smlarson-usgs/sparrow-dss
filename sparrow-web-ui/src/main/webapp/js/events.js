@@ -212,7 +212,7 @@ Sparrow.handlers.DownstreamTrackingInstructions = function(){
 							"<b style=\"font-size: 1.3em;\"><a title\"Click to open the reports in a new window\" href=\"javascript:displayDeliverySummaryReport()\">Open the Delivery Summary Report</a></b>.<br />" +
 							"The summary reports total the load delivered to the downstream reaches and show breakdowns of the originating regions (state or HUC).");
 				}
-				var highlightClass = 'outline-highlight';
+				var highlightClass = 'background-highlight';
 				var millisecondsToHighlightFor = 5000;
 				//Show the button to open the reports on the map
 				Ext.each(reportBtns, function(reportBtn){
