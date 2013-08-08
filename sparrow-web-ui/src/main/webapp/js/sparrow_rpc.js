@@ -4,6 +4,22 @@ appbase += '/' + contextroot;
 
 var modelSourcesCache;
 
+var screenCastNameToVideoIdMap = {
+	'Working with Sources' : '1tzeR4WkLv0',
+	'Incremental Yield' : '5K1Smu7Q4Fc',
+	'Selecting Downstream Outlets' : 'zrycRF7MeG8',
+	'Changing Source Inputs' : 'UkC_76uq748',
+	'Incremental Yield to an Outlet' : 'tHnxt2ORNQU',
+	'Summarizing Delivered Load to Downstream Outlets' : 'HG9S4D0Jjfc'
+};
+
+var openScreencast = function(videoId){
+	var newWindow = window.open('screencast.jsp?videoId=' + videoId, '_blank',
+	   				'resizable=0,location=0,status=0,scrollbars=0,width=960,height=757');
+		newWindow.focus();
+		return newWindow;
+};
+
 var modelSourcesAreInCache = function(id) {
 	if(!modelSourcesCache) {
 		modelSourcesCache = new Array();
@@ -114,20 +130,9 @@ function renderModel(response, options) {
 		docMenu.add({
 	   	text: 'Video: ' + name,
 	   	handler: function() {
-	   		var newWindow = window.open('screencast.jsp?videoId=' + videoId, '_blank',
-	   				'resizable=0,location=0,status=0,scrollbars=0,width=960,height=757');
-	   		newWindow.focus();
+	   		openScreencast(videoId);
 	   	}
 		});
-	};
-
-	var videoNameToVideoIdMap = {
-		'Working with Sources' : '1tzeR4WkLv0',
-		'Incremental Yield' : '5K1Smu7Q4Fc',
-		'Selecting Downstream Outlets' : 'zrycRF7MeG8',
-		'Changing Source Inputs' : 'UkC_76uq748',
-		'Incremental Yield to an Outlet' : 'tHnxt2ORNQU',
-		'Summarizing Delivered Load to Downstream Outlets' : 'HG9S4D0Jjfc'
 	};
 
     docMenu.removeAll();
@@ -174,7 +179,7 @@ function renderModel(response, options) {
    });
    docMenu.add('-');
    //add videos
-   Ext.iterate(videoNameToVideoIdMap, function(name, videoId){
+   Ext.iterate(screenCastNameToVideoIdMap, function(name, videoId){
 		addVideoItemToDocMenu(name, videoId);
    });
 

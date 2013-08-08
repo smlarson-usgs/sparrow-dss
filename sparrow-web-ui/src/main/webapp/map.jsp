@@ -70,6 +70,7 @@
 	<script src="js/ext_extensions/dockpanel.js"></script>
 	<script src="js/USGSUtils.js"></script>
 	<script src="js/SparrowUIContext.js"></script>
+	<script src="js/Screencasts.js"></script>
 	<script src="js/sparrow_ui.js"></script>
 	<script src="js/GroupMembershipWindow.js"></script>
 	<script src="js/mapoptions/MapOptionsPanel.js"></script>
@@ -246,6 +247,22 @@
         	(<a class="helpLink" href="javascript:getGeneralHelp('CommonTerms.Streamflow')">Streamflow</a> &amp;
         	<a class="helpLink" href="javascript:getGeneralHelp('CommonTerms.Incremental Area')">Incremental Area</a>)</label>
         </fieldset>
+
+		<fieldset class="distinct"><legend>Additional Information</legend>
+        <p class="form-note"><a href="javascript:Screencasts.getById('deliveryReports').open();">Delivery Reports</a> provide additional information on downstream tracking reaches such as:</p>
+
+		<ul>
+			<li>Total load delivered to each selected downstream reach, from their respective upstream watershed areas</li>
+			<li>Total delivered loads broken down by source (livestock manure, wastewater discharge, etc.)</li>
+			<li>Load and yield aggregated by HUC and state</li>
+
+		</ul>
+
+        <p class="form-note">Watch <a href="javascript:Screencasts.getById('deliveryReports').open();">this screencast</a> to learn more about Delivery Reports.</p>
+
+
+        </fieldset>
+
         </fieldset>
         </form>
 

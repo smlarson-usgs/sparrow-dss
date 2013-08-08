@@ -10,6 +10,11 @@
 	background-image: url(../images/drought-flood_banner.jpg);
 }
 
+.export ul li{
+	list-style-type: disc;
+	margin-left: 3em;
+}
+
 img, body, html {
 	border: 0 none;
 }

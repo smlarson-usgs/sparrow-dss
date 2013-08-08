@@ -1018,7 +1018,7 @@ var EXPORT_DATA_WIN = new (function(){
 				layout: 'fit',
 				plain: true,
 				modal: true,
-				width: 560,
+				width: 675,
 				resizable: false,
 				buttons: [
 				{
