@@ -1,5 +1,5 @@
 /**
- * config:
+ * @param {Object} config:
  *	id - the programmatic id used throughout this app
  *	videoId - the id of the video given to it by it's hosting service
  *	name - the user-facing name
@@ -42,7 +42,7 @@ Screencast.open = function(videoId){
  *
  */
 var Screencasts = (function(){
-	var screencastHybridArray = [];
+	var screencastHybridArray = [];//will be returned
 	var screencastIdMap = {};
 	var screencastData = [
 		//id, name, video id triples:
@@ -52,10 +52,12 @@ var Screencasts = (function(){
 		['incYieldToOutlet', 'Incremental Yield to an Outlet' , 'tHnxt2ORNQU'],
 		['deliveryReports','Summarizing Delivered Load to Downstream Outlets' , 'HG9S4D0Jjfc']
 	];
-	Ext.each(screencastData, function(triple, index){
-		var id = triple[0],
-			name = triple[1],
-			videoId = triple[2];
+	var counter;
+	for(counter = 0; counter < screencastData.length; counter++){
+		var screencastDatum = screencastData[counter];
+		var id = screencastDatum[0],
+			name = screencastDatum[1],
+			videoId = screencastDatum[2];
 
 		var numericalIndex = screencastHybridArray.push(
 			new Screencast({
@@ -65,7 +67,7 @@ var Screencasts = (function(){
 			})
 		);
 		screencastIdMap[id] = screencastHybridArray[numericalIndex-1];
-	});
+	};
 
 	/**
 	 * Get the Screencast by id
@@ -91,11 +93,12 @@ var Screencasts = (function(){
 	];
 	var warning = function(){
 		throw	'The array mutator methods have been intentionally removed. '+
-				'See the Screencasts class docs for explanation.';
+				'See the Screencasts.js class docs for explanation.';
 	};
-	Ext.each(mutatorMethodNames, function(mutatorMethodName){
+	for(counter = 0; counter < mutatorMethodNames.length; counter++){
+		var mutatorMethodName = mutatorMethodNames[counter];
 		screencastHybridArray[mutatorMethodName] = warning;
-	});
+	};
 	return screencastHybridArray;
 }());
 
