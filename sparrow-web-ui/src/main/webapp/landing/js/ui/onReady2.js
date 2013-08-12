@@ -6,7 +6,7 @@ Ext.onReady(function() {
 	CONTROLLER.readStateFromHistory();
 
 	Ext.each(Screencasts, function(screencast){
-		var opt = document.createElement('OPTION');
+		var opt = document.createElement('option');
 		opt.text = screencast.name;
 		opt.value = screencast.videoId;
 

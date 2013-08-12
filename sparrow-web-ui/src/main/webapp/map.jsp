@@ -184,6 +184,18 @@
     	Please note that no endorsement, expressed or implied, is made by the USGS or the U.S. Government of any interpretations or decisions that result from the use of these models, nor shall the fact of distribution constitute any such endorsement, and no responsibility is assumed by the USGS in connection therewith.
     	<br/><br/>
     	</p>
+		<fieldset><legend>Looking for Delivered Load Information?</legend>
+        <p class="form-note">
+			If you are mapping a
+			<a class="helpLink" href="javascript:getGeneralHelp('CommonTerms.Data Series')">delivery data series</a>,
+			<a href="javascript:Screencasts.getById('deliveryReports').open();">summary reports</a>
+			are available that summarize where load is delivered to and where it originates from.
+			For more details, a <a href="javascript:Screencasts.getById('deliveryReports').open();">complete tutorial</a> video is available.
+		</p>
+
+        <p class="form-note">Watch <a href="javascript:Screencasts.getById('deliveryReports').open();">this screencast</a> to learn more about Delivery Reports.</p>
+        </fieldset>
+
     	<fieldset>
     	<legend>Export Format</legend>
     	<p>
@@ -247,22 +259,6 @@
         	(<a class="helpLink" href="javascript:getGeneralHelp('CommonTerms.Streamflow')">Streamflow</a> &amp;
         	<a class="helpLink" href="javascript:getGeneralHelp('CommonTerms.Incremental Area')">Incremental Area</a>)</label>
         </fieldset>
-
-		<fieldset class="distinct"><legend>Additional Information</legend>
-        <p class="form-note"><a href="javascript:Screencasts.getById('deliveryReports').open();">Delivery Reports</a> provide additional information on downstream tracking reaches such as:</p>
-
-		<ul>
-			<li>Total load delivered to each selected downstream reach, from their respective upstream watershed areas</li>
-			<li>Total delivered loads broken down by source (livestock manure, wastewater discharge, etc.)</li>
-			<li>Load and yield aggregated by HUC and state</li>
-
-		</ul>
-
-        <p class="form-note">Watch <a href="javascript:Screencasts.getById('deliveryReports').open();">this screencast</a> to learn more about Delivery Reports.</p>
-
-
-        </fieldset>
-
         </fieldset>
         </form>
 
