@@ -132,16 +132,16 @@ var GOTO_REACH_WIN = new (function(){
 
 	var _pageSize = 50;
 	var _startRecord = 0;
-	
+
 	//Extend the timeout to 2 minutes
-	var findReachProxy = new Ext.data.HttpProxy({ url: "findReaches" });
+	var findReachProxy = new Ext.data.HttpProxy({
+		url: "findReaches"
+	});
 	findReachProxy.conn = { timeout: 120000 };
 
 	var findReachStore = new Ext.data.Store({
 		// load using HTTP
-		url: 'findReaches',
 		proxy: findReachProxy,
-		//url: 'js_tests/FindReachTest.xml',
 		remoteSort: true,
 		// the return will be XML, so lets set up a reader
 		reader: new Ext.data.XmlReader({
@@ -162,8 +162,8 @@ var GOTO_REACH_WIN = new (function(){
 			{name: 'targets', type: 'string'}
 		]),
 		listeners: {
-			beforeload: function (str) {
-				str.lastOptions.params.xmlreq = getReachRequestXML(); //always have latest form request
+			beforeload: function (str, options) {
+				options.params.xmlreq = getReachRequestXML(); //always have latest form request
 			}
 		}
 	});
@@ -290,7 +290,7 @@ var GOTO_REACH_WIN = new (function(){
 					var isOkEmpty = (rawXml.getElementsByTagName('status')[0].firstChild.data == "OK_EMPTY");
 					Ext.getBody().unmask();
 					var message = "";	//set below
-					
+
 					if (isOK) {
 						var count = findReachStore.getTotalCount();
 						var message = " (" + count + " records found)";
@@ -301,7 +301,7 @@ var GOTO_REACH_WIN = new (function(){
 			    				cbObject.myCheckBox.setValue(false);
 			    			}
 			    		}
-						
+
 					} else if (isOkEmpty) {
 						Ext.Msg.show({
 							title: 'No Reaches Found',
