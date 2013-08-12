@@ -38,7 +38,14 @@
 		var url = '//www.youtube.com/embed/' + videoIdOfInterest + '?' + $.param(playerVars);
 		console.log(url);
 		$('#player').attr('src', url);
+		//refresh page first time, otherwise leave it be
+
 	});
+	function conditionallyRefresh(){
+		if(null === getQueryParam('secondLoad')){
+			location.assign(location.href + '&secondLoad=true');
+		}
+	};
 
 
 	function getQueryParam(key) {
@@ -80,7 +87,7 @@
 			<div class="area-content">
 				<!--<h4 id="please-wait">Initial video loading may be slow - please be patient.</h4>-->
 				<div>
-					<iframe id="player" width="960" height="720" frameborder="0" allowfullscreen></iframe>
+					<iframe id="player" width="960" height="720" frameborder="0" onload = "conditionallyRefresh();" allowfullscreen></iframe>
 				</div>
 			</div>
 		</div>

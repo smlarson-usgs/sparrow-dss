@@ -1,5 +1,5 @@
 /**
- * config:
+ * @param {Object} config:
  *	id - the programmatic id used throughout this app
  *	videoId - the id of the video given to it by it's hosting service
  *	name - the user-facing name
