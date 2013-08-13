@@ -14,10 +14,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @Immutable
 public class ReachFullId implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-	private final Long modelId;
+	private static final long serialVersionUID = 2L;
+	private final long modelId;
 	private final String clientId;
-	private final Long reachId;
+	private final long reachId;
 	private final int _hash;
 
 	public ReachFullId(Long modelID, Long reachId, String clientId) {
@@ -37,11 +37,11 @@ public class ReachFullId implements Serializable {
 		return clientId;
 	}
 	
-	public Long getReachId() {
+	public long getReachId() {
 		return reachId;
 	}
 
-	public Long getModelId() {
+	public long getModelId() {
 		return modelId;
 	}
 
@@ -52,9 +52,9 @@ public class ReachFullId implements Serializable {
 			ReachFullId otherRid = (ReachFullId) obj;
 			if (otherRid.hashCode() == hashCode()) {
 				isEqual =
-						modelId.equals(otherRid.getModelId()) &&
+						modelId == otherRid.getModelId() &&
 						clientId.equals(otherRid.getReachClientId()) &&
-						reachId.equals(otherRid.getReachId());
+						reachId == otherRid.getReachId();
 			}
 		}
 		return isEqual;

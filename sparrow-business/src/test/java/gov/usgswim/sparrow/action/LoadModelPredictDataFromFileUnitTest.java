@@ -5,6 +5,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowUnits;
+import gov.usgswim.sparrow.TopoData;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,6 +59,9 @@ public class LoadModelPredictDataFromFileUnitTest {
 		assertTrue(model50.getSrcMetadata().getRowCount() > 0);
 		
 		//topo
+		assertTrue(model50.getTopo().isIndexed(PredictData.TOPO_TNODE_COL));
+		assertTrue(model50.getTopo().isIndexed(PredictData.TOPO_FNODE_COL));
+		assertTrue(model50.getTopo() instanceof TopoData);
 		assertEquals(7, model50.getTopo().getColumnCount());
 		assertEquals("MODEL_REACH", model50.getTopo().getName(0));
 		assertEquals("FNODE", model50.getTopo().getName(1));

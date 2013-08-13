@@ -20,7 +20,7 @@ public class ReachAreaFractionMapFactory implements CacheEntryFactory {
 	public ReachRowValueMap createEntry(Object request) throws Exception {
 		
 		if (request instanceof ReachID) {
-			CalcReachAreaFractionMap action = new CalcReachAreaFractionMap((ReachID) request, false, false);
+			CalcReachAreaFractionMap action = new CalcReachAreaFractionMap((ReachID) request, true, false);
 			ReachRowValueMap result = action.run();
 			return result;
 		} else if (request instanceof ReachAreaFractionMapRequest) {

@@ -39,7 +39,6 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 
 	protected TopoData topoData;
 	protected Long targetReachId;
-	protected String msg = null;
 	
 	/** If true, FRAC values that do not total to 1 will not be corrected. Mostly for debugging. */
 	protected boolean forceUncorrectedFracValues = false;
@@ -89,12 +88,6 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 			targetReachId = reachId.getReachID();
 			topoData = SharedApplication.getInstance().getPredictData(reachId.getModelID()).getTopo();
 		}
-	}
-	
-	
-	@Override
-	protected String getPostMessage() {
-		return msg;
 	}
 	
 	@Override
@@ -169,6 +162,9 @@ public class CalcReachAreaFractionMap extends Action<ReachRowValueMap> {
 			}	//if there are upstream rows
 		}	//while the que of reaches to process is not empty
 		
+		
+		//Set the action message
+		this.setPostMessage("Target: " + topoData.getIdForRow(targetReachRow) + " (reach row ID), upstream reaches: " + completedReaches.size());
 		return completedReaches;
 	}
 	

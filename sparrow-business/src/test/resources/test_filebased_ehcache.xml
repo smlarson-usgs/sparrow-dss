@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="ehcache.xsd">
+	xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="false">
 
 	<!--
 	Note:  For caches with factories (all of them for this project), 
@@ -357,7 +357,7 @@
 	<cache name="CatchmentAreas" diskPersistent="true" />
 	
 	<!-- I think this is only needed for NHD -->
-	<cache name="ReachFullId" diskPersistent="true" />
+	<cache name="ReachFullId" maxElementsOnDisk="1000000" diskPersistent="true" />
 	<cache name="StatesForModel" diskPersistent="true"/> <!-- Small lists -->
 	<cache name="ModelReachAreaRelations" diskPersistent="true" /> <!-- one row per reach w/ embeded list -->
 	

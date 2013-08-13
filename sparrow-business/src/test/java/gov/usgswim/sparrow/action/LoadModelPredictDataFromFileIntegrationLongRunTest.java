@@ -10,6 +10,7 @@ import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowTestBaseWithDB;
 import gov.usgswim.sparrow.SparrowUnits;
+import gov.usgswim.sparrow.TopoData;
 import gov.usgswim.sparrow.domain.Source;
 import gov.usgswim.sparrow.domain.SparrowModel;
 
@@ -87,6 +88,14 @@ public class LoadModelPredictDataFromFileIntegrationLongRunTest extends SparrowT
 
 		//compare, skipping column zero, which has db row ids.
 		assertTrue(compareTables(db, file, new int[] {0}, true, 0d, false));
+		
+		assertTrue(file.isIndexed(PredictData.TOPO_TNODE_COL));
+		assertTrue(file.isIndexed(PredictData.TOPO_FNODE_COL));
+		assertTrue(file instanceof TopoData);
+		
+		assertTrue(db.isIndexed(PredictData.TOPO_TNODE_COL));
+		assertTrue(db.isIndexed(PredictData.TOPO_FNODE_COL));
+		assertTrue(db instanceof TopoData);
 	}
 
 	@Test

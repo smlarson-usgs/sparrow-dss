@@ -28,7 +28,7 @@ public class ReachAreaFractionMapRequest implements Serializable {
 	
 	public ReachAreaFractionMapRequest(ReachID reachId) {
 		this.reachId = reachId;
-		this.forceUncorrectedFracValues = false;
+		this.forceUncorrectedFracValues = true;
 		this.forceIgnoreIfTran = false;
 	}
 

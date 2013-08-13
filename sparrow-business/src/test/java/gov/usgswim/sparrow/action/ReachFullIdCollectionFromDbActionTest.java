@@ -3,14 +3,12 @@ package gov.usgswim.sparrow.action;
 import com.mockrunner.jdbc.JDBCTestCaseAdapter;
 import com.mockrunner.jdbc.ParameterSets;
 import com.mockrunner.jdbc.PreparedStatementResultSetHandler;
-import com.mockrunner.jdbc.StatementResultSetHandler;
 import com.mockrunner.mock.jdbc.MockConnection;
 import com.mockrunner.mock.jdbc.MockResultSet;
 import gov.usgswim.sparrow.domain.ReachFullId;
 import gov.usgswim.sparrow.request.ReachClientId;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Test;
 
 /**
  * Test with a Mock connection so that we don't go to the DB.
@@ -52,11 +50,11 @@ public class ReachFullIdCollectionFromDbActionTest extends JDBCTestCaseAdapter {
 		
 		
 		assertEquals(2, fullIds.size());
-		assertEquals(new Long(50L), fullIds.get(0).getModelId());
-		assertEquals(new Long(1L), fullIds.get(0).getReachId());
+		assertEquals(50L, fullIds.get(0).getModelId());
+		assertEquals(1L, fullIds.get(0).getReachId());
 		assertEquals("C1", fullIds.get(0).getReachClientId());
-		assertEquals(new Long(50L), fullIds.get(1).getModelId());
-		assertEquals(new Long(2L), fullIds.get(1).getReachId());
+		assertEquals(50L, fullIds.get(1).getModelId());
+		assertEquals(2L, fullIds.get(1).getReachId());
 		assertEquals("C2", fullIds.get(1).getReachClientId());
 	}
 	

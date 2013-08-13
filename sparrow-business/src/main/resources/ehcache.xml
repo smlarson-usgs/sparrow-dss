@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="ehcache.xsd">
+	xsi:noNamespaceSchemaLocation="ehcache.xsd" updateCheck="false">
 
 	<!--
 	Note:  For caches with factories (all of them for this project), 
@@ -441,7 +441,7 @@
 	<cache name="FractionedWatershedAreaTable" maxElementsInMemory="3" timeToLiveSeconds="600" />
 
 	<!-- Client ID to Reach ID mapping.  All reach IDs give to the client are 'Full_Identifiers' in the db.
-		internally, only the IDENTIIER is used. -->
-	<cache name="ReachFullId" maxElementsInMemory="2000" timeToIdleSeconds="14400" timeToLiveSeconds="28800" />
+	internally, only the IDENTIIER is used. -->
+	<cache name="ReachFullId" maxElementsInMemory="5000" timeToIdleSeconds="14400" timeToLiveSeconds="28800" />
 	
 </ehcache>

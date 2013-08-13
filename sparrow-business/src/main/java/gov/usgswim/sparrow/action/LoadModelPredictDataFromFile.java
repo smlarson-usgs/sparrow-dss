@@ -270,13 +270,16 @@ public class LoadModelPredictDataFromFile extends Action<PredictData> implements
 		//Add the fraction back on
 		dtw.setColumn(fracColumn, 6);
 		
+		//Used heavily during delivery calcs
 		dtw.buildIndex(PredictData.TOPO_TNODE_COL);
+		dtw.buildIndex(PredictData.TOPO_FNODE_COL);
 		
 		//TopoData topoTable = new TopoDataComposit(dtw);
 		TopoDataImm topoTable = new TopoDataImm(dtw.getColumns(), dtw.getName(), dtw.getDescription(), dtw.getProperties(), dtw.getIndex());
 
 		assert(topoTable.hasRowIds()): "topo should have IDENTIFIER as row ids";
 		assert(topoTable.isIndexed(PredictData.TOPO_TNODE_COL));
+		assert(topoTable.isIndexed(PredictData.TOPO_FNODE_COL));
 
 		return topoTable;
 	}

@@ -190,8 +190,9 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 		addResultSetForAutoClose(rset);
 		DataTableWritable result = DataTableConverter.toDataTable(rset, colTypes, true);
 		
-		/** TNODE is used heavily during delivery calcs to find reaches, so index */
+		/** TNODE and FNODE are used heavily during delivery calcs to find reaches, so index */
 		result.buildIndex(PredictData.TOPO_TNODE_COL);
+		result.buildIndex(PredictData.TOPO_FNODE_COL);
 
 		if (log.isDebugEnabled()) {
 			log.debug("Printing sample of topo ...");
@@ -204,6 +205,7 @@ public class LoadModelPredictData extends Action<PredictData> implements ILoadMo
 
 		assert(topoTable.hasRowIds()): "topo should have IDENTIFIER as row ids";
 		assert(topoTable.isIndexed(PredictData.TOPO_TNODE_COL));
+		assert(topoTable.isIndexed(PredictData.TOPO_FNODE_COL));
 
 		return topoTable;
 	}
