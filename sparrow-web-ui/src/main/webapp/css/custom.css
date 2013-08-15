@@ -10,6 +10,11 @@
 	background-image: url(../images/drought-flood_banner.jpg);
 }
 
+.export ul li{
+	list-style-type: disc;
+	margin-left: 3em;
+}
+
 img, body, html {
 	border: 0 none;
 }
@@ -555,6 +560,11 @@ form.export fieldset.distinct {
 	border: 1px solid #666;
 }
 
+form.export fieldset.important {
+	border: 2px solid #b77; font-size: 110%;
+	margin-top: 1em; margin-bottom: 1.5em;
+}
+
 form.export fieldset legend {
 	font-style: italic; font-weight: bold; font-size: 110%;
 	border-bottom: 2px solid #666; padding: 0 4em 0 .5em; z-index: 99;
@@ -562,6 +572,10 @@ form.export fieldset legend {
 
 form.export fieldset fieldset legend {
 	font-style: italic; font-weight: bold; font-size: 100%; border: none; padding: 0;
+}
+
+form.export fieldset.important legend, form.export fieldset.distinct legend{
+	border: none;  padding-right: 1em;
 }
 
 form.export label {

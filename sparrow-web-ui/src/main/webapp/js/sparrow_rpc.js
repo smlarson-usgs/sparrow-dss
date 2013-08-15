@@ -4,6 +4,22 @@ appbase += '/' + contextroot;
 
 var modelSourcesCache;
 
+var screenCastNameToVideoIdMap = {
+	'Working with Sources' : '1tzeR4WkLv0',
+	'Incremental Yield' : '5K1Smu7Q4Fc',
+	'Selecting Downstream Outlets' : 'zrycRF7MeG8',
+	'Changing Source Inputs' : 'UkC_76uq748',
+	'Incremental Yield to an Outlet' : 'tHnxt2ORNQU',
+	'Summarizing Delivered Load to Downstream Outlets' : 'HG9S4D0Jjfc'
+};
+
+var openScreencast = function(videoId){
+	var newWindow = window.open('screencast.jsp?videoId=' + videoId, '_blank',
+	   				'resizable=0,location=0,status=0,scrollbars=0,width=1280,height=780');
+		newWindow.focus();
+		return newWindow;
+};
+
 var modelSourcesAreInCache = function(id) {
 	if(!modelSourcesCache) {
 		modelSourcesCache = new Array();
@@ -114,20 +130,9 @@ function renderModel(response, options) {
 		docMenu.add({
 	   	text: 'Video: ' + name,
 	   	handler: function() {
-	   		var newWindow = window.open('screencast.jsp?videoId=' + videoId, '_blank',
-	   				'resizable=0,location=0,status=0,scrollbars=0,width=960,height=757');
-	   		newWindow.focus();
+	   		openScreencast(videoId);
 	   	}
 		});
-	};
-
-	var videoNameToVideoIdMap = {
-		'Working with Sources' : '1tzeR4WkLv0',
-		'Incremental Yield' : '5K1Smu7Q4Fc',
-		'Selecting Downstream Outlets' : 'zrycRF7MeG8',
-		'Changing Source Inputs' : 'UkC_76uq748',
-		'Incremental Yield to an Outlet' : 'tHnxt2ORNQU',
-		'Summarizing Delivered Load to Downstream Outlets' : 'HG9S4D0Jjfc'
 	};
 
     docMenu.removeAll();
@@ -174,7 +179,7 @@ function renderModel(response, options) {
    });
    docMenu.add('-');
    //add videos
-   Ext.iterate(videoNameToVideoIdMap, function(name, videoId){
+   Ext.iterate(screenCastNameToVideoIdMap, function(name, videoId){
 		addVideoItemToDocMenu(name, videoId);
    });
 
@@ -406,19 +411,7 @@ var IDENTIFY = new (function(){
 	        	return;
 			}
 		}
-		//
-		//
-		//
-		//
-		///
-		///
-		///
-		//
-		//
-		///
-		//
-		///
-		///
+
 		SvgOverlay.removeAllOverlays();
 		var geom = reachResponse["sparrow-id-response"]["results"]["result"][0]["identification"]["ReachGeometry"]["basin"];
 		SvgOverlay.renderGeometry(geom, animateOptions, 'black', 'white');
@@ -430,139 +423,6 @@ var IDENTIFY = new (function(){
 	    clicked_lat = null;
 	    clicked_lon = null;
 
-//		{ // Get the bounding box of the identified reach
-//			var bbox = reachResponse["sparrow-id-response"].results.result[0].identification.bbox;
-//			var xmin = parseFloat(bbox["@min-long"]);
-//			var ymin = parseFloat(bbox["@min-lat"]);
-//			var xmax = parseFloat(bbox["@max-long"]);
-//			var ymax = parseFloat(bbox["@max-lat"]);
-//
-//			var marker_lat = (clicked_lat || parseFloat(bbox["@marker-lat"]));
-//			var marker_lon = (clicked_lon || parseFloat(bbox["@marker-long"]));
-//		}
-//
-//		{ //create reach svg shape
-//			// TODO refactor into utility method
-//			var reachPoints = [];
-//			var polygon = reachResponse["sparrow-id-response"].results.result[0].identification.polygon;
-//			var polyLine = reachResponse["sparrow-id-response"].results.result[0].identification.polyLine;
-//			var source = polygon || polyLine;
-//			if (source != null){
-//				var isPolygon = (polygon != null);
-//				var isPolyLine = (polyLine != null);
-//				var reachPointPairs = source["@points"].trim().split(' ');
-//
-//				xmin = 180;
-//				ymin = 90;
-//				xmax = -180;
-//				ymax = -90;
-//
-//				for (var i = 0; i < reachPointPairs.length; i++) {
-//					var tp = reachPointPairs[i].split(',')
-//					var lat = parseFloat(tp[1]);
-//					var lon = parseFloat(tp[0]);
-//
-//					if (lat > ymax) ymax = lat;
-//					if (lat < ymin) ymin = lat;
-//					if (lon > xmax) xmax = lon;
-//					if (lon < xmin) xmin = lon;
-//
-//					reachPoints.push(lat);
-//					reachPoints.push(lon)
-//				}
-//			}
-//		}
-//
-//	    clicked_lat = null;
-//	    clicked_lon = null;
-//
-//	    if (animateOptions.reCenterMap) { // recenter window to reach, zooming if necessary
-//
-//	    	var xExtent = xmax - xmin;
-//	    	var yExtent = ymax - ymin;
-//
-//	    	// This temporarily centers the catchment squarely in upper right of the map
-//	    	// and sets the zoom level
-//	    	if (animateOptions.zoom) map1.fitToBBox(xmin - xExtent, ymin - yExtent, xmax, ymax);
-//
-//
-//	        // Calculate how far south and west we should center the map from the reach
-//	        var vBBox = map1.getViewportBoundingBox();
-//	        var yDelta = (vBBox.ymax - vBBox.ymin) / 4;
-//	        var xDelta = (vBBox.xmax - vBBox.xmin) / 4;
-//
-//	        // Calculate the center point of the reach's bounding box
-//	        var y = (ymax + ymin) / 2;
-//	        var x = (xmax + xmin) / 2;
-//
-//	        // Animate the map to the point south and west of the reach's box
-//	        map1.moveTo(y - yDelta, x - xDelta);
-//
-//	    }
-//
-//		IDENTIFY_REACH_SPINNER.hide();
-//	    if (animateOptions.showInfo) renderReachIdentifyWindow(reachResponse);
-//
-//			if (SvgOverlay.hasOverlay()) {
-//				SvgOverlay.removeAllOverlays();
-//			}
-//
-//	    if (reachPoints.length > 0) {
-//	    	if (isPolygon){
-//		        map1.drawShape(new JMap.svg.Polygon({
-//		        	points: reachPoints,
-//		        	properties: {
-//		    	    	stroke: 'black',
-//		    	    	'stroke-width': '4px',
-//		    	    	fill: 'white',
-//		    	    	'fill-opacity': 0.1,
-//		    	    	'stroke-linejoin': 'round'
-//		    	    },
-//		    	    events: {
-//		    	    	//onclick: function(e) {alert('identify handler'); return false;}
-//		    	    }
-//		        }));
-//	    	} else if (isPolyLine){
-//		        map1.drawShape(new JMap.svg.PolyLine({
-//		        	points: reachPoints,
-//		        	properties: {
-//		    	    	stroke: 'yellow',
-//		    	    	'stroke-width': '9px',
-//		    	    	fill: 'white',
-//		    	    	'fill-opacity': 0.1,
-//		    	    	'stroke-linejoin': 'round'
-//		    	    }
-//		        }));
-//		        map1.drawShape(new JMap.svg.PolyLine({
-//		        	points: reachPoints,
-//		        	properties: {
-//		    	    	stroke: 'black',
-//		    	    	'stroke-width': '4px',
-//		    	    	fill: 'white',
-//		    	    	'fill-opacity': 0.1,
-//		    	    	'stroke-linejoin': 'round'
-//		    	    },
-//		    	    events: {
-//		    	    	//onclick: function(e) {alert('identify handler'); return false;}
-//		    	    }
-//		        }));
-//	    	}
-//
-//				SvgOverlay.internalNotifyOverlayAdded(false, true);
-//
-//	    }
-
-	    /*
-	    // Draw a bounding box around the reach and place a marker
-	    map1.FOIManager.removeAllFOIs();
-	    map1.FOIManager.addFOI(new IdentifyMarker({
-	    	map: map1,
-	    	minLat: ymin,
-	    	minLon: xmin,
-	    	maxLat: ymax,
-	    	maxLon: xmax
-	    }));
-	    */
 	};
 
 	/**

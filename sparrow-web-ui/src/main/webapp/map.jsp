@@ -70,6 +70,7 @@
 	<script src="js/ext_extensions/dockpanel.js"></script>
 	<script src="js/USGSUtils.js"></script>
 	<script src="js/SparrowUIContext.js"></script>
+	<script src="js/Screencasts.js"></script>
 	<script src="js/sparrow_ui.js"></script>
 	<script src="js/GroupMembershipWindow.js"></script>
 	<script src="js/mapoptions/MapOptionsPanel.js"></script>
@@ -183,6 +184,15 @@
     	Please note that no endorsement, expressed or implied, is made by the USGS or the U.S. Government of any interpretations or decisions that result from the use of these models, nor shall the fact of distribution constitute any such endorsement, and no responsibility is assumed by the USGS in connection therewith.
     	<br/><br/>
     	</p>
+		<fieldset class="important"><legend>Looking for Downstream Tracking / Delivered Load Information?</legend>
+        <p class="form-note">
+			If you are mapping a delivery-based
+			<a class="helpLink" href="javascript:getGeneralHelp('CommonTerms.Data Series')">data series</a>,
+			a Delivery Report is available that summarize where load is delivered to and where it originates from.
+			For more details, a <a href="javascript:openScreencast('HG9S4D0Jjfc');">complete tutorial</a> video is available.
+		</p>
+        </fieldset>
+
     	<fieldset>
     	<legend>Export Format</legend>
     	<p>

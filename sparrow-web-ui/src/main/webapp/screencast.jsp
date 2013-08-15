@@ -10,36 +10,54 @@
 	
 	<script src="jquery/jquery-1.7.2.js"></script>
 	<script src="screencast/js/jquery.fitvids.js"></script>
+	<script src="screencast/js/Screencasts.js"></script>
 
 	<script type="text/javascript" language="javascript">
 
-	var tag = document.createElement('script');
+	$(document).ready(function(){
+		var tag = document.createElement('script');
 
-	tag.src = "https://www.youtube.com/iframe_api";
-	var firstScriptTag = document.getElementsByTagName('script')[0];
-	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
+		tag.src = "https://www.youtube.com/iframe_api";
+		var firstScriptTag = document.getElementsByTagName('script')[0];
+		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+	});
+	
 	var ytp;
 	var waitMessageIsVisible = true;
 	function onYouTubeIframeAPIReady() {
-		var videoIdStr = getQueryParam('videoId');
+		var videoIdOfInterest = getQueryParam('videoId');
+		
+		var otherVideoIds = [];
 
-		if (videoIdStr == null) {
+		$.each(Screencasts, function(index, screencast){
+			//filtered pluck
+			var videoId = screencast.videoId;
+			if(videoId !== videoIdOfInterest){
+				otherVideoIds.push(videoId);
+			}
+		});
+		var otherVideoIdsCsv = otherVideoIds.join(',');
+		
+		if (videoIdOfInterest === null) {
 			window.alert("No video is selected.");
 			return;
 		}
+		
 
 		ytp = new YT.Player('player', {
-			videoId: videoIdStr,
+			videoId: videoIdOfInterest,
 			height: 720,
-			width: 960,
-			enablejsapi: 1,
+			width: 1280,
 			playerVars: {
 				autoplay: 0,
-				controls: 1,
+				controls: 2,
+				enablejsapi: 1,
 				modestbranding: 1,
-				playlist: '1tzeR4WkLv0,5K1Smu7Q4Fc,zrycRF7MeG8,UkC_76uq748,tHnxt2ORNQU'},
-			events: {'onReady': onPlayerReady, 'onStateChange': onStateChange}
+				playlist: otherVideoIdsCsv,
+				origin: window.location.protocol + '////' + window.location.hostname,
+				rel: 0
+			},
+			events: {'onReady': onPlayerReady}
 		});
 		
 		$("#page-content").fitVids();
@@ -48,13 +66,16 @@
 	function onPlayerReady(event) {
 		event.target.setPlaybackQuality('hd720');
 		event.target.playVideo();
-	}
-	
-	function onStateChange(event) {
-		if (waitMessageIsVisible && event.data == YT.PlayerState.PLAYING) {
-			waitMessageIsVisible = false;
-			$("#please-wait").hide();
-		}
+		ytp.addEventListener('onStateChange', function(e){
+			
+			if (e.data === YT.PlayerState.PLAYING) {
+				if (waitMessageIsVisible) {
+					waitMessageIsVisible = false;
+					$("#please-wait").hide();
+				}
+			}
+		});
+		
 	}
 		
 	function getQueryParam(key) {
