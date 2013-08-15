@@ -15,12 +15,12 @@ var Screencast = function(config){
 	//delegate to static method
 	self.open = function(){
 		Screencast.open(self.videoId);
-	}
+	};
 };
 //static method:
 Screencast.open = function(videoId){
 	var newWindow = window.open('screencast.jsp?videoId=' + videoId, '_blank',
-	   				'resizable=0,location=0,status=0,scrollbars=0,width=960,height=757');
+	   				'resizable=0,location=0,status=0,scrollbars=0,width=1280,height=780');
 		newWindow.focus();
 		return newWindow;
 };
