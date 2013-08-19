@@ -31,8 +31,8 @@
 				</div>
 				<div id="tabs" class="content">
 					<ul>
-							<li><a href="#terminal-report-container"><span>Total Delivered Load Summary</span></a></li>
-							<li><a href="#aggregate-report-container"><span>Delivered Load from Selected Upstream Regions</span></a></li>
+						<li><a href="#aggregate-report-container"><span>Delivered Load from Selected Upstream Regions</span></a></li>	
+						<li><a href="#terminal-report-container"><span>Total Delivered Load Summary</span></a></li>
 					</ul>
 					<div id="terminal-report-container" class="report-container">
 							<jsp:include page="terminal_wrapper.jsp" flush="true" />

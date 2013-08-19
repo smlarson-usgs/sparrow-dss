@@ -36,7 +36,28 @@ public class SimpleValueFormatterTest {
 	@After
 	public void tearDown() {
 	}
-
+	
+	
+	@Test
+	public void testCSV() {
+		SimpleValueFormatter instance = new SimpleValueFormatter(IFormatter.OutputType.CSV);
+		assertEquals("\"1,2\"", instance.format("1,2"));
+	}
+	
+	@Test
+	public void testTabSeparatedValues() {
+		SimpleValueFormatter instance = new SimpleValueFormatter(IFormatter.OutputType.TAB);
+		String formatted = instance.format("1\t2"); //1 [tab] 2
+		assertTrue("1 2".equals(formatted));	//1 [space] 2 
+	}
+	
+	@Test
+	public void testNullValue() {
+		SimpleValueFormatter instance = new SimpleValueFormatter(IFormatter.OutputType.TAB);
+		String formatted = instance.format(null);
+		assertTrue("".equals(formatted));
+	}
+	
 	/**
 	 * Test of format method, of class SimpleValueFormatter.
 	 * This test ensures that the formatter throws exceptions when a user
@@ -49,12 +70,11 @@ public class SimpleValueFormatterTest {
 	 * not implement.
 	 */
 	@Test
-	public void testFormat() {
+	public void testUnsupportedOutputType() {
 		try{
 			SimpleValueFormatter instance = new SimpleValueFormatter(IFormatter.OutputType.ZIP);
 			instance.format("dummy");
-		}
-		catch(NotImplementedException e){
+		} catch(NotImplementedException e){
 			assertTrue(true);
 			return;
 		}

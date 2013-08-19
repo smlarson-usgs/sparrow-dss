@@ -356,7 +356,13 @@ a.actionLink:hover {
 }
 
 
-
+/*
+Symatic formatting */
+.important {
+	border: 2px solid #b77; font-size: 110%;
+	margin-top: 1em; margin-bottom: 1.5em;
+}
+.important p {margin: .5em .5em; }
 
 /*map tools*/
 

@@ -44,12 +44,12 @@ public class HTMLTableCellFormatterTest {
 	 * Test of format method, of class HTMLTableCellFormatter.
 	 */
 	@Test
-	public void testFormat() {
+	public void testFormatDefaultDoubleFormat() {
 		OutputType outputTypes[] = {OutputType.XHTML, OutputType.XHTML_TABLE, OutputType.XML};
 		HTMLTableCellFormatter formatter;
-		Map<String, String> inputToExpected = this.getInputToExpectedMap();
+		Map<String, String> inputToExpected = this.getInputToExpectedMapDefaultDoubleFormat();
 		for(OutputType outputType : outputTypes){
-			 formatter = new HTMLTableCellFormatter(outputType);
+			 formatter = new HTMLTableCellFormatter(outputType, "Double");
 			 for(String input : inputToExpected.keySet()){
 				 String expectedValue = inputToExpected.get(input);
 				 String actualValue = formatter.format(input);
@@ -57,7 +57,68 @@ public class HTMLTableCellFormatterTest {
 			 }
 		}
 	}
-	private Map<String, String> getInputToExpectedMap(){
+	
+	@Test
+	public void testFormatDefaultIntegerFormat() {
+		OutputType outputTypes[] = {OutputType.XHTML, OutputType.XHTML_TABLE, OutputType.XML};
+		HTMLTableCellFormatter formatter;
+		Map<String, String> inputToExpected = this.getInputToExpectedMapDefaultIntegerFormat();
+		for(OutputType outputType : outputTypes){
+			 formatter = new HTMLTableCellFormatter(outputType, "Integer");
+			 for(String input : inputToExpected.keySet()){
+				 String expectedValue = inputToExpected.get(input);
+				 String actualValue = formatter.format(input);
+				 assertEquals(expectedValue, actualValue);
+			 }
+		}
+	}
+	
+	@Test
+	public void testFormatStringFormat() {
+		OutputType outputTypes[] = {OutputType.XHTML, OutputType.XHTML_TABLE, OutputType.XML};
+		HTMLTableCellFormatter formatter;
+		Map<String, String> inputToExpected = this.getInputToExpectedStringFormat();
+		for(OutputType outputType : outputTypes){
+			 formatter = new HTMLTableCellFormatter(outputType, "String");
+			 for(String input : inputToExpected.keySet()){
+				 String expectedValue = inputToExpected.get(input);
+				 String actualValue = formatter.format(input);
+				 assertEquals(expectedValue, actualValue);
+			 }
+		}
+	}
+	
+	@Test
+	public void testFormatNullFormat() {
+		OutputType outputTypes[] = {OutputType.XHTML, OutputType.XHTML_TABLE, OutputType.XML};
+		HTMLTableCellFormatter formatter;
+		Map<String, String> inputToExpected = this.getInputToExpectedStringFormat();
+		for(OutputType outputType : outputTypes){
+			 formatter = new HTMLTableCellFormatter(outputType, null);
+			 for(String input : inputToExpected.keySet()){
+				 String expectedValue = inputToExpected.get(input);
+				 String actualValue = formatter.format(input);
+				 assertEquals(expectedValue, actualValue);
+			 }
+		}
+	}
+	
+	@Test
+	public void testFormatUnrecognizedFormat() {
+		OutputType outputTypes[] = {OutputType.XHTML, OutputType.XHTML_TABLE, OutputType.XML};
+		HTMLTableCellFormatter formatter;
+		Map<String, String> inputToExpected = this.getInputToExpectedStringFormat();
+		for(OutputType outputType : outputTypes){
+			 formatter = new HTMLTableCellFormatter(outputType, "not a recognized format");
+			 for(String input : inputToExpected.keySet()){
+				 String expectedValue = inputToExpected.get(input);
+				 String actualValue = formatter.format(input);
+				 assertEquals(expectedValue, actualValue);
+			 }
+		}
+	}
+		
+	private Map<String, String> getInputToExpectedMapDefaultDoubleFormat(){
 		HashMap<String, String> inputToExpectedOutput = new HashMap<String, String>();
 		//easy on the fingers, alias:
 		Map<String, String> i2o = inputToExpectedOutput;
@@ -79,6 +140,63 @@ public class HTMLTableCellFormatterTest {
 		i2o.put("100000700345", "100,000,700,345");
 		i2o.put("1000000700345", "1,000,000,700,345");
 		//check non-#'s
+		i2o.put("ALABAMA", "ALABAMA");
+		i2o.put("asdf 123", "asdf 123");
+		i2o.put("asdf123", "asdf123");
+		i2o.put("123asdf", "123asdf");
+		i2o.put("123 asdf", "123 asdf");
+
+		Map<String, String> inputToExpectedWithFixedExpectedOutput = new HashMap<String, String>();
+
+		for(String key : inputToExpectedOutput.keySet()){
+			String value = inputToExpectedOutput.get(key);
+			inputToExpectedWithFixedExpectedOutput.put(key,
+				HTMLTableCellFormatter.PREFIX +
+				value +
+				HTMLTableCellFormatter.SUFFIX);
+		}
+		return inputToExpectedWithFixedExpectedOutput;
+	}
+	
+	private Map<String, String> getInputToExpectedMapDefaultIntegerFormat(){
+		HashMap<String, String> inputToExpectedOutput = new HashMap<String, String>();
+		//easy on the fingers, alias:
+		Map<String, String> i2o = inputToExpectedOutput;
+		//check #'s where 0 == integer component
+		i2o.put("0.1", "0");
+
+		//check #'s where 0 < integer component
+		i2o.put("1700", "1,700");
+		i2o.put("1700.123", "1,700");
+		i2o.put("170002345", "170,002,345");
+		i2o.put("1000000700345", "1,000,000,700,345");
+		//check non-#'s
+		i2o.put("ALABAMA", "ALABAMA");
+		i2o.put("asdf 123", "asdf 123");
+		i2o.put("asdf123", "asdf123");
+		i2o.put("123asdf", "123asdf");
+		i2o.put("123 asdf", "123 asdf");
+
+		Map<String, String> inputToExpectedWithFixedExpectedOutput = new HashMap<String, String>();
+
+		for(String key : inputToExpectedOutput.keySet()){
+			String value = inputToExpectedOutput.get(key);
+			inputToExpectedWithFixedExpectedOutput.put(key,
+				HTMLTableCellFormatter.PREFIX +
+				value +
+				HTMLTableCellFormatter.SUFFIX);
+		}
+		return inputToExpectedWithFixedExpectedOutput;
+	}
+	
+	private Map<String, String> getInputToExpectedStringFormat(){
+		HashMap<String, String> inputToExpectedOutput = new HashMap<String, String>();
+		//easy on the fingers, alias:
+		Map<String, String> i2o = inputToExpectedOutput;
+		//check #'s where 0 == integer component
+		i2o.put("0.1", "0.1");
+		i2o.put("100000.00000001", "100000.00000001");
+		i2o.put("003456", "003456");
 		i2o.put("ALABAMA", "ALABAMA");
 		i2o.put("asdf 123", "asdf 123");
 		i2o.put("asdf123", "asdf123");

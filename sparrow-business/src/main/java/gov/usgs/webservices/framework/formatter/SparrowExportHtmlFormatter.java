@@ -121,6 +121,7 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 
 							String header = in.getAttributeValue(null, "name");
 							String unit = StringUtils.trimToNull(in.getAttributeValue(null, "unit"));
+							String type = StringUtils.trimToNull(in.getAttributeValue(null, "type"));
 							String relation = in.getAttributeValue(null, RelationType.XML_ATTRIB_NAME);
 
 							if (unit != null) {
@@ -136,10 +137,10 @@ public class SparrowExportHtmlFormatter extends AbstractFormatter {
 								} else if (RelationType.rel_percent.equals(rt)) {
 									formatters.add(new HTMLRelativePercentCellFormatter(false));
 								} else {
-									formatters.add(new HTMLTableCellFormatter(outputType));
+									formatters.add(new HTMLTableCellFormatter(outputType, type));
 								}
 							} else {
-								formatters.add(new HTMLTableCellFormatter(outputType));
+								formatters.add(new HTMLTableCellFormatter(outputType, type));
 							}
 
 						} else if ("data".equals(localName)) {
