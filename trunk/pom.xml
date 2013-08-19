@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>gov.usgs.cida</groupId>
+	<artifactId>sparrow-parent</artifactId>
+	<packaging>pom</packaging>
+	<version>1.4.32-SNAPSHOT</version>
+	<name>Sparrow DSS Parent Project</name>
+
+	<modules>
+		<module>sparrow-service</module>
+		<module>sparrow-web-ui</module>
+    <module>sparrow-datatable</module>
+    <module>sparrow-business</module>
+    <module>sparrow-validation</module>
+    <module>sparrow-calculation</module>
+		<module>sparrow-business-integration-tests</module>
+  </modules>
+	
+	<properties>
+		<war.dir>src/main/webapp</war.dir>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
+		<cargo.containerId>tomcat6x</cargo.containerId>
+		<cida.maven.url>http://internal.cida.usgs.gov/maven</cida.maven.url>
+		<cida.svn.url>https://cida-svn.er.usgs.gov/repos/dev</cida.svn.url>
+		<!-- <cargo.containerId>tomcat6x</cargo.containerId> -->
+		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+		<timestamp>${maven.build.timestamp}</timestamp> 
+	</properties>
+	
+	<scm>
+		<developerConnection>scm:svn:https://cida-svn.er.usgs.gov/repos/dev/usgs/sparrow/dss/app/trunk</developerConnection>
+	</scm>
+	
+	<distributionManagement>
+		<repository>
+			<id>cida-sparrow-dss-releases</id>
+			<name>CIDA Sparrow DSS Releases</name>
+			<url>${cida.maven.url}/content/repositories/cida-sparrow-dss-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>cida-sparrow-dss-snapshots</id>
+			<name>CIDA Sparrow DSS Snapshots</name>
+			<url>${cida.maven.url}/content/repositories/cida-sparrow-dss-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+	
+	<repositories>
+		<repository>
+			<url>${cida.maven.url}/content/repositories/cida-releases/</url>
+			<id>cida-releases</id>
+			<layout>default</layout>
+			<name>Cida Releases - Release Shared Libraries</name>
+		</repository>
+		<repository>
+			<id>cida-sparrow-dss-thirdparty</id>
+			<url>${cida.maven.url}/content/repositories/cida-sparrow-dss-thirdparty</url>
+		</repository>
+		<repository>
+			<id>cida-thirdparty</id>
+			<url>${cida.maven.url}/content/repositories/cida-thirdparty</url>
+		</repository>
+	</repositories>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-enforcer-plugin</artifactId>
+					<version>1.0.1</version>
+					<executions>
+						<execution>
+							<id>enforce-versions</id>
+							<goals>
+								<goal>enforce</goal>
+								<goal>display-info</goal>
+							</goals>
+							<configuration>
+								<rules>
+									<requireMavenVersion>
+										<version>2.1</version>
+									</requireMavenVersion>
+									<requireJavaVersion>
+										<version>1.6</version>
+									</requireJavaVersion>
+								</rules>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.2</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>

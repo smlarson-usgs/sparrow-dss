@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map_request datasource="sparrow" srid="8307" width="$width$" height="$height$" transparent="true"
+	bgcolor="#ffffff" antialiase="true" keepthemesorder="true" format="PNG8_STREAM">
+	<box>
+		<coordinates>$BBOX$</coordinates>
+	</box>
+	<themes>
+		<theme name="huc8_$model_id$" />
+	</themes>
+	<styles>
+		<style name="sparrow_dss">
+		</style>
+	</styles>
+</map_request>

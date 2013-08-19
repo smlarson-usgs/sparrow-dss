@@ -1,0 +1,105 @@
+<reachGroup enabled="true" name="Northern Indiana Plants">
+	<!--  ReachGroup Object -->
+	<desc>Old-folks homes near Miami that are part of the 'Keep Florida Young' Project</desc>
+	<notes>
+I initially selected HUC8 04140103
+but it looks like there are some others plants that need to be included.
+
+As a start, we are proposing a 10% reduction across the board,
+but we will tailor this later based on plant operation.
+</notes>
+	<!-- Multiple treatments are possible -->
+	<adjustment src="5" coef=".9" />
+	<!--  Existing Adjustment Object -->
+	<adjustment src="4" coef=".75" />
+	<logicalSet>
+		<criteria attrib="huc8">03110206</criteria>
+		<!--
+		Contains these reaches (all are listed) :
+7,764
+7,765
+7,766
+7,767
+7,768
+7,769
+7,770
+7,771
+7,772
+7,773
+7,774
+7,775
+7,776
+7,777
+7,778
+7,779
+7,780
+7,781
+7,782
+65,077
+661,790
+661,810
+661,820
+661,830
+661,840
+		-->
+	</logicalSet>
+	<logicalSet>
+		<criteria attrib="huc6">031401</criteria>
+		<!--
+		Contains these reaches (first 4 listed) :
+8166
+8167
+8171
+8172
+
+Does not contain these reaches (4 listed) :
+8285
+8286
+8287
+8288
+		-->
+	</logicalSet>
+	<logicalSet>
+		<criteria attrib="huc4">0314</criteria>
+		<!--
+		Contains these reaches (first 4 listed) :
+8166
+8167
+8171
+8172
+
+Does not contain these reaches (4 listed) :
+8569
+8570
+8571
+8572
+		-->	
+	</logicalSet>
+	<logicalSet>
+		<criteria attrib="huc2">03</criteria>
+		<!--
+		Contains these reaches (first 4 listed) :
+4557
+4558
+4559
+4560
+
+Does not contain these reaches (4 listed) :
+16715
+16716
+16717
+16718
+		-->	
+	</logicalSet>
+	<logicalSet>
+		<criteria attrib="reach" relation="upstream">17142</criteria>
+		<!--
+		Contains these reaches (all listed) :
+17142 (the reach itself)
+17143
+17144
+17145
+17146
+		-->	
+	</logicalSet>
+</reachGroup>

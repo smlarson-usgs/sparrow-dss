@@ -1,0 +1,59 @@
+<sparrow-reach-response xmlns="http://www.usgs.gov/sparrow/id-response-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="50">
+	<success>true</success>
+	<results>4</results>
+	<status>OK</status>
+	<message/>
+	<reach>
+		<id>10444</id>
+		<name>LITTLE R</name>
+		<meanq>252.1</meanq>
+		<catch-area>76.42</catch-area>
+		<tot-contrib-area>765.2</tot-contrib-area>
+		<hucs>
+			<huc8 id="03070101" name=""/>
+			<huc6 id="030701" name=""/>
+			<huc4 id="0307" name=""/>
+			<huc2 id="03" name=""/>
+		</hucs>
+	</reach>
+	<reach>
+		<id>10460</id>
+		<name>LITTLE R</name>
+		<meanq>252.1</meanq>
+		<catch-area>6.18</catch-area>
+		<tot-contrib-area>771.38</tot-contrib-area>
+		<hucs>
+			<huc8 id="03070101" name=""/>
+			<huc6 id="030701" name=""/>
+			<huc4 id="0307" name=""/>
+			<huc2 id="03" name=""/>
+		</hucs>
+	</reach>
+	<reach>
+		<id>5476</id>
+		<name>LITTLE R</name>
+		<meanq>285.34</meanq>
+		<catch-area>34.75</catch-area>
+		<tot-contrib-area>824.3</tot-contrib-area>
+		<hucs>
+			<huc8 id="03040104" name=""/>
+			<huc6 id="030401" name=""/>
+			<huc4 id="0304" name=""/>
+			<huc2 id="03" name=""/>
+		</hucs>
+	</reach>
+	<reach>
+		<id>6576</id>
+		<name>LITTLE R</name>
+		<meanq>273.4</meanq>
+		<catch-area>63.29</catch-area>
+		<tot-contrib-area>791.97</tot-contrib-area>
+		<hucs>
+			<huc8 id="03060105" name=""/>
+			<huc6 id="030601" name=""/>
+			<huc4 id="0306" name=""/>
+			<huc2 id="03" name=""/>
+		</hucs>
+	</reach>
+</sparrow-reach-response>

@@ -1,0 +1,741 @@
+/* ext corrections */
+.x-panel-reset .x-panel-body i,
+.x-panel-reset .x-panel-body em,
+.x-panel-reset .x-panel-body b {
+	padding: 0 .3em;
+}
+
+/* Use a specific banner image */
+#header #banner-area {
+	background-image: url(../images/drought-flood_banner.jpg);
+}
+
+.export ul li{
+	list-style-type: disc;
+	margin-left: 3em;
+}
+
+img, body, html {
+	border: 0 none;
+}
+
+/* Turn css formatting back on, overriding ext */
+.enable-css ul {
+	list-style: disc inside none;
+}
+
+.enable-css ol {
+	list-style: decimal inside none;
+}
+
+.section {
+	margin-top: .8em; margin-bottom: .8em;
+}
+
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+
+.clearfix {
+	display: inline-block;
+}
+
+#models-area li {
+	list-style-type: none !important;
+}
+
+.sparrow-identify-mapped-value {
+	text-align: center;
+	font-size: 1.5em;
+	font-weight: bold;
+	padding: 0.5em;
+}
+
+html[xmlns] .clearfix {
+	display: block;
+}
+
+* html .clearfix {
+	height: 1%;
+}
+
+.basicList {
+	list-style-type: none !important;
+    margin-left: 25px;
+}
+.paragraph {
+    font: normal 12px tahoma, arial, helvetica, sans-serif;
+	margin: 1em 0;
+}
+.code {
+    background-color: #DFE8F6;
+    border: 1px dashed #999999;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.group_element {
+  position: relative;
+}
+
+.group_item {
+    background-color: #DFE8F6;
+    border: solid #8DB2E3 1px;
+    color: #15428B;
+    cursor: pointer;
+    font-family: tahoma,arial,helvetica,sans-serif;
+    font-size: 12px;
+    height: 50px;
+    margin: 5px 5px 0px 5px;
+    position: relative;
+}
+
+.group_toggle {
+  position: absolute;
+  top: 18px;
+  left: -5px;
+}
+
+.group_enabled {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+}
+
+.group_description {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  font-size: 80%;
+}
+
+.group_identify {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+}
+
+.group_edit {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+}
+
+.group_edit_list {
+    background-color: #ffe;
+    border: solid #bbb 1px;
+    font-family: tahoma,arial,helvetica,sans-serif;
+    font-size: 11px;
+    padding: 4px;
+    position: absolute;
+    right: 8px;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.group_edit_list a {
+  display: block;
+}
+
+.group_edit_list a:hover{
+  background-color: #bbb;
+}
+
+.group_reach {
+    border-bottom: dotted #bbb 1px;
+    background-color: white;
+    font-size: 80%;
+    font-family: tahoma,arial,helvetica,sans-serif;
+    height: 2.5em;
+    position: relative;
+    text-indent: 10px;
+}
+
+.reach_id_link {
+  position: absolute;
+  right: 8px;
+  bottom: 4px;
+}
+
+.reach_del_link {
+  position: absolute;
+  right: 8px;
+  top: 4px;
+}
+
+
+.group_title {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+}
+
+.controls-custom {
+  left:2em;
+  margin-left:0.5em;
+  position:absolute;
+  top: 0.5em;
+  z-index:998;
+}
+
+.sparrow-transparent {
+	background-color: transparent;
+}
+
+.map-sync-warning {
+  float: right;
+  height: auto;
+  right: 10px;
+  font-weight: bold;
+  position:absolute;
+  padding: 2px;
+  cursor: pointer;
+  bottom: 5px;
+  z-index:999;
+}
+
+.controls-custom img {
+  background-color: #F1EAD8;
+  border:2px outset gray;
+  cursor: pointer;
+}
+
+.background-highlight{
+	background-color: #FF9900;
+}
+.background-highlight button{
+	background-color: #FF9900;
+}
+.controls-custom a img {
+  background-color: #F1EAD8;
+  border:1px outset gray;
+  cursor: pointer;
+  float: left;
+  padding: 0.2em;
+}
+
+.controls-custom a:hover img {
+  border:1px inset gray;
+  background-color: #DED6A4;
+}
+
+.controls-custom .selected img {
+  border:1px inset gray;
+  background-color: #DED6A4;
+}
+
+
+.data_row {
+  width: 100%;
+}
+
+.data_header {
+  color: white;
+  background-color: #15428B;
+  font-weight: bold;
+  border-top: dotted gray 1px;
+}
+
+.col_7em {
+  width: 7em;
+  float: left;
+}
+
+
+.col_55 {
+  width: 55%;
+  float: left;
+}
+
+
+.col_50 {
+  width: 50%;
+  float: left;
+}
+
+.col_40 {
+  width: 40%;
+  float: left;
+}
+
+.col_30 {
+  width: 30%;
+  float: left;
+}
+
+.col_20 {
+  width: 20%;
+  float: left;
+}
+
+.col_25 {
+  width: 25%;
+  float: left;
+}
+
+.col_10 {
+  width: 10%;
+  float: left;
+}
+
+.bin_to {
+  float: left;
+}
+
+
+#map-options-tab select {
+  width: 100%;
+}
+
+#map-options-tab, #main-adjustments-tab, #main-targets-tab {
+  font-size: 80%;
+}
+
+#gcapi-graphs {
+	font-family: arial;
+	font-size: 13px;
+	font-weight: lighter
+}
+
+#graph_legend_table th {
+	text-align: center;
+}
+
+#graph_legend_table td {
+	padding-left: .75em;
+	padding-right: .75em;
+}
+
+#legend {
+   position:absolute;
+   bottom: 35px;
+   right: 10px;
+   z-index: 205;
+}
+
+#legend-table .unit {
+	font-weight: 600;
+}
+
+#legend-table .legend-title {
+	text-align: center; font-weight: bold; font-size: 115%;
+}
+
+.color_swatch {
+  height: 1.5em;
+  width: 1.5em;
+  border: solid black 1px;
+}
+
+legend {
+  font-weight: bold;
+  font-size: 120%;
+}
+
+fieldset {
+  position: relative; padding: 0.3em; margin: 0.3em;
+}
+
+a.helpLink {
+    font-size: 11px;
+	text-decoration: underline;
+}
+
+/* Link that performs an action when clicked */
+a.actionLink, a.actionLink:visited {
+	color: #003;
+}
+
+a.actionLink:hover {
+	color: #006;
+}
+
+
+
+
+/*map tools*/
+
+.selected-tool {
+	border: solid red 1px;
+}
+
+.map-tools {
+	z-index: 99;
+	position: absolute;
+	top: 5px;
+	left: 40px;
+}
+
+.hand-drag-icon {
+	background-image: url(../scrollable_map/images/draghand.gif) !important;
+}
+
+
+.id-reach-icon {
+	background-image: url(../images/identifygif.gif) !important;
+}
+
+.id-calib-icon {
+	background-image: url(../images/identifycalibgif.gif) !important;
+}
+
+.cursor-identify {
+	cursor: url('../images/identifyCur.cur'), pointer;
+}
+
+
+.zoom-in-icon {
+	background-image: url(../images/zoomInIcon.gif) !important;
+}
+
+.zoom-out-icon {
+	background-image: url(../images/zoomOutIcon.gif) !important;
+}
+
+.zoom-to-original-extent-icon {
+	background-image: url(../images/zoomToOriginalExtent.gif) !important;
+}
+
+.map-layers-icon {
+	background-image: url(../images/layersIcongif.gif) !important;
+}
+
+
+
+
+/*ID */
+.id-box-highlight {
+	position: absolute;
+	border: dashed black 2px;
+}
+
+
+.site-title, .site-title span a {
+	width: 100%;
+	background-color:#345280;
+	color:#FFFFFF;
+	font-size:120%;
+	font-weight:bold;
+}
+
+
+/* Model listing page PAGE */
+.model-item {
+	border: dotted black 1px;
+	margin: 1em;
+	padding: 5px;
+}
+
+.model-item .model-screenshot-area {
+	float: left;
+	height: 90px;
+	width: 177px;
+}
+
+.model-description-area {
+	margin-left: 180px;
+}
+
+.model-predefined-session-area ul {
+	padding-left: 1.2em;
+}
+
+.model-predefined-session-area {
+	clear: both;
+}
+
+.model-screenshot {
+	float: left;
+	margin-right: 5px;
+	border: solid gray 1px;
+	height: 85px;
+	width: 170px;
+}
+
+
+.model-title {
+	font-size: large;
+}
+
+.model-title a {
+	display: block;
+	outline: 0px;
+}
+
+.model-dateadded {
+	font-style: italic;
+}
+
+.model-description {
+
+
+}
+
+
+
+.model-screenshot:hover {
+	outline:5px solid #ddd;
+}
+
+/* help-content section */
+#help-content dt {
+	display: list-item;
+	font-weight: bolder;
+	text-decoration: underline;
+	list-style-type: none !important;
+	list-style: outside;
+	text-indent: .2em;
+	margin: .2em 0em;
+	padding-top: .8em;
+}
+#help-content dd {
+	/* display: block; */
+	text-indent: .5em;
+	margin: .1em;
+}
+
+/* Introduction of home page */
+#introduction h3, #introduction h4 {
+	display: inline-block; float: left; padding-right: 1em;
+}
+
+/* Screencasts */
+#screencasts-area {
+	display: block;	padding: 2px 0; margin: .7em 0;
+	border-top: solid 2px #ccc; border-bottom: solid 2px #ccc;
+}
+
+#screencasts-area h3, #screencasts-area h3 {
+	display: inline-block; float: left; padding-right: 1em;
+}
+
+#screencasts-area .screencast {
+	float: left; clear: none; width: 248px; padding: 4px; margin: .4em;
+}
+
+#screencasts-area .screencast object,
+#screencasts-area .screencast object embed {
+
+}
+
+/* Model listing options (for admin user) */
+#model-controls-area fieldset {
+	padding: .5em; border: dotted 1px #000;	background-color: #B3D1FF;
+}
+
+#model-controls-area legend {
+	display: block; background-color: #fff;
+	border-top: dotted 1px #000; border-bottom: dotted 1px #000;
+}
+
+#model-controls-area label {
+	font-weight: bold;
+}
+
+#model-controls-area fieldset span {
+	padding-right: 2em;
+}
+
+#model-controls-area .logout-link {
+	padding-left: 4em;
+}
+
+.logout-link {
+	/* margin-left: auto; margin-left: auto; */
+	text-align:center; font-style: italic;
+}
+
+/* Form formatting */
+
+form.export fieldset {
+	margin: .5em .2em; padding: .2em; border: none;
+}
+
+form.export fieldset.distinct {
+	border: 1px solid #666;
+}
+
+form.export fieldset.important {
+	border: 2px solid #b77; font-size: 110%;
+	margin-top: 1em; margin-bottom: 1.5em;
+}
+
+form.export fieldset legend {
+	font-style: italic; font-weight: bold; font-size: 110%;
+	border-bottom: 2px solid #666; padding: 0 4em 0 .5em; z-index: 99;
+}
+
+form.export fieldset fieldset legend {
+	font-style: italic; font-weight: bold; font-size: 100%; border: none; padding: 0;
+}
+
+form.export fieldset.important legend, form.export fieldset.distinct legend{
+	border: none;  padding-right: 1em;
+}
+
+form.export label {
+	font-style: normal; font-size: 100%;
+}
+
+.label-comment {
+	font-style: italic; font-size: 90%;
+}
+
+
+.visual-break {
+	padding: .1em; margin: .4em .1em;
+}
+
+.form-note {
+	font-style: italic; font-size: 100%; margin-left: .5em;
+}
+
+fieldset .form-note {
+	font-style: italic; font-size: 100%; margin-left: 1em;
+}
+
+fieldset fieldset .form-note {
+	font-style: italic; font-size: 100%; margin-left: 1.5em;
+}
+
+.disabled * { color: #333; }
+.disabled legend { color: #000; }
+
+
+/* TEXT FOR ADJUSTMENT AND TARGET TABS */
+
+.adjustment-tab-text {
+	border: 0px !important;
+	text-align: justify !important;
+	padding: 0.5em;
+}
+
+.target-tab-text {
+	border: 0px !important;
+	text-align: justify !important;
+	padding: 0.5em;
+}
+
+#help-content {
+	border: 0px !important;
+	padding: 1em;
+}
+
+#help-content h2 {
+	font-size: 1.5em;
+	background-color: #d0d0d0;
+}
+
+#help-content i {
+	padding-left: 0.25em;
+	padding-right: 0.25em;
+}
+
+#help-content b {
+	padding-left: 0.35em;
+	padding-right: 0.35em;
+}
+
+#help-content ul {
+	list-style-type: none !important;
+	list-style-position: inside;
+}
+
+/* Admin pages style */
+#pre-session-admin-list {
+	border-collapse:collapse;
+}
+
+#pre-session-admin-list td,  #pre-session-admin-list th {
+	border: 1px solid black;
+}
+
+.map-pane {
+	background-image: url('../scrollable_map/images/blank.gif') !important;
+}
+
+.cursor-hand-open {
+	cursor: url(../scrollable_map/images/handopen.cur), move !important;
+}
+
+.cursor-hand-closed {
+	cursor: url(../scrollable_map/images/handclose.cur), move !important;
+}
+
+.cursor-identify-point {
+	cursor: crosshair;
+}
+
+.cursor-hand-open {
+	cursor: url(../scrollable_map/images/handopen.cur), move !important;
+}
+
+.cursor-zoom-in {
+	cursor: url(../scrollable_map/images/zoomInCur.cur), crosshair !important;
+}
+
+.cursor-zoom-out {
+	cursor: url(../scrollable_map/images/zoomOutCur.cur), crosshair !important;
+}
+
+.ext-ie .x-btn button{width:100%; !important}
+
+/* This gives toolbar buttons the regular button style */
+.x-toolbar .x-btn-tl{
+	background-position: -6px 0;
+}
+.x-toolbar .x-btn-tr{
+	background-position: -9px 0;
+}
+.x-toolbar .x-btn-tc{
+	background-position: 0 -9px;
+}
+
+.x-toolbar .x-btn-ml{
+	background-position: -6px -24px;
+}
+.x-toolbar .x-btn-mr{
+	background-position: -9px -24px;
+}
+
+.x-toolbar .x-btn-mc{
+	background-position: 0 -2168px;
+}
+.x-toolbar .x-btn-bl{
+	background-position: -6px -3px;
+}
+.x-toolbar .x-btn-br{
+	background-position: -9px -3px;
+}
+.x-toolbar .x-btn-bc{
+	background-position: 0 -18px;
+}
+
+.light-blue {
+	background-color: #CEDFF5;
+}
+
+.zero-padding {
+	padding-top: 0px !important;
+	padding-bottom: 0px !important;
+	margin-top: 0px !important;
+	margin-bottom: 0px !important;
+}
+
+/* formatting for the color pallet (used on the custom bin dialog) */
+.x-color-palette {
+    width: 290px; height: 210px;
+}
+
+.x-color-palette a {
+    display: block; padding: 0; margin: 0; font-size: 1px;
+}
+
+.x-color-palette em span {
+    height: 12px; line-height: 1px; width: 12px;
+}

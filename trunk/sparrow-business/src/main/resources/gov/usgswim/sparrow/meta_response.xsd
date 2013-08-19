@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.usgs.gov/sparrow/meta_response/v0_1"
+            targetNamespace="http://www.usgs.gov/sparrow/meta_response/v0_1"
+            elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xsd:element name="models">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="model" type="ModelType" maxOccurs="unbounded"/>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="ModelType">
+		<xsd:sequence>
+			<xsd:element name="status" minOccurs="0">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="approved" type="xsd:boolean"/>
+						<xsd:element name="public" type="xsd:boolean"/>
+						<xsd:element name="archived" type="xsd:boolean"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="description" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="url" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="dateAdded" type="xsd:date"/>
+			<xsd:element name="contactId" type="xsd:integer"/>
+			<xsd:element name="enhNetworkId" type="xsd:integer"/>
+			<xsd:element name="bounds">
+			    <xsd:complexType>
+					<xsd:attribute name="north" use="required" type="xsd:decimal"/>
+					<xsd:attribute name="west" use="required" type="xsd:decimal"/>
+					<xsd:attribute name="south" use="required" type="xsd:decimal"/>
+					<xsd:attribute name="east" use="required" type="xsd:decimal"/>
+			    </xsd:complexType>
+			</xsd:element>
+			<xsd:element name="sources">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="source" type="SourceType"
+												 maxOccurs="unbounded"/>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:decimal" use="required"/>
+	</xsd:complexType>
+    <xsd:complexType name="SourceType">
+		<xsd:sequence>
+			<xsd:element name="name" type="xsd:string"/>
+			<xsd:element name="displayName" type="xsd:string"/>
+			<xsd:element name="description" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="constituent" type="xsd:string"/>
+			<xsd:element name="units" type="xsd:string" />
+		</xsd:sequence>
+		<xsd:attribute name="id" use="required" type="xsd:integer"/>
+		<xsd:attribute name="identifier" use="required" type="xsd:integer"/>
+		<xsd:attribute name="sortOrder" use="required" type="xsd:integer"/>
+    </xsd:complexType>
+</xsd:schema>

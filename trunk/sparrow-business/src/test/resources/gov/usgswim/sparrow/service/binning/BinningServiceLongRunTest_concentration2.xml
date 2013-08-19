@@ -1,0 +1,21 @@
+<PredictionContext xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="50">
+	<adjustmentGroups conflicts="accumulate">
+		<reachGroup enabled="true" name="MOBILE-TOMBIGBEE huc4 Group">
+			<desc />
+			<notes />
+			<adjustment src="5" coef="0.5" />
+			<logicalSet>
+				<criteria name="MOBILE-TOMBIGBEE" attrib="huc4" relation="in">0316</criteria>
+			</logicalSet>
+		</reachGroup>
+		<individualGroup enabled="true" />
+	</adjustmentGroups>
+	<analysis>
+		<dataSeries>total_concentration</dataSeries>
+		<groupBy aggFunction="avg" />
+	</analysis>
+	<terminalReaches />
+	<areaOfInterest />
+	<nominalComparison type="absolute" />
+</PredictionContext>

@@ -1,0 +1,200 @@
+
+.content { position: relative; }
+.content h1, .content h2, .content h3, content h4 { text-align: center; }
+.content h1 { margin-bottom: .2em; padding-bottom: .2em; }
+.content h2 { margin-bottom: .2em; padding-bottom: .1em; }
+.content h3 { margin-bottom: .1em; padding-bottom: .1em; }
+.content h4 { margin-bottom: .1em; padding-bottom: .1em; }
+.content h5 { margin-bottom: .1em; padding-bottom: .1em; }
+.content p { margin-top: .3em; margin-bottom: .3em; }
+
+/**
+Head Section */
+.explanation {
+	margin: .4em 0; padding: .3em; background-color: transparent;
+}
+
+/* was 160px */
+.explanation .figure,
+.explanation .inset-figure {
+	width: 450px; border: none; padding: 0; box-shadow: none; margin: .2em 1.5em .2em 1.5em; }
+.explanation .figure img,
+.explanation .inset-figure .img { width: 450px; }
+.explanation .figure img:hover,
+.explanation .inset-figure .img:hover  {
+	box-shadow: 4px 4px 2px rgba(50, 50, 250, 0.5); }
+
+.explanation .inset-figure { width: 160px; }
+.explanation .inset-figure img { width: 160px; }
+/* .explanation img { float: left; margin: .1em .6em .1em .2em; } */
+
+.explanation p, .explanation h1, .explanation h2, .explanation h3, .explanation h4 { clear: none; }
+
+.explanation .section { margin-top: 1em; margin-bottom: 1em; clear: both; position: relative;}
+.explanation .distinct { border: solid 1px #000 !important; }
+
+.explanation:after {
+	content: '.';
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+.explanation .section + .section { border-top: 2px solid #000; }
+
+.explanation h4 { margin-top: .4em; }
+
+
+.download-area {
+	position: absolute; right: .5em; bottom: .5em;
+}
+
+.explanation p { margin: .2em 0; }
+
+.columns-2 { border: solid 1px #000; border-left: none; /*width: auto; this messes up ie7 */ }
+.columns-2 .column { border-left: solid 1px #000; background-color:transparent !important; }
+.columns-2 .column .column { border: none; }
+
+.to-and-from-area { }
+
+/* jquery adds backgrounds and padding to these, which breaks the visual format*/
+#tabs, .report-container { background: none !important; background-color: transparent !important; }
+.ui-tabs-panel { padding: .1em .2em .1em .1em !important; }
+
+.report-container .controls { width: 100%;}
+.from-aggregate-area { background-color: transparent; }
+.to-downstream-reaches-area { background-color: transparent; }
+.column .content { padding: 0 .4em; }
+.export-area { clear: both; }
+.downstream-reaches-out-of-sync {
+	display: none; /* Initially not displayed */
+	padding: .3em; font-weight: bold; color: #300; border: solid 3px #900;
+}
+.downstream-reaches-list {
+	font-size: 75%;
+	max-height: 6em;
+	overflow-y: auto;
+
+}
+
+.report-area {
+	clear: both;	/* Don't let it float into or off the side of the column area above */
+	position: relative;	/* Allows it to be layout parent */
+	min-height: 10em;
+}
+.report-load-status {
+	display: none; /* Only shown when code turns it on */
+	background-color: #fff;
+	background-color: rgba(255, 255, 255, .8);
+	position: absolute;	top: 0; left: 0; width: 100%; height: 100%; padding: 0;
+	font-size: 200%;
+}
+.report-load-status .message { text-align: center; }
+
+.report-table-area table { 	border-collapse:collapse; background-color: #fff;	font-size: 90%; }
+
+table {
+
+}
+
+.report-table-area table, th, td { border: 1px solid black; padding: .6em; }
+
+table th {
+	font-weight: bold;
+	background-color: #ddd;
+}
+
+/**
+Relative percentage cells */
+td.rel-percent-in-col { padding: 0; }
+
+.rel-percent-in-col .value-wrap {
+	position: relative; display: block; width: 100%; height: 3em;
+}
+
+.value-wrap .report-percent-visualization {
+ position: absolute; top: 0; right: 0; height: 100%; margin: 0; padding: 0;
+ background-color: #ffc;  border-left: solid 1px #000;
+}
+/*
+.rel-percent-in-col .report-percent-visualization {
+ display: block; height: 100%; margin: 0; padding: 0;
+ position: absolute; top: 0; right: 0;
+ background-color: #ffc;  border-left: solid 1px #000;
+}
+*/
+.value-wrap .report-percent-value {
+	display: block; overflow: visible; z-index: 1;
+	position: absolute; top: 50%; left: 50%; width: 3em; height: 1em;
+	margin-left: -1.75em; margin-top: -.75em; padding: 0.5em;
+	text-align: center;
+	color: black; background-color: #ddd; background-color: rgba(213, 213, 213, .7);
+	border: none; border-radius: .4em;
+}
+
+rel-percent-in-row div {
+ bottom: 0; width: 100%; margin: 0; padding: 0;
+ background-color: #ffc;  border-top: solid 1px #000;
+}
+
+/* Uses the 'off right' technique to hide
+ * unused tabs instead of the 'display none' technique.
+ * This allows animations (in particular show / hide)
+ * to work correctly on hidden tabs.
+ */
+.ui-tabs .ui-tabs-hide {
+    position: absolute;
+    right: 90000px;
+		display: block !important;
+}
+
+
+.button-link {
+	display: inline-block; padding: .3em .6em;
+    background: #4479BA;
+    color: #FFF !important;
+		border: solid 1px #20538D;
+		border-radius: 4px;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4), 0 1px 1px rgba(0, 0, 0, 0.2);
+    -webkit-transition-duration: 0.2s;
+    -moz-transition-duration: 0.2s;
+    transition-duration: 0.2s;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+}
+.button-link:hover {
+    background: #356094;
+    border: solid 1px #2A4E77;
+    text-decoration: none;
+}
+.button-link:active {
+    -webkit-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+    -moz-box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+    background: #2E5481;
+    border: solid 1px #203E5F;
+}
+
+.figure {
+	position: relative; padding: 6px; margin: .5em; width: 337px; clear: both;
+	border: solid 1px #000;
+	box-shadow: 4px 4px 2px rgba(0, 0, 0, 0.2);
+}
+
+.figure .wrap { clear: both; position: relative; }
+.figure .wrap img {
+	display: block; margin: auto;
+	box-shadow: 4px 4px 2px rgba(0, 0, 0, 0.2); }
+.figure .caption { clear: both; }
+
+.cluster { float: left; clear: none;}
+
+#report-model-info {
+	text-align: center;
+}

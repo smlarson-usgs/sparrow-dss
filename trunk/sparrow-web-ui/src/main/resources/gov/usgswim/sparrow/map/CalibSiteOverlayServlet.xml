@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map_request datasource="sparrow" width="$width$" height="$height$" bgcolor="#ffffff"
+	antialiase="true" format="PNG8_STREAM" transparent="true">
+	<box>
+		<coordinates>$BBOX$</coordinates>
+	</box>
+	<themes>
+		<theme name="theme1">
+			<jdbc_query datasource="sparrow" jdbc_srid="8307" spatial_column="site_geom"
+				render_style="circle_marker"
+				>SELECT site_geom from model_calib_site_vw where sparrow_model_id = $model_id$</jdbc_query>
+		</theme>
+	</themes>
+	<styles>
+		<style name="circle_marker">
+			<svg width="1in" height="1in">
+				<g class="marker" style="width:8;height:8;stroke:white;fill:black;">
+					<circle r="8" />
+				</g>
+			</svg>
+		</style>
+	</styles>
+</map_request>

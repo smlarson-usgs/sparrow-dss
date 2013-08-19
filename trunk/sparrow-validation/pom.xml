@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>gov.usgs.cida</groupId>
+    <artifactId>sparrow-parent</artifactId>
+    <version>1.4.32-SNAPSHOT</version>
+  </parent>
+  <groupId>gov.usgs.cida</groupId>
+  <artifactId>sparrow-validation</artifactId>
+  <version>1.4.32-SNAPSHOT</version>
+  <name>sparrow-validation</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+	
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.0</version>
+        <executions>
+          <execution>
+						<id>Build_RunAllTests</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>gov.usgs.cida.sparrow.validation.RunAllTests</mainClass>
+                </transformer>
+              </transformers>
+              <artifactSet>
+                <excludes>
+                  <exclude>junit:junit</exclude>
+                </excludes>
+              </artifactSet>
+            </configuration>
+          </execution>
+          <execution>
+						<id>Build_RunAllDBOnlyTests</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+							<shadedArtifactAttached>true</shadedArtifactAttached>	<!-- Create additional jar -->
+              <shadedClassifierName>RunDbOnly</shadedClassifierName> <!-- add to name -->
+							
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>gov.usgs.cida.sparrow.validation.RunAllDBOnlyTests</mainClass>
+                </transformer>
+              </transformers>
+              <artifactSet>
+                <excludes>
+                  <exclude>junit:junit</exclude>
+                </excludes>
+              </artifactSet>
+            </configuration>
+          </execution>
+          <execution>
+						<id>Build_RunReachViewer</id>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+							<shadedArtifactAttached>true</shadedArtifactAttached>	<!-- Create additional jar -->
+              <shadedClassifierName>RunReachViewer</shadedClassifierName> <!-- add to name -->
+							
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>gov.usgs.cida.sparrow.validation.RunReachViewer</mainClass>
+                </transformer>
+              </transformers>
+              <artifactSet>
+                <excludes>
+                  <exclude>junit:junit</exclude>
+                </excludes>
+              </artifactSet>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+	
+  <dependencies>
+		<dependency>
+			<groupId>gov.usgs.cida</groupId>
+			<artifactId>sparrow-business</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
+		<!-- Normally provided in the deployed app, but this needs there during runtime -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6_g</artifactId>
+			<version>11.2.0.2.0-1</version>
+			<type>jar</type>
+		</dependency>
+  </dependencies>
+</project>

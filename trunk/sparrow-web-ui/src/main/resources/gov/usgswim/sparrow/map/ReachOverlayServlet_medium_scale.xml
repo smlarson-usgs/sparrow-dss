@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map_request datasource="sparrow" srid="8307" width="$width$" height="$height$" transparent="true"
+	bgcolor="#888888" antialiase="true" keepthemesorder="true" format="PNG8_STREAM">
+	<box>
+		<coordinates>$BBOX$</coordinates>
+	</box>
+	<!--
+	This somewhat crazy XML request just draws the reaches in black, even though
+	it ask for all the prediciton data to be joined.  The advantage is that it
+	allows MV to use the cached theme and to override the render style.
+	-->
+	<ns_data_provider provider_id="sparrowPredict" time_out="200000">
+		<parameters>
+			<parameter name="model-id">$model_id$</parameter>
+		</parameters>
+		<for_theme name="reach$model_id$" />
+		<custom_rendering_style name="Style$random$" />
+	<join spatial_key_column="identifier" />
+	</ns_data_provider>
+	
+	<themes>
+		<theme name="reach$model_id$" />
+	</themes>
+	<styles>
+		<style name="Style$random$">
+			<g class="line" style="stroke-width:.4;fill:#000000;">
+				<line class="base" style="stroke-width:.4;fill:#000000;" />
+			</g>
+		</style>
+	</styles>
+</map_request>

@@ -1,0 +1,8 @@
+<!-- JNDI Properties for Sparrow Map clustering -->
+<Environment 
+		name="sparrowCoreServer" 
+		value="cida-wiwsc-int-mvprod1.er.usgs.gov"
+         type="java.lang.String" 
+         override="true"
+/>
+<!-- /JNDI Properties for Sparrow Map clustering -->

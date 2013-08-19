@@ -1,0 +1,15 @@
+<PredictionContext xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="50">
+	<adjustmentGroups conflicts="accumulate">
+		<individualGroup enabled="true" />
+	</adjustmentGroups>
+	<analysis>
+		<dataSeries>incremental_delivered_yield</dataSeries>
+		<groupBy aggFunction="avg" />
+	</analysis>
+	<terminalReaches>
+		<reach id="10075" name="BOGUE CHITO R" />
+	</terminalReaches>
+	<areaOfInterest />
+	<nominalComparison type="none" />
+</PredictionContext>

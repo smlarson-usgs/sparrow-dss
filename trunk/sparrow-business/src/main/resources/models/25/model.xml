@@ -1,0 +1,325 @@
+<Model id="25">
+	<Authors>
+		<Author id="1">
+			<Name>First name, last name</Name>
+			<Link/>
+		</Author>
+	</Authors>
+	<Model_name>National Total Dissolved Solids</Model_name>
+	<MRB>MRB06</MRB>
+	<Constituent>
+		<Name>Total Dissolved Solids</Name>
+		<Units>kg/yr</Units>
+		<Description>2000 National SPARROW model of dissolved-solids transport</Description>
+	</Constituent>
+	<Sources>
+		<Source id="All">
+			<Name>All</Name>
+			<Units/>
+			<Description>All sources combined.</Description>
+		</Source>
+		<Source id="1">
+			<Name>Carbonate resid, high</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Carbonate residual material, high yielding. </Description>
+		</Source>
+		<Source id="2">
+			<Name>Carbonate resid, low</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Carbonate residual material, low yieldings.</Description>
+		</Source>
+		<Source id="3">
+			<Name>Noncarbonate resid, high</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Noncarbonate residual material, high yielding.</Description>
+		</Source>
+		<Source id="4">
+			<Name>Noncarbonate resid, low</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Noncarbonate residual material, low yielding.</Description>
+		</Source>
+		<Source id="5">
+			<Name>Alk. intrusive volcanic rock</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Alkaline intrusive volcanic rock.</Description>
+		</Source>
+		<Source id="6">
+			<Name>Silicic residual, high</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Silicic residual material, high yielding.</Description>
+		</Source>
+		<Source id="7">
+			<Name>Silicic residual, low</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Silicic residual material, low yielding.</Description>
+		</Source>
+		<Source id="8">
+			<Name>Extrusive volcanic rock</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Extrusive volcanic rock.</Description>
+		</Source>
+		<Source id="9">
+			<Name>Colluvial sediment, high</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Colluvial sediment, high yielding.</Description>
+		</Source>
+		<Source id="10">
+			<Name>Colluvial sediment, mod</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Colluvial sediment, moderate yielding.</Description>
+		</Source>
+		<Source id="11">
+			<Name>Colluvial sediment, low</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Colluvial sediment, low yielding.</Description>
+		</Source>
+		<Source id="12">
+			<Name>Glacial till, clayey</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Glacial till, clayey.</Description>
+		</Source>
+		<Source id="13">
+			<Name>Glacial till, loamy, high</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Glacial till, loamy, high yielding.</Description>
+		</Source>
+		<Source id="14">
+			<Name>Glacial till, loamy, low</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Glacial till, loamy, low yielding.</Description>
+		</Source>
+		<Source id="15">
+			<Name>Glacial till, coarse, high</Name>
+			<Units>kg/yr</Units>
+			<Description>Dissolved solids from Glacial till, coarse textured, high yielding.</Description>
+		</Source>
+		<Source id="16">
+			<Name>Glacial till, coarse, low</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Glacial till, coarse textured, low yielding. </Description>
+		</Source>
+		<Source id="17">
+			<Name>Glacial outwash coarse, high</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Glacial outwash and glacial lake sediment, coarse textured, high yielding.</Description>
+		</Source>
+		<Source id="18">
+			<Name>Glacial outwash coarse, low</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Glacial outwash and glacial lakesediment, coarse textured, low yielding.</Description>
+		</Source>
+		<Source id="19">
+			<Name>Glacial lake, fine, high</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Glacial lake sediment, fine textured, high yielding.</Description>
+		</Source>
+		<Source id="20">
+			<Name>Glacial lake, fine, low</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Glacial lake sediment, fine textured, low yielding.</Description>
+		</Source>
+		<Source id="21">
+			<Name>Eolian, coarse (sand dunes)</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Eolian sediment, coarse textured (sand dunes).</Description>
+		</Source>
+		<Source id="22">
+			<Name>Eolian, fine (loess), high</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Eolian sediment, fine textured (glacial loess), high yielding.</Description>
+		</Source>
+		<Source id="23">
+			<Name>Eolian, fine (loess), mod</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Eolian sediment, fine textured (glacial loess), moderate yielding.</Description>
+		</Source>
+		<Source id="24">
+			<Name>Eolian, fine (loess), non-yld</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Eolian sediment, fine textured (glacial loess), non-yielding.</Description>
+		</Source>
+		<Source id="25">
+			<Name>Saline lake sediment</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Saline lake sediment.</Description>
+		</Source>
+		<Source id="26">
+			<Name>Alluvium/coastal, high</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Alluvium and fine-textured coastal zone sediment, high yielding.</Description>
+		</Source>
+		<Source id="27">
+			<Name>Alluvium/coastal, low</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Alluvium and fine-textured coastal zone sediment, low yielding.</Description>
+		</Source>
+		<Source id="28">
+			<Name>Coastal zone, coarse, high</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Coastal zone sediment, coarse-textured, high yielding.</Description>
+		</Source>
+		<Source id="29">
+			<Name>Coastal zone, coarse, low/Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Coastal zone sediment, coarse-textured, low-yielding.</Description>
+		</Source>
+		<Source id="30">
+			<Name>Hydric soils, peat and muck</Name>
+			<Units>kg/yr</Units>
+			<Description>Dissolved solids from Hydric soils, peat and muck.</Description>
+		</Source>
+		<Source id="31">
+			<Name>Water (undiff submerged lith)</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from undifferentiated submerged lithologies). </Description>
+		</Source>
+		<Source id="32">
+			<Name>Cultivated land</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Cultivated land.</Description>
+		</Source>
+		<Source id="33">
+			<Name>Pasture land</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Pasture land.</Description>
+		</Source>
+		<Source id="34">
+			<Name>Urban land</Name>
+			<Units>sq km</Units>
+			<Description>Dissolved solids from Urban land.</Description>
+		</Source>
+		<Source id="35">
+			<Name>Road de-icers</Name>
+			<Units>kg/year</Units>
+			<Description>Dissolved solids from Road de-icers.</Description>
+		</Source>
+		<Source id="36">
+			<Name>Boundary inflow</Name>
+			<Units>kg/year</Units>
+			<Description>Dissolved solids entering the the United States through stream fluxes at international boundaries with Canada or Mexico.</Description>
+		</Source>
+		<Source id="37">
+			<Name>Nominal input</Name>
+			<Units>kg/year</Units>
+			<Description>A nominal input of 1 kg/yr of dissolved solids to ensure non-zero fluxes in every catchment.</Description>
+		</Source>
+	</Sources>
+	<Model_papers>
+		<Paper id="1">
+			<Link link=""/>
+			<Citation_mods>
+				<identifier type=""/>
+				<identifier type=""/>
+				<identifier type=""/>
+				<genre/>
+				<titleInfo>
+					<title/>
+				</titleInfo>
+				<originInfo>
+					<dateOther/>
+					<publisher/>
+					<placeTerm/>
+				</originInfo>
+				<name>
+					<namePart/>
+					<role>Author</role>
+				</name>
+				<physicalDescription>
+					<form/>
+					<form/>
+					<form/>
+				</physicalDescription>
+				<note type="citation/reference"/>
+				<edition/>
+				<languageTerm/>
+			</Citation_mods>
+		</Paper>
+	</Model_papers>
+	<CommonTerms>
+		<Term id="For Source">
+			Each model has different sources that the modeler has determined to be statistically significant.
+			Choose a source from the list to present data only from that source.  This model contains these sources:
+			
+			<dl>
+				<!-- These names could be improved, do we have updated info from Greg? -->
+				<dt>All</dt>
+				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
+				<dt>Carbonate residual material, high yielding</dt>
+				<dd>Dissolved solids from Carbonate residual material, high yielding.</dd>
+				<dt>Carbonate residual material, low yielding</dt>
+				<dd>Dissolved solids from Carbonate residual material, low yielding.</dd>
+				<dt>Noncarbonate residual material, high yielding</dt>
+				<dd>Dissolved solids from Noncarbonate residual material, high yielding.</dd>				
+				<dt>Noncarbonate residual material, low yielding</dt>
+				<dd>Dissolved solids from Noncarbonate residual material, low yielding.</dd>
+				<dt>Alkaline intrusive volcanic rock</dt>
+				<dd>Dissolved solids from Alkaline intrusive volcanic rock.</dd>
+				<dt>Silicic residual material, high yielding</dt>
+				<dd>Dissolved solids from Silicic residual material, high yielding.</dd>
+				<dt>Silicic residual material, low yielding</dt>
+				<dd>Dissolved solids from Silicic residual material, low yielding.</dd>
+				<dt>Extrusive volcanic rock</dt>
+				<dd>Dissolved solids from Extrusive volcanic rock.</dd>
+				<dt>Colluvial sediment, high yielding</dt>
+				<dd>Dissolved solids from Colluvial sediment, high yielding.</dd>
+				<dt>Colluvial sediment, moderate yielding</dt>
+				<dd>Dissolved solids from Colluvial sediment, moderate yielding.</dd>
+				<dt>Colluvial sediment, low yielding</dt>
+				<dd>Dissolved solids from Colluvial sediment, low yielding.</dd>
+				<dt>Glacial till, clayey</dt>
+				<dd>Dissolved solids from Glacial till, clayey.</dd>
+				<dt>Glacial till, loamy, high yielding</dt>
+				<dd>Dissolved solids from Glacial till, loamy, high yielding.</dd>
+				<dt>Glacial till, loamy, low yielding</dt>
+				<dd>Dissolved solids from Glacial till, loamy, low yielding.</dd>
+				<dt>Glacial till, coarse textured, high yielding</dt>
+				<dd>Dissolved solids from Glacial till, coarse textured, high yielding.</dd>
+				<dt>Glacial till, coarse textured, low yielding</dt>
+				<dd>Dissolved solids from Glacial till, coarse textured, low yielding. </dd>
+				<dt>Glacial outwash and glacial lake sediment, coarse textured, high yielding</dt>
+				<dd>Dissolved solids from Glacial outwash and glacial lake sediment, coarse textured, high yielding.</dd>
+				<dt>Glacial outwash and glacial lake sediment, coarse textured, low yielding</dt>
+				<dd>Dissolved solids from Glacial outwash and glacial lake sediment, coarse textured, low yielding.</dd>				
+				<dt>Glacial lake sediment, fine textured, high yielding</dt>
+				<dd>Dissolved solids from Glacial lake sediment, fine textured, high yielding.</dd>
+				<dt>Glacial lake sediment, fine textured, low yielding</dt>
+				<dd>Dissolved solids from Glacial lake sediment, fine textured, low yielding.</dd>
+				<dt>Eolian sediment, coarse textured (sand dunes)</dt>
+				<dd>Dissolved solids from Eolian sediment, coarse textured (sand dunes).</dd>
+				<dt>Eolian sediment, fine textured (glacial loess), high yielding</dt>
+				<dd>Dissolved solids from Eolian sediment, fine textured (glacial loess), high yielding.</dd>
+				<dt>Eolian sediment, fine textured (glacial loess), moderate yielding</dt>
+				<dd>Dissolved solids from Eolian sediment, fine textured (glacial loess), moderate yielding.</dd>
+				<dt>Eolian sediment, fine textured (glacial loess), non-yielding</dt>
+				<dd>Dissolved solids from Eolian sediment, fine textured (glacial loess), non-yielding.</dd>
+				<dt>Saline lake sediment</dt>
+				<dd>Dissolved solids from Saline lake sediment.</dd>
+				<dt>Alluvium and fine-textured coastal zone sediment, high yielding</dt>
+				<dd>Dissolved solids from Alluvium and fine-textured coastal zone sediment, high yielding.</dd>
+				<dt>Alluvium and fine-textured coastal zone sediment, low yielding</dt>
+				<dd>Dissolved solids from Alluvium and fine-textured coastal zone sediment, low yielding.</dd>
+				<dt>Coastal zone sediment, coarse-textured, high yielding</dt>
+				<dd>Dissolved solids from Coastal zone sediment, coarse-textured, high yielding.</dd>
+				<dt>Coastal zone sediment, coarse-textured, low-yielding</dt>
+				<dd>Dissolved solids from Coastal zone sediment, coarse-textured, low-yielding.</dd>
+				<dt>Hydric soils, peat and muck</dt>
+				<dd>Dissolved solids from Hydric soils, peat and muck.</dd>
+				<dt>Water (undifferentiated submerged lithologies)</dt>
+				<dd>Dissolved solids from undifferentiated submerged lithologies).</dd>
+				<dt>Cultivated land</dt>
+				<dd>Dissolved solids from Cultivated land.</dd>
+				<dt>Pasture land</dt>
+				<dd>Dissolved solids from Pasture land.</dd>
+				<dt>Urban land</dt>
+				<dd>Dissolved solids from Urban land.</dd>
+				<dt>Road de-icers</dt>
+				<dd>Dissolved solids from Road de-icers.</dd>
+				<dt>Boundary inflow</dt>
+				<dd>Dissolved solids entering the the United States through stream fluxes at international boundaries with Canada or Mexico.</dd>
+				<dt>Nominal input</dt>
+				<dd>A nominal input of 1 kg/yr of dissolved solids to ensure non-zero fluxes in every catchment.</dd>
+			</dl>
+		</Term>
+	</CommonTerms>
+		
+</Model>

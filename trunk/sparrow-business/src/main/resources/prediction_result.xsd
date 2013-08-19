@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://www.usgs.gov/sparrow/prediction-response/v0_1"
+	targetNamespace="http://www.usgs.gov/sparrow/prediction-response/v0_1"
+	elementFormDefault="qualified" xmlns:req="http://www.usgs.gov/sparrow/prediction-request/v0_1">
+	<xsd:import namespace="http://www.usgs.gov/sparrow/prediction-request/v0_1"
+		schemaLocation="prediction_request.xsd" />
+
+	<xsd:annotation>
+		<xsd:documentation>This xsd defines the structure of the XML response for a request for prediction result data.</xsd:documentation>
+	</xsd:annotation>
+	<xsd:element name="sparrow-prediction-response" type="sparrow-prediction-response-type" />
+
+	<xsd:complexType name="sparrow-prediction-response-type">
+		<xsd:sequence>
+			<xsd:element name="request" type="req:sparrow-prediction-request-type" minOccurs="0" />
+			<xsd:element name="response" type="prediction-result-type" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="prediction-result-type">
+		<xsd:sequence>
+			<xsd:element name="metadata">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="columns">
+							<xsd:complexType>
+								<xsd:choice>
+									<xsd:sequence>
+										<xsd:element name="col" minOccurs="1" maxOccurs="unbounded"
+											type="column-metadata" />
+									</xsd:sequence>
+									<xsd:sequence>
+										<xsd:element name="group" minOccurs="1"
+											maxOccurs="unbounded" type="grouped-column-metadata" />
+									</xsd:sequence>
+								</xsd:choice>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+					<xsd:attribute name="rowCount" />
+					<xsd:attribute name="columnCount" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:element name="data">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="r" minOccurs="1" maxOccurs="unbounded">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="c" maxOccurs="unbounded" />
+								</xsd:sequence>
+								<xsd:attribute name="id" use="required" type="xsd:integer" />
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="column-metadata">
+		<xsd:sequence>
+			<xsd:element name="short-description" minOccurs="0" />
+			<xsd:element name="full-description" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="name" use="required" />
+		<xsd:attribute name="type" use="required" />
+		<xsd:attribute name="unit">
+			<xsd:annotation>
+				<xsd:documentation>
+          For columns with associated measurement units, the unit attribute is
+					the name of the unit.  Examples unit values:  'Percent', 'Pounds',
+          'Miles'.
+        </xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+		<xsd:attribute name="unit-abbr">
+			<xsd:annotation>
+				<xsd:documentation>
+          For columns with units, the unit-abbr is the abbreviated suffix that
+					can be appended to values when displayed.
+          Examples unit-abbr values:  '%', 'lbs', 'mi'.
+        </xsd:documentation>
+			</xsd:annotation>
+		</xsd:attribute>
+	</xsd:complexType>
+	<xsd:complexType name="grouped-column-metadata">
+		<xsd:sequence>
+			<xsd:element name="short-description" minOccurs="0" />
+			<xsd:element name="full-description" minOccurs="0" />
+			<xsd:element name="col" minOccurs="0" maxOccurs="unbounded" type="column-metadata" />
+		</xsd:sequence>
+		<xsd:attribute name="name" use="required" />
+	</xsd:complexType>
+
+
+</xsd:schema>

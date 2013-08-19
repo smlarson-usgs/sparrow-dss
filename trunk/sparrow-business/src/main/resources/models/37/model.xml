@@ -1,0 +1,109 @@
+<Model id="37">
+	<Authors>
+		<Author id="1">
+			<Name>Last, first</Name>
+			<Link/>
+		</Author>
+	</Authors>
+	<Model_name>MARB TN</Model_name>
+	<MRB>MARB</MRB>
+	<Constituent>
+		<Name>Nitrogen</Name>
+		<Units>kg/yr</Units>
+		<Description> 2002 Total Nitrogen Model for the Mississippi Atchafalaya Basin</Description>
+	</Constituent>
+	<Sources>
+		<Source id="All">
+			<Name>All</Name>
+			<Units/>
+			<Description>All sources combined.</Description>
+		</Source>
+		<Source id="1">
+			<Name>Waste Water Treatment Plants</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen from Waste Water Treatment Plants 2002, kg (PCS)</Description>
+		</Source>
+		<Source id="2">
+			<Name>Atmosphere</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen from Atmospheric Deposition 2002, kg (CMAQ)</Description>
+		</Source>
+		<Source id="3">
+			<Name>Manure (confined)</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen from Manure in Confined Operations 2002, kg</Description>
+		</Source>
+		<Source id="4">
+			<Name>Fertilizers (farm)</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen from Farm Fertilizers 2002, kg</Description>
+		</Source>
+		<Source id="5">
+			<Name>Fixation</Name>
+			<Units>kg</Units>
+			<Description>Nitrogen from fixation by soybeans and alfalfa 2002, kg</Description>
+		</Source>
+		<Source id="6">
+			<Name>Urban and Open Areas</Name>
+			<Units>sq km</Units>
+			<Description>Urban and Developed Land, 2001 NLCD</Description>
+		</Source>
+	</Sources>
+	<Model_papers>
+		<Paper id="1">
+			<Link link=""/>
+			<Citation_mods>
+				<identifier type=""/>
+				<identifier type=""/>
+				<identifier type=""/>
+				<genre/>
+				<titleInfo>
+					<title/>
+				</titleInfo>
+				<originInfo>
+					<dateOther/>
+					<publisher/>
+					<placeTerm/>
+				</originInfo>
+				<name>
+					<namePart/>
+					<role>Author</role>
+				</name>
+				<physicalDescription>
+					<form/>
+					<form/>
+					<form/>
+				</physicalDescription>
+				<note type="citation/reference"/>
+				<edition/>
+				<languageTerm/>
+			</Citation_mods>
+		</Paper>
+	</Model_papers>
+	<CommonTerms>
+		<Term id="For Source">
+			Each model has different sources that the modeler has determined to be statistically significant.
+			Choose a source from the list to present data only from that source.  This model contains these sources:
+			
+			<dl>
+				<!-- These names could be improved, do we have updated info from Greg? -->
+				<dt>All</dt>
+				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
+				<dt>Waste Water Treatment Plants</dt>
+				<dd>Nitrogen from Waste Water Treatment Plants 2002, kg (PCS).</dd>
+				<dt>Atmosphere</dt>
+				<dd>Nitrogen from Atmospheric Deposition 2002, kg (CMAQ).</dd>
+				<dt>Manure (confined)</dt>
+				<dd>Nitrogen from Manure in Confined Operations 2002, kg.</dd>
+				<dt>Fertilizers (farm)</dt>
+				<dd>Nitrogen from Farm Fertilizers 2002, kg.</dd>				
+				<dt>Fixation</dt>
+				<dd>Nitrogen from fixation by soybeans and alfalfa 2002, kg.</dd>
+				<dt>Urban and Open Areas</dt>
+				<dd>Urban and Developed Land, 2001 NLCD, sqkm.</dd>
+
+			</dl>
+		</Term>
+	</CommonTerms>
+		
+</Model>

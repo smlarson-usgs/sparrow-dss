@@ -1,0 +1,102 @@
+<Model id="41">
+	<Authors>
+		<Author id="1">
+			<Name>First name, last name</Name>
+			<Link/>
+		</Author>
+	</Authors>
+	<Model_name>MRB03 Nitrogen</Model_name>
+	<MRB>MRB03</MRB>
+	<Constituent>
+		<Name>Nitrogen</Name>
+		<Units>kg/yr</Units>
+		<Description> 2002 Total Nitrogen Model for MRB3</Description>
+	</Constituent>
+	<Sources>
+		<Source id="All">
+			<Name>All</Name>
+			<Units/>
+			<Description>All sources combined.</Description>
+		</Source>
+		<Source id="1">
+			<Name>Point Sources (Total)</Name>
+			<Units>kg</Units>
+			<Description>PCS Nitrogen 2002, kg (total)</Description>
+		</Source>
+		<Source id="2">
+			<Name>Atmosphere (Total)</Name>
+			<Units>kg</Units>
+			<Description>Atmos Dep 2002, TIN</Description>
+		</Source>
+		<Source id="3">
+			<Name>Manure (confined)</Name>
+			<Units>kg</Units>
+			<Description>Sum total of Nitrogen from Manure in Confined Operations (kg)</Description>
+		</Source>
+		<Source id="4">
+			<Name>Fertilizers (farm)</Name>
+			<Units>kg</Units>
+			<Description>Sum total of Nitrogen from Farms (kg)</Description>
+		</Source>
+		<Source id="5">
+			<Name>Agricultural Area</Name>
+			<Units>kg/ha2</Units>
+			<Description>Agricultural Area</Description>
+		</Source>
+	</Sources>
+	<Model_papers>
+		<Paper id="1">
+			<Link link=""/>
+			<Citation_mods>
+				<identifier type=""/>
+				<identifier type=""/>
+				<identifier type=""/>
+				<genre/>
+				<titleInfo>
+					<title/>
+				</titleInfo>
+				<originInfo>
+					<dateOther/>
+					<publisher/>
+					<placeTerm/>
+				</originInfo>
+				<name>
+					<namePart/>
+					<role>Author</role>
+				</name>
+				<physicalDescription>
+					<form/>
+					<form/>
+					<form/>
+				</physicalDescription>
+				<note type="citation/reference"/>
+				<edition/>
+				<languageTerm/>
+			</Citation_mods>
+		</Paper>
+	</Model_papers>
+	<CommonTerms>
+		<Term id="For Source">
+			Each model has different sources that the modeler has determined to be statistically significant.
+			Choose a source from the list to present data only from that source.  This model contains these sources:
+			
+			<dl>
+				<!-- These names could be improved, do we have updated info from Greg? -->
+				<dt>All</dt>
+				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
+				<dt>Point Sources (Total)</dt>
+				<dd>PCS Nitrogen 2002, kg (total)</dd>
+				<dt>Atmosphere (Total)</dt>
+				<dd>Atmospheric Deposition 2002, TIN</dd>
+				<dt>Manure (confined)</dt>
+				<dd>Sum total of Nitrogen from Manure in Confined Operations (kg)</dd>
+				<dt>Fertilizers (farm)</dt>
+				<dd>Sum total of Nitrogen from Farms (kg)</dd>				
+				<dt>Agricultural Area</dt>
+				<dd>Agricultural Area</dd>
+
+			</dl>
+		</Term>
+	</CommonTerms>
+		
+</Model>
