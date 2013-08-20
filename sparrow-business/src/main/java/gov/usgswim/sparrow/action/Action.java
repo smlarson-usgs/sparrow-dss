@@ -180,14 +180,22 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	}
 
 	/**
-	 * Override to add validation errors.
+	 * Override to validate the caller supplied parameters.
+	 * 
+	 * This method is called <em>before</em> initFileds() is called and is
+	 * intended to validate the caller parameters only.  It may later not be
+	 * possible to initFields(), but that is <i>Exception</i>al.
 	 *
-	 * If implementations call addValidationError(), an error will be recorded
-	 * and the doAction() method will not be called.  The run() method will
+	 * Implementations can call addValidationError(), which will be record the
+	 * error.  Any recorded errors will prevent initiFields() and doAction()
+	 * from being called.  The run() argument will return null and the call
+	 * can call get/hasValidationErrors to determine the cause.
+	 * 
+	 * Note that calling addValidateError() with a null argument will not add
+	 * an error message, to simplify implementations.
+	 * method will not be called.  The run() method will
 	 * return null.
 	 *
-	 * This method should validate the values the action was given from the caller
-	 * and not attempt to load its own data to perform additional validations.
 	 */
 	protected void validate() {
 		//Default implementation does nothing.
@@ -198,7 +206,10 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	 * Implementations can override to initiate fields they need to do the calculation.
 	 * For instance, if they are passed only a model ID, they can load the model
 	 * data in this method.
-	 * @throws Exception
+	 * 
+	 * This method is called after validate().  
+	 * 
+	 * @throws Exception If required values cannot be initialized.
 	 */
 	protected void initFields() throws Exception {
 		//Default implementation does nothing.
@@ -1062,6 +1073,43 @@ public abstract class Action<R extends Object> implements IAction<R> {
 			ins = Action.class.getResourceAsStream(path);
 		}
 		return ins;
+	}
+	
+	/**
+	 * Breaks the passed list into sublists of the specified size.
+	 * 
+	 * This can be used to split query parameters into batches to deal w/ parameter
+	 * count limitations (ie, you can only have 1K params in a SQL IN clause).
+	 * 
+	 * This method uses List.subList(), so the destinationListOfLists is
+	 * backed by the sourceList.  Do not modify the source list or the
+	 * destination lists will be invalid.
+	 * 
+	 * @param destinationListOfLists List of Lists to split the lists into
+	 * @param sourceList	Source list
+	 * @param itemCountInSublists	Number of items allowed in each sublist.
+	 */
+	protected static <T> void splitListIntoSubLists(List<List<T>> destinationListOfLists,
+			List<T> sourceList, int itemCountInSublists) {
+		
+		List<List<T>> listOfLists = destinationListOfLists;	//shorter name
+		
+
+		int startIndexInclusive = 0;
+		int endIndexExclusive = 0;	//will be assigned
+
+		while (startIndexInclusive < sourceList.size()) {
+			endIndexExclusive = startIndexInclusive + itemCountInSublists;
+
+			if (endIndexExclusive > sourceList.size()) {
+				endIndexExclusive = sourceList.size();
+			}
+
+			listOfLists.add(sourceList.subList(startIndexInclusive, endIndexExclusive));
+
+			startIndexInclusive = endIndexExclusive;
+		}
+
 	}
 
 }

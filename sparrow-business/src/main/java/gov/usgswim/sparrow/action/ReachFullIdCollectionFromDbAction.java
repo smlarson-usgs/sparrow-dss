@@ -104,6 +104,9 @@ public class ReachFullIdCollectionFromDbAction extends Action<List<ReachFullId>>
 			result.add(fullId);
 		}
 		
+		//Preemptive, otherwise we wait for the entire action to finish
+		rs.close();
+		
 		return result;
 	}
 	

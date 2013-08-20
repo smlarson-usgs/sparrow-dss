@@ -9,7 +9,9 @@ import gov.usgswim.sparrow.domain.DataSeriesType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import static junit.framework.Assert.assertEquals;
 import org.junit.Before;
 
 import org.junit.Test;
@@ -150,5 +152,136 @@ public class ActionUnitTest extends JDBCTestCaseAdapter {
 				act.getDataSeriesProperty(DataSeriesType.total, false, "Not Found"));
 		assertEquals("Not Found",
 				act.getDataSeriesProperty("does_not_exist", false, "Not Found"));
+	}
+	
+	public void testSplitListIntoSubLists_10_2() {
+		List<Long> sourceIds = new ArrayList<Long>();
+		List<List<Long>> destIds = new ArrayList<List<Long>>();
+		
+		for (long ids = 0; ids < 10; ids++) {
+			sourceIds.add(ids);
+		}
+		
+		ActionWrapper action = new ActionWrapper();
+		action.testSplitListIntoSubLists(destIds, sourceIds, 2);
+		
+		assertEquals(5, destIds.size());
+		assertEquals(2, destIds.get(0).size());
+		assertEquals(new Long(0), destIds.get(0).get(0));
+		assertEquals(new Long(1), destIds.get(0).get(1));
+		assertEquals(2, destIds.get(1).size());
+		assertEquals(2, destIds.get(2).size());
+		assertEquals(2, destIds.get(3).size());
+		assertEquals(2, destIds.get(4).size());
+		assertEquals(new Long(8), destIds.get(4).get(0));
+		assertEquals(new Long(9), destIds.get(4).get(1));
+	}
+	
+	public void testSplitListIntoSubLists_10_3() {
+		List<Long> sourceIds = new ArrayList<Long>();
+		List<List<Long>> destIds = new ArrayList<List<Long>>();
+		
+		for (long ids = 0; ids < 10; ids++) {
+			sourceIds.add(ids);
+		}
+		
+		ActionWrapper action = new ActionWrapper();
+		action.testSplitListIntoSubLists(destIds, sourceIds, 3);
+		
+		assertEquals(4, destIds.size());
+		assertEquals(3, destIds.get(0).size());
+		assertEquals(new Long(0), destIds.get(0).get(0));
+		assertEquals(new Long(1), destIds.get(0).get(1));
+		assertEquals(new Long(2), destIds.get(0).get(2));
+		assertEquals(3, destIds.get(1).size());
+		assertEquals(3, destIds.get(2).size());
+		assertEquals(1, destIds.get(3).size());
+		assertEquals(new Long(9), destIds.get(3).get(0));
+	}
+	
+	public void testSplitListIntoSubLists_10_4() {
+		List<Long> sourceIds = new ArrayList<Long>();
+		List<List<Long>> destIds = new ArrayList<List<Long>>();
+		
+		for (long ids = 0; ids < 10; ids++) {
+			sourceIds.add(ids);
+		}
+		
+		ActionWrapper action = new ActionWrapper();
+		action.testSplitListIntoSubLists(destIds, sourceIds, 4);
+		
+		assertEquals(3, destIds.size());
+		assertEquals(4, destIds.get(0).size());
+		assertEquals(new Long(0), destIds.get(0).get(0));
+		assertEquals(new Long(1), destIds.get(0).get(1));
+		assertEquals(new Long(2), destIds.get(0).get(2));
+		assertEquals(new Long(3), destIds.get(0).get(3));
+		assertEquals(4, destIds.get(1).size());
+		assertEquals(2, destIds.get(2).size());
+		assertEquals(new Long(8), destIds.get(2).get(0));
+		assertEquals(new Long(9), destIds.get(2).get(1));
+	}
+	
+	public void testSplitListIntoSubLists_10_5() {
+		List<Long> sourceIds = new ArrayList<Long>();
+		List<List<Long>> destIds = new ArrayList<List<Long>>();
+		
+		for (long ids = 0; ids < 10; ids++) {
+			sourceIds.add(ids);
+		}
+		
+		ActionWrapper action = new ActionWrapper();
+		action.testSplitListIntoSubLists(destIds, sourceIds, 5);
+		
+		assertEquals(2, destIds.size());
+		assertEquals(5, destIds.get(0).size());
+		assertEquals(new Long(0), destIds.get(0).get(0));
+		assertEquals(new Long(1), destIds.get(0).get(1));
+		assertEquals(new Long(2), destIds.get(0).get(2));
+		assertEquals(new Long(3), destIds.get(0).get(3));
+		assertEquals(new Long(4), destIds.get(0).get(4));
+		assertEquals(5, destIds.get(1).size());
+		assertEquals(new Long(5), destIds.get(1).get(0));
+		assertEquals(new Long(9), destIds.get(1).get(4));
+	}
+	
+	public void testSplitListIntoSubLists_11_5() {
+		List<Long> sourceIds = new ArrayList<Long>();
+		List<List<Long>> destIds = new ArrayList<List<Long>>();
+		
+		for (long ids = 0; ids < 11; ids++) {
+			sourceIds.add(ids);
+		}
+		
+		ActionWrapper action = new ActionWrapper();
+		action.testSplitListIntoSubLists(destIds, sourceIds, 5);
+		
+		assertEquals(3, destIds.size());
+		assertEquals(5, destIds.get(0).size());
+		assertEquals(new Long(0), destIds.get(0).get(0));
+		assertEquals(new Long(1), destIds.get(0).get(1));
+		assertEquals(new Long(2), destIds.get(0).get(2));
+		assertEquals(new Long(3), destIds.get(0).get(3));
+		assertEquals(new Long(4), destIds.get(0).get(4));
+		assertEquals(5, destIds.get(1).size());
+		assertEquals(new Long(5), destIds.get(1).get(0));
+		assertEquals(new Long(9), destIds.get(1).get(4));
+		assertEquals(1, destIds.get(2).size());
+		assertEquals(new Long(10), destIds.get(2).get(0));
+	}
+	
+	public static class ActionWrapper extends Action {
+
+		@Override
+		public Object doAction() throws Exception {
+			throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+		}
+		
+		public static <T> void testSplitListIntoSubLists(List<List<T>> destinationListOfLists,
+			List<T> sourceList, int itemCountInSublists) {
+			
+			splitListIntoSubLists(destinationListOfLists, sourceList, itemCountInSublists);
+		}
+		
 	}
 }

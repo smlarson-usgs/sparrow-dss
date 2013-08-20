@@ -97,8 +97,7 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 
 		ColumnIndex index = predictData.getTopo().toImmutable().getIndex();
 
-		int rowCount = idInfo.getRowCount();
-				LoadReachesAreas loadReachesAreas = new LoadReachesAreas(terminalReaches, predictData, rowCount);
+		LoadReachesAreas loadReachesAreas = new LoadReachesAreas(terminalReaches, predictData);
 		modelReachAreaTable = loadReachesAreas.run();
 		ColumnData fullIdCol = idInfo.getColumn(3);
 
