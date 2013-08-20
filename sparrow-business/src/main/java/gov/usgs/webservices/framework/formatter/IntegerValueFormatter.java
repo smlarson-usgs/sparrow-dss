@@ -54,22 +54,25 @@ public class IntegerValueFormatter extends SimpleValueFormatter {
 	public String format(String rawValue) {
 		
 		String formattedValue = null;
-		try {
-
+		
+		if (rawValue != null) {
 			try {
-				//Try as integer - numbers w/ decimals will fail
-				Integer numValue = Integer.parseInt(rawValue);
-				formattedValue = numFormatter.format(numValue);
-			} catch (NumberFormatException ee) {
-				//Try as decimal number - this will allow decimal values to round up:
-				//1.6  --> 2
-				Double numValue = Double.parseDouble(rawValue);
-				formattedValue = numFormatter.format(numValue);
-			}
 
-			
-		} catch(NumberFormatException e) {
-			formattedValue = rawValue;	//Just allow the original string to be used
+				try {
+					//Try as integer - numbers w/ decimals will fail
+					Integer numValue = Integer.parseInt(rawValue);
+					formattedValue = numFormatter.format(numValue);
+				} catch (NumberFormatException ee) {
+					//Try as decimal number - this will allow decimal values to round up:
+					//1.6  --> 2
+					Double numValue = Double.parseDouble(rawValue);
+					formattedValue = numFormatter.format(numValue);
+				}
+
+
+			} catch(NumberFormatException e) {
+				formattedValue = rawValue;	//Just allow the original string to be used
+			}
 		}
 		
 		formattedValue = super.format(formattedValue);	//encodes for output type

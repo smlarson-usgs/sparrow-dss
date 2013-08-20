@@ -57,11 +57,14 @@ public class DoubleValueFormatter extends SimpleValueFormatter {
 	public String format(String rawValue) {
 		
 		String formattedValue = null;
-		try{
-			Double numValue = Double.parseDouble(rawValue);
-			formattedValue = numFormatter.format(numValue);
-		} catch(NumberFormatException e){
-			formattedValue = rawValue;	//Just allow the original string to be used
+		
+		if (rawValue != null) {
+			try{
+				Double numValue = Double.parseDouble(rawValue);
+				formattedValue = numFormatter.format(numValue);
+			} catch(NumberFormatException e){
+				formattedValue = rawValue;	//Just allow the original string to be used
+			}
 		}
 		
 		formattedValue = super.format(formattedValue);	//encodes for output type
