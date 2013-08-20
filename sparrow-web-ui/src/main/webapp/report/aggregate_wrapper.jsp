@@ -31,7 +31,7 @@
 				</div>
 				<div class="caption"></div>
 			</div>
-			<h2>Delivered Load from Selected Upstream Region</h2>
+			<h2>Delivered Load from Selected Upstream Regions</h2>
 			<p>
 				This report aggregates the load delivered to the downstream reaches by the upstream contributing region.
 				More

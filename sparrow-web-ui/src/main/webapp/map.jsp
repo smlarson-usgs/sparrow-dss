@@ -171,10 +171,27 @@
     </div>
 
     <div id="ui-load-window" class="x-hidden">
+		
+		<div class="important">
+			<h4>Alert:  Older saved sessions may not work</h4>
+			<p>
+			Saved sessions created for NHD models before June, 2013 will likely not work.
+			Prior to June 2013, reaches were identified by the NHD GridCode.
+			In June this was changed to ComIds,
+			which are more commonly used as identifiers for reaches within the NHD network.
+			</p>
+			<p>
+			NHD models include the MRB 1 North Atlantic models and the Chesapeake Bay Models.
+			Other models will continue to work.  Sorry for any inconvenience.
+			</p>
+		</div>
       <form id="file_upload_form" method="post" enctype="multipart/form-data" action="loadMapState">
-        <input name="ui_file" id="ui_file" size="21" type="file" /><br/> <br/>
-        <div align="center"><input type="submit" name="action" value="Load Session" onclick="return LOAD_STATE_WIN.close()"/></div><br/>
-        <iframe onload="Sparrow.ui.load_ui(this)" id="upload_target" name="upload_target" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
+		 <fieldset>
+			<legend>Upload a previously saved session</legend>
+			<input name="ui_file" id="ui_file" size="21" type="file" /><br/> <br/>
+			<div align="center"><input type="submit" name="action" value="Load Session" onclick="return LOAD_STATE_WIN.close()"/></div><br/>
+			<iframe onload="Sparrow.ui.load_ui(this)" id="upload_target" name="upload_target" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
+		</fieldset>
       </form>
     </div>
 

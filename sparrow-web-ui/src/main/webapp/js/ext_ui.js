@@ -975,7 +975,7 @@ var LOAD_STATE_WIN = new (function(){
 				layout: 'fit',
 				plain: true,
 				modal: true,
-				width: 300,
+				width: 500,
 				resizable: false
 			});
 		}
