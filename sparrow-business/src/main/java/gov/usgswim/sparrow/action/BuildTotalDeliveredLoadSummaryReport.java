@@ -97,9 +97,14 @@ public class BuildTotalDeliveredLoadSummaryReport extends Action<DataTableSet> {
 
 		ColumnIndex index = predictData.getTopo().toImmutable().getIndex();
 
-		int rowCount = idInfo.getRowCount();
-				LoadReachesAreas loadReachesAreas = new LoadReachesAreas(terminalReaches, predictData, rowCount);
+		LoadReachesAreas loadReachesAreas = new LoadReachesAreas(terminalReaches, predictData);
 		modelReachAreaTable = loadReachesAreas.run();
+		
+		if (modelReachAreaTable == null) {
+			this.setPostMessage("Unable to load the reach areas via LoadReachesAreas.");
+			return null;
+		}
+		
 		ColumnData fullIdCol = idInfo.getColumn(3);
 
 		//We can't add immutable columns to a writable table, so we need to construct a new table
