@@ -8,14 +8,13 @@ import com.mockrunner.mock.jdbc.MockResultSet;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.SparrowTestBase;
 import gov.usgswim.sparrow.datatable.ModelReachAreaDataTable;
-import gov.usgswim.sparrow.domain.ReachFullId;
-import gov.usgswim.sparrow.domain.TerminalReaches;
-import gov.usgswim.sparrow.request.ReachClientId;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 import org.apache.commons.lang.StringUtils;
 
 /**
@@ -24,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
  */
 public class LoadReachAreasTest extends JDBCTestCaseAdapter {
 	MockConnection connection;
+	PreparedStatementResultSetHandler handler;
 	
 	PredictData model50PredictData;
 	
@@ -35,15 +35,26 @@ public class LoadReachAreasTest extends JDBCTestCaseAdapter {
 		
 		connection =
 				getJDBCMockObjectFactory().getMockConnection();
-		PreparedStatementResultSetHandler handler = connection.getPreparedStatementResultSetHandler();
+		handler = connection.getPreparedStatementResultSetHandler();
+		
+	}
+	
+	private void prepareResults(int count, int firstRow) {
 		MockResultSet resultSet = handler.createResultSet();
-		
 		//These need to be real reach IDs, b/c they are looked up in the action
-		Long[] reachIds = {model50PredictData.getIdForRow(1000), model50PredictData.getIdForRow(1001)};
+		Long[] reachIds = new Long[count];
+		Double[] catchAreas = new Double[count];
+		Double[] contribAreas = new Double[count];
+		Double[] upstreamAreas = new Double[count];
 		
-		Double[] catchAreas = {10D, 20D};
-		Double[] contribAreas = {11D, 21D};
-		Double[] upstreamAreas = {12D, 22D};
+		for (int i = 0; i < count; i++) {
+			reachIds[i] = model50PredictData.getIdForRow(firstRow + i);
+			catchAreas[i] = new Double(i + 1);
+			contribAreas[i] = ((double)i + 1) * 1000D;
+			upstreamAreas[i] = ((double)i + 1) * 1000000D;
+		}
+		
+
 		
 		resultSet.addColumn("identifier", reachIds);
 		resultSet.addColumn("incrementalArea", catchAreas);
@@ -51,12 +62,16 @@ public class LoadReachAreasTest extends JDBCTestCaseAdapter {
 		resultSet.addColumn("totalUpstreamArea", upstreamAreas);
 		
 		handler.prepareGlobalResultSet(resultSet);
-		
-		
 	}
 	
 	
+	
+	
+	
+	
 	public void testBasicSingleQuery() throws Exception {
+		
+		prepareResults(2, 1000);
 		
 		ArrayList<Long> reachIds = new ArrayList<Long>();
 		
@@ -87,18 +102,66 @@ public class LoadReachAreasTest extends JDBCTestCaseAdapter {
 		assertEquals(model50PredictData.getTopo().getRowCount(), reachAreas.getRowCount());
 		
 		//Row 1000
-		assertEquals(new Double(10D), reachAreas.getIncrementalAreaColumn().getDouble(1000), .0000001D);
-		assertEquals(new Double(11D), reachAreas.getTotalContributingAreaColumn().getDouble(1000), .0000001D);
-		assertEquals(new Double(12D), reachAreas.getTotalUpstreamAreaColumn().getDouble(1000), .0000001D);
+		assertEquals(new Double(1D), reachAreas.getIncrementalAreaColumn().getDouble(1000), .0000001D);
+		assertEquals(new Double(1000D), reachAreas.getTotalContributingAreaColumn().getDouble(1000), .01D);
+		assertEquals(new Double(1000000D), reachAreas.getTotalUpstreamAreaColumn().getDouble(1000), .01D);
 		
 		//Row 1001
-		assertEquals(new Double(20D), reachAreas.getIncrementalAreaColumn().getDouble(1001), .0000001D);
-		assertEquals(new Double(21D), reachAreas.getTotalContributingAreaColumn().getDouble(1001), .0000001D);
-		assertEquals(new Double(22D), reachAreas.getTotalUpstreamAreaColumn().getDouble(1001), .0000001D);
+		assertEquals(new Double(2D), reachAreas.getIncrementalAreaColumn().getDouble(1001), .0000001D);
+		assertEquals(new Double(2000D), reachAreas.getTotalContributingAreaColumn().getDouble(1001), .01D);
+		assertEquals(new Double(2000000D), reachAreas.getTotalUpstreamAreaColumn().getDouble(1001), .01D);
+
+	}
+	
+	/**
+	 * If an ID does not match the IDs in the model, there should be a missing row.
+	 * Our test is simulating the resultset, so there is no way for the query to
+	 * fail to find the rows we specify.  
+	 * 
+	 * To make this happen, we just have the query return one row instead of the
+	 * two we search for.  This should cause the error response.
+	 * 
+	 * @throws Exception 
+	 */
+	public void testBasicSingleQueryWithBadId() throws Exception {
+		
+		prepareResults(1, 1000);	//Only create one result row
+		
+		
+		ArrayList<Long> reachIds = new ArrayList<Long>();
+		
+		reachIds.add(model50PredictData.getIdForRow(1000));
+		reachIds.add(9999999L);	//Doesnt exist
+		
+		LoadReachesAreas action = new LoadReachesAreas(reachIds, model50PredictData);
+		ModelReachAreaDataTable reachAreas = action.run(connection, connection);
+		
+		//Actual SQL string and params
+		String actualSql = connection.getPreparedStatementResultSetHandler().getExecutedStatements().get(0).toString();
+		ParameterSets actualParams = connection.getPreparedStatementResultSetHandler().getParametersForExecutedStatement(actualSql);
+		
+		String expectedSql = "SELECT identifier, catch_area as incrementalArea, tot_contrib_area as totalContributingArea, tot_upstream_area as totalUpstreamArea FROM MODEL_ATTRIB_VW WHERE sparrow_model_id = ? AND identifier IN (?, ?)";
+		
+		//Check sql and params
+		assertEquals(StringUtils.deleteWhitespace(expectedSql), StringUtils.deleteWhitespace(actualSql));
+		assertEquals(3, actualParams.getParameterSet(0).size());
+		assertEquals(new Long(50), actualParams.getParameterSet(0).get(1));
+		assertEquals(new Long(model50PredictData.getIdForRow(1000)), actualParams.getParameterSet(0).get(2));
+		assertEquals(new Long(9999999L), actualParams.getParameterSet(0).get(3));
+		
+		
+		
+		assertFalse(action.hasValidationErrors());
+		assertNull(reachAreas);
+		assertTrue(action.getPostMessage() != null);
 
 	}
 	
 	public void testBasicQueryWith1000Ids() throws Exception {
+		
+		prepareResults(1000, 1000);
+		
+		
 		ArrayList<Long> reachIds = new ArrayList<Long>();
 		
 		for (int i = 0; i < 1000; i++) {
@@ -126,17 +189,33 @@ public class LoadReachAreasTest extends JDBCTestCaseAdapter {
 		assertEquals(new Long(model50PredictData.getIdForRow(1000)), actualParams.getParameterSet(0).get(2));
 		assertEquals(new Long(model50PredictData.getIdForRow(1999)), actualParams.getParameterSet(0).get(1001));
 		
+		assertFalse(action.hasValidationErrors());
+		assertNotNull(reachAreas);
+		assertFalse(action.getPostMessage() != null);
 
 	}
 	
+	/**
+	 * This test will cause the action to fail, but we still want to check that
+	 * the correct queries and parameters were run.
+	 * 
+	 * Its difficult to convert this to a test that has the action working
+	 * bc our mock jdbc result set is global (the same one is always returned).
+	 * 
+	 * To work, mock jdbc would need to return 1k rows the first time and 1 row
+	 * the 2nd time.
+	 * 
+	 * @throws Exception 
+	 */
 	public void testBasicQueryWith1001Ids() throws Exception {
+		
+		prepareResults(1, 1000);
+		
 		ArrayList<Long> reachIds = new ArrayList<Long>();
 		
 		for (int i = 0; i < 1001; i++) {
 			reachIds.add(model50PredictData.getIdForRow(1000 + i));
 		}
-		
-		System.out.println("1000 index for 10001 reaches: " + reachIds.get(1000));
 		
 		LoadReachesAreas action = new LoadReachesAreas(reachIds, model50PredictData);
 		ModelReachAreaDataTable reachAreas = action.run(connection, connection);
@@ -170,19 +249,25 @@ public class LoadReachAreasTest extends JDBCTestCaseAdapter {
 		assertEquals(new Long(50), actualParams_2.getParameterSet(0).get(1));
 		assertEquals(new Long(model50PredictData.getIdForRow(2000)), actualParams_2.getParameterSet(0).get(2));
 		
+		//We expect the action to fail
+		assertFalse(action.hasValidationErrors());
+		assertNull(reachAreas);
+		assertTrue(action.getPostMessage() != null);
 	}
 	
 	
 
 	
 	public void testBasicQueryWith2000Ids() throws Exception {
+		
+		//1k rows should be return twice for a total of 2k
+		prepareResults(1000, 1000);
+		
 		ArrayList<Long> reachIds = new ArrayList<Long>();
 		
 		for (int i = 0; i < 2000; i++) {
 			reachIds.add(model50PredictData.getIdForRow(1000 + i));
 		}
-		
-		System.out.println("1000 index for 2000 reaches: " + reachIds.get(1000));
 		
 		LoadReachesAreas action = new LoadReachesAreas(reachIds, model50PredictData);
 		ModelReachAreaDataTable reachAreas = action.run(connection, connection);
@@ -215,6 +300,10 @@ public class LoadReachAreasTest extends JDBCTestCaseAdapter {
 		assertEquals(new Long(50), actualParams_2.get(1));
 		assertEquals(new Long(model50PredictData.getIdForRow(2000)), actualParams_2.get(2));
 		assertEquals(new Long(model50PredictData.getIdForRow(2999)), actualParams_2.get(1001));
+		
+		assertFalse(action.hasValidationErrors());
+		assertNotNull(reachAreas);
+		assertFalse(action.getPostMessage() != null);
 		
 	}
 }

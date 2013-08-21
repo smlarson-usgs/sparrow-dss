@@ -45,6 +45,8 @@ public class LoadReachesAreas extends Action<ModelReachAreaDataTable>{
 	//This deails w/ the oracle IN clause limitation of 1K params
 	List<List<Long>> reachIdSets;
 	
+	private int numberOfReachesLoaded = 0;	//status tracking and final count check
+	
 	//Self-populated
 	private int rowsInModel;
 	
@@ -106,7 +108,20 @@ public class LoadReachesAreas extends Action<ModelReachAreaDataTable>{
 					idList, totalUpstreamArea, totalContributingArea, incrementalArea);
 		}
 
-		areaTable = new ModelReachAreaDataTable(totalUpstreamArea, totalContributingArea, incrementalArea);
+		
+		//Verify that the number of returned reaches matches the number of
+		//requested reach IDs.
+		//NOTE:  We don't check for duplicate IDs.
+		if (numberOfReachesLoaded != reachIds.size()) {
+			this.setPostMessage(
+					"Some reach ids were not found in model " + predictData.getModel().getId() +
+					".  Expected to find " + reachIds.size() + " reaches by ID, but only found " + numberOfReachesLoaded);
+			areaTable = null;
+		} else {
+			areaTable = new ModelReachAreaDataTable(totalUpstreamArea, totalContributingArea, incrementalArea);
+		}
+		
+		
 		return areaTable;
 	}
 	
@@ -130,6 +145,9 @@ public class LoadReachesAreas extends Action<ModelReachAreaDataTable>{
 
 
 		while(queryResults.next()){
+			
+			numberOfReachesLoaded++;
+			
 			Long reachId = queryResults.getLong(RESULT_ID_NAME);
 			int row = predictData.getRowForReachID(reachId);
 			totalUpstreamArea.setValue(
