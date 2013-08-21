@@ -30,21 +30,13 @@ public class HUCServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
 		WebResponse response = client.sendRequest(req);
 		String actualResponse = response.getText();
-		System.out.println("response: " + actualResponse);
+		//System.out.println("response: " + actualResponse);
 		
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
 		assertXpathEvaluatesTo("gov.usgswim.sparrow.domain.HUC", "/ServiceResponseWrapper/entityClass", actualResponse);
 		assertXpathEvaluatesTo("01", "/ServiceResponseWrapper/entityList/entity[1]/hucCode", actualResponse);
 		
-		
-		//Quick check that the cache is working
-		long startTime = System.currentTimeMillis();
-		client.sendRequest(req);
-		actualResponse = response.getText();
-		long endTime = System.currentTimeMillis();
-		
-		assertTrue((endTime - startTime) < 200L);
 	}
 	
 	@Test
@@ -54,7 +46,7 @@ public class HUCServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
 		WebResponse response = client.sendRequest(req);
 		String actualResponse = response.getText();
-		System.out.println("response: " + actualResponse);
+		//System.out.println("response: " + actualResponse);
 		
 		assertXpathEvaluatesTo("OK", "/ServiceResponseWrapper/status", actualResponse);
 		assertXpathEvaluatesTo("GET", "/ServiceResponseWrapper/operation", actualResponse);
@@ -72,7 +64,7 @@ public class HUCServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
 		WebResponse response = client.sendRequest(req);
 		String actualResponse = response.getText();
-		System.out.println("response: " + actualResponse);
+		//System.out.println("response: " + actualResponse);
 		
 	}
 
