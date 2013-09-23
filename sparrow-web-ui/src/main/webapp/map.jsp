@@ -206,7 +206,7 @@
 			If you are mapping a delivery-based
 			<a class="helpLink" href="javascript:getGeneralHelp('CommonTerms.Data Series')">data series</a>,
 			a Delivery Report is available that summarizes where load is delivered to and where it originates from.
-			For more details, a <a href="javascript:openScreencast('HG9S4D0Jjfc');">complete tutorial</a> video is available.
+            For more details, a <a href="#" onclick="javascript:openScreencast('HG9S4D0Jjfc');">complete tutorial</a> video is available.
 		</p>
         </fieldset>
 
