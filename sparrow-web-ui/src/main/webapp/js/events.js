@@ -60,11 +60,11 @@ Sparrow.events.EventManager = function(){ return{
 				var targetsCount = Sparrow.SESSION.getAllTargetedReaches();
 				targetsCount = targetsCount ? targetsCount.length : 0;
 
-				if(targetsCount > 0) {
-					targetPanel.showInstructions();
+				if (targetsCount > 0) {
+					targetPanel.showInstructions(targetsCount);
 				} else {
-					targetPanel.hideInstructions();
-			}
+					targetPanel.hideInstructions(targetsCount); 
+			    }
 		});
 
 		Sparrow.CONTEXT.on('comparisonchanged', function() {

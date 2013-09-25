@@ -149,8 +149,9 @@ var WATERSHED_WINDOW = new (function() {
 													reachInfo.totalReaches + " reaches, however, only " + 
 													reachInfo.reachAddedCnt + " were added because some were already in the 'Selected Downstream Reaches' list.");
 											} else {
+											    var plural = reachInfo.reachAddedCnt==1 ?"" :"es";
 												Ext.Msg.alert("","Added " + 
-													reachInfo.reachAddedCnt + " reache(s) to the 'Selected Downstream Reaches' list.");
+													reachInfo.reachAddedCnt + " reach"+plural +" to the 'Selected Downstream Reaches' list.");
 											}																			
 										});	
 										reachStore.load({

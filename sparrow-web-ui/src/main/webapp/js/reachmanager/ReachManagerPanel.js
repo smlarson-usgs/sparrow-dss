@@ -738,15 +738,20 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 		Sparrow.TargetsPanel.superclass.constructor.call(this, config);
 	},
 
-	showInstructions : function() {
-		this.instructionsPanel.update('<b>Selected Downstream Reach(es)</b><br/>(Right click on reach name for more information)');
+	showInstructions : function(reachCount) { 
+		this.instructionsPanel.update( this.makeLabel(reachCount) +'<br/>(Right click on reach name for more information)' );
 		this.syncSize();
 		this.instructionsPanel.ownerCt.setHeight(150);
 		this.instructionsPanel.ownerCt.doLayout();
 	},
 
-	hideInstructions : function() {
-		this.instructionsPanel.update('<b>Selected Downstream Reach(es)</b>');
+    makeLabel : function(rcount) {
+        var plural = rcount==1 ?"" :"es";
+        return '<b>Selected Downstream Reach'+plural +' ('+rcount+')</b>';
+    },
+
+	hideInstructions : function(reachCount) {
+		this.instructionsPanel.update( this.makeLabel(reachCount) );
 		this.syncSize();
 		this.instructionsPanel.ownerCt.setHeight(70);
 		this.instructionsPanel.ownerCt.doLayout();
