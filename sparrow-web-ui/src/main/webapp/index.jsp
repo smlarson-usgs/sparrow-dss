@@ -49,6 +49,7 @@
 		<script type="text/javascript" src="landing/js/ui/animator.min.js"></script>
 
 		<script src='js/Screencasts.js' type="text/javascript"></script>
+        <script src="js/sparrow_rpc.js"></script>
 
 		<%--  onReady File  --%>
 		<script src='landing/js/ui/onReady2.js?rev=1' type="text/javascript"></script>
@@ -126,9 +127,14 @@
 										<h4>Tutorial Videos</h4>
 										<select id="tutorial-video-select">
 											<option value="">Select a video...</option>
-											<%-- rest of options loaded dynamically --%>
+											<option value="1tzeR4WkLv0">Working with Sources</option>
+											<option value="5K1Smu7Q4Fc">Incremental Yield</option>
+											<option value="zrycRF7MeG8">Selecting Downstream Outlets</option>
+											<option value="UkC_76uq748">Changing Source Inputs</option>
+											<option value="tHnxt2ORNQU">Incremental Yield to an Outlet</option>
+											<option value="HG9S4D0Jjfc">Summarizing Delivered Load to Downstream Outlets</option>
 										</select>
-										<button id="tutorial-video-go-button">Watch now &gt;&gt;</button>
+										<button id="tutorial-video-go-button" onclick="var vids=document.getElementById('tutorial-video-select');openScreencast(vids.children[vids.selectedIndex].value);">Watch now &gt;&gt;</button>
 										<h4>Found a bug or have a comment?</h4>
 										<p>
 											Please send bugs, suggestions and questions to the
