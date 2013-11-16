@@ -1,75 +1,49 @@
 Sparrow.events.EventManager = function(){ return{
 	//register events TODO may want to create methods to register certain events, to split events into logical types
 	registerSessionEvents : function(){
-		Sparrow.CONTEXT.on('map-updated-and-synced', function() {
-			//Current series
-			var series = Sparrow.SESSION.getSeriesName();
-
-		    //hide any out of sync messages
-		    if(document.getElementById('map-sync-warning').className.indexOf('x-hidden') < 0) {
-				document.getElementById('map-sync-warning').className += " x-hidden";
-		    }
-
-		    Ext.getCmp('update-map-button-panel').setStatusInSync(series);
-		    EXPORT_DATA_WIN.enable();	//One way trip to enable
-
-		    Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(false);
-
-				//Google Analytics event tracking
-				_gaq.push(['_trackEvent', 'Context', 'Update', series, parseInt(model_id)]);
-
-		});
-
+		
+		//The user just clicked the Update Map Button successfully
+		Sparrow.CONTEXT.on('map-updated-and-synced', Sparrow.handlers.UiComponents.updatePerInSyncMap);
+		
+		
+		//Changes that would invalidate the current map
+		Sparrow.CONTEXT.on('changed', function() {
+			Sparrow.handlers.UiComponents.updatePerOutOfSyncMap();
+		});	//required?
 		Sparrow.CONTEXT.on('dataseries-changed', function() {
 			Sparrow.handlers.UiComponents.updateComparisons();
+			Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(true);
+			Sparrow.handlers.UiComponents.updatePerOutOfSyncMap();
 		});
-
-		Sparrow.CONTEXT.on('model-source-changed', function() {
-			Sparrow.handlers.UiComponents.updateComparisons();
-		});
-
-		Sparrow.CONTEXT.on('changed', function(){
-			var isChanged = Sparrow.SESSION.isChanged();
-			if (isChanged) {
-				//re-enable the gen map button
-				Ext.getCmp('update-map-button-panel').setStatusOutOfSync(Sparrow.SESSION.getSeriesName());
-
-				//Notify user with a visual cue
-				document.getElementById('map-sync-warning').className = document.getElementById('map-sync-warning').className.replace(/x-hidden/g, '');
-
-				Sparrow.SESSION.fireContextEvent("targets-changed");
-
-				//Update the ID window if open
-				var reachIdentifyWindow = Ext.getCmp('reach-identify-window');
-				if (reachIdentifyWindow && reachIdentifyWindow.isApplying) {
-					// refresh the window
-					var reachId = reachIdentifyWindow.getReachId();
-					IDENTIFY.identifyReach(null, null, reachId, 1, true);
-				}
-
-			}
-		});
-
-		Sparrow.CONTEXT.on("targets-changed", function() {
-				var targetPanel = Ext.getCmp('main-targets-tab');
-				targetPanel.treePanel.loadTree();
-
-				//update the delivery instructions to reflect
-				Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(Sparrow.SESSION.isTermReachesChanged());
-
-				var targetsCount = Sparrow.SESSION.getAllTargetedReaches();
-				targetsCount = targetsCount ? targetsCount.length : 0;
-
-				if (targetsCount > 0) {
-					targetPanel.showInstructions(targetsCount);
-				} else {
-					targetPanel.hideInstructions(targetsCount); 
-			    }
-		});
-
 		Sparrow.CONTEXT.on('comparisonchanged', function() {
 			Sparrow.handlers.UiComponents.updateComparisons();
+			Sparrow.handlers.UiComponents.updatePerOutOfSyncMap();
 		});
+		Sparrow.CONTEXT.on('model-source-changed', function() {
+			Sparrow.handlers.UiComponents.updateComparisons();
+			Sparrow.handlers.UiComponents.updatePerOutOfSyncMap();
+		});
+		Sparrow.CONTEXT.on("targets-changed", function() {
+			Sparrow.handlers.UiComponents.updatePerTargetsChanged();
+			Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(true);
+			Sparrow.handlers.DownstreamTrackingInstructions.disableReport();
+			Sparrow.handlers.UiComponents.updatePerOutOfSyncMap();
+		});
+		Sparrow.CONTEXT.on('adjustment-changed', function() {
+			Sparrow.handlers.UiComponents.adjustmentChange();
+			Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(true);
+			Sparrow.handlers.DownstreamTrackingInstructions.disableReport();
+			Sparrow.handlers.UiComponents.updatePerOutOfSyncMap();
+		});
+		
+		//Shouldn't this be the same as the adjustment-changed?
+		Sparrow.CONTEXT.on('adjustment-group-changed', function() {
+			Sparrow.handlers.UiComponents.updateAdjustmentsTree();
+			Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(true);
+			Sparrow.handlers.UiComponents.updatePerOutOfSyncMap();
+		});
+		
+		//need sourceshareComparison change event
 
 		/**
 		 * Called when the state loading is complete.  Must happen after
@@ -137,8 +111,6 @@ Sparrow.events.EventManager = function(){ return{
 			_gaq.push(['_trackEvent', 'PreSession', 'Loaded', series, parseInt(model_id)]);
 		});
 
-		Sparrow.CONTEXT.on('adjustment-changed', Sparrow.handlers.UiComponents.adjustmentChange);
-		Sparrow.CONTEXT.on('adjustment-group-changed', Sparrow.handlers.UiComponents.updateAdjustmentsTree);
 
 		/**
 		 * Invoked when the user changes the map selection b/t Reaches or Catchments.
@@ -167,7 +139,7 @@ Sparrow.events.EventManager = function(){ return{
 
 		Sparrow.CONTEXT.on("mapLayers-changed", Sparrow.handlers.MapComponents.toggleMapLayer);
 	}
-}}();
+};}();
 
 //TODO move this into its own file if needed
 Sparrow.handlers.DownstreamTrackingInstructions = function(){
@@ -179,7 +151,51 @@ Sparrow.handlers.DownstreamTrackingInstructions = function(){
 		"<a href='javascript:displayDeliverySummaryReport()'>Open the Summary Reports</a><br />" +
 		"The summary reports show load delivered to the downstream reaches and the originating region (state or HUC).";
 
-	return{
+	return {
+		
+	getReportButtons : function() {
+		var reportBtns = [
+			mapToolButtons.getComponent('mapToolButtonsOpenDeliveryReports'),
+			Ext.getCmp('leftHandOpenDeliveryReportsButton')
+		];
+		return reportBtns;
+	},
+			
+	enableReport : function() {
+		
+		var highlightClass = 'background-highlight';
+		var msToHighlightFor = 10000;
+				
+		Ext.each(this.getReportButtons(), function(reportBtn){
+			if (reportBtn && reportBtn.hidden) {
+				reportBtn.show();
+				reportBtn.ownerCt.doLayout();
+				reportBtn.getEl().addClass(highlightClass).fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn();
+				var removeClass = function(){reportBtn.removeClass(highlightClass); window.clearInterval(intervalId);};
+				var intervalId = window.setInterval(removeClass, msToHighlightFor);
+			}
+		});
+	},
+	
+	/**
+	 * Enables the delivery report if we have a delivery series and terminal reaches.
+	 * Does not check if map is in sync - do not call if not.
+	 */
+	enableReportIfPermitted : function() {
+		if (Sparrow.SESSION.isDeliveryDataSeries() && Sparrow.SESSION.getAllTargetedReaches().length > 0) {
+			this.enableReport();
+		}
+	},
+			
+	disableReport : function() {
+		//Hide the button to open the reports on the map
+		Ext.each(this.getReportButtons(), function(reportBtn){
+			if (reportBtn && ! reportBtn.hidden) {
+				reportBtn.hide();
+				reportBtn.ownerCt.doLayout();
+			}
+		});
+	},
 
 	syncDeliveryTabInstructions : function(mapOutOfSync) {
 	    //Downstream tracking
@@ -196,11 +212,6 @@ Sparrow.handlers.DownstreamTrackingInstructions = function(){
 			"<a href='javascript:GOTO_MAP_OPTIONS_TAB()'>Display Results</a> tab."
 		var toMapDownstream = "To map a downstream tracking data, you must ";
 
-		var reportBtns = [
-			mapToolButtons.getComponent('mapToolButtonsOpenDeliveryReports'),
-			Ext.getCmp('leftHandOpenDeliveryReportsButton')
-		];
-
 		if (!mapOutOfSync) {
 			//In Sync options
 			if (Sparrow.SESSION.isDeliveryDataSeries()) {
@@ -212,18 +223,7 @@ Sparrow.handlers.DownstreamTrackingInstructions = function(){
 							"<b style=\"font-size: 1.3em;\"><a title\"Click to open the reports in a new window\" href=\"javascript:displayDeliverySummaryReport()\">Open the Delivery Summary Report</a></b>.<br />" +
 							"The summary reports total the load delivered to the downstream reaches and show breakdowns of the originating regions (state or HUC).");
 				}
-				var highlightClass = 'background-highlight';
-				var millisecondsToHighlightFor = 5000;
-				//Show the button to open the reports on the map
-				Ext.each(reportBtns, function(reportBtn){
-					if (reportBtn && reportBtn.hidden) {
-						reportBtn.show();
-						reportBtn.ownerCt.doLayout();
-						reportBtn.getEl().addClass(highlightClass).fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn().fadeOut().fadeIn();
-						var removeClass = function(){reportBtn.removeClass(highlightClass); window.clearInterval(intervalId);};
-						var intervalId = window.setInterval(removeClass, millisecondsToHighlightFor);
-					}
-				});
+				
 			} else {
 				//Does not have delivery dataseries
 
@@ -237,13 +237,6 @@ Sparrow.handlers.DownstreamTrackingInstructions = function(){
 					);
 				}
 
-				//Hide the button to open the reports on the map
-				Ext.each(reportBtns, function(reportBtn){
-					if (reportBtn && ! reportBtn.hidden) {
-						reportBtn.hide();
-						reportBtn.ownerCt.doLayout();
-					}
-				});
 			}
 
 
@@ -284,6 +277,61 @@ Sparrow.handlers.DownstreamTrackingInstructions = function(){
 }}();
 
 Sparrow.handlers.UiComponents = function(){ return{
+	
+	updatePerInSyncMap : function(){
+		//Current series
+		var series = Sparrow.SESSION.getSeriesName();
+
+		//hide any out of sync messages
+		if(document.getElementById('map-sync-warning').className.indexOf('x-hidden') < 0) {
+			document.getElementById('map-sync-warning').className += " x-hidden";
+		}
+
+		Ext.getCmp('update-map-button-panel').setStatusInSync(series);
+		EXPORT_DATA_WIN.enable();	//One way trip to enable
+
+		Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(false);
+		Sparrow.handlers.DownstreamTrackingInstructions.enableReportIfPermitted();
+
+		//Google Analytics event tracking
+		_gaq.push(['_trackEvent', 'Context', 'Update', series, parseInt(model_id)]);
+	},
+			
+	updatePerOutOfSyncMap : function(){
+		var isChanged = Sparrow.SESSION.isChanged();
+		if (isChanged) {
+			//re-enable the gen map button
+			Ext.getCmp('update-map-button-panel').setStatusOutOfSync(Sparrow.SESSION.getSeriesName());
+
+			//Notify user with a visual cue
+			document.getElementById('map-sync-warning').className = document.getElementById('map-sync-warning').className.replace(/x-hidden/g, '');
+
+			//Update the ID window if open
+			var reachIdentifyWindow = Ext.getCmp('reach-identify-window');
+			if (reachIdentifyWindow && reachIdentifyWindow.isApplying) {
+				// refresh the window
+				var reachId = reachIdentifyWindow.getReachId();
+				IDENTIFY.identifyReach(null, null, reachId, 1, true);
+			}
+
+		}
+	},
+			
+	updatePerTargetsChanged : function(){
+		var targetPanel = Ext.getCmp('main-targets-tab');
+		targetPanel.treePanel.loadTree();
+
+		var targetsCount = Sparrow.SESSION.getAllTargetedReaches();
+		targetsCount = targetsCount ? targetsCount.length : 0;
+
+		if (targetsCount > 0) {
+			targetPanel.showInstructions(targetsCount);
+		} else {
+			targetPanel.hideInstructions(targetsCount); 
+		}
+	},
+			
+			
 	updateComparisons : function(){
 		var comp = Ext.getCmp('map-options-tab').comparisonCombo;
 		var rad = Ext.getCmp('map-options-tab').mapUnitsRadioGrp;
@@ -369,7 +417,7 @@ Sparrow.handlers.UiComponents = function(){ return{
 
 			Sparrow.SESSION.clearComparisonUserSelection();
 
-			ds.resetDropDownList();
+			ds.resetDropDownList();	
 		}
 
 		//The UI context doesn't know the state of the combo (enabled or val)

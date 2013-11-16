@@ -236,7 +236,6 @@ Sparrow.ui = function() { return{
 	
 	  //open window for edit
 	  CREATE_GROUP_WIN.open(gp_json["@name"], gp_id);
-	  Sparrow.SESSION.fireContextEvent('changed');
 	
 	}
 	

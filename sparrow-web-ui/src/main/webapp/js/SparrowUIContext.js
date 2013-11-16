@@ -214,13 +214,13 @@ Sparrow.ux.Session.prototype = {
 		this.suspend = false;
 		if (this.changeQueue){
 			this.changeQueue = false;
-			this.fireContextEvent('changed');
 		}
 	},
 
 	/** Registers change event */
 	changed : function(){
-		this.fireContextEvent('changed');
+		//No-op:  this should be handled by specific events
+		//this.fireContextEvent('changed');
 	},
 	
 	fireContextEvent : function(event, argument){
@@ -246,7 +246,12 @@ Sparrow.ux.Session.prototype = {
 	},
 	
 	isTermReachesChanged : function() {
-		return (this.TransientMapState.previousTermReachesState != Ext.util.JSON.encode(this.PredictionContext.terminalReaches));
+		if (this.TransientMapState.previousTermReachesState == null) {
+			//No previous state - No change if currently null or empty.
+			return !(this.PredictionContext.terminalReaches == null || this.PredictionContext.terminalReaches.reach.length == 0);
+		} else {
+			return (this.TransientMapState.previousTermReachesState != Ext.util.JSON.encode(this.PredictionContext.terminalReaches));
+		}
 	},
 	
 	isAdjGroupsChanged : function() {
