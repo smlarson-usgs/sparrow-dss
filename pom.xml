@@ -63,6 +63,23 @@
 			<url>${cida.maven.url}/content/repositories/cida-thirdparty</url>
 		</repository>
 	</repositories>
+	
+	<pluginRepositories>
+		<pluginRepository>
+			<url>${cida.maven.url}/content/repositories/cida-releases/</url>
+			<id>cida-releases</id>
+			<layout>default</layout>
+			<name>Cida Releases - Release Shared Libraries</name>
+		</pluginRepository>
+		<pluginRepository>
+			<id>cida-sparrow-dss-thirdparty</id>
+			<url>${cida.maven.url}/content/repositories/cida-sparrow-dss-thirdparty</url>
+		</pluginRepository>
+		<pluginRepository>
+			<id>cida-thirdparty</id>
+			<url>${cida.maven.url}/content/repositories/cida-thirdparty</url>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<build>
 		<pluginManagement>

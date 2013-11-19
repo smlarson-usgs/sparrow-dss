@@ -70,7 +70,6 @@
 	<script src="js/ext_extensions/dockpanel.js"></script>
 	<script src="js/USGSUtils.js"></script>
 	<script src="js/SparrowUIContext.js"></script>
-	<script src="js/Screencasts.js"></script>
 	<script src="js/sparrow_ui.js"></script>
 	<script src="js/GroupMembershipWindow.js"></script>
 	<script src="js/mapoptions/MapOptionsPanel.js"></script>
@@ -158,7 +157,7 @@
     </div>
 
     <div id="ui-save-window" class="x-hidden">
-      <form id="save_state_form" method="post" action="saveMapState" target="_blank" onsubmit="return Sparrow.ui.save_map_state()">
+      <form id="save_state_form" method="post" action="saveMapState" target="_blank" onsubmit="return Sparrow.ui.save_map_state();">
         <br/>
         <div>
           <label for="savefileas">Save File As:</label><br />
@@ -189,8 +188,8 @@
 		 <fieldset>
 			<legend>Upload a previously saved session</legend>
 			<input name="ui_file" id="ui_file" size="21" type="file" /><br/> <br/>
-			<div align="center"><input type="submit" name="action" value="Load Session" onclick="return LOAD_STATE_WIN.close()"/></div><br/>
-			<iframe onload="Sparrow.ui.load_ui(this)" id="upload_target" name="upload_target" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
+			<div align="center"><input type="submit" name="action" value="Load Session" onclick="return LOAD_STATE_WIN.close();"/></div><br/>
+			<iframe onload="Sparrow.ui.load_ui(this);" id="upload_target" name="upload_target" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
 		</fieldset>
       </form>
     </div>
