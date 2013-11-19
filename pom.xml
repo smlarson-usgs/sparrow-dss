@@ -11,10 +11,10 @@
 	<modules>
 		<module>sparrow-service</module>
 		<module>sparrow-web-ui</module>
-    <module>sparrow-datatable</module>
-    <module>sparrow-business</module>
-    <module>sparrow-validation</module>
-    <module>sparrow-calculation</module>
+		<module>sparrow-datatable</module>
+		<module>sparrow-business</module>
+		<module>sparrow-validation</module>
+		<module>sparrow-calculation</module>
 		<module>sparrow-business-integration-tests</module>
   </modules>
 	
@@ -115,6 +115,11 @@
 							</configuration>
 						</execution>
 					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>2.1.1</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
