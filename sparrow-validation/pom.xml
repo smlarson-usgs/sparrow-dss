@@ -4,11 +4,11 @@
   <parent>
     <groupId>gov.usgs.cida</groupId>
     <artifactId>sparrow-parent</artifactId>
-    <version>1.4.32.4-SNAPSHOT</version>
+    <version>1.4.32.4</version>
   </parent>
   <groupId>gov.usgs.cida</groupId>
   <artifactId>sparrow-validation</artifactId>
-  <version>1.4.32.4-SNAPSHOT</version>
+  <version>1.4.32.4</version>
   <name>sparrow-validation</name>
   <url>http://maven.apache.org</url>
   <properties>
