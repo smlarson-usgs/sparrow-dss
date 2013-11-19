@@ -4,11 +4,11 @@
   <parent>
     <groupId>gov.usgs.cida</groupId>
     <artifactId>sparrow-parent</artifactId>
-    <version>1.4.32.5-SNAPSHOT</version>
+    <version>1.4.32.4</version>
   </parent>
   <groupId>gov.usgs.cida</groupId>
   <artifactId>sparrow-calculation</artifactId>
-  <version>1.4.32.5-SNAPSHOT</version>
+  <version>1.4.32.4</version>
   <name>sparrow-calculation</name>
   <url>http://maven.apache.org</url>
   <properties>
@@ -27,7 +27,7 @@
 		<dependency>
 			<groupId>gov.usgs.cida</groupId>
 			<artifactId>sparrow-datatable</artifactId>
-			<version>1.4.32.5-SNAPSHOT</version>
+			<version>1.4.32.4</version>
 			<type>jar</type>
 		</dependency>
 		<dependency>
