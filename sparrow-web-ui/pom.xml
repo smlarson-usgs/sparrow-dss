@@ -152,7 +152,6 @@
 		<profile> <!-- Development build with NO javascript minification -->
 			<id>development</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
 				<property>
 					<name>sparrow.build.profile</name>
 					<value>development</value>
@@ -200,6 +199,7 @@
 		<profile> <!-- Production build, includes javascript minification -->
 			<id>production</id>
 			<activation>
+				<activeByDefault>true</activeByDefault>
 				<property>
 					<name>sparrow.build.profile</name>
 					<value>production</value>
