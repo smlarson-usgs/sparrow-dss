@@ -27,7 +27,8 @@
 		<cida.svn.url>https://cida-svn.er.usgs.gov/repos/dev</cida.svn.url>
 		<!-- <cargo.containerId>tomcat6x</cargo.containerId> -->
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
-		<timestamp>${maven.build.timestamp}</timestamp> 
+		<timestamp>${maven.build.timestamp}</timestamp>
+		<sparrow.build.profile>production</sparrow.build.profile>
 	</properties>
 	
 	<scm>
