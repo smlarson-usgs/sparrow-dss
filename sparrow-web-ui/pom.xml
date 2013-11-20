@@ -14,6 +14,10 @@
 	<name>sparrow-web-ui</name>
 	<version>1.4.32.7-SNAPSHOT</version>
 	<description>SPARROW web mapping application</description>
+	
+	<properties>
+		<sparrow.build.profile>production</sparrow.build.profile>
+	</properties>
 
 	<dependencies>
 		<dependency>
