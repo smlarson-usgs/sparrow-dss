@@ -268,9 +268,11 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-war-plugin</artifactId>
 						<configuration>
+							<!--  accept default
 		                    <warSourceDirectory>
-		                       ${basedir}/target/minifiedWebapp <!-- we want to minify web resources and maintain an orignal copy so we copied them here first, see plugin below-->
+		                       ${basedir}/target/minifiedWebapp
 		                    </warSourceDirectory>
+							-->
 							<manifest>
 								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 							</manifest>
@@ -286,12 +288,14 @@
 				             <webResource> 
 				               <directory>${basedir}/target/minifiedWebapp</directory> 
 				               <includes> 
-				                 <include>footer.jsp</include>
-				                 <include>index.jsp</include>
-				                 <include>dss.jsp</include> 
+				                 <param>map.jsp</param>
 				               </includes> 
 				               <targetPath /> 
 				               <filtering>true</filtering> 
+				             </webResource> 
+				             <webResource> 
+				               <directory>${basedir}/target/minifiedWebapp/js/build</directory> 
+							   <targetPath>js/build</targetPath>
 				             </webResource> 
 				           </webResources> 
 						</configuration>
