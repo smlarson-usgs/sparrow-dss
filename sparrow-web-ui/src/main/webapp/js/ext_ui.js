@@ -523,7 +523,7 @@ Ext.onReady(function() {
 		]
 	});
 
-	if (Ext.isIE6) {
+	if (Ext.isIE6 || Ext.isIE7 || Ext.isIE8) {
 		IE6_WARN_WINDOW.open();
 	}
 
@@ -1541,13 +1541,13 @@ var IE6_WARN_WINDOW = new (function(){
 				layout: 'fit',
 				plain: true,
 				modal: true,
-				width: 400,
-				height: 200,
+				width: 600,
+				height: 400,
 				draggable: false,
 				resizable: false,
 				autoScroll: true,
 				buttons: [{
-					text:'Continue',
+					text:'Continue at your own risk...',
 					handler: function() {
 						ie_warn_win.close();
 					}

@@ -115,28 +115,34 @@
 	<%}%>
 
     <div id="ie6-warn-win" class="x-hidden">
-      <b>It appears that you are using Internet Explorer Version 6 or 7</b><br/>
+      <b>It appears that you are using Internet Explorer Version 6, 7 or 8</b><br/>
 
-        Internet Explorer Versions 7 (IE7) and older are not supported by this
-        application and many features will be broken or work incorrectly.
-        <br/><br/><b>Why is IE7 not supported?</b><br/>
+        Internet Explorer Versions 8 (IE8) and older are not supported by this
+        application and many features will be broken or work incorrectly.<br/>
+		<br/>
+		In the case of IE 8, most features <i>should</i> work, however none of the
+		map highlighting features work.  This includes outlining the reach currently
+		identified with the <i>Identify Reach</i> tool and outlining sets of reaches on the
+		Adjustments Tab using the <i>Show on Map</i> tool.
+		
+		
+        <br/><br/><b>Why are these older browsers not supported?</b><br/>
 
         The <a href="http://www.w3.org/Consortium/">World Wide Web Consortium (W3C)</a>
-				creates standards so that web pages work consistently for everyone.
-				Newer browsers generally support these standards while older browsers generally don't.
-				In particular, IE7 does not support or incorrectly implements many of the
-				W3C standards. Your choice of browser may be out of your hands,
+		creates standards so that web pages work consistently for everyone.
+		Newer browsers generally support these standards while older browsers generally don't.
+		In particular, IE7 does not support or incorrectly implements many of the
+		W3C standards. Your choice of browser may be out of your hands,
         however, if you are able to, you should consider upgrading your browser
         to the latest version of Internet Explorer or installing one of the
-				browsers below. Doing so will improve your web experience,
-				enabling you to use and view sites as their creators intended.
+		browsers below. Doing so will improve your web experience,
+		enabling you to use and view sites as their creators intended.
 
-        <br/><br/>A partial list of browsers supporting current W3C standards
-        includes:<br/>
-					* <a href="https://www.google.com/intl/en/chrome/browser/">Chrome</a><br/>
-          * <a href="http://www.mozilla.org/en-US/firefox/new/">Firefox</a><br/>
-          * Safari (available by default on Apple computers)<br/>
-          * <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">The latest Internet Explorer version</a><br/>
+        <br/><br/>A partial list of browsers supporting current W3C standards includes:<br/>
+		* <a href="https://www.google.com/intl/en/chrome/browser/">Chrome</a><br/>
+        * <a href="http://www.mozilla.org/en-US/firefox/new/">Firefox</a><br/>
+        * Safari (available by default on Apple computers)<br/>
+        * <a href="http://windows.microsoft.com/en-us/internet-explorer/download-ie">The latest Internet Explorer version</a><br/>
     </div>
 
     <div id="navigation-bar">
