@@ -285,6 +285,7 @@
 				                 <include>footer.jsp</include>
 				                 <include>index.jsp</include>
 				                 <include>dss.jsp</include>
+								 <include>map.jsp</include>
 				               </includes> 
 				               <targetPath /> 
 				               <filtering>true</filtering>
