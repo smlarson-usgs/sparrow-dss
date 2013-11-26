@@ -5,14 +5,14 @@
 	<parent>
 	<groupId>gov.usgs.cida</groupId>
 		<artifactId>sparrow-parent</artifactId>
-		<version>1.4.32.12</version>
+		<version>1.4.32.13-SNAPSHOT</version>
 	</parent>
 
 	<groupId>gov.usgs.cida</groupId>
 	<artifactId>sparrow-web-ui</artifactId>
 	<packaging>war</packaging>
 	<name>sparrow-web-ui</name>
-	<version>1.4.32.12</version>
+	<version>1.4.32.13-SNAPSHOT</version>
 	<description>SPARROW web mapping application</description>
 	
 	<properties>
