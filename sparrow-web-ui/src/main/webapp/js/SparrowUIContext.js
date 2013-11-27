@@ -118,10 +118,14 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
         	originalBoundEast: null,
         	originalBoundWest: null,
         	lastNominalComparison: null,	/* comparison last time comp was disabled (for re-enabling) */
+			
+			/* state tracking */
+			lastMappedContext: null, /* Snapshot of the state (context and permState) at time of last map draw */
+			lastMappedContextId: null, /* Id (a number) of this state as registered w/ the server */
+			lastValidContext: null, /* Snapshot of the state (context and permState) that was last known to be valid and registered w/ server (fallback if no map) */
+			lastValidContextId: null, /* Id (a number) of this state as registered w/ the server */
         	
         	previousState: null, /* previous context and perm state, serialized as json */
-        	previousTermReachesState: null, /* previous terminalReaches, serialized as json */
-        	previousAdjGroupsState: null, /* previous adjustmentGroups, serialized as json */
         	
         	/*
         	 * Bin data become transient if auto-binning is used b/c its redundant
@@ -181,9 +185,17 @@ Sparrow.ux.Session.prototype = {
 
 	getPredictionContext: function(){return this.PredictionContext;},
 
-	/** Returns PredictionContext as XML String */
-	getPredictionContextAsXML : function(){
-		return Sparrow.USGS.JSONtoXML({PredictionContext : this.PredictionContext});
+	/**
+	 * Returns a PredictionContext as an XML document for communication w/ the server.
+	 * 
+	 * if no context is specified, the current PredictionContext is used.
+	 * 
+	 * @param PredictionContext context Optional context - the current one is used if not specified.
+	 * @returns An XML String represention of the context.
+	 */
+	getPredictionContextAsXML : function(context) {
+		if (context == null) context = this.PredictionContext;
+		return Sparrow.USGS.JSONtoXML({PredictionContext : context});
 	},
 	
 	/** Returns adjustments as XML String */
@@ -232,30 +244,219 @@ Sparrow.ux.Session.prototype = {
 			this.context.fireEvent(event, argument);
 		}
 	},
-
-	/** marks the current state for future comparison */
-	mark: function(){
-		this.TransientMapState.previousState = this.asJSON();
-		this.TransientMapState.previousTermReachesState = Ext.util.JSON.encode(this.PredictionContext.terminalReaches);
-		this.TransientMapState.previousAdjGroupsState = Ext.util.JSON.encode(this.PredictionContext.adjustmentGroups);    	
-	},
-
-	/** Compares current state to argument */
-	isChanged : function(){
-		return (this.TransientMapState.previousState != this.asJSON());
+			
+	/**
+	 *  Marks a server-registered mappable state so it can be returned to and compared to.
+	 *  Marking a mapped state automatically updates the last valid state (i.e.,
+	 *  it call markValidState).
+	 *  
+	 *  @param {Number} The server assigned ID for this context - required.
+	 */
+	markMappedState: function(contextId) {
+		this.TransientMapState.lastMappedContext = this.asJSON();
+		this.TransientMapState.lastMappedContextId = contextId;
+		this.markValidState(contextId);
 	},
 	
-	isTermReachesChanged : function() {
-		if (this.TransientMapState.previousTermReachesState == null) {
-			//No previous state - No change if currently null or empty.
-			return !(this.PredictionContext.terminalReaches == null || this.PredictionContext.terminalReaches.reach.length == 0);
+	/**
+	 * Marks a (possibly) server-registered valid state so it can be returned to and compared to.
+	 * 
+	 * At startup, this will be called to save the init state so that even if the
+	 * user modifies the UI to an invalid state, UI operations can use the init
+	 * state for communications w/ the server that require a valid context.
+	 * 
+	 * @param {Number} validContextId The context ID (if available)
+	 * @param {Object} The context {PredictionContext, PermanentMapState}  - otherwise the current state is used.
+	 */
+	markValidState: function(validContextId, validContext) {
+		
+		if (validContext != null) {
+			this.TransientMapState.lastValidContext = Ext.util.JSON.encode(validContext);
 		} else {
-			return (this.TransientMapState.previousTermReachesState != Ext.util.JSON.encode(this.PredictionContext.terminalReaches));
+			this.TransientMapState.lastValidContext = this.asJSON();
+		}
+		
+		this.TransientMapState.lastValidContextId = validContextId;
+	},
+	
+	/**
+	 * Returns a usable context ID, good for most operations.
+	 * This is the ID that is currently being mapped, or if there is no map,
+	 * the ID of the default context, marked at the time the UI loads.
+	 * 
+	 * It is theoretically possible that the UI could update the valid state w/o
+	 * updating the map, in which case the caller would need to choose between this
+	 * and getMappedContextId.
+	 * 
+	 * @returns {unresolved}
+	 */
+	getUsableContextId: function() {
+		var ms = this.TransientMapState.lastMappedContextId;
+		var vs = this.TransientMapState.lastValidContextId;
+		
+		if (ms == vs) {
+			return ms;
+		} else {
+			return vs;
 		}
 	},
+			
+	/**
+	 * Returns the effective context, which can be used for most operations.
+	 * The effective context is the context currently mapped, or if there is no map,
+	 * the default context, marked at the time the UI loads.
+	 * 
+	 * It is theoretically possible that the UI could update the valid state w/o
+	 * updating the map, in which case the caller would need to choose between this
+	 * and getMappedContext.
+	 * 
+	 * @returns {Object} {PredictionContext, PermanentMapState}
+	 */
+	getLastUsableContext: function() {
+		var ms = this.TransientMapState.lastMappedContext;
+		var vs = this.TransientMapState.lastValidContext;
+		
+		if (ms == vs) {
+			if (ms != null) {
+				return Ext.util.JSON.decode(ms);
+			} else {
+				return null;
+			}
+		} else {
+			if (vs != null) {
+				return Ext.util.JSON.decode(vs);
+			} else {
+				return null;
+			}
+		}
+	},
+		
+	/**
+	 * Returns the context ID of the last generated map, which may be null.
+	 * 
+	 * @returns {unresolved}
+	 */
+	getLastMappedContextId: function() {
+		return this.TransientMapState.lastMappedContextId;
+	},
+			
+	/**
+	 * Returns the context of the last generated map, which may be null.
+	 * 
+	 * @returns {Object} {PredictionContext, PermanentMapState} or null.
+	 */
+	getLastMappedContext: function() {
+		if (this.TransientMapState.lastMappedContext != null) {
+			return Ext.util.JSON.decode(this.TransientMapState.lastMappedContext);
+		} else {
+			return null;
+		}
+	},
+
+	/**
+	 *  Marks an assumed to be mappable state for future comparison.
+	 *  This state is also used to register a context if no map has been created
+	 *  yet, but a context is needed for server communication (eg the ID operation).
+	 */
+	mark: function(){
+		this.TransientMapState.previousState = this.asJSON();
+		//this.TransientMapState.previousTermReachesState = Ext.util.JSON.encode(this.PredictionContext.terminalReaches);
+		//this.TransientMapState.previousAdjGroupsState = Ext.util.JSON.encode(this.PredictionContext.adjustmentGroups);    	
+	},
 	
-	isAdjGroupsChanged : function() {
-		return (this.TransientMapState.previousAdjGroupsState != Ext.util.JSON.encode(this.PredictionContext.adjustmentGroups));
+	/**
+	 * Returns true if a map was ever created for this model.
+	 */		
+	isMapping : function() {
+		return this.TransientMapState.lastMappedContextId != null;
+	},
+	
+	/**
+	 * Returns true if the state has changed since the last map was drawn.
+	 * If no map was ever drawn, returns true.
+	 */
+	isChangedSinceLastMap : function() {
+		if (this.TransientMapState.lastMappedContextId == null) {
+			return true;
+		} else {
+			return (this.asJSON() != this.TransientMapState.lastMappedContext);
+		}
+	},
+			
+	/**
+	 * Returns true if the state has changed since the context was last registered.
+	 * If no context was ever registered, this returns true.
+	 * Perhaps rename to changedSinceLastRegisteredState?
+	 */
+	isChangedSinceLastMarkedState : function() {
+		if (this.TransientMapState.lastValidContextId == null) {
+			//No state was ever register
+			return true;
+		} else {
+			return (this.asJSON() == this.TransientMapState.lastValidContext);
+		}
+	},
+
+
+	/**
+	 * Returns true if the current app state can be mapped.
+	 * This will check isValidContextState in addition to other non-context
+	 * related settings that might make the state unmappable.
+	 * @returns {undefined}
+	 */
+	isValidMapState : function() {
+		var msg = this.getInvalidMapStateMessage();
+		return msg == null;
+	},
+			
+	/**
+	 * Returns true if the current context state would be expected to be mappable,
+	 * i.e., would not through an error when registering a context id.
+	 * e.g.:  A delivery series w/o downstream reaches is not mappable.
+	 * This is a best guess:  The server has the final say.
+	 */
+	isValidContextState : function() {
+		var msg = this.getInvalidContextStateMessage();
+		return msg == null;
+	},
+	
+	/**
+	 * Returns a message explaining why the current state is invalid/unmappable, if it is.
+	 * If the current context would be expected to be mappable, null is returned.
+	 * This basically adds additional requirements to getInvalidContextStateMessage.
+	 * @returns A String message if the context is unmappable, null if it is mappable.
+	 */		
+	getInvalidMapStateMessage : function() {
+		
+		var msg = this.getInvalidContextStateMessage();
+		
+		if (msg == null) {
+			if (! this.isBinAuto() && this.getBinData()['functionalBins'].length == 0) {
+				msg = "The <i>Auto Binning</i> option on the <i>Display Results</i> tab is disabled, but no bins are specified.  " +
+						"Please enable <i>Auto Binning</i> or define custom bins to create a map.<br/>"  +
+						"<i>Binning</i> determines which values are drawn in which color on the map.  " +
+						"If you are unsure how to proceed, it is generally OK to use the auto binning.";
+			}
+		}
+		
+		return msg;
+	},
+			
+	/**
+	 * Returns a message explaining why the current context is unregisterable w/ the server, if it is.
+	 * If the current context would be expected to be registerable, null is returned.
+	 * @returns A String message if the context is unregisterable, null if it is.
+	 */		
+	getInvalidContextStateMessage : function() {			
+		if (this.isDeliveryDataSeries() && ! this.hasEnabledTargetReaches())	{
+			return "A <i>Downstream Tracking</i> data series is selected on the <i>Display Results</i> tab, but no <i>Downstream Reaches</i> are selected.  " +
+					"Please select at least one <i>Downstream Reach</i> on the <i>Downstream Tracking</i> tab and try again.";
+		} else if (this.getDataSeries() == 'source_value' && this.getDataSeriesSource() == '') {
+			return "The data series <i>Model Input Sources</i> is selected on the <i>Display Results</i> tab, but no <i>Model Source</i> is selected.  " +
+					"Please select a <i>Model Source</i> on the <i>Display Results</i> tab and try again.";
+		} else {
+			return null;
+		}
 	},
 
 	// Doesn't seem to be used?? [IK]
@@ -1473,6 +1674,11 @@ Sparrow.ux.Session.prototype = {
 	    }
 	    return false;
 	},
+			
+	hasEnabledTargetReaches : function() {
+		return this.PredictionContext.terminalReaches.reach != null &&
+				this.PredictionContext.terminalReaches.reach.length > 0;
+	},
 
 	/**
 	 * Returns an array containing all of the targeted reaches.
@@ -1503,10 +1709,6 @@ Sparrow.ux.Session.prototype = {
  * user's current PredictionContext and is based entirely upon options chosen
  * within the user interface.
  *
- * Note that this object does not necessarily correspond with the current
- * context_id variable being used throughout the scripts.  The context_id is only
- * updated when a PredictionContext has been submitted to the web service, so
- * the variable will only be up to date as of the last submittal of this object.
  */
 Sparrow.CONTEXT = new Sparrow.ux.Context({});
 Sparrow.SESSION = new Sparrow.ux.Session({context: Sparrow.CONTEXT});

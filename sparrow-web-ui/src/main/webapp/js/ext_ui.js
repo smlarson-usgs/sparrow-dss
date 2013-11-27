@@ -191,7 +191,7 @@ Ext.onReady(function() {
 				},'-',{
 					text: 'Save Session...',
 					handler: function() {
-						SAVE_AS_WIN.open();
+						SAVE_AS_WIN.requestOpen();
 					}
 				},{
 					text: 'Submit Session as a Predefined Scenario...',
@@ -375,17 +375,10 @@ Ext.onReady(function() {
 				text: '<b>Update Map</b>',
 				autoHeight: true,
 				handler: function() {
-					if (Sparrow.SESSION.getPredictionContext().terminalReaches.reach.length < 1 &&
-						Sparrow.SESSION.isDeliveryDataSeries())	{
-						//there are no targets and delivery series is selected
-						Ext.Msg.alert('Warning', 'You must specify a downstream reach on the Downstream Tracking tab before you can display a Downstream Tracking data series.');
-					} else if (Sparrow.SESSION.getDataSeries() == 'source_value' &&
-						Sparrow.SESSION.getDataSeriesSource() == '') {
-						Ext.Msg.alert('Warning', 'You must specify a model source.');
-					} else if (! Sparrow.SESSION.isBinAuto() && Sparrow.SESSION.getBinData()['functionalBins'].length == 0) {
-						Ext.Msg.alert('Warning', 'You must either enable <i>Auto Binning</i> or define custom bins on the <i><b>Display Results</b></i> tab.');
-					} else {
+					if (Sparrow.SESSION.isValidMapState()) {
 						make_map();
+					} else {
+						Ext.Msg.alert('Warning', Sparrow.SESSION.getInvalidMapStateMessage());
 					}
 				},
 				tooltip: {
@@ -531,16 +524,7 @@ Ext.onReady(function() {
 	mapToolButtons = new Ext.ButtonGroup({
 		renderTo: 'map-controls',
 		id: 'map-tool-buttons',
-		//columns: 8,
-//		layout: 'hbox',
-//		padding: '5',
-//		align: 'top',
-//		pack:'start',
-//		layout: {
-//			type: 'hbox',
-//			padding: '5',
-//			align: 'left'
-//		},
+
 		defaults: {
 			iconAlign: 'top',
 			//tooltipType: 'title',
@@ -643,7 +627,7 @@ Ext.onReady(function() {
     	getModel();
     }
 
-	Sparrow.SESSION.fireContextEvent('finished-loading-state');
+	Sparrow.SESSION.fireContextEvent('finished-loading-ui');
 });
 
 /**
@@ -732,6 +716,18 @@ var IDENTIFY_CALIB_SITE_SPINNER = function() {
  */
 var SAVE_AS_WIN = new (function(){
 	var save_as_win;
+	
+	this.requestOpen = function() {
+		if (Sparrow.SESSION.isMapping()) {
+			if (Sparrow.SESSION.isChangedSinceLastMap()) {
+				Ext.Msg.alert('Warning', "The map is not showing your current selections.  Click <i>Update Map</i> and try again.");
+			} else {
+				this.open();
+			}
+		} else {
+			Ext.Msg.alert('Warning', "There must be a generated map before the session is saved.  Click <i>Update Map</i> and try again.");
+		}
+	};
 
 	this.open = function(){
 		if(!save_as_win){

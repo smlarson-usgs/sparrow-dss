@@ -50,14 +50,11 @@ describe('Session', {
 
 	},
 
-	'test mark()': function(){
+	'test markValidState()': function(){
 		//value_of(SESSION.prevState).should_be(null);
-		SESSION.mark();
-		value_of(SESSION.prevState).should_not_be(null);
-		value_of(Ext.decode(SESSION.prevState)).should_not_be(null); // valid json object
-	},
-
-	'TODO test isChangedFrom()': function(){
+		SESSION.markValidState();
+		value_of(SESSION.lastValidContext).should_not_be(null);
+		value_of(Ext.decode(SESSION.lastValidContext)).should_not_be(null); // valid json object
 	},
 
 	'TODO test getBinning()': function(){

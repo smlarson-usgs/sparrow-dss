@@ -209,6 +209,7 @@ Ext.ux.CustomBinsWindow = Ext.extend(Ext.Window, {
                         		ok: function(w) {
 		                        	var b = getContextIdAsync({
 		                        		scope: this,
+										profile: 'bin',
 		                        		callback: function() {
 				                            var bucketCount = w.getBucketCount();
 				                            var bucketType = w.getBucketType();
@@ -218,7 +219,7 @@ Ext.ux.CustomBinsWindow = Ext.extend(Ext.Window, {
 				                            Ext.Ajax.request({
 				                                url: 'getBins',
 				                                method: 'GET',
-				                                params: 'context-id=' + context_id + '&bin-count=' + bucketCount + '&bin-type=' + bucketType,
+				                                params: 'context-id=' + Sparrow.SESSION.getUsableContextId() + '&bin-count=' + bucketCount + '&bin-type=' + bucketType,
 				                                scope: this,
 				                                success: this.handleAutoGenerateSuccess,
 				                                failure: this.handleAutoGenerateFailure,

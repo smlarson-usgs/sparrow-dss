@@ -77,8 +77,6 @@ Sparrow.ui = function() { return{
 	    Sparrow.ui.loadUserSession = false;
 	    
 	    Sparrow.SESSION.fireContextEvent('finished-loading-pre-session');
-    	Sparrow.SESSION.fireContextEvent('changed');
-    	Sparrow.SESSION.fireContextEvent('finished-loading-state');
 	
 	    //add the sparrow data layer to the map
 	    make_map();
@@ -149,8 +147,6 @@ Sparrow.ui = function() { return{
 	    groups[i-1] = groups[i];
 	    groups[i] = t_g;
 	  }
-	  //last_SESSION = Sparrow.SESSION.asJSON();
-	  Sparrow.SESSION.mark();
 	}
 	
 	//move a group down in the left panel
@@ -179,8 +175,6 @@ Sparrow.ui = function() { return{
 	    groups[i] = t_g;
 	
 	  }
-	  //last_SESSION = SESSION.asJSON();
-	  Sparrow.SESSION.mark();
 	}
 	
 	/*
@@ -269,9 +263,7 @@ Sparrow.ui = function() { return{
 	, save_map_state : function(asXML) {
 		
 	  if (SAVE_AS_WIN.close()) {
-		  Sparrow.ui.update_SESSION_mapstate();
-	
-	    Sparrow.SESSION.mark();
+		Sparrow.ui.update_SESSION_mapstate();
 	
 	    if (asXML) {
 	      document.getElementById('savefileas_extension').value = 'xml';
@@ -304,7 +296,7 @@ Sparrow.ui = function() { return{
 			        + '<sparrow-report-request '
 			        + '  xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2" '
 			        + '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> '
-			        + '  <PredictionContext context-id="' + context_id + '"/> '
+			        + '  <PredictionContext context-id="' + Sparrow.SESSION.getUsableContextId() + '"/> '
 			        ;
 			    if (bound) {
 			        xmlreq += '  <bbox>' + map1.getViewportBoundingBoxString() + '</bbox> ';

@@ -352,7 +352,7 @@ var GOTO_REACH_WIN = new (function(){
 	var addIdentifyBtnRenderer = function(v, m, r, ri, ci, s) {
 	    return buttonRenderer(
 	    		'',
-	    		function() { IDENTIFY.identifyReach(null, null, r.id, 4, true); }, {disabled:(context_id==null), cls: 'id_go'},
+	    		function() { IDENTIFY.identifyReach(null, null, r.id, 4, true); }, {disabled:(! Sparrow.SESSION.isMapping()), cls: 'id_go'},
 	    		'id-reach-icon');
 	};
 

@@ -103,12 +103,23 @@ var AttributesGrid = (function(){
 
         // Set up a record definition for pushing into the store
         var AttributeRecord = Ext.data.Record.create(attributeRecords);
-
-        var mappedval = this.reachResponse["sparrow-id-response"].results.result[0]['mapped-value'];
-        var html = 'Current Mapped Value: ' + Math.round(mappedval.value*1000)/1000 + ' ' + Sparrow.USGS.prettyPrintUnitsForHtml(mappedval.units) +
+		var mappedval = this.reachResponse["sparrow-id-response"].results.result[0]['mapped-value'];
+		var mappedValHtml = "";
+		
+		if (! Sparrow.SESSION.isMapping()) {
+			mappedValHtml = 'Current Mapped Value: <i>[There is no current map]</i><br/>' +
+			'<img src="images/small_info_icon.png" alt="Careful!"/><span class="note">All values displayed in this window are based on the unadjusted Total Load data series.</span>';
+		} else if (Sparrow.SESSION.isChangedSinceLastMap()) {
+			mappedValHtml = '<img class="warn" src="images/small_alert_icon.png" alt="Careful!"/>Current Mapped Value: <i>' + Math.round(mappedval.value*1000)/1000 + ' ' + Sparrow.USGS.prettyPrintUnitsForHtml(mappedval.units) +
+    		' of ' + mappedval.constituent + ' (' + mappedval.name + ')</i><br/>' +
+			'<span class="note">This mapped value and the values displayed in this window are not up to date with your mapping selections.  Click the Update Map button to update.</span>';
+		} else {
+			mappedValHtml = 'Current Mapped Value: ' + Math.round(mappedval.value*1000)/1000 + ' ' + Sparrow.USGS.prettyPrintUnitsForHtml(mappedval.units) +
     		' of ' + mappedval.constituent + ' (' + mappedval.name + ')';
-        document.getElementById('sparrow-identify-mapped-value-a').innerHTML = html;
-        document.getElementById('sparrow-identify-mapped-value-b').innerHTML = html;
+		}
+		
+        document.getElementById('sparrow-identify-mapped-value-a').innerHTML = mappedValHtml;
+        document.getElementById('sparrow-identify-mapped-value-b').innerHTML = mappedValHtml;
         var sectionList = this.reachResponse["sparrow-id-response"].results.result[0].attributes.data.section;
         for (var i = 0; i < sectionList.length; i++) {
             var sectionTitle = sectionList[i]["@display"];

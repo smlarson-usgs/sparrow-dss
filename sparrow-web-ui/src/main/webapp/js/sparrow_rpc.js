@@ -300,18 +300,18 @@ var IDENTIFY = new (function(){
 	 * animOpts is defined in svn_overlay
 	 */
 	this.identifyReach = function(lat, lon, reachId, animOpts, showInfo) {
-		if(!(context_id)) {
+		if(! Sparrow.SESSION.isMapping()) {
 			getContextIdAsync({
 		    	callback: function() {
 					IDENTIFY.identifyReachWithContextId(lat, lon, reachId, animOpts, showInfo);
 				},
-				isIdentifying: true
+				profile: 'identify'
 			});
-		}
-		else {
+		} else {
 			IDENTIFY.identifyReachWithContextId(lat, lon, reachId, animOpts, showInfo);
 		}
-	}
+	};
+	
 	this.identifyReachWithContextId = function(lat, lon, reachId, animOpts, showInfo) {
 
 		if (Ext.isNumber(animOpts)){
@@ -319,63 +319,50 @@ var IDENTIFY = new (function(){
 			animOpts = SvgOverlay.standardAnimateOptions[animOpts];
 		}
 
-		if ( animOpts.showPleaseWait )
-			IDENTIFY_REACH_SPINNER.show();
+		if (animOpts.showPleaseWait) { IDENTIFY_REACH_SPINNER.show(); }
 
-	    // Begin building the IdByPoint request
-		//var b = getContextIdAsync({
-		//	scope: this,
-		//	callback: function() {
+		var xmlreq = ''
+			+ '<sparrow-id-request xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_2" '
+			+ 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
+			+ '<context-id>' + Sparrow.SESSION.getUsableContextId() + '</context-id>';
 
-			    var xmlreq = ''
-			        + '<sparrow-id-request xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_2" '
-			        + 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">';
-			        if (context_id) xmlreq += '<context-id>' + context_id + '</context-id>';
-			        else xmlreq += '<model-id>' + model_id + '</model-id>';
+		// Identify by reach id or point clicked on the map
+		if (!reachId) {
+			xmlreq += '<point lat="' + lat + '" long="' + lon + '" />';
+			clicked_lat = lat;
+			clicked_lon = lon;
+		} else {
+			xmlreq += '<reach id="' + reachId + '" />';
+		}
 
+		// Request adjustments and attributes from the service
+		xmlreq += ''
+			+ '<content>'
+			+ '<adjustments /><attributes />'
+			+ '</content>'
+			+ '<response-format><mime-type>json</mime-type></response-format>'
+			+ '</sparrow-id-request>';
 
-			    // Identify by reach id or point clicked on the map
-			    if (!reachId) {
-			        xmlreq += '<point lat="' + lat + '" long="' + lon + '" />';
-			        clicked_lat = lat;
-			        clicked_lon = lon;
-			    } else {
-			        xmlreq += '<reach id="' + reachId + '" />';
-			    }
-
-			    // Request adjustments and attributes from the service
-			    xmlreq += ''
-			        + '<content>'
-			        //+ ((animate == 1)? '<adjustments /><attributes />' : '') trying to change as to request less content when zooming. doesn't work. TODO debug later
-			        + '<adjustments /><attributes />'
-			        + '</content>'
-			        + '<response-format><mime-type>json</mime-type></response-format>'
-			        + '</sparrow-id-request>'
-			        ;
-
-			    last_id_JSON = null;
-			    this.abort();
-			    idRequest = Ext.Ajax.request({
-			    	method: 'POST',
-			    	url: 'getIdentify',
-			    	success: function(r,o) {
-			    		this.loadIdentifyReach(r,animOpts, showInfo);
-			    		if (animOpts.showPleaseWait)
-			    			IDENTIFY_REACH_SPINNER.hide();
-			    	},
-			    	failure: function(r,o) {
-			    		Ext.Msg.alert('Warning', 'identify failed');
-			    		if (animOpts.showPleaseWait)
-			    			IDENTIFY_REACH_SPINNER.hide();
-			    	},
-			    	params: {
-			    		xmlreq: xmlreq,
-			    		mimetype: 'json'
-			    	},
-			    	scope: this
-			    });
-		//	 }
-		//});
+		this.abort();
+		idRequest = Ext.Ajax.request({
+			method: 'POST',
+			url: 'getIdentify',
+			success: function(r,o) {
+				this.loadIdentifyReach(r,animOpts, showInfo);
+				if (animOpts.showPleaseWait)
+					IDENTIFY_REACH_SPINNER.hide();
+			},
+			failure: function(r,o) {
+				Ext.Msg.alert('Warning', 'identify failed');
+				if (animOpts.showPleaseWait)
+					IDENTIFY_REACH_SPINNER.hide();
+			},
+			params: {
+				xmlreq: xmlreq,
+				mimetype: 'json'
+			},
+			scope: this
+		});
 
 	};
 
@@ -545,32 +532,27 @@ var IDENTIFY = new (function(){
  * Values tab.
  */
 function updateReachPredictions(reachId) {
-	//getContextIdAsync({
-	//	scope: this,
-	//	callback: function() {
-		    var xmlreq = ''
-		        + '<sparrow-id-request '
-		        + 'xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_2" '
-		        + 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
-		        + '<context-id>' + context_id + '</context-id>'
-		        + '<reach id="' + reachId + '" />'
-		        + '<content><predicted /></content>'
-		        + '<response-format><mime-type>json</mime-type></response-format>'
-		        + '</sparrow-id-request>'
-		        ;
+	var xmlreq = ''
+		+ '<sparrow-id-request '
+		+ 'xmlns="http://www.usgs.gov/sparrow/id-point-request/v0_2" '
+		+ 'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
+		+ '<context-id>' + Sparrow.SESSION.getUsableContextId() + '</context-id>'
+		+ '<reach id="' + reachId + '" />'
+		+ '<content><predicted /></content>'
+		+ '<response-format><mime-type>json</mime-type></response-format>'
+		+ '</sparrow-id-request>'
+		;
 
-		    //document.getElementById('debug').innerHTML = xmlreq.replace(/</g,'&lt;');
-		    Ext.Ajax.request({
-		    	method: 'POST',
-		    	url: 'getIdentify',
-		    	success: renderPredictionsTabOnly,
-		    	params: {
-		    		xmlreq: xmlreq,
-		    		mimetype: 'json'
-		    	}
-		    });
-	//	}
-	//});
+	//document.getElementById('debug').innerHTML = xmlreq.replace(/</g,'&lt;');
+	Ext.Ajax.request({
+		method: 'POST',
+		url: 'getIdentify',
+		success: renderPredictionsTabOnly,
+		params: {
+			xmlreq: xmlreq,
+			mimetype: 'json'
+		}
+	});
 }
 
 /**
@@ -721,35 +703,86 @@ function renderGraph(id_JSON) {
 	}
 }
 
-var context_id = null;
-var last_id_JSON = null;
-
 /**
  * sets the id for the current PredictionContext.
  *
  * returns bool indicates whether or not function passed pre-conditions for retrieving context
+ * 
+ * options:
+ * 	scope		: Set to this by caller
+ *	callback	: method to call when complete
+ *	profile : map (default) | identify | bin
+ *	
+ *	The <i>map</i> profile registers the current context (current state of the app)
+ *	with the server and updates the lastMappedContext.  This operation will fail
+ *	w/ a warning to the user if the current state is invalid.
+ *	
+ *	The <i>identify</i> profile is intended to be used by the Identify operation
+ *	and is intended to not modify the current state of the application.  It
+ *	will register the last know valid state of the application with the server,
+ *	which may be different that the current state if the user is IDing prior to
+ *	making a map and has modified the map from its init state.  It will store
+ *	the context and contextID as lastValidContext.  This operation will not
+ *	fail if the current state is invalid.
+ *	
+ *	The <i>bin</i> profile is intended to be used to register a context prior to
+ *	creating bins.  Like the map profile, it will register the current context,
+ *	but will store the context to lastValidContext, not the
+ *	last mapped state.  Thus, it will fail if the current context is invalid.
+ *	
+ *	nonMapping	: Set true to for non-mapping invocations (see below)
+ *	useCurrentState : Set true to register the current state, false to use an appropriate prior state (see below).
  */
 
 function getContextIdAsync(options) {
 
-	var formulateLegendText = function(displayUnits, displayConstituent) {
-		return displayUnits + ' ' + displayConstituent;
-	};
-
+	var PROFILE_MAP = "map";
+	var PROFILE_IDENTIFY = "identify";
+	var PROFILE_BIN = "bin";
+	
+	if (options.profile == null) options.profile = PROFILE_MAP;
+	var isMap = (options.profile == PROFILE_MAP);
+	var isIdentify = (options.profile == PROFILE_IDENTIFY);
+	var isBin = (options.profile == PROFILE_BIN);
+	
 	var getDisplayInfo = function(xmlText, tagName) {
 		var display = xmlText.getElementsByTagName(tagName)[0].firstChild ? xmlText.getElementsByTagName(tagName)[0].firstChild.nodeValue : '';
 		return display;
 	};
+	
+	//Do we need a new ID?
+	var needToRun = false;
+	if ((isIdentify || isBin) && Sparrow.SESSION.isChangedSinceLastMarkedState()) {
+		needToRun = true;
+	} else if (Sparrow.SESSION.isChangedSinceLastMap()) {
+		needToRun = true;
+	}
 
-    if (Sparrow.SESSION.isChanged() || context_id == null) {
+    if (needToRun) {
+		
+		var xmlReq = null;
+		var contextUsedForId = null;
+		
+		if (isIdentify) {
+			contextUsedForId = Sparrow.SESSION.getLastUsableContext();
+			xmlReq = Sparrow.SESSION.getPredictionContextAsXML(contextUsedForId);
+		} else {
+			if (Sparrow.SESSION.isValidContextState()) {
+				xmlReq = Sparrow.SESSION.getPredictionContextAsXML();
+			} else {
+				Ext.Msg.alert('Warning', 'The currently selected data options are not valid:<br/>' + Sparrow.SESSION.getInvalidContextStateMessage());
+				return false;
+			}
+		}
+		
     	Ext.Ajax.request({
     		method: 'POST',
     		url: 'getContextId',
     		params: {
-    			xmlreq: Sparrow.SESSION.getPredictionContextAsXML()
+    			xmlreq: xmlReq
     		},
     		success: function(r,o) {
-    	        context_id = r.responseXML.childNodes[0].getAttribute("context-id");
+    	        var contextId = r.responseXML.childNodes[0].getAttribute("context-id");
 
     	        var displayName = getDisplayInfo(r.responseXML, 'name');
     	        var displayDesc = getDisplayInfo(r.responseXML, 'description');
@@ -763,11 +796,17 @@ function getContextIdAsync(options) {
     	        Sparrow.SESSION.setSeriesConstituent(displayConstituent);
     	        Sparrow.SESSION.setRowCount(rowCount);
 
-    	        Sparrow.SESSION.mark();
+				if (isMap) {
+					Sparrow.SESSION.markMappedState(contextId);
+				} else {
+					Sparrow.SESSION.markValidState(contextId, contextUsedForId);
+				}
+
     	        options.callback.call(options.scope);
     		},
     		failure: function(r,o) {
-    			Ext.Msg.alert('Warning', 'failed getting context id')
+    			Ext.Msg.alert('Warning', 'Failed getting context id');
+				return false;
     		}
     	});
     } else {
@@ -796,7 +835,7 @@ function make_map() {
         Ext.Ajax.request({
             url: 'getBins',
             method: 'GET',
-            params: 'context-id=' + context_id + '&bin-count=' + bucketCount + '&bin-type=' + bucketType,
+            params: 'context-id=' + Sparrow.SESSION.getUsableContextId() + '&bin-count=' + bucketCount + '&bin-type=' + bucketType,
             scope: this,
             success: function(response, options) {
 	            var binValues = Sparrow.ui.parseBinDataResponse(response.responseXML);
@@ -819,11 +858,12 @@ function make_map() {
 	};
 
 	if (Sparrow.SESSION.isBinAuto()) {
-	    getContextIdAsync({ callback: _autoGenBins });	//Adds the dataLayer if successful
+	    getContextIdAsync({ callback: _autoGenBins, profile: 'map' });	//Adds the dataLayer if successful
 	} else {
 		getContextIdAsync({
+			profile: 'map',
 	    	callback: function() {
-	    	    var urlParams = 'context-id=' + context_id || '';
+	    	    var urlParams = 'context-id=' + Sparrow.SESSION.getUsableContextId();
 
 	    		var bins = Sparrow.SESSION.getBinData()['functionalBins'];
 	    		//PermanentMapState["binning"]["bins"];
@@ -886,7 +926,7 @@ function addDataLayer() {
 
     // Set up the map tile url
     var urlParams = 'model_id=' + model_id;
-    urlParams += (context_id ? '&context_id=' + context_id : '');
+    urlParams += ('&context_id=' + Sparrow.SESSION.getUsableContextId());
     urlParams += '&what_to_map=' + what_to_map + '&theme_name=' + theme_name;
 
     var bins = Sparrow.SESSION.getBinData()["functionalBins"];

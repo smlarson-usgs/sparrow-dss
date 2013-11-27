@@ -49,7 +49,7 @@ Sparrow.events.EventManager = function(){ return{
 		 * Called when the state loading is complete.  Must happen after
 		 * 'finished-loading-pre-session' if it is a pre-session.
 		 */
-		Sparrow.CONTEXT.on('finished-loading-state', function() {
+		Sparrow.CONTEXT.on('finished-loading-ui', function() {
 			//Update the overlay controls to the current state
 			var mapOptionsTab = Ext.getCmp('map-options-tab');
 			mapOptionsTab.syncDataOverlayControlsToSession();
@@ -58,6 +58,14 @@ Sparrow.events.EventManager = function(){ return{
 			Sparrow.handlers.MapComponents.updateCalibrationLayerOnMap();
 			Sparrow.handlers.MapComponents.updateReachOverlayOnMap();
 			Sparrow.handlers.MapComponents.updateHuc8OverlayOnMap();
+			
+			//Todo - is this a mappable state?
+			if (Sparrow.SESSION.isValidContextState()) {
+				Sparrow.SESSION.markValidState();
+			} else {
+				//This should never get this far, but just in case, tell the user.
+				Ext.Msg.alert('Warning', Sparrow.SESSION.getInvalidContextStateMessage());
+			}
 
 		});
 
@@ -71,7 +79,7 @@ Sparrow.events.EventManager = function(){ return{
 		 */
 		Sparrow.CONTEXT.on('finished-loading-pre-session', function() {
 
-			//Remove all data-related layers (the finished-loading-state will put them back)
+			//Remove all data-related layers (the finished-loading-ui will put them back)
 			Sparrow.handlers.MapComponents.turnOffDataRelatedLayers();
 
 			if (! Sparrow.SESSION.PermanentMapState["mapLayers"]) {
@@ -105,8 +113,12 @@ Sparrow.events.EventManager = function(){ return{
 					}
 				}
 			}
+			
+			Sparrow.SESSION.fireContextEvent('changed');
+			Sparrow.SESSION.fireContextEvent('finished-loading-ui');
 
 			//Google Analytics event tracking
+			var series = Sparrow.SESSION.getSeriesName();
 			_gaq.push(['_trackEvent', 'Context', 'Update', series, parseInt(model_id)]);
 			_gaq.push(['_trackEvent', 'PreSession', 'Loaded', series, parseInt(model_id)]);
 		});
@@ -298,8 +310,7 @@ Sparrow.handlers.UiComponents = function(){ return{
 	},
 			
 	updatePerOutOfSyncMap : function(){
-		var isChanged = Sparrow.SESSION.isChanged();
-		if (isChanged) {
+		if (Sparrow.SESSION.isChangedSinceLastMap() && Sparrow.SESSION.isMapping()) {
 			//re-enable the gen map button
 			Ext.getCmp('update-map-button-panel').setStatusOutOfSync(Sparrow.SESSION.getSeriesName());
 
@@ -531,7 +542,7 @@ Sparrow.handlers.MapComponents = function(){
 		var isShowing = (map1.getMapLayer(layerId) != null);
 
 		if (showRequested && ! isShowing) {
-	        var urlParams = 'model_id=' + model_id + '&context_id=' + context_id;
+	        var urlParams = 'model_id=' + model_id + '&context_id=' + Sparrow.SESSION.getUsableContextId();
 
 	        map1.layerManager.unloadMapLayer(layerId);
 	        map1.appendLayer(
