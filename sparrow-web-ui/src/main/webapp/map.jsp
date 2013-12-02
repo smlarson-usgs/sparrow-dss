@@ -3,7 +3,7 @@
 <html>
   <head>
 
-		<jsp:include page="template_meta_tags.jsp" flush="true" />
+	<jsp:include page="template_meta_tags.jsp" flush="true" />
 
     <title>SPARROW Decision Support System</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">

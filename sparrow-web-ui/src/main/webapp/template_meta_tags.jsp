@@ -2,14 +2,10 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" > 
 		
 		<%--
-		Tell newer versions of IE to pretend they are IE9 (or 7 if needed.)
-		IE8 Does not work for rendering SVG.
-		The version of EXT used in the project is not aware of versions beyond
-		IE8, so EXT assumes its running in IE6 and pops up warning messages.
-		This also seems to more reliably turn off IE compatability mode, preventing
-		JS errors that would occur otherwise.
+		Tell newer versions of IE to pretend they are IE9.
+		IE8 Does not work for rendering SVG, so versions 8 and older get warning messages.
 		--%>
-		<meta http-equiv="x-ua-compatible" content="IE=7,9" >
+		<meta http-equiv="x-ua-compatible" content="IE=9" >
 		
 		<meta name="description" content ="SPARROW Decision Support tool - an online version of the SPARROW Models with support for scenario testing."> 
 		<meta name="author" content="See http://water.usgs.gov/nawqa/sparrow for authorship of the SPARROW model.  Site and online capabilities created by CIDA, http://cida.usgs.gov"> 
