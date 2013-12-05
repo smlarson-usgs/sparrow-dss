@@ -31,6 +31,7 @@ public class SparrowModelValidationRunner {
 	public enum DATABASE {
 		WIWSC_PROD("WIWSC Production", "WP", "130.11.165.152:1521:widw"),
 		EROS_PROD("EROS Production", "EP", "152.61.236.40:1521:dbdw"),
+		EROS_DEV("EROS Development (trans)", "EDEV", "152.61.236.135:1521:devtrans"),
 		TEST("Test", "T", "130.11.165.137:1521:witest"),
 		DEVELOPMENT("Development", "D", "130.11.165.154:1521:widev");
 		
