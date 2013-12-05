@@ -35,6 +35,7 @@
             <br /><a href="http://search.usgs.gov/" title="Link to main USGS search (not publications search)">Search USGS</a>
         </div>
     </div><!-- End content -->
+	<h2 id="site-title">SPARROW Decision Support System&nbsp;<span id="title-model-name"></span><span style="display: block; float: right;" id="index-link"></span></h2>
     <div id="quick-links" class="access-help">
         <h4>Quick Page Navigation</h4>
         <ul title="links to portions of this page.  Details:  Not normally visible and intended for screen readers.  Page layout has the content near top. Links opening new windows are noted in titles.">
@@ -46,11 +47,5 @@
             <li><a href="#footer" title="Maintenance info, general USGS links.  Bottom of page, after content.">Misc. Page Info</a></li>
         </ul>
     </div>
-    <table class="site-title">
-    	<tr>
-    		<td><h2 id="site-title">SPARROW Decision Support System <span id="title-model-name"></span></h2></td>
-    		<td align="right"><span id="index-link"></span></td>
-    	</tr>
-    </table>
     <!--<h3 id="internal-only">For Internal USGS Access Only</h3>-->
 </div><!-- /header -->

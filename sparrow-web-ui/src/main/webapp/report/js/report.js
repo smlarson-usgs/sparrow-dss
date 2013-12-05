@@ -4,8 +4,7 @@ var _TERM_REPORT_CONTAINER_ID = "terminal-report-container";
 var _AGG_REPORT_CONTAINER_ID = "aggregate-report-container";
 
 $(document).ready(function(){
-	$('#report-model-name').html(window.opener.Sparrow.SESSION.getModelName());
-	$('#report-model-constituent').html(window.opener.Sparrow.SESSION.getModelConstituent());
+	$('#title-model-name').html(" - " + window.opener.Sparrow.SESSION.getModelName());
 	$("#tabs").tabs();
 
 	initTermReachList();
@@ -202,14 +201,21 @@ function checkTermReachesInSync(initTerms, curTerms) {
 function openTerminalHelp() {
 
 		var newWindow = window.open('terminal_report_help.jsp', '_blank',
-		'resizable=1,location=0,status=1,scrollbars=1,width=750,height=640');
+		'resizable=1,location=0,status=1,scrollbars=1,width=800,height=640');
 		newWindow.focus();
 }
 
 function openAggHelp() {
 
 		var newWindow = window.open('aggregate_report_help.jsp', '_blank',
-		'resizable=1,location=0,status=1,scrollbars=1,width=750,height=640');
+		'resizable=1,location=0,status=1,scrollbars=1,width=800,height=640');
+		newWindow.focus();
+}
+
+function openGenHelp() {
+
+		var newWindow = window.open('../faq.jsp', '_blank',
+		'resizable=1,location=0,status=1,scrollbars=1,width=800,height=640');
 		newWindow.focus();
 }
 

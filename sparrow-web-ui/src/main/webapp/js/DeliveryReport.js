@@ -2,7 +2,7 @@
 function displayDeliverySummaryReport() {
 
 		var newWindow = window.open('report/deliveryreport.jsp?context-id=' + Sparrow.SESSION.getUsableContextId(), '_blank',
-		'resizable=1,location=0,status=1,scrollbars=1,width=900,height=700');
+		'resizable=1,location=0,status=1,scrollbars=1,width=1000,height=750');
 		newWindow.focus();
 }
 

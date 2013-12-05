@@ -192,7 +192,7 @@ function renderModel(response, options) {
 
     // Render the appropriate model 'theme'
     var siteTitleBar = document.getElementById('title-model-name');
-    siteTitleBar.innerHTML = Sparrow.SESSION.getModelName();
+    siteTitleBar.innerHTML = " - " + Sparrow.SESSION.getModelName();
 
     // Get the treaments tab from the group defintion window
     var treatmentTab = document.getElementById('treatment-tab');

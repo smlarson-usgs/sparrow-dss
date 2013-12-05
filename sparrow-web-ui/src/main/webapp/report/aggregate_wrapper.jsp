@@ -34,9 +34,9 @@
 			<h2>Delivered Load from Selected Upstream Regions</h2>
 			<p>
 				This report aggregates the load delivered to the downstream reaches by the upstream contributing region.
-				More
-				<a href="javascript:openAggHelp();" title="Click to open more detailed documentation in a new window.">detailed documentation</a>
+				<a href="javascript:openAggHelp();" title="Click to open more detailed documentation in a new window.">Detailed documentation about how the load is aggregated</a>
 				is available.
+				FAQs and additional documentation can be found <a href="javascript:openGenHelp();" title="Click to open documentation in a new window.">here</a>.
 			</p>
 		</div>
 		<div class="to-and-from-area columns-2">
@@ -79,7 +79,11 @@
 					<p class="downstream-reaches-out-of-sync">
 						<img src="../images/small_alert_icon.png" alt="Warning Icon" />
 						Careful!  These downstream reaches are no longer the
-						<em>Selected Downstream Reaches</em> in the Sparrow DSS.  <a href="">More info...</a>
+						<em>Selected Downstream Reaches</em> in the Sparrow DSS,
+						so they do not correspond to what is shown on the map.
+						To ensure the report and the map are based on the same
+						set of downstream reaches, close this window, update the
+						map and reopen the report from the Sparrow DSS application.
 					</p>
 					<p class="downstream-reaches-list"></p>
 				</div>
