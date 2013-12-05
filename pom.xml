@@ -5,7 +5,7 @@
 	<groupId>gov.usgs.cida</groupId>
 	<artifactId>sparrow-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.4.32.14-SNAPSHOT</version>
+	<version>1.4.33-SNAPSHOT</version>
 	<name>Sparrow DSS Parent Project</name>
 
 	<modules>
