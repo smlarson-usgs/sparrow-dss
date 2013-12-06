@@ -98,7 +98,9 @@
 				<dd>Nitrogen mass in permitted wastewater discharge</dd>
 				<dt>Fertilizer Corn Soy</dt>
 				<dd>Nitrogen mass in commerical fertilizer applied to agricultural land in corn / soybeans / alfalfa</dd>
-				<dt>Fixation Soy Alfalfa</dt>
+				<dt>Atmospheric TIN</dt>
+				<dd>Inorganic nitrogen detrended to 2002 conditions. </dd>				
+                                <dt>Fixation Soy Alfalfa</dt>
 				<dd>Nitrogen mass from fixation by soybeans</dd>				
 				<dt>Manure</dt>
 				<dd>Nitrogen mass in manure from livestock production</dd>
