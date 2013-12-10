@@ -60,6 +60,7 @@ public class SparrowCalculationRunner {
 	String activeModelDirectory;
 	String cacheDirectory;	//directory to cache db model data to, so re-run models are faster
 	List<Long> modelIds;
+	String dbUser;
 	String dbPwd;
 	Database database;
 	int firstModelId = -1;
@@ -347,9 +348,9 @@ public class SparrowCalculationRunner {
 
 			pr = promptWhichDb();
 			if (pr.quit) return false;
-			if(Database.DEVELOPMENT != this.database){
-				pr = promptPwd();
-			}
+			pr = promptUser();
+			if (pr.quit) return false;
+			pr = promptPwd();
 			if (pr.quit) return false;
 
 			intiDbConfig();
@@ -422,43 +423,14 @@ public class SparrowCalculationRunner {
 
 
 	public void intiDbConfig() {
-		String url = "";
-		String user = "";
-		String pwd = "";
-		switch(database) {
-			case DEVELOPMENT:
+		String url = "jdbc:oracle:thin:@" + database.getUrlFragment();
 
-				url = "jdbc:oracle:thin:@130.11.165.154:1521:widev";
-				user = "sparrow_dss";
-				pwd = "***REMOVED***";
-				break;
-			case TEST:
-				//Edit these props to point to test
-				url = "jdbc:oracle:thin:@130.11.165.137:1521:witest";
-				user = "sparrow_dss";
-				pwd = dbPwd;
-				break;
-			case MIDDLETON_PROD:
-				//Production Properties
-				url = "jdbc:oracle:thin:@130.11.165.152:1521:widw";
-				user = "sparrow_dss";
-				pwd = dbPwd;
-				break;
-			case EROS_PROD:
-				//Production Properties
-				url = "jdbc:oracle:thin:@152.61.236.40:1521:dbdw";
-				user = "sparrow_dss";
-				pwd = dbPwd;
-				break;
-			default:
-				throw new RuntimeException("No database was selected.");
-		}
 		System.setProperty("rw_dburl", url);
-		System.setProperty("rw_dbuser", user);
-		System.setProperty("rw_dbpass", pwd);
+		System.setProperty("rw_dbuser", dbUser);
+		System.setProperty("rw_dbpass", dbPwd);
 		System.setProperty("dburl", url);
-		System.setProperty("dbuser", user);
-		System.setProperty("dbpass", pwd);
+		System.setProperty("dbuser", dbUser);
+		System.setProperty("dbpass", dbPwd);
 	}
 
 	public boolean initLoggingConfig() {
@@ -651,13 +623,19 @@ public class SparrowCalculationRunner {
 			return prompModelIds();
 		}
 	}
-
-
+	
 	public PromptResponse promptWhichDb() {
 
 		System.out.println("");
 		System.out.println(": : Database Connection : :");
-		PromptResponse response = prompt("Which database should the calculation use?  (D)evelopment, (T)est, , (M)iddleton Production or (E)ros Production: ");
+		
+		String dbOpts = "";
+		for (Database d : Database.values()) {
+			dbOpts += "(" + d.getShortName() + ") " + d.getFullName() + ", ";
+		}
+		dbOpts = dbOpts.substring(0, dbOpts.length() - 1);
+		
+		PromptResponse response = prompt("Which database should the calculation use?  " + dbOpts + ": ");
 		if (response.quit) return response;
 
 		if (response.isEmptyOrNull()) {
@@ -665,15 +643,9 @@ public class SparrowCalculationRunner {
 			return promptWhichDb();
 		} else {
 			String strVal = response.getNullTrimmedStrResponse();
-			if("d".equalsIgnoreCase(strVal)){
-				database = Database.DEVELOPMENT;
-			} else if ("t".equalsIgnoreCase(strVal)) {
-				database = Database.TEST;
-			} else if ("m".equalsIgnoreCase(strVal)) {
-				database = Database.MIDDLETON_PROD;
-			} else if ("e".equalsIgnoreCase(strVal)) {
-				database = Database.EROS_PROD;
-			} else {
+			database = Database.DEVELOPMENT.getForShortName(strVal);
+			
+			if(database == null) {
 				System.out.println("Sorry, I didn't get that.");
 				return promptWhichDb();
 			}
@@ -682,7 +654,15 @@ public class SparrowCalculationRunner {
 		return response;
 	}
 
-	//useTestDb
+	public PromptResponse promptUser() {
+		PromptResponse pwdResp = prompt("Enter the db user: ");
+		if (! pwdResp.quit) {
+			dbUser = pwdResp.getStrResponse();
+		}
+		
+		return pwdResp;
+	}
+	
 	public PromptResponse promptPwd() {
 		PromptResponse pwdResp = prompt("Enter the db password: ");
 		if (! pwdResp.quit) {
