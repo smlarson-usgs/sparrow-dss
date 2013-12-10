@@ -23,24 +23,20 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
 		</dependency>
 		<dependency>
 		    <groupId>log4j</groupId>
 		    <artifactId>apache-log4j-extras</artifactId>
-		    <version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.servlets</groupId>
@@ -62,7 +58,6 @@
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
-			<version>2.5</version>
 		</dependency>
 		
 		<!-- Used for email logging of serious errors -->

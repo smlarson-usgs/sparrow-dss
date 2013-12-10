@@ -3,6 +3,7 @@ package gov.usgs.cida.sparrow.calculation.framework;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.action.LoadModelMetadata;
+import static gov.usgswim.sparrow.action.LoadModelMetadata.SKIP_LOADING_PREDEFINED_THEMES;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -89,9 +90,15 @@ public class SparrowCalculationRunner {
 	* @throws Exception
 	*/
 	public static void main(String[] args) throws Exception {
+		
 		if(null == lifecycle){
 			 lifecycle = new LifecycleListener();
 		}
+		
+		//turn off Loading of predefined themes (we would need the transactional connection to load them)
+		SharedApplication.getInstance().getConfiguration().put(SKIP_LOADING_PREDEFINED_THEMES, "true");
+		
+		
 		boolean continueRun = true;
 
 		if (args.length == 0) {
@@ -358,6 +365,7 @@ public class SparrowCalculationRunner {
 			try {
 				Connection conn = SharedApplication.getInstance().getRWConnection();
 				conn.close();
+				System.out.println("Connection seems OK.");
 			} catch (Exception e) {
 				System.err.println("Oops, a bad pwd, or lack of network access to the db?");
 				e.printStackTrace();
@@ -425,12 +433,14 @@ public class SparrowCalculationRunner {
 	public void intiDbConfig() {
 		String url = "jdbc:oracle:thin:@" + database.getUrlFragment();
 
-		System.setProperty("rw_dburl", url);
-		System.setProperty("rw_dbuser", dbUser);
-		System.setProperty("rw_dbpass", dbPwd);
-		System.setProperty("dburl", url);
-		System.setProperty("dbuser", dbUser);
-		System.setProperty("dbpass", dbPwd);
+		SharedApplication.getInstance().getConfiguration().put("rw_dburl", url);
+		SharedApplication.getInstance().getConfiguration().put("rw_dbuser", dbUser);
+		SharedApplication.getInstance().getConfiguration().put("rw_dbpass", dbPwd);
+
+		SharedApplication.getInstance().getConfiguration().put("dburl", url);
+		SharedApplication.getInstance().getConfiguration().put("dbuser", dbUser);
+		SharedApplication.getInstance().getConfiguration().put("dbpass", dbPwd);
+		
 	}
 
 	public boolean initLoggingConfig() {
