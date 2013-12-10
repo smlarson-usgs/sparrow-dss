@@ -130,6 +130,11 @@
 						<releaseProfiles>production</releaseProfiles>
 					</configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-shade-plugin</artifactId>
+					<version>2.2</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
