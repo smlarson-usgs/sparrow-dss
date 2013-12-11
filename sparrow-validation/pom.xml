@@ -39,11 +39,7 @@
 									<mainClass>gov.usgs.cida.sparrow.validation.RunAllTests</mainClass>
 								</transformer>
 							</transformers>
-							<artifactSet>
-								<excludes>
-									<exclude>junit:junit</exclude>
-								</excludes>
-							</artifactSet>
+
 						</configuration>
 					</execution>
 					<execution>
@@ -64,11 +60,7 @@
 									<mainClass>gov.usgs.cida.sparrow.validation.RunAllDBOnlyTests</mainClass>
 								</transformer>
 							</transformers>
-							<artifactSet>
-								<excludes>
-									<exclude>junit:junit</exclude>
-								</excludes>
-							</artifactSet>
+
 						</configuration>
 					</execution>
 					<execution>
@@ -89,11 +81,7 @@
 									<mainClass>gov.usgs.cida.sparrow.validation.RunReachViewer</mainClass>
 								</transformer>
 							</transformers>
-							<artifactSet>
-								<excludes>
-									<exclude>junit:junit</exclude>
-								</excludes>
-							</artifactSet>
+
 						</configuration>
 					</execution>
 				</executions>
@@ -106,12 +94,14 @@
 			<groupId>gov.usgs.cida</groupId>
 			<artifactId>sparrow-business</artifactId>
 			<version>${project.version}</version>
+			<type>jar</type>
 		</dependency>
 
 		<!-- Normally provided in the deployed app, but this needs there during runtime -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
+			<scope>compile</scope> <!-- inherit from parent as 'provided', so must override -->
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet.jsp</groupId>
