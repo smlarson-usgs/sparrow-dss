@@ -363,6 +363,7 @@ public class SparrowCalculationRunner {
 			intiDbConfig();
 
 			try {
+				System.out.println("Trying to connect to " + dbUser + "@" + "jdbc:oracle:thin:@" + database.getUrlFragment());
 				Connection conn = SharedApplication.getInstance().getRWConnection();
 				conn.close();
 				System.out.println("Connection seems OK.");

@@ -31,7 +31,8 @@ public class SparrowModelValidationRunner {
 	public enum DATABASE {
 		WIWSC_PROD("WIWSC Production", "WP", "130.11.165.152:1521:widw"),
 		EROS_PROD("EROS Production", "EP", "152.61.236.40:1521:dbdw"),
-		EROS_DEV("EROS Development (trans)", "EDEV", "152.61.236.135:1521:devtrans"),
+		EROS_DEV("EROS Development (trans)", "EDEV", "cida-eros-dbdev.er.usgs.gov:1521:devtrans"),
+		EROS_QA("EROS QA (trans)", "EQA", "cida-eros-dbqa.er.usgs.gov:1521:qatrans"),
 		TEST("Test", "T", "130.11.165.137:1521:witest"),
 		DEVELOPMENT("Development", "D", "130.11.165.154:1521:widev");
 		
@@ -389,8 +390,10 @@ public class SparrowModelValidationRunner {
 			intiDbConfig();
 			
 			try {
+				System.out.println("Trying to connect to " + dbUser + "@" + "jdbc:oracle:thin:@" + database.getUrlFragment());
 				Connection conn = SharedApplication.getInstance().getROConnection();
 				conn.close();
+				System.out.println("DB Connection Looks OK.");
 			} catch (Exception e) {
 				System.err.println("Oops, a bad pwd, or lack of network access to the db?");
 				e.printStackTrace();
