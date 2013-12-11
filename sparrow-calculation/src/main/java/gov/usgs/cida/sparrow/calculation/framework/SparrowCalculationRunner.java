@@ -1,6 +1,5 @@
 package gov.usgs.cida.sparrow.calculation.framework;
 
-import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.action.LoadModelMetadata;
 import static gov.usgswim.sparrow.action.LoadModelMetadata.SKIP_LOADING_PREDEFINED_THEMES;
@@ -9,15 +8,12 @@ import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.*;
-import java.net.URL;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
-import org.apache.log4j.xml.DOMConfigurator;
 
 /**
  * This calculation runner and the associated framework code was based off of
@@ -654,7 +650,7 @@ public class SparrowCalculationRunner {
 			return promptWhichDb();
 		} else {
 			String strVal = response.getNullTrimmedStrResponse();
-			database = Database.DEVELOPMENT.getForShortName(strVal);
+			database = Database.EROS_PROD.getForShortName(strVal);
 			
 			if(database == null) {
 				System.out.println("Sorry, I didn't get that.");
