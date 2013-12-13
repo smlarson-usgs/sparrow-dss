@@ -1329,29 +1329,12 @@ function renderReachIdentifyWindow(reachResponse) {
 	var reachName = reachResponse["sparrow-id-response"].results.result[0].identification.name;
 
 	reachIdentifyWin.on('show', function(w) {
-		var targetReachName = targetsTab.identifyControls.items.items[0];
-		var addTargetButton = targetsTab.identifyControls.items.items[1];
-		var adjReachGroup = adjTab.identifyControls.items.items[0];
-
-		targetReachName.update("<b>"+reachName+"</b>");
-		addTargetButton.handler=function(btn){
-			if(Sparrow.SESSION.isReachTarget(reachId))
-				Ext.MessageBox.alert("Already added", '"'+reachName+'" is already a downstream reach');
-			else
-				Sparrow.SESSION.addToTargetReaches(reachId, reachName);
-		};
-		targetsTab.identifyControls.show();
-
-		adjTab.identifyControls.remove(adjReachGroup);
-		adjTab.identifyControls.show();
-		adjTab.identifyControls.add(new Sparrow.ui.AddToGroupPanel({reachResponse: reachResponse}));
-		adjTab.doLayout();
+		targetsTab.setIdentifiedReach(reachId, reachName);
+		adjTab.setIdentifiedReach(reachResponse);
 	});
 	reachIdentifyWin.on('close', function(w) {
-		targetsTab.identifyControls.hide();
-		targetsTab.doLayout();
-		adjTab.identifyControls.hide();
-		adjTab.doLayout();
+		targetsTab.clearIdentifiedReach();
+		adjTab.clearIdentifiedReach();
 	});
 
 	// Position the window at the top left of the map and show

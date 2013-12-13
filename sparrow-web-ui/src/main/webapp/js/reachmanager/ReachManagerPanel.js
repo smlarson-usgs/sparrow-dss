@@ -394,7 +394,6 @@ Sparrow.ux.TargetTreePanel = Ext.extend(Ext.tree.TreePanel,{
 
 Sparrow.AdjustmentsPanel = Ext.extend(Ext.Panel, {
 	constructor: function(config){
-		var fieldsAnchor = '97%';
 		var fieldsetAnchor = '92%';
 
 		this.instructionsPanel = new Ext.Panel({
@@ -406,7 +405,7 @@ Sparrow.AdjustmentsPanel = Ext.extend(Ext.Panel, {
 		this.treePanel = new Sparrow.ux.GroupTreePanel({
 			border: false
 		});
-		this.identifyControls = new Ext.Panel({
+		this.currentReachAsAdjusted = new Ext.Panel({
         	border: false,
         	fieldLabel: '',
         	labelSeparator: '',
@@ -437,10 +436,7 @@ Sparrow.AdjustmentsPanel = Ext.extend(Ext.Panel, {
 					frame: false,
 					border: false,
 					region: 'north',
-					collapsible: true,
-					hideCollapseTool: true,
-					collapseMode: 'mini',
-					split: true,
+					collapsible: false,
 					layout: 'fit'
 			    },new Ext.form.FormPanel({
 					border: true,
@@ -488,7 +484,7 @@ Sparrow.AdjustmentsPanel = Ext.extend(Ext.Panel, {
 				        		    }
 					        	}
 					        },
-					        this.identifyControls
+					        this.currentReachAsAdjusted
 				        ]
 					},
 					{
@@ -543,61 +539,88 @@ Sparrow.AdjustmentsPanel = Ext.extend(Ext.Panel, {
 		this.instructionsPanel.update('<b>2. Change the values of the source inputs</b><br/>(Right click to change input values or show on map)');
 		this.syncSize();
 		this.instructionsPanel.ownerCt.setHeight(150);
-		this.instructionsPanel.ownerCt.doLayout();
+		this.doLayout(false, true);
 	},
 
 	hideInstructions : function() {
 		this.instructionsPanel.update('<b>2. Change the values of the source inputs</b>');
 		this.syncSize();
 		this.instructionsPanel.ownerCt.setHeight(70);
-		this.instructionsPanel.ownerCt.doLayout();
+		this.doLayout(false, true);
+	},
+	
+	/**
+	 * Sets which reach is currently identified so that the UI can
+	 * provide a buttons to add that reach (or related set) to the adjustment list.
+	 */
+	setIdentifiedReach : function(reachResponse) {
+
+		var adjReachGroup = this.currentReachAsAdjusted.items.items[0];
+		this.currentReachAsAdjusted.remove(adjReachGroup, true);
+		this.currentReachAsAdjusted.show();
+		this.currentReachAsAdjusted.add(new Sparrow.ui.AddToGroupPanel({reachResponse: reachResponse}));
+		this.doLayout(false, true);
+	},
+	
+	/**
+	 * Cancels the available actions for an identified reach.
+	 */
+	clearIdentifiedReach : function() {
+		this.currentReachAsAdjusted.hide();
+		this.doLayout(false, true);
 	}
 });
 
 Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 	constructor: function(config){
 		var dataSeriesTip = 'Please note that data series selected here will require that you first specify a target reach for the analysis.';
-		var fieldsAnchor = "97%";
-		var fieldsetAnchor = "92%";
 
 		this.treePanel = new Sparrow.ux.TargetTreePanel({
 			border: false,
-			region: 'center'
-		});
-		this.instructionsPanel = new Ext.Panel({
-			region: 'north',
-			border: false,
-			autoHeight: true,
-			html: '<b>Selected Downstream Reach(es)</b>'
+			region: 'center',
+			margin: 20,
+			title: 'Selected Downstream Reaches (0 total)<br/><i>Use the buttons above to add reaches.</i>'
 		});
 
 		this.displayResultsInstructions = new Ext.Panel({
+			region: 'south',
         	border: false,
-        	padding: 5,
-        	html: '[No downstream reaches have been chosen]'
+        	html: '<p><b>2. Display Results</b><br/>[No downstream reaches have been chosen]</p>'
 		});
 
-		this.identifyControls = new Ext.Panel({
-	        	border: true,
-	        	padding: 5,
-	        	labelSeparator: '',
-	        	labelWidth: 110,
-	        	labelAlign: 'left',
-	        	layout: 'form',
-	        	hidden: true,
-        		itemCls: 'zero-padding',
-        		ctCls: 'zero-padding',
-	        	items:[
-	        	       {xtype:'label', fieldLabel: 'Identified Reach', text:'', labelStyle: 'padding: 0px; font-weight: bold;'},
-	        	       {xtype:'button', text: 'Add as Downstream Reach',
-	        	    	handler: function(){}
-	        	       }
-	        	], listeners: {
-	        		'beforeshow' : function(p) {
-					p.getEl().fadeIn();
-	        		}
-	        	}
-	        });
+		this.selectByIdButton = new Ext.Button({
+			text: 'Identify on the map', style: 'margin: 5px; clear: both;',
+			icon: 'images/identifygif.gif', cls: 'x-btn-text-icon',
+			listeners: {
+				render: function(c) {
+				  Ext.fly(c.el).on('click', function(e, t) {
+					  var b = Ext.getCmp('mapToolButtonsIdentify');//TODO using global map1 here
+					  if (!b.pressed) {
+						  b.toggle();
+						  Ext.Msg.alert(
+							'Identifying a reach to add it as a downstream reach', 
+							"The 'Identify Reach' tool is now selected on the map - its located in the upper left corner of the map window.<br/>" +
+							"Click on the map to identify a reach, then use the menu to the left of the map to add that reach as a Downstream Reach.");
+					  } else {
+						  Ext.Msg.alert(
+							'Identifying a reach to add it as a downstream reach', 
+							"The 'Identify Reach' tool is already selected on the map - its located in the upper left corner of the map window.<br/>" +
+							"Click on the map to identify a reach, then use the menu to the left of the map to add that reach as a Downstream Reach.");
+					  }
+					  map1.setMouseAction(IDENTIFY.identifyPoint); //TODO using global map1 here
+
+				  });
+				},
+				beforeshow : function(p) { p.getEl().fadeIn();}
+			}
+		});
+		
+		this.currentReachAsDownstreamButton = new Ext.Button({
+			hidden: true, style: 'clear: both; margin: 5px;',
+			scale: 'large', text: 'Add as Downstream Reach<br/>name',
+			icon: 'images/identifygif.gif', cls: 'x-btn-text-icon',
+			listeners: {'beforeshow' : function(p) { p.getEl().fadeIn();}}
+		});
 
 		var defaults = {
 			title: 'Downstream Tracking',
@@ -608,152 +631,135 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 					contentEl: 'targets-text',
 			        frame: false,
 			        border: false,
-					collapsible: true,
-					hideCollapseTool: true,
-					collapseMode: 'mini',
-					split: true,
+					collapsible: false,
 					region: 'north'
-			    },new Ext.form.FormPanel({
-					border: true,
-					autoScroll: true,
+			    },{
+					xtype: 'panel',
+					border: false,
 					region: 'center',
-					padding: 5,
+					layout: 'border',
 					items: [{
-						xtype: 'fieldset',
-						anchor: fieldsetAnchor,
-						layout: 'form',
-						labelWidth: 15, //this is actually used as indentation for this section
-						items: [
-					        {xtype: 'panel', border: false, html: '<b>1. Select Downstream Reach(es)</b>'},
-//					        {
-//					        	xtype: 'button',
-//				        		itemCls: 'zero-padding',
-//				        		ctCls: 'zero-padding',
-//			    	        	text: 'Select Reaches from a list...',
-//			    	        	anchor: fieldsAnchor,
-//			    	        	handler: function() {
-//			    	        		WATERSHED_WINDOW.open();
-//			    	          	}
-//			    	        },
-					        {
-					        	xtype: 'panel',
-					        	border: false,
-					        	labelSeparator: '',
-				        		itemCls: 'zero-padding',
-				        		ctCls: 'zero-padding',
-					        	html: '<a style="cursor: pointer; padding: .2em 0; display: block;" title="Select a reach by selecting from a list of watersheds">--Select from a watershed list</a>',
-					        	listeners: {
-					        		render: function(c) {
-				        		      Ext.fly(c.el).on('click', function(e, t) {
-				        		    	  WATERSHED_WINDOW.open();
-				        		      });
-				        		    }
-					        	}
-					        },
-					        {
-					        	xtype: 'panel',
-					        	border: false,
-					        	labelSeparator: '',
-				        		itemCls: 'zero-padding',
-				        		ctCls: 'zero-padding',
-					        	html: '<a style="cursor: pointer; padding: .2em 0; display: block;" title="Identify Reach">--Locate on map<img src="images/identifygif.gif" alt="Identify icon" style="vertical-align: bottom;"/></a>',
-					        	listeners: {
-					        		render: function(c) {
-				        		      Ext.fly(c.el).on('click', function(e, t) {
-				        		    	  var b = Ext.getCmp('mapToolButtonsIdentify');//TODO using global map1 here
-				        		    	  if (!b.pressed) b.toggle();
-				        		    	  map1.setMouseAction(IDENTIFY.identifyPoint); //TODO using global map1 here
-				        		      });
-				        		    }
-					        	}
-					        },
-					        {
-					        	xtype: 'panel',
-					        	border: false,
-					        	labelSeparator: '',
-				        		itemCls: 'zero-padding',
-				        		ctCls: 'zero-padding',
-					        	html: '--<a style="cursor: pointer;">Find by name or hydrologic unit code</a>',
-					        	listeners: {
-					        		render: function(c) {
-				        		      Ext.fly(c.el).on('click', function(e, t) {
-				        		    	  GOTO_REACH_WIN.open();
-				        		      });
-				        		    }
-					        	}
-					        },
-					        this.identifyControls
-				        ]
+						xtype: 'panel',
+						region: 'north',
+						padding: 5,
+						height: 110,
+						items: [{
+								xtype: 'panel', border: false, html: '<b>1. Select Downstream Reach(es) :</b>', style: 'margin: 5px 0;'
+							}, {
+								xtype: 'button', text: 'From list of watersheds', style: 'margin: 5px; float: left;',
+								listeners: {
+									render: function(c) {
+									  Ext.fly(c.el).on('click', function(e, t) {
+										  WATERSHED_WINDOW.open();
+									  });
+									}
+								}
+							}, {
+								xtype: 'button', text: 'By name or hydrologic unit code', style: 'margin: 5px; float: left;',
+								listeners: {
+									render: function(c) {
+									  Ext.fly(c.el).on('click', function(e, t) {
+										  GOTO_REACH_WIN.open();
+									  });
+									}
+								}
+							},
+							this.selectByIdButton, 
+							this.currentReachAsDownstreamButton]
+
 					},
 					{
-						xtype: 'fieldset',
-						anchor: fieldsetAnchor,
+						xtype: 'panel',
+						region: 'center',
 						layout: 'border',
-						height: 70,
-						autoScroll: true,
-		        		itemCls: 'zero-padding',
-		        		ctCls: 'zero-padding',
+						padding: '10',
+						border: false,
 						items: [
-						       this.instructionsPanel,
-						       this.treePanel,
-						       {
-						    	   region: 'south',
-						    	   border: false,
-						    	   itemCls: 'zero-padding',
-						    	   ctCls: 'zero-padding',
-						    	   layout: 'anchor',
-						    	   autoHeight: true,
-							       items: [{
-							        	xtype: 'button',
-						        		itemCls: 'zero-padding',
-						        		ctCls: 'zero-padding',
-					    	        	text: 'Remove all Downstream Reaches',
-					    	        	anchor: fieldsAnchor,
-					    	        	handler: function() {
-					    	        	  	Ext.Msg.confirm('', 'Are you sure you want to remove all of your selected downstream reaches?', function(choice) {
-					    	        	  		if(choice == 'yes')
-					    	        	  			Sparrow.SESSION.removeAllReachesFromTargets();
-					    	        	  	}, this);
-					    	          	}
-					    	       }]
-						       }]
+							   this.treePanel,
+							   {
+									xtype: 'panel',
+									region: 'south',
+									border: false,
+									items: [{
+										xtype: 'button',
+										style: 'margin: 5px auto',
+										text: 'Remove all Downstream Reaches',
+										handler: function() {
+											Ext.Msg.confirm('', 'Are you sure you want to remove all of your selected downstream reaches?', function(choice) {
+												if(choice == 'yes')
+													Sparrow.SESSION.removeAllReachesFromTargets();
+											}, this);
+										}
+									}]
+
+							   }]
 					},
 					{
-						xtype: 'fieldset',
-						anchor: fieldsetAnchor,
-						layout: 'form',
-						labelAlign: 'top',
-		        		itemCls: 'zero-padding',
-		        		ctCls: 'zero-padding',
+						
+						xtype: 'panel', region: 'south', layout: 'fit',
+						height: 34, padding: 5,
 						items: [
-					        {xtype: 'panel', border: false, html: '<b>2. Display Results</b>'},
-					        this.displayResultsInstructions
-				        ]
+							this.displayResultsInstructions
+						]
 					}
 					]
-				})
-		        ]
+				}]
 		};
 		config = Ext.applyIf(config, defaults);
 		Sparrow.TargetsPanel.superclass.constructor.call(this, config);
 	},
 
-	showInstructions : function(reachCount) { 
-		this.instructionsPanel.update( this.makeLabel(reachCount) +'<br/>(Right click on reach name for more information)' );
-		this.syncSize();
-		this.instructionsPanel.ownerCt.setHeight(150);
-		this.instructionsPanel.ownerCt.doLayout();
+	updateInstructions : function(reachCount) { 
+		var tree = this.treePanel;
+		if (reachCount > 0) {
+			tree.setTitle('<b>Selected Downstream Reaches ('+reachCount+' total)</b><br/><i>Right click on reach name for more information</i>');
+		} else {
+			tree.setTitle('<b>Selected Downstream Reaches (0 total)</b><br/><i>Use the buttons above to add reaches.</i>');
+		}
+		this.doLayout();
 	},
+			
+	updateStepTwoInstructions : function(text) {
+		this.displayResultsInstructions.body.update('<p><b>2. Display Results</b><br/>' + text + '</p>');
+		var newHeight = this.displayResultsInstructions.body.dom.children[0].offsetHeight;
+		this.displayResultsInstructions.ownerCt.setHeight(newHeight + 10);
+		this.doLayout();
+	},
+	
+	/**
+	 * Sets which reach is currently identified so that the UI can
+	 * provide a button to add that reach to the downstream list.
+	 */
+	setIdentifiedReach : function(reachId, reachName) {
 
-    makeLabel : function(rcount) {
-        var plural = rcount==1 ?"" :"es";
-        return '<b>Selected Downstream Reach'+plural +' ('+rcount+')</b>';
-    },
+		var addButton = this.currentReachAsDownstreamButton;
+		
+		//Stash these as properties of the control
+		addButton.reachid = reachId;
+		addButton.reachName = reachName;
 
-	hideInstructions : function(reachCount) {
-		this.instructionsPanel.update( this.makeLabel(reachCount) );
-		this.syncSize();
-		this.instructionsPanel.ownerCt.setHeight(70);
-		this.instructionsPanel.ownerCt.doLayout();
+		addButton.setText("Add the currently identified reach<br/><b>'" + reachName + "'</b> as a Downstream Reach");
+		addButton.handler=function(btn){
+			if(Sparrow.SESSION.isReachTarget(btn.reachid))
+				Ext.MessageBox.alert("Already added", '"'+btn.reachName+'" is already a downstream reach');
+			else
+				Sparrow.SESSION.addToTargetReaches(btn.reachid, btn.reachName);
+		};
+		this.selectByIdButton.hide();
+		this.currentReachAsDownstreamButton.show();
+		this.doLayout(false, true);
+	},
+	
+	/**
+	 * Cancels the available actions for an identified reach.
+	 */
+	clearIdentifiedReach : function() {
+		//Clear these props so there is no confusion
+		this.currentReachAsDownstreamButton.reachid = '';
+		this.currentReachAsDownstreamButton.reachName = '';
+		
+		this.currentReachAsDownstreamButton.hide();
+		this.selectByIdButton.show();
+		this.doLayout(false, true);
 	}
 });
