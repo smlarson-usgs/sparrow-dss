@@ -24,7 +24,7 @@
 			<Description>Nitrogen mass in permitted wastewater discharge</Description>
 		</Source>
 		<Source id="2">
-			<Name>Fertilizer Corn Soy</Name>
+			<Name>Fert/Fix from Corn-Soy-Alfalfa</Name>
 			<Units>kg/yr</Units>
 			<Description>Fertilizer Corn, Soybeans, Alfalfa</Description>
 		</Source>
@@ -34,21 +34,16 @@
 			<Description/>
 		</Source>
 		<Source id="4">
-			<Name>Fixation Soy Alfalfa</Name>
-			<Units>kg/yr</Units>
-			<Description>Fixation Soybeans and Alfalfa</Description>
-		</Source>
-		<Source id="5">
 			<Name>Manure</Name>
 			<Units>kg/yr</Units>
 			<Description>Nitrogen mass in manure from livestock production</Description>
 		</Source>
-		<Source id="6">
+		<Source id="5">
 			<Name>Developed Land</Name>
 			<Units>km2</Units>
 			<Description>Area of developed land</Description>
 		</Source>
-		<Source id="7">
+		<Source id="6">
 			<Name>Fertilizer Other</Name>
 			<Units>kg/yr</Units>
 			<Description>Nitrogen mass in commercial fertilizer applied to agricultural land in other crops</Description>
@@ -96,12 +91,10 @@
 				<dd>Not really a separate source, it just tallies all the sources together.  Reported in kg.</dd>
 				<dt>Municipal Point Source</dt>
 				<dd>Nitrogen mass in permitted wastewater discharge</dd>
-				<dt>Fertilizer Corn Soy</dt>
-				<dd>Nitrogen mass in commerical fertilizer applied to agricultural land in corn / soybeans / alfalfa</dd>
+				<dt>Fert/Fix from Corn-Soy-Alfalfa</dt>
+				<dd>Nitrogen mass in commercial fertilizer applied to agricultural land in corn / soybeans / alfalfa</dd>
 				<dt>Atmospheric TIN</dt>
-				<dd>Inorganic nitrogen detrended to 2002 conditions. </dd>				
-                                <dt>Fixation Soy Alfalfa</dt>
-				<dd>Nitrogen mass from fixation by soybeans</dd>				
+				<dd>Inorganic nitrogen detrended to 2002 conditions. </dd>							
 				<dt>Manure</dt>
 				<dd>Nitrogen mass in manure from livestock production</dd>
 				<dt>Developed Land</dt>
