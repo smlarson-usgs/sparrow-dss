@@ -14,13 +14,8 @@
 <spatial_data_cache max_cache_size="2000" report_stats="true"/>
 
 <ns_data_provider id="sparrowPredict" class="gov.usgswim.sparrow.MapViewerSparrowDataProvider"/>
-  
-<!-- cida prod server -->
-<!--
-<map_data_source name="sparrow" jdbc_host="130.11.165.152" jdbc_sid="widw" jdbc_port="1521" jdbc_user="SPARROW_DSS" jdbc_password="GvGuGjlKVAnuhmX0Ym5juxa7ZUgaYN0cxqjYBLJqejg=" jdbc_mode="thin" max_connections="1" number_of_mappers="3"/>
--->
 
-<!-- test connection -->
+<!-- MapViewer's own connection to the DB.  It has issues w/ using JNDI connections. -->
 <map_data_source name="sparrow" jdbc_host="130.11.165.137" jdbc_sid="witest" jdbc_port="1521" jdbc_user="SPARROW_DSS"
 jdbc_password="!FILL_IN_WITH_LEADING_BANG"
 jdbc_mode="thin" max_connections="1" number_of_mappers="3"/>
