@@ -21,38 +21,25 @@
 	<jsp:include page="../template_page_tracking.jsp" flush="true" />
 </head>
 <body>
-<div id="sizer">
-	<div id="expander">
-		<div id="wrapper" class="clearfix">
-			<div id="usgs-header-panel">
-				<jsp:include page="../header.jsp" flush="true" />
-			</div>
-
-			<div id="page-area-container" class="area-container"> 
-				<div id="page-content" class="area-1 area">
-					<div class="area-content">
-						<div id="tabs" class="content">
-							<ul>
-								<li><a href="#aggregate-report-container"><span>Delivered Load from Selected Upstream Regions</span></a></li>	
-								<li><a href="#terminal-report-container"><span>Total Delivered Load Summary</span></a></li>
-							</ul>
-							<div id="terminal-report-container" class="report-container">
-									<jsp:include page="terminal_wrapper.jsp" flush="true" />
-							</div>
-							<div id="aggregate-report-container" class="report-container">
-								<jsp:include page="aggregate_wrapper.jsp" flush="true" />
-							</div>
-						</div>
-
-
-					</div>
+<jsp:include page="../header-unbalanced.jsp" flush="true" />
+	<div id="page-content" class="area-1 area">
+		<div class="area-content">
+			<div id="tabs" class="content">
+				<ul>
+					<li><a href="#aggregate-report-container"><span>Delivered Load from Selected Upstream Regions</span></a></li>	
+					<li><a href="#terminal-report-container"><span>Total Delivered Load Summary</span></a></li>
+				</ul>
+				<div id="terminal-report-container" class="report-container">
+						<jsp:include page="terminal_wrapper.jsp" flush="true" />
 				</div>
-			</div> <!-- /page-area-container -->
-			<div id="usgs-footer-panel">
-				<jsp:include page="../footer.jsp" flush="true" />
+				<div id="aggregate-report-container" class="report-container">
+					<jsp:include page="aggregate_wrapper.jsp" flush="true" />
+				</div>
 			</div>
-		</div> <!-- /wrapper --> 
-	</div> <!-- /expander --> 
-</div> <!-- /sizer --> 
+
+
+		</div>
+	</div>
+<jsp:include page="../footer-unbalanced.jsp" flush="true" />
 </body>
 </html>

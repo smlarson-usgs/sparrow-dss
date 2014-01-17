@@ -30,9 +30,11 @@
         </div>
         <div id="ccsa-area">
             <h4 class="access-help">Top Level USGS Links</h4>
-            <br /><a href="http://www.usgs.gov/" title="Link to main USGS page">USGS Home</a>
-            <br /><a href="http://www.usgs.gov/ask/index.html" title="Link to main USGS contact page">Contact USGS</a>
-            <br /><a href="http://search.usgs.gov/" title="Link to main USGS search (not publications search)">Search USGS</a>
+			<ul>
+				<li><a href="http://www.usgs.gov/" title="Link to main USGS page">USGS Home</a></li>
+				<li><a href="http://www.usgs.gov/ask/index.html" title="Link to main USGS contact page">Contact USGS</a></li>
+				<li><a href="http://search.usgs.gov/" title="Link to main USGS search (not publications search)">Search USGS</a></li>
+			</ul>
         </div>
     </div><!-- End content -->
 	<h2 id="site-title">SPARROW Decision Support System&nbsp;<span id="title-model-name"></span><span style="display: block; float: right;" id="index-link"></span></h2>

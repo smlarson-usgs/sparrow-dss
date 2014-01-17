@@ -1,7 +1,7 @@
-<div id="footer" style="width: 100%; margin-right: -1em;">
+<div id="footer">
 <%@page import="gov.usgswim.sparrow.SparrowUtil, gov.usgswim.sparrow.SparrowUtil.UrlFeatures" %>
 <%
-	UrlFeatures pageRequestUrl = SparrowUtil.getRequestUrlFeatures(request);
+	String appBaseUrl = SparrowUtil.getRequestUrlFeatures(request).getBaseUrlWithoutSlash();
 %>
     <div id="usgs-policy-links">
         <h4 class="access-help">USGS Policy Information Links</h4>
@@ -34,21 +34,17 @@
                 </span><!-- vcard -->
             </p>
             <p id="footer-page-url">URL: <a href="http://water.usgs.gov/nawqa/sparrow/dss/">http://water.usgs.gov/nawqa/sparrow/dss/</a></p>
-            <p id="footer-contact-info">Page Contact Information: <a title="Contact Email" href="mailto:sparrowdss@usgs.gov?subject=Sparrow Map Comments">SPARROW DSS Administrator</a></p>
+            <p id="footer-contact-info">Page Contact Information: <a title="Contact Email" href="mailto:sparrowdss@usgs.gov?subject=Sparrow%20Map%20Comments">SPARROW DSS Administrator</a></p>
 	        <p id="footer-page-modified-info">Page Last modified: ${buildTime} <span id="versionInfo">(Version: ${pom.version} (${timestamp}) - ${deployment_profile})</span></p>
-
         </div><!-- /page-info -->
-        <div id="gov-buttons">
-			<a href="http://cida.usgs.gov" title="link to the official CIDA web portal">
-				<img alt="CIDA button" src="<%= pageRequestUrl.getBaseUrlWithSlash() %>images/cida_logo.jpg" height="80"/>
+		<div id="gov-buttons">
+			<a title="link to the official US Government web portal" href="http://firstgov.gov/">
+				<img src="<%= appBaseUrl %>/images/footer_graphic_firstGov.jpg" alt="FirstGov button"/>
 			</a>
-            <a title="link to the official US Government web portal" href="http://firstgov.gov/">
-                <img src="<%= pageRequestUrl.getBaseUrlWithSlash() %>images/footer_graphic_firstGov.jpg" alt="FirstGov button">
-            </a>
-            <a title="Link to Take Pride in America, a volunteer organization that helps to keep America's public lands beautiful." href="http://www.takepride.gov/">
-                <img src="<%= pageRequestUrl.getBaseUrlWithSlash() %>images/footer_graphic_takePride.jpg" alt="Take Pride in America button">
-            </a>
-        </div><!-- /gov-buttons -->
+			<a title="Link to Take Pride in America, a volunteer organization that helps to keep America's public lands beautiful." href="http://www.takepride.gov/">
+				<img src="<%= appBaseUrl %>/images/footer_graphic_takePride.jpg" alt="Take Pride in America button"/>
+			</a>
+		</div><!-- /gov-buttons -->
     </div><!-- /content -->
 </div><!-- /footer -->
 

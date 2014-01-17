@@ -4,19 +4,15 @@
 <head>
 <jsp:include page="template_meta_tags.jsp" flush="true" />
 <jsp:include page="template_ie7_sizer_fix.jsp" flush="true" />
-	
+<title>About the SPARROW Decision Support System</title>
 
-
-		<title>About the SPARROW Decision Support System</title>
-		
-		<link rel="stylesheet" href="css/one_column.css?rev=1" type="text/css">
-		<link rel="stylesheet" href="css/static_custom.css?rev=1" type="text/css">
-		<link rel="stylesheet" href="css/dss_page.css?rev=1" type="text/css">
-		
+<link rel="stylesheet" href="css/one_column.css?rev=1" type="text/css">
+<link rel="stylesheet" href="css/static_custom.css?rev=1" type="text/css">
+<link rel="stylesheet" href="css/dss_page.css?rev=1" type="text/css">
 <jsp:include page="template_page_tracking.jsp" flush="true" />
 </head>
 <body>
-<jsp:include page="template_body_header.jsp" flush="true" />
+<jsp:include page="header-unbalanced.jsp" flush="true" />
 
 <div id="page-content" class="area-1 area"> 
 	<div id="doc-and-model-container" class="area-content"> 
@@ -64,6 +60,6 @@
 	</div>
 </div>
 
-	<jsp:include page="template_body_footer.jsp" flush="true" />
+<jsp:include page="footer-unbalanced.jsp" flush="true" />
 </body>
 </html>

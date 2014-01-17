@@ -15,14 +15,14 @@
 	
 </head>
 <body>
-	<jsp:include page="template_body_header.jsp" flush="true" />
-		<div id="page-content" class="area-1 area"> 
-			<div id="faq-container" class="area-content">
+<jsp:include page="header-unbalanced.jsp" flush="true" />
+	<div id="page-content" class="area-1 area"> 
+		<div id="faq-container" class="area-content">
 
-				<h1>Frequently Asked Questions for the SPARROW DSS Tool</h1>
-				<%= AtomReaderUtil.getAtomFeedContentOnlyAsString("https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=conf_all&title=SPARROW_DSS_DOCS_FAQ&labelString=sparrow_dss_docs_faq&excludedSpaceKeys=&sort=modified&maxResults=1&timeSpan=3650&showContent=true") %>
-			</div>
+			<h1>Frequently Asked Questions for the SPARROW DSS Tool</h1>
+			<%= AtomReaderUtil.getAtomFeedContentOnlyAsString("https://my.usgs.gov/confluence/createrssfeed.action?types=page&spaces=conf_all&title=SPARROW_DSS_DOCS_FAQ&labelString=sparrow_dss_docs_faq&excludedSpaceKeys=&sort=modified&maxResults=1&timeSpan=3650&showContent=true") %>
 		</div>
-	<jsp:include page="template_body_footer.jsp" flush="true" />
+	</div>
+<jsp:include page="footer-unbalanced.jsp" flush="true" />
 </body>
 </html>

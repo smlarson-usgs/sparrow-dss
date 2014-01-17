@@ -4,7 +4,6 @@
 <html>
 <head>
 	<jsp:include page="../template_meta_tags.jsp" flush="true" />
-	<jsp:include page="../template_ie7_sizer_fix.jsp" flush="true" />
 
 	<title>Delivered Load from Selected Upstream Regions Report Help</title>
 	
@@ -16,7 +15,7 @@
 	<jsp:include page="../template_page_tracking.jsp" flush="true" />
 </head>
 <body>
-	<jsp:include page="../template_body_header.jsp" flush="true" />
+	<jsp:include page="../header-unbalanced.jsp" flush="true" />
 	
 		<div id="page-content" class="area-1 area"> 
 			<div class="area-content">
@@ -98,6 +97,6 @@
     
 		</div>
 	</div>
-	<jsp:include page="../template_body_footer.jsp" flush="true" />
+	<jsp:include page="../footer-unbalanced.jsp" flush="true" />
 </body>
 </html>
