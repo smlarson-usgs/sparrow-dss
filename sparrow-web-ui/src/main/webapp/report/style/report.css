@@ -1,4 +1,7 @@
 
+/** Override the extra wide padding in the jquery ui css */
+.ui-tabs .ui-tabs-nav li a { padding: .25em .5em !important; }
+
 .content { position: relative; }
 .content h1, .content h2, .content h3, content h4 { text-align: center; }
 .content h1 { margin-bottom: .2em; padding-bottom: .2em; }

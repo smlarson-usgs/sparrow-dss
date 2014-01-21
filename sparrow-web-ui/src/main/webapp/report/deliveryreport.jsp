@@ -10,13 +10,13 @@
 	<script src="../jquery/jquery-1.7.2.js"></script>
 	<script src="../jquery/jquery-ui-1.8.20.custom/js/jquery-ui-1.8.20.custom.min.js"></script>
 	<script src="../jquery/jquery.timer/jquery.timer.js"></script>
-	<script src="js/report.js"></script>
+	<script src="js/report.js?rev=3"></script>
 
 	<link href="../jquery/jquery-ui-1.8.20.custom/css/smoothness/jquery-ui-1.8.20.custom.css" rel="stylesheet" type="text/css"/>
 
-	<link type="text/css" rel="stylesheet" href="../css/full_width.css?rev=2">
-	<link type="text/css" rel="stylesheet" href="../css/static_custom.css?rev=2">
-	<link type="text/css" rel="stylesheet" href="style/report.css?rev=2" />
+	<link type="text/css" rel="stylesheet" href="../css/full_width.css?rev=3">
+	<link type="text/css" rel="stylesheet" href="../css/static_custom.css?rev=3">
+	<link type="text/css" rel="stylesheet" href="style/report.css?rev=3" />
 
 	<jsp:include page="../template_page_tracking.jsp" flush="true" />
 </head>
