@@ -12,6 +12,8 @@
 	<link type="text/css" rel="stylesheet" href="css/custom.css" />
 
 	<link rel="stylesheet" type="text/css" href="ext_js/resources/css/ext-all.css" />
+	<jsp:include page="template_ie7_sizer_fix.jsp" flush="true" />
+	
 	<script type="text/javascript" src="ext_js/adapter/ext/ext-base.js"></script>
 	<script type="text/javascript" src="ext_js/ext-all.js"></script>
 	<script type="text/javascript" src="js/ModelSelector.js"></script>

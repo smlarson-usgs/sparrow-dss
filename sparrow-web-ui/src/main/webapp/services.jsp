@@ -14,21 +14,9 @@
 		<link rel="stylesheet" href="css/full_width.css?rev=1" type="text/css">
     	<link rel="stylesheet" href="css/static_custom.css?rev=1" type="text/css">
     	<link rel="stylesheet" href="css/dss_page.css?rev=1" type="text/css">
-		<!--[if lte IE 7]>
-		<style type="text/css">
-		#sizer {
-			width:expression(document.body.clientWidth > 1440 ? "500px" : "78%" );
-		}
+		<jsp:include page="template_ie7_sizer_fix.jsp" flush="true" />
 		
-		<%-- 
-		Fix for ugly extra padding and button format:
-		http://latrine.dgx.cz/the-stretched-buttons-problem-in-ie
-		--%>
-		button, new-empty-session button { padding: .1em .2em !important; margin: .2em; overflow: visible; }
-
-		</style>
-		<![endif]-->
-				<style type="text/css">
+		<style type="text/css">
 			@page {  }
 			table { border-collapse:collapse; border-spacing:0; empty-cells:show }
 			td, th { vertical-align:top; font-size:12pt;}

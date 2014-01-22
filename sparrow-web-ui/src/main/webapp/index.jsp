@@ -1,25 +1,12 @@
 <!doctype html>
 <html>
 	<head>
-	<jsp:include page="template_meta_tags.jsp" flush="true" />
+		<jsp:include page="template_meta_tags.jsp" flush="true" />
 
 		<link rel="stylesheet" href="css/left_only.css?rev=1" type="text/css">
 		<link rel="stylesheet" href="css/static_custom.css?rev=1" type="text/css">
     	<link rel="stylesheet" href="css/landing_page.css?rev=1" type="text/css">
-		<!--[if lte IE 7]>
-		<style type="text/css">
-		#sizer {
-			width:expression(document.body.clientWidth > 1440 ? "500px" : "78%" );
-		}
-
-		<%--
-		Fix for ugly extra padding and button format:
-		http://latrine.dgx.cz/the-stretched-buttons-problem-in-ie
-		--%>
-		button, new-empty-session button { padding: .1em .2em !important; margin: .2em; overflow: visible; }
-
-		</style>
-		<![endif]-->
+		<jsp:include page="template_ie7_sizer_fix.jsp" flush="true" />
 
 		<%--  ExtJS Scripts --%>
 		<script src="landing/js/ext/adapter/ext/ext-base.js?rev=1" type="text/javascript"></script>

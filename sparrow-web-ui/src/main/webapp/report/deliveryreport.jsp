@@ -17,6 +17,7 @@
 	<link type="text/css" rel="stylesheet" href="../css/full_width.css?rev=3">
 	<link type="text/css" rel="stylesheet" href="../css/static_custom.css?rev=3">
 	<link type="text/css" rel="stylesheet" href="style/report.css?rev=3" />
+	<jsp:include page="../template_ie7_sizer_fix.jsp" flush="true" />
 
 	<jsp:include page="../template_page_tracking.jsp" flush="true" />
 </head>

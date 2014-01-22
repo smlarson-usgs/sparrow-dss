@@ -8,6 +8,8 @@
     <link rel="icon" href="favicon.ico" >
     <link type="text/css" rel="stylesheet" href="css/usgs_style_main.css" />
     <link type="text/css" rel="stylesheet" href="css/custom.css" />
+	<jsp:include page="template_ie7_sizer_fix.jsp" flush="true" />
+	
     <%
         // Build the URL to the current SPARROW deployment
         String host = request.getHeader("Host");
@@ -15,7 +17,7 @@
         String url = "http://" + host + context + "/map.jsp";
     %>
 		
-		<jsp:include page="template_page_tracking.jsp" flush="true" />
+	<jsp:include page="template_page_tracking.jsp" flush="true" />
 </head>
 <body>
     <jsp:include page="header.jsp" flush="true" />

@@ -219,10 +219,8 @@ make area-2 links unclickable.
 /* =Generic =Misc
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-/* Equal text size - mostly IE vs everything else */
-body { font-size: 95%; line-height: 1.0; font-family: Verdana, Arial, Helvetica, sans-serif; }
-* html body { font-size: 75%; line-height: 1.2; /* Visible only to IE */ }
-#sizer { font-size: 92%; }	/* A reasonable text size */
+body { font-family: Verdana, Arial, Helvetica, sans-serif; }
+#sizer { font-size: 88%; line-height: 1.0; }	/* A reasonable text size */
 
 #page-area-container .area-1 { background-color: #fff; }
 #page-area-container .area-2 { background-color: #999; }

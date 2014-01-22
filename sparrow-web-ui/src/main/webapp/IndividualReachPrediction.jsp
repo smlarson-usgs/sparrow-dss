@@ -4,11 +4,11 @@
 <html>
   <head>
     <jsp:include page="template_meta_tags.jsp" flush="true" />
-		
+	<jsp:include page="template_ie7_sizer_fix.jsp" flush="true" />	
     <title>Individual Reach Prediction Service Test</title>
     <link rel="icon" href="../favicon.ico" />
 		
-		<jsp:include page="template_page_tracking.jsp" flush="true" />
+	<jsp:include page="template_page_tracking.jsp" flush="true" />
 		
   </head>
   <body>

@@ -107,6 +107,7 @@
 		
 		#footer {display: block; height: 10px; background-color:#345280;}
   </style>
+	<jsp:include page="template_ie7_sizer_fix.jsp" flush="true" />
 </head>
 <body>
 	<div id="header"> 

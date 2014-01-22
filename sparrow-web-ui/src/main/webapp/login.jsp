@@ -10,7 +10,8 @@
 	<link type="text/css" rel="stylesheet" href="http://www.usgs.gov/styles/common.css" />
 	<link type="text/css" rel="stylesheet" href="http://infotrek.er.usgs.gov/docs/usgs_vis_std/style/usgs_style_main.css" />
 	<link type="text/css" rel="stylesheet" href="css/custom.css" />
-
+	<jsp:include page="template_ie7_sizer_fix.jsp" flush="true" />
+	
 	<jsp:include page="template_page_tracking.jsp" flush="true" />
 </head>
 <body>

@@ -5,6 +5,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		<title>Prediction Context Service Test</title>
 		<link type="text/css" rel="stylesheet" href="http://www.usgs.gov/styles/common.css"/>
+		<jsp:include page="template_ie7_sizer_fix.jsp" flush="true" />
 		<link rel="icon" href="../favicon.ico"/>
 	</head>
 	<body>

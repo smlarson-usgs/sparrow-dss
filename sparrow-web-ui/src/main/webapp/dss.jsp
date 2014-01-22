@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="css/one_column.css?rev=1" type="text/css">
 <link rel="stylesheet" href="css/static_custom.css?rev=1" type="text/css">
 <link rel="stylesheet" href="css/dss_page.css?rev=1" type="text/css">
+<jsp:include page="template_ie7_sizer_fix.jsp" flush="true" />
 <jsp:include page="template_page_tracking.jsp" flush="true" />
 </head>
 <body>

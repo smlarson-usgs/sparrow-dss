@@ -585,11 +585,12 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 		this.displayResultsInstructions = new Ext.Panel({
 			region: 'south',
         	border: false,
+			autoHeight: true,
         	html: '<p><b>2. Display Results</b><br/>[No downstream reaches have been chosen]</p>'
 		});
 
 		this.selectByIdButton = new Ext.Button({
-			text: 'Identify on the map', style: 'margin: 5px; clear: both;',
+			text: 'Identify on the map', style: 'float: left; margin: 3px 2px;',
 			icon: 'images/identifygif.gif', cls: 'x-btn-text-icon',
 			listeners: {
 				render: function(c) {
@@ -616,14 +617,48 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 		});
 		
 		this.currentReachAsDownstreamButton = new Ext.Button({
-			hidden: true, style: 'clear: both; margin: 5px;',
+			hidden: true, style: 'float: left; margin: 3px 2px;',
 			scale: 'large', text: 'Add as Downstream Reach<br/>name',
 			icon: 'images/identifygif.gif', cls: 'x-btn-text-icon',
 			listeners: {'beforeshow' : function(p) { p.getEl().fadeIn();}}
 		});
+		
+		this.stepOnePanel = new Ext.Panel({
+			region: 'north',
+			padding: 5,
+			autoHeight: true,
+			items: [{
+					xtype: 'panel', border: false, html: '<b>1. Select Downstream Reach(es) :</b>', style: 'margin: 5px 0;'
+				}, {
+					xtype: 'button', text: 'From list of watersheds', style: 'float: left; margin: 3px 2px;',
+					listeners: {
+						render: function(c) {
+						  Ext.fly(c.el).on('click', function(e, t) {
+							  WATERSHED_WINDOW.open();
+						  });
+						}
+					}
+				}, {
+					xtype: 'button', text: 'By name or hydrologic unit code', style: 'float: left; margin: 3px 2px;',
+					listeners: {
+						render: function(c) {
+						  Ext.fly(c.el).on('click', function(e, t) {
+							  GOTO_REACH_WIN.open();
+						  });
+						}
+					}
+				},
+				this.selectByIdButton, 
+				this.currentReachAsDownstreamButton]	
+		});
 
 		var defaults = {
 			title: 'Downstream Tracking',
+			listeners: {
+				activate: function() {
+					this.updateStepTwoSize();
+				}
+			},
 			border: false,
 			layout: 'border',
 			tabTip: 'view and manage downstream reaches',
@@ -638,36 +673,8 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 					border: false,
 					region: 'center',
 					layout: 'border',
-					items: [{
-						xtype: 'panel',
-						region: 'north',
-						padding: 5,
-						height: 110,
-						items: [{
-								xtype: 'panel', border: false, html: '<b>1. Select Downstream Reach(es) :</b>', style: 'margin: 5px 0;'
-							}, {
-								xtype: 'button', text: 'From list of watersheds', style: 'margin: 5px; float: left;',
-								listeners: {
-									render: function(c) {
-									  Ext.fly(c.el).on('click', function(e, t) {
-										  WATERSHED_WINDOW.open();
-									  });
-									}
-								}
-							}, {
-								xtype: 'button', text: 'By name or hydrologic unit code', style: 'margin: 5px; float: left;',
-								listeners: {
-									render: function(c) {
-									  Ext.fly(c.el).on('click', function(e, t) {
-										  GOTO_REACH_WIN.open();
-									  });
-									}
-								}
-							},
-							this.selectByIdButton, 
-							this.currentReachAsDownstreamButton]
-
-					},
+					items: [
+						this.stepOnePanel,
 					{
 						xtype: 'panel',
 						region: 'center',
@@ -721,9 +728,20 @@ Sparrow.TargetsPanel = Ext.extend(Ext.Panel, {
 			
 	updateStepTwoInstructions : function(text) {
 		this.displayResultsInstructions.body.update('<p><b>2. Display Results</b><br/>' + text + '</p>');
-		var newHeight = this.displayResultsInstructions.body.dom.children[0].offsetHeight;
-		this.displayResultsInstructions.ownerCt.setHeight(newHeight + 10);
+		this.updateStepTwoSize();
+	},
+			
+	updateStepTwoSize : function() {
 		this.doLayout();
+		var task = new Ext.util.DelayedTask(function(){
+			var offsetHeight = this.displayResultsInstructions.el.dom.firstChild.firstChild.firstChild.offsetHeight;
+			if (offsetHeight == 0) offsetHeight = 50;
+			offsetHeight+=10;
+			this.displayResultsInstructions.ownerCt.setHeight(offsetHeight);
+			this.doLayout();
+		}, this);
+		
+		task.delay(100); 
 	},
 	
 	/**

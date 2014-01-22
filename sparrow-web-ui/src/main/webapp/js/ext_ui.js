@@ -413,6 +413,14 @@ Ext.onReady(function() {
 			UpdateMapButtonPanel.superclass.constructor.call(this, config);
 		},
 
+		setStatusFreshLoad : function() {
+			var text = "Click <b><i>Update map</i></b> to generate a map.";
+			this.updateMapInstructions.body.update(text);
+			this.updateMapButton.setDisabled(false);
+			this.updateMapInstructions.doLayout();
+			this.findParentByType('panel').doLayout();
+		},
+		
 		setStatusInSync : function(dataseries) {
 
 			if (! this.updateMapButton.disabled) {
