@@ -85,7 +85,8 @@
 			             <webResource> 
 				               <directory>${basedir}/src/main/webapp</directory> 
 				               <includes> 
-				                 <include>app-info.txt</include> 
+				                 <include>app-info.txt</include>
+								 <include>footer.jsp</include>
 				               </includes> 
 				               <targetPath /> 
 				               <filtering>true</filtering> 
@@ -97,8 +98,23 @@
 	</build>
 
 	<dependencies>
-		
 		<!-- Interproject dep -->
+		<dependency>
+			<groupId>gov.usgs.cida</groupId>
+			<artifactId>sparrow-shared-ui</artifactId>
+			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<!-- Proxy servlet contains a duplication of this class -->
+					<groupId>gov.usgs.cida</groupId>
+					<artifactId>dynamicProperties</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>commons-lang</groupId>
+					<artifactId>commons-lang</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 		<dependency>
 			<groupId>gov.usgs.cida</groupId>
 			<artifactId>sparrow-business</artifactId>

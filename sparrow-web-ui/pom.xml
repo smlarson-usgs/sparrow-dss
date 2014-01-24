@@ -21,6 +21,18 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>gov.usgs.cida</groupId>
+			<artifactId>sparrow-shared-ui</artifactId>
+			<version>${project.version}</version>
+			<exclusions>
+				<exclusion>
+					<!-- Proxy servlet contains a duplication of this class -->
+					<groupId>gov.usgs.cida</groupId>
+					<artifactId>dynamicProperties</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<scope>provided</scope>
@@ -55,10 +67,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-		</dependency>
 		
 		<!-- Used for email logging of serious errors -->
 		<dependency>
@@ -66,26 +74,6 @@
 		    <artifactId>mail</artifactId>
 		    <version>1.4</version>
 		</dependency>
-		
-		<!-- Used to slurp my.usgs.gov wiki page for embeded documentation -->
-		<dependency>
-			<groupId>org.apache.abdera</groupId>
-			<artifactId>abdera-client</artifactId>
-			<version>1.1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
-		 <type>jar</type>
-		</dependency>
-		<dependency>
-        <groupId>net.sf.jtidy</groupId>
-        <artifactId>jtidy</artifactId>
-        <version>r938</version>
-    </dependency>
-		
-
 
 	</dependencies>
 
@@ -278,9 +266,6 @@
 				               <directory>${basedir}/target/minifiedWebapp</directory> 
 				               <includes> 
 				                 <include>footer.jsp</include>
-				                 <include>index.jsp</include>
-				                 <include>dss.jsp</include>
-								 <include>map.jsp</include>
 				               </includes> 
 				               <targetPath /> 
 				               <filtering>true</filtering>

@@ -7,6 +7,7 @@ package gov.usgswim.sparrow;
 import gov.usgs.cida.config.DynamicReadOnlyProperties;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.naming.NamingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -57,7 +58,12 @@ public class HealthTest extends HttpServlet {
 		super.init();
 		
 		props = new DynamicReadOnlyProperties();
-		props.addJNDIContexts(DynamicReadOnlyProperties.DEFAULT_JNDI_CONTEXTS);
+		try {
+			props.addJNDIContexts(DynamicReadOnlyProperties.DEFAULT_JNDI_CONTEXTS);
+		} catch (Exception ne) {
+			throw new ServletException(ne);
+		}
+		
 
 	}
 
