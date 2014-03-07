@@ -1,6 +1,6 @@
 package gov.usgswim.sparrow.parser;
 
-import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.test.SparrowTestBase;
 import gov.usgswim.sparrow.domain.AdvancedAnalysis;
 import gov.usgswim.sparrow.domain.Analysis;
 import gov.usgswim.sparrow.domain.DataSeriesType;

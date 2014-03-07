@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import gov.usgs.cida.binning.domain.Bin;
 import gov.usgs.cida.binning.domain.BinSet;
 import gov.usgs.cida.binning.domain.BinType;
-import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.test.SparrowTestBase;
 import gov.usgswim.sparrow.action.DeliveryReach;
 import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.request.BinningRequest;

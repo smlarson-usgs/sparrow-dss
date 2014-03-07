@@ -6,7 +6,7 @@ import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.adjustment.SparseOverrideAdjustment;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.PredictDataImm;
-import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.test.SparrowTestBase;
 import gov.usgswim.sparrow.TopoDataComposit;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.datatable.SingleColumnOverrideDataTable;

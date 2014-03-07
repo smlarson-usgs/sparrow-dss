@@ -1,0 +1,27 @@
+<PredictionContext xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="50">
+	<adjustmentGroups conflicts="accumulate">
+		<reachGroup enabled="true" name="MyGroup">
+			<desc/>
+			<notes/>
+			<adjustment src="1" coef="0.10998900109989"/>
+			<adjustment src="2" coef="0.10998900109989"/>
+			<adjustment src="3" coef="0.10998900109989"/>
+			<adjustment src="4" coef="0.10998900109989"/>
+			<logicalSet>
+				<criteria name="SMOKY HILL" attrib="huc4" relation="">9831</criteria>
+			</logicalSet>
+		</reachGroup>
+		<individualGroup enabled="true"/>
+	</adjustmentGroups>
+	<analysis>
+		<dataSeries source="">incremental_delivered_yield</dataSeries>
+		<groupBy aggFunction="avg"/>
+	</analysis>
+	<terminalReaches>
+		<reach id="9682" name="DEER CR"/>
+	</terminalReaches>
+	<areaOfInterest/>
+	<nominalComparison type="none"/>
+</PredictionContext>
+

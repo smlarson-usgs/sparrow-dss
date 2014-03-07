@@ -2,7 +2,7 @@ package gov.usgswim.sparrow.action;
 
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.test.SparrowTestBase;
 import gov.usgswim.sparrow.action.BuildAnalysisForAllSources.COLUMN_NAME_FORMAT;
 import gov.usgswim.sparrow.datatable.PredictResult;
 import gov.usgswim.sparrow.domain.*;

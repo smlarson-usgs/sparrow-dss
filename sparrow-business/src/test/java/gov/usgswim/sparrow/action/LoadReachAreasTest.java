@@ -6,7 +6,7 @@ import com.mockrunner.jdbc.PreparedStatementResultSetHandler;
 import com.mockrunner.mock.jdbc.MockConnection;
 import com.mockrunner.mock.jdbc.MockResultSet;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.test.SparrowTestBase;
 import gov.usgswim.sparrow.datatable.ModelReachAreaDataTable;
 import java.util.ArrayList;
 import java.util.Map;

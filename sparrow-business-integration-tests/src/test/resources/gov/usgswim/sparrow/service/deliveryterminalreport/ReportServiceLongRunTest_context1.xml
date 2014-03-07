@@ -1,0 +1,15 @@
+<PredictionContext xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" model-id="50">
+	<adjustmentGroups conflicts="accumulate">
+		<individualGroup enabled="true"></individualGroup>
+	</adjustmentGroups>
+	<analysis>
+		<dataSeries>delivered_fraction</dataSeries>
+		<groupBy aggFunction="avg"></groupBy>
+	</analysis>
+	<terminalReaches>
+		<reach id="9682" name="MOBILE R"></reach>
+	</terminalReaches>
+	<areaOfInterest></areaOfInterest>
+	<nominalComparison type="none"></nominalComparison>
+</PredictionContext>

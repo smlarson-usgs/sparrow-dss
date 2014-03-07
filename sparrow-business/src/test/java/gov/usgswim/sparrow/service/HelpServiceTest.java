@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.service;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import gov.usgswim.sparrow.SparrowServiceTestBaseNoDB;
+import gov.usgswim.sparrow.test.SparrowServiceTestBaseNoDB;
 
 import java.io.IOException;
 

@@ -7,7 +7,7 @@ import gov.usgs.cida.datatable.ColumnDataWritable;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
 import gov.usgs.cida.datatable.impl.StandardNumberColumnDataWritable;
-import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.test.SparrowTestBase;
 import gov.usgswim.sparrow.util.BigDecimalUtils;
 
 import java.math.BigDecimal;

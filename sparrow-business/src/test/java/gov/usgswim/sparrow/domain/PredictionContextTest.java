@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.domain;
 
 import static org.junit.Assert.*;
-import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.test.SparrowTestBase;
 
 import javax.xml.stream.XMLStreamReader;
 

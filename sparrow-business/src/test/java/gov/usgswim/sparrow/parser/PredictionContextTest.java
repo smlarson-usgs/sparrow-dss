@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.parser;
 
-import static gov.usgswim.sparrow.SparrowTestBase.readToString;
-import gov.usgswim.sparrow.SparrowTestBase;
+import static gov.usgswim.sparrow.test.SparrowTestBase.readToString;
+import gov.usgswim.sparrow.test.SparrowTestBase;
 import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;

@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.parser;
 
 import static org.junit.Assert.*;
-import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.test.SparrowTestBase;
 import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 

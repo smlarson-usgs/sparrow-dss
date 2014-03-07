@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.impl.SimpleDataTableWritable;
 import gov.usgswim.sparrow.PredictData;
-import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.test.SparrowTestBase;
 import static org.junit.Assert.*;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.request.FractionedWatershedAreaRequest;

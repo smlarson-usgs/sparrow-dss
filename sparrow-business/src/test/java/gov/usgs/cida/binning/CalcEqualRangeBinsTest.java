@@ -10,7 +10,7 @@ import gov.usgs.cida.binning.domain.InProcessBinSet;
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.impl.SimpleDataTable;
 import gov.usgs.cida.datatable.impl.StandardDoubleColumnData;
-import gov.usgswim.sparrow.SparrowTestBase;
+import gov.usgswim.sparrow.test.SparrowTestBase;
 import gov.usgswim.sparrow.action.DeliveryReach;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.*;
