@@ -131,7 +131,7 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 			ds.setConnectionCachingEnabled(true);
 			ds.setURL("jdbc:oracle:thin:@130.11.165.154:1521:widev");
 			ds.setUser("sparrow_dss");
-			ds.setPassword("***REMOVED***");
+			ds.setPassword("replaced");
 
 			initDataSource(ds, ctx, "sparrow_dss");
 		}
@@ -146,7 +146,7 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 			//igsarmewdbdev.er.usgs.gov
 			ds.setURL("jdbc:oracle:thin:@130.11.165.154:1521:widev");
 			ds.setUser("sparrow_dss");
-			ds.setPassword("***REMOVED***");
+			ds.setPassword("replaced");
 
 			initDataSource(ds, ctx, "sparrow_dss_trans");
 		}
@@ -221,7 +221,7 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 	protected static void setDbProperties() throws IOException {
 		SharedApplication.getInstance().getConfiguration().setProperty("dburl", "jdbc:oracle:thin:@130.11.165.154:1521:widev");
 		SharedApplication.getInstance().getConfiguration().setProperty("dbuser", "sparrow_dss");
-		SharedApplication.getInstance().getConfiguration().setProperty("dbpass", "***REMOVED***");
+		SharedApplication.getInstance().getConfiguration().setProperty("dbpass", "replaced");
 	}
 	
 	protected static String prompt(String prompt) throws IOException {
