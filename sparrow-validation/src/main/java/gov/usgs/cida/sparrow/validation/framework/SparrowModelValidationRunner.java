@@ -24,10 +24,7 @@ import org.apache.log4j.Logger;
  * @author eeverman
  */
 public class SparrowModelValidationRunner {
-	/*
-	 * 				System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.154:1521:widev");
 
-	 */
 	public enum DATABASE {
 		EROS_PROD("EROS Prod (dbtrans)", "EP", "cida-eros-dbtrans.er.usgs.gov:1521:dbtrans"),
 		EROS_QA("EROS QA (qatrans)", "EQA", "cida-eros-dbqa.er.usgs.gov:1521:qatrans"),
@@ -460,9 +457,9 @@ public class SparrowModelValidationRunner {
 
 	public void intiDbConfig() {
 
-		System.setProperty("dburl", "jdbc:oracle:thin:@" + database.getUrlFragment());
-		System.setProperty("dbuser", dbUser);
-		System.setProperty("dbpass", dbPwd);
+		System.setProperty(SharedApplication.READONLY_DB_URL_KEY, "jdbc:oracle:thin:@" + database.getUrlFragment());
+		System.setProperty(SharedApplication.READONLY_DB_USER_KEY, dbUser);
+		System.setProperty(SharedApplication.READONLY_DB_PASS_KEY, dbPwd);
 
 	}
 	

@@ -129,9 +129,9 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 			OracleDataSource ds = new OracleDataSource(); 
 			
 			ds.setConnectionCachingEnabled(true);
-			ds.setURL("jdbc:oracle:thin:@130.11.165.154:1521:widev");
-			ds.setUser("sparrow_dss");
-			ds.setPassword("replaced");
+			ds.setURL(SharedApplication.getInstance().getConfiguration().getProperty(SharedApplication.READONLY_DB_URL_KEY));
+			ds.setUser(SharedApplication.getInstance().getConfiguration().getProperty(SharedApplication.READONLY_DB_USER_KEY));
+			ds.setPassword(SharedApplication.getInstance().getConfiguration().getProperty(SharedApplication.READONLY_DB_PASS_KEY));
 
 			initDataSource(ds, ctx, "sparrow_dss");
 		}
@@ -141,12 +141,9 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 			
 			ds.setConnectionCachingEnabled(true);
 
-			//ALWAYS USE THE TEST DB FOR TRANSACTIONAL SUPPORT.
-			//130.11.165.154
-			//igsarmewdbdev.er.usgs.gov
-			ds.setURL("jdbc:oracle:thin:@130.11.165.154:1521:widev");
-			ds.setUser("sparrow_dss");
-			ds.setPassword("replaced");
+			ds.setURL(SharedApplication.getInstance().getConfiguration().getProperty(SharedApplication.READWRITE_DB_URL_KEY));
+			ds.setUser(SharedApplication.getInstance().getConfiguration().getProperty(SharedApplication.READWRITE_DB_USER_KEY));
+			ds.setPassword(SharedApplication.getInstance().getConfiguration().getProperty(SharedApplication.READWRITE_DB_PASS_KEY));
 
 			initDataSource(ds, ctx, "sparrow_dss_trans");
 		}
@@ -192,21 +189,6 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 		} catch (Exception e) {
 			log.warn("Exception thrown trying to close the test connection", e);
 		}
-		
-		//It *seems* like closing the connection pool would be the right thing
-		//to do, but it seems that the call to close() is ignored.
-		//Rather than fight, I'll let the pool stay open for all the tests being
-		//run, which means it doesn't have to create a new set of conn's for
-		//each test.
-//		oracleDataSource.close();
-//		oracleDataSource = null;
-//		
-//		Context ctx = new InitialContext();
-//        ctx.destroySubcontext("java:comp/env/jdbc");
-//        ctx.destroySubcontext("java:comp/env");
-//        ctx.destroySubcontext("java:comp");
-//        ctx.destroySubcontext("java:");
-        
 
 	}
 	
@@ -216,12 +198,6 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 		}
 		
 		return sparrowDBTestConn;
-	}
-	
-	protected static void setDbProperties() throws IOException {
-		SharedApplication.getInstance().getConfiguration().setProperty("dburl", "jdbc:oracle:thin:@130.11.165.154:1521:widev");
-		SharedApplication.getInstance().getConfiguration().setProperty("dbuser", "sparrow_dss");
-		SharedApplication.getInstance().getConfiguration().setProperty("dbpass", "replaced");
 	}
 	
 	protected static String prompt(String prompt) throws IOException {

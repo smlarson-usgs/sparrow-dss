@@ -139,9 +139,9 @@ public class ComparePredictionToTextLongRunTest {
 		System.setProperty(LoadModelMetadata.SKIP_LOADING_PREDEFINED_THEMES, "true");
 		
 		//Production Properties
-		System.setProperty("dburl", "jdbc:oracle:thin:@130.11.165.152:1521:widw");
-		System.setProperty("dbuser", "sparrow_dss");
-		System.setProperty("dbpass", dbPwd);
+		System.setProperty(SharedApplication.READONLY_DB_URL_KEY, "jdbc:oracle:thin:@130.11.165.152:1521:widw");
+		System.setProperty(SharedApplication.READONLY_DB_USER_KEY, "sparrow_dss");
+		System.setProperty(SharedApplication.READONLY_DB_USER_KEY, dbPwd);
 		
 		//Turns on detailed logging - very verbose on the tests
 		//log.setLevel(Level.DEBUG);
