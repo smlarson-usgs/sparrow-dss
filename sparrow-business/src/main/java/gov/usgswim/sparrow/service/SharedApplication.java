@@ -68,6 +68,23 @@ public class SharedApplication  {
 
 	//an ehcache test cache
 	public static final String SERIALIZABLE_CACHE = PredictContext.name();
+	
+	/**
+	 * Keys to lookup a read-only db connection information in system properties.
+	 * This is primarily for testing or running locally.
+	 */
+	public static final String READONLY_DB_USER_KEY = "ro_dbuser";
+	public static final String READONLY_DB_PASS_KEY = "ro_dbpass";
+	public static final String READONLY_DB_URL_KEY = "ro_dburl";
+	
+	/**
+	 * Keys to lookup a read-write db connection information in system properties.
+	 * This is primarily for testing or running locally.
+	 */
+	public static final String READWRITE_DB_USER_KEY = "rw_dbuser";
+	public static final String READWRITE_DB_PASS_KEY = "rw_dbpass";
+	public static final String READWRITE_DB_URL_KEY = "rw_dburl";
+	
 
 
 	//Request Monitoring
@@ -211,9 +228,9 @@ public class SharedApplication  {
 		{
 			DriverManager.registerDriver(new OracleDriver());
 		}
-		String dbuser = SharedApplication.getInstance().getConfiguration().getProperty("dbuser");
-		String dbpass = SharedApplication.getInstance().getConfiguration().getProperty("dbpass");
-		String url = SharedApplication.getInstance().getConfiguration().getProperty("dburl");
+		String dbuser = SharedApplication.getInstance().getConfiguration().getProperty(READONLY_DB_USER_KEY);
+		String dbpass = SharedApplication.getInstance().getConfiguration().getProperty(READONLY_DB_PASS_KEY);
+		String url = SharedApplication.getInstance().getConfiguration().getProperty(READONLY_DB_URL_KEY);
 		Connection connection;
 		connection = DriverManager.getConnection(url, dbuser, dbpass);
 		return connection;
@@ -224,9 +241,9 @@ public class SharedApplication  {
 		{
 			DriverManager.registerDriver(new OracleDriver());
 		}
-		String dbuser = SharedApplication.getInstance().getConfiguration().getProperty("rw_dbuser");
-		String dbpass = SharedApplication.getInstance().getConfiguration().getProperty("rw_dbpass");
-		String url = SharedApplication.getInstance().getConfiguration().getProperty("rw_dburl");
+		String dbuser = SharedApplication.getInstance().getConfiguration().getProperty(READWRITE_DB_USER_KEY);
+		String dbpass = SharedApplication.getInstance().getConfiguration().getProperty(READWRITE_DB_PASS_KEY);
+		String url = SharedApplication.getInstance().getConfiguration().getProperty(READWRITE_DB_URL_KEY);
 		Connection connection;
 		connection = DriverManager.getConnection(url, dbuser, dbpass);
 		return connection;

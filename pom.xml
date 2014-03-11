@@ -15,7 +15,6 @@
 		<module>sparrow-datatable</module>
 		<module>sparrow-business</module>
 		<module>sparrow-validation</module>
-		<module>sparrow-calculation</module>
 		<module>sparrow-shared-test</module>
 		<module>sparrow-business-integration-tests</module>
   </modules>
