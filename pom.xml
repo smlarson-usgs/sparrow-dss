@@ -14,6 +14,11 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
+			
+			<properties>
+				<run-integration-tests>false</run-integration-tests>
+			</properties>
+			
 			<modules>
 				<module>sparrow-service</module>
 				<module>sparrow-web-ui</module>
@@ -25,15 +30,46 @@
 				<module>sparrow-business-integration-tests</module>
 			</modules>
 		</profile>
+		
 		<profile>
-			<id>run-integration-tests</id>
+			<id>integration-test-only-build</id>
 			<activation>
 				<property>
-					<name>run-integration-tests</name>
+					<name>integration-test-only-build</name>
 					<value>true</value>
 				</property>
 			</activation>
+			
+			<properties>
+				<run-integration-tests>true</run-integration-tests>
+			</properties>
+			
 			<modules>
+				<module>sparrow-business-integration-tests</module>
+			</modules>
+		</profile>
+		
+		<profile>
+			<id>sonar-build</id>
+			<activation>
+				<property>
+					<name>sonar-build</name>
+					<value>true</value>
+				</property>
+			</activation>
+			
+			<properties>
+				<run-integration-tests>true</run-integration-tests>
+			</properties>
+			
+			<modules>
+				<module>sparrow-service</module>
+				<module>sparrow-web-ui</module>
+				<module>sparrow-shared-ui</module>
+				<module>sparrow-datatable</module>
+				<module>sparrow-business</module>
+				<module>sparrow-validation</module>
+				<module>sparrow-shared-test</module>
 				<module>sparrow-business-integration-tests</module>
 			</modules>
 		</profile>
