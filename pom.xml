@@ -8,16 +8,38 @@
 	<version>1.4.33-SNAPSHOT</version>
 	<name>Sparrow DSS Parent Project</name>
 
-	<modules>
-		<module>sparrow-service</module>
-		<module>sparrow-web-ui</module>
-		<module>sparrow-shared-ui</module>
-		<module>sparrow-datatable</module>
-		<module>sparrow-business</module>
-		<module>sparrow-validation</module>
-		<module>sparrow-shared-test</module>
-		<module>sparrow-business-integration-tests</module>
-  </modules>
+	<profiles>
+		<profile>
+			<id>default-profile</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<modules>
+				<module>sparrow-service</module>
+				<module>sparrow-web-ui</module>
+				<module>sparrow-shared-ui</module>
+				<module>sparrow-datatable</module>
+				<module>sparrow-business</module>
+				<module>sparrow-validation</module>
+				<module>sparrow-shared-test</module>
+				<module>sparrow-business-integration-tests</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>run-integration-tests</id>
+			<activation>
+				<property>
+					<name>run-integration-tests</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<modules>
+				<module>sparrow-business-integration-tests</module>
+			</modules>
+		</profile>
+		
+	</profiles>
+
 	
 	<properties>
 		<war.dir>src/main/webapp</war.dir>
@@ -219,7 +241,7 @@
 			</dependency>
 			
 			<!-- These two deps are provided when mapviewer is overlayed, so they are
-				just required when compiling and testing. -->
+			just required when compiling and testing. -->
 			<dependency>
 				<groupId>com.oracle</groupId>
 				<artifactId>sdoapi</artifactId>
@@ -233,7 +255,7 @@
 				<type>jar</type>
 			</dependency>
 			<!-- this special dep. is only used for overlaying the wars. It is not
-				placed on the classpath -->
+			placed on the classpath -->
 			<dependency>
 				<groupId>com.oracle</groupId>
 				<artifactId>mapviewer</artifactId>
