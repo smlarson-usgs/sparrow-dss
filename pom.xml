@@ -149,6 +149,12 @@
 	
 	<repositories>
 		<repository>
+			<url>${cida.maven.url}/content/repositories/cida-releases/</url>
+			<id>cida-releases</id>
+			<layout>default</layout>
+			<name>Cida Releases - Release Shared Libraries</name>
+		</repository>
+		<repository>
 			<id>cida-sparrow-dss-thirdparty</id>
 			<url>${cida.maven.url}/content/repositories/cida-sparrow-dss-thirdparty</url>
 		</repository>
