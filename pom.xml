@@ -155,13 +155,7 @@
 		<repository>
 			<id>cida-public</id>
 			<name>CIDA Public Nexus</name>
-			<url>${cida.maven.url}/cida-public-releases/</url>
-		</repository>
-		<repository>
-			<url>${cida.maven.url}/content/repositories/cida-releases/</url>
-			<id>cida-releases</id>
-			<layout>default</layout>
-			<name>Cida Releases - Release Shared Libraries</name>
+			<url>http://cida.usgs.gov/maven/cida-public/</url>
 		</repository>
 		<repository>
 			<id>cida-sparrow-dss-thirdparty</id>
