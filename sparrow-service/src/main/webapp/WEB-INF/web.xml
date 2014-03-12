@@ -2,14 +2,7 @@
 <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee  http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <display-name>SPARROW DSS Services {Owner: NB, Coder: EE}</display-name>
     <description>The SPARROW DSS application, which includes Oracle's Mapviewer.</description>
-    <!--
-*****************************************
-***	MapViewer Configuration
-***************************************** -->
-    <context-param>
-        <param-name>oracle.portal.log.LogLevel</param-name>
-        <param-value>4</param-value>
-    </context-param>
+
     <!--
 *****************************************
 ***	SPARROW Configuration
@@ -32,19 +25,7 @@
         <filter-name>LogMapviewerRequestsFilter</filter-name>
         <filter-class>gov.usgswim.sparrow.LogMapviewerRequestsFilter</filter-class>
     </filter>
-    <!--
-*****************************************
-***	Mapviewer Related
-*****************************************  -->
-    <filter>
-        <filter-name>adfFaces</filter-name>
-        <filter-class>oracle.adf.view.faces.webapp.AdfFacesFilter</filter-class>
-    </filter>
-    <!-- WMS1.1 filter -->
-    <filter>
-        <filter-name>WMS11</filter-name>
-        <filter-class>oracle.lbs.webmapserver.WMSServletFilter</filter-class>
-    </filter>
+
     <filter>
         <filter-name>RequestMonitorFilter</filter-name>
         <filter-class>gov.usgswim.sparrow.monitor.RequestMonitorFilter</filter-class>
