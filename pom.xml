@@ -100,10 +100,6 @@
 				</property>
 			</activation>
 			
-			<properties>
-				<run-integration-tests>true</run-integration-tests>
-			</properties>
-			
 			<modules>
 				<module>sparrow-service</module>
 				<module>sparrow-web-ui</module>
