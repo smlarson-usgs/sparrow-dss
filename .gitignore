@@ -7,3 +7,6 @@
 /sparrow-validation/target/
 /sparrow-calculation/target/
 /sparrow-business-integration-tests/target/
+/sparrow-geoserver/nb-configuration.xml
+/sparrow-geoserver/target/
+/sparrow-geoserver/src/main/webapp/META-INF/

@@ -70,6 +70,7 @@
 				<module>sparrow-validation</module>
 				<module>sparrow-shared-test</module>
 				<module>sparrow-business-integration-tests</module>
+				<module>sparrow-geoserver</module>
 			</modules>
 		</profile>
 		
@@ -126,7 +127,6 @@
 		<cargo.containerId>tomcat6x</cargo.containerId>
 		<cida.maven.url>http://internal.cida.usgs.gov/maven</cida.maven.url>
 		<cida.svn.url>https://cida-svn.er.usgs.gov/repos/dev</cida.svn.url>
-		<!-- <cargo.containerId>tomcat6x</cargo.containerId> -->
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<sparrow.build.profile>production</sparrow.build.profile>
@@ -153,6 +153,11 @@
 	
 	<repositories>
 		<repository>
+			<id>cida-public</id>
+			<name>CIDA Public Nexus</name>
+			<url>${cida.maven.url}/cida-public-releases/</url>
+		</repository>
+		<repository>
 			<url>${cida.maven.url}/content/repositories/cida-releases/</url>
 			<id>cida-releases</id>
 			<layout>default</layout>
@@ -165,6 +170,10 @@
 		<repository>
 			<id>cida-thirdparty</id>
 			<url>${cida.maven.url}/content/repositories/cida-thirdparty</url>
+		</repository>
+		<repository>
+			<id>opengeo</id>
+			<url>http://repo.opengeo.org/</url>
 		</repository>
 	</repositories>
 	
