@@ -153,21 +153,12 @@
 	
 	<repositories>
 		<repository>
-			<id>cida-public</id>
-			<name>CIDA Public Nexus</name>
-			<url>http://cida.usgs.gov/maven/cida-public/</url>
-		</repository>
-		<repository>
 			<id>cida-sparrow-dss-thirdparty</id>
 			<url>${cida.maven.url}/content/repositories/cida-sparrow-dss-thirdparty</url>
 		</repository>
 		<repository>
 			<id>cida-thirdparty</id>
 			<url>${cida.maven.url}/content/repositories/cida-thirdparty</url>
-		</repository>
-		<repository>
-			<id>opengeo</id>
-			<url>http://repo.opengeo.org/</url>
 		</repository>
 	</repositories>
 	
