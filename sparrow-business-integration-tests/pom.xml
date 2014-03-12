@@ -1,19 +1,18 @@
 <?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>gov.usgs.cida</groupId>
-		<artifactId>sparrow-parent</artifactId>
-		<version>1.4.33-SNAPSHOT</version>
-	</parent>
-	<groupId>gov.usgs.cida</groupId>
-	<artifactId>sparrow-business-integration-tests</artifactId>
-	<version>1.4.33-SNAPSHOT</version>
-	<name>sparrow-business-integration-tests</name>
-	<url>http://maven.apache.org</url>
-	<properties>
-	</properties>
-	<dependencies>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>gov.usgs.cida</groupId>
+    <artifactId>sparrow-parent</artifactId>
+    <version>1.4.33-SNAPSHOT</version>
+  </parent>
+  <artifactId>sparrow-business-integration-tests</artifactId>
+  <version>1.4.33-SNAPSHOT</version>
+  <name>sparrow-business-integration-tests</name>
+  <url>http://maven.apache.org</url>
+  <properties>
+  </properties>
+  <dependencies>
 		<!-- Interproject dep -->
 		<dependency>
 			<groupId>gov.usgs.cida</groupId>

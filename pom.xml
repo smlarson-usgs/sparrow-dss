@@ -8,6 +8,48 @@
 	<version>1.4.33-SNAPSHOT</version>
 	<name>Sparrow DSS Parent Project</name>
 
+	<url>http://cida.usgs.gov/sparrow/</url>
+	<inceptionYear>2009</inceptionYear>
+	<organization>
+		<name>Center for Integrated Data Analytics</name>
+		<url>http://cida.usgs.gov</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>Public Domain</name>
+			<url>http://en.wikipedia.org/wiki/Public_domain_software</url>
+			<comments>All work of the US Government enter into the Public Domain within
+				the United States.  Whether that work is public domain outside of
+				the United States depends on various factors.
+			</comments>
+		</license>
+	</licenses>
+	
+	<developers>
+		<developer>
+			<id>eeverman</id>
+			<name>Eric Everman</name>
+			<email>eeverman@usgs.gov</email>
+			<roles>
+				<role>Software Developer</role>
+			</roles>
+			<organization>Center for Integrated Data Analytics</organization>
+			<organizationUrl>http://cida.usgs.gov</organizationUrl>
+			<timezone>-6</timezone>
+		</developer>
+		<developer>
+			<id>isuftin</id>
+			<name>Ivan Suftin</name>
+			<email>isuftin@usgs.gov</email>
+			<roles>
+				<role>Software Developer</role>
+			</roles>
+			<organization>Center for Integrated Data Analytics</organization>
+			<organizationUrl>http://cida.usgs.gov</organizationUrl>
+			<timezone>-6</timezone>
+		</developer>
+	</developers>
+	
 	<profiles>
 		<profile>
 			<id>default-profile</id>
@@ -91,7 +133,9 @@
 	</properties>
 	
 	<scm>
-		<developerConnection>scm:svn:https://cida-svn.er.usgs.gov/repos/dev/usgs/sparrow/dss/app/trunk</developerConnection>
+		<connection>scm:git:https://github.com/USGS-CIDA/sparrow-dss.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/USGS-CIDA/sparrow-dss.git</developerConnection>
+		<url>https://github.com/USGS-CIDA/sparrow-dss</url>
 	</scm>
 	
 	<distributionManagement>
@@ -129,7 +173,7 @@
 			<url>${cida.maven.url}/content/repositories/cida-releases/</url>
 			<id>cida-releases</id>
 			<layout>default</layout>
-			<name>Cida Releases - Release Shared Libraries</name>
+			<name>CIDA Releases - Release Shared Libraries</name>
 		</pluginRepository>
 		<pluginRepository>
 			<id>cida-sparrow-dss-thirdparty</id>
