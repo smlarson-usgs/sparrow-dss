@@ -18,13 +18,6 @@
 		<gs.version>2.4.5</gs.version>
 		<gt.version>10.5</gt.version>
 	</properties>
-	    
-	<repositories>
-		<repository>
-			<id>opengeo</id>
-			<url>http://repo.opengeo.org/</url>
-		</repository>
-	</repositories>
 		
 	<dependencyManagement>
 		<dependencies>
