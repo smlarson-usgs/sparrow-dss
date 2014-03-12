@@ -114,42 +114,15 @@
 			<artifactId>cglib-nodep</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- An XML parser that MapViewer requires.
-			It used to be provided by oc4j, but in the most recent MapViewer war
-			it came bundled in the war, making me think that they no longer
-			expect MV to be deployed in OC4J only.  -->
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>xmlparserv2</artifactId>
-			<type>jar</type>
-			<scope>runtime</scope>
-		</dependency>
-
-
-		<!-- These two deps are provided when mapviewer is overlayed, so they are
-			just required when compiling and testing. -->
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>sdoapi</artifactId>
-			<type>jar</type>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>sdovis</artifactId>
-			<type>jar</type>
-			<scope>provided</scope>
 		</dependency>
-		<!-- this special dep. is only used for overlaying the wars. It is not
-			placed on the classpath -->
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>mapviewer</artifactId>
-			<type>war</type>
-			<scope>runtime</scope>
-		</dependency>
-
+		
 		<!-- Used for email logging of serious errors -->
 		<dependency>
 		    <groupId>javax.mail</groupId>
@@ -158,10 +131,6 @@
 		<dependency>
 			<groupId>gov.usgs.cida</groupId>
 			<artifactId>dynamicProperties</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
 		</dependency>
 		<dependency>
 			<!-- This is marked as provided b/c a base test class is in the src code (not test code) so it can be shared -->

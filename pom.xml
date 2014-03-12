@@ -311,15 +311,6 @@
 			</dependency>
 			<dependency>
 				<groupId>com.oracle</groupId>
-				<artifactId>xmlparserv2</artifactId>
-				<version>11.1.1.5.1-1</version>
-				<type>jar</type>
-			</dependency>
-			
-			<!-- These two deps are provided when mapviewer is overlayed, so they are
-			just required when compiling and testing. -->
-			<dependency>
-				<groupId>com.oracle</groupId>
 				<artifactId>sdoapi</artifactId>
 				<version>11.1.1.5.1-1</version>
 				<type>jar</type>
@@ -329,14 +320,6 @@
 				<artifactId>sdovis</artifactId>
 				<version>11.1.1.5.1-1</version>
 				<type>jar</type>
-			</dependency>
-			<!-- this special dep. is only used for overlaying the wars. It is not
-			placed on the classpath -->
-			<dependency>
-				<groupId>com.oracle</groupId>
-				<artifactId>mapviewer</artifactId>
-				<version>11.1.1.5.1-1</version>
-				<type>war</type>
 			</dependency>
 			<dependency>
 				<groupId>com.google.collections</groupId>
@@ -430,11 +413,6 @@
 				<groupId>gov.usgs.cida</groupId>
 				<artifactId>dynamicProperties</artifactId>
 				<version>0.0.1</version>
-			</dependency>
-			<dependency>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok</artifactId>
-				<version>0.11.8</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

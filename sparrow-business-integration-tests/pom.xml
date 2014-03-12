@@ -118,29 +118,6 @@
 			<artifactId>cglib-nodep</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- An XML parser that MapViewer requires.
-		It used to be provided by oc4j, but in the most recent MapViewer war
-		it came bundled in the war, making me think that they no longer
-		expect MV to be deployed in OC4J only.  -->
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>xmlparserv2</artifactId>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>sdoapi</artifactId>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>sdovis</artifactId>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc6_g</artifactId>
