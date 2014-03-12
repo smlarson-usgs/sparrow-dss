@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>sparrow-parent</artifactId>
+		<groupId>gov.usgs.cida</groupId>
+		<version>1.4.33-SNAPSHOT</version>
+	</parent>
+	<groupId>gov.usgs.cida</groupId>
+	<artifactId>sparrow-geoserver</artifactId>
+	<version>1.4.33-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<name>Sparrow Geoserver</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<gs.version>2.4.5</gs.version>
+		<gt.version>10.5</gt.version>
+	</properties>
+	    
+	<repositories>
+		<repository>
+			<id>opengeo</id>
+			<url>http://repo.opengeo.org/</url>
+		</repository>
+	</repositories>
+		
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.geoserver</groupId>
+				<artifactId>geoserver</artifactId>
+				<version>${gs.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>geotools</artifactId>
+				<version>${gt.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<dependencies>
+		<dependency>
+			<groupId>xerces</groupId>
+			<artifactId>xercesImpl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>gov.usgs.cida.geoserver</groupId>
+			<artifactId>geoserver</artifactId>
+			<version>${gs.version}-1</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>org.geoserver.extension</groupId>
+			<artifactId>oracle</artifactId>
+			<version>${gs.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-shapefile</artifactId>
+			<type>jar</type>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<finalName>geoserver</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<overlays>
+						<overlay>
+							<groupId>gov.usgs.cida.geoserver</groupId>
+							<artifactId>geoserver</artifactId>
+							<excludes>
+								<exclude>**/workspaces/upload/</exclude>
+								<exclude>**/workspaces/draw/</exclude>
+								<exclude>**/workspaces/sample/</exclude>
+							</excludes>
+						</overlay>
+					</overlays>
+					<warSourceExcludes>WEB-INF/web.xml</warSourceExcludes>
+					<packagingExcludes>
+						**/workspaces/upload,
+						**/workspaces/draw,
+						**/workspaces/sample
+					</packagingExcludes>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
