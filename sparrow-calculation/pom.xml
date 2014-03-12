@@ -7,7 +7,6 @@
     <version>1.4.33-SNAPSHOT</version>
   </parent>
   <packaging>jar</packaging>
-  <groupId>gov.usgs.cida</groupId>
   <artifactId>sparrow-calculation</artifactId>
   <version>1.4.33-SNAPSHOT</version>
   <name>sparrow-calculation</name>

@@ -6,7 +6,6 @@
     <artifactId>sparrow-parent</artifactId>
     <version>1.4.33-SNAPSHOT</version>
   </parent>
-  <groupId>gov.usgs.cida</groupId>
   <artifactId>sparrow-business-integration-tests</artifactId>
   <version>1.4.33-SNAPSHOT</version>
   <name>sparrow-business-integration-tests</name>
