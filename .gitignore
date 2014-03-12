@@ -1,0 +1,9 @@
+/sparrow-shared-ui/target/
+/sparrow-datatable/target/
+/sparrow-shared-test/target/
+/sparrow-business/target/
+/sparrow-service/target/
+/sparrow-web-ui/target/
+/sparrow-validation/target/
+/sparrow-calculation/target/
+/sparrow-business-integration-tests/target/
