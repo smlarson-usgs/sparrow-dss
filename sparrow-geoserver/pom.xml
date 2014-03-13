@@ -13,47 +13,16 @@
 
 	<name>Sparrow Geoserver</name>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<gs.version>2.4.5</gs.version>
-		<gt.version>10.5</gt.version>
-	</properties>
-
-	<repositories>
-		<repository>
-			<id>cida-public</id>
-			<name>CIDA Public Nexus</name>
-			<url>http://cida.usgs.gov/maven/cida-public/</url>
-		</repository>
-		<repository>
-			<id>opengeo</id>
-			<url>http://repo.opengeo.org/</url>
-		</repository>
-	</repositories>
-						
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.geoserver</groupId>
-				<artifactId>geoserver</artifactId>
-				<version>${gs.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.geotools</groupId>
-				<artifactId>geotools</artifactId>
-				<version>${gt.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
 	<dependencies>
 		<dependency>
+			<groupId>gov.usgs.cida</groupId>
+			<artifactId>sparrow-wps</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+<!--		<dependency>
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>gov.usgs.cida.geoserver</groupId>
 			<artifactId>geoserver</artifactId>
