@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import org.geoserver.wps.gs.GeoServerProcess;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.impl.DataStoreInfoImpl;
 import org.geotools.data.DataAccess;
@@ -25,7 +26,7 @@ import org.apache.log4j.Logger;
  */
 @DescribeProcess(title = "CreateDatastoreProcess",
 		description = "Creates datastore based on a shapefile and a dbf file.")
-public class CreateDatastoreProcess implements SparrowWps {
+public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 	protected static Logger log = Logger.getLogger(CreateDatastoreProcess.class);
 	
 	
