@@ -1,41 +1,48 @@
 <global>
-    <settings>
-        <contact>
-            <addressCity>Middleton</addressCity>
-            <addressCountry>WI</addressCountry>
-            <addressType>Work</addressType>
-            <contactEmail>eeverman@usgs.gov</contactEmail>
-            <contactOrganization>CIDA</contactOrganization>
-            <contactPerson>Eric Everman</contactPerson>
-            <contactPosition>Software Engineer</contactPosition>
-        </contact>
-        <charset>UTF-8</charset>
-        <numDecimals>8</numDecimals>
-        <onlineResource>http://geoserver.org</onlineResource>
-        <verbose>false</verbose>
-        <verboseExceptions>false</verboseExceptions>
-    </settings>
-    <jai>
-        <allowInterpolation>false</allowInterpolation>
-        <recycling>false</recycling>
-        <tilePriority>5</tilePriority>
-        <tileThreads>7</tileThreads>
-        <memoryCapacity>0.5</memoryCapacity>
-        <memoryThreshold>0.75</memoryThreshold>
-        <imageIOCache>false</imageIOCache>
-        <pngAcceleration>true</pngAcceleration>
-        <jpegAcceleration>true</jpegAcceleration>
-        <allowNativeMosaic>false</allowNativeMosaic>
-    </jai>
-    <coverageAccess>
-        <maxPoolSize>10</maxPoolSize>
-        <corePoolSize>5</corePoolSize>
-        <keepAliveTime>30000</keepAliveTime>
-        <queueType>UNBOUNDED</queueType>
-        <imageIOCacheThreshold>10240</imageIOCacheThreshold>
-    </coverageAccess>
-    <updateSequence>131</updateSequence>
-    <featureTypeCacheSize>0</featureTypeCacheSize>
-    <globalServices>true</globalServices>
-    <xmlPostRequestLogBufferSize>1024</xmlPostRequestLogBufferSize>
+	<settings>
+		<contact>
+			<id>contact</id>
+			<address>8505 Research Way</address>
+			<addressCity>Middleton</addressCity>
+			<addressCountry>United States</addressCountry>
+			<addressPostalCode>53562</addressPostalCode>
+			<addressState>WI</addressState>
+			<addressType>Work</addressType>
+			<contactEmail>eeverman@usgs.gov</contactEmail>
+			<contactOrganization>USGS Center for Integrated Data Analytics</contactOrganization>
+			<contactPerson>Eric Everman</contactPerson>
+			<contactPosition>Computer Scientist</contactPosition>
+			<contactVoice>608-821-3820</contactVoice>
+		</contact>
+		<charset>UTF-8</charset>
+		<numDecimals>4</numDecimals>
+		<verbose>true</verbose>
+		<verboseExceptions>true</verboseExceptions>
+		<localWorkspaceIncludesPrefix>false</localWorkspaceIncludesPrefix>
+	</settings>
+	<jai>
+		<allowInterpolation>false</allowInterpolation>
+		<recycling>false</recycling>
+		<tilePriority>5</tilePriority>
+		<tileThreads>7</tileThreads>
+		<memoryCapacity>0.5</memoryCapacity>
+		<memoryThreshold>0.75</memoryThreshold>
+		<imageIOCache>false</imageIOCache>
+		<pngAcceleration>false</pngAcceleration>
+		<jpegAcceleration>false</jpegAcceleration>
+		<allowNativeMosaic>false</allowNativeMosaic>
+	</jai>
+	<coverageAccess>
+		<maxPoolSize>10</maxPoolSize>
+		<corePoolSize>5</corePoolSize>
+		<keepAliveTime>30000</keepAliveTime>
+		<queueType>UNBOUNDED</queueType>
+		<imageIOCacheThreshold>10240</imageIOCacheThreshold>
+	</coverageAccess>
+	<updateSequence>8</updateSequence>
+	<featureTypeCacheSize>0</featureTypeCacheSize>
+	<globalServices>true</globalServices>
+	<xmlPostRequestLogBufferSize>1024</xmlPostRequestLogBufferSize>
+	<xmlExternalEntitiesEnabled>false</xmlExternalEntitiesEnabled>
+	<resourceErrorHandling>OGC_EXCEPTION_REPORT</resourceErrorHandling>
 </global>
