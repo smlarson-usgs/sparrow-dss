@@ -15,17 +15,19 @@ import org.geoserver.catalog.impl.DataStoreInfoImpl;
 import org.geotools.data.DataAccess;
 import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
+import org.geotools.process.factory.DescribeResult;
 import org.geotools.util.NullProgressListener;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.apache.log4j.Logger;
+import org.geotools.process.ProcessException;
 
 /**
  *
  * @author eeverman
  */
-@DescribeProcess(title = "CreateDatastoreProcess",
-		description = "Creates datastore based on a shapefile and a dbf file.")
+@DescribeProcess(title="CreateDatastoreProcess", version="1.0.0",
+		description="Creates datastore based on a shapefile and a dbf file.")
 public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 	protected static Logger log = Logger.getLogger(CreateDatastoreProcess.class);
 	
@@ -36,19 +38,14 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 		this.catalog = catalog;
 	}
 	
+	@DescribeResult(name="response", description="test")
 	public String execute(
 			@DescribeParameter(name="contextId", description="The ID of the context to create a store for", min = 1) Integer contextId,
 			@DescribeParameter(name="shapefFilePath", description="The path to the shapefile", min = 1) String shapefFilePath,
 			@DescribeParameter(name="dbfFilePath", description="The path to the dbf file", min = 1) String dbfFilePath,
 			@DescribeParameter(name="idFieldInDbf", description="The name of the ID column in the shapefile", min = 1) String idFieldInDbf
 		) throws Exception {
-		
-		
-//		PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
-//		if (context == null) fail("Unrecognize context ID");
-//		
-//		WriteDbfFileForContext writeDbfFile = new WriteDbfFileForContext(context);
-//		File dbfFile = writeDbfFile.run();
+
 		
 		File shpFile = new File(shapefFilePath);
 		File dbfFile = new File(dbfFilePath);
@@ -85,14 +82,14 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
             if (message == null && e.getCause() != null) {
                 message = e.getCause().getMessage();
             }
-            throw new IllegalArgumentException(
-                    "Error creating data store, check the parameters. Error message: " + message);
+			
+            fail("Error creating data store, check the parameters. Err message: " + message);
         }
 		
 		return "OK";
 	}
 	
 	private void fail(String message) throws Exception {
-		throw new Exception(message);
+		throw new ProcessException(message);
 	}
 }
