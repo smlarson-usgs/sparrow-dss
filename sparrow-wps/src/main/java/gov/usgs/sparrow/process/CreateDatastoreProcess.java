@@ -22,6 +22,8 @@ import org.geotools.util.NullProgressListener;
 import org.opengis.feature.Feature;
 import org.opengis.feature.type.FeatureType;
 import org.apache.log4j.Logger;
+import org.geoserver.catalog.CatalogBuilder;
+import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geotools.data.DataStore;
 import org.geotools.data.DataUtilities;
@@ -30,6 +32,7 @@ import org.geotools.data.Transaction;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureStore;
+import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
@@ -37,6 +40,7 @@ import org.geotools.process.ProcessException;
 import org.opengis.feature.simple.SimpleFeature;
 import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.Name;
+import org.geotools.data.DataUtilities;
 
 /**
  *
@@ -94,16 +98,54 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
             DataAccess<? extends FeatureType, ? extends Feature> dataStore = info.getDataStore(new NullProgressListener());
 			
 			
-			
 			List<Name> names = dataStore.getNames();
-			for (Name n : names) {
-				System.out.println(n.getLocalPart());
-				FeatureIterator<? extends Feature> fi = dataStore.getFeatureSource(n).getFeatures().features();
-				while (fi.hasNext()) {
-					Feature f = fi.next();
-					System.out.println(f.getType().getName().getLocalPart() + ", " + f.getIdentifier().getID());
-				}
-			}
+			Name allData = names.get(0);
+			
+			//FeatureType ft = dataStore.getSchema(allData);
+			FeatureCollection fc = dataStore.getFeatureSource(allData).getFeatures();
+			SimpleFeatureCollection sfc = (SimpleFeatureCollection)fc;
+			FeatureType ftFromDs = dataStore.getSchema(allData);
+			FeatureType ftFromFs = dataStore.getFeatureSource(allData).getSchema();
+			
+			//Create some cat builder thing for some purpose
+			CatalogBuilder cb = new CatalogBuilder(catalog);
+			cb.setWorkspace(info.getWorkspace());
+			cb.setStore(info);
+			FeatureTypeInfo fti = cb.buildFeatureType(dataStore.getFeatureSource(allData));
+			LayerInfo li = cb.buildLayer(fti);
+			
+			catalog.add(fti);
+			catalog.add(li);
+			
+//			FeatureTypeInfo typeInfo = cb.buildFeatureType(fc.getSchema().getName());
+			
+//			
+//			SimpleFeatureIterator sfi = sfc.features();
+//			while (sfi.hasNext()) {
+//				SimpleFeature sf = sfi.next();
+//				List<Object> attribs = sf.getAttributes();
+//				for (Object a : attribs) {
+//					System.out.println(a.toString());
+//				}
+//			}
+			
+			
+//			FeatureTypeInfo fti = (FeatureTypeInfo)((SimpleFeatureType) (sfa[sfa.length - 1]));
+//			LayerInfo layerInfo = cb.buildLayer(sfc.getSchema());
+//			
+//			catalog.add(fti);
+//			catalog.add(layerInfo);
+			
+			
+//			List<Name> names = dataStore.getNames();
+//			for (Name n : names) {
+//				System.out.println(n.getLocalPart());
+//				FeatureIterator<? extends Feature> fi = dataStore.getFeatureSource(n).getFeatures().features();
+//				while (fi.hasNext()) {
+//					Feature f = fi.next();
+//					System.out.println(f.getType().getName().getLocalPart() + ", " + f.getIdentifier().getID());
+//				}
+//			}
 			//dataStore.getNames()
             //dataStore.dispose();
         } catch (IOException e) {
