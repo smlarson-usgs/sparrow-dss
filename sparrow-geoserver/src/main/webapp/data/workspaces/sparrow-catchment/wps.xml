@@ -1,0 +1,47 @@
+<wps>
+  <id>WPSInfoImpl--1ab06a31:144c29f4f8b:-7ff1</id>
+  <workspace>
+    <id>WorkspaceInfoImpl--1ab06a31:144c29f4f8b:-7ff7</id>
+  </workspace>
+  <enabled>true</enabled>
+  <name>WPS</name>
+  <title>Prototype GeoServer WPS</title>
+  <versions>
+    <org.geotools.util.Version>
+      <version>1.0.0</version>
+    </org.geotools.util.Version>
+  </versions>
+  <citeCompliant>false</citeCompliant>
+  <schemaBaseURL>http://schemas.opengis.net</schemaBaseURL>
+  <verbose>false</verbose>
+  <connectionTimeout>300.0</connectionTimeout>
+  <resourceExpirationTimeout>300</resourceExpirationTimeout>
+  <maxSynchronousProcesses>3</maxSynchronousProcesses>
+  <maxAsynchronousProcesses>3</maxAsynchronousProcesses>
+  <processGroups>
+    <processGroup>
+      <factoryClass>org.geoserver.wps.DeprecatedProcessFactory</factoryClass>
+      <enabled>true</enabled>
+    </processGroup>
+    <processGroup>
+      <factoryClass>org.geoserver.wps.jts.SpringBeanProcessFactory</factoryClass>
+      <enabled>true</enabled>
+    </processGroup>
+    <processGroup>
+      <factoryClass>org.geotools.process.geometry.GeometryProcessFactory</factoryClass>
+      <enabled>true</enabled>
+    </processGroup>
+    <processGroup>
+      <factoryClass>org.geotools.process.raster.RasterProcessFactory</factoryClass>
+      <enabled>true</enabled>
+    </processGroup>
+    <processGroup>
+      <factoryClass>org.geotools.process.vector.VectorProcessFactory</factoryClass>
+      <enabled>true</enabled>
+    </processGroup>
+    <processGroup>
+      <factoryClass>gov.usgs.sparrow.process.SparrowWpsFactory</factoryClass>
+      <enabled>true</enabled>
+    </processGroup>
+  </processGroups>
+</wps>
