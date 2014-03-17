@@ -70,6 +70,7 @@
 				<module>sparrow-validation</module>
 				<module>sparrow-shared-test</module>
 				<module>sparrow-business-integration-tests</module>
+				<module>sparrow-wps</module>
 				<module>sparrow-geoserver</module>
 			</modules>
 		</profile>
@@ -126,6 +127,10 @@
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<sparrow.build.profile>production</sparrow.build.profile>
+		
+		<!-- GeoServer and GeoTools Version Numbers -->
+		<gs.version>2.4.5</gs.version>
+		<gt.version>10.5</gt.version>
 	</properties>
 	
 	<scm>
@@ -161,6 +166,15 @@
 		<repository>
 			<id>cida-thirdparty</id>
 			<url>${cida.maven.url}/content/repositories/cida-thirdparty</url>
+		</repository>
+		<repository>
+			<id>opengeo</id>
+			<url>http://repo.opengeo.org/</url>
+		</repository>
+		<repository>
+			<id>cida-public</id>
+			<name>CIDA Public Nexus</name>
+			<url>http://cida.usgs.gov/maven/cida-public/</url>
 		</repository>
 	</repositories>
 	
@@ -244,6 +258,20 @@
 	</build>
 	<dependencyManagement>
 		<dependencies>
+			<dependency>
+				<groupId>org.geoserver</groupId>
+				<artifactId>geoserver</artifactId>
+				<version>${gs.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>geotools</artifactId>
+				<version>${gt.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>

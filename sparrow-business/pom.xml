@@ -138,5 +138,10 @@
 			<artifactId>junit</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-shapefile</artifactId>
+			<scope>provided</scope>
+		</dependency>
   </dependencies>
 </project>

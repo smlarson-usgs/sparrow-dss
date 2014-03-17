@@ -1,0 +1,26 @@
+<settings>
+  <id>SettingsInfoImpl--1ab06a31:144c29f4f8b:-7ffc</id>
+  <workspace>
+    <id>WorkspaceInfoImpl--1ab06a31:144c29f4f8b:-7ffe</id>
+    <name>sparrow-flowline</name>
+  </workspace>
+  <contact>
+    <id>contact</id>
+    <address>8505 Research Way</address>
+    <addressCity>Middleton</addressCity>
+    <addressCountry>United States</addressCountry>
+    <addressPostalCode>53562</addressPostalCode>
+    <addressState>WI</addressState>
+    <addressType>Work</addressType>
+    <contactEmail>eeverman@usgs.gov</contactEmail>
+    <contactOrganization>USGS Center for Integrated Data Analytics</contactOrganization>
+    <contactPerson>Eric Everman</contactPerson>
+    <contactPosition>Computer Scientist</contactPosition>
+    <contactVoice>608-821-3820</contactVoice>
+  </contact>
+  <charset>UTF-8</charset>
+  <numDecimals>4</numDecimals>
+  <verbose>true</verbose>
+  <verboseExceptions>true</verboseExceptions>
+  <localWorkspaceIncludesPrefix>false</localWorkspaceIncludesPrefix>
+</settings>
