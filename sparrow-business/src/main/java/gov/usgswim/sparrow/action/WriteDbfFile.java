@@ -108,8 +108,15 @@ public class WriteDbfFile extends Action<File> {
 				if (id.longValue() > Integer.MAX_VALUE) {
 					throw new Exception("IDs larger than 9 digits are not currently supported b/c our NHD shapefile only has 9 digits.");
 				}
+				
+				Double val = dataColumn.getDouble(row);
+				////////////////////////1234567890.1234	//the max value of the 14.4 column
+				if (val.doubleValue() > 9999999999.9999D) {
+					throw new Exception("Values larger than 10 places left of the decimal + 4 right of the decimal not currently supported.");
+				}
+				
 				oneRow[0] = id;
-				oneRow[1] = dataColumn.getDouble(row);
+				oneRow[1] = val;
 				
 				dbfWriter.write(oneRow);
 			}

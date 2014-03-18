@@ -1,11 +1,13 @@
 package gov.usgswim.sparrow.service.predictcontext;
 
 import gov.usgswim.service.HttpService;
+import gov.usgswim.sparrow.action.WriteDbfFileForContext;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.ReturnStatus;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.QueryLoader;
+import java.io.File;
 
 import java.io.StringReader;
 
@@ -90,7 +92,10 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 			}
 			
 			
+			WriteDbfFileForContext writeDbfFile = new WriteDbfFileForContext(context);
+			File dbfFile = writeDbfFile.run();
 			
+			//Next:  Contact GeoServer w/ the appropriate info
 			
 
 			String response = props.getParametrizedQuery("ResponseOK",
