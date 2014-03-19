@@ -11,8 +11,8 @@
 	<link type="text/css" rel="stylesheet" href="http://infotrek.er.usgs.gov/docs/usgs_vis_std/style/usgs_style_main.css" />
 	<link type="text/css" rel="stylesheet" href="../css/custom.css" />
 
-	<script type="text/javascript" src="../ext_js/adapter/ext/ext-base.js"></script>
-	<script type="text/javascript" src="../ext_js/ext-all.js"></script>
+	<script type="text/javascript" src="../webjars/extjs/3.4.1.1/adapter/ext/ext-base.js"></script>
+	<script type="text/javascript" src="../webjars/extjs/3.4.1.1/ext-all.js"></script>
 	<script type="text/javascript" src="../js/PredefinedSessionAdmin.js"></script>
 	<script type="text/javascript">
 		Ext.onReady(loadAllModels);

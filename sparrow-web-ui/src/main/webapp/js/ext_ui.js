@@ -1,5 +1,5 @@
 // Reference local blank image
-Ext.BLANK_IMAGE_URL = 'ext_js/resources/images/default/s.gif';
+Ext.BLANK_IMAGE_URL = 'webjars/extjs/3.4.1.1/resources/images/default/s.gif';
 
 var loadStateBBox = Sparrow.USGS.getURLParam("bbox");
 

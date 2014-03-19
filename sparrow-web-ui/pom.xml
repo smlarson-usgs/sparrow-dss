@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-	<groupId>gov.usgs.cida</groupId>
+		<groupId>gov.usgs.cida</groupId>
 		<artifactId>sparrow-parent</artifactId>
 		<version>1.4.33-SNAPSHOT</version>
 	</parent>
@@ -46,8 +46,8 @@
 			<artifactId>log4j</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>log4j</groupId>
-		    <artifactId>apache-log4j-extras</artifactId>
+			<groupId>log4j</groupId>
+			<artifactId>apache-log4j-extras</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.servlets</groupId>
@@ -69,9 +69,15 @@
 		
 		<!-- Used for email logging of serious errors -->
 		<dependency>
-		    <groupId>javax.mail</groupId>
-		    <artifactId>mail</artifactId>
-		    <version>1.4</version>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>extjs</artifactId>
+			<version>3.4.1.1</version>
 		</dependency>
 
 	</dependencies>
@@ -142,32 +148,32 @@
 			</properties>
 			<build>
 				<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-war-plugin</artifactId>
-					<configuration>
-			           <webResources> 
-			             <webResource> 
-			               <directory>${basedir}/src/main/webapp/WEB-INF</directory> 
-			               <includes> 
-			                 <include>web.xml</include> 
-			               </includes> 
-			               <targetPath>WEB-INF</targetPath> 
-			               <filtering>true</filtering> 
-			             </webResource> 
-			             <webResource> 
-				               <directory>${basedir}/src/main/webapp</directory> 
-				               <includes> 
-				                 <include>footer.jsp</include>
-				                 <include>index.jsp</include>
-				                 <include>dss.jsp</include>
-				               </includes> 
-				               <targetPath /> 
-				               <filtering>true</filtering> 
-				             </webResource> 
-			           </webResources> 
-					</configuration>
-				</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-war-plugin</artifactId>
+						<configuration>
+							<webResources> 
+								<webResource> 
+									<directory>${basedir}/src/main/webapp/WEB-INF</directory> 
+									<includes> 
+										<include>web.xml</include> 
+									</includes> 
+									<targetPath>WEB-INF</targetPath> 
+									<filtering>true</filtering> 
+								</webResource> 
+								<webResource> 
+									<directory>${basedir}/src/main/webapp</directory> 
+									<includes> 
+										<include>footer.jsp</include>
+										<include>index.jsp</include>
+										<include>dss.jsp</include>
+									</includes> 
+									<targetPath /> 
+									<filtering>true</filtering> 
+								</webResource> 
+							</webResources> 
+						</configuration>
+					</plugin>
 				</plugins>
 			</build>
 		</profile>
@@ -190,8 +196,8 @@
 			<build>
 				<plugins>
 					<!-- Copy the webapp directory to a target folder meant for minifying 
-						so that original svn controlled resources are not affect by the JS minification 
-						process -->
+					so that original svn controlled resources are not affect by the JS minification 
+					process -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-resources-plugin</artifactId>
@@ -218,7 +224,7 @@
 						</executions>
 					</plugin>
 					<!-- minify listed JSPs from the source folder (so we don't affect source 
-						controlled resources) -->
+					controlled resources) -->
 					<plugin>
 						<groupId>gov.usgs.cida</groupId>
 						<artifactId>auto-minify-plugin</artifactId>
@@ -248,27 +254,27 @@
 								<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 							</manifest>
 							<webResources> 
-				             <webResource> 
-				               <directory>${basedir}/target/minifiedWebapp/WEB-INF</directory> 
-				               <includes> 
-				                 <include>web.xml</include> 
-				               </includes> 
-				               <targetPath>WEB-INF</targetPath> 
-				               <filtering>true</filtering> 
-				             </webResource> 
-				             <webResource> 
-				               <directory>${basedir}/target/minifiedWebapp</directory> 
-				               <includes> 
-				                 <include>footer.jsp</include>
-				               </includes> 
-				               <targetPath /> 
-				               <filtering>true</filtering>
-				             </webResource> 
-				             <webResource> 
-				               <directory>${basedir}/target/minifiedWebapp/js/build</directory> 
-							   <targetPath>js/build</targetPath>
-				             </webResource> 
-				           </webResources> 
+								<webResource> 
+									<directory>${basedir}/target/minifiedWebapp/WEB-INF</directory> 
+									<includes> 
+										<include>web.xml</include> 
+									</includes> 
+									<targetPath>WEB-INF</targetPath> 
+									<filtering>true</filtering> 
+								</webResource> 
+								<webResource> 
+									<directory>${basedir}/target/minifiedWebapp</directory> 
+									<includes> 
+										<include>footer.jsp</include>
+									</includes> 
+									<targetPath /> 
+									<filtering>true</filtering>
+								</webResource> 
+								<webResource> 
+									<directory>${basedir}/target/minifiedWebapp/js/build</directory> 
+									<targetPath>js/build</targetPath>
+								</webResource> 
+							</webResources> 
 						</configuration>
 					</plugin>
 				</plugins>
