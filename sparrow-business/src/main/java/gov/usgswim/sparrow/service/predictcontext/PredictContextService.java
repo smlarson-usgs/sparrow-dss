@@ -1,11 +1,13 @@
 package gov.usgswim.sparrow.service.predictcontext;
 
 import gov.usgswim.service.HttpService;
+import gov.usgswim.sparrow.action.WriteDbfFileForContext;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.ReturnStatus;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.QueryLoader;
+import java.io.File;
 
 import java.io.StringReader;
 
@@ -88,9 +90,6 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 			if (description == null) {
 				description = "";	//keep it empty so it won't display on client
 			}
-			
-			
-			
 			
 
 			String response = props.getParametrizedQuery("ResponseOK",

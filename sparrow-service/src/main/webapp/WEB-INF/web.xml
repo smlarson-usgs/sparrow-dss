@@ -1,120 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee  http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <display-name>SPARROW DSS Services {Owner: NB, Coder: EE}</display-name>
-    <description>The SPARROW DSS application, which includes Oracle's Mapviewer.</description>
+    <description>The SPARROW DSS application.</description>
 
-    <!--
-*****************************************
-***	SPARROW Configuration
-*****************************************  -->
-    <filter>
-        <description>
-			MapViewer has a really bad habit of creating a session for all of
-			its mapping requests.  This filter kills those sessions immediately
-			as they are created.  Since all these requests are served through
-			a proxy, the sessions are never used anyway.
-		</description>
-        <filter-name>noMapViewerSessions</filter-name>
-        <filter-class>gov.usgswim.sparrow.NoMapViewerSessions</filter-class>
-    </filter>
-    <filter>
-        <description>
-			Debug filter to spit the MapViewer XML map requests to the log.
-			To enable, set the log4j log level to trace for this class.
-		</description>
-        <filter-name>LogMapviewerRequestsFilter</filter-name>
-        <filter-class>gov.usgswim.sparrow.LogMapviewerRequestsFilter</filter-class>
-    </filter>
 
     <filter>
         <filter-name>RequestMonitorFilter</filter-name>
         <filter-class>gov.usgswim.sparrow.monitor.RequestMonitorFilter</filter-class>
     </filter>
-    <!--
-*****************************************
-***	SPARROW Configuration
-*****************************************  -->
     <filter-mapping>
         <filter-name>RequestMonitorFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    <filter-mapping>
-        <filter-name>adfFaces</filter-name>
-        <servlet-name>Faces Servlet</servlet-name>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>WMS11</filter-name>
-        <url-pattern>/wms</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>noMapViewerSessions</filter-name>
-        <url-pattern>/omserver/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>LogMapviewerRequestsFilter</filter-name>
-        <url-pattern>/omserver/*</url-pattern>
-    </filter-mapping>
     <listener>
         <listener-class>gov.usgswim.sparrow.LifecycleListener</listener-class>
     </listener>
-    <!--
-*****************************************
-***	Mapviewer Related
-*****************************************  -->
-    <!-- ADF faces resources servlet -->
-    <servlet>
-        <servlet-name>resources</servlet-name>
-        <servlet-class>oracle.adf.view.faces.webapp.ResourceServlet</servlet-class>
-    </servlet>
-    <!-- MapViewer Servlet -->
-    <servlet>
-        <servlet-name>oms</servlet-name>
-        <servlet-class>oracle.lbs.mapserver.oms</servlet-class>
-        <load-on-startup>1</load-on-startup>
-        <!-- role name used in code -->
-        <security-role-ref>
-            <role-name>map_admin</role-name>
-            <role-link>map_admin_role</role-link>
-        </security-role-ref>
-    </servlet>
-    <!-- MapViewer FOI -->
-    <servlet>
-        <servlet-name>foi</servlet-name>
-        <servlet-class>oracle.lbs.foi.FOIServlet</servlet-class>
-        <load-on-startup>2</load-on-startup>
-    </servlet>
-    <!-- MapViewer Map Cache Server -->
-    <servlet>
-        <servlet-name>mcs</servlet-name>
-        <servlet-class>oracle.lbs.mapcache.MCSServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <!-- MapViewer Proxy servlet -->
-    <servlet>
-        <servlet-name>MVProxy</servlet-name>
-        <servlet-class>oracle.mapviewer.proxy.MVProxyServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <servlet>
-        <servlet-name>mcsad</servlet-name>
-        <servlet-class>oracle.lbs.mapcache.AdminServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-        <!-- role name used in code -->
-        <security-role-ref>
-            <role-name>map_admin</role-name>
-            <role-link>map_admin_role</role-link>
-        </security-role-ref>
-    </servlet>
-    <!-- MapViewer Servlet Mapping for normal requests -->
-    <servlet>
-        <servlet-name>Faces Servlet</servlet-name>
-        <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-    <!--
-*****************************************
-***	SPARROW Configuration
-*****************************************  -->
+
     <servlet>
         <servlet-name>ModelService</servlet-name>
         <servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
@@ -245,8 +146,15 @@
         <url-pattern>/sp_delivery_aggreport/*</url-pattern>
     </servlet-mapping>
 		
-		
-		
+	<servlet>
+		<servlet-class>gov.usgswim.sparrow.service.maplayer.RegisterMapLayerService</servlet-class>
+		<servlet-name>RegisterMapLayerService</servlet-name>
+	</servlet>
+	<servlet-mapping>
+        <servlet-name>RegisterMapLayerService</servlet-name>
+        <url-pattern>/RegisterMapLayerService/*</url-pattern>
+    </servlet-mapping>
+	
     <servlet>
         <servlet-name>Watershed_Service</servlet-name>
         <servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
@@ -259,56 +167,7 @@
         <servlet-name>Watershed_Service</servlet-name>
         <url-pattern>/sp_watershed/*</url-pattern>
     </servlet-mapping>
-    <!--
-*****************************************
-***	Mapviewer Related
-*****************************************  -->
-    <servlet-mapping>
-        <servlet-name>oms</servlet-name>
-        <url-pattern>/omserver</url-pattern>
-    </servlet-mapping>
-    <!-- MapViewer mapping for secure admin requests -->
-    <servlet-mapping>
-        <servlet-name>oms</servlet-name>
-        <url-pattern>/mapadmin</url-pattern>
-    </servlet-mapping>
-    <!-- MapViewer mapping for OpenGIS WMS 1.1.1 spec -->
-    <servlet-mapping>
-        <servlet-name>oms</servlet-name>
-        <url-pattern>/wms</url-pattern>
-    </servlet-mapping>
-    <!-- ADF Faces Servlet Mapping -->
-    <servlet-mapping>
-        <servlet-name>Faces Servlet</servlet-name>
-        <url-pattern>/faces/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>resources</servlet-name>
-        <url-pattern>/adf/*</url-pattern>
-    </servlet-mapping>
-    <!-- MapViewer FOI Servlet Mapping -->
-    <servlet-mapping>
-        <servlet-name>foi</servlet-name>
-        <url-pattern>/foi</url-pattern>
-    </servlet-mapping>
-    <!-- MapViewer Map Cache Server Mapping -->
-    <servlet-mapping>
-        <servlet-name>mcs</servlet-name>
-        <url-pattern>/mcserver</url-pattern>
-    </servlet-mapping>
-    <!-- MapViewer proxy servlet mapping -->
-    <servlet-mapping>
-        <servlet-name>MVProxy</servlet-name>
-        <url-pattern>/proxy</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>mcsad</servlet-name>
-        <url-pattern>/mcsadmin</url-pattern>
-    </servlet-mapping>
-    <!--
-*****************************************
-***	SPARROW Configuration
-*****************************************  -->
+
     <servlet-mapping>
         <servlet-name>ModelService</servlet-name>
         <url-pattern>/sp_model/*</url-pattern>
@@ -403,68 +262,18 @@
     <welcome-file-list>
         <welcome-file>index.html</welcome-file>
     </welcome-file-list>
-    <!--
-*****************************************
-***	Mapviewer Related
-*****************************************  -->
-    <!--
-	<taglib>
-		<taglib-uri> http://xmlns.oracle.com/spatial/mvtaglib </taglib-uri>
-		<taglib-location> /WEB-INF/mvtaglib.tld </taglib-location>
-	</taglib>
-	-->
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>SecureAdmin</web-resource-name>
-            <description>MapViewer Admin pages</description>
-            <url-pattern>/admin/*</url-pattern>
-            <url-pattern>/faces/admin/*</url-pattern>
-            <url-pattern>/mapadmin</url-pattern>
-            <url-pattern>/mcsadmin</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>map_admin_role</role-name>
-        </auth-constraint>
-    </security-constraint>
-    <!--  For Secure Map Rendering demos only -->
-    <security-constraint>
-        <web-resource-collection>
-            <web-resource-name>Secure mapping demo page</web-resource-name>
-            <description>MapViewer secure map rendering demo</description>
-            <url-pattern>/demo/secure-mapping.html</url-pattern>
-        </web-resource-collection>
-        <auth-constraint>
-            <role-name>secure_maps_role</role-name>
-        </auth-constraint>
-    </security-constraint>
-    <login-config>
-        <auth-method>FORM</auth-method>
-        <!--    <realm-name>mvconsole</realm-name> -->
-        <form-login-config>
-            <form-login-page>/mvlogon.jsp</form-login-page>
-            <form-error-page>/logon_failed.html</form-error-page>
-        </form-login-config>
-    </login-config>
-    <security-role>
-        <description>To perform MapViewer administration.</description>
-        <role-name>map_admin_role</role-name>
-    </security-role>
-    <!--  For Secure Map Rendering demos only -->
-    <security-role>
-        <role-name>secure_maps_role</role-name>
-    </security-role>
-		
-		<resource-ref>
-			<description>Read only database for data and geometry</description>
-			<res-ref-name>jdbc/sparrow_dss</res-ref-name>
-			<jndi-name>jdbc/sparrow_dss</jndi-name>
-			<res-type>javax.sql.DataSource</res-type>
-		</resource-ref>
-		
-		<resource-ref>
-			<description>Read/write database for some administrative transactional actions</description>
-			<res-ref-name>jdbc/sparrow_dss_trans</res-ref-name>
-			<jndi-name>jdbc/sparrow_dss_trans</jndi-name>
-			<res-type>javax.sql.DataSource</res-type>
-		</resource-ref>
+
+	<resource-ref>
+		<description>Read only database for data and geometry</description>
+		<res-ref-name>jdbc/sparrow_dss</res-ref-name>
+		<jndi-name>jdbc/sparrow_dss</jndi-name>
+		<res-type>javax.sql.DataSource</res-type>
+	</resource-ref>
+
+	<resource-ref>
+		<description>Read/write database for some administrative transactional actions</description>
+		<res-ref-name>jdbc/sparrow_dss_trans</res-ref-name>
+		<jndi-name>jdbc/sparrow_dss_trans</jndi-name>
+		<res-type>javax.sql.DataSource</res-type>
+	</resource-ref>
 </web-app>
