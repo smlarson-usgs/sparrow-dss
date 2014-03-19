@@ -12,6 +12,7 @@ import gov.usgswim.sparrow.service.SharedApplication;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
+import javax.naming.NamingException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpEntity;
@@ -23,6 +24,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.jndi.JndiTemplate;
 
 /**
  * Contact the GeoServer spds:CreateDatastore WPS to register a prediction
@@ -57,11 +59,7 @@ public class CreateGeoserverLayer extends Action<String> {
 	
 	@Override
 	protected void initFields() throws Exception {
-		geoserverHost = "localhost";
-		geoserverPort = 8080;
-		geoserverPath = "/sparrow-geoserver/wps";
-		//geoserverCreateLayerEndPoint = new URL("http://localhost:8080/sparrow-geoserver/wps?service=wps&version=1.0.0&request=execute&identifier=dss:CreateDatastore");
-		
+	
 		ModelRequestCacheKey mrk = new ModelRequestCacheKey(context.getModelID(), false, false, false);
 		SparrowModel model = SharedApplication.getInstance().getModelMetadata(mrk).get(0);
 		themeName = model.getThemeName();
@@ -79,6 +77,24 @@ public class CreateGeoserverLayer extends Action<String> {
 			addValidationError("DBF File cannot be null");
 		} else if (! dbfFile.exists()) {
 			addValidationError("DBF must exist");
+		}
+		
+		
+		//We need to access these params to check if they exist, so we'll
+		//do this initiation here.
+		JndiTemplate template = new JndiTemplate();
+		
+		try {
+			geoserverHost = (String)template.lookup("java:comp/env/geoserver-host");
+			geoserverPort = (Integer)template.lookup("java:comp/env/geoserver-port");
+			geoserverPath = (String)template.lookup("java:comp/env/geoserver-path");
+			
+		} catch(NamingException exception){
+			addValidationError("All the configuration parameters must be specified"
+					+ " in the Context.xml file: geoserver-host, geoserver-port & geoserver-path");
+		} catch (RuntimeException rte) {
+			addValidationError("The context configuration parameters must be specified as the correct types: "
+					+ "geoserver-host (String), geoserver-port (Integer) & geoserver-path (String)");
 		}
 
 		
