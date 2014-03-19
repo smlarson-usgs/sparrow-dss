@@ -91,12 +91,6 @@ public class PredictContextService implements HttpService<PredictContextRequest>
 				description = "";	//keep it empty so it won't display on client
 			}
 			
-			
-			WriteDbfFileForContext writeDbfFile = new WriteDbfFileForContext(context);
-			File dbfFile = writeDbfFile.run();
-			
-			//Next:  Contact GeoServer w/ the appropriate info
-			
 
 			String response = props.getParametrizedQuery("ResponseOK",
 				new String[] {

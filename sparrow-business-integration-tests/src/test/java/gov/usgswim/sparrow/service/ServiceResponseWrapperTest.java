@@ -18,6 +18,30 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 public class ServiceResponseWrapperTest extends SparrowTestBase {
 	
+	
+	@Test
+	public void verifySimpleStringSerialization() throws Exception {
+		
+		
+		ServiceResponseWrapper wrap = new ServiceResponseWrapper(
+				String.class, ServiceResponseOperation.REGISTER);
+		
+		wrap.addEntity("Result String");
+		
+		XStream stream = new XStream();
+		stream.processAnnotations(ServiceResponseWrapper.class);
+		
+		String xml = stream.toXML(wrap);
+		System.out.println(xml);
+		
+//		assertEquals("OK", getXPathValue("//ServiceResponseWrapper/status", xml));
+//		assertEquals("GET", getXPathValue("//ServiceResponseWrapper/operation", xml));
+//		assertEquals("gov.usgswim.sparrow.domain.IPredefinedSession", getXPathValue("//ServiceResponseWrapper/entityClass", xml));
+//		assertEquals("99", getXPathValue("//ServiceResponseWrapper/entityId", xml));
+//		assertEquals("1", getXPathValue("count(//ServiceResponseWrapper/entityList/entity)", xml));
+//		assertEquals("PredefinedSession", getXPathValue("//ServiceResponseWrapper/entityList/entity/@class", xml));
+	}
+	
 	@Test
 	public void verifyPredefinedSessionSerialization() throws Exception {
 		

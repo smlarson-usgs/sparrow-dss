@@ -10,10 +10,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.naming.NamingException;
 import org.geoserver.wps.gs.GeoServerProcess;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.impl.DataStoreInfoImpl;
-import org.geoserver.catalog.DataStoreInfo;
 import org.geotools.data.DataAccess;
 import org.geotools.process.factory.DescribeParameter;
 import org.geotools.process.factory.DescribeProcess;
@@ -26,22 +26,9 @@ import org.geoserver.catalog.CatalogBuilder;
 import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ProjectionPolicy;
-import org.geotools.data.DataStore;
-import org.geotools.data.DataUtilities;
-import org.geotools.data.DefaultTransaction;
-import org.geotools.data.Transaction;
-import org.geotools.data.simple.SimpleFeatureCollection;
-import org.geotools.data.simple.SimpleFeatureIterator;
-import org.geotools.data.simple.SimpleFeatureStore;
-import org.geotools.feature.FeatureCollection;
-import org.geotools.feature.FeatureIterator;
-import org.geotools.feature.simple.SimpleFeatureBuilder;
-import org.geotools.feature.simple.SimpleFeatureTypeBuilder;
 import org.geotools.process.ProcessException;
-import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.feature.simple.SimpleFeatureType;
 import org.opengis.feature.type.Name;
-import org.geotools.data.DataUtilities;
+import org.springframework.jndi.JndiTemplate;
 
 /**
  *
@@ -52,6 +39,7 @@ import org.geotools.data.DataUtilities;
 public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 	protected static Logger log = Logger.getLogger(CreateDatastoreProcess.class);
 	
+	private static final String DEFAULT_SHAPEFILE_DIRECTORY = System.getProperty("user.home") + "/sparrow/shapefiles/";
 	
 	private Catalog catalog;
 	
@@ -62,18 +50,42 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 	@DescribeResult(name="response", description="test")
 	public String execute(
 			@DescribeParameter(name="contextId", description="The ID of the context to create a store for", min = 1) Integer contextId,
-			@DescribeParameter(name="shapefFilePath", description="The path to the shapefile", min = 1) String shapefFilePath,
+			@DescribeParameter(name="shapefFileName", description="The name of the shapefile, it is assumed that GeoServer has a configured directory to find it.", min = 1) String shapefFileName,
 			@DescribeParameter(name="dbfFilePath", description="The path to the dbf file", min = 1) String dbfFilePath,
 			@DescribeParameter(name="idFieldInDbf", description="The name of the ID column in the shapefile", min = 1) String idFieldInDbf
 		) throws Exception {
-
 		
-		File shpFile = new File(shapefFilePath);
+		
+		JndiTemplate template = new JndiTemplate();
+		File shapeFileDir = null;
+		
+		try {
+			String shapefileDirPath = (String)template.lookup("java:comp/env/shapefile-directory");
+			shapeFileDir = new File(shapefileDirPath);
+			if (! (shapeFileDir.exists() && shapeFileDir.canRead())) {
+				throw new Exception("The shapefile location '" + shapefileDirPath + 
+						"' does not exist or is unreadable.");
+			}
+		} catch(NamingException exception){
+			//Try the default location
+			shapeFileDir = new File(DEFAULT_SHAPEFILE_DIRECTORY);
+			
+			if (! (shapeFileDir.exists() && shapeFileDir.canRead())) {
+				throw new Exception("The configuration parameter 'java:comp/env/shapefile-directory'"
+						+ " is unset and the default location '" + DEFAULT_SHAPEFILE_DIRECTORY + 
+						"' does not exist or is unreadable.", exception);
+			}
+		}
+
+
+		if (! shapefFileName.endsWith(".shp")) shapefFileName+= ".shp";
+		
+		File shpFile = new File(shapeFileDir, shapefFileName);
 		File dbfFile = new File(dbfFilePath);
 		
 		
 		if (! shpFile.exists()) {
-			fail("The shape file '" + shapefFilePath + "' does not exist.");
+			fail("The shape file '" + shapefFileName + "' does not exist in the configured directory '" + shapeFileDir.getAbsolutePath() + "'");
 		}
 		
 		if (! dbfFile.exists()) {
@@ -120,6 +132,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 			
 			catalog.add(fti);
 			catalog.add(li);
+			return info.getWorkspace().getName() + ":" + li.getName();
 
         } catch (IOException e) {
             log.error("Error obtaining new data store", e);
@@ -131,7 +144,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
             fail("Error creating data store, check the parameters. Err message: " + message);
         }
 		
-		return "OK";
+		return "FAILED";	//We never actually reach this line
 	}
 	
 	private void fail(String message) throws Exception {
