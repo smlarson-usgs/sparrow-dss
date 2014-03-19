@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package gov.usgs.sparrow.process;
 
 import java.io.File;
@@ -31,15 +27,18 @@ import org.opengis.feature.type.Name;
 import org.springframework.jndi.JndiTemplate;
 
 /**
- *
+ * WPS to add a layer to GeoServer based on an export dbf file from the user's
+ * prediction context, and a specified shapefile.
  * @author eeverman
  */
 @DescribeProcess(title="CreateDatastoreProcess", version="1.0.0",
-		description="Creates datastore based on a shapefile and a dbf file.")
+		description="Creates datastore based on a shapefile and a dbf file.  OK to re-request layers - they will not be recreated, however.")
 public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 	protected static Logger log = Logger.getLogger(CreateDatastoreProcess.class);
 	
 	private static final String DEFAULT_SHAPEFILE_DIRECTORY = System.getProperty("user.home") + "/sparrow/shapefiles/";
+	private static final String FLOWLINE_WORKSPACE_NAME = "sparrow-flowline";
+	private static final String FLOWLINE_NAMESPACE = "http://water.usgs.gov/nawqa/sparrow/dss/spatial/" + FLOWLINE_WORKSPACE_NAME;
 	
 	private Catalog catalog;
 	
@@ -47,6 +46,16 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 		this.catalog = catalog;
 	}
 	
+	/**
+	 * Requests that the layer be created if it does not already exist.
+	 * 
+	 * @param contextId
+	 * @param shapefFileName
+	 * @param dbfFilePath
+	 * @param idFieldInDbf
+	 * @return
+	 * @throws Exception 
+	 */
 	@DescribeResult(name="response", description="test")
 	public String execute(
 			@DescribeParameter(name="contextId", description="The ID of the context to create a store for", min = 1) Integer contextId,
@@ -54,6 +63,35 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 			@DescribeParameter(name="dbfFilePath", description="The path to the dbf file", min = 1) String dbfFilePath,
 			@DescribeParameter(name="idFieldInDbf", description="The name of the ID column in the shapefile", min = 1) String idFieldInDbf
 		) throws Exception {
+		
+		
+		String fullLayerName = FLOWLINE_WORKSPACE_NAME + ":" + contextId;
+		LayerInfo layer = catalog.getLayerByName(FLOWLINE_WORKSPACE_NAME + ":" + contextId);
+		
+		if (layer == null) {
+			createLayer(contextId, shapefFileName, dbfFilePath, idFieldInDbf);
+		}
+		
+		return fullLayerName;
+		
+	}
+	
+	/**
+	 * Actually creates the layer, working on the assumption that it does not exist.
+	 * 
+	 * @param contextId
+	 * @param shapefFileName
+	 * @param dbfFilePath
+	 * @param idFieldInDbf
+	 * @return
+	 * @throws Exception 
+	 */
+	protected boolean createLayer(Integer contextId, String shapefFileName,
+			String dbfFilePath, String idFieldInDbf) throws Exception {
+
+		
+		String fullLayerName = FLOWLINE_WORKSPACE_NAME + ":" + contextId;
+		catalog.getLayerByName(FLOWLINE_WORKSPACE_NAME + ":" + contextId);
 		
 		
 		JndiTemplate template = new JndiTemplate();
@@ -95,12 +133,12 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 		Map<String, Serializable> dsParams = new HashMap<String, Serializable>();
 		dsParams.put("shapefile", shpFile.toURI().toURL());
 		dsParams.put("dbase_file", dbfFile.toURI().toURL());
-		dsParams.put("namespace", "http://water.usgs.gov/nawqa/sparrow/dss/spatial/sparrow-flowline");
+		dsParams.put("namespace", FLOWLINE_NAMESPACE);
 		dsParams.put("dbase_field", idFieldInDbf);
 		
 		DataStoreInfoImpl info = new DataStoreInfoImpl(catalog);
 		info.setType("Dbase Shapefile Joining Data Store");
-		info.setWorkspace(catalog.getWorkspaceByName("sparrow-flowline"));
+		info.setWorkspace(catalog.getWorkspaceByName(FLOWLINE_WORKSPACE_NAME));
 		info.setEnabled(true);
 		info.setName(contextId.toString());
 		info.setConnectionParameters(dsParams);
@@ -132,7 +170,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 			
 			catalog.add(fti);
 			catalog.add(li);
-			return info.getWorkspace().getName() + ":" + li.getName();
+			return true;
 
         } catch (IOException e) {
             log.error("Error obtaining new data store", e);
@@ -144,44 +182,11 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
             fail("Error creating data store, check the parameters. Err message: " + message);
         }
 		
-		return "FAILED";	//We never actually reach this line
+		return false;	//We never actually reach this line
 	}
 	
-	private void fail(String message) throws Exception {
+	private void fail(String message) throws ProcessException {
 		throw new ProcessException(message);
 	}
-	
-//	private createStore() {
-//		// TODO - This only works for file based data stores. This will not work for 
-//		// database-backed datastores
-//		storeInfo = catalog.getDataStoreByName(ws.getName(), store);
-//		if (storeInfo == null) {
-//			LOGGER.log(Level.INFO, "Store {0} not found. Will try to create", store);
-//			File dataRoot = dataDir.findWorkspaceDir(ws);
-//							if (dataRoot == null) {
-//								dataRoot = new File(dataDir.root() + File.separator + "workspaces" + File.separator + ws.getName());
-//								org.apache.commons.io.FileUtils.forceMkdir(dataRoot);
-//							}
-//			String dataDirLocation = dataRoot.getPath();
-//			LOGGER.log(Level.INFO, "GEOSERVER_DATA_DIR found @ {0}", dataDirLocation);
-//			File storeDirectory = new File(dataRoot, store);
-//			if (!storeDirectory.exists()) {
-//				LOGGER.log(Level.INFO, "Store directory @ {0} not found. Will try to create", storeDirectory.getPath());
-//				storeDirectory.mkdirs();
-//			}
-//			LOGGER.log(Level.INFO, "Store directory @ {0} created", storeDirectory.getPath());
-//			CatalogBuilder builder = new CatalogBuilder(catalog);
-//			storeInfo = builder.buildDataStore(store);
-//
-//			try {
-//				storeInfo.getConnectionParameters().put("url", storeDirectory.toURI().toURL().toExternalForm());
-//			} catch (MalformedURLException ex) {
-//				storeInfo.getConnectionParameters().put("url", "file://" + storeDirectory.getPath());
-//			}
-//			catalog.add(storeInfo);
-//			LOGGER.info("Store created");
-//		}
-//	}
-	
 	
 }
