@@ -10,7 +10,7 @@
 
 
     <!--Ext JS-->
-    <link rel="stylesheet" type="text/css" href="ext_js/resources/css/ext-all.css" />
+    <link rel="stylesheet" type="text/css" href="webjars/extjs/3.4.1.1/resources/css/ext-all.css" />
     <link rel="stylesheet" href="scrollable_map/css/scrollable_map.css"/>
 
     <!-- Sparrow/USGS -->
@@ -20,8 +20,8 @@
 	<jsp:include page="template_ie7_sizer_fix.jsp" flush="true" />
 
 	<%-- the minify plugin doesn't recognize the 'type' attribute, so that will prevent this one from being minified twice --%>
-  <script type="text/javascript" src="ext_js/adapter/ext/ext-base.js"></script>
-	<script type="text/javascript" src="ext_js/ext-all.js"></script>
+  <script type="text/javascript" src="webjars/extjs/3.4.1.1/adapter/ext/ext-base.js"></script>
+	<script type="text/javascript" src="webjars/extjs/3.4.1.1/ext-all.js"></script>
 	<script type="text/javascript" src="js/ext_extensions/ext_ie_patch.js"></script>
 
 	<%-- John scrollable map framework --%>

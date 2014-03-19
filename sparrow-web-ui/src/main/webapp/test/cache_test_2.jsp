@@ -15,8 +15,8 @@
     <div style="padding: 1em">
     
     <a href="cache_test_1.jsp">Go to 1</a>
-	<img src="../ext_js/resources/images/access/form/checkbox.gif" />
-	<img src="../ext_js/resources/images/access/form/exclamation.gif" />
+	<img src="../webjars/extjs/3.4.1.1/resources/images/access/form/checkbox.gif" />
+	<img src="../webjars/extjs/3.4.1.1/resources/images/access/form/exclamation.gif" />
     </div>
     <jsp:include page="../footer.jsp" flush="true" />
 </body>
