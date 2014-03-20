@@ -143,17 +143,14 @@ public class CreateGeoserverLayer extends Action<String> {
 		httpPost.setEntity(httpEntity);
 		httpPost.addHeader("Accept", "text/html; charset=UTF-8");
 		httpPost.addHeader("Accept-Charset", "UTF-8");
+		
+		log.debug("Requesting to create data layer w/ GeoServer WPS at: " + httpPost.getURI());
 
 		try (CloseableHttpResponse response1 = httpclient.execute(httpPost)) {
 			
-			System.out.println(response1.getStatusLine());
 			HttpEntity entity = response1.getEntity();
-			
 			String encoding = findEncoding(entity, "UTF-8");
-			System.out.println("Response encoding: " + encoding);
-
 			String stringFromStream = IOUtils.toString(entity.getContent(), encoding);
-			
 			EntityUtils.consume(entity);
 			
 			return stringFromStream;
