@@ -247,6 +247,19 @@ public abstract class Action<R extends Object> implements IAction<R> {
 	public boolean hasValidationErrors() {
 		return validationErrors.size() > 0;
 	}
+	
+	/**
+	 * Returns an Exception, if one occurred during the execution of the Action.
+	 * 
+	 * @return A Throwable or null if one did not occur.
+	 */
+	public Throwable getException() {
+		if (invocation != null) {
+			return invocation.getError();
+		} else {
+			return null;
+		}
+	}
 
 	/**
 	 * This method is called at the completion of the action, regardless of
@@ -267,6 +280,7 @@ public abstract class Action<R extends Object> implements IAction<R> {
 		try {
 			try {
 
+				//TODO:  Do we really need an inner try block?
 				String msg = getPostMessage();
 				if (msg == null) {
 					msg = "(no message from the action)";

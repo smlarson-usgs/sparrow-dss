@@ -24,6 +24,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 import org.springframework.jndi.JndiTemplate;
 
 /**
@@ -113,6 +114,10 @@ public class CreateGeoserverLayer extends Action<String> {
 		
 		
 		String response = getQueryResponse(xmlReq);
+		
+		if (response.contains("ExceptionReport")) {
+			throw new Exception("Call failed:\r\n" + response);
+		}
 		
 		return response;
 	}

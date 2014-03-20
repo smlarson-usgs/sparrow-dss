@@ -446,6 +446,19 @@
         <servlet-name>HealthTest</servlet-name>
         <url-pattern>/HealthTest</url-pattern>
     </servlet-mapping>
+	
+    <servlet>
+        <servlet-name>RegisterMapLayerService</servlet-name>
+        <servlet-class>gov.usgswim.sparrow.SparrowProxyServlet</servlet-class>
+        <init-param>
+            <param-name>forward-context</param-name>
+            <param-value>RegisterMapLayerService</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RegisterMapLayerService</servlet-name>
+        <url-pattern>/RegisterMapLayerService/*</url-pattern>
+    </servlet-mapping>
     <session-config>
         <session-timeout>360</session-timeout>
     </session-config>
