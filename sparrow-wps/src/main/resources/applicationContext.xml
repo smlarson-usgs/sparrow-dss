@@ -11,14 +11,16 @@
 
 		<context:annotation-config />
 
-
-    <bean id="sparrowWpsFactory" class="gov.usgs.sparrow.process.SparrowWpsFactory">
+	<bean id = "jndiTemplate" class = "org.springframework.jndi.JndiTemplate"></bean>
+		
+    <bean id="sparrowWpsFactory" class="org.geoserver.sparrow.process.SparrowWpsFactory">
 		<constructor-arg index="0" type="java.lang.String"><value>Custom Sparrow WPS Processes</value></constructor-arg>
 		<constructor-arg index="1" type="java.lang.String"><value>spdss</value></constructor-arg>
     </bean>
 	
-    <bean id="createDatastoreProcess" class="gov.usgs.sparrow.process.CreateDatastoreProcess">
+    <bean id="createDatastoreProcess" class="org.geoserver.sparrow.process.CreateDatastoreProcess">
 		<constructor-arg index="0" ref="catalog"/>
+		<constructor-arg index="1" ref="jndiTemplate"/>
     </bean>
 
 </beans>

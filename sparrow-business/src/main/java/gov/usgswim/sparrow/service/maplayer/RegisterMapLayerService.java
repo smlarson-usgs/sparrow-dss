@@ -37,6 +37,8 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
 				
 		try {
 			
+			log.trace("Received a request to register a map layer for contextid: " + contextId);
+			
 			if (contextId == null) {
 				throw new Exception("The context ID cannot be empty");
 			}
@@ -55,10 +57,18 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
 			CreateGeoserverLayer cglAction = new CreateGeoserverLayer(context, dbfFile);
 			String layerName = cglAction.run();
 			
-			wrap.setStatus(OK);
-			wrap.addEntity(layerName);
+			Throwable actionExp = cglAction.getException();
+			
+			if (actionExp == null) {
+				wrap.setStatus(OK);
+				wrap.addEntity(layerName);
+			} else {
+				wrap.setStatus(FAIL);
+				wrap.setMessage(actionExp.getMessage());
+			}
 			
 		} catch (Exception e) {
+			log.error("Register map layer request for contextid: " + contextId + " caused an Exception", e);
 			wrap.setError(e);
 		}
 
