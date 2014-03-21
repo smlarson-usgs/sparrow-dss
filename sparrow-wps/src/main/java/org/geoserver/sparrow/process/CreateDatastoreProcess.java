@@ -67,7 +67,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 			@DescribeParameter(name="shapefFileName", description="The name of the shapefile, it is assumed that GeoServer has a configured directory to find it.", min = 1) String shapefFileName,
 			@DescribeParameter(name="dbfFilePath", description="The path to the dbf file", min = 1) String dbfFilePath,
 			@DescribeParameter(name="idFieldInDbf", description="The name of the ID column in the shapefile", min = 1) String idFieldInDbf,
-			@DescribeParameter(name="projectedSrs", description="A fully qualified name of an SRS to project to.  If unspecified, EPSG:4326 is used.", min = 1) String projectedSrs
+			@DescribeParameter(name="projectedSrs", description="A fully qualified name of an SRS to project to.  If unspecified, EPSG:4326 is used.", min = 0) String projectedSrs
 		) throws Exception {
 		
 		//Cleanup the SRS
