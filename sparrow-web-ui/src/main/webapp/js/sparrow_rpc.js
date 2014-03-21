@@ -745,10 +745,16 @@ function getContextIdAsync(options) {
 	var isIdentify = (options.profile == PROFILE_IDENTIFY);
 	var isBin = (options.profile == PROFILE_BIN);
 	
-	var getDisplayInfo = function(xmlText, tagName) {
-		var display = xmlText.getElementsByTagName(tagName)[0].firstChild ? xmlText.getElementsByTagName(tagName)[0].firstChild.nodeValue : '';
-		return display;
-	};
+	//Callbacks are defined either as options.callback or as an array in options.callbackChain
+	//in which item 0 is the next callback to be called.
+	//.callback takes precidence over .callbackChain and .callback will be removed after it is used.
+	var callback;
+	if (options.callback) {
+		callback = options.callback;
+		delete options.callback;	//remove so later chained calls happen as normal
+	} else if (options.callbackChain) {
+		callback = options.callbackChain.shift();
+	}
 	
 	//Do we need a new ID?
 	var needToRun = false;
@@ -784,11 +790,11 @@ function getContextIdAsync(options) {
     		success: function(r,o) {
     	        var contextId = r.responseXML.childNodes[0].getAttribute("context-id");
 
-    	        var displayName = getDisplayInfo(r.responseXML, 'name');
-    	        var displayDesc = getDisplayInfo(r.responseXML, 'description');
-    	        var displayUnits = getDisplayInfo(r.responseXML, 'units');
-    	        var displayConstituent = getDisplayInfo(r.responseXML, 'constituent');
-    	        var rowCount = getDisplayInfo(r.responseXML, 'rowCount');
+    	        var displayName = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'name');
+    	        var displayDesc = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'description');
+    	        var displayUnits = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'units');
+    	        var displayConstituent = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'constituent');
+    	        var rowCount = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'rowCount');
 
     	        Sparrow.SESSION.setSeriesName(displayName);
     	        Sparrow.SESSION.setSeriesDescription(displayDesc);
@@ -796,13 +802,16 @@ function getContextIdAsync(options) {
     	        Sparrow.SESSION.setSeriesConstituent(displayConstituent);
     	        Sparrow.SESSION.setRowCount(rowCount);
 
-				if (isMap) {
-					Sparrow.SESSION.markMappedState(contextId);
-				} else {
-					Sparrow.SESSION.markValidState(contextId, contextUsedForId);
-				}
-
-    	        options.callback.call(options.scope);
+				//We don't know if the map will be generated, so only mark valid.
+				Sparrow.SESSION.markValidState(contextId, contextUsedForId);
+				
+//				if (isMap) {
+//					Sparrow.SESSION.markMappedState(contextId);
+//				} else {
+//					Sparrow.SESSION.markValidState(contextId, contextUsedForId);
+//				}
+				
+				if (callback) callback.call(this, options);
     		},
     		failure: function(r,o) {
     			Ext.Msg.alert('Warning', 'Failed getting context id');
@@ -810,105 +819,183 @@ function getContextIdAsync(options) {
     		}
     	});
     } else {
-        options.callback.call(options.scope);
+        if (callback) callback.call(this, options);
     }
 
     return true;
 }
 
+/**
+ * Registers a data layer to be mapped, based on the passed context ID.
+ * This method will set the WmsDataLayerName so that it can be refered to for mapping.
+ * 
+ * @param options.contextId - The context ID to register
+ * @param options.callback - A function to call when complete
+ * @return false if the registration failed, otherwise the callback is called.
+ */
+function confirmOrAdjustCurrentContextBins(options) {
+	
+	//Callbacks are defined either as options.callback or as an array in options.callbackChain
+	//in which item 0 is the next callback to be called.
+	//.callback takes precidence over .callbackChain and .callback will be removed after it is used.
+	var callback;
+	if (options.callback) {
+		callback = options.callback;
+		delete options.callback;	//remove so later chained calls happen as normal
+	} else if (options.callbackChain) {
+		callback = options.callbackChain.shift();
+	}
+	
+	
+	var urlParams = 'context-id=' + Sparrow.SESSION.getUsableContextId();
+
+	var bins = Sparrow.SESSION.getBinData()['functionalBins'];
+	//PermanentMapState["binning"]["bins"];
+	urlParams += '&binLowList=' + Ext.pluck(bins, 'low').join();
+	urlParams += '&binHighList=' + Ext.pluck(bins, 'high').join();
+	urlParams = encodeURI(urlParams);
+				
+	Ext.Ajax.request({
+		url: 'confirmBins',
+		method: 'GET',
+		params: urlParams,
+		scope: this,
+		success: function(response, o) {
+			var result = response.responseXML.getElementsByTagName('entity')[0].firstChild.nodeValue;
+			var allValuesInABin = response.responseXML.lastChild.getElementsByTagName('entity')[0].firstChild.nodeValue;
+			var allValuesInASingleBin = response.responseXML.lastChild.getElementsByTagName('entity')[1].firstChild.nodeValue;
+
+			if(allValuesInABin!='true' || allValuesInASingleBin!='true'){
+				var msg = '<br/>Would you like to automatically adjust the bins to include the entire set of results on the map in \'Equal Count\' bins?';
+
+				if(allValuesInABin=='false') msg = '- There are results not included in your custom bins that will not be displayed on the map.<br/>' + msg;
+				if(allValuesInASingleBin=='false') msg = '- All results fall into a single bin.<br/>' + msg;
+
+				Ext.Msg.confirm(
+					'Potential Binning Issues',
+					msg,
+					function(yes){
+						if(yes!='yes') {
+							
+							options.callback = callback;
+							autoGenBins(options);
+						}
+					}
+				);
+			}
+			if (callback) callback.call(this, options);
+		},
+		failure: function(response, o) {
+			Ext.Msg.alert('Warning', 'Failed to confirm bins');
+		},
+		timeout: 40000
+	});
+};
+
+function autoGenBins(options) {
+	
+	//Callbacks are defined either as options.callback or as an array in options.callbackChain
+	//in which item 0 is the next callback to be called.
+	//.callback takes precidence over .callbackChain and .callback will be removed after it is used.
+	var callback;
+	if (options.callback) {
+		callback = options.callback;
+		delete options.callback;	//remove so later chained calls happen as normal
+	} else if (options.callbackChain) {
+		callback = options.callbackChain.shift();
+	}
+	
+	var bucketCount = Sparrow.SESSION.getBinCount();
+	var bucketType = Sparrow.SESSION.getBinType();
+
+	Ext.Ajax.request({
+		url: 'getBins',
+		method: 'GET',
+		params: 'context-id=' + Sparrow.SESSION.getUsableContextId() + '&bin-count=' + bucketCount + '&bin-type=' + bucketType,
+		scope: this,
+		success: function(response, o) {
+			var binValues = Sparrow.ui.parseBinDataResponse(response.responseXML);
+
+			Sparrow.SESSION.setBinData(binValues);
+			var comparisonBucketLbl = Ext.getCmp('map-options-tab').bucketLabel;
+			comparisonBucketLbl.setText(bucketCount + ' ' + Sparrow.SESSION.getBinTypeName() + ' Bins');
+			
+			//If later chain calls fail, how can we fix?
+			if (callback) callback.call(this, options);
+		},
+		failure: function(response, o) {
+			//TODO:  Should really detect failure based on the status flag
+			if (response.isTimeout) {
+				Ext.Msg.alert('Warning', 'autogen bins timed out');
+			} else {
+				Ext.Msg.alert('Warning', 'Something else happened while trying to auto-generate bins.');
+			}
+		},
+		timeout: 40000
+	});
+};
 
 
 
-
-
+/**
+ * Registers a data layer to be mapped, based on the passed context ID.
+ * This method will set the WmsDataLayerName so that it can be refered to for mapping.
+ * 
+ * @param options.contextId - The context ID to register
+ * @param options.callback - A function to call when complete
+ * @return false if the registration failed, otherwise the callback is called.
+ */
+function registerDataLayer(options) {
+	
+	//Callbacks are defined either as options.callback or as an array in options.callbackChain
+	//in which item 0 is the next callback to be called.
+	//.callback takes precidence over .callbackChain and .callback will be removed after it is used.
+	var callback;
+	if (options.callback) {
+		callback = options.callback;
+		delete options.callback;	//remove so later chained calls happen as normal
+	} else if (options.callbackChain) {
+		callback = options.callbackChain.shift();
+	}
+	
+	var contextId = options.contextId;
+	if (! contextId) contextId = Sparrow.SESSION.getUsableContextId();
+	
+	Ext.Ajax.request({
+		method: 'GET',
+		url: 'RegisterMapLayerService?context-id=' + contextId +'&projected-srs=EPSG:4326',
+		success: function(r,o) {
+			var layerName = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'entity');
+			
+			//What if this fails?  We leave the UI in an inconsistent state.
+			Sparrow.SESSION.setWmsDataLayerName(layerName);
+			if (callback) callback.call(this, options);
+		},
+		failure: function(r,o) {
+			Ext.Msg.alert('Warning', 'Failed registering the data layer');
+		}
+	});
+};
 
 /**
  * Add the sparrow datalayer to the map
  */
 function make_map() {
 
-	var _autoGenBins = function() {
-		var bucketCount = Sparrow.SESSION.getBinCount();
-		var bucketType = Sparrow.SESSION.getBinType();
-		var bucketDisplayType = Sparrow.SESSION.getBinTypeName();
-
-        Ext.Ajax.request({
-            url: 'getBins',
-            method: 'GET',
-            params: 'context-id=' + Sparrow.SESSION.getUsableContextId() + '&bin-count=' + bucketCount + '&bin-type=' + bucketType,
-            scope: this,
-            success: function(response, options) {
-	            var binValues = Sparrow.ui.parseBinDataResponse(response.responseXML);
-
-	            Sparrow.SESSION.setBinData(binValues);
-		        var comparisonBucketLbl = Ext.getCmp('map-options-tab').bucketLabel;
-		        comparisonBucketLbl.setText(bucketCount + ' ' + Sparrow.SESSION.getBinTypeName() + ' Bins');
-	            addDataLayer();
-	        },
-            failure: function(response, options) {
-            	//TODO:  Should really detect failure based on the status flag
-            	if (response.isTimeout) {
-            		Ext.Msg.alert('Warning', 'autogen bins timed out')
-            	} else {
-
-            	}
-	        },
-            timeout: 40000
-        });
-	};
-
 	if (Sparrow.SESSION.isBinAuto()) {
-	    getContextIdAsync({ callback: _autoGenBins, profile: 'map' });	//Adds the dataLayer if successful
+		
+		var options = new Object();
+		options.callbackChain = [autoGenBins, registerDataLayer, addDataLayer];
+		options.profile = 'map';
+		
+	    getContextIdAsync(options);	//Adds the dataLayer if successful
 	} else {
-		getContextIdAsync({
-			profile: 'map',
-	    	callback: function() {
-	    	    var urlParams = 'context-id=' + Sparrow.SESSION.getUsableContextId();
-
-	    		var bins = Sparrow.SESSION.getBinData()['functionalBins'];
-	    		//PermanentMapState["binning"]["bins"];
-	    		urlParams += '&binLowList=' + Ext.pluck(bins, 'low').join();
-	    		urlParams += '&binHighList=' + Ext.pluck(bins, 'high').join();
-	    		urlParams = encodeURI(urlParams);
-
-	    		Ext.Ajax.request({
-		            url: 'confirmBins',
-		            method: 'GET',
-		            params: urlParams,
-		            scope: this,
-		            success: function(response, options) {
-			            var result = response.responseXML.getElementsByTagName('entity')[0].firstChild.nodeValue;
-			            var allValuesInABin = response.responseXML.lastChild.getElementsByTagName('entity')[0].firstChild.nodeValue;
-			            var allValuesInASingleBin = response.responseXML.lastChild.getElementsByTagName('entity')[1].firstChild.nodeValue;
-
-			            if(allValuesInABin!='true' || allValuesInASingleBin!='true'){
-			            	var msg = '<br/>Would you like to automatically adjust the bins to include the entire set of results on the map in \'Equal Count\' bins?';
-
-			            	if(allValuesInABin=='false') msg = '- There are results not included in your custom bins that will not be displayed on the map.<br/>' + msg;
-			            	if(allValuesInASingleBin=='false') msg = '- All results fall into a single bin.<br/>' + msg;
-
-			            	Ext.Msg.confirm(
-			            		'Potential Binning Issues',
-			            		msg,
-			            		function(yes){
-			            			if(yes!='yes'){
-			            				addDataLayer();
-			            			} else {
-			            				_autoGenBins();
-			            			}
-			            		}
-			            	);
-			            } else {
-			            	addDataLayer();
-			            }
-			        },
-		            failure: function(response, options) {
-		            	Ext.Msg.alert('Warning', 'Failed to confirm bins');
-			        },
-		            timeout: 40000
-		        });
-	    	}
-		});
+		
+		var options = new Object();
+		options.callbackChain = [confirmOrAdjustCurrentContextBins, registerDataLayer, addDataLayer];
+		options.profile = 'map';
+		
+		getContextIdAsync(options);
 	}
 }
 
@@ -936,6 +1023,8 @@ function addDataLayer() {
 	urlParams += '&binHighList=' + Ext.pluck(bins, 'high').join();
 	urlParams += '&binColorList=' + colors.join();
 	urlParams = encodeURI(urlParams);
+	
+	var layerName = Sparrow.SESSION.getWmsDataLayerName();
 
     // Update the legend
     var legendEl = Ext.get('legend');
@@ -949,10 +1038,11 @@ function addDataLayer() {
     		id: mappedValueLayerID,
     		scaleMin: 0,
     		scaleMax: 100,
-    		baseUrl: 'getMap?' + urlParams,
+    		baseUrl: 'http://cida-eros-sparrowdev.er.usgs.gov:8081/geoserver/sparrow-flowline/wms?',
     		legendUrl: 'getLegend?' + urlParams,
-    		title: "sparrow reaches",
-    		name: "sparrow_reaches",
+    		title: layerName,
+    		name: layerName,
+			layersUrlParam: layerName,
     		isHiddenFromUser: true,
     		description: 'Sparrow Reaches',
     		opacity: Sparrow.SESSION.getDataLayerOpacity()

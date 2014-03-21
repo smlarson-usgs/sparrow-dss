@@ -97,6 +97,7 @@
 	<script src="js/events.js"></script>
 	<script src="js/svg_overlay.js"></script>
 	<script src="js/DeliveryReport.js"></script>
+	<script src="js/utils.js"></script>
 
 	<jsp:include page="template_page_tracking.jsp" flush="true" />
 
