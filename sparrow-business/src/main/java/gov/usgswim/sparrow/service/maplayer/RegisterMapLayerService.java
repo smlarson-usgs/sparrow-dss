@@ -34,14 +34,20 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
 		Map params = httpReq.getParameterMap();
 
         Integer contextId = getInteger(params, "context-id");
-				
-		try {
+		String projectedSrs = getClean(params, "projected-srs");
+		
+		log.trace("Received a request to register a map layer for contextid: " + contextId + " projection: " + projectedSrs);
+		
+		if (projectedSrs == null) {
+			log.debug("The projectedSrs is not specified - the default from GeoServer will be used.");
+		}
 			
-			log.trace("Received a request to register a map layer for contextid: " + contextId);
+		try {
 			
 			if (contextId == null) {
 				throw new Exception("The context ID cannot be empty");
 			}
+
 					
 			PredictionContext context = SharedApplication.getInstance().getPredictionContext(contextId);
 			
@@ -54,7 +60,7 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
 			File dbfFile = writeDbfFile.run();
 			
 			//Register the data plus the shapefile w/ GeoServer as a layer
-			CreateGeoserverLayer cglAction = new CreateGeoserverLayer(context, dbfFile);
+			CreateGeoserverLayer cglAction = new CreateGeoserverLayer(context, dbfFile, projectedSrs);
 			String layerName = cglAction.run();
 			
 			Throwable actionExp = cglAction.getException();
