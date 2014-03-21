@@ -1,17 +1,10 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgs.cida.datatable.ColumnData;
-import gov.usgswim.sparrow.SparrowUnits;
-import gov.usgswim.sparrow.datatable.DivideColumnData;
-import gov.usgswim.sparrow.datatable.SparrowColumnAttribsBuilder;
-import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.io.File;
-import java.io.InputStreamReader;
-import java.net.URL;
 import javax.naming.NamingException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -24,7 +17,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
 import org.springframework.jndi.JndiTemplate;
 
 /**
@@ -41,21 +33,29 @@ public class CreateGeoserverLayer extends Action<String> {
 	public static final String DEFAULT_ENCODING = "UTF-8";
 	
 	//User init
-	PredictionContext context;
-	private File dbfFile;
+	private final PredictionContext context;
+	private final File dbfFile;
+	private final String projectedSrs;
 	
 	
 	//Self Init
-	String geoserverHost;
-	int geoserverPort;
-	String geoserverPath;
-	String themeName;
-	String idField;
+	private String geoserverHost;
+	private int geoserverPort;
+	private String geoserverPath;
+	private String shapefileFileName;
+	private String idFieldInShapeFileAndDbfFile;
 	
-	
-	public CreateGeoserverLayer(PredictionContext context, File dbfFile) {
+	/**
+	 * Constructs the action w/ all needed parameters
+	 * 
+	 * @param context A prediction context to construct the map layer for
+	 * @param dbfFile Reference to a DBF file that contains ID and value columns.
+	 * @param projectedSrs A fully qualified name of an SRS to project to.  If unspecified, GeoServer will default to.
+	 */
+	public CreateGeoserverLayer(PredictionContext context, File dbfFile, String projectedSrs) {
 		this.context = context;
 		this.dbfFile = dbfFile;
+		this.projectedSrs = projectedSrs;
 	}
 	
 	@Override
@@ -63,8 +63,8 @@ public class CreateGeoserverLayer extends Action<String> {
 	
 		ModelRequestCacheKey mrk = new ModelRequestCacheKey(context.getModelID(), false, false, false);
 		SparrowModel model = SharedApplication.getInstance().getModelMetadata(mrk).get(0);
-		themeName = model.getThemeName();
-		idField = model.getEnhNetworkIdColumn();
+		shapefileFileName = model.getThemeName();
+		idFieldInShapeFileAndDbfFile = model.getEnhNetworkIdColumn();
 	}
 
 	@Override
@@ -108,9 +108,10 @@ public class CreateGeoserverLayer extends Action<String> {
 		String xmlReq = this.getTextWithParamSubstitution(
 				"template",
 				"contextId", context.getId().toString(), 
-				"themeName", themeName, 
+				"themeName", shapefileFileName, 
 				"dbfFilePath", dbfFile.getAbsolutePath(), 
-				"idField", idField);
+				"idField", idFieldInShapeFileAndDbfFile,
+				"projectedSrs", (projectedSrs == null)?"":projectedSrs);
 		
 		
 		String response = getQueryResponse(xmlReq);

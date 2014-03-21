@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.naming.NamingException;
+import org.apache.commons.lang.StringUtils;
 import org.geoserver.wps.gs.GeoServerProcess;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.impl.DataStoreInfoImpl;
@@ -56,6 +57,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 	 * @param shapefFileName
 	 * @param dbfFilePath
 	 * @param idFieldInDbf
+	 * @param projectedSrs
 	 * @return
 	 * @throws Exception 
 	 */
@@ -64,16 +66,22 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 			@DescribeParameter(name="contextId", description="The ID of the context to create a store for", min = 1) Integer contextId,
 			@DescribeParameter(name="shapefFileName", description="The name of the shapefile, it is assumed that GeoServer has a configured directory to find it.", min = 1) String shapefFileName,
 			@DescribeParameter(name="dbfFilePath", description="The path to the dbf file", min = 1) String dbfFilePath,
-			@DescribeParameter(name="idFieldInDbf", description="The name of the ID column in the shapefile", min = 1) String idFieldInDbf
+			@DescribeParameter(name="idFieldInDbf", description="The name of the ID column in the shapefile", min = 1) String idFieldInDbf,
+			@DescribeParameter(name="projectedSrs", description="A fully qualified name of an SRS to project to.  If unspecified, EPSG:4326 is used.", min = 1) String projectedSrs
 		) throws Exception {
+		
+		//Cleanup the SRS
+		projectedSrs = StringUtils.trimToNull(projectedSrs);
+		if (projectedSrs == null) projectedSrs = "EPSG:4326";
 		
 		
 		String fullLayerName = FLOWLINE_WORKSPACE_NAME + ":" + contextId;
 		LayerInfo layer = catalog.getLayerByName(FLOWLINE_WORKSPACE_NAME + ":" + contextId);
-		log.debug("Request for layer for contextId {}.  Exists? {}, Shapefile: {}, dbfFile: {}, idField: {}", new Object[] {contextId, (layer != null), shapefFileName, dbfFilePath, idFieldInDbf});
+		log.debug("Request for layer for contextId {}.  Exists? {}, Shapefile: {}, dbfFile: {}, idField: {}, projectedSrs: {}", 
+				new Object[] {contextId, (layer != null), shapefFileName, dbfFilePath, idFieldInDbf, projectedSrs});
 		
 		if (layer == null) {
-			createLayer(contextId, shapefFileName, dbfFilePath, idFieldInDbf);
+			createLayer(contextId, shapefFileName, dbfFilePath, idFieldInDbf, projectedSrs);
 			log.debug("Request for contextId {} created OK.  Returning layer '{}'", new Object[] {contextId, fullLayerName});
 		}
 		
@@ -88,11 +96,12 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 	 * @param shapefFileName
 	 * @param dbfFilePath
 	 * @param idFieldInDbf
+	 * @param projectedSrs
 	 * @return
 	 * @throws Exception 
 	 */
 	protected boolean createLayer(Integer contextId, String shapefFileName,
-			String dbfFilePath, String idFieldInDbf) throws Exception {
+			String dbfFilePath, String idFieldInDbf, String projectedSrs) throws Exception {
 
 		
 		String fullLayerName = FLOWLINE_WORKSPACE_NAME + ":" + contextId;
@@ -163,7 +172,6 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 			List<Name> names = dataStore.getNames();
 			Name allData = names.get(0);
 
-			String targetSRSCode = "EPSG:3857";
 			ProjectionPolicy srsHandling = ProjectionPolicy.FORCE_DECLARED;
 			
 			//Create some cat builder thing for some purpose
@@ -171,7 +179,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 			cb.setWorkspace(info.getWorkspace());
 			cb.setStore(info);
 			FeatureTypeInfo fti = cb.buildFeatureType(dataStore.getFeatureSource(allData));
-			fti.setSRS(targetSRSCode);
+			fti.setSRS(projectedSrs);
 			fti.setName(contextId.toString());
 			fti.setTitle(contextId.toString());
 			fti.setDescription("A datalayer constructed for a single SPARROW DSS Prediction Context");
