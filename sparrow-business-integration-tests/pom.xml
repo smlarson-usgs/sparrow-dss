@@ -10,9 +10,9 @@
   <version>1.4.33-SNAPSHOT</version>
   <name>sparrow-business-integration-tests</name>
   <url>http://maven.apache.org</url>
-  <properties>
+<!--  <properties>
       <jacoco.version>0.7.0.201403182114</jacoco.version>
-  </properties>
+  </properties>-->
   <dependencies>
 		<!-- Interproject dep -->
 		<dependency>
@@ -139,7 +139,6 @@
             <groupId>org.jacoco</groupId>
             <artifactId>org.jacoco.agent</artifactId>
             <classifier>runtime</classifier>
-            <version>${jacoco.version}</version>
             <scope>test</scope>
         </dependency>
 	</dependencies>
@@ -225,7 +224,11 @@
 					<value>true</value>
 				</property>
 			</activation>
-			
+<!--            <properties>
+                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+                <sonar.language>java</sonar.language>
+                <sonar.jacoco.itReportPath>${project.basedir}/reports/jacoco.exec</sonar.jacoco.itReportPath>
+            </properties>-->
 			<build>
 				<plugins>
 					<plugin>
@@ -239,14 +242,16 @@
 							<rw_dbuser>${readwrite_db_user}</rw_dbuser>
 							<rw_dbpass>${readwrite_db_pass}</rw_dbpass>
 							<rw_dburl>${readwrite_db_url}</rw_dburl>
-                            <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
+                            <!--<jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>-->
 						  </systemPropertyVariables>
 						</configuration>
 					</plugin>
                      <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>${jacoco.version}</version>
+                        <configuration>
+                            <destFile>${project.basedir}/../target/jacoco-it.exec</destFile>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>default-prepare-agent</id>
@@ -292,6 +297,12 @@
                                             </limits>
                                         </rule>
                                     </rules>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>post-test</id>
+                                <configuration>
+                                    <skip>true</skip>
                                 </configuration>
                             </execution>
                         </executions>
