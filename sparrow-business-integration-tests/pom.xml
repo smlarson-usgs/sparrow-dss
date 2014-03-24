@@ -11,7 +11,7 @@
   <name>sparrow-business-integration-tests</name>
   <url>http://maven.apache.org</url>
   <properties>
-	  
+      <jacoco.version>0.7.0.201403182114</jacoco.version>
   </properties>
   <dependencies>
 		<!-- Interproject dep -->
@@ -135,7 +135,13 @@
 			<artifactId>dynamicProperties</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+        <dependency>
+            <groupId>org.jacoco</groupId>
+            <artifactId>org.jacoco.agent</artifactId>
+            <classifier>runtime</classifier>
+            <version>${jacoco.version}</version>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 
 	<profiles>
@@ -233,13 +239,14 @@
 							<rw_dbuser>${readwrite_db_user}</rw_dbuser>
 							<rw_dbpass>${readwrite_db_pass}</rw_dbpass>
 							<rw_dburl>${readwrite_db_url}</rw_dburl>
+                            <jacoco-agent.destfile>target/jacoco.exec</jacoco-agent.destfile>
 						  </systemPropertyVariables>
 						</configuration>
 					</plugin>
                      <plugin>
                         <groupId>org.jacoco</groupId>
                         <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.7.0.201403182114</version>
+                        <version>${jacoco.version}</version>
                         <executions>
                             <execution>
                                 <id>default-prepare-agent</id>
