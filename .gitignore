@@ -10,3 +10,4 @@
 /sparrow-geoserver/nb-configuration.xml
 /sparrow-geoserver/target/
 /sparrow-geoserver/src/main/webapp/META-INF/
+/sparrow-service/src/main/webapp/META-INF/context.xml
