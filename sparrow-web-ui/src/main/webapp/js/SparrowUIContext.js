@@ -100,7 +100,8 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
         	 * A negative value means the layer is disabled but the opacity
         	 * setting is being preserved for when it is later re-enabled.
         	 */
-        	mapLayers: new Object()
+        	mapLayers: new Object(),
+			wmsDataLayerName: ""
         },
         TransientMapState : {
         	constituent: "",
@@ -464,6 +465,16 @@ Sparrow.ux.Session.prototype = {
 		this.PermanentMapState["what_to_map"] = val;
 		this.fireContextEvent("what-to-map");
 		this.changed();
+	},
+	
+	setWmsDataLayerName: function(layerName) {
+		this.PermanentMapState["wmsDataLayerName"] = layerName;
+		this.fireContextEvent("what-to-map");
+		this.changed();
+	},
+	
+	getWmsDataLayerName: function() {
+		return this.PermanentMapState["wmsDataLayerName"];
 	},
 	
 	getBinType: function() {
