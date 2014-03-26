@@ -312,19 +312,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 			try {
 				String shapefileDirPath = (String)jndiTemplate.lookup(JNDI_KEY_FOR_SHAPEFILE_DIRECTORY);
 
-				if (shapefileDirPath.startsWith("/")) {
-					shapeFileDir = new File(shapefileDirPath);
-				} else {
-
-					File home = new File(System.getProperty("user.home"));
-
-					if (shapefileDirPath.startsWith("~" + File.separator)) {
-						shapeFileDir = new File(home, shapefileDirPath.substring(2));
-					} else {
-						shapeFileDir = new File(home, shapefileDirPath);
-					}
-				}
-
+				shapeFileDir = getFileReference(shapefileDirPath);
 
 				if (! (shapeFileDir.exists() && shapeFileDir.canRead())) {
 
@@ -338,8 +326,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 			} catch(NamingException exception) {
 				//Try the default location
 
-				File home = new File(System.getProperty("user.home"));
-				shapeFileDir = new File(home, DEFAULT_SHAPEFILE_DIRECTORY);
+				shapeFileDir = getFileReference(DEFAULT_SHAPEFILE_DIRECTORY);
 
 				if (! (shapeFileDir.exists() && shapeFileDir.canRead())) {
 
@@ -358,6 +345,28 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 		}
 		
 		return baseShapefileDir;
+	}
+	
+	/**
+	 * Interprets a file path, interpreting '~/' and relative paths as relative
+	 * to the user.home.  Only paths staring with the system separator are
+	 * interpreted as absolute.
+	 * 
+	 * @param path
+	 * @return 
+	 */
+	public static File getFileReference(String path) {
+		if (path.startsWith(File.separator)) {
+			//Absolute path
+			return new File(path);
+		} else {
+			File home = new File(System.getProperty("user.home"));
+			if (path.startsWith("~" + File.separator)) {
+				return new File(home, path.substring(2));
+			} else {
+				return new File(home, path);
+			}
+		}
 	}
 	
 	protected final String getWmsPath() throws Exception {
