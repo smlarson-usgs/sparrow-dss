@@ -13,3 +13,4 @@
 /sparrow-service/src/main/webapp/META-INF/context.xml
 /target/
 /sparrow-business-integration-tests/nb-configuration.xml
+/sparrow-sld/target/
