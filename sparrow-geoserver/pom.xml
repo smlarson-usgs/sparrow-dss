@@ -19,10 +19,6 @@
 			<artifactId>sparrow-wps</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-<!--		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl</artifactId>
-		</dependency>-->
 		<dependency>
 			<groupId>gov.usgs.cida.geoserver</groupId>
 			<artifactId>geoserver</artifactId>
@@ -34,11 +30,6 @@
 			<artifactId>oracle</artifactId>
 			<version>${gs.version}</version>
 		</dependency>
-<!--		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-shapefile</artifactId>
-			<type>jar</type>
-		</dependency>-->
 		<dependency>
 			<groupId>gov.usgs.cida.glri</groupId>
 			<artifactId>multi-dbf-datastore</artifactId>
