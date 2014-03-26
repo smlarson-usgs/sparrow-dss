@@ -1,0 +1,19 @@
+ <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+    <bean id="sldResource" class="org.geoserver.sparrow.sld.SLDResource"/>
+
+    <bean id="helloMapping" class="org.geoserver.rest.RESTMapping">
+        <property name="routes">
+            <map>
+                <entry>
+                    <key>
+                        <value>/test.{format}</value>
+                    </key>
+                    <value>sldResource</value>
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+</beans>

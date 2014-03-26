@@ -121,7 +121,6 @@
 		<war.dir>src/main/webapp</war.dir>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<netbeans.hint.deploy.server>Tomcat60</netbeans.hint.deploy.server>
 		<cargo.containerId>tomcat6x</cargo.containerId>
 		<cida.maven.url>http://internal.cida.usgs.gov/maven</cida.maven.url>
 		<cida.svn.url>https://cida-svn.er.usgs.gov/repos/dev</cida.svn.url>
