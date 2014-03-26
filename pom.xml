@@ -72,6 +72,7 @@
 				<module>sparrow-business-integration-tests</module>
 				<module>sparrow-wps</module>
 				<module>sparrow-geoserver</module>
+                <module>sparrow-sld</module>
 			</modules>
 		</profile>
 		
@@ -289,9 +290,6 @@
             </plugin>
         </plugins>
 	</build>
-    <modules>
-        <module>sparrow-sld</module>
-    </modules>
     <dependencyManagement>
 		<dependencies>
 			<dependency>
