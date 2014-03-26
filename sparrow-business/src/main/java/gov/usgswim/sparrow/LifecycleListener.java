@@ -1,10 +1,18 @@
 package gov.usgswim.sparrow;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.annotations.XStreamInclude;
+import gov.usgs.cida.binning.domain.BinSet;
 import gov.usgs.cida.config.DynamicReadOnlyProperties;
 import gov.usgswim.sparrow.cachefactory.EhCacheConfigurationReader;
 import gov.usgswim.sparrow.clustering.SparrowCacheManager;
+import gov.usgswim.sparrow.domain.HUC;
+import gov.usgswim.sparrow.domain.PredefinedSession;
+import gov.usgswim.sparrow.domain.ReachGeometry;
 import gov.usgswim.sparrow.service.ConfiguredCache;
 import gov.usgswim.sparrow.service.SharedApplication;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseEntityList;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 
 import java.io.IOException;
 import java.net.URL;
@@ -147,6 +155,14 @@ public class LifecycleListener implements ServletContextListener {
 				}
 			}
 			
+			//Initialize XStream classes with annotations
+			XStream xstream = new XStream();
+			
+			xstream.processAnnotations(ServiceResponseWrapper.class);
+			xstream.processAnnotations(PredefinedSession.class);
+			xstream.processAnnotations(HUC.class);
+			xstream.processAnnotations(BinSet.class);
+
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

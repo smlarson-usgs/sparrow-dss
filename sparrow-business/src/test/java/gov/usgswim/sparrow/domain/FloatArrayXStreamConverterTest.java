@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.domain;
 
 import static org.junit.Assert.assertEquals;
-import gov.usgswim.sparrow.service.ServletResponseParser;
+import gov.usgs.cida.sparrow.service.util.ServletResponseParser;
 
 import org.junit.Test;
 

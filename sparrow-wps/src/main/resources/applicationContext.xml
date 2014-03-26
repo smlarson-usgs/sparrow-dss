@@ -13,14 +13,27 @@
 
 	<bean id = "jndiTemplate" class = "org.springframework.jndi.JndiTemplate"></bean>
 		
+		
+	<!-- Need to register WPS PPIOs as content handlers for response types --> 
+	<bean id="sparrowDataLayerPPIO" class="org.geoserver.sparrow.process.SparrowDataLayerPPIO"></bean>
+	
     <bean id="sparrowWpsFactory" class="org.geoserver.sparrow.process.SparrowWpsFactory">
-		<constructor-arg index="0" type="java.lang.String"><value>Custom Sparrow WPS Processes</value></constructor-arg>
-		<constructor-arg index="1" type="java.lang.String"><value>spdss</value></constructor-arg>
     </bean>
 	
     <bean id="createDatastoreProcess" class="org.geoserver.sparrow.process.CreateDatastoreProcess">
 		<constructor-arg index="0" ref="catalog"/>
 		<constructor-arg index="1" ref="jndiTemplate"/>
     </bean>
+	
+	<!-- Register classes that have XStream Annotations -->
+<!--	<bean class="org.geoserver.sparrow.XStreamAnnotationRegistrar">
+
+		<constructor-arg>
+			<list>
+				<value>gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper</value>
+				<value>org.geoserver.sparrow.process.SparrowDataLayerResponse</value>
+			</list>
+		</constructor-arg>
+    </bean>-->
 
 </beans>

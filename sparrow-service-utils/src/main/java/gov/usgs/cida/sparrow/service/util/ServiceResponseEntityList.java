@@ -1,6 +1,5 @@
-package gov.usgswim.sparrow.service;
+package gov.usgs.cida.sparrow.service.util;
 
-import gov.usgswim.ImmutableBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,9 +44,6 @@ public class ServiceResponseEntityList {
 	public ServiceResponseEntityList(Object entity) {
 		list = new ArrayList<Object>(1);
 		
-		if (entity instanceof ImmutableBuilder) {
-			entity = ((ImmutableBuilder)entity).toImmutable();
-		}
 		list.add(entity);
 	}
 	
@@ -55,10 +51,6 @@ public class ServiceResponseEntityList {
 	public void add(Object entity) {
 		if (list == null) {
 			list = new ArrayList<Object>();
-		}
-		
-		if (entity instanceof ImmutableBuilder) {
-			entity = ((ImmutableBuilder)entity).toImmutable();
 		}
 		
 		list.add(entity);

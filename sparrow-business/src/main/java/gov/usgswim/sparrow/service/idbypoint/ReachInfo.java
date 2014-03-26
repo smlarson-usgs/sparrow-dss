@@ -7,7 +7,7 @@ import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeNonNullTag;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeOpeningTag;
 import gov.usgswim.Immutable;
 import gov.usgswim.sparrow.domain.ReachGeometry;
-import gov.usgswim.sparrow.service.ServletResponseParser;
+import gov.usgs.cida.sparrow.service.util.ServletResponseParser;
 
 import com.thoughtworks.xstream.XStream;
 /**

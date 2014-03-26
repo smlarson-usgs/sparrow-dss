@@ -1,13 +1,13 @@
 package gov.usgswim.sparrow.service.maplayer;
 
-import static gov.usgswim.sparrow.service.ServiceResponseStatus.FAIL;
-import static gov.usgswim.sparrow.service.ServiceResponseStatus.OK;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseStatus.FAIL;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseStatus.OK;
 import gov.usgswim.sparrow.action.CreateGeoserverLayer;
 import gov.usgswim.sparrow.action.WriteDbfFileForContext;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
-import gov.usgswim.sparrow.service.ServiceResponseOperation;
-import gov.usgswim.sparrow.service.ServiceResponseWrapper;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseOperation;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.io.File;
 
@@ -61,13 +61,13 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
 			
 			//Register the data plus the shapefile w/ GeoServer as a layer
 			CreateGeoserverLayer cglAction = new CreateGeoserverLayer(context, dbfFile, projectedSrs);
-			String layerName = cglAction.run();
+			String wpsResponse = cglAction.run();
 			
 			Throwable actionExp = cglAction.getException();
 			
 			if (actionExp == null) {
 				wrap.setStatus(OK);
-				wrap.addEntity(layerName);
+				wrap.addEntity(wpsResponse);
 			} else {
 				wrap.setStatus(FAIL);
 				wrap.setMessage(actionExp.getMessage());

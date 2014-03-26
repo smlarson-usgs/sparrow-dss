@@ -1,9 +1,6 @@
-package gov.usgswim.sparrow.service;
+package gov.usgs.cida.sparrow.service.util;
 
-import static gov.usgswim.sparrow.service.ServiceResponseMimeType.*;
-
-
-import gov.usgswim.sparrow.action.Action;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,9 +16,48 @@ import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
 import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
+/**
+ * A parse utility for Servlets that can turn recognizes incoming XML and JSON
+ * and can parse it into objects via XStream (assuming that the xml matches
+ * as registered XStream class - classes should be registered at startup for
+ * XStream to recognize their annotations).
+ * 
+ * Parsing of incoming POST data is first checked for content type.  If it is
+ * recognized (currently XML and JSON), the content is read into a String.
+ * 
+ * Otherwise, the parser checks for content in default parameters which can be
+ * modified based on header values (see constants).
+ * 
+ * @author eeverman
+ */
 public class ServletResponseParser {
 	protected static Logger log =
 		Logger.getLogger(ServletResponseParser.class); //logging for this class
+	
+	/** Posters may set a header of this name to the name of a http parameter
+	 *  used to post XML data.  Otherwise the default name is used.
+	 */
+	public static final String XML_SUBMIT_HEADER_NAME = "xml_req_param";
+	
+	/** The default xml parameter name.
+	 */
+	public static final String XML_SUBMIT_DEFAULT_PARAM_NAME = "xml";
+	
+	/**
+	 * Allows the return type to be specified.
+	 * TODO:  This is weird/wrong - the caller should set an accept type.
+	 */
+	public static final String REQUESTED_MIME_TYPE_PARAM_NAME = "mime_type";
+	
+	/** Posters may set a header of this name to the name of a http parameter
+	 *  used to post XML data.  Otherwise the default name is used.
+	 */
+	public static final String JSON_SUBMIT_DEFAULT_PARAM_NAME = "json";
+	
+	/** The default json parameter name.
+	 */
+	public static final String JSON_SUBMIT_HEADER_NAME = "json_req_param";
+
 	
 	
 	HttpServletRequest req;
@@ -111,11 +147,11 @@ public class ServletResponseParser {
 				
 				//couldn't find it in the body of the post, so check for explicit
 				//set param names
-				String xmlParam = StringUtils.trimToNull(req.getHeader(AbstractSparrowServlet.XML_SUBMIT_HEADER_NAME));
-				String jsonParam = StringUtils.trimToNull(req.getHeader(AbstractSparrowServlet.JSON_SUBMIT_HEADER_NAME));
+				String xmlParam = StringUtils.trimToNull(req.getHeader(XML_SUBMIT_HEADER_NAME));
+				String jsonParam = StringUtils.trimToNull(req.getHeader(JSON_SUBMIT_HEADER_NAME));
 				
-				if (xmlParam == null) xmlParam = AbstractSparrowServlet.XML_SUBMIT_DEFAULT_PARAM_NAME;
-				if (jsonParam == null) jsonParam = AbstractSparrowServlet.JSON_SUBMIT_DEFAULT_PARAM_NAME;
+				if (xmlParam == null) xmlParam = XML_SUBMIT_DEFAULT_PARAM_NAME;
+				if (jsonParam == null) jsonParam = JSON_SUBMIT_DEFAULT_PARAM_NAME;
 				
 
 				content = StringUtils.trimToNull(req.getParameter(xmlParam));

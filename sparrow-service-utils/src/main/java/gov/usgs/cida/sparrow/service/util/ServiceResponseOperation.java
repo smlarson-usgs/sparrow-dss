@@ -1,4 +1,4 @@
-package gov.usgswim.sparrow.service;
+package gov.usgs.cida.sparrow.service.util;
 
 public enum ServiceResponseOperation {
 	CREATE,

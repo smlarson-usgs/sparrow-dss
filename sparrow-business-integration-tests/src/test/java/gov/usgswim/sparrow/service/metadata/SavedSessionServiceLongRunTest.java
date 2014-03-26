@@ -4,7 +4,7 @@ import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static gov.usgswim.sparrow.service.ServiceResponseMimeType.*;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType.*;
 
 import java.sql.Statement;
 import java.io.ByteArrayInputStream;
@@ -20,8 +20,8 @@ import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
 import gov.usgswim.sparrow.domain.PredefinedSessionType;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
-import gov.usgswim.sparrow.service.ServiceResponseWrapper;
-import gov.usgswim.sparrow.service.ServletResponseParser;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
+import gov.usgs.cida.sparrow.service.util.ServletResponseParser;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import org.junit.After;
@@ -91,7 +91,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDB
 		//assignRequestParams(req, sessions[0]);
 		
 		String ps1Str = Action.getText("Session1", this.getClass());
-		req.setParameter(AbstractSparrowServlet.XML_SUBMIT_DEFAULT_PARAM_NAME, ps1Str);
+		req.setParameter(ServletResponseParser.XML_SUBMIT_DEFAULT_PARAM_NAME, ps1Str);
 		Object entity = ServletResponseParser.getXMLXStream().fromXML(ps1Str);
 		IPredefinedSession ps1 = (IPredefinedSession)entity;
 		
@@ -160,7 +160,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDB
 		String ps1Str = Action.getText("Session1", this.getClass());
 		
 		//set a custom param name
-		req.setHeaderField(AbstractSparrowServlet.XML_SUBMIT_HEADER_NAME, "i_made_this_up");
+		req.setHeaderField(ServletResponseParser.XML_SUBMIT_HEADER_NAME, "i_made_this_up");
 		
 		req.setParameter("i_made_this_up", ps1Str);
 		Object entity = ServletResponseParser.getXMLXStream().fromXML(ps1Str);

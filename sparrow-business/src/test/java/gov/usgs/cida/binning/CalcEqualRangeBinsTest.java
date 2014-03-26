@@ -15,10 +15,10 @@ import gov.usgswim.sparrow.action.DeliveryReach;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.*;
 import gov.usgswim.sparrow.request.BinningRequest;
-import gov.usgswim.sparrow.service.ServiceResponseOperation;
-import gov.usgswim.sparrow.service.ServiceResponseStatus;
-import gov.usgswim.sparrow.service.ServiceResponseWrapper;
-import gov.usgswim.sparrow.service.ServletResponseParser;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseOperation;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseStatus;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
+import gov.usgs.cida.sparrow.service.util.ServletResponseParser;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

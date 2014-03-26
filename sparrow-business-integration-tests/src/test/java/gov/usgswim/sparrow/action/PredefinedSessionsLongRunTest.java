@@ -11,7 +11,7 @@ import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
 import gov.usgswim.sparrow.domain.PredefinedSessionType;
 import gov.usgswim.sparrow.request.PredefinedSessionRequest;
 import gov.usgswim.sparrow.request.PredefinedSessionUniqueRequest;
-import gov.usgswim.sparrow.service.ServletResponseParser;
+import gov.usgs.cida.sparrow.service.util.ServletResponseParser;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.sql.Connection;

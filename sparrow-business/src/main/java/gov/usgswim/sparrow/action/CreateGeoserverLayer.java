@@ -116,7 +116,7 @@ public class CreateGeoserverLayer extends Action<String> {
 		
 		String response = getQueryResponse(xmlReq);
 		
-		if (response.contains("ExceptionReport")) {
+		if (! response.contains("<status>OK</status>")) {
 			throw new Exception("Call failed:\r\n" + response);
 		}
 		

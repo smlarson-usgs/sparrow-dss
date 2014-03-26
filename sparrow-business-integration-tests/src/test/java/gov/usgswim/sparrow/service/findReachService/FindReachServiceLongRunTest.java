@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.service.findReachService;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.assertEquals;
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
-import gov.usgswim.sparrow.service.ReturnStatus;
+import gov.usgs.cida.sparrow.service.util.ReturnStatus;
 
 import java.io.IOException;
 

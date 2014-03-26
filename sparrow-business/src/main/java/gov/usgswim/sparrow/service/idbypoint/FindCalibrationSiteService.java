@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 import gov.usgswim.sparrow.action.LoadCalibrationSite;
 import gov.usgswim.sparrow.domain.CalibrationSite;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
-import gov.usgswim.sparrow.service.ServiceResponseOperation;
-import gov.usgswim.sparrow.service.ServiceResponseStatus;
-import gov.usgswim.sparrow.service.ServiceResponseWrapper;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseOperation;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseStatus;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 
 public class FindCalibrationSiteService extends AbstractSparrowServlet {
 	

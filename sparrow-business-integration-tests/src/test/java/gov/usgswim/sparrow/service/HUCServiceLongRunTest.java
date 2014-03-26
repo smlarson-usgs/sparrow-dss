@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.service;
 
+import gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.assertTrue;
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDB;
@@ -10,6 +11,7 @@ import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
+import gov.usgs.cida.sparrow.service.util.ServletResponseParser;
 
 /**
  * 
@@ -60,7 +62,7 @@ public class HUCServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		WebRequest req = new PostMethodWebRequest(SERVICE_URL);
 		req.setParameter("huc", "03080102");	//single segment
 		//req.setParameter("huc", "01");	//multi segment
-		req.setParameter(AbstractSparrowServlet.REQUESTED_MIME_TYPE_PARAM_NAME, ServiceResponseMimeType.JSON.toString());
+		req.setParameter(ServletResponseParser.REQUESTED_MIME_TYPE_PARAM_NAME, ServiceResponseMimeType.JSON.toString());
 
 		WebResponse response = client.sendRequest(req);
 		String actualResponse = response.getText();
