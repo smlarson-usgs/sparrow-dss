@@ -15,7 +15,7 @@ import gov.usgswim.sparrow.request.PredefinedSessionUniqueRequest;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
-import gov.usgs.cida.sparrow.service.util.ServletResponseParser;
+import gov.usgswim.sparrow.service.ServletResponseParser;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.BufferedReader;

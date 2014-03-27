@@ -8,7 +8,7 @@ import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseOperation;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseStatus;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
-import gov.usgs.cida.sparrow.service.util.ServletResponseParser;
+import gov.usgswim.sparrow.service.ServletResponseParser;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextPipeline;
 import gov.usgswim.sparrow.service.predictcontext.PredictContextRequest;
@@ -54,7 +54,7 @@ public class SourceComparisonErrorLongRunTest extends SparrowTestBaseWithDBandCa
 		ServiceResponseWrapper wrap = new ServiceResponseWrapper(binSet, null, ServiceResponseStatus.OK,
 				ServiceResponseOperation.CALCULATE);
 		
-		String actualXml = ServletResponseParser.getXMLXStream().toXML(wrap);
+		String actualXml = SharedApplication.getInstance().getXmlXStream().toXML(wrap);
 		log.debug("actual binning: " + actualXml);
 		
 		String xmlBinResp = SparrowTestBase.getXmlAsString(this.getClass(), "binResp");

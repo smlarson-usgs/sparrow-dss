@@ -15,7 +15,7 @@
 		
 		
 	<!-- Need to register WPS PPIOs as content handlers for response types --> 
-	<bean id="sparrowDataLayerPPIO" class="org.geoserver.sparrow.process.SparrowDataLayerPPIO"></bean>
+	<bean id="serviceResponseWrapperPPIO" class="gov.usgs.cida.sparrow.service.util.ServiceResponseWrapperPPIO"></bean>
 	
     <bean id="sparrowWpsFactory" class="org.geoserver.sparrow.process.SparrowWpsFactory">
     </bean>

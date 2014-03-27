@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 
 import com.thoughtworks.xstream.XStream;
 import gov.usgswim.sparrow.monitor.ServletInvocation;
-import gov.usgs.cida.sparrow.service.util.ServletResponseParser;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 import javax.servlet.ServletException;
@@ -349,16 +348,34 @@ public abstract class AbstractSparrowServlet extends HttpServlet {
 	
 		switch (wrap.getMimeType()) {
 		case XML: 
-			xs = ServletResponseParser.getXMLXStream();
+			xs = SharedApplication.getInstance().getXmlXStream();
 			break;
 		case JSON:
-			xs = ServletResponseParser.getJSONXStreamWriter();
+			xs = SharedApplication.getInstance().getJsonXStreamWriter();
 			break;
 		default:
 			throw new RuntimeException("Unknown MIMEType.");
 		}
 		
 		xs.toXML(wrap, resp.getWriter());
+	}
+	
+	/**
+	 * Writes the passed content as the specified type.  Assumed UTF-8.
+	 * 
+	 * @param resp
+	 * @param content
+	 * @param mimeType
+	 * @throws IOException
+	 */
+	protected void sendResponse(HttpServletResponse resp, String content, ServiceResponseMimeType mimeType) throws IOException {
+		
+		XStream xs = null;
+		resp.setCharacterEncoding("UTF-8");
+		resp.setContentType(mimeType.toString());
+	
+		resp.getWriter().print(content);
+		resp.getWriter().flush();
 	}
 
 	/**

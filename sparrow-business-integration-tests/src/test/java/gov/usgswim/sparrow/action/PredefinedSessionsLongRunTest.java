@@ -11,7 +11,7 @@ import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
 import gov.usgswim.sparrow.domain.PredefinedSessionType;
 import gov.usgswim.sparrow.request.PredefinedSessionRequest;
 import gov.usgswim.sparrow.request.PredefinedSessionUniqueRequest;
-import gov.usgs.cida.sparrow.service.util.ServletResponseParser;
+import gov.usgswim.sparrow.service.ServletResponseParser;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.sql.Connection;
@@ -479,8 +479,8 @@ public class PredefinedSessionsLongRunTest extends SparrowTestBaseWithDB {
 	//@Test
 	public void quickXMLandJSON() {
 		PredefinedSessionBuilder[] sessions = createUnsavedPredefinedSessions();
-		String xml1 = ServletResponseParser.getXMLXStream().toXML(sessions[0]);
-		String json1 = ServletResponseParser.getJSONXStreamWriter().toXML(sessions[0]);
+		String xml1 = SharedApplication.getInstance().getXmlXStream().toXML(sessions[0]);
+		String json1 = SharedApplication.getInstance().getJsonXStreamWriter().toXML(sessions[0]);
 		System.out.println(xml1);
 		System.out.println(json1);
 		

@@ -13,7 +13,8 @@ import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseOperation;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseStatus;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
-import gov.usgs.cida.sparrow.service.util.ServletResponseParser;
+import gov.usgswim.sparrow.service.ServletResponseParser;
+import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -457,7 +458,7 @@ public class CalcEqualCountBinsTest extends CalcEqualRangeBinsTest {
 		ServiceResponseWrapper wrap = new ServiceResponseWrapper(bs, 99999L, ServiceResponseStatus.OK,
 				ServiceResponseOperation.CALCULATE);
 		
-		String xml = ServletResponseParser.getXMLXStream().toXML(wrap);
+		String xml = SharedApplication.getInstance().getXmlXStream().toXML(wrap);
 		
 		log.debug(xml);
 		

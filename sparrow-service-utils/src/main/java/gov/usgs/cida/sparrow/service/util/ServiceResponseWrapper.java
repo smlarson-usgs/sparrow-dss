@@ -243,9 +243,9 @@ public class ServiceResponseWrapper {
 	}
 
 	/**
-	 * @param errorDetail the errorDetail to set
+	 * @param error the errorDetail to set
 	 */
-	public void setError(Exception error) {
+	public void setError(Throwable error) {
 		errorMessage = error.getLocalizedMessage();
 		errorType = error.getCause().getClass().getCanonicalName();
 		

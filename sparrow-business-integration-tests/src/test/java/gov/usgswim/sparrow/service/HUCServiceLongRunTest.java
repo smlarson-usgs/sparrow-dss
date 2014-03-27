@@ -11,7 +11,6 @@ import com.meterware.httpunit.GetMethodWebRequest;
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
-import gov.usgs.cida.sparrow.service.util.ServletResponseParser;
 
 /**
  * 

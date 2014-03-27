@@ -1,4 +1,4 @@
-package gov.usgs.cida.sparrow.service.util;
+package gov.usgswim.sparrow.service;
 
 import static gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType.*;
 
@@ -10,11 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
-import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType;
 
 /**
  * A parse utility for Servlets that can turn recognizes incoming XML and JSON
@@ -107,10 +103,10 @@ public class ServletResponseParser {
 			if (! UNKNOWN.equals(type) && content != null) {
 				switch (type) {
 				case XML:
-					entity = getXMLXStream().fromXML(content);
+					entity = SharedApplication.getInstance().getXmlXStream().fromXML(content);
 					break;
 				case JSON:
-					entity = getJSONXStreamReader().fromXML(content);
+					entity = SharedApplication.getInstance().getJsonXStreamReader().fromXML(content);
 					break;
 				default:
 					errorMessage = "Unrecognized content type.";
@@ -191,36 +187,4 @@ public class ServletResponseParser {
 	    return data;
 	}
 	
-	
-	public static XStream getXMLXStream() {
-		XStream xs = new XStream(new StaxDriver());
-	    xs.setMode(XStream.NO_REFERENCES);
-	    xs.processAnnotations(ServiceResponseWrapper.class);
-	    return xs;
-	}
-	
-	/**
-	 * To read JSON, we need to use the Jettison driver.
-	 * @return
-	 */
-	public static XStream getJSONXStreamReader() {
-		HierarchicalStreamDriver driver = new JettisonMappedXmlDriver();
-		XStream xs = new XStream(driver);
-	    xs.setMode(XStream.NO_REFERENCES);
-	    xs.processAnnotations(ServiceResponseWrapper.class);
-	    return xs;
-	}
-	
-	/**
-	 * The Jettison driver works to write JSON, but it does it all
-	 * as a single line.  This driver makes it more readable when
-	 * serializing, but does not support reading.
-	 * @return
-	 */
-	public static XStream getJSONXStreamWriter() {
-		XStream xs = new XStream(new JsonHierarchicalStreamDriver());
-	    xs.setMode(XStream.NO_REFERENCES);
-	    xs.processAnnotations(ServiceResponseWrapper.class);
-	    return xs;
-	}
 }

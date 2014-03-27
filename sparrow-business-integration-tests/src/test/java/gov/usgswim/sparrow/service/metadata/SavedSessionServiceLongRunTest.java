@@ -3,14 +3,12 @@ package gov.usgswim.sparrow.service.metadata;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType.*;
 
 import java.sql.Statement;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
 import java.sql.Connection;
-import java.util.Map;
 
 import gov.usgs.webservices.framework.utils.StringUtils;
 import gov.usgswim.sparrow.SparrowServiceTestBaseWithDBandCannedModel50;
@@ -18,15 +16,10 @@ import gov.usgswim.sparrow.action.Action;
 import gov.usgswim.sparrow.action.PredefinedSessionsLongRunTest;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSessionBuilder;
-import gov.usgswim.sparrow.domain.PredefinedSessionType;
-import gov.usgswim.sparrow.service.AbstractSparrowServlet;
-import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
-import gov.usgs.cida.sparrow.service.util.ServletResponseParser;
+import gov.usgswim.sparrow.service.ServletResponseParser;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.meterware.httpunit.GetMethodWebRequest;
@@ -34,8 +27,6 @@ import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.PutMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 /**
  * Note:  This test uses the test db which is currently being used to store
@@ -92,7 +83,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDB
 		
 		String ps1Str = Action.getText("Session1", this.getClass());
 		req.setParameter(ServletResponseParser.XML_SUBMIT_DEFAULT_PARAM_NAME, ps1Str);
-		Object entity = ServletResponseParser.getXMLXStream().fromXML(ps1Str);
+		Object entity = SharedApplication.getInstance().getXmlXStream().fromXML(ps1Str);
 		IPredefinedSession ps1 = (IPredefinedSession)entity;
 		
 		WebResponse response = client.sendRequest(req);
@@ -163,7 +154,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDB
 		req.setHeaderField(ServletResponseParser.XML_SUBMIT_HEADER_NAME, "i_made_this_up");
 		
 		req.setParameter("i_made_this_up", ps1Str);
-		Object entity = ServletResponseParser.getXMLXStream().fromXML(ps1Str);
+		Object entity = SharedApplication.getInstance().getXmlXStream().fromXML(ps1Str);
 		IPredefinedSession ps1 = (IPredefinedSession)entity;
 		
 		WebResponse response = client.sendRequest(req);
@@ -195,7 +186,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDB
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(ps1Str.getBytes(Charset.forName("UTF-8")));
 		WebRequest req = new PutMethodWebRequest(SESSION_SERVICE_URL, inputStream, XML.toString() +"; UTF-8");
 		
-		Object entity = ServletResponseParser.getXMLXStream().fromXML(ps1Str);
+		Object entity = SharedApplication.getInstance().getXmlXStream().fromXML(ps1Str);
 		IPredefinedSession ps1 = (IPredefinedSession)entity;
 		
 		WebResponse response = client.sendRequest(req);
@@ -227,7 +218,7 @@ public class SavedSessionServiceLongRunTest extends SparrowServiceTestBaseWithDB
 		ByteArrayInputStream inputStream = new ByteArrayInputStream(ps1Str.getBytes(Charset.forName("UTF-8")));
 		WebRequest req = new PutMethodWebRequest(SESSION_SERVICE_URL, inputStream, JSON.toString() +"; UTF-8");
 		
-		Object entity = ServletResponseParser.getJSONXStreamReader().fromXML(ps1Str);
+		Object entity = SharedApplication.getInstance().getJsonXStreamReader().fromXML(ps1Str);
 		IPredefinedSession ps1 = (IPredefinedSession)entity;
 		
 		WebResponse response = client.sendRequest(req);

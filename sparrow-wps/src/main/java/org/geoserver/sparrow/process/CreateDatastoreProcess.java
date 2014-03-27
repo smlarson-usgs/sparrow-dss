@@ -148,17 +148,25 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 		log.debug("Request for layers for contextId {}.  Exists (flow/catch)? {}/{}, coverageName: {}, dbfFile: {}, idField: {}, projectedSrs: {}", 
 				new Object[] {contextId, (flowLayer != null), (catchLayer != null), coverageName, dbfFilePath, idFieldInDbf, projectedSrs});
 		
+		String message = "";
+		
 		
 		if (flowLayer == null) {
 			File flowlineShapefile = this.getFlowlineShapefile(coverageName);
 			createLayer(FLOWLINE_NAMESPACE, FLOWLINE_WORKSPACE_NAME, contextId, flowlineShapefile, dbfFilePath, idFieldInDbf, projectedSrs);
 			log.debug("Request for flowline layer for contextId {} created OK.  Returning layer '{}'", new Object[] {contextId, fullFlowlineLayerName});
+			message+= "Flowline layer did not exist and was created.  ";
+		} else {
+			message+= "Flowline layer already existed.  ";
 		}
 		
 		if (catchLayer == null) {
 			File catchmentShapefile = this.getCatchmentShapefile(coverageName);
 			createLayer(CATCHMENT_NAMESPACE, CATCHMENT_WORKSPACE_NAME, contextId, catchmentShapefile, dbfFilePath, idFieldInDbf, projectedSrs);
 			log.debug("Request for flowline layer for contextId {} created OK.  Returning layer '{}'", new Object[] {contextId, fullFlowlineLayerName});
+			message+= "Catchment layer did not exist and was created.  ";
+		} else {
+			message+= "Catchment layer already existed.  ";
 		}
 		
 		//return buildResponse(getWmsPath(), fullFlowlineLayerName, fullCatchmentLayerName);
@@ -172,6 +180,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 		wrap.setMimeType(ServiceResponseMimeType.XML);
 		wrap.setOperation(ServiceResponseOperation.CREATE);
 		wrap.setStatus(ServiceResponseStatus.OK);
+		wrap.setMessage(StringUtils.trimToNull(message));
 		wrap.addEntity(resp);
 		
 		return wrap;
