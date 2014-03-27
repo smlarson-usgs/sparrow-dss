@@ -1,6 +1,5 @@
 package org.geoserver.sparrow.process;
 
-import org.geoserver.sparrow.process.SparrowWps;
 import org.geoserver.wps.jts.SpringBeanProcessFactory;
 
 /**
@@ -12,7 +11,7 @@ import org.geoserver.wps.jts.SpringBeanProcessFactory;
  * @author eeverman
  */
 public class SparrowWpsFactory extends SpringBeanProcessFactory {
-	public SparrowWpsFactory(String title, String namespace){ 
-			super(title, namespace, SparrowWps.class); 
+	public SparrowWpsFactory() { 
+			super("Custom Sparrow WPS Processes", "spdss", SparrowWps.class); 
 	} 
 }

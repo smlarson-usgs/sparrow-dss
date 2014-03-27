@@ -496,4 +496,7 @@
             
 		</dependencies>
 	</dependencyManagement>
+  <modules>
+    <module>sparrow-service-utils</module>
+  </modules>
 </project>

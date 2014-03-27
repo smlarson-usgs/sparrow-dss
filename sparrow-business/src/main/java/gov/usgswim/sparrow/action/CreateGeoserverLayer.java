@@ -116,10 +116,6 @@ public class CreateGeoserverLayer extends Action<String> {
 		
 		String response = getQueryResponse(xmlReq);
 		
-		if (response.contains("ExceptionReport")) {
-			throw new Exception("Call failed:\r\n" + response);
-		}
-		
 		return response;
 	}
 
@@ -142,7 +138,7 @@ public class CreateGeoserverLayer extends Action<String> {
 		HttpPost httpPost = new HttpPost(uriBuild.build());
 		HttpEntity httpEntity = new StringEntity(thePost, ContentType.APPLICATION_XML);
 		httpPost.setEntity(httpEntity);
-		httpPost.addHeader("Accept", "text/html; charset=UTF-8");
+		httpPost.addHeader("Accept", "application/xml; charset=UTF-8");
 		httpPost.addHeader("Accept-Charset", "UTF-8");
 		
 		log.debug("Requesting to create data layer w/ GeoServer WPS at: " + httpPost.getURI());
@@ -151,8 +147,14 @@ public class CreateGeoserverLayer extends Action<String> {
 			
 			HttpEntity entity = response1.getEntity();
 			String encoding = findEncoding(entity, "UTF-8");
+			String contentType = findContentType(entity, "application/xml");
 			String stringFromStream = IOUtils.toString(entity.getContent(), encoding);
 			EntityUtils.consume(entity);
+			
+			if (! contentType.contains("xml")) {
+				//We were expecting xml, so anything else is an error.
+				throw new Exception("Unexpected response of type '" + entity.getContentType().getValue() + "' :" + stringFromStream);
+			}
 			
 			return stringFromStream;
 		}
@@ -174,6 +176,14 @@ public class CreateGeoserverLayer extends Action<String> {
 			return findEncoding(entity.getContentType().getValue(), defaultEncoding);
 		} catch (RuntimeException e) {
 			return defaultEncoding;
+		}
+	}
+	
+	protected String findContentType(HttpEntity entity, String defaultType) {
+		try {
+			return findContentType(entity.getContentType().getValue(), defaultType);
+		} catch (RuntimeException e) {
+			return defaultType;
 		}
 	}
 	
@@ -203,6 +213,28 @@ public class CreateGeoserverLayer extends Action<String> {
 			
 		} catch (RuntimeException e) {
 			return defaultEncoding;
+		}
+	}
+	
+	/**
+	 * Parses an http contentType header string to find the content type, if it exists.
+	 * If it cannot find the encoding, the default is returned.
+	 * 
+	 * @param contentTypeHeaderString The String value of the http contentType header
+	 * @param defaultType Return this encoding if we cannot find the value in the header.
+	 * @return 
+	 */
+	protected String findContentType(String contentTypeHeaderString, String defaultType) {
+		
+		try {
+			//Example contentType:  text/html; charset=utf-8
+
+			String[] parts = contentTypeHeaderString.split(";");
+			String type = StringUtils.trimToNull(parts[0]);
+			return type;
+			
+		} catch (RuntimeException e) {
+			return defaultType;
 		}
 	}
 

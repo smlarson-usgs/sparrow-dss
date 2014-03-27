@@ -5,7 +5,7 @@ import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeClosingTag;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeNonNullTag;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeOpeningTag;
 import gov.usgs.cida.datatable.DataTable;
-import gov.usgswim.sparrow.service.ReturnStatus;
+import gov.usgs.cida.sparrow.service.util.ReturnStatus;
 
 /**
  * A simple Bean object with a 

@@ -1,8 +1,9 @@
 package gov.usgswim.sparrow.service;
 
-import static gov.usgswim.sparrow.service.ServiceResponseOperation.GET;
-import static gov.usgswim.sparrow.service.ServiceResponseStatus.FAIL;
-import static gov.usgswim.sparrow.service.ServiceResponseStatus.OK;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseOperation.GET;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseStatus.FAIL;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseStatus.OK;
 import gov.usgswim.sparrow.domain.HUC;
 import gov.usgswim.sparrow.domain.ReachGeometry;
 import gov.usgswim.sparrow.request.HUCRequest;

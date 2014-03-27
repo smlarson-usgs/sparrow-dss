@@ -1,13 +1,14 @@
 package gov.usgswim.sparrow.service.maplayer;
 
-import static gov.usgswim.sparrow.service.ServiceResponseStatus.FAIL;
-import static gov.usgswim.sparrow.service.ServiceResponseStatus.OK;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType.XML;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseStatus.FAIL;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseStatus.OK;
 import gov.usgswim.sparrow.action.CreateGeoserverLayer;
 import gov.usgswim.sparrow.action.WriteDbfFileForContext;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
-import gov.usgswim.sparrow.service.ServiceResponseOperation;
-import gov.usgswim.sparrow.service.ServiceResponseWrapper;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseOperation;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.io.File;
 
@@ -26,10 +27,12 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
 	protected void doActualGet(HttpServletRequest httpReq, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		//Since the WPS returns its own wrapper in all cases except an error,
+		//this wrapper is only used for errors.
 		ServiceResponseWrapper wrap = new ServiceResponseWrapper(
-				String.class, ServiceResponseOperation.REGISTER);
+				String.class, ServiceResponseOperation.CREATE);
 		wrap.setStatus(FAIL); // pessimistic...
-		wrap.setMimeType(parseMime(httpReq));
+		wrap.setMimeType(XML);
 
 		Map params = httpReq.getParameterMap();
 
@@ -61,24 +64,24 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
 			
 			//Register the data plus the shapefile w/ GeoServer as a layer
 			CreateGeoserverLayer cglAction = new CreateGeoserverLayer(context, dbfFile, projectedSrs);
-			String layerName = cglAction.run();
+			String wpsResponse = cglAction.run();
 			
-			Throwable actionExp = cglAction.getException();
-			
-			if (actionExp == null) {
-				wrap.setStatus(OK);
-				wrap.addEntity(layerName);
+			if (cglAction.getException() == null) {
+				//The action/WPS response is itself an XML wrapper
+				sendResponse(resp, wpsResponse, XML);
+				return;
 			} else {
-				wrap.setStatus(FAIL);
-				wrap.setMessage(actionExp.getMessage());
+				throw cglAction.getException();	//caught below and handled
 			}
 			
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			log.error("Register map layer request for contextid: " + contextId + " caused an Exception", e);
 			wrap.setError(e);
 		}
-
+		
+		//This only happens if there is an error
 		sendResponse(resp, wrap);
+
 	}
 
 	@Override

@@ -19,7 +19,7 @@ import gov.usgswim.sparrow.domain.ReachElement;
 import gov.usgswim.sparrow.domain.ReachGroup;
 import gov.usgswim.sparrow.request.ReachClientId;
 import gov.usgswim.sparrow.request.ReachID;
-import gov.usgswim.sparrow.service.ReturnStatus;
+import gov.usgs.cida.sparrow.service.util.ReturnStatus;
 import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.util.QueryLoader;
 

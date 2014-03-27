@@ -1,5 +1,8 @@
 package gov.usgswim.sparrow.service;
 
+import gov.usgs.cida.sparrow.service.util.ServiceResponseStatus;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseOperation;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 import static org.junit.Assert.assertEquals;
 import gov.usgswim.sparrow.test.SparrowTestBase;
 import gov.usgswim.sparrow.action.PredefinedSessionsLongRunTest;

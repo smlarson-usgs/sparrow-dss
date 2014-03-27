@@ -100,8 +100,7 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
         	 * A negative value means the layer is disabled but the opacity
         	 * setting is being preserved for when it is later re-enabled.
         	 */
-        	mapLayers: new Object(),
-			wmsDataLayerName: ""
+        	mapLayers: new Object()
         },
         TransientMapState : {
         	constituent: "",
@@ -138,7 +137,12 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
         		"binColors":[],
         		"boundUnlimited":[],
         		"nonDetect":[]
-        	}
+        	},
+			
+			/* The current data layer wms url and layer names */
+			dataLayerWmsUrl: "",
+			flowlineDataLayerName: "",
+			catchDataLayerName: ""
         }
     }
 
@@ -467,14 +471,23 @@ Sparrow.ux.Session.prototype = {
 		this.changed();
 	},
 	
-	setWmsDataLayerName: function(layerName) {
-		this.PermanentMapState["wmsDataLayerName"] = layerName;
-		this.fireContextEvent("what-to-map");
+	setDataLayerInfo: function(dataLayerWmsUrl, flowlineDataLayerName, catchDataLayerName) {
+		this.TransientMapState["dataLayerWmsUrl"] = dataLayerWmsUrl;
+		this.TransientMapState["flowlineDataLayerName"] = flowlineDataLayerName;
+		this.TransientMapState["catchDataLayerName"] = catchDataLayerName;
 		this.changed();
 	},
 	
-	getWmsDataLayerName: function() {
-		return this.PermanentMapState["wmsDataLayerName"];
+	getDataLayerWmsUrl: function() {
+		return this.TransientMapState["dataLayerWmsUrl"];
+	},
+	
+	getFlowlineDataLayerName: function() {
+		return this.TransientMapState["flowlineDataLayerName"];
+	},
+	
+	getCatchDataLayerName: function() {
+		return this.TransientMapState["catchDataLayerName"];
 	},
 	
 	getBinType: function() {

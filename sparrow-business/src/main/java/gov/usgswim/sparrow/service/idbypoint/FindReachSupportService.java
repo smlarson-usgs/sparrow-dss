@@ -3,7 +3,7 @@ package gov.usgswim.sparrow.service.idbypoint;
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgswim.service.ServiceServlet;
 import gov.usgswim.sparrow.service.ConfiguredCache;
-import gov.usgswim.sparrow.service.ReturnStatus;
+import gov.usgs.cida.sparrow.service.util.ReturnStatus;
 
 import java.io.IOException;
 import java.io.StringReader;

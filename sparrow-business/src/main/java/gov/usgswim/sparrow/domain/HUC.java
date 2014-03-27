@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.domain;
 
 import gov.usgswim.Immutable;
-import gov.usgswim.sparrow.service.ServiceResponseEntityList;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseEntityList;
 
 import java.io.Serializable;
 

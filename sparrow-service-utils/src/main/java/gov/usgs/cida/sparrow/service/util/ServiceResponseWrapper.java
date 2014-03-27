@@ -1,9 +1,5 @@
-package gov.usgswim.sparrow.service;
+package gov.usgs.cida.sparrow.service.util;
 
-import gov.usgs.cida.binning.domain.BinSet;
-import gov.usgswim.sparrow.domain.HUC;
-import gov.usgswim.sparrow.domain.PredefinedSession;
-import gov.usgswim.sparrow.domain.ReachGeometry;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -23,7 +19,7 @@ import com.thoughtworks.xstream.annotations.XStreamInclude;
  * @param <T>
  */
 @XStreamAlias("ServiceResponseWrapper")
-@XStreamInclude({ServiceResponseEntityList.class, PredefinedSession.class, HUC.class, ReachGeometry.class, BinSet.class})
+@XStreamInclude({ServiceResponseEntityList.class})
 public class ServiceResponseWrapper {
 	
 	//Transient response flags used for serialization
@@ -210,6 +206,13 @@ public class ServiceResponseWrapper {
 	public void setEntityClass(String entityClass) {
 		this.entityClass = entityClass;
 	}
+	
+	/**
+	 * @param entityClass the entityClass to set
+	 */
+	public void setEntityClass(Class entityClass) {
+		this.entityClass = entityClass.getCanonicalName();
+	}
 
 	/**
 	 * @return the encoding
@@ -240,9 +243,9 @@ public class ServiceResponseWrapper {
 	}
 
 	/**
-	 * @param errorDetail the errorDetail to set
+	 * @param error the errorDetail to set
 	 */
-	public void setError(Exception error) {
+	public void setError(Throwable error) {
 		errorMessage = error.getLocalizedMessage();
 		errorType = error.getCause().getClass().getCanonicalName();
 		

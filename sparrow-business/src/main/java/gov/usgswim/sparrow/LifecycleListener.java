@@ -8,8 +8,6 @@ import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Map;
-import javax.naming.*;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

@@ -965,11 +965,19 @@ function registerDataLayer(options) {
 		method: 'GET',
 		url: 'RegisterMapLayerService?context-id=' + contextId +'&projected-srs=EPSG:4326',
 		success: function(r,o) {
-			var layerName = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'entity');
+			var ok = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'Status');
 			
-			//What if this fails?  We leave the UI in an inconsistent state.
-			Sparrow.SESSION.setWmsDataLayerName(layerName);
-			if (callback) callback.call(this, options);
+			if (ok == 'OK') {
+				var datalayerWmsUrl = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'EndpointUrl');
+				var flowlineLayerName = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'FlowLayerName');
+				var catchLayerName = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'CatchLayerName');
+				
+				//What if this fails?  We leave the UI in an inconsistent state.
+				Sparrow.SESSION.setDataLayerInfo(datalayerWmsUrl, flowlineLayerName, catchLayerName);
+				if (callback) callback.call(this, options);
+			} else {
+				Ext.Msg.alert('Error', 'Failed registering the data layer');
+			}
 		},
 		failure: function(r,o) {
 			Ext.Msg.alert('Warning', 'Failed registering the data layer');
@@ -1024,7 +1032,14 @@ function addDataLayer() {
 	urlParams += '&binColorList=' + colors.join();
 	urlParams = encodeURI(urlParams);
 	
-	var layerName = Sparrow.SESSION.getWmsDataLayerName();
+	var dataLayerWmsUrl = Sparrow.SESSION.getDataLayerWmsUrl();
+	var layerName = "";
+	
+	if (what_to_map == "reach") {
+		layerName = Sparrow.SESSION.getFlowlineDataLayerName();
+	} else {
+		layerName = Sparrow.SESSION.getCatchDataLayerName();
+	}
 
     // Update the legend
     var legendEl = Ext.get('legend');
@@ -1038,7 +1053,7 @@ function addDataLayer() {
     		id: mappedValueLayerID,
     		scaleMin: 0,
     		scaleMax: 100,
-    		baseUrl: 'http://cida-eros-sparrowdev.er.usgs.gov:8081/geoserver/sparrow-flowline/wms?',
+    		baseUrl: dataLayerWmsUrl + "?",
     		legendUrl: 'getLegend?' + urlParams,
     		title: layerName,
     		name: layerName,
@@ -1049,6 +1064,7 @@ function addDataLayer() {
     	})
     );
 
+	Sparrow.SESSION.markMappedState(Sparrow.SESSION.getUsableContextId());
     Sparrow.SESSION.fireContextEvent('map-updated-and-synced');
 
 }

@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.service;
 
+import gov.usgs.cida.sparrow.service.util.ServiceResponseStatus;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.List;
@@ -14,9 +15,8 @@ import gov.usgswim.sparrow.action.GetReachGroupsOverlappingLogicalSet;
 import gov.usgswim.sparrow.domain.AdjustmentGroups;
 import gov.usgswim.sparrow.domain.ConflictingReachGroup;
 import gov.usgswim.sparrow.domain.LogicalSet;
-import gov.usgswim.sparrow.service.AbstractSparrowServlet;
-import gov.usgswim.sparrow.service.ServiceResponseOperation;
-import gov.usgswim.sparrow.service.ServiceResponseWrapper;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseOperation;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 
 //TODO this service returns two booleans, might want to make it return something more description
 /**
