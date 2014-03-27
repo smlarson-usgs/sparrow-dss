@@ -15,8 +15,13 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>gov.usgs.cida</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>sparrow-wps</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+        <dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>sparrow-sld</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
