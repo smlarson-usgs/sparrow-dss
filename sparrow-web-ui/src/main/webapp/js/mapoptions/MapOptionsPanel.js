@@ -556,7 +556,7 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 		var initSourceValue = sourceCombo.getValue();
 
 		//central 'series changed' handler w/ side effects
-		this.setDataSeriesCtl(dataSeriesValue, combo);
+		this.setDataSeriesCtl(dataSeriesValue);
 
 		var finalSourceValue = sourceCombo.getValue();
 		var effectiveSourceValue = sourceCombo.disabled ? -1 : finalSourceValue;
@@ -569,7 +569,7 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 		}
 
 		//Ensure up to date, will cause the Context to mark its state as dirty
-		Sparrow.SESSION.setDataSeries(dataSeriesValue, combo.getRawValue());
+		Sparrow.SESSION.setDataSeries(dataSeriesValue);
 		Sparrow.SESSION.setDataSeriesSource(effectiveSourceValue);
 	},
 	

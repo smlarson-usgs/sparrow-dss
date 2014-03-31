@@ -291,12 +291,13 @@ Sparrow.ui = function() { return{
 			    }
 			    var bound = document.getElementById('export_checkbox_bounded').checked;
 	
+				//User should be warned if their state does not match the map
 			    var xmlreq = ''
 			        + '<?xml version="1.0" encoding="ISO-8859-1" ?>'
 			        + '<sparrow-report-request '
 			        + '  xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2" '
 			        + '  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"> '
-			        + '  <PredictionContext context-id="' + Sparrow.SESSION.getUsableContextId() + '"/> '
+			        + '  <PredictionContext context-id="' + Sparrow.SESSION.getMappedOrValidContextId() + '"/> '
 			        ;
 			    if (bound) {
 			        xmlreq += '  <bbox>' + map1.getViewportBoundingBoxString() + '</bbox> ';
