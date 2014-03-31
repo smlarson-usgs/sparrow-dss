@@ -697,7 +697,7 @@ fieldset fieldset .form-note {
 	cursor: url(../scrollable_map/images/zoomOutCur.cur), crosshair !important;
 }
 
-.ext-ie .x-btn button{width:100%; !important}
+.ext-ie .x-btn button{width:100% !important;}
 
 /* This gives toolbar buttons the regular button style */
 .x-toolbar .x-btn-tl{
