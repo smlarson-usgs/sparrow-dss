@@ -1034,20 +1034,14 @@ function addDataLayer() {
 
     //get parameters to create base url for sparrow data layer
     var what_to_map = Sparrow.SESSION.PermanentMapState["what_to_map"];
-    var theme_name = Sparrow.SESSION.getThemeName();
-
-    // Set up the map tile url
-    var urlParams = 'model_id=' + model_id;
-    urlParams += ('&context_id=' + Sparrow.SESSION.getLastValidContextId());
-    urlParams += '&what_to_map=' + what_to_map + '&theme_name=' + theme_name;
 
     var bins = Sparrow.SESSION.getBinData()["functionalBins"];
     var colors = Sparrow.SESSION.getBinData()["binColors"];
 
-	urlParams += '&binLowList=' + Ext.pluck(bins, 'low').join();
-	urlParams += '&binHighList=' + Ext.pluck(bins, 'high').join();
-	urlParams += '&binColorList=' + colors.join();
-	urlParams = encodeURI(urlParams);
+	var binParams = 'binLowList=' + Ext.pluck(bins, 'low').join();
+	binParams += '&binHighList=' + Ext.pluck(bins, 'high').join();
+	binParams += '&binColorList=' + colors.join();
+	binParams = encodeURIComponent(binParams);
 	
 	var dataLayerWmsUrl = Sparrow.SESSION.getDataLayerWmsUrl();
 	var layerName = "";
@@ -1066,13 +1060,14 @@ function addDataLayer() {
     		scaleMin: 0,
     		scaleMax: 100,
     		baseUrl: dataLayerWmsUrl + "?",
-    		legendUrl: 'getLegend?' + urlParams,
+    		legendUrl: 'getLegend?' + binParams,
     		title: layerName,
     		name: layerName,
 			layersUrlParam: layerName,
     		isHiddenFromUser: true,
-    		description: 'Sparrow Reaches',
-    		opacity: Sparrow.SESSION.getDataLayerOpacity()
+    		description: 'Sparrow Coverage',
+    		opacity: Sparrow.SESSION.getDataLayerOpacity(),
+			sld: dataLayerWmsUrl + "/sld_endpoint?uri_encoded_bin_data=" + binParams
     	})
     );
 
