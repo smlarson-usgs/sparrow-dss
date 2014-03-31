@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.domain;
 
+import com.thoughtworks.xstream.annotations.XStreamAlias;
 import gov.usgswim.ImmutableBuilder;
 import gov.usgswim.sparrow.parser.XMLParseValidationException;
 import gov.usgswim.sparrow.parser.XMLStreamParserComponent;
