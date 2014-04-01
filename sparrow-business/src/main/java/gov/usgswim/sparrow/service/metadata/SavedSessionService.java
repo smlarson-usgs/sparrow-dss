@@ -1,20 +1,20 @@
 package gov.usgswim.sparrow.service.metadata;
 
-import static gov.usgswim.sparrow.service.ServiceResponseMimeType.JSON;
-import static gov.usgswim.sparrow.service.ServiceResponseMimeType.XML;
-import static gov.usgswim.sparrow.service.ServiceResponseOperation.CREATE;
-import static gov.usgswim.sparrow.service.ServiceResponseOperation.GET;
-import static gov.usgswim.sparrow.service.ServiceResponseOperation.UPDATE;
-import static gov.usgswim.sparrow.service.ServiceResponseStatus.FAIL;
-import static gov.usgswim.sparrow.service.ServiceResponseStatus.OK;
-import static gov.usgswim.sparrow.service.ServiceResponseStatus.UNKNOWN;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType.JSON;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType.XML;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseOperation.CREATE;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseOperation.GET;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseOperation.UPDATE;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseStatus.FAIL;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseStatus.OK;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseStatus.UNKNOWN;
 import gov.usgswim.sparrow.domain.IPredefinedSession;
 import gov.usgswim.sparrow.domain.PredefinedSessionType;
 import gov.usgswim.sparrow.request.PredefinedSessionRequest;
 import gov.usgswim.sparrow.request.PredefinedSessionUniqueRequest;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
-import gov.usgswim.sparrow.service.ServiceResponseMimeType;
-import gov.usgswim.sparrow.service.ServiceResponseWrapper;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 import gov.usgswim.sparrow.service.ServletResponseParser;
 import gov.usgswim.sparrow.service.SharedApplication;
 

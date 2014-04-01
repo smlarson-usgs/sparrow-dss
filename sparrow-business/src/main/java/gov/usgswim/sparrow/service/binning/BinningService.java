@@ -1,13 +1,13 @@
 package gov.usgswim.sparrow.service.binning;
 
-import static gov.usgswim.sparrow.service.ServiceResponseOperation.CALCULATE;
-import static gov.usgswim.sparrow.service.ServiceResponseStatus.FAIL;
-import static gov.usgswim.sparrow.service.ServiceResponseStatus.OK;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseOperation.CALCULATE;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseStatus.FAIL;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseStatus.OK;
 import gov.usgs.cida.binning.domain.BinSet;
 import gov.usgs.cida.binning.domain.BinType;
 import gov.usgswim.sparrow.request.BinningRequest;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
-import gov.usgswim.sparrow.service.ServiceResponseWrapper;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 import java.io.IOException;

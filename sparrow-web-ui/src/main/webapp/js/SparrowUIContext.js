@@ -100,19 +100,13 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
         	 * A negative value means the layer is disabled but the opacity
         	 * setting is being preserved for when it is later re-enabled.
         	 */
-        	mapLayers: new Object(),
-			wmsDataLayerName: ""
+        	mapLayers: new Object()
         },
         TransientMapState : {
         	constituent: "",
         	units: "",
-        	seriesConstituent: "",
-        	seriesUnits: "",
-        	seriesName: "",
-        	seriesDescription: "",
         	docUrl: "",
         	modelName: "",
-        	rowCount: "",
         	themeName: "",
         	originalBoundSouth: null,
         	originalBoundNorth: null,
@@ -127,6 +121,21 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
 			lastValidContextId: null, /* Id (a number) of this state as registered w/ the server */
         	
         	previousState: null, /* previous context and perm state, serialized as json */
+			
+			lastValidSeriesData: {
+				seriesConstituent: null,
+				seriesUnits: null,
+				seriesName: null,
+				seriesDescription: null,
+				rowCount: null
+			},
+			lastMappedSeriesData: {
+				seriesConstituent: null,
+				seriesUnits: null,
+				seriesName: null,
+				seriesDescription: null,
+				rowCount: null
+			},
         	
         	/*
         	 * Bin data become transient if auto-binning is used b/c its redundant
@@ -138,7 +147,12 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
         		"binColors":[],
         		"boundUnlimited":[],
         		"nonDetect":[]
-        	}
+        	},
+			
+			/* The current data layer wms url and layer names */
+			dataLayerWmsUrl: "",
+			flowlineDataLayerName: "",
+			catchDataLayerName: ""
         }
     }
 
@@ -248,15 +262,17 @@ Sparrow.ux.Session.prototype = {
 			
 	/**
 	 *  Marks a server-registered mappable state so it can be returned to and compared to.
-	 *  Marking a mapped state automatically updates the last valid state (i.e.,
-	 *  it call markValidState).
+	 *  Marking a mapped state automatically updates the last valid state (calls
+	 *  markValidState).
 	 *  
-	 *  @param {Number} The server assigned ID for this context - required.
+	 *  @param contextId {Number} Required context ID assigned by the server.
+	 *  @param seriesData {object} Required object matching the structure of lastMappedSeriesData
 	 */
-	markMappedState: function(contextId) {
+	markMappedState: function(contextId, seriesData) {
 		this.TransientMapState.lastMappedContext = this.asJSON();
 		this.TransientMapState.lastMappedContextId = contextId;
-		this.markValidState(contextId);
+		this._copySeriesData(seriesData, this.TransientMapState.lastMappedSeriesData);
+		this.markValidState(contextId, seriesData);
 	},
 	
 	/**
@@ -266,18 +282,43 @@ Sparrow.ux.Session.prototype = {
 	 * user modifies the UI to an invalid state, UI operations can use the init
 	 * state for communications w/ the server that require a valid context.
 	 * 
-	 * @param {Number} validContextId The context ID (if available)
-	 * @param {Object} The context {PredictionContext, PermanentMapState}  - otherwise the current state is used.
+	 * The optional parameters can be set if the context is registered w/ the server.
+	 * 
+	 * @param contextId {Number} optional validContextId The context ID (if available)
+	 * @param seriesData {object} optional object matching the structure of lastMappedSeriesData
 	 */
-	markValidState: function(validContextId, validContext) {
-		
-		if (validContext != null) {
-			this.TransientMapState.lastValidContext = Ext.util.JSON.encode(validContext);
+	markValidState: function(contextId, seriesData) {
+		if (contextId) {
+			this.TransientMapState.lastValidContextId = contextId;
 		} else {
-			this.TransientMapState.lastValidContext = this.asJSON();
+			this.TransientMapState.lastValidContextId = null;	//don't let old value stay
 		}
 		
-		this.TransientMapState.lastValidContextId = validContextId;
+		this.TransientMapState.lastValidContext = this.asJSON();
+		this._copySeriesData(seriesData, this.TransientMapState.lastValidSeriesData);
+	},
+	
+	/**
+	 * Safely copies series data from one instance to another, handling null
+	 * conditions in copyFrom.
+	 * 
+	 * If copyFrom is null or one of its fields unspecified, the corresponding
+	 * field in copyTo is set to "" (possibly the entire copyTo if copyFrom is null).
+	 */
+	_copySeriesData: function(copyFrom, copyTo) {
+		if (copyFrom) {
+			copyTo.seriesConstituent = copyFrom.seriesConstituent?copyFrom.seriesConstituent:null;
+			copyTo.seriesUnits = copyFrom.seriesUnits?copyFrom.seriesUnits:null
+			copyTo.seriesName = copyFrom.seriesName?copyFrom.seriesName:null;
+			copyTo.seriesDescription = copyFrom.seriesDescription?copyFrom.seriesDescription:null;
+			copyTo.rowCount = copyFrom.rowCount?copyFrom.rowCount:null;
+		} else {
+			copyTo.seriesConstituent = null;
+			copyTo.seriesUnits = null;
+			copyTo.seriesName = null;
+			copyTo.seriesDescription = null;
+			copyTo.rowCount = null;
+		}
 	},
 	
 	/**
@@ -291,44 +332,63 @@ Sparrow.ux.Session.prototype = {
 	 * 
 	 * @returns {unresolved}
 	 */
-	getUsableContextId: function() {
-		var ms = this.TransientMapState.lastMappedContextId;
-		var vs = this.TransientMapState.lastValidContextId;
-		
-		if (ms == vs) {
-			return ms;
+	getMappedOrValidContextId: function() {
+		if (this.TransientMapState.lastMappedContextId) {
+			return this.TransientMapState.lastMappedContextId;
 		} else {
-			return vs;
+			return this.TransientMapState.lastValidContextId;
 		}
+	},
+	
+	getMappedSeriesData: function() {
+		return this.TransientMapState.lastMappedSeriesData;
+	},
+	
+	/**
+	 * Returns the most recent usable context ID, which may not be mapped.
+	 * 
+	 * It is possible that the UI could update the valid state w/o
+	 * updating the map, in which case the caller would need to choose between this
+	 * and getMappedContextId.
+	 * 
+	 * @returns {unresolved}
+	 */
+	getLastValidContextId: function() {
+		return this.TransientMapState.lastValidContextId;
+	},
+	
+	getLastValidSeriesData: function() {
+		return this.TransientMapState.lastValidSeriesData;
+	},
+	
+	/**
+	 * Returns true only if the lastValidId, context and seriesData are all
+	 * set.  If false, the last valid context was not registered with the server.
+	 * @returns {boolean}
+	 */
+	isLastValidLastValidContextFullySpecified: function() {
+		return (
+				this.TransientMapState.lastValidContextId &&
+				this.TransientMapState.lastValidContext &&
+				this.TransientMapState.lastValidSeriesData.seriesConstituent); 
 	},
 			
 	/**
-	 * Returns the effective context, which can be used for most operations.
-	 * The effective context is the context currently mapped, or if there is no map,
-	 * the default context, marked at the time the UI loads.
+	 * Returns the most recent usable context, which may not be mapped.
 	 * 
-	 * It is theoretically possible that the UI could update the valid state w/o
+	 * It is possible that the UI could update the valid state w/o
 	 * updating the map, in which case the caller would need to choose between this
 	 * and getMappedContext.
 	 * 
 	 * @returns {Object} {PredictionContext, PermanentMapState}
 	 */
-	getLastUsableContext: function() {
-		var ms = this.TransientMapState.lastMappedContext;
+	getLastValidContext: function() {
 		var vs = this.TransientMapState.lastValidContext;
-		
-		if (ms == vs) {
-			if (ms != null) {
-				return Ext.util.JSON.decode(ms);
-			} else {
-				return null;
-			}
+
+		if (vs != null) {
+			return Ext.util.JSON.decode(vs);
 		} else {
-			if (vs != null) {
-				return Ext.util.JSON.decode(vs);
-			} else {
-				return null;
-			}
+			return null;
 		}
 	},
 		
@@ -391,10 +451,9 @@ Sparrow.ux.Session.prototype = {
 	 */
 	isChangedSinceLastMarkedState : function() {
 		if (this.TransientMapState.lastValidContextId == null) {
-			//No state was ever register
-			return true;
+			return true;	//No state was ever registered or we have no ID for it
 		} else {
-			return (this.asJSON() == this.TransientMapState.lastValidContext);
+			return (this.asJSON() != this.TransientMapState.lastValidContext);
 		}
 	},
 
@@ -467,14 +526,23 @@ Sparrow.ux.Session.prototype = {
 		this.changed();
 	},
 	
-	setWmsDataLayerName: function(layerName) {
-		this.PermanentMapState["wmsDataLayerName"] = layerName;
-		this.fireContextEvent("what-to-map");
+	setDataLayerInfo: function(dataLayerWmsUrl, flowlineDataLayerName, catchDataLayerName) {
+		this.TransientMapState["dataLayerWmsUrl"] = dataLayerWmsUrl;
+		this.TransientMapState["flowlineDataLayerName"] = flowlineDataLayerName;
+		this.TransientMapState["catchDataLayerName"] = catchDataLayerName;
 		this.changed();
 	},
 	
-	getWmsDataLayerName: function() {
-		return this.PermanentMapState["wmsDataLayerName"];
+	getDataLayerWmsUrl: function() {
+		return this.TransientMapState["dataLayerWmsUrl"];
+	},
+	
+	getFlowlineDataLayerName: function() {
+		return this.TransientMapState["flowlineDataLayerName"];
+	},
+	
+	getCatchDataLayerName: function() {
+		return this.TransientMapState["catchDataLayerName"];
 	},
 	
 	getBinType: function() {
@@ -765,20 +833,16 @@ Sparrow.ux.Session.prototype = {
 	/**
 	 * If setting the dataSeries, update the name and description as well so that
 	 * events have access to the current info.
+	 * The intent is that this is called by the UI when the user changes the
+	 * series - it does not update the series info returned by a registered
+	 * context (lastValidSeriesData) and these two are expected to often be out
+	 * of sync.
+	 * 
 	 * @param dataSeries
-	 * @param dataSeriesName
-	 * @param dataSeriesDescription
 	 */
-	setDataSeries: function(dataSeries, dataSeriesName, dataSeriesDescription) {
+	setDataSeries: function(dataSeries) {
 		var oldVal = this.PredictionContext.analysis.dataSeries["#text"];
 		this.PredictionContext.analysis.dataSeries["#text"] = dataSeries;
-		this.TransientMapState.seriesName = dataSeriesName;
-		
-		if (dataSeriesDescription) {
-			this.TransientMapState.seriesDescription = dataSeriesDescription;
-		} else {
-			this.TransientMapState.seriesDescription = dataSeriesName;
-		}
 		
 		if(oldVal != dataSeries) {
 			this.fireContextEvent("dataseries-changed");
@@ -1041,33 +1105,9 @@ Sparrow.ux.Session.prototype = {
 	getModelUnits: function() {
 		return this.TransientMapState.units;
 	},
-
-	setSeriesConstituent: function(val) {
-		this.TransientMapState.seriesConstituent = val;
-	},
-	
-	setSeriesUnits: function(val) {
-		this.TransientMapState.seriesUnits = val;
-	},
-	
-	setSeriesName: function(val) {
-		this.TransientMapState.seriesName = val;
-	},
-	
-	getSeriesName: function() {
-		return this.TransientMapState.seriesName;
-	},
-	
-	setSeriesDescription: function(val) {
-		this.TransientMapState.seriesDescription = val;
-	},
-	
-	getSeriesDescription: function() {
-		return this.TransientMapState.seriesDescription;
-	},
 	
 	getLegendTitle: function() {
-		var title = this.TransientMapState.seriesName;
+		var title = this.getMappedSeriesData().seriesName;
 		if(this.hasAdjustments() && 
 				this.getComparisons() != 'none' && 
 				this.getComparisons() != 'percent') {
@@ -1077,9 +1117,10 @@ Sparrow.ux.Session.prototype = {
 	},
 	
 	getLegendUnitsAndConstituent: function() {
+		var seriesData = this.getMappedSeriesData();
 		
-		var u = Sparrow.USGS.prettyPrintUnitsForHtml(this.TransientMapState.seriesUnits);
-		var c = this.TransientMapState.seriesConstituent;
+		var u = Sparrow.USGS.prettyPrintUnitsForHtml(seriesData.seriesUnits);
+		var c = seriesData.seriesConstituent;
 		
 		if (u == "") u = null;
 		if (c == "") c = null;
@@ -1141,14 +1182,6 @@ Sparrow.ux.Session.prototype = {
 	
 	getModelName: function() {
 		return this.TransientMapState.modelName;
-	},
-	
-	setRowCount: function(val) {
-		this.TransientMapState.rowCount = val;
-	},
-	
-	getRowCount: function() {
-		return this.TransientMapState.rowCount;
 	},
 	
 	setThemeName: function(val) {

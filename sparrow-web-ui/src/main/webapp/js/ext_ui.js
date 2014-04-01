@@ -1041,8 +1041,8 @@ var EXPORT_DATA_WIN = new (function(){
 				listeners: {
 					'show' : function(cmp0) {
 						//Update the displayed row count
-						document.getElementById('export-row-count-1').innerHTML = Sparrow.SESSION.getRowCount();
-						document.getElementById('export-row-count-2').innerHTML = Sparrow.SESSION.getRowCount();
+						document.getElementById('export-row-count-1').innerHTML = Sparrow.SESSION.getMappedSeriesData().rowCount;
+						document.getElementById('export-row-count-2').innerHTML = Sparrow.SESSION.getMappedSeriesData().rowCount;
 						self.enableFormSection(document.getElementById('export-data-window-adjusted-series'), Sparrow.SESSION.hasEnabledAdjustments());
 					}
 				}

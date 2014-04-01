@@ -207,9 +207,12 @@ Ext.ux.CustomBinsWindow = Ext.extend(Ext.Window, {
                         var autoGenerateWin = new Ext.ux.AutoGenerateBucketsWindow({
                         	listeners: {
                         		ok: function(w) {
-		                        	var b = getContextIdAsync({
+									
+									//TODO:  This could use our callback chaining in rpc,
+									//and can use the getBins method, which should now have
+									//no setSTate side effects.
+		                        	getContextIdAsync({
 		                        		scope: this,
-										profile: 'bin',
 		                        		callback: function() {
 				                            var bucketCount = w.getBucketCount();
 				                            var bucketType = w.getBucketType();
@@ -219,7 +222,7 @@ Ext.ux.CustomBinsWindow = Ext.extend(Ext.Window, {
 				                            Ext.Ajax.request({
 				                                url: 'getBins',
 				                                method: 'GET',
-				                                params: 'context-id=' + Sparrow.SESSION.getUsableContextId() + '&bin-count=' + bucketCount + '&bin-type=' + bucketType,
+				                                params: 'context-id=' + Sparrow.SESSION.getMappedOrValidContextId() + '&bin-count=' + bucketCount + '&bin-type=' + bucketType,
 				                                scope: this,
 				                                success: this.handleAutoGenerateSuccess,
 				                                failure: this.handleAutoGenerateFailure,
@@ -229,11 +232,9 @@ Ext.ux.CustomBinsWindow = Ext.extend(Ext.Window, {
 				                            // TODO[IK] add method to inspect object and autoCancel pending request/timeout
 				                            Ext.getBody().mask('Generating bins...  <input type="button" onclick="Ext.getBody().unmask();Ext.Ajax.abort();" value="cancel" />', 'x-mask-loading');
 
-				                        }
+				                        },
+										errorHandler: this.handleAutoGenerateFailure
 		                        	});
-		                        	if (!b) {
-		                        		this.onCancel();
-		                        	}
 		                        },
                         		scope: this
                         	}
@@ -378,7 +379,7 @@ Ext.ux.CustomBinsWindow = Ext.extend(Ext.Window, {
     	if (response.isTimeout) {
     		Ext.Msg.alert('Warning', 'autogen bins timed out');
     	} else {
-
+			Ext.Msg.alert('Warning', 'Unable to autogenerate bins.');
     	}
     }
 

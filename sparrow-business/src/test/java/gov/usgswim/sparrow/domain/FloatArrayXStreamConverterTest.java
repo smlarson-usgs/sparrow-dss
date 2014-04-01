@@ -1,11 +1,11 @@
 package gov.usgswim.sparrow.domain;
 
 import static org.junit.Assert.assertEquals;
-import gov.usgswim.sparrow.service.ServletResponseParser;
 
 import org.junit.Test;
 
 import com.thoughtworks.xstream.XStream;
+import gov.usgswim.sparrow.service.SharedApplication;
 
 public class FloatArrayXStreamConverterTest {
 
@@ -15,7 +15,7 @@ public class FloatArrayXStreamConverterTest {
 		Segment s = new Segment(ords, false);
 		Segment[] ss = new Segment[] {s};
 		Geometry geom = new Geometry(ss);
-		XStream xs = ServletResponseParser.getXMLXStream();
+		XStream xs = SharedApplication.getInstance().getXmlXStream();
 		
 		String orgXml = xs.toXML(geom);
 		//System.out.println(orgXml);

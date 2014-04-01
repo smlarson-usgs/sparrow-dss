@@ -10,6 +10,7 @@ import gov.usgswim.sparrow.domain.ReachGeometry;
 import gov.usgswim.sparrow.service.ServletResponseParser;
 
 import com.thoughtworks.xstream.XStream;
+import gov.usgswim.sparrow.service.SharedApplication;
 /**
  * Simple bean class to hold a reach that was identified by a user lat/long location.
  * @author eeverman
@@ -75,8 +76,8 @@ public class ReachInfo {
 
 			if (reachGeom != null) {
 				
-				XStream xs = ServletResponseParser.getXMLXStream();
-				String catchment = ServletResponseParser.getXMLXStream().toXML(reachGeom);
+				XStream xs = SharedApplication.getInstance().getXmlXStream();
+				String catchment = xs.toXML(reachGeom);
 				
 				//Trim this off the front:
 				//<?xml version='1.0' encoding='UTF-8'?>

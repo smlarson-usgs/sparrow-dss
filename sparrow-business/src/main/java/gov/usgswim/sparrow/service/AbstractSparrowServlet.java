@@ -1,7 +1,7 @@
 package gov.usgswim.sparrow.service;
 
-import static gov.usgswim.sparrow.service.ServiceResponseMimeType.UNKNOWN;
-import static gov.usgswim.sparrow.service.ServiceResponseMimeType.XML;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType.UNKNOWN;
+import static gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType.XML;
 
 import java.io.IOException;
 import java.util.Enumeration;
@@ -16,6 +16,8 @@ import org.apache.log4j.Logger;
 
 import com.thoughtworks.xstream.XStream;
 import gov.usgswim.sparrow.monitor.ServletInvocation;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 import javax.servlet.ServletException;
 
 /**
@@ -29,29 +31,6 @@ import javax.servlet.ServletException;
 public abstract class AbstractSparrowServlet extends HttpServlet {
 	protected static Logger log =
 		Logger.getLogger(AbstractSparrowServlet.class); //logging for this class
-	
-	
-	public static final String REQUESTED_MIME_TYPE_PARAM_NAME = "mime_type";
-	/** Posters may set a header of this name to the name of a http parameter
-	 *  used to post XML data.  If not specified, the content of the post will
-	 *  be used w/ content type detection.
-	 */
-	public static final String XML_SUBMIT_HEADER_NAME = "xml_req_param";
-	/** Posters may set a header of this name to the name of a http parameter
-	 *  used to post JSON data.  If not specified, the content of the post will
-	 *  be used w/ content type detection.
-	 */
-	public static final String JSON_SUBMIT_HEADER_NAME = "json_req_param";
-	/** Posters may set a header of this name to the name of a http parameter
-	 *  used to post XML data.  If not specified, the content of the post will
-	 *  be used w/ content type detection.
-	 */
-	public static final String XML_SUBMIT_DEFAULT_PARAM_NAME = "xml";
-	/** Posters may set a header of this name to the name of a http parameter
-	 *  used to post JSON data.  If not specified, the content of the post will
-	 *  be used w/ content type detection.
-	 */
-	public static final String JSON_SUBMIT_DEFAULT_PARAM_NAME = "json";
 
 	
 	/**
@@ -369,16 +348,34 @@ public abstract class AbstractSparrowServlet extends HttpServlet {
 	
 		switch (wrap.getMimeType()) {
 		case XML: 
-			xs = ServletResponseParser.getXMLXStream();
+			xs = SharedApplication.getInstance().getXmlXStream();
 			break;
 		case JSON:
-			xs = ServletResponseParser.getJSONXStreamWriter();
+			xs = SharedApplication.getInstance().getJsonXStreamWriter();
 			break;
 		default:
 			throw new RuntimeException("Unknown MIMEType.");
 		}
 		
 		xs.toXML(wrap, resp.getWriter());
+	}
+	
+	/**
+	 * Writes the passed content as the specified type.  Assumed UTF-8.
+	 * 
+	 * @param resp
+	 * @param content
+	 * @param mimeType
+	 * @throws IOException
+	 */
+	protected void sendResponse(HttpServletResponse resp, String content, ServiceResponseMimeType mimeType) throws IOException {
+		
+		XStream xs = null;
+		resp.setCharacterEncoding("UTF-8");
+		resp.setContentType(mimeType.toString());
+	
+		resp.getWriter().print(content);
+		resp.getWriter().flush();
 	}
 
 	/**
@@ -391,7 +388,7 @@ public abstract class AbstractSparrowServlet extends HttpServlet {
 	 */
 	protected ServiceResponseMimeType parseMime(HttpServletRequest req) {
 		String mimeStr = StringUtils.trimToNull(
-				req.getParameter(REQUESTED_MIME_TYPE_PARAM_NAME));
+				req.getParameter(ServletResponseParser.REQUESTED_MIME_TYPE_PARAM_NAME));
 		
 		ServiceResponseMimeType type = ServiceResponseMimeType.parse(mimeStr);
 		

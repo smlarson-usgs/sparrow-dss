@@ -1,5 +1,11 @@
 package gov.usgswim.sparrow.service;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.json.JettisonMappedXmlDriver;
+import com.thoughtworks.xstream.io.json.JsonHierarchicalStreamDriver;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
+import gov.usgs.cida.binning.domain.Bin;
 import static gov.usgswim.sparrow.service.ConfiguredCache.*;
 import gov.usgs.cida.binning.domain.BinSet;
 import gov.usgs.cida.config.DynamicReadOnlyProperties;
@@ -8,6 +14,7 @@ import gov.usgs.cida.datatable.DataTable;
 import gov.usgs.cida.datatable.DataTableSet;
 import gov.usgs.cida.datatable.DataTableWritable;
 import gov.usgs.cida.datatable.utils.DataTableConverter;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 import gov.usgswim.sparrow.PredictData;
 import gov.usgswim.sparrow.UncertaintyData;
 import gov.usgswim.sparrow.UncertaintyDataRequest;
@@ -91,6 +98,11 @@ public class SharedApplication  {
 	private ConcurrentLinkedQueue<RequestMonitor> activeRequests = new ConcurrentLinkedQueue<RequestMonitor>();
 	private ConcurrentLinkedQueue<RequestMonitor> completeSimpleRequests = new ConcurrentLinkedQueue<RequestMonitor>();
 	private ConcurrentLinkedQueue<RequestMonitor> completeComplexRequests = new ConcurrentLinkedQueue<RequestMonitor>();
+	
+	//XStream central instance - needed so we can configure it
+	private XStream xmlXstream;
+	private XStream jsonWriterXstream;
+	private XStream jsonReaderXstream;
 
 	private SharedApplication() {
 
@@ -1089,6 +1101,66 @@ public class SharedApplication  {
 			try { conn.close(); } catch (SQLException e) { ; }
 			conn = null;
 		}
+	}
+	
+	
+	/**
+	 * Central access to an XML XStream implementation that is configured to
+	 * process all the known domain classes w/ XStream annotations.
+	 * @return 
+	 */
+	public synchronized XStream getXmlXStream() {
+		if (xmlXstream == null) {
+			xmlXstream = new XStream(new StaxDriver());
+			initXStream(xmlXstream);
+		}
+		
+		return xmlXstream;
+	}
+	
+	/**
+	 * Central access to a JSPN XStream reader implementation that is configured to
+	 * process all the known domain classes w/ XStream annotations.
+	 * 
+	 * Use the alternate getJsonXStreamWriter method for writing JSON.
+	 * @return 
+	 */
+	public synchronized XStream getJsonXStreamReader() {
+		if (jsonReaderXstream == null) {
+			jsonReaderXstream = new XStream(new JettisonMappedXmlDriver());
+			initXStream(jsonReaderXstream);
+		}
+		
+		return jsonReaderXstream;
+	}
+	
+	/**
+	 * Central access to a JSPN XStream writer implementation that is configured to
+	 * process all the known domain classes w/ XStream annotations.
+	 * 
+	 * Use the alternate getJsonXStreamReader method for writing JSON.
+	 * @return 
+	 */
+	public synchronized XStream getJsonXStreamWriter() {
+		if (jsonWriterXstream == null) {
+			jsonWriterXstream = new XStream(new JsonHierarchicalStreamDriver());
+			initXStream(jsonWriterXstream);
+		}
+		
+		return jsonWriterXstream;
+	}
+
+	/**
+	 * Init an XStream instance w/ all the known domain classes w/ annotations.
+	 * @param instance 
+	 */
+	private void initXStream(XStream instance) {
+		instance.setMode(XStream.NO_REFERENCES);
+		instance.processAnnotations(ServiceResponseWrapper.class);
+		instance.processAnnotations(PredefinedSession.class);
+		instance.processAnnotations(HUC.class);
+		instance.processAnnotations(BinSet.class);
+		instance.processAnnotations(ReachGeometry.class);
 	}
 
 

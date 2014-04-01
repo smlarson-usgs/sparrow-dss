@@ -9,9 +9,9 @@ import gov.usgswim.sparrow.action.VerifyBinningResolution;
 import gov.usgswim.sparrow.action.VerifyInclusiveBinning;
 import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.service.AbstractSparrowServlet;
-import gov.usgswim.sparrow.service.ServiceResponseOperation;
-import gov.usgswim.sparrow.service.ServiceResponseStatus;
-import gov.usgswim.sparrow.service.ServiceResponseWrapper;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseOperation;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseStatus;
+import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
 import gov.usgswim.sparrow.service.SharedApplication;
 
 //TODO this service returns two booleans, might want to make it return something more description
