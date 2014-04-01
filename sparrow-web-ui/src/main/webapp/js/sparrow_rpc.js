@@ -1030,27 +1030,38 @@ function make_map() {
 function addDataLayer() {
 
 	//Internal ID used for the map layer
-	var mappedValueLayerID = Sparrow.config.LayerIds.mainDataLayerId;
+	var mappedValueLayerID = Sparrow.config.LayerIds.mainDataLayerId,
+        //get parameters to create base url for sparrow data layer
+        what_to_map = Sparrow.SESSION.PermanentMapState["what_to_map"],
+        bins = Sparrow.SESSION.getBinData()["functionalBins"],
+        colors = Sparrow.SESSION.getBinData()["binColors"],
+        binParams,
+        dataLayerWmsUrl = Sparrow.SESSION.getDataLayerWmsUrl(),	//ends with /wms
+        sldUrl,
+        workspace,
+        layerName,
+        wsAndLayerName,
+        splitWsAndLayerName;
 
-    //get parameters to create base url for sparrow data layer
-    var what_to_map = Sparrow.SESSION.PermanentMapState["what_to_map"];
-
-    var bins = Sparrow.SESSION.getBinData()["functionalBins"];
-    var colors = Sparrow.SESSION.getBinData()["binColors"];
-
-	var binParams = 'binLowList=' + Ext.pluck(bins, 'low').join();
+	
+	if (what_to_map === "reach") {
+		wsAndLayerName = Sparrow.SESSION.getFlowlineDataLayerName();
+	} else {
+		wsAndLayerName = Sparrow.SESSION.getCatchDataLayerName();
+	}
+    
+    binParams = 'binLowList=' + Ext.pluck(bins, 'low').join();
 	binParams += '&binHighList=' + Ext.pluck(bins, 'high').join();
 	binParams += '&binColorList=' + colors.join();
-	
-	var dataLayerWmsUrl = Sparrow.SESSION.getDataLayerWmsUrl();	//ends with /wms
-	var mapServerUrl = dataLayerWmsUrl.substring(0, dataLayerWmsUrl.length - 4);
-	var layerName = "";
-	
-	if (what_to_map == "reach") {
-		layerName = Sparrow.SESSION.getFlowlineDataLayerName();
-	} else {
-		layerName = Sparrow.SESSION.getCatchDataLayerName();
-	}
+    
+    splitWsAndLayerName = wsAndLayerName.split(':');
+    workspace = splitWsAndLayerName[0];
+    layerName = splitWsAndLayerName[1];
+    sldUrl = 'http://geoserver/rest/sld/workspace/';
+    sldUrl += workspace;
+    sldUrl += '/layer/';
+    sldUrl += layerName;
+    sldUrl += '/' + what_to_map + '.sld?' + encodeURIComponent(binParams);
 
     map1.layerManager.unloadMapLayer(mappedValueLayerID);
     map1.appendLayer(
@@ -1061,13 +1072,13 @@ function addDataLayer() {
     		scaleMax: 100,
     		baseUrl: dataLayerWmsUrl + "?",
     		legendUrl: 'getLegend?' + binParams,
-    		title: layerName,
-    		name: layerName,
-			layersUrlParam: layerName,
+    		title: wsAndLayerName,
+    		name: wsAndLayerName,
+			layersUrlParam: wsAndLayerName,
     		isHiddenFromUser: true,
     		description: 'Sparrow Coverage',
     		opacity: Sparrow.SESSION.getDataLayerOpacity(),
-			sld: encodeURIComponent(mapServerUrl + "/sld_endpoint?" + binParams)
+			sld: sldUrl
     	})
     );
 
