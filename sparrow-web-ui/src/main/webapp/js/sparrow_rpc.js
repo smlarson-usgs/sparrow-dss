@@ -1041,9 +1041,9 @@ function addDataLayer() {
 	var binParams = 'binLowList=' + Ext.pluck(bins, 'low').join();
 	binParams += '&binHighList=' + Ext.pluck(bins, 'high').join();
 	binParams += '&binColorList=' + colors.join();
-	binParams = encodeURIComponent(binParams);
 	
-	var dataLayerWmsUrl = Sparrow.SESSION.getDataLayerWmsUrl();
+	var dataLayerWmsUrl = Sparrow.SESSION.getDataLayerWmsUrl();	//ends with /wms
+	var mapServerUrl = dataLayerWmsUrl.substring(0, dataLayerWmsUrl.length - 4);
 	var layerName = "";
 	
 	if (what_to_map == "reach") {
@@ -1067,7 +1067,7 @@ function addDataLayer() {
     		isHiddenFromUser: true,
     		description: 'Sparrow Coverage',
     		opacity: Sparrow.SESSION.getDataLayerOpacity(),
-			sld: dataLayerWmsUrl + "/sld_endpoint?uri_encoded_bin_data=" + binParams
+			sld: encodeURIComponent(mapServerUrl + "/sld_endpoint?" + binParams)
     	})
     );
 
