@@ -1034,6 +1034,7 @@ function addDataLayer() {
         //get parameters to create base url for sparrow data layer
         what_to_map = Sparrow.SESSION.PermanentMapState["what_to_map"],
         bins = Sparrow.SESSION.getBinData()["functionalBins"],
+        boundedFlag = !Sparrow.SESSION.getBinData()["boundUnlimited"][0].low,
         colors = Sparrow.SESSION.getBinData()["binColors"],
         binParams,
         dataLayerWmsUrl = Sparrow.SESSION.getDataLayerWmsUrl(),	//ends with /wms
@@ -1054,6 +1055,7 @@ function addDataLayer() {
     binParams = 'binLowList=' + Ext.pluck(bins, 'low').join();
 	binParams += '&binHighList=' + Ext.pluck(bins, 'high').join();
 	binParams += '&binColorList=' + colors.join();
+	binParams += '&bounded=' + boundedFlag;
     
     splitWsAndLayerName = wsAndLayerName.split(':');
     workspace = splitWsAndLayerName[0];

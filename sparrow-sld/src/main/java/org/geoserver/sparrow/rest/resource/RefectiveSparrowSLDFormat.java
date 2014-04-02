@@ -103,6 +103,7 @@ public class RefectiveSparrowSLDFormat extends DataFormat {
             properties.put("workspace", sldInfo.getWorkspace());
             properties.put("layer", sldInfo.getLayer());
             properties.put("sldName", sldInfo.getSldName());
+            properties.put("bounded", sldInfo.getBounded());
             properties.put("bins", new SimpleSequence(sldInfo.getBins(), null));
             return properties;
         }
