@@ -5,6 +5,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -33,12 +35,18 @@ public class SLDResourceTest extends GeoServerTestSupport {
     }
     
     @Test
-    public void testHandleGetCatchmentSLDUnencodedBounded() throws Exception {
-        System.out.println("testHandleGetCatchmentSLDUnencodedBounded");
-        Document dom = getAsDOM("/rest/sld/workspace/sparrow-catchment/layer/1629177216/catch.sld?binLowList=-1000,1000,2000,5000,24000&binHighList=1000,2000,5000,24000,70000000&binColorList=FFFFD4,FEE391,FEC44F,FE9929,EC7014&bounded=false");
+    public void testHandleGetCatchmentSLDUnencodedUnBounded() throws Exception {
+        System.out.println("testHandleGetCatchmentSLDUnencodedUnBounded");
+        Document dom = getAsDOM("/rest/sld/workspace/sparrow-catchment/layer/1629177216/catch.sld?binLowList=-1000,1000,2000,5000,24000&binHighList=1000,2000,5000,24000,70000000&binColorList=FFFFD4,FEE391,FEC44F,FE9929,EC7014&bounded=true");
         assertNotNull(dom);
         assertEquals(dom.getFirstChild().getNodeName(), "StyledLayerDescriptor");
         assertTrue(dom.getFirstChild().getTextContent().contains("Sparrow Catchment style"));
+        
+        
+        NodeList ftsList = dom.getElementsByTagName("FeatureTypeStyle");
+        assertEquals(ftsList.getLength(), 5);
+        Node node = ftsList.item(ftsList.getLength() - 1);
+        assertNotNull(node);
     }
 
     @Test
