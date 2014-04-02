@@ -1037,6 +1037,7 @@ function addDataLayer() {
         colors = Sparrow.SESSION.getBinData()["binColors"],
         binParams,
         dataLayerWmsUrl = Sparrow.SESSION.getDataLayerWmsUrl(),	//ends with /wms
+        gsUrl = dataLayerWmsUrl.substring(0, dataLayerWmsUrl.length - 3),
         sldUrl,
         workspace,
         layerName,
@@ -1057,7 +1058,7 @@ function addDataLayer() {
     splitWsAndLayerName = wsAndLayerName.split(':');
     workspace = splitWsAndLayerName[0];
     layerName = splitWsAndLayerName[1];
-    sldUrl = 'http://geoserver/rest/sld/workspace/';
+    sldUrl = gsUrl + 'rest/sld/workspace/';
     sldUrl += workspace;
     sldUrl += '/layer/';
     sldUrl += layerName;
