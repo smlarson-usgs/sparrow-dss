@@ -47,6 +47,7 @@ public class SparrowSLDResource extends AbstractResource {
         String binLowList = getQueryStringValue("binLowList", String.class, "");
         String binHighList = getQueryStringValue("binHighList", String.class, "");
         String binColorList = getQueryStringValue("binColorList", String.class, "");
+        Boolean boundedFlag = Boolean.parseBoolean(getQueryStringValue("bounded", String.class, "false"));
         String[] binLowListArray = StringUtils.split(binLowList, ',');
         String[] binHighListArray = StringUtils.split(binHighList, ',');
         String[] binColorListArray = StringUtils.split(binColorList, ',');
@@ -58,11 +59,12 @@ public class SparrowSLDResource extends AbstractResource {
         logString += String.format("Bin Low List: %s\n", binLowList);
         logString += String.format("Bin High List: %s\n", binHighList);
         logString += String.format("Bin Color List: %s\n", binColorList);
+        logString += String.format("Bounded: %s\n", String.valueOf(boundedFlag));
         
         getContext().getLogger().log(Level.FINE, logString);
         
         DataFormat format = getFormatGet();
-        SparrowSLDInfo sldInfo = new SparrowSLDInfo(workspace, layer, sldName, binLowListArray, binHighListArray, binColorListArray);
+        SparrowSLDInfo sldInfo = new SparrowSLDInfo(workspace, layer, sldName, binLowListArray, binHighListArray, binColorListArray, boundedFlag);
         Representation sldRepresentation = format.toRepresentation(sldInfo);
         getResponse().setEntity(sldRepresentation);
     }

@@ -14,16 +14,28 @@
         <Rule>
           <Name>${bin_index + 1}</Name>
           <ogc:Filter>
-            <ogc:And>
-              <ogc:PropertyIsGreaterThanOrEqualTo>
-                <ogc:PropertyName>VALUE</ogc:PropertyName>
-                <ogc:Literal>${bin.lower}</ogc:Literal>
-              </ogc:PropertyIsGreaterThanOrEqualTo>
-              <ogc:PropertyIsLessThan>
-                <ogc:PropertyName>VALUE</ogc:PropertyName>
-                <ogc:Literal>${bin.upper}</ogc:Literal>
-              </ogc:PropertyIsLessThan>
-            </ogc:And>
+            <#if bin_index == 0 && !bounded>
+                <ogc:PropertyIsLessThanOrEqualTo>
+                    <ogc:PropertyName>VALUE</ogc:PropertyName>
+                    <ogc:Literal>${bin.upper}</ogc:Literal>
+                </ogc:PropertyIsLessThanOrEqualTo>
+            <#elseif bin_index == bins?size - 1 && !bounded>
+                <ogc:PropertyIsGreaterThanOrEqualTo>
+                    <ogc:PropertyName>VALUE</ogc:PropertyName>
+                    <ogc:Literal>${bin.lower}</ogc:Literal>
+                </ogc:PropertyIsGreaterThanOrEqualTo>
+            <#else>
+                <ogc:And>
+                    <ogc:PropertyIsGreaterThanOrEqualTo>
+                      <ogc:PropertyName>VALUE</ogc:PropertyName>
+                      <ogc:Literal>${bin.lower}</ogc:Literal>
+                    </ogc:PropertyIsGreaterThanOrEqualTo>
+                    <ogc:PropertyIsLessThan>
+                      <ogc:PropertyName>VALUE</ogc:PropertyName>
+                      <ogc:Literal>${bin.upper}</ogc:Literal>
+                    </ogc:PropertyIsLessThan>
+                </ogc:And>
+            </#if>
           </ogc:Filter>
           <LineSymbolizer>
             <Stroke>

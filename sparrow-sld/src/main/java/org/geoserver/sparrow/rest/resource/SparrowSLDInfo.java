@@ -2,6 +2,7 @@ package org.geoserver.sparrow.rest.resource;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ public class SparrowSLDInfo implements Serializable {
     private String workspace;
     private String layer;
     private String sldName;
+    private Boolean bounded;
     private List<Map<String, String>> bins = new ArrayList<>();
 
     private SparrowSLDInfo() {
@@ -26,11 +28,12 @@ public class SparrowSLDInfo implements Serializable {
         this.bins = null;
     }
 
-    public SparrowSLDInfo(String workspace, String layer, String sldName, String[] binLowList, String[] binHighList, String[] binColorList) {
+    public SparrowSLDInfo(String workspace, String layer, String sldName, String[] binLowList, String[] binHighList, String[] binColorList, Boolean bounded) {
         this.workspace = workspace;
         this.layer = layer;
         this.sldName = sldName;
-
+        this.bounded = bounded;
+        
         bins = new ArrayList<>();
 
         for (int ind = 0; ind < binLowList.length; ind++) {
@@ -91,14 +94,28 @@ public class SparrowSLDInfo implements Serializable {
      * @return the bins
      */
     public List<Map<String, String>> getBins() {
-        return bins;
+        return Collections.unmodifiableList(bins);
     }
 
     /**
      * @param bins the bins to set
      */
     public void setBins(List<Map<String, String>> bins) {
-        this.bins = bins;
+        this.bins = new ArrayList<>(bins);
+    }
+
+    /**
+     * @return the bounded
+     */
+    public Boolean getBounded() {
+        return bounded;
+    }
+
+    /**
+     * @param bounded the bounded to set
+     */
+    public void setBounded(Boolean bounded) {
+        this.bounded = bounded;
     }
 
 }
