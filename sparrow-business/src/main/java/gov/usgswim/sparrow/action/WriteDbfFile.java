@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.ColumnIndex;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,16 +29,16 @@ import org.geotools.data.shapefile.dbf.DbaseFileWriter;
  */
 public class WriteDbfFile extends Action<File> {
 
-	private String idColumnName;
-	private ColumnData idColumn;
-	private ColumnData dataColumn;
-	private File outputFile;
+	private final String idColumnName;
+	private final ColumnIndex columnIndex;
+	private final ColumnData dataColumn;
+	private final File outputFile;
 	
 	/**
 	 * All parameters are required to be non-null.  In addition, the idColumn and
 	 * dataColumns must have a matching number of rows.
 	 * 
-	 * @param idColumn ColumnData instance containing IDs for each row.
+	 * @param columnIndex ColumnData instance containing IDs for each row.
 	 *	Must be convertible to Integers.
 	 * @param dataColumn ColumnData instance containing values for each row.
 	 *	Values must be convertible to Double values.
@@ -45,8 +46,8 @@ public class WriteDbfFile extends Action<File> {
 	 *	If it exists, it will be overwritten.
 	 * @param idColumnName The name to use for the ID column.
 	 */
-	public WriteDbfFile(ColumnData idColumn, ColumnData dataColumn, File outputFile, String idColumnName) {
-		this.idColumn = idColumn;
+	public WriteDbfFile(ColumnIndex columnIndex, ColumnData dataColumn, File outputFile, String idColumnName) {
+		this.columnIndex = columnIndex;
 		this.dataColumn = dataColumn;
 		this.outputFile = outputFile;
 		this.idColumnName = idColumnName;
@@ -54,12 +55,12 @@ public class WriteDbfFile extends Action<File> {
 
 	@Override
 	protected void validate() {
-		if (idColumn == null) {
+		if (columnIndex == null) {
 			addValidationError("The id column cannot be null");
 		} else if (dataColumn == null) {
 			addValidationError("The data column cannot be null");
-		} else if (! idColumn.getRowCount().equals(dataColumn.getRowCount())) {
-			addValidationError("The id column and data column must have the same number of rows");
+		} else if (! (columnIndex.getMaxRowNumber() == (dataColumn.getRowCount() - 1))) {
+			addValidationError("The column index and data column must have the same number of rows");
 		}
 		
 		if (outputFile == null) {
@@ -78,7 +79,7 @@ public class WriteDbfFile extends Action<File> {
 		DbaseFileHeader header = new DbaseFileHeader();
 		header.addColumn(idColumnName, 'N', 9, 0);
 		header.addColumn("VALUE", 'N', 14, 4);
-		header.setNumRecords(idColumn.getRowCount());
+		header.setNumRecords(dataColumn.getRowCount());
 		
 
 		FileChannel foc = null;
@@ -93,17 +94,9 @@ public class WriteDbfFile extends Action<File> {
 			//Keep reusing the same array for each row
 			Object[] oneRow = new Object[2];
 
-			for (int row = 0; row < idColumn.getRowCount(); row++) {
+			for (int row = 0; row < dataColumn.getRowCount(); row++) {
 				
-				Object idVal = idColumn.getValue(row);
-				Long id = null;
-				if (idVal instanceof Number) {
-					id = ((Number)idVal).longValue();
-					
-				} else {
-					String s = idVal.toString();
-					id = Long.parseLong(s);
-				}
+				Long id = columnIndex.getIdForRow(row);
 				
 				if (id.longValue() > Integer.MAX_VALUE) {
 					throw new Exception("IDs larger than 9 digits are not currently supported b/c our NHD shapefile only has 9 digits.");
@@ -121,7 +114,7 @@ public class WriteDbfFile extends Action<File> {
 				dbfWriter.write(oneRow);
 			}
 			
-			log.debug("Wrote " + idColumn.getRowCount() + " rows to dbf file, " + outputFile.getAbsolutePath());
+			log.debug("Wrote " + dataColumn.getRowCount() + " rows to dbf file, " + outputFile.getAbsolutePath());
 
 			return outputFile;
 		} finally {
