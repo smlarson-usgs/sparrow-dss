@@ -12,7 +12,7 @@
       <#list bins as bin>
       <FeatureTypeStyle>
         <Rule>
-          <Name>${bin_index + 1}</Name>
+          <Name>Bin ${bin_index + 1} of ${bins?size}</Name>
           <ogc:Filter>
             <#if bin_index == 0 && !bounded>
                 <ogc:PropertyIsLessThanOrEqualTo>
