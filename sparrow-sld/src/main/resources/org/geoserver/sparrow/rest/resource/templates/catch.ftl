@@ -8,7 +8,7 @@
   <NamedLayer>
     <Name>${workspace}:${layer}</Name>
     <UserStyle>
-      <Title>SPARROW sample style</Title>
+      <Title>Sparrow Catchment style</Title>
       <#list bins as bin>
       <FeatureTypeStyle>
         <Rule>

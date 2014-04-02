@@ -10,16 +10,15 @@ import freemarker.template.Template;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.geoserver.rest.format.DataFormat;
 import org.geotools.util.logging.Logging;
 import org.restlet.data.Request;
-import org.restlet.data.Response;
 import org.restlet.ext.freemarker.TemplateRepresentation;
 import org.restlet.resource.Representation;
-import org.restlet.resource.Resource;
 
 /**
  *
@@ -29,11 +28,9 @@ public class RefectiveSparrowSLDFormat extends DataFormat {
 
     private static final Logger LOGGER = Logging.getLogger(RefectiveSparrowSLDFormat.class);
     private final Request request;
-    protected Class clazz;
 
-    public RefectiveSparrowSLDFormat(Class clazz, Request request, Response response, Resource resource) {
+    public RefectiveSparrowSLDFormat(Request request) {
         super(SparrowSLDResource.MEDIATYPE_SLD);
-        this.clazz = clazz;
         this.request = request;
     }
 
@@ -66,7 +63,7 @@ public class RefectiveSparrowSLDFormat extends DataFormat {
             templateName = template.getName();
         } else {
             //use a fallback
-            templateName = "Object.ftl";
+            templateName = "failover.ftl";
         }
 
         return new TemplateRepresentation(templateName, configuration, object, getMediaType());
@@ -85,8 +82,9 @@ public class RefectiveSparrowSLDFormat extends DataFormat {
 
     protected Configuration createConfiguration(Object data) {
         Configuration cfg = new Configuration();
+        cfg.setLocale(Locale.US);
         cfg.setClassForTemplateLoading(getClass(), "templates");
-        cfg.setObjectWrapper(new ObjectToMapWrapper<SparrowSLDInfo>(SparrowSLDInfo.class));
+        cfg.setObjectWrapper(new ObjectToMapWrapper<>(SparrowSLDInfo.class));
         return cfg;
     }
 

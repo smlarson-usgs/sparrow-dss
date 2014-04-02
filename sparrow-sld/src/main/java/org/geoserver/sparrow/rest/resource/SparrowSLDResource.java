@@ -2,6 +2,7 @@ package org.geoserver.sparrow.rest.resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.apache.commons.lang.StringUtils;
 import org.geoserver.rest.AbstractResource;
 import org.geoserver.rest.format.DataFormat;
@@ -10,6 +11,7 @@ import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
+import org.restlet.data.Status;
 import org.restlet.resource.Representation;
 
 /**
@@ -23,8 +25,7 @@ public class SparrowSLDResource extends AbstractResource {
         MediaTypes.registerExtension("sld", MEDIATYPE_SLD);
     }
 
-    public SparrowSLDResource() {
-    }
+    public SparrowSLDResource() {}
 
     public SparrowSLDResource(Context context, Request request, Response response) {
         super(context, request, response);
@@ -33,12 +34,13 @@ public class SparrowSLDResource extends AbstractResource {
     @Override
     protected List<DataFormat> createSupportedFormats(Request request, Response response) {
         List<DataFormat> handledFormats = new ArrayList<>();
-        handledFormats.add(new RefectiveSparrowSLDFormat(this.getClass(), super.getRequest(), super.getResponse(), this));
+        handledFormats.add(new RefectiveSparrowSLDFormat(getRequest()));
         return handledFormats;
     }
 
     @Override
     public void handleGet() {
+        //TODO- What to do if we are missing any of these? 
         String workspace = getAttribute("workspace");
         String layer = getAttribute("layer");
         String sldName = getAttribute("sldName");
@@ -48,6 +50,16 @@ public class SparrowSLDResource extends AbstractResource {
         String[] binLowListArray = StringUtils.split(binLowList, ',');
         String[] binHighListArray = StringUtils.split(binHighList, ',');
         String[] binColorListArray = StringUtils.split(binColorList, ',');
+        
+        String logString = "SLD Request:\n";
+        logString += String.format("Workspace: %s\n", workspace);
+        logString += String.format("Layer: %s\n", layer);
+        logString += String.format("SLD Name: %s\n", sldName);
+        logString += String.format("Bin Low List: %s\n", binLowList);
+        logString += String.format("Bin High List: %s\n", binHighList);
+        logString += String.format("Bin Color List: %s\n", binColorList);
+        
+        getContext().getLogger().log(Level.FINE, logString);
         
         DataFormat format = getFormatGet();
         SparrowSLDInfo sldInfo = new SparrowSLDInfo(workspace, layer, sldName, binLowListArray, binHighListArray, binColorListArray);
