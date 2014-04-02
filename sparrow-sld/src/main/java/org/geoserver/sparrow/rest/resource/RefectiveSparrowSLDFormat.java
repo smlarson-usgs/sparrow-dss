@@ -66,7 +66,7 @@ public class RefectiveSparrowSLDFormat extends DataFormat {
             templateName = template.getName();
         } else {
             //use a fallback
-            templateName = "Object.ftl";
+            templateName = "failover.ftl";
         }
 
         return new TemplateRepresentation(templateName, configuration, object, getMediaType());
