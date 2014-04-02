@@ -27,10 +27,13 @@ import org.restlet.resource.Representation;
 public class RefectiveSparrowSLDFormat extends DataFormat {
 
     private static final Logger LOGGER = Logging.getLogger(RefectiveSparrowSLDFormat.class);
-    private final Request request;
+    private Request request = null;
 
-    public RefectiveSparrowSLDFormat(Request request) {
+    public RefectiveSparrowSLDFormat() {
         super(SparrowSLDResource.MEDIATYPE_SLD);
+    }
+    
+    void setRequest(Request request) {
         this.request = request;
     }
 

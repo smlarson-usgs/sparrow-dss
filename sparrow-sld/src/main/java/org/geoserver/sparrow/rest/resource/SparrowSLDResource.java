@@ -11,7 +11,6 @@ import org.restlet.Context;
 import org.restlet.data.MediaType;
 import org.restlet.data.Request;
 import org.restlet.data.Response;
-import org.restlet.data.Status;
 import org.restlet.resource.Representation;
 
 /**
@@ -34,7 +33,8 @@ public class SparrowSLDResource extends AbstractResource {
     @Override
     protected List<DataFormat> createSupportedFormats(Request request, Response response) {
         List<DataFormat> handledFormats = new ArrayList<>();
-        handledFormats.add(new RefectiveSparrowSLDFormat(getRequest()));
+        RefectiveSparrowSLDFormat format = new RefectiveSparrowSLDFormat();
+        handledFormats.add(format);
         return handledFormats;
     }
 
@@ -63,7 +63,9 @@ public class SparrowSLDResource extends AbstractResource {
         
         getContext().getLogger().log(Level.FINE, logString);
         
-        DataFormat format = getFormatGet();
+        RefectiveSparrowSLDFormat format = (RefectiveSparrowSLDFormat) getFormatGet();
+        format.setRequest(getRequest());
+        
         SparrowSLDInfo sldInfo = new SparrowSLDInfo(workspace, layer, sldName, binLowListArray, binHighListArray, binColorListArray, boundedFlag);
         Representation sldRepresentation = format.toRepresentation(sldInfo);
         getResponse().setEntity(sldRepresentation);
