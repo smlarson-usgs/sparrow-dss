@@ -1,9 +1,7 @@
 package org.geoserver.sparrow.rest.resource;
 
-import com.vividsolutions.jts.util.CollectionUtil;
 import freemarker.core.ParseException;
 import freemarker.ext.beans.BeansWrapper;
-import freemarker.ext.beans.CollectionModel;
 import freemarker.template.Configuration;
 import freemarker.template.ObjectWrapper;
 import freemarker.template.SimpleHash;
@@ -12,8 +10,6 @@ import freemarker.template.Template;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
@@ -24,7 +20,6 @@ import org.restlet.data.Response;
 import org.restlet.ext.freemarker.TemplateRepresentation;
 import org.restlet.resource.Representation;
 import org.restlet.resource.Resource;
-import org.springframework.util.CollectionUtils;
 
 /**
  *
