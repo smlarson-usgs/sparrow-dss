@@ -1,8 +1,10 @@
 package org.geoserver.sparrow.rest.resource;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.geoserver.rest.AbstractResource;
 import org.geoserver.rest.format.DataFormat;
@@ -19,12 +21,15 @@ import org.restlet.resource.Representation;
  */
 public class SparrowSLDResource extends AbstractResource {
 
+    static final Logger LOG = org.geotools.util.logging.Logging.getLogger("org.geoserver.sparrow.rest");
     public static final MediaType MEDIATYPE_SLD = new MediaType("application/vnd.ogc.sld+xml");
+
     static {
         MediaTypes.registerExtension("sld", MEDIATYPE_SLD);
     }
 
-    public SparrowSLDResource() {}
+    public SparrowSLDResource() {
+    }
 
     public SparrowSLDResource(Context context, Request request, Response response) {
         super(context, request, response);
@@ -39,7 +44,7 @@ public class SparrowSLDResource extends AbstractResource {
     }
 
     @Override
-    public void handleGet() {
+    public synchronized void handleGet() {
         //TODO- What to do if we are missing any of these? 
         String workspace = getAttribute("workspace");
         String layer = getAttribute("layer");
@@ -51,7 +56,7 @@ public class SparrowSLDResource extends AbstractResource {
         String[] binLowListArray = StringUtils.split(binLowList, ',');
         String[] binHighListArray = StringUtils.split(binHighList, ',');
         String[] binColorListArray = StringUtils.split(binColorList, ',');
-        
+
         String logString = "SLD Request:\n";
         logString += String.format("Workspace: %s\n", workspace);
         logString += String.format("Layer: %s\n", layer);
@@ -60,15 +65,23 @@ public class SparrowSLDResource extends AbstractResource {
         logString += String.format("Bin High List: %s\n", binHighList);
         logString += String.format("Bin Color List: %s\n", binColorList);
         logString += String.format("Bounded: %s\n", String.valueOf(boundedFlag));
-        
-        getContext().getLogger().log(Level.FINE, logString);
-        synchronized (this) {
-            RefectiveSparrowSLDFormat format = (RefectiveSparrowSLDFormat) getFormatGet();
-            format.setRequest(getRequest());
-            SparrowSLDInfo sldInfo = new SparrowSLDInfo(workspace, layer, sldName, binLowListArray, binHighListArray, binColorListArray, boundedFlag);
-            Representation sldRepresentation = format.toRepresentation(sldInfo);
-            getResponse().setEntity(sldRepresentation);
+        LOG.log(Level.FINE, logString);
+
+        RefectiveSparrowSLDFormat format = (RefectiveSparrowSLDFormat) getFormatGet();
+        format.setRequest(getRequest());
+        SparrowSLDInfo sldInfo = new SparrowSLDInfo(workspace, layer, sldName, binLowListArray, binHighListArray, binColorListArray, boundedFlag);
+        Representation sldRepresentation = format.toRepresentation(sldInfo);
+        try {
+            System.out.println(sldRepresentation.getText());
+        } catch (IOException ex) {
+            Logger.getLogger(SparrowSLDResource.class.getName()).log(Level.SEVERE, null, ex);
         }
+        try {
+            LOG.log(Level.FINE, sldRepresentation.getText());
+        } catch (IOException ex) {
+            //
+        }
+        getResponse().setEntity(sldRepresentation);
     }
 
     @Override
