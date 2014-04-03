@@ -62,13 +62,13 @@ public class SparrowSLDResource extends AbstractResource {
         logString += String.format("Bounded: %s\n", String.valueOf(boundedFlag));
         
         getContext().getLogger().log(Level.FINE, logString);
-        
-        RefectiveSparrowSLDFormat format = (RefectiveSparrowSLDFormat) getFormatGet();
-        format.setRequest(getRequest());
-        
-        SparrowSLDInfo sldInfo = new SparrowSLDInfo(workspace, layer, sldName, binLowListArray, binHighListArray, binColorListArray, boundedFlag);
-        Representation sldRepresentation = format.toRepresentation(sldInfo);
-        getResponse().setEntity(sldRepresentation);
+        synchronized (this) {
+            RefectiveSparrowSLDFormat format = (RefectiveSparrowSLDFormat) getFormatGet();
+            format.setRequest(getRequest());
+            SparrowSLDInfo sldInfo = new SparrowSLDInfo(workspace, layer, sldName, binLowListArray, binHighListArray, binColorListArray, boundedFlag);
+            Representation sldRepresentation = format.toRepresentation(sldInfo);
+            getResponse().setEntity(sldRepresentation);
+        }
     }
 
     @Override
