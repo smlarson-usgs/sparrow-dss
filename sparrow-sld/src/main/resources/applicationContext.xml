@@ -1,7 +1,7 @@
  <!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
 
 <beans>
-    <bean id="sldResource" class="org.geoserver.sparrow.rest.resource.SparrowSLDResource"/>
+    <bean id="sldFinder" class="org.geoserver.sparrow.rest.resource.finder.ReflectiveSparrowSLDFormatFinder"/>
 
     <bean id="sparrowRestConfigMapping" class="org.geoserver.rest.RESTMapping">
         <property name="routes">
@@ -10,7 +10,7 @@
                     <key>
                         <value>/sld/workspace/{workspace}/layer/{layer}/{sldName}.{format}</value>
                     </key>
-                    <value>sldResource</value>
+                    <value>sldFinder</value>
                 </entry>
             </map>
         </property>
