@@ -71,17 +71,6 @@ public class SparrowSLDResource extends AbstractResource {
         format.setRequest(getRequest());
         SparrowSLDInfo sldInfo = new SparrowSLDInfo(workspace, layer, sldName, binLowListArray, binHighListArray, binColorListArray, boundedFlag);
         Representation sldRepresentation = format.toRepresentation(sldInfo);
-        try {
-            System.out.println(sldRepresentation.getText());
-        } catch (IOException ex) {
-            Logger.getLogger(SparrowSLDResource.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            LOG.log(Level.FINE, sldRepresentation.getText());
-        } catch (IOException ex) {
-            //
-        }
-        getResponse().setEntity(sldRepresentation);
     }
 
     @Override
