@@ -1064,7 +1064,7 @@ function addDataLayer() {
     sldUrl += workspace;
     sldUrl += '/layer/';
     sldUrl += layerName;
-    sldUrl += '/' + what_to_map + '.sld?' + encodeURIComponent(binParams);
+    sldUrl += '/' + what_to_map + '.sld?' + binParams;
 
     map1.layerManager.unloadMapLayer(mappedValueLayerID);
     map1.appendLayer(
@@ -1081,7 +1081,7 @@ function addDataLayer() {
     		isHiddenFromUser: true,
     		description: 'Sparrow Coverage',
     		opacity: Sparrow.SESSION.getDataLayerOpacity(),
-			sld: sldUrl
+			sld: encodeURIComponent(sldUrl)
     	})
     );
 
