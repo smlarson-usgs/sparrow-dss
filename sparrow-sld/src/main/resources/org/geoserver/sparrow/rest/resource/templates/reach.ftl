@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <StyledLayerDescriptor 
     xmlns="http://www.opengis.net/sld" 
     xmlns:ogc="http://www.opengis.net/ogc" 

@@ -33,7 +33,7 @@ public class SLDResourceTest extends GeoServerTestSupport {
         assertEquals(dom.getFirstChild().getNodeName(), "StyledLayerDescriptor");
         assertTrue(dom.getFirstChild().getTextContent().contains("Sparrow Reach style"));
     }
-    
+
     @Test
     public void testHandleGetCatchmentSLDUnencodedUnBounded() throws Exception {
         System.out.println("testHandleGetCatchmentSLDUnencodedUnBounded");
@@ -41,8 +41,7 @@ public class SLDResourceTest extends GeoServerTestSupport {
         assertNotNull(dom);
         assertEquals(dom.getFirstChild().getNodeName(), "StyledLayerDescriptor");
         assertTrue(dom.getFirstChild().getTextContent().contains("Sparrow Catchment style"));
-        
-        
+
         NodeList ftsList = dom.getElementsByTagName("FeatureTypeStyle");
         assertEquals(ftsList.getLength(), 5);
         Node node = ftsList.item(ftsList.getLength() - 1);
