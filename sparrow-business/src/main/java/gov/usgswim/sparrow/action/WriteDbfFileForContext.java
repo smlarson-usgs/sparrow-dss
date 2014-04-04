@@ -1,6 +1,7 @@
 package gov.usgswim.sparrow.action;
 
 import gov.usgs.cida.datatable.ColumnData;
+import gov.usgs.cida.datatable.ColumnIndex;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.domain.SparrowModel;
@@ -25,12 +26,13 @@ import java.io.File;
  */
 public class WriteDbfFileForContext extends Action<File> {
 
+	private static final String ID_COLUMN_NAME = "IDENTIFIER";
+	
 	//User config
 	private PredictionContext context;
 	
 	//Self initialized
-	private String idColumnName;
-	private ColumnData idColumn;
+	private ColumnIndex columnIndex;
 	private ColumnData dataColumn;
 	private File outputFile;
 	
@@ -42,13 +44,7 @@ public class WriteDbfFileForContext extends Action<File> {
 	protected void initFields() throws Exception {
 		
 		dataColumn = context.getDataColumn().getColumnData();
-		DataTable idTable = SharedApplication.getInstance().getModelReachIdentificationAttributes(context.getModelID());
-		idColumn = idTable.getColumn(3);
-		ModelRequestCacheKey modelReq = new ModelRequestCacheKey(context.getModelID(), false, false, false);
-		SparrowModel model = SharedApplication.getInstance().getModelMetadata(modelReq).get(0);
-		idColumnName = model.getEnhNetworkIdColumn();
-		
-
+		columnIndex = SharedApplication.getInstance().getPredictData(context.getModelID()).getTopo().getIndex();
 		outputFile = new File(getDefaultCacheDirectory(), context.getId().toString() + ".dbf");
 		outputFile.createNewFile();
 	}
@@ -65,8 +61,7 @@ public class WriteDbfFileForContext extends Action<File> {
 	
 	@Override
 	public File doAction() throws Exception {
-
-		WriteDbfFile writeAction = new WriteDbfFile(idColumn, dataColumn, outputFile, idColumnName);
+		WriteDbfFile writeAction = new WriteDbfFile(columnIndex, dataColumn, outputFile, ID_COLUMN_NAME);
 		return writeAction.run();
 	}
 

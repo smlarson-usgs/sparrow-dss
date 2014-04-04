@@ -1,5 +1,6 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgs.cida.datatable.HashMapColumnIndex;
 import gov.usgs.cida.datatable.impl.StandardNumberColumnDataWritable;
 import gov.usgs.cida.datatable.impl.StandardStringColumnDataWritable;
 import gov.usgswim.sparrow.test.SparrowTestBase;
@@ -24,17 +25,15 @@ import static org.junit.Assert.*;
 public class WriteDbFileForContextTest extends SparrowTestBase {
 	
 	private final static double comp_err = .001d;
-	StandardStringColumnDataWritable idCol;
+	long[] idArray;
+	HashMapColumnIndex columnIndex;
 	StandardNumberColumnDataWritable valueCol;
 
 	@Before
 	public void setup() {
-
-		//
-		idCol = new StandardStringColumnDataWritable("IDs", null);
-		idCol.setValue("1", 0);
-		idCol.setValue("2", 1);
-		idCol.setValue("3", 2);
+		
+		idArray = new long[] {1, 2, 3};
+		columnIndex = new HashMapColumnIndex(idArray);
 
 		//
 		valueCol = new StandardNumberColumnDataWritable();
@@ -57,7 +56,7 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 			tempFile.deleteOnExit();
 
 			WriteDbfFile action = new WriteDbfFile(
-				idCol,
+				columnIndex,
 				valueCol,
 				tempFile,
 				"COMID");
@@ -120,7 +119,9 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 		File tempFile = File.createTempFile("predictExport", ".dbf");
 		//////////////123456789
 		Long BIG_ID = 999999999L;	//This should be the largest allowed value
-		idCol.setValue(BIG_ID.toString(), 0);	//max 9 digits accepted	
+		
+		idArray[0] = BIG_ID;
+		columnIndex = new HashMapColumnIndex(idArray);
 		
 		///////////////////1234567890.1234
 		double BIG_VALUE = 9999999999.9999D;
@@ -132,7 +133,7 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 			tempFile.deleteOnExit();
 
 			WriteDbfFile action = new WriteDbfFile(
-				idCol,
+				columnIndex,
 				valueCol,
 				tempFile,
 				"COMID");
@@ -162,7 +163,8 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 		File tempFile = File.createTempFile("predictExport", ".dbf");
 		//////////////1234567890
 		Long BIG_ID = 9999999999L;	//max 9 digits accepted	
-		idCol.setValue(BIG_ID.toString(), 0);
+		idArray[0] = BIG_ID;
+		columnIndex = new HashMapColumnIndex(idArray);
 		
 		try {
 			//PredictResult predictResult = getTestModelPredictResult();
@@ -170,7 +172,7 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 			tempFile.deleteOnExit();
 
 			WriteDbfFile action = new WriteDbfFile(
-				idCol,
+				columnIndex,
 				valueCol,
 				tempFile,
 				"COMID");
@@ -194,7 +196,8 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 		File tempFile = File.createTempFile("predictExport", ".dbf");
 		//////////////123456789
 		Long BIG_ID = 999999999L;	//This should be the largest allowed value
-		idCol.setValue(BIG_ID.toString(), 0);	//max 9 digits accepted	
+		idArray[0] = BIG_ID;
+		columnIndex = new HashMapColumnIndex(idArray);
 		
 		///////////////////12345678901.2345
 		double BIG_VALUE = 99999999999.9999D;	//TOO BIG!!
@@ -206,7 +209,7 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 			tempFile.deleteOnExit();
 
 			WriteDbfFile action = new WriteDbfFile(
-				idCol,
+				columnIndex,
 				valueCol,
 				tempFile,
 				"COMID");
@@ -237,7 +240,7 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 			tempFile.deleteOnExit();
 
 			WriteDbfFile action = new WriteDbfFile(
-				idCol,
+				columnIndex,
 				valueCol,
 				tempFile,
 				"COMID");

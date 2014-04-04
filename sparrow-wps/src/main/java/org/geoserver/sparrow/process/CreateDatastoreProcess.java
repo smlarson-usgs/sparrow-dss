@@ -94,6 +94,8 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 	private static final String FLOWLINE_NAMESPACE = "http://water.usgs.gov/nawqa/sparrow/dss/spatial/" + FLOWLINE_WORKSPACE_NAME;
 	private static final String CATCHMENT_NAMESPACE = "http://water.usgs.gov/nawqa/sparrow/dss/spatial/" + CATCHMENT_WORKSPACE_NAME;
 	
+	private static final String JOIN_COLUMN = "IDENTIFIER";
+	
 	private Catalog catalog;
 	private JndiTemplate jndiTemplate;
 	
@@ -129,7 +131,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 			@DescribeParameter(name="contextId", description="The ID of the context to create a store for", min = 1) Integer contextId,
 			@DescribeParameter(name="coverageName", description="The name of the coverage,assumed to be a directory in the filesystem GeoServer is running on.", min = 1) String coverageName,
 			@DescribeParameter(name="dbfFilePath", description="The path to the dbf file", min = 1) String dbfFilePath,
-			@DescribeParameter(name="idFieldInDbf", description="The name of the ID column in the shapefile", min = 1) String idFieldInDbf,
+			@DescribeParameter(name="idFieldInDbf", description="The name of the ID column in the shapefile (NO LONGER USED - ALWAYS IDENTIFIER)", min = 1) String idFieldInDbf,
 			@DescribeParameter(name="projectedSrs", description="A fully qualified name of an SRS to project to.  If unspecified, EPSG:4326 is used.", min = 0) String projectedSrs
 		) throws Exception {
 				
@@ -145,15 +147,15 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 		LayerInfo flowLayer = catalog.getLayerByName(fullFlowlineLayerName);
 		LayerInfo catchLayer = catalog.getLayerByName(fullCatchmentLayerName);
 		
-		log.debug("Request for layers for contextId {}.  Exists (flow/catch)? {}/{}, coverageName: {}, dbfFile: {}, idField: {}, projectedSrs: {}", 
-				new Object[] {contextId, (flowLayer != null), (catchLayer != null), coverageName, dbfFilePath, idFieldInDbf, projectedSrs});
+		log.debug("Request for layers for contextId {}.  Exists (flow/catch)? {}/{}, coverageName: {}, dbfFile: {}, projectedSrs: {}", 
+				new Object[] {contextId, (flowLayer != null), (catchLayer != null), coverageName, dbfFilePath, projectedSrs});
 		
 		String message = "";
 		
 		
 		if (flowLayer == null) {
 			File flowlineShapefile = this.getFlowlineShapefile(coverageName);
-			createLayer(FLOWLINE_NAMESPACE, FLOWLINE_WORKSPACE_NAME, contextId, flowlineShapefile, dbfFilePath, idFieldInDbf, projectedSrs);
+			createLayer(FLOWLINE_NAMESPACE, FLOWLINE_WORKSPACE_NAME, contextId, flowlineShapefile, dbfFilePath, JOIN_COLUMN, projectedSrs);
 			log.debug("Request for flowline layer for contextId {} created OK.  Returning layer '{}'", new Object[] {contextId, fullFlowlineLayerName});
 			message+= "Flowline layer did not exist and was created.  ";
 		} else {
@@ -162,7 +164,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 		
 		if (catchLayer == null) {
 			File catchmentShapefile = this.getCatchmentShapefile(coverageName);
-			createLayer(CATCHMENT_NAMESPACE, CATCHMENT_WORKSPACE_NAME, contextId, catchmentShapefile, dbfFilePath, idFieldInDbf, projectedSrs);
+			createLayer(CATCHMENT_NAMESPACE, CATCHMENT_WORKSPACE_NAME, contextId, catchmentShapefile, dbfFilePath, JOIN_COLUMN, projectedSrs);
 			log.debug("Request for flowline layer for contextId {} created OK.  Returning layer '{}'", new Object[] {contextId, fullFlowlineLayerName});
 			message+= "Catchment layer did not exist and was created.  ";
 		} else {
