@@ -38,12 +38,12 @@
                 </ogc:And>
             </#if>
           </ogc:Filter>
-          <LineSymbolizer>
-            <Stroke>
+          <PolygonSymbolizer>
+            <Fill>
+              <CssParameter name="fill">#${bin.color}</CssParameter>
               <CssParameter name="stroke">#${bin.color}</CssParameter>
-              <CssParameter name="stroke-width">2</CssParameter>
-            </Stroke>
-          </LineSymbolizer>
+            </Fill>
+          </PolygonSymbolizer>
         </Rule>
       </FeatureTypeStyle>
       </#list>

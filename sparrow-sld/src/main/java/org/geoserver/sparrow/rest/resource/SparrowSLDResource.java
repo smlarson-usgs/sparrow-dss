@@ -71,6 +71,7 @@ public class SparrowSLDResource extends AbstractResource {
         format.setRequest(getRequest());
         SparrowSLDInfo sldInfo = new SparrowSLDInfo(workspace, layer, sldName, binLowListArray, binHighListArray, binColorListArray, boundedFlag);
         Representation sldRepresentation = format.toRepresentation(sldInfo);
+        getResponse().setEntity(sldRepresentation);
     }
 
     @Override

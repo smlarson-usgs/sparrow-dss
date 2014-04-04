@@ -14,3 +14,4 @@
 /target/
 /sparrow-business-integration-tests/nb-configuration.xml
 /sparrow-sld/target/
+/sparrow-service-utils/target/
