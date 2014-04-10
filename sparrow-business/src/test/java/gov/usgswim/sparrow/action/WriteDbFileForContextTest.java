@@ -120,7 +120,7 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
                                 + File.separatorChar 
                                 + "sparrow"
                                 + File.separatorChar
-                                + "data_cache";
+                                + "data";
              assertNotNull(result);
              assertEquals(result.getCanonicalPath(), assertion);
          }

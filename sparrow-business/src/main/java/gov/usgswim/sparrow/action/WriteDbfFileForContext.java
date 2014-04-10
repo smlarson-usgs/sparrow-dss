@@ -27,7 +27,7 @@ public class WriteDbfFileForContext extends Action<File> {
 
 	private static final String ID_COLUMN_NAME = "IDENTIFIER";
 	private static final String DATA_EXPORT_DIRECTORY = "data-export-directory";
-          private File defaultCacheDirectory;
+          private File dataDirectory;
 	//User config
 	private PredictionContext context;
 	
@@ -46,15 +46,15 @@ public class WriteDbfFileForContext extends Action<File> {
 
 	@Override
 	protected void initFields() throws Exception {
-		File dCacheDir = getDataDirectory();
+		File dataDir = getDataDirectory();
                     
-                    if (!dCacheDir.exists()) {
-                        Files.createDirectories(dCacheDir.toPath());
+                    if (!dataDir.exists()) {
+                        Files.createDirectories(dataDir.toPath());
                     }
         
 		dataColumn = context.getDataColumn().getColumnData();
 		columnIndex = SharedApplication.getInstance().getPredictData(context.getModelID()).getTopo().getIndex();
-		outputFile = new File(dCacheDir, context.getId().toString() + ".dbf");
+		outputFile = new File(dataDir, context.getId().toString() + ".dbf");
 		outputFile.createNewFile();
 	}
 	
@@ -75,23 +75,23 @@ public class WriteDbfFileForContext extends Action<File> {
 	}
 
 	protected File getDataDirectory() {
-                    File dCacheDir;
+                    File dDir;
                     
-                    if (this.defaultCacheDirectory != null) {
-                        dCacheDir =  this.defaultCacheDirectory;
+                    if (this.dataDirectory != null) {
+                        dDir =  this.dataDirectory;
                     } else {
                         DynamicReadOnlyProperties props = SharedApplication.getInstance().getConfiguration();
-                        String fallbackCacheDirectory = System.getProperty("user.home") 
+                        String fallbackDataDirectory = System.getProperty("user.home") 
                                 + File.separatorChar 
                                 + "sparrow"
                                 + File.separatorChar
-                                + "data_cache";
-                        String sparrowCacheDirectory = props.getProperty(DATA_EXPORT_DIRECTORY, fallbackCacheDirectory);
-                        dCacheDir =  new File(sparrowCacheDirectory);
-                        this.defaultCacheDirectory = dCacheDir;
+                                + "data";
+                        String sparrowDataDirectory = props.getProperty(DATA_EXPORT_DIRECTORY, fallbackDataDirectory);
+                        dDir =  new File(sparrowDataDirectory);
+                        this.dataDirectory = dDir;
                     }
                     
-                    return dCacheDir;
+                    return dDir;
 	}
 
 }
