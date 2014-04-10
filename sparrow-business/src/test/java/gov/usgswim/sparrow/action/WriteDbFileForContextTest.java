@@ -115,7 +115,7 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
          public void testGetDefaultCacheDirectoryWithoutSysprops() throws IOException {
              System.out.println("testGetDefaultCacheDirectory");
              WriteDbfFileForContext obj = new WriteDbfFileForContext();
-             File result = obj.getDefaultCacheDirectory();
+             File result = obj.getDataDirectory();
              String  assertion = System.getProperty("user.home") 
                                 + File.separatorChar 
                                 + "sparrow"
@@ -131,7 +131,7 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
              String TEST_PATH = "/i/am/a/test/property/file/path";
              SharedApplication.getInstance().getConfiguration().setProperty("geoserver-cache-dir", TEST_PATH);
              WriteDbfFileForContext obj = new WriteDbfFileForContext();
-             File result = obj.getDefaultCacheDirectory();
+             File result = obj.getDataDirectory();
              String  assertion = TEST_PATH;
              assertNotNull(result);
              assertEquals(result.getCanonicalPath(), assertion);

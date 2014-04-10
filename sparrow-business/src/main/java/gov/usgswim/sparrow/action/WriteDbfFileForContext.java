@@ -26,7 +26,7 @@ import java.nio.file.Files;
 public class WriteDbfFileForContext extends Action<File> {
 
 	private static final String ID_COLUMN_NAME = "IDENTIFIER";
-	private static final String GEOSERVER_CACHE_DIR = "geoserver-cache-dir";
+	private static final String DATA_EXPORT_DIRECTORY = "data-export-directory";
           private File defaultCacheDirectory;
 	//User config
 	private PredictionContext context;
@@ -46,7 +46,7 @@ public class WriteDbfFileForContext extends Action<File> {
 
 	@Override
 	protected void initFields() throws Exception {
-		File dCacheDir = getDefaultCacheDirectory();
+		File dCacheDir = getDataDirectory();
                     
                     if (!dCacheDir.exists()) {
                         Files.createDirectories(dCacheDir.toPath());
@@ -74,7 +74,7 @@ public class WriteDbfFileForContext extends Action<File> {
 		return writeAction.run();
 	}
 
-	protected File getDefaultCacheDirectory() {
+	protected File getDataDirectory() {
                     File dCacheDir;
                     
                     if (this.defaultCacheDirectory != null) {
@@ -86,8 +86,9 @@ public class WriteDbfFileForContext extends Action<File> {
                                 + "sparrow"
                                 + File.separatorChar
                                 + "data_cache";
-                        String sparrowCacheDirectory = props.getProperty(GEOSERVER_CACHE_DIR, fallbackCacheDirectory);
+                        String sparrowCacheDirectory = props.getProperty(DATA_EXPORT_DIRECTORY, fallbackCacheDirectory);
                         dCacheDir =  new File(sparrowCacheDirectory);
+                        this.defaultCacheDirectory = dCacheDir;
                     }
                     
                     return dCacheDir;
