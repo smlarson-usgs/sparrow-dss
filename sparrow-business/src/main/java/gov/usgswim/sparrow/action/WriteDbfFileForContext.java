@@ -1,13 +1,12 @@
 package gov.usgswim.sparrow.action;
 
+import gov.usgs.cida.config.DynamicReadOnlyProperties;
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.ColumnIndex;
-import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.domain.PredictionContext;
-import gov.usgswim.sparrow.domain.SparrowModel;
-import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.io.File;
+import java.nio.file.Files;
 
 /**
  * Creates a dbf file containing an ID column and a data column.
@@ -27,7 +26,8 @@ import java.io.File;
 public class WriteDbfFileForContext extends Action<File> {
 
 	private static final String ID_COLUMN_NAME = "IDENTIFIER";
-	
+	private static final String DATA_EXPORT_DIRECTORY = "data-export-directory";
+          private File dataDirectory;
 	//User config
 	private PredictionContext context;
 	
@@ -39,13 +39,22 @@ public class WriteDbfFileForContext extends Action<File> {
 	public WriteDbfFileForContext(PredictionContext context) {
 		this.context = context;
 	}
+    
+         protected WriteDbfFileForContext() {
+             // Created for testing
+         }
 
 	@Override
 	protected void initFields() throws Exception {
-		
+		File dataDir = getDataDirectory();
+                    
+                    if (!dataDir.exists()) {
+                        Files.createDirectories(dataDir.toPath());
+                    }
+        
 		dataColumn = context.getDataColumn().getColumnData();
 		columnIndex = SharedApplication.getInstance().getPredictData(context.getModelID()).getTopo().getIndex();
-		outputFile = new File(getDefaultCacheDirectory(), context.getId().toString() + ".dbf");
+		outputFile = new File(dataDir, context.getId().toString() + ".dbf");
 		outputFile.createNewFile();
 	}
 	
@@ -65,13 +74,24 @@ public class WriteDbfFileForContext extends Action<File> {
 		return writeAction.run();
 	}
 
-	public File getDefaultCacheDirectory() {
-		
-		File home = new File(System.getProperty("user.home"));
-		File cacheDir = new File(home, "sparrow");
-		cacheDir = new File(cacheDir, "data_cache");
-		
-		return cacheDir;
+	protected File getDataDirectory() {
+                    File dDir;
+                    
+                    if (this.dataDirectory != null) {
+                        dDir =  this.dataDirectory;
+                    } else {
+                        DynamicReadOnlyProperties props = SharedApplication.getInstance().getConfiguration();
+                        String fallbackDataDirectory = System.getProperty("user.home") 
+                                + File.separatorChar 
+                                + "sparrow"
+                                + File.separatorChar
+                                + "data";
+                        String sparrowDataDirectory = props.getProperty(DATA_EXPORT_DIRECTORY, fallbackDataDirectory);
+                        dDir =  new File(sparrowDataDirectory);
+                        this.dataDirectory = dDir;
+                    }
+                    
+                    return dDir;
 	}
 
 }

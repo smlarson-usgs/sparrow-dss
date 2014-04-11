@@ -2,21 +2,20 @@ package gov.usgswim.sparrow.action;
 
 import gov.usgs.cida.datatable.HashMapColumnIndex;
 import gov.usgs.cida.datatable.impl.StandardNumberColumnDataWritable;
-import gov.usgs.cida.datatable.impl.StandardStringColumnDataWritable;
+import gov.usgswim.sparrow.service.SharedApplication;
 import gov.usgswim.sparrow.test.SparrowTestBase;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import org.geotools.data.shapefile.dbf.DbaseFileHeader;
 import org.geotools.data.shapefile.dbf.DbaseFileReader;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
@@ -112,6 +111,31 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 		}
 	}
 	
+         @Test
+         public void testGetDefaultDataDirectoryWithoutSysprops() throws IOException {
+             System.out.println("testGetDefaultDataDirectoryWithoutSysprops");
+             WriteDbfFileForContext obj = new WriteDbfFileForContext();
+             File result = obj.getDataDirectory();
+             String  assertion = System.getProperty("user.home") 
+                                + File.separatorChar 
+                                + "sparrow"
+                                + File.separatorChar
+                                + "data";
+             assertNotNull(result);
+             assertEquals(result.getCanonicalPath(), assertion);
+         }
+         
+        @Test
+         public void testGetDefaultDataDirectoryWithSysprops() throws IOException {
+             System.out.println("testGetDefaultDataDirectoryWithSysprops");
+             String TEST_PATH = "/i/am/a/test/property/file/path";
+             SharedApplication.getInstance().getConfiguration().setProperty("geoserver-cache-dir", TEST_PATH);
+             WriteDbfFileForContext obj = new WriteDbfFileForContext();
+             File result = obj.getDataDirectory();
+             String  assertion = TEST_PATH;
+             assertNotNull(result);
+             assertEquals(result.getCanonicalPath(), assertion);
+         }
 
 	@Test
 	public void writeAndReadBigValues() throws Exception {
@@ -266,7 +290,7 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 			tempFile.delete();
 		}
 	}
-	
+
 	public List<Object[]> readDbfFile(File file) throws Exception {
 		FileChannel fc = null;
 		FileInputStream fis = null;
