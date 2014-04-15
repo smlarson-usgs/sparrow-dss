@@ -56,8 +56,7 @@ PredefinedSessionsWindow = Ext.extend(Ext.Window, {
 						Ext.Msg.alert('Warning', 'Please select a model to load.');
 					}
 					_this.close();
-					Sparrow.ui.loadUserSession = true;
-					Sparrow.ui.render_ui(sessionRecord.data.contextString);
+					Sparrow.ui.loadPredefinedSessionFromJSON(sessionRecord.data.contextString);
 				}
 			},{
 				text: 'Cancel',

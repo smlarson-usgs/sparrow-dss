@@ -19,18 +19,10 @@
 	<script type="text/javascript" src="../js/USGSUtils.js"></script>
 	<script type="text/javascript">
 	    window.onload = function() {
-	        if (Sparrow.ui.loadSessionName) {
-	    		Ext.Ajax.request({
-	    			method: 'GET',
-	    			url: 'listPredefSessions',
-	    			success: function(r,o){
-	    				Sparrow.ui.render_ui(r.responseText);
-	    			},
-	    			params: {
-	    				uniqueCode: Sparrow.ui.loadSessionName
-	    			}
-	    		});
-	        } else {
+			var sessionName : Sparrow.USGS.getURLParam("session");
+			if (sessionName && sessionName != "") {
+				Sparrow.ui.loadPredefinedSessionByName(sessionName);
+			} else {
 	        	configForEditPage();
 	        }
 	    };

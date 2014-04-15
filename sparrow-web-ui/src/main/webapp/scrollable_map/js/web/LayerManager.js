@@ -296,6 +296,34 @@ JMap.web.LayerManager.prototype.getActiveLayer = function(layerId) {
 	return null;
 }
 
+/**
+ * Return an non-active (currently not on the map due to out of zoom range) layer object.
+ * 
+ * This is not the same as layers that are not turned on.
+ * 
+ * @param {String} layerId	id of the layer.
+ * @return Layer object otherwise null if does not exist.
+ */
+JMap.web.LayerManager.prototype.getSelectedNotAvailableLayer = function(layerId) {
+	for (var i = 0; i < this.selectedNotAvailable.length; i++) {
+		if (this.selectedNotAvailable[i].id == layerId) {
+			return this.selectedNotAvailable[i];
+		}
+	}
+	return null;
+}
+
+/**
+ * Returns a layer by id if the layer is selected (turned on), even if it is out of zoom scale.
+ * 
+ * @param {type} layerId
+ * @return Layer object otherwise null if does not exist.
+ */
+JMap.web.LayerManager.prototype.getSelectedLayer = function(layerId) {
+	var layer = this.getActiveLayer(layerId);
+	if (! layer) layer = this.getSelectedNotAvailableLayer(layerId);
+	return layer;
+}
 
 
 

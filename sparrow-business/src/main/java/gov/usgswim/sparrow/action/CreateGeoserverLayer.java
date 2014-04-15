@@ -90,6 +90,9 @@ public class CreateGeoserverLayer extends Action<String> {
 			geoserverPort = (Integer)template.lookup("java:comp/env/geoserver-port");
 			geoserverPath = (String)template.lookup("java:comp/env/geoserver-path");
 			
+			if (! geoserverPath.endsWith("/")) geoserverPath = geoserverPath + "/";
+			geoserverPath = geoserverPath + "wps";
+			
 		} catch(NamingException exception){
 			addValidationError("All the configuration parameters must be specified"
 					+ " in the Context.xml file: geoserver-host, geoserver-port & geoserver-path");

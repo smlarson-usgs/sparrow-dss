@@ -83,10 +83,17 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
         	//related to the model.  Negative means not shown but spec's the
         	//remembered opacity (-75 == 75 opacity, not shown).
         	calibSites: -75,
-					reachOverlay: 80,
-					huc8Overlay: -75,
-					dataLayerOpacity: 100,
+			reachOverlay: 80,
+			huc8Overlay: -75,
+			dataLayerOpacity: 100,
 			
+			/*
+			 * lat, lon & zoom are only valid at selet times:
+			 * -initially after loading a predefined or user uploaded session
+			 * -immediately before the session is exported (via update_SESSION_mpastate)
+			 * At all other times, expect this to be out of sync w/ the current map.
+			 * As such, there are no accessor methods to limit usage.
+			 */
         	lat: null,
         	lon: null,
         	zoom: null,
@@ -108,16 +115,21 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
         	docUrl: "",
         	modelName: "",
         	themeName: "",
-        	originalBoundSouth: null,
-        	originalBoundNorth: null,
-        	originalBoundEast: null,
-        	originalBoundWest: null,
+			sourceList: null,	/* Structured array - see renderModelData */
+        	originalBoundSouth: null, /* float */
+        	originalBoundNorth: null, /* float */
+        	originalBoundEast: null, /* float */
+        	originalBoundWest: null, /* float */
         	lastNominalComparison: null,	/* comparison last time comp was disabled (for re-enabling) */
+			spatialServiceEndpoint: null,	/* nominally Geoserver's urls */
+			predefinedSessionName: null,	/* possibly passed in the url, or choosen by user after load */
+			
 			
 			/* state tracking */
-			lastMappedContext: null, /* Snapshot of the state (context and permState) at time of last map draw */
+			lastMappedState: null, /* Snapshot of the state (context and permState) at time of last map draw */
 			lastMappedContextId: null, /* Id (a number) of this state as registered w/ the server */
-			lastValidContext: null, /* Snapshot of the state (context and permState) that was last known to be valid and registered w/ server (fallback if no map) */
+			lastMappedContext: null, /* Context ONLY of the last map (perm state is not included) */
+			lastValidState: null, /* Snapshot of the state (context and permState) that was last known to be valid and registered w/ server (fallback if no map) */
 			lastValidContextId: null, /* Id (a number) of this state as registered w/ the server */
         	
         	previousState: null, /* previous context and perm state, serialized as json */
@@ -165,20 +177,42 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
  */
 Sparrow.ux.Session = function(config){
 	this.context = config.context;
-	return this.load(this.context.sessionTemplate);
+	return this.load(this.context.sessionTemplate, true);
 };
 Sparrow.ux.Session.prototype = {
-	load : function(jsonOrString) {
+	
+	/**
+	 * Load a new state from a JSON String.
+	 * 
+	 * This is used at application startup to load a blank state from the 
+	 * Sparrow.ux.Context.sessionTemplate, its used to load a predefined session
+	 * (which are stored as JSON strings) and simlarly for adhoc stored sessions
+	 * that the user might upload.
+	 * 
+	 * Loading a predefined session or user uploaded session should *not* set
+	 * the loadNewTransientData flag, since:
+	 * In the case of a PreSession, the model data is still valid.
+	 * In the case of a user uploaded session, it could be a different model,
+	 * so the model data needs to be reloaded.
+	 * 
+	 * @param {String} jsonOrString A JSON serialized string representing a context state.  See Sparrow.ux.Context.sessionTemplate for structure.
+	 * @param {boolean} loadNewTransientData If true, the transient data (or lack of) in jsonOrString will overwrite the current transient data.
+	 * @returns {Sparrow.ux.Session.prototype}
+	 */
+	load : function(jsonOrString, loadNewTransientData) {
 		// JSONify the input if it is a string.
 		var data = (Ext.isString(jsonOrString))? Ext.decode(jsonOrString): jsonOrString;
 
 		// This is done so that the Session object may be manipulated just as the original JSON object
 		this.PredictionContext = data.PredictionContext;
 		this.PermanentMapState = data.PermanentMapState;
-		this.TransientMapState = data.TransientMapState;
 		
-		if (this.TransientMapState == null) {
-			//This happens during pre-session load
+		if (loadNewTransientData) {
+			this.TransientMapState = data.TransientMapState;
+		}
+		
+		//Its possible the loaded transient is null, so update to the template.
+		if (! this.TransientMapState) {
 			this.TransientMapState = this.context.sessionTemplate.TransientMapState;
 		}
 		
@@ -190,6 +224,10 @@ Sparrow.ux.Session.prototype = {
 		}
 		
 		return this;
+	},
+	
+	getModelId : function() {
+		return parseInt(Sparrow.SESSION.PredictionContext["@model-id"]);
 	},
 
 	getData : function(){return {
@@ -218,8 +256,22 @@ Sparrow.ux.Session.prototype = {
 		return Sparrow.USGS.JSONtoXML({adjustmentGroups : this.PredictionContext.adjustmentGroups});
 	},
 
-	/** Returns SESSION/SESSION.data as a JSON String for serialization. */
-	asJSON : function(){return Ext.util.JSON.encode(this.getData());}, // might need to be this.getData()
+
+	/**
+	 * Returns the current non-transient state as a JSON string.
+	 * 
+	 * @param {boolean} contextOnly If true, only the Prediction context is included - the perm state is skipped.
+	 * @returns {String} A JSON string representing the application state.
+	 */
+	asJSON : function(contextOnly){
+		var state = this.getData();
+		if (contextOnly == true) {
+			return Ext.util.JSON.encode({PredictionContext: state.PredictionContext});
+		} else {
+			return Ext.util.JSON.encode(state);
+		}
+	},
+	
 
 	/** Returns SESSION/SESSION.data as a XML String*/
 	asSessionXML : function(){ 
@@ -269,8 +321,9 @@ Sparrow.ux.Session.prototype = {
 	 *  @param seriesData {object} Required object matching the structure of lastMappedSeriesData
 	 */
 	markMappedState: function(contextId, seriesData) {
-		this.TransientMapState.lastMappedContext = this.asJSON();
+		this.TransientMapState.lastMappedState = this.asJSON();
 		this.TransientMapState.lastMappedContextId = contextId;
+		this.TransientMapState.lastMappedContext = this.asJSON(true);
 		this._copySeriesData(seriesData, this.TransientMapState.lastMappedSeriesData);
 		this.markValidState(contextId, seriesData);
 	},
@@ -294,7 +347,7 @@ Sparrow.ux.Session.prototype = {
 			this.TransientMapState.lastValidContextId = null;	//don't let old value stay
 		}
 		
-		this.TransientMapState.lastValidContext = this.asJSON();
+		this.TransientMapState.lastValidState = this.asJSON();
 		this._copySeriesData(seriesData, this.TransientMapState.lastValidSeriesData);
 	},
 	
@@ -369,7 +422,7 @@ Sparrow.ux.Session.prototype = {
 	isLastValidLastValidContextFullySpecified: function() {
 		return (
 				this.TransientMapState.lastValidContextId &&
-				this.TransientMapState.lastValidContext &&
+				this.TransientMapState.lastValidState &&
 				this.TransientMapState.lastValidSeriesData.seriesConstituent); 
 	},
 			
@@ -382,8 +435,8 @@ Sparrow.ux.Session.prototype = {
 	 * 
 	 * @returns {Object} {PredictionContext, PermanentMapState}
 	 */
-	getLastValidContext: function() {
-		var vs = this.TransientMapState.lastValidContext;
+	getLastValidState: function() {
+		var vs = this.TransientMapState.lastValidState;
 
 		if (vs != null) {
 			return Ext.util.JSON.decode(vs);
@@ -406,9 +459,9 @@ Sparrow.ux.Session.prototype = {
 	 * 
 	 * @returns {Object} {PredictionContext, PermanentMapState} or null.
 	 */
-	getLastMappedContext: function() {
-		if (this.TransientMapState.lastMappedContext != null) {
-			return Ext.util.JSON.decode(this.TransientMapState.lastMappedContext);
+	getLastMappedState: function() {
+		if (this.TransientMapState.lastMappedState != null) {
+			return Ext.util.JSON.decode(this.TransientMapState.lastMappedState);
 		} else {
 			return null;
 		}
@@ -420,9 +473,7 @@ Sparrow.ux.Session.prototype = {
 	 *  yet, but a context is needed for server communication (eg the ID operation).
 	 */
 	mark: function(){
-		this.TransientMapState.previousState = this.asJSON();
-		//this.TransientMapState.previousTermReachesState = Ext.util.JSON.encode(this.PredictionContext.terminalReaches);
-		//this.TransientMapState.previousAdjGroupsState = Ext.util.JSON.encode(this.PredictionContext.adjustmentGroups);    	
+		this.TransientMapState.previousState = this.asJSON();  	
 	},
 	
 	/**
@@ -433,14 +484,15 @@ Sparrow.ux.Session.prototype = {
 	},
 	
 	/**
-	 * Returns true if the state has changed since the last map was drawn.
+	 * Returns true if context (not perm or trans state) has changed since the
+	 * last map was drawn.
 	 * If no map was ever drawn, returns true.
 	 */
 	isChangedSinceLastMap : function() {
 		if (this.TransientMapState.lastMappedContextId == null) {
 			return true;
 		} else {
-			return (this.asJSON() != this.TransientMapState.lastMappedContext);
+			return (this.asJSON(true) != this.TransientMapState.lastMappedContext);
 		}
 	},
 			
@@ -453,7 +505,7 @@ Sparrow.ux.Session.prototype = {
 		if (this.TransientMapState.lastValidContextId == null) {
 			return true;	//No state was ever registered or we have no ID for it
 		} else {
-			return (this.asJSON() != this.TransientMapState.lastValidContext);
+			return (this.asJSON() != this.TransientMapState.lastValidState);
 		}
 	},
 
@@ -829,6 +881,22 @@ Sparrow.ux.Session.prototype = {
 		return comparison["@type"];
 	},
 	
+	setSpatialServiceEndpoint: function(endpointUrl) {
+		this.TransientMapState.spatialServiceEndpoint = endpointUrl;
+	},
+	
+	getSpatialServiceEndpoint: function() {
+		return this.TransientMapState.spatialServiceEndpoint;
+	},
+	
+	setPredefinedSessionName: function(sessionName) {
+		if (sessionName == "") sessionName = null;
+		this.TransientMapState.predefinedSessionName = sessionName;
+	},
+	
+	getPredefinedSessionName: function() {
+		return this.TransientMapState.predefinedSessionName;
+	},
 
 	/**
 	 * If setting the dataSeries, update the name and description as well so that
@@ -1137,19 +1205,19 @@ Sparrow.ux.Session.prototype = {
 	},
 	
 	setOriginalBoundSouth: function(val) {
-		this.TransientMapState.originalBoundSouth = val;
+		this.TransientMapState.originalBoundSouth = parseFloat(val);
 	},
 	
 	setOriginalBoundNorth: function(val) {
-		this.TransientMapState.originalBoundNorth = val;
+		this.TransientMapState.originalBoundNorth = parseFloat(val);
 	},
 
 	setOriginalBoundEast: function(val) {
-		this.TransientMapState.originalBoundEast = val;
+		this.TransientMapState.originalBoundEast = parseFloat(val);
 	},
 
 	setOriginalBoundWest: function(val) {
-		this.TransientMapState.originalBoundWest = val;
+		this.TransientMapState.originalBoundWest = parseFloat(val);
 	},
 	
 	getOriginalBoundSouth: function() {
@@ -1190,6 +1258,14 @@ Sparrow.ux.Session.prototype = {
 	
 	getThemeName: function() {
 		return this.TransientMapState.themeName;
+	},
+	
+	setSourceList: function(val) {
+		this.TransientMapState.sourceList = val;
+	},
+	
+	getSourceList: function() {
+		return this.TransientMapState.sourceList;
 	},
 	
 	hasAdjustments: function() {

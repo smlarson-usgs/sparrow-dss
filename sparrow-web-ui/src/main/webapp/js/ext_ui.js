@@ -619,24 +619,157 @@ Ext.onReady(function() {
 	//This is the plumbing for the app
 	Sparrow.events.EventManager.registerSessionEvents();
 
-	if (Sparrow.ui.loadSessionName) {
-		Ext.Ajax.request({
-			method: 'GET',
-			url: 'listPredefSessions',
-			success: function(r,o){
-				Sparrow.ui.render_ui(r.responseText);
-			},
-			params: {
-				uniqueCode: Sparrow.ui.loadSessionName,
-						content_only: 'true'
-			}
-		});
-    } else {
-    	getModel();
-    }
-
 	Sparrow.SESSION.fireContextEvent('finished-loading-ui');
 });
+
+/**
+ * Renders the model source options to the page and other model info dependent items..
+ *
+ */
+function renderModelInfo() {
+	
+	var docUrl = Sparrow.SESSION.getDocUrl();
+	
+    var docMenu = Ext.menu.MenuMgr.get('sparrow-documentation-menu');
+
+	/**
+	 * @param {string} name - the user-facing text for the menu item
+	 * @param {string} videoId - the youtube video id
+	 */
+	var addVideoItemToDocMenu = function(name, videoId){
+		//access docMenu through closure
+		docMenu.add({
+	   	text: 'Video: ' + name,
+	   	handler: function() {
+	   		openScreencast(videoId);
+	   	}
+		});
+	};
+
+    docMenu.removeAll();
+    if(docUrl != null) {
+        docMenu.add({
+        	text: 'About: ' + Sparrow.SESSION.getModelName() + '...',
+        	handler: function() {
+        		var newWindow = window.open(docUrl, '_blank');
+        		newWindow.focus();
+        	}
+        });
+    }
+    docMenu.add({
+    	text: 'What is SPARROW?',
+    	handler: function() {
+    		var newWindow = window.open('http://pubs.usgs.gov/fs/2009/3019/pdf/fs_2009_3019.pdf', '_blank');
+    		newWindow.focus();
+    	}
+    });
+   docMenu.add({
+    	text: 'SPARROW Applications & Documentation',
+    	handler: function() {
+    		var newWindow = window.open('http://water.usgs.gov/nawqa/sparrow/', '_blank');
+    		newWindow.focus();
+    	}
+    });
+   docMenu.add({
+   	text: 'SPARROW FAQs',
+   	handler: function() {
+   		var newWindow = window.open('faq.jsp', '_blank');
+   		newWindow.focus();
+   	}
+   });
+   docMenu.add('-');
+   docMenu.add({
+	   text: 'Tutorial Videos',
+	   style: {'font-weight': 'bold', 'font-size': '110%'}
+   });
+   docMenu.add({
+	   text: 'Video windows can be resized to show full detail',
+	   style: {'font-style': 'italic'}
+   });
+   docMenu.add('-');
+   //add videos
+   Ext.iterate(screenCastNameToVideoIdMap, function(name, videoId){
+		addVideoItemToDocMenu(name, videoId);
+   });
+
+   Ext.getCmp('map-options-tab').autoBinsChk.setValue(Sparrow.SESSION.isBinAuto());
+
+    // Render the appropriate model 'theme'
+    var siteTitleBar = document.getElementById('title-model-name');
+    siteTitleBar.innerHTML = " - " + Sparrow.SESSION.getModelName();
+
+    // Get the treaments tab from the group defintion window
+    var treatmentTab = document.getElementById('treatment-tab');
+    treatmentTab.innerHTML = '';
+
+    // Iterate over the sources
+    var mapOptionsTab = Ext.getCmp('map-options-tab');
+    mapOptionsTab.clearSources();
+
+	var sourceList = Sparrow.SESSION.getSourceList();
+    for (var i = 0; i < sourceList.length; i++) {
+
+        // Add to the data series source select
+        var displayName = sourceList[i]["displayName"];
+        var description = sourceList[i]["description"];
+        mapOptionsTab.addSource(displayName, i + 1, description);
+
+        // Add a row to the treatment tab
+        var data_row = document.createElement('div');
+        data_row.className = 'data_row clearfix';
+        (i%2) ? data_row.style.backgroundColor = '#FFFFFF' : data_row.style.backgroundColor = '#EEEEEE';
+
+        var src_name = document.createElement('div');
+        src_name.className = 'col_25';
+        src_name.innerHTML = sourceList[i]["displayName"];
+
+        var src_constituent = document.createElement('div');
+        src_constituent.className = 'col_20';
+        src_constituent.innerHTML = sourceList[i]["constituent"] + ' (' + sourceList[i]["units"] + ')';
+
+        var src_adj_div = document.createElement('div');
+        src_adj_div.className = 'col_20';
+        var src_adj = Sparrow.USGS.createElement('select','treatment-tab_src_adj');
+        src_adj.id = 'treatment-tab_src_adj_' + i;
+        src_adj.size = 1;
+        for (var j = 0; j <= 8; j++) {
+            var opt = new Option(j * 0.25, j * 0.25);
+            src_adj.options[j] = opt;
+        }
+        src_adj.value = 1;
+
+        var src_cust = document.createElement('div');
+        src_cust.className = 'col_30';
+        //src_cust.innerHTML = '<a href="#" onclick="return false">customize...</a>';
+        var src_cust_a = document.createElement('a');
+        src_cust_a.href = "";
+        src_cust_a.index = i;
+        src_cust_a.innerHTML = 'enter custom multiplier...';
+        src_cust_a.onclick = function() {
+            var idx = this.index;
+            var src_adj_sel = document.getElementById('treatment-tab_src_adj_' + idx);
+            var reply = parseFloat(prompt("Enter new value for multiplier:",""));
+            if (!isNaN(reply)) {
+                src_adj_sel.value = reply;
+                if (src_adj_sel.value != reply) { //number doesn't exist in list already, add it
+                    src_adj_sel.options[9] = new Option(reply,reply);
+                    src_adj_sel.value = reply;
+                }
+            }
+            return false;
+        };
+
+        src_cust.appendChild(src_cust_a);
+        treatmentTab.appendChild(data_row);
+        data_row.appendChild(src_name);
+        data_row.appendChild(src_constituent);
+        data_row.appendChild(src_adj_div);
+        src_adj_div.appendChild(src_adj);
+        data_row.appendChild(src_cust);
+    }
+
+    mapOptionsTab.filterSourceCombo();
+}
 
 /**
  * Prompt the user before following link home
