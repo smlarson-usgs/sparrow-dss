@@ -610,7 +610,7 @@ var edaCodeStore = new Ext.data.XmlStore({
   autoLoad: true,
 	baseParams: {
 		get: 'code',
-		model: (model_id || Sparrow.USGS.getURLParam("model") || 22)
+		model: (model_id || Sparrow.USGS.getURLParam("model"))
 	},
   url: 'findReachSupport',
   record: 'code',
@@ -633,7 +633,7 @@ var edaNameStore = new Ext.data.XmlStore({
   autoLoad: true,
 	baseParams: {
 		get: 'name',
-		model: (model_id || Sparrow.USGS.getURLParam("model") || 22)
+		model: (model_id || Sparrow.USGS.getURLParam("model"))
 	},
   url: 'findReachSupport',
   record: 'name',

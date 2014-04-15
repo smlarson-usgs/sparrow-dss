@@ -44,34 +44,68 @@ Sparrow.events.EventManager = function(){ return{
 		});
 		
 		//need sourceshareComparison change event
+		
+		//TODO:  ee 4/15/14
+		//Proposed loading event (not implemented, but would be much cleaner) :
+		//1) Build (load) UI
+		//2) Load application state - either default context, pre-session (or upload)
+		//3) Load model info (model ID now known from presession, if specified)
+		//4) Load external service endpoints
+		//5) Sync UI to application state
+		//
+		//Currently, setting app state and sync'ing the UI to that state is
+		//mixed in multiple places.  The above order would cleanly order things,
+		//syncing the UI last after we fully know the app state to load.
+		
 
 		/**
-		 * Called when the state loading is complete.  Must happen after
-		 * 'finished-loading-pre-session' if it is a pre-session.
+		 * The basic ui is built and ready to load state to.
 		 */
 		Sparrow.CONTEXT.on('finished-loading-ui', function() {
-			//Update the overlay controls to the current state
-			var mapOptionsTab = Ext.getCmp('map-options-tab');
-			mapOptionsTab.syncDataOverlayControlsToSession();
-
-			//Update the map to the current state
-			Sparrow.handlers.MapComponents.updateCalibrationLayerOnMap();
-			Sparrow.handlers.MapComponents.updateReachOverlayOnMap();
-			Sparrow.handlers.MapComponents.updateHuc8OverlayOnMap();
+			loadBasicModelInfo();
 			
-			//Todo - is this a mappable state?
-			if (Sparrow.SESSION.isValidContextState()) {
-				Sparrow.SESSION.markValidState();
+			//Load the name of a predefined session, if we have one
+			Sparrow.SESSION.setPredefinedSessionName(Sparrow.USGS.getURLParam("session"));
+		});
+		
+		/**
+		 * The model data has been load, such as model name, sources, theme name - all loaded to transient state.
+		 */
+		Sparrow.CONTEXT.on('finished-loading-basic-model-info', function() {
+			renderModelInfo();
+			loadExternalResourceInfo();
+		});
+		
+		/**
+		 * External resource info has been loaded (currently, the location of GeoServer)
+		 */
+		Sparrow.CONTEXT.on('finished-loading-external-resource-info', function() {
+			if (Sparrow.SESSION.getPredefinedSessionName()) {
+				Sparrow.ui.loadPredefinedSessionByName(Sparrow.SESSION.getPredefinedSessionName());
 			} else {
-				//This should never get this far, but just in case, tell the user.
-				Ext.Msg.alert('Warning', Sparrow.SESSION.getInvalidContextStateMessage());
+				Sparrow.SESSION.fireContextEvent('finished-loading-everything');
 			}
-			
-			Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(false);
-			Ext.getCmp('update-map-button-panel').setStatusFreshLoad();
-
 		});
 
+		/**
+		 * The user has uploaded a saved session and it is from a model other than
+		 * the model initially loaded.
+		 */
+		Sparrow.CONTEXT.on('finished-loading-pre-session-new-model', function() {
+			//Remove all data-related layers (the finished-loading-ui will put them back)
+			Sparrow.handlers.MapComponents.turnOffDataRelatedLayers();
+			
+			//deal w/ older session definitions
+			Sparrow.handlers.MapComponents.ensureMaplayerState();
+			
+			//This name is used to determine if we have loaded a named session
+			//and it might still be present from a previous load.
+			//A new model is from a user uploaded session, so not a named pre-session.
+			Sparrow.SESSION.setPredefinedSessionName(null);
+			
+			//This will reload model info, but should not go down the 'predefined session' path again.
+			loadBasicModelInfo();
+		});
 		/**
 		 * When a predefined session is loaded, this method can be called to force
 		 * the mapping framework to display all the layers specified by that session.
@@ -84,48 +118,89 @@ Sparrow.events.EventManager = function(){ return{
 
 			//Remove all data-related layers (the finished-loading-ui will put them back)
 			Sparrow.handlers.MapComponents.turnOffDataRelatedLayers();
-
-			if (! Sparrow.SESSION.PermanentMapState["mapLayers"]) {
-				//This is mostly to handle old sessions that do not have map layers
-				//defined.
-				Sparrow.SESSION.PermanentMapState["mapLayers"] = new Object();
-
-
-				//Pick up whatever map layers are currently turned on
-				var mapLayers = map1.layerManager.activeMapLayers;
-				for (var i=0; i<mapLayers.length; i++) {
-					Sparrow.SESSION.setMapLayerEnabled(mapLayers[i].id, mapLayers[i].opacity);
-				}
-
-				//map layers that are selected, but not active due to being out of scale or bbox
-				mapLayers = map1.layerManager.selectedNotAvailable;
-				for (var i=0; i<mapLayers.length; i++) {
-					Sparrow.SESSION.setMapLayerEnabled(mapLayers[i].id, mapLayers[i].opacity);
-				}
-
-			} else {
-				var allLayers = Sparrow.SESSION.getAvailableMapLayers();
-				for (var i=0; i<allLayers.length; i++) {
-					map1.layerManager.removeLayerFromMap(allLayers[i].id);
-				}
-
-
-				for (var layerId in Sparrow.SESSION.PermanentMapState["mapLayers"]) {
-					if (Sparrow.SESSION.isMapLayerEnabled(layerId)) {
-						Sparrow.SESSION.fireContextEvent("mapLayers-changed", layerId);
-					}
-				}
-			}
 			
-			Sparrow.SESSION.fireContextEvent('changed');
-			Sparrow.SESSION.fireContextEvent('finished-loading-ui');
+			//deal w/ older session definitions
+			Sparrow.handlers.MapComponents.ensureMaplayerState();
 
 			//Google Analytics event tracking
 			var series = Sparrow.SESSION.getLastValidSeriesData().seriesName;
 			_gaq.push(['_trackEvent', 'Context', 'Update', series, parseInt(model_id)]);
 			_gaq.push(['_trackEvent', 'PreSession', 'Loaded', series, parseInt(model_id)]);
+			
+			Sparrow.SESSION.fireContextEvent('finished-loading-everything');
 		});
+		
+		Sparrow.CONTEXT.on('finished-loading-everything', function() {
+			//Update the overlay controls to the current state
+			var mapOptionsTab = Ext.getCmp('map-options-tab');
+			mapOptionsTab.syncDataOverlayControlsToSession();
 
+
+			
+			//Todo - is this a mappable state?
+			if (Sparrow.SESSION.isValidContextState()) {
+				Sparrow.SESSION.markValidState();
+			} else {
+				//This should never get this far, but just in case, tell the user.
+				Ext.Msg.alert('Warning', Sparrow.SESSION.getInvalidContextStateMessage());
+			}
+			
+			Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(false);
+			Ext.getCmp('update-map-button-panel').setStatusFreshLoad();
+			
+			//
+			//Update the map to the current state
+			//
+			
+			map1.dontDraw = true;	//turn off map updates
+			var allLayers = Sparrow.SESSION.getAvailableMapLayers();
+
+			//Remove all (including reach overlay, calibration & hucs if enabled)
+			for (var i=0; i<allLayers.length; i++) {
+				map1.layerManager.removeLayerFromMap(allLayers[i].id);
+			}
+			
+			//Update named layers
+			Sparrow.handlers.MapComponents.updateCalibrationLayerOnMap();
+			Sparrow.handlers.MapComponents.updateReachOverlayOnMap();
+			Sparrow.handlers.MapComponents.updateHuc8OverlayOnMap();
+
+			//re-enable requested (not including reach overlay, calibration & hucs)
+			for (var layerId in Sparrow.SESSION.PermanentMapState["mapLayers"]) {
+				if (Sparrow.SESSION.isMapLayerEnabled(layerId)) {
+					Sparrow.SESSION.fireContextEvent("mapLayers-changed", layerId);
+				}
+			}
+			
+			//Only the zoom/fit operation is left, so turn updates back on
+			map1.dontDraw = false;
+			
+			//Pre-session bounds (non-null if loading from pre-session)
+			var lat = Sparrow.SESSION.PermanentMapState.lat;
+			var lon = Sparrow.SESSION.PermanentMapState.lon;
+			var zoom = Sparrow.SESSION.PermanentMapState.zoom;
+			
+			if (lat != null && lon != null && zoom != null) {
+				//Only happens if we are loading a saved/predefined session
+				
+				if (zoom < map1.minZoom) zoom = map1.minZoom;
+				map1.jumpTo(lat,lon,zoom);
+				
+				//set to null so we don't pick up again.  Repopulated if we save the session.
+				Sparrow.SESSION.PermanentMapState.lat = null;
+				Sparrow.SESSION.PermanentMapState.lon = null;
+				Sparrow.SESSION.PermanentMapState.zoom = null;
+				
+				//add the sparrow data layer to the map
+				make_map();
+			} else {
+				map1.fitToBBox(Sparrow.SESSION.getOriginalBoundEast(),
+					Sparrow.SESSION.getOriginalBoundSouth(), 
+					Sparrow.SESSION.getOriginalBoundWest(), 
+					Sparrow.SESSION.getOriginalBoundNorth());
+			}
+
+		});
 
 		/**
 		 * Invoked when the user changes the map selection b/t Reaches or Catchments.
@@ -154,7 +229,7 @@ Sparrow.events.EventManager = function(){ return{
 				map1.layerManager.getMapLayer(Sparrow.config.LayerIds.mainDataLayerId).setOpacity(Sparrow.SESSION.getDataLayerOpacity()); //TODO global map
 		});
 
-		Sparrow.CONTEXT.on("mapLayers-changed", Sparrow.handlers.MapComponents.toggleMapLayer);
+		Sparrow.CONTEXT.on("mapLayers-changed", Sparrow.handlers.MapComponents.updateBackgroundLayer);
 	}
 };}();
 
@@ -420,32 +495,9 @@ Sparrow.handlers.UiComponents = function(){ return{
 }}();
 
 Sparrow.handlers.MapComponents = function(){
-	var _isLayerActiveInMap = function(layerId) {
-		var isActive = false;
-
-		//Check the active and displayed layers
-		var mapLayers = map1.layerManager.activeMapLayers;
-		for (var i=0; i<mapLayers.length; i++) {
-			if (mapLayers[i].id == layerId) {
-				isActive = true;
-				break;
-			}
-		}
-
-		if (!isActive) {}
-			//check the map layers that are selected, but are out of scale or bbox
-			mapLayers = map1.layerManager.selectedNotAvailable;
-			for (var i=0; i<mapLayers.length; i++) {
-				if (mapLayers[i].id == layerId) {
-					isActive = true;
-					break;
-				}
-			}
-		return isActive;
-	};
 
 	return {
-	toggleMapLayer : function(layerId){
+	updateBackgroundLayer : function(layerId){
 		//User has enabled/disabled a mapLayer, or changed opacity.
 		//This event should also fire after mapLayer selections are
 		//loaded from a predefined theme or at startup.
@@ -453,7 +505,9 @@ Sparrow.handlers.MapComponents = function(){
 		var opacity = Sparrow.SESSION.getMapLayerOpacity(layerId);
 
 		if (isEnabled) {
-			if (! _isLayerActiveInMap(layerId)) {
+			
+			//TODO: This next line look wrong - we can't append a layer id like this
+			if (! map1.layerManager.getSelectedLayer(layerId)) {
 				map1.appendLayer(layerId);
 			}
 			if(map1.layerManager.getMapLayer(layerId)) map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
@@ -472,25 +526,29 @@ Sparrow.handlers.MapComponents = function(){
 		var layerId = Sparrow.config.LayerIds.calibrationSiteLayerId;
 		var opacity = Sparrow.SESSION.getCalibSitesOverlayOpacity();
 		var showRequested = Sparrow.SESSION.isCalibSitesOverlayRequested();
-		var isShowing = (map1.getMapLayer(layerId) != null);
+		var isShowing = (map1.layerManager.getSelectedLayer(layerId) != null);
+		var isAvailable = (map1.getMapLayer(layerId) != null);
 
-	    if (showRequested && ! isShowing) {
-	        var urlParams = 'model_id=' + model_id;
-
-	        map1.layerManager.unloadMapLayer(layerId);
-	        map1.appendLayer(
-	        	new JMap.web.mapLayer.WMSLayer({
-	        		id: layerId, zDepth: 59990, opacity: opacity,
-	        		scaleMin: 0, scaleMax: 100,
-	        		baseUrl: 'calibSiteOverlay?' + urlParams,
-	        		title: "Calibration Sites",
-	        		name: "calibration_sites",
-	        		isHiddenFromUser: true,
-	        		description: 'Sites used to calibration the Sparrow Model'
-	        	})
-	        );
-	    } else if (showRequested) {
-	    	map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
+		if (showRequested) {
+//			if (! isAvailable) {
+//				var urlParams = 'model_id=' + model_id;
+//
+//				map1.layerManager.unloadMapLayer(layerId);
+//				map1.appendLayer(
+//					new JMap.web.mapLayer.WMSLayer({
+//						id: layerId, zDepth: 59990, opacity: opacity,
+//						scaleMin: 0, scaleMax: 100,
+//						baseUrl: 'calibSiteOverlay?' + urlParams,
+//						title: "Calibration Sites",
+//						name: "calibration_sites",
+//						isHiddenFromUser: true,
+//						description: 'Sites used to calibration the Sparrow Model'
+//					})
+//				);
+//			} else if (! isShowing) {
+//				map1.appendLayer(layerId);
+//			}
+//			map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
 	    } else {
 	    	map1.layerManager.unloadMapLayer(layerId);
 	    }
@@ -520,25 +578,37 @@ Sparrow.handlers.MapComponents = function(){
 		var layerId = Sparrow.config.LayerIds.reachLayerId;
 		var opacity = Sparrow.SESSION.getReachOverlayOpacity();
 		var showRequested = Sparrow.SESSION.isReachOverlayRequested() && Sparrow.SESSION.isReachOverlayEnabled();
-		var isShowing = (map1.getMapLayer(layerId) != null);
+		var isShowing = (map1.layerManager.getSelectedLayer(layerId) != null);
+		var isAvailable = (map1.getMapLayer(layerId) != null);
 
-		if (showRequested && ! isShowing) {
-	        var urlParams = 'model_id=' + model_id + '&context_id=' + Sparrow.SESSION.getMappedOrValidContextId();
+		if (showRequested) {
+			if (! isAvailable) {
 
-	        map1.layerManager.unloadMapLayer(layerId);
-	        map1.appendLayer(
-	        	new JMap.web.mapLayer.WMSLayer({
-	        		id: layerId,  zDepth: 59995, opacity: opacity,
-	        		scaleMin: 0, scaleMax: 100,
-	        		baseUrl: 'reachOverlay?' + urlParams,
-	        		title: "Reach Overlay",
-	        		name: "reach_overlay",
-	        		isHiddenFromUser: true,
-	        		description: 'Reaches overlayed in grey'
-	        	})
-	        );
-	    } else if (showRequested) {
-	    	map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
+				var baseUrl = Sparrow.SESSION.getSpatialServiceEndpoint();
+				if (baseUrl.lastIndexOf("/") != (baseUrl.length - 1)) {
+					baseUrl = baseUrl + "/";
+				}
+				baseUrl = baseUrl + "wms?";
+
+				var wsAndLayerName = "reach-overlay:" + Sparrow.SESSION.getThemeName();
+
+				map1.layerManager.unloadMapLayer(layerId);
+				map1.appendLayer(
+					new JMap.web.mapLayer.WMSLayer({
+						id: layerId,  zDepth: 59995, opacity: opacity,
+						scaleMin: 0, scaleMax: 100,
+						baseUrl: baseUrl,
+						title: "Reach Overlay",
+						name: "reach_overlay",
+						isHiddenFromUser: true,
+						description: 'Reaches overlayed in grey',
+						layersUrlParam: wsAndLayerName
+					})
+				);
+			} else if (! isShowing) {
+				map1.appendLayer(layerId);
+			}
+			map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
 	    } else {
 	    	map1.layerManager.unloadMapLayer(layerId);
 	    }
@@ -548,27 +618,57 @@ Sparrow.handlers.MapComponents = function(){
 		var layerId = Sparrow.config.LayerIds.huc8LayerId;
 		var opacity = Sparrow.SESSION.getHuc8OverlayOpacity();
 		var showRequested = Sparrow.SESSION.isHuc8OverlayRequested();
-		var isShowing = (map1.getMapLayer(layerId) != null);
+		var isShowing = (map1.layerManager.getSelectedLayer(layerId) != null);
+		var isAvailable = (map1.getMapLayer(layerId) != null);
 
-		if (showRequested && ! isShowing) {
-	        var urlParams = 'model_id=' + model_id;
-
-	        map1.layerManager.unloadMapLayer(layerId);
-	        map1.appendLayer(
-	        	new JMap.web.mapLayer.WMSLayer({
-	        		id: layerId, zDepth: 59992, opacity: opacity,
-	        		scaleMin: 0, scaleMax: 100,
-	        		baseUrl: 'huc8Overlay?' + urlParams,
-	        		title: "HUC8 Overlay",
-	        		name: "huc8_overlay",
-	        		isHiddenFromUser: true,
-	        		description: 'HUC8 boundries overlayed in black'
-	        	})
-	        );
-	    } else if (showRequested) {
-	    	map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
+		if (showRequested) {
+//			if (! isAvailable) {
+//				
+//				var urlParams = 'model_id=' + model_id;
+//
+//				map1.appendLayer(
+//					new JMap.web.mapLayer.WMSLayer({
+//						id: layerId, zDepth: 59992, opacity: opacity,
+//						scaleMin: 0, scaleMax: 100,
+//						baseUrl: 'huc8Overlay?' + urlParams,
+//						title: "HUC8 Overlay",
+//						name: "huc8_overlay",
+//						isHiddenFromUser: true,
+//						description: 'HUC8 boundries overlayed in black'
+//					})
+//				);
+//			} else if (! isShowing) {
+//				map1.appendLayer(layerId);
+//			}
+//			map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
 	    } else {
 	    	map1.layerManager.unloadMapLayer(layerId);
 	    }
+	},
+	
+	/**
+	 * Older saved/predefined sessions may not have mapLayers stored in them.
+	 * Rather than have no layers turned on, pick up whatever layers are currently
+	 * on.
+	 * @returns {undefined}
+	 */
+	ensureMaplayerState : function() {
+		
+		if (! Sparrow.SESSION.PermanentMapState["mapLayers"]) {
+			Sparrow.SESSION.PermanentMapState["mapLayers"] = new Object();
+
+
+			//Pick up whatever map layers are currently turned on
+			var mapLayers = map1.layerManager.activeMapLayers;
+			for (var i=0; i<mapLayers.length; i++) {
+				Sparrow.SESSION.setMapLayerEnabled(mapLayers[i].id, mapLayers[i].opacity);
+			}
+
+			//map layers that are selected, but not active due to being out of scale or bbox
+			mapLayers = map1.layerManager.selectedNotAvailable;
+			for (var i=0; i<mapLayers.length; i++) {
+				Sparrow.SESSION.setMapLayerEnabled(mapLayers[i].id, mapLayers[i].opacity);
+			}
+		}
 	}
 }}();

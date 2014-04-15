@@ -156,6 +156,15 @@
     </servlet-mapping>
 	
     <servlet>
+        <servlet-name>GeoServerWMSEndPointService</servlet-name>
+        <servlet-class>gov.usgswim.sparrow.service.maplayer.GeoServerWMSEndPointService</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>GeoServerWMSEndPointService</servlet-name>
+        <url-pattern>/GeoServerWMSEndPointService/*</url-pattern>
+    </servlet-mapping>
+	
+    <servlet>
         <servlet-name>Watershed_Service</servlet-name>
         <servlet-class>gov.usgswim.service.ServiceServlet</servlet-class>
         <init-param>

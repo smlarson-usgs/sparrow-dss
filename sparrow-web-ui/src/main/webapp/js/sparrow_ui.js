@@ -1,13 +1,24 @@
 Sparrow.ui = function() { return{
-	loadSessionName : Sparrow.USGS.getURLParam("session")
 	
-	, loadUserSession : false
+	loadPredefinedSessionByName : function(sessionName) {
+		Ext.Ajax.request({
+			method: 'GET',
+			url: 'listPredefSessions',
+			success: function(r,o){
+				Sparrow.ui.loadPredefinedSessionFromJSON(r.responseText);
+			},
+			params: {
+				uniqueCode: sessionName,
+				content_only: 'true'
+			}
+		});
+    }
 	
 	/**
 	 * Called when the iFrame used to load a predefined session is created or
 	 * actually loaded to (ie, it will be called at startup w/ no data).
 	 */
-	, load_ui : function(iframe) {
+	, loadPredefinedSessionFromIFrame : function(iframe) {
 	    document.getElementById('gps-area').innerHTML = '';
 	    var ibody = iframe.contentWindow.document.body;
 	    var ipre = "";
@@ -15,21 +26,24 @@ Sparrow.ui = function() { return{
 	
 	    if (ipre.length > 0) {
 	    	var sessionJSON = ipre[0].innerHTML;
-	    	Sparrow.ui.loadUserSession = true;
-	    	Sparrow.ui.render_ui(sessionJSON);
+	    	Sparrow.ui.loadPredefinedSessionFromJSON(sessionJSON);
 	    }
 	}
 	
-	, render_ui : function(SESSION_txt) {
+	, loadPredefinedSessionFromJSON : function(SESSION_txt) {
+		
+		var orgModelId = Sparrow.SESSION.getModelId();
 	    Sparrow.SESSION.load(SESSION_txt);
+		var newModelId = Sparrow.SESSION.getModelId();
+		var isNewModel = (orgModelId != newModelId);
+		
 	    Sparrow.SESSION.convertOldBinningDataToNew();
 	    Sparrow.SESSION.convertOldOverlaysToNew();
 	
-	    model_id = Sparrow.SESSION.PredictionContext["@model-id"]; //TODO
+		//TODO:  For now leaving this global, since it is used multiple places
+	    model_id = Sparrow.SESSION.getModelId();
 		edaCodeStore.load({params: {model: model_id}});
 		edaNameStore.load({params: {model: model_id}});
-	
-	    getModel();
 	
 	    // Get the values from the PredictionContext first, since selecting
 	    // options from the dropdowns may fire events that change the context
@@ -51,14 +65,6 @@ Sparrow.ui = function() { return{
 	    mapOptionsTab.setComparisonCtl(comparison);
 	    mapOptionsTab.setComparisonBucket(bucketCount + ' ' + bucketType + ' Bins');
 	    mapOptionsTab.setWhatToMapCtl(whatToMap);
-
-	    //load map state
-	    if (!loadStateBBox || Sparrow.ui.loadUserSession) {
-	    	var zoom = Sparrow.SESSION.PermanentMapState.zoom;
-		    var lat = Sparrow.SESSION.PermanentMapState.lat;
-		    var lon = Sparrow.SESSION.PermanentMapState.lon;
-		    map1.jumpTo(lat,lon,zoom - map1.minZoom);
-	    }
 	
 	    //load adjustments
 	    Ext.getCmp('main-adjustments-tab').treePanel.loadTree(); 
@@ -74,13 +80,12 @@ Sparrow.ui = function() { return{
 	    	combo.disable();
 		}
 	    
-	    Sparrow.ui.loadUserSession = false;
+		if (isNewModel) {
+			Sparrow.SESSION.fireContextEvent('finished-loading-pre-session-new-model');
+		} else {
+			Sparrow.SESSION.fireContextEvent('finished-loading-pre-session');
+		}
 	    
-	    Sparrow.SESSION.fireContextEvent('finished-loading-pre-session');
-	
-	    //add the sparrow data layer to the map
-	    make_map();
-
 	}
 	
 	/*

@@ -197,7 +197,7 @@
 			<legend>Upload a previously saved session</legend>
 			<input name="ui_file" id="ui_file" size="21" type="file" /><br/> <br/>
 			<div align="center"><input type="submit" name="action" value="Load Session" onclick="return LOAD_STATE_WIN.close();"/></div><br/>
-			<iframe onload="Sparrow.ui.load_ui(this);" id="upload_target" name="upload_target" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
+			<iframe onload="Sparrow.ui.loadPredefinedSessionFromIFrame(this);" id="upload_target" name="upload_target" src="" style="width:0;height:0;border:0px solid #fff;"></iframe>
 		</fieldset>
       </form>
     </div>
