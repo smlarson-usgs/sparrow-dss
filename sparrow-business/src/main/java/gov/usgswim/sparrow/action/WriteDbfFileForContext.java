@@ -75,23 +75,23 @@ public class WriteDbfFileForContext extends Action<File> {
 	}
 
 	protected File getDataDirectory() {
-                    File dDir;
-                    
-                    if (this.dataDirectory != null) {
-                        dDir =  this.dataDirectory;
-                    } else {
-                        DynamicReadOnlyProperties props = SharedApplication.getInstance().getConfiguration();
-                        String fallbackDataDirectory = System.getProperty("user.home") 
-                                + File.separatorChar 
-                                + "sparrow"
-                                + File.separatorChar
-                                + "data";
-                        String sparrowDataDirectory = props.getProperty(DATA_EXPORT_DIRECTORY, fallbackDataDirectory);
-                        dDir =  new File(sparrowDataDirectory);
-                        this.dataDirectory = dDir;
-                    }
-                    
-                    return dDir;
+		File dDir;
+
+		if (this.dataDirectory != null) {
+			dDir =  this.dataDirectory;
+		} else {
+			DynamicReadOnlyProperties props = SharedApplication.getInstance().getConfiguration();
+			String fallbackDataDirectory = System.getProperty("user.home") 
+					+ File.separatorChar 
+					+ "sparrow"
+					+ File.separatorChar
+					+ "data";
+			String sparrowDataDirectory = props.getProperty(DATA_EXPORT_DIRECTORY, fallbackDataDirectory);
+			dDir =  new File(sparrowDataDirectory);
+			this.dataDirectory = dDir;
+		}
+
+		return dDir;
 	}
 
 }
