@@ -129,7 +129,7 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
          public void testGetDefaultDataDirectoryWithSysprops() throws IOException {
              System.out.println("testGetDefaultDataDirectoryWithSysprops");
              String TEST_PATH = "/i/am/a/test/property/file/path";
-             SharedApplication.getInstance().getConfiguration().setProperty("geoserver-cache-dir", TEST_PATH);
+             SharedApplication.getInstance().getConfiguration().setProperty("data-export-directory", TEST_PATH);
              WriteDbfFileForContext obj = new WriteDbfFileForContext();
              File result = obj.getDataDirectory();
              String  assertion = TEST_PATH;
