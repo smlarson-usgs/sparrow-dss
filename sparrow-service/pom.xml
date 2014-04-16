@@ -5,13 +5,13 @@
 	<parent>
 	<groupId>gov.usgs.cida</groupId>
 		<artifactId>sparrow-parent</artifactId>
-		<version>1.4.33-SNAPSHOT</version>
+		<version>1.4.33</version>
 	</parent>
 
 	<artifactId>sparrow-service</artifactId>
 	<packaging>war</packaging>
 	<name>sparrow-service</name>
-	<version>1.4.33-SNAPSHOT</version>
+	<version>1.4.33</version>
 
 	<properties>
 		<netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>

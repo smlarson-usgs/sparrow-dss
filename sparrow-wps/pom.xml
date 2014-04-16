@@ -4,11 +4,11 @@
 	<parent>
 		<artifactId>sparrow-parent</artifactId>
 		<groupId>gov.usgs.cida</groupId>
-		<version>1.4.33-SNAPSHOT</version>
+		<version>1.4.33</version>
 	</parent>
 	<groupId>gov.usgs.cida</groupId>
 	<artifactId>sparrow-wps</artifactId>
-	<version>1.4.33-SNAPSHOT</version>
+	<version>1.4.33</version>
 	<packaging>jar</packaging>
 
 	<name>Sparrow WPS</name>
