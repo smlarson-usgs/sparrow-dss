@@ -314,6 +314,7 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
         		Sparrow.SESSION.setHuc8OverlayRequested(checked);
         		this.huc8OverlaySlider.setDisabled(!checked);
         	},
+			disabled: true, /* TODO: This feature is not available on GeoServer version yet */
         	scope: this
         });
 		
