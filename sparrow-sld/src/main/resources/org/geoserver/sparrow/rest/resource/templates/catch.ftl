@@ -16,10 +16,10 @@
           <Name>Bin ${bin_index + 1} of ${bins?size}</Name>
           <ogc:Filter>
             <#if bin_index == 0 && !bounded>
-                <ogc:PropertyIsLessThanOrEqualTo>
+                <ogc:PropertyIsLessThan>
                     <ogc:PropertyName>VALUE</ogc:PropertyName>
                     <ogc:Literal>${bin.upper}</ogc:Literal>
-                </ogc:PropertyIsLessThanOrEqualTo>
+                </ogc:PropertyIsLessThan>
             <#elseif bin_index == bins?size - 1 && !bounded>
                 <ogc:PropertyIsGreaterThanOrEqualTo>
                     <ogc:PropertyName>VALUE</ogc:PropertyName>
