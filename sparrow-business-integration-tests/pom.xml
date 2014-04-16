@@ -4,10 +4,10 @@
   <parent>
     <groupId>gov.usgs.cida</groupId>
     <artifactId>sparrow-parent</artifactId>
-    <version>1.4.33</version>
+    <version>1.4.34-SNAPSHOT</version>
   </parent>
   <artifactId>sparrow-business-integration-tests</artifactId>
-  <version>1.4.33</version>
+  <version>1.4.34-SNAPSHOT</version>
   <name>sparrow-business-integration-tests</name>
   <url>http://maven.apache.org</url>
 <!--  <properties>
