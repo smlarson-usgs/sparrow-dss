@@ -37,7 +37,13 @@ Sparrow.index.CSWClient = function() {
 
     function setXpathValue(_a, _b, _c) {
 
-        var _e = _a.selectSingleNode ? _a.selectSingleNode(_b) : _a.evaluate(_b, _a).iterateNext();
+        var _e;
+
+        try {
+            _e = _a.selectSingleNode(_b);
+        } catch (ex) {
+            _e = _a.evaluate(_b, _a).iterateNext();
+        }
 
         if (typeof _c === 'string') {
             if (_e) {
@@ -62,7 +68,6 @@ Sparrow.index.CSWClient = function() {
     function parseXml(xmlString) {
         var result;
         if (window.ActiveXObject) {
-            // IE
             result = new ActiveXObject('Msxml2.DOMDocument.6.0');
             result.loadXML(xmlString);
         } else {
@@ -113,15 +118,15 @@ Sparrow.index.CSWClient = function() {
             if (config.accept) {
                 xmlhttp.setRequestHeader("Accept", config.accept);
             }
-            xmlhttp.send(params); // POST
+            xmlhttp.send(params);
 
 
             if (config.accept == HTML_MIME_TYPE) {
-                xml = xmlhttp.responseText;	//text string
+                xml = xmlhttp.responseText;
             } else if (config.accept == XML_MIME_TYPE) {
-                xml = xmlhttp.responseXML; //xml document
+                xml = xmlhttp.responseXML;
             } else {
-                xml = xmlhttp.responseText;	//Don't know - assume text
+                xml = xmlhttp.responseText;
             }
 
             return xml;
@@ -148,9 +153,12 @@ Sparrow.index.CSWClient = function() {
         this.defaults_xml = loadDocument(defaultsPath);
         this.getModelIdFromRespStylesheet = loadDocument(getModelIdFromResp);
         this.xmlStylesheet = loadDocument(prettyXmlResp);
-        this.defaultschema = this.defaults_xml.selectSingleNode ?
-                this.defaults_xml.selectSingleNode("/defaults/outputschema/text()").nodeValue :
-                this.defaults_xml.evaluate("/defaults/outputschema/text()", this.defaults_xml).iterateNext().data;
+
+        try {
+            this.defaultschema = this.defaults_xml.selectSingleNode("/defaults/outputschema/text()").nodeValue;
+        } catch (ex) {
+            this.defaultschema = this.defaults_xml.evaluate("/defaults/outputschema/text()", this.defaults_xml).iterateNext().data;
+        }
 
         this.host = cswhost;
 
@@ -248,9 +256,13 @@ Sparrow.index.CSWClient = function() {
             var csw_response = sendCSWRequest({host: this.host, request: request, accept: XML_MIME_TYPE});
             var results = "<results><request start=\"" + start + "\"";
             results += " maxrecords=\"";
-            results += this.defaults_xml.selectSingleNode ?
-                    this.defaults_xml.selectSingleNode("/defaults/maxrecords/text()").nodeValue :
-                    this.defaults_xml.evaluate("/defaults/maxrecords/text()", this.defaults_xml).iterateNext().data;
+
+            try {
+                results += this.defaults_xml.selectSingleNode("/defaults/maxrecords/text()").nodeValue;
+            } catch (ex) {
+                results += this.defaults_xml.evaluate("/defaults/maxrecords/text()", this.defaults_xml).iterateNext().data;
+            }
+
             results += "\"/></results>";
             var results_xml = parseXml(results);
 

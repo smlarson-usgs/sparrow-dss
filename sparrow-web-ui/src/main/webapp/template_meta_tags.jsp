@@ -5,7 +5,7 @@
 		Tell newer versions of IE to pretend they are IE9.
 		IE8 Does not work for rendering SVG, so versions 8 and older get warning messages.
 		--%>
-		<meta http-equiv="x-ua-compatible" content="IE=9" >
+		<meta http-equiv="x-ua-compatible" content="IE=10" >
 		
 		<meta name="description" content ="SPARROW Decision Support tool - an online version of the SPARROW Models with support for scenario testing."> 
 		<meta name="author" content="See http://water.usgs.gov/nawqa/sparrow for authorship of the SPARROW model.  Site and online capabilities created by CIDA, http://cida.usgs.gov"> 
