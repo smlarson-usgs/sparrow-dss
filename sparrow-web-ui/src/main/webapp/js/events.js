@@ -527,29 +527,37 @@ Sparrow.handlers.MapComponents = function(){
 		var opacity = Sparrow.SESSION.getCalibSitesOverlayOpacity();
 		var showRequested = Sparrow.SESSION.isCalibSitesOverlayRequested();
 		var isShowing = (map1.layerManager.getSelectedLayer(layerId) != null);
-		var isAvailable = (map1.getMapLayer(layerId) != null);
 
 		if (showRequested) {
-//			if (! isAvailable) {
-//				var urlParams = 'model_id=' + model_id;
-//
-//				map1.layerManager.unloadMapLayer(layerId);
-//				map1.appendLayer(
-//					new JMap.web.mapLayer.WMSLayer({
-//						id: layerId, zDepth: 59990, opacity: opacity,
-//						scaleMin: 0, scaleMax: 100,
-//						baseUrl: 'calibSiteOverlay?' + urlParams,
-//						title: "Calibration Sites",
-//						name: "calibration_sites",
-//						isHiddenFromUser: true,
-//						description: 'Sites used to calibration the Sparrow Model'
-//					})
-//				);
-//			} else if (! isShowing) {
-//				map1.appendLayer(layerId);
-//			}
-//			map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
-	    } else {
+			if (isShowing) {
+				map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
+			} else {
+				var viewParams = "viewparams=modelid:" + Sparrow.SESSION.getModelId() + ";";
+				var baseUrl = Sparrow.SESSION.getSpatialServiceEndpoint();
+				if (baseUrl.lastIndexOf("/") != (baseUrl.length - 1)) {
+					baseUrl = baseUrl + "/";
+				}
+
+				//There is not a separate WMS param for this, so tack onto base url
+				baseUrl = baseUrl + "wms?" + viewParams;
+
+				var wsAndLayerName = "calibration-overlay:calibration";
+
+				map1.layerManager.unloadMapLayer(layerId);
+				map1.appendLayer(
+					new JMap.web.mapLayer.WMSLayer({
+						id: layerId,  zDepth: 59990, opacity: opacity,
+						scaleMin: 0, scaleMax: 100,
+						baseUrl: baseUrl,
+						title: "Calibration Site Overlay",
+						name: "calibration",
+						isHiddenFromUser: true,
+						description: 'Calibration sites overlay',
+						layersUrlParam: wsAndLayerName
+					})
+				);
+			}
+		} else {
 	    	map1.layerManager.unloadMapLayer(layerId);
 	    }
 	},
@@ -579,11 +587,11 @@ Sparrow.handlers.MapComponents = function(){
 		var opacity = Sparrow.SESSION.getReachOverlayOpacity();
 		var showRequested = Sparrow.SESSION.isReachOverlayRequested() && Sparrow.SESSION.isReachOverlayEnabled();
 		var isShowing = (map1.layerManager.getSelectedLayer(layerId) != null);
-		var isAvailable = (map1.getMapLayer(layerId) != null);
 
 		if (showRequested) {
-			if (! isAvailable) {
-
+			if (isShowing) {
+				map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
+			} else {
 				var baseUrl = Sparrow.SESSION.getSpatialServiceEndpoint();
 				if (baseUrl.lastIndexOf("/") != (baseUrl.length - 1)) {
 					baseUrl = baseUrl + "/";
@@ -605,11 +613,8 @@ Sparrow.handlers.MapComponents = function(){
 						layersUrlParam: wsAndLayerName
 					})
 				);
-			} else if (! isShowing) {
-				map1.appendLayer(layerId);
 			}
-			map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
-	    } else {
+		} else {
 	    	map1.layerManager.unloadMapLayer(layerId);
 	    }
 	},
@@ -619,10 +624,9 @@ Sparrow.handlers.MapComponents = function(){
 		var opacity = Sparrow.SESSION.getHuc8OverlayOpacity();
 		var showRequested = Sparrow.SESSION.isHuc8OverlayRequested();
 		var isShowing = (map1.layerManager.getSelectedLayer(layerId) != null);
-		var isAvailable = (map1.getMapLayer(layerId) != null);
 
 		if (showRequested) {
-//			if (! isAvailable) {
+//			if (! isShowing) {
 //				
 //				var urlParams = 'model_id=' + model_id;
 //
@@ -637,11 +641,11 @@ Sparrow.handlers.MapComponents = function(){
 //						description: 'HUC8 boundries overlayed in black'
 //					})
 //				);
-//			} else if (! isShowing) {
-//				map1.appendLayer(layerId);
+//		
+//			} else {
+//				map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
 //			}
-//			map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
-	    } else {
+		} else {
 	    	map1.layerManager.unloadMapLayer(layerId);
 	    }
 	},
