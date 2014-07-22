@@ -73,6 +73,7 @@
 				<module>sparrow-wps</module>
 				<module>sparrow-geoserver</module>
                 <module>sparrow-sld</module>
+				<module>sparrow-jmeter</module>
 			</modules>
 		</profile>
 		
@@ -95,6 +96,20 @@
 		</profile>
 		
 		<profile>
+			<id>jmeter-test-only-build</id>
+			<activation>
+				<property>
+					<name>jmeter-test-only-build</name>
+					<value>true</value>
+				</property>
+			</activation>
+			
+			<modules>
+				<module>sparrow-jmeter</module>
+			</modules>
+		</profile>
+		
+		<profile>
 			<id>sonar-build</id>
 			<activation>
 				<property>
@@ -111,6 +126,7 @@
 				<module>sparrow-validation</module>
 				<module>sparrow-shared-test</module>
 				<module>sparrow-business-integration-tests</module>
+				<module>sparrow-jmeter</module>
 			</modules>
 		</profile>
 		

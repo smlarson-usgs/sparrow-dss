@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>sparrow-parent</artifactId>
+		<groupId>gov.usgs.cida</groupId>
+		<version>1.4.34-SNAPSHOT</version>
+	</parent>
+	<groupId>gov.usgs.cida</groupId>
+	<artifactId>sparrow-jmeter</artifactId>
+	<version>1.4.34-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	
+	<name>Sparrow JMeter</name>
+
+<!--	<repositories>
+		<repository>
+			<id>nexus</id>
+			<name>CIDA Nexus</name>
+			<url>http://internal.cida.usgs.gov/maven/content/groups/public/</url>
+		</repository>
+		<repository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>central</id>
+			<name>Maven Repository Switchboard</name>
+			<url>http://repo1.maven.org/maven2</url>
+		</repository>
+	</repositories>-->
+
+	<pluginRepositories>
+       <pluginRepository>
+            <id>Maven JMeter Plugin</id>
+                <url>http://yciabaud.github.com/jmeter-maven-plugin/repository</url>
+        </pluginRepository>
+
+		<pluginRepository>
+			<releases>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>central</id>
+			<name>Maven Plugin Repository</name>
+			<url>http://repo1.maven.org/maven2</url>
+		</pluginRepository>
+	</pluginRepositories>
+	
+	<profiles>
+		<profile>
+			<id>LoadAllContextAndMapData</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>jmeter-test-name</name>
+					<value>LoadAllContextAndMapData</value>
+				</property>
+			</activation>
+			<properties>
+				<jMeterTestFile>LoadAllContextAndMapData.jmx</jMeterTestFile>
+			</properties>
+		</profile>
+		<profile>
+			<id>TerminalReportTest</id>
+			<activation>
+				<property>
+					<name>jmeter-test-name</name>
+					<value>TerminalReportTest</value>
+				</property>
+			</activation>
+			<properties>
+				<jMeterTestFile>TerminalReportTest.jmx</jMeterTestFile>
+			</properties>
+		</profile>
+		<profile>
+			<id>TerminalReportStressTest</id>
+			<activation>
+				<property>
+					<name>jmeter-test-name</name>
+					<value>TerminalReportStressTest</value>
+				</property>
+			</activation>
+			<properties>
+				<jMeterTestFile>TerminalReportStressTest.jmx</jMeterTestFile>
+			</properties>
+		</profile>
+	</profiles>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>com.lazerycode.jmeter</groupId>
+				<artifactId>jmeter-maven-plugin</artifactId>
+				<version>1.8.1</version>
+				<executions>
+					<execution>
+						<id>jmeter-tests</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>jmeter</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<testFilesIncluded>
+						<jMeterTestFile>${jMeterTestFile}</jMeterTestFile>
+					</testFilesIncluded>
+					<reportDir>${project.build.directory}/jmeter-reports</reportDir>
+					
+					<jmeterUserProperties>
+						<reportDir>${project.build.directory}/jmeter-reports</reportDir>
+						<Host>${Host}</Host>
+						<Port>${Port}</Port>
+						<ContextPath>${ContextPath}</ContextPath>
+						<MapRequestsMapLoopsPerModel>${MapRequestsMapLoopsPerModel}</MapRequestsMapLoopsPerModel>
+						<MapRequestsModelCountMatchingCsvFile>${MapRequestsModelCountMatchingCsvFile}</MapRequestsModelCountMatchingCsvFile>
+						<MapRequestsConcurrentUsers>${MapRequestsConcurrentUsers}</MapRequestsConcurrentUsers>
+						<MapRequestsRampUpSeconds>${MapRequestsRampUpSeconds}</MapRequestsRampUpSeconds>
+					</jmeterUserProperties>
+				</configuration>
+			</plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>xml-maven-plugin</artifactId>
+                <version>1.0-beta-3</version>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>transform</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <transformationSets>
+                        <transformationSet>
+                            <dir>${project.build.directory}/jmeter-reports</dir>
+                            <stylesheet>extras/jmeter-results-detail-report_21.xsl</stylesheet>
+                            <outputDir>${project.build.directory}/site/jmeter-results</outputDir>
+                            <fileMappers>
+                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                                    <targetExtension>html</targetExtension>
+                                </fileMapper>
+                            </fileMappers>
+                        </transformationSet>
+                    </transformationSets>
+                </configuration>
+            </plugin>
+		</plugins>
+	</build>
+</project>
