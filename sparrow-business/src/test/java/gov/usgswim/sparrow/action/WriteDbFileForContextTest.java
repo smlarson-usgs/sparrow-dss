@@ -27,6 +27,16 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 	long[] idArray;
 	HashMapColumnIndex columnIndex;
 	StandardNumberColumnDataWritable valueCol;
+	
+	/** Column that only returns nulls when double values are requested */
+	StandardNumberColumnDataWritable nullCol = new StandardNumberColumnDataWritable() {
+		public Double getDouble(int row) { return null; }	
+	};
+	
+	/** Column that only returns nulls when double values are requested */
+	StandardNumberColumnDataWritable nanCol = new StandardNumberColumnDataWritable() {
+		public Double getDouble(int row) { return Double.NaN; }	
+	};
 
 	@Before
 	public void setup() {
@@ -40,6 +50,35 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 		valueCol.setValue(10D, 0);
 		valueCol.setValue(200D, 1);
 		valueCol.setValue(3000D, 2);
+		
+		nullCol.setName("Load");
+		nullCol.setValue(0, 2);	//force there to be 3 rows
+		
+		nanCol.setName("Load");
+		nanCol.setValue(0, 2);	//force there to be 3 rows
+	}
+	
+	@Test
+	public void testTest() throws Exception {
+		//valueCol
+		assertEquals("Load", valueCol.getName());
+		assertEquals(10D, valueCol.getDouble(0), comp_err);
+		assertEquals(200D, valueCol.getDouble(1), comp_err);
+		assertEquals(3000D, valueCol.getDouble(2), comp_err);
+
+		//Null col
+		assertEquals("Load", nullCol.getName());
+		assertNull(nullCol.getDouble(0));
+		assertNull(nullCol.getDouble(1));
+		assertNull(nullCol.getDouble(2));
+		assertEquals(3, nullCol.getRowCount().intValue());
+		
+		//Nan col
+		assertEquals("Load", nanCol.getName());
+		assertEquals(Double.NaN, nanCol.getDouble(0), comp_err);
+		assertEquals(Double.NaN, nanCol.getDouble(1), comp_err);
+		assertEquals(Double.NaN, nanCol.getDouble(2), comp_err);
+		assertEquals(3, nanCol.getRowCount().intValue());
 	}
 	
 	
@@ -284,6 +323,83 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 				System.out.println("diff: " + diff);
 			}
 			assertEquals(SMALL_VALUE, ((Double)result.get(0)[1]), .0002D);
+			
+		
+		} finally {
+			tempFile.delete();
+		}
+	}
+	
+	@Test
+	public void writeAndReadNullValue() throws Exception {
+		
+		File tempFile = File.createTempFile("predictExport", ".dbf");
+		
+		
+		try {
+			//PredictResult predictResult = getTestModelPredictResult();
+
+			tempFile.deleteOnExit();
+
+			WriteDbfFile action = new WriteDbfFile(
+				columnIndex,
+				nullCol,
+				tempFile,
+				"COMID");
+
+			File resultFile = action.run();
+			
+			List<Object[]> result = readDbfFile(tempFile);
+			
+			assertEquals(3, result.size());
+			assertEquals(2, result.get(0).length);
+			
+			assertNull(result.get(0)[1]);
+			assertNull(result.get(1)[1]);
+			assertNull(result.get(2)[1]);
+			
+			
+		
+		} finally {
+			tempFile.delete();
+		}
+	}
+	
+	/**
+	 * Note:  The DBF lib converts NaN values to Null, so that is codified here.
+	 * @throws Exception 
+	 */
+	@Test
+	public void writeAndReadNaNValue() throws Exception {
+		
+		File tempFile = File.createTempFile("predictExport", ".dbf");
+		
+		
+		try {
+			//PredictResult predictResult = getTestModelPredictResult();
+
+			tempFile.deleteOnExit();
+
+			WriteDbfFile action = new WriteDbfFile(
+				columnIndex,
+				nanCol,
+				tempFile,
+				"COMID");
+
+			File resultFile = action.run();
+			
+			List<Object[]> result = readDbfFile(tempFile);
+			
+			assertEquals(3, result.size());
+			assertEquals(2, result.get(0).length);
+			
+			assertNull(result.get(0)[1]);
+			assertNull(result.get(1)[1]);
+			assertNull(result.get(2)[1]);
+			
+			assertNull(result.get(0)[1]);
+			assertNull(result.get(1)[1]);
+			assertNull(result.get(2)[1]);
 			
 		
 		} finally {
