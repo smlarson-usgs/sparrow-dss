@@ -24,6 +24,9 @@ import org.geotools.data.shapefile.dbf.DbaseFileWriter;
  * this is currently set to 9 digits so that we match the NHD shapefile, which only
  * has 9 digits (thus, is an integer).
  * 
+ * Null and NaN values are OK to write, but NaN will be read back as Null.
+ * Null ID are never allowed.
+ * 
  * @author eeverman
  *
  */
@@ -103,11 +106,18 @@ public class WriteDbfFile extends Action<File> {
 				}
 				
 				Double val = dataColumn.getDouble(row);
-				////////////////////////1234567890.1234	//the max value of the 14.4 column
-				if (val.doubleValue() > 9999999999.9999D) {
-					throw new Exception("Values larger than 10 places left of the decimal + 4 right of the decimal not currently supported.");
+				
+				if (val != null) {
+					//Null values are OK, they just fail the next check
+					
+					
+					////////////////////////1234567890.1234	//the max value of the 14.4 column
+					if (val.doubleValue() > 9999999999.9999D) {
+						throw new Exception("Values larger than 10 places left of the decimal + 4 right of the decimal not currently supported.");
+					}
 				}
 				
+				//Null and NaN value are OK here, but NaN values are read back as null
 				oneRow[0] = id;
 				oneRow[1] = val;
 				
