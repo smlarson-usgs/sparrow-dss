@@ -108,6 +108,7 @@
 						<jMeterTestFile>${jMeterTestFile}</jMeterTestFile>
 					</testFilesIncluded>
 					<reportDir>${project.build.directory}/jmeter-reports</reportDir>
+					<ignoreResultFailures>true</ignoreResultFailures>
 					
 					<jmeterUserProperties>
 						<reportDir>${project.build.directory}/jmeter-reports</reportDir>
