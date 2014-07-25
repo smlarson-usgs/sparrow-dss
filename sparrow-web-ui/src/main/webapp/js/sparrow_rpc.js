@@ -646,7 +646,7 @@ function confirmOrAdjustCurrentContextBins(options) {
 			var allValuesInASingleBin = response.responseXML.lastChild.getElementsByTagName('entity')[1].firstChild.nodeValue;
 
 			if(allValuesInABin != 'true' || allValuesInASingleBin != 'true'){
-				var msg = '<br/>Would you like to automatically adjust the bins to include the entire set of results on the map in \'Equal Count\' bins?';
+				var msg = '<br/>Would you like to adjust the bins to include the entire set of results on the map using <b><i>' + Sparrow.SESSION.getBinTypeName() + '</i></b> bins?';
 
 				if(allValuesInABin=='false') msg = '- There are results not included in your custom bins that will not be displayed on the map.<br/>' + msg;
 				if(allValuesInASingleBin=='false') msg = '- All results fall into a single bin.<br/>' + msg;
@@ -654,16 +654,23 @@ function confirmOrAdjustCurrentContextBins(options) {
 				Ext.Msg.confirm(
 					'Potential Binning Issues',
 					msg,
-					function(yes){
-						if(yes!='yes') {
+					function(userResp){
+						if(userResp == 'yes') {
 							
 							options.callback = callback;
+							
+							//Sparrow.SESSION.setBinAuto(true);	//enable auto-binning
 							generateBins(options);
+						} else {
+							//no
+							if (callback) callback.call(this, options);
 						}
 					}
 				);
+			} else {
+				if (callback) callback.call(this, options);
 			}
-			if (callback) callback.call(this, options);
+			
 		},
 		failure: function(response, o) {
 			Ext.Msg.alert('Warning', 'Failed to confirm bins');
@@ -797,12 +804,23 @@ function saveNewState(options) {
 	} else if (options.callbackChain) {
 		callback = options.callbackChain.shift();
 	}		
-					
-	Sparrow.SESSION.setBinData(options.binData);
 	
-	//TODO:  This could be handled as a binChange event
-	var comparisonBucketLbl = Ext.getCmp('map-options-tab').bucketLabel;
-	comparisonBucketLbl.setText(Sparrow.SESSION.getBinCount() + ' ' + Sparrow.SESSION.getBinTypeName() + ' Bins');
+	if (Sparrow.SESSION.isBinAuto()) {
+		if (options.binData) {
+			Sparrow.SESSION.setBinData(options.binData);
+			
+			//TODO:  This could be handled as a binChange event
+			var comparisonBucketLbl = Ext.getCmp('map-options-tab').bucketLabel;
+			comparisonBucketLbl.setText(Sparrow.SESSION.getBinCount() + ' ' + Sparrow.SESSION.getBinTypeName() + ' Bins');
+		} else {
+			//This shouldn't happen
+			Ext.Msg.alert('Error', "Expected auto-generated bins, but none were provided.");
+		}
+	} else if (options.binData) {
+		//Custom bins, but the user has requested that the values be adjusted
+		options.binData['binColors'] = null;	//rm colors (keep user's previous colors)
+		Sparrow.SESSION.setBinData(options.binData);
+	}
 	
 	Sparrow.SESSION.setDataLayerInfo(
 			options.dataLayer.datalayerWmsUrl, 

@@ -657,6 +657,13 @@ Sparrow.ux.Session.prototype = {
 	 * @param structuredBinningData
 	 */
 	setBinData: function(structuredBinData) {
+		
+		//If the user's bins are being 'fixed' b/c they don't contain all the
+		//values, keep the users previous colors and just take the numbers.
+		if (structuredBinData['binColors'] == null) {
+			structuredBinData['binColors'] = this.getBinData()['binColors'];
+		}
+		
 		if (this.PermanentMapState.binAuto) {
 			this.TransientMapState.binData = structuredBinData;
 		} else {
