@@ -66,12 +66,13 @@ public class RegisterMapLayerService extends AbstractSparrowServlet {
 			CreateGeoserverLayer cglAction = new CreateGeoserverLayer(context, dbfFile, projectedSrs);
 			String wpsResponse = cglAction.run();
 			
-			if (cglAction.getException() == null) {
-				//The action/WPS response is itself an XML wrapper
-				sendResponse(resp, wpsResponse, XML);
-				return;
-			} else {
+			if (cglAction.getException() != null) {
 				throw cglAction.getException();	//caught below and handled
+			} else if (wpsResponse == null || wpsResponse.length() == 0) {
+				throw new Exception("The map server returned an empty response");
+			} else {
+				sendResponse(resp, wpsResponse, XML);	//The action/WPS response is itself an XML wrapper
+				return;
 			}
 			
 		} catch (Throwable e) {
