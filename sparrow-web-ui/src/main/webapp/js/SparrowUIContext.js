@@ -148,6 +148,20 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
 				seriesDescription: null,
 				rowCount: null
 			},
+			
+			/* Arry of context ids and their associated dataLayerInfo
+			 * registered as data layers w/ the map server.
+			 * This list should be kept short (5?) b/c the server will eventually
+			 * sweep old map layers.  This list allows the UI to know that layers
+			 * have been previously registerd so that they don't have to be
+			 * if the user is just changing bin color or what to map.
+			 * Note that a context may be registered for predictions registering
+			 * the layer is a separate process.
+			 */
+			registerDataLayers: {
+				contextIds : [],
+				dataLayerInfos : []
+			},
         	
         	/*
         	 * Bin data become transient if auto-binning is used b/c its redundant
@@ -162,9 +176,12 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
         	},
 			
 			/* The current data layer wms url and layer names */
-			dataLayerWmsUrl: "",
-			flowlineDataLayerName: "",
-			catchDataLayerName: ""
+			dataLayerInfo : {
+				dataLayerWmsUrl: "",	//ends with /wms
+				flowlineDataLayerName: "",
+				catchDataLayerName: ""
+			}
+
         }
     }
 
@@ -488,7 +505,7 @@ Sparrow.ux.Session.prototype = {
 	 * last map was drawn.
 	 * If no map was ever drawn, returns true.
 	 */
-	isChangedSinceLastMap : function() {
+	isContextChangedSinceLastMap : function() {
 		if (this.TransientMapState.lastMappedContextId == null) {
 			return true;
 		} else {
@@ -569,6 +586,96 @@ Sparrow.ux.Session.prototype = {
 		} else {
 			return null;
 		}
+	},		
+			
+	/**
+	 * Returns true if the context id was previously registered as a data layer
+	 * with the map server.
+	 * 
+	 * @param {type} contextId
+	 * @returns {undefined}
+	 */
+	isRegisteredDataLayer : function(contextId) {
+		return (this.TransientMapState.registerDataLayers.contextIds.indexOf(contextId) > -1);
+	},
+	
+	/**
+	 * Finds the data layer info for the context ID, or returns null if not found.
+	 * @param {type} contextId
+	 * @returns {registerDataLayers.dataLayerInfos}
+	 */
+	getRegisteredDataLayer : function(contextId) {
+		idx = this.TransientMapState.registerDataLayers.contextIds.indexOf(contextId);
+		if (idx > -1) {
+			return this.TransientMapState.registerDataLayers.dataLayerInfos[idx];
+		} else {
+			return null;
+		}
+	},
+	
+	/**
+	 * Records a context ID and its datalyer info as being registered w/ the map
+	 * server as a data layer.
+	 * 
+	 * Only the five most recent context IDs are kept so that very old IDs will
+	 * be forced to re-register.
+	 * 
+	 * If the layer is already recorded, it brings it to the top of the list
+	 * (more recently used), allowing older unused ones to drop off.
+	 * 
+	 * @param {type} contextId
+	 * @returns {undefined}
+	 */
+	bumpRegisteredDataLayer : function(contextId) {
+		
+		idx = this.TransientMapState.registerDataLayers.contextIds.indexOf(contextId);
+		
+		
+		//If zero, its already at the top of the list
+		if (idx > 0) {
+			//already in list - remove it
+			this.TransientMapState.registerDataLayers.contextIds.splice(idx, 1);
+			dl = this.TransientMapState.registerDataLayers.dataLayerInfos.splice(idx, 1);
+			
+			//re-insert at zero
+			this.TransientMapState.registerDataLayers.contextIds.splice(0,0, contextId);
+			this.TransientMapState.registerDataLayers.dataLayerInfos.splice(0,0, dl);
+		}
+		
+	},
+	
+	/**
+	 * Records a context ID and its datalyer info as being registered w/ the map
+	 * server as a data layer.
+	 * 
+	 * Only the five most recent context IDs are kept so that very old IDs will
+	 * be forced to re-register.
+	 * 
+	 * If the layer is already recorded, it brings it to the top of the list
+	 * (more recently used), allowing older unused ones to drop off.
+	 * 
+	 * @param {type} contextId The context ID of the data layer
+	 * @param dataLayerInfo All the layer info - see TransientState above for definition
+	 * @returns {undefined}
+	 */
+	addRegisteredDataLayer : function(contextId, dataLayerInfo) {
+		
+		idx = this.TransientMapState.registerDataLayers.contextIds.indexOf(contextId);
+		
+		if (idx < 0) {
+			//Not already in list
+			this.TransientMapState.registerDataLayers.contextIds.splice(0,0, contextId);
+			this.TransientMapState.registerDataLayers.dataLayerInfos.splice(0,0, dataLayerInfo);
+			
+			//trim to most recent 5 entries
+			while (this.TransientMapState.registerDataLayers.contextIds.length > 5) {
+				this.TransientMapState.registerDataLayers.contextIds.pop();
+				this.TransientMapState.registerDataLayers.dataLayerInfos.pop();
+			}
+		} else {
+			//already in list - just bump it
+			this.bumpRegisteredDataLayer(contextId);
+		}
 	},
 
 	// Doesn't seem to be used?? [IK]
@@ -578,23 +685,39 @@ Sparrow.ux.Session.prototype = {
 		this.changed();
 	},
 	
-	setDataLayerInfo: function(dataLayerWmsUrl, flowlineDataLayerName, catchDataLayerName) {
-		this.TransientMapState["dataLayerWmsUrl"] = dataLayerWmsUrl;
-		this.TransientMapState["flowlineDataLayerName"] = flowlineDataLayerName;
-		this.TransientMapState["catchDataLayerName"] = catchDataLayerName;
+	/**
+	 * Sets the dataLayer information, used to map the data layer as a wms layer
+	 * from the map server.
+	 * 
+	 * If only the context ID is provide, it is assumed that this layer was already
+	 * registerd and we just find it in the registerDataLayers list.
+	 * 
+	 * @param {type} contextId
+	 * @param {type} dataLayerInfo
+	 * @param {type} flowlineDataLayerName
+	 * @param {type} catchDataLayerName
+	 * @returns {undefined}
+	 */
+	setCurrentDataLayerInfo: function(contextId, dataLayerInfo) {
+		
+		if (dataLayerInfo != null && ! this.isRegisteredDataLayer(contextId)) {
+			//Adding a new layer, or one not previously registered
+
+			this.TransientMapState["dataLayerInfo"] = dataLayerInfo;
+
+			this.addRegisteredDataLayer(contextId, dataLayerInfo);
+		} else {
+			//Making an already registered layer current again
+			var dl = this.getRegisteredDataLayer(contextId);
+			this.TransientMapState["dataLayerInfo"] = dl;
+			this.bumpRegisteredDataLayer(contextId);
+		}
+
 		this.changed();
 	},
 	
-	getDataLayerWmsUrl: function() {
-		return this.TransientMapState["dataLayerWmsUrl"];
-	},
-	
-	getFlowlineDataLayerName: function() {
-		return this.TransientMapState["flowlineDataLayerName"];
-	},
-	
-	getCatchDataLayerName: function() {
-		return this.TransientMapState["catchDataLayerName"];
+	getDataLayerInfo: function() {
+		return this.TransientMapState["dataLayerInfo"];
 	},
 	
 	getBinType: function() {

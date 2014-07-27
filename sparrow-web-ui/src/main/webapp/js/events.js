@@ -370,7 +370,7 @@ Sparrow.handlers.UiComponents = function(){ return{
 	},
 			
 	updatePerOutOfSyncMap : function(){
-		if (Sparrow.SESSION.isChangedSinceLastMap() && Sparrow.SESSION.isMapping()) {
+		if (Sparrow.SESSION.isContextChangedSinceLastMap() && Sparrow.SESSION.isMapping()) {
 			//re-enable the gen map button
 			Ext.getCmp('update-map-button-panel').setStatusOutOfSync(Sparrow.SESSION.getMappedSeriesData().seriesName);
 

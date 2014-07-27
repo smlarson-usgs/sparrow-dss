@@ -860,7 +860,7 @@ var SAVE_AS_WIN = new (function(){
 	
 	this.requestOpen = function() {
 		if (Sparrow.SESSION.isMapping()) {
-			if (Sparrow.SESSION.isChangedSinceLastMap()) {
+			if (Sparrow.SESSION.isContextChangedSinceLastMap()) {
 				Ext.Msg.alert('Warning', "The map is not showing your current selections.  Click <i>Update Map</i> and try again.");
 			} else {
 				this.open();

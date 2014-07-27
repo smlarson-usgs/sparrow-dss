@@ -764,35 +764,44 @@ function registerDataLayer(options) {
 	var contextId = options.contextId;
 	if (! contextId) contextId = Sparrow.SESSION.getLastValidContextId();
 	
-	var onLocalErr = function(r) {
-		if (options.errorHandler) {
-			options.errorMessage = "Failed registering the data map layer with the map server";
-			options.errorHandler.call(this, r, options);
-		} else {
-			Ext.Msg.alert('Warning', "Failed registering the data map layer with the map server");
-		}
-	};
-	
-	Ext.Ajax.request({
-		method: 'GET',
-		url: 'RegisterMapLayerService?context-id=' + contextId +'&projected-srs=EPSG:4326',
-		success: function(r,o) {
-			var ok = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'Status');
-			
-			if (ok == 'OK') {
-				
-				options.dataLayer = new Object();
-				options.dataLayer.datalayerWmsUrl = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'EndpointUrl');
-				options.dataLayer.flowlineLayerName = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'FlowLayerName');
-				options.dataLayer.catchLayerName = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'CatchLayerName');
-				
-				if (callback) callback.call(this, options);
+	if (! Sparrow.SESSION.isRegisteredDataLayer(contextId)) {
+		//not already registered
+		
+		var onLocalErr = function(r) {
+			if (options.errorHandler) {
+				options.errorMessage = "Failed registering the data map layer with the map server";
+				options.errorHandler.call(this, r, options);
 			} else {
-				onLocalErr.call(this, r, options);
+				Ext.Msg.alert('Warning', "Failed registering the data map layer with the map server");
 			}
-		},
-		failure: onLocalErr
-	});
+		};
+
+		Ext.Ajax.request({
+			method: 'GET',
+			url: 'RegisterMapLayerService?context-id=' + contextId +'&projected-srs=EPSG:4326',
+			success: function(r,o) {
+				var ok = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'Status');
+
+				if (ok == 'OK') {
+
+					options.dataLayer = new Object();
+					options.dataLayer.dataLayerWmsUrl = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'EndpointUrl');
+					options.dataLayer.flowlineDataLayerName = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'FlowLayerName');
+					options.dataLayer.catchDataLayerName = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'CatchLayerName');
+
+					if (callback) callback.call(this, options);
+				} else {
+					onLocalErr.call(this, r, options);
+				}
+			},
+			failure: onLocalErr
+		});
+		
+	} else {
+		//already registered - move on
+		options.dataLayer = null;
+		if (callback) callback.call(this, options);
+	}
 };
 
 function saveNewState(options) {
@@ -813,8 +822,7 @@ function saveNewState(options) {
 			var comparisonBucketLbl = Ext.getCmp('map-options-tab').bucketLabel;
 			comparisonBucketLbl.setText(Sparrow.SESSION.getBinCount() + ' ' + Sparrow.SESSION.getBinTypeName() + ' Bins');
 		} else {
-			//This shouldn't happen
-			Ext.Msg.alert('Error', "Expected auto-generated bins, but none were provided.");
+			//This is the case when the context has not changed.
 		}
 	} else if (options.binData) {
 		//Custom bins, but the user has requested that the values be adjusted
@@ -822,10 +830,7 @@ function saveNewState(options) {
 		Sparrow.SESSION.setBinData(options.binData);
 	}
 	
-	Sparrow.SESSION.setDataLayerInfo(
-			options.dataLayer.datalayerWmsUrl, 
-			options.dataLayer.flowlineLayerName, 
-			options.dataLayer.catchLayerName);
+	Sparrow.SESSION.setCurrentDataLayerInfo(options.contextId, options.dataLayer);
 	
 	if (callback) callback.call(this, options);
 }
@@ -846,14 +851,82 @@ function make_map() {
 	options.dataLayer.catchLayerName = null;
 	
 	//TODO:  We could add an error handler that says we failed to map.
-		
-	if (Sparrow.SESSION.isBinAuto()) {
-		options.callbackChain = [generateBins, registerDataLayer, saveNewState, addDataLayer];
-	} else {
-		options.callbackChain = [confirmOrAdjustCurrentContextBins, registerDataLayer, saveNewState, addDataLayer];
-	}
 	
-	getContextIdAsync(options);	//Adds the dataLayer if successful
+	if (Sparrow.SESSION.isContextChangedSinceLastMap()) {
+		//Need to register context and layer
+		if (Sparrow.SESSION.isBinAuto()) {
+			options.callbackChain = [generateBins, registerDataLayer, saveNewState, addDataLayer];
+		} else {
+			options.callbackChain = [confirmOrAdjustCurrentContextBins, registerDataLayer, saveNewState, addDataLayer];
+		}
+		
+		getContextIdAsync(options);	//Adds the dataLayer if successful
+	} else {
+		//Context and layer already registered
+		
+		//Use to check if bins need to be updated
+		var lastMapState = Sparrow.SESSION.getLastMappedState();
+		var lastMapPermState = lastMapState.PermanentMapState;
+		
+		
+		//Since we skip fetching the context id from server, set it here so other
+		//chained methods can find it
+		options.contextId = Sparrow.SESSION.getLastMappedContextId();
+		
+		if (Sparrow.SESSION.isBinAuto()) {
+			
+			if (lastMapPermState.binAuto) {
+				//We had auto binning when we last did the map - bins are OK
+				options.callbackChain = [addDataLayer];
+				saveNewState(options);
+			} else {
+				//Prev map had custom bins, now auto, so regen bins
+				options.callbackChain = [saveNewState, addDataLayer];
+				generateBins(options);
+			}
+
+		} else {
+			
+			//see if the functional bins have changed since the last map
+			var oldBinsOkToUse = true;
+			
+			if (! lastMapPermState.binAuto) {
+				if (lastMapPermState.binData) {	//null if the user had prev used auto-binning
+					var currentFBins = Sparrow.SESSION.getBinData().functionalBins;
+					var oldFBins = lastMapPermState.binData.functionalBins;
+					
+					//check all functional bins
+					for (i = 0; i < currentFBins.length; i++) {
+						if (currentFBins[i].low != oldFBins[i].low || currentFBins[i].high != oldFBins[i].high) {
+							oldBinsOkToUse = false;
+							break;
+						}
+					}
+				} else {
+					oldBinsOkToUse = false;
+				}
+			} else {
+				oldBinsOkToUse = false;	//last bins were auto bins
+			}
+			
+
+			
+			
+
+			
+			if (oldBinsOkToUse) {
+				options.callbackChain = [addDataLayer];
+				saveNewState(options);	//Bins may have change since last map - reconfirm
+			} else {
+				options.callbackChain = [saveNewState, addDataLayer];
+				confirmOrAdjustCurrentContextBins(options);	//Bins may have change since last map - reconfirm
+			}
+
+		}
+	}
+
+	
+	
 }
 
 /**
@@ -871,8 +944,9 @@ function addDataLayer() {
         boundedFlag = !Sparrow.SESSION.getBinData()["boundUnlimited"][0].low,
         colors = Sparrow.SESSION.getBinData()["binColors"],
         binParams,
-        dataLayerWmsUrl = Sparrow.SESSION.getDataLayerWmsUrl(),	//ends with /wms
-        gsUrl = dataLayerWmsUrl.substring(0, dataLayerWmsUrl.length - 3),
+		dataLayerInfo = Sparrow.SESSION.getDataLayerInfo(),
+        dataLayerWmsUrl = dataLayerInfo.dataLayerWmsUrl,	
+        gsUrl = dataLayerInfo['dataLayerWmsUrl'].substring(0, dataLayerWmsUrl.length - 3),
         sldUrl,
         workspace,
         layerName,
@@ -881,9 +955,9 @@ function addDataLayer() {
 
 	
 	if (what_to_map === "reach") {
-		wsAndLayerName = Sparrow.SESSION.getFlowlineDataLayerName();
+		wsAndLayerName = dataLayerInfo.flowlineDataLayerName;
 	} else {
-		wsAndLayerName = Sparrow.SESSION.getCatchDataLayerName();
+		wsAndLayerName = dataLayerInfo.catchDataLayerName;
 	}
     
     binParams = 'binLowList=' + Ext.pluck(bins, 'low').join();
