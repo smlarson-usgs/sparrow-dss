@@ -1638,13 +1638,6 @@ function openCustomBucketsWindow() {
 
 	customBucketsWin.show();
 
-	// Save the bins if the save event is fired
-	customBucketsWin.on('save', function(w) {
-		Sparrow.SESSION.setBinData(w.getBucketList());
-		var comparisonBucketLbl = Ext.getCmp('map-options-tab').bucketLabel;
-		comparisonBucketLbl.setText(w.getBucketCount() + ' ' + w.getBucketType() + ' Bins');
-		make_map();
-	});
 }
 /**
  * Warning window which pops up if Ext detects user is using IE6

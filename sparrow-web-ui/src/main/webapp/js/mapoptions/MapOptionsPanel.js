@@ -632,7 +632,7 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 	 * Sets the 'Buckets' dropdown value.  This method does not fire the
 	 * 'select' event for the dropdown.
 	 */
-	setComparisonBucket: function(value) {
+	setBinDescription: function(value) {
 		this.bucketLabel.setText(value);
 	},
 

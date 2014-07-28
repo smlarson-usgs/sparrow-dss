@@ -720,20 +720,45 @@ Sparrow.ux.Session.prototype = {
 		return this.TransientMapState["dataLayerInfo"];
 	},
 	
-	getBinType: function() {
+	getAutoBinType: function() {
 		return this.PermanentMapState.binType;
 	},
 	
-	setBinType: function(type) {
+	setAutoBinType: function(type) {
 		this.PermanentMapState.binType = type;
 	},
 	
-	getBinTypeName: function() {
+	/**
+	 * Returns a user displayable name for the type of bins that *would* be
+	 * created with the current type of autoBin.
+	 * 
+	 * @See getCurrentBinTypeName
+	 * @returns {String}
+	 */
+	getAutoBinTypeName: function() {
 		var type = this.PermanentMapState.binType;
+		
 		if (type == 'EQUAL_COUNT') {
 			return 'Equal Count';
 		} else if (type == 'EQUAL_RANGE') {
 			return 'Equal Range';
+		} else {
+			return 'UNKNOWN';
+		}
+	},
+	
+	/**
+	 * Returns a user displayable name for the current type of bins.
+	 * If autoBin is disabled, this will return 'Custom', which is different than
+	 * what getAutoBinTypeName(), which will always return what type of auto be
+	 * generated if they were enabled.
+	 * @returns {String}
+	 */
+	getCurrentBinTypeName: function() {
+		var type = this.PermanentMapState.binType;
+		
+		if (this.PermanentMapState.binAuto) {
+			return this.getAutoBinTypeName();
 		} else {
 			return 'Custom';
 		}
@@ -764,6 +789,8 @@ Sparrow.ux.Session.prototype = {
 				}
 				this.TransientMapState.binData = null;
 			}
+			
+			this.fireContextEvent("autobin-changed");
 		}
 	},
 	
@@ -777,9 +804,17 @@ Sparrow.ux.Session.prototype = {
 
 	/**
 	 * See the structure of this data defined above.
+	 * 
+	 * If isIsolatedUserChange is true, the map will auto redraw.  This should
+	 * be set true when the user is ONLY changing the bins directly.  In other
+	 * cases (autoBins or auto-adjustming the bins) where the caller will
+	 * update the map, leave this flag false so we don't redraw the map twice.
+	 * 
 	 * @param structuredBinningData
+	 * @param isIsolatedUserChange - Set true if this is a single user action 
+	 *	(false when autoBin sets this data or caller plans to update map)
 	 */
-	setBinData: function(structuredBinData) {
+	setBinData: function(structuredBinData, isIsolatedUserChange) {
 		
 		//If the user's bins are being 'fixed' b/c they don't contain all the
 		//values, keep the users previous colors and just take the numbers.
@@ -804,7 +839,12 @@ Sparrow.ux.Session.prototype = {
 		}
 		this.PermanentMapState.binCount = cnt;
 		
-	    this.changed();
+		if (isIsolatedUserChange) {
+			this.fireContextEvent("user-bindata-changed");
+		} else {
+			this.fireContextEvent("system-bindata-changed");
+		}
+	    
 	},
 	
 	/**
@@ -817,6 +857,86 @@ Sparrow.ux.Session.prototype = {
 	 */
 	getBinCount: function() {
 		return this.PermanentMapState.binCount;
+	},
+	
+	/**
+	 * If autoBin is enabled, returns true if the current auto generated bin
+	 * data is current.  If true, it is not necessary to regenerate bins with
+	 * the server before drawing the map.  This means this method can only return
+	 * true if the map was previously drawn, the context has not changed, and
+	 * the previous map was done w/ autoBin.
+	 * 
+	 * If autoBin is false, this method returns false.
+	 * @returns {undefined}
+	 */
+	isAutoBinDataCurrent: function() {
+		
+		if (this.isBinAuto() && ! this.isContextChangedSinceLastMap()) {
+			//We are in autoBin mode && the context has not changed since the last map
+			
+			var lastMapState = this.getLastMappedState();
+			
+			if (lastMapState && lastMapState.PermanentMapState) {
+				//Edge case err checking:  we had a map, so there should be a mapped state
+				
+				var lastMapPermState = lastMapState.PermanentMapState;
+
+				if (lastMapPermState.binAuto) {
+					//The previous map was generated w/ autoBin, so should be OK to reuse bins
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	},
+	
+	/**
+	 * If autoBin is disabled, returns true if the prediction context has been
+	 * mapped with the current user created custom bins, and the context has not
+	 * changed since that map was drawn.
+	 * If true, it is not necessary to validate the custom bins with
+	 * the server before drawing the map.  This means this method can only return
+	 * true if the map was previously drawn w/ autoBin disabled, the context and
+	 * the bin break-point values have not changed, and autoBin is still disabled.
+	 * 
+	 * If autoBin is true, this method returns false.
+	 * @returns {undefined}
+	 */
+	isCustomBinDataCurrent: function() {
+		if (! this.isBinAuto() && ! this.isContextChangedSinceLastMap()) {
+			//We are not in autoBin mode && the context has not changed since the last map
+			
+			var lastMapState = this.getLastMappedState();
+			
+			if (lastMapState && lastMapState.PermanentMapState && lastMapState.PermanentMapState.binData) {
+				//Edge case err checking:  we had a map, so there should be a mapped state
+				
+				
+				var lastMapPermState = lastMapState.PermanentMapState;
+
+				if (! lastMapPermState.binAuto) {
+					//The previous map was generated w/o autoBin, so check bin values
+					
+					var binsAreadyVerified = true;
+					
+					var currentFBins = this.getBinData().functionalBins;
+					var oldFBins = lastMapPermState.binData.functionalBins;
+					
+					//check all functional bins
+					for (i = 0; i < currentFBins.length; i++) {
+						if (currentFBins[i].low != oldFBins[i].low || currentFBins[i].high != oldFBins[i].high) {
+							binsAreadyVerified = false;
+							break;
+						}
+					}
+					
+					return binsAreadyVerified;
+				}
+			}
+		}
+		
+		return false;
 	},
 	
 	/**
@@ -893,7 +1013,9 @@ Sparrow.ux.Session.prototype = {
 		}
 		
 		if (this.PermanentMapState.autoBin != null) {
-			this.setBinAuto(this.PermanentMapState.autoBin);
+			
+			//bypass any events
+			this.PermanentMapState.binAuto = this.PermanentMapState.autoBin;
 		}
 		
 		//Null out old properties

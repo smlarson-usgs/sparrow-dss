@@ -15,6 +15,31 @@ Sparrow.events.EventManager = function(){ return{
 			Sparrow.handlers.DownstreamTrackingInstructions.syncDeliveryTabInstructions(true);
 			Sparrow.handlers.UiComponents.updatePerOutOfSyncMap();
 		});
+		
+		//User initiated turn autobin on/off
+		Sparrow.CONTEXT.on('autobin-changed', function() {
+			
+			if (Sparrow.SESSION.isBinAuto()) {
+				make_map();	//Just switched to autobin
+			} else {
+				openCustomBucketsWindow();	//Just turned autobin OFF
+			}
+		});
+		
+		//User init:  Change custom bin data
+		Sparrow.CONTEXT.on('user-bindata-changed', function() {
+			
+			//Chain these two events
+			Sparrow.SESSION.fireContextEvent('system-bindata-changed');
+
+			make_map();
+		});
+		
+		//System init:  System updated auto bin data
+		Sparrow.CONTEXT.on('system-bindata-changed', function() {
+			var mapOptionsTab = Ext.getCmp('map-options-tab');
+			mapOptionsTab.setBinDescription(Sparrow.SESSION.getBinCount() + ' ' + Sparrow.SESSION.getCurrentBinTypeName()+ ' Bins');
+		});
 		Sparrow.CONTEXT.on('comparisonchanged', function() {
 			Sparrow.handlers.UiComponents.updateComparisons();
 			Sparrow.handlers.UiComponents.updatePerOutOfSyncMap();

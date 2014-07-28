@@ -646,7 +646,7 @@ function confirmOrAdjustCurrentContextBins(options) {
 			var allValuesInASingleBin = response.responseXML.lastChild.getElementsByTagName('entity')[1].firstChild.nodeValue;
 
 			if(allValuesInABin != 'true' || allValuesInASingleBin != 'true'){
-				var msg = '<br/>Would you like to adjust the bins to include the entire set of results on the map using <b><i>' + Sparrow.SESSION.getBinTypeName() + '</i></b> bins?';
+				var msg = '<br/>Would you like to adjust the bins to include the entire set of results on the map using <b><i>' + Sparrow.SESSION.getAutoBinTypeName() + '</i></b> bins?';
 
 				if(allValuesInABin=='false') msg = '- There are results not included in your custom bins that will not be displayed on the map.<br/>' + msg;
 				if(allValuesInASingleBin=='false') msg = '- All results fall into a single bin.<br/>' + msg;
@@ -656,13 +656,9 @@ function confirmOrAdjustCurrentContextBins(options) {
 					msg,
 					function(userResp){
 						if(userResp == 'yes') {
-							
 							options.callback = callback;
-							
-							//Sparrow.SESSION.setBinAuto(true);	//enable auto-binning
 							generateBins(options);
 						} else {
-							//no
 							if (callback) callback.call(this, options);
 						}
 					}
@@ -707,8 +703,8 @@ function generateBins(options) {
 		callback = options.callbackChain.shift();
 	}
 	
-	var bucketCount = Sparrow.SESSION.getBinCount();
-	var bucketType = Sparrow.SESSION.getBinType();
+	var bucketCount = (options.binCount)?options.binCount:Sparrow.SESSION.getBinCount();
+	var bucketType = (options.binType)?options.binType:Sparrow.SESSION.getAutoBinType();
 	var contextId = options.contextId;
 	if (! contextId) contextId = Sparrow.SESSION.getLastValidContextId();
 	
@@ -816,18 +812,14 @@ function saveNewState(options) {
 	
 	if (Sparrow.SESSION.isBinAuto()) {
 		if (options.binData) {
-			Sparrow.SESSION.setBinData(options.binData);
-			
-			//TODO:  This could be handled as a binChange event
-			var comparisonBucketLbl = Ext.getCmp('map-options-tab').bucketLabel;
-			comparisonBucketLbl.setText(Sparrow.SESSION.getBinCount() + ' ' + Sparrow.SESSION.getBinTypeName() + ' Bins');
+			Sparrow.SESSION.setBinData(options.binData, false);
 		} else {
 			//This is the case when the context has not changed.
 		}
 	} else if (options.binData) {
 		//Custom bins, but the user has requested that the values be adjusted
 		options.binData['binColors'] = null;	//rm colors (keep user's previous colors)
-		Sparrow.SESSION.setBinData(options.binData);
+		Sparrow.SESSION.setBinData(options.binData, false);
 	}
 	
 	Sparrow.SESSION.setCurrentDataLayerInfo(options.contextId, options.dataLayer);
@@ -835,6 +827,48 @@ function saveNewState(options) {
 	if (callback) callback.call(this, options);
 }
 
+/**
+ * Async fetches the auto-generated bins for the current map state and calls the
+ * passed handler when complete.
+ * 
+ * The handler is passed an options object with these fields:
+ * options.binData - The requested binData object
+ * 
+ * If options.binData is undefined, the call failed and a user msg was displayed.
+ * 
+ * This should be used instead of calling generateBins directly, since this auto-
+ * registers the context ID as needed.
+ * 
+ * Bin data is not saved:  only returned to the caller.
+ * 
+ * @param callBackHandler function called when complete.  Options are passed
+ * @param scope Scope passed through to callback handler as part of options:  options.scope.
+ * @returns binData
+ * 
+ */
+function fetchAutoBins(callBackHandler, binType, binCount, scope) {
+
+	//Standard options structure, pulling all possible return values together
+	//for the call chain.
+	var options = new Object();
+	options.contextId = null;
+	options.binType = binType;
+	options.binCount = binCount;
+	options.scope = scope;
+	options.binData = null;	//See SparrowUIContext for object definition
+	
+	if (Sparrow.SESSION.isChangedSinceLastMarkedState()) {
+
+		options.callbackChain = [generateBins, callBackHandler];
+		getContextIdAsync(options);
+		
+	} else {
+
+		options.contextId = Sparrow.SESSION.getLastMappedContextId();
+		options.callbackChain = [callBackHandler];
+		generateBins(options);
+	}
+}
 /**
  * Add the sparrow datalayer to the map
  */
@@ -864,10 +898,6 @@ function make_map() {
 	} else {
 		//Context and layer already registered
 		
-		//Use to check if bins need to be updated
-		var lastMapState = Sparrow.SESSION.getLastMappedState();
-		var lastMapPermState = lastMapState.PermanentMapState;
-		
 		
 		//Since we skip fetching the context id from server, set it here so other
 		//chained methods can find it
@@ -875,8 +905,8 @@ function make_map() {
 		
 		if (Sparrow.SESSION.isBinAuto()) {
 			
-			if (lastMapPermState.binAuto) {
-				//We had auto binning when we last did the map - bins are OK
+			if (Sparrow.SESSION.isAutoBinDataCurrent()) {
+				//No need to re-gen autobin data
 				options.callbackChain = [addDataLayer];
 				saveNewState(options);
 			} else {
@@ -886,35 +916,8 @@ function make_map() {
 			}
 
 		} else {
-			
-			//see if the functional bins have changed since the last map
-			var oldBinsOkToUse = true;
-			
-			if (! lastMapPermState.binAuto) {
-				if (lastMapPermState.binData) {	//null if the user had prev used auto-binning
-					var currentFBins = Sparrow.SESSION.getBinData().functionalBins;
-					var oldFBins = lastMapPermState.binData.functionalBins;
-					
-					//check all functional bins
-					for (i = 0; i < currentFBins.length; i++) {
-						if (currentFBins[i].low != oldFBins[i].low || currentFBins[i].high != oldFBins[i].high) {
-							oldBinsOkToUse = false;
-							break;
-						}
-					}
-				} else {
-					oldBinsOkToUse = false;
-				}
-			} else {
-				oldBinsOkToUse = false;	//last bins were auto bins
-			}
-			
-
-			
-			
-
-			
-			if (oldBinsOkToUse) {
+	
+			if (Sparrow.SESSION.isCustomBinDataCurrent()) {
 				options.callbackChain = [addDataLayer];
 				saveNewState(options);	//Bins may have change since last map - reconfirm
 			} else {
@@ -924,8 +927,6 @@ function make_map() {
 
 		}
 	}
-
-	
 	
 }
 
