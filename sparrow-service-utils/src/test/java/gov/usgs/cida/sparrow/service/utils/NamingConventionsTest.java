@@ -11,7 +11,7 @@ import org.junit.Test;
 public class NamingConventionsTest {
 	
 	 @Test
-	 public void trySomeSimpleValues() {
+	 public void trySomeSimpleConvertionsToXMLSafeValues() {
 		 
 		assertEquals("N1234", NamingConventions.convertContextIdToXMLSafeName(-1234));
 		assertEquals("P1234", NamingConventions.convertContextIdToXMLSafeName(1234));
@@ -21,5 +21,13 @@ public class NamingConventionsTest {
 		assertEquals(NamingConventions.FLOWLINE_WORKSPACE_NAME +  ":N1234", NamingConventions.getFullFlowlineLayerName(-1234));
 		assertEquals(NamingConventions.CATCHMENT_WORKSPACE_NAME + ":P1234", NamingConventions.getFullCatchmentLayerName(1234));
 		assertEquals(NamingConventions.CATCHMENT_WORKSPACE_NAME + ":P0", NamingConventions.getFullCatchmentLayerName(0));
+	 }
+	 
+	 @Test
+	 public void trySomeSimpleConvertionsBackToNumbers() {
+		 
+		assertEquals(-1234, NamingConventions.convertXMLSafeNameToContextId("N1234"));
+		assertEquals(1234, NamingConventions.convertXMLSafeNameToContextId("P1234"));
+		assertEquals(0, NamingConventions.convertXMLSafeNameToContextId("P0"));
 	 }
 }
