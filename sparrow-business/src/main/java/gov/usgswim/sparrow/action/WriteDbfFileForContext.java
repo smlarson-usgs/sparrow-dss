@@ -3,6 +3,7 @@ package gov.usgswim.sparrow.action;
 import gov.usgs.cida.config.DynamicReadOnlyProperties;
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.ColumnIndex;
+import gov.usgs.cida.sparrow.service.util.NamingConventions;
 import gov.usgswim.sparrow.domain.PredictionContext;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.io.File;
@@ -54,7 +55,7 @@ public class WriteDbfFileForContext extends Action<File> {
         
 		dataColumn = context.getDataColumn().getColumnData();
 		columnIndex = SharedApplication.getInstance().getPredictData(context.getModelID()).getTopo().getIndex();
-		outputFile = new File(dataDir, context.getId().toString() + ".dbf");
+		outputFile = new File(dataDir, NamingConventions.convertContextIdToXMLSafeName(context.getId()) + ".dbf");
 		outputFile.createNewFile();
 	}
 	
