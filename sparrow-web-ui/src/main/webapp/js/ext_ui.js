@@ -860,7 +860,7 @@ var SAVE_AS_WIN = new (function(){
 	
 	this.requestOpen = function() {
 		if (Sparrow.SESSION.isMapping()) {
-			if (Sparrow.SESSION.isChangedSinceLastMap()) {
+			if (Sparrow.SESSION.isContextChangedSinceLastMap()) {
 				Ext.Msg.alert('Warning', "The map is not showing your current selections.  Click <i>Update Map</i> and try again.");
 			} else {
 				this.open();
@@ -1638,13 +1638,6 @@ function openCustomBucketsWindow() {
 
 	customBucketsWin.show();
 
-	// Save the bins if the save event is fired
-	customBucketsWin.on('save', function(w) {
-		Sparrow.SESSION.setBinData(w.getBucketList());
-		var comparisonBucketLbl = Ext.getCmp('map-options-tab').bucketLabel;
-		comparisonBucketLbl.setText(w.getBucketCount() + ' ' + w.getBucketType() + ' Bins');
-		make_map();
-	});
 }
 /**
  * Warning window which pops up if Ext detects user is using IE6

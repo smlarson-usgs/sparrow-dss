@@ -53,17 +53,14 @@ Sparrow.ui = function() { return{
 	    var dataSeries = pc.analysis.dataSeries["#text"];
 	    var source = pc.analysis.dataSeries["@source"];
 	    var comparison = pc.nominalComparison["@type"];
-	    var bucketType = Sparrow.SESSION.getBinTypeName();
-	    var bucketCount = Sparrow.SESSION.getBinCount();
 	    var whatToMap = ms["what_to_map"];
-	    var aggFunction = Sparrow.SESSION.PredictionContext.analysis.groupBy["@aggFunction"];
 	
 	    // Set the appropriate map options controls
 	    var mapOptionsTab = Ext.getCmp('map-options-tab');
 	    mapOptionsTab.setDataSeriesCtl(dataSeries);
 	    mapOptionsTab.setSourceCtl(source);
 	    mapOptionsTab.setComparisonCtl(comparison);
-	    mapOptionsTab.setComparisonBucket(bucketCount + ' ' + bucketType + ' Bins');
+	    Sparrow.SESSION.fireContextEvent('system-bindata-changed');	//updated UI text
 	    mapOptionsTab.setWhatToMapCtl(whatToMap);
 	
 	    //load adjustments

@@ -148,6 +148,20 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
 				seriesDescription: null,
 				rowCount: null
 			},
+			
+			/* Arry of context ids and their associated dataLayerInfo
+			 * registered as data layers w/ the map server.
+			 * This list should be kept short (5?) b/c the server will eventually
+			 * sweep old map layers.  This list allows the UI to know that layers
+			 * have been previously registerd so that they don't have to be
+			 * if the user is just changing bin color or what to map.
+			 * Note that a context may be registered for predictions registering
+			 * the layer is a separate process.
+			 */
+			registerDataLayers: {
+				contextIds : [],
+				dataLayerInfos : []
+			},
         	
         	/*
         	 * Bin data become transient if auto-binning is used b/c its redundant
@@ -162,9 +176,12 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
         	},
 			
 			/* The current data layer wms url and layer names */
-			dataLayerWmsUrl: "",
-			flowlineDataLayerName: "",
-			catchDataLayerName: ""
+			dataLayerInfo : {
+				dataLayerWmsUrl: "",	//ends with /wms
+				flowlineDataLayerName: "",
+				catchDataLayerName: ""
+			}
+
         }
     }
 
@@ -488,7 +505,7 @@ Sparrow.ux.Session.prototype = {
 	 * last map was drawn.
 	 * If no map was ever drawn, returns true.
 	 */
-	isChangedSinceLastMap : function() {
+	isContextChangedSinceLastMap : function() {
 		if (this.TransientMapState.lastMappedContextId == null) {
 			return true;
 		} else {
@@ -569,6 +586,96 @@ Sparrow.ux.Session.prototype = {
 		} else {
 			return null;
 		}
+	},		
+			
+	/**
+	 * Returns true if the context id was previously registered as a data layer
+	 * with the map server.
+	 * 
+	 * @param {type} contextId
+	 * @returns {undefined}
+	 */
+	isRegisteredDataLayer : function(contextId) {
+		return (this.TransientMapState.registerDataLayers.contextIds.indexOf(contextId) > -1);
+	},
+	
+	/**
+	 * Finds the data layer info for the context ID, or returns null if not found.
+	 * @param {type} contextId
+	 * @returns {registerDataLayers.dataLayerInfos}
+	 */
+	getRegisteredDataLayer : function(contextId) {
+		idx = this.TransientMapState.registerDataLayers.contextIds.indexOf(contextId);
+		if (idx > -1) {
+			return this.TransientMapState.registerDataLayers.dataLayerInfos[idx];
+		} else {
+			return null;
+		}
+	},
+	
+	/**
+	 * Records a context ID and its datalyer info as being registered w/ the map
+	 * server as a data layer.
+	 * 
+	 * Only the five most recent context IDs are kept so that very old IDs will
+	 * be forced to re-register.
+	 * 
+	 * If the layer is already recorded, it brings it to the top of the list
+	 * (more recently used), allowing older unused ones to drop off.
+	 * 
+	 * @param {type} contextId
+	 * @returns {undefined}
+	 */
+	bumpRegisteredDataLayer : function(contextId) {
+		
+		idx = this.TransientMapState.registerDataLayers.contextIds.indexOf(contextId);
+		
+		
+		//If zero, its already at the top of the list
+		if (idx > 0) {
+			//already in list - remove it
+			this.TransientMapState.registerDataLayers.contextIds.splice(idx, 1);
+			dl = this.TransientMapState.registerDataLayers.dataLayerInfos.splice(idx, 1);
+			
+			//re-insert at zero
+			this.TransientMapState.registerDataLayers.contextIds.splice(0,0, contextId);
+			this.TransientMapState.registerDataLayers.dataLayerInfos.splice(0,0, dl);
+		}
+		
+	},
+	
+	/**
+	 * Records a context ID and its datalyer info as being registered w/ the map
+	 * server as a data layer.
+	 * 
+	 * Only the five most recent context IDs are kept so that very old IDs will
+	 * be forced to re-register.
+	 * 
+	 * If the layer is already recorded, it brings it to the top of the list
+	 * (more recently used), allowing older unused ones to drop off.
+	 * 
+	 * @param {type} contextId The context ID of the data layer
+	 * @param dataLayerInfo All the layer info - see TransientState above for definition
+	 * @returns {undefined}
+	 */
+	addRegisteredDataLayer : function(contextId, dataLayerInfo) {
+		
+		idx = this.TransientMapState.registerDataLayers.contextIds.indexOf(contextId);
+		
+		if (idx < 0) {
+			//Not already in list
+			this.TransientMapState.registerDataLayers.contextIds.splice(0,0, contextId);
+			this.TransientMapState.registerDataLayers.dataLayerInfos.splice(0,0, dataLayerInfo);
+			
+			//trim to most recent 5 entries
+			while (this.TransientMapState.registerDataLayers.contextIds.length > 5) {
+				this.TransientMapState.registerDataLayers.contextIds.pop();
+				this.TransientMapState.registerDataLayers.dataLayerInfos.pop();
+			}
+		} else {
+			//already in list - just bump it
+			this.bumpRegisteredDataLayer(contextId);
+		}
 	},
 
 	// Doesn't seem to be used?? [IK]
@@ -578,39 +685,80 @@ Sparrow.ux.Session.prototype = {
 		this.changed();
 	},
 	
-	setDataLayerInfo: function(dataLayerWmsUrl, flowlineDataLayerName, catchDataLayerName) {
-		this.TransientMapState["dataLayerWmsUrl"] = dataLayerWmsUrl;
-		this.TransientMapState["flowlineDataLayerName"] = flowlineDataLayerName;
-		this.TransientMapState["catchDataLayerName"] = catchDataLayerName;
+	/**
+	 * Sets the dataLayer information, used to map the data layer as a wms layer
+	 * from the map server.
+	 * 
+	 * If only the context ID is provide, it is assumed that this layer was already
+	 * registerd and we just find it in the registerDataLayers list.
+	 * 
+	 * @param {type} contextId
+	 * @param {type} dataLayerInfo
+	 * @param {type} flowlineDataLayerName
+	 * @param {type} catchDataLayerName
+	 * @returns {undefined}
+	 */
+	setCurrentDataLayerInfo: function(contextId, dataLayerInfo) {
+		
+		if (dataLayerInfo != null && ! this.isRegisteredDataLayer(contextId)) {
+			//Adding a new layer, or one not previously registered
+
+			this.TransientMapState["dataLayerInfo"] = dataLayerInfo;
+
+			this.addRegisteredDataLayer(contextId, dataLayerInfo);
+		} else {
+			//Making an already registered layer current again
+			var dl = this.getRegisteredDataLayer(contextId);
+			this.TransientMapState["dataLayerInfo"] = dl;
+			this.bumpRegisteredDataLayer(contextId);
+		}
+
 		this.changed();
 	},
 	
-	getDataLayerWmsUrl: function() {
-		return this.TransientMapState["dataLayerWmsUrl"];
+	getDataLayerInfo: function() {
+		return this.TransientMapState["dataLayerInfo"];
 	},
 	
-	getFlowlineDataLayerName: function() {
-		return this.TransientMapState["flowlineDataLayerName"];
-	},
-	
-	getCatchDataLayerName: function() {
-		return this.TransientMapState["catchDataLayerName"];
-	},
-	
-	getBinType: function() {
+	getAutoBinType: function() {
 		return this.PermanentMapState.binType;
 	},
 	
-	setBinType: function(type) {
+	setAutoBinType: function(type) {
 		this.PermanentMapState.binType = type;
 	},
 	
-	getBinTypeName: function() {
+	/**
+	 * Returns a user displayable name for the type of bins that *would* be
+	 * created with the current type of autoBin.
+	 * 
+	 * @See getCurrentBinTypeName
+	 * @returns {String}
+	 */
+	getAutoBinTypeName: function() {
 		var type = this.PermanentMapState.binType;
+		
 		if (type == 'EQUAL_COUNT') {
 			return 'Equal Count';
 		} else if (type == 'EQUAL_RANGE') {
 			return 'Equal Range';
+		} else {
+			return 'UNKNOWN';
+		}
+	},
+	
+	/**
+	 * Returns a user displayable name for the current type of bins.
+	 * If autoBin is disabled, this will return 'Custom', which is different than
+	 * what getAutoBinTypeName(), which will always return what type of auto be
+	 * generated if they were enabled.
+	 * @returns {String}
+	 */
+	getCurrentBinTypeName: function() {
+		var type = this.PermanentMapState.binType;
+		
+		if (this.PermanentMapState.binAuto) {
+			return this.getAutoBinTypeName();
 		} else {
 			return 'Custom';
 		}
@@ -641,6 +789,8 @@ Sparrow.ux.Session.prototype = {
 				}
 				this.TransientMapState.binData = null;
 			}
+			
+			this.fireContextEvent("autobin-changed");
 		}
 	},
 	
@@ -654,9 +804,17 @@ Sparrow.ux.Session.prototype = {
 
 	/**
 	 * See the structure of this data defined above.
+	 * 
+	 * If isIsolatedUserChange is true, the map will auto redraw.  This should
+	 * be set true when the user is ONLY changing the bins directly.  In other
+	 * cases (autoBins or auto-adjustming the bins) where the caller will
+	 * update the map, leave this flag false so we don't redraw the map twice.
+	 * 
 	 * @param structuredBinningData
+	 * @param isIsolatedUserChange - Set true if this is a single user action 
+	 *	(false when autoBin sets this data or caller plans to update map)
 	 */
-	setBinData: function(structuredBinData) {
+	setBinData: function(structuredBinData, isIsolatedUserChange) {
 		
 		//If the user's bins are being 'fixed' b/c they don't contain all the
 		//values, keep the users previous colors and just take the numbers.
@@ -681,7 +839,12 @@ Sparrow.ux.Session.prototype = {
 		}
 		this.PermanentMapState.binCount = cnt;
 		
-	    this.changed();
+		if (isIsolatedUserChange) {
+			this.fireContextEvent("user-bindata-changed");
+		} else {
+			this.fireContextEvent("system-bindata-changed");
+		}
+	    
 	},
 	
 	/**
@@ -694,6 +857,86 @@ Sparrow.ux.Session.prototype = {
 	 */
 	getBinCount: function() {
 		return this.PermanentMapState.binCount;
+	},
+	
+	/**
+	 * If autoBin is enabled, returns true if the current auto generated bin
+	 * data is current.  If true, it is not necessary to regenerate bins with
+	 * the server before drawing the map.  This means this method can only return
+	 * true if the map was previously drawn, the context has not changed, and
+	 * the previous map was done w/ autoBin.
+	 * 
+	 * If autoBin is false, this method returns false.
+	 * @returns {undefined}
+	 */
+	isAutoBinDataCurrent: function() {
+		
+		if (this.isBinAuto() && ! this.isContextChangedSinceLastMap()) {
+			//We are in autoBin mode && the context has not changed since the last map
+			
+			var lastMapState = this.getLastMappedState();
+			
+			if (lastMapState && lastMapState.PermanentMapState) {
+				//Edge case err checking:  we had a map, so there should be a mapped state
+				
+				var lastMapPermState = lastMapState.PermanentMapState;
+
+				if (lastMapPermState.binAuto) {
+					//The previous map was generated w/ autoBin, so should be OK to reuse bins
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	},
+	
+	/**
+	 * If autoBin is disabled, returns true if the prediction context has been
+	 * mapped with the current user created custom bins, and the context has not
+	 * changed since that map was drawn.
+	 * If true, it is not necessary to validate the custom bins with
+	 * the server before drawing the map.  This means this method can only return
+	 * true if the map was previously drawn w/ autoBin disabled, the context and
+	 * the bin break-point values have not changed, and autoBin is still disabled.
+	 * 
+	 * If autoBin is true, this method returns false.
+	 * @returns {undefined}
+	 */
+	isCustomBinDataCurrent: function() {
+		if (! this.isBinAuto() && ! this.isContextChangedSinceLastMap()) {
+			//We are not in autoBin mode && the context has not changed since the last map
+			
+			var lastMapState = this.getLastMappedState();
+			
+			if (lastMapState && lastMapState.PermanentMapState && lastMapState.PermanentMapState.binData) {
+				//Edge case err checking:  we had a map, so there should be a mapped state
+				
+				
+				var lastMapPermState = lastMapState.PermanentMapState;
+
+				if (! lastMapPermState.binAuto) {
+					//The previous map was generated w/o autoBin, so check bin values
+					
+					var binsAreadyVerified = true;
+					
+					var currentFBins = this.getBinData().functionalBins;
+					var oldFBins = lastMapPermState.binData.functionalBins;
+					
+					//check all functional bins
+					for (i = 0; i < currentFBins.length; i++) {
+						if (currentFBins[i].low != oldFBins[i].low || currentFBins[i].high != oldFBins[i].high) {
+							binsAreadyVerified = false;
+							break;
+						}
+					}
+					
+					return binsAreadyVerified;
+				}
+			}
+		}
+		
+		return false;
 	},
 	
 	/**
@@ -770,7 +1013,9 @@ Sparrow.ux.Session.prototype = {
 		}
 		
 		if (this.PermanentMapState.autoBin != null) {
-			this.setBinAuto(this.PermanentMapState.autoBin);
+			
+			//bypass any events
+			this.PermanentMapState.binAuto = this.PermanentMapState.autoBin;
 		}
 		
 		//Null out old properties

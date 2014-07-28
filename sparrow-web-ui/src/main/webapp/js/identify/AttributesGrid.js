@@ -109,7 +109,7 @@ var AttributesGrid = (function(){
 		if (! Sparrow.SESSION.isMapping()) {
 			mappedValHtml = 'Current Mapped Value: <i>[There is no current map]</i><br/>' +
 			'<img src="images/small_info_icon.png" alt="Careful!"/><span class="note">All values displayed in this window are based on the unadjusted Total Load data series.</span>';
-		} else if (Sparrow.SESSION.isChangedSinceLastMap()) {
+		} else if (Sparrow.SESSION.isContextChangedSinceLastMap()) {
 			mappedValHtml = '<img class="warn" src="images/small_alert_icon.png" alt="Careful!"/>Current Mapped Value: <i>' + Math.round(mappedval.value*1000)/1000 + ' ' + Sparrow.USGS.prettyPrintUnitsForHtml(mappedval.units) +
     		' of ' + mappedval.constituent + ' (' + mappedval.name + ')</i><br/>' +
 			'<span class="note">This mapped value and the values displayed in this window are not up to date with your mapping selections.  Click the Update Map button to update.</span>';

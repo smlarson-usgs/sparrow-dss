@@ -205,36 +205,16 @@ Ext.ux.CustomBinsWindow = Ext.extend(Ext.Window, {
                     tooltip: 'Auto-generate bins...',
                     handler: function() {
                         var autoGenerateWin = new Ext.ux.AutoGenerateBucketsWindow({
+							parent: this,
                         	listeners: {
                         		ok: function(w) {
 									
-									//TODO:  This could use our callback chaining in rpc,
-									//and can use the getBins method, which should now have
-									//no setSTate side effects.
-		                        	getContextIdAsync({
-		                        		scope: this,
-		                        		callback: function() {
-				                            var bucketCount = w.getBucketCount();
-				                            var bucketType = w.getBucketType();
-				                            this.bucketTypeDisp = w.getBucketTypeDisp();
-
-				                            // Make ajax call to auto-generate service
-				                            Ext.Ajax.request({
-				                                url: 'getBins',
-				                                method: 'GET',
-				                                params: 'context-id=' + Sparrow.SESSION.getMappedOrValidContextId() + '&bin-count=' + bucketCount + '&bin-type=' + bucketType,
-				                                scope: this,
-				                                success: this.handleAutoGenerateSuccess,
-				                                failure: this.handleAutoGenerateFailure,
-				                                timeout: 40000
-				                            });
-				                            // timeout upped to 40000 from 10000 to deal with annoying timeout issue
-				                            // TODO[IK] add method to inspect object and autoCancel pending request/timeout
-				                            Ext.getBody().mask('Generating bins...  <input type="button" onclick="Ext.getBody().unmask();Ext.Ajax.abort();" value="cancel" />', 'x-mask-loading');
-
-				                        },
-										errorHandler: this.handleAutoGenerateFailure
-		                        	});
+									var binType = w.getBucketType();
+									var binCount = w.getBucketCount();
+									var handler = w.parent.handleAutoGenerateBins;
+									
+									fetchAutoBins(handler, binType, binCount, w.parent);
+									
 		                        },
                         		scope: this
                         	}
@@ -267,6 +247,8 @@ Ext.ux.CustomBinsWindow = Ext.extend(Ext.Window, {
         // Install event handlers after everything is attached
         this.addEvents({save: true});
         this.addEvents({cancel: true});
+		
+		
     },
 
     onRender: function(ct, position) {
@@ -275,9 +257,40 @@ Ext.ux.CustomBinsWindow = Ext.extend(Ext.Window, {
     },
 
     onSave: function() {
-        this.fireEvent('save', this);
-        this.close();
+		
+		var msg = this.validateBins();
+		
+		
+		if (msg == null) {
+			Sparrow.SESSION.setBinData(this.getBucketList(), true);
+			this.close();
+		} else {
+			Ext.Msg.alert('Error', msg);
+		}
     },
+	
+	/**
+	 * Returns a string message if there is a validation error.
+	 * Returns null if all the data looks good.
+	 */
+	validateBins: function() {
+		var bins = this.getBucketList();
+			//check that all values are spec'ed
+			
+		if (bins['functionalBins'].length == 0) {
+			return "No Bins are are specified.  Use the '+' button to add bins.";
+		}
+		
+		for (i = 0; i < bins['functionalBins'].length; i++) {
+			if (! (bins['binColors'][i] && bins['binColors'][i].length == 6)) {
+				return "One of the bin colors is unset.  Click on the empty color to select a color for the bin.";
+			}
+		}
+		
+		
+		
+		return null;
+	},
 
     onCancel: function() {
         this.fireEvent('cancel', this);
@@ -361,6 +374,24 @@ Ext.ux.CustomBinsWindow = Ext.extend(Ext.Window, {
 	    	this.addBucket(functionalBins[i]['low'], functionalBins[i]['high'], colors[i]);
 	    }
     },
+	
+	handleAutoGenerateBins: function(response) {
+		
+		if (response.binData) {
+			response.scope.bucketStore.removeAll();
+			var functionalBins = response.binData['functionalBins'];
+			var binColors = response.binData['binColors'];
+
+			for (var i = 0; i < functionalBins.length; i++) {	
+				response.scope.addBucket(functionalBins[i]['low'], functionalBins[i]['high'], binColors[i]);
+			}
+
+		} else {
+			//User should already have seen a msg
+		}
+
+		Ext.getBody().unmask();
+	},
 
     handleAutoGenerateSuccess: function(response, options) {
         this.bucketStore.removeAll();

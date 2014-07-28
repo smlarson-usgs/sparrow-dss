@@ -646,7 +646,7 @@ function confirmOrAdjustCurrentContextBins(options) {
 			var allValuesInASingleBin = response.responseXML.lastChild.getElementsByTagName('entity')[1].firstChild.nodeValue;
 
 			if(allValuesInABin != 'true' || allValuesInASingleBin != 'true'){
-				var msg = '<br/>Would you like to adjust the bins to include the entire set of results on the map using <b><i>' + Sparrow.SESSION.getBinTypeName() + '</i></b> bins?';
+				var msg = '<br/>Would you like to adjust the bins to include the entire set of results on the map using <b><i>' + Sparrow.SESSION.getAutoBinTypeName() + '</i></b> bins?';
 
 				if(allValuesInABin=='false') msg = '- There are results not included in your custom bins that will not be displayed on the map.<br/>' + msg;
 				if(allValuesInASingleBin=='false') msg = '- All results fall into a single bin.<br/>' + msg;
@@ -656,13 +656,9 @@ function confirmOrAdjustCurrentContextBins(options) {
 					msg,
 					function(userResp){
 						if(userResp == 'yes') {
-							
 							options.callback = callback;
-							
-							//Sparrow.SESSION.setBinAuto(true);	//enable auto-binning
 							generateBins(options);
 						} else {
-							//no
 							if (callback) callback.call(this, options);
 						}
 					}
@@ -707,8 +703,8 @@ function generateBins(options) {
 		callback = options.callbackChain.shift();
 	}
 	
-	var bucketCount = Sparrow.SESSION.getBinCount();
-	var bucketType = Sparrow.SESSION.getBinType();
+	var bucketCount = (options.binCount)?options.binCount:Sparrow.SESSION.getBinCount();
+	var bucketType = (options.binType)?options.binType:Sparrow.SESSION.getAutoBinType();
 	var contextId = options.contextId;
 	if (! contextId) contextId = Sparrow.SESSION.getLastValidContextId();
 	
@@ -764,35 +760,44 @@ function registerDataLayer(options) {
 	var contextId = options.contextId;
 	if (! contextId) contextId = Sparrow.SESSION.getLastValidContextId();
 	
-	var onLocalErr = function(r) {
-		if (options.errorHandler) {
-			options.errorMessage = "Failed registering the data map layer with the map server";
-			options.errorHandler.call(this, r, options);
-		} else {
-			Ext.Msg.alert('Warning', "Failed registering the data map layer with the map server");
-		}
-	};
-	
-	Ext.Ajax.request({
-		method: 'GET',
-		url: 'RegisterMapLayerService?context-id=' + contextId +'&projected-srs=EPSG:4326',
-		success: function(r,o) {
-			var ok = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'Status');
-			
-			if (ok == 'OK') {
-				
-				options.dataLayer = new Object();
-				options.dataLayer.datalayerWmsUrl = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'EndpointUrl');
-				options.dataLayer.flowlineLayerName = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'FlowLayerName');
-				options.dataLayer.catchLayerName = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'CatchLayerName');
-				
-				if (callback) callback.call(this, options);
+	if (! Sparrow.SESSION.isRegisteredDataLayer(contextId)) {
+		//not already registered
+		
+		var onLocalErr = function(r) {
+			if (options.errorHandler) {
+				options.errorMessage = "Failed registering the data map layer with the map server";
+				options.errorHandler.call(this, r, options);
 			} else {
-				onLocalErr.call(this, r, options);
+				Ext.Msg.alert('Warning', "Failed registering the data map layer with the map server");
 			}
-		},
-		failure: onLocalErr
-	});
+		};
+
+		Ext.Ajax.request({
+			method: 'GET',
+			url: 'RegisterMapLayerService?context-id=' + contextId +'&projected-srs=EPSG:4326',
+			success: function(r,o) {
+				var ok = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'Status');
+
+				if (ok == 'OK') {
+
+					options.dataLayer = new Object();
+					options.dataLayer.dataLayerWmsUrl = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'EndpointUrl');
+					options.dataLayer.flowlineDataLayerName = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'FlowLayerName');
+					options.dataLayer.catchDataLayerName = Sparrow.utils.getFirstXmlElementValue(r.responseXML, 'CatchLayerName');
+
+					if (callback) callback.call(this, options);
+				} else {
+					onLocalErr.call(this, r, options);
+				}
+			},
+			failure: onLocalErr
+		});
+		
+	} else {
+		//already registered - move on
+		options.dataLayer = null;
+		if (callback) callback.call(this, options);
+	}
 };
 
 function saveNewState(options) {
@@ -807,29 +812,63 @@ function saveNewState(options) {
 	
 	if (Sparrow.SESSION.isBinAuto()) {
 		if (options.binData) {
-			Sparrow.SESSION.setBinData(options.binData);
-			
-			//TODO:  This could be handled as a binChange event
-			var comparisonBucketLbl = Ext.getCmp('map-options-tab').bucketLabel;
-			comparisonBucketLbl.setText(Sparrow.SESSION.getBinCount() + ' ' + Sparrow.SESSION.getBinTypeName() + ' Bins');
+			Sparrow.SESSION.setBinData(options.binData, false);
 		} else {
-			//This shouldn't happen
-			Ext.Msg.alert('Error', "Expected auto-generated bins, but none were provided.");
+			//This is the case when the context has not changed.
 		}
 	} else if (options.binData) {
 		//Custom bins, but the user has requested that the values be adjusted
 		options.binData['binColors'] = null;	//rm colors (keep user's previous colors)
-		Sparrow.SESSION.setBinData(options.binData);
+		Sparrow.SESSION.setBinData(options.binData, false);
 	}
 	
-	Sparrow.SESSION.setDataLayerInfo(
-			options.dataLayer.datalayerWmsUrl, 
-			options.dataLayer.flowlineLayerName, 
-			options.dataLayer.catchLayerName);
+	Sparrow.SESSION.setCurrentDataLayerInfo(options.contextId, options.dataLayer);
 	
 	if (callback) callback.call(this, options);
 }
 
+/**
+ * Async fetches the auto-generated bins for the current map state and calls the
+ * passed handler when complete.
+ * 
+ * The handler is passed an options object with these fields:
+ * options.binData - The requested binData object
+ * 
+ * If options.binData is undefined, the call failed and a user msg was displayed.
+ * 
+ * This should be used instead of calling generateBins directly, since this auto-
+ * registers the context ID as needed.
+ * 
+ * Bin data is not saved:  only returned to the caller.
+ * 
+ * @param callBackHandler function called when complete.  Options are passed
+ * @param scope Scope passed through to callback handler as part of options:  options.scope.
+ * @returns binData
+ * 
+ */
+function fetchAutoBins(callBackHandler, binType, binCount, scope) {
+
+	//Standard options structure, pulling all possible return values together
+	//for the call chain.
+	var options = new Object();
+	options.contextId = null;
+	options.binType = binType;
+	options.binCount = binCount;
+	options.scope = scope;
+	options.binData = null;	//See SparrowUIContext for object definition
+	
+	if (Sparrow.SESSION.isChangedSinceLastMarkedState()) {
+
+		options.callbackChain = [generateBins, callBackHandler];
+		getContextIdAsync(options);
+		
+	} else {
+
+		options.contextId = Sparrow.SESSION.getLastMappedContextId();
+		options.callbackChain = [callBackHandler];
+		generateBins(options);
+	}
+}
 /**
  * Add the sparrow datalayer to the map
  */
@@ -846,14 +885,49 @@ function make_map() {
 	options.dataLayer.catchLayerName = null;
 	
 	//TODO:  We could add an error handler that says we failed to map.
+	
+	if (Sparrow.SESSION.isContextChangedSinceLastMap()) {
+		//Need to register context and layer
+		if (Sparrow.SESSION.isBinAuto()) {
+			options.callbackChain = [generateBins, registerDataLayer, saveNewState, addDataLayer];
+		} else {
+			options.callbackChain = [confirmOrAdjustCurrentContextBins, registerDataLayer, saveNewState, addDataLayer];
+		}
 		
-	if (Sparrow.SESSION.isBinAuto()) {
-		options.callbackChain = [generateBins, registerDataLayer, saveNewState, addDataLayer];
+		getContextIdAsync(options);	//Adds the dataLayer if successful
 	} else {
-		options.callbackChain = [confirmOrAdjustCurrentContextBins, registerDataLayer, saveNewState, addDataLayer];
+		//Context and layer already registered
+		
+		
+		//Since we skip fetching the context id from server, set it here so other
+		//chained methods can find it
+		options.contextId = Sparrow.SESSION.getLastMappedContextId();
+		
+		if (Sparrow.SESSION.isBinAuto()) {
+			
+			if (Sparrow.SESSION.isAutoBinDataCurrent()) {
+				//No need to re-gen autobin data
+				options.callbackChain = [addDataLayer];
+				saveNewState(options);
+			} else {
+				//Prev map had custom bins, now auto, so regen bins
+				options.callbackChain = [saveNewState, addDataLayer];
+				generateBins(options);
+			}
+
+		} else {
+	
+			if (Sparrow.SESSION.isCustomBinDataCurrent()) {
+				options.callbackChain = [addDataLayer];
+				saveNewState(options);	//Bins may have change since last map - reconfirm
+			} else {
+				options.callbackChain = [saveNewState, addDataLayer];
+				confirmOrAdjustCurrentContextBins(options);	//Bins may have change since last map - reconfirm
+			}
+
+		}
 	}
 	
-	getContextIdAsync(options);	//Adds the dataLayer if successful
 }
 
 /**
@@ -871,8 +945,9 @@ function addDataLayer() {
         boundedFlag = !Sparrow.SESSION.getBinData()["boundUnlimited"][0].low,
         colors = Sparrow.SESSION.getBinData()["binColors"],
         binParams,
-        dataLayerWmsUrl = Sparrow.SESSION.getDataLayerWmsUrl(),	//ends with /wms
-        gsUrl = dataLayerWmsUrl.substring(0, dataLayerWmsUrl.length - 3),
+		dataLayerInfo = Sparrow.SESSION.getDataLayerInfo(),
+        dataLayerWmsUrl = dataLayerInfo.dataLayerWmsUrl,	
+        gsUrl = dataLayerInfo['dataLayerWmsUrl'].substring(0, dataLayerWmsUrl.length - 3),
         sldUrl,
         workspace,
         layerName,
@@ -881,9 +956,9 @@ function addDataLayer() {
 
 	
 	if (what_to_map === "reach") {
-		wsAndLayerName = Sparrow.SESSION.getFlowlineDataLayerName();
+		wsAndLayerName = dataLayerInfo.flowlineDataLayerName;
 	} else {
-		wsAndLayerName = Sparrow.SESSION.getCatchDataLayerName();
+		wsAndLayerName = dataLayerInfo.catchDataLayerName;
 	}
     
     binParams = 'binLowList=' + Ext.pluck(bins, 'low').join();
