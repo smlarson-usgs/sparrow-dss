@@ -635,7 +635,7 @@ Sparrow.ux.Session.prototype = {
 		if (idx > 0) {
 			//already in list - remove it
 			this.TransientMapState.registerDataLayers.contextIds.splice(idx, 1);
-			dl = this.TransientMapState.registerDataLayers.dataLayerInfos.splice(idx, 1);
+			dl = this.TransientMapState.registerDataLayers.dataLayerInfos.splice(idx, 1)[0];
 			
 			//re-insert at zero
 			this.TransientMapState.registerDataLayers.contextIds.splice(0,0, contextId);
