@@ -130,6 +130,19 @@
 			</modules>
 		</profile>
 		
+		<profile>
+			<id>liquibase-build</id>
+			<activation>
+				<property>
+					<name>liquibase-build</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<modules>
+				<module>sparrow-liquibase</module>
+			</modules>
+		</profile>
+		
 	</profiles>
 
 	
