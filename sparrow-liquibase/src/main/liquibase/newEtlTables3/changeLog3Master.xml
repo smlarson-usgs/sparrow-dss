@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<databaseChangeLog 
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd"> 
+
+	<preConditions>
+		<dbms type="oracle" />
+		<runningAs username="SPARROW_DSS" />
+    </preConditions>
+
+	<include file="changeLog3Tables.sql" relativeToChangelogFile="true"/>
+	<include file="changeLog3Indexes.sql" relativeToChangelogFile="true"/>
+	<include file="changeLog3ForeignKeys.sql" relativeToChangelogFile="true"/>
+	<include file="changeLog3Data.sql" relativeToChangelogFile="true"/>
+	<include file="changeLog3Column.sql" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>
