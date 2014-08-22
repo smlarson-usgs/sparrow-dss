@@ -978,6 +978,8 @@ function addDataLayer() {
     map1.layerManager.unloadMapLayer(mappedValueLayerID);
     map1.appendLayer(
     	new JMap.web.mapLayer.WMSLayer({
+			
+			format: "image/png8",
     		zDepth: 60000,
     		id: mappedValueLayerID,
     		scaleMin: 0,
@@ -990,7 +992,10 @@ function addDataLayer() {
     		isHiddenFromUser: true,
     		description: 'Sparrow Coverage',
     		opacity: Sparrow.SESSION.getDataLayerOpacity(),
-			sld: encodeURIComponent(sldUrl)
+			customParams: {
+				format_options: 'antialiasing:none;quantizer:octree;',
+				sld: sldUrl
+			}
     	})
     );
 
