@@ -49,8 +49,8 @@
 
 	<!-- Defines a comma seperated list of workspace names that should be left 
 		untouched - Default is "reach-overlay" -->
-	<Environment name="sparrow.geoserver.sweeper.workspaces.read-only"
-		type="java.lang.String" value="reach-overlay" />
+	<Environment name="sparrow.geoserver.sweeper.workspaces.pruned"
+		type="java.lang.String" value="sparrow-catchment, sparrow-flowline" />
 
 	<Resource name="jdbc/sparrow_dss" auth="Container"
 		url="jdbc:oracle:thin:@IP:PORT:DB" username="USER"

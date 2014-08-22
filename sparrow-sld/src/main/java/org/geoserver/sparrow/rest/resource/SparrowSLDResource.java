@@ -45,6 +45,16 @@ public class SparrowSLDResource extends AbstractResource {
 
     @Override
     public synchronized void handleGet() {
+    	/**
+    	 * Put a layer access time in the catalog (JIRA SPDSS-1268)
+    	 * https://internal.cida.usgs.gov/jira/browse/SPDSS-1268
+    	 * 
+    	 * 		layerInfo.getMetadata().put("lastUsedMS", System.currentTimeMillis());
+    	 * 		catalog.save(layerInfo);
+    	 * 
+    	 * only save if lastUsedMS time is > than say 5 minutes.
+    	 */
+    	
         //TODO- What to do if we are missing any of these? 
         String workspace = getAttribute("workspace");
         String layer = getAttribute("layer");
@@ -56,6 +66,8 @@ public class SparrowSLDResource extends AbstractResource {
         String[] binLowListArray = StringUtils.split(binLowList, ',');
         String[] binHighListArray = StringUtils.split(binHighList, ',');
         String[] binColorListArray = StringUtils.split(binColorList, ',');
+        
+        LOG.log(Level.INFO, "\n**********> SLD CALLED FOR WORKSPACE [" + workspace + "] FOR LAYER [" + layer + "]");
 
         String logString = "SLD Request:\n";
         logString += String.format("Workspace: %s\n", workspace);
