@@ -35,20 +35,18 @@ JMap.web.mapLayer.WMSLayer.prototype.getSourceURL = function(x, y) {
 	src += 'request=' + this.request;
 	src += '&srs=EPSG:' + this.srs;
 	src += '&version=' + this.version;
-	src += '&layers=' + this.layersUrlParam;
+	src += '&layers=' + encodeURIComponent(this.layersUrlParam);
 	src += "&BBOX=" + xmin + "," + ymin + "," + xmax + "," + ymax;
 	src += "&width=" + (this.map.tileSize - (this.overlapX * -2));
 	src += "&height=" + (this.map.tileSize - (this.overlapY * -2));            
 	src += '&transparent=true';
-	src += '&format=' + this.format;    
+	src += '&format=' + encodeURIComponent(this.format);    
 	src += '&styles='; //according to the spec, styles is *required* in WMS, only support default here
-
-	if (this.sld) src += '&sld=' + this.sld;
 	
 	//any additional params not in the WMS standard
 	if (this.customParams) {
 		for (var x in this.customParams) {
-			src += '&' + x + '=' + this.customParams[x];
+			src += '&' + encodeURIComponent(x) + '=' + encodeURIComponent(this.customParams[x]);
 		}
 	}
 

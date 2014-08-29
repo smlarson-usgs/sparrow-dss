@@ -31,7 +31,6 @@ JMap.web.mapLayer.Layer = function(params) {
 		this.description = params.description;
 		this.classTheme = params.classTheme;
 		this.className = params.className;
-		this.sld = params.sld;
 		this.overlap = (params.overlap || 0);
 		this.customParams = params.customParams;
 		
