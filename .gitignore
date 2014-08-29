@@ -15,3 +15,7 @@
 /sparrow-business-integration-tests/nb-configuration.xml
 /sparrow-sld/target/
 /sparrow-service-utils/target/
+.project
+.classpath
+.settings
+sparrow-wps/target/

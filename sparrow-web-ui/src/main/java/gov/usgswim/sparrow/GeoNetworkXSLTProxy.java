@@ -65,7 +65,7 @@ public class GeoNetworkXSLTProxy extends ProxyServlet {
 			throws MalformedURLException {
 		
 		return new URL("http://localhost:8080/geonetwork/srv/en/csw");
-		
+		//return new URL("http://130.11.165.190:8080/geonetwork/srv/en/csw");
 	}
 
 	/**

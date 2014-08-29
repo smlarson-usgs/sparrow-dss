@@ -24,6 +24,10 @@
 		<constructor-arg index="0" ref="catalog"/>
 		<constructor-arg index="1" ref="jndiTemplate"/>
     </bean>
+    
+    <bean id="sweeper" class="org.geoserver.sparrow.util.GeoserverSweeperStartupListener">
+		<constructor-arg index="0" ref="catalog"/>
+	</bean>
 	
 	<!-- Register classes that have XStream Annotations -->
 <!--	<bean class="org.geoserver.sparrow.XStreamAnnotationRegistrar">

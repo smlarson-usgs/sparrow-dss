@@ -212,6 +212,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 		dsParams.put("dbase_file", dbfFile.toURI().toURL());
 		dsParams.put("namespace", namespace);
 		dsParams.put("dbase_field", idFieldInDbf);
+		dsParams.put("lastUsedMS", System.currentTimeMillis());		// Date for pruning process
 		
 		DataStoreInfoImpl info = new DataStoreInfoImpl(catalog);
 		info.setType("Dbase Shapefile Joining Data Store");
