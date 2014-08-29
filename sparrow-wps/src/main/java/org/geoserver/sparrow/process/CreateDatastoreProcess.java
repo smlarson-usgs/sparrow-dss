@@ -5,13 +5,16 @@ import gov.usgs.cida.sparrow.service.util.ServiceResponseMimeType;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseOperation;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseStatus;
 import gov.usgs.cida.sparrow.service.util.ServiceResponseWrapper;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.naming.NamingException;
+
 import org.apache.commons.lang.StringUtils;
 import org.geoserver.catalog.Catalog;
 import org.geoserver.catalog.CatalogBuilder;
@@ -19,6 +22,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.impl.DataStoreInfoImpl;
+import org.geoserver.sparrow.util.GeoserverSweeperStartupListener;
 import org.geoserver.wps.gs.GeoServerProcess;
 import org.geotools.data.DataAccess;
 import org.geotools.process.ProcessException;
@@ -221,19 +225,17 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 		info.setName(layerName);
 		info.setConnectionParameters(dsParams);
 		
-			
+		CatalogBuilder cb = new CatalogBuilder(catalog);
+		catalog.add(info);
+		DataAccess<? extends FeatureType, ? extends Feature> dataStore = info.getDataStore(new NullProgressListener());
+		
         try {
-			catalog.add(info);
-            DataAccess<? extends FeatureType, ? extends Feature> dataStore = info.getDataStore(new NullProgressListener());
-			
-			
 			List<Name> names = dataStore.getNames();
 			Name allData = names.get(0);
 
 			ProjectionPolicy srsHandling = ProjectionPolicy.FORCE_DECLARED;
 			
 			//Create some cat builder thing for some purpose
-			CatalogBuilder cb = new CatalogBuilder(catalog);
 			cb.setWorkspace(info.getWorkspace());
 			cb.setStore(info);
 			FeatureTypeInfo fti = cb.buildFeatureType(dataStore.getFeatureSource(allData));
@@ -248,13 +250,24 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
 			catalog.add(fti);
 			catalog.add(li);
 			return true;
-
         } catch (IOException e) {
             log.error("Error obtaining new data store", e);
             String message = e.getMessage();
             if (message == null && e.getCause() != null) {
                 message = e.getCause().getMessage();
             }
+            
+            log.error("Attempting to role back layer creation changes...");
+            
+            /**
+             * Since we dont know exactly when the exception was thrown we will do the full layer removal
+             * process.  It will do everything it needs to remove a layer that already exists but its
+             * possible that it wont get to something as a prerequisite for full removal might be what 
+             * threw this exception.
+             */
+			if(!GeoserverSweeperStartupListener.pruneDataStore(cb, catalog, dataStore, info, dbfFile)) {
+				log.error("Unable to fully remove all layer creation changes");
+			}
 			
             fail("Error creating data store, check the parameters. Err message: " + message);
         }
