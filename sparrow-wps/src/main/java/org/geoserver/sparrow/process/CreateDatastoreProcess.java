@@ -266,7 +266,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
              * threw this exception.
              */
 			if(!GeoserverSweeperStartupListener.pruneDataStore(cb, catalog, dataStore, info, dbfFile)) {
-				log.error("Unable to fully remove all layer creation changes");
+				log.error("Unable to fully remove all layer creation changes for datastore [" + info.getName() + "]");
 			}
 			
             fail("Error creating data store, check the parameters. Err message: " + message);
