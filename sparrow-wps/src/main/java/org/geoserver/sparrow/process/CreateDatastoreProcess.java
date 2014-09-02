@@ -257,7 +257,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
                 message = e.getCause().getMessage();
             }
             
-            log.error("Attempting to role back layer creation changes...");
+            log.error("Attempting to roll back layer creation changes...");
             
             /**
              * Since we dont know exactly when the exception was thrown we will do the full layer removal
