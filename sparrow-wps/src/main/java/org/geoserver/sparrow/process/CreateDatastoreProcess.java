@@ -22,7 +22,7 @@ import org.geoserver.catalog.FeatureTypeInfo;
 import org.geoserver.catalog.LayerInfo;
 import org.geoserver.catalog.ProjectionPolicy;
 import org.geoserver.catalog.impl.DataStoreInfoImpl;
-import org.geoserver.sparrow.util.GeoserverSweeperStartupListener;
+import org.geoserver.sparrow.util.GeoServerSparrowLayerSweeper;
 import org.geoserver.wps.gs.GeoServerProcess;
 import org.geotools.data.DataAccess;
 import org.geotools.process.ProcessException;
@@ -265,7 +265,7 @@ public class CreateDatastoreProcess implements SparrowWps, GeoServerProcess {
              * possible that it wont get to something as a prerequisite for full removal might be what 
              * threw this exception.
              */
-			if(!GeoserverSweeperStartupListener.pruneDataStore(cb, catalog, dataStore, info, dbfFile)) {
+			if(!GeoServerSparrowLayerSweeper.pruneDataStore(cb, catalog, dataStore, info, dbfFile)) {
 				log.error("Unable to fully remove all layer creation changes for datastore [" + info.getName() + "]");
 			}
 			
