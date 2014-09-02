@@ -28,7 +28,7 @@ import org.opengis.feature.type.Name;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.jndi.JndiTemplate;
 
-public class GeoserverSweeperStartupListener implements InitializingBean {
+public class GeoServerSparrowLayerSweeper implements InitializingBean {
 	protected static final Logger LOGGER = org.geotools.util.logging.Logging.getLogger("org.geoserver.sparrow.util");
 	private static final Long DEFAULT_MAX_LAYER_AGE = 2592000000l; // 30d
 	private static final Long DEFAULT_RUN_EVER_MS = 3600000l; // 1h
@@ -41,7 +41,7 @@ public class GeoserverSweeperStartupListener implements InitializingBean {
 	private String[] prunedWorkspaces;
 	private Thread sweeperThread;
 
-	public GeoserverSweeperStartupListener(Catalog catalog) {
+	public GeoServerSparrowLayerSweeper(Catalog catalog) {
 		this.catalog = catalog;
 	}
 
@@ -281,7 +281,7 @@ public class GeoserverSweeperStartupListener implements InitializingBean {
 								 */
 								if (currentTime - fileAge > this.maxAge) {
 									File dbfFile = new File(dbaseLocation);
-									removedData = GeoserverSweeperStartupListener.pruneDataStore(cBuilder, catalog, da,  dsInfo, dbfFile);							
+									removedData = GeoServerSparrowLayerSweeper.pruneDataStore(cBuilder, catalog, da,  dsInfo, dbfFile);							
 								}
 							}
 						}

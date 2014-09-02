@@ -25,7 +25,7 @@
 		<constructor-arg index="1" ref="jndiTemplate"/>
     </bean>
     
-    <bean id="sweeper" class="org.geoserver.sparrow.util.GeoserverSweeperStartupListener">
+    <bean id="sweeper" class="org.geoserver.sparrow.util.GeoServerSparrowLayerSweeper">
 		<constructor-arg index="0" ref="catalog"/>
 	</bean>
 	
