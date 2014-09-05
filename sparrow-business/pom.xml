@@ -106,7 +106,6 @@
 			<!-- Required by XMLUnit to support out-of-order element comparison -->
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
-			<scope>test</scope>
 		</dependency>
 
 		<dependency>
