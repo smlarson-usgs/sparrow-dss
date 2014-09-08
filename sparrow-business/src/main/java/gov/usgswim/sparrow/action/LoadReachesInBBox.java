@@ -33,10 +33,7 @@ import org.xml.sax.helpers.DefaultHandler;
  * @author eeverman
  *
  */
-public class LoadReachesInBBox extends Action<Long[]> {
-	protected static Logger log =
-			Logger.getLogger(LoadReachesInBBox.class); //logging for this class
-		
+public class LoadReachesInBBox extends Action<Long[]> {		
 	/** Name of the GeoServer query in the classname matched properties file */
 	public static final String GEOSERVER_QUERY = "getfeature";
 		
@@ -78,75 +75,58 @@ public class LoadReachesInBBox extends Action<Long[]> {
 		
 		//In form of:
 		//		wfs?service=wfs&version=1.0.0&request=GetFeature&typeNames=@LayerName@&srsName=EPSG:4326&bbox=$leftLong$, $lowerLat$, $rightLong$, $upperLat$&propertyname=reach-overlay:IDENTIFIER
-		/**
-		 * For JIRA SPDSS-1278 I was originally going to use the LoadReachesInBBox.properties pattern
-		 * that was used prior when building the SQL needed classes.  Unfortunately the calls that
-		 * offer this "properties file -> string replacement" functionality is a coded with SQL
-		 * classes in mind (PreparedStatement, SQLString, etc).  Due to this and the fact that this
-		 * GeoServer request will not change I decided to make it a hardcoded value here.
-		 * 
-		 * There also isn't a lot of time to get this specific JIRA done so if this is an important
-		 * pattern that we now want to offer for GeoServer requests we should add this functionality
-		 * in a later JIRA.
-		 * 
-				Map<String, Object> params = new HashMap<String, Object>();
-				params.put("LayerName", layerName);
-				params.put("leftLong", modelBBox.getLeftLongBound());
-				params.put("rightLong", modelBBox.getRightLongBound());
-				params.put("upperLat", modelBBox.getUpperLatBound());
-				params.put("lowerLat", modelBBox.getLowerLatBound());
-				String request = getROPSFromPropertiesFile(GEOSERVER_QUERY, this.getClass(), params);
-		 *
-		 *
-		 */
 		String request = "wfs?service=wfs&version=1.0.0&request=GetFeature&typeNames=" + layerName + "&srsName=EPSG:4326&bbox=" +
 						 leftLong + "," + lowerLat + "," + rightLong + "," + upperLat + "&propertyname=reach-overlay:IDENTIFIER";
 		
 		log.info("PERFORMING GEOSERVER REQUEST WITH: [" + request + "]");
 		
-		GeoServerResponse response = GeoServerConnection.getInstance().doRequest(request);
+		GeoServerResponse response = null;
+		Long[] results = null;
 		
-		if(response == null) {
-			log.error("Unable to retrieve feature ids from GeoServer for model [" + modelBBox.getModelId() + "].  Returning an emtpy list of ids...");
-			return new Long[]{};
-		}
-
-		/**
-		 * Since the GeoServerConnection class returns an object that represents
-		 * the raw response from GeoServer we will need to parse the contents
-		 * ourselves based on the information inside the GeoServerReponse object.
-		 * 
-		 * We are expecting XML/GML so that is what we will parse for.
-		 */
-		Map<String, String> contentTypes = response.getContentTypes();
-		boolean gmlContent = false;
-		if(contentTypes.keySet().contains("subtype")) {
-			String subType = contentTypes.get("subtype");
-			if(subType.contains("gml")) {
-				gmlContent = true;
+		try {
+			response = GeoServerConnection.getInstance().doRequest(request);
+		
+			if(response == null) {
+				throw new Exception("Unable to retrieve feature ids from GeoServer for model [" + modelBBox.getModelId() + "].");
 			}
-		} else {
-			// Loop through all values and see if we find a gml content type
-			for(String value : contentTypes.values()) {
-				if(value.contains("gml")) {
+	
+			/**
+			 * Since the GeoServerConnection class returns an object that represents
+			 * the raw response from GeoServer we will need to parse the contents
+			 * ourselves based on the information inside the GeoServerReponse object.
+			 * 
+			 * We are expecting XML/GML so that is what we will parse for.
+			 */
+			Map<String, String> contentTypes = response.getContentTypes();
+			boolean gmlContent = false;
+			if(contentTypes.keySet().contains("subtype")) {
+				String subType = contentTypes.get("subtype");
+				if(subType.contains("gml")) {
 					gmlContent = true;
-					break;
+				}
+			} else {
+				// Loop through all values and see if we find a gml content type
+				for(String value : contentTypes.values()) {
+					if(value.contains("gml")) {
+						gmlContent = true;
+						break;
+					}
 				}
 			}
+			
+			if(!gmlContent) {
+				throw new Exception("Response from GeoServer for model [" + modelBBox.getModelId() + "] does not contain valid GML.  Unable to parse.");
+			}
+			
+			results = convertStringListToLongArray(parseGMLResultsForFeatureIDs(response.getFilename()));
+			
+			/**
+			 * Remove the temporary file now that we no longer need it.
+			 */
+		} finally {
+			Path tempPath = Paths.get(response.getFilename());
+			Files.deleteIfExists(tempPath);
 		}
-		
-		if(!gmlContent) {
-			log.error("Response from GeoServer for model [" + modelBBox.getModelId() + "] does not contain valid GML.  Unable to parse.  Returning an emtpy list of ids...");
-			return new Long[]{};
-		}
-		
-		Long[] results = convertStringListToLongArray(parseGMLResultsForFeatureIDs(response.getFilename()));
-		
-		/**
-		 * Remove the temporary file now that we no longer need it.
-		 */
-		Path tempPath = Paths.get(response.getFilename());
-		Files.deleteIfExists(tempPath);
 		
 		log.info("Number of FeatureIDs returned from GeoServer are :[" + results.length + "]");
 		
@@ -169,24 +149,19 @@ public class LoadReachesInBBox extends Action<Long[]> {
 		this.modelBBox = modelBBox;
 	}
 	
-	private Long[] convertStringListToLongArray(List<String> list) {
+	private Long[] convertStringListToLongArray(List<String> list) throws Exception {
 		List<Long> results = new ArrayList<Long>();
 		
 		for(String item : list) {
-			Long value = 0L;
-			
-			try {
-				results.add(Long.parseLong(item));				
-			} catch (Exception e) {
-				log.error("Unable to convert feature id [" + item + "] to long value.  Skipping id...");
-			}
+			Long value = 0L;			
+			results.add(Long.parseLong(item));	
 		}
 		
 		return results.toArray(new Long[results.size()]);
 	}
 	
 	
-	private List<String> parseGMLResultsForFeatureIDs(String file) {
+	private List<String> parseGMLResultsForFeatureIDs(String file) throws SAXException, IOException, ParserConfigurationException {
 		List<String> results = new ArrayList<String>();
 		
 		/**
@@ -211,23 +186,8 @@ public class LoadReachesInBBox extends Action<Long[]> {
 		 * 
 		 * 	All we care about in this XML is the value in <reach-overlay:IDENTIFIER>######</reach-overlay:IDENTIFIER>
 		 */
-		ReachOverlayIdentifierParser roiParser;
-		try {
-			roiParser = new ReachOverlayIdentifierParser();
-		} catch (Exception e) {
-			log.error("Unable to create GML SAX parser for model [" + modelBBox.getModelId() + "].  Exception: [" + e.getMessage() + "]");
-			return results;
-		} 
-		
-		try {
-			results.addAll(roiParser.parseReachOverlayIdentifierSource(file));
-		} catch (SAXException e) {
-			log.error("Unable to parse GeoServer response for [" + modelBBox.getModelId() + "].  SAXException: [" + e.getMessage() + "]");
-			e.printStackTrace();
-		} catch (IOException e) {
-			log.error("Unable to parse GeoServer response for [" + modelBBox.getModelId() + "].  IOException: [" + e.getMessage() + "]");
-			e.printStackTrace();
-		}		
+		ReachOverlayIdentifierParser roiParser = new ReachOverlayIdentifierParser();
+		results.addAll(roiParser.parseReachOverlayIdentifierSource(file));
 		
 		return results;
 	}
