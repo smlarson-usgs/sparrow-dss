@@ -36,7 +36,7 @@ public class GeoServerConnection {
 	/*
 	 * INSTANCE
 	 */
-	private static final GeoServerConnection INSTANCE = new GeoServerConnection();
+	private static GeoServerConnection INSTANCE = null;
 	
 	private GeoServerConnection() {
 		JndiTemplate template = new JndiTemplate();
@@ -72,7 +72,14 @@ public class GeoServerConnection {
 	}
 	
 	public static GeoServerConnection getInstance() {
-        return INSTANCE;
+		if(GeoServerConnection.INSTANCE == null) {
+			synchronized (GeoServerConnection.class) {
+				if(GeoServerConnection.INSTANCE == null) {
+					GeoServerConnection.INSTANCE = new GeoServerConnection();
+				}
+			}
+		}
+        return GeoServerConnection.INSTANCE;
     }
 	
 	/**
@@ -82,16 +89,18 @@ public class GeoServerConnection {
 	 * <br/><br/>
 	 * It is the clients responsibility to parse the byte[] content from GeoServer
 	 * by inspecting the headers contained in the response object.
+	 * @throws Exception 
 	 */
-	public GeoServerResponse doRequest(String request) {
+	public GeoServerResponse doRequest(String request) throws Exception {
 		GeoServerResponse result = null;
 		
 		URL url = null;
 		try {
 			url = new URL(this.fullURL + request);
 		} catch (MalformedURLException e) {
-			log.error("GeoServerResponse.doRequest() MalformedURLException : unable to create URL from request [" + request +"].  Exception: [" + e.getMessage() +"]");
-			return result;
+			String msg = "GeoServerResponse.doRequest() MalformedURLException : unable to create URL from request [" + request +"].  Exception: [" + e.getMessage() +"]";
+			log.error(msg);
+			throw new Exception(msg);
 		}
 		
 		InputStream responseStream = null;
@@ -123,10 +132,15 @@ public class GeoServerConnection {
 	    		result.setContentsRead(pureLength);
 	    		result.setFilename(tempFile.toString());
     		} else {
-    			log.error("GeoServerResponse.doRequest() HTTP Result Code != 200 : [" + status + "] for request [" + request + "]");
+    			String msg = "GeoServerResponse.doRequest() HTTP Result Code != 200 : [" + status + "] for request [" + request + "]";
+    			log.error(msg);
+    			throw new Exception(msg);
     		}
     	} catch (Exception e) {
-    		log.error("GeoServerResponse.doRequest() Exception : " + e.getMessage());
+    		String msg = "GeoServerResponse.doRequest() Exception : " + e.getMessage();
+    		log.error(msg);
+    		throw new Exception(msg);
+    		
 		} finally {
 			try {
 				if(responseStream != null) {
