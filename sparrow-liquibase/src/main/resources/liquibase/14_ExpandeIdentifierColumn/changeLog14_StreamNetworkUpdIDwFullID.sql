@@ -10,7 +10,7 @@ WHERE
   AND decode(REGEXP_INSTR (full_identifier, '[^[:digit:]]'),0,'NUMBER','NOT_NUMBER') = 'NUMBER';
 --rollback select null from dual;
   
---changeset kmschoep:ERupdateIDENTIFIERwithFULL_IDENTIFIER
+--changeset kmschoep:NRupdateIDENTIFIERwithFULL_IDENTIFIER
 UPDATE NOM_REACH
 SET IDENTIFIER = TO_NUMBER(FULL_IDENTIFIER)
 WHERE
