@@ -28,7 +28,7 @@ WHERE
       identifier is not null;
 --rollback select null from dual;  
 
---changeset kmschoep:NRmodIDENTIFIER10digits
+--changeset kmschoep:NRmodIDENTIFIER11digits
 --preconditions onFail:HALT onError:HALT
-ALTER TABLE NOM_REACH MODIFY (IDENTIFIER number(10,0));
+ALTER TABLE NOM_REACH MODIFY (IDENTIFIER number(11,0));
 --rollback select null from dual;
