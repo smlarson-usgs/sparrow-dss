@@ -120,7 +120,7 @@ public class LoadReachesInBBox extends Action<Long[]> {
 			 */
 		} finally {
 			Path tempPath = Paths.get(response.getFilename());
-			//Files.deleteIfExists(tempPath);
+			Files.deleteIfExists(tempPath);
 		}
 		
 		log.info("Number of FeatureIDs returned from GeoServer are :[" + results.length + "]");
