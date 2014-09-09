@@ -3,7 +3,7 @@
 --This is for the stream_network schema
 
 --changeset kmschoep:ERaddColumnOld_Identifier
-ALTER TABLE ENH_REACH ADD COLUMN (OLD_IDENTIFIER number(10,0));
+ALTER TABLE ENH_REACH ADD (OLD_IDENTIFIER number(10,0));
 --rollback update enh_reach set identifier = old_identifier;
 --rollback alter table ENH_REACH drop COLUMN OLD_IDENTIFIER;
 
@@ -16,7 +16,7 @@ WHERE
 --rollback select null from dual; 
       
 --changeset kmschoep:NRaddColumnOld_Identifier
-ALTER TABLE NOM_REACH ADD COLUMN (OLD_IDENTIFIER number(10,0));
+ALTER TABLE NOM_REACH ADD (OLD_IDENTIFIER number(10,0));
 --rollback update nom_reach set identifier = old_identifier;
 --rollback alter table NOM_REACH drop COLUMN OLD_IDENTIFIER;
 
@@ -31,4 +31,4 @@ WHERE
 --changeset kmschoep:NRmodIDENTIFIER10digits
 --preconditions onFail:HALT onError:HALT
 ALTER TABLE NOM_REACH MODIFY (IDENTIFIER number(10,0));
---rollback alter table nom_reach modify (identifier number(9,0));
+--rollback select null from dual;
