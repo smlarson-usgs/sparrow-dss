@@ -81,7 +81,7 @@ JMap.web.LayerManager.prototype._loadLayersToMap = function(layersXML, servicesF
 
 				var legendUrl = JMap.util.getNodeValue(layers[j],'LegendURL');    
 				var metaUrl = JMap.util.getNodeValue(layers[j],'MetadataURL');         
-				var opacity = JMap.util.getNodeValue(layers[j],'opacity',100);
+				var opacity = Number(JMap.util.getNodeValue(layers[j],'opacity',100));
 				var boundingBox = JMap.util.getNodeValue(layers[j],'LatLon','-180,-90,180,90');
 				var description = JMap.util.getNodeValue(layers[j], 'Description','No description');
 				var sld = JMap.util.getNodeValue(layers[j], 'SLDURL');
@@ -326,7 +326,6 @@ JMap.web.LayerManager.prototype.getSelectedLayer = function(layerId) {
 }
 
 
-
 /**
  * determines whether or not a layer can be "turned on" at the current map scale.
  * 
@@ -357,7 +356,21 @@ JMap.web.LayerManager.prototype.getAvailableLayers = function() {
 		}
 	}
 	return available;
-}
+};
+
+/**
+ * get array list of all layers in a disconnected array.
+ * 
+ * @return a list of layers.
+ */
+JMap.web.LayerManager.prototype.getAllLayers = function() {
+
+	var available = [];
+	for (var i = 0; i < this.mapLayers.length; i++) {
+		available.push(this.mapLayers[i]);    
+	}
+	return available;
+};
 
 
 

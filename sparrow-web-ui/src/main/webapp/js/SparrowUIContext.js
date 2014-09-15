@@ -1404,7 +1404,7 @@ Sparrow.ux.Session.prototype = {
 	 * @returns
 	 */
 	getAvailableMapLayers: function() {
-		var layers = map1.layerManager.getAvailableLayers();
+		var layers = map1.layerManager.getAllLayers();
 		return layers;
 	},
 	
