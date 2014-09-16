@@ -79,7 +79,7 @@ public class LoadReachesInBBox extends Action<Long[]> {
 		Long[] results = null;
 		
 		try {
-			response = GeoServerConnection.getInstance().doRequest(request);
+			response = GeoServerConnection.getInstance().doGetRequest(request);
 		
 			if(response == null) {
 				throw new Exception("Unable to retrieve feature ids from GeoServer for model [" + modelBBox.getModelId() + "].");
@@ -148,7 +148,6 @@ public class LoadReachesInBBox extends Action<Long[]> {
 		List<Long> results = new ArrayList<Long>();
 		
 		for(String item : list) {
-			Long value = 0L;			
 			results.add(Long.parseLong(item));	
 		}
 		
