@@ -109,7 +109,6 @@ public class LoadReachByPoint extends Action<ReachInfo>{
 		 * 		http://cida-eros-sparrowdev.er.usgs.gov:8081/geoserver/wps
 		 */
 		String wpsCall = "wps";
-		//log.error("\n\nLOADREACHBYPOINT WPS CALL:\n[" + wpsCall + "]\nDATA:[\n" + postData + "]\n\n");
 		
 		GeoServerResponse response = null;
 		try {
@@ -136,11 +135,6 @@ public class LoadReachByPoint extends Action<ReachInfo>{
 					break;
 				}
 			}
-			
-			//DEBUG
-			byte[] encoded = Files.readAllBytes(Paths.get(response.getFilename()));
-			log.error("\n\nGEOSERVER HEADERS: \n[" + contentTypes + "]\n\nGEOSERVER RESPONSE: \n[" + new String(encoded, "UTF-8") + "]\n\n\n");
-			//DEBUG
 			
 			if(!xmlContent) {
 				throw new Exception("Response from GeoServer for model [" + this.modelId + "] does not contain valid XML.  Unable to parse.");
