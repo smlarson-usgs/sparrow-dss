@@ -1,8 +1,6 @@
 package gov.usgswim.sparrow.action;
 
-import gov.usgswim.sparrow.domain.ReachGeometry;
 import gov.usgswim.sparrow.request.ReachClientId;
-import gov.usgswim.sparrow.request.ReachID;
 import gov.usgswim.sparrow.service.idbypoint.ReachInfo;
 
 import java.sql.ResultSet;
@@ -75,16 +73,10 @@ public class LoadReachByID extends Action<ReachInfo> {
 		
 		rs.close();
 		
-		LoadReachCatchmentDetail catchAction = new LoadReachCatchmentDetail();
-		
 		Long reachIdLong = Long.parseLong(identifier);
-		ReachID reachId = new ReachID(reachClientId.getModelID(), reachIdLong);
-		catchAction.setReach(reachId);
-		ReachGeometry reachGeom = catchAction.run();
-		
+
 		result = new ReachInfo(
 				reachClientId.getModelID(), reachIdLong, reachClientId.getReachClientId(), reachName, null,
-				reachGeom,
 				huc2, huc2name, huc4, huc4name,
 				huc6, huc6name, huc8, huc8name);
 		

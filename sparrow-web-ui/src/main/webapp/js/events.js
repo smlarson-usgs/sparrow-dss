@@ -247,6 +247,7 @@ Sparrow.events.EventManager = function(){ return{
 		});
 
 		Sparrow.CONTEXT.on("reachoverlay-changed", function() { Sparrow.handlers.MapComponents.updateReachOverlayOnMap(); });
+		Sparrow.CONTEXT.on("reachidoverlay-changed", function() { Sparrow.handlers.MapComponents.updateReachIdOverlayOnMap(); });
 		Sparrow.CONTEXT.on("huc8overlay-changed", function() { Sparrow.handlers.MapComponents.updateHuc8OverlayOnMap(); });
 
 		Sparrow.CONTEXT.on("dataLayerOpacity-changed", function() {
@@ -516,6 +517,37 @@ Sparrow.handlers.UiComponents = function(){ return{
 		//so we need to tell it to update
 		Sparrow.handlers.UiComponents.updateComparisons();
 		Sparrow.handlers.UiComponents.updateAdjustmentsTree();
+	},
+	
+	/**
+	 * Makes the 'Remove Overlay' button visible to the user so they can turn
+	 * off the current overlay (like the reach identify layer).
+	 * 
+	 * @returns {undefined}
+	 */
+	enableReachOverlayButton : function() {
+		var btn = mapToolButtons.getComponent('mapToolButtonsHideOverlay');
+
+		if (btn.hidden) {
+			btn.show();
+			mapToolButtons.doLayout();
+		}
+		
+		//Even if this was just an update, flash the button so the user sees it.
+		btn.getEl().fadeOut().fadeIn().fadeOut().fadeIn();
+	},
+	
+	/**
+	 * Removes the 'Remove Overlay' button.
+	 * @returns {undefined}
+	 */
+	disableReachOverlayButton : function() {
+		var btn = mapToolButtons.getComponent('mapToolButtonsHideOverlay');
+
+		if (! btn.hidden) {
+			btn.hide();
+			mapToolButtons.doLayout();
+		}
 	}
 }}();
 
@@ -641,6 +673,53 @@ Sparrow.handlers.MapComponents = function(){
 			}
 		} else {
 	    	map1.layerManager.unloadMapLayer(layerId);
+	    }
+	},
+	
+	/**
+	 * Updates the reachID overlay layer on the map to match the current session
+	 * state.
+	 */
+	updateReachIdOverlayOnMap : function() {
+		var layerId = Sparrow.config.LayerIds.reachIdLayerId;
+		var opacity = Sparrow.SESSION.getReachIdOverlayOpacity();
+		var showRequested = Sparrow.SESSION.isReachIdOverlayRequested();
+		var isShowing = (map1.layerManager.getSelectedLayer(layerId) != null);
+
+		if (showRequested) {
+			if (isShowing) {
+				map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
+			} else {
+				var baseUrl = Sparrow.SESSION.getSpatialServiceEndpoint();
+				if (baseUrl.lastIndexOf("/") != (baseUrl.length - 1)) {
+					baseUrl = baseUrl + "/";
+				}
+				baseUrl = baseUrl + "wms?";
+
+				var wsAndLayerName = "catchment-overlay:" + Sparrow.SESSION.getThemeName();
+
+				map1.layerManager.unloadMapLayer(layerId);
+				map1.appendLayer(
+					new JMap.web.mapLayer.WMSLayer({
+						id: layerId,  zDepth: 60000, opacity: opacity,
+						scaleMin: 0, scaleMax: 100,
+						baseUrl: baseUrl,
+						title: "Reach Identification Overlay",
+						name: "reachid_overlay",
+						isHiddenFromUser: true,
+						description: 'Catchment of the identified reach outlined in grey',
+						layersUrlParam: wsAndLayerName,
+						customParams: {
+							CQL_FILTER: "IDENTIFIER=" + Sparrow.SESSION.getIdentifiedReachId()
+						}
+					})
+				);
+			}
+			
+			Sparrow.handlers.UiComponents.enableReachOverlayButton();
+		} else {
+	    	map1.layerManager.unloadMapLayer(layerId);
+			Sparrow.handlers.UiComponents.disableReachOverlayButton();
 	    }
 	},
 

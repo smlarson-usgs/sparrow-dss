@@ -603,6 +603,9 @@ Ext.onReady(function() {
 			text: 'Remove overlay',
 			hidden: true,
 			handler: function() {
+				Sparrow.SESSION.setReachIdOverlayRequested(false);
+				
+				//depricated, but still used for huc8 and watersheds
 				SvgOverlay.removeAllOverlays();
 			}
 		},{

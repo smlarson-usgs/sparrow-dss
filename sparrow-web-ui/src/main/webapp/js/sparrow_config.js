@@ -35,7 +35,8 @@ Sparrow.config.LayerIds = function(){return {
 	huc8LayerId: -203525,
 	reachLayerId: -203526,
 	calibrationSiteLayerId: -203527,
-	mainDataLayerId: -203528 
+	mainDataLayerId: -203528,
+	reachIdLayerId: -203600
 }}();
 
 Sparrow.config.GraphColorArray = [
