@@ -2,9 +2,17 @@ package gov.usgswim.sparrow.util;
 
 import gov.usgs.webservices.framework.utils.ResourceLoaderUtils;
 import gov.usgs.webservices.framework.utils.SmartXMLProperties;
+import gov.usgswim.sparrow.action.Action;
+import gov.usgswim.sparrow.domain.SparrowModel;
+import gov.usgswim.sparrow.request.ModelRequestCacheKey;
+import gov.usgswim.sparrow.service.SharedApplication;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang.StringUtils;
 
@@ -144,6 +152,35 @@ public abstract class SparrowResourceUtils {
 	public static String lookupModelName(Long modelID) {
 		// TODO implement this
 		throw new NotImplementedException();
+	}
+	
+	public static String lookupLayerNameForModelID(Long modelID) {
+		ModelRequestCacheKey key = new ModelRequestCacheKey(modelID, false, false, false);
+		List<SparrowModel> modelMetaDataList = SharedApplication.getInstance().getModelMetadata(key);
+		
+		if((modelMetaDataList == null) || (modelMetaDataList.size() == 0)) {
+			return null;
+		}
+		
+		SparrowModel model = modelMetaDataList.get(0);
+		
+		if(model == null) {
+			return null;
+		}
+		
+		return model.getThemeName();
+	}
+	
+	public static byte[] getFileDataByClass(Class<?> clazz, String extension) throws IOException {
+		String path = clazz.getName().replace('.', '/') + extension;
+		InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+		
+		return IOUtils.toByteArray(ins);
+	}
+	
+	public static byte[] getFileData(String path) throws IOException {
+		InputStream ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);		
+		return IOUtils.toByteArray(ins);
 	}
 
 	private SparrowResourceUtils() {/* private constructor to prevent instantiation */ }

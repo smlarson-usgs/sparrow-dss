@@ -1,11 +1,11 @@
 package gov.usgs.cida.sparrow.service.util;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -91,14 +91,14 @@ public class GeoServerConnection {
 	 * by inspecting the headers contained in the response object.
 	 * @throws Exception 
 	 */
-	public GeoServerResponse doRequest(String request) throws Exception {
+	public GeoServerResponse doGetRequest(String request) throws Exception {
 		GeoServerResponse result = null;
 		
 		URL url = null;
 		try {
 			url = new URL(this.fullURL + request);
 		} catch (MalformedURLException e) {
-			String msg = "GeoServerResponse.doRequest() MalformedURLException : unable to create URL from request [" + request +"].  Exception: [" + e.getMessage() +"]";
+			String msg = "GeoServerResponse.doGetRequest() MalformedURLException : unable to create URL from request [" + request +"].  Exception: [" + e.getMessage() +"]";
 			log.error(msg);
 			throw new Exception(msg);
 		}
@@ -108,6 +108,9 @@ public class GeoServerConnection {
     		HttpURLConnection connection = (HttpURLConnection)url.openConnection();
     		responseStream = connection.getInputStream();
 	
+    		/**
+    		 * Response
+    		 */
 	        // Get the response code
     		int status = connection.getResponseCode();
     		result = new GeoServerResponse(url, status);
@@ -120,11 +123,9 @@ public class GeoServerConnection {
 	    		
 	    		/**
 	    		 * Create a file and stream the content to it as we read it from
-	    		 * the stream.  The reason we do this is two-fold:
-	    		 * 		1) The resulting content could be very large (GML from GeoServer)
-	    		 * 		2) We only need a little bit of data out of it and its GML so
-	    		 * 		   we will be using a SAX parser which reads from a file more
-	    		 * 		   efficiently than a String.
+	    		 * the stream.  The reason we do this is because the resulting
+	    		 * content could be very large and we don't know what type it is
+	    		 * as that is the caller's responsibility
 	    		 */
 	    		String uuid = UUID.randomUUID().toString().replaceAll("-", "");
 	    		Path tempFile = Paths.get(System.getProperty("java.io.tmpdir"), uuid);
@@ -132,12 +133,12 @@ public class GeoServerConnection {
 	    		result.setContentsRead(pureLength);
 	    		result.setFilename(tempFile.toString());
     		} else {
-    			String msg = "GeoServerResponse.doRequest() HTTP Result Code != 200 : [" + status + "] for request [" + request + "]";
+    			String msg = "GeoServerResponse.doGetRequest() HTTP Result Code != 200 : [" + status + "] for request [" + request + "]";
     			log.error(msg);
     			throw new Exception(msg);
     		}
     	} catch (Exception e) {
-    		String msg = "GeoServerResponse.doRequest() Exception : " + e.getMessage();
+    		String msg = "GeoServerResponse.doGetRequest() Exception : " + e.getMessage();
     		log.error(msg);
     		throw new Exception(msg);
     		
@@ -147,7 +148,81 @@ public class GeoServerConnection {
 					responseStream.close();
 				}
 			} catch (IOException e) {
-				log.warn("GeoServerResponse.doRequest() Closing response inputstream exception : " + e.getMessage());
+				log.warn("GeoServerResponse.doGetRequest() Closing response inputstream exception : " + e.getMessage());
+			}
+		}
+		
+		return result;
+	}
+	
+	public GeoServerResponse doPostRequest(String request, byte[] data, String contentType) throws Exception {
+		GeoServerResponse result = null;
+		
+		URL url = null;
+		try {
+			url = new URL(this.fullURL + request);
+		} catch (MalformedURLException e) {
+			String msg = "GeoServerResponse.doPostRequest() MalformedURLException : unable to create URL from request [" + request +"].  Exception: [" + e.getMessage() +"]";
+			log.error(msg);
+			throw new Exception(msg);
+		}
+		
+		InputStream responseStream = null;
+		try {
+			URLConnection uc = url.openConnection();  
+	        HttpURLConnection connection = (HttpURLConnection) uc;
+    		
+    		/**
+    		 * Connection POST instructions and data
+    		 */
+    		connection.setDoInput(true);  
+    		connection.setDoOutput(true);  
+    		connection.setRequestMethod("POST");  
+    		connection.setRequestProperty("Content-type", contentType);          
+    		connection.getOutputStream().write(data);
+    		
+    		/**
+    		 * Response
+    		 */
+    		// Get the response code
+    		int status = connection.getResponseCode();
+    		responseStream = connection.getInputStream();
+    		result = new GeoServerResponse(url, status);
+    		
+    		if(status == 200) {
+	    		result.setResponseHeaders(connection.getHeaderFields());
+	    		result.setContentEncoding(connection.getContentEncoding());
+	    		result.setContentType(connection.getContentType());
+	    		result.setContentLength(connection.getContentLength());
+	    		
+	    		/**
+	    		 * Create a file and stream the content to it as we read it from
+	    		 * the stream.  The reason we do this is because the resulting
+	    		 * content could be very large and we don't know what type it is
+	    		 * as that is the caller's responsibility
+	    		 */
+	    		String uuid = UUID.randomUUID().toString().replaceAll("-", "");
+	    		Path tempFile = Paths.get(System.getProperty("java.io.tmpdir"), uuid);
+	    		long pureLength = Files.copy(responseStream, tempFile, java.nio.file.StandardCopyOption.REPLACE_EXISTING);	    		
+	    		result.setContentsRead(pureLength);
+	    		result.setFilename(tempFile.toString());
+    		} else {
+    			String msg = "GeoServerResponse.doPostRequest() HTTP Result Code != 200 : [" + status + "] for request [" + request + "]";
+    			log.error(msg);
+    			throw new Exception(msg);
+    		}
+		} catch (Exception e) {
+    		String msg = "GeoServerResponse.doPostRequest() Exception : " + e.getMessage();
+    		log.error(msg);
+    		throw new Exception(msg);
+    		
+		} finally {
+			try {
+				if(responseStream != null) {
+					responseStream.close();
+				}
+			} catch (IOException e) {
+				log.warn("GeoServerResponse.doPostRequest() Closing response inputstream exception : " + e.getMessage());
 			}
 		}
 		
