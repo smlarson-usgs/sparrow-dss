@@ -6,11 +6,7 @@ import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeClosingTag;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeNonNullTag;
 import static gov.usgswim.sparrow.util.SimpleXMLBuilderHelper.writeOpeningTag;
 import gov.usgswim.Immutable;
-import gov.usgswim.sparrow.domain.ReachGeometry;
-import gov.usgswim.sparrow.service.ServletResponseParser;
 
-import com.thoughtworks.xstream.XStream;
-import gov.usgswim.sparrow.service.SharedApplication;
 /**
  * Simple bean class to hold a reach that was identified by a user lat/long location.
  * @author eeverman
@@ -23,8 +19,6 @@ public class ReachInfo {
 	private final String clientReachId;
 	private final String name;
 	private final transient Integer distInMeters;
-
-	private final ReachGeometry reachGeom;
 
 	private transient Double clickedLong;
 	private transient Double clickedLat;
@@ -39,7 +33,6 @@ public class ReachInfo {
 	private final String huc8Name;
 
 	public ReachInfo(Long modelID, Long reachId, String clientReachId, String name, Integer distInMeters,
-			ReachGeometry reachGeom,
 			String huc2, String huc2Name, String huc4, String huc4Name,
 			String huc6, String huc6Name, String huc8, String huc8Name
 	) {
@@ -48,7 +41,6 @@ public class ReachInfo {
 		this.clientReachId = clientReachId;
 		this.name = name;
 		this.distInMeters = distInMeters;
-		this.reachGeom = reachGeom;
 
 		this.huc2 = huc2;
 		this.huc2Name = huc2Name;
@@ -72,18 +64,6 @@ public class ReachInfo {
 				writeClosedFullTag(in, "point",
 						"lat", asString(clickedLat),
 						"long", asString(clickedLong));
-			}
-
-			if (reachGeom != null) {
-				
-				XStream xs = SharedApplication.getInstance().getXmlXStream();
-				String catchment = xs.toXML(reachGeom);
-				
-				//Trim this off the front:
-				//<?xml version='1.0' encoding='UTF-8'?>
-				catchment = catchment.substring(38);
-
-				in.append(catchment);
 			}
 
 			writeOpeningTag(in, "hucs");
@@ -114,7 +94,7 @@ public class ReachInfo {
 
 	public ReachInfo cloneWithDistance(Integer distance) {
 		ReachInfo clone = new ReachInfo(modelID, reachId, clientReachId, name,
-				distance, reachGeom,
+				distance,
 				huc2, huc2Name, huc4, huc4Name, huc6, huc6Name, huc8, huc8Name );
 
 		return clone;
@@ -141,10 +121,6 @@ public class ReachInfo {
 
 	public String getName() {
 		return name;
-	}
-
-	public ReachGeometry getGeometry() {
-		return reachGeom;
 	}
 
 	public long getModelID() {

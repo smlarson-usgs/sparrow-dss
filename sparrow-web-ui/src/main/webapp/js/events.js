@@ -517,6 +517,37 @@ Sparrow.handlers.UiComponents = function(){ return{
 		//so we need to tell it to update
 		Sparrow.handlers.UiComponents.updateComparisons();
 		Sparrow.handlers.UiComponents.updateAdjustmentsTree();
+	},
+	
+	/**
+	 * Makes the 'Remove Overlay' button visible to the user so they can turn
+	 * off the current overlay (like the reach identify layer).
+	 * 
+	 * @returns {undefined}
+	 */
+	enableReachOverlayButton : function() {
+		var btn = mapToolButtons.getComponent('mapToolButtonsHideOverlay');
+
+		if (btn.hidden) {
+			btn.show();
+			mapToolButtons.doLayout();
+		}
+		
+		//Even if this was just an update, flash the button so the user sees it.
+		btn.getEl().fadeOut().fadeIn().fadeOut().fadeIn();
+	},
+	
+	/**
+	 * Removes the 'Remove Overlay' button.
+	 * @returns {undefined}
+	 */
+	disableReachOverlayButton : function() {
+		var btn = mapToolButtons.getComponent('mapToolButtonsHideOverlay');
+
+		if (! btn.hidden) {
+			btn.hide();
+			mapToolButtons.doLayout();
+		}
 	}
 }}();
 
@@ -684,8 +715,11 @@ Sparrow.handlers.MapComponents = function(){
 					})
 				);
 			}
+			
+			Sparrow.handlers.UiComponents.enableReachOverlayButton();
 		} else {
 	    	map1.layerManager.unloadMapLayer(layerId);
+			Sparrow.handlers.UiComponents.disableReachOverlayButton();
 	    }
 	},
 
