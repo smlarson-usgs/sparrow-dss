@@ -110,9 +110,11 @@ public class WriteDbfFile extends Action<File> {
 				if (val != null) {
 					//Null values are OK, they just fail the next check
 					
-					
-					////////////////////////1234567890.1234	//the max value of the 14.4 column
-					if (val.doubleValue() > 9999999999.9999D) {
+					long purevalue = Double.doubleToRawLongBits(val.doubleValue()) | 0;
+					if(purevalue == 0) {
+						log.error("A purely 0.0 value");
+						val = null;
+					} else if (val.doubleValue() > 9999999999.9999D) {
 						throw new Exception("Values larger than 10 places left of the decimal + 4 right of the decimal not currently supported.");
 					}
 				}
