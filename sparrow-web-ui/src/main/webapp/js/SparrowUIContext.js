@@ -124,6 +124,15 @@ Sparrow.ux.Context = Ext.extend(Ext.util.Observable, {
 			spatialServiceEndpoint: null,	/* nominally Geoserver's urls */
 			predefinedSessionName: null,	/* possibly passed in the url, or choosen by user after load */
 			
+			//Similar to calibSites in PermanentMapState, but for the Reach
+			//Identification overlay.  This is kept in transient state b/c
+			//the currently IDed reach is not considered 'saveable' to a session.
+        	//Negative means not shown but spec's the
+        	//remembered opacity (-75 == 75 opacity, not shown).
+        	identifiedReachOverlay: -75,
+			
+			identifiedReachId: null,
+			
 			
 			/* state tracking */
 			lastMappedState: null, /* Snapshot of the state (context and permState) at time of last map draw */
@@ -1244,6 +1253,68 @@ Sparrow.ux.Session.prototype = {
 	
 	getReachOverlayOpacity: function() {
 		return this._getAnyDataLayerOpacity("reachOverlay");
+	},
+	
+	/**
+	 * Enables/disables and assigns the opacity of the reach identification layer.
+	 * This cannot use the std _setAnyDataLayerEnabled call b/c this is based on
+	 * trans state, not the perm state.
+	 * 
+	 * @param enable required
+	 * @param newOpacity optional if enabling the layer.  Otherwise it uses
+	 * the previous opacity.
+	 */
+	setReachIdOverlayRequested: function(enable, newOpacity, reachId) {
+		
+		var orgOpacity = this.TransientMapState.identifiedReachOverlay;
+		
+		if (enable) {
+			
+			if (reachId) {
+				this.setIdentifiedReachId(reachId);
+			}
+			
+			if (newOpacity) {
+				this.TransientMapState.identifiedReachOverlay = newOpacity;
+				this.fireContextEvent("reachidoverlay-changed");
+			} else if (orgOpacity < 0) {
+				this.TransientMapState.identifiedReachOverlay = Math.abs(orgOpacity);
+				this.fireContextEvent("reachidoverlay-changed");
+			}
+		} else {
+			if (orgOpacity > 0) {
+				this.TransientMapState.identifiedReachOverlay = orgOpacity * -1;
+				this.fireContextEvent("reachidoverlay-changed");
+			}
+		}
+	},
+
+	/**
+	 * Returns true if the reach overlay is requested by the user.
+	 * Note that the layer may be disabled due to reaches being the data layer.
+	 * Check isReachOverlayEnabled to confirm that the layer should be drawn if it
+	 * is requested.
+	 */
+	isReachIdOverlayRequested: function() {
+		return (this.TransientMapState.identifiedReachOverlay > 0);
+	},
+	
+	getReachIdOverlayOpacity: function() {
+		var op = this.TransientMapState.identifiedReachOverlay;
+		if (op != null) {
+			op = Math.abs(op);
+			return op;
+		} else {
+			return 75;	//default
+		}
+	},
+	
+	setIdentifiedReachId: function(id) {
+		this.TransientMapState.identifiedReachId = id;
+	},
+	
+	getIdentifiedReachId: function(id) {
+		return this.TransientMapState.identifiedReachId;
 	},
 	
 	/**

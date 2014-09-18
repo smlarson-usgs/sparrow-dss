@@ -247,6 +247,7 @@ Sparrow.events.EventManager = function(){ return{
 		});
 
 		Sparrow.CONTEXT.on("reachoverlay-changed", function() { Sparrow.handlers.MapComponents.updateReachOverlayOnMap(); });
+		Sparrow.CONTEXT.on("reachidoverlay-changed", function() { Sparrow.handlers.MapComponents.updateReachIdOverlayOnMap(); });
 		Sparrow.CONTEXT.on("huc8overlay-changed", function() { Sparrow.handlers.MapComponents.updateHuc8OverlayOnMap(); });
 
 		Sparrow.CONTEXT.on("dataLayerOpacity-changed", function() {
@@ -636,6 +637,50 @@ Sparrow.handlers.MapComponents = function(){
 						isHiddenFromUser: true,
 						description: 'Reaches overlayed in grey',
 						layersUrlParam: wsAndLayerName
+					})
+				);
+			}
+		} else {
+	    	map1.layerManager.unloadMapLayer(layerId);
+	    }
+	},
+	
+	/**
+	 * Updates the reachID overlay layer on the map to match the current session
+	 * state.
+	 */
+	updateReachIdOverlayOnMap : function() {
+		var layerId = Sparrow.config.LayerIds.reachIdLayerId;
+		var opacity = Sparrow.SESSION.getReachIdOverlayOpacity();
+		var showRequested = Sparrow.SESSION.isReachIdOverlayRequested();
+		var isShowing = (map1.layerManager.getSelectedLayer(layerId) != null);
+
+		if (showRequested) {
+			if (isShowing) {
+				map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
+			} else {
+				var baseUrl = Sparrow.SESSION.getSpatialServiceEndpoint();
+				if (baseUrl.lastIndexOf("/") != (baseUrl.length - 1)) {
+					baseUrl = baseUrl + "/";
+				}
+				baseUrl = baseUrl + "wms?";
+
+				var wsAndLayerName = "catchment-overlay:" + Sparrow.SESSION.getThemeName();
+
+				map1.layerManager.unloadMapLayer(layerId);
+				map1.appendLayer(
+					new JMap.web.mapLayer.WMSLayer({
+						id: layerId,  zDepth: 60000, opacity: opacity,
+						scaleMin: 0, scaleMax: 100,
+						baseUrl: baseUrl,
+						title: "Reach Identification Overlay",
+						name: "reachid_overlay",
+						isHiddenFromUser: true,
+						description: 'Catchment of the identified reach outlined in grey',
+						layersUrlParam: wsAndLayerName,
+						customParams: {
+							CQL_FILTER: "IDENTIFIER=" + Sparrow.SESSION.getIdentifiedReachId()
+						}
 					})
 				);
 			}
