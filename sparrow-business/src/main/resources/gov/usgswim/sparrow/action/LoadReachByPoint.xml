@@ -14,7 +14,8 @@
 				method="POST">
 				<wps:Body>
 					<wfs:GetFeature service="WFS" version="1.0.0"
-						outputFormat="GML2">
+						outputFormat="GML2"
+						xmlns:reach-overlay="http://water.usgs.gov/nawqa/sparrow/dss/spatial/reach-overlay">
 						<wfs:Query typeName="_LAYERNAME_" />
 					</wfs:GetFeature>
 				</wps:Body>
