@@ -57,6 +57,8 @@ public class LoadReachByPoint extends Action<ReachInfo>{
 		layerName = "reach-overlay:" + layerName;
 		
 		ReachPointInfo reachResult = getReachPointFromGeoServer(layerName);
+		
+		log.info("LoadReachByPoint.doAction():  Found Reach Info:\n" + reachResult); 
 				
 		if (reachResult != null) {
 			
