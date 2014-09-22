@@ -247,7 +247,6 @@ Sparrow.events.EventManager = function(){ return{
 		});
 
 		Sparrow.CONTEXT.on("reachoverlay-changed", function() { Sparrow.handlers.MapComponents.updateReachOverlayOnMap(); });
-		Sparrow.CONTEXT.on("reachidoverlay-changed", function() { Sparrow.handlers.MapComponents.updateReachIdOverlayOnMap(); });
 		Sparrow.CONTEXT.on("huc8overlay-changed", function() { Sparrow.handlers.MapComponents.updateHuc8OverlayOnMap(); });
 
 		Sparrow.CONTEXT.on("dataLayerOpacity-changed", function() {
@@ -256,6 +255,19 @@ Sparrow.events.EventManager = function(){ return{
 		});
 
 		Sparrow.CONTEXT.on("mapLayers-changed", Sparrow.handlers.MapComponents.updateBackgroundLayer);
+		
+		//Sparrow.CONTEXT.on("reachidoverlay-changed", function() { Sparrow.handlers.MapComponents.updateReachIdOverlayOnMap(); });
+		
+		/**
+		 * Fired when a reach is identified w/ a reach ID.
+		 * Currently this displays the reach-id overlays, which highlights the catchment.
+		 */
+		Sparrow.CONTEXT.on("reach-id-layer-enabled", function() { Sparrow.handlers.MapComponents.showReachIdOverlay(); });
+		
+		/**
+		 * Fired when the user requests that the reach id overlay should no longer be shown.
+		 */
+		Sparrow.CONTEXT.on("reach-id-layer-disabled", function() { Sparrow.handlers.MapComponents.deleteReachIdOverlay(); });
 	}
 };}();
 
@@ -677,50 +689,60 @@ Sparrow.handlers.MapComponents = function(){
 	},
 	
 	/**
-	 * Updates the reachID overlay layer on the map to match the current session
+	 * Shows the reachID overlay layer on the map to match the current session
 	 * state.
 	 */
-	updateReachIdOverlayOnMap : function() {
+	showReachIdOverlay : function() {
 		var layerId = Sparrow.config.LayerIds.reachIdLayerId;
 		var opacity = Sparrow.SESSION.getReachIdOverlayOpacity();
 		var showRequested = Sparrow.SESSION.isReachIdOverlayRequested();
 		var isShowing = (map1.layerManager.getSelectedLayer(layerId) != null);
 
-		if (showRequested) {
-			if (isShowing) {
-				map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
-			} else {
-				var baseUrl = Sparrow.SESSION.getSpatialServiceEndpoint();
-				if (baseUrl.lastIndexOf("/") != (baseUrl.length - 1)) {
-					baseUrl = baseUrl + "/";
+
+		//RM the layer if already showning.  May be already showing w/ a previous
+		//reach id.
+		map1.layerManager.unloadMapLayer(layerId);
+		
+		
+
+		var baseUrl = Sparrow.SESSION.getSpatialServiceEndpoint();
+		if (baseUrl.lastIndexOf("/") != (baseUrl.length - 1)) {
+			baseUrl = baseUrl + "/";
+		}
+		baseUrl = baseUrl + "wms?";
+
+		var wsAndLayerName = "catchment-overlay:" + Sparrow.SESSION.getThemeName();
+
+		map1.layerManager.unloadMapLayer(layerId);
+		map1.appendLayer(
+			new JMap.web.mapLayer.WMSLayer({
+				id: layerId,  zDepth: -60000, opacity: opacity,
+				scaleMin: 0, scaleMax: 100,
+				baseUrl: baseUrl,
+				title: "Reach Identification Overlay",
+				name: "reachid_overlay",
+				isHiddenFromUser: true,
+				description: 'Catchment of the identified reach outlined in grey',
+				layersUrlParam: wsAndLayerName,
+				customParams: {
+					CQL_FILTER: "IDENTIFIER=" + Sparrow.SESSION.getIdentifiedReachId()
 				}
-				baseUrl = baseUrl + "wms?";
+			})
+		);
 
-				var wsAndLayerName = "catchment-overlay:" + Sparrow.SESSION.getThemeName();
-
-				map1.layerManager.unloadMapLayer(layerId);
-				map1.appendLayer(
-					new JMap.web.mapLayer.WMSLayer({
-						id: layerId,  zDepth: 60000, opacity: opacity,
-						scaleMin: 0, scaleMax: 100,
-						baseUrl: baseUrl,
-						title: "Reach Identification Overlay",
-						name: "reachid_overlay",
-						isHiddenFromUser: true,
-						description: 'Catchment of the identified reach outlined in grey',
-						layersUrlParam: wsAndLayerName,
-						customParams: {
-							CQL_FILTER: "IDENTIFIER=" + Sparrow.SESSION.getIdentifiedReachId()
-						}
-					})
-				);
-			}
 			
-			Sparrow.handlers.UiComponents.enableReachOverlayButton();
-		} else {
-	    	map1.layerManager.unloadMapLayer(layerId);
-			Sparrow.handlers.UiComponents.disableReachOverlayButton();
-	    }
+		Sparrow.handlers.UiComponents.enableReachOverlayButton();
+
+	},
+	
+	/**
+	 * Shows the reachID overlay layer on the map to match the current session
+	 * state.
+	 */
+	deleteReachIdOverlay : function() {
+		var layerId = Sparrow.config.LayerIds.reachIdLayerId;
+		map1.layerManager.unloadMapLayer(layerId);
+		Sparrow.handlers.UiComponents.disableReachOverlayButton();
 	},
 
 	updateHuc8OverlayOnMap : function() {
