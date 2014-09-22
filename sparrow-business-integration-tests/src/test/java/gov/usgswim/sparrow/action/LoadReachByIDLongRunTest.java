@@ -49,15 +49,7 @@ public class LoadReachByIDLongRunTest  extends SparrowTestBaseWithDB {
 		assertEquals("0305", info.getHuc4());
 		assertEquals("030501", info.getHuc6());
 		assertEquals("03050106", info.getHuc8());
-	
-		
-		//spatial attribs
-		assertEquals(-81.31852d, info.getGeometry().getBasin().getMinLong(), .002);
-		assertEquals(34.41093d, info.getGeometry().getBasin().getMinLat(), .002);
-		assertEquals(-81.23758d, info.getGeometry().getBasin().getMaxLong(), .002);
-		assertEquals(34.58522d, info.getGeometry().getBasin().getMaxLat(), .002);
 
-		
 		//System.out.println(info.toIdentificationXML());
 	}
 	
