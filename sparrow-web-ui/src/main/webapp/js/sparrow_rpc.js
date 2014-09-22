@@ -214,10 +214,6 @@ var IDENTIFY = new (function(){
 			}
 		}
 
-//		SvgOverlay.removeAllOverlays();
-//		var geom = reachResponse["sparrow-id-response"]["results"]["result"][0]["identification"]["ReachGeometry"]["basin"];
-//		SvgOverlay.renderGeometry(geom, animateOptions, 'black', 'white');
-
 		Sparrow.SESSION.setReachIdOverlayRequested(true, null, reachResponse['sparrow-id-response']['results']['result'][0]['identification']['id']);
 		
 		if (showInfo) {
