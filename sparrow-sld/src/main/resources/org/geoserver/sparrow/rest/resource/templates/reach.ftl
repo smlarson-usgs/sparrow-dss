@@ -41,7 +41,18 @@
           <LineSymbolizer>
             <Stroke>
               <CssParameter name="stroke">#${bin.color}</CssParameter>
-              <CssParameter name="stroke-width">2</CssParameter>
+				<CssParameter name="stroke-width">
+					<ogc:Function name="max">
+						<ogc:Literal>.1</ogc:Literal> <!-- No small than .1 pixel -->
+						<ogc:Div>
+							<ogc:Literal>1000000</ogc:Literal>
+							<ogc:Function name="env">
+								<ogc:Literal>wms_scale_denominator</ogc:Literal>
+								<ogc:Literal>1000000</ogc:Literal>
+							</ogc:Function>
+						</ogc:Div>
+					</ogc:Function>
+				</CssParameter>
             </Stroke>
           </LineSymbolizer>
         </Rule>
