@@ -41,9 +41,11 @@
           <LineSymbolizer>
             <Stroke>
               <CssParameter name="stroke">#${bin.color}</CssParameter>
-				<CssParameter name="stroke-width">
+			<CssParameter name="stroke-width">
+				<ogc:Function name="min">
+					<ogc:Literal>10</ogc:Literal><!-- No bigger than 10 pixels -->
 					<ogc:Function name="max">
-						<ogc:Literal>.1</ogc:Literal> <!-- No small than .1 pixel -->
+						<ogc:Literal>.1</ogc:Literal><!-- No small than .1 pixel -->
 						<ogc:Div>
 							<ogc:Literal>1000000</ogc:Literal>
 							<ogc:Function name="env">
@@ -52,7 +54,8 @@
 							</ogc:Function>
 						</ogc:Div>
 					</ogc:Function>
-				</CssParameter>
+				</ogc:Function>
+			</CssParameter>
             </Stroke>
           </LineSymbolizer>
         </Rule>
