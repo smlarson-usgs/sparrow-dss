@@ -133,7 +133,9 @@ public class WriteDbfFile extends Action<File> {
 
 					dbfWriter.write(oneRow);
 				} else {
-					//I'm hoping its OK if we just leave these values out of the dbf file
+					//Just leave this value out of the dbf file.
+					//We are mapping a delivery data series and this reach is not
+					//upstream of the target(s)
 				}
 			}
 			
