@@ -1276,16 +1276,17 @@ Sparrow.ux.Session.prototype = {
 			
 			if (newOpacity) {
 				this.TransientMapState.identifiedReachOverlay = newOpacity;
-				this.fireContextEvent("reachidoverlay-changed");
 			} else if (orgOpacity < 0) {
 				this.TransientMapState.identifiedReachOverlay = Math.abs(orgOpacity);
-				this.fireContextEvent("reachidoverlay-changed");
 			}
+			
+			this.fireContextEvent("reach-id-layer-enabled");
+			
 		} else {
 			if (orgOpacity > 0) {
 				this.TransientMapState.identifiedReachOverlay = orgOpacity * -1;
-				this.fireContextEvent("reachidoverlay-changed");
 			}
+			this.fireContextEvent("reach-id-layer-disabled");
 		}
 	},
 
