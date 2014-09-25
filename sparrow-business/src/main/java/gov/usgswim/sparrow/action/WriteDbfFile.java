@@ -87,7 +87,12 @@ public class WriteDbfFile extends Action<File> {
 		DbaseFileHeader header = new DbaseFileHeader();
 		header.addColumn(idColumnName, 'N', 9, 0);
 		header.addColumn("VALUE", 'N', 14, 4);
-		header.setNumRecords(dataColumn.getRowCount());
+		
+		if (rowsToInclude == null) {
+			header.setNumRecords(dataColumn.getRowCount());
+		} else {
+			header.setNumRecords(rowsToInclude.size());
+		}
 		
 
 		FileChannel foc = null;
