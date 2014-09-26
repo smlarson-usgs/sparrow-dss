@@ -4,7 +4,10 @@ import gov.usgs.cida.config.DynamicReadOnlyProperties;
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.ColumnIndex;
 import gov.usgs.cida.sparrow.service.util.NamingConventions;
+import gov.usgswim.sparrow.domain.DataSeriesType;
 import gov.usgswim.sparrow.domain.PredictionContext;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
+import gov.usgswim.sparrow.domain.TerminalReaches;
 import gov.usgswim.sparrow.service.SharedApplication;
 import java.io.File;
 import java.nio.file.Files;
@@ -28,7 +31,7 @@ public class WriteDbfFileForContext extends Action<File> {
 
 	private static final String ID_COLUMN_NAME = "IDENTIFIER";
 	private static final String DATA_EXPORT_DIRECTORY = "data-export-directory";
-          private File dataDirectory;
+	private File dataDirectory;
 	//User config
 	private PredictionContext context;
 	
@@ -36,6 +39,7 @@ public class WriteDbfFileForContext extends Action<File> {
 	private ColumnIndex columnIndex;
 	private ColumnData dataColumn;
 	private File outputFile;
+	private ReachRowValueMap reachRowValueMap;
 	
 	public WriteDbfFileForContext(PredictionContext context) {
 		this.context = context;
@@ -57,6 +61,26 @@ public class WriteDbfFileForContext extends Action<File> {
 		columnIndex = SharedApplication.getInstance().getPredictData(context.getModelID()).getTopo().getIndex();
 		outputFile = new File(dataDir, NamingConventions.convertContextIdToXMLSafeName(context.getId()) + ".dbf");
 		outputFile.createNewFile();
+		
+		DataSeriesType type = context.getAnalysis().getDataSeries();
+		
+		//grab the delivery fraction map if this is a delivery data series.
+		//This is used to weed out the reaches that are not upstream of the
+		//user selected terminal reaches.
+		if (type.isDeliveryRequired()) {
+
+			TerminalReaches tReaches = context.getTerminalReaches();
+
+			assert(tReaches != null) : "client should not submit a delivery request without reaches";
+
+			reachRowValueMap = SharedApplication.getInstance().getDeliveryFractionMap(tReaches);
+
+			if (reachRowValueMap == null) {
+				throw new Exception("Unable to find or calculate the delivery fraction map");
+			}
+		} else {
+			reachRowValueMap = null;
+		}
 	}
 	
 	
@@ -71,7 +95,7 @@ public class WriteDbfFileForContext extends Action<File> {
 	
 	@Override
 	public File doAction() throws Exception {
-		WriteDbfFile writeAction = new WriteDbfFile(columnIndex, dataColumn, outputFile, ID_COLUMN_NAME);
+		WriteDbfFile writeAction = new WriteDbfFile(columnIndex, dataColumn, outputFile, ID_COLUMN_NAME, reachRowValueMap);
 		return writeAction.run();
 	}
 

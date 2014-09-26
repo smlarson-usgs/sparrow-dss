@@ -97,7 +97,8 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 				columnIndex,
 				valueCol,
 				tempFile,
-				"COMID");
+				"COMID",
+				null);
 
 			File resultFile = action.run();
 			
@@ -199,7 +200,8 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 				columnIndex,
 				valueCol,
 				tempFile,
-				"COMID");
+				"COMID",
+				null);
 
 			File resultFile = action.run();
 			
@@ -238,7 +240,8 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 				columnIndex,
 				valueCol,
 				tempFile,
-				"COMID");
+				"COMID",
+				null);
 
 			File resultFile = action.run();
 			
@@ -275,7 +278,8 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 				columnIndex,
 				valueCol,
 				tempFile,
-				"COMID");
+				"COMID",
+				null);
 
 			File resultFile = action.run();
 
@@ -306,7 +310,8 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 				columnIndex,
 				valueCol,
 				tempFile,
-				"COMID");
+				"COMID",
+				null);
 
 			File resultFile = action.run();
 			
@@ -345,7 +350,8 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 				columnIndex,
 				nullCol,
 				tempFile,
-				"COMID");
+				"COMID",
+				null);
 
 			File resultFile = action.run();
 			
@@ -384,7 +390,8 @@ public class WriteDbFileForContextTest extends SparrowTestBase {
 				columnIndex,
 				nanCol,
 				tempFile,
-				"COMID");
+				"COMID",
+				null);
 
 			File resultFile = action.run();
 			

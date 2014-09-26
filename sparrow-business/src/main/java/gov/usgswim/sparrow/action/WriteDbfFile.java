@@ -2,6 +2,7 @@ package gov.usgswim.sparrow.action;
 
 import gov.usgs.cida.datatable.ColumnData;
 import gov.usgs.cida.datatable.ColumnIndex;
+import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,6 +37,7 @@ public class WriteDbfFile extends Action<File> {
 	private final ColumnIndex columnIndex;
 	private final ColumnData dataColumn;
 	private final File outputFile;
+	private final ReachRowValueMap rowsToInclude;
 	
 	/**
 	 * All parameters are required to be non-null.  In addition, the idColumn and
@@ -48,12 +50,15 @@ public class WriteDbfFile extends Action<File> {
 	 * @param outputFile A valid file reference to write to.
 	 *	If it exists, it will be overwritten.
 	 * @param idColumnName The name to use for the ID column.
+	 * @param rowsToInclude Optional.  If specified, the row numbers in this map
+	 *	are used to determine what rows to include.
 	 */
-	public WriteDbfFile(ColumnIndex columnIndex, ColumnData dataColumn, File outputFile, String idColumnName) {
+	public WriteDbfFile(ColumnIndex columnIndex, ColumnData dataColumn, File outputFile, String idColumnName, ReachRowValueMap rowsToInclude) {
 		this.columnIndex = columnIndex;
 		this.dataColumn = dataColumn;
 		this.outputFile = outputFile;
 		this.idColumnName = idColumnName;
+		this.rowsToInclude = rowsToInclude;
 	}
 
 	@Override
@@ -82,7 +87,12 @@ public class WriteDbfFile extends Action<File> {
 		DbaseFileHeader header = new DbaseFileHeader();
 		header.addColumn(idColumnName, 'N', 9, 0);
 		header.addColumn("VALUE", 'N', 14, 4);
-		header.setNumRecords(dataColumn.getRowCount());
+		
+		if (rowsToInclude == null) {
+			header.setNumRecords(dataColumn.getRowCount());
+		} else {
+			header.setNumRecords(rowsToInclude.size());
+		}
 		
 
 		FileChannel foc = null;
@@ -99,29 +109,34 @@ public class WriteDbfFile extends Action<File> {
 
 			for (int row = 0; row < dataColumn.getRowCount(); row++) {
 				
-				Long id = columnIndex.getIdForRow(row);
-				
-				if (id.longValue() > Integer.MAX_VALUE) {
-					throw new Exception("IDs larger than 9 digits are not currently supported b/c our NHD shapefile only has 9 digits.");
-				}
-				
-				Double val = dataColumn.getDouble(row);
-				
-				if (val != null) {
-					//Null values are OK, they just fail the next check
+				if (rowsToInclude == null || rowsToInclude.hasRowNumber(row)) {
 					
-					
-					////////////////////////1234567890.1234	//the max value of the 14.4 column
-					if (val.doubleValue() > 9999999999.9999D) {
-						throw new Exception("Values larger than 10 places left of the decimal + 4 right of the decimal not currently supported.");
+					Long id = columnIndex.getIdForRow(row);
+
+					if (id.longValue() > Integer.MAX_VALUE) {
+						throw new Exception("IDs larger than 9 digits are not currently supported b/c our NHD shapefile only has 9 digits.");
 					}
+
+					Double val = dataColumn.getDouble(row);
+
+					if (val != null) {
+						//Null values are OK, they just fail the next check
+
+						if (val.doubleValue() > 9999999999.9999D) {
+							throw new Exception("Values larger than 10 places left of the decimal + 4 right of the decimal not currently supported.");
+						}
+					}
+
+					//Null and NaN value are OK here, but NaN values are read back as null
+					oneRow[0] = id;
+					oneRow[1] = val;
+
+					dbfWriter.write(oneRow);
+				} else {
+					//Just leave this value out of the dbf file.
+					//We are mapping a delivery data series and this reach is not
+					//upstream of the target(s)
 				}
-				
-				//Null and NaN value are OK here, but NaN values are read back as null
-				oneRow[0] = id;
-				oneRow[1] = val;
-				
-				dbfWriter.write(oneRow);
 			}
 			
 			log.debug("Wrote " + dataColumn.getRowCount() + " rows to dbf file, " + outputFile.getAbsolutePath());
