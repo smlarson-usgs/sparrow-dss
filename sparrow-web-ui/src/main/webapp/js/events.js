@@ -601,16 +601,15 @@ Sparrow.handlers.MapComponents = function(){
 			if (isShowing) {
 				map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
 			} else {
-				var viewParams = "viewparams=modelid:" + Sparrow.SESSION.getModelId() + ";";
 				var baseUrl = Sparrow.SESSION.getSpatialServiceEndpoint();
 				if (baseUrl.lastIndexOf("/") != (baseUrl.length - 1)) {
 					baseUrl = baseUrl + "/";
 				}
 
 				//There is not a separate WMS param for this, so tack onto base url
-				baseUrl = baseUrl + "wms?" + viewParams;
+				baseUrl = baseUrl + "wms?";
 
-				var wsAndLayerName = "calibration-overlay:calibration";
+				var wsAndLayerName = "sparrow-calibration:" + Sparrow.SESSION.getModelId();
 
 				map1.layerManager.unloadMapLayer(layerId);
 				map1.appendLayer(
