@@ -58,7 +58,13 @@
 			</activation>
 			
 			<properties>
+				<!-- 
+					Turn off integration tests and jmeter tests by default.
+					On Jenkins, these are run as separate jobs b/c they are long running.
+				
+				-->
 				<run-integration-tests>false</run-integration-tests>
+				<jmeter-test-name>skip</jmeter-test-name>
 			</properties>
 			
 			<modules>
@@ -238,9 +244,12 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.1</version>
 					<configuration>
 						<source>1.7</source>
 						<target>1.7</target>
+						<fork>true</fork>
+						<maxmem>512m</maxmem>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -324,12 +333,45 @@
 	</build>
     <dependencyManagement>
 		<dependencies>
+			
+			<!-- Geoserver related -->
 			<dependency>
 				<groupId>org.geoserver</groupId>
 				<artifactId>geoserver</artifactId>
 				<version>${gs.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
+				<exclusions>
+					<exclusion>
+						<artifactId>gt-shapefile</artifactId>
+						<groupId>org.geotools</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<!-- duplicates the geoserver dependency, but is sometimes used by itself -->
+				<groupId>org.geoserver</groupId>
+				<artifactId>rest</artifactId>
+				<version>${gs.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>gt-shapefile</artifactId>
+						<groupId>org.geotools</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<!-- duplicates the geoserver dependency, but is sometimes used by itself -->
+				<groupId>org.geoserver</groupId>
+				<artifactId>main</artifactId>
+				<classifier>tests</classifier>
+				<version>${gs.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>gt-shapefile</artifactId>
+						<groupId>org.geotools</groupId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
@@ -337,61 +379,43 @@
 				<version>${gt.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>javax.servlet</groupId>
-				<artifactId>servlet-api</artifactId>
-				<version>2.5</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>javax.servlet.jsp</groupId>
-				<artifactId>jsp-api</artifactId>
-				<version>2.1</version>
-				<scope>provided</scope>
-			</dependency>
-			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.8.2</version>
-			</dependency>
-			<dependency>
-				<groupId>httpunit</groupId>
-				<artifactId>httpunit</artifactId>
-				<version>1.7</version>
-			</dependency>
-			<dependency>
-				<!-- this is an optional dep of httpunit, but we need it for the tests -->
-				<groupId>rhino</groupId>
-				<artifactId>js</artifactId>
-				<version>1.6R5</version>
-			</dependency>
-			<dependency>
-				<groupId>xmlunit</groupId>
-				<artifactId>xmlunit</artifactId>
-				<version>1.3</version>
-			</dependency>
-			<dependency>
-				<!-- Required by XMLUnit to support out-of-order element comparison -->
-				<groupId>xerces</groupId>
-				<artifactId>xercesImpl</artifactId>
-				<version>2.6.2</version>
-			</dependency>
-			<dependency>
-				<groupId>com.mockrunner</groupId>
-				<artifactId>mockrunner-jdk1.6-j2ee1.3</artifactId>
-				<version>0.4</version>
 				<exclusions>
 					<exclusion>
-						<groupId>cglib-nodep</groupId>
-						<artifactId>cglib-nodep</artifactId>
-					</exclusion>
-					<exclusion>
-						<groupId>jboss</groupId>
-						<artifactId>jboss-jee</artifactId>
+						<artifactId>gt-shapefile</artifactId>
+						<groupId>org.geotools</groupId>
 					</exclusion>
 				</exclusions>
 			</dependency>
+			<dependency>
+				<groupId>gov.usgs.cida.glri</groupId>
+				<artifactId>multi-dbf-datastore</artifactId>
+				<version>1.1.0.0</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>gt-shapefile</artifactId>
+						<groupId>org.geotools</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt-shapefile-old</artifactId>
+				<type>jar</type>
+				<version>${gt.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.geoserver.extension</groupId>
+				<artifactId>wps-core</artifactId>
+				<version>${gs.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>gt-shapefile</artifactId>
+						<groupId>org.geotools</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			
+			<!-- Code Dependencies -->
 			<dependency>
 				<groupId>cglib</groupId>
 				<artifactId>cglib-nodep</artifactId>
@@ -435,6 +459,20 @@
 				<groupId>org.apache.tomcat</groupId>
 				<artifactId>catalina</artifactId>
 				<version>6.0.29</version>
+			</dependency>
+			
+			<!-- Servlet -->
+			<dependency>
+				<groupId>javax.servlet</groupId>
+				<artifactId>servlet-api</artifactId>
+				<version>2.5</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>javax.servlet.jsp</groupId>
+				<artifactId>jsp-api</artifactId>
+				<version>2.1</version>
+				<scope>provided</scope>
 			</dependency>
 			
 			<!-- Logging -->
@@ -518,7 +556,53 @@
 				<artifactId>spring-context</artifactId>
 				<version>3.1.4.RELEASE</version>
 			</dependency>
+			
+
+			<!-- Testing -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.8.2</version>
+			</dependency>
+			<dependency>
+				<groupId>httpunit</groupId>
+				<artifactId>httpunit</artifactId>
+				<version>1.7</version>
+			</dependency>
+			<dependency>
+				<!-- this is an optional dep of httpunit, but we need it for the tests -->
+				<groupId>rhino</groupId>
+				<artifactId>js</artifactId>
+				<version>1.6R5</version>
+			</dependency>
+			<dependency>
+				<groupId>xmlunit</groupId>
+				<artifactId>xmlunit</artifactId>
+				<version>1.3</version>
+			</dependency>
+			<dependency>
+				<!-- Required by XMLUnit to support out-of-order element comparison -->
+				<groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId>
+				<version>2.6.2</version>
+			</dependency>
+			<dependency>
+				<groupId>com.mockrunner</groupId>
+				<artifactId>mockrunner-jdk1.6-j2ee1.3</artifactId>
+				<version>0.4</version>
+				<exclusions>
+					<exclusion>
+						<groupId>cglib-nodep</groupId>
+						<artifactId>cglib-nodep</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>jboss</groupId>
+						<artifactId>jboss-jee</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
             
+			<!-- IDE Integration -->
             <dependency>
                 <groupId>org.jacoco</groupId>
                 <artifactId>org.jacoco.agent</artifactId>

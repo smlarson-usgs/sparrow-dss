@@ -13,12 +13,6 @@
         <dependency>
             <groupId>org.geoserver</groupId>
             <artifactId>rest</artifactId>
-			<exclusions>
-				<exclusion>
-					<artifactId>gt-shapefile</artifactId>
-					<groupId>org.geotools</groupId>
-				</exclusion>
-			</exclusions>
         </dependency>
         <dependency>
             <groupId>org.geoserver</groupId>

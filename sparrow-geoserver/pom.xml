@@ -38,19 +38,11 @@
 		<dependency>
 			<groupId>gov.usgs.cida.glri</groupId>
 			<artifactId>multi-dbf-datastore</artifactId>
-			<version>1.0.0.1</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>gt-shapefile</artifactId>
-					<groupId>org.geotools</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-shapefile-old</artifactId>
 			<type>jar</type>
-			<version>10.5</version>
 		</dependency>
 	</dependencies>
 	
