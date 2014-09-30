@@ -25,6 +25,12 @@
             <artifactId>main</artifactId>
             <classifier>tests</classifier>
             <scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>gt-shapefile</artifactId>
+					<groupId>org.geotools</groupId>
+				</exclusion>
+			</exclusions>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

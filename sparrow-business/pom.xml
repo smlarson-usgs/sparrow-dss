@@ -144,7 +144,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.geotools</groupId>
-			<artifactId>gt-shapefile</artifactId>
+			<artifactId>gt-shapefile-old</artifactId>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>

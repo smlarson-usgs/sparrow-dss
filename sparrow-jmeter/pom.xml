@@ -50,15 +50,29 @@
 	
 	<profiles>
 		<profile>
-			<id>LoadAllContextAndMapData</id>
+			<id>SkipJMeterTests</id>
 			<activation>
 				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>jmeter-test-name</name>
+					<value>skip</value>
+				</property>
+			</activation>
+			<properties>
+				<!-- effectively turn of the jmeter tests by putting them in a non-existant phase -->
+				<run-in-phase>none</run-in-phase>
+			</properties>
+		</profile>
+		<profile>
+			<id>LoadAllContextAndMapData</id>
+			<activation>
 				<property>
 					<name>jmeter-test-name</name>
 					<value>LoadAllContextAndMapData</value>
 				</property>
 			</activation>
 			<properties>
+				<run-in-phase>verify</run-in-phase>
 				<jMeterTestFile>LoadAllContextAndMapData.jmx</jMeterTestFile>
 			</properties>
 		</profile>
@@ -71,6 +85,7 @@
 				</property>
 			</activation>
 			<properties>
+				<run-in-phase>verify</run-in-phase>
 				<jMeterTestFile>TerminalReportTest.jmx</jMeterTestFile>
 			</properties>
 		</profile>
@@ -83,6 +98,7 @@
 				</property>
 			</activation>
 			<properties>
+				<run-in-phase>verify</run-in-phase>
 				<jMeterTestFile>TerminalReportStressTest.jmx</jMeterTestFile>
 			</properties>
 		</profile>
@@ -97,7 +113,7 @@
 				<executions>
 					<execution>
 						<id>jmeter-tests</id>
-						<phase>verify</phase>
+						<phase>${run-in-phase>}</phase>
 						<goals>
 							<goal>jmeter</goal>
 						</goals>
@@ -128,7 +144,7 @@
                 <version>1.0-beta-3</version>
                 <executions>
                     <execution>
-                        <phase>verify</phase>
+                        <phase>${run-in-phase>}</phase>
                         <goals>
                             <goal>transform</goal>
                         </goals>

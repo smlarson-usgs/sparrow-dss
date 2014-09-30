@@ -41,6 +41,18 @@
 			<artifactId>wps-core</artifactId>
 			<version>${gs.version}</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.geotools</groupId>
+					<artifactId>gt-shapefile</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-shapefile-old</artifactId>
+			<type>jar</type>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
