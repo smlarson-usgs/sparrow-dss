@@ -28,25 +28,11 @@
 		<dependency>
 			<groupId>org.geoserver.extension</groupId>
 			<artifactId>wps-core</artifactId>
-			<version>${gs.version}</version>
 			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<artifactId>gt-shapefile</artifactId>
-					<groupId>org.geotools</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>gov.usgs.cida.glri</groupId>
 			<artifactId>multi-dbf-datastore</artifactId>
-			<version>1.0.0.2-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>gt-shapefile</artifactId>
-					<groupId>org.geotools</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<!-- This version does not match the parent pom,
