@@ -83,22 +83,6 @@
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 				</configuration>
 			</plugin>
-			
-			<!-- Maven Tomcat Plugin								-->
-			<!-- 	mvn tomcat:deploy							-->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>tomcat-maven-plugin</artifactId>
-				<version>1.1</version>
-				<configuration>
-					<url>http://sparrow:8081/manager/text</url>
-					<path>/geoserver</path>
-					<username>tomcat-script</username>
-					<password>wq+ABC.7murk</password>
-				</configuration>
-			</plugin>
-				
-				
 		</plugins>
 		<pluginManagement>
 			<plugins>
