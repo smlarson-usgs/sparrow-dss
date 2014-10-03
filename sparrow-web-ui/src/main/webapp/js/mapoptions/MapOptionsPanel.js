@@ -267,7 +267,7 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
 		this.calibSitesSlider = new Ext.Slider({
 				fieldLabel: ' ',
 				labelSeparator: '',
-				layerId: Sparrow.config.LayerIds.calibrationSiteLayerId,
+				layerId: Sparrow.config.layers.calibrationSiteLayer.id,
 			    width: 70,
 			    value: Sparrow.SESSION.getCalibSitesOverlayOpacity(),
 			    increment: 1,
@@ -314,7 +314,6 @@ MapOptionsPanel = Ext.extend(Ext.form.FormPanel, {
         		Sparrow.SESSION.setHuc8OverlayRequested(checked);
         		this.huc8OverlaySlider.setDisabled(!checked);
         	},
-			disabled: true, /* TODO: This feature is not available on GeoServer version yet */
         	scope: this
         });
 		

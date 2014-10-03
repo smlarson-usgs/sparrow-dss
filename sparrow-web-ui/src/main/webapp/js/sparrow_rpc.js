@@ -936,7 +936,7 @@ function make_map() {
 function addDataLayer() {
 
 	//Internal ID used for the map layer
-	var mappedValueLayerID = Sparrow.config.LayerIds.mainDataLayerId,
+	var mappedValueLayerID = Sparrow.config.layers.mainDataLayer.id,
         //get parameters to create base url for sparrow data layer
         what_to_map = Sparrow.SESSION.PermanentMapState["what_to_map"],
         bins = Sparrow.SESSION.getBinData()["functionalBins"],
@@ -978,17 +978,17 @@ function addDataLayer() {
     	new JMap.web.mapLayer.WMSLayer({
 			
 			format: "image/png8",
-    		zDepth: 60000,
+    		zDepth: Sparrow.config.layers.mainDataLayer.zDepth,
     		id: mappedValueLayerID,
-    		scaleMin: 0,
-    		scaleMax: 100,
+    		scaleMin: Sparrow.config.layers.mainDataLayer.scaleMin,
+    		scaleMax: Sparrow.config.layers.mainDataLayer.scaleMax,
     		baseUrl: dataLayerWmsUrl + "?",
     		legendUrl: 'getLegend?' + binParams,
     		title: wsAndLayerName,
     		name: wsAndLayerName,
 			layersUrlParam: wsAndLayerName,
     		isHiddenFromUser: true,
-    		description: 'Sparrow Coverage',
+    		description: Sparrow.config.layers.mainDataLayer.title,
     		opacity: Sparrow.SESSION.getDataLayerOpacity(),
 			customParams: {
 				format_options: 'antialiasing:none;quantizer:octree;',
