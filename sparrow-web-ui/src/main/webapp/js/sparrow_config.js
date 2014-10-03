@@ -31,12 +31,63 @@ Sparrow.config.ComboValues = function(){return{
 	
 }}();
 
-Sparrow.config.LayerIds = function(){return {
-	huc8LayerId: -203525,
-	reachLayerId: -203526,
-	calibrationSiteLayerId: -203527,
-	mainDataLayerId: -203528,
-	reachIdLayerId: -203600
+/*
+ * The various dynamic layers that the application loads from
+ * its associated map server instance.
+ * Key:
+ * id: Unique ID used to track this layer internally.  Do not change the ID,
+ *		since predefined scenarios will and stored sessions iwill refer to this number.
+ * workspaceName: The name of the workspace on the server.  Often the workspace
+ *		of a layer is fixed, but the actual layer name depends on the model or its network.
+ * zDepth: Stacking order of the layers.  Smaller number (more negative) are on
+ *		top of layers with larger numbers.
+ * scaleMin / scaleMax: Scale at which the layer turns on and off.
+ *		0/100 is basically always on.
+ * title: Used internally as a title - This likely has no function.
+ * 
+ * Layers are listed below in order with those on top listed first.
+ */
+Sparrow.config.layers = function(){return {
+	reachIdLayer: {
+		id: -203600,
+		workspaceName: "catchment-overlay", /* This layer is a filtered catchment layer */
+		zDepth: -60000,
+		scaleMin: 0,
+		scaleMax: 100,
+		title: "Reach Identification Layer"
+	},
+	calibrationSiteLayer: {
+		id: -203527,
+		workspaceName: 'sparrow-calibration',
+		zDepth: 59990,
+		scaleMin: 0,
+		scaleMax: 100,
+		title: "Calibration sites overlay"
+	},
+	huc8Layer: {
+		id: -203525,	/* UI Internal unique ID */
+		workspaceName: 'huc8-overlay', /* Name of the workspace on GeoServer */
+		zDepth: 59994, /* UI Stacking order */
+		scaleMin: 0,
+		scaleMax: 100,
+		title: "HUC8 Overlay"
+	},
+	reachOverlayLayer: {
+		id: -203526,
+		workspaceName: 'reach-overlay',
+		zDepth: 59995,
+		scaleMin: 0,
+		scaleMax: 100,
+		title: "Reach Overlay"
+	},
+	mainDataLayer: {
+		id: -203528,
+		workspaceName: null, /* Specified by Context */
+		zDepth: 60000,
+		scaleMin: 0,
+		scaleMax: 100,
+		title: "Predicted data display layer"
+	}
 }}();
 
 Sparrow.config.GraphColorArray = [

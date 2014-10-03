@@ -250,8 +250,8 @@ Sparrow.events.EventManager = function(){ return{
 		Sparrow.CONTEXT.on("huc8overlay-changed", function() { Sparrow.handlers.MapComponents.updateHuc8OverlayOnMap(); });
 
 		Sparrow.CONTEXT.on("dataLayerOpacity-changed", function() {
-			if(map1.layerManager.getMapLayer(Sparrow.config.LayerIds.mainDataLayerId))
-				map1.layerManager.getMapLayer(Sparrow.config.LayerIds.mainDataLayerId).setOpacity(Sparrow.SESSION.getDataLayerOpacity()); //TODO global map
+			if(map1.layerManager.getMapLayer(Sparrow.config.layers.mainDataLayer.id))
+				map1.layerManager.getMapLayer(Sparrow.config.layers.mainDataLayer.id).setOpacity(Sparrow.SESSION.getDataLayerOpacity());
 		});
 
 		Sparrow.CONTEXT.on("mapLayers-changed", Sparrow.handlers.MapComponents.updateBackgroundLayer);
@@ -586,13 +586,13 @@ Sparrow.handlers.MapComponents = function(){
 	},
 
 	turnOffDataRelatedLayers: function() {
-		map1.layerManager.unloadMapLayer(Sparrow.config.LayerIds.calibrationSiteLayerId);
-		map1.layerManager.unloadMapLayer(Sparrow.config.LayerIds.reachLayerId);
-		map1.layerManager.unloadMapLayer(Sparrow.config.LayerIds.huc8LayerId);
+		map1.layerManager.unloadMapLayer(Sparrow.config.layers.calibrationSiteLayer.id);
+		map1.layerManager.unloadMapLayer(Sparrow.config.layers.reachOverlayLayer.id);
+		map1.layerManager.unloadMapLayer(Sparrow.config.layers.huc8Layer.id);
 	},
 
 	updateCalibrationLayerOnMap : function() {
-		var layerId = Sparrow.config.LayerIds.calibrationSiteLayerId;
+		var layerId = Sparrow.config.layers.calibrationSiteLayer.id;
 		var opacity = Sparrow.SESSION.getCalibSitesOverlayOpacity();
 		var showRequested = Sparrow.SESSION.isCalibSitesOverlayRequested();
 		var isShowing = (map1.layerManager.getSelectedLayer(layerId) != null);
@@ -609,18 +609,22 @@ Sparrow.handlers.MapComponents = function(){
 				//There is not a separate WMS param for this, so tack onto base url
 				baseUrl = baseUrl + "wms?";
 
-				var wsAndLayerName = "sparrow-calibration:" + Sparrow.SESSION.getModelId();
+				var wsAndLayerName = Sparrow.config.layers.calibrationSiteLayer.workspaceName + ":" 
+						+ Sparrow.SESSION.getModelId();
 
 				map1.layerManager.unloadMapLayer(layerId);
 				map1.appendLayer(
 					new JMap.web.mapLayer.WMSLayer({
-						id: layerId,  zDepth: 59990, opacity: opacity,
-						scaleMin: 0, scaleMax: 100,
+						id: Sparrow.config.layers.calibrationSiteLayer.id,  
+						zDepth: Sparrow.config.layers.calibrationSiteLayer.zDepth, 
+						opacity: opacity,
+						scaleMin: Sparrow.config.layers.calibrationSiteLayer.scaleMin, 
+						scaleMax: Sparrow.config.layers.calibrationSiteLayer.scaleMax,
 						baseUrl: baseUrl,
-						title: "Calibration Site Overlay",
-						name: "calibration",
+						title: Sparrow.config.layers.calibrationSiteLayer.title,
+						name: Sparrow.config.layers.calibrationSiteLayer.title,
 						isHiddenFromUser: true,
-						description: 'Calibration sites overlay',
+						description: Sparrow.config.layers.calibrationSiteLayer.title,
 						layersUrlParam: wsAndLayerName
 					})
 				);
@@ -651,7 +655,7 @@ Sparrow.handlers.MapComponents = function(){
 	 * state.
 	 */
 	updateReachOverlayOnMap : function() {
-		var layerId = Sparrow.config.LayerIds.reachLayerId;
+		var layerId = Sparrow.config.layers.reachOverlayLayer.id;
 		var opacity = Sparrow.SESSION.getReachOverlayOpacity();
 		var showRequested = Sparrow.SESSION.isReachOverlayRequested() && Sparrow.SESSION.isReachOverlayEnabled();
 		var isShowing = (map1.layerManager.getSelectedLayer(layerId) != null);
@@ -666,18 +670,22 @@ Sparrow.handlers.MapComponents = function(){
 				}
 				baseUrl = baseUrl + "wms?";
 
-				var wsAndLayerName = "reach-overlay:" + Sparrow.SESSION.getThemeName();
+				var wsAndLayerName = Sparrow.config.layers.reachOverlayLayer.workspaceName +
+						":" + Sparrow.SESSION.getThemeName();
 
 				map1.layerManager.unloadMapLayer(layerId);
 				map1.appendLayer(
 					new JMap.web.mapLayer.WMSLayer({
-						id: layerId,  zDepth: 59995, opacity: opacity,
-						scaleMin: 0, scaleMax: 100,
+						id: layerId,
+						zDepth: Sparrow.config.layers.reachOverlayLayer.zDepth,
+						opacity: opacity,
+						scaleMin: Sparrow.config.layers.reachOverlayLayer.scaleMin,
+						scaleMax: Sparrow.config.layers.reachOverlayLayer.scaleMax,
 						baseUrl: baseUrl,
-						title: "Reach Overlay",
-						name: "reach_overlay",
+						title: Sparrow.config.layers.reachOverlayLayer.title,
+						name: Sparrow.config.layers.reachOverlayLayer.title,
 						isHiddenFromUser: true,
-						description: 'Reaches overlayed in grey',
+						description: Sparrow.config.layers.reachOverlayLayer.title,
 						layersUrlParam: wsAndLayerName
 					})
 				);
@@ -692,16 +700,12 @@ Sparrow.handlers.MapComponents = function(){
 	 * state.
 	 */
 	showReachIdOverlay : function() {
-		var layerId = Sparrow.config.LayerIds.reachIdLayerId;
+		var layerId = Sparrow.config.layers.reachIdLayer.id;
 		var opacity = Sparrow.SESSION.getReachIdOverlayOpacity();
-		var showRequested = Sparrow.SESSION.isReachIdOverlayRequested();
-		var isShowing = (map1.layerManager.getSelectedLayer(layerId) != null);
-
 
 		//RM the layer if already showning.  May be already showing w/ a previous
 		//reach id.
 		map1.layerManager.unloadMapLayer(layerId);
-		
 		
 
 		var baseUrl = Sparrow.SESSION.getSpatialServiceEndpoint();
@@ -710,18 +714,22 @@ Sparrow.handlers.MapComponents = function(){
 		}
 		baseUrl = baseUrl + "wms?";
 
-		var wsAndLayerName = "catchment-overlay:" + Sparrow.SESSION.getThemeName();
+		var wsAndLayerName = Sparrow.config.layers.reachIdLayer.workspaceName +
+				":" + Sparrow.SESSION.getThemeName();
 
 		map1.layerManager.unloadMapLayer(layerId);
 		map1.appendLayer(
 			new JMap.web.mapLayer.WMSLayer({
-				id: layerId,  zDepth: -60000, opacity: opacity,
-				scaleMin: 0, scaleMax: 100,
+				id: layerId,  
+				zDepth: Sparrow.config.layers.reachIdLayer.zDepth, 
+				opacity: opacity,
+				scaleMin: Sparrow.config.layers.reachIdLayer.scaleMin, 
+				scaleMax: Sparrow.config.layers.reachIdLayer.scaleMax,
 				baseUrl: baseUrl,
-				title: "Reach Identification Overlay",
-				name: "reachid_overlay",
+				title: Sparrow.config.layers.reachIdLayer.title,
+				name: Sparrow.config.layers.reachIdLayer.title,
 				isHiddenFromUser: true,
-				description: 'Catchment of the identified reach outlined in grey',
+				description: Sparrow.config.layers.reachIdLayer.title,
 				layersUrlParam: wsAndLayerName,
 				customParams: {
 					CQL_FILTER: "IDENTIFIER=" + Sparrow.SESSION.getIdentifiedReachId()
@@ -739,37 +747,47 @@ Sparrow.handlers.MapComponents = function(){
 	 * state.
 	 */
 	deleteReachIdOverlay : function() {
-		var layerId = Sparrow.config.LayerIds.reachIdLayerId;
+		var layerId = Sparrow.config.layers.reachIdLayer.id;
 		map1.layerManager.unloadMapLayer(layerId);
 		Sparrow.handlers.UiComponents.disableReachOverlayButton();
 	},
 
 	updateHuc8OverlayOnMap : function() {
-		var layerId = Sparrow.config.LayerIds.huc8LayerId;
+		var layerId = Sparrow.config.layers.huc8Layer.id;
 		var opacity = Sparrow.SESSION.getHuc8OverlayOpacity();
 		var showRequested = Sparrow.SESSION.isHuc8OverlayRequested();
 		var isShowing = (map1.layerManager.getSelectedLayer(layerId) != null);
 
 		if (showRequested) {
-//			if (! isShowing) {
-//				
-//				var urlParams = 'model_id=' + model_id;
-//
-//				map1.appendLayer(
-//					new JMap.web.mapLayer.WMSLayer({
-//						id: layerId, zDepth: 59992, opacity: opacity,
-//						scaleMin: 0, scaleMax: 100,
-//						baseUrl: 'huc8Overlay?' + urlParams,
-//						title: "HUC8 Overlay",
-//						name: "huc8_overlay",
-//						isHiddenFromUser: true,
-//						description: 'HUC8 boundries overlayed in black'
-//					})
-//				);
-//		
-//			} else {
-//				map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
-//			}
+			if (isShowing) {
+				map1.layerManager.getMapLayer(layerId).setOpacity(opacity);
+			} else {
+				var baseUrl = Sparrow.SESSION.getSpatialServiceEndpoint();
+				if (baseUrl.lastIndexOf("/") != (baseUrl.length - 1)) {
+					baseUrl = baseUrl + "/";
+				}
+				baseUrl = baseUrl + "wms?";
+
+				var wsAndLayerName = Sparrow.config.layers.huc8Layer.workspaceName +
+						":" + Sparrow.SESSION.getThemeName();
+
+				map1.layerManager.unloadMapLayer(layerId);
+				map1.appendLayer(
+					new JMap.web.mapLayer.WMSLayer({
+						id: layerId,  
+						zDepth: Sparrow.config.layers.huc8Layer.zDepth, 
+						opacity: opacity,
+						scaleMin: Sparrow.config.layers.huc8Layer.scaleMin, 
+						scaleMax: Sparrow.config.layers.huc8Layer.scaleMax,
+						baseUrl: baseUrl,
+						title: Sparrow.config.layers.huc8Layer.title,
+						name: Sparrow.config.layers.huc8Layer.title,
+						isHiddenFromUser: true,
+						description: Sparrow.config.layers.huc8Layer.title,
+						layersUrlParam: wsAndLayerName
+					})
+				);
+			}
 		} else {
 	    	map1.layerManager.unloadMapLayer(layerId);
 	    }

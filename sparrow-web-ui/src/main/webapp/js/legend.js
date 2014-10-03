@@ -93,7 +93,7 @@ Sparrow.ui.renderLegend = function() {
         new Ext.Slider({
     		fieldLabel: ' ',
     		labelSeparator: '',
-    		layerId: Sparrow.config.LayerIds.mainDataLayerId,
+    		layerId: Sparrow.config.layers.mainDataLayer.id,
     	    increment: 1,
     	    value: Sparrow.SESSION.getDataLayerOpacity(),
     	    minValue: 0,
