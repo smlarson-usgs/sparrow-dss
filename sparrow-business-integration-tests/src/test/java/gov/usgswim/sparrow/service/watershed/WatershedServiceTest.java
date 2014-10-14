@@ -6,6 +6,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.meterware.httpunit.*;
+import gov.usgswim.sparrow.test.SparrowTestBase;
+import org.w3c.dom.Document;
 
 public class WatershedServiceTest extends SparrowServiceTestBaseWithDB {
 
@@ -27,11 +29,12 @@ public class WatershedServiceTest extends SparrowServiceTestBaseWithDB {
 		String actualReportResponse = reportWebResponse.getText();
 		
 		//System.out.println(actualReportResponse);
+		Document xmlDoc = SparrowTestBase.getW3cXmlDocumentFromString(actualReportResponse);
 		
-		String metadataActualColCountStr = getXPathValue("count(//*[local-name()='metadata']//*[local-name()='col'])", actualReportResponse); 
-		String metadataStatedColCountStr = getXPathValue("//*[local-name()='metadata']/@columnCount", actualReportResponse); 
-		String metadataStatedRowCountStr = getXPathValue("//*[local-name()='metadata']/@rowCount", actualReportResponse); 
-		String actualRowCountStr = getXPathValue("count(//*[local-name()='data']//*[local-name()='r'])", actualReportResponse);
+		String metadataActualColCountStr = getXPathValue("count(//*[local-name()='metadata']//*[local-name()='col'])", xmlDoc); 
+		String metadataStatedColCountStr = getXPathValue("//*[local-name()='metadata']/@columnCount", xmlDoc); 
+		String metadataStatedRowCountStr = getXPathValue("//*[local-name()='metadata']/@rowCount", xmlDoc); 
+		String actualRowCountStr = getXPathValue("count(//*[local-name()='data']//*[local-name()='r'])", xmlDoc);
 		
 		assertEquals("3", metadataActualColCountStr);
 		assertEquals("3", metadataStatedColCountStr);
@@ -67,11 +70,12 @@ public class WatershedServiceTest extends SparrowServiceTestBaseWithDB {
 		String actualReportResponse = reportWebResponse.getText();
 		
 		//System.out.println(actualReportResponse);
+		Document xmlDoc = SparrowTestBase.getW3cXmlDocumentFromString(actualReportResponse);
 		
-		String metadataActualColCountStr = getXPathValue("count(//*[local-name()='metadata']//*[local-name()='col'])", actualReportResponse); 
-		String metadataStatedColCountStr = getXPathValue("//*[local-name()='metadata']/@columnCount", actualReportResponse); 
-		String metadataStatedRowCountStr = getXPathValue("//*[local-name()='metadata']/@rowCount", actualReportResponse); 
-		String actualRowCountStr = getXPathValue("count(//*[local-name()='data']//*[local-name()='r'])", actualReportResponse);
+		String metadataActualColCountStr = getXPathValue("count(//*[local-name()='metadata']//*[local-name()='col'])", xmlDoc); 
+		String metadataStatedColCountStr = getXPathValue("//*[local-name()='metadata']/@columnCount", xmlDoc); 
+		String metadataStatedRowCountStr = getXPathValue("//*[local-name()='metadata']/@rowCount", xmlDoc); 
+		String actualRowCountStr = getXPathValue("count(//*[local-name()='data']//*[local-name()='r'])", xmlDoc);
 		
 		assertEquals("1", metadataActualColCountStr);
 		assertEquals("1", metadataStatedColCountStr);

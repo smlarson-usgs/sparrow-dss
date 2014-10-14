@@ -48,8 +48,10 @@ public class LoadUnitAreasLongRunTest extends SparrowTestBaseWithDB {
 			assertEquals(2, dt.getColumnCount());
 			assertEquals(null, dt.getUnits(0));
 			assertEquals("IDENTIFIER", dt.getName(0));
+			assertEquals(Long.class, dt.getDataType(0));
 
 			assertEquals(SparrowUnits.SQR_KM.toString(), dt.getUnits(1));
+			assertEquals(Double.class, dt.getDataType(1));
 			assertEquals(areaType.getName(), dt.getName(1));
 			assertEquals(areaType.getDescription(), dt.getDescription(1));
 			assertEquals(areaType.name(), dt.getProperty(1, TableProperties.DATA_SERIES.toString()));
