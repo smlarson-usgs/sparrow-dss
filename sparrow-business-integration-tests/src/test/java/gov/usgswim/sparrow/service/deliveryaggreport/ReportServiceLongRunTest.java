@@ -15,6 +15,7 @@ import gov.usgswim.sparrow.SparrowUnits;
 import gov.usgswim.sparrow.domain.AggregationLevel;
 import static org.custommonkey.xmlunit.XMLAssert.assertXpathEvaluatesTo;
 import org.junit.Ignore;
+import org.w3c.dom.Document;
 
 public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
@@ -50,12 +51,13 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		String actualReportResponse = reportWebResponse.getText();
 
 		//System.out.println(actualReportResponse);
+		Document xmlDoc = SparrowTestBase.getW3cXmlDocumentFromString(actualReportResponse);
 
-		String rowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
-		String nonZeroRowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tr[td[position() = 9 and .!=0]])", actualReportResponse);
-		String watershedAreaColumnLabel = ReportServiceLongRunTest.getXPathValue("//*[local-name() = 'th'][position() = 3]", actualReportResponse);
-		String alabamaPercentage = ReportServiceLongRunTest.getXPathValue("/table/tbody[1]/tr[1]/td[10]/div[1]/div[1]", actualReportResponse);
-		String kentuckyPercentage = ReportServiceLongRunTest.getXPathValue("/table/tbody[1]/tr[3]/td[10]/div[1]/div[1]", actualReportResponse);
+		String rowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", xmlDoc);
+		String nonZeroRowCountStr = ReportServiceLongRunTest.getXPathValue("count(//tr[td[position() = 9 and .!=0]])", xmlDoc);
+		String watershedAreaColumnLabel = ReportServiceLongRunTest.getXPathValue("//*[local-name() = 'th'][position() = 3]", xmlDoc);
+		String alabamaPercentage = ReportServiceLongRunTest.getXPathValue("/table/tbody[1]/tr[1]/td[10]/div[1]/div[1]", xmlDoc);
+		String kentuckyPercentage = ReportServiceLongRunTest.getXPathValue("/table/tbody[1]/tr[3]/td[10]/div[1]/div[1]", xmlDoc);
 
 		assertEquals("9", rowCountStr);
 		assertEquals("7", nonZeroRowCountStr);

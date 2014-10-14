@@ -67,13 +67,13 @@ public class LoadUnitAreasLongRunTest extends SparrowTestBaseWithDB {
 		LoadUnitAreas lua = new LoadUnitAreas(50, AreaType.INCREMENTAL);
 		DataTable dt = lua.run();
 		assertEquals(8321, dt.getRowCount());
-		int row = dt.findFirst(0, 9388);
+		int row = dt.findFirst(0, 9388L);
 		assertEquals((Double) 100.91, dt.getDouble(row, 1));
 
 		lua = new LoadUnitAreas(50, AreaType.TOTAL_CONTRIBUTING);
 		dt = lua.run();
 		assertEquals(8321, dt.getRowCount());
-		row = dt.findFirst(0, 9390);
+		row = dt.findFirst(0, 9390L);
 		assertEquals((Double) 1091.98, dt.getDouble(row, 1));
 
 	}

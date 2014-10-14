@@ -11,6 +11,7 @@ import com.meterware.httpunit.*;
 import gov.usgswim.sparrow.service.deliveryterminalreport.ReportRequest;
 import static gov.usgswim.sparrow.test.SparrowTestBase.getXPathValue;
 import org.junit.Ignore;
+import org.w3c.dom.Document;
 
 public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
@@ -50,12 +51,13 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		WebResponse reportWebResponse = client.sendRequest(reportWebRequest);
 		String actualReportResponse = reportWebResponse.getText();
 
-		String rowCountStr = gov.usgswim.sparrow.service.deliveryaggreport.ReportServiceLongRunTest.getXPathValue("count(//tbody/tr)", actualReportResponse);
+		Document xmlDoc = SparrowTestBase.getW3cXmlDocumentFromString(actualReportResponse);
+		String rowCountStr = getXPathValue("count(//tbody/tr)", xmlDoc);
 
 		assertEquals("2", rowCountStr);
 
-		String firstTerminalReachName = getXPathValue("//tbody/tr[th[a=9682]]/td[1]", actualReportResponse);
-		String totalValue = getXPathValue("//tbody/tr[2]/td[.=\"40,735,550\"]", actualReportResponse);
+		String firstTerminalReachName = getXPathValue("//tbody/tr[th[a=9682]]/td[1]", xmlDoc);
+		String totalValue = getXPathValue("//tbody/tr[2]/td[.=\"40,735,550\"]", xmlDoc);
 
 		assertEquals("MOBILE R", firstTerminalReachName);
 		assertEquals("40,735,550", totalValue);
@@ -86,13 +88,14 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 		String actualReportResponse = reportWebResponse.getText();
 
 //		System.out.println(actualReportResponse);
-
-		String firstReachId = getXPathValue("//*[local-name()='data']/*[local-name()='r'][position()=1]/@id", actualReportResponse);
-		String numberOfValues = getXPathValue("count(//*[local-name()='data']/*[local-name()='r'][position()=1]/*[local-name()='c'])", actualReportResponse);
-		String declairedColCount = getXPathValue("//*[local-name()='metadata']/@columnCount", actualReportResponse);
-		String firstGroupColCount = getXPathValue("//*[local-name()='group'][1]/@count", actualReportResponse);
-		String secondGroupColCount = getXPathValue("//*[local-name()='group'][2]/@count", actualReportResponse);
-		String declairedRowCount = getXPathValue("//*[local-name()='metadata']/@rowCount", actualReportResponse);
+		Document xmlDoc = SparrowTestBase.getW3cXmlDocumentFromString(actualReportResponse);
+		
+		String firstReachId = getXPathValue("//*[local-name()='data']/*[local-name()='r'][position()=1]/@id", xmlDoc);
+		String numberOfValues = getXPathValue("count(//*[local-name()='data']/*[local-name()='r'][position()=1]/*[local-name()='c'])", xmlDoc);
+		String declairedColCount = getXPathValue("//*[local-name()='metadata']/@columnCount", xmlDoc);
+		String firstGroupColCount = getXPathValue("//*[local-name()='group'][1]/@count", xmlDoc);
+		String secondGroupColCount = getXPathValue("//*[local-name()='group'][2]/@count", xmlDoc);
+		String declairedRowCount = getXPathValue("//*[local-name()='metadata']/@rowCount", xmlDoc);
 
 		assertEquals("9682", firstReachId);
 		assertEquals("12", numberOfValues);

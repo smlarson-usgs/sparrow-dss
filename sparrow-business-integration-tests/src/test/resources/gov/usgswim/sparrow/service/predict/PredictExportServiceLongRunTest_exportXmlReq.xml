@@ -2,7 +2,6 @@
 <sparrow-report-request xmlns="http://www.usgs.gov/sparrow/prediction-schema/v0_2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<PredictionContext context-id="$context-id$" />
-	<bbox>-80.8,32,-80,32.8</bbox>
 	<response-content>
 		<id-attributes />
 		<stat-attributes />
