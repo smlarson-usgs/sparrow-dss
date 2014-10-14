@@ -141,8 +141,8 @@ public class FindReaches extends Action<DataTable> {
 		buildLessThan(query, "MEANQ", frReq.meanQHi);
 		buildGreaterThan(query, "MEANQ", frReq.meanQLo);
 		buildLikeRight(query, "HUC8", frReq.huc);
-		buildIn(query, "EDACODE", frReq.getEdaCodeArray());
-		buildIn(query, "EDANAME", frReq.getEdaNameArray());
+		buildIn(query, "trim(EDACODE)", frReq.getEdaCodeArray());
+		buildIn(query, "trim(EDANAME)", frReq.getEdaNameArray());
 
 		//whereClause += " and rownum <= " + Integer.toString(maxReturnSize+1);
 		return query;

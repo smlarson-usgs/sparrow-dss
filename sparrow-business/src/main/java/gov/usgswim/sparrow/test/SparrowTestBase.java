@@ -377,6 +377,20 @@ public abstract class SparrowTestBase {
 		String value = (String) xPath.evaluate(xpathExpression, document, XPathConstants.STRING);
 		return value;
 	}
+	
+	/**
+	 * Returns the string value of the XPath expression.
+	 * This is namespace aware.
+	 * @param xpathExpression
+	 * @param xmlDocument
+	 * @return
+	 * @throws Exception
+	 */
+	public static String getXPathValue(String xpathExpression, Document xmlDocument) throws Exception {
+		XPath xPath = XPathFactory.newInstance().newXPath();
+		String value = (String) xPath.evaluate(xpathExpression, xmlDocument, XPathConstants.STRING);
+		return value;
+	}
 
 	/**
 	 * Returns a wc3 XML Document from an xml string.
@@ -693,6 +707,50 @@ public abstract class SparrowTestBase {
 	public boolean compareTables(DataTable expected, DataTable actual) {
 		return compareTables(expected, actual, null, true, 0d, false);
 	}
+	
+	/**
+	 * Compares two PredictData's, returning true if they are equal.
+	 *
+	 * Any mismatched values or rowIDs are logged as errors (log.error) and
+	 * will cause false to be returned.
+	 *
+	 * @param expected
+	 * @param actual
+	 * @return
+	 */
+	public boolean compare(PredictData expected, PredictData actual) {
+		
+		boolean match = true;
+		double fractionalDeltaAllowed = .000001d;
+		
+		if( ! compareTables(expected.getTopo(), actual.getTopo(), new int[] {0}, true, fractionalDeltaAllowed, false)) {
+			log.error("The Topo Tables were not equal");
+			match = false;
+		}
+		
+		if( ! compareTables(expected.getCoef(), actual.getCoef(), null, true, fractionalDeltaAllowed, false)) {
+			log.error("The Coef Tables were not equal");
+			match = false;
+		}
+		
+		if( ! compareTables(expected.getDelivery(), actual.getDelivery(), null, true, fractionalDeltaAllowed, false)) {
+			log.error("The Delivery Tables were not equal");
+			match = false;
+		}
+		
+		if( ! compareTables(expected.getSrc(), actual.getSrc(), null, true, fractionalDeltaAllowed, false)) {
+			log.error("The Src Tables were not equal");
+			match = false;
+		}
+		
+		if( ! compareTables(expected.getSrcMetadata(), actual.getSrcMetadata(), null, true, fractionalDeltaAllowed, false)) {
+			log.error("The SrcMetadata Tables were not equal");
+			match = false;
+		}
+
+		
+		return match;
+	}
 
 	/**
 	 * Compares two datatables, returning true if they are equal.
@@ -779,7 +837,14 @@ public abstract class SparrowTestBase {
 			}
 		}
 
+		int rowErr = 0;
+		int valueErr = 0;
+		int idErr = 0;
+		
 		for (int r = 0; r < expected.getRowCount(); r++) {
+			
+			boolean curRowHasErr = false;
+			
 			for (int c = 0; c < expected.getColumnCount(); c++) {
 
 				if (Arrays.binarySearch(ignoreColumn, c) < 0) {
@@ -789,6 +854,9 @@ public abstract class SparrowTestBase {
 
 					if (! isEqual(orgValue, newValue, fractionalDeltaAllowed)) {
 						match = false;
+						curRowHasErr = true;
+						valueErr++;
+						
 						log.error("Mismatch : " + r + "," + c + ") [" + orgValue + "] [" + newValue + "]");
 					}
 				} else {
@@ -804,16 +872,29 @@ public abstract class SparrowTestBase {
 					//ok - skip
 				} else if (expectId == null || actualId == null) {
 					match = false;
+					curRowHasErr = true;
+					idErr++;
+					
 					log.error("Mismatched ID for row " + r + " [" + expectId + "] [" + actualId + "]");
 					match = false;
 				} else if (expectId.equals(actualId)) {
 					//ok - skip
 				} else {
 					//neither are null, but they have different values
-					log.error("Mismatched ID for row " + r + " [" + expectId + "] [" + actualId + "]");
 					match = false;
+					curRowHasErr = true;
+					idErr++;
+					
+					log.error("Mismatched ID for row " + r + " [" + expectId + "] [" + actualId + "]");
+					
 				}
 			}
+			
+			if (curRowHasErr) rowErr++;
+		}
+		
+		if (!match) {
+			log.error("Summary: " + rowErr + " rows with errors, " + idErr + " non-matching ids and " + valueErr + " non-matching values.");
 		}
 
 		return match;

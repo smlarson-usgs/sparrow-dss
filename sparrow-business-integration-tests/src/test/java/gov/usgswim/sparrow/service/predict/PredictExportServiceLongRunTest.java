@@ -11,6 +11,7 @@ import org.junit.Test;
 import com.meterware.httpunit.PostMethodWebRequest;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
+import org.w3c.dom.Document;
 
 public class PredictExportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
@@ -50,9 +51,6 @@ public class PredictExportServiceLongRunTest extends SparrowServiceTestBaseWithD
 		WebResponse exportWebResponse = client.sendRequest(exportWebRequest);
 		String exportContextResponse = exportWebResponse.getText();
 
-
-		log.debug("export: " + exportContextResponse);
-
 		//Ensure this stream name has quotes
 		assertTrue(exportContextResponse.contains("\"SAVANNAH R, S CHANNEL\""));
 
@@ -84,20 +82,18 @@ public class PredictExportServiceLongRunTest extends SparrowServiceTestBaseWithD
 		exportWebRequest.setParameter("xmlreq", exportRequestText);
 		WebResponse exportWebResponse = client.sendRequest(exportWebRequest);
 		String exportContextResponse = exportWebResponse.getText();
+		
+		Document xmlDoc = getW3cXmlDocumentFromString(exportContextResponse);
 
-
-		log.debug("export: " + exportContextResponse);
-
-		String strRowCount = getXPathValue("count(//*[local-name()='r'])", exportContextResponse);
+		String strRowCount = getXPathValue("count(//*[local-name()='r'])", xmlDoc);
 		int rowCount = Integer.parseInt(strRowCount);
 
-		assertEquals(41, rowCount);
+		assertEquals(8321, rowCount);
+		
 
 		//Each row should contain the specified number of columns, even though some data is null
-		for (int i=1; i <= rowCount; i++) {
-			String strColCount = getXPathValue("count(//*[local-name()='r' and position() =" + i + "]/*[local-name() = 'c'])", exportContextResponse);
-			assertEquals("44", strColCount);
-		}
+		String strRowsWith44Columns = getXPathValue("count(//*[local-name()='r'][count(*[local-name()='c' ]) = 44])", xmlDoc);
+		assertEquals("8321", strRowsWith44Columns);	//all should have 44 columns
 	}
 
 
