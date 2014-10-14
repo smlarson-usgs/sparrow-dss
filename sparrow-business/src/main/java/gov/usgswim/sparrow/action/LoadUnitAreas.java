@@ -19,10 +19,10 @@ import java.sql.ResultSet;
  *
  *  The returned table has two columns:
  *  <ul>
- *  <li>Column 0 : The ID of associated entity for that row.  For reach
+ *  <li>Column 0 : Long.  The ID of associated entity for that row.  For reach
  *  level data this will be the reach Identifier.  For HUC level data it will
  *  be the HUC ID.
- *  <li>Column 1 : The area, based on the type of area requested.
+ *  <li>Column 1 : Double.  The area, based on the type of area requested.
  *  </ul>
  *
  *  For reach related rows, they are returned in PredictData order.
@@ -64,7 +64,7 @@ public class LoadUnitAreas extends Action<DataTable> {
 		ResultSet rset = st.executeQuery();
 		addResultSetForAutoClose(rset);
 		DataTableWritable values = null;
-		values = DataTableConverter.toDataTable(rset);
+		values = DataTableConverter.toDataTable(rset, new Class[]{Long.class, Double.class}, false);
 		values.buildIndex(0);
 		values.getColumns()[1].setUnits(SparrowUnits.SQR_KM.toString());
 		values.getColumns()[1].setName(areaType.getName());
