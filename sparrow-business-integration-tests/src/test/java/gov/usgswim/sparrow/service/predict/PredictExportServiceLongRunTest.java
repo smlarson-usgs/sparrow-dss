@@ -18,12 +18,6 @@ public class PredictExportServiceLongRunTest extends SparrowServiceTestBaseWithD
 	private static final String CONTEXT_SERVICE_URL = "http://localhost:8088/sp_predictcontext";
 	private static final String EXPORT_SERVICE_URL = "http://localhost:8088/sp_predict";
 
-	@Override
-	public void doBeforeClassSingleInstanceSetup() throws Exception {
-		//Uncomment to debug
-		//setLogLevel(Level.DEBUG);
-	}
-
 	/**
 	 * Values containing commas should be escaped
 	 * @throws Exception

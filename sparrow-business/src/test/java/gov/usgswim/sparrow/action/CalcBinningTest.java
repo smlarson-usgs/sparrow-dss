@@ -90,13 +90,6 @@ public class CalcBinningTest extends SparrowTestBase {
 
 	// ==============
 	
-	
-	@Override
-	public void doBeforeClassSingleInstanceSetup() throws Exception {
-		//Uncomment to debug
-		//setLogLevel(Level.DEBUG);
-	}
-	
 
 	@Test public void testInfinityAssumptions() {
 		assertTrue(Double.isInfinite(Double.POSITIVE_INFINITY));
@@ -344,15 +337,6 @@ public class CalcBinningTest extends SparrowTestBase {
     	}
     }
 
-    @Ignore // TEST fails, as expected
-    @Test public void testBigDecimalDoubleFloat_RoundtripBehavior() {
-    	for (double value = 0; value < 2; value += .001) {
-    		BigDecimal bd = new BigDecimal(value);
-    		assertTrue("Assuming absolute equality for " + value, value >= bd.floatValue());
-    		assertTrue("Assuming absolute equality for " + value, value <= bd.floatValue());
-    	}
-    }
-
     @Test public void testBigDecimalDoubleStringParse_RoundtripBehavior() {
     	for (double value = 0; value < 2; value += .001) {
     		BigDecimal bd = new BigDecimal(value);
@@ -360,17 +344,6 @@ public class CalcBinningTest extends SparrowTestBase {
 
     		assertTrue("Even the String parsing roundtrip behavior should be equal", doubleValue >= bd.doubleValue());
     		assertTrue("Even the String parsing roundtrip behavior should be equal", doubleValue <= bd.doubleValue());
-    	}
-    }
-
-    @Ignore // TEST fails, as expected
-    @Test public void testBigDecimalFloatStringParse_RoundtripBehavior() {
-    	for (double value = 0; value < 2; value += .001) {
-    		BigDecimal bd = new BigDecimal(value);
-    		Float floatValue = Float.parseFloat(bd.toPlainString());
-
-    		assertTrue("Even the String parsing roundtrip behavior should be equal for " + floatValue, floatValue >= bd.doubleValue());
-    		assertTrue("Even the String parsing roundtrip behavior should be equal for " + floatValue, floatValue <= bd.doubleValue());
     	}
     }
 

@@ -22,12 +22,6 @@ public class ReportServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 	private static final String CONTEXT_SERVICE_URL = "http://localhost:8088/sp_predictcontext";
 	private static final String REPORT_SERVICE_URL = "http://localhost:8088/sp_delivery_aggreport";
 
-	@Override
-	public void doBeforeClassSingleInstanceSetup() throws Exception {
-		//Uncomment to debug
-		//setLogLevel(Level.DEBUG);
-	}
-
 	@Test
 	public void model50NoAdjustXMLStateLoadReport() throws Exception {
 		String contextRequestText = SparrowTestBase.getXmlAsString(this.getClass(), "context1");

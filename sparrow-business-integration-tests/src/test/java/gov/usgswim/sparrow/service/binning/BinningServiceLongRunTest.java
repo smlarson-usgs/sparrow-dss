@@ -23,12 +23,6 @@ public class BinningServiceLongRunTest extends SparrowServiceTestBaseWithDBandCa
 
 	private static final String CONTEXT_SERVICE_URL = "http://localhost:8088/sp_predictcontext";
 	private static final String BINNING_SERVICE_URL = "http://localhost:8088/sp_binning";
-
-	@Override
-	public void doBeforeClassSingleInstanceSetup() throws Exception {
-		//Uncomment to debug
-		setLogLevel(Level.DEBUG);
-	}
 	
 	@Test
 	public void incrementalDeliveredYieldContext() throws Exception {

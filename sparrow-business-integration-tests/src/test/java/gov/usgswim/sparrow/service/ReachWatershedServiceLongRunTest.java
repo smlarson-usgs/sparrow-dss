@@ -19,11 +19,6 @@ public class ReachWatershedServiceLongRunTest extends SparrowServiceTestBaseWith
 	
 	private static final String SERVICE_URL = "http://localhost:8088/reachwatershed/";
 
-	@Override
-	protected void doBeforeClassSingleInstanceSetup() throws Exception {
-		super.doBeforeClassSingleInstanceSetup();
-		//log.setLevel(Level.DEBUG);
-	}
 	
 	// ============
 	// TEST METHODS

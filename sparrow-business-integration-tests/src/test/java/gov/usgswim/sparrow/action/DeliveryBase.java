@@ -61,10 +61,6 @@ public class DeliveryBase  extends SparrowTestBaseWithDBandCannedModel50 {
 	public void doBeforeClassSingleInstanceSetup() throws Exception {
 
 
-		//Uncomment to debug
-		//setLogLevel(Level.DEBUG);
-		super.doBeforeClassSingleInstanceSetup();
-
 		BufferedReader stdDelFracTo9682Stream = new BufferedReader(new InputStreamReader(
 				SparrowTestBase.getResource(DeliveryBase.class, "stdDelFracTo9682", "tab")
 			));

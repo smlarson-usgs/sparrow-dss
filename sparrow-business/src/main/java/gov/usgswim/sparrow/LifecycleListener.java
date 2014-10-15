@@ -67,7 +67,7 @@ public class LifecycleListener implements ServletContextListener {
 			} 
 		}
 
-		SparrowCacheManager.getInstance().shutdown();
+		SparrowCacheManager.destroy();
 
 	}
 

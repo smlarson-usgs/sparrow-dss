@@ -13,12 +13,6 @@ import com.meterware.httpunit.WebResponse;
 public class PredictContextServiceLongRunTest extends SparrowServiceTestBaseWithDB {
 
 	private static final String SERVICE_URL = "http://localhost:8088/sp_predictcontext";
-
-	@Override
-	public void doBeforeClassSingleInstanceSetup() throws Exception {
-		//Uncomment to debug
-		//setLogLevel(Level.DEBUG);
-	}
 	
 	@Test
 	public void incrementalDeliveredYieldContext() throws Exception {

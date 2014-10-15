@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * The purpose of this class is to decorate the configuration loading of the
  * ehcache CacheManager by performing property substitution on the ehcache.xml
  * configuration file. As a result of doing this, the CacheManager no longer
- * will manage its singleton, so that must be managed here.
+ will manage its singleCacheManger, so that must be managed here.
  * 
  * @author ilinkuo
  * 
@@ -41,66 +41,83 @@ public class SparrowCacheManager {
 	private static final Logger LOG = LoggerFactory.getLogger(SparrowCacheManager.class);
 
 	/**
-	 * The Singleton Instance.
+	 * The Singleton cache Instance.
 	 */
-	private static volatile CacheManager singleton;
+	private static volatile CacheManager singleCacheManger;
+	
+	/**
+	 * Single cache manager - provides some hooks into an mbean server.
+	 */
+	private static volatile ManagementService singleCacheManagementService;
 
 	/**
-	 * A factory method to create a singleton CacheManager with default config, or return it if it exists.
+	 * A factory method to create a singleCacheManger CacheManager with default config, or return it if it exists.
 	 * <p/>
 	 * The configuration will be read, {@link Ehcache}s created and required stores initialized. When the {@link CacheManager} is no longer
 	 * required, call shutdown to free resources.
 	 * 
-	 * @return the singleton CacheManager
+	 * @return the singleCacheManger CacheManager
 	 * @throws CacheException
 	 *             if the CacheManager cannot be created
 	 */
 	public synchronized static CacheManager create() throws CacheException {
-		if (singleton != null) {
-			return singleton;
+		if (singleCacheManger != null) {
+			return singleCacheManger;
 		}
 
-		if (singleton == null) {
+		if (singleCacheManger == null) {
 			// CacheManager created in this way will not have JNDI property substitution
 			LOG.warn("Creating new SparrowCacheManager with default config, no JNDI property substitution");
-			singleton = new CacheManager();
+			singleCacheManger = new CacheManager();
 		} else {
 			LOG.debug("Attempting to create an existing singleton unneeded. Existing singleton returned.");
 		}
-		return singleton;
+		return singleCacheManger;
 	}
 
 
 	/**
-	 * Creates singleton CacheManager from resource name
+	 * Creates singleCacheManger CacheManager from resource name
 	 * @return
 	 * @throws CacheException
 	 * @throws IOException 
 	 */
-	public static CacheManager createFromResource(String resourceName, boolean isJndiAware) throws CacheException, IOException {
+	public synchronized static CacheManager createFromResource(String resourceName, boolean isJndiAware) throws CacheException, IOException {
 
-		synchronized (CacheManager.class) {
-			LOG.info("Creating new SparrowCacheManager from resource " + resourceName);
-			
-			InputStream in = null;
-			
-			try {
-				in = getConfigurationStream(isJndiAware, resourceName);
-			    singleton = new CacheManager(in);
-			    singleton.setName("SparrowCacheManager");
+		LOG.info("Creating new SparrowCacheManager from resource " + resourceName);
 
-			} catch (Exception e){
-				LOG.error("SparrowCacheManager was not able to create configured cache manager");
-			} finally {
-			    in.close();
-			}
-			
-			// register cache in MBeanServer for JMX
-			MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
-		    ManagementService.registerMBeans(singleton, mBeanServer, false, false, false, true);
-		    
-			return singleton;
+		InputStream in = null;
+
+		try {
+			in = getConfigurationStream(isJndiAware, resourceName);
+			singleCacheManger = new CacheManager(in);
+			singleCacheManger.setName("SparrowCacheManager");
+
+		} catch (Exception e){
+			LOG.error("SparrowCacheManager was not able to create configured cache manager");
+		} finally {
+			in.close();
 		}
+
+		// register cache in MBeanServer for JMX
+		MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
+		singleCacheManagementService  = new ManagementService(singleCacheManger, mBeanServer, false, false, false, true);
+
+		return singleCacheManger;
+	}
+	
+	public synchronized static void destroy() {
+		
+		if (singleCacheManger != null) {
+			singleCacheManger.shutdown();
+			singleCacheManger = null;
+		}
+		
+		if (singleCacheManagementService != null) {
+			singleCacheManagementService.dispose();
+			singleCacheManagementService = null;
+		}
+
 	}
 
 
@@ -139,13 +156,13 @@ public class SparrowCacheManager {
 
 
 	/**
-	 * A factory method to create a singleton CacheManager with default config, or return it if it exists.
+	 * A factory method to create a singleCacheManger CacheManager with default config, or return it if it exists.
 	 * <p/>
 	 * This has the same effect as {@link CacheManager#create}
 	 * <p/>
 	 * Same as {@link #create()}
 	 * 
-	 * @return the singleton CacheManager
+	 * @return the singleCacheManger CacheManager
 	 * @throws CacheException
 	 *             if the CacheManager cannot be created
 	 */
