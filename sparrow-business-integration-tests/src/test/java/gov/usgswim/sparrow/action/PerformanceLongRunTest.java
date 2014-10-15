@@ -33,7 +33,7 @@ public class PerformanceLongRunTest extends SparrowTestBaseWithDB {
 	static PredictionContext context;
 
 	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	public void doBeforeClassSingleInstanceSetup() throws Exception {
 
 		//Turns on detailed logging
 		//log.setLevel(Level.DEBUG);

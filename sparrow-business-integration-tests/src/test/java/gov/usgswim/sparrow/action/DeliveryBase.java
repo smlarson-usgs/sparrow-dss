@@ -58,12 +58,12 @@ public class DeliveryBase  extends SparrowTestBaseWithDBandCannedModel50 {
 	protected static TerminalReaches targetBoth;
 
 	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	public void doBeforeClassSingleInstanceSetup() throws Exception {
 
 
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);
-		super.doOneTimeCustomSetup();
+		super.doBeforeClassSingleInstanceSetup();
 
 		BufferedReader stdDelFracTo9682Stream = new BufferedReader(new InputStreamReader(
 				SparrowTestBase.getResource(DeliveryBase.class, "stdDelFracTo9682", "tab")

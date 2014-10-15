@@ -75,7 +75,7 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 	}
 
 	@Override
-	public void doOneTimeFrameworkSetup() throws Exception {
+	public void doBeforeClassTestFrameworkSetup() throws Exception {
 		
 		if (!loadModelDataFromFile()) {
 			//Explicitly force a load from the db, not from CSV or serialization file.
@@ -99,7 +99,7 @@ public abstract class SparrowTestBaseWithDB extends SparrowTestBase {
 	}
 	
 	@Override
-	public void doOneTimeFrameworkTearDown() throws Exception {
+	public void doAfterClassTestFrameworkTearDown() throws Exception {
 		singleInstanceToTearDown.doDbTearDown();
 		singleInstanceToTearDown = null;
 		SharedApplication.getInstance().reloadConfiguration();

@@ -54,7 +54,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 	SparrowColumnSpecifier zeroTo10In10Values;	//1-10, but all the values are at the bottom
 	
 	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	public void doBeforeClassSingleInstanceSetup() throws Exception {
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);
 	}

@@ -12,7 +12,7 @@ import org.w3c.dom.Document;
 public class WatershedServiceTest extends SparrowServiceTestBaseWithDB {
 
 	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	public void doBeforeClassSingleInstanceSetup() throws Exception {
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);
 	}

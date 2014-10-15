@@ -32,17 +32,7 @@ public abstract class SparrowServiceTestBaseNoDB extends SparrowTestBase {
 	
 	
 	@Override
-	protected void doOneTimeLifecycleSetup() throws Exception {
-		//Do nothing - the lifecycle is setup via the servlet
-	}
-
-	@Override
-	protected void doOneTimeLifecycleTearDown() {
-		//Do nothing - the lifecycle is handled via the servlet
-	}
-	
-	@Override
-	protected void doOneTimeFrameworkSetup() throws Exception {
+	protected void doBeforeClassTestFrameworkSetup() throws Exception {
 		servletRunner =  new ServletRunner(new File(WEB_XML_LOCATION));
 		client = servletRunner.newClient();
 	}
@@ -51,7 +41,7 @@ public abstract class SparrowServiceTestBaseNoDB extends SparrowTestBase {
 	 * @see gov.usgswim.sparrow.SparrowUnitTestBaseClass#doTearDown()
 	 */
 	@Override
-	protected void doOneTimeFrameworkTearDown() throws Exception {
+	protected void doAfterClassTestFrameworkTearDown() throws Exception {
 		servletRunner.shutDown();
 	}
 	

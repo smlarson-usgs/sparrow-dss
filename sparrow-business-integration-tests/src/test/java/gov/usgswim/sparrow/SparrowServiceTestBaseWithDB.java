@@ -34,29 +34,18 @@ public abstract class SparrowServiceTestBaseWithDB extends SparrowTestBaseWithDB
 	protected static ServletUnitClient client;
 	
 	@Override
-	public void doOneTimeFrameworkSetup() throws Exception {
-		super.doOneTimeFrameworkSetup();
+	public void doBeforeClassTestFrameworkSetup() throws Exception {
+		super.doBeforeClassTestFrameworkSetup();
 		
 		servletRunner =  new ServletRunner(new File(SparrowServiceTestBaseWithDB.WEB_XML_LOCATION));
 		client = servletRunner.newClient();
 	}
 
 	@Override
-	public void doOneTimeFrameworkTearDown() throws Exception {
-		super.doOneTimeFrameworkTearDown();
+	public void doAfterClassTestFrameworkTearDown() throws Exception {
+		super.doAfterClassTestFrameworkTearDown();
 		
 		servletRunner.shutDown();
-	}
-	
-
-	@Override
-	protected void doOneTimeLifecycleSetup() {
-		//do nothing - the servlet container is handling the lifecycle
-	}
-
-	@Override
-	protected void doOneTimeLifecycleTearDown() {
-		//do nothing - the servlet container is handling the lifecycle
 	}
 	
 	/**

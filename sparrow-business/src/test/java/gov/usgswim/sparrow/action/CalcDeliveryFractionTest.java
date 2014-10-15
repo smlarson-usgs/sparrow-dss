@@ -45,9 +45,9 @@ public class CalcDeliveryFractionTest extends SparrowTestBase {
 	static final double COMP_ERROR = .0000001d;
 
 	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	public void doBeforeClassSingleInstanceSetup() throws Exception {
 		//log.setLevel(Level.DEBUG);
-		super.doOneTimeCustomSetup();
+		super.doBeforeClassSingleInstanceSetup();
 
 		BufferedReader baseDataStream = new BufferedReader(new InputStreamReader(
 				SparrowTestBase.getResource(CalcDeliveryFractionTest.class, "data", "tab")

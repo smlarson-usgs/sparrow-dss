@@ -25,7 +25,7 @@ public class BinningServiceLongRunTest extends SparrowServiceTestBaseWithDBandCa
 	private static final String BINNING_SERVICE_URL = "http://localhost:8088/sp_binning";
 
 	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	public void doBeforeClassSingleInstanceSetup() throws Exception {
 		//Uncomment to debug
 		setLogLevel(Level.DEBUG);
 	}

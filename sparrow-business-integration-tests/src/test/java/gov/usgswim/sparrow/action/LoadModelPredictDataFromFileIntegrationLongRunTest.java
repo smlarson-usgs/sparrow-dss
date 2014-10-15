@@ -22,7 +22,7 @@ public class LoadModelPredictDataFromFileIntegrationLongRunTest extends SparrowT
 	static PredictData filePredictData;
 
 	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	public void doBeforeClassSingleInstanceSetup() throws Exception {
 
 		//Normally we would load via the SharedApplication, which uses the cache.
 		//However, since we want to ensure we are comparing db values to the text

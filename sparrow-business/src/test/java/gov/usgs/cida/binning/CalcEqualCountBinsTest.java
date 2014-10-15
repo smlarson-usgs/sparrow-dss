@@ -27,7 +27,7 @@ import org.junit.Test;
 public class CalcEqualCountBinsTest extends CalcEqualRangeBinsTest {
 
 	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	public void doBeforeClassSingleInstanceSetup() throws Exception {
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);
 	}

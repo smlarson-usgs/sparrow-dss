@@ -41,9 +41,9 @@ public class NSDataSetBuilderTest extends SparrowTestBase {
 	static DataTable stdDelFracToBoth;
 
 	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	public void doBeforeClassSingleInstanceSetup() throws Exception {
 		//log.setLevel(Level.DEBUG);
-		super.doOneTimeCustomSetup();
+		super.doBeforeClassSingleInstanceSetup();
 
 
 		//Lets hack the predictData to Turn off transport for the two
