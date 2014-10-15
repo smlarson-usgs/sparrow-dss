@@ -22,7 +22,7 @@ public class LoadStreamFlowLongRunTest extends SparrowTestBaseWithDB {
 	static SparrowColumnSpecifier model50Flow;
 	
 	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	public void doBeforeClassSingleInstanceSetup() throws Exception {
 		LoadStreamFlow lf = new LoadStreamFlow();
 		lf.setModelId(SparrowTestBaseWithDB.TEST_MODEL_ID);
 		model50Flow = lf.run();

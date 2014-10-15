@@ -19,7 +19,7 @@ public class PredictExportServiceLongRunTest extends SparrowServiceTestBaseWithD
 	private static final String EXPORT_SERVICE_URL = "http://localhost:8088/sp_predict";
 
 	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	public void doBeforeClassSingleInstanceSetup() throws Exception {
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);
 	}

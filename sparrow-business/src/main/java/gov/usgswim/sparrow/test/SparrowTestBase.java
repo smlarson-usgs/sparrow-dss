@@ -93,8 +93,11 @@ public abstract class SparrowTestBase {
 	//For basic predict data, use testModelPredictResults.
 	private static DataTable testModelCompletePredictResults;
 
-	//True until the firstRun is complete (used for onetime init)
-	private static boolean firstRun = true;
+	//True until just before the first test (globally for the classloader) is run (used for global onetime init)
+	private static volatile boolean firstTestEverRun = true;
+	
+	//True until just before the first test of a test subclass is run.  Use for one-time init for a single test class.
+	private static volatile boolean firstTestOfSubclass = true;
 
 	/** A single instance which is destroyed in teardown */
 	private static SparrowTestBase singleInstanceToTearDown;
@@ -105,82 +108,55 @@ public abstract class SparrowTestBase {
 	//Cannot use the @BeforeClass since we need the ability to override methods.
 	@Before
 	public void SparrowUnitTestSetUp() throws Exception {
-		if (firstRun) {
-			doOneTimeSetup();
-			firstRun = false;
+		if (firstTestEverRun) {
+			doBeforeClassSetup();
+			firstTestEverRun = false;
+		}
+		
+		if (firstTestOfSubclass) {
 			singleInstanceToTearDown = this;
+			firstTestOfSubclass = false;
 		}
 	}
 
 
+	/**
+	 * Do a teardown for a single test class
+	 * (leave global constructs in place)
+	 * @throws Exception 
+	 */
 	@AfterClass
 	public static void SparrowUnitTestTearDown() throws Exception {
 		if (singleInstanceToTearDown != null) {
 			//is null if all the tests in a class are ignored.
-			singleInstanceToTearDown.doOneTimeTearDown();
+			singleInstanceToTearDown.doAfterClassTearDown();
 		}
-	}
-
-	protected void doOneTimeSetup() throws Exception {
-		doOneTimeLogSetup();
-		doOneTimeGeneralSetup();
-		doOneTimeLifecycleSetup();
-
-		try {
-			//The junit framework subclasses can override the FrameworkSetup,
-			//allowing endpoint tests (ie the classes actually containing the tests)
-			//to override CustomSetup w/o having to worry about calling super
-			//(or the results of failing to call it).
-			doOneTimeFrameworkSetup();	//Intended for framework subclasses (like SparrowDBTest) to override
-		} catch (Exception e) {
-			log.fatal("Custom test setup doOneTimeFrameworkSetup() is throwing an exception!", e);
-			throw e;
-		}
-
-		try {
-			doOneTimeCustomSetup();	//intended endpoint test subclasses to use for setup
-		} catch (Exception e) {
-			log.fatal("Custom test setup doOneTimeCustomSetup() is throwing an exception!", e);
-			throw e;
-		}
-	}
-
-	protected void doOneTimeTearDown() throws Exception {
-
-		try {
-
-			singleInstanceToTearDown.doOneTimeCustomTearDown();	//for endpoint test classes
-			singleInstanceToTearDown.doOneTimeFrameworkTearDown();	//for framework test classes
-		} catch (Exception e) {
-			log.fatal("Custom test teardown doOneTimeCustomTearDown() is throwing an exception!", e);
-		}
-
-		log.setLevel(initialLogLevel);
-
-		singleInstanceToTearDown.doOneTimeLifecycleTearDown();
-		singleInstanceToTearDown.doOneTimeGeneralTearDown();
-		singleInstanceToTearDown.doOneTimeLogTearDown();
-
-		singleInstanceToTearDown = null;
-		firstRun = true;	//reset this flag since it shared by all instances
 	}
 
 	/**
-	 * Private to protect the ability to reset the logging to its original state.
-	 *
-	 * Subclasses should use the doOneTimeCustomSetup to change the log level,
-	 * which will be reverted when the test is complete.
-	 *
-	 * @throws Exception
+	 * Do all the setup needed before a test class is run.
+	 * 
+	 * This is run once for each test class instance.
+	 * 
+	 * Normally this would be a static method, but via some test base class trickery,
+	 * it can be an instance method and overridden.
+	 * @throws Exception 
 	 */
-	private void doOneTimeLogSetup() throws Exception {
+	private void doBeforeClassSetup() throws Exception {
+		
+		//Many system props are set here and this is called for each test class.
+		//This is done so that if a test class modified system props, it will
+		//always be reset here.
+		
+		
+		
+		//
+		//Set System props
+		
+		//App environment settings
 		System.setProperty(LifecycleListener.APP_ENV_KEY, "local");
 		System.setProperty(LifecycleListener.APP_MODE_KEY, "test");
-		initialLogLevel = log.getLevel();
-	}
-
-	protected void doOneTimeGeneralSetup() throws Exception {
-
+		
 		//Tell JNDI config to not expect JNDI props
 		System.setProperty(
 				"gov.usgs.cida.config.DynamicReadOnlyProperties.EXPECT_NON_JNDI_ENVIRONMENT",
@@ -207,59 +183,123 @@ public abstract class SparrowTestBase {
 		System.setProperty("javax.xml.transform.TransformerFactory",
 	    	"com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl");
 
-
+		//configuration for XMLUnit when doing xml comparisons
 		XMLUnit.setIgnoreWhitespace(true);
 		XMLUnit.setIgnoreComments(true);
+		
+		//Logging
+		initialLogLevel = log.getLevel();	//record so we can reset to this level
+		
+		
+		doBeforeClassApplicationLifecycleSetup();
+
+		try {
+			//Setup for test framework classes
+			doBeforeClassTestFrameworkSetup();
+		} catch (Exception e) {
+			log.fatal("Test framework setup doBeforeClassTestFrameworkSetup() is throwing an exception!", e);
+			throw e;
+		}
+
+		try {
+			doBeforeClassSingleInstanceSetup();	//intended for individual test subclasses to do setup
+		} catch (Exception e) {
+			log.fatal("Custom test setup doBeforeClassSingleInstanceCustomSetup() is throwing an exception!", e);
+			throw e;
+		}
 	}
 
-	protected void doOneTimeLifecycleSetup() throws Exception {
+	private void doAfterClassTearDown() throws Exception {
+
+		try {
+
+			singleInstanceToTearDown.doAfterClassSingleInstanceTearDown();	//for endpoint test classes
+			singleInstanceToTearDown.doAfterClassTestFrameworkTearDown();	//for framework test classes
+		} catch (Exception e) {
+			log.fatal("Custom test teardown doOneTimeCustomTearDown() is throwing an exception!", e);
+		}
+
+		//Reset log level in case a test changed it
+		log.setLevel(initialLogLevel);
+
+		singleInstanceToTearDown.doAfterClassApplicationLifecycleTearDown();
+
+		singleInstanceToTearDown = null;
+		firstTestOfSubclass = true;	//reset this flag since it shared by all instances
+	}
+
+	/**
+	 * The sparrow application has a 'Livecycle' class that handles some top level
+	 * environment things like the cache and some master environment switches.
+	 * @throws Exception 
+	 */
+	protected void doBeforeClassApplicationLifecycleSetup() throws Exception {
 		lifecycle.contextInitialized(null, true);
 	}
 
 
 	/**
-	 * Intended to be overridden by framework subclasses like SparrowDBTest.
-	 * If frameworks use this method, endpoint subclasses do not need to call
-	 * super if they use doOneTimeCustomSetup().
+	 * Intended to be overridden by the test framework subclasses like SparrowDBTest.
+	 * This allows test framework instances to use this method and still allow
+	 * individual test instances to use doBeforeClassCustomSetup() w/o calling
+	 * super().
+	 * 
 	 * @throws Exception
 	 */
-	protected void doOneTimeFrameworkSetup() throws Exception {
+	protected void doBeforeClassTestFrameworkSetup() throws Exception {
 		//nothing to do and no need to call super if overriding.
 	}
 
 	/**
-	 * Called only before the first test.
-	 * Intended to be overridden for one-time initiation by endpoint test classes.
-	 * Those methods should not need to call super() for this method.
+	 * Similar to adding an @BeforeClass, this method is called ONE TIME before
+	 * any of the tests are run in a JUnit test class.
+	 * 
+	 * This is the method to override if your test needs to do custom setup
+	 * FOR THE ENTIRE CLASS.  The advantage of using this method over using
+	 * @BeforeClass is that this method will be called after other test environment
+	 * construction has been done, such as configuration the cache and the application
+	 * sense of environment.  Additionally, this method is a non-static so you
+	 * can use instance vars.
+	 * 
+	 * If you need to do teardown of resources created in this method, the ONLY
+	 * way to correctly do this is to override the doAfterClassSingleInstanceTearDown()
+	 * method.
+	 * 
+	 * The base test classes do not use this method, so there is no need to
+	 * call super().
+	 * 
 	 * @throws Exception
 	 */
-	protected void doOneTimeCustomSetup() throws Exception {
+	protected void doBeforeClassSingleInstanceSetup() throws Exception {
 		//nothing to do and no need to call super if overriding.
 	}
 
-	protected void doOneTimeLogTearDown() {
-		//nothing to do
-	}
-
-	protected void doOneTimeLifecycleTearDown() {
+	/**
+	 * Shut down the sparrow application 'Livecycle' class that handles some top
+	 * level environment things like the cache and some master environment switches.
+	 * @throws Exception 
+	 */
+	protected void doAfterClassApplicationLifecycleTearDown() {
 		lifecycle.contextDestroyed(null, true);
 	}
 
-
-	protected void doOneTimeGeneralTearDown() {
-		//nothing to do
-	}
-
-	protected void doOneTimeFrameworkTearDown() throws Exception {
+	protected void doAfterClassTestFrameworkTearDown() throws Exception {
 		//Nothing to do
 	}
 
 	/**
-	 * For endpoint sublclasses to override.
-	 * implementers do not need to call super().
+	 * Similar to adding an @AfterClass, this method is called ONE TIME after
+	 * all of the tests are run in a JUnit test class.
+	 * 
+	 * This is the ONLY CORRECT WAY to clean up resources
+	 * created via the doBeforeClassSingleInstanceSetup().
+	 * 
+	 * The base test classes do not use this method, so there is no need to
+	 * call super().
+	 * 
 	 * @throws Exception
 	 */
-	protected void doOneTimeCustomTearDown() throws Exception {
+	protected void doAfterClassSingleInstanceTearDown() throws Exception {
 		//nothing to do and no need to call super if overriding.
 	}
 

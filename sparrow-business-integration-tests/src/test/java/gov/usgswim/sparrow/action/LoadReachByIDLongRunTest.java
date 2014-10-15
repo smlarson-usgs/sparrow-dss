@@ -30,7 +30,7 @@ public class LoadReachByIDLongRunTest  extends SparrowTestBaseWithDB {
 	static ReachClientId clientReachId;
 	
 	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	public void doBeforeClassSingleInstanceSetup() throws Exception {
 		
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);

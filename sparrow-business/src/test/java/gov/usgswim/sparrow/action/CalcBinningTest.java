@@ -92,7 +92,7 @@ public class CalcBinningTest extends SparrowTestBase {
 	
 	
 	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	public void doBeforeClassSingleInstanceSetup() throws Exception {
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);
 	}

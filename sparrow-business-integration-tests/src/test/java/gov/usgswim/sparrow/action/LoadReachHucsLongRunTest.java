@@ -26,7 +26,7 @@ public class LoadReachHucsLongRunTest extends SparrowTestBaseWithDB {
 	
 	
 	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	public void doBeforeClassSingleInstanceSetup() throws Exception {
 		
 		//reaches in HUC8 #03030001
 		reachesInHuc.add(81039);

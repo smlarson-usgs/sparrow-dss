@@ -15,7 +15,7 @@ public class PredictContextServiceLongRunTest extends SparrowServiceTestBaseWith
 	private static final String SERVICE_URL = "http://localhost:8088/sp_predictcontext";
 
 	@Override
-	public void doOneTimeCustomSetup() throws Exception {
+	public void doBeforeClassSingleInstanceSetup() throws Exception {
 		//Uncomment to debug
 		//setLogLevel(Level.DEBUG);
 	}
