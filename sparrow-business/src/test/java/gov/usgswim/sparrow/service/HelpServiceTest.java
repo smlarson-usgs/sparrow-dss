@@ -12,7 +12,7 @@ import org.xml.sax.SAXException;
 
 import com.meterware.httpunit.WebResponse;
 
-public class HelpServiceTest extends SparrowServiceTestBaseNoDB{
+public class HelpServiceTest extends SparrowServiceTestBaseNoDB {
 
 	private static final String HELP_SERVICE_URL = "http://localhost:8088/sp_help";
 

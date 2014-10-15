@@ -27,8 +27,8 @@ public abstract class SparrowServiceTestBaseNoDB extends SparrowTestBase {
 	// SERVICE URLS
 	// ============
 
-	protected ServletRunner servletRunner;
-	protected ServletUnitClient client;
+	protected static ServletRunner servletRunner;
+	protected static ServletUnitClient client;
 	
 	
 	@Override

@@ -25,13 +25,6 @@ public class BuildTotalDeliveredLoadByUpstreamRegionReportTest extends DeliveryB
 
 	static final double COMP_ERROR = .0000001d;
 
-	@Override
-	public void doBeforeClassSingleInstanceSetup() throws Exception {
-		//Uncomment to debug
-		//setLogLevel(Level.DEBUG);
-		super.doBeforeClassSingleInstanceSetup();
-	}
-
 	@Test
 	public void dataSanityCheckForStates() throws Exception {
 

@@ -15,12 +15,6 @@ import org.junit.Test;
 
 public class IDServiceIntegrationLongRunTest extends SparrowServiceTestBaseWithDBandCannedModel50 {
 	
-	@Override
-	protected void doBeforeClassSingleInstanceSetup() throws Exception {
-		super.doBeforeClassSingleInstanceSetup();
-		setLogLevel(Level.DEBUG);
-	}
-	
 	// ============
 	// TEST METHODS
 	// ============

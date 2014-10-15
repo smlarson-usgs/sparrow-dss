@@ -11,12 +11,6 @@ import org.w3c.dom.Document;
 
 public class WatershedServiceTest extends SparrowServiceTestBaseWithDB {
 
-	@Override
-	public void doBeforeClassSingleInstanceSetup() throws Exception {
-		//Uncomment to debug
-		//setLogLevel(Level.DEBUG);
-	}
-	
 	@Test
 	public void basicTestOfWatershedListingForAModel() throws Exception {
 		

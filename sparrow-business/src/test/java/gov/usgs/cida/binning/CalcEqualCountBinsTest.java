@@ -25,12 +25,6 @@ import org.apache.log4j.Level;
 import org.junit.Test;
 
 public class CalcEqualCountBinsTest extends CalcEqualRangeBinsTest {
-
-	@Override
-	public void doBeforeClassSingleInstanceSetup() throws Exception {
-		//Uncomment to debug
-		//setLogLevel(Level.DEBUG);
-	}
 	
 	@Test
 	public void testSmoothEven100Values() throws Exception {

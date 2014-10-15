@@ -102,7 +102,7 @@ public abstract class SparrowTestBase {
 	/** A single instance which is destroyed in teardown */
 	private static SparrowTestBase singleInstanceToTearDown;
 
-	private Level initialLogLevel = null;
+	private static Level initialLogLevel = null;
 
 
 	//Cannot use the @BeforeClass since we need the ability to override methods.
@@ -259,8 +259,9 @@ public abstract class SparrowTestBase {
 	 * FOR THE ENTIRE CLASS.  The advantage of using this method over using
 	 * @BeforeClass is that this method will be called after other test environment
 	 * construction has been done, such as configuration the cache and the application
-	 * sense of environment.  Additionally, this method is a non-static so you
-	 * can use instance vars.
+	 * sense of environment.  This method is a non-static but you
+	 * may ONLY MODIFY STATIC VARS due to the fact that JUnit uses one test
+	 * instance per test method.
 	 * 
 	 * If you need to do teardown of resources created in this method, the ONLY
 	 * way to correctly do this is to override the doAfterClassSingleInstanceTearDown()

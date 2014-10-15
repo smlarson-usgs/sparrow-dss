@@ -25,12 +25,6 @@ import org.junit.Test;
  */
 public class SourceComparisonErrorLongRunTest extends SparrowTestBaseWithDBandCannedModel50 {
 	
-	@Override
-	public void doBeforeClassSingleInstanceSetup() throws Exception {
-		//Uncomment to debug
-		setLogLevel(Level.DEBUG);
-	}
-	
 	@Test
 	public void testComparison() throws Exception {
 		String xmlContextReq = SparrowTestBase.getXmlAsString(this.getClass(), "context");
