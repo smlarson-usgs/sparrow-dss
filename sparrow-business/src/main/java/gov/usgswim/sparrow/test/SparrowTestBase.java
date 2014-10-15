@@ -109,11 +109,12 @@ public abstract class SparrowTestBase {
 	@Before
 	public void SparrowUnitTestSetUp() throws Exception {
 		if (firstTestEverRun) {
-			doBeforeClassSetup();
+			//Nothing special to do here...  All has been moved to firstTestOfSubclass
 			firstTestEverRun = false;
 		}
 		
 		if (firstTestOfSubclass) {
+			doBeforeClassSetup();
 			singleInstanceToTearDown = this;
 			firstTestOfSubclass = false;
 		}
