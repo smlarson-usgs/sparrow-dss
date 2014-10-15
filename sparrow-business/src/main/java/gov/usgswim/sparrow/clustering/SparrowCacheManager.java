@@ -55,21 +55,19 @@ public class SparrowCacheManager {
 	 * @throws CacheException
 	 *             if the CacheManager cannot be created
 	 */
-	public static CacheManager create() throws CacheException {
+	public synchronized static CacheManager create() throws CacheException {
 		if (singleton != null) {
 			return singleton;
 		}
 
-		synchronized (CacheManager.class) {
-			if (singleton == null) {
-				// CacheManager created in this way will not have JNDI property substitution
-				LOG.warn("Creating new SparrowCacheManager with default config, no JNDI property substitution");
-				singleton = new CacheManager();
-			} else {
-				LOG.debug("Attempting to create an existing singleton unneeded. Existing singleton returned.");
-			}
-			return singleton;
+		if (singleton == null) {
+			// CacheManager created in this way will not have JNDI property substitution
+			LOG.warn("Creating new SparrowCacheManager with default config, no JNDI property substitution");
+			singleton = new CacheManager();
+		} else {
+			LOG.debug("Attempting to create an existing singleton unneeded. Existing singleton returned.");
 		}
+		return singleton;
 	}
 
 
