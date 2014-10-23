@@ -211,13 +211,17 @@
 			<url>${cida.maven.url}/content/repositories/cida-thirdparty</url>
 		</repository>
 		<repository>
-			<id>opengeo</id>
-			<url>http://repo.opengeo.org/</url>
+			<id>cida-opengeo</id>
+			<url>${cida.maven.url}/content/repositories/opengeo/</url>
 		</repository>
 		<repository>
 			<id>cida-public</id>
 			<name>CIDA Public Nexus</name>
 			<url>http://cida.usgs.gov/maven/cida-public/</url>
+		</repository>
+		<repository>
+			<id>boundless</id>
+			<url>http://repo.boundlessgeo.com/main/</url>
 		</repository>
 		<repository>
 			<id>osgeo</id>
