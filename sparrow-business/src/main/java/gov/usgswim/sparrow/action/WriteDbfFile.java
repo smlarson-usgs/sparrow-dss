@@ -33,11 +33,22 @@ import org.geotools.data.shapefile.dbf.DbaseFileWriter;
  */
 public class WriteDbfFile extends Action<File> {
 
+	/** Ensures a minimum of 6 digits of precision for all numbers. */
+	private static final int REQUIRED_SIGNIFICANT_DIGITS = 6;
+	
+	/** The value column should have at least one decimal place to force the Double data type */
+	private static final int MIN_REQUIRED_DECIMAL_PLACES = 1;
+	
 	private final String idColumnName;
 	private final ColumnIndex columnIndex;
 	private final ColumnData dataColumn;
 	private final File outputFile;
 	private final ReachRowValueMap rowsToInclude;
+	
+	//self init
+	/** Give the digit places available, the max value representable in the file */
+	private double maxValueInDbf = 0;
+	private double minValueInDbf = 0;
 	
 	/**
 	 * All parameters are required to be non-null.  In addition, the idColumn and
@@ -86,7 +97,21 @@ public class WriteDbfFile extends Action<File> {
 
 		DbaseFileHeader header = new DbaseFileHeader();
 		header.addColumn(idColumnName, 'N', 9, 0);
-		header.addColumn("VALUE", 'N', 14, 4);
+		
+		//Determine the number of digits & decimal places
+		int leftDigits = getRequiredDigitsLeftOfTheDecimal(
+						dataColumn.getMaxDouble(), dataColumn.getMinDouble(), REQUIRED_SIGNIFICANT_DIGITS);
+		int rightDigits = getRequiredDigitsRightOfTheDecimal(
+						leftDigits, REQUIRED_SIGNIFICANT_DIGITS, MIN_REQUIRED_DECIMAL_PLACES);
+		
+		
+		header.addColumn("VALUE", 'N', leftDigits + rightDigits, rightDigits);
+		
+		
+		//Build the max value possible w/ this number of digits
+		maxValueInDbf = getMaxValueforDigits(leftDigits, rightDigits);
+		minValueInDbf = (-1d) * maxValueInDbf;
+
 		
 		if (rowsToInclude == null) {
 			header.setNumRecords(dataColumn.getRowCount());
@@ -122,8 +147,16 @@ public class WriteDbfFile extends Action<File> {
 					if (val != null) {
 						//Null values are OK, they just fail the next check
 
-						if (val.doubleValue() > 9999999999.9999D) {
-							throw new Exception("Values larger than 10 places left of the decimal + 4 right of the decimal not currently supported.");
+						if (val.doubleValue() > maxValueInDbf) {
+							val = maxValueInDbf;
+							log.warn("A + infinity value was writtin to the dbf file to be joined"
+											+ " to a shapefile for mapping, however, the max representable"
+											+ " value is " + maxValueInDbf + ", which was used instead.");
+						} else if (val.doubleValue() < minValueInDbf) {
+							val = minValueInDbf;
+							log.warn("A - infinity value was writtin to the dbf file to be joined"
+											+ " to a shapefile for mapping, however, the min representable"
+											+ " value is " + minValueInDbf + ", which was used instead.");
 						}
 					}
 
@@ -160,6 +193,97 @@ public class WriteDbfFile extends Action<File> {
 		}
 	}
 
+	/**
+	 * Returns the number of digits to the left of the decimal needed to represent
+	 * the range of numbers described by the min and max values.
+	 * 
+	 * Null or NaN values are treated as zero.  If both the min and max values are
+	 * infinite, the number of required digits is (arbitrarily) returned as
+	 * 3x the number of requiredSignificantDigits. 
+	 * 
+	 * The minimum return value is 1, since for our dbf library, it always reserves
+	 * at least one integer digit.
+	 * 
+	 * @param minValue
+	 * @param maxValue
+	 * @param requiredSignificantDigits
+	 * @return 
+	 */
+	public static int getRequiredDigitsLeftOfTheDecimal(Double minValue, Double maxValue, int requiredSignificantDigits) {
+		if (minValue == null || Double.isNaN(minValue)) minValue = 0d;
+		if (maxValue == null || Double.isNaN(maxValue)) maxValue = 0d;
 
+		minValue = Math.abs(minValue);
+		maxValue = Math.abs(maxValue);
+
+		double absMaxValue = Math.max(minValue, maxValue);
+
+		if (absMaxValue < 1) {
+			return 1;
+		} else if (Double.isInfinite(absMaxValue)) {
+			return requiredSignificantDigits * 3;
+		}	else {
+						double log10OfMax = Math.log10(absMaxValue);
+			return (int)log10OfMax + 1;
+		}
+
+	}
+	
+	/**
+	 * Calculates the number of decimal places (right of the decimal) required to
+	 * give the desired number of significant digits, given the number of digits
+	 * to the left of the decimal needed to hold the larger numbers.
+	 * 
+	 * In the cases that either no decimal places are available (all available
+	 * sigfigs are already used to the left of the decimal) or all values are zero,
+	 * the minRequiredDecimalPlaces is returned.
+	 * 
+	 * @param requiredDigitsLeftOfTheDecimal
+	 * @param requiredSignificantDigits
+	 * @param minRequiredDecimalPlaces If not decimal places are req'ed based on sigfigs, set another minimum.
+	 * @return 
+	 */
+	public static int getRequiredDigitsRightOfTheDecimal(
+					int requiredDigitsLeftOfTheDecimal, int requiredSignificantDigits, int minRequiredDecimalPlaces) {
+		
+		if (requiredDigitsLeftOfTheDecimal == 0 && requiredSignificantDigits == 0) {
+			return minRequiredDecimalPlaces;
+		} else {
+			int decimalPlaces = requiredSignificantDigits - requiredDigitsLeftOfTheDecimal;
+			if (decimalPlaces < 0) decimalPlaces = 0;
+			return Math.max(decimalPlaces, minRequiredDecimalPlaces);
+		}
+	}
+	
+	/**
+	 * Given a number of integer digits (left of decimal) and decimal digits
+	 * (right of decimal), the returned number is the max number that can be
+	 * represented.
+	 * 
+	 * If the digits are both zero, zero is returned.
+	 * 
+	 * Example return value:  9999.99
+	 * 
+	 * @param integerDigits
+	 * @param decimalDigits
+	 * @return 
+	 */
+	public static double getMaxValueforDigits(int integerDigits, int decimalDigits) {
+		
+		if (integerDigits < 1 && decimalDigits < 1) {
+			return 0d;
+		}
+		
+		String maxValueStr = "";
+		for (int i=0; i < integerDigits; i++) {
+			maxValueStr+="9";
+		}
+		maxValueStr+=".";
+		for (int i=0; i < decimalDigits; i++) {
+			maxValueStr+="9";
+		}
+		
+		return Double.parseDouble(maxValueStr);
+	}
 
 }

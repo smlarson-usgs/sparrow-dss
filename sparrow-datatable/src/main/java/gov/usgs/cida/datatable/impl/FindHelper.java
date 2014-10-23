@@ -463,12 +463,16 @@ public abstract class FindHelper {
 			Double result = null;
 			int arraySize = column.getRowCount();
 			if  (arraySize > 0) {
-				double max = column.getDouble(0);
+				Double max = column.getDouble(0);
 				for (int i=1; i<arraySize; i++) {
 					Double current = column.getDouble(i);
 					
 					if (current != null && ! Double.isNaN(current)) {
-						max = Math.max(max, current);
+						if (max == null || Double.isNaN(max)) {
+							max = current;
+						} else {
+							max = Math.max(max, current);
+						}
 					}
 				}
 				result = max;
@@ -486,12 +490,16 @@ public abstract class FindHelper {
 			Double result = null;
 			int arraySize = column.getRowCount();
 			if  (arraySize > 0) {
-				double min = column.getDouble(0);
+				Double min = column.getDouble(0);
 				for (int i=1; i<arraySize; i++) {
 					Double current = column.getDouble(i);
 					
 					if (current != null && ! Double.isNaN(current)) {
-						min = Math.min(min, current);
+						if (min == null || Double.isNaN(min)) {
+							min = current;
+						} else {
+							min = Math.min(min, current);
+						}
 					}
 				}
 				result = min;
