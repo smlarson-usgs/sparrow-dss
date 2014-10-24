@@ -1,0 +1,3 @@
+error /.*ORA-/
+error /.*SP2-/
+error /.Usage 1: sqlplus -H | -V/

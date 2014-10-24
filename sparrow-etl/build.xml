@@ -1,0 +1,396 @@
+<project name="SparrowEtl">
+	
+	<target name="dos2unix">
+		<fixcrlf srcdir="${dataDir}/${mrb}/${constituent}" includes="*.txt" preservelastmodified="true"/>
+	</target>
+	
+	<target name="ancilCtlTest">
+		<available file="${basedir}/${mrb}/${constituent}/ancil.ctl" property="specificAncilCtl"/>
+	</target>
+	
+	<target name="ancilUploadSpecific" depends="ancilCtlTest" if="specificAncilCtl">
+		<echo>Load file ${mrb}/${constituent}/ancil.txt into database table temp_ancil</echo>
+		<exec executable="sqlldr" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="DATA=${dataDir}/${mrb}/${constituent}/ancil.txt"/>
+			<arg value="BAD=${basedir}/ancil.bad"/>
+			<arg value="DISCARD=${basedir}/ancil.dsc"/>
+			<arg value="CONTROL=${basedir}/${mrb}/${constituent}/ancil.ctl"/>
+		</exec>
+	</target>
+
+	<target name="ancilUpload" depends="ancilUploadSpecific"/>
+	
+	
+	
+	<target name="coefCtlTest">
+		<available file="${basedir}/${mrb}/${constituent}/coef.ctl" property="specificCoefCtl"/>
+	</target>
+	
+	<target name="coefUploadGeneric" depends="coefCtlTest" unless="specificCoefCtl">
+		<echo>Load file ${mrb}/${constituent}/coef.txt into database table temp_coef</echo>
+		<exec executable="sqlldr" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="DATA=${dataDir}/${mrb}/${constituent}/coef.txt"/>
+			<arg value="BAD=${basedir}/coef.bad"/>
+			<arg value="DISCARD=${basedir}/coef.dsc"/>
+			<arg value="CONTROL=${basedir}/coef.ctl"/>
+		</exec>
+	</target>
+
+	<target name="coefUploadSpecific" depends="coefCtlTest" if="specificCoefCtl">
+		<echo>Load file ${mrb}/${constituent}/coef.txt into database table temp_coef</echo>
+		<exec executable="sqlldr" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="DATA=${dataDir}/${mrb}/${constituent}/coef.txt"/>
+			<arg value="BAD=${basedir}/coef.bad"/>
+			<arg value="DISCARD=${basedir}/coef.dsc"/>
+			<arg value="CONTROL=${basedir}/${mrb}/${constituent}/coef.ctl"/>
+		</exec>
+	</target>
+
+	<target name="coefUpload" depends="coefUploadSpecific, coefUploadGeneric"/>
+	
+	
+	
+	<target name="gridCodesCtlTest">
+		<available file="${basedir}/${mrb}/${constituent}/grid_codes.ctl" property="gridCodesCtl"/>
+	</target>
+	
+	<target name="gridCodesUpload" depends="gridCodesCtlTest" if="gridCodesCtl">
+		<echo>Load file ${mrb}/${constituent}/huc_list.txt into database table temp_huc_list</echo>
+		<exec executable="sqlldr" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="DATA=${dataDir}/${mrb}/${constituent}/MRB1_GRIDCODES.txt"/>
+			<arg value="BAD=${basedir}/grid_codes.bad"/>
+			<arg value="DISCARD=${basedir}/grid_codes.dsc"/>
+			<arg value="CONTROL=${basedir}/${mrb}/${constituent}/grid_codes.ctl"/>
+		</exec>
+	</target>
+
+	
+	
+	<target name="hucListCtlTest">
+		<available file="${basedir}/${mrb}/${constituent}/huc_list.ctl" property="hucListCtl"/>
+	</target>
+	
+	<target name="hucListUpload" depends="hucListCtlTest" if="hucListCtl">
+		<echo>Load file ${mrb}/${constituent}/huc_list.txt into database table temp_huc_list</echo>
+		<exec executable="sqlldr" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="DATA=${dataDir}/${mrb}/${constituent}/huc_list.txt"/>
+			<arg value="BAD=${basedir}/huc_list.bad"/>
+			<arg value="DISCARD=${basedir}/huc_list.dsc"/>
+			<arg value="CONTROL=${basedir}/${mrb}/${constituent}/huc_list.ctl"/>
+		</exec>
+	</target>
+
+	
+	
+	<target name="predictCtlTest">
+		<available file="${basedir}/${mrb}/${constituent}/predict.ctl" property="specificPredictCtl"/>
+	</target>
+	
+	<target name="predictUploadSpecific" depends="predictCtlTest" if="specificPredictCtl">
+		<echo>Load file ${mrb}/${constituent}/predict.txt into database table temp_predict</echo>
+		<exec executable="sqlldr" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="DATA=${dataDir}/${mrb}/${constituent}/predict.txt"/>
+			<arg value="BAD=${basedir}/predict.bad"/>
+			<arg value="DISCARD=${basedir}/predict.dsc"/>
+			<arg value="CONTROL=${basedir}/${mrb}/${constituent}/predict.ctl"/>
+		</exec>
+	</target>
+	
+	<target name="predictUpload" depends="predictUploadSpecific"/>
+	
+	
+	
+	<target name="populateTempAncilHuc" depends="hucListUpload, ancilUpload" if="hucListCtl">
+		<echo>Populate temp_ancil huc from temp_huc_list</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/populateTempAncilHuc.sql"/>
+		</exec>
+	</target>
+		
+	
+	
+	<target name="residsCtlTest">
+		<available file="${basedir}/${mrb}/${constituent}/resids.ctl" property="specificResidsCtl"/>
+	</target>
+	
+	<target name="residsUploadSpecific" depends="residsCtlTest" if="specificResidsCtl">
+		<echo>Load file ${mrb}/${constituent}/resids.txt into database table temp_resids</echo>
+		<exec executable="sqlldr" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="DATA=${dataDir}/${mrb}/${constituent}/resids.txt"/>
+			<arg value="BAD=${basedir}/resids.bad"/>
+			<arg value="DISCARD=${basedir}/resids.dsc"/>
+			<arg value="CONTROL=${basedir}/${mrb}/${constituent}/resids.ctl"/>
+		</exec>
+	</target>
+	
+	<target name="residsUpload" depends="residsUploadSpecific"/>
+	
+	
+	
+	<target name="populateTempResidsMrbId" depends="gridCodesUpload, residsUpload" if="gridCodesCtl">
+		<echo>Populate temp_ancil huc from temp_huc_list</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/populateTempResidsMrbId.sql"/>
+		</exec>
+	</target>
+	
+
+	
+	<target name="srcCtlTest">
+		<available file="${basedir}/${mrb}/${constituent}/src.ctl" property="specificSrcCtl"/>
+	</target>
+	
+	<target name="srcUploadGeneric" depends="srcCtlTest" unless="specificSrcCtl">
+		<echo>Load file ${mrb}/${constituent}/src.txt into database table temp_src</echo>
+		<exec executable="sqlldr" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="DATA=${dataDir}/${mrb}/${constituent}/src.txt"/>
+			<arg value="BAD=${basedir}/src.bad"/>
+			<arg value="DISCARD=${basedir}/src.dsc"/>
+			<arg value="CONTROL=${basedir}/src.ctl"/>
+		</exec>
+	</target>
+	
+	<target name="srcUploadSpecific" depends="srcCtlTest" if="specificSrcCtl">
+		<echo>Load file ${mrb}/${constituent}/src.txt into database table temp_src</echo>
+		<exec executable="sqlldr" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="DATA=${dataDir}/${mrb}/${constituent}/src.txt"/>
+			<arg value="BAD=${basedir}/src.bad"/>
+			<arg value="DISCARD=${basedir}/src.dsc"/>
+			<arg value="CONTROL=${basedir}/${mrb}/${constituent}/src.ctl"/>
+		</exec>
+	</target>
+	
+	<target name="srcUpload" depends="srcUploadSpecific, srcUploadGeneric"/>
+	
+	
+
+	<target name="srcMetadataCtlTest">
+		<available file="${basedir}/${mrb}/${constituent}/src_metadata.ctl" property="specificSrcMetadataCtl"/>
+	</target>
+	
+	<target name="srcMetadataUploadGeneric" depends="srcMetadataCtlTest" unless="specificSrcMetadataCtl">
+		<echo>Load file ${mrb}/${constituent}/src_metadata.txt into database table temp_src_metadata</echo>
+		<exec executable="sqlldr" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="DATA=${dataDir}/${mrb}/${constituent}/src_metadata.txt"/>
+			<arg value="BAD=${basedir}/src_metadata.bad"/>
+			<arg value="DISCARD=${basedir}/src_metadata.dsc"/>
+			<arg value="CONTROL=${basedir}/src_metadata.ctl"/>
+		</exec>
+	</target>
+
+	<target name="srcMetadataUpload" depends="srcMetadataUploadGeneric"/>
+		
+		
+
+	<target name="topoCtlTest">
+		<available file="${basedir}/${mrb}/${constituent}/topo.ctl" property="specificTopoCtl"/>
+	</target>
+		
+	<target name="topoUploadSpecific" depends="topoCtlTest" if="specificTopoCtl">
+		<echo>Load file ${mrb}/${constituent}/topo.txt into database table temp_topo</echo>
+		<exec executable="sqlldr" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="DATA=${dataDir}/${mrb}/${constituent}/topo.txt"/>
+			<arg value="BAD=${basedir}/topo.bad"/>
+			<arg value="DISCARD=${basedir}/topo.dsc"/>
+			<arg value="CONTROL=${basedir}/${mrb}/${constituent}/topo.ctl"/>
+		</exec>
+	</target>
+
+	<target name="topoUploadGeneric" depends="topoCtlTest" unless="specificTopoCtl">
+		<echo>Load file ${mrb}/${constituent}/topo.txt into database table temp_topo</echo>
+		<exec executable="sqlldr" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="DATA=${dataDir}/${mrb}/${constituent}/topo.txt"/>
+			<arg value="BAD=${basedir}/topo.bad"/>
+			<arg value="DISCARD=${basedir}/topo.dsc"/>
+			<arg value="CONTROL=${basedir}/topo.ctl"/>
+		</exec>
+	</target>
+
+	<target name="topoUpload" depends="topoUploadSpecific, topoUploadGeneric"/>
+
+	<target name="doUploads" depends="dos2unix, ancilUpload, coefUpload, populateTempAncilHuc, predictUpload, residsUpload, populateTempResidsMrbId, srcUpload, topoUpload"/>
+	
+	
+			
+
+	<target name="buildModelReach">
+		<echo>Transform data into model_reach</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/buildModelReachSwap.sql"/>
+			<arg value="${mrb}"/>
+			<arg value="${constituent}"/>
+		</exec>
+	</target>
+	
+	<target name="buildModelSource">
+		<echo>Transform data into source</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/buildModelSourceSwap.sql"/>
+			<arg value="${mrb}"/>
+			<arg value="${constituent}"/>
+		</exec>
+	</target>
+
+	<target name="buildModelReachCoef">
+		<echo>Transform data into source</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/buildModelReachCoefSwap.sql"/>
+			<arg value="${mrb}"/>
+			<arg value="${constituent}"/>
+		</exec>
+	</target>
+
+	<target name="buildModelSourceValue">
+		<echo>Transform data into source</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/buildModelSourceValueSwap.sql"/>
+			<arg value="${mrb}"/>
+			<arg value="${constituent}"/>
+		</exec>
+	</target>
+
+	<target name="buildModelSourceReachCoef">
+		<echo>Transform data into source</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/buildModelSourceReachCoefSwap.sql"/>
+			<arg value="${mrb}"/>
+			<arg value="${constituent}"/>
+		</exec>
+	</target>
+
+	<target name="buildModelReachAttrib">
+		<echo>Transform data into source</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/buildModelReachAttribSwap.sql"/>
+			<arg value="${mrb}"/>
+			<arg value="${constituent}"/>
+		</exec>
+	</target>
+
+	<target name="buildModelCalibSites">
+		<echo>Transform data into source</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/buildModelCalibSitesSwap.sql"/>
+			<arg value="${mrb}"/>
+			<arg value="${constituent}"/>
+		</exec>
+	</target>
+
+	<target name="buildSwapTables" depends="buildModelReach, buildModelReachCoef, buildModelSourceValue, buildModelSourceReachCoef, buildModelReachAttrib, buildModelCalibSites"/>
+	
+
+
+	<target name="exchangeModelReach">
+		<echo>Transform data into model_reach</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/exchangeModelReach.sql"/>
+			<arg value="${mrb}"/>
+			<arg value="${constituent}"/>
+		</exec>
+	</target>
+	
+	<target name="exchangeModelSource">
+		<echo>Transform data into source</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/exchangeModelSource.sql"/>
+			<arg value="${mrb}"/>
+			<arg value="${constituent}"/>
+		</exec>
+	</target>
+
+	<target name="exchangeModelReachCoef">
+		<echo>Transform data into source</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/exchangeModelReachCoef.sql"/>
+			<arg value="${mrb}"/>
+			<arg value="${constituent}"/>
+		</exec>
+	</target>
+
+	<target name="exchangeModelSourceValue">
+		<echo>Transform data into source</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/exchangeModelSourceValue.sql"/>
+			<arg value="${mrb}"/>
+			<arg value="${constituent}"/>
+		</exec>
+	</target>
+
+	<target name="exchangeModelSourceReachCoef">
+		<echo>Transform data into source</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/exchangeModelSourceReachCoef.sql"/>
+			<arg value="${mrb}"/>
+			<arg value="${constituent}"/>
+		</exec>
+	</target>
+
+	<target name="exchangeModelReachAttrib">
+		<echo>Transform data into source</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/exchangeModelReachAttrib.sql"/>
+			<arg value="${mrb}"/>
+			<arg value="${constituent}"/>
+		</exec>
+	</target>
+
+	<target name="exchangeModelCalibSites">
+		<echo>Transform data into source</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/exchangeModelCalibSites.sql"/>
+			<arg value="${mrb}"/>
+			<arg value="${constituent}"/>
+		</exec>
+	</target>
+	
+	<target name="buildModelReachWatershed">
+		<echo>Transform data into source</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/buildModelReachWatershedSwap.sql"/>
+			<arg value="${mrb}"/>
+			<arg value="${constituent}"/>
+		</exec>
+	</target>
+	
+	<target name="exchangeModelReachWatershedSwap">
+		<echo>Transform data into source</echo>
+		<exec executable="sqlplus" failonerror="true">
+			<arg value="${sparrow_dss}/${sparrow_dss_password}@${instance}"/>
+			<arg value="@${basedir}/exchangeModelReachWatershedSwap.sql"/>
+			<arg value="${mrb}"/>
+			<arg value="${constituent}"/>
+		</exec>
+	</target>
+
+	<target name="doExchanges" depends="exchangeModelReach, exchangeModelReachCoef, exchangeModelSourceValue, exchangeModelSourceReachCoef, exchangeModelReachAttrib, exchangeModelCalibSites, buildModelReachWatershed, exchangeModelReachWatershedSwap"/>
+
+</project>
