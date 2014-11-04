@@ -62,6 +62,7 @@
 								<exclude>**/workspaces/upload/</exclude>
 								<exclude>**/workspaces/draw/</exclude>
 								<exclude>**/workspaces/sample/</exclude>
+								<exclude>META-INF/context.xml</exclude>
 								<exclude>WEB-INF/lib/gt-shapefile-10.5.jar</exclude>
 							</excludes>
 						</overlay>
