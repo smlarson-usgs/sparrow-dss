@@ -47,7 +47,7 @@
 	</dependencies>
 	
 	<build>
-		<finalName>geoserver</finalName>
+		<finalName>sparrowgeoserver</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
