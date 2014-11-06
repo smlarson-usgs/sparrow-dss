@@ -113,7 +113,7 @@
 				<executions>
 					<execution>
 						<id>jmeter-tests</id>
-						<phase>${run-in-phase&gt;}</phase>
+						<phase>${run-in-phase}</phase>
 						<goals>
 							<goal>jmeter</goal>
 						</goals>
