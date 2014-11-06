@@ -135,6 +135,9 @@
 						<MapRequestsModelCountMatchingCsvFile>${MapRequestsModelCountMatchingCsvFile}</MapRequestsModelCountMatchingCsvFile>
 						<MapRequestsConcurrentUsers>${MapRequestsConcurrentUsers}</MapRequestsConcurrentUsers>
 						<MapRequestsRampUpSeconds>${MapRequestsRampUpSeconds}</MapRequestsRampUpSeconds>
+						<GeoserverHost>${Host}</GeoserverHost>
+						<GeoserverPort>${Port}</GeoserverPort>
+						<GeoserverContextPath>${ContextPath}</GeoserverContextPath>
 					</jmeterUserProperties>
 				</configuration>
 			</plugin>
