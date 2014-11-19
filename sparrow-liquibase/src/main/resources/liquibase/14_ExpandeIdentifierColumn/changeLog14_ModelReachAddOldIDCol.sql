@@ -21,3 +21,14 @@ ALTER TABLE MODEL_REACH MODIFY (IDENTIFIER number(10,0));
 --rollback select null from dual;
 
 
+--changeset kmschoep:addSwapColumnOld_Identifier
+ALTER TABLE MODEL_REACH_SWAP ADD (OLD_IDENTIFIER number(10,0));
+--rollback update model_reach_swap set identifier = old_identifier;
+--rollback alter table MODEL_REACH_SWAP drop COLUMN OLD_IDENTIFIER;
+
+
+--changeset kmschoep:modIDENTIFIER10digitsSwap
+--preconditions onFail:HALT onError:HALT
+ALTER TABLE MODEL_REACH_SWAP MODIFY (IDENTIFIER number(10,0));
+--rollback select null from dual;
+
