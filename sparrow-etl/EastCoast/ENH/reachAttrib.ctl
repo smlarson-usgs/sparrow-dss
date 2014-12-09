@@ -19,7 +19,7 @@ TRAILING NULLCOLS
 ,REACHCODE filler
 ,FLOWDIR filler
 ,WBAREACOMI filler
-,FTYPEfiller
+,FTYPE filler
 ,FCODE filler
 ,SHAPE_LENG filler
 ,ENABLED filler
@@ -44,6 +44,6 @@ TRAILING NULLCOLS
 ,COUNT100M2 filler
 ,MEAN_ANN_P filler
 ,MEAN_ANN_T filler
-,HUC8
-,HUC6	
+,HUC8 filler
+,HUC6 filler
 )
