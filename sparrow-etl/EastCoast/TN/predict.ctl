@@ -4,7 +4,7 @@ TRUNCATE
 INTO TABLE "SPARROW_DSS"."TEMP_PREDICT"
 FIELDS TERMINATED BY X'9'
 TRAILING NULLCOLS
-(mrb_id :waterid 
+(mrb_id 
 ,MRB filler
 ,HUC8 filler
 ,reachcode_comb filler
@@ -190,15 +190,15 @@ TRAILING NULLCOLS
 ,total_yield filler
 ,inc_total_yield filler
 ,concentration filler
-,map_del_frac
-,sh_PT_MUN_SMJ
-,sh_PT_MUN_CB
-,sh_PT_MUN_NWENG
-,sh_PT_MUN_DELHUD
-,sh_CMAQ2002KG
-,sh_UrbLand_SN
-,sh_FertRotation
-,sh_Fert_other
+,map_del_frac filler
+,sh_PT_MUN_SMJ filler
+,sh_PT_MUN_CB filler
+,sh_PT_MUN_NWENG filler
+,sh_PT_MUN_DELHUD filler
+,sh_CMAQ2002KG filler
+,sh_UrbLand_SN filler
+,sh_FertRotation filler
+,sh_Fert_other filler
 ,sh_ManureAll
-
+ filler
 )

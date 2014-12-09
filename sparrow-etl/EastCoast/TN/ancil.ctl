@@ -7,23 +7,23 @@ TRAILING NULLCOLS
 (local_id
 ,std_id
 ,new_or_modified
-,mrb_id :waterid
+,mrb_id
 ,hydseq "nvl(:hydseq,0)"
-,sqkm :inc_area
-,demtarea :tot_area
+,sqkm 
+,demtarea 
 ,headflag
 ,termflag
-,pname :GNIS_Name
-,meanq :mean_flow
+,pname 
+,meanq
 ,mavelu filler
 ,target filler
 ,MRB filler
 ,HUC8
 ,reachcode_comb filler
-,edacode "substr(:NOAA_targetonly,1,5)"
-,edaname :NOAA_Name
+,edacode "substr(:edacode,1,5)"
+,edaname
 ,ReachTOT filler
-,rchtype :ReachType
+,rchtype
 ,WBRchCd filler
 ,del_frac filler
 ,mean_del_frac filler
