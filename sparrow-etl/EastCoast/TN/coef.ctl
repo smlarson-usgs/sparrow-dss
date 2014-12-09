@@ -4,7 +4,7 @@ INTO TABLE TEMP_COEF
 TRUNCATE
 FIELDS TERMINATED BY X'9'
 TRAILING NULLCOLS
-(mrb_id :waterid
+(mrb_id
 ,iter
 ,inc_delivf
 ,tot_delivf
