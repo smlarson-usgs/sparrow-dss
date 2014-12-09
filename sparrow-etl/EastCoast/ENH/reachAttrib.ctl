@@ -8,11 +8,9 @@ TRAILING NULLCOLS
 ,tnode filler
 ,LPOLY_ filler
 ,RPOLY_ filler
-,reach_length :LENGTH
+,reach_length
 ,NHDWFLOW_M filler
 ,NHDWFLOW_1 filler
-,identifier filler
-,full_identifier filler
 ,FDATE filler
 ,RESOLUTION filler
 ,GNIS_ID filler
@@ -29,7 +27,7 @@ TRAILING NULLCOLS
 ,CASE_ filler
 ,FREQUENCY filler
 ,GRID_CODE filler
-,cum_catch_area :CUMDRAINAG
+,cum_catch_area
 ,VALUE filler
 ,COUNT filler
 ,PROD_UNIT filler
@@ -44,8 +42,8 @@ TRAILING NULLCOLS
 ,H4 filler
 ,TOTUP_DA filler
 ,COUNT100M2 filler
-,MEAN_ANN_P
-,MEAN_ANN_T
-,H8
-,H6	
+,MEAN_ANN_P filler
+,MEAN_ANN_T filler
+,HUC8
+,HUC6	
 )
