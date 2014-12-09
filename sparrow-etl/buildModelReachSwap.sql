@@ -27,14 +27,9 @@ alter table source_value_swap disable constraint source_value_swp_mdl_rch_fk;
   
 truncate table model_reach_swap;
 
-insert into model_reach_swap (model_reach_id, identifier, full_identifier, sparrow_model_id, enh_reach_id, hydseq, iftran, fnode, tnode, frac, reach_size, mean_pload, se_pload, mean_pload_inc, se_pload_inc, old_identifier)
+insert into model_reach_swap (model_reach_id, identifier, full_identifier, sparrow_model_id, enh_reach_id, hydseq, iftran, fnode, tnode, frac, reach_size, mean_pload, se_pload, mean_pload_inc, se_pload_inc)
 select model_reach_seq.nextval,
-       case :mrb
-         when 'MRB01' then NVL(enh_reach.full_identifier, temp_ancil.mrb_id)
-	 when 'MRB01Fake' then NVL(enh_reach.full_identifier, temp_ancil.mrb_id)
-	 when 'Chesapeake' then NVL(enh_reach.full_identifier, temp_ancil.mrb_id)
-         else to_char(temp_ancil.mrb_id)
-       end,
+       temp_ancil.mrb_id,
        case :mrb
          when 'MRB01' then NVL(enh_reach.full_identifier, temp_ancil.mrb_id)
 	 when 'MRB01Fake' then NVL(enh_reach.full_identifier, temp_ancil.mrb_id)
@@ -52,8 +47,7 @@ select model_reach_seq.nextval,
        temp_predict.mean_pload_total,
        temp_predict.se_pload_total,
        temp_predict.mean_pload_inc_total,
-       temp_predict.se_pload_inc_total,
-       temp_ancil.mrb_id
+       temp_predict.se_pload_inc_total
   from temp_ancil
        left outer join stream_network.enh_reach
          on temp_ancil.local_id = enh_reach.identifier and
