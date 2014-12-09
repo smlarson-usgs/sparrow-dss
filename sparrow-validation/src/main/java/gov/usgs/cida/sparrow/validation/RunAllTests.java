@@ -90,6 +90,7 @@ public class RunAllTests extends SparrowModelValidationRunner {
 		 *				Production will always have this as false, but can be toggled here
 		 *				for testing.  This takes precidence over Arg 3.
 		 */
+		addValidator(new ModelMetaDataValidation());
 		addValidator(new CalculatedTotalContributingAreaShouldEqualLoadedValue(wideComparator, preciseComparator, false));
 		addValidator(new CalculatedTotalUpstreamAreaShouldEqualLoadedValue(wideComparator, preciseComparator, false));
 		addValidator(new FailableDbTests(tightComparator, false));

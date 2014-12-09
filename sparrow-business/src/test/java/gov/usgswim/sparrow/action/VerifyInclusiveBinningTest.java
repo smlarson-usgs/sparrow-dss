@@ -38,7 +38,7 @@ public class VerifyInclusiveBinningTest {
 	
 	@Test
 	public void testInclusiveBinning() throws Exception{
-		SparrowColumnSpecifier tens = new SparrowColumnSpecifier(baseTable, 0, Integer.valueOf(0));
+		SparrowColumnSpecifier tens = new SparrowColumnSpecifier(baseTable, 0, Integer.valueOf(0), null);
 		
 		assertEquals(
 				"Test inclusive, no boundry cases", 

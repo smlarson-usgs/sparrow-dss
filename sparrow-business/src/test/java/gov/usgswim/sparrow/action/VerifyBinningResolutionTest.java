@@ -38,7 +38,7 @@ public class VerifyBinningResolutionTest {
 	
 	@Test
 	public void testBinningResolution() throws Exception{
-		SparrowColumnSpecifier tens = new SparrowColumnSpecifier(baseTable, 0, Integer.valueOf(0));
+		SparrowColumnSpecifier tens = new SparrowColumnSpecifier(baseTable, 0, Integer.valueOf(0), null);
 		
 		assertEquals(
 				"Test all values in one bin", 

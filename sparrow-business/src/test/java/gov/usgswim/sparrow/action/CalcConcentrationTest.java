@@ -73,8 +73,8 @@ public class CalcConcentrationTest {
 		baseTable.getColumns()[baseColIndex].setUnits(SparrowUnits.KG_PER_YEAR.getUserName());
 		baseTable.getColumns()[flowColIndex].setUnits(SparrowUnits.CFS.getUserName());
 		
-		SparrowColumnSpecifier baseCol = new SparrowColumnSpecifier(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
-		SparrowColumnSpecifier flowCol = new SparrowColumnSpecifier(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
+		SparrowColumnSpecifier baseCol = new SparrowColumnSpecifier(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID, EXAMPLE_MODEL_ID);
+		SparrowColumnSpecifier flowCol = new SparrowColumnSpecifier(baseTable, flowColIndex, EXAMPLE_CONTEXT_ID, EXAMPLE_MODEL_ID);
 		
 		CalcConcentration calc = new CalcConcentration();
 		calc.setBaseData(baseCol);
@@ -99,8 +99,8 @@ public class CalcConcentrationTest {
 		baseTable.getColumns()[flowColIndex].setUnits(SparrowUnits.CFS.getUserName());
 		
 		
-		SparrowColumnSpecifier baseCol = new SparrowColumnSpecifier(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
-		SparrowColumnSpecifier flowCol = new SparrowColumnSpecifier(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
+		SparrowColumnSpecifier baseCol = new SparrowColumnSpecifier(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID, EXAMPLE_MODEL_ID);
+		SparrowColumnSpecifier flowCol = new SparrowColumnSpecifier(baseTable, flowColIndex, EXAMPLE_CONTEXT_ID, EXAMPLE_MODEL_ID);
 		
 		CalcConcentration calc = new CalcConcentration();
 		calc.setBaseData(baseCol);
@@ -125,8 +125,8 @@ public class CalcConcentrationTest {
 		baseTable.getColumns()[flowColIndex].setUnits(SparrowUnits.CFS.getUserName());
 		
 		baseTable.setValue(Double.NaN, 0, baseColIndex);
-		SparrowColumnSpecifier baseCol = new SparrowColumnSpecifier(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
-		SparrowColumnSpecifier flowCol = new SparrowColumnSpecifier(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
+		SparrowColumnSpecifier baseCol = new SparrowColumnSpecifier(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID, EXAMPLE_MODEL_ID);
+		SparrowColumnSpecifier flowCol = new SparrowColumnSpecifier(baseTable, flowColIndex, EXAMPLE_CONTEXT_ID, EXAMPLE_MODEL_ID);
 		
 		CalcConcentration calc = new CalcConcentration();
 		calc.setBaseData(baseCol);
@@ -150,8 +150,8 @@ public class CalcConcentrationTest {
 		baseTable.getColumns()[baseColIndex].setUnits(SparrowUnits.SQR_KM.getUserName());	//wrong
 		baseTable.getColumns()[flowColIndex].setUnits(SparrowUnits.CFS.getUserName());
 		
-		SparrowColumnSpecifier baseCol = new SparrowColumnSpecifier(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
-		SparrowColumnSpecifier flowCol = new SparrowColumnSpecifier(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
+		SparrowColumnSpecifier baseCol = new SparrowColumnSpecifier(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID, EXAMPLE_MODEL_ID);
+		SparrowColumnSpecifier flowCol = new SparrowColumnSpecifier(baseTable, flowColIndex, EXAMPLE_CONTEXT_ID, EXAMPLE_MODEL_ID);
 		
 		CalcConcentration calc = new CalcConcentration();
 		calc.setBaseData(baseCol);
@@ -175,8 +175,8 @@ public class CalcConcentrationTest {
 		baseTable.getColumns()[baseColIndex].setUnits(SparrowUnits.KG_PER_YEAR.getUserName());	//wrong
 		baseTable.getColumns()[flowColIndex].setUnits(SparrowUnits.MG_PER_L.getUserName());
 		
-		SparrowColumnSpecifier baseCol = new SparrowColumnSpecifier(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID);
-		SparrowColumnSpecifier flowCol = new SparrowColumnSpecifier(baseTable, flowColIndex, null, EXAMPLE_MODEL_ID);
+		SparrowColumnSpecifier baseCol = new SparrowColumnSpecifier(baseTable, baseColIndex, EXAMPLE_CONTEXT_ID, EXAMPLE_MODEL_ID);
+		SparrowColumnSpecifier flowCol = new SparrowColumnSpecifier(baseTable, flowColIndex, EXAMPLE_CONTEXT_ID, EXAMPLE_MODEL_ID);
 		
 		CalcConcentration calc = new CalcConcentration();
 		calc.setBaseData(baseCol);

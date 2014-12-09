@@ -5,6 +5,7 @@ import gov.usgswim.sparrow.datatable.SparrowColumnSpecifier;
 import gov.usgswim.sparrow.domain.ComparisonType;
 import gov.usgswim.sparrow.domain.ReachRowValueMap;
 import gov.usgswim.sparrow.request.BinningRequest;
+import static gov.usgswim.sparrow.domain.DataSeriesType.total_concentration;
 
 import java.math.BigDecimal;
 
@@ -48,6 +49,20 @@ public class CalcBins extends Action<BinSet> {
     public CalcBins() {
 
     }
+
+	@Override
+	protected void validate() {
+		if (total_concentration.equals(request.getDataSeries())) {
+			if (request.getDetectionLimit() == null) {
+				this.addValidationError("This model (refered to as model id " + 
+						dataColumn.getModelId() + 
+						") has no detection limit configured for it.  This is required to map concentration.  " +
+						"Please contact the Sparrow Administrator.");
+			}
+		}
+	}
+	
+	
     
 	@Override
 	public BinSet doAction() throws Exception {

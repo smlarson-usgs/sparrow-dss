@@ -57,7 +57,7 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 		if (analysis.isAggregated()) {
 			AggregationRunner aggRunner = new AggregationRunner(context);
 			DataTable aggResult = aggRunner.doAggregation(unAggResult.getTable());
-			return new SparrowColumnSpecifier(aggResult, unAggResult.getColumn(), context.getId());
+			return new SparrowColumnSpecifier(aggResult, unAggResult.getColumn(), context.getId(), context.getModelID());
 
 		} else {
 			return unAggResult;
@@ -186,7 +186,7 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 
 						predictionBasedResult = view;
 					} else if (type.equals(DataSeriesType.total_concentration)){
-						SparrowColumnSpecifier predictResultColumn = new SparrowColumnSpecifier(result, dataColIndex, context.getId());
+						SparrowColumnSpecifier predictResultColumn = new SparrowColumnSpecifier(result, dataColIndex, context.getId(), context.getModelID());
 						SparrowColumnSpecifier streamFlowData = SharedApplication.getInstance().getStreamFlow(context.getModelID());
 						CalcConcentration calc = new CalcConcentration();
 						calc.setBaseData(predictResultColumn);
@@ -357,6 +357,6 @@ public class CalcAnalysis extends Action<SparrowColumnSpecifier>{
 			}
 		}
 
-		return new SparrowColumnSpecifier(dataTable, dataColIndex, context.getId());
+		return new SparrowColumnSpecifier(dataTable, dataColIndex, context.getId(), context.getModelID());
 	}
 }

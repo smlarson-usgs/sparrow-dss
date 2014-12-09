@@ -62,7 +62,7 @@ public class BinningService extends AbstractSparrowServlet {
 			}
 		} catch (Exception e) {
 			wrap.setError(e);
-			wrap.setMessage("Unable to retrieve PredefinedSession(s) from the db.");
+			wrap.setMessage("Unable to calculate bins");
 		}
 
 

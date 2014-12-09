@@ -15,25 +15,7 @@ import java.util.List;
 @Immutable
 public class SparrowModelImm implements SparrowModel, Serializable {
 
-	private static final long serialVersionUID = 2L;
-	
-	/**
-	 *  The concentration detection limit for TN.
-	 *  This is used to create a lower bound in the legend and restrict
-	 *  reported values.
-	 */
-	static final BigDecimal TN_CONCENTRATION_THRESHOLD = new BigDecimal(".05");
-	
-	/**
-	 *  The concentration detection limit for TP.
-	 *  This is used to create a lower bound in the legend and restrict
-	 *  reported values.
-	 */
-	static final BigDecimal TP_CONCENTRATION_THRESHOLD = new BigDecimal(".01");
-	
-	/* The concentration detection limit for suspended sediment */
-	//static final BigDecimal SEDIMENT_CONCENTRATION_THRESHOLD = new BigDecimal(".01");	//NEED INFO FROM GREG
-	
+	private static final long serialVersionUID = 4L;
 	
 	private final Long _id;
 	private final boolean _approved;
@@ -233,7 +215,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	/**
 	 * Returns the min value to display (detection limit) for this model.
 	 * 
-	 * This method inores the comparison type so that we get what the nominal
+	 * This method ignores the comparison type so that we get what the nominal
 	 * detection limit would be.
 	 * 
 	 * @param dataSeries
@@ -243,17 +225,15 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	public static BigDecimal getDetectionLimit(DataSeriesType dataSeries, String constituent) {
 		switch (dataSeries) {
 		case total_concentration:
-			if (TN_CONSTITUENT_NAME.equalsIgnoreCase(constituent)) {
-				return TN_CONCENTRATION_THRESHOLD;
-			} else if (TP_CONSTITUENT_NAME.equalsIgnoreCase(constituent)) {
-				return TP_CONCENTRATION_THRESHOLD;
-			} else if (SEDIMENT_CONSTITUENT_NAME.equalsIgnoreCase(constituent)) {
-				//return SEDIMENT_CONCENTRATION_THRESHOLD;
-				throw new RuntimeException("Unrecognized constituent '" + constituent + "'");
+			
+			ConstituentType type = ConstituentType.SUSPENDED_SEDIMENT.fromStringIgnoreCase(constituent);
+			
+			if (type != null) {
+				return type.getConcentrationDetectionLimit();
 			} else {
 				throw new RuntimeException("Unrecognized constituent '" + constituent + "'");
 			}
-			//break;	//unreachable
+
 		default:
 			return null;
 		}
@@ -262,7 +242,7 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 	/**
 	 * Returns the min value to display (detection limit) for this model.
 	 * 
-	 * This method inores the comparison type so that we get what the nominal
+	 * This method ignores the comparison type so that we get what the nominal
 	 * detection limit would be.
 	 * 
 	 * @param dataSeries
@@ -302,8 +282,12 @@ public class SparrowModelImm implements SparrowModel, Serializable {
 			decimalPlaces = 0;
 			break;
 		case total_concentration:
-			decimalPlaces = getNonZeroDecimalPlaces(detectionLimit);
-			if (decimalPlaces < 0) decimalPlaces = 0;
+			
+			if (detectionLimit != null) {
+				decimalPlaces = getNonZeroDecimalPlaces(detectionLimit);
+				if (decimalPlaces < 0) decimalPlaces = 0;
+			}
+			
 			break;
 		case incremental_yield:
 		case total_yield:
