@@ -4,6 +4,40 @@
 		<fixcrlf srcdir="${dataDir}/${mrb}/${constituent}" includes="*.txt" preservelastmodified="true"/>
 	</target>
 	
+	<target name="reachCtlTest">
+			<available file="${basedir}/${mrb}/${constituent}/reach.ctl" property="specificReachCtl"/>
+		</target>
+		
+		<target name="reachUploadSpecific" depends="reachCtlTest" if="specificReachCtl">
+			<echo>Load file ${mrb}/${constituent}/reach.txt into database table temp_enh_reach</echo>
+			<exec executable="sqlldr" failonerror="true">
+				<arg value="${stream_network}/${stream_network_password}@${instance}"/>
+				<arg value="DATA=${dataDir}/${mrb}/${constituent}/reach.txt"/>
+				<arg value="BAD=${basedir}/reach.bad"/>
+				<arg value="DISCARD=${basedir}/reach.dsc"/>
+				<arg value="CONTROL=${basedir}/${mrb}/${constituent}/reach.ctl"/>
+			</exec>
+		</target>
+	
+	<target name="reachUpload" depends="reachUploadSpecific"/>
+	
+	<target name="reachAttribCtlTest">
+				<available file="${basedir}/${mrb}/${constituent}/reachAttrib.ctl" property="specificReachAttribCtl"/>
+			</target>
+			
+			<target name="reachAttribUploadSpecific" depends="reachAttribCtlTest" if="specificReachAttribCtl">
+				<echo>Load file ${mrb}/${constituent}/reach.txt into database table temp_enh_reach_attrib</echo>
+				<exec executable="sqlldr" failonerror="true">
+					<arg value="${stream_network}/${stream_network_password}@${instance}"/>
+					<arg value="DATA=${dataDir}/${mrb}/${constituent}/reach.txt"/>
+					<arg value="BAD=${basedir}/reach.bad"/>
+					<arg value="DISCARD=${basedir}/reach.dsc"/>
+					<arg value="CONTROL=${basedir}/${mrb}/${constituent}/reachAttrib.ctl"/>
+				</exec>
+			</target>
+	
+	<target name="reachAttribUpload" depends="reachAttribUploadSpecific"/>
+	
 	<target name="ancilCtlTest">
 		<available file="${basedir}/${mrb}/${constituent}/ancil.ctl" property="specificAncilCtl"/>
 	</target>
