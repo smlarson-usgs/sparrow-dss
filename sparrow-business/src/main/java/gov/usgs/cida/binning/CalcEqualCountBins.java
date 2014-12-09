@@ -1023,7 +1023,7 @@ public class CalcEqualCountBins {
 		SimpleDataTable table = new SimpleDataTable(new ColumnData[]{col}, "name",
 				"description", null);
 		
-		SparrowColumnSpecifier scs = new SparrowColumnSpecifier(table, 0, null);
+		SparrowColumnSpecifier scs = new SparrowColumnSpecifier(table, 0, dataColumn.getContextId(), dataColumn.getModelId());
 		dataColumn = scs;
 	}
 	

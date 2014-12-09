@@ -76,7 +76,7 @@ public class CalcConcentration extends Action<SparrowColumnSpecifier> {
 		
 		SingleColumnCoefDataTable result = new SingleColumnCoefDataTable(baseXflow, conversionCoefCol, baseData.getColumn(), concAttribs);
 		
-		SparrowColumnSpecifier resultCol = new SparrowColumnSpecifier(result, baseData.getColumn(), baseData.getContextId());
+		SparrowColumnSpecifier resultCol = new SparrowColumnSpecifier(result, baseData.getColumn(), baseData.getContextId(), baseData.getModelId());
 		
 		return resultCol;
 	}

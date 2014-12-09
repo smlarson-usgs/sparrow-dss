@@ -91,7 +91,7 @@ public class CalcComparison extends Action<SparrowColumnSpecifier> {
 		}
 		
 
-		return new SparrowColumnSpecifier(resultTable, compCol.getColumn(), context.getId());
+		return new SparrowColumnSpecifier(resultTable, compCol.getColumn(), context.getId(), context.getModelID());
 	}
 
 	public PredictionContext getContext() {

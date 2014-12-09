@@ -123,7 +123,7 @@ public class CalcAggregate extends Action<SparrowColumnSpecifier> {
 		}
 		
 				
-		return new SparrowColumnSpecifier(result, 0, null);
+		return new SparrowColumnSpecifier(result, 0, null, data.getModelId());
 
 	}
 	

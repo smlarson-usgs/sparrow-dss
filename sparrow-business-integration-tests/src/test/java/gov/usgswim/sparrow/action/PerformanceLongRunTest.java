@@ -104,7 +104,7 @@ public class PerformanceLongRunTest extends SparrowTestBaseWithDB {
 
 		//Copy the prediction results to an NSDataSet
 		dataColumn =
-			new SparrowColumnSpecifier(predictResults, predictResults.getTotalCol(), context.getId());
+			new SparrowColumnSpecifier(predictResults, predictResults.getTotalCol(), context.getId(), TEST_MODEL_ID);
 
 		startTime = System.currentTimeMillis();
 		for (int i=0; i< ITERATION_COUNT;  i++) {

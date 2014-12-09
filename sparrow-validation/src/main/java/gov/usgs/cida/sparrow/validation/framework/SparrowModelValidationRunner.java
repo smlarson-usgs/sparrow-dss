@@ -121,6 +121,14 @@ public class SparrowModelValidationRunner {
 	*/
 	public static void main(String[] args) throws Exception {
 		
+		//Uncomment if you need to see how the logging is being configured.
+		//System.setProperty("log4j.debug", "true");
+		
+		//System-wide setttings that primarily affect what log4j config file is loaded.
+		//To see the result, uncomment the log4j.debug line above.
+		System.setProperty("application-environment", "local");	//local:  Don't send emails for errors
+		System.setProperty("application-mode", "validation");	//validation:  validation specific log4j settings
+		
 		boolean continueRun = true;
 		
 		if (args.length == 0) {

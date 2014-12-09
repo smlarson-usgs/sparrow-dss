@@ -10,12 +10,6 @@ import java.util.List;
  * Domain Object representing a SPARROW SparrowModel.
  */
 public interface SparrowModel {
-
-
-	//Standardized names for constituents so we can detect which const. we have.
-	static final String TN_CONSTITUENT_NAME = "Nitrogen";
-	static final String TP_CONSTITUENT_NAME = "Phosphorus";
-	static final String SEDIMENT_CONSTITUENT_NAME = "Suspended Sediment";
 	
 	/**
 	 * The UUID for this source.  This is the database srcId.
