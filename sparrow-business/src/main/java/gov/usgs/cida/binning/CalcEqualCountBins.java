@@ -1023,7 +1023,16 @@ public class CalcEqualCountBins {
 		SimpleDataTable table = new SimpleDataTable(new ColumnData[]{col}, "name",
 				"description", null);
 		
-		SparrowColumnSpecifier scs = new SparrowColumnSpecifier(table, 0, dataColumn.getContextId(), dataColumn.getModelId());
+		SparrowColumnSpecifier scs = null;
+		
+		if (dataColumn != null) {
+			scs = new SparrowColumnSpecifier(table, 0, dataColumn.getContextId(), dataColumn.getModelId());
+		} else {
+			
+			//This should only be the case during tests, where we don't really
+			//have a full model to work from.
+			scs = new SparrowColumnSpecifier(table, 0, null, null);
+		}
 		dataColumn = scs;
 	}
 	
