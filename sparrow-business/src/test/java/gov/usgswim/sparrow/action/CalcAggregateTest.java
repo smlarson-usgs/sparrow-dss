@@ -89,7 +89,7 @@ public class CalcAggregateTest {
 		}
 		
 		reachValues = reachValuesW.toImmutable();
-		reachValueCol = new SparrowColumnSpecifier(reachValues, 0, null);
+		reachValueCol = new SparrowColumnSpecifier(reachValues, 0, null, null);
 	}
 	
 	

@@ -65,7 +65,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
 					"desc",	null, false);
 			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd});
-			zeroTo50in50ValuesWithTopOverage = new SparrowColumnSpecifier(table, 0, null);
+			zeroTo50in50ValuesWithTopOverage = new SparrowColumnSpecifier(table, 0, null, null);
 		}
 		
 		{
@@ -78,7 +78,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
 					"desc",	null, false);
 			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd});
-			zeroTo50in50ValuesWithInfiniteTop = new SparrowColumnSpecifier(table, 0, null);
+			zeroTo50in50ValuesWithInfiniteTop = new SparrowColumnSpecifier(table, 0, null, null);
 		}
 		
 		{
@@ -91,7 +91,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
 					"desc",	null, false);
 			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd});
-			zeroToNeg50in50ValuesWithTopOverage = new SparrowColumnSpecifier(table, 0, null);
+			zeroToNeg50in50ValuesWithTopOverage = new SparrowColumnSpecifier(table, 0, null, null);
 		}
 		
 		{
@@ -104,7 +104,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
 					"desc",	null, false);
 			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd});
-			zeroTo50in50ValuesWithBtmOverage = new SparrowColumnSpecifier(table, 0, null);
+			zeroTo50in50ValuesWithBtmOverage = new SparrowColumnSpecifier(table, 0, null, null);
 		}
 		
 		{
@@ -117,7 +117,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
 					"desc",	null, false);
 			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd});
-			zeroToNeg50in50ValuesWithBtmOverage = new SparrowColumnSpecifier(table, 0, null);
+			zeroToNeg50in50ValuesWithBtmOverage = new SparrowColumnSpecifier(table, 0, null, null);
 		}
 		
 		{
@@ -130,7 +130,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
 					"desc",	null, false);
 			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd});
-			smallValuesWithTopOverage = new SparrowColumnSpecifier(table, 0, null);
+			smallValuesWithTopOverage = new SparrowColumnSpecifier(table, 0, null, null);
 		}
 		
 		{
@@ -142,7 +142,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
 					"desc",	null, false);
 			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd});
-			sameSame = new SparrowColumnSpecifier(table, 0, null);
+			sameSame = new SparrowColumnSpecifier(table, 0, null, null);
 		}
 		
 		
@@ -158,7 +158,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 			ColumnData cd = new StandardDoubleColumnData(data, "test", "unit",
 					"desc",	null, false);
 			SimpleDataTable table = new SimpleDataTable(new ColumnData[] {cd});
-			zeroTo10In10Values = new SparrowColumnSpecifier(table, 0, null);
+			zeroTo10In10Values = new SparrowColumnSpecifier(table, 0, null, null);
 		}
 		
 	}
@@ -855,7 +855,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 
 		BinningRequest req = new BinningRequest(99999, 2, BinType.EQUAL_RANGE,
 				DataSeriesType.total, ComparisonType.none,
-				SparrowModel.TN_CONSTITUENT_NAME, null, null);
+				ConstituentType.TOTAL_NITROGEN.getName(), null, null);
 		
 		CalcEqualRangeBins action = new CalcEqualRangeBins();
 		
@@ -896,7 +896,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 
 		BinningRequest req = new BinningRequest(99999, 2, BinType.EQUAL_RANGE,
 				DataSeriesType.total, ComparisonType.none,
-				SparrowModel.TN_CONSTITUENT_NAME, null, null);
+				ConstituentType.TOTAL_NITROGEN.getName(), null, null);
 		
 		CalcEqualRangeBins action = new CalcEqualRangeBins();
 		
@@ -937,7 +937,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 		
 		BinningRequest req = new BinningRequest(99999, 2, BinType.EQUAL_RANGE,
 				DataSeriesType.total, ComparisonType.none,
-				SparrowModel.TN_CONSTITUENT_NAME, null, null);
+				ConstituentType.TOTAL_NITROGEN.getName(), null, null);
 		CalcEqualRangeBins action = new CalcEqualRangeBins();
 		
 		
@@ -977,7 +977,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 		
 		BinningRequest req = new BinningRequest(99999, 2, BinType.EQUAL_RANGE,
 				DataSeriesType.total, ComparisonType.none,
-				SparrowModel.TN_CONSTITUENT_NAME, null, null);
+				ConstituentType.TOTAL_NITROGEN.getName(), null, null);
 		CalcEqualRangeBins action = new CalcEqualRangeBins();
 		
 		
@@ -1002,7 +1002,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 		
 		BinningRequest req = new BinningRequest(99999, 2, BinType.EQUAL_RANGE,
 				DataSeriesType.total, ComparisonType.none,
-				SparrowModel.TN_CONSTITUENT_NAME, null, null);
+				ConstituentType.TOTAL_NITROGEN.getName(), null, null);
 		
 		CalcEqualRangeBins action = new CalcEqualRangeBins();
 		
@@ -1030,7 +1030,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 		
 		BinningRequest req = new BinningRequest(99999, 7, BinType.EQUAL_RANGE,
 				DataSeriesType.total, ComparisonType.none,
-				SparrowModel.TN_CONSTITUENT_NAME, null, null);
+				ConstituentType.TOTAL_NITROGEN.getName(), null, null);
 		CalcEqualRangeBins action = new CalcEqualRangeBins();
 		
 		
@@ -1061,7 +1061,7 @@ public class CalcEqualRangeBinsTest extends SparrowTestBase {
 		
 		BinningRequest req = new BinningRequest(99999, 7, BinType.EQUAL_RANGE,
 				DataSeriesType.total, ComparisonType.none,
-				SparrowModel.TN_CONSTITUENT_NAME, null, null);
+				ConstituentType.TOTAL_NITROGEN.getName(), null, null);
 		CalcEqualRangeBins action = new CalcEqualRangeBins();
 		
 		

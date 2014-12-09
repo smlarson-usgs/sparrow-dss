@@ -6,8 +6,8 @@ public class EmptyDataColumn extends SparrowColumnSpecifier {
 	protected String units;
 	protected String constituent;
 	
-	public EmptyDataColumn(Integer contextId, String units, String constituent) {
-		super(null, -1, contextId);
+	public EmptyDataColumn(Integer contextId, String units, String constituent, Long modelId) {
+		super(null, -1, contextId, modelId);
 		this.units = units;
 		this.constituent = constituent;
 	}

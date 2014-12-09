@@ -247,7 +247,13 @@ public class ServiceResponseWrapper {
 	 */
 	public void setError(Throwable error) {
 		errorMessage = error.getLocalizedMessage();
-		errorType = error.getCause().getClass().getCanonicalName();
+		
+		if (error.getCause() != null) {
+			errorType = error.getCause().getClass().getCanonicalName();
+		} else {
+			errorType = error.getClass().getCanonicalName();
+		}
+		
 		
 		StringWriter sw = new StringWriter();
 		PrintWriter ps = new PrintWriter(sw);

@@ -187,7 +187,7 @@ public class NSDataSetBuilderTest extends SparrowTestBase {
 		SingleColumnOverrideDataTable dataTable = new SingleColumnOverrideDataTable(
 				predictData.getTopo(),
 				deliveryFrac, 4, null);
-		SparrowColumnSpecifier dataColumn = new SparrowColumnSpecifier(dataTable, 4, 9999);
+		SparrowColumnSpecifier dataColumn = new SparrowColumnSpecifier(dataTable, 4, 9999, null);
 
 
 		if (useNaValue) {

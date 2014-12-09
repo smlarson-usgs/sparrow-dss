@@ -422,7 +422,7 @@ public class CalcEqualCountBinsTest extends CalcEqualRangeBinsTest {
 
 		BinningRequest req = new BinningRequest(99999, 2, BinType.EQUAL_COUNT,
 				DataSeriesType.total, ComparisonType.none,
-				SparrowModel.TN_CONSTITUENT_NAME, null, null);
+				ConstituentType.TOTAL_NITROGEN.getName(), null, null);
 		
 		CalcEqualCountBins action = new CalcEqualCountBins();
 		

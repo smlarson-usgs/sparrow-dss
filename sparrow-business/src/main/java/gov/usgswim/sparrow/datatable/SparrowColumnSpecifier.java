@@ -14,14 +14,9 @@ import gov.usgs.cida.datatable.DataTable;
 public class SparrowColumnSpecifier {
 	private final DataTable table;
 	private final int column;
-	private Integer contextId;	//Defined when we have a context
-	private Long modelId;	//Defined only when we have a modelID but no context
+	private Integer contextId;
+	private Long modelId;
 
-	public SparrowColumnSpecifier(DataTable table, int column, Integer contextId) {
-		this.table = table;
-		this.column = column;
-		this.contextId = contextId;
-	}
 	
 	public SparrowColumnSpecifier(DataTable table, int column, Integer contextId, Long modelId) {
 		this.table = table;
@@ -46,7 +41,8 @@ public class SparrowColumnSpecifier {
 	 * The PredictionContext ID this datacolumn is for.
 	 * 
 	 * It may be null in the case we are holding data that is model specific but
-	 * not context specific, such as stream flow or other attribute data.
+	 * not context specific, or for derived display data, such as aggregating by
+	 * HUC for use outside of a prediction context.
 	 * @return
 	 */
 	public Integer getContextId() {
@@ -56,8 +52,6 @@ public class SparrowColumnSpecifier {
 	/**
 	 * The SparrowModel ID this datacolumn is for.
 	 * 
-	 * It may be null in the case we are holding data that is context specific,
-	 * such as predicted data.  If we have a contextID, the model ID can be null.
 	 * @return
 	 */
 	public Long getModelId() {

@@ -71,6 +71,7 @@ public class RunDb_WarningOnly_Tests extends SparrowModelValidationRunner {
 		 *				Production will always have this as false, but can be toggled here
 		 *				for testing.  This takes precidence over Arg 3.
 		 */
+		addValidator(new ModelMetaDataValidation());
 		addValidator(new CalculatedTotalContributingAreaShouldEqualLoadedValue(wideComparator, preciseComparator, true));
 		addValidator(new CalculatedTotalUpstreamAreaShouldEqualLoadedValue(wideComparator, preciseComparator, true));
 
