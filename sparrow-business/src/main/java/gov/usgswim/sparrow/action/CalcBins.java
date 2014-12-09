@@ -52,11 +52,14 @@ public class CalcBins extends Action<BinSet> {
 
 	@Override
 	protected void validate() {
-		if (total_concentration.equals(request.getDataSeries())) {
+		if (total_concentration.equals(request.getDataSeries()) && ComparisonType.none.equals(request.getComparison())) {
+			
+			//Its OK to have no detection limits for other data series or when we are doing comparisons
+			
 			if (request.getDetectionLimit() == null) {
 				this.addValidationError("This model (refered to as model id " + 
-						dataColumn.getModelId() + 
-						") has no detection limit configured for it.  This is required to map concentration.  " +
+						dataColumn.getModelId() + ") " +
+						"has no detection limit configured for it.  This is required to map concentration.  " +
 						"Please contact the Sparrow Administrator.");
 			}
 		}
