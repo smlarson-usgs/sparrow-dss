@@ -66,7 +66,7 @@
           </elementProp>
           <elementProp name="GeoserverContextPath" elementType="Argument">
             <stringProp name="Argument.name">GeoserverContextPath</stringProp>
-            <stringProp name="Argument.value">${__P(GeoserverContextPath,geoserver)}</stringProp>
+            <stringProp name="Argument.value">${__P(GeoserverContextPath,sparrowgeoserver)}</stringProp>
             <stringProp name="Argument.desc">Geoserver context path</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
@@ -327,6 +327,16 @@
               <boolProp name="XPathExtractor.namespace">false</boolProp>
             </XPathExtractor>
             <hashTree/>
+            <XPathExtractor guiclass="XPathExtractorGui" testclass="XPathExtractor" testname="Catchment Local Layer Name Extract" enabled="true">
+              <stringProp name="TestPlan.comments">flow and catch layers have the same local name.</stringProp>
+              <stringProp name="XPathExtractor.default"></stringProp>
+              <stringProp name="XPathExtractor.refname">localLayerName</stringProp>
+              <stringProp name="XPathExtractor.xpathQuery">substring-after(//CatchLayerName, &apos;:&apos;)</stringProp>
+              <boolProp name="XPathExtractor.validate">false</boolProp>
+              <boolProp name="XPathExtractor.tolerant">false</boolProp>
+              <boolProp name="XPathExtractor.namespace">false</boolProp>
+            </XPathExtractor>
+            <hashTree/>
           </hashTree>
           <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Map Request Loop (per MapRequestdCount)" enabled="true">
             <boolProp name="LoopController.continue_forever">true</boolProp>
@@ -413,9 +423,16 @@
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">styles</stringProp>
                   </elementProp>
+                  <elementProp name="format_options" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                    <stringProp name="Argument.value">antialiasing:none;quantizer:octree;</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                    <stringProp name="Argument.name">format_options</stringProp>
+                  </elementProp>
                   <elementProp name="sld" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                    <stringProp name="Argument.value">http://${GeoserverHost}:${GeoserverPort}/${GeoserverContextPath}/rest/sld/workspace/sparrow-catchment/layer/${contextIdBasic}/catch.sld?binLowList=0,3000,10000,43000,269000&amp;binHighList=3000,10000,43000,269000,306900000&amp;binColorList=FFFFD4,FEE391,FEC44F,FE9929,EC7014&amp;bounded=false</stringProp>
+                    <stringProp name="Argument.value">http://${GeoserverHost}:${GeoserverPort}/${GeoserverContextPath}/rest/sld/workspace/sparrow-catchment/layer/${localLayerName}/catch.sld?binLowList=0,25000,58000,141000,676000&amp;binHighList=25000,58000,141000,676000,500000000&amp;binColorList=FFFFD4,FEE391,FEC44F,FE9929,EC7014&amp;bounded=false</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">sld</stringProp>
@@ -507,7 +524,7 @@
                   </elementProp>
                   <elementProp name="format" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                    <stringProp name="Argument.value">image/png</stringProp>
+                    <stringProp name="Argument.value">image/png8</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">format</stringProp>
@@ -519,9 +536,16 @@
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">styles</stringProp>
                   </elementProp>
+                  <elementProp name="format_options" elementType="HTTPArgument">
+                    <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                    <stringProp name="Argument.value">antialiasing:none;quantizer:octree;</stringProp>
+                    <stringProp name="Argument.metadata">=</stringProp>
+                    <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                    <stringProp name="Argument.name">format_options</stringProp>
+                  </elementProp>
                   <elementProp name="sld" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                    <stringProp name="Argument.value">http://${GeoserverHost}:${GeoserverPort}/${GeoserverContextPath}/rest/sld/workspace/sparrow-flowline/layer/${contextIdBasic}/reach.sld?binLowList=0,3000,10000,43000,269000&amp;binHighList=3000,10000,43000,269000,306900000&amp;binColorList=FFFFD4,FEE391,FEC44F,FE9929,EC7014&amp;bounded=false</stringProp>
+                    <stringProp name="Argument.value">http://${GeoserverHost}:${GeoserverPort}/${GeoserverContextPath}/rest/sld/workspace/sparrow-flowline/layer/${localLayerName}/reach.sld?binLowList=0,3000,10000,43000,269000&amp;binHighList=3000,10000,43000,269000,306900000&amp;binColorList=FFFFD4,FEE391,FEC44F,FE9929,EC7014&amp;bounded=false</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                     <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     <stringProp name="Argument.name">sld</stringProp>
