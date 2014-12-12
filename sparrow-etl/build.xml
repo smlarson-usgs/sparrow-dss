@@ -256,7 +256,7 @@
 
 	<target name="topoUpload" depends="topoUploadSpecific, topoUploadGeneric"/>
 
-	<target name="doUploads" depends="dos2unix, ancilUpload, coefUpload, populateTempAncilHuc, predictUpload, residsUpload, populateTempResidsMrbId, srcUpload, topoUpload"/>
+	<target name="doUploads" depends="dos2unix, ancilUpload, coefUpload, populateTempAncilHuc, predictUpload, residsUpload, srcUpload, topoUpload"/>
 	
 	
 			
