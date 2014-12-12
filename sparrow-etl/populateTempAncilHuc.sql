@@ -8,7 +8,7 @@ select 'start time: ' || systimestamp from dual;
 update temp_ancil
    set huc8 = (select huc8_char
                  from temp_huc_list
-                where temp_ancil.local_id = temp_huc_list.gridcode);
+                where temp_ancil.local_id = temp_huc_list.comid);
 
 commit;
 
