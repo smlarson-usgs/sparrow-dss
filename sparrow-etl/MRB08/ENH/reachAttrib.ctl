@@ -11,7 +11,6 @@ TRAILING NULLCOLS
 ,reach_length
 ,NHDWFLOW_M filler
 ,NHDWFLOW_1 filler
-,identifier
 ,FDATE filler
 ,RESOLUTION filler
 ,GNIS_ID filler
