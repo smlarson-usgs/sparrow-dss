@@ -128,16 +128,21 @@
 					
 					<jmeterUserProperties>
 						<reportDir>${project.build.directory}/jmeter-reports</reportDir>
-						<Host>${Host}</Host>
-						<Port>${Port}</Port>
-						<ContextPath>${ContextPath}</ContextPath>
-						<MapRequestsMapLoopsPerModel>${MapRequestsMapLoopsPerModel}</MapRequestsMapLoopsPerModel>
-						<MapRequestsModelCountMatchingCsvFile>${MapRequestsModelCountMatchingCsvFile}</MapRequestsModelCountMatchingCsvFile>
+						<ServiceHost>${ServiceHost}</ServiceHost>
+						<ServicePort>${ServicePort}</ServicePort>
+						<ServiceContextPath>${ServiceContextPath}</ServiceContextPath>
 						<MapRequestsConcurrentUsers>${MapRequestsConcurrentUsers}</MapRequestsConcurrentUsers>
-						<MapRequestsRampUpSeconds>${MapRequestsRampUpSeconds}</MapRequestsRampUpSeconds>
-						<GeoserverHost>${Host}</GeoserverHost>
-						<GeoserverPort>${Port}</GeoserverPort>
-						<GeoserverContextPath>${ContextPath}</GeoserverContextPath>
+						<GeoserverHost>${GeoserverHost}</GeoserverHost>
+						<GeoserverPort>${GeoserverPort}</GeoserverPort>
+						<GeoserverContextPath>${GeoserverContextPath}</GeoserverContextPath>
+						<MaxNumberOfModelsToRun>${MaxNumberOfModelsToRun}</MaxNumberOfModelsToRun>
+						<MapCatch>${MapCatch}</MapCatch>
+						<MapReach>${MapReach}</MapReach>
+						<RandomizeContexts>${RandomizeContexts}</RandomizeContexts>
+						<GeonetworkHost>${GeonetworkHost}</GeonetworkHost>
+						<GeonetworkPort>${GeonetworkPort}</GeonetworkPort>
+						<GeonetworkContextPath>${GeonetworkContextPath}</GeonetworkContextPath>
+						<EnableAppLevelDebugMessages>${EnableAppLevelDebugMessages}</EnableAppLevelDebugMessages>
 					</jmeterUserProperties>
 				</configuration>
 			</plugin>
