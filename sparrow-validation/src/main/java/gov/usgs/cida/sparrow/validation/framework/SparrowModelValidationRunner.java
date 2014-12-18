@@ -4,6 +4,7 @@ import gov.usgs.cida.sparrow.validation.framework.ValidationTestUtils;
 import gov.usgs.cida.datatable.DataTable;
 import gov.usgswim.sparrow.LifecycleListener;
 import gov.usgswim.sparrow.action.LoadModelMetadata;
+import static gov.usgswim.sparrow.action.LoadModelMetadata.SKIP_LOADING_PREDEFINED_THEMES;
 import gov.usgswim.sparrow.domain.SparrowModel;
 import gov.usgswim.sparrow.request.ModelRequestCacheKey;
 import gov.usgswim.sparrow.service.SharedApplication;
@@ -129,6 +130,10 @@ public class SparrowModelValidationRunner {
 		System.setProperty("application-environment", "local");	//local:  Don't send emails for errors
 		System.setProperty("application-mode", "validation");	//validation:  validation specific log4j settings
 		
+		//Don't try to load predefined sessions b/c they are not used in the tests
+		//and require a rw db connection.
+		System.setProperty(SKIP_LOADING_PREDEFINED_THEMES, "true");	
+		
 		boolean continueRun = true;
 		
 		if (args.length == 0) {
@@ -170,6 +175,11 @@ public class SparrowModelValidationRunner {
 		}
 		
 		if (continueRun && runner.initModelValidators()) {
+			
+			log.info("*****************************************");
+			log.info("Expecting to write logging to: " + System.getProperty("user.home") + System.getProperty("file.separator") + "sparrow_validation_test_results.txt");
+			log.info("*****************************************");
+			
 			long startTime = System.currentTimeMillis();
 			runner.run();
 			long endTime = System.currentTimeMillis();

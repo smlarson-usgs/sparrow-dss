@@ -7,20 +7,20 @@
 	<appender name="CA" class="org.apache.log4j.ConsoleAppender">
 		<param name="Target" value="System.out" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %C{1}:%L - %m%n" />
+			<param name="ConversionPattern" value="ca %d{ABSOLUTE} %5p %C{1}:%L - %m%n" />
 		</layout>
 	</appender>
 	<appender name="CA_Minimal" class="org.apache.log4j.ConsoleAppender">
 		<param name="Target" value="System.out" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%C{1}:%L - %m%n" />
+			<param name="ConversionPattern" value="cam %C{1}:%L - %m%n" />
 		</layout>
 	</appender>
 	<appender name="FILE" class="org.apache.log4j.FileAppender">
-		<param name="File" value="~/sparrow_validation_test_results.txt" />
+		<param name="File" value="${user.home}${file.separator}sparrow_validation_test_results.txt" />
 		<param name="Append" value="false" />
 		<layout class="org.apache.log4j.PatternLayout">
-			<param name="ConversionPattern" value="%d{ABSOLUTE} %5p %C{1}:%L - %m%n" />
+			<param name="ConversionPattern" value="f %d{ABSOLUTE} %5p %C{1}:%L - %m%n" />
 		</layout>
 	</appender>
 	
@@ -43,14 +43,14 @@
 		<appender-ref ref="CA" />
 	</logger> -->
 	
-	<logger name="gov.usgswim.sparrow.validation" additivity="false">
-		<level value="info" />
-		<appender-ref ref="CA_Minimal" />
+	<logger name="gov.usgs.cida.sparrow.validation" additivity="true">
+		<level value="INFO" />
+		<!--<appender-ref ref="CA_Minimal" />-->
 		<appender-ref ref="FILE" />
 	</logger>
 
 	<root>
-		<priority value="error" />
+		<priority value="ERROR" />
 		<appender-ref ref="CA" />
 	</root>
 
