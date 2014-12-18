@@ -12,7 +12,7 @@
       <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
     </TestPlan>
     <hashTree>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Dev Server Configuration Variables" enabled="false">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="Dev Server Configuration Variables" enabled="true">
         <collectionProp name="Arguments.arguments">
           <elementProp name="ServiceHost" elementType="Argument">
             <stringProp name="Argument.name">ServiceHost</stringProp>
@@ -98,7 +98,7 @@
           </elementProp>
           <elementProp name="EnableAppLevelDebugMessages" elementType="Argument">
             <stringProp name="Argument.name">EnableAppLevelDebugMessages</stringProp>
-            <stringProp name="Argument.value">${__P(EnableAppLevelDebugMessages, false)}</stringProp>
+            <stringProp name="Argument.value">${__P(EnableAppLevelDebugMessages, true)}</stringProp>
             <stringProp name="Argument.desc">Set to true to turn on app level debug msg&apos;s, which are on the level of one per tile requested.</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
@@ -106,7 +106,7 @@
         <stringProp name="TestPlan.comments">How many users and how many of each map each user requests.</stringProp>
       </Arguments>
       <hashTree/>
-      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="QA Server Configuration Variables" enabled="true">
+      <Arguments guiclass="ArgumentsPanel" testclass="Arguments" testname="QA Server Configuration Variables" enabled="false">
         <collectionProp name="Arguments.arguments">
           <elementProp name="ServiceHost" elementType="Argument">
             <stringProp name="Argument.name">ServiceHost</stringProp>
@@ -999,6 +999,21 @@ log.info(&quot;----- Register map layer for &quot; + modelId + &quot; context &q
           </hashTree>
           <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Map Requests" enabled="true"/>
           <hashTree>
+            <ConfigTestElement guiclass="HttpDefaultsGui" testclass="ConfigTestElement" testname="HTTP Request Defaults" enabled="true">
+              <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+                <collectionProp name="Arguments.arguments"/>
+              </elementProp>
+              <stringProp name="HTTPSampler.domain">${ServiceHost}</stringProp>
+              <stringProp name="HTTPSampler.port">${ServicePort}</stringProp>
+              <stringProp name="HTTPSampler.connect_timeout">5000</stringProp>
+              <stringProp name="HTTPSampler.response_timeout">20000</stringProp>
+              <stringProp name="HTTPSampler.protocol">http</stringProp>
+              <stringProp name="HTTPSampler.contentEncoding"></stringProp>
+              <stringProp name="HTTPSampler.path"></stringProp>
+              <stringProp name="TestPlan.comments">Add some timeouts so that the test will eventually give up on failed map tiles</stringProp>
+              <stringProp name="HTTPSampler.concurrentPool">4</stringProp>
+            </ConfigTestElement>
+            <hashTree/>
             <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Zoomed out initial model view" enabled="true"/>
             <hashTree>
               <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Mapping Catch" enabled="true">
