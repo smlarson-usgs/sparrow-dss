@@ -110,18 +110,18 @@
         <collectionProp name="Arguments.arguments">
           <elementProp name="ServiceHost" elementType="Argument">
             <stringProp name="Argument.name">ServiceHost</stringProp>
-            <stringProp name="Argument.value">${__P(Host,cida-eros-sparrowsvcqa2)}</stringProp>
+            <stringProp name="Argument.value">${__P(ServiceHost,cida-eros-sparrowsvcqa2)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">Takes a startup prop of name &apos;Host&apos; or uses &apos;cida-...&apos; if not provided.  Places in var &apos;Host&apos;.</stringProp>
           </elementProp>
           <elementProp name="ServicePort" elementType="Argument">
             <stringProp name="Argument.name">ServicePort</stringProp>
-            <stringProp name="Argument.value">${__P(Port,8080)}</stringProp>
+            <stringProp name="Argument.value">${__P(ServicePort,8080)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="ServiceContextPath" elementType="Argument">
             <stringProp name="Argument.name">ServiceContextPath</stringProp>
-            <stringProp name="Argument.value">${__P(ContextPath,sparrow_mv)}</stringProp>
+            <stringProp name="Argument.value">${__P(ServiceContextPath,sparrow_mv)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="MapRequestsConcurrentUsers" elementType="Argument">
