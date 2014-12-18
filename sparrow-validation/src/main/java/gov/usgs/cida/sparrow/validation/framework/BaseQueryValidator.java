@@ -160,12 +160,23 @@ public class BaseQueryValidator extends SparrowModelValidationBase {
 				}
 			}
 		} catch (Exception e) {
-			recordTestException(modelId, e, "The query '" + queryName + "' failed with a SQL error. See the "
-					+ BaseQueryValidator.class.getName() + ".properties file for query SQL.");
+			if (! this.failedTestIsOnlyAWarning) {
+				recordTestException(modelId, e, "The query '" + queryName + "' failed with a SQL error. See the "
+						+ BaseQueryValidator.class.getName() + ".properties file for query SQL.");
+			} else {
+				String msg = "Failed test query '" + queryName + "' with SQL error '" + e.getMessage() + "'. See the "
+							+ this.getClass().getName() + ".properties file for query SQL.";
+				recordError(modelId, msg);
+			}
+
 								
 		} finally {
-			rs.close();
-			st.close();
+			try {
+				rs.close();
+				st.close();
+			} catch (Exception ee) {
+				//ignore - we likely never created an rs.
+			}
 		}
 	}
 	
