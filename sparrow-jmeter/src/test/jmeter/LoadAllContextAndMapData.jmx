@@ -383,7 +383,22 @@
             <stringProp name="script">//JMeter properties seem to persist from run to run, so explicitly clear them out.
 log.info(&quot;***** Initializing all static properties&quot;);
 
+log.info(&quot;     Configured Test Properties:&quot;);
+log.info(&quot;     ServiceHost: &quot; + vars.get(&quot;ServiceHost&quot;));
+log.info(&quot;     ServicePort: &quot; + vars.get(&quot;ServicePort&quot;));
+log.info(&quot;     ServiceContextPath: &quot; + vars.get(&quot;ServiceContextPath&quot;));
+log.info(&quot;     MapRequestsConcurrentUsers: &quot; + vars.get(&quot;MapRequestsConcurrentUsers&quot;));
+log.info(&quot;     GeoserverHost: &quot; + vars.get(&quot;GeoserverHost&quot;));
+log.info(&quot;     GeoserverPort: &quot; + vars.get(&quot;GeoserverPort&quot;));
+log.info(&quot;     GeoserverContextPath: &quot; + vars.get(&quot;GeoserverContextPath&quot;));
+log.info(&quot;     MapCatch: &quot; + vars.get(&quot;MapCatch&quot;));
+log.info(&quot;     MapReach: &quot; + vars.get(&quot;MapReach&quot;));
+log.info(&quot;     RandomizeContexts: &quot; + vars.get(&quot;RandomizeContexts&quot;));
+log.info(&quot;     GeonetworkHost: &quot; + vars.get(&quot;GeonetworkHost&quot;));
+log.info(&quot;     GeonetworkPort: &quot; + vars.get(&quot;GeonetworkPort&quot;));
+log.info(&quot;     GeonetworkContextPath: &quot; + vars.get(&quot;GeonetworkContextPath&quot;));
 
+	
 //
 // Some initial default values
 
