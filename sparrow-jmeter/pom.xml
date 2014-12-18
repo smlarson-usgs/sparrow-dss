@@ -124,8 +124,8 @@
 							<reportDir>${project.build.directory}/jmeter-reports</reportDir>
 							<ignoreResultFailures>true</ignoreResultFailures>
 							<jMeterProcessJVMSettings>
-								<xms>2048</xms>
-								<xmx>2048</xmx>
+								<xms>1G</xms>
+								<xmx>2G</xmx>
 							</jMeterProcessJVMSettings>
 
 							<propertiesUser>
