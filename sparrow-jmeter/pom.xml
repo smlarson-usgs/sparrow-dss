@@ -117,34 +117,34 @@
 						<goals>
 							<goal>jmeter</goal>
 						</goals>
+						<configuration>
+							<testFilesIncluded>
+								<jMeterTestFile>${jMeterTestFile}</jMeterTestFile>
+							</testFilesIncluded>
+							<reportDir>${project.build.directory}/jmeter-reports</reportDir>
+							<ignoreResultFailures>true</ignoreResultFailures>
+
+							<propertiesUser>
+								<reportDir>${project.build.directory}/jmeter-reports</reportDir>
+								<ServiceHost>${ServiceHost}</ServiceHost>
+								<ServicePort>${ServicePort}</ServicePort>
+								<ServiceContextPath>${ServiceContextPath}</ServiceContextPath>
+								<MapRequestsConcurrentUsers>${MapRequestsConcurrentUsers}</MapRequestsConcurrentUsers>
+								<GeoserverHost>${GeoserverHost}</GeoserverHost>
+								<GeoserverPort>${GeoserverPort}</GeoserverPort>
+								<GeoserverContextPath>${GeoserverContextPath}</GeoserverContextPath>
+								<MaxNumberOfModelsToRun>${MaxNumberOfModelsToRun}</MaxNumberOfModelsToRun>
+								<MapCatch>${MapCatch}</MapCatch>
+								<MapReach>${MapReach}</MapReach>
+								<RandomizeContexts>${RandomizeContexts}</RandomizeContexts>
+								<GeonetworkHost>${GeonetworkHost}</GeonetworkHost>
+								<GeonetworkPort>${GeonetworkPort}</GeonetworkPort>
+								<GeonetworkContextPath>${GeonetworkContextPath}</GeonetworkContextPath>
+								<EnableAppLevelDebugMessages>${EnableAppLevelDebugMessages}</EnableAppLevelDebugMessages>
+							</propertiesUser>
+						</configuration>
 					</execution>
 				</executions>
-				<configuration>
-					<testFilesIncluded>
-						<jMeterTestFile>${jMeterTestFile}</jMeterTestFile>
-					</testFilesIncluded>
-					<reportDir>${project.build.directory}/jmeter-reports</reportDir>
-					<ignoreResultFailures>true</ignoreResultFailures>
-					
-					<jmeterUserProperties>
-						<reportDir>${project.build.directory}/jmeter-reports</reportDir>
-						<ServiceHost>${ServiceHost}</ServiceHost>
-						<ServicePort>${ServicePort}</ServicePort>
-						<ServiceContextPath>${ServiceContextPath}</ServiceContextPath>
-						<MapRequestsConcurrentUsers>${MapRequestsConcurrentUsers}</MapRequestsConcurrentUsers>
-						<GeoserverHost>${GeoserverHost}</GeoserverHost>
-						<GeoserverPort>${GeoserverPort}</GeoserverPort>
-						<GeoserverContextPath>${GeoserverContextPath}</GeoserverContextPath>
-						<MaxNumberOfModelsToRun>${MaxNumberOfModelsToRun}</MaxNumberOfModelsToRun>
-						<MapCatch>${MapCatch}</MapCatch>
-						<MapReach>${MapReach}</MapReach>
-						<RandomizeContexts>${RandomizeContexts}</RandomizeContexts>
-						<GeonetworkHost>${GeonetworkHost}</GeonetworkHost>
-						<GeonetworkPort>${GeonetworkPort}</GeonetworkPort>
-						<GeonetworkContextPath>${GeonetworkContextPath}</GeonetworkContextPath>
-						<EnableAppLevelDebugMessages>${EnableAppLevelDebugMessages}</EnableAppLevelDebugMessages>
-					</jmeterUserProperties>
-				</configuration>
 			</plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
