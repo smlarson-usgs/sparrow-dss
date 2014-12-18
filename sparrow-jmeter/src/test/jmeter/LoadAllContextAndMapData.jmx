@@ -96,6 +96,12 @@
             <stringProp name="Argument.desc">Geoserver context path</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="EnableAppLevelDebugMessages" elementType="Argument">
+            <stringProp name="Argument.name">EnableAppLevelDebugMessages</stringProp>
+            <stringProp name="Argument.value">${__P(EnableAppLevelDebugMessages, false)}</stringProp>
+            <stringProp name="Argument.desc">Set to true to turn on app level debug msg&apos;s, which are on the level of one per tile requested.</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
         </collectionProp>
         <stringProp name="TestPlan.comments">How many users and how many of each map each user requests.</stringProp>
       </Arguments>
@@ -182,6 +188,12 @@
             <stringProp name="Argument.name">GeonetworkContextPath</stringProp>
             <stringProp name="Argument.value">${__P(GeonetworkContextPath,sparrow/sparrow_geonetwork)}</stringProp>
             <stringProp name="Argument.desc">Geoserver context path</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="EnableAppLevelDebugMessages" elementType="Argument">
+            <stringProp name="Argument.name">EnableAppLevelDebugMessages</stringProp>
+            <stringProp name="Argument.value">${__P(EnableAppLevelDebugMessages, false)}</stringProp>
+            <stringProp name="Argument.desc">Set to true to turn on app level debug msg&apos;s, which are on the level of one per tile requested.</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
         </collectionProp>
@@ -397,7 +409,7 @@ log.info(&quot;     RandomizeContexts: &quot; + vars.get(&quot;RandomizeContexts
 log.info(&quot;     GeonetworkHost: &quot; + vars.get(&quot;GeonetworkHost&quot;));
 log.info(&quot;     GeonetworkPort: &quot; + vars.get(&quot;GeonetworkPort&quot;));
 log.info(&quot;     GeonetworkContextPath: &quot; + vars.get(&quot;GeonetworkContextPath&quot;));
-
+log.info(&quot;     EnableAppLevelDebugMessages: &quot; + vars.get(&quot;EnableAppLevelDebugMessages&quot;));
 	
 //
 // Some initial default values
@@ -421,6 +433,7 @@ if (tilesPerUser != Math.ceil(tilesTotal / users)) {
 
 //Put props
 // Any props listed here should also be listed in the Only Once - Clear Properties script
+props.put(&quot;EnableAppLevelDebugMessages&quot;, vars.get(&quot;EnableAppLevelDebugMessages&quot;)); //Enable app level debug 
 props.put(&quot;allModelMeta&quot;, {});	//Object Data structure containing all model data 
 props.put(&quot;modelIds&quot;, []);		//Array of all model ids
 props.put(&quot;modelCount&quot;, 0);		//will update after all the model metadata is loaded
@@ -1020,7 +1033,8 @@ log.info(&quot;----- Register map layer for &quot; + modelId + &quot; context &q
                       <stringProp name="scriptLanguage">javascript</stringProp>
                       <stringProp name="parameters"></stringProp>
                       <stringProp name="filename"></stringProp>
-                      <stringProp name="script">var model = props.get(&quot;currentModel&quot;);
+                      <stringProp name="script">var isDebug = props.get(&quot;EnableAppLevelDebugMessages&quot;);
+var model = props.get(&quot;currentModel&quot;);
 var modelId = props.get(&quot;modelId&quot;);
 var contextIndex = Number(props.get(&quot;contextIndex&quot;));
 var contextId = props.get(&quot;contextId&quot;);
@@ -1036,7 +1050,10 @@ threadLoopIndex = Number(threadLoopIndex) + 1;
 var tileIndex = ctx.getThreadNum() + (users * threadLoopIndex);	//Determine the tile to render based on the thread number &amp; how many times this thread has looped
 var tile = model[&quot;initViewTiles&quot;][tileIndex];
 
-log.debug(&quot;Will map a tile for &quot; + modelId + &quot; on thread &quot; + ctx.getThreadNum() + &quot; threadLoopIndex &quot; + threadLoopIndex + &quot; for tile index &quot; + tileIndex);
+if (isDebug == &quot;true&quot;) {
+	log.info(&quot;Will map a zoomed out catch tile for &quot; + modelId + 
+	&quot; on thread &quot; + ctx.getThreadNum() + &quot; threadLoopIndex &quot; + threadLoopIndex + &quot; for tile index &quot; + tileIndex);
+}
 
 
 vars.put(&quot;modelId&quot;, modelId);
@@ -1240,7 +1257,8 @@ vars.put(&quot;contextIndex&quot;, contextIndex);</stringProp>
                       <stringProp name="scriptLanguage">javascript</stringProp>
                       <stringProp name="parameters"></stringProp>
                       <stringProp name="filename"></stringProp>
-                      <stringProp name="script">var model = props.get(&quot;currentModel&quot;);
+                      <stringProp name="script">var isDebug = props.get(&quot;EnableAppLevelDebugMessages&quot;);
+var model = props.get(&quot;currentModel&quot;);
 var modelId = props.get(&quot;modelId&quot;);
 var contextIndex = Number(props.get(&quot;contextIndex&quot;));
 var contextId = props.get(&quot;contextId&quot;);
@@ -1256,7 +1274,10 @@ threadLoopIndex = Number(threadLoopIndex) + 1;
 var tileIndex = ctx.getThreadNum() + (users * threadLoopIndex);	//Determine the tile to render based on the thread number &amp; how many times this thread has looped
 var tile = model[&quot;initViewTiles&quot;][tileIndex];
 
-log.debug(&quot;Will map a tile for &quot; + modelId + &quot; on thread &quot; + ctx.getThreadNum() + &quot; threadLoopIndex &quot; + threadLoopIndex + &quot; for tile index &quot; + tileIndex);
+if (isDebug == &quot;true&quot;) {
+	log.info(&quot;Will map a zoomed out reach tile for &quot; + modelId + 
+	&quot; on thread &quot; + ctx.getThreadNum() + &quot; threadLoopIndex &quot; + threadLoopIndex + &quot; for tile index &quot; + tileIndex);
+}
 
 
 vars.put(&quot;modelId&quot;, modelId);
@@ -1463,7 +1484,8 @@ vars.put(&quot;contextIndex&quot;, contextIndex);</stringProp>
                       <stringProp name="scriptLanguage">javascript</stringProp>
                       <stringProp name="parameters"></stringProp>
                       <stringProp name="filename"></stringProp>
-                      <stringProp name="script">var model = props.get(&quot;currentModel&quot;);
+                      <stringProp name="script">var isDebug = props.get(&quot;EnableAppLevelDebugMessages&quot;);
+var model = props.get(&quot;currentModel&quot;);
 var modelId = props.get(&quot;modelId&quot;);
 var contextIndex = Number(props.get(&quot;contextIndex&quot;));
 var contextId = props.get(&quot;contextId&quot;);
@@ -1479,7 +1501,10 @@ threadLoopIndex = Number(threadLoopIndex) + 1;
 var tileIndex = ctx.getThreadNum() + (users * threadLoopIndex);	//Determine the tile to render based on the thread number &amp; how many times this thread has looped
 var tile = model[&quot;zoom1ViewTiles&quot;][tileIndex];
 
-log.debug(&quot;Will map a tile for &quot; + modelId + &quot; on thread &quot; + ctx.getThreadNum() + &quot; threadLoopIndex &quot; + threadLoopIndex + &quot; for tile index &quot; + tileIndex);
+if (isDebug == &quot;true&quot;) {
+	log.info(&quot;Will map a zoomed in (1) catch tile for &quot; + modelId + 
+	&quot; on thread &quot; + ctx.getThreadNum() + &quot; threadLoopIndex &quot; + threadLoopIndex + &quot; for tile index &quot; + tileIndex);
+}
 
 
 vars.put(&quot;modelId&quot;, modelId);
@@ -1683,7 +1708,8 @@ vars.put(&quot;contextIndex&quot;, contextIndex);</stringProp>
                       <stringProp name="scriptLanguage">javascript</stringProp>
                       <stringProp name="parameters"></stringProp>
                       <stringProp name="filename"></stringProp>
-                      <stringProp name="script">var model = props.get(&quot;currentModel&quot;);
+                      <stringProp name="script">var isDebug = props.get(&quot;EnableAppLevelDebugMessages&quot;);
+var model = props.get(&quot;currentModel&quot;);
 var modelId = props.get(&quot;modelId&quot;);
 var contextIndex = Number(props.get(&quot;contextIndex&quot;));
 var contextId = props.get(&quot;contextId&quot;);
@@ -1699,7 +1725,10 @@ threadLoopIndex = Number(threadLoopIndex) + 1;
 var tileIndex = ctx.getThreadNum() + (users * threadLoopIndex);	//Determine the tile to render based on the thread number &amp; how many times this thread has looped
 var tile = model[&quot;zoom1ViewTiles&quot;][tileIndex];
 
-log.debug(&quot;Will map a tile for &quot; + modelId + &quot; on thread &quot; + ctx.getThreadNum() + &quot; threadLoopIndex &quot; + threadLoopIndex + &quot; for tile index &quot; + tileIndex);
+if (isDebug == &quot;true&quot;) {
+	log.info(&quot;Will map a zoomed in (1) reach tile for &quot; + modelId + 
+	&quot; on thread &quot; + ctx.getThreadNum() + &quot; threadLoopIndex &quot; + threadLoopIndex + &quot; for tile index &quot; + tileIndex);
+}
 
 
 vars.put(&quot;modelId&quot;, modelId);
