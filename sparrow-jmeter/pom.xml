@@ -124,9 +124,23 @@
 							<reportDir>${project.build.directory}/jmeter-reports</reportDir>
 							<ignoreResultFailures>true</ignoreResultFailures>
 							<jMeterProcessJVMSettings>
-								<xms>1G</xms>
-								<xmx>2G</xmx>
+								<xms>2048</xms>
+								<xmx>2048</xmx>
 							</jMeterProcessJVMSettings>
+							
+							<!--
+							   To simplify debugging, it is advisable to adapt the loglevel.
+							   The jmeter logs are written to the file jmeter.log.
+							-->
+							<overrideRootLogLevel>DEBUG</overrideRootLogLevel>
+
+							<!--
+							   By default, the console output during a jmeter test run is suppressed.
+							   We want to display the progress using the listener "Generate Summary Results" 
+							   (which periodically prints stats to stdout). Therefore we have to make sure,
+							   that the jmeter output is not suppressed.
+							-->
+							<suppressJMeterOutput>false</suppressJMeterOutput>
 
 							<propertiesUser>
 								<reportDir>${project.build.directory}/jmeter-reports</reportDir>
