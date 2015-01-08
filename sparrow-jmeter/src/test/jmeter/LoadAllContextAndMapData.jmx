@@ -32,7 +32,7 @@
           </elementProp>
           <elementProp name="MapRequestsConcurrentUsers" elementType="Argument">
             <stringProp name="Argument.name">MapRequestsConcurrentUsers</stringProp>
-            <stringProp name="Argument.value">${__P(MapRequestsConcurrentUsers,24)}</stringProp>
+            <stringProp name="Argument.value">${__P(MapRequestsConcurrentUsers,1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">Only one user is required to sequentially load models.  Larger than one is a stress test.</stringProp>
           </elementProp>
@@ -56,9 +56,15 @@
           </elementProp>
           <elementProp name="MaxNumberOfModelsToRun" elementType="Argument">
             <stringProp name="Argument.name">MaxNumberOfModelsToRun</stringProp>
-            <stringProp name="Argument.value">${__P(MaxNumberOfModelsToRun,99)}</stringProp>
+            <stringProp name="Argument.value">${__P(MaxNumberOfModelsToRun,1)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">Filters how many models ids are queied fromGeoNetwork (sort order unknown)</stringProp>
+          </elementProp>
+          <elementProp name="MaxNumberOfTilesPerMap" elementType="Argument">
+            <stringProp name="Argument.name">MaxNumberOfTilesPerMap</stringProp>
+            <stringProp name="Argument.value">${__P(MaxNumberOfTilesPerMap,1)}</stringProp>
+            <stringProp name="Argument.desc">Request all tiles for map (6x4=24) unless this is set to less than 24.  If less than 24, must be divisible by the number of ConcurrentUsers.  Disable by setting to 0 value.</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="MapCatch" elementType="Argument">
             <stringProp name="Argument.name">MapCatch</stringProp>
@@ -71,6 +77,12 @@
             <stringProp name="Argument.value">${__P(MapReach, true)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">If &apos;true&apos;, reaches are mapped.  Otherwise, reahes are mapped.</stringProp>
+          </elementProp>
+          <elementProp name="MapStaticLayers" elementType="Argument">
+            <stringProp name="Argument.name">MapStaticLayers</stringProp>
+            <stringProp name="Argument.value">${__P(MapStaticLayers, false)}</stringProp>
+            <stringProp name="Argument.desc">If &apos;true&apos;, the reference only layers are requested, such as reach overlay, calibration sites and catchment overlay.  False by default.</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="RandomizeContexts" elementType="Argument">
             <stringProp name="Argument.name">RandomizeContexts</stringProp>
@@ -154,6 +166,12 @@
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">Filters how many models ids are queied fromGeoNetwork (sort order unknown)</stringProp>
           </elementProp>
+          <elementProp name="MaxNumberOfTilesPerMap" elementType="Argument">
+            <stringProp name="Argument.name">MaxNumberOfTilesPerMap</stringProp>
+            <stringProp name="Argument.value">${__P(MaxNumberOfTilesPerMap,0)}</stringProp>
+            <stringProp name="Argument.desc">Request all tiles for map (6x4=24) unless this is set to less than 24.  If less than 24, must be divisible by the number of ConcurrentUsers.  Disable by setting to 0 value.</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
           <elementProp name="MapCatch" elementType="Argument">
             <stringProp name="Argument.name">MapCatch</stringProp>
             <stringProp name="Argument.value">${__P(MapCatch, true)}</stringProp>
@@ -165,6 +183,12 @@
             <stringProp name="Argument.value">${__P(MapReach, true)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
             <stringProp name="Argument.desc">If &apos;true&apos;, reaches are mapped.  Otherwise, reahes are mapped.</stringProp>
+          </elementProp>
+          <elementProp name="MapStaticLayers" elementType="Argument">
+            <stringProp name="Argument.name">MapStaticLayers</stringProp>
+            <stringProp name="Argument.value">${__P(MapStaticLayers, false)}</stringProp>
+            <stringProp name="Argument.desc">If &apos;true&apos;, the reference only layers are requested, such as reach overlay, calibration sites and catchment overlay.  False by default.</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="RandomizeContexts" elementType="Argument">
             <stringProp name="Argument.name">RandomizeContexts</stringProp>
@@ -405,6 +429,7 @@ log.info(&quot;     GeoserverPort: &quot; + vars.get(&quot;GeoserverPort&quot;))
 log.info(&quot;     GeoserverContextPath: &quot; + vars.get(&quot;GeoserverContextPath&quot;));
 log.info(&quot;     MapCatch: &quot; + vars.get(&quot;MapCatch&quot;));
 log.info(&quot;     MapReach: &quot; + vars.get(&quot;MapReach&quot;));
+log.info(&quot;     MaxNumberOfTilesPerMap: &quot; + vars.get(&quot;MaxNumberOfTilesPerMap&quot;));
 log.info(&quot;     RandomizeContexts: &quot; + vars.get(&quot;RandomizeContexts&quot;));
 log.info(&quot;     GeonetworkHost: &quot; + vars.get(&quot;GeonetworkHost&quot;));
 log.info(&quot;     GeonetworkPort: &quot; + vars.get(&quot;GeonetworkPort&quot;));
@@ -416,17 +441,31 @@ log.info(&quot;     EnableAppLevelDebugMessages: &quot; + vars.get(&quot;EnableA
 
 
 //Basic numbers
+var maxNumberOfTilesPerMap = Number(vars.get(&quot;MaxNumberOfTilesPerMap&quot;));
 var tilesWide = 6;	//should only be even numbers
 var tilesTall = 4;	//should only be even numbers
 var tilesTotal = tilesWide * tilesTall;
+var mappedTilesTotal = tilesTotal;
+
+//restrict total number of tiles to map only if less than then the number of tiles in the map and not turned off by setting to zero.
+if (maxNumberOfTilesPerMap &lt; tilesTotal &amp;&amp; maxNumberOfTilesPerMap &gt; 0) mappedTilesTotal = maxNumberOfTilesPerMap;
+
 var users = Number(vars.get(&quot;MapRequestsConcurrentUsers&quot;));
-var tilesPerUser = Math.floor(tilesTotal / users);	//How many tiles one user/thread needs to request to request the entire map
+var tilesPerUser = Math.floor(tilesTotal / users);	//How many tiles one user/thread WOULD need to request to request the entire map (may not request all)
+var mappedTilesPerUser = Math.floor(mappedTilesTotal / users);	//How many tiles one user/thread will actually request to request (may not be entire map)
 var randomCoef = Math.random() * 2.0;	//somewhere between 0 and 2
 
 
 if (tilesPerUser != Math.ceil(tilesTotal / users)) {
 	log.error(&quot;MapRequestsConcurrentUsers is specified as &quot; + users + &quot;, however, there are &quot; + tilesTotal + 
-	&quot; to render, which is not divisible by &quot; + users + &quot;.  Please  specified MapRequestsConcurrentUsers to go evenly into the number of tiles.&quot;);
+	&quot; in the map, which is not divisible by &quot; + users + &quot;.  Please  specify MapRequestsConcurrentUsers to go evenly into the number of tiles.&quot;);
+	ctx.getEngine().stopEngineNow();
+}
+
+
+if (maxNumberOfTilesPerMap &gt; 0 &amp;&amp; mappedTilesPerUser != Math.ceil(maxNumberOfTilesPerMap / users)) {
+	log.error(&quot;MapRequestsConcurrentUsers is specified as &quot; + users + &quot;, however, MaxNumberOfTilesPerMap is spec&apos;ed as &quot; + maxNumberOfTilesPerMap + 
+	&quot; which is not divisible by &quot; + users + &quot;.  Please  specify MaxNumberOfTilesPerMap as a multiple of the number of users.&quot;);
 	ctx.getEngine().stopEngineNow();
 }
 
@@ -443,13 +482,21 @@ props.remove(&quot;modelId&quot;);				//the actual current model id from modelId
 props.put(&quot;tilesWide&quot;, tilesWide);
 props.put(&quot;tilesTall&quot;, tilesTall);
 props.put(&quot;tilesTotal&quot;, tilesTotal);
+props.put(&quot;mappedTilesTotal&quot;, mappedTilesTotal);
 props.put(&quot;tilesPerUser&quot;, tilesPerUser);
+props.put(&quot;mappedTilesPerUser&quot;, mappedTilesPerUser);
 props.put(&quot;randomCoef&quot;, randomCoef);	//Use for randomized coef&apos;s in context adjustments so we force new context id and map layers for each run
 
 props.put(&quot;contextIdIndex&quot;, 0);			//If we register multiple contexts per model, this points to the current one
 
-log.info(&quot;----- Initializing all static properties.  There will be &quot; + users + &quot; concurrent map tiles requests (threads) to request &quot; + 
-	tilesTotal + &quot; total tiles per context.  Thus, there are &quot; + tilesPerUser + &quot; tiles per thread.&quot;);</stringProp>
+if (mappedTilesTotal == tilesTotal) {
+	log.info(&quot;----- Initializing all static properties.  There will be &quot; + users + &quot; concurrent map tiles requests (threads) to request &quot; + 
+		tilesTotal + &quot; total tiles per context.  Thus, there are &quot; + tilesPerUser + &quot; tiles per thread.&quot;);
+} else {
+	log.info(&quot;----- Initializing all static properties.  There will be &quot; + users + &quot; concurrent map tiles requests (threads) to request &quot; + 
+		mappedTilesTotal + &quot; tiles per context.  Thus, there are &quot; + mappedTilesPerUser + &quot; tiles per thread.  NOTE: This is not the total number of tiles in a map - it was restricted by the MaxNumberOfTilesPerMap param.&quot;);
+}
+</stringProp>
             <stringProp name="scriptLanguage">javascript</stringProp>
           </BSFSampler>
           <hashTree/>
@@ -638,7 +685,8 @@ function makeTiles(south, west, tilesTall, tilesWide, tileLatLongSize) {
 				west: (west + tileLatLongSize * col),
 				south: (south + tileLatLongSize * row),
 				east: (west + tileLatLongSize * (col + 1)),
-				north: (south + tileLatLongSize * (row + 1))
+				north: (south + tileLatLongSize * (row + 1)),
+				rowcol: &quot;r&quot; + row + &quot;c&quot; + col
 			};
 	
 			log.debug(&quot;Created tile :   &quot; + tile.west + &quot;,&quot; + tile.south + &quot;,&quot; + tile.east + &quot;,&quot; + tile.north);
@@ -647,7 +695,48 @@ function makeTiles(south, west, tilesTall, tilesWide, tileLatLongSize) {
 		}
 	}
 
-	return tiles;
+	//Reorder the tiles so that they spiral out from the center.
+	//This allows us to just request the first few tiles in the list
+	//and make sure we actually get tiles with geom, rather than empty edge tiles.
+	//I tried a few spiral calc implementations, but... its complicated.  Below is the
+	//solution for the 6 x 4 grid - we just display a warning if that is not the tile arrangement.
+	if (tilesTall == 4 &amp;&amp; tilesWide == 6) {
+		var spiral = [];
+
+		spiral.push(tiles[8]);
+		spiral.push(tiles[9]);
+		spiral.push(tiles[15]);
+		spiral.push(tiles[14]);
+		spiral.push(tiles[13]);
+		spiral.push(tiles[7]);
+		spiral.push(tiles[1]);
+		spiral.push(tiles[2]);
+		spiral.push(tiles[3]);
+		spiral.push(tiles[4]);
+		spiral.push(tiles[10]);
+		spiral.push(tiles[16]);
+		spiral.push(tiles[22]);
+		spiral.push(tiles[21]);
+		spiral.push(tiles[20]);
+		spiral.push(tiles[19]);
+		spiral.push(tiles[18]);
+		spiral.push(tiles[12]);
+		spiral.push(tiles[6]);
+		spiral.push(tiles[0]);
+		spiral.push(tiles[5]);
+		spiral.push(tiles[11]);
+		spiral.push(tiles[17]);
+		spiral.push(tiles[23]);
+
+		return spiral;
+
+		
+	} else {
+		log.error(&quot;WARNING:  THIS SECTION OF CODE ASSUMES THAT THE MAP GRID IS 6X4.  SINCE IT IS NOT, THE SPIRAL TILE ARRANGEMENT WILL BE SKIPPED MEANING THAT THE FIRST REQUESTED TILES WILL BE EDGES RATHER THAN THE MIDDLE OF THE MAP.&quot;);
+		return tiles;
+	}
+
+	
 }
 </stringProp>
               <stringProp name="scriptLanguage">javascript</stringProp>
@@ -1041,7 +1130,7 @@ log.info(&quot;----- Register map layer for &quot; + modelId + &quot; context &q
                 <hashTree>
                   <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop all map tiles for map (catch zoomed out view)" enabled="true">
                     <boolProp name="LoopController.continue_forever">true</boolProp>
-                    <stringProp name="LoopController.loops">${__javaScript(Number(props.get(&quot;tilesPerUser&quot;)))}</stringProp>
+                    <stringProp name="LoopController.loops">${__javaScript(Number(props.get(&quot;mappedTilesPerUser&quot;)))}</stringProp>
                   </LoopController>
                   <hashTree>
                     <BSFSampler guiclass="TestBeanGUI" testclass="BSFSampler" testname="Init thread for a single tile request" enabled="true">
@@ -1086,7 +1175,8 @@ vars.put(&quot;localLayerName&quot;, model[&quot;localLayerNames&quot;][contextI
 vars.put(&quot;thdnum&quot;, ctx.getThreadNum());
 vars.put(&quot;threadLoopIndex&quot;, threadLoopIndex);
 vars.put(&quot;tileIndex&quot;, tileIndex);
-vars.put(&quot;contextIndex&quot;, contextIndex);</stringProp>
+vars.put(&quot;contextIndex&quot;, contextIndex);
+vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                     </BSFSampler>
                     <hashTree/>
                     <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Zoomed Out Catch Tile" enabled="true">
@@ -1126,6 +1216,13 @@ vars.put(&quot;contextIndex&quot;, contextIndex);</stringProp>
                             <stringProp name="Argument.metadata">=</stringProp>
                             <boolProp name="HTTPArgument.use_equals">true</boolProp>
                             <stringProp name="Argument.name">tileIdx</stringProp>
+                          </elementProp>
+                          <elementProp name="rowcol" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                            <stringProp name="Argument.value">${rowcol}</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">rowcol</stringProp>
                           </elementProp>
                           <elementProp name="threadLoopIndex" elementType="HTTPArgument">
                             <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -1265,7 +1362,7 @@ vars.put(&quot;contextIndex&quot;, contextIndex);</stringProp>
                 <hashTree>
                   <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop all map tiles for map (reach zoomed out view)" enabled="true">
                     <boolProp name="LoopController.continue_forever">true</boolProp>
-                    <stringProp name="LoopController.loops">${__javaScript(Number(props.get(&quot;tilesPerUser&quot;)))}</stringProp>
+                    <stringProp name="LoopController.loops">${__javaScript(Number(props.get(&quot;mappedTilesPerUser&quot;)))}</stringProp>
                   </LoopController>
                   <hashTree>
                     <BSFSampler guiclass="TestBeanGUI" testclass="BSFSampler" testname="Init thread for a single tile request" enabled="true">
@@ -1310,7 +1407,8 @@ vars.put(&quot;localLayerName&quot;, model[&quot;localLayerNames&quot;][contextI
 vars.put(&quot;thdnum&quot;, ctx.getThreadNum());
 vars.put(&quot;threadLoopIndex&quot;, threadLoopIndex);
 vars.put(&quot;tileIndex&quot;, tileIndex);
-vars.put(&quot;contextIndex&quot;, contextIndex);</stringProp>
+vars.put(&quot;contextIndex&quot;, contextIndex);
+vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                     </BSFSampler>
                     <hashTree/>
                     <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Zoomed Out Reach Tile" enabled="true">
@@ -1350,6 +1448,247 @@ vars.put(&quot;contextIndex&quot;, contextIndex);</stringProp>
                             <stringProp name="Argument.metadata">=</stringProp>
                             <boolProp name="HTTPArgument.use_equals">true</boolProp>
                             <stringProp name="Argument.name">tileIdx</stringProp>
+                          </elementProp>
+                          <elementProp name="rowcol" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                            <stringProp name="Argument.value">${rowcol}</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">rowcol</stringProp>
+                            <stringProp name="Argument.desc">false</stringProp>
+                          </elementProp>
+                          <elementProp name="threadLoopIndex" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                            <stringProp name="Argument.value">${threadLoopIndex}</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">threadLoopIndex</stringProp>
+                          </elementProp>
+                          <elementProp name="request" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">GetMap</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">request</stringProp>
+                          </elementProp>
+                          <elementProp name="srs" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">EPSG:4326</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">srs</stringProp>
+                          </elementProp>
+                          <elementProp name="version" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">1.1.1</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">version</stringProp>
+                          </elementProp>
+                          <elementProp name="layers" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">${flowLayerName}</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">layers</stringProp>
+                          </elementProp>
+                          <elementProp name="BBOX" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">${west},${south},${east},${north}</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">BBOX</stringProp>
+                          </elementProp>
+                          <elementProp name="width" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">256</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">width</stringProp>
+                          </elementProp>
+                          <elementProp name="height" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">256</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">height</stringProp>
+                          </elementProp>
+                          <elementProp name="transparent" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">true</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">transparent</stringProp>
+                          </elementProp>
+                          <elementProp name="format" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">image/png8</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">format</stringProp>
+                          </elementProp>
+                          <elementProp name="styles" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value"></stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">styles</stringProp>
+                          </elementProp>
+                          <elementProp name="format_options" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">antialiasing:none;quantizer:octree;</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">format_options</stringProp>
+                          </elementProp>
+                          <elementProp name="sld" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">http://${GeoserverHost}:${GeoserverPort}/${GeoserverContextPath}/rest/sld/workspace/sparrow-flowline/layer/${localLayerName}/catch.sld?binLowList=0,25000,58000,141000,676000&amp;binHighList=25000,58000,141000,676000,500000000&amp;binColorList=FFFFD4,FEE391,FEC44F,FE9929,EC7014&amp;bounded=false</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">sld</stringProp>
+                          </elementProp>
+                        </collectionProp>
+                      </elementProp>
+                      <stringProp name="HTTPSampler.domain">${GeoserverHost}</stringProp>
+                      <stringProp name="HTTPSampler.port">${GeoserverPort}</stringProp>
+                      <stringProp name="HTTPSampler.connect_timeout"></stringProp>
+                      <stringProp name="HTTPSampler.response_timeout"></stringProp>
+                      <stringProp name="HTTPSampler.protocol"></stringProp>
+                      <stringProp name="HTTPSampler.contentEncoding">UTF-8</stringProp>
+                      <stringProp name="HTTPSampler.path">/${GeoserverContextPath}/wms</stringProp>
+                      <stringProp name="HTTPSampler.method">GET</stringProp>
+                      <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
+                      <boolProp name="HTTPSampler.auto_redirects">true</boolProp>
+                      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+                      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+                      <stringProp name="HTTPSampler.implementation">Java</stringProp>
+                      <boolProp name="HTTPSampler.monitor">false</boolProp>
+                      <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
+                    </HTTPSamplerProxy>
+                    <hashTree/>
+                  </hashTree>
+                </hashTree>
+              </hashTree>
+              <IfController guiclass="IfControllerPanel" testclass="IfController" testname="If Mapping Static Layers" enabled="true">
+                <stringProp name="IfController.condition">${MapStaticLayers}</stringProp>
+                <boolProp name="IfController.evaluateAll">false</boolProp>
+                <boolProp name="IfController.useExpression">true</boolProp>
+              </IfController>
+              <hashTree>
+                <SyncTimer guiclass="TestBeanGUI" testclass="SyncTimer" testname="Synchronizing Timer" enabled="true">
+                  <stringProp name="groupSize">${MapRequestsConcurrentUsers}</stringProp>
+                  <longProp name="timeoutInMs">0</longProp>
+                </SyncTimer>
+                <hashTree/>
+                <BSFSampler guiclass="TestBeanGUI" testclass="BSFSampler" testname="Reset thread to loop tiles" enabled="true">
+                  <stringProp name="scriptLanguage">javascript</stringProp>
+                  <stringProp name="parameters"></stringProp>
+                  <stringProp name="filename"></stringProp>
+                  <stringProp name="script">vars.put(&quot;threadLoopIndex&quot;, -1);</stringProp>
+                </BSFSampler>
+                <hashTree/>
+                <TransactionController guiclass="TransactionControllerGui" testclass="TransactionController" testname="Zoomed out initial model view static-layers Transaction" enabled="true">
+                  <boolProp name="TransactionController.includeTimers">false</boolProp>
+                  <boolProp name="TransactionController.parent">false</boolProp>
+                </TransactionController>
+                <hashTree>
+                  <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop all map tiles for map (static zoomed out view)" enabled="true">
+                    <boolProp name="LoopController.continue_forever">true</boolProp>
+                    <stringProp name="LoopController.loops">${__javaScript(Number(props.get(&quot;mappedTilesPerUser&quot;)))}</stringProp>
+                  </LoopController>
+                  <hashTree>
+                    <BSFSampler guiclass="TestBeanGUI" testclass="BSFSampler" testname="Init thread for a single tile request" enabled="true">
+                      <stringProp name="scriptLanguage">javascript</stringProp>
+                      <stringProp name="parameters"></stringProp>
+                      <stringProp name="filename"></stringProp>
+                      <stringProp name="script">var isDebug = props.get(&quot;EnableAppLevelDebugMessages&quot;);
+var model = props.get(&quot;currentModel&quot;);
+var modelId = props.get(&quot;modelId&quot;);
+var contextIndex = Number(props.get(&quot;contextIndex&quot;));
+var contextId = props.get(&quot;contextId&quot;);
+var totalTiles = Number(props.get(&quot;tilesTotal&quot;));
+//var tilesPerUser = Number(props.get(&quot;tilesPerUser&quot;));
+var users = Number(vars.get(&quot;MapRequestsConcurrentUsers&quot;));
+var threadLoopIndex = vars.get(&quot;threadLoopIndex&quot;);	//How many times has this thread looped through the map loop?
+
+//Starts at -1, so always increment before use
+threadLoopIndex = Number(threadLoopIndex) + 1;
+
+
+var tileIndex = ctx.getThreadNum() + (users * threadLoopIndex);	//Determine the tile to render based on the thread number &amp; how many times this thread has looped
+var tile = model[&quot;initViewTiles&quot;][tileIndex];
+
+if (isDebug == &quot;true&quot;) {
+	log.info(&quot;Will map a zoomed out reach tile for &quot; + modelId + 
+	&quot; on thread &quot; + ctx.getThreadNum() + &quot; threadLoopIndex &quot; + threadLoopIndex + &quot; for tile index &quot; + tileIndex);
+}
+
+
+vars.put(&quot;modelId&quot;, modelId);
+vars.put(&quot;contextId&quot;, contextId);
+vars.put(&quot;north&quot;, Number(tile[&quot;north&quot;]));
+vars.put(&quot;west&quot;, Number(tile[&quot;west&quot;]));
+vars.put(&quot;south&quot;, Number(tile[&quot;south&quot;]));
+vars.put(&quot;east&quot;, Number(tile[&quot;east&quot;]));
+vars.put(&quot;flowLayerName&quot;, model[&quot;flowLayerNames&quot;][contextIndex]);
+vars.put(&quot;catchLayerName&quot;, model[&quot;catchLayerNames&quot;][contextIndex]);
+vars.put(&quot;localLayerName&quot;, model[&quot;localLayerNames&quot;][contextIndex]);
+
+
+//debug &amp; index info
+vars.put(&quot;thdnum&quot;, ctx.getThreadNum());
+vars.put(&quot;threadLoopIndex&quot;, threadLoopIndex);
+vars.put(&quot;tileIndex&quot;, tileIndex);
+vars.put(&quot;contextIndex&quot;, contextIndex);
+vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
+                    </BSFSampler>
+                    <hashTree/>
+                    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Zoomed Out Calibration Tile (NOT COMPLETE)" enabled="true">
+                      <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                        <collectionProp name="Arguments.arguments">
+                          <elementProp name="thdNum" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+                            <stringProp name="Argument.value">${thdnum}</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">thdNum</stringProp>
+                          </elementProp>
+                          <elementProp name="modelId" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                            <stringProp name="Argument.value">${modelId}</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">modelId</stringProp>
+                          </elementProp>
+                          <elementProp name="contextId" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                            <stringProp name="Argument.value">${contextId}</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">contextId</stringProp>
+                          </elementProp>
+                          <elementProp name="contextIdx" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                            <stringProp name="Argument.value">${contextIndex}</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">contextIdx</stringProp>
+                          </elementProp>
+                          <elementProp name="tileIdx" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                            <stringProp name="Argument.value">${tileIndex}</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">tileIdx</stringProp>
+                          </elementProp>
+                          <elementProp name="rowcol" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                            <stringProp name="Argument.value">${rowcol}</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">rowcol</stringProp>
+                            <stringProp name="Argument.desc">false</stringProp>
                           </elementProp>
                           <elementProp name="threadLoopIndex" elementType="HTTPArgument">
                             <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -1492,7 +1831,7 @@ vars.put(&quot;contextIndex&quot;, contextIndex);</stringProp>
                 <hashTree>
                   <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop all map tiles for map (catch zoom1 view)" enabled="true">
                     <boolProp name="LoopController.continue_forever">true</boolProp>
-                    <stringProp name="LoopController.loops">${__javaScript(Number(props.get(&quot;tilesPerUser&quot;)))}</stringProp>
+                    <stringProp name="LoopController.loops">${__javaScript(Number(props.get(&quot;mappedTilesPerUser&quot;)))}</stringProp>
                   </LoopController>
                   <hashTree>
                     <BSFSampler guiclass="TestBeanGUI" testclass="BSFSampler" testname="Init thread for a single tile request" enabled="true">
@@ -1537,7 +1876,8 @@ vars.put(&quot;localLayerName&quot;, model[&quot;localLayerNames&quot;][contextI
 vars.put(&quot;thdnum&quot;, ctx.getThreadNum());
 vars.put(&quot;threadLoopIndex&quot;, threadLoopIndex);
 vars.put(&quot;tileIndex&quot;, tileIndex);
-vars.put(&quot;contextIndex&quot;, contextIndex);</stringProp>
+vars.put(&quot;contextIndex&quot;, contextIndex);
+vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                     </BSFSampler>
                     <hashTree/>
                     <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Zoom1 Catch Tile" enabled="true">
@@ -1577,6 +1917,14 @@ vars.put(&quot;contextIndex&quot;, contextIndex);</stringProp>
                             <stringProp name="Argument.metadata">=</stringProp>
                             <boolProp name="HTTPArgument.use_equals">true</boolProp>
                             <stringProp name="Argument.name">tileIdx</stringProp>
+                          </elementProp>
+                          <elementProp name="rowcol" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                            <stringProp name="Argument.value">${rowcol}</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">rowcol</stringProp>
+                            <stringProp name="Argument.desc">false</stringProp>
                           </elementProp>
                           <elementProp name="threadLoopIndex" elementType="HTTPArgument">
                             <boolProp name="HTTPArgument.always_encode">false</boolProp>
@@ -1716,7 +2064,7 @@ vars.put(&quot;contextIndex&quot;, contextIndex);</stringProp>
                 <hashTree>
                   <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Loop all map tiles for map (reach zoom1 view)" enabled="true">
                     <boolProp name="LoopController.continue_forever">true</boolProp>
-                    <stringProp name="LoopController.loops">${__javaScript(Number(props.get(&quot;tilesPerUser&quot;)))}</stringProp>
+                    <stringProp name="LoopController.loops">${__javaScript(Number(props.get(&quot;mappedTilesPerUser&quot;)))}</stringProp>
                   </LoopController>
                   <hashTree>
                     <BSFSampler guiclass="TestBeanGUI" testclass="BSFSampler" testname="Init thread for a single tile request" enabled="true">
@@ -1761,7 +2109,8 @@ vars.put(&quot;localLayerName&quot;, model[&quot;localLayerNames&quot;][contextI
 vars.put(&quot;thdnum&quot;, ctx.getThreadNum());
 vars.put(&quot;threadLoopIndex&quot;, threadLoopIndex);
 vars.put(&quot;tileIndex&quot;, tileIndex);
-vars.put(&quot;contextIndex&quot;, contextIndex);</stringProp>
+vars.put(&quot;contextIndex&quot;, contextIndex);
+vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                     </BSFSampler>
                     <hashTree/>
                     <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Zoom1 Reach Tile" enabled="true">
@@ -1801,6 +2150,14 @@ vars.put(&quot;contextIndex&quot;, contextIndex);</stringProp>
                             <stringProp name="Argument.metadata">=</stringProp>
                             <boolProp name="HTTPArgument.use_equals">true</boolProp>
                             <stringProp name="Argument.name">tileIdx</stringProp>
+                          </elementProp>
+                          <elementProp name="rowcol" elementType="HTTPArgument">
+                            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+                            <stringProp name="Argument.value">${rowcol}</stringProp>
+                            <stringProp name="Argument.metadata">=</stringProp>
+                            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+                            <stringProp name="Argument.name">rowcol</stringProp>
+                            <stringProp name="Argument.desc">false</stringProp>
                           </elementProp>
                           <elementProp name="threadLoopIndex" elementType="HTTPArgument">
                             <boolProp name="HTTPArgument.always_encode">false</boolProp>
