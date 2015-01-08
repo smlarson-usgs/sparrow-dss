@@ -1079,6 +1079,9 @@ var flowLayerNames = modelMeta[&quot;flowLayerNames&quot;];
 var catchLayerNames = modelMeta[&quot;catchLayerNames&quot;];
 var localLayerNames = modelMeta[&quot;localLayerNames&quot;];
 
+//var staticHuc = modelMeta[&quot;staticHuc&quot;];
+//var staticCal = modelMeta[&quot;staticCal&quot;];
+//var staticReach = modelMeta[&quot;staticReach&quot;];
 
 flowLayerNames.push(vars.get(&quot;flowLayerName&quot;));
 catchLayerNames.push(vars.get(&quot;catchLayerName&quot;));
@@ -1628,10 +1631,15 @@ var tileIndex = ctx.getThreadNum() + (users * threadLoopIndex);	//Determine the 
 var tile = model[&quot;initViewTiles&quot;][tileIndex];
 
 if (isDebug == &quot;true&quot;) {
+	log.info(&quot;Running tests on static layers!!!&quot;);
+}
+
+/*
+if (isDebug == &quot;true&quot;) {
 	log.info(&quot;Will map a zoomed out reach tile for &quot; + modelId + 
 	&quot; on thread &quot; + ctx.getThreadNum() + &quot; threadLoopIndex &quot; + threadLoopIndex + &quot; for tile index &quot; + tileIndex);
 }
-
+*/
 
 vars.put(&quot;modelId&quot;, modelId);
 vars.put(&quot;contextId&quot;, contextId);
@@ -1643,6 +1651,10 @@ vars.put(&quot;flowLayerName&quot;, model[&quot;flowLayerNames&quot;][contextInd
 vars.put(&quot;catchLayerName&quot;, model[&quot;catchLayerNames&quot;][contextIndex]);
 vars.put(&quot;localLayerName&quot;, model[&quot;localLayerNames&quot;][contextIndex]);
 
+vars.put(&quot;staticReachOverlay&quot;, model[&quot;staticReach&quot;]);
+vars.put(&quot;staticCalOverlay&quot;, model[&quot;staticCal&quot;]);
+vars.put(&quot;staticHucOverlay&quot;, model[&quot;staticHuc&quot;]);
+
 
 //debug &amp; index info
 vars.put(&quot;thdnum&quot;, ctx.getThreadNum());
@@ -1652,7 +1664,7 @@ vars.put(&quot;contextIndex&quot;, contextIndex);
 vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                     </BSFSampler>
                     <hashTree/>
-                    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Zoomed Out Reach Tile" enabled="true">
+                    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Static Zoomed Out Reach Tile" enabled="true">
                       <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
                         <collectionProp name="Arguments.arguments">
                           <elementProp name="request" elementType="HTTPArgument">
@@ -1678,7 +1690,7 @@ vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                           </elementProp>
                           <elementProp name="layers" elementType="HTTPArgument">
                             <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                            <stringProp name="Argument.value">reach-overlay:mrb02_mrbe2rf1</stringProp>
+                            <stringProp name="Argument.value">${staticReachOverlay}</stringProp>
                             <stringProp name="Argument.metadata">=</stringProp>
                             <boolProp name="HTTPArgument.use_equals">true</boolProp>
                             <stringProp name="Argument.name">layers</stringProp>
@@ -1744,7 +1756,7 @@ vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                       <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
                     </HTTPSamplerProxy>
                     <hashTree/>
-                    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Zoomed Out HUC Tile" enabled="true">
+                    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Static Zoomed Out HUC Tile" enabled="true">
                       <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
                         <collectionProp name="Arguments.arguments">
                           <elementProp name="request" elementType="HTTPArgument">
@@ -1770,7 +1782,7 @@ vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                           </elementProp>
                           <elementProp name="layers" elementType="HTTPArgument">
                             <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                            <stringProp name="Argument.value">huc8-overlay:mrb02_mrbe2rf1</stringProp>
+                            <stringProp name="Argument.value">${staticHucOverlay}</stringProp>
                             <stringProp name="Argument.metadata">=</stringProp>
                             <boolProp name="HTTPArgument.use_equals">true</boolProp>
                             <stringProp name="Argument.name">layers</stringProp>
@@ -1836,7 +1848,7 @@ vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                       <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
                     </HTTPSamplerProxy>
                     <hashTree/>
-                    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Zoomed Out Calibration Tile" enabled="true">
+                    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Static Zoomed Out Calibration Tile" enabled="true">
                       <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
                         <collectionProp name="Arguments.arguments">
                           <elementProp name="request" elementType="HTTPArgument">
@@ -1862,7 +1874,7 @@ vars.put(&quot;rowcol&quot;, tile[&quot;rowcol&quot;]);</stringProp>
                           </elementProp>
                           <elementProp name="layers" elementType="HTTPArgument">
                             <boolProp name="HTTPArgument.always_encode">true</boolProp>
-                            <stringProp name="Argument.value">sparrow-calibration:50</stringProp>
+                            <stringProp name="Argument.value">${staticCalOverlay}</stringProp>
                             <stringProp name="Argument.metadata">=</stringProp>
                             <boolProp name="HTTPArgument.use_equals">true</boolProp>
                             <stringProp name="Argument.name">layers</stringProp>
