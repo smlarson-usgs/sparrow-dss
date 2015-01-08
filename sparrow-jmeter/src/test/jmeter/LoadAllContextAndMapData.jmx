@@ -591,6 +591,7 @@ var zoomSizes = [
 
 
 var bounds = oneMetaData.models.model[0].bounds;
+var themeName = oneMetaData.models.model[0].themeName;
 var orgNorth = Number(bounds[&quot;@north&quot;]);
 var orgWest = Number(bounds[&quot;@west&quot;]);
 var orgSouth = Number(bounds[&quot;@south&quot;]);
@@ -599,6 +600,10 @@ var orgWidth = orgEast - orgWest;
 var orgHeight = orgNorth - orgSouth;
 var orgLongCenter = orgWest + (orgWidth / 2);
 var orgLatCenter = orgSouth + (orgHeight / 2);
+
+var staticHucLayerName = &apos;huc8-overlay:&apos; + themeName;
+var staticCalibrationLayerName = &apos;sparrow-calibration:&apos; + modelId;
+var staticReachLayerName = &apos;reach-overlay:&apos; + themeName;
 
 log.info(&quot;Found these original map bounds for model &quot; + modelId + &quot;:   &quot; + orgWest + &quot;,&quot; + orgSouth + &quot;,&quot; + orgEast + &quot;,&quot; + orgNorth);
 
@@ -658,6 +663,9 @@ allMetaData[&quot;&quot; + modelId] = {
 	alignedBbox:  {north: alignedNorth, west: alignedWest, south: alignedSouth, east: alignedEast},
 	initViewTiles: initViewTiles,
 	zoom1ViewTiles: zoom1ViewTiles,
+	staticHuc: staticHucLayerName,
+	staticCal: staticCalibrationLayerName,
+	staticReach: staticReachLayerName,
 	contextIds: [],
 	flowLayerNames: [],
 	catchLayerNames: [],
